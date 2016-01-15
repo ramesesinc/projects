@@ -1,0 +1,11 @@
+<workunit>
+    <invokers>
+        <invoker type="waiver:option" caption="Waiver Option" action="init" />
+    </invokers>     
+    
+    <code class="com.rameses.clfc.treasury.amnesty.WaiveOptionController" />
+
+    <pages>
+        <page template="com.rameses.clfc.treasury.amnesty.WaiveOptionPage" />
+    </pages>
+</workunit>

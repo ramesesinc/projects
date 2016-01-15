@@ -1,0 +1,45 @@
+<workunit extends="wtemplates/ListController.xml">
+    <invokers>
+        <!--
+        <invoker folderid="/explorer/txn/loan" caption="Loan Ledger Non-cashes" role="ACCT_OFFICER"/>
+        -->
+        <invoker folderid="/home/online/loan" caption="Loan Ledger Non-cashes" role="ACCT_OFFICER"/>
+    </invokers>
+    
+    <code>
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        
+        class LoanLedgerNoncashListController extends ListController
+        {
+            @Service("LoanLedgerNoncashService")
+            def svc;
+        
+            String serviceName = "LoanLedgerNoncashService";
+            String entityName = "ledgernoncash";
+        
+            Map createPermission = [domain:'LOAN', role:'CAO_OFFICER,CASHIER'];
+
+            def selectedOption;
+            def optionsModel = [
+                getItems: {
+                    return svc.getStates();
+                }, 
+                onselect: { o->
+                    query.state = o.state;
+                    reloadAll();
+                }
+            ] as ListPaneModel;
+        
+            void beforeGetColumns(Map params) {
+                params.state = selectedOption?.state;
+            }
+        }
+    </code>
+    
+    <pages>
+        <page template="com.rameses.clfc.ui.ListPage" />
+    </pages>
+</workunit>

@@ -1,0 +1,11 @@
+<workunit>
+    <invokers>
+        <invoker type="borrower-ledger:report" action="preview" caption="Ledger" target="popup" />
+    </invokers>
+    
+    <code class="com.rameses.clfc.report.ledger.BorrowerLedgerReportController" />
+    
+    <pages>
+        <page template="com.rameses.osiris2.common.ui.ReportPreviewPage"/>
+    </pages>
+</workunit>

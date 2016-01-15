@@ -1,0 +1,6 @@
+"addOtherIncome" [borrowerContext.mode != 'edit']{
+    enabled: false; 
+}
+"addOtherIncome" [borrowerContext.mode == 'edit']{
+    enabled: true; 
+}

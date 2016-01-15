@@ -1,0 +1,6 @@
+"entity.*|data.*|collector|selectedItem" [mode=='create'] {
+    enabled: true; 
+} 
+"entity.*|data.*|collector|selectedItem" [mode=='read'] {
+    enabled: false; 
+} 

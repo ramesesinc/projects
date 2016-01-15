@@ -1,0 +1,7 @@
+<workunit extends="wtemplates/ServiceLookupController.xml" 
+    serviceName="UsergroupMemberLookupService" tag="FIELD_COLLECTOR"> 
+    <invokers>
+        <invoker type="route-collector:lookup" caption="Field Collectors" target="popup"/> 
+    </invokers>
+        
+</workunit>

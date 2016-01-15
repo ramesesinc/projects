@@ -1,0 +1,6 @@
+"addEmployment" [borrowerContext.mode != 'edit']{
+    enabled: false; 
+}
+"addEmployment" [borrowerContext.mode == 'edit']{
+    enabled: true; 
+}

@@ -1,0 +1,12 @@
+<workunit>
+    <invokers>
+        <invoker type='smccondition:create' action='create' caption='SMC Condition' target='popup' />
+        <invoker type='smccondition:open' action='open' caption='SMC Condition' target='popup' />
+    </invokers>
+    
+    <code class='com.rameses.clfc.treasury.ledger.amnesty.smc.SMCConditionController' />
+    
+    <pages>
+        <page template='com.rameses.clfc.treasury.ledger.amnesty.smc.SMCConditionPage' />
+    </pages>
+</workunit>

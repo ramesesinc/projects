@@ -1,0 +1,32 @@
+<workunit extends="wtemplates/ListController.xml">
+    <invokers>
+        <!--
+        <invoker folderid="/home/capture/treasury" caption="Captured Loan Receivables" domain="LOAN" role="ACCT_OFFICER" />
+        -->
+    </invokers>
+    
+    <code>
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        
+        class LoanReceivableCaptureListController extends ListController
+        {
+            String serviceName = "LoanReceivableCaptureService";
+            String entityName = "loanreceivablecapture";
+        
+            Map createPermission = [domain: 'LOAN', role: 'CAO_OFFICER,ACCT_ASSISTANT'];
+        
+            def state;
+            void beforeGetColumns(Map params) {
+                if (state) params.state = state;
+            }
+        
+            List fetchList(Map params) {
+                if (state) params.txnstate = state;
+                return super.fetchList(params);
+            }
+        }
+    </code>
+</workunit>

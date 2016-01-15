@@ -1,0 +1,11 @@
+<workunit>
+    <invokers>
+        <invoker type="amnestycapture-plugin" caption="Approver" plugintype="poster" index="2" />
+    </invokers>
+    
+    <code class="com.rameses.clfc.audit.amnesty.capture.PosterController" />
+    
+    <pages>
+        <page template="com.rameses.clfc.audit.amnesty.capture.PosterPage" />
+    </pages>
+</workunit>

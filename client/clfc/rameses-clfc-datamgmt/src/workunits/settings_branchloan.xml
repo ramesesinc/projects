@@ -1,0 +1,17 @@
+<workunit>
+    <invokers>
+        <invoker type="branchloansettings:create" action="create" caption="Branch Loan Setting" target="popup" />
+        <invoker type="branchloansettings:open" action="open" caption="Branch Loan Setting" target="popup" />
+        
+        <invoker type="formActions" action="activate" caption="Activate" mnemonic="a" shortcut="ctrl a"
+            visibleWhen="#{mode=='read' &amp;&amp; entity.txnstate!='ACTIVE'}" />
+        <invoker type="formActions" action="deactivate" caption="Deactivate" mnemonic="d" shortcut="ctrl d"
+            visibleWhen="#{mode=='read' &amp;&amp; entity.txnstate=='ACTIVE'}" />
+    </invokers>
+    
+    <code class="com.rameses.clfc.settings.branchloan.BranchLoanSettingsController" />
+    
+    <pages>
+        <page template="com.rameses.clfc.settings.branchloan.BranchLoanSettingsPage" />
+    </pages>
+</workunit>

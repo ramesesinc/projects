@@ -1,0 +1,27 @@
+<workunit>
+    <invokers>
+        <invoker type="saving:create" action="create" caption="Savings Account Information" 
+            target="popup" resizable="false"/>
+        <invoker type="saving:open" caption="Savings Account Information"  
+            target="popup" resizable="false"/>
+    </invokers>
+    <code>
+        <![CDATA[
+            import com.rameses.rcp.common.*;
+            import com.rameses.rcp.annotations.*;
+            import com.rameses.osiris2.client.*;
+            import java.rmi.server.UID;
+            import com.rameses.clfc.loan.controller.*;
+            
+            class SavingsAccountFormController extends PopupMasterController
+            {
+                def createEntity() {
+                    return [ objid:'BSA'+new UID() ]
+                }
+            }
+        ]]>
+    </code>
+    <pages>
+        <page template="com.rameses.clfc.loan.BankAccountsFormPage"/>
+    </pages>
+</workunit>

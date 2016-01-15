@@ -1,0 +1,19 @@
+<workunit>
+    <invokers>
+        <invoker type="loanreceivablevoidrequest:create" action="init" caption="Receivable Void Request" target="popup" />
+        <invoker type="loanreceivablevoidrequest:open" action="open" caption="Receivable Void Request" target="popup" />
+        
+        <invoker type="formActions" action="close" caption="Close" mnemonic="c" shortcut="ctrl c" immediate="true" />
+        
+        <invoker type="formActions" action="approveDocument" caption="Approve" mnemonic="a" shortcut="ctrl a"
+            visibleWhen="#{entity.txnstate=='FOR_APPROVAL'}" role="APPROVER" />
+        <invoker type="formActions" action="disapprove" caption="Disapprove" mnemonic="d" shortcut="ctrl d"
+            visibleWhen="#{entity.txnstate=='FOR_APPROVAL'}" role="APPROVER" />
+    </invokers>
+    
+    <code class="com.rameses.clfc.treasury.loan.receivable.LoanReceivableVoidRequestController" />
+    
+    <pages>
+        <page template="com.rameses.clfc.treasury.loan.receivable.LoanReceivableVoidRequestPage" />
+    </pages>
+</workunit>

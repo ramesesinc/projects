@@ -1,0 +1,14 @@
+<workunit>
+    <invokers>
+        <invoker type="encashmentcbs:formActions" action="preview" caption="Print Generated CBS" 
+            visibleWhen="#{entity.generated != null}" />
+            
+        <invoker type="formActions" action="close" caption="Close" immediate="true" />
+    </invokers>
+    
+    <code class="com.rameses.clfc.report.encashment.EncashmentCBSReportController" />
+    
+    <pages>
+        <page template="com.rameses.osiris2.common.ui.ReportPreviewPage" />
+    </pages>
+</workunit>

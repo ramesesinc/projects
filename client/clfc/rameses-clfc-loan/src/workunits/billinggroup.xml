@@ -1,0 +1,20 @@
+<workunit>
+    <invokers>
+        <invoker type="billinggroup:create" action="create" caption="Billling Group" target="popup" />
+        <invoker type="billinggroup:open" action="open" caption="Billing Group" target="popup" />
+        
+        <invoker type="formActions" action="submitForApproval" caption="Submit for Approval" mnemonic="s" shortcut="ctrl S"
+            visibleWhen="#{mode=='read' &amp;&amp; entity.txnstate=='DRAFT'}" role="LEGAL_OFFICER,ACCT_ASSISTANT" />
+            
+        <invoker type="formActions" action="approveDocument" caption="Approve" mnemonic="a" shortcut="ctrl A"
+            visibleWhen="#{mode=='read' &amp;&amp; entity.txnstate=='FOR_APPROVAL'}" role="APPROVER" />
+        <invoker type="formActions" action="disapprove" caption="Disapprove" mnemonic="d" shortcut="ctrl D"
+            visibleWhen="#{mode=='read' &amp;&amp; entity.txnstate=='FOR_APPROVAL'}" role="APPROVER" />
+    </invokers>
+    
+    <code class="com.rameses.clfc.billinggroup.BillingGroupController" />
+    
+    <pages>
+        <page template="com.rameses.clfc.billinggroup.BillingGroupPage" />
+    </pages>
+</workunit>

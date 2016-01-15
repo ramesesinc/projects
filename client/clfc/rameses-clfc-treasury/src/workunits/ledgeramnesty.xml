@@ -1,0 +1,42 @@
+<workunit>
+    <invokers>
+        <invoker type='ledgeramnesty:create' action='create' caption='Amnesty' target='popup' />
+        <invoker type='ledgeramnesty:open' action='open' caption='Amnesty' target='popup' />
+        
+        <invoker type='formActions' action='close' caption='Close' mnemonic='c' shortcut='ctrl c'
+            visibleWhen="#{mode=='read' &amp;&amp; recommendationmode=='read'}" immediate='true' />
+        <invoker type='formActions' action='cancel' caption='Cancel' mnemonic='c' shortcut='ctrl c'
+            visibleWhen="#{mode!='read'}" immediate='true' />
+        
+        <invoker type='formActions' action='create' caption='New' mnemonic='n' shortcut='ctrl n'
+            visibleWhen="#{mode=='read' &amp;&amp; recommendationmode=='read'}" immediate='true' role='CAO_OFFICER' domain='LOAN' />
+        
+        <invoker type='formActions' action='edit' caption='Edit' mnemonic='e' shortcut='ctrl e'
+            visibleWhen="#{mode=='read' &amp;&amp; entity?.txnmode=='ONLINE' &amp;&amp; entity?.txnstate=='DRAFT'}"
+            role='CAO_OFFICER' domain='LOAN' />
+        <invoker type='formActions' action='save' caption='Save' mnemonic='s' shortcut='ctrl s'
+            visibleWhen="#{mode!='read'}" />
+        
+        <invoker type='formActions' action='submitForApproval' caption='Submit For Approval' mnemonic='s' shortcut='ctrl s'
+            visibleWhen="#{mode=='read' &amp;&amp; entity?.txnstate=='DRAFT'}" />
+            
+        <invoker type='formActions' action='cancelRecommendations' caption='Cancel' mnemonic='c' shortcut='ctrl c'
+            visibleWhen="#{recommendationmode!='read'}" />
+            
+        <invoker type='formActions' action='editRecommendations' caption='Edit Recommendations' mnemonic='e' shortcut='ctrl e'
+            visibleWhen="#{recommendationmode=='read' &amp;&amp; entity?.txnmode=='ONLINE' &amp;&amp; entity?.txnstate=='FOR_APPROVAL'}" 
+            role='FLA_OFFICER' domain='LOAN' />
+        <invoker type='formActions' action='saveRecommendations' caption='Save' mnemonic='s' shortcut='ctrl s'
+            visibleWhen="#{recommendationmode!='read'}" />
+            
+        <invoker type='formActions' action='returnDocument' caption='Return Document' mnemonic='r' shortcut='ctrl r' 
+            visibleWhen="#{mode=='read' &amp;&amp; recommendationmode=='read' &amp;&amp; entity?.txnmode=='ONLINE' &amp;&amp; entity?.txnstate=='FOR_APPROVAL'}" 
+            role='FLA_OFFICER' domain='LOAN' />
+    </invokers>
+    
+    <code class='com.rameses.clfc.treasury.ledger.amnesty.LedgerAmnestyController' />
+    
+    <pages>
+        <page template='com.rameses.clfc.treasury.ledger.amnesty.LedgerAmnestyPage' />
+    </pages>
+</workunit>

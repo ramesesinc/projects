@@ -1,0 +1,13 @@
+<workunit>
+    <invokers>
+        <invoker type='ledgernote:open' action='open' caption='Notes' target='popup' />
+        
+        <invoker type='formActions' action='close' caption='Close' mnemonic='c' shortcut='ctrl c' immediate='true' />
+    </invokers>
+    
+    <code class='com.rameses.clfc.ledger.notes.LoanLedgerNotesController' />
+    
+    <pages>
+        <page template='com.rameses.clfc.ledger.notes.LoanLedgerNotesPage' />
+    </pages>
+</workunit>

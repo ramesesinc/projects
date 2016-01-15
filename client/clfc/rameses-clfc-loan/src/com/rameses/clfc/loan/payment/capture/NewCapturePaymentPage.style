@@ -1,0 +1,12 @@
+"payment.*|option|borrower" [ mode == 'read' ] {
+    enabled: false;
+}
+"payment.*|option|borrower" [ mode != 'read' ] {
+    enabled: true;
+}
+"payment.check.*|payment.bank" [ payment.option == 'check' ] {
+    enabled: true;
+}
+"payment.check.*|payment.bank" [ payment.option != 'check' ] {
+    enabled: false;
+}

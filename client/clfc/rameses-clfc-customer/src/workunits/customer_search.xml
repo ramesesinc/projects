@@ -1,0 +1,20 @@
+<workunit>
+    <invokers>
+        <invoker type="customer:search" caption="Search Customer" action="init"/>
+        
+        <invoker type="navActions" caption="" action="moveFirstPage" icon="images/navbar/first.png" immediate="true"/>
+        <invoker type="navActions" caption="" action="moveBackPage" icon="images/navbar/previous.png" immediate="true"/>
+        <invoker type="navActions" caption="" action="moveNextPage" icon="images/navbar/next.png" immediate="true"/>
+        <invoker type="navActions" caption="" action="moveLastPage" icon="images/navbar/last.png" immediate="true"/>
+        
+        <invoker type="formActions" caption="View" action="view" immediate="true"/>
+        <invoker type="formActions" caption="Select" action="select" immediate="true"/> 
+   </invokers>
+   
+   <code class="com.rameses.clfc.customer.CustomerSearchController"/> 
+   
+   <pages>
+       <page template="com.rameses.clfc.customer.CustomerSearchPage"/> 
+       <page template="com.rameses.clfc.customer.CustomerSearchHandlerPage" name="handlerpage"/> 
+   </pages>
+</workunit>

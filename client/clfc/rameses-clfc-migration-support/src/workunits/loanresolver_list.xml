@@ -1,0 +1,75 @@
+<workunit extends="wtemplates/ListController.xml" >
+    <invokers>
+        <!--
+        <invoker folderid="/home/migrationsupport" caption="Loans" role="DATAMGMT" />
+        -->
+        <invoker type="loanresolver:list" caption="Loans" target="popup" height="500" width="900" />
+        
+        <!--
+        <invoker type="formActions" action="resolveAll" caption="Resolve All" mnemonic="r" shortcut="ctrl r"
+            visibleWhen="#{selectedOption?.state=='UNRESOLVED' &amp;&amp; xlist?.size() > 1}" role="RESOLVER"/>
+        -->
+    </invokers>
+    
+    <code>
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        
+        class LoanResolverListController extends ListController
+        {
+            @Service("MigrationLoanResolverService")
+            def service;
+        
+            String serviceName = "MigrationLoanResolverService";
+            String entityName = "loanresolver"
+        
+            boolean allowCreate = false;
+       
+            void beforeGetColumns(Map params) {
+                params.state = selectedOption?.state;
+            }
+        
+        
+            def selectedOption, borrower, xlist;
+            def optionsModel = [
+                getItems: {
+                    return service.getStates();
+                }, 
+                onselect: { o->
+                    query.state = o.state;
+                    reloadAll();
+                }
+            ] as ListPaneModel;
+        
+            boolean onOpen(Map params) {
+                if (borrower) {
+                    if (!borrower.name) {
+                        borrower.name = borrower.lastname + ', ' + borrower.firstname;
+                        if (borrower.middlename) borrower.name += ' ' + borrower.middlename;
+                    }
+                    params.borrower = borrower
+                    params.hasborrower = true;
+                }
+                return true;
+            }
+        
+            void afterFetchList(List list) {
+                if (list) xlist = list;
+            }
+        
+            void resolveAll() {
+                if (!MsgBox.confirm("You are about to resolve all current items of this list. Continue?")) return;
+                //xlist.each{ println it }
+                service.resolveAll([list: xlist]);
+                MsgBox.alert("Successfully resolve items.");
+                reload();
+            }
+        }
+    </code>
+    
+    <pages>
+        <page template="com.rameses.clfc.migrationsupport.ui.ListPage" />
+    </pages>
+</workunit>

@@ -1,0 +1,21 @@
+<workunit>
+    <invokers>
+        <invoker type="borrowerresolver:open" action="open" caption="Borrower Resolver" target="popup" />
+        
+        <invoker type="formActions" action="resolve" caption="Resolve" mnemonic="r" shortcut="ctrl r"
+            visibleWhen="#{mode=='read' &amp;&amp; entity.isresolved==false}" role="RESOLVER" />
+        <!--
+        <invoker type="formActions" action="resolveLoans" caption="Resolve Loans" mnemonic="l" shortcut="ctrl l"
+            visibleWhen="#{mode=='read' &amp;&amp; entity.isedited==true}" />
+        -->
+    </invokers>
+    
+    <code class="com.rameses.clfc.migrationsupport.borrowerresolver.BorrowerResolverController" />
+    
+    <pages>
+        <!--
+        <page template="com.rameses.clfc.migrationsupport.borrowerresolver.BorrowerResolverPage" />
+        -->
+        <page template="com.rameses.clfc.migrationsupport.borrowerresolver.BorrowerResolverMainPage" />
+    </pages>
+</workunit>

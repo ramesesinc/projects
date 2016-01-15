@@ -1,0 +1,4 @@
+"listHandler:item.*" [item.qty != 0] {
+    color: black;
+    font-weight: bold;
+}

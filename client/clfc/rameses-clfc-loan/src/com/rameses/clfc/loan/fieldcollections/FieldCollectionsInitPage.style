@@ -1,0 +1,7 @@
+"collector" [ isCollector != true ] {
+    visible: true;
+}
+
+"collector" [ isCollector == true ] {
+    visible: false;
+}

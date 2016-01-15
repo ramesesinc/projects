@@ -1,0 +1,37 @@
+<workunit>
+    <invokers>
+        <invoker type="quick_launcher" code="NEWC" caption="Customer Information" action="create" permission="system"/>
+        <invoker type="customer:create" caption="Customer Information" action="create"/>
+        <invoker type="customer:open" caption="Customer Information" action="open"/>
+        
+        <invoker type="formActions" caption="Close" action="close" 
+            visibleWhen="#{mode=='init' || mode=='read'}" immediate="true"/>
+        <invoker type="formActions" caption="Next" action="next" menmonic="n" shortcut="ctrl n"
+            visibleWhen="#{mode=='init'}" />
+        
+        <invoker type="formActions" caption="New" action="create" mnemonic="n" 
+            visibleWhen="#{mode=='read' &amp;&amp; allowCreate==true}" immediate="true"
+            role='ENCODER' domain='ENTITY' />
+        <invoker type="formActions" caption="Edit" action="edit" 
+            visibleWhen="#{mode=='read' &amp;&amp; allowEdit==true}" immediate="true"
+            role='ENCODER' domain='ENTITY' />
+        <invoker type="formActions" caption="Select" action="select" mnemonic="t"  
+            visibleWhen="#{mode=='read' &amp;&amp; allowSelect==true}" immediate="true"/>
+        
+        <invoker type="formActions" caption="Cancel" action="cancelCreate" 
+            visibleWhen="#{mode=='create'}" immediate="true"/>
+        <invoker type="formActions" caption="Save" action="saveCreate" 
+            visibleWhen="#{mode=='create'}"/>
+        
+        <invoker type="formActions" caption="Cancel" action="cancelUpdate"  visibleWhen="#{mode=='edit'}" immediate="true"/>
+        <invoker type="formActions" caption="Save" action="saveUpdate" visibleWhen="#{mode=='edit'}"/> 
+   </invokers>
+   
+   <code class="com.rameses.clfc.customer.CustomerController"/>
+   
+   <pages>
+       <page template="com.rameses.clfc.customer.CustomerInitPage" />
+       <page template="com.rameses.clfc.customer.CustomerPage" name="main" />
+       <page template="com.rameses.clfc.customer.BlankPage" name="blankpage"/>
+   </pages>
+</workunit>

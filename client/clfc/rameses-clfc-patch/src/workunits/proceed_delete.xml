@@ -1,0 +1,22 @@
+<workunit>
+    <invokers>
+        <invoker type="ledgerproceeds-delete:create" action="create" caption="Delete Ledger Proceeds" 
+            target="popup" resizable="false" />
+        <invoker type="ledgerproceeds-delete:open" action="open" caption="Delete Ledger Proceeds"
+            target="popup" resizable="false" />
+       
+        <invoker type="formActions" action="submitForApproval" caption="Submit for Approval" mnemonic="s" shortcut="ctrl s"
+            visibleWhen="#{mode=='read' &amp;&amp; entity.state=='DRAFT'}" role="CAO_OFFICER" domain="LOAN" />
+            
+        <invoker type="formActions" action="approveDocument" caption="Approve" mnemonic="a" shortcut="ctrl a"
+            visibleWhen="#{mode=='read' &amp;&amp; entity.state=='FOR_APPROVAL'}" role="APPROVER" domain="LOAN" />
+        <invoker type="formActions" action="disapprove" caption="Disapprove" mnemonic="d" shortcut="ctrl d"
+            visibleWhen="#{mode=='read' &amp;&amp; entity.state=='FOR_APPROVAL'}" role="APPROVER" domain="LOAN" />
+    </invokers>
+    
+    <code class="com.rameses.clfc.patch.ledgerproceed.delete.DeleteLoanLedgerProceedsController" />
+    
+    <pages>
+        <page template="com.rameses.clfc.patch.ledgerproceed.delete.DeleteLoanLedgerProceedsPage" />
+    </pages>
+</workunit>

@@ -1,0 +1,35 @@
+<workunit extends="wtemplates/ListControler.xml">
+    <invokers>
+        <invoker type="compromise:create" action="create" caption="Compromise Agreement" target="popup" />
+        <invoker type="compromise:open" action="open" caption="Compromise Agreement" target="popup" />
+        
+        
+        <invoker type="formActions" action="submitForApproval" caption="Submit For Approval" mnemonic="s" shortcut="ctrl S"
+            visibleWhen="#{mode == 'read' &amp;&amp; entity.state== 'DRAFT'}" />
+            
+        <invoker type="formActions" action="approveDocument" caption="Approve" mnemonic="a" shortcut="ctrl A"
+            visibleWhen="#{mode == 'read' &amp;&amp; entity.state == 'FOR_APPROVAL'}" />
+            
+        <invoker type="formActions" action="disapprove" caption="Disapprove" mnemonic="d" shortcut="ctrl D"
+            visibleWhen="#{mode == 'read' &amp;&amp; entity.state == 'FOR_APPROVAL'}" />
+            
+        <invoker type="formActions" action="changeOffer" caption="Change Offer" mnemonic="g" shortcut="ctrl G"
+            visibleWhen="#{mode == 'read' &amp;&amp; entity.state == 'APPROVED'}" />
+        <!--
+        <invoker type="loanledger:formActions" action="init" caption="Compromise" mnemonic="m" target="popup" resizable="false"
+            visibleWhen="#{selectedEntity != null &amp;&amp; (selectedEntity.ismatured == 1 &amp;&amp; selectedEntity.compromiseid == null)}"/>
+            
+        <invoker type="loanledger:formActions" action="open" caption="Compromise" mnemonic="m" target="popup" resizable="false"
+            visibleWhen="#{selectedEntity != null &amp;&amp; (selectedEntity.ismatured == 1 &amp;&amp; selectedEntity.compromiseid != null)}"/>
+            
+        <invoker type="formActions" action="close" mnemonic="c" immediate="true" tooltip="Close"/>
+        <invoker type="formActions" action="save" visibleWhen="#{mode != 'read'}" tooltip="Save"/>
+        -->
+    </invokers>
+    
+    <code class="com.rameses.clfc.ledger.compromise.LoanLedgerCompromiseController"/>
+    
+    <pages>
+        <page template="com.rameses.clfc.ledger.compromise.LoanLedgerCompromisePage"/>
+    </pages>
+</workunit>

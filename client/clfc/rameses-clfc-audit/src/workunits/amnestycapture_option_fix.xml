@@ -1,0 +1,11 @@
+<workunit>
+    <invokers>
+        <invoker type="fixcapture:option" caption="Fix Option" action="init"/>
+    </invokers>     
+    
+    <code class="com.rameses.clfc.audit.amnesty.capture.FixOptionController" />
+    
+    <pages>
+        <page template="com.rameses.clfc.audit.amnesty.capture.FixOptionPage" />
+    </pages>
+</workunit>

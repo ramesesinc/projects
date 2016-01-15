@@ -1,0 +1,24 @@
+<workunit extends="wtemplates/LookupController.xml">
+    <invokers>
+        <invoker type="deposittype:lookup" caption="Deposit Types" target="popup" />
+    </invokers>
+    
+    <code>
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        
+        class DepositTypeLookupController extends LookupController 
+        {
+            String serviceName = "DepositTypeLookupService";
+            String entityName = "deposittype";
+            
+            def state;            
+            List fetchList(Map params) {
+                if (state) params.state = state;
+                return super.fetchList(params);
+            }
+        }
+    </code>
+</workunit>

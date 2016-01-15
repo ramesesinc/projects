@@ -1,0 +1,32 @@
+<workunit>
+    <invokers>
+        <invoker folderid="/menu/txn/treasury" action="create" caption="Encashment" target="popup" 
+            role="CASHIER" />
+        
+        <invoker type="encashment:create" action="create" caption="Encashment" target="popup" />
+        <invoker type="encashment:open" action="open" caption="Encashment" target="popup" />
+        
+        <!--
+        <invoker type="formActions" action="submitForApproval" caption="Submit For Approval" mnemonic="s"
+            shortcut="ctrl S" visibleWhen="#{mode == 'read' &amp;&amp; entity.txnstate == 'DRAFT'}" />
+            
+        <invoker type="formActions" action="approveDocument" caption="Approve" mnemonic="a" shortcut="ctrl A"
+            visibleWhen="#{mode == 'read' &amp;&amp; entity.txnstate == 'FOR_APPROVAL'}" role="APPROVER" />
+        <invoker type="formActions" action="disapprove" caption="Disapprove" mnemonic="d" shortcut="ctrl D"
+            visibleWhen="#{mode == 'read' &amp;&amp; entity.txnstate == 'FOR_APPROVAL'}" role="APPROVER" />
+        -->
+        <invoker type='formActions' action='submitForApproval' caption='Submit for Approval' mnemonic='s' shortcut='ctrl s'
+            visibleWhen="#{mode=='read' &amp;&amp; entity?.txnstate=='DRAFT'}" />
+        
+        <invoker type='formActions' action='approveDocument' caption='Approve' mnemonic='a' shortcut='ctrl a'
+            visibleWhen="#{mode=='read' &amp;&amp; entity?.txnstate=='FOR_APPROVAL'}" role='APPROVER' />
+        <invoker type='formActions' action='disapprove' caption='Disapprove' mnemonic='d' shortcut='ctrl d'
+            visibleWhen="#{mode=='read' &amp;&amp; entity?.txnstate=='FOR_APPROVAL'}" role='APPROVER' />
+    </invokers>
+    
+    <code class="com.rameses.clfc.treasury.encashment.EncashmentMainController" />
+    
+    <pages>
+        <page template="com.rameses.clfc.treasury.encashment.EncashmentMainPage" />
+    </pages>
+</workunit>

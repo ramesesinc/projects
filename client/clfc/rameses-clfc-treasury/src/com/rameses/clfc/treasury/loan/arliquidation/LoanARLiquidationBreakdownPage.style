@@ -1,0 +1,6 @@
+"data.*" [mode!='read'] {
+    enabled: true;
+}
+"data.*" [mode=='read'] {
+    enabled: false;
+}

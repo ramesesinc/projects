@@ -1,0 +1,25 @@
+<workunit>
+    <invokers>
+        <invoker type="otherlending:create" action="create" caption="Other Lending Information" 
+            target="popup" resizable="false"/>
+        <invoker type="otherlending:open" caption="Other Lending Information" 
+            target="popup" resizable="false"/>
+    </invokers>
+    <code>
+        <![CDATA[
+            import com.rameses.rcp.common.*;
+            import com.rameses.rcp.annotations.*;
+            import com.rameses.osiris2.client.*;
+            import com.rameses.clfc.util.LoanUtil;
+            import com.rameses.clfc.loan.controller.*;
+            
+            class OtherLendingFormController extends PopupMasterController
+            {
+                def modesOfPayment = LoanUtil.otherLendingModesOfPayment;
+            }
+        ]]>
+    </code>
+    <pages>
+        <page template="com.rameses.clfc.loan.otherlending.OtherLendingFormPage"/>
+    </pages>
+</workunit>

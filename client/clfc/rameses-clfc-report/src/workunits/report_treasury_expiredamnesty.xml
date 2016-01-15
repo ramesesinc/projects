@@ -1,0 +1,20 @@
+<workunit>
+    <invokers>
+        <invoker folderid="/home/online/report" caption="Expired Amnesty" action="init"
+            role="BRANCH_MANAGER,ASST_BRANCH_MANAGER,ACCT_ASSISTANT" domain="TREASURY" />
+        
+        <invoker type="formActions" action="close" caption="Close" mnemonic="c" shortcut="ctrl W" immediate="true"
+            visibleWhen="#{mode == 'init'}" />
+        <invoker type="formActions" action="preview" caption="Preview" mnemonic="v" shortcut="ctrl V" 
+            visibleWhen="#{mode == 'init'}" />
+        <invoker type="formActions" action="back" caption="Back" mnemonic="b" shortcut="ctrl B" 
+            visibleWhen="#{mode == 'preview'}" />
+    </invokers>
+    
+    <code class="com.rameses.clfc.report.amnesty.expired.ExpiredAmnestySummaryReportController" />
+    
+    <pages>
+        <page template="com.rameses.clfc.report.amnesty.expired.ExpiredAmnestySummaryReportInitPage" />
+        <page template="com.rameses.osiris2.common.ui.ReportPreviewPage" name="preview" />
+    </pages>
+</workunit>

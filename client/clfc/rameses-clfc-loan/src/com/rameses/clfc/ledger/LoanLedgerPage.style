@@ -1,0 +1,6 @@
+"selectedPayment" [entity.updatetype == 0] {
+    readonly: false;
+}
+"selectedPayment" [entity.updatetype != 0] {
+    readonly: true;
+}

@@ -1,0 +1,46 @@
+<workunit extends="wtemplates/ListController.xml">
+    <invokers>
+        <!--
+        <invoker folderid="/explorer/txn/loan" caption="CBS Listing" role="ACCT_OFFICER" />
+        -->
+        <invoker folderid="/home/online/collection" caption="CBS Listing" role="ACCT_OFFICER" />
+    </invokers>
+    
+    <code>     
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+
+        class CashBreakdownListController extends ListController
+        {
+            @Service("CollectionCashbreakdownService")
+            def svc;
+
+            String serviceName = "CollectionCashbreakdownService";
+            String entityName = "cashbreakdown";
+        
+            Map createPermission = [domain: 'LOAN', role: 'CASHIER'];
+
+            def selectedOption;
+
+            def optionsModel = [
+                getItems: {
+                    return svc.getOptions();
+                }, 
+                onselect: { o->
+                    query.state = o.state;
+                    reloadAll();
+                }
+            ] as ListPaneModel;
+        
+            void beforeGetColumns(Map params) {
+                params.state = selectedOption?.state;
+            }
+        }
+    </code>
+    
+    <pages>
+        <page template="com.rameses.clfc.ui.ListPage" />
+    </pages>
+</workunit>

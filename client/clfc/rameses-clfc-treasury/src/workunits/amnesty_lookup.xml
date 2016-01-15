@@ -1,0 +1,28 @@
+<workunit extends="wtemplates/LookupController.xml">
+    <invokers>
+        <invoker type="amnesty:lookup" caption="Lookup Amnesty" target="popup" />
+    </invokers>
+    
+    <code>
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        
+        class AmnestyLookupController extends LookupController
+        {
+            String serviceName = 'AmnestyLookupService';
+        
+            def state;
+            def option;
+            def type;
+        
+            List fetchList(Map params) {
+                if (state) params.txnstate = state;
+                if (option) params.amnestyoption = option;
+                if (type) params.txntype = type;
+                return super.fetchList(params);
+            }
+        }
+    </code>
+</workunit>

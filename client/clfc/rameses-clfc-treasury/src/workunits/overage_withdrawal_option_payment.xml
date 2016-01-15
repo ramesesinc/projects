@@ -1,0 +1,11 @@
+<workunit>
+    <invokers>
+        <invoker type="overagewithdrawal-payment:option" />
+    </invokers>
+    
+    <code class="com.rameses.clfc.treasury.overage.withdrawal.OverageWithdrawalPaymentController" />
+    
+    <pages>
+        <page template="com.rameses.clfc.treasury.overage.withdrawal.OverageWithdrawalPaymentPage" />
+    </pages>
+</workunit>

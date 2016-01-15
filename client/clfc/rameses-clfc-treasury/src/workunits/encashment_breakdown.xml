@@ -1,0 +1,12 @@
+<workunit>
+    <invokers>
+        <invoker type='encashment-plugin' name='breakdown' index='1' caption='Breakdown' />
+        <invoker type="encashment:breakdown" caption="Breakdown" />
+    </invokers>
+    
+    <code class="com.rameses.clfc.treasury.encashment.EncashmentBreakdownController" />
+    
+    <pages>
+        <page template="com.rameses.clfc.treasury.encashment.EncashmentBreakdownPage" />
+    </pages>
+</workunit>

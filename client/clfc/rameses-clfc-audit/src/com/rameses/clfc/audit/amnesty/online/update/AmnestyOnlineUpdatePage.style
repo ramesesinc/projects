@@ -1,0 +1,21 @@
+"entity.update.*" [ 1==1 ] {
+    enabled: false;
+}
+"entity.update.*" [ mode!='read' && entity?.amnesty?.amnestyoption=='FIX'] {
+    enabled: true;
+}
+"entity.update.dtstarted" [ mode!='read' && entity?.amnesty?.amnestyoption=='WAIVER'] {
+    enabled: true;
+}
+"entity.update.date" [mode!='read' && entity?.amnesty?.amnestyoption=='FIX' && entity?.update?.isspotcash==0] {
+    enabled: false;
+}
+"entity.update.(days|months)" [mode!='read' && entity?.amnesty?.amnestyoption=='FIX' && entity?.update?.isspotcash==0] {
+    enabled: true;
+}
+"entity.update.date" [mode!='read' && entity?.amnesty?.amnestyoption=='FIX' && entity?.update?.isspotcash==1] {
+    enabled: true;
+}
+"entity.update.(days|months)" [mode!='read' && entity?.amnesty?.amnestyoption=='FIX' && entity?.update?.isspotcash==1] {
+    enabled: false;
+}

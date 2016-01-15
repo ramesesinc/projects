@@ -1,0 +1,12 @@
+<workunit>
+    <invokers>
+        <invoker type='ledgeramnesty:type:plugin' caption='Foreclosure' value='FORECLOSURE' index='2' />
+        <invoker type='ledgeramnesty:foreclosure' action='init' />
+    </invokers>
+    
+    <code class='com.rameses.clfc.treasury.ledger.amnesty.foreclosure.AmnestyForeclosureController' />
+    
+    <pages>
+        <page tempate='com.rameses.clfc.treasury.ledger.amnesty.foreclosure.AmnestyForeclosurePage' />
+    </pages>
+</workunit>

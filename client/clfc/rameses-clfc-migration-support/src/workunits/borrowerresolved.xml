@@ -1,0 +1,19 @@
+<workunit>
+    <invokers>
+        <invoker type="borrower-resolved:open" action="open" caption="Borrower" target="popup" />
+        
+        <invoker type="formActions" action="close" caption="Close" mnemonic="c" shortcut="ctrl c" immediate="true" />
+        
+        <invoker type="navActions2" caption="" action="moveFirstPage" icon="images/navbar/first.png" immediate="true"/>
+        <invoker type="navActions2" caption="" action="moveBackPage" icon="images/navbar/previous.png" immediate="true"/>
+        <invoker type="navActions2" caption="" action="moveNextPage" icon="images/navbar/next.png" immediate="true"/>
+        <invoker type="navActions2" caption="" icon="images/navbar/last.png" immediate="true"/>
+        
+    </invokers>
+    
+    <code class="com.rameses.clfc.migrationsupport.borrowerresolver.BorrowerResolvedController" />
+    
+    <pages>
+        <page template="com.rameses.clfc.migrationsupport.borrowerresolver.BorrowerResolvedPage" />
+    </pages>
+</workunit>

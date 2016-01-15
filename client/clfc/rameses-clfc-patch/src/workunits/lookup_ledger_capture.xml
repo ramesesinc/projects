@@ -1,0 +1,18 @@
+<workunit extends="wtemplates/LookupController.xml">
+    <invokers>
+        <invoker type="ledger_capture:lookup" caption="Borrower Lookup" target="popup" resizable="false" />
+    </invokers>
+    
+    <code>
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        
+        class LedgerCaptureLookupController extends LookupController
+        {
+            String serviceName = "ChangeLedgerDetailLookupService";
+            //String entityName = "loanapp_capture";
+        }
+    </code>
+</workunit>

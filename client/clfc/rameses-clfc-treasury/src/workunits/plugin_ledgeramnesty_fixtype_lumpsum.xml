@@ -1,0 +1,12 @@
+<workunit>
+    <invokers>
+        <invoker type='ledgeramnesty:fixtype' caption='Lump Sum' value='lumpsum' index='0' />
+        <invoker type='fixtype:lumpsum' action='init' />
+    </invokers>
+    
+    <code class='com.rameses.clfc.treasury.ledger.amnesty.fix.FixLumpSumController' />
+    
+    <pages>
+        <page template='com.rameses.clfc.treasury.ledger.amnesty.fix.FixLumpSumPage' />
+    </pages>
+</workunit>

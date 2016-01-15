@@ -1,0 +1,30 @@
+<workunit>
+    <invokers>
+        <invoker folderid="/menu/txn/treasury" caption="Request New Fund" 
+            action="create" role="ACCT_ASSISTANT" target="popup"/> 
+            
+        <invoker type="fundrequest:open" caption="Fund Request" 
+            action="open" role="BRANCH_MANAGER,ASST_BRANCH_MANAGER,ACCT_ASSISTANT" 
+            target="open"/> 
+            
+        <invoker type="formActions" caption="Close" action="close" 
+            visibleWhen="#{mode=='read'}" immediate="true"/>      
+        <invoker type="formActions" caption="Approve" action="approve" 
+            visibleWhen="#{mode=='read' &amp;&amp; entity.state=='PENDING'}" 
+            role="BRANCH_MANAGER,ASST_BRANCH_MANAGER" immediate="true"/> 
+        <invoker type="formActions" caption="Reject" action="reject" 
+            visibleWhen="#{mode=='read' &amp;&amp; entity.state=='PENDING'}" 
+            role="BRANCH_MANAGER,ASST_BRANCH_MANAGER" immediate="true"/> 
+            
+        <invoker type="formActions" caption="Cancel" action="cancelCreate" 
+            visibleWhen="#{mode=='create'}" immediate="true"/>     
+        <invoker type="formActions" caption="Save" action="saveCreate" 
+            visibleWhen="#{mode=='create'}"/>     
+    </invokers> 
+    
+    <code class="com.rameses.clfc.treasury.fund.FundRequestController"/>
+
+    <pages>
+        <page name="com.rameses.clfc.treasury.fund.FundRequestPage"/>
+    </pages>
+</workunit>

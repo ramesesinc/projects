@@ -1,0 +1,47 @@
+<workunit>
+    <invokers>
+        <invoker type="overage:create" action="init" caption="Overage" target="popup" resizable="false" />
+        <invoker type="overage:open" action="open" caption="Overage" target="popup" resizable="false" />
+        
+        <invoker type="formActions" action="close" caption="Close" mnemonic="c" shortcut="ctrl W" 
+            immediate="true" visibleWhen="#{mode=='read'}" />
+        <invoker type="formActions" action="cancel" caption="Cancel" mnemonic="c" shortcut="ctrl C" 
+            immediate="true" visibleWhen="#{mode!='read'}" />
+        <invoker type="formActions" action="edit" caption="Edit" mnemonic="e" shortcut="ctrl E" 
+            visibleWhen="#{mode=='read' &amp;&amp; entity.state=='DRAFT'}" role='CASHIER' />
+        <invoker type="formActions" action="save" caption="Save" mnemonic="s" shortcut="ctrl S" 
+            visibleWhen="#{mode!='read'}" />
+        
+        <!--
+        <invoker type="formActions" action="submitForSignatory" caption="Submit" mnemonic="s" shortcut="ctrl S"
+            visibleWhen="#{mode=='read' &amp;&amp; entity.state=='DRAFT'}" />
+        -->
+        <invoker type='formActions' action='submitForNoting' caption='Submit for Noting' mnemonic='s' shortcut='ctrl s'
+            visibleWhen="#{mode=='read' &amp;&amp; entity?.state=='DRAFT'}" role='CASHIER' />
+        
+        <invoker type="formActions" action="noted" caption="Noted" mnemonic="n" shortcut="ctrl N"
+            visibleWhen="#{mode=='read' &amp;&amp; entity.state=='FOR_NOTING'}" />
+        
+        <invoker type="formActions" action="voidOverage" caption="Void" mnemonic="v" shortcut="ctrl V"
+            visibleWhen="#{mode=='read' &amp;&amp; entity.allowVoid==true}" role="CASHIER" />
+        
+        <invoker type="formActions" action="viewVoidRemarks" caption="View void remarks" mnemonic="v" shortcut="ctrl V"
+            visibleWhen="#{mode=='read' &amp;&amp; entity.voidremarks!=null}" />
+            
+        <!--
+        <invoker type="formActions" action="submitForApproval" caption="Submit For Approval" mnemonic="s" shortcut="ctrl S" 
+            visibleWhen="#{mode == 'read' &amp;&amp; entity.state == 'DRAFT'}" />   
+        
+        <invoker type="formActions" action="approve" caption="Approve" mnemonic="a" shortcut="ctrl A" 
+            visibleWhen="#{mode == 'read' &amp;&amp; entity?.state == 'FOR_APPROVAL'}" role="APPROVER" />
+        <invoker type="formActions" action="disapprove" caption="Disapprove" mnemonic="d" shortcut="ctrl D"
+            visibleWhen="#{mode == 'read' &amp;&amp; entity?.state == 'FOR_APPROVAL'}" role="APPROVER" />
+        -->
+    </invokers>
+    
+    <code class="com.rameses.clfc.collection.overage.CollectionOverageController" />
+    
+    <pages>
+        <page template="com.rameses.clfc.collection.overage.CollectionOveragePage" />
+    </pages>
+</workunit>

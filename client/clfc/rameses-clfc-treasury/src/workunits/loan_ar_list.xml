@@ -1,0 +1,23 @@
+<workunit extends="wtemplates/ListController.xml">
+    <invokers>
+        <!--
+        <invoker folderid="/home/online/treasury" caption="AR Request Listing" domain="LOAN" role="ACCT_OFFICER" />
+        -->
+    </invokers>
+    
+    <code>
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        
+        class LoanARListController extends ListController
+        {
+            String serviceName = "LoanARService";
+            String entityName = "loanar";
+        
+            Map createPermission = [role: 'ACCT_ASSISTANT'];
+            
+        }
+    </code>
+</workunit>

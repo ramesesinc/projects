@@ -1,0 +1,48 @@
+<workunit>
+    <invokers>
+        <invoker type="templatecondition:create" caption="Condition" action="init" target="popup"/>
+        <invoker type="templatecondition:open" caption="Condition" action="open" target="popup"/>
+    </invokers>
+    
+    <code>
+        <![CDATA[
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*
+        import java.rmi.server.UID;
+        
+        class ConditionController{
+        
+            @Service('ReportTemplateFactService')
+            def factSvc;
+        
+            def entity;
+            def title = "Condition";
+            def handler;
+            
+            void init(){
+                
+            }
+            
+            void open(){
+                
+            }
+            
+            def doOk(){
+                
+                return '_close';
+            }
+            
+            def doCancel(){
+                return '_close';
+            }
+
+        }
+        ]]>
+    </code>
+    
+    <pages>
+        <page template="com.rameses.clfc.reporttemplate.TemplateConditionPage"/>
+    </pages>
+</workunit>

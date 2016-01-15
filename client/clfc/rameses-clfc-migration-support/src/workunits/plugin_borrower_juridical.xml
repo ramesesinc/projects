@@ -1,0 +1,28 @@
+<workunit>
+    <invokers>
+        <invoker type="borrowerjuridical:plugin" />
+    </invokers>
+    
+    <code>
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        
+        class BorrowerJuridicalPluginController
+        {
+            @Caller
+            def caller;
+            def entity, mode;
+    
+            def getAddressComponent() {
+                println 'get address component';
+                return Inv.lookupOpener('address:component', [entity: entity?.newaddress]);
+            }
+        }
+    </code>
+    
+    <pages>
+        <page template="com.rameses.clfc.migrationsupport.borrowerresolver.BorrowerResolverJuridicalPage" />
+    </pages>
+</workunit>

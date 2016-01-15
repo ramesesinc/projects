@@ -1,0 +1,15 @@
+"entity.*" [ mode == 'read' ] {
+    enabled: false;
+    disabledTextColor: #000;
+    readonly: true;
+}
+
+"entity.*" [ mode != 'read' ] {
+    enabled: true;
+}
+
+"entity.txndate|entity.collector|entity.remarks" [ entity.txntype == 'REQUEST' ] {
+    enabled: false;
+    disabledTextColor: #000;
+    readonly: true;
+}

@@ -1,0 +1,25 @@
+<workunit extends="wtemplates/LookupController.xml">
+    <invokers>
+        <invoker type="ledgerborrower:lookup" caption="Borrower Lookup" target="popup" resizable="false"/>
+    </invokers>
+    
+    <code>
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        
+        class LoanLedgerLookupService extends LookupController
+        {
+            String serviceName = "LoanLedgerLookupService";
+            
+            boolean allowSearch = true;
+        
+            def pastdueledgers;            
+            List fetchList(Map params) {
+                if (pastdueledgers) params.pastdueledgers = pastdueledgers;
+                return super.fetchList(params);
+            }
+        }
+    </code>
+</workunit>

@@ -1,0 +1,24 @@
+<workunit extends='wtemplates/LookupController.xml'>
+    <invokers>
+        <invoker type='ledgeramnesty:lookup' caption='Amnesty Lookup' target='popup' />
+    </invokers>
+    
+    <code>
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        
+        class LedgerAmnestyLookupController extends LookupController
+        {
+            String serviceName = 'LedgerAmnestyLookupService';
+        
+            def type, foravail;
+            List fetchList(Map params) {
+                params.type = type;
+                params.foravail = foravail;
+                return super.fetchList(params);
+            }
+        }
+    </code>
+</workunit>

@@ -1,0 +1,25 @@
+<workunit>
+    <invokers>
+        <invoker folderid="/home/online/support" action="init" caption="Amend Branch Outstanding" 
+            role="ADMIN_SUPPORT" />
+        
+        <invoker type="formActions" action="close" caption="Close" mnnemonic="c" shortcut="ctrl c"
+            visibleWhen="#{page=='default'}" />
+        <invoker type="formActions" action="next" caption="Next" mnemonic="n" shortcut="ctrl n"
+            visibleWhen="#{page=='default'}" />
+        
+        <invoker type="formActions" action="back" caption="Back" mnemonic="b" shortcut="ctrl b"
+            visibleWhen="#{page=='main'}" />
+        <invoker type="formActions" action="cancelRemove" caption="Cancel Remove" mnemonic="c" shortcut="ctrl c"
+            visibleWhen="#{page=='main'}" />
+        <invoker type="formActions" action="update" caption="Update List" mnemonic="u" shortcut="ctrl u"
+            visibleWhen="#{page=='main'}" />
+    </invokers>
+    
+    <code class="com.rameses.clfc.patch.report.amend.branch.outstanding.AmendBranchOutstandingReportController" />
+    
+    <pages>
+        <page template="com.rameses.clfc.patch.report.amend.branch.outstanding.AmendBranchOutstandingReportInitPage" />
+        <page template="com.rameses.clfc.patch.report.amend.branch.outstanding.AmendBranchOutstandingReportPage" name="main" />
+    </pages>
+</workunit>

@@ -1,0 +1,15 @@
+<workunits>
+    <invokers>
+        <!--
+        <invoker type="loanapp-fla:open" caption="FLA"/>
+        -->
+        <invoker type="loanapp-flaindividual:open" caption="FLA"/>
+        <invoker type="loanapp-flajuridical:open" caption="FLA"/>
+    </invokers>
+    
+    <code class="com.rameses.clfc.loan.fla.LoanAppFLAController"/>
+    
+    <pages>
+        <page template="com.rameses.clfc.loan.fla.LoanAppFLAPage"/>
+    </pages>
+</workunits>

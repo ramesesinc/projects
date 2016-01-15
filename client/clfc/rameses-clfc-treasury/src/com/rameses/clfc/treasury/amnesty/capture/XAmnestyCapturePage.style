@@ -1,0 +1,9 @@
+"entity.*|option" [mode == 'read'] {
+    enabled: false;
+}
+"entity.*|option" [mode != 'read'] {
+    enabled: true;
+}
+"entity.(dtended|txndate)" [1 == 1] {
+    enabled: false;
+}

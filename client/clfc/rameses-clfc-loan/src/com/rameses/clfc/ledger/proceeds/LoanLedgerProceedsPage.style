@@ -1,0 +1,15 @@
+"entity.txndate|entity.refno|entity.amount" [entity.txnstate == 'DRAFT'] {
+    visible: false;
+}
+"entity.txndate|entity.refno|entity.amount" [entity.txnstate != 'DRAFT'] {
+    visible: true;
+}
+"entity.(txndate|refno)" [1 == 1] {
+    enabled: false;
+}
+"entity.(txndate|refno)" [mode != 'read' && entity.txntype == 'CAPTURE'] {
+    enabled: true;
+}
+"entity.amount" [entity.txnstate == 'FOR_SELLING' && entity.txntype != 'CAPTURE'] {
+    enabled: true;
+}

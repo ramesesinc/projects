@@ -1,0 +1,9 @@
+"entity.(loanamount|loandate|intrate|term|producttype.*)" [1==1] {
+    enabled: false;
+}
+"entity.overpaymentamount" [mode!='read' && entity.paymentmethod=='over'] {
+    enabled: true;
+}
+"entity.overpaymentamount" [mode=='read' || entity.paymentmethod!='over'] {
+    enabled: false;
+}

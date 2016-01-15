@@ -1,0 +1,29 @@
+<workunit extends="wtemplates/ListController.xml">
+    <invokers>
+        <invoker type="loanledger-plugin" plugintype="collectorremarks" caption="Collector Remarks" index="7" />
+    </invokers>
+    
+    <code>
+        <![CDATA[   
+            import com.rameses.rcp.common.*;
+            import com.rameses.rcp.annotations.*;
+            import com.rameses.osiris2.common.*;
+            import com.rameses.osiris2.client.*;
+
+            class LoanLedgerCollectorRemarksListController extends ListController
+            {
+                String serviceName = "LoanLedgerRemarksService";
+                String entityName = "ledgercollectorremarks";
+
+                boolean allowClose = false;
+                boolean allowCreate = false;
+
+                def entity;
+                void beforeFetchList(Map params) {
+                    params.type = 'collector';
+                    if (entity) params.ledgerid = entity.objid;
+                }
+            }
+        ]]>
+    </code>
+</workunit>

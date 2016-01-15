@@ -1,0 +1,445 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="Residency"
+
+		 language="groovy"		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Portrait"
+		 pageWidth="535"
+		 pageHeight="842"
+		 columnWidth="535"
+		 columnSpacing="0"
+		 leftMargin="0"
+		 rightMargin="0"
+		 topMargin="0"
+		 bottomMargin="0"
+		 whenNoDataType="NoPages"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false">
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+
+	<parameter name="RESIDENCY" isForPrompting="false" class="java.lang.Object"/>
+	<parameter name="OCCUPANCY" isForPrompting="false" class="java.lang.Object"/>
+	<parameter name="CURRENTDATE" isForPrompting="false" class="java.util.Date">
+		<defaultValueExpression ><![CDATA[new Date()]]></defaultValueExpression>
+	</parameter>
+
+	<variable name="residencyyears" class="java.lang.Integer" resetType="Report" calculation="System">
+		<initialValueExpression><![CDATA[$P{RESIDENCY}.source?.since? Integer.parseInt(new java.text.SimpleDateFormat("yyyy").format(new Date())) - Integer.parseInt(new SimpleDateFormat("yyyy").format($P{RESIDENCY}.source?.since)) : 0]]></initialValueExpression>
+	</variable>
+	<variable name="occupancyyears" class="java.lang.Integer" resetType="Report" calculation="System">
+		<initialValueExpression><![CDATA[$P{OCCUPANCY}.source?.since? Integer.parseInt(new java.text.SimpleDateFormat("yyyy").format(new Date())) - Integer.parseInt(new SimpleDateFormat("yyyy").format($P{OCCUPANCY}.source?.since)) : 0]]></initialValueExpression>
+	</variable>
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</title>
+		<pageHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="76"  isSplitAllowed="true" >
+				<staticText>
+					<reportElement
+						x="3"
+						y="9"
+						width="51"
+						height="11"
+						key="staticText-1"/>
+					<box></box>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Residency]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="266"
+						y="9"
+						width="73"
+						height="11"
+						key="staticText-2"/>
+					<box></box>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Lot Occupancy]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="43"
+						y="19"
+						width="76"
+						height="11"
+						key="textField-1"/>
+					<box>					<bottomPen lineWidth="0.5"/>
+</box>
+					<textElement>
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{RESIDENCY}.source?.type]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						x="3"
+						y="19"
+						width="51"
+						height="11"
+						key="staticText-3"/>
+					<box></box>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Type :]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="125"
+						y="29"
+						width="65"
+						height="11"
+						key="staticText-4"
+						positionType="Float"/>
+					<box></box>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Rent Amount :]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="138"
+						y="19"
+						width="65"
+						height="11"
+						key="staticText-5"/>
+					<box></box>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Rent Type :]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="119"
+						y="50"
+						width="74"
+						height="11"
+						key="staticText-6"
+						positionType="Float"/>
+					<box></box>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Length of stay :]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="157"
+						y="40"
+						width="36"
+						height="11"
+						key="staticText-7"
+						positionType="Float"/>
+					<box></box>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Since :]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="3"
+						y="60"
+						width="46"
+						height="11"
+						key="staticText-8"
+						positionType="Float"/>
+					<box></box>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Remarks :]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						x="262"
+						y="7"
+						width="0"
+						height="64"
+						key="line-1"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="189"
+						y="18"
+						width="72"
+						height="11"
+						key="textField-2"/>
+					<box>					<bottomPen lineWidth="0.5"/>
+</box>
+					<textElement>
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{RESIDENCY}.source?.renttype]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="189"
+						y="28"
+						width="72"
+						height="11"
+						key="textField-3"
+						positionType="Float"/>
+					<box>					<bottomPen lineWidth="0.5"/>
+</box>
+					<textElement>
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$P{RESIDENCY}.source?.rentamount]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="MMM dd, yyyy" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="189"
+						y="38"
+						width="72"
+						height="11"
+						key="textField-4"
+						positionType="Float"/>
+					<box>					<bottomPen lineWidth="0.5"/>
+</box>
+					<textElement>
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.util.Date"><![CDATA[$P{RESIDENCY}.source?.since]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="49"
+						y="60"
+						width="212"
+						height="11"
+						key="textField-5"
+						positionType="Float"/>
+					<box>					<bottomPen lineWidth="0.5"/>
+</box>
+					<textElement>
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{RESIDENCY}.source?.remarks]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="310"
+						y="20"
+						width="76"
+						height="11"
+						key="textField-6"/>
+					<box>					<bottomPen lineWidth="0.5"/>
+</box>
+					<textElement>
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{OCCUPANCY}.source?.type]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						x="270"
+						y="20"
+						width="51"
+						height="11"
+						key="staticText-9"/>
+					<box></box>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Type :]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="394"
+						y="30"
+						width="65"
+						height="11"
+						key="staticText-10"
+						positionType="Float"/>
+					<box></box>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Rent Amount :]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="406"
+						y="20"
+						width="65"
+						height="11"
+						key="staticText-11"/>
+					<box></box>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Rent Type :]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="386"
+						y="51"
+						width="74"
+						height="11"
+						key="staticText-12"
+						positionType="Float"/>
+					<box></box>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Length of stay :]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="425"
+						y="40"
+						width="36"
+						height="11"
+						key="staticText-13"
+						positionType="Float"/>
+					<box></box>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Since :]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="270"
+						y="60"
+						width="46"
+						height="11"
+						key="staticText-14"/>
+					<box></box>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Remarks :]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="454"
+						y="20"
+						width="75"
+						height="11"
+						key="textField-7"/>
+					<box>					<bottomPen lineWidth="0.5"/>
+</box>
+					<textElement>
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{OCCUPANCY}.source?.renttype]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="454"
+						y="30"
+						width="75"
+						height="11"
+						key="textField-8"
+						positionType="Float"/>
+					<box>					<bottomPen lineWidth="0.5"/>
+</box>
+					<textElement>
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$P{OCCUPANCY}.source?.rentamount]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="MMM dd, yyyy" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="454"
+						y="40"
+						width="75"
+						height="11"
+						key="textField-9"
+						positionType="Float"/>
+					<box>					<bottomPen lineWidth="0.5"/>
+</box>
+					<textElement>
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.util.Date"><![CDATA[$P{OCCUPANCY}.source?.since]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="316"
+						y="60"
+						width="213"
+						height="11"
+						key="textField-10"
+						positionType="Float"/>
+					<box>					<bottomPen lineWidth="0.5"/>
+</box>
+					<textElement>
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{OCCUPANCY}.source?.remarks]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="188"
+						y="50"
+						width="73"
+						height="11"
+						key="textField-11"
+						positionType="Float"/>
+					<box>					<bottomPen lineWidth="0.5"/>
+</box>
+					<textElement>
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$V{residencyyears}? $V{residencyyears}+" Yr/Yrs." : ""]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="453"
+						y="50"
+						width="76"
+						height="11"
+						key="textField-12"
+						positionType="Float"/>
+					<box>					<bottomPen lineWidth="0.5"/>
+</box>
+					<textElement>
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$V{occupancyyears}? $V{occupancyyears}+" Yr/Yrs." : ""]]></textFieldExpression>
+				</textField>
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</summary>
+</jasperReport>

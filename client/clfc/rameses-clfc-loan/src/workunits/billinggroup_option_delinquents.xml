@@ -1,0 +1,20 @@
+<workunit extends='wtemplates/BillingGroupListController.xml'>
+    <invokers>
+        <invoker type='billinggroup-option' caption='Delinquent Accounts' index='3' />
+    </invokers>
+    
+    <code>
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        import com.rameses.clfc.billinggroup.*;
+        
+        class BillingGroupDelinquentAccountListController extends BillingGroupListController
+        {
+            String serviceName = 'LoanBillingGroupOptionAccountsService';
+            String type = 'DELINQUENT';
+        
+        }
+    </code>
+</workunit>

@@ -1,0 +1,15 @@
+<workunit>
+    <invokers>
+        <!--
+        <invoker type="encashmentcbs:main" action="init" caption="Cash Breakdown" />
+        -->
+        <invoker type='encashment-cbs-plugin' name='main' caption='Cash Breakdown' index='0' />
+        <invoker type='encashment:cbs:main' action='init' caption='Cash Breakdown' />
+    </invokers>
+    
+    <code class="com.rameses.clfc.treasury.encashment.cbs.EncashmentCBSController" />
+    
+    <pages>
+        <page template="com.rameses.clfc.treasury.encashment.cbs.EncashmentCBSPage" />
+    </pages>
+</workunit>

@@ -1,0 +1,99 @@
+<workunit>
+    <invokers>
+        <invoker type="templatefact:create" caption="Facts" action="init"/>
+        <invoker type="templatefact:open" caption="Facts" action="open"/>
+        <invoker type="formActions" caption="Close" action="_close" immediate="true"/>
+        <invoker type="formActions" caption="Save" action="save" visibleWhen="#{mode == 'create'}"/>
+        <invoker type="formActions" caption="Edit" action="edit" visibleWhen="#{mode == 'read'}"/>
+        <invoker type="formActions" caption="Delete" action="delete" visibleWhen="#{mode == 'read'}"/>
+        <invoker type="formActions" caption="Save" action="update" visibleWhen="#{mode == 'edit'}"/>
+    </invokers>
+    
+    <code>
+        <![CDATA[
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*
+        import java.rmi.server.UID;
+        
+        class FactController{
+        
+            @Service('ReportTemplateFactService')
+            def factSvc;
+        
+            def entity;
+            def title = "Fact";
+            def mode;
+            
+            void init(){
+                entity = [:];
+                entity.objid = "FCT"+new UID().toString();
+                entity.fields = [];
+                mode = "create";
+            }
+            
+            void open(){
+                mode = "read";
+                title = entity.title;
+                entity.fields = factSvc.getFields(entity);
+            }
+            
+            void save(){
+                if(!MsgBox.confirm('You are about to save this record. Continue?')) return;
+                if(!entity.fields) throw new Exception("Fields are required!");
+                factSvc.create(entity);
+                mode = "read";
+            }
+            
+            void edit(){
+                mode = "edit";
+            }
+            
+            def delete(){
+                if(!MsgBox.confirm('You are about to delete this record. Continue?')) return;
+                factSvc.delete(entity);
+                return '_close';
+            }
+            
+            void update(){
+                if(!MsgBox.confirm('You are about to update this record. Continue?')) return;
+                factSvc.update(entity);
+                mode = "read";
+            }
+            
+            def addField(){
+                def handler = {o->
+                    entity.fields << o;
+                    fieldHandler.reload();
+                }
+                return Inv.lookupOpener("templatefield:create",[entity:[:],handler:handler]);
+            }
+            
+            def editField(){
+                def handler = {o ->
+                    field = o;
+                    fieldHandler.reload();
+                }
+                return Inv.lookupOpener("templatefield:open",[entity:field,handler:handler]);
+            }
+            
+            void removeField(){
+                if(field) entity.fields.remove(field);
+            }
+            
+            def field;
+            def fieldHandler = [
+                fetchList : {
+                    return entity.fields;
+                }
+            ] as BasicListModel;
+
+        }
+        ]]>
+    </code>
+    
+    <pages>
+        <page template="com.rameses.clfc.reporttemplate.fact.TemplateFactPage"/>
+    </pages>
+</workunit>

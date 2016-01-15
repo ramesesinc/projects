@@ -1,0 +1,24 @@
+"data.*" [caller.mode != 'edit']{
+    enabled: false; 
+}
+"data.*" [caller.mode == 'edit']{
+    enabled: true; 
+}
+"data.marketedby" [caller.mode=='edit' && data.clienttype=='MARKETED'] {
+    enabled: true; 
+} 
+"data.route" [caller.mode=='edit' && loanapp.state=='FOR_INSPECTION'] {
+    enabled: true; 
+}
+"data.*" [caller.mode=='edit' && loanapp.appmode=='CAPTURE' && loanapp.state=='RELEASED'] {
+    enabled: false; 
+}
+"data.(clienttype|marketedby|route|nextto)" [caller.mode=='edit' && loanapp.appmode=='CAPTURE' && loanapp.state=='RELEASED'] {
+    enabled: true; 
+}
+"data.producttype.*" [caller.mode=='edit' && loanapp.appmode=='CAPTURE' && loanapp.state=='RELEASED'] {
+    enabled: false; 
+}
+"data.marketedby" [caller.mode=='edit' && data.clienttype!='MARKETED'] {
+    enabled: false; 
+} 

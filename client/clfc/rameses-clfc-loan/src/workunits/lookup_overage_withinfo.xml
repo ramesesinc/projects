@@ -1,0 +1,11 @@
+<workunit>
+    <invokers>
+        <invoker type="overagewithinfo:lookup" caption="Lookup Overage" target="popup" />
+    </invokers>
+    
+    <code class="com.rameses.clfc.collection.overage.lookup.OverageWithInfoLookupController" />
+    
+    <pages>
+        <page template="com.rameses.clfc.collection.overage.lookup.OverageWithInfoLookupPage" />
+    </pages>
+</workunit>

@@ -1,0 +1,23 @@
+<workunit extends="wtemplates/ListController.xml">
+    <invokers>
+        <!--
+        <invoker folderid="/explorer/txn/treasury" caption="Shortage Fund Requests" role="CASHIER,ACCT_ASSISTANT" />
+        -->
+        <invoker folderid="/home/online/treasury" caption="Shortage Fund Requests" role="CASHIER,ACCT_ASSISTANT" />
+    </invokers>
+    
+    <code>
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        
+        class ShortageFundRequestListController extends ListController
+        {
+            String serviceName = "LoanCollectionShortageFundRequestService";
+            String entityName = "shortagefundrequest";
+            
+            boolean allowCreate = false;
+        }
+    </code>
+</workunit>

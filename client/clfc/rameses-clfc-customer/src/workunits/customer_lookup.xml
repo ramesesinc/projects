@@ -1,0 +1,5 @@
+<workunit extends="wtemplates/ServiceLookupController.xml" serviceName="CustomerLookupService">
+   <invokers>
+         <invoker type="customer:lookup" caption="Lookup Customer" target="popup"/>
+   </invokers>
+</workunit>

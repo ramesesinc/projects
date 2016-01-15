@@ -1,0 +1,12 @@
+<workunit>
+    <invokers>
+        <invoker type='ledgeramnesty:fixtype' caption='Term' value='term' index='2' />
+        <invoker type='fixtype:term' action='init' />
+    </invokers>
+    
+    <code class='com.rameses.clfc.treasury.ledger.amnesty.fix.FixTermController' />
+    
+    <pages>
+        <page template='com.rameses.clfc.treasury.ledger.amnesty.fix.FixTermPage' />
+    </pages>
+</workunit>

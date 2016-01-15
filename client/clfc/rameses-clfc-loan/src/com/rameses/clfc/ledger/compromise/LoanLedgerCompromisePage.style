@@ -1,0 +1,6 @@
+"entity.dtended" [ 1 == 1 ] {
+    enabled: false;
+}
+"entity.dteffective" [ entity.changeoffer == true ] {
+    enabled: false;
+}

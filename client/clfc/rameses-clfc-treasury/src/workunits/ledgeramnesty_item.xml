@@ -1,0 +1,21 @@
+<workunit>
+    <invokers>
+        <invoker type='ledgeramnesty:item:create' action='init' caption='Amnesty Item' target='popup' />
+        <invoker type='ledgeramnesty:item:open' action='open' caption='Amnesty Item' target='popup' />
+        
+        <invoker type='formActions' action='cancel' caption='Cancel' mnemonic='c' shortcut='ctrl c' immediate='true' />
+        <invoker type='formActions' action='ok' caption='Ok' mnemonic='o' shortcut='ctrl o' 
+            visibleWhen="#{mode!='read'}" />
+        
+        <invoker type='formActions' action='approve' caption='Approve' mnemonic='a' shortcut='ctrl a'
+            visibleWhen="#{mode=='read' &amp;&amp; entity?.state=='FOR_APPROVAL'}" role='FLA_OFFICER' domain='LOAN' />
+        <invoker type='formActions' action='disapprove' caption='Disapprove' mnemonic='d' shortcut='ctrl d'
+            visibleWhen="#{mode=='read' &amp;&amp; entity?.state=='FOR_APPROVAL'}" role='FLA_OFFICER' domain='LOAN' />
+    </invokers>
+    
+    <code class='com.rameses.clfc.treasury.ledger.amnesty.ItemController' />
+    
+    <pages>
+        <page template='com.rameses.clfc.treasury.ledger.amnesty.ItemPage' />
+    </pages>
+</workunit>

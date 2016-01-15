@@ -1,0 +1,27 @@
+<workunit extends="wtemplates/ListController.xml">
+    <invokers>
+        <!--
+        <invoker folderid="/explorer/txn/loan" caption="Closed Ledger Listing" role="ACCT_OFFICER" />
+        -->
+        <invoker folderid="/home/online/loan" caption="Closed Ledger Listing" role="ACCT_OFFICER" />
+    </invokers>
+    
+    <code>
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        
+        class ClosedLoanLedgerListController extends ListController
+        {
+            String serviceName = "LoanLedgerService";
+            String entityName = "loanledger";
+        
+            boolean allowCreate = false;
+        
+            void beforeFetchList(Map params) {
+                params.state = 'CLOSE';
+            }
+        }
+    </code>
+</workunit>

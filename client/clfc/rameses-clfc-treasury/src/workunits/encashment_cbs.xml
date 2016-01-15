@@ -1,0 +1,11 @@
+<workunit>
+    <invokers>
+        <invoker type="encashment:cbs:open" action="open" caption="Encashment CBS" target="popup" />
+    </invokers>
+    
+    <code class="com.rameses.clfc.treasury.encashment.cbs.EncashmentCBSMainController" />
+    
+    <pages>
+        <page template="com.rameses.clfc.treasury.encashment.cbs.EncashmentCBSMainPage" />
+    </pages>
+</workunit>

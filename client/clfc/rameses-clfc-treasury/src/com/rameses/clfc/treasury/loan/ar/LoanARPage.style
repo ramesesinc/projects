@@ -1,0 +1,9 @@
+"entity.check.*" [entity.txntype!='check' || entity.txnstate!='APPROVED' || allowInputCheck==false] {
+    enabled: false;
+}
+"entity.check.*" [entity.txntype=='check' && entity.txnstate=='APPROVED' && allowInputCheck==true] {
+    enabled: true;
+}
+"entity.totalamount" [1==1] {
+    enabled: false;
+}

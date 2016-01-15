@@ -1,0 +1,56 @@
+<workunits>
+    <invokers>
+        <invoker type="template:create" caption="Template" action="init"/>
+        <invoker type="template:open" caption="Template" action="open"/>
+        <invoker type="formActions" caption="Close" action="_close" immediate="true"/>
+        <invoker type="formActions" caption="Save" action="save" visibleWhen="#{mode == 'create'}"/>
+    </invokers>
+    
+    <code>
+        <![CDATA[
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*
+        import java.rmi.server.UID;
+        
+        class TemplateController{
+        
+            def entity;
+            def title;
+            def mode;
+            
+            void init(){
+                entity = [:];
+                title = "Template (NEW)";
+                mode = "create";
+            }
+            
+            void save(){
+                
+            }
+            
+            def add(){
+                def handler = {o ->
+                    def condition = o;
+                    if(condition) entity.conditions << condition;
+                    conditionHandler.reload();
+                }
+                return Inv.lookupOpener("templatecondition:create",[entity:[:],handler:handler]);
+            }
+            
+            def condition;
+            def conditionHandler = [
+                fetchList : {
+                    return entity.conditions;
+                }
+            ] as BasicListModel;
+
+        }
+        ]]>
+    </code>
+    
+    <pages>
+        <page template="com.rameses.clfc.reporttemplate.TemplatePage"/>
+    </pages>
+</workunits>

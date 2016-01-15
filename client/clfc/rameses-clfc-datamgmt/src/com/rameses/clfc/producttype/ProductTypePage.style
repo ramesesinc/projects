@@ -1,0 +1,9 @@
+"entity.*" [mode == 'read'] {
+    enabled: false; 
+} 
+"entity.*" [mode != 'read'] {
+    enabled: true; 
+} 
+"entity.name" [mode == 'edit'] {
+    enabled: false; 
+} 

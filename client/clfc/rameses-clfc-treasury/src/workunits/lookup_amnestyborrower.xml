@@ -1,0 +1,18 @@
+<workunit extends="wtemplates/LookupController.xml">
+    <invokers>
+        <invoker type="amnestyledger:lookup" caption="Lookup Ledgers" target="popup" />
+    </invokers>
+    
+    <code>
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        
+        class AmnestyLedgerLookupController extends LookupController
+        {
+            String serviceName = "AmnestyLedgerLookupService";
+            String entityName = "amnestyledger";
+        }
+    </code>
+</workunit>

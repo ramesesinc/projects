@@ -1,0 +1,18 @@
+"entity.*" [mode!='read'] {
+    enabled: true;
+}
+"entity.(days|months)" [entity?.usedate==0 || entity?.usedate==null] {
+    enabled: true;
+}
+"entity.(days|months)" [entity?.usedate==1] {
+    enabled: false;
+}
+"entity.date" [entity?.usedate==0 || entity?.usedate==null] {
+    enabled: false;
+}
+"entity.date" [entity?.usedate==1] {
+    enabled: enabled;
+}
+"entity.*" [mode=='read'] {
+    enabled: false;
+}

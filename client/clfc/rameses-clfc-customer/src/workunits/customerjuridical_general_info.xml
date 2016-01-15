@@ -1,0 +1,11 @@
+<workunit>
+    <invokers>        
+        <invoker type="customerjuridical:plugin" caption="General Information" action="init" index="-1000"/>
+    </invokers>
+    
+    <code class="com.rameses.clfc.customer.CustomerJuridicalGeneralInfoController" />
+    
+    <pages>
+        <page template="com.rameses.clfc.customer.CustomerJuridicalGeneralInfoPage" />
+    </pages>
+</workunit>

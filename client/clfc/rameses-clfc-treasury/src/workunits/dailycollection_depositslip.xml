@@ -1,0 +1,11 @@
+<workunit>
+    <invokers>
+        <invoker type="dailycollection:depositslip" action="init" caption="Deposit Slips" />
+    </invokers>
+    
+    <code class="com.rameses.clfc.treasury.dailycollection.DailyCollectionDepositSlipController" />
+    
+    <pages>
+        <page template="com.rameses.clfc.treasury.dailycollection.DailyCollectionDepositSlipPage" />
+    </pages>
+</workunit>

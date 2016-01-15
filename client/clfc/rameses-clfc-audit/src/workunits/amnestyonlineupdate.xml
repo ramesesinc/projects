@@ -1,0 +1,20 @@
+<workunit>
+    <invokers>
+        <invoker type="amnestyonlineupdate:create" action="create" caption="Amnesty Update" target="popup" />
+        <invoker type="amnestyonlineupdate:open" action="open" caption="Amnesty Update" target="popup" />
+        
+        <invoker type="formActions" action="submitForApproval" caption="Submit for Approval" mnemonic="s"
+            shortcut="ctrl s" visibleWhen="#{mode=='read' &amp;&amp; entity.txnstate=='DRAFT'}" />
+        
+        <invoker type="formActions" action="approveDocument" caption="Approve" mnemonic="a" shortcut="ctrl a"
+            visibleWhen="#{mode=='read' &amp;&amp; entity.txnstate=='FOR_APPROVAL'}" role="AUDIT_APPROVER" />
+        <invoker type="formActions" action="disapprove" caption="Disapprove" mnemonic="d" shortcut="ctrl d"
+            visibleWhen="#{mode=='read' &amp;&amp; entity.txnstate=='FOR_APPROVAL'}" role="AUDIT_APPROVER" />
+    </invokers>
+    
+    <code class="com.rameses.clfc.audit.amnesty.online.update.AmnestyOnlineUpdateController" />
+    
+    <pages>
+        <page template="com.rameses.clfc.audit.amnesty.online.update.AmnestyOnlineUpdatePage" />
+    </pages>
+</workunit>

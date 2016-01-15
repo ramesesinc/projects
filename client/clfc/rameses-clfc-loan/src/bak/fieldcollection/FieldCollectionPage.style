@@ -1,0 +1,18 @@
+"denominationHandler:item.*" [item.qty != 0] {
+    background-color: yellow;
+    color: black;
+}
+"selectedDenomination" [mode == 'read'] {
+    readonly: true;
+}
+"selectedDenomination" [mode != 'read'] {
+    readonly: false;
+}
+
+"entity.route.*" [ route.type == 'route' ] {
+    visible: true;
+}
+
+"entity.route.*" [ route.type != 'route' ] {
+    visible: false;
+}

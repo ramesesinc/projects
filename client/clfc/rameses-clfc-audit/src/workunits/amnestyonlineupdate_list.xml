@@ -1,0 +1,47 @@
+<!--
+<workunit extends="wtemplates/InboxController.xml">
+-->
+<workunit extends="wtemplates/ListController.xml">
+    <invokers>
+        <invoker folderid="/home/capture/audit" caption="Update Online Amnesties" role="AUDIT_AMNESTY" />
+    </invokers>
+    
+    <code>
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        
+        class AmnestyOnlineUpdateListController extends ListController
+        {
+            @Service("AmnestyOnlineUpdateService")
+            def svc;
+        
+            String serviceName = "AmnestyOnlineUpdateService";
+            String entityName = "amnestyonlineupdate";
+        
+            Map createPermission = [domain: 'AUDIT', role: 'AUDIT_AMNESTY'];
+        
+            void beforeGetColumns(Map params) {
+                def state = selectedOption?.state;
+                if (state) params.state = state;
+            }
+        
+            def selectedOption;
+            def optionsModel = [
+                fetchList: { 
+                    return svc.getStates();; 
+                },
+                onselect: {o-> 
+                    query.state = selectedOption?.state; 
+                    reloadAll(); 
+                }
+            ] as ListPaneModel; 
+        }
+    </code>
+    
+    <pages>
+        <page template="com.rameses.clfc.ui.ListPage" />
+    </pages>
+    
+</workunit>

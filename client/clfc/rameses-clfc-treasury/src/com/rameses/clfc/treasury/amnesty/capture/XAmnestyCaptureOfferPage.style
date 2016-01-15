@@ -1,0 +1,18 @@
+"entity.*" [allowEdit==true] {
+    enabled: true;
+}
+"entity.(days|months)" [entity.isspotcash==0] {
+    enabled: true;
+}
+"entity.(days|months)" [entity.isspotcash!=0] {
+    enabled: false;
+}
+"entity.date" [entity.isspotcash!=0] {
+    enabled: true;
+}
+"entity.date" [entity.isspotcash==0] {
+    enabled: false;
+}
+"entity.*" [allowEdit!=true] {
+    enabled: false;
+}

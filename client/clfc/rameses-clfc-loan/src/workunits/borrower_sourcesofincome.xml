@@ -1,0 +1,18 @@
+<workunit>
+    <invokers>
+        <!--
+        <invoker type="loanapp-borrower:plugin" caption=" Other Sources of Income  " action="init" index="-93"/>
+        -->
+        <invoker type="loanapp-borrowerindividual:plugin" caption=" Other Sources of Income  " action="init" index="-93"/>
+        <invoker type="loanapp-jointborrower:plugin" caption=" Other Sources of Income  " 
+            action="init" index="-93"/>
+        <invoker type="loanapp-comaker:plugin" caption=" Other Sources of Income  " 
+            action="init" index="-93"/>
+    </invokers>
+    
+    <code class="com.rameses.clfc.borrower.BorrowerSourceOfIncomeController"/>
+    
+    <pages>
+        <page template="com.rameses.clfc.borrower.BorrowerSourceOfIncomePage"/>
+    </pages>
+</workunit>

@@ -1,0 +1,27 @@
+"entity.*" [borrowerContext.mode != 'edit']{
+    enabled: false; 
+}
+"entity.residency.*|entity.occupancy.*" [borrowerContext.mode == 'edit' && entity.objid != null] {
+    enabled: true;
+}
+"entity.residency.*|entity.occupancy.*" [borrowerContext.mode == 'edit' && entity.objid == null] {
+    enabled: false;
+}
+"borrower" [borrowerContext.mode != 'edit']{
+    enabled: false;
+}
+"borrower" [borrowerContext.mode == 'edit']{
+    enabled: true;
+}
+"entity.residency.rent.*" [borrowerContext.mode == 'edit' && entity.residency?.type == 'RENTED' && entity.objid != null] {
+    enabled:true;
+}
+"entity.residency.rent.*" [borrowerContext.mode == 'edit' && entity.residency?.type != 'RENTED' && entity.objid != null] {
+    enabled:false;
+}
+"entity.occupancy.rent.*" [borrowerContext.mode == 'edit' && entity.occupancy?.type == 'RENTED' && entity.objid != null] {
+    enabled:true;
+}
+"entity.occupancy.rent.*" [borrowerContext.mode == 'edit' && entity.occupancy?.type != 'RENTED' && entity.objid != null] {
+    enabled:false;
+}

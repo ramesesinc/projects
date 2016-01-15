@@ -1,0 +1,25 @@
+<workunit extends="wtemplates/LookupController.xml">
+    <invokers>
+        <invoker type="billinggroup:lookup" caption="Billing Group Lookup" target="popup" />
+    </invokers>
+    
+    <code>
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        
+        class BillingGroupLookupController extends LookupController
+        {
+            String serviceName = "LoanBillingGroupLookupService";
+            
+            def state, type, date;
+            List fetchList(Map params) {
+                if (state) params.txnstate = state;
+                if (type) params.txntype = type;
+                if (date) params.date = date;
+                return super.fetchList(params);
+            }
+        }
+    </code>
+</workunit>

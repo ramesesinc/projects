@@ -1,0 +1,37 @@
+<folders>
+    <folder id="explorer">
+        <folder id="loan" caption="Loans" index="99"/>
+        <folder id="afterfla" caption="After FLA" index="100"/>
+        
+        <folder id="txn" caption="Transactions" index="0">
+            <folder id="clfc" caption="CLFC"/>
+        </folder>
+        <folder id="master" caption="Master Management" index="1">
+            <folder id="loan" caption="Loans"/>
+        </folder>
+        <folder id="txnmgmt" caption="Transaction Management" index="2">
+            <folder id="clfc" caption="CLFC"/>
+        </folder>
+        <folder id="rulemgmt" caption="Rule Management" index="3">
+            <folder id="clfc" caption="CLFC"/>
+        </folder>
+        <folder id="report" caption="Reports" index="4">
+            <folder id="clfc" caption="CLFC"/>
+        </folder>
+        <folder id="setting" caption="Settings Management" index="5">
+            <folder id="clfc" caption="CLFC"/>
+        </folder>
+    </folder>
+    
+    <folder id="menu">
+        <folder id="txn">
+            <folder id="loan" caption="Loan"/>
+        </folder>
+    </folder>
+    
+    <folder id="home">
+        <folder id="online" caption="Online">
+            <folder id='report' caption='Report' />
+        </folder>
+    </folder>
+</folders>

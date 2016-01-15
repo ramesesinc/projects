@@ -1,0 +1,91 @@
+<workunit extends="wtemplates/ListController.xml">
+    <invokers>
+        <!--
+        <invoker folderid="/explorer/txn/treasury" caption="Deposits" 
+            role="BRANCH_MANAGER,ASST_BRANCH_MANAGER" />
+        <invoker folderid="/home/treasury" caption="Deposits"  
+            role="BRANCH_MANAGER,ASST_BRANCH_MANAGER" />
+        -->
+        <invoker folderid='home/online/treasury' caption='Deposits'
+            role='BRANCH_MANAGER,ASST_BRANCH_MANAGER' />
+    </invokers>
+    
+    <code>
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        
+        class DepositListController extends ListController
+        {
+            @Service('DepositService')
+            def svc;
+        
+            String serviceName = 'DepositService';
+            String entityName = 'deposit';
+
+            void beforeGetColumns(Map params) {
+                //params.txntype = selectedOption?.txntype;
+                params.state = selectedOption?.state;
+            }
+            
+            def selectedOption;
+            def optionsModel = [
+                getItems: {
+                    //return svc.getOptions();
+                    return svc.getStates();
+                }, 
+                onselect: { o->
+                    //query.txntype = o.txntype;
+                    query.state = o.state;
+                    reloadAll();
+                }
+            ] as ListPaneModel;
+        }
+    </code>
+    
+    <pages>
+        <page template="com.rameses.clfc.ui.ListPage" />
+    </pages>
+    <!--
+    <pages>
+        <page template="com.rameses.clfc.treasury.deposit.DepositListPage" />
+    </pages>
+    -->
+    <!--
+    <code>
+        <![CDATA[
+            import com.rameses.rcp.common.*;
+            import com.rameses.rcp.annotations.*;
+            import com.rameses.osiris2.client.*;
+            import com.rameses.osiris2.common.*;
+
+            class DepositListController extends ListController
+            {
+                @Service("DepositService")
+                def svc;
+            
+                String serviceName = "DepositService";
+                String entityName = "deposit";
+                def txntype;
+                
+                void beforeGetColumns( params ) {
+                    if (txntype) params.txntype = txntype;
+                }
+                
+                def optionsModel = [
+                    getItems: {
+                        return svc.getOptions();
+                    }, 
+                    onselect: { o->
+                        query.txntype = o.txntype;
+                        txntype = o.txntype;
+                        reloadAll();
+                    }
+                ] as ListPaneModel;
+            }
+        ]]>
+    </code>
+    -->
+    
+</workunit>

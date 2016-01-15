@@ -1,0 +1,12 @@
+"entity.(dtended|dtstarted)" [1==1] {
+    enabled: false;
+}
+"entity.dtstarted" [mode != 'read' && entity.txnmode == 'CAPTURE'] {
+    enabled: true;
+}
+"option" [mode == 'read'] {
+    enabled: false;
+}
+"option" [mode != 'read'] {
+    enabled: true;
+}

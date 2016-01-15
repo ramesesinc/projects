@@ -1,0 +1,8 @@
+<workunit extends="wtemplates/ListController.xml">
+
+    <invokers>
+        <invoker type="home.action" caption="Inbox Messages" index="-10000"/> 
+    </invokers>
+
+    <code class="com.rameses.clfc.inbox.InboxListController"/> 
+</workunit>

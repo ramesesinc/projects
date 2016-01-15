@@ -1,0 +1,17 @@
+<workunit>
+    <invokers>
+        <invoker type="loanapp-report:plugin" caption="Co-Maker's Statement" target="window" action="init"/>
+        
+        <invoker type="formActions" action="close" mnemonic="c" shortcut="ctrl W" visibleWhen="#{mode == 'init'}" immediate="true"/>
+        <invoker type="formActions" action="preview" caption="Preview" mnemonic="p" visibleWhen="#{mode == 'init'}"/>
+        
+        <invoker type="formActions" action="back" caption="Back" mnemonic="b" visibleWhen="#{mode == 'view'}" immediate="true"/>
+    </invokers>
+    
+    <code class="com.rameses.clfc.report.controller.ComakerStatementReportController"/>
+    
+    <pages>
+        <page template="com.rameses.clfc.report.comakerstatement.ComakerStatementInitPage"/>
+        <page template="com.rameses.osiris2.common.ui.ReportPreviewPage" name="preview"/>
+    </pages>
+</workunit>

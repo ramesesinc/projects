@@ -1,0 +1,10 @@
+<folders>
+    <folder id="explorer">
+    </folder>
+    <folder id="home">
+        <folder id="online" caption="Online" >
+            <folder id='loan' caption='Loan' />
+            <folder id='support' caption='Support' />
+        </folder>
+    </folder>
+</folders>

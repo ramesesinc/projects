@@ -1,0 +1,5 @@
+<workunit extends="wtemplates/ServiceLookupController.xml" serviceName="PaymentScheduleService">
+    <invokers>
+        <invoker type="paymentschedule:lookup" caption="Lookup Payment Schedule" target="popup" />
+    </invokers>
+</workunit>

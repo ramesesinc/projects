@@ -1,0 +1,58 @@
+<workunit>
+    <invokers>
+        <invoker type="templatefield:create" caption="Field" action="init" target="popup"/>
+        <invoker type="templatefield:open" caption="Field" action="open" target="popup"/>
+    </invokers>
+    
+    <code>
+        <![CDATA[
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*
+        import java.rmi.server.UID;
+        
+        class FieldController{
+        
+            @Service('ReportTemplateFactService')
+            def factSvc;
+        
+            def entity;
+            def title = "Field";
+            def field;
+            def dataTypes;
+            def datatype;
+            def handler;
+            
+            void init(){
+                dataTypes = factSvc.getDataTypes();
+            }
+            
+            void open(){
+                dataTypes = factSvc.getDataTypes();
+                dataTypes.each{
+                    def item = it;
+                    if(item.name == entity.datatype) datatype = item;
+                }
+            }
+            
+            def doOk(){
+                entity.objid = "FLD"+new UID().toString();
+                entity.datatype = datatype.name;
+                entity.handler = datatype.handler;
+                handler(entity);
+                return '_close';
+            }
+            
+            def doCancel(){
+                return '_close';
+            }
+
+        }
+        ]]>
+    </code>
+    
+    <pages>
+        <page template="com.rameses.clfc.reporttemplate.fact.TemplateFieldPage"/>
+    </pages>
+</workunit>

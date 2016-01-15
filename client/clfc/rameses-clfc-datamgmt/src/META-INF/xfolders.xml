@@ -1,0 +1,12 @@
+<folders>
+    <folder id="home">
+        <!--
+        <folder id="master" caption="Master" />
+        <folder id="settings" caption="Settings" />
+        -->
+        <folder id='online' caption='Online'>
+            <folder id='master' caption='Master' />
+            <folder id='settings' caption='Settings' />
+        </folder>
+    </folder>
+</folders>

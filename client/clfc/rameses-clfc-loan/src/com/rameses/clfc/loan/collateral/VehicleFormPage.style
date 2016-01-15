@@ -1,0 +1,12 @@
+"entity.*|doOk|orcr" [mode != 'read'] {
+    enabled:true;
+}
+"entity.*|doOk|orcr" [mode == 'read'] {
+    enabled:false;
+}
+"entity.orcr.*" [orcr == true && mode != 'read'] {
+    enabled:true;
+}
+"entity.orcr.*" [orcr == false] {
+    enabled:false;
+}

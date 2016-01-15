@@ -1,0 +1,12 @@
+<workunit>
+    <invokers>
+        <invoker type="roletemplateusergroup:edit" action="open" caption="User Group" target="popup" />
+        <invoker type="roletemplateusergroup:add" action="create" caption="User Group" target="popup" />
+    </invokers>
+    
+    <code class="com.rameses.clfc.admin.roletemplate.RoleTemplateUserGroupController" />
+    
+    <pages>
+        <page template="com.rameses.clfc.admin.roletemplate.RoleTemplateUserGroupPage" />
+    </pages>
+</workunit>

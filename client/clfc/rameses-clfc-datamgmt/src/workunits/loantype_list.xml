@@ -1,0 +1,20 @@
+<workunit extends="wtemplates/ListController.xml">
+    <invokers>
+        <invoker folderid="/home/online/master" caption="Loan Types" role="DATAMGMT_AUTHOR"/> 
+    </invokers>
+    
+    <code>
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        
+        class LoanTypeListController extends ListController
+        {
+            String serviceName = 'LoanTypeService';
+            String entityName = 'loantype';
+        
+            Map createPermission = [domain: 'DATAMGMT', role: 'DATAMGMT_AUTHOR'];
+        }
+    </code>
+</workunit>

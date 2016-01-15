@@ -1,0 +1,5 @@
+<workunit extends="wtemplates/ServiceLookupController.xml" serviceName="ExemptionTypeLookupService"> 
+    <invokers>
+        <invoker type="exemptiontype:lookup" caption="Exemption Types" target="popup"/> 
+    </invokers>
+</workunit>

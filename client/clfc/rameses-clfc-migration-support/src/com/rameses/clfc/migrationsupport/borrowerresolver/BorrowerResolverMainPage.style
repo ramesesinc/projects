@@ -1,0 +1,6 @@
+"customertype" [mode!='read'] {
+    enabled: true;
+}
+"customertype" [mode=='read'] {
+    enabled: false;
+}

@@ -1,0 +1,47 @@
+<workunit>
+    <invokers>
+        <invoker type="loanledger:formActions" action="init" caption="Close Ledger"  target="popup" resizable="false"
+            visibleWhen="#{selectedEntity != null &amp;&amp; selectedEntity.state == 'OPEN'}" role="SYSADMIN"/>
+            
+        <invoker type="formActions" action="close" caption="Close" immediate="true" />
+        <invoker type="formActions" action="save" caption="Save" visibleWhen="#{mode == 'create'}"/>
+    </invokers>
+    
+    <code>
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        
+        class CloseLedgerController
+        {
+            @Binding
+            def binding;
+        
+            @Service("CloseLedgerService")
+            def service;
+            
+            def entity;
+            def mode;
+            
+            void init() {
+                entity = service.open(entity);
+                mode = 'create';
+            }
+            
+            def close() {
+                return "_close";
+            }
+            
+            def save() {
+                entity = service.save(entity);
+                mode = 'read';
+                binding.refresh();
+            }
+        }
+    </code>
+    
+    <pages>
+        <page template="com.rameses.clfc.patch.ledger.CloseLedgerPage" />
+    </pages>
+</workunit>

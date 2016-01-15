@@ -1,0 +1,18 @@
+<workunit>
+    <invokers>
+        <invoker folderid="/home/online/support" action="init" caption="Payment Transfer" 
+            role="ADMIN_SUPPORT" permission="transfer"/>
+        <!--
+        <invoker type="home.action" action="init" caption="Payment Transfer" role="ADMIN_SUPPORT" permission="transfer"/>
+        -->
+        
+        <invoker type="formActions" action="close" caption="Close" mnemonic="c" shortcut="ctrl W" immediate="true" />
+        <invoker type="formActions" action="transfer" caption="Transfer Payment" mnemonic="t" shortcut="ctrl T" />
+    </invokers>
+    
+    <code class="com.rameses.clfc.patch.payment.PaymentTransferController" />
+    
+    <pages>
+        <page template="com.rameses.clfc.patch.payment.PaymentTransferPage" />
+    </pages>
+</workunit>

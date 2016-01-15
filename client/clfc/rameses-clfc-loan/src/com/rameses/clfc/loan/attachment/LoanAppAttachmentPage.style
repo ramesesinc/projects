@@ -1,0 +1,6 @@
+"addAttachment" [caller.mode != 'read'] {
+    enabled:true;
+}
+"addAttachment" [caller.mode == 'read'] {
+    enabled:false;
+}

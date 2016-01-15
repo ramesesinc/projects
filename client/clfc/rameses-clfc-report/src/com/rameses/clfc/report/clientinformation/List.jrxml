@@ -1,0 +1,530 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="List"
+
+		 language="groovy"		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Portrait"
+		 pageWidth="535"
+		 pageHeight="842"
+		 columnWidth="535"
+		 columnSpacing="0"
+		 leftMargin="0"
+		 rightMargin="0"
+		 topMargin="0"
+		 bottomMargin="0"
+		 whenNoDataType="NoPages"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false">
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+
+	<parameter name="SPOUSE" isForPrompting="false" class="java.lang.Object"/>
+	<parameter name="PARENT" isForPrompting="false" class="java.lang.Object"/>
+	<parameter name="BUSINESS" isForPrompting="false" class="java.lang.Object"/>
+	<parameter name="RESIDENCY" isForPrompting="false" class="java.lang.Object"/>
+	<parameter name="EMPLOYMENT" isForPrompting="false" class="java.lang.Object"/>
+	<parameter name="OTHER_INCOME" isForPrompting="false" class="java.lang.Object"/>
+	<parameter name="EDUCATIONAL_BACKGROUND" isForPrompting="false" class="java.lang.Object"/>
+	<parameter name="CHILDREN_LIST" isForPrompting="false" class="java.lang.Object"/>
+	<parameter name="CHILDREN_EMPLOYMENT" isForPrompting="false" class="java.lang.Object"/>
+	<parameter name="CHILDREN_OTHER_INCOME" isForPrompting="false" class="java.lang.Object"/>
+	<parameter name="SIBLING_LIST" isForPrompting="false" class="java.lang.Object"/>
+	<parameter name="SIBLING_EMPLOYMENT" isForPrompting="false" class="java.lang.Object"/>
+	<parameter name="SIBLING_OTHER_INCOME" isForPrompting="false" class="java.lang.Object"/>
+	<parameter name="SAVING_LIST" isForPrompting="false" class="java.lang.Object"/>
+	<parameter name="CHECKING_LIST" isForPrompting="false" class="java.lang.Object"/>
+	<parameter name="DTYPE" isForPrompting="false" class="java.lang.String"/>
+
+	<field name="name" class="java.lang.String"/>
+	<field name="birthdate" class="java.lang.String"/>
+	<field name="contactno" class="java.lang.String"/>
+	<field name="age" class="java.lang.Integer"/>
+	<field name="address" class="java.lang.String"/>
+	<field name="civilstatus" class="java.lang.String"/>
+	<field name="parents" class="java.lang.Object"/>
+	<field name="otheraccts" class="java.lang.String"/>
+	<field name="otherincomes" class="java.lang.Object"/>
+	<field name="employments" class="java.lang.Object"/>
+	<field name="siblings" class="java.lang.Object"/>
+	<field name="checkingaccts" class="java.lang.Object"/>
+	<field name="savingaccts" class="java.lang.Object"/>
+	<field name="educations" class="java.lang.Object"/>
+	<field name="residency" class="java.lang.Object"/>
+	<field name="occupancy" class="java.lang.Object"/>
+	<field name="children" class="java.lang.Object"/>
+	<field name="spouse" class="java.lang.Object"/>
+
+
+		<group  name="otherAccounts" >
+			<groupExpression><![CDATA[]]></groupExpression>
+			<groupHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupFooter>
+		</group>
+		<group  name="checkingAccounts" >
+			<groupExpression><![CDATA[]]></groupExpression>
+			<groupHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupFooter>
+		</group>
+		<group  name="savingAccounts" >
+			<groupExpression><![CDATA[]]></groupExpression>
+			<groupHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupFooter>
+		</group>
+		<group  name="otherIncome" >
+			<groupExpression><![CDATA[]]></groupExpression>
+			<groupHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupFooter>
+		</group>
+		<group  name="siblings" >
+			<groupExpression><![CDATA[]]></groupExpression>
+			<groupHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupFooter>
+		</group>
+		<group  name="parents" >
+			<groupExpression><![CDATA[]]></groupExpression>
+			<groupHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupFooter>
+		</group>
+		<group  name="employment" >
+			<groupExpression><![CDATA[]]></groupExpression>
+			<groupHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupFooter>
+		</group>
+		<group  name="educationalBackground" >
+			<groupExpression><![CDATA[]]></groupExpression>
+			<groupHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupFooter>
+		</group>
+		<group  name="children" >
+			<groupExpression><![CDATA[]]></groupExpression>
+			<groupHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupFooter>
+		</group>
+		<group  name="spouse" >
+			<groupExpression><![CDATA[]]></groupExpression>
+			<groupHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupFooter>
+		</group>
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</title>
+		<pageHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="26"  isSplitAllowed="true" >
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="12"
+						y="4"
+						width="510"
+						height="18"
+						key="textField-32"/>
+					<box></box>
+					<textElement textAlignment="Center">
+						<font pdfFontName="Helvetica-Bold" size="12" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{DTYPE}.equals("JOINT")? "JOINT BORROWER INFORMATION" : "CO-MAKER INFORMATION"]]></textFieldExpression>
+				</textField>
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="315"  isSplitAllowed="true" >
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="10"
+						y="295"
+						width="470"
+						height="11"
+						key="textField-30"
+						positionType="Float"
+						isRemoveLineWhenBlank="true">
+							<printWhenExpression><![CDATA[$F{otheraccts}? true : false]]></printWhenExpression>
+						</reportElement>
+					<box>					<bottomPen lineWidth="0.0"/>
+</box>
+					<textElement markup="html">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["<b>Other Accounts:</b> "+$F{otheraccts}]]></textFieldExpression>
+				</textField>
+				<subreport  isUsingCache="true">
+					<reportElement
+						x="10"
+						y="270"
+						width="508"
+						height="22"
+						key="subreport-12"
+						positionType="Float"
+						isPrintRepeatedValues="false"
+						isRemoveLineWhenBlank="true">
+							<printWhenExpression><![CDATA[$F{checkingaccts}? true : false]]></printWhenExpression>
+						</reportElement>
+					<dataSourceExpression><![CDATA[$F{checkingaccts}]]></dataSourceExpression>
+					<subreportExpression  class="net.sf.jasperreports.engine.JasperReport"><![CDATA[$P{CHECKING_LIST}]]></subreportExpression>
+				</subreport>
+				<subreport  isUsingCache="true">
+					<reportElement
+						x="10"
+						y="245"
+						width="508"
+						height="22"
+						key="subreport-11"
+						positionType="Float"
+						isPrintRepeatedValues="false"
+						isRemoveLineWhenBlank="true">
+							<printWhenExpression><![CDATA[$F{savingaccts}? true : false]]></printWhenExpression>
+						</reportElement>
+					<dataSourceExpression><![CDATA[$F{savingaccts}]]></dataSourceExpression>
+					<subreportExpression  class="net.sf.jasperreports.engine.JasperReport"><![CDATA[$P{SAVING_LIST}]]></subreportExpression>
+				</subreport>
+				<subreport  isUsingCache="true">
+					<reportElement
+						x="10"
+						y="220"
+						width="508"
+						height="22"
+						key="subreport-9"
+						positionType="Float"
+						isPrintRepeatedValues="false"
+						isRemoveLineWhenBlank="true">
+							<printWhenExpression><![CDATA[$F{otherincomes}? true : false]]></printWhenExpression>
+						</reportElement>
+					<dataSourceExpression><![CDATA[$F{otherincomes}]]></dataSourceExpression>
+					<subreportExpression  class="net.sf.jasperreports.engine.JasperReport"><![CDATA[$P{OTHER_INCOME}]]></subreportExpression>
+				</subreport>
+				<subreport  isUsingCache="true">
+					<reportElement
+						x="10"
+						y="195"
+						width="508"
+						height="22"
+						key="subreport-17"
+						positionType="Float"
+						isPrintRepeatedValues="false"
+						isRemoveLineWhenBlank="true">
+							<printWhenExpression><![CDATA[$F{siblings}? true : false]]></printWhenExpression>
+						</reportElement>
+					<subreportParameter  name="SIBLING_EMPLOYMENT">
+						<subreportParameterExpression><![CDATA[$P{SIBLING_EMPLOYMENT}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="SIBLING_OTHER_INCOME">
+						<subreportParameterExpression><![CDATA[$P{SIBLING_OTHER_INCOME}]]></subreportParameterExpression>
+					</subreportParameter>
+					<dataSourceExpression><![CDATA[$F{siblings}]]></dataSourceExpression>
+					<subreportExpression  class="net.sf.jasperreports.engine.JasperReport"><![CDATA[$P{SIBLING_LIST}]]></subreportExpression>
+				</subreport>
+				<subreport  isUsingCache="true">
+					<reportElement
+						x="10"
+						y="170"
+						width="508"
+						height="22"
+						key="subreport-4"
+						positionType="Float"
+						isPrintRepeatedValues="false"
+						isRemoveLineWhenBlank="true">
+							<printWhenExpression><![CDATA[$F{educations}? true : false]]></printWhenExpression>
+						</reportElement>
+					<dataSourceExpression><![CDATA[$F{educations}]]></dataSourceExpression>
+					<subreportExpression  class="net.sf.jasperreports.engine.JasperReport"><![CDATA[$P{EDUCATIONAL_BACKGROUND}]]></subreportExpression>
+				</subreport>
+				<subreport  isUsingCache="true">
+					<reportElement
+						x="10"
+						y="144"
+						width="508"
+						height="22"
+						key="subreport-16"
+						positionType="Float"
+						isPrintRepeatedValues="false"
+						isRemoveLineWhenBlank="true">
+							<printWhenExpression><![CDATA[$F{children}? true : false]]></printWhenExpression>
+						</reportElement>
+					<subreportParameter  name="CHILDREN_EMPLOYMENT">
+						<subreportParameterExpression><![CDATA[$P{CHILDREN_EMPLOYMENT}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="CHILDREN_OTHER_INCOME">
+						<subreportParameterExpression><![CDATA[$P{CHILDREN_OTHER_INCOME}]]></subreportParameterExpression>
+					</subreportParameter>
+					<dataSourceExpression><![CDATA[$F{children}]]></dataSourceExpression>
+					<subreportExpression  class="net.sf.jasperreports.engine.JasperReport"><![CDATA[$P{CHILDREN_LIST}]]></subreportExpression>
+				</subreport>
+				<subreport  isUsingCache="true">
+					<reportElement
+						x="10"
+						y="119"
+						width="508"
+						height="22"
+						key="subreport-14"
+						positionType="Float"
+						isPrintRepeatedValues="false"
+						isRemoveLineWhenBlank="true">
+							<printWhenExpression><![CDATA[$F{parents}? true : false]]></printWhenExpression>
+						</reportElement>
+					<subreportParameter  name="DTYPE">
+						<subreportParameterExpression><![CDATA[$P{DTYPE}]]></subreportParameterExpression>
+					</subreportParameter>
+					<dataSourceExpression><![CDATA[$F{parents}]]></dataSourceExpression>
+					<subreportExpression  class="net.sf.jasperreports.engine.JasperReport"><![CDATA[$P{PARENT}]]></subreportExpression>
+				</subreport>
+				<subreport  isUsingCache="true">
+					<reportElement
+						x="10"
+						y="94"
+						width="508"
+						height="22"
+						key="subreport-13"
+						positionType="Float"
+						isPrintRepeatedValues="false"
+						isRemoveLineWhenBlank="true">
+							<printWhenExpression><![CDATA[$F{employments}? true : false]]></printWhenExpression>
+						</reportElement>
+					<dataSourceExpression><![CDATA[$F{employments}]]></dataSourceExpression>
+					<subreportExpression  class="net.sf.jasperreports.engine.JasperReport"><![CDATA[$P{EMPLOYMENT}]]></subreportExpression>
+				</subreport>
+				<subreport  isUsingCache="true">
+					<reportElement
+						x="10"
+						y="69"
+						width="508"
+						height="22"
+						key="subreport-7"
+						positionType="Float"
+						isPrintRepeatedValues="false"
+						isRemoveLineWhenBlank="true">
+							<printWhenExpression><![CDATA[$F{spouse}.source?.objid? true : false]]></printWhenExpression>
+						</reportElement>
+					<subreportParameter  name="RESIDENCY">
+						<subreportParameterExpression><![CDATA[$P{RESIDENCY}]]></subreportParameterExpression>
+					</subreportParameter>
+					<dataSourceExpression><![CDATA[$F{spouse}]]></dataSourceExpression>
+					<subreportExpression  class="net.sf.jasperreports.engine.JasperReport"><![CDATA[$P{SPOUSE}]]></subreportExpression>
+				</subreport>
+				<staticText>
+					<reportElement
+						x="3"
+						y="6"
+						width="49"
+						height="11"
+						key="staticText-1"/>
+					<box></box>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Name :]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="52"
+						y="6"
+						width="478"
+						height="11"
+						key="textField-1"/>
+					<box>					<bottomPen lineWidth="0.5"/>
+</box>
+					<textElement>
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{name}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						x="4"
+						y="18"
+						width="49"
+						height="11"
+						key="staticText-2"/>
+					<box></box>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Age :]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="52"
+						y="18"
+						width="30"
+						height="11"
+						key="textField-2"/>
+					<box>					<bottomPen lineWidth="0.5"/>
+</box>
+					<textElement>
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.Integer"><![CDATA[$F{age}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						x="4"
+						y="29"
+						width="49"
+						height="11"
+						key="staticText-3"/>
+					<box></box>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Address :]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="52"
+						y="29"
+						width="478"
+						height="11"
+						key="textField-3"/>
+					<box>					<bottomPen lineWidth="0.5"/>
+</box>
+					<textElement>
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{address}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						x="81"
+						y="18"
+						width="49"
+						height="11"
+						key="staticText-4"/>
+					<box></box>
+					<textElement>
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[yrs. old]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="130"
+						y="17"
+						width="55"
+						height="11"
+						key="staticText-19"/>
+					<box></box>
+					<textElement>
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[Civil Status :]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="184"
+						y="17"
+						width="346"
+						height="11"
+						key="textField-14"/>
+					<box>					<bottomPen lineWidth="0.5"/>
+</box>
+					<textElement>
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{civilstatus}]]></textFieldExpression>
+				</textField>
+				<subreport  isUsingCache="true">
+					<reportElement
+						x="10"
+						y="44"
+						width="508"
+						height="22"
+						key="subreport-15"
+						positionType="Float"
+						isPrintRepeatedValues="false"
+						isRemoveLineWhenBlank="true"/>
+					<subreportParameter  name="RESIDENCY">
+						<subreportParameterExpression><![CDATA[$F{residency}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="OCCUPANCY">
+						<subreportParameterExpression><![CDATA[$F{occupancy}]]></subreportParameterExpression>
+					</subreportParameter>
+					<dataSourceExpression><![CDATA[$F{residency}]]></dataSourceExpression>
+					<subreportExpression  class="net.sf.jasperreports.engine.JasperReport"><![CDATA[$P{RESIDENCY}]]></subreportExpression>
+				</subreport>
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</summary>
+</jasperReport>

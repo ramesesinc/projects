@@ -1,0 +1,14 @@
+<workunit>
+    <invokers>
+        <invoker type="sibling:create" action="create" caption="Sibling Information" 
+            target="popup" resizable="false"/>
+        <invoker type="sibling:open" action="open" caption="Sibling Information" 
+            target="popup" resizable="false"/>
+    </invokers>
+    
+    <code class="com.rameses.clfc.loan.SiblingsFormController"/>
+    
+    <pages>
+        <page template="com.rameses.clfc.loan.SiblingsFormPage"/>
+    </pages>
+</workunit>

@@ -1,0 +1,24 @@
+<workunit extends="wtemplates/ListController.xml">
+    <invokers>
+        <!--
+        <invoker folderid="/explorer/master" caption="Payment Schedules" role="DATAMGMT_AUTHOR"/>
+        -->
+        <invoker folderid="/home/online/master" caption="Payment Schedules" role="DATAMGMT_AUTHOR"/> 
+    </invokers>
+    
+    <code>
+    import com.rameses.rcp.common.*;
+    import com.rameses.rcp.annotations.*;
+    import com.rameses.osiris2.client.*;
+    import com.rameses.osiris2.common.*;
+
+    class PaymentScheduleListController extends ListController 
+    {
+        String serviceName = 'PaymentScheduleService';
+        String entityName  = 'paymentschedule';
+        
+        //Map createPermission = [domain:'DATAMGMT', role:'DATAMGMT_AUTHOR', permission:'product_type.create']; 
+        //Map readPermission = [domain:'DATAMGMT', role:'DATAMGMT_AUTHOR', permission:'product_type.read']; 
+    } 
+    </code>    
+</workunit>

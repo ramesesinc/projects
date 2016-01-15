@@ -1,0 +1,18 @@
+<workunit>
+    <invokers>
+        <invoker type="formActions" caption="Refresh" action="refresh" icon="images/toolbars/refresh.png" immediate="true"
+            mnemonic="r" shortcut="ctrl R" />
+        
+        <invoker type="navActions" action="moveFirstPage" icon="images/navbar/first.png" immediate="true"/>
+        <invoker type="navActions" caption="" action="moveBackPage" icon="images/navbar/previous.png" immediate="true"/>
+        <invoker type="navActions" caption="" action="moveNextPage" icon="images/navbar/next.png" immediate="true"/>
+        <invoker type="navActions" caption="" action="moveLastPage" icon="images/navbar/last.png" immediate="true"/>
+    </invokers>
+    
+    <code class='com.rameses.clfc.billinggroup.BillingGroupListController' />
+    
+    <pages>
+        <page template='com.rameses.osiris2.themes.ListPage'  />
+        <page name="queryform" template="com.rameses.osiris2.themes.DefaultQueryFormPanel"/>
+    </pages>
+</workunit>

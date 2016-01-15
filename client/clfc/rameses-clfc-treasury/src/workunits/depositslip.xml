@@ -1,0 +1,32 @@
+<workunit>
+    <invokers>
+        <invoker type="depositslip:create" action="create" caption="Deposit Slip" 
+            role="ACCT_ASSISTANT" permission="depositslip.create" 
+            target="popup" resizable="false"/> 
+            
+        <invoker type="depositslip:open" action="open" caption="Deposit Slip" 
+            target="popup" resizable="false"/> 
+            
+        <invoker type='formActions' action='approveDocument' caption='Approve' mnemonic='a' shortcut='ctrl a'
+            visibleWhen="#{mode=='read' &amp;&amp; entity?.state=='DRAFT'}" />
+        <!--
+        <invoker type="formActions" action="safekeep" caption="Safe Keep" mnemonic="f" shortcut="ctrl F"
+            visibleWhen="#{entity.state=='APPROVED'}" role="BRANCH_MANAGER" />
+            
+        <invoker type="formActions" action="deposit" caption="Deposit" mnemonic="d" shortcut="ctrl D"
+            visibleWhen="#{entity.state=='APPROVED'}" />
+            
+        <invoker type="formActions" action="checkout" caption="Check Out" mnemonic="o" shortcut="ctrl O"
+            visibleWhen="#{entity.state=='CLOSED' &amp;&amp; entity.reftype=='SAFE_KEEP'}" />
+            
+        <invoker type="formActions" action="reinstate" caption="Re-instate" mnemonic="r" shortcut="ctrl R"
+            visibleWhen="#{allowReinstate}" />
+        -->
+    </invokers>
+    
+    <code class="com.rameses.clfc.treasury.depositslip.DepositSlipController" />
+    
+    <pages>
+        <page template="com.rameses.clfc.treasury.depositslip.DepositSlipPage" />
+    </pages>
+</workunit>

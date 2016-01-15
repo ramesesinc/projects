@@ -1,0 +1,6 @@
+"addSibling" [borrowerContext.mode != 'edit']{
+    enabled: false; 
+}
+"addSibling" [borrowerContext.mode == 'edit']{
+    enabled: true; 
+}

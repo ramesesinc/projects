@@ -1,0 +1,25 @@
+<workunit>
+    <invokers>
+        <invoker type="currencytype:create" action="create" caption="Currency Type" 
+            role="DATAMGMT_AUTHOR" permission="currencytype.create" 
+            target="popup" resizable="false"/> 
+            
+        <invoker type="currencytype:open" action="open" caption="Currency Type" 
+            role="DATAMGMT_AUTHOR" permission="currencytype.read" 
+            target="popup" resizable="false"/>  
+            
+        <invoker type="formActions" caption="Activate" action="activate" 
+            immediate="true" visibleWhen="#{mode=='read' &amp;&amp; entity.txnstate!='ACTIVATED'}"/>  
+        <invoker type="formActions" caption="Deactivate" action="deactivate" 
+            immediate="true" visibleWhen="#{mode=='read' &amp;&amp; entity.txnstate=='ACTIVATED'}"/>   
+            
+        <invoker type="formActions" caption="View Logs" action="viewLogs" 
+            immediate="true" visibleWhen="#{mode=='read'}"/> 
+    </invokers>     
+    
+    <code class="com.rameses.clfc.currency.CurrencyTypeController"/>
+
+    <pages>
+        <page name="com.rameses.clfc.currency.CurrencyTypePage"/>
+    </pages>
+</workunit>

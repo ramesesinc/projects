@@ -1,0 +1,24 @@
+<workunit extends="wtemplates/LookupController.xml">
+    <invokers>
+        <invoker type="cbswithencashment:lookup" caption="Lookup CBS" target="popup" />
+    </invokers>
+    
+    <code>
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        
+        class CBSWithEncashmentLookupController extends LookupController
+        {
+            String serviceName = "CollectionCashbreakdownLookupService";
+            
+            def state;
+            List fetchList(Map params) {
+                if (state) params.state = state;
+                params.includeencashment = true;
+                return super.fetchList(params);
+            }
+        }
+    </code>
+</workunit>

@@ -1,0 +1,12 @@
+<workunit>
+    <invokers>
+        <invoker type='ledgeramnesty:type:plugin' caption='SMC' value='SMC' index='1' />
+        <invoker type='ledgeramnesty:smc' action='init' />
+    </invokers>
+    
+    <code class='com.rameses.clfc.treasury.ledger.amnesty.smc.AmnestySMCController' />
+    
+    <pages>
+        <page template='com.rameses.clfc.treasury.ledger.amnesty.smc.AmnestySMCPage' />
+    </pages>
+</workunit>

@@ -1,0 +1,25 @@
+<workunit extends="wtemplates/ListController.xml">
+    <invokers>
+        <!--
+        <invoker folderid="/explorer/master" caption="Deposit Types" role="DATAMGMT_AUTHOR" permission="deposittype.read"/> 
+        -->
+        <invoker folderid="/home/online/master" caption="Deposit Types" role="DATAMGMT_AUTHOR" permission="deposittype.read"/> 
+    </invokers>
+    
+    <code>
+    import com.rameses.rcp.common.*;
+    import com.rameses.rcp.annotations.*;
+    import com.rameses.osiris2.client.*;
+    import com.rameses.osiris2.common.*;
+
+    class DepositTypeListController extends ListController 
+    {
+        String serviceName = 'DepositTypeService';
+        String entityName  = 'deposittype';
+        
+        Map createPermission = [domain:'DATAMGMT', role:'DATAMGMT_AUTHOR', permission:'deposittype.create']; 
+        Map readPermission = [domain:'DATAMGMT', role:'DATAMGMT_AUTHOR', permission:'deposittype.read']; 
+    } 
+    </code>
+    
+</workunit>

@@ -1,0 +1,9 @@
+"entity.*" [1 == 1] {
+    enabled: false;
+}
+"collector|route|entity.txndate" [mode == 'create'] {
+    enabled: true;
+}
+"collector|route|entity.txndate" [mode != 'create'] {
+    enabled: false;
+}

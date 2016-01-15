@@ -1,0 +1,11 @@
+<workunit extends='wtemplates/ListController.xml'>
+    <invokers>
+        <invoker type="overage:list" caption="Overages" target="popup" width="800" height="600" />
+    </invokers>
+    
+    <code class='com.rameses.clfc.collection.overage.CollectionOverageListController' />
+    
+    <pages>
+        <page template="com.rameses.clfc.ui.ListPage" />
+    </pages>
+</workunit>

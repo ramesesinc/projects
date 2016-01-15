@@ -1,0 +1,23 @@
+<workunit extends="wtemplates/ListController.xml">
+    
+    <invokers>
+        <invoker folderid="/explorer/txn/afterfla" caption="For Release" 
+            role="CAO_OFFICER" index="1"/>
+   </invokers>
+   
+    <code>
+    import com.rameses.rcp.common.*;
+    import com.rameses.rcp.annotations.*;
+    import com.rameses.osiris2.client.*;
+    import com.rameses.osiris2.common.*;      
+    
+    class ForReleaseLoanSearchService extends ListController 
+    {
+        String serviceName = 'LoanAppSearchService';
+        String entityName = 'loanapp';
+        String tag = 'FOR_RELEASE';
+        
+        boolean allowCreate = false;
+    }     
+    </code>     
+</workunit>

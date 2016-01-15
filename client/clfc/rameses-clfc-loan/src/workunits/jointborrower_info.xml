@@ -1,0 +1,15 @@
+<workunit>
+    <invokers>
+        <invoker type="jointborrower:create" action="create" target="popup" 
+            caption="Joint Borrower Information" width="700" height="625"/>
+            
+        <invoker type="jointborrower:open" action="open" target="popup" 
+            caption="Joint Borrower Information" width="700" height="625"/>
+    </invokers>
+    
+    <code class="com.rameses.clfc.loan.jointborrower.JointBorrowerController"/>
+    
+    <pages>
+        <page template="com.rameses.clfc.loan.jointborrower.JointBorrowerPage"/>
+    </pages>
+</workunit>

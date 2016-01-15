@@ -1,0 +1,17 @@
+<workunit>
+    <invokers>
+        <!--
+        <invoker type="loanapp-borrower:plugin" caption=" Checking Account  " index="-91"/>
+        -->
+        <invoker type="loanapp-borrowerindividual:plugin" caption=" Checking Account  " index="-91"/>
+        <invoker type="loanapp-borrowerjuridical:plugin" caption=" Checking Account  " index="-91"/>
+        <invoker type="loanapp-jointborrower:plugin" caption=" Checking Account  " index="-91"/>
+        <invoker type="loanapp-comaker:plugin" caption=" Checking Account  " index="-91"/>
+    </invokers>
+    
+    <code class="com.rameses.clfc.borrower.BorrowerCheckingAccountController"/>
+    
+    <pages>
+        <page template="com.rameses.clfc.borrower.BorrowerCheckingAccountPage"/>
+    </pages>
+</workunit>

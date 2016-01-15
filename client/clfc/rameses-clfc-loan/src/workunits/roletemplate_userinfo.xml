@@ -1,0 +1,11 @@
+<workunit>
+    <invokers>
+        <invoker type="userinfo:option" action="init" caption="Role Templates" index="3" />
+    </invokers>
+    
+    <code class="com.rameses.clfc.admin.roletemplate.RoleTemplateUserInfoController" />
+    
+    <pages>
+        <page template="com.rameses.clfc.admin.roletemplate.RoleTemplateUserInfoPage" />
+    </pages>
+</workunit>

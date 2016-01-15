@@ -1,0 +1,6 @@
+"entity.iswaive.*" [mode != 'read'] {
+    enabled: true;
+}
+"entity.iswaive.*" [mode == 'read'] {
+    enabled: false;
+}

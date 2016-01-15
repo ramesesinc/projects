@@ -1,0 +1,23 @@
+<workunit extends="wtemplates/ListController.xml">
+    
+    <invokers>
+        <invoker folderid="/explorer/txn/loan" caption="For CRECOM" 
+            role="CAO_OFFICER,CRECOM_OFFICER" index="3"/>
+   </invokers>
+   
+    <code>
+    import com.rameses.rcp.common.*;
+    import com.rameses.rcp.annotations.*;
+    import com.rameses.osiris2.client.*;
+    import com.rameses.osiris2.common.*;      
+    
+    class ForCRECOMLoanSearchService extends ListController 
+    {
+        String serviceName = 'LoanAppSearchService';
+        String entityName = 'loanapp';
+        String tag = 'FOR_CRECOM';
+        
+        boolean allowCreate = false;
+    }     
+    </code>    
+</workunit>

@@ -1,0 +1,22 @@
+<workunit>
+    <invokers>
+        <!--
+        <invoker folderid="/explorer/txn/loan" action="init" caption="CBS Checking" 
+            role="ACCT_ASSISTANT,ASST_BRANCH_MANAGER,BRANCH_MANAGER" />
+        -->
+        <invoker folderid="/home/online/collection" action="init" caption="CBS Checking" 
+            role="ACCT_ASSISTANT,ASST_BRANCH_MANAGER,BRANCH_MANAGER" />
+        
+        <invoker type="formActions" action="close" caption="Close" mnemonic="c" shortcut="ctrl W" visibleWhen="#{mode == 'init'}" immediate="true"/>
+        <invoker type="formActions" action="next" caption="Next" mnemonic="n" shortcut="ctrl N" visibleWhen="#{mode == 'init'}" />
+        <invoker type="formActions" action="back" caption="Back" mnemonic="b" shortcut="ctrl B" visibleWhen="#{mode == 'main'}" />
+    </invokers>
+    
+    <code class="com.rameses.clfc.cashbreakdownchecking.CashBreakdownCheckingController" />
+    
+    <pages>
+        <page template="com.rameses.clfc.cashbreakdownchecking.CashBreakdownCheckingInitPage" />
+        <page template="com.rameses.clfc.cashbreakdownchecking.CashBreakdownConsolidatedPage" name="consolidated" />
+        <page template="com.rameses.clfc.cashbreakdownchecking.CashBreakdownPercollectorPage" name="percollector" />
+    </pages>
+</workunit>

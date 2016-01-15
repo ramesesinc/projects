@@ -1,0 +1,6 @@
+<workunit extends="wtemplates/ServiceLookupController.xml" serviceName="LoanSignatoryLookupService"> 
+    <invokers>
+        <invoker type="loan-signatory:lookup" caption="Signatories" target="popup"/> 
+    </invokers>
+        
+</workunit>

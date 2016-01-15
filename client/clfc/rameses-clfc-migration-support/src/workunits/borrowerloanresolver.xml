@@ -1,0 +1,11 @@
+<workunit>
+    <invokers>
+        <invoker type="borrowerloansresolver:open" action="open" caption="Borrower Loans Resolver" target="popup" />
+    </invokers>
+    
+    <code class="com.rameses.clfc.migrationsupport.borrowerloansresolver.BorrowerLoansResolverController" />
+    
+    <pages>
+        <page template="com.rameses.clfc.migrationsupport.borrowerloansresolver.BorrowerLoansResolverPage" />
+    </pages>
+</workunit>

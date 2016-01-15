@@ -1,0 +1,14 @@
+<workunit>
+    <invokers>
+        <invoker type="encashment:formActions" action="preview" caption="Print Encashment Breakdown" 
+            visibleWhen="#{entity.txnstate == 'APPROVED'}" />
+            
+        <invoker type="formActions" action="close" caption="Close" immediate="true" />
+    </invokers>
+    
+    <code class="com.rameses.clfc.report.encashment.EncashmentBreakdownController" />
+    
+    <pages>
+        <page template="com.rameses.osiris2.common.ui.ReportPreviewPage" />
+    </pages>
+</workunit>

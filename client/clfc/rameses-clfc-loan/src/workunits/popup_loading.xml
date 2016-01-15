@@ -1,0 +1,36 @@
+<workunit>
+    <invokers>
+        <invoker type="popup:loading" undecorated="true" target="popup" />
+    </invokers>
+    
+    <code>
+        import com.rameses.platform.interfaces.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.rcp.framework.ClientContext;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.util.*;
+        
+        public class LoadingPage 
+        {
+            @Binding(onactivate='onbinding_activate') 
+            def binding;
+            
+            def handler;
+        
+            void closeForm() { 
+                binding?.fireNavigation('_close');
+            }
+        
+            void onbinding_activate() {
+                EventQueue.invokeLater({ 
+                    if (handler) handler(); 
+                }); 
+            } 
+        }
+    </code>
+    
+    <pages>
+        <page template="com.rameses.clfc.ui.LoadingPage" />
+    </pages>
+</workunit>

@@ -1,0 +1,52 @@
+<workunit>
+    <invokers>
+        <invoker type="amnestypluginpreview" action="preview" caption="Amnesty Ledger" target="popup" 
+            width="1000" height="400" />
+        
+        <invoker type="formActions" action="close" caption="Close" mnemonic="c" shortcut="ctrl C" immediate="true" />
+        
+        <invoker type="navActions2" caption="" action="moveFirstPage" icon="images/navbar/first.png" immediate="true"/>
+        <invoker type="navActions2" caption="" action="moveBackPage" icon="images/navbar/previous.png" immediate="true"/>
+        <invoker type="navActions2" caption="" action="moveNextPage" icon="images/navbar/next.png" immediate="true"/>
+        <invoker type="navActions2" caption="" action="moveLastPage" icon="images/navbar/last.png" immediate="true"/>
+        
+    </invokers>
+    
+    <code class='com.rameses.clfc.treasury.ledger.amnesty.preview.LedgerAmnestyPreviewController' />
+    
+    <pages>
+        <page template='com.rameses.clfc.treasury.ledger.amnesty.preview.LedgerAmnestyPreviewPage' />
+    </pages>
+    
+    <!--
+    <code>
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        import com.rameses.clfc.ledger.fixpreview.LoanLedgerFixPreviewController
+        
+        class AmnestyPreviewController extends LoanLedgerFixPreviewController
+        {
+            void preview() {
+                if (entity) {
+                    if (!entity.rows) entity.rows = 30;
+                    data.lastpageindex = service.getPageIndex([objid: data.objid, rows: entity.rows]);
+                }
+                refresh();
+            }
+        
+            def close() {
+                return "_close";
+            }
+            
+        }
+    </code>
+    
+    
+    <pages>
+        
+        <page template="com.rameses.clfc.ledger.fixpreview.LoanLedgerFixPreviewPage" />
+    </pages>
+    -->
+</workunit>

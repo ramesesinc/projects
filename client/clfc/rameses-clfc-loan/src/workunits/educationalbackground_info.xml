@@ -1,0 +1,26 @@
+<workunit>
+    <invokers>
+        <invoker type="education:create" action="create" caption="Educational Background" 
+            target="popup" resizable="false"/>
+        <invoker type="education:open" caption="Educational Background" 
+            target="popup" resizable="false"/>
+    </invokers>
+    <code>
+        <![CDATA[
+            import com.rameses.rcp.common.*;
+            import com.rameses.rcp.annotations.*;
+            import com.rameses.osiris2.client.*;
+            import java.rmi.server.UID;
+            
+            class EducationalBackgroundFormController extends com.rameses.clfc.loan.controller.PopupMasterController
+            {
+                def createEntity() {
+                    return [ objid:'EDUC'+new UID() ]
+                }
+            }
+        ]]>
+    </code>
+    <pages>
+        <page template="com.rameses.clfc.loan.EducationalBackgroundFormPage"/>
+    </pages>
+</workunit>

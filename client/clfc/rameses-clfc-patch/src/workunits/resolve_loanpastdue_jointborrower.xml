@@ -1,0 +1,15 @@
+<workunit>
+    <invokers>
+        <invoker folderid="/home/online/support" action="init" caption="Resolve Loan Past Due JB" 
+            role="ADMIN_SUPPORT" />
+        
+        <invoker type='formActions' action='close' caption='Close' mnemonic='c' shortcut='ctrl c' immediate='true' />
+        <invoker type='formActions' action='resolve' caption='Resolve' mnemonic='r' shortcut='ctrl r' />
+    </invokers>
+    
+    <code class='com.rameses.clfc.patch.branch.pastdue.resolvejoint.ResolveLoanPastDueJointBorrowerController' />
+    
+    <pages>
+        <page template='com.rameses.clfc.patch.branch.pastdue.resolvejoint.ResolveLoanPastDueJointBorrowerPage' />
+    </pages>
+</workunit>

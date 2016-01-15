@@ -1,0 +1,54 @@
+<workunit>
+    <invokers>
+        <!--
+        <invoker type="fix:option" caption="Fix Option" action="init"/>
+        -->
+    </invokers>     
+    
+    <code class="com.rameses.clfc.treasury.amnesty.FixOptionController" />
+    
+    <!--
+    <code>
+
+        class FixOptionController {
+            def entity;
+            def data;
+
+            void init(){
+                if(!entity){
+                    entity = [:];
+                }
+                entity.offers = [];
+            }
+
+            def addBtn(){
+                return Inv.lookupOpener('offer:create',[handler: func]);
+            }
+        
+            def func =  { o->
+                entity.offers.add(o);
+                println entity.offers;
+                tableHandler.reload();
+            }
+        
+            void removeBtn() {
+                if(data){
+                    entity.offers.remove(data);
+                }
+            }
+        
+            def tableHandler = [
+               fetchList:{o ->
+                    return entity.offers;
+               }
+            ] as BasicListModel;
+        
+        }
+    </code>
+    -->
+    
+
+    <pages>
+        <page template="com.rameses.clfc.treasury.amnesty.FixOptionPage" />
+    </pages>
+</workunit>

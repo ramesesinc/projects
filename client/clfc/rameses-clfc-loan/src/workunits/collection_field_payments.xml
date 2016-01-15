@@ -1,0 +1,51 @@
+<workunit>
+    <invokers>
+        <!--
+        <invoker folderid="/explorer/txn/loan" action="init" caption="Field Collections" role="FIELD_COLLECTOR, ACCT_OFFICER"/>
+        -->
+        <invoker folderid="/home/online/collection" action="init" caption="Field Collections" role="FIELD_COLLECTOR, ACCT_OFFICER"/>
+        
+        <invoker type='formActions' action='close' caption='Close' mnemonic='c' shorcut='ctrl w' immediate='true'
+            visibleWhen="#{action=='init'}" />
+        <invoker type='formActions' action='next' caption='Next' mnemonic='n' shortcut='ctrl n'
+            visibleWhen="#{action=='init'}" />
+        
+        <invoker type='formActions' action='back' caption='Back' mnemonic='b' shortcut='ctrl b'
+            visibleWhen="#{action=='view'}" />
+        <invoker type='formActions' action='remit' caption='Remit' mnemonic='r' shortcut='ctrl r' 
+            visibleWhen="#{action=='view' &amp;&amp; entity?.issendback==true}" 
+            role='FIELD_COLLECTOR' />
+        <invoker type='formActions' action='capturePayment' caption='Capture Payment' mnemonic='p' shortcut='ctrl p' 
+            visibleWhen="#{action=='view' &amp;&amp; entity?.issendback==true}" 
+            role='FIELD_COLLECTOR' />
+        <invoker type='formActions' action='voidPayment' caption='Void Payment' mnemonic='v' shortcut='ctrl v' 
+            visibleWhen="#{action=='view' &amp;&amp; entity?.issendback==true &amp;&amp; selectedPayment!=null}"
+            role='FIELD_COLLECTOR' />
+        <invoker type='formActions' action='viewSendBack' caption='View Send Back' 
+            visibleWhen="#{action=='view' &amp;&amp; entity?.issendback==true}" />
+        
+        <!--
+        <invoker type="formActions" action="close" caption="Close" mnemonic="c" shortcut="ctrl W" immediate="true" visibleWhen="#{page == 'init'}"/>
+        <invoker type="formActions" action="next" caption="Next" mnemonic="n" shortcut="ctrl N" visibleWhen="#{page == 'init'}"/>
+        
+        <invoker type="formActions" action="back" caption="Back" mnemonic="b" shortcut="ctrl B" visibleWhen="#{page == 'main'}"/>
+        <invoker type="formActions" action="remit" caption="Remit" mnemonic="r" shortcut="ctrl R" visibleWhen="#{allowRemit}" />
+        <invoker type="formActions" action="capturePayment" caption="Capture Payment" mnemonic="p" shortcut="ctrl P" 
+            visibleWhen="#{allowCapturePayment}" />
+        <invoker type="formActions" action="viewSendBack" caption="View Send Back" mnemonic="v" shortcut="ctrl V" 
+            visibleWhen="#{allowViewSendBack}" />
+        -->    
+        
+        <!--    
+        <invoker type="formActions" action="viewAnnotations" caption="View Annotations" mnemonic="v" shortcut="ctrl V" 
+            visibleWhen="#{allowViewAnnotations}" />
+        -->
+    </invokers>
+    
+    <code class="com.rameses.clfc.loan.fieldcollections.FieldCollectionsController"/>
+    
+    <pages>
+        <page template="com.rameses.clfc.loan.fieldcollections.FieldCollectionsInitPage"/>
+        <page template="com.rameses.clfc.loan.fieldcollection.FieldCollectionLoanPage" name="main"/>
+    </pages>
+</workunit>

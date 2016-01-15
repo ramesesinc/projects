@@ -1,0 +1,25 @@
+<workunit>
+    <invokers>
+        <invoker type="cashbreakdown:formActions" action="init" caption="Print Cash Breakdown"
+            visibleWhen="#{entity.cbsno != null}" />
+        
+        <invoker type="formActions" action="close" caption="Close" mnemonic="c" shortcut="ctrl W" immediate="true" />
+        <!--
+        <invoker type="formActions" action="close" caption="Close" mnemonic="c" shortcut="ctrl W" immediate="true" 
+            visibleWhen="#{page == 'default'}" />
+        <invoker type="formActions" action="back" caption="Back" mnemonic="b" shortcut="ctrl B" immediate="true"
+            visibleWhen="#{page != 'default'}" />
+        <invoker type="formActions" action="preview" caption="Next" mnemonic="n" shortcut="ctrl N" 
+            visibleWhen="#{page == 'default'}" />
+        -->
+    </invokers>
+    
+    <code class="com.rameses.clfc.report.cashbreakdown.CashBreakdownReportController" />
+    
+    <pages> 
+        <!--       
+        <page template="com.rameses.clfc.report.cashbreakdown.CashBreakdownReportInitPage" />
+        -->
+        <page template="com.rameses.osiris2.common.ui.ReportPreviewPage"/>
+    </pages>
+</workunit>

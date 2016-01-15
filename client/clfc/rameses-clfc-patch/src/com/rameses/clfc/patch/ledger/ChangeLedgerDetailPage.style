@@ -1,0 +1,6 @@
+"data.overpaymentamount" [paymentmethod?.value == 'over'] {
+    enabled: true;
+}
+"data.overpaymentamount" [paymentmethod?.value != 'over'] {
+    enabled: false;
+}

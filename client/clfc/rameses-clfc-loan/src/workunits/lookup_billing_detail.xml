@@ -1,0 +1,26 @@
+<workunit extends="wtemplates/LookupController.xml">
+    <invokers>
+        <invoker type="billing-detail:lookup" caption="Lookup Billing" target="popup" />
+    </invokers>
+    
+    <code>
+        <![CDATA[
+            import com.rameses.rcp.common.*;
+            import com.rameses.rcp.annotations.*;
+            import com.rameses.osiris2.client.*;
+            import com.rameses.osiris2.common.*;
+            
+            class LedgerBillingDetailLookupController extends LookupController
+            {
+                String serviceName = "LoanLedgerBillingDetailLookupService"
+                String entityName = "billingdetail";
+                
+                def itemid;
+                List fetchList(Map params) {
+                    params.itemid = itemid;
+                    return super.fetchList(params);
+                }
+            }
+        ]]>
+    </code>
+</workunit>

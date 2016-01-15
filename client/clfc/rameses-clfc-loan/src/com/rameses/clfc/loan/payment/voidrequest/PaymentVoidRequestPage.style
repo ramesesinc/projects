@@ -1,0 +1,23 @@
+"entity.reason" [mode != 'read'] {
+    enabled: true;
+}
+
+"entity.reason" [mode == 'read'] {
+    enabled: false;
+}
+
+"entity.posterremarks" [entity.state == 'FOR_APPROVAL'] {
+    enabled: true;
+}
+
+"entity.posterremarks" [entity.state != 'FOR_APPROVAL'] {
+    enabled: false;
+}
+
+"entity.posterremarks" [ entity.state == 'DRAFT' ] {
+    visible: false;
+}
+
+"entity.posterremarks" [ entity.state != 'DRAFT' ] {
+    visible: true;
+}

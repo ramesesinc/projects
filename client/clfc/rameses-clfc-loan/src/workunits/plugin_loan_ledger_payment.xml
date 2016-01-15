@@ -1,0 +1,15 @@
+<workunit>
+    <invokers>
+        <invoker type="loanledger-plugin" action="open" caption="Payments" index="0" />
+        
+        <invoker type="formActions" action="refresh" caption="Refresh" />
+        <invoker type="formActions" action="rebuild" caption="Rebuild Collection Sheet"
+            visibleWhen="#{entity.updatetype == 0}" />
+    </invokers>
+    
+    <code class="com.rameses.clfc.ledger.payment.LoanLedgerPaymentController" />
+    
+    <pages>
+        <page template="com.rameses.clfc.ledger.payment.LoanLedgerPaymentPage" />
+    </pages>
+</workunit>

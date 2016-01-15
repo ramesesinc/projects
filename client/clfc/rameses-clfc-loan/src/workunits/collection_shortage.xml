@@ -1,0 +1,81 @@
+<workunit>
+    <invokers>
+        <invoker type="shortage:create" action="init" caption="Shortage" target="popup" resizable="false" />
+        <invoker type="shortage:open" action="open" caption="Shortage" target="popup" resizable="false" />
+        
+        <invoker type='formActions' action='close' caption='Close' mnemonic='c' shortcut='ctrl w'
+            visibleWhen="#{mode=='read' &amp;&amp; cbsmode=='read'}" immediate='true' />
+        <invoker type='formActions' action='cancel' caption='Cancel' mnemonic='c' shortcut='ctrl c'
+            visibleWhen="#{mode!='read'}" immediate='true' />
+        
+        <invoker type='formActions' action='edit' caption='Edit' mnemonic='e' shortcut='ctrl e'
+            visibleWhen="#{mode=='read' &amp;&amp; entity?.state=='DRAFT'}" />
+        <invoker type='formActions' action='save' caption='Save' mnemonic='s' shortcut='ctrl s'
+            visibleWhen="#{mode!='read' &amp;&amp; entity?.state=='DRAFT'}" />
+            
+        <invoker type='formActions' action='submitForNoting' caption='Submit for Noting' mnemonic='s' shortcut='ctrl s'
+            visibleWhen="#{mode=='read' &amp;&amp; entity?.state=='DRAFT'}" />
+            
+        <invoker type='formActions' action='noted' caption='Noted' mnemonic='n' shortcut='ctrl n'
+            visibleWhen="#{mode=='read' &amp;&amp; entity?.state=='FOR_NOTING'}" />
+        
+        <invoker type='formActions' action='cancelCbs' caption='Cancel' mnemonic='c' shortcut='ctrl c'
+            visibleWhen="#{cbsmode!='read'}" immediate='true' />
+        <invoker type='formActions' action='editCbs' caption='Edit' mnemonic='e' shortcut='ctrl e' 
+            visibleWhen="#{cbsmode=='read' &amp;&amp; entity?.alloweditcbs==true}" />
+        <invoker type='formActions' action='saveCbs' caption='Save' mnemonic='s' shortcut='ctrl s'
+            visibleWhen="#{cbsmode!='read'}" />
+            
+        <invoker type='formActions' action='voidShortage' caption='Void' mnemonic='v' shortcut='ctrl v'
+            visibleWhen="#{mode=='read' &amp;&amp; cbsmode=='read' &amp;&amp; entity?.allowvoid==true}" 
+            role='CASHIER' />
+            
+        <invoker type='formActions' action='viewVoidRemarks' caption='View Void Remarks' mnemonic='v' shortcut='ctrl v'
+            visibleWhen="#{mode=='read' &amp;&amp; cbsmode=='read' &amp;&amp; entity?.voidremarks!=null}" />
+        
+    </invokers>
+    
+    <code class="com.rameses.clfc.collection.shortage.CollectionShortageController" />
+    
+    <pages>
+        <page template="com.rameses.clfc.collection.shortage.CollectionShortagePage" />
+    </pages>
+</workunit>
+
+
+<!--
+<invoker type="formActions" action="close" caption="Close" mnemonic="c" shortcut="ctrl C" immediate="true" 
+    visibleWhen="#{mode != 'edit'}" />
+<invoker type="formActions" action="cancel" caption="Cancel" mnemonic="c" shortcut="ctrl C" immediate="true"
+    visibleWhen="#{mode == 'edit' &amp;&amp; entity?.state == 'DRAFT'}" />
+<invoker type="formActions" action="edit" caption="Edit" mnemonic="e" shortcut="ctrl E" 
+    visibleWhen="#{mode == 'read' &amp;&amp; entity?.state == 'DRAFT'}" />
+<invoker type="formActions" action="save" caption="Save" mnemonic="s" shortcut="ctrl S" 
+    visibleWhen="#{mode != 'read' &amp;&amp; entity?.state == 'DRAFT'}" />
+
+<invoker type="formActions" action="submitForSignatory" caption="Submit" mnemonic="s" shortcut="ctrl S"
+    visibleWhen="#{mode=='read' &amp;&amp; entity.state=='DRAFT'}" />
+
+<invoker type="formActions" action="noted" caption="Noted" mnemonic="n" shortcut="ctrl N"
+    visibleWhen="#{mode=='read' &amp;&amp; entity.state=='FOR_SIGNATORY'}" />
+ -->
+<!--
+<invoker type="formActions" action="cancelCashbreakdown" caption="Cancel" mnemonic="c" shortcut="ctrl C" immediate="true"
+    visibleWhen="#{allowCancel}" /> 
+<invoker type="formActions" action="saveCashbreakdown" caption="Save" mnemonic="s" shortcut="ctrl S" 
+    visibleWhen="#{allowSave}" />
+<invoker type="formActions" action="editCashbreakdown" caption="Edit" mnemonic="e" shortcut="ctrl E"
+    visibleWhen="#{allowEdit}" />
+
+<invoker type="formActions" action="submitCbsForVerification" caption="Submit CBS For Verification" menonic="s" shortcut="ctrl S"
+    visibleWhen="#{allowCbsForVerification}" />
+
+<invoker type="formActions" action="viewCbsSendback" caption="View CBS Send Back" 
+    visibleWhen="#{mode=='read' &amp;&amp; entity.cashbreakdown?.state=='SEND_BACK'}" />
+
+<invoker type="formActions" action="voidShortage" caption="Void" menmonic="v" shortcut="ctrl V"
+    visibleWhen="#{mode=='read' &amp;&amp; entity.allowVoid==true}" role="CASHIER" />
+
+<invoker type="formActions" action="viewVoidRemarks" caption="View void remarks" mnemonic="v" shortcut="ctrl V"
+    visibleWhen="#{mode=='read' &amp;&amp; entity.voidremarks!=null}" />
+-->

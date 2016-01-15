@@ -1,0 +1,6 @@
+"entity.(amount|particulars)" [mode=='read'] {
+    enabled: false;
+}
+"entity.(amount|particulars)" [mode!='read'] {
+    enabled: true;
+}

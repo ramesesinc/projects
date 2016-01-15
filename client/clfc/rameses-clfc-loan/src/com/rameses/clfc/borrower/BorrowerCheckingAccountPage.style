@@ -1,0 +1,6 @@
+"addCheckingAcct" [borrowerContext.mode != 'edit']{
+    enabled: false; 
+}
+"addCheckingAcct" [borrowerContext.mode == 'edit']{
+    enabled: true;
+}

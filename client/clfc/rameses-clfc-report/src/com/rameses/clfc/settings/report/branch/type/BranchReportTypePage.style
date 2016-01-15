@@ -1,0 +1,3 @@
+"entity.code" [mode=='edit'] {
+    enabled: false;
+}

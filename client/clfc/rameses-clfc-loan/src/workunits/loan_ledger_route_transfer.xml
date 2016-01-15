@@ -1,0 +1,14 @@
+<workunit>
+    <invokers>
+        <invoker folderid="/menu/txn/ledger" action="init" caption="Route Transfer" role="ACCT_ASSISTANT" />
+        
+        <invoker type="formActions" action="close" caption="Close" immediate="true" />
+        <invoker type="formActions" action="transfer" caption="Transfer" mnemonic="t" shortcut="ctrl T" />
+    </invokers>
+    
+    <code class="com.rameses.clfc.ledger.transfer.LedgerRouteTransferController" />
+    
+    <pages>
+        <page template="com.rameses.clfc.ledger.transfer.LedgerRouteTransferPage" />
+    </pages>
+</workunit>

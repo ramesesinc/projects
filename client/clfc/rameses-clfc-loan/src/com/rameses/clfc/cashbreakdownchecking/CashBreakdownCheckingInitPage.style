@@ -1,0 +1,7 @@
+"collector|route" [ type == 'percollector' ] {
+    enabled: true;
+}
+
+"collector|route" [ type != 'percollector' ] {
+    enabled: false;
+}

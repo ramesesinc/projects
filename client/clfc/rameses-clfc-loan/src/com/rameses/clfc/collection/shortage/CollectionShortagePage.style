@@ -1,0 +1,23 @@
+"entity.amount" [mode != 'read' && (entity == null || entity.state == 'DRAFT')] {
+    enabled: true;
+}
+"entity.remarks" [mode != 'read' && (entity == null || entity.state == 'DRAFT')] {
+    enabled: true;
+    readonly: false;
+}
+"entity.amount" [mode == 'read' || entity.state != 'DRAFT'] {
+    enabled: false;
+}
+"entity.remarks" [mode == 'read' || entity.state != 'DRAFT'] {
+    enabled: true;
+    readonly: true;
+}
+"entity.cbsno" [cbsmode!='read'] {
+    enabled: true;
+}
+"entity.cbsno" [cbsmode=='read'] {
+    enabled: false;
+}
+"entity.remarks" [1==1] {
+    enabled: true;
+}

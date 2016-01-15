@@ -1,0 +1,37 @@
+<workunit>
+    <invokers>
+        <invoker type="loanapp:open" caption="Loan Application" action="open" target="window"/>
+        
+        <invoker type="formActions" caption="Edit" action="edit" visibleWhen="#{isForEdit}" immediate="true"/>
+        <invoker type="formActions" caption="Cancel" action="cancel" visibleWhen="#{isEditable}" immediate="true"/>
+        <invoker type="formActions" caption="Save" action="save" visibleWhen="#{isEditable}"/> 
+        
+        <invoker type="formActions" caption="Submit" action="submitForInspection" 
+            icon="images/toolbars/approve.png" visibleWhen="#{isPending}" 
+            tooltip="Submit For Inspection"/>
+        
+        <invoker type="formActions" caption="Submit" action="submitForCrecom" 
+            role="CI_OFFICER" icon="images/toolbars/approve.png" 
+            tooltip="Submit For CRECOM" visibleWhen="#{isForInspection}"/>
+                    
+        <invoker type="formActions" caption="Submit" action="submitForApproval" 
+            role="CRECOM_OFFICER" icon="images/toolbars/approve.png" 
+            tooltip="Submit For Approval" visibleWhen="#{isForCrecom}"/>
+                    
+        <invoker type="formActions" caption="Return For CI" action="returnForCi" 
+            role="CRECOM_OFFICER" icon="images/toolbars/approve.png" 
+            tooltip="Return For CI" visibleWhen="#{isForCrecom}"/>
+                    
+        <invoker type="formActions" caption="Back Out" action="backOut" tooltip="Back Out"
+                    icon="images/toolbars/cancel.png" visibleWhen="#{isApproved}"/>
+        <invoker type="formActions" caption="Submit" action="submitForRelease" tooltip="Submit For Release"
+                    icon="images/toolbars/approve.png" visibleWhen="#{isApproved}"/>
+    </invokers>
+    
+    <code class="com.rameses.clfc.loan.controller.LoanAppController"/>
+    
+    <pages>
+        <page template="com.rameses.clfc.loan.LoanAppPage"/> 
+        <page template="com.rameses.clfc.loan.LoanAppBlankPage" name="blankpage"/> 
+    </pages>
+</workunit>

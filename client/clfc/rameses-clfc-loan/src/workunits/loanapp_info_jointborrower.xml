@@ -1,0 +1,15 @@
+<workunit>
+    <invokers>
+        <!--
+        <invoker type="loanapp-jointborrower:open" caption="Joint Borrower" action="init" key="jointborrower"/>
+        -->
+        <invoker type="loanapp-jointborrowerindividual:open" caption="Joint Borrower" action="init" key="jointborrower"/>
+        <invoker type="loanapp-jointborrowerjuridical:open" caption="Joint Borrower" action="init" key="jointborrower"/>
+    </invokers>
+    
+    <code class="com.rameses.clfc.loan.jointborrower.LoanAppJointBorrowerController"/>
+    
+    <pages>
+        <page template="com.rameses.clfc.loan.jointborrower.LoanAppJointBorrowerPage"/>
+    </pages>
+</workunit>

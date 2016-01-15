@@ -1,0 +1,6 @@
+"bank" [mode != 'read'] {
+    enabled: true;
+}
+"bank" [mode == 'read'] {
+    enabled: false;
+}

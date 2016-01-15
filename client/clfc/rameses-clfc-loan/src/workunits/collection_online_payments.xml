@@ -1,0 +1,20 @@
+<workunit>
+    <invokers>
+        <!--
+        <invoker folderid="/explorer/txn/loan" action="init" caption="Online Collections" role="ACCT_OFFICER"/>
+        -->
+        <invoker folderid="/home/online/collection" action="init" caption="Online Collections" role="ACCT_OFFICER" />
+        
+        <invoker type="formActions" action="close" caption="Close" mnemonic="c" shortcut="ctrl W" immediate="true" visibleWhen="#{page == 'init'}"/>
+        <invoker type="formActions" action="next" caption="Next" mnemonic="n" shortcut="ctrl N" visibleWhen="#{page == 'init'}"/>
+        
+        <invoker type="formActions" action="back" caption="Back" mnemonic="b" shortcut="ctrl B" visibleWhen="#{page == 'main'}"/>
+    </invokers>
+    
+    <code class="com.rameses.clfc.loan.onlinecollections.OnlineCollectionsController"/>
+    
+    <pages>
+        <page template="com.rameses.clfc.loan.onlinecollections.OnlineCollectionsInitPage"/>
+        <page template="com.rameses.clfc.loan.onlinecollections.OnlineCollectionsPage" name="main"/>
+    </pages>
+</workunit>

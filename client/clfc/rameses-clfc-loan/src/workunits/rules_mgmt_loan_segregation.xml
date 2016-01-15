@@ -1,0 +1,7 @@
+<workunit extends="wtemplates/RuleMgmtController.xml" serviceName="RuleMgmtService" tag="loansegregation">
+    <invokers>
+        <invoker folderid="/explorer/rulemgmt/clfc" caption="Loan Segregation Rules" action="init" index="3" 
+            role="RULE_AUTHOR" />
+        
+    </invokers>
+</workunit>

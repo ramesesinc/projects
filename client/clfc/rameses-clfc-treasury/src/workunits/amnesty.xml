@@ -1,0 +1,109 @@
+<workunit>
+    <invokers>
+        <invoker type="amnesty:create" action="create" caption="Amnesty" target="popup" />
+        <invoker type="amnesty:open" action="open" caption="Amnesty" target="popup" />
+        
+        <invoker type="formActions" action="close" caption="Close" mnemonic="c" shortcut="ctrl C"
+            visibleWhen="#{mode=='read'}" immediate="true" />
+        
+        <invoker type="formActions" action="cancel" caption="Cancel" mnemonic="c" shortcut="ctrl C"
+            visibleWhen="#{mode!='read'}" immediate="true" />        
+        
+        <invoker type="formActions" action="create" caption="New" mnemonic="n" shortcut="ctrl N"
+            visibleWhen="#{mode=='read' &amp;&amp; entity.txnmode=='ONLINE'}" immediate="true" role="CAO_OFFICER" domain="LOAN" />
+        
+        <invoker type="formActions" action="edit" caption="Edit" mnemonic="e" shortcut="ctrl E"
+            visibleWhen="#{mode=='read' &amp;&amp; entity.txnmode=='ONLINE' &amp;&amp;  entity.txnstate=='DRAFT'}" domain="LOAN" 
+            role="CAO_OFFICER" />
+        
+        <invoker type="formActions" action="save" caption="Save" mnemonic="s" shortcut="ctrl S" 
+            visibleWhen="#{mode!='read'}" />
+        
+        <invoker type="formActions" action="submitForApproval" caption="Submit for Approval" mnemonic="s"
+            shortcut="ctrl S" visibleWhen="#{mode=='read' &amp;&amp; entity.txnmode=='ONLINE' &amp;&amp;  entity.txnstate=='DRAFT'}"
+            role="CAO_OFFICER" domain="LOAN" />
+        
+        <invoker type="formActions" action="approve" caption="Approve" mnemonic="a" shortcut="ctrl A"
+            visibleWhen="#{mode=='read' &amp;&amp; entity.txnmode=='ONLINE' &amp;&amp; entity.txnstate=='FOR_APPROVAL'}" domain="LOAN" 
+            role="FLA_OFFICER" />
+        <invoker type="formActions" action="disapprove" caption="Disapprove" mnemonic="d" shortcut="ctrl D"
+            visibleWhen="#{mode=='read' &amp;&amp; entity.txnmode=='ONLINE' &amp;&amp; entity.txnstate=='FOR_APPROVAL'}" domain="LOAN" 
+            role="FLA_OFFICER" />
+            
+        <invoker type="formActions" action="avail" caption="Avail" mnemonic="a" shortcut="ctrl A"
+            visibleWhen="#{allowAvail}" role="CAO_OFFICER,LEGAL_OFFICER" domain="LOAN"/>
+        <invoker type="formActions" action="reject" caption="Reject" mnemonic="r" shortcut="ctrl R"
+            visibleWhen="#{allowReject}" role="CAO_OFFICER,LEGAL_OFFICER" domain="LOAN" />
+        
+        <invoker type="formActions" action="submitForVerification" caption="Submit for Verification" mnemonic="s" shortcut="ctrl s"
+            visibleWhen="#{allowSubmitForVerification}" domain="LOAN" role="CAO_OFFICER" />
+        <invoker type="formActions" action="viewSendBack" caption="View Send Back" mnemonic="v" shortcut="ctrl v"
+            visibleWhen="#{mode=='read' &amp;&amp; entity.txnmode=='ONLINE' &amp;&amp; entity.sendbackremarks!=null}" />
+            
+        <invoker type="formActions" action="verify" caption="Verify" mnemonic="v" shortcut="ctrl v"
+            visibleWhen="#{mode=='read' &amp;&amp; entity.txnmode=='ONLINE' &amp;&amp; entity.txnstate=='FOR_VERIFICATION'}" role="APPROVER" />
+        <invoker type="formActions" action="sendBack" caption="Send Back" mnemonic="s" shortcut="ctrl s"
+            visibleWhen="#{mode=='read' &amp;&amp; entity.txnmode=='ONLINE' &amp;&amp; entity.txnstate=='FOR_VERIFICATION'}" role="APPROVER" />
+
+        <!--
+        <invoker type="formActions" action="close" caption="Close" mnemonic="c" shortcut="ctrl C"
+            visibleWhen="#{allowClose}" immediate="true" />
+        <invoker type="formActions" action="create" caption="New" mnemonic="n" shortcut="ctrl N"
+            visibleWhen="#{mode=='read' &amp;&amp; forApprovalMode=='read' &amp;&amp; approvalMode=='read'}" immediate="true" 
+            domain="LOAN" role="CAO_OFFICER,LEGAL_OFFICER" />
+        
+        <invoker type="formActions" action="cancel" caption="Cancel" mnemonic="c" shortcut="ctrl C"
+            visibleWhen="#{mode=='edit' &amp;&amp; entity.txnstate=='DRAFT'}" immediate="true" />
+        <invoker type="formActions" action="edit" caption="Edit" mnemonic="e" shortcut="ctrl E"
+            visibleWhen="#{mode=='read' &amp;&amp; entity.txnstate=='DRAFT'}" immediate="true" 
+            domain="LOAN" role="CAO_OFFICER,LEGAL_OFFICER" />
+        <invoker type="formActions" action="save" caption="Save" mnemonic="s" shortcut="ctrl S"
+            visibleWhen="#{mode!='read' &amp;&amp; entity.txnstate=='DRAFT'}" />
+            
+        <invoker type="formActions" action="submitForApproval" caption="Submit For Approval" mnemonic="s" shortcut="ctrl S" 
+            visibleWhen="#{mode == 'read' &amp;&amp; entity.txnstate == 'DRAFT'}"
+            domain="LOAN" role="CAO_OFFICER,LEGAL_OFFICER" />
+        
+        <invoker type="formActions" action="cancelForApproval" caption="Cancel" mnemonic="c" shortcut="ctrl C"
+            visibleWhen="#{forApprovalMode=='edit' &amp;&amp; entity.txnstate=='FOR_APPROVAL'}" immediate="true" />
+        <invoker type="formActions" action="editForApproval" caption="Edit" mnemonic="e" shortcut="ctrl E"
+            visibleWhen="#{forApprovalMode=='read' &amp;&amp; entity.txnstate=='FOR_APPROVAL'}" immediate="true"
+            role="FLA_OFFICER" />
+        <invoker type="formActions" action="saveForApproval" caption="Save" mnemonic="s" shortcut="ctrl S"
+            visibleWhen="#{forApprovalMode!='read' &amp;&amp; entity.txnstate=='FOR_APPROVAL'}" />
+                
+        <invoker type="formActions" action="approveDocument" caption="Approve" mnemonic="a" shortcut="ctrl A"
+            visibleWhen="#{forApprovalMode=='read' &amp;&amp; entity.txnstate == 'FOR_APPROVAL'}" 
+            role="FLA_OFFICER"/>
+        <invoker type="formActions" action="disapprove" caption="Disapprove" mnemonic="d" shortcut="ctrl D"
+            visibleWhen="#{forApprovalMode=='read' &amp;&amp; entity.txnstate == 'FOR_APPROVAL'}" 
+            role="FLA_OFFICER"/>
+            
+        <invoker type="formActions" action="cancelApproval" caption="Cancel" mnemonic="c" shortcut="ctrl C"
+            visibleWhen="#{approvalMode=='edit' &amp;&amp; entity.txnstate=='APPROVED'}" immediate="true" />
+        <invoker type="formActions" action="editApproval" caption="Edit" mnemonic="e" shortcut="ctrl E"
+            visibleWhen="#{approvalMode=='read' &amp;&amp; entity.txnstate=='APPROVED' &amp;&amp; entity.txntype==null &amp;&amp; entity.amnestyoption=='FIX'}" 
+            immediate="true" domain="LOAN" role="CAO_OFFICER,LEGAL_OFFICER" />
+        <invoker type="formActions" action="saveApproval" caption="Save" mnemonic="s" shortcut="ctrl S"
+            visibleWhen="#{approvalMode!='read' &amp;&amp; entity.txnstate=='APPROVED'}" />
+            
+        <invoker type="formActions" action="cancelAmend" caption="Cancel" mnemonic="c" shortcut="ctrl C"
+            visibleWhen="#{allowAmend==true}" />
+        <invoker type="formActions" action="saveAmend" caption="Save" mnemonic="s" shortcut="ctrl S"
+            visibleWhen="#{allowAmend==true}" />
+            
+        <invoker type="formActions" action="amend" caption="Amend" mnemonic="n" shortcut="ctrl N"
+            visibleWhen="#{allowForAmend}" domain="LOAN" role="CAO_OFFICER,LEGAL_OFFICER" />
+        <invoker type="formActions" action="avail" caption="Avail" mnemonic="a" shortcut="ctrl A"
+            visibleWhen="#{allowAvail}" domain="LOAN" role="CAO_OFFICER,LEGAL_OFFICER" />
+        <invoker type="formActions" action="reject" caption="Reject" mnemonic="r" shortcut="ctrl R"
+            visibleWhen="#{allowReject}" domain="LOAN" role="CAO_OFFICER,LEGAL_OFFICER" />
+        -->
+    </invokers>
+    
+    <code class="com.rameses.clfc.treasury.amnesty.AmnestyController" />
+    
+    <pages>
+        <page template="com.rameses.clfc.treasury.amnesty.AmnestyPage" />
+    </pages>
+</workunit>

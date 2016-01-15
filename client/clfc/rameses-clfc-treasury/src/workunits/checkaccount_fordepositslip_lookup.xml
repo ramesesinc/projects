@@ -1,0 +1,22 @@
+<workunit extends='wtemplates/LookupController.xml'>
+    <invokers>
+        <invoker type='checkaccount:fordepositslip:lookup' caption='Lookup Check' target='popup' />
+    </invokers>
+    
+    <code>
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        
+        class CheckAccountForDepositSlipLookupController extends LookupController
+        {
+            String serviceName = 'CheckAccountLookupService';
+        
+            List fetchList(Map params) {
+                params.type = 'FOR_DEPOSITSLIP';
+                return super.fetchList(params);
+            }
+        }
+    </code>
+</workunit>

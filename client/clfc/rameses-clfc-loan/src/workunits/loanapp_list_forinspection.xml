@@ -1,0 +1,23 @@
+<workunit extends="wtemplates/ListController.xml">
+    
+    <invokers>
+        <invoker folderid="/explorer/txn/loan" caption="For Inspection" 
+            role="CAO_OFFICER,CI_OFFICER" index="2"/>
+   </invokers>
+   
+    <code>
+    import com.rameses.rcp.common.*;
+    import com.rameses.rcp.annotations.*;
+    import com.rameses.osiris2.client.*;
+    import com.rameses.osiris2.common.*;      
+    
+    class ForInspectionLoanSearchService extends ListController 
+    {
+        String serviceName = 'LoanAppSearchService';
+        String entityName = 'loanapp';
+        String tag = 'FOR_INSPECTION';
+        
+        boolean allowCreate = false;
+    }     
+    </code>   
+</workunit>

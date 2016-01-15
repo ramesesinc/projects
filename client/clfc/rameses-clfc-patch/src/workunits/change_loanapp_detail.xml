@@ -1,0 +1,25 @@
+<workunit>
+    <invokers>
+        <invoker folderid="/home/online/support" action="init" caption="Change Loan App Detail" 
+            role="ADMIN_SUPPORT" permission="changeloandetail"/>
+        <!--
+        <invoker type="home.action" action="init" caption="Change Loan App Detail" role="ADMIN_SUPPORT" permission="changeloandetail"/>
+        -->
+        
+        <invoker type="formActions" action="close" caption="Close" immediate="true" mnemonic="c"
+            shortcut="ctrl W" visibleWhen="#{mode == 'init'}" />
+        <invoker type="formActions" action="next" caption="Next" mnemonic="n" shortcut="ctrl N"
+            visibleWhen="#{mode == 'init'}" />
+        <invoker type="formActions" action="back" caption="Back" mnemonic="b" shortcut="ctrl B"
+            visibleWhen="#{mode != 'init'}" immediate="true" />
+        <invoker type="formActions" action="save" caption="Save" mnemonic="s" shortcut="ctrl S"
+            visibleWhen="#{mode != 'init'}" />
+    </invokers>
+    
+    <code class="com.rameses.clfc.patch.loan.detail.ChangeLoanAppDetailController" />
+    
+    <pages >
+        <page template="com.rameses.clfc.patch.loan.detail.ChangeLoanAppDetailInitPage" />
+        <page template="com.rameses.clfc.patch.loan.detail.ChangeLoanAppDetailPage" name="main" />
+    </pages>
+</workunit>

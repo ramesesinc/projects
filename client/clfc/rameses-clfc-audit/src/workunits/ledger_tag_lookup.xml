@@ -1,0 +1,5 @@
+<workunit extends="wtemplates/ServiceLookupController.xml" serviceName="CaptureLoanLedgerTagLedgerLookupService">
+    <invokers>
+        <invoker type='ledgertag:lookup' caption="Lookup Ledgers" target='popup' />
+    </invokers>
+</workunit>

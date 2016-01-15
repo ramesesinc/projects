@@ -1,0 +1,27 @@
+<workunit extends="wtemplates/LookupController.xml">
+    <invokers>
+        <invoker type="specialcollectionledger:lookup" caption="Ledger Lookup" target="popup" resizable="false"/>
+    </invokers>
+    
+    <code>
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        
+        class SpecialCollectionLedgerLookupController extends LookupController
+        {
+            String serviceName = "LoanSpecialCollectionLedgerLookupService";
+            String entityName = "specialcollectionledger";
+            
+            def collectorid;
+            def billdate;
+            
+            List fetchList(Map params) {
+                params.collectorid = collectorid;
+                params.billdate = billdate;
+                return super.fetchList(params);
+            }
+        }
+    </code>
+</workunit>

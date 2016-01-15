@@ -1,0 +1,9 @@
+"listModel:item.*" [ item.amtpaid > 0 ] {
+    background: #C0C0C0;
+}
+"entity.avgamt" [entity.paymentmethod == 'over'] {
+    enabled: true;
+}
+"entity.avgamt" [entity.paymentmethod != 'over'] {
+    enabled: false;
+}

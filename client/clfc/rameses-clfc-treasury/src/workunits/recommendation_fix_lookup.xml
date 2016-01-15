@@ -1,0 +1,24 @@
+<workunit extends='wtemplates/LookupController.xml'>
+    <invokers>
+        <invoker type='fixrecommendation:lookup' caption='Fix Recommendation Lookup' target='popup' />
+    </invokers>
+    
+    <code>
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        
+        class FixRecommendationLookupController extends LookupController
+        {
+            String serviceName = 'FixRecommendationLookupService'
+            
+            def amnestyid;
+            List fetchList(Map params) {
+                params.amnestyid = amnestyid;
+                return super.fetchList(params);
+            }
+        }
+    </code>
+    
+</workunit>

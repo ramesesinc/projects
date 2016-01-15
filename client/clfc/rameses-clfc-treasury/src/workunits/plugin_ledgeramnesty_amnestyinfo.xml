@@ -1,0 +1,11 @@
+<workunit>
+    <invokers>
+        <invoker type="ledgeramnesty-plugin" caption="Amnesty Information" action="init" index="1" />
+    </invokers>
+    
+    <code class="com.rameses.clfc.treasury.ledger.amnesty.AmnestyInformationController" />
+    
+    <pages>
+        <page template="com.rameses.clfc.treasury.ledger.amnesty.AmnestyInformationPage" />
+    </pages>
+</workunit>

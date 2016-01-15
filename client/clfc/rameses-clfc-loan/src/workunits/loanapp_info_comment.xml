@@ -1,0 +1,15 @@
+<workunit>
+    <invokers>
+        <!--
+        <invoker type="loanapp-comment:open" caption="Comments" key="comment"/>
+        -->
+        <invoker type="loanapp-commentindividual:open" caption="Comments" key="comment"/>
+        <invoker type="loanapp-commentjuridical:open" caption="Comments" key="comment"/>
+    </invokers>
+    
+    <code class="com.rameses.clfc.loan.controller.LoanAppCommentController"/>
+    
+    <pages>
+        <page template="com.rameses.clfc.loan.LoanAppCommentPage"/>
+    </pages>
+</workunit>

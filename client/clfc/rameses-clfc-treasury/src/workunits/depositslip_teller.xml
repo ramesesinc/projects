@@ -1,0 +1,14 @@
+<workunit>
+    <invokers>
+        <!--
+        <invoker type="deposit:create" caption="Deposit" action="create" target="popup" resizable="false" /> 
+        <invoker type="deposit:open" caption="Deposit" action="open" target="popup" resizable="false" /> 
+        -->
+    </invokers>
+    
+    <code class="com.rameses.clfc.treasury.depositslip.DepositTellerController"/> 
+    
+    <pages>
+        <page template="com.rameses.clfc.treasury.depositslip.DepositTellerPage"/> 
+    </pages>
+</workunit>

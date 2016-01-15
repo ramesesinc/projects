@@ -1,0 +1,65 @@
+<workunit>
+    <invokers>
+        <invoker folderid="/menu/txn/collection" action="init" caption="Post Online Collection" role="CASHIER" index="4"/>
+        <invoker type="quick_launcher" code="OCOL" action="init" caption="Post Online Collection" role="CASHIER"/> 
+        <invoker folderid="/home/online/collection" action="init" caption="Post Online Collection" role="CASHIER"/>
+        
+        <invoker type='formActions' action='close' caption='Close' mnemonic='c' shortcut='ctrl w'
+            visibleWhen="#{action=='init'}" immediate='true' />
+        <invoker type='formActions' action='next' caption='Next' mnemonic='n' shortcut='ctrl n'
+            visibleWhen="#{action=='init'}" />
+        
+        <invoker type='formActions' action='back' caption='Back' mnemonic='b' shortcut='ctrl b'
+            visibleWhen="#{action!='init' &amp;&amp; mode=='read'}" immediate='true' />
+        <invoker type='formActions' action='remit' caption='Remit' mnemonic='r' shortcut='ctrl r'
+            visibleWhen="#{action!='init' &amp;&amp; mode=='read' &amp;&amp; entity?.state=='DRAFT'}" />
+            
+        <invoker type='formActions' action='voidPayment' caption='Void Payment' mnemonic='v' shortcut='ctrl v'
+            visibleWhen="#{action!='init' &amp;&amp; mode=='read' &amp;&amp; entity?.state=='DRAFT' &amp;&amp; selectedPayment!=null}" 
+            immediate='true' />
+        
+        <invoker type='formActions' action='cancel' caption='Cancel' mnemonic='c' shortcut='ctrl c' 
+            visibleWhen="#{action!='init' &amp;&amp; mode!='read'}" immediate='true' />
+        <invoker type='formActions' action='save' caption='Save' mnemonic='s' shortcut='ctrl s'
+            visibleWhen="#{action!='init' &amp;&amp; mode!='read'}" />
+        
+        <invoker type='formActions' action='edit' caption='Edit' mnemonic='e' shortcut='ctrl e'
+            visibleWhen="#{action=='main' &amp;&amp; mode=='read' &amp;&amp; entity?.alloweditbreakdown==true}" />
+        <invoker type='formActions' action='post' caption='Post' mnemonic='p' shortcut='ctrl p'
+            visibleWhen="#{action=='main' &amp;&amp; mode=='read' &amp;&amp; totalbreakdown==totalcash &amp;&amp; entity?.allowpost==true}" />
+        
+        <invoker type='formActions' action='submitCbsForVerification' caption='Submit CBS For Verification' mnemonic='s' shortcut='ctrl s' 
+            visibleWhen="#{mode=='read' &amp;&amp; action=='main' &amp;&amp; entity?.cashbreakdown?.allowcbssubmitforverification==true}" />
+
+        <invoker type='formActions' action='viewCbsSendbackRemarks' caption='View CBS Send Back Remarks'
+            visibleWhen="#{mode=='read' &amp;&amp; action=='main' &amp;&amp; entity?.cashbreakdown?.sendbackremarks}" />
+        
+        
+        <!--
+        <invoker type="formActions" action="close" caption="Close" mnemonic="c" shortcut="ctrl W"
+            visibleWhen="#{mode == 'init'}" immediate="true"/>
+        <invoker type="formActions" action="next" caption="Next" mnemonic="n" shortcut="ctrl N"
+            visibleWhen="mode == 'init'"/>
+            
+        <invoker type="formActions" action="back" caption="Back" mnemonic="b" shortcut="ctrl B"
+            visibleWhen="#{mode != 'init' &amp;&amp; mode != 'edit'}" immediate="true" />
+        <invoker type="formActions" action="remit" caption="Remit" mnemonic="r" shortcut="ctrl R"
+            visibleWhen="#{mode != 'init' &amp;&amp; entity.state == 'DRAFT'}" />
+        <invoker type="formActions" action="cancel" caption="Cancel" mnemonic="c" shortcut="ctrl C"
+            visibleWhen="#{mode == 'edit'}" immediate="true" />
+        <invoker type="formActions" action="save" caption="Save" mnemonic="s" shortcut="ctrl S"
+            visibleWhen="#{isAllowSave}"/>
+        <invoker type="formActions" action="edit" caption="Edit" mnemonic="e" shortcut="ctrl E"
+            visibleWhen="#{isAllowEdit}"/>
+        <invoker type="formActions" action="post" caption="Post" mnemonic="p" shortcut="ctrl P"
+            visibleWhen="#{isAllowPost}"/>
+        -->
+    </invokers>
+    
+    <code class="com.rameses.clfc.loan.onlinecollection.OnlineCollectionController" />
+    
+    <pages>
+        <page template="com.rameses.clfc.loan.onlinecollection.OnlineCollectionInitPage"/>
+        <page template="com.rameses.clfc.loan.onlinecollection.OnlineCollectionPage" name="main"/>
+    </pages>
+</workunit>

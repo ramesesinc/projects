@@ -1,0 +1,12 @@
+<workunit>
+    <invokers>
+        <invoker type='ledgeramnesty:type:plugin' caption='Fix' value='FIX' index='0' />
+        <invoker type='ledgeramnesty:fix' action='init' />
+    </invokers>
+    
+    <code class='com.rameses.clfc.treasury.ledger.amnesty.fix.AmnestyFixController' />
+    
+    <pages>
+        <page template='com.rameses.clfc.treasury.ledger.amnesty.fix.AmnestyFixPage' />
+    </pages>
+</workunit>

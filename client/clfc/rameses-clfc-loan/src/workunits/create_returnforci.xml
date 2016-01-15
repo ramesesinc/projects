@@ -1,0 +1,32 @@
+<workunit>
+    <invokers>
+        <invoker type="application-returnforci:create" caption="Return For CI" target="popup"/>
+    </invokers>
+    <code>
+        <![CDATA[
+            import com.rameses.rcp.common.*;
+            import com.rameses.rcp.annotations.*;
+            import com.rameses.osiris2.client.*;
+            
+            class ReturnForCIFormController
+            {
+                def data = [:]
+                def handler
+                
+                def doOk() {
+                    if(MsgBox.confirm("You are about to send back this application. Do you want to continue?")) {
+                        if( handler ) handler(data)
+                        return "_close"
+                    }
+                }
+                
+                def doCancel() {
+                    return "_close"
+                }
+            }
+        ]]>
+    </code>
+    <pages>
+        <page template="com.rameses.clfc.loan.ReturnForCIFormPage"/>
+    </pages>
+</workunit>

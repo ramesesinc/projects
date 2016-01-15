@@ -1,0 +1,52 @@
+<workunits>
+    <invokers>
+        <invoker type="amnestycapture:create" action="create" caption="Capture Amnesty" target="popup" />
+        <invoker type="amnestycapture:open" action="open" caption="Capture Amnesty" target="popup" />
+        
+        <invoker type="formActions" action="close" caption="Close" mnemonic="c" shortcut="ctrl c" 
+            visibleWhen="#{mode=='read'}" immediate="true" /> 
+        <invoker type="formActions" action="cancel" caption="Cancel" mnemonic="c" shortcut="ctrl c"
+            visibleWhen="#{mode!='read'}" immediate="true" />
+        
+        <invoker type="formActions" action="create" caption="New" mnemonic="n" shortcut="ctrl n"
+            visibleWhen="#{mode=='read'}" immediate="true" role="AUDIT_AMNESTY" />
+        
+        <invoker type="formActions" action="edit" caption="Edit" mnemonic="e" shortcut="ctrl e"
+            visibleWhen="#{mode=='read' &amp;&amp; entity.txnstate=='DRAFT'}" role="AUDIT_AMNESTY" />
+            
+        <invoker type="formActions" action="save" caption="Save" mnemonic="s" shortcut="ctrl s" 
+            visibleWhen="#{mode!='read'}" />
+        
+        <invoker type="formActions" action="submitForApproval" caption="Submit for Approval" mnemonic="s" shorcut="ctrl s"
+            visibleWhen="#{mode=='read' &amp;&amp; entity.txnstate=='DRAFT'}" role="AUDIT_AMNESTY" />
+            
+        <invoker type="formActions" action="approve" caption="Approve" mnemonic="a" shorcut="ctrl a"
+            visibleWhen="#{mode=='read' &amp;&amp; entity.txnstate=='FOR_APPROVAL'}" role="AUDIT_APPROVER" />
+        <invoker type="formActions" action="disapprove" caption="Disapprove" mnemonic="d" shortcut="ctrl d"
+            visibleWhen="#{mode=='read' &amp;&amp; entity.txnstate=='FOR_APPROVAL'}" role="AUDIT_APPROVER" />
+            
+        <invoker type="formActions" action="avail" caption="Avail" mnemonic="a" shortcut="ctrl a"
+            visibleWhen="#{allowAvail}" role="AUDIT_AMNESTY" />
+        <invoker type="formActions" action="reject" caption="Reject" mnemonic="r" shorcut="ctrl r"
+            visibleWhen="#{allowReject}" role="AUDIT_AMNESTY" />
+            
+        <invoker type="formActions" action="submitForVerification" caption="Submit for Verification" mnemonic="s" shortcut="ctrl s"
+            visibleWhen="#{allowSubmitForVerification}" role="AUDIT_AMNESTY" />
+        <invoker type="formActions" action="viewSendBack" caption="View Send Back" mnemonic="v" shortcut="ctrl v"
+            visibleWhen="#{mode=='read' &amp;&amp; entity.sendbackremarks!=null}" />
+            
+        <invoker type="formActions" action="verify" caption="Verify" mnemonic="v" shortcut="ctrl v"
+            visibleWhen="#{mode=='read' &amp;&amp; entity.txnstate=='FOR_VERIFICATION'}" role="AUDIT_APPROVER" />
+        <invoker type="formActions" action="sendBack" caption="Send Back" mnemonic="s" shortcut="ctrl s"
+            visibleWhen="#{mode=='read' &amp;&amp; entity.txnstate=='FOR_VERIFICATION'}" role="AUDIT_APPROVER" />
+            
+        <invoker type="formActions" action="closeAmnesty" caption="Close Amnesty" mnemonic="a" shortcut="ctrl a" 
+            visibleWhen="#{entity.isactive==true}" role="AUDIT_AMNESTY" />
+    </invokers>
+    
+    <code class="com.rameses.clfc.audit.amnesty.capture.AmnestyCaptureController" />
+    
+    <pages>
+        <page template="com.rameses.clfc.audit.amnesty.capture.AmnestyPage" />
+    </pages>
+</workunits>

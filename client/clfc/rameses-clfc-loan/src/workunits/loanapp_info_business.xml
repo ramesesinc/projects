@@ -1,0 +1,14 @@
+<workunit>
+    <invokers>
+        <!--
+        <invoker type="loanapp-business:open" action="init" caption="Business" key="business"/>
+        -->
+        <invoker type="loanapp-businessindividual:open" action="init" caption="Business" key="business"/>
+    </invokers>
+    
+    <code class="com.rameses.clfc.loan.business.LoanAppBusinessController"/>
+    
+    <pages>
+        <page template="com.rameses.clfc.loan.business.LoanAppBusinessPage"/>
+    </pages>
+</workunit>

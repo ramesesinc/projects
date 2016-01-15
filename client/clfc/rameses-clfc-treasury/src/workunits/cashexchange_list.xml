@@ -1,0 +1,43 @@
+<workunit extends='wtemplates/ListController.xml'>
+    <invokers>
+        <invoker folderid='/home/online/treasury' caption='Cash Exchanges' 
+            role='ACCT_OFFICER,ASST_BRANCH_MANAGER,BRANCH_MANAGER' />
+    </invokers>
+    
+    <code>
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        
+        class CashExchangeListController extends ListController
+        {
+            @Service('CashExchangeService')
+            def svc;
+        
+            String serviceName = 'CashExchangeService';
+            String entityName = 'cashexchange';
+        
+            Map createPermission = [domain: 'TREASURY', role: 'CASHIER'];
+        
+            void beforeGetColumns(Map params) {
+                params.state = selectedOption?.state;
+            }
+        
+            def selectedOption;
+            def optionsModel = [
+                fetchList: { 
+                    return svc.getStates();; 
+                },
+                onselect: {o-> 
+                    query.state = selectedOption?.state; 
+                    reloadAll(); 
+                }
+            ] as ListPaneModel; 
+        }
+    </code>
+    
+    <pages>
+        <page template="com.rameses.clfc.ui.ListPage" />
+    </pages>
+</workunit>

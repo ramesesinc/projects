@@ -1,0 +1,11 @@
+<workunit extends="wtemplates/ListController.xml">
+    <invokers>
+        <invoker type="shortage:list" caption="Shortages" target="popup" width="800" height="600" />
+    </invokers>
+    
+    <code class='com.rameses.clfc.collection.shortage.CollectionShortageListController' />
+    
+    <pages>
+        <page template="com.rameses.clfc.ui.ListPage" />
+    </pages>
+</workunit>

@@ -1,0 +1,20 @@
+<workunits>
+    <invokers>
+        <invoker type="product_type:create" action="create" caption="Product Type" 
+            role="DATAMGMT_AUTHOR" permission="product_type.create" 
+            target="popup" resizable="false"/>
+            
+        <invoker type="product_type:open" action="open" caption="Product Type" 
+            role="DATAMGMT_AUTHOR" permission="product_type.read" 
+            target="popup" resizable="false"/>
+            
+        <invoker type="formActions" caption="View Logs" action="viewLogs" 
+            immediate="true" visibleWhen="#{mode=='read'}"/>            
+    </invokers>
+    
+     <code class="com.rameses.clfc.producttype.ProductTypeController"/>
+    
+    <pages>
+        <page template="com.rameses.clfc.producttype.ProductTypePage"/>
+    </pages>
+</workunits>

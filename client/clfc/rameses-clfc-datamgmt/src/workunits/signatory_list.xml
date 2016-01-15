@@ -1,0 +1,27 @@
+<workunit extends="wtemplates/ListController.xml">
+    <invokers>
+        <!--
+        <invoker folderid="/explorer/master" caption="Signatories" 
+            role="DATAMGMT_AUTHOR" permission="signatory.read" />
+            
+        <invoker type="home.action" caption="Signatories" 
+            role="DATAMGMT_AUTHOR" permission="signatory.read"/> 
+        -->
+    </invokers>
+    
+    <code>
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        
+        class LoanSignatoryListController extends ListController
+        {
+            String serviceName = "LoanSignatoryService";
+            String entityName = "signatory";
+            
+            Map createPermission = [domain:'DATAMGMT', role:'DATAMGMT_AUTHOR', permission:'signatory.read']; 
+            Map readPermission = [domain:'DATAMGMT', role:'DATAMGMT_AUTHOR', permission:'signatory.read'];
+        }
+    </code>
+</workunit>

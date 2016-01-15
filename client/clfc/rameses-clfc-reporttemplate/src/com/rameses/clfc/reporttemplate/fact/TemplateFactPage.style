@@ -1,0 +1,7 @@
+"entity.*|addField|removeField|editField"[mode=='read']{
+    enabled : false;
+}
+
+"entity.*|addField|removeField|editField"[mode!='read']{
+    enabled : true;
+}

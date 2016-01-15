@@ -1,0 +1,15 @@
+<workunit>
+    <invokers>
+        <!--
+        <invoker type="loanapp-recommendation:open" caption="Recommendations" action="init" key="recommendation"/>
+        -->
+        <invoker type="loanapp-recommendationindividual:open" caption="Recommendations" action="init" key="recommendation"/>
+        <invoker type="loanapp-recommendationjuridical:open" caption="Recommendations" action="init" key="recommendation"/>
+    </invokers>
+    
+    <code class="com.rameses.clfc.loan.recommendation.LoanAppRecommendationController"/>
+    
+    <pages>
+        <page template="com.rameses.clfc.loan.recommendation.LoanAppRecommendationPage"/>
+    </pages>
+</workunit>

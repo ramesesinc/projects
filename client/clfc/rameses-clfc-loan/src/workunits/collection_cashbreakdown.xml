@@ -1,0 +1,33 @@
+<workunit>
+    <invokers>
+        <invoker type="cashbreakdown:create" action="create" caption="Cash Breakdown Sheet"
+            target="popup" resizable="false" />
+        <invoker type="cashbreakdown:open" action="open" caption="Cash Breakdown Sheet" 
+            target="popup" resizable="false" />
+            
+        <invoker type="formActions" action="verify" caption="Verify" mnemonic="v" shortcut="ctrl V"
+            visibleWhen="#{mode=='read' &amp;&amp; entity?.allowverify==true}" role="ACCT_ASSISTANT" />
+        <invoker type="formActions" action="sendBack" caption="Send Back" mnemonic="s" shortcut="ctrl S"
+            visibleWhen="#{mode=='read' &amp;&amp; entity?.allowverify==true}" role="ACCT_ASSISTANT" />
+        <!--
+        <invoker type="formActions" action="reconcile" caption="Reconcile" mnemonic="r" shortcut="ctrl R" 
+            visibleWhen="#{entity.state == 'FOR_VERIFICATION'}" role="ACCT_ASSISTANT"  />
+        -->
+        <!--
+        <invoker type="formActions" action="submitForVerification" caption="Submit For Verification" mnemonic="v" shortcut="ctrl V"
+            visibleWhen="#{mode == 'read' &amp;&amp; entity.state == 'DRAFT' &amp;&amp; entity.allowEdit == true}" 
+                 role="ACCT_ASSISTANT"  />
+        --> 
+        <invoker type='formActions' action='viewSendBackRemarks' caption='View Send Back Remarks'
+            visibleWhen="#{mode=='read' &amp;&amp; entity?.hassendback==true}" />
+        
+        <invoker type="formActions" caption="View Logs" action="viewLogs" 
+            immediate="true" visibleWhen="#{mode=='read'}"/> 
+    </invokers>
+    
+    <code class="com.rameses.clfc.collection.cashbreakdown.CashBreakdownController" />
+    
+    <pages>
+        <page template="com.rameses.clfc.collection.cashbreakdown.CashBreakdownPage" />
+    </pages>
+</workunit>

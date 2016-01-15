@@ -1,0 +1,15 @@
+<workunit>
+    <invokers>
+        <invoker type="checkout:formActions" action="preview" caption="Preview" mnemonic="v"
+            shortcut="ctrl V" visibleWhen="#{mode == 'read'}" 
+            target="popup"/>
+            
+        <invoker type="formActions" action="close" caption="Close" immediate="true" mnemonic="c" shortcut="ctrl C" />
+    </invokers>
+    
+    <code class="com.rameses.clfc.report.vaultcheckout.VaultCheckoutController" />
+    
+    <pages>        
+        <page template="com.rameses.osiris2.common.ui.ReportPreviewPage" />
+    </pages>
+</workunit>

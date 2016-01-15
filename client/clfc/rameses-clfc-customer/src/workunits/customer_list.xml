@@ -1,0 +1,20 @@
+<workunit extends='wtemplates/ListController.xml'>
+    <invokers>
+        <invoker folderid='/home/online/master' caption='Customers' domain='LOAN' 
+                 role='ACCT_OFFICER' />
+        
+        <invoker type="navActions" caption="" action="moveFirstPage" icon="images/navbar/first.png" immediate="true"/>
+        <invoker type="navActions" caption="" action="moveBackPage" icon="images/navbar/previous.png" immediate="true"/>
+        <invoker type="navActions" caption="" action="moveNextPage" icon="images/navbar/next.png" immediate="true"/>
+        <invoker type="navActions" caption="" action="moveLastPage" icon="images/navbar/last.png" immediate="true"/>
+        
+        <invoker type='formActions' action='close' caption='Close' mnemonic='c' shortcut='ctrl w'
+            immediate='true' />
+        <invoker type='formActions' action='create' caption='New' mnemonic='n' shortcut='ctrl n'
+            immediate='true' role='ENCODER' domain='ENTITY' />
+        <invoker type='formActions' action='open' caption='Open' mnemonic='o' shortcut='ctrl o' 
+            visibleWhen="#{selectedEntity!=null}" />
+    </invokers>
+   
+    <code class="com.rameses.clfc.customer.CustomerListController"/> 
+</workunit>

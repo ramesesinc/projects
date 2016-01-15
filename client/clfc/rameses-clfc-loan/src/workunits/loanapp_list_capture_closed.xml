@@ -1,0 +1,28 @@
+<workunit extends="wtemplates/ListController.xml">
+    
+    <invokers>
+        <invoker folderid="/explorer/txn/capture" caption="Fully Paid" 
+            role="CAO_OFFICER" index="1"/>
+   </invokers>
+   
+    <code>
+    import com.rameses.rcp.common.*;
+    import com.rameses.rcp.annotations.*;
+    import com.rameses.osiris2.client.*;
+    import com.rameses.osiris2.common.*;      
+    
+    class CaptureClosedLoanSearchService extends ListController 
+    {
+        String serviceName = 'LoanAppSearchService';
+        String entityName = 'loanapp-capture';
+        String tag = 'CLOSED';
+        
+        boolean allowCreate = false;
+                
+        List fetchList( Map params ) {
+            params.appmode = 'CAPTURE'; 
+            return super.fetchList(params);
+        }         
+    }     
+    </code>   
+</workunit>

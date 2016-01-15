@@ -1,0 +1,16 @@
+<workunit>
+    <invokers>
+       <invoker type="rulemgmt:formActions" caption="Posting Rules Analyzer" 
+            visibleWhen="#{ruleset == 'loanposting'}" action="init" target="window"/>  
+                    
+       <invoker type="formActions" caption="Back" action="_close" immediate="true"/>
+       <invoker type="formActions" caption="Run Test" action="runTest"/>
+    </invokers>
+    
+    <code class="com.rameses.clfc.rules.LoanPostingAnalyzerController" />
+    
+    <pages>
+        <page template="com.rameses.clfc.rules.LoanPostingAnalyzerPage"/>
+       
+    </pages>
+</workunit>

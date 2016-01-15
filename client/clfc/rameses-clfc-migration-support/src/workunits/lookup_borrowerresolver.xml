@@ -1,0 +1,26 @@
+<workunit extends="wtemplates/LookupController.xml">
+    <invokers>
+        <invoker type="borrowerresolver:lookup" caption="Lookup Borrower" target="popup" />
+    </invokers>
+    <code>
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        
+        class MigrationBorrowerResolverLookupController extends LookupController
+        {
+            String serviceName = "MigrationBorrowerResolverLookupService";
+        
+            def state;
+            void beforeGetColumns(Map params) {
+                if (state) params.state = state;
+            }
+        
+            List fetchList(Map params) {
+                if (state) params.state = state;
+                return super.fetchList(params);
+            }
+        }
+    </code>
+</workunit>

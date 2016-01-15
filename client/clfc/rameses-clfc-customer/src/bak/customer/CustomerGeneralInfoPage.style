@@ -1,0 +1,6 @@
+"entity.*"[callerContext.mode == 'read'] {
+    enabled: false; 
+} 
+"entity.*"[callerContext.mode != 'read'] {
+    enabled: true; 
+} 

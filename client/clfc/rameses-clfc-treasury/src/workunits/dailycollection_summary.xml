@@ -1,0 +1,11 @@
+<workunit>
+    <invokers>
+        <invoker type="dailycollection:summary" action="init" caption="Summary" />
+    </invokers>
+    
+    <code class="com.rameses.clfc.treasury.dailycollection.DailyCollectionSummaryController" />
+    
+    <pages>
+        <page template="com.rameses.clfc.treasury.dailycollection.DailyCollectionSummaryPage" />
+    </pages>
+</workunit>

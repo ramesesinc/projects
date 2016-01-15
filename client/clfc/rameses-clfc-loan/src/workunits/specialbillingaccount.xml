@@ -1,0 +1,23 @@
+<workunit>
+    <invokers>
+        <invoker type='specialbillingaccount:create' action='create' caption='Special Billing Account' target='popup' />
+        <invoker type='specialbillingaccount:open' action='open' caption='Special Billing Account' target='popup' />
+        
+        <invoker type='formActions' action='submitForApproval' caption='Submit for Approval' mnemonic='s' shortcut='ctrl s'
+            visibleWhen="#{mode=='read' &amp;&amp; entity?.txnstate=='DRAFT'}" role='CAO_OFFICER,LEGAL_OFFICER' />
+            
+        <invoker type='formActions' action='approveDocument' caption='Approve' mnemonic='a' shortcut='ctrl a'
+            visibleWhen="#{mode=='read' &amp;&amp; entity?.txnstate=='FOR_APPROVAL'}" role='APPROVER' />
+        <invoker type='formActions' action='disapprove' caption='Disapprove' mnemonic='d' shortcut='ctrl d'
+            visibleWhen="#{mode=='read' &amp;&amp; entity?.txnstate=='FOR_APPROVAL'}" role='APPROVER' />
+            
+        <invoker type='formActions' action='closeAccount' caption='Close Account' mnemonic='a' shortcut='ctrl a'
+            visibleWhen="#{mode=='read' &amp;&amp; entity?.txnstate=='APPROVED'}" role='CAO_OFFICER,LEGAL_OFFICER' />
+    </invokers>
+    
+    <code class='com.rameses.clfc.ledger.specialbillingaccount.SpecialBillingAccountController' />
+    
+    <pages>
+        <page template='com.rameses.clfc.ledger.specialbillingaccount.SpecialBillingAccountPage' />
+    </pages>
+</workunit>

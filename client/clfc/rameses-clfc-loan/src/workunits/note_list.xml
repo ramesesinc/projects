@@ -1,0 +1,14 @@
+<workunit extends="wtemplates/ListController.xml">
+    <invokers>
+        <!--
+        <invoker folderid="/explorer/master" caption="Notes" role="BRANCH_MANAGER,ACCT_ASSISTANT"/> 
+        -->
+        <invoker folderid="/home/online/master" caption="Notes" role="BRANCH_MANAGER,ACCT_ASSISTANT"/> 
+    </invokers>
+    
+    <code class="com.rameses.clfc.note.NoteListController"/> 
+    
+    <pages>
+        <page template="com.rameses.clfc.note.NoteListPage"/> 
+    </pages>
+</workunit>

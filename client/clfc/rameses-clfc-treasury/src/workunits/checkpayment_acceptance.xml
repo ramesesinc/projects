@@ -1,0 +1,12 @@
+<workunit>
+    <invokers>
+        <invoker type="checkpayment:accept" caption="Check Acceptance Form" 
+            action="init" target="popup" resizable="false"/> 
+    </invokers>     
+    
+    <code class="com.rameses.clfc.treasury.checkpayment.CheckAcceptanceController"/>
+
+    <pages>
+        <page name="com.rameses.clfc.treasury.checkpayment.CheckAcceptancePage"/>
+    </pages>
+</workunit>

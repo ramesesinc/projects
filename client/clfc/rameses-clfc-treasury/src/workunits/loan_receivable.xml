@@ -1,0 +1,15 @@
+<workunit>
+    <invokers>
+        <invoker type="loanreceivable:open" action="open" caption="Loan Receivable" target="popup" />
+        
+        <invoker type="formActions" action="close" caption="Close" mnemonic="c" shortcut="ctrl c" immediate="true" />
+        <invoker type="formActions" action="voidDocument" caption="Void" mnemonic="v" shortcut="ctrl v"
+            visibleWhen="#{entity.txnstate=='ACTIVE' &amp;&amp; entity.txntype=='CAPTURE'}" role="ACCT_ASSISTANT" />
+    </invokers>
+    
+    <code class="com.rameses.clfc.treasury.loan.receivable.LoanReceivableController" />
+    
+    <pages>
+        <page template="com.rameses.clfc.treasury.loan.receivable.LoanReceivablePage" />
+    </pages>
+</workunit>

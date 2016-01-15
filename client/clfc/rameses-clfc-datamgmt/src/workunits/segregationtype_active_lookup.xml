@@ -1,0 +1,22 @@
+<workunit extends="wtemplates/LookupController.xml">
+    <invokers>
+        <invoker type="segregationtype-active:lookup" caption="Lookup Segregation Type" target="popup" />
+    </invokers>
+    
+    <code>
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        
+        class ActiveSegregationTypeLookupController extends LookupController
+        {
+            String serviceName = "LoanSegregationTypeLookupService";
+        
+            List fetchList(Map params) {
+                params.state = 'ACTIVATED';
+                return super.fetchList(params);
+            }
+        }
+    </code>
+</workunit>

@@ -1,0 +1,5 @@
+<workunit extends='wtemplates/ServiceLookupController.xml' serviceName='CancelLoanLookupService' >
+    <invokers>
+        <invoker type='cancel-loanapp:lookup' caption='Loanapp Lookup' target='popup' />
+    </invokers>
+</workunit>

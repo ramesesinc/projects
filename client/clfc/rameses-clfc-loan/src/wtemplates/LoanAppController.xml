@@ -1,0 +1,13 @@
+<workunit>
+    <invokers>
+        <invoker type="formActions" action="cancel" caption="Cancel" visibleWhen="#{mode=='create'}" immediate="true"/> 
+        <invoker type="formActions" action="save" caption="Save" visibleWhen="#{mode=='create'}"/> 
+        
+        <invoker type="formActions" action="close" caption="Close" visibleWhen="#{mode!='create'}" immediate="true"/> 
+        <invoker type="formActions" action="create" visibleWhen="#{mode!='create'}" immediate="true" caption="Create Another"/> 
+        <invoker type="formActions" action="edit" visibleWhen="#{mode!='create'}" immediate="true" caption="Continue Editing"/> 
+    </invokers>
+    <pages>
+        <page template="com.rameses.clfc.loan.NewLoanAppSuccessPage" name="successpage"/>
+    </pages>
+</workunit>

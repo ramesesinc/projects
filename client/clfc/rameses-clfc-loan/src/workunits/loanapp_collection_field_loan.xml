@@ -1,0 +1,14 @@
+<workunit>
+    <invokers>
+        <invoker type="fcloan:open" action="open" target="window"/>
+        
+        <invoker type="formActions" action="close" caption="Close" tooltip="Close" mnemonic="c" 
+            immediate="true"/>
+    </invokers>
+    
+    <code class='com.rameses.clfc.loan.fieldcollection.FieldCollectionLoanListController' />
+    
+    <pages>
+        <page template="com.rameses.clfc.loan.fieldcollection.FieldCollectionLoanPage"/>
+    </pages>
+</workunit>

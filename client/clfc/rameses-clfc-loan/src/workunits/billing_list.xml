@@ -1,0 +1,47 @@
+<workunit extends="wtemplates/ListController.xml">
+    <invokers>
+        <!--
+        <invoker folderid="/explorer/txn/loan" caption="Collection Sheets" role="ACCT_OFFICER"/>
+        -->
+        <invoker folderid="/home/online/billing" caption="Collection Sheets" role="ACCT_OFFICER"/>
+        <!--
+        <invoker type="formActions" action="open" caption="Open" mnemonic="o" shortcut="ctrl O" 
+            visibleWhen="#{isAllowOpen}"/>
+        -->
+    </invokers>
+    
+    <code>
+        <![CDATA[
+            import com.rameses.rcp.common.*;
+            import com.rameses.rcp.annotations.*;
+            import com.rameses.osiris2.client.*;
+            import com.rameses.osiris2.common.*;
+
+            class CollectionSheetsListController extends ListController
+            {
+                @Service("LoanLedgerBillingService")
+                def svc;
+
+                String serviceName = "LoanLedgerBillingService";
+                String entityName = "ledgerbilling";
+
+                boolean allowCreate = false;
+                def selectedOption;
+
+                def optionsModel = [
+                    getItems: {
+                        return svc.getOptions();
+                    }, 
+                    onselect: { o->
+                        query.state = o.state;
+                        reload();
+                    }
+                ] as ListPaneModel;
+            }
+        ]]>
+    </code>
+    
+    <pages>
+        <page template="com.rameses.clfc.ui.ListPage" />
+    </pages>
+</workunit>

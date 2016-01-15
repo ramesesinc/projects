@@ -1,0 +1,55 @@
+<workunit extends="wtemplates/ListController.xml">
+    <invokers>
+        <!--
+        <invoker folderid="/explorer/txn/loan" caption="Field Requests" role="ACCT_OFFICER" />
+        -->
+        
+        <invoker folderid="/home/online/billing" caption="Field Requests" role="ACCT_OFFICER" />
+        
+        <!--
+        <invoker type="formActions" action="create" caption="Create" mnemonic="e" visibleWhen="#{selectedEntity != null &amp;&amp; selectedEntity.state == 'PENDING'}"/>
+        <invoker type="formActions" action="open" visibleWhen="#{selectedEntity != null &amp;&amp; selectedEntity.state != 'PENDING'}"/>
+        -->
+    </invokers>
+    
+    <code>
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        
+        class SpecialCollectionRequestListController extends ListController
+        {
+            @Service("LoanSpecialCollectionRequestService")
+            def svc;
+            
+            String serviceName = "LoanSpecialCollectionRequestService";
+            String entityName = "screquest";
+            
+            boolean allowCreate = false;
+            //boolean allowOpen = false;
+            def selectedOption;
+            
+            /*
+            boolean onOpen(Map params) {
+                //if (params.entity.state == 'PENDING') return false;
+                return super.onOpen(params);
+            }
+            */
+            
+            def optionsModel = [
+                getItems: {
+                    return svc.getOptions();
+                }, 
+                onselect: { o->
+                    query.state = o.state;
+                    reload();
+                }
+            ] as ListPaneModel;
+        }
+    </code>
+    
+    <pages>
+        <page template="com.rameses.clfc.ui.ListPage" />
+    </pages>
+</workunit>

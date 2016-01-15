@@ -1,0 +1,7 @@
+"entity.*|exemptType|borrower" [mode=='create' || mode=='edit'] {
+    enabled: true; 
+}
+"entity.*|exemptType|borrower" [!(mode=='create' || mode=='edit')] {
+    enabled: false; 
+}
+ 

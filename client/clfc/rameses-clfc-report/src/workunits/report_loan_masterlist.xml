@@ -1,0 +1,21 @@
+<workunit>
+    <invokers>
+        <invoker folderid="/home/online/report" caption="Loan Master List" action="init" 
+            role="BRANCH_MANAGER,ASST_BRANCH_MANAGER,ACCT_ASSISTANT" />
+        
+        <invoker type="formActions" action="close" caption="Close" mnemonic="c" shortcut="ctrl c"
+            visibleWhen="#{mode=='init'}" immediate="true" />
+        <invoker type="formActions" action="preview" caption="Preview" mnemonic="v" shortcut="ctrl v"
+            visibleWhen="#{mode=='init'}" />
+       
+        <invoker type="formActions" action="back" caption="Back" mnemonic="b" shortcut="ctrl b"
+            visibleWhen="#{mode=='preview'}" immediate="true" />
+    </invokers>
+    
+    <code class="com.rameses.clfc.report.loan.masterlist.LoanMasterListReportController" />
+    
+    <pages>
+        <page template="com.rameses.clfc.report.loan.masterlist.LoanMasterListReportInitPage" />
+        <page template="com.rameses.osiris2.common.ui.ReportPreviewPage" name="preview" />
+    </pages>
+</workunit>

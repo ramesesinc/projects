@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="MustCollateral"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Portrait"
+		 pageWidth="535"
+		 pageHeight="842"
+		 columnWidth="535"
+		 columnSpacing="0"
+		 leftMargin="0"
+		 rightMargin="0"
+		 topMargin="0"
+		 bottomMargin="0"
+		 whenNoDataType="NoPages"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false">
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+
+	<parameter name="APPLIANCELIST" isForPrompting="false" class="java.lang.Object"/>
+	<parameter name="PROPERTYLIST" isForPrompting="false" class="java.lang.Object"/>
+	<parameter name="VEHICLELIST" isForPrompting="false" class="java.lang.Object"/>
+	<parameter name="VEHICLE" isForPrompting="false" class="java.lang.Object"/>
+	<parameter name="APPLIANCE" isForPrompting="false" class="java.lang.Object"/>
+	<parameter name="PROPERTY" isForPrompting="false" class="java.lang.Object"/>
+
+	<field name="mustcollateral.appliancelist" class="java.lang.Object"/>
+	<field name="mustcollateral.propertylist" class="java.lang.Object"/>
+	<field name="mustcollateral.vehiclelist" class="java.lang.Object"/>
+
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</title>
+		<pageHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="87"  isSplitAllowed="true" >
+				<staticText>
+					<reportElement
+						x="116"
+						y="2"
+						width="218"
+						height="15"
+						key="staticText-1"/>
+					<box>					<rightPen lineWidth="0.0"/>
+</box>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="10" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Name]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="6"
+						y="2"
+						width="110"
+						height="15"
+						key="staticText-3"/>
+					<box></box>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="10" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Collateral Type]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="334"
+						y="2"
+						width="96"
+						height="15"
+						key="staticText-6"/>
+					<box>					<rightPen lineWidth="0.0"/>
+</box>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="10" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Amount Appraised]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						x="4"
+						y="19"
+						width="426"
+						height="1"
+						key="line-1"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<subreport  isUsingCache="true">
+					<reportElement
+						x="4"
+						y="23"
+						width="424"
+						height="20"
+						key="subreport-1"
+						positionType="Float"
+						isPrintRepeatedValues="false"
+						isRemoveLineWhenBlank="true"/>
+					<subreportParameter  name="APPLIANCELIST">
+						<subreportParameterExpression><![CDATA[$P{APPLIANCELIST}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="TYPE">
+						<subreportParameterExpression><![CDATA["appliance"]]></subreportParameterExpression>
+					</subreportParameter>
+					<dataSourceExpression><![CDATA[$F{mustcollateral.appliancelist}]]></dataSourceExpression>
+					<subreportExpression  class="net.sf.jasperreports.engine.JasperReport"><![CDATA[$P{APPLIANCE}]]></subreportExpression>
+				</subreport>
+				<subreport  isUsingCache="true">
+					<reportElement
+						x="4"
+						y="44"
+						width="424"
+						height="20"
+						key="subreport-2"
+						positionType="Float"
+						isPrintRepeatedValues="false"
+						isRemoveLineWhenBlank="true"/>
+					<subreportParameter  name="PROPERTYLIST">
+						<subreportParameterExpression><![CDATA[$P{PROPERTYLIST}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="TYPE">
+						<subreportParameterExpression><![CDATA["property"]]></subreportParameterExpression>
+					</subreportParameter>
+					<dataSourceExpression><![CDATA[$F{mustcollateral.propertylist}]]></dataSourceExpression>
+					<subreportExpression  class="net.sf.jasperreports.engine.JasperReport"><![CDATA[$P{PROPERTY}]]></subreportExpression>
+				</subreport>
+				<subreport  isUsingCache="true">
+					<reportElement
+						x="4"
+						y="65"
+						width="424"
+						height="20"
+						key="subreport-3"
+						positionType="Float"
+						isPrintRepeatedValues="false"
+						isRemoveLineWhenBlank="true"/>
+					<subreportParameter  name="VEHICLELIST">
+						<subreportParameterExpression><![CDATA[$P{VEHICLELIST}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="TYPE">
+						<subreportParameterExpression><![CDATA["vehicle"]]></subreportParameterExpression>
+					</subreportParameter>
+					<dataSourceExpression><![CDATA[$F{mustcollateral.vehiclelist}]]></dataSourceExpression>
+					<subreportExpression  class="net.sf.jasperreports.engine.JasperReport"><![CDATA[$P{VEHICLE}]]></subreportExpression>
+				</subreport>
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</summary>
+</jasperReport>

@@ -1,0 +1,4 @@
+"entity.*|availableBalance" [1==1] {
+    enabled: false; 
+    background-color:#ffffff;
+} 

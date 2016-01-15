@@ -1,0 +1,12 @@
+<workunit>
+    <invokers>
+        <invoker type="offer:create" caption="Offer" action="init" target="popup"/>
+        <invoker type="offer:open" caption="Offer" target="popup" />
+    </invokers>
+    
+    <code class="com.rameses.clfc.treasury.amnesty.OfferController" />
+    
+    <pages>
+        <page template="com.rameses.clfc.treasury.amnesty.OfferPage" />
+    </pages>
+</workunit>

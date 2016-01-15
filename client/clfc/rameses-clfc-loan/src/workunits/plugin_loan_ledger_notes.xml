@@ -1,0 +1,50 @@
+<workunit extends="wtemplates/ListController.xml">
+    <invokers>
+        <invoker type="loanledger-plugin" plugintype="notes" caption="Notes" index="6" />
+    </invokers>
+    
+    <code>
+        <![CDATA[   
+            import com.rameses.rcp.common.*;
+            import com.rameses.rcp.annotations.*;
+            import com.rameses.osiris2.common.*;
+            import com.rameses.osiris2.client.*;
+
+            class LoanLedgerNotesController extends ListController
+            {
+                @Service("LoanLedgerNoteService")
+                def svc;
+
+                String serviceName = "LoanLedgerNoteService";
+                String entityName = "ledgernote";
+
+                boolean allowClose = false;
+                boolean allowCreate = false;
+
+                def entity;
+                void beforeFetchList(Map params) {
+                    if (entity) params.ledgerid = entity.objid;
+                }
+
+                def selectedOption;
+                def optionsModel = [
+                    getItems: {
+                        return svc.getStates();
+                    }, 
+                    onselect: { o->
+                        query.state = o.state;
+                        reloadAll();
+                    }
+                ] as ListPaneModel;
+
+                void beforeGetColumns(Map params) {
+                    params.state = selectedOption?.state;
+                }
+            }
+        ]]>
+    </code>
+        
+    <pages>
+        <page template="com.rameses.clfc.ui.ListPage" />
+    </pages>
+</workunit>

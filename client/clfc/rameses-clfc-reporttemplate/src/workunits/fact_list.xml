@@ -1,0 +1,5 @@
+<workunit extends="wtemplates/ListController.xml" serviceName="ReportTemplateFactService" entityName="templatefact">
+    <invokers>
+        <invoker folderid="/home/reporttemplate" caption="Facts" index="1" role="MASTER"/>
+    </invokers>
+</workunit>

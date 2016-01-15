@@ -1,0 +1,6 @@
+"category" [mode=='read'] {
+    enabled: false;
+}
+"category" [mode!='read'] {
+    enabled: true;
+}

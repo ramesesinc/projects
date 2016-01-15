@@ -1,0 +1,34 @@
+<workunit extends="wtemplates/ListController.xml">
+    <invokers>
+        <!--
+        <invoker folderid="/home/online/treasury" caption="Receivable Void Requests" domain="LOAN" role="ACCT_OFFICER" />
+        -->
+    </invokers>
+    
+    <code>
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        
+        class LoanReceivableVoidRequestListController extends ListController
+        {
+            String serviceName = "LoanReceivableVoidRequestService";
+            String entityName = "loanreceivablevoidrequest";
+            
+            boolean allowCreate = false;
+        
+            //Map createPermission = [domain: 'LOAN', role: 'CAO_OFFICER,ACCT_ASSISTANT'];
+        
+            def state;
+            void beforeGetColumns(Map params) {
+                if (state) params.state = state;
+            }
+        
+            List fetchList(Map params) {
+                if (state) params.txnstate = state;
+                return super.fetchList(params);
+            }
+        }
+    </code>
+</workunit>

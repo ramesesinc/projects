@@ -1,0 +1,17 @@
+<workunit>
+    <invokers>
+        <invoker folderid="/menu/txn/ledger" action="create" caption="Capture Loan Ledger Proceed" 
+            role="CAO_OFFICER" target="popup" />
+        <invoker type="captureledgerproceed:open" action="open" caption="Capture Loan Ledger Proceed" 
+            target="popup" />
+        
+        <invoker type="formActions" action="sold" caption="Sell" mnemonic="s" shortcut="ctrl S"
+            visibleWhen="#{mode=='read' &amp;&amp; entity.txnstate=='FOR_SELLING'}" />
+    </invokers>
+    
+    <code class="com.rameses.clfc.ledger.proceeds.CaptureLoanLedgerProceedsController" />
+    
+    <pages>
+        <page template="com.rameses.clfc.ledger.proceeds.LoanLedgerProceedsPage" />
+    </pages>
+</workunit>

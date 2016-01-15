@@ -1,0 +1,25 @@
+<workunit>
+    <invokers>
+        <invoker type="accounttype:create" action="create" caption="Account Type" 
+            role="DATAMGMT_AUTHOR" permission="accounttype.create" 
+            target="popup" resizable="false"/> 
+            
+        <invoker type="accounttype:open" action="open" caption="Account Type" 
+            role="DATAMGMT_AUTHOR" permission="accounttype.read" 
+            target="popup" resizable="false"/>  
+            
+        <invoker type="formActions" caption="Activate" action="activate" 
+            immediate="true" visibleWhen="#{mode=='read' &amp;&amp; entity.txnstate!='ACTIVATED'}"/>  
+        <invoker type="formActions" caption="Deactivate" action="deactivate" 
+            immediate="true" visibleWhen="#{mode=='read' &amp;&amp; entity.txnstate=='ACTIVATED'}"/>   
+            
+        <invoker type="formActions" caption="View Logs" action="viewLogs" 
+            immediate="true" visibleWhen="#{mode=='read'}"/> 
+    </invokers>     
+    
+    <code class="com.rameses.clfc.account.AccountTypeController"/>
+
+    <pages>
+        <page name="com.rameses.clfc.account.AccountTypePage"/>
+    </pages>
+</workunit>

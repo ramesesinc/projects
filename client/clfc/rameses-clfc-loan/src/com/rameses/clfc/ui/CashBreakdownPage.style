@@ -1,0 +1,10 @@
+"denominationHandler:item.*" [item.qty != 0] {
+    color: black;
+    font-weight: bold;
+}
+"selectedDenomination" [editable == true] {
+    readonly: false;
+}
+"selectedDenomination" [editable != true] {
+    readonly: true;
+}

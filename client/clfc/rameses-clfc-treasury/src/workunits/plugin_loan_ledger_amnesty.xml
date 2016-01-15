@@ -1,0 +1,98 @@
+<workunit extends="wtemplates/ListController.xml">
+    <invokers>
+        <invoker type="loanledger-plugin" caption="Amnesties" index="4" />
+        
+        <invoker type="formActions" action="preview" caption="Preview" mnemonic="v" shortcut="ctrl V"
+            visibleWhen="#{selectedEntity!=null}" />
+    </invokers>
+    
+    <code>
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        
+        class LoanLedgerAmnestyListController extends ListController
+        {
+            @Service('LedgerAmnestyService')
+            def svc;
+        
+            String serviceName = 'LedgerAmnestyService';
+            String entityName = 'ledgeramnesty';
+        
+            boolean allowCreate = false;
+            boolean allowClose = false;
+        
+            def selectedOption;
+            def optionsModel = [
+                fetchList: { 
+                    return svc.getStates();
+                },
+                onselect: {o-> 
+                    query.state = selectedOption?.state; 
+                    reloadAll(); 
+                }
+            ] as ListPaneModel; 
+        
+            def entity;
+            void beforeFetchList(Map params) {
+                params.ledgerid = entity?.objid;
+            }
+        
+            void beforeGetColumns(Map params) {
+               params.ledgerid = entity?.objid;
+            }
+        
+            def preview() {
+                /*
+                def params = [
+                    entity  : [objid: selectedEntity.ledgerid],
+                    data    : selectedEntity
+                ]
+                */
+                def params = [entity: selectedEntity];
+                return Inv.lookupOpener('amnestypluginpreview', params);
+            }
+        }
+    </code>
+    
+    <pages>
+        <page template="com.rameses.clfc.ui.ListPage" />
+    </pages>
+    
+    <!--
+    <code>
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        
+        class LoanLedgerAmnestyListController extends ListController
+        {
+            String serviceName = "AmnestyService";
+            String entityName = "amnesty";
+            //String formName = "amnestyplugin";
+        
+            boolean allowCreate = false;
+            boolean allowClose = false;
+        
+            def entity;
+            void beforeFetchList(Map params) {
+                if (entity) params.ledgerid = entity.objid;
+            }
+        
+            void beforeGetColumns(Map params) {
+               if (entity) params.ledgerid = entity.objid;
+            }
+        
+            def preview() {
+                def params = [
+                    entity  : [objid: selectedEntity.ledgerid],
+                    data    : selectedEntity
+                ]
+                return Inv.lookupOpener('amnestypluginpreview', params);
+            }
+        }
+    </code>
+    -->
+</workunit>

@@ -1,0 +1,11 @@
+<workunit>
+    <invokers>
+        <invoker type="dailycollection:overage" action="init" caption="Overages" />
+    </invokers>
+    
+    <code class="com.rameses.clfc.treasury.dailycollection.DailyCollectionOverageController" />
+    
+    <pages>
+        <page template="com.rameses.clfc.treasury.dailycollection.DailyCollectionOveragePage" />
+    </pages>
+</workunit>

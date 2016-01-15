@@ -1,0 +1,19 @@
+<workunit extends="wtemplates/ListController.xml">
+    <invokers>
+        <!--
+        <invoker folderid="/explorer/master" caption="Check Payments" 
+            role="CASHIER" permission="checkpayment.read"/> 
+        
+        <invoker folderid="/home/collection" caption="Check Payments" 
+            role="CASHIER" permission="checkpayment.read"/>  
+        -->
+        <invoker folderid='/home/online/collection' caption='Check Payments' role='CASHIER'
+            permission='checkpayment.read' />
+    </invokers>
+    
+    <code class="com.rameses.clfc.treasury.checkpayment.CheckPaymentListController"/> 
+    
+    <pages>
+        <page template="com.rameses.clfc.treasury.checkpayment.CheckPaymentListPage"/> 
+    </pages>
+</workunit>

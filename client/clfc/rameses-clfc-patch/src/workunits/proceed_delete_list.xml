@@ -1,0 +1,43 @@
+<workunit extends="wtemplates/ListController.xml">
+    <invokers>
+        <invoker folderid="/home/online/loan" caption="Delete Ledger Proceeds" role="CAO_OFFICER" domain="LOAN" />
+    </invokers>
+    
+    <code>
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        
+        class DeleteLoanLedgerProceedsListController extends ListController
+        {
+            @Service("DeleteLedgerProceedsService")
+            def svc;
+        
+            String serviceName = "DeleteLedgerProceedsService";
+            String entityName = "ledgerproceeds-delete";
+            
+            Map createPermission = [domain:'LOAN', role:'CAO_OFFICER'];
+
+            def selectedOption;
+            def optionsModel = [
+                getItems: {
+                    return svc.getStates();
+                }, 
+                onselect: { o->
+                    query.state = o.state;
+                    reloadAll();
+                }
+            ] as ListPaneModel;
+        
+            void beforeGetColumns(Map params) {
+                params.state = selectedOption?.state;
+            }
+        }
+    </code>
+    
+    <pages>
+        <page template="com.rameses.clfc.ui.ListPage" />
+    </pages>
+    
+</workunit>

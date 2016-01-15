@@ -1,0 +1,23 @@
+<workunit extends="wtemplates/LookupController.xml">
+    <invokers>
+        <invoker type="shortage:lookup" caption="Lookup Shortage" target="popup" />
+    </invokers>
+    
+    <code>
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        
+        class ShortageLookupControler extends LookupController
+        {
+            String serviceName = 'LoanCollectionShortageLookupService';
+            
+            def state;
+            List fetchList(Map params) {
+                if (state) params.state = state;
+                return super.fetchList(params);
+            }
+        }
+    </code>
+</workunit>

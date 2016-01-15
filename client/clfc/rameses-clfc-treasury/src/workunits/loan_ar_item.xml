@@ -1,0 +1,12 @@
+<workunit>
+    <invokers>
+        <invoker type="loanaritem:create" action="init" caption="AR Item" target="popup" />
+        <invoker type="loanaritem:open" caption="AR Item" target="popup" />
+    </invokers>
+    
+    <code class="com.rameses.clfc.treasury.loan.ar.LoanARItemController" />
+    
+    <pages>
+        <page template="com.rameses.clfc.treasury.loan.ar.LoanARItemPage" />
+    </pages>
+</workunit>

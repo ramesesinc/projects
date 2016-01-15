@@ -1,0 +1,11 @@
+<workunit>
+    <invokers>
+        <invoker type="amnesty-plugin" caption="Amnesty Information" index="1" />
+    </invokers>
+    
+    <code class="com.rameses.clfc.treasury.amnesty.AmnestyInformationController" />
+    
+    <pages>
+        <page template="com.rameses.clfc.treasury.amnesty.AmnestyInformationPage" />
+    </pages>
+</workunit>

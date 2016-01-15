@@ -1,0 +1,13 @@
+"entity.*" [mode == 'read'] {
+    enabled: false; 
+} 
+"entity.*" [mode != 'read'] {
+    enabled: true; 
+} 
+"entity.code" [mode == 'edit'] {
+    enabled: false; 
+}
+"entity.remarks" [mode == 'read' || mode != 'read'] {
+    enabled: false;
+    disabledTextColor: #000;
+}

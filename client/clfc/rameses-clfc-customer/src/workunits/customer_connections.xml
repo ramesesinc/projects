@@ -1,0 +1,12 @@
+<workunit>
+    <invokers>
+        <invoker type="customerindividual:plugin" caption="Connections" action="init"/>
+        <invoker type="customerjuridical:plugin" caption="Connections" action="init" />
+   </invokers>
+   
+   <code class="com.rameses.clfc.customer.CustomerConnectionsController"/>
+   
+   <pages>
+       <page template="com.rameses.clfc.customer.CustomerConnectionsPage"/>
+   </pages>
+</workunit>

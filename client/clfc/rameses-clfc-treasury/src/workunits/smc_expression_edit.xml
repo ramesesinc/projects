@@ -1,0 +1,11 @@
+<workunit>
+    <invokers>
+        <invoker type='smc:expression:editor' caption='Expression Editor' target='popup' action='init' />
+    </invokers>
+    
+    <code class='com.rameses.clfc.treasury.ledger.amnesty.smc.SMCExpressionEditorController' />
+    
+    <pages>
+        <page template='com.rameses.clfc.treasury.ledger.amnesty.smc.SMCExpressionEditorPage' />
+    </pages>
+</workunit>

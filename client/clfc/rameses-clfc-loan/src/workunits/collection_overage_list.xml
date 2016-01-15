@@ -1,0 +1,58 @@
+<workunit extends="wtemplates/ListController.xml">
+    <invokers>
+        <!--
+        <invoker folderid="/explorer/txn/loan" action="viewonly" caption="Overages" role="ACCT_OFFICER" />
+        -->
+        <invoker folderid="/home/online/collection" action="viewonly" caption="Overages" role="ACCT_OFFICER" />
+        
+        <!--
+        <invoker type="overage:list" caption="Overages" target="popup" width="800" height="600" />
+        -->
+    </invokers>
+    
+    <code class='com.rameses.clfc.collection.overage.CollectionOverageListController' />
+    <!--
+    <code>
+        <![CDATA[
+            import com.rameses.rcp.common.*;
+            import com.rameses.rcp.annotations.*;
+            import com.rameses.osiris2.client.*;
+            import com.rameses.osiris2.common.*;
+            
+            class OverageListController extends ListController
+            {
+                String serviceName = "LoanCollectionOverageService";
+                String entityName = "overage";
+                
+                boolean allowCreate = true;
+                
+                def remittanceid;
+                def collector;
+                def txndate;
+                def handler;
+                
+                List fetchList(Map params) {
+                    params.remittanceid = remittanceid;
+                    return super.fetchList(params);
+                }
+                
+                Map createOpenerParams() {
+                    def params = super.createOpenerParams();
+                    params.remittanceid = remittanceid
+                    params.collector = collector;
+                    params.txndate = txndate;
+                    params.afterApproveHandler = handler;
+                    return params;
+                }
+                
+                void viewonly() {
+                    allowCreate = false;
+                }
+            }
+        ]]>
+    </code>
+    -->
+    <pages>
+        <page template="com.rameses.clfc.ui.ListPage" />
+    </pages>
+</workunit>

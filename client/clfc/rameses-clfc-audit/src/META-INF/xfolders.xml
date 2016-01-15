@@ -1,0 +1,7 @@
+<folders>
+    <folder id="home">
+        <folder id='capture' caption='Capture'>
+            <folder id="audit" caption="Audit" />
+        </folder>
+    </folder>
+</folders>

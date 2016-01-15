@@ -1,0 +1,15 @@
+<workunit>
+    <invokers>
+        <!--
+        <invoker type="loanapp-summary:open" caption="Summary"/>
+        -->
+        <invoker type="loanapp-summaryindividual:open" caption="Summary"/>
+        <invoker type="loanapp-summaryjuridical:open" caption="Summary"/>
+    </invokers>
+    
+    <code class="com.rameses.clfc.loan.summary.LoanAppSummaryController"/>
+    
+    <pages>
+        <page template="com.rameses.clfc.loan.summary.LoanAppSummaryPage"/>
+    </pages>
+</workunit>

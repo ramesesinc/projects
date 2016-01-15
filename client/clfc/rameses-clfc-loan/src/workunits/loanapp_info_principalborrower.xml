@@ -1,0 +1,15 @@
+<workunit>
+    <invokers>
+        <!--
+        <invoker type="loanapp-principalborrower:open" caption="Loan Application" action="init" key="principalborrower"/>
+        -->
+        <invoker type="loanapp-principalborrowerindividual:open" caption="Loan Application" action="init" key="principalborrower"/>
+        <invoker type="loanapp-principalborrowerjuridical:open" caption="Loan Application" action="init" key="principalborrower"/>
+    </invokers>
+    
+    <code class="com.rameses.clfc.loan.controller.LoanAppPrincipalBorrowerController"/>
+    
+    <pages>
+        <page template="com.rameses.clfc.loan.LoanAppPrincipalBorrowerPage"/>
+    </pages>
+</workunit>

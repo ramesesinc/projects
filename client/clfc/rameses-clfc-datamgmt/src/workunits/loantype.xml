@@ -1,0 +1,12 @@
+<workunit>
+    <invokers>
+        <invoker type="loantype:create" action="create" caption="Loan Type" target="popup" />
+        <invoker type="loantype:open" action="open" caption="Loan Type" target="popup" />
+    </invokers>
+    
+    <code class="com.rameses.clfc.loantype.LoanTypeController" />
+    
+    <pages>
+        <page template="com.rameses.clfc.loantype.LoanTypePage" />
+    </pages>
+</workunit>

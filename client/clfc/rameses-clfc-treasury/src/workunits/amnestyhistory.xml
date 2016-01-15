@@ -1,0 +1,13 @@
+<workunit>
+    <invokers>
+        <invoker type="amnestyhistory:open" action="open" caption="Amnesty" target="popup" />
+        
+        <invoker type="formActions" caption="Close" action="_close" immediate="true" />
+    </invokers>
+    
+    <code class="com.rameses.clfc.treasury.amnesty.history.AmnestyHistoryController" />
+    
+    <pages>
+        <page template="com.rameses.clfc.treasury.amnesty.history.AmnestyHistoryPage" />
+    </pages>
+</workunit>

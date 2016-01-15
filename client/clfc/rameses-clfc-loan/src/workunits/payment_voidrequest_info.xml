@@ -1,0 +1,27 @@
+<workunit>
+    <invokers>
+        <invoker type="voidrequest:create" action="create" caption="Void Request" target="popup" resizable="false"/>
+        <invoker type="voidrequest:open" action="open" caption="Void Request" target="popup" resizable="false"/>
+        
+        <!--
+        <invoker type="formActions" action="approve" caption="Approve" mnemonic="v" shortcut='ctrl v'
+            visibleWhen="#{mode=='read' &amp;&amp; entity.state=='FOR_APPROVAL'}" 
+            role="APPROVER" domain='LOAN' tooltip="Approve"/>
+        -->
+        <invoker type='formActions' action='approveDocument' caption='Approve' mnemonic='a' shortcut='ctrl a'
+            visibleWhen="#{mode=='read' &amp;&amp; entity?.state=='FOR_APPROVAL'}" role='APPROVER' domain='LOAN' />
+        
+        <invoker type='formActions' action='disapprove' caption='Disapprove' mnemonic='d' shortcut='ctrl d'
+            visibleWhen="#{mode=='read' &amp;&amp; entity?.state=='FOR_APPROVAL'}" role='APPROVER' domain='LOAN' />
+        <!--                
+        <invoker type="formActions" action="disapprove" caption="Disapprove" mnemonic="d" visibleWhen="#{mode == 'read' &amp;&amp; entity.state == 'FOR_APPROVAL'}" 
+            role="APPROVER" domain='LOAN' tooltip="Disapprove"/>
+        -->
+    </invokers>
+    
+    <code class="com.rameses.clfc.loan.payment.voidrequest.PaymentVoidRequestController" />
+    
+    <pages>
+        <page template="com.rameses.clfc.loan.payment.voidrequest.PaymentVoidRequestPage" />
+    </pages>
+</workunit>

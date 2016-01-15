@@ -1,0 +1,6 @@
+"type" [mode=='read'] {
+    enabled: false;
+}
+"type" [mode!='read'] {
+    enabled: true;
+}

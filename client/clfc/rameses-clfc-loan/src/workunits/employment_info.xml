@@ -1,0 +1,28 @@
+<workunit>
+    <invokers>
+        <invoker type="employment:create" action="create" caption="Employment Information" 
+            target="popup" resizable="false"/>
+        <invoker type="employment:open" caption="Employment Information" 
+            target="popup" resizable="false"/>
+    </invokers>
+    <code>
+        <![CDATA[
+            import com.rameses.rcp.common.*;
+            import com.rameses.rcp.annotations.*;
+            import com.rameses.osiris2.client.*;
+            import com.rameses.osiris2.common.*;
+            import java.rmi.server.UID;
+            
+            class EmploymentFormController extends com.rameses.clfc.loan.controller.PopupMasterController
+            {
+                def createEntity() {
+                    return [ objid:'EMP'+new UID() ]
+                }
+                def statusList = LOV.LOAN_EMP_STATUS
+            }
+        ]]>
+    </code>
+    <pages>
+        <page template="com.rameses.clfc.loan.EmploymentFormPage"/>
+    </pages>
+</workunit>

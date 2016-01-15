@@ -1,0 +1,7 @@
+"entity.*" [mode=='edit'] { 
+    enabled: true; 
+} 
+"entity.*" [!(mode=='edit')] { 
+    enabled: false; 
+    disabledTextColor: #000; 
+} 

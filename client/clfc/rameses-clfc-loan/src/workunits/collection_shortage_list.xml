@@ -1,0 +1,18 @@
+<workunit extends="wtemplates/ListController.xml">
+    <invokers>
+        <!--
+        <invoker folderid="/explorer/txn/loan" action="viewonly" caption="Shortages" role="ACCT_OFFICER" />
+        -->
+        <invoker folderid="/home/online/collection" action="viewonly" caption="Shortages" role="ACCT_OFFICER" />
+        
+        <!--
+        <invoker type="shortage:list" caption="Shortages" target="popup" width="800" height="600" />
+        -->
+    </invokers>
+    
+    <code class='com.rameses.clfc.collection.shortage.CollectionShortageListController' />
+    
+    <pages>
+        <page template="com.rameses.clfc.ui.ListPage" />
+    </pages>
+</workunit>

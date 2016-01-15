@@ -1,0 +1,12 @@
+<workunit extends="wtemplates/ListController.xml">
+    <invokers>
+        <invoker folderid="/explorer/txn/treasury" caption="Fund Requests" 
+            role="BRANCH_MANAGER,ASST_BRANCH_MANAGER,ACCT_ASSISTANT"/> 
+    </invokers>
+    
+    <code class="com.rameses.clfc.treasury.fund.FundRequestListController"/> 
+    
+    <pages>
+        <page template="com.rameses.clfc.treasury.fund.FundRequestListPage"/> 
+    </pages>
+</workunit>

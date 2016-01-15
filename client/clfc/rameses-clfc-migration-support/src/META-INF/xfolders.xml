@@ -1,0 +1,7 @@
+<folders>
+    <folder id="home">
+        <folder id='online' caption='Online'>
+            <folder id="migrationsupport" caption="Migration Support" />
+        </folder>
+    </folder>
+</folders>

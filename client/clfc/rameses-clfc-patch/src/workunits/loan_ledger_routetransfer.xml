@@ -1,0 +1,15 @@
+<workunit>
+    <invokers>
+        <invoker type="loanledger:formActions" caption="Transfer Route" mnemonic="t" 
+            target="popup" visibleWhen="#{selectedEntity != null}" role="DATAMGMT_AUTHOR" domain="DATAMGMT"/>
+        
+        <invoker type="formActions" action="close" caption="Close" immediate="true"/>
+        <invoker type="formActions" action="transfer" caption="Transfer" />
+    </invokers>
+    
+    <code class="com.rameses.clfc.patch.ledger.transfer.LoanLedgerTransferController" />
+    
+    <pages>
+        <page template="com.rameses.clfc.patch.ledger.transfer.LoanLedgerTransferPage" />
+    </pages>
+</workunit>

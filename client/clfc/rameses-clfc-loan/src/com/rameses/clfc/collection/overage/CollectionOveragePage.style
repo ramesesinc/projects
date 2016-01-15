@@ -1,0 +1,15 @@
+"entity.*" [ mode != 'read' ] {
+    enabled: true;
+}
+"entity.*" [ mode == 'read' ] {
+    enabled: false;
+}
+"entity.remarks" [1==1] {
+    enabled: true;
+}
+"entity.remarks" [mode == 'read'] {
+    readonly: true;
+}
+"entity.remarks" [mode != 'read'] {
+    readonly: false;
+}

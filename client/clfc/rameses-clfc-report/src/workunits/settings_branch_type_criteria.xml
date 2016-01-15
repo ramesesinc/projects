@@ -1,0 +1,12 @@
+<workunit>
+    <invokers>
+        <invoker type="branchreporttypecriteria:create" action="init" caption="Branch Criteria" target="popup" />
+        <invoker type="branchreporttypecriteria:open" caption="Branch Criteria" target="popup" />
+    </invokers>
+    
+    <code class="com.rameses.clfc.settings.report.branch.type.BranchReportTypeCriteriaController" />
+    
+    <pages>
+        <page template="com.rameses.clfc.settings.report.branch.type.BranchReportTypeCriteriaPage" />
+    </pages>
+</workunit>

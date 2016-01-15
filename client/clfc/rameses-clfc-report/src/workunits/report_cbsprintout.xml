@@ -1,0 +1,47 @@
+<workunit>
+    <invokers>
+        <invoker folderid="/explorer/report" caption="CBS Printout" action="preview"/>
+        
+        <invoker type="formActions" action="close" mnemonic="c" caption="Close" shortcut="ctrl W" immediate="true"/>
+            
+    </invokers>
+    
+    <code>
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        import com.rameses.osiris2.reports.*;
+        
+        class CbsPrintoutController extends ReportModel{
+            @Service('CBSPrintoutReportService')
+            def cbs;
+        
+        
+            public Map getParameters() {
+                return [:];
+            }
+
+            public Object getReportData() {
+                return cbs.getReportData();
+            }
+
+            public String getReportName() {
+                return "com/rameses/clfc/report/cbsprintout/CBSPrintout.jasper";
+            }
+            
+            void preview(){
+                viewReport();
+            }
+            
+            def close(){
+                return '_close';
+            }
+
+        }
+    </code>
+    
+    <pages>
+        <page template="com.rameses.osiris2.common.ui.ReportPreviewPage"/> 
+    </pages>
+</workunit>

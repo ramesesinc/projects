@@ -1,0 +1,12 @@
+"entity.*|doOk" [mode != 'read'] {
+    enabled:true;
+}
+"entity.*|doOk" [mode == 'read'] {
+    enabled:false;
+}
+"entity.occupancy.rent.*" [entity.occupancy.type == 'RENTED' && mode != 'read'] {
+    enabled:true;
+}
+"entity.occupancy.rent.*" [entity.occupancy.type != 'RENTED' && mode != 'read'] {
+    enabled:false;
+}

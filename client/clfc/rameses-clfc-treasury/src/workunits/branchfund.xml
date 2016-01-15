@@ -1,0 +1,22 @@
+<workunit>
+    <invokers>
+        <invoker folderid="/menu/txn/treasury" caption="Branch Fund" action="open" target="popup"  
+            role="BRANCH_MANAGER,ASST_BRANCH_MANAGER,ACCT_ASSISTANT" permission="branchfund.read"/>  
+        
+        <invoker type="branchfund:open" caption="Branch Fund" action="open" target="popup" resizable="false" 
+            role="BRANCH_MANAGER,ASST_BRANCH_MANAGER,ACCT_ASSISTANT" permission="branchfund.read"/> 
+            
+        <invoker type="formActions" caption="Close Window" action="close" immediate="true"/> 
+        <invoker type="formActions" caption="Item Logs" action="viewLogs" immediate="true"/> 
+        
+        <invoker type="formActions" caption="Close Fund" action="closeFund" immediate="true"
+            role="BRANCH_MANAGER,ASST_BRANCH_MANAGER,ACCT_ASSISTANT" permission="branchfund.close"
+            visibleWhen="#{entity.state=='ACTIVE'}"/> 
+    </invokers> 
+    
+    <code class="com.rameses.clfc.treasury.fund.BranchFundController"/>
+
+    <pages>
+        <page name="com.rameses.clfc.treasury.fund.BranchFundPage"/>
+    </pages>
+</workunit>

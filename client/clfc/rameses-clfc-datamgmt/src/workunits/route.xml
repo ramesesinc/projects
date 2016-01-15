@@ -1,0 +1,20 @@
+<workunit>
+    <invokers>
+        <invoker type="route:create" action="create" caption="Route" 
+            role="DATAMGMT_AUTHOR" permission="route.create" 
+            target="popup" resizable="false"/> 
+            
+        <invoker type="route:open" action="open" caption="Route" 
+            role="DATAMGMT_AUTHOR" permission="route.read" 
+            target="popup" resizable="false"/>         
+            
+        <invoker type="formActions" caption="View Logs" action="viewLogs" 
+            immediate="true" visibleWhen="#{mode=='read'}"/>                         
+    </invokers>     
+    
+    <code class="com.rameses.clfc.route.RouteController"/>
+
+    <pages>
+        <page name="com.rameses.clfc.route.RoutePage"/>
+    </pages>
+</workunit>

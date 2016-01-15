@@ -1,0 +1,12 @@
+<workunit>
+    <invokers>
+        <invoker type='ledgeramnesty:type:plugin' caption='Bad Debt' value='BADDEBT' index='2' />
+        <invoker type='ledgeramnesty:baddebt' action='init' />
+    </invokers>
+    
+    <code class='com.rameses.clfc.treasury.ledger.amnesty.baddebt.AmnestyBadDebtController' />
+    
+    <pages>
+        <page template='com.rameses.clfc.treasury.ledger.amnesty.baddebt.AmnestyBadDebtPage' />
+    </pages>
+</workunit>

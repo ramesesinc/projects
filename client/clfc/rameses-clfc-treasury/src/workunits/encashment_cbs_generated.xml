@@ -1,0 +1,15 @@
+<workunit>
+    <invokers>
+        <!--
+        <invoker type="encashmentcbs:generated" action="init" caption="Generated Cash Breakdown" />
+        -->
+        <invoker type='encashment-cbs-plugin' name='generated' caption='Generated Cash Breakdown' index='1' />
+        <invoker type='encashment:cbs:generated' action='init' caption='Generated Cash Breakdown' />
+    </invokers>
+    
+    <code class="com.rameses.clfc.treasury.encashment.cbs.EncashmentCBSGeneratedController" />
+    
+    <pages>
+        <page template="com.rameses.clfc.treasury.encashment.cbs.EncashmentCBSGeneratedPage" />
+    </pages>
+</workunit>

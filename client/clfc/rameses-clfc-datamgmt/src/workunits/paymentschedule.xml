@@ -1,0 +1,25 @@
+<workunit>
+    <invokers>
+        <invoker type="paymentschedule:create" action="create" caption="Payment Schedule" target="popup" />
+        <invoker type="paymentschedule:open" action="open" caption="Payment Schedule" target="popup" />
+    </invokers>
+    
+    <code>
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+
+        class PaymentScheduleController extends CRUDController 
+        {
+            String serviceName = "PaymentScheduleService";
+
+            boolean allowDelete = false;
+            boolean allowApprove = false;
+        }
+    </code>
+    
+    <pages>
+        <page template="com.rameses.clfc.paymentschedule.PaymentSchedulePage" />
+    </pages>
+</workunit>

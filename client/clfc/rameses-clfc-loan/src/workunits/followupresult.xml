@@ -1,0 +1,15 @@
+<workunit>
+    <invokers>
+        <invoker type='followupresult:create' action='create' caption='Follow-up Result' target='popup' />
+        <invoker type='followupresult:open' action='open' caption='Follow-up Result' target='popup' />
+        
+        <invoker type='formActions' action='confirm' caption='Confirm' mnemonic='f' shortcut='ctrl f' 
+            visibleWhen="#{mode=='read' &amp;&amp; entity?.txnstate=='DRAFT'}" role='LEGAL_OFFICER' />
+    </invokers>
+    
+    <code class='com.rameses.clfc.followup.result.FollowupResultController' />
+    
+    <pages>
+        <page template='com.rameses.clfc.followup.result.FollowupResultPage' />
+    </pages>
+</workunit>

@@ -1,0 +1,19 @@
+"entity.*" [ allowEdit == true ] {
+    enabled: true;
+}
+"entity.*" [ allowEdit != true ] {
+    enabled: false;
+}
+"entity.txndate" [ 1==1 ] {
+    enabled: false;
+}
+"entity.remarks" [1==1] {
+    enabled: true;
+}
+"entity.remarks" [allowEdit == true] {
+    readonly: false;
+}
+"entity.remarks" [allowEdit != true] {
+    readonly: true;
+}
+

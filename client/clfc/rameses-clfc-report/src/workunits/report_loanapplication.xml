@@ -1,0 +1,13 @@
+<workunit>
+    <invokers>
+        <invoker type="loanapp-report:plugin" caption="Loan Application" action="preview" target="window"/>
+        
+        <invoker type="formActions" action="close" mnemonic="c" shortcut="ctrl W"/>
+    </invokers>
+    
+    <code class="com.rameses.clfc.report.controller.LoanapplicationReportController"/>
+    
+    <pages>
+        <page template="com.rameses.osiris2.common.ui.ReportPreviewPage"/>
+    </pages>
+</workunit>

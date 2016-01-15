@@ -1,0 +1,9 @@
+"entity.(txndate|refno)" [mode!='read' && entity.txntype != 'CAPTURE'] {
+    enabled: false;
+}
+"entity.paidby" [mode=='read' || entity.txntype == 'CAPTURE'] {
+    enabled: false;
+}
+"entity.paidby" [mode!='read' && entity.txntype != 'CAPTURE'] {
+    enabled: true;
+}

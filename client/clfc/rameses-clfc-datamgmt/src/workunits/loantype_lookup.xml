@@ -1,0 +1,5 @@
+<workunit extends="wtemplates/ServiceLookupController.xml" serviceName="LoanTypeService">
+    <invokers>
+        <invoker type="loantype:lookup" caption="Lookup Loan Type" target="popup" />
+    </invokers>
+</workunit>

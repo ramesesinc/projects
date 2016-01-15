@@ -1,0 +1,24 @@
+<workunit extends='wtemplates/LookupController.xml'>
+    <invokers>
+        <invoker type='cashexchange:cbs:lookup' caption='Lookup CBS' target='popup' />
+    </invokers>
+    
+    <code>
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        
+        class CashExchangeCBSLookupController extends LookupController
+        {
+            String serviceName = 'CashExchangeCBSLookupService';
+            
+            def date;
+            List fetchList(Map params) {
+                params.date = date;
+                return super.fetchList(params);
+            }
+        }
+    </code>
+    
+</workunit>

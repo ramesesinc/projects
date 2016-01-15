@@ -1,0 +1,22 @@
+<workunit>
+    <invokers>
+        <!--
+        <invoker folderid="/home/report" caption="Branch Report" action="init"
+            domain="TREASURY" role="ACCT_ASSISTANT,CASHIER,BRANCH_MANAGER" />
+        -->
+        <invoker type="formActions" action="close" caption="Close" mnemonic="c" shortcut="ctrl c"
+            visibleWhen="#{mode=='init'}" immediate="true" />
+        <invoker type="formActions" action="preview" caption="Preview" mnemonic="v" shortcut="ctrl V" 
+            visibleWhen="#{mode=='init'}" />
+        
+        <invoker type="formActions" action="back" caption="Back" mnemonic="b" shortcut="ctrl b"
+            visibleWhen="#{mode=='preview'}" immediate="true" />
+    </invokers>
+    
+    <code class="com.rameses.clfc.report.treasury.branch.BranchReportController" />
+    
+    <pages>
+        <page template="com.rameses.clfc.report.treasury.branch.BranchReportInitPage" />
+        <page template="com.rameses.osiris2.common.ui.ReportPreviewPage" name="preview" />
+    </pages>
+</workunit>

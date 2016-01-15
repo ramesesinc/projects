@@ -1,0 +1,6 @@
+"entity.*|bank" [mode=='create' || mode=='edit'] {
+    enabled: true;
+}
+"entity.*|bank" [!(mode=='create' || mode=='edit')] {
+    enabled: false;
+}

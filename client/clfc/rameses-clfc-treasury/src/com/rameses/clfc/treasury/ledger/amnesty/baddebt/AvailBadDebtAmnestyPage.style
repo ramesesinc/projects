@@ -1,0 +1,14 @@
+"entity.*" [1==1] {
+    enabled: false;
+}
+"entity.remarks" [mode=='read'] {
+    enabled: true;
+    readonly: true;
+}
+"entity.remarks" [mode!='read'] {
+    enabled: true;
+    readonly: false;
+}
+"noncash.*" [1==1] {
+    enabled: false;
+}

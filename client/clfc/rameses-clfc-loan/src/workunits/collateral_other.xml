@@ -1,0 +1,11 @@
+<workunit>
+    <invokers>
+        <invoker type="loanapp-collateral:plugin" action="init" caption=" Other Collaterals   " index="-97"/>
+    </invokers>
+    
+    <code class="com.rameses.clfc.loan.collateral.CollateralOtherController"/>
+    
+    <pages>
+        <page template="com.rameses.clfc.loan.collateral.CollateralOtherPage"/>
+    </pages>
+</workunit>

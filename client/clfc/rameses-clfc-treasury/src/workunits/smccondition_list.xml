@@ -1,0 +1,18 @@
+<workunit extends="wtemplates/ListController.xml">
+    <invokers>
+        <invoker folderid='/home/online/master' caption='SMC Conditions'/>
+    </invokers>
+    
+    <code>
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        
+        class SMCConditionListController extends ListController
+        {
+            String serviceName = 'SMCConditionService';
+            String entityName = 'smccondition';
+        }
+    </code>
+</workunit>

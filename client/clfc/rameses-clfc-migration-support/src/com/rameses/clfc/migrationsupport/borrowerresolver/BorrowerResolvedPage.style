@@ -1,0 +1,15 @@
+"loan.(loanamount|loandate|intrate|term|producttype.*)" [1==1] {
+    enabled: false;
+}
+"loan.overpaymentamount" [mode!='read' && loan.paymentmethod=='over'] {
+    enabled: true;
+}
+"loan.overpaymentamount" [mode=='read' || loan.paymentmethod!='over'] {
+    enabled: false;
+}
+"loan.(paymentmethod|acctstate|apptype)" [mode!='read'] {
+    enabled: true;
+}
+"loan.(paymentmethod|acctstate|apptype)" [mode=='read'] {
+    enabled: false;
+}

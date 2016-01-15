@@ -1,0 +1,14 @@
+<workunit>
+    <invokers>
+        <!--
+        <invoker type='encashment-plugin' name='cashexchange' index='2' caption='Cash Exchange' />
+        <invoker type="encashment:cashexchange" action="init" caption="Change" />
+        -->
+    </invokers>
+    
+    <code class='com.rameses.clfc.treasury.encashment.EncashmentCashExchangeController' />
+    
+    <pages>
+        <page template='com.rameses.clfc.treasury.encashment.EncashmentCashExchangePage' />
+    </pages>
+</workunit>

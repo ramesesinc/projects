@@ -1,0 +1,6 @@
+"entity.*|borrower" [1==1] {
+    enabled: false; 
+}
+"entity.(approved|posted)remarks" [1==1] {
+    enabled: false; 
+}

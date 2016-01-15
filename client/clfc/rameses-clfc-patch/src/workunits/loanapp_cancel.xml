@@ -1,0 +1,22 @@
+<wokrunit>
+    <invokers>>
+        <invoker folderid="/home/online/loan" caption="Cancel Loan" domain='LOAN' role="CAO_OFFICER" />
+        
+        <invoker type='formActions' action='close' caption='Close' mnemonic='c' shortcut='ctrl c'
+            visibleWhen="#{action=='init'}" immediate='true' />
+        <invoker type='formActions' action='next' caption='Next' mnemonic='n' shortcut='ctrl n'
+            visibleWhen="#{action=='init'}" />
+        
+        <invoker type='formActions' action='back' caption='Back' mnemonic='b' shortcut='ctrl b'
+            visibleWhen="#{action=='main'}" immediate='true' />
+        <invoker type='formActions' action='cancelLoan' caption='Cancel Loan' mnemonic='c' shortcut='ctrl c'
+            visibleWhen="#{action=='main'}" />
+    </invokers>
+    
+    <code class='com.rameses.clfc.patch.loan.cancel.CancelLoanController' />
+    
+    <pages>
+        <page template='com.rameses.clfc.patch.loan.cancel.CancelLoanInitPage' />
+        <page template='com.rameses.clfc.patch.loan.cancel.CancelLoanPage' name='main' />
+    </pages>
+</wokrunit>

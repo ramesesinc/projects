@@ -1,0 +1,6 @@
+"entity.remittance.cbsno" [entity.state == 'DRAFT' && entity.hasCash] {
+    enabled: true;
+}
+"entity.remittance.cbsno" [entity.state != 'DRAFT' || !entity.hasCash] {
+    enabled: false;
+}

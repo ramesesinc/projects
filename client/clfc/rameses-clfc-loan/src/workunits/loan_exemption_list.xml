@@ -1,0 +1,15 @@
+<workunit extends="wtemplates/ListController.xml">
+    <invokers>
+        <!--
+        <invoker folderid="/explorer/master" caption="Exemptions" role="BRANCH_MANAGER,ACCT_ASSISTANT"/> 
+        -->
+        
+        <invoker folderid="/home/online/master" caption="Exemptions" role="BRANCH_MANAGER,ACCT_ASSISTANT"/> 
+    </invokers>
+    
+    <code class="com.rameses.clfc.loan.exemption.ExemptionListController"/> 
+    
+    <pages>
+        <page template="com.rameses.clfc.loan.exemption.ExemptionListPage"/> 
+    </pages>
+</workunit>

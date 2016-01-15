@@ -1,0 +1,17 @@
+<workunit>
+    <invokers>
+        <invoker type="branchfund_items:open" caption="Branch Fund: Item Logs" action="init" target="popup"/> 
+        
+        <invoker type="formActions" caption="Close" action="_close"/> 
+        
+        <invoker type="navigationActions" caption="First" action="moveFirstPage"/> 
+        <invoker type="navigationActions" caption="Previous" action="moveBackPage"/> 
+        <invoker type="navigationActions" caption="Next " action="moveNextPage"/> 
+    </invokers>
+    
+    <code class="com.rameses.clfc.treasury.fund.BranchFundItemsController"/> 
+    
+    <pages>
+        <page template="com.rameses.clfc.treasury.fund.BranchFundItemsPage"/> 
+    </pages>
+</workunit>

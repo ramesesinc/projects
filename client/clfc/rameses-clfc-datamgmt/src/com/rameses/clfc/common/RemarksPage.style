@@ -1,0 +1,6 @@
+"remarks" [mode=='read'] {
+    enabled: false;
+}
+"remarks" [mode!='read'] {
+    enabled: true;
+}

@@ -1,0 +1,36 @@
+"entity.*" [borrowerContext.mode != 'edit']{
+    enabled: false; 
+}
+"entity.residency.*|entity.occupancy.*" [borrowerContext.mode == 'edit' && entity.objid != null]{
+    enabled: true; 
+}
+"entity.residency.*|entity.occupancy.*" [borrowerContext.mode == 'edit' && entity.objid == null] {
+    enabled: false;
+}
+"borrower" [borrowerContext.mode != 'edit']{
+    enabled: false;
+}
+"borrower" [borrowerContext.mode == 'edit']{
+    enabled: true;
+}
+"borrower" [borrowerContext.loanapp?.appmode == 'CAPTURE'] { 
+    enabled: false; 
+}
+"relation" [borrowerContext.borrower?.type != 'PRINCIPAL'] {
+    visible:true;
+}
+"relation" [borrowerContext.borrower?.type == 'PRINCIPAL'] {
+    visible:false;
+}
+"entity.residency.rent.*" [borrowerContext.mode == 'edit' && entity.residency?.type == 'RENTED' ] {
+    enabled:true;
+}
+"entity.residency.rent.*" [borrowerContext.mode == 'edit' && entity.residency?.type != 'RENTED' ] {
+    enabled:false;
+}
+"entity.occupancy.rent.*" [borrowerContext.mode == 'edit' && entity.occupancy?.type == 'RENTED' ] {
+    enabled:true;
+}
+"entity.occupancy.rent.*" [borrowerContext.mode == 'edit' && entity.occupancy?.type != 'RENTED' ] {
+    enabled:false;
+}

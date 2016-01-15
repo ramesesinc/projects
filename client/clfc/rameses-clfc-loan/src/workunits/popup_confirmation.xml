@@ -1,0 +1,41 @@
+<workunit>
+    <invokers>
+        <invoker type="popup:confirmation" action="init" caption="Confirmation" target="popup" resizable="false" />
+    </invokers>
+    
+    <code>
+        <![CDATA[
+            import com.rameses.rcp.common.*;
+            import com.rameses.rcp.annotations.*;
+            import com.rameses.osiris2.client.*;
+            import com.rameses.osiris2.common.*;
+
+            class ConfirmationController 
+            {
+                def text, handler;
+
+                void init() {
+                    println text.indexOf('\n');
+                    text.replaceAll('\n', '<br/>');
+                    text = "<html><body>" + text + "</body></html>";
+                    println text
+                }
+
+                def doCancel() {
+                    return '_close'; 
+                }
+
+                def doOk() {
+                    if (handler) {
+                        EventQueue.invokeLater({ handler(); });
+                    }        
+                    return '_close'; 
+                }
+            }
+        ]]>
+    </code>
+    
+    <pages>
+        <page template="com.rameses.clfc.ui.ConfirmationPage" />
+    </pages>
+</workunit>

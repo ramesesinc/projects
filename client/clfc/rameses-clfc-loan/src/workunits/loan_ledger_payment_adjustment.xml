@@ -1,0 +1,16 @@
+<workunit>
+    <invokers>
+        <!--
+        <invoker type="loanledger:formActions" action="init" caption="Adjust Payments" mnemonic="a" 
+            target="popup" visibleWhen="#{selectedEntity != null}" role="ACCT_OFFICER"/>
+        -->
+        <invoker type="formActions" action="close" mnemonic="c" tooltip="Close"/>
+        <invoker type="formActions" action="save" mnemonic="s" tooltip="Save adjustment"/>
+    </invokers>
+    
+    <code class="com.rameses.clfc.ledger.payment.adjustment.LoanLedgerAdjustmentController"/>
+    
+    <pages>
+        <page template="com.rameses.clfc.ledger.payment.adjustment.LoanLedgerAdjustmentPage"/>
+    </pages>
+</workunit>

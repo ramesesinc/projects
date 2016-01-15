@@ -1,0 +1,57 @@
+<folders>
+    <folder id="explorer">
+        <folder id="loan" caption="Loans" index="99"/>
+        <folder id="afterfla" caption="After FLA" index="100"/>
+        
+        <folder id="txn" caption="Transactions">
+            <folder id="loan" caption="Loans" index="0"/>
+            <folder id="afterfla" caption="After FLA" index="1"/>
+            <folder id="capture" caption="Captured Loans" index="2"/>
+            <folder id="treasury" caption="Treasury" index="100"/>
+        </folder>
+        
+        <folder id="master" caption="Master Management">
+            <folder id="loan" caption="Loans"/>
+        </folder>
+        
+        <folder id="txnmgmt" caption="Transaction Management" index="2">
+            <folder id="clfc" caption="CLFC"/>
+        </folder>
+        
+        <folder id="rulemgmt" caption="Rule Management" index="3">
+            <folder id="clfc" caption="CLFC"/>
+        </folder>
+        
+        <folder id="report" caption="Reports" index="4">
+            <folder id="clfc" caption="CLFC"/>
+        </folder>
+        
+    </folder>
+    
+    <folder id="menu">
+        <folder id="txn" caption="Transaction">
+            <folder id="application" caption="Application"/>
+            <folder id="collection" caption="Collection"/>
+            <folder id="ledger" caption="Ledger"/>
+        </folder>
+    </folder>
+    
+    <folder id="home">
+        
+        <!--
+        <folder id="master" caption="Master" />
+        <folder id="collection" caption="Collection" />
+        <folder id="billing" caption="Billing" />
+        <folder id="treasury" caption="Treasury" />
+        -->
+        <folder id='online' caption='Online' >
+            <folder id='admin' caption='Administration' />
+            <folder id='legal' caption='Legal' />
+            <folder id='master' caption='Master' />
+            <folder id='collection' caption='Collection' />
+            <folder id='billing' caption='Billing' />
+            <folder id='treasury' caption='Treasury' />
+        </folder>
+    </folder>
+    
+</folders>

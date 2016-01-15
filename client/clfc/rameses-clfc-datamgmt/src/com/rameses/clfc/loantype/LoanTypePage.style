@@ -1,0 +1,6 @@
+"entity.name" [mode == 'create'] {
+    enabled: true;
+}
+"entity.name" [mode != 'create'] {
+    enabled: false;
+}

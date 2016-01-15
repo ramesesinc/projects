@@ -1,0 +1,32 @@
+<workunit extends="wtemplates/ListController.xml">
+    <invokers>
+        <!--
+        <invoker folderid="/home/treasury" caption="AR Request Liquidations" domain="LOAN" role="ACCT_OFFICER" />
+        -->
+    </invokers>
+    
+    <code>
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        
+        class LoanARLiquidationListController extends ListController
+        {
+            String serviceName = "LoanARLiquidationService";
+            String entityName = "loanarliquidation";
+        
+            Map createPermission = [role: 'ACCT_ASSISTANT'];
+        
+            def state;
+            void beforeGetColumns(Map params) {
+                if (state) param.state = state;
+            }
+        
+            List fetchList(Map params) {
+                if (state) params.txnstate = state;
+                return super.fetchList(params);
+            }
+        }
+    </code>
+</workunit>

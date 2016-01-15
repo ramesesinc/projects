@@ -1,0 +1,27 @@
+<workunit>
+    <invokers>
+        <invoker type="loanledger:open" action="open" caption="Loan Ledger" target="window" />
+        
+        <invoker type="formActions" action="close" caption="Close" mnemonic="c" shortcut="ctrl W"
+            immediate="true" visibleWhen="#{isDefault}" />
+            
+        <!--    
+        <invoker type="formActions" action="rebuild" caption="Rebuild Collection Sheet" mnemonic="r" 
+            shortcut="ctrl R" visibleWhen="#{isDefault &amp;&amp; entity.updatetype == 0}"/>
+        -->    
+        <!--    
+        <invoker type="formActions" action="preview" caption="Preview" mnemonic="v" shortcut="ctrl v" visibleWhen="#{isDefault}" />
+        <invoker type="formActions" action="back" caption="Back" mnemonic="b" visibleWhen="#{isPreview}" shortcut="ctrl B"/> 
+        -->
+        <!--
+        <invoker type="formActions" action="viewHistory" caption="View History" visibleWhen="#{isPreview}" mnemonic="h"/>
+        -->
+    </invokers>
+    
+    <code class="com.rameses.clfc.ledger.LoanLedgerController"/>
+    
+    <pages>
+        <page template="com.rameses.clfc.ledger.LoanLedgerPage"/>
+        <page name="preview" template="com.rameses.osiris2.common.ui.ReportPreviewPage"/>
+    </pages>
+</workunit>

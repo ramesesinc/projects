@@ -1,0 +1,15 @@
+"entity.txndate" [ 1 == 1] {
+    enabled: false;
+    disabledTextColor: #000;
+    readonly: true;
+}
+
+"entity.remarks" [ mode == 'read' ] {
+    enabled: false;
+    disabledTextColor: #000;
+    readonly: true;
+}
+
+"entity.remarks" [ mode != 'read' ] {
+    enabled: true;
+}

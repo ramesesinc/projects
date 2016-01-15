@@ -1,0 +1,6 @@
+"entity.overpayment" [entity.paymentmethod == 'over'] {
+    enabled: true;
+}
+"entity.overpayment" [entity.paymentmethod != 'over'] {
+    enabled: false;
+}

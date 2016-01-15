@@ -1,0 +1,49 @@
+<workunit>
+    <invokers>
+        <invoker type="borrowerindividual:plugin" />
+    </invokers>
+    
+    <code>
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        
+        class BorrowerIndividualPluginController
+        {
+            @Caller
+            def caller;
+        
+            @PropertyChangeListener
+            def listener = [
+                "civilstatus": { o->
+                    if (!o) {
+                        entity.maritalstatus = null
+                    } else {
+                        entity.maritalstatus = o.key;
+                    }
+                    caller?.civilstatus = o;
+                }
+            ]
+        
+            def entity, mode, civilstatus, gender;
+        
+            def getCivilStatusTypeList() {
+                return caller?.getCivilStatusTypeList();
+            }
+
+            def getGenderList() {
+                return caller?.getGenderList();
+            }
+    
+            def getAddressComponent() {
+                println 'get address component';
+                return Inv.lookupOpener('address:component', [entity: entity?.newaddress]);
+            }
+        }
+    </code>
+    
+    <pages>
+        <page template="com.rameses.clfc.migrationsupport.borrowerresolver.BorrowerResolverIndividualPage" />
+    </pages>
+</workunit>

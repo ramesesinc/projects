@@ -1,0 +1,52 @@
+<workunit extends="wtemplates/ListController.xml">
+    <invokers>
+        <invoker type="ledgerbilling:formActions" action="initialize" width="600" height="600" caption="Special Collection"
+            target="popup" visibleWhen="#{mode == 'read'}" />
+    </invokers>
+    
+    <code>
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osirsi2.client.*;
+        import com.rameses.osiris2.common.*;
+        
+        class SpecialCollectionPopupListController extends ListController
+        {
+            String serviceName = "LoanSpecialCollectionService";
+            String entityName = "scpopup";
+            
+            boolean allowCreate = false;
+            def entity;
+            void initialize() {
+                if (entity.allowspecialcollection == true)
+                    allowCreate = true;
+            }
+            
+            void beforeFetchList( Map params ) {
+                params.billingid = entity?.objid;
+            }
+        
+            void beforeGetColumns(Map params) {
+                params.showstatus = true;
+            }
+            
+            Map createOpenerParams() {
+                def params = super.createOpenerParams();
+                params.allowcreate = allowCreate;
+                return params;
+            }
+        
+            def open() {
+                def opener = super.open();
+                opener.target = 'self';
+                return opener;
+            }
+            
+            Opener create() {
+                def opener = super.create();
+                opener.target = 'self';
+                return opener;
+            }
+        }
+    </code>
+</workunit>

@@ -1,0 +1,9 @@
+"entity.ledger.*" [1==1] {
+    enabled: false;
+}
+"entity.remarks" [mode=='read'] {
+    readonly: true;
+}
+"entity.remarks" [mode!='read'] {
+    readonly: false;
+}

@@ -1,0 +1,45 @@
+<workunit extends="wtemplates/ListController.xml">
+    <invokers>
+        <!--
+        <invoker folderid="/explorer/txn/loan" caption="Captured Payments" role="FIELD_COLLECTOR" />
+        -->
+        <invoker folderid="/home/online/collection" caption="Captured Payments" role="FIELD_COLLECTOR" />
+    </invokers>
+    
+    <code>
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        
+        class CapturedPaymentsListController extends ListController
+        {
+            @Service("LoanCapturePaymentService")
+            def svc;
+        
+            String serviceName = "LoanCapturePaymentService";
+            String entityName = "capturedpayment";
+            
+            boolean allowCreate = false;
+            def selectedOption;
+
+            def optionsModel = [
+                getItems: {
+                    return svc.getOptions();
+                }, 
+                onselect: { o->
+                    query.state = o.state;
+                    reloadAll();
+                }
+            ] as ListPaneModel;
+        
+            void beforeGetColumns(Map params) {
+                params.state = selectedOption?.state;
+            }
+        }
+    </code>
+    
+    <pages>
+        <page template="com.rameses.clfc.ui.ListPage" />
+    </pages>
+</workunit>

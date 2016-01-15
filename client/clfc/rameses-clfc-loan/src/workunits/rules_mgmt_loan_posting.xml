@@ -1,0 +1,5 @@
+<workunit extends="wtemplates/RuleMgmtController.xml" serviceName="RuleMgmtService" tag="loanposting">
+    <invokers>
+        <invoker folderid="/explorer/rulemgmt/clfc" caption="Loan Posting Rules" action="init" index="2" />
+    </invokers>
+</workunit>

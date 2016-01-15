@@ -1,0 +1,19 @@
+<workunit extends="wtemplates/ListController.xml">
+    <invokers>
+        <invoker type='loanledger-plugin' plugintype='amnestypreview' action='init' caption='Fix' index='2' />
+        
+        <invoker type="formActions" caption="Refresh" action="refresh" icon="images/toolbars/refresh.png" immediate="true"
+            mnemonic="r" shortcut="ctrl R" />
+        
+        <invoker type="navActions2" caption="" action="moveFirstPage" icon="images/navbar/first.png" immediate="true" />
+        <invoker type="navActions2" caption="" action="moveBackPage" icon="images/navbar/previous.png" immediate="true" />
+        <invoker type="navActions2" caption="" action="moveNextPage" icon="images/navbar/next.png" immediate="true" />
+        <invoker type="navActions2" caption="" action="moveLastPage" icon="images/navbar/last.png" immediate="true" />
+    </invokers>
+    
+    <code class='com.rameses.clfc.treasury.ledger.amnesty.preview.AmnestyPreviewController' />
+    
+    <pages>
+        <page template='com.rameses.clfc.treasury.ledger.amnesty.preview.LedgerAmnestyPreviewPage' />
+    </pages>
+</workunit>

@@ -1,0 +1,21 @@
+<workunit>
+    <invokers>
+        <invoker type="capturepayment:new" action="create" caption="Capture Payment" target="popup" />
+        
+        <invoker type='formActions' action='close' caption='Close' mnemonic='c' shortcut='ctrl c'
+            visibleWhen="#{mode=='read'}" immediate='true' />
+        <invoker type='formActions' action='cancel' caption='Cancel' mnemonic='c' shortcut='ctrl c'
+            visibleWhen="#{mode!='read'}" immediate='true' />
+        
+        <invoker type='formActions' action='save' caption='Save' mnemonic='s' shortcut='ctrl s'
+            visibleWhen="#{mode!='read'}" />
+        <invoker type='formActions' action='create' caption='New' mnemonic='n' shortcut='ctrl n'
+            visibleWhen="#{mode=='read'}" />
+    </invokers>
+    
+    <code class="com.rameses.clfc.loan.payment.capture.NewCapturePaymentController" />
+    
+    <pages>
+        <page template="com.rameses.clfc.loan.payment.capture.NewCapturePaymentPage" />
+    </pages>
+</workunit>

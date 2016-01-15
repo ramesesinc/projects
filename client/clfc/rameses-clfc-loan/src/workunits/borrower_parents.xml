@@ -1,0 +1,18 @@
+<workunit>
+    <invokers>
+        <!--
+        <invoker type="loanapp-borrower:plugin" action="init" caption=" Parents Information  " index="-95"/>
+        -->
+        <invoker type="loanapp-borrowerindividual:plugin" action="init" caption=" Parents Information  " index="-95"/>
+        <invoker type="loanapp-jointborrower:plugin" action="init" caption=" Parents Information  " 
+            index="-95"/>
+        <invoker type="loanapp-comaker:plugin" action="init" caption=" Parents Information  " 
+            index="-95"/>
+    </invokers>
+    
+    <code class="com.rameses.clfc.borrower.BorrowerParentsController"/>
+    
+    <pages>
+        <page template="com.rameses.clfc.borrower.BorrowerParentsPage"/>
+    </pages>
+</workunit>

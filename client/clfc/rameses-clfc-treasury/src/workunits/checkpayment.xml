@@ -1,0 +1,21 @@
+<workunit>
+    <invokers>
+        <invoker type="checkpayment:open" action="open" caption="Check Payment" 
+            role="CASHIER" permission="checkpayment.read" target="popup" resizable="false"/> 
+            
+        <invoker type="formActions" caption="Close" action="close" immediate="true" mnemonic="c" shortcut="ctrl c" /> 
+        <!--
+        <invoker type="formActions" caption="Post" action="post" visibleWhen="#{entity.state=='FOR_CLEARING'}"/>  
+        -->
+        <invoker type="formActions" action="cleared" caption="Clear" mnemonic="l" shortcut="ctrl l"
+            visibleWhen="#{entity.state=='FOR_CLEARING'}" role="CASHIER" />
+        <invoker type="formActions" caption="Reject" action="reject" visibleWhen="#{entity.state=='FOR_CLEARING'}"/>  
+        <invoker type="formActions" caption="View Logs" action="viewLogs" immediate="true"/> 
+    </invokers>     
+    
+    <code class="com.rameses.clfc.treasury.checkpayment.CheckPaymentController"/>
+
+    <pages>
+        <page name="com.rameses.clfc.treasury.checkpayment.CheckPaymentPage"/>
+    </pages>
+</workunit>

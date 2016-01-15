@@ -1,0 +1,6 @@
+"entity.iswaive.*" [ allowEdit == true ] {
+    enabled: true;
+}
+"entity.iswaive.*" [ allowEdit != true ] {
+    enabled: false;
+}

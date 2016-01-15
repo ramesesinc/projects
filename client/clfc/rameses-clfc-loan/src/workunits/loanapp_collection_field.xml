@@ -1,0 +1,101 @@
+<workunit>
+    <invokers>
+        <invoker folderid="/menu/txn/collection" action="init" caption="Post Field Collection" role="CASHIER" index="5"/>
+        <invoker type="quick_launcher" code="FCOL" action="init" caption="Post Field Collection" role="CASHIER" /> 
+                
+        <invoker folderid="/home/online/collection" action="init" caption="Post Field Collection" role="CASHIER" />
+        
+        <invoker type='formActions' action='close' caption='Close' mnemonic='c' shortcut='ctrl w'
+            visibleWhen="#{action=='init'}" immediate='true' />
+        <invoker type='formActions' action='next' caption='Next' mnemonic='n' shortcut='ctrl n'
+            visibleWhen="#{action=='init'}" />
+        
+        <invoker type='formActions' action='back' caption='Back' mnemonic='b' shortcut='ctrl b'
+            visibleWhen="#{action=='view' &amp;&amp; mode=='read'}" />
+        <invoker type='formActions' action='cancel' caption='Cancel' mnemonic='c' shortcut='ctrl c'
+            visibleWhen="#{mode!='read'}" immediate='true' />
+        
+        <invoker type='formActions' action='edit' caption='Edit' mnemonic='e' shortcut='ctrl e'
+            visibleWhen="#{action=='view' &amp;&amp; mode=='read' &amp;&amp; entity?.alloweditbreakdown==true}" 
+            role='CASHIER' />
+        <invoker type='formActions' action='save' caption='Save' mnemonic='s' shortcut='ctrl s'
+            visibleWhen="#{mode!='read'}" />
+        
+        <invoker type='formActions' action='post' caption='Post' role='CASHIER' mnemonic='p' shortcut='ctrl p'
+            visibleWhen="#{mode=='read' &amp;&amp; action=='view' &amp;&amp; totalCollection==totalbreakdown &amp;&amp; entity?.allowpost==true}" />
+        
+        <invoker type='formActions' action='submitCbsForVerification' caption='Submit CBS For Verification' mnemonic='s' shortcut='ctrl s' 
+            visibleWhen="#{mode=='read' &amp;&amp; action=='view' &amp;&amp; entity?.cashbreakdown?.allowcbssubmitforverification==true}" />
+
+        <invoker type='formActions' action='viewCbsSendbackRemarks' caption='View CBS Send Back Remarks'
+            visibleWhen="#{mode=='read' &amp;&amp; action=='view' &amp;&amp; entity?.cashbreakdown?.sendbackremarks}" />
+        
+        <invoker type='formActions' action='viewCollectionSheets' caption='View Collection Sheets' mnemonic='v' shortcut='ctrl v'
+            visibleWhen="#{action=='view' &amp;&amp; mode=='read'}" />
+            
+        <invoker type='formActions' action='sendback' caption='Send Back' 
+            visibleWhen="#{action=='view' &amp;&amp; mode=='read' &amp;&amp; entity?.allowpost==true}" />
+
+        <invoker type='formActions' action='shortage' caption='Shortages'
+            visibleWhen="#{action=='view' &amp;&amp; mode=='read'}" />
+        
+        <invoker type='formActions' action='overage' caption='Overages'
+            visibleWhen="#{action=='view' &amp;&amp; mode=='read'}" />  
+            
+        <!--
+        <invoker type="formActions" action="close" caption="Close" mnemonic="c" 
+            shortcut="ctrl W" visibleWhen="#{mode == 'init'}" immediate="true"/>
+            
+        <invoker type="formActions" action="next" caption="Next" mnemonic="n" 
+            shortcut="ctrl N" visibleWhen="#{mode == 'init'}"/>
+            
+        <invoker type="formActions" action="back" caption="Back" mnemonic="b" 
+            visibleWhen="#{mode != 'init' &amp;&amp; mode != 'edit'}" shortcut="ctrl B"/>
+        <invoker type="formActions" action="cancel" caption="Cancel" role="CASHIER" 
+            visibleWhen="#{mode == 'edit'}" mnemonic="c" shortcut="ctrl C"/>     
+            
+        <invoker type="formActions" action="edit" caption="Edit" role="CASHIER" 
+            visibleWhen="#{isAllowEdit}" mnemonic="e" shortcut="ctrl E"/>
+        <invoker type="formActions" action="save" caption="Save" role="CASHIER"
+            visibleWhen="#{isAllowSave}" mnemonic="s" shortcut="ctrl S"/>
+            
+        <invoker type="formActions" action="submitCbsForVerification" caption="Submit CBS For Verification" mnemonic="s" 
+            shortcut="ctrl S" visibleWhen="#{isAllowCbsForVerifcation}" />
+        
+        <invoker type="formActions" action="post" caption="Post" role="CASHIER" 
+            visibleWhen="#{isAllowPost}" mnemonic="p" shortcut="ctrl P"/>
+                        
+        <invoker type="formActions" action="viewCbsSendbackRemarks" caption="View CBS Send Back Remarks"
+            visibleWhen="#{mode=='read' &amp;&amp; page=='main' &amp;&amp; entity.cashbreakdown?.state=='SEND_BACK'}" />
+        
+        <invoker type="formActions" action="viewCollectionSheets" caption="View Collectionsheets" mnemonic="v"
+            visibleWhen="#{mode=='read' &amp;&amp; page == 'main'}" shortcut="ctrl V" role="CASHIER" />
+        
+        <invoker type="formActions" action="sendback" caption="Send Back" role="CASHIER" 
+            visibleWhen="#{mode=='read' &amp;&amp; page == 'main' &amp;&amp; entity.remittance?.state!='POSTED'}" />
+            
+        <invoker type="formActions" action="shortage" caption="Shortages" role="CASHIER" 
+            visibleWhen="#{mode=='read' &amp;&amp; page == 'main'}" />
+            
+        <invoker type="formActions" action="overage" caption="Overages" role="CASHIER" 
+            visibleWhen="#{mode=='read' &amp;&amp; page == 'main'}" />  
+            
+        <invoker type="formACtions" action="shortagefundrequest" caption="Short Fund Request" role="CASHIER"
+            visibleWhen="#{mode=='read' &amp;&amp; page == 'main' &amp;&amp; entity.remittance?.state!='POSTED'}" />
+        -->
+        <!--
+        <invoker type="formActions" action="viewExemptions" caption="Exemptions" visibleWhen="#{mode != 'init'}"/>
+        -->
+    </invokers>
+    
+    <!--
+    <code class="com.rameses.clfc.loan.fieldcollection.FieldCollectionController"/>
+    -->
+    <code class='com.rameses.clfc.loan.fieldcollection.FieldCollectionController' />
+    
+    <pages>
+        <page template="com.rameses.clfc.loan.fieldcollection.FieldCollectionInitPage"/>
+        <page template="com.rameses.clfc.loan.fieldcollection.FieldCollectionPage" name="main"/>
+        <page template="com.rameses.clfc.loan.fieldcollection.FieldCollectionSpecialPage" name="special"/>
+    </pages>
+</workunit>

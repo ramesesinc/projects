@@ -1,0 +1,20 @@
+<workunit>
+    <invokers>
+        <invoker type="signatory:create" action="create" caption="Signatory" 
+            role="DATAMGMT_AUTHOR" permission="signatory:create.create" 
+            target="popup" resizable="false"/>
+            
+        <invoker type="signatory:open" action="open" caption="Calendar Event" 
+            role="DATAMGMT_AUTHOR" permission="signatory:create.read" 
+            target="popup" resizable="false"/>
+            
+        <invoker type="formActions" caption="View Logs" action="viewLogs" 
+            immediate="true" visibleWhen="#{mode=='read'}"/>   
+    </invokers>
+    
+    <code class="com.rameses.clfc.signatory.SignatoryController" />
+    
+    <pages>
+        <page template="com.rameses.clfc.signatory.SignatoryPage" />
+    </pages>
+</workunit>

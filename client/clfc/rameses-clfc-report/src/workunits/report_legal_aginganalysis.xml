@@ -1,0 +1,15 @@
+<workunit>
+    <invokers>
+        <invoker folderid="/explorer/online/report" caption="Aging Analysis" action="init"/>
+        <invoker type="formActions" caption="Close" action="_close" immediate="true"/>
+        <invoker type="formActions" caption="Back" action="back" visibleWhen="#{mode=='preview'}"/>
+        <invoker type="formActions" caption="Preview" action="preview" visibleWhen="#{mode == 'init'}"/>
+    </invokers>
+    
+    <code class="com.rameses.clfc.report.legal.aginganalysis.AgingAnalysisController"/>
+    
+    <pages>
+        <page template="com.rameses.clfc.report.legal.aginganalysis.AgingAnalysisInitPage"/>
+        <page name="preview" template="com.rameses.osiris2.common.ui.ReportPreviewPage" />
+    </pages>
+</workunit>

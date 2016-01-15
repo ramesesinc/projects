@@ -1,0 +1,7 @@
+<folders>
+    <folder id='home' caption='Home'>
+        <folder id='online' caption='Online'>
+            <folder id='master' caption='Master' />
+        </folder>
+    </folder>
+</folders>

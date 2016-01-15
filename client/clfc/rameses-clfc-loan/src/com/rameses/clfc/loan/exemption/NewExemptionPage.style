@@ -1,0 +1,15 @@
+"entity.*|exemptType|addLedger|removeLedger" [mode=='create' || mode=='edit'] {
+    enabled: true; 
+}
+"entity.*|exemptType|addLedger|removeLedger" [!(mode=='create' || mode=='edit')] {
+    enabled: false; 
+}
+"removeLedger" [selectedItem == null] {
+    enabled: false; 
+}
+"removeLedger" [selectedItem != null] {
+    enabled: true; 
+}
+"removeLedger" [!(mode=='create' || mode=='edit')] {
+    enabled: false; 
+} 

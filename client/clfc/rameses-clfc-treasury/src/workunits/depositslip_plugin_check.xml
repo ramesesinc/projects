@@ -1,0 +1,11 @@
+<workunit>
+    <invokers>
+        <invoker type="depositslip-plugin" caption="Checks" index="1" />
+    </invokers>
+    
+    <code class="com.rameses.clfc.treasury.depositslip.CheckPluginController" />
+    
+    <pages>
+        <page template="com.rameses.clfc.treasury.depositslip.CheckPluginPage" />
+    </pages>
+</workunit>

@@ -1,0 +1,23 @@
+<workunit>
+    <invokers>
+        <!--
+        <invoker type="loanarliquidationitem:create" action="init" caption="AR Liquidation Item" target="popup" />
+        -->
+        <invoker type="loanarliquidationitem:open" action="init" caption="AR Liquidation Item" 
+            target="popup" resizable="false" />
+        
+        <invoker type="formActions" action="close" caption="Close" mnemonic="c" shortcut="ctrl c" 
+            immediate="true" visibleWhen="#{mode=='read'}" />
+        
+        <invoker type="formActions" action="close" caption="Cancel" mnemonic="c" shortcut="ctrl c"
+            immediate="true" visibleWhen="#{mode!='read'}" />
+        <invoker type="formActions" action="save" caption="Save" mnemonic="s" shortcut="ctrl s"
+            visibleWhen="#{mode!='read'}" />
+    </invokers>
+    
+    <code class="com.rameses.clfc.treasury.loan.arliquidation.LoanARLiquidationItemController" />
+    
+    <pages>
+        <page template="com.rameses.clfc.treasury.loan.arliquidation.LoanARLiquidationItemPage" />
+    </pages>
+</workunit>

@@ -1,0 +1,55 @@
+<workunit>
+    <invokers>
+        <invoker type="screquest:open" action="open" caption="Field Collection Request" target="popup" />
+        <!--
+        <invoker type="formActions" action="close" caption="Close" immediate="true" mnemonic="c" shortcut="ctrl W"
+            visibleWhen="#{mode=='read'}" />
+        <invoker type="formActions" action="cancel" caption="Cancel" immediate="true" mnemonic="c" shortcut="ctrl C"
+            visibleWhen="#{mode!='read'}" />
+        <invoker type="formActions" action="save" caption="Save" mnemonic="s" shortcut="ctrl S" 
+            visibleWhen="#{mode!='read'}" />
+        <invoker type="formActions" action="edit" caption="Edit" mnemonic="e" shortcut="ctrl E" 
+            visibleWhen="#{mode=='read' &amp;&amp; entity.state != 'DOWNLOADED'}" role="ACCT_ASSISTANT" />
+        -->
+        
+        <invoker type="formActions" action="close" caption="Close" mnemonic="c" shortcut="ctrl W"
+            visibleWhen="#{mode=='read'}" immediate="true" />
+        <invoker type="formActions" action="cancel" caption="Cancel" mnemonic="c" shortcut="ctrl C"
+            visibleWhen="#{mode!='read'}" immediate="true" />
+        
+        <invoker type="formActions" action="edit" caption="Edit" mnemonic="e" shortcut="ctrl E"
+            visibleWhen="#{mode=='read' &amp;&amp; entity.state=='PENDING'}" role="ACCT_ASSISTANT" />
+        <invoker type="formActions" action="save" caption="Save" mnemonic="s" shortcut="ctrl S"
+            visibleWhen="#{mode!='read'}" />
+        
+        <invoker type="formActions" action="submitForVerification" caption="Submit for Verification" mnemonic="s"
+            shortcut="ctrl S" visibleWhen="#{mode=='read' &amp;&amp; entity.state=='PENDING'}" role="ACCT_ASSISTANT" />
+        
+        <invoker type="formActions" action="verify" caption="Verify" mnemonic="v" shortcut="ctrl V"
+            visibleWhen="#{mode=='read' &amp;&amp; entity.state=='FOR_VERIFICATION'}" role="ACCT_ASSISTANT" />
+            
+        <invoker type="formActions" action="submitForApproval" caption="Submit for Approval" mnemonic="s" shortcut="ctrl S"
+            visibleWhen="#{mode=='read' &amp;&amp; entity.state=='VERIFIED'}" role="ACCT_ASSISTANT" />
+            
+        <invoker type="formActions" action="approveDocument" caption="Approve" mnemonic="a" shortcut="ctrl A"
+            visibleWhen="#{mode=='read' &amp;&amp; entity.state=='FOR_APPROVAL'}" role="APPROVER" />
+        <invoker type="formActions" action="disapprove" caption="Disapprove" mnemonic="d" shortcut="ctrl D"
+            visibleWhen="#{mode=='read' &amp;&amp; entity.state=='FOR_APPROVAL'}" role="APPROVER" />
+        
+        <invoker type="formActions" action="createBilling" caption="Create Billing" mnemonic="b" shortcut="ctrl B"
+            visibleWhen="#{mode=='read' &amp;&amp; entity.state=='APPROVED'}" role="ACCT_ASSISTANT" />
+        <invoker type="formActions" action="cancelBilling" caption="Cancel Billing" mnemonic="a" shortcut="ctrl A"
+            visibleWhen="#{mode=='read' &amp;&amp; entity.state=='APPROVED'}" role="ACCT_ASSISTANT" />
+        
+        <!--
+        <invoker type="formActions" action="resetBilling" caption="Reset" mnemonic="r" shortcut="ctrl R"
+            visibleWhen="#{mode=='read' &amp;&amp; entity.allowReset==true}" />
+        -->
+    </invokers>
+    
+    <code class="com.rameses.clfc.ledger.specialcollection.SpecialCollectionRequestController" />
+    
+    <pages>
+        <page template="com.rameses.clfc.ledger.specialcollection.SpecialCollectionPage" />
+    </pages>
+</workunit>

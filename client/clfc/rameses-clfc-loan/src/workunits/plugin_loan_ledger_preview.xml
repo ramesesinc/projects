@@ -1,0 +1,22 @@
+<workunit>
+    <invokers>
+        <invoker type="loanledger-plugin" action="refresh" caption="Ledger" plugintype="ledgerpreview" index="1" />
+        
+        <invoker type="formActions" caption="Refresh" action="refresh" icon="images/toolbars/refresh.png" immediate="true"
+            mnemonic="r" shortcut="ctrl R" />
+        
+        <invoker type="formActions" action="printLedger" caption="Print" mnemonic="p" shortcut="ctrl p" />
+        
+        <invoker type="navActions2" caption="" action="moveFirstPage" icon="images/navbar/first.png" immediate="true"/>
+        <invoker type="navActions2" caption="" action="moveBackPage" icon="images/navbar/previous.png" immediate="true"/>
+        <invoker type="navActions2" caption="" action="moveNextPage" icon="images/navbar/next.png" immediate="true"/>
+        <invoker type="navActions2" caption="" action="moveLastPage" icon="images/navbar/last.png" immediate="true"/>
+        
+    </invokers>
+    
+    <code class="com.rameses.clfc.ledger.preview.LoanLedgerPreviewController" />
+    
+    <pages>
+        <page template="com.rameses.clfc.ledger.preview.LoanLedgerPreviewPage" />
+    </pages>
+</workunit>

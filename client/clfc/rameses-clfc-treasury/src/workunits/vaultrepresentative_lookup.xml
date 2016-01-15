@@ -1,0 +1,7 @@
+<workunit extends="wtemplates/ServiceLookupController.xml" serviceName="VaultDepositRepresentativeLookupService"> 
+        
+    <invokers>
+        <invoker type="vaultrepresentative:lookup" caption="Representative" target="popup"/> 
+    </invokers>
+        
+</workunit>

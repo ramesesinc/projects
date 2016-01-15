@@ -1,0 +1,41 @@
+<workunit>
+    <invokers>
+        <invoker type="backout:create" caption="Back Out Form" target="popup"/>
+    </invokers>
+    <code>
+        <![CDATA[
+            import com.rameses.rcp.common.*;
+            import com.rameses.rcp.annotations.*;
+            import com.rameses.osiris2.client.*;
+            
+            class BackOutFormController
+            {
+                def type = 0;
+                def data = [:];
+                def handler;
+                                
+                @PropertyChangeListener
+                def listener = [
+                    "type": {o->
+                        if(o == 0) data.type = 'filein'
+                        if(o == 1) data.type = 'fileout'
+                    }
+                ]
+                
+                def doOk() {
+                    if(MsgBox.confirm("You are about to back-out this application. Do you want to continue?")) {
+                        if( handler ) handler(data)
+                        return "_close"
+                    }
+                }
+                
+                def doCancel() {
+                    return "_close"
+                }
+            }
+        ]]>
+    </code>
+    <pages>
+        <page template="com.rameses.clfc.loan.BackOutFormPage"/>
+    </pages>
+</workunit>

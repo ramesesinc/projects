@@ -1,0 +1,27 @@
+<workunit extends="wtemplates/ListController.xml">
+    <invokers>
+        <!--
+        <invoker folderid="/explorer/master" caption="Calendar Events" 
+            role="DATAMGMT_AUTHOR" permission="calendar_event.read" 
+            icon="images/calendar.png"/>
+        -->
+        <invoker folderid="/home/online/master" caption="Calendar Events" 
+            role="DATAMGMT_AUTHOR" permission="calendar_event.read"/> 
+    </invokers>
+   
+    <code>
+    import com.rameses.rcp.common.*;
+    import com.rameses.rcp.annotations.*;
+    import com.rameses.osiris2.client.*;
+    import com.rameses.osiris2.common.*;
+
+    class CalendarEventListController extends ListController 
+    {
+        String serviceName = 'CalendarEventService';
+        String entityName  = 'calendar_event';
+        
+        Map createPermission = [domain:'DATAMGMT', role:'DATAMGMT_AUTHOR', permission:'calendar_event.create']; 
+        Map readPermission = [domain:'DATAMGMT', role:'DATAMGMT_AUTHOR', permission:'calendar_event.read'];
+    } 
+    </code>   
+</workunit>

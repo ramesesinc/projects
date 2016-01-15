@@ -1,0 +1,6 @@
+"entity.*|civilstatus|gender" [mode!='read'] {
+    enabled: true;
+}
+"entity.*|civilstatus|gender" [mode=='read'] {
+    enabled: false;
+}

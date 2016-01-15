@@ -1,0 +1,36 @@
+"entity.*" [mode == 'modify'] {
+    enabled: false;
+}
+"entity.remarks" [1==1] {
+    enabled: true;
+}
+"entity.remarks" [mode == 'read'] {
+    readonly: true;
+}
+"entity.remarks" [mode != 'read' && mode != 'modify'] {
+    readonly: false;
+}
+"new(amount|date)" [entity.requesttype == 'MODIFY'] {
+    visible: true;
+}
+"new(amount|date)" [entity.requesttype != 'MODIFY' || entity.txnstate == 'APPROVED'] {
+    visible: false;
+}
+"modify(amount|date)" [entity.requesttype == 'MODIFY'] {
+    enabled: true;
+}
+"modify(amount|date)" [mode == 'read' || entity.requesttype != 'MODIFY' || entity.txnstate == 'APPROVED'] {
+    enabled: false;
+}
+"newamount" [mode != 'read' && modifyamount == true] {
+    enabled: true;
+}
+"newamount" [mode == 'read' || modifyamount == false] {
+    enabled: false;
+}
+"newdate" [mode != 'read' && modifydate == true] {
+    enabled: true;
+}
+"newdate" [mode == 'read' || modifydate == false] {
+    enabled: false;
+}

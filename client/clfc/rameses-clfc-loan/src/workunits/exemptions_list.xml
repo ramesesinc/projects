@@ -1,0 +1,33 @@
+<workunit extends="wtemplates/ListController.xml">
+    <invokers>
+        <invoker type="exemptions:view" caption="Exemptions" target="window"/>
+        
+        <invoker type="formActions" action="addExemptions" caption="Add Exemptions"/>
+    </invokers>
+    
+    <code>
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        
+        class ExemptionsListController extends ListController
+        {
+            String serviceName="LoanExemptionService";
+            String entityName="exemption";
+            boolean allowCreate = false;
+            boolean allowOpen = false;
+            
+            def entity;
+            
+            void onbeforeFetchList( Map params ) {
+                params.batchpaymentid = entity.objid;
+                params.txndate = entity.txndate;
+            }
+            
+            def addExemptions() {
+                return InvokerUtil.lookupOpener("exemption:create", [batchpaymentid: entity.objid, txndate: entity.txndate]);
+            }
+        }
+    </code>
+</workunit>

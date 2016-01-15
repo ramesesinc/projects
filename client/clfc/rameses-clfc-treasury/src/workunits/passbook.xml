@@ -1,0 +1,25 @@
+<workunit>
+    <invokers>
+        <invoker type="passbook:create" action="create" caption="Passbook" 
+            role="ACCT_ASSISTANT" permission="passbook.create" target="popup" resizable="false"/> 
+            
+        <invoker type="passbook:open" action="open" caption="Passbook" 
+            role="ACCT_ASSISTANT" permission="passbook.read" target="popup" resizable="false"/> 
+            
+        <invoker type="formActions" caption="Activate" action="activate" 
+            immediate="true" visibleWhen="#{mode=='read' &amp;&amp; entity.txnstate!='ACTIVE' &amp;&amp; entity.txnstate!='CLOSED'}"/> 
+        <invoker type="formActions" caption="Deactivate" action="deactivate" 
+            immediate="true" visibleWhen="#{mode=='read' &amp;&amp; entity.txnstate=='ACTIVE'}"/> 
+        <invoker type="formActions" caption="Close Account" action="closeAccount" 
+            immediate="true" visibleWhen="#{mode=='read' &amp;&amp; entity.txnstate!='CLOSED'}"/> 
+            
+        <invoker type="formActions" caption="View Logs" action="viewLogs" 
+            immediate="true" visibleWhen="#{mode=='read'}"/> 
+    </invokers>     
+    
+    <code class="com.rameses.clfc.treasury.passbook.PassbookController"/>
+
+    <pages>
+        <page name="com.rameses.clfc.treasury.passbook.PassbookPage"/>
+    </pages>
+</workunit>

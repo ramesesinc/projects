@@ -1,0 +1,20 @@
+<workunit extends="wtemplates/ListController.xml">
+    <invokers>
+        <invoker folderid="/home/online/admin" caption="Role Templates" domain="ADMIN" role="ADMIN_SUPPORT" />
+    </invokers>
+    
+    <code>
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        
+        class RoleTemplateListController extends ListController
+        {
+            String serviceName = "RoleTemplateService";
+            String entityName = "roletemplate";
+        
+            Map createPermission = [domain: 'ADMIN', role: 'ADMIN_SUPPORT'];
+        }
+    </code>
+</workunit>

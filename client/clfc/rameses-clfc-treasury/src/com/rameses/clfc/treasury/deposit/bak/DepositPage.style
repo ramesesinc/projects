@@ -1,0 +1,9 @@
+"entity.*|addDepositSlip" [mode != 'read'] {
+    enabled: true;
+}
+"entity.*|addDepositSlip" [mode == 'read'] {
+    enabled: false;
+}
+"entity.txndate" [1 == 1] {
+    enabled: false;
+}

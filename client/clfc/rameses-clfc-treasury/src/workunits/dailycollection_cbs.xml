@@ -1,0 +1,11 @@
+<workunit>
+    <invokers>
+        <invoker type="dailycollection:cbs" action="init" caption="Cash Breakdown Sheets" />
+    </invokers>
+    
+    <code class="com.rameses.clfc.treasury.dailycollection.DailyCollectionCBSController" />
+    
+    <pages>
+        <page template="com.rameses.clfc.treasury.dailycollection.DailyCollectionCBSPage" />
+    </pages>
+</workunit>

@@ -1,0 +1,11 @@
+<workunit>
+    <invokers>
+        <invoker type="loanapp-collateral:plugin" caption=" Properties   " index="-98"/>
+    </invokers>
+    
+    <code class="com.rameses.clfc.loan.collateral.CollateralPropertyController"/>
+    
+    <pages>
+        <page template="com.rameses.clfc.loan.collateral.CollateralPropertyPage"/>
+    </pages>
+</workunit>

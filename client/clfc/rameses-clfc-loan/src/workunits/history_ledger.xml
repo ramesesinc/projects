@@ -1,0 +1,34 @@
+<workunit extends="wtemplates/ListController.xml">
+    <invokers>
+        <invoker type="loanledger:history" caption="Adjustment History" target="popup"/>
+    </invokers>
+    
+    <code>
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;  
+        
+        class LoanLedgerHistoryController extends ListController
+        {
+            String serviceName = 'LoanLedgerHistoryService';
+            String entityName = 'history';
+            def ledgerid;
+            def searchtext;
+
+            boolean allowCreate = false;
+            boolean allowOpen = false;
+            
+            protected boolean onOpen(Map map) { return false; }
+            
+            protected void onbeforeFetchList(Map map) {
+                map.searchtext = searchtext;
+                map.parentid = ledgerid;
+            }
+        }
+    </code>
+    
+    <pages>
+        <page template="com.rameses.clfc.ledger.payment.adjustment.HistoryQueryFormPage" name="queryform"/>
+    </pages>
+</workunit>

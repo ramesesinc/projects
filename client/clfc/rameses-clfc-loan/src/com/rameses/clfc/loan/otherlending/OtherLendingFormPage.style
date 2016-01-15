@@ -1,0 +1,7 @@
+"entity.*|doOk" [mode != 'read'] {
+    enabled:true;
+}
+
+"entity.*|doOk" [mode == 'read'] {
+    enabled:false;
+}

@@ -1,0 +1,9 @@
+<workunit>
+    <invokers>
+        <invoker type="loanapp:formActions" caption="Renew" action="renew" target="process"
+            visibleWhen="#{(entity.state=='RELEASED' || entity.state=='CLOSED') &amp;&amp; entity.appmode=='CAPTURE' &amp;&amp; editableMode==false}"/>
+    </invokers>
+    
+    <code class="com.rameses.clfc.patch.loan.LoanAppCaptureOptionController"/>
+
+</workunit>

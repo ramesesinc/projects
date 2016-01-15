@@ -1,0 +1,21 @@
+<workunit>
+    <invokers>
+        <invoker type="remarks-preview" caption="Remarks" target="popup" resizable="false" />
+    </invokers>
+    
+    <code>
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        
+        class RemarksPreviewController
+        {
+            def remarks;
+        }
+    </code>
+    
+    <pages>
+        <page template="com.rameses.clfc.ledger.preview.RemarksPreviewPage" />
+    </pages>
+</workunit>

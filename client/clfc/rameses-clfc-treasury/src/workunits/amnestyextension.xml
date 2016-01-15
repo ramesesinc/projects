@@ -1,0 +1,20 @@
+<workunit>
+    <invokers>
+        <invoker type="amnestyextension:create" action="create" caption="Amnesty Extension" target="popup" />
+        <invoker type="amnestyextension:open" action="open" caption="Amnesty Extension" target="popup" />
+        
+        <invoker type="formActions" action="submitForApproval" caption="Submit For Approval" mnemonic="s"
+            shortcut="ctrl S" visibleWhen="#{mode=='read' &amp;&amp; entity.txnstate=='DRAFT'}" />
+            
+        <invoker type="formActions" action="approveDocument" caption="Approve" mnemonic="a" shortcut="ctrl A"
+            visibleWhen="#{entity.txnstate=='FOR_APPROVAL'}" role="APPROVER" />
+        <invoker type="formActions" action="disapprove" caption="Disapprove" mnemonic="d" shortcut="ctrl D"
+            visibleWhen="#{entity.txnstate=='FOR_APPROVAL'}" role="APPROVER" />
+    </invokers>
+    
+    <code class="com.rameses.clfc.treasury.amnesty.extension.AmnestyExtensionController" />
+    
+    <pages>
+        <page template="com.rameses.clfc.treasury.amnesty.extension.AmnestyExtensionPage" />
+    </pages>
+</workunit>

@@ -1,0 +1,21 @@
+<workunit>
+    <invokers>
+        <invoker folderid="/explorer/report" caption="Branch Fund Listing" 
+            domain="TREASURY" role="BRANCH_MANAGER,ASST_BRANCH_MANAGER,ACCT_ASSISTANT"/>
+        
+        <invoker type="formActions" action="close" mnemonic="c" caption="Close" shortcut="ctrl W" immediate="true" 
+            visibleWhen="#{mode == 'init'}" />
+        <invoker type="formActions" action="preview" mnemonic="v" caption="Preview" shortcut="ctrl V" 
+            visibleWhen="#{mode == 'init'}" />
+            
+        <invoker type="formActions" action="back" mnemonic="b" caption="Back" shortcut="ctrl B"
+            visibleWhen="#{mode == 'preview'}" />
+    </invokers>
+    
+    <code class="com.rameses.clfc.report.fund.BranchFundListReportController"/>
+    
+    <pages>
+        <page template="com.rameses.clfc.report.fund.BranchFundListReportInitPage"/>
+        <page template="com.rameses.osiris2.common.ui.ReportPreviewPage" name="preview"/> 
+    </pages>
+</workunit>

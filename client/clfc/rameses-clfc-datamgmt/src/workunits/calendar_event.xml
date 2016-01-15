@@ -1,0 +1,20 @@
+<workunit>
+    <invokers>
+        <invoker type="calendar_event:create" action="create" caption="Calendar Event" 
+            role="DATAMGMT_AUTHOR" permission="calendar_event.create" 
+            target="popup" resizable="false"/>
+            
+        <invoker type="calendar_event:open" action="open" caption="Calendar Event" 
+            role="DATAMGMT_AUTHOR" permission="calendar_event.read" 
+            target="popup" resizable="false"/>
+            
+        <invoker type="formActions" caption="View Logs" action="viewLogs" 
+            immediate="true" visibleWhen="#{mode=='read'}"/>             
+    </invokers>
+    
+    <code class="com.rameses.clfc.calendar.CalendarEventController"/>
+    
+    <pages>
+        <page name="com.rameses.clfc.calendar.CalendarEventPage"/>
+    </pages>
+</workunit>

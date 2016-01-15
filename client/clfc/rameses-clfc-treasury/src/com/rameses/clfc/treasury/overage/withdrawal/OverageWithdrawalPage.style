@@ -1,0 +1,9 @@
+"entity.(txndate|overage.(txndate|balance|remarks))" [1 == 1] {
+    enabled: false;
+}
+"withdrawaltype" [mode=='read'] {
+    enabled: false;
+}
+"withdrawaltype" [mode!='read'] {
+    enabled: true;
+}

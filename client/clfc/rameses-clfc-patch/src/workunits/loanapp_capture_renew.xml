@@ -1,0 +1,16 @@
+<workunit>
+    <invokers>
+        <invoker type="loanapp-capture:renew" caption="Renew Application" action="init" target="popup"
+            visibleWhen="#{editableMode == true}" />
+        
+        <invoker type="formActions" caption="Cancel" action="doCancel" immediate="true"/> 
+        <invoker type="formActions" caption="Save" action="doSave"/> 
+    </invokers>
+    
+    <code class="com.rameses.clfc.patch.loan.LoanAppCaptureRenewController"/>
+    
+    <pages>
+        <page template="com.rameses.clfc.patch.loan.LoanAppCaptureRenewPage"/> 
+    </pages>
+
+</workunit>

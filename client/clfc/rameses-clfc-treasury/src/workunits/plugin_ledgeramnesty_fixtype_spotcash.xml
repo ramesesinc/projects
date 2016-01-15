@@ -1,0 +1,12 @@
+<workunit>
+    <invokers>
+        <invoker type='ledgeramnesty:fixtype' caption='Spot Cash' value='spotcash' index='1' />
+        <invoker type='fixtype:spotcash' action='init' />
+    </invokers>
+    
+    <code class='com.rameses.clfc.treasury.ledger.amnesty.fix.FixSpotCashController' />
+    
+    <pages>
+        <page template='com.rameses.clfc.treasury.ledger.amnesty.fix.FixSpotCashPage' />
+    </pages>
+</workunit>

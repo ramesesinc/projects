@@ -1,0 +1,7 @@
+<workunit extends="wtemplates/ServiceLookupController.xml" 
+    serviceName="UsergroupMemberLookupService" tag="FIELD_COLLECTOR,CASHIER"> 
+    <invokers>
+        <invoker type="xcollector:lookup" caption="Field Collectors" target="popup"/> 
+    </invokers>
+        
+</workunit>

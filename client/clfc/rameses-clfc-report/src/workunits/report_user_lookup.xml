@@ -1,0 +1,24 @@
+<workunit extends="wtemplates/LookupController.xml">
+    <invokers>
+        <invoker type="report-user:lookup" caption="Lookup User" target="popup" />
+    </invokers>
+    
+    <code>
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        
+        class ReportUserLookupController extends LookupController
+        {
+            String serviceName = 'ReportUserLookupService';
+        
+            def roles, domains;
+            List fetchList(Map params) {
+                if (roles) params._roles = roles;
+                if (domains) params._domains = domains;
+                return super.fetchList(params);
+            }
+        }
+    </code>
+</workunit>

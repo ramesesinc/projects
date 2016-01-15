@@ -1,0 +1,25 @@
+<workunit extends="wtemplates/ListController.xml">
+    <invokers>
+        <!--
+        <invoker folderid="/explorer/master" caption="Currency Types" role="DATAMGMT_AUTHOR" permission="currencytype.read"/> 
+        -->
+        <invoker folderid="/home/online/master" caption="Currency Types" role="DATAMGMT_AUTHOR" permission="currencytype.read"/> 
+    </invokers>
+    
+    <code>
+    import com.rameses.rcp.common.*;
+    import com.rameses.rcp.annotations.*;
+    import com.rameses.osiris2.client.*;
+    import com.rameses.osiris2.common.*;
+
+    class CurrencyTypeListController extends ListController 
+    {
+        String serviceName = 'CurrencyTypeService';
+        String entityName  = 'currencytype';
+        
+        Map createPermission = [domain:'DATAMGMT', role:'DATAMGMT_AUTHOR', permission:'currencytype.create']; 
+        Map readPermission = [domain:'DATAMGMT', role:'DATAMGMT_AUTHOR', permission:'currencytype.read']; 
+    } 
+    </code>
+    
+</workunit>

@@ -1,0 +1,27 @@
+<workunit>
+    <invokers>
+        <invoker type="checking:create" caption="Checking Account Information" 
+            target="popup" resizable="false"/>
+        <invoker type="checking:open" caption="Checking Account Information" 
+            target="popup" resizable="false"/>   
+    </invokers>
+    <code>
+    <![CDATA[
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import java.rmi.server.UID;
+        import com.rameses.clfc.loan.controller.*;
+
+        class CheckingAccountFormController extends PopupMasterController
+        {
+            def createEntity() {
+                return [ objid:'BCA'+new UID() ]
+            }
+        }
+    ]]>
+    </code>
+    <pages>
+        <page template="com.rameses.clfc.loan.BankAccountsFormPage"/>
+    </pages>
+</workunit>

@@ -1,0 +1,20 @@
+<workunit>
+    <invokers>
+        <invoker type="overagevoidrequest:create" action="create" caption="Overage Void Request" target="popup" />
+        <invoker type="overagevoidrequest:open" action="open" caption="Overage Void Request" target="popup" />
+        
+        <invoker type="formActions" action="submitForApproval" caption="Submit for Approval" mnemonic="s" shortcut="ctrl S"
+            visibleWhen="#{mode=='read' &amp;&amp; entity.txnstate=='DRAFT'}" role="CASHIER" />
+            
+        <invoker type="formActions" action="approveDocument" caption="Approve" mnemonic="a" shortcut="ctrl A"
+            visibleWhen="#{mode=='read' &amp;&amp; entity.txnstate=='FOR_APPROVAL'}" role="APPROVER" />
+        <invoker type="formActions" action="disapprove" caption="Disapprove" mnemonic="d" shortcut="ctrl D"
+            visibleWhen="#{mode=='read' &amp;&amp; entity.txnstate=='FOR_APPROVAL'}" role="APPROVER" /> 
+    </invokers>
+    
+    <code class="com.rameses.clfc.treasury.overage.voidrequest.OverageVoidRequestController" />
+    
+    <pages>
+        <page template="com.rameses.clfc.treasury.overage.voidrequest.OverageVoidRequestPage" />
+    </pages>
+</workunit>

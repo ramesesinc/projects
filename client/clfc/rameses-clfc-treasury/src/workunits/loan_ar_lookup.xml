@@ -1,0 +1,27 @@
+<workunit extends="wtemplates/LookupController.xml">
+    <invokers>
+        <invoker type="loanar:lookup" caption="Lookup AR Request" target="popup" />
+    </invokers>
+    
+    <code>
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        
+        class LoanARLookupController extends LookupController
+        {
+            String serviceName = "LoanARLookupService";
+            
+            def state;
+            void beforeGetColumns(Map params) {
+                if (state) params.state = state;
+            }
+        
+            List fetchList(Map params) {
+                if (state) params.txnstate = state;
+                return super.fetchList(params);
+            }
+        }
+    </code>
+</workunit>

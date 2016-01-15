@@ -1,0 +1,6 @@
+"addJointBorrower|removeJointBorrower" [caller.mode != 'read'] {
+    enabled:true;
+}
+"addJointBorrower|removeJointBorrower" [caller.mode == 'read'] {
+    enabled:false;
+}

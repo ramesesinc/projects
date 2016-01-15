@@ -1,0 +1,20 @@
+<workunit>
+    <invokers>
+        <invoker folderid="/explorer/report" caption="Overage Detail Summary Report" 
+            role="BRANCH_MANAGER,ACCT_ASSISTANT" domain="TREASURY" />
+        
+        <invoker type="formActions" action="close" caption="Close" mnemonic="c" shortcut="ctrl W" immediate="true"
+            visibleWhen="#{mode == 'init'}" />
+        <invoker type="formActions" action="preview" caption="Preview" mnemonic="v" shortcut="ctrl V" 
+            visibleWhen="#{mode == 'init'}" />
+        <invoker type="formActions" action="back" caption="Back" mnemonic="b" shortcut="ctrl B" 
+            visibleWhen="#{mode == 'preview'}" />
+    </invokers>
+    
+    <code class="com.rameses.clfc.report.treasury.overagedetailsummary.OverageDetailSummaryReportController" />
+    
+    <pages>
+        <page template="com.rameses.clfc.report.treasury.overagedetailsummary.OverageDetailSummaryReportInitPage" />
+        <page template="com.rameses.osiris2.common.ui.ReportPreviewPage" name="preview" />
+    </pages>
+</workunit>

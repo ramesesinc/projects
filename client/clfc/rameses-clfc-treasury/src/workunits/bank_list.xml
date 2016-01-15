@@ -1,0 +1,27 @@
+<workunit extends="wtemplates/ListController.xml">
+    <invokers>
+        <!--
+        <invoker folderid="/explorer/master" caption="Banks" role="CASHIER,ACCT_ASSISTANT" permission="bank.read"/> 
+        -->
+        <!--
+        <invoker folderid="/home/master" caption="Banks" role="CASHIER,ACCT_ASSISTANT" permission="bank.read"/> 
+        -->
+        <invoker folderid='/home/online/master' caption='Banks' role='CASHIER,ACCT_ASSISTANT' permission='bank.read' />
+    </invokers>
+    
+    <code>
+    import com.rameses.rcp.common.*;
+    import com.rameses.rcp.annotations.*;
+    import com.rameses.osiris2.client.*;
+    import com.rameses.osiris2.common.*;
+
+    class BankListController extends ListController 
+    {
+        String serviceName = 'BankService';
+        String entityName  = 'bank';
+        
+        Map createPermission = [domain:'TREASURY', role:'CASHIER,ACCT_ASSISTANT', permission:'bank.create'];
+    } 
+    </code>
+    
+</workunit>

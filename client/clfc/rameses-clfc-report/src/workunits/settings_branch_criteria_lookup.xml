@@ -1,0 +1,17 @@
+<workunit extends="wtemplates/LookupController.xml">
+    <invokers>
+        <invoker type="branchreportcriteria:lookup" caption="Lookup Branch Criteria" target="popup" />
+    </invokers>
+    
+    <code>
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        
+        class BranchReportCriteriaLookupController extends LookupController
+        {
+            String serviceName = "BranchReportCriteriaLookupService";
+        }
+    </code>
+</workunit>

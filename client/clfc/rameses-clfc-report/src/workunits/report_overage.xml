@@ -1,0 +1,14 @@
+<workunit>
+    <invokers>
+        <invoker type="overage:formActions" action="preview" caption="Print" mnemonic="p" shortcut="ctrl p" 
+            visibleWhen="#{mode=='read' &amp;&amp; entity.state=='APPROVED'}" target="popup" />
+            
+        <invoker type="formActions" action="close" caption="Close" immediate="true" mnemonic="c" shortcut="ctrl C" />
+    </invokers>
+    
+    <code class="com.rameses.clfc.report.overage.OverageReportController"/>
+    
+    <pages>        
+        <page template="com.rameses.osiris2.common.ui.ReportPreviewPage" />
+    </pages>
+</workunit>

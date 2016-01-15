@@ -1,0 +1,17 @@
+<workunit>
+    <invokers>
+       <invoker type="rulemgmt:formActions" caption="Segregation Rules Analyzer" action="init"  
+            visibleWhen="#{ruleset == 'loansegregation'}" target="window"/>    
+       <invoker type="home.actions" caption="Segregation Rules Analyzer" action="init" target="window"/>    
+            
+       <invoker type="formActions" caption="Back" action="_close" immediate="true"/>
+       <invoker type="formActions" caption="Run Test" action="runTest"/>
+    </invokers>
+    
+    <code class="com.rameses.clfc.rules.LoanSegregationAnalyzerController" />
+        
+    <pages>
+        <page template="com.rameses.clfc.rules.LoanSegregationAnalyzerPage"/>
+       
+    </pages>
+</workunit>

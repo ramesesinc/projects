@@ -1,0 +1,19 @@
+<workunit>
+    <invokers>
+        <invoker type="sendback:open" action="open" caption="Send Back" target="popup" resizable="false" />
+        
+        <invoker type="formActions" action="close" caption="Close" mnemonic="c" shortcut="ctrl W" immediate="true" />
+        <invoker type="formActions" action="init" caption="New" mnemonic="n" shortcut="ctrl N" immediate="true" 
+            visibleWhen="#{mode == 'read' &amp;&amp; action == 'sendback' &amp;&amp; entity.state == 'ACCEPTED'}"/>
+        <invoker type="formActions" action="save" caption="Save" mnemonic="s" shortcut="ctrl S" 
+            visibleWhen="#{mode == 'create'}" />
+        <invoker type="formActions" action="accept" caption="Accept" mnemonic="a" shortcut="ctrl A"
+            visibleWhen="#{mode == 'read' &amp;&amp; entity.state == 'DRAFT' &amp;&amp; action != 'sendback'}" />
+    </invokers>
+    
+    <code class="com.rameses.clfc.collection.sendback.CollectionSendBackController" />
+    
+    <pages>
+        <page template="com.rameses.clfc.collection.sendback.CollectionSendBackPage" />
+    </pages>
+</workunit>

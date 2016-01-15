@@ -1,0 +1,6 @@
+"addBusiness" [caller.mode != 'read'] {
+    enabled:true;
+}
+"addBusiness" [caller.mode == 'read'] {
+    enabled:false;
+}

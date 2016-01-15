@@ -1,0 +1,6 @@
+"addAppliance" [mode != 'read'] {
+    enabled:true;
+}
+"addAppliance" [mode == 'read'] {
+    enabled:false;
+}

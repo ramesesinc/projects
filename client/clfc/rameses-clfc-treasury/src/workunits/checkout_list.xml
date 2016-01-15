@@ -1,0 +1,46 @@
+<workunit extends="wtemplates/ListController.xml">
+    <invokers>
+        <!--
+        <invoker folderid="/explorer/txn/treasury" caption="Check-outs" 
+            role="BRANCH_MANAGER,ASST_BRANCH_MANAGER" />
+        <invoker folderid="/home/treasury" caption="Check-outs"  
+            role="BRANCH_MANAGER,ASST_BRANCH_MANAGER" />
+        -->
+        <invoker folderid='/home/online/treasury' caption='Check-outs' role='BRANCH_MANAGER,ASST_BRANCH_MANAGER' />
+    </invokers>
+    
+    <code>
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        
+        class CheckoutListController extends ListController
+        {
+            @Service('CheckoutService')
+            def svc;
+        
+            String serviceName = 'CheckoutService';
+            String entityName = 'checkout';
+        
+            void beforeGetColumns(Map params) {
+                params.state = selectedOption?.state;
+            }
+        
+            def selectedOption;
+            def optionsModel = [
+                fetchList: { 
+                    return svc.getStates();; 
+                },
+                onselect: {o-> 
+                    query.state = selectedOption?.state; 
+                    reloadAll(); 
+                }
+            ] as ListPaneModel; 
+        }
+    </code>
+    
+    <pages>
+        <page template="com.rameses.clfc.ui.ListPage" />
+    </pages>
+</workunit>

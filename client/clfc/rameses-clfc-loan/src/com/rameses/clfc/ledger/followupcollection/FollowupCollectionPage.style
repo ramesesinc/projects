@@ -1,0 +1,9 @@
+"entity.*" [ mode == 'read' ] {
+    enabled: false;
+    disabledTextColor: #000;
+    readonly: true;
+}
+
+"entity.*" [ mode != 'read' ] {
+    enabled: true;
+}

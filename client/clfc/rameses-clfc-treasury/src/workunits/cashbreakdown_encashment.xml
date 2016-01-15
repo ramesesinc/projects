@@ -1,0 +1,16 @@
+<workunit>
+    <invokers>
+        <!--
+        <invoker type="cashbreakdown:formActions" action="init" caption="View Encashments" target="popup" 
+            visibleWhen="#{entity.state=='VERIFIED' || entity.state=='DEPOSITED'}" />
+        -->    
+        <invoker type="formActions" action="close" caption="Close" immediate="true" mnemonic="c"
+            shortcut="ctrl W" />
+    </invokers>
+    
+    <code class="com.rameses.clfc.treasury.encashment.CashBreakdownEncashmentController" />
+    
+    <pages>
+        <page template="com.rameses.clfc.treasury.encashment.CashBreakdownEncashmentPage" />
+    </pages>
+</workunit>

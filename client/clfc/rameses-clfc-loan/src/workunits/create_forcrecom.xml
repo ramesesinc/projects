@@ -1,0 +1,33 @@
+<workunit>
+    <invokers>
+        <invoker type="application-forcrecom:create" caption="Submit For CRECOM" target="popup"/>
+    </invokers>
+    <code>
+        <![CDATA[
+            import com.rameses.rcp.common.*;
+            import com.rameses.rcp.annotations.*;
+            import com.rameses.osiris2.client.*;
+            import java.rmi.server.UID;
+            
+            class SubmitForCrecomController
+            {
+                def data = [:]
+                def handler
+                
+                def doOk() {
+                    if(MsgBox.confirm("You are about to submit this application. Do you want to continue?")) {
+                        if( handler ) handler(data)
+                        return "_close"
+                    }
+                }
+                
+                def doCancel() {
+                    return "_close"
+                }
+            }
+        ]]>
+    </code>
+    <pages>
+        <page template="com.rameses.clfc.loan.SubmitForCrecomPage"/>
+    </pages>
+</workunit>

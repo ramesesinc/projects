@@ -1,0 +1,47 @@
+<workunit extends="wtemplates/ListController.xml">
+    <invokers>
+        <invoker type="loanledger-plugin" action="init" caption="Adjustments" index="3" />
+        
+    </invokers>
+    
+    <code>
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        
+        class LoanLedgerAdjustmentsListController extends ListController
+        {
+            @Service("LoanLedgerAdjustmentService")
+            def svc;
+            
+            String serviceName = "LoanLedgerAdjustmentService";
+            String entityName = "ledgeradjustment";
+        
+            boolean allowClose = false;
+        
+            Map createPermission = [domain: 'LOAN', role: 'CAO_OFFICER'];
+        
+            def entity;
+            void init() {
+                if (entity) {
+                    entity.borrower = svc.getBorrower([objid: entity.acctid]);
+                }
+            }
+        
+            void beforeFetchList(Map params) {
+                if (entity) params.ledgerid = entity.objid;
+            }
+        
+            void beforeGetColumns(Map params) {
+                if (entity) params.ledgerid = entity.objid;
+            }
+        
+            Map createOpenerParams() {
+                def params = super.createOpenerParams();
+                if (entity) params.ledger = entity;
+                return params;
+            }
+        }
+    </code>
+</workunit>

@@ -1,0 +1,26 @@
+<workunit>
+    <invokers>
+        <invoker folderid="/menu/txn/treasury" action="create" caption="Check-out Deposit Slip" 
+            role="ASST_BRANCH_MANAGER,BRANCH_MANAGER" target="popup" resizable="false" />
+        
+        <invoker type='checkout:create' action='create' caption='Check-out' target='popup' />
+        <invoker type='checkout:open' action='open' caption='Check-out' target='popup' />
+        
+        <invoker type='formActions' action='confirm' caption='Confirm check-out'
+            visibleWhen="#{mode=='read' &amp;&amp; entity?.txnstate=='DRAFT'}" />
+        <!--
+        <invoker type="checkout:create" action="init" caption="Check-out" target="popup" resizable="false" />
+        <invoker type="checkout:open" action="open" caption="Check-out" target="popup" resizable="false" />
+        
+        <invoker type="formActions" action="close" caption="Close" immediate="true" mnemonic="c" shortcut="ctrl W" />
+        <invoker type="formActions" action="checkout" caption="Check-out" mnemonic="h" shortcut="ctrl H" 
+            visibleWhen="#{mode != 'read'}" />
+        -->
+    </invokers>
+    
+    <code class="com.rameses.clfc.treasury.checkout.CheckoutController" />
+    
+    <pages>
+        <page template="com.rameses.clfc.treasury.checkout.CheckoutPage" />
+    </pages>
+</workunit>

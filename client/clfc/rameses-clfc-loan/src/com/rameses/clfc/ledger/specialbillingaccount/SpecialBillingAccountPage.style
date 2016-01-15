@@ -1,0 +1,3 @@
+"entity.(loanapp.*|ledger.*)" [1==1] {
+    enabled: false;
+}

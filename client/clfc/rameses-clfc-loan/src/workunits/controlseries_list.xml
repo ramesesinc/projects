@@ -1,0 +1,30 @@
+<workunit extends="wtemplates/ListController.xml">
+    <invokers>
+        <!--
+        <invoker folderid="/explorer/txn/loan" caption="Control Series" role="ACCT_OFFICER" />
+        -->
+        <invoker folderid="/home/online/master" caption="Control Series" role="ACCT_OFFICER" />
+        
+        <invoker type="formActions" action="mapPaymentSeries" caption="Map Previous Payment Series"
+            domain="ADMIN" role="ADMIN_SUPPORT" />
+    </invokers>
+    
+    <code>
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        
+        class ControlSeriesListController extends ListController
+        {
+            String serviceName = "ControlSeriesService";
+            String entityName = "controlseries";
+        
+            Map createPermission = [domain: 'LOAN', role: 'ACCT_ASSISTANT'];            
+            
+            void mapPaymentSeries() {
+                service.mapPreviousPaymentSeries();
+            }
+        }
+    </code>
+</workunit>

@@ -1,0 +1,8 @@
+{
+  caption: 'ROUNDOFFNEAREST5CENTS',
+  description: 'round off to the nearest 5 cents',
+  code: 'com.rameses.clfc.functions.ModifiedNumberFunc.roundOffNearest5Cents',
+  title: '@ROUNDOFFNEAREST5CENTS( number )',
+  signature: '@ROUNDOFFNEAREST5CENTS( | )',
+  group: 'numeric'  
+}

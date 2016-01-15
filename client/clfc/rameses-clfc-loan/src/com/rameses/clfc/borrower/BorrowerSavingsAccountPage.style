@@ -1,0 +1,6 @@
+"addSavingAcct" [borrowerContext.mode != 'edit']{
+    enabled: false; 
+}
+"addSavingAcct" [borrowerContext.mode == 'edit']{
+    enabled: true; 
+}

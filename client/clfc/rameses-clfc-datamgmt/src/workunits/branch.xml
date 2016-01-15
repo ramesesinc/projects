@@ -1,0 +1,24 @@
+<workunit>
+    <invokers>
+        <invoker folderid="/explorer/setting" caption="Branch Information" 
+            action="open" target="popup" permission="system"/> 
+        
+        <invoker type="branch:info" caption="Branch Information" action="open" target="popup"/> 
+        
+        <invoker type="formActions" caption="Close" action="close" visibleWhen="#{mode=='read'}"/> 
+        
+        <invoker type="formActions" caption="Edit" action="edit" 
+            domain="ADMIN" role="SYSADMIN" permission="system" visibleWhen="#{mode=='read'}"/> 
+        
+        <invoker type="formActions" caption="Cancel" action="cancel" 
+            domain="ADMIN" role="SYSADMIN" permission="system" visibleWhen="#{mode=='edit'}"/> 
+        <invoker type="formActions" caption="Save" action="save" 
+            domain="ADMIN" role="SYSADMIN" permission="system" visibleWhen="#{mode=='edit'}"/> 
+    </invokers>
+    
+    <code class="com.rameses.clfc.branch.BranchInfoController"/>
+    
+    <pages>
+        <page template="com.rameses.clfc.branch.BranchInfoPage"/>
+    </pages>
+</workunit>

@@ -1,0 +1,15 @@
+"entity.*" [mode=='create' || mode=='edit'] {
+    enabled: true; 
+} 
+"entity.*" [!(mode=='create' || mode=='edit')] {
+    enabled: false; 
+} 
+"borrower" [mode=='create' || mode=='edit'] {
+    enabled: true; 
+} 
+"borrower" [!(mode=='create' || mode=='edit')] {
+    enabled: false; 
+} 
+"entity.(approved|posted)remarks" [1==1] {
+    enabled: false; 
+}

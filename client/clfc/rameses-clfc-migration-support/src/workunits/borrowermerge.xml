@@ -1,0 +1,18 @@
+<workunit>
+    <invokers>
+        <invoker type="borrowermerge:open" action="open" caption="Merge Request" target="popup" />
+        
+        <invoker type="formActions" action="close" caption="Close" mnemonic="c" shortcut="ctrl c" immediate="true" />
+        
+        <invoker type="formActions" action="approveDocument" caption="Approve" mnemonic="a" shortcut="ctrl a"
+            visibleWhen="#{entity.state=='FOR_APPROVAL'}" role="APPROVER" />
+        <invoker type="formActions" action="disapprove" caption="Disapprove" mnemonic="d" shortcut="ctrl d"
+            visibleWhen="#{entity.state=='FOR_APPROVAL'}" role="APPROVER" />
+    </invokers>
+    
+    <code class="com.rameses.clfc.migrationsupport.borrowermerge.BorrowerMergeController" />
+    
+    <pages>
+        <page template="com.rameses.clfc.migrationsupport.borrowermerge.BorrowerMergePage" />
+    </pages>
+</workunit>

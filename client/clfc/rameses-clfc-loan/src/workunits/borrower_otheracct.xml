@@ -1,0 +1,19 @@
+<workunit>
+    <invokers>
+        <!--
+        <invoker type="loanapp-borrower:plugin" action="init" caption=" Other Account  " index="-90"/>
+        -->
+        <invoker type="loanapp-borrowerindividual:plugin" action="init" caption=" Other Account  " index="-90"/>
+        <invoker type="loanapp-borrowerjuridical:plugin" action="init" caption=" Other Account  " index="-90"/>
+        <invoker type="loanapp-jointborrower:plugin" action="init" caption=" Other Account  " 
+            index="-90"/>
+        <invoker type="loanapp-comaker:plugin" action="init" caption=" Other Account  " 
+            index="-90"/>
+    </invokers>
+    
+    <code class="com.rameses.clfc.borrower.BorrowerOtherAccountController"/>
+    
+    <pages>
+        <page template="com.rameses.clfc.borrower.BorrowerOtherAccountPage"/>
+    </pages>
+</workunit>

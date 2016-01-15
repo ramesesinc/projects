@@ -1,0 +1,13 @@
+<folders>
+    <folder id="explorer">
+        <folder id="master">
+            <folder id="report-generator" caption="Report" index="20"/>
+        </folder>    
+    </folder>
+    
+    <folder id="home">
+            <folder id="reporttemplate" caption="Report">
+                
+            </folder>
+    </folder>
+</folders>

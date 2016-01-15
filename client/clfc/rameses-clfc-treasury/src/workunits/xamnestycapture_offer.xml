@@ -1,0 +1,14 @@
+<workunit>
+    <invokers>
+        <!--
+        <invoker type="offercapture:create" caption="Offer" action="init" target="popup"/>
+        <invoker type="offercapture:open" caption="Offer" target="popup" />
+        -->
+    </invokers>
+    
+    <code class="com.rameses.clfc.treasury.amnesty.capture.AmnestyCaptureOfferController" />
+    
+    <pages>
+        <page template="com.rameses.clfc.treasury.amnesty.capture.AmnestyCaptureOfferPage" />
+    </pages>
+</workunit>

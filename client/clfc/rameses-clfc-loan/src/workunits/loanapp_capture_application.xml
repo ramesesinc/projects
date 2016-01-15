@@ -1,0 +1,15 @@
+<workunit extends="wtemplates/LoanAppController.xml">
+    <invokers>        
+        <invoker folderid="/menu/txn/application" caption="Capture Application" 
+            role="CAO_OFFICER" action="init" index="1"/>             
+            
+        <invoker type="quick_launcher" code="CLA" caption="Capture Application" 
+            role="CAO_OFFICER" action="init"/>            
+    </invokers>
+    
+    <code class="com.rameses.clfc.loan.capture.NewCaptureLoanAppController"/>
+    
+    <pages>
+        <page template="com.rameses.clfc.loan.capture.NewCaptureLoanAppPage"/>
+    </pages>
+</workunit>

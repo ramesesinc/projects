@@ -1,0 +1,25 @@
+<workunit>
+    <invokers>
+        <invoker type="deposittype:create" action="create" caption="Deposit Type" 
+            role="DATAMGMT_AUTHOR" permission="deposittype.create" 
+            target="popup" resizable="false"/> 
+            
+        <invoker type="deposittype:open" action="open" caption="Deposit Type" 
+            role="DATAMGMT_AUTHOR" permission="deposittype.read" 
+            target="popup" resizable="false"/>  
+            
+        <invoker type="formActions" caption="Activate" action="activate" 
+            immediate="true" visibleWhen="#{mode=='read' &amp;&amp; entity.txnstate!='ACTIVATED'}"/>  
+        <invoker type="formActions" caption="Deactivate" action="deactivate" 
+            immediate="true" visibleWhen="#{mode=='read' &amp;&amp; entity.txnstate=='ACTIVATED'}"/>   
+            
+        <invoker type="formActions" caption="View Logs" action="viewLogs" 
+            immediate="true" visibleWhen="#{mode=='read'}"/> 
+    </invokers>     
+    
+    <code class="com.rameses.clfc.deposit.DepositTypeController"/>
+
+    <pages>
+        <page name="com.rameses.clfc.deposit.DepositTypePage"/>
+    </pages>
+</workunit>

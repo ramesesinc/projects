@@ -1,0 +1,12 @@
+"entity.remarks" [1==1] {
+    enabled: true;
+}
+"entity.shortage.(txndate|amount)" [1==1] {
+    enabled: false;
+}
+"entity.remarks" [mode=='read'] {
+    readonly: true;
+}
+"entity.remarks" [mode!='read'] {
+    readonly: false;
+}

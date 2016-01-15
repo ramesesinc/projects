@@ -1,0 +1,18 @@
+<workunit>
+    <invokers>
+        <invoker type="ledgerproceed:create" action="create" caption="Ledger Proceed" target="popup" />
+        <invoker type="ledgerproceed:open" action="open" caption="Ledger Proceed" target="popup" />
+        
+        <invoker type="formActions" action="submitForSelling" caption="Submit For Selling" mnemonic="s" shortcut="ctrl S"
+            visibleWhen="#{mode=='read' &amp;&amp; entity.txnstate=='DRAFT'}" />
+            
+        <invoker type="formActions" action="sell" caption="Sell" mnemonic="s" shortcut="ctrl S"
+            visibleWhen="#{mode=='read' &amp;&amp; entity.txnstate=='FOR_SELLING'}" />
+    </invokers>
+    
+    <code class="com.rameses.clfc.ledger.proceeds.LoanLedgerProceedsController" />
+    
+    <pages>
+        <page template="com.rameses.clfc.ledger.proceeds.LoanLedgerProceedsPage" />
+    </pages>
+</workunit>

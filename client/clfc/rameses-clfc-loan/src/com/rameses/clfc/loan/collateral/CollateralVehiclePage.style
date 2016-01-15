@@ -1,0 +1,6 @@
+"addVehicle" [mode != 'read'] {
+    enabled:true;
+}
+"addVehicle" [mode == 'read'] {
+    enabled:false;
+}

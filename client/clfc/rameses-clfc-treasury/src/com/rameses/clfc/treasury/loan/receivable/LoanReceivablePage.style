@@ -1,0 +1,15 @@
+"entity.amount" [entity.txntype=='CAPTURE' && mode!='read'] {
+    enabled: true;
+}
+"entity.amount" [mode=='read'] {
+    enabled: false;
+}
+"entity.description" [1==1] {
+    enabled: true;
+}
+"entity.description" [entity.txntype=='CAPTURE' && mode!='read'] {
+    readonly: false;
+}
+"entity.description" [mode=='read'] {
+    readonly: true;
+}

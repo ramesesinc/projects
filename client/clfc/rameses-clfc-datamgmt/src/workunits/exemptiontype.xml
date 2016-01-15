@@ -1,0 +1,25 @@
+<workunit>
+    <invokers>
+        <invoker type="exemptiontype:create" action="create" caption="Exemption Type" 
+            role="DATAMGMT_AUTHOR" permission="exemptiontype.create" 
+            target="popup" resizable="false"/> 
+            
+        <invoker type="exemptiontype:open" action="open" caption="Exemption Type" 
+            role="DATAMGMT_AUTHOR" permission="exemptiontype.read" 
+            target="popup" resizable="false"/>  
+            
+        <invoker type="formActions" caption="Activate" action="activate" 
+            immediate="true" visibleWhen="#{mode=='read' &amp;&amp; entity.txnstate!='ACTIVATED'}"/>  
+        <invoker type="formActions" caption="Deactivate" action="deactivate" 
+            immediate="true" visibleWhen="#{mode=='read' &amp;&amp; entity.txnstate=='ACTIVATED'}"/>   
+            
+        <invoker type="formActions" caption="View Logs" action="viewLogs" 
+            immediate="true" visibleWhen="#{mode=='read'}"/> 
+    </invokers>     
+    
+    <code class="com.rameses.clfc.exemption.ExemptionTypeController"/>
+
+    <pages>
+        <page name="com.rameses.clfc.exemption.ExemptionTypePage"/>
+    </pages>
+</workunit>

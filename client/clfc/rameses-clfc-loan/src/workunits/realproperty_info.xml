@@ -1,0 +1,14 @@
+<workunit>
+    <invokers>
+        <invoker type="realproperty:create" action="create" caption="Real Property Information" 
+            target="popup" resizable="false"/>
+        <invoker type="realproperty:open" caption="Real Property Information" 
+            target="popup" resizable="false"/>
+    </invokers>
+    
+    <code class="com.rameses.clfc.loan.collateral.RealPropertyFormController"/>
+    
+    <pages>
+        <page template="com.rameses.clfc.loan.collateral.RealPropertyFormPage"/>
+    </pages>
+</workunit>

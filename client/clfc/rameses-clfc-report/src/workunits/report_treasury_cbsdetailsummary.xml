@@ -1,0 +1,20 @@
+<workunit>
+    <invokers>
+        <invoker folderid="/explorer/report" caption="CBS Detail Summary Report" 
+            role="ACCT_ASSISTANT" domain="TREASURY" />
+        
+        <invoker type="formActions" action="close" mnemonic="c" caption="Close" shortcut="ctrl W" immediate="true" 
+            visibleWhen="#{mode == 'init'}" />
+        <invoker type="formActions" action="preview" mnemonic="v" caption="Preview" shortcut="ctrl V" 
+            visibleWhen="#{mode == 'init'}" />
+        <invoker type="formActions" action="back" mnemonic="b" caption="Back" shortcut="ctrl B"
+            visibleWhen="#{mode == 'preview'}" />
+    </invokers>
+    
+    <code class="com.rameses.clfc.report.treasury.cbsdetailsummary.CBSDetailSummaryReportController"/>
+    
+    <pages>
+        <page template="com.rameses.clfc.report.treasury.cbsdetailsummary.CBSDetailSummaryReportInitPage" />
+        <page template="com.rameses.osiris2.common.ui.ReportPreviewPage" name="preview" />
+    </pages>
+</workunit>

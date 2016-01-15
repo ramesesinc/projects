@@ -1,0 +1,16 @@
+"entity.remarks" [action == 'sendback'] {
+    enabled: true;
+    readonly: false;
+}
+"entity.remarks" [action != 'sendback' || mode == 'read'] {
+    enabled: true;
+    readonly: true;
+}
+"entity.reply" [action != 'sendback'] {
+    enabled: true;
+    readonly: false;
+}
+"entity.reply" [action == 'sendback' || entity.state == 'ACCEPTED'] {
+    enabled: true;
+    readonly: true;
+}

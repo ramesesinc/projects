@@ -1,0 +1,12 @@
+<workunit>
+    <invokers>
+        <invoker type="controlseries:create" action="init" caption="Control Series" target="popup"/>
+        <invoker type="controlseries:open" action="open" caption="Control Series" target="popup"/>
+    </invokers>
+    
+    <code class="com.rameses.clfc.controlseries.ControlSeriesController" />
+    
+    <pages>
+        <page template="com.rameses.clfc.controlseries.ControlSeriesPage"/>
+    </pages>
+</workunit>

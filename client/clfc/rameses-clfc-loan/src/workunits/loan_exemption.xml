@@ -1,0 +1,35 @@
+<workunit>
+    <invokers>
+        <invoker type="exemption:open" caption="Exemption" action="open" role="BRANCH_MANAGER,ACCT_ASSISTANT"/> 
+
+        <invoker type="formActions" caption="Close" action="closeForm" visibleWhen="#{mode=='read'}"/>  
+        <invoker type="formActions" caption="Cancel" action="cancelCreate" visibleWhen="#{mode=='create'}" immediate="true"/>  
+        <invoker type="formActions" caption=" Save " action="saveCreate" visibleWhen="#{mode=='create'}"/>  
+        
+        <invoker type="formActions" caption="Cancel" action="cancelUpdate" visibleWhen="#{mode=='edit'}" immediate="true"/>  
+        <invoker type="formActions" caption=" Save " action="saveUpdate" visibleWhen="#{mode=='edit'}"/>          
+        
+        <invoker type="formActions" caption="Edit" action="edit" visibleWhen="#{mode=='read' &amp;&amp; entity.state=='PENDING'}" 
+                 role="BRANCH_MANAGER,ACCT_ASSISTANT"/>  
+        <invoker type="formActions" caption="Reject" action="reject" visibleWhen="#{mode=='read' &amp;&amp; entity.state=='PENDING'}" 
+                 role="BRANCH_MANAGER,ACCT_ASSISTANT"/>                   
+        <invoker type="formActions" caption="Submit For Approval" action="submitForApproval" visibleWhen="#{mode=='read' &amp;&amp; entity.state=='PENDING'}" 
+                 role="BRANCH_MANAGER,ACCT_ASSISTANT"/> 
+                 
+        <invoker type="formActions" caption="Approve" action="approve" visibleWhen="#{mode=='read' &amp;&amp; entity.state=='FOR_APPROVAL'}"
+                 role="BRANCH_MANAGER"/> 
+        <invoker type="formActions" caption="Reject" action="reject" visibleWhen="#{mode=='read' &amp;&amp; entity.state=='FOR_APPROVAL'}"
+                 role="BRANCH_MANAGER"/> 
+        <invoker type="formActions" caption="Disapprove" action="disapprove" visibleWhen="#{mode=='read' &amp;&amp; entity.state=='APPROVED'}"
+                 role="BRANCH_MANAGER"/> 
+        <invoker type="formActions" caption="Terminate" action="submitForTermination" visibleWhen="#{terminateActionVisible==true}" 
+                 role="BRANCH_MANAGER"/> 
+        <invoker type="formActions" caption="View Logs" action="viewLogs" visibleWhen="#{mode!='create'}" role="BRANCH_MANAGER,ACCT_ASSISTANT"/>   
+    </invokers>
+    
+    <code class="com.rameses.clfc.loan.exemption.ExemptionController"/> 
+    
+    <pages>
+        <page template="com.rameses.clfc.loan.exemption.ExemptionPage"/> 
+    </pages>
+</workunit>

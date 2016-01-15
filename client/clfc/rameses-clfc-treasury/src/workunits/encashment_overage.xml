@@ -1,0 +1,12 @@
+<workunit>
+    <invokers>
+        <invoker type='encashment-plugin' name='overage' index='3' caption='Overage' />
+        <invoker type="encashment:overage" caption="Overage" action='init' />
+    </invokers>
+    
+    <code class="com.rameses.clfc.treasury.encashment.EncashmentOverageController" />
+    
+    <pages>
+        <page template="com.rameses.clfc.treasury.encashment.EncashmentOveragePage" />
+    </pages>
+</workunit>

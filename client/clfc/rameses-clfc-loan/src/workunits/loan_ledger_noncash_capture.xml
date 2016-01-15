@@ -1,0 +1,17 @@
+<workunit>
+    <invokers>
+        <invoker folderid="/menu/txn/ledger" action="create" caption="Capture Loan Ledger Non-cash"
+            role="CAO_OFFICER,CASHIER" target="popup" />
+        <invoker type="captureledgernoncash:open" action="open" caption="Capture Loan Ledger Non-cash" 
+            target="popup" />
+        
+        <invoker type="formActions" action="collect" caption="Collect" mnemonic="o" shortcut="ctrl o"
+            visibleWhen="#{mode=='read' &amp;&amp; entity.txnstate=='DRAFT'}" />
+    </invokers>
+    
+    <code class="com.rameses.clfc.ledger.noncash.CaptureLoanLedgerNoncashController" />
+    
+    <pages>
+        <page template="com.rameses.clfc.ledger.noncash.LoanLedgerNoncashPage" />
+    </pages>
+</workunit>

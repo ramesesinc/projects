@@ -1,0 +1,19 @@
+<workunit extends='wtemplates/LookupController.xml'>
+    <invokers>
+        <invoker type='specialbillingaccount:ledger:lookup' caption='Ledger Lookup' target='popup' />
+    </invokers>
+    
+    <code>
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        
+        class ForSpecialBillingLookupController extends LookupController
+        {
+            String serviceName = "LoanSpecialBillingAccountLedgerLookupService";
+            
+            boolean allowSearch = true;
+        }
+    </code>
+</workunit>

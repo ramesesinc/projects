@@ -1,0 +1,57 @@
+<workunit>
+    <invokers>
+        <invoker type="clfc:denomination" action="init"/>
+    </invokers>
+    
+    <code>
+        <![CDATA[
+            import com.rameses.rcp.common.*;
+            import com.rameses.rcp.annotations.*;
+            import com.rameses.osiris2.client.*;
+            import com.rameses.osiris2.common.*;
+            import com.rameses.clfc.util.LoanUtil;
+            
+            class CLFCDenominationController
+            {
+                @Binding
+                def binding;
+                
+                def onupdate
+                def entries;
+                def totalbreakdown = 0;
+                def editable = true;
+                
+                void init() {
+                    if (entries.size() == 0) {
+                        LoanUtil.denominations.each{
+                            def map = [:];
+                            map.putAll(it);
+                            entries << map;
+                        }
+                    }
+                    denominationHandler.reload();
+                }
+                
+                def denominationHandler = [
+                    isAllowAdd: { return false; },
+                    fetchList: {
+                        return entries;
+                    },
+                    onColumnUpdate: {itm, colName->
+                        itm.qty = (int) (itm.qty == null? 0.00 : itm.qty);
+                        
+                        itm.prevamt = itm.amount;
+                        itm.amount = itm.denomination * itm.qty;
+                        totalbreakdown += (itm.amount - itm.prevamt);
+                        if (onupdate) onupdate(totalbreakdown);
+                        binding.refresh('totalbreakdown');
+                    }
+                ] as EditorListModel;
+            }
+        ]]>
+    </code>
+    
+    <pages>
+        <page template="com.rameses.clfc.ui.CashBreakdownPage"/>
+    </pages>
+</workunit>

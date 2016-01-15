@@ -1,0 +1,30 @@
+<workunit>
+    <invokers>
+        <invoker folderid="/home/online/support" action="init" caption="Update Cash Breakdown" role="ADMIN_SUPPORT" domain="ADMIN" />
+        <!--
+        <invoker type="home.action" action="init" caption="Update Cash Breakdown" role="ADMIN_SUPPORT" domain="ADMIN" />
+        -->
+        
+        <invoker type="formActions" action="close" caption="Close" immediate="true" visibleWhen="#{page == 'init'}" 
+            mnemonic="c" shortcut="ctrl W" />
+        <invoker type="formActions" action="next" caption="Next" mnemonic="n" shortcut="ctrl N"
+            visibleWhen="#{page == 'init'}" />
+            
+        <invoker type="formActions" action="back" caption="Back" mnmonic="b" immediate="true" shortcut="ctrl B"
+            visibleWhen="#{page == 'main' &amp;&amp; mode == 'read'}" />
+        <invoker type="formActions" action="cancel" caption="Cancel" mnemonic="c" immediate="true" shortcut="ctrl C"
+            visibleWhen="#{mode == 'edit'}" />
+        <invoker type="formActions" action="save" caption="Save" mnemonic="s" shortcut="ctrl S" 
+            visibleWhen="#{mode != 'read'}" />
+        <invoker type="formActions" action="edit" caption="Edit" mnemonic="e" shortcut="ctrl E"
+            visibleWhen="#{page != 'init' &amp;&amp; mode == 'read'}" />
+        
+    </invokers>
+    
+    <code class="com.rameses.clfc.patch.cashbreakdown.UpdateCashBreakdownController"/>
+    
+    <pages>
+        <page template="com.rameses.clfc.patch.cashbreakdown.UpdateCashBreakdownInitPage" />
+        <page template="com.rameses.clfc.patch.cashbreakdown.UpdateCashBreakdownPage" name="main" />
+    </pages>
+</workunit>

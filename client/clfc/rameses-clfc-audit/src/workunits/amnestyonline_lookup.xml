@@ -1,0 +1,5 @@
+<workunit extends="wtemplates/ServiceLookupController.xml" serviceName="AmnestyOnlineLookupService">
+    <invokers>
+        <invoker type='amnestyonline:lookup' caption="Lookup Amnesties" target='popup' />
+    </invokers>
+</workunit>

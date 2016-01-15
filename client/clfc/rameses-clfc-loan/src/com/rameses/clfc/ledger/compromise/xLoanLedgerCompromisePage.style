@@ -1,0 +1,14 @@
+"data.*" [mode == 'read'] {
+    readonly: true;
+}
+"data.*' [mode != 'read'] {
+    readony: false;
+}
+"data.fixedamount|data.dteffectivefrom|data.dteffectiveto" [data.compromisetype != "FIXED AMOUNT" || data.compromisetype == null] {
+    readonly: true;
+    enabled: false;
+}
+"data.fixedamount|data.dteffectivefrom|data.dteffectiveto" [data.compromisetype == "FIXED AMOUNT"] {
+    readonly: false;
+    enabled: true;
+}

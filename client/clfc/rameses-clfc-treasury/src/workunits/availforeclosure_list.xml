@@ -1,0 +1,47 @@
+<workunit extends='wtemplates/ListController.xml'>
+    <invokers>
+        <!--
+        <invoker folderid='/home/online/loan' caption='Avail Foreclosure Amnesty' domain='LOAN' role='ACCT_OFFICER' />
+        -->
+    </invokers>
+    
+    <code>
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        
+        class AvailForeclosureAmnestyListController extends ListController
+        {
+            @Service("AvailForeclosureAmnestyService")
+            def svc;
+        
+            String serviceName = "AvailForeclosureAmnestyService";
+            String entityName = "availforeclosureamnesty";        
+        
+            Map createPermission = [domain: 'LOAN', role: 'CAO_OFFICER,LEGAL_OFFICER'];
+            
+            boolean closeButtonAdded = false;
+        
+            void beforeGetColumns(Map params) {
+                def state = selectedOption?.state;
+                if (state) params.state = state;
+            }
+        
+            def selectedOption;
+            def optionsModel = [
+                fetchList: { 
+                    return svc.getStates();; 
+                },
+                onselect: {o-> 
+                    query.state = selectedOption?.state; 
+                    reloadAll(); 
+                }
+            ] as ListPaneModel; 
+        }
+    </code>
+    
+    <pages>
+        <page template="com.rameses.clfc.ui.ListPage" />
+    </pages>
+</workunit>

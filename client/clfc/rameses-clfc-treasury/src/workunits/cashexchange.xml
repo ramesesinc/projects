@@ -1,0 +1,20 @@
+<workunit>
+    <invokers>
+        <invoker type='cashexchange:create' action='create' caption='Cash Exchange' target='popup' />
+        <invoker type='cashexchange:open' action='open' caption='Cash Exchange' target='popup' />
+        
+        <invoker type='formActions' action='submitForApproval' caption='Submit for Approval' mnemonic='s' shortcut='ctrl s'
+            visibleWhen="#{mode=='read' &amp;&amp; entity?.txnstate=='DRAFT'}" />
+        
+        <invoker type='formActions' action='approveDocument' caption='Approve' mnemonic='a' shortcut='ctrl a'
+            visibleWhen="#{mode=='read' &amp;&amp; entity?.txnstate=='FOR_APPROVAL'}" role='APPROVER' />
+        <invoker type='formActions' action='disapprove' caption='Disapprove' mnemonic='d' shortcut='ctrl d'
+            visibleWhen="#{mode=='read' &amp;&amp; entity?.txnstate=='FOR_APPROVAL'}" role='APPROVER' />
+    </invokers>
+    
+    <code class='com.rameses.clfc.treasury.cashexchange.CashExchangeController' />
+    
+    <pages>
+        <page template='com.rameses.clfc.treasury.cashexchange.CashExchangePage' />
+    </pages>
+</workunit>

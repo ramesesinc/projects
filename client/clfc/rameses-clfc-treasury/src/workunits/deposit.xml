@@ -1,0 +1,50 @@
+<workunit>
+    <invokers>
+        <invoker folderid="/menu/txn/treasury" action="init" caption="Create Deposit" 
+            role="ASST_BRANCH_MANAGER,BRANCH_MANAGER" target="popup" resizable="false" />
+        
+        <invoker type='deposit:create' action='create' caption='Deposit' target='popup' />
+        <invoker type='deposit:open' action='open' caption='Deposit' target='popup' />
+        
+        <invoker type='formActions' action='confirm' caption='Confirm deposit'
+            visibleWhen="#{mode=='read' &amp;&amp; entity?.txnstate=='DRAFT'}" />
+        
+    </invokers>
+    
+    <code class='com.rameses.clfc.treasury.deposit.DepositController' />
+    
+    <pages>
+        <page template='com.rameses.clfc.treasury.deposit.DepositPage' />
+    </pages>
+</workunit>
+
+<!--
+<workunit>
+    <invokers>
+        <invoker folderid="/menu/txn/treasury" action="init" caption="Create Deposit" 
+            role="ASST_BRANCH_MANAGER,BRANCH_MANAGER" target="popup" resizable="false" />
+        <invoker type="deposit:create" action="init" caption="Deposit" target="popup" resizable="false" />
+        <invoker type="deposit:open" action="open" caption="Deposit" target="popup" resizable="false" />
+        
+        <invoker type="formActions" action="close" caption="Close" immediate="true" mnemonic="c"
+            shortcut="ctrl W" visibleWhen="#{page == 'default'}" />
+        <invoker type="formActions" action="next" caption="Next" mnemonic="n" shortcut="ctrl N" 
+            visibleWhen="#{page == 'default'}" />
+            
+        <invoker type="formActions" action="back" caption="Back" immediate="true" mnemonic="b"
+            shortcut="ctrl B" visibleWhen="#{page == 'main' &amp;&amp; mode == 'create'}" />
+        <invoker type="formActions" action="save" caption="Save" mnemonic="s" shortcut="ctrl S"
+            visibleWhen="#{page == 'main' &amp;&amp; mode == 'create'}" />
+            
+        <invoker type="formActions" action="close" caption="Close" immediate="true" mnemonic="c"
+            shortcut="ctrl C" visibleWhen="#{page == 'main' &amp;&amp; mode == 'read'}" />
+    </invokers>
+    
+    <code class="com.rameses.clfc.treasury.deposit.DepositController" />
+    
+    <pages>
+        <page template="com.rameses.clfc.treasury.deposit.DepositInitPage" />
+        <page template="com.rameses.clfc.treasury.deposit.DepositPage" name="main" />
+    </pages>
+</workunit>
+-->

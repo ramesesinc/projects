@@ -1,0 +1,23 @@
+<workunit extends="wtemplates/LookupController.xml">
+    <invokers>
+        <invoker type="draft-billing-collector:lookup" caption="Field Collectors" target="popup"/>
+    </invokers>
+    
+    <code>
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        
+        class DraftBillingLookupController extends LookupController
+        {
+            String serviceName = "LoanLedgerBillingLookupService";
+            String entityName = "ledgerbilling";
+            
+            List fetchList(Map params) {
+                params.state = 'DRAFT';
+                return super.fetchList(params);
+            }
+        }
+    </code>
+</workunit>

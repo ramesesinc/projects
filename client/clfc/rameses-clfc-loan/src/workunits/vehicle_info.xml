@@ -1,0 +1,14 @@
+<workunit>
+    <invokers>
+        <invoker type="vehicle:create" action="create" caption="Vehicle Information" 
+            target="popup" resizable="false"/>
+        <invoker type="vehicle:open" action="open" caption="Vehicle Information" 
+            target="popup" resizable="false"/>
+    </invokers>
+    
+    <code class="com.rameses.clfc.loan.collateral.VehicleFormController"/>
+        
+    <pages>
+        <page template="com.rameses.clfc.loan.collateral.VehicleFormPage"/>
+    </pages>
+</workunit>

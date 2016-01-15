@@ -1,0 +1,20 @@
+<workunit>
+    <invokers>
+        <invoker type="overagewithdrawal:create" action="create" caption="Overage Withdrawal" target="popup" />
+        <invoker type="overagewithdrawal:open" action="open" caption="Overage Withdrawal" target="popup" />
+        
+        <invoker type="formActions" action="submitForApproval" caption="Submit For Approval" mnemonic="s" shortcut="ctrl S"
+            visibleWhen="#{mode=='read' &amp;&amp; entity.txnstate == 'DRAFT'}" />
+            
+        <invoker type="formActions" action="approveDocument" caption="Approve" mnemonic="a" shortcut="ctrl A"
+            visibleWhen="#{entity.txnstate == 'FOR_APPROVAL'}" role="APPROVER" />
+        <invoker type="formActions" action="disapprove" caption="Disapprove" mnemonic="d" shortcut="ctrl D"
+            visibleWhen="#{entity.txnstate == 'FOR_APPROVAL'}" role="APPROVER" />
+    </invokers>
+    
+    <code class="com.rameses.clfc.treasury.overage.withdrawal.OverageWithdrawalController" />
+    
+    <pages>
+        <page template="com.rameses.clfc.treasury.overage.withdrawal.OverageWithdrawalPage" />
+    </pages>
+</workunit>

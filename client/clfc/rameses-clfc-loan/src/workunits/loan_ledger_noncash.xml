@@ -1,0 +1,15 @@
+<workunit>
+    <invokers>
+        <invoker type="ledgernoncash:create" action="create" caption="Loan Ledger Non-cash" target="popup" />
+        <invoker type="ledgernoncash:open" action="open" caption="Loan Ledger Non-cash" target="popup" />
+        
+        <invoker type="formActions" action="collect" caption="Collect" mnemonic="o" shortcut="ctrl o" 
+            visibleWhen="#{mode=='read' &amp;&amp; entity.txnstate=='DRAFT'}" role="CASHIER" />
+    </invokers>
+    
+    <code class="com.rameses.clfc.ledger.noncash.LoanLedgerNoncashController" />
+    
+    <pages>
+        <page template="com.rameses.clfc.ledger.noncash.LoanLedgerNoncashPage" />
+    </pages>
+</workunit>

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="launcher" default="start" basedir=".">
+    
+    <target name="init">
+        <property file="conf.properties"/> 
+        
+        <taskdef resource="net/sf/antcontrib/antcontrib.properties">
+            <classpath>
+                <pathelement location="../../lib/ant-contrib-0.6.jar"/>
+            </classpath>
+        </taskdef>          
+    </target>
+    
+    <target name="start" depends="init, copy-osiris3-server, deploy-server-libs, deploy-services, deploy-datasources, deploy-apps, deploy-web, run-server">
+
+    </target>
+    
+    <!--=====================================================
+    = COPY OSIRIS SERVER 
+    =======================================================-->
+    <target name="copy-osiris3-server">
+        <copy todir="${target.server.dir}/bin">
+            <fileset dir="${osiris.server.dir}/bin"/>
+        </copy>
+        <copy todir="${target.server.dir}/lib">
+            <fileset dir="${osiris.server.dir}/lib"/>
+        </copy>
+        
+        <copy file="../server.conf" todir="${target.server.dir}/bin" overwrite="true"/> 
+    </target>
+    
+    <target name="deploy-server-libs" depends="init">
+        <!-- remove server libs from workspace -->
+        <property name="_target.server.lib.dir_" value="${target.server.dir}/lib"/> 
+        <dirset id="target.server.lib.name" includes="*.jar" dir="${_target.server.lib.dir_}"/>
+        <property name="target.server.lib.names" refid="target.server.lib.name"/> 
+        <for list="${target.server.lib.names}" delimiter=";" param="val">
+            <sequential> 
+                <delete file="${_target.server.lib.dir_}/@{val}"/> 
+            </sequential>
+        </for> 
+        
+        <!-- copy server libs to workspace -->
+        <property name="_source.server.lib.dir_" value="${osiris.server.dir}/lib"/> 
+        <dirset id="source.server.lib.name" includes="*.jar" dir="${_source.server.lib.dir_}"/>
+        <property name="source.server.lib.names" refid="source.server.lib.name"/> 
+        <for list="${source.server.lib.names}" delimiter=";" param="val">
+            <sequential>
+                <copy file="${_source.server.lib.dir_}/@{val}" todir="${_target.server.lib.dir_}"/>
+            </sequential>
+        </for>
+    </target>
+
+    <target name="deploy-services" depends="init">
+        <property name="_target.server.modules.dir_" value="${target.server.dir}/workspace/services/shared/v25/modules"/>        
+        <delete dir="${_target.dir_}" failonerror="false"/> 
+        
+        <for list="${shared.services}" delimiter=":" param="val">
+            <sequential>
+                <copy todir="${_target.server.modules.dir_}/@{val}">
+                    <fileset dir="${projects.dir}/server/@{val}"/>
+                </copy>
+            </sequential>
+        </for>
+    </target>
+    
+    <target name="deploy-datasources" depends="init">
+        <copy todir="${target.services.dir}/datasources">
+            <fileset dir="../datasources"/> 
+        </copy>
+    </target>    
+    
+    <target name="deploy-apps" depends="init">
+        <property name="_target.app.dir_" value="${target.services.dir}/apps/${target.app.name}"/> 
+        <delete dir="${_target.app.dir_}" failonerror="false"/> 
+        <copy file="../app.conf" todir="${_target.app.dir_}" overwrite="true"/> 
+        <copy todir="${_target.app.dir_}/adapters">
+            <fileset dir="../adapters"/> 
+        </copy>
+        <copy todir="${_target.app.dir_}/connections">
+            <fileset dir="../connections"/> 
+        </copy>        
+        
+        <for list="${app.modules}" delimiter=":" param="val">
+            <sequential>
+                <copy todir="${_target.app.dir_}/modules/@{val}">
+                    <fileset dir="${projects.dir}/server/@{val}"/>
+                </copy>
+            </sequential>
+        </for>        
+    </target>   
+    
+    <target name="deploy-web" depends="init">
+        <property name="_target.web.dir_" value="${target.server.dir}/workspace/web"/> 
+        <copy file="../anubis.hosts" todir="${_target.web.dir_}" overwrite="true"/> 
+    </target>    
+    
+    <target name="run-server" depends="init">
+        <exec executable="cmd" dir="${target.server.dir}/bin">
+            <arg value="/c"/>
+            <arg value="run2.bat"/>
+        </exec>
+    </target>
+        
+</project>

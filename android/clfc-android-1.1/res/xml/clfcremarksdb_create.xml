@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<db>
+    <sql>
+        CREATE TABLE remarks (
+        	objid TEXT NOT NULL PRIMARY KEY,
+        	billingid TEXT NOT NULL,
+        	itemid TEXT NOT NULL,
+        	state TEXT NOT NULL, -- 'PENDING,CLOSED',
+        	trackerid TEXT NOT NULL,
+        	txndate TEXT NOT NULL,
+        	borrower_objid TEXT NOT NULL,
+        	borrower_name TEXT NOT NULL,
+        	loanapp_objid TEXT NOT NULL,
+        	loanapp_appno TEXT NOT NULL,
+        	collector_objid TEXT NOT NULL,
+        	collector_name TEXT NOT NULL,
+        	routecode TEXT NOT NULL,
+        	remarks TEXT NOT NULL,
+        	lng NUMERIC NOT NULL,
+        	lat NUMERIC NOT NULL,
+        	type NUMERIC NOT NULL -- 'NORMAL,FOLLOWUP,SPECIAL'
+        )
+    </sql>
+</db>

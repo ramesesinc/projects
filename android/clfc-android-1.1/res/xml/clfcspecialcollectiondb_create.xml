@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<db> 
+    <sql>
+        <![CDATA[
+	        CREATE TABLE IF NOT EXISTS specialcollection (
+	        	objid TEXT NOT NULL PRIMARY KEY,
+	        	txndate TEXT NOT NULL,
+	        	collector_objid TEXT NOT NULL,
+	        	collector_name TEXT NOT NULL,
+	        	name TEXT NOT NULL,
+	        	remarks TEXT NOT NULL
+	        )
+        ]]>
+    </sql>
+</db>

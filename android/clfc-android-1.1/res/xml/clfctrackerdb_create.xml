@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<db>    
+    <sql>
+        CREATE TABLE location_tracker (
+        	objid TEXT NOT NULL PRIMARY KEY,
+        	seqno NUMERIC NOT NULL,
+        	txndate TEXT NOT NULL,
+        	trackerid TEXT NOT NULL,
+        	collectorid TEXT NOT NULL,
+        	lng NUMERIC NOT NULL,
+        	lat NUMERIC NOT NULL
+        )
+    </sql>
+    <sql>
+        CREATE TABLE prev_location (
+        	objid TEXT NOT NULL PRIMARY KEY,
+        	lng NUMERIC NOT NULL,
+        	lat NUMERIC NOT NULL
+        )
+    </sql>
+</db>

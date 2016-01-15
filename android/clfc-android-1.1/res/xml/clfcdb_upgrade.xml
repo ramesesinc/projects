@@ -1,0 +1,7 @@
+<db>    
+	<sql> DROP TABLE IF EXISTS collectionsheet </sql>
+	<sql> DROP TABLE IF EXISTS notes </sql>
+	<sql> DROP TABLE IF EXISTS sys_var </sql>
+	<sql> DROP TABLE IF EXISTS route </sql>
+	<sql> DROP TABLE IF EXISTS specialcollection </sql>
+</db>

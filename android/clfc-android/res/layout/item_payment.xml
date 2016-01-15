@@ -1,0 +1,361 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/RelativeLayout1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="5dp"
+        android:paddingTop="5dp" >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/textView6"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginLeft="5dp"
+                android:text="@string/txt_refno"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textSize="17sp" />
+
+            <TextView
+                android:id="@+id/textView14"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignRight="@+id/textView6"
+                android:text="@string/semicolon"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textSize="17sp" />
+
+            <TextView
+                android:id="@+id/tv_txndate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginLeft="5dp"
+                android:layout_toRightOf="@+id/textView6"
+                android:paddingLeft="5dp"
+                android:text="@string/txt_empty"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textSize="17sp" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/textView7"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginLeft="5dp"
+                android:text="@string/txt_txndate"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textSize="17sp" />
+
+            <TextView
+                android:id="@+id/textView15"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignRight="@+id/textView7"
+                android:text="@string/semicolon"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textSize="17sp" />
+
+            <TextView
+                android:id="@+id/tv_collector"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginLeft="5dp"
+                android:layout_toRightOf="@+id/textView7"
+                android:paddingLeft="5dp"
+                android:text="@string/txt_empty"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textSize="17sp" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/textView8"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginLeft="5dp"
+                android:text="@string/txt_type"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textSize="17sp" />
+
+            <TextView
+                android:id="@+id/textView16"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignRight="@+id/textView8"
+                android:text="@string/semicolon"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textSize="17sp" />
+
+            <TextView
+                android:id="@+id/tv_info_paymenttype"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginLeft="5dp"
+                android:layout_toRightOf="@+id/textView8"
+                android:paddingLeft="5dp"
+                android:text="@string/txt_empty"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textSize="17sp" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rl_check"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" >
+
+		        <RelativeLayout
+		            android:layout_width="match_parent"
+		            android:layout_height="wrap_content" >
+		
+		            <TextView
+		                android:id="@+id/TextView9"
+		                android:layout_width="100dp"
+		                android:layout_height="wrap_content"
+		                android:layout_alignParentLeft="true"
+		                android:layout_alignParentTop="true"
+		                android:layout_marginLeft="5dp"
+		                android:text="@string/txt_bank"
+		                android:textAppearance="?android:attr/textAppearanceMedium"
+		                android:textSize="17sp" />
+		
+		            <TextView
+		                android:id="@+id/TextView16"
+		                android:layout_width="wrap_content"
+		                android:layout_height="wrap_content"
+		                android:layout_alignParentTop="true"
+		                android:layout_alignRight="@+id/TextView9"
+		                android:text="@string/semicolon"
+		                android:textAppearance="?android:attr/textAppearanceMedium"
+		                android:textSize="17sp" />
+		
+		            <TextView
+		                android:id="@+id/tv_info_bank"
+		                android:layout_width="wrap_content"
+		                android:layout_height="wrap_content"
+		                android:layout_alignParentRight="true"
+		                android:layout_alignParentTop="true"
+		                android:layout_marginLeft="5dp"
+		                android:layout_toRightOf="@+id/TextView16"
+		                android:paddingLeft="5dp"
+		                android:text="@string/txt_empty"
+		                android:textAppearance="?android:attr/textAppearanceMedium"
+		                android:textSize="17sp" />
+		
+		        </RelativeLayout>
+		        
+		         <RelativeLayout
+		            android:layout_width="match_parent"
+		            android:layout_height="wrap_content" >
+		
+		            <TextView
+		                android:id="@+id/TextView8"
+		                android:layout_width="100dp"
+		                android:layout_height="wrap_content"
+		                android:layout_alignParentLeft="true"
+		                android:layout_alignParentTop="true"
+		                android:layout_marginLeft="5dp"
+		                android:text="@string/txt_checkno"
+		                android:textAppearance="?android:attr/textAppearanceMedium"
+		                android:textSize="17sp" />
+		
+		            <TextView
+		                android:id="@+id/TextView17"
+		                android:layout_width="wrap_content"
+		                android:layout_height="wrap_content"
+		                android:layout_alignParentTop="true"
+		                android:layout_alignRight="@+id/TextView8"
+		                android:text="@string/semicolon"
+		                android:textAppearance="?android:attr/textAppearanceMedium"
+		                android:textSize="17sp" />
+		
+		            <TextView
+		                android:id="@+id/tv_info_checkno"
+		                android:layout_width="wrap_content"
+		                android:layout_height="wrap_content"
+		                android:layout_alignParentRight="true"
+		                android:layout_alignParentTop="true"
+		                android:layout_marginLeft="5dp"
+		                android:layout_toRightOf="@+id/TextView17"
+		                android:paddingLeft="5dp"
+		                android:text="@string/txt_empty"
+		                android:textAppearance="?android:attr/textAppearanceMedium"
+		                android:textSize="17sp" />
+		
+		        </RelativeLayout>
+
+		         
+		         <RelativeLayout
+		            android:layout_width="match_parent"
+		            android:layout_height="wrap_content" >
+		
+		            <TextView
+		                android:id="@+id/TextView7"
+		                android:layout_width="100dp"
+		                android:layout_height="wrap_content"
+		                android:layout_alignParentLeft="true"
+		                android:layout_alignParentTop="true"
+		                android:layout_marginLeft="5dp"
+		                android:text="@string/txt_checkdate"
+		                android:textAppearance="?android:attr/textAppearanceMedium"
+		                android:textSize="17sp" />
+		
+		            <TextView
+		                android:id="@+id/TextView15"
+		                android:layout_width="wrap_content"
+		                android:layout_height="wrap_content"
+		                android:layout_alignParentTop="true"
+		                android:layout_alignRight="@+id/TextView7"
+		                android:text="@string/semicolon"
+		                android:textAppearance="?android:attr/textAppearanceMedium"
+		                android:textSize="17sp" />
+		
+		            <TextView
+		                android:id="@+id/tv_info_checkdate"
+		                android:layout_width="wrap_content"
+		                android:layout_height="wrap_content"
+		                android:layout_alignParentRight="true"
+		                android:layout_alignParentTop="true"
+		                android:layout_marginLeft="5dp"
+		                android:layout_toRightOf="@+id/TextView15"
+		                android:paddingLeft="5dp"
+		                android:text="@string/txt_empty"
+		                android:textAppearance="?android:attr/textAppearanceMedium"
+		                android:textSize="17sp" />
+		
+		        </RelativeLayout>
+		         
+            </LinearLayout>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/textView9"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginLeft="5dp"
+                android:text="@string/txt_amount"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textSize="17sp" />
+
+            <TextView
+                android:id="@+id/textView17"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignRight="@+id/textView9"
+                android:text="@string/semicolon"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textSize="17sp" />
+
+            <TextView
+                android:id="@+id/tv_info_paymentamount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginLeft="5dp"
+                android:layout_toRightOf="@+id/textView9"
+                android:paddingLeft="5dp"
+                android:text="@string/txt_empty"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textSize="17sp" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/TextView03"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginLeft="5dp"
+                android:text="@string/txt_paidby"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textSize="17sp" />
+
+            <TextView
+                android:id="@+id/TextView02"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignRight="@+id/TextView03"
+                android:text="@string/semicolon"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textSize="17sp" />
+
+            <TextView
+                android:id="@+id/tv_info_paidby"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginLeft="5dp"
+                android:layout_toRightOf="@+id/TextView03"
+                android:paddingLeft="5dp"
+                android:text="@string/txt_empty"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textSize="17sp" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <View
+        android:id="@+id/view1"
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="false"
+        android:background="@color/divider_color" />
+
+</RelativeLayout>

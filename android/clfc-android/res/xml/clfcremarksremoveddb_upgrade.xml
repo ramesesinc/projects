@@ -1,0 +1,3 @@
+<db>
+	<sql> DROP TABLE IF EXISTS remarks_removed </sql>
+</db>

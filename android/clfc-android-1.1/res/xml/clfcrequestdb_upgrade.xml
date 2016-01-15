@@ -1,0 +1,3 @@
+<db>
+	<sql> DROP TABLE IF EXISTS void_request </sql>
+</db>

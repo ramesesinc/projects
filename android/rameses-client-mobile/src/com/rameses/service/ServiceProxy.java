@@ -1,0 +1,24 @@
+/*
+ * EJBServiceProxy.java
+ *
+ * Created on September 23, 2011, 12:43 PM
+ *
+ * To change this template, choose Tools | Template Manager
+ * and open the template in the editor.
+ */
+
+package com.rameses.service;
+
+import java.lang.reflect.Method;
+import java.util.Map;
+
+/**
+ *
+ * @author jzamss
+ */
+public interface ServiceProxy {
+    public Object invoke(String action, Object[] params) throws Exception;
+    public Object invoke(String action) throws Exception;
+    public Map getConf();
+
+}

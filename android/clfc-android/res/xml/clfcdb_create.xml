@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<db>    
+    <sql>
+        CREATE TABLE collectionsheet (
+        	objid TEXT NOT NULL PRIMARY KEY,
+        	billingid TEXT NOT NULL,
+        	itemid TEXT NOT NULL,
+        	seqno NUMERIC NOT NULL,
+        	borrower_objid TEXT NOT NULL,
+        	borrower_name TEXT NOT NULL,
+        	loanapp_objid TEXT NOT NULL,
+        	loanapp_appno TEXT NOT NULL,
+        	loanapp_loanamount NUMERIC NOT NULL,
+        	amountdue NUMERIC NOT NULL,
+        	overpaymentamount NUMERIC NOT NULL,
+        	refno TEXT NOT NULL,
+        	routecode TEXT NOT NULL,
+        	term NUMERIC NOT NULL,
+        	releasedate TEXT NOT NULL,
+        	maturitydate TEXT NOT NULL,
+        	dailydue NUMERIC NOT NULL, 
+        	balance NUMERIC NOT NULL,
+        	interest NUMERIC NOT NULL,
+        	penalty NUMERIC NOT NULL,
+        	others NUMERIC NOT NULL,
+        	homeaddress TEXT NOT NULL,
+        	collectionaddress TEXT,
+        	type TEXT NOT NULL, -- 'NORMAL,SPECIAL,FOLLOWUP',
+        	paymentmethod TEXT NOT NULL, -- 'schedule,over'
+        	isfirstbill NUMERIC NOT NULL,
+        	totaldays NUMERIC NOT NULL
+        ) 
+    </sql> 
+    <sql>
+        CREATE TABLE payment (
+        	objid TEXT NOT NULL PRIMARY KEY,
+        	parentid TEXT NOT NULL,
+        	itemid TEXT NOT NULL,
+        	billingid TEXT NOT NULL,
+        	txndate TEXT NOT NULL,
+        	refno TEXT NOT NULL,
+        	posttype TEXT NOT NULL, -- Underpayment,Schedule,Overpayment
+        	paytype TEXT NOT NULL, -- 'schedule,over'
+        	payoption TEXT NOT NULL, -- 'cash,check'
+        	amount NUMERIC NOT NULL,
+        	paidby TEXT NOT NULL,
+        	bank_objid TEXT,
+        	bank_name TEXT,
+        	check_no TEXT,
+        	check_date TEXT,
+        	collector_objid TEXT NOT NULL
+        )
+    </sql>
+    <sql>
+        CREATE TABLE void_request (
+        	objid TEXT NOT NULL PRIMARY KEY,
+        	state TEXT NOT NULL, -- 'PENDING,APPROVED'
+        	csid TEXT NOT NULL,
+        	paymentid TEXT NOT NULL,
+        	itemid TEXT NOT NULL,
+        	collector_objid TEXT NOT NULL
+        )
+    </sql>
+    <sql>
+        CREATE TABLE remarks (
+        	objid TEXT NOT NULL PRIMARY KEY,
+        	billingid TEXT NOT NULL,
+        	itemid TEXT NOT NULL,
+        	remarks TEXT NOT NULL,
+        	collector_objid TEXT NOT NULL,
+        	collector_name TEXT NOT NULL
+        )
+    </sql>
+    <sql>
+		CREATE TABLE notes ( 
+			objid TEXT NOT NULL PRIMARY KEY,
+			parentid TEXT NOT NULL,
+			itemid	TEXT NOT NULL,
+			txndate TEXT NOT NULL,
+			dtcreated TEXT NOT NULL,
+			remarks TEXT NOT NULL
+		) 
+    </sql> 
+    <sql>
+		CREATE TABLE collector_remarks ( 
+			objid TEXT NOT NULL PRIMARY KEY,
+			parentid TEXT NOT NULL,
+			txndate TEXT NOT NULL,
+			collectorname TEXT NOT NULL,
+			remarks TEXT NOT NULL
+		) 
+    </sql> 
+    <sql>
+		CREATE TABLE followup_remarks ( 
+			objid TEXT NOT NULL PRIMARY KEY,
+			parentid TEXT NOT NULL,
+			txndate TEXT NOT NULL,
+			collectorname TEXT NOT NULL,
+			remarks TEXT NOT NULL
+		) 
+    </sql>  
+    <sql>
+		CREATE TABLE sys_var ( 
+			name TEXT NOT NULL PRIMARY KEY,   
+			value TEXT NOT NULL 
+		) 
+    </sql>
+    <sql>
+        CREATE TABLE collection_group (
+        	objid TEXT NOT NULL PRIMARY KEY,
+        	state TEXT NOT NULL, -- 'ACTIVE,REMITTED',
+        	billingid TEXT NOT NULL,
+        	billdate TEXT NOT NULL,
+        	collectorid TEXT NOT NULL,
+        	description TEXT NOT NULL,
+        	area TEXT,
+        	type TEXT NOT NULL -- 'route,followup,special'
+        )
+    </sql>
+    <sql>
+        CREATE TABLE specialcollection (
+        	objid TEXT NOT NULL PRIMARY KEY,
+        	state TEXT NOT NULL, -- 'FOR_DOWNLOAD,DOWNLOADED',
+        	txndate TEXT NOT NULL,
+        	collector_objid TEXT NOT NULL,
+        	collector_name TEXT NOT NULL,
+        	name TEXT NOT NULL,
+        	remarks TEXT NOT NULL
+        )
+    </sql>
+    <sql>
+        CREATE TABLE bank (
+        	objid TEXT NOT NULL PRIMARY KEY,
+        	name TEXT NOT NULL
+        )
+    </sql>
+    <sql>
+        CREATE TABLE amnesty (
+        	objid TEXT NOT NULL PRIMARY KEY,
+        	parentid TEXT NOT NULL,
+        	refno TEXT NOT NULL,
+        	dtstarted TEXT NOT NULL,
+        	dtended TEXT,
+        	amnestyoption TEXT NOT NULL, -- WAIVER,FIX
+        	iswaivepenalty NUMERIC NOT NULL,
+        	iswaiveinterest NUMERIC NOT NULL,
+        	grantedoffer_amount NUMERIC,
+        	grantedoffer_days NUMERIC,
+        	grantedoffer_months NUMERIC,
+        	grantedoffer_isspotcash NUMERIC, -- 0=false,1=true
+        	grantedoffer_date TEXT
+        )
+    </sql>
+</db>

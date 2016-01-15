@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<db> 
+    <sql>
+        <![CDATA[
+	        CREATE TABLE payment (
+	        	objid TEXT NOT NULL PRIMARY KEY,
+	        	parentid TEXT NOT NULL,
+	        	state TEXT NOT NULL, -- 'PENDING,CLOSED',
+	        	itemid TEXT NOT NULL,
+	        	billingid TEXT NOT NULL,
+	        	trackerid TEXT NOT NULL,
+	        	collector_objid TEXT NOT NULL,
+	        	collector_name TEXT NOT NULL,
+	        	borrower_objid TEXT NOT NULL,
+	        	borrower_name TEXT NOT NULL,
+	        	loanapp_objid TEXT NOT NULL,
+	        	loanapp_appno TEXT NOT NULL,
+	        	routecode TEXT NOT NULL,
+	        	refno TEXT NOT NULL,
+	        	txndate TEXT NOT NULL,
+	        	paytype TEXT NOT NULL,
+	        	payoption TEXT NOT NULL,
+	        	amount NUMERIC NOT NULL,
+	        	paidby TEXT NOT NULL,
+	        	bank_objid TEXT,
+	        	bank_name TEXT,
+	        	check_no TEXT,
+	        	check_date TEXT,
+	        	isfirstbill NUMERIC NOT NULL,
+	        	lng NUMERIC NOT NULL,
+	        	lat NUMERIC NOT NULL,
+	        	type TEXT NOT NULL, -- 'NORMAL,FOLLOWUP,SPECIAL'
+	        	overpaymentamount NUMERIC NOT NULL
+	        )
+        ]]>
+    </sql>
+</db>

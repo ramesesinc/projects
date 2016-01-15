@@ -1,0 +1,44 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'org.javafxports:jfxmobile-plugin:1.0.0-b9'
+        classpath 'com.android.tools.build:gradle:1.0.0'
+        classpath 'org.codehaus.groovy:gradle-groovy-android-plugin:0.3.5'
+    }
+}
+
+apply plugin: 'org.javafxports.jfxmobile'
+
+repositories {
+    jcenter()
+}
+
+mainClassName = 'com.rameses.Main'
+
+jfxmobile {
+    android {
+        manifest = 'lib/AndroidManifest.xml'
+    }
+    ios {
+        infoPList = file('src/ios/Default-Info.plist')
+    }
+}
+
+jfxmobile {
+    android {
+        packagingOptions {
+        exclude 'build.properties'
+        }
+    }
+}
+
+dependencies {
+    compile 'org.codehaus.groovy:groovy:2.4.0:grooid'
+}
+
+dependencies {    
+    compile fileTree(dir: 'lib', include: '*.jar')
+}
+

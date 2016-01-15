@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<db>    
+    <sql>
+        CREATE TABLE void_request(
+        	objid TEXT NOT NULL PRIMARY KEY,
+        	state TEXT NOT NULL, -- 'PENDING,APPROVED,DISAPPROVED',
+        	csid TEXT NOT NULL,
+        	paymentid TEXT NOT NULL,
+        	itemid TEXT NOT NULL,
+        	txndate TEXT NOT NULL,
+        	collector_objid TEXT NOT NULL,
+        	collector_name TEXT NOT NULL,
+        	reason TEXT NOT NULL
+        ) 
+    </sql>
+</db>

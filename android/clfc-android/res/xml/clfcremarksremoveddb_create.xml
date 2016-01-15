@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<db>
+    <sql>
+        CREATE TABLE remarks_removed (
+        	objid TEXT NOT NULL PRIMARY KEY,
+        	billingid TEXT NOT NULL,
+        	itemid TEXT NOT NULL,
+        	state TEXT NOT NULL -- 'PENDING,CLOSED'
+        )
+    </sql>
+</db>

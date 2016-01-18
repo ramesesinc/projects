@@ -1,0 +1,190 @@
+<workunit> 
+    <invokers>
+        <invoker type="patientchart:open" index="0" caption="Patient Chart" action="start" target="window"/>
+        <invoker type="extActions"  caption="Assign Physician" action="assignPhysician" visibleWhen="#{entity.attendingphysician?.objid==null}" />
+        <invoker type="extActions"  caption="Refresh" action="refresh"/>
+    </invokers>  
+    <code>
+         <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import java.rmi.server.*;
+        import com.rameses.osiris2.reports.*;
+        import com.rameses.util.*;
+        
+        class PatientChartController  extends PageFlowController {
+        
+            @Service("PatientChartService")
+            def service;
+        
+            @Service("PatientService")
+            def patientSvc;
+            
+            @Binding
+            def binding;
+            
+            @FormTitle
+            def title;
+            
+            @FormId
+            def formId;
+            
+            def optionList;
+            def selectedOption;
+            def entity;
+            def mode;
+            def saveHandler;
+            def state;
+            def photo;
+            def taskText;
+            
+            String entityName = "patientchart:info";
+            
+            def start() {
+                mode = 'read';
+                state = 'new'
+                entity = service.open( entity );   
+                photo = patientSvc.getPhoto([objid:entity.objid]);
+                title = "Chart No : " + entity.chartno + " - " + entity.patient.lastname + ", " + entity.patient.firstname;
+                formId = entity.objid;
+                loadOptions();
+                if( entity.state ) {
+                    state = entity.state.toLowerCase();
+                }
+                buildText();
+                return super.start();
+            }
+
+            void loadOptions() {
+                optionList = Inv.lookupOpeners( "patientchart:option", [entity:entity] );
+                if(optionList) selectedOption = optionList[0];
+            }
+            
+            void submitForAssessment() {
+                service.submitForAssessment( entity );
+            }
+
+            void sendForHome() {
+                service.sendForHome( entity );
+                MsgBox.alert('Chart submitted');
+            }
+            
+            void sendForReferral() {
+                service.sendForReferral( entity );
+                MsgBox.alert('Chart submitted');
+            }
+            
+            void sendForAdmission() {
+                service.sendForAdmission( entity );
+                MsgBox.alert('Chart submitted');
+            }
+            
+            def showPatient() {
+                def op = Inv.lookupOpener( "patient:open", [entity:entity.patient] ); 
+                op.target = 'popup';
+                return op;
+            }
+            
+            def smsPatient() {
+                def e = [:];
+                e.phoneno = entity.patient.mobileno;
+                e.receipienttype = 'patient';
+                e.message = "Ref No " + entity.chartno;
+                return Inv.lookupOpener( "smsmessage:send", [entity:e]);
+            }
+            
+            def getPhysician() {
+                if( entity.attendingphysician?.objid == null )
+                    return 'Not Assigned';
+                else
+                    return entity.attendingphysician.lastname + ", " + entity.attendingphysician.firstname;
+            }
+            
+            def df = new java.text.SimpleDateFormat( "MMM dd, yyyy");
+            def getBirthage() {
+                String s = "";
+                if( entity.patient.birthdate ) {
+                    s = df.format( entity.patient.birthdate ) + " ("+ entity.patient.age +")<br>";
+                };
+                return s + (entity.patient.gender=='M'?'Male':'Female'); 
+            }
+            
+            def getSection() {
+                if( entity.section == 'OPD' ) return "Out Patient (OPD)";
+                else if( entity.section == 'ER' )return "Emergency Room (ER)";
+                else return "In Patient";
+            }
+            
+            def assignPhysician() {
+                def s = { o->
+                    def m = [id:o.objid, objid: entity.objid] ;
+                    m.name = o.lastname +","+o.firstname;
+                    service.assignPhysician( m );
+                    entity.attendingphysician = [objid:m.id, lastname:o.lastname, firstname:o.firstname, contactno: o.contactno];
+                    binding.refresh();
+                }
+                def op = Inv.lookupOpener( "physician:lookup", [onselect:s] ); 
+                op.target = 'popup';
+                return op;
+            }
+                        
+            def sendSMS() {
+                def e = [:];
+                e.phoneno = entity.attendingphysician.contactno;
+                e.receipienttype = 'physisican';
+                e.message = "Patient: " + entity.patient.lastname + ", " + entity.patient.firstname;
+                return Inv.lookupOpener( "smsmessage:send", [entity:e]);
+            }
+            
+            void buildText() {
+                def info = [:];
+                info.tasklist = service.getTodoList([objid:entity.objid]);
+                info.activitylist = service.getActivityList([objid:entity.objid]);
+                taskText = TemplateProvider.instance.getResult("html/tasklist.htm", [entity:info] );
+            }
+            
+            void refresh() {
+                entity = service.open( entity );   
+                photo = patientSvc.getPhoto([objid:entity.objid]);
+                title = "Chart No : " + entity.chartno + " - " + entity.patient.lastname + ", " + entity.patient.firstname;
+                formId = entity.objid;
+                loadOptions();
+                if( entity.state ) {
+                    state = entity.state.toLowerCase();
+                }
+                buildText();
+            }
+            
+            
+            def openActivity(o) {
+                return Inv.lookupOpener( "patientchart:activity-view:"+o.type.toLowerCase(), [entity: o] );
+            }
+            
+        }
+        ]]>
+        
+    </code>
+    <pageflow>
+        <start>
+            <transition to="#{state}"/>
+        </start>
+        <page name="new" title="Patient Chart (Initial)">
+            <transition to="end" caption="Close"/>
+            <transition to="assessment" caption="Submit Assessment" action="submitForAssessment" role="NURSE" permission="patientchart.submitassessment"/>
+        </page>
+        <page name="assessment" title="Patient Chart (For Assessment)">
+            <transition to="end" caption="Close"/>
+            <transition to="end" name="home" caption="Send Home" action="sendForHome" role="PHYSICIAN" permission="patientchart.disposition"/>
+            <transition to="end" name="referral" caption="Send For Referral" action="sendForReferral" role="PHYSICIAN" permission="patientchart.disposition"/>
+            <transition to="end" name="admission" caption="Send for Admission" action="sendForAdmission" role="PHYSICIAN" permission="patientchart.disposition"/>
+        </page>
+        <end/>
+    </pageflow>
+    
+    <pages>
+        <page name="new" template="com.rameses.ehoms.patientchart.PatientChartPage"/>
+        <page name="assessment" template="com.rameses.ehoms.patientchart.PatientChartPage"/>
+    </pages>
+</workunit>

@@ -1,0 +1,37 @@
+<workunit> 
+    <invokers>
+        <invoker type="patientchart:activity:vs" action="init"/>
+        <invoker type="patientchart:activity-view:vs" action="init" target="popup"/>
+    </invokers>   
+    <code>
+         <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import java.rmi.server.*;
+        import com.rameses.osiris2.reports.*;
+        import com.rameses.util.*;
+        
+        class VitalSignActivityController  {
+        
+            @Service("PatientChartVitalSignService")
+            def service;
+            
+            def parent;
+            def entity;
+            def items;
+            def infoText;
+            
+            void init() {
+                items = service.getList( [activityid:entity.objid] );
+                infoText = TemplateProvider.instance.getResult( "templates/activity/vs.htm", [results:items] );
+            }
+            
+        }
+        ]]>
+    </code>
+    <pages>
+        <page template="com.rameses.ehoms.common.ViewHandlerPage"/>
+    </pages>
+</workunit>

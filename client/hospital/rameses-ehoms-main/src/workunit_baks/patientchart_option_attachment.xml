@@ -1,0 +1,42 @@
+<workunit> 
+    <invokers>
+        <invoker type="patientchart:option" index="3" caption="Attachments" action="init"/>
+    </invokers>  
+    
+    <code>
+         <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import java.rmi.server.*;
+        import com.rameses.util.*;
+        
+        class PatientChartAttachmentController  {
+        
+            @Service("PatientChartAttachmentService")
+            def service;
+            
+            @Binding
+            def binding;
+            
+            def entity;
+            def image;    
+            
+            def text;
+            
+            void init() {
+                image = service.getFirst().image;
+                text = "<img src='file:///C:/tests/download2.jpg'/><a href='doView'>Click</a>";
+            }
+            
+            def doView() {
+                return Inv.lookupOpener( "attachment:viewer", [image: image] );
+            }
+        }
+        ]]>
+    </code>
+    <pages>
+        <page template="com.rameses.ehoms.patientchart.AttachmentPage"/>
+    </pages>
+</workunit>

@@ -1,0 +1,98 @@
+<workunit>
+    <invokers>
+        <invoker type="notetemplate:field" action="init" target="popup"/>
+    </invokers>
+    <code>
+        <![CDATA[
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+    
+        class NoteTemplateController  {
+
+            @Service("NoteTemplateService")
+            def noteSvc;
+        
+            @Binding
+            def binding;
+            
+            def handler;
+            def viewtype = "text";
+            def section;
+            def _text;
+            boolean keyword = false;
+            
+            def init() {
+                if(!section && !handler) {
+                    MsgBox.alert( "section and handler must be defined.");
+                }    
+                return viewtype;
+            }
+            
+            void setText( String s ) {
+                _text = s;
+                handler(s);
+            }
+            
+            String getText() {
+                return _text;
+            }
+            
+            def editorModel = [
+                fetchList: { o->
+                    def s = o.searchtext;
+                    if(!s) s = "%";
+                    else s += "%";
+                    def list = noteSvc.getTemplatesByKeyword( [section:section, keyword: s] );
+                    list.each { it.tag = it.keyword }
+                    return list;
+                },
+                getTemplate: { o->
+                    return o.text;
+                }
+            ] as HtmlEditorModel;
+            
+            def editorTextModel = [
+                fetchList: { o->
+                    def s = o.searchtext;
+                    if(!s) s = "%";
+                    def list;
+                    if( keyword ) {
+                        s += "%";
+                        list = noteSvc.getTemplatesByKeyword( [section:section, keyword: s] );
+                        list.each { it.tag = it.keyword }
+                    }
+                    else {
+                        s = "%"+s+"%";
+                        list = noteSvc.getTemplates( [section:section, keyword: s] );
+                        list.each { it.tag = it.text }
+                    }
+                    return list;
+                },
+                getTemplate: { o->
+                    return o.text;
+                }
+            ] as TextEditorModel;
+            
+            def showTemplate() {
+                def m = [section:section];
+                m.handler = { o->
+                    if(!text) 
+                        text = '';
+                    else
+                        text += "\n";
+                    text += o;
+                    binding.refresh();
+                };
+                return Inv.lookupOpener( "notetemplate:lookup", m );
+            }
+        }
+        
+        ]]>    
+    </code>
+    <pages>
+        <page name="text" template="com.rameses.ehoms.common.NoteTemplateText"/>
+        <page name="html" template="com.rameses.ehoms.common.NoteTemplateHtml"/>
+    </pages>
+</workunit>

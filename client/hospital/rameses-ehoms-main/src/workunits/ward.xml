@@ -1,0 +1,34 @@
+<workunit> 
+    <invokers>
+        <invoker type="ward:create" index="0" caption="New Drug" action="create" />
+        <invoker type="ward:open" index="0" caption="Drug" action="open"/>
+    </invokers>  
+    <code>
+         <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import java.rmi.server.*;
+        import com.rameses.util.*;
+        
+        class WardController extends CRUDController {
+        
+            @Service("WardService")
+            def service;
+        
+            String entityName = "ward";
+            String prefixId    = 'WRD';
+            boolean allowApprove = false;
+            
+            def unitTypes = ['ROOM', 'BED'];
+            
+        }
+        ]]>
+        
+    </code>
+    
+    <pages>
+        <page template="com.rameses.ehoms.master.WardPage"/>
+    </pages>
+</workunit>

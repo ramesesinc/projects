@@ -1,0 +1,55 @@
+<workunit>
+    <invokers>
+        <invoker type="labtest_template:create" caption="New Lab Test Template" action="create"/>
+        <invoker type="labtest_template:open" caption="Lab Test Template" action="open"/>
+    </invokers>
+    <code>
+        <![CDATA[
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        import java.rmi.server.*;
+    
+        class LabTestTemplateController extends CRUDController {
+        
+            String serviceName = "LabTestTemplateService";
+            String entityName = "LabTestTemplateService";
+            String prefixId    = 'LBTST';
+            
+            def groupList;
+            def selectedGroup;
+            
+            Map createEntity() {
+                return [items: []];
+            }
+            
+            def listModel = [
+                fetchList: {
+                    return entity.items;
+                },
+                onAddItem: { o ->
+                    if( !entity.items.find{ it.objid == o.objid } ) {
+                        entity.items << o;
+                    }
+                },
+                onRemoveItem: { o->
+                    entity.items.remove(o);
+                }
+            ] as EditorListModel;
+           
+            def getLookupItems() {
+                def h = { o->
+                    listModel.selectedItem.item.putAll( o );
+                }
+                return Inv.lookupOpener("labtest_item:lookup", [onselect: h] );
+            }
+            
+        }
+        
+        ]]>    
+    </code>
+    <pages>
+        <page template="com.rameses.ehoms.laboratory.LabTestTemplatePage"/>
+    </pages>
+</workunit>

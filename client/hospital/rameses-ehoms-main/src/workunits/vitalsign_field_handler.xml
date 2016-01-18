@@ -1,0 +1,28 @@
+<workunit>
+    <invokers>
+        <invoker type="vitalsign:fieldhandler" action="init"/>
+    </invokers>
+    <code>
+        <![CDATA[
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+    
+        class VitalSignFieldHandler {
+            
+            def entity;
+            def units;
+            
+            void init() {
+                if( units ) entity.unit = units[0];
+            }
+            
+        }
+        
+        ]]>    
+    </code>
+    <pages>
+        <page name="queryform" template="com.rameses.ehoms.common.VitalSignFieldHandler"/>
+    </pages>
+</workunit>

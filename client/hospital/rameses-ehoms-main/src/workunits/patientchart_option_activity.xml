@@ -1,0 +1,47 @@
+<workunit> 
+    <invokers>
+        <invoker type="patientchart:option" index="1" caption="Activity"/>
+    </invokers>   
+    
+    <code>
+         <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import java.rmi.server.*;
+        import com.rameses.osiris2.reports.*;
+        
+        class PatientChartActivityController  {
+
+            @Service("PatientChartActivityService") 
+            def service;
+            
+            def filter;
+            def selectedItem;
+            def entity;
+            
+            def getOpener() {
+                if(!selectedItem) return null;
+                def h = {
+                    listHandler.reload();
+                }
+                String s = "patientchart:activity:" + selectedItem.activity.objid.toLowerCase(); 
+                return Inv.lookupOpener( s, [parent:entity, entity:selectedItem, handler: h] );
+            }
+            
+            def listHandler = [
+                fetchList: { o->
+                    return service.getList(entity);
+                },
+            ] as BasicListModel;
+            
+        }
+        ]]>
+    </code>
+    <pages>
+        <page template="com.rameses.ehoms.patientchart.ActivityList"/>
+    </pages>
+    
+    
+</workunit>

@@ -1,0 +1,80 @@
+<%
+def df = new java.text.SimpleDateFormat( "MMM dd, yyyy. hh:mm" );
+def dformat = { o->
+return df.format( o );
+}
+def spc = "&nbsp;&nbsp;&nbsp;";
+%>
+<html>
+    <style>
+        TABLE TD { font-family:Arial;font-size:9px;  }
+    </style>
+    <body>
+        <table cellpadding="0" cellspacing="0" width="100%">
+            <tr>
+                <td colspan="2"><b>Reason for Visit: </b></td>
+            </tr>
+            <tr>
+                <td colspan="2">${spc}${!entity.reason?'' : entity.reason}</td>
+            </tr>
+            <tr>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td colspan="2"><b>Problems/Complaints</b></td>
+            </tr>
+            <tr>
+                <td colspan="2">${spc}${entity.complaint==null?'':entity.complaint}<br></td>
+            </tr>
+            <tr>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td colspan="2"><b>Allergies</b></td>
+            </tr>
+            <%if(entity.allergies) { entity.allergies.each {%>
+            <tr>
+                <td>
+                    ${spc}<i><u>${it.allergens*.name.join(",")}</u></i>
+                    ${spc}(${it.severity}) Occurence: ${it.occurrence}
+                </td>
+                <td><font size="2">posted by ${it.user.name} on ${dformat(it.dtfiled)}</font></td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    ${spc}${spc}Reaction: ${it.reaction} 
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    ${spc}${spc}Notes: ${it.notes} <br>        
+                </td>
+            </tr>
+            <%}}%>
+            
+            <%if(!entity.allergies) { %>
+            <tr>
+                <td>${spc}No known allergies</td>
+            </tr>
+            <%}%>
+            
+            <tr>
+                <td>&nbsp;</td>
+            </tr>
+            
+            <tr>
+                <td><b>Diagnosis</b></td>
+            </tr>
+            <%entity.diagnosis.each {%>
+                <tr>
+                    <td>${spc}${it.diagnosis.title} (${it.diagnosis.objid})</td>
+                    <td><font size="2">posted by ${it.user.name} on ${dformat(it.dtfiled)}</font></td>
+                </tr>
+                <tr>
+                    <td colspan="2">${spc}${spc}${it.notes==null?'':it.notes}</td>
+                </tr>
+            <%}%>
+        </table>    
+        
+    </body>
+</html>

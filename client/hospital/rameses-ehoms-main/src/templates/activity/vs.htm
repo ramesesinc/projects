@@ -1,0 +1,16 @@
+
+<html>
+    <body>
+        <b>Vital Sign Results</b>
+        <table>    
+            <%results.each{ %>
+                <tr>
+                    <td>${it.title} ( ${it.vitalsignid} ) </td>
+                    <td>
+                        ${it.value} ${(it.unit)? it.unit : ''}
+                    </td>
+                </tr>
+            <%}%>
+        </table>
+    </body>
+</html>

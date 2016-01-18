@@ -1,0 +1,16 @@
+
+<html>
+    <body>
+        <b>Radiology Results</b>
+        <table>    
+            <%results.each{ %>
+                <tr>
+                    <td>
+                        <a href="openItem" objid="${it.objid}">${it.item.name}<a/> 
+                        (${it.attachmentcount} attachments) 
+                    </td>
+                </tr>
+            <%}%>
+        </table>
+    </body>
+</html>

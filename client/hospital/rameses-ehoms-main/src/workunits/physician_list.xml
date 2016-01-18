@@ -1,0 +1,7 @@
+<workunit extends="wtemplates/ListController.xml" serviceName="PhysicianService" entityName="physician" allowSearch="true"> 
+    <invokers>
+        <invoker folderid="/explorer/master" index="0" caption="Physician"  role="MASTER,NURSE" permission1="physician.view"/>
+        <invoker type="home.action" index="0" caption="Physicians Address Book"  role="MASTER,NURSE" permission1="physician.view"/>
+    </invokers>    
+</workunit>
+

@@ -1,0 +1,7 @@
+"entity.title" [ mode == 'read' ] {
+    enabled: false;
+}
+
+"entity.title" [ mode != 'read' ] {
+    enabled: true;
+}

@@ -1,0 +1,16 @@
+"entity.acctid" [ searchtype == 'bycard' ] {
+    enabled : true;
+}
+
+"entity.acctid" [ searchtype != 'bycard' ] {
+    enabled : false;
+}
+
+"searchname" [ searchtype != 'byname' ] {
+    enabled : false;
+}
+
+"searchname" [ searchtype == 'byname' ] {
+    enabled : true;
+}
+

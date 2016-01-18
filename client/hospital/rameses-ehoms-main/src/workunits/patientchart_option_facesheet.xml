@@ -1,0 +1,85 @@
+<workunit> 
+    <invokers>
+        <invoker type="patientchart:option" index="0" caption="Facesheet" action="init"/>
+        
+        <invoker type="formActions" index="0" caption="Add Complaint" action="addComplaint"/>
+        <invoker type="formActions" index="0" caption="Add Diagnosis" action="addDiagnosis"/>
+        <invoker type="formActions" index="1" caption="Add Allergy" action="addAllergy"/>
+    </invokers>   
+    
+    <code>
+         <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import java.rmi.server.*;
+        import com.rameses.util.*;
+        
+        class PatientChartFacesheetController  {
+        
+            @Binding
+            def binding;
+            
+            String formName = "facesheet";
+            String entityName = "facesheet";
+            
+            def entity;
+            def infoText;
+            
+            void init() {
+                buildText();
+            }
+
+            void buildText() {
+                infoText = TemplateProvider.instance.getResult("html/facesheet.htm", [entity:entity] );
+            }
+        
+            def addComplaint( o ) {
+                def h = { x->
+                    entity.complaint = x;
+                    buildText();
+                    binding?.refresh();
+                }
+                def e = [notes:''];
+                e.objid = 'PCCOMP'+new UID();
+                e.parentid = entity.objid;
+                return Inv.lookupOpener( "complaint:add", [handler:h,entity:entity] );
+            }
+            
+            def addDiagnosis( o ) {
+                def h = { x->
+                    entity.diagnosis << x
+                    buildText();
+                    binding?.refresh();
+                }
+                def e = [notes:''];
+                e.objid = 'PCDIAG'+new UID();
+                e.parentid = entity.objid;
+                return Inv.lookupOpener( "diagnosis:add", [handler:h, entity: e] );
+            }
+            
+            def addAllergy( o ) {
+                def h = { x->
+                    if(!entity.allergies) entity.allergies = [];
+                    entity.allergies << x;
+                    buildText();
+                    binding?.refresh();
+                }
+                def e = [allergens:[]];
+                e.objid = 'PCALLGY'+new UID();
+                e.parentid = entity.objid;
+                return Inv.lookupOpener( "allergy:add", [handler:h, entity: e] );
+            }
+            
+            
+        }
+        ]]>
+    </code>
+    
+    <pages>
+        <page template="com.rameses.ehoms.patientchart.FacesheetPage"/>
+    </pages>
+    
+    
+</workunit>

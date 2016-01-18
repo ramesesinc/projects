@@ -1,0 +1,32 @@
+<workunit>
+    <invokers>
+        <invoker type="labresult:fieldhandler" action="init"/>
+    </invokers>
+    <code>
+        <![CDATA[
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+    
+        class LabResultFieldHandler {
+            
+            def entity;
+            def unit;
+            def range;
+            def type = 'text';
+            
+            def init() {
+                return type;
+            }
+            
+        }
+        
+        ]]>    
+    </code>
+    <pages>
+        <page name="text" template="com.rameses.ehoms.laboratory.LabResultTextFieldHandler"/>
+        <page name="integer" template="com.rameses.ehoms.laboratory.LabResultIntegerFieldHandler"/>
+        <page name="decimal" template="com.rameses.ehoms.laboratory.LabResultDecimalFieldHandler"/>
+    </pages>
+</workunit>

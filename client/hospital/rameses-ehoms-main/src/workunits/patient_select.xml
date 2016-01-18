@@ -1,0 +1,186 @@
+<workunit> 
+    <invokers>
+        
+        <invoker type="patient:select" caption="Select Patient" action="start" />
+        <invoker type="patient:select:edit" caption="Edit Patient" action="openForEdit"/>
+        <!-- -->
+        <invoker type="formActions" caption="Next" action="doNext" />
+    </invokers>  
+    <code>
+         <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import java.rmi.server.*;
+        import com.rameses.util.*;
+        
+        class PatientModeController extends PageFlowController {
+
+            @Service("PatientService")
+            def service;
+            
+            @Service("PatientMatchService")
+            def matchService;
+            
+            String title = "Select Patient Initial";
+        
+            def mode = 'create';
+            def searchtype = "bycard";
+            
+            def step = "initial";
+            def handler;
+            def entity = [:];
+            def list = [];
+            def searchname;
+            boolean hasmatch = false;
+            def selectedItem;
+            
+            def genderList = LOV.GENDER.collect{[name:it.key, caption:it.value]};
+            def civilStatusList = LOV.CIVIL_STATUS.collect{[name:it.key, caption:it.value]};   
+            def nationalityLookup = [
+                fetchList: { o->
+                    return service.getNationalityList(o);
+                }
+            ] as SuggestModel;
+            def religionLookup = [
+                fetchList: { o->
+                    return service.getReligionList(o);
+                }
+            ] as SuggestModel;
+            def photoHandler = Inv.lookupOpener( 'photo:component', [
+                handler: {o->entity.photo = o.image; entity.thumbnail = o.thumbnail;}  
+            ] );
+            def addressComponent = Inv.lookupOpener( 'address:component', [handler: { o-> entity.address = o; }  ] );
+            
+            def openForEdit() {
+                entity = service.open( entity );
+                if( !entity.photo ) {
+                    entity.photo = service.getPhoto( [objid: entity.objid] );
+                    photoHandler.handle.photo = entity.photo;
+                }    
+                addressComponent.handle.address = entity.address?.text;
+                step = 'editinfo';
+                return super.start();
+            }
+            
+            def selectNameModel = [
+                fetchList: { o->
+                    return service.getLookupNames( o );
+                },
+                onselect: { o->
+                    entity.objid = o.objid;
+                    searchname = o.name;
+                }
+            ] as SuggestModel;
+            
+            void initNew() {
+                entity.objid = 'PTN'+new UID();
+                list.clear();
+                list = matchService.getResults( entity );
+                hasmatch = (list.size()>0);
+                listModel.reload();
+            }
+            
+            void loadInfo() {
+                entity = service.open( [objid: entity.objid] );
+                selectedItem = entity;
+            }
+            
+            
+            /** used in  match list **/
+            def listModel = [
+                fetchList: { o->
+                    return list;
+                }
+            ] as BasicListModel
+            
+            def getSelectedPhoto() {
+                if(!selectedItem) return null;
+                if(!selectedItem.photo) {
+                    selectedItem.photo = service.getPhoto(selectedItem);
+                }
+                return selectedItem.photo;
+            }
+            
+            void checkCreate() {
+                if(list?.find{ it.match == 100.0 } )
+                    throw new Exception("Cannot create record because there is a  exact(100%) match");
+            }
+            
+            def selectMatchedPatient() {
+                if( handler ) handler( selectedItem );
+                return "_close";
+            }
+            
+            void selectPatient() {
+                if( handler ) handler( entity );
+            }
+            
+            void save() {
+                if( !entity.acctid ) {
+                   entity = service.create( entity );
+                   MsgBox.alert( "Patient Card No " + entity.acctid );
+                }
+                else {
+                    entity = service.update( entity );
+                }
+                if(handler) handler( entity );
+            }
+            
+            
+        }
+        ]]>
+    </code>
+    
+    <pageflow>
+        <start>
+            <transition to="#{step}"/>
+        </start>
+        <page name="initial" title="Initial">
+            <transition to="select-mode" caption="Next" immediate="false" name="next"/>
+        </page>
+        <process name="select-mode">
+            <transition to="check-create" cond="#{mode=='create'}" action="initNew"/>
+            <transition to="confirm" cond="#{mode=='search'}" action="loadInfo"/>
+        </process>    
+        <process name="check-create">
+            <transition to="match" cond="#{hasmatch==true}"/>
+            <transition to="newinfo" cond="#{hasmatch==false}"/>
+        </process>    
+        <page name="match" title="Match Create">
+            <transition to="initial"  caption="Back" name="back"/>
+            <transition to="newinfo"  caption="Add as New Patient" action="checkCreate"/>
+        </page>
+        <page name="newinfo" title="Personal Info">
+            <transition to="initial"  caption="Back" name="back"/>
+            <transition to="end"  caption="Save" action="save" name="save"/>
+        </page>
+        <page name="confirm" title="Confirm Info">
+            <transition to="initial"  caption="Back" name="back"/>
+            <transition to="end"  caption="Select Patient" action="selectPatient"/>
+        </page>
+        
+        <page name="editinfo" title="Edit Personal Info">
+            <transition to="editname"  caption="Edit Name"/>
+            <transition to="end"  caption="Save" action="save" name="save"/>
+        </page>
+        <page name="editname" title="Edit Name">
+            <transition to="editinfo" name='cancel' caption="Cancel"/>
+            <transition to="editinfo" name='update' caption="Update" />
+        </page>
+
+        <end/>
+    </pageflow>
+    
+    <pages>
+        <page name="initial" template="com.rameses.ehoms.patient.SelectPatientMode"/>
+        <page name="match" template="com.rameses.ehoms.patient.MatchNameListPage"/>
+        <page name="newinfo" template="com.rameses.ehoms.patient.EditPersonalPage"/>
+        <page name="editinfo" template="com.rameses.ehoms.patient.EditPersonalPage"/>
+        <page name="editname" template="com.rameses.ehoms.patient.NewPatientPage"/>
+        
+        <page name="confirm" template="com.rameses.ehoms.patient.ConfirmInfoPage"/>
+    </pages>
+    
+</workunit>

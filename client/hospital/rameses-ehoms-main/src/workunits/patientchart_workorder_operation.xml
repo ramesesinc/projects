@@ -1,0 +1,24 @@
+<workunit> 
+    <invokers>
+        <invoker type="workorder:type" index="6" caption="Perform Operation" target="popup"/>
+    </invokers>
+    <code>
+          <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import java.rmi.server.*;
+        import com.rameses.osiris2.reports.*;
+        
+        class OperationWorkOrderController  {
+        
+            def entity = [:];
+            
+        }
+        ]]>
+    </code>
+    <pages>
+        <page template="com.rameses.ehoms.patientchart.workorder.PerformOperationWorkOrderPage" />
+    </pages>
+</workunit>

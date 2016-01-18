@@ -1,0 +1,11 @@
+provider=email
+mail.username=gazeebu@gmail.com
+mail.password=gazeebu1234
+mail.smtp.auth=true
+mail.smtp.starttls.enable=true
+mail.transport.protocol=smtp
+mail.smtp.host=smtp.gmail.com
+mail.smtp.port=587
+mail.smtp.auth=true
+mail.debug=true
+mail.from=gazeebu@gmail.com

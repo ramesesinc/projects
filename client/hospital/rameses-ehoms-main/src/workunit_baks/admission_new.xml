@@ -1,0 +1,27 @@
+<workunit>
+    <invokers>
+        <invoker type="admission:create" caption="New Admission" action="create"/>
+    </invokers>
+    <code>
+        <![CDATA[
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+    
+        class NewAdmissionController extends ServiceLookupController {
+            
+            def entity;
+            
+            void create() {
+            
+            }
+            
+        }
+        
+        ]]>    
+    </code>
+    <pages>
+        <page name="queryform" template="com.rameses.ehoms.admission.AdmissionForm"/>
+    </pages>
+</workunit>

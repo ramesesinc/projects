@@ -1,0 +1,12 @@
+<%
+    def df = new java.text.SimpleDateFormat( "MMM dd, yyyy. hh:mm" );
+    def dformat = { o->
+        return df.format( o );
+    }
+%>
+<html>
+    <body>
+        <h1>Medication</h1>
+        <p>${info.description}</p>
+    </body>
+</html>

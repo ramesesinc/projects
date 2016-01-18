@@ -1,0 +1,5 @@
+<workunit extends="wtemplates/IdListController.xml"> 
+    <invokers>
+        <invoker type="patient:option" index="3" caption="Identification" />
+    </invokers>  
+</workunit>

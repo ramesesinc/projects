@@ -1,0 +1,47 @@
+<workunit> 
+    <invokers>
+        <invoker type="physician:create" index="0" caption="New Physician" action="create"/>
+        <invoker type="physician:lookup:formActions" index="0" caption="New Physician" action="create"/>
+        <invoker type="physician:open" index="0" caption="Physician" action="open"/>
+        
+        <invoker type="formActions" index="0" caption="Send Message" action="sendMessage"/>
+        <invoker type="formActions" index="0" caption="Register User" action="registerUser" visibleWhen="#{mode == 'read' &amp;&amp; entity.username==null}"/>
+    </invokers>  
+    <code>
+         <![CDATA[    
+        import com.rameses.osiris2.common.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;;
+        
+        class PhysicianController  extends CRUDController {
+        
+            String serviceName = "PhysicianService";
+            String entityName = "physician";
+            String title = "Physician";
+            boolean allowDelete = false; 
+            boolean allowApprove = false; 
+        
+            def genderList = LOV.GENDER.collect{[name:it.key, caption:it.value]};
+        
+            def sendMessage() {
+                def e = [phoneno: entity.contactno];
+                return Inv.lookupOpener( "smsmessage:send", [entity: e] );
+            }
+            
+            def registerUser() {
+                def x = MsgBox.prompt( "Enter username" );
+                if(x) {
+                    entity.username = x;
+                    service.registerUser( entity );
+                }
+            }
+            
+        }    
+        ]]>
+        
+    </code>
+    <pages>
+        <page template="com.rameses.ehoms.physician.PhysicianInfoPage"/>
+    </pages>
+</workunit>

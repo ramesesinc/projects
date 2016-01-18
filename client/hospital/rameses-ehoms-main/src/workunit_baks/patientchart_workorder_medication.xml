@@ -1,0 +1,73 @@
+<workunit extends="com/rameses/ehoms/patientchart/workorder/WorkOrderController.xml"> 
+    <invokers>
+        <invoker type="workorder:type" caption="Request Medication" target="popup" action="create"/>
+        <invoker type="workorder:md:open" caption="Request Medication" target="popup" action="open"/>
+        
+        <!-- activate -->
+        <invoker type="formActions" caption="Accept" action="accept" visibleWhen="#{entity.state!='closed' &amp;&amp; mode=='read'}" role="NURSE"/>
+    </invokers>
+    <code>
+          <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import java.rmi.server.*;
+        import com.rameses.util.*;
+        import com.rameses.ehoms.patientchart.workorder.*;
+        
+        class MedicationWorkOrderController extends WorkOrderController{
+        
+            @Service("DrugLookupService")
+            def service;
+            
+            def selectedMed;
+            def warningText;
+            
+            String title = "Administer Medication";
+            String activityType = 'MD';
+            
+            //default for info is list. with the exception of drug medication
+             public def createInfo() {
+                return [:];
+             }
+            
+            def drugModel = [
+                fetchList: { o->
+                    return service.getList(o);
+                },
+                onselect: { o->
+                    entity.info.drug = [objid:o.objid, name:o.name];
+                    binding.focus( "suggest" );
+                }
+            ] as SuggestModel;
+            
+            def save() {
+                try {
+                    super.save();
+                    return '_exit';
+                }
+                catch(Warning w) {
+                    warningText = TemplateProvider.instance.getResult("html/medwarning.htm", [info:w.info] );
+                    return "warning";
+                }
+            }
+
+            def doOk() {
+                return save();
+            }
+
+            def doCancel() {
+                return "_exit";
+            }
+            
+            
+        }
+        ]]>
+    </code>
+    <pages>
+        <page name="create" template="com.rameses.ehoms.patientchart.workorder.MedicationWorkOrderNewPage" />
+        <page name="warning" template="com.rameses.ehoms.patientchart.workorder.MedicationWorkOrderWarningPage" />
+        <page name="read" template="com.rameses.ehoms.patientchart.workorder.MedicationWorkOrderViewPage" />
+    </pages>
+</workunit>

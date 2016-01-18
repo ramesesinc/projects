@@ -1,0 +1,91 @@
+<workunit> 
+    <invokers>
+        <invoker type="patientchart:create" index="0" caption="Patient Chart" action="create" target="window"/>
+        
+        <invoker type="formActions" index="0" caption="Submit" action="save"/>
+    </invokers>    
+    <code>
+         <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import java.rmi.server.*;
+        import com.rameses.osiris2.reports.*;
+        
+        
+        class NewPatientChartController  {
+        
+            @Service("PatientChartService")
+            def service;
+        
+            @Binding
+            def binding;
+        
+            @Caller
+            def caller;
+
+            def entity;
+            def reasonTemplate;
+            String title = "New Patient Chart";
+            
+            def mode = "initial";
+            
+            void create() {
+                String section = caller.info.tag;
+                entity = [objid: "OPD"+new UID(), section:section ];
+                def m =[:];
+                m.handler = { o->entity.reason=o; }; 
+                m.section = 'reason';
+                reasonTemplate = Inv.lookupOpener( "notetemplate:field", m );
+            }
+            
+           
+            def getSection() {
+                if( entity.section == 'OPD' ) {
+                    return "Out Patient (OPD)";
+                }
+                else if( entity.section == 'ER' ){
+                    return "Emergency Room (ER)";
+                }
+            }
+
+            def patientUpdateHandler = {o->
+                entity.patient = o;
+                binding.refresh();
+            }
+            
+            def addPatient() {
+                def op = Inv.lookupOpener( "patient:select", [handler:patientUpdateHandler] );
+                op.target = 'popup';
+                return op;
+            }
+            
+            def viewPatient() {
+                def op = Inv.lookupOpener( "patient:select:edit", [handler:patientUpdateHandler, 
+                    entity: entity.patient] );
+                op.target = 'popup';
+                return op;
+            }
+
+            def changePatient() {
+                return addPatient();
+            }
+
+            
+            def save() {
+                if( MsgBox.confirm("You are about to submit this record. Proceed?")) {
+                    def g = service.create( entity );
+                    MsgBox.alert( "New OPD Record created " + g.chartno);
+                    return "_close";
+                }
+            }
+            
+        }
+        ]]>
+    </code>
+    
+    <pages>
+        <page template="com.rameses.ehoms.patientchart.NewPatientChartPage"/>
+    </pages>
+</workunit>

@@ -1,0 +1,5 @@
+<workunit extends="wtemplates/ListController.xml" serviceName="DrugService" entityName="drug" allowSearch="true"> 
+    <invokers>
+        <invoker folderid="/explorer/master" index="3" caption="List of Drugs" role="MASTER" permission="drug.view"/>
+    </invokers>    
+</workunit>

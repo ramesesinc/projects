@@ -1,0 +1,90 @@
+<workunit extends="com/rameses/ehoms/patientchart/workorder/WorkOrderController.xml"> 
+    <invokers>
+        <invoker type="workorder:type" caption="Laboratory" target="popup" action="create"/>
+        <invoker type="workorder:lb:open" caption="Laboratory" target="popup" action="open"/>
+        
+        <!-- activate -->
+        <invoker type="formActions" caption="Accept" action="accept" visibleWhen="#{state=='open' &amp;&amp; mode=='read'}" role="LABORATORY"/>
+        <invoker type="formActions" caption="Update Result" action="updateResult" visibleWhen="#{state=='processing'}" role="LABORATORY"/>
+        <invoker type="formActions" caption="Submit for Approval" action="sendForApproval" visibleWhen="#{state=='processing'}" role="LABORATORY"/>
+    </invokers>
+    <code>
+          <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import java.rmi.server.*;
+        import com.rameses.osiris2.reports.*;
+        import com.rameses.ehoms.patientchart.workorder.*;
+        
+        class LaboratoryWorkOrderController extends WorkOrderController {
+        
+            @Service("LabTestItemService")
+            def service;
+            
+            @Service("PatientChartLabResultService")
+            def labSvc;
+
+            String activityType = 'LB';
+            String title = "Laboratory";
+            
+            def selectedTest;
+            def controls;
+            
+            void afterOpen() {
+                if( state == 'processing' ) buildResults();
+            }
+            
+            def selectLabTestModel = [
+                fetchList: { o->
+                    o.includegroup = true;
+                    return service.getList(o);
+                },
+                onselect: { o->
+                    if( !entity.info.find{ it.objid == o.objid } ) {
+                        entity.info << o;
+                        binding.refresh("selectedTest");
+                    }
+                    binding.focus( "suggest" );
+                }
+            ] as SuggestModel;
+            
+            void removeTest() {
+                if(!selectedTest) return;
+                entity.info.remove( selectedTest );
+                binding.refresh("selectedTest");
+            }
+            
+            void buildResults() {
+                controls = [];
+                entity.results = labSvc.getList( [workorderid: entity.objid] );
+                entity.results.each {
+                    def c = [:];
+                    c.caption = it.item.name;
+                    c.categoryid = it.groupname;
+                    c.properties = [ unit: it.item.unit, entity: it, range: it.item.range, type:it.datatype ];
+                    c.type = 'subform';
+                    c.handler = 'labresult:fieldhandler';
+                    controls << c;
+                    c.required = true;
+                }
+                mode = 'result';            
+            }
+            
+            def formModel = [
+                getControlList: { return controls }
+            ] as FormPanelModel;  
+            
+            void updateResult() {
+                labSvc.updateResults( entity.results );
+            }
+        }
+        ]]>
+    </code>
+    <pages>
+        <page name="create" template="com.rameses.ehoms.patientchart.workorder.LaboratoryWorkOrderNewPage" />
+        <page name="read" template="com.rameses.ehoms.patientchart.workorder.LaboratoryWorkOrderViewPage" />
+        <page name="result" template="com.rameses.ehoms.patientchart.workorder.LaboratoryWorkOrderResultPage" />
+    </pages>
+</workunit>

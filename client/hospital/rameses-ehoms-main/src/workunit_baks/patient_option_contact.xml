@@ -1,0 +1,34 @@
+<workunit> 
+    <invokers>
+        <invoker type="patient:option" index="2" caption="Contact Info" action="init"/>
+        <invoker type="formActions" caption="Edit" action="edit"/>
+    </invokers>  
+    <code>
+         <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import java.rmi.server.*;
+        import com.rameses.osiris2.reports.*;
+        
+        class PatientContactController  {
+
+            //include contact nos. and contact persons
+        
+            @Caller 
+            def caller;
+            
+            def entity;
+            
+            void init() {
+            
+            }
+        }
+        ]]>
+        
+    </code>
+    <pages>
+        <page name="default" template="com.rameses.ehoms.patient.ContactPage"/>
+    </pages>
+</workunit>

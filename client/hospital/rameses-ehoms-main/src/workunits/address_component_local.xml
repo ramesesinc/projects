@@ -1,0 +1,40 @@
+<workunit> 
+    <invokers>
+        <invoker type="address:component:type" caption="Local Address" action="init"/>
+    </invokers>    
+    <code>    
+         <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import java.rmi.server.*;
+        import com.rameses.osiris2.reports.*;
+        
+        class LocalAddressController  {
+        
+            def entity;
+            def handler;
+            def addressTypes = ["HOME","WORK"];
+            
+            void init() {
+                entity = [barangay:[:]];
+            }
+            
+            def getInfo() {
+                entity.text = entity.address1+",\n"+entity.address2+ "\n";
+                if(entity.barangay) {
+                    entity.text += entity.barangay.name;
+                }
+                return entity;
+            }
+            
+        }
+        ]]>
+    </code>    
+    
+    <pages>
+        <page template="com.rameses.ehoms.common.LocalAddressPage"/>
+    </pages>
+    
+</workunit>

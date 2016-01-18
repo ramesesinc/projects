@@ -1,0 +1,46 @@
+<workunit> 
+    <invokers>
+        <invoker type="patient:matchlist" caption="Patient Match"/>
+        <invoker type="formActions" caption="Back" action="_close"/>
+        <invoker type="formActions" caption="Add as New Patient" action="doNext"/>
+    </invokers>  
+    <code>
+         <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import java.rmi.server.*;
+        import com.rameses.util.*;
+        
+        class PatientMatchListController  {
+        
+            @Service("PatientService")
+            def service;
+        
+            def saveHandler;
+            def entity;
+            def matchList;
+            def selectedItem;
+
+            def matchListModel = [
+                fetchList: { o->
+                    return matchList;
+                }
+            ] as BasicListModel;
+            
+            def doNext() {
+                if(!saveHandler) throw new Exception("saveHandler is required");
+                def r = saveHandler(null);
+                return r;
+            }
+            
+        }
+        ]]>
+        
+    </code>
+    
+    <pages>
+        <page template="com.rameses.ehoms.patient.MatchNameListPage"/>
+    </pages>
+</workunit>

@@ -1,0 +1,54 @@
+<workunit> 
+    <invokers>
+        <invoker type="patient:lookupfield" />
+    </invokers>    
+    <code>    
+         <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import java.rmi.server.*;
+        import com.rameses.osiris2.reports.*;
+        
+        class PatientController  {
+        
+            @Binding
+            def binding;
+            
+            def entity;
+            
+            def changePatient() {
+                def h = { o->
+                    entity.putAll( o );
+                    binding.refresh();
+                }
+                return Inv.lookupOpener( "patient:lookup", [onselect: h] );
+            }
+            
+            def viewPatient() {
+                if( !entity.objid )
+                    throw new Exception("Please select a patient");
+                def op = Inv.lookupOpener( "patient:open", [entity: entity] );
+                op.target = 'popup';
+                return op;
+            }
+            
+            def addPatient() {
+                def s = { o->
+                    entity.putAll( o );
+                    binding.refresh();
+                    return "_close";
+                }
+                def op = Inv.lookupOpener( "patient:create", [saveHandler: s] );
+                op.target = 'popup';
+                return op;
+            }
+            
+        }
+        ]]>
+    </code>    
+    <pages>
+        <page template="com.rameses.ehoms.patient.PatientLookupField"/>
+    </pages>
+</workunit>

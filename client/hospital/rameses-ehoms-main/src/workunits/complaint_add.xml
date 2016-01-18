@@ -1,0 +1,80 @@
+<workunit> 
+    <invokers>
+        <invoker type="complaint:add" caption="Add Complaint" target="popup" action="init"/>
+    </invokers>   
+    
+    <code>
+         <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import java.rmi.server.*;
+        import com.rameses.osiris2.reports.*;
+        
+        class PatientChartAddComplaintController  {
+
+            @Service("PatientChartService") 
+            def service;
+            
+            
+            @Service("NoteTemplateService")
+            def noteSvc;
+            
+            
+            @Binding
+            def binding;
+            
+            def handler;
+            def entity;
+            def complaint;
+            
+            void init() {
+                complaint = entity.complaint;
+            }
+            
+            def addComplaintNote() {
+                def m = [section:'complaint'];
+                m.handler = { o->
+                    if(!complaint) 
+                        complaint = '';
+                    else
+                        complaint += "\n";
+                    complaint += o;
+                    binding.refresh();
+                };
+                return Inv.lookupOpener( "notetemplate:lookup", m );
+            }
+            
+            def doOk() {
+                entity.complaint = complaint;
+                service.update( entity );
+                if(handler) handler(complaint);
+                return "_close";
+            }
+            
+            def doCancel() {
+                return "_close";
+            }
+            
+            def editorModel = [
+                fetchList: { o->
+                    def s = o.searchtext;
+                    if(!s) s = "%";
+                    else s += "%";
+                    return noteSvc.getTemplates( [section:'complaint', keyword: s] );
+                },
+                getTemplate: { o->
+                    return o.text;
+                }
+            ] as HtmlEditorModel;
+            
+        }
+        ]]>
+    </code>
+    <pages>
+        <page template="com.rameses.ehoms.patientchart.AddComplaint"/>
+    </pages>
+    
+    
+</workunit>

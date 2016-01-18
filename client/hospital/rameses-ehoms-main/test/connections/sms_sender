@@ -1,0 +1,8 @@
+provider=script
+app.host=www.etracs.org
+app.cluster=osiris3
+app.context=sms
+readTimeout=30000
+
+env.acctname=rameses
+env.apikey=12ramesesinc34

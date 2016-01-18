@@ -1,0 +1,83 @@
+<workunit>
+    <invokers>
+        <invoker type="notetemplate:lookup" caption="Lookup Note Template" action="init" target="popup"/>
+    </invokers>
+    <code>
+        <![CDATA[
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+    
+        class LookupNoteTemplateController  {
+
+            @Service("NoteTemplateService")
+            def service;
+        
+            @Script("User")
+            def user;
+            
+            @Binding
+            def binding;
+            
+            def scope;
+            def section;
+            def keywords;
+            def keyword;
+            def authorid;
+            def handler;
+            
+            @PropertyChangeListener
+            def listener = [
+                "scope" : { o->
+                    init();
+                }
+            ];
+            
+            void init() {
+                if(!authorid) authorid = user.profile?.USERID;
+                def m = [:];
+                m.authorid = authorid;
+                m.scope = scope;
+                m.section = section;
+                keywords = service.getList(m);
+            }
+            
+            def scopes = [ 
+                [key:'private', caption:'Show only private to author'],
+                [key:'public', caption:'Show only public templates (hospital wide)'],
+            ];
+            
+            def addTemplate() {
+                def m = [:];
+                m.authorid = authorid;
+                m.scope = null;
+                if( scope ) m.scope = scope.key
+                m.section = section;
+                if( keyword ) m.text = keyword.text; 
+                m.handler = { o->
+                    keywords << o;
+                    keyword = o;
+                    binding.refresh();
+                }
+                return Inv.lookupOpener( "notetemplate:add", m );
+            }
+            
+            def doOk() {
+                if(!keyword.text) return;
+                handler( keyword.text );
+                return "_close";
+            }
+            
+            def doCancel() {
+                return "_close";
+            }
+            
+        }
+        
+        ]]>    
+    </code>
+    <pages>
+        <page template="com.rameses.ehoms.common.LookupNoteTemplate"/>
+    </pages>
+</workunit>

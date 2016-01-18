@@ -1,0 +1,37 @@
+<workunit extends="wtemplates/ServiceLookupController.xml" serviceName="AllergenLookupService" allowSearch="true">
+    <invokers>
+        <invoker type="allergen:lookup" caption="Lookup Allergen" target="popup" action="init"/>
+    </invokers>
+    <code>
+        <![CDATA[
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+    
+        class AllergenLookupController extends ServiceLookupController {
+            
+            @Service("AllergenService")
+            def svc;
+        
+            def classifications;
+            
+            void init() {
+                classifications = svc.getClassifications();
+            }
+            
+            @PropertyChangeListener 
+            def listener = [
+                "query.classification" : { o->
+                    if( o ) super.reload(); 
+                }
+            ];
+            
+        }
+        
+        ]]>    
+    </code>
+    <pages>
+        <page name="queryform" template="com.rameses.ehoms.allergen.AllergenQueryForm"/>
+    </pages>
+</workunit>

@@ -1,0 +1,9 @@
+<workunit> 
+    <invokers>
+        <invoker type="loader" index="10000" action="init"/>
+    </invokers>    
+    <code class="com.rameses.ehoms.main.HomeControllerImpl"/>    
+    <pages>
+        <page template="com.rameses.ehoms.main.HomePage"/>
+    </pages>
+</workunit>

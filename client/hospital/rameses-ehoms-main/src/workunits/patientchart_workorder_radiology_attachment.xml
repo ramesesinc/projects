@@ -1,0 +1,96 @@
+<workunit> 
+    <invokers>
+        <invoker type="radiology:attachment" caption="Attachment" action="init" target="popup"/>
+        
+        <invoker type="formActions" caption="Close" action="_close" immediate="true" visibleWhen="#{mode!='addnew'}"/>
+        <invoker type="formActions" caption="Add New" action="addNew" visibleWhen="#{mode!='addnew'}" immediate="true"/>
+        
+        <invoker type="formActions" caption="Cancel Add" action="cancelAddNew" visibleWhen="#{mode=='addnew'}" immediate="true"/>
+        <invoker type="formActions" caption="Save and add Another" action="save" visibleWhen="#{mode=='addnew'}"/>
+    </invokers>
+    <code>
+        <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import java.rmi.server.*;
+        import com.rameses.osiris2.reports.*;
+        import com.rameses.io.*;
+        import com.rameses.util.*;
+        import javax.swing.JFileChooser;
+        import javax.swing.filechooser.FileNameExtensionFilter;
+        import com.rameses.io.StreamUtil;
+        import java.io.FileInputStream;
+    
+        class RadiologyAttachmentController  {
+        
+            @Service("PatientChartRadiologyService")
+            def service;
+            
+            @Binding
+            def binding;
+            
+            def mode;
+            def images;
+            def parent;
+            def entity;
+            def selectedImage;
+            
+            def imageHandler = Inv.lookupOpener( 'photo:component:blank', [
+                handler: {o->entity.image = o.image; entity.thumbnail = o.thumbnail;} , allowChange: false 
+            ] );
+            
+            void init() {
+                images = service.getAttachments( parent );
+                entity = [:];
+                mode = 'read';
+            }
+
+            void addNew() {
+                entity = [objid:'PCRDATT'+new UID()];
+                entity.parentid = parent.objid;
+                entity.title = null;
+                entity.image = null;
+                entity.thumbnail = null;  
+                imageHandler.handle.clear();
+                mode = 'addnew';
+            }
+            
+            void cancelAddNew() {
+                entity = selectedImage;
+                mode = 'read';
+            }
+            
+            def save() {
+                service.addAttachment( entity );
+                images << entity;
+                imageModel.reload();
+                addNew();
+            }
+           
+            def imageModel = [
+                getCols: { return 1; }, 
+                fetchList: { o->
+                    return images.collect{ [objid:it.objid, image: it.thumbnail, caption: it. title] };
+                },
+                onselect: { o->
+                    if(mode!='addnew') {
+                        if( !o.cache ) {
+                            def z = service.findAttachment( [objid: o.objid] );
+                            o.cache = z.image;
+                        }
+                        imageHandler.handle.updatePhoto( o.cache );
+                    }
+                }
+            ] as ImageGalleryModel;
+
+        }
+        ]]>
+    </code>
+    
+    <pages>
+        <page template="com.rameses.ehoms.patientchart.workorder.RadiologyAttachment" />
+    </pages>
+    
+</workunit>

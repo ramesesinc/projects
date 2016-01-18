@@ -1,0 +1,32 @@
+<workunit extends="wtemplates/MasterCRUDController.xml"> 
+    <invokers>
+        <invoker type="drug:create" index="0" caption="New Drug" action="create" />
+        <invoker type="drug:open" index="0" caption="Drug" action="open"/>
+    </invokers>  
+    <code>
+         <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import java.rmi.server.*;
+        import com.rameses.util.*;
+        
+        class DrugController extends MasterCRUDController {
+        
+            @Service("DrugService")
+            def service;
+        
+            String entityName = "drug";
+            String prefixId    = 'DRG';
+            boolean allowApprove = false;
+            
+        }
+        ]]>
+        
+    </code>
+    
+    <pages>
+        <page name="create" template="com.rameses.ehoms.master.DrugPage"/>
+    </pages>
+</workunit>

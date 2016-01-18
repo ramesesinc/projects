@@ -1,0 +1,39 @@
+<%
+    def df = new java.text.SimpleDateFormat( "MMM dd, yyyy. hh:mm" );
+    def dformat = { o->
+        return df.format( o );
+    }
+    
+    
+    def grps = results.groupBy{ it.groupname };
+%>
+
+
+<html>
+    <body>
+        <b>Laboratory Results</b>
+        <font size="3">
+            <table>    
+                <%grps.each{ k,v-> %>
+                    <tr>
+                        <td colspan="4"><b>${k}</b></td>
+                    </tr>
+                    <%v.each { %>
+                        <tr>
+                            <td>${it.item.name} ( ${it.item.objid} ) </td>
+                            <td>
+                                <%if(it.value){%>${it.value}<%}%>
+                            </td>
+                            <td>
+                                ${it.item.unit} 
+                            </td>
+                            <td>
+                                ${it.item.range} 
+                            </td>
+                        </tr>
+                    <%}%>
+                <%}%>
+            </table>
+        </font>
+    </body>
+</html>

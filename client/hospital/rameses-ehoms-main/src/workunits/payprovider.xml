@@ -1,0 +1,34 @@
+<workunit extends="wtemplates/MasterCRUDController.xml"> 
+    <invokers>
+        <invoker type="payprovider:create" index="0" caption="New Pay Provider" action="create" />
+        <invoker type="payprovider:open" index="0" caption="Pay Provider" action="open"/>
+    </invokers>  
+    <code>
+         <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import java.rmi.server.*;
+        import com.rameses.util.*;
+        
+        class PayProviderController extends MasterCRUDController {
+        
+            @Service("PayProviderService")
+            def service;
+        
+            String entityName = "payprovider";
+            String prefixId    = 'PAYP';
+            boolean allowApprove = false;
+            
+            def providerTypes = ["INSURANCE", "DONOR", "COMPANY"];
+            
+        }
+        ]]>
+        
+    </code>
+    
+    <pages>
+        <page name="create" template="com.rameses.ehoms.master.PayProviderPage"/>
+    </pages>
+</workunit>

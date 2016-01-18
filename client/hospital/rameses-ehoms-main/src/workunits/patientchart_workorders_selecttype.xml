@@ -1,0 +1,41 @@
+<workunit> 
+    <invokers>
+        <invoker type="workorder:new:select" index="2" caption="Work Orders" target="popup" action="init"/>
+        <invoker type="patientchart:info:formActions" caption="Request Work Order" action="init" target="popup" index="5"/>
+    </invokers>
+    <code>
+          <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import java.rmi.server.*;
+        import com.rameses.osiris2.reports.*;
+        
+        class WorkOrderListController  {
+            
+            def section;
+            def entity;
+            def workOrderTypes
+            def selectedItem;
+        
+            void init() {
+                workOrderTypes = Inv.lookupOpeners( "workorder:type", [entity:entity] );
+            }
+            
+            def doOk() {
+                selectedItem.target = 'self';
+                return selectedItem;
+            }
+            
+            def doCancel() {
+                return "_close";
+            }
+            
+        }
+        ]]>
+    </code>
+    <pages>
+        <page template="com.rameses.ehoms.patientchart.workorder.SelectWorkOrderTypePage" />
+    </pages>
+</workunit>

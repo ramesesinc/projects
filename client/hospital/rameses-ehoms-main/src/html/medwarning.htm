@@ -1,0 +1,23 @@
+<%
+    def df = new java.text.SimpleDateFormat( "MMM dd, yyyy. hh:mm" );
+    def dformat = { o->
+        return df.format( o );
+    }
+%>
+<html>
+    <body>
+        <%if(info.allergies) {%>
+            <b>Patient has known allergies with this drug.</b><br>       
+            <ul>
+            <%info.allergies.each {%>
+            <li>
+                Allergies: ${it.allergens*.name.join(",")}
+                <b>Severity</b>:${it.severity} Occurence: ${it.occurrence}<br>
+                Reaction: ${it.reaction} <br>
+                Notes: ${it.notes} <br>
+            </li>
+            <%}%>
+            </ul>        
+        <%}%>
+    </body>
+</html>

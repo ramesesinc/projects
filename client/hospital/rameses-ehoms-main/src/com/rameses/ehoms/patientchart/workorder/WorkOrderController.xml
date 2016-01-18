@@ -1,0 +1,10 @@
+<workunit> 
+    <invokers>
+        <invoker type="formActions" caption="Close" action="_exit" />
+        <invoker type="formActions" caption="Save" action="save" visibleWhen="#{mode=='create'}"/>
+        <invoker type="formActions" caption="Submit" action="submit" visibleWhen="#{mode=='accept'}"/>
+    </invokers>
+    <pages>
+        <page name="accept" template="com.rameses.ehoms.patientchart.workorder.WorkOrderBillItemsPage"/>
+    </pages>
+</workunit>

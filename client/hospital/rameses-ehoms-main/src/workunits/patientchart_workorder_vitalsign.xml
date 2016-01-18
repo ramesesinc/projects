@@ -1,0 +1,85 @@
+<workunit extends="com/rameses/ehoms/patientchart/workorder/WorkOrderController.xml"> 
+    <invokers>
+        <invoker type="workorder:type" caption="Vital Sign" target="popup" action="create" index="-1"/>
+        <invoker type="workorder:vs:open" caption="Vital Sign" target="popup" action="open"/>
+        
+        <!-- activate -->
+        <invoker type="formActions" caption="Results" action="updateResults" visibleWhen="#{state=='open' &amp;&amp; mode=='read'}" role="NURSE"/>
+        <invoker type="formActions" caption="Submit" action="submit" visibleWhen="#{mode=='result'}"/>
+    </invokers>
+    <code>
+        <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import java.rmi.server.*;
+        import com.rameses.osiris2.reports.*;
+        import com.rameses.ehoms.patientchart.workorder.*;
+        
+        class VitalSignWorkOrderController extends WorkOrderController  {
+        
+            @Service("VitalSignLookupService")
+            def service;
+            
+            String activityType = 'VS';
+            String title = "Vital Signs";
+            
+            def items;
+            def selectedItem;
+            def controls;
+            
+            //if true, this will auto close the activity.
+             public boolean getAutoCloseActivity() {
+                return true;
+             }
+            
+            void afterCreate() {
+                items = service.getAll();
+                items.each  {it.checked = true;}
+            }
+            
+            void beforeSave() {
+                entity.info = items.findAll{ it.checked == true };
+            }
+            
+            void afterOpen() {
+                items = entity.info;
+            }
+           
+            def listModel = [
+                fetchList: { o->
+                    return items;
+                }
+            ] as EditorListModel;
+
+            def updateResults() {
+                controls = [];
+                entity.info.each {
+                    if( it.units ) {
+                        def c = [:];
+                        c.caption = it.title;
+                        c.properties = [ units: it.units?.split(","), entity: it ];
+                        c.type = 'subform';
+                        c.handler = 'vitalsign:fieldhandler';
+                        controls << c;
+                        c.required = true;
+                    }
+                }
+                mode = 'result';
+                return mode;
+            }
+            
+            def formModel = [
+                getControlList: { return controls }
+            ] as FormPanelModel;            
+            
+        }
+        ]]>
+    </code>
+    <pages>
+        <page name="create" template="com.rameses.ehoms.patientchart.workorder.VitalSignWorkOrderNewPage" />
+        <page name="read" template="com.rameses.ehoms.patientchart.workorder.VitalSignWorkOrderViewPage" />
+        <page name="result" template="com.rameses.ehoms.patientchart.workorder.VitalSignWorkOrderResultPage" />
+    </pages>
+</workunit>

@@ -1,0 +1,81 @@
+<workunit>
+    <invokers>
+        <invoker type="home.action" caption="Lab Test Result" action="init"/>
+    </invokers>
+    <code>
+        <![CDATA[
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        import java.rmi.server.*;
+    
+        class LabTestResultController {
+        
+            @Service("LabTestTemplateService")
+            def service;
+            
+            def entity;
+            def template;
+            def formInfos;
+            
+            void init() {
+                entity = [:];
+                template = service.open( [objid: 'LBTST-38a08c5e:145743b98da:-7fea'] );
+                formInfos = [];
+                template.items.each {
+                    def m = [:];
+                    m.valuetype = 
+                    formInfos << [type:it.valuetype, caption:it.name, group:it.group, 
+                }
+            ];
+            //fix the datatype
+            x.datatype = x.attribute.datatype;
+            if(x.datatype.indexOf("_")>0) {
+                x.datatype = x.datatype.substring(0, x.datatype.indexOf("_"));
+            }
+            if(i.type == "boolean") {
+                i.type = "subform";
+                i.handler = "bpapplication:yesno";
+                i.properties = [item:x];
+            }
+            else if(i.type == "string_array") {
+                i.type = "combo";
+                i.itemsObject = x.attribute.arrayvalues;
+            }
+            else if( i.type == 'decimal' ) {
+                i.preferredSize = '150,20';
+            }
+            else if( i.type == "string" ) {
+                i.type = "text";
+            }
+            else if( i.type == "info") {
+                i.type = "subform";
+                i.properties = [item:i.bean];
+                i.showCaption = false;
+            }
+            formInfos << i;
+            }
+            
+            
+           def formPanel = [
+                getCategory: { key->
+                    return entity.items
+                },
+                updateBean: {name,value,item->
+                    item.bean.value = value;
+                },
+                getControlList: {
+                    return formInfos;
+                }
+            ] as FormPanelModel;
+
+            
+        }
+        
+        ]]>    
+    </code>
+    <pages>
+        <page template="com.rameses.ehoms.laboratory.LabTestResultPage"/>
+    </pages>
+</workunit>

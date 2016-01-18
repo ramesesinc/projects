@@ -1,0 +1,36 @@
+<workunit> 
+    <invokers>
+        <invoker type="patientchart:activity:lb" action="init"/>
+        <invoker type="patientchart:activity-view:lb" action="init" target="popup"/>
+    </invokers>   
+    <code>
+         <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import java.rmi.server.*;
+        import com.rameses.osiris2.reports.*;
+        import com.rameses.util.*;
+        
+        class LaboratoryActivityController  {
+        
+            @Service("PatientChartLabResultService")
+            def service;
+            
+            def entity;
+            def items;
+            def infoText;
+            
+            void init() {
+                items = service.getList( [activityid:entity.objid] );
+                infoText = TemplateProvider.instance.getResult( "templates/activity/lb.htm", [results:items] );
+            }
+            
+        }
+        ]]>
+    </code>
+    <pages>
+        <page template="com.rameses.ehoms.common.ViewHandlerPage"/>
+    </pages>
+</workunit>

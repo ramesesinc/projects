@@ -1,0 +1,5 @@
+<workunit extends="wtemplates/ExplorerViewController.xml" serviceName="WorkOrderListService" allowSearch="false" tag="MD,VS"> 
+    <invokers>
+        <invoker type="home.action" index="0" caption="Nurse Station" role="NURSE"/>
+    </invokers>    
+</workunit>

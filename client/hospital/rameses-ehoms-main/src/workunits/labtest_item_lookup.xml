@@ -1,0 +1,5 @@
+<workunit extends="wtemplates/ServiceLookupController.xml" serviceName="LabTestItemService" allowSearch="true"> 
+    <invokers>
+        <invoker type="labtest_item:lookup" index="0" caption="Lookup Items" target="popup"/>
+    </invokers>   
+</workunit>

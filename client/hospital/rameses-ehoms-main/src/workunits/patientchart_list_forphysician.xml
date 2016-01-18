@@ -1,0 +1,6 @@
+<workunit extends="wtemplates/ExplorerViewController.xml" serviceName="PatientChartListService" 
+    defaultFileType="patientchart" allowSearch="false" tag="physician_view"> 
+    <invokers>
+        <invoker type="home.action" index="0" caption="Patient Charts (Physicians)" role="PHYSICIAN"/>
+    </invokers>    
+</workunit>

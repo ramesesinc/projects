@@ -1,0 +1,44 @@
+<workunit> 
+    <invokers>
+        <invoker type="patient:option" index="3" caption="Chart History" />
+        <invoker type="formActions" index="3" caption="Sync from Cloud" />
+    </invokers>  
+    <code>
+         <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import java.rmi.server.*;
+        import com.rameses.osiris2.reports.*;
+        
+        class PatientChartHistoryController  {
+
+            @Service("PatientChartHistoryService")
+            def service;
+        
+            @Caller 
+            def caller;
+            
+            @FormTitle
+            def title = "Chart History";
+            
+            def entity;
+            
+            def listHandler = [
+                getColumns: {
+                    return service.getColumns([:]);
+                },
+                fetchList: { o->
+                    return service.getList([objid:entity.objid]);
+                }
+            ] as BasicListModel;
+            
+        }
+        ]]>
+        
+    </code>
+    <pages>
+        <page name="default" template="com.rameses.osiris2.themes.BasicListPage"/>
+    </pages>
+</workunit>

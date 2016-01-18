@@ -1,0 +1,66 @@
+<workunit>
+    
+    <invokers>
+        <invoker type="diagnosis:add" caption="Add Diagnosis" action="create" target="popup"/>
+    </invokers>
+    
+    <code>
+        <![CDATA[
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+    
+        class AddDiagnosisController {
+            
+            @Service("DiseaseLookupService")
+            def service;
+        
+            @Service("PatientChartDiagnosisService")
+            def diagnosisSvc;
+            
+            @Binding
+            def binding;
+        
+            def entity;
+            def handler;
+            def noteTemplate;
+            
+            void create() {
+                def m = [:];
+                m.handler = { o->entity.notes=o; }; 
+                m.section = 'diagnosis';
+                noteTemplate = Inv.lookupOpener( "notetemplate:field", m );
+            }
+            
+            def selectModel = [
+                fetchList: { o->
+                    return service.getList(o);
+                },
+                onselect: { o->
+                    entity.diagnosis = o;
+                }
+            ] as SuggestModel;
+            
+            def doCancel() {
+                return "_close";
+            }
+            
+            def doOk() {
+                if(!handler) 
+                    throw new Exception("Please provide handler");
+                diagnosisSvc.create( entity );                    
+                handler( entity );
+                return "_close";
+            }
+            
+            
+      
+        }
+        
+        ]]>    
+    </code>
+    <pages>
+        <page name="queryform" template="com.rameses.ehoms.patientchart.AddDiagnosisPage"/>
+    </pages>
+</workunit>

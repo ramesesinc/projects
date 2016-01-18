@@ -1,0 +1,41 @@
+<workunit> 
+    <invokers>
+        <invoker type="patientchart:activity:rd" action="init"/>
+        <invoker type="patientchart:activity-view:rd" action="init" target="popup" resizable="false"/>
+    </invokers>   
+    <code>
+         <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import java.rmi.server.*;
+        import com.rameses.osiris2.reports.*;
+        import com.rameses.util.*;
+        
+        class RadiologyActivityController  {
+        
+            @Service("PatientChartRadiologyService")
+            def service;
+            
+            def parent;
+            def entity;
+            def items;
+            def infoText;
+            
+            void init() {
+                items = service.getList( [activityid:entity.objid] );
+                infoText = TemplateProvider.instance.getResult( "templates/activity/rd.htm", [results:items] );
+            }
+            
+            def openItem(params) {
+                def m = items.find{ it.objid == params.objid }; 
+                return Inv.lookupOpener( "patientchart:radiology:viewer", [entity:m] ); 
+            }
+        }
+        ]]>
+    </code>
+    <pages>
+        <page template="com.rameses.ehoms.common.ViewHandlerPage"/>
+    </pages>
+</workunit>

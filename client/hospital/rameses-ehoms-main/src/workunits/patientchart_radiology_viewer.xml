@@ -1,0 +1,60 @@
+<workunit>
+    <invokers>
+        <invoker type="patientchart:radiology:viewer" caption="Radiology" target="popup" action="init" resizable="false"/>
+    </invokers>
+    <code>
+        <![CDATA[
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+    
+        class ImageViewerController  {
+            
+            @Service("PatientChartRadiologyService")
+            def service;
+            
+            def entity;
+            def selectedImage;
+            def items;
+            
+            void init() {
+                selectedImage = [:];
+                items = service.getAttachments( entity );
+            }
+            
+            def galleryModel = [
+                fetchList: {o-> 
+                    return items.collect{ [image: it.thumbnail, caption: it.title, title:it.title, objid: it.objid] }; 
+                },
+                onselect: { o->
+                    if( !o.largeImage ) {
+                        o.largeImage = service.findAttachment( [objid:selectedImage.objid] )?.image;
+                    }
+                }
+            ] as ImageGalleryModel;
+            
+            def doOk() {
+                service.update( entity );
+                return "_close";
+            }
+            
+            def doCancel() {
+                return "_close";
+            }
+            
+            def moveNext() {
+                galleryModel.moveNext();
+            }
+            
+            def movePrev() {
+                galleryModel.movePrevious();
+            }
+        }
+        ]]>    
+    </code>
+    
+    <pages>
+        <page  template="com.rameses.ehoms.patientchart.PatientChartRadiologyAttachment"/>
+    </pages>
+</workunit>

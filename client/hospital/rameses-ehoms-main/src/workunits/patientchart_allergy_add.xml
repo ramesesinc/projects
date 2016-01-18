@@ -1,0 +1,75 @@
+<workunit>
+    <invokers>
+        <invoker type="allergy:add" caption="Add Allergy" target="popup" action="init"/>
+    </invokers>
+    <code>
+        <![CDATA[
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import java.rmi.server.*;
+        import com.rameses.osiris2.common.*;
+    
+        class AddAllergyController  {
+            
+            @Service("PatientChartAllergyService")
+            def service;
+        
+            @Binding
+            def binding;
+            
+            def entity;
+            def allergenClasses;
+            def severityList;
+            def handler;
+            def selectedItem;
+            
+            def reactionTemplate;
+            def noteTemplate;
+            
+            void init() {
+                allergenClasses = LOV.ALLERGEN_CLASS*.key;
+                severityList = LOV.ALLERGY_SEVERITY*.key;
+                def z = [ section: 'allergy_note', handler: { o->entity.reaction=o; } ]; 
+                reactionTemplate = Inv.lookupOpener( "notetemplate:field", z );
+
+                def m = [ section: 'allergy_reaction', handler: { o->entity.notes=o; } ]; 
+                noteTemplate = Inv.lookupOpener( "notetemplate:field", m );
+            }
+            
+            def allergenModel = [
+                fetchList: { o->
+                    o.allergenclass = entity.allergenclass;
+                    return service.getLookupAllergen( o );
+                },
+                onselect: { o->
+                    if( entity.allergens.find{ it.objid == o.objid} ) 
+                        throw new Exception("Item already added");
+                    entity.allergens << [code:o.code, objid:o.objid, name:o.name];
+                    binding.refresh( "selectedItem" );
+                }
+            ] as SuggestModel;
+            
+            void removeItem() {
+                if(!selectedItem) return;
+                entity.allergens.remove( selectedItem );
+            }
+            
+            def doCancel() {
+                return "_close";
+            }
+            
+            def doOk() {
+                entity = service.create( entity );
+                handler( entity );
+                return "_close";
+            }
+            
+        }
+        
+        ]]>    
+    </code>
+    <pages>
+        <page name="queryform" template="com.rameses.ehoms.patientchart.AddAllergy"/>
+    </pages>
+</workunit>

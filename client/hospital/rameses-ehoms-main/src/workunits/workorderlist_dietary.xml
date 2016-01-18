@@ -1,0 +1,6 @@
+<workunit extends="wtemplates/ListController.xml" serviceName="WorkOrderListService" 
+    entityName="dietary" allowSearch="true" tag="dietary"> 
+    <invokers>
+        <invoker type="home.action" index="0" caption="Dietary" role="DIETARY"/>
+    </invokers>    
+</workunit>

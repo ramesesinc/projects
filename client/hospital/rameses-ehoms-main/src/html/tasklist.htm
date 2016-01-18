@@ -1,0 +1,49 @@
+<%
+def df = new java.text.SimpleDateFormat( "MMM dd, yyyy. hh:mm" );
+def dformat = { o->
+if(!o) return '';
+return df.format( o );
+}
+def spc = "&nbsp;&nbsp;&nbsp;";
+%>
+<html>
+    <style>
+        TABLE TD { font-family:Arial;font-size:8px;  }
+    </style>
+    <body>
+        <table cellpadding="0" cellspacing="0" width="100%">
+            <tr>
+                <td><b>To do List:</b><br></td>
+            </tr>
+            <%entity.tasklist.each { %>
+                <tr>
+                    <td>
+                        <b>${it.activity}</b>  requested by ${it.requester?.name}<br>
+                        $spc$spc$spc<i>Ref No:${it.refno} posted on ${df.format(it.dtfiled)}</i>
+                        <br>
+                    </td>
+                </tr>
+            <%}%>
+            <tr>
+                <td><b>&nbsp;</b></td>
+            </tr>
+            <tr>
+                <td><hr></td>
+            </tr>
+            <tr>
+                <td><b>Activities Taken</b><br></td>
+            </tr>
+             <%entity.activitylist.each { %>
+                <tr>
+                    <td>
+                        <b>${it.activity}</b><br>
+                        $spc$spc$spc<i>Ref No:${it.refno} - posted on ${df.format(it.dtfiled)}</i>
+                        <a href="openActivity" objid="${it.objid}" type="${it.activitytype}">View</a>
+                        <br>
+                    </td>
+                </tr>
+            <%}%>
+        </table>    
+        
+    </body>
+</html>

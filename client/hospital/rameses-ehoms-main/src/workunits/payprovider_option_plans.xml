@@ -1,0 +1,37 @@
+<workunit> 
+    <invokers>
+        <invoker type="payprovider:option" index="1" caption="Plans"/>
+    </invokers>  
+    <code>
+         <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import java.rmi.server.*;
+        import com.rameses.util.*;
+        
+        class PayProviderPlansController {
+        
+            @Service("PayProviderPlanService")
+            def service;
+            
+            def entity;
+            
+            def listHandler = [
+                getColumns: {
+                    return service.getColumns([:]);
+                },
+                fetchList: { o->
+                    return service.getList(entity);
+                }
+            ] as BasicListModel;
+        
+        }
+        
+        ]]>
+    </code>
+    <pages>
+        <page template="com.rameses.osiris2.themes.BasicListPage"/>
+    </pages>
+</workunit>

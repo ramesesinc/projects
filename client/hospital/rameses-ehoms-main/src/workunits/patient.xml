@@ -1,0 +1,48 @@
+<workunit extends="wtemplates/MasterCRUDController.xml"> 
+    <invokers>
+        <invoker type="patient:open" index="0" caption="Patient" action="open"/>
+    </invokers>  
+    <code>
+         <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import java.rmi.server.*;
+        import com.rameses.util.*;
+        
+        class PatientController extends MasterCRUDController {
+        
+            @Service("PatientService")
+            def service;
+        
+            def saveHandler;
+            String entityName = "patient";
+            String prefixId    = 'PATIENT';
+            
+            @FormTitle
+            def title;
+            def photo;
+            
+            def genderList = LOV.GENDER.collect{[name:it.key, caption:it.value]};
+            def civilStatusList = LOV.CIVIL_STATUS.collect{[name:it.key, caption:it.value]};
+            
+            def save() {
+                return super.save();
+            }
+            
+            def open() {
+                def z = super.open();
+                title = entity.lastname + ", "+entity.firstname + " ("+ entity.acctid + ")";
+                photo = service.getPhoto( entity );
+                return z;
+            }
+        }
+        ]]>
+        
+    </code>
+    
+    <pages>
+        <page name="edit" template="com.rameses.ehoms.patient.ViewPersonalPage"/>
+    </pages>
+</workunit>

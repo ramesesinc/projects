@@ -1,0 +1,25 @@
+<workunit> 
+    <invokers>
+        <invoker type="payprovider:option" index="0" caption="General Info"/>
+    </invokers>  
+    <code>
+         <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import java.rmi.server.*;
+        import com.rameses.util.*;
+        
+        class PayProviderGeneralController {
+        
+            def providerTypes = ["INSURANCE", "DONOR", "COMPANY"];
+            def entity;
+        }
+        
+        ]]>
+    </code>
+    <pages>
+        <page name="create" template="com.rameses.ehoms.master.PayProviderPage"/>
+    </pages>
+</workunit>

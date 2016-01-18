@@ -8,6 +8,7 @@ android/*/dist
 android/*/build
 android/*/build.xml
 android/*/nbproject/private
+android/*/nbproject/build-impl.xml~
 android/*/nbproject/genfiles.properties
 android/*/nbproject/groovy-build.xml
 android/*/.terminal
@@ -17,6 +18,7 @@ build/**/dist
 build/**/build
 build/**/build.xml
 build/**/nbproject/private
+build/**/nbproject/build-impl.xml~
 build/**/nbproject/genfiles.properties
 build/**/nbproject/groovy-build.xml
 build/**/.terminal
@@ -25,6 +27,7 @@ client/**/dist
 client/**/build
 client/**/build.xml
 client/**/nbproject/private
+client/**/nbproject/build-impl.xml~
 client/**/nbproject/genfiles.properties
 client/**/nbproject/groovy-build.xml
 client/**/.terminal

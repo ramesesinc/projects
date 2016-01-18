@@ -1,0 +1,86 @@
+<workunit>
+    <invokers>
+        <invoker type="tracsremittance:reports" caption="Report By Revenue Item"  action="init"  target="self" index="-1"/>
+        
+        <invoker type="formActions" caption="Back" action="_close" mnemonic="b" shortcut="ctrl B" icon="images/toolbars/arrow_left.png"/>
+    </invokers>
+    
+    <code>
+        <![CDATA[    
+        import com.rameses.osiris2.common.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import java.rmi.server.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.util.*;
+        import com.rameses.osiris2.reports.*;
+        
+        class RemittanceRevenueItemReportController {
+        
+            @Binding
+            def binding;
+        
+            @Service("TRACSMigrationService")
+            def svc
+            
+            @Service("ReportParameterService")
+            def paramsvc
+           
+            def fund
+            def fundlist
+             
+            def entity;
+            def reportdata;
+            def reportPath = "com/rameses/gov/etracs/tools/"
+            def mode = 'init'
+            
+            String title = "Remittance Report By Revenue Item";
+            
+            void init() {
+                fundlist = svc.getFundlist( entity.objid )
+                fund = [:]
+                viewReport();
+            }
+            
+            void setFund( def fund) {
+                this.fund = fund;
+                
+                viewReport() 
+                binding.refresh() 
+            }
+            
+            void viewReport() {
+                reportdata = svc.generateReportByRevenueItem( [objid:entity.objid, fundid: fund.objid] )
+                report.viewReport();
+            }
+       
+            def report = [
+                getReportName : { return reportPath + 'reportbyrevenueitem.jasper' },
+                getReportData : { return reportdata }, 
+                getParameters : { 
+                    def params = paramsvc.getStandardParameter() 
+                    params.SUBTITLE = 'SUMMARY OF COLLECTION'
+                    params.FUND = 'all'
+                    if (fund) {
+                        params.SUBTITLE = params.SUBTITLE + ' BY ' + fund.title + ' FUND ' ;
+                        params.FUND = 'specific'
+                    }
+                    return params;
+                },
+                getSubReports : {
+                    return [ 
+                        new SubReport("ReportSummary", reportPath + "reportbyrevenueitemsummary.jasper"),
+                        new SubReport("BrgyShareSummary", reportPath + "reportbyrevenueitemsummary_share.jasper")
+                    ] as SubReport[];    
+                 }
+            ] as ReportModel
+            
+        }      
+       ]]>
+    </code>
+    
+   <pages>
+       <page template="com.rameses.gov.treasury.remittance.report.RemittanceReportByFund" />
+   </pages>
+   
+</workunit>

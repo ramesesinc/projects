@@ -1,0 +1,5 @@
+<workunit extends="wtemplates/ServiceLookupController.xml" serviceName="AklanSpecialPassTypeLookupService">
+    <invokers>
+        <invoker type="aklanspecialpassaccttype:lookup" caption="Lookup Special Pass Account Type" target="popup"/>
+    </invokers>
+</workunit>

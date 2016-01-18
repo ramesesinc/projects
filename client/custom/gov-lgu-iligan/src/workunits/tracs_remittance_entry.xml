@@ -1,0 +1,126 @@
+<workunit>
+    <invokers>
+        <invoker type="tracsmigration_entry:add" caption="TRACS Remittance Entry (Add)" action="init" target="popup"/>    
+    </invokers>
+    
+    <code>
+<![CDATA[    
+
+import com.rameses.rcp.annotations.*
+import com.rameses.rcp.common.*
+import com.rameses.osiris2.client.*
+import com.rameses.osiris2.common.*
+import com.rameses.gov.treasury.certification.*;
+import com.rameses.osiris2.reports.*;
+import java.rmi.server.*;
+
+class  TracsReceiptMigrationController 
+{
+    @Service('TRACSMigrationService')
+    def svc;
+    
+    @Service('CollectionTypeService')
+    def collectionTypeSvc;
+    
+    def entry = [:];
+    
+    def handler
+    
+    @Binding 
+    def binding 
+    
+    def selectedItem
+    
+    def title = "TRACS Remittance Receipts "
+    
+    def formTypes;
+    def formType
+    def collectionTypes
+    def mode 
+    
+    @PropertyChangeListener
+    def listener = [
+         "formType": { o->
+            entry.formno = o.objid
+            entry.formtype = o.formtype 
+            collectionTypes = collectionTypeSvc.getCollectionTypes([formno: o.objid]);
+        } 
+    ]
+    
+    public void init() { 
+        formTypes = collectionTypeSvc.getFormTypes();
+        entry = [:]
+        entry.uid = "ENT" + new UID()
+        entry.totalcash = 0.0
+        mode='init'
+    }   
+    
+    void open() {
+        mode='open' 
+    }
+    
+    void load() {
+        entry  = svc.getTRACSReceipts( entry );
+        listModel.reload();
+        mappingListHandler.reload()
+        binding.refresh("entry.* ")
+    }
+    
+    def doOk() {
+        if( entry.unmappedacctlist.find{it.etracsaccount == null}) 
+            throw new Exception("There are still unmapped tracs account.  ")
+         
+        entry.receipts = entry.receipts.findAll{ it.selected == true }
+        if( handler) handler(entry )    
+        return "_close"
+    }
+    
+    def doCancel() {
+        if(! MsgBox.confirm("Discard changes?   "))  return;
+        return "_close";
+    }
+    
+    def listModel = [
+        fetchList : { return entry.receipts },
+        onColumnUpdate: {item, colname-> 
+            if( colname == 'selected') {
+                if( item.selected == 1)
+                     entry.totalamount += item.amount 
+                else 
+                    entry.totalamount -= item.amount 
+                
+                binding.refresh("entry.totalamount") 
+            }
+        }
+        
+    ] as EditorListModel
+    
+    def mappingListHandler = [
+        fetchList : { return entry.unmappedacctlist }, 
+        onColumnUpdate: {item, colname-> 
+            if( colname == 'etracsaccount') {
+                svc.createAccountMapping( [
+                    taxfeeid : item.taxfeeid,
+                    fundid:item.etracsaccount.fund.objid,
+                    fundcode:item.etracsaccount.fund.code,
+                    fundtitle:item.etracsaccount.fund.title,
+                    itemid:item.etracsaccount.objid,
+                    itemcode:item.etracsaccount.code,
+                    itemtitle:item.etracsaccount.title 
+                ])
+            }
+        }
+    ] as EditorListModel
+    
+    
+}
+
+]]>
+        
+    </code>
+    
+    <pages>
+        <page  template="com.rameses.gov.etracs.tools.TRACSRemittanceEntryPage"/>
+    </pages>
+    
+</workunit>

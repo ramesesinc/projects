@@ -1,0 +1,47 @@
+<workunit>
+    <invokers>
+        <invoker type="business:preassessment:printout" index="-10" caption="Preassessment" action="preview" />
+        <invoker type="formActions" caption="Back" action="_close" />
+    </invokers>
+    
+    <code>
+        <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import java.rmi.server.*;
+        import com.rameses.osiris2.reports.*;
+        
+        class  BusinessPreAssessmentReportController extends com.rameses.etracs.shared.ReportController {
+        
+            def entity;
+            def title = "Business Preassessement Printout"
+            def df = new java.text.SimpleDateFormat("yyyy-MM-dd");
+                    
+            def reportPath = "com/rameses/gov/etracs/bpls/reports/preassessment/"
+            String reportName =  reportPath + "PreAssessment.jasper" 
+            
+            def getReportData(){
+                if(entity.dateapplied) {
+                    entity.dateapplied = df.parse( entity.dateapplied );
+                } 
+                return entity;
+            } 
+            
+            SubReport[] getSubReports() { 
+                return [
+                       new SubReport("PreAssessmentInfo", reportPath + "PreAssessmentInfo.jasper"),
+                        new SubReport("PreAssessmentItem", reportPath + "PreAssessmentItem.jasper"),
+                    ] as SubReport[];
+             }
+            
+        }
+        ]]>
+    </code>
+    
+    <pages>
+       <page name="preview" template="com.rameses.osiris2.common.ui.ReportPreviewPage"/>
+    </pages>
+    
+</workunit>

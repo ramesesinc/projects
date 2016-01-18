@@ -1,0 +1,5 @@
+<workunit extends="wtemplates/ServiceLookupController.xml" serviceName="WaterBillAccountLookupService" allowSearch="true" >
+    <invokers>
+        <invoker type="waterbillacct:lookup" caption="Lookup Water Bill Account" target="popup"/>
+    </invokers>
+</workunit>

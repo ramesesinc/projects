@@ -1,0 +1,11 @@
+<workunit extends="wtemplates/ListController.xml">
+    <invokers>
+        <invoker folderid="/home/aklanterminal" caption="Special Pass Account" 
+                 index="100" role="COLLECTOR,SUBCOLLECTOR"/> 
+        
+        <invoker type="terminalpasshome.action" caption="Special Pass" 
+                 role="COLLECTOR,SUBCOLLECTOR" index="1"/> 
+    </invokers>
+    
+    <code class="gov.lgu.aklan.terminal.AklanSpecialTerminalPassListController"/> 
+</workunit>

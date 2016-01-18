@@ -1,0 +1,5 @@
+<workunit extends="wtemplates/ServiceLookupController.xml" serviceName="AklanTurnstileCategoryLookupService">
+    <invokers>
+        <invoker type="aklanturnstilecategory:lookup" caption="Lookup Turnstile Category" target="popup"/>
+    </invokers>
+</workunit>

@@ -1,0 +1,13 @@
+<folders>
+    <folder id="explorer">
+        <folder id="txn">
+            <folder id="treasury" caption="Treasury" index="5">
+            </folder>
+        </folder>
+    </folder>
+      
+    <folder id="home">
+        <folder id="aklanterminal" caption="AKLAN Terminal">
+        </folder>
+    </folder>
+</folders>

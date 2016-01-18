@@ -1,0 +1,61 @@
+<workunit>
+    
+    <invokers>
+        <invoker folderid="/explorer/txn/treasury/tools" caption="Remittance Revenueitem Update" role="DATA_CONTROLLER" index="5"/>
+    </invokers>
+    
+    <code>
+<![CDATA[    
+
+import com.rameses.rcp.annotations.*
+import com.rameses.rcp.common.*
+import com.rameses.osiris2.client.*
+import com.rameses.osiris2.common.*
+import com.rameses.gov.treasury.certification.*;
+import com.rameses.osiris2.reports.*;
+
+class  UpdateRemittanceRevenueItemController 
+{
+    @Service('RemittanceUpdateService')
+    def svc;
+    
+    def entity = [:];
+    
+    @Binding 
+    def binding 
+    
+    def title = "Remittance Revenueitem Update"
+    
+    def next() {
+        def item = svc.findItem( entity )
+        entity.fromitemcode = item.item.code ;
+        entity.fromitemtitle = item.item.title
+        return "main"
+    }
+    
+    def getItemHandler() {
+        return InvokerUtil.lookupOpener("revenueitem:lookup", [ onselect:{ o->
+              entity.toitem = o;
+              binding.refresh("entity.toitem.*")
+        } ]) 
+    }
+    
+    def update() {
+        svc.updateItem( entity );
+        MsgBox.alert("Remittance revenute item succesfully updated.  ")
+        entity = [:]
+        return "default"
+    }
+    
+}
+
+]]>
+        
+    </code>
+    
+    <pages>
+        <page  template="com.rameses.gov.etracs.tools.RemittanceRevenueItemInitPage"/>
+        <page name="main" template="com.rameses.gov.etracs.tools.RemittanceRevenueItemMainPage"/>
+    </pages>
+    
+</workunit>

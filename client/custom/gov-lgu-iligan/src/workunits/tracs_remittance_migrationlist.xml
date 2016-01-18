@@ -1,0 +1,7 @@
+<workunit extends="wtemplates/ListController.xml" serviceName="TRACSMigrationListService" entityName="tracsmigration">
+    <!--
+    <invokers>
+        <invoker folderid="/explorer/txn/treasury/tools" caption="TRACS Cashreceipt Migrations" role="DATA_CONTROLLER" index="8"  />
+    </invokers>
+    -->
+</workunit>

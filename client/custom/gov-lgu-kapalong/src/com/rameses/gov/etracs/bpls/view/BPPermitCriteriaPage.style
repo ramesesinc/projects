@@ -1,0 +1,21 @@
+"entity.*" [1==1] {
+    visible: false; 
+}
+"entity.(period|barangay)" [1==1] {
+    visible: true; 
+}
+"entity.year" [entity.period.toString().matches('yearly|quarterly|monthly')==true] {
+    visible: true; 
+}
+"entity.qtr" [entity.period.toString().matches('quarterly')==true] {
+    visible: true; 
+}
+"entity.month" [entity.period.toString().matches('monthly')==true] {
+    visible: true; 
+}
+"entity.*" [ mode=='processing' ] {
+    enabled: false; 
+}
+"entity.*" [ !(mode=='processing') ] {
+    enabled: true; 
+} 

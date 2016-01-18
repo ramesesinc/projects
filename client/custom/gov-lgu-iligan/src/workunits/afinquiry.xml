@@ -1,0 +1,85 @@
+<workunit>
+    <!--
+    <invokers>
+        <invoker folderid="/explorer/txn/treasury/tools" caption="AF Inquiry" role="DATA_CONTROLLER" index="7" />
+    </invokers>
+    -->
+    <code>
+<![CDATA[    
+
+import com.rameses.rcp.annotations.*
+import com.rameses.rcp.common.*
+import com.rameses.osiris2.client.*
+import com.rameses.osiris2.common.*
+import com.rameses.gov.treasury.certification.*;
+import com.rameses.osiris2.reports.*;
+
+class  AFInquiryController 
+{
+    @Service('AFInquiryToolService')
+    def svc;
+    
+    def entity = [:];
+    def list = []
+    
+    @Binding 
+    def binding 
+    
+    def selectedItem
+    
+    def title = "AF Inquiry"
+    
+    def listHandler = [
+          fetchList: { o->
+                if(! entity.series) return []
+                
+                def list = svc.search( entity ) ;
+                if(! list ) MsgBox.alert("No record(s) found.          ")
+                return list 
+          }
+    ] as BasicListModel
+    
+    void search() {
+        listHandler.load();
+        binding.refresh()
+    }
+
+    
+    void changeStartSeries() {
+        if(selectedItem.currentseries != selectedItem.startseries)
+            throw new Exception("Change of start series not allowed. Series already in used. ")
+        def series = MsgBox.prompt("Enter new startseries ? " );
+        if( !series) throw new Exception("New series is required.  " )
+        if(! series.isInteger() )  throw new Exception("New series must be an integer.  " )
+        if(  series.toInteger() > selectedItem.endseries)
+            throw new Exception("New series must not exceed endseries   ")
+        
+            
+        selectedItem.newseries = series 
+        svc.changeStartSeries( selectedItem )
+        listHandler.load();
+    }
+    
+    void delete() {
+        if( !MsgBox.confirm("Delete selected item?     ")) return;
+    
+        svc.delete( selectedItem )
+        listHandler.load();
+    }
+    
+    def transfer() {
+       return  InvokerUtil.lookupOpener("afutility:selectcollector", [item:selectedItem, handler:{ listHandler.load(); }])
+    }
+    
+    
+}
+
+]]>
+        
+    </code>
+    
+    <pages>
+        <page  template="com.rameses.gov.etracs.tools.AFInquiryPage"/>
+    </pages>
+    
+</workunit>

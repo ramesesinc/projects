@@ -1,0 +1,86 @@
+<workunit extends="wtemplates/gov/treasury/CertificationController.xml">
+    <invokers>
+        <invoker type="treasury-certification" caption="TRACS Collection Certification" role="REPORT" certificationType="cashreceipt_tracs" index="5" permission="collectioncertification.tracs"/>
+        <invoker type="treasury-certification:cashreceipt_tracs:create" action="init" caption="TRACS Collection Certification"  target="self" index="10" role="REPORT" permission="collectioncertification.tracs"/>
+        
+        <invoker type="cashreceipt_tracs:open" action="open" caption="Collection Certification"  target="self" index="10" role="REPORT" permission="collectioncertification.tracs"/>
+    </invokers>
+    
+    <code>
+<![CDATA[    
+
+import com.rameses.rcp.annotations.*
+import com.rameses.rcp.common.*
+import com.rameses.osiris2.client.*
+import com.rameses.osiris2.common.*
+import com.rameses.gov.treasury.certification.*;
+import com.rameses.osiris2.reports.*;
+
+class  TRACSCashReceiptCertificationController extends CertificationController
+{
+    @Service('TracsCashReceiptService')
+    def crSvc;
+    
+    def receipt;
+    
+    String type;
+
+    def getLookupReceipt(){
+        return InvokerUtil.lookupOpener('tracsreceipt:lookup', [
+            onselect : {
+                if (it.voided == 1 || it.voided == true)
+                    throw new Exception('Receipt has already been voided.');
+                receipt = it;
+                loadReceiptInfo();
+            },
+            
+            onempty :{
+                entity.name = null;
+                entity.address = null;
+                entity.amount = 0.0;
+                entity.receiptno = null;
+                entity.receiptdate = null;
+            }
+            
+        ]);
+    }
+    
+    
+    void loadReceiptInfo(){
+        receipt = crSvc.open(receipt);
+        entity.refid = entity.objid;
+        entity.name = receipt.paidby;
+        entity.address = receipt.paidbyaddress;
+        entity.amount = receipt.amount;
+        entity.receiptno = receipt.receiptno;
+        entity.receiptdate = new java.text.SimpleDateFormat('MMMMM dd, yyyy').format(receipt.receiptdate);
+        entity.items = receipt.items;
+        entity.LANDTAX = receipt.LANDTAX
+    }
+    
+    
+    
+    
+    String reportPath  = 'com/rameses/gov/treasury/certification/cashreceipt/';
+    String reportName  = reportPath + 'cashreceiptcertification.jasper'
+    
+    SubReport[] getSubReports() {
+        def jas  = 'cashreceiptcertificationitem.jasper'
+        if(entity.LANDTAX == 1)  jas  = 'cashreceiptcertificationitem_rpt.jasper'
+    
+        return [
+            new SubReport('item', reportPath + jas ),
+        ] as SubReport[]
+    }
+
+}
+
+]]>
+        
+    </code>
+    
+    <pages>
+        <page name="default" template="com.rameses.gov.treasury.certification.cashreceipt.CertificationCashReceiptPage"/>
+    </pages>
+    
+</workunit>

@@ -1,0 +1,5 @@
+<workunit extends="wtemplates/ServiceLookupController.xml" serviceName="TracsCashReceiptService">
+   <invokers>
+         <invoker type="tracsreceipt:lookup" caption="TRACS Receipt" target="popup"/>
+   </invokers>
+</workunit>

@@ -1,0 +1,60 @@
+<workunit extends="wtemplates/gov/treasury/ReportController.xml" >
+    <invokers>
+        <invoker folderid="/explorer/report/accounting" action="init" caption="NGAS Consolidated Report" target="window" index="10" 
+            role="REPORT"  />
+    </invokers>
+    <code>
+
+<![CDATA[
+
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.reports.*;
+
+
+class NGASConsolidatedReportController extends com.rameses.etracs.shared.ReportController {
+
+    @Service('KaliboNGASConsolidatedReportService') 
+    def svc
+    
+    String title = 'NGAS Consolidated Report'
+    String reportpath = 'com/rameses/gov/ngas/report/'
+    String reportName = reportpath + 'ngasconsolidated.jasper'
+    
+        
+    def initReport(){
+        return 'default'
+    }
+    
+    def data
+    def getReportData(){
+        data = svc.generateReport(entity);
+        return data.reportdata
+    }
+    
+    def formControl = [
+        getFormControls: {
+            return [
+                new FormControl( "combo", [caption:'Format', name:'entity.type', items:'reportTypes', required:true, allowNull:false, captionWidth:120]),
+                new FormControl( "integer", [caption:'Year', name:'entity.year', required:true, preferredSize:'80,19', captionWidth:120]),
+                new FormControl( "combo", [caption:'Quarter', name:'entity.qtr', items:'quarters', required:true, immediate:true, preferredSize:'80,19', captionWidth:120]),
+                new FormControl( "combo", [caption:'Month', name:'entity.month', items:'monthsByQtr', depends:'entity.qtr', expression:'#{item.name}', dynamic:true, preferredSize:'80,19', captionWidth:120]),
+            ]    
+        },
+   ] as FormPanelModel;
+   
+   
+   Map getParameters(){
+        return data.header 
+    }
+    
+    def getReportTypes(){
+        return ['standard', 'extended']
+    }   
+}
+
+]]>        
+        
+    </code>
+</workunit>

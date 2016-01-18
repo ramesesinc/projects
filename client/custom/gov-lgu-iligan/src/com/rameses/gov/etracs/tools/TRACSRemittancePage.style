@@ -1,0 +1,7 @@
+"entity.dtposted|entity.collector|add|remove" [ mode == 'init' ] {
+    enabled: true;
+}
+
+"entity.dtposted|entity.collector|add|remove" [ mode == 'posted' ] {
+    enabled: false;
+}

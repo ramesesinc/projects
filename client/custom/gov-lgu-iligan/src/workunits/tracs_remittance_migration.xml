@@ -1,0 +1,134 @@
+<workunit>
+    <invokers>
+       <invoker type="tracsmigration:create" action="init" caption="TRACS Receipt" target="window"/>
+       <invoker type="tracsmigration:open" action="open" caption="TRACS Receipt" target="window"/>
+        
+        <invoker type="formActions" caption="Close" action="_close" visibleWhen="#{mode != 'init'}"  immediate="true" mnemonic="c" shortcut="ctrl C" icon="images/toolbars/cancel.png"/>
+        <invoker type="formActions" caption="New" action="create" visibleWhen="#{mode != 'init'}"   mnemonic="n" shortcut="ctrl N" icon="images/toolbars/create.png"/>
+        <invoker type="formActions" caption="Cancel" action="doCancel"  visibleWhen="#{mode == 'init'}" immediate="true" mnemonic="c" shortcut="ctrl C" icon="images/toolbars/cancel.png"/>
+        <invoker type="formActions" caption="Save" action="save" visibleWhen="#{mode == 'init'}" mnemonic="s" shortcut="ctrl S" icon="images/toolbars/save.png"/>
+        <invoker type="formActions" caption="Reports" name="popupReports" visibleWhen="#{mode == 'posted'}" category="tracsremittance:reports" />
+    </invokers>
+    
+    <code>
+<![CDATA[    
+
+import com.rameses.rcp.annotations.*
+import com.rameses.rcp.common.*
+import com.rameses.osiris2.client.*
+import com.rameses.osiris2.common.*
+import com.rameses.gov.treasury.certification.*;
+import com.rameses.osiris2.reports.*;
+import java.rmi.server.*;
+
+class  TracsReceiptMigrationController 
+{
+    @Service('TRACSMigrationService')
+    def svc;
+    
+    @Service('CollectionTypeService')
+    def collectionTypeSvc;
+    
+    def entity = [:];
+    
+    @Binding 
+    def binding 
+    def mode
+    
+    def entityName = "tracsrem"
+    
+    def selectedItem
+    
+    def title = "TRACS Cashreceipt Migration"
+    
+    
+    def popupReports(def inv) {
+        def popupMenu = new PopupMenuOpener();
+        def list = InvokerUtil.lookupOpeners( inv.properties.category, [entity:entity] );
+        list.each{
+            popupMenu.add( it );
+        }
+        return popupMenu;
+    }
+    
+    public void init() { 
+        entity = [:]
+        entity.objid = "TREM" + new UID()
+        entity.amount = 0.0
+        entity.collections = []
+        entity.entries = []
+        mode='init'
+    }   
+   
+    void open() {
+        mode = 'posted'
+        entity = svc.open( entity ) 
+    }
+    
+    def doCancel() {
+        if(!MsgBox.confirm("Discard changes?   ")) retrun null;
+        
+        return "_close"
+    }
+    
+    
+    void save() {
+        if(! MsgBox.confirm("Please ensure that all data are correct. Continue? ")) return;
+    
+        entity.txnno = svc.save( entity ).txnno ; 
+        MsgBox.alert("Data migrated successfully.      ")
+        mode = "posted"
+        binding.refresh();
+    }
+    
+    void create() {
+        init() 
+        listModel.reload()
+    }
+    
+    def add() {
+        return InvokerUtil.lookupOpener("tracsmigration_entry:add", [ handler:{ o->
+                 entity.entries << o  
+                 entity.collections << [ 
+                    uid:o.uid, formno:o.formno, amount:o.totalamount,
+                    startseries:o.receipts[0].receiptno, endseries:o.receipts[-1].receiptno
+                 ]
+                 
+                 entity.amount = entity.collections.amount.sum() 
+                 listModel.reload()
+                 binding.refresh("entity.amount");
+            } ])
+        
+    }
+    
+    void remove() {
+        if( !selectedItem ) return;
+    
+        if(! MsgBox.confirm("Remove selected item?   ")) return;
+        
+        
+        entity.entries.remove( entity.entries.find{it.uid == selectedItem.uid })
+        entity.collections.remove( entity.collections.find{it.uid == selectedItem.uid })
+        
+        listModel.reload()
+        entity.amount = entity.collections.amount.sum() 
+        binding.refresh("entity.amount");
+    } 
+    
+    
+    def listModel = [
+        fetchList : { return entity.collections }
+    ] as BasicListModel 
+    
+    
+}
+
+]]>
+        
+    </code>
+    
+    <pages>
+        <page  template="com.rameses.gov.etracs.tools.TRACSRemittancePage"/>
+    </pages>
+    
+</workunit>

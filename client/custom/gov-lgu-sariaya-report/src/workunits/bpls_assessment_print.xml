@@ -1,0 +1,32 @@
+<workunit>
+    <invokers>
+        <invoker type="business_application:assessment:print" caption="Assessment Template-B" action="preview"/> 
+        <invoker type="formActions" caption="Back" action="_close" icon="back"/> 
+    </invokers>
+    
+    <code>
+    <![CDATA[ 
+import com.rameses.rcp.annotations.*; 
+import com.rameses.rcp.common.*; 
+
+class BPLSAssessmentReportTemplateB extends com.rameses.gov.etracs.bpls.controller.BusinessAssessmentReportController {
+
+    String reportPath = 'gov/lgu/sariaya/bpls/report/assessment/'; 
+
+    void afterReportData( data ) {
+        //do something here...
+                
+        def grossinfos = data.assessmentinfos?.findAll{ it.attribute?.objid=='GROSS' }.collect{[ lobid: it.lob?.objid, value: it.decimalvalue ]} 
+        data.taxfees.findAll{ it.taxfeetype.toString().toUpperCase()=='TAX' }.each{ x-> 
+            x.gross = grossinfos.find{ it.lobid==x.lob?.objid }?.value 
+        } 
+    } 
+} 
+    ]]> 
+    </code>
+    
+    <pages>
+        <page name="preview" template="com.rameses.osiris2.common.ui.ReportPreviewPage" />
+    </pages>
+    
+</workunit>

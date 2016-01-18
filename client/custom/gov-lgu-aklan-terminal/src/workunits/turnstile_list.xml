@@ -1,0 +1,8 @@
+<workunit extends="wtemplates/ListController.xml">
+    <invokers>
+        <invoker folderid="/home/aklanterminal" caption="Manage Turnstile" 
+                 domain="TERMINAL" role="ADMIN" index="100"/> 
+    </invokers>
+    
+    <code class="gov.lgu.aklan.terminal.AklanTurnstileListController"/> 
+</workunit>

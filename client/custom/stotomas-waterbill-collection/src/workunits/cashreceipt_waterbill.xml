@@ -1,0 +1,99 @@
+<workunit extends="wtemplates/gov/treasury/BasicCashReceiptController.xml">
+    <invokers>
+        <invoker type="collectiontype:handler" caption="Sto Tomas Water Bill" name="waterbill" index="6"/>
+        <invoker type="cashreceipt:waterbill" action="init" />
+    </invokers>
+    <code>
+        <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import com.rameses.enterprise.treasury.cashreceipt.*
+        import com.rameses.util.* 
+        
+        class  WaterBillCashreceiptController  extends BasicCashReceipt  {
+            
+            @Service("WaterBillAccountLookupService")
+            def svc 
+            
+            @Service("DateService")
+            def dtSvc 
+            
+            @PropertyChangeListener
+            def listener=[
+                    "entity.account.totaldue":{o->
+                        entity.account.totaldue=o
+                        entity.amount = o
+                        updateBalances();
+                    },
+                    
+                    "entity.account.duedate" : { o -> 
+                       entity.account.duedate = o
+                       def dp = svc.computeDiscPenalty(entity.account) 
+                       info.penalty = 0.0
+                       info.discount = 0.0
+                       if( dp) {
+                            if(dp.type == "penalty") {
+                                info.penalty = dp.amount
+                            } else {
+                                info.discount = dp.amount 
+                            }
+                        }
+                        entity.account.totaldue = entity.account.amountdue + entity.account.otheramount + entity.account.penalty - entity.account.discount 
+                        entity.amount = entity.account.totaldue
+
+                        updateBalances();  
+                    }
+            ]
+            
+            
+            void init(){
+                super.init();
+                entity.account = [:]
+                boolean pass = false
+                Modal.show( Inv.lookupOpener("waterbillacct:lookup", [
+                       onselect:{ o-> 
+                            entity.account.code = o.code;    
+                            pass = true 
+                        }
+                    ]) ) 
+                    
+                if(! pass) throw new BreakException()  
+                
+                
+                entity.account = svc.findAccountInfo(entity.account) 
+                entity.paidby = entity.account.name  + " ACCT #" + entity.account.code
+                entity.paidbyaddress = "STO. TOMAS"
+                
+                entity.account.totaldue = entity.account.amountdue + entity.account.otheramount + entity.account.penalty - entity.account.discount 
+                entity.amount = entity.account.totaldue
+                
+                updateBalances();
+            }
+            
+            def getTotalAmount() {
+                return entity.amount 
+            }
+            
+            public void validateBeforePost() {
+                entity.items = []
+                entity.items << [
+                        objid:  'CI' + new java.rmi.server.UID(),
+                        item: entity.collectiontype.item,
+                        amount: entity.amount,
+                        remarks : "Acct No : " + entity.account.code 
+                 ]  
+                 
+            } 
+
+        }
+        ]]>
+        
+    </code>
+    
+    <pages>
+        <page name="default" template="waterbill.collection.ui.WaterBillCollection"/>
+    </pages>
+    
+</workunit> 

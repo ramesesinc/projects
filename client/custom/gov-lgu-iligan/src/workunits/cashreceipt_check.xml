@@ -1,0 +1,70 @@
+<workunit>
+   
+    <invokers>
+        <invoker folderid="/explorer/txn/treasury/tools" caption="Check Payment Update" role="DATA_CONTROLLER" index="6"/>
+    </invokers>
+    
+    <code>
+<![CDATA[    
+
+import com.rameses.rcp.annotations.*
+import com.rameses.rcp.common.*
+import com.rameses.osiris2.client.*
+import com.rameses.osiris2.common.*
+import com.rameses.gov.treasury.certification.*;
+import com.rameses.osiris2.reports.*;
+
+class  CashReceiptToolController 
+{
+    @Service('CashReceiptToolService')
+    def svc;
+    
+    def entity = [:];
+    
+    @Binding 
+    def binding 
+    
+    def title = "Check Payment Update"
+    
+    def next() {
+        entity = svc.findCashreceipt( entity ) 
+        entity.check = [:]
+        return "main"
+    }
+    
+    def update() {
+        entity.check.amount = entity.amount 
+        svc.updateCheckPayment( entity );
+        MsgBox.alert("Cash receipt successfully updated.   ")
+        entity = [:]
+        binding.refresh("entity.*");
+        return "default"
+    }
+    
+    def getLookupBank(){
+        return InvokerUtil.lookupOpener('bank:lookup', [
+            onselect : {
+                entity.check.bankid = it.objid;
+                entity.check.bank   = it.code;
+                entity.check.deposittype = it.deposittype;
+            },
+
+            onempty  : {
+                entity.check.bankid = null;
+                entity.check.bank   = null;
+                entity.check.deposittype = null;
+            }
+        ])
+    }
+}
+
+]]>
+        
+    </code>
+    
+    <pages>
+        <page  template="com.rameses.gov.etracs.tools.CashreceiptUpdateInitPage"/>
+        <page name="main"  template="com.rameses.gov.etracs.tools.CashreceiptUpdatePage"/>
+    </pages>
+    
+</workunit>

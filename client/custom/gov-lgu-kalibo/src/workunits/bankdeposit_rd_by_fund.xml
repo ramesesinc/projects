@@ -1,0 +1,71 @@
+<workunit>
+    <invokers>
+        <invoker type="bankdeposit:reports"  caption="Report of Deposits" action="init"  target="self" index="50"/>
+        
+        <invoker type="formActions" caption="Back" action="_close" mnemonic="b" shortcut="ctrl B" icon="images/toolbars/arrow_left.png"/>
+    </invokers>
+    <code>
+        <![CDATA[    
+        import com.rameses.osiris2.common.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import java.rmi.server.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.util.*;
+        import com.rameses.osiris2.reports.*;
+        import com.rameses.etracs.shared.*;
+        
+        class BankDepositRDController {
+        
+            @Binding
+            def binding
+            
+            @Service('KaliboBankDepositReportService')
+            def svc
+            
+            @Service("ReportParameterService")
+            def paramsvc
+        
+            def entity;
+            def title = 'Report of Deposits' 
+            
+            def fundlist
+            def fund
+            def reportdata;
+            def reportPath = "com/rameses/gov/treasury/bankdeposit/reportbyfund/"
+            
+            void init() {
+                fundlist = svc.getFundlist( entity.objid )
+                fund = fundlist[0];
+                viewReport()
+            }
+            
+            void setFund( def fund) {
+                this.fund = fund;
+                
+                viewReport()
+                binding.refresh()
+            }
+            
+            void viewReport() {
+                reportdata = svc.generateReportOfDepositsByFund( entity, fund )
+                report.viewReport();
+            }
+            
+            
+            def report = [
+                getReportName : { return reportPath + 'reportofdeposits.jasper' },
+                getReportData : { return reportdata }, 
+                getParameters : { 
+                    def params = paramsvc.getStandardParameter() 
+                    params.LOGOLGU = EtracsReportUtil.getInputStream("lgu-logo.png")
+                    return params;
+                },
+            ] as ReportModel
+        }
+        ]]>
+    </code>
+    <pages>
+        <page template="com.rameses.gov.treasury.bankdeposit.report.BankDepositReportByFund" />
+    </pages>
+</workunit>

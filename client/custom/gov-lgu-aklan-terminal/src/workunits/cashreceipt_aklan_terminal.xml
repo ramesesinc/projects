@@ -1,0 +1,99 @@
+<workunit>
+    <invokers>
+	<invoker type="cashreceipt:aklanterminal" action="init" caption="Enter No. of Guests"/>
+        
+        <invoker type="formActions" action="_close" caption="Back" immediate="true" visibleWhen="#{!completed}" 
+            icon="images/toolbars/arrow_left.png" mnemonic="c"/>
+        <invoker type="formActions" action="post" caption="Save" visibleWhen="#{!completed}"
+            icon="images/toolbars/save.png" mnemonic="s" />
+
+        <invoker type="formActions" action="_close:_close" caption="Quit" visibleWhen="#{completed}" mnemonic="n"/>
+        <invoker type="formActions" action="_close" caption="New" visibleWhen="#{completed}" mnemonic="n"/>
+        <invoker type="formActions" action="reprint" caption="Reprint" mnemonic="p" visibleWhen="#{completed}"/>
+        <invoker type="formActions" action="doVoid" caption="Void" visibleWhen="#{completed}"/>        
+    </invokers>	
+    
+    <code>
+        <![CDATA[
+        
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        import com.rameses.util.*;
+        import com.rameses.enterprise.treasury.cashreceipt.*;
+        import gov.lgu.aklan.terminal.*; 
+
+        class  AklanTerminalCashReceiptController extends AbstractCashReceipt {
+            
+            def optionList = ['YES', 'NO'];
+            
+            String getTitle(){
+                return 'Aklan Jetty Port Terminal Collection'
+            }
+
+            @PropertyChangeListener
+            def listener = [
+                "entity.totalcash": { o->
+                    calcChange();
+                },
+                "entity.amount" : {
+                    entity.totalcash = entity.amount;
+                    entity.cashchange = 0.0;
+                    binding.refresh('entity.totalcash');
+                },
+                "entity.num.*" : {
+                    if (!entity.numadult) entity.numadult = 0;
+                    entity.amount = NumberUtil.round(entity.numadult * entity.rate);
+                    binding.refresh();
+                }
+            ];
+
+            void calcChange(){
+                entity.cashchange = 0.0
+                if ( !entity.amount ) entity.amount = 0.0;
+                if (entity.totalcash > entity.amount){
+                    entity.cashchange = entity.totalcash - entity.amount;
+                    binding.refresh('entity.cashchange');
+                } 
+            }
+
+            void init() {
+                entity.remarks = '';
+                if(!entity.items) 
+                    throw new Exception("Item account must be specified.Please check cash receipt interceptor for single item");
+            }
+
+            public void validateBeforePost() {
+                if (entity.amount > entity.totalcash)
+                    throw new Exception('Cash Received must be greater than or equal to Amount.')
+                entity.items[0].amount = entity.amount;
+            }
+
+            def close(){
+                return '_close'
+            }
+            
+            
+            void print() {
+                super.print(); 
+
+                entity.tickets.each {o-> 
+                    o.collector = entity.collector.name;
+                    o.orno = entity.receiptno;
+                    o.ordate = entity.receiptdate; 
+                    o.gateno = o.tag;
+                } 
+                def printer = new TicketPrinter();
+                printer.terminalname = entity.org.name;
+                printer.print( entity.thermalprintername, entity.tickets ); 
+            } 
+        } 
+        ]]>
+    </code>
+    
+    <pages>
+	<page template="gov.lgu.aklan.terminal.AklanTerminalCashReceiptPage"/>
+        <page name="completed" template="com.rameses.enterprise.treasury.cashreceipt.CashReceiptInfoPage"/>
+    </pages>		
+</workunit>

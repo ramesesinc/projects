@@ -1,0 +1,46 @@
+<workunit>
+    <!--
+    <invokers>
+        <invoker folderid="/explorer/txn/treasury/tools" caption="CTC Brgy Share Update" role="DATA_CONTROLLER" index="7"/>
+    </invokers>
+    -->
+    <code>
+<![CDATA[    
+
+import com.rameses.rcp.annotations.* 
+import com.rameses.rcp.common.*
+import com.rameses.osiris2.client.*
+import com.rameses.osiris2.common.*
+import com.rameses.gov.treasury.certification.*;
+import com.rameses.osiris2.reports.*;
+
+class CashReceiptUpdateController 
+{
+    @Service('RemittanceUpdateService')
+    def svc;
+    
+    def entity = [:];
+    
+    @Binding 
+    def binding 
+    
+    def title = "CTC Brgy Share Update"
+    
+    void update() {
+        svc.updateCTCBShare( entity );
+        MsgBox.alert("CTC Brgy Share successfully updated  .  ")
+        entity = [:]
+        binding.refresh("entity.*");
+    }
+    
+}
+
+]]>
+        
+    </code>
+    
+    <pages>
+        <page  template="com.rameses.gov.etracs.tools.CTCBUpdateShare"/>
+    </pages>
+    
+</workunit>

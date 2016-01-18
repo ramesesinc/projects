@@ -1,0 +1,61 @@
+<workunit>
+    <invokers>
+        <invoker type="business_application:unifiedform" caption="Print Front" action="preview" index="1"/>
+        
+        <invoker type="formActions" caption="Close" action="_close"/>
+    </invokers>
+    
+    <code>
+    <![CDATA[    
+import com.rameses.rcp.annotations.*;
+import com.rameses.rcp.common.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.common.*;
+import com.rameses.osiris2.reports.*;
+
+class BusinessApplicationPrintoutReportController extends ReportController {
+    
+    @Service("BusinessApplicationUnifiedFormService") 
+    def service;
+
+    @Service('EntityService') 
+    def entitySvc; 
+
+    @FormId
+    String formId;
+    
+    @FormTitle
+    String formTitle;
+
+    def entity;
+    def title = "Business Application";
+
+    final String REPORT_PATH = "com/rameses/gov/etracs/bpls/reports/unifiedform/"; 
+    String reportName = REPORT_PATH + 'main.jasper'; 
+
+    SubReport[] subReports = [
+        new SubReport("ITEM", REPORT_PATH + 'item.jasper')
+    ] as SubReport[]; 
+
+    def getReportData() { 
+        return service.getReport([ objid: entity.objid ]); 
+    } 
+
+    Map getParameters() { 
+        def inp = null; 
+        try { 
+            def result = entitySvc.getPhoto([ objid: entity.business?.owner.objid ]); 
+            inp = ( result.photo? new java.io.ByteArrayInputStream(result.photo) : null ); 
+        } catch(Throwable t) {;} 
+
+        return [ OWNER_PHOTO : inp ];  
+    } 
+} 
+    ]]>
+    </code>
+    
+    <pages>
+        <page name="report" template="com.rameses.osiris2.common.ui.ReportPreviewPage"/>
+    </pages>
+    
+</workunit>

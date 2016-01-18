@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    
+    <invokers>
+        <invoker type="quick_launcher" code="REQ01" action="init" caption="Requirement Type" role="ASSESSOR_DATAMGMT,MASTER" />
+        <invoker type="rptrequirementtype:create" action="init" caption="Requirement Type" role="ASSESSOR_DATAMGMT,MASTER" />
+        <invoker type="rptrequirementtype:open" action="open" caption="Requirement Type" role="ASSESSOR_DATAMGMT,MASTER" />
+    </invokers>
+        
+    <code lang="groovy">
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*
+        
+        public class RPTRequirementTypeController  extends CRUDController
+        {
+            String serviceName = "RPTRequirementTypeService"
+            String entityName  = 'rptrequirementtype'
+            String prefixId    = 'RT'
+            
+            boolean allowApprove = false;
+            
+            def handler;
+            def handlers;
+            
+            void afterOpen(data){
+                handler = getHandlers().find{it.properties.name == data.handler }
+            }
+            
+            void afterCreate(data){
+                handler = null;
+            }
+            
+            def getHandlers(){
+                if (!handlers)
+                    handlers = InvokerUtil.lookupOpeners('rptrequirementtype:handler', [:]);
+                return handlers;
+            }
+            
+            void setHandler(handler){
+                this.handler = handler;
+                entity.handler = handler.properties.name;
+            }
+        }
+        
+    </code>
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.rpt.master.ui.RPTRequirementTypePage" />
+    </pages>
+</workunit>
+

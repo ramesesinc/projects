@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="consolidation:info" caption="General Info" index="-10"/>
+        <invoker type="formActions" caption="Remote Tools" mnemonic="r" name="popupSupportInfo" visibleWhen="#{showSupport}" category="consolidation:info:remotetool" index="100000" role="ADMIN"/>
+   </invokers>
+   <code>
+
+   
+<![CDATA[       
+   
+
+import com.rameses.rcp.annotations.* 
+import com.rameses.rcp.common.* 
+import com.rameses.osiris2.client.*
+import com.rameses.osiris2.common.*
+import com.rameses.common.*;
+
+class ConsolidationMainInfoController
+{
+    def svc;
+    def entity;
+    
+    String title = 'General Information'
+    
+    
+    def popupSupportInfo(def inv) {
+        def popupMenu = new PopupMenuOpener();
+        def list = InvokerUtil.lookupOpeners( inv.properties.category, [entity:entity] ).findAll{
+            def vw = it.properties.visibleWhen;
+            return  ((!vw)  ||  ExpressionResolver.getInstance().evalBoolean( vw, [entity:entity, orgid:OsirisContext.env.ORGID] ));
+        }
+        list.each{
+            popupMenu.add( it );
+        }
+        return popupMenu;
+    }
+    
+    def getShowSupport(){
+        if (entity.state != 'APPROVED') 
+            return false;
+        return true;
+    }
+        
+}
+       
+
+]]>
+
+
+   </code>
+    
+    <pages> 
+        <page name="init" template="com.rameses.gov.etracs.rpt.consolidation.ui.ConsolidationInfoPage"/>
+    </pages>
+</workunit>
+
+

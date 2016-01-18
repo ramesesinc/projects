@@ -1,0 +1,49 @@
+<workunit>
+    <invokers>
+       <invoker type="ruleanalyzer:bpls:address" caption="Edit Addrsss" action="init" target="popup"/>
+    </invokers>
+    <code>
+        <![CDATA[
+            import com.rameses.rcp.common.*
+            import com.rameses.rcp.annotations.*
+            import com.rameses.osiris2.client.*
+            import com.rameses.osiris2.common.*
+            import com.rameses.rulemgmt.constraint.*;
+            import com.rameses.rulemgmt.*;
+            import java.rmi.server.*;
+            import com.rameses.gov.etracs.bpls.application.*;
+            
+            class AdderessController {
+            
+                def entity;
+                def handler;
+                
+                def items = [
+                    [key:'local', caption: 'Local'],
+                    [key:'rented', caption: 'Rented'],
+                    [key:'government', caption: 'On government Property'],
+                ]
+                
+                void init() {
+                    if(!entity) entity = [:]
+                }
+                
+                def doCancel() {
+                    return "_close";
+                }
+                
+                def doOk() {
+                    if(!handler) throw new Exception("Handler must be specified");
+                    entity.text = "type:"+entity.type;
+                    entity.text += "\n barangay:"+entity.barangay?.name;
+                    handler( entity );
+                    return "_close";
+                }
+
+            }
+        ]]>    
+    </code>
+    <pages>
+        <page template="com.rameses.gov.etracs.rules.bpls.AddressPage"/>
+    </pages>
+</workunit>

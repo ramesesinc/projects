@@ -1,0 +1,22 @@
+"selected.*|entity.*" [mode == "read"]{
+    readonly:true;
+}
+
+"selected.*|entity.*" [mode != "read"]{
+    readonly:false;
+}
+
+
+"lgu" [mode == "read"]{
+    enabled:false;
+}
+
+"lgu" [mode != "read"]{
+    enabled:true;
+}
+
+"entity.ry" [true == true]{
+    enabled:false;
+}
+
+

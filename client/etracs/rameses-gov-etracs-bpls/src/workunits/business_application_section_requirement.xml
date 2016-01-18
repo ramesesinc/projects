@@ -1,0 +1,73 @@
+<workunit>
+    <invokers>
+        <invoker type="business_application:section" caption="Requirements" index="50" action="init"/>   
+        <invoker type="formActions" caption="Load Requirements" action="loadRequirements"/>    
+        <invoker type="formActions" caption="Update" action="updateRequirement"/>    
+        <invoker type="formActions" caption="Remove" action="removeRequirement"/>    
+    </invokers>
+    
+    <code>
+        <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import com.rameses.common.*;
+        import java.rmi.server.*
+        import com.rameses.util.*;
+        
+        class  BusinessApplicationRequirementsController  {
+        
+            @Script("BusinessRequirementUtil")
+            def requirement;
+            
+            @Service("BusinessRequirementService")
+            def service;
+            
+            @Binding
+            def binding;
+            
+            def entity;
+            def selectedItem;
+            
+            @FormTitle
+            def title = "Business Requirements";
+            
+            void init() {
+                entity.requirements = service.getList( [businessid: entity.business?.objid, applicationid: entity.objid] );
+                requirement.reset();
+            } 
+            
+            void loadRequirements() {
+                entity.requirements = service.fetchRequirements( entity );
+                requirement.reset();
+            }
+            
+             def updateRequirement() {
+                if(!requirement.selectedItem) return null;
+                return InvokerUtil.lookupOpener( "business_application:requirement", [
+                    info:requirement.selectedItem,
+                    handler: { o->
+                        service.updateRequirement(o);
+                        requirement.reset();
+                    }
+                ]);
+            }
+            
+            void removeRequirement() {
+                if( !requirement.selectedItem) throw new Exception('Please select an item');
+                if( requirement.selectedItem.refno )
+                    throw new Exception('Requirement cannot be removed because it is already completed');
+                service.removeRequirement(requirement.selectedItem);
+                requirement.fetch();
+            }
+            
+        }
+        ]]>
+    </code>
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.bpls.view.BusinessApplicationRequirementList"/>
+    </pages>
+    
+</workunit>

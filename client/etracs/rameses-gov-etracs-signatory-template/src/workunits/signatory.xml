@@ -1,0 +1,62 @@
+<workunit>
+    <invokers>
+        <invoker type="signatory:create" action="init" caption="New Signatory" target="popup" />
+        
+        <invoker type="formActions" action="_close" caption="Close" mnemonic="c" shortcut="Ctrl C" immediate="true" icon="images/cancel.png" />
+        <invoker type="formActions" action="save" caption="Save" mnemonic="s" shortcut="Ctrl S" icon="images/save.png" />
+        <invoker type="formActions" action="lookupPersonnel" mnemonic="l" shortcut="Ctrl L" immediate="true" caption="Search Personnel" />
+    </invokers>
+    
+    <code>
+    <![CDATA[
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import java.rmi.server.UID
+        
+        class SignatoryMasterController
+        {
+            @Binding
+            binding
+            
+            @Service('SignatoryService')
+            def svc
+            
+            def entity = [:]
+            def doctype
+            def indexno
+            def oncreate
+            
+            void init() {
+                entity.objid = 'S' + new UID()
+            }
+            
+            def save() {
+                entity.doctype = doctype
+                entity.indexno = indexno
+                entity.name = entity.firstname + ' ' + (entity.middlename ? entity.middlename + ' ':'') + entity.lastname 
+                if (oncreate) oncreate( entity )
+                return '_close'
+            }
+            
+            def lookupPersonnel() {
+                def onselect = {
+                    entity.personnelid = it.objid
+                    entity.firstname   = it.firstname
+                    entity.middlename  = it.middlename
+                    entity.lastname    = it.lastname
+                    entity.title        = it.jobtitle
+                    entity.department = it.department 
+                    binding.refresh('entity.*')
+                }
+            
+                return InvokerUtil.lookupOpener('usersignatory:lookup', [onselect:onselect])
+            }
+        }
+    ]]>
+    </code>
+    
+    <pages>
+        <page template="rameses.gov.etracs.signatory.template.SignatoryPage" />
+    </pages>
+</workunit>

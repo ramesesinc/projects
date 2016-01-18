@@ -1,0 +1,68 @@
+<workunit extends="wtemplates/gov/treasury/ReportController.xml" >
+    <invokers>
+        <invoker folderid="/explorer/report/treasury" action="init" caption="Statement of Revenue" target="window" index="3" 
+            role="REPORT" permission="statementofrevenue.viewreport" />
+    </invokers>
+    <code>
+
+<![CDATA[
+
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.reports.*;
+
+
+class StatementOfRevenueController extends com.rameses.etracs.shared.ReportController {
+
+    @Service('StatementOfRevenueService') 
+    def svc
+    
+    String title = 'Statement of Revenue'
+    String reportpath = 'com/rameses/gov/treasury/report/statementofrevenue/'
+    String reportName = reportpath + 'statementofrevenue.jasper'
+    
+        
+    def initReport(){
+        entity.hidezeroamount = true
+        return 'default'
+    }
+    
+    
+    def data
+    def getReportData(){
+        data = svc.generateReport(entity);
+        return data.reportdata
+    }
+    
+    def formControl = [
+        getFormControls: {
+            return [
+                new FormControl( "combo", [caption:'Chart Type', name:'entity.charttype', items:'charttypes', required:true, captionWidth:120, allowNull:false]),
+                new FormControl( "combo", [caption:'Format', name:'entity.type', items:'reportTypes', required:true, allowNull:false, captionWidth:120]),
+                new FormControl( "integer", [caption:'Year', name:'entity.year', required:true, preferredSize:'80,19', captionWidth:120]),
+                new FormControl( "combo", [caption:'Quarter', name:'entity.qtr', items:'quarters', required:true, immediate:true, preferredSize:'80,19', captionWidth:120]),
+                new FormControl( "combo", [caption:'Month', name:'entity.month', items:'monthsByQtr', depends:'entity.qtr', expression:'#{item.name}', dynamic:true, preferredSize:'80,19', captionWidth:120]),
+                new FormControl( "checkbox", [caption:'Hide Zero Amount', name:'entity.hidezeroamount',preferredSize:'140,19', captionWidth:120]),
+            ]    
+        },
+   ] as FormPanelModel;
+   
+   
+   Map getParameters(){
+        return [TITLE:data.title, PERIOD:data.period]
+    }
+    
+    def getCharttypes(){
+        return ['NGAS', 'SRE']
+    }
+    
+    def getReportTypes(){
+        return ['standard', 'extended', 'detailed']
+    }   
+}
+
+]]>        
+        
+    </code>
+</workunit>

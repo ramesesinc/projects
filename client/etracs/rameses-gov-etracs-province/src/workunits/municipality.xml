@@ -1,0 +1,36 @@
+<workunit>
+    <invokers>
+        <invoker type="municipality:open" caption="Municipality" action="open"/>
+        <invoker type="municipality:create" caption="Municipality" action="create"/>        
+    </invokers>
+    <code>
+        <![CDATA[
+        import com.rameses.osiris2.common.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+
+        public class MunicipalityOrgController extends CRUDController {
+        
+            String createFocusComponent = 'entity.name'; 
+            String editFocusComponent = 'entity.name'; 
+            String serviceName = "MunicipalityService";
+            String entityName = "municipality";
+            String title = "Municipality";
+            
+            Map createEntity() {
+                def m = [:];
+                m.mayor = [:];
+                m.treasurer = [:];
+                m.assessor = [:];
+                m.parent = [:];
+                return m;
+            }
+            
+        }        
+    ]]>
+    </code>
+    <pages>
+        <page template="com.rameses.gov.lgu.ui.MunicipalityPage"/> 
+    </pages>
+</workunit>

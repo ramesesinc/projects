@@ -1,0 +1,12 @@
+"entity.*"  [allowEdit == true] {
+    enabled:true;
+}
+
+"entity.*"  [allowEdit == false] {
+    enabled:false;
+}
+
+
+"entity.rpu.total.*"[true == true]{
+    enabled:false;
+}

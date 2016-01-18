@@ -1,0 +1,5 @@
+<workunit extends="wtemplates/RuleMgmtController.xml" serviceName="RuleMgmtService" tag="landassessment">
+    <invokers>
+        <invoker folderid="/explorer/rulemgmt/assessor" caption="Land Assessment Rules" action="init" index="51" role="RULE_AUTHOR"/>
+    </invokers>
+</workunit>

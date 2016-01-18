@@ -1,0 +1,27 @@
+"assignAfSerial|changeMode" [selectedAfControl != null]{
+    enabled:true;
+}
+
+"assignAfSerial|changeMode" [selectedAfControl == null]{
+    enabled:false;
+}
+
+
+"unassignControl|changeModeAssigned" [selectedAssignedItem != null]{
+    enabled:true;
+}
+
+"unassignControl|changeModeAssigned" [selectedAssignedItem == null]{
+    enabled:false;
+}
+
+
+
+
+"openBatchCaptured" [selectedCaptured != null]{
+    enabled:true;
+}
+
+"openBatchCaptured" [selectedCaptured == null]{
+    enabled:false;
+}

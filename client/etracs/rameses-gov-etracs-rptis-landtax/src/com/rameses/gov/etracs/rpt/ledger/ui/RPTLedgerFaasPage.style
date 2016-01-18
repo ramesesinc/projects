@@ -1,0 +1,16 @@
+"ledgerfaas.idleland"[ledger.rputype == 'land']{
+    enabled:true;
+}
+
+"ledgerfaas.idleland"[ledger.rputype != 'land']{
+    enabled:false;
+}
+
+
+"ledgerfaas.(toyear|toqtr)"[createtype == 'newfaas']{
+    enabled:true;
+}
+
+"ledgerfaas.(toyear|toqtr)"[createtype == null || createtype != 'newfaas']{
+    enabled:false;
+}

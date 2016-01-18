@@ -1,0 +1,55 @@
+<workunit extends="wtemplates/gov/bp/ReportController.xml" >
+    <invokers>
+        <invoker folderid="/explorer/report/bpls" action="init" role="REPORT" 
+            caption="Business Permit Listing" target="window" index="-50"/> 
+    </invokers>
+
+    <code>
+    <![CDATA[
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.common.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.reports.*;
+        
+        public class BusinessPermitListingReportController extends com.rameses.etracs.shared.ReportController  
+        {
+            
+            @Service('BPPermitReportService')
+            def svc;
+            
+            @Service('BarangayLookupService') 
+            def brgySvc;
+            
+            String title = "Business Permit Listing";
+            String reportpath = 'com/rameses/gov/etracs/bpls/reports/'
+            String reportName = reportpath + 'BPPermitListing.jasper'
+            
+            def formControl = [
+                getFormControls: {
+                    return [
+                        new FormControl( "integer", [caption:'Year', name:'entity.year', required:true, preferredSize:'100,20', captionWidth:100]),
+                        new FormControl( "combo", [caption:'Barangay', name:'entity.barangay', items:'barangaylist',  expression:'#{item.name}', preferredSize:'0,20', captionWidth:100])
+                    ]    
+                },
+            ] as FormPanelModel; 
+                
+             def getReportData(){
+                return svc.getReport( entity ); 
+            }
+            
+            
+             Map getParameters(){
+                return [
+                    YEAR:entity.year,
+                    BARANGAY : ( entity.barangay  ? entity.barangay.name : 'ALL')
+                ] 
+            }
+            
+            List getBarangaylist() {
+                return brgySvc.getList([:]);
+            }
+        }
+    ]]>
+    </code>
+</workunit>

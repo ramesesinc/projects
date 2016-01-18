@@ -1,0 +1,9 @@
+"redflag.message|action"[mode=='create']{
+    enabled:true;
+    required:true;
+}
+
+"redflag.message|action"[mode!='create']{
+    enabled:false;
+    required:false;
+}

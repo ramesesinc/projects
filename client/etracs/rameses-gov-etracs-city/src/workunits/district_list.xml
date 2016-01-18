@@ -1,0 +1,5 @@
+<workunit extends="wtemplates/ListController.xml" serviceName="DistrictService" entityName="district">
+    <invokers>
+        <invoker type="district:manage" caption="District" index="4"/>
+    </invokers>
+</workunit>

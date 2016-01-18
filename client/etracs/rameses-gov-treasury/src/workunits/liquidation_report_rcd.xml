@@ -1,0 +1,72 @@
+<workunit>
+    
+   <invokers>
+         <invoker type="liquidation:reports" caption="Report on Collection and Deposits (RCD) By Fund" action="initReport" index="1" target="self"/>
+         
+        <invoker type="formActions" caption="Back" action="_close" mnemonic="b" shortcut="ctrl B" icon="images/toolbars/arrow_left.png"/>
+   </invokers>
+   
+   <code>
+       <![CDATA[
+        import com.rameses.osiris2.common.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import java.rmi.server.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.util.*;
+        import com.rameses.osiris2.reports.*;
+        
+        class LiquidationRCDReportController extends com.rameses.etracs.shared.ReportController  {
+        
+            @Binding
+            def binding;
+        
+            @Service("LiquidationReportService")
+            def svc
+            
+            
+            String title = "Report on Collection and Deposits (RCD) By Fund" 
+            String reportpath = "com/rameses/gov/treasury/liquidation/report/rcd/"
+            String reportName = reportpath + 'main.jasper' 
+            
+            def fundlist 
+            def fund 
+            
+            def initReport() {
+                fundlist = svc.getFundlist( entity.objid ); 
+                setFund( fundlist[0] );
+            }
+            
+            void setFund( fund ){
+                this.fund = fund 
+                buildReport()
+
+                if( binding) binding.refresh()
+            }
+            
+            def getReportData(){
+                return svc.getRCDReportData([ liquidationid: entity.objid, fundid: fund.fundid ]); 
+            }
+            
+            
+            SubReport[] getSubReports() {
+               return [ 
+                   new SubReport("remittances", reportpath + "remittances.jasper"),
+                    new SubReport("collectionsummary", reportpath + "collectionsummary.jasper"),
+                    new SubReport("reportaforms", reportpath + "reportaforms.jasper"),
+                    new SubReport("reportnsaforms", reportpath + "reportnsaforms.jasper"),
+                    new SubReport("reportnonserialsummary", reportpath + "reportnonserialsummary.jasper"),
+                    new SubReport("OtherPayments", reportpath + "otherpayments.jasper"),
+                    new SubReport("Denomination", reportpath + "denomination.jasper")
+                ] as SubReport[];       
+            }
+            
+        }      
+       ]]>
+   </code>
+   
+   <pages>
+       <page template="com.rameses.enterprise.treasury.report.PreviewByFundPage" />
+   </pages>
+   
+</workunit>

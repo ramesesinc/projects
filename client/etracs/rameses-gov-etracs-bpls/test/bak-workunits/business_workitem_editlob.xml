@@ -1,0 +1,89 @@
+<workunit>
+    <invokers>
+        <invoker type="business:workitem:editlob:open" caption="Edit Line of Business" action="open" target="window"/>
+        <invoker type="formActions" caption="Submit" action="closeWorkitem"/>
+    </invokers>
+    
+    <code>
+        <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import com.rameses.common.*;
+        import java.rmi.server.*;
+        import com.rameses.util.*;
+        
+        class BusinessWorkItemEditLobController extends WorkitemController {
+        
+            @Service("BusinessApplicationWorkflowService")
+            def service;
+        
+            String title = "Edit Line of Business (Work Item)";
+            def selectedLob;
+            
+            def lobModel = [
+                fetchList: { o->
+                    return entity.lobs;
+                }
+            ] as EditorListModel;
+            
+            def addLob() {
+                return InvokerUtil.lookupOpener( "lob:lookup", [
+                    onselect: { o->
+                        if(entity.lobs.find{ it.lobid == o.objid }!=null) 
+                            throw new Exception("Item already added");
+                        def m = [:];
+                        m.objid = "BIZLOB"+new UID();
+                        m.lobid = o.objid;
+                        m.name = o.name;
+                        m.classification = o.classification;
+                        m.assessmenttype = "NEW";
+                        entity.lobs << m; 
+                        lobModel.reload();
+                    }
+                ]);
+            }
+            
+            def reclassifyLob() {
+                if(!selectedLob) return null;
+                return InvokerUtil.lookupOpener( "lob:lookup", [
+                    onselect: { o->
+                        if(entity.lobs.find{ it.lobid == o.objid }!=null) 
+                            throw new Exception("Item already added");
+                        def m = [:];
+                        selectedLob.lobid = o.objid; 
+                        selectedLob.name = o.name;
+                        selectedLob.classification = o.classification;
+                        lobModel.reload();
+                    }
+                ]);
+            }
+
+            def removeLob() {
+                if(!selectedLob) return null;
+                if(selectedLob.assessmenttype !='NEW')
+                    throw new Exception("Only new lines of business be removed");
+                entity.lobs.remove(selectedLob); 
+                lobModel.reload();
+            }
+
+            def retireLob() {
+                if(!selectedLob) return null;
+                if(selectedLob.assessmenttype =='NEW')
+                    throw new Exception("New lines of business cannot be retired");
+                selectedLob.assessmenttype = 'RETIRE'
+                lobModel.reload();
+            }
+            
+            
+        }
+        
+        ]]>
+    </code>
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.bpls.view.EditLobPage"/>
+    </pages>
+    
+</workunit>

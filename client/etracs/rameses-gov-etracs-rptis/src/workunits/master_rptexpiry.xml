@@ -1,0 +1,41 @@
+<workunit>
+    <invokers>
+        <invoker type="rptexpiry:create" caption="New RPT Expiry"/>
+        <invoker type="rptexpiry:open" caption="RPT Expiry"/>
+        
+    </invokers>
+    
+    <code>
+        <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import java.rmi.server.*;
+        
+        class RPTExpiryController {
+        
+             @Service("RPTExpiryDateService")
+             def service;
+
+             def entity = [:];
+             def qtrs = (1..4);
+             def expirytypes = ['QTRDUEDATE', 'DISCOUNT', 'INTEREST']
+             
+             def doOk() {
+                service.save(entity);
+                return "_close"
+             }
+             def doCancel() {
+                return "_close"
+             }
+        }
+        ]]>
+        
+    </code>
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.rpt.master.ui.RPTExpiryPage"/>
+    </pages>
+    
+</workunit>

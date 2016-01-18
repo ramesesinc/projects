@@ -1,0 +1,50 @@
+<workunit extends="wtemplates/ListController.xml" formName="machrysetting:list">
+    <invokers>
+        <invoker folderid="/explorer/setting/rpt" caption="Machine Revision Settings" target="window" role="ASSESSOR_DATAMGMT,MASTER" index="13"/>
+        <invoker type="quick_launcher" code="GRS03" target="window" caption="Machine Revision Settings" />
+        <invoker type="formActions" action="copy" shortcut="ctrl C" visibleWhen="#{selectedItem != null }" immediate="true" caption="Copy" mnemonic="c" icon="images/doc-new.png" />
+    </invokers>
+    <code lang="groovy">
+
+<![CDATA[
+        
+        
+import com.rameses.rcp.annotations.*
+import com.rameses.rcp.common.*
+import com.rameses.osiris2.client.*
+import com.rameses.osiris2.common.*
+import javax.swing.JFileChooser;
+import com.rameses.io.*;
+import com.rameses.util.Base64Cipher;
+
+public class MachRYSettingListController extends ListController 
+{
+    @Service('MachRYSettingService')
+    def svc;
+    
+    
+    String serviceName = 'MachRYSettingListService'
+    String entityName  = 'machrysetting'
+    
+    
+    def copy() {
+        if( MsgBox.confirm('Copy revision year ' + selectedEntity.ry + '?' ) ) {
+            return InvokerUtil.lookupOpener('machrysetting:copy', [entity:selectedEntity])
+        }
+        return null
+    }
+    
+    Column[] getColumns(){ 
+        return [
+            new Column(name:'ry', caption:'Revision Year', alignment:'left', format:'0000', width:120),
+            new Column(name:'appliedto', caption:'Applied To', width:250),
+        ]
+    }
+    
+}
+
+
+]]>
+
+    </code>    
+</workunit>

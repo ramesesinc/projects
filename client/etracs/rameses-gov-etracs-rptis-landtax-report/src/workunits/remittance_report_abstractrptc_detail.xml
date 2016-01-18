@@ -1,0 +1,52 @@
+<workunit>
+    <invokers>
+        <invoker type="remittance:reports" caption="Abstract of RPT Collection (Detail)" action="preview" target="self" index="12"/>
+        
+        <invoker type="formActions" caption="Back" action="_close" mnemonic="b" shortcut="ctrl B" icon="images/toolbars/arrow_left.png"/>
+    </invokers>
+    
+    <code>
+        <![CDATA[    
+        import com.rameses.osiris2.common.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import java.rmi.server.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.util.*;
+        import com.rameses.osiris2.reports.*;
+        
+        class RemittanceReportAbstractRPTDetailController extends com.rameses.etracs.shared.ReportController 
+        {
+            @Service("LandTaxReportAbstractTaxCollectionService")
+            def svc
+            
+            String title = "Abstract of RPT Collection (Detail)";
+            String reportpath = "com/rameses/gov/etracs/landtax/report/abstractofcollectiondetail/"
+            String reportName = reportpath + 'abstractrptcollectiondetail.jasper' 
+            
+            def data = [:]
+            
+            def getReportData(){
+               data =  svc.generateAbstractOfRPTCollectionDetail( entity );
+               return data.items
+            }
+            
+            SubReport[] getSubReports() {
+                 return [ 
+                    new SubReport("Item", reportpath + "abstractrptcollectiondetailitem.jasper") 
+                ] as SubReport[];    
+            }
+            
+            
+            Map getParameters(){
+                return data.header 
+            }
+        }      
+       ]]>
+    </code>
+    
+   <pages>
+       <page name="preview" template="com.rameses.osiris2.common.ui.ReportPreviewPage"/>
+   </pages>
+   
+</workunit>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="faas:changeinfo" 
+            action="revertState" caption="Revert State to Interim" target="process"  
+            role="ADMIN" permission="faas.change_approved_state" 
+            index="99" />
+   </invokers>
+   <code>       
+<![CDATA[
+
+import com.rameses.rcp.annotations.* 
+import com.rameses.rcp.common.* 
+import com.rameses.osiris2.client.*
+import com.rameses.osiris2.common.*
+
+
+public class ChangeFAASStateController 
+{
+    String title = 'Revert State to Interim';
+    
+    def entity;
+    
+    @Service('FAASRevertStateService')
+    def svc;
+    
+    void revertState(){
+        if (entity.state != 'CURRENT')  
+            throw new Exception('State is invalid. Only current state is allowed.');
+        if (entity.datacapture == 0 || entity.datacapture == false)
+            throw new Exception('Unable to process this record. Only data captured FAAS is allowed.');
+            
+        if (MsgBox.confirm('Reverting record state to interim is not recommended and must be used judiciously. Continue?')){
+            svc.revertStateToInterim([objid:entity.objid]);
+            MsgBox.alert('State has been successfully reverted to interim.')
+        }
+    }
+    
+    
+}
+       
+]]>       
+    </code>
+</workunit>
+
+

@@ -1,0 +1,6 @@
+<workunit extends="wtemplates/TaskListController.xml" processname="business_application">
+    <invokers>
+        <invoker type="business_application:section" caption="Task Logs" index="3" />
+    </invokers>
+    
+</workunit>

@@ -1,0 +1,5 @@
+<workunit extends="wtemplates/ServiceLookupController.xml" serviceName="RPTLedgerLookupService" >
+    <invokers>
+        <invoker type="rptledger:lookup" action="init" caption="Realty Tax Ledger Lookup" target="popup" width="700"/>
+    </invokers>
+</workunit>

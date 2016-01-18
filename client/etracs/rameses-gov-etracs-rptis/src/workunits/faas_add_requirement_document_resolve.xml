@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="faas:add_faas_requirement_document" action="init" 
+                 caption="Add Requirement Document" 
+                 actiontype="add_faas_requirement_document" />
+        
+        
+        <invoker type="supportActions" action="addImage" caption="Add" role="RECORD,RECEIVER"/>
+        <invoker type="supportActions" action="deleteImage" caption="Delete" role="RECORD,RECEIVER" visibleWhen="#{selectedItem != null}"/>
+        <invoker type="supportActions" action="viewImage" caption="View" visibleWhen="#{selectedItem != null}"/>
+        
+   </invokers>
+   
+   <code class="com.rameses.gov.etracs.rpt.faas.change.ui.AddFaasRequirementDocumentController">       
+    </code>
+
+    <pages> 
+        <page template="com.rameses.gov.etracs.rpt.faas.change.ui.AddFaasRequirementDocumentPage"/>
+    </pages>
+</workunit>
+
+

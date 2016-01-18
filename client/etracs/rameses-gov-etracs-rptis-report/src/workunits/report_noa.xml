@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker folderid="/explorer/report/rpt" action="init" caption="Notice of Assessment" target="window" index="600" 
+            role="ASSESSOR_REPORT,REPORT" />
+        <invoker type="assessmentnotice:create" action="init" caption="Notice of Assessment" target="self"/>
+        <invoker type="assessmentnotice:open" action="open" caption="Notice of Assessment" target="self"/>
+        
+        <invoker type="formActions" action="_close" caption="Close" visibleWhen="#{mode != 'receive'}" immediate="true" />
+        <invoker type="formActions" action="save" caption="Save" mnemonic="s" shortcut="ctrl S" visibleWhen="#{mode=='create'}"/>
+        
+        <invoker type="formActions" action="receive" caption="Receive" mnemonic="r" visibleWhen="#{entity.state == 'OPEN' &amp;&amp; mode=='read'}"/>
+        <invoker type="formActions" action="cancelReceive" caption="Cancel" mnemonic="c" visibleWhen="#{entity.state == 'OPEN' &amp;&amp; mode=='receive'}" immediate="true"/>
+        <invoker type="formActions" action="receiveNotice" caption="Save" mnemonic="s" visibleWhen="#{entity.state == 'OPEN' &amp;&amp; mode=='receive'}"/>
+        
+        <invoker type="formActions" action="preview" caption="Preview" mnemonic="v" visibleWhen="#{mode == 'read'}"/>
+        <invoker type="formActions" action="back" caption="Back" mnemonic="b" visibleWhen="#{mode == 'preview'}"/>
+        
+        
+    </invokers>
+        
+    <code>
+        
+    import com.rameses.rcp.annotations.* 
+    import com.rameses.rcp.common.* 
+    import com.rameses.osiris2.client.*
+    import com.rameses.osiris2.common.*
+
+    class AssessmentNoticeController extends com.rameses.gov.etracs.rpt.report.notice.AssessmentNoticeController
+    {
+        
+    }        
+    
+    </code>
+    <pages>
+        <page name="init" template="com.rameses.gov.etracs.rpt.report.notice.AssessmentNoticeCreatePage" />
+        <page template="com.rameses.gov.etracs.rpt.report.notice.AssessmentNoticePage" />
+        <page name="preview" template="com.rameses.gov.etracs.rpt.report.PreviewPage" />
+    </pages>    
+</workunit>
+
+

@@ -1,0 +1,34 @@
+<workunit extends="wtemplates/LookupController.xml">
+    <invokers>
+        <invoker type="usersignatory:lookup" action="init" caption="Recommender Lookup" target="popup" />
+    </invokers>
+    
+    <code>
+
+import com.rameses.rcp.common.*
+import com.rameses.rcp.annotations.*
+import com.rameses.osiris2.client.*
+import com.rameses.osiris2.common.*
+
+class RPTApproverLookupController extends LookupController
+{
+    @Service("SignatoryService")
+    def svc
+    
+    Column[] getColumns() {
+        return [
+            new Column(name:'lastname', caption:'Last Name'),
+            new Column(name:'firstname', caption:'First name'),
+            new Column(name:'middlename', caption:'Middle Name'),
+            new Column(name:'title', caption:'Title'),
+            new Column(name:'department', caption:'Department')
+        ];
+    }
+    
+    List fetchList( Map params ) { 
+        return svc.getUserAsSignatories(params)
+    }
+}  
+
+    </code>
+</workunit>

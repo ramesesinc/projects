@@ -1,0 +1,29 @@
+"entity.*" [mode == 'read']{
+    enabled:false;
+}
+
+"entity.*" [mode != 'read']{
+    enabled:true;
+}
+
+
+"selectedItem" [mode == 'read']{
+    readonly:true;
+}
+
+"selectedItem" [mode != 'read']{
+    readonly:false;
+}
+
+"entity.*" [entity.state == 'APPROVED']{
+    enabled:false;
+}
+
+"selectedItem" [entity.state == 'APPROVED']{
+    readonly:true;
+}
+
+
+"entity.amount" [true == true]{
+    enabled:false;
+}

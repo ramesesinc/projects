@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit extends="rpt_wtemplates/CertificationController.xml">
+    <invokers>
+        <invoker folderid="/explorer/txn/rpt/cert" action="init" caption="No Property" 
+            opener="noproperty" index="8" role="CERTIFICATION_ISSUER,RECORD" permission="certification.noproperty"/>    
+            
+        <invoker folderid="/menu/txn/rpt/cert" action="init" caption="No Property" 
+            opener="noproperty" index="8" role="CERTIFICATION_ISSUER,RECORD" permission="certification.noproperty"/>    
+            
+        <invoker type="quick_launcher" action="init" code="RC08" caption="No Property" 
+            opener="noproperty" index="8" role="CERTIFICATION_ISSUER,RECORD" permission="certification.noproperty"/>
+            
+        <invoker type="noproperty:open" action="open" caption="No Property" /> 
+    </invokers>
+    
+    <code>
+        
+<![CDATA[
+
+
+package com.rameses.gov.etracs.rpt.report.certification;
+
+
+import com.rameses.rcp.annotations.*
+import com.rameses.rcp.common.*
+import com.rameses.osiris2.client.*
+import com.rameses.osiris2.reports.*;
+
+public class NoPropertyController extends com.rameses.gov.etracs.rpt.report.certification.AbstractCertificationController
+{
+    @Service('RPTCertificationNoPropertyService')
+    def svc;
+    
+    def getService(){
+        return svc;
+    }
+    
+    String reportName = 'com/rameses/gov/etracs/rpt/report/certification/NoPropertyCertification.jasper'
+
+    Map getParameters(){
+        return [REPORTTITLE:'No Property']
+    }
+    
+    
+        
+    def getLookupTaxpayer(){
+        return InvokerUtil.lookupOpener('entity:lookup',[
+            onselect : { 
+                svc.checkExistingProperties(it.objid)
+                entity.taxpayer = [objid:it.objid, name:it.name, address:it.address.text];
+                entity.requestedby = it.name;
+                entity.requestedbyaddress = it.address.text;
+            },
+            onempty  : { 
+                entity.taxpayer = null;
+                entity.requestedby = null;
+                entity.requestedbyaddress = null;
+            },
+        ])
+    }
+    
+    def getCertificationTypes(){
+        return [
+            [type:'bytaxpayer', caption:'By Taxpayer'],
+        ]
+    }  
+}
+
+
+
+]]>
+    </code>
+    
+</workunit>

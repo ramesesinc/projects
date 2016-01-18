@@ -1,0 +1,75 @@
+<workunit extends="wtemplates/gov/treasury/ReportController.xml" >
+    <invokers>
+        <invoker xfolderid="/explorer/report/treasury" action="init" caption="Cashbook By Liquidation" target="window" index="7" role="LIQUIDATING_OFFICER"/>
+    </invokers>
+    <code>
+<![CDATA[
+
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.reports.*;
+
+class CashbookLiquidationReportController extends com.rameses.etracs.shared.ReportController
+{
+    @Service('CashbookLiquidationReportService') 
+    def svc
+    
+    String title = 'Cashbook By Liquidation'
+    String reportpath = 'com/rameses/gov/treasury/report/cashbook/'
+    String reportName = reportpath + 'cashbookliquidation.jasper'
+
+    def data;
+
+    def periods = [
+        [code:'daily', name:'DAILY'],
+        [code:'monthly', name:'MONTHLY'],
+    ]; 
+            
+    def initReport(){
+        return 'default'
+    }
+   
+    def getReportData(){
+        data = svc.generateReport(entity);
+        return data.items
+    }
+    
+    def formControl = [
+        getFormControls: {
+            return [
+                new FormControl( "integer", [caption:'Year', name:'entity.year', required:true, preferredSize:'100,19', captionWidth:100]), 
+                new FormControl( "combo", [caption:'Month', name:'entity.month', required:true, items:'months', expression:'#{item.name}', allowNull:false, preferredSize:'100,19', captionWidth:100]),
+                new FormControl( "combo", [caption:'Fund', name:'entity.fund', required:true, items:'funds', expression:'#{item.title}', allowNull:false, preferredSize:'0,19', captionWidth:100]),
+            ]    
+        }
+    ] as FormPanelModel;
+   
+   
+    Map getParameters(){
+        return data.info
+    }
+    
+    List getMonths(){
+        return dtSvc.getMonths();
+    }
+    
+    List getFunds() {
+        def results = []; 
+        def list = fundSvc.getList([:]); 
+        list.findAll{ it.parentid==null }.each{ x-> 
+            results << x; 
+            def subfunds = list.findAll{ it.parentid==x.objid } 
+            subfunds.each{ it.title='    '+ it.title }
+            results.addAll( subfunds ); 
+        } 
+        return results;  
+    }
+}
+]]>        
+    </code>
+    
+    <pages>
+        <page template="com.rameses.gov.treasury.report.view.CashBookLiquidationReportInitPage"/> 
+    </pages>
+</workunit>

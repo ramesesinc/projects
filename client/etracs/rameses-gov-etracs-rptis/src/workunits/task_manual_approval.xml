@@ -1,0 +1,67 @@
+<workunit>
+    <invokers>
+        <invoker type="rptmessage:approval" action="init" caption="Manually Approve Subdivision" />
+    </invokers>
+    <code>
+    <![CDATA[
+                import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;   
+        import com.rameses.gov.etracs.rpt.common.*;
+        
+        public class TaskManualApprovalController{
+        
+            @Binding
+            def binding;
+            
+            def message;
+            def approver;
+            
+            def handler;
+            def task;
+            
+            void init(){
+                approver = [:]
+            }
+            
+            def doOk() {
+                task.message = message;
+                task.data.manualapprover = approver;
+                handler.call();
+                return "_close";
+            }
+            
+            def doCancel() {
+                return "_close";
+            }
+            
+    def getLookupApprover(){
+        return Inv.lookupOpener('txnsignatory:lookup',[
+            doctype : 'RPTAPPROVER',
+            onselect : { 
+                if (!approver)
+                    approver = [:]
+                approver.putAll(it)
+            },
+            onempty  : { clearSignatory(approver)},
+        ])
+    }
+    
+    void clearSignatory(signatory){
+        if (signatory){
+            signatory.personnelid = null;
+            signatory.name = null;
+            signatory.title = null;
+        }
+    }               
+            
+        }
+    ]]>
+    </code>
+
+    <pages>
+        <page template="com.rameses.gov.etracs.rpt.workflow.RPTManualApprovalPage"/>
+    </pages>
+    
+</workunit>

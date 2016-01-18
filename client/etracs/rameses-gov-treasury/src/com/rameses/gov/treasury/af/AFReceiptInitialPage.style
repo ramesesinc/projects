@@ -1,0 +1,7 @@
+"request.*" [receiptType == 'PURCHASE' ]{
+    enabled: true;
+} 
+
+"request.*" [receiptType != 'PURCHASE' ]{
+    enabled: false;
+}

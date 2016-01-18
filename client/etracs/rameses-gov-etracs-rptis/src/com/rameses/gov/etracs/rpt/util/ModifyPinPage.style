@@ -1,0 +1,7 @@
+"faas|entity.provcity|entity.munidistrict" [mode != 'byfaas']{
+    enabled:true;
+}
+
+"faas|entity.provcity|entity.munidistrict" [mode == 'byfaas']{
+    enabled:false;
+}

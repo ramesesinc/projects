@@ -1,0 +1,11 @@
+"entity.*" [allowEdit == true]{
+    enabled:true;
+}
+
+"entity.*" [allowEdit != true]{
+    enabled:false;
+}
+
+"entity.appraiser.*|entity.recommender.*|entity.taxmapper.*|entity.approver.*"[true == true]{
+    enabled:false;
+}

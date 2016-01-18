@@ -1,0 +1,58 @@
+<workunit extends="wtemplates/gov/treasury/ReportController.xml" >
+    <invokers>
+        <invoker folderid="/explorer/report/treasury" action="init" caption="AF Inventory Report" target="window" index="10" role="AFO" />
+    </invokers>
+    <code>
+
+<![CDATA[
+
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.reports.*;
+
+
+class AFInventoryReportController extends com.rameses.etracs.shared.ReportController 
+{
+    @Service('AFInventoryReportService') 
+    def svc
+    
+    String title = 'AF Inventory Report'
+    String reportpath = 'com/rameses/gov/treasury/report/'
+    String reportName = reportpath + 'afinventoryreport.jasper'
+    
+        
+    def initReport(){
+        return 'default'
+    }
+    
+    
+    def data
+    def getReportData(){
+        data = svc.generateReport(entity);
+        return data.items
+    }
+    
+    def formControl = [
+        getFormControls: {
+            return [
+                new FormControl( "integer", [caption:'Year', name:'entity.year', required:true, preferredSize:'100,19', captionWidth:100]), 
+                new FormControl( "combo", [caption:'Month', name:'entity.month', required:true, items:'months', expression:'#{item.name}', preferredSize:'100,19', captionWidth:100]),
+            ]    
+        }
+   ] as FormPanelModel;
+   
+   
+   Map getParameters(){
+        return data.info
+    }
+    
+    List getMonths(){
+        return dtSvc.getMonths();
+    }
+}
+
+]]>        
+        
+    </code>
+</workunit>

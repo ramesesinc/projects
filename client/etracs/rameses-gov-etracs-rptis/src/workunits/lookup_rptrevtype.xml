@@ -1,0 +1,30 @@
+<workunit extends="wtemplates/LookupController.xml">
+    <invokers>
+        <invoker type="rptrevtype:lookup" action="init" caption="Revenue Type Lookup" target="popup" />
+    </invokers>
+    
+    <code>
+        
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+import com.rameses.osiris2.client.*
+import com.rameses.osiris2.common.*
+
+class RPTRevenueTypeLookupController extends LookupController 
+{
+    def state;
+    
+    Column[] getColumns() {
+        return [
+            new Column(name:"value", caption:"Revenue Period", width:250),
+        ]
+    }
+    
+    List fetchList( Map params ) { 
+        return LOV.RPT_REV_TYPES
+    }
+}  
+
+    </code>
+    
+</workunit>

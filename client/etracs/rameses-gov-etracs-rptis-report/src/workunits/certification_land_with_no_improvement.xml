@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit extends="rpt_wtemplates/CertificationController.xml">
+    <invokers>
+        <invoker folderid="/explorer/txn/rpt/cert" action="init" caption="Land with No Improvement" 
+            opener="landwithnoimprov" index="2" role="CERTIFICATION_ISSUER,RECORD" />
+            
+        <invoker folderid="/menu/txn/rpt/cert" action="init" caption="Land with No Improvement" 
+            opener="landwithnoimprov" index="2" role="CERTIFICATION_ISSUER,RECORD" />
+            
+        <invoker type="quick_launcher" action="init" code="RC22" caption="Land with No Improvement" 
+            opener="landwithnoimprov" index="2" role="CERTIFICATION_ISSUER,RECORD" />
+            
+        <invoker type="landwithnoimprov:open" action="open" caption="Land with No Improvement" /> 
+    </invokers>
+    
+    <code>
+<![CDATA[
+
+package com.rameses.gov.etracs.rpt.report.certification;
+
+
+import com.rameses.rcp.annotations.*
+import com.rameses.rcp.common.*
+import com.rameses.osiris2.client.*
+import com.rameses.osiris2.reports.*;
+
+public class LandWithNoImprovementController extends com.rameses.gov.etracs.rpt.report.certification.AbstractCertificationController
+{
+    @Service('RPTCertificationLandService')
+    def svc;
+    
+    boolean certbytd = true
+    
+            
+    def getService(){
+        return svc;
+    }
+    
+    
+    def save(){
+        return svc.createLandWithNoImprovement( entity )
+    }
+       
+    def reportPath = 'com/rameses/gov/etracs/rpt/report/certification/'
+    String reportName = reportPath + 'LandWithNoImprovement.jasper'
+
+    Map getParameters(){
+        return [REPORTTITLE:'Land with No Improvement']
+    }
+    
+    SubReport[] getSubReports() {
+        return [
+            new SubReport('LandItem', reportPath + 'LandWithNoImprovementItem.jasper'),
+        ] as SubReport[]
+    }    
+        
+    def getLookupFaas(){
+        return InvokerUtil.lookupOpener('faas:lookup',[
+            onselect : { 
+                if (it.state != 'CURRENT'){
+                    throw new Exception('FAAS is not current.')
+                }
+                if (it.rputype != 'land')
+                    throw new Exception('Selected FAAS is not Land. Only land property is allowed.')
+                 
+                svc.validateLandWithNoImprovement([faasid:it.objid, asofyear:entity.asofyear])
+                
+                entity.faasid = it.objid;
+                entity.tdno= it.tdno;
+                entity.taxpayer = it.taxpayer;
+                entity.requestedby = it.taxpayer.name;
+                entity.requestedbyaddress = it.taxpayer.address;
+            },
+            onempty  : { 
+                entity.faasid = null;
+                entity.tdno= null;
+                entity.taxpayer = null;
+                entity.requestedby = null;
+                entity.requestedbyaddress = null;
+            },
+        ])
+    }
+    
+    def getCertificationTypes(){
+        return [
+            [type:'byfaas', caption:'By FAAS'],
+        ]
+    }    
+}
+
+
+]]>
+    </code>
+</workunit>

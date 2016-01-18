@@ -1,0 +1,16 @@
+<workunit>
+    <invokers>
+        <invoker type="quick_launcher" code="IMP01" action="init" caption="Import Remote Server Data" role="SYSADMIN"/>
+        <invoker folderid="/explorer/txn/tools" code="IMP01" action="init" caption="Import Remote Server Data" role="SYSADMIN"/>
+        <invoker type="formActions" action="_close" caption="Close" mnemonic="c" immediate="true" icon="images/toolbars/cancel.png" />
+        <invoker type="formActions" action="deploy" caption="Deploy Updates" mnemonic="d" shortcut="ctrl D" visibleWhen="#{mode == 'read'}" />
+        <invoker type="formActions" action="doImport" caption="Import" mnemonic="i" visibleWhen="#{mode == 'init'}" />
+    </invokers>
+    
+    <code class="com.rameses.gov.etracs.tools.exporter.RemoteServerDataImportController">
+    </code> 
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.tools.exporter.RemoteServerDataPage"/>
+    </pages>
+</workunit>

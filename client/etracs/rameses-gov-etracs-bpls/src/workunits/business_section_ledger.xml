@@ -1,0 +1,22 @@
+<workunit>
+    <invokers>
+        <invoker type="business:section" caption="Business Ledger" index="40"/>
+       
+        <invoker type="formActions" caption="Send SMS" action="sendSMS" target="process"/> 
+        <invoker type="formActions" caption="Print Bill" action="runBilling"/>
+        
+        <invoker type="formActions" caption="Request Payment" action="requestPayment"/>
+        <invoker type="formActions" caption="Capture Payment" action="capturePayment" role="ADMIN"/>
+        <invoker type="formActions" caption="Add Receivable" action="addReceivable"  role="ADMIN"/>
+        <invoker type="formActions" caption="Tax Credit Payment" action="payTaxCredit"/>
+        
+        <invoker type="receivableActions" caption=" Edit " action="doEditReceivable" visibleWhen="#{selectedReceivable != null}"/>
+        <invoker type="receivableActions" caption="Remove" action="doRemoveReceivable" visibleWhen="#{selectedReceivable != null}"/>
+    </invokers>
+    
+    <code class="com.rameses.gov.etracs.bpls.controller.BusinessLedgerController"/>
+
+    <pages>
+        <page template="com.rameses.gov.etracs.bpls.business.BusinessLedger"/>
+    </pages>    
+</workunit>

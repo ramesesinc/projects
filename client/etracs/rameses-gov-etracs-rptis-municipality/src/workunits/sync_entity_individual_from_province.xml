@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit extends="municipality_templates/DataSyncController.xml">
+    <invokers>
+        <invoker type="individualentity:list:formActions" action="init" caption="Sync from Province"  
+            role="MASTER" 
+            serviceName="MunicipalityEntitySyncService"
+            remoteServiceName="ProvinceEntitySyncHandler" 
+            showRy="false" 
+            entityType="individual"/>
+            
+    </invokers>
+</workunit>

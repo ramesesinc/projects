@@ -1,0 +1,74 @@
+<workunit>
+    <invokers>
+       <invoker type="remittance:reports" caption="Remittance Report By Collection Type" action="initReport" target="self" index="2"/>
+       
+      <invoker type="formActions" caption="Back" action="_close" mnemonic="b" shortcut="ctrl B" icon="images/toolbars/arrow_left.png"/>
+    </invokers>
+    
+    <code>
+        <![CDATA[    
+        import com.rameses.osiris2.common.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import java.rmi.server.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.util.*;
+        import com.rameses.osiris2.reports.*;
+        
+        class RemittanceCollectionTypeReportController extends com.rameses.etracs.shared.ReportController {
+        
+            @Binding
+            def binding;
+        
+            @Service("RemittanceReportService")
+            def svc
+            
+            def collectiontypelist
+            def collectiontype
+            
+            String title = "Remittance Report By Collection Type";
+            String reportpath =  "com/rameses/gov/treasury/remittance/report/"
+            String reportName = reportpath + 'reportbycollectiontype.jasper' 
+            
+            def getReportData(){
+               return svc.generateReportByCollectionType( entity, collectiontype)
+            }
+            
+            
+            def initReport() {
+                collectiontypelist = svc.getCollectiontypelist( entity.objid ) 
+                collectiontype = [:]
+                return preview();
+            }
+            
+            void setCollectiontype( def collectiontype) {
+                this.collectiontype = collectiontype;
+                
+                preview();
+                binding.refresh()
+            }
+            
+            SubReport[] getSubReports() {
+                return [ 
+                        new SubReport("ReportBItem", reportpath + "reportbycollectiontypeitem.jasper"),
+                ] as SubReport[];    
+            }
+            
+             Map getParameters(){
+                def params = [:]
+                params.SUBTITLE = 'SUMMARY OF COLLECTION'
+                if (collectiontype)
+                    params.SUBTITLE = params.SUBTITLE + ' (' + collectiontype.title + ')';
+                    
+                return params;
+             }
+            
+        }      
+       ]]>
+    </code>
+    
+   <pages>
+       <page name="preview" template="com.rameses.gov.treasury.remittance.report.RemittanceReportByCollectionType" />
+   </pages>
+   
+</workunit>

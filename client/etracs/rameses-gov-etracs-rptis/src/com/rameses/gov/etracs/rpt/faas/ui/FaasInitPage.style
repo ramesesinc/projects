@@ -1,0 +1,51 @@
+".*" [ true == true ] {
+    enabled:true;
+}
+
+"entity.lgu|entity.barangay|entity.isection|entity.iparcel" [entity.rputype == 'land']{
+    enabled:true;
+    visible:true;
+    required:true;
+}
+
+
+"entity.lgu|entity.barangay|entity.isection|entity.iparcel" [entity.rputype != 'land']{
+    enabled:false;
+    visible:false;
+    required:false;
+}
+
+"entity.rp|entity.suffix" [entity.rputype == 'land']{
+    enabled:false;
+    visible:false;
+    required:false;
+}
+
+"entity.rp|entity.suffix" [entity.rputype != 'land']{
+    enabled:true;
+    visible:true;
+    required:true;
+}
+
+
+
+"entity.claimno" [entity.rputype == 'land']{
+    enabled:true;
+    visible:true;
+}
+
+
+"entity.claimno" [entity.rputype != 'land']{
+    enabled:false;
+    visible:false;
+}
+
+
+"entity.ry|entity.txntype|entity.pintype"[newDiscovery == null || newDiscovery == false]{
+    enabled:true;
+}
+
+"entity.ry|entity.txntype|entity.pintype"[newDiscovery != null && newDiscovery == true]{
+    enabled:false;
+}
+

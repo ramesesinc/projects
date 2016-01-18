@@ -1,0 +1,162 @@
+import com.rameses.rcp.annotations.*
+import com.rameses.rcp.common.*
+import com.rameses.osiris2.client.*
+import com.rameses.osiris2.common.*
+import java.rmi.server.*;
+import com.rameses.util.*;
+
+public class BusinessAssessmentInfoUtil {
+
+    @Caller
+    def caller;
+
+    @Service("BusinessBillingService")
+    def billSvc;
+
+    @Service("BusinessAssessmentService")
+    def assessmentSvc;
+
+    def billing = [:];
+    def paymentType;
+    def handler;
+
+    def getEntity() {
+        return caller.entity;
+    }
+
+    def infoModel = [
+        fetchList: { o->
+            return entity.assessmentinfos;
+        }
+    ] as BasicListModel;
+            
+    def  taxfeeModel = [
+        fetchList: { o->
+            return entity.taxfees;
+        }
+    ] as BasicListModel;
+           
+    def calculate() {
+        def e = [:];
+        e.putAll( entity );
+        return InvokerUtil.lookupOpener( "bpinfoedit:assessment", [
+            entity: e, 
+            initialInfos: entity.appinfos.collect{it},
+            existingInfos: entity.assessmentinfos,
+            'query.businessid': entity.business?.objid,
+            handler:{ result ->
+                entity.assessmentinfos = result.infos?.findAll{ it.infotype == 'assessment' };
+                if (!result.taxfees) throw new Exception('No tax fees found ');
+                entity.taxfees = result.taxfees;
+                entity.totals =  result.totals;
+                if(handler) handler();
+
+                refresh();
+                caller.binding?.refresh();
+            }
+        ]);
+    }
+
+    boolean analyzer = true;
+    def selectedTaxfee;
+    def showDetails() {
+        if(!selectedTaxfee) 
+            throw new Exception("Please select an item");
+        if(!selectedTaxfee.details) 
+            throw new Exception("This item does not have qtr details");
+        return Inv.lookupOpener( "business:billing_details", [entity:selectedTaxfee, analyzer: analyzer] );
+    }
+    
+    def show_paid = false;
+    void runBill( bd ) {
+        def p = [:];
+        p.billdate = bd;
+        p.taxfees = entity.taxfees;
+        p.show_paid = show_paid;
+        p.app = [apptype:entity.apptype, appyear:entity.appyear, dtfiled:entity.dtfiled, appno:entity.appno];    
+        def result = billSvc.generateBilling( p );
+        entity.taxfees = result.taxfees;
+        entity.totals = result.totals;
+        entity.expirydate = result.expirydate;
+        entity.nextbilldate = result.expirydate;
+        entity.billdate = bd;
+
+        billing = [:];
+        billing.taxfees = result.taxfees;
+        billing.billdate = bd;
+        refresh();
+    }
+
+    /***********************************************
+    * called by analyzer test pay
+    ***********************************************/
+    def showPaymentOption() {
+        return showPaymentOption(null);
+    }
+
+    def showPaymentOption(def handler) {
+        if(!handler) {
+            handler = { pmt->
+                def p = [:];
+                p.billdate = entity.billdate;
+                p.taxfees = billing.taxfees;
+                p.payment = pmt;
+                p.app = [apptype:entity.apptype, appyear:entity.appyear, dtfiled:entity.dtfiled, appno:entity.appno];   
+                def result = billSvc.getBillingForPayment( p );
+                entity.taxfees = result.taxfees;
+                entity.totals = result.totals;
+                entity.expirydate = result.expirydate;
+                entity.items = result.items;
+                paymentType = pmt.paymenttype;
+                refresh();
+            }
+        }
+        return Inv.lookupOpener("cashreceipt:payoption", [handler:handler] );
+    }
+
+    void refresh() {
+        infoModel.reload();
+        taxfeeModel.reload();
+        caller.binding?.refresh();
+    }
+
+    /***********************************************
+    * called by application assessment
+    ***********************************************/
+    void load() {
+        def m = assessmentSvc.getAssessment( caller.entity );
+        caller.entity.taxfees = m.taxfees;
+        caller.entity.assessmentinfos = m.assessmentinfos;
+        caller.entity.totals = m.totals;
+        caller.entity.expirydate = m.expirydate;
+        caller.entity.grossinfos = m.grossinfos;
+    }
+
+    /***********************************************
+    * called by cash receipt
+    ***********************************************/
+    void loadBillByAppno(def app) {
+        if(!app.appno) throw new Exception('Please specify appno in BusinessAssessmentInfoUtil.loadBillbyAppno')
+        throw new Exception('BusinessAssessmentInfoUtil.loadBillByAppno not implemented');
+        def m = billSvc.getBilling( app );
+        caller.entity.taxfees = m.taxfees;
+        caller.entity.totals = m.totals;
+        entity.expirydate = m.expirydate;
+        entity.items = m.items;
+        billing = [:];
+        billing.taxfees = m.taxfees;
+    }
+
+    def verify() {
+        if(!entity.assessmentinfos) 
+            throw new Exception("Please specify at least one info for business");
+        def unedited = entity.assessmentinfos.findAll{ it.value == null };
+        if( unedited ) {
+            def buff = new StringBuffer();
+            unedited.each {
+                buff.append( "\n"+it.attribute.name );
+            }
+            throw new Exception("Please complete the ff. Do not leave blanks" + buff.toString() );  
+        }    
+    }
+}

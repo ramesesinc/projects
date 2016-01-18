@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<Form version="1.3" maxVersion="1.3" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
+  <AuxValues>
+    <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0"/>
+    <AuxValue name="FormSettings_autoSetComponentName" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_generateFQN" type="java.lang.Boolean" value="true"/>
+    <AuxValue name="FormSettings_generateMnemonicsCode" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_i18nAutoMode" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_layoutCodeTarget" type="java.lang.Integer" value="1"/>
+    <AuxValue name="FormSettings_listenerGenerationStyle" type="java.lang.Integer" value="0"/>
+    <AuxValue name="FormSettings_variablesLocal" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_variablesModifier" type="java.lang.Integer" value="2"/>
+  </AuxValues>
+
+  <Layout>
+    <DimensionLayout dim="0">
+      <Group type="103" groupAlignment="0" attributes="0">
+          <Group type="102" alignment="0" attributes="0">
+              <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="1" attributes="0">
+                  <Component id="xButton1" min="-2" max="-2" attributes="0"/>
+                  <Component id="xFormPanel2" alignment="1" min="-2" pref="447" max="-2" attributes="0"/>
+                  <Component id="xFormPanel1" min="-2" pref="447" max="-2" attributes="1"/>
+              </Group>
+              <EmptySpace max="32767" attributes="0"/>
+          </Group>
+      </Group>
+    </DimensionLayout>
+    <DimensionLayout dim="1">
+      <Group type="103" groupAlignment="0" attributes="0">
+          <Group type="102" alignment="0" attributes="0">
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="xFormPanel1" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="xFormPanel2" pref="169" max="32767" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="xButton1" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+          </Group>
+      </Group>
+    </DimensionLayout>
+  </Layout>
+  <SubComponents>
+    <Container class="com.rameses.rcp.control.XFormPanel" name="xFormPanel1">
+      <Properties>
+        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+          <PropertyBean type="com.rameses.rcp.control.border.XTitledBorder">
+            <Property name="title" type="java.lang.String" value="Ledger Information"/>
+          </PropertyBean>
+        </Property>
+        <Property name="captionWidth" type="int" value="120"/>
+      </Properties>
+      <SubComponents>
+        <Component class="com.rameses.rcp.control.XTextField" name="xTextField1">
+          <Properties>
+            <Property name="caption" type="java.lang.String" value="TD No."/>
+            <Property name="cellPadding" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
+              <Insets value="[5, 0, 0, 0]"/>
+            </Property>
+            <Property name="name" type="java.lang.String" value="info.tdno" noResource="true"/>
+            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[0, 20]"/>
+            </Property>
+            <Property name="required" type="boolean" value="true"/>
+          </Properties>
+        </Component>
+        <Component class="com.rameses.rcp.control.XTextField" name="xTextField2">
+          <Properties>
+            <Property name="caption" type="java.lang.String" value="Previous TD No."/>
+            <Property name="name" type="java.lang.String" value="info.prevtdno" noResource="true"/>
+            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[0, 20]"/>
+            </Property>
+          </Properties>
+        </Component>
+        <Component class="com.rameses.rcp.control.XTextField" name="xTextField3">
+          <Properties>
+            <Property name="caption" type="java.lang.String" value="PIN"/>
+            <Property name="name" type="java.lang.String" value="info.fullpin" noResource="true"/>
+            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[0, 20]"/>
+            </Property>
+            <Property name="required" type="boolean" value="true"/>
+          </Properties>
+        </Component>
+        <Component class="com.rameses.rcp.control.XLookupField" name="xLookupField1">
+          <Properties>
+            <Property name="caption" type="java.lang.String" value="Owner"/>
+            <Property name="expression" type="java.lang.String" value="#{info.taxpayer.name}"/>
+            <Property name="handler" type="java.lang.String" value="entity:lookup"/>
+            <Property name="name" type="java.lang.String" value="info.taxpayer" noResource="true"/>
+            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[0, 20]"/>
+            </Property>
+            <Property name="required" type="boolean" value="true"/>
+          </Properties>
+        </Component>
+        <Component class="com.rameses.rcp.control.XIntegerField" name="xIntegerField1">
+          <Properties>
+            <Property name="caption" type="java.lang.String" value="Last Year Paid"/>
+            <Property name="captionWidth" type="int" value="120"/>
+            <Property name="index" type="int" value="-10"/>
+            <Property name="name" type="java.lang.String" value="info.lastyearpaid" noResource="true"/>
+            <Property name="required" type="boolean" value="true"/>
+          </Properties>
+        </Component>
+        <Component class="com.rameses.rcp.control.XComboBox" name="xComboBox1">
+          <Properties>
+            <Property name="caption" type="java.lang.String" value="Last Qtr Paid"/>
+            <Property name="captionWidth" type="int" value="120"/>
+            <Property name="immediate" type="boolean" value="true"/>
+            <Property name="items" type="java.lang.String" value="quarters"/>
+            <Property name="name" type="java.lang.String" value="info.lastqtrpaid" noResource="true"/>
+            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[100, 20]"/>
+            </Property>
+            <Property name="required" type="boolean" value="true"/>
+          </Properties>
+        </Component>
+        <Container class="com.rameses.rcp.control.XSeparator" name="xSeparator1">
+          <Properties>
+            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[0, 20]"/>
+            </Property>
+          </Properties>
+
+          <Layout>
+            <DimensionLayout dim="0">
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <EmptySpace min="0" pref="433" max="32767" attributes="0"/>
+              </Group>
+            </DimensionLayout>
+            <DimensionLayout dim="1">
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <EmptySpace min="0" pref="20" max="32767" attributes="0"/>
+              </Group>
+            </DimensionLayout>
+          </Layout>
+        </Container>
+        <Component class="com.rameses.rcp.control.XCheckBox" name="xCheckBox1">
+          <Properties>
+            <Property name="cellPadding" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
+              <Insets value="[0, 20, 0, 0]"/>
+            </Property>
+            <Property name="name" type="java.lang.String" value="info.taxable" noResource="true"/>
+            <Property name="showCaption" type="boolean" value="false"/>
+            <Property name="text" type="java.lang.String" value="Is Taxable?"/>
+          </Properties>
+        </Component>
+      </SubComponents>
+    </Container>
+    <Component class="com.rameses.rcp.control.XButton" name="xButton1">
+      <Properties>
+        <Property name="defaultCommand" type="boolean" value="true"/>
+        <Property name="name" type="java.lang.String" value="fixLedger" noResource="true"/>
+        <Property name="text" type="java.lang.String" value="Fix Ledger"/>
+      </Properties>
+    </Component>
+    <Container class="com.rameses.rcp.control.XFormPanel" name="xFormPanel2">
+      <Properties>
+        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+          <PropertyBean type="com.rameses.rcp.control.border.XTitledBorder">
+            <Property name="title" type="java.lang.String" value="Partial Payment Breakdown"/>
+          </PropertyBean>
+        </Property>
+      </Properties>
+      <SubComponents>
+        <Component class="com.rameses.rcp.control.XLabel" name="xLabel1">
+          <Properties>
+            <Property name="cellPadding" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
+              <Insets value="[5, 0, 0, 0]"/>
+            </Property>
+            <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
+              <StringArray count="2">
+                <StringItem index="0" value="info.lastyearpaid"/>
+                <StringItem index="1" value="info.lastqtrpaid"/>
+              </StringArray>
+            </Property>
+            <Property name="expression" type="java.lang.String" value="#{partialperiod}"/>
+            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+              <Font name="Tahoma" size="12" style="1"/>
+            </Property>
+            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="0" green="0" red="cc" type="rgb"/>
+            </Property>
+            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[0, 21]"/>
+            </Property>
+            <Property name="showCaption" type="boolean" value="false"/>
+          </Properties>
+        </Component>
+        <Container class="com.rameses.rcp.control.XFormPanel" name="xFormPanel5">
+          <Properties>
+            <Property name="orientation" type="java.lang.String" value="HORIZONTAL"/>
+            <Property name="padding" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
+              <Insets value="[5, 0, 0, 0]"/>
+            </Property>
+            <Property name="showCaption" type="boolean" value="false"/>
+          </Properties>
+          <SubComponents>
+            <Container class="com.rameses.rcp.control.XFormPanel" name="xFormPanel3">
+              <Properties>
+                <Property name="captionWidth" type="int" value="100"/>
+                <Property name="padding" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
+                  <Insets value="[5, 5, 5, 5]"/>
+                </Property>
+                <Property name="showCaption" type="boolean" value="false"/>
+              </Properties>
+              <SubComponents>
+                <Component class="com.rameses.rcp.control.XDecimalField" name="xDecimalField1">
+                  <Properties>
+                    <Property name="caption" type="java.lang.String" value="Basic"/>
+                    <Property name="name" type="java.lang.String" value="info.basicpaid" noResource="true"/>
+                    <Property name="required" type="boolean" value="true"/>
+                  </Properties>
+                </Component>
+                <Component class="com.rameses.rcp.control.XDecimalField" name="xDecimalField2">
+                  <Properties>
+                    <Property name="caption" type="java.lang.String" value="Discount"/>
+                    <Property name="name" type="java.lang.String" value="info.basicdisctaken" noResource="true"/>
+                    <Property name="required" type="boolean" value="true"/>
+                  </Properties>
+                </Component>
+                <Component class="com.rameses.rcp.control.XDecimalField" name="xDecimalField3">
+                  <Properties>
+                    <Property name="caption" type="java.lang.String" value="Penalty"/>
+                    <Property name="name" type="java.lang.String" value="info.basicintpaid" noResource="true"/>
+                    <Property name="required" type="boolean" value="true"/>
+                  </Properties>
+                </Component>
+              </SubComponents>
+            </Container>
+            <Container class="com.rameses.rcp.control.XFormPanel" name="xFormPanel4">
+              <Properties>
+                <Property name="captionWidth" type="int" value="100"/>
+                <Property name="padding" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
+                  <Insets value="[5, 5, 5, 5]"/>
+                </Property>
+                <Property name="showCaption" type="boolean" value="false"/>
+              </Properties>
+              <SubComponents>
+                <Component class="com.rameses.rcp.control.XDecimalField" name="xDecimalField4">
+                  <Properties>
+                    <Property name="caption" type="java.lang.String" value="SEF"/>
+                    <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
+                      <StringArray count="1">
+                        <StringItem index="0" value="info.basicpaid"/>
+                      </StringArray>
+                    </Property>
+                    <Property name="name" type="java.lang.String" value="info.sefpaid" noResource="true"/>
+                    <Property name="required" type="boolean" value="true"/>
+                  </Properties>
+                </Component>
+                <Component class="com.rameses.rcp.control.XDecimalField" name="xDecimalField5">
+                  <Properties>
+                    <Property name="caption" type="java.lang.String" value="Discount"/>
+                    <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
+                      <StringArray count="1">
+                        <StringItem index="0" value="info.basicdisctaken"/>
+                      </StringArray>
+                    </Property>
+                    <Property name="name" type="java.lang.String" value="info.sefdisctaken" noResource="true"/>
+                    <Property name="required" type="boolean" value="true"/>
+                  </Properties>
+                </Component>
+                <Component class="com.rameses.rcp.control.XDecimalField" name="xDecimalField6">
+                  <Properties>
+                    <Property name="caption" type="java.lang.String" value="Penalty"/>
+                    <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
+                      <StringArray count="1">
+                        <StringItem index="0" value="info.basicintpaid"/>
+                      </StringArray>
+                    </Property>
+                    <Property name="name" type="java.lang.String" value="info.sefintpaid" noResource="true"/>
+                    <Property name="required" type="boolean" value="true"/>
+                  </Properties>
+                </Component>
+              </SubComponents>
+            </Container>
+          </SubComponents>
+        </Container>
+      </SubComponents>
+    </Container>
+  </SubComponents>
+</Form>

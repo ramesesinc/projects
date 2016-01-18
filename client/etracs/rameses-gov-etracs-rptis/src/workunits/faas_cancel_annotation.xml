@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="cancelannotation:create" action="init" caption="FAAS Cancel Annotation (New)" target="window"  
+            role="RECORD" permission="cancelannotation.create" />
+        <invoker type="cancelannotation:open" action="open" caption="FAAS Cancel Annotation" target="window"  />
+        
+   </invokers>
+   <code>       
+<![CDATA[
+        
+import com.rameses.rcp.annotations.* 
+import com.rameses.rcp.common.* 
+import com.rameses.osiris2.client.*
+import com.rameses.osiris2.common.*
+import com.rameses.util.MapBeanUtils;
+
+public class CancelAnnotationController extends PageFlowController
+{
+
+    @Binding
+    def binding;
+    
+    @Service('CancelAnnotationService')
+    def svc 
+            
+    @Invoker
+    def invoker 
+    
+    def MODE_CREATE = 'create';
+    def MODE_EDIT   = 'edit';
+    def MODE_READ   = 'read';
+    
+    def STATE_INTERIM     = 'INTERIM';
+    def STATE_FORAPPROVAL = 'FORAPPROVAL';
+    def STATE_APPROVED    = 'APPPROVED';
+    def STATE_CANCELLED   = 'CANCELLED';
+    
+    
+    def mode;
+    def entity;
+    def annotation;
+    
+    
+    def init(){
+        entity = svc.initCancelAnnotation(annotation.objid)
+        mode = MODE_CREATE
+        return super.signal('init')
+    }
+    
+    
+    def open(){
+        entity = svc.openCancelAnnotation(entity.objid)
+        mode = MODE_READ;
+        return super.signal('open');
+    }
+       
+    boolean getAllowEdit(){
+        if ( entity.state == STATE_APPROVED ||
+             entity.state == STATE_CANCELLED )
+                return false;
+        if (mode == MODE_READ )
+                return false;
+        return true 
+    }
+    
+    
+
+    /*-----------------------------------------------------
+     * 
+     * DOCUMENT SUPPORT 
+     *
+     *----------------------------------------------------*/
+    def oldEntity 
+            
+    void edit(){
+        oldEntity = MapBeanUtils.copy(entity)
+        mode = MODE_EDIT;
+    }
+    
+    
+    void cancelEdit(){
+        if (oldEntity){
+            entity.putAll(oldEntity)
+        }
+        oldEntity = null
+        mode = MODE_READ;
+    }
+    
+    void save(){
+        if (mode == MODE_CREATE)
+            entity = svc.createCancelAnnotation(entity)
+        else 
+            entity = svc.updateCancelAnnotation(entity)
+        mode = MODE_READ;
+    }    
+   
+    
+    void delete(){
+        svc.deleteCancelAnnotation(entity)
+    }
+    
+    
+
+    /*-----------------------------------------------------
+     * 
+     * WORKFLOW ACTIONS
+     *
+     *----------------------------------------------------*/
+   
+    
+    void submitCancelAnnotationForApproval(){
+        entity = svc.submitCancelAnnotationForApproval(entity);
+    }
+    
+    
+    void disapproveCancelAnnotation(){
+        entity = svc.disapproveCancelAnnotation(entity)
+    }
+    
+    
+    void approveCancelAnnotation() {
+        entity = svc.approveCancelAnnotation(entity);
+    }
+
+    
+}
+       
+              
+]]>                            
+   </code>
+
+    <pageflow>
+        <start>
+            <transition name="init" to="default"/>
+            <transition name="open" to="open"/>
+        </start>
+        
+        <page name="init" title="Cancel Annotation: Initial Information">
+            <transition caption="Cancel" to="end"  mnemonic="c" icon="images/toolbars/cancel.png"/>
+            <transition caption="Next"  to="default" action="initCancelAnnotation" mnemonic="n"  />
+        </page>
+        
+        <process name="open">
+            <transition to="default" cond="#{entity.state == 'DRAFT'}"/>
+            <transition to="forapproval" cond="#{entity.state == 'FORAPPROVAL'}"/>
+            <transition to="approved" cond="#{entity.state == 'APPROVED'}"/>
+            <transition to="cancelled" cond="#{entity.state == 'CANCELLED'}"/>
+        </process>
+        
+        <page name="default" title="Cancel Annotation (Draft)">
+            <transition caption="Close"  to="end"      mnemonic="c" icon="images/toolbars/cancel.png" visibleWhen="#{mode == 'read'}"/>
+            <transition caption="Edit"   to="back-to-default" action="edit"  name="edit" mnemonic="e" shortcut="ctrl E" icon="images/toolbars/edit.png"  visibleWhen="#{mode == 'read'}" role="RECORD"/>
+            <transition caption="Cancel" to="back-to-default" action="cancelEdit" name="cancel" mnemonic="c" icon="images/toolbars/cancel.png" visibleWhen="#{mode != 'read'}"/>
+            <transition caption="Save"   to="back-to-default" action="save" name="save" mnemonic="s" shortcut="ctrl S" icon="images/toolbars/save.png"  visibleWhen="#{mode != 'read'}" />
+            <transition caption="Delete" to="delete"  action="delete" confirm="Delete record?"    mnemonic="d" icon="images/toolbars/trash.png"  visibleWhen="#{mode == 'read'}" role="RECORD"/>
+            <transition caption="Submit" to="forapproval" action="submitCancelAnnotationForApproval"  mnemonic="m"  visibleWhen="#{mode == 'read'}" confirm="Submit Cancel Annotation for approval?" role="RECORD"/>
+        </page>
+        
+        <process name="back-to-default">
+            <transition to="default" />
+        </process>
+        
+        <process name="delete">
+            <transition to="end"/>
+        </process>
+        
+        
+        <page name="forapproval" title="Cancel Annotation (For Approval)">
+            <transition caption="Close" to="end" mnemonic="c" icon="images/toolbars/cancel.png" visibleWhen="#{mode == 'read'}" />
+            <transition caption="Edit"   to="back-to-forapproval" action="edit" name="edit" mnemonic="e" shortcut="ctrl E" icon="images/toolbars/edit.png"  visibleWhen="#{mode == 'read'}" role="APPROVER"/>
+            <transition caption="Cancel" to="back-to-forapproval" action="cancelEdit" name="cancel"  mnemonic="c" icon="images/toolbars/cancel.png" visibleWhen="#{mode != 'read'}"/>
+            <transition caption="Save"   to="back-to-forapproval" action="save" name="save" mnemonic="s" shortcut="ctrl S" icon="images/toolbars/save.png"  visibleWhen="#{mode != 'read'}" />
+            <transition caption="Disapprove" to="default" action="disapproveCancelAnnotation" mnemonic="d" visibleWhen="#{mode == 'read'}" confirm="Disapprove cancel annotation?" role="APPROVER"/>
+            <transition caption="Approve" to="approved" action="approveCancelAnnotation" mnemonic="v" icon="images/toolbars/approve.png" visibleWhen="#{mode == 'read'}" confirm="Approve cancel annotation?" role="APPROVER"/>
+        </page>
+        
+        <process name="back-to-forapproval">
+            <transition to="forapproval"/>
+        </process>
+        
+        <page name="approved" title="Cancel Annotation (Approved)">
+            <transition caption="Close" to="end" mnemonic="c" icon="images/toolbars/cancel.png"/>
+        </page>
+        
+        <page name="cancelled" title="Cancel Annotation (Cancelled)">
+            <transition caption="Close" to="end" mnemonic="c" icon="images/toolbars/cancel.png"/>
+        </page>
+        
+        <end />
+        
+    </pageflow>
+    
+    <pages> 
+        <page name="init" template="com.rameses.gov.etracs.rpt.annotation.ui.CancelAnnotationPage"/>
+        <page name="default" template="com.rameses.gov.etracs.rpt.annotation.ui.CancelAnnotationPage"/>
+        <page name="forapproval" template="com.rameses.gov.etracs.rpt.annotation.ui.CancelAnnotationPage"/>
+        <page name="approved" template="com.rameses.gov.etracs.rpt.annotation.ui.CancelAnnotationPage"/>
+        <page name="cancelled" template="com.rameses.gov.etracs.rpt.annotation.ui.CancelAnnotationPage"/>
+    </pages>
+</workunit>
+
+

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="faas:open" action="open" caption="FAAS" target="window"  />
+        <invoker type="faasresent:open" action="openResent" caption="FAAS" target="window"  />
+   </invokers>
+   
+   <code>
+       
+<![CDATA[       
+
+import com.rameses.rcp.annotations.* 
+import com.rameses.rcp.common.* 
+import com.rameses.osiris2.client.*
+import com.rameses.osiris2.common.*
+import com.rameses.util.*;
+import com.rameses.common.*;
+import com.rameses.gov.etracs.rpt.workflow.RPTWorkflowController
+
+public class FaasWorkflowController extends RPTWorkflowController
+{
+    @Service('FAASWorkflowService')
+    def service;
+    
+    @Service('FAASService')
+    def svc;
+    
+    @Service('RPTSmsService')
+    def smsSvc
+    
+    def getService() {return service; }
+    String getFileType(){ return 'faas'; }
+    
+    void afterOpen(o){
+        super.afterOpen(o);
+        formId = 'FAAS:' + (entity.tdno ? entity.tdno : entity.utdno);
+        formTitle = 'FAAS: ' + formId
+    }
+
+    String getTitle(){
+        return 'FAAS ' + entity.txntype.name + ': (' +  task.title + ')   PIN: ' + entity.fullpin
+    }
+    
+    def getSections(){
+        return InvokerUtil.lookupOpeners( "faas:info", [entity:entity, svc:svc ] ).findAll {
+            def vw = it.properties.visibleWhen;
+            return  ((!vw)  ||  ExpressionResolver.getInstance().evalBoolean( vw, [entity:entity] ));
+        }
+    }
+    
+            
+    void notifyClient(){
+        if (smsSvc)
+            smsSvc.notifyClient(entity.trackingno);
+        else
+            throw new Exception('SMS Service is not available at this time. Try again later.');
+    }
+    
+}
+
+]]>
+
+   </code>    
+    <pages> 
+        <page template="com.rameses.gov.etracs.rpt.workflow.InfoPage"/>
+    </pages>
+</workunit>
+
+

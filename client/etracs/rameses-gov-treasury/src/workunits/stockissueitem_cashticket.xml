@@ -1,0 +1,29 @@
+<workunit>
+    
+    <invokers>
+       <invoker type="stockissueitem:cashticket" />
+    </invokers>
+    
+    <code>
+         <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        
+        class StockIssueItemCashTicket {
+            def item;
+            
+            def itemModel = [
+                fetchList: { o->
+                    return [];
+                }
+            ] as BasicListModel;
+        }
+        ]]>
+    </code>
+    
+    <pages>
+        <page template="com.rameses.gov.treasury.cashticket.StockIssueItemCashTicketPage"/>
+    </pages>
+</workunit>

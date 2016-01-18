@@ -1,0 +1,7 @@
+<workunit extends="wtemplates/ListController.xml" serviceName="RPTParameterService" entityName="rptparameter" formName="rptparameter:list">
+    <invokers>
+        <invoker folderid="/explorer/master/rpt" caption="Parameters"  role="ASSESSOR_DATAMGMT,MASTER" target="window" index="10" />
+        <invoker folderid="/home/rpt/master" caption="Parameters"  role="ASSESSOR_DATAMGMT,MASTER" target="window" index="10" />
+        <invoker type="quick_launcher" code="RPAR00" caption="Parameters"  role="ASSESSOR_DATAMGMT,MASTER" />
+    </invokers>
+</workunit>

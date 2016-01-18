@@ -1,0 +1,7 @@
+"selectedSection|selectedLand|selectedAffectedRpu" [mode == 'read']{
+    readonly:true;
+}
+
+"selectedSection|selectedLand|selectedAffectedRpu" [mode != 'read']{
+    readonly:false;
+}

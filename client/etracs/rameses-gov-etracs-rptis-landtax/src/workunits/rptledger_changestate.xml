@@ -1,0 +1,60 @@
+<workunit>
+    <invokers>
+        <invoker type="rptledger:formActions" action="init" caption="Change Ledger State" 
+                 role="ADMIN" visibleWhen="#{entity.state=='APPROVED'}" target="popup" index="50000" />        
+        
+        <invoker type="rptledgermanual:formActions" action="init" caption="Change Ledger State" 
+                 role="ADMIN" visibleWhen="#{entity.state=='APPROVED'}" target="popup" index="105" />        
+    </invokers>
+    
+    <code lang="groovy">
+        <![CDATA[
+        
+import com.rameses.rcp.common.*
+import com.rameses.rcp.annotations.*
+import com.rameses.osiris2.client.*
+
+
+public class ChangeLedgerStateController 
+{
+    @Caller
+    def caller;
+    
+    @Binding
+    def binding
+    
+    @Service('RPTLedgerService')
+    def svc 
+    
+    def entity 
+    
+    String title = 'Change Ledger State'
+    
+    def currentstate;
+    
+    def states = ['PENDING', 'APPROVED', 'CANCELLED'];
+    
+    
+    void init(){
+        currentstate = entity.state;
+    }
+    
+    
+    def update(){
+        if (MsgBox.confirm('Update ledger state?')){
+            svc.updateState(entity);
+            caller.open();
+            return '_close'
+        }
+    }
+    
+}
+
+
+]]>
+    </code>
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.rpt.ledger.ui.RPTLedgerChangeStatePage" />
+    </pages>
+</workunit>

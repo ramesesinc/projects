@@ -1,0 +1,51 @@
+<workunit>
+    <invokers>
+        <invoker type="business_owner_address:edit" caption="Edit Owner Address" target="popup"/>
+    </invokers>
+    
+    <code>
+         <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import java.rmi.server.*;
+        import com.rameses.util.*;
+        
+        public class FixBusinessOwnerAddressController  {
+        
+            @Service("EntityService")
+            def entitySvc;
+            
+            def entry = [:];
+            def entity;
+            def handler;
+            boolean showremarks = false;
+        
+            void reloadAddress() {
+                if(!entity.business.owner.objid) 
+                    throw new Exception("Please select first an owner");
+                def owner = entitySvc.open([objid:entity.business.owner.objid]);
+                entity.business.owner = owner;
+            }
+                      
+            def doOk() {
+                if( !entity.business.owner.address.objid )
+                    throw new Exception("Owner address is not specified. Please update address");
+
+                if(handler) handler();
+                return "_close";
+            }
+            
+            def doCancel() {
+                return "_close";
+            }        
+        }
+        ]]>
+    </code>    
+    
+    <pages>
+        <page  template="com.rameses.gov.etracs.bpls.amend.EditOwnerAddress"/>
+    </pages>
+    
+</workunit>

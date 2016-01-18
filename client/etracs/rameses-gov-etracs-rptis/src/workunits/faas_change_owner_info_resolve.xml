@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="faas:change_owner_info" action="init" 
+                 caption="Owner and Administrator" 
+                 actiontype="change_owner_info"/>
+   </invokers>
+   <code class="com.rameses.gov.etracs.rpt.faas.change.ui.ChangeOwnerInfoController" />
+    <pages> 
+        <page template="com.rameses.gov.etracs.rpt.faas.change.ui.ChangeOwnerInfoPage"/>
+    </pages>
+</workunit>
+
+

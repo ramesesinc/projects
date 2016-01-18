@@ -1,0 +1,99 @@
+<workunit>
+    <invokers>
+        <invoker type="business_payment:add" caption="Add Ledger Payment" target="popup" action="init"/>
+    </invokers>
+    
+    <code>
+        <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import com.rameses.common.*;
+        import java.rmi.server.*
+        import com.rameses.util.*;
+        
+        class AddBusinessPaymentController {
+        
+            @Binding 
+            def binding;
+            
+            def entity;
+            def mode;
+            def items;
+            def handler;
+            def selectedItem;
+            
+            @FormTitle
+            def title;
+            
+            void init() {
+                if(!items) throw new Exception("No items to pay");
+                entity = [objid:'BPPMT'+new UID(), taxcredit: 0];
+            }
+            
+            void updateTotals( o ) {
+                o.total = (o.amtpaid + o.surchargepaid + o.interestpaid) - o.discount;
+                o.amount = o.amtpaid;
+                o.surcharge = o.surchargepaid;
+                o.interest = o.interestpaid;
+                entity.total = items.sum{ it.total } + entity.taxcredit;
+                binding.refresh( "entity.total" );
+            }
+            
+            def listModel = [
+                fetchList: { o->
+                    return items;
+                },
+                onColumnUpdate: { o,col-> 
+                    if( o.amtpaid > o.balance )
+                        throw new Exception("Amt paid must be less than balance");
+                    updateTotals( o );
+                }
+            ] as EditorListModel;
+            
+            def doOk() {
+                //collect only items where total has changed.
+                
+                if( !entity.total )
+                    throw new Exception("Please specify at least one payment");
+                entity.items = items.findAll{ it.total };
+                entity.amount = entity.total;
+                if( !entity.items) 
+                    throw new Exception("Please specify at least one payment");
+                if(!handler) throw new Exception("Please specify a handler");
+                handler(entity);
+                return "_close";
+            }
+            
+            def doCancel() {
+                return "_close";
+            }    
+            
+            def viewCashReceipt() {
+                def opener = InvokerUtil.lookupOpener( "cashreceiptinfo:open", [entity: [objid: entity.refid]] );
+                opener.target = "popup";
+                return opener;
+            }
+            
+            def payAll() {
+                items.each { o->
+                    o.amtpaid = o.balance;
+                    o.total = (o.amtpaid + o.surchargepaid + o.interestpaid) - o.discount;
+                    o.surcharge = o.surchargepaid;
+                    o.interest = o.interestpaid;
+                }
+                entity.total = items.sum{ it.total }+entity.taxcredit;
+                listModel.reload();
+            }
+            
+        }
+        
+        ]]>
+    </code>
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.bpls.view.AddBusinessPaymentPage"/>
+    </pages>
+    
+</workunit>

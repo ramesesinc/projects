@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="faas:changeinfo" action="init" 
+            caption="Owner and Administrator" target="popup"  
+            role="ADMIN" permission="faas.change_owner_info" index="2" 
+            actiontype="change_owner_info"/>
+        
+        <invoker type="faas:modifyinfo" action="init" 
+            caption="Owner and Administrator" target="popup"  
+            role="APRAISER" index="2" 
+            actiontype="change_owner_info"/>
+        
+        <invoker type="faas:redflag:action" action="init" 
+            caption="Change Owner and Administrator" index="2" 
+            actiontype="change_owner_info"/>
+        
+        <invoker type="formActions" action="_close" caption="Cancel" mnemonic="c" immediate="true" />
+        <invoker type="formActions" action="save" caption="Save" mnemonic="s" />
+   </invokers>
+   
+   <code class="com.rameses.gov.etracs.rpt.faas.change.ui.ChangeOwnerInfoController"/>       
+   
+    <pages> 
+        <page template="com.rameses.gov.etracs.rpt.faas.change.ui.ChangeOwnerInfoPage"/>
+    </pages>
+</workunit>
+
+

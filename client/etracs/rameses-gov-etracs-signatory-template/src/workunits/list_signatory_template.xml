@@ -1,0 +1,40 @@
+<workunit>
+    <invokers>
+        <invoker folderid="/explorer/setting" caption="Signatory Templates" target="window" />
+        <invoker type="formActions" action="_close" caption="Close" mnemonic="c" shortcut="Ctrl C" icon="images/cancel.png" />
+        <invoker type="formActions" action="open" caption="Open" mnemonic="o" shortcut="Ctrl O" icon="images/open.png" />
+    </invokers>
+    
+    <code>
+    <![CDATA[
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        
+        class SignatoryTemplateListController
+        {
+            def selectedItem
+            def listHandler = [
+                getColumns  : {return [
+                    new Column(name:'caption', caption:'Doc Type')
+                ]},
+                
+                fetchList   : { return InvokerUtil.lookupOpeners('signatorytemplate') },
+                
+                onOpenItem  : { itm, colName -> open() }
+            ] as BasicListModel
+            
+            def open() {
+                if( selectedItem )
+                    return selectedItem;
+                return null;
+            }
+        }
+    ]]>
+    </code>
+    
+    <pages>
+        <page template="rameses.gov.etracs.signatory.template.SignatoryTemplateListPage" />
+    </pages>
+</workunit>

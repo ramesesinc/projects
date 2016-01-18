@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="rpuland:info" caption="Assessment" index="50" mnemonic="E"/>
+        <invoker type="rpubldg:info" caption="Assessment" index="50" mnemonic="E"/>
+        <invoker type="rpumach:info" caption="Assessment" index="50" mnemonic="E"/>
+        <invoker type="rpuplanttree:info" caption="Assessment" index="50" mnemonic="E"/>
+        <invoker type="rpumisc:info" caption="Assessment" index="50" mnemonic="E"/>
+    </invokers>
+    
+    <code>
+<![CDATA[        
+        
+import com.rameses.rcp.annotations.* 
+import com.rameses.rcp.common.* 
+import com.rameses.osiris2.client.* 
+import com.rameses.osiris2.common.* 
+
+class AssessmentController extends com.rameses.gov.etracs.rpt.workflow.BasicInfoController
+{
+    def assessmentListHandler = [
+        fetchList : {return entity.rpu.assessments }
+    ] as BasicListModel
+    
+   
+}    
+    
+]]>        
+    </code>
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.rpt.rpu.ui.RpuInfoAssessmentPage"/>
+    </pages>
+</workunit>

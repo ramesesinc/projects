@@ -1,0 +1,55 @@
+<workunit extends="rpt_wtemplates/ReportController.xml" >
+    <invokers>
+        <invoker folderid="/explorer/report/rpt" action="init" caption="Report on Real Property Assessment" target="window" index="13" 
+            role="ASSESSOR_REPORT,REPORT" />
+    </invokers>
+    <code>
+
+<![CDATA[
+
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.reports.*;
+
+class GenerateRPAReportController extends com.rameses.gov.etracs.rpt.report.AsyncReportController
+{
+    @Service('RPTReportRPAService') 
+    def svc 
+    
+    @Service('PropertyClassificationService')
+    def pcSvc;    
+    
+    @Binding 
+    def binding;
+    
+    String title = 'Report on Real Property Assessment'
+    boolean showClassification = true;
+    
+    String reportName = 'com/rameses/gov/etracs/rpt/report/reportonrpa.jasper';
+    
+    void buildReportData(entity, asyncHandler){
+        svc.generateReportOnRPA(entity, asyncHandler); 
+    }
+    
+    Map getParameters(){
+        data.parameters.LOGOLGU = getInputStream('lgu-logo.png');
+        return data.parameters;
+    }
+    
+   def getReporttypes(){
+        return ['PERIOD', 'AS OF DATE']
+   }    
+   
+    def getPropertyClassifications(){
+        return pcSvc.getList([:]);
+    }   
+
+}
+]]>        
+        
+    </code>
+    <pages>
+        <page name="default" template="com.rameses.gov.etracs.rpt.report.ReportInit2Page"/>
+    </pages>
+</workunit>

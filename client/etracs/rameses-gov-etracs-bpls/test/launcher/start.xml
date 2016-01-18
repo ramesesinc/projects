@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="launcher" default="start" basedir=".">
+    
+    <target name="init">
+        <property file="conf.properties"/>
+        <property name="incubation.dir" value="${rameses.dir}/incubation"/>
+        
+        <taskdef resource="net/sf/antcontrib/antcontrib.properties">
+            <classpath>
+                <pathelement location="../../lib/ant-contrib-0.6.jar"/>
+            </classpath>
+        </taskdef> 
+        <taskdef name="groovy" classname="org.codehaus.groovy.ant.Groovy">
+            <classpath>
+                <pathelement location="C:/RAMESES/platform-libs/client/groovy-all-1.5.5.jar"/>
+                <pathelement location="C:/RAMESES/platform-libs/client/rameses-common2.jar"/>
+            </classpath> 
+        </taskdef>        
+    </target>
+    
+    <target name="build" depends="init, copy-osiris3-server, deploy-server-libs, deploy-services, deploy-datasources, deploy-apps, deploy-web, deploy-web-resources, deploy-client-platform" description="Run build">
+    </target>
+    
+    <target name="start" depends="build, run-server">
+    </target>
+    
+    <!--=====================================================
+    = COPY OSIRIS SERVER 
+    =======================================================-->
+    <target name="copy-osiris3-server">
+        <copy todir="${target.server.dir}/bin" overwrite="true">
+            <fileset dir="${osiris.server.dir}/bin"/>
+        </copy>
+        <copy todir="${target.server.dir}/lib" overwrite="true">
+            <fileset dir="${osiris.server.dir}/lib"/>
+        </copy>
+        
+        <loadfile srcfile="../server.conf" property="server.conf"/> 
+        <groovy>
+            def str = project.getProperty('server.conf');
+            properties.each{k,v-> 
+            str = str.replaceAll('\\$\\{'+ k +'\\}', v);  
+            }
+            properties['server.conf.replaced']=str;
+        </groovy>
+        <echo message="Building server.conf ..."/>
+        <echo file="${target.server.dir}/bin/server.conf">${server.conf.replaced}</echo> 
+    </target>
+    
+    <target name="deploy-server-libs" depends="init">
+        <!-- remove server libs from workspace -->
+        <property name="_target.server.lib.dir_" value="${target.server.dir}/lib"/> 
+        <dirset id="target.server.lib.name" includes="*.jar" dir="${_target.server.lib.dir_}"/>
+        <property name="target.server.lib.names" refid="target.server.lib.name"/> 
+        <for list="${target.server.lib.names}" delimiter=";" param="val">
+            <sequential> 
+                <delete file="${_target.server.lib.dir_}/@{val}"/> 
+            </sequential>
+        </for> 
+        
+        <!-- copy server libs to workspace -->
+        <!--
+        <property name="_source.server.lib.dir_" value="${platform-libs.dir}/server"/> 
+        <dirset id="source.server.lib.name" includes="*.jar" dir="${_source.server.lib.dir_}"/>
+        <property name="source.server.lib.names" refid="source.server.lib.name"/> 
+        <for list="${source.server.lib.names}" delimiter=";" param="val">
+            <sequential>
+                <echo> Copying @{val} ... </echo>
+                <copy file="${_source.server.lib.dir_}/@{val}" todir="${_target.server.lib.dir_}"/>
+            </sequential>
+        </for>
+        -->
+        <copy todir="${_target.server.lib.dir_}" overwrite="true" failonerror="true">
+            <fileset dir="${platform-libs.dir}/server"/>
+        </copy>
+    </target>
+    
+
+    <target name="deploy-services" depends="init">
+        <property name="_target.server.modules.dir_" value="${target.server.dir}/workspace/services/shared/v25/modules"/>        
+        <delete dir="${_target.server.modules.dir_}" failonerror="false"/> 
+        
+        <for list="${shared.services}" delimiter=":" param="val">
+            <sequential>
+                <copy todir="${_target.server.modules.dir_}/@{val}">
+                    <fileset dir="${projects.dir}/server/@{val}"/>
+                </copy>
+            </sequential>
+        </for>
+    </target>
+    
+    <target name="deploy-datasources" depends="init">
+        <copy todir="${target.services.dir}/datasources">
+            <fileset dir="../datasources"/> 
+        </copy>
+    </target>    
+    
+    <target name="deploy-apps" depends="init">
+        <property name="_target.app.dir_" value="${target.services.dir}/apps/${target.app.name}"/> 
+        <delete dir="${_target.app.dir_}" failonerror="false"/> 
+        <copy file="../app.conf" todir="${_target.app.dir_}" overwrite="true"/> 
+        <copy todir="${_target.app.dir_}/adapters">
+            <fileset dir="../adapters"/> 
+        </copy>
+        <copy todir="${_target.app.dir_}/connections">
+            <fileset dir="../connections"/> 
+        </copy>        
+        
+        <for list="${app.modules}" delimiter=":" param="val">
+            <sequential>
+                <copy todir="${_target.app.dir_}/modules/@{val}">
+                    <fileset dir="${projects.dir}/server/@{val}"/>
+                </copy>
+            </sequential>
+        </for> 
+    </target>   
+    
+    <target name="deploy-web" depends="init">
+        <property name="_target.web.dir_" value="${target.server.dir}/workspace/web"/> 
+        <copy file="../anubis.hosts" todir="${_target.web.dir_}" overwrite="true"/> 
+        <loadfile srcfile="../anubis.hosts" property="anubis.hosts"/> 
+        <groovy>
+            def str = project.getProperty('anubis.hosts');
+            properties.each{k,v-> 
+            str = str.replaceAll('\\$\\{'+ k +'\\}', v);  
+            }
+            properties['anubis.hosts.replaced']=str;
+        </groovy>
+        <echo message="Building anubis.hosts ..."/>
+        <echo file="${_target.web.dir_}/anubis.hosts">${anubis.hosts.replaced}</echo>         
+        
+        <delete dir="${_target.web.dir_}/etracs" failonerror="true"/> 
+        <copy todir="${_target.web.dir_}/etracs" overwrite="true" failonerror="false"> 
+            <fileset dir="${projects.dir}/web/etracs"/> 
+        </copy> 
+    </target>    
+    
+    <target name="deploy-web-resources" depends="init">
+        <property name="_target.web.download.modules.dir_" value="${target.server.dir}/workspace/web/resources/downloads/modules"/>  
+        <copy todir="${target.server.dir}/workspace/web/resources" failonerror="false">
+            <fileset dir="../../resources" />
+        </copy>
+        <delete dir="${_target.web.download.modules.dir_}/modules" failonerror="false"/>
+        <copy file="../updates.xml" todir="${_target.web.download.modules.dir_}" failonerror="false"/>
+        
+        <for list="${download.core.modules}" delimiter=":" param="val">
+            <sequential>
+                <echo> Copying @{val} ... </echo>
+                <copy file="${platform-libs.dir}/client/@{val}" todir="${_target.web.download.modules.dir_}/core" overwrite="true" failonerror="false"/> 
+            </sequential>
+        </for> 
+        <for list="${download.shared.modules}" delimiter=":" param="val">
+            <sequential>
+                <echo> Copying @{val} ... </echo>
+                <copy file="${projects.dir}/client/@{val}/dist/@{val}.jar" todir="${_target.web.download.modules.dir_}/shared" overwrite="true" failonerror="false"/> 
+            </sequential>
+        </for> 
+        <for list="${download.app.modules}" delimiter=":" param="val">
+            <sequential>
+                <echo> Copying @{val} ... </echo>
+                <copy file="${projects.dir}/client/@{val}/dist/@{val}.jar" todir="${_target.web.download.modules.dir_}" overwrite="true" failonerror="false"/> 
+            </sequential>
+        </for> 
+        
+        <loadfile srcfile="../updates.xml" property="updates.xml"/> 
+        <groovy>
+            def str = project.getProperty('updates.xml');
+            properties.each{k,v-> 
+            str = str.replaceAll('\\$\\{'+ k +'\\}', v);  
+            }
+            properties['updates.xml.replaced']=str;
+        </groovy>
+        <echo message="Building updates.xml ..."/>
+        <echo file="${_target.web.download.modules.dir_}/updates.xml">${updates.xml.replaced}</echo>         
+    </target> 
+    
+    <target name="deploy-client-platform" depends="init">
+        <property name="_target.platform.name_" value="${target.app.name}_platform"/>        
+        <property name="_target.platform.dir_" value="${workspace.dir}/${_target.platform.name_}"/>  
+        <echo message="Deploying ${_target.platform.name_} ..."/>
+        <delete dir="${_target.platform.dir_}" failonerror="false"/> 
+        <copy todir="${_target.platform.dir_}" overwrite="true" failonerror="false">
+            <fileset dir="${platforms.dir}/${_target.platform.name_}"/> 
+        </copy>      
+    </target>
+    
+    <target name="run-server" depends="init" description="Run server">
+        <exec executable="cmd" dir="${target.server.dir}/bin">
+            <arg value="/c"/>
+            <arg value="run.bat"/>
+        </exec>
+    </target>
+    
+    <target name="update-services" depends="init">
+        <property name="_target.shared.modules.dir_" value="${target.server.dir}/workspace/services/shared/v25/modules"/>        
+        <for list="${shared.services}" delimiter=":" param="val">
+            <sequential>
+                <copy todir="${_target.shared.modules.dir_}/@{val}">
+                    <fileset dir="${projects.dir}/server/@{val}"/>
+                </copy>
+            </sequential>
+        </for>    
+        
+        <property name="_target.app.modules.dir_" value="${target.server.dir}/workspace/services/apps/${target.app.name}/modules"/> 
+        <for list="${app.modules}" delimiter=":" param="val">
+            <sequential>
+                <copy todir="${_target.app.modules.dir_}/@{val}">
+                    <fileset dir="${projects.dir}/server/@{val}"/>
+                </copy>
+            </sequential>
+        </for>   
+        
+        <groovy>
+        <![CDATA[ 
+            import com.rameses.service.*;
+            
+            def appenv = [
+                'app.host'      : properties['target.app.host'], 
+                'app.context'   : properties['target.app.name'],
+                'app.cluster'   : 'osiris3' 
+            ]; 
+            def proxy = new ScriptServiceContext(appenv).create('SysToolService');
+            proxy.invoke('clearScripts'); 
+        ]]>     
+        </groovy>        
+    </target>
+    
+</project>

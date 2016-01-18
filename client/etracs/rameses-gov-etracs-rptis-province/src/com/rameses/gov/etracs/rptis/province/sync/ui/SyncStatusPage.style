@@ -1,0 +1,26 @@
+"syncData" [showsync == true]{
+    visible:true;
+    required:true;
+}
+
+"syncData" [showsync != true]{
+    visible:false;
+    required:false;
+}
+
+"syncData"[showsync == true && processing == true]{
+    enabled:false;
+}
+
+
+"syncData"[showsync == true && processing == false]{
+    enabled:true;
+}
+
+"doClose"[processing == true]{
+    visible:false;
+}
+
+"doClose" [processing == false]{
+    visible:true;
+}

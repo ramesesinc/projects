@@ -1,0 +1,7 @@
+"entity.*"[caller.mode=='read'] {
+    enabled: false;
+} 
+
+"entity.*"[caller.mode!='read'] {
+    enabled: true;
+}

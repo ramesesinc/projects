@@ -1,0 +1,47 @@
+<!-- REQUISITION ISSUE SLIP -->
+<workunit extends="wtemplates/StockSaleController.xml">
+    
+    <invokers>
+        <invoker folderid="home/af" caption="AF Sale" action="create" index="1" role="AFO" target="window"/>
+        <invoker type="quick_launcher" code="AFSALE" caption="Accountable Form Sale" action="create" index="1" role="AFO" target="window"/>
+        <invoker folderid="/menu/txn/treasury" caption="Accountable Form Sale" action="create" index="10" role="AFO"/>
+        
+        <invoker type="issueafrequest_SALE:open" caption="Accountable Form Sale" action="open" role="AFO" target="window"/>
+        <invoker type="afquery_SALE:open" caption="Accountable Form Sale" action="open" role="AFO" target="window"/>
+    </invokers>
+    
+    <code>
+       <![CDATA[
+        
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import java.rmi.server.*;
+        import com.rameses.enterprise.inventory.stock.*;
+        
+        class AFSaleController extends StockSaleController {
+        
+            String title = "Accountable Form Sale";
+            def entityName = "afstocksale";    
+            
+            def getLookupRequest() {
+                return InvokerUtil.lookupOpener( "afrequest:lookup", [
+                    "query.reqtype": "SALE",
+                    onselect: { o->
+                        request = o;
+                        binding.refresh('request');
+                    }
+                ]);
+            }
+            
+        }
+        
+        ]]>
+    </code>
+    
+    <pages>
+        <page name="initial" template="com.rameses.gov.treasury.af.AFSaleInitialPage"/>
+    </pages>
+    
+</workunit>

@@ -1,0 +1,33 @@
+<workunit extends="wtemplates/ExplorerViewController.xml" >
+    <invokers>
+        <invoker folderid="/explorer/master/treasury" caption="Form60 Setup" index="50" action="init" role="MASTER"/>
+   </invokers>
+   <code>
+       import com.rameses.rcp.common.*;
+       import com.rameses.rcp.annotations.*;
+       import com.rameses.osiris2.client.*;
+       import com.rameses.osiris2.common.*;
+       
+       class Fom60SetupController extends ExplorerViewController {
+       
+            String serviceName = 'Form60SetupService'
+       
+            public String getTitle() {
+               return "Form60 Setup";
+            }
+
+            public String getPrefixId() {
+               return "FRM60";
+            }
+       
+            public String getDefaultFileType() {
+                return "form60";
+            }
+
+            public String getContext() {
+                return "form60";
+            }    
+       
+       }
+   </code>
+</workunit>

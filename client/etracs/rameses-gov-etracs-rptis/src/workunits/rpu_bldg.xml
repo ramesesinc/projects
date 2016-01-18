@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="rpubldg:open" action="init" />
+    </invokers>
+    
+    <code>
+        
+<![CDATA[        
+        
+import com.rameses.rcp.annotations.* 
+import com.rameses.rcp.common.* 
+import com.rameses.osiris2.client.* 
+import com.rameses.osiris2.common.* 
+
+public class RpuBldgController extends com.rameses.gov.etracs.rpt.rpu.ui.RpuController
+{
+    
+
+}
+                
+                
+]]>                
+    </code>
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.rpt.rpu.ui.RpuPage"/>
+    </pages>
+</workunit>

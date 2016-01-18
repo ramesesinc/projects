@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+         <invoker type="faas:formActions" action="init" caption="Previous FAAS" index="2000" visibleWhen="#{entity.previousfaases.size() &gt; 0 &amp;&amp; (entity._resolve == null || entity._resolve == false)}" target="popup"/>
+         <invoker type="formActions" action="_close" caption="Close" immediate="true" />
+    </invokers>
+        
+<code>
+<![CDATA[
+
+import com.rameses.rcp.annotations.* 
+import com.rameses.rcp.common.* 
+import com.rameses.osiris2.client.*
+import com.rameses.osiris2.common.*
+import com.rameses.gov.etracs.rpt.util.*;
+
+class PreviousFaasController
+{
+    @Binding
+    def binding;
+    
+    @Service('FAASService')
+    def svc;
+    
+    def entity;
+    def faas;
+    
+    public String getTitle(){
+        return 'Previous FAAS: ' + faas?.tdno
+    }
+    
+    def init(){
+        faas = svc.openFaas([objid:entity.previousfaases.first().prevfaasid]);
+        if (faas)
+            return InvokerUtil.lookupOpener('prevfaas:open',[entity:faas])
+        throw new Exception('FAAS record does not exist.');
+    }
+}
+
+]]>
+</code>
+</workunit>
+
+

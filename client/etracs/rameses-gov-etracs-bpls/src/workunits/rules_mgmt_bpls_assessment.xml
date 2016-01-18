@@ -1,0 +1,5 @@
+<workunit extends="wtemplates/RuleMgmtController.xml" serviceName="RuleMgmtService" tag="bpassessment">
+    <invokers>
+        <invoker folderid="/explorer/rulemgmt/bpls" caption="BP Assessment Rules" action="init" index="1" role="RULE_AUTHOR"/>
+    </invokers>
+</workunit>

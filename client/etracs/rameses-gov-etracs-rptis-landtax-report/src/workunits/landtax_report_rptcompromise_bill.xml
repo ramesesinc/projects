@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="rptcompromise:formActions" action="preview" caption="Statement of Account" target="self"  index="100" visibleWhen="#{entity.state == 'APPROVED'}"/>        
+        <invoker type="formActions" action="_close" caption="Close" mnemonic="c" icon="images/toolbars/cancel.png" immediate="true"/>            
+    </invokers>
+    <code>
+<![CDATA[
+
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.reports.*;
+import com.rameses.etracs.shared.*;
+
+class CompromiseBillReportController
+{
+    @Service('RPTReceiptCompromiseService')
+    def svc 
+    
+    @Service("ReportParameterService")
+    def svcParams;
+
+    @Binding
+    def binding;
+    
+    def entity;
+    def params;
+    def mode;
+    
+    String title = "Compromise Agreement Billing Statement";
+    String reportpath = "com/rameses/gov/etracs/landtax/report/compromise/"
+    String reportName = reportpath + 'rptcompromise_bill.jasper'
+
+    def preview() {
+        buildReport()
+        mode = 'view'
+        return 'preview' 
+    }
+
+    void print(){
+        buildReport();
+        ReportUtil.print( report.report, true )
+    }
+
+    void buildReport(){
+        params = svcParams.getStandardParameter();
+        params.LOGOLGU = EtracsReportUtil.getInputStream("lgu-logo.png");
+        entity.unpaiditems = svc.getUnpaidInstallments(entity.objid);
+        report.viewReport();
+    }
+
+    def report = [
+        getReportName : { return getReportName() }, 
+        getReportData : { return entity },
+        getSubReports : { return getSubReports() },
+        getParameters : { return  params },
+    ] as ReportModel;
+
+    def back() {
+        binding.refresh("entity.*");
+        mode = 'init';
+        return 'default';  
+    }
+
+    SubReport[] getSubReports() {
+         return [ 
+            new SubReport("installments", reportpath + "rptcompromise_bill_installments.jasper"),
+        ] as SubReport[];    
+    }
+
+}
+
+
+]]>
+
+    </code>
+    <pages>
+        <page name="preview" template="com.rameses.gov.etracs.rpt.report.PreviewPage"/>
+    </pages>
+</workunit>

@@ -1,0 +1,12 @@
+<workunit>
+    <invokers>
+        <invoker type="formActions" action="_close" caption="Close" mnemonic="c" shortcut="Ctrl C" icon="images/cancel.png" />
+    </invokers>
+    
+    <code class="rameses.gov.etracs.signatory.template.SignatoryTemplateController">
+    </code>
+    
+    <pages>
+        <page template="rameses.gov.etracs.signatory.template.SignatoryTemplatePage" />
+    </pages>
+</workunit>

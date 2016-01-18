@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="faas:info" action="init" caption="Examination Findings" index="10" />
+        <invoker type="subdivision:info" action="init" caption="Examination Findings" index="10" />
+        <invoker type="subdivisionfromcs:info" action="init" caption="Examination Findings" index="10" />
+        <invoker type="consolidation:info" action="init" caption="Examination Findings" index="10" />
+        <invoker type="resection:info" action="init" caption="Examination Findings" index="10" />
+        <invoker type="mcsettlement:info" action="init" caption="Examination Findings" index="10" />
+        
+        <invoker type="formActions" action="refresh" caption="Refresh" mnemonic="r" />
+        
+        <invoker type="itemActions" action="addFinding" caption="Add" mnemonic="a" visibleWhen="#{showActions == true}" role="EXAMINER"/>
+        <invoker type="itemActions" action="viewFinding" caption="Open" mnemonic="o" role="EXAMINER" visibleWhen="#{showActions == true &amp;&amp; selectedFinding != null}" />
+        <invoker type="itemActions" action="removeFinding" caption="Remove" mnemonic="r" role="EXAMINER" visibleWhen="#{showActions == true &amp;&amp; selectedFinding != null  &amp;&amp; allowEdit==true}" />
+        <invoker type="itemActions" action="preview" caption="Preview" mnemonic="v" visibleWhen="#{selectedFinding != null}" />        
+   </invokers>
+   <code>
+
+<![CDATA[
+
+        
+import com.rameses.rcp.annotations.* 
+import com.rameses.rcp.common.* 
+import com.rameses.osiris2.client.*
+import com.rameses.osiris2.common.*
+
+class ExaminationFindingsInfoController
+{
+    @Binding
+    def binding;
+    
+    @Service('ExaminationService')
+    def examinationSvc;
+    
+    def svc;
+    
+    
+    def entity;
+    def findings;
+    def mode;
+    def selectedFinding;
+    
+    def MODE_READ = 'read';
+    def MODE_EDIT = 'edit';
+    
+    String title = 'Examination Findings'
+    
+    void init(){
+        findings = examinationSvc.getFindings(entity.objid)
+        listHandler?.load();
+        mode = MODE_READ;
+    }
+    
+    void refresh(){
+        init();
+    }
+       
+    def listHandler = [
+        fetchList : { return findings }
+    ] as BasicListModel
+    
+       
+    boolean getAllowEdit(){
+        if (entity.state.matches('CURRENT|CANCELLED|APPROVED'))
+            return false;
+        if (mode != MODE_READ) 
+            return false;
+        return true;
+    }
+       
+       
+    def addFinding(){
+        return InvokerUtil.lookupOpener('examinerfinding:create', [
+            entity : entity,
+            
+            onadd  : {
+                init();
+            }
+        ])
+    }
+       
+    def viewFinding(){
+       return InvokerUtil.lookupOpener('examinerfinding:open', [
+            entity : entity,
+            allowEdit : getAllowEdit(),
+            finding : selectedFinding,
+            showActions: showActions,
+            
+            onupdate : {
+                init();
+            }
+        ])
+    }
+       
+    def removeFinding(){
+        if ( !selectedFinding ) 
+            return;
+            
+        if ( MsgBox.confirm('Remove selected item?') ){
+            examinationSvc.removeFinding(selectedFinding);
+            findings.remove(selectedFinding);
+            listHandler.load();
+        }
+    }
+       
+       
+    def preview(){
+        if (!selectedFinding) return;
+        
+       return InvokerUtil.lookupOpener('ocularinspection:preview', [
+            entity : selectedFinding,
+        ])
+    }
+    
+    
+    boolean getShowActions(){
+        if (entity.taskstate && entity.taskstate.matches('assign.*')) return false;
+        if (entity.taskstate && !entity.taskstate.matches('examiner')) return false;
+        if (entity.state.matches('CURRENT|CANCELLED')) return false;
+        if (OsirisContext.env.USERID != entity.assignee.objid) return false;
+        return true;
+    }    
+}
+       
+       
+]]>
+
+   </code>
+    
+    <pages> 
+        <page template="com.rameses.gov.etracs.rpt.examination.ui.ExaminationListPage"/>
+    </pages>
+</workunit>
+
+

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="notification-group" caption="For Review and Verification" group="assign-receiver"  role="RECEIVER" index="1000"/>
+        <invoker type="notification-group" caption="For Examination" group="assign-examiner"  role="EXAMINER" index="1001"/>
+        <invoker type="notification-group" caption="For Taxmapping" group="assign-taxmapper"  role="TAXMAPPER" index="1002"/>
+        <invoker type="notification-group" caption="For Taxmapping" group="assign-provtaxmapper"  role="TAXMAPPER" index="1002"/>
+        <invoker type="notification-group" caption="For Taxmapping Approval" group="assign-taxmapping-approval"  role="TAXMAPPER_CHIEF" index="1005"/>
+        <invoker type="notification-group" caption="For Appraisal" group="assign-appraiser"  role="APPRAISER" index="1015"/>
+        <invoker type="notification-group" caption="For Appraisal" group="assign-provappraiser"  role="APPRAISER" index="1015"/>
+        <invoker type="notification-group" caption="For Appraisal Approval" group="assign-appraisal-chief"  role="APPRAISAL_CHIEF" index="1020"/>
+        <invoker type="notification-group" caption="For Recommending Approval" group="assign-recommender"  role="RECOMMENDER" index="1030"/>
+        <invoker type="notification-group" caption="For Approval" group="assign-approver"  role="ASSESSOR,APPROVER" index="1035"/>
+        
+        
+    </invokers>
+</workunit>

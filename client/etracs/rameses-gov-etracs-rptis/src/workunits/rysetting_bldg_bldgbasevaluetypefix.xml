@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="basevaluetype:fix" action="init" caption="Fix Base Value" />
+    </invokers>
+    
+    <code lang="groovy">
+<![CDATA[
+        
+import com.rameses.rcp.annotations.*
+import com.rameses.rcp.common.*
+import com.rameses.osiris2.client.*
+
+public class BldgBaseValueTypeFixController extends com.rameses.gov.etracs.rpt.rysetting.bldgrysetting.ui.BaseValueTypeController 
+{
+    @Service('BldgRYSettingService')
+    def svc 
+    
+    public def getService(){return svc }
+
+    public Column[] getColumns() { 
+        return [
+            new Column(caption:'Bldg Code*', editable:true, type:'lookup', expression:'#{item.bldgkind.code}', handler:bldgKindLookup, maxWidth:80),
+            new Column(name:'bldgkind.name', caption:'Kind of Building' ),
+            new Column(name:'basevalue', caption:'Base Value', type:'decimal', editable:true),
+        ]
+    }
+
+}
+
+]]>
+    </code>
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.rpt.rysetting.bldgrysetting.ui.BaseValueTypePage"/>
+    </pages>
+</workunit>

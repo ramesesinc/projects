@@ -1,0 +1,6 @@
+<workunit extends="wtemplates/ServiceLookupController.xml" 
+    serviceName="BPAssessmentSysVarLookupService">
+    <invokers>
+        <invoker type="bpassessment_sysvar:lookup" caption="Lookup Sys Variable" target="popup"/>
+    </invokers>
+</workunit>

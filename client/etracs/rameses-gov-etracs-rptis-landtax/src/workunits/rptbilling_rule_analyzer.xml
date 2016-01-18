@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="rulemgmt:formActions" caption="Land Tax Billing Rule Analyzer" action="init"
+            visibleWhen="#{ruleset == 'rptbilling'}" target="window" role="RULE_AUTHOR"/>
+       <invoker type="home.action" caption="Land Tax Billing Rule Analyzer" action="init"
+            visibleWhen="#{ruleset == 'rptbilling'}" target="window" role="RULE_AUTHOR"/>
+       <invoker type="formActions" caption="Close" action="_close" immediate="true"/>
+    </invokers>
+        
+    <code>
+        
+<![CDATA[
+
+
+import com.rameses.rcp.annotations.*;
+import com.rameses.rcp.common.*;
+import com.rameses.osiris2.client.*
+import com.rameses.osiris2.common.*
+
+class RPTBillingRuleAnalyzer
+{
+    @Binding
+    def binding
+    
+    @Service('DateService')
+    def dtSvc 
+    
+    @Service('RPTBillingRuleAnalyzerService')
+    def billSvc
+    
+    @Service('RPTLedgerService')
+    def ledgerSvc
+    
+    String title = 'RPT Billing Rules Analyzer'
+    
+    def bill
+    def quarters = [1,2,3,4]
+    def selectedLedgerItem
+    def rputypes = LOV.RPT_RPUTYPES*.key
+    def incentive
+    def partial 
+    
+    void init(){
+        bill = [
+            objid       : 'B' + new java.rmi.server.UID(),
+            billdate    : dtSvc.getServerDate(),
+            billtoyear  : dtSvc.getServerYear(),
+            billtoqtr   : 4, 
+            rptledger   : getLedgerInfo(),
+            incentives  : [],
+        ]
+        
+        incentive = [fromyear:0, toyear:0, basicrate:0.0, sefrate:0.0]
+        partial = [amount:0.0]
+    }
+    
+    def getLedgerInfo(){
+        return [
+            objid           : 'RLID',
+            lastyearpaid    : dtSvc.getServerYear() - 1, 
+            lastqtrpaid     : 4, 
+            rputype         : rputypes[0], 
+            faases          : [],
+            partialbasic    : 0.0,
+            partialbasicdisc: 0.0,
+            partialbasicint : 0.0,
+            partialsef      : 0.0,
+            partialsefdisc  : 0.0,
+            partialsefint   : 0.0,
+        ]
+    }
+    
+    void generate(){
+        def rptledger = bill.rptledger
+        rptledger.fromyear = (rptledger.lastqtrpaid == 4 ? rptledger.lastyearpaid + 1 : rptledger.lastyearpaid)
+        rptledger.fromqtr = (rptledger.lastqtrpaid == 4 ? 1 : rptledger.lastqtrpaid + 1)
+        rptledger.barangayid = rptledger.barangay.objid 
+        
+        bill.rptledgerid = rptledger.objid
+        bill.partial = partial
+        
+        bill.incentives = []
+        if (incentive.basicrate > 0.0 || incentive.sefrate > 0.0 ){
+            bill.incentives << incentive;
+        }
+        
+        bill.putAll( billSvc.generateNoLedger(bill) )
+        bill.taxes.sort{a,b ->  a.item.title <=> b.item.title}
+        billitemsHandler.load()
+        taxesHandler.load()
+        clearPartial()
+    }
+    
+    void clearPartial(){
+        partial = [amount:0.0]
+        binding.refresh('partial.*')
+    }
+    
+    def ledgeritemsHandler = [
+        fetchList : { return bill.rptledger.faases },
+    ] as BasicListModel
+
+    
+    def addLedgerItem(){
+        return InvokerUtil.lookupOpener('rptledgerfaas:create', [
+            svc          : ledgerSvc,
+            ledger       : bill.rptledger,
+            
+            onaddHandler : { 
+                bill.rptledger.faases << it 
+                ledgeritemsHandler.load()
+            }
+        ])
+    }
+    
+    
+    void removeLedgerItem(){
+        if (selectedLedgerItem && MsgBox.confirm('Remove item?')) {
+            bill.rptledger.faases.remove( selectedLedgerItem )
+            ledgeritemsHandler.load()
+        }
+    }
+    
+    
+    def billitemsHandler = [
+        fetchList : { 
+            if ( !bill.items ) bill.items = []
+            return bill.items
+        }
+    ] as BasicListModel
+    
+    
+    def taxesHandler = [
+        fetchList : { return bill.taxes }
+    ] as BasicListModel
+    
+    
+    def getRealtyTaxTotal(){
+        def total = bill.taxes.findAll{it.revtype != 'misc'}.amount.sum()
+        if (total == null) total = 0.0
+        return total;
+    }
+    
+    def getMiscTotal(){
+        def total = bill.taxes.findAll{it.revtype == 'misc'}.amount.sum()
+        if (total == null) total = 0.0
+        return total;
+    }
+
+}
+
+
+
+]]>
+
+</code>
+
+    <pages>
+        <page template="com.rameses.gov.etracs.rpt.landtax.billing.analyzer.ui.RPTBillingAnalyzerPage" />
+    </pages>
+</workunit>

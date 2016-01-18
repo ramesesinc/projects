@@ -1,0 +1,36 @@
+"entity.*" [mode == 'processing'] {
+    enabled: false; 
+} 
+"entity.*" [mode != 'processing'] {
+    enabled: true; 
+} 
+
+
+
+"entity.(year|quarter|month|asofdate)" [true == true]{
+    visible:false;
+    required:false;
+}   
+
+"entity.(year|quarter)" [entity.reporttype == 'PERIOD']{
+    visible:true;
+    required:true;
+}   
+
+"entity.month" [entity.reporttype == 'PERIOD']{
+    visible:true;
+}   
+
+"entity.asofdate" [entity.reporttype != 'PERIOD']{
+    visible:true;
+    required:true;
+}   
+
+"entity.classification"[true==true]{
+    visible:false;
+}
+
+"entity.classification"[showClassification==true || showClassification == null]{
+    visible:true;
+}
+

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit extends="com/rameses/osiris2/reports/templates/reports.xml">
+    <invokers>
+        <invoker type="rptledgermanual:formActions" action="preview" caption="Preview Bill" visibleWhen="#{entity.state=='APPROVED'}"/>
+        <invoker type="rptledger:formActions" action="preview" caption="Preview Bill" visibleWhen="#{entity.state=='APPROVED'}"/>
+        <invoker type="rptledger:list:formActions" action="preview" caption="Preview Bill" visibleWhen="#{selectedEntity != null &amp;&amp; selectedEntity.state == 'APPROVED'}" depends="selectedEntity" target="self" />
+   </invokers>
+
+    <code>
+        
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.reports.*;
+
+class RPTLedgerBillController
+{
+    @Caller
+    def caller;
+        
+    @Service('RPTBillingService')
+    def billSvc;
+        
+    def entity;
+        
+    def preview(){
+        if (!entity)
+            entity = caller.selectedEntity;
+        def bill = billSvc.initBill(entity.objid);
+        bill.taxpayer = entity.taxpayer;
+        return InvokerUtil.lookupOpener('rptbill:print', [bill:bill, caller:this])
+    }
+    
+}
+        
+    </code>
+</workunit>
+

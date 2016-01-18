@@ -1,0 +1,39 @@
+<workunit extends="wtemplates/ListController.xml">
+    <invokers>
+        <invoker folderid="/explorer/txn/rpt/list" caption="Cancelled Faases"  target="window" index="13" role="ASSESSOR_SHARED,SHARED" />
+        <invoker type="quick_launcher" code="CF000" caption="Cancelled Faases " role="ASSESSOR_SHARED,SHARED" />
+    </invokers>
+    <code>
+        import com.rameses.rcp.common.*
+        import com.rameses.rcp.annotations.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import com.rameses.gov.etracs.rpt.util.RPTUtil;
+        
+        class CancelledFaasListController extends ListController
+        {
+            String serviceName = 'CancelledFAASService'
+            
+            String formTarget = 'window'
+            
+            public String getEntityName(){ 
+                return 'cancelledfaas' 
+            }
+            
+            int getRows() { return 50 }
+            
+            Column[] getColumns(){
+                return [
+                    new Column(name:"state", caption:"State", width:100),
+                    new Column(name:"reason.name", caption:"Cancel Reason", width:150),
+                    new Column(name:"faas.tdno", caption:"TD No.", width:120),
+                    new Column(name:"faas.fullpin", caption:"PIN", width:150),
+                    new Column(name:"faas.owner.name", caption:"Owner Name", width:250),
+                    new Column(name:"faas.totalareaha", caption:"New Area (ha)", width:120, type:'decimal', format:'#,##0.0000'),
+                    new Column(name:"faas.totalmv", caption:"Market Value", width:120, type:'decimal', format:'#,##0.00'),
+                    new Column(name:"faas.totalav", caption:"Assessed Value", width:120, type:'decimal', format:'#,##0.00'),
+                ]
+            }
+        }
+    </code>
+</workunit>

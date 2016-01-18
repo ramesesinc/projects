@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="noledger:create" action="init" caption="Add No Ledger Realty Tax Colletion" target="popup" />
+        <invoker type="noledger:edit" action="edit" caption="Edit No Ledger Realty Tax Colletion" target="popup" />
+        
+        <invoker type="formActions" action="doClose" caption="Close" icon="images/toolbars/cancel.png" immediate="true" />
+        <invoker type="formActions" action="doAdd" caption="Add" mnemonic="a" visibleWhen="#{mode == 'create'}"/>
+        <invoker type="formActions" action="doUpdate" caption="Update" mnemonic="u" visibleWhen="#{mode == 'edit'}"/>
+    </invokers>
+    <code class="com.rameses.gov.etracs.rpt.collection.ui.RPTReceiptNoLedgerAddController">
+    </code>
+
+    <pages>
+        <page template="com.rameses.gov.etracs.rpt.collection.ui.RPTReceiptNoLedgerAddPage"/>
+    </pages>
+</workunit>

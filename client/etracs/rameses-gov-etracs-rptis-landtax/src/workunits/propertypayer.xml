@@ -1,0 +1,121 @@
+<workunit>
+    <invokers>
+        <invoker type="propertypayer:create" action="create" caption="Property Payer (New)" target="window" role="LANDTAX" />
+        <invoker type="quick_launcher" code="PP01" action="create" caption="Property Payer (New)" target="window" role="LANDTAX" />
+        
+        <invoker type="propertypayer:open" action="open" caption="Property Payer" target="window" role="LANDTAX" />
+        
+        <invoker type="formActions" action="_close" caption="Cancel" mnemonic="c" immediate="true" visibleWhen="#{mode=='init'}" />
+        <invoker type="formActions" action="save" caption="Save" mnemonic="s" visibleWhen="#{mode=='init'}" />
+        
+        <invoker type="formActions" action="_close" caption="Close" mnemonic="c" immediate="true" visibleWhen="#{mode!='init'}" />
+        <invoker type="formActions" action="delete" caption="Delete" mnemonic="d" immediate="true" visibleWhen="#{mode!='init'}" />
+    </invokers>
+    <code>
+<![CDATA[
+
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+import com.rameses.osiris2.client.*
+import com.rameses.osiris2.common.*
+
+class PropertyPayerController
+{
+    @Binding
+    def binding;
+
+    @Service('PropertyPayerService')
+    def svc;
+
+    def MODE_INIT = 'init';
+    def MODE_OPEN = 'open';
+
+    def mode;
+    def entity;
+
+    String title = 'Property Payer Information';
+    
+        
+    @FormTitle
+    @FormId
+    public String getFormId(){
+        return 'Property Payer: ' + (entity.taxpayer ? entity.taxpayer.acctno : 'New');
+    }
+    
+    def create(){
+        entity = [objid:'PP' + new java.rmi.server.UID(), items:[]];
+        mode = MODE_INIT;
+        return 'init';
+    }
+
+
+    def save(){
+        svc.create(entity);
+        entity.putAll(svc.open(entity));
+        mode = MODE_OPEN;
+        return 'default';
+    }
+
+    void open(){
+        entity.putAll( svc.open(entity))
+    }
+
+    def delete(){
+        if (MsgBox.confirm('Delete record?')){
+            svc.delete(entity);
+            return '_close';
+        }
+    }
+
+    /*==================================================
+    * ITEM SUPPORT 
+    ==================================================*/
+    def selectedItem;
+
+    def getLookupLedger(){
+        return Inv.lookupOpener('rptledger:lookup', [
+            onselect : {
+                if (it.state != 'APPROVED')
+                        throw new Exception('Ledger is invalid. Only approved ledger is allowed.')
+                selectedItem.rptledger = it;
+            },
+
+            onempty :{
+                selectedItem.rptledger = null;
+            }
+        ])
+    }
+
+    def listHandler = [
+        createItem : { return [objid:'PPI' + new java.rmi.server.UID(), parentid:entity.objid] },
+        getRows    : { return entity.items.size() + 1 },
+        fetchList  : { return entity.items},
+
+        validate   : { li ->
+            svc.checkDuplicateItem(li.item);
+        },
+
+        onAddItem  : {item ->
+            svc.addItem(item);
+            entity.items << item;
+        },
+
+        onRemoveItem : {item ->
+            if (MsgBox.confirm('Delete selected item?')){
+                svc.deleteItem(item)
+                entity.items.remove(item)
+                return true;
+            }
+            return false;
+        },
+    ] as EditorListModel;
+
+}
+
+]]>
+    </code>
+    <pages>
+        <page name="init" template="com.rameses.gov.etracs.landtax.propertypayer.ui.PropertyPayerInitPage"/>
+        <page template="com.rameses.gov.etracs.landtax.propertypayer.ui.PropertyPayerPage"/>
+    </pages>
+</workunit>

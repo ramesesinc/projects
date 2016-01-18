@@ -1,0 +1,7 @@
+<workunit extends="wtemplates/ListController.xml" serviceName="MiscItemService" entityName="miscitem" formName="miscitem:list">
+    <invokers>
+        <invoker folderid="/explorer/master/rpt" caption="Miscellaneous Items" target="window" index="9"  role="ASSESSOR_DATAMGMT,MASTER" />
+        <invoker folderid="/home/rpt/master" caption="Miscellaneous Items" target="window" index="9"  role="ASSESSOR_DATAMGMT,MASTER" />
+        <invoker type="quick_launcher" code="MISC00" caption="Miscellaneous Items"  role="ASSESSOR_DATAMGMT,MASTER" />
+    </invokers>
+</workunit>

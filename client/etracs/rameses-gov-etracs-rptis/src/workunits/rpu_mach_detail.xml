@@ -1,0 +1,14 @@
+<workunit>
+    <invokers>
+        <invoker type="machdetail:create" action="create" caption="Machine Information (New)" target="popup" icon="images/doc-new.png"/>
+        <invoker type="machdetail:open" action="open" caption="Machine Information" target="popup" icon="images/open.png"/>
+        
+        <invoker type="formActions" action="ok" caption="OK" mnemonic="o" icon="images/approve.png"/>
+    </invokers>
+    <code class="com.rameses.gov.etracs.rpt.rpu.mach.ui.RpuMachDetailController" >
+    </code>
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.rpt.rpu.mach.ui.RpuMachDetailPage"/>
+    </pages>
+</workunit>

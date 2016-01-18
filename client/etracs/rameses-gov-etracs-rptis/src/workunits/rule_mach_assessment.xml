@@ -1,0 +1,5 @@
+<workunit extends="wtemplates/RuleMgmtController.xml" serviceName="RuleMgmtService" tag="machassessment">
+    <invokers>
+        <invoker folderid="/explorer/rulemgmt/assessor" caption="Machinery Assessment Rules" action="init" index="52" role="RULE_AUTHOR"/>
+    </invokers>
+</workunit>

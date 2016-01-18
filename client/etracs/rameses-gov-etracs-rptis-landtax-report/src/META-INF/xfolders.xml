@@ -1,0 +1,8 @@
+<folders>
+    <folder id="explorer">
+        <folder id="report" caption="Reports" index="3">
+            <folder id="landtax" caption="Land Tax" index="1">
+            </folder>
+        </folder>
+    </folder>
+</folders>

@@ -1,0 +1,46 @@
+<workunit>
+    
+    <invokers>
+        <invoker type="business:section" caption="Property Assessors Office" index="50"/>
+        
+        <invoker type="formActions" caption="Update PIN" action="updatePIN" />
+    </invokers>
+    
+    <code>
+        <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import java.rmi.server.*;
+        import com.rameses.gov.etracs.bpls.application.*;
+        
+        class BusinessInfoAssessorController {
+        
+            @Service("BusinessPropertyAssessorService")
+            def svc;
+            
+            @Binding
+            def binding;
+        
+            def title = "Property Assessor";
+            def entity;
+            
+            def updatePIN() {
+                def o = MsgBox.prompt("Enter PIN");
+                if(o) {
+                    svc.updatePIN( [objid:entity.objid, pin:o] );
+                    entity.pin = o;
+                    MsgBox.alert("PIN successfully updated");
+                    binding.refresh();
+                }
+            }
+            
+        }
+        ]]>
+        
+    </code>
+    <pages>
+        <page template="com.rameses.gov.etracs.bpls.business.BusinessPropertyAssessor"/>
+    </pages>
+</workunit>

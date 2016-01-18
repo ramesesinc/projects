@@ -1,0 +1,15 @@
+"entity.(message|effectivedate|blockaction)" [mode == 'create'] {
+    enabled:true;
+}
+
+"entity.(postedby|resolvedby|remarks)" [mode != 'resolve'] {
+    visible:false;
+}
+
+"entity.(message|effectivedate|blockaction)" [mode == 'resolve'] {
+    enabled:false;
+}
+
+"entity.(postedby|resolvedby|remarks)" [mode == 'resolve'] {
+    visible:true;
+}

@@ -1,0 +1,7 @@
+"removeLedger" [selectedLedgerFaas != null]{
+    enabled:true;
+}
+
+"removeLedger" [selectedLedgerFaas == null]{
+    enabled:false;
+}

@@ -1,0 +1,52 @@
+<workunit>
+    <invokers>
+        <invoker type="afcontrol:formActions" caption="Transfer AF" target="popup" action="init"/>
+    </invokers>
+    <code>
+        <![CDATA[    
+
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        
+        class  TransferAFController {
+            
+            @Caller
+            def caller;
+        
+            @Service("AFControlService")
+            def service;
+            
+            def entity;    
+            
+            def newCollector;
+            
+            void init() {
+                entity = caller.selectedEntity;
+                if(entity==null)
+                    throw new Exception("Please select an item ");
+            }
+            
+            def doCancel() {
+                return "_close";
+            }
+            
+            def doOk() {
+                if(MsgBox.confirm("You are about to transfer to this series. Proceed?")) {
+                    def collector = [objid:newCollector.objid,
+                        name: newCollector.firstname + " "  + newCollector.lastname,
+                        title: newCollector.jobtitle];
+                    service.transfer( [issueto:collector, controlid:entity.objid]);
+                    return "_close";
+                }
+            }
+        }
+        
+        
+        ]]>
+    </code>
+    <pages>
+        <page template="com.rameses.gov.treasury.afcontrol.TransferAFControlPage"/>
+    </pages>
+</workunit>

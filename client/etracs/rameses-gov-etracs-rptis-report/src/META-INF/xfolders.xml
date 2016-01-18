@@ -1,0 +1,42 @@
+<folders>
+    <folder id="explorer">
+        <folder id="master">
+            <folder id="rpt" caption="Assessor" index="1" />
+        </folder>
+        <folder id="txn" caption="Transactions" index="2">
+            <folder id="rpt" caption="Assessor" index="1">
+                <folder id="list" caption="Listings" index="1" />
+                <folder id="online" caption="Online" index="2" />
+                <folder id="txn" caption="Manual Support" index="3" />
+                <folder id="cert" caption="Certification" index="4" />
+                <folder id="report" caption="Report" index="5" />
+                <folder id="util" caption="Utilities" index="6" />
+            </folder>
+            <folder id="taxmapping" caption="Taxmapping" index="2">
+                <folder id="list" caption="Listing" index="1" />
+                <folder id="txn" caption="Transaction" index="2" />
+                <folder id="report" caption="Report" index="3" />
+            </folder>
+            <folder id="landtax" caption="Land Tax" index="3">
+                <folder id="list" caption="Listing" index="1"/>
+                <folder id="txn" caption="Transaction" index="2"/>
+                <folder id="report" caption="Report" index="3"/> 
+                <folder id="util" caption="Utilities" index="6" />
+            </folder>
+        </folder>
+        <folder id="report" caption="Reports" index="3">
+            <folder id="rpt" caption="Assessor" index="1" />
+            <folder id="landtax" caption="Land Tax" index="2" />
+        </folder>
+        <folder id="setting" caption="Settings" index="4">
+            <folder id="rpt" caption="Assessor" index="1"/>
+            <folder id="landtax" caption="Land Tax" index="2"/>
+        </folder>
+        
+        <folder id="rulemgmt" index="5" >
+            <folder id="assessor" caption="Assessor" index="1" />
+            <folder id="landtax" caption="Land Tax" index="2" />
+        </folder>
+    </folder>
+</folders>
+

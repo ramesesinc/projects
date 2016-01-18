@@ -1,0 +1,129 @@
+<workunit>
+    <invokers>
+        <invoker type="subdivision:info" action="init" caption="FAAS Listing" visibleWhen="#{entity.state == 'APPROVED'}" index="450"/>
+        <invoker type="subdivisionfromcs:info" action="init" caption="FAAS Listing" visibleWhen="#{entity.state == 'APPROVED'}" index="450"/>
+        <invoker type="consolidation:info" action="init" caption="FAAS Listing" visibleWhen="#{entity.state == 'APPROVED'}" index="450"/>
+    </invokers>
+    <code >
+    <![CDATA[
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*
+        import com.rameses.osiris2.reports.*;
+        
+        public class FAASListingController
+        {
+            @Binding
+            def binding;
+            
+            def svc;
+            
+            def entity;
+            def selectedItem;
+            def faases;
+            boolean printing = false;
+            def printTask;
+            def msg;
+            
+            
+            void init(){
+                faases = svc.getFaasListing(entity.objid);
+            }
+            
+            def listHandler = [
+                getRows   : { return faases.size(); },
+                fetchList : { return faases; }
+            ] as BasicListModel;
+            
+            
+            def reportopener;
+            
+            def getOpener(){
+                if (printing) 
+                    return reportopener;
+               
+                reportopener = null;
+                if (selectedItem)
+                    reportopener = InvokerUtil.lookupOpener('faas:report', [entity:selectedItem]);
+                return reportopener;
+            }
+            
+            void cancelPrinting(){
+                printTask.cancelled = true;
+                printing = false;
+            }
+            
+            
+            
+            def oncomplete = {
+                printing = false;
+                binding.refresh('printAll|cancelPrinting');
+            }
+            
+            def onprogress = {
+                msg = it;
+                binding.refresh('msg');
+            }
+            
+            void printAll(){
+                if (!MsgBox.confirm('Print all faases?'))
+                    return;
+                    
+                if (!faases) 
+                    return;
+                    
+                printTask = new PrintTask(faases:faases, oncomplete:oncomplete, onprogress:onprogress);
+                Thread t = new Thread(printTask);
+                t.start();
+                printing = true;
+            }
+            
+        }
+        
+        
+        public class PrintTask implements Runnable
+        {
+            def faases;
+            boolean cancelled;
+            def oncomplete;
+            def onprogress;
+            
+            public void run(){
+                int count = 0;
+                cancelled = false;
+                
+                for(int i=0; i < faases.size(); i++){
+                    if (cancelled) 
+                        break;
+                        
+                    def faas = faases[i];
+                    def o = InvokerUtil.lookupOpener('faas:report:print', [entity:faas]);
+                    if (o){
+                        o.handle.report.viewReport();
+                        ReportUtil.print(o.handle.report.report, false);
+                    }
+                    count += 1;
+                    onprogress('Printing ' + faas.tdno);
+                    
+                    try{
+                        Thread.sleep(2000);
+                    }
+                    catch(e){
+                        //ignore
+                    }
+                }
+                
+                onprogress('');
+                oncomplete();
+            }   
+        }
+    
+        
+    ]]>    
+    </code>
+    
+<page>
+    <page template="com.rameses.gov.etracs.rpt.common.InfoListPage" />
+</page>    
+</workunit>

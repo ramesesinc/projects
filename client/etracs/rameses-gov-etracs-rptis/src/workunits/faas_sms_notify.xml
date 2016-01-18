@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="faas:formActions" action="notifyClient" caption="Notify Owner (SMS)" target="process" index="100000" visibleWhen="#{entity.state=='CURRENT'}" role="RECOMMENDER,APPROVER,RECORD" />
+    </invokers>
+    <code>
+<![CDATA[
+        
+import com.rameses.rcp.annotations.*;        
+import com.rameses.rcp.common.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.common.*;
+
+class FAASSmsNotifyClientController
+{
+    @Binding 
+    def binding;
+    
+    @Service('RPTSmsService')
+    def svc; 
+    
+    def entity;
+    
+    void notifyClient(){
+        if (MsgBox.confirm('Notify Client that FAAS has already been approved?')){
+            svc.notifyClient([objid:entity.objid]);
+            MsgBox.alert('Approval notification has been successfully sent.')
+        }
+    }
+        
+}
+
+
+]]>
+
+    </code>
+    <pages>
+    </pages>
+</workunit>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="faas:redflag:action" action="init" 
+            caption="Change FAAS Sketch" index="7" 
+            actiontype="change_faas_sketch"/>        
+        
+        <invoker type="formActions" action="_close" caption="Cancel" mnemonic="c" immediate="true" />
+        <invoker type="formActions" action="save" caption="Save" mnemonic="s" />
+   </invokers>
+</workunit>
+
+

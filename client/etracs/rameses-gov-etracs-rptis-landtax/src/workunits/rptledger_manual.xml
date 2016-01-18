@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="rptledger:create" action="create" caption="Manual Realty Tax Ledger (Create)" target="window"  />
+        <invoker type="rptledgermanual:create" action="create" caption="Manual Realty Tax Ledger (Create)" target="window"  />
+        <invoker type="rptledgermanual:open" action="open" caption="Manual Realty Tax Ledger" target="window"  />
+        
+        <invoker type="formActions" action="_exit" caption="Cancel" immediate="true" mnemonic="c" visibleWhen="#{mode=='create'}"/>
+        <invoker type="formActions" action="save" caption="Save" shortcut="ctrl S" mnemonic="s" visibleWhen="#{mode=='create'}"/>
+        
+        <invoker type="formActions" action="_exit" caption="Close" immediate="true" mnemonic="c" visibleWhen="#{mode=='read'}"/>
+        <invoker type="formActions" action="edit" caption="Edit" mnemonic="e" visibleWhen="#{mode=='read' &amp;&amp; entity.state == 'PENDING'}"/>
+        <invoker type="formActions" action="cancel" caption="Cancel" immediate="true" mnemonic="c" visibleWhen="#{mode=='edit'}"/>
+        <invoker type="formActions" action="update" caption="Save" shortcut="ctrl S" mnemonic="s" visibleWhen="#{mode=='edit'}"/>
+        
+        <invoker type="formActions" action="delete" caption="Delete" visibleWhen="#{mode=='read' &amp;&amp; entity.state == 'PENDING' &amp;&amp; entity.faasid == null}"/>
+        <invoker type="formActions" action="approve" caption="Approve" visibleWhen="#{mode=='read' &amp;&amp; entity.state == 'PENDING'}"/>
+        
+        
+        <invoker type="historyActions" action="fixLedgerFaas" caption="Fix Ledger FAAS Data" 
+            mnemonic="d" visibleWhen="#{ledger.state=='APPROVED' &amp;&amp; selectedItem != null }"  
+            role="ADMIN" depends="selectedItem"/>
+            
+        <!-- 
+        <invoker type="formActions" action="fixLedger" caption="Fix Ledger" mnemonic="f" visibleWhen="#{mode=='read' &amp;&amp; entity.state=='APPROVED'}"  role="ADMIN" permission="rptentity.fixledger" />
+        <invoker type="formActions" action="fixLedgerFaas" caption="Fix Ledger FAAS Data" mnemonic="d" visibleWhen="#{mode=='read' &amp;&amp; entity.state=='APPROVED'}"  role="ADMIN" permission="rptentity.fixledger" />
+        <invoker type="formActions" action="changeState" caption="Change Ledger State" mnemonic="l" visibleWhen="#{mode=='read'}"  role="ADMIN" permission="rptentity.changestate" />
+        -->
+
+   </invokers>
+
+   <code class="com.rameses.gov.etracs.rpt.ledger.ui.RPTLedgerManualController">
+       
+   </code>
+
+   <pages> 
+       <page name="init" template="com.rameses.gov.etracs.rpt.ledger.ui.RPTLedgerManualInitPage"/>
+       <page template="com.rameses.gov.etracs.rpt.ledger.ui.RPTLedgerPage"/>
+    </pages>
+</workunit>
+

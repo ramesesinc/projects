@@ -1,0 +1,45 @@
+ <workunit>
+    <invokers>
+        <invoker type="collectiontype:handler" caption="Single Item" name="singleitem"  index="100"  />
+    </invokers>
+    <code>
+        <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        
+        class  SingleAccountCollectionTypeController {
+        
+            @Caller 
+            def caller;
+
+            @Binding
+            def binding
+            
+            public def getEntity() {
+                return caller.entity;
+            }
+            
+            def  getLookupAccount() {
+                return Inv.lookupOpener("revenueitem:lookup", [
+                        onselect:{ o-> 
+                            entity.account = o 
+                            binding.refresh("entity.account");
+                        },
+                        onempty: { 
+                             entity.account = null
+                             binding.refresh("entity.account");
+                        }
+                    ] 
+                );
+            }
+            
+        }
+        ]]>
+        
+    </code>
+    <pages>
+        <page template="com.rameses.enterprise.treasury.collection.SingleItemHandler"/>
+    </pages>
+ </workunit>    

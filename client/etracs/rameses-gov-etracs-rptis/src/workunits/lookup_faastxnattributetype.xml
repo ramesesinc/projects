@@ -1,0 +1,31 @@
+<workunit extends="wtemplates/LookupController.xml">
+    <invokers>
+        <invoker type="faastxnattributetype:lookup" caption="FAAS Txn Attribute Type Lookup" target="popup" />
+    </invokers>
+    
+    <code>
+        
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+import com.rameses.osiris2.client.*
+import com.rameses.osiris2.common.*
+
+class LookupFaasTxnAttributeTypeController extends LookupController 
+{
+    @Service("RPTRequirementRuleService")
+    def svc;
+    
+    Column[] getColumns() {
+        return [
+            new Column(name:"attribute", caption:"Attribute", width:250),
+        ]
+    }
+    
+    List fetchList( Map params ) { 
+        return svc.getFaasTxnAttributeTypes( params );
+    }
+}  
+
+    </code>
+    
+</workunit>

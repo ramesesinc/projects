@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="subdivision:open" action="open" caption="Subdivision" target="window"  />
+        <invoker type="subdivisionresent:open" action="openResent" caption="Subdivision" target="window"  />
+   </invokers>
+
+   <code class="com.rameses.gov.etracs.rpt.subdivision.ui.SubdivisionController">
+   </code>
+
+   <pages> 
+        <page template="com.rameses.gov.etracs.rpt.workflow.InfoPage"/>
+        <page name="completed" template="com.rameses.gov.etracs.rpt.workflow.InfoPage"/>
+         <page name="wait" template="com.rameses.gov.etracs.rpt.util.WaitInfoPage"/>
+    </pages>
+</workunit>
+
+

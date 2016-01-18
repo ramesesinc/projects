@@ -1,0 +1,12 @@
+"entity.rpu.*" [allowEdit == true]{
+    enabled:true;
+}
+
+"entity.rpu.*" [allowEdit != true]{
+    enabled:false;
+}
+
+
+"entity.rpu.*"  [entity._resolve == true] {
+    enabled:true;
+}

@@ -1,0 +1,23 @@
+<workunit extends="wtemplates/ServiceLookupController.xml">
+    <invokers>
+        <invoker type="realproperty:lookup" action="init" caption="Real Property Lookup" target="popup" width="850"/>
+    </invokers>
+    <code>
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        
+        class RealPropertyLookupController extends LookupController 
+        {
+            String serviceName = 'RealPropertyListService'
+            
+            def ry;
+            
+            List fetchList(Map params){
+                params.ry = ry;
+                return super.fetchList(params);
+            }
+        }
+    </code>
+</workunit>

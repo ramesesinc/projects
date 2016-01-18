@@ -1,0 +1,10 @@
+"selectedDeposit|selectedRemittance" [ mode == 'read']{
+    readonly:true;
+}
+
+
+"selectedDeposit|selectedRemittance" [ mode != 'read']{
+    readonly:false;
+}
+
+

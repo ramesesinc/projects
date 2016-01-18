@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker folderid="/explorer/txn/landtax" action="init" caption="Barangay Share" role="LANDTAX" index="130"/>
+        <invoker type="brgyshare:create" action="init" caption="Barangay Share" role="LANDTAX" />
+        <invoker type="brgyshare:open" action="open" caption="Barangay Share" />
+        
+        <!-- init -->
+        <invoker type="formActions" action="_close" caption="Cancel" mnemonic="c" icon="images/toolbars/cancel.png" visibleWhen="#{mode=='init'}"/>
+        <invoker type="formActions" action="initBrgyShare" caption="Next" mnemonic="n" icon="images/toolbars/next.png" visibleWhen="#{mode=='init'}"/>
+        
+        
+        <!-- create -->
+        <invoker type="formActions" action="_close" caption="Cancel" mnemonic="c" icon="images/toolbars/cancel.png" visibleWhen="#{mode=='create'}"/>
+        <invoker type="formActions" action="save" caption="Save" mnemonic="s" shortcut="Ctrl S" icon="images/toolbars/save.png" visibleWhen="#{mode=='create'}"/>
+        
+        <!-- read -->
+        <invoker type="formActions" action="_close" caption="Close" mnemonic="c" icon="images/toolbars/cancel.png" visibleWhen="#{mode=='read'}"/>
+        <invoker type="formActions" action="delete" caption="Delete" mnemonic="d" visibleWhen="#{mode=='read' &amp;&amp; entity.state != 'POSTED'}"/>
+        <invoker type="formActions" action="post" caption="Post" mnemonic="p" visibleWhen="#{mode=='read' &amp;&amp; entity.state != 'POSTED'}"/>
+        <invoker type="formActions" action="preview" caption="Preview" mnemonic="v" icon="images/toolbars/preview.png" visibleWhen="#{mode=='read' &amp;&amp; entity.state == 'POSTED'}"/>
+        
+        <!-- preview -->
+        <invoker type="formActions" action="back" caption="Back" mnemonic="b" icon="images/toolbars/back.png" visibleWhen="#{mode=='preview'}"/>
+    </invokers>
+        
+    <code class="com.rameses.gov.etracs.rpt.brgyshare.BarangayShareController">
+    </code>
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.rpt.brgyshare.BrgySharePage" />
+        <page name="init" template="com.rameses.gov.etracs.rpt.brgyshare.BrgyShareInitPage" />
+        <page name="preview" template="com.rameses.gov.etracs.rpt.report.PreviewPage" />
+    </pages>
+</workunit>

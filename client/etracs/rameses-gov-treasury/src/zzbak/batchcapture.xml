@@ -1,0 +1,26 @@
+<workunit>
+   <invokers>
+        <invoker folderid="home/collection" caption="Batch Capture List" action="init" role="SUBCOLLECTOR" target="window"/>
+        <invoker type="quick_launcher" code="BC01" caption="Batch Capture" action="init" role="SUBCOLLECTOR" target="window"/>
+        <invoker folderid="/menu/txn/treasury" caption="Batch Capture" action="init" index="10" role="SUBCOLLECTOR"/>
+        
+        <invoker type="batchcapture:create" caption="Batch Capture" action="init" role="SUBCOLLECTOR" target="window"/>
+        <invoker type="batchcapture:open" caption="Batch Capture" action="open" role="SUBCOLLECTOR,COLLECTOR,DATA_CONTROLLER" target="window" />
+       
+        <invoker type="formActions" caption="Close" action="_close"  immediate="true" mnemonic="c" shortcut="ctrl C" icon="images/toolbars/cancel.png"/>
+        <invoker type="formActions" caption="Next" action="next" visibleWhen="#{mode == 'init'}" mnemonic="n" shortcut="ctrl N" icon="images/toolbars/arrow_right.png"/>
+        <invoker type="formActions" caption="Submit For Posting" action="submitForPosting" visibleWhen="#{mode == 'create' &amp;&amp; entity.state == 'DRAFT'}" shortcut="ctrl S" mnemonic="s" icon="images/toolbars/save.png"/>
+        <invoker type="formActions" caption="Delete" action="delete" visibleWhen="#{mode == 'create' &amp;&amp; entity.state == 'DRAFT'}" mnemonic="d" shortcut="ctrl D"/>
+        <invoker type="formActions" caption="Disapprove" action="disapprove" visibleWhen="#{mode == 'create' &amp;&amp; entity.state =='FORPOSTING'}" mnemonic="d" role="COLLECTOR,DATA_CONTROLLER" permission="batchcapture.disapprove"/>
+        <invoker type="formActions" caption="Post" action="post" visibleWhen="#{mode == 'create' &amp;&amp; entity.state =='FORPOSTING'}" mnemonic="p" shortcut="ctrl P" role="COLLECTOR,DATA_CONTROLLER" permission="batchcapture.post"/>
+        <invoker type="formActions" caption="Submit For Online Remittance" action="submitForOnlineRemittance" visibleWhen="#{ mode == 'create' &amp;&amp; entity.state =='POSTED'}" mnemonic="p" role="COLLECTOR,DATA_CONTROLLER" permission="batchcapture.submitforonlineremittance"/>
+   </invokers>
+   
+   <code class="com.rameses.gov.treasury.batchcapture.BatchCaptureController"/>
+   
+   <pages>
+        <page template="com.rameses.gov.treasury.batchcapture.BatchCaptureInitPage"/>
+        <page name="main" template="com.rameses.gov.treasury.batchcapture.BatchCapturePage"/>
+   </pages>
+   
+</workunit>

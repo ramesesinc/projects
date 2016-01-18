@@ -1,0 +1,13 @@
+<workunit extends="wtemplates/gov/treasury/MiscPOSReceiptController.xml">
+    <invokers>
+        <invoker type="miscpos:handler" action="doInit" caption="Terminal Fee" formno="51" revtype="terminal_fee" target="self" />
+        <invoker type="miscpos:handler" action="doInit" caption="Baggage Fee" formno="51" revtype="baggage_fee" target="self"/>
+        <invoker type="miscpos:handler" action="doInit" caption="Stall Rental" formno="51" revtype="stall_rental" target="self"/>
+        <invoker type="miscpos:handler" action="doInit" caption="Electric Bill" formno="51" revtype="electric_bill" target="self"/>
+        <invoker type="miscpos:handler" action="doInit" caption="Water Fees" formno="51" revtype="water_fees" target="self"/>
+        <invoker type="miscpos:handler" action="doInit" caption="Traffic Violation Fee" formno="51" revtype="traffic_violation_fee" target="self"/>
+        <invoker type="miscpos:handler" action="doInit" caption="Police Certification Fee" formno="51" revtype="police_certification_fee" target="self"/>
+        <invoker type="miscpos:handler" action="doInit" caption="Police Report" formno="51" revtype="police_report" target="self"/>
+        <invoker type="miscpos:handler" action="doInit" caption="Police Blotter Extract Copy" formno="51" revtype="police_blotter_extract_copy" target="self"/>
+    </invokers>    
+</workunit>

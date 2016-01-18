@@ -1,0 +1,27 @@
+<workunit>
+    
+   <invokers>
+       <invoker type="quick_launcher" code="CP01" caption="Collection Posting" index="200" role="CASHIER" action="init" target="window"/>
+       
+        <invoker type="collectionposting:create" caption="Collection Posting" index="200" role="CASHIER" action="init" target="window"/>
+        <invoker type="collectionposting:open" caption="Collection Posting" index="200" role="CASHIER" action="open" target="window"/>
+        
+        
+        <invoker type="formActions" action="next" caption="Next" mnemonic="n" visibleWhen="#{mode == MODE_INIT}" icon="images/toolbars/arrow_right.png"/>
+        
+        <invoker type="formActions" action="back" caption="Back" mnemonic="b" visibleWhen="#{mode == MODE_CREATE}" />
+        <invoker type="formActions" action="post" caption="Post" mnemonic="p" visibleWhen="#{mode == MODE_CREATE}" />
+        
+        <invoker type="formActions" action="_close" caption="Close" mnemonic="c" visibleWhen="#{mode == MODE_READ" icon="images/toolbars/cancel.png"/>
+        
+     </invokers>
+   
+   <code class="com.rameses.gov.treasury.collection.posting.CollectionPosting">
+   </code>
+   
+   <pages>
+       <page name="init" template="com.rameses.gov.treasury.collection.posting.CollectionPostingInitPage" />
+       <page template="com.rameses.gov.treasury.collection.posting.CollectionPostingPage" />
+   </pages>
+   
+</workunit>

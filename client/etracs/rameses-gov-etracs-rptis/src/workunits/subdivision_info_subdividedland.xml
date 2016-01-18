@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="subdivision:info" action="init" caption="Subdivided Lands" index="15"/>
+        <invoker type="pinActions" action="add" caption="Add" mnemonic="a" visibleWhen="#{showActions == true}" role="TAXMAPPER"/>
+   </invokers>
+   <code>
+
+<![CDATA[
+        
+import com.rameses.rcp.annotations.* 
+import com.rameses.rcp.common.* 
+import com.rameses.osiris2.client.*
+import com.rameses.osiris2.common.*
+
+
+class SubdividedLandController
+{
+    @Caller
+    def caller;
+    
+    
+    @Binding
+    def binding;
+    
+    @Service('FAASService')
+    def faasSvc;
+    
+    @Service('SubdivisionService')
+    def svc; 
+    
+    def entity; //subdivision 
+    def selectedItem;
+    def lands;
+    def faas;
+    def motherlands;
+    
+    void init(){
+        lands = svc.getSubdividedLands(entity.objid);
+        motherlands = svc.getMotherLands([objid:entity.objid]);
+    }
+    
+    def getOpener(){
+        if (! selectedItem) 
+            return null;
+        faas = [objid:selectedItem.newfaasid];    
+        def params = [entity:faas, svc:faasSvc, taskstate:entity.taskstate, assignee:entity.assignee]
+        return InvokerUtil.lookupOpener('faasdata:open', params);
+    }
+    
+    def listHandler = [
+        getRows      : {lands.size() + 2},
+        
+        fetchList    : {return lands},
+        
+        onRemoveItem : {item ->
+            if (MsgBox.confirm('Remove selected PIN?')){
+                svc.deleteSubdividedLand(item);
+                lands.remove(item);
+                listHandler.load();
+                binding.refresh('count');
+                return true;
+            }
+            return false;
+        },
+    ] as EditorListModel;
+    
+    
+    def add(){
+        motherlands = svc.getMotherLands([objid:entity.objid]);
+        if (!motherlands) 
+            throw new Exception('Mother Land(s) to subdivide is/are not yet specified.');
+            
+        return InvokerUtil.lookupOpener('realproperty:create', [
+            entity     : entity,
+            barangayid : motherlands[0].barangayid,
+            
+            oncreate : { rp -> 
+                def land = [
+                    objid           : 'SL' + new java.rmi.server.UID(),
+                    subdivisionid   : entity.objid, 
+                    newfaasid       : rp.objid,
+                    newpin          : rp.pin,
+                    rp              : rp,
+                ]
+                lands << svc.createSubdividedLand(land, entity);
+                listHandler.load();
+                binding.refresh('count');
+            }
+        ])
+    }
+    
+    
+    
+    boolean getShowActions(){
+        if (entity.taskstate && entity.taskstate.matches('assign.*')) return false;
+        if (entity.state.matches('APPROVED')) return false;
+        return true;
+    }
+    
+    
+    void addMessage(msg){
+        caller.addMessage(msg);
+    }
+    
+    void clearMessages(msg){
+        caller.clearMessages(msg);
+    }
+    
+    def getCount(){
+        return lands.size();
+    }
+}
+       
+]]>
+
+   </code>
+    
+    <pages> 
+        <page template="com.rameses.gov.etracs.rpt.subdivision.ui.SubdividedLandPage"/>
+    </pages>
+</workunit>
+
+

@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="faasannotation:create" action="init" caption="FAAS Annotation (New)" target="window"  
+            role="RECORD" permission="annotation.create"/>
+        
+        <invoker type="faasannotation:open" action="open" caption="FAAS Annotation" target="window"  />
+            
+        <invoker folderid="/explorer/txn/rpt/online" action="init"  caption="Annotation" index="21" 
+            role="RECORD" permission="annotation.create"/>
+        
+        <invoker folderid="/home/rpt/txn" action="init"  caption="Annotation" index="21" 
+            role="RECORD" permission="annotation.create"/>
+        
+         
+         <invoker type="quick_launcher" code="FA01" action="init"  caption="Annotation" index="21" 
+            role="RECORD" permission="annotation.create"/>
+        
+   </invokers>
+   <code>       
+<![CDATA[
+
+import com.rameses.rcp.annotations.* 
+import com.rameses.rcp.common.* 
+import com.rameses.osiris2.client.*
+import com.rameses.osiris2.common.*
+import com.rameses.util.MapBeanUtils;
+
+public class FAASAnnotationController extends PageFlowController
+{
+
+    @Binding
+    def binding;
+    
+    @Service('FAASAnnotationService')
+    def svc 
+            
+    @Invoker
+    def invoker 
+    
+    def MODE_CREATE = 'create';
+    def MODE_EDIT   = 'edit';
+    def MODE_READ   = 'read';
+    
+    def STATE_INTERIM     = 'INTERIM';
+    def STATE_FORAPPROVAL = 'FORAPPROVAL';
+    def STATE_APPROVED    = 'APPPROVED';
+    def STATE_CANCELLED   = 'CANCELLED';
+    
+    
+    def faas;
+    def mode;
+    def entity;
+    
+    
+    def init(){
+        mode = MODE_CREATE
+        return super.signal('init')
+    }
+    
+    
+    def open(){
+        entity = svc.openAnnotation(entity.objid)
+        mode = MODE_READ;
+        return super.signal('open');
+    }
+    
+    def getLookupFaas() {
+        return InvokerUtil.lookupOpener('faas:lookup', [:])
+    }
+    
+    
+    List getAnnotationTypes(){
+        return svc.getAnnotationTypes()
+    }
+    
+    boolean getAllowEdit(){
+        if ( entity.state == STATE_APPROVED ||
+             entity.state == STATE_CANCELLED )
+                return false;
+        if (mode == MODE_READ )
+                return false;
+        return true 
+    }
+    
+    
+
+    /*-----------------------------------------------------
+     * 
+     * DOCUMENT SUPPORT 
+     *
+     *----------------------------------------------------*/
+    def oldEntity 
+            
+    void edit(){
+        oldEntity = MapBeanUtils.copy(entity)
+        mode = MODE_EDIT;
+    }
+    
+    
+    void cancelEdit(){
+        if (oldEntity){
+            entity.putAll(oldEntity)
+        }
+        oldEntity = null
+        mode = MODE_READ;
+    }
+    
+    void save(){
+        if (mode == MODE_CREATE)
+            entity = svc.createAnnotation(entity)
+        else 
+            entity = svc.updateAnnotation(entity)
+        mode = MODE_READ;
+    }    
+   
+    
+    void delete(){
+        svc.deleteAnnotation(entity)
+    }
+    
+    
+
+    /*-----------------------------------------------------
+     * 
+     * WORKFLOW ACTIONS
+     *
+     *----------------------------------------------------*/
+    void initAnnotation(){
+        entity = svc.initAnnotation(faas);
+    }
+    
+    
+    void submitAnnotationForApproval(){
+        entity = svc.submitAnnotationForApproval(entity);
+    }
+    
+    
+    void disapproveAnnotation(){
+        entity = svc.disapproveAnnotation(entity)
+    }
+    
+    
+    void approveAnnotation() {
+        entity = svc.approveAnnotation(entity);
+    }
+
+    
+}
+       
+]]>       
+   </code>
+
+    <pageflow>
+        <start>
+            <transition name="init" to="init"/>
+            <transition name="open" to="open"/>
+        </start>
+        
+        <page name="init" title="Annotation: Initial Information">
+            <transition caption="Cancel" to="end"  mnemonic="c" icon="images/toolbars/cancel.png"/>
+            <transition caption="Next"  to="default" action="initAnnotation" mnemonic="n"  />
+        </page>
+        
+        <process name="open">
+            <transition to="default" cond="#{entity.state == 'DRAFT'}"/>
+            <transition to="forapproval" cond="#{entity.state == 'FORAPPROVAL'}"/>
+            <transition to="approved" cond="#{entity.state == 'APPROVED'}"/>
+            <transition to="cancelled" cond="#{entity.state == 'CANCELLED'}"/>
+        </process>
+        
+        <page name="default" title="Annotation (Draft)">
+            <transition caption="Close"  to="end"      mnemonic="c" icon="images/toolbars/cancel.png" visibleWhen="#{mode == 'read'}"/>
+            <transition caption="Edit"   to="back-to-default" action="edit"  name="edit" mnemonic="e" shortcut="ctrl E" icon="images/toolbars/edit.png"  visibleWhen="#{mode == 'read'}" role="RECORD"/>
+            <transition caption="Cancel" to="back-to-default" action="cancelEdit" name="cancel" mnemonic="c" icon="images/toolbars/cancel.png" visibleWhen="#{mode != 'read'}"/>
+            <transition caption="Save"   to="back-to-default" action="save" name="save" mnemonic="s" shortcut="ctrl S" icon="images/toolbars/save.png"  visibleWhen="#{mode != 'read'}" />
+            <transition caption="Delete" to="delete"  action="delete" confirm="Delete record?"    mnemonic="d" icon="images/toolbars/trash.png"  visibleWhen="#{mode == 'read'}" role="RECORD"/>
+            <transition caption="Submit" to="forapproval" action="submitAnnotationForApproval"  mnemonic="m"  visibleWhen="#{mode == 'read'}" confirm="Submit Annotation for approval?" role="RECORD"/>
+        </page>
+        
+        <process name="back-to-default">
+            <transition to="default" />
+        </process>
+        
+        <process name="delete">
+            <transition to="end"/>
+        </process>
+        
+        
+        <page name="forapproval" title="Annotation (For Approval)">
+            <transition caption="Close" to="end" mnemonic="c" icon="images/toolbars/cancel.png" visibleWhen="#{mode == 'read'}" />
+            <transition caption="Edit"   to="back-to-forapproval" action="edit" name="edit" mnemonic="e" shortcut="ctrl E" icon="images/toolbars/edit.png"  visibleWhen="#{mode == 'read'}" />
+            <transition caption="Cancel" to="back-to-forapproval" action="cancelEdit" name="cancel"  mnemonic="c" icon="images/toolbars/cancel.png" visibleWhen="#{mode != 'read'}"/>
+            <transition caption="Save"   to="back-to-forapproval" action="save" name="save" mnemonic="s" shortcut="ctrl S" icon="images/toolbars/save.png"  visibleWhen="#{mode != 'read'}" />
+            <transition caption="Disapprove" to="default" action="disapproveAnnotation" mnemonic="d" visibleWhen="#{mode == 'read'}" confirm="Disapprove Annotation?" role="APPROVER"/>
+            <transition caption="Approve" to="approved" action="approveAnnotation" mnemonic="v" icon="images/toolbars/approve.png" visibleWhen="#{mode == 'read'}" confirm="Approve Annotation?" role="APPROVER"/>
+        </page>
+        
+        <process name="back-to-forapproval">
+            <transition to="forapproval"/>
+        </process>
+        
+        <page name="approved" title="Annotation (Approved)">
+            <transition caption="Close" to="end" mnemonic="c" icon="images/toolbars/cancel.png"/>
+        </page>
+        
+        <page name="cancelled" title="Annotation (Cancelled)">
+            <transition caption="Close" to="end" mnemonic="c" icon="images/toolbars/cancel.png"/>
+        </page>
+        
+        <end />
+        
+    </pageflow>
+    
+    <pages> 
+        <page name="init" template="com.rameses.gov.etracs.rpt.annotation.ui.AnnotationInitPage"/>
+        <page name="default" template="com.rameses.gov.etracs.rpt.annotation.ui.FAASAnnotationPage"/>
+        <page name="forapproval" template="com.rameses.gov.etracs.rpt.annotation.ui.FAASAnnotationPage"/>
+        <page name="approved" template="com.rameses.gov.etracs.rpt.annotation.ui.FAASAnnotationPage"/>
+        <page name="cancelled" template="com.rameses.gov.etracs.rpt.annotation.ui.FAASAnnotationPage"/>
+    </pages>
+</workunit>
+
+

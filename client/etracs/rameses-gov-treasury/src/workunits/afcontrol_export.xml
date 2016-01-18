@@ -1,0 +1,145 @@
+<workunit>
+        
+   <invokers>
+        <invoker type="afcontrol:export" action="init" caption="Export AF Controls" />
+        
+        <invoker type="formActions" caption="Close" action="_close" icon="images/toolbars/cancel.png"/>
+        <invoker type="formActions" caption="Export" action="doExport" />
+   </invokers>
+   
+   <code>
+<![CDATA[
+
+import com.rameses.osiris2.common.*;
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+import com.rameses.osiris2.client.*;
+import javax.swing.*;
+import com.rameses.io.*;
+
+class AFControlExportController 
+{
+    @Binding
+    def binding;
+    
+    @Service("AFControlService")
+    def svc;
+
+    @Service("AFService")
+    def afSvc;
+    
+    @Service('AFControlExportImportService')
+    def exportSvc 
+            
+    
+    @PropertyChangeListener
+    def listener = [
+        "entity.formno": { 
+            loadAfControls() 
+        }
+    ]    
+
+    String title = 'Export Accountable Forms'
+    
+    def entity = [:];
+    
+    def selectedItem;
+    def selectedExportItem;
+    
+    def afcontrols;
+    def exportedcontrols;
+    
+    
+    def aftypes = [];
+    
+    void init(){
+        aftypes =  afSvc.getList([:]);
+        afcontrols = [];
+        exportedcontrols = [];
+    }
+    
+    
+    void doExport(){
+        def chooser = new JFileChooser();
+        int i = chooser.showSaveDialog(null);
+        if(i==0) {
+            FileUtil.writeObject( chooser.selectedFile, buildExportedControls());
+            MsgBox.alert("Data has been successfully exported!");
+        }        
+    }
+    
+    
+    def buildExportedControls(){
+        def data = []
+        exportedcontrols.each{
+            data  << exportSvc.getAfControlInfo(it);
+        }
+        
+        return data;
+    }
+    
+    
+    void addItem(){
+        if (selectedItem ) {
+            selectedItem.formno = entity.formno.objid;
+            exportedcontrols << selectedItem;
+            afcontrols.remove(afcontrols.find{it.objid == selectedItem.objid})
+            listHandler.reload();
+            exportListHandler.reload();
+        }
+    }
+    
+    
+    void removeExportItem(){
+        if (selectedExportItem){
+            exportedcontrols.remove(selectedExportItem);
+            afcontrols << selectedExportItem;
+            listHandler.reload();
+            exportListHandler.reload();
+        }
+    }
+
+    
+    def getAddedForExportControls(afcontrols){
+        def list = []
+        afcontrols.each{ ac ->
+            if (exportedcontrols.find{it.objid == ac.objid}){
+                list << ac
+            }
+        }
+        return list;
+    }
+    
+        
+    void loadAfControls(){
+        afcontrols = []
+        if(entity.formno) {
+            afcontrols = svc.getOpenList( [formno:entity.formno.objid]);
+            afcontrols.removeAll( getAddedForExportControls(afcontrols) )            
+            afcontrols.removeAll( afcontrols.findAll{it.active == 1} )
+            afcontrols.removeAll( afcontrols.findAll{it.txnmode == 'REMOTE'} )
+        }
+        listHandler.reload();
+    }
+    
+    def listHandler = [
+        fetchList: { return afcontrols; }
+    ] as BasicListModel;
+    
+    
+    def exportListHandler = [
+        fetchList  : { return exportedcontrols; }
+    ] as BasicListModel;
+
+
+    
+} 
+
+]]>
+   </code>
+   
+   <pages>
+       <page template="com.rameses.gov.treasury.af.AFControlExportPage"/>
+   </pages>
+   
+</workunit>

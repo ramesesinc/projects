@@ -1,0 +1,36 @@
+"entity.*|selected.*|lgu" [mode == "read"]{
+    readonly:true;
+}
+
+"entity.*|selected.*|lgu" [mode == "edit"]{
+    readonly:false;
+}
+
+
+"baseValueSubform|baseValueType" [ selectedBldgType != null ] {
+    enabled:true;
+}
+
+
+"baseValueSubform|baseValueType" [ mode == 'read' || selectedBldgType == null ] {
+    enabled:false;
+}
+
+
+
+
+"createAdditionalItem|openAdditionalItem|removeAdditionalItem" [mode == "read"]{
+    enabled:false;
+}
+
+"createAdditionalItem|openAdditionalItem|removeAdditionalItem" [mode != "read"]{
+    enabled:true;
+}
+
+"openAdditionalItem|removeAdditionalItem" [selectedAdditionalItem == null || selectedAdditionalItem.objid == null]{
+    enabled:false;
+}
+
+"entity.ry" [true == true]{
+    enabled:false;
+}

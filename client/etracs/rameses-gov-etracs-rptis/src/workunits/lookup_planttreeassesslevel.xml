@@ -1,0 +1,41 @@
+<workunit extends="wtemplates/LookupController.xml">
+    <invokers>
+        <invoker type="planttreeassesslevel:lookup" action="init" caption="Plant/Tree Assess Level Lookup" target="popup" />
+    </invokers>
+    
+    <code>
+        
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+import com.rameses.osiris2.client.*
+import com.rameses.osiris2.common.*
+
+class PlantTreeAssessLevelLookupController extends LookupController
+{
+    @Service("PlantTreeRYSettingLookupService")
+    def svc;
+    
+    def ry;
+    def lguid;
+    def barangayid;
+    
+    Column[] getColumns() {
+        return [
+            new Column(name:"code", caption:"Code", width:70),
+            new Column(name:"name", caption:"Classification", width:250),
+            new Column(name:"rate", caption:"Rate", type:'decimal', format:'#,##0', width:100),
+        ]
+    }
+    
+    List fetchList( Map params ) { 
+        params.ry = ry;
+        params.lguid = lguid;
+        params.barangayid = barangayid;
+        return svc.lookupAssessLevels(params)
+    }
+}  
+
+
+    </code>
+    
+</workunit>

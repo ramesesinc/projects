@@ -1,0 +1,49 @@
+<workunit>
+        
+    <invokers>
+         <invoker type="form60-category:open" caption="Form60 Category" action="open"/>
+         <invoker type="form60-category:create" caption="Form60 Category" action="create"/>
+   </invokers>
+   
+   <code>
+       <![CDATA[
+        import com.rameses.osiris2.common.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        
+        class Form60CategoryController extends CRUDController {
+        
+            @Caller
+            def caller;
+            
+            String entityName = "form60";
+            
+            def node;
+            boolean showConfirmOnSave = false;
+
+            public String getServiceName() {
+                return caller.getServiceName();
+            }
+            
+            public String getTitle() {
+                return caller.getTitle() + " - Category";
+            }  
+            
+            public String getPrefixId() {
+                return caller.getPrefixId();
+            }
+            
+            Map createEntity() {
+                return [type:'category'];
+            }
+            
+        }      
+       ]]>
+   </code>
+   
+   <pages>
+       <page template="com.rameses.treasury.municipality.form60.CategoryPage"/>
+   </pages>
+   
+</workunit>

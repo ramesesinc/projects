@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="realproperty:create" action="init" caption="Real Property" role="TAXMAPPER" target="popup" />
+        <invoker type="extActions" action="add" caption="Add" mnemonic="a" />
+    </invokers>
+        
+    <code>
+<![CDATA[
+
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.common.*;
+import com.rameses.gov.etracs.rpt.util.*;
+import com.rameses.util.MapBeanUtils;
+
+public class RealPropertyController
+{
+    @Binding
+    def binding;
+          
+    @Service('RealPropertyService')
+    def svc;
+    
+    @Service('LGUService')
+    def lguSvc;
+
+    @Service('Var')
+    def var 
+    
+    String getTitle(){
+        return 'Real Property'
+    }
+    
+    def entity;
+    def barangayid;
+    
+    def oncreate; //handler 
+    
+    def ryList;
+    
+    @PropertyChangeListener
+    def listener = [
+        'entity.pintype|entity.isection|entity.iparcel' :{ buildPin() },
+    ]
+    
+                
+    void init(){
+        ryList = svc.getRyList();
+        entity = svc.init();
+        entity.barangay = lguSvc.lookupBarangayById(barangayid);
+        entity.isection = null;
+        entity.iparcel = null;
+        entity.ry = ryList.find{it == entity.ry}
+    }
+        
+    def add(){
+        updateLguInfo()
+        svc.checkDuplicatePin(entity);
+        if (oncreate) oncreate(entity);
+        return '_close';
+    }
+    
+                
+    void buildPin(){       
+        RPTUtil.buildPin(entity, var);
+        binding?.refresh('entity.pin');
+    }
+    
+
+    void updateLguInfo(){
+        if ('DISTRICT'.equalsIgnoreCase(entity.barangay?.parent?.orgclass)){
+            entity.lguid = entity.barangay.provcity.objid
+            entity.lgutype = 'city'
+        }
+        else {
+            entity.lguid = entity.barangay?.munidistrict.objid
+            entity.lgutype = 'municipality'
+        }
+    }
+    
+    
+    def getPinTypes(){
+        return ['new','old'];
+    }
+            
+}
+        
+
+]]>        
+        
+    </code>
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.rpt.realproperty.ui.RealPropertyPage" />
+    </pages>
+</workunit>

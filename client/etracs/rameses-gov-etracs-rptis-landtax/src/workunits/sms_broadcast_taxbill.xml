@@ -1,0 +1,91 @@
+<workunit>
+    <invokers>
+        <invoker folderid="/explorer/txn/landtax/util" action="init" caption="Broadcast Tax Bill (SMS)" />
+        
+        <invoker type="formActions" action="_close" caption="Close" mnemonic="c" immediate="true"  visibleWhen="#{processing == false}"/>
+        <invoker type="formActions" action="cancel" caption="Cancel" mnemonic="c" immediate="true"  visibleWhen="#{processing == true}"/>
+        <invoker type="formActions" action="broadcast" caption="Broadcast" mnemonic="b" visibleWhen="#{processing == false}" />
+        
+    </invokers>
+    <code>
+<![CDATA[
+
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+import com.rameses.osiris2.client.*
+import com.rameses.osiris2.common.*
+import com.rameses.util.BreakException;
+
+class BroadcastTaxBillController 
+{
+    @Binding
+    def binding;
+    
+    @Service('LandTaxSMSService')
+    def svc;
+
+    def processing = false;
+    def cancelled = false;
+    
+    def params = [:];
+    
+    def getTitle(){
+        return 'Broadcast Realty Tax Dues'
+    }
+    
+    def loghandler = new TextWriter();
+    
+    void init(){
+    }
+    
+    void cancel(){
+        cancelled = true;
+        processing = false;
+    }
+    
+    void broadcast(){
+        if (MsgBox.confirm('Broadcast realty tax dues to registered clients?')){
+            new Thread(process).start();
+        }
+    }
+        
+    def process = [
+        run : {
+            processing = true;
+            cancelled = false;
+            try{
+                loghandler.writeln('Loading Ledgers with balance.');
+                def ledgers = svc.getUnpaidLedgers()
+                
+                ledgers.each{ledger ->
+                    loghandler.writeln('Sending tax due SMS message for ledger ' + ledger.tdno);
+                    svc.sendTaxDueInfo(ledger);
+
+                    if (cancelled == true){
+                        throw new BreakException();
+                    }
+                }
+            }
+            catch(e){
+                if (e instanceof BreakException)
+                    loghandler.writeln('Broadcast is cancelled.');
+                else 
+                    loghandler.writeln('ERROR: ' + e.message);                    
+            }
+            processing = false;
+            
+            if (!cancelled)
+                loghandler.writeln('\nBroadcast has been successfully completed.');
+                
+            binding.refresh('.*')
+        }
+    ] as Runnable;
+    
+}
+
+]]>
+    </code>
+    <pages>
+        <page template="com.rameses.gov.etracs.rpt.landtax.sms.ui.SMSBroadcastPage"/>
+    </pages>
+</workunit>

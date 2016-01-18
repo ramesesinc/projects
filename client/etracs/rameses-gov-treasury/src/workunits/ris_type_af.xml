@@ -1,0 +1,56 @@
+<!-- REQUISITION ISSUE SLIP -->
+<workunit>
+    <invokers>
+       <invoker type="ris:types" caption="Issuance AF" txntype="AF:ISSUE" role="AFO" />
+       <invoker type="ris:types" caption="Issuance AF" txntype="AF:ISSUE" role="COLLECTOR" />
+       <invoker type="ris:types" caption="Sale AF" txntype="AF:SALE" role="AFO" />
+       <invoker type="ris:types" caption="Purchase AF" txntype="AF:PURCHASE" role="AFO" />
+       
+       <invoker type="ris:open" action="open" caption="RIS AF" target="window"/>
+    </invokers>
+    
+    <code>
+        <![CDATA[
+        import com.rameses.osiris2.common.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.util.*;
+        import java.rmi.server.*;
+        
+        public class AFRISController extends RISController {
+        
+            @Service("RISService")
+            def service;
+
+            @Invoker
+            def invoker;
+
+            boolean showConfirmOnSave = true;
+            boolean allowCreate = false;
+
+            
+            public String getTxnType() {
+                return invoker.properties.txntype;
+            }
+
+            public def getLookupItems() {
+                return InvokerUtil.lookupOpener("af:lookup", [
+                    onselect:{ o->
+                        if( entity.items.findAll{ it.item.objid ==  o.objid })
+                            throw new Exception("Item is already selected");
+                        selectedItem.item = o;
+                        selectedItem.unit = o.unit;
+                    }
+                ]);
+            }
+
+        }        
+        ]]>
+    </code>    
+    
+    <pages>
+        <page template="com.rameses.gov.treasury.ris.RISPage"/>
+    </pages>
+    
+</workunit>

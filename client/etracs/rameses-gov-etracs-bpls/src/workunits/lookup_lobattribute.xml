@@ -1,0 +1,21 @@
+<workunit extends="wtemplates/LookupController.xml">
+    <invokers>
+        <invoker type="lobattribute:lookup" caption="Lookup Attribute" target="popup"/>
+    </invokers>
+    <code>
+        import com.rameses.rcp.common.*
+        import com.rameses.rcp.annotations.*
+        import com.rameses.osiris2.common.*
+        
+        class LOBAttributeLookup extends LookupController {
+            String entityName = "lobattribute_lookup";
+        
+            public String getServiceName() { return "LobAttributeService" }
+            public Column[] getColumns() {
+                return [
+                    new Column(name:'name', caption:'Attribute')
+                ] as Column[]
+            }
+        }
+    </code>
+</workunit>

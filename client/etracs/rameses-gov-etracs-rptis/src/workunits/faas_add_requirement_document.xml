@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="faas:redflag:action" action="init" 
+            caption="Add Requirement Document" index="8" 
+            actiontype="add_faas_requirement_document"/>        
+        
+        <invoker type="redflag:add_faas_requirement_document" action="init"/>
+        
+        <invoker type="formActions" action="_close" caption="Cancel" mnemonic="c" immediate="true" />
+        <invoker type="formActions" action="save" caption="Save" mnemonic="s" />
+   </invokers>
+    <code>
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        
+        class RequirementDocumentInfoController
+        {
+            @Binding
+            def binding;
+        
+                
+            @Service('RPTRequirementTypeService')
+            def reqTypeSvc;
+        
+            def entity;
+            def requirementtypes;
+        
+            void init(){
+                requirementtypes = reqTypeSvc.getList([:]);
+            }   
+        
+            def getRedflag(){
+                return entity.redflag;
+            }
+        
+            
+        }
+    </code>
+   <pages>
+       <page template="com.rameses.gov.etracs.rpt.faas.change.ui.AddFaasRequirementDocumentInfoPage"/>
+   </pages>
+</workunit>
+
+

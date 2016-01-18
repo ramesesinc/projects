@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="faas:changeinfo" action="init" 
+            caption="Property Info and Boundaries" target="popup"  
+            role="ADMIN" permission="faas.change_property_info" index="1" 
+            actiontype="change_property_info"/>
+        
+        <invoker type="faas:modifyinfo" action="init" 
+            caption="Property Info and Boundaries" target="popup"  
+            role="TAXMAPPER" index="1" 
+            actiontype="change_property_info"/>
+        
+        <invoker type="faas:redflag:action" action="init" 
+            caption="Change Property Info and Boundaries" index="1" 
+            actiontype="change_property_info"/>
+        
+        <invoker type="formActions" action="_close" caption="Cancel" mnemonic="c" immediate="true" />
+        <invoker type="formActions" action="save" caption="Save" mnemonic="s" />
+   </invokers>
+   
+   <code class="com.rameses.gov.etracs.rpt.faas.change.ui.ChangePropertyInfoController">        
+    </code>
+
+
+    <pages> 
+        <page template="com.rameses.gov.etracs.rpt.faas.change.ui.ChangePropertyInfoPage"/>
+    </pages>
+</workunit>
+
+

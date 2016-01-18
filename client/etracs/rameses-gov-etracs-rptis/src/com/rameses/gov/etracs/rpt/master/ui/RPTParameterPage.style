@@ -1,0 +1,11 @@
+"entity.*" [mode != "read"] {
+    enabled:true;
+}
+
+"entity.minvalue|entity.maxvalue" [entity.paramtype != 'range_decimal' && entity.paramtype != 'range_integer']{
+    enabled:false;
+}
+
+"entity.*" [mode == "read"] {
+    enabled:false;
+}

@@ -1,0 +1,11 @@
+"assignee"[ assignees == null ] {
+    visible: false;
+}   
+
+"showSignViewer|paste"[digitalsigactive == null || digitalsigactive == false]{
+    visible:false;
+}
+
+"showSignViewer|paste"[digitalsigactive == true]{
+    visible:true;
+}

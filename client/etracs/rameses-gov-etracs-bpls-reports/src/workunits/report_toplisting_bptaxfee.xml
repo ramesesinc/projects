@@ -1,0 +1,67 @@
+<workunit extends="wtemplates/gov/bp/ReportController.xml" >
+    <invokers>
+        <invoker folderid="/explorer/report/bpls" action="init" role="REPORT" 
+            caption="Top Business Listing (Tax/Fee)" target="window" index="-25"/>
+    </invokers>
+
+    <code>
+    <![CDATA[
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.common.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.reports.*;
+        
+        public class BPTaxFeeTopListingReportController extends com.rameses.etracs.shared.ReportController  
+        {
+            @Service('BPTaxFeeTopListingReportService')
+            def svc;
+            
+            String title = "Top Business Listing (Tax/Fee)";
+            String reportpath = 'com/rameses/gov/etracs/bpls/reports/'
+            String reportName = reportpath + 'BPTaxFeeTopListing.jasper'
+            
+            def formControl = [
+                getFormControls: {
+                    return [
+                        new FormControl( "integer", [caption:'Year', name:'entity.year', required:true, preferredSize:'100,20', captionWidth:100]),
+                        new FormControl( "integer", [caption:'Top', name:'entity.topsize', required:true, preferredSize:'100,20', captionWidth:100]),
+                        new FormControl( "combo", [caption:'Type', name:'entity.txntype', items:'typelist',  immediate:true, preferredSize:'0,20', captionWidth:100 ]) 
+                    ]    
+                },
+            ] as FormPanelModel; 
+            
+            def APP_TYPES = ['NEW','RENEW']; 
+            def data;
+            
+            def init() {
+                def result = super.init(); 
+                entity.topsize = 10; 
+                return result; 
+            } 
+            
+            def getReportData(){
+                data = svc.getReport( entity ); 
+                return data.items;
+            }
+            
+            Map getParameters(){
+                def map = [
+                    TITLE : data.title.toString(), 
+                    APPYEAR : entity.year, 
+                    APPTYPE : 'ALL' 
+                ];
+                if ( entity.txntype ) { 
+                    map.APPTYPE = entity.txntype; 
+                } 
+                return map; 
+            }
+         
+            List getTypelist() {
+                return APP_TYPES; 
+            }
+        }
+    ]]>
+    </code>
+    
+</workunit>

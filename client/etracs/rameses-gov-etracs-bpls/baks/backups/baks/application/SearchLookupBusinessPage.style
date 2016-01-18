@@ -1,0 +1,31 @@
+"query.*" [searching==true] {
+    enabled:false;
+}
+
+"query.*" [searching==false] {
+    enabled:true;
+}
+
+"searchListModel.move.*" [searching==false] {
+    enabled:false;
+}
+
+"searchListModel.move.*" [searching==true] {
+    enabled:true;
+}
+
+"doSearch" [searching==false] {
+    visible:true;
+}
+
+"doSearch" [searching==true] {
+    visible:false;
+}
+
+"doReset" [searching==false] {
+    visible:false;
+}
+
+"doReset" [searching==true] {
+    visible:true;
+}

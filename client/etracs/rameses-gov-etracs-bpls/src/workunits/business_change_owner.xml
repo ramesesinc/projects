@@ -1,0 +1,86 @@
+<workunit>
+    <invokers>
+        <invoker type="business:change" caption="Change Owner" target="popup"
+                 role="BUSINESSINFO,ASSESSOR,LICENSING" index="10" action="init"/>
+
+        <!--
+        <invoker type="business:change" caption="Update Owner Info" target="popup"
+                 role="BUSINESSINFO,ASSESSOR,LICENSING" index="11" action="initUpdate"/>
+        -->         
+    </invokers>
+    
+    <code>
+         <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import java.rmi.server.*;
+        import com.rameses.util.*;
+        
+        public class BusinessChangeOwnerApplication {
+        
+            @Binding
+            def binding;
+
+            @Script("BusinessOwnerUtil")
+            def owner;
+            
+            @Service("BusinessChangeService")
+            def service;
+            
+            def entity;
+            def oldEntity;
+            def handler;
+            def title = "Change Business Owner";
+            def entry = [:];
+            
+            void init() {
+                entry.oldvalue = entity.owner.name;
+                oldEntity = entity;
+                entity = [:];
+                entity.business = [:];
+                entity.business.owner = [address:[:]];
+                entry.changetype = "CHANGE-OWNER";
+            }
+            
+            void initUpdate() {
+                entry.oldvalue = entity.owner.name;
+                entry.changetype = "UPDATE-OWNER";
+            }
+            
+            def doOk() {
+                if( !entity.business.owner?.objid )
+                    throw new Exception("Please select an entity");
+                entry.businessid = oldEntity.objid;
+                entry.applicationid = oldEntity.currentapplicationid;
+                entry.ownerid = entity.business.owner.objid;
+                entry.ownername = entity.business.owner.name;
+                entry.owneraddressid = entity.business.owner.address.objid;
+                entry.owneraddress = entity.business.owner.address.text;
+                entry.orgtype = entity.business.orgtype;
+                entry.newvalue = entity.business.owner.name;
+                if( entry.changetype == "CHANGE-OWNER") {
+                    service.changeOwner(entry);
+                }
+                else {
+                    service.updateOwner(entry);
+                }
+                oldEntity.owner = entity.business.owner;
+                if(handler) handler(false);
+                return "_close";
+            }
+                        
+            def doCancel() {
+                return "_close";
+            }
+                        
+        }
+        ]]>
+    </code>    
+    
+    <pages>
+        <page name="edit-owner" template="com.rameses.gov.etracs.bpls.amend.ChangeOwnerPage"/>
+    </pages>
+    
+</workunit>

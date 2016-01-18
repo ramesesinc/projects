@@ -1,0 +1,64 @@
+<workunit>
+    <invokers>
+       <invoker type="compromisereport:municipal" caption="Application Letter" action="preview" target="self" index = "101" visibleWhen="#{entity.state.matches('FORAPPROVAL|APPROVED')}"/>   
+       <invoker type="compromisereport:city" caption="Application Letter" action="preview" target="self" index = "101" visibleWhen="#{entity.state.matches('FORAPPROVAL|APPROVED')}"/>   
+       <invoker type="formActions" action="_close" caption="Close" mnemonic="c" icon="images/toolbars/cancel.png" immediate="true"/>  
+    </invokers>
+    
+    <code>
+        <![CDATA[
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.reports.*;
+        import com.rameses.etracs.shared.*;
+        
+        class CompromiseAgreementApplicationLetterController{
+        
+            @Service('ReportParameterService')
+            def paramSvc;
+            
+            @Service('LandTaxReportCompromiseService')
+            def svc;
+            
+            def entity;
+            def params;
+            def mode;
+            
+            String title = "Compromise Agreement (Application Letter)";
+            String reportPath = "com/rameses/gov/etracs/landtax/report/compromise/";
+            String reportName = reportPath + "rptcompromise_applicationletter.jasper";
+            
+            def preview(){
+                buildReport();
+                mode = 'view';
+                return 'preview';
+            }
+            
+            def report = [
+                getReportName : { return getReportName() },
+                getReportData : { return svc.buildApplicationData(entity.objid) },
+                getSubReports : { return getSubReports() },
+                getParameters : { return params },
+            ] as ReportModel;
+            
+            void buildReport(){
+                params = paramSvc.getStandardParameter();
+                params.LOGOLGU = EtracsReportUtil.getInputStream("lgu-logo.png");
+                report.viewReport();
+            }
+            
+            SubReport[] getSubReports() {
+                return [ 
+                   new SubReport("credits", reportPath + "rptcompromise_applicationletter_credits.jasper")
+               ] as SubReport[];    
+           }
+            
+        }
+        ]]>
+    </code>
+    
+    <pages>
+        <page name="preview" template="com.rameses.gov.etracs.rpt.report.PreviewPage"/>
+    </pages>
+</workunit>

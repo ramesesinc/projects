@@ -1,0 +1,8 @@
+"entity.*"  [allowEdit == true] {
+    enabled:true;
+}
+
+"entity.*"  [allowEdit == false] {
+    enabled:false;
+}
+

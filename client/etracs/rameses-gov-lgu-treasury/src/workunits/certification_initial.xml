@@ -1,0 +1,56 @@
+<workunit>
+    
+   <invokers>
+      <invoker folderid="/explorer/txn/treasury/certs" action="init" caption="Treasury Certification"  role="REPORT"/>
+      <invoker type="quick_launcher" code="TCCERT" action="init" caption="Treasury Certification"  role="REPORT"/>
+      
+     <!-- self toolbars -->
+     <invoker type="formActions" caption="Close" action="_close" mnemonic="c" icon="images/toolbars/cancel.png"/>
+     <invoker type="formActions" caption="Next" action="process" shortcut="ctrl N" mnemonic="n" icon="images/toolbars/arrow_right.png"/>
+   </invokers>
+   
+   <code>
+       <![CDATA[
+        import com.rameses.osiris2.common.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.util.*;
+        
+        class CashReceiptCertificationInitialController  {
+        
+            @Binding
+            def binding;
+        
+            String title = "Treasury Certifications";
+
+            def opener;
+            def openers;
+            
+            def entity = [:];
+            
+            void init() {
+                openers = InvokerUtil.lookupOpeners( "treasury-certification", [entity:entity]);
+            }
+
+                        
+            def process() {
+                try {
+                    def type = opener.properties.certificationType
+                    def openername = 'treasury-certification:' + type + ':create'
+                    println 'Opener Name -> ' + openername
+                    return InvokerUtil.lookupOpener(openername, [entity:entity, type:type]);
+                }
+                catch(e) {
+                    throw e;
+                }
+            }
+        }      
+       ]]>
+   </code>
+   
+   <pages>
+       <page template="com.rameses.gov.treasury.certification.CertificationInitPage" />
+   </pages>
+   
+</workunit>

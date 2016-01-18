@@ -1,0 +1,12 @@
+<folders>
+    <folder id="explorer">
+        <folder id="txn" caption="Transactions">
+            <folder id="bpls" caption="BPLS">
+                <folder id="util" caption="Utilities"/>
+            </folder>
+        </folder>
+        <folder id="report" caption="Reports">
+            <folder id="bpls" caption="BPLS" />
+        </folder>
+    </folder> 
+</folders>

@@ -1,0 +1,8 @@
+<workunit>
+    <invokers>
+        <invoker type="cashreceipt-form:51" />
+    </invokers>
+    
+    <code class="com.rameses.gov.treasury.cashreceipt.forms.CashReceiptForm51"/>
+    
+</workunit>

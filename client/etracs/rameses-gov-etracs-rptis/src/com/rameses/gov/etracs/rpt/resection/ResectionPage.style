@@ -1,0 +1,16 @@
+"entity.*|appraiser.*|recommender.*|taxmapper.*|approver.*" [allowEdit == true]{
+    enabled:true;
+}
+
+"selectedLand|selectedAffectedRpu|selectedSection" [allowEdit == true]{
+    readonly:false;
+}
+
+
+"entity.*|appraiser.*|recommender.*|taxmapper.*|approver.*" [allowEdit != true]{
+    enabled:false;
+}
+
+"selectedLand|selectedAffectedRpu|selectedSection" [allowEdit != true]{
+    readonly:true;
+}

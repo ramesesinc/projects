@@ -1,0 +1,60 @@
+<workunit> 
+    <invokers>
+        <invoker type="address:component:type" key="local" caption="Local" action="init" />
+        <invoker type="address:component:local" action="init"/>
+    </invokers>    
+    <code>    
+         <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import java.rmi.server.*;
+        import com.rameses.osiris2.reports.*;
+        
+        class LocalAddressController  {
+        
+            @Service("LGUAddressService")
+            def addrSvc;
+        
+            @Binding 
+            def binding;
+            
+            def entity;
+            
+            def getLookupBarangay(){
+                return Inv.lookupOpener('barangay:lookup', [
+                    onselect: { brgy -> 
+                        entity.barangay = brgy;
+                        entity.city = brgy.city;
+                        entity.province = brgy.province;
+                        entity.municipality = brgy.municipality;
+                    },
+                    onempty :{
+                        entity.barangay = [:];
+                        entity.putAll(addrSvc.getLocalAddress());
+                    }
+                ])
+            }
+            
+            void init() {
+                def m = addrSvc.getLocalAddress();
+                entity.putAll(m);
+                entity.type = 'local';
+                if(!entity.barangay) entity.barangay = [:];
+            }
+            
+            void refresh() {
+                if(binding) binding.refresh();
+            } 
+            
+            
+        }
+        ]]>
+    </code>    
+    
+    <pages>
+        <page template="com.rameses.etracs.common.LocalAddressPage"/>
+    </pages>
+    
+</workunit>

@@ -1,0 +1,6 @@
+"entity.*" [mode == 'read'] {
+    readonly:true;
+}
+
+"entity.*" [mode != 'read'] {
+    readonly:false;

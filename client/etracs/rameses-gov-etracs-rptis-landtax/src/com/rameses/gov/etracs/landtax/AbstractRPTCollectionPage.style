@@ -1,0 +1,39 @@
+"entity.date"[entity.period=='Daily']{
+    visible:true;
+} 
+
+"entity.date"[entity.period!='Daily']{
+    visible:false;
+}
+
+"entity.month|entity.year"[entity.period=='Monthly']{
+    visible:true;
+} 
+
+"entity.month|entity.year"[entity.period!='Monthly']{
+    visible:false;
+}
+
+"entity.startdate"[entity.period=='Range']{
+    visible:true;
+} 
+
+"entity.startdate"[entity.period!='Range']{
+    visible:false;
+}
+
+"entity.enddate"[entity.period=='Range']{
+    visible:true;
+} 
+
+"entity.enddate"[entity.period!='Range']{
+    visible:false;
+}
+
+"entity.collector"[entity.period!=null]{
+    visible:true;
+} 
+
+"entity.collector"[entity.period==null]{
+    visible:false;
+}

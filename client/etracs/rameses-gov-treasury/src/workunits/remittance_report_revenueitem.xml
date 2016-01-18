@@ -1,0 +1,77 @@
+<workunit>
+    <invokers>
+        <invoker type="remittance:reports" caption="Remittance Report By Revenue Item" action="initReport" target="self" index="5"/>
+        
+        <invoker type="formActions" caption="Back" action="_close" mnemonic="b" shortcut="ctrl B" icon="images/toolbars/arrow_left.png"/>
+    </invokers>
+    
+    <code>
+        <![CDATA[    
+        import com.rameses.osiris2.common.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import java.rmi.server.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.util.*;
+        import com.rameses.osiris2.reports.*;
+        
+        class RemittanceRevenueItemReportController extends com.rameses.etracs.shared.ReportController  {
+        
+            @Binding
+            def binding;
+        
+            @Service("RemittanceReportService")
+            def svc
+            
+            def fund
+            def fundlist
+             
+            String reportpath =  "com/rameses/gov/treasury/remittance/report/"
+            String reportName = reportpath + 'reportbyrevenueitem.jasper' 
+            String title = "Remittance Report By Revenue Item";
+            
+            def initReport() {
+                fundlist = svc.getFundlist( entity.objid )
+                fund = [:]
+                return preview();
+            }
+            
+            void setFund( def fund) {
+                this.fund = fund;
+                
+                preview()  
+                binding.refresh() 
+            }
+            
+            def getReportData(){
+                return svc.generateReportByRevenueItem( entity, fund )
+            }
+            
+            SubReport[] getSubReports() {
+                return [ 
+                    new SubReport("ReportSummary", reportpath + "reportbyrevenueitemsummary.jasper"),
+                    new SubReport("BrgyShareSummary", reportpath + "reportbyrevenueitemsummary_share.jasper")
+                ] as SubReport[];      
+            }
+            
+             Map getParameters(){
+                def params = [:]
+                params.SUBTITLE = 'SUMMARY OF COLLECTION'
+                params.FUND = "all"
+                if (fund) {
+                    params.SUBTITLE = params.SUBTITLE + ' BY ' + fund.title + ' FUND ' ;
+                    params.FUND = "specific"
+                }
+                    
+                return params;
+             }
+            
+        }      
+       ]]>
+    </code>
+    
+   <pages>
+       <page name="preview" template="com.rameses.gov.treasury.remittance.report.RemittanceReportByFund" />
+   </pages>
+   
+</workunit>

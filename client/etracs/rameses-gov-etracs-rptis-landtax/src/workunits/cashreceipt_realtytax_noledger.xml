@@ -1,0 +1,14 @@
+<workunit extends="wtemplates/gov/treasury/BasicCashReceiptController.xml">
+    <invokers>
+        <invoker type="cashreceipt:rptnoledger" action="init" />
+        <invoker type="formActions" action="printDetail" immediate="true" caption="Print Detail" visibleWhen="#{completed == true &amp;&amp; entity.voided == false}" mnemonic="d"/>
+    </invokers>
+    
+    <code class="com.rameses.gov.etracs.rpt.collection.ui.RPTReceiptNoLedgerController" >
+    </code>
+    
+    <pages>
+        <page name="default" template="com.rameses.gov.etracs.rpt.collection.ui.RPTReceiptNoLedgerPage" />
+    </pages>
+    
+</workunit>

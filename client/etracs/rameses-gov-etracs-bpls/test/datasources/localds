@@ -1,0 +1,5 @@
+dialect=mysql
+driverClass=com.mysql.jdbc.Driver
+url=jdbc:mysql://localhost/etracs25_bayombong
+user=root
+pwd=1234

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit extends="municipality_templates/MasterDataSyncController.xml">
+    <invokers>
+        <invoker type="propertyclassification:list:formActions" action="syncData" caption="Sync from Province"  
+            role="ASSESSOR_DATAMGMT,MASTER" 
+            entityName="propertyclassification" 
+            serviceName="PropertyClassificationService"
+        />
+        <invoker type="exemptiontype:list:formActions" action="syncData" caption="Sync from Province"  
+            role="ASSESSOR_DATAMGMT,MASTER" 
+            entityName="exemptiontype" 
+            serviceName="ExemptionTypeService"
+        />
+        <invoker type="canceltdreason:list:formActions" action="syncData" caption="Sync from Province" 
+            role="ASSESSOR_DATAMGMT,MASTER" 
+            entityName="canceltdreason" 
+            serviceName="CancelTDReasonService"
+        />
+        <invoker type="bldgkind:list:formActions" action="syncData" caption="Sync from Province"  
+            role="ASSESSOR_DATAMGMT,MASTER" 
+            entityName="bldgkind" 
+            serviceName="BldgKindService"
+        />
+        <invoker type="material:list:formActions" action="syncData" caption="Sync from Province"  
+            role="ASSESSOR_DATAMGMT,MASTER" 
+            entityName="material" 
+            serviceName="MaterialService"
+        />
+        <invoker type="structure:list:formActions" action="syncData" caption="Sync from Province"  
+            role="ASSESSOR_DATAMGMT,MASTER" 
+            entityName="structure" 
+            itemName="structurematerial"
+            itemField="materials"
+            itemKey="structure_objid"
+            serviceName="StructureService"
+            
+        />
+        <invoker type="machine:list:formActions" action="syncData" caption="Sync from Province"  
+            role="ASSESSOR_DATAMGMT,MASTER" 
+            entityName="machine" 
+            serviceName="MachineService"
+        />
+        <invoker type="planttree:list:formActions" action="syncData" caption="Sync from Province"  
+            role="ASSESSOR_DATAMGMT,MASTER" 
+            entityName="planttree" 
+            serviceName="PlantTreeService"
+        />
+        <invoker type="miscitem:list:formActions" action="syncData" caption="Sync from Province"  
+            role="ASSESSOR_DATAMGMT,MASTER" 
+            entityName="miscitem" 
+            serviceName="MiscItemService"
+        />
+        <invoker type="rptparameter:list:formActions" action="syncData" caption="Sync from Province"  
+            role="ASSESSOR_DATAMGMT,MASTER" 
+            entityName="rptparameter" 
+            serviceName="RPTParameterService"
+        />
+        <invoker type="rptrequirementtype:list:formActions" action="syncData" caption="Sync from Province"  
+            role="ASSESSOR_DATAMGMT,MASTER" 
+            entityName="rpt_requirement_type" 
+            serviceName="RPTRequirementTypeService"
+        />
+        
+        <invoker type="formActions" action="doClose" caption="Close" immediate="true" />
+        <invoker type="formActions" action="syncData" caption="Sync Data" visibleWhen="#{showsync==true}"/>
+
+    </invokers>
+</workunit>

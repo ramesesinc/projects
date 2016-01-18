@@ -1,0 +1,203 @@
+<workunit>
+    <invokers>
+        <invoker folderid="explorer/txn/treasury/tools" caption="Forward AF Serial" target="popup" action="init" role="AFO" permission="afserial.forward" index="101"/>
+        
+        <invoker type="formActions" caption="Close" action="_close" mnemonic="c" shortcut="ctrl C" icon="images/toolbars/cancel.png" visibleWhen="#{mode != 'create'}" immediate="true"/> 
+        <invoker type="formActions" caption="New" action="create" mnemonic="n" shortcut="ctrl N" icon="images/toolbars/create.png" visibleWhen="#{mode != 'create'}" />
+        
+        <invoker type="formActions" caption="Cancel" action="cancel" mnemonic="c" shortcut="ctrl X" icon="images/toolbars/cancel.png" visibleWhen="#{mode == 'create'}" immediate="true"/> 
+        <invoker type="formActions" caption="Save" action="save" mnemonic="s" shortcut="ctrl S" icon="images/toolbars/save.png" visibleWhen="#{mode == 'create'}" />
+    </invokers>
+    
+    <code>
+        <![CDATA[    
+        import com.rameses.osiris2.common.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import java.rmi.server.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.util.*;
+        import com.rameses.osiris2.reports.*;
+        
+        class ForwardAFSerialController {
+        
+            @Binding
+            def binding
+            
+            String title = "Forward AF Serial";
+        
+            @Service("DateService")
+            def dtsvc;
+        
+            @Service("CollectionTypeService")
+            def collTypeSvc;    
+            
+            @Service("UsergroupMemberLookupService")
+            def ugmSvc;
+            
+            @Service("AFSerialCollectorMigrationService")
+            def svc
+            
+            def entity;
+            def collectorlist;
+            def collector;
+            def formTypes;
+            def formtype;
+            def formunit;
+            def mode;
+            def endseries;
+            
+            @PropertyChangeListener
+            def listener = [
+                "collector" : { o->
+                    entity.collector = (o? o: null); 
+                }, 
+                "formtype" : { o -> 
+                    entity.afid = (o? o.objid: null);
+                    if (o?.units) {
+                        formunit = o.units.first(); 
+                    } else {
+                        formunit = null; 
+                    } 
+                    recalcStartSeries(); 
+                },
+                "formunit" : { o-> 
+                    entity.unit = (formunit? formunit.unit: null);
+                    recalcStartSeries(); 
+                }, 
+                "entity.startseries" : { o-> 
+                    recalcStartSeries(); 
+                }, 
+                "entity.currentseries" : { o-> 
+                    if (formtype?.serieslength && entity.startseries) {  
+                        entity.currentseries = entity.currentseries.padLeft( formtype.serieslength, '0' ); 
+                    } 
+                } 
+            ] 
+            
+            public void init() { 
+                mode = 'create'
+                entity = [
+                    refdate: dtsvc.getServerDate(),
+                    qtyreceived: 50 
+               ]
+            }
+            
+            void create() {
+                init();
+                endseries = null;
+                collector = [:];
+                formtype = [:]
+                binding.focus('collector');
+                binding.refresh(); 
+            }
+            
+            def cancel() {
+                if (MsgBox.confirm('You are about to close this window. Continue?')) {
+                    return '_close'; 
+                } else { 
+                    return null; 
+                } 
+            } 
+            
+            def getQtyReceived() {
+                if (entity.startseries && entity.endseries) {
+                    def nstartseries = entity.startseries.toInteger();
+                    def nendseries = entity.endseries.toInteger();
+                    return (nendseries - nstartseries) + 1; 
+                } else { 
+                    return null; 
+                } 
+            } 
+            
+            def getQtyBalance() {
+                if (entity.currentseries && entity.endseries) {
+                    def ncurrentseries = entity.currentseries.toInteger();
+                    def nendseries = entity.endseries.toInteger();
+                    return (nendseries - ncurrentseries) + 1; 
+                } else { 
+                    return null; 
+                } 
+            }             
+            
+            void recalcStartSeries() {
+                if (formtype?.serieslength && formunit?.qty && entity.startseries) {  
+                    def num = (entity.startseries.toInteger() + formunit.qty)-1;
+                    entity.endseries = num.toString().padLeft( formtype.serieslength, '0' ); 
+                    entity.startseries = entity.startseries.padLeft( formtype.serieslength, '0' ); 
+                } else {
+                    entity.endseries = null; 
+                } 
+            } 
+            
+            def validateSeries( o ) { 
+                if( o.toString().length() != formtype.serieslength ) 
+                    throw new Exception("Series number length must be " + formtype.serieslength );
+            }
+            
+            void validateSeriesRange() {
+                if (!entity.startseries) 
+                    throw new Exception('Please specify the Start Series');
+                if (!entity.currentseries) 
+                    throw new Exception('Please specify the Current Series');
+                if (!entity.endseries) 
+                    throw new Exception('Please specify the End Series');
+                    
+                def nstartseries = entity.startseries.toInteger();
+                def ncurrentseries = entity.currentseries.toInteger();
+                def nendseries = entity.endseries.toInteger();
+                
+                if( nstartseries > ncurrentseries ) 
+                    throw new Exception("Start series must not be greater than the current series"); 
+                if( nstartseries > nendseries ) 
+                    throw new Exception("Start series must not be greater than the end series"); 
+                if( ncurrentseries < nstartseries ) 
+                    throw new Exception("Current series must not be less than the start series");                     
+                if( ncurrentseries > nendseries ) 
+                    throw new Exception("Current series must not be greater than the end series"); 
+            } 
+            
+            public def save() {
+                validateSeries( entity.startseries );
+                validateSeries( entity.currentseries );
+                validateSeries( entity.endseries );
+                validateSeriesRange(); 
+                recalcStartSeries();
+                
+                if (MsgBox.confirm("You are about to submit this information. Continue?")) { 
+                    entity.reason = 'FORWARD BALANCE';
+                    entity.remarks = 'FORWARD BALANCE';
+                    entity.reftype = 'SYSTEM';
+                    entity.refid = 'SYSTEM';
+                    entity.qtyreceived = getQtyReceived();
+                    entity.qtybalance = getQtyBalance();
+                    entity.unit = formunit.unit; 
+                    svc.post( entity );  
+                    mode = 'posted';
+                    
+                    return '_close'; 
+                } else {
+                    return null; 
+                } 
+            }
+            
+            List getCollectorlist() {
+                if( !collectorlist ) { 
+                    collectorlist =  ugmSvc.getList(['_tag':'COLLECTOR']); 
+                }
+                return collectorlist;
+            }
+            
+            List getFormTypes() { 
+                if( !formTypes ) { 
+                    formTypes = svc.getFormTypesSerial(); 
+                } 
+                return formTypes; 
+            }
+        }
+        ]]>
+    </code>
+    <pages>
+        <page template="com.rameses.gov.treasury.af.AFControlSerialPage"/>
+    </pages>
+</workunit>

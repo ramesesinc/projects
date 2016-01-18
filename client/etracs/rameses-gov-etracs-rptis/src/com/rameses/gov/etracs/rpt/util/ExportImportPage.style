@@ -1,0 +1,27 @@
+"entity.*" [mode == 'processing'] {
+    enabled: false; 
+} 
+
+"entity.*" [mode != 'processing'] {
+    enabled: true; 
+} 
+
+"progress" [mode == 'processing']{
+    visible:true;
+}
+
+"progress" [mode != 'processing']{
+    visible:false;
+}
+
+"msg"[mode == 'init']{
+    visible:false;
+}
+
+"msg"[mode != 'init']{
+    visible:true;
+}
+
+"file"[mode == 'processed']{
+    enabled:false;
+}

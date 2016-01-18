@@ -1,0 +1,5 @@
+<workunit extends="wtemplates/ListController.xml" serviceName="RPTExpiryDateService" entityName="rptexpiry">
+    <invokers>
+        <invoker folderid="/explorer/master/landtax" caption="RPT Billing Expiry Dates" target="popup" index="11" role="MASTER,ASSESSOR_DATAMGMT"/>
+    </invokers>
+</workunit>

@@ -1,0 +1,6 @@
+<workunit extends="wtemplates/ListController.xml" serviceName="RPTTransmittalService" entityName="rpttransmittal"  formName="rpttransmittal:list">
+    <invokers>
+        <invoker folderid="/explorer/txn/rpt/list" caption="Transmittals"  target="window" index="1000"  role="ASSESSOR_DATAMGMT,MASTER" />
+        <invoker folderid="/home/rpt" caption="Transmittals"  target="window" index="1000"  role="ASSESSOR_DATAMGMT,MASTER" />
+    </invokers>
+</workunit>

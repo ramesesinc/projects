@@ -1,0 +1,89 @@
+package com.rameses.gov.etracs.rpt.report;
+
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.reports.*;
+import com.rameses.rcp.framework.TaskManager;
+
+abstract class AbstractBatchReportController
+{
+    @Binding
+    def binding
+
+    @Service('LGUService')
+    def lguSvc
+            
+    @Service('Var')
+    def var 
+            
+    def title='FAAS Batch Printing'
+
+    def params;
+    def lgu;
+    def barangays;
+            
+    def msg 
+    def mode 
+    def pagetypes;
+    def selectiontypes;
+    def states;
+    boolean interrupt;
+            
+    public void init() {
+        params = [:]
+        params.revisionyear = var.get('current_ry');
+        states = ['CURRENT', 'CANCELLED'];
+        params.state = 'CURRENT';
+        params.selectiontype = selectiontypes.find{it.type=='bysection'}
+        params.pagetype = null;
+        params.printinterval = 1;
+        params.copies = 1;
+        params.showprinterdialog = false;
+        barangays = lguSvc.getBarangaysByParentId(null);
+        mode='init';
+    }
+            
+    def updateMessage = { msg ->
+        this.msg = msg
+        binding.refresh('msg')
+    }
+
+    def onFinish = { msg -> 
+        this.msg = msg
+        this.mode = 'init';
+        binding.refresh();
+    }
+
+    def onError = { err ->
+        mode = 'init';
+        msg = err;
+        binding.refresh();
+    }
+
+    def cancelPrinting() {
+        interrupt = true;
+        this.mode = 'init'
+        msg = 'Printing of faas has been cancelled.  '
+        binding.refresh();
+    }
+
+    public abstract void print();
+
+
+    def getSelectiontypes(){
+        if (!selectiontypes)
+        selectiontypes = [
+            [type:'bysection', caption:'By Section'],
+            [type:'bytdrange', caption:'TD No. Range'],
+            [type:'bybrgy', caption:'By Barangay'],
+        ]
+        return selectiontypes;
+    }
+            
+    def getPagetypes(){
+        if (!pagetypes)
+        pagetypes = ['FRONT', 'BACK']
+        return pagetypes;
+    }
+}

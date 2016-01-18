@@ -1,0 +1,9 @@
+"entity.*|formtype|formunit|collector" [mode == 'create' ]{
+    enabled: true; 
+} 
+"entity.*|formtype|formunit|collector" [mode != 'create' ]{
+    enabled: false; 
+} 
+"entity.endseries|qtyReceived|qtyBalance" [1==1] {
+    enabled: false; 
+} 

@@ -1,0 +1,47 @@
+<workunit extends="wtemplates/enterprise/treasury/BasicCashReceiptController.xml">
+    <invokers>
+        <invoker type="collectiontype:handler" caption="Sharing" name="sharing" index="100"  />
+        <invoker type="cashreceipt:sharing" action="init"/>
+    </invokers>
+    
+    <code>
+        <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import com.rameses.enterprise.treasury.cashreceipt.*
+        import com.rameses.util.*;
+        
+        class  SharingCashReceiptController extends BasicCashReceipt {
+            
+            String entityName = "sharing_cashreceipt"
+            
+            @Service("CollectionTypeService")
+            def svc
+   
+            def specifyAmount() {
+                def h = {o->
+                    def list = svc.getAccounts([objid: entity.collectiontype.objid]);
+                    entity.items = list.collect{ [item:it.account, amount:it.defaultvalue] };
+                    entity.items.each {
+                        it.amount = it.amount * o;
+                    }
+                    entity.amount = entity.items.sum{it.amount};
+                    updateBalances();
+                    itemListModel.reload();
+
+                }
+                return Inv.lookupOpener("cashreceipt:sharing_enteramount",[handler:h]);
+            }                        
+        }
+        ]]>
+        
+    </code>
+    
+    
+    <pages>
+        <page template="com.rameses.gov.treasury.cashreceipt.SharingCashReceiptPage"/>
+    </pages>
+    
+</workunit>

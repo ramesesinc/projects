@@ -1,0 +1,19 @@
+"bill.itemcount" [payoption != 'bycount']{
+    enabled:false;
+    required:false;
+}
+
+"bill.itemcount" [payoption == 'bycount']{
+    enabled:true;
+    required:true;
+}
+
+"compromise" [payoption == 'compromise']{
+    enabled:true;
+    required:true;
+}
+
+"compromise" [payoption != 'compromise']{
+    enabled:false;
+}
+

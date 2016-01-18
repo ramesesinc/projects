@@ -1,0 +1,27 @@
+"entity.rpu.*"  [allowEdit == true] {
+    enabled:true;
+}
+
+"selectedItem" [allowEdit == true]{
+    readonly:false;
+}
+
+"selectedItem" [allowEdit != true]{
+    readonly:true;
+}
+
+"entity.rpu.*"  [allowEdit == true] {
+    enabled:true;
+}
+
+"entity.rpu.*"  [allowEdit != true] {
+    enabled:false;
+}
+
+"entity.rpu.*"  [entity._resolve == true] {
+    enabled:true;
+}
+
+"selectedItem"  [entity._resolve == true] {
+    readonly:false;
+}

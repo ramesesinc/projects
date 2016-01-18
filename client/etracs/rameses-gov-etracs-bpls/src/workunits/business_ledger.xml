@@ -1,0 +1,45 @@
+<workunit>
+    <invokers>
+        <invoker type="business_ledger:open" caption="Business Ledger" action="init" width="1035" height="600"/> 
+
+        <invoker type="formActions" caption="Close" action="_close"/>
+        <invoker type="formActions" caption="Send SMS" action="sendSMS" target="process" immediate="true"/> 
+        <invoker type="formActions" caption="Print Bill" action="runBilling"/> 
+
+        <invoker type="formActions" caption="Capture Payment" action="capturePayment" role="ADMIN"/>
+        <invoker type="formActions" caption="Add Receivable" action="addReceivable"  role="ADMIN"/>        
+    </invokers>
+    
+    <code> 
+    <![CDATA[
+import com.rameses.rcp.annotations.*;
+import com.rameses.rcp.common.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.common.*;
+
+class BusinessLedgerControllerImpl extends com.rameses.gov.etracs.bpls.controller.BusinessLedgerController {    
+
+    @Service("BusinessMasterService")
+    def businessMasterService;
+
+    @Service("BusinessLobService")
+    def lobSvc;
+
+    String getTitle() {
+        return 'Business Ledger: '+ ( entity.businessname? entity.businessname: '');  
+    } 
+
+    void init() { 
+        def b = businessMasterService.open([ objid: entity.objid ]); 
+        entity.clear(); 
+        entity.putAll( b ); 
+        entity.lobs = lobSvc.getActiveLobs([ businessid: entity.objid ]);
+    } 
+} 
+    ]]> 
+    </code>
+
+    <pages>
+        <page template="com.rameses.gov.etracs.bpls.business.BusinessLedger"/>
+    </pages>  
+</workunit>

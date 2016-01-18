@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="basevaluetype:range" action="init" caption="Range Base Value" />
+    </invokers>
+    
+    <code lang="groovy">
+<![CDATA[
+        
+import com.rameses.rcp.annotations.*
+import com.rameses.rcp.common.*
+import com.rameses.osiris2.client.*
+
+public class BldgBaseValueTypeRangeController  extends com.rameses.gov.etracs.rpt.rysetting.bldgrysetting.ui.BaseValueTypeController 
+{
+    
+    @Service('BldgRYSettingService')
+    def svc 
+    
+    public def getService(){ return svc }
+    
+    public Column[] getColumns(){ 
+        return [
+            new Column(caption:'Bldg Code*', editable:true, type:'lookup', expression:'#{item.bldgkind.code}', handler:bldgKindLookup, maxWidth:80),
+            new Column(name:'bldgkind.name', caption:'Kind of Building' ),
+            new Column(name:'minbasevalue', caption:'Minimum Base Value*', type:'decimal', editable:true ),
+            new Column(name:'maxbasevalue', caption:'Maximum Base Value*', type:'decimal', editable:true),
+        ]
+    }
+     
+    void validateItem( item ) {       
+        if( item.minbasevalue == null ) throw new Exception('Minimum Base Value is required.')
+        if( item.maxbasevalue == null ) throw new Exception('Maximum Base Value is required.')
+        if( item.maxbasevalue < item.minbasevalue ) throw new Exception('Maximum Base Value must be greater than or equal to Minimum Base Value.')
+    }
+
+}
+
+]]>
+    </code>
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.rpt.rysetting.bldgrysetting.ui.BaseValueTypePage"/>
+    </pages>
+</workunit>

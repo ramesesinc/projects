@@ -1,0 +1,6 @@
+<workunit extends="wtemplates/ServiceLookupController.xml"  
+    serviceName="Form60SetupLookupService">
+    <invokers>
+        <invoker type="form60item:lookup" caption="Lookup Form60 Item" target="popup" /> 
+    </invokers>
+</workunit>

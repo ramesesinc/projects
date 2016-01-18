@@ -1,0 +1,7 @@
+"request" [issuanceType == 'ISSUANCE' ]{
+    enabled: true;
+} 
+
+"request" [issuanceType != 'ISSUANCE' ]{
+    enabled: false;
+}

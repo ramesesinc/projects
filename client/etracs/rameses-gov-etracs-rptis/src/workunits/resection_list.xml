@@ -1,0 +1,6 @@
+<workunit extends="wtemplates/ListController.xml" serviceName="ResectionListService" entityName="resection" formTarget="window" >
+    <invokers>
+        <invoker folderid="/explorer/txn/rpt/list" caption="Resections"  target="window" index="210"  role="ASSESSOR_SHARED,SHARED"/>
+        <invoker type="quick_launcher" code="RS00" caption="Resections" role="ASSESSOR_SHARED,SHARED" />
+    </invokers>
+</workunit>

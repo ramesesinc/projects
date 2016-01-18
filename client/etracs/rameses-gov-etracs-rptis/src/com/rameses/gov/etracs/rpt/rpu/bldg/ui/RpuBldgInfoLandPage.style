@@ -1,0 +1,13 @@
+"selectedLand"  [allowEdit == true] {
+    readonly:false;
+}
+
+"selectedLand"  [entity.datacapture==0 && entity.txntype.objid.matches('SD|CS')] {
+    readonly:true;
+}
+
+
+"selectedLand"  [allowEdit != true] {
+    readonly:true;
+}
+

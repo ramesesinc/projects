@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="rpuland:info" caption="Record of Superseded Assessment" index="60" mnemonic="r"/>
+        <invoker type="rpubldg:info" caption="Record of Superseded Assessment" index="60" mnemonic="r"/>
+        <invoker type="rpumach:info" caption="Record of Superseded Assessment" index="60" mnemonic="r"/>
+        <invoker type="rpuplanttree:info" caption="Record of Superseded Assessment" index="60" mnemonic="r"/>
+        <invoker type="rpumisc:info" caption="Record of Superseded Assessment" index="60" mnemonic="r"/>
+    </invokers>
+    
+    <code>
+<![CDATA[        
+        
+import com.rameses.rcp.annotations.* 
+import com.rameses.rcp.common.* 
+import com.rameses.osiris2.client.* 
+import com.rameses.osiris2.common.* 
+
+class PreviousRecordController extends com.rameses.gov.etracs.rpt.workflow.BasicInfoController
+{
+    
+}    
+    
+]]>        
+    </code>
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.rpt.rpu.ui.RpuInfoPreviousRecordPage"/>
+    </pages>
+</workunit>

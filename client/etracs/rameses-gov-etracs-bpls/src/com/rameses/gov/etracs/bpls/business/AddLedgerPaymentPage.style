@@ -1,0 +1,15 @@
+"entity.(refno|refdate)" [mode != 'capture'] {
+    enabled:false;
+}
+
+"entity.(refno|refdate)" [mode == 'capture'] {
+    enabled:true;
+}
+
+"listModel.item.(surchargepaid|discount|interestpaid)" [mode == 'request'] {
+    editable: false;
+}
+
+"listModel.item.(surchargepaid|discount|interestpaid)" [mode != 'request'] {
+    editable: true;
+}

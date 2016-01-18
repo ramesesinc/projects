@@ -1,0 +1,28 @@
+<workunit>
+    <invokers>
+        <invoker type="waitprocess:open" undecorated="true" target="popup" />
+    </invokers>
+    
+    <code>
+        import com.rameses.platform.interfaces.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.rcp.framework.ClientContext;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.util.*;
+        
+        public class WaitProcessController  
+        {
+            @Binding
+            def binding;
+        
+            void close() { 
+                binding.fireNavigation('_close'); 
+            } 
+        }
+    </code>
+    
+    <pages>
+        <page template="com.rameses.etracs.shared.WaitProcessPage" />
+    </pages>
+</workunit>

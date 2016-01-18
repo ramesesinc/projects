@@ -1,0 +1,34 @@
+<workunit extends="wtemplates/LookupController.xml">
+    <invokers>
+        <invoker type="txnsignatory:lookup" action="init" caption="Signatory Lookup" target="popup" />
+    </invokers>
+    
+    <code>
+
+import com.rameses.rcp.common.*
+import com.rameses.rcp.annotations.*
+import com.rameses.osiris2.client.*
+import com.rameses.osiris2.common.*
+
+class SignatoryLookupController extends LookupController
+{
+    @Service("TxnSignatoryService")
+    def svc
+    
+    def doctype;
+    
+    Column[] getColumns() {
+        return [
+            new Column(name:"name", caption:"Appraised By", width:250),
+            new Column(name:"title", caption:"Job Title", width:250),
+        ]
+    }
+    
+    List fetchList( Map params ) { 
+        params.doctype = doctype;
+        return svc.lookup(params)
+    }
+}  
+
+    </code>
+</workunit>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="consolidation:open" action="open" caption="Consolidation" target="window"  />
+        <invoker type="consolidationresent:open" action="openResent" caption="Consolidation" target="window"  />
+   </invokers>
+
+   <code class="com.rameses.gov.etracs.rpt.consolidation.ui.ConsolidationController">
+       
+   </code>
+
+   <pages> 
+        <page template="com.rameses.gov.etracs.rpt.workflow.InfoPage"/>
+        <page name="wait" template="com.rameses.gov.etracs.rpt.util.WaitInfoPage"/>
+       
+    </pages>
+</workunit>
+

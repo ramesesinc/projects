@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="rptledgerfaas:create" action="create" caption="Ledger FAAS (New)" target="popup"/>
+        <invoker type="rptledgerfaas:createnewrevision" action="createNewRevision" caption="Ledger FAAS (New)" target="popup"/>
+        <invoker type="rptledgerfaas:edit" action="edit" caption="Ledger FAAS (New)" target="popup"/>
+    </invokers>
+    
+    <code class="com.rameses.gov.etracs.rpt.ledger.ui.RPTLedgerFaasController">
+    </code>
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.rpt.ledger.ui.RPTLedgerFaasPage" />
+    </pages>
+</workunit>

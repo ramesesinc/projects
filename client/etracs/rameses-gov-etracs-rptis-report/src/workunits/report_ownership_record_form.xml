@@ -1,0 +1,41 @@
+<workunit extends="rpt_wtemplates/ReportController.xml" >
+    <invokers>
+        <invoker folderid="/explorer/report/rpt" action="init" caption="Ownership Record Form" target="window" index="8" 
+            role="ASSESSOR_REPORT,REPORT" />
+    </invokers>
+    <code>
+
+<![CDATA[
+
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.reports.*;
+
+class OwnershipRecordFormReportController extends com.rameses.gov.etracs.rpt.report.AsyncReportController
+{
+    @Service('RPTReportORFService') 
+    def svc 
+    
+    String title = 'Ownership Record Form'
+    
+    String reportName = 'com/rameses/gov/etracs/rpt/report/orf.jasper';
+    def data 
+    
+    void buildReportData(entity, asyncHandler){
+        svc.generateORF(entity, asyncHandler)
+    }
+    
+   def formControl = [
+        getFormControls: {
+            return [
+                new FormControl( "lookup", [caption:'Taxpayer', name:'entity.taxpayer', handler:'entity:lookup', expression:'#{entity.taxpayer.name}', required:true]),
+                new FormControl("label", [caption:'Address', name:'entity.taxpayer.address.text',  depends:'entity.taxpayer'])
+            ]    
+        },
+   ] as FormPanelModel;
+}
+]]>        
+        
+    </code>
+</workunit>

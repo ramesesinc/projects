@@ -1,0 +1,313 @@
+<workunit>
+    
+    <invokers>
+        <invoker folderid="/home/business/business_application" 
+            caption="Data Migration"  action="start" target="window" 
+            role="BUSINESSINFO,ADMIN" index="56" permission="business.datamigration"/>
+          
+        <invoker type="lobActions" caption="Add" action="lob.add"  immediate="true"/>
+        <invoker type="lobActions" caption="Remove" action="lob.remove" immediate="true" 
+            visibleWhen="#{lob.selectedItem!=null}"/>
+        <invoker type="lobActions" caption="Map Line of Business" action="lob.reclassify" 
+            immediate="true" visibleWhen="#{lob.selectedItem!=null}"/>
+   </invokers>
+    
+    <code>
+        <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import com.rameses.util.*;
+        import java.rmi.server.*;
+        
+        /****************************************************
+        * capture types:
+        *   info - basic capture info only for current year
+        *   unpaid - business has remaining balance
+        *   processing - application still unfinished
+        *   delinquent - has delinquent
+        *   datasource - use datasource
+        *****************************************************/
+        class BusinessCapture extends PageFlowController {
+        
+            @Service("DateService")
+            def dateSvc;
+            
+            @Service("BusinessCaptureService")
+            def service;
+            
+            @Script("BusinessApplicationUtil")
+            def application;
+            
+            @Script("BusinessVerificationUtil")
+            def verifyList;
+            
+            @Script("BusinessOwnerUtil")
+            def owner;
+            
+            @Script("BusinessLobUtil")
+            def lob;
+        
+            @Script("BusinessAddressUtil")
+            def address;
+
+            @Script("BusinessCaptureUtil")
+            def capture;
+            
+            @Script("BusinessInfoUtil")
+            def appinfo;
+                
+            @Script("BusinessAssessmentInfoUtil")
+            def assessmentInfo;
+            
+            @FormTitle
+            def title = "Capture Business";
+            
+            def entity;
+            def receivables;
+            
+            @Service("BusinessUserRoleService")
+            def userRoleSvc;
+            
+            def start() {
+                capture.loadSources();
+                assessmentInfo.show_paid = true;
+                return super.start();
+            }
+            
+            void init() {
+                capture.validateTxnType(); 
+                application.init([ txnmode:'CAPTURE']);
+                                        
+                switch( capture.type ) {
+                    case 'current':
+                        entity.apptype = capture.current_apptype;
+                        entity.appyear = dateSvc.getServerYear();
+                        entity.state = 'ACTIVE';
+                        break;
+                    case 'processing':     
+                        entity.apptype = capture.processing_apptype;
+                        entity.dtfiled = capture.processing_dateapplied;
+                        entity.appyear = dateSvc.getServerYear();
+                        entity.state = 'PROCESSING';
+                        break;
+                    case 'delinquent_renew':     
+                        entity.apptype = 'RENEW';
+                        entity.appyear = capture.delinquent_renew_year;
+                        entity.activeyear = entity.appyear;
+                        entity.yearstarted = null;
+                        entity.state = 'ACTIVE';
+                        if(entity.appyear < 2000 )
+                            throw new Exception("Last year renewed must be greater than 2000");
+                        if( entity.appyear >= dateSvc.getServerYear() )
+                            throw new Exception("Please choose a year before the current year");
+                        break;
+                    case 'delinquent_new':     
+                        entity.apptype = 'NEW';
+                        entity.appyear = capture.delinquent_new_year;
+                        entity.activeyear = entity.appyear;
+                        entity.yearstarted = null;
+                        if(entity.appyear < 2000 )
+                            throw new Exception("Last year renewed must be greater than 2000");
+                        entity.state = 'ACTIVE';
+                        if( entity.appyear > dateSvc.getServerYear() )
+                            throw new Exception("Please choose a year before the current year");
+                        break;
+                }    
+                lob.reset();
+                lob.lobAssessmentType = entity.apptype;
+            }
+
+            void openEntry() {
+                capture.openEntry();
+                lob.reset();
+                lob.lobAssessmentType = entity.apptype;
+                def r = service.getReceivables(entity);
+                entity.taxfees = r.receivables;
+                entity.totals =  [regfee:0,othercharge:0,total:0,tax:0];
+                entity.txnmode = 'CAPTURE';
+                taxfeeModel.reload();
+            }
+            
+            void initAddressType() {
+                if( application.copyOwnerAddress ) {
+                    owner.reload();
+                    entity.business.address = entity.business.owner.address;
+                    address.addressType = entity.business.address.type;
+                }
+                else {
+                    address.addressType = application.addressType;
+                }
+            }
+            
+            def taxfeeModel = [
+                fetchList: { o->
+                    return entity.taxfees;
+                },
+                onColumnUpdate: { o,col-> 
+                    o.total = o.amount - (o.amtpaid + o.surcharge + o.interest) - o.discount;
+                    binding.refresh();
+                }
+            ] as EditorListModel;
+                        
+            def paymentModel = [
+                fetchList: { o->
+                    return entity.payments;
+                }
+            ] as BasicListModel;
+            
+                        
+            void resetAll() {
+                if( MsgBox.confirm("This will clear changes and payments made. Continue?")) {
+                    initAssessment();
+                }
+            }
+            
+            void initAssessment() {
+                if( capture.type == 'datasource' ) {
+                    if( !entity.taxfees ) MsgBox.alert('No receivables found');
+                    return;
+                }    
+                entity.payments = [];
+                entity.taxfees = [];
+                taxfeeModel.reload();
+                paymentModel.reload();
+                binding.refresh();
+            }
+            
+            void initReceivable() { 
+                entity.taxfees.each{tf-> 
+                    def o = entity.lobs.find{ it.oldlobid==tf.oldlob?.objid } 
+                    if (o) tf.lob = [objid: o.lobid, name: o.name] 
+                } 
+            } 
+            
+            def getTotalPayment() {
+                return entity.payments.sum{it.total};
+            }
+            
+            void save() {
+                if ( !entity.taxfees ) { 
+                    if (!MsgBox.confirm("You are about to save this record without building the ledger. Proceed?")) { 
+                        throw new BreakException(); 
+                    } 
+                } else if( !MsgBox.confirm("You are about to save this record. Proceed?") ) {
+                    throw new BreakException();
+                }
+                
+                entity.taxfees.each{
+                    if ( !it.account?.objid ) { 
+                        throw new Exception('Please specify the account mapping for ' + it.oldaccount.title);  
+                    } 
+                } 
+                application.save();
+            }
+            
+            void addAnother() {
+                entity = [:];
+            }
+            
+            def mapAccount() {
+                def params = [
+                    onselect: {o-> 
+                        assessmentInfo.selectedTaxfee.account = o;
+                        taxfeeModel.refresh(); 
+                    }, 
+                    onempty: {
+                        assessmentInfo.selectedTaxfee.account = null;
+                        taxfeeModel.refresh(); 
+                    } 
+                ]; 
+                return mapAccount( params );
+            }
+            
+            def mapAccount( params ) {
+                if(!assessmentInfo.selectedTaxfee)
+                    throw new Exception("Select an item to map");
+                    
+                return Inv.lookupOpener( "revenueitem:lookup", params );
+            } 
+            
+            def getLookupAccount() {
+                def params = [
+                    onselect: {o-> 
+                        assessmentInfo.selectedTaxfee.account = o;
+                    }, 
+                    onempty: {
+                        assessmentInfo.selectedTaxfee.account = null;
+                    } 
+                ]; 
+                return mapAccount( params );
+            } 
+        }
+        ]]>
+        
+    </code>
+    
+    <pageflow>
+        <start>
+            <transition to="selecttype"/>
+        </start>
+
+        <page name="selecttype" title="Select type of capture">
+            <transition to="end" caption="Close" />
+            <transition to="search" caption="Next"  immediate="false" action="init"/>
+        </page>
+        
+        <page name="search" title="Search Business @ #{capture.query.source}">
+            <transition to="selecttype" caption="Back" />
+            <transition to="edit-name" caption="Next" name="next"  action="openEntry"/>
+        </page>
+        
+        <page name="edit-name" title="Edit Business Name">
+            <transition to="search" caption="Back" name="back" 
+                            confirm="This will reset everything you typed. Proceed?"/>
+            <transition to="#{verifyList.pass==false?'verify-name':'edit-owner'}" caption="Next" name="next"  action="verifyList.check" immediate="false" />
+        </page>
+        
+        <page name="verify-name" title="Verify Business Name">
+            <transition to="edit-name" caption="Back" mnemonic="B"/>
+            <transition to="edit-owner" caption="Next" name="next" mnemonic="N" action="verifyList.verify"/>
+        </page>        
+        
+        <page name="edit-owner" title="Edit Business Owner">
+            <transition to="edit-name" caption="Back" />
+            <transition to="edit-address" caption="Next" action="owner.verify" />
+        </page>
+        
+        <page name="edit-address" title="Edit Business Address" action="initAddressType">
+            <transition to="edit-owner" caption="Back" />
+            <transition to="edit-lob" caption="Next"  action="address.verify"/>
+        </page>
+
+        <page name="edit-lob" title="Edit Line of Business">
+            <transition to="edit-address" caption="Back" />
+            <transition to="edit-receivable" caption="Next" action="lob.verify"/> 
+        </page>
+
+        <page name="edit-receivable" title="Edit TaxFee" action="initReceivable">
+            <transition to="edit-lob" caption="Back" />
+            <transition to="success" caption="Submit" action="save"/>
+        </page>        
+
+        <page name="success" title="Business Registered">
+            <transition to="selecttype" caption="Add Another" action="addAnother"/>
+        </page>
+
+        <end/>
+    </pageflow>
+    
+    <pages>
+        <page name="selecttype" template="com.rameses.gov.etracs.bpls.view.SelectDataMigrationTypePage"/>
+        <page name="search" template="com.rameses.gov.etracs.bpls.view.SearchBusinessCapturePage"/>
+        <page name="edit-name" template="com.rameses.gov.etracs.bpls.view.CaptureBusinessPage"/>
+        <page name="verify-name" template="com.rameses.gov.etracs.bpls.view.BusinessNameVerificationPage"/>
+        <page name="edit-owner" template="com.rameses.gov.etracs.bpls.view.EditBusinessOwnerPage"/>
+        <page name="edit-address" template="com.rameses.gov.etracs.bpls.view.EditBusinessAddressPage"/>
+        <page name="edit-lob" template="com.rameses.gov.etracs.bpls.view.CaptureLobPage"/>
+        <page name="edit-receivable" template="com.rameses.gov.etracs.bpls.view.CaptureReceivablePage"/>
+        <page name="success" template="com.rameses.gov.etracs.bpls.view.SuccessPage"/>
+    </pages>
+    
+</workunit>

@@ -1,0 +1,30 @@
+"selected.*|entity.*" [mode != "read"]{
+    readonly:false;
+}
+
+
+
+"lgu" [mode == "read"]{
+    enabled:false;
+}
+
+"lgu" [mode != "read"]{
+    enabled:true;
+}
+
+"entity.ry" [true == true]{
+    enabled:false;
+}
+
+
+"selectedValue" [selectedPlantTree == null ]{
+    readonly:true;
+}
+
+"selectedValue" [selectedPlantTree != null ]{
+    readonly:false;
+}
+
+"selected.*|entity.*" [mode == "read"]{
+    readonly:true;
+}

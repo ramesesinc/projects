@@ -1,0 +1,23 @@
+<workunit extends="wtemplates/ListController.xml">
+    <invokers>
+        <invoker folderid="/explorer/txn/treasury/certs" caption="Issued Certifications"  target="window" index="0" role="REPORT"/>
+        <invoker type="quick_launcher" code="TCCERTS" caption="Issued Certifications"  target="window" index="0" role="REPORT"/>
+    </invokers>
+    <code>
+        import com.rameses.rcp.common.*
+        import com.rameses.rcp.annotations.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        
+        class CertificationListController extends ListController
+        {
+            String serviceName  = 'CertificationService'
+            String formTarget   = 'self'
+            boolean allowCreate = false;
+            
+            public String getEntityName(){ 
+                return selectedEntity?.type
+            }
+        }
+    </code>
+</workunit>

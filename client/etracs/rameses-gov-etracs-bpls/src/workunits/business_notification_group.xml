@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="notification-group" caption="CEO" group="ceo" role="CEO" index="1000"/>
+        <invoker type="notification-group" caption="For Assessment" group="assign-assessor"  role="ASSESSOR" index="1000"/>
+    </invokers>
+</workunit>

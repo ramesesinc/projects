@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="rptledger:nod" action="previewNotice" caption="Notice of Delinquency" target="popup" />        
+        <invoker folderid="/explorer/txn/landtax" action="init" caption="Notice of Delinquency" index="150" 
+            role="LANDTAX" target="window" />
+        
+        <invoker type="quick_launcher" code="NOD01" action="init" caption="Notice of Delinquency" index="150" 
+            role="LANDTAX" target="window" />
+        
+        <invoker type="rptledger:formActions" action="initPreview" caption="Notice of Delinquency" target="popup" index="110" visibleWhen="#{entity.state == 'APPROVED'}" />        
+        <invoker type="rptledgermanual:formActions" action="previewNotice" caption="Notice of Delinquency" target="popup"  index="110" visibleWhen="#{entity.state == 'APPROVED'}"/>        
+        
+            
+        <invoker type="formActions" action="_close" caption="Close" mnemonic="c" icon="images/toolbars/cancel.png" immediate="true"/>            
+        <invoker type="formActions" action="previewNotice" caption="Preview" mnemonic="p" visibleWhen="#{mode.matches('init|initpreview')}"  immediate="true"/>
+        <invoker type="formActions" action="init" caption="Back" mnemonic="b" icon="images/toolbars/back.png" visibleWhen="#{mode=='preview' &amp;&amp; taxpayer!=null}"/>
+        
+    </invokers>
+    <code>
+
+<![CDATA[ 
+
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.common.*;
+import com.rameses.osiris2.reports.*;
+import com.rameses.etracs.shared.*;
+
+class RPTLedgerNoticeOfDelinquencyController
+{
+    @Service('LandTaxReportNoticeOfDelinquencyService')
+    def svc 
+
+    @Service("ReportParameterService")
+    def reportSvc;
+    
+    @Service('RPTBillingService')
+    def billingSvc 
+    
+    @Service('DateService')
+    def dtSvc;
+
+    def taxpayer;
+    def address;
+    def entity;
+    def data = [:]
+    def dtcomputed;
+    
+    String title = 'Notice of Delinquency'
+    
+    def mode
+    
+    def init(){
+        dtcomputed = dtSvc.getServerDate();
+        mode = 'init';
+        return 'default';
+    }
+    
+    def initPreview(){
+        init();
+        mode = 'initpreview';
+        return 'default'
+    }
+    
+    
+    void buildReportInfo(){
+        svc.validateDateComputed(dtcomputed);
+        
+        def params = [
+            taxpayer    : (taxpayer ? taxpayer : entity?.taxpayer),
+            rptledgerid : entity?.objid,
+            billdate    : dtcomputed,
+        ]
+        if (!params.taxpayer) throw new Exception('Please specify taxpayer'); 
+        
+        def bill = billingSvc.initBill(null)
+        bill.billdate = dtcomputed;
+
+        def rptledgerids = []
+        if (entity) {
+            rptledgerids << entity.objid
+        }
+        else {
+            bill.taxpayer = taxpayer
+            def props = billingSvc.loadProperties(bill)
+            if (props ) rptledgerids += props.objid
+        }
+        
+        rptledgerids.each{
+            bill.rptledgerid = it;
+            billingSvc.generateBill(bill);
+        }
+        
+        data = svc.generateNoticeOfDelinquency(params)
+        report.viewReport()
+    }
+    
+    void printNotice() {
+        buildReportInfo()
+        ReportUtil.print( report.report, true )
+    }
+    
+    def previewNotice() {
+        buildReportInfo()
+        mode = 'preview'
+        return 'preview'
+    }
+      
+    def reportpath = 'com/rameses/gov/etracs/landtax/report/nod/'
+            
+    def report = [
+        getReportName : { return reportpath + 'noticeofdelinquency.jasper' },
+        getSubReports  : {
+            return [
+                new SubReport('NODLedger', reportpath + 'noticeofdelinquencyledger.jasper'),
+            ] as SubReport[]
+        },
+        getReportData : { return data },
+        getParameters : { 
+            def p = reportSvc.getStandardParameter();
+            p.LOGOLGU = EtracsReportUtil.getInputStream("lgu-logo.png");
+            return p;
+        }
+    ] as ReportModel
+    
+
+}
+
+]]>
+    </code>
+    <pages>
+        <page template="com.rameses.gov.etracs.landtax.report.nod.NoticeOfDelinquencyInitPage"/>
+        <page name="preview" template="com.rameses.gov.etracs.rpt.report.PreviewPage"/>
+    </pages>
+</workunit>

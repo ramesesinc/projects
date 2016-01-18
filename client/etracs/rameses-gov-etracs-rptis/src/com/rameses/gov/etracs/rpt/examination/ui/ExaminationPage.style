@@ -1,0 +1,19 @@
+"finding.*|addPhoto|removePhoto" [mode == 'read']{
+    enabled:false;
+}
+
+"finding.*|addPhoto|removePhoto" [mode != 'read']{
+    enabled:true;
+}
+
+"selectedInspector|selectedPhoto" [mode == 'read']{
+    readonly:true;
+}
+
+"selectedInspector|selectedPhoto" [mode != 'read']{
+    readonly:false;
+}
+
+"removePhoto"[selectedPhoto != null && mode != 'read']{
+    enabled:true;
+}

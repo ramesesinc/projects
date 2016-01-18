@@ -1,0 +1,66 @@
+<!-- REQUISITION ISSUE SLIP -->
+<workunit>
+    
+    <invokers>
+       <invoker type="stockreceiptitem:serial" action="init"/>
+    </invokers>
+    
+    <code>
+         <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import com.rameses.gov.treasury.af.*;
+        
+        class StockReceiptItemAFSerial {
+        
+            @Service("AFStockReceiptService")
+            def svc;
+        
+            @Caller
+            def caller;
+        
+            def afInfo;
+            def item;
+            
+            void init() {
+                if(item.items == null ) {
+                    item.items = [];
+                }   
+                afInfo = svc.getInfo([objid: item.item.objid, unit:item.unit, type:'afserial' ]);
+                item.unitqty = afInfo.unitqty;
+            }
+            
+            def itemModel =  [
+                onColumnUpdate: { o,col->
+                    if(col == "qty") {
+                        AFSerialUtil.validateQtyReceived( item, o );
+                    }
+                    else if(col == "startseries") {
+                        AFSerialUtil.validateSeries( afInfo, o );
+                        o.endseries = AFSerialUtil.getEndSeries( afInfo, o );
+                        AFSerialUtil.checkConflict(item, o);
+                    }
+                    else if( col == "startstub" ) {
+                        o.endstub = AFSerialUtil.getEndStub( o );
+                    }
+                },
+                onAddItem: { o->
+                    item.items << o;
+                    item.qtyreceived = item.items.sum{ it.qty };
+                    item.remarks = item.items.collect{ it.startseries + "-" + it.endseries + "(" + it.startstub  + "-" + it.endstub + ")" }.join(",");
+                    caller.itemModel.reload();
+                },
+                fetchList: { o->
+                    return item.items;
+                }
+            ] as EditorListModel;
+        }
+        ]]>
+    </code>
+    
+    <pages>
+        <page template="com.rameses.gov.treasury.af.StockReceiptItemAFSerialPage"/>
+    </pages>
+</workunit>

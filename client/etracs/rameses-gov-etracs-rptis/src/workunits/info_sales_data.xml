@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="faas:info" action="init" caption="Sales Data" index="550" visibleWhen="#{entity.txntype.objid.matches('TR.*')}"/>
+        
+        <invoker type="formActions" action="refresh" caption="Refresh" mnemonic="r" />
+        <invoker type="formActions" action="edit" caption="Edit" mnemonic="e" role="RECORD,RECEIVER" visibleWhen="#{showEdit == true}" />
+        <invoker type="formActions" action="cancelEdit" caption="Cancel" mnemonic="c" role="RECORD,RECEIVER" visibleWhen="#{mode == 'edit'}" immediate="true" />
+        <invoker type="formActions" action="save" caption="Save" mnemonic="s" role="RECORD,RECEVIER" visibleWhen="#{mode == 'edit'}" />
+   </invokers>
+   <code>
+       
+<![CDATA[
+        
+import com.rameses.rcp.annotations.* 
+import com.rameses.rcp.common.* 
+import com.rameses.osiris2.client.*
+import com.rameses.osiris2.common.*
+
+class SalesDataInfoController
+{
+    @Binding
+    def binding;
+    
+    @Service('RPTSalesDataService')
+    def saleSvc;
+    
+    def svc;
+    
+    def MODE_READ = 'read';
+    def MODE_EDIT = 'edit';
+    boolean isnew = false;
+    
+    def mode;
+    def entity;
+    def sale;
+    
+    String title = 'Sales Data Information'
+    
+    void init(){
+        try{
+            sale = saleSvc.open([objid:entity.objid]);
+            isnew = false;
+        }
+        catch( e ){
+            createNewBuyer();
+        }
+        mode = MODE_READ;
+    }
+    
+    void createNewBuyer(){
+        sale = [
+            objid    : entity.objid, 
+            seller   : [:],
+            buyer    : entity.taxpayer,
+        ];
+        isnew = true;
+    }
+    
+    
+    void edit(){
+        mode = MODE_EDIT;
+    }
+    
+    
+    void cancelEdit(){
+        init();
+    }
+    
+    void save(){
+        if ( isnew )
+            sale.putAll(saleSvc.create(sale));
+        else
+            sale.putAll(saleSvc.update(sale));
+            
+        mode = MODE_READ;
+        isnew = false;
+    }
+    
+    
+    void refresh(){
+        init();
+    }
+
+    boolean getShowEdit(){
+        if (entity.taskstate && entity.taskstate.matches('assign.*')) return false;
+        if (entity.state.matches('CURRENT|CANCELLED')) return false;
+        if (mode != MODE_READ) return false;
+        return true;
+    }
+    
+    
+}
+]]>
+       
+   </code>
+    
+    <pages> 
+        <page template="com.rameses.gov.etracs.rpt.salesdata.ui.RPTSalesDataPage"/>
+    </pages>
+</workunit>
+
+

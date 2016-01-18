@@ -1,0 +1,29 @@
+<workunit extends="wtemplates/LookupController.xml" serviceName="MunicipalityLookupService" >
+    <invokers>
+        <invoker type="municipality:lookup" action="init" caption="Municipality Lookup" target="popup" />
+    </invokers>
+    
+    <code>
+        
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+import com.rameses.osiris2.client.*
+import com.rameses.osiris2.common.*
+
+class MunicipalityLookupController extends LookupController 
+{
+    @Service('LGUService')
+    def svc;
+    
+    
+    Column[] getColumns() {
+        return [
+            new Column(name:"name", caption:"Name", width:70),
+            new Column(name:"caption", caption:"Parameter", width:250),
+        ]
+    }
+}  
+
+    </code>
+    
+</workunit>

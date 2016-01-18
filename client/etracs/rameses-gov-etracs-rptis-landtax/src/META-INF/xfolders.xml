@@ -1,0 +1,16 @@
+<folders>
+    <folder id="explorer">
+        <folder id="txn" caption="Transactions" index="2">
+            <folder id="landtax" caption="Land Tax" index="3"/>
+        </folder>
+        
+        <folder id="report" caption="Reports" index="3">
+            <folder id="landtax" caption="Land Tax" index="1"/>
+        </folder>
+    </folder>
+    <folder id="home">
+        <folder id="landtax" caption="Land Tax">
+            <folder id="txn" caption="Online Transactions"/>
+        </folder>
+    </folder>
+</folders>

@@ -1,0 +1,31 @@
+<workunit>
+    <invokers>
+        <invoker type="municipality:open"  caption="Municipality" target="popup" action="open"/>
+        <invoker type="municipality:manage"  caption="Municipality" target="popup" action="open"/>
+    </invokers>
+   <code>
+        <![CDATA[
+        import com.rameses.osiris2.common.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+
+        public class MunicipalityOrgController extends CRUDController {
+        
+            //injected by the caller
+            def node, filetype; 
+            
+            String createFocusComponent = 'entity.name'; 
+            String editFocusComponent = 'entity.name'; 
+            
+            String serviceName = "MunicipalityContextService";
+            String entityName = "municipality";
+            String title = "Municipality";
+            
+        } 
+         ]]>
+    </code>
+    <pages>
+        <page template="com.rameses.gov.lgu.ui.MunicipalityPage"/> 
+    </pages>
+</workunit>

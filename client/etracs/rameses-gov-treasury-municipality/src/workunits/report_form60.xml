@@ -1,0 +1,48 @@
+<workunit extends="wtemplates/gov/treasury/ReportController.xml" >
+    <invokers>
+        <invoker folderid="/explorer/report/treasury" action="init" caption="Provincial Form 60" target="window" index="50" role="REPORT" />
+    </invokers>
+    <code>
+        <![CDATA[
+
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.reports.*;
+
+        class Form60ReportController extends com.rameses.etracs.shared.ReportController
+        {
+            @Service('Form60ReportService') 
+            def svc
+
+            String title = 'Provincial Form 60 Report'
+            String reportName = 'com/rameses/treasury/municipality/form60/report/form60.jasper'
+
+            def data
+            def getReportData(){
+                data = svc.generateReport(entity);
+                return data.items
+            }
+
+            def formControl = [
+                getFormControls: {
+                    return [
+                        new FormControl( "integer", [caption:'Year', name:'entity.year', required:true, preferredSize:'100,19', captionWidth:100]), 
+                        new FormControl( "combo", [caption:'Month', name:'entity.month', required:true, items:'months', expression:'#{item.name}', preferredSize:'100,19', captionWidth:100]),
+                    ]    
+                }
+           ] as FormPanelModel;
+
+            List getMonths(){
+                return dtSvc.getMonths();
+            }
+            
+            Map getParameters(){
+                return [PERIOD: data.period]
+            }
+        }
+
+    ]]>        
+        
+    </code>
+</workunit>

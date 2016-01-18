@@ -1,0 +1,15 @@
+<workunit>
+    <invokers>
+        <invoker type="formActions"     action="_close" caption="Cancel" mnemonic="c"  icon="images/toolbars/cancel.png" immediate="true" visibleWhen="#{mode=='init'}"/>
+        <invoker type="formActions"     action="print" caption="Print" mnemonic="p" shortcut="ctrl + P" icon="images/toolbars/print.png" visibleWhen="#{mode=='init'}"/>
+        <invoker type="formActions"     action="preview" caption="Preview" mnemonic="v"  icon="images/doc-view.png" visibleWhen="#{mode=='init'}"/>
+        
+        <invoker type="formActions"     action="_close" caption="Close" mnemonic="c"  icon="images/toolbars/cancel.png" immediate="true" visibleWhen="#{mode=='view'}"/>
+        <invoker type="formActions"     action="back" caption="Back" mnemonic="c"  icon="images/toolbars/back.png" immediate="true" visibleWhen="#{mode=='view'}"/>
+        
+    </invokers>
+    <pages>
+        <page template="com.rameses.gov.treasury.report.ReportInitPage" />
+        <page name="preview" template="com.rameses.gov.treasury.report.PreviewPage" />
+    </pages>
+</workunit>

@@ -1,0 +1,45 @@
+<workunit>
+    <invokers>
+        <invoker type="business_permit:capture" caption="Capture Business Permit" target="popup" />
+    </invokers>
+    
+    <code>
+        <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import com.rameses.common.*;
+        import java.rmi.server.*
+        import com.rameses.util.*;
+        
+        class CaptureBusinessPermitController {
+        
+            @Service("BusinessPermitService")
+            def service;
+
+            @Binding 
+            def binding;
+
+            def entity;
+            def handler;
+            
+            def doOk() {
+                handler();
+                return "_close";
+            }
+            
+            def doCancel() {
+                return "_close";
+            }
+            
+        }
+        
+        ]]>
+    </code>
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.bpls.view.CapturePermitPage"/>
+    </pages>
+    
+</workunit>

@@ -1,0 +1,8 @@
+"select" [selectedItem != null]{
+    enabled:true;
+}
+
+
+"select" [selectedItem == null]{
+    enabled:false;
+}

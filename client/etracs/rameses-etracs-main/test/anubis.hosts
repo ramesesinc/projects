@@ -1,0 +1,1 @@
+default=file:///${target.server.dir}/workspace/web/${target.app.name}

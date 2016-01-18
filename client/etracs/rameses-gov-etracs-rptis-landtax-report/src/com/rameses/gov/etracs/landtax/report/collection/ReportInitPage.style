@@ -1,0 +1,18 @@
+"xentity.*" [ mode=='processing' ] {
+    enabled: false; 
+} 
+"xentity.*" [ !(mode=='processing') ] {
+    enabled: true; 
+}
+"entity.(period|year)" [ 1==1 ] {
+    visible: true; 
+}
+"entity.(qtr|month)" [ 1==1 ] {
+    visible: false; 
+}
+"entity.qtr" [ entity.period?.code=='quarterly' ] {
+    visible: true; 
+} 
+"entity.month" [ entity.period?.code=='monthly' ] {
+    visible: true; 
+} 

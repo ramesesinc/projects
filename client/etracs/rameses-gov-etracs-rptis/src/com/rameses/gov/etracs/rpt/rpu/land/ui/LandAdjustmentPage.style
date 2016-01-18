@@ -1,0 +1,12 @@
+"selectedItem"  [allowEdit == true] {
+    readonly:false;
+}
+
+"selectedItem"  [entity.datacapture == 0 && entity.txntype.newrpu == 0] {
+    readonly:true;
+}
+
+
+"selectedItem"  [allowEdit == false] {
+    readonly:true;
+}

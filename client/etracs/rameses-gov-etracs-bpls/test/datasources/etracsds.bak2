@@ -1,0 +1,6 @@
+dialect=mssql
+driverClass=com.microsoft.sqlserver.jdbc.SQLServerDriver
+url=jdbc:sqlserver://192.168.254.24;DatabaseName=iligan
+user=sa
+pwd=12345
+maxPoolSize=100

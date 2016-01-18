@@ -1,0 +1,47 @@
+<workunit> 
+    <invokers>
+        <invoker type="quick_launcher" action="init" code="POS" caption="Collection (TS)" role="COLLECTOR,SUBCOLLECTOR" />
+        <invoker type="home.action" action="init" code="POS" caption="Collection (TS)" role="COLLECTOR,SUBCOLLECTOR" index="600"/>
+        <invoker folderid="/explorer/txn/treasury" action="init" caption="Collections (TS)" role="COLLECTOR,SUBCOLLECTOR" index="100"/>
+        <invoker type="formActions" action="_close" caption="Close" icon="images/toolbars/cancel.png" immediate="true" />
+    </invokers>    
+    <code> 
+        
+<![CDATA[
+
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+import com.rameses.rcp.framework.*;
+import com.rameses.util.*;
+import com.rameses.osiris2.*;
+import com.rameses.osiris2.client.*;
+
+public class POSHomeController {
+
+    def collectionActions = [];
+    String title = 'Collection'
+    
+    
+    void init(){
+        
+        def actionProvider = ClientContext.currentContext.actionProvider;
+        collectionActions = actionProvider.lookupActions('miscpos:handler');
+        
+        collectionActions.each{ 
+            if (!it.icon) it.icon = 'images/home-icon.png';
+
+            def target = it.properties.target+'';
+            if (!target.matches('window|popup|process|_window|_popup|_process')) 
+            	it.properties.target = 'window'; 
+        }
+    }
+    
+}
+
+
+]]>
+    </code>
+    <pages>
+        <page template="com.rameses.gov.treasury.collection.pos.POSMainPage"/>
+    </pages>
+</workunit>

@@ -1,0 +1,138 @@
+<workunit>
+    <invokers>
+        <!--
+        <invoker folderid="explorer/txn/treasury/tools" caption="Forward AF Serial (Batch)" target="popup" action="init" xrole="AF_FORWARDER" index="100"/>
+        --> 
+        
+        <invoker type="formActions" caption="Close" action="_close" mnemonic="c" shortcut="ctrl C" icon="images/toolbars/cancel.png" immediate="true"/>
+        <invoker type="formActions" caption="New" action="newSeries" mnemonic="n" shortcut="ctrl N" icon="images/toolbars/create.png" visibleWhen="#{mode != 'create'}" />
+        <invoker type="formActions" caption="Save" action="save" mnemonic="s" shortcut="ctrl S" icon="images/toolbars/save.png" visibleWhen="#{mode == 'create'}" />
+    </invokers>
+    
+    <code>
+        <![CDATA[    
+        import com.rameses.osiris2.common.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import java.rmi.server.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.util.*;
+        import com.rameses.osiris2.reports.*;
+        
+        class ForwardAFSerialController {
+        
+            @Binding
+            def binding
+            
+            String title = "Forward AF Serial (Batch)";
+        
+            @Service("DateService")
+            def dtsvc;
+        
+            @Service("CollectionTypeService")
+            def collTypeSvc;    
+            
+            @Service("UsergroupMemberLookupService")
+            def ugmSvc;
+            
+            @Service("AFSerialCollectorMigrationService")
+            def svc
+            
+            def entity
+            def collectorlist;
+            def collector
+            def formTypes
+            def formtype
+            def mode
+            def endseries
+            
+            @PropertyChangeListener
+            def listener = [
+                "collector" : { o->
+                    if(o) entity.collector = o
+                }, 
+                "formtype" : { o -> 
+                    if(o) entity.afid = o.objid 
+                },
+                
+            ]
+            
+            public void init() {
+                mode ='create'
+                entity = [
+                    refdate: dtsvc.getServerDate()
+               ]
+            }
+            
+            void newSeries() {
+                init()
+                endseries = null;
+                collector = [:];
+                formtype = [:]
+                binding.refresh()
+            }
+            
+            def validateSeries( o ) { 
+                if( o.toString().length() > formtype.serieslength ) throw new Exception("Series number length must not greater than " + formtype.serieslength );
+                if(!o.toString().endsWith("1") ) throw new Exception("Last number of start series must be 1"); 
+                
+                
+            }
+            
+            public void save() {
+               validateSeries( entity.startseries);
+               if( entity.endseries < entity.startseries ) 
+                    throw new Exception("Endseries must not less than start series ");
+               
+               def parameter = [
+                     collector:entity.collector,
+                     afid:entity.afid,
+                     suffix:entity.suffix,
+                     prefix:entity.prefix,
+                     reason:'FORWARD BALANCE',
+                     remarks:'FORWARD BALANCE',
+                     refid:'SYSTEM',
+                     reftype:'SYSTEM',
+                     refdate: entity.refdate 
+               ]
+               
+               def start = entity.startseries 
+               def end = entity.endseries  
+               def stub = entity.stub 
+               while( true) {
+                    if( start >= end) break ;
+
+                    parameter.startseries = start ;
+                    parameter.currentseries = start;    
+                    parameter.endseries = (start + 49);
+                    parameter.stub = stub
+
+                    svc.post( parameter)
+
+                    start += 50 
+                    stub +=1
+              }
+              
+              mode ='posted'
+            }
+            
+            List getCollectorlist( ) {
+                if(! collectorlist) collectorlist =  ugmSvc.getList(['_tag':'COLLECTOR']);
+                return collectorlist;
+            }
+            
+            List getFormTypes() {
+                if( ! formTypes) formTypes = collTypeSvc.getFormTypesSerial();
+                
+                return formTypes
+            }
+            
+            
+            
+        }
+        ]]>
+    </code>
+    <pages>
+        <page template="com.rameses.gov.treasury.af.AFControlSerialPage1"/>
+    </pages>
+</workunit>

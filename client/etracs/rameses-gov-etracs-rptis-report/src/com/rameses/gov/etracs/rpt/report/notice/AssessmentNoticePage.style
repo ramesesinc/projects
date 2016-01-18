@@ -1,0 +1,9 @@
+"entity.receivedby|entity.dtdelivered|entity.remarks" [mode == 'receive']{
+    enabled:true;
+    required:true;
+}
+
+"entity.receivedby|entity.dtdelivered|entity.remarks" [mode == 'read']{
+    enabled:false;
+    required:false;
+}

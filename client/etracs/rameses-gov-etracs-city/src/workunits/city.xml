@@ -1,0 +1,45 @@
+<workunit>
+    <invokers>
+        <invoker type="city:open"  caption="City" target="popup" action="open"/>
+        <invoker type="city:manage"  caption="City" target="popup" action="open"/>
+    </invokers>
+    
+    <code>
+        <![CDATA[
+        import com.rameses.osiris2.common.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+
+        public class CityOrgController extends CRUDController {
+        
+            def node, filetype;
+            
+            String createFocusComponent = 'entity.name'; 
+            String editFocusComponent = 'entity.name'; 
+            
+            String serviceName = "CityContextService";
+            String entityName = "city";
+            String title = "City";
+            
+            boolean isAllowCreate() { return false; } 
+            boolean isAllowDelete() { return false; } 
+            boolean isAllowApprove() { return false; } 
+            
+            void afterOpen(data) {
+                resolveData(data); 
+            }  
+            
+            void resolveData(data) {
+                if (!data.mayor) data.mayor = [:];
+                if (!data.assessor) data.assessor = [:];
+                if (!data.treasurer) data.treasurer = [:];           
+            }             
+        }        
+        ]]>    
+    </code>
+    
+    <pages>
+        <page template="com.rameses.gov.lgu.ui.CityPage"/> 
+    </pages>
+</workunit>

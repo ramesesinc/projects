@@ -1,0 +1,89 @@
+<workunit>
+    <invokers>
+        <invoker type="cashreceipt:selectcashticket:formActions" caption="View Assignees"  role="COLLECTOR"/>
+        
+        <invoker type="formActions" caption="Back" action="_close"/>
+        <invoker type="formActions" caption="Add Subcollector" action="addSubCollector"/>
+        <invoker type="formActions" caption="Remove Subcollector" action="removeAssignee"/>
+        <invoker type="formActions" caption="Assign" action="assignAF"/>
+    </invokers>
+    
+    <code>
+        <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import com.rameses.enterprise.treasury.cashreceipt.*
+        
+        class  CashTicketViewAssigneeController  {
+            @Binding
+            def binding;
+            
+            @Service("CashTicketControlService")
+            def service;
+        
+            String title = "Cash Ticket Assignees"    
+            def entity;
+            def selectedItem;
+            
+            def listModel = [
+                fetchList: { o->
+                    return service.getIssuances(entity);
+                }
+            ] as BasicListModel;
+            
+            def addSubCollector() {
+                return InvokerUtil.lookupOpener("subcollector:lookup", [
+                    onselect: { o->
+                        def p = [controlid:entity.controlid, subcollector: o, formno:entity.formno];
+                        service.addSubCollector(p);
+                        listModel.reload();
+                    }
+                ]);
+            }
+            
+            void assignAF() {
+                if(!selectedItem) {
+                    throw new Exception("Select a subcollector first");
+                }    
+                def qty = MsgBox.prompt( 'Enter qty to assign to ' + selectedItem.subcollector.name );
+                if(qty == null || qty == 'null') {
+                    return;
+                }    
+                else if( !qty.isInteger() ) {
+                    throw new Exception("Qty must be a number");
+                }
+                else {
+                    int iqty = Integer.parseInt(qty);
+                    def p = [fromid: entity.objid, toid: selectedItem.objid, qty: iqty];
+                    service.assignAF( p );
+                    entity.qtybalance -= iqty;
+                    entity.amtbalance = entity.qtybalance * entity.denomination;
+                    listModel.reload();
+                    binding.refresh("entity.(amtbalance|qtybalance)")
+                }
+            }
+            
+            void removeAssignee() {
+                if(!selectedItem) return;
+                if( MsgBox.confirm("You are about to remove this entry. Continue?")) {
+                    int iqty = selectedItem.qtybalance;
+                    def p = [fromid: selectedItem.objid, toid: entity.objid, qty: iqty];
+                    service.removeAssignee(p);
+                    entity.qtybalance += iqty;
+                    entity.amtbalance = entity.qtybalance * entity.denomination;
+                    listModel.reload();
+                    binding.refresh("entity.(amtbalance|qtybalance)")
+                }
+            }
+        }
+        ]]>
+        
+    </code>
+    
+    <pages>
+        <page template="com.rameses.gov.treasury.cashreceipt.CashTicketViewAssigneePage"/>
+    </pages>
+    
+</workunit>

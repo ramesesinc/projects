@@ -1,0 +1,48 @@
+<workunit>
+    <invokers>
+        <invoker type="collectiontype:handler" caption="Miscellaneous" name="misc" index="100"  />
+    </invokers>
+    
+    <code>
+        <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        
+        class  MiscCashReceiptController {
+        
+            @Caller 
+            def caller;
+
+            @Binding
+            def binding
+            
+            public def getEntity() {
+                return caller.entity;
+            }
+            
+            def  getLookupFund() {
+                return Inv.lookupOpener("fund:lookup", [
+                        onselect:{ o-> 
+                            entity.fund = o 
+                            binding.refresh("entity.fund");
+                        },
+                        onempty: { 
+                             entity.fund = null
+                             binding.refresh("entity.fund");
+                        }
+                    ] 
+                );
+            }
+            
+        }
+        ]]>
+        
+    </code>
+    
+    <pages>
+        <page template="com.rameses.gov.treasury.collection.MiscCollectionTypePage"/>
+    </pages>
+    
+</workunit>

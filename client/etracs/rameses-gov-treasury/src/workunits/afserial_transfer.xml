@@ -1,0 +1,58 @@
+<workunit>
+        
+   <invokers>
+        <invoker type="afserial:transfer" caption="Transfer Accountable Form" target="popup"/>
+        
+        <invoker type="formActions" caption="Close" action="_close" icon="images/toolbars/cancel.png" immediate="true"/>
+        <invoker type="formActions" caption="Transfer" action="transfer" />
+   </invokers>
+   
+   <code>
+<![CDATA[
+
+import com.rameses.osiris2.common.*;
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+import com.rameses.osiris2.client.*;
+import javax.swing.*;
+import com.rameses.io.*;
+
+class AFTransferController 
+{
+    @Binding
+    def binding;
+    
+    @Service("AFInventoryService")
+    def svc;
+    
+    @Service("UsergroupMemberLookupService")
+    def ugmSvc;
+    
+    def entity 
+    def handler
+
+    def title = "Transfer Accountable Form"
+    
+    def transfer() {
+        svc.transferAF(entity ) 
+        if( handler ) handler();
+        return "_close"
+    }
+    
+    def getCollectorlist() {
+        def list =   ugmSvc.getList(['_tag':'COLLECTOR']);
+        list.remove( list.find{it.objid == entity.respcenterid} )
+        return list;
+    }
+
+    
+} 
+
+]]>
+   </code>
+   
+   <pages>
+       <page template="com.rameses.gov.treasury.af.AFSerialTransferPage"/>
+   </pages>
+   
+</workunit>

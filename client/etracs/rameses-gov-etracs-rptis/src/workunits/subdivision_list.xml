@@ -1,0 +1,35 @@
+<workunit extends="wtemplates/ExplorerViewController.xml" defaultFileType="subdivision" autoSelect="true">
+    <invokers>
+        <invoker folderid="/explorer/txn/rpt/list" caption="Subdivisions"  target="window" index="110" role="ASSESSOR_SHARED,SHARED"/>
+        <invoker folderid="/home/rpt" caption="Subdivisions"  target="window" index="110" role="ASSESSOR_SHARED,SHARED"/>
+        <invoker type="quick_launcher" code="SD00" caption="Subdivisions"  role="ASSESSOR_SHARED,SHARED"/>
+        <invoker type="formActions" action="open" caption="Open" mnemonic="o" shortcut="ctrl O" depends="listHandler.selectedEntity" index="1"/>        
+    </invokers>
+        <code>
+     import com.rameses.rcp.common.*
+    import com.rameses.rcp.annotations.*
+    import com.rameses.osiris2.client.*
+    import com.rameses.osiris2.common.*
+            
+    class SubdivisionExplorerViewController extends ExplorerViewController
+    {
+        String serviceName = 'SubdivisionListService'
+            
+        String formTarget = 'window'
+        boolean allowCreate = false;
+        boolean allowSearch = false;
+        boolean allowOpen = false;
+
+        public Object open() throws Exception {
+            if (selectedEntity.state.equalsIgnoreCase('APPROVED') )
+                return InvokerUtil.lookupOpener('subdivision:closedwf:open', [entity:selectedEntity]);
+            return InvokerUtil.lookupOpener('subdivision:open', [entity:selectedEntity]);
+        }
+
+        int getRows() { return 50 }
+
+    }  
+    </code>   
+    <pages>
+    </pages>
+</workunit>

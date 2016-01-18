@@ -1,0 +1,12 @@
+"entity.*" [ mode=='processing' ] {
+    enabled: false; 
+} 
+"entity.*" [ !(mode=='processing') ] {
+    enabled: true; 
+} 
+"entity.year" [ !(entity.period?.code=='AS_OF_YEAR' || entity.period?.code=='FOR_THE_YEAR') ] {
+    visible: false; 
+} 
+"entity.year" [ entity.period?.code=='AS_OF_YEAR' || entity.period?.code=='FOR_THE_YEAR' ] {
+    visible: true; 
+} 

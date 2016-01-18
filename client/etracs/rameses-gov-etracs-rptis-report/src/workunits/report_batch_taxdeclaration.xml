@@ -1,0 +1,77 @@
+<workunit >
+    <invokers>
+        <invoker folderid="/explorer/report/rpt" action="init" caption="Tax Declaration Batch Printing" target="window" index="602" 
+            role="ASSESSOR_REPORT,REPORT" />
+        
+        <invoker type="formActions" action="_close" caption="Close" mnemonic="c" icon="images/toolbars/cancel.png" immediate="true" visibleWhen="#{mode == 'init'}"/>
+        <invoker type="formActions" action="print" caption="Print" mnemonic="p" shortcut="ctrl + P" icon="images/toolbars/print.png" visibleWhen="#{mode == 'init'}"/>
+        <invoker type="formActions" action="cancelPrinting" caption="Cancel Printing" icon="images/toolbars/cancel.png" mnemonic="a" shortcut="ctrl + a" visibleWhen="#{mode == 'printing'}" />
+    </invokers>
+    <code >
+    <![CDATA[
+       import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.reports.*;
+        import com.rameses.rcp.framework.TaskManager;
+        import com.rameses.etracs.shared.*;
+
+        class TaxDecBatchReportController extends com.rameses.gov.etracs.rpt.report.AbstractBatchReportController
+        {
+            @Service("TDReportService")
+            def svc
+
+            def title='Tax Declaration Batch Printing'
+
+            public void print() {
+                mode = 'printing';
+                Thread t = new Thread( batchTask)
+                t.start();
+            }
+            
+            def batchTask = [
+                run : {
+                    def list = null;
+                    try {
+                        list = svc.getFaasIds(params) 
+                    }
+                    catch(e){
+                        onError(e.message);
+                        return;
+                    }
+
+                    if( !list){
+                        onError('No records found.');
+                        return;
+                    }
+                    
+                    try { 
+                        def entity = list.remove(0);
+                        while(!interrupt && entity) {
+                            def reportInvoker = Inv.lookupOpener('td:report', [entity:entity])
+                            def tdreport = reportInvoker.handle.report.report
+                            1.upto(params.copies){copycnt -> 
+                                ReportUtil.print( tdreport, params.showprinterdialog) ;
+                                updateMessage("Printing TD No. ${entity.tdno} copy # " + copycnt  );
+                                Thread.sleep(params.printinterval * 1000)
+                            }
+                            entity = (list ? list.remove(0) : null);
+                        }    
+                        def msg = "Batch printing of Tax Declaration has been successfully completed." 
+                        if(interrupt) 
+                            msg = 'Tax Declaration printing has been interrupted.    '
+                        onFinish(msg );
+                   } catch(e) {
+                        onError( e );
+                   }
+                }
+        ] as Runnable
+        
+    }        
+  
+    ]]>    
+    </code>
+     <pages>
+        <page  template="com.rameses.gov.etracs.rpt.report.FAASBatchReportPage" />
+    </pages>
+</workunit>

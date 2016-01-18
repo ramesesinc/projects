@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="faas:info" action="init" caption="Red Flags" index="1005" />
+        <!-- 
+        <invoker type="subdivision:info" action="init" caption="Red Flags" index="1005" />
+        <invoker type="subdivisionfromcs:info" action="init" caption="Red Flags" index="1005" />
+        <invoker type="consolidation:info" action="init" caption="Red Flags" index="1005" />
+        <invoker type="resection:info" action="init" caption="Red Flags" index="1005" />
+        <invoker type="mcsettlement:info" action="init" caption="Red Flags" index="1005" />
+        -->
+        <invoker type="formActions" action="refresh" caption="Refresh" mnemonic="r" />
+        <invoker type="formActions" action="resolve" caption="Resolve" mnemonic="v" visibleWhen="#{showResolve==true}" depends="selectedItem"/>
+   </invokers>
+   <code>
+
+<![CDATA[
+
+                
+import com.rameses.rcp.annotations.* 
+import com.rameses.rcp.common.* 
+import com.rameses.osiris2.client.*
+import com.rameses.osiris2.common.*
+
+class RedFlagsInfoController
+{
+    @Binding
+    def binding;
+    
+    def svc;
+
+    @Service('RPTRedFlagService')
+    def redflagSvc;
+    
+    String title = 'Red Flags';
+    
+    def entity;
+    def redflags;
+    def selectedItem;
+        
+        
+    @PropertyChangeListener
+    def listener = [
+        'selectedItem' : {  binding.refresh('formActions')}
+    ] 
+            
+    void init(){
+        redflags = redflagSvc.getList([parentid:entity.objid]);
+        listHandler?.load();
+    }
+    
+    void refresh(){
+        init();
+    }
+    
+    def listHandler = [
+        fetchList : { return redflags },
+    ] as BasicListModel
+    
+    
+    def oncomplete = {
+        selectedItem.putAll(it);
+        binding.refresh('selectedItem');
+    }
+    
+    
+    def resolve(){
+        if (!selectedItem)
+            throw new Exception('A selected red flag is required.');
+        if (selectedItem.state != 'OPEN')
+            throw new Exception('Only OPEN red flag can be resolved.')
+        selectedItem.putAll(redflagSvc.open(selectedItem));
+        return Inv.lookupOpener('redflag:resolve', [entity:entity, redflag:selectedItem, oncomplete:oncomplete]);
+    }
+    
+    
+    boolean getShowResolve(){
+        if (!selectedItem) return false;
+        if (selectedItem.state != 'OPEN') return false;
+        if (OsirisContext.env.ORGCLASS == 'PROVINCE') return false;
+        return true;
+    }
+}
+       
+]]>       
+   </code>
+    
+    <pages> 
+        <page template="com.rameses.gov.etracs.rpt.faas.redflag.ui.RedFlagInfoPage"/>
+    </pages>
+</workunit>
+
+

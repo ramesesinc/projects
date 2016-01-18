@@ -1,0 +1,148 @@
+<workunit extends="wtemplates/gov/bp/ReportController.xml" >
+    <invokers>
+        <invoker folderid="/explorer/report/bpls" action="init" role="REPORT" 
+            caption="Application Listing" target="window" index="-90"/>
+    </invokers>
+    
+    <code>
+    <![CDATA[
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+import com.rameses.osiris2.common.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.reports.*;
+
+public class ApplicationListingReportController extends com.rameses.etracs.shared.AsyncReportController {
+
+    @Service('LobClassificationService') 
+    def lobClassficationSvc;
+
+    @Service('BarangayLookupService') 
+    def brgySvc;
+
+    @Service('BPApplicationListingReportService')
+    def svc 
+
+    String title = "Application Listing";
+    String reportpath = 'com/rameses/gov/etracs/bpls/reports/'; 
+    String reportName = reportpath + 'ApplicationListing.jasper'; 
+
+    @PropertyChangeListener 
+    def listeners = [
+        'entity.classification': { o-> 
+            if ( o ) entity.lob = null; 
+        } 
+    ];  
+
+    @Script('ReportPeriod') 
+    def periodUtil; 
+
+    def formControl = [
+        getControlList: { 
+            return [
+                [type:'combo', caption:'Period', name:'entity.period', required:true, items:'periodUtil.types',  expression:'#{item.title}', preferredSize:'100,20', captionWidth:100],
+                [type:'integer', caption:'Year', name:'entity.year', required:true, depends:'entity.period', visibleWhen:'#{ entity.period.type.matches("yearly|quarterly|monthly")==true }', preferredSize:'100,20', captionWidth:100 ],
+                [type:'combo', caption:'Quarter', name:'entity.qtr', required:true, items:'periodUtil.quarters', depends:'entity.period', visibleWhen:'#{ entity.period.type=="quarterly" }', preferredSize:'100,20', captionWidth:100],
+                [type:'combo', caption:'Month', name:'entity.month', required:true, items:'periodUtil.months', expression:'#{item.title}', depends:'entity.period', visibleWhen:'#{ entity.period.type=="monthly" }', preferredSize:'100,20', captionWidth:100],
+                [type:'date', caption:'Date', name:'entity.date', required:true, depends:'entity.period', visibleWhen:'#{ entity.period.type=="daily" }', preferredSize:'100,20', captionWidth:100],
+
+                [type:'checkbox', caption:'App Type', text:'NEW', name:'entity.type_new', immediate:true, preferredSize:'0,20', captionWidth:100 ],
+                [type:'checkbox', caption:'',  text:'RENEW', name:'entity.type_renew',immediate:true, preferredSize:'0,20', captionWidth:100 ],
+                [type:'checkbox', caption:'',  text:'RETIRE', name:'entity.type_retire', immediate:true, preferredSize:'0,20', captionWidth:100 ],
+
+                [type:'checkbox', caption:'State', text:'INFO', name:'entity.state_info', immediate:true, preferredSize:'0,20', captionWidth:100 ],
+                [type:'checkbox', caption:'',  text:'ASSESSMENT', name:'entity.state_assessment', immediate:true, preferredSize:'0,20', captionWidth:100 ],
+                [type:'checkbox', caption:'',  text:'PAYMENT', name:'entity.state_payment', immediate:true, preferredSize:'0,20', captionWidth:100 ],                                                
+                [type:'checkbox', caption:'',  text:'RELEASE', name:'entity.state_release', immediate:true, preferredSize:'0,20', captionWidth:100 ],
+                [type:'checkbox', caption:'',  text:'COMPLETED', name:'entity.state_completed', immediate:true, preferredSize:'0,20', captionWidth:100 ],                        
+
+                [type:'combo', caption:'Barangay', name:'entity.barangay', items:'barangaylist',  expression:'#{item.name}', preferredSize:'0,20', captionWidth:100],
+                [type:'combo', caption:'Classification', name:'entity.classification', items:'classificationlist', expression:'#{item.name}', preferredSize:'0,20', captionWidth:100],
+                [type:'lookup', caption:'Line of Business', name:'entity.lob', handler:'lookupLOB', expression:'#{item.name}', depends:'entity.classification', preferredSize:'0,20', captionWidth:100],
+            ]; 
+        } 
+    ] as FormPanelModel; 
+
+    def initReport() {
+        def outcome = super.initReport(); 
+        entity.state_completed = true; 
+        entity.period = periodUtil.types[0]; 
+        return outcome; 
+    } 
+    
+    void buildReportData(entity, asyncHandler) { 
+        def startdate = null; 
+        def enddate = null; 
+        if ( entity.period.type == 'yearly' ) {
+            startdate = periodUtil.format( periodUtil.getYearStartDate( entity.year ), 'yyyy-MM-dd HH:mm:ss' );
+            enddate   = periodUtil.format( periodUtil.getYearEndDate( entity.year ), 'yyyy-MM-dd HH:mm:ss' );
+        } else if ( entity.period.type == 'quarterly' ) {
+            startdate = periodUtil.format( periodUtil.getQtrStartDate( entity.year, entity.qtr ), 'yyyy-MM-dd HH:mm:ss' );
+            enddate   = periodUtil.format( periodUtil.getQtrEndDate( entity.year, entity.qtr ), 'yyyy-MM-dd HH:mm:ss' );
+        } else if ( entity.period.type == 'monthly' ) { 
+            startdate = periodUtil.format( periodUtil.getMonthStartDate( entity.year, entity.month.index ), 'yyyy-MM-dd HH:mm:ss' );
+            enddate   = periodUtil.format( periodUtil.getMonthEndDate( entity.year, entity.month.index ), 'yyyy-MM-dd HH:mm:ss' );
+        } else if ( entity.period.type == 'daily' ) { 
+            startdate = ''+ periodUtil.parse( entity.date ) +' 00:00:00'; 
+            enddate   = ''+ periodUtil.parse( entity.date ) +' 23:59:59'; 
+        } 
+
+        entity.startdate = startdate;
+        entity.enddate = enddate; 
+        svc.getReport( entity, asyncHandler );
+    }
+
+    Map getParameters(){
+        def apptypes = [
+            (entity.type_new? 'NEW' : null), 
+            (entity.type_renew? 'RENEW' : null), 
+            (entity.type_retire? 'RETIRE' : null)  
+        ].findAll{( it != null )} 
+
+        def appstates = [
+            (entity.state_info? 'INFO' : null),
+            (entity.state_assessment? 'ASSESSMENT' : null),
+            (entity.state_payment? 'PAYMENT' : null),
+            (entity.state_release? 'RELEASE' : null),
+            (entity.state_completed? 'COMPLETED' : null) 
+        ].findAll{( it != null )} 
+        
+        def periodtitle = null; 
+        if ( entity.period.type == 'yearly' ) {
+            periodtitle = periodUtil.getPeriodTitle([ year: entity.year ]);
+        } else if ( entity.period.type == 'quarterly' ) { 
+            periodtitle = periodUtil.getPeriodTitle([ year: entity.year, qtr: entity.qtr ]);
+        } else if ( entity.period.type == 'monthly' ) {
+            periodtitle = periodUtil.getPeriodTitle([ year: entity.year, month: entity.month.index ]);
+        } else if ( entity.period.type == 'daily' ) {
+            periodtitle = periodUtil.getPeriodTitle([ date: entity.date ]);
+        } 
+
+        return [
+            PERIOD         : periodtitle, 
+            APPTYPE        : ( apptypes? apptypes.join(', ') : '(ALL)' ), 
+            STATE          : ( appstates? appstates.join(', ') : '(ALL)' ), 
+            BARANGAYNAME   : ( entity.barangay? entity.barangay.name : '(ALL)' ),
+            CLASSIFICATION : ( entity.classification? entity.classification.name : '(ALL)' ),
+            LOB            : ( entity.lob? entity.lob.name : '(ALL)' ),
+        ]; 
+    }
+
+    List getBarangaylist() {
+        return brgySvc.getList([:]);
+    }
+
+    List getClassificationlist() {
+        return lobClassficationSvc.getList([:]);
+    }
+
+    def getLookupLOB() {
+        return Inv.lookupOpener('lob:lookup', [ 
+            'query.classification' : entity.classification 
+        ]);
+    }
+}
+    ]]>
+    </code>
+    
+</workunit>

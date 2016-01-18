@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="faas:change_faas_sketch" action="init" 
+                 caption="Change FAAS Sketch" 
+                 actiontype="change_faas_sketch"/>
+        
+        <invoker type="faas:changeinfo" action="initChangeInfo" 
+            caption="Change FAAS Sketch" target="popup"  
+            role="ADMIN" permission="faas.change_faas_sketch" index="6" 
+            actiontype="change_faas_sketch"/>
+        
+        <invoker type="formActions" action="_close" caption="Cancel" mnemonic="c" immediate="true" visibleWhen="#{mode=='changeinfo'}"/>
+        <invoker type="formActions" action="save" caption="Save" mnemonic="s" visibleWhen="#{mode=='changeinfo'}"/>
+   </invokers>
+   
+  <code>
+<![CDATA[
+import com.rameses.rcp.annotations.* 
+import com.rameses.rcp.common.* 
+import com.rameses.osiris2.client.*
+import com.rameses.osiris2.common.*
+
+class ChangeSketchController extends com.rameses.gov.etracs.rpt.faas.ui.FaasSketchInfoController
+{
+    @Invoker 
+    def invoker
+    
+    @Service('FAASSupportService')
+    def supportSvc;
+    
+    @Service('FAASChangeInfoService')
+    def svc;    
+    
+    
+    def changeinfo = [:]
+    def mode;
+    
+    void init(){
+        super.init();
+        changeinfo = [
+            objid       : 'CI' + new java.rmi.server.UID(),
+            faasid      : entity.objid,
+            rpid        : entity.rp.objid,
+            rpuid       : entity.rpu.objid,
+            action      : invoker.properties.actiontype,
+            newinfo     : [:],
+            previnfo    : [:],
+        ];
+    }
+    
+    void initChangeInfo(){
+        mode = 'changeinfo';
+        init();
+    }
+
+    
+    void afterUpload(){
+        changeinfo.image = supportSvc.getSketchImageData([objid:entity.objid]);
+    }
+    
+    void afterRemove(){
+        changeinfo.image = [headers:[], chunks:[]];
+    }
+    
+    def save(){
+        if (MsgBox.confirm('Save and apply changes?')){
+            svc.updateInfo(changeinfo);
+            return '_close';
+        }
+        return null;
+    }
+    
+}
+            
+]]>      
+  </code>
+ 
+    <pages> 
+        <page template="com.rameses.gov.etracs.rpt.faas.change.ui.ChangeFaasSketchInfoPage"/>
+    </pages>
+</workunit>
+
+

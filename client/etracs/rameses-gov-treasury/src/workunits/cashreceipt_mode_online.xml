@@ -1,0 +1,25 @@
+<workunit>
+    <invokers>
+        <invoker type="cashreceipt:mode" caption="ONLINE" index="0" />
+    </invokers>
+    
+    <code>
+        <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import com.rameses.enterprise.treasury.cashreceipt.*
+        
+        class  CashReceiptModeOnlineController  {
+            def entity;
+        }
+        ]]>
+        
+    </code>
+    
+    <pages>
+        <page template="com.rameses.gov.treasury.cashreceipt.ModeOnlinePage"/>
+    </pages>
+    
+</workunit>

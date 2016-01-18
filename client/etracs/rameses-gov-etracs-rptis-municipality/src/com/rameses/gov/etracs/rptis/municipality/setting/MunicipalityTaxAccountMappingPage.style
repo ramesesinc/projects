@@ -1,0 +1,7 @@
+"selectedItem.basic.*|selectedItem.sef.*|update"[selectedItem == null]{
+    enabled:false;
+}
+
+"selectedItem.basic.*|selectedItem.sef.*|update"[selectedItem != null]{
+    enabled:true;
+}

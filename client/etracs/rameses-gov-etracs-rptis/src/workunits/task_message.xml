@@ -1,0 +1,87 @@
+<workunit>
+    <invokers>
+        <invoker type="rptmessage:create" action="showSignViewer" caption="Message" />
+    </invokers>
+    <code>
+    <![CDATA[
+                import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;   
+        import com.rameses.gov.etracs.rpt.common.*;
+        import com.rameses.rcp.common.SigIdModel;
+        import com.rameses.rcp.sigid.SigIdViewer;
+        
+        public class RPTMessageController{
+        
+            @Binding
+            def binding;
+            
+            @Service('Var')
+            def var;
+            
+            def message;
+            def assignees;
+            def task;
+            def assignee;
+            def signature;
+            def digitalsigactive;
+            def handler;
+            
+            void showSignViewer(){
+                signature = [:];
+                loadDigitalSignatureStatus();
+                if (digitalsigactive)
+                    SigIdViewer.open(model); 
+            }
+            
+            void loadDigitalSignatureStatus(){
+                if (digitalsigactive == null)
+                    digitalsigactive = var.getProperty('digital_signature_active', 0);
+                digitalsigactive = digitalsigactive.toString().toLowerCase().matches('1|y|yes|t|true')
+            }
+            
+            def model = [
+                onselect: {sig-> 
+                     signature.image = sig.imageData;
+                     signature.sigstring = sig.sigString;
+                     signature.numstrokes = sig.numberOfStrokes;
+                     binding.refresh('signature.image');
+                 },
+
+                 getPenWidth: {
+                     return 5;
+                 }            
+            ] as SigIdModel
+            
+            def doOk() {
+                if ( digitalsigactive && signature.numstrokes == 0)
+                    throw new Exception('Signature is required.');
+                if (!digitalsigactive)
+                    signature = null;
+                    
+                task.message = message;
+                task.signature = signature;
+                if(assignee) task.assignee = assignee;
+                handler.call();
+                return "_close";
+            }
+            
+            def doCancel() {
+                return "_close";
+            }
+            
+            void paste(){
+                signature.image = DBImageUtil.getInstance().getClipboardImage();
+                binding.refresh('signature.image');
+            }
+            
+        }
+    ]]>
+    </code>
+
+    <pages>
+        <page template="com.rameses.gov.etracs.rpt.workflow.RPTMessagePage"/>
+    </pages>
+    
+</workunit>

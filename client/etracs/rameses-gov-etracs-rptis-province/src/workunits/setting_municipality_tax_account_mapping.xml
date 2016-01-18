@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker folderid="/explorer/setting/landtax" action="init" caption="Municipality Realty Tax Account Mapping" index="1" category="assessor" role="LANDTAX_DATAMGMT" />
+        
+        <invoker type="formActions" action="_close" caption="Close" immediate="true" />
+        <invoker type="formActions" action="refreshAccountMappings" caption="Refresh" immediate="true" />
+        <invoker type="formActions" action="buildAccountMappings" caption="Build Account Mappings" immediate="true" />                
+    </invokers>
+    <code>
+        
+import com.rameses.rcp.annotations.*;        
+import com.rameses.rcp.common.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.common.*;
+
+class MunicipalityTaxAccountMappingController 
+{
+    @Binding 
+    def binding;
+    
+    @Service('MunicipalityTaxAccountMappingService')
+    def svc;
+    
+    String title = 'Municipality Realty Tax Account Mapping';
+    
+    def selectedItem;
+    def mappings 
+    
+    void init(){
+        mappings = svc.getMappings();
+    }
+
+    
+    def listHandler = [
+        fetchList    : { return mappings },
+        validate : { li ->
+            svc.saveMapping(selectedItem);
+        },
+    ] as EditorListModel
+    
+    void save(){
+        if (selectedItem){
+            svc.saveMapping(selectedItem);
+            MsgBox.alert('Record has been successfully save.');
+        }
+    }
+    
+    
+    void required(title, value){
+        if (!value)
+            throw new Exception(title + ' is required.');
+    }
+    
+    void refreshAccountMappings() {
+        mappings = svc.getMappings();
+        listHandler.reload(); 
+    } 
+    
+    void buildAccountMappings() { 
+        if ( !mappings ) throw new Exception('No available municipal(s)');
+        
+        if (MsgBox.confirm("You are about to build the municipal accounts. Do you want to continue?")) {
+            mappings = svc.buildAccounts([:]); 
+            MsgBox.alert("Successfully build.");
+            listHandler.reload(); 
+        }
+    }        
+}
+
+
+    </code>
+    <pages>
+        <page template="com.rameses.gov.etracs.rptis.province.setting.MunicipalityTaxAccountMappingPage"/>
+    </pages>
+</workunit>

@@ -1,0 +1,21 @@
+"entity.*|doBuild|doCancel" [mode=='init' || mode=='done']{
+    enabled:false;
+}
+"entity.*|doBuild" [mode=='init' || mode=='done']{
+    enabled:true;
+}
+"entity.*|doBuild" [mode == 'building']{
+    enabled:false;
+}
+"doCancel" [mode == 'building']{
+    enabled:true;
+}
+"loadingicon" [mode == 'building']{
+    visible: true;
+}
+"loadingicon" [mode != 'building']{
+    visible: false;
+}
+"doBuild|doCancel" [mode == 'done']{
+    enabled:false;
+}

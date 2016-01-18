@@ -1,0 +1,80 @@
+<workunit extends="rpt_wtemplates/ReportController.xml" >
+    <invokers>
+        <invoker folderid="/menu/report/landtax" action="init" caption="Abstract of Real Property Collection" target="window" index="10" 
+            role="LANDTAX_REPORT"/>
+    </invokers>
+    <code>
+
+<![CDATA[
+
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.reports.*;
+
+class AbstractRPTCollectionController extends com.rameses.gov.etracs.rpt.report.ReportController
+{
+    @Service('LandTaxReportService') 
+    def svc 
+    
+    @PropertyChangeListener
+    def listener = ['.*': {
+            println 'Property Changed: ' + it 
+        }
+    ]
+    
+    String title = 'Abstract of Real Property Collection'
+    
+    
+    def data 
+    
+    
+    String reportPath = 'com/rameses/gov/etracs/rpt/report/landtax/'
+    String reportName = reportPath + 'abstractrptcollection.jasper';
+    
+    SubReport[] getSubReports() {
+        return [
+            new SubReport( 'AbstractItem', reportPath + 'abstractrptcollectionitem.jasper'),
+            new SubReport( 'AbstractAdvance', reportPath + 'abstractrptcollectionadv.jasper'),
+        ] as SubReport[]
+    }
+    
+    def getReportData(){
+        data = svc.generateAbstractOfCollection(entity)
+        return data;
+    }
+    
+    Map getParameters(){
+        return [
+            TITLE       : data?.title, 
+            PERIOD      : data?.period,
+        ]
+    }
+    
+    
+    List getAccounts(){
+        return ['BASIC', 'SEF']
+    }
+    
+        
+    List getDays(){
+        return svc.getNumDays( entity.year, entity.month?.index-1 )
+    }
+    
+    
+   def formControl = [
+        getFormControls: {
+            return [
+                new FormControl( "combo", [caption:'Account', name:'entity.accttype', items:'accounts', immediate:true, preferredSize:'100,19']),
+                new FormControl( "integer", [caption:'Year', name:'entity.year', required:true, preferredSize:'100,19']),
+                new FormControl( "combo", [caption:'Quarter', name:'entity.qtr', items:'quarters', required:true, preferredSize:'100,19', immediate:true]),
+                new FormControl( "combo", [caption:'Month', name:'entity.month', items:'monthsByQtr', depends:['entity.qtr'] as String[], expression:'#{item.name}', dynamic:true, preferredSize:'100,19', immediate:true]),
+                new FormControl( "combo", [caption:'Day', name:'entity.day', items:'days', dynamic:true, depends:['entity.month'] as String[], immediate:true, preferredSize:'100,19']),
+            ]    
+        },
+   ] as FormPanelModel;
+}
+]]>        
+        
+    </code>
+</workunit>

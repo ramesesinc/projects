@@ -1,0 +1,61 @@
+"addFaas|editFaas|removeFaas" [ entity.state == 'PENDING'] {
+    enabled:true;
+}
+
+"selectedItem" [ entity.state == 'PENDING'] {
+    readonly:false;
+}
+
+"editFaas|removeFaas" [ selectedItem == null ]{
+    enabled:false;
+}
+
+
+"addFaas|editFaas|removeFaas" [ entity.state != 'PENDING' || mode == 'read'] {
+    enabled:false;
+}
+
+"editFaas|removeFaas" [selectedItem.systemcreated == true] {
+    enabled:false;
+}
+
+
+"selectedItem" [ entity.state != 'PENDING' || mode == 'read'] {
+    readonly:true;
+}
+
+
+"historyActions" [true == true]{
+    visible:false;
+}
+
+"historyActions" [selectedItem != null && selectedItem.state == 'APPROVED']{
+    visible:true;
+}
+
+
+"openSubLedger|deleteSubLedger" [selectedSubLedger == null]{
+    enabled:false;
+}
+
+
+"openSubLedger|deleteSubLedger" [selectedSubLedger != null]{
+    enabled:true;
+}
+
+"deleteSubLedger" [selectedSubLedger.state != 'PENDING']{
+    visible:false;
+}
+
+"addSubLedger|openSubLedger|deleteSubLedger" [entity.state != 'APPROVED']{
+    enabled:false;
+}
+
+
+"viewTaxDeclaration" [true == true]{
+    enabled:false;
+}
+
+"viewTaxDeclaration" [selectedItem != null && selectedItem.faasid != null]{
+    enabled:true;
+}

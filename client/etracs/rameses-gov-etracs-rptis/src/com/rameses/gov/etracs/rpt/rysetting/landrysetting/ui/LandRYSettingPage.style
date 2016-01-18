@@ -1,0 +1,32 @@
+"selected.*" [mode == "read"]{
+    readonly:true;
+}
+
+"selected.*" [mode == "edit"]{
+    readonly:false;
+}
+
+"lgu" [mode == "read"]{
+    enabled:false;
+}
+
+"lgu" [mode == "edit"]{
+    enabled:true;
+}
+
+
+"createLandAdjustmentType|openLandAdjustmentType|removeLandAdjustmentType" [mode == "read"]{
+    enabled:false;
+}
+
+"createLandAdjustmentType|openLandAdjustmentType|removeLandAdjustmentType" [mode == "edit"]{
+    enabled:true;
+}
+
+"openLandAdjustmentType|removeLandAdjustmentType" [selectedLandAdjustmentType == null]{
+    enabled:false;
+}
+
+"entity.ry" [true == true]{
+    enabled:false;
+}

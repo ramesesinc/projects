@@ -1,0 +1,56 @@
+<workunit>
+    <invokers>
+       <invoker type="bpassessment:analyzer:payment" caption="Payment" action="init" target="popup"/>
+       <invoker type="formActions" caption="Back" action="_close" />
+    </invokers>
+    <code>
+        <![CDATA[
+            import com.rameses.rcp.common.*
+            import com.rameses.rcp.annotations.*
+            import com.rameses.osiris2.client.*
+            import com.rameses.osiris2.common.*
+            import com.rameses.rulemgmt.constraint.*;
+            import com.rameses.rulemgmt.*;
+            import java.rmi.server.*;
+            
+            class PaymentController  {
+                
+                @Service("BPPaymentRuleService")
+                def service;
+            
+                String title = "Payment Distribution";
+                
+                def amtpaid;
+                def entity;
+                def result;
+                def taxcredit = 0;
+                def totalaccount;
+            
+                void init() {
+                    result = service.execute( entity );
+                    amtpaid = result.total;
+                    taxcredit = result.taxcredit;
+                    totalaccount = result.totalaccount;
+                }
+                
+                def accountListModel = [
+                    fetchList: { o->
+                        return result.accounts;
+                    }
+                ] as BasicListModel;
+                
+                def listModel = [
+                    fetchList: { o->
+                         return result.items;
+                    }
+                ] as BasicListModel;
+                
+            }
+        ]]>    
+    </code>
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.rules.bpls.PaymentDistributionPage"/>
+    </pages>
+    
+</workunit>

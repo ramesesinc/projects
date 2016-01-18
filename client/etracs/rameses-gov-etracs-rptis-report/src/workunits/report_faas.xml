@@ -1,0 +1,124 @@
+<workunit>
+    <invokers>
+        <invoker type="faas:formActions" action="initPreview" caption="Faas Report" visibleWhen="#{mode=='read'}"/>
+        <invoker type="faaslist:formActions" action="initPreview" caption="Faas Report" visibleWhen="#{selectedEntity != null}" depends="listHandler.selectedEntity" index="30" icon="images/toolbars/preview.png"/>
+        <invoker type="faas:list:formActions" action="initPreview" caption="Faas Report" visibleWhen="#{selectedEntity != null}"/>
+        <invoker type="faas:report" action="initPreview" caption="Faas" />
+        <invoker type="formActions" action="_close" caption="Close" mnemonic="c" immediate="true" icon="images/toolbars/cancel.png" />
+    </invokers>
+    <code >
+    <![CDATA[
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.reports.*;
+        import com.rameses.gov.etracs.rpt.util.*;
+        
+        public class FAASReportController 
+        {
+            @Service('FAASReportService')
+            def svc;
+            
+            @Service('ReportParameterService')
+            def paramSvc;
+            
+            def entity
+            def reportdata 
+            def reportparams = [:]
+            
+            @FormId
+            @FormTitle
+            String getTitle(){
+                return 'FAAS Report: ' + (entity.tdno ? entity.tdno : entity.utdno)
+            }
+            
+            def reportPath = 'com/rameses/gov/etracs/rpt/report/faas/'
+            
+            void initPreview() {
+                reportdata = svc.getReportData( entity)
+                saveSignatures(reportdata)
+                report.viewReport();
+            }
+            
+            void saveSignatures(reportdata){
+                reportdata.signatories.each{ k, v ->
+                    def objid = v.objid + '-' + v.state 
+                    if (v.signature?.image)
+                        v.signatureis = DBImageUtil.getInstance().saveImageToFile(objid, v.signature.image)
+                }
+            }
+            
+            def report =[
+                getReportName : { return getFaasReportName() },
+                getSubReports : { return getFaasSubReports() },
+                getReportData : { return reportdata; },
+                getParameters : { 
+                    def params = paramSvc.getStandardParameter(); 
+                    params.ImageInputStream = DBImageUtil.getInstance().getImage2(entity.objid)
+                    params.putAll(reportparams);
+                    return params 
+                }
+            ] as ReportModel
+
+            def getFaasReportName() {
+                def rputype = reportdata.rpu.rputype.toLowerCase()
+                if( rputype == 'mach' )
+                    return reportPath + 'mach/FAASMach.jasper'
+                if( rputype == 'bldg' )
+                    return reportPath + 'bldg/FAASBldg.jasper'
+                if( rputype == 'misc' )
+                    return reportPath + 'misc/FAASMisc.jasper'
+                return reportPath + 'land/FAASLand.jasper'
+            }
+
+            def getFaasSubReports() {
+                def rputype = reportdata.rpu.rputype.toLowerCase()
+                
+                if( rputype == 'bldg' ) {
+                    return [
+                        new SubReport( 'BuildingStructure', reportPath + 'bldg/BuildingStructure.jasper'),
+                        new SubReport( 'AdditionalItem', reportPath + 'bldg/AdditionalItem.jasper'),
+                        new SubReport( 'PropertyAssessment', reportPath + 'bldg/PropertyAssessment.jasper'),
+                        new SubReport( 'AnnotationList', reportPath + 'bldg/FAASAnnotationList.jasper'),
+                        new SubReport( 'Signatories', reportPath + 'Signatories.jasper'),
+                    ] as SubReport[]
+                }
+                if( rputype == 'mach' ) {
+                    return [
+                        new SubReport( 'MachDetail', reportPath + 'mach/MachDetail.jasper'),
+                        new SubReport( 'PropertyAppraisal', reportPath + 'mach/PropertyAppraisal.jasper'),
+                        new SubReport( 'PropertyAssessment', reportPath + 'mach/PropertyAssessment.jasper'),
+                        new SubReport( 'AnnotationList', reportPath + 'mach/FAASAnnotationList.jasper'),
+                        new SubReport( 'Signatories', reportPath + 'Signatories.jasper'),
+                    ] as SubReport[]
+                }
+                if( rputype == 'misc' ) {
+                    return [
+                        new SubReport( 'MiscPropertyAppraisal', reportPath + 'misc/MiscPropertyAppraisal.jasper'),
+                        new SubReport( 'MiscAdjustment', reportPath + 'misc/MiscAdjustment.jasper'),
+                        new SubReport( 'PropertyAssessment', reportPath + 'misc/PropertyAssessment.jasper'),
+                        new SubReport( 'AnnotationList', reportPath + 'misc/FAASAnnotationList.jasper'),
+                        new SubReport( 'Signatories', reportPath + 'Signatories.jasper'),
+                    ] as SubReport[]
+                }
+
+                return [
+                    new SubReport( 'LandAppraisal', reportPath + 'land/LandAppraisal.jasper'),
+                    new SubReport( 'PlantTreesAppraisal', reportPath + 'land/PlantTreesAppraisal.jasper'),
+                    new SubReport( 'LandAdjustment', reportPath + 'land/LandAdjustment.jasper'),
+                    new SubReport( 'PropertyAssessment', reportPath + 'land/PropertyAssessment.jasper'),
+                    new SubReport( 'AnnotationList', reportPath + 'land/FAASAnnotationList.jasper'),
+                    new SubReport( 'BackTaxList', reportPath + 'land/BackTaxList.jasper'),
+                    new SubReport( 'Signatories', reportPath + 'Signatories.jasper'),
+                ] as SubReport[]
+            }
+        
+        }
+        
+    ]]>    
+    </code>
+    
+<page>
+    <page template="com.rameses.gov.etracs.rpt.report.PreviewPage" />
+</page>    
+</workunit>

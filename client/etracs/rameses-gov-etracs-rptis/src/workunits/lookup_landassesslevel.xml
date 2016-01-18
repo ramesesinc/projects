@@ -1,0 +1,42 @@
+<workunit extends="wtemplates/LookupController.xml">
+    <invokers>
+        <invoker type="landassesslevel:lookup" action="init" caption="Assessment Level Lookup" target="popup" />
+    </invokers>
+    
+    <code>
+
+import com.rameses.rcp.common.*
+import com.rameses.rcp.annotations.*
+import com.rameses.osiris2.client.*
+import com.rameses.osiris2.common.*
+
+class LandAssessLevelLookupController extends LookupController
+{
+    @Service("LandRYSettingLookupService")
+    def svc
+    
+    def lguid;
+    def barangayid;
+    def ry;
+    def classificationid;
+    
+    Column[] getColumns() {
+        return [
+            new Column(name:"code", caption:"Code", width:80),
+            new Column(name:"name", caption:"Name", width:250),
+            new Column(name:"rate", caption:"Rate", width:80, type:'decimal'),
+            new Column(name:"fixrate", caption:"Fix?", width:50, type:'boolean', checkValue:'1', uncheckValue:'0'),
+        ]
+    }
+    
+    List fetchList( Map params ) { 
+        params.lguid = lguid;
+        params.barangayid = barangayid;
+        params.ry = ry;
+        params.classificationid = classificationid;
+        return svc.lookupAssessLevels(params);
+    }
+}  
+
+    </code>
+</workunit>

@@ -1,0 +1,32 @@
+<workunit extends="wtemplates/ExplorerViewController.xml" >
+    <invokers>
+        <invoker folderid="/explorer/master/treasury/sre" caption="SRE Accounts" index="1" action="init" role="MASTER"/>
+        <invoker type="formActions" action="sync" caption="Sync From Cloud" role="MASTER" />
+   </invokers>
+   <code>
+       import com.rameses.rcp.common.*;
+       import com.rameses.rcp.annotations.*;
+       import com.rameses.osiris2.client.*;
+       import com.rameses.osiris2.common.*;
+       import com.rameses.enterprise.accounts.*;
+       
+       class SREAccountMgmtController extends AccountMgmtController {
+       
+         String serviceName = 'SREAccountService'
+         
+         @Service("SREAccountService") 
+         def accountService;
+            
+         public String getTitle() {
+            return "SRE Account Management";
+         }
+       
+         public String getPrefixId() {
+            return "SREACCT";
+         }
+       
+
+       
+       }
+   </code>
+</workunit>

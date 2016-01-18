@@ -1,0 +1,31 @@
+"params.*" [ mode == 'init' ] {
+    enabled:true;
+}
+
+"params.(barangay|section|starttdno|endtdno)"[mode=='init']{
+    visible:false;
+    required:false;
+}
+
+"params.barangay"[params.selectiontype.type=='bybrgy']{
+    visible:true;
+    enabled:true;
+    required:true;
+}
+
+"params.(barangay|section)"[params.selectiontype.type=='bysection']{
+    visible:true;
+    enabled:true;
+    required:true;
+}
+
+"params.(starttdno|endtdno)"[params.selectiontype.type=='bytdrange']{
+    visible:true;
+    enabled:true;
+    required:true;
+}
+
+
+"params.*" [ mode != 'init' ] {
+    enabled:false;
+}

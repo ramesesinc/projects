@@ -1,0 +1,15 @@
+"params.*" [ processing == false] {
+    enabled:true;
+}
+
+"params.*" [ processing == true] {
+    enabled:false;
+}
+
+"msg" [ processing == false] {
+    visible:false;
+}
+
+"msg" [ processing == true] {
+    visible:true;
+}

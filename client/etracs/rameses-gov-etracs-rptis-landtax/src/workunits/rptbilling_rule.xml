@@ -1,0 +1,5 @@
+<workunit extends="wtemplates/RuleMgmtController.xml" serviceName="RuleMgmtService" tag="rptbilling">
+    <invokers>
+        <invoker folderid="/explorer/rulemgmt/landtax" caption="Realty Tax Billing Rules" action="init" index="50" role="LANDTAX"/>
+    </invokers>
+</workunit>

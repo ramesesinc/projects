@@ -1,0 +1,42 @@
+<workunit>
+    <invokers>
+        <invoker type="bankdeposit:formActions"  caption="Export to eNGAS(CSV)" action="generateCvs"  target="process" visibleWhen="#{mode=='read'}" />
+    </invokers>
+    <code>
+        <![CDATA[    
+        import com.rameses.osiris2.common.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import java.rmi.server.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.util.*;
+        import javax.swing.*;
+        import com.rameses.io.*;
+        
+        class BankDepositExportRCDController {
+            
+            @Service("BankDepositReportService") 
+            def svc
+            
+            def entity
+        
+            void generateCvs() {
+                def data = svc.exportNGASToCsv( entity );
+                def chooser = new JFileChooser();
+                def sdf = new java.text.SimpleDateFormat("yyyyMMddHHmmss");
+                def fileName = entity.txnno +"-"+ sdf.format(new Date()) +".csv";
+                chooser.selectedFile = new File( fileName );
+                int i = chooser.showSaveDialog(null);
+                if(i==0) {
+                    FileWriter fw = new FileWriter(chooser.selectedFile);
+                    fw.write(data.toString());
+                    fw.flush();
+                    fw.close()
+                    MsgBox.alert("Data has been successfully exported!");
+                }
+            }
+        
+        }    
+        ]]>
+    </code>
+</workunit>

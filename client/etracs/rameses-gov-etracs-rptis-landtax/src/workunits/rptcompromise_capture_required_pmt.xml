@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="rptcompromise:capturedownpayment" action="initDownpayment" caption="Capture Downpayment" target="popup" />
+        <invoker type="rptcompromise:capturecypayment" action="initCYPayment" caption="Capture Current Year Payment" target="popup" />
+    </invokers>
+    <code lang="groovy">
+<![CDATA[
+
+import com.rameses.rcp.annotations.*
+import com.rameses.rcp.common.*
+import com.rameses.osiris2.client.*
+import com.rameses.osiris2.reports.*
+import java.rmi.server.UID
+
+public class RPTCompromiseCapturePaymentController 
+{
+    @Binding 
+    def binding
+    
+    def pmt
+    def onadd //handler 
+    
+    def entity;
+    
+    void init(){
+        pmt = [
+            collector : [:],
+            paidby   : entity.secondpartyrepresentative,
+            paidbyaddress: entity.secondpartyaddress,
+        ]
+    }   
+    
+    void initDownpayment() {
+        init();
+        pmt.amount = entity.downpayment;
+        pmt.type = 'downpayment' 
+    }   
+    
+    void initCYPayment() {
+        init();
+        pmt.type = 'cypayment' 
+    }   
+    
+    def postPayment() {
+        if( pmt.amount <= 0.0 ) 
+            throw new Exception('Amount must be greater than zero.')
+            
+        if (pmt.type == 'cypayment' && pmt.cy <= entity.endyear)
+            throw new Exception('Current year must be greater than ' + entity.endyear + '.');
+            
+        if( MsgBox.confirm('Posted payment can no longer be edited.\nMake sure the entries are correct.\nContinue?') ) {
+            if( onadd ) 
+                onadd( pmt )
+            return '_close' 
+        }
+        return null 
+    }
+    
+    def doCancel() {
+        if( MsgBox.confirm('Cancel payment?')) {
+            return '_close'
+        }
+        return null 
+    }
+    
+}
+
+
+]]>
+    </code>
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.rpt.ledger.compromise.RPTCompromisePaymentPage" />
+    </pages>
+</workunit>

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker folderid="/explorer/setting/landtax" action="init" caption="Barangay Realty Tax Account Mapping" index="1" category="assessor" role="LANDTAX" />
+        
+        <invoker type="formActions" action="_close" caption="Close" immediate="true" />
+        <invoker type="formActions" action="refreshAccountMappings" caption="Refresh" immediate="true" />
+        <invoker type="formActions" action="buildAccountMappings" caption="Build Account Mappings" immediate="true" />
+    </invokers>
+    <code>
+        
+import com.rameses.rcp.annotations.*;        
+import com.rameses.rcp.common.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.common.*;
+
+class BrgyTaxAccountMappingController 
+{
+    @Binding 
+    def binding;
+    
+    @Service('BrgyTaxAccountMappingService')
+    def svc;
+    
+    String title = 'Barangay Realty Tax Account Mapping';
+    
+    def selectedItem;
+    def list;
+    
+    void init(){
+        svc.saveUnmappedBarangays();
+        list = svc.getMappings([:]);
+    }
+
+    
+    def listHandler = [
+        getRows     : { return list.size()},
+        fetchList    : { return list},
+        validate     : { li -> 
+            def item = li.item;
+            svc.saveMapping(item);
+        },
+    ] as BasicListModel
+    
+    void save(){
+        if (selectedItem){
+            svc.saveMapping(selectedItem);
+            MsgBox.alert('Record has been successfully save.');
+        }
+    }    
+
+    def getLgus(){
+        def orgclass = OsirisContext.env.ORGCLASS
+        def orgid = OsirisContext.env.ORGID
+
+        if ('PROVINCE'.equalsIgnoreCase(orgclass)) {
+            return lguSvc.lookupMunicipalities([:])
+        }
+        else if ('MUNICIPALITY'.equalsIgnoreCase(orgclass)) {
+            return [lguSvc.lookupMunicipalityById(orgid)]
+        }
+        else if ('CITY'.equalsIgnoreCase(orgclass)) {
+            return [lguSvc.lookupCityById(orgid)]
+        }
+        return []
+    }
+
+    void refreshAccountMappings() {
+        list = svc.getMappings( [:] ); 
+        listHandler.reload(); 
+    } 
+    
+    void buildAccountMappings() { 
+        if ( !list ) throw new Exception('No available barangay(s)');
+        
+        if (MsgBox.confirm("You are about to build the barangay accounts. Do you want to continue?")) {
+            list = svc.buildAccounts([:]); 
+            MsgBox.alert("Successfully build.");
+            listHandler.reload(); 
+        }
+    }
+}
+
+
+    </code>
+    <pages>
+        <page template="com.rameses.gov.etracs.landtax.setting.BrgyTaxAccountMappingPage"/>
+    </pages>
+</workunit>

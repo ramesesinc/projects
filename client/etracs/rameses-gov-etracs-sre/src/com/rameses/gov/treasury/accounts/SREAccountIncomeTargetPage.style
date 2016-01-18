@@ -1,0 +1,6 @@
+"listHandler:item.target" [item.haschildren==1] {
+    background-color: #e5e5e5;
+} 
+"listHandler:item.target" [item.haschildren==0] {
+    background-color: #ffc08f;
+} 

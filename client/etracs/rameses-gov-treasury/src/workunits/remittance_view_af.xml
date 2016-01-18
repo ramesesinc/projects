@@ -1,0 +1,47 @@
+<workunit>
+    <invokers>
+        <invoker type="remittance:formActions" caption="View AF" immediate="true" action="init" index="6" visibleWhen="#{mode != 'initial' }"/>
+        
+        <invoker type="formActions" caption="Back" action="_close" mnemonic="b" shortcut="ctrl B" icon="images/toolbars/arrow_left.png"/>
+    </invokers>
+    
+    <code>
+        <![CDATA[    
+        import com.rameses.osiris2.common.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import java.rmi.server.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.util.*;
+        import com.rameses.osiris2.reports.*;
+        
+        class AFRemittanceCashReceiptCController {
+        
+            @Service("AFRemittanceService")
+            def service;
+            
+            def title;
+            def entity;
+            
+            void init() {
+                title = (entity.txnno) ? "Remittance" : "Unremitted (Current AF Inventory)";
+            }
+            
+            def receiptsListModel = [
+                fetchList: {
+                    if( entity.txnno )
+                        return service.getRemittedAF( [objid:entity.objid] );
+                    else
+                        return service.getUnremittedAF( [:] );
+                }
+            ] as BasicListModel;
+            
+        }      
+       ]]>
+    </code>
+    
+   <pages>
+       <page template="com.rameses.gov.treasury.remittance.ViewAFRemittancePage" />
+   </pages>
+   
+</workunit>

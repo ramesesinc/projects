@@ -1,0 +1,7 @@
+"sale.*" [mode == 'read']{
+    enabled:false;
+}
+
+"sale.*" [mode != 'read']{
+    enabled:true;
+}

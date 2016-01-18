@@ -1,0 +1,7 @@
+"entity.lessor.*|addLessor" [ government == 0 ] {
+    visible: true;
+}
+
+"entity.lessor.*|addLessor" [ government == 1 ] {
+    visible: false;
+}

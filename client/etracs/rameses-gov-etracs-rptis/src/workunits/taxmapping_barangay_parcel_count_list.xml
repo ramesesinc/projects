@@ -1,0 +1,56 @@
+<workunit>
+    <invokers>
+        <invoker folderid="/explorer/txn/taxmapping/list" action="init"  caption="Barangay Parcel Counts"  target="window" index="1" role="TAXMAPPER" />
+        <invoker type="formActions" action="_close" caption="Close" mnemonic="c"/>
+    </invokers>
+    <code>
+        import com.rameses.rcp.common.*
+        import com.rameses.rcp.annotations.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        
+        class TaxmapingListingController 
+        {
+            @Service('TaxmappingListService')
+            def svc; 
+            
+            @Service('BarangayLookupService')
+            def brgySvc;
+            
+            String title = 'Barangay Parcel Counts';
+            
+            def barangays;
+            def barangay;
+            
+            def rylist;
+            def ry;
+            
+            def list;
+            
+            @PropertyChangeListener
+            def listener = [
+                '.*' : { reload() },
+            ]
+            
+            void init(){
+                barangays = brgySvc.getList([:]);
+                rylist = svc.getRevisionYears();
+            }
+            
+            void reload(){
+                def params = [objid:barangay.objid, ry:ry]
+                list = svc.getBarangayLastParcelInfo(params);
+                listHandler?.load();
+            }
+            
+            
+            def listHandler = [
+                fetchList : {return list}
+            ] as BasicListModel
+            
+        }
+    </code>
+    <pages>
+        <page template="com.rameses.gov.etracs.rpt.taxmapping.ui.ListPage"/>
+    </pages>
+</workunit>

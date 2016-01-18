@@ -1,0 +1,49 @@
+<workunit>
+    <invokers>
+        <invoker type="remittance:reports" caption="Remittance Report By Cash Ticket" action="preview" target="self" index="7"/>
+        
+        <invoker type="formActions" caption="Back" action="_close" mnemonic="b" shortcut="ctrl B" icon="images/toolbars/arrow_left.png"/>
+    </invokers>
+    
+    <code>
+        <![CDATA[    
+        import com.rameses.osiris2.common.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import java.rmi.server.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.util.*;
+        import com.rameses.osiris2.reports.*;
+        
+        class RemittanceCashTicketReportController extends com.rameses.etracs.shared.ReportController  
+        {
+        
+            @Binding
+            def binding;
+        
+            @Service("RemittanceReportService")
+            def svc
+            
+            String title = "Remittance Report By Cash Ticket";
+            String reportPath =  "com/rameses/gov/treasury/remittance/report/"
+            String reportName = reportPath + 'cashticketreport.jasper'
+            
+            def getReportData(){
+                return svc.generateReportByCashTicket( entity )
+            }
+            
+           SubReport[] getSubReports() {
+               return [ 
+                    new SubReport("ReportCashTicketSummary", reportPath + "cashticketreportsummary.jasper"),
+                ] as SubReport[];    
+            }
+            
+        }      
+       ]]>
+    </code>
+    
+   <pages>
+       <page name="preview" template="com.rameses.osiris2.common.ui.ReportPreviewPage" />
+   </pages>
+   
+</workunit>

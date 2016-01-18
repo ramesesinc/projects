@@ -1,0 +1,55 @@
+<workunit extends="wtemplates/gov/bp/ReportController.xml" >
+    <invokers>
+        <invoker folderid="/explorer/report/bpls" action="init" role="REPORT" 
+            caption="Taxpayer Listing" target="window" index="-90"/>
+        
+    </invokers>
+    
+    <code>
+    <![CDATA[
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+import com.rameses.osiris2.common.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.reports.*;
+
+public class BPMasterListReportController extends com.rameses.etracs.shared.ReportController  
+{
+    @Service('BPMasterListReportService')
+    def svc;
+
+    String title = "Business Taxpayer Masterlist";
+    String reportpath = 'com/rameses/gov/etracs/bpls/reports/'
+    String reportName = reportpath + 'BPMasterList.jasper'
+
+    def statuslist = ['ACTIVE','PROCESSING','RETIRED']; 
+    def rptparams = [:];
+    
+    def formControl = [
+        getFormControls: {
+            return [
+                new FormControl( "integer", [caption:'Year', name:'entity.year', required:true, preferredSize:'100,20', captionWidth:100]), 
+                new FormControl( "combo", [caption:'Status', name:'entity.state', required:true, items:'statuslist', allowNull:false, captionWidth:100]) 
+            ]    
+        },
+    ] as FormPanelModel; 
+
+    def init() {
+        def outcome = super.init(); 
+        entity.state = statuslist[0]; 
+        return outcome; 
+    } 
+    
+    Map getParameters() { 
+        return rptparams; 
+    }
+
+    def getReportData(){
+        rptparams.YEAR = entity.year;
+        rptparams.TXNSTATE = entity.state;
+        return svc.getReport( entity ); 
+    }
+}
+    ]]>
+    </code>
+</workunit>

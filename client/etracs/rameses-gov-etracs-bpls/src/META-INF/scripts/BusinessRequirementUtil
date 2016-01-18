@@ -1,0 +1,70 @@
+import com.rameses.rcp.annotations.*
+import com.rameses.rcp.common.*
+import com.rameses.osiris2.client.*
+import com.rameses.osiris2.common.*
+import java.rmi.server.*;
+import com.rameses.util.*;
+
+public class BusinessRequirementUtil {
+    
+    @Caller
+    def caller;
+
+    @Service("BPRequirementRuleService")
+    def service;
+
+    def selectedItem;
+    def oldReq;
+
+    def getEntity() {
+        return caller.entity;
+    }
+
+    def fetch() {
+        oldReq = entity.requirements;
+        def result = service.execute( entity );
+        entity.requirements = result.requirements;
+        if(oldReq) {
+            entity.requirements.each {x->
+                def z = oldReq.find{ it.reftype == x.reftype  };
+                if(z) x.putAll( z );
+            }
+        }
+        listModel.reload();
+    }
+
+    def listModel = [
+        fetchList: { o-> 
+            return entity.requirements; 
+        },
+        onOpenItem: { o,col->
+           return edit();
+        }
+    ] as BasicListModel; 
+            
+    def edit() {
+        if(!selectedItem) return null;
+        return InvokerUtil.lookupOpener( "business_application:requirement", [
+            info:selectedItem,
+            handler: { o->
+                selectedItem.putAll( o );
+                listModel.reload();
+            }
+        ]);
+    }
+
+    void verify() {
+        //do nothing
+    }
+
+    void reset(){
+        listModel.reload();
+    }
+
+    /******************************************
+    * used by application section
+    ******************************************/
+
+   
+
+}

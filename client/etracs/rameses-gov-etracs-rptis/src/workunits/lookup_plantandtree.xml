@@ -1,0 +1,35 @@
+<workunit extends="wtemplates/LookupController.xml">
+    <invokers>
+        <invoker type="planttree:lookup" action="init" caption="Plants and Trees Lookup" target="popup" />
+    </invokers>
+    
+    <code>
+        
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+import com.rameses.osiris2.client.*
+import com.rameses.osiris2.common.*
+
+class PlantTreeLookupController extends LookupController
+{
+    @Service("PlantTreeService")
+    def svc;
+    
+    def state;
+    Column[] getColumns() {
+        return [
+            new Column(name:"code", caption:"Code", width:70),
+            new Column(name:"name", caption:"Plant/Tree", width:250),
+        ]
+    }
+    
+    List fetchList( Map params ) { 
+        params.state = ( state ? state : '%')
+        return svc.getPlantTrees(params)
+    }
+}  
+
+
+    </code>
+    
+</workunit>

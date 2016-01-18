@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="redflag:resolve" action="init" caption="Resolve Red Flag" target="popup" />
+        
+        <invoker type="formActions" action="cancel" caption="Cancel" immediate="true" />
+        <invoker type="formActions" action="resolve" caption="Resolve" mnemonic="r" />
+    </invokers>
+    <code>
+<![CDATA[
+        
+import com.rameses.rcp.annotations.*;        
+import com.rameses.rcp.common.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.common.*;
+
+class MunicipalityFaasRedFlagResolveController
+{
+    @Binding 
+    def binding;
+    
+    @Service('MunicipalityRedFlagService')
+    def svc;
+    
+    def entity;
+    def redflag;
+    def opener;
+    
+    String getTitle(){
+        return 'Red Flag Resolution';
+    }
+    
+    def oncomplete; //caller handler
+    
+    void init(){
+        def sopener = 'faas:' + redflag.action;
+        println 'spopener -> ' + sopener
+        entity._redflag = redflag;
+        opener = Inv.lookupOpener(sopener, [entity:entity]);
+        if (opener){
+            opener.handle.init();
+        }
+    }
+    
+    def resolve(){
+        if (MsgBox.confirm('Resolve red flag?')){
+            redflag.putAll(svc.resolveRedFlag(redflag, opener.handle.changeinfo));
+            if (oncomplete) oncomplete(redflag);
+            entity._resolve = null;
+            return '_close';
+        }
+        return null;
+    }
+    
+    def cancel(){
+        opener.handle.cancel();
+        return '_close';
+    }
+}
+
+
+]]>
+
+    </code>
+    <pages>
+        <page template="com.rameses.gov.etracs.rpt.faas.redflag.ui.RedFlagResolvePage"/>
+    </pages>
+</workunit>

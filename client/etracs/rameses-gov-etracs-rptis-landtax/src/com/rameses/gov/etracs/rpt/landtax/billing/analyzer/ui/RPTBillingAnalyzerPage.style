@@ -1,0 +1,3 @@
+"billitemsHandler:item.*" [item.actualuse == 'TOTALS']{
+    font-weight:bold;
+}

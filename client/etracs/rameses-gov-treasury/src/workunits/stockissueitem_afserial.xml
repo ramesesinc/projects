@@ -1,0 +1,33 @@
+<!-- REQUISITION ISSUE SLIP -->
+<workunit>
+    
+    <invokers>
+       <invoker type="stockissueitem:serial" />
+    </invokers>
+    
+    <code>
+         <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        
+        class StockIssueItemAFSerial {
+        
+            def item;
+            
+            
+            
+            def itemModel = [
+                fetchList: { o->
+                    return [];
+                }
+            ] as BasicListModel;
+        }
+        ]]>
+    </code>
+    
+    <pages>
+        <page template="com.rameses.gov.treasury.af.StockIssueItemAFSerialPage"/>
+    </pages>
+</workunit>

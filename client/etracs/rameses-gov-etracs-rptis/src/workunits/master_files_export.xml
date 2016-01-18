@@ -1,0 +1,71 @@
+<workunit extends="rpt_wtemplates/ExportController.xml">
+    <invokers>
+        <invoker type="propertyclassification:list:formActions" 
+                 action="init" caption="Export" 
+                 title ="Export Property Classifications"
+                 serviceName="PropertyClassificationService"
+                 role="MASTER" target="popup" index="501"/>
+        
+        <invoker type="exemptiontype:list:formActions" 
+                 action="init" caption="Export" 
+                 title ="Export Exemption Types"
+                 serviceName="ExemptionTypeService"
+                 role="MASTER" target="popup" index="501"/>
+        
+        <invoker type="canceltdreason:list:formActions" 
+                 action="init" caption="Export" 
+                 title ="Export Cancel FAAS Reasons"
+                 serviceName="CancelTDReasonService"
+                 role="MASTER" target="popup" index="501"/>
+        
+        <invoker type="bldgkind:list:formActions" 
+                 action="init" caption="Export" 
+                 title ="Export Kind of Buildings"
+                 serviceName="BldgKindService"
+                 role="MASTER" target="popup" index="501"/>
+        
+        <invoker type="material:list:formActions" 
+                 action="init" caption="Export" 
+                 title ="Export Materials"
+                 serviceName="MaterialService"
+                 role="MASTER" target="popup" index="501"/>
+        
+        <invoker type="structure:list:formActions" 
+                 action="init" caption="Export" 
+                 title ="Export Structures"
+                 serviceName="StructureService"
+                 role="MASTER" target="popup" index="501"/>
+        
+        <invoker type="machine:list:formActions" 
+                 action="init" caption="Export" 
+                 title ="Export Machines"
+                 serviceName="MachineService"
+                 role="MASTER" target="popup" index="501"/>
+        
+        <invoker type="planttree:list:formActions" 
+                 action="init" caption="Export" 
+                 title ="Export Plants/Trees"
+                 serviceName="PlantTreeService"
+                 role="MASTER" target="popup" index="501"/>
+        
+        <invoker type="miscitem:list:formActions" 
+                 action="init" caption="Export" 
+                 title ="Export Miscellaneous Items"
+                 serviceName="MiscItemService"
+                 role="MASTER" target="popup" index="501"/>
+        
+        <invoker type="rptparameter:list:formActions" 
+                 action="init" caption="Export" 
+                 title ="Export Parameters"
+                 serviceName="RPTParameterService"
+                 role="MASTER" target="popup" index="501"/>
+        
+        <invoker type="rptrequirementtype:list:formActions" 
+                 action="init" caption="Export" 
+                 title ="Export Requirement Types"
+                 serviceName="RPTRequirementTypeService"
+                 role="MASTER" target="popup" index="501"/>
+        
+    </invokers>
+</workunit>
+

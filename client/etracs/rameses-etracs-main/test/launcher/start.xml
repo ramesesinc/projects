@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="launcher" default="start" basedir=".">
+    
+    <target name="init">
+        <property file="conf.properties"/>
+        <property name="incubation.dir" value="${rameses.dir}/incubation"/>
+        
+        <taskdef resource="net/sf/antcontrib/antcontrib.properties">
+            <classpath>
+                <pathelement location="../../lib/ant-contrib-0.6.jar"/>
+            </classpath>
+        </taskdef> 
+        <taskdef name="groovy" classname="org.codehaus.groovy.ant.Groovy">
+            <classpath>
+                <pathelement location="../../lib/groovy-all-1.5.5.jar"/>
+            </classpath>            
+        </taskdef>        
+    </target>
+    
+    <target name="build" depends="init, copy-osiris3-server, deploy-server-libs, deploy-services, deploy-datasources, deploy-apps, deploy-web, deploy-web-resources, deploy-client-platform"></target>
+    
+    <target name="start" depends="build, run-server"></target>
+    
+    <!--=====================================================
+    = COPY OSIRIS SERVER 
+    =======================================================-->
+    <target name="copy-osiris3-server">
+        <copy todir="${target.server.dir}/bin" overwrite="true">
+            <fileset dir="${osiris.server.dir}/bin"/>
+        </copy>
+        <copy todir="${target.server.dir}/lib" overwrite="true">
+            <fileset dir="${osiris.server.dir}/lib"/>
+        </copy>
+        
+        <loadfile srcfile="../server.conf" property="server.conf"/> 
+        <groovy>
+            def str = project.getProperty('server.conf');
+            properties.each{k,v-> 
+                str = str.replaceAll('\\$\\{'+ k +'\\}', v);  
+            }
+            properties['server.conf.replaced']=str;
+        </groovy>
+        <echo message="Building server.conf ..."/>
+        <echo file="${target.server.dir}/bin/server.conf">${server.conf.replaced}</echo> 
+    </target>
+    
+    <target name="deploy-server-libs" depends="init">
+        <!-- remove server libs from workspace -->
+        <property name="_target.server.lib.dir_" value="${target.server.dir}/lib"/> 
+        <dirset id="target.server.lib.name" includes="*.jar" dir="${_target.server.lib.dir_}"/>
+        <property name="target.server.lib.names" refid="target.server.lib.name"/> 
+        <for list="${target.server.lib.names}" delimiter=";" param="val">
+            <sequential> 
+                <delete file="${_target.server.lib.dir_}/@{val}"/> 
+            </sequential>
+        </for> 
+        
+        <!-- copy server libs to workspace -->
+        <property name="_source.server.lib.dir_" value="${platform-libs.dir}/server"/> 
+        <dirset id="source.server.lib.name" includes="*.jar" dir="${_source.server.lib.dir_}"/>
+        <property name="source.server.lib.names" refid="source.server.lib.name"/> 
+        <for list="${source.server.lib.names}" delimiter=";" param="val">
+            <sequential>
+                <echo> Copying @{val} ... </echo>
+                <copy file="${_source.server.lib.dir_}/@{val}" todir="${_target.server.lib.dir_}"/>
+            </sequential>
+        </for>
+    </target>
+
+    <target name="deploy-services" depends="init">
+        <property name="_target.server.modules.dir_" value="${target.server.dir}/workspace/services/shared/v25/modules"/>        
+        <delete dir="${_target.server.modules.dir_}" failonerror="false"/> 
+        
+        <for list="${shared.services}" delimiter=":" param="val">
+            <sequential>
+                <copy todir="${_target.server.modules.dir_}/@{val}">
+                    <fileset dir="${projects.dir}/server/@{val}"/>
+                </copy>
+            </sequential>
+        </for>
+    </target>
+    
+    <target name="deploy-datasources" depends="init">
+        <copy todir="${target.services.dir}/datasources">
+            <fileset dir="../datasources"/> 
+        </copy>
+    </target>    
+    
+    <target name="deploy-apps" depends="init">
+        <property name="_target.app.dir_" value="${target.services.dir}/apps/${target.app.name}"/> 
+        <delete dir="${_target.app.dir_}" failonerror="false"/> 
+        <copy file="../app.conf" todir="${_target.app.dir_}" overwrite="true"/> 
+        <copy todir="${_target.app.dir_}/adapters">
+            <fileset dir="../adapters"/> 
+        </copy>
+        <copy todir="${_target.app.dir_}/connections">
+            <fileset dir="../connections"/> 
+        </copy>        
+        
+        <for list="${app.modules}" delimiter=":" param="val">
+            <sequential>
+                <copy todir="${_target.app.dir_}/modules/@{val}">
+                    <fileset dir="${projects.dir}/server/@{val}"/>
+                </copy>
+            </sequential>
+        </for> 
+    </target>   
+    
+    <target name="deploy-web" depends="init">
+        <property name="_target.web.dir_" value="${target.server.dir}/workspace/web"/> 
+        <copy file="../anubis.hosts" todir="${_target.web.dir_}" overwrite="true"/> 
+        <loadfile srcfile="../anubis.hosts" property="anubis.hosts"/> 
+        <groovy>
+            def str = project.getProperty('anubis.hosts');
+            properties.each{k,v-> 
+                str = str.replaceAll('\\$\\{'+ k +'\\}', v);  
+            }
+            properties['anubis.hosts.replaced']=str;
+        </groovy>
+        <echo message="Building anubis.hosts ..."/>
+        <echo file="${_target.web.dir_}/anubis.hosts">${anubis.hosts.replaced}</echo>         
+        
+        <delete dir="${_target.web.dir_}/${target.app.name}" failonerror="true"/> 
+        <copy todir="${_target.web.dir_}/${target.app.name}" overwrite="true" failonerror="false"> 
+            <fileset dir="${projects.dir}/web/${target.app.name}"/> 
+        </copy> 
+    </target>    
+    
+    <target name="-do-copy-download-core-module">
+        <groovy>
+        <![CDATA[
+            def filename = properties['params_file'];
+            if (filename == null) filename = '';
+
+            def arr = filename.split(','); 
+            def jarname = arr[0];
+            if (!jarname) return;
+            
+            if (!jarname.endsWith('.jar')) {
+                jarname = jarname+'.jar';
+            } 
+            
+            def srcfile = properties['params_srcdir'] + '/' + jarname;
+            ant.echo(' Copying ' + jarname + '...');
+            ant.copy(file:srcfile, todir:properties['params_todir'], overwrite:true, failonerror:false); 
+        ]]> 
+        </groovy>
+    </target>
+    
+    <target name="-do-copy-download-client-module">
+        <groovy>
+        <![CDATA[
+            def filename = properties['params_file'];
+            if (filename == null) filename = '';
+
+            def arr = filename.split(','); 
+            def projname = arr[0];
+            if (!projname) return;
+            
+            def srcfile = properties['params_srcdir'] + '/' + projname + '/dist/' + projname + '.jar';
+            ant.echo(' Copying ' + projname + '...');
+            ant.copy(file:srcfile, todir:properties['params_todir'], overwrite:true, failonerror:false); 
+        ]]> 
+        </groovy>
+    </target>    
+    
+    <target name="deploy-web-resources" depends="init">
+        <property name="_target.web.download.modules.dir_" value="${target.server.dir}/workspace/web/resources/downloads/modules"/>  
+        <copy todir="${target.server.dir}/workspace/web/resources" failonerror="false">
+            <fileset dir="../../resources" />
+        </copy>
+        <delete dir="${_target.web.download.modules.dir_}/modules" failonerror="false"/>
+
+        <echo message="Build download core modules ..."/>
+        <for list="${download.core.modules}" delimiter=":" param="val">
+            <sequential> 
+                <antcall target="-do-copy-download-core-module"> 
+                    <param name="params_todir" value="${_target.web.download.modules.dir_}/core"/> 
+                    <param name="params_srcdir" value="${platform-libs.dir}/client"/> 
+                    <param name="params_file" value="@{val}"/> 
+                </antcall> 
+            </sequential> 
+        </for> 
+        
+        <echo message="Build download shared modules ..."/>
+        <for list="${download.shared.modules}" delimiter=":" param="val">
+            <sequential>
+                <antcall target="-do-copy-download-client-module"> 
+                    <param name="params_todir" value="${_target.web.download.modules.dir_}/shared"/> 
+                    <param name="params_srcdir" value="${projects.dir}/client"/> 
+                    <param name="params_file" value="@{val}"/> 
+                </antcall>                 
+            </sequential>
+        </for> 
+        
+        <echo message="Build download app modules ..."/>
+        <for list="${download.app.modules}" delimiter=":" param="val">
+            <sequential>
+                <antcall target="-do-copy-download-client-module"> 
+                    <param name="params_todir" value="${_target.web.download.modules.dir_}"/> 
+                    <param name="params_srcdir" value="${projects.dir}/client"/> 
+                    <param name="params_file" value="@{val}"/> 
+                </antcall>                                 
+            </sequential>
+        </for> 
+        
+        <echo message="Generate updates.xml ..."/>
+        <groovy>
+        <![CDATA[     
+            def buffer = new StringBuffer();
+            buffer.append('<app>');
+            buffer.append('\n<env>');
+            
+            def appenv = properties['download.app.env'];
+            if (appenv == null) appenv = '';
+            
+            appenv.split(':::').each{
+                buffer.append('\n\t' + it); 
+            } 
+            buffer.append('\n</env>'); 
+            
+            buffer.append('\n<modules>');  
+            [
+                [name:'download.core.modules', title:'core libraries', prefix:'core/'],
+                [name:'download.shared.modules', title:'shared libraries', prefix:'shared/'],
+                [name:'download.app.modules', title:'main app libraries']
+            ].each{item-> 
+                def sval = properties[item.name];
+                if (sval == null) sval = '';
+                if (!item.prefix) item.prefix='';
+
+                buffer.append('\n ');
+                buffer.append('\n\t<!-- '+item.title+' -->');
+                sval.split(':').each{ 
+                    def arr = it.split(','); 
+                    def jarname = arr[0];
+                    if (!jarname) return;
+                    if (!jarname.endsWith('.jar')) {
+                        jarname = jarname+'.jar';
+                    } 
+                    def jarver = (arr.length > 1? arr[1]: '1.0'); 
+                    buffer.append('\n\t<module file="'+item.prefix+jarname+'" version="'+jarver+'"/>');
+                } 
+            } 
+            
+            buffer.append('\n</modules>'); 
+            buffer.append('\n</app>');
+            properties['generated.updates.xml']=buffer.toString();
+        ]]>     
+        </groovy>         
+        <echo file="${_target.web.download.modules.dir_}/updates.xml">${generated.updates.xml}</echo>         
+    </target> 
+    
+    <target name="deploy-client-platform" depends="init">
+        <property name="_target.platform.name_" value="${target.app.name}_platform"/>        
+        <property name="_target.platform.dir_" value="${workspace.dir}/${_target.platform.name_}"/>  
+        <echo message="Deploying ${_target.platform.name_} ..."/>
+        <delete dir="${_target.platform.dir_}" failonerror="false"/> 
+        <copy todir="${_target.platform.dir_}" overwrite="true" failonerror="false">
+            <fileset dir="${platforms.dir}/${_target.platform.name_}"/> 
+        </copy>      
+    </target>
+    
+    <target name="run-server" depends="init">
+        <exec executable="cmd" dir="${target.server.dir}/bin">
+            <arg value="/c"/>
+            <arg value="run.bat"/>
+        </exec>
+    </target>
+        
+</project>

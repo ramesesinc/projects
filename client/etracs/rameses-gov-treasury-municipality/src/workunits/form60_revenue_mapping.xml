@@ -1,0 +1,55 @@
+<workunit>
+    
+   <invokers>
+        <invoker folderid="/explorer/master/treasury" caption="Form60 Revenue Mapping" index="51" role="MASTER"/>
+   </invokers>
+
+   <code>
+       import com.rameses.rcp.common.*;
+       import com.rameses.rcp.annotations.*;
+       import com.rameses.osiris2.client.*;
+       import com.rameses.osiris2.common.*;
+       
+       class Form60RevenueMappingService  {
+       
+           @Service("Form60RevenueMappingService") 
+           def service;
+       
+            def searchtext; 
+            def selectedItem;
+
+            def listModel = [
+                fetchList: { o->
+                    o.searchtext = searchtext;
+                    return service.getRevenueItemList(o);
+                }
+            ] as EditorListModel;   
+
+            void search() {
+                listModel.reload();
+            }
+
+            def getLookupAccount() {
+                def p = [:];
+                boolean islov = false;
+                p.onselect = { o->
+                    def z = [objid:selectedItem.objid];
+                    z.revenueitemid = selectedItem.objid; 
+                    z.account = o;
+                    service.create( z );
+                    selectedItem.account = z.account;
+                    return "_close";
+                };
+                p.onempty = { o->
+                    service.removeEntity( [objid: selectedItem.revenueitemid] );
+                    selectedItem.account = [:];
+                }
+                return Inv.lookupOpener( "form60item:lookup", p ); 
+             }
+       }
+   </code>
+   
+   <pages>
+        <page template="com.rameses.enterprise.accounts.RevenueItemMappingPage"/>
+   </pages>
+</workunit>

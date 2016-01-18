@@ -1,0 +1,13 @@
+"taxpayer|address"[mode=='init']{
+    visible:true;
+    required:true;
+}
+
+"taxpayer|address"[mode!='init']{
+    visible:false;
+    required:false;
+}
+
+"dtcomputed"[mode != 'init']{
+    cellPadding:'10,0,0,0';
+}

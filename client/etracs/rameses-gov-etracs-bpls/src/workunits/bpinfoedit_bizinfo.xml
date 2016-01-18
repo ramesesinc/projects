@@ -1,0 +1,111 @@
+<workunit>
+    
+    <invokers>
+        <invoker type="business:editinfo" caption="Edit Business Info" target="popup" action="init" />
+    </invokers>
+    
+    <code>
+        <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import java.rmi.server.*;
+        import com.rameses.gov.etracs.bpls.application2.*;
+        
+        public class BPEditBusinessInfo  {
+
+            @Binding
+            def binding;
+        
+            def orgTypes = LOV.ORG_TYPES;
+            def entity;
+            def handler;
+            boolean hasLookup;
+        
+            void init() {
+                if( entity.owner == null ) entity.owner = [:];
+            }
+            
+            public def doOk() {
+                handler( entity );
+                return "_close";
+            }
+            
+            public def doCancel()    {
+                return "_close";
+            }
+            
+            @PropertyChangeListener
+            def listener = [
+                "entity.orgtype" : { o->
+                    entity.owner = null;
+                    entity.orgtypename = orgTypes.find{ it.key == o}?.value;
+                }
+            ]
+            
+           def getLookupOwners() {
+                if( !entity.orgtype ) {
+                    MsgBox.err("Please select an orgtype first.");
+                    return null;
+                }    
+                hasLookup = true;
+
+                String lookupName = (entity.orgtype == 'SING') ?'individualentity:lookup':'juridicalentity:lookup';
+                return InvokerUtil.lookupOpener( lookupName, [
+                    "query.orgtype": entity.orgtype,
+                    onselect: { o->
+                        entity.owner = o;
+                        binding.refresh("entity.owner.address");
+                    },
+                    onempty: {
+                        entity.owner = null;
+                        binding.refresh("entity.owner.address");
+                        hasLookup = false;
+                    }
+                ]);
+            }
+
+             def showOwner() {
+                if(!entity.orgtype)
+                    throw new Exception("Please select an org type");
+                String action = (entity.owner?.objid) ? ":open" : ":create";
+                if(action == ":create" && !hasLookup )
+                    throw new Exception("Please attempt first a lookup before creating a new record");
+
+                String openerName = (entity.orgtype=='SING'?'individual':'juridical')+'entity';
+                if( entity.orgtype == 'SING' ) {
+                    def initial = [:];
+                    def sh = { o->
+                        entity.owner = [ objid:o.objid, name:o.name, address:o.address ];
+                        binding.refresh("entity.owner.*");
+                    }
+                    return InvokerUtil.lookupOpener( "individualentity"+action, [entity: entity.owner, initial:initial, saveHandler:sh] );
+                }
+                else {
+                    def initial = [:];
+                    initial.orgtype = entity.orgtype;
+                    def sh = { o->
+                        entity.owner = [ objid:o.objid, name:o.name, address:o.address ];
+                        binding.refresh("entity.owner.*");
+                    }
+                    return InvokerUtil.lookupOpener( "juridicalentity"+action, [entity: entity.owner, initial: initial, saveHandler:sh] );
+                }
+            }
+            
+            def copyBusinessName() {
+                entity.tradename = entity.businessname;
+                binding.refresh("entity.tradename");
+                binding.focus("entity.tradename");
+            }
+            
+        }
+        ]]>
+        
+    </code>
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.bpls.business.EditBusinessInfoPage"/>
+    </pages>
+    
+</workunit>

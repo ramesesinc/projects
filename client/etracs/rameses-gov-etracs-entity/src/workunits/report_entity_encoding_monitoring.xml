@@ -1,0 +1,52 @@
+<workunit extends="entity_wtemplates/ReportController.xml" >>
+    <invokers>
+        <invoker folderid="/explorer/report/entity" action="init" caption="Entity Encoding Monitoring" target="window" index="1"  role="MASTER" />
+    </invokers>
+    <code>
+
+<![CDATA[
+
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.reports.*;
+
+class EntityReportController extends com.rameses.entity.reports.ReportController
+{
+    @Service('EntityMonitoringReportService') 
+    def svc 
+    
+    String title = 'Entity Encoding Statistics'
+    
+    String reportName = 'com/rameses/entity/reports/entity_encoding_monitoring.jasper';
+    def data 
+    
+        
+    def getReportData(){
+        data = svc.getEncodingStatistics(entity)
+        return data.items;
+    }
+    
+    Map getParameters(){
+        return [
+            TITLE       : data?.title, 
+            PERIOD      : data?.period,
+        ]
+    }
+    
+    
+   def formControl = [
+        getFormControls: {
+            return [
+                new FormControl( "integer", [caption:'Year', name:'entity.year', required:true, preferredSize:'100,19']),
+                new FormControl( "combo", [caption:'Quarter', name:'entity.qtr', items:'quarters', required:true, preferredSize:'100,19', immediate:true]),
+                new FormControl( "combo", [caption:'Month', name:'entity.month', items:'monthsByQtr', depends:['entity.qtr'] as String[], expression:'#{item.name}', dynamic:true, preferredSize:'100,19', immediate:true, required:true]),
+                new FormControl( "combo", [caption:'Day', name:'entity.day', items:'days', dynamic:true, depends:['entity.month'] as String[], immediate:true, preferredSize:'100,19']),
+            ]    
+        },
+   ] as FormPanelModel;
+}
+]]>        
+        
+    </code>
+</workunit>

@@ -1,0 +1,210 @@
+<workunit>
+    
+   <invokers>
+       <!--
+         <invoker type="bankdepositcapture:create" caption="Bank Deposits (Capture) " action="init" target="window"/>
+         <invoker type="bankdepositcapture:open" caption="Bank Deposits (Capture)" action="open" target="window"/>
+        --> 
+        <invoker folderid="/explorer/txn/treasury" caption="Bank Deposit (Capture)" index="32" action="init" target="window"
+            role="DATA_CONTROLLER" />
+        
+        <invoker type="formActions" caption="Close" name="_close"  immediate="true" mnemonic="c" shortcut="ctrl C" icon="images/toolbars/cancel.png"/>
+        <invoker type="formActions" caption="Next" name="start" visibleWhen="#{mode == 'initial'}" mnemonic="n" shortcut="ctrl N" icon="images/toolbars/arrow_right.png"/>
+        <invoker type="formActions" caption="Submit" name="submit" visibleWhen="#{mode == 'create'}" mnemonic="s" shortcut="ctrl S" icon="images/toolbars/save.png"/>
+         
+        <invoker type="formActions" caption="Reports" name="popupReports"   
+            visibleWhen="#{mode == 'read' }" category="bankdeposit:reports" />
+     </invokers>
+   
+   <code>
+       <![CDATA[
+        import com.rameses.osiris2.common.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import java.rmi.server.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.util.*;
+        
+        class BankDepositCaptureController {
+        
+            @Binding
+            def binding;
+        
+            @Service("BankDepositCaptureService")
+            def service;
+            
+            @Service("BankDepositService")
+            def svc;
+        
+            String title = "Bank Deposit (Capture)";
+            def entity;
+            def mode = 'initial';
+            def liquidations 
+            def cashierlist
+            
+            boolean showSelected;
+            
+            def selectedFund;
+            def selectedDeposit;
+            
+            
+            @PropertyChangeListener 
+            def listener = [
+                "entity.cashier": { o->
+                    liquidations = service.getUndepositedLiquidations([cashierid: o.objid]) 
+                    liquidationListModel.load();
+                    if( liquidations ){
+                        entity.amount = liquidations.amount.sum()   
+                    }
+                    binding.refresh("entity.amount");
+                }
+            ]
+            
+            def getExtActions() {
+                return InvokerUtil.lookupActions( "bankdeposit:formActions", [entity:entity] );
+            }
+            
+            def popupReports(def inv) {
+                def popupMenu = new PopupMenuOpener();
+                def list = InvokerUtil.lookupOpeners( inv.properties.category, [entity:entity] );
+                list.each{
+                    popupMenu.add( it );
+                }
+                return popupMenu;
+            }
+            
+            void init() {
+                mode = "initial";
+                entity = [:]
+                entity.objid = "BD" + new UID();
+                entity.amount = 0.0
+                cashierlist  = service.getCashierList() 
+                liquidations= []
+            }
+            
+            def back() {
+                mode = "initial";
+                return "default";
+            }
+            
+            def selectAll() {
+                if( liquidations ){
+                    liquidations.each{it.selected = true} 
+                    liquidationListModel.load();
+                    entity.amount = liquidations.amount.sum()   
+                    binding.refresh()
+                 }
+            }
+            
+            def deselectAll() {
+                liquidations.each{it.selected = false} 
+                liquidationListModel.load();
+                entity.amount = 0.0
+                binding.refresh()
+            }
+            
+            def start() {
+                mode = "create";
+                entity.cashbreakdown = [];
+                entity.liquidations = liquidations.findAll{it.selected == true}
+                def info = service.init( [cashierfundids:  "'" + entity.liquidations.objid.join("','") + "'" ] )
+                entity.fundsummary = info.fundsummary;
+                entity.undepositedChecks = info.undepositedChecks
+                entity.deposits = []
+                return "main";
+            }
+            
+           def open(){
+                mode = "read";
+                title = 'Bank Deposit Summary (Capture)'
+                entity = svc.open(entity);
+                return 'view'
+            }
+            
+            def addDeposit() {
+                if(!selectedFund || selectedFund.balance <= 0 ) 
+                    throw new Exception("Please select a fund with a reminaing balance nto zero"); 
+                return InvokerUtil.lookupOpener( "bankdeposit:entry", [
+                    undepositedChecks: entity.undepositedChecks,
+                    selectedFund: selectedFund,
+                    handler: { o->
+                        if( entity.deposits.find{ it.bankaccount.objid == o.bankaccount.objid } ) {
+                            throw new Exception("Bank account already selected. Please choose another bank account");
+                        }    
+                        entity.deposits << o;
+                        selectedFund.allocated += o.amount;
+                        selectedFund.balance = selectedFund.amount - selectedFund.allocated;
+                        fundSummaryModel.reload();    
+                        depositModel.reload();
+                    }
+                ]);
+            }
+            
+            def removeDeposit() {
+                if(!selectedDeposit) return;
+                //remove all checks also
+                entity.deposits.remove( selectedDeposit );
+                def fund = entity.fundsummary.find{ it.fund.objid == selectedDeposit.fund.objid };
+                fund.allocated -= selectedDeposit.amount;
+                fund.balance = fund.amount - fund.allocated;
+                selectedDeposit.checks.each {
+                    entity.undepositedChecks.add( it );    
+                }
+                fundSummaryModel.reload();   
+                depositModel.reload();
+            }
+            
+            
+            def submit() {
+                if( entity.fundsummary.find{ it.balance > 0 } )
+                    throw new Exception("There should be no undeposited balance");
+            
+                if( MsgBox.confirm("You are about to submit this deposit. Please ensure the entries are correct")) {
+                    entity = svc.post( entity );
+                    mode = "read";
+                    MsgBox.alert("Posting successful");
+                    return 'view';
+                }
+                return null;
+            }
+            
+            def liquidationListModel = [
+                fetchList: { o-> return liquidations },
+                onColumnUpdate: {item, colname-> 
+                    if (colname == 'selected'){
+                        if( item.selected == true) {
+                            entity.amount += item.amount
+                        } else {
+                            entity.amount -= item.amount
+                        }
+                        binding.refresh("entity.amount")
+                    }
+                        
+                }
+            ] as EditorListModel;
+            
+            def fundSummaryModel = [
+                fetchList: { o->return entity.fundsummary; }
+            ] as BasicListModel;
+            
+            def depositModel = [
+                fetchList: { o->
+                    if(showSelected) {
+                        return entity.deposits.findAll{ it.fund.objid == selectedFund.fund.objid };
+                    }
+                    return entity.deposits; 
+                }
+            ] as BasicListModel;
+           
+            
+        }      
+       ]]>
+   </code>
+   
+   <pages>
+       <page template="com.rameses.gov.treasury.bankdeposit.capture.BankDepositCaptureInitPage" />
+       <page name="main" template="com.rameses.enterprise.treasury.bankdeposit.BankDepositProcessPage" />
+       <page name="view" template="com.rameses.enterprise.treasury.bankdeposit.BankDepositViewPage" />
+   </pages>
+   
+</workunit>

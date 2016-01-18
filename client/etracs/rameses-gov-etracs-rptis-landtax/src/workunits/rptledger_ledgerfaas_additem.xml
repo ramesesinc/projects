@@ -1,0 +1,99 @@
+<workunit>
+    <invokers>
+        <invoker type="rptledgermanual:formActions" action="create" caption="Add New FAAS" target="popup" index="200"  visibleWhen="#{entity.state == 'APPROVED'}"/>        
+    </invokers>
+    
+    <code lang="groovy">
+        <![CDATA[
+        
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+import com.rameses.osiris2.client.*;
+import java.rmi.server.UID;
+
+public class RPTLedgerFaasController  
+{
+    @Caller
+    def caller;
+    
+    @Service('RPTLedgerService')
+    def svc;
+    
+    def entity;
+    def ledgerfaas; 
+    def mode;
+    def type; // additem, new
+    
+    void create() {
+        ledgerfaas = [
+            objid           : 'LI' + new UID(),
+            state           : 'PENDING',
+            rptledgerid     : entity.objid,
+            fromqtr         : 1,
+            toyear          : 0,
+            toqtr           : 4,
+            taxable         : true,
+            backtax         : false,
+            idleland        : 0,
+            systemcreated   : false,
+            assessedvalue   : 0.0,
+        ]
+        type = 'additem';
+        mode = 'create'
+    }
+    
+    void edit() {
+        ledgerfaas.txntype = txntypes.find{it.objid == ledgerfaas.txntype.objid}
+        ledgerfaas.classification = classifications.find{it.objid == ledgerfaas.classification.objid}
+        ledgerfaas.actualuse = classifications.find{it.objid == ledgerfaas.actualuse.objid}
+        type = 'additem';
+        mode = 'edit' 
+    }
+    
+    def ok() {
+        def last = entity.faases.last();
+        if ( ledgerfaas.fromyear <= last.fromyear)
+            throw new Exception('From Year must be greater than ' + last.fromyear + '.')
+            
+        if( ledgerfaas.assessedvalue == null )
+            throw new Exception('Assessed Value is required.')
+        
+        if (ledgerfaas.assessedvalue < 0.0)
+            throw new Exception('Assessed Value must be greater than or equal to zero.')
+        
+        if (MsgBox.confirm('Post faas record?')){
+            svc.saveNewLedgerFaas(ledgerfaas, last);
+            caller?.open();
+            return '_close' 
+        }
+        return null;
+    }
+    
+    
+    List getTxntypes() {
+        return svc.getTxnTypes()
+    }
+    
+    List getClassifications() {
+        return svc.getClassifications()
+    }
+    
+    List getQuarters(){
+        return [1,2,3,4]
+    }
+    
+    List getQuarters(){
+        return [0, 1,2,3,4]
+    }
+   
+    
+}
+
+
+]]>
+    </code>
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.rpt.ledger.ui.RPTLedgerFaasPage" />
+    </pages>
+</workunit>

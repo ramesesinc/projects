@@ -1,0 +1,6 @@
+dialect=mssql
+driverClass=net.sourceforge.jtds.jdbc.Driver
+url=jdbc:jtds:sqlserver://192.168.254.60/tracs_iligan
+user=sa
+pwd=1234
+maxPoolSize=100

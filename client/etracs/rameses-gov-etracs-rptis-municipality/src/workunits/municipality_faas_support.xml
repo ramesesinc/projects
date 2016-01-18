@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="faas:info:remotetool" action="resendToProvince" caption="Resend to Province" target="process" index="100" role="ADMIN" />
+    </invokers>
+    <code>
+<![CDATA[
+        
+import com.rameses.rcp.annotations.*;        
+import com.rameses.rcp.common.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.common.*;
+
+class MunicipalityFAASSupportController
+{
+    @Binding 
+    def binding;
+    
+    @Service('MunicipalityFAASService')
+    def svc; 
+    
+    def entity;
+    
+    void resendToProvince(){
+        if (MsgBox.confirm('Resubmit FAAS to Province?')){
+            svc.resubmitToProvince(entity);
+            MsgBox.alert('FAAS has been successfully submitted to province.')
+        }
+    }
+        
+}
+
+
+]]>
+
+    </code>
+    <pages>
+    </pages>
+</workunit>

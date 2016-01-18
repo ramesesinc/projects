@@ -1,0 +1,48 @@
+<workunit extends="wtemplates/LookupController.xml">
+    <invokers>
+        <invoker type="bldgadditionalitem:lookup" caption="Building Adjustment Type Lookups" target="popup" />
+    </invokers>
+    
+    <code>
+
+import com.rameses.rcp.common.*
+import com.rameses.rcp.annotations.*
+import com.rameses.osiris2.client.*
+import com.rameses.osiris2.common.*
+
+class BldgFloorAdditionalLookupController extends com.rameses.gov.etracs.rpt.util.ExprLookupEditorController
+{
+    @Service("BldgRYSettingLookupService")
+    def svc
+    
+    def lguid;
+    def barangayid;
+    def ry;
+    def type;
+    
+    List fetchList(Map params){
+        params.lguid = lguid;
+        params.barangayid = barangayid;
+        params.ry = ry;
+        params.type = type;
+        return svc.lookupAdditionalItems(params);
+    }
+    
+    def getVariables(){
+        return svc.getVariables()
+    }
+    
+    Column[] getColumns() {
+        return [
+            new Column(name:"code", caption:"Code", width:80),
+            new Column(name:"name", caption:"Name", width:150),
+            new Column(name:"expr", caption:"Rate", width:250),
+        ]
+    }
+}
+    
+    </code>
+    <pages>
+        <page name="info" template="com.rameses.gov.etracs.rpt.util.VariableInfoPage" />
+    </pages>    
+</workunit>

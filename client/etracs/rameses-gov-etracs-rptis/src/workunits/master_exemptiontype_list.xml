@@ -1,0 +1,7 @@
+<workunit extends="wtemplates/ListController.xml" serviceName="ExemptionTypeService" entityName="exemptiontype" formName="exemptiontype:list">
+    <invokers>
+        <invoker folderid="/explorer/master/rpt" caption="Exemption Types" target="window" index="2"  role="ASSESSOR_DATAMGMT,MASTER" />
+        <invoker folderid="/home/rpt/master" caption="Exemption Types" target="window" index="2"  role="ASSESSOR_DATAMGMT,MASTER" />
+        <invoker type="quick_launcher" code="ET00" caption="Exemption Types"  role="ASSESSOR_DATAMGMT,MASTER" />
+    </invokers>
+</workunit>

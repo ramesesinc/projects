@@ -1,0 +1,7 @@
+<workunit extends="wtemplates/ListController.xml" serviceName="PropertyClassificationService" entityName="propertyclassification" formName="propertyclassification:list">
+    <invokers>
+        <invoker folderid="/explorer/master/rpt" caption="Property Classifications" target="window" index="1"  role="ASSESSOR_DATAMGMT,MASTER" />
+        <invoker folderid="/home/rpt/master" caption="Property Classifications" target="window" index="1"  role="ASSESSOR_DATAMGMT,MASTER" />
+        <invoker type="quick_launcher" code="PC00" caption="Property Classifications"  role="ASSESSOR_DATAMGMT,MASTER" />
+    </invokers>
+</workunit>

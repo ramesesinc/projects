@@ -1,0 +1,20 @@
+<workunit>
+    <invokers>
+        <invoker type="miscpos:create" action="doInit" caption="Collection" target="self"/>
+        <invoker type="formActions" action="close" caption="Close" mnemonic="c" immediate="true" />
+        <invoker type="formActions" action="post" caption="Save" shortcut="ctrl S" mnemonic="s" visibleWhen="#{completed == false}" />
+        <invoker type="formActions" action="doInit" caption="New" visibleWhen="#{completed == true}" shortcut="ctrl N" mnemonic="n"/>
+        <invoker type="formActions" action="reprint" caption="Reprint"  visibleWhen="#{completed}" shortcut="ctrl P"/>
+        <invoker type="formActions" action="doVoid" immediate="true" caption="Void" visibleWhen="#{completed &amp;&amp; !entity.voided}" shortcut="ctrl V" mnemonic="v"/>
+        <!-- <invoker type="formActions" action="checkPayment" caption="Check Payment" mnemonic="c"  /> -->
+    </invokers>
+    
+    <code class="com.rameses.gov.treasury.collection.pos.MiscPOSReceiptController">
+    </code>
+    
+    <pages>
+        <page name="default" template="com.rameses.gov.treasury.collection.pos.MiscPOSPage"/>
+        <page name="completed" template="com.rameses.enterprise.treasury.cashreceipt.CashReceiptInfoPage"/>
+    </pages>
+    
+</workunit>

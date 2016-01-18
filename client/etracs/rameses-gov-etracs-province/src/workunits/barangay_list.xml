@@ -1,0 +1,5 @@
+<workunit extends="wtemplates/ListController.xml" serviceName="BarangayService" entityName="barangay">
+    <invokers>
+        <invoker folderid="/explorer/org" caption="Barangay" index="5"/>
+    </invokers>
+</workunit>

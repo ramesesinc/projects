@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="faas:formActions" action="init" caption="Add Red Flag" index="100000" visibleWhen="#{!entity.state.matches('CURRENT|CANCELLED') &amp;&amp; !entity.taskstate.matches('assign.*')}" target="popup"/>
+        
+        <invoker type="formActions" action="_close" caption="Cancel" mnemonic="c" immediate="true" visibleWhen="#{mode=='create'}"/>
+        <invoker type="formActions" action="_close" caption="Close" mnemonic="c" immediate="true" visibleWhen="#{mode!='create'}"/>
+        <invoker type="formActions" action="post" caption="Post" mnemonic="p"  visibleWhen="#{mode=='create'}"/>
+    </invokers>
+    <code>
+        
+<![CDATA[
+
+
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.common.*;
+
+class ProvinceFaasRedFlagController 
+{
+    @Service('ProvinceRedFlagService')
+    def svc;
+    
+    def entity;
+    def redflag;
+    
+    def mode;
+    def MODE_CREATE = 'create';
+    def MODE_READ = 'read';
+    def action;
+    
+    void init(){
+        redflag = [
+            objid   : 'RF' + new java.rmi.server.UID(),
+            parentid : entity.objid,
+            state   : 'OPEN',
+            refid   : entity.objid,
+            refno   : (entity.tdno ? entity.tdno : entity.utdno) ,
+            lguid   : entity.lguid,
+            filedby : getFiledBy(),
+            info    : [:],
+        ]
+        entity.redflag = redflag;
+        mode = MODE_CREATE;
+    }
+    
+    void post(){
+        if (MsgBox.confirm('Post red flag?')){
+            redflag.action = action.action;
+            redflag.putAll(svc.postRedFlag(redflag));
+            mode = MODE_READ;
+        }
+    }
+    
+    def getFiledBy(){
+        return [
+            objid : OsirisContext.env.USERID,
+            name  : OsirisContext.env.USER,
+        ]
+    }
+    
+    
+    def atypes;
+    def getActiontypes(){
+        if (!atypes){
+            atypes = Inv.lookupOpeners('faas:redflag:action').collect{
+                return [caption:it.caption, action:it.properties.actiontype]
+            }
+        }
+        return atypes;
+    }
+    
+    def getOpener(){
+        if (action) {
+            return Inv.lookupOpener('redflag:'+action.action, [entity:entity]);
+        }
+        return null;
+    }
+}
+
+    
+]]>
+
+    </code>
+    <pages>
+        <page template="com.rameses.gov.etracs.rpt.faas.redflag.ui.RedFlagPage" />
+    </pages>
+</workunit>

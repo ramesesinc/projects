@@ -1,0 +1,124 @@
+<!-- REQUISITION ISSUE SLIP -->
+<workunit>
+    <invokers>
+       <invoker type="ris:formActions" caption="Receive Items" action="create" 
+        visibleWhen="#{entity?.txntype == 'AF:PURCHASE' &amp;&amp; entity?.state == 'APPROVED'}" />
+        
+        <invoker type="formActions"  action="viewRIS" caption="View RIS" visibleWhen="#{entity?.state == 'APPROVED' || entity?.state == 'CLOSED'}" />
+       <invoker type="formActions"  action="viewRIV" caption="View RIV" visibleWhen="#{entity?.state == 'APPROVED' || entity?.state == 'CLOSED'}" />
+
+    </invokers>
+    
+    <code>
+        <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import com.rameses.gov.treasury.controllers.*
+        import java.rmi.server.*;
+        
+        class  CloseAFPurchaseController extends CRUDController {
+            
+            @Caller
+            def caller;
+        
+            @Service("AFReceiptService")
+            def  service;
+
+            boolean showConfirmOnSave = true;
+            String confirmSaveMsg = "You are about to update the AF inventory. Continue?";
+
+            String title = "Purchase Receipt";
+            def ris;
+            boolean showSelected = false;
+            boolean allowEdit = false;
+            boolean allowApprove = false;
+            boolean allowCreate = false;
+
+            Map createEntity() {
+                ris = caller.entity;
+                def m = [objid:"AFRCT"+ new UID() ];
+                m.items = [];
+                m.ris = ris;
+                return m;
+            }
+            
+            void beforeSave(o) {
+                if( !entity.items )
+                    throw new Exception("Please add at least one item");
+            }
+            
+            void afterSave(o) {
+                ris.state = "CLOSED";
+            }
+            
+            def close() {
+                if( mode == "read" ) 
+                    return "_close:_close";
+                else    
+                    return "_close";
+            }
+
+            
+            def reqItemModel = [
+                fetchList: { o->
+                    return ris.items;
+                }
+            ] as BasicListModel;
+            
+            def issuedItemModel = [
+                fetchList: { o->
+                    if( showSelected ) {
+                        return entity.items.findAll{ 
+                            it.af == selectedItem?.item?.code 
+                        };
+                    }
+                    return entity.items;
+                }
+            ] as BasicListModel;
+            
+            def addItems() {
+                return InvokerUtil.lookupOpener("afreceipt:additem", [
+                    afList: ris.items,
+                    addHandler: { o->
+                        entity.items << o;
+                        issuedItemModel.reload();
+                        reqItemModel.reload();
+                    }
+                ]);
+            }
+            
+            def viewRIS() {
+                return InvokerUtil.lookupOpener("report:ris", [risid:entity.ris.objid])
+            }
+            
+            def viewRIV() {
+                return InvokerUtil.lookupOpener("report:riv", [risid:entity.ris.objid])
+            }
+            
+            
+            /*-------- REMOVE AF SUPPORT --------*/
+            def selectedAf;
+            
+            void removeAf(){
+                if (selectedAf && MsgBox.confirm('Remove selected accountable form item?')){
+                    entity.items.remove(selectedAf);
+                    def risItem = entity.ris.items.find{it.item.code == selectedAf.af};
+                    risItem.qtyreceived -= selectedAf.qty
+                    risItem.qtybalance += selectedAf.qty
+                    issuedItemModel.reload();
+                    reqItemModel.reload();
+                }
+            }
+            
+        }
+        ]]>
+        
+    </code>
+    
+    <pages>
+        <page template="com.rameses.gov.treasury.ris.AFReceiptPage"/>
+    </pages>
+    
+</workunit>

@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="rptcompromise:captureinstallment" action="init" caption="Capture Installment Payment" target="popup" />
+    </invokers>
+    <code lang="groovy">
+        
+<![CDATA[
+
+import com.rameses.rcp.annotations.*
+import com.rameses.rcp.common.*
+import com.rameses.osiris2.client.*
+import com.rameses.osiris2.reports.*
+import java.rmi.server.UID
+
+public class RPTCompromiseCapturePaymentController 
+{
+    @Binding 
+    def binding
+    
+    @Service('RPTCompromiseService')
+    def svc 
+    
+    @Service('RPTReceiptCompromiseService')
+    def receiptSvc 
+    
+    def entity 
+    def onadd   //handler 
+    def pmt
+    def unpaidItems 
+    
+    def init() {
+        unpaidItems = receiptSvc.getUnpaidInstallments( entity.objid ) 
+        if( ! unpaidItems ) throw new Exception('Compromise has already been fully paid.')
+        
+        unpaidItems.each{ it.pay = false  }
+        pmt = [collector:[:], amount:0.0, voided:0, mode:'capture']
+        calculateORAmount()
+    }
+    
+    def savePayment(){
+        def paiditems = unpaidItems.findAll{ it.pay == true }
+        if( ! paiditems ) throw new Exception('At least one (1) installment must be paid.')
+        
+        if( MsgBox.confirm('Verify that all entries are correct.\nPayment cannot be edited once posted.')) {
+            
+            receiptSvc.postCapturedInstallmentPayment( entity, pmt, paiditems )
+            if( onadd ) {
+                onadd( paiditems )
+            }
+            return '_close' 
+        }
+        return null 
+    }
+    
+    def installmentListHandler = [
+        fetchList  : { return unpaidItems },
+        getRows    : { return 50 },
+        
+        onColumnUpdate : {item, colname -> 
+            if( 'pay' == colname ) {
+                def idx = unpaidItems.indexOf(item);
+                item.amtdue = 0.0;
+                if( item.pay ) {
+                    item.amtdue = item.balance;
+                    for( int i=0; i < idx; i++ ) {
+                        unpaidItems[i].pay = item.pay ;
+                        unpaidItems[i].amtdue = unpaidItems[i].balance;
+                    }
+                }
+                for( int i=idx+1; i< unpaidItems.size(); i++) {
+                    unpaidItems[i].pay = false;
+                    unpaidItems[i].amtdue = 0.0;
+                }
+                installmentListHandler.load();
+                calculateORAmount();
+            }
+            if (colname == 'amtdue'){
+                item.pay = true;
+            }
+        },
+        
+        validate : { li ->
+            def item = li.item;
+            if (item.amtdue == null )
+                throw new Exception('Amount to pay is required.');
+            if (item.amtdue > item.balance)
+                throw new Exception('Amount to pay must be less than or equal to balance.');
+            calculateORAmount();
+        }
+        
+    ] as EditorListModel 
+    
+    void calculateORAmount(){
+        try {
+            pmt.amount = unpaidItems.findAll{it.pay == true}?.amtdue.sum()
+        }
+        catch( e ) {
+            pmt.amount = 0.0
+        }
+        binding?.refresh('pmt.amount')
+    }
+    
+    
+    def cancelAddPayment() {
+        if( MsgBox.confirm('Cancel payment?')) {
+            return '_close'
+        }
+        return null 
+    }   
+}
+
+
+]]>
+
+    </code>
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.rpt.ledger.compromise.RPTCompromiseInstallmentPaymentPage" />
+    </pages>
+</workunit>

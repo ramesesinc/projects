@@ -1,0 +1,33 @@
+<workunit extends="wtemplates/LookupController.xml">
+    <invokers>
+        <invoker type="rptrecommender:lookup" action="init" caption="Recommender Lookup" target="popup" />
+    </invokers>
+    
+    <code>
+
+import com.rameses.rcp.common.*
+import com.rameses.rcp.annotations.*
+import com.rameses.osiris2.client.*
+import com.rameses.osiris2.common.*
+
+class RPTRecommenderLookupController extends LookupController
+{
+    @Service("RPTOfficerLookupService")
+    def svc
+    
+    def state;
+    
+    Column[] getColumns() {
+        return [
+            new Column(name:"name", caption:"Recommended By", width:250),
+            new Column(name:"title", caption:"Job Title", width:250),
+        ]
+    }
+    
+    List fetchList( Map params ) { 
+        return svc.lookupRecommenders(params)
+    }
+}  
+
+    </code>
+</workunit>

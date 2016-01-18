@@ -1,0 +1,23 @@
+"removeSignatory|moveUp|moveDown" [selectedItem == null] {
+    enabled:false;
+}
+
+"removeSignatory|moveUp|moveDown" [selectedItem != null] {
+    enabled:true;
+}
+
+"moveUp" [currentIndex <= 0] {
+    enabled:false;
+}
+
+"moveUp" [currentIndex > 0] {
+    enabled:true;
+}
+
+"moveDown" [currentIndex == (listSize - 1)] {
+    enabled:false;
+}
+
+"moveDown" [selectedItem != null && currentIndex < (listSize - 1)] {
+    enabled:true;
+}

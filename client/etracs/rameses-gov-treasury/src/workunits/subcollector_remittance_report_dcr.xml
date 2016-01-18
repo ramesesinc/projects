@@ -1,0 +1,66 @@
+<workunit>
+    <invokers>
+       <invoker type="subcollector-remittance:report" caption="Daily Collection Report" action="init" target="self" index="1"/>
+       
+      <invoker type="formActions" caption="Back" action="_close" mnemonic="b" shortcut="ctrl B" icon="images/toolbars/arrow_left.png"/>
+    </invokers>
+    
+    <code>
+        <![CDATA[    
+        import com.rameses.osiris2.common.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import java.rmi.server.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.util.*;
+        import com.rameses.osiris2.reports.*;
+        
+        class DailyCollectionReportController {
+        
+            @Binding
+            def binding;
+        
+            @Service("SubCollectorRemittanceService")
+            def svc
+            
+            @Service("ReportParameterService")
+            def paramsvc
+            
+            def entity;
+            def reportPath = "com/rameses/gov/treasury/remittance/subcollector/report/"
+            def reportdata;
+            
+            String title = "Daily Collection Report";
+            
+            void init() {
+                viewReport();
+            }
+            
+            void viewReport() {
+                reportdata = svc.generateDCR(entity.objid);
+                report.viewReport();
+            }
+            
+            def report = [
+                getReportName : { return reportPath + 'dcr_main.jasper' },
+                getReportData : { return reportdata }, 
+                getParameters : { 
+                    return paramsvc.getStandardParameter() 
+                },
+                getSubReports : {
+                    return [ 
+                        new SubReport("CollectionSummary", reportPath + "collectionsummary.jasper"),
+                        new SubReport("Denomination", reportPath + "denomination.jasper"),
+                    ] as SubReport[];    
+                 }
+            ] as ReportModel
+            
+        }      
+       ]]>
+    </code>
+    
+   <pages>
+       <page template="com.rameses.gov.treasury.report.PreviewPage" />
+   </pages>
+   
+</workunit>

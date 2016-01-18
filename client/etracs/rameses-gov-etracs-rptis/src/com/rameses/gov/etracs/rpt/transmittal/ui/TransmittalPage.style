@@ -1,0 +1,7 @@
+"entity.remarks" [mode == 'read']{
+    enabled:false;
+}
+
+"entity.remarks" [mode != 'read']{
+    enabled:true;
+}

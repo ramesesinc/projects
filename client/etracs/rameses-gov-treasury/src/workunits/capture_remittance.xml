@@ -1,0 +1,231 @@
+<workunit>
+   <invokers>
+        <!--
+         <invoker  type="remittancecapture:create" caption="Remittance (Capture)" action="init" target="window" index="300" />
+         <invoker  type="remittancecapture:open" caption="Remittance (Capture)" action="open" target="window" index="300" />
+        -->
+         <invoker folderid="/explorer/txn/treasury" caption="Remittance (Capture)" action="init" target="window" index="30" 
+            role="DATA_CONTROLLER" />
+         <invoker type="quick_launcher" code="CREM" caption="Remittance (Capture)" action="init" target="window" 
+            role="DATA_CONTROLLER"/>
+         
+         <invoker type="formActions" caption="Close" name="_close" immediate="true" mnemonic="c" shortcut="ctrl C" icon="images/toolbars/cancel.png"/>
+         <invoker type="formActions" caption="Next" name="start" visibleWhen="#{mode == 'initial'}" mnemonic="n" shortcut="ctrl N" icon="images/toolbars/arrow_right.png"/>
+         <invoker type="formActions" caption="Back" name="back" visibleWhen="#{mode == 'create'}" mnemonic="b" shortcut="ctrl B" icon="images/toolbars/arrow_left.png"/>
+         <invoker type="formActions" caption="Submit" name="submit" visibleWhen="#{mode == 'create' }" mnemonic="s" shortcut="ctrl S" icon="images/toolbars/save.png"/>
+         
+         <invoker type="formActions" caption="Reports" name="popupReports"   
+            visibleWhen="#{mode == 'read' }" category="remittance:reports" />
+     </invokers>
+   
+   <code>
+   <![CDATA[
+import com.rameses.osiris2.common.*;
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+import java.rmi.server.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.util.*;
+
+class RemittanceCaptureController {
+
+    @Binding
+    def binding;
+    
+    @Service("RemittanceCaptureService")
+    def service;
+    
+    @Service("RemittanceService")
+    def svc;
+    
+   
+    String title = "Remittance (Capture)";
+    
+    def entity;
+    def cashBreakdown;
+    def mode = 'initial';
+    def collectorlist;
+    def items = [];
+    
+    def total = 0.0;
+    def breakdown = 0.0;
+    
+    @PropertyChangeListener 
+    def listener = [ 
+        "entity.dtposted" : { o-> 
+            loadCollections(); 
+        }, 
+        "entity.collector" :{ o-> 
+            loadCollections(); 
+        } 
+    ];  
+
+    void init() { 
+        mode = "initial";
+        entity = [ objid: "REMC" + new UID(), state: "CAPTURE", items: [] ];
+        entity.amount = entity.totalcash = entity.totalnoncash = 0.0; 
+    }     
+
+    void loadCollections() { 
+        if ( entity.dtposted && entity.collector?.objid ) { 
+            items = service.getCapturedCollections([ 
+                collectorid    : entity.collector.objid, 
+                remittancedate : entity.dtposted 
+            ]); 
+
+        } else if ( items ) {  
+            items.clear(); 
+        } 
+        
+        listModel.load(); 
+        rebuildTotals();
+    } 
+
+    void rebuildTotals() {
+        entity.amount = entity.totalcash = entity.totalnoncash = 0.0; 
+        if ( items ) {
+            def selitems = items.findAll{( it.selected==true )} 
+            def amount = selitems.sum{( it.amount? it.amount: 0.0 )} 
+            def totalcash = selitems.sum{( it.totalcash? it.totalcash: 0.0 )} 
+            def totalnoncash = selitems.sum{( it.totalnoncash? it.totalnoncash: 0.0 )} 
+            entity.amount = ( amount? amount: 0.0 ); 
+            entity.totalcash = ( totalcash? totalcash: 0.0 ); 
+            entity.totalnoncash = ( totalnoncash? totalnoncash: 0.0 ); 
+        } 
+        if ( binding ) binding.refresh( 'entity.amount' ); 
+    }
+    
+    def getExtActions() { 
+        return InvokerUtil.lookupActions( "captureremittance:formActions", [ entity: entity ] );  
+    } 
+    
+    def popupReports( inv ) {
+        if ( entity.dtposted instanceof String ) {
+            entity.dtposted = (new java.text.SimpleDateFormat( "yyyy-MM-dd" )).parse(entity.dtposted);
+        } 
+        def popupMenu = new PopupMenuOpener();
+        def list = InvokerUtil.lookupOpeners( inv.properties.category, [entity:entity] );
+        list.each{ popupMenu.add( it ) } 
+
+        return popupMenu;
+    }
+        
+    def getCollectorlist() {
+        if ( !collectorlist ) { 
+            collectorlist = service.getCollectors(); 
+        }   
+        return collectorlist;
+    } 
+        
+    def listModel = [
+        fetchList: { o->
+            return items;
+        }, 
+        onColumnUpdate: { item, colname-> 
+            rebuildTotals(); 
+        }
+    ] as EditorListModel;
+    
+    def selectAll() { 
+        items?.each{ it.selected=true }  
+        rebuildTotals(); 
+        listModel.refresh(); 
+    }
+    
+    def deselectAll() {
+        items?.each{ it.selected=false }  
+        rebuildTotals(); 
+        listModel.refresh(); 
+    } 
+
+    def checkModel = [
+        fetchList: {
+            return entity.checks;
+        }
+    ] as BasicListModel;
+
+
+    /* ************************************************************* */
+    def back() {
+        mode = "initial"
+        return "default"
+    }
+        
+    def start() { 
+        def selitems = items?.findAll{ it.selected==true }
+        if ( !selitems ) throw new Exception('Please select an item(s) to remit'); 
+
+        entity.remittancedate = entity.dtposted; 
+        def params = [ 
+            remittancedate: entity.remittancedate, 
+            collector: entity.collector, 
+            items : selitems.collect{[ controlid: it.controlid ]} 
+        ]; 
+        def draftinfo = service.saveDraftRemittance( params ); 
+        entity.draftid = draftinfo.objid; 
+
+        entity.checks = service.getUnremittedChecks([ draftid: entity.draftid ]); 
+        entity.items = []; 
+        selitems.each{ entity.items << it } 
+
+        checkModel.load()
+        entity.cashbreakdown = [];
+        cashBreakdown = InvokerUtil.lookupOpener("cash:breakdown", [
+            entries: entity.cashbreakdown, 
+            onupdate: { o->
+                breakdown = o;
+                total = entity.totalnoncash+breakdown;
+                binding.refresh("breakdown|total");
+            }
+        ]);      
+        mode = "create";    
+        return "main"
+    }
+
+    void submit() {
+        if ( breakdown != entity.totalcash )
+            throw new Exception("Cash breakdown must equal total cash");
+    
+        if ( MsgBox.confirm("You are about to submit this remittance. Please ensure the entries are correct")) { 
+            def result = service.post( entity );
+            mode = 'read'; 
+            if ( result ) { 
+                entity.clear(); 
+                entity = result; 
+            } 
+            MsgBox.alert("Posting successful");
+
+            //try to change the remittancedate from string to date type 
+            try {
+                if ( entity.remittancedate instanceof String ) {
+                    entity.remittancedate = java.sql.Timestamp.valueOf( entity.remittancedate );
+                }
+            } catch(Throwable t) {;} 
+            try {
+                if ( entity.remittancedate instanceof String ) {
+                    entity.remittancedate = java.sql.Date.valueOf( entity.remittancedate );
+                }
+            } catch(Throwable t) {;} 
+        }
+    }
+    
+
+    /* ************************************************************* */ 
+    def open() { 
+        mode = "read";
+        entity = svc.open(entity);
+        cashBreakdown = InvokerUtil.lookupOpener("cash:breakdown", [entries: entity.cashbreakdown] );    
+        total = entity.totalcash + entity.totalnoncash;
+        breakdown = entity.cashbreakdown.sum{it.amount};
+        return "main"
+    } 
+}      
+   ]]>
+   </code>
+   
+   <pages>
+       <page template="com.rameses.gov.treasury.remittance.RemittanceCaptureInitPage" />
+       <page name="main" template="com.rameses.gov.treasury.remittance.RemittanceCapturePage" />
+   </pages>
+   
+</workunit>

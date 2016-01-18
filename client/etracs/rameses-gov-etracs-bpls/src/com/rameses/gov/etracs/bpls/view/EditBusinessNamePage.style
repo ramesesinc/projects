@@ -1,0 +1,7 @@
+"entity.business.officetype" [application.permitType.options.show_office==true] {
+    visible:true;
+}
+
+"entity.business.officetype" [application.permitType.options.show_office!=true] {
+    visible:false;
+}

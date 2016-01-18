@@ -1,0 +1,7 @@
+<workunit extends="wtemplates/ListController.xml" serviceName="RPTTaxIncentiveService" entityName="rpttaxincentive">
+    <invokers>
+        <invoker folderid="/explorer/txn/landtax/list" caption="Realty Tax Incentives"  target="window" index="50"  role="LANDTAX" />
+        <invoker folderid="/home/landtax" caption="Tax Incentives"  target="window" index="1010"  role="LANDTAX" />
+        <invoker type="quick_launcher" code="RPTI00" caption="Realty Tax Incentives" role="LANDTAX" />
+    </invokers>
+</workunit>

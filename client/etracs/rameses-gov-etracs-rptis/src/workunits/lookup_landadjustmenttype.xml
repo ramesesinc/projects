@@ -1,0 +1,48 @@
+<workunit extends="wtemplates/LookupController.xml">
+    <invokers>
+        <invoker type="landadjustmenttype:lookup" action="init" caption="Land Adjustment Type Lookup" target="popup" />
+    </invokers>
+    
+    <code>
+
+import com.rameses.rcp.common.*
+import com.rameses.rcp.annotations.*
+import com.rameses.osiris2.client.*
+import com.rameses.osiris2.common.*
+
+class LandAdjustmentTypeLookupController extends com.rameses.gov.etracs.rpt.util.ExprLookupEditorController
+{
+    @Service("LandRYSettingLookupService")
+    def svc
+    
+    def lguid;
+    def barangayid;
+    def ry;
+    def classificationid;
+    
+    Column[] getColumns() {
+        return [
+            new Column(name:"code", caption:"Code", width:80),
+            new Column(name:"name", caption:"Name", width:250),
+            new Column(name:"expr", caption:"Computation Formula", width:250),
+        ]
+    }
+    
+    List fetchList( Map params ) { 
+        params.lguid = lguid;
+        params.barangayid = barangayid;
+        params.ry = ry;
+        params.classificationid = classificationid;
+        return svc.lookupAdjustmentTypes(params);
+    }
+    
+    def getVariables(){
+        return svc.getVariables()
+    }
+}  
+
+    </code>
+    <pages>
+        <page name="info" template="com.rameses.gov.etracs.rpt.util.VariableInfoPage" />
+    </pages>        
+</workunit>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="rpuland:info" caption="Memoranda" index="1000" mnemonic="M" />
+        <invoker type="rpubldg:info" caption="Memoranda" index="1000" mnemonic="M" />
+        <invoker type="rpumach:info" caption="Memoranda" index="1000" mnemonic="M" />
+        <invoker type="rpuplanttree:info" caption="Memoranda" index="1000" mnemonic="M" />
+        <invoker type="rpumisc:info" caption="Memoranda" index="1000" mnemonic="M" />
+    </invokers>
+    
+    <code>
+<![CDATA[        
+        
+import com.rameses.rcp.annotations.* 
+import com.rameses.rcp.common.* 
+import com.rameses.osiris2.client.* 
+import com.rameses.osiris2.common.* 
+
+class MemorandaController extends com.rameses.gov.etracs.rpt.workflow.BasicInfoController
+{
+    
+}    
+    
+]]>        
+    </code>
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.rpt.faas.ui.FaasInfoMemorandaPage"/>
+    </pages>
+</workunit>

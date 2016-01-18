@@ -1,0 +1,28 @@
+"entity.rpu.*" [allowEdit == true]{
+    enabled:true;
+}
+
+"selectedItem|selectedParam" [allowEdit == true]{
+    readonly:false;
+}
+
+
+"entity.rpu.*" [allowEdit != true]{
+    enabled:false;
+}
+
+"selectedItem|selectedParam" [allowEdit != true]{
+    readonly:true;
+}
+
+"selectedParam" [selectedItem == null]{
+    readonly:true;
+}
+
+"entity.rpu.*"  [entity._resolve == true] {
+    enabled:true;
+}
+
+"selectedItem|selectedParam"  [entity._resolve == true] {
+    readonly:false;
+}

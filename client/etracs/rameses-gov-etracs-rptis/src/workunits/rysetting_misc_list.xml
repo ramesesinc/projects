@@ -1,0 +1,50 @@
+<workunit extends="wtemplates/ListController.xml" formName="miscrysetting:list">
+    <invokers>
+        <invoker folderid="/explorer/setting/rpt" caption="Miscellaneous Item Revision Settings" target="window" role="ASSESSOR_DATAMGMT,MASTER" index="15"/>
+        <invoker type="quick_launcher" code="GRS05" target="window" caption="Miscellaneous Item  Revision Settings" />
+        
+        <invoker type="formActions" action="copy" shortcut="ctrl C" visibleWhen="#{selectedItem != null }" immediate="true" caption="Copy" mnemonic="c" icon="images/doc-new.png" />
+    </invokers>
+    <code lang="groovy">
+        
+<![CDATA[
+
+                
+import com.rameses.rcp.annotations.*
+import com.rameses.rcp.common.*
+import com.rameses.osiris2.client.*
+import com.rameses.osiris2.common.*
+import javax.swing.JFileChooser;
+import com.rameses.io.*;
+import com.rameses.util.Base64Cipher;
+
+public class MiscRYSettingMgmtController extends ListController 
+{
+    @Service('MiscRYSettingService')
+    def svc;
+    
+    String serviceName = 'MiscRYSettingListService'
+    String entityName  = 'miscrysetting'
+    
+    def copy() {
+        def opener = null
+        if( MsgBox.confirm('Copy revision year ' + selectedEntity.ry + '?' ) ) {
+            opener = InvokerUtil.lookupOpener(entityName + ':copy', [entity:selectedEntity])
+        }
+        return opener 
+    }
+    
+    Column[] getColumns(){ 
+        return [
+            new Column(name:'ry', caption:'Revision Year', format:'0000', alignment:'left', width:120),
+            new Column(name:'appliedto', caption:'Applied To', width:250),
+        ]
+    }
+    
+}
+
+
+]]>
+
+</code>    
+</workunit>

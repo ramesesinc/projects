@@ -1,0 +1,78 @@
+<workunit>
+        
+    <invokers>
+         <invoker type="form60-item:open" caption="Form60 Item" action="open"/>
+         <invoker type="form60-item:create" caption="Form60 Item" action="create"/>
+   </invokers>
+   
+   <code>
+       <![CDATA[
+        import com.rameses.osiris2.common.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import java.rmi.server.*;
+        
+        class Form60Controller extends CRUDController {
+        
+            @Caller
+            def caller;
+        
+            String entityName = "form60";
+            
+            def node;
+            def parenttitle
+            
+            
+            public String getServiceName() {
+                return caller.getServiceName();
+            }
+            
+            public String getTitle() {
+                return caller.getTitle() + " - Item";
+            }  
+            
+            public String getPrefixId() {
+                return caller.getPrefixId();
+            }
+            
+            
+            Map createEntity() {
+                def m = [parentid:node.objid, type:'item'];
+                parenttitle = node.title;
+                m.nationalrate = 0.0
+                m.provgenrate = 0.0
+                m.provsefrate = 0.0
+                m.provtrustrate = 0.0
+                m.munigenrate = 0.0
+                m.munisefrate = 0.0
+                m.munitrustrate = 0.0
+                m.barangayrate = 0.0
+                return m;
+            }
+          
+            protected void beforeSave(m) {
+                validate() 
+            }
+            
+            void validate() {
+                def totalrate = entity.nationalrate + 
+                                entity.provgenrate + entity.provsefrate + entity.provtrustrate +
+                                entity.munigenrate + entity.munisefrate + entity.munitrustrate +
+                                entity.barangayrate 
+
+                if( totalrate == 0.0 ) throw new Exception('Sharing rate must be greater than zero.')
+                if( totalrate > 100 ) throw new Exception('Sharing rate must not exceed to 100%')
+
+            }
+            
+            
+        }      
+       ]]>
+   </code>
+   
+   <pages>
+       <page template="com.rameses.treasury.municipality.form60.ItemPage"/>
+   </pages>
+   
+</workunit>

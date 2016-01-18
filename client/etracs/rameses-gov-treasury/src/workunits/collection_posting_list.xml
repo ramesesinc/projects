@@ -1,0 +1,19 @@
+<workunit extends="wtemplates/ListController.xml" >
+    <invokers>
+        <invoker folderid="/explorer/txn/treasury" caption="Collection Postings" role="CASHIER" index="200"/>
+    </invokers>
+    
+    <code>
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        
+        class CollectionPostingListController extends ListController {
+            String serviceName = 'CollectionPostingService'
+            String entityName = 'collectionposting'
+            String formTarget = 'window'
+        }
+        
+    </code> 
+</workunit>

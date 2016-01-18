@@ -1,0 +1,17 @@
+"printAll" [printing == false]{
+    visible:true;
+}
+"printAll" [printing == true]{
+    visible:false;
+}
+
+
+"cancelPrinting" [printing == false]{
+    visible:false;
+}
+
+"cancelPrinting" [printing == true]{
+    visible:true;
+}
+
+

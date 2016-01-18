@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="faas:change_previous_info" action="init" 
+                 caption="Superseded FAAS Information" 
+                actiontype="change_previous_info"/>
+   </invokers>
+
+    <code class="com.rameses.gov.etracs.rpt.faas.change.ui.ChangePreviousInfoController">       
+    </code>
+
+    <pages> 
+        <page template="com.rameses.gov.etracs.rpt.faas.change.ui.ChangePreviousInfoPage"/>
+    </pages>
+</workunit>
+
+

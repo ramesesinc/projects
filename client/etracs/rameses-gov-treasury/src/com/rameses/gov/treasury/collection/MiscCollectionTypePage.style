@@ -1,0 +1,8 @@
+
+"entity.fund" [ mode == 'create' ] {
+    enabled:false;
+}
+
+"entity.fund" [ mode != 'create' ] {
+    enabled:true;
+}

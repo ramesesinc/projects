@@ -1,0 +1,50 @@
+<workunit extends="rpt_wtemplates/ReportController.xml" >
+    <invokers>
+        <invoker folderid="/menu/report/landtax" action="init" caption="Realty Tax Delinquency Listing (Old)" target="window" index="101" 
+            role="LANDTAX_REPORT"/>
+    </invokers>
+    <code>
+
+<![CDATA[
+
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.reports.*;
+
+class RPTDelinquencyListingOldController extends com.rameses.gov.etracs.rpt.report.ReportController
+{
+    @Service('LandTaxReportService') 
+    def svc
+    
+    String title = 'Realty Tax Delinquency Listing';
+    
+    String reportName = 'com/rameses/gov/etracs/rpt/report/landtax/rptdelinquencyold.jasper'
+    def data 
+        
+    def getReportData(){
+        return svc.generateDelinquencyReportOldFormat(entity);
+    }
+    
+    Map getParameters(){
+        return [
+            TITLE : 'Realty Tax Delinquency Listing for ' + entity.barangay.name,
+            BARANGAY : entity.barangay.name,
+        ]
+    }
+    
+    
+   def formControl = [
+        getFormControls: {
+            return [
+                new FormControl( "combo", [caption:'Barangay', name:'entity.barangay', items:'barangays', required:true, expression:'#{item.name}', preferredSize:'0,21']),
+            ]    
+        },
+   ] as FormPanelModel;
+   
+
+}
+]]>        
+        
+    </code>
+</workunit>

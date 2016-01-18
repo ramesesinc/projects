@@ -1,0 +1,70 @@
+<workunit extends="rpt_wtemplates/ImportController.xml">
+    <invokers>        
+        <invoker type="propertyclassification:list:formActions" 
+                 action="init" caption="Import" 
+                 title ="Import Property Classifications"
+                 serviceName="PropertyClassificationService"
+                 role="MASTER" target="popup" index="502"/>
+        
+        <invoker type="exemptiontype:list:formActions" 
+                 action="init" caption="Import" 
+                 title ="Import Exemption Types"
+                 serviceName="ExemptionTypeService"
+                 role="MASTER" target="popup" index="502"/>
+        
+        <invoker type="canceltdreason:list:formActions" 
+                 action="init" caption="Import" 
+                 title ="Import Cancel FAAS Reasons"
+                 serviceName="CancelTDReasonService"
+                 role="MASTER" target="popup" index="502"/>
+        
+        <invoker type="bldgkind:list:formActions" 
+                 action="init" caption="Import" 
+                 title ="Import Kind of Buildings"
+                 serviceName="BldgKindService"
+                 role="MASTER" target="popup" index="502"/>
+        
+        <invoker type="material:list:formActions" 
+                 action="init" caption="Import" 
+                 title ="Import Materials"
+                 serviceName="MaterialService"
+                 role="MASTER" target="popup" index="502"/>
+        
+        <invoker type="structure:list:formActions" 
+                 action="init" caption="Import" 
+                 title ="Import Structures"
+                 serviceName="StructureService"
+                 role="MASTER" target="popup" index="502"/>
+        
+        <invoker type="machine:list:formActions" 
+                 action="init" caption="Import" 
+                 title ="Import Machines"
+                 serviceName="MachineService"
+                 role="MASTER" target="popup" index="502"/>
+        
+        <invoker type="planttree:list:formActions" 
+                 action="init" caption="Import" 
+                 title ="Import Plants/Trees"
+                 serviceName="PlantTreeService"
+                 role="MASTER" target="popup" index="502"/>
+        
+        <invoker type="miscitem:list:formActions" 
+                 action="init" caption="Import" 
+                 title ="Import Miscellaneous Items"
+                 serviceName="MiscItemService"
+                 role="MASTER" target="popup" index="502"/>
+        
+        <invoker type="rptparameter:list:formActions" 
+                 action="init" caption="Import" 
+                 title ="Import Parameters"
+                 serviceName="RPTParameterService"
+                 role="MASTER" target="popup" index="502"/>
+        
+        <invoker type="rptrequirementtype:list:formActions" 
+                 action="init" caption="Import" 
+                 title ="Import Requirement Types"
+                 serviceName="RPTRequirementTypeService"
+                 role="MASTER" target="popup" index="502"/>       
+    </invokers>
+</workunit>
+

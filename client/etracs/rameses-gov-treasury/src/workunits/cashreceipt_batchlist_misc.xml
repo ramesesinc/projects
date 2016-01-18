@@ -1,0 +1,66 @@
+<workunit>
+    
+   <invokers>
+         <invoker type="cashreceipt:batch:misc" caption="Batch Cash Receipt Capture(Miscellaneous)" action="init"/>
+         <invoker type="formActions" caption="Cancel" action="_close" immediate="true"/>
+         <invoker type="formActions" caption="Save" action="save"/>
+         <invoker type="formActions" caption="Post" action="post"/>
+   </invokers>
+   
+   <code>
+       <![CDATA[
+        import com.rameses.osiris2.common.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.reports.*;
+        import com.rameses.util.*;
+        import com.rameses.enterprise.treasury.cashreceipt.batch.*;
+        
+        class BatchCashReceiptController extends BatchCaptureController {
+        
+            @Service("CashReceiptBatchCaptureService")
+            def service;
+        
+            String title = "Batch Capture (Miscellaneous Collection)";
+            
+            public String getFileType() {
+                return "cashreceipt:misc:editor";
+            }    
+            
+            def batchItems = [];
+            
+            void init() {
+                entity = entity.batchcontrol;
+            }
+            
+            public String getNextReceiptNo() {
+                def p = (entity.prefix)?entity.prefix:'';
+                def s = (entity.suffix)?entity.sufix:'';
+                def pad = "0".multiply(entity.serieslength - (entity.startseries+'').length());
+                return p+pad+entity.startseries+s;
+            }
+            
+            public int getNextSeries() {
+                return entity.startseries;
+            }
+            
+            public void moveNext() {
+                entity.startseries += 1;
+                binding.refresh("entity.startseries");
+            }
+            
+            public void save() {
+                entity.items = batchItems;
+                service.create( entity );
+            }
+           
+        }      
+       ]]>
+   </code>
+   
+   <pages>
+        <page template="com.rameses.enterprise.treasury.cashreceipt.batch.BatchCapturePage"/>
+   </pages>
+   
+</workunit>

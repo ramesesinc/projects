@@ -1,0 +1,55 @@
+<workunit extends="rpt_wtemplates/ReportController.xml" >
+    <invokers>
+        <invoker folderid="/explorer/report/rpt" action="init" caption="Tax Mapping Control Roll (Modified)" target="window" index="4" 
+            role="ASSESSOR_REPORT,REPORT" />
+    </invokers>
+    <code>
+
+<![CDATA[
+
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.reports.*;
+
+
+class TMCRModifiedController extends com.rameses.gov.etracs.rpt.report.AsyncReportController
+{
+    @Service('RPTReportTMCRService') 
+    def svc 
+    
+    String title = 'Tax Mapping Control Roll (Modified) Report'
+    
+    String reportName = 'com/rameses/gov/etracs/rpt/report/tmcr_modified.jasper';
+    
+    void buildReportData(entity, asyncHandler){
+        svc.generateTMCRModified(entity, asyncHandler);
+    }
+    
+    def getReporttypes(){
+        return ['GR', 'MAINTENANCE']
+    }
+    
+    def formControl = [
+        getFormControls: {
+            return [
+                new FormControl( "combo", [caption:'Report Type', name:'entity.reporttype', emptyText:'ALL', items:'reporttypes', preferredSize:'0,21']),
+                new FormControl( "combo", [caption:'LGU', name:'entity.lgu', required:true, items:'lgus', expression:'#{item.name}']),
+                new FormControl( "combo", [caption:'Barangay', name:'entity.barangay', required:true, items:'barangays', expression:'#{item.name}', depends:'entity.lgu', dynamic:true]),
+                new FormControl( "text", [caption:'Section', name:'entity.section', preferredSize:'50,19', required:true]),
+            ]    
+        },
+   ] as FormPanelModel;
+   
+    Map getParameters(){
+        data.parameters.SECTION = entity.section;
+        return data.parameters;
+    }
+    
+   
+}
+
+]]>        
+        
+    </code>
+</workunit>

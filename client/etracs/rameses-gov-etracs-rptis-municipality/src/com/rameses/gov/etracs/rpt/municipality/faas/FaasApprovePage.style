@@ -1,0 +1,7 @@
+"entity.*" [mode == 'init']{
+    enabled:true;
+}
+
+"entity.*" [mode != 'init']{
+    enabled:false;
+}

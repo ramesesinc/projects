@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit extends="wtemplates/TaskListController.xml" processname="subdivision">
+    <invokers>
+        <invoker type="subdivision:info" caption="Logs" index="2000" />
+   </invokers>
+</workunit>
+
+

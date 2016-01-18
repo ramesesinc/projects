@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="rpttransmittal:item" action="open" caption="FAAS Transmittal Item"  index="0" />
+   </invokers>
+   
+   <code>
+       
+<![CDATA[
+
+import com.rameses.rcp.annotations.*;
+import com.rameses.rcp.common.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.common.*;
+
+class FaasTransmittalItemController
+{
+    @Binding 
+    def binding;
+    
+    @Caller 
+    def caller;
+    
+    def svc;
+    def entity;
+    def items;
+    def selectedItem;
+    
+    void open(){
+        items = svc.getItems(entity);
+    }
+    
+    def getLookupFaas(){
+        return InvokerUtil.lookupOpener('faas:lookup', [
+            onselect : {faas ->
+                svc.validateFaasForTransmittal(entity.type, faas)
+                updateItemData(faas);
+            },
+            
+            onempty : {
+                updateItemData([:]);
+            }
+        ])
+    }
+    
+    void updateItemData(faas){
+        selectedItem.state = faas.state;
+        selectedItem.refid = faas.objid;
+        selectedItem.txntype = faas.txntype;
+        selectedItem.owner = faas.owner;
+        selectedItem.tdno = faas.tdno;
+        selectedItem.fullpin = faas.fullpin;
+        selectedItem.cadastrallotno = faas.cadastrallotno;
+        selectedItem.totalareaha = faas.totalareaha;
+        selectedItem.totalareasqm = faas.totalareasqm;
+        selectedItem.totalmv = faas.totalmv;
+        selectedItem.totalav = faas.totalav;
+    }
+    
+    def listHandler = [
+        createItem  : { return [transmittalid:entity.objid, filetype:'faas'] },
+        
+        getRows     : {return items.size() + 1 },
+        
+        fetchList   : { return items },
+        
+        getColumns  : { return [
+            new Column(name:'tdno', caption:'TD No.*', editable:true, width:120, type:'lookup', handler:'lookupFaas', expression:'#{item.tdno}' ),
+            new Column(name:'fullpin', caption:'PIN', width:150),
+            new Column(name:'txntype.objid', caption:'Txn Type', width:70),
+            new Column(name:'owner.name', caption:'Owner Name', width:250),
+            new Column(name:'owner.address', caption:'Address', width:250),
+            new Column(name:'totalareaha', caption:'Area (ha)', width:100),
+            new Column(name:'totalmv', caption:'M.V.', width:100, type:'decimal'),
+            new Column(name:'totalav', caption:'A.V.', width:100, type:'decimal'),
+        ]},
+        
+        onAddItem   : {item -> 
+            item.objid = 'TI' + new java.rmi.server.UID();
+            svc.saveItem(item);
+            items << item;
+            binding.refresh('itemcount');
+        },
+        
+        validate    : {li->
+            if (!li.item.objid)
+                checkDuplicate(li.item);
+            else
+                svc.saveItem(li.item);
+        },
+        
+        onRemoveItem : { item ->
+            return removeItem();
+        }
+        
+    ] as EditorListModel;
+    
+    
+    def removeItem(){
+        if (!selectedItem) 
+            return false;
+            
+        if (MsgBox.confirm('Remove selected item?')){
+            svc.deleteItem(selectedItem);
+            items.remove(selectedItem);
+            listHandler.load();
+            binding.refresh('itemcount');
+            return true;
+        }
+        return false;
+    }
+    
+    void checkDuplicate(item){
+        def dup = items.find{it.refid == item.refid && it.objid != item.objid};
+        if (dup) throw new Exception('Duplicate FAAS is not allowed.');
+    }
+       
+    def getItemcount(){
+        return items.size();
+    }
+    
+    def getMode(){
+        return caller.mode;
+    }
+}       
+              
+]]>       
+   </code>
+    <pages>
+        <page template="com.rameses.gov.etracs.rpt.transmittal.ui.TransmittalItemPage"/>
+    </pages>    
+</workunit>
+
+

@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="rptrequirement:viewer" action="init" caption="Requirements Viewer" alwaysOnTop="true" target="popup" />
+   </invokers>
+   <code>
+
+<![CDATA[
+
+                
+import com.rameses.rcp.annotations.* 
+import com.rameses.rcp.common.* 
+import com.rameses.rcp.framework.*;
+import com.rameses.osiris2.client.*
+import com.rameses.osiris2.common.*
+import com.rameses.gov.etracs.rpt.util.*;
+
+class RequirementViewerController
+{
+    @Binding
+    def binding;
+    
+    @Service('RPTRequirementService')
+    def reqSvc;
+
+    String title = 'Requirement Viewer'
+    
+    def entity;
+    def requirements;
+    def images;
+    def selectedRequirement;
+    def selectedImage;
+    
+    def viewername = 'faas';
+    def ids = [];
+        
+    @Close
+    public void onClose(){
+        ClientContext.currentContext.eventManager.remove(viewername);
+    }
+    
+    
+    void doClose(param){
+        ids.remove(param.objid);
+        if (!ids)
+            binding.fireNavigation('_close');
+    }
+    
+    
+    void init(){
+        ClientContext.currentContext.eventManager.register(viewername, [
+            onEvent : {o -> 
+                entity = o;
+                requirements = reqSvc.getRequirements(entity.objid);
+                selectedRequirement = null;
+                listHandler.load();
+                listHandler.setSelectedItem(0);
+                if (!ids.contains(entity.objid))
+                    ids << entity.objid;
+            }, 
+            onMessage : { param ->
+                if (param.action == 'close')
+                    doClose(param);
+            },
+            onDestroy : {
+                binding.fireNavigation('_close');
+            },
+        ] as EventListener);
+    }
+    
+    def listHandler = [
+        fetchList : { return requirements },
+    ] as BasicListModel
+    
+    void setSelectedRequirement(req){
+        selectedRequirement = req;
+        loadImages();
+    }
+    
+    void loadImages(){
+        images = [];
+        try{
+           images = DBImageUtil.getInstance().getImages(selectedRequirement.objid);    
+        }
+        catch(e){
+            println 'Load Images error ============';
+            e.printStackTrace();
+        }
+        imageListHandler.load();
+    }
+
+
+    def imageListHandler = [
+        fetchList : { return images }
+    ] as BasicListModel
+    
+        
+    def getImage(){
+        if (selectedImage)
+            return DBImageUtil.getInstance().getImage(selectedImage.objid);
+        return null;
+    }
+    
+
+}
+       
+]]>       
+   </code>
+    
+    <pages> 
+        <page template="com.rameses.gov.etracs.rpt.requirement.ui.RequirementViewerPage"/>
+    </pages>
+</workunit>
+
+

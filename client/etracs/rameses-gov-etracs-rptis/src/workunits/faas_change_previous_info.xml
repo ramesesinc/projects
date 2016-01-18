@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="faas:changeinfo" action="init" 
+            caption="Superseded Information" target="popup"  
+            role="ADMIN" permission="faas.change_previous_info" index="5" 
+            actiontype="change_previous_info"/>
+        
+        <invoker type="faas:redflag:action" action="init" 
+            caption="Change Superseded Information" index="5" 
+            actiontype="change_previous_info"/>
+        
+        <invoker type="formActions" action="_close" caption="Cancel" mnemonic="c" immediate="true" />
+        <invoker type="formActions" action="save" caption="Save" mnemonic="s" />
+   </invokers>
+   
+    <code class="com.rameses.gov.etracs.rpt.faas.change.ui.ChangePreviousInfoController">       
+    </code>
+
+    <pages> 
+        <page template="com.rameses.gov.etracs.rpt.faas.change.ui.ChangePreviousInfoPage"/>
+    </pages>
+</workunit>
+
+

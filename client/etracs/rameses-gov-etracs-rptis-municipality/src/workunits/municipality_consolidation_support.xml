@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="consolidation:info:remotetool" action="resendToProvince" caption="Resend Consolidation" target="process" index="1" role="ADMIN" />
+        <invoker type="consolidation:info:remotetool" action="resendRequirements" caption="Resend Requirements" target="process" index="2" role="ADMIN" />
+    </invokers>
+    <code>
+<![CDATA[
+        
+import com.rameses.rcp.annotations.*;        
+import com.rameses.rcp.common.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.common.*;
+
+class MunicipalityConsolidationSupportController
+{
+    @Binding 
+    def binding;
+    
+    @Service('MunicipalityConsolidationSupportService')
+    def svc; 
+    
+    def entity;
+    
+    void resendToProvince(){
+        if (MsgBox.confirm('Resubmit consolidation to Province?')){
+            svc.resubmitToProvince(entity);
+            MsgBox.confirm('Consolidation has been successfully submitted to province.')
+        }
+    }
+    
+    void resendRequirements(){
+        if (MsgBox.confirm('Resubmit consolidation requirements to Province?')){
+            svc.resubmitRequirements(entity);
+            MsgBox.confirm('Consolidation requirements have been successfully submitted to province.')
+        }
+    }
+    
+        
+}
+
+
+]]>
+
+    </code>
+    <pages>
+    </pages>
+</workunit>

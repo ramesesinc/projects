@@ -1,0 +1,33 @@
+<workunit extends="wtemplates/ListController.xml">
+    <invokers>
+        <invoker folderid="/explorer/txn/rpt/list" caption="Annotation Cancellations"  target="window" index="155" role="ASSESSOR_SHARED,SHARED" />
+        <invoker type="quick_launcher" code="FA02" caption="Annotation Cancellations" role="ASSESSOR_SHARED,SHARED" />
+    </invokers>
+    <code>
+        import com.rameses.rcp.common.*
+        import com.rameses.rcp.annotations.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        
+        class CancelledAnnotationListController extends ListController
+        {
+            String serviceName = 'CancelAnnotationService'
+            
+            public String getEntityName(){ return 'cancelannotation' }
+                
+            boolean allowCreate = false
+            
+            int getRows() { return 50 }
+            
+            Column[] getColumns(){
+                return [
+                    new Column(name:"state", caption:"State", width:100),
+                    new Column(name:"fileno", caption:"File No.", width:120),
+                    new Column(name:"annotation.faas.tdno", caption:"TD No.", width:120),
+                    new Column(name:"annotation.faas.fullpin", caption:"PIN", width:180),
+                    new Column(name:"remarks", caption:"Memoranda", width:300),
+                ]
+            }
+        }
+    </code>
+</workunit>

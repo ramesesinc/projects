@@ -1,0 +1,70 @@
+<!-- REQUISITION ISSUE SLIP -->
+<workunit>
+    <invokers>
+       <invoker type="afreceipt:additem" caption="Receive Items" action="init" target="popup"/>
+    </invokers>
+    
+    <code>
+        <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        
+        class  AddReceiptItemPurchaseController  {
+        
+            @Service("AFStockUtilService")
+            def stockUtil;
+        
+            def afList;
+            def entity;
+            def selectedItem;
+            def addHandler;
+            
+            void init() {
+                entity = [:];
+            }
+            
+            def addAndClose() {
+                addAndContinue();
+                return "_close";
+            }
+            
+            @PropertyChangeListener
+            def listener = [
+                "selectedItem" : { o->
+                    if(o.qtybalance==null) {
+                        o.qtybalance = o.qty;
+                    }
+                    if(o.qtyreceived==null) {
+                        o.qtyreceived = 0;
+                    }
+                    entity = [:];
+                }
+            ];
+            
+            void addAndContinue() {
+                if( selectedItem.qtybalance < entity.qty ) {
+                    throw new Exception("Qty must not be greater than the requested qty");
+                }
+                entity.af = selectedItem.item.code;
+                entity = stockUtil.getValidatedInfo( entity );
+                addHandler(entity);
+                selectedItem.qtyreceived += entity.qty;
+                selectedItem.qtybalance = selectedItem.qty - selectedItem.qtyreceived;
+                entity = [:];
+            }
+            
+            def doClose() {
+                return "_close";
+            }   
+        }
+        ]]>
+        
+    </code>
+    
+    <pages>
+        <page template="com.rameses.gov.treasury.ris.AddReceiptItemPage"/>
+    </pages>
+    
+</workunit>

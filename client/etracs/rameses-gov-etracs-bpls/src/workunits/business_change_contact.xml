@@ -1,0 +1,53 @@
+<workunit>
+    <invokers>
+        <invoker type="business:change" caption="Change Contact Info" target="popup"
+                 role="BUSINESSINFO,ASSESSOR,LICENSING" index="5" action="init"/>
+    </invokers>
+    
+    <code>
+         <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import java.rmi.server.*;
+        import com.rameses.util.*;
+        
+        public class BusinessChangeContactInfo {
+        
+            @Service("BusinessChangeService")
+            def service;
+            
+            def entity;
+            def handler;
+            def entry = [:];
+            
+            void init() {
+                entry.businessid = entity.objid;
+                entry.phoneno = entity.phoneno;
+                entry.mobileno = entity.mobileno;
+                entry.email = entity.email;
+            }
+            
+            def doOk() {
+                service.updateContact( entry);
+                entity.phoneno = entry.phoneno;
+                entity.mobileno = entry.mobileno;
+                entity.email = entry.email;
+                if(handler) handler(false);
+                return "_close";
+            }
+            
+            def doCancel() {
+                return "_close";
+            }
+            
+        }
+        ]]>
+    </code>    
+    
+    <pages>
+        <page name="edit-owner" template="com.rameses.gov.etracs.bpls.amend.ChangeBusinessContact"/>
+    </pages>
+    
+</workunit>

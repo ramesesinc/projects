@@ -1,0 +1,89 @@
+<workunit extends="wtemplates/gov/treasury/ReportController.xml" >
+    <invokers>
+        <invoker folderid="/explorer/report/treasury" caption="Daily Report Of Collection Summary By Fund" target="window" index="10">
+            <action name="doInit" role="REPORT" tag="all" permission="collectionreport.view"/> 
+            <action name="doInit" role="COLLECTOR" tag="collector" permission="collectionreport.view"/> 
+        </invoker> 
+    </invokers>
+
+    <code>
+<![CDATA[
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.reports.*;
+
+
+class DailyCollectionController extends com.rameses.etracs.shared.ReportController 
+{
+    @Service('CollectorReportService') 
+    def svc
+
+    @Script('User')
+    def user;
+
+    String title = 'Daily Report Of Collection Summary By Fund'
+    String reportpath = 'com/rameses/gov/treasury/report/'
+    String reportName = reportpath + 'dailycollectionsummaryreport.jasper'
+    
+    def tag; 
+    def data;
+    
+    def periods = [
+        [type:'monthly', title:'Monthly'] 
+    ];
+
+    void doInit( invoker ) {
+        init();
+        
+        tag = invoker?.properties?.tag; 
+        entity.period = periods[0].type; 
+        entity.collector = [
+            objid : user.env.USERID,
+            name  : user.env.FULLNAME 
+        ]; 
+    } 
+
+    def lookupCollector = Inv.lookupOpener('collector:lookup', [
+        onselect: { o-> 
+            def name = [o.firstname, o.middlename, o.lastname].findAll{(it? true: false)}.join(' '); 
+            entity.collector = [objid: o.objid, name: name]; 
+        }, 
+        onempty: {
+            entity.collector = null; 
+        } 
+    ]); 
+        
+    def initReport(){
+        return 'default'
+    }     
+    
+    def getReportData(){
+        data = svc.generateDailyCollectionReport(entity);
+        return data.items
+    }
+    
+    def formControl = [
+        getFormControls: {
+            return [
+                new FormControl( "integer", [caption:'Year', name:'entity.year', required:true, preferredSize:'100,19', captionWidth:100]), 
+                new FormControl( "combo", [caption:'Month', name:'entity.month', items:'months', expression:'#{item.name}', preferredSize:'100,19', captionWidth:100, required:true]),
+            ]    
+        }
+    ] as FormPanelModel;
+   
+    Map getParameters(){
+        return data.header
+    }
+
+    List getMonths(){
+        return dtSvc.getMonths();
+    }
+}
+]]>        
+    </code>
+    
+    <pages>
+        <page template="com.rameses.gov.treasury.report.view.CollectionReportCriteriaPage" />
+    </pages>      
+</workunit>

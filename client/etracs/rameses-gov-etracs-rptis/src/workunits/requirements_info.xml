@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="faas:info" action="init" caption="Requirements" index="5" />
+        <invoker type="subdivision:info" action="init" caption="Requirements" index="5" />
+        <invoker type="subdivisionfromcs:info" action="init" caption="Requirements" index="5" />
+        <invoker type="consolidation:info" action="init" caption="Requirements" index="5" />
+        <invoker type="resection:info" action="init" caption="Requirements" index="5" />
+        <invoker type="mcsettlement:info" action="init" caption="Requirements" index="5" />
+        <invoker type="formActions" action="refresh" caption="Refresh" mnemonic="r" />
+        <invoker type="formActions" action="openViewer" caption="Open Viewer" visibleWhen="#{showViewer==true}" />
+   </invokers>
+   <code>
+
+<![CDATA[
+
+                
+import com.rameses.rcp.annotations.* 
+import com.rameses.rcp.common.* 
+import com.rameses.osiris2.client.*
+import com.rameses.osiris2.common.*
+
+class RequirementsInfoController
+{
+    @Binding
+    def binding;
+
+    @Service('RPTRequirementService')
+    def reqSvc;
+    
+    def svc;
+    
+    String title = 'Requirements'
+    
+    String entityName = 'rptrequirement';
+    
+    def entity;
+    def requirements;
+    def selectedItem;
+        
+    void init(){
+        requirements = reqSvc.getRequirements(entity.objid);
+        listHandler?.load();
+    }
+    
+    def onupdateRequirement = {
+        listHandler.refresh();
+    }
+    
+    def getOpener(){
+        if (!selectedItem)
+            return null;
+        def openers = InvokerUtil.lookupOpeners('rptrequirementtype:handler', [entity:selectedItem, svc:reqSvc, onupdate:onupdateRequirement]);
+        return openers.find{it.properties.name == selectedItem.handler}
+    }
+    
+    
+    void refresh(){
+        init();
+    }
+    
+    
+    def listHandler = [
+        fetchList : { return requirements },
+    ] as BasicListModel
+    
+    
+    
+    boolean getShowViewer(){
+        if (requirements.size() > 0 )
+            return true;
+        return false;
+    }
+    
+            
+    def openViewer(){
+        return Inv.lookupOpener('rptrequirement:viewer', [entity : entity, requirements:requirements])
+    }
+    
+    
+}
+       
+]]>       
+   </code>
+    
+    <pages> 
+        <page template="com.rameses.gov.etracs.rpt.requirement.ui.RequirementInfoPage"/>
+    </pages>
+</workunit>
+
+

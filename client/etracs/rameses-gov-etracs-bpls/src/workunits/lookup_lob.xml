@@ -1,0 +1,6 @@
+<workunit extends="wtemplates/ServiceLookupController.xml" serviceName="LobLookupService" allowSearch="true">
+    <invokers>
+        <invoker type="lob:lookup" caption="Lookup LOB" target="popup"/>
+    </invokers>
+   
+</workunit>

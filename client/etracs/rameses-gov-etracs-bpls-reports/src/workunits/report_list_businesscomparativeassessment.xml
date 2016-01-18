@@ -1,0 +1,80 @@
+<workunit extends="wtemplates/gov/bp/ReportController.xml" >
+    <invokers>
+        <invoker xfolderid="/explorer/report/bpls" action="myinit" caption="Business Comparative Assessment Listing" target="window" index="9" 
+            role="REPORT"/>
+        
+    </invokers>
+
+   <code>
+    <![CDATA[
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.common.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.reports.*;
+        
+        public class BusinessComparativeAssessmentListingReportController extends com.rameses.etracs.shared.ReportController  
+        {
+            
+            @Service('BPComparativeAssessmentPReportService')
+            def svc;
+            
+            String title = "Business Comparative Assessment Listing";
+            String reportpath = 'com/rameses/gov/etracs/bpls/reports/'
+            String reportName = reportpath + 'ComparativeAssessmentList.jasper'
+            
+            def myinit() {
+                def parsedate = dtSvc.parseCurrentDate();
+                entity.yearfrom = parsedate.year -1 ;
+                entity.yearto = parsedate.year 
+                entity.qtr  = parsedate.qtr;
+                mode = 'init'
+                return initReport();
+            }
+            
+            def getReportData(){
+                return svc.getReport( entity ); 
+            }
+            
+       
+            def formControl = [
+                getFormControls: {
+                    return [
+                        new FormControl( "integer", [caption:'Year From', name:'entity.yearfrom', required:true, preferredSize:'100,20', captionWidth:100]),
+                        new FormControl( "integer", [caption:'Year To', name:'entity.yearto', required:true, preferredSize:'100,20', captionWidth:100]),
+                        new FormControl( "combo", [caption:'Type', name:'entity.type', items:'typelist', required:true, immediate:true, preferredSize:'0,20', captionWidth:100 ]),
+                        new FormControl( "combo", [caption:'Quarter', name:'entity.qtr', items:'qtrlist', depends:'entity.type', dynamic:true, preferredSize:'100,20', captionWidth:100]) 
+                    ]
+                },
+           ] as FormPanelModel; 
+            
+           SubReport[] getSubReports(){ 
+                return [
+                        new SubReport( 'QUARTERLYITEMS', reportpath + 'ComparativeAssessmentQuarterlyItems.jasper' ),
+                        new SubReport( 'ANNUALLYITEMS', reportpath + 'ComparativeAssessmentAnnuallyItems.jasper' )
+                    ] as SubReport[]
+            }
+            
+            Map getParameters(){
+                return [
+                    TITLE : reportdata.title,
+                    YEARFROM : entity.yearfrom,
+                    YEARTO : entity.yearto,
+                    QTR : reportdata.strqtr,
+                ] 
+            }
+             
+            List getTypelist() {
+                return ['ANNUALLY','QUARTERLY'];
+            }
+            
+            List getQtrlist() {
+                if( entity.type == "QUARTERLY") return [1,2,3,4];
+                
+                return []
+            }
+        }
+    ]]>
+    </code>
+    
+</workunit>

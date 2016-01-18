@@ -1,0 +1,60 @@
+<workunit extends="rpt_wtemplates/ReportController.xml" >
+    <invokers>
+        <invoker folderid="/explorer/report/rpt" action="init" caption="FAAS MasterList" target="window" index="1" 
+            role="ASSESSOR_REPORT,REPORT" />
+    </invokers>
+    <code>
+
+<![CDATA[
+
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.reports.*;
+
+
+class MasterListingController extends com.rameses.gov.etracs.rpt.report.AsyncReportController
+{
+    @Service('RPTReportMasterListService') 
+    def svc 
+    
+    String title = 'FAAS Master List Report'
+    
+    String reportName = 'com/rameses/gov/etracs/rpt/report/masterlist.jasper';
+    
+    void buildReportData(entity, asyncHandler){
+        svc.getMasterListing(entity, asyncHandler);
+    }
+    
+    Map getParameters(){
+        return data.parameters;
+    }    
+    
+    def getReporttypes(){
+        return ['GR', 'MAINTENANCE']
+    }
+    
+    def formControl = [
+        getFormControls: {
+            return [
+                new FormControl( "combo", [captionWidth:100, caption:'Report Type', name:'entity.reporttype', emptyText:'ALL', items:'reporttypes', preferredSize:'0,21']),
+                new FormControl( "label", [captionWidth:100, caption:'Year', name:'entity.year', required:true, preferredSize:'100,19']),
+                new FormControl( "combo", [captionWidth:100, caption:'LGU', name:'entity.lgu', required:true, items:'lgus', expression:'#{item.name}', allowNull:false]),
+                new FormControl( "combo", [captionWidth:100, caption:'Classification', name:'entity.classification', items:'classifications', required:true, immediate:true, expression:'#{item.name}']),
+                new FormControl( "combo", [captionWidth:100, caption:'Order By', name:'entity.orderby', items:'orderbyColumns', expression:'#{item.caption}']),
+            ]    
+        },
+   ] as FormPanelModel;
+   
+   
+   def orderbyColumns = [
+        [fieldname:'t.name', caption:'Owner Name'],
+        [fieldname:'t.fullpin', caption:'PIN'],
+        [fieldname:'t.tdno', caption:'TD No.'],
+    ]
+}
+
+]]>        
+        
+    </code>
+</workunit>

@@ -1,0 +1,12 @@
+"entity.*" [ allowEdit == true ] {
+    enabled:true;
+}
+
+
+"entity.*" [allowEdit == false] {
+    enabled:false;
+}
+
+"entity.annotation.*" [true == true] {
+    enabled:false;
+}

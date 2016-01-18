@@ -1,0 +1,133 @@
+import com.rameses.rcp.annotations.*
+import com.rameses.rcp.common.*
+import com.rameses.osiris2.client.*
+import com.rameses.osiris2.common.*
+import java.rmi.server.*;
+import com.rameses.util.*;
+
+public class BusinessLobUtil {
+
+    @Caller
+    def caller;
+
+    def assessmentTypes = LOV.LOB_ASSESSMENT_TYPES*.key;
+    def lobAssessmentType = "NEW";
+
+    boolean lobUpdated;
+    def selectedItem;
+    def handler;
+    boolean updated;
+    
+    def getItems() {
+        return caller.entity.lobs;
+    }
+
+
+    def listModel = [
+       createItem: { 
+            return null;
+       },
+       fetchList: { o->
+            return items;
+       },
+       isColumnEditable:{item,colname-> 
+          if (colname == 'assessmenttype' && item.assessmenttype == 'ACTIVE') {
+             return false; 
+          } 
+          return true; 
+       } 
+    ] as EditorListModel;
+
+    def add() {
+        return InvokerUtil.lookupOpener( "lob:lookup", [
+            onselect: { o->
+                if(items.find{ it.lobid == o.objid }!=null) 
+                    throw new Exception("Item already added");
+                def m = [:];
+                m.objid = "BIZLOB"+new UID();
+                m.lobid = o.objid;
+                m.name = o.name;
+                m.classification = o.classification;
+                m.assessmenttype = lobAssessmentType;
+                items << m; 
+                listModel.reload();
+                lobUpdated = true;
+                if(handler) handler();
+                updated = true;    
+            }
+        ]);
+    }
+
+    void retire() {
+        if(!selectedItem) return;
+        if(selectedItem.assessmenttype == 'NEW') throw new Exception("New cannot be retired");
+        selectedItem.prevassessmenttype = selectedItem.assessmenttype; 
+        selectedItem.assessmenttype = "RETIRE";
+        lobUpdated = true;
+        if(handler) handler();
+        updated = true;
+    }
+
+    void unretire() {
+        if(!selectedItem) return;
+        selectedItem.assessmenttype = selectedItem.prevassessmenttype;
+        lobUpdated = true;
+        if(handler) handler();
+        updated = true;
+    }
+
+     void remove()  {
+        if( !selectedItem ) return;
+        items.remove(selectedItem);
+        listModel.reload();
+        if(handler) handler();
+        updated = true;
+    }
+
+
+    def reclassify() {
+        if(!selectedItem) return;
+        return InvokerUtil.lookupOpener( "lob:lookup", [
+            onselect: { o->
+                if(items.find{ it.lobid == o.objid }!=null) 
+                    throw new Exception("Item already added");
+                selectedItem.lobid = o.objid;
+                selectedItem.name = o.name;
+                selectedItem.classification = o.classification;
+                listModel.reload();
+                lobUpdated = true;
+                if(handler) handler();
+                updated = true;
+            }
+        ]);
+    }
+
+    def verify() {
+        if(!items) 
+            throw new Exception("Please specify at least one line of business");
+        if(items.find{!it.lobid})
+            throw new Exception("All lines of business must be specified. lobid is null");
+    }
+    
+    void reset() {
+        listModel.reload();
+    }
+
+    //used in additional
+    def activeLobs = [];
+    void removeActiveLobs() {
+        activeLobs  = items.findAll{ it.assessmenttype == 'ACTIVE' }; 
+        items.removeAll( activeLobs );
+        if(!items) {
+            caller.entity.lobs = activeLobs;
+            throw new Exception("Please select at least one line of business");
+        }
+    }
+
+    void restoreAllLobs() {
+        caller.entity.lobs = activeLobs + caller.entity.lobs;
+        activeLobs.clear();
+        listModel.reload();
+    }
+
+}

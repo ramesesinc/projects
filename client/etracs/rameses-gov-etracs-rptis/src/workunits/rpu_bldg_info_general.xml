@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="rpubldg:info" action="init" caption="General Information" index="1" mnemonic="G"/>
+    </invokers>
+    
+    <code>
+<![CDATA[        
+        
+import com.rameses.rcp.annotations.* 
+import com.rameses.rcp.common.* 
+import com.rameses.osiris2.client.* 
+import com.rameses.osiris2.common.* 
+import com.rameses.gov.etracs.rpt.util.RPTUtil;
+
+class BldgGeneralInfoController
+{
+    @Binding 
+    def binding;
+    
+    @Caller
+    def caller;
+    
+    @Service('Var')
+    def varSvc;
+    
+    def rpuSvc;
+    
+    def entity;    
+    
+    def getAllowEdit(){
+        return caller.allowEdit;
+    }
+    
+    @PropertyChangeListener
+    def listener = [
+        'entity.rpu.(hasswornamount|swornamount|useswornamount|effectiveage|dtoccupied|dtcompleted|depreciation)':{
+            if (!entity.rpu.hasswornamount){
+                entity.rpu.swornamount = 0.0;
+                entity.rpu.useswornamount = false;
+            }
+            calculateAssessment();
+        },
+    ]    
+    
+    void init(){
+    
+    }
+    
+    def getClassifications(){
+        return rpuSvc.getClassifications();
+    }    
+    
+    
+    void calculateAssessment(){
+        caller?.calculateAssessment();
+        binding.refresh('.*');
+    }
+    
+    def getClassList(){
+        return [
+            'CLASS A', 'CLASS B', 'CLASS C', 'CLASS D'
+        ]
+    }
+    
+    
+    def getAutoDepreciate(){
+        def autodepreciate = varSvc.get('bldg_rpu_auto_depreciate')
+        if (autodepreciate == null) autodepreciate = true;
+        return RPTUtil.isTrue(autodepreciate);
+    }
+   
+}    
+    
+]]>        
+    </code>
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.rpt.rpu.bldg.ui.RpuBldgInfoGeneralPage"/>
+    </pages>
+</workunit>

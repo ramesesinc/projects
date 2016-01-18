@@ -1,0 +1,105 @@
+<workunit>
+    <invokers>
+        <!--
+        <invoker folderid="/home/business/business_application" caption="Update Qtr Gross for New"  
+                 action="start" target="window" role="ASSESSOR" index="52"/>
+        -->
+        <invoker type="extActions" caption="Print"  icon="images/toolbars/printer.png" 
+            action="application.print" visibleWhen="#{state=='save-success'}"/>
+    </invokers>
+    
+    <code>
+         <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import java.rmi.server.*;
+        import com.rameses.gov.etracs.bpls.controller.*;
+        
+        public class UpdateQtrGrossApplication extends PageFlowController {
+        
+            @Script("BusinessSearchUtil")
+            def searchList;
+        
+            @Script("BusinessApplicationUtil")
+            def application;
+            
+            @Script("BusinessLobUtil")
+            def lob;
+
+            @Script("BusinessAssessmentInfoUtil")
+            def assessmentInfo;
+
+            def entity;
+            def qtrs = [];
+            
+            void open() {
+                entity = [:];
+                application.init( [businessid:searchList.selectedItem.objid, apptype: 'UPDATEQTRGROSS'] );
+                lob.reset();
+                qtrs = entity.remove("qtrs");
+            }
+            
+            void updateInfo() {
+                Modal.show(assessmentInfo.calculate());
+            }
+            
+            void save() {
+                entity = application.create( entity );
+                qtrs.remove(0);
+            }
+            
+            boolean getHasMore() {
+                return (qtrs.size() > 0);
+            }
+           
+        }
+        ]]>
+    </code>    
+    
+    <pageflow>
+        
+        <start>
+            <transition to="search" name="create" />
+        </start>
+        
+        <page name="search" title="Search Business Name (Update Qtr Gross)">
+            <transition to="initial" caption="Next" name="next" mnemonic="N" immediate="false" action="open"/>
+        </page>
+        
+        <!--
+        <page name="initial" title="Update Gross for New Business (Q #{entity.appqtr})">
+            <transition to="search" caption="Back" mnemonic="B" name="back" />
+            <transition to="edit-info" caption="Next" mnemonic="S" />
+        </page>
+        -->
+        
+        <page name="initial" title="Update Gross for New Business (QTR #{entity.appqtr})">
+            <transition to="search" caption="Back" mnemonic="B" name="back" />
+            <transition to="confirm" caption="Next" mnemonic="S" action="updateInfo"/>
+        </page>
+        
+        <page name="confirm" title="Update Gross for New Business  (QTR #{entity.appqtr})">
+            <transition to="initial" caption="Back" mnemonic="B" name="back" />
+            <transition to="save-success" caption="Save" mnemonic="S" action="save" name="save"
+                confirm="You are about to submit this application. Continue?"/>
+        </page>
+
+        <page name="save-success" title="Save Success">
+            <transition to="end" caption="Close" />
+            <transition to="initial" caption="Add Another" visibleWhen="hasMore" action="open" />
+        </page>
+
+        <end/>
+    </pageflow>
+    
+    <pages>
+        <page name="search" template="com.rameses.gov.etracs.bpls.view.SearchBusinessPage"/>
+        <!--<page name="initial" template="com.rameses.gov.etracs.bpls.view.UpdateQtrGrossInitialPage"/>-->
+        <page name="initial" template="com.rameses.gov.etracs.bpls.view.EditLobPage"/>
+        <page name="confirm" template="com.rameses.gov.etracs.bpls.view.AssessmentConfirmPage"/>
+        <page name="save-success" template="com.rameses.gov.etracs.bpls.view.SuccessPage"/>
+    </pages>
+    
+</workunit>

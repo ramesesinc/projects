@@ -1,0 +1,70 @@
+<workunit>
+    <invokers>
+       <invoker type="stockrequest:reports" caption="RIS Report" action="viewRIS" visibleWhen="#{entity.reqtype == 'ISSUANCE'}"/>
+       <invoker type="stockrequest:reports" caption="RIV Report" action="viewRIV" visibleWhen="#{entity.reqtype == 'PURCHASE'}"/>
+       <invoker type="formActions" caption="Back" action="_close" />
+    </invokers>
+    
+    <code>
+        <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import java.rmi.server.*;
+        import com.rameses.gov.treasury.controllers.*
+         import com.rameses.osiris2.reports.*;
+        
+        class  RISReportController  {
+            
+            @Caller
+            def caller
+        
+            @Service("RISReportService")
+            def svc
+            
+            @Service("ReportParameterService")
+            def paramsvc
+            
+            def risid 
+            def reportData;
+            def reportPath = "com/rameses/gov/treasury/ris/report/"
+            def reportname 
+            def subreport  
+         
+            void viewRIS() {
+                MsgBox.alert("")
+                /*
+                if(! risid ) risid = caller.entity.objid
+                reportData = svc.getRISData( risid )
+                reportname = reportPath + "ris.jasper";
+                subreport = new SubReport("ReportRISItem", reportPath + "risitem.jasper")
+                report.viewReport();
+                */
+            } 
+            
+            void viewRIV() {
+                if(! risid ) risid = caller.entity.objid
+                reportData =  svc.getRIVData( risid)
+                reportname = reportPath + "riv.jasper";
+                subreport = new SubReport("ReportRIVItem", reportPath + "rivitem.jasper")
+                report.viewReport();
+            } 
+            
+            def report = [
+                getReportName : { return reportname },
+                getReportData : { return  reportData },
+                getParameters : { return paramsvc.getStandardParameter() },
+                getSubReports : {return [ subreport ] as SubReport[];    }
+            ] as ReportModel
+           
+        }
+        ]]>
+        
+    </code>
+    
+    <pages>
+        <page template="com.rameses.gov.treasury.report.PreviewPage"/>
+    </pages>
+    
+</workunit>

@@ -1,0 +1,23 @@
+<folders>
+    <folder id="explorer">
+        <folder id="master">
+            <folder id="treasury" caption="Treasury" index="5"/>
+        </folder>
+        <folder id="txn">
+            <folder id="treasury" caption="Treasury" index="5">
+                <folder id="certs" caption="Certifications and Clearances" index="400"/>
+                <folder id="reports" caption="Reports" index="500"/>
+                <folder id="tools" caption="Tools" index="700"/>
+            </folder>
+                
+        </folder>
+    </folder>
+     <folder id="menu">
+        <folder id="txn" caption="Transaction">
+            <folder id="treasury" caption="Treasury"/> 
+        </folder>
+        <folder id="report" caption="Report">
+            <folder id="treasury" caption="Treasury"/>
+        </folder>
+    </folder>   
+</folders>

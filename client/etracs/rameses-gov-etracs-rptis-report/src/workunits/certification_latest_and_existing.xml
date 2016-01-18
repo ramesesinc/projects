@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit extends="rpt_wtemplates/CertificationController.xml">
+    <invokers>
+        <invoker folderid="/explorer/txn/rpt/cert" action="init" caption="Latest and Existing" 
+            opener="latest" index="5" role="CERTIFICATION_ISSUER,RECORD" permission="certification.latestandexisting"/>
+            
+        <invoker folderid="/menu/txn/rpt/cert" action="init" caption="Latest and Existing" 
+            opener="latest" index="5" role="CERTIFICATION_ISSUER,RECORD" permission="certification.latestandexisting"/>
+            
+        <invoker type="quick_launcher" action="init" code="RC05" caption="Latest and Existing" 
+            opener="latest" index="5" role="CERTIFICATION_ISSUER,RECORD" permission="certification.latestandexisting"/>
+            
+        <invoker type="latest:open" action="open" caption="Latest and Existing" /> 
+    </invokers>
+    
+    <code>
+        
+<![CDATA[        
+
+
+package com.rameses.gov.etracs.rpt.report.certification;
+
+
+import com.rameses.rcp.annotations.*
+import com.rameses.rcp.common.*
+import com.rameses.osiris2.client.*
+import com.rameses.osiris2.reports.*;
+
+public class LatestAndExistingController extends com.rameses.gov.etracs.rpt.report.certification.AbstractCertificationController
+{
+    @Service('RPTCertificationLatestService')
+    def svc;
+    
+    def getService(){
+        return svc;
+    }
+    
+    def save(){
+        return svc.createLatestAndExisting(entity)
+    }
+    
+    String reportPath = 'com/rameses/gov/etracs/rpt/report/certification/'
+    
+    
+    String getReportName(){
+        if (entity.faasid)
+            return reportPath + 'LatestAndExistingByTD.jasper'
+        else
+            return reportPath + 'LatestAndExisting.jasper'
+    }
+
+    SubReport[] getSubReports() {
+        if (entity.faasid)
+            return null;
+        else 
+            return [
+                new SubReport('LatestAndExistingItem', reportPath + 'LatestAndExistingItem.jasper'),
+                new SubReport('FootNoteItem', reportPath + 'FootNoteItem.jasper'),
+            ] as SubReport[]
+    }
+    
+    Map getParameters(){
+        return [REPORTTITLE:'Latest and Existing']
+    }
+}
+
+
+
+]]>
+    </code>
+    
+</workunit>

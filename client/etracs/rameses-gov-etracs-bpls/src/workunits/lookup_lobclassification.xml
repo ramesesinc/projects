@@ -1,0 +1,21 @@
+<workunit extends="wtemplates/LookupController.xml">
+    <invokers>
+        <invoker type="lobclassification:lookup" caption="Lookup Line of Business Classification" target="popup"/>
+    </invokers>
+    <code>
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*;
+
+        class LOBClassificationLookup extends LookupController 
+        {
+            public String getServiceName() { return "LobClassificationService" }
+            public Column[] getColumns() {
+                return [
+                    new Column(name:'name', caption:"Name")
+                ] as Column[];
+            }
+        }
+    </code>
+</workunit>

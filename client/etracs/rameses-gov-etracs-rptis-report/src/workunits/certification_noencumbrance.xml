@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit extends="rpt_wtemplates/CertificationController.xml">
+    <invokers>
+        <invoker folderid="/explorer/txn/rpt/cert" action="init" caption="No Encumbrance" 
+            opener="noencumbrance" index="7" role="CERTIFICATION_ISSUER,RECORD" permission="certification.noencumbrance"/>    
+            
+        <invoker folderid="/menu/txn/rpt/cert" action="init" caption="No Encumbrance" 
+            opener="noencumbrance" index="7" role="CERTIFICATION_ISSUER,RECORD" permission="certification.noencumbrance"/>    
+            
+        <invoker type="quick_launcher" action="init" code="RC07" caption="No Encumbrance" 
+            opener="noencumbrance" index="7" role="CERTIFICATION_ISSUER,RECORD" permission="certification.noencumbrance"/>
+            
+        <invoker type="noencumbrance:open" action="open" caption="No Encumbrance" /> 
+    </invokers>
+    
+    <code>
+        
+<![CDATA[
+
+
+package com.rameses.gov.etracs.rpt.report.certification;
+
+
+import com.rameses.rcp.annotations.*
+import com.rameses.rcp.common.*
+import com.rameses.osiris2.client.*
+import com.rameses.osiris2.reports.*;
+
+public class NoEncumbranceController extends com.rameses.gov.etracs.rpt.report.certification.AbstractCertificationController
+{
+    @Service('RPTCertificationNoEncumbranceService')
+    def svc;
+    
+    boolean certbytd = true;
+    
+    def getService(){
+        return svc;
+    }
+    
+    String reportName = 'com/rameses/gov/etracs/rpt/report/certification/NoEncumbrance.jasper'
+
+    Map getParameters(){
+        return [REPORTTITLE:'No Encumbrance']
+    }
+    
+    def getCertificationTypes(){
+        return [
+            [type:'byfaas', caption:'By FAAS'],
+        ]
+    }      
+}
+
+
+]]>
+    </code>
+    
+</workunit>

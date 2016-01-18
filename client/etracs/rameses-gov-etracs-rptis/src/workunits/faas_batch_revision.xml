@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="quick_launcher" code="BGR01" action="init" caption="Batch General Revision"  mnemonic="b" role="APPRAISER" permission="batchgr.create"/>
+        <invoker folderid="/explorer/txn/rpt/util" action="init"  caption="Batch General Revision" index="100" role="APPRAISER" permission="batchgr.create"/>
+        <invoker type="formActions" action="_close" caption="Close" mnemonic="c" immediate="true" icon="images/toolbars/cancel.png" visibleWhen="#{processing==false}"/>
+        <invoker type="formActions" action="cancel" caption="Cancel" mnemonic="c" immediate="true" icon="images/toolbars/cancel.png" visibleWhen="#{processing==true}"/>
+        <invoker type="formActions" action="revise" caption="Revise" mnemonic="r" visibleWhen="#{processing==false}"/>
+    </invokers>
+    <code class="com.rameses.gov.etracs.rpt.faas.ui.BatchGRController" >
+    </code>
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.rpt.faas.ui.BatchGRInitPage" />
+    </pages>
+</workunit>

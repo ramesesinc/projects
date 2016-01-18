@@ -1,0 +1,30 @@
+"entity.or.*" [officialuse == true]{
+    enabled:false;
+    required:false;
+}
+
+"entity.or.*" [officialuse != true]{
+    enabled:true;
+    required:true;
+}
+
+
+
+"entity.tdno|entity.taxpayername" [certbytd == true]{
+    visible:true;
+}
+
+
+"entity.tdno|entity.taxpayername" [certbytd == false]{
+    visible:false;
+}
+
+
+"entity.taxpayer" [certbytd == true]{
+    visible:false;
+}
+
+
+"entity.taxpayer" [certbytd == false]{
+    visible:true;
+}

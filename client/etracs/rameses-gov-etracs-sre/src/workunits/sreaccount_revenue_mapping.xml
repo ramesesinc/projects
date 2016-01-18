@@ -1,0 +1,32 @@
+<workunit>
+    
+   <invokers>
+        <invoker folderid="/explorer/master/treasury/sre" caption="SRE Revenue Mapping" index="1" role="MASTER"/>
+   </invokers>
+
+   <code>
+       import com.rameses.rcp.common.*;
+       import com.rameses.rcp.annotations.*;
+       import com.rameses.osiris2.client.*;
+       import com.rameses.osiris2.common.*;
+       import com.rameses.enterprise.accounts.*;
+       
+       class SRERevenueMappingController extends AccountRevenueMapping {
+       
+           @Service("SRERevenueMappingService") 
+           def _service;
+
+           public def getService() {
+                return _service;
+           }
+       
+           public String getLookupServiceName() {
+                return "SREAccountLookupService";
+           }
+       }
+   </code>
+   
+   <pages>
+        <page template="com.rameses.enterprise.accounts.RevenueItemMappingPage"/>
+   </pages>
+</workunit>

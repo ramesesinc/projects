@@ -1,0 +1,5 @@
+<workunit extends="wtemplates/ServiceLookupController.xml" serviceName="RPTCompromiseService" >
+    <invokers>
+        <invoker type="rptcompromise:lookup" action="init" caption="Compromise Lookup" target="popup" width="700"/>
+    </invokers>
+</workunit>

@@ -1,0 +1,121 @@
+<workunit>
+    <invokers>
+        <invoker type="businessinfo:assessment:formActions" caption="Print" icon="images/toolbars/printer.png" 
+            action="viewReport" visibleWhen="#{!entity.task?.state?.matches('assign-assessor|assessment')}"/>
+            
+        <invoker type="formActions" caption="Close" action="_close"/>
+    </invokers>
+    
+    <code>
+        <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import java.rmi.server.*;
+        import com.rameses.osiris2.reports.*;
+        
+        class  BPAssessmentReportController  {
+        
+            def data;
+            def entity;
+            def title = "BP Assessment"
+            
+            def reportPath = "com/rameses/gov/etracs/bpls/reports/assessment/"
+            
+            @Service("ReportParameterService") 
+            def paramsvc
+         
+            @FormId
+            String formId;
+            
+            @FormTitle
+            String formTitle;
+            
+            
+            void viewReport() {
+                if( !entity.taxfees ) {
+                    throw new Exception("Please calculate tax and fees first");
+                }
+                
+                formTitle = "Assmt "+ entity.appno; 
+                formId = "ASSRPT:"+entity.objid;            
+            
+                 def findAssessmentType = { o->
+                    if(!o?.objid) return "";
+                    return entity.lobs.find{ it.lobid == o.objid }?.assessmenttype;
+                 }
+                 def findCapital = { o->
+                    if( o.taxfeetype != "TAX" ) return null;
+                    def val = entity.assessmentinfos.find{ it.attribute.name == 'CAPITAL' && it.lob.objid == o.lob.objid }?.value;
+                    if(!val) return null;
+                    return new BigDecimal(val+"");
+                 }
+                 def findGross = { o->
+                    if( o.taxfeetype != "TAX" ) return null;
+                    def val = entity.assessmentinfos.find{ it.attribute.name == 'GROSS' && it.lob.objid == o.lob.objid }?.value;
+                    if(!val) return null;
+                    return new BigDecimal(val+"");
+                 }
+                 def taxfees = entity.taxfees.collect{ 
+                    [
+                      lobname:it.lob?.name, 
+                      accttitle: it.account.title,
+                      amtdue: new BigDecimal(it.amount), 
+                      amount: new BigDecimal(it.amount), 
+                      assessmenttype: findAssessmentType(it.lob),
+                      taxfeetype: it.taxfeetype,
+                      capital: findCapital(it),
+                      gross: findGross(it)
+                    ]  
+                 };
+                //ctcno: "CCI2012-191919191", 
+                //ctcdate: java.sql.Date.valueOf("2013-02-01"),
+               data = [
+                   temporary: false,
+                   appno: entity.appno, 
+                   apptype:entity.apptype,
+                   dtfiled: entity.dtfiled,
+                   bin: entity.bin,
+                   barcode: entity.barcode,
+                   tradename: entity.tradename, 
+                   businessaddress: entity.business.address,
+                   ownername: entity.owner.name, 
+                   owneraddress: entity.owner.address,
+                   totaltax: new BigDecimal(entity.totals.tax+""), 
+                   totalregfee: new BigDecimal(entity.totals.regfee+""), 
+                   totalcharge: new BigDecimal(entity.totals.othercharge+""), 
+                   totalamount: new BigDecimal(entity.totals.total+""), 
+                   laterenewal:"0", 
+                   applications: [
+                        taxes: taxfees.findAll{ it.taxfeetype == "TAX" },  
+                        regfees:taxfees.findAll{ it.taxfeetype == "REGFEE" },  
+                        charges:taxfees.findAll{ it.taxfeetype == "OTHERCHARGE" },  
+                   ],
+                   assessedbylastname: entity.assessedby.lastname,
+                   assessedbyfirstname: entity.assessedby.firstname,
+                   assessedbyjobtitle: entity.assessedby.jobtitle,
+                ]
+                report.viewReport();
+            } 
+            
+            def report = [
+                getReportName : { return reportPath + "Assessment.jasper" },
+                getReportData : { return  data },
+                getParameters : { return paramsvc.getStandardParameter() },
+                getSubReports : { return [
+                        new SubReport("AssessmentItem", reportPath + "AssessmentItem.jasper"),
+                        new SubReport("AssessmentNonTax", reportPath + "AssessmentNonTax.jasper")
+                    ] as SubReport[];
+                }
+            ] as ReportModel
+           
+        }
+        ]]>
+    </code>
+    
+    <pages>
+        <page template="com.rameses.osiris2.common.ui.ReportPreviewPage"/>
+    </pages>
+    
+</workunit>

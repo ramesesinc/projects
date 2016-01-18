@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="faas:info" action="init" caption="History" index="1000" />
+        <invoker type="formActions" action="refresh" caption="Refresh" mnemonic="r" />
+   </invokers>
+   <code>
+
+        
+import com.rameses.rcp.annotations.* 
+import com.rameses.rcp.common.* 
+import com.rameses.osiris2.client.*
+import com.rameses.osiris2.common.*
+
+class FaasListInfoController
+{
+    @Binding
+    def binding;
+    
+    def svc;
+    
+    def entity;
+    def list;
+    
+    String title = 'FAAS History'
+    
+    void init(){
+        list = svc.getHistory(entity.objid);
+        listHandler?.load();
+    }
+    
+    void refresh(){
+        init();
+    }
+    
+    
+    def listHandler = [
+        fetchList : { return list; },
+        getColumns : { svc.getHistoryColumns() }
+    ] as BasicListModel
+    
+}
+       
+   </code>
+    
+    <pages> 
+        <page template="com.rameses.gov.etracs.rpt.faas.ui.FaasInfoHistoryPage"/>
+    </pages>
+</workunit>
+
+

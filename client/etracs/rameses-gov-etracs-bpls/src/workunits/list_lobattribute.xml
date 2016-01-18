@@ -1,0 +1,5 @@
+<workunit extends="wtemplates/ListController.xml" serviceName="LobAttributeService" entityName="lobattribute">
+    <invokers>
+        <invoker folderid="/explorer/master/bpls" caption="LOB Attribute" target="window" index="10" role="MASTER"/>
+    </invokers>
+</workunit>

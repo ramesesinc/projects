@@ -1,0 +1,52 @@
+<workunit>
+    <invokers>
+        <invoker type="businesstaxcredit:create" caption="Build Ledger" action="init"  target="popup"/>
+    </invokers>
+    
+    <code>
+        <![CDATA[    
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        import java.rmi.server.*;
+        import com.rameses.osiris2.reports.*;
+        
+        class  BPTaxCreditLedgerController  {
+            
+            @Service("BusinessTaxCreditService")
+            def service; 
+            
+            def entity;
+            def handler;
+            
+            void init() {
+                entity.balance = 0;
+            }
+            
+            def doOk() {
+                def detail = [businessid: entity.businessid];
+                detail.refid = "beg.balance";
+                detail.refno = "NA";
+                detail.reftype = "beg.balance";
+                detail.refdate = new Date();
+                detail.dr = entity.balance;
+                detail.particulars = 'beg.balance';
+                entity = service.post( detail );
+                handler( entity );
+                return "_close";
+            }
+            
+            def doCancel() {
+                return "_close";
+            }
+
+        }   
+        ]]>
+    </code>
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.bpls.business.taxcredit.BuildTaxCreditAccount"/>
+    </pages>
+    
+</workunit>

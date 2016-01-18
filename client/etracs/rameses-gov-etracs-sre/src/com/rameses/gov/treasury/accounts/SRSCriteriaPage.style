@@ -1,0 +1,27 @@
+"entity.*" [ mode != 'processing' ] {
+    enabled: true; 
+} 
+"entity.*" [1==1] {
+    visible: false; 
+}
+"entity.(period|type|acctgroup|fund)" [1==1] {
+    visible: true; 
+}
+"entity.opt.*" [1==1] {
+    visible: true; 
+}
+"entity.year" [entity.period.toString().matches('quarterly|monthly|asofqtr|asofmonth')==true] {
+    visible: true; 
+}
+"entity.qtr" [entity.period.toString().matches('quarterly|asofqtr')==true] {
+    visible: true; 
+}
+"entity.month" [entity.period.toString().matches('monthly|asofmonth')==true] {
+    visible: true; 
+}
+"entity.date" [entity.period.toString().matches('daily|asofday')==true] {
+    visible: true; 
+}
+"entity.*" [ mode == 'processing' ] {
+    enabled: false; 
+} 

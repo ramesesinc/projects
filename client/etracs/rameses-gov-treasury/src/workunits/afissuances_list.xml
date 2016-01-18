@@ -1,0 +1,76 @@
+<workunit extends="wtemplates/ListController.xml" >
+    <invokers>
+        <invoker folderid="/explorer/txn/treasury" caption="AF Issuances" role="AFO"/>
+        
+        <invoker type="formActions" caption="Change Mode" action="changeMode" mnemonic="h" shortcut="ctrl H" visibleWhen="#{selectedItem != null}"/>
+        <invoker type="formActions" caption="Transfer" action="transfer" mnemonic="t" shortcut="ctrl T" visibleWhen="#{selectedItem != null}"/>
+    </invokers>
+    
+    <code>
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        
+        class AFIssuancesController extends ListController {
+                
+            String serviceName = 'AFIssuanceListService'
+            String entityName = 'afissuance'
+            String formTarget = 'window'
+            String tag = 'list'
+            
+            boolean allowCreate = false;
+            boolean allowOpen = false 
+        
+            def collector
+            def collectorlist;
+            
+            @Service("UsergroupMemberLookupService")
+            def ugmSvc;
+            
+            @Service("AFControlService")
+            def svc;
+
+            
+            @PropertyChangeListener
+            def listener = [
+                "collector" : {
+                    search();
+                }, 
+            ]   
+            
+            List getCollectorlist( ) {
+                if(! collectorlist) collectorlist =  ugmSvc.getList(['_tag':'COLLECTOR']);
+                return collectorlist;
+            }
+            
+            protected void onbeforeFetchList(Map m) {
+                m.collectorid = collector ? collector.objid : '%';
+            }
+            
+             def changeMode() {
+                if(!selectedItem) throw new Exception("Select an item");
+                return InvokerUtil.lookupOpener("af:changemode", 
+                    [entity:selectedItem.item, saveHandler: { search() }] 
+                );
+            }
+            
+            def transfer() {
+                if(!selectedItem) throw new Exception("Select an item");
+                
+                return InvokerUtil.lookupOpener("afserial:transfer", 
+                    [entity:selectedItem.item, handler: { 
+                        search() 
+                    }] 
+                );
+            }
+            
+            
+        }
+        
+    </code>
+    <pages>
+        <page name='queryform' template='com.rameses.gov.treasury.af.CollectorQueryPanel'/>
+    </pages>
+    
+</workunit>

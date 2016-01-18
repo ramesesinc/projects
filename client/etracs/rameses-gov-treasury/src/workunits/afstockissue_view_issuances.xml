@@ -1,0 +1,45 @@
+<!-- REQUISITION ISSUE SLIP -->
+<workunit>
+    
+    <invokers>
+        <invoker type="afstockissue:formActions" caption="View Issuances" 
+            visibleWhen="#{mode=='enterqty'}" target="popup" />
+    </invokers>
+    
+    <code>
+        <![CDATA[
+        
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import java.rmi.server.*;
+        import com.rameses.enterprise.inventory.stock.*;
+        
+        class AFViewStockIssuances {
+        
+            @Service("AFInventoryQueryService")
+            def service;
+        
+            def entity;
+            def selectedItem;
+            
+            def doClose() {
+                return "_close";
+            }
+            
+            def listModel = [
+                fetchList: { o->
+                    return service.getIssuancesOnHand([issuetoid: entity.issueto.objid]);
+                }
+            ] as BasicListModel;
+            
+        }
+        
+        ]]>
+    </code>
+    <pages>
+        <page  template="com.rameses.gov.treasury.af.AFCollectorIssuancesPage"/>
+    </pages>
+    
+</workunit>

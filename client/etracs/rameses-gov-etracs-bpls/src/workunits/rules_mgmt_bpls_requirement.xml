@@ -1,0 +1,5 @@
+<workunit extends="wtemplates/RuleMgmtController.xml" serviceName="RuleMgmtService" tag="bprequirement">
+    <invokers>
+        <invoker folderid="/explorer/rulemgmt/bpls" caption="BP Requirement Rules" action="init" index="2" role="RULE_AUTHOR"/>
+    </invokers>
+</workunit>

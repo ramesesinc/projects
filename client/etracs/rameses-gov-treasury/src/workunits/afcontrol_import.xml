@@ -1,0 +1,89 @@
+<workunit>
+        
+   <invokers>
+        <invoker type="afcontrol:import" action="init" caption="Import AF Controls" target="popup"/>
+        
+        <invoker type="formActions" caption="Close" action="_close" icon="images/toolbars/cancel.png"/>
+        <invoker type="formActions" caption="Browse File to Import" action="doImport" visibleWhen="#{mode == 'init'}" />
+        <invoker type="formActions" caption="Post Data" action="post" visibleWhen="#{mode == 'forposting'}" />
+   </invokers>
+   
+   <code>
+<![CDATA[
+
+import com.rameses.osiris2.common.*;
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+import com.rameses.osiris2.client.*;
+import javax.swing.*;
+import com.rameses.io.*;
+
+class AFControlImportController 
+{
+    @Binding
+    def binding;
+    
+    @Service('AFControlExportImportService')
+    def svc;
+            
+    
+    String title = 'Import Accountable Forms';
+    
+    def data;
+    def mode;
+    
+    def MODE_INIT       = 'init';
+    def MODE_FORPOSTING = 'forposting';
+    def MODE_POSTED     = 'posted';
+    
+
+    void init(){
+        data = [];
+        mode = MODE_INIT;
+    }
+    
+    
+    void doImport(){
+        def chooser = new JFileChooser();
+        int i = chooser.showOpenDialog(null);
+        if(i==0) {
+            data = FileUtil.readObject( chooser.selectedFile );
+            listHandler.reload();
+            mode = MODE_FORPOSTING;
+        }      
+    }
+    
+    void post(){
+        if (MsgBox.confirm('Post imported controls?')){
+            data.each{ ac ->
+                try {
+                    svc.postImportedAf(ac);
+                    ac.status = 'Successfully posted.'
+                }
+                catch(e ){
+                    ac.status = e.message
+                }
+            }
+           
+            listHandler.reload();
+            mode = MODE_POSTED;
+            MsgBox.alert('AF Controls has been successfully posted.');
+        }
+    }
+    
+    
+    def listHandler = [
+        fetchList: { return data ; }
+    ] as BasicListModel;
+   
+    
+} 
+
+]]>
+   </code>
+   
+   <pages>
+       <page template="com.rameses.gov.treasury.af.AFControlImportPage"/>
+   </pages>
+   
+</workunit>

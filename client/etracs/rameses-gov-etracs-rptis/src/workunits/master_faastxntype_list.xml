@@ -1,0 +1,6 @@
+<workunit extends="wtemplates/ListController.xml" serviceName="FAASTxnTypeService" entityName="faastxntype"  formName="faastxntype:list" allowApprove="false" allowCreate="false">
+    <invokers>
+        <invoker folderid="/explorer/master/rpt" caption="Transaction Types"  target="window" index="1000"  role="ASSESSOR_DATAMGMT,MASTER" />
+        <invoker folderid="/home/rpt/master" caption="Transaction Types"  target="window" index="1000"  role="ASSESSOR_DATAMGMT,MASTER" />
+    </invokers>
+</workunit>

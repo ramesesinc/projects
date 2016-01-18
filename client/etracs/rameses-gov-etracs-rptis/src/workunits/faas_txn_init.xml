@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit extends="rpt_wtemplates/FAASTxnInitController.xml">
+    <invokers>
+        <invoker type="quick_launcher" code="TR01" action="init" caption="Transfer of Ownership" 
+                 txntype="TR" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createTransfer" index="1"  />
+        <invoker folderid="/explorer/txn/rpt/online" action="init" caption="Transfer of Ownership" 
+                 txntype="TR" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createTransfer" index="1"  />
+        <invoker folderid="/home/rpt/txn" action="init" caption="Transfer of Ownership" 
+                 txntype="TR" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createTransfer" index="1"  />
+        
+            
+            
+        <invoker type="quick_launcher" code="TR02" action="init" caption="Transfer with Reassessment" 
+                 txntype="TRE" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createTransfer" index="2"  />
+        <invoker folderid="/explorer/txn/rpt/online" action="init" caption="Transfer with Reassessment" 
+                 txntype="TRE" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createTransfer" index="2"  />
+        <invoker folderid="/home/rpt/txn" action="init" caption="Transfer with Reassessment" 
+                 txntype="TRE" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createTransfer" index="2"  />
+        
+            
+            
+        <invoker type="quick_launcher" code="TR03" action="init" caption="Transfer with Correction" 
+                 txntype="TRC" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createTransfer" index="3"  />
+        <invoker folderid="/explorer/txn/rpt/online" action="init" caption="Transfer with Correction" 
+                 txntype="TRC" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createTransfer" index="3"  />
+        <invoker folderid="/home/rpt/txn" action="init" caption="Transfer with Correction" 
+                 txntype="TRC" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createTransfer" index="3"  />
+        
+            
+            
+        <invoker type="quick_launcher" code="CE01" action="init" caption="Correction of Entry" 
+                 txntype="CE" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createCorrection" index="4"  />
+        <invoker folderid="/explorer/txn/rpt/online" action="init" caption="Correction of Entry" 
+                 txntype="CE" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createCorrection" index="4"  />
+        <invoker folderid="/home/rpt/txn" action="init" caption="Correction of Entry" 
+                 txntype="CE" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createCorrection" index="4"  />
+        
+            
+            
+        <invoker type="quick_launcher" code="CC01" action="init" caption="Change Classification" 
+                 txntype="CC" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createChangeClassification" index="5"  />
+        <invoker folderid="/explorer/txn/rpt/online" action="init" caption="Change Classification" 
+                 txntype="CC" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createChangeClassification" index="5"  />
+        <invoker folderid="/home/rpt/txn" action="init" caption="Change Classification" 
+                 txntype="CC" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createChangeClassification" index="5"  />
+        
+            
+            
+        <invoker type="quick_launcher" code="CT01" action="init" caption="Change Taxability" 
+                 txntype="CT" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createChangeTaxability" index="6"  />
+        <invoker folderid="/explorer/txn/rpt/online" action="init" caption="Change Taxability" 
+                 txntype="CT" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createChangeTaxability" index="6"  />
+        <invoker folderid="/home/rpt/txn" action="init" caption="Change Taxability" 
+                 txntype="CT" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createChangeTaxability" index="6"  />
+        
+            
+            
+        <invoker type="quick_launcher" code="CD01" action="init" caption="Change Depreciation" 
+                 txntype="CD" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createChangeDepreciation" index="7"  />
+        <invoker folderid="/explorer/txn/rpt/online" action="init" caption="Change Depreciation" 
+                 txntype="CD" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createChangeDepreciation" index="7"  />
+        <invoker folderid="/home/rpt/txn" action="init" caption="Change Depreciation" 
+                 txntype="CD" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createChangeDepreciation" index="7"  />
+        
+            
+        <invoker type="quick_launcher" code="RE01" action="init" caption="Re-Assessment" 
+                 txntype="RE" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createReassessment" index="8"  />
+        <invoker folderid="/explorer/txn/rpt/online" action="init" caption="Re-Assessment" 
+                 txntype="RE" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createReassessment" index="8"  />
+        <invoker folderid="/home/rpt/txn" action="init" caption="Re-Assessment" 
+                 txntype="RE" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createReassessment" index="8"  />
+        
+        <invoker type="quick_launcher" code="CA01" action="init" caption="Change Administrator" 
+                 txntype="CA" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createReassessment" index="9"  />
+        <invoker folderid="/explorer/txn/rpt/online" action="init" caption="Change Administrator" 
+                 txntype="CA" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createReassessment" index="9"  />
+        <invoker folderid="/home/rpt/txn" action="init" caption="Change Administrator" 
+                 txntype="CA" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createReassessment" index="9"  />
+      
+    </invokers>
+</workunit>
+
+

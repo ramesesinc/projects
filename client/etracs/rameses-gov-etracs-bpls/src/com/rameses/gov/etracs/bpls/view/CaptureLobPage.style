@@ -1,0 +1,15 @@
+"entity.business.officetype" [application.permitTypeOptions.show_address==true] {
+    visible:true;
+}
+
+"entity.business.officetype" [application.permitTypeOptions.show_address!=true] {
+    visible:false;
+}
+
+"entity.(dtfiled|apptype)" [ entity.txnmode == 'CAPTURE' ] {
+    visible:true;
+}
+
+"entity.(dtfiled|apptype)" [ entity.txnmode != 'CAPTURE' ] {
+    visible:false;
+}

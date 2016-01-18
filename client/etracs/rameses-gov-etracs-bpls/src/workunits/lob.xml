@@ -1,0 +1,69 @@
+<workunit>
+    <invokers>       
+        <invoker type="quick_launcher" code="LOB01" action="create" caption="Line of Business" role="MASTER" />
+        <invoker type="lob:create" action="init" caption="Line of Business" />
+        <invoker type="lob:open" action="open" caption="Line of Business" />
+    </invokers>
+    <code>
+        <![CDATA[
+
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*
+
+        class LobController extends CRUDController {   
+
+            @Service('LobService')
+            def service;
+            
+            String entityName  = 'lob'
+            String prefixId    = 'LOB';
+            def selectedItem;
+            
+            Map createEntity() {
+                return [ attributes:[] ]
+            }
+            
+            void entityChanged() {
+                listHandler.reload();
+            }
+            
+            def addAttribute() {
+                return InvokerUtil.lookupOpener( "lobattribute:lookup", [
+                    onselect: { o->
+                        if( entity.attributes.find{ it.objid == o.objid } )
+                            throw new Exception("You have already added this attribute.")
+                        def m = [:];
+                        m.lobid = entity.objid;
+                        m.lobattributeid = o.objid;
+                        m.name = o.name;
+                        service.addAttribute( m );
+                        entity.attributes << m;
+                        listHandler.reload();
+                    }
+                ]);
+            }
+            
+            void removeAttribute() {
+                if(!selectedItem) return;
+                if( MsgBox.confirm("You are about to delete this attribute. Continue?") ) {
+                    service.removeAttribute( selectedItem );
+                    entity.attributes.remove(selectedItem);
+                    listHandler.reload();
+               }
+            }
+            
+            def listHandler = [
+                fetchList: {o->
+                    return entity.attributes
+                }
+            ] as BasicListModel;
+        }
+        ]]>        
+        
+    </code>
+    <pages>
+        <page name="main" template="com.rameses.gov.etracs.bpls.lob.LobPage"/>
+    </pages>
+</workunit>

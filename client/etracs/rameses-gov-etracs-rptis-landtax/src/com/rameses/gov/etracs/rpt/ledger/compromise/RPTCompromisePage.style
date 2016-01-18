@@ -1,0 +1,77 @@
+"entity.first.*|entity.second.*|entity.notarized.*|selectedWitness|entity.downpaymentor.*|entity.cypaymentor.*|entity.cypaymentamount" [true == true] {
+    enabled:false;
+}
+
+
+"entity.first.*|entity.second.*|entity.notarized.*|selectedWitness" [ (mode =='edit' || mode=='create') && entity.state =='DRAFT' ]{
+    enabled:true;
+}   
+
+
+"capturePayment" [entity.state != 'APPROVED'] {
+    enabled:false;
+}
+
+"capturePayment" [entity.state == 'APPROVED'] {
+    enabled:true;
+}
+
+
+"captureDownpayment|captureCYPayment" [entity.state != 'FORPAYMENT'] {
+    enabled:false;
+}
+
+"captureDownpayment|captureCYPayment" [entity.state == 'FORPAYMENT'] {
+    enabled:true;
+}
+
+
+"captureDownpayment" [entity.downpaymentorno != null ] {
+    enabled:false;
+}
+
+"captureCYPayment" [entity.cypaymentorno != null ] {
+    enabled:false;
+}
+
+
+
+"entity.manualdiff"[true == true]{
+    enabled:false;
+}
+
+"selectedInstallment"[type=='online']{
+    readonly:true;
+}
+
+"selectedInstallment"[type!='online']{
+    readonly:false;
+}
+
+"entity.notarized.*|selectedWitness" [ entity.state == 'FORAPPROVAL' ]{
+    enabled:true;
+    required:true;
+}   
+
+
+"entity.notarized.*|selectedWitness" [ entity.state == 'APPROVED' ]{
+    enabled:false;
+}   
+
+
+"firstinstallmentpnl|modifyInstallmentDate|entity.firstinstallmentdate" [entity.state=='DRAFT']{
+    visible:true;
+}
+
+"firstinstallmentpnl|modifyInstallmentDate|entity.firstinstallmentdate" [entity.state!='DRAFT']{
+    visible:false;
+}
+
+
+"restructureInstallments"[showRestructure == true]{
+    visible:true;
+}
+
+"restructureInstallments"[showRestructure != true]{
+    visible:false;
+}

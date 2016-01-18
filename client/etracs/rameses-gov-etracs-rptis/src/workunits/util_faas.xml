@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="quick_launcher" code="UTIL01" action="submitToProvince" caption="Submit FAAS To Province"
+            role="ADMIN" 
+            target="process" index="1001" />
+        <invoker type="quick_launcher" code="UTIL02" action="submitImagesToProvince" caption="Submit FAAS Images To Province"
+            role="ADMIN" 
+            target="process" index="1002" />
+        <invoker type="quick_launcher" code="UTIL03" action="changeModeToDataCapture" caption="Change FAAS Mode to Capture"
+            role="ADMIN" 
+            target="process" index="1003" />
+        <invoker type="quick_launcher" code="UTIL04" action="deleteApprovedFaas" caption="Delete Approved FAAS"
+            role="ADMIN" 
+            target="process" index="1004" />
+    </invokers>
+    
+    <code lang="groovy">
+
+<![CDATA[        
+
+import com.rameses.rcp.common.*
+import com.rameses.rcp.annotations.*
+import com.rameses.osiris2.client.*
+
+public class FAASUtilController
+{
+    @Service('FAASRemoteUtilService')
+    def svc 
+    
+    @Service('FAASSupportService')
+    def faasSvc 
+    
+    void submitToProvince(){
+        def tdno = MsgBox.prompt("Enter TD No. of FAAS to be submitted to Province.");
+        if (tdno)
+            svc.submitFaasForProvinceApproval([tdno:tdno]);
+    }
+    
+    void submitImagesToProvince(){
+        def tdno = MsgBox.prompt("Enter TD No. of FAAS whose images are to be submitted to Province.");
+        if (tdno)
+            svc.submitFaasImages([tdno:tdno]);
+    }
+    
+    void changeModeToDataCapture(){
+        def tdno = MsgBox.prompt("Enter TD No. of FAAS to change mode to Data Capture.");
+        if (tdno){
+            faasSvc.changeModeToDataCapture(tdno);
+            MsgBox.alert('Data Capture mode has been successfully modified.');
+        }
+    }
+    
+    void deleteApprovedFaas(){
+        def tdno = MsgBox.prompt("Enter TD No. of FAAS to delete.");
+        if (tdno){
+            faasSvc.deleteApprovedFaas([tdno:tdno]);
+            MsgBox.alert('FAAS has been successfully deleted.');
+        }
+    }
+    
+}
+
+
+]]>
+</code>
+    
+    <pages>
+    </pages>
+</workunit>
+

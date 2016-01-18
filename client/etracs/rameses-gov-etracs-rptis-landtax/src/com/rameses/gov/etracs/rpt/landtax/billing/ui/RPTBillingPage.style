@@ -1,0 +1,8 @@
+"bill.billdate" [ bill.advancebill == true ] {
+    enabled:true;
+}
+
+"bill.billdate" [ bill.advancebill == false ] {
+    enabled:false;
+}
+

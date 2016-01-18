@@ -1,0 +1,90 @@
+<workunit>  
+    <invokers>
+        <invoker type="business:section" caption="Application History" index="5"  />
+        <invoker type="formActions"  caption="Open" action="openItem" />
+        <invoker type="formActions"  caption="Refresh" action="listModel.reload" />
+        
+        <invoker type="formActions" caption="Capture Late Renewal" action="captureLateRenewal" 
+                 role="ASSESSOR" permission="business.captureLateRenewal" index="55"/>
+
+        <invoker type="extActions" caption="Unified Form" action="showUnifiedFormMenu" icon="images/toolbars/printer.png"/>
+                 
+    </invokers>
+    
+    <code>
+        <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import java.rmi.server.*
+        import com.rameses.gov.etracs.bpls.business.*;
+        
+        class  BusinessApplicationHistory  {
+        
+            @Service("BusinessApplicationHistoryService")
+            def service;
+        
+            @Service("BusinessApplicationService")
+            def appSvc;
+        
+            @Caller 
+            def caller;
+            
+            @Binding
+            def binding;
+            
+            String title = "Application History";
+            def entityName = "business_application_history";
+            def entity;
+            def selectedItem;
+            
+            def listModel = [
+                fetchList: { o->
+                    return service.getList( [businessid: entity.objid] );
+                },
+            ]as BasicListModel;
+            
+            
+            def openItem() {
+                if(!selectedItem) return;
+                def type = selectedItem.filetype;
+                def op = Inv.lookupOpener( type+":open", [entity: selectedItem] );
+                binding.fireNavigation(op);
+            } 
+            
+            void captureLateRenewal() { 
+                def params = [ 
+                    apptype    : 'LATERENEWAL',  
+                    businessid : entity.objid                     
+                ]; 
+                def app = appSvc.initNew( params );
+                
+                if (!MsgBox.confirm("You are about to add a LateRenewal transaction for "+ app.appyear +". Proceed?")) return; 
+                
+                appSvc.create( app ); 
+                listModel.reload(); 
+            } 
+            
+            def showUnifiedFormMenu() {
+                if(selectedItem == null ) {
+                    throw new Exception("Please select an application");
+                }
+                def list = Inv.lookupOpeners( "business_application:unifiedform", [entity:selectedItem, handler:[:]] );
+                def pop = new PopupMenuOpener();
+                list.each {
+                    pop.add( it );
+                }
+                return pop;
+            }
+            
+            
+        } 
+        ]]>
+    </code>
+    
+    <pages>
+        <page  template="com.rameses.gov.etracs.bpls.business.ApplicationHistory"/>
+    </pages>
+    
+</workunit>

@@ -1,0 +1,15 @@
+"selectedItem" [mode == 'read'] {
+    readonly:true;
+}
+
+"selectedItem" [mode == 'create'] {
+    readonly:false;
+}
+
+"addAttribute|removeAttribute" [mode == 'read'] {
+    visible:true;
+}
+
+"addAttribute|removeAttribute" [mode == 'create'] {
+    visible:false;
+}

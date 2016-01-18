@@ -1,0 +1,36 @@
+<!-- REQUISITION ISSUE SLIP -->
+<workunit>
+    
+    <invokers>
+       <invoker type="stockitem:types" caption="AF Serial" itemtype="AFSERIAL" itemclass="AF" action="init" />
+    </invokers>
+    
+    <code>
+         <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        
+        class StockItemTypeAFSerialController {
+            @Caller 
+            def caller;
+        
+            def getEntity() {
+                return caller.entity;
+            }
+            
+            def init() {
+                entity.defaultunit = entity.defaultunit? entity.defaultunit : 'STUB'
+                entity.qty = entity.qty ? entity.qty : 50
+                entity.serieslength = entity.serieslength ? entity.serieslength : 7
+            }
+            
+        }
+        ]]>
+    </code>
+    
+    <pages>
+        <page template="com.rameses.gov.treasury.af.AFSerialHandler"/>
+    </pages>
+</workunit>

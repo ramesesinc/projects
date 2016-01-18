@@ -1,0 +1,48 @@
+<workunit extends="wtemplates/ListController.xml">
+    <invokers>
+        <invoker folderid="/explorer/txn/rpt/list" action="initAssessorCertifications" caption="Certifications and Clearances"  target="window" index="500" role="ASSESSOR_SHARED,SHARED" />
+        <invoker folderid="/home/rpt" action="initAssessorCertifications" caption="Certifications and Clearances"  target="window" index="500" role="ASSESSOR_SHARED,SHARED" />
+    </invokers>
+    <code>
+        import com.rameses.rcp.common.*
+        import com.rameses.rcp.annotations.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        
+        class CertificationListController extends ListController
+        {
+            String serviceName  = 'RPTCertificationService'
+            String formTarget   = 'window'
+            boolean allowCreate = false;
+            
+            void initAssessorCertifications(){
+                query.office = 'assessor'
+            }
+            
+            void initLandTaxClearances(){
+                query.office = 'landtax'
+            }
+            
+            public String getEntityName(){ 
+                return selectedEntity?.opener 
+            }
+                
+                        
+            int getRows() { return 50 }
+            
+            Column[] getColumns(){
+                return [
+                    new Column(name:"txnno", caption:"Txn No.", width:70),
+                    new Column(name:"txndate", caption:"Txn Date", width:120),
+                    new Column(name:"opener", caption:"Type", width:100),
+                    new Column(name:"requestedby", caption:"Requested By", width:200),
+                    new Column(name:"requestedbyaddress", caption:"Address", width:200),
+                    new Column(name:"purpose", caption:"Purpose", width:200),
+                    new Column(name:"certifiedby", caption:"Certified By", width:250),
+                    new Column(name:"official", caption:"Official", width:100, type:'boolean'),
+                    new Column(name:"createdby", caption:"Created By", width:250),
+                ]
+            }
+        }
+    </code>
+</workunit>

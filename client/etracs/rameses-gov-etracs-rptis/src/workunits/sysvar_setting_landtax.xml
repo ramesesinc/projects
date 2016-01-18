@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit extends="rpt_wtemplates/RPTSetting.xml">
+    <invokers>
+        <invoker folderid="/explorer/setting/landtax" action="init" caption="Land Tax Settings and Preferences" index="2" category="landtax" role="LANDTAX_DATAMGMT"/>
+    </invokers>
+</workunit>

@@ -1,0 +1,57 @@
+<!-- REQUISITION ISSUE SLIP -->
+<workunit extends="wtemplates/StockReceiptController.xml">
+    <invokers>
+        <invoker folderid="/menu/txn/treasury" caption="Accountable Form RIS" action="create" role="AFO"/>
+        <invoker folderid="home/af" caption="AF Receipt" action="create" role="AFO" target="window"/> 
+        <invoker type="quick_launcher" code="AFRCT" caption="Accountable Form Receipt" action="create" role="AFO" target="window"/>
+        
+        <invoker type="afstockreceipt:create" caption="AF Receipt" action="create" role="AFO" target="window"/> 
+        <invoker type="afstockreceipt:open" caption="AF Receipt" action="open" role="AFO" target="window"/> 
+        
+        <invoker type="issueafrequest_PURCHASE:open" caption="Accountable Form Reciept" action="open" role="AFO" target="window"/>
+        <invoker type="afquery_PURCHASE:open" caption="Accountable Form Reciept" action="open" role="AFO" target="window"/>
+    </invokers>
+    
+    <code>
+<![CDATA[
+
+import com.rameses.rcp.annotations.*
+import com.rameses.rcp.common.*
+import com.rameses.osiris2.client.*
+import com.rameses.osiris2.common.*
+import java.rmi.server.*;
+import com.rameses.enterprise.inventory.stock.*;
+
+class AFReceipt extends StockReceiptController {
+
+    String title = "Accountable Form Receipt";
+    def receiptType;
+    def receiptTypes = ["PURCHASE"];
+    def entityName = "afstockreceipt";    
+    
+    @PropertyChangeListener
+    def listener = [
+        "receiptType" : { o->
+            request = null;
+            binding.refresh();
+        }
+    ]
+    
+    def getLookupRequest() {
+        return InvokerUtil.lookupOpener( "afrequest:lookup", [
+            "query.reqtype": receiptType,
+            onselect: { o->
+                request = o;
+                binding.refresh('request');
+            }
+        ]);
+    }
+}
+
+]]>
+    </code>
+
+    <pages>
+        <page name="initial" template="com.rameses.gov.treasury.af.AFReceiptInitialPage"/>
+    </pages>
+</workunit>

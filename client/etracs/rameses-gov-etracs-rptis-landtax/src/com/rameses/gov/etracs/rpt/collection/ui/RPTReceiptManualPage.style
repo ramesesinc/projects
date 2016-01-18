@@ -1,0 +1,7 @@
+"selectedManualItem"[selectedLedger == null]{
+    readonly:true;
+}
+
+"selectedManualItem"[selectedLedger != null]{
+    readonly:false;
+}

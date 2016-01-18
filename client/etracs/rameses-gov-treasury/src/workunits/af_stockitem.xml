@@ -1,0 +1,107 @@
+<workunit>
+        
+   <invokers>
+        <invoker type="af:formActions" caption="Inventory" action="init" visibleWhen="#{mode!='create'}"/>
+        <invoker type="formActions" caption="Back" action="_close" immediate="true"/>
+   </invokers>
+   
+   <code>
+        <![CDATA[
+
+        import com.rameses.osiris2.common.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import javax.swing.*;
+        import com.rameses.io.*;
+        import com.rameses.util.*;
+
+        class AFStockItemController {
+        
+            @Binding
+            def binding;
+            
+            @Caller
+            def caller;
+            
+            @Service("AFStockItemService")
+            def service;
+            
+            def stockitem;
+            def stockunits = [];
+            def entity;
+            def rowStatus;
+            def selectedItem;
+            
+            def init() {
+                try { stockitem = service.open([objid: entity.objid]);} catch(ign) {;}
+                if( !stockitem?.objid ) {
+                    def p = MsgBox.confirm('You have not yet created an inventory for this item. Create now?');
+                    if(!p) {
+                        throw new BreakException();
+                    }    
+                    else  {
+                        stockitem = [:];
+                        stockitem.objid = entity.objid;
+                        stockitem.state = 'APPROVED';
+                        stockitem.code = entity.objid;
+                        stockitem.title = entity.title;
+                        stockitem.type = entity.formtype;
+                        stockitem.itemclass = 'AF';
+                        stockitem.description = entity.title;
+                        service.create( stockitem );
+                    }   
+                }
+                stockunits = service.getUnits( stockitem );
+                return "default";
+            }
+            
+            def listModel = [
+                fetchList: {
+                    return stockunits;
+                },
+                onAddItem: {o-> 
+                    stockunits << o;
+                },
+                onCommitItem:{o-> 
+                    if(rowStatus.index == 0 ) {
+                        o.defaultunit = 1;
+                    }
+                    o.itemid = entity.objid;
+                    service.addUnit(o);
+                    if(rowStatus.index>0 && o.defaultunit == 1) {
+                        stockunits.each { it.defaultunit = 0 };
+                        o.defaultunit = 1;
+                        listModel.reload();
+                    }        
+                },
+                onColumnUpdate: { o,col->
+                    if(col=='defaultunit' ) {
+                        if( o.itemid != null ) {
+                            service.updateDefault( [unit:o.unit, objid: stockitem.objid] ); 
+                            stockunits.each { it.defaultunit = 0 };
+                            o.defaultunit = 1;
+                            listModel.reload();
+                        }
+                    }
+                },
+                onRemoveItem: { o->
+                    if(selectedItem==null) return null;
+                    if( MsgBox.confirm('You are about to remove this entry. Proceed?')) {
+                        service.removeUnit(selectedItem);
+                        stockunits.remove(selectedItem);
+                        listModel.reload();
+                    }
+                }
+            ] as EditorListModel;
+            
+        } 
+
+        ]]>
+   </code>
+   
+   <pages>
+       <page template="com.rameses.gov.treasury.af.AFStockItemPage"/>
+   </pages>
+   
+</workunit>

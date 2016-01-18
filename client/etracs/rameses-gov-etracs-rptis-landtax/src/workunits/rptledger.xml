@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="rptledger:open" action="open" caption="Realty Tax Ledger" role="LANDTAX" permission="rptledger.read"/> 
+        
+        <invoker type="formActions" action="_close" caption="Close" mnemonic="c" icon="images/toolbars/cancel.png" immediate="true" visibleWhen="#{mode=='read'}" />
+        <invoker type="formActions" action="cancel" caption="Cancel" mnemonic="c" icon="images/toolbars/cancel.png" immediate="true" visibleWhen="#{mode!='read'}" />
+        <invoker type="formActions" action="edit" caption="Edit" mnemonic="e" shortcut="ctrl E" visibleWhen="#{mode=='read' &amp;&amp; entity.state=='PENDING'}" icon="images/toolbars/edit.png" 
+            domain="LANDTAX" role="LANDTAX" permission="rptledger.edit" />
+            
+        <invoker type="formActions" action="save" caption="Save" mnemonic="s" shortcut="ctrl S" visibleWhen="#{mode!='read'}" icon="images/toolbars/save.png" />
+        <invoker type="formActions" action="delete" caption="Delete" visibleWhen="#{mode=='read' &amp;&amp; entity.state == 'PENDING' &amp;&amp; entity.faasid == null}"/>
+        <invoker type="formActions" action="approve" caption="Approve" mnemonic="a" visibleWhen="#{mode=='read' &amp;&amp; entity.state=='PENDING'}" icon="images/toolbars/approve.png" 
+            domain="LANDTAX" role="LANDTAX" permission="rptledger.approve" />
+           
+        <invoker type="historyActions" action="fixLedgerFaas" caption="Fix Ledger FAAS" mnemonic="d" 
+                 visibleWhen="#{mode=='read' &amp;&amp; entity.state=='APPROVED' &amp;&amp; selectedItem != null}"  
+                 domain="LANDTAX" role="ADMIN" permission="rptledger.fix_ledger_faas" depends="selectedItem" />
+                 
+        <invoker type="historyActions" action="addNewLedgerFaas" caption="Add New FAAS" mnemonic="d" 
+                 visibleWhen="#{mode=='read' &amp;&amp; entity.state=='APPROVED' }"  
+                 domain="LANDTAX" role="ADMIN" permission="rptledger.add_new_ledger_faas"/>
+        
+        <!-- 
+        <invoker type="ledgerItemActions" action="repostLedgerItems" 
+            caption="Repost Items" visibleWhen="#{mode=='read' &amp;&amp; entity.state=='APPROVED'}"  
+            role="ADMIN" mnemonic="e" />
+        --> 
+        
+        <invoker type="ledgerItemActions" action="addLedgerItem" 
+            caption="Add" mnemonic="a" visibleWhen="#{mode=='read' &amp;&amp; entity.state=='APPROVED'}"  
+            role="ADMIN" depends="selectedLedgerItem" />
+        <invoker type="ledgerItemActions" action="editLedgerItem" 
+            caption="Edit" visibleWhen="#{mode=='read' &amp;&amp; entity.state=='APPROVED' &amp;&amp; selectedLedgerItem != null}"  
+            role="ADMIN" mnemonic="e" depends="selectedLedgerItem" />
+        
+        
+    </invokers>
+    
+    <code class="com.rameses.gov.etracs.rpt.ledger.ui.RPTLedgerController">
+    </code>
+    
+    <pages>
+        <page name="open" template="com.rameses.gov.etracs.rpt.ledger.ui.RPTLedgerPage" />
+        <page template="com.rameses.gov.etracs.rpt.ledger.ui.RPTLedgerPage" />
+        <page name="preview" template="com.rameses.gov.etracs.rpt.common.PreviewPage"/>
+    </pages>
+</workunit>

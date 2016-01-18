@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="faas:change_property_info" action="init" 
+                 caption="Change Property Info and Boundaries" 
+                 actiontype="change_property_info"/>
+   </invokers>
+   
+   <code class="com.rameses.gov.etracs.rpt.faas.change.ui.ChangePropertyInfoController">        
+    </code>
+    
+    <pages> 
+        <page template="com.rameses.gov.etracs.rpt.faas.change.ui.ChangePropertyInfoPage"/>
+    </pages>
+</workunit>
+
+

@@ -1,0 +1,64 @@
+<workunit>
+    <invokers>
+        <invoker type="rptsubledger:reconcile" caption="Realty Tax Sub-Ledger Reconcile" target="popup" />        
+    </invokers>
+    
+    <code lang="groovy">
+        <![CDATA[
+        
+import com.rameses.rcp.common.*
+import com.rameses.rcp.annotations.*
+import com.rameses.osiris2.client.*
+
+
+public class ReconcileSubledgerController 
+{
+    @Caller 
+    def caller;
+    
+    @Service('RPTLedgerService')
+    def svc;
+    
+    @Binding
+    def binding;
+    
+    def entity;
+    def currentledger = [:]
+    
+    String title = 'Reconcile Sub-Ledger'
+    
+    def getLookupCurrentLedger(){
+        return InvokerUtil.lookupOpener('rptledger:lookup', [
+        
+            onselect :{
+                svc.validateReconcileSubledger(entity, it);
+                currentledger = it;
+            },
+            
+            onempty: {
+                currentledger = [:];
+            }
+
+        ])
+    }
+    
+    
+    def reconcile(){
+        if (MsgBox.confirm('Reconcile subledger with its current ledger?')){
+            svc.reconcileSubledger(entity, currentledger);
+            caller.refresh();
+            return '_close'
+        }
+        return null;
+    }
+
+}
+
+
+]]>
+    </code>
+    
+    <pages>
+        <page name="reconcile" template="com.rameses.gov.etracs.rpt.ledger.ui.RPTSubledgerReconcilePage" />
+    </pages>
+</workunit>

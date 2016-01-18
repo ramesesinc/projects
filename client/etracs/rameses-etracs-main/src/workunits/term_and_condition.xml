@@ -1,0 +1,41 @@
+<workunit> 
+    <invokers> 
+        <invoker folderid="/menu/help" caption="Terms and Conditions" action="init" target="popup"/> 
+    </invokers> 
+    
+    <code>  
+    <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import com.rameses.io.IOStream;
+        
+        class TermAndConditionController 
+        {
+            def content;
+            
+            void init() {
+                def clientContext = com.rameses.rcp.framework.ClientContext.currentContext;
+                def url = clientContext.getResource('com/rameses/etracs/tac/content'); 
+                if (url) { 
+                    def bytes = IOStream.toByteArray(url); 
+                    content = new String(bytes); 
+                    
+                } else {
+                    content = '-- No available terms and conditions --';
+                } 
+            } 
+            
+            def doOk() {
+                return '_close';
+            } 
+        }
+    ]]>
+    </code>    
+    
+    <pages>
+        <page template="com.rameses.etracs.tac.TermAndConditionPage"/> 
+    </pages>
+
+</workunit>

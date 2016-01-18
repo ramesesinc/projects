@@ -1,0 +1,8 @@
+"selectedFinding" [mode == 'read']{
+    readonly:true;
+}
+
+"selectedFinding" [mode != 'read']{
+    readonly:false;
+}
+

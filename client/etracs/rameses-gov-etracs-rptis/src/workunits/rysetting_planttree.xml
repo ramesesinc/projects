@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit extends="rpt_wtemplates/RYSetting.xml">
+    <invokers>
+        <invoker type="planttreerysetting:create" action="create" caption="Create Plant/Tree Revision Setting" role="ASSESSOR_DATAMGMT,MASTER" />
+        <invoker type="planttreerysetting:open" action="open" caption="Edit Plant/Tree Revision Setting" role="ASSESSOR_DATAMGMT,MASTER" />
+        <invoker type="planttreerysetting:copy" action="copy" caption="Plant/Tree Revision Setting" role="ASSESSOR_DATAMGMT,MASTER" />
+    </invokers>
+    
+    <code class="com.rameses.gov.etracs.rpt.rysetting.planttreerysetting.ui.PlantTreeRYSettingController" />
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.rpt.rysetting.planttreerysetting.ui.PlantTreeRYSettingPage"/>
+    </pages>
+</workunit>

@@ -1,0 +1,6 @@
+<workunit extends="wtemplates/ListController.xml" serviceName="RPTCompromiseService" entityName="rptcompromise" formName="rptcompromise:list">
+    <invokers>
+        <invoker folderid="/explorer/txn/landtax/list" caption="Compromise Agreements" target="window" index="200"  role="SHARED" />
+        <invoker folderid="/home/landtax" caption="Compromise Agreements" target="window" index="1005"  role="SHARED" />
+    </invokers>
+</workunit>

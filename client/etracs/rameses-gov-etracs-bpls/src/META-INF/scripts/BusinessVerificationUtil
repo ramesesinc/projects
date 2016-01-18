@@ -1,0 +1,46 @@
+import com.rameses.rcp.annotations.*
+import com.rameses.rcp.common.*
+import com.rameses.osiris2.client.*
+import com.rameses.osiris2.common.*
+import java.rmi.server.*;
+import com.rameses.util.*;
+
+public class BusinessVerificationUtil {
+
+     @Service("BusinessNameVerificationService")
+     def service;
+
+     @Caller
+     def caller;
+
+     def searchList;
+     boolean pass;
+     def selectedItem;
+     def entity;
+
+     void check() {
+         searchList  = service.getList(caller.entity.business.businessname); 
+         if(searchList) {
+            pass = false;
+            listModel.reload();
+         }
+         else {
+            pass = true;
+         }
+     }
+             
+     def listModel = [
+        fetchList: { o->return searchList;}
+     ] as BasicListModel;
+
+     void reset() {
+        searchList = [];
+        listModel.reload();
+     }
+
+     void verify() {
+        if( searchList.find{ it.weight == 100 } )
+            throw new Exception("Exact business name already exists. Please choose another business name");
+     }
+
+}

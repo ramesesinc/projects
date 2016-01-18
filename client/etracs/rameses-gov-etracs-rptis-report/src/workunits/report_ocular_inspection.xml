@@ -1,0 +1,62 @@
+<workunit extends="rpt_wtemplates/ReportController.xml" >
+    <invokers>
+        <invoker type="ocularinspection:preview" action="preview" caption="Ocular Inspection Report" target="self" />
+    </invokers>
+    <code>
+
+<![CDATA[
+
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.reports.*;
+import com.rameses.gov.etracs.rpt.util.*;
+
+
+class OcularInspectionController extends com.rameses.gov.etracs.rpt.report.ReportController
+{
+    @Service('RPTReportOcularInspectionService') 
+    def svc 
+    
+    String title = 'Ocular Inspection Report'
+    String reportPath = 'com/rameses/gov/etracs/rpt/report/examination/';
+    String reportName = reportPath + 'ocularinspection.jasper';
+    
+    def getReportData(){
+        return svc.buildOcularInspectionReport(entity);
+    }
+    
+     Map getParameters(){
+        def p = [:]
+        def images = DBImageUtil.getInstance().getImages(entity.objid);
+        if (images){
+            p.PHOTO1_IS = DBImageUtil.getInstance().getInputStream(images[0].objid);
+            if (images.size() >= 2)
+                p.PHOTO2_IS = DBImageUtil.getInstance().getInputStream(images[1].objid);
+            if (images.size() >= 3)
+                p.PHOTO3_IS = DBImageUtil.getInstance().getInputStream(images[2].objid);
+            if (images.size() >= 4)
+                p.PHOTO4_IS = DBImageUtil.getInstance().getInputStream(images[3].objid);
+            if (images.size() >= 5)
+                p.PHOTO5_IS = DBImageUtil.getInstance().getInputStream(images[4].objid);
+            if (images.size() >= 6)
+                p.PHOTO6_IS = DBImageUtil.getInstance().getInputStream(images[5].objid);
+        }
+        p.PHOTOCOUNT = images.size();
+        return p;
+    }
+    
+    
+    SubReport[] getSubReports(){
+        return [
+            new SubReport( 'inspectors', reportPath + 'inspectors.jasper'),
+        ] as SubReport[]
+    }
+
+
+}
+
+]]>        
+        
+    </code>
+</workunit>

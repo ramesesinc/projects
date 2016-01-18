@@ -1,0 +1,5 @@
+<workunit extends="wtemplates/ListController.xml" serviceName="AFReceiptListService" tag="list" entityName="afstockreceipt">
+    <invokers>
+        <invoker folderid="/explorer/txn/treasury" caption="AF Receipts" role="AFO"/>
+    </invokers>
+</workunit>

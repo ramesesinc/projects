@@ -1,0 +1,26 @@
+<workunit extends="wtemplates/gov/treasury/BasicCashReceiptController.xml">
+    <invokers>
+        <invoker type="collectiontype:handler" caption="Large Cattle Ownership" name="lco" index="100"  />
+        <invoker type="cashreceipt:lco" action="init" />
+    </invokers>
+    
+    <code>
+        <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import com.rameses.enterprise.treasury.cashreceipt.*
+        
+        class  LaregCattleOwnershipReceiptController extends BasicCashReceipt {
+            def sexList = ["MALE", "FEMALE"];
+        }
+        ]]>
+        
+    </code>
+    
+    <pages>
+        <page name="default" template="com.rameses.gov.treasury.cashreceipt.LargeCattleOwnershipPage"/>
+    </pages>
+    
+</workunit>

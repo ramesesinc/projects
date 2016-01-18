@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="consolidation:info:remotetool" action="resend" caption="Resend To Municipality" role="ADMIN"  target="process"/>
+    </invokers>
+    <code>
+        
+<![CDATA[
+
+
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.common.*;
+
+class ResendConsolidationController 
+{
+    @Service('ConsolidationService')
+    def svc;
+    
+    def entity;
+    
+    void resend(){
+        if (MsgBox.confirm('Resend record to municipality?')){
+            svc.resendToMunicipality(entity);
+            MsgBox.alert('Record has been successfully sent to municipality.');
+        }
+    }
+    
+    def getOrgid(){
+        return OsiricContext.env.ORGID;
+    }
+}
+
+
+]]>
+
+    </code>
+</workunit>

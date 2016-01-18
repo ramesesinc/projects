@@ -1,0 +1,6 @@
+"entity.*|handler" [mode == 'read'] {
+    enabled:false;
+}
+
+"entity.*|handler" [mode != 'read'] {
+    enabled:true;

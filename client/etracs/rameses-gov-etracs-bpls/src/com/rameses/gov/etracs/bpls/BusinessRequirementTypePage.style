@@ -1,0 +1,15 @@
+"entity.account" [ entity.type == 'OTHERFEE' ] {
+    visible: true;
+}
+
+"entity.account" [ entity.type != 'OTHERFEE'  ] {
+    visible: false;
+}
+
+"entity.(department|role)" [ entity.type == 'WORKFLOW' ] {
+    visible: true;
+}
+
+"entity.(department|role)" [ entity.type != 'WORKFLOW'  ] {
+    visible: false;
+}

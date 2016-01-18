@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker folderid="/explorer/txn/rpt/manual" action="init" caption="Manually Approve FAAS" 
+                index="1000" role="APPROVER" />
+        <invoker folderid="/home/rpt/manual" action="init" caption="Manually Approve FAAS" 
+                index="1000" role="APPROVER"   />
+        
+        <invoker type="formActions" action="_close" caption="Cancel" immediate="true" visibleWhen="#{mode=='init'}"/>
+        <invoker type="formActions" action="_close" caption="Close" immediate="true" visibleWhen="#{mode!='init'}"/>
+        
+        <invoker type="formActions" action="init" caption="New" visibleWhen="#{mode!='init'}"/>
+        <invoker type="formActions" action="approve" caption="Approve" visibleWhen="#{mode=='init'}"/>
+    </invokers>
+    <code>
+<![CDATA[
+        
+import com.rameses.rcp.annotations.*;        
+import com.rameses.rcp.common.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.common.*;
+
+class MunicipalityFaasApproveController 
+{
+    @Binding 
+    def binding;
+    
+    @Service('MunicipalityFAASService')
+    def svc; 
+    
+    def entity;
+    
+    def mode;
+    def MODE_INIT = 'init'
+    def MODE_APPROVED = 'approved'
+    
+    String title = 'Manually Approve FAAS'
+    
+    
+    void init(){
+        entity = [approver:[:]];
+        mode = MODE_INIT;
+    }
+    
+    void approve(){
+        if (MsgBox.confirm('Approve FAAS?')){
+            svc.approveFaas(entity);
+            mode = MODE_APPROVED;
+            MsgBox.alert('FAAS has been successfully approved.')
+        }
+    }
+    
+    
+    def getLookupFaas(){
+        return Inv.lookupOpener('faas:lookup', [
+            onselect : {
+                if ( it.state.equalsIgnoreCase('CANCELLED'))
+                    throw new Exception('FAAS has already been cancelled.');
+                if ( it.state.equalsIgnoreCase('CURRENT') )
+                    throw new Exception('FAAS is already current.');
+                entity.faas = it;
+            },
+            
+            onempty : {
+                entity.faas = null;
+                binding.refresh('entity.faas.*');
+            }
+        ]);
+    }
+    
+    def getLookupApprover(){
+        return Inv.lookupOpener('txnsignatory:lookup',[
+            doctype : 'RPTAPPROVER',
+            onselect : { 
+                if (!entity.approver)
+                    entity.approver = [:]
+                entity.approver.putAll(it)
+            },
+            onempty  : { clearSignatory(entity.approver)},
+        ])
+    }
+    
+    void clearSignatory(signatory){
+        if (signatory){
+            signatory.personnelid = null;
+            signatory.name = null;
+            signatory.title = null;
+        }
+    }   
+    
+}
+
+
+]]>
+
+    </code>
+    <pages>
+        <page template="com.rameses.gov.etracs.rpt.municipality.faas.FaasApprovePage"/>
+    </pages>
+</workunit>

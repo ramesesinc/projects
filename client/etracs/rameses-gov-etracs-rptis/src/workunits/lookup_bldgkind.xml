@@ -1,0 +1,34 @@
+<workunit extends="wtemplates/LookupController.xml">
+    <invokers>
+        <invoker type="bldgkind:lookup" action="init" caption="Kind of Building Lookup" target="popup" />
+    </invokers>
+    
+    <code>
+
+import com.rameses.rcp.common.*
+import com.rameses.rcp.annotations.*
+import com.rameses.osiris2.client.*
+import com.rameses.osiris2.common.*
+
+class BldgKindLookupController extends LookupController
+{
+    @Service("BldgKindService")
+    def svc
+    
+    def state;
+    
+    Column[] getColumns() {
+        return [
+            new Column(name:"code", caption:"Code", width:80),
+            new Column(name:"name", caption:"Kind of Building", width:250),
+        ]
+    }
+    
+    List fetchList( Map params ) { 
+        params.state = (state ? state : '%')
+        return svc.getBldgKinds(params)
+    }
+}  
+
+    </code>
+</workunit>

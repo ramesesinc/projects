@@ -1,0 +1,74 @@
+<workunit>
+    <invokers>
+        <invoker type="rptcompromise:forpayment" action="init" />
+    </invokers>
+    
+    <code>
+        
+<![CDATA[
+        
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.common.*;
+import com.rameses.osiris2.reports.*;
+import com.rameses.gov.etracs.rpt.common.*;
+
+class CompromiseForPaymentController
+{
+    @Caller 
+    def caller;
+        
+    @Service('RPTReceiptCompromiseService')
+    def svc;
+    
+    
+    @PropertyChangeListener 
+    def listener = [
+        'entity.requiredpayment' : {
+            if (entity.requiredpayment.type == 'downpayment')
+                entity.amount = compromise.downpayment;
+            else
+                entity.amount = currentyeardue;
+            caller.calcReceiptAmount();
+        }
+    ]
+    
+    def compromise;
+    def currentyeardue = 0.0
+
+    def getEntity(){
+        return caller.entity;
+    }
+    
+    void init(){
+        compromise = entity.compromise;
+        def bill = svc.getCurrentYearDue(compromise.rptledgerid);
+        currentyeardue = bill.taxes.amount.sum(); 
+        getEntity().bill = bill;
+        getEntity().billid = bill.objid;
+        bill.remove('taxes');
+        bill.remove('items');
+    }
+    
+    List getRequiredPayments() {
+        def list = []
+        
+        if( compromise.downpaymentorno == null &&  (compromise.downpaymentrequired == 1 || compromise.downpaymentrequired )  ) {
+            list.add( [type:'downpayment', caption:'Downpayment' ] )
+        }
+        else if( compromise.cypaymentorno == null && ( compromise.cypaymentrequired == 1 || compromise.cypaymentrequired) ) {
+            list.add( [type:'cypayment', caption:'Current Year Payment' ] )
+        }
+        return list ;
+    }
+}
+
+]]> 
+    </code>
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.rpt.collection.ui.RPTReceiptByCompromiseRequiredPayment" />
+    </pages>
+    
+</workunit>

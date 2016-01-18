@@ -1,0 +1,13 @@
+<workunit>
+    <invokers>
+        <invoker type="business_application:assessment:print" caption="Assessment" action="preview" index="-8888"/>
+        <invoker type="formActions" caption="Back" action="_close" icon="back"/>
+    </invokers>
+    
+    <code class="com.rameses.gov.etracs.bpls.controller.BusinessAssessmentReportController"/>
+    
+    <pages>
+        <page name="preview" template="com.rameses.osiris2.common.ui.ReportPreviewPage" />
+    </pages>
+    
+</workunit>

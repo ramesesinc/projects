@@ -1,0 +1,11 @@
+"infoModel.item.value" [ item.datatype == 'decimal' ] {
+    alignment: 'RIGHT';
+}
+
+"infoModel.item.value" [ item.datatype == 'integer' ] {
+    alignment: 'RIGHT';
+}
+
+"infoModel.item.value" [ item.datatype == 'boolean' ] {
+    alignment: 'CENTER';
+}

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="faas:change_faas_appraisal" action="init" 
+                 caption="Change Appraisal Information" 
+                 actiontype="change_faas_appraisal" />
+   </invokers>
+   
+   <code class="com.rameses.gov.etracs.rpt.faas.change.ui.ChangeAppraisalInfoController">       
+    </code>
+
+    <pages> 
+        <page template="com.rameses.gov.etracs.rpt.faas.change.ui.ChangeFaasOpenerInfoPage"/>
+    </pages>
+</workunit>
+
+

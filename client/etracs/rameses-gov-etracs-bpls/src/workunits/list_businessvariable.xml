@@ -1,0 +1,5 @@
+<workunit extends="wtemplates/ListController.xml" serviceName="BusinessVariableService" entityName="businessvariable">
+    <invokers>
+        <invoker folderid="/explorer/master/bpls" caption="Business Variables" target="window" index="12" role="MASTER"/>
+    </invokers>
+</workunit>

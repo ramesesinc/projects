@@ -1,0 +1,117 @@
+<workunit>
+    
+    <invokers>
+        <invoker type="business_assessment:change" caption="Change Line of Business" 
+            target="popup" index="0" action="init" />
+                
+        <invoker type="lobActions" caption="Add" action="lob.add" immediate="true"/>
+        <invoker type="lobActions" caption="Remove" action="lob.remove" immediate="true" 
+           visibleWhen="#{lob.selectedItem!=null}" depends="lob.selectedItem"/>           
+    </invokers>
+    
+    <code>
+    <![CDATA[    
+import com.rameses.rcp.annotations.*
+import com.rameses.rcp.common.*
+import com.rameses.osiris2.client.*
+import com.rameses.osiris2.common.*
+import java.rmi.server.*;
+import com.rameses.util.*;
+import com.rameses.gov.etracs.bpls.application.*;
+
+class EditLOBController {
+
+    @Binding
+    def binding;
+    
+    @Script("BusinessLobUtil")
+    def lob;
+    
+    @Script("BusinessInfoUtil")
+    def appinfo;
+    
+    @Service("BusinessChangeService")
+    def service;
+    
+    def lobAssessmentTypes = ['NEW','RENEW','RETIRE']
+    
+    def lobs;
+    def selectedLob;
+    def handler;
+    def entity;
+    def oldEntity;
+    def entry;
+    def title;
+    boolean updated;
+    
+    void init() {
+        title = "Change Line of Business";
+        if ( entity.taxfees ) {
+            if ( !MsgBox.confirm("Your present assessment will be cleared with this transaction. Proceed?")) 
+                throw new BreakException(); 
+        } 
+        oldEntity = entity;
+
+        entry = [:];  //used by reason
+        entity = [:];
+        entity.putAll( oldEntity );
+        entity.lobs = [];
+        entity.lobs.addAll( oldEntity.lobs );
+        entity.lobs.each{ it.prevassessmenttype=it.assessmenttype } 
+        if ( entity.apptype.toString().toUpperCase().matches('NEW|RETIRE') ) {
+            lobAssessmentTypes = [ entity.apptype ];  
+        } 
+    } 
+    
+    def doOk() { 
+        if ( entity.lobs.find{( !it.assessmenttype )} ) {
+            throw new Exception('Assessment Type is required in the list of LOB'); 
+        }
+
+        def haschanges = false; 
+        def changedlob = entity.lobs.find{ it.prevassessmenttype != it.assessmenttype }
+        if ( changedlob?.objid ) haschanges = true; 
+        else if ( lob.updated ) haschanges = true;
+        
+        if ( haschanges ) {
+            lob.verify();
+            Modal.show(appinfo.update());
+            appinfo.verify();
+            
+            entry.businessid = entity.business.objid;
+            entry.applicationid = entity.objid;
+            entry.lobs = entity.lobs;     
+            entry.appinfos = entity.appinfos;     
+            entry.requirements = entity.requirements;     
+            entry.particulars = '-';
+            entry.changetype = 'CHANGE-APPINFO';
+            entry.activeyear = entity.appyear;
+            entry.changetype = 'CHANGE-LOB';
+            service.updateAppInfos(entry);     
+            
+            oldEntity.lobs = entity.lobs;     
+            oldEntity.appinfos = entity.appinfos;     
+            oldEntity.requirements = entity.requirements;     
+            oldEntity.taxfees = [];
+            oldEntity.assessmentinfos = [];
+            if (handler) handler(true); 
+            
+            return "_close";
+        } 
+        else {
+            return "_close";
+        }
+    }
+    
+    def doCancel() {
+        return "_close";
+    }
+}
+    ]]>
+    </code>
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.bpls.amend.ChangeLobPage"/>
+    </pages>
+
+</workunit>

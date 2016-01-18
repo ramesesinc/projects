@@ -1,0 +1,31 @@
+<workunit>
+    <invokers>
+        <invoker type="district:open" caption="District" action="open"/>
+        <invoker type="district:create"  caption="District" action="create"/>
+    </invokers>
+   <code>
+        <![CDATA[
+        import com.rameses.osiris2.common.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+
+        public class DistrictOrgController extends CRUDController {
+        
+            String createFocusComponent = 'entity.code'; 
+            String editFocusComponent = 'entity.name'; 
+            
+            String serviceName = "DistrictService";
+            String entityName = "district";
+            String title = "District";
+            
+            Map createEntity() {
+                return [:]
+            }                        
+        }        
+         ]]>
+    </code>
+    <pages>
+        <page template="com.rameses.gov.lgu.ui.DistrictPage"/> 
+    </pages>
+</workunit>

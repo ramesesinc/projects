@@ -1,0 +1,38 @@
+<workunit>
+    <invokers>
+        <invoker type="basic:open" action="open"/>
+        <invoker type="basic:create" action="create"/>        
+    </invokers>
+    <code>
+        <![CDATA[
+        import com.rameses.osiris2.common.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+
+        public class BasicOrgController extends CRUDController {
+        
+            String createFocusComponent = 'entity.name'; 
+            String editFocusComponent = 'entity.name'; 
+            String serviceName = "OrgService";
+            String entityName;
+            String parentclass;
+            
+            @FormTitle
+            String title;
+            
+            Map createEntity() {
+                MsgBox.alert( 'create basic ' +  entityName );
+                def m = [:];
+                m.captain = [:];
+                m.treasurer = [:];
+                return m;
+            }
+            
+        }        
+    ]]>
+    </code>
+    <pages>
+        <page template="com.rameses.gov.lgu.ui.BasicOrgPage"/> 
+    </pages>
+</workunit>

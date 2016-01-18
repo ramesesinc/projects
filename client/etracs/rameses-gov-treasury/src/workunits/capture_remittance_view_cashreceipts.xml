@@ -1,0 +1,58 @@
+<workunit>
+    <invokers>
+        <invoker type="captureremittance:formActions" caption="View Receipts" 
+            visibleWhen="#{mode == 'create' }" index="5" immediate="true"/>
+
+        <invoker type="captureremittance:formActions" caption="View Receipts" action="initView"
+            visibleWhen="#{mode == 'read' }" index="5" immediate="true"/>    
+            
+        <invoker type="formActions" caption="Back" action="_close" icon="images/toolbars/arrow_left.png"/>
+    </invokers>
+    
+    <code>
+    <![CDATA[    
+import com.rameses.rcp.annotations.*;
+import com.rameses.rcp.common.*;
+import com.rameses.util.*;
+import com.rameses.osiris2.common.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.reports.*;
+import java.rmi.server.*;
+
+class CaptureRemittanceCashReceiptCController {
+
+    @Service("RemittanceService")
+    def service;
+    
+    @Service("RemittanceCaptureService")
+    def rcSvc;
+
+    String title = "Remittance (Capture) ";
+        
+    boolean remitted = false;
+    def entity;
+    
+    def initView() { 
+        remitted = true; 
+    } 
+    
+    def receiptsListModel = [
+        fetchList: { 
+            if ( remitted ) {
+                return service.getRemittedReceipts([ objid: entity.objid ]); 
+            } else { 
+                def list = rcSvc.getUnremittedReceipts([ draftid: entity.draftid ]);   
+                list?.sort{a,b-> return a.receiptno <=> b.receiptno}
+                return list;
+            } 
+        } 
+    ] as BasicListModel; 
+} 
+    ]]>
+    </code>
+    
+    <pages>
+        <page template="com.rameses.enterprise.treasury.remittance.ViewReceiptsPage" /> 
+    </pages>
+   
+</workunit>

@@ -1,0 +1,62 @@
+<workunit>
+    <invokers>
+        <invoker type="cashreceipt:selectaf:formActions" caption="View Assignees"  role="COLLECTOR"/>
+        <!-- OWN TOOLBARS -->
+        <invoker type="formActions" caption="Back" action="_close" />
+        <invoker type="formActions" caption="Unassign" action="unassign" role="COLLECTOR"/>
+        <invoker type="formActions" caption="Change Mode" action="changeMode" role="COLLECTOR"/>
+
+    </invokers>
+    
+    <code>
+        <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import com.rameses.enterprise.treasury.cashreceipt.*
+        
+        class  ViewAFAssigneeController  {
+            
+            
+            @Service("AFControlService")
+            def svc;
+            
+            def selectedItem;
+            def entity;
+            def list;
+            String title = "View Subcollector";
+            
+            
+            def changeMode() {
+                if(!selectedItem) throw new Exception("Select an item");
+                return InvokerUtil.lookupOpener("afserial:changemode", 
+                    [entity:selectedItem, saveHandler: { listModel.reload(); }] 
+                );
+            }
+            
+            def unassign() {
+                if(!selectedItem) throw new Exception("Select an item");
+                
+                svc.unassign( selectedItem );
+                listModel.load();
+        
+            }
+            
+            def listModel = [
+                fetchList: { o->
+                    list = svc.getAssigneeIssuanceList( entity );
+                    return list;
+                }
+            ] as BasicListModel;
+            
+        }
+        ]]>
+        
+    </code>
+    
+    <pages>
+        <page template="com.rameses.gov.treasury.cashreceipt.ViewAssigneePage"/>
+    </pages>
+    
+</workunit>

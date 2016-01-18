@@ -1,0 +1,33 @@
+<workunit extends="wtemplates/LookupController.xml">
+    <invokers>
+        <invoker type="machine:lookup" action="init" caption="Machine Lookup" target="popup" />
+    </invokers>
+    
+    <code>
+        
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+import com.rameses.osiris2.client.*
+import com.rameses.osiris2.common.*
+
+class LookupMachinesController extends LookupController
+{
+    @Service("MachineService")
+    def svc;
+    
+    def state;
+    
+    Column[] getColumns() {
+        return [
+            new Column(name:"code", caption:"Code", width:70),
+            new Column(name:"name", caption:"Machine", width:250),
+        ]
+    }
+    
+    List fetchList( Map params ) { 
+        params.state = ( state ? state : '%')
+        return svc.getMachines( params )
+    }
+}  
+    </code>
+</workunit>

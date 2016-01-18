@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit extends="rpt_wtemplates/CertificationController.xml">
+    <invokers>
+        <invoker folderid="/explorer/txn/rpt/cert" action="init" caption="Ownership" 
+            opener="ownership" index="6" role="CERTIFICATION_ISSUER,RECORD" permission="certification.ownership"/>    
+            
+        <invoker folderid="/menu/txn/rpt/cert" action="init" caption="Ownership" 
+            opener="ownership" index="6" role="CERTIFICATION_ISSUER,RECORD" permission="certification.ownership"/>    
+            
+        <invoker type="quick_launcher" action="init" code="RC06" caption="Ownership" 
+            opener="ownership" index="6" role="CERTIFICATION_ISSUER,RECORD" permission="certification.ownership"/>
+            
+        <invoker type="ownership:open" action="open" caption="Ownership" /> 
+    </invokers>
+    
+    <code>
+        
+<![CDATA[
+
+
+package com.rameses.gov.etracs.rpt.report.certification;
+
+
+import com.rameses.rcp.annotations.*
+import com.rameses.rcp.common.*
+import com.rameses.osiris2.client.*
+import com.rameses.osiris2.reports.*;
+
+public class OwnershipController extends com.rameses.gov.etracs.rpt.report.certification.AbstractCertificationController
+{
+    @Service('RPTCertificationOwnershipService')
+    def svc;
+    
+    boolean certbytd = true
+    
+            
+    def getTitle(){
+        return 'Certificate of Ownership'
+    }
+    
+    def getService(){
+        return svc;
+    }
+    
+    def save(){
+        return svc.createCertification(entity)
+    }
+    
+    String reportName = 'com/rameses/gov/etracs/rpt/report/certification/Ownership.jasper'
+
+    Map getParameters(){
+        return [REPORTTITLE:'Certificate of Ownership']
+    }
+    
+    def getCertificationTypes(){
+        return [
+            [type:'byfaas', caption:'By FAAS'],
+        ]
+    }      
+}
+
+
+
+]]>
+    </code>
+    
+</workunit>

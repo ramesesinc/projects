@@ -1,0 +1,32 @@
+<workunit>
+    <invokers>
+        <invoker type="report-parameter-loader" action="init" />
+    </invokers>
+    
+    <code>
+    <![CDATA[
+import com.rameses.osiris2.reports.*; 
+
+class LGUReportParameterLoader { 
+
+    def params = [:];  
+
+    void init() { 
+        if ( !params ) return; 
+
+        params.WATERMARK = ReportUtil.getImageAsStream( 'lgu-watermark.png' ); 
+        params.LOGOLGU   = ReportUtil.getImageAsStream( 'lgu-logo.png' ); 
+        params.LOGOBLGF  = ReportUtil.getImageAsStream( 'lgu-blgf.png' ); 
+        params.LOGOASSESSOR = ReportUtil.getImageAsStream( 'lgu-assessor.png' ); 
+        params.LOGOTREASURY = ReportUtil.getImageAsStream( 'lgu-treasury.png' ); 
+
+        params.WATERMARKURL = ReportUtil.getImage( 'lgu-watermark.png' ); 
+        params.LOGOLGUURL   = ReportUtil.getImage( 'lgu-logo.png' ); 
+        params.LOGOBLGFURL  = ReportUtil.getImage( 'lgu-blgf.png' ); 
+        params.LOGOASSESSORURL = ReportUtil.getImage( 'lgu-assessor.png' ); 
+        params.LOGOTREASURYURL = ReportUtil.getImage( 'lgu-treasury.png' ); 
+    } 
+} 
+    ]]> 
+    </code> 
+</workunit>

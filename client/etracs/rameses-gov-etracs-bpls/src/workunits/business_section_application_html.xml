@@ -1,0 +1,35 @@
+<workunit>
+    <invokers>
+        <invoker type="business:section" caption="Application Html" index="200" />
+        
+        <invoker type="formActions" caption="Print" name="print" />
+    </invokers>
+    
+    <code>
+        <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import com.rameses.util.*;
+
+        class HtmlViewController  {
+            def entity;
+            
+            def getHtml() {
+                return TemplateProvider.instance.getResult("templates/application.htm", [entity: entity] );
+            }
+            
+            def fire(def o) {
+                MsgBox.alert('fire type' + o);
+            }
+        }
+        ]]>
+    </code>
+
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.bpls.view.HtmlViewerPage"/>
+    </pages>
+    
+</workunit>

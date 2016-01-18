@@ -1,0 +1,5 @@
+- update client platform jars
+	- lib/osiris3-client-platform.jar
+- update download modules	
+	- core/rameses-client-ui.jar
+	- shared/client-ui-extended.jar

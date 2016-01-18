@@ -1,0 +1,19 @@
+import com.rameses.annotations.*
+import com.rameses.common.*
+import com.rameses.services.extended.*
+
+
+class LDNTubodRPTLedgerService  
+{
+	@ActiveDB('tubod')
+	def em 
+
+
+	@ProxyMethod
+	public def postNewLedger(faas) {
+		faas = em.findFaasByTdNo(faas)
+		def ledger = em.findLedgerByFaasId(faas)
+		return ledger 
+	}
+		
+}

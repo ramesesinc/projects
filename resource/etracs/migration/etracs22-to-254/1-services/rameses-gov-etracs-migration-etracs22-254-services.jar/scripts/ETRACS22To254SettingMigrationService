@@ -1,0 +1,380 @@
+import com.rameses.annotations.*
+import com.rameses.common.*
+import java.rmi.server.UID;
+import com.rameses.util.*;
+
+class ETRACS22To254SettingMigrationService 
+{
+	@ActiveDB(value='etracs22_setting', em='etracs22')
+	def em22;
+
+
+	@Service('ETRACS22To254UtilService')
+	def util 
+
+	def updateClassification(entity){
+		entity.classification = em22.findClassification(entity)
+	}
+
+
+	/*==================================================================*/
+	@ActiveDB('landrysetting')
+	def landEm;
+
+	@ProxyMethod
+	public void migrateLandSettings(lgutype){
+		def lgu = findLguByType(lgutype)
+		em22.getLandSettings([appliedto:lgu.lguname]).each{setting->
+			landEm.save(setting)
+		}
+		println 'Migrated landrysetting.'
+	}
+
+	@ProxyMethod
+	public void migrateLandAssessLevels(  ) {
+		em22.getLandAssessLevels().each{lvl ->
+			updateClassification(lvl)
+			lvl.fixrate = util.toBoolean(lvl.fixrate, true)
+			landEm.save(lvl, 'landassesslevel')
+
+			if (lvl.ranges) 
+				lvl.ranges = em22.serializer.read(lvl.ranges);
+			else 
+				lvl.ranges = []
+
+			lvl.ranges.each{x->
+				def range = [:]
+				range.objid = 'BR-' + new java.rmi.server.UID()
+				range.landassesslevelid = lvl.objid
+				range.landrysettingid = lvl.landrysettingid
+				range.mvfrom = x.mvfrom
+				range.mvto = x.mvto
+				range.rate = x.rate
+				landEm.save(range, 'landassesslevelrange') 
+			}
+		}	
+		println 'Migrated landassesslevels.'
+	}
+		
+	@ProxyMethod
+	public void migrateSpecificClasses(  ) {
+		em22.getSpecificClasses().each{spc ->
+			landEm.save(spc, 'lcuvspecificclass')
+		}	
+		println 'Migrated specificclasses.'
+	}
+		
+	@ProxyMethod
+	public void migrateSubClasses(  ) {
+		em22.getSubClasses().each{sub ->
+			landEm.save(sub, 'lcuvsubclass')
+		}	
+		println 'Migrated subclasses.'
+	}
+		
+	@ProxyMethod
+	public void migrateStrippings(  ) {
+		em22.getStrippings().each{
+			landEm.save(it, 'lcuvstripping')
+		}
+		println 'Migrated strippings.'
+	}
+
+	@ProxyMethod
+	public void migrateLandAdjustments(  ) {
+		em22.getAdjustmentTypes().each{adj ->
+			landEm.save(adj, 'landadjustmenttype')
+			landEm.deleteLandAdjustmentTypeClassifications([landadjustmenttypeid:adj.objid])
+
+			adj.classifications = em22.serializer.read(adj.classifications);
+			adj.classifications.each{
+				def clz = [
+					landrysettingid		 : adj.landrysettingid,
+					landadjustmenttypeid : adj.objid,
+					classification_objid : it.propertyid
+				]
+				landEm.insertLandAdjustmentTypeClassification(clz)
+			}
+		}
+		println 'Migrated landadjustments.'
+	}
+
+
+	/*==================================================================*/
+	@ActiveDB('bldgrysetting')
+	def bldgEm
+
+	@ActiveDB('bldgkind')
+	def bldgkindEm
+
+	@ProxyMethod
+	public void migrateBldgSettings(lgutype){
+		def lgu = findLguByType(lgutype)
+		em22.getBldgSettings([appliedto:lgu.lguname]).each{setting->
+			setting.depreciatecoreanditemseparately = util.toBoolean(setting.depreciatecoreanditemseparately, false)
+			setting.computedepreciationbasedonschedule = util.toBoolean(setting.computedepreciationbasedonschedule, false)
+			setting.straightdepreciation = util.toBoolean(setting.straightdepreciation, false)
+			setting.calcbldgagebasedondtoccupied = util.toBoolean(setting.calcbldgagebasedondtoccupied, false)
+			setting.predominant = util.toBoolean(setting.predominant, true)
+			bldgEm.save(setting)
+		}
+	}
+
+	@ProxyMethod
+	public void migrateBldgAssessLevels(  ) {
+		em22.getBldgAssessLevels().each{lvl ->
+			updateClassification(lvl)
+			lvl.fixrate = util.toBoolean(lvl.fixrate, true)
+			bldgEm.save(lvl, 'assesslevel')
+
+			if (lvl.ranges) 
+				lvl.ranges = em22.serializer.read(lvl.ranges);
+			else 
+				lvl.ranges = []
+
+			lvl.ranges.each{x->
+				def range = [:]
+				range.objid = 'BR-' + new java.rmi.server.UID()
+				range.bldgassesslevelid = lvl.objid
+				range.bldgrysettingid = lvl.bldgrysettingid
+				range.mvfrom = x.mvfrom
+				range.mvto = x.mvto
+				range.rate = x.rate
+				try{
+					bldgEm.save(range, 'range') 
+				}
+				catch(e){
+					//ignore dups
+				}
+			}
+		}	
+		println 'Migrated bldgassesslevels.'
+	}
+
+
+	@ProxyMethod
+	public void migrateBldgTypes(){
+		em22.getBldgTypes().each{bt ->
+			bldgEm.save(bt, 'bldgtype')
+
+			bt.depreciations = em22.serializer.read(bt.depreciations);
+			bt.depreciations.each{
+				def dep = [:]
+                dep.objid            = 'BD' + new java.rmi.server.UID()
+                dep.bldgrysettingid  = bt.bldgrysettingid
+                dep.bldgtypeid       = bt.objid
+                dep.agefrom			= it.agefrom
+                dep.ageto			= it.ageto
+                dep.rate 			= it.rate
+        		bldgEm.save(dep, 'depreciation') 
+			}
+		}
+		println 'Migrated bldgtypes.'
+	}
+
+
+	@ProxyMethod
+	public void migrateBldgKindBuccs(){
+		em22.getBldgKindBuccs().each{
+			resolveBldgKind(it)
+			bldgEm.save(it, 'bldgkindbucc')
+		}
+		println 'Migrated bldgkindbuccs.'
+	}
+
+	void resolveBldgKind(bldgkindbucc){
+		def bk = bldgkindEm.read(bldgkindbucc.bldgkind)
+		if (!bk){
+			bldgkindbucc.bldgkind.state = 'DRAFT'
+			bldgkindbucc.bldgkind.state = 'DRAFT'
+			bldgkindEm.create(bldgkindbucc.bldgkind)
+		}
+
+	}
+
+
+	@ProxyMethod
+	public void migrateBldgAdditionalItems(){
+		em22.getBldgAdditionalItems().each{
+			try{
+				bldgEm.save(it, 'bldgadditionalitem')
+			}
+			catch(e){
+				it.code += '.'
+				it.name += '.'
+				bldgEm.save(it, 'bldgadditionalitem')
+			}
+		}
+		println 'Migrated bldgadditionalitems.'
+	}
+
+
+
+	/*==================================================================*/
+	@ActiveDB('machrysetting')
+	def machEm
+
+	@ProxyMethod
+	public void migrateMachSettings(lgutype){
+		def lgu = findLguByType(lgutype)
+		em22.getMachSettings([appliedto:lgu.lguname]).each{setting->
+			machEm.save(setting)
+		}
+		println 'Migrated mach settings.'
+	}
+
+
+	@ProxyMethod
+	public void migrateMachAssessLevels(  ) {
+		em22.getMachAssessLevels().each{lvl ->
+			updateClassification(lvl)
+			lvl.fixrate = util.toBoolean(lvl.fixrate, true)
+			machEm.save(lvl, 'assesslevel')
+
+			if (lvl.ranges) 
+				lvl.ranges = em22.serializer.read(lvl.ranges);
+			else 
+				lvl.ranges = []
+
+			lvl.ranges.each{x->
+				def range = [:]
+				range.objid = 'BR-' + new java.rmi.server.UID()
+				range.machassesslevelid = lvl.objid
+				range.machrysettingid = lvl.machrysettingid
+				range.mvfrom = x.mvfrom
+				range.mvto = x.mvto
+				range.rate = x.rate
+				machEm.save(range, 'assesslevelrange') 
+			}
+		}	
+		println 'Migrated machassesslevels.'
+	}
+
+
+	@ProxyMethod
+	public void migrateMachForexes(){
+		em22.getMachForexes().each{
+			machEm.save(it, 'forex')
+		}
+		println 'Migrated mach forexes.'
+	}
+
+
+
+
+	/*==================================================================*/
+	@ActiveDB('planttreerysetting')
+	def plantEm
+
+	@ProxyMethod
+	public void migratePlantTreeSettings(lgutype){
+		def lgu = findLguByType(lgutype)
+		em22.getPlantTreeSettings([appliedto:lgu.lguname]).each{setting->
+			plantEm.save(setting)
+
+			if (setting.assesslevels) 
+				setting.assesslevels = em22.serializer.read(setting.assesslevels);
+			else 
+				setting.assesslevels = []
+
+			setting.assesslevels.each{lvl->
+				if (!lvl.objid)
+					lvl.objid = 'BR-' + new java.rmi.server.UID()
+
+				lvl.planttreerysettingid = setting.objid
+				updateClassification(lvl)
+				if (!lvl.classification)
+					lvl.classification = em22.findAgriClassification()
+				plantEm.save(lvl, 'assesslevel') 
+			}
+		}
+	}
+
+
+	@ProxyMethod
+	public void migratePlantTreeUnitValues(){
+		em22.getPlantTreeUnitValues().each{
+			plantEm.save(it, 'planttreeunitvalue')
+		}
+	}
+
+
+
+	/*==================================================================*/
+	@ActiveDB('miscrysetting')
+	def miscEm
+
+
+	@ProxyMethod
+	public void migrateMiscSettings(lgutype){
+		def lgu = findLguByType(lgutype)
+		em22.getMiscSettings([appliedto:lgu.lguname]).each{setting->
+			miscEm.save(setting)
+		}
+	}
+
+
+	@ProxyMethod
+	public void migrateMiscAssessLevels(  ) {
+		em22.getMiscAssessLevels().each{lvl ->
+			updateClassification(lvl)
+			lvl.fixrate = util.toBoolean(lvl.fixrate, true)
+			miscEm.save(lvl, 'assesslevel')
+
+			if (lvl.ranges) 
+				lvl.ranges = em22.serializer.read(lvl.ranges);
+			else 
+				lvl.ranges = []
+
+			lvl.ranges.each{x->
+				def range = [:]
+				range.objid = 'BR-' + new java.rmi.server.UID()
+				range.miscassesslevelid = lvl.objid
+				range.miscrysettingid = lvl.miscrysettingid
+				range.mvfrom = x.mvfrom
+				range.mvto = x.mvto
+				range.rate = x.rate
+				miscEm.save(range, 'range') 
+			}
+		}	
+		println 'Migrated miscassesslevels.'
+	}
+
+
+	@ProxyMethod
+	public void migrateMiscItemUnitValues(){
+		em22.getMiscItemUnitValues().each{
+			miscEm.save(it, 'itemvalue')
+		}
+		println 'Migrated misc item values.'
+	}
+
+
+
+
+	/*==================================================================*/
+	@ActiveDB('rysetting')
+	def rysettingEm
+
+
+	@ProxyMethod
+	public void migrateLguRySettings(lgutype) {
+		def lgu = findLguByType(lgutype)
+		em22.getLguRySettings().each{
+			it.lguname = lgu.lguname
+			it.lguid = lgu.objid 
+			rysettingEm.save(it)
+		}		
+		println 'Migrated lgu ry settings.'
+	}
+
+
+	def findLguByType(lgutype){
+		def lgu = em22.findLguByType([lgutype:lgutype])
+		if (!lgu)
+			throw new Exception('LGU of type ' + lgutype + ' does not exist.')
+		return lgu 
+	}
+
+
+}

@@ -1,0 +1,23 @@
+import com.rameses.annotations.*
+import com.rameses.common.*
+import com.rameses.services.extended.*
+
+
+class LDNRPTLedgerService  
+{
+	@ActiveDB('ldn')
+	def em 
+
+
+	@ProxyMethod
+	public def postNewLedger(faas) {
+		faas = em.findFaasByTdNo(faas)
+		if (!faas)
+			throw new Exception('FAAS with TD No. ' + faas.tdno + ' does not exist.')
+		def ledger = em.findLedgerByFaasId([faasid:faas.objid])
+		if (!ledger)
+			throw new Exception('Ledger does not exist.')
+		return ledger 
+	}
+		
+}

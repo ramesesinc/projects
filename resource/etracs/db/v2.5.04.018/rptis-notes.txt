@@ -1,0 +1,16 @@
+-----------------------------------------------------
+VERSION NOTES
+-----------------------------------------------------
+- Add FAAS Txnlog support
+- Fix land adjustment computation error when editing appraisal
+- Do not display null faas report info 
+- Support barangay filter in approve faas listing
+- Fix faas state when returning from approver 
+- Add recalculate facility
+- Modify province compromise report format
+- Revert missing cancelled faas information
+- Add page number and item count on rptbilling
+- Fix void receipt info included in tax clearance
+- Fix qtrly clearance payment reflected as full year
+- Display partial info in compromise receipt when partial payment is made
+- Do not allow duplicate bldg actual use

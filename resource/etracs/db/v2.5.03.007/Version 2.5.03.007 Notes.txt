@@ -1,0 +1,15 @@
+CORE/SHARED UDPATES:
+===========================================
+
+osiris2-client-themes.jar
+rameses-client-ui.jar
+rameses-common2.jar
+
+
+
+CLIENT UDPATES:
+===========================================
+rameses-gov-etracs-rptis.jar
+rameses-gov-etracs-rptis-municipality.jar
+rameses-gov-etracs-rptis-province.jar
+rameses-gov-etracs-rptis-report.jar

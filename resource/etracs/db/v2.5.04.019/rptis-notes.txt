@@ -1,0 +1,22 @@
+-----------------------------------------------------
+VERSION NOTES
+-----------------------------------------------------
+- Add plant/tree adjustment roundoff to one support
+- Add pending ledger delete support
+- Add faas delete support for encoder
+- Fix municipality faas workflow interceptor when action is null
+- Improve update pin facility 
+- Display adjustment details for plant/tree adjustments
+- Display administrator in faas master listing report 
+- Display administrator in bldg faas land reference info
+- Display administrator in approved faas listing
+- Display administrator in journal of assessment transaction
+- Value adjustment support for mix uses
+- Fix null error in Talaingod tax declaration report
+- Display land reference in machine faas
+- Display bldg faas assessment level as percentage
+- Display additional area in bldg faas 
+- Display prev area in bldg faas 
+- Fix tax declaration notes
+- Manual depreciation support
+

@@ -1,0 +1,5 @@
+-----------------------------------------------------
+VERSION NOTES
+-----------------------------------------------------
+- landassessment rules: Add new rulegroup for adjustment
+

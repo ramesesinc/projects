@@ -1,0 +1,6 @@
+-----------------------------------------------------
+VERSION NOTES
+-----------------------------------------------------
+- update: rameses-common2.jar - add round with scale support 
+- Add new RULEDEF for planttree, mach and misc assessment rule
+- Add new RULES for (land/plant/mach/misc)

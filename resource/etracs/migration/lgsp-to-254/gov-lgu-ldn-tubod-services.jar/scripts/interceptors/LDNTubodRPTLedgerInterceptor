@@ -1,0 +1,119 @@
+import com.rameses.annotations.*
+import com.rameses.common.*
+import com.rameses.services.extended.*
+
+
+class LDNTubodRPTLedgerInterceptor
+{
+	@ActiveDB('tubod')
+	def em
+
+	@ActiveDB(value='rptledger', em="main")
+	def ledgerEm
+
+	@ActiveDB(value='lgsp', em="lgsp")
+	def lgspEm
+
+	@Service('RPTUtil')
+	def util
+	
+
+	@After(pattern="RPTLedgerService.postNewLedger", eval="#{args[0].datacapture == true || args[0].datacapture == 1}")
+	public void postOnlineLedgerInfo(evt){
+		def ledger = evt.result 
+		
+		if (ledger.state == 'APPROVED') {
+			println 'Ledger has already been migrated.'
+			return;
+		}
+
+		println 'Migrating lgsp ledger for tdno '  + ledger.tdno
+
+		try{
+			postFaasHistory(ledger)
+			postLedgerPayments(ledger)
+		}
+		catch(e){
+			println '='*50 
+			println 'Error posting ctdcams data....'
+			e.printStackTrace();
+		}
+	}
+
+
+	void postFaasHistory(ledger){
+		def histories = []
+		getTaxDecNums(ledger).each{taxdecnum ->
+			println 'postFaasHistory [taxdecnum] -> ' + taxdecnum
+			histories += lgspEm.getFaasHistories([taxdecnum:taxdecnum])
+		}
+		
+		histories.removeAll(histories.findAll{it.objid == null})
+
+		def toyear = 2014
+		histories.each{
+			it.rptledgerid = ledger.objid
+			it.taxable = true
+			it.reclassed = false
+			it.backtax = false
+			it.systemcreated = false
+			it.idleland = 0
+			it.fromyear = util.toInteger(it.fromyear)
+			it.fromqtr = util.toInteger(it.fromqtr)
+			it.toyear = toyear
+			it.toqtr = util.toInteger(it.toqtr)
+			it.classification = ledger.classification
+			it.actualuse = ledger.classification
+			it.assessedvalue = util.toDecimal(it.assessedvalue)
+			ledgerEm.save(it, 'ledgerfaas')
+			toyear = it.fromyear - 1
+		}
+	}
+
+
+	def getTaxDecNums(ledger){
+		def previds = []
+
+		def prev = lgspEm.findPrevious([taxdecnum:ledger.objid])
+		while (prev){
+			previds << prev.previoustd
+			prev = lgspEm.findPrevious([taxdecnum:prev.previoustd])
+		}
+		return previds 
+	}
+
+
+	void postLedgerPayments(ledger){
+		def ledgerpmt = [objid:ledger.objid, lastyearpaid:null, lastqtrpaid:null]
+
+		def taxdecnums =  getTaxDecNums(ledger)
+		taxdecnums << ledger.objid 
+
+		taxdecnums.each{taxdecnum->
+			lgspEm.getPayments([taxdecnum:taxdecnum]).each{payment ->
+				payment.rptledgerid = ledger.objid
+				payment.fromyear = util.toInteger(payment.fromyear)
+				payment.fromqtr = util.toInteger(payment.fromqtr)
+				payment.toyear = util.toInteger(payment.toyear)
+				payment.toqtr = util.toInteger(payment.toqtr)
+				payment.basic = util.toDecimal(payment.basic)
+				payment.basicint = util.toDecimal(payment.basicint)
+				payment.basicdisc = util.toDecimal(payment.basicdisc)
+				payment.sef = util.toDecimal(payment.sef)
+				payment.sefint = util.toDecimal(payment.sefint)
+				payment.sefdisc = util.toDecimal(payment.sefdisc)
+				payment.amount = util.toDecimal(payment.amount)
+
+				ledgerEm.create(payment, 'credit')
+				ledgerpmt.lastyearpaid = payment.toyear 
+				ledgerpmt.lastqtrpaid = payment.toqtr 
+			}
+		}
+		if (ledgerpmt.lastyearpaid != null){
+			em.updateLedgerLastYearPaid(ledgerpmt)
+			em.approveLedgerFaases(ledger)
+		}
+	}
+
+
+}

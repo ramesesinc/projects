@@ -1,0 +1,22 @@
+-----------------------------------------------------
+VERSION 2.5.04.025a NOTES 
+-----------------------------------------------------
+- Update modify pin facility
+- Fix missing bldg general revision land ref
+- Fix non-approval of consolidation affected rpus
+- As of year support for Certifications
+- Improvement of RPT Ledger UI
+- Improvement of RPT Billing UI
+- Property filter paid by year/qtr items during collection
+- Update docno when tdno is modified
+- Improve backtax support
+- Fix revert change info txn
+- Miscellaneous certifications update
+- TD report adjustment factor support
+- Fix tax incentive address bug
+- Support for compromise in billing rules (no discount requirement)
+- Fix current year overpayment in application report printout
+- Clear faas restriction when payment is made
+- Add support to change property classification
+- Insert missing bldgkind when synching with province
+- Add support to delete current faas (datacapture only)

@@ -1,0 +1,9 @@
+-----------------------------------------------------
+VERSION 2.5.04.025 NOTES 
+-----------------------------------------------------
+- Sworn amount support for MiscRPU
+- Fix FAAS report adjustments for land with impovements
+- Additional search criteria e.g. title, survey, etc for FAAS Management screen
+- Add property payer support 
+- Deprecate non-standard online transactions (based on manual)
+- Add support for improvement revision (changepin)

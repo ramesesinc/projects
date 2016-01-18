@@ -1,0 +1,29 @@
+-----------------------------------------------------
+VERSION 2.5.04.024 NOTES 
+-----------------------------------------------------
+- Support to change previous information of FAAS 
+- Handle  possible "null" notification related vars when no available internet
+- Support to manually approved faas encoding
+- Fix compromise defaulted error when no payment is made
+- Support for automatic approval of batch general revision transaction
+- Support by tdno range or by sectoin batch FAAS/TD printing 
+- Allow reuse of cancelled PIN
+- Fix missing logo for batch printing of FAAS/TD
+- Fix subdivision delete error due to FK
+- Update and improvement on ledger reconcile routine 
+- Fix bldg revision setting sync error 
+- Fix missing superseeded FAAS information for Consolidation transaction
+- Improvement for Realty Tax Collection. Support period to pay and no. of items to pay 
+- Support manual approval of FAAS (for municipality)
+- Support for resending faas, subdivision and consolidation data between prov and muni
+- Fix on FAAS transmittal missing sketch and requirements
+- Fix redundant error message on assessment roll report
+- Grant SHARED role access of faas monitoring report 
+- Fix miscellaneous property multiple item computation bug
+- Updates on Assessment Roll report
+- Fix FAAS report error for manually cancelled record
+- Support plant/tree lookup by name
+- Display prev administrator in building faas
+- Modify caption for add ledger item entry screen
+
+

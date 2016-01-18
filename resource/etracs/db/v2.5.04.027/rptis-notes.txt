@@ -1,0 +1,14 @@
+-----------------------------------------------------
+VERSION 2.5.04.027 NOTES 
+-----------------------------------------------------
+- Fix RPT Compromise styled-text error and term value
+- Fix TD Certified True Copy "official" error
+-----------------------------------------------------
+
+TODO:
+
+- add PROVINCIAL_ASSESSOR role to provincial assessor
+- add MUNICIPAL_ASSESSOR role to municipal assessors
+-----------------------------------------------------
+
+

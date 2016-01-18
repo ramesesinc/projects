@@ -1,0 +1,15 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import com.rameses.osiris3.mgmt.*;
+
+class SysToolService 
+{	
+	@Context 
+	def context;
+
+	@ProxyMethod 
+	public void clearScripts() {
+		ScriptUtil.clearScript(context);
+		ScriptUtil.clearInterceptors(context); 
+	}
+} 

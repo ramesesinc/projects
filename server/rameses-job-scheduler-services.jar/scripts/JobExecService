@@ -1,0 +1,12 @@
+import com.rameses.annotations.*
+
+public class JobExecService {
+
+	@Async
+	@ProxyMethod
+	public void fire( def params ) {
+		println "supposed 1 to be async fire schedule job ->" + params.jobtype;
+	}
+
+
+}

@@ -1,0 +1,7 @@
+<schema>
+	<element tablename="sys_wf">
+		<field name="name" primary="true"/>
+		<field name="title" required="true"/>
+	</element>	
+</schema>	
+

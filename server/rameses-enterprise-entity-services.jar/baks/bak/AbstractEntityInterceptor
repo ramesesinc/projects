@@ -1,0 +1,39 @@
+import com.rameses.annotations.*
+import com.rameses.common.*
+import java.rmi.server.UID;
+import com.rameses.util.*;
+import com.rameses.io.*;
+import com.rameses.services.extended.*;
+
+class AbstractEntityInterceptor  {
+
+	@ActiveDB('entity')
+	def em;
+
+	@Service('SequenceService')
+	def seqSvc;
+
+	def INDEX_CHAR_COUNT = 300
+
+	@Before(pattern="EntityService.create", index=0 )
+	public void beforeCreate1( evt ) {
+		def entity = evt.args[0];
+		if (!entity.objid) throw new Exception('Please specify objid'); 
+		if (!entity.type) throw new Exception('Please specify type'); 
+		entity.entityno = seqSvc.getNextFormattedSeries( "ENTITY" ); 
+	}
+
+		
+	@Before(pattern="EntityService.(create|update)", index=100 )
+	public void beforeCreate2( evt ) {
+		def entity = evt.args[0];
+		if(!entity.name)
+			throw new Exception("Entity.name must not be blank");
+		def len = entity.name.length()
+		if (len > INDEX_CHAR_COUNT) len = INDEX_CHAR_COUNT
+		entity.entityname = entity.name.substring(0, len)
+	}
+
+
+
+}

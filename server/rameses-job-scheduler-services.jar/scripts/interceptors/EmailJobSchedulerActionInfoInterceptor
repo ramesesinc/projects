@@ -1,0 +1,23 @@
+import com.rameses.annotations.*
+
+public class SMSJobSchedulerActionInfoInterceptor {
+
+	@Env
+	def env;
+
+	@ActiveDB(value="jobscheduler_action_email", em="jobscheduler")
+	def em;
+
+	@After(pattern="JobSchedulerInfoService.(create|update)", eval="#{args[0].jobtype == 'email'}")
+	public void afterSave( def evt ) {
+		def action = evt.args[0].action;
+		em.save( action );
+	}
+
+	@After(pattern="JobSchedulerInfoService.open", eval="#{result.jobtype == 'email'}")
+	public void afterOpen( def evt ) {
+		def o = evt.result;
+		o.action = em.read( [objid: o.objid] );
+	}
+
+}

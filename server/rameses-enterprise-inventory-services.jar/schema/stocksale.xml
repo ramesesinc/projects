@@ -1,0 +1,32 @@
+<schema>
+
+	<element name="stocksale" tablename="stocksale">
+		<field name="objid" primary="true"/>	
+		<field name="state" required="true"/>
+		<field name="request_objid" required="true"/>
+		<field name="request_reqno" required="true"/>
+		<field name="issueno" required="true"/>
+		<field name="dtfiled" required="true"/>
+		<field name="reqtype" required="true"/>
+		<field name="user_objid" required="true"/>
+		<field name="user_name" required="true"/>
+
+		<field name="soldto_objid" required="true"/>
+		<field name="soldto_name" required="true"/>
+		<field name="soldto_title" />		
+	</element>
+	
+	<element name="item" tablename="stocksaleitem">
+		<field name="objid" primary="true"/>			
+		<field name="parentid" required="true"/>
+		<field name="item_objid" required="true"/>
+		<field name="item_code" required="true"/>
+		<field name="item_title" required="true"/>
+		<field name="unit" required="true"/>
+		<field name="qtyrequested" required="true"/>
+		<field name="qtyissued" required="true"/>
+		<field name="remarks" />
+		<field name="cost" />
+	</element>	
+
+</schema>

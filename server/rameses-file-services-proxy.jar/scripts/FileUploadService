@@ -1,0 +1,19 @@
+
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+
+public class FileUploadService
+{
+	@Service(value='FileUploadService', connection='fileserver_proxy') 
+	def proxy;
+
+	@ProxyMethod 
+	public def create( data ) { 
+		return proxy.create( data ); 
+	} 
+
+	@ProxyMethod 
+	public def addDetail( data ) { 
+		return proxy.addDetail( data ); 
+	} 
+} 

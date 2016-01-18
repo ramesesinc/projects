@@ -1,0 +1,14 @@
+import com.rameses.annotations.*
+import com.rameses.functions.*;
+import com.rameses.util.*;
+import com.rameses.services.extended.*;
+
+public class JobSchedulerListService extends ActiveCrudListService {
+
+	@Service("DateService")
+	def dateSvc;
+
+	@ActiveDB(value="jobscheduler", em="jobscheduler")
+	def em;
+
+}

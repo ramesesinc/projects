@@ -1,0 +1,55 @@
+<schema>
+	<element name="bankaccount" tablename="bankaccount">
+		<field name="objid" primary="true"/>
+		<field name="state" required="true"/>
+		<field name="code" required="true"/>
+		<field name="title" required="true"/>
+		<field name="accttype" />
+		<field name="description" />
+		<field name="bank_objid" required="true"/>
+		<field name="bank_code" required="true"/>
+		<field name="bank_name" required="true"/>
+		
+		<field name="fund_objid" required="true"/>
+		<field name="fund_code" required="true"/>
+		<field name="fund_title" required="true"/>
+		
+		<field name="currency" required="true"/>
+		<field name="cashreport"/>
+		<field name="cashbreakdownreport"/>
+		<field name="checkreport"/>
+		<field name="checkbreakdownreport"/>
+
+		<field name="beginbalance" required="true"/>
+		<field name="forwardbalance" required="true"/>
+		<field name="totaldr" required="true"/>
+		<field name="totalcr" required="true"/>
+		<field name="endbalance" required="true"/>
+		<field name="currentlineno" required="true"/>
+	</element>
+	
+	<element name="detail" tablename="bankaccount_entry">
+		<field name="objid" primary="true"/>
+		<field name="parentid" required="true"/>
+		<field name="txndate"  required="true"/>
+		<field name="refid"  required="true"/>
+		<field name="reftype"  required="true"/>
+		<field name="refno"  required="true"/>
+		<field name="refdate"  required="true"/>
+		<field name="particulars"  required="true"/>
+		<field name="dr"  required="true"/>
+		<field name="cr"  required="true"/>
+		<field name="runbalance"  required="true"/>
+		<field name="lineno"  required="true"/>
+		<field name="postingrefid" />
+	</element>
+
+	<element name="account-segment" tablename="bankaccount_account">
+		<field name="objid" primary="true"/>	
+		<field name="acctid" />
+	</element>
+	
+	
+</schema>
+
+

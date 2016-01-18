@@ -1,0 +1,36 @@
+import com.rameses.annotations.*
+import com.rameses.common.ExpressionResolver;
+
+public class SMSJobExecInterceptor {
+
+	@Env
+	def env;
+
+	@PersistenceContext(dynamic=true)
+	def dataEm;
+
+	@ActiveDB(value="jobscheduler_action_sms", em="jobscheduler")
+	def em;
+
+ 	@Service("SMSService")
+    def smsSvc;
+
+	@After(pattern="JobExecService.fire", eval="#{args[0].jobtype == 'sms'}")
+	public void fire( def evt ) {
+		def arg = evt.args[0];
+
+		def info = em.read( [objid: arg.objid] );
+		
+		//lookup from the existing adapters
+		def list = dataEm.lookup( info.adapter ).sqlContext.createQuery( info.sql ).resultList;
+		list.each { o->
+			if( o.phoneno ) {
+				def msg = ExpressionResolver.instance.evalString(info.messagetemplate, o);
+				smsSvc.send([ phoneno: o.phoneno, message: msg ]);
+			}
+		}
+	}
+
+	
+
+}

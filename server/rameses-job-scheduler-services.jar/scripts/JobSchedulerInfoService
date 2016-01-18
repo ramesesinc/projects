@@ -1,0 +1,51 @@
+import com.rameses.annotations.*
+import com.rameses.functions.*;
+import com.rameses.util.*;
+import com.rameses.services.extended.*;
+
+public class JobSchedulerInfoService extends ActiveCrudService {
+
+	@Service("DateService")
+	def dateSvc;
+
+	@ActiveDB(value="jobscheduler", em="jobscheduler")
+	def em;
+
+	/**
+	* fix the dates
+	**/
+	public void beforeCreate(o) {
+		def tt = new java.text.SimpleDateFormat( 'yyyy-MM-dd' );
+		if( o.startdate ) {
+			o.startdate = tt.parse( o.startdate );
+		}	
+		if( o.enddate ) {
+			o.enddate = tt.parse( o.enddate );
+		}	
+		o.state = 'DRAFT';
+		if( !o.action )
+			throw new Exception("Action is required");
+	}
+
+	@ProxyMethod
+	public def activate(o) {
+		//set expiry to start date and time
+		def tt = new java.text.SimpleDateFormat( 'yyyy-MM-dd' );
+		def exp = new java.text.SimpleDateFormat( 'yyyy-MM-dd HH:mm' );
+		o.state = 'ACTIVE';
+		if( o.startdate instanceof String ) {
+			o.startdate = tt.parse( o.startdate );
+		}	
+		o.expirydate = exp.parse( tt.format(o.startdate) + ' ' + o.starttime ); 
+		em.activate(o);
+		return o;
+	}
+
+	@ProxyMethod
+	public def suspend(o) {
+		o.state = 'SUSPENDED';
+		em.updateState(o);
+	}
+
+
+}

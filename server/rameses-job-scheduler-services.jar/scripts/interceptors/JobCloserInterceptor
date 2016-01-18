@@ -1,0 +1,39 @@
+import com.rameses.annotations.*
+
+public class JobCloserInterceptor {
+
+	@ActiveDB(value="jobscheduler", em="jobscheduler")
+	def em;
+
+	@Service("JobSchedulerDateService")
+	def scheduler;
+
+	@Env
+	def env;
+
+	@After(pattern="JobExecService.fire", index=1000)
+	public void closeJob( def evt ) {
+		def job = evt.args[0];
+		println "fired closer"
+		em.removeProcessingLock( [objid: job.objid] );
+		if( env.error ) {
+			em.addError( [objid: job.objid, msg: env.error ] );
+		}
+ 		else {
+			def p = [:];
+			p.putAll(job);
+			def dt = scheduler.findNextSchedule(p);
+			println "next schedule date is " + dt;
+			if( dt == null ) {
+				em.updateState( [objid: job.objid, state:'ENDED'] );
+			}
+			else {
+				println "updateing expiry date " + [objid: job.objid, expirydate: dt.date];
+				em.updateExpirydate( [objid: job.objid, expirydate: dt.date] );
+				em.transferToCompleted( [objid: job.objid] );
+			}
+ 		}
+	}
+
+
+}

@@ -1,0 +1,8 @@
+<schema>
+	<element name="paymentorder" tablename="paymentorder">
+		<field name="txnid" primary="true"/>
+		<field name="txntype" required="true"/>
+		<field name="info" required="true"/>
+		<field name="expirydate" />
+	</element>
+</schema>

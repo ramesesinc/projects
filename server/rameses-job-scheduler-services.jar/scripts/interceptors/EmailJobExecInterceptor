@@ -1,0 +1,36 @@
+import com.rameses.annotations.*
+import com.rameses.common.ExpressionResolver;
+
+public class EmailJobExecInterceptor {
+
+	@Env
+	def env;
+
+	@PersistenceContext(dynamic=true)
+	def dataEm;
+
+	@ActiveDB(value="jobscheduler_action_email", em="jobscheduler")
+	def em;
+
+ 	@Service("EmailService")
+    def emailSvc;
+
+	@After(pattern="JobExecService.fire", eval="#{args[0].jobtype == 'email'}")
+	public void fire( def evt ) {
+		def arg = evt.args[0];
+
+		def info = em.read( [objid: arg.objid] );
+		
+		//lookup from the existing adapters
+		def list = dataEm.lookup( info.adapter ).sqlContext.createQuery( info.sql ).resultList;
+		list.each { o->
+			if( o.email ) {
+				def msg = ExpressionResolver.instance.evalString(info.messagetemplate, o);
+				emailSvc.send([ recipients: [o.email], subject:'WEALTHBANK', message: msg ]);
+			}
+		}
+	}
+
+	
+
+}

@@ -1,0 +1,46 @@
+import com.rameses.common.*
+import com.rameses.annotations.*
+import com.rameses.services.extended.*
+
+class EntityLookupService extends ActiveListService {
+
+	@ActiveDB(value='entity', em='entity')
+	def em
+
+	String pagingKeys = "e.objid";
+	String listMethod = 'getLookup'
+
+	@ProxyMethod
+	public def getColumns(def o) {
+		return [
+			[name:"entityno", caption:"Entity No", width:80, maxWidth:120], 		
+			[name:"name", caption:"Name"], 
+			[name:"address.text", caption:"Address"], 
+			[name:"type", caption:"Type", width:80, maxWidth:100] 
+		];	
+	}
+
+	void beforeList( params ) {
+		if (!params.searchtext || params.searchtext.trim().length() == 0) 
+			throw new Exception('Please specify a search criteria.');
+
+		params.filter = '';	
+		if ( params.type ) { 
+			params.filter = " AND e.type IN ('" + params.type.split(",").join("','") + "')";
+		}
+	}
+
+	void afterList( params, list ) {
+		list.each{ formatAddress( it?.address, ", " ) } 
+	} 
+
+	void formatAddress( x, delimiter ) { 
+		if ( !x ) return;
+
+		def txt1 = [x.unitno, x.bldgno, x.bldgname].findAll{ (it? true: false) }.join(" ").trim(); 
+		def txt2 = [x.street, x.subdivision].findAll{ (it? true: false) }.join(" ").trim(); 
+		def txt3 = [x.barangay?.name, x.city, x.municipality, x.province].findAll{ (it? true: false) }.join(", ").trim(); 
+		def result = [txt1, txt2, txt3].findAll{ (it? true: false) }.join( delimiter ).trim(); 
+		if (result) x.text = result; 
+	} 
+} 

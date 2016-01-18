@@ -1,0 +1,174 @@
+import com.rameses.annotations.*
+import com.rameses.functions.*;
+import com.rameses.util.*;
+
+public class JobSchedulerDateService {
+
+	@Service("DateService")
+	def dateSvc;
+
+	/*************************************************
+	* frequency: daily, weekly, monthly, yearly (default=daily)
+	* startdate : date
+	* endate: date
+	* starttime: start time of day
+	* endtime: end time of day
+	* recurringtype: once, hour, minute, seconds
+	* refdate: the reference date
+	* returns next date
+	**************************************************/
+	private def parseDateTime(String sd) {
+		def tf = new java.text.SimpleDateFormat( 'yyyy-MM-dd HH:mm' ); 
+		Date d = tf.parse(sd);
+		def cal = Calendar.getInstance();
+		cal.setTime( d );
+		def map = [:];
+		map.month = cal.get( Calendar.MONTH ) + 1;
+		map.day = cal.get( Calendar.DATE );
+		map.year = cal.get( Calendar.YEAR );
+		map.hour = cal.get( Calendar.HOUR_OF_DAY );
+		map.minute = cal.get( Calendar.MINUTE );
+		map.second = cal.get( Calendar.SECOND );
+		map.date  = cal.getTime(); 
+		return map;
+	}
+
+	private def parseDate( def dt, def t, def refdate ) {
+		def tt = new java.text.SimpleDateFormat( 'yyyy-MM-dd' ); 
+		String _ss = null;
+		if( dt ) {
+			if( dt instanceof Date ) {
+				_ss = tt.format( dt );
+			}
+			else {
+				_ss = tt.format( tt.parse(dt) );
+			}
+		}
+		else {
+			_ss = refdate.year + "-" + refdate.month + "-" + refdate.day;
+		}
+		return parseDateTime( _ss + " " + t );
+	}
+
+	private def parseRefDate( def refdate ) {
+		def tf = new java.text.SimpleDateFormat( 'yyyy-MM-dd HH:mm' ); 
+		String _refdate = null;
+		if( refdate ) {
+			if(  refdate instanceof Date ) {
+				_refdate = tf.format( refdate );	
+			}
+			else {
+				_refdate = tf.format( tf.parse(refdate) );
+			}
+		}
+		else {
+			_refdate = tf.format( dateSvc.getServerDate() );
+		}
+		return parseDateTime( _refdate );
+	}
+
+	private def addDays( Date d, int num  ) {
+		def tf = new java.text.SimpleDateFormat( 'yyyy-MM-dd HH:mm' ); 
+		def cal = Calendar.getInstance();
+		cal.setTime( d );
+		cal.add( Calendar.DATE, num );
+		return parseDateTime( tf.format( cal.getTime() ));
+	}
+
+	//find days diff between start and refdate. 
+	//if diff less than 0, return startdate
+	//if diff == 1 proceed with time. this means it is same day. 
+	//if diff > 1  
+	private def findNextDay( def startdate, def refdate ) {
+
+	}
+
+	@ProxyMethod
+	public def findNextSchedule( def params ) {
+		
+		def scheduletype = (!params.scheduletype) ? "once" : params.scheduletype;
+		def frequency = (!params.frequency) ? "daily" : params.frequency;
+		int frequencyinterval = (!params.frequencyinterval) ? 1 : Integer.parseInt(params.frequencyinterval+"") ;
+		def recurtype = (!params.recurtype) ? "hour" : params.recurtype;
+		int recurinterval = (!params.recurinterval) ? 1 : Integer.parseInt( params.recurinterval + "");
+		boolean moveNextDay = false;
+
+		//build the start date
+		def refdate = parseRefDate( params.refdate );
+		def dstart = parseDate( params.startdate, (params.starttime) ? params.starttime : "00:00", refdate );
+		def dend = parseDate( params.enddate, (params.endtime) ? params.endtime : "23:59" , refdate );
+
+		/*
+		println "refdate " + refdate;
+		println "startdate " + dstart;
+		println "enddate " + dend;
+		*/
+
+		//check if end date
+		if(scheduletype =="once" || refdate.date.after(dend.date) ) {
+        	//null means do not run again
+            return null;
+        }
+
+		def newtime = [year:refdate.year, month:refdate.month, day: refdate.day];
+		int diffDays = DateFunc.daysDiff(dstart.date, refdate.date);		
+
+		if( diffDays < 0 ) {
+			return dstart;
+		}
+		else if(diffDays > 0 || recurtype == "once") {
+			int intDiff = diffDays / frequencyinterval;
+			newtime =  addDays( dstart.date, intDiff + frequencyinterval );
+		}
+
+
+    	//count minutes. if minutes beyond endtime, calculate net diff. 
+        int count_min = 1;
+        if( recurtype == "hour" ) count_min = 60;
+        int startmin = (dstart.hour *60) + dstart.minute;
+        int refmin = (refdate.hour *60) + refdate.minute;
+        int endmin = (dend.hour * 60) + dend.minute;
+
+        //find the diff. this represents how much time should be added to 
+        //the start time that is greater then the present date.
+        if( refmin < startmin || refmin > endmin ) {
+        	println "test 2"
+        	newtime.hour = dstart.hour;
+            newtime.minute = dstart.minute;
+        }   
+        else {
+        	println "test 3"
+        	//determine how many interval minutes from startmin
+            int diff = (refmin - startmin ) / (recurinterval * count_min);
+
+            //add one recur interval to move to next time
+            diff = (diff + 1) * (recurinterval * count_min);
+            
+            //add the interval. at this point, just add interval directly bec. it is already converted as hours or minutes
+            //add the diff to the minutes;
+            
+            int hrs =  diff / 60;
+            int mins = diff % 60;
+
+            newtime.hour = dstart.hour + hrs;
+            newtime.minute = dstart.minute + mins;
+            if( newtime.hour > dend.hour || (newtime.hour==dend.hour && newtime.minute > dend.minute)) {
+                int intDiff = diffDays / frequencyinterval;
+				newtime =  addDays( dstart.date, intDiff + frequencyinterval );
+            }
+            println "enter newtime->"+newtime;
+        }
+         
+		def cal = Calendar.getInstance();
+		cal.set( Calendar.YEAR, newtime.year );
+		cal.set( Calendar.DATE, newtime.day );
+		cal.set( Calendar.MONTH, newtime.month-1 );
+		cal.set( Calendar.HOUR_OF_DAY, newtime.hour );
+		cal.set( Calendar.MINUTE, newtime.minute );
+		cal.set( Calendar.SECOND, 0 );
+		newtime.date = cal.getTime();
+		return newtime;
+	}
+
+
+}

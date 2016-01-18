@@ -1,0 +1,12 @@
+<schema>
+
+	<element tablename="entityid">
+		<field name="objid" primary="true"/>
+		<field name="entityid" required="true"/>
+		<field name="idtype" required="true"/>
+		<field name="idno" required="true"/>
+		<field name="dtissued" required="true"/>
+		<field name="dtexpiry" required="true"/>
+	</element> 
+
+</schema>

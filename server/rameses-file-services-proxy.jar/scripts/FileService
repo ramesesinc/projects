@@ -1,0 +1,24 @@
+
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+
+public class FileService
+{
+	@Service(value='FileService', connection='fileserver_proxy') 
+	def proxy;
+
+	@ProxyMethod 
+	public def getHeader ( params ) { 
+		return proxy.getHeader( params ); 
+	} 
+
+	@ProxyMethod 
+	public def getDetail ( params ) { 
+		return proxy.getDetail( params ); 
+	} 
+
+	@ProxyMethod 
+	public void removeFile( params ) {
+		proxy.removeFile( params ); 
+	}	
+} 

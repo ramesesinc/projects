@@ -1,0 +1,52 @@
+import com.rameses.annotations.*
+import com.rameses.common.*
+import java.rmi.server.UID;
+import com.rameses.util.*;
+import com.rameses.io.*;
+import com.rameses.services.extended.*;
+
+class TerminalAdminService extends AbstractListService { 
+
+	@PersistenceContext('admin')
+	def	em; 
+
+	String schemaName = 'terminal';
+	String pagingKeys = 'terminalid'
+
+	@ProxyMethod
+	public def getColumns( params ) {
+		return[
+			[name:'terminalid', caption:'Terminal Key', maxWidth:100 ], 
+			[name:'macaddress', caption:'Mac Address', width:200, maxWidth:200 ], 
+			[name:'dtregistered', caption:'Date Registered', width:150, resizable:false ], 
+			[name:'registeredby', caption:'Registered By' ] 
+		];
+	}
+
+	@ProxyMethod 
+	public void generateKeys( params ) {
+		if (!params.size) throw new Exception('Please specify size');
+
+		def data = [:];
+		for (int i=0; i<params.size; i++) {
+			data.terminalid = KeyGen.generateAlphanumKey( null, 10 );
+			data.state = 0;
+			em.create( schemaName, data ); 
+		} 
+	} 
+
+	@ProxyMethod 
+	public void unassign( entity ) {
+		if (!entity?.terminalid) throw new Exception('Please specify terminalid');
+
+		def data = em.read(schemaName, [terminalid: entity.terminalid]); 
+		if (!data) throw new Exception("'"+entity.terminalid+"' terminal not found"); 
+
+		def newdata = [:];
+		data.each{k,v-> newdata[k]=null; } 
+		newdata.terminalid = entity.terminalid;
+		newdata.state = 0;
+		em.update(schemaName, newdata); 
+	} 	
+		
+}

@@ -1,0 +1,9 @@
+<schema>
+	<element tablename="sys_jobscheduler_action_email">
+		<field name="objid" primary="true"/>
+		<field name="adapter" />
+		<field name="sql" />
+		<field name="servicename" />
+		<field name="messagetemplate" />
+	</element>	
+</schema>

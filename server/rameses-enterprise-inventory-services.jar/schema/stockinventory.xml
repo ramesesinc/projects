@@ -1,0 +1,31 @@
+<schema>
+
+	<element name="stockinventory" tablename="stockinventory">
+		<field name="objid" primary="true"/>
+		<field name="item_objid" required="true"/>
+		<field name="item_code" required="true"/>
+		<field name="item_title" required="true"/>
+		<field name="unit" required="true"/>
+		<field name="qtyin" required="true"/>
+		<field name="qtyout" required="true"/>
+		<field name="qtycancelled" required="true"/>
+		<field name="qtybalance" required="true"/>
+		<field name="lineno" required="true"/>
+		<field name="pageno" required="true"/>
+	</element>
+
+	<element name="detail" tablename="stockinventory_detail">
+		<field name="objid" primary="true"/>
+		<field name="parentid" required="true"/>
+		<field name="reftype" required="true"/>
+		<field name="refid" required="true"/>
+		<field name="refdate" required="true"/>
+		<field name="refno" required="true"/>
+		<field name="qtyin" required="true"/>
+		<field name="qtyout" required="true"/>
+		<field name="qtycancelled" required="true"/>
+		<field name="runbalance" required="true"/>
+	</element>
+
+
+</schema>	

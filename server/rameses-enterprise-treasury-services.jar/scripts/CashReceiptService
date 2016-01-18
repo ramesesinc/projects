@@ -1,0 +1,134 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.common.*
+import com.rameses.services.extended.*
+
+class CashReceiptService  {
+
+	@PersistenceContext("main")
+	def em;
+
+	@Env
+	def env;
+	
+	@Service("DateService")
+	def dateService;
+	
+	@Service("Var")
+	def var;
+	
+	@Service("NumberService")
+	def numSvc;
+	
+	@ActiveDB("collector")
+	def collector;
+
+	@ActiveDB("cashreceipt")
+	def cashreceipt; 
+
+   
+	/**
+	* note: setting of collector is in the CashReceiptInterceptor of gov. module.
+	* it is gotten during getNextReceiptInfo
+	*/
+	@ProxyMethod
+	public def init( def entity ) {
+		entity.objid = "RCT"+new java.rmi.server.UID();
+		if(!entity.receiptdate) {
+			entity.receiptdate =  dateService.serverDate;
+		}	
+		else {
+			def currdate = dateService.serverDate; 
+			entity.receiptdate = dateService.parse( 'yyyy-MM-dd',entity.receiptdate)
+        	if( entity.receiptdate > currdate ) throw new Exception('Advance date is not allowed.')
+		}
+
+		entity.org = [objid:env.ORGID, name:env.ORGNAME];
+		entity.user = [objid: env.USERID, name:env.USER];
+		entity.items = [];
+        entity.amount = 0;
+        entity.totalcash = 0;
+        entity.totalnoncash = 0;
+        entity.balancedue = 0;
+        entity.cashchange = 0;
+        entity.totalcredit = 0;
+        entity.paymentitems = [];	
+
+        if(	!entity.formtype) {
+        	throw new Exception("Form type is required. Check collection form");
+        }
+        
+		return entity;
+	}	
+
+	@ProxyMethod
+    public void validateCheckDate( def checkdate ) {
+		def currdate = dateService.serverDate 
+        checkdate = dateService.parse( 'yyyy-MM-dd',checkdate)
+        if( checkdate > currdate ) throw new Exception('Post dated check is not allowed.')
+        def daysdiff = dateService.getDaysDiff( checkdate, currdate ) 
+        def staledayscount = Integer.parseInt( var.getProperty("stale_check_days_count", 180) + "" );
+        if( daysdiff > staledayscount ) throw new Exception('Stale check is not allowed.')
+    }
+	
+	@ProxyMethod
+	public def post( def p ) {
+		if(!p.formtype)
+			throw new Exception("Form type is required");
+
+		def amount = numSvc.round( p.amount );
+		def amtitemsum = numSvc.round( p.items.amount.sum() ); 
+		if( amount != amtitemsum )	
+			throw new Exception('A data problem is encountered during validation of Receipt No. ' + p.receiptno + '.\nThe Receipt Amount is not equal to item amount total.\nClose the form and recreate the transaction to correct the problem.')
+
+		//check if there are payment items with no type. throw error
+		def test = p.paymentitems.findAll{ !it.reftype };
+		if(test) throw new Exception("All payment items must have a type. Please review the code");
+
+		if(!p.payer) p.payer = [:];  //if there is no id, we need still to add bec. it is an object.
+
+		p.txndate = dateService.serverDate;
+		p.state = "POSTED"
+		if(p.subcollector?.objid ) p.state = "DELEGATED"
+		if(p.batchcapture) p.state = "CAPTURED"
+
+		em.create("cashreceipt", p ); 
+		p.items.each { x->
+			if(! x.objid  ) x.objid = "RCTI"+ new UID();
+			x.receiptid = p.objid;
+			em.create("cashreceipt:item", x);
+		}
+		p.paymentitems.each { x->
+			x.objid = "CRPMT"+new UID();
+			x.receiptid = p.objid;
+			em.create("cashreceipt:paymentitem-noncash", x);
+		} 
+		return formatReport(p);
+	}	
+		
+	@ProxyMethod
+	public def formatReport( def p ) {
+		p.payerdetails = p.paidby + "\n" + p.paidbyaddress;
+		if( p.amount < 1 ) { 
+			def amount = Long.parseLong( p.amount.toString().split("\\.")[1] )
+			p.amountinwords = numSvc.doubleToWords( amount ).toUpperCase() + " CENTAVOS";
+		} else 
+			p.amountinwords = numSvc.doubleToWords( p.amount ).toUpperCase() + " PESOS ONLY";
+		return p;
+	}
+	
+	@ProxyMethod 
+	public def open( o ) {
+		def x = cashreceipt.findCashReceiptInfo( o ); 
+		x.voided = x.voided.intValue();
+		x.items = cashreceipt.getItems( o );
+		x.paymentitems = cashreceipt.getNoncashPayments( o ); 
+		return formatReport( x );
+	} 
+
+	@ProxyMethod 
+	public void updateState( o ) {
+		cashreceipt.updateState( o ); 
+	} 
+}

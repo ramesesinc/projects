@@ -1,0 +1,56 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.common.*
+import com.rameses.services.extended.*
+
+class StockSaleService extends ActiveCrudService {
+
+	@ActiveDB("stocksale")
+	def em;
+
+	@Service("SequenceService") 
+	def seqSvc;
+
+	@Service("DateService") 
+	def dateSvc;
+
+	@Service("StockRequestService")
+	def reqSvc
+
+	@ActiveDB("stockitem")
+	def stockitem;
+
+	@Service("UserService")
+	def userSvc
+
+
+	@Env
+	def env;
+
+	void beforeCreate( def o ) {
+		o.org = [objid:env.ORGID, name:env.ORGNAME];
+		o.user = [objid:env.USERID, name:env.FULLNAME]; 
+		o.issueno = "IRAF" + seqSvc.getNextFormattedSeries("IRAF");
+		o.dtfiled = dateSvc.serverDate;
+		o.state = "CLOSED";
+	}
+	
+	void afterCreate( o ) { 
+		o.items.each {
+			it.objid = "STKSLITEM"+new UID();
+			it.parentid = o.objid;
+			em.create( it, "item" );
+		}
+		em.closeRequest( [objid: o.request.objid] );
+	}
+
+	void afterOpen( o ) {
+		if(o.user ){
+			def u = userSvc.open( o.user ) 
+			if( u ) o.user.title = u.jobtitle 
+		}
+		o.items = em.getItems(o);
+		o.request = reqSvc.open( o.request )
+	}
+}

@@ -1,0 +1,40 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.common.*
+import com.rameses.services.extended.*;
+
+
+class RuleExporterService {
+
+	
+	@Service("RuleMgmtService")
+	def service;
+
+	@ProxyMethod
+	public def upload( def o ) {
+		try {
+			def old = null;
+			try {
+				old = service.open( o );
+				if(old) {
+					throw new Exception("Rule exists");
+				}
+			}
+			catch(e){;}
+
+			service.create( o );
+			o.conditions.each {
+				service.saveCondition(it);
+			}
+			o.actions.each {
+				service.saveAction(it);
+			}
+		}
+		catch(e) {	
+			throw e;
+		}
+	}
+	
+
+}

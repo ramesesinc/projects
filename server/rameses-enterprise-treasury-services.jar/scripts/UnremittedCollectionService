@@ -1,0 +1,29 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.common.*
+import com.rameses.services.extended.*
+
+class UnremittedCollectionService {
+
+	@ActiveDB('unremittedcollection')
+	def em; 
+
+	@Env
+	def env;
+	
+	@ProxyMethod
+	public def getList ( params ) {
+		params._pagingKeys = 'c.objid'; 
+		params.collectorid = env.USERID
+		params.searchtext = params.searchtext ? params.searchtext + "%" : "%"
+		return em.getList( params ); 
+	}
+
+
+	@ProxyMethod 
+	def fixInventory( params ) { 
+		return params; 
+	} 
+
+}

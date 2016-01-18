@@ -1,0 +1,14 @@
+import com.rameses.common.*
+import com.rameses.annotations.*
+import com.rameses.services.extended.*;
+
+class EntityContactService extends ActiveCrudListService {
+
+	@ActiveDB('entitycontact')
+	def em;
+	
+	public void beforeList(o) {
+		if(!o.entityid) throw new Exception("Entity id is required")
+	}
+
+}

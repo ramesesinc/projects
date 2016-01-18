@@ -1,0 +1,33 @@
+import com.rameses.annotations.*
+import com.rameses.common.*
+import java.rmi.server.UID;
+import com.rameses.util.*;
+import com.rameses.io.*;
+import com.rameses.services.extended.*;
+
+class EntityService extends ActiveCrudListService {
+
+	@ActiveDB("entity")
+	def	em; 
+
+	@Env
+	def env;
+
+	String pagingKeys = 'e.objid'
+
+	@ProxyMethod
+	public def getColumns( params ) {
+		def columns = [
+			[name:'entityno', caption:'Entity No', width:80, resizable:false],
+			[name:'entityno', caption:'Entity No', width:80, resizable:false],
+		]; 
+		return columns; 
+	}
+
+	public void beforeList( params ) {
+		if (!params.name) params.name = params.searchtext; 
+		params.name = (params.name? params.name+'%': '%');
+	}
+
+
+}

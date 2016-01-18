@@ -1,0 +1,35 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.services.extended.*;
+
+
+public class CashReceiptBarcodeService {
+	
+	@ActiveDB("collectiontype")
+	def collectionType;
+
+	@Service("CashReceiptService")
+	def service;
+
+	@Env
+	def env;
+
+
+	@ProxyMethod
+	public def init( def o ) {
+		if(!o.prefix ) throw new Exception("Please specify a barcode prefix");
+		def prefix = o.prefix;
+		def collectiontype = collectionType.findCollectionTypeByBarcode([barcode: prefix]);
+		if(!collectiontype)	
+			throw new Exception("Collection type not found with barcode prefix " + prefix + ". Please check collection type and register barcode prefix");
+		
+		def z = [formtype: "serial", formno: collectiontype.formno, txnmode: 'ONLINE', collectiontype: collectiontype ];
+        def entity = service.init( z );	
+        entity.collectiontype = collectiontype;
+        return entity;
+	}
+
+
+
+}

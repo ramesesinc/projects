@@ -1,0 +1,19 @@
+<schema>
+	<element tablename="entity_address">
+		<field name="objid" primary="true"/>
+		<field name="parentid" required="true"/>
+		<field name="type" required="true"/>
+		<field name="addresstype"/>
+		<field name="barangay_objid" />
+		<field name="barangay_name"/>
+		<field name="city" />
+		<field name="municipality" />
+		<field name="province"/>
+		<field name="bldgno" />
+		<field name="bldgname" />
+		<field name="unitno" />
+		<field name="street" />
+		<field name="subdivision" />
+		<field name="pin" />
+	</element>
+</schema>

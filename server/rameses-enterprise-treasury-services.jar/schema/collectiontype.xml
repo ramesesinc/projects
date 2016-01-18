@@ -1,0 +1,22 @@
+<schema>
+
+	<element name="collectiontype" tablename="collectiontype">
+		<field name="objid" primary="true"/>	
+		<field name="state" required="true"/>
+		<field name="name" required="true"/>
+		<field name="title" required="true"/>
+		<field name="formno" required="true"/>
+		<field name="handler" required="true"/>
+		<field name="allowbatch" />
+		<field name="allowonline" />
+		<field name="allowoffline" />
+		<field name="barcodekey" />
+		<field name="sortorder" />
+		<field name="org_objid"  />
+		<field name="org_name"  />
+		<field name="fund_objid"  />
+		<field name="fund_title"  />
+		<field name="category"  />
+	</element>
+
+</schema>

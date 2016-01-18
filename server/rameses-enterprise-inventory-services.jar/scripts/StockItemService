@@ -1,0 +1,60 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.common.*;
+import com.rameses.services.extended.*;
+
+class StockItemService extends ActiveCrudListService {
+
+	@ActiveDB("stockitem")
+	def em;
+
+	@ProxyMethod
+	public def getNodes( def o ) {
+		return em.getItemClasses();
+	}
+
+	@ProxyMethod
+	public def getColumns( def o ) {
+		return[
+			[name:'code', caption:'Item Code' ],
+			[name:'title', caption:'Item Title' ],
+			[name:'type', caption:'Item Type' ],
+			[name:'baseunit', caption:'Base Unit' ],
+			[name:'defaultunit', caption:'Unit' ],
+			[name:'state', caption:'State' ],
+		];
+	}	
+
+	public void beforeCreate(entity) {
+		entity.objid = entity.code 
+	}
+
+	public void afterCreate(entity){
+		def unit = [
+			itemid: entity.objid,
+			unit: entity.defaultunit,
+			qty: entity.qty 
+		]		
+		em.create( unit, "unit");
+	}
+
+	public void beforeRemoveEntity(entity) {
+		em.removeItemUnit( entity )
+	}
+
+	public void afterUpdate(entity){
+		def unit = [
+			itemid: entity.objid,
+			unit: entity.defaultunit,
+			qty: entity.qty 
+		]		
+		em.save( unit, "unit");
+	}
+	
+	public void afterOpen(entity){
+		def unit = em.findUnitQty( [itemid: entity.objid, unit: entity.defaultunit])
+		if(unit) entity.qty = unit.qty
+	} 
+	
+}

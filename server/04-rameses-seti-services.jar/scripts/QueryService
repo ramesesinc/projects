@@ -1,0 +1,41 @@
+import com.rameses.annotations.*
+
+class QueryService {
+
+	@DataContext(dynamic=true)
+	def db;
+
+	@ProxyMethod
+	public def getList( def o ) {
+		if(!o.name) throw new Exception('Please specify a name in QueryService.getList');
+
+		def em = db.lookup(o.name);
+		if( !o.where && !o.findBy && !o._limit )
+			throw new Exception("QueryService.getList. Please indicate a where,findBy or limit property");
+
+		//for where first argument is the condition, second is the value.	
+		if( o.where ) {
+			if(o.where.size() == 1) {
+				em.where( o.where[0] )		
+			}
+			else if (o.where.size==2) {
+				em.where( o.where[0], o.where[1] );			
+			}
+		}
+
+		if(o.findBy) {
+			em.find( o.findBy );
+		}
+
+		//select columns
+		if(o.select) 
+			em.select( o.select );
+		else 
+			em.select("*");
+		if( o._start ) em.start = o._start ;	
+		if( o._limit ) em.limit = o._limit;
+		return em.list();
+	}
+
+
+}

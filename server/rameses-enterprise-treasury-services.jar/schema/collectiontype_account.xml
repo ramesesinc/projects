@@ -1,0 +1,13 @@
+<schema>
+
+	<element name="collectiontype_account" tablename="collectiontype_account">
+		<field name="collectiontypeid"  primary="true"/>
+		<field name="account_objid"  primary="true"/>
+		<field name="account_title"  />
+		<field name="tag"  />
+		<field name="valuetype"  required="true"/>
+		<field name="defaultvalue" required="true"/>
+		<field name="sortorder" required="true" />
+	</element>
+
+</schema>

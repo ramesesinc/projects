@@ -1,0 +1,10 @@
+<schema>
+
+	<element tablename="entitycontact">
+		<field name="objid" primary="true"/>
+		<field name="entityid" required="true"/>
+		<field name="contacttype" required="true"/>
+		<field name="contact" required="true"/>
+	</element> 
+
+</schema>

@@ -1,0 +1,33 @@
+import com.rameses.annotations.*;
+
+class UnliquidatedRemittanceService {
+	
+	@ActiveDB("liquidation")
+	def em; 
+
+	@Env
+	def env;
+
+	@ProxyMethod
+	public def getNodes() {
+		return [  
+			[name:'pending', title: 'Pending', state:'OPEN'],
+			[name:'forliquidation', title: 'For Liquidation', state:'APPROVED'],
+			[name:'onhold', title: 'On Hold', state:'HOLD'],
+		];
+	}
+
+	@ProxyMethod
+	public def getList( o ) {
+		if(!o) o = [state: 'OPEN'];
+		def e = [:]
+		e.remittances = em.getUnliquidatedRemittanceList([userid: env.USERID, state:o?.state ])
+		e.amount = e.remittances.sum{ it.amount };	
+		e.totalcash = e.remittances.sum{ it.totalcash };	
+		e.totalnoncash = e.remittances.sum{ it.totalnoncash };
+		return e;
+	}
+
+
+
+}

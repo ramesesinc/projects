@@ -1,0 +1,85 @@
+import com.rameses.annotations.*
+import com.rameses.common.*
+import java.rmi.server.UID;
+import com.rameses.util.*;
+import com.rameses.io.*;
+import com.rameses.services.extended.*;
+
+
+class UsergroupService extends ActiveCrudListService {
+
+	@ActiveDB(value="usergroup", em="admin")
+	def	em; 
+
+	@Env
+	def env;
+
+	String schemaName = "usergroup";
+	String subSchemaName = "member";
+	
+	String pagingKeys = 'ug.objid'
+
+	@ProxyMethod
+	public def getNodes( def o ) {
+		o.userid = env.USERID;
+		o.usergroupfilter = "";
+		if (o.usergroupid) o.domain = o.usergroupid;
+
+		def list;
+		if( o.root )
+			list = em.getRootNodes(o);
+		else
+			list = em.getChildNodes(o);
+		list.each { 
+			if (o.root) it.folder = true;
+			if (it.filetype == 'usergroup-folder') {
+				it.children = [[filetype:'usergroup']];
+			}
+		}
+		return list;
+	}
+	
+	
+	/*****
+	* display the member columns
+	***/
+	@ProxyMethod
+	public def getColumns( def o ) {
+		o.userid = env.USERID;
+		return[
+			[name:'user.username', caption:'User Name' ],
+			[name:'user.lastname', caption:'Last Name' ],
+			[name:'user.firstname', caption:'First Name' ],
+			[name:'org.name', caption:'Org' ],
+			[name:'securitygroup.name', caption:'Security Group' ],
+		];
+	}
+	
+	public void beforeList( def o ) {	
+		o.userid = env.USERID;
+		o.usergroupfilter = "";
+		if (o.usergroupid) o.usergroupfilter = ' AND ugm.usergroup_objid=$P{usergroupid} ';
+	}
+	
+	@ProxyMethod 
+	public void updatePermission(def params) {
+		if (!params.objid) throw new Exception('Please specify objid'); 
+
+		def info = em.read(params, 'member');  
+		if (!info) throw new Exception("'"+params.objid+"' usergroup member record not found"); 
+		
+		info.exclude = params.exclude; 
+		em.update(info, "member"); 
+	} 
+
+
+	public void approve ( data ) {} 	
+
+	@ProxyMethod
+	public def getPermissions(o) {
+		return em.getPermissions(o);
+	}
+
+}
+
+

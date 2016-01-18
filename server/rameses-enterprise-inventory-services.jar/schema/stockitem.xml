@@ -1,0 +1,21 @@
+<schema>
+
+	<element name="stockitem" tablename="stockitem">
+		<field name="objid" primary="true"/>	
+		<field name="state" />
+		<field name="code" required="true"/>
+		<field name="title" required="true"/>
+		<field name="type" required="true"/>
+		<field name="itemclass" required="true"/>
+		<field name="description" required="true"/>
+		<field name="baseunit" />
+		<field name="defaultunit" />
+	</element>
+	
+	<element name="unit" tablename="stockitem_unit">
+		<field name="itemid" primary="true"/>			
+		<field name="unit" primary="true"/>			
+		<field name="qty" />			
+	</element>	
+
+</schema>

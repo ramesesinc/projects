@@ -1,0 +1,194 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.common.*
+import com.rameses.services.extended.*
+
+class LiquidationService  {
+
+	@ActiveDB("liquidation")
+	def em; 
+
+	@Env
+	def env;
+
+	@Service("SequenceService")
+	def seqSvc;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@Service("CashBookPostService")
+	def cashBook;
+
+	@Service("Var")
+	def var 
+	
+	@ProxyMethod
+	public def init() {
+		if( ! toBoolean(var.allow_multiple_open_liquidation, true)) {
+			def ud = em.getUndepositedLiquidations([liquidatingofficerid: env.USERID] ) 
+			if(ud ) throw new Exception("There are still undeposited liquidations. ");	
+		} 
+
+		def o = [objid: "LIQ"+new UID(), cashier:[:]];	
+		o.remittances = em.getUnliquidatedRemittances( [liquidatingofficerid: env.USERID]);
+		if(!o.remittances)
+			throw new Exception("No pending remittances to liquidate");
+
+		o.amount = o.remittances.sum{ it.amount };	
+		o.totalcash = o.remittances.sum{ it.totalcash };	
+		o.totalnoncash = o.remittances.sum{ it.totalnoncash };	
+
+		//get fund summary
+		o.fundsummary =  em.getUnliquidatedFundSummary( [liquidatingofficerid: env.USERID] );		
+		o.checks = em.getUnliquidatedChecks( [liquidatingofficerid: env.USERID] );	
+
+		//initial values
+		o.liquidatingofficer = [objid:env.USERID, name:env.FULLNAME, title: env.JOBTITLE ];	
+		o.state = "OPEN";
+		o.dtposted = dateSvc.serverDate;
+
+		return o;
+	}
+
+
+	@ProxyMethod
+	public def post( o ) {
+		if( o.fundsummary.find{ !it.cashier }   )
+			throw new Exception("There must be a cashier associated");
+
+		o.txnno = formatTxnno(o)
+		
+		em.create( o );
+
+		def ids = "'" + o.remittances*.objid.join("','") + "'";
+		def m = [liquidationid:o.objid];
+		m.ids = ids;
+		em.postLiquidateRemittance(m);
+		em.postLiquidateNoncash(m);
+		
+
+		//update cashbook to add new entry
+		o.fundsummary.each {
+				it.objid = "LIQFUND"+new UID();
+				it.liquidationid = o.objid;
+				em.create( it, "cashier_fund");
+				def detail = [:];
+				detail.fundid = it.fund.objid;
+				detail.fundtitle = it.fund.title 
+				detail.subacctid = o.liquidatingofficer.objid; 
+				detail.type = 'LIQUIDATING_OFFICER' 
+				detail.refid = o.objid;
+				detail.refno = o.txnno;
+				detail.refdate = o.dtposted;
+				detail.reftype = "liquidation";
+				detail.amount = it.amount;
+				detail.particulars = "LIQUIDATION";
+				cashBook.postDR( detail );
+		}
+		return o;		
+	}	
+
+
+	@ProxyMethod
+	public def open( o ) {
+		o = em.read([ objid:o.objid ]);
+		o.fundsummary = em.getFundSummaries([ liquidationid: o.objid ]);
+		o.checks = em.getLiquidatedNoncash( o ); 
+
+		def td = o.checks.findAll{ it.reftype == 'CHECK' }?.sum{it.amount};
+		if(td==null) td = 0.0;
+
+		def tc = o.checks.findAll{ it.reftype == 'CREDITMEMO' }?.sum{it.amount};
+		if(tc==null) tc = 0.0;
+
+		o.totaldeposit = td + o.totalcash;
+		o.totalcreditmemo = tc;
+		return o;
+	}
+
+	@ProxyMethod
+	public def getFundSummaries(o) {
+		return em.getFundSummaries([ liquidationid: o.objid ]);
+	}
+
+	@ProxyMethod
+    public def formatTxnno( liq ) {
+    	def format = 'UTFS'
+    	def seqid = null
+    	if(var.liquidation_format) format = var.liquidation_format;
+    	if(var.liquidation_sequenceid_format ) seqid = var.liquidation_sequenceid_format;
+    	
+
+        //Formatting Options:
+        // YY - YEAR POSTED
+        // MM - MONTH POSTED 
+        // DD - DATE POSTED 
+        // UT - USER TXNCODE
+        // SQ - SEQUENCE 
+        // FS- FORMATTED SEQUENCE 
+        
+        def dt = dateSvc.parseDate( liq.dtposted, null)
+        def txncode = "LIQ";	
+		if(env.TXNCODE) txncode = "LIQ-" + env.TXNCODE; 		
+
+        def values = [
+        	YY:dt.year+"", 
+        	MM:dt.month.toString().padLeft(2, '0',),
+        	DD:dt.day.toString().padLeft(2, '0'),
+        	UT:txncode 
+        ]
+
+        def txnno  = format 
+        values.keySet().each {
+            txnno = txnno.replace( it, values[it] )
+        }
+
+        def series 
+        if(seqid) {
+        	def seq = seqid;
+        	values.keySet().each {
+            	seq = seq.replace( it, values[it] )
+            }
+            series = seqSvc.getNextSeries( seq); 
+            
+        } else {
+        	series = seqSvc.getNextSeries(  txnno.replace("FS", '') ); 
+        }
+
+        txnno = txnno.replace( 'SQ', series+"" )
+        txnno = txnno.replace( 'FS', "$series".padLeft(5, '0') )
+        return txnno 
+    }
+
+    public boolean toBoolean(value, defvalue){
+        if (value == null) 
+            return defvalue;
+
+        if (value instanceof Boolean) 
+            return value;
+
+        if ('1/y/yes/t/true'.indexOf(value.toString().trim()) >= 0 ) 
+            return true;
+        
+        return false;
+    }
+
+
+    @ProxyMethod
+    public void holdRemittance( def o ) {
+    	em.updateRemittanceState([objid:o.objid, state:'HOLD']);	
+    }
+
+    @ProxyMethod
+    public void unholdRemittance( def o ) {
+    	em.updateRemittanceState([objid:o.objid, state:'OPEN']);	
+    }
+
+    @ProxyMethod
+    public void submitForLiquidation( def o ) {
+    	em.updateRemittanceState([objid:o.objid, state:'APPROVED']);	
+    }
+
+}	

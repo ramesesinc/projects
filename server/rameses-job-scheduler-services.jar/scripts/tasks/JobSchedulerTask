@@ -1,0 +1,53 @@
+import com.rameses.annotations.*
+
+public class JobSchedulerTask {
+	
+	@ActiveDB(value="jobscheduler", em="jobscheduler")
+	def em;
+
+	@ActiveDB(value="jobscheduler", em="jobscheduler")
+	def em2;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@Service("JobExecService")
+	def jobExec;
+
+	@Schedule(interval=5, immediate=false)
+	public def collectExpiredTasks(def param) {
+		def svdate = dateSvc.serverDate;
+		em.collectExpiredJobs( [serverDate: svdate] );
+	} 
+
+	@Schedule(interval=5, immediate=false)
+	public def fireForProcessing(def param) {
+		def list = em.getForProcessingJobs();
+		if( list.size() == 0 ) {
+			println "no jobs to process";
+			return;
+		}	
+		println "processing jobs"
+		list.each {
+			jobExec.fire( it );
+		}
+		println "processed jobs completed";
+	} 
+
+	@Schedule(interval=5, immediate=false)
+	public def updateCompleted(def param) {
+		def list = em2.getCompletedJobs();
+		if( list.size() == 0 ) {
+			return;
+		}	
+		println "activating completed jobs"
+		list.each {
+			def p = [:];
+			p.putAll(it)
+			p.refdate = it.expirydate;
+			em.removeCompletedLock( [objid: p.objid] );
+		}
+		println "processed jobs completed";
+	} 
+
+}

@@ -1,0 +1,32 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.common.*
+import com.rameses.services.extended.*;
+
+
+class RuleExecutorService {
+
+	@Resource("RuleService")
+	def ruleSvc;
+
+	@ActiveDB("rule")
+	def ruleDB;
+		
+	@ProxyMethod(local=true)	
+	public void execute( String ruleset, def facts, def actions, def handler )	{
+		try {
+			def grps = ruleDB.getRulegroups( [ruleset: ruleset] );
+			for( g in grps ) {
+				ruleSvc.execute( ruleset, facts, actions, g.name );
+				if(handler) handler( g.name );
+			}
+		}
+		catch(e) {
+			e.printStackTrace();
+			throw e;
+		}
+	}
+
+
+}

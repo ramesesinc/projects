@@ -1,0 +1,61 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.UID;
+
+public class FileService
+{
+	@ActiveDB(value='file_registry', em='fileregistry')
+	def fileregistry;
+
+	@ActiveDB(value='file', dynamic=true)	
+	def filedb;
+
+
+	@ProxyMethod 
+	public Map findHeader ( Map params ) { 
+		if (!params.objid) throw new Exception('Please specify objid');
+
+		def filereg = fileregistry.read( params ); 
+		if (filereg) {
+			def em = filedb.lookup(filereg.context);
+			def o = em.read( params ); 
+			o.context = filereg.context; 
+			return o; 
+		} 
+	} 
+
+	@ProxyMethod 
+	public Map findItem ( Map params ) { 
+		if (!params.context) throw new Exception('Please specify context');
+		if (!params.objid) throw new Exception('Please specify objid');
+
+		def em = filedb.lookup( params.context ); 
+		return em.findDetail( params ); 
+	} 
+
+	@ProxyMethod 
+	public List getItems ( Map params ) { 
+		if (!params.context) throw new Exception('Please specify context');
+		if (!params.fileid) throw new Exception('Please specify fileid');
+		if (!params.startindexno) throw new Exception('Please specify startindexno');
+		if (!params.endindexno) throw new Exception('Please specify endindexno');
+
+		params.parentid = params.fileid; 
+		def em = filedb.lookup( params.context ); 
+		return em.getItems( params ); 
+	} 
+
+
+	@ProxyMethod 
+	public void removeFile( params ) {
+		if ( !params.fileid ) throw new Exception('fileid parameter is required'); 
+
+		def reg = fileregistry.read([ objid: params.fileid ]); 
+		if (!reg) return;  
+
+		fileregistry.delete( reg ); 
+		def em = filedb.lookup( reg.context ); 
+		em.removeItems([ parentid: params.fileid ]); 
+		em.delete([ objid: params.fileid ]); 
+	} 
+} 

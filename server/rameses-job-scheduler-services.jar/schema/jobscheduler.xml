@@ -1,0 +1,20 @@
+<schema>
+	
+	<element tablename="sys_jobscheduler_task">
+		<field name="objid" primary="true"/>
+		<field name="name" required="true"/>
+		<field name="description"/>
+		<field name="state"  required="true"/>
+		<field name="scheduletype" required="true"/>
+		<field name="frequency"/>
+		<field name="frequencyinterval"/>
+		<field name="startdate"/>
+		<field name="starttime"/>
+		<field name="enddate"/>
+		<field name="endtime"/>
+		<field name="recurtype"/>
+		<field name="recurinterval"/>
+		<field name="expirydate"/>
+		<field name="jobtype" />
+	</element>	
+</schema>

@@ -1,0 +1,18 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+
+class PaymentOrderCashReceiptInterceptor {
+
+	@Service("PaymentOrderService")
+	def svc;
+
+	@After(pattern="CashReceiptService.post", eval="#{args[0].type=='paymentorder'}", index=100)
+	public def deletePaymentOrder(def evt) { 
+		def result = evt.result;
+		def paymentorder = svc.open( [txnid:result.txnid]);
+		paymentorder.receipt = result; 
+		svc.close( paymentorder );
+	} 
+
+}

@@ -1,0 +1,56 @@
+import com.rameses.annotations.*
+import com.rameses.common.*
+import java.rmi.server.UID;
+import com.rameses.util.*;
+import com.rameses.io.*;
+import com.rameses.services.extended.*;
+
+class IndividualEntityInterceptor  {
+
+	@ActiveDB("entityindividual")
+	def	em; 
+
+	@Service('DateService')
+	def dtSvc;
+
+	@Service("LOVService")
+	def LOV;
+
+	
+
+	@Before(pattern="EntityService.(create|update)",  eval="args[0].type.equalsIgnoreCase('INDIVIDUAL')", index=10 )
+	public void beforeCreate( evt ) {
+		def entity = evt.args[0];
+		entity.name = entity.lastname+', '+entity.firstname; 
+		if (entity.middlename) entity.name += ' '+entity.middlename;
+	}
+
+	@After(pattern="EntityService.create", eval="result.type.equalsIgnoreCase('INDIVIDUAL')" )
+	public void afterCreate( evt ) {
+		def entity = evt.result;
+		em.create( entity );
+	}
+
+	@After(pattern="EntityService.update", eval="result.type.equalsIgnoreCase('INDIVIDUAL')" )
+	public void afterUpdate( evt ) {
+		def entity = evt.result;
+		em.update( entity );
+	}
+
+	@After(pattern="EntityService.open", eval="result.type.equalsIgnoreCase('INDIVIDUAL')")
+	public void afterOpen( evt ) {
+		def entity = evt.result;
+		entity.putAll ( em.read(entity) );
+		if (entity.birthdate){
+			def birthyear = dtSvc.getYear( entity.birthdate )
+			entity.age = dtSvc.serverYear - birthyear
+		}		
+		if( entity.gender ) {
+			entity.gendername = LOV.GENDER.get( entity.gender );
+		}
+		if( entity.civilstatus ) {
+			entity.civilstatusname = LOV.CIVIL_STATUS.get( entity.civilstatus );
+		}
+	}
+
+}

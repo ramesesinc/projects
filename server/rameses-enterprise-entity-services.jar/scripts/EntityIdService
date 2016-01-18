@@ -1,0 +1,30 @@
+import com.rameses.common.*
+import com.rameses.annotations.*
+import com.rameses.services.extended.*;
+
+class EntityIdService extends ActiveCrudListService {
+
+	@ActiveDB('entityid')
+	def em;
+	
+	public void beforeList(o) {
+		if(!o.entityid) throw new Exception("Entity id is required")
+	}
+
+	void findDuplicate(o) {
+		if(!o.idtype) throw new Exception("ID Type is required");
+		if(!o.idno) throw new Exception("ID No is required");
+		def g = em.findDuplicate(o);
+		if(g)
+			throw new Exception("ID already exists owned by " + g.name + " entity no:"+g.entityno);
+	}
+
+	public void beforeCreate(o) {
+		findDuplicate( o );
+	}
+
+	public void beforeUpdate(o) {
+		findDuplicate( o );
+	}
+
+}

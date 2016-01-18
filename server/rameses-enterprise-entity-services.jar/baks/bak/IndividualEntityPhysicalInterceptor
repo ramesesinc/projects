@@ -1,0 +1,31 @@
+import com.rameses.annotations.*
+import com.rameses.common.*
+import java.rmi.server.UID;
+import com.rameses.util.*;
+import com.rameses.io.*;
+import com.rameses.services.extended.*;
+
+class IndividualEntityPhysicalInterceptor  {
+
+	@ActiveDB("entity")
+	def	em; 
+
+	@After(pattern="EntityService.create", eval="args[0].hasphysical == true", index=100 )
+	public void afterCreate( evt ) {
+		def entity = evt.args[0];
+		em.create( entity, "physical" );
+	}
+
+	@After(pattern="EntityService.update", eval="args[0].hasphysical == true", index=100)
+	public void afterUpdate( evt ) {
+		def entity = evt.args[0];
+		em.save( entity, "physical" );
+	}
+
+	@After(pattern="EntityService.open", eval="args[0].hasphysical == true", index=100)
+	public void afterOpen( evt ) {
+		def entity = evt.result;
+		entity.putAll ( em.read(entity, 'physical') );
+	}
+
+}

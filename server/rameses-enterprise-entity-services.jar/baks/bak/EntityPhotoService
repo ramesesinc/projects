@@ -1,0 +1,34 @@
+import com.rameses.annotations.*
+import com.rameses.common.*
+import java.rmi.server.UID;
+import com.rameses.util.*;
+import com.rameses.io.*;
+
+class EntityPhotoService {
+
+	@ActiveDB("entity")
+	def	em; 
+
+	@Service("DateService")
+	def dtSvc;
+
+	@ProxyMethod
+	public def addPhoto(o) {
+		o.dtfiled = dtSvc.serverDate;
+		return em.create( o, "photo");
+	}
+
+	@ProxyMethod
+	public def getPhoto(o) {
+		return em.read( o, "photo");
+	}
+
+	@ProxyMethod 
+	public def getPhotoMedia(params) {
+		def o = em.findPhoto(params)
+		def mf = new MediaFile();
+		mf.contentType = "image/gif";
+		mf.content = (o?.image == null? new byte[0]: o.image);
+		return mf;		
+	}
+}

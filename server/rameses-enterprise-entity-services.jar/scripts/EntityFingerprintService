@@ -1,0 +1,23 @@
+import com.rameses.annotations.*
+import com.rameses.common.*
+import java.rmi.server.UID;
+import com.rameses.util.*;
+import com.rameses.io.*;
+
+class EntityFingerprintService {
+
+	@ActiveDB("entity")
+	def	em; 
+
+	@ProxyMethod
+	public def addFingerprint(o) {
+		o.objid = "FGR"+new UID();
+		return em.create( o, "fingerprint");
+	}
+
+	@ProxyMethod
+	public def getFingerprint(o) {
+		return em.read( o, "fingerprint");
+	}
+
+}

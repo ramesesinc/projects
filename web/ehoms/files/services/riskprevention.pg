@@ -1,0 +1,6 @@
+{
+   title 		: 'Disaster and Risk Prevention',
+   description 	: 'Tools for disaster monitoring',
+   icon 		: '/images/main/tools.png',
+   sortorder 	: 8
+}

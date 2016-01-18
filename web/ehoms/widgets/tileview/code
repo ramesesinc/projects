@@ -1,0 +1,13 @@
+<%
+    def style = 'flow';
+    if (OPTIONS.list) {
+		def result = STYLE.render( style, OPTIONS.list, OPTIONS );
+		print result;
+	} else { 
+	    def folderid = OPTIONS.folderid ? OPTIONS.folderid : '/'; 
+	    def allItems = ANUBIS.getFolder(folderid).allowedChildren;
+	    def items = allItems - allItems.findAll{ it.hidden==true } 
+	    def result = STYLE.render( style, items, OPTIONS );
+	    print result; 
+	} 
+%>

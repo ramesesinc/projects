@@ -1,0 +1,8 @@
+{ 
+	href		: '/list/workorder',
+	title		: 'Work Order', 
+	secured		: true,  
+	sortorder	: -91, 
+
+	icon		: '/images/main/tools.png' 
+} 

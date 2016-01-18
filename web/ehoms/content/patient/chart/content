@@ -1,0 +1,327 @@
+
+<%
+	def VITALSIGN = ANUBIS.getFile( '/activity/vitalsign.pg' );
+	def LABORATORY = ANUBIS.getFile( '/activity/laboratory.pg' );
+	def RADIOLOGY = ANUBIS.getFile( '/activity/radiology.pg' );
+	
+	def FACESHEET = ANUBIS.getFile( '/patient/option/facesheet.pg' );
+	def ACTIVITY = ANUBIS.getFile( '/patient/option/activity.pg' );
+	def RESULTS = ANUBIS.getFile( '/patient/option/results.pg' );
+	def WORKORDERS = ANUBIS.getFile( '/patient/option/workorders.pg' );
+	
+    def ADD_DIAGNOSIS = ANUBIS.getFile( '/popup/adddiagnosis.pg' );
+    def NOTE_TEMPLATE = ANUBIS.getFile( '/popup/notetemplate.pg' );
+
+	def service = SERVICE.lookup("PatientChartService", "main");
+	def entity = service.open([objid: PARAMS.chartid? PARAMS.chartid : '']);
+%>
+
+<script>
+	@register( VITALSIGN.path )
+	@register( LABORATORY.path )
+	@register( RADIOLOGY.path )
+	@register( FACESHEET.path )
+	@register( ACTIVITY.path )
+	@register( RESULTS.path )
+	@register( WORKORDERS.path )
+	@register( ADD_DIAGNOSIS.path )
+	@register( NOTE_TEMPLATE.path )
+
+	\$put("${PAGE.context}", new function() {
+		var self = this;
+		var patientChartSvc = Service.lookup("PatientChartService", "main");
+		var patientChartActivitySvc = Service.lookup("PatientChartActivityService", "main");
+		var patientChartVitalSignSvc = Service.lookup("PatientChartVitalSignService", "main");
+
+		this.entity;
+		this.activityList;
+		this.selectedActivity;
+		this.opener;
+		this.chartid;
+
+		this.facesheetParams = {
+			addDiagnosisHandler	: function(x) { self.addDiagnosis(x); }
+		}		
+		
+		this.activityParams = {
+			resultHandler: function(x) { self.activityResultHandler(x); }
+		}
+		/*this.activityParams = {
+			vitalSignHandler	: function(x) { self.vitalSignResult(x); },
+			radiologyHandler 	: function(x) { self.radiologyResult(x); },
+			laboratoryHandler 	: function(x) { self.laboratoryResult(x); }
+		}*/
+		
+		this.activityResultParams = {
+			backHandler: function(x) { self.backActivity(x); }
+		}
+
+		this.addDiagnosisParams = {
+			saveDiagnosisHandler	: function(x) { self.saveDiagnosis(x); },
+			cancelDiagnosisHandler	: function(x) { self.cancelDiagnosis(x); },
+			noteTemplateHandler 	: function(x) { self.noteTemplateHandler(x); }
+		}
+
+		this.activityListModel = {
+			rows: (self.activityList? self.activityList.size() : 0),
+			fetchList: function(o) {
+				if (!self.activityList) self.activityList = [];
+				var item;
+				for (var i = 0; i<self.activityList.length; i++) {
+					item = self.activityList[i];
+					item.hasResult = self.activityResult(item);
+				}
+				return self.activityList;
+			}
+		}
+
+		this.onload = function() {
+			self.chartid = ${PARAMS.chartid? "'" + PARAMS.chartid + "'" : ""};
+			self.entity = self.getEntity();
+			//self.refreshActivityList();
+
+			//window.console.log("${PAGE.context}")
+			self.facesheetParams.entity = self.entity;
+			//window.console.log(self.facesheetParams.entity);
+			self.opener = new Opener( "${FACESHEET.name}", self.facesheetParams );
+			/*var ctx = "${FACESHEET.name}";
+			var params = { 
+				addDiagnosis 	: self.addDiagnosis
+			};
+			var activity = ${PARAMS.activity? "'" + PARAMS.activity + "'" : null};
+			if (activity) {				
+				switch (activity) {
+					case "VS": 	ctx = "${VITALSIGN.name}";
+								break;
+				}
+			}
+
+			self.opener = new Opener( ctx, params );*/
+
+			//window.console.log(self.entity);
+			//return 'vitalsign';
+			//self.activityListModel.load();
+			//window.console.log(self.entity);
+			//console.log("context : " + ${PAGE.context});
+			//console.log("params: " + ${PARAMS}.toString())
+		}
+		
+		this.getEntity = function() {
+			return patientChartSvc.open({ objid: self.chartid });
+		}
+
+		this.clone = function( src ) {
+			var map = {};
+			for (k in src) {
+				map[k] = src[k];
+			}
+			return map;
+		}
+
+		this.activityResult = function( act ) {
+			var activityid = act.activity.objid;
+			switch (activityid) {
+				case "VS": 	return self.vitalSignResult( act );
+							break;
+			}
+			return false;
+		}
+
+		this.addDiagnosis = function( params ) {
+			if (!params) return;
+			window.console.log("add diagnosis");
+			self.opener = new Opener( "${ADD_DIAGNOSIS.name}", self.addDiagnosisParams );
+			//return "add_diagnosis";
+		}
+
+		this.cancelDiagnosis = function( params ) {
+			if (!params) return;
+			window.console.log("cancel diagnosis");
+			self.facesheetParams.entity = self.entity;
+			self.opener = new Opener( "${FACESHEET.name}", self.facesheetParams );
+			//return "default";
+			//self.opener = new Opener( "${FACESHEET.name}", self.facesheetParams );
+			//self._controller.refresh();
+		}
+
+		this.saveDiagnosis = function(x) {
+			if (!x) return;
+			window.console.log("save diagnosis");
+			self.entity.diagnosis.push(x);
+			self.opener = new Opener( "${FACESHEET.name}", self.facesheetParams);
+		}
+
+		this.noteTemplateHandler = function( x ) {
+			if (!x) return;
+			window.console.log("${NOTE_TEMPLATE.name}");
+			var params = {
+				cancelTemplateHandler	: function(x) { 
+					self.cancelTemplateHandler(x); 
+				},
+				saveTemplateHandler		: function(x) { 
+					self.selectTemplateHandler(x); 
+				}
+			};
+			params.section = x.section;
+			params.callerCtx = x.callerCtx;
+			params.notes = (x.notes? x.notes : "");
+			self.opener = new Opener( "${NOTE_TEMPLATE.name}", params );
+		}
+
+		this.selectTemplateHandler = function( x ) {
+			if (!x) return;
+			window.console.log("select template handler");
+			var caller = (x.callerCtx? x.callerCtx : "");
+			var ctx;
+			var params;
+			switch (caller) {
+				case "add_diagnosis": 	ctx = "${ADD_DIAGNOSIS.name}";
+										params = self.addDiagnosisParams;
+										params.entity = { notes: x.notes };
+								 		break;
+			}
+			self.opener = new Opener( ctx, params );
+		}
+
+		this.cancelTemplateHandler = function( x ) {
+			if (!x) return;
+			window.console.log("cancel template handler");
+			var caller = (x.callerCtx? x.callerCtx : "");
+			var ctx;
+			var params;
+			switch (caller) {
+				case "add_diagnosis": 	ctx = "${ADD_DIAGNOSIS.name}";
+										params = self.addDiagnosisParams;
+								 		break;
+			}
+			self.opener = new Opener( ctx, params );
+		}
+
+		this.showFacesheet = function() {
+			self.facesheetParams.entity = self.entity;
+			self.opener = new Opener( "${FACESHEET.name}", self.facesheetParams );
+		}
+		
+		this.backActivity = function(x) {
+			if (!x) return;
+			
+			window.console.log("back activity");
+			self.opener = new Opener( "${ACTIVITY.name}", self.activityParams );
+		}		
+		
+		this.activityResultHandler = function(x) {
+			if (!x) return;
+			
+			self.activityResultParams.entity = x.entity;
+			var act = x.activity;
+			var ctx;
+			switch (act) {
+				case "VS": ctx = "${VITALSIGN.name}"; break;
+				case "RD": ctx = "${RADIOLOGY.name}"; break;
+				case "LB": ctx = "${LABORATORY.name}"; break;
+			}
+			self.opener = new Opener( ctx, self.activityResultParams );
+		}
+		
+		this.showActivity = function() {
+			self.opener = new Opener( "${ACTIVITY.name}", self.activityParams );
+		}
+		
+		this.showResults = function() {
+			self.opener = new Opener( "${RESULTS.name}", {} );
+		}
+		
+		this.showWorkorders = function() {
+			self.opener = new Opener( "${WORKORDERS.name}", {} );
+		}
+	});
+</script>
+
+<style>
+	#main-container {
+		width: 1024px;
+		margin: 0 auto;
+	} 
+
+	#patient-pic {
+		height: 150px;
+		width: 150px;
+		float: left;
+	}
+
+	#patient-info {
+		padding-left: 10px;
+		float: left;
+	}
+
+	#activity, #activity table {
+		width: 100%;
+	}
+
+</style>
+
+<div id="main-container">
+	<h2>Patient Chart</h2>
+	<div id="patient-pic">
+		<img r:context="${PAGE.context}" src="/media/getPatientPhoto?objid=<% print entity.patient.objid %>" style="height: 100%; width: 100%"/>
+	</div>
+	<div id="patient-info">
+		<span style="font-weight: bold;"> 
+			Chart No. <label r:context="${PAGE.context}" r:name="entity.chartno" />
+		</span> <br/>
+		<span> 
+			<label r:context="${PAGE.context}" r:name="entity.patient.lastname" />,
+			<label r:context="${PAGE.context}" r:name="entity.patient.firstname" />
+		</span> <br/>
+		<span> 
+			Age: <label r:context="${PAGE.context}" r:name="entity.patient.age" />
+		</span> <br/>
+	</div>
+	<div style="clear: both"></div>
+	<!--
+	<div r:controller="${PAGE.context}"></div>
+-->
+	<hr size=1/>
+	<div r:context="${PAGE.context}" r:name="opener"></div>
+
+	<div id="actions">
+		<%
+			def actions = ANUBIS.getFolder( '/patient/option' ).allowedChildren;
+			actions.sort{ it.index };
+			actions.each{
+				println "<button r:context='${PAGE.context}' r:name='${it.action}'>" + it.title + "</button> &nbsp";
+			}
+		%>
+	</div>
+	<!--
+	<div id="activity">
+		<h3>To Do:</h3>
+		<table r:context="${PAGE.context}" r:model="activityListModel" r:varName="item" r:name="selectedActivity">
+			<thead>
+				<th></th>
+				<th>Activity</th>
+				<th>Start Date</th>
+				<th>End Date</th>
+				<th>Result</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td>
+						<div r:context="${PAGE.context}" r:visibleWhen="#{item.state == null}">
+							<a r:context="${PAGE.context}" r:name="updateResults">Update Results</a>
+							<a r:context="${PAGE.context}" r:name="closeTask" r:visibleWhen="#{item.hasResult}">Close Task</a>
+						</div>
+						<div r:context="${PAGE.context}" r:visibleWhen="#{item.state == 'CARRIED'}">
+							<a r:context="${PAGE.context}" r:name="viewResult">View Result</a>
+						</div>
+					</td>
+					<td>#{item.title}</td>
+					<td>#{item.startdate}</td>
+					<td>#{item.enddate}</td>
+					<td></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+-->
+</div>

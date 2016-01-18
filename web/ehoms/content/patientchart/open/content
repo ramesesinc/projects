@@ -1,0 +1,132 @@
+<%
+	def df = new java.text.SimpleDateFormat("MMM dd, yyyy. hh:mm");
+	def info = REQUEST.getAttribute("patientchart");
+	if (!info) info = [:];
+
+	def spc = "&nbsp;&nbsp;&nbsp;";
+%> 
+<style>
+.category { font-weight:bold; color:#444; padding:0; margin:0; } 
+.paragraph { text-indent:2em; padding:0; margin:0; }
+</style>
+
+<a href="/patientchart/diagnosis?objid=${PARAMS.objid}" style="text-decoration:none;">
+	<input type="button" value="Diagnosis"/> 
+</a>
+<a href="/patientchart/medication?objid=${PARAMS.objid}" style="text-decoration:none;">
+	<input type="button" value="Medication"/> 
+</a>
+<a href="/patientchart/workup?objid=${PARAMS.objid}" style="text-decoration:none;">
+	<input type="button" value="Work Up"/> 
+</a>
+
+<br/>
+<br/>
+<div class="category"> Problems/Complaints </div> 
+<%if (info.complaint){%> 
+	<div class="paragraph">${info.complaint}</div> 
+<%} else {%>
+	<div class="paragraph"> --None-- </div> 
+<%}%>
+
+<br/>
+<div class="category"> Allergies </div> 
+<%if (info.allergies){%>
+	<table cellpadding="2" cellspacing="0" width="100%">
+	<%info.allergies.each{%>
+		<tr>
+		    <td>
+		        ${spc}<i><u>${it.allergens*.name.join(",")}</u></i>
+		        ${spc}(${it.severity}) &nbsp; Occurence: ${it.occurrence}
+		    </td>
+		    <td>
+		    	<font size="2"> posted by ${it.user.name} on ${df.format(it.dtfiled)} </font>
+		    </td>
+		</tr>
+		<tr>
+		    <td colspan="2">
+		        ${spc}${spc}Reaction: ${it.reaction} 
+		    </td>
+		</tr>
+		<tr>
+		    <td colspan="2">
+		        ${spc}${spc}Notes: ${it.notes} <br>        
+		    </td>
+		</tr>	
+		<tr><td colspan="2" style="font-size:5px;">&nbsp;</td></tr>
+	<%}%> 
+	</table>
+<%} else {%>
+	<div class="paragraph">No known allergies</div>
+<%}%>
+
+<br/>
+<div class="category"> Diagnosis </div> 
+<%if (info.diagnosis){%>
+	<table cellpadding="2" cellspacing="0" width="100%">
+	<%info.diagnosis.each{%>
+		<tr>
+	        <td> ${spc}${it.diagnosis.title} (${it.diagnosis.objid}) </td>
+	        <td> 
+	        	<font size="2">posted by ${it.user.name} on ${df.format(it.dtfiled)}</font> 
+	        </td>
+	    </tr>
+	    <tr>
+	        <td colspan="2">
+	        	${spc}${spc}${spc}${it.notes==null?'':it.notes}
+	        </td>
+	    </tr>
+	    <tr><td colspan="2" style="font-size:5px;">&nbsp;</td></tr>
+	<%}%> 
+	</table> 
+<%} else {%>
+	<div class="paragraph"> --None-- </div>
+<%}%>
+
+<br/>
+<div class="category"> Vital Signs </div> 
+${_vitalsign}
+
+<br/>
+<div class="category"> Workup Results </div> 
+${_laboratory}<br>
+${_radiology}
+
+
+
+<div style="padding:50px;">&nbsp;</div>
+
+<style>
+.footer-actions {
+	position:fixed; bottom:0; right:0; left:0; z-index:1000;
+	border-top:0; border-right:0; border-left:0;
+
+	border:0; padding:0; background: #c0c0c0;
+	background: #06f; overflow: hidden;
+}
+.footer-actions .action {
+	text-align:center; padding:20px;
+	font-weight:bold; font-size:40px;
+
+	color: #fff; white-space:nowrap; cursor:default; 
+	border-right:1px solid #c0c0c0;
+}
+.footer-actions .action:hover {
+	background: #05e;	
+}
+</style>
+<div class="footer-actions">
+	<table cellpadding="0" cellspacing="0" width="100%" border="0">
+	<tr>
+		<td class="action action-first">
+			For Home
+		</td>
+		<td class="action">
+			For Referral
+		</td>
+		<td class="action action-last">
+			For Admission
+		</td>
+	</tr>
+	</table>
+</div>

@@ -1,0 +1,6 @@
+{
+	title 		: 'Clearances and Certifications',
+	description : 'Apply and pay clearances and certifications online',
+	icon 		: '/images/main/certificate.png', 
+	sortorder 	: 1
+}

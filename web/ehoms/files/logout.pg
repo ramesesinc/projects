@@ -1,0 +1,6 @@
+{ 
+	title		: 'Logout', 
+	context		: 'logout', 
+	sortorder	: 1000, 
+	hidden 		: true
+} 

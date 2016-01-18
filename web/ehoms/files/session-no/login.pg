@@ -1,0 +1,5 @@
+{
+	href		: '/login',
+   	title 		: "Login",
+   	sortorder 	: 1000
+}

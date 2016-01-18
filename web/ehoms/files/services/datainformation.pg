@@ -1,0 +1,6 @@
+{
+   title 		: 'Data and Information',
+   description 	: 'Statistics, reports and datasets',
+   icon 		: '/images/main/statistics.png', 
+   sortorder 	: 6
+}

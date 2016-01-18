@@ -1,0 +1,72 @@
+<%
+	def objid = 'PCDIAG' + new java.rmi.server.UID();
+%>
+<script>
+\$put("diagnosis", new function(){
+	var self = this;
+	var service = Service.lookup("DiseaseLookupService", "ehoms");
+	var diagSvc = Service.lookup("PatientChartDiagnosisService", "ehoms");
+
+	this.entity = {objid:'${objid}', parentid: '${PARAMS.objid}'};
+	this.suggestSearchText;
+
+	this.fetchSuggestList = function( searchtext, e ) {
+		var params = { searchtext: searchtext };
+		return service.getList(params);
+	} 
+
+	this.doSave = function() {
+		diagSvc.create( self.entity ); 
+		window.location.href = '/patientchart/open?objid=${PARAMS.objid}'; 
+	}
+
+	this.doCancel = function() {
+		window.location.href = '/patientchart/open?objid=${PARAMS.objid}'; 	
+	}
+}); 
+</script>
+
+<style>
+.editor { margin-top:10px; width:800px; }
+textarea { height:200px; }
+#form { margin-top:10px; }
+#form td.label { 
+	vertical-align:top; padding-top:10px; padding-right:10px; 
+	width: 100px;
+}
+.page-actions {
+	padding-left: 570px;
+}
+</style>
+
+<div class="page-title" style="white-space:nowrap;"> 
+	Add Diagnosis
+</div> 
+
+<table id="form" cellpadding="0" cellspacing="0" border="0">
+<tr>
+	<td class="label"> ICD10 Code: </td> 
+	<td> 
+		<input type="text" class="editor" 
+				r:context="diagnosis" r:name="suggestSearchText" 
+				r:suggest="fetchSuggestList" r:suggestName="entity.diagnosis" 
+				r:suggestExpression="#{title} (#{code})" r:required="true" 
+				r:caption="Diagnosis"/> 
+	</td> 
+</tr>
+<tr>
+	<td class="label"> Notes: </td> 
+	<td> 
+		<textarea class="editor" r:context="diagnosis" 
+					r:name="entity.notes" r:required="true" 
+					r:caption="Notes" r:textcase="none"></textarea> 
+	</td> 
+</tr>
+<tr>
+	<td>&nbsp;</td>
+	<td align="center" style="white-space:nowrap;">
+		<input type="button" value="Save" r:context="diagnosis" r:name="doSave"/>
+		<input type="button" value="Cancel" r:context="diagnosis" r:name="doCancel" r:immediate="true"/>
+	</td>
+</tr>
+</table>

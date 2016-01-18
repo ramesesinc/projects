@@ -1,0 +1,6 @@
+{
+	title: 		'Radiology',
+	context: 	'xrayviewer',
+	secured:	true,
+	fragment: 	true,
+}

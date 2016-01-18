@@ -1,0 +1,6 @@
+{
+	href 		: '/patientchart/list', 
+   title		: "Home",
+   sortorder	: -1000,
+   secured		: true
+}

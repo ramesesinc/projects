@@ -1,0 +1,7 @@
+@import url(../../fonts/opensans/stylesheet.css);
+@import url(../../fonts/aller/stylesheet.css);
+
+.mainmenu .navbar td a { color:#fff; font-weight:normal; font-family:'Open Sans';}
+body {
+	background:#f1f1ff url('../../images/noise.png');
+}

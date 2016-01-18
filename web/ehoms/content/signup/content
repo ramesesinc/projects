@@ -1,0 +1,50 @@
+<style>
+	div#box {
+		border1:1px solid #d9d9d9;
+		margin-bottom: 1.25em; 
+		background1: #f2f2f2; 
+		background1: #fff;
+		padding: 1.25em; 
+		font-size:10pt;
+	}	
+	#box { text-align:left; }
+	#box #title { color:#252525; font-size:21pt; }
+	#box input[type=text], #box input[type=password] { 
+		font-size: 0.875em; height: 2.3125em; 
+		border: 1px solid #cccccc;
+		-webkit-box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+		box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+		color: rgba(0,0,0,0.75);
+		margin: 0 0 1em 0;
+		padding: 0.5em;
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		-webkit-transition: -webkit-box-shadow 0.45s, border-color 0.45s ease-in-out;
+		-moz-transition: -moz-box-shadow 0.45s, border-color 0.45s ease-in-out;
+		transition: box-shadow 0.45s, border-color 0.45s ease-in-out;		
+	} 
+	#box input[type=button] { font-size:11pt; }
+</style>
+
+<table cellpadding="0" cellspacing="0" width="400" align="center" style="margin-top:50px;">
+<tr>
+	<td id="box" align="left">
+		<p id="title">Sign up</p>
+		Email <br/> 
+		<input type="text" style="width:300px"/> <br/>
+
+		Password <br/> 
+		<input type="password" style="width:300px"/> <br/>
+
+		Retype Password <br/> 
+		<input type="password" style="width:300px"/> 
+
+		<br/><br/>
+		<button class="button-green" onclick="window.location.href='/'; return false;">Submit</button> 
+		<button class="button-green" onclick="window.location.href='/'; return false;">Cancel</button> 		
+	</td> 
+</tr>
+</table>
+
+

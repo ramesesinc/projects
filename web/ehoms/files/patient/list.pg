@@ -1,0 +1,5 @@
+{
+   title		: "Patient Chart List",
+   context		: "patientchartlist",
+   secured		: true
+}

@@ -1,0 +1,129 @@
+<style>
+.category-handlex { 
+	margin-left:-15px; min-width:11px; display:inline-block; cursor:pointer; 
+	background:url('/images/arrow-right.png') no-repeat 0 50%;
+}
+.category-handle-expandedx {
+	background:url('/images/arrow-down.png') no-repeat 0 50%;	
+}
+.category { font-size:1.5em; color:#707070; font-weight:600; margin:0; display:inline-block; }
+.category-desc { color:#444; padding:5px 0 15px 0; }
+.category-content { display:none; }
+.category-content-desc { padding-bottom:5px; } 
+ol.steps { margin:0; margin-bottom:30px; padding-left:21px; }
+ol.steps > li { margin:0; }
+.subcategory { font-weight:bold; margin:5px 0; color:#333; }
+.tbl { margin:0 0 30px 0; border-collapse:collapse; border:1px solid #909090; }
+.tbl td { padding:4px 10px; border:1px solid #909090; vertical-align:top; } 
+.tbl .header > td { background-color:#909090; color:#fff; border:0; }
+</style>
+
+<div class="category-handle" targetid="sms-content">&nbsp;</div>
+<div class="category" targetid="sms-content">SMS</div>
+<div class="category-desc">
+	You can get information about your real property transactions thru our SMS inquiry facility. <br/> 
+	Track your balances, request certifications and more. &nbsp;&nbsp;
+	<a href="javascript:return false;" class="category-handle" targetid="sms-content"> View more </a> 
+</div> 
+<div class="category-content" id="sms-content">
+	<div class="subcategory">Available Keywords</div>
+	<table class="tbl" cellpadding="0" cellspacing="0" width="100%">
+	<tr class="header">
+		<td style="width:100px;white-space:nowrap;">Keyword</td>
+		<td>Description</td>
+		<td>Example</td>
+	</tr>
+	<tr>
+		<td>RH</td>
+		<td>Help information related to SMS services</td>
+		<td>RH</td>
+	</tr>
+	<tr>
+		<td>RE</td>
+		<td>Enrolls the <b>TD_NO</b> to avail SMS services</td>
+		<td>RE TD1234567890</td>
+	</tr>
+	<tr>
+		<td>RI</td>
+		<td>Receive information for each enrolled properties</td>
+		<td>
+			RI (<i>For all properties</i>) <br/> 
+			RI TD1234567890 (<i>For specific property</i>)
+		</td>
+	</tr>
+	<tr>
+		<td>RT</td>
+		<td>Enroll a tracking number</td>
+		<td>RT TRCK200001</td>
+	</tr>
+	<tr>
+		<td>RS</td>
+		<td>Unregister a specific property or all properties</td>
+		<td>
+			RS (<i>For all properties</i>) <br/>
+			RS TD1234567890 (<i>For specific property</i>)
+		</td>
+	</tr>
+	<tr>
+		<td>RB</td>
+		<td>Inquire current balance of a specific <b>TD_NO</b></td>
+		<td>RB TD1234567890</td>
+	</tr>
+	</table>
+
+	<div class="subcategory">Supported LGUs</div>
+	<table class="tbl" cellpadding="0" cellspacing="0" width="100%">
+	<tr class="header">
+		<td style="width:100px;white-space:nowrap;"> LGU Code </td>
+		<td> LGU Name </td>
+	</tr>
+	<tr>
+		<td>169</td>
+		<td>Iligan City</td>
+	</tr>
+	</table>	
+
+	<span style="color:maroon;font-weight:bold;">SMS Format: </span> 
+	&nbsp;&lt;<b>LGU_CODE</b>&gt;&lt;SPACE&gt;&lt;<b>KEYWORD</b>&gt;&lt;SPACE&gt;&lt;<b>YOUR_MESSAGE</b>&gt; 
+
+	<div style="margin:10px 0 20px 0;"> 
+		To subscribe text &lt;<b>LGU_CODE</b>&gt; <b>RE</b> &lt;<b>YOUR_TD_NO</b>&gt; and send it to <b>09229990188</b>. <br/> 
+		To unsubscribe text &lt;<b>LGU_CODE</b>&gt; <b>RS</b> &lt;<b>YOUR_TD_NO</b>&gt; and send it to <b>09229990188</b>. <br/> 
+	</div>
+</div>
+
+<div class="category-handle" targetid="onlineweb-content">&nbsp;</div>
+<div class="category" targetid="onlineweb-content" style="margin-top:20px;">Online Web</div>
+<div class="category-desc"> 
+	Check your real property records online, receive notifications, view billing and pay online. <br/> 
+	Sign up or <a href="javascript:return false;" class="category-handle" targetid="onlineweb-content">learn more</a>. 
+</div> 
+<div class="category-content" id="onlineweb-content">
+	<ol class="steps">
+		<li>
+			Create a <span style="color:maroon;font-weight:bold;">Filipizen</span> account using your email and pasword. Sign up is free.
+		</li> 
+		<li>
+			Login and select an LGU you want to transact with
+		</li>
+		<li>
+			Enroll with that LGU and provide necessary details
+		</li>
+		<li>
+			Wait for the LGU to verify your account. If accepted, you can now start transacting.
+		</li>
+	</ol>
+</div>
+
+<script>
+BindingUtils.loaders.push(function(){
+	\$('.category-handle').on('click', function(){
+		var e = \$(this); 
+		var id = e.attr('targetid');
+		var con = \$('#'+id);
+		if (!con.is(':visible')) {
+			con.show(300); 
+		}
+	}); 	
+}); 
+</script>

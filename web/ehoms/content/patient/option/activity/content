@@ -1,0 +1,78 @@
+
+<script>
+	\$put( "${PAGE.context}", new function() {
+		var self = this;
+		var service = Service.lookup("PatientChartActivityService", "main");
+		
+		this.activityList;
+		this.selectedActivity;
+		this.resultHandler;
+				
+		this.onload = function() {
+			self.getActivityList();
+		}
+		
+		this.view = function() {
+			var activityid = self.selectedActivity.activity.objid;
+			var params = { entity: self.selectedActivity };
+			switch (activityid) {
+				case "VS": self.showVitalSignResult(params); break;
+				case "RD": self.showRadiologyResult(params); break;
+				case "LB": self.showLaboratoryResult(params); break;
+			}
+		}
+		
+		this.showVitalSignResult = function( params ) {
+			params.activity = "VS";
+			if (self.resultHandler) self.resultHandler(params);
+		}
+		
+		this.showRadiologyResult = function( params ) {
+			params.activity = "RD";
+			window.console.log("show radiology");
+			if (self.resultHandler) self.resultHandler(params);
+		}
+		
+		this.showLaboratoryResult = function( params ) {
+			params.activity = "LB";
+			if (self.resultHandler) self.resultHandler(params);
+		}
+		
+		this.getActivityList = function() {
+			var chartid = ${PARAMS.chartid? "'" + PARAMS.chartid + "'" : ""};
+			self.activityList = service.getList({ objid: chartid });
+		}
+	})
+</script>
+
+<style>
+	#activity-container, #activity-container table {
+		width: 100%;
+	}
+</style>
+
+<div id="activity-container">
+	
+	<table r:context="${PAGE.context}" r:items="activityList" r:varName="item" r:name="selectedActivity">
+		<thead>
+			<th></th>
+			<th>Activity</th>
+			<th>Start Date</th>
+			<th>End Date</th>
+			<th>Status</th>
+			<th>Performed By</th>
+		</thead>
+		<tbody>
+			<tr>
+				<td>
+					<a r:context="${PAGE.context}" r:name="view">View</a>
+				</td>
+				<td>#{item.title}</td>
+				<td>#{item.startdate}</td>
+				<td>#{item.enddate}</td>
+				<td>#{item.state}</td>
+				<td>#{item.actor.name}</td>
+			</tr>
+		</tbody>
+	</table>
+</div>

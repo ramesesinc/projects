@@ -1,0 +1,58 @@
+<%
+	def patientSvc = SERVICE.lookup('PatientService', 'ehoms');
+	def listSvc = SERVICE.lookup('PatientChartListService', 'ehoms'); 
+	def list = listSvc.getList( [_tag:'physician_view', state: 'assessment'] ); 
+	def df = new java.text.SimpleDateFormat('MMM dd, yyyy');
+%>
+
+<style>
+.chartlist { font-size: 18px; }
+td.chartitem  { 
+	border-top:1px solid #c0c0c0;
+	padding-top:5px;
+ }
+.patient-info-photo { padding-right:5px; width:1px; }
+.patient-info-general { 
+	vertical-align:top; 
+	white-space:nowrap;
+
+}
+.patient-info-general > .name {
+	font-weight:bold;
+	font-size:20px;
+}
+</style>
+
+<table class="chartlist" cellpadding="0" cellspacing="0" width="100%" border="0">
+<%
+list.each{item->
+	def thumbnail = patientSvc.getPhoto([objid: item.patient.objid]);
+	if (thumbnail) {
+		item.thumbnailpath = "/media/getPatientPhoto?objid="+item.patient.objid; 
+	} else {
+		item.thumbnailpath = "/images/photo.png";
+	}	
+%>
+<tr onclick="window.location.href='/patientchart/open?objid=${item.objid}'">
+	<td class="patient-info-photo chartitem" valign="top">
+		<img src="${item.thumbnailpath}" width="100"/> 
+	</td>
+	<td class="patient-info-general chartitem" valign="top">
+		<span class="name">${item.patient.name}</span><br/>
+		${item.patient.birthdate? df.format(item.patient.birthdate): "NONE"} 
+		(${item.patient.age? item.patient.age: "NONE"}) <br/> 
+		<%
+			if (item.patient.gender == 'M') print 'Male';
+			else if (item.patient.gender == 'F') print 'Female';
+			else print 'NONE';
+		%>
+	</td>
+	<td class="patient-info-chart chartitem" valign="top" align="left">
+		Chart No. ${item.chartno}<br/>
+		Section: ${item.section} <br/>
+		Date:    ${item.dtfiled}
+	</td>
+</tr>
+
+<%}%>	
+</table>

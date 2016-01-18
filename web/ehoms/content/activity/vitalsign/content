@@ -1,0 +1,41 @@
+<script>
+	\$put("${PAGE.context}", new function() {
+		var self = this;
+		var service = Service.lookup("PatientChartVitalSignService", "main");
+		
+		this.entity;
+		this.results;
+		this.backHandler;
+		
+		this.onload = function() {
+			if (!self.entity) 
+				self.results = [];
+			else
+				self.results = service.getList({ activityid: self.entity.objid });
+		}
+		
+		this.back = function() {
+			if (self.backHandler) self.backHandler({ back: "ok" });
+		}
+	});
+</script>
+
+<style>
+	#vital-sign {
+		width: 100%;
+	}
+</style>
+
+<div id="vital-sign">
+	<b>Vital Sign Results</b>
+	<table r:context="${PAGE.context}" r:items="results" r:varName="item">		
+		<tr>
+			<td>#{item.title} ( #{item.vitalsignid} ) </td>
+			<td>
+				#{item.value} #{(item.unit)? item.unit : ''}
+			</td>
+		</tr>
+	</table>
+	<br/> <br/>
+	<button r:context="${PAGE.context}" r:name="back">Back</button>
+</div>

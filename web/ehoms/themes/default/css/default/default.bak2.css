@@ -1,0 +1,58 @@
+@import url(../common.css);
+
+.master-header {
+	position:fixed; top:0; right:0; left:0; z-index:1000;
+	border-top:0; border-right:0; border-left:0;
+
+	border:0; 
+	-webkit-box-shadow: 0 8px 6px -6px #808080; 
+	-moz-box-shadow: 0 8px 6px -6px #808080; 
+	box-shadow: 0 8px 6px -6px #808080; 
+}
+.master-header-height { height:55px; min-height:55px; max-height:55px; } 
+.master-body-top { top:55px; }
+.master-header .master-tblheader-section > td {
+	white-space:nowrap; padding-top:3px; 
+}
+.master-header .master-tblheader-section > .logo { 
+	margin:0; padding:3px 7px 0px 0px; 
+}
+.master-body { position:absolute; left:0; right:0; bottom:0; }
+.master-tblheader #master-header-right { padding-right:0px; }
+.master-body, .master-footer {
+	vertical-align:top;
+}
+.master-body {
+	min-height:400px; min-width:400px;
+}
+.master-content { height:100%; }	
+.master-footer { 
+	white-space:nowrap; height:1px; padding:5px;
+}
+.master-footer-row > td { background-color:#7d7d7d; color:#fff; font-size:0.8em; }
+
+.mainmenu .navbar .gap { color:#c0c0c0; }
+.mainmenu .navbar .navbar-col { margin:0; padding:0px 1px; }
+.mainmenu .navbar td a { 
+	font-size:1.0125em; text-decoration:none; 
+	color: #f5f5f5; text-shadow:1px 1px #303030;
+}
+.mainmenu .navbar td > div:hover { background-color: transparent; border:1px solid #dbe6fb; }
+.mainmenu .navbar td.selected a { 
+	color:#fff; text-shadow:1px 1px #303030; font-weight:600;
+}
+.mainmenu .navbar .navbar-col > div { 
+	padding:1px 5px; 
+	border:1px solid transparent;
+	border-radius: 5px; 
+	-webkit-border-radius:5px;
+	-moz-border-radius:5px;	
+}
+
+
+.master-header-content {  
+	padding:0 20px;
+}
+.fixed-center-view { 
+	
+} 

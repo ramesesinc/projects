@@ -1,0 +1,5 @@
+{
+	href 		: '/home',
+   	title		: "Home",
+   	sortorder	: -1000
+}

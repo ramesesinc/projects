@@ -1,0 +1,180 @@
+
+<%
+	def VITALSIGN = ANUBIS.getFile( '/vitalsign/popup.pg' );
+%>
+
+<script>
+	@register( VITALSIGN.path )
+
+	\$put("${PAGE.context}", new function() {
+		var self = this;
+		var patientChartSvc = Service.lookup("PatientChartService", "main");
+		var patientChartActivitySvc = Service.lookup("PatientChartActivityService", "main");
+		var patientChartVitalSignSvc = Service.lookup("PatientChartVitalSignService", "main");
+
+		this.entity;
+		this.activityList;
+		this.selectedActivity;
+
+		this.activityListModel = {
+			rows: (self.activityList? self.activityList.size() : 0),
+			fetchList: function(o) {
+				if (!self.activityList) self.activityList = [];
+				var item;
+				for (var i = 0; i<self.activityList.length; i++) {
+					item = self.activityList[i];
+					item.hasResult = self.activityResult(item);
+				}
+				return self.activityList;
+			}
+		}
+
+		this.onload = function() {
+			var chartid = ${PARAMS.chartid? "'" + PARAMS.chartid + "'" : ""};
+			self.entity = patientChartSvc.open({objid: chartid});
+			self.refreshActivityList();
+			//self.activityListModel.load();
+			//window.console.log(self.entity);
+			//console.log("context : " + ${PAGE.context});
+			//console.log("params: " + ${PARAMS}.toString())
+		}
+
+		this.refreshActivityList = function() {
+			self.activityList = patientChartActivitySvc.getList({objid: self.entity.objid});
+		} 
+
+		this.activityResult = function( act ) {
+			var activityid = act.activity.objid;
+			switch (activityid) {
+				case "VS": 	return self.vitalSignResult( act );
+							break;
+			}
+			return false;
+		}
+
+		this.vitalSignResult = function( act ) {
+			var items = patientChartVitalSignSvc.getItems({ activityid: act.objid });
+			var flag = false;
+			if (items.length > 0) {
+				var item = items[0];
+				flag = (item.value? true : false);
+			}
+			return flag;
+		}
+
+		this.updateResults = function() {
+			var activityid = self.selectedActivity.activity.objid;
+			switch (activityid) {
+				case 'VS': 	return self.showVitalSign(false);
+							break;
+			}
+		}
+
+		this.closeTask = function() {
+			var result = window.confirm("You are about to submit this for assessment and will close this task. Proceed?");
+			if (result) {
+				patientChartActivitySvc.closeTask({ activityid: self.selectedActivity.objid });
+				self.refreshActivityList();
+				self.activityListModel.load();
+			}
+		}
+
+		this.viewResult = function() {
+			var activityid = self.selectedActivity.activity.objid;
+			switch (activityid) {
+				case 'VS': 	return self.showVitalSign(true);
+							break;
+			}
+		}
+
+		this.showVitalSign = function( readonly ) {
+			readonly = (readonly? readonly : false);
+			var h = function(x) {
+				var item;
+				for (var i=0; i<x.list.length; i++) {
+					item = x.list[i];
+					item.parentid = self.entity.objid;
+					item.activityid = self.selectedActivity.objid;
+				}
+
+				patientChartVitalSignSvc.saveEntries(x.list);
+				self.refreshActivityList();
+			}
+			var params = {
+				entity 		: self.selectedActivity,
+				saveHandler : h,
+				readonly 	: readonly
+			}
+			return new PopupOpener( "${VITALSIGN.name}", params );
+		}
+
+		this.propertyChangeListener = {
+			activityList: function(o) {
+				self.activityListModel.load();
+			}
+		}
+	});
+</script>
+
+<style>
+	#main-container {
+		width: 1024px;
+		margin: 0 auto;
+	} 
+
+	#activity, #activity table {
+		width: 100%;
+	}
+
+</style>
+
+<div id="main-container">
+	<!--
+	<h2>Patient Chart</h2>
+	<div id="patient-pic">
+	</div>
+	<div id="patient-info">
+		<span style="font-weight: bold;"> 
+			Chart No. <label r:context="${PAGE.context}" r:name="entity.chartno" />
+		</span> <br/>
+		<span> 
+			<label r:context="${PAGE.context}" r:name="entity.patient.lastname" />,
+			<label r:context="${PAGE.context}" r:name="entity.patient.firstname" />
+		</span> <br/>
+		<span> 
+			Age: <label r:context="${PAGE.context}" r:name="entity.patient.age" />
+		</span> <br/>
+	</div>
+	<div style="clear: both"></div>
+	-->
+	@patientchart()
+	<div id="activity">
+		<h3>To Do:</h3>
+		<table r:context="${PAGE.context}" r:model="activityListModel" r:varName="item" r:name="selectedActivity">
+			<thead>
+				<th></th>
+				<th>Activity</th>
+				<th>Start Date</th>
+				<th>End Date</th>
+				<th>Result</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td>
+						<div r:context="${PAGE.context}" r:visibleWhen="#{item.state == null}">
+							<a r:context="${PAGE.context}" r:name="updateResults">Update Results</a>
+							<a r:context="${PAGE.context}" r:name="closeTask" r:visibleWhen="#{item.hasResult}">Close Task</a>
+						</div>
+						<div r:context="${PAGE.context}" r:visibleWhen="#{item.state == 'CARRIED'}">
+							<a r:context="${PAGE.context}" r:name="viewResult">View Result</a>
+						</div>
+					</td>
+					<td>#{item.title}</td>
+					<td>#{item.startdate}</td>
+					<td>#{item.enddate}</td>
+					<td></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>

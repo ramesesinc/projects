@@ -1,0 +1,106 @@
+
+<script>
+
+	\$put("${PAGE.context}", new function() {
+		var self = this;
+		var patientChartSvc = Service.lookup("PatientChartListService", "main");
+
+		this.selectedPatientChart;
+
+		this.patientChartListModel = {
+			rows: 15,
+			fetchList: function(o) {
+				var params = { activity: "VS" };	
+				return patientChartSvc.getList(params);
+				//return self.patientChartList;
+			}
+		}
+
+		this.view = function() {
+			window.location.href = "/patient/chart?chartid=" + self.selectedPatientChart.chartid;
+		}
+
+		this.refresh = function() {
+			self.patientChartListModel.load();
+		}
+
+		this.suggestdata;
+		this.fetchList = function(searchtext, e) {
+			return [
+				{caption: 'Blood Pressure'},
+				{caption: 'Respiratory'},
+				{caption: 'Heart Rate'},
+				{caption: 'Temperature'}
+			]
+		}
+	});
+</script>
+
+<style>
+	#main {
+		width: 1024px;
+		margin: 0 auto;
+	}
+
+	#main table {
+		width: 100%;
+		border: 1px solid black;
+	}
+
+	#main table tr td {
+		vertical-align: top;
+	}
+
+	@media only screen and 
+</style>
+
+<div id="main">
+	<h2>Vital Sign Checking</h2>
+
+	<!--
+	<div style="width: 300px; float: left;">
+		Section
+		<select r:context="${PAGE.context}" r:items="sectionList" r:name="selectedSection" style="width: 200px">
+		</select>
+	</div>
+-->
+	<!--
+	<input type="text" r:context="${PAGE.context}" r:name="suggestdata" r:suggest="fetchList" r:suggestExpression="#{caption}" />
+	-->
+	<button r:context="${PAGE.context}" r:name="refresh">Refresh</button> 
+	<br/> <br/>
+	<table r:context="${PAGE.context}" r:model="patientChartListModel" r:name="selectedPatientChart" r:varName="item">
+		<thead>
+			<tr>
+				<td style="width: 5%"></td>
+				<td style="width: 10%">Chart No.</td>
+				<td style="width: 20%">Patient</td>
+				<td style="width: 20%">Physician</td>
+				<td style="width: 45%">Complaint</td>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>
+					<a r:context="${PAGE.context}" r:name="view">View</a>
+					<!--
+					<a r:context="${PAGE.context}" r:name="updateResult">Update Result</a> &nbsp;
+					<a r:context="${PAGE.context}" r:name="closeTask">Close Task</a>
+					-->
+				</td>
+				<td>#{item.chartno}</td>
+				<td>#{item.patient.lastname}, #{item.patient.firstname}</td>
+				<td>#{item.physician.lastname}, #{item.physician.firstname}</td>
+				<td>#{item.complaint}</td>
+				<!--
+				<td>
+					<label class="patient-chartno">
+						<a r:context="${PAGE.context}" r:name="openChart">#{item.chartno}</a>
+					</label> <br/>
+					<label class="patient-name">#{item.patient.name}</label>
+				</td>
+			-->
+			</tr>
+		</tbody>
+	</table>
+</div>

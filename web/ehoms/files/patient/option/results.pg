@@ -1,0 +1,8 @@
+{ 
+	title		: 'Results', 
+	context		: 'results', 
+	action		: 'showResults',
+	index		: 2,
+	secured		: true, 
+	fragment	: true
+} 

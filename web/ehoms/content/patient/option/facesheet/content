@@ -1,0 +1,55 @@
+<script>
+        \$put( "${PAGE.context}", new function() {
+                var self = this;
+
+                this.entity;
+                this.addDiagnosisHandler;
+
+				this.onload = function() {
+					window.console.log("facesheet");
+				}
+				
+                this.addDiagnosis = function() {
+                    if (self.addDiagnosisHandler) self.addDiagnosisHandler({ add: "ok" });
+                }
+        });
+</script>
+
+
+<button r:context="${PAGE.context}" r:name="addDiagnosis">Add Diagnosis</button> 
+<br/> <br/>
+
+<b>Reason for Visit: </b> <label r:context="${PAGE.context}" r:name="entity.reason" r:visibleWhen="#{entity.reason}"/> <br>
+
+<b>Problems/Complaints</b><br>
+<span r:context="${PAGE.context}" r:visibleWhen="#{entity.complaint}">
+    <ul> <li><label r:context="${PAGE.context}" r:name="entity.complaint" /></li> </ul>
+    <br/>
+</span>
+
+<b>Allergies</b><br>
+<ul r:context="${PAGE.context}" r:visibleWhen="#{entity.allergies == null || entity.allergies.length == 0}"> 
+    <li>No known allergies</li> 
+</ul>
+<ul r:context="${PAGE.context}" r:varName="item" r:items="entity.allergies" r:visibleWhen="#{entity.allergies.length > 0}">
+    <li>
+        Allergies: #{item.allergens*.name.join(",")}
+        <b>Severity</b>:#{item.severity}) Occurence: #{item.occurrence}<br>
+        Reaction: #{item.reaction} <br>
+        Notes: #{item.notes} <br>
+        <i><font size="3">posted by #{item.user.name} on #{item.dtfiled}</font></i>
+    </li>
+</ul>
+<br>
+
+<b>Diagnosis</b><br>
+<ul r:context="${PAGE.context}" r:items="entity.diagnosis" r:varName="item" r:visibleWhen="#{entity.diagnosis != null}">
+    <li>
+        #{item.diagnosis.title} (#{item.diagnosis.objid})
+        <br>
+        <span r:context="${PAGE.context}" r:visibleWhen="#{item.notes}">
+            #{item.notes} <br/>
+        </span>
+        <i><font size="3">posted by #{item.user.name} on #{item.dtfiled}</font></i>
+    </li>
+</ul>

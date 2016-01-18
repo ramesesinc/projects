@@ -1,0 +1,20 @@
+def patientSvc = SERVICE.lookup('PatientService', 'ehoms');
+def chartSvc = SERVICE.lookup('PatientChartService', 'ehoms');
+def info = chartSvc.open( [objid: PARAMS.objid] );  
+def thumbnail = patientSvc.getPhoto([objid: info.objid]); 
+if (thumbnail) { 
+	info.thumbnailpath = "/media/getPatientPhoto?objid="+info.objid; 
+} else { 
+	info.thumbnailpath = "/images/photo.png"; 
+} 
+
+if (info.patient.gender == 'M') { 
+	info.patient.gender='Male'; 
+} else if (info.patient.gender == 'F') { 
+	info.patient.gender='Female'; 
+} else { 
+	info.patient.gender='NONE'; 
+} 
+
+System.out.println("loaded patient chart 2"); 
+REQUEST.setAttribute("patientchart", info);

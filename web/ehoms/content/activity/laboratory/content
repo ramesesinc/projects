@@ -1,0 +1,39 @@
+<script>
+	\$put("${PAGE.context}", new function() {
+		var self = this;
+		var service = Service.lookup("PatientChartLabResultService", "main");
+		
+		this.entity;
+		this.results;
+		this.backHandler;
+				
+		this.onload = function() {
+			if (!self.entity) 
+				self.results = [];
+			else {
+				self.results = service.getList({ activityid: self.entity.objid });
+				
+			}
+		}
+		
+		this.back = function() {
+			if (self.backHandler) self.backHandler({ back: "ok" });
+		}
+	});
+</script>
+
+<style>
+	#laboratory, #laboratory table {
+		width: 100%;
+	}
+</style>
+
+<div id="laboratory">
+	<b>Laboratory Results</b>
+	<table r:context="${PAGE.context}" r:items="results" r:varName="item">		
+		<tr>
+		</tr>
+	</table>
+	<br/> <br/>
+	<button r:context="${PAGE.context}" r:name="back">Back</button>
+</div>

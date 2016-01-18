@@ -1,0 +1,7 @@
+{
+	"app.cluster"	: "${app.cluster}",
+	"app.context"	: "${app.context}", 
+	"app.host"		: "${app.host}",
+	readTimeout		: "${readTimeout}", 
+	handler			: "script"
+}

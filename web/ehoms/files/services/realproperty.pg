@@ -1,0 +1,6 @@
+{
+   title 				: 'Real Property',
+   icon 				: '/images/main/home.png',    
+   shortdescription 	: 'Monitor real property records and assessments',
+   description 			: 'You can check your real property records thru SMS or online web'   
+}

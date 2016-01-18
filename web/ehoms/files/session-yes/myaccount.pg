@@ -1,0 +1,12 @@
+{ 
+	fragment	: true,	
+	href 		: '/myaccount', 	
+	title		: 'My Account', 
+	context		: 'myaccount', 
+	secured		: true, 
+	sortorder	: 1000, 
+	hidden		: true,
+
+ 	target		: 'dropdown',
+ 	options		: {headless:true, width:400}
+} 

@@ -1,0 +1,5 @@
+@import url(../common.css);
+
+div.body {
+	background: url('../images/splash-background.png');	
+}

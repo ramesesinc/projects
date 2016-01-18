@@ -1,0 +1,31 @@
+<style>
+	#main, #actions {
+		width: 600px;
+		margin: 0 auto;
+	}
+
+	#main textarea {
+		width: 100%;
+	}
+</style>
+
+<script>
+	\$put("${PAGE.context}", new function() {
+		var self = this;
+
+		this.entity;
+
+		this.complete = function() {
+			console.log("action: complete");
+		}
+	});
+</script>
+
+<div id="main">
+	<h3>Activity: <label r:context="${PAGE.context}" r:name="entity.activity"/></h3>
+	Instructions: <br/>
+	<textarea r:context="${PAGE.context}" r:name="entity.info" />
+</div>
+<div id="actions">
+	<button r:context="${PAGE.context}" r:name="complete">Complete</button>
+</div>

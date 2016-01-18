@@ -1,0 +1,5 @@
+{  
+	context		: 'radiology', 
+	secured 	: true,
+	fragment 	: true
+} 

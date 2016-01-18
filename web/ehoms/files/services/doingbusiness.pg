@@ -1,0 +1,8 @@
+{
+   title 				: 'Doing Business',
+   shortdescription 	: 'Apply and monitor business applications online',
+   icon 				: '/images/main/handshake.png', 
+   sortorder 			: 3, 
+
+   description			: 'Doing business in the Philippines requires licenses or permits that need to be obtained from the local as well as the national government which depends on the type of business you want to engage in.' 
+}

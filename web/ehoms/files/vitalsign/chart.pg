@@ -1,0 +1,8 @@
+{ 
+	title		: 'Patient Chart', 
+	context		: 'patientchart', 
+	secured:	true,
+	fragment: 	true,
+	hidden:		true,
+	options:	{width:650, height:470}
+} 

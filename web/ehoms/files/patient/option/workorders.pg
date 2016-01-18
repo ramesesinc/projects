@@ -1,0 +1,8 @@
+{ 
+	title		: 'Work Orders', 
+	context		: 'workorders', 
+	action		: 'showWorkorders',
+	index		: 3,
+	secured		: true, 
+	fragment	: true
+} 

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<title> ${MODULE.title? MODULE.title: PROJECT.title} - ${PAGE.title} </title>	
+	<meta name="keywords" content="${PROJECT.keywords} ${MODULE.keywords? MODULE.keywords:''}"/>
+	<meta name="description" content="${PROJECT.description}"/>	
+
+	@stdlib()
+	@css('default')
+	@page-imports()
+
+	<style>
+		.theme-background { background-image:none; }
+		.theme-footer-border { border:0; }	
+		.layout-content { padding-top: 40px; }	
+	</style> 
+</head>
+
+<body class="theme-font">	
+	<% def session_folder = (SESSION?.sessionid? '/session-yes': '/session-no'); %> 
+
+	<div class="theme-header-background master-header">
+		<table class="master-tblheader" cellpadding="0" cellspacing="0" width="100%" height="100%" border="0">
+		<tr class="master-tblheader-section">
+			<td id="master-header-logo" class="logo"> @logo() </td>
+			<td id="master-header-logo-desc" class="logo-desc"> &nbsp; </td> 
+			<td id="master-header-center" style="width:100%"> &nbsp; </td> 
+			<td id="master-header-right" class="mainmenu" style="white-space:nowrap;"> 
+				@navbar(folderid:[session_folder], class:'topmenu') 
+			</td> 
+		</tr>
+		</table>
+	</div>
+
+	<div class="layout-content content">
+		${_content}
+	</div>
+</body>
+</html>
+

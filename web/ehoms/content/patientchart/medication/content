@@ -1,0 +1,68 @@
+<%
+	def objid = 'PCMED' + new java.rmi.server.UID();
+	def info = REQUEST.getAttribute("patientchart");
+	if (!info) info = [:];	
+%>
+<script>
+\$put("medication", new function(){
+	var self = this;
+	var service = Service.lookup("PatientChartWorkOrderService", "ehoms");
+
+	this.entity = {
+		objid:'${objid}', parentid: '${PARAMS.objid}', 
+		section: '${info.section}', activitytype: 'MD', 
+		info:[]  
+	};
+
+	this.doSave = function() {
+		service.create( self.entity ); 
+		window.location.href = '/patientchart/open?objid=${PARAMS.objid}'; 
+	}
+
+	this.doCancel = function() {
+		window.location.href = '/patientchart/open?objid=${PARAMS.objid}'; 	
+	}
+});
+</script>
+
+<style>
+.rx {
+	position:absolute; padding-top:5px; padding-left:5px;
+}
+.editor { 
+	width:95%; height:300px;
+	border:1px solid transparent;
+	padding-top:70px; padding-left:15px; 
+}
+#form { 
+	margin-top:10px; width: 100%;
+}
+#form td.label { 
+	vertical-align:top; padding-top:10px; padding-right:10px; 
+	width: 100px;
+}
+.page-actions {
+	padding-left: 570px;
+}
+</style>
+
+<div class="rx" style="white-space:nowrap;"> 
+	<img src="/images/rx.png" height="50" border="0"/> 
+</div> 
+
+<div class="panel">
+	<textarea class="editor" r:context="medication" 
+		r:name="entity.text" r:required="true" 
+		r:caption="Text" r:textcase="none">
+	</textarea> 
+
+	<table id="form" cellpadding="0" cellspacing="0" border="0">
+	<tr>
+		<td style="white-space:nowrap;">
+			<input type="button" value="Send To Nurse Station" r:context="medication" r:name="doSave"/>
+			<input type="button" value="Send To Pharmacy" r:context="medication" r:name="doSave"/>
+			<input type="button" value="Cancel" r:context="medication" r:name="doCancel" r:immediate="true"/>
+		</td>
+	</tr>
+	</table>
+</div>

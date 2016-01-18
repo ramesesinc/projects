@@ -1,0 +1,118 @@
+@import url(../../fonts/aller/stylesheet.css);
+@import url(../../fonts/opensans/stylesheet.css);
+
+html, body, div, table, button, input, textarea, select, label, span, p {
+	font-family: 'Open Sans', arial, tahoma;
+}
+body { margin:0; font-size:0.875em; }
+
+.banner {
+	background-color:black;
+	opacity:0.7;
+	color:white;
+}
+.header {
+	font-family: 'Open Sans', arial, verdana, tahoma;
+	color:black; font-size: 30px;
+}
+.menubody1 { background-color:#CDEB8B; }
+.body-theme { 
+	background: #CDEB8B url('../../images/noise.png');
+}
+.footer td {
+	padding-top:5px;
+	font-family:arial;
+	font-size:10px;
+	padding-left:10px;
+}
+.mainlogo {
+	font-family: 'aller_displayregular', arial, verdana, tahoma;
+	font-size: 30px;
+	color:#4096EE;
+}
+.beta {
+	font-size: 10px;
+	color:#4096EE;
+	vertical-align:top;
+}
+
+.usermenu a{
+	color:white;
+	font-size:15px;
+	text-decoration:none;
+	font-family:arial;
+}
+
+.box  td {
+	vertical-align:middle;
+	padding: 4px;
+}
+.box div {
+	border: 0px solid #36393D;
+	height: 100%;
+	font-family: arial;
+	font-weight: bolder;
+	text-align:center;
+	padding: 10px;
+	font-size:25px;	
+	background-color:#6BBA70;
+	color:white;
+	vertical-align:middle;
+}
+
+a label {cursor:pointer;}
+
+#reetrlogo {
+	font-family: 'allerregular';
+	font-size:35px;
+}
+
+.box #c1 {
+	padding-top: 20px;
+	background-color:#B02B2C;
+}
+.box #c2 {
+	background-color:#356AA0;
+}
+.box #c3 {
+	font-size:18px;
+	background-color:#3F4C6B;
+}
+.box #c4 {
+	background-color:#C79810;
+}
+.box #c5 {
+	font-size: 24px;
+}
+.box #c6 {
+	font-size:25px;
+	background-color:#D01F3C;
+}
+
+.box a {
+	border:none;
+	color:white;
+	text-decoration: none;
+	padding:0;
+}
+.button-green, .button-green:hover {
+	background: #80be34 url('../../images/button-green.png'); color: #fff; 
+	text-align: center; font-weight: bold; padding: 3px 10px; font-size: 10pt;
+	border: 1px solid #7fbd32; 
+	text-shadow: #4c8a00 1px 1px 1px;
+	border-radius: 3px;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	outline: 0; margin: 0;
+	line-height: 16px;
+}
+.button-green2, .button-green2:hover {
+	background: #3ea23f; color: #fff; 
+	border:1px solid #2f7d30; border:1px solid #3ea23f;
+	text-align: center; font-weight:500; font-size:0.60em;
+	padding: 0px 15px 15px 15px; margin:0;
+	text-shadow: #505050 1px 1px 1px; height:32px;
+	border-radius: 3px; 
+	-webkit-border-radius:3px;
+	-moz-border-radius:3px; 
+}

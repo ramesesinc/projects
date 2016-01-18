@@ -1,0 +1,6 @@
+{
+   title 		: 'Community and Living',
+   description 	: 'Explore and know more about living in your LGU',
+   icon 		: '/images/main/community.png', 
+   sortorder 	: 7
+}

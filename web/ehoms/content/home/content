@@ -1,0 +1,15 @@
+<style>
+.tileview { margin-left:0px; margin-top:50px; }
+.tileview .tileview-col { padding-right:10px; }
+.tileview .tileview-block { margin-bottom:10px; }
+.tileview .tileview-block-icon { padding:10px 10px 10px 2px; } 
+.tileview .tileview-block-content { padding-right:20px; } 
+.tileview .tileview-block-title > a {
+	color:#505050; text-decoration:none; line-height:18px; 
+	font-size:1.2em; font-weight:600;
+}
+.tileview .tileview-block-title > a:hover { color:#01A952; text-decoration:underline; }
+.tileview .tileview-block-desc { color:#707070; line-height:1.3em; }
+</style>
+
+@tileview(folderid:'/home_action', class:'homeaction')

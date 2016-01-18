@@ -1,0 +1,4 @@
+{ 
+	title		: 'Patient Chart', 
+	secured		: true 
+} 

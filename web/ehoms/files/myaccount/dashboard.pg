@@ -1,0 +1,6 @@
+{ 
+	title		: 'Dashboard', 
+	context		: 'dashboard', 
+	secured		: true, 
+	sortorder	: -80
+} 

@@ -1,0 +1,9 @@
+{ 
+	title		: 'Vital Sign', 
+	context		: 'vitalsign', 
+	secured		: true, 
+	fragment	: true,
+	href		: '/activity/vitalsign',
+
+	icon		: '/images/main/tools.png' 
+} 

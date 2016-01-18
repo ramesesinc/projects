@@ -1,0 +1,19 @@
+<%
+	def pginfo = ANUBIS.getFile('/services/'+PARAMS.name+'.pg');
+	if (!pginfo) pginfo = PAGE;
+%>
+<style>
+.page-desc { color:#808080; }
+#error-box { text-align:center; margin:100px; font-size:1.5em; color:#505050; }
+</style>
+
+<div style="padding:20px;">
+	<div class="page-title">${pginfo.title}</div>
+	<div class="page-desc"> ${pginfo.description} </div>
+
+
+	<div id="error-box" class="error-box">
+		We are currently upgrading the site at the moment. <br/>
+		Service is unavailable at this time. 
+	</div>
+</div>

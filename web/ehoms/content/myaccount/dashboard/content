@@ -1,0 +1,27 @@
+<% PAGE.scripts.addAll(['/res/js/Chart.js','/js/lib/highcharts.js']); %>
+
+<style>
+body { background-image:none; } 
+.no-info {
+    font-style:italic; color:#a0a0a0;
+}
+.widget-window {
+    margin-top:10px; margin-right:10px;
+    border:1px solid #d5d5d5; 
+    border-color: rgba(0,0,0,.2);
+    box-shadow: 0 2px 10px rgba(0,0,0,.2);
+    -webkit-user-select: text;      
+    -webkit-border-radius: 2px;
+    border-radius: 2px; 
+    min-height:300px;
+}
+.widget-window .widget-window-title { 
+    padding:5px 5px; font-weight:600; font-size:1.0em; color:#808080;
+    background-color:#e7e7e7; border-bottom:1px solid #d5d5d5;
+    color:#777; text-shadow:1px 1px #eee;
+} 
+</style>
+
+<div style="margin-top:10px;"></div>
+
+@pagetitle() 

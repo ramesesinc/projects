@@ -1,0 +1,45 @@
+<%
+	def df = new java.text.SimpleDateFormat('MMM dd, yyyy');
+	def info = REQUEST.getAttribute("patientchart");
+	if (!info) info = [:];
+%> 
+
+<style>
+.chartlist { font-size: 18px; }
+.patient-info-photo { padding-right:5px; width:1px; }
+.patient-info-general { 
+	vertical-align:top; 
+	white-space:nowrap;
+
+}
+.patient-info-general > .name {
+	font-weight:bold;
+	font-size:20px;
+}
+.reason { text-indent: 2em; }
+</style>
+
+<table class="chartlist" cellpadding="0" cellspacing="0" width="100%" border="0">
+<tr>
+	<td class="patient-info-photo chartitem" valign="top">
+		<img src="${info.thumbnailpath}" width="100"/> 
+	</td>
+	<td class="patient-info-general chartitem" valign="top">
+		<span class="name">${info.patient.lastname}, ${info.patient.firstname}</span><br/>
+		${info.patient.birthdate? df.format(info.patient.birthdate): "NONE"} 
+		(${info.patient.age? info.patient.age: "NONE"}) <br/>
+		${info.patient.gender} 
+	</td>
+	<td class="patient-info-chart chartitem" valign="top" align="left">
+		Chart No. ${info.chartno}<br/>
+		Section: ${info.section} <br/>
+		Date:    ${info.dtfiled}
+	</td>
+</tr>
+</table>
+
+<b>Reason for visit:</b>
+<div class="reason">${info.reason}</div> 
+<hr/>
+
+${_content}

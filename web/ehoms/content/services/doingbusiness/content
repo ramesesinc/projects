@@ -1,0 +1,82 @@
+<script>
+var businessctx = new function(){
+
+	this.structureTypes = {
+		'SOLE-PROPRIETORSHIP': 'A sole proprietorship, also known as the sole trader or simply a proprietorship, is a type of business entity that is owned and run by one individual and in which there is no legal distinction between the owner and the business.', 
+		'CORPORATION'		 : 'A corporation is a separate legal entity that has been incorporated either directly through legislation or through a registration process established by law. Incorporated entities have legal rights and liabilities that are distinct from their employees and shareholders, and may conduct business as either a profit-seeking business or not-for-profit business.', 
+		'COOPERATIVE'		 : 'A cooperative ("coop") or co-operative ("co-op") is an autonomous association of persons who voluntarily cooperate for their mutual social, economic, and cultural benefit.' 
+	};
+
+	this.data = {};	
+
+	this.startNow = function() { 
+		if (!this.data.locality) {
+			alert('Please select a locality first'); 
+			return;
+		}
+
+		\$.cookie('business_locality', this.data.locality, {path:'/'}); 
+		window.location.href = '/biz/newapp'; 
+	}	
+}
+
+\$put('business', businessctx); 
+BindingUtils.loaders.push(function(){
+	var doc = \$(document);
+
+	\$('input[type=radio].structuretype').on('click', function(){
+		var type = businessctx.data.structuretype; 
+		var desc = businessctx.structureTypes[type];
+		var con = \$('#structuretype-info');
+		var e = \$(this); 
+		var pos = e.position();
+		var lx = pos.left + e.width() + 150;
+		var ly = pos.top;
+		con.css('left', lx + 'px'); 
+		con.css('top', ly + 'px');
+		con.html(desc+'');
+		if (!con.is(':visible')) { 
+			doc.bind('mouseup', onWindowClicked); 
+		} 
+		con.show(); 
+	}); 
+	
+	function onWindowClicked(e) {
+		var target = \$(e.target);
+		if (!target.hasClass('structuretype')) {
+			var con = \$('#structuretype-info');
+			con.hide();
+			doc.unbind('mouseup', onWindowClicked); 
+		}
+	}
+}); 
+</script>
+
+<style>
+input[type=radio] { border:1px solid; margin:5px 5px 2px 2px; padding:0; }
+.question { font-weight:bold; font-size:1.2em; color:#333; padding:5px 0 10px 0; }
+#structuretype-info { padding:10px; background:#F4F39E; max-width:400px; min-wdith:300px;}
+#startnow { margin-top:100px; display:block; height:35px; }
+</style>
+
+<div class="question">Select a locality?</div>
+<select r:context="business" r:name="data.locality">
+<% 
+try { 
+	def lgus = SERVICE.lookup("LguMemberService", "filipizen").getList(); 
+	lgus.each { print '<option code="'+it.lgucode+'" value="'+it.lguname+'">'+it.lgudesc+'</option>'; } 
+} catch(e) {
+	println '<div id="error-box">'+e+'</div>'; 
+} 
+%> 
+</select> 
+
+<input type="button" id="startnow" r:context="business" r:name="startNow" value="Start Now"/> 
+
+<!-- 
+<div class="question">What is your business structure?</div>
+<input type="radio" class="structuretype" r:context="business" r:name="data.structuretype" value="SOLE-PROPRIETORSHIP">Sole-Proprietorship</input> <br/>
+<input type="radio" class="structuretype" r:context="business" r:name="data.structuretype" value="CORPORATION">Corporation</input> <br/>
+<input type="radio" class="structuretype" r:context="business" r:name="data.structuretype" value="COOPERATIVE">Cooperative</input> <br/>
+<div id="structuretype-info" class="dropdown-window">dropdown-window</div> 
+-->

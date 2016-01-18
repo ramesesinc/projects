@@ -1,0 +1,6 @@
+import com.rameses.common.MediaFile;
+
+def service = SERVICE.lookup('PatientService', 'ehoms');
+def thumbnail = service.getPhoto([objid: PARAMS.objid]); 
+return thumbnail;
+

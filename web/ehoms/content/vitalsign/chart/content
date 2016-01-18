@@ -1,0 +1,107 @@
+
+<%
+	def VITALSIGN = ANUBIS.getFile( '/vitalsign/popup.pg' );
+%>
+<script>
+	@register( VITALSIGN.path )
+
+	\$put("${PAGE.context}", new function() {
+		var self = this;
+		var patientChartSvc = Service.lookup("PatientChartService", "main");
+		var patientChartActivitySvc = Service.lookup("PatientChartActivityService", "main");
+		var patientChartVitalSignSvc = Service.lookup("PatientChartVitalSignService", "main");
+
+		this.entity;
+		this.activity;
+		this.chartid;
+		this.activityid;
+
+		this.onload = function() {
+			//var chartid = ${PARAMS.chartid? "'" + PARAMS.chartid + "'" : null};
+			self.entity = patientChartSvc.open({ objid: self.chartid });
+			self.activity = patientChartActivitySvc.open({ objid: self.activityid });
+			self.activity.vitalSignList = patientChartVitalSignSvc.getItems({ activityid: self.activityid });
+			//self.entity.activityList = patientChartActivitySvc.getList({ objid: self.chartid });
+		}
+
+		this.updateResults = function() {
+			var handler = function(x) {
+				var item;
+				for (var i=0; i<x.list.length; i++) {
+					item = x.list[i];
+					item.parentid = self.chartid;
+					item.activityid = self.activityid;
+				}
+
+				patientChartVitalSignSvc.saveEntries(x.list);
+				
+			}
+			return new PopupOpener( "${VITALSIGN.name}", { saveHandler: handler, entity: self.activity });
+		}
+
+		this.closeTask = function() {
+			var r = confirm("You are about to close this task. Continue?");
+			if (r == true) {
+				patientChartActivitySvc.closeTask({ activityid: self.activityid });
+			}
+		}
+
+	});
+</script>
+
+<style>
+	#main-container {
+		width: 600px;
+		margin: 0 auto;
+	} 
+
+	#patient-pic {
+		height: 150px;
+		width: 150px;
+	}
+
+	#patient-pic img {
+		height: 100%;
+		width: 100%;
+	}
+
+	#patient-pic, #patient-info {
+		float: left;
+	}
+
+	#patient-info {
+		height: 150px;
+		width: 450px;
+	}
+</style>
+
+<div id="main-container">
+	<div id="patient-pic">
+	</div>
+	<div id="patient-info">
+		<span>
+			<label style="font-weight: bold; font-size: 18px;" r:context="${PAGE.context}" r:name="entity.chartno" />
+		</span> <br/>
+		<span>
+			<label r:context="${PAGE.context}" r:name="entity.patient.lastname" />
+		</span>, 
+		<span>
+			<label r:context="${PAGE.context}" r:name="entity.patient.firstname" /> <br/>
+		</span>
+	</div>
+	<div style="clear: both"></div> <br/>
+	<a r:context="${PAGE.context}" r:name="updateResults">Update Results</a> &nbsp;
+	<a r:context="${PAGE.context}" r:name="closeTask">Close Task</a>
+	<br/> <br/>
+	<b>Vital Sign Results</b>
+	<table style="width: 300px; border: 1px solid black;" r:context="${PAGE.context}" r:items="activity.vitalSignList" r:varName="item">
+		<tbody>
+			<tr>
+				<td>#{item.title}</td>
+				<td>
+					#{item.value? item.value + " " + item.unit : "not taken"}
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>

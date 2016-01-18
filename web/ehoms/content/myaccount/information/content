@@ -1,0 +1,157 @@
+<%
+	def data = [:];
+	try { 
+		def svc = SERVICE.lookup('WebAccountService', 'admin');
+		data = svc.getAccountInfo([sessionid: SESSION.sessionid]); 
+	} catch(Throwable t) {
+		println '<p class="error-box" style="margin:0 10px 10px 10px;">'+t.message+'</p>'; 
+		t.printStackTrace();
+	} 
+%>
+<script>
+var chpwdpg = @register('/myaccount/changepassword') 
+\$put('${PAGE.context}', new function(){
+
+	this.changePassword = function() {
+		return new PopupOpener(chpwdpg.id, {});
+	}
+}); 
+</script>
+
+<style>
+table.xdatatable {
+	width:100%; margin-top:20px;
+}
+table.xdatatable tr.datatable-header > td {
+	border-bottom:1px solid #c0c0c0;
+}
+table.xdatatable tr.xdatatable-header > td.xdatatable-header-title {
+	font-size:12px; color:#606060; text-shadow:1px 1px #efefef;
+	font-weight:bold;
+}
+table.xdatatable tr.xdatatable-header > td.xdatatable-header-action {
+	text-align:right;
+}
+table.data {
+	border-collapse: collapse;
+	width:100%; margin-bottom:20px; 
+}
+table.data tr > td {
+	border:1px solid #e0e0e0;
+	border-left:0; border-right:0;
+	padding:2px 10px;
+}
+table.data tr > td.key {
+	padding-right:30px; width:200px;
+}
+table.data tr > td.description {
+	text-align:right; color:#808080;
+}
+</style>
+
+<table cellpadding="0" cellspacing="0" width="100%" style="margin-top:10px;">
+<tr>
+	<td> @pagetitle() </td>
+	<td align="right" style="white-space:nowrap;"> 
+		<input type="button" r:context="${PAGE.context}" r:name="changePassword" value="Change Password"/>
+	</td> 
+</tr>
+</table>
+
+
+<table class="xdatatable" cellpadding="0" cellspacing="0" width="100%">
+<tr class="xdatatable-header">
+	<td class="xdatatable-header-title">General Information</td>
+	<td class="xdatatable-header-action">&nbsp;</td>
+</tr>
+<tr>
+	<td colspan="2">
+		<table class="data" cellpadding="0" cellspacing="0">
+		<tr>
+			<td class="description" colspan="2">User information for this account</td>
+		</tr> 
+		<tr>
+			<td class="key">Username</td>
+			<td class="value">${data.user.username}</td>
+		</tr>
+		<tr>
+			<td class="key">Last Name</td>
+			<td class="value">${data.user.lastname? data.user.lastname: '&nbsp;'}</td>
+		</tr>
+		<tr>
+			<td class="key">First Name</td>
+			<td class="value">${data.user.firstname? data.user.firstname: '&nbsp;'}</td>
+		</tr>
+		<tr>
+			<td class="key">Middle Name</td>
+			<td class="value">${data.user.middlename? data.user.middlename: '&nbsp;'}</td>
+		</tr>
+		<tr>
+			<td class="key">Job Title</td>
+			<td class="value">${data.user.jobtitle? data.user.jobtitle: '&nbsp;'}</td>
+		</tr>
+		<tr>
+			<td class="key">Txn Code</td>
+			<td class="value">${data.user.txncode? data.user.txncode: '&nbsp;'}</td>
+		</tr>		
+		</table>
+	</td>
+</tr>
+<tr class="xdatatable-header">
+	<td class="xdatatable-header-title">Roles</td>
+	<td class="xdatatable-header-action">&nbsp;</td>
+</tr>
+<tr>
+	<td colspan="2">
+		<table class="data" cellpadding="0" cellspacing="0">
+		<tr>
+			<td class="key">${data.roles? data.roles: '(None)'}</td>
+			<td class="description">Access level for this account</td>
+		</tr>
+		</table>
+	</td>
+</tr>
+<tr class="xdatatable-header">
+	<td class="xdatatable-header-title">Access Settings</td>
+	<td class="xdatatable-header-action">&nbsp;</td>
+</tr>
+<tr>
+	<td colspan="2">
+		<table class="data" cellpadding="0" cellspacing="0">
+		<tr>
+			<td class="description" colspan="2">Access settings for this account</td>
+		</tr>		
+		<tr>
+			<td class="key">Client Type</td>
+			<td class="value">${data.clienttype? data.clienttype: '(Not Available)'}</td>
+		</tr>
+		<tr>
+			<td class="key">Time-In</td>
+			<td class="value">${data.timein? data.timein: '(Not Available)'}</td>
+		</tr>
+		<tr>
+			<td class="key">Access Time</td>
+			<td class="value">${data.accesstime? data.accesstime: '(Not Available)'}</td>
+		</tr> 
+		<tr>
+			<td class="key">Access Expiry</td>
+			<td class="value">${data.accessexpiry? data.accessexpiry: '(Not Available)'}</td>
+		</tr> 		
+		</table>
+	</td>
+</tr>
+<tr class="xdatatable-header">
+	<td class="xdatatable-header-title">Localization</td>
+	<td class="xdatatable-header-action">&nbsp;</td>
+</tr>
+<tr>
+	<td colspan="2">
+		<table class="data" cellpadding="0" cellspacing="0">
+		<tr>
+			<td class="key">English (Default)</td>
+			<td class="description">Language selection for this account</td>
+		</tr>
+		</table>
+	</td>
+</tr>
+</table> 

@@ -1,0 +1,52 @@
+<% 
+	def AcctInfo = [:];
+	try {  
+		def svc = SERVICE.lookup('WebAccountService', 'admin'); 
+		AcctInfo = svc.getAccountInfo([sessionid: SESSION.sessionid]); 
+	} catch(e) {
+		e.printStackTrace(); 
+	}
+%> 
+<script> 
+\$put('${PAGE.context}', new function(){
+
+});
+</script>
+
+<style> 
+#acctheader { padding:10px 20px; min-width:200px; border-bottom:1px solid #d5d5d5; font-size:0.95em; }
+#acctname { color:#289dff; font-size:0.95em; font-weight:600; margin-left:5px; }
+#acctbody { padding:10px 0px; border-top:1px solid #f7f7f7; }
+.acctmenu-navbar { width:100%; margin:0; font-size:10pt; } 
+.acctmenu-navbar .navbar-row td.gap { display:none; } 
+.acctmenu-navbar .navbar-row a.navbar-action { color: #333; text-shadow:1px 1px #e5e5e5; } 
+.acctmenu-navbar .navbar-row .navbar-col { padding:5px 20px; }
+.acctmenu-navbar .navbar-row .navbar-col:hover { background-color: #41bbd3; color: #fff; } 
+.acctmenu-navbar .navbar-row .navbar-col:hover a { color: inherit; text-shadow:none; } 
+</style>
+
+<div id="acctheader">
+	Welcome: <span id="acctname">${AcctInfo?.user.name}</span> 
+</div>
+<div id="acctbody">
+	@navbar(folderid:'/myaccount', style:'vertical', class:'acctmenu')
+</div>
+
+<script>
+BindingUtils.loaders.push(function(){
+	var actions = \$('.acctmenu-navbar .navbar-row .navbar-col .navbar-action');
+	if (!actions[0]) return; 
+
+	actions.parent().on('click', function(e){ 
+		window.console.log(e); 
+		var a = \$(e.target); 
+		if (a.hasClass('navbar-action')) return true; 
+
+		a = a.children('.navbar-action'); 
+		if (a[0]) { 
+			window.location.href = a.attr('href');
+		} 
+		return false; 
+	}); 
+});
+</script>

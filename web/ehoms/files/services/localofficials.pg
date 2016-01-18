@@ -1,0 +1,6 @@
+{
+   title 		: 'Local Officials',
+   description 	: 'Learn more about your LGU and the people who run it',
+   icon 		: '/images/main/official.png',
+   sortorder 	: 2
+}

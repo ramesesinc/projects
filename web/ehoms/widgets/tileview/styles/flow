@@ -1,0 +1,50 @@
+<%
+    def xclass  = OPTIONS.class? OPTIONS.class: 'default';
+    int width   = OPTIONS.width? OPTIONS.width: 300;
+    int cols    = OPTIONS.cols? OPTIONS.cols: 3; 
+    int blocks  = (DATA.size() / cols).intValue();
+    if ((DATA.size() % cols) > 0) blocks += 1;
+
+    int iconSize  = OPTIONS.iconSize? OPTIONS.iconSize: 50;
+    def iconHeight = 'height="'+iconSize+'"';
+    def iconWidth  = '';    
+    if (OPTIONS.iconWidth) iconWidth = 'width="'+OPTIONS.iconWidth+'"';
+    if (OPTIONS.iconHeight) iconHeight = 'height="'+OPTIONS.iconHeight+'"';
+
+    def iconVAlignment = 'valign="top"';
+    if (OPTIONS.iconVAlignment) iconVAlignment='valign="'+OPTIONS.iconVAlignment+'"';
+
+    println '<table class="tileview '+xclass+'-tileview" cellpadding="0" cellspacing="0" border="0">'
+    for (int r=0; r<blocks; r++) {
+    	println '<tr class="tileview-rows">'; 
+    	for (int c=0; c<cols; c++) {
+    		int idx = (r*cols)+c;
+    		if (idx >= DATA.size()) break;
+
+    		def o = DATA[idx];
+            def desc = (o.shortdescription? o.shortdescription: o.description);
+    		println """ 
+    			<td class="tileview-col" valign="top">
+    				<table class="tileview-block" cellpadding="0" cellspacing="0" border="0" style="min-width:${width}px;max-width:${width}px;width:${width}px;">
+    				<tr>
+    					<td class="tileview-block-icon" ${iconVAlignment} rowspan="2" style="width:1px;">
+    						<img src="${o.icon}" border="0" ${iconHeight} ${iconWidth}/>
+    					</td>
+    					<td class="tileview-block-content-filler tileview-block-content">
+                            <p class="tileview-block-title" style="margin:0;">
+                                <a href="${o.href? o.href: o.path}">${o.title}</a> 
+                            </p>
+                            <p class="tileview-block-desc" style="margin:0;">
+                                ${desc? desc: ''}
+                            </p>
+    					</td>
+    				</tr>
+    				</table>
+    			</td>
+    		""";
+    	}
+    	println '</tr>'; 
+    }
+
+    println '</table>';
+%>

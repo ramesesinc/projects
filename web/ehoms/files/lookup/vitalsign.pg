@@ -1,0 +1,7 @@
+{
+	context: 	'vitalsign',
+	xsecured:	true,
+	fragment: 	true,
+	hidden:		true,
+	options:	{width:650, height:440}
+}

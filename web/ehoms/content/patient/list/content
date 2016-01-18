@@ -1,0 +1,112 @@
+<style>
+	#main-container {
+		width: 1024px;
+		margin: 0 auto;
+	}
+
+	#main-container table {
+		width: 100%;
+		border: 1px solid black;
+	}
+
+	.patient-chartno {
+		font-size: 1.4em;
+		font-weight: bold;
+	}
+
+	.patient-name {
+		font-size: 1.2em;
+		font-style: italic;
+	}
+
+</style>
+
+<script>
+
+	\$put("${PAGE.context}", new function() {
+		var self = this;
+
+		this.selectedSection;
+		this.selectedPatient;
+		this.searchtext = "";
+
+		this.patientList = [
+			{chartno: '12345', patientname: 'Zamora, Jessie 1', section: 'OPD'},
+			{chartno: '12346', patientname: 'Zamora, Jessie 2', section: 'WARD'},
+			{chartno: '12347', patientname: 'Zamora, Jessie 3', section: 'ER'},
+			{chartno: '12348', patientname: 'Zamora, Jessie 4', section: 'OPD'},
+			{chartno: '12349', patientname: 'Zamora, Jessie 5', section: 'WARD'},
+			{chartno: '12350', patientname: 'Zamora, Jessie 6', section: 'ER'},
+			{chartno: '12351', patientname: 'Zamora, Jessie 7', section: 'OPD'}
+		];
+
+		this.sectionList = ["ER", "OPD", "WARD"];
+
+		this.patientListModel = {
+			rows: 15,
+			fetchList: function(o) {
+				return self.getPatientsBySection();
+			}
+		};
+
+		this.getPatientsBySection = function() {
+			var list = [];
+			var item;
+			for (var i=0; i<self.patientList.length; i++) {
+				item = self.patientList[i];
+				if (self.selectedSection == item.section) {
+					list.push(item);
+				}
+			}
+			return list;
+		}
+
+		this.openChart = function() {
+			//console.log("chartno: " + self.selectedPatient.chartno);
+			//window.location('/patient/chart');
+			//${PARAMS}.chartno = self.selectedPatient.chartno;
+			//console.log("href: " + window.location.href);
+			window.location.href = "/patient/chart?chartno=" + self.selectedPatient.chartno;
+		}
+
+		this.propertyChangeListener = {
+			"selectedSection": function(o) {
+				//console.log("section : " + o);
+				self.patientListModel.load();
+			}
+		}
+		/*this.propertyChangeListener = [
+			selectedSection: function (o) {
+				self.patientListModel.load();
+				//console.log("section: " + o);
+			}
+		]*/
+	});
+</script>
+
+<div id="main-container">
+	<h2>Patient Chart List</h2>
+
+	<div style="width: 300px; float: left;">
+		Section
+		<select r:context="${PAGE.context}" r:items="sectionList" r:name="selectedSection" style="width: 200px">
+		</select>
+	</div>
+	<table r:context="${PAGE.context}" r:model="patientListModel" r:name="selectedPatient" r:varName="item">
+		<thead>
+			<tr>
+				<td>Patient</td>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>
+					<label class="patient-chartno">
+						<a r:context="${PAGE.context}" r:name="openChart">#{item.chartno}</a>
+					</label> <br/>
+					<label class="patient-name">#{item.patientname}</label>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>

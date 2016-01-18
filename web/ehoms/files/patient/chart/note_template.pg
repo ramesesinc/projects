@@ -1,0 +1,7 @@
+{ 
+	secured		: true, 
+	fragment	: true,
+	href		: '/popup/notetemplate',
+
+	icon		: '/images/main/tools.png' 
+} 

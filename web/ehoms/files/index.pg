@@ -1,0 +1,6 @@
+{
+	href		: '/home',
+   	title 		: "Home",
+   	sortorder	: -1, 
+   	hidden		: true
+}

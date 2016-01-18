@@ -1,0 +1,5 @@
+{  
+	context		: 'vitalsign', 
+	secured 	: true,
+	fragment 	: true
+} 

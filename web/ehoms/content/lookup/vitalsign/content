@@ -1,0 +1,104 @@
+<style>
+
+	#main {
+		width: 600px;
+		margin: 0 auto;
+	}
+
+	#main table {
+		width: 100%;
+		border: 1px solid black;
+	}
+
+	#actions {
+		width: 600px;
+		margin: 0 auto;
+	}
+
+	#actions table {
+		width: 100%;
+	}
+
+	#actions table tr td {
+		text-align: center;
+		vertical-align: bottom;
+	}
+
+	#actions button {
+		text-align: center;
+	}
+</style>
+
+<script>
+	\$put("${PAGE.context}", new function() {
+		var self = this;
+
+		this.entity;
+		this.selectedVitalSign;
+
+		this.listModel = {
+			rows: 5,
+			fetchList: function(o) {
+				if (self.entity != null) return self.entity.vitalSignsList;
+				return [];
+			}
+		}
+
+		this.discontinue = function() {
+			console.log("action: discontinue");
+		}
+
+		this.complete = function() {
+			console.log("action: complete");
+		}
+
+		this.addBPResult = function() {
+			console.log("type: " + self.selectedVitalSign.type);
+		}
+
+		this.addRespiratory = function() {
+			console.log("type: " + self.selectedVitalSign.type);
+		}
+
+		this.addPulse = function() {
+			console.log("type: " + self.selectedVitalSign.type);
+		}
+
+		this.addTemperature = function() {
+			console.log("type: " + self.selectedVitalSign.type);
+		}
+	});
+</script>
+
+<div id="main"> 
+	<h3>Activity: <label r:context="${PAGE.context}" r:name="entity.activity" /></h3>
+	<table r:context="${PAGE.context}" r:model="listModel" r:varName="item" r:name="selectedVitalSign">
+		<thead>
+			<tr>
+				<td style="width: 70%">Vital Sign</td>
+				<td style="width: 30%">Result</td>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>#{item.name}</td>
+				<td>
+					<span r:visible
+					 #{item.result? item.result + ' mmHg': '<input r:context="${PAGE.context}" type="integer" r:name="selectedVitalSign.systolic" />/<input r:context="${PAGE.context}" r:type="integer" r:name="selectedVitalSign.diastolic" />'}
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+<div id="actions">
+	<table>
+		<tr>
+			<td>
+				<button r:context="${PAGE.context}" r:name="discontinue">Discontinue</button>
+			</td>
+			<td>
+				<button r:context="${PAGE.context}" r:name="complete">Complete</button>
+			</td>
+		</tr>
+	</table>
+</div>

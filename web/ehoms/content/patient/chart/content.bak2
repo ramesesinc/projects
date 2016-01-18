@@ -1,0 +1,154 @@
+
+<%
+	def VITALSIGN = ANUBIS.getFile( '/activity/vitalsign.pg' );
+	def FACESHEET = ANUBIS.getFile( '/patient/option/facesheet.pg' );
+    def ADD_DIAGNOSIS = ANUBIS.getFile( '/popup/adddiagnosis.pg' );
+
+
+	def service = SERVICE.lookup("PatientChartService", "main");
+	def entity = service.open([objid: PARAMS.chartid? PARAMS.chartid : '']);
+
+	def sessionSvc = SERVICE.lookup("SessionService", "main");
+	def env = sessionSvc.getUserInfo(SESSION.sessionid).env;
+%>
+
+<script>
+	@register( VITALSIGN.path )
+	@register( FACESHEET.path )
+	@register( ADD_DIAGNOSIS.path );
+
+	\$put("${PAGE.context}", new function() {
+		var self = this;
+		var chartSvc = Service.lookup("PatientChartService", "main");
+		var diseaseLookupSvc = Service.lookup("DiseaseLookupService", "main");
+		var chartDiagnosisSvc = Service.lookup("PatientChartDiagnosisService", "main");
+		var noteTemplSvc = Service.lookup("NoteTemplateService", "main");
+
+
+		this.entity;
+		this.diagnosisEntity;
+		this.diagSuggName;
+		this.diagnosisSearchtext;
+		this.noteTemplate;
+		this.templateSection;
+		this.noteTemplateScopeList = [
+            {key:'private', caption:'Show only private to author'},
+            {key:'public', caption:'Show only public templates (hospital wide)'},
+		];
+		this.keywordList;
+		this.selectedScope;
+		this.selectedKeyword;
+		this.keywordInfo;
+		this.keywordText;
+
+		this.onload = function() {
+			var chartid = ${PARAMS.chartid? "'" + PARAMS.chartid + "'" : ""};
+			self.entity = chartSvc.open({objid: chartid});
+			window.console.log(self.entity);
+		}
+
+		this.addDiagnosis = function() {
+			self.templateSection = 'diagnosis';
+			self.diagnosisSearchtext = "";
+			self.diagnosisEntity = { 
+				objid 	: chartDiagnosisSvc.createObjid(),
+				parentid: self.entity.objid 
+			};
+			return "add_diagnosis";
+		}
+
+		this.cancelDiagnosis = function() {
+			return "default";
+		}
+
+		this.saveDiagnosis = function() {
+			chartDiagnosisSvc.create(self.diagnosisEntity);
+			return "default";
+		}
+
+		this.clearSelectedDiagnosis = function() {
+			self.diagnosisSearchtext = null;
+		}
+
+		this.diagnosisList = function(searchtext, e) {
+			var params = { searchtext: searchtext };
+			return diseaseLookupSvc.getList(params);
+		}
+
+		this.noteTemplate = function() {
+			if (!self.selectedScope) self.selectedScope = self.noteTemplateScopeList[0];
+			var params = { 
+				authorid: "${env.USERID}",
+				scope 	: self.selectedScope.key,
+				section : self.templateSection
+			}
+			self.keywordList = noteTemplSvc.getList(params);
+			return "note_template";
+		}
+
+		this.selectNoteTemplate = function() {
+			self.diagnosisEntity.notes += " "+self.selectedKeyword.text;
+			return "add_diagnosis";
+		}
+
+		this.cancelNoteTemplate = function() {
+			return "add_diagnosis";
+		}
+
+		this.propertyChangeListener = {
+			diagSuggName: function(x) {
+				self.diagnosisEntity.diagnosis = x;
+			},
+			selectedKeyword: function(x) {
+				window.console.log(x);
+				self.keywordText = x.text;
+			}
+		}
+
+	}, { @load-controller-page() });
+</script>
+
+<style>
+	#main-container {
+		width: 1024px;
+		margin: 0 auto;
+	} 
+
+	#patient-pic {
+		height: 150px;
+		width: 150px;
+		float: left;
+	}
+
+	#patient-info {
+		padding-left: 10px;
+		float: left;
+	}
+
+	#activity, #activity table {
+		width: 100%;
+	}
+
+</style>
+
+<div id="main-container">
+	<h2>Patient Chart</h2>
+	<div id="patient-pic">
+		<img r:context="${PAGE.context}" src="/media/getPatientPhoto?objid=<% print entity.patient.objid %>" style="height: 100%; width: 100%"/>
+	</div>
+	<div id="patient-info">
+		<span style="font-weight: bold;"> 
+			Chart No. <label r:context="${PAGE.context}" r:name="entity.chartno" />
+		</span> <br/>
+		<span> 
+			<label r:context="${PAGE.context}" r:name="entity.patient.lastname" />,
+			<label r:context="${PAGE.context}" r:name="entity.patient.firstname" />
+		</span> <br/>
+		<span> 
+			Age: <label r:context="${PAGE.context}" r:name="entity.patient.age" />
+		</span> <br/>
+	</div>
+	<div style="clear: both"></div>
+	<hr size=1/>
+	<div r:controller="${PAGE.context}"></div>
+</div>

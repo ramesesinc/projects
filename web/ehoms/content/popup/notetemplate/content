@@ -1,0 +1,121 @@
+<%
+	def sessionSvc = SERVICE.lookup("SessionService", "main");
+	def env = sessionSvc.getUserInfo(SESSION.sessionid).env;
+%>
+
+<script>
+	\$put( "${PAGE.context}", new function() {
+		var self = this;
+		var service = Service.lookup("NoteTemplateService", "main");
+
+		this.scopeList = [
+            {key:'private', caption:'Show only private to author'},
+            {key:'public', caption:'Show only public templates (hospital wide)'},
+		];
+		this.selectedKeyword;
+		this.selectedScope;
+		this.keywordList;
+		this.section;
+		this.callerCtx;
+		this.notes;
+
+		this.cancelTemplateHandler;
+		this.saveTemplateHandler;
+
+		this.onload = function() {
+			self.keywordList = self.getKeywordList();
+			window.console.log("note template onload");
+		}
+
+		this.getKeywordList = function() {
+			if (!self.selectedScope) self.selectedScope = self.scopeList[0];
+			var params = {
+				authorid: "${env.USERID}",
+				scope 	: self.selectedScope.key,
+				section : (self.section? self.section : "")
+			};
+			return service.getList(params);
+		}
+
+		this.selectNoteTemplate = function() {
+			if (self.notes) self.notes += " ";
+			self.notes += self.selectedKeyword.text;
+			var params = {
+				callerCtx	: self.callerCtx,
+				notes 	 	: self.notes
+			}
+			window.console.log(params);
+			if (self.saveTemplateHandler) self.saveTemplateHandler(params);
+		}
+
+		this.cancelNoteTemplate = function() {
+			var params = { callerCtx: self.callerCtx };
+			if (self.cancelTemplateHandler) self.cancelTemplateHandler(params);
+		}
+
+		this.propertyChangeListener = {
+			section: function(x) {
+				self.keywordList = self.getKeywordList();
+			}
+		}
+	})
+</script>
+
+<style>
+	.scope {
+		width: 400px;
+	}
+	.selected {
+		font-weight: bold;
+	}
+	#keyword {
+		width: 250px;
+		height: 200px;
+		float: left;
+	}
+	#keyword table {
+		width: 100%;
+	}
+	#note-template textarea {
+		width: 500px; 
+		height: 100px;
+		resize: none;
+	}
+</style>
+
+<div id="notetemplate-container">
+	Scope: <select class="scope" r:context="${PAGE.context}" r:name="selectedScope" r:items="scopeList" r:allowNull="false" r:itemLabel="caption" />
+	<br/> <br/>
+
+	<div id="keyword">
+		Keyword
+		<table r:context="${PAGE.context}" r:varName="item" r:name="selectedKeyword" r:items="keywordList">
+			<tr>
+				<td>#{item.keyword} (#{item.scope})</td>
+			</tr>
+		</table>
+	</div>
+	<div id="note-template">
+		Note Template <br/>
+		<textarea readonly="true" r:context="${PAGE.context}" r:name="selectedKeyword.text" r:depends="selectedKeyword" />
+		<br/> <br/>
+		<table>
+			<tr>
+				<td>Author</td>
+				<td><label r:context="${PAGE.context}" r:name="selectedKeyword.author.name" r:visibleWhen="#{selectedKeyword.author}" r:depends="selectedKeyword" /></td>
+			</tr>
+			<tr>
+				<td>Date Created</td>
+				<td><label r:context="${PAGE.context}" r:name="selectedKeyword.dtcreated" r:visibleWhen="#{selectedKeyword.dtcreated}" r:depends="selectedKeyword" /></td>
+			</tr>
+			<tr>
+				<td>Date Last Modified</td>
+				<td><label r:context="${PAGE.context}" r:name="selectedKeyword.dtmodified" r:visibleWhen="#{selectedKeyword.dtmodified}" r:depends="selectedKeyword" /></td>
+			</tr>
+		</table>
+	</div>
+	<div style="clear: both"></div>
+	<br/> <br/>
+	<button r:context="${PAGE.context}" r:name="selectNoteTemplate">Ok</button> &nbsp
+	<button r:context="${PAGE.context}" r:name="cancelNoteTemplate">Cancel</button>
+</div>

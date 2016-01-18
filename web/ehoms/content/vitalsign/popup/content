@@ -1,0 +1,90 @@
+
+
+<script>
+	\$put("${PAGE.context}", new function() {
+		var self = this;
+		var service = Service.lookup("PatientChartVitalSignService", "main");
+
+		this.saveHandler;
+		this.entity;
+		this.items;
+		this.readonly = false;
+
+		this.listModel = {
+			rows: (self.items? self.items.size() : 0),
+			fetchList: function(o) {
+				if (!self.items) {
+					self.items = [];
+				}
+				return self.items;
+			}
+		}
+
+		this.onload = function() {
+			//window.console.log("activityid: " + self.entity.objid);
+			self.items = service.getItems({ activityid: self.entity.objid });
+			//self.copyVitalSignList(self.entity.vitalSigns);
+			//window.console.log(self.entity);
+		}
+
+		this.save = function() {
+			if (self.saveHandler) self.saveHandler({ list: self.items });
+			return "_close";
+		}
+
+		this.cancel = function() {
+			return "_close";
+		}
+
+		this.propertChangeListener = {
+			items: function(o) {
+				self.listModel.load();
+			}
+		}
+	});
+</script>
+
+<style>
+	#container {
+		width: 90%;
+		margin: 0 auto;
+	}
+
+	#container table {
+		width: 100%;
+	}
+</style>
+
+<div id="container">
+	<span r:context="${PAGE.context}" r:visibleWhen="#{!readonly}">
+		<h3>Check Vital Sign</h3>
+		Input the vital sign results <br/>
+	</span>
+	<span r:context="${PAGE.context}" r:visibleWhen="#{readonly}">
+		<h3>Vital Sign Results</h3>
+	</span>
+	<table r:context="${PAGE.context}" r:model="listModel" r:varName="item" r:varStatus="idx">	
+		<tr>
+			<td>
+				<span r:context="${PAGE.context}" r:visibleWhen="#{!readonly}">
+					#{item.title}: 
+				</span>
+				<span r:context="${PAGE.context}" r:visibleWhen="#{readonly}">
+					#{item.title} ( #{item.vitalsignid} )
+				</span>
+			</td>
+			<td>
+				<span r:context="${PAGE.context}" r:visibleWhen="#{!readonly}">
+					<input style="text-align: center" r:context="${PAGE.context}" r:name="items[#{idx.index}].value" r:caption="#{item.title}" r:required="true"/> &nbsp;
+					<select style="width: 150px" r:context="${PAGE.context}" r:items="items[#{idx.index}].units" r:name="items[#{idx.index}].unit"></select>
+				</span>
+				<span r:context="${PAGE.context}" r:visibleWhen="#{readonly == true}">
+					#{items[idx.index].value? items[idx.index].value + " " + items[idx.index].unit : "not taken"}
+				</span>
+			</td>
+		</tr>
+	</table>
+	<br/> <br/>
+	<button r:context="${PAGE.context}" r:name="save" r:visibleWhen="#{!readonly}">Save</button>
+	<button r:context="${PAGE.context}" r:name="cancel" r:immediate="true">Cancel</button>
+</div>

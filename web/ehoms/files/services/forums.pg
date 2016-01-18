@@ -1,0 +1,6 @@
+{
+   title 		: 'Forums and Discussions',
+   description 	: 'File complaints and discuss issues',
+   icon 		: '/images/main/forum.png',
+   sortorder 	: 5
+}

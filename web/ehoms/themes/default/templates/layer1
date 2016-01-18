@@ -1,0 +1,14 @@
+<style>
+.layer-page-title { 
+	margin-top:40px; font-size:1.9em; color:#444;
+} 
+.layer-page-desc {
+	margin-top:20px; font-size: 1.3em; 
+	margin-bottom:30px;
+}
+</style>
+
+<div class="page-title layer-page-title">${PAGE.title}</div> 
+<div class="layer-page-desc">${PAGE.description? PAGE.description: PAGE.shortdescription}</div> 
+
+${_content} 

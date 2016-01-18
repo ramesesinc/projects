@@ -1,0 +1,17 @@
+<style>
+#logout-title {  
+	background: url('/images/loading.gif') no-repeat;
+	padding-left:40px; margin-top:20px; 
+}
+</style>
+
+<div id="logout-title" class="page-title"> Logging out ... </div>
+<form id="form-logout" action="/actions/logout" method="post"></form>
+<script>
+BindingUtils.loaders.push(function(){
+	var callback = function(){
+		\$('#form-logout').submit(); 
+	} 
+	setTimeout(callback, 1000); 
+});
+</script>

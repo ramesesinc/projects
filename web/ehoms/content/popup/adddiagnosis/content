@@ -1,0 +1,97 @@
+<%
+	def diagSvc = SERVICE.lookup("PatientChartDiagnosisService", "main");
+	def objid = diagSvc.getObjid();
+
+	def chartSvc = SERVICE.lookup("PatientChartService", "main");
+	def entity = chartSvc.open([objid: PARAMS.chartid]);
+%>
+
+<script>
+	\$put( "${PAGE.context}", new function() {
+		var self = this;
+		var service = Service.lookup("DiseaseLookupService", "main");
+		var diagSvc = Service.lookup("PatientChartDiagnosisService", "main");
+
+		this.entity;
+		this.suggData;
+		this.diagnosis;
+
+		this.saveDiagnosisHandler;
+		this.cancelDiagnosisHandler;
+		this.noteTemplateHandler;
+
+		this.fetchList = function( searchtext, e ) {
+			var params = { searchtext: searchtext };
+			return service.getList(params);
+		}
+
+		this.clearDiagnosis = function() {
+			self.searchtext = "";
+		}
+
+		this.saveDiagnosis = function() {
+			self.entity.objid = "${objid}";
+			self.entity.parentid = "${entity.objid}";
+			self.entity.diagnosis = self.diagnosis;
+			self.entity = diagSvc.create(self.entity);
+			if (self.saveDiagnosisHandler) self.saveDiagnosisHandler(self.entity);
+		}
+
+		this.cancelDiagnosis = function() {
+			window.console.log((self.cancelDiagnosisHandler));
+			if (self.cancelDiagnosisHandler) self.cancelDiagnosisHandler({ cancel: "ok" });
+		}
+
+		this.noteTemplate = function() {
+			window.console.log(self.entity);
+			var params = {
+				callerCtx	: "${PAGE.context}",
+				section 	: "diagnosis"
+			}
+			window.console.log("note template entity");
+			window.console.log(self.entity);
+			if (self.entity) {
+				params.notes = (self.entity.notes? self.entity.notes : "");
+			}
+			if (self.noteTemplateHandler) self.noteTemplateHandler(params);
+		}
+	})
+</script>
+
+
+<style>
+	#diagnosis-container, #diagnosis-container table {
+		width: 100%;
+	}
+
+	#diagnosis-container table td {
+		vertical-align: top;
+	}
+</style>
+
+<div id="diagnosis-container">
+	<h4>Add Diagnosis</h4>
+
+	<table >
+		<tr>
+			<td style="width: 120px">Diagnosis:</td>
+			<td>
+				<input style="width: 70%" type="text" r:context="${PAGE.context}" r:name="suggData" r:suggest="fetchList" r:suggestName="diagnosis" r:suggestExpression="#{title} (#{code})" r:required="true" r:caption="Diagnosis" /> &nbsp;
+				<button r:context="${PAGE.context}" r:name="clearDiagnosis">Clear</button>
+			</td>
+		</tr>
+		<tr>
+			<td>Notes:</td>
+			<td>
+				<textarea rows="5" style="width: 100%; resize: none;" r:context="${PAGE.context}" r:name="entity.notes" r:required="true" r:caption="Notes" />
+			</td>
+		</tr>
+		<tr>
+			<td></td>
+			<td> <button r:context="${PAGE.context}" r:name="noteTemplate" r:immediate="true" >Key</button> </td>
+		</tr>
+	</table>
+	<br/> <br/>
+	<button r:context="${PAGE.context}" r:name="saveDiagnosis">  Ok  </button> &nbsp;
+	<button r:context="${PAGE.context}" r:name="cancelDiagnosis" r:immediate="true" >Cancel</button>
+</div>

@@ -1,0 +1,6 @@
+{ 
+	title		: 'Account Information', 
+	context		: 'acctinfo', 
+	secured		: true, 
+	sortorder	: -100
+} 

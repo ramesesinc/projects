@@ -1,0 +1,9 @@
+<workunit>
+    <invokers>
+        <invoker type="cashreceipt:waterworks:lookup" caption="Water Payment" />
+    </invokers>
+    <code class="com.rameses.gov.etracs.waterworks.models.WaterworksAccountLookup" />
+    <pages>
+        <page template="com.rameses.gov.etracs.waterworks.views.WaterworksAccountLookupPage"/>
+    </pages>
+</workunit>

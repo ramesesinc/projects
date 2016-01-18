@@ -1,0 +1,12 @@
+<workunit extends="wtemplates/gov/treasury/BasicCashReceiptController.xml">
+    <invokers>
+        <invoker type="cashreceipt:ctcindividual" action="init" />
+    </invokers>
+    
+    <code class="com.rameses.gov.etracs.ctc.IndividualCtcCashReceipt"/>
+    
+    <pages>
+        <page name="default" template="com.rameses.gov.etracs.ctc.IndividualPage"/>
+    </pages>
+    
+</workunit>

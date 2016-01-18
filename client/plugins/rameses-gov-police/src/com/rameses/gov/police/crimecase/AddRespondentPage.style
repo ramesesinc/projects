@@ -1,0 +1,15 @@
+"respondent" [mode == 'create'] {
+    enabled:true;
+}
+
+"respondent" [mode != 'create'] {
+    enabled:false;
+}
+
+"removeRespondentCrime" [selectedCrime != null] {
+    enabled:true;
+}
+
+"removeRespondentCrime" [selectedCrime == null] {
+    enabled:false;
+}

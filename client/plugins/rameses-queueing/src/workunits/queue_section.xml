@@ -1,0 +1,12 @@
+<workunit extends="seti2/templates/CrudFormController.xml" schemaName="queue_section">
+    <invokers>
+        <!--
+        <invoker type="home.action" caption="Add Queue Section" action="create" target="popup"/> 
+        -->
+        <invoker type="queue_section:create" caption="Queue Section" action="create" target="popup"/> 
+        <invoker type="queue_section:open" caption="Queue Section" action="open" target="popup"/> 
+    </invokers>
+    <pages>
+        <page name="read" template="queueing.model.QueueSectionPage"/>
+    </pages>
+</workunit>    

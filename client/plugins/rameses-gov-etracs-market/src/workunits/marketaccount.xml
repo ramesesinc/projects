@@ -1,0 +1,45 @@
+<workunit>
+    <invokers>
+        <invoker type="marketaccount:create" caption="New Market Account" action="create" role="MASTER"/>
+        <invoker type="marketaccount:open" caption="Market Account" action="open"  role="MASTER"/>
+        <invoker type="formActions" caption="Compute Rate" action="computeRate" visibleWhen="#{mode=='create' || mode=='edit'}"/>
+    </invokers>
+    
+    <code>
+        <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import com.rameses.common.*;
+        import java.rmi.server.*
+        import com.rameses.util.*;
+        
+        class  MarketAccountController extends MasterCRUDController {
+        
+            String serviceName = "MarketAccountService";
+            String entityName  = 'marketaccount';
+            String prefixId    = 'MACCT';
+            
+            Map createEntity() {
+                 return [rentalunit:[:], owner:[:]];
+            }
+            
+            def getLookupOpenRentalUnits() {
+                return Inv.lookupOpener( "market_rentalunit:lookup", ["query.available":true] );
+            }
+            
+            void computeRate() {
+                def r = service.computeRate( entity );
+                entity.rate = r.rate;
+            }
+        }
+        ]]>
+    </code>
+    
+    <pages>
+        <page name="create" template="com.rameses.gov.etracs.marketaccount.NewMarketAccountPage"/>
+        <page template="com.rameses.osiris2.common.ui.OptionFormPage"/>
+    </pages>
+    
+</workunit>

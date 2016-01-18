@@ -1,0 +1,14 @@
+"query.month" [ query.option != 'MONTH' ] {
+    visible: false;
+}
+"query.month" [ query.option == 'MONTH' ] {
+    visible: true;
+}
+"query.amount" [ query.option?.matches('MONTH|FULL') ] {
+    visible: false;
+}
+"query.amount" [ !query.option?.matches('MONTH|FULL') ] {
+    visible: true;
+}
+
+

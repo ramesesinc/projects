@@ -1,0 +1,40 @@
+<workunit>
+    <invokers>
+        <invoker type="cashreceipt-form:907" />
+    </invokers>
+    
+    <code>
+        <![CDATA[    
+
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import com.rameses.osiris2.reports.*;
+        
+        class  CashReceiptForm907 extends ReportModel {
+        
+            def reportData;
+            def parameters = [:];
+            
+            @Service("ReportParameterService")
+            def paramSvc
+            
+            def reportPath = 'com/rameses/gov/etracs/ctc/forms/'
+            
+            public Map getParameters() {
+                return paramSvc.getStandardParameter();
+            }
+            
+            public Object getReportData() {
+                return reportData;
+            }
+            
+            public String getReportName() {
+                return reportPath + "form_907.jasper";
+            }
+        }
+        ]]>
+    </code>
+    
+</workunit>

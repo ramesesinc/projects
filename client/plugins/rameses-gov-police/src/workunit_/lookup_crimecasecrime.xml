@@ -1,0 +1,50 @@
+<workunit>
+    <invokers>
+        <invoker type="crimecasecrime:lookup" caption="Lookup Crime Case Crime" target="popup" />
+    </invokers>
+    
+    <code>
+    <![CDATA[
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        
+        class CrimeCaseCrimeLookupController extends LookupModel
+        {
+            @Service('CrimeCaseService')
+            def svc;
+            
+            def crimes;
+            def onselect;
+            def selected;
+            
+            def ok() {
+                if( onselect ) onselect( selected );
+                return '_close';
+            }
+            
+            def getListHandler() { return this; }
+            int getRows() { return 20; }
+            
+            Column[] getColumns() {
+                return [
+                    new Column(name:'code', caption:'Code'),
+                    new Column(name:'title', caption:'Title'),
+                ];
+            }
+            
+            List fetchList( Map params ) {
+                return crimes.findAll{
+                    def searchtext = (params.searchtext == null? "": params.searchtext.toLowerCase());
+                    if (searchtext.length() == 0) return true;
+                    if (it.code.toLowerCase().indexOf(searchtext) >= 0) return true; 
+                    return (it.title.toLowerCase().indexOf(searchtext) >= 0);
+                };
+            }
+        }
+    ]]>
+    </code>
+    
+    <pages>
+        <page template="com.rameses.gov.police.LookupPage" />
+    </pages>
+</workunit>

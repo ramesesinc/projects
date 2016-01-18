@@ -1,0 +1,5 @@
+<workunit extends="wtemplates/ListController.xml" serviceName="MarketAccountService" entityName="marketaccount">
+    <invokers>
+        <invoker type="home.action" caption="Market Accounts" index="2" role="MASTER"/>
+    </invokers>
+</workunit>

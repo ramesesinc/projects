@@ -1,0 +1,5 @@
+<workunit extends="wtemplates/RuleMgmtController.xml" serviceName="RuleMgmtService" tag="marketbilling">
+    <invokers>
+        <invoker folderid="/explorer/rulemgmt/market" caption="Market Billing Rules" action="init" index="1" role="RULE_AUTHOR"/>
+    </invokers>
+</workunit>

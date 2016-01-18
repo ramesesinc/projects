@@ -1,0 +1,18 @@
+<folders>
+    <folder id="home">
+        <folder id="waterworks" caption="Waterworks" />
+    </folder>
+    <folder id="explorer">
+        <folder id="master" caption="Master">
+            <folder id="waterworks" caption="Waterworks"/>
+        </folder>
+        <folder id="rulemgmt" caption="Rule Management">
+            <folder id="waterworks" caption="Waterworks" index="5"/>
+        </folder>    
+    </folder>
+    <folder id="menu">
+        <folder id="master" caption="Master">
+            <folder id="waterworks" caption="Waterworks"/>
+        </folder>            
+    </folder>
+</folders>    

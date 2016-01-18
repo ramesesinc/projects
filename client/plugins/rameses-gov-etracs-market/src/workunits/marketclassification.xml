@@ -1,0 +1,32 @@
+<workunit>
+    <invokers>
+        <invoker type="marketclassification:create" caption="New Market Classification" action="create"/>
+        <invoker type="marketclassification:open" caption="Market Classification" action="open"/>
+    </invokers>
+    
+    <code>
+        <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import com.rameses.common.*;
+        import java.rmi.server.*
+        
+        class  MarketClassificationController extends CRUDController {
+        
+            @Service("MarketClassificationService")
+            def service;
+            
+            String entityName  = 'marketclassification'
+            String prefixId    = 'MKTCLS';
+            
+        }
+        ]]>
+    </code>
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.market.MarketClassification"/>
+    </pages>
+    
+</workunit>

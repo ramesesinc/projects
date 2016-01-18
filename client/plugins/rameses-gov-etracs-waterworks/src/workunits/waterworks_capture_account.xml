@@ -1,0 +1,11 @@
+<workunit extends="com/rameses/seti2/templates/CrudForm.xml">
+    <invokers>
+        <invoker folderid="/home/waterworks" caption="Capture Account" action="create" index="4"/>
+    </invokers>
+    <code class="com.rameses.gov.etracs.waterworks.models.WaterworksAccount" />
+    <pages>
+        <page name="create" template="com.rameses.gov.etracs.waterworks.views.WaterworksAccountPage"/>
+        <page name="read" template="com.rameses.gov.etracs.waterworks.views.WaterworksAccountPage"/>
+        <page name="edit" template="com.rameses.gov.etracs.waterworks.views.WaterworksAccountPage"/>
+    </pages>
+</workunit>

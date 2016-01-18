@@ -1,0 +1,9 @@
+<workunit>
+    <invokers>
+        <invoker type="cashreceipt:payoption:waterworks" target="popup"/>
+    </invokers>
+    <code class="com.rameses.gov.etracs.waterworks.models.WaterworksPayOption" />
+    <pages>
+        <page template="com.rameses.gov.etracs.waterworks.views.WaterworksPayOptionPage"/>
+    </pages>
+</workunit>

@@ -1,0 +1,5 @@
+<workunit extends="wtemplates/ListController.xml" serviceName="CrimeCaseListService" entityName="crimecase">
+    <invokers>
+        <!--<invoker folderid="/explorer/txnmgmt/police" caption="Crime Case List" target="window" />-->
+    </invokers>
+</workunit>

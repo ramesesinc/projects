@@ -1,0 +1,8 @@
+<folders>
+    <folder id="home">
+        <folder id="admin" caption="Administration">
+            <folder id="queueing" caption="Queue System" index="100"/>
+        </folder>
+    </folder>
+</folders>
+

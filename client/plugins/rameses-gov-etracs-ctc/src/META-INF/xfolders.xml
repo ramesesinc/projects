@@ -1,0 +1,15 @@
+<folders>
+    <folder id="explorer">
+        <folder id="master">
+            <folder id="ctc" caption="Community Tax Certificate" index="10"/>
+        </folder>
+        <folder id="txn">
+            <folder id="treasury" caption="Treasury" index="5">
+                <folder id="ctc" caption="Community Tax Certificate" index="600"/>
+            </folder>
+        </folder>
+        <folder id="rulemgmt">
+            <folder id="ctc" caption="Community Tax Certificate" index="600"/>
+        </folder>
+    </folder>
+</folders>

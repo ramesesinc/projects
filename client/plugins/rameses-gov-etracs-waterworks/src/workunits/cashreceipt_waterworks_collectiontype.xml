@@ -1,0 +1,6 @@
+<workunit extends="wtemplates/enterprise/treasury/BasicCollectionType.xml">
+    <invokers>
+        <invoker type="collectiontype:handler" caption="Water Payment" 
+                 name="waterworks" formtype="serial" formno="51"  index="120" />
+    </invokers>
+</workunit>

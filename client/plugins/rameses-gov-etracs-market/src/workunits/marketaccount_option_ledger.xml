@@ -1,0 +1,38 @@
+<workunit>
+    <invokers>
+        <invoker type="marketaccount:option" caption="Ledger" index="1" visibleWhen="#{entity.state=='APPROVED'}" />
+    </invokers>
+    
+    <code>
+        <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import com.rameses.common.*;
+        import java.rmi.server.*
+        import com.rameses.util.*;
+        
+        class  MarketAccountLedgerController  {
+        
+            @Service("MarketLedgerService")
+            def service;
+        
+            def entity;
+            
+            String entityName= "marketaccount_ledger";
+            
+            def listModel = [
+                fetchList: { o->
+                    return service.getPaymentDetails(  [objid: entity.objid] );
+                }
+            ] as BasicListModel;
+        }
+        ]]>
+    </code>
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.marketaccount.LedgerPage"/>
+    </pages>
+    
+</workunit>

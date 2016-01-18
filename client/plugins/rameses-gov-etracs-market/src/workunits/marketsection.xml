@@ -1,0 +1,32 @@
+<workunit>
+    <invokers>
+        <invoker type="marketsection:create" caption="Market Section" action="create" target="popup"/>
+        <invoker type="marketsection:open" caption="Market Section" action="open" target="popup"/>
+    </invokers>
+    <code>
+        <![CDATA[
+        import com.rameses.rcp.common.*
+        import com.rameses.rcp.annotations.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import com.rameses.rulemgmt.constraint.*;
+        import com.rameses.rulemgmt.*;
+        import java.rmi.server.*;
+        
+        class MarketSectionTypeController extends CRUDController  {
+        
+            @Service("MarketSectionService")
+            def service;
+            
+            String entityName  = 'marketsection'
+            String prefixId    = 'MSEC';
+        }
+        
+        ]]>
+    </code>
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.market.MarketSection"/>
+    </pages>
+    
+</workunit>

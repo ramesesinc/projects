@@ -1,0 +1,35 @@
+<workunit>
+    
+   <invokers>
+         <invoker type="profession:create" caption="Profession" action="create"/>
+         <invoker type="profession:open" caption="Profession" action="open"  />
+   </invokers>
+   
+   <code>
+       <![CDATA[
+        import com.rameses.osiris2.common.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        
+        class BankController extends CRUDController {
+            String serviceName = "ProfessionService";
+            String entityName = "profession";
+            String title = "Profession";
+            String prefixId = "PR";
+            
+            boolean allowEdit = false;
+            boolean allowApprove = false;
+            
+            void afterCreate(Object data){
+                data.objid = null
+            }
+        }      
+       ]]>
+   </code>
+   
+   <pages>
+       <page template="com.rameses.gov.etracs.ctc.ProfessionPage" />
+   </pages>
+   
+</workunit>

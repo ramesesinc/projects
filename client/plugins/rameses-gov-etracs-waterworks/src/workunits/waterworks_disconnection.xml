@@ -1,0 +1,18 @@
+<workunit>
+    <invokers>
+        <invoker folderid="/home/waterworks" caption="Disconnection"  index="1"/>
+    </invokers>
+    <code class="com.rameses.gov.etracs.waterworks.models.WaterworksDisConnection" />
+    <pageflow>
+        <start>
+            
+        </start>
+        <page name="" title="">
+            
+        </page>
+        <end/>
+    </pageflow>    
+    <pages>
+        <page template="com.rameses.gov.etracs.waterworks.views.WaterworksDisConnectionPage"/>
+    </pages>
+</workunit>

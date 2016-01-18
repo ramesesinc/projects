@@ -1,0 +1,14 @@
+<workunit>
+    <invokers>
+        <invoker type="queue_group:create" caption="Queue Group" action="create" target="popup"/> 
+        <invoker type="queue_group:open" caption="Queue Group" action="open" target="popup"/> 
+
+        <invoker type="formActions" caption="Close" action="_close"/> 
+        <invoker type="formActions" caption="Edit" action="edit" visibleWhen="#{mode.matches('read')}"/> 
+        <invoker type="formActions" caption="Save" action="save" visibleWhen="#{mode.matches('create|edit')}"/> 
+    </invokers>
+    <code class="queueing.model.QueueGroup"/>
+    <pages>
+        <page  template="queueing.view.QueueGroupPage"/>
+    </pages>
+</workunit>    

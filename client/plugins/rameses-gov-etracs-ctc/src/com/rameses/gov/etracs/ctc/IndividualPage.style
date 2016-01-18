@@ -1,0 +1,43 @@
+"entity.additional_remarks" [entity.hasadditional == true]{
+    enabled:true;
+}
+"entity.additional_remarks" [entity.hasadditional != true]{
+    enabled:false;
+}
+
+"entity.payer.middlename" [ hasmiddlename == true ]{
+    enabled:false;
+}
+"entity.payer.middlename" [ hasmiddlename != true ]{
+    enabled:true;
+}
+"entity.payer.tin" [ hastin == true ]{
+    enabled:false;
+}
+"entity.payer.tin" [ hastin != true ]{
+    enabled:true;
+}
+
+"entity.payer.acr"[ entity.payer.citizenship == 'FILIPINO']{
+    enabled:false;
+    required:false;
+}
+"entity.payer.acr"[ entity.payer.citizenship != 'FILIPINO']{
+    enabled:true;
+    required:true;
+}
+
+"entity.payer.seniorcitizen" [ 1==1 ]{
+    enabled:false;
+}
+"entity.newbusiness" [ 1==1 ] {
+    enabled:true; 
+} 
+
+"entity.barangay" [ctctype == 'individual']{
+    enabled:false;
+}
+"entity.barangay" [ctctype != 'individual']{
+    enabled:true;
+    required:true;
+}

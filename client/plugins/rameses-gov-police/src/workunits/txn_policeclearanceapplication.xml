@@ -1,0 +1,189 @@
+<workunit>
+    <invokers>
+        <invoker type="policeclearance:open" action="open" caption="Police Clearance"/>
+        
+        <invoker type="extActions" action="submit" caption="Submit" shortcut="ctrl S" mnemonic="s" icon="images/toolbars/submit.png" visibleWhen="#{entity.state == 'DRAFT' &amp;&amp; mode == 'read'}"/>
+        <invoker type="extActions" action="attachOrInfo" caption="Attach OR" icon="images/toolbars/release.png" visibleWhen="#{entity.state == 'FOR_RELEASE'}"/>
+        <invoker type="extActions" action="release" caption="Release" shortcut="ctrl R" mnemonic="r" icon="images/toolbars/release.png" visibleWhen="#{entity.state == 'FOR_RELEASE'}"/>
+        <invoker type="extActions" action="printPoliceClearance" caption="Print" shortcut="ctrl P" mnemonic="p" icon="images/toolbars/print.png" visibleWhen="#{entity.state == 'APPROVED' &amp;&amp; isViewReport == false}"/>
+        <!--<invoker type="extActions" action="previewPoliceClearance" caption="Preview" shortcut="ctrl v" mnemonic="v" icon="images/toolbars/preview.png" visibleWhen="#{entity.state == 'APPROVED' &amp;&amp; isViewReport == false}"/>-->
+        <invoker type="extActions" action="back" caption="Back" shortcut="ctrl b" mnemonic="b" icon="images/toolbars/back.png" visibleWhen="#{isViewReport == true}" />
+    </invokers>
+    
+    <code>
+    <![CDATA[
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*
+        import com.rameses.osiris2.reports.*;
+        import java.rmi.server.UID;
+        import com.rameses.rcp.framework.ClientContext;
+        
+        class PoliceClearanceApplicationController extends CRUDController {
+        
+            @Binding
+            def binding;
+        
+            @Service('ReportParameterService')
+            def reportSvc;
+            
+            @Service("PoliceClearanceService")
+            def service;
+            
+            String entityName = "policeclearance";
+            String prefixId = "POLC";
+            Boolean isAllowApproved = false;
+            
+            def personalinfo;
+            def isViewReport = false
+            
+            void beforeSave( entity ) {
+                if( ! entity.photo ) throw new Exception("Photo is required");
+                if( ! entity.leftthumbmark ) throw new Exception("Left thumb mark is required");
+                if( ! entity.rightthumbmark ) throw new Exception("Right thumb mark is required");
+            }
+            
+            void afterSave( entity ) {
+                entity.state = 'PENDING';
+            }
+            
+            def temp;
+            void afterEdit( entity ) {
+                temp = [:];
+                temp.putAll( entity );
+            }
+            
+            void afterCancel() {
+                entity.clear();
+                entity.putAll( temp );
+                temp.clear();
+            }
+            
+            def submit() {
+                if( MsgBox.confirm('Submit document?') ) {
+                    entity = service.submitPoliceClearance( entity );
+                    return 'forrelease';
+                }
+            }
+            
+            def attachOrInfo() {
+                return InvokerUtil.lookupOpener( 'policeclearance:attachor', [
+                    onselect : { o->
+                        entity.putAll( o );
+                    }
+                ]);
+            }
+            
+            def release() {
+                if( entity.orno == null ) throw new Exception( 'Please attach OR' );
+                entity = service.releasePoliceClearance( entity );
+                if( entity.state == 'FOR_VERIFICATION' ) 
+                    return 'verificationpage';
+                else
+                    printPoliceClearance();
+            }
+            
+            boolean hasLookup;
+            def showPersonalInfo() {
+                if( !hasLookup && !entity.personalinfoid ) 
+                    throw new Exception("Please search first before attempting to create a new record");
+                String action = "open";
+                def data = entity.person;
+                if( !data?.objid ) {
+                    action = "create";
+                    data = [:];
+                }    
+                def opener =  InvokerUtil.lookupOpener( 'individualentity:'+action, [entity:data, 
+                    saveHandler: {o->
+                        entity.person = o;
+                        binding.refresh("entity.person.*");
+                    }
+                ]);
+                opener.target = "popup";
+                return opener;
+            }
+            
+            def getLookupPersonalInfo() {
+                hasLookup = true;
+                return InvokerUtil.lookupOpener( 'individualentity:lookup', [
+                    onselect : { o->
+                        entity.person = service.openPerson( o );
+                        binding.refresh();
+                    },
+                    onempty: {
+                        hasLookup = false;
+                        entity.person = null;
+                        binding.refresh('entity.*');
+                    }
+                ]);
+            }
+            
+            void buildPoliceClearanceReportInfo() {
+                //entity = service.getReportInformation( entity );
+                entity.forprinting = true;
+                report.viewReport();
+            }
+            
+            void printPoliceClearance() {
+                buildPoliceClearanceReportInfo();
+                ReportUtil.print( report.report, true );
+            }
+            
+            def previewPoliceClearance() {
+                buildPoliceClearanceReportInfo();
+                isViewReport = true;
+                return 'preview';
+            }
+            
+            def back() {
+                isViewReport = false;
+                return 'default';
+            }
+            
+            def cameraHandler = [
+                onselect : { bytes->
+                    entity.photo = bytes;
+                    binding.refresh('entity.photo');
+                }
+            ] as CameraModel
+            
+            def thumbprintHandler = [
+                onselect : { info->
+                    entity.leftthumbmark = info.leftThumbData;
+                    entity.leftthumbfmd = info.leftThumbFmdData;
+                    entity.rightthumbmark = info.rightThumbData;
+                    entity.rightthumbfmd = info.rightThumbFmdData;
+                    binding.refresh('entity.(leftthumbmark|rightthumbmark)');
+                    
+                }
+            ] as FingerPrintModel
+            
+            def warrantModel = [
+                fetchList: { o->
+                    return entity.warrants;
+                }
+            ] as EditorListModel;
+            
+            def report = [
+                getReportName : { return 'com/rameses/gov/police/reports/PoliceClearance.jasper'; },
+                getReportData : {
+                    def data = [:];
+                    data.putAll( entity );
+                    data.leftthumbimage = new ByteArrayInputStream( entity.leftthumbmark );
+                    data.rightthumbimage = new ByteArrayInputStream( entity.rightthumbmark );
+                    data.photoimage = new ByteArrayInputStream( entity.photo );
+                    return data;
+                },
+                getParameters : { return reportSvc.getStandardParameter(); }
+            ] as ReportModel
+        }
+    ]]>
+    </code>
+    
+    <pages>
+        <page name="default" template="com.rameses.gov.police.policeclearance.PoliceClearanceApplicationPage" />
+        <page name="forrelease" template="com.rameses.gov.police.policeclearance.ForReleasePoliceClearancePage" />
+        <page name="verificationpage" template="com.rameses.gov.police.policeclearance.ForReleasePoliceClearancePage" />
+    </pages>
+</workunit>

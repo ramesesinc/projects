@@ -1,0 +1,7 @@
+"btnCapturePhoto|btnCaptureThumbMark" [mode == 'read'] {
+    enabled:false;
+}
+
+"btnCapturePhoto|btnCaptureThumbMark" [mode != 'read'] {
+    enabled:true;
+}

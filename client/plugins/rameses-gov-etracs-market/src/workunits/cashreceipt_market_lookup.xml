@@ -1,0 +1,51 @@
+<workunit>
+    <invokers>
+        <invoker type="cashreceipt:market:lookup" caption="Lookup Market" target="popup"/>
+        <invoker type="formActions" caption="Next" action="doSelect"/>
+    </invokers>
+    <code>
+         <![CDATA[
+            import com.rameses.rcp.common.*
+            import com.rameses.rcp.annotations.*
+            import com.rameses.osiris2.client.*
+            import com.rameses.osiris2.common.*
+            import com.rameses.rulemgmt.constraint.*;
+            import com.rameses.rulemgmt.*;
+            import java.rmi.server.*;
+            
+            class CashReceiptMarketLookup   {
+            
+                @Binding
+                def binding;
+            
+                @Service("MarketCashReceiptService")
+                def service;
+            
+                def onselect;
+                def query = [:];
+                def selectedItem;
+                
+                def doSearch() {
+                    listModel.reload();
+                }
+                
+                def listModel = [
+                    fetchList: { o->
+                        o.putAll( query );
+                        return service.getLedgerList(o);
+                    }
+                ] as PageListModel;
+                
+                
+                def doSelect() {
+                    if(onselect) onselect(selectedItem);
+                    return "_close";
+                }
+            }
+        ]]>    
+        
+    </code>
+    <pages>
+        <page template="com.rameses.gov.etracs.market.cashreceipt.LookupMarketAccountPage"/>
+    </pages>
+</workunit>

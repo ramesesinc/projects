@@ -1,0 +1,9 @@
+<workunit>
+    <invokers>
+        <invoker type="queue:button" /> 
+    </invokers>
+    <code class="queueing.model.QueueButton"/>
+    <pages>
+        <page template="queueing.view.QueueButton"/>
+    </pages>
+</workunit>    

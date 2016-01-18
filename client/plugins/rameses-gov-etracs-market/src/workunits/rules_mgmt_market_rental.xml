@@ -1,0 +1,5 @@
+<workunit extends="wtemplates/RuleMgmtController.xml" serviceName="RuleMgmtService" tag="marketrental">
+    <invokers>
+        <invoker folderid="/explorer/rulemgmt/market" caption="Market Rental Rules" action="init" index="0" role="RULE_AUTHOR"/>
+    </invokers>
+</workunit>

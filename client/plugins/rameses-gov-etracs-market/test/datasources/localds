@@ -1,0 +1,6 @@
+dialect=mssql
+driverClass=com.microsoft.sqlserver.jdbc.SQLServerDriver
+url=jdbc:sqlserver://localhost;DatabaseName=market
+user=sa
+pwd=12345
+maxPoolSize=100

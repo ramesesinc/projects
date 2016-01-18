@@ -1,0 +1,10 @@
+<workunit extends="wtemplates/ListController.xml" serviceName="MarketRentalUnitService" entityName="market_rentalunit">
+    <invokers>
+        <invoker folderid="/explorer/master/market" caption="Market Rental Units" index="1" role="MASTER" action="init"/>
+        <invoker type="home.action" caption="Market Rental Units" index="1" role="MASTER" action="init"/>
+    </invokers>
+    <code class="com.rameses.gov.etracs.market.MarketQueryListController"/>
+    <pages>
+        <page name="queryform" template="com.rameses.gov.etracs.market.MarketQueryPage"/>
+    </pages>
+</workunit>

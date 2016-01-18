@@ -1,0 +1,9 @@
+<workunit>
+    <invokers>
+        <invoker type="cashreceipt:vrs:lookup" caption="Vehicle Registration Payment"/>
+    </invokers>
+    <code class="com.rameses.gov.etracs.vrs.models.VrsApplicationLookup" />
+    <pages>
+        <page template="com.rameses.gov.etracs.vrs.views.VrsApplicationLookupPage"/>
+    </pages>
+</workunit>

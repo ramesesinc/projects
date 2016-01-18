@@ -1,0 +1,14 @@
+<workunit extends="com/rameses/seti2/templates/CrudForm.xml">
+    <invokers>
+        <invoker folderid="/home/vrs" caption="New Application" action="create" />
+        
+        <!-- extended actions -->
+        <invoker type="extActions" caption="Assign Franchise" action="assignFranchise" />
+    </invokers>
+    <code class="com.rameses.gov.etracs.vrs.models.VrsApplicationForm" />
+    <pages>
+        <page name="create" template="com.rameses.gov.etracs.vrs.views.NewApplicationPage"/>
+        <page name="read" template="com.rameses.gov.etracs.vrs.views.NewApplicationPage"/>
+        <page name="edit" template="com.rameses.gov.etracs.vrs.views.NewApplicationPage"/>
+    </pages>
+</workunit>

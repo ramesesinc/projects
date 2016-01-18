@@ -1,0 +1,5 @@
+<workunit extends="seti2/templates/CrudLookupController.xml" schemaName="queue_section">
+    <invokers>
+        <invoker type="queue_section:lookup" caption="Lookup Section" action="init" target="popup" /> 
+    </invokers>
+</workunit>    

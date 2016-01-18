@@ -1,0 +1,36 @@
+<workunit extends="wtemplates/gov/bp/ReportController.xml" >
+    <!--
+    <invokers>
+        <invoker folderid="/explorer/report/bpls" action="init" caption="Monthly Paid Marktet Listing" target="window" index="5" />
+        
+    </invokers>
+    --> 
+    <code>
+    <![CDATA[
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.common.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.reports.*;
+        
+        public class MonthlyPaidMarketListingReportController extends com.rameses.gov.etracs.market.report.ReportController 
+        {
+        
+            @Service('MarketMonthlyPaidReportService')
+            def svc;
+            
+            String title = "Monthly Paid Marktet Listing";
+            String reportpath = 'com/rameses/gov/etracs/market/report/'
+            String reportName = reportpath + 'monthlypaidmarketlisting.jasper'
+            
+            def getReportData(){
+                return svc.getReport( ); 
+            }
+            
+         }
+    ]]>
+    </code>
+    <pages>
+        <page name="preview" template="com.rameses.osiris2.common.ui.ReportPreviewPage"/>  
+    </pages>
+</workunit>

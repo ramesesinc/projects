@@ -1,0 +1,63 @@
+<workunit>
+    <invokers>
+        <invoker type="marketaccount_ledger:formActions" caption="Add Payment" index="4" action="create" target="popup"/>
+    </invokers>
+    <code>
+         <![CDATA[
+            import com.rameses.rcp.common.*
+            import com.rameses.rcp.annotations.*
+            import com.rameses.osiris2.client.*
+            import com.rameses.osiris2.common.*
+            import com.rameses.rulemgmt.constraint.*;
+            import com.rameses.rulemgmt.*;
+            import java.rmi.server.*;
+            import com.rameses.gov.etracs.bpls.*;
+            
+            class MarketPaymentController extends CRUDController {
+            
+                @Service("MarketPaymentService")
+                def service;
+                
+                @Caller 
+                def caller;
+                
+                String entityName  = 'market_payment'
+                String prefixId    = 'MPMT';
+                boolean allowApprove = false;
+                
+                Map createEntity() {
+                    return [items: [], acctid: caller.entity.objid ];
+                }
+                
+                private void updateTotals() {
+                    entity.amount = entity.items.sum{it.amtpaid };
+                    entity.amount += entity.items.sum{it.surchargepaid };
+                    entity.amount += entity.items.sum{it.interestpaid };
+                    binding.refresh( "entity.amount");
+                }
+                
+                def listModel = [
+                    fetchList: {
+                        return entity.items;
+                    },
+                    onAddItem: { o->
+                        entity.items << o;
+                        updateTotals(); 
+                    },
+                    onRemoveItem: { o->
+                        entity.items.remove(o);
+                        updateTotals();
+                    }
+                ] as EditorListModel;
+
+                def afterSave() {
+                    caller.listModel?.reload();
+                    return "_close";
+                }
+            }
+            ]]>
+    </code>
+    <pages>
+        <page template="com.rameses.gov.etracs.marketaccount.MarketPaymentPage"/>
+    </pages>
+</workunit>

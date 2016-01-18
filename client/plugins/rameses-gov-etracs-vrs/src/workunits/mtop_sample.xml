@@ -1,0 +1,15 @@
+<workunit>
+    <invokers>
+        <invoker folderid="/home/vrs" caption="Sample VRS" index="30" action="loadTask" />
+        <invoker type="extActions" caption="View History"  action="viewHistory" />
+        <invoker type="extActions" caption="View Subtasks"  action="viewOpenSubTasks" />
+        
+        <invoker type="extActions" caption="Assess" visibleWhen="#{task?.state=='assessment'}"  action="viewHistory" />
+        <invoker type="extActions" caption="Xapprove" visibleWhen="#{task?.state=='approval'}"  action="viewHistory" />
+    </invokers>
+    <code class="com.rameses.gov.etracs.vrs.models.MtopWorkflowSample" />
+    <pages>
+        <page name="default" template="com.rameses.gov.etracs.vrs.views.SamplePage"/>
+        <page name="sample2" template="com.rameses.gov.etracs.vrs.views.SamplePage1"/>
+    </pages>
+</workunit>

@@ -1,0 +1,32 @@
+"crime|removeCrime" [mode == 'read'] {
+    enabled:false;
+}
+
+"crime|removeCrime" [mode != 'read'] {
+    enabled:true;
+}
+
+
+"addRespondent|editRespondent|removeRespondent" [mode == 'read'] {
+    enabled:false;
+}
+
+"addRespondent|editRespondent|removeRespondent" [mode != 'read'] {
+    enabled:true;
+}
+
+"removeCrime" [selectedCrime == null] {
+    enabled:false;
+}
+
+"removeCrime" [selectedCrime != null && mode != 'read'] {
+    enabled:true;
+}
+
+"editRespondent|removeRespondent" [selectedRespondent == null] {
+    enabled:false;
+}
+
+"editRespondent|removeRespondent" [selectedRespondent != null && mode != 'read'] {
+    enabled:true;
+}

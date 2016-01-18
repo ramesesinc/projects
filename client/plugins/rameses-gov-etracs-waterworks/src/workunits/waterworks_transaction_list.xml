@@ -1,0 +1,9 @@
+<workunit extends="com/rameses/seti2/templates/CrudForm.xml">
+    <invokers>
+        <invoker folderid="/home/waterworks" caption="Transaction Listing" action="create" index="-1"/>
+    </invokers>
+    <code class="com.rameses.gov.etracs.waterworks.models.WaterworksTransactionList" />
+    <pages>
+        <page template="com.rameses.gov.etracs.waterworks.views.WaterworksTransactionListPage"/>
+    </pages>
+</workunit>

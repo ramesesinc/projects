@@ -1,0 +1,68 @@
+<workunit>
+    <invokers>
+        <invoker type="marketaccount_ledger:formActions" caption="Billing" index="10" target="popup"/>
+        <invoker type="marketaccount:option" caption="Billing" index="3" visibleWhen="#{entity.state=='APPROVED'}" />
+    </invokers>
+    
+    <code>
+        <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import com.rameses.common.*;
+        import java.rmi.server.*
+        import com.rameses.util.*;
+        
+        class  MarketAccountBillingController  {
+        
+            @Service("MarketBillingService")
+            def service;
+            
+            @Binding
+            def binding;
+            
+            def entity;
+            def items; 
+            def total;
+            
+            
+            def selectedViewOption;
+            def viewOptions = [
+                [key:'0', caption: 'Basic'],
+                [key:'1', caption: 'Compromise'],
+            ]
+            
+            def listModel = [
+                fetchList: { o->
+                    return items;
+                }
+            ] as BasicListModel;
+            
+            void doBilling() {
+                def m = [:];
+                m.objid = entity.objid;
+                m.billingtype = selectedViewOption;
+                def r = service.getBillItems( m );
+                items = r.items;
+                listModel.reload();
+                total = r.total;
+                
+            }
+            
+            def viewReport() {
+                def m = [
+                    objid: entity.objid,
+                    billingtype : selectedViewOption
+                ]
+                return InvokerUtil.lookupOpener("marketbilling:report", [entity:m] );
+            }
+        }
+        ]]>
+    </code>
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.marketaccount.BillingPage"/>
+    </pages>
+    
+</workunit>

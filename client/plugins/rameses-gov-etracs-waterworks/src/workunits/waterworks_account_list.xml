@@ -1,0 +1,5 @@
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" schemaName="waterworks_account">
+    <invokers>
+        <invoker folderid="/home/waterworks" caption="Waterworks Account List" action="init" />
+    </invokers>
+</workunit>

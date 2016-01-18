@@ -1,0 +1,184 @@
+<workunit>
+    <invokers>
+        <invoker type="crimecase:create" action="init" caption="Crime Case" target="window" />
+        <invoker type="crimecase:open" action="open" caption="Crime Case" target="window" />
+    </invokers>
+    
+    <code>
+    <![CDATA[
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        import java.rmi.server.*;
+        
+        class CrimeCaseController extends CRUDController
+        {
+            String serviceName = 'CrimeCaseService';
+            String entityName  = 'crimecase';
+            String prefixId    = 'CC';
+        
+            def selectedCrime;
+            def selectedRespondent;
+            
+            void afterCreate( entity ) {
+                entity.casedate = new java.text.SimpleDateFormat("yyyy-MM-dd").format( new Date() );
+                entity.crimes = [];
+                entity.respondents = [];
+            }
+            
+            void afterSave( entity ) {
+                entity._deletedRespondents = [];
+                entity._newRespondents = [];
+                entity._editedRespondents = [];
+            }
+            
+            void afterOpen( entity ) {
+                entity._deletedRespondents = [];
+                entity._newRespondents = [];
+                entity._editedRespondents = [];
+            }
+            
+            def temp;
+            void afterEdit( entity ) {
+                temp = [:];
+                temp.putAll( entity );
+                temp.crimes = [];
+                entity.crimes.each {
+                    temp.crimes << it;
+                }
+                
+                temp.respondents = [];
+                entity.respondents.each {
+                    def map = [:];
+                    map.putAll( it );
+                    temp.respondents << map;
+                }
+            }
+            
+            void afterCancel() {
+                entity.clear(); 
+                entity.putAll( temp );
+                temp.clear();
+            }
+            
+            def getLookupCrime() {
+                return InvokerUtil.lookupOpener( "crime:lookup", [
+                    onselect: { o->
+                        if( entity.crimes.find{ it.crimeid == o.objid } != null ) 
+                            throw new Exception( "Item already added" );
+                        
+                        def m = [:];
+                        m.objid = "CCC" + new UID();
+                        m.crimecaseid = entity.objid;
+                        m.crimeid = o.objid;
+                        m.code = o.code;
+                        m.title = o.title;
+                        entity.crimes << m;
+                        crimeModel.reload();
+                    }
+                ]);
+            }
+            
+            void removeCrime() {
+                if( ! selectedCrime ) return ;
+                entity.respondents?.each { r->
+                    def crime = r.respondentcrimes?.find{ selectedCrime.crimeid == it.crimeid };
+                    if( crime ) throw new Exception( 'Crime cannot be removed. It is currently reference by a respondent.' );
+                }
+                entity.crimes.remove( selectedCrime );
+            }
+            
+            void removeRespondent() {
+                if( ! selectedRespondent ) return ;
+                if( mode == 'edit' ) {
+                    def newresp = entity._newRespondents.find{ it.objid == selectedRespondent.objid }
+                    if( ! newresp ) 
+                        entity._deletedRespondents << selectedRespondent;
+                    else
+                        entity._newRespondents.remove( newresp );
+                }
+                
+                entity.respondents.remove( selectedRespondent );
+            }
+            
+            def addRespondent() {
+                if( ! entity.crimes ) throw new Exception( 'There is no crime specified.' );
+            
+                return InvokerUtil.lookupOpener( "crimecase:addRespondent", [
+                    crimes : entity.crimes,
+                    onselect : { o->
+                        if( entity.respondents.find{ it.respondentid == o.respondentid } != null )
+                            throw new Exception( "Item already added" );
+                       
+                        def m = [:];
+                        m.putAll( o );                        
+                        m.crimecaseid = entity.objid;   
+                        getCrimeParticipationInfo( m );
+                        entity.respondents << m;
+                        
+                        if( mode == 'edit' ) entity._newRespondents << m;    
+                        respondentModel.reload();
+                    }
+                ]);
+            }
+            
+            def editRespondent() {
+                def temp = [:];
+                temp.putAll( selectedRespondent );
+                temp.respondentcrimes = [];
+                selectedRespondent.respondentcrimes.each {
+                    def map = [:];
+                    map.putAll( it );
+                    temp.respondentcrimes << map;
+                } 
+                temp._deletedRespondentCrimes = [];
+                temp._newRespondentCrimes = [];
+            
+                return InvokerUtil.lookupOpener( "crimecase:editRespondent", [
+                    respondentinfo : temp, 
+                    crimes : entity.crimes,
+                    onselect : {o->
+                        getCrimeParticipationInfo( o );
+                        if( mode == 'edit' ) {
+                            if( entity._newRespondents.find{ it.objid == o.objid } == null ) {
+                                def editedresp = entity._editedRespondents.find{ it.objid == o.objid }
+                                if( editedresp ) entity._editedRespondents.remove( editedresp );
+                                entity._editedRespondents << o;
+                            }
+                        }
+                        selectedRespondent.clear();
+                        selectedRespondent.putAll(o); 
+                        respondentModel.refreshSelectedItem();
+                    }
+                ]);
+            }
+            
+            void getCrimeParticipationInfo( respondent ) {
+                def crimeparticipation = '';
+                respondent.respondentcrimes?.each {
+                    crimeparticipation = crimeparticipation + it.title + " ( " + it.participation + " ), ";
+                }
+                
+                respondent.crimeparticipationinfo = crimeparticipation;
+            }
+           
+            def crimeModel = [
+                fetchList: { o->
+                    return entity.crimes;
+                }
+            ] as EditorListModel;
+            
+            def respondentModel = [
+                fetchList: { o->
+                    entity.respondents;
+                }
+            ] as EditorListModel;
+        }
+    ]]>
+    </code>
+    
+    <pages>
+        <page template="com.rameses.gov.police.crimecase.CrimeCasePage" />
+    </pages>
+</workunit>

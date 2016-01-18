@@ -1,0 +1,7 @@
+"entity.code" [ mode != 'create' ] {
+    enabled: false;
+}
+
+"updateName" [ mode == 'create' ] {
+    visible: false;
+}

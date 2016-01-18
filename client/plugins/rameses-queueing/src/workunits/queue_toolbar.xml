@@ -1,0 +1,10 @@
+<workunit>
+    <invokers>
+        <invoker type="toolbar" caption="Queue" action="init" role="USER" alwaysOnTop="true" target="popup" /> 
+    </invokers>
+    <code class="queueing.model.UserQueue"/>
+    <pages>
+        <page name="default" template="queueing.view.SelectQueueNumber"/>
+        <page name="view" template="queueing.view.ShowCurrentQueueNumber"/>
+    </pages>
+</workunit>    

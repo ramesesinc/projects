@@ -1,0 +1,42 @@
+"entity.realpropertyav" [haspropertyinfo == true]{
+    enabled:false;
+}
+"entity.realpropertyav" [haspropertyinfo != true]{
+    enabled:true;
+}
+
+"entity.payer.tin" [ hastin == true ]{
+    enabled:false;
+}
+"entity.payer.tin" [ hastin != true ]{
+    enabled:true;
+}
+
+"entity.payer.orgtype" [ hasorgtype == true ]{
+    enabled:false;
+}
+"entity.payer.orgtype" [ hasorgtype != true ]{
+    enabled:true;
+}
+
+
+"entity.payer.nature" [ hasnature == true ]{
+    enabled:false;
+}
+"entity.payer.nature" [ hasnature != true ]{
+    enabled:true;
+}
+
+"entity.payer.dtregistered" [ hasdtregistered == true ]{
+    enabled:false;
+}
+"entity.payer.dtregistered" [ hasdtregistered != true ]{
+    enabled:true;
+}
+
+"entity.payer.placeregistered" [ hasplaceregistered == true ]{
+    enabled:false;
+}
+"entity.payer.placeregistered" [ hasplaceregistered != true ]{
+    enabled:true;
+}

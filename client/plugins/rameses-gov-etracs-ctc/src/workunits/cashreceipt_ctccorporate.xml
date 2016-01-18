@@ -1,0 +1,13 @@
+<workunit extends="wtemplates/gov/treasury/BasicCashReceiptController.xml">
+    <invokers>
+        <invoker type="cashreceipt:ctccorporate" action="init" />
+    </invokers>
+    
+    <code class="com.rameses.gov.etracs.ctc.CorporateCtcCashReceipt" >
+    </code>
+    
+    <pages>
+        <page name="default" template="com.rameses.gov.etracs.ctc.CorporatePage"/>
+    </pages>
+    
+</workunit>

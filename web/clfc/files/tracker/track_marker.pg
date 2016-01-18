@@ -1,0 +1,5 @@
+{
+	title: "Map Marker Information",
+	context: "track_marker",
+	hidden: true
+}

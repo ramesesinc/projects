@@ -1,0 +1,8 @@
+{
+	secured		: true,
+	type		: 'home.action',	
+	title		: 'Mobile Tracker',
+	icon		: '/images/mobile-tracker.png', 
+	description : 'Tracks the location of the field collectors upon collecting payments',
+	href 		: '/tracker/list'
+}

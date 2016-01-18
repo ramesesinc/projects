@@ -1,0 +1,630 @@
+
+<script type="text/javascript">
+var trackerid = ${PARAMS.trackerid? '"'+PARAMS.trackerid+'"': null}; 	
+var trackerSvc = Service.lookup("MobileTrackerService", "main"); 
+var workspace = {} 
+
+function isGoogleMapReady() {
+	try { 
+		new google.maps.LatLng(0.0, 0.0); 
+		google; 
+		return true; 
+	} catch(e) { 
+		return false; 
+	} 
+} 
+
+function createMapObject(params) {
+	if (!isGoogleMapReady()) return;
+
+	try { 
+		var tracker = trackerSvc.open({objid: trackerid}); 
+		if (!tracker) throw new Error("The specified trackerid does not exist"); 
+
+		workspace.tracker = tracker;
+		params = {lng: tracker.startlng, lat: tracker.startlat} 
+		if (workspace.onstart) workspace.onstart();			
+	} catch(e) { 
+		\$('#map-canvas').hide();
+		\$('#info-box').html(e+'. &nbsp;Please try again.').show(); 
+		return; 
+	} 
+
+	if (!params) params = {};			
+	if (!params.zoom) params.zoom = 13;
+	if (!params.lng || params.lng == 0) params.lng = 123.87636423110962;
+	if (!params.lat || params.lat == 0) params.lat = 10.309926522447359;
+
+	var mapOptions = { 
+		zoom: params.zoom,
+		center: new google.maps.LatLng(params.lat, params.lng),
+		mapTypeId: google.maps.MapTypeId.ROADMAP		
+	} 
+	workspace.map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
+	workspace.markers = []; 
+	workspace.logs = []; 		
+	if (workspace.tracker) { 
+		var tracker = workspace.tracker;
+		if (tracker.startlng && tracker.startlat && tracker.startlng != 0 && tracker.startlat != 0) { 
+			var startMarker = new google.maps.Marker({
+				position: new google.maps.LatLng(tracker.startlat, tracker.startlng), 
+				map 	: workspace.map, 
+				title 	: 'Starting Point',
+				icon 	: '/images/mapicons/start.png',
+				zIndex 	: 1000
+			});	
+			workspace.markers.push(startMarker); 
+			workspace.startlog = {lat: tracker.startlat, lng: tracker.startlng, objid: tracker.objid, type:'start'} 
+			new HeadWindowHandler(workspace, startMarker, workspace.startlog);
+		} 
+		if (tracker.state == 'CLOSED' && tracker.closedlat && tracker.closedlng && tracker.closedlat != 0 && tracker.closedlng != 0) { 
+			var endMarker = new google.maps.Marker({ 
+				position: new google.maps.LatLng(tracker.closedlat, tracker.closedlng), 
+				map 	: workspace.map, 
+				title 	: 'End Point',
+				icon 	: '/images/mapicons/end.png',
+				zIndex 	: 1000
+			});	
+			workspace.markers.push(endMarker);
+			workspace.endlog = {lat: tracker.closedlat, lng: tracker.closedlng, objid: tracker.objid, type:'end'}
+			new HeadWindowHandler(workspace, endMarker, workspace.endlog);
+		}
+		var htmlstring = 	'<table cellpadding="0" cellspacing="0" style="white-space:nowrap;width:250px;">'+
+							'<tr> <td style="width:115px"> <input id="displaypayment" type="checkbox" r:context="tracker" r:immediate="true" r:name="displaypayment" r:checkedValue=true r:uncheckedValue=false > &nbsp; Payment </td>'+
+							'<td> <input id="displayremarks" type="checkbox" r:context="tracker" r:immediate="true" r:name="displayremarks" r:checkedValue=true r:uncheckedValue=false /> &nbsp; Remarks </td>' +
+							'</tr><tr> <td> <input id="displaytracker" type="checkbox" r:context="tracker" r:immediate="true" r:name="displaytracker" r:checkedValue=true r:uncheckedValue=false /> &nbsp; Tracking </td>' +
+							'</tr></table>';
+		setOptions(htmlstring);
+	} 
+} 
+
+function initialize() {
+	createMapObject({});
+	if (!workspace.map) return;
+
+	google.maps.event.addListener(workspace.map, 'click', function(event) {
+		var latLng = event.latLng;
+		if (window.console) {
+			window.console.log('latlng='+ latLng.lat() + ', ' + latLng.lng());
+		}
+	});
+} 
+  
+function loadScript() {
+	var script = document.createElement("script");
+	script.type = "text/javascript";
+	script.src = "http://maps.googleapis.com/maps/api/js?v=3.expr&key=${PROJECT.apikey}&sensor=true&callback=initialize"; 
+	document.body.appendChild(script); 
+} 
+
+window.onload = loadScript;
+
+function GmapInfoWindowHandler(workspace, gmarker, data, url) {
+	var txntype = (data.txntype? data.txntype: 'NORMAL');
+	var infowindow = new google.maps.InfoWindow({ 
+		size: new google.maps.Size(50, 50), 			
+		content: '<table cellpadding="0" cellspacing="0" style="white-space:nowrap;width:180px;"><tr>'+ 
+		         '<td style="width:1px;"><img src="/images/loading.gif" height="16" border="0"/></td>'+
+		         '<td style="padding-left:5px;">loading information...</td>'+ 
+		         '</tr></table>'
+	}); 
+
+	var loadContent = function() {
+		\$.ajax({ 
+			cache: false, 				
+			url: url,//'/tracker/marker?objid='+data.objid, 
+			complete: function(o, resp_stat) {
+				if (resp_stat == 'success') {
+					infowindow.setContent(o.responseText); 
+				} else {
+					infowindow.setContent('<p class="error-box"><b class="error-box-title">'+resp_stat+'</b><br/>'+o.statusText+'</p>'); 
+				}
+			}, 
+			error: function(o, resp_stat, msg) {
+				infowindow.setContent('<p class="error-box"><b class="error-box-title">'+resp_stat+'</b><br/>'+msg+'</p>'); 
+			} 
+		});
+	} 
+
+	var opencallback = function() {
+		if (workspace.infowindow) workspace.infowindow.close(); 
+		infowindow.open(workspace.map, gmarker); 
+		workspace.infowindow = infowindow; 
+		loadContent(); 		
+	}
+
+	google.maps.event.addListener(gmarker, 'click', opencallback); 
+	data.openInfoWindow = opencallback; 
+} 
+
+function HeadWindowHandler(workspace, gmarker, data) {
+	var infowindow = new google.maps.InfoWindow({ 
+		size: new google.maps.Size(50, 50), 			
+		content: '<table cellpadding="0" cellspacing="0" style="white-space:nowrap;width:180px;"><tr>'+ 
+		         '<td style="width:1px;"><img src="/images/loading.gif" height="16" border="0"/></td>'+
+		         '<td style="padding-left:5px;">loading information...</td>'+ 
+		         '</tr></table>'
+	}); 
+
+	var loadContent = function() {
+		\$.ajax({ 
+			cache: false, 				
+			url: '/tracker/head?objid='+data.objid+'&type='+data.type, 
+			complete: function(o, resp_stat) {
+				if (resp_stat == 'success') {
+					infowindow.setContent(o.responseText); 
+				} else {
+					infowindow.setContent('<p class="error-box"><b class="error-box-title">'+resp_stat+'</b><br/>'+o.statusText+'</p>'); 
+				}
+			}, 
+			error: function(o, resp_stat, msg) {
+				infowindow.setContent('<p class="error-box"><b class="error-box-title">'+resp_stat+'</b><br/>'+msg+'</p>'); 
+			} 
+		});
+	} 
+
+	google.maps.event.addListener(gmarker, 'click', function() {
+		if (workspace.infowindow) workspace.infowindow.close(); 
+		infowindow.open(workspace.map, gmarker); 
+		workspace.infowindow = infowindow; 
+		loadContent();  
+	});	
+} 
+
+function updateCurrentLocation(item){
+	if (!isGoogleMapReady()) return; 
+	if (!item.lng || !item.lat || item.lng==0 || item.lat==0) return; 	
+	if (workspace.locatorMarker) workspace.locatorMarker.setMap(null);
+	if (item && workspace.tracker && workspace.tracker.state == 'OPEN') { 
+		var image = {
+			url: '/images/mapicons/locator.gif',
+			anchor: new google.maps.Point(25, 30)
+		}
+		workspace.locatorMarker = new google.maps.Marker({ 
+			position 	: new google.maps.LatLng(item.lat, item.lng), 
+			title 		: 'Current Location', 
+			map 		: workspace.map, 		
+			optimized 	: false, 
+			icon 		: image,
+			zIndex 		: 100
+		});	
+	} 	
+}
+function MessageHandler(item) {
+	this.click = function(e) {
+		var logs = workspace.logs;
+
+		if (logs) {
+			var data = null;
+			logs.each(function(o){ 
+				if (o.objid==item.objid) data = o;
+			}); 
+
+			if (data && data.openInfoWindow) {
+				data.openInfoWindow();
+				return;
+			}
+		}
+		/*var logs = workspace.paymentlogs;
+
+		if (logs) {
+			var data = null;
+			logs.each(function(o){ 
+				if (o.objid==item.objid) data = o;
+			}); 
+
+			if (data && data.openInfoWindow) {
+				data.openInfoWindow();
+				return;
+			}
+		}
+
+		logs = workspace.remarklogs;
+		if (logs) {
+			var data = null;
+			logs.each(function(o){ 
+				if (o.objid==item.objid) data = o;
+			}); 
+
+			if (data && data.openInfoWindow) {
+				data.openInfoWindow();
+				return;
+			}
+		}*/
+	}
+}
+function addPaymentLog(item) {
+	if (!isGoogleMapReady()) return; 
+	if (!item.lng || !item.lat || item.lng==0 || item.lat==0) return; 
+	//if (!workspace.paymentlogs) workspace.paymentlogs = []; 
+	if (!workspace.logs) workspace.logs = []; 
+	if (!workspace.paymentcount) workspace.paymentcount=0;
+
+	//var logs = workspace.paymentlogs;
+	var logs = workspace.logs;
+	var logitem = logs.find(function(o){ return (o.objid==item.objid? o: null); });  
+	if (logitem) return; 
+
+	updateCurrentLocation(item); 
+	logs.push(item); 
+	workspace.paymentcount++;
+
+	var logcount = workspace.paymentcount; 
+	var remarks = (item.remarks? item.remarks: '');
+	var txntype = (item.txntype? item.txntype: 'NORMAL');
+	var iconpath = '/images/mapicons/payment-'+txntype+'.png';
+	var marker = new google.maps.Marker({ 
+		position 	: new google.maps.LatLng(item.lat, item.lng), 
+		title 		: txntype+' Payment (#'+ (logcount) +') '+remarks, 
+		icon 		: iconpath.toLowerCase(), 				
+		animation 	: google.maps.Animation.DROP, 
+		map 		: workspace.map, 
+		draggable 	: false, 
+		zIndex 		: 500
+	});	
+	item.marker = marker; 
+	new GmapInfoWindowHandler(workspace, marker, item, '/tracker/marker?objid='+item.objid);  
+
+	if (tracker_controller.displaypayment == true) {
+		var htmlstring = '<p class="postedtitle">Payment #'+ logcount +'</p> RECEIVED PAYMENT OF '+ item.borrower.name + '<p class="postedon">transacted on <span class="txndate">'+ item.txndate +'</span></p>';
+		addMessage(htmlstring, new MessageHandler(item)); 
+	}
+} 
+function addNormalLog(item) {
+	if (!isGoogleMapReady()) return; 
+	if (!item.lng || !item.lat || item.lng==0 || item.lat==0) return; 
+	if (!workspace.logs) workspace.logs = [];
+	if (!workspace.remarklogs) workspace.remarklogs = [];
+
+	var logs = workspace.logs;
+	var logitem = logs.find(function(o){ return (o.objid==item.objid? o: null); });  
+	if (logitem) return; 
+
+	updateCurrentLocation(item); 
+
+	logs.push(item); 
+	var logcount = logs.length;
+	var title    = 'Tracked #'+ logcount +' on '+item.txndate; 
+	var iconname = 'pin'; 	
+	if (item.reftype == 'REMARKS') {
+		iconname = item.reftype + '_' + item.txntype; 
+		title = item.txntype+' Remarks: '+item.remarks;
+		//workspace.remarklogs.push(item);
+	}
+
+	var iconpath = '/images/mapicons/' + iconname + '.png';	
+	var marker = new google.maps.Marker({ 
+		position 	: new google.maps.LatLng(item.lat, item.lng), 
+		title 		: title, 
+		icon 		: iconpath.toLowerCase(), 				
+		map 		: workspace.map, 
+		draggable 	: false, 
+		zIndex 		: 250 
+	});	
+
+	if (item.reftype == 'REMARKS') {
+		if (!workspace.remarkscount) workspace.remarkscount = 0;
+		workspace.remarkscount++;
+		item.marker = marker; 
+		new GmapInfoWindowHandler(workspace, marker, item, '/tracker/remark_marker?objid='+item.objid); 
+		if (tracker_controller.displayremarks == true) {
+			var htmlstring = '<p class="postedtitle">No Payment</p>' + item.borrower.name + '<br/>' + item.remarks + '<br/> <p class="postedon">transacted on <span class="txndate">'+ item.txndate +'</span></p>';
+			addMessage(htmlstring, new MessageHandler(item)); 
+		}
+	} else if (item.reftype == 'TRACK') {
+		if (!workspace.trackercount) workspace.trackercount = 0;
+		workspace.trackercount++;
+		var prevlnglat = workspace.previoustracklnglat; 
+		var newlnglat = item.lng + ':' + item.lat;
+		if (prevlnglat == newlnglat) return;
+
+		new GmapInfoWindowHandler(workspace, marker, item, '/tracker/track_marker?objid='+item.objid); 
+		if (tracker_controller.displaytracker == true ) {
+			var htmlstring = '<p class="postedtitle">Tracking...</p>lng: '+ item.lng +', lat:'+ item.lat +'<p class="postedon">tracked on <span class="txndate">'+ item.txndate +'</span></p>';
+			addMessage(htmlstring, new MessageHandler(item)); 
+		}
+		workspace.previoustracklnglat = newlnglat; 
+	}
+}
+function addLog(item) {
+	if (!isGoogleMapReady()) return; 
+	if (!(item.parentid.toLowerCase() == trackerid.toLowerCase())) return;
+
+	//if (!workspace.paymentlogs) workspace.paymentlogs = [];
+	//if (!workspace.remarklogs) workspace.remarklogs = []; 
+
+	if (!workspace.logs) workspace.logs = []; 
+	if (item.reftype == 'PAYMENT' ) { 
+		addPaymentLog(item); 
+	} else { 
+		addNormalLog(item); 
+	} 
+
+	var paymentcount = 0;//workspace.logs.length; 
+	if (tracker_controller.displaypayment == true) paymentcount += workspace.paymentcount;
+	if (tracker_controller.displayremarks == true) paymentcount += workspace.remarkscount;
+	if (tracker_controller.displaytracker == true) paymentcount += workspace.trackercount;
+	//var paymentcount = workspace.paymentlogs.length; 
+	//paymentcount += workspace.remarklogs.length;
+	if (paymentcount > 0) {  
+		\$('.notification-icon').removeClass('button-icon-notification-bell').addClass('button-icon-notification-bell-on');
+		\$('.notification-count').html(paymentcount).show(); 
+	} 
+}
+var socket = Socket.create('gmap');
+socket.handlers.handler1 = function(item) { 
+	if (!isGoogleMapReady() || !trackerid) return; 
+	if (!(item.status == 'OK')) return; 
+
+	addLog(item); 
+} 
+socket.start();
+
+var tracker_log = new function() { 
+	var _page=1, _limit=25;
+
+	this.fetch = function() { 
+		var _start = (_page*_limit)-_limit;
+		var logs = trackerSvc.getLogs({trackerid: trackerid, _limit:_limit+1, _start:_start}); 
+		for (var i=0; i<logs.length; i++) {
+			if (i < _limit) addLog(logs[i]); 
+		}
+
+		if (logs.length > _limit) {
+			_page++; 
+			//setTimeout(tracker_log.fetch, 500); 
+			//window.console.log('fetch more... page=' + _page); 
+		} 
+	} 
+} 
+
+var tracker_controller = new function() {
+	var self = this;
+
+	this.data = {}
+	this.displaypayment = true;
+	this.displayremarks = true;
+	this.displaytracker = false;
+	
+	var refreshCallback = function() {
+		if (isGoogleMapReady()) { 
+			setTimeout(tracker_log.fetch, 1000);
+		} else {
+			setTimeout(refreshCallback, 1000);
+		}
+	}
+	
+	this.onload = function() {	
+		workspace.onstart = function(){
+			\$get('tracker').refresh('getCollectorName'); 
+		} 	
+		setTimeout(refreshCallback, 1000);
+	} 
+	
+	this.getCollectorName = function() {
+		var tracker = workspace.tracker;	
+		//window.console.log(tracker);
+		var buffer = '(Not Available)';
+		if (tracker && tracker.user) {
+			buffer = '';
+			var user = tracker.user; 
+			if (user.firstname) buffer = buffer + user.firstname + ' '; 
+			if (user.middlename) buffer = buffer + user.middlename + ' '; 
+			if (user.lastname) buffer = buffer + user.lastname + ' '; 
+		} 
+		return buffer;
+	}
+
+	this.getCollectionDate = function() {
+		var tracker = workspace.tracker;			
+		var buffer = '(Not Available)';
+		if (tracker && tracker.user) {
+			buffer = '';
+			if (tracker.dtstart) {
+				var date = new Date(tracker.dtstart);
+				window.console.log(tracker.dtstart);
+				window.console.log(date);
+				buffer += date.format("yyyy-mmm-dd");
+			}
+		} 
+		return buffer;
+	}
+
+	this.getRoutes = function() {
+		var tracker = workspace.tracker;			
+		var buffer = '(Not Available)';
+		if (tracker) {
+			buffer = '';
+			var routes = trackerSvc.getRoutesString(tracker);
+			if (routes) buffer += routes;
+		} 
+		return buffer;
+	}
+
+	this.getStatus = function() {		
+		var tracker = workspace.tracker;	
+		var buffer = '(Not Available)';
+		if (tracker) {
+			buffer = '';
+			if (tracker.state) buffer += tracker.state;
+		} 
+		return buffer;
+	}
+
+	this.getTerminalid = function() {
+		var tracker = workspace.tracker; 
+		if (tracker && tracker.terminalid) {
+			return tracker.terminalid; 
+		} else {
+			return '(Not Available)'; 
+		}
+	}
+
+	this.showCollectorInfo = function() {
+
+	}
+
+	this.refreshWindow = function() {
+		window.location.reload();
+	}
+
+	this.reloadLogs = function() {
+		setTimeout(reloadLogsImpl, 1);
+	}
+
+	var reloadLogsImpl = function() {		
+		\$("#message-list > tbody").html("");
+		var logs = workspace.logs;
+		var item, htmlstring, previoustracklnglat;
+		var counter = 0, logcount = 0;
+		window.console.log("display payment " + self.displaypayment);
+		window.console.log("display remarks " + self.displayremarks);
+		window.console.log("display tracker " + self.displaytracker);
+		for (var i=0; i<logs.length; i++) {
+			item = logs[i];
+			if (item.reftype == 'TRACK' && self.displaytracker == true) {
+				counter++;
+				var prevlnglat = previoustracklnglat; 
+				var newlnglat = item.lng + ':' + item.lat;
+				if (prevlnglat == newlnglat) continue;
+				htmlstring = '<p class="postedtitle">Tracking...</p>lng: '+ item.lng +', lat:'+ item.lat +'<p class="postedon">tracked on <span class="txndate">'+ item.txndate +'</span></p>';
+				addMessage(htmlstring, new MessageHandler(item)); 
+				previoustracklnglat = newlnglat; 
+				//window.console.log("tracker");
+
+			} else if (item.reftype == 'REMARKS' && self.displayremarks == true) {
+				htmlstring = '<p class="postedtitle">No Payment</p>' + item.borrower.name + '<br/>' + item.remarks + '<br/> <p class="postedon">transacted on <span class="txndate">'+ item.txndate +'</span></p>';
+				addMessage(htmlstring, new MessageHandler(item)); 
+				//window.console.log("remarks");
+				counter++;
+
+			} else if (item.reftype == 'PAYMENT' && self.displaypayment == true) {
+				logcount++;
+				htmlstring = '<p class="postedtitle">Payment #'+ logcount +'</p> RECEIVED PAYMENT OF '+ item.borrower.name + '<p class="postedon">transacted on <span class="txndate">'+ item.txndate +'</span></p>';
+				addMessage(htmlstring, new MessageHandler(item)); 
+				window.console.log("payment");
+				counter++;
+
+			}
+		}
+		if (counter > 0) {
+			\$('.notification-icon').removeClass('button-icon-notification-bell').addClass('button-icon-notification-bell-on');
+			\$('.notification-count').html(counter).show(); 
+		} else if (counter == 0) {
+			\$('.notification-icon').removeClass('button-icon-notification-bell-on').addClass('button-icon-notification-bell');			
+			\$('.notification-count').hide(); 
+		}
+	}
+
+	this.propertyChangeListener = {
+		"displaypayment": function (o) { 
+			var val = ((o==true || o=="true")? 1 : 0);
+			self.displaypayment = new Boolean(val).valueOf();
+			self.reloadLogs(); 
+		},
+		"displayremarks": function (o) { 
+			var val = ((o==true || o=="true")? 1 : 0);
+			self.displayremarks = new Boolean(val).valueOf();
+			self.reloadLogs(); 
+		},
+		"displaytracker": function (o) { 
+			var val = ((o==true || o=="true")? 1 : 0);
+			self.displaytracker = new Boolean(val).valueOf();
+			self.reloadLogs(); 
+		}
+	}
+}
+\$put("tracker", tracker_controller); 
+
+function resizeMapCanvas() {
+	var height = \$(window).height()-40; 
+	if (height < 500) return;
+
+	\$('#map-canvas').height(height);
+} 
+\$(document).ready(function(){ 
+	resizeMapCanvas();
+	
+	\$(window).resize(function(){
+		resizeMapCanvas();
+	});
+});
+</script>
+
+<style type="text/css">
+	html { height: 100% }
+	body { height: 100%; margin: 0; padding: 0 }
+	#map-canvas { border-top:1px solid #cfcfcf; }
+	#map-canvas #provider-not-found {
+		font-size:24px; text-align:center; padding-top:50px;
+	} 
+	.postedtitle { margin:0; color:darkslateblue; font-weight:bold; font-size:11pt; }
+	.postedon { margin:0; color:#808080; font-size:11px; font-weight:bold; }
+	.postedon .txndate { font-size:11px; color:darkslateblue; font-family:'courier'; }
+
+	#legend {
+		height: 150px; width: 150px; z-index: 100; position: absolute; bottom: 0;
+		font-family: tahoma; margin-left: 10px;
+	}
+	.legend-item-color { border: 1px solid #000; height: 10px; width: 20px; }
+</style>
+
+<div id="info-box" class="error-box" style="margin:20px;display:none;"></div>
+<div id="map-canvas">
+	<span style="white-space:nowrap;position:relative;top:20px;left:20px;font-size:1.6em;">
+		<img src="/images/loading.gif" border="0" height="24"/>
+		&nbsp;&nbsp; loading map, please wait... 
+	</span> 
+</div> 
+
+<div r:dockto="header-action">
+	<table class="mainmenu">
+	<tr>
+		<td>
+			<a r:context="tracker" r:name="showCollectorInfo">
+				<span r:context="tracker" r:type="label">Collector:&nbsp;&nbsp; #{getCollectorName()}</span> 
+			</a>
+		</td> 
+		<td>
+			<span r:context="tracker" r:type="label">Colletion Date:&nbsp;&nbsp; #{getCollectionDate()}</span> 
+		</td>
+		<td>
+			<span r:context="tracker" r:type="label">Routes:&nbsp;&nbsp; #{getRoutes()}</span> 
+		</td>
+		<td>
+			<span r:context="tracker" r:type="label">Status:&nbsp;&nbsp; #{getStatus()}</span> 
+		</td>
+		<td>
+			<a r:context="tracker" r:name="refreshWindow">Refresh</a>
+		</td>
+		<td>
+			<a href="#" onclick="javascript:toggleMessageWindow();return false;">
+				<span class="button-icon-notification-bell notification-icon"></span>
+			</a>
+			<span class="notification-count" style="display:none;">0</span>
+		</td>
+	</tr>
+	</table>
+</div>
+
+<div id="legend">
+	<label style="font-size: 16px; font-weight: bold;">Legend</label>
+	<table style="margin-top: 5px">
+		<tr>
+			<td><div class="legend-item-color" style="background-color: #00f279"/><td>
+			<td><b>Normal</b></td>
+		</tr>
+		<tr>
+			<td><div class="legend-item-color" style="background-color: #ffff66"/><td>
+			<td><b>Special</b></td>
+		</tr>
+		<tr>
+			<td><div class="legend-item-color" style="background-color: #dce718"/><td>
+			<td><b>Follow-up</b></td>
+		</tr>
+		<tr>
+			<td><div class="legend-item-color" style="background-color: #66ccff"/><td>
+			<td><b>Remarks</b></td>
+		</tr>
+	</table>
+</div>

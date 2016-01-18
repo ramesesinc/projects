@@ -1,0 +1,58 @@
+<script>
+var trackerlogs = @register('/tracker/logs')
+\$put('${PAGE.context}', new function(){ 
+	var svc = Service.lookup('MobileTrackerService', 'main');
+	var self = this;	
+
+	this.selectedItem;
+
+	this.listModel = { 
+		rows: 15,
+		fetchList: function(o) { 
+			o['_ordermode']='DESC';
+			return svc.getList(o);	
+		}
+	}	
+
+	this.viewMap = function() {
+		var params = 'toolbar=0,location=0,directories=0,menubar=0,resizable=1,width=800,height=600';
+		window.open('/tracker/map?trackerid='+this.selectedItem.objid, this.selectedItem.objid);
+	}
+
+	this.viewLogs = function() { 
+		var params = 'toolbar=0,location=0,directories=0,menubar=0,resizable=1,width=800,height=600';
+		window.open('/tracker/logs?trackerid='+this.selectedItem.objid, this.selectedItem.objid+'_log');		
+	}	
+
+	this.onclose = function() {
+		window.location.href = '/'; 
+	}
+});
+</script>
+
+<table class="datatable datatable-border" r:context="${PAGE.context}" r:model="${PAGE.listModel? PAGE.listModel: 'listModel'}" r:name="selectedItem" r:varName="item" cellpadding="0" cellspacing="0" width="100%"> 
+<thead>
+	<tr>
+		<td style="width:30px;">&nbsp;</td>
+		<td style="width:300px;">Collector</td>
+		<td style="width:100px;maxWidth:100px;">Collection Date</td>
+		<td style="width:100px;">Routes</td>
+		<td>Status</td> 
+	</tr>
+</thead>
+<tbody>
+	<tr>
+		<td style="white-space:nowrap;">
+			<a r:context="${PAGE.context}" r:name="viewMap">Map</a> 
+			<!--
+			&nbsp;&nbsp;
+			<a r:context="${PAGE.context}" r:name="viewLogs">Logs</a> 
+			-->
+		</td>
+		<td style="white-space:nowrap;"> #{item.user? ([item.user.firstname, item.user.middlename, item.user.lastname].join(' ')): '&nbsp;'} </td>	
+		<td style="white-space:nowrap;"> #{item.txndate} </td>	
+		<td style="white-space:nowrap;"> #{item.routes} </td>	
+		<td style="white-space:nowrap;"> #{item.state} </td> 
+	</tr>
+</tbody>
+</table>

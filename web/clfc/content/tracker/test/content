@@ -1,0 +1,401 @@
+
+<script type="text/javascript">
+	var trackerid = ${PARAMS.trackerid? '"'+PARAMS.trackerid+'"': null}; 	
+	var trackerSvc = Service.lookup("TestMobileTrackerService03", "main"); 
+	var workspace = {} 
+
+	function createMapObject(params) {
+		try { 
+			google;
+		} catch(e) {
+			return;
+		}
+
+		if (!params) params = {};
+		if (!params.zoom) params.zoom = 14;
+		if (!params.lng || params.lng == 0) params.lng = 123.88664245605469;
+		if (!params.lat || params.lat == 0) params.lat =  10.308332621491582;
+
+		var mapOptions = { 
+			zoom: params.zoom,
+			center: new google.maps.LatLng(params.lat, params.lng),
+			mapTypeId: google.maps.MapTypeId.ROADMAP		
+		} 
+		workspace.map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
+		workspace.markers = []; 
+		workspace.logs = []; 		
+		if (workspace.tracker) { 
+			var tracker = workspace.tracker;
+			if (tracker.startlng && tracker.startlat && tracker.startlng != 0 && tracker.startlat != 0) { 
+				var startMarker = new google.maps.Marker({
+					position: new google.maps.LatLng(tracker.startlat, tracker.startlng), 
+					map: workspace.map, 
+					title: 'Starting Point',
+					icon: '/images/mapicons/start.png'
+				});	
+				workspace.markers.push(startMarker); 
+				workspace.startlog = {lat: tracker.startlat, lng: tracker.startlng, objid: tracker.objid, type:'start'} 
+				new HeadWindowHandler(workspace, startMarker, workspace.startlog);
+			} 
+			if (tracker.state == 'CLOSED' && tracker.closedlat && tracker.closedlng && tracker.closedlat != 0 && tracker.closedlng != 0) { 
+				var endMarker = new google.maps.Marker({ 
+					position: new google.maps.LatLng(tracker.closedlat, tracker.closedlng), 
+					map: workspace.map, 
+					title: 'End Point',
+					icon: '/images/mapicons/end.png'
+				});	
+				workspace.markers.push(endMarker);
+				workspace.endlog = {lat: tracker.closedlat, lng: tracker.closedlng, objid: tracker.objid, type:'end'}
+				new HeadWindowHandler(workspace, endMarker, workspace.endlog);
+			}
+		} 
+	} 
+
+    function initialize() {
+    	createMapObject({});
+    	if (!workspace.map) return;
+
+    	google.maps.event.addListener(workspace.map, 'click', function(event) {
+			var latLng = event.latLng;
+			window.console.log('latlng='+ latLng.lat() + ', ' + latLng.lng());
+		});
+	} 
+	  
+	function loadScript() {
+		var script = document.createElement("script");
+		script.type = "text/javascript";
+		script.src = "http://maps.googleapis.com/maps/api/js?v=3.expr&key=${PROJECT.apikey}&sensor=true&callback=initialize"; 
+		document.body.appendChild(script); 
+	} 
+
+	window.onload = loadScript;
+
+	function GmapInfoWindowHandler(workspace, gmarker, data) {
+		var txntype = (data.txntype? data.txntype: 'NORMAL');
+		var infowindow = new google.maps.InfoWindow({ 
+			size: new google.maps.Size(50, 50), 			
+			content: '<table cellpadding="0" cellspacing="0" style="white-space:nowrap;width:180px;"><tr>'+ 
+			         '<td style="width:1px;"><img src="/images/loading.gif" height="16" border="0"/></td>'+
+			         '<td style="padding-left:5px;">loading information...</td>'+ 
+			         '</tr></table>'
+		}); 
+
+		var loadContent = function() {
+			\$.ajax({ 
+				cache: false, 				
+				url: '/tracker/marker?objid='+data.objid, 
+				complete: function(o, resp_stat) {
+					if (resp_stat == 'success') {
+						infowindow.setContent(o.responseText); 
+					} else {
+						infowindow.setContent('<p class="error-box"><b class="error-box-title">'+resp_stat+'</b><br/>'+o.statusText+'</p>'); 
+					}
+				}, 
+				error: function(o, resp_stat, msg) {
+					infowindow.setContent('<p class="error-box"><b class="error-box-title">'+resp_stat+'</b><br/>'+msg+'</p>'); 
+				} 
+			});
+		} 
+
+		google.maps.event.addListener(gmarker, 'click', function() {
+			if (workspace.infowindow) workspace.infowindow.close(); 
+			infowindow.open(workspace.map, gmarker); 
+			workspace.infowindow = infowindow; 
+			loadContent();  
+		});	
+	} 
+
+	function HeadWindowHandler(workspace, gmarker, data) {
+		var infowindow = new google.maps.InfoWindow({ 
+			size: new google.maps.Size(50, 50), 			
+			content: '<table cellpadding="0" cellspacing="0" style="white-space:nowrap;width:180px;"><tr>'+ 
+			         '<td style="width:1px;"><img src="/images/loading.gif" height="16" border="0"/></td>'+
+			         '<td style="padding-left:5px;">loading information...</td>'+ 
+			         '</tr></table>'
+		}); 
+
+		var loadContent = function() {
+			\$.ajax({ 
+				cache: false, 				
+				url: '/tracker/head?objid='+data.objid+'&type='+data.type, 
+				complete: function(o, resp_stat) {
+					if (resp_stat == 'success') {
+						infowindow.setContent(o.responseText); 
+					} else {
+						infowindow.setContent('<p class="error-box"><b class="error-box-title">'+resp_stat+'</b><br/>'+o.statusText+'</p>'); 
+					}
+				}, 
+				error: function(o, resp_stat, msg) {
+					infowindow.setContent('<p class="error-box"><b class="error-box-title">'+resp_stat+'</b><br/>'+msg+'</p>'); 
+				} 
+			});
+		} 
+
+		google.maps.event.addListener(gmarker, 'click', function() {
+			if (workspace.infowindow) workspace.infowindow.close(); 
+			infowindow.open(workspace.map, gmarker); 
+			workspace.infowindow = infowindow; 
+			loadContent();  
+		});	
+	} 	
+
+	var showInMap = function(data) {		
+		try { 
+			google; 
+		} catch(e) {
+			return;
+		}
+
+		if (!data || !data.lat || !data.lng || data.lat==0 || data.lng==0) return;
+
+		var marker = new google.maps.Marker({ 
+			title: 'Location[date='+data.txndate+', lng='+data.lng+', lat='+data.lat+', accuracy='+data.accuracy+']', 
+			position: new google.maps.LatLng(data.lat, data.lng), 
+			map: workspace.map 
+		});	
+	}
+
+	var sortedLogs = [];
+	var sortedPaymentLogs = [];
+	var repaintHandler = function() {
+		try { 
+			google; 
+		} catch(e) {
+			return;
+		}
+		//bind new markers
+		var paymentlogs = sortedPaymentLogs;
+		for (var i=0; i<paymentlogs.length; i++) { 
+			var item = paymentlogs[i];
+			if (item.marker) continue;
+
+			var remarks = (item.remarks? item.remarks: '');
+			var txntype = (item.txntype? item.txntype: 'NORMAL');
+			var iconpath = '/images/mapicons/payment-'+txntype+'.png';
+			var pm = new google.maps.Marker({ 
+				position 	: new google.maps.LatLng(item.lat, item.lng), 
+				title 		: txntype+' Payment (#'+ (i+1) +') '+remarks, 
+				icon 		: iconpath.toLowerCase(), 				
+    			animation 	: google.maps.Animation.DROP, 
+    			map 		: workspace.map, 
+				draggable 	: false     			
+			});	
+			item.marker = pm; 			
+			new GmapInfoWindowHandler(workspace, pm, item); 
+		} 
+
+		var lineSymbol = {
+			path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW
+		};
+
+		var logs = sortedLogs;
+		var lastItem = (logs.length > 0? logs[logs.length-1]: null); 
+		var previtem = workspace.startlog;
+		var strokeColor = null;		
+		var paths = [];
+
+		for (var i=0; i<logs.length; i++) {
+			var item = logs[i]; 
+			if (!item || !item.lat || !item.lng || item.lat==0 || item.lng==0) continue;
+
+			var marker = new google.maps.Marker({ 
+				title: 'Location[lng='+item.lng+', lat='+item.lat+']', 				
+				position: new google.maps.LatLng(item.lat, item.lng), 
+				map: workspace.map 
+			});	
+		} 
+
+
+		if (workspace.locatorMarker) workspace.locatorMarker.setMap(null);
+		if (lastItem && 1==0) { 
+			var image = {
+				url: '/images/mapicons/locator.gif',
+				anchor: new google.maps.Point(25, 30)
+			}
+			workspace.locatorMarker = new google.maps.Marker({ 
+				position: new google.maps.LatLng(lastItem.lat, lastItem.lng), 
+				map: workspace.map, 
+				title: 'Current Location[lng='+lastItem.lng+', lat='+lastItem.lat+']',
+				icon:  image,
+				optimized: false  
+			});	
+		} 
+	} 
+
+	function sortList( list ) { 
+		if (1==1) return list;
+		/*
+		if (!list) return [];
+
+		var newarray = [];
+		for (var i=0; i<list.length; i++) {
+			newarray.push(list[i]); 
+		}
+
+		var comparator = function(a, b) {
+			if (!b.indexno) return -1; 
+
+			return a.indexno-b.indexno; 
+		}
+		newarray.sort(comparator); 
+		return newarray;*/
+	}
+
+	var socket = Socket.create('gmap');
+	socket.handlers.handler1 = function(x) {
+		if (!trackerid) return;		
+		if (!(x.status == 'OK')) return;
+		if (!(x.parentid.toLowerCase() == trackerid.toLowerCase())) return;
+
+		if (!workspace.paymentlogs) workspace.paymentlogs = []; 
+		if (!workspace.logs) workspace.logs = []; 
+
+		workspace.logs.push(x);
+		if (x.reftype == 'PAYMENT') workspace.paymentlogs.push(x); 
+
+		sortedLogs = sortList(workspace.logs); 
+		sortedPaymentLogs = sortList(workspace.paymentlogs);
+		setTimeout(repaintHandler, 1000); 
+		var paymentcount = sortedPaymentLogs.length;
+		if (paymentcount > 0) {  
+			\$('.notification-icon').removeClass('button-icon-notification-bell').addClass('button-icon-notification-bell-on');
+			\$('.notification-count').html(paymentcount).show(); 
+		} 
+	} 
+
+	socket.handlers.notificationlist = function(o) {
+		if (!(o.status == 'OK')) return;
+
+		addMessage(o.title + '<br/><p>posted on '+o.dtfiled+'</p>'); 
+	}
+	socket.start();
+</script>
+<script>
+	\$put("tracker", new function() {
+		var self = this;
+
+		this.data = {}
+
+		var refreshHandler = function() {
+			var alive = false; 
+			try {
+				google;
+				alive = true; 
+			} catch(e) {;}
+
+			if (alive == true) { 	
+				var _page = 1;
+				var _limit = 25;			
+				while (true) {
+					var _start = (_page-1)*_limit;
+					var params = {trackerid: trackerid, _start:_start, _limit:_limit};
+					params.fromdate = ${PARAMS.fromdate? "'"+PARAMS.fromdate+"'": null};
+					params.todate   = ${PARAMS.todate? "'"+PARAMS.todate+"'": null};
+					var list = trackerSvc.getList(params); 
+					if (list.length == 0) break;
+
+					for (var i=0; i<list.length; i++) {
+						var item = list[i];
+						item.indexno=_start+i;
+						item.status='OK';
+						item.parentid=item.sessionid;
+						showInMap(item);
+					}
+					_page++;
+				} 
+			} else { 
+				setTimeout(refreshHandler, 1000);
+			}
+		}
+		
+		this.onload = function() {	
+			workspace.onstart = function(){
+				\$get('tracker').refresh('getCollectorName'); 
+			} 	
+			setTimeout(refreshHandler, 1000);
+		} 
+		
+		this.getCollectorName = function() {
+			var tracker = workspace.tracker;			
+			var buffer = '(Not Available)';
+			if (tracker && tracker.user) {
+				buffer = '';
+				var user = tracker.user; 
+				if (user.firstname) buffer = buffer + user.firstname + ' '; 
+				if (user.middlename) buffer = buffer + user.middlename + ' '; 
+				if (user.lastname) buffer = buffer + user.lastname + ' '; 
+			} 
+			return buffer;
+		}
+
+		this.getTerminalid = function() {
+			var tracker = workspace.tracker; 
+			if (tracker && tracker.terminalid) {
+				return tracker.terminalid; 
+			} else {
+				return '(Not Available)'; 
+			}
+		}
+
+		this.showCollectorInfo = function() {
+
+		}
+
+		this.refreshWindow = function() {
+			window.location.reload();
+		}
+	});
+
+	function resizeMapCanvas() {
+		var height = \$(window).height()-40; 
+		if (height < 500) return;
+
+		\$('#map-canvas').height(height);
+	}
+
+	\$(document).ready(function(){ 
+		resizeMapCanvas();
+		
+		\$(window).resize(function(){
+			resizeMapCanvas();
+		});
+	});
+</script>
+
+<style type="text/css">
+	html { height: 100% }
+	body { height: 100%; margin: 0; padding: 0 }
+	#map-canvas { border-top:1px solid #cfcfcf; }
+	#map-canvas #provider-not-found {
+		font-size:24px; text-align:center; padding-top:50px;
+	} 
+</style>
+
+<div id="info-box" class="error-box" style="margin:20px;display:none;"></div>
+<div id="map-canvas">
+	<span style="white-space:nowrap;position:relative;top:20px;left:20px;font-size:1.6em;">
+		<img src="/images/loading.gif" border="0" height="24"/>
+		&nbsp;&nbsp; loading map, please wait... 
+	</span> 
+</div> 
+
+<div r:dockto="header-action">
+	<table class="mainmenu">
+	<tr>
+		<td>
+			<a r:context="tracker" r:name="showCollectorInfo">
+				<span r:context="tracker" r:type="label">Collector:&nbsp;&nbsp; #{getCollectorName()}</span> 
+			</a>
+		</td> 
+		<td>
+			<a r:context="tracker" r:name="refreshWindow">Refresh</a>
+		</td>
+		<td>
+			<a href="#">
+				<span class="button-icon-notification-bell notification-icon"></span>
+			</a>
+			<span class="notification-count" style="display:none;">0</span>
+		</td>
+	</tr>
+	</table>
+</div>

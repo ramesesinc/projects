@@ -1,0 +1,72 @@
+<%
+def svc = SERVICE.lookup("MobileTrackerService", "admin");
+def data = svc.openLog([objid: PARAMS.objid]); 
+def includetracker = (PARAMS.includetracker? PARAMS.includetracker : false);
+def info = (data.info? data.info: [:]); 
+%>
+<style>
+#markerinfo { font-family:'opensans',Tahoma,Arial; }
+#markerinfo > #title { font-weight:bold; color:#505050; }
+#markerinfo .data-row > td { padding:2px 5px; border:1px solid #d5d5d5; vertical-align:top; } 
+#markerinfo .data-row > td.label { 
+	width:80px; border-right:0; text-align:right; padding-right:20px; 
+	font-weight:bold; font-size:0.85em; color:#808080; 
+} 
+#markerinfo .data-row > td.value { width:200px; border-left:0; } 
+</style>
+
+<div id="markerinfo">
+	<span id="title">Payment Information</span>
+	<table cellpadding="0" cellspacing="0" style="white-space:nowrap;border-collapse:collapse;margin-top:5px;">
+	<tr class="data-row">
+		<td class="label">Type</td>
+		<td class="value">${data.txntype? data.txntype: 'Normal'}</td>
+	</tr>	
+	<tr class="data-row">
+		<td class="label">Txn Date</td>
+		<td class="value">${data.txndate}</td>
+	</tr>	
+	<tr class="data-row">
+		<td class="label">Ref. No.</td>
+		<td class="value">${data.info.refno? data.info.refno: '&nbsp;'}</td>
+	</tr> 
+	<tr class="data-row">
+		<td class="label">Amount Paid</td>
+		<td class="value">${data.info.amount? data.info.amount: '&nbsp;'}</td>
+	</tr>
+	<tr class="data-row">
+		<td class="label">Paid By</td>
+		<td class="value">${data.info.paidby? data.info.paidby: '&nbsp;'}</td>
+	</tr>
+	<tr class="data-row">
+		<td class="value" colspan="2" style="background:#e5e5e5;font-size:8px;">&nbsp;</td>
+	</tr> 
+	<tr class="data-row">
+		<td class="label">App. No.</td>
+		<td class="value">${data.info.loanapp?.appno? data.info.loanapp?.appno: '&nbsp;'}</td>
+	</tr>	
+	<tr class="data-row">
+		<td class="label">Borrower</td>
+		<td class="value">${data.info.borrower?.name? data.info.borrower?.name: '&nbsp;'}</td>
+	</tr> 
+	<tr class="data-row">
+		<td class="label">Address</td>
+		<td class="value">${data.info.borrower?.address? data.info.borrower?.address: '&nbsp;'}</td>
+	</tr>		
+	<tr class="data-row">
+		<td class="value" colspan="2" style="background:#e5e5e5;font-size:8px;">&nbsp;</td>
+	</tr> 	
+	<tr class="data-row">
+		<td class="label">Remarks</td>
+		<td class="value">${data.info.remarks? data.info.remarks: '&nbsp;'}</td>
+	</tr> 
+	<tr class="data-row">
+		<td class="label">Longitude</td>
+		<td class="value">${data.lng? data.lng: '&nbsp;'}</td>
+	</tr> 	
+	<tr class="data-row">
+		<td class="label">Latitude</td>
+		<td class="value">${data.lat? data.lat: '&nbsp;'}</td>
+	</tr> 	
+	</table>
+</div> 

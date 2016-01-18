@@ -1,0 +1,6 @@
+{
+	secured		: true, 
+	context		: 'trackerlist', 
+	title		: 'Mobile Tracker', 
+	description : 'Tracks the location of the field collectors upon collecting payments'
+}

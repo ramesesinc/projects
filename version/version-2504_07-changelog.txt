@@ -1,0 +1,4 @@
+RPT
+-----------------------------
+1. Reflect subdivided land modification to FAAS.
+2. Allow editing of ry and pintype in real property screen

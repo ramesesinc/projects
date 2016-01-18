@@ -1,0 +1,41 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.common.*
+
+class SRERevenueMappingService {
+
+	@ActiveDB("revenueitem")
+	def em;
+
+	@ActiveDB("sreaccount")
+	def sre;
+
+	@ActiveDB("sre_revenue_mapping")
+	def mapping;
+
+	@ProxyMethod 
+	public def getRevenueItemList(o) {
+		if(!o.searchtext) 
+			o.searchtext = '%';
+		else
+			o.searchtext += "%";	
+		def list  = sre.getRevenueItemList( o );
+		if(! list ) list = sre.getRevenueItemListByCode(o)
+		return list;
+	}
+
+	@ProxyMethod
+	public void removeEntity(o) {
+		mapping.delete( o );
+	}
+
+	public def create( o ) {
+		mapping.delete( [objid: o.revenueitemid] );
+		o.objid = o.revenueitemid;
+		o.revenueitemid = o.revenueitemid;
+		o.acctid = o.account?.objid;
+		return mapping.create(o);
+	}
+
+}

@@ -1,0 +1,45 @@
+<schema>
+	<element name="resection" tablename="resection">
+		<field name="objid" primary="true" />
+		<field name="state" required="true" />
+		<field name="pintype" required="true" />
+		<field name="barangayid" required="true" />
+		<field name="barangaypin" required="true" />
+		<field name="section" required="true"/>
+		<field name="ry" required="true" type="integer" />
+		<field name="txntype_objid" required="true" />
+		<field name="txnno" required="true" />
+		<field name="txndate" required="true" />
+		<field name="autonumber" required="true" type="boolean" />
+		<field name="effectivityyear" required="true" type="integer" />
+		<field name="effectivityqtr" required="true" type="integer" />
+		<field name="memoranda" required="true" />
+		<complex name="signatories" serializer="default" type="list" />
+	</element>
+
+	<element name="section" tablename="resectionitem">
+		<field name="objid" primary="true" />
+		<field name="resectionid" required="true" />
+		<field name="newsection" required="true" />
+		<field name="landcount" required="true" type="integer"/>
+	</element>
+
+	<element name="affectedrpu" tablename="resectionaffectedrpu">
+		<field name="objid" primary="true" />
+		<field name="resectionid" required="true" />
+		<field name="rputype" required="true" />
+		<field name="prevfaasid" required="true" />
+		<field name="prevrpuid" required="true" />
+		<field name="prevrpid" required="true" />
+		<field name="newsection" />
+		<field name="newparcel" />
+		<field name="newtdno" />
+		<field name="newutdno" required="true" />
+		<field name="newpin"  />
+		<field name="newsuffix"  />
+		<field name="newfaasid" />
+		<field name="newrpuid" />
+		<field name="newrpid " />
+		<field name="memoranda" required="true" />
+	</element>
+</schema>

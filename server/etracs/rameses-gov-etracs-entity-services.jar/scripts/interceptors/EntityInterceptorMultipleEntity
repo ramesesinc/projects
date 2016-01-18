@@ -1,0 +1,56 @@
+import com.rameses.annotations.*
+import com.rameses.common.*
+import java.rmi.server.UID;
+import com.rameses.util.*;
+import com.rameses.io.*;
+import com.rameses.services.extended.*;
+
+class EntityInterceptorMultipleEntity  {
+
+	@ActiveDB("entitymultiple")
+	def	em; 
+
+	@Service("LOVService")
+	def LOV;
+
+	@Service('LogService')
+	def logSvc 
+
+
+	
+	@After(pattern="EntityService.create", eval="args[0].type == 'MULTIPLE'")
+	public void afterCreate(def evt ) {
+		def parms = evt.args[0];
+		logSvc?.log('create', 'MultipleEntity', parms.objid)
+	}
+
+	@After(pattern="EntityService.update", eval="args[0].type == 'MULTIPLE'")
+	public void beforeUpdate(def evt ) {
+		def parms = evt.args[0];
+		if( !parms?.loaded ) {
+			em.update( parms );
+		}
+		logSvc?.log('update', 'MultipleEntity', parms.objid)
+	}
+
+	@After(pattern="EntityService.open", eval="result.type == 'MULTIPLE'")
+	public void afterOpen( evt ) {
+		def parms = evt.args[0];
+		def entity = evt.result;
+		if( !parms?.loaded ) {
+			def e = em.read( [objid: entity.objid ] ) 
+			if (e)
+				entity.putAll ( e );
+		}
+		entity.members = em.getMembers([objid: entity.objid]); 
+	}
+
+
+	@After(pattern="EntityService.getTypes", index=3)
+	public void addTypes( evt ) {
+		def types = evt.result;
+		types << "MULTIPLE";
+	}
+
+
+}

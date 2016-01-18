@@ -1,0 +1,155 @@
+<schema>
+    <element name="rptledger" tablename="rptledger">
+        <field name="objid" primary="true" />
+        <field name="state" required="true" />
+        <field name="faasid" />
+        <field name="nextbilldate" />
+        <field name="lastyearpaid" required="true" type="integer" />
+        <field name="lastqtrpaid" required="true" type="integer" />
+        <field name="barangayid" required="true" />
+        <field name="taxpayer_objid" required="true" />
+        <field name="owner_name" required="true" />
+        <field name="fullpin" required="true" />
+        <field name="tdno" required="true" />
+        <field name="cadastrallotno" />
+        <field name="rputype" required="true" />
+        <field name="txntype_objid" required="true" />
+        <field name="classification_objid" required="true" />
+        <field name="classcode" required="true" />
+        <field name="totalav" required="true" type="decimal" />
+        <field name="totalmv" required="true" type="decimal" />
+        <field name="totalareaha" required="true" type="decimal" />
+        <field name="taxable" required="true" type="boolean" />
+        <field name="prevtdno"/>
+        <field name="titleno"/>
+        <field name="updateflag"/>
+        <field name="forcerecalcbill"/>
+    </element>
+
+    <element name="subledger" tablename="rptledger_subledger">
+        <field name="objid" primary="true" />
+        <field name="parent_objid" required="true" />
+        <field name="subacctno" required="true" />
+    </element>
+
+    <element name="ledgerfaas" tablename="rptledgerfaas">
+        <field name="objid" primary="true" />
+        <field name="state" required="true" />
+        <field name="rptledgerid" required="true" />
+        <field name="faasid" />
+        <field name="tdno" required="true" />
+        <field name="txntype_objid" required="true" />
+        <field name="classification_objid" required="true" />
+        <field name="actualuse_objid"  />
+        <field name="taxable" required="true" type="boolean" />
+        <field name="idleland" required="true" type="integer" />
+        <field name="reclassed" type="boolean" />
+        <field name="backtax" required="true" type="boolean" />
+        <field name="fromyear" required="true" type="integer" />
+        <field name="fromqtr" required="true" type="integer" />
+        <field name="toyear" required="true" type="integer" />
+        <field name="toqtr" required="true" type="integer" />
+        <field name="assessedvalue" required="true" type="decimal" />
+        <field name="systemcreated" required="true" type="boolean" />
+    </element>
+
+    <element name="ledgeritem" tablename="rptledgeritem">
+        <field name="objid" primary="true" />
+        <field name="rptledgerid" required="true"/>
+        <field name="rptledgerfaasid" required="true"/>
+        <field name="taxdifference" type="integer" required="true" />
+        <field name="classification_objid" />
+        <field name="actualuse_objid" />
+        <field name="remarks" />
+        <field name="year" type="integer" required="true"/>
+        <field name="basicav" required="true" type="decimal" />
+        <field name="sefav" required="true" type="decimal" />
+        <field name="av" required="true" type="decimal" />
+        <field name="basic" type="decimal" required="true" />
+        <field name="basicpaid" type="decimal" required="true" />
+        <field name="basicint" type="decimal" required="true" />
+        <field name="basicintpaid" type="decimal" required="true" />
+        <field name="basicdisc" type="decimal" required="true" />
+        <field name="basicdisctaken" type="decimal" required="true" />
+        <field name="basicidle" type="decimal" required="true" />
+        <field name="basicidlepaid" type="decimal" required="true" />
+        <field name="basicidledisc" type="decimal" required="true" />
+        <field name="basicidledisctaken" type="decimal" required="true" />
+        <field name="basicidleint" type="decimal" required="true" />
+        <field name="basicidleintpaid" type="decimal" required="true" />
+        <field name="sef" type="decimal" required="true" />
+        <field name="sefpaid" type="decimal" required="true" />
+        <field name="sefint" type="decimal" required="true" />
+        <field name="sefintpaid" type="decimal" required="true" />
+        <field name="sefdisc" type="decimal" required="true" />
+        <field name="sefdisctaken" type="decimal" required="true" />
+        <field name="firecode" type="decimal" required="true" />
+        <field name="firecodepaid" type="decimal" required="true" />
+        <field name="revperiod" />
+        <field name="qtrly" type="integer" required="true" />
+        <field name="fullypaid" required="true" type="integer" />
+    </element>  
+
+    <element name="ledgeritemqtrly" tablename="rptledgeritem_qtrly">
+        <field name="objid" primary="true" />
+        <field name="parentid" required="true" />
+        <field name="rptledgerid" required="true"/>
+        <field name="year" type="integer" required="true" />
+        <field name="qtr" type="integer" required="true" />
+        <field name="basicav" type="decimal" required="true" />
+        <field name="sefav" type="decimal" required="true" />
+        <field name="av" type="decimal" required="true" />
+        <field name="basic" type="decimal" required="true" />
+        <field name="basicpaid" type="decimal" required="true" />
+        <field name="basicint" type="decimal" required="true" />
+        <field name="basicintpaid" type="decimal" required="true" />
+        <field name="basicdisc" type="decimal" required="true" />
+        <field name="basicdisctaken" type="decimal" required="true" />
+        <field name="basicidle" type="decimal" required="true" />
+        <field name="basicidlepaid" type="decimal" required="true" />
+        <field name="basicidledisc" type="decimal" required="true" />
+        <field name="basicidledisctaken" type="decimal" required="true" />
+        <field name="basicidleint" type="decimal" required="true" />
+        <field name="basicidleintpaid" type="decimal" required="true" />
+        <field name="sef" type="decimal" required="true" />
+        <field name="sefpaid" type="decimal" required="true" />
+        <field name="sefint" type="decimal" required="true" />
+        <field name="sefintpaid" type="decimal" required="true" />
+        <field name="sefdisc" type="decimal" required="true" />
+        <field name="sefdisctaken" type="decimal" required="true" />
+        <field name="firecode" type="decimal" required="true" />
+        <field name="firecodepaid" type="decimal" required="true" />
+        <field name="revperiod" />
+        <field name="partialled" required="true" type="integer" />
+        <field name="fullypaid" required="true" type="integer" />
+    </element>
+
+    <element name="credit" tablename="rptledger_credit">
+        <field name="objid" primary="true" />
+        <field name="rptledgerid" required="true" />
+        <field name="type" required="true" />
+        <field name="refno" required="true" />
+        <field name="refdate" required="true" />
+        <field name="payorid" />
+        <field name="paidby_name" required="true" />
+        <field name="paidby_address" required="true" />
+        <field name="collector" required="true" />
+        <field name="postedby" required="true" />
+        <field name="postedbytitle" required="true" />
+        <field name="dtposted" required="true" />
+        <field name="fromyear" type="integer" required="true" />
+        <field name="fromqtr" type="integer" required="true" />
+        <field name="toyear" type="integer" required="true" />
+        <field name="toqtr" type="integer" required="true" />
+        <field name="basic" required="true" type="decimal" />
+        <field name="basicint" required="true" type="decimal" />
+        <field name="basicdisc" required="true" type="decimal" />
+        <field name="basicidle" required="true" type="decimal" />
+        <field name="sef" required="true" type="decimal" />
+        <field name="sefint" required="true" type="decimal" />
+        <field name="sefdisc" required="true" type="decimal" />
+        <field name="firecode" required="true" type="decimal" />
+        <field name="amount" required="true" type="decimal" />
+        <field name="collectingagency" />
+    </element>
+</schema>

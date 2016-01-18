@@ -1,0 +1,63 @@
+<schema>
+    <element name="rptbill" tablename="rptbill">
+        <field name="objid" primary="true" /> 
+        <field name="taxpayer_objid" required="true" /> 
+        <field name="taxpayer_name" /> 
+        <field name="taxpayer_address" /> 
+        <field name="barcode"  /> 
+        <field name="expirydate" required="true" /> 
+        <field name="postedby" required="true" /> 
+        <field name="postedbytitle" required="true" /> 
+        <field name="dtposted" required="true" /> 
+        <field name="billtoyear" required="true" /> 
+        <field name="billtoqtr" required="true" /> 
+    </element>
+
+    <element name="rptbill_ledger" tablename="rptbill_ledger">
+        <field name="rptledgerid" primary="true" />
+        <field name="billid" primary="true" />
+        <field name="updateflag" />
+    </element>
+
+    <element name="rptbill_item" tablename="rptbill_ledger_item">
+        <field name="objid" primary="true" />
+        <field name="billid" required="true" />
+        <field name="rptledgerid" required="true" />
+        <field name="rptledgerfaasid" required="true" />
+        <field name="rptledgeritemid" required="true" />
+        <field name="rptledgeritemqtrlyid" required="true" />
+        <field name="av" required="true" type="decimal" />
+        <field name="basicav" required="true" type="decimal" />
+        <field name="sefav" required="true" type="decimal" />
+        <field name="year" required="true" type="integer" />
+        <field name="qtr" required="true" type="integer" />
+        <field name="basic" required="true" type="decimal" />
+        <field name="basicint" required="true" type="decimal" />
+        <field name="basicdisc" required="true" type="decimal" />
+        <field name="basicidle" required="true" type="decimal" />
+        <field name="basicidledisc" required="true" type="decimal" />
+        <field name="basicidleint" required="true" type="decimal" />
+        <field name="sef" required="true" type="decimal" />
+        <field name="sefint" required="true" type="decimal" />
+        <field name="sefdisc" required="true" type="decimal" />
+        <field name="firecode" required="true" type="decimal" />
+        <field name="basicnet" required="true" type="decimal" />
+        <field name="sefnet" required="true" type="decimal" />
+        <field name="total" required="true" type="decimal" />
+        <field name="revperiod" />
+        <field name="partialled" required="true" type="integer" />
+        <field name="taxdifference" required="true" type="boolean" />
+    </element>
+
+    <element name="rptbill_account" tablename="rptbill_ledger_account">
+        <field name="objid" primary="true" />
+        <field name="billid" required="true" />
+        <field name="rptledgerid" required="true" />
+        <field name="revperiod" required="true" />
+        <field name="revtype" required="true" />
+        <field name="item_objid" required="true" />
+        <field name="amount" type="decimal" required="true" />
+        <field name="discount" type="decimal" required="true" />
+        <field name="sharetype" required="true" />
+    </element>
+</schema>

@@ -1,0 +1,10 @@
+<schema>
+	<element name="rpt_requirement_type" tablename="rpt_requirement_type">
+		<field name="objid" primary="true"/>
+		<field name="state" required="true"/>
+		<field name="name" required="true"/>
+		<field name="description" />
+		<field name="handler" />
+		<field name="sortorder" type="integer" />
+	</element>
+</schema>

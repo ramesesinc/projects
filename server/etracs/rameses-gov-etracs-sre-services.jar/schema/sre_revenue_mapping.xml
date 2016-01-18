@@ -1,0 +1,10 @@
+<schema>
+
+	<element tablename="sre_revenue_mapping">
+		<field name="objid" primary="true"/>	
+		<field name="version" />
+		<field name="revenueitemid" required="true"/>
+		<field name="acctid" required="true"/>
+	</element>
+
+</schema>

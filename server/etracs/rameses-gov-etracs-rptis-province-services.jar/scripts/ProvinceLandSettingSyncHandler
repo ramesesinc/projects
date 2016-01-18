@@ -1,0 +1,86 @@
+import com.rameses.osiris3.xconnection.*;
+import com.rameses.annotations.*;
+import com.rameses.common.*;
+
+class ProvinceLandSettingSyncHandler
+{   
+	@ActiveDB('landrysetting')
+	def em 
+
+
+	@Env
+	def env 
+
+	@Context 
+	def appCtx;
+
+	@Service()
+	def self
+
+	@Service('LandRYSettingService')
+	def landSvc 
+
+	@Service('OrgService')
+	def orgSvc 
+
+
+
+	@ProxyMethod 
+	public def syncData( params ) {
+		self.doSync(params)
+		return new AsyncToken()
+	}
+
+
+	@Async 
+	@ProxyMethod
+	public void doSync( params ) {
+		def xconn = appCtx.getResource( XConnection.class, env.ASYNC.CONNECTION ); 
+		def queue = xconn.register( env.ASYNC.ID ); 
+
+		// params : [orgcode:'xxx', ry:xxxx ]
+		//get lguid
+		def org = orgSvc.findByCode([code:params.orgcode])
+		if (! org){
+			queue.push([msgtype:'_ERROR_', msg:'Organization code not found.'])
+			queue.push( new AsyncToken(closed:true) )
+			return
+		}
+		
+
+		//get landrysetting by lguid
+		def settings = em.getSettingsByLguIdRy([lguid:org.objid, ry:params.ry])
+		if (!settings){
+			queue.push([msgtype:'_ERROR_', msg:'Requested revision setting does not exist.'])
+			queue.push( new AsyncToken(closed:true) )
+			return
+		}
+
+		settings.each{setting ->
+			setting = landSvc.open(setting)
+			queue.push([msgtype:'landrysetting', data:setting])
+
+			def data = landSvc.getAssessLevels(setting.objid).each{ lvl ->
+							lvl.ranges = landSvc.getRanges(lvl.objid)
+						}
+
+			queue.push([msgtype:'landassesslevels', data:data])
+
+			data = landSvc.getSpecificClasses(setting.objid, '%').each{ spc ->
+						spc.subclasses = landSvc.getSubClasses(spc.objid)
+					}
+
+			queue.push([msgtype:'specificclasses', data:data])
+
+			data = landSvc.getStrippings(setting.objid, '%')
+			queue.push([msgtype:'strippings', data:data])
+
+			data = landSvc.getLandAdjustmentTypes(setting.objid).each{
+				it.classifications = landSvc.getAdjustmentClassifications(it)
+			}
+			queue.push([msgtype:'adjustmenttypes', data:data])
+		}
+
+		queue.push( new AsyncToken(closed:true) )
+	}
+}

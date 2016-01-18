@@ -1,0 +1,85 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.common.*
+import com.rameses.services.extended.*
+
+class NGASLiquidationReportService  {
+
+	@ActiveDB('ngas_liquidation_report')
+	def em;
+
+	@Service("NumberService")
+	def numSvc;
+
+	@Service("DateService")
+	def dtSvc;
+
+	@ProxyMethod 
+	public def getAbstractReport( liq, fund ) {
+		liq.each{k,v-> 
+			println ''+ k +'-> '+ v; 
+		}
+
+		def p =  [remittanceid: liq.objid, filter: ''];
+		if ( fund?.objid ) {
+			p.fundid = fund.objid;
+			p.filter = ''' AND ia.fund_objid = $P{fundid}  ''';
+		}
+
+		def itemGrps = em.getLiquidatedItems( p ).groupBy{ it.parentid } 
+		def acctGrps = em.getAccountGroups([filter: '']).groupBy{ it.parentid } 
+		def items = [];
+
+		def roots = acctGrps.remove('ROOT');
+		if (roots == null) roots = [];
+		
+		roots << [objid:'UNMAPPED', title:'Unmapped Accounts', type:'root', level:0];
+
+		for( r in roots ) {
+			r.level = 0;
+			r.type = 'root'
+			items << r;	
+			loop( r, items, acctGrps, itemGrps );
+		}
+
+		items = items.findAll{ it.amount == null || it.amount > 0  };
+
+		def hdr = getHeader( liq, fund ); 
+		return [header: hdr, items:items ];	
+	}
+
+	def getHeader( o, fund ) {
+		def header = [:]
+		header.REPORTTITLE = 'SUMMARY OF CASH COLLECTIONS AND DEPOSITS BY NGAS'  
+		header.TXNNO = o.txnno
+		header.TXNDATE = dtSvc.format('MMMMM dd, yyyy', o.dtposted)
+		header.TXNAMOUNT = o.amount
+		header.DATEPOSTED =  o.dtposted 
+		header.AMTINWORDS = numSvc.doubleToWords( o.amount );
+		header.FUND = (fund?.objid ? fund.title : 'All');
+		return header;	
+	}
+
+	def loop( ctx, items, acctGrps, itemGrps ) {
+		def children = acctGrps.remove( ctx.objid );
+		ctx.amount = 0;
+		if(children) {
+		    for( c in children ) {
+		    	c.level = ctx.level + 1;
+		    	items << c;
+		    	loop( c, items, acctGrps, itemGrps );
+		    }	
+		    ctx.amount += children.sum{ it.amount };	
+		}
+		def details = itemGrps.remove( ctx.objid );
+		for( i in details ) {
+			i.level = ctx.level+1;
+			ctx.amount += i.amount;
+			items << i;
+		}
+	}
+
+	
+
+}

@@ -1,0 +1,70 @@
+import com.rameses.annotations.*
+import com.rameses.common.*;
+import com.rameses.services.extended.*;
+
+class RPTLedgerInterceptor
+{
+    @Env 
+    def env 
+
+    @ActiveDB('rptledger')
+    def em
+
+	@Service('RPTLedgerService')
+	def svc
+
+    @Service('RealPropertyService')
+    def rpSvc
+
+	@Service('RPTUtil')
+	def util 
+
+    @Service('LogService')
+    def logSvc
+
+	def STATE_PENDING   = 'PENDING'
+	def STATE_APPROVED  = 'APPROVED'
+
+
+    @After(pattern="RPTLedgerService.(createLedger|createSubLedger|updateLedger|updateSubLedger|approveLedger|fixLedger)") 
+    public void logActions( evt ) {
+        def ledger = evt.result 
+        logSvc.log( evt.methodName, 'RPTLEDGER', ledger.objid)
+    }
+
+	@After(pattern="FAASService.approveFaas", eval="#{!env.ORGCLASS?.equalsIgnoreCase('province')}")
+	public void postFaasToRPTLedger(evt){
+        def faas = evt.result 
+        if ((faas.txntype.objid.matches('SD|CS') || isFAASFromSubdivision(faas)) && faas.rpu.rputype == 'land'){
+            svc.postNewLedger(faas)
+        }
+        else if ((faas.txntype.objid.matches('SD|CS') || isFAASFromSubdivision(faas)) && faas.rpu.rputype != 'land'){
+            svc.postLedgerFaasData(faas);
+        }
+		else if ( faas.txntype.newledger || util.isTrue(faas.datacapture)) {
+            postNewLedger(faas)
+        }
+        else {
+        	svc.postLedgerFaasData(faas);
+        }		
+	}
+
+    boolean isFAASFromSubdivision(faas){
+        return em.findFaasFromSubdividedLand(faas) != null 
+    }
+
+    void postNewLedger(faas){
+        def manualledger = svc.findLedgerbyTdNo(faas)
+            
+        if (!manualledger)
+            manualledger = svc.findLedgerbyPrevTdNo(faas)
+
+        if (!manualledger){
+            svc.postNewLedger(faas);
+        }
+        else {
+            svc.reconcileManualLedger(faas, manualledger)
+        }
+    }
+}
+

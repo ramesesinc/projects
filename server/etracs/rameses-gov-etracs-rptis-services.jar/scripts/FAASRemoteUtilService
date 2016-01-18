@@ -1,0 +1,49 @@
+import com.rameses.annotations.*
+import com.rameses.common.*;
+import com.rameses.services.extended.*;
+
+class FAASRemoteUtilService
+{
+
+	@Env
+	def env
+
+    @Service('RPTNotificationService')
+    def svc 
+
+    @Service('FAASService')
+	def faasSvc
+
+	@Service('RPTUtil')
+	def util
+
+	@Service('FAASSupportService')
+	def supportSvc 
+
+	@ProxyMethod
+	public void submitFaasForProvinceApproval(faas){
+        faas = faasSvc.getFaasByTdNo(faas.tdno)
+        def asyncreq = svc.createAsyncRequest('ProvinceFAASRemoteService', 'postFaasForProvinceApproval', supportSvc.getFaasData(faas), svc.buildEnvMap(env))
+        def msg = svc.createAsyncMessage(asyncreq[0])
+        msg.groupid = 'assign-receiver'
+        msg.filetype = 'faas'
+        msg.messagetype = 'faas-forprovapproval'
+        msg.message = 'FAAS No. ' + (faas.tdno ? faas.tdno : faas.utdno) + ' (assign-receiver).'
+        svc.sendAsyncMessage(msg)
+        println 'submit Online FAAS for province approval ... done'
+    }
+
+    @ProxyMethod
+    public void submitFaasImages(faas){
+        faas = faasSvc.getFaasByTdNo(faas.tdno)
+        def asyncreq = svc.createAsyncRequest('ProvinceFAASRemoteService', 'postFaasImages', supportSvc.getFaasImages(faas), svc.buildEnvMap(env))
+        def msg = svc.createAsyncMessage(asyncreq[0])
+        msg.filetype = 'faas'
+        msg.messagetype = 'faas-images'
+        msg.message = 'Post images for FAAS ' + (faas.tdno ? faas.tdno : faas.utdno) + '.'
+        svc.sendAsyncMessage(msg)
+        println 'submit FAAS images to province ... done'
+    }
+
+}
+

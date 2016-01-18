@@ -1,0 +1,16 @@
+<schema>
+	<element name="structure" tablename="structure">
+		<field name="objid" primary="true"/>
+		<field name="state" required="true"/>
+		<field name="code" required="true"/>
+		<field name="name" required="true"/>
+		<field name="indexno" type="integer" />
+	</element>
+	
+	<element name="structurematerial" tablename="structurematerial">
+		<field name="structure_objid" primary="true"/>
+		<field name="material_objid" primary="true" />
+		<field name="display" required="true" type="integer" />
+		<field name="idx" required="true" type="integer" />
+	</element>
+</schema>

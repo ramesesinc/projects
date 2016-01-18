@@ -1,0 +1,44 @@
+
+import com.rameses.annotations.*;
+import com.rameses.common.*;
+
+class BPLobTopListingReportService
+{
+	@ActiveDB("bpreport")
+	def em
+
+	@ProxyMethod
+	public def getReport( params ) { 
+
+		params.classificationid = ( params.classification ? params.classification.objid : '%' );
+		params.varname = ( params.txntype == 'NEW' ? 'CAPITAL' : 'GROSS');
+
+		def list = em.getBusinessTopList( params );
+		if ( !list ) throw new Exception('No records found.')
+
+		def prevamount = -1.0; 
+		def rankno = 1; 
+		list.each {
+			if (it.amount != prevamount) {
+				prevamount = it.amount; 
+				it.rankno = rankno;				
+				rankno += 1; 
+			} 
+		} 
+
+		return [
+			title : buildTitle( params ), 
+			items : list 
+		]; 
+	} 
+
+	def buildTitle( param ) { 
+		def buff = new StringBuilder("TOP ");
+		buff.append( param.topsize.toString() );
+		if ( param.txntype ) {
+			buff.append( " " + param.txntype.toString() ); 
+		}
+		buff.append( " BUSINESSES" );
+		return buff.toString(); 
+	} 
+}

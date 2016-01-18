@@ -1,0 +1,12 @@
+<schema>
+	<element name="income_summary" tablename="income_summary">
+		<field name="refid" primary="true"/>
+		<field name="refdate"/>
+		<field name="acctid" primary="true"/>
+		<field name="fundid"/>
+		<field name="amount"/>
+		<field name="refno"/>
+		<field name="reftype"/>
+		<field name="orgid"/>
+	</element>
+</schema>

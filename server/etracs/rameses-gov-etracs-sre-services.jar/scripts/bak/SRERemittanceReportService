@@ -1,0 +1,112 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.common.*
+import com.rameses.services.extended.*
+
+class NGASRemittanceReportService  {
+
+	@ActiveDB('ngas_remittance_report')
+	def em;
+
+	@Service("NumberService")
+	def numSvc;
+
+	@Service("DateService")
+	def dtsvc;
+
+	def getHeader( rem, fund ) {
+		def header = [:]
+		header.REPORTTITLE = 'SUMMARY OF CASH COLLECTIONS AND DEPOSITS BY NGAS'  
+		header.REMITTANCENO = rem.txnno
+		header.REMITTANCEDATE = dtsvc.format('MMMMM dd, yyyy', rem.dtposted)
+		header.REMITTANCEAMOUNT = rem.amount
+		header.COLLECTORNAME = rem.collector.name
+		header.COLLECTORTITLE = rem.collector.title
+		header.LIQUIDATINGOFFICER = rem.liquidatingofficer.name
+		header.LIQUIDATINGOFFICERTITLE = rem.liquidatingofficer.title
+		header.DATEPOSTED =  rem.dtposted 
+		header.AMTINWORDS = numSvc.doubleToWords( rem.amount );
+		if( fund?.objid!=null) 
+			header.FUND = fund.title;
+		else
+			header.FUND = 'All';	
+		return header;	
+	}
+
+	@ProxyMethod 
+	public def getSummaryReport(def rem, def fund) {
+		def p =  [ remittanceid: rem.objid ];
+		p.filter = '';
+		if( fund?.objid!=null ) {
+			p.fundid = fund.objid;
+			p.filter = ''' AND ri.fund_objid = $P{fundid}  ''';
+		}
+		def items = em.getSummaryReport( p );
+		items.each {z->
+			if(!z.code) {
+				z.acctcode = 'UNMAPPED';
+			}
+			else {
+				z.acctcode = z.title + " \n(" + z.code + ")";
+			}	
+			if(z.voided==1) z.paidby = "*** VOID ***";
+		}
+		def hdr = getHeader(rem,fund);
+		return [ header: hdr, items:items];
+	}
+
+
+	def loop( ctx, items, acctGrps, itemGrps ) {
+		def children = acctGrps.remove( ctx.objid );
+		ctx.amount = 0;
+		if(children) {
+		    for( c in children ) {
+		    	c.level = ctx.level + 1;
+		    	items << c;
+		    	loop( c, items, acctGrps, itemGrps );
+		    }	
+		    ctx.amount += children.sum{ it.amount };	
+		}
+		def details = itemGrps.remove( ctx.objid );
+		for( i in details ) {
+			i.level = ctx.level+1;
+			ctx.amount += i.amount;
+			items << i;
+		}
+	}
+
+	@ProxyMethod 
+	public def getAbstractReport(def rem, def fund) {
+		def p =  [ remittanceid: rem.objid ];
+		p.filter = '';
+		if( fund?.objid!=null ) {
+			p.fundid = fund.objid;
+			p.filter = ''' AND ri.fund_objid = $P{fundid}  ''';
+		}
+
+		/******** select applicable revenue items **************/
+		/******** select applicable ngas accounts **************/
+
+		def itemGrps = em.getRemittanceItems( p ).groupBy{it.parentid};
+		def acctGrps = em.getNGASAccounts([filter: '']).groupBy{it.parentid};
+
+		def items = [];
+	
+		def roots = acctGrps.remove('ROOT');
+		roots << [objid:'UNMAPPED', title:'Unmapped Accounts', type:'root', level:0];
+
+		for( r in roots ) {
+			r.level = 0;
+			r.type = 'root'
+			items << r;	
+			loop( r, items, acctGrps, itemGrps );
+		}
+
+		items = items.findAll{ it.amount == null || it.amount > 0  };
+
+		def hdr = getHeader(rem,fund);
+		return [header: hdr, items:items ];	
+	}
+
+}

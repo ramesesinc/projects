@@ -1,0 +1,95 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.common.*
+
+import com.rameses.services.extended.*
+
+class SREAccountService extends ActiveCrudNodeService {
+
+	@ActiveDB('sreaccount')
+	def em;
+
+	@Service(value='SREAccountService', connection='etracsorg.osiris3')
+	def acctSvc;
+
+	public void afterNode( def selectedNode, def list ) {
+		list.each { 
+			it.caption = it.code + " (" + it.title + ") ";
+			it.filetype = "account-"+it.type;
+			it.children = [  
+				[caption:'Account Group', filetype: 'account-group'],
+				[caption:'Account Detail', filetype: 'account-detail']
+			]
+		}
+		if(selectedNode.root == true) {
+			list.add(0, [name:'detail', caption:'Details', leaf:true, allowSearch:true]);
+		}	
+	}
+
+	@ProxyMethod
+	public def getColumns( def o ) {
+		def cols = [
+			[name:'code', caption:'Acct Code', width:100, maxWidth:200 ],
+			[name:'title', caption:'Acct Title' ],
+			[name:'type', caption:'Type' ]
+		];
+		return cols;
+	}
+
+	public def open(o) {
+		return em.findInfo(o);
+	}
+
+	public void beforeList( def p ) {
+		if(p.name == "search") {
+			p._listMethod = "getSearch";
+		}
+		else if(p.name == "detail") {
+			p._listMethod = "getListDetails";
+		}
+		if( p._tag ) {
+			p._listMethod = "getLookup";
+			p.type = p._tag;
+			if(!p.parentid) p.parentid = '%';
+		}
+	}
+	
+	public void afterList( def p, def list ) {
+		list.each { 
+			it.filetype = 'account-'+it.type;
+		}
+	}
+	
+    @ProxyMethod
+    public def getSubAccounts(o) {
+    	return em.getSubAccounts( o );
+    }
+    
+  	@ProxyMethod
+    public def saveSubAccount(o) {
+    	return em.save( o );
+    }
+
+	@ProxyMethod
+    public def changeParent(o) {
+    	return em.changeParent( o );
+    }
+
+    @ProxyMethod 
+    public void syncFromCloud() {
+    	def list = []
+    	def start = 0
+    	while(true){
+    		list = acctSvc.getList([searchtext: '%', _start:start, _limit: 25]);
+    		if(! list ) break;
+
+    		list.each { 
+    			em.save(it);
+    		}
+    		start += 25
+    	}
+    }
+
+
+}

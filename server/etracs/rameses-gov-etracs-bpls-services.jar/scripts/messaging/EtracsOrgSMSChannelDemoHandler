@@ -1,0 +1,105 @@
+
+import com.rameses.annotations.*;
+import com.rameses.http.*;
+import com.rameses.util.*;
+
+class EtracsOrgSMSChannelDemoHandler {
+
+	@Service(value="SMSService", connection="etracsorg_smsservice")
+	def proxy;
+
+	@Service("BusinessBillingService")
+	def billingSvc;
+
+	@Service("BusinessAssessmentService")
+	def assessmentSvc;
+
+	@Service("BusinessMasterService")
+	def business;
+
+	@ActiveDB("business_application_task")
+	def appTask;
+
+	@Service("DateService")
+	def dateSvc;
+
+	//keywords: BPINFO, BPBILL, BPSTAT 
+	@OnMessage(value='etracsorg_smschannel', eval="#{data.keyword == 'BPINFO'}")
+	public void handleBPInfo( msg ) { 
+		def m = [objid:msg.objid, phoneno: msg.phoneno];
+		try {
+			def bin = msg.message; 
+			def r = business.findByBIN( [bin:bin] );
+			def s = new StringBuilder();
+			s.append( "BIN: " + r.bin + "\n");
+			s.append( "Name: " + r.businessname  + "\n");
+			s.append( "Owner: " + r.owner.name + "\n");
+			m.message = s.toString();
+		}
+		catch(e) {
+			m.message = e.message;
+		}
+		reply( m ); 
+	} 
+
+	@OnMessage(value='etracsorg_smschannel', eval="#{data.keyword == 'BPBILL'}")
+	public void handleBPBill( msg ) { 
+		def m = [objid:msg.objid, phoneno: msg.phoneno];
+		try {
+			def appno = msg.message;
+			def r = assessmentSvc.getBillingByAppno(  [appno: appno ] );
+			def s = new StringBuilder();
+			s.append( "BIN: " + r.bin + "\n");
+			s.append( "Name: " + r.businessname  + "\n");
+			s.append( "Owner: " + r.ownername + "\n\n");
+			s.append( "Total amount due: " + r.totals.total +"\n" );
+			s.append( "Valid until: " + r.expirydate );
+			m.message =  s.toString();
+		}
+		catch(e) {
+			m.message = e.message;
+		}
+		reply( m ); 
+	} 
+
+	@OnMessage(value='etracsorg_smschannel', eval= "#{data.keyword == 'BPSTAT'}")
+	public void handleBpStat( msg ) { 
+		def m = [objid:msg.objid, phoneno: msg.phoneno];
+		try {
+			def bin = msg.message;
+			def r = business.findByBIN( [bin:bin] );
+			def t = appTask.findStatusByBIN( [bin: bin ]);
+			r.putAll( t );
+			def s = new StringBuilder();
+			s.append( "BIN: " + r.bin + "\n");
+			s.append( "Name: " + r.businessname  + "\n");
+			s.append( "Owner: " + r.owner.name + "\n\n");
+			s.append( "App No: " + r.appno + "\n");
+			s.append( "Date applied : " +  dateSvc.format('yyyy MMMM dd', r.dtfiled) + "\n\n");
+			s.append( "Current Status: " + r.state + "\n");
+			s.append( "since " +  dateSvc.format('yyyy MMMM dd', r.startdate) + "\n");
+			if( r.assignee?.name ) {
+				s.append( "Person to follow up: " + r.assignee.name + "\n");
+			}
+			m.message =  s.toString();	
+			println m.message;
+		}
+		catch(e) {
+			m.message = e.message;
+		}
+		reply( m ); 
+	} 
+
+	private void reply( msg ) {
+		try { 
+			def params = [
+				objid 	: msg.objid, 
+				phoneno : msg.phoneno, 
+				message : msg.message
+			]; 
+			proxy.send(params); 
+		} catch(e) {
+			println 'error sending message caused by ' + e.message;
+		} 
+	} 
+} 

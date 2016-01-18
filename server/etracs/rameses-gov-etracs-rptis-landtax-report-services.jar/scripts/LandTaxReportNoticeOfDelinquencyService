@@ -1,0 +1,79 @@
+import com.rameses.annotations.*
+import com.rameses.common.*;
+import com.rameses.services.extended.*;
+
+class LandTaxReportNoticeOfDelinquencyService
+{
+	@Env 
+	def env
+
+	@ActiveDB('landtaxreport_noticeofdelinquency')
+	def em
+
+	@Service('DateService')	
+	def dtSvc 
+
+	@Service('RPTUtil')
+	def util
+
+	@Service('NumberService')
+	def numSvc 
+
+
+	@ProxyMethod
+	public void validateDateComputed(dtcomputed){
+		if (!dtcomputed) dtcomputed = dtSvc.serverDate 
+		def currdate = dtSvc.parse('yyyy-MM-dd', dtSvc.format('yyyy-MM-dd', dtSvc.serverDate))
+		dtcomputed = dtSvc.parse('yyyy-MM-dd', dtcomputed)
+		if (dtcomputed.before(currdate))
+			throw new Exception('Date Computed must be greater than or equal to current date.')
+	}
+
+	@ProxyMethod
+	public def generateNoticeOfDelinquency( data ) {
+		if (data.rptledgerid)
+			data.filters = ' rl.objid = $P{rptledgerid} '
+		else if (data.taxpayer){
+			data.taxpayerid = data.taxpayer.objid
+			data.taxpayer.address = data.taxpayer.address.text
+			data.filters = ' rl.taxpayer_objid = $P{taxpayerid} '
+		}
+		else {
+			throw new Exception('Ledger or taxpayer is required.')
+		}
+		
+		data.cy = dtSvc.serverYear
+		
+		def list = em.getDelinquentLedgers(data)
+		util.buildPeriodCovered(list)
+
+		data.ledgers = list.findAll{it.amtdue > 0.0}
+		data.ledgers.each{
+			if (it.classcode.matches('A|AGR'))
+				it.area = numSvc.format('#,##0.0000', it.totalareaha) + ' ha.'
+			else 
+				it.area = numSvc.format('#,##0.00', it.totalareasqm) + ' sqm'
+		}
+
+		if (data.billdate)
+			data.billdate = dtSvc.parse('yyyy-MM-dd', data.billdate)
+		else 
+			data.billdate = dtSvc.serverDate
+
+		data.validuntil = dtSvc.getMonthEndDate(data.billdate)
+		data.empowered = 'Municipal Treasurer'
+		data.legaloffice = 'Municipal Legal Office'
+		if (env.ORGCLASS.equalsIgnoreCase('city')){
+			data.empowered = 'City Treasurer'
+			data.legaloffice = 'City Legal Office'
+		}
+		else if (env.ORGCLASS.equalsIgnoreCase('province')){
+			data.empowered = 'Provincial Treasurer'
+			data.legaloffice = 'Province Legal Office'
+		}
+
+		return data 
+	}
+
+}
+

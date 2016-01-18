@@ -1,0 +1,68 @@
+import com.rameses.annotations.*;
+import com.rameses.common.*;
+
+class BPApplicationListingReportService {
+	
+	@Service('NumberService')
+	def numSvc;
+	
+	@ActiveDB("bpreport")
+	def em;
+
+	@ActiveDB("bpapplication_report")
+	def bpapplication_report; 
+
+	@Service("LOVService")
+    def LOV;
+
+    @Async
+	@ProxyMethod
+	public def getReport( params ) { 
+		params.filter = '';
+		params.completed = 0;
+
+		def states = []; 
+		if ( params.state_info ) states << "'INFO'"; 
+		if ( params.state_assessment ) states << "'ASSESSMENT'"; 
+		if ( params.state_payment ) states << "'PAYMENT'";
+		if ( params.state_release ) states << "'RELEASE'";
+		if ( params.state_completed ) params.completed = 0; 
+		if ( states ) params.filter += " AND a.state IN (" + states.join(',') + ")";
+
+		def apptypes = [];
+		if ( params.type_new ) apptypes << "'NEW'";
+		if ( params.type_renew ) apptypes << "'RENEW'"; 
+		if ( params.type_retire ) apptypes << "'RETIRE'";
+		if ( apptypes ) {  
+			params.filter += " AND alob.assessmenttype IN (" + apptypes.join(',') + ")";
+		} 
+
+		if( params.barangay?.objid ) {
+			params.barangayid = params.barangay.objid;
+			params.filter = ''' AND ba.barangay_objid = $P{barangayid} ''';
+		}
+		if( params.classification?.objid ) {
+			params.classificationid =  params.classification.objid;
+			params.filter += ''' AND lob.classification_objid = $P{classificationid} ''';
+		}
+		if( params.lob?.objid ) {
+			params.lobid = params.lob.objid;
+			params.filter += ''' AND lob.objid = $P{lobid} ''';
+		}
+		
+		def zlist = bpapplication_report.getList( params );
+		if( ! zlist ) throw new Exception('No records found.');
+
+		zlist.each { 
+			it.capital = (it.capital ? numSvc.round( it.capital ) : 0.0 );
+			it.gross = (it.gross ?  numSvc.round( it.gross ) : 0.0 );
+		} 
+		return zlist;	
+	}
+
+	@ProxyMethod
+	public def getApplicationStates() {
+		return LOV.BUSINESS_APPLICATION_STATES*.key
+	}
+
+}

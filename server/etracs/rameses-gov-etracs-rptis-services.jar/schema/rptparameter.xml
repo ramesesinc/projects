@@ -1,0 +1,12 @@
+<schema>
+	<element name="rptparameter" tablename="rptparameter">
+		<field name="objid" primary="true"/>
+		<field name="state" required="true"/>
+		<field name="name" required="true"/>
+		<field name="caption" required="true"/>
+		<field name="description" />
+		<field name="paramtype" required="true"/>
+		<field name="minvalue" />
+		<field name="maxvalue" />
+	</element>
+</schema>

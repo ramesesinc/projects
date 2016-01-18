@@ -1,0 +1,32 @@
+import com.rameses.annotations.*
+import com.rameses.common.*;
+import com.rameses.services.extended.*;
+import java.rmi.server.UID
+
+class RPTReportAnnotationListService
+{
+    @ActiveDB('rptreport_annotation')
+    def em
+
+    @Async
+	@ProxyMethod 
+	public def generateAnnotationListing(params) {
+		params.lguid = params.lgu.objid 
+
+		params.orderbyclause = ''
+		if( params.orderby ) {
+			params.orderbyclause = ' ORDER BY ' + params.orderby.fieldname 
+		}
+		
+		def list = em.getAnnotationListing(params)
+		if( ! list ) throw new Exception('Records not found.')
+		def p = [
+			FORLGUNAME : params.lgu.lgutype.toUpperCase() + ' OF ' + params.lgu.name 
+		]
+		return [
+			parameters:p,
+			reportdata:list
+		]
+	}
+
+}

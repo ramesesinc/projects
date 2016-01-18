@@ -1,0 +1,90 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.common.*
+import com.rameses.services.extended.*
+
+class AFStockSaleInterceptor {
+
+	@Service("AFInventoryService")
+	def afInventorySvc ;
+
+	@ActiveDB("stockitem")
+	def stockitem;
+
+	@ActiveDB("af_control")
+	def afControl;
+
+	@ActiveDB("af_inventory")
+	def afInventoryDb;
+
+	
+	@After(pattern="StockSaleService.create")
+	public void postReceipt( def evt ) { 
+		def o = evt.result;
+		def list = o.items.findAll{ it.qtyissued > 0  && it.items!=null };
+		for( z in list ) {
+
+			z.items.each {
+				def m = [:];		
+				m.controlid = it.controlid;
+				m.refid = o.objid;
+				m.reftype = "stocksale";	
+				m.refno = o.issueno;
+				m.refdate = o.dtfiled;
+				m.afid = z.item.objid;
+				m.unit = z.unit;
+				m.startseries = (it.startseries!=null)?it.startseries: 0;
+				m.endseries = (it.endseries!=null)?it.endseries: 0;
+				m.startstub = (it.startstub!=null)?it.startstub: 0;
+				m.endstub = (it.endstub!=null)?it.endstub: 0;
+				m.prefix = it.prefix;
+				m.suffix = it.suffix;
+				m.qty= it.qtyissued;
+				m.unitqty = it.unitqty;
+				m.itemclass = z.item.itemclass;
+				m.itemtype = z.item.type;
+				m.txntype = o.reqtype;
+				if(! z.remarks) 
+					m.remarks = "SOLD TO " + o.soldto.name
+				else 
+					m.remarks = z.remarks
+				m.cost = it.cost 
+				afInventorySvc.postIssue(m);
+
+				def head = [:];
+				head.refid = m.refid;
+				head.reftype = "stocksale";	
+				head.refno = o.issueno;
+				head.refdate = o.dtfiled;
+			    head.startstub = (it.startstub!=null)?it.startstub: 0;
+			    head.endstub =  (it.endstub!=null)?it.endstub: 0;
+			    head.afid = m.afid;
+			    head.currentstub =  (it.endstub!=null)?it.endstub: 0;
+				head.startseries = (it.startseries!=null)?it.startseries: 0; 
+				head.endseries = (it.endseries!=null)?it.endseries: 0 
+				head.currentseries = (it.endseries!=null)?it.endseries + 1: 0;
+				head.prefix = m.prefix;
+				head.suffix = m.suffix;
+				head.qty = m.qty ;
+				head.unit = m.unit; 
+				head.remarks = "RECEIVED FROM SALE";
+				head.respcenter = o.soldto;
+				if(!head.respcenter.type) head.respcenter.type = 'COLLECTOR';
+				head.txntype = o.reqtype + "-RECEIPT";
+				afInventorySvc.postSale(head);
+			}
+		}
+	}	
+
+	@After(pattern="StockSaleService.open")
+	public void afterOpen(evt) {
+		def o = evt.result;
+		o.items.each{
+			def params = [afid: it.item.objid, unit: it.unit, stockissueid: it.parentid, respcentertype: 'COLLECTOR' ]
+			it.items = afInventoryDb.getAFDetails(params); 
+			it.handler =  it.aftype.toLowerCase() 
+		}
+	}
+
+}

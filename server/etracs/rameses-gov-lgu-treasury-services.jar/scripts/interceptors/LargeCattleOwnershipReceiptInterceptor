@@ -1,0 +1,25 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+
+class LargeCattleOwnershipInterceptor {
+
+	@ActiveDB('collectiontype_account')
+	def acct;
+	
+	@ActiveDB("cashreceipt_largecattleownership")
+	def em
+
+	@After(pattern="CashReceiptService.post", eval="#{result.collectiontype?.handler == 'lco' && result.txnmode != 'CAPTURE'}")
+	public def postToSpecificTable(def evt) { 
+		def cs = evt.result;	
+		em.create(cs);
+	}
+
+	@After(pattern="CashReceiptService.open", eval="#{result.collectiontype?.handler == 'lco' && result.txnmode != 'CAPTURE'}")
+	public def onOpenReceipt(def evt) { 
+		def cs = em.read(evt.result);
+		evt.result.putAll( cs );
+	}
+
+}

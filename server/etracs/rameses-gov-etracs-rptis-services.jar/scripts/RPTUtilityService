@@ -1,0 +1,109 @@
+import com.rameses.annotations.*
+import com.rameses.services.extended.*
+
+class RPTUtilityService
+{
+	@ActiveDB('rptutility')
+	def em
+
+	@ActiveDB('rpu')
+	def rpudb
+
+	@ActiveDB('pin')
+	def pindb 
+    
+	@Service('RPUService')
+	def rpuSvc 
+	
+	@Service('RealPropertyService')
+	def rpSvc 
+
+
+	
+	 //info: faasid, oldpin, tdno, pintype, municipality, barangay, 
+	//section, parcel, suffix, newpin, ssection, sparcel 
+	@ProxyMethod
+	public def updatePin( info ) { 
+		validatePin( info )
+		rpuSvc.checkDuplicateFullPin([objid:info.rpuid, ry: info.ry, fullpin:info.newpin])
+		def tokens = info.newpin.tokenize('-')
+		info.ssection = tokens[3]
+		info.sparcel = tokens[4]
+		if( info.rputype == 'land') {
+			def rp = null
+			def rpu = rpuSvc.openRpu( [objid:info.rpuid] )
+			if( rpu ) {
+				rp = rpSvc.open([objid:rpu.realpropertyid])
+				rp.pintype = info.pintype 
+				rp.pin = info.newpin 
+				rp.section = info.ssection
+				rp.barangay = info.barangay
+				rp.barangayid = info.barangay.objid 
+				rp.parcel = info.sparcel 
+				rpSvc.update( rp )
+				pindb.updateBarangayid(rp)
+
+				info.realpropertyid = rp.objid 
+				modifyInfo(info)
+
+				//update improvements pin 
+				rpudb.getLandImprovementsRpuByRealPropertyId([realpropertyid: rp.objid]).each { 
+					def param = [
+						newpin: buildNewPin(info.newpin, it.fullpin, it.suffix),
+						suffix:it.suffix, 
+						rpuid: it.objid ,
+						realpropertyid : rp.objid,
+					]
+					modifyInfo(param)
+				}
+			}
+			return rp
+			
+		} else {
+			def landpin = info.barangay.pin + '-' + info.ssection + '-' + info.sparcel
+			if (info.pintype == 'old'){
+				landpin = info.barangay.oldpin + '-' + info.ssection + '-' + info.sparcel
+			}
+			def landrp = em.findByPinRy([pin:landpin, ry:info.ry])
+			if (!landrp)
+				throw new Exception('Land Real Property with PIN ' + landpin  + ' does not exist.')
+
+			info.realpropertyid = landrp.objid 
+			modifyInfo(info)
+			return null
+		}
+	}
+
+
+	void modifyInfo(info){
+		em.modifyPin(info)
+		em.modifyFaasPin(info)
+		em.modifyLedgerPin(info)
+	}
+	
+	void validatePin( info ) {
+        if( info.rputype == 'bldg' && (info.suffix < 1000 || info.suffix > 1999)) {
+            throw new Exception('Building Suffix must be between 1001 and 1999.')
+        }
+        if( info.rputype == 'mach' && (info.suffix < 2000 || info.suffix > 2999)) {
+            throw new Exception('Building Suffix must be between 2001 and 2999.')
+        }
+        if( info.rputype == 'planttree' && (info.suffix < 3000 || info.suffix > 3999)) {
+            throw new Exception('Building Suffix must be between 3001 and 3999.')
+        }
+        if( info.rputype == 'misc' && (info.suffix < 5000 || info.suffix > 5999)) {
+            throw new Exception('Building Suffix must be between 5001 and 5999.')
+        }
+    }
+	
+	def buildNewPin(newpin, fullpin, suffix){
+	    if (fullpin.indexOf('(') < 0)
+	        return newpin + '-' + suffix
+    
+    	def tokens = newpin.tokenize('-')
+	    tokens[4] = '(' + tokens[4] + ')'
+	    def pin = tokens.join('-') + '-' + suffix
+	    return pin 
+	}
+
+}

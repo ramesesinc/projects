@@ -1,0 +1,165 @@
+import com.rameses.common.*
+import com.rameses.annotations.*
+import java.rmi.server.UID
+
+class CancelAnnotationService 
+{
+	@PersistenceContext('rpt')
+	def em 
+	
+	@Service('SequenceService')
+	def seqSvc
+	
+	@Service('TxnRefService')
+	def txnRef
+	
+	@Service('WorkflowStateService')
+	def workflowRef 
+
+	@Service('DateService')
+	def dateSvc
+	
+	@Env
+	def env
+
+	@Service('RPTUtil')
+	def util
+
+
+
+	@Service('FAASAnnotationService')
+	def annotationSvc 
+	
+	def SCHEMA_NAME 		= 'cancelannotation'
+	
+	def STATE_DRAFT 		= 'DRAFT' 
+	def STATE_FORAPPROVAL 	= 'FORAPPROVAL' 
+	def STATE_APPROVED 		= 'APPROVED' 
+	def STATE_CANCELLED 	= 'CANCELLED' 
+	
+
+	@ProxyMethod
+    public def getList( params ) {
+    	params.searchtext = (params.searchtext ? params.searchtext : '') + '%'
+        def filters = [
+            ' and ca.txnno LIKE $P{searchtext}',
+            ' and fa.txnno LIKE $P{searchtext}',
+            ' and f.tdno LIKE $P{searchtext}',
+            ' and f.owner_name LIKE $P{searchtext}',
+            ' and r.fullpin LIKE $P{searchtext}',
+            ' and fa.fileno LIKE $P{searchtext}',
+        ]
+        return util.getListFromQuery( 'cancelannotation:getList' , filters, params, 'ca.objid' )
+    }
+
+
+	@ProxyMethod
+	public def initCancelAnnotation( annotationid ) {
+		def annotation = annotationSvc.openAnnotation(annotationid)
+		validateAnnotationState(annotation)
+		txnRef.checkReference(annotation.objid)
+		return [
+			objid 			: util.generateId('CA'),
+			state 			: STATE_DRAFT,
+			annotation  	: annotation,
+			annotationid 	: annotation.objid, 
+			oramount 		: 0.0,
+		]	
+	}
+	
+
+	@ProxyMethod
+	public Map createCancelAnnotation( cancelannotation ) {
+		def annotation = annotationSvc.openAnnotation( cancelannotation.annotationid )
+		validateAnnotationState( annotation )
+		validateInfo( cancelannotation )
+		cancelannotation.txnno = seqSvc.getNextFormattedSeries('CancelAnnotation')
+		cancelannotation.txndate  = dateSvc.serverDate
+		workflowRef.insert(cancelannotation)
+		em.validate( SCHEMA_NAME, cancelannotation )
+		em.create( SCHEMA_NAME, cancelannotation )
+		txnRef.insertRef(annotation.objid,  cancelannotation.objid, 'Annotation is referenced by Cancel Annotation No. ' + cancelannotation.txnno + '.' )
+		return cancelannotation 
+	}
+
+
+	@ProxyMethod
+	public Map updateCancelAnnotation( cancelannotation ) {
+		validateInfo( cancelannotation )
+		em.validate( SCHEMA_NAME, cancelannotation )
+		em.update(SCHEMA_NAME, cancelannotation)
+		return cancelannotation 
+	}
+
+
+	@ProxyMethod
+	public def openCancelAnnotation( objid) {
+		def cancelannotation = em.sqlContext.createNamedQuery('cancelannotation:open').setParameter('objid', objid).singleResult
+		if( !cancelannotation ) throw new Exception('Cancel Annotation does not exist or has already been deleted.')
+		return cancelannotation 
+	}
+
+
+	@ProxyMethod
+	public def deleteCancelAnnotation( cancelannotation ) {
+		txnRef.delete(cancelannotation.objid)
+		workflowRef.deleteAll(cancelannotation.objid)
+		em.delete(SCHEMA_NAME, cancelannotation)	
+	}
+
+
+
+	@ProxyMethod
+	public Map submitCancelAnnotationForApproval( cancelannotation ) {
+		def annotation = annotationSvc.openAnnotation( cancelannotation.annotationid )
+		validateAnnotationState( annotation )
+		cancelannotation.state = STATE_FORAPPROVAL
+		workflowRef.insert(cancelannotation)
+		em.update(SCHEMA_NAME, cancelannotation )
+		return cancelannotation
+	}
+
+
+	@ProxyMethod
+	public Map approveCancelAnnotation( cancelannotation ) {
+		def annotation = annotationSvc.openAnnotation( cancelannotation.annotationid )
+		validateAnnotationState( annotation )
+		
+		cancelannotation.state = STATE_APPROVED
+		workflowRef.insert(cancelannotation)
+		em.update(SCHEMA_NAME, cancelannotation )
+
+		annotationSvc.cancelAnnotation(annotation)
+		
+		txnRef.delete( cancelannotation.annotationid )
+		txnRef.delete( cancelannotation.faasid )
+		
+		return cancelannotation
+	}
+
+
+	@ProxyMethod
+	public def disapproveCancelAnnotation( cancelannotation ) {
+		workflowRef.delete(cancelannotation)
+		cancelannotation.state = STATE_DRAFT
+		em.update(SCHEMA_NAME, cancelannotation) 
+		return cancelannotation 
+	}
+
+
+
+	void validateInfo( cancelannotation ) {
+		def currdate 		= dateSvc.serverDate 
+		def dtsigned		= dateSvc.parse('yyyy-MM-dd', cancelannotation.dtsigned )
+		def ordate			= dateSvc.parse('yyyy-MM-dd', cancelannotation.ordate )
+		
+		if( dtsigned > currdate ) throw new Exception('Date Signed must not exceed current date.')
+		if( ordate > currdate ) throw new Exception('O.R. Date must not exceed current date.')
+		if( dtsigned > ordate ) throw new Exception('O.R. Date must be later or equal to Date Signed.')
+	}
+
+	void validateAnnotationState(annotation){
+		if (annotation.state == 'CANCELLED') throw new Exception('Annotation has already been cancelled.')
+		if (annotation.state != 'APPROVED') throw new Exception('Annotation is not yet approved.')
+	}
+}

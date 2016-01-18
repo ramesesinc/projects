@@ -1,0 +1,81 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.common.*
+import com.rameses.services.extended.*
+
+class NGASLiquidationJevReportService  
+{
+
+	@ActiveDB('ngas_liquidation_jev_report')
+	def em;
+
+	@Env 
+	def env 
+
+	def PADDING_SIZE = 10
+
+	@ProxyMethod 
+	def getReportOptions( params ) {
+		return [
+			funds: em.getFunds( params )
+		]; 
+	}
+
+	@ProxyMethod 
+	def generateJevEntries( params ) {
+		def padding = '      '
+		def revtype = ''
+		if (params.fundid.equalsIgnoreCase('GENERAL')) 
+			revtype = 'basic%'
+		else if (params.fundid.equalsIgnoreCase('SEF')) 
+			revtype = 'sef%'
+
+		params.liquidationid = params.objid;
+		params.orgtype = env.ORGCLASS;
+		params.revtype = revtype; 
+
+		def credits = em.getJevEntries(params).each{
+			it.account.title = padding + it.account.title 
+		}
+		def rptreceivable = em.findRPTReceivables(params)
+		if (rptreceivable.credit != null)
+			credits << rptreceivable
+
+		if (!credits)
+			return [:]
+
+		credits.sort{a,b -> a.account.code <=> b.account.code }
+
+		//build debits
+		def debits = [];
+		def rptdiscount = 0.0
+		if (params.fundid.matches('GENERAL|SEF')){
+			rptdiscount = em.findRPTBasicDiscount(params).discount;
+			if (rptdiscount == null) rptdiscount = 0.0;
+		}
+		debits << [account:[title:'Cash in Vault', code:'101'], debit:credits.credit.sum() - rptdiscount, credit:0.0]
+		debits << [account:[title:'Other Receivables', code:'149'], debit:0.0, credit:0.0]
+		if (params.fundid.matches('GENERAL|SEF')){
+			debits << [account:[title:'Discount on RPT', code:'954'], debit:rptdiscount, credit:0.0]
+		}
+
+
+		//rptincomes 
+		def rptincomes = em.getRPTIncomes(params).each{
+			it.account.title = padding + it.account.title 
+		}
+		if (rptincomes)
+			 rptincomes.add(0, [account:[code:'451', title:'DEFERRED RPT INCOME'], credit:0.0, debit:rptincomes.credit.sum()])
+		else 
+			rptincomes = [[debit:0.0, credit:0.0]]
+
+		return [
+			totaldebit  : debits.debit.sum() + rptincomes.debit.sum(),
+			totalcredit : credits.credit.sum() + rptincomes.credit.sum(),
+			items 		: debits + credits,
+			rptincomes 	: rptincomes,
+			shares 		: em.getRPTShares(params).each{it.sharetype = it.sharetype.toUpperCase()},
+		]; 
+	} 
+}

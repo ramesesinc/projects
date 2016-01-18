@@ -1,0 +1,59 @@
+import com.rameses.annotations.*
+import com.rameses.common.*;
+import com.rameses.services.extended.*;
+
+class ProvinceSubdivisionWorkflowInterceptor
+{
+	@Env
+	def env 
+
+	@Service('RPTCloudNotificationService')
+	def svc
+
+	@Service('SubdivisionSupportService')
+	def supportSvc 
+
+	@ActiveDB('subdivision_task')
+	def taskEm;
+	
+
+	@After(pattern="SubdivisionService.resendToMunicipality") 
+	public void resendToLguOnlineConsolidation( evt ) {
+		println 'Resend subdivision to municipality...'
+		def subdivision = evt.result
+		doNotifyMunicipality(subdivision)
+	}	
+
+	@After(pattern="SubdivisionWorkflowService.signal", eval="#{args[0].state.matches('approver|provapprover') && args[0].action == 'completed' }") 
+	public void submitToLguOnlineSubdivision( evt ) {
+		println 'submitToLguOnlineSubdivision...'
+		def subdivision = evt.args[0].data;
+		doNotifyMunicipality(subdivision)
+	}
+
+	void doNotifyMunicipality(subdivision){
+		if (subdivision.originlguid.replaceAll('-.*?','') != env.ORGID.replaceAll('-.*?', '')){
+			// notify municipality of the approve subdivision
+			notifyMunicipality(subdivision)
+		}
+		else {
+			//post province created subdivision to municipality
+			postSubdivisionToMunicipality(subdivision)
+		}
+	}
+
+	void notifyMunicipality(subdivision){
+		println 'Notify municipality....'
+		subdivision.tasks = taskEm.getTasks(subdivision)
+		supportSvc.buildFaasesData(subdivision)
+		def asyncreq = svc.createAsyncRequest('MunicipalitySubdivisionRemoteCallHandler', 'approveSubdivisionByProvince',  subdivision)
+		svc.sendAsyncMessage(asyncreq[0], subdivision.lguid)
+	}
+
+	void postSubdivisionToMunicipality(subdivision){
+		println 'Post subdivision to municipality....'
+		def data = supportSvc.buildSubdivisionData(subdivision)
+		def asyncreq = svc.createAsyncRequest('MunicipalitySubdivisionRemoteCallHandler', 'postApprovedSubdivisionFromProvince',  data)
+		svc.sendAsyncMessage(asyncreq[0], subdivision.lguid)
+	}
+}

@@ -1,0 +1,38 @@
+import com.rameses.annotations.*
+import com.rameses.common.*;
+
+class FAASLookupService
+{
+	@PersistenceContext('rpt')
+	def em 
+
+	
+	@Service('RPTUtil')
+	def utilSvc
+	
+
+	@ProxyMethod
+	public def lookupFaas( params ) {
+		params.state 		= (params.state ? params.state : '') + '%'
+		params.taxpayerid 	= (params.taxpayerid ? params.taxpayerid : '') + '%'
+		params.tdno 		= params.searchtext
+		params.blockno 		= params.searchtext 
+		params.searchtext 	= (params.searchtext ? params.searchtext : '') + '%';
+		
+		def filters = [
+			' and f.tdno = $P{tdno} ',
+			' and r.fullpin LIKE $P{searchtext} ',
+			' and f.name LIKE $P{searchtext} ',
+			' and rp.cadastrallotno LIKE $P{searchtext} ',
+			' and rp.blockno = $P{blockno} ',
+			' and rp.surveyno LIKE $P{searchtext}',
+			' and t.trackingno LIKE $P{searchtext}',
+		]
+
+		return utilSvc.getListFromQuery('faas:lookupFaas', filters, params, 'f.objid');
+	}
+
+
+
+}
+

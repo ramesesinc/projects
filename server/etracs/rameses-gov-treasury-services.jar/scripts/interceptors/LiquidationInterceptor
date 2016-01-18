@@ -1,0 +1,20 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.common.*
+
+
+/** This posts transaction to income summary*/
+class LiquidationInterceptor {
+	
+	@Service("IncomeSummaryService")
+	def incomeSvc;
+
+	@After(pattern="LiquidationService.post")
+	public void postIncomeSummary( def evt ) { 
+		def entity = evt.result;
+		incomeSvc.post([liquidationid: entity.objid]); 
+        entity.posted = 1;   
+	}
+	
+}

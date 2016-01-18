@@ -1,0 +1,58 @@
+import com.rameses.annotations.*
+import com.rameses.common.*;
+import com.rameses.services.extended.*;
+
+
+class DBImageService
+{
+	@ActiveDB(value='dbimage', em="image")
+	def em 
+
+	@Service('LogService')
+	def logSvc 
+
+
+	@ProxyMethod
+	public def saveHeader( image ) {
+		em.save(image);
+		def action = (image.title == 'SKETCH' ? 'sketch-update' : 'attachment')
+		def ref = (image.title == 'SKETCH' ? 'faas' : 'attachment')
+		logSvc.log(action, ref, image.refid )
+	}
+
+	@ProxyMethod
+	public def openHeader( image ) {
+		return em.read(image)
+	}
+
+	@ProxyMethod
+	public void deleteImage( image ) {
+		em.deleteItems(image)
+		em.delete(image)	
+	}
+
+	@ProxyMethod
+	public void deleteAllImages( param ) {
+		em.deleteAllItems(param)
+		em.deleteAllHeaders(param)	
+	}
+
+	@ProxyMethod
+	public def getImages( param ) {
+		return em.getImages(param)	
+	}
+
+
+	@ProxyMethod
+	public def saveItem( item ) {
+		em.save(item, 'chunk')	
+	}
+
+
+	@ProxyMethod
+	public def getImageItems( param ) {
+		return em.getItems(param)
+	}
+
+}
+

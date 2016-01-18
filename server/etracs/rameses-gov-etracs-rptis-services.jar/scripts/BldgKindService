@@ -1,0 +1,52 @@
+import com.rameses.annotations.*;
+import com.rameses.common.*;
+import com.rameses.services.extended.*;
+
+
+class BldgKindService extends ActiveCrudListService
+{
+	@ActiveDB('bldgkind')
+	def em
+	
+	String pagingKeys = 'objid'
+
+	void beforeList(params){
+		if (params == null) params = [:]
+		params.searchtext = (params.searchtext ? params.searchtext :'')+'%'
+	}
+
+	@ProxyMethod
+	public def getColumns( params ) {
+	    return [
+            [name:"code", caption:"Code", width:80],
+            [name:"name", caption:"Title", width:250],
+            [name:"state", caption:"State", width:100],
+        ]
+	}
+
+	@ProxyMethod
+	public def getBldgKinds( params ) {
+		beforeList(params)
+		return em.getBldgKinds(params)
+	}
+
+
+	@Async
+	@ProxyMethod
+	public def exportData(params) {
+		return [
+			filetype: 'bldgkind',
+			bldgkinds: getBldgKinds([:])
+		] 
+	}
+
+	@Async
+	@ProxyMethod
+	public def importData( data ) {
+		if (data.filetype != 'bldgkind')
+			throw new Exception('Invalid data.')
+		data.bldgkinds.each{
+			save(it)
+		}
+	}
+}

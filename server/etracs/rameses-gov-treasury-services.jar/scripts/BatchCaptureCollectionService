@@ -1,0 +1,285 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.common.*
+import com.rameses.services.extended.*
+
+public class BatchCaptureCollectionService  {
+	
+	@ActiveDB("batchcapture_collection")
+	def em
+
+	@PersistenceContext('main')
+	def pem 
+
+	@Service("DateService")
+	def dtSvc
+
+	@Service("CashReceiptService")
+	def crSvc;
+
+	@Service("CashReceiptVoidService")
+	def voidSvc;
+
+	@Env
+	def env
+
+	
+	@ProxyMethod
+	public def initBatchCapture(def entity){
+		if( em.findBatchControlByState(entity) ) 	
+			throw new Exception("There are still unposted collection for this series. ");
+
+		entity.objid = "BCC"+new java.rmi.server.UID();
+		entity.state = 'DRAFT'
+		entity.org =  [objid:env.ORGID, name:env.ORGNAME]
+		entity.txndate = dtSvc.serverDate
+		entity.paymenttype='CASH'
+		entity.totalcash = 0.0
+		entity.totalnoncash = 0.0
+		entity.amount = 0.0
+		entity.totalamount = 0.0
+		em.create(entity, "batchcapture_collection" )
+
+		entity.batchitems = []
+		return entity;
+	}
+
+	@ProxyMethod 
+	public def addUpdateItem( entity, item ) { 
+		em.deleteBatchEntryItems( item ); 
+		em.delete( item, 'entry' ); 
+		em.create( item, "entry")
+
+		item.items.each { 
+			it.objid ="BCCEI"+new java.rmi.server.UID();
+			it.parentid = item.objid
+			it.item.fund = it.fund;
+			it.amount = (it.amount? it.amount : item.amount);
+			em.create(it, "entry_item"); 
+		} 
+
+		def bes = em.findBatchSummary([ objid : item.parentid ]); 
+		if ( bes == null ) bes = [:]; 
+
+		bes.totalcash = ( bes.totalcash ? bes.totalcash : 0.0 ); 
+		bes.totalnoncash = ( bes.totalnoncash ? bes.totalnoncash : 0.0 ); 
+		bes.totalamount = bes.totalcash + bes.totalnoncash;
+		bes.objid = item.parentid;
+		em.updateBatchSummary( bes ); 
+
+		if ( item.paymentitems ) {
+			item.totalnoncash = item.paymentitems.sum{ it.amount } 
+			item.totalcash = 0.0; 
+		} else { 
+			item.totalnoncash = 0.0;
+			item.totalcash = item.items.sum{ it.amount } 
+		} 
+
+		def oitem = em.findBatchEntry([ objid: item.objid ]); 		
+		def header = em.read([objid: item.parentid]); 
+		header.currentseries = em.getBatchEntries([objid: item.parentid]).max{ it.series }.series + 1;
+		return [header: header, item: oitem]; 
+	} 
+
+	@ProxyMethod  
+	public def removeItem( item, entity ) { 
+		em.deleteBatchEntryItems( item ); 
+		em.delete( item, "entry" ); 
+
+		def bes = em.findBatchSummary([ objid : item.parentid ]); 
+		if ( bes == null ) bes = [:]; 
+
+		bes.totalcash = ( bes.totalcash ? bes.totalcash : 0.0 ); 
+		bes.totalnoncash = ( bes.totalnoncash ? bes.totalnoncash : 0.0 ); 
+		bes.totalamount = bes.totalcash + bes.totalnoncash;
+		bes.objid = item.parentid;
+		em.updateBatchSummary( bes ); 
+		
+		def header = em.read([ objid: item.parentid ]); 
+		def entries = em.getBatchEntries([ objid: item.parentid ]); 
+		if ( entries ) { 
+			header.currentseries = entries.max{ it.series }.series + 1; 
+		} else { 
+			header.currentseries = header.startseries; 
+		} 
+		return header; 
+	} 
+
+
+	@ProxyMethod
+	public def submitForPosting( params ) {
+		if ( !params.objid ) throw new Exception('objid parameter is required');
+		if ( !params.checksum ) throw new Exception('checksum parameter is required');
+
+		def header = em.read( params, 'batchcapture_collection' ); 
+		if ( !header ) throw new Exception('Could not open batchcapture collection');  
+
+		def entries = em.getBatchEntries( params ); 
+		if ( !entries ) throw new Exception('Process failed. There must be at least 1 item for this transaction');
+
+		def checklist = [ header.objid, header.totalamount, entries.size() ]; 
+		entries.each{ checklist << it.series }
+
+		def targetchecksum = com.rameses.util.Encoder.MD5.encode(checklist.join(',')); 
+		if (!( params.checksum == targetchecksum )) {
+			throw new Exception('Invalid checksum value. Please reopen and verify the transaction');
+		}
+
+		def nextseries = entries.min{ it.series }.series; 
+		entries.each{
+			if ( it.series == nextseries ) {
+				nextseries = it.series + 1; 
+			} else { 
+				throw new Exception('Process failed. Receipt# '+ it.receiptno +' may have been tampered. Please verify');
+			} 
+		}
+
+		def item = params.batchitems.find{it.amount == 0.0 && (it.voided == 0 || it.voided == false)}
+		validateAmount(item)
+
+		header.state = 'FORPOSTING'; 
+		em.update( header, 'batchcapture_collection' ); 
+		return header; 
+	} 
+
+	@ProxyMethod
+	public void removeBatchCapture(def entity) {
+		em.deleteBatchEntryItemByRootid(entity);
+		em.deleteBatchEntry(entity);
+		em.delete(entity, "batchcapture_collection"); 
+	}
+
+	@ProxyMethod
+	public def disapproved( params ) {
+		def header = em.read( params, 'batchcapture_collection' ); 
+		if ( !header ) throw new Exception('Could not open batchcapture collection');  
+
+		header.state = 'DRAFT'; 
+		em.update( header, 'batchcapture_collection' ); 
+		return header;  
+	} 
+
+	@ProxyMethod
+	public def post( params ) { 
+		if ( !params.objid ) throw new Exception('objid parameter is required');
+		//if ( !params.checksum ) throw new Exception('checksum parameter is required');
+
+		def entity = em.read( params, 'batchcapture_collection' ); 
+		if ( !entity ) throw new Exception('Could not open batchcapture collection');  
+
+		entity.batchitems = em.getBatchEntries( params ); 
+		if ( !entity.batchitems ) throw new Exception('Process failed. There must be at least 1 item for this transaction');
+
+		entity.batchitems.each {bi->
+			validateAmount(bi);
+
+			bi.batchcapture = true;
+			bi.collector = entity.collector;
+			bi.formtype = entity.formtype;
+			bi.formno = entity.formno;
+			bi.stub = entity.stub;
+			bi.controlid = entity.controlid;
+			bi.txnmode = entity.txnmode;
+			bi.org = entity.org;
+			bi.cashchange = 0;
+			bi.totalcredit = 0;
+			bi.user = entity.capturedby;
+
+			bi.items = em.getBatchEntryItems( bi );  			
+			bi.items.each { 
+				it.item.fund = it.fund; 
+				it.amount = (it.amount? it.amount: bi.amount);
+				it.remarks = bi.remarks; 
+			}
+
+			if ( !bi.paymentitems ) bi.paymentitems = []; 
+			else if ( bi.paymentitems instanceof String ) {
+				bi.paymentitems = em.serializer.read( bi.paymentitems ); 
+			}
+
+			crSvc.post( bi );
+		} 
+		entity.batchitems.findAll{ it.voided > 0 }.each{
+			it.collector = entity.collector;
+			voidSvc.post([ receipt: it, reason: "CANCELLED" ]); 
+		}
+
+		entity.state = 'POSTED';
+		entity.postedby = [ objid: env.USERID, name: env.USER, date: dtSvc.serverDate ]; 
+		em.post( entity ); 
+		return entity; 
+	}
+
+	@ProxyMethod
+	public void submitForOnlineRemittance(entity) { 	
+		entity.batchitems.each {bi->
+			em.updateCashReceiptState(bi);
+		}
+		entity.state = 'CLOSED'
+		em.updateBatchCaptureState(entity)
+	}
+
+	@ProxyMethod
+	public def getColumns(def p) {
+		return [
+			[name:'state', caption:'State'],
+            [name:'formno', caption:'AF No.'],
+            [name:'collectorname', caption:'Collector'],
+            [name:'startseries', caption:'Start Series'],
+            [name:'endseries', caption:'endseries'],
+            [name:'totalamount', caption:'Amount', type:'decimal', format:'#,##0.00' ],
+            [name:'capturedbyname', caption:'Encoded By']
+		];
+	}
+
+	@ProxyMethod
+	public def getList(def params ) {
+		params.searchtext = params.searchtext ? params.searchtext + "%" : "%"
+		params.filter = '';
+		if( params.listtype == 'bysubcollector') {
+			params.collectorid = env.USERID;
+			params.filter = ''' AND capturedby_objid like $P{collectorid} ''';
+		}
+		else if( params.listtype == 'bycollector') {
+			params.collectorid = env.USERID;
+			params.filter = ''' AND collector_objid like $P{collectorid} ''';
+		}
+		return em.getList(params);
+	}
+
+	@ProxyMethod 
+	public def open( params ) {
+		def entity = em.read(params, "batchcapture_collection" )
+		if ( !entity ) throw new Exception("Could not open selected item.  ")
+
+		entity.batchitems = em.getBatchEntries( entity );
+		if ( entity.batchitems ) {
+			entity.currentseries = entity.batchitems.max{ it.series }.series + 1; 
+		} else { 
+			entity.currentseries = entity.startseries; 
+		} 
+
+		entity.batchitems.each {
+			it._filetype = "batchcapture:misc"
+			it.items = em.getBatchEntryItems(it)
+			it.items.each {
+				it.item.fund = it.fund;
+			}
+			
+			def fi = (it.items? it.items[0]: [:]); 
+			it.acctinfo = (it.items.size() > 1) ? '( Multiple Accounts )' : fi.item?.title 
+			it.remarks = fi.remarks;
+			it.paymentitems = (it.paymentitems ? pem.serializer.read(it.paymentitems)  : [])
+			it.collector = entity.collector
+		} 
+		return entity; 
+	}
+
+	void validateAmount(item){
+		if (item && item.amount <= 0.0 && item.voided == 0){
+			throw new Exception('Amount for Receipt No. ' + item.receiptno + ' must be greater than zero.')
+		}
+	}
+
+}

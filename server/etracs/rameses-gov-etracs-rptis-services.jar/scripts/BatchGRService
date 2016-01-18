@@ -1,0 +1,295 @@
+import com.rameses.annotations.*
+import com.rameses.common.*;
+import java.util.concurrent.*
+import java.rmi.server.UID
+
+class BatchGRService
+{
+	
+	@ActiveDB('batchgr')
+	def bgrDb
+
+    @Env
+	def env
+
+    @Service('RPTUtil ')
+    def util 
+    
+	@Service('GeneralRevisionService')
+	def grSvc
+
+	@Service('FAASService')
+	def faasSvc 
+
+	@Service('Var')
+	def var
+
+	@ProxyMethod
+	public List getFaasesForRevision(params) {
+		params.ry = params.newrysetting.ry 
+		params.barangayid = params.barangay.objid 
+		return bgrDb.getFaasesForRevision(params)
+	} 
+	
+
+	
+	@ProxyMethod
+	public def reviseLandFaas( params) {
+		util.required('Land FAAS ID', params.objid)
+		util.required('New RY', params.newry)
+		params.newry = params.newry.ry
+		//params.memoranda : optional 
+
+		def retval = [success:0, error:0]
+		
+		if( ! params.memoranda ) params.memoranda = 'REVISED PURSUANT TO R.A. 7160' 
+		def landfaas = reviseFaas( params, null, retval )
+		if( landfaas ) {
+			def improvements = faasSvc.getLandImprovements( params.objid )
+			println 'Processing Improvements -> ' + improvements.size()
+			improvements.each{ improvement ->
+				improvement.newry = params.newry 
+				improvement.memoranda = params.memoranda 
+				println 'improvement -> ' + improvement.objid 
+				def faas = reviseFaas( improvement, landfaas, retval)
+			}
+		}
+		return retval
+	}
+	
+	@ProxyMethod
+	public def reviseFaas( info ) {
+		def retval = [success:0, error:0]
+		try {
+			def faas = grSvc.createDataCaptureGeneralRevision(info)
+			faas.memoranda = info.memoranda 
+			faas.appraiser = info.appraiser 
+            faas.taxmapper = info.taxmapper 
+            faas.recommender = info.recommender 
+            faas.approver = info.approver 
+            faas.memoranda = info.memoranda
+            faas.effectivityyear = info.newrysetting.ry + 1 
+
+			faas = faasSvc.createFaas( faas )
+			if (info.autoapprove)
+				faas = faasSvc.approveFaas(faas)
+			println 'Successfully revised -> ' + faas.rpu.rputype + ' : ' +  faas.prevtdno 
+			retval.success += 1
+		}
+		catch ( e ) {
+			println '='*50
+			e.printStackTrace()
+			retval.error += 1
+			logError( info.faas.objid, info.newrysetting.ry, e ) 
+		}
+		return retval
+	}		
+
+
+	@ProxyMethod
+	public def reviseFaas2( params ) {
+		util.required('Land FAAS ID', params.objid)
+		util.required('New RY', params.newry)
+		params.newry = params.newry.ry
+		if( ! params.memoranda ) params.memoranda = 'REVISED PURSUANT TO SECTION 219 OF R.A. 7160' 
+
+		def retval = [success:0, error:0]
+		try {
+			def faas = faasSvc.openFaas( params )
+			def newrysetting = getRySetting( faas.rpu.rputype, params.newry ) 
+			faas.autonumber = false
+			faas = grSvc.initOnlineGeneralRevision([faas:faas, newrysetting:newrysetting, autonumber:faas.autonumber])
+			faas.memoranda = params.memoranda 
+			if ( util.toBoolean( var.gr_td_autonumber, false ) == true){
+				faas.tdno = faasSvc.generateNextTdNo(faas)
+				faas.utdno = faas.tdno 
+			}
+			faas = faasSvc.createFaas( faas )
+			println 'Successfully revised -> ' + faas.rpu.rputype + ' : ' +  faas.prevtdno 
+			retval.success += 1
+		}
+		catch ( e ) {
+			println '='*50
+			e.printStackTrace()
+			retval.error += 1
+			logError( params.objid, params.newry, e ) 
+		}
+		return retval
+	}		
+
+	@ProxyMethod
+	public List getRyList( rputype ) {
+		if( !rputype || 'land'.equals( rputype ) ) {
+			return bgrDb.getLandRYSettings([:])
+		}
+		else if( 'bldg'.equals( rputype ) ) {
+			return bgrDb.getBldgRYSettings([:])
+		}
+		else if( 'mach'.equals( rputype ) ) {
+			return bgrDb.getMachRYSettings([:])
+		}
+		else if( 'planttree'.equals( rputype ) ) {
+			return bgrDb.getPlantTreeRYSettings([:])
+		}
+		else if( 'misc'.equals( rputype ) ) {
+			return bgrDb.getMiscRYSettings([:])
+		}
+		return []
+	}
+
+
+
+
+	
+	void logError( faasid, newry, e ) {
+		def sw = null 
+		def pw = null 
+		try {
+			bgrDb.deleteBatchGRError([faasid:faasid])
+			
+			sw = new StringWriter()
+			pw = new PrintWriter(sw)
+			e.printStackTrace( pw)
+			bgrDb.insertBatchGRError([
+				faasid 	: faasid,
+				ry 		: newry,
+				msg 	: sw.toString(),
+			])
+		}
+		catch( ex ) {
+			println 'Unable to Log Error for ' + faasid 
+		}
+		finally{
+			if( sw ) try{ sw.close() } catch( ex ) {}
+			if( pw ) try{ pw.close() } catch( ex ){}
+		}
+		
+	}
+	
+	
+
+	
+
+	@ProxyMethod 
+	public void validateBatchRY( newry, barangayid ) {
+		barangayid = ( barangayid ? barangayid : '%')
+		//checkPendingFaasTransactions( newry, barangayid )
+		
+		if( var.current_ry >= newry ) {
+			throw new Exception('New Revision Year must be greater than current revision year ' + rptsetting.ry )
+		}
+		
+		//check landry setting 
+		def ry = bgrDb.findRYSetting_land([ry:newry])
+		if( ! ry ) throw new Exception( "Land Revision Year Setting for $newry is not defined.")
+		
+		//check bldgry setting 
+		ry = bgrDb.findRYSetting_bldg([ry:newry])
+		if( ! ry ) throw new Exception( "Building Revision Year Setting for $newry is not defined.")
+		
+		//check machry setting 
+		ry = bgrDb.findRYSetting_mach([ry:newry])
+		if( ! ry ) throw new Exception( "Machine Revision Year Setting for $newry is not defined.")
+		
+		//check planttreery setting 
+		if ( existSetting( 'planttreerysetting') ){
+			ry = bgrDb.findRYSetting_planttree([ry:newry])
+			if( ! ry ) throw new Exception( "Plant/Tree Revision Year Setting for $newry is not defined.")
+		}
+		
+		//check getRYSetting_misc setting 
+		if ( existSetting('miscrysetting') ) {
+			ry = bgrDb.findRYSetting_misc([ry:newry])
+			if( ! ry ) throw new Exception( "Miscellaneous Revision Year Setting for $newry is not defined.")
+		}
+	}
+	
+	
+	@ProxyMethod 
+	public Map initGeneralRevision( faas, txntype, prevtdno, autonumber, newrysetting, landfaas ) {
+		if( !newrysetting ) {
+			throw new Exception('New RY Setting is required.')
+		}
+		
+		faas = faasSvc.initReassessmentTransaction( [faas:faas, txntype:txntype, prevtdno:prevtdno, autonumber:autonumber] )
+		if( faas.rpu.ry >= newrysetting.ry ) {
+			throw new Exception('New Revision Year must be greater than ' + faas.rpu.ry + '.' )
+		}
+		
+		def txn 			= faasSvc.resolveTxnType( txntype )
+		faas.info.txntype	= txn.txntype 
+        faas.info.txn       = txn 
+		faas.info.datacapture = false
+		faas.rpu.ry			= newrysetting.ry 
+		
+		if( landfaas ) {
+			//update pin info in case pin is renumbered
+			faas.rp.putAll( landfaas.rp )
+			faas.rpu.fullpin 	= landfaas.rp.pin + '-' + faas.rpu.suffix
+			faas.info.landfaasid = landfaas.objid 
+			faas.info.landfaastaxpayerid = landfaas.info.taxpayerid
+		}
+		
+		//recalculate due to gr 
+		def rputype = faas.rpu.rputype 
+		
+		if( 'land'.equals( rputype )  ) {
+			faas = landRpuSvc.initGeneralRevision( faas, newrysetting )
+		}
+		else if( 'bldg'.equals( rputype )  ) {
+			faas.remove('previnfo')
+			faas = bldgRpuSvc.initGeneralRevision( faas, newrysetting )
+		}
+		else if( 'mach'.equals( rputype )  ) {
+			faas.remove('previnfo')
+			faas = machRpuSvc.initGeneralRevision( faas, newrysetting )
+		}
+		else if( 'planttree'.equals( rputype )  ) {
+			faas.remove('previnfo')
+			faas = planttreeRpuSvc.initGeneralRevision( faas, newrysetting)
+		}
+		else if( 'misc'.equals( rputype )  ) {
+			faas.remove('previnfo')
+			faas = miscRpuSvc.initGeneralRevision( faas, newrysetting)
+		}
+		else {
+			throw new Exception( 'Cannot process rpu type ' + rputype + '.' )
+		}
+		
+		faas.info.tdno 		= faasSvc.generateNextTdNo( faas )
+		
+		return faas 
+		
+	}
+	
+	
+	
+	def getRySetting( rputype, newry ) {
+		if( rputype == 'land' ) {
+			return bgrDb.findRYSetting_land([ry:newry])
+		}
+		
+		if( rputype == 'bldg' ) {
+			return bgrDb.findRYSetting_bldg([ry:newry])
+		}
+		
+		if( rputype == 'mach' ) {
+			return bgrDb.findRYSetting_mach([ry:newry])
+		}
+		
+		if( rputype == 'planttree' ) {
+			return bgrDb.findRYSetting_planttree([ry:newry])
+		}
+		
+		if( rputype == 'misc' ) {
+			return bgrDb.findRYSetting_misc([ry:newry])
+		}
+		return null 
+	}
+	
+	boolean existSetting( setting ) {
+		return bgrDb.getRYSettings([setting:setting]).size() > 0
+	}
+	
+}
+

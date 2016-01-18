@@ -1,0 +1,20 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+
+class AFStockReceiptService {
+
+	@ActiveDB("af_stock")
+	def em;
+
+	
+	/**
+	* this is called during stockreceipt issuance in details.
+	*/
+	@ProxyMethod
+	public def getInfo(def o) {
+		return em.findAFInfo(o);
+	}
+	
+
+}

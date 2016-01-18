@@ -1,0 +1,219 @@
+import com.rameses.annotations.*;
+import com.rameses.services.extended.*;
+import java.rmi.server.*;
+
+
+class BusinessPermitService  {
+
+	@ActiveDB("business_permit")
+	def em;
+
+	@ActiveDB("business_billing")
+	def billEm;
+
+	@ActiveDB("entity_address")
+	def entity_address;
+
+	@Service("BusinessApplicationService")
+	def appSvc;
+
+	@Service("Var")
+	def sysvar;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@Service("SequenceService")
+	def seqSvc;
+
+	@Service("BusinessMasterService")
+	def bizInfo;
+
+	@Service("BusinessLobService")
+	def lobSvc;
+
+	@Service("BusinessPaymentService")
+	def paySvc;
+
+	@Service("OrgService")
+	def orgSvc;
+
+	@Env
+	def env;
+
+	@ProxyMethod
+	public def create( o ) {
+		if ( !o.businessid ) throw new Exception("Please specify businessid");
+		if ( !o.applicationid ) throw new Exception("Please specify applicationid");
+
+		//check permit if exist to prevent duplication
+		def perminfo = em.findPermit( o ); 
+		if ( perminfo ) throw new Exception('Business Permit already exist. Please reload your screen');  
+
+		def parentperm = null; 
+		if ( o.parentapplicationid ) { 
+			parentperm = em.findPermitByApplication([applicationid: o.parentapplicationid]); 
+		} 
+		
+		//check first if you are allowed to release the permit
+		def app = appSvc.open( [objid: o.applicationid] );
+		def buz = app.business;
+		def expirydate = o.expirydate;
+		if ( !expirydate ) {
+			expirydate = dateSvc.getMonthEndDate( dateSvc.parse('yyyy-MM-dd', app.appyear+"-12-01") );	
+		}
+
+		def permitstat = em.findPermitCount([ businessid: o.businessid, activeyear: app.appyear ]); 
+		def permitver = permitstat.icount;  
+		def plateno = o.plateno;
+		def permitno = o.permitno;
+		if ( permitno ) {
+			//do nothing 
+		} else if ( parentperm?.permitno ) {
+			def pno = parentperm.permitno; 
+			def strver = '-0'; 
+			if (pno.endsWith(strver)) { 
+				pno = pno.substring(0, pno.lastIndexOf(strver)); 
+			} 
+
+			permitno = pno +'-'+ permitver; 
+			plateno = parentperm.plateno;
+
+		} else {
+			def lgucode = orgSvc.getRoot()?.code;
+			if ( !lgucode ) throw new Exception("LGU code is null. Please check OrgService.getRoot. Ensure there is a root org");
+
+			lgucode = lgucode.replace("-", "");	
+			def yr = dateSvc.serverYear;
+			def mnth = dateSvc.serverMonth;
+			def smon = ( mnth < 10 ) ? "0"+mnth : mnth+"";
+			def prefix = "BP-"+app.appyear;
+			permitno = prefix+"-"+seqSvc.getNextFormattedSeries(prefix)+"-"+permitver; 
+		}
+
+		def dtissued = o.dtissued;
+		if ( !dtissued ) dtissued = dateSvc.getServerDate(); 
+
+		def permit = [:];
+		permit.objid = "BPPMT"+new UID();
+		permit.businessid = app.business.objid;
+		permit.applicationid = app.objid;
+		permit.state = 'ACTIVE';
+		permit.activeyear = app.appyear;
+		permit.version = permitver;
+		permit.permittype = 'STANDARD';
+		permit.dtissued = dtissued;
+		permit.issuedby = [objid: env.USERID, name: env.FULLNAME];
+		permit.expirydate = expirydate;
+		permit.permitno = permitno;
+		permit.plateno = plateno; 
+		em.create( permit ); 
+		return permit; 
+	} 
+
+
+	@ProxyMethod
+	public def open(def o ) {
+		if(!o.applicationid) throw new Exception("applicationid is required");		
+		def r = em.findPermitByApplication( o );
+		r.payments.each {
+			it.refdate = dateSvc.parse( 'yyyy-MM-dd', it.refdate);
+			it.amount = new BigDecimal(it.amount);
+		}
+		r.lobs = appSvc.getAppLobs( [applicationid: o.applicationid ] );
+		if(r.lobs) {
+			r.lobnames = r.lobs*.name.join(",");
+		}
+		r.barcode = '51005:'+r.bin;
+		return r;
+	}
+
+	@ProxyMethod
+	public def getReport( o ) {
+		if ( !o.applicationid ) throw new Exception("applicationid is required");
+
+		def app = em.findPermitByApplication( o );
+		def perm = em.findPermitForReport( o ); 
+		perm.lobs = []; 
+
+		em.getApplicationLOBs( o ).each{ x-> 
+			if ( x.assessmenttype.toString().equalsIgnoreCase('RETIRE') ) {
+				def retirelobs = perm.lobs.findAll{ it.lobid==x.lobid } 
+				if (retirelobs) perm.lobs.removeAll( retirelobs );
+			} else { 
+				perm.lobs << x; 
+			}
+		} 
+
+		if ( !perm.lobs ) throw new Exception('No available active LOB'); 
+ 
+		def addr = em.findBusinessAddress([ objid: perm.address?.objid ]);
+		if ( addr ) {
+			addr.showextended = false; 
+			perm.businessaddress = formatAddress( addr ); 
+			addr.showextended = true; 
+			perm.businessfulladdress = formatAddress( addr ); 
+
+			if ( addr.pin ) perm.pin = addr.pin; 
+		} 
+
+		addr = entity_address.read([ objid: perm.owner?.address?.objid ]);
+		if ( addr ) {
+			addr.showextended = false; 
+			perm.owneraddress = formatAddress( addr ); 
+			addr.showextended = true; 
+			perm.ownerfulladdress = formatAddress( addr ); 
+		} 
+
+		perm.apptype = (perm.parentapptype? perm.parentapptype: perm.apptype); 
+		perm.lobnames = perm.lobs*.name.join(","); 
+		perm.payments = em.getApplicationPayments(o);
+		perm.barcode = '51005:'+perm.bin;
+		return perm;
+	}
+
+	private String formatAddress( addr ) {
+		def list = []; 
+		def bldgaddr = (addr.unitno? addr.unitno+' ':'') + (addr.bldgno? addr.bldgno+' ':'') + (addr.bldgname? addr.bldgname+' ':''); 
+		if (bldgaddr.trim()) list << bldgaddr.trim(); 
+		if ( addr.street ) list << addr.street; 
+		if ( addr.subdivision ) list << addr.subdivision;
+		if ( addr.barangay?.name ) list << addr.barangay.name;
+
+		boolean show_extended = false; 
+		if ( addr.showextended ) {
+			show_extended = true; 
+		} else if ( addr.type == 'nonlocal' ) { 
+			show_extended = true; 
+		}
+
+		if ( show_extended ) {
+			if ( addr.municipality ) list << addr.municipality;
+			if ( addr.city ) list << addr.city;
+			if ( addr.province ) list << addr.province; 
+		} 
+		return list.join(", ").replaceAll(",,",","); 
+	} 
+	
+	/*
+	@ProxyMethod
+	public void rebuildPermit( o ) {
+		def p = em.read( [objid: o.objid] );
+		def b = bizInfo.open( [objid: p.businessid] );
+		copy(p,b);
+		em.update( p );	
+	}
+
+	@ProxyMethod
+	public def reissuePermit( o ) {
+		em.deactivatePermit(o);
+		return create(o);
+	}
+	*/
+
+	@ProxyMethod
+	public void updatePlateno( o ) {
+		em.updatePlateno( o);
+	}
+
+} 

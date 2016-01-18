@@ -1,0 +1,145 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.common.*;
+import com.rameses.services.extended.*;
+
+class NGASSummaryReportService {
+
+	@ActiveDB('ngas_report')
+	def em; 
+
+	@Service('DateService')
+	def dtSvc;
+
+	@Service('NumberService')
+	def numSvc;	
+
+
+	@ProxyMethod 
+	public def getReportOptions() {
+		return [:]; 
+	} 
+
+	@ProxyMethod 
+	public def getRemittanceReport( params ) {
+		def unmaps = em.getUnmappedAcctsByRemittance([ remittanceid: params.objid ]); 
+		def sourcelist = em.getReportDataByRemittance([ remittanceid: params.objid ]); 
+		if ( !sourcelist ) throw new Exception('No available record(s) found');
+
+		def txninfo = em.findRemittance([ objid: params.objid ]);
+		return buildReport( params, sourcelist, unmaps, txninfo ); 
+	}
+
+	@ProxyMethod 
+	public def getLiquidationReport( params ) {
+		def unmaps = em.getUnmappedAcctsByLiquidation([ liquidationid: params.objid ]); 
+		def sourcelist = em.getReportDataByLiquidation([ liquidationid: params.objid ]); 
+		if ( !sourcelist ) throw new Exception('No available record(s) found');
+
+		def txninfo = em.findLiquidation([ objid: params.objid ]);	
+		return buildReport( params, sourcelist, unmaps, txninfo ); 	
+	} 
+
+	def buildReport( params, sourcelist, unmaps, txninfo ) {
+		def tmplist = [];
+		sourcelist.findAll{( it.actualamount > 0.0 )}.each{
+			buildPath( tmplist, sourcelist, it ) 
+		}
+		tmplist.sort{ it.itemindex } 
+
+		def treenodes = []; 
+		tmplist.findAll{ it.parentid == 'root' }.each{
+			buildTree( treenodes, tmplist, it, 0 ) 
+		} 
+
+		if ( treenodes ) {  
+			def maxlevel = treenodes.max{ it.level }.level; 
+			for ( int i=maxlevel; i >= 0; i-- ) {
+				def parentnodes = treenodes.findAll{ it.level==i }.groupBy{ it.parentid } 
+				if ( !parentnodes ) continue; 
+
+				parentnodes.each{ k,v-> 
+					def subamt = v? v.sum{(it.amount? it.amount: 0.0)} : 0.0; 
+					def par = treenodes.find{ it.objid == k }
+					if (par) {
+						def amt = (par.amount? par.amount: 0.0); 
+						par.amount = amt + subamt; 
+					}
+				}
+			}
+		} 
+
+		def roots = treenodes.findAll{ it.parentid=='root' }
+		roots.each{ formatAcct(treenodes, it, 1) } 
+
+		def results = treenodes; 
+		def totalunmap = 0.0; 
+		def totalamt = roots.sum{( it.amount? it.amount: 0.0 )}
+		if ( !totalamt ) totalamt = 0.0;
+		
+		if ( unmaps ) {
+			totalunmap = unmaps.sum{( it.amount? it.amount: 0.00 )} 
+
+			def unmacct = [objid:'unmapped', parentid:'root', title:'UNMAPPED ACCOUNTS', type:'group', amount:totalunmap];
+			unmaps.add(0, unmacct); 
+			formatAcct( unmaps, unmacct, 1 ); 
+
+			if ( results ) {
+				results.addAll(0, unmaps); 
+			} else {
+				results.addAll( unmaps ); 
+			}
+		}
+
+		return [
+			reportdata : results, 
+			header     : [ 
+				TOTALAMOUNT : totalamt + totalunmap, 
+				TITLE    : 'NGAS STATEMENT OF REVENUE', 
+				TXNNO    : txninfo?.txnno, 
+				TXNDATE  : txninfo?.dtposted 
+			] 
+		]; 
+	} 
+
+	void buildTree( targets, sources, acct, level ) {
+		targets << acct; 
+		acct.level = level; 
+		acct.amount = acct.actualamount; 
+		sources.findAll{ it.parentid == acct.objid }.each{
+			buildTree( targets, sources, it, level+1 ) 
+		} 
+	} 
+
+	void buildPath( targets, sources, acct ) { 
+		def node = targets.find{ it.objid == acct.objid }
+		if ( node == null ) targets << acct; 
+
+		def parent = sources.find{ it.objid == acct.parentid }
+		if (parent) buildPath( targets, sources, parent ) 
+	} 
+
+	void formatAcct( results, acct, level ) {
+		def spacer = ''; 
+		if ( level > 1 ) spacer = '     '*(level-1); 
+
+		def suffix = '';
+		if (level == 1) suffix='*'; 
+
+		def prefix = '';
+		if (acct.type.toString().matches("detail|subaccount")) {
+			prefix = (acct.code? acct.code+' ' : ''); 
+		} 
+
+		acct.title = spacer + prefix + acct.title + suffix; 
+
+		def children = results.findAll{ it.parentid==acct.objid } 
+		if ( children ) { 
+			acct.haschildren = true; 
+			children.each{ formatAcct(results, it, level+1) } 
+		} else {
+			acct.haschildren = false; 
+		}
+	} 
+} 

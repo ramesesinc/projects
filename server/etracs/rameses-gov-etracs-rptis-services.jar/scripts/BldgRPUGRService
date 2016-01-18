@@ -1,0 +1,93 @@
+import com.rameses.annotations.*
+import com.rameses.util.*
+
+class BldgRPUGRService
+{
+	@PersistenceContext('rpt')
+	def em
+
+	@Service('BldgRYSettingLookupService')
+	def lookupSvc
+
+	@Service('BldgRPUService')
+	def bldgRpuSvc 
+
+	@Service('PinService')
+	def pinSvc
+    
+	@Service('Var')
+	def var 
+
+	@Service('RPTUtil')
+	def util
+
+	@Service('DateService')
+	def dtSvc 
+
+	
+	@ProxyMethod
+	public def reviseBldgRpu(rpu){
+		rpu.dtappraised = dtSvc.serverDate 
+		if (rpu.floorcount == null || rpu.floorcount == 0){
+			rpu.floorcount = 1
+		}
+		rpu.basevalue = 0.0;
+		rpu.effectiveage = null;
+		reviseStructuralTypes(rpu)
+		bldgRpuSvc.calculateAssessment(rpu)
+		return rpu
+	}
+
+	void reviseStructuralTypes(rpu){
+		rpu.structuraltypes.each{ st ->
+			st.bldgtype = lookupSvc.lookupBldgTypeByPrevId(st.bldgtype.objid)
+			st.bldgkindbucc = lookupSvc.lookupBldgKindBuccByPrevId(st.bldgkindbucc.objid)
+			if (st.bldgkindbucc ){
+				st.basevalue = st.bldgkindbucc.basevalue 
+				if (rpu.bldgkindbucc.basevaluetype == 'range'){
+					st.basevalue = st.bldgkindbucc.maxbasevalue 
+				}
+				st.unitvalue = st.basevalue
+			}
+			reviseBldgUses(rpu, st)
+		}
+	}
+
+
+	void reviseBldgUses( rpu, st) {
+		reviseActualUse( rpu, st  )
+		reviseFloors( rpu, st )
+	}
+	
+	void reviseActualUse( rpu, st  ) {
+		def deletedUses = []
+		st.bldguses.each{ bu ->
+			bu.actualuse =  lookupSvc.lookupAssessLevelByPrevId(bu.actualuse.objid)
+			if( !bu.actualuse  ) {
+				deletedUses.add( bu )
+			}
+		}
+		if (st.bldguses)
+			st.bldguses.removeAll( deletedUses )
+	}
+	
+	void reviseFloors(rpu, st) {
+		st.bldguses.each{ bu ->
+			bu.floors.each{ floor -> 
+				def deletedItems = []
+				floor.additionals.each{  addl ->
+					addl.additionalitem = lookupSvc.lookupAdditionalItemByPrevId(addl.objid)
+					if (addl.additionalitem) {
+						addl.expr = addl.additionalitem.expr 
+					}
+					else {
+						deletedItems.add(addl)
+					}
+				}
+				if (floor.additionals)
+					floor.additionals.removeAll( deletedItems )
+			}
+		}
+	}
+}
+ 

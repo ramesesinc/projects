@@ -1,0 +1,84 @@
+package machassessment;
+
+import rptis.facts.*;
+import rptis.mach.facts.*;
+import java.util.*;
+import com.rameses.rules.common.*;
+
+global RuleAction action;
+
+
+
+rule "init"
+	agenda-group "INITIAL"
+	salience 500000
+	no-loop
+	when
+		MU   : MachineActualUse()
+	then	
+		Map map = new HashMap();
+		map.put("machuse", MU);
+		action.execute( "init-info", map, drools );
+end
+
+rule "calc-machine-al"
+	agenda-group "ASSESSLEVEL"
+	salience 500000
+	no-loop
+	when
+		MU   : MachineActualUse()
+		MACH : MachineDetail(machuse == MU)
+	then	
+		Map map = new HashMap();
+		map.put("machuse", MU);
+		map.put("machine", MACH);
+		action.execute( "calc-mach-al", map, drools );
+end
+
+
+rule "calc-machine-av"
+	agenda-group "ASSESSEDVALUE"
+	salience 500000
+	no-loop
+	when
+		MU   : MachineActualUse()
+		MACH : MachineDetail(machuse == MU, MV:marketvalue, AL:assesslevel)
+	then	
+		Map bindings = new HashMap();
+		bindings.put("MV", MV);
+		bindings.put("AL", AL);
+
+		Map map = new HashMap();
+		map.put("machine", MACH);
+		map.put( "expr", (new ActionExpression("@ROUNDTOTEN( MV * AL / 100.0)", bindings)) );
+		action.execute( "calc-mach-av", map, drools );
+end
+
+rule "summarize-machine-info"
+	agenda-group "AFTER-ASSESSEDVALUE"
+	salience 500000
+	no-loop
+	when
+		MU   : MachineActualUse()
+		MACH : MachineDetail(machuse == MU)
+	then	
+		MU.setBasemarketvalue( MU.getBasemarketvalue() + MACH.getBasemarketvalue());
+		MU.setMarketvalue( MU.getMarketvalue() + MACH.getMarketvalue());
+		MU.setAssesslevel( MACH.getAssesslevel());
+		MU.setAssessedvalue( MU.getAssessedvalue() + MACH.getAssessedvalue());
+end
+
+
+
+
+rule "build-assessment"
+	agenda-group "SUMMARY"
+	salience 500000
+	no-loop
+	when
+		MU  : MachineActualUse()
+	then	
+		Map map = new HashMap();
+		map.put("machuse", MU);
+		action.execute( "add-assessment-info", map, drools );
+end

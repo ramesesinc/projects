@@ -1,0 +1,57 @@
+import com.rameses.annotations.*
+import com.rameses.common.*;
+import com.rameses.services.extended.*;
+import java.rmi.server.UID;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.lang.*;
+
+class RPTReportFaasMonitoringService 
+{
+	@ActiveDB('faasreport_monitoring')
+	def em;
+
+	@ProxyMethod
+	def getUsers(params){
+		return em.getUsers(params);
+	}
+
+	@ProxyMethod
+	def getData(params){
+		def data = [];
+		def map = ['userid':'%','username':'All Users'];
+		params.user = params.user ? params.user : map;
+		params.userid = params.user.userid;
+		def day = params.day ? params.day : "";
+		params.date = params.year + "-" + String.format("%02d",params.month.index) + "-" + day + "%";
+		def users = em.getUsers(params);
+		users.each{
+			def user = it;
+			def actions = em.getTxnLogActions();
+			actions.each{
+				def entity = [:];
+				entity.user = user.username;
+				entity.action = it.action;
+				entity.actioncount = (int) em.findActionCountSummation(['action':entity.action, 'userid':user.userid, 'date':params.date]).sum;
+				data << entity;
+			}
+		}
+		return data;
+	}
+
+	public String dateString(int year, int month, int day){
+		Calendar c = Calendar.getInstance();
+		c.set(year,month,day,0,0);
+		Date date = c.getTime();
+		SimpleDateFormat yearFormat = new SimpleDateFormat("yyyy");
+		SimpleDateFormat monthFormat = new SimpleDateFormat("MMMM");
+		SimpleDateFormat dayFormat = new SimpleDateFormat("dd");
+		String dateString = "";
+		if(day == 0){
+			dateString = "For the month of "+monthFormat.format(date)+" "+yearFormat.format(date);
+		}else{
+			dateString = monthFormat.format(date) + " " + dayFormat.format(date) + ", " + yearFormat.format(date);
+		}
+		return dateString;
+	}
+}

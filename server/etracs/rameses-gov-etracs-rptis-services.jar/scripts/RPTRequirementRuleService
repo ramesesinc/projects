@@ -1,0 +1,87 @@
+import com.rameses.annotations.*;
+import java.rmi.server.*;
+import com.rameses.rules.common.*;
+import com.rameses.util.*;
+import com.rameses.services.extended.*;
+
+
+public class RPTRequirementRuleService
+{
+	@ActiveDB('rpt_requirement_type')
+	def em 
+
+	@Service('RPTRequirementTypeService')
+	def reqTypeSvc 
+
+	@ActiveDB("rule")
+	def ruleDB;
+
+
+	@Resource("RuleService")
+	def ruleSvc;
+
+	def RULESET 		= 'rptrequirement'
+	def FACT_PACKAGE 	= 'rptrequirement.'
+
+	
+	@ProxyMethod
+	public def getFaasTxnAttributeTypes( params ) {
+		if (!params.searchtext) params.searchtext = ''
+		params.searchtext += '%'
+		return em.getFaasTxnAttributeTypes(params)
+	}
+
+
+	@ProxyMethod
+	public def getRequirements( txninfo ) {
+		def requirements = []
+		def facts 		 = createFacts(txninfo) 
+		def actions 	 = buildActions(requirements)
+		def grps  		 = ruleDB.getRulegroups( [ruleset: RULESET] );
+
+		grps.each{g ->
+			ruleSvc.execute( RULESET, facts, actions, g.name);
+		}
+    	return requirements
+	}
+
+	def buildActions(requirements){
+		def actions = new RuleAction();
+		actions.addCommand('add-requirement', new AddRequirement(reqTypeSvc:reqTypeSvc, requirements:requirements))
+		return actions 
+	}
+
+	def createFacts(txninfo){
+		def facts 			= []
+		def fact 			= ruleSvc.createFact(RULESET, FACT_PACKAGE + 'RPTTxnInfoFact')
+		fact.txntype 		= txninfo.txntype.objid
+		fact.txntypemode 	= txninfo.txntypemode
+		fact.planRequired 	= (txninfo.planrequired == null ? false : txninfo.planrequired)
+		fact.rputype		= txninfo.rputype
+		fact.classificationid = txninfo.classificationid 
+		facts << fact
+
+		txninfo.attributes.each{ 
+			if (it.selected || it.selected == 1){
+				fact = ruleSvc.createFact(RULESET, FACT_PACKAGE + 'TxnAttributeFact')
+				fact.txntype = txninfo.txntype.objid 
+				fact.attribute = it.attribute 
+				facts << fact 
+			}
+		}
+
+		return facts;
+	}
+}
+
+
+public class AddRequirement implements RuleActionHandler {
+	def reqTypeSvc
+	def requirements
+	public void execute(def params, def drools) {
+		def requirement = reqTypeSvc.open([objid:params.requirementtype.key])
+		if (requirement){
+			requirements << requirement 
+		}
+	}
+}

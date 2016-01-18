@@ -1,0 +1,104 @@
+import com.rameses.annotations.*
+import com.rameses.common.*;
+import com.rameses.services.extended.*;
+import com.rameses.util.*;
+
+class GeneralRevisionService
+{
+	
+	@ActiveDB('generalrevision')
+	def grdb 
+
+	@PersistenceContext('rpt')
+	def em
+    
+	@Env
+	def env
+
+	@Service('FAASService')
+	def faasSvc 
+
+
+	@Service('RPUService')
+	def rpuSvc
+
+	@Service('RealPropertyService')
+	def rpSvc 
+
+
+    @Service('Var')
+	def var
+
+	
+	@Service('RPTUtil')	
+	def utilSvc
+
+
+
+	@ProxyMethod
+	public def initOnlineGeneralRevision( info ) {
+		def faas = initGeneralRevision(info)
+		faasSvc.createFaas(faas)
+		return faas 
+	}
+
+
+
+	@ProxyMethod
+	public def initGeneralRevision( info ) {
+		utilSvc.required('Property to process', info.faas)
+		utilSvc.required('New Revision Year', info.newrysetting)
+		info.txntype = faasSvc.getTxnType('GR');
+		def faas = faasSvc.initTransaction(info)
+		
+		if (faas.rpu.rputype == 'land'){
+			faas.rpu.realpropertyid = faas.rp.objid
+		}
+		else {
+			def landrpu = grdb.findCurrentRevisedLandRpu([objid:faas.rpu.landrpuid, ry:info.newrysetting.ry])
+			if (!landrpu)
+				landrpu = grdb.findCurrentRevisedLandRpuByPin([pin:faas.rp.pin, ry:info.newrysetting.ry])
+			if (!landrpu)
+				landrpu = grdb.findRevisedLandRpu([previd:faas.rpu.landrpuid, ry:info.newrysetting.ry])
+			if (!landrpu) 
+				landrpu = grdb.findRevisedLandByRealPropertyId([realpropertyid:faas.rpu.realpropertyid, ry:info.newrysetting.ry])
+			if (!landrpu) 
+				throw new Exception('Land RPU is not yet revised for Revision Year ' + info.newrysetting.ry + '.')
+			faas.rp = rpSvc.open([objid:landrpu.realpropertyid])
+			faas.realpropertyid = faas.rp.objid
+			faas.rpu.realpropertyid = faas.rp.objid 
+			faas.rpu.landrpuid = landrpu.objid 
+		}
+		faas.rpu.rysettingid 	= info.newrysetting.objid 
+		faas.rpu.ry 			= info.newrysetting.ry
+		faas.rp.ry 			= info.newrysetting.ry 
+
+		faas.rpu.rp = faas.rp
+		rpuSvc.reviseRpu(faas.rpu)
+		return faas 
+	}
+
+	@ProxyMethod
+	public def createDataCaptureGeneralRevision( info ) {
+		def faas = initGeneralRevision( info )
+		return faas 
+	}	
+
+
+	/*--------------------------------------------------------
+	*
+	* Support Methods
+	*
+	* --------------------------------------------------------*/
+
+	/* returns the list of revision settings which is greater than the specified ry*/
+	@ProxyMethod
+	public def getRyList(lguid, ry, rputype ) {
+		lguid = (lguid ? lguid : var.lgu_objid)
+		ry = (ry == null ? var.current_ry : ry)
+		rputype = (rputype ? rputype : 'LAND')
+		return em.sqlContext.createNamedQuery('generalrevision:getRyList' + rputype.toUpperCase())
+				.setParameters([lguid:lguid, ry:ry]).resultList 
+	}
+}
+

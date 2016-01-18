@@ -1,0 +1,32 @@
+import com.rameses.annotations.*
+import com.rameses.common.*;
+import com.rameses.services.extended.*;
+import java.rmi.server.UID
+
+class RPTReportAssessmentRollService
+{
+    @ActiveDB('rptreport_assessmentroll')
+    def em
+
+    
+    @Async
+    @ProxyMethod
+    public def generateAssessmentRollTaxable( params ){
+    	params.barangayid = params.barangay?.objid
+		def list = em.getAssessmentRollTaxable(params)
+		if( ! list ) throw new Exception('Records not found.')
+		return [reportdata:list]
+    }
+
+    
+    @Async
+    @ProxyMethod
+    public def generateAssessmentRollExempt( params ){
+    	params.barangayid = params.barangay?.objid
+		def list = em.getAssessmentRollExempt(params)
+		if( ! list ) throw new Exception('Records not found.')
+		return [reportdata:list]
+    }
+
+
+}

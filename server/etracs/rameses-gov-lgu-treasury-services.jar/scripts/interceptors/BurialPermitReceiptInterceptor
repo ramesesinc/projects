@@ -1,0 +1,28 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+
+class BurialPermitReceiptInterceptor {
+
+	
+	@ActiveDB('collectiontype_account')
+	def acct;
+	
+	@ActiveDB("cashreceipt_burial")
+	def em
+	
+	
+	@After(pattern="CashReceiptService.post", eval="#{result.collectiontype?.handler == 'burial' && result.txnmode != 'CAPTURE'}")
+	public def postToSpecificTable(def evt) { 
+		def cs = evt.result;	
+		em.create(cs);
+	}
+
+	@After(pattern="CashReceiptService.open", eval="#{result.collectiontype?.handler == 'burial' && result.txnmode != 'CAPTURE'}")
+	public def onOpenReceipt(def evt) { 
+		def cs = em.read(evt.result);
+		cs.age = cs.age ? cs.age.toString(): ""
+		evt.result.putAll( cs );
+	}
+
+}

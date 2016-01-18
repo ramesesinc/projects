@@ -1,0 +1,39 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.common.*
+import com.rameses.services.extended.*
+
+class DirectToCashInterceptor { 
+	
+	@ActiveDB('income_summary')
+	def incSumEm
+
+	@Service('RevenueItemAccountService')
+	def revItemSvc
+
+	@Env
+	def env
+
+	@After(pattern="CreditMemoService.doApprove", eval="#{args[0].type.issuecashreceipt == 0 }")
+	public void postIncomeSummary( def evt ) { 
+		def dc = evt.args[0];
+		dc.items.each {
+			def p = [:]
+			p.refid = it.parentid
+			p.refdate = dc.refdate
+			
+			def rv = revItemSvc.findAccount( it.item )	
+			p.acctid = rv.objid
+			p.fundid = rv.fund.objid 
+			p.amount = it.amount
+			p.refno = dc.refno
+			p.reftype = 'DIRECTTOCASH'
+			p.orgid = env.ORGID 
+			incSumEm.create(p)
+		}
+
+	}	
+
+}
+

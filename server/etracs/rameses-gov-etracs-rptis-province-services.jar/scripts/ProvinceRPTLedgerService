@@ -1,0 +1,24 @@
+import com.rameses.osiris3.xconnection.*;
+import com.rameses.annotations.*;
+import com.rameses.common.*;
+
+class ProvinceRPTLedgerService
+{   
+	@Service('RPTLedgerService')
+	def ledgerSvc 
+
+
+	@ProxyMethod
+	public def syncData(msg){
+		try {
+			def ledger = ledgerSvc.openLedger(msg.data)
+			ledger.putAll(msg.data)
+			ledgerSvc.updateLedger(ledger)
+		}
+		catch(e){
+			//not yet existing, so insert 
+			ledgerSvc.createLedger(msg.data)
+		}
+	}	
+
+}

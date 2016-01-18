@@ -1,0 +1,123 @@
+import com.rameses.annotations.*;
+import com.rameses.common.*
+import com.rameses.services.extended.*
+import com.rameses.util.*
+
+
+class CRAAFReportService  
+{ 
+	@ActiveDB('craaf_report')
+	def adb 
+
+	@Env
+	def env 
+ 
+	@Service('DateService')
+	def dtSvc
+
+	@Service('ReportParameterService')
+	def reportSvc
+
+	@Service('AFInventoryService')
+	def invSvc 
+
+
+	@ProxyMethod
+	public def generateCraafData( params ) {
+		/* params -> [year, month] */ 
+		if( params.month.index == dtSvc.getServerMonth() ) {
+			//forward afo  unissued series 
+			def firstdate = params.year + "-" +  params.month.index.toString().padLeft(2, '0',) + "-01 00:00:00"
+			adb.getAFOUnforwardedAF([firstdate:firstdate]).each {
+				it.refid = 'BAL-FORWARD'
+				it.reftype = 'BAL-FORWARD'
+				it.refno = 'BAL-FORWARD'
+				it.refdate = firstdate
+				it.txntype = 'FORWARD'
+				it.remarks =  'BEGINNING BALANCE'
+				it.qty = ( it.endseries - it.startseries  ) + 1 
+				invSvc.postBegin( it);
+			}
+		}	
+
+		def data = [ items : getCraafData(params) ]; 
+		if ( !data.items ) throw new Exception("No record(s) found.        ");
+
+		data.info = [ 
+			PREPAREDBY 		: env.FULLNAME,
+			PREPAREDBYTITLE : env.JOBTITLE,
+			TREASURERNAME	: reportSvc.standardParameter.TREASURERNAME, 
+			TREASURERTITLE	: reportSvc.standardParameter.TREASURERTITLE,
+			PERIOD			: 'FOR THE MONTH OF ' + params.month.caption + ', ' + params.year,
+		]; 
+		return data; 
+	}
+
+	@ProxyMethod
+	public def getFormControlList(  ) {
+		return [
+			[type:"integer", caption:'Year', name:'entity.year', required:true, preferredSize:'80,19', captionWidth:120],
+            [type:"combo", caption:'Month', name:'entity.month', items:'months', expression:'#{item.name}', preferredSize:'80,19', captionWidth:120],
+		]
+	}
+
+	def getCraafData(params) {
+		def list = adb.getCraafData([year:params.year, month:params.month.index]); 
+		list.each {
+			it.beginstartseries = (it.receivedstartseries>0? null: it.beginstartseries); 
+			it.beginendseries = (it.receivedstartseries>0? null: it.beginendseries); 
+			if ( it.issuedstartseries>0 ) {
+				it.beginstartseries = (it.prevendingstartseries>0 ? it.prevendingstartseries : it.beginstartseries); 
+				it.beginendseries = (it.prevendingendseries>0 ? it.prevendingendseries : it.beginendseries); 
+			} 
+
+			if ( it.receivedstartseries>0 && it.receivedendseries>0 ) { 
+				it.qtyreceived = (it.receivedendseries-it.receivedstartseries)+1; 
+			} 
+			if ( it.beginstartseries>0 && it.beginendseries>0 ) { 
+				it.qtybegin = (it.beginendseries-it.beginstartseries)+1; 
+			} 
+			if ( it.issuedstartseries>0 && it.issuedendseries>0 ) { 
+				it.qtyissued = (it.issuedendseries-it.issuedstartseries)+1; 
+			} 
+			if ( it.endingstartseries>0 && it.endingendseries>0 ) {
+				it.qtyending = (it.endingendseries-it.endingstartseries)+1; 
+			}
+
+			if ( it.aftype=='cashticket' ) {
+				def denomination = (it.denomination? it.denomination: 1) * 1.0;
+				if ( it.qtyreceived>0 ) it.receivedamt = it.qtyreceived * denomination;  
+				if ( it.qtybegin>0 ) it.beginamt = it.qtybegin * denomination;  
+				if ( it.qtyissued>0 ) it.issuedamt = it.qtyissued * denomination;  
+				if ( it.qtyending>0 ) it.endingamt = it.qtyending * denomination;  
+
+				it.receivedstartseries = it.receivedendseries = null; 
+				it.beginstartseries = it.beginendseries = null; 
+				it.issuedstartseries = it.issuedendseries = null; 
+				it.endingstartseries = it.endingendseries = null; 
+				if ( it.stubno  ) it.afid = (''+ it.afid +'  #'+ it.stubno);
+			}
+
+			if ( !it.qtyending ) {
+				it.remarks = 'CONSUMED'; 
+				if ( it.categoryindex>0 && it.saled>0 ) {
+					it.remarks = 'SALE'; 
+				} 
+			} 
+
+			it.receivedstartseries = (Integer) it.receivedstartseries;
+			it.receivedendseries = (Integer) it.receivedendseries;
+			it.beginstartseries = (Integer) it.beginstartseries;
+			it.beginendseries = (Integer) it.beginendseries;
+			it.issuedstartseries = (Integer) it.issuedstartseries;
+			it.issuedendseries = (Integer) it.issuedendseries;
+			it.endingstartseries = (Integer) it.endingstartseries;
+			it.endingendseries = (Integer) it.endingendseries;
+			it.qtyreceived = (Integer) it.qtyreceived;
+			it.qtybegin = (Integer) it.qtybegin;
+			it.qtyissued = (Integer) it.qtyissued;
+			it.qtyending = (Integer) it.qtyending;			
+		} 
+		return list; 
+	} 
+} 

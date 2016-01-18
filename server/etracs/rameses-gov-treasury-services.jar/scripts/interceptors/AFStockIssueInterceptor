@@ -1,0 +1,111 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.common.*
+import com.rameses.services.extended.*
+
+class AFStockIssueInterceptor {
+
+	@Service("AFInventoryService")
+	def afInventorySvc;
+
+	@ActiveDB("af_inventory")
+	def afInventoryDb;
+
+	@ActiveDB("stockitem")
+	def stockitem;
+
+	@ActiveDB("af_control")
+	def afControl;
+
+	@ActiveDB("stockissue")
+	def em;
+
+	@After(pattern="StockIssueService.create")
+	public void postReceipt( def evt ) { 
+		def o = evt.result;
+		def list = o.items.findAll{ it.qtyissued > 0 && it.items!=null };
+		for( z in list ) {
+			z.items.each {
+				def m = [:];		
+				m.controlid = it.controlid;
+				m.refid = o.objid;
+				m.reftype = "stockissue";	
+				m.refno = o.issueno;
+				m.refdate = o.dtfiled;
+				m.afid = z.item.objid;
+				m.unit = z.unit;
+				m.startseries = (it.startseries!=null ? it.startseries: 0);
+				m.endseries = (it.endseries!=null ? it.endseries: 0);
+				m.startstub = (it.startstub!=null ? it.startstub: 0);
+				m.endstub = (it.endstub!=null ? it.endstub: 0);
+				m.prefix = it.prefix;
+				m.suffix = it.suffix;
+				m.unitqty = it.unitqty;
+				m.itemclass = z.item.itemclass;
+				m.itemtype = z.item.type;
+				m.txntype = o.reqtype;
+				m.remarks = "ISSUED TO " + o.issueto.name; 
+				m.qty = m.qtyissued = it.qtyissued; 
+				m.cost = it.cost; 
+
+				if ( it.items ) {
+					//this is the adjusted qty issued 
+					m.qtyissued = it.items.sum{ a-> a.qtyissued } 
+				} 
+				afInventorySvc.postIssue(m);
+
+				//iterate the stubs data 
+				it.items.each {
+					def head = [:];
+					head.refid = m.refid;
+					head.reftype = "stockissue";	
+					head.refno = o.issueno;
+					head.refdate = o.dtfiled;
+				    head.startstub = it.stubno;
+				    head.endstub = it.stubno;
+				    head.afid = m.afid;
+				    head.currentstub = it.stubno;
+					head.startseries = it.startseries;
+					head.endseries = it.endseries;
+					head.currentseries = it.startseries;
+					head.prefix = m.prefix;
+					head.suffix = m.suffix;
+					head.qty = it.qtyissued;
+					head.unit = m.unit;
+					head.remarks = "RECEIVED FROM ISSUE";
+					head.respcenter = o.issueto;
+					if ( !head.respcenter.type ) head.respcenter.type = 'COLLECTOR';
+
+					head.txntype = o.reqtype + "-RECEIPT";
+					def q = afInventorySvc.postReceipt( head );
+
+					def c = [:];
+					c.putAll( q ); 
+					c.owner = o.issueto;
+					c.assignee = o.issueto;
+					c.refdate = o.dtfiled;
+					c.txnmode = 'ONLINE'
+					c.stubno = it.stubno;
+					c.active = 0;
+					afControl.create( c );
+				}
+			}
+		}
+	}
+
+	@After(pattern="StockIssueService.open")
+	public void afterOpen(evt) {
+		def o = evt.result;
+		o.items.each{
+			def params = [afid: it.item.objid, unit: it.unit, stockissueid: it.parentid , respcentertype: 'COLLECTOR']
+			it.handler =  it.aftype.toLowerCase() 
+			it.items = afInventoryDb.getAFDetails(params).each {
+				if( "cashticket".equals(it.aftype)) {
+					it.startseries = null;
+					it.endseries = null
+				}
+			} 
+		}
+	}
+}

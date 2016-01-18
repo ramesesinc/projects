@@ -1,0 +1,65 @@
+<schema>
+	<element name="cashreceiptrpt" tablename="cashreceipt_rpt">
+		<field name="objid" primary="true" />
+		<field name="year" type="integer" required="true" />
+		<field name="qtr" type="integer" required="true" />
+		<field name="month" type="integer" required="true" />
+		<field name="day" type="integer" required="true" />
+		<!-- type: online, capture, noledger etc -->
+		<field name="txntype" required="true" />
+	</element>
+
+	<element name="cashreceiptitem_online" tablename="cashreceiptitem_rpt_online">
+		<field name="objid" primary="true" />
+		<field name="rptledgerid" />
+		<field name="rptledgerfaasid" />
+		<field name="year" required="true" />
+		<field name="qtr" required="true" />
+		<field name="fromqtr" required="true" />
+		<field name="toqtr" required="true" />
+		<field name="basic" required="true" type="decimal" />
+		<field name="basicint" required="true" type="decimal" />
+		<field name="basicdisc" required="true" type="decimal" />
+		<field name="basicidle" required="true" type="decimal" />
+		<field name="basicidledisc" required="true" type="decimal" />
+		<field name="basicidleint" required="true" type="decimal" />
+		<field name="sef" required="true" type="decimal" />
+		<field name="sefint" required="true" type="decimal" />
+		<field name="sefdisc" required="true" type="decimal" />
+		<field name="firecode" required="true" type="decimal" />
+		<field name="basicnet" required="true" type="decimal" />
+		<field name="sefnet" required="true" type="decimal" />
+		<field name="total" required="true" type="decimal" />
+		<field name="revperiod" required="true" />
+		<field name="rptreceiptid" required="true" />
+		<field name="partialled" required="true" />
+		<field name="rptledgeritemid"  />
+		<field name="rptledgeritemqtrlyid"  />
+	</element>
+
+	<element name="noledgeritem" tablename="cashreceiptitem_rpt_noledger">
+		<field name="objid" primary="true" />
+		<field name="tdno" required="true" />
+		<field name="owner_name" required="true"/>
+		<field name="pin" />
+		<field name="txntype_objid" required="true"/>
+		<field name="rputype" required="true" />
+		<field name="cadastrallotno" />
+		<field name="classification_objid" required="true" />
+		<field name="actualuse_objid" required="true" />
+		<field name="barangay_objid" required="true" />
+		<field name="av" required="true" type="decimal" />
+		<field name="originalav" required="true" type="decimal" />
+	</element>
+
+	<element name="account" tablename="cashreceiptitem_rpt_account">
+		<field name="objid" primary="true"/>
+		<field name="rptledgerid"/>
+		<field name="revperiod"/>
+		<field name="revtype"/>
+		<field name="item_objid"/>
+		<field name="amount"/>
+		<field name="rptreceiptid"/>
+		<field name="sharetype"/>
+	</element>
+</schema>

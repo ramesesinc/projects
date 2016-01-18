@@ -1,0 +1,14 @@
+<schema>
+
+	<element name="sreaccount" tablename="sreaccount">
+		<field name="objid" primary="true"/>	
+		<field name="parentid" />
+		<field name="state" required="true"/>
+		<field name="chartid" />
+		<field name="code" required="true"/>
+		<field name="title" required="true"/>
+		<field name="type" />
+		<field name="acctgroup" />
+	</element>
+
+</schema>

@@ -1,0 +1,73 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.services.extended.*;
+
+public class BusinessRequirementService  {
+
+	@ActiveDB("business_requirement")
+	def em;
+
+	@DataContext("business_requirement")
+	def br;
+
+
+	@Service("DateService")
+	def dateSvc;
+
+	@Service("BPRequirementRuleService")
+	def ruleSvc;
+
+	@ProxyMethod
+	public void addRequirements(def o) {
+		if(!o.businessid) throw new Exception("businessid is required");
+
+		o.requirements?.each {
+			it.objid = "BUSREQ"+new UID();
+			it.businessid = o.businessid;
+			it.applicationid = o.applicationid;
+			if ( it.completed ) { 
+				it.dtcompleted = dateSvc.serverDate; 
+			} 
+			em.create(it); 
+		}
+	}
+
+	@ProxyMethod
+	public def getList(def o) {
+		if(!o.businessid) throw new Exception("businessid is required");
+		return em.getApplicationRequirements( o );
+	}
+
+	@ProxyMethod
+	public def fetchRequirements(def o) {
+		if(!o.business?.objid) throw new Exception("business objid is required");
+		if(!o.objid) throw new Exception("application objid is required");
+		def p = [:];
+		p.businessid = o.business.objid; 
+		p.applicationid = o.objid;
+
+		def list = em.getApplicationRequirements( p);
+		def rlist = ruleSvc.execute( o )?.requirements;
+		for(z in rlist) {
+			if( list.find{ it.reftype == z.reftype } ) continue;
+			z.objid = "BUSREQ"+new UID();
+			z.businessid = o.business.objid;
+			z.applicationid = o.objid;
+			em.create(z);				
+		} 
+		def r = em.getApplicationRequirements( p );
+		return r;
+	}
+
+	@ProxyMethod
+	public def updateRequirement(o) {
+		em.update( o );	
+	}
+
+	@ProxyMethod
+	public def removeRequirement(o) {
+		br.find( [objid: o.objid] ).delete();	
+	}
+
+}

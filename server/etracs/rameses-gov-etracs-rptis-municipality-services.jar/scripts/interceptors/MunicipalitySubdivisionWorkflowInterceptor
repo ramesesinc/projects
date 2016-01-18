@@ -1,0 +1,24 @@
+import com.rameses.annotations.*
+import com.rameses.common.*;
+
+class MunicipalitySubdivisionWorkflowInterceptor
+{
+	@Env
+	def env
+
+    @Service('MunicipalitySubdivisionSupportService')
+    def svc 
+
+    @Service('SubdivisionSupportService')
+    def supportSvc
+    
+	@After(pattern="SubdivisionWorkflowService.signal", eval="#{args[0].state=='forprovsubmission' && args[0].action=='completed'}", index=10000) 
+	public void submitToProvince( evt ) {
+		def subdivision = evt.args[0].data;
+		def subdivisiondata = supportSvc.buildSubdivisionData(subdivision)
+        svc.submitToProvince(subdivisiondata)
+        println 'Submitted subdivision to province.'
+	}
+
+}
+

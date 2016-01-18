@@ -1,0 +1,101 @@
+import com.rameses.annotations.*
+import com.rameses.common.*
+import com.rameses.util.*
+import com.rameses.services.extended.*
+
+
+class FAASChangeInfoInterceptor
+{
+	@ActiveDB('rpt_changeinfo')
+	def em
+
+	@Service('EntityService')
+	def entitySvc
+
+	@Service('RPUService')
+	def rpuSvc
+
+	@Service('FAASSupportService')
+	def supportSvc
+
+	@Service('RPTRequirementService')
+	def reqSvc
+
+	
+	@After(pattern="FAASChangeInfoService.updateInfo", eval="#{result.action=='change_property_info'}")
+	public void updatePropertyInfo(evt){
+		def changeinfo = evt.result
+		em.updatePropertyInfo(changeinfo.newinfo);
+		em.updateLedgerPropertyInfo(changeinfo.newinfo);
+	}
+	
+	
+	@After(pattern="FAASChangeInfoService.updateInfo", eval="#{result.action=='change_faas_info'}")
+	public void updateFaasInfo(evt){
+		def changeinfo = evt.result
+		changeinfo.newinfo.utdno = changeinfo.newinfo.tdno 
+		em.updateFaasInfo(changeinfo.newinfo);
+		em.updateLedgerInfo(changeinfo.newinfo);
+		em.updateLedgerFaasInfo(changeinfo.newinfo);
+
+		if (changeinfo.newinfo.classification){
+			changeinfo.newinfo.classificationid = changeinfo.newinfo.classification.objid 
+			em.updateRpuInfo(changeinfo.newinfo);
+		}
+	}
+
+
+	@Before(pattern="FAASChangeInfoService.updateInfo", eval="#{args[0].action=='change_owner_info'}")
+	public void beforeUpdateOwnerInfo(evt){
+		def changeinfo = evt.args[0]
+		if (changeinfo.taxpayer){
+			entitySvc.save(changeinfo.taxpayer);
+		}
+	}
+
+
+	@After(pattern="FAASChangeInfoService.updateInfo", eval="#{result.action=='change_owner_info'}")
+	public void updateOwnerInfo(evt){
+		def changeinfo = evt.result
+		def info = [
+			faasid : changeinfo.faasid,
+			taxpayer_objid : changeinfo.newinfo.taxpayer.objid,
+			taxpayer_name : changeinfo.newinfo.taxpayer.name,
+			taxpayer_address : changeinfo.newinfo.taxpayer.address,
+			owner_name : changeinfo.newinfo.owner.name,
+			owner_address : changeinfo.newinfo.owner.address,
+			administrator_objid : changeinfo.newinfo.administrator.objid,
+			administrator_name : changeinfo.newinfo.administrator.name,
+			administrator_address : changeinfo.newinfo.administrator.address,
+		]
+		em.updateFaasOwnerInfo(info)
+		em.updateLedgerOwnerInfo(info)
+	}
+
+	@After(pattern="FAASChangeInfoService.updateInfo", eval="#{result.action=='change_previous_info'}")
+	public void updatePreviousInfo(evt){
+		def changeinfo = evt.result
+		em.updateFaasPreviousInfo(changeinfo.newinfo);
+	}	
+
+	@After(pattern="FAASChangeInfoService.updateInfo", eval="#{result.action=='change_faas_appraisal'}")
+	public void updateAppraisalInfo(evt){
+		def changeinfo = evt.result
+		rpuSvc.updateRpu(changeinfo.newinfo);
+	}	
+
+	@After(pattern="FAASChangeInfoService.updateInfo", eval="#{result.action=='change_faas_sketch'}")
+	public void updateFaasSketch(evt){
+		def changeinfo = evt.result
+		supportSvc.deleteImageData(changeinfo)
+		supportSvc.saveImageData(changeinfo)
+	}	
+
+	@After(pattern="FAASChangeInfoService.updateInfo", eval="#{result.action=='add_faas_requirement_document'}")
+	public void addRequirementDocument(evt){
+		def changeinfo = evt.result
+		reqSvc.save(changeinfo.requirement)
+		supportSvc.saveImageData(changeinfo)
+	}	
+}
+

@@ -1,0 +1,56 @@
+import com.rameses.annotations.*;
+import com.rameses.common.*;
+import com.rameses.services.extended.*;
+
+class ProvinceRedFlagService
+{   
+	@Service('RPTRedFlagService')
+	def redflagSvc 
+
+	@Service('RPTCloudNotificationService')
+	def cloudSvc 
+
+	@Service('NotificationService')
+	def notifySvc		
+
+	@ActiveDB('faas_task')
+	def taskEm
+
+
+	@ProxyMethod
+	public def postRedFlag( entity ) {
+		entity.putAll(redflagSvc.create(entity))
+		notifyMunicipality(entity)
+		return entity
+	}
+
+	void notifyMunicipality(entity){
+		def asyncreq = cloudSvc.createAsyncRequest('MunicipalityRedFlagRemoteCallHandler', 'postRedFlag', entity)
+		cloudSvc.sendAsyncMessage(asyncreq[0], entity.lguid)
+        println 'Submit change FAAS red flag information to municipality.'
+	}
+
+
+	public void resolveRedFlag(redflag){
+		redflagSvc.save(redflag)
+		notifyFiledBy(redflag)
+	}
+
+	void notifyFiledBy(redflag){
+		def currtask = taskEm.findOpenTask([objid:redflag.refid])
+		def message = 'FAAS No. ' + redflag.refno + ' was resolved by by ' + redflag.resolvedby.name 
+		def msg = [
+            objid     : redflag.refid,
+            recipientid : redflag.filedby.objid,
+            recipienttype : 'user',
+            senderid  : redflag.resolvedby.objid,
+            sender    : redflag.resolvedby.name,
+            message   : message,
+            filetype  : 'faas',
+            data 	  : [taskid: currtask.objid],
+        ]
+        notifySvc.addMessage(msg)
+	}
+
+
+}

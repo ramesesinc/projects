@@ -1,0 +1,231 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.common.*
+import com.rameses.services.extended.*
+
+class NGASBankDepositReportService  
+{
+
+	@ActiveDB('ngas_bankdeposit_report')
+	def em;
+
+	@Env 
+	def env 
+
+	def PADDING_SIZE = 10
+
+	@ProxyMethod 
+	def getFundlist( bankdepositid ) {
+		return em.getFundlist([bankdepositid:bankdepositid]);
+	}
+
+	@ProxyMethod 
+	def generateReportOfCollectionsByFund( deposit, fund ) {
+		def data = deposit.clone();
+		data.fund = fund; 
+		def params = [bankdepositid: data.objid, fundid: fund.objid ]
+		return em.getReportOfCollectionsByFund(params)
+	}
+
+
+	@ProxyMethod 
+	def generateReportOfDepositsByFund( deposit, fund ) {
+		def data = deposit.clone();
+		data.fund = fund; 
+		def params = [bankdepositid: data.objid, fundid: fund.objid ]
+		return em.getReportOfDepositsByFund(params)
+	}
+
+
+	@ProxyMethod 
+	def generateJevEntries( deposit, fund ) {
+		def padding = '      '
+		def revtype = ''
+		if (fund.objid.equalsIgnoreCase('GENERAL')) 
+			revtype = 'basic%'
+		else if (fund.objid.equalsIgnoreCase('SEF')) 
+			revtype = 'sef%'
+
+		def params = [bankdepositid: deposit.objid, fundid: fund.objid, orgtype:env.ORGCLASS, revtype:revtype]
+		def credits = em.getJevEntries(params).each{
+			it.account.title = padding + it.account.title 
+		}
+		def rptreceivable = em.findRPTReceivables(params)
+		if (rptreceivable.credit != null)
+			credits << rptreceivable
+
+		if (!credits)
+			return [:]
+
+		credits.sort{a,b -> a.account.code <=> b.account.code }
+
+		//build debits
+		def debits = [];
+		def rptdiscount = 0.0
+		if (fund.objid.matches('GENERAL|SEF')){
+			rptdiscount = em.findRPTBasicDiscount(params).discount;
+			if (rptdiscount == null) rptdiscount = 0.0;
+		}
+		debits << [account:[title:'Cash in Vault', code:'101'], debit:credits.credit.sum() - rptdiscount, credit:0.0]
+		debits << [account:[title:'Other Receivables', code:'149'], debit:0.0, credit:0.0]
+		if (fund.objid.matches('GENERAL|SEF')){
+			debits << [account:[title:'Discount on RPT', code:'954'], debit:rptdiscount, credit:0.0]
+		}
+
+
+		//rptincomes 
+		def rptincomes = em.getRPTIncomes(params).each{
+			it.account.title = padding + it.account.title 
+		}
+		if (rptincomes)
+			 rptincomes.add(0, [account:[code:'451', title:'DEFERRED RPT INCOME'], credit:0.0, debit:rptincomes.credit.sum()])
+		else 
+			rptincomes = [[debit:0.0, credit:0.0]]
+
+		return [
+			totaldebit  : debits.debit.sum() + rptincomes.debit.sum(),
+			totalcredit : credits.credit.sum() + rptincomes.credit.sum(),
+			items 		: debits + credits,
+			rptincomes 	: rptincomes,
+			shares 		: em.getRPTShares(params).each{it.sharetype = it.sharetype.toUpperCase()},
+		]
+	}
+
+	@ProxyMethod 
+	public def generateAbstractReport(def deposit, def fund, def reporttype) {
+		def p =  [ bankdepositid: deposit.objid ];
+		if(! fund ) {
+			p.fundid = '%'
+		} else {
+			p.fundid = fund.objid 
+		}
+
+		def items = []
+		if ("standard".equals(reporttype)) { 
+		  	items = em.getStandardItems( p );
+		} else if("extended".equals(reporttype)){
+			items =  em.getExtendedItems(p);
+		} 
+
+		if( ! items) throw new Exception("No record(s) found.               ");
+
+		def reportdata = buildChartOfAccountFormat(reporttype, items)
+		reportdata.removeAll(reportdata.findAll{it.amount <= 0.0 })
+		def hdr = [:]
+		hdr.TITLE = 'NGAS ABSTRACT REPORT ON DEPOSIT ( ' + reporttype.toUpperCase() +' )'  
+		hdr.TXNNO	= deposit.txnno
+		hdr.DTPOSTED = deposit.dtposted 
+		hdr.TOTAL = reportdata.findAll{it.leaf == 1}.amount.sum();
+		return [header: hdr, items:reportdata ];	 
+	}
+
+
+	def buildChartOfAccountFormat(reporttype, items){
+		def data = []
+		data += items.findAll{it.objid == 'unmapped' || it.parentid == 'unmapped'}.each{ it.leaf = 1}
+		data.each{ it.total = it.amount }
+		def idx = -1
+
+		def rootaccts =  em.getNgasRootAccounts()
+		rootaccts.each{ 
+			if ("standard".equals(reporttype)) {
+				doBuildStandardFormat( data, items, idx, it)
+			} else if("extended".equals(reporttype)){
+				doBuildExtendedFormat(data, items, idx, it)
+			} 
+		}	
+	
+		calculateGroupTotals(reporttype, data)
+		return data 
+	}
+
+	void doBuildStandardFormat(data, items, idx, acct){
+		idx += 1
+		acct.amount = 0.0
+		acct.level = idx 
+		def collections =  items.findAll{it.accountid == acct.objid}
+		if (collections){
+			acct.amount = collections.amount.sum()
+			acct.leaf = 1
+		}
+		acct.title = padTitle(acct, idx)
+		data << acct 
+		def subaccts = em.getNgasSubAccounts([parentid:acct.objid])
+		subaccts.each{
+			doBuildStandardFormat(data, items, idx, it )
+		}
+	}
+
+
+
+	void doBuildExtendedFormat(data, items, idx, acct){
+		idx += 1
+		acct.title = padTitle(acct, idx)
+		acct.amount = 0.0
+		acct.level = idx 
+		def collections = items.findAll{it.accountid == acct.objid}
+		if (collections){
+			acct.amount = collections.amount.sum()
+			acct.leaf = 1
+		}
+		data << acct
+
+		def subaccts = em.getNgasExtendedSubAccounts([parentid:acct.objid])
+		subaccts.each{
+			doBuildExtendedFormat(data, items, idx, it )
+		}
+	}
+
+	
+	def padTitle(acct, idx){
+		def title =  acct.code + ' - ' + acct.title 
+		return (' ' * PADDING_SIZE * idx) + title 
+	}
+
+	void calculateGroupTotals(reporttype, data){
+		def maxlevel = data.level.max() 
+		for(int i = maxlevel - 1; i > 0; i--){
+			['detail','group'].each{ type -> 
+				def groupaccts = data.findAll{it.level == i && it.type == type }
+				groupaccts.each{ grpacct ->
+					def colls = data.findAll{it.parentid == grpacct.objid}
+					def amt = colls.amount.sum()
+					if( colls && amt > 0.0) { 
+						def s = colls.findAll{it.amount > 0 }[-1]
+						if(s.type.matches('detail|subaccount')) s.total = amt 
+					}
+					if (amt > 0.0 && grpacct.amount == 0){
+						grpacct.amount = amt
+					}
+					else if (amt > 0.0 && grpacct.amount != 0){
+						def idx = data.indexOf(grpacct) + colls.size() + 1
+						def otheracct = [objid:'O'+ grpacct.objid, parentid:grpacct.objid, title:(' '*PADDING_SIZE) + grpacct.title + ' (OTHERS)', amount:grpacct.amount, leaf:1, type:'subaccount', level:grpacct.level+1]
+						data.add(idx, otheracct)
+						grpacct.amount += amt
+						grpacct.leaf = null
+					}
+				}
+
+			}
+		}
+
+		//update rootgroups
+		data.findAll{it.level == 0 }.each{ rgrp ->
+			def amt = data.findAll{it.parentid == rgrp.objid}.amount.sum();
+			if (amt > 0.0){
+				rgrp.amount = amt 
+			}
+		}
+
+		if( "extended".equals(reporttype)){
+			data.findAll{ it.type == 'detail' && it.amount > 0.0 }.each{ d -> 
+				if(! data.find{it.parentid == d.objid})
+					d.total = d.amount
+			}
+
+		}
+
+	}
+	
+}

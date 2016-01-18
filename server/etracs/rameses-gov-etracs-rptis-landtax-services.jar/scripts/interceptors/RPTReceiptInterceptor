@@ -1,0 +1,73 @@
+import com.rameses.annotations.*
+import com.rameses.eserver.*;
+import com.rameses.common.*;
+
+class RPTReceiptInterceptor
+{
+	@PersistenceContext('rpt')
+	def em
+
+	@Service('RPTReceiptService')
+	def svc 
+
+	@Service('Var')
+	def var 
+
+	@Service('RPTUtil')
+	def util
+
+
+	@After(pattern="CashReceiptService.open", eval="#{result.formno=='56'}") 
+	public void interceptOpenReceipt( evt ) {
+		def receipt = evt.result
+		svc.open(receipt)
+		if (receipt.txntype.matches('rptonline|rptmanual')){
+			if (!receipt._items)
+				receipt._items = []
+			receipt._items = svc.getItemsForPrinting(receipt)
+			util.buildPeriodCovered(receipt._items)
+			receipt.itemcount = receipt._items.size()
+			if(receipt.itemcount > 0) addLGUInfo(receipt)
+		}
+	}
+
+
+	@Before(pattern="CashReceiptService.post", eval="#{args[0].formno=='56' && args[0].txntype.matches('rptonline|rptmanual')}") 
+	public void interceptBeforePostReceipt( evt ) {
+		def receipt = evt.args[0]
+		svc.checkLedgerUpdateFlagModified(receipt)
+		receipt.items = svc.getSummarizedCashReceiptItems(receipt); 
+	}
+
+	@After(pattern="CashReceiptService.post", eval="#{result.formno=='56' && args[0].txntype.matches('rptonline|rptmanual')}") 
+	public void interceptPostReceipt( evt ) {
+		def receipt = evt.result
+		svc.createReceipt(receipt)
+		receipt._items = svc.getItemsForPrinting(receipt)
+		util.buildPeriodCovered(receipt._items)
+		receipt.itemcount = receipt._items.size()
+		receipt.rptitems = null
+		if(receipt.itemcount > 0) addLGUInfo(receipt)
+	}
+
+	@After(pattern="CashReceiptVoidService.post", eval="#{result.receipt.formno=='56' && args[0].receipt.txntype.matches('rptonline|rptmanual')}") 
+	public void interceptVoidReceipt( evt ) {
+		svc.voidReceipt(evt.result.receipt)
+	}
+
+	void addLGUInfo( receipt ) {
+		if("province".equalsIgnoreCase(var.lgu_type)) {
+			receipt.lguname = receipt._items.collect{[munidistrict: it.munidistrict]}.unique{it.munidistrict}*.munidistrict.join('/')
+			receipt.parentlguname = receipt._items[0].provcity 
+		} else if ("city".equalsIgnoreCase(var.lgu_type)) { 
+			def i = receipt._items[0]
+			receipt.lguname = i.provcity  
+		} else {
+			def i = receipt._items[0]
+			receipt.lguname = i.munidistrict
+			receipt.parentlguname = i.provcity 
+		}
+	}
+
+}
+

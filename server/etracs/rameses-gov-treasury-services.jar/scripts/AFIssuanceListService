@@ -1,0 +1,31 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.services.extended.*;
+
+public class AFIssuanceListService extends ActiveListService {
+	
+	@ActiveDB("afissuance")
+	def em;
+
+	@ProxyMethod
+	public def getColumns(def params ) {
+            return [
+                  [name:'respcentername', caption:'Collector'],
+                  [name:'afid', caption:'AF No.', maxWidth:80],
+                  [name:'formtype', caption:'Type', maxWidth:80],
+                  [name:'stubno', caption:'Stub No.', maxWidth:120],
+                  [caption:'Start Series', type:'label', expression:"#{item.startseries}"],
+                  [caption:'End Series', type:'label', expression:"#{item.endseries}"],
+                  [caption:'Current Series', type:'label', expression:"#{item.currentseries}"],
+                  [name:'qtyreceived', caption:'Qty. Received', type:'integer', maxWidth:110],
+                  [name:'balance', caption:'Balance', type:'integer', maxWidth:80],
+                  [name:'txnmode', caption:'Mode', maxWidth:100 ],
+                  [name:'assigneename', caption:'Assign To'],
+            ]
+	}
+
+      public void beforeList( params ) {
+
+      } 
+}

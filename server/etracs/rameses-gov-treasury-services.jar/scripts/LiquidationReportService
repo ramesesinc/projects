@@ -1,0 +1,327 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.common.*
+import com.rameses.services.extended.*
+import java.text.DecimalFormat;
+
+class LiquidationReportService  {
+
+	@ActiveDB('liquidation')
+	def liqEm;
+
+	@ActiveDB("liquidationreport")
+	def liqreport; 
+
+	@Service("NumberService")
+	def numSvc;
+
+	@Service("LiquidationService")
+	def liqSvc
+
+	@Service('RAAFReportService') 
+	def raafSvc; 	
+
+	@Env 
+	def env; 
+
+	def decformat = new DecimalFormat("#,##0.00");
+
+
+	@ProxyMethod 
+	def getReportOptions( params ) {
+		return [
+			funds : liqreport.getLiquidationFundlist([ liquidationid: params.objid ]) 
+		]; 
+	}
+
+	@ProxyMethod 
+	def getFundlist( liquidationid ) {
+		return liqreport.getLiquidationFundlist([ liquidationid: liquidationid ]);
+	}
+
+	@ProxyMethod 
+	def getRCDReportData( params ) {
+		def liquidation = liqreport.findLiquidationInfo( params ); 
+		if( !liquidation ) throw new Exception("Could not open liquidation with objid " + params.liquidationid ); 
+
+		liquidation.remittances = liqreport.getRCDRemittances( params );
+		liquidation.collectionsummaries = liqreport.getRCDCollectionSummary( params );
+		liquidation.remittedforms = raafSvc.getRAAFByLiquidation( params ); 
+		liquidation.otherpayments = liqreport.getRCDOtherPayments( params );
+		liquidation.amountinwords = numSvc.doubleToWords( liquidation.amount ); 
+		return liquidation;
+	}
+
+	@ProxyMethod 
+	def getRCDSummaryData( params ) {
+		def liquidation = liqSvc.open([ objid: params.liquidationid ])
+		if(! liquidation ) throw new Exception("Could not open liquidation with objid " + params.liquidationid )
+
+		params.fundid = '%'; 
+		
+		liquidation.remittances = liqreport.getRCDRemittancesSummary( params ); 
+		liquidation.collectionsummaries = liqreport.getRCDCollectionSummary( params ); 
+		liquidation.remittedforms = raafSvc.getRAAFByLiquidation( params ); 
+		liquidation.otherpayments = liquidation.checks
+		liquidation.amountinwords = numSvc.doubleToWords( liquidation.amount )
+		liquidation.cashbreakdown.each { it.qty = it.qty.toString() }
+		def cashiers = liqreport.getLiquidationCashierList( params );
+		liquidation.cashier = [
+			name: cashiers.name.join("/"),
+			title: cashiers.jobtitle.join("/")
+		] 
+		return liquidation;
+	}
+
+
+	@ProxyMethod 
+	def getReportByFund( params ) {
+		if ( !params.fundid ) params.fundid = '%'; 
+
+		def data = liqEm.read([ objid: params.liquidationid ]); 
+		data.receipts = liqreport.getReceipts( params ); 
+		if ( !data.receipts ) throw new Exception('No record(s) found                  ');
+
+		data.acctsummaries = liqreport.getReceiptItemAccounts( params );  
+		data.user = [name: env.FULLNAME, title: env.JOBTITLE]; 
+		return data;
+	}
+
+	@ProxyMethod 
+	def generateReportByRevenueItem( liq, fund ) {
+		def data = liq.clone();
+
+		def params = [ liquidationid: data.objid,  fundid : fund ? fund.fundid : '%'] 
+		data.acctsummaries = liqreport.getRevenueItemSummaryByFund( params ); 
+
+		if( ! data.acctsummaries ) throw new Exception("No record(s) found ");
+
+		data.amount = data.acctsummaries.amount.sum(); 
+		return data;
+	}
+
+
+	private def getRemittedAF( params ) {
+		def list = liqreport.getRCDRemittedForms( params ); 
+		if ( !list ) return list;
+
+		def results = []; 
+		buildRemittedSerials( results, list ); 
+		buildRemittedCTs( results, list ); 
+		return results; 
+	} 
+
+	void buildRemittedSerials( results, sources ) { 
+		def list = sources.findAll{ it.formtype=='serial' } 
+		if ( !list ) return;
+
+		list.eachWithIndex{o,i-> o.rindex=i; o.level=null; } 
+
+	    int groupindex = 0; 
+	    list.groupBy{[ afid:it.formno ]}.each{k,v-> 
+	    	int nextseries = 0;
+	    	v.findAll{ it.issuedstartseries > 0 }.each{x-> 
+		       if (x.issuedstartseries != nextseries) {
+		           groupindex++;
+		       } 
+		       nextseries = x.issuedendseries+1; 		       
+		       x.groupindex = groupindex; 
+		       x.level = 0; 
+		    }
+			compress( results, v.findAll{ it.level==0 }.groupBy{[ afid:k.afid, groupindex:it.groupindex]} ); 
+
+			groupindex++;
+		    nextseries = 0;
+		    v.findAll{ it.receivedstartseries > 0 && it.level==null }.each{x-> 
+		       if (x.receivedstartseries != nextseries) {
+		           groupindex++;
+		       } 
+		       nextseries = x.receivedendseries+1; 		       
+		       x.groupindex = groupindex; 
+		       x.level = 1; 
+		    }
+		    compress( results, v.findAll{ it.level==1 }.groupBy{[ afid:k.afid, groupindex:it.groupindex ]} ); 
+
+		    groupindex++;
+		    nextseries = 0;
+		    v.findAll{ it.beginstartseries > 0 && it.level==null }.each{x-> 
+		       if (x.beginstartseries != nextseries) {
+		           groupindex++;
+		       } 
+		       nextseries = x.beginendseries+1; 		       
+		       x.groupindex = groupindex; 
+		       x.level = 2; 
+		    } 
+		    compress( results, v.findAll{ it.level==2 }.groupBy{[ afid:k.afid, groupindex:it.groupindex ]} ); 
+	    } 
+	    results.each{
+	    	if ( it.qtybegin==0 ) it.qtybegin = null; 
+	    	if ( it.qtyreceived==0 ) it.qtyreceived = null; 
+	    	if ( it.qtyissued==0 ) it.qtyissued = null; 
+	    	if ( it.qtyending==0 ) it.qtyending = null; 
+	    }
+	    results.sort{ it.groupindex }
+	}	
+
+	void buildRemittedCTs( results, sources ) {
+		def list = sources.findAll{ it.formtype=='cashticket' } 
+		if ( !list ) return; 
+
+		list.eachWithIndex{ o,idx->
+			o.rindex = idx + 1000; 
+			o.receivedstartseries = o.receivedendseries = null;
+			o.beginstartseries = o.beginendseries = null; 
+			o.issuedstartseries = o.issuedendseries = null; 
+			o.endingstartseries = o.endingendseries = null; 
+		}
+
+	    list.groupBy{ it.formno }.each{k,v-> 
+	    	def item = v.first().clone(); 
+	    	item.qtyreceived = v.sum{(it.qtyreceived? it.qtyreceived: 0)}
+			item.qtybegin = v.sum{(it.qtybegin? it.qtybegin: 0)}
+			item.qtyissued = v.sum{(it.qtyissued? it.qtyissued: 0)}
+			item.qtyending = v.sum{(it.qtyending? it.qtyending: 0)}
+		    if ( item.qtybegin > 0 && item.qtyissued > 0 ) { 
+	        	item.qtyending = item.qtybegin - item.qtyissued; 
+	        } 
+
+			item.receivedamt = (item.qtyreceived? item.qtyreceived*item.denomination: 0.0); 
+			item.beginamt = (item.qtybegin? item.qtybegin*item.denomination: 0.0); 
+			item.issuedamt = (item.qtyissued? item.qtyissued*item.denomination: 0.0);
+			item.endingamt = (item.qtyending? item.qtyending*item.denomination: 0.0);
+			results << item; 
+	    } 
+	} 
+
+	void compress( results, data ) {
+		data.each{k,v-> 
+		    def item = [:];
+		    item.putAll(v.first()); 
+		    
+		    if (v.size() > 1) {
+		        def lst = v.findAll{ it.issuedstartseries > 0 }
+		        item.issuedstartseries = (lst? lst.first().issuedstartseries: null);
+		        item.issuedendseries = (lst? lst.last().issuedendseries: null);
+
+		        lst = v.findAll{ it.beginstartseries > 0 }
+		        item.beginstartseries = (lst? lst.first().beginstartseries: null);
+		        item.beginendseries = (lst? lst.last().beginendseries: null);    
+
+		        lst = v.findAll{ it.receivedstartseries > 0 }
+		        item.receivedstartseries = (lst? lst.first().receivedstartseries: null);
+		        item.receivedendseries = (lst? lst.last().receivedendseries: null);        
+
+		        lst = v.findAll{ it.endingstartseries > 0 }
+		        item.endingstartseries = (lst? lst.first().endingstartseries: null);
+		        item.endingendseries = (lst? lst.last().endingendseries: null);  
+
+		        item.qtybegin = v.sum{( it.qtybegin? it.qtybegin: 0)} 
+		        item.qtyissued = v.sum{( it.qtyissued? it.qtyissued: 0 )} 
+		        item.qtyreceived = v.sum{( it.qtyreceived? it.qtyreceived: 0 )} 
+		        item.qtyending = v.sum{( it.qtyending? it.qtyending: 0 )} 
+		    } 
+
+	    	if ( !item.beginstartseries ) item.qtybegin = null; 
+	        if ( !item.issuedstartseries ) item.qtyissued = null; 
+	        if ( !item.receivedstartseries ) item.qtyreceived = null; 
+	        if ( !item.endingstartseries ) item.qtyending = null; 
+
+	        if ( item.formtype == 'cashticket' ) { 
+	        	item.receivedstartseries = item.receivedendseries = null;
+	        	item.beginstartseries = item.beginendseries = null; 
+	        	item.issuedstartseries = item.issuedendseries = null; 
+	        	item.endingstartseries = item.endingendseries = null; 
+
+	        } else {
+		        if ( item.beginstartseries && item.issuedstartseries && item.beginstartseries > item.issuedstartseries) {
+		        	item.beginstartseries = item.issuedstartseries; 
+		        	item.qtybegin = (item.beginendseries-item.beginstartseries)+1; 
+		        } 
+		        if ( item.issuedendseries > 0 ) {
+		        	item.endingstartseries = item.issuedendseries+1; 
+		        	if ( !item.endingendseries || item.endingstartseries > item.endingendseries ) { 
+		        		item.endingstartseries = null;  
+		        		item.endingendseries = null; 
+		        		item.qtyending = null; 
+		        	} else {
+		        		item.qtyending = (item.endingendseries-item.endingstartseries)+1; 
+		        	}
+		        }
+	        }
+
+	        if ( item.qtybegin >= 0 && item.qtyissued >= 0 ) {
+	        	item.qtyending = item.qtybegin - item.qtyissued; 
+	        	if ( item.qtyending <= 0 ) item.qtyending = null; 
+	        } 	        
+		    results << item; 
+		} 
+	}
+
+	void buildRange(items, list) {
+		if (!list) 
+	        return
+	    
+	    if (list.size() == 1){
+	        items << list[0] 
+	        return
+	    }
+	    
+	    def useditems = list.findAll{
+	        ! (it.endingstartseries.toString().endsWith('01') || it.endingstartseries.toString().endsWith('51')) 
+	    }
+	    
+	    useditems.each{  
+	    	it.beginstartseries = (it.beginstartseries && it.receivedstartseries == null) ? it.beginstartseries : null 
+	    	it.beginendseries = (it.beginstartseries && it.receivedstartseries == null) ? it.beginendseries : null 
+	    	it.qtybegin = (it.beginstartseries && it.receivedstartseries == null) ? it.qtybegin : null 
+	    	items << it
+	    } 
+
+	    list.removeAll(useditems)    
+	    
+	    def prevseries = 0
+	    def qty = 0
+	    def start = null
+	    def end = null
+	    
+	    list.each{
+	    	if ( prevseries + 1 == it.endingstartseries || prevseries == 0){
+	            if ( !start ) start = it;
+	            end = it;
+	            qty += 50
+	        }
+	        else {
+	            items << createItem(start, end, qty)
+	            start = it;
+	            end = it;
+	            qty = 50
+	        }
+	        prevseries = it.endingendseries
+	    }
+	    
+	    if (start && end && qty > 0) {
+	    	items << createItem(start, end, qty)
+	    }
+	}
+
+	def createItem(start, end, qty) {
+		return  [
+        	formno: start.formno,
+        	receivedstartseries: start.receivedstartseries  ? start.receivedstartseries: null ,
+        	receivedendseries : start.receivedstartseries ? end.endingendseries: null ,
+        	qtyreceived : start.receivedendseries ? qty : null,
+        	beginstartseries: (start.beginstartseries && !start.receivedstartseries == null) ? start.beginstartseries: null ,
+        	beginendseries : (start.beginstartseries && !start.receivedstartseries == null) ? end.endingendseries: null ,
+        	qtybegin : (start.beginstartseries && start.receivedstartseries == null) ? qty : null,
+        	endingstartseries:  start.receivedstartseries ? start.receivedstartseries: start.beginstartseries ,
+        	endingendseries: end.endingendseries ,
+            qtyending  : qty,
+        ]
+	}
+
+	@ProxyMethod 
+	public def getAbstractNGASReport( params ) { 
+		return liqreport.getAbstractNGASReport( params );
+	}
+}

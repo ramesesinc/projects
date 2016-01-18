@@ -1,0 +1,340 @@
+import com.rameses.annotations.*
+import com.rameses.common.*
+import com.rameses.util.*
+import com.rameses.services.extended.*
+
+public class MachRYSettingService
+{
+    @Env 
+    def env 
+
+    @ActiveDB('machrysetting')
+    def em
+     
+    @Service('PropertyClassificationService')
+    def pcSvc
+
+    @Service('MachRYSettingListService')
+    def listSvc 
+    
+    @Service('RYSettingService')
+    def rysettingSvc
+    
+    @Service('Var')
+    def var 
+
+    @Service('RPTUtil')
+    def util 
+    
+    def SCHEMA_ASSESSLEVEL      = 'assesslevel' 
+    def SCHEMA_ASSESSLEVELRANGE = 'assesslevelrange' 
+    def SCHEMA_FOREX            = 'forex'
+    
+    def STATE_DRAFT     = 'DRAFT'
+    def STATE_APPROVED  = 'APPROVED'
+
+    def SETTING_TYPE    = 'mach' 
+    def RESIDUAL_RATE   = 20.0
+    
+    
+    @ProxyMethod
+    public boolean settingExists() {
+        def settings = listSvc.getList( null )
+        return settings.size() > 0
+    }
+    
+    @ProxyMethod
+    public def create( entity ) {
+        entity.state = STATE_DRAFT
+        entity.residualrate = RESIDUAL_RATE
+        buildAppliedToInfo(entity)
+        validate( entity )
+        em.create( entity )
+        loadInitialAssessesLevels(entity)
+        rysettingSvc.createLgus( SETTING_TYPE, entity )
+        return entity 
+    }
+    
+
+    @ProxyMethod 
+    public Map open( entity ) {
+        entity = em.read(entity)
+        if (!entity)
+            throw new Exception('Setting does not exist or has already been deleted.')
+
+        entity.lgus = rysettingSvc.loadLgus(SETTING_TYPE, entity.objid)
+        return entity
+    }
+
+	
+    @ProxyMethod
+    public def update( entity ) {
+        buildAppliedToInfo(entity)
+        validate( entity )
+        em.update( entity)
+        rysettingSvc.createLgus(SETTING_TYPE, entity )
+        return entity 
+    }
+    
+    
+    @ProxyMethod
+    public void delete( entity ) {
+        em.deleteRanges(entity)
+        em.deleteAssessLevels(entity)
+        em.deleteForexes(entity)
+        em.deleteRySettingLgus(entity)
+		em.delete(entity)
+    }
+    
+
+    @ProxyMethod
+    public Map copy( objid, ry ) {
+        def oldsettingid = objid
+        def setting = em.read([objid:objid])
+        if (!setting) 
+            throw new Exception('Setting does not exist or has already been deleted.')
+
+        setting.previd = null
+        setting.objid = util.generateId('MS')
+        setting.ry = ry  
+        setting.appliedto = null
+        em.create(setting )
+
+        copyAssessLevels( setting.objid, oldsettingid )
+        copyMachForexes(setting.objid, oldsettingid)
+        return open( setting )
+    }
+    
+
+    @ProxyMethod
+    public Map reviseSettings( newry, copyYear ) {
+        util.required('Copy Year', copyYear )
+
+        if( newry <= copyYear ) 
+        throw new Exception('New Revision Year must be greater than copy year.')
+
+        def settings = em.getSettingsByRy([ry:copyYear])
+        if( !settings ) 
+        throw new Exception('Revision Year ' + copyYear  + ' setting is not defined.')
+        
+        settings.each{setting->
+            def oldsettingid = setting.objid 
+            setting          = em.read([objid:oldsettingid] )
+            setting.previd   = setting.objid 
+            setting.objid    = util.generateId('MS')
+            setting.ry       = newry  
+            if ( ! isDuplicateSetting( setting ) ){
+                em.create(setting )
+                copyAssessLevels( setting.objid, oldsettingid )
+                copyMachForexes(setting.objid, oldsettingid)
+                rysettingSvc.copyLgus( SETTING_TYPE, setting.objid, oldsettingid)
+            }
+        }
+        return open( settings[0] )
+    }
+    
+
+    void copyAssessLevels(newsettingid, oldsettingid){
+        getAssessLevels( oldsettingid ).each{ al ->
+            al.previd           = al.objid 
+            al.objid            = util.generateId('AL')
+            al.machrysettingid  = newsettingid
+            saveAssessLevel( al )
+
+            getRanges(al.previd).each{ range ->
+                range.previd = range.objid 
+                range.objid = util.generateId('RA')
+                range.machassesslevelid = al.objid 
+                range.machrysettingid = newsettingid
+                saveRange( range )
+            }
+        }
+    }
+
+    void copyMachForexes(newsettingid, oldsettingid){
+        getForexes( oldsettingid ).each{
+            it.previd           = it.objid;
+            it.objid            = util.generateId('MF')
+            it.machrysettingid  = newsettingid
+            saveForex( it );
+        }
+    }
+
+    /*----------------------------------------------------------
+    * AssessLevel Methods
+    ----------------------------------------------------------*/
+    @ProxyMethod
+    public void saveAssessLevel( assesslevel ) {
+        em.save(assesslevel, SCHEMA_ASSESSLEVEL)
+        if (util.isTrue(assesslevel.fixrate)) {
+            deleteRangeByAssessLevelId(assesslevel.objid)
+        }
+    }
+    
+
+    @ProxyMethod
+    public void deleteAssessLevel( assesslevel ) {
+        deleteRangeByAssessLevelId(assesslevel.objid)
+        em.delete(assesslevel, SCHEMA_ASSESSLEVEL)
+    }
+    
+
+    @ProxyMethod
+    public List getAssessLevels( machrysettingid )  {
+        return em.getAssessLevels([machrysettingid:machrysettingid]).each{
+                it.fixrate = util.toBoolean(it.fixrate, true)
+            }
+    }
+    
+
+    @ProxyMethod
+    public void deleteRangeByAssessLevelId(machassesslevelid){
+        em.deleteRangeByAssessLevelId([machassesslevelid:machassesslevelid])
+    }
+
+
+    /*----------------------------------------------------------
+    * AssessLevelRange Methods
+    ----------------------------------------------------------*/
+    @ProxyMethod
+    public void saveRange( range ) {
+        em.save(range, SCHEMA_ASSESSLEVELRANGE)
+    }
+    
+
+    @ProxyMethod
+    public void deleteRange( range ) {
+        em.delete(range, SCHEMA_ASSESSLEVELRANGE)
+    }
+
+    @ProxyMethod
+    public def getRanges( machassesslevelid  ) { 
+        return em.getAssessLevelRanges([machassesslevelid:machassesslevelid])
+    }
+
+
+
+    /*----------------------------------------------------------
+    * Forex Methods
+    ----------------------------------------------------------*/
+    @ProxyMethod
+    public void saveForex( forex ) {
+        em.save(forex, SCHEMA_FOREX)
+    }
+    
+
+    @ProxyMethod
+    public void deleteForex( forex ) {
+        em.delete(forex, SCHEMA_FOREX)
+    }
+    
+    @ProxyMethod
+    public List getForexes( machrysettingid )  {
+        return  em.getForexes([machrysettingid:machrysettingid])
+    }
+    
+
+    @ProxyMethod
+    public void syncData( msg ) {
+        println 'Synching data -> ' + msg.msgtype
+
+        if (msg.msgtype == 'machrysetting'){
+            em.save( msg.data )
+            rysettingSvc.createLgus( SETTING_TYPE, msg.data )
+        }
+        else if (msg.msgtype == 'assesslevels'){
+            msg.data.each{ lvl ->
+                saveAssessLevel(lvl)
+                lvl.ranges.each{ range ->
+                    saveRange(range)
+                }
+            }
+        }
+        else if (msg.msgtype == 'forexes'){
+            msg.data.each{
+                saveForex(it)
+            }
+        }
+    }
+    
+    /*----------------------------------------------------------
+    * Support Methods
+    ----------------------------------------------------------*/
+    
+    boolean isDuplicateSetting( entity ) {
+        def data = em.findDuplicate(entity)
+        return data != null 
+    }
+
+    
+	void validate( entity ) {
+        if( entity.ry <= 0 ) 
+            throw new Exception('Revision Year must be greater than zero.')
+    }
+
+
+    void buildAppliedToInfo(entity){
+        if (env.ORGCLASS == 'PROVINCE' && entity.lgus == null)
+            entity.lgus = []
+        else if (! entity.lgus ) {
+            entity.lgus = [[rysettingid:entity.objid,lguid:var.lgu_objid, lguname:var.lgu_name, settingtype:SETTING_TYPE]]
+        }
+        else{
+            entity.appliedto = entity.lgus.sort{a,b -> a.lguname <=> b.lguname}.lguname.join(', ')
+        }
+    }
+
+
+
+    void loadInitialAssessesLevels(entity){
+        pcSvc.getList([:]).each{
+            saveAssessLevel([
+                objid               : it.objid,
+                machrysettingid     : entity.objid,
+                classification_objid : it.objid,
+                classification       : it,
+                code                : it.code,
+                name                : it.name, 
+                fixrate             : true,
+                rate                : 0.0
+            ])
+        }
+    }
+
+
+    @Async
+    @ProxyMethod
+    public def exportData(setting) {
+        setting = open(setting);
+        setting.type = 'mach';
+        setting.levels = getAssessLevels(setting.objid);
+        setting.ranges = [];
+        setting.levels.each{
+            setting.ranges += getRanges(it.objid);
+        }
+        setting.forexes = getForexes(setting.objid);
+        return setting
+    }
+
+
+    @Async
+    @ProxyMethod
+    public def importData(setting) {
+        if (setting.type != 'mach')
+            throw new Exception('Invalid data. Imported data is for ' + setting.type.toUpperCase() + ' setting.');
+            
+        try{
+            create(setting);
+        }
+        catch( e){
+            update(setting);
+        }
+        
+        setting.levels.each{ saveAssessLevel(it) }
+        setting.ranges.each{ saveRange(it) }
+        setting.forexes.each{ saveForex(it) }
+    }
+
+
+    	
+}

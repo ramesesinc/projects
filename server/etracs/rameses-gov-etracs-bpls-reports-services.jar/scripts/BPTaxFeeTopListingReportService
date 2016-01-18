@@ -1,0 +1,47 @@
+
+import com.rameses.annotations.*;
+import com.rameses.common.*;
+
+class BPTaxFeeTopListingReportService
+{	
+	@ActiveDB("bpreport")
+	def em
+
+	@ProxyMethod
+	public def getReport( params ) { 
+		
+		if ( params.txntype ) {
+			params.filter = ''' AND ba.apptype=$P{txntype} '''; 
+		} else {
+			params.filter = ''' AND ba.apptype IN ('NEW','RENEW') '''; 
+		}
+
+		def list = em.getBPTaxFeeTopList( params );
+		if ( !list ) throw new Exception('No records found')
+
+		def prevtotal = -1.0; 
+		def rankno = 1; 
+		list.each {
+			if (it.total != prevtotal) {
+				prevtotal = it.total; 
+				it.rankno = rankno;				
+				rankno += 1; 				
+			} 
+		} 
+
+		return [
+			title : buildTitle( params ), 
+			items : list 
+		]; 
+	}
+
+	def buildTitle( param ) { 
+		def buff = new StringBuilder("TOP ");
+		buff.append( param.topsize.toString() );
+		if ( param.txntype ) {
+			buff.append( " " + param.txntype.toString() ); 
+		}
+		buff.append( " BUSINESSES" );
+		return buff.toString(); 
+	} 
+} 

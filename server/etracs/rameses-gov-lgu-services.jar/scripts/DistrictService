@@ -1,0 +1,59 @@
+import com.rameses.annotations.*;
+import com.rameses.common.*;
+import java.rmi.server.UID
+import com.rameses.services.extended.*;
+
+class DistrictService extends ActiveCrudListService {
+	
+	@ActiveDB('district')	
+	def em
+	
+	@ActiveDB("org")
+	def org;
+
+	@Service("OrgService")
+	def orgSvc;
+
+	@ProxyMethod 
+	public def getColumns( params ) {
+		return [
+			[name:'name', caption:'Name'],  
+			[name:'indexno', caption:'Index No'],
+			[name:'pin', caption:'PIN'] 
+		];
+	}
+
+	public void beforeList(o) {
+		o.name = '%';
+	}
+
+	public void afterOpen(o) {
+		def z = org.read( [objid: o.objid] );
+		o.putAll( z );
+		if(z.parentid) {
+			o.parent = org.read( [objid: z.parentid] );
+		}
+	}
+
+	public void beforeUpdate(o) {
+		org.update(o);
+	}	
+
+	public void beforeCreate(o) {
+		o.orgclass = 'DISTRICT';
+		o.root = 0;
+		if(!o.parent) {
+			o.parent = orgSvc.getRoot();
+			o.parentid = o.parent.objid;
+		}
+		else {
+			o.parentid = o.parent.objid;
+		}
+		org.create(o);	
+	}	
+
+	public void afterRemoveEntity(o) {
+		org.delete(o);	
+	}		
+
+}

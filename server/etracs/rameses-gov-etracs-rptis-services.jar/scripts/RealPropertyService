@@ -1,0 +1,216 @@
+import com.rameses.annotations.*
+import com.rameses.common.*
+import com.rameses.services.extended.*
+
+class RealPropertyService 
+{
+	@ActiveDB('realproperty')
+	def em
+
+	@Service('LGUService')
+	def lguSvc
+
+	@Service('RPTUtil')
+	def util
+
+	@Service('Var')
+	def var 
+
+	def STATE_INTERIM       = 'INTERIM'
+    def STATE_FORAPPROVAL   = 'FORAPPROVAL'
+    def STATE_CURRENT       = 'CURRENT'
+    def STATE_CANCELLED     = 'CANCELLED'
+
+    def SECTION_NEW_MAX  	= 3
+	def PARCEL_NEW_MAX  	= 2
+	def SECTION_OLD_MAX  	= 2
+	def PARCEL_OLD_MAX  	= 3
+
+
+	@ProxyMethod
+	public def initCapture(info ) {
+		if (info.rputype == 'land'){
+			info.remove('rp')
+			def rp = init()
+			rp.putAll(info)
+			if (info.barangay) 
+				rp.barangayid = info.barangay.objid
+			checkDuplicatePin(rp)
+			info.rp = rp;
+		}
+		info.realpropertyid = info.rp.objid
+		return info.rp
+	}
+
+
+	@ProxyMethod
+	public def init(  ) {
+		return [
+			objid		: 'RP' + new java.rmi.server.UID(),
+			state 		: 'INTERIM',
+			ry 			: var.current_ry,
+			autonumber	: false,
+			isnew   	: true,
+			pintype 	: var.pin_type,
+		]	
+	}
+
+	@ProxyMethod
+	public def create( entity ) {
+		if (!entity.state)
+			entity.state = STATE_INTERIM
+		validate(entity)
+		em.create(entity)	
+		return entity;
+	}
+
+	@ProxyMethod
+	public def update( entity ) {
+		validate(entity)
+		em.update(entity)	
+		return entity;
+	}
+
+	@ProxyMethod
+	public def save( entity ) {
+		validate(entity)
+		em.save(entity)	
+		return entity;
+	}
+
+	@ProxyMethod
+	public def open( entity ) {
+		entity = em.read(entity)	
+		if (!entity)
+			throw new Exception('Real Property does not exist or has been deleted.')
+		entity.barangay = lguSvc.lookupBarangayById(entity.barangayid)
+		entity.isection = null
+		entity.iparcel = null
+		if (entity.section)
+			entity.isection = util.toInteger(entity.section)
+		if (entity.parcel)			
+			entity.iparcel = util.toInteger(entity.parcel)
+		return entity 
+	}
+
+	@ProxyMethod
+	public void delete( entity ) {
+		em.delete(entity)	
+	}
+
+
+	@ProxyMethod
+	public def approve( entity ) {
+		entity.state = STATE_CURRENT
+		entity.barangay = lguSvc.lookupBarangayById(entity.barangayid)
+		em.cancelPreviousRealProperty(entity)
+		em.approve(entity)	
+		return entity
+	}
+
+
+	@ProxyMethod
+    public def getRyList(  ) {
+        return em.getLandRevisionYears().ry;
+    }
+
+
+    @ProxyMethod
+    public def validateRealPropertyForFaas(rp, faasid){
+    	if (rp.state == STATE_CANCELLED)
+    		throw new Exception('Real Property has already been cancelled.')
+
+    	def faas = em.findFaasByRealPropertyId([realpropertyid:rp.objid, faasid:faasid])
+    	if (faas)
+    		throw new Exception('Real Property is currently referenced by TD No. ' + faas.tdno + '.')
+    }
+
+
+	@ProxyMethod
+	public def buildPin( rp, info ) {
+		if (! info.pintype ) {
+			info.pintype = var.pin_type 
+		}
+		util.required('Pin Type', info.pintype)
+		util.required('Barangay PIN', info.barangay.pin)
+		util.required('Section', info.section)
+		util.required('Parcel', info.parcel)
+		
+		def maxsectionlen = null
+		def maxparcellen = null
+		def pin = null
+		
+		if (info.pintype.toLowerCase() == 'new'){
+			maxsectionlen = SECTION_NEW_MAX
+			maxparcellen  = PARCEL_NEW_MAX
+			pin = info.barangay.pin
+		}
+		else {
+			maxsectionlen = SECTION_OLD_MAX
+			maxparcellen  = PARCEL_OLD_MAX
+			pin = info.barangay.oldpin
+		}
+		
+		validateLength('Section', info.section.toString().length(), maxsectionlen)
+		validateLength('Parcel', info.parcel.toString().length(), maxparcellen)
+
+		def section = info.section.toString().padLeft(maxsectionlen,'0')
+		def parcel  = info.parcel.toString().padLeft(maxparcellen,'0')
+		pin = pin + '-' + section + '-' + parcel 
+
+		if (info.claimno) {
+			pin += '-' + info.claimno
+		}
+
+		rp.pintype = info.pintype 
+		rp.section = section 
+		rp.parcel  = parcel 
+		rp.pin     = pin 
+		return rp 
+	}
+
+	@ProxyMethod
+    public def checkDuplicatePin(params) {
+    	if (params.txntype?.newrealproperty==1 || params.txntype?.newrealproperty==true)
+    		return;
+    	params.claimfilter = ''
+    	if (params.claimno)
+    		params.claimfilter = ' AND claimno = $P{claimno}'
+
+    	def rp = em.findDuplicatePin(params)
+    	if (rp)
+    		throw new Exception('PIN No. ' + params.pin + ' already exist.')
+    }
+
+
+	void validate(entity){
+		validateSectionParcelLength(entity)
+	}
+
+	void validateSectionParcelLength(entity){
+		if (entity.pintype == 'new' && entity.section?.length() > 3) 
+			throw new Exception('Invalid section. Section must be less than or equal to 999.')
+        if (entity.pintype == 'old' && entity.section?.length() > 2) 
+        	throw new Exception('Invalid section. Section must be less than or equal to 99.')
+
+        if (!util.isTrue(var.assessor_allow_3_digit_parcel)){
+	        if (entity.pintype == 'new' && entity.parcel?.length() > 2) 
+	        	throw new Exception('Invalid parcel. Parcel must be less than or equal to 99.')
+        }
+        if (entity.pintype == 'old' && entity.parcel?.length() > 3) 
+        	throw new Exception('Invalid parcel. Parcel must be less than or equal to 999.')
+	}
+ 
+	void validateLength(type, value, maxvalue ){
+		if (value > maxvalue)
+			throw new Exception(type + ' must not exceed ' + maxvalue + '.')
+
+		if (value < 0)
+		throw new Exception(type + ' must not be zero.')
+	}
+
+	@ProxyMethod
+	public void updateBoundaries( entity ) {
+		em.updateBoundaries(entity)
+	}
+}

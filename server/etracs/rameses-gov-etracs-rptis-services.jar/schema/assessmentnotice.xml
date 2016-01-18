@@ -1,0 +1,29 @@
+<schema>
+	<element name="assessmentnotice" tablename="assessmentnotice">
+		<field name="objid" primary="true"/>
+		<field name="state" required="true" />
+		<field name="txnno" required="true" />
+		<field name="txndate" required="true" />
+		<field name="assessmentyear" required="true" type="integer" />
+		<field name="taxpayerid" required="true" />
+		<field name="taxpayername" required="true" />
+		<field name="taxpayeraddress" required="true" />
+		<field name="administrator_name" />
+		<field name="administrator_address" />
+		<field name="createdbyid" />
+		<field name="createdbyname" required="true" />
+		<field name="createdbytitle" required="true" /> 
+		<field name="approvedbyid" />
+		<field name="approvedbyname" required="true" />
+		<field name="approvedbytitle" required="true" />
+		<field name="dtdelivered" />
+		<field name="receivedby" />
+		<field name="remarks" />
+	</element>
+	
+	<element name="item" tablename="assessmentnoticeitem">
+		<field name="objid" primary="true" />
+		<field name="assessmentnoticeid" required="true" />
+		<field name="faasid" required="true" />
+	</element>
+</schema>

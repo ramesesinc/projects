@@ -1,0 +1,202 @@
+import com.rameses.annotations.*
+import com.rameses.common.*
+import com.rameses.services.extended.*
+
+class RPTReceiptService
+{
+	@Env 
+	def env 
+
+	@ActiveDB('cashreceiptrpt')
+	def em
+    
+    @Service('DateService')
+	def dtSvc
+
+	@Service('NumberService')
+	def numSvc
+
+	@Service('RPTUtil')
+	def util
+	
+	@Service('Var')
+	def var 
+
+	@Service('RPTBillingService')
+	def billingSvc
+
+	def SCHEMA_RECEIPT 		= 'cashreceiptrpt'
+	def SCHEMA_ITEM 		= 'cashreceiptrptitem'
+
+	def RECEIPT_TYPE_ONLINE = 'online'
+	def RECEIPT_TYPE_MANUAL = 'manual'
+
+
+	@ProxyMethod
+	public def open( receipt ) {
+		def rct = em.read(receipt)	
+		if (rct){
+			receipt.putAll(rct)
+		}
+
+		def checks = []
+		receipt.paymentitems.each{
+		  checks << it.bank + ' - ' + it.refno + ' / ' + dtSvc.format('MM-dd-yyyy', it.refdate)
+		}
+		receipt.checkno = null
+		if (checks){
+			receipt.checkno = checks.join('\n')
+		}
+	}
+
+	
+	@ProxyMethod
+	public def getItemsForPayment( bill ) {
+		def params = billingSvc.buildParams(bill)
+		if (!bill.rptledgerid)
+			params.rptledgerid = '%'
+		def items =  em.getItemsForPayment(params).each{ it.pay = true }	
+		items.removeAll(items.findAll{it.amount == 0.0})
+		if (!items) throw new Exception('There are no more unpaid ledgers for this taxpayer.')
+		return items 
+	}
+
+	@ProxyMethod
+	public def createReceipt( receipt ) {
+		def pdate = dtSvc.parseDate(receipt.txndate, null)
+		receipt.year = pdate.year
+		receipt.qtr = pdate.qtr
+		receipt.month = pdate.month
+		receipt.day = pdate.day
+		
+		em.create(receipt)
+		postPaidItems(receipt)
+		return receipt
+	}
+
+	@ProxyMethod
+	public void postPaidItems(receipt){
+		def params = [
+			objid			: util.generateId('RI'), 
+			rptreceiptid    : receipt.objid,
+			billid 			: receipt.billid, 
+			updateflag      : 'UF' + new java.rmi.server.UID(),
+		]
+
+		receipt.rptitems.each{
+			params.rptledgerid = it.rptledgerid 
+			params.fromyear	   = it.fromyear
+			params.fromqtr 	   = it.fromqtr
+			params.toyear	   = it.toyear
+			params.toqtr 	   = it.toqtr
+
+			em.insertPaidOnlineItems(params)
+			em.insertPaidOnlineAccounts(params)
+
+			em.clearFaasRestrictions(params)
+
+			em.updateLedgerItemQrtrlyPayment(params)
+			em.updateLedgerItemQrtrlyFullyPaidFlag(params)
+			em.updateLedgerItemFullyPaidFlag(params)
+			em.updateLedgerItemPayment(params)
+			updateLedgerInfo(params)
+		}
+
+		em.deletePaidOnlineItems(params)
+		em.deletePaidOnlineAccounts(params)
+		em.deleteRptBillLedgers(params)
+		em.deleteRptBill(params)
+	}
+
+	void updateLedgerInfo(params){
+		def lastpaiditem = em.findLastPaidLedgerItemQtrly(params)
+		if (lastpaiditem){
+			params.lastyearpaid = lastpaiditem.year 
+			params.lastqtrpaid  = lastpaiditem.qtr 
+			em.updateLedgerYearQtrPaid(params)
+		}
+	}
+
+
+	@ProxyMethod
+	public void checkLedgerUpdateFlagModified(receipt){
+		def ledger = em.findModifiedLedgerUpdateFlag([billid:receipt.billid])
+		if (ledger)
+			throw new Exception('Ledger ' + ledger.tdno + ' has been modified.\nCancel this transaction and re-bill the ledger before collecting any payment.')
+	}
+
+	@ProxyMethod
+	public def getSummarizedCashReceiptItems( receipt ) {
+		def ledgerids = receipt.rptitems.collect{ "'" + it.rptledgerid + "'"}.join(',')
+		def params = [
+			billid    : receipt.billid,
+			filter    : ' rl.objid in ( ' + ledgerids +' ) '
+		]
+		return em.getSummarizedCashReceiptItems(params).findAll{it.amount > 0.0}.each{
+			it.objid = 'CI' + new java.rmi.server.UID()
+			it.receiptid = receipt.objid
+		}
+	}
+
+
+
+	@ProxyMethod
+	public void voidReceipt( receipt ) {
+		def params = [
+			rptreceiptid : receipt.objid,
+			txndate 	 : receipt.txndate,
+			updateflag   : 'UF' + new java.rmi.server.UID()
+		]
+
+		def paidledgers = em.getPaidLedgersByReceipt(params)
+		paidledgers.each{
+			params.putAll(it)
+			em.revertLedgerItemQtrlyPayment(params)
+			em.updateLedgerItemFullyPaidFlag(params)
+			em.updateLedgerItemPayment(params)
+
+			// update ledger lastyearpaid/lastqtrpaid 
+			def item = em.findLastPaidLedgerItemQtrly(params)
+			if (!item)
+				item = em.findFirstLedgerItemQtrly(params)
+			if (item){
+				params.lastyearpaid = item.year 
+				params.lastqtrpaid  = item.qtr 
+			}
+			em.resetVoidedLedgerInfo(params)
+		}
+
+	}
+
+
+	@ProxyMethod
+	public def getItemsForPrinting(receipt) {
+		def items = em.getItemsForPrinting([rptreceiptid:receipt.objid])
+		items.each{
+			if (it.owner.name == receipt.paidby) {
+				it.owner.name = ''
+			}
+		}
+		return items 
+	}
+
+
+	@ProxyMethod
+	public def getCollectionsByCount(receiptcount){
+		def params = [userid:env.USERID, _limit:receiptcount, _pagingKeys:'cr.objid']
+		return em.getCollectionsByCount(params)
+	}
+
+
+	@ProxyMethod
+	public def getUnpaidPropertiesForPayment(bill){
+		bill.billdate = dtSvc.serverDate
+		if (!bill.taxpayer) throw new Exception('Taxpayer is required.')
+		bill.taxpayerid = bill.taxpayer.objid
+		return  em.getUnpaidPropertiesForPayment(billingSvc.buildParams(bill))
+	}
+
+
+	
+
+}

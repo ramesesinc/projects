@@ -1,0 +1,111 @@
+import com.rameses.annotations.*;
+import com.rameses.common.*
+import com.rameses.util.*
+
+class RAAFReportService  
+{ 
+	@ActiveDB('raaf_report')
+	def adb 
+ 
+	@Service('DateService')
+	def dtSvc
+
+	@Service('ReportParameterService')
+	def reportSvc
+
+	@Env
+	def env 
+
+	@ProxyMethod
+	public def getReportData( params ) {
+		def collectorid = (params.collector? params.collector.objid: env.USERID);
+		def items = adb.getReportData([year:params.year, month:params.month.index, collectorid: collectorid]); 
+		if ( !items ) throw new Exception('No record(s) found                  ');
+
+		buildRAAF( items, false ); 
+
+		def data = [:]
+		data.items = items;
+		data.info = [
+			COLLECTORNAME	: params.collector ? params.collector.fullname : env.FULLNAME,
+			COLLECTORTITLE  : params.collector ? params.collector.title : env.JOBTITLE,
+			PERIOD			: 'FOR THE MONTH OF ' + params.month.caption + ', ' + params.year,
+		]; 
+		return data; 
+	} 
+
+	@ProxyMethod
+	public def getRAAFByRemittance( params ) { 
+		if ( !params.remittanceid ) throw new Exception('remittanceid parameter is required');
+
+		def items = adb.getReportDataByRef([ refid: params.remittanceid ]);  
+		buildRAAF( items, true ); 
+		return items; 
+	} 
+
+	@ProxyMethod
+	public def getRAAFByLiquidation( params ) { 
+		if ( !params.liquidationid ) throw new Exception('liquidationid parameter is required');
+
+		def items = adb.getReportDataByRef([ refid: params.liquidationid ]);  
+		buildRAAF( items, true ); 
+		return items; 
+	} 	
+
+
+	void buildRAAF( list, withrefid ) { 
+		list.each {
+			it.beginstartseries = (it.receivedstartseries>0? null: it.beginstartseries); 
+			it.beginendseries = (it.receivedstartseries>0? null: it.beginendseries); 
+			if ( it.issuedstartseries>0 ) {
+				it.beginstartseries = (it.prevendingstartseries>0 ? it.prevendingstartseries : it.beginstartseries); 
+				it.beginendseries = (it.prevendingendseries>0 ? it.prevendingendseries : it.beginendseries); 
+			} 
+
+			if ( it.receivedstartseries>0 && it.receivedendseries>0 ) { 
+				it.qtyreceived = (it.receivedendseries-it.receivedstartseries)+1; 
+			} 
+			if ( it.beginstartseries>0 && it.beginendseries>0 ) { 
+				it.qtybegin = (it.beginendseries-it.beginstartseries)+1; 
+			} 
+			if ( it.issuedstartseries>0 && it.issuedendseries>0 ) { 
+				it.qtyissued = (it.issuedendseries-it.issuedstartseries)+1; 
+			} 
+			if ( it.endingstartseries>0 && it.endingendseries>0 ) {
+				it.qtyending = (it.endingendseries-it.endingstartseries)+1; 
+			}			
+
+			/*if ( !withrefid ) {
+				it.beginstartseries = (it.receivedstartseries>0? null: it.beginstartseries); 
+				it.beginendseries = (it.receivedstartseries>0? null: it.beginendseries); 
+			}*/
+
+			if ( it.formtype=='cashticket' ) {
+				def denomination = (it.denomination? it.denomination: 1) * 1.0;
+				if ( it.qtyreceived>0 ) it.receivedamt = it.qtyreceived * denomination;  
+				if ( it.qtybegin>0 ) it.beginamt = it.qtybegin * denomination;  
+				if ( it.qtyissued>0 ) it.issuedamt = it.qtyissued * denomination;  
+				if ( it.qtyending>0 ) it.endingamt = it.qtyending * denomination;  
+
+				it.receivedstartseries = it.receivedendseries = null; 
+				it.beginstartseries = it.beginendseries = null; 
+				it.issuedstartseries = it.issuedendseries = null; 
+				it.endingstartseries = it.endingendseries = null; 
+				if ( it.stubno  ) it.afid = (''+ it.afid +'  #'+ it.stubno);
+			} 
+
+			it.receivedstartseries = (Integer) it.receivedstartseries;
+			it.receivedendseries = (Integer) it.receivedendseries;
+			it.beginstartseries = (Integer) it.beginstartseries;
+			it.beginendseries = (Integer) it.beginendseries;
+			it.issuedstartseries = (Integer) it.issuedstartseries;
+			it.issuedendseries = (Integer) it.issuedendseries;
+			it.endingstartseries = (Integer) it.endingstartseries;
+			it.endingendseries = (Integer) it.endingendseries;
+			it.qtyreceived = (Integer) it.qtyreceived;
+			it.qtybegin = (Integer) it.qtybegin;
+			it.qtyissued = (Integer) it.qtyissued;
+			it.qtyending = (Integer) it.qtyending;
+		}
+	}
+}

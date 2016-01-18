@@ -1,0 +1,85 @@
+import com.rameses.annotations.*
+import com.rameses.eserver.*;
+import com.rameses.common.*;
+import com.rameses.services.extended.*;
+
+class RPTReceiptCompromiseInterceptor
+{
+	@ActiveDB('cashreceiptrpt')
+	def em
+
+	@Service('RPTReceiptCompromiseService')
+	def svc 
+
+	@Service('Var') 
+	def var;
+
+	@After(pattern="CashReceiptService.open", eval="#{result.formno=='56'}", index=100) 
+	public void interceptOpenReceipt( evt ) {
+		def receipt = evt.result
+		svc.open(receipt)
+		if (receipt.txntype == 'rptcompromise'){
+			if ( ! receipt._items )
+				receipt._items = []
+			receipt._items += svc.getItemsForPrinting(receipt)
+			receipt.itemcount = receipt._items.size()
+			if(receipt.itemcount > 0) addLGUInfo(receipt)
+		}
+	}
+
+	@Before(pattern="CashReceiptService.post", eval="#{args[0].formno=='56' && args[0].txntype == 'rptcompromise'}") 
+	public void interceptBeforePostReceipt( evt ) {
+		def receipt = evt.args[0]
+
+		if (receipt.requiredpayment == null || receipt.requiredpayment.type == 'downpayment'){
+			svc.buildCreditAndTaxItems(receipt);
+		}
+		else {
+			receipt.taxes = svc.getCurrentYearTaxes(receipt);
+		}
+		receipt.taxes.each{
+			receipt.items << createReceiptItem(receipt, it)
+		}
+	}
+
+
+	@After(pattern="CashReceiptService.post", eval="#{result.formno=='56' && args[0].txntype == 'rptcompromise'}") 
+	public void interceptAfterPostReceipt( evt ) {
+		def receipt = evt.result
+		svc.createReceipt(receipt)
+		receipt._items = svc.getItemsForPrinting(receipt)
+		receipt.itemcount = receipt._items.size()
+		receipt.ledgers = null
+		if(receipt.itemcount > 0) addLGUInfo(receipt)
+	}
+
+	@After(pattern="CashReceiptVoidService.post", eval="#{result.receipt.formno=='56' && args[0].receipt.txntype == 'rptcompromise'}") 
+	public void interceptVoidReceipt( evt ) {
+		svc.voidReceipt(evt.result.receipt)
+	}
+
+	def createReceiptItem(receipt, tax){
+		return [
+			objid  		: tax.objid,
+			receiptid 	: receipt.objid,
+			item        : em.findRevenueItemById(tax.item),
+			amount		: tax.amount,
+			remarks		: null,
+		]
+	}
+
+	void addLGUInfo( receipt ) {
+		if("province".equalsIgnoreCase(var.lgu_type)) {
+			receipt.lguname = receipt._items.unique{it.munidistrict}*.munidistrict.join('/')
+			receipt.parentlguname = receipt._items[0].provcity 
+		} else if ("city".equalsIgnoreCase(var.lgu_type)) { 
+			def i = receipt._items[0]
+			receipt.lguname = i.provcity  
+		} else {
+			def i = receipt._items[0]
+			receipt.lguname = i.munidistrict
+			receipt.parentlguname = i.provcity 
+		}
+	}
+}
+

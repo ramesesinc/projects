@@ -1,0 +1,8 @@
+<schema>
+	<element name="lobattribute" tablename="lobattribute">
+		<field name="objid" primary="true"/>
+		<field name="state" required="true"/>
+		<field name="name" required="true"/>
+		<field name="description"/>
+	</element>
+</schema>

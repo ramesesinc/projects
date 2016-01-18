@@ -1,0 +1,128 @@
+import com.rameses.annotations.*
+import com.rameses.common.*;
+import com.rameses.services.extended.*;
+import java.rmi.server.UID
+
+class RPTReportRPAService
+{
+	@Env 
+	def env 
+
+    @ActiveDB('rptreport_rpa')
+    def em
+
+    @Service('Var')
+    def var 
+
+    @Service('LGUService')
+    def lguSvc 
+
+    @Service('PropertyClassificationService')
+    def pcSvc 
+
+    @Service('ExemptionTypeService')
+    def etSvc
+
+    @Service('RPTUtil')
+    def util
+
+    @Service('ReportParameterService')
+    def paramSvc 
+
+
+    @Async
+	@ProxyMethod
+	public Map generateReportOnRPA( params ) {
+		params.lguid = params.lgu?.objid 
+		util.buildReportTitlePeriod('REPORT ON REAL PROPERTY ASSESSMENTS', params)
+		if ('PERIOD'.equalsIgnoreCase(params.reporttype))
+			util.buildEndingPeriodFilter(params)
+		else 
+			params.filter = ' f.dtapproved <= $P{asofdate} '
+
+		if (params.barangay){
+			params.filter += ' AND rp.barangayid = $P{barangayid} ' 
+			params.barangayid = params.barangay.objid 
+		}
+
+		if (params.classification){
+			params.filter += ' AND r.classification_objid = $P{classid} '
+			params.classid = params.classification.objid 
+		}
+
+		params.lguid = params.lgu?.objid 
+
+		def taxables = em.getReportOnRPATaxable(params)
+							.each{ it.rpucount = util.toInteger2( it.rpucount, 0)}
+		
+		int lineno = 1
+		int charindex = 'a' 
+		def taxableclasses = getClassifications()
+		def firstspecial = taxableclasses.find{ it.special == 1 }
+		taxableclasses.add( taxableclasses.indexOf( firstspecial), [objid:'SPECIAL', name:'SPECIAL', special:0] )
+		
+		taxableclasses.each{ item ->
+			def taxable = taxables.find{ it.classid == item.objid }
+			if( taxable ) {
+				item.putAll( taxable )
+			}
+			item.taxability = 'TAXABLE' 
+			if( item.special == 0 ) {
+				item.classname = lineno + '. ' + item.name 
+				lineno += 1
+			}
+			else {
+				item.classname = '   ' + ((char)charindex) + '. ' + item.name 
+				charindex += 1;
+			}
+		}
+		
+		def exempts  = em.getReportOnRPAExempt(params)
+							.each{ it.rpucount = util.toInteger2( it.rpucount, 0)}
+		
+		lineno = 1 
+		def exemptclasses  = getExemptionTypes();
+		exemptclasses.each { item -> 
+			def exempt = exempts.find{ it.classid == item.objid }
+			if( exempt ) {
+				item.putAll( exempt )
+			}
+			item.classname = lineno + '. ' + item.name 
+			item.taxability = 'EXEMPT'
+			lineno += 1
+		}
+
+		def p = [
+			PERIOD 		: params.period,
+			PERIODTYPE 	: params.periodtype,
+			TITLE 		: params.title,
+			FORLGUNAME  : (params.lgu ? params.lgu.name : (env.ORGCLASS + ' OF ' + env.ORGNAME)),
+			LGUTYPE     : (params.lgu ? params.lgu.lgutype : env.ORGCLASS), 
+			BRGYCOUNT   : getBarangays(params).size(),
+		]
+
+		
+		return [
+			parameters  : p, 
+			reportdata  : taxableclasses + exemptclasses,
+		]
+	}
+
+
+    @ProxyMethod
+    public def getClassifications(){
+    	return pcSvc.getClassifications([:])
+    }
+
+    
+    @ProxyMethod
+    public def getExemptionTypes(  ) {
+    	return 	etSvc.getExemptionTypes([:])
+    }
+
+
+    @ProxyMethod
+    public def getBarangays(params){
+    	return lguSvc.lookupBarangaysByRootId(params.lguid)	
+    }
+}

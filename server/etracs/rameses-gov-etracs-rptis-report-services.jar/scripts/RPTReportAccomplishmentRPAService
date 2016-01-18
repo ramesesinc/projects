@@ -1,0 +1,112 @@
+import com.rameses.annotations.*
+import com.rameses.common.*;
+import com.rameses.services.extended.*;
+import java.rmi.server.UID
+
+class RPTReportAccomplishmentRPAService
+{
+    @ActiveDB('rptreport_accomplishmentrpa')
+    def em
+
+    @Service('Var')
+    def var 
+
+    @Service('RPTUtil')
+    def util
+
+    
+    @Service('LGUService')
+    def lguSvc 
+
+
+	@Async
+	@ProxyMethod
+	public Map generateAccomplishmentRPA(params) {
+		params.lguid = params.lgu?.objid 
+
+		util.buildReportFormalTitlePeriod('ACCOMPLISHMENT REPORT ON REAL PROPERTY ASSESSMENTS', params)
+
+		util.buildPreceedingPeriodFilter(params)
+		def preceedingassessments = em.getPreceedingRPAAccomplishment(params)
+		
+		util.buildCurrentPeriodFilter(params)
+		def currentassessments = em.getCurrentRPAAccomplishment(params)
+		def cancelledassessments = em.getCancelledRPAAccomplishment(params)
+
+		util.buildEndingPeriodFilter(params)
+		def endingassessments = em.getEndingRPAAccomplishment(params)
+		
+		def updateBrgyAccomplishment = { lgu, list ->
+			def info = list.find{ it.barangayid == lgu.objid }
+			if( info ) lgu.putAll( info )
+		}
+	
+		def lguinfos = getBarangays(params).collect { 
+			[ 	objid 		: it.objid, 
+				barangay	: it.name, 
+				preceedingtaxablecount 	: 0.0,
+				preceedingtaxableav 	: 0.0,
+				preceedingexemptcount 	: 0.0,
+				preceedingexemptav 		: 0.0,
+				
+				currenttaxablecount 	: 0.0,
+				currenttaxableav 		: 0.0,
+				currentexemptcount 		: 0.0,
+				currentexemptav 		: 0.0,
+				
+				cancelledtaxablecount 	: 0.0,
+				cancelledtaxableav 		: 0.0,
+				cancelledexemptcount 	: 0.0,
+				cancelledexemptav 		: 0.0,
+				
+				endingtaxablecount 		: 0.0,
+				endingtaxableav 		: 0.0,
+				endingexemptcount 		: 0.0,
+				endingexemptav 			: 0.0,
+			]
+		}
+		lguinfos.each { lgu ->
+			updateBrgyAccomplishment( lgu, preceedingassessments )
+			updateBrgyAccomplishment( lgu, currentassessments )
+			updateBrgyAccomplishment( lgu, cancelledassessments )
+			updateBrgyAccomplishment( lgu, endingassessments )
+		}
+		
+		lguinfos.add([
+			barangay	: 'TOTAL',
+			preceedingtaxablecount	: util.sum(lguinfos, 'preceedingtaxablecount'),
+			preceedingtaxableav		: util.sum(lguinfos, 'preceedingtaxableav'),
+			preceedingexemptcount	: util.sum(lguinfos, 'preceedingexemptcount'),
+			preceedingexemptav		: util.sum(lguinfos, 'preceedingexemptav'),
+			currenttaxablecount		: util.sum(lguinfos, 'currenttaxablecount'),
+			currenttaxableav		: util.sum(lguinfos, 'currenttaxableav'),
+			currentexemptcount		: util.sum(lguinfos, 'currentexemptcount'),
+			currentexemptav			: util.sum(lguinfos, 'currentexemptav'),
+			cancelledtaxablecount	: util.sum(lguinfos, 'cancelledtaxablecount'),
+			cancelledtaxableav		: util.sum(lguinfos, 'cancelledtaxableav'),
+			cancelledexemptcount	: util.sum(lguinfos, 'cancelledexemptcount'),
+			cancelledexemptav		: util.sum(lguinfos, 'cancelledexemptav'),
+			endingtaxablecount		: util.sum(lguinfos, 'endingtaxablecount'),
+			endingtaxableav			: util.sum(lguinfos, 'endingtaxableav'),
+			endingexemptcount		: util.sum(lguinfos, 'endingexemptcount'),
+			endingexemptav			: util.sum(lguinfos, 'endingexemptav'),
+		])
+		def p = [
+			PERIOD 		: params.period,
+			PERIODTYPE 	: params.periodtype,
+			TITLE 		: params.title,
+			FORLGUNAME  : params.lgu.lgutype.toUpperCase() + ' OF ' + params.lgu.name,
+		]
+		return [
+			parameters  : p, 
+			reportdata  : lguinfos,
+		]
+	}
+
+
+    @ProxyMethod
+    public def getBarangays(params){
+    	return lguSvc.lookupBarangaysByRootId(params.lguid)	
+    }
+
+}

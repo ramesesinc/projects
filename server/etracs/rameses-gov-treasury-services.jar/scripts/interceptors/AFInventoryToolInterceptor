@@ -1,0 +1,85 @@
+import com.rameses.annotations.*;
+import com.rameses.common.*
+import com.rameses.services.extended.*
+import com.rameses.util.*;
+
+class AFInventoryToolInterceptor { 
+
+	@ActiveDB('afinventory_tool') 
+	def em; 
+
+	@ActiveDB('af_inventory') 
+	def afi_em; 
+
+	@ActiveDB('af_control') 
+	def afc_em; 
+
+	@Env 
+	def env; 
+
+
+	@After( pattern="AFInventoryService.fixInventory" )
+	public void onFixAF ( evt ) { 
+		def params = evt.args[0]; 
+		process( params ); 
+	} 
+
+	@After( pattern="UnremittedCollectionService.fixInventory" )
+	public void onFixUnremittedAF ( evt ) { 
+		def params = evt.args[0]; 
+		def collectorid = (params.collectorid? params.collectorid : env.USERID); 
+		params.collectorid = collectorid;  
+
+		def list = em.getUnremittedAFs( params );
+		if ( !list ) throw new Exception('No available unremitted AF'); 
+
+		list.each{ process( it ) } 
+	} 
+
+	void process( params ) {
+		def afidata = em.findAFInventory( params ); 
+		if ( !afidata ) return; 
+
+		if ( !afidata.respcenter?.type.toString().equalsIgnoreCase('COLLECTOR') ) 
+			throw new Exception('This facility is only applicable to COLLECTOR respcenter type');
+
+		if ( afidata.qtyin > 0 ) { 
+			if ( afidata.formtype=='serial' ) { 
+				processSerial( afidata ); 
+			} else { 
+				processCashticket( afidata ); 
+			} 
+		}   
+	}
+
+	void processSerial( data ) { 
+		def nfo = em.findAFSerial( data );
+		em.updateAFControl([ 
+			objid         : data.objid, 
+			currentseries : nfo.startseries + nfo.qtyissued  
+		]); 
+
+		data.currentseries = data.startseries + nfo.qtyremitted; 
+		data.qtyout = data.currentseries - data.startseries; 
+		data.qtybalance = data.qtyin - data.qtyout; 
+		em.updateAFInventory( data ); 
+	} 
+
+	void processCashticket( data ) {
+		def ct = em.findCashticket( data ); 
+		if ( ct.amtissued==null ) ct.amtissued = 0.0;
+		if ( ct.amtremitted==null ) ct.amtremitted = 0.0; 
+		
+		def qtyissued = (int) (ct.amtissued / ct.denomination); 
+		em.updateAFControl([ 
+			objid         : data.objid, 
+			currentseries : ct.startseries + qtyissued 
+		]); 
+
+		def qtyremitted = (int) (ct.amtremitted / ct.denomination); 
+		data.currentseries = data.startseries + qtyremitted; 
+		data.qtyout = data.currentseries - data.startseries; 
+		data.qtybalance = data.qtyin - data.qtyout; 
+		em.updateAFInventory( data ); 		
+	} 
+}

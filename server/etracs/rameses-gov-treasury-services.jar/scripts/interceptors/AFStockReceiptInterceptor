@@ -1,0 +1,89 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.common.*
+import com.rameses.services.extended.*
+
+class AFStockReceiptInterceptor {
+
+	@Service("AFInventoryService")
+	def afInventorySvc;
+
+	@ActiveDB("stockitem")
+	def stockitem;
+
+	@ActiveDB('afreceipt')
+	def afreceipt; 
+
+	@ActiveDB("af_inventory")
+	def afInventoryDb;
+
+	@Env
+	def env;
+
+	@Service("UserService")
+	def userSvc
+
+	@After(pattern="StockReceiptService.create", eval="#{args[0].itemclass == 'AF'}")
+	public void postAFSerialReceipt( def evt ) { 
+		def o = evt.result;
+		def list = o.items.findAll{ it.qtyreceived > 0 && it.items!=null };
+		list.each { z->
+			if(!z.unitqty)
+				throw new Exception("No unit qty found for " + z.item.objid );
+			z.items.each {
+				def m = [:];		
+				m.refid = o.objid;
+				m.reftype = "stockreceipt";	
+				m.refno = o.receiptno;
+				m.refdate = o.dtfiled;
+				m.afid = z.item.objid;
+				m.unit = z.unit;
+				m.startseries = (it.startseries!=null)?it.startseries: 0;
+				m.endseries = (it.endseries!=null)?it.endseries: 0;
+				m.currentseries = m.startseries;
+				m.startstub = (it.startstub!=null)?it.startstub: 0;
+				m.endstub = (it.endstub!=null)?it.endstub: 0;
+				m.currentstub = m.startstub;
+				m.prefix = it.prefix;	
+				m.suffix = it.suffix;
+				m.qty= it.qty*z.unitqty;
+				m.unitQty = z.unitqty;
+				m.itemclass = z.item.itemclass;
+				m.itemtype = z.item.type;
+				m.txntype = "RECEIPT";
+				m.respcenter = [objid:env.USERID, name:env.FULLNAME, type:'AFO'];
+				m.remarks = "RECEIPT OF PURCHASE";
+				m.cost = it.cost
+				afInventorySvc.postReceipt(m);
+			}	
+		}
+	}
+
+		
+	/*@After(pattern="StockReceiptService.open") 
+	public void afterOpen( evt ) { 
+		def result = evt.result; 
+		def info = afreceipt.findInfo([objid: result.objid]); 
+		if (info) result.putAll( info ); 
+	}*/
+	
+	@After(pattern="StockReceiptService.open")
+	public void afterOpen(evt) {
+		def o = evt.result;
+		def info = afreceipt.findInfo([objid: o.objid]); 
+		if (info) o.putAll( info ); 
+		
+		o.items.each{
+			def params = [afid: it.item.objid, unit: it.unit, stockissueid: it.parentid, respcentertype: 'AFO' ]
+			it.handler =  it.aftype.toLowerCase() 
+			it.items = afInventoryDb.getAFDetails(params).each {
+				if( "cashticket".equals(it.aftype)) {
+					it.startseries = null;
+					it.endseries = null
+				}
+			}; 
+			
+		}
+	}	
+}

@@ -1,0 +1,96 @@
+import com.rameses.annotations.*;
+import com.rameses.common.*;
+import com.rameses.services.extended.*;
+import com.rameses.util.*;
+
+class RemoteServerDataDeployerService 
+{
+	@ActiveDB('fund')	
+	def fundEm
+
+	@ActiveDB('af')	
+	def afEm
+
+	@ActiveDB('collectiontype')	
+	def collTypeEm
+
+	@ActiveDB('collectiontype_account')	
+	def collTypeAcctEm
+
+	@ActiveDB('revenueitem')	
+	def revItemEm
+	
+	@ActiveDB('usergroup')	
+	def ugEm	
+
+	@ActiveDB('user')	
+	def userEm	
+
+	@ActiveDB('cashbook')
+	def cashbookEm
+
+	@ActiveDB('org')
+	def orgEm
+	
+	@ActiveDB('collectiongroup')	
+	def collgroup; 
+
+	@ProxyMethod
+	public void deployUpdates( entity ) {
+		try{ orgEm.create(EntityUtil.mapToField(entity.data.orgclass), "orgclass") } catch(e){}
+
+		try{ orgEm.create(EntityUtil.mapToField(entity.data.org)) } catch(e) {}
+
+		entity.data.funds.each{
+			try{ fundEm.create(EntityUtil.mapToField(it) ) } catch(e){}
+		}
+
+		entity.data.afs.each{
+			try{ afEm.create(EntityUtil.mapToField(it) ) } catch(e){}
+
+		}
+
+		entity.data.itemaccounts.each{
+			try{ revItemEm.create(EntityUtil.mapToField(it) ) } catch(e){} 
+		}		
+
+		entity.data.collectiontypes.each{
+			 try{ collTypeEm.create(EntityUtil.mapToField(it) ) } catch(e){}
+		} 
+		entity.data.collectionTypesAccounts.each{
+			try{ collTypeAcctEm.create(EntityUtil.mapToField(it) ) } catch(e){  }
+		} 
+
+		entity.data.collectiongroups.each{
+			 try{ collgroup.create(EntityUtil.mapToField(it) ) } catch(e){}
+		} 
+		entity.data.collectiongroupitems.each{
+			 try{ 
+			 	collgroup.create(EntityUtil.mapToField(it), 'collectiongroup_revenueitem') 
+			 } catch(e){} 
+		} 
+
+		entity.data.usergroups.each{
+			try{ ugEm.create(EntityUtil.mapToField(it) ) } catch(e){} 
+		}	
+
+		entity.data.users.each{
+			try{ userEm.create(EntityUtil.mapToField(it) ) } catch(e){} 
+		}
+
+		entity.data.userMemberships.each{
+			try{ ugEm.create(EntityUtil.mapToField(it) , "member") } catch(e){} 
+		}
+
+		entity.data.cashbooks.each{ c -> 
+			def cb = EntityUtil.mapToField(c);
+			try{ cashbookEm.create(cb) } catch(e){}
+			try {
+				cb.details.each {
+					cashbookEm.create( it, "detail" )
+				}
+			} catch(e) {} 
+		}
+		
+	}
+}

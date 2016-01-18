@@ -1,0 +1,172 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.common.*
+import com.rameses.services.extended.*
+
+class NGASStatementOfRevenueService  {
+
+	@ActiveDB('ngasstatementofreveneue')
+	def em;
+
+	@Service("NumberService")
+	def numSvc;
+
+	@Service("DateService")
+	def dtsvc;
+
+	@Service('RPTUtil')
+	def util
+
+	def PADDING_SIZE = 10
+
+	
+	@ProxyMethod 
+	public def generateReport(params) {
+		buildDateFilter(params)
+		def reporttype = params.type 
+
+		def items = []
+		if ("standard".equals(reporttype)) { 
+		  	items = em.getStandardItems( params );
+		} else if("extended".equals(reporttype)){
+			items =  em.getExtendedItems(params);
+		} 
+
+		if( ! items) throw new Exception("No record(s) found.               ");
+
+		def reportdata = buildChartOfAccountFormat(reporttype, items)
+		reportdata.removeAll(reportdata.findAll{it.amount <= 0.0 })
+		
+		def header = [
+			TITLE  : 'NGAS Statement of Revenue ( ' + reporttype.toUpperCase() + ' )',
+			PERIOD : util.buildPeriod(params),
+			TOTAL  : reportdata.findAll{it.leaf == 1}.amount.sum() 
+		]
+
+		return [
+			header 		: header,  
+			reportdata  : reportdata
+		]
+    }
+
+
+	def buildChartOfAccountFormat(reporttype, items){
+		def data = []
+		data += items.findAll{it.objid == 'unmapped' || it.parentid == 'unmapped'}.each{ it.leaf = 1}
+		data.each{ it.total = it.amount }
+		def idx = -1
+
+		def rootaccts =  em.getNgasRootAccounts()
+		rootaccts.each{ 
+			if ("standard".equals(reporttype)) {
+				doBuildStandardFormat( data, items, idx, it)
+			} else if("extended".equals(reporttype)){
+				doBuildExtendedFormat(data, items, idx, it)
+			} 
+		}	
+	
+		calculateGroupTotals(reporttype, data)
+		return data 
+	}
+
+	void doBuildStandardFormat(data, items, idx, acct){
+		idx += 1
+		acct.amount = 0.0
+		acct.level = idx 
+		def collections =  items.findAll{it.accountid == acct.objid}
+		if (collections){
+			acct.amount = collections.amount.sum()
+			acct.leaf = 1
+		}
+		acct.title = padTitle(acct, idx)
+		data << acct 
+		def subaccts = em.getNgasSubAccounts([parentid:acct.objid])
+		subaccts.each{
+			doBuildStandardFormat(data, items, idx, it )
+		}
+	}
+
+
+
+	void doBuildExtendedFormat(data, items, idx, acct){
+		idx += 1
+		acct.title = padTitle(acct, idx)
+		acct.amount = 0.0
+		acct.level = idx 
+		def collections = items.findAll{it.accountid == acct.objid}
+		if (collections){
+			acct.amount = collections.amount.sum()
+			acct.leaf = 1
+		}
+		data << acct
+
+		def subaccts = em.getNgasExtendedSubAccounts([parentid:acct.objid])
+		subaccts.each{
+			doBuildExtendedFormat(data, items, idx, it )
+		}
+	}
+
+	
+	def padTitle(acct, idx){
+		def title =  acct.code + ' - ' + acct.title 
+		return (' ' * PADDING_SIZE * idx) + title 
+	}
+
+	void calculateGroupTotals(reporttype, data){
+		def maxlevel = data.level.max() 
+		for(int i = maxlevel - 1; i > 0; i--){
+			['detail','group'].each{ type -> 
+				def groupaccts = data.findAll{it.level == i && it.type == type }
+				groupaccts.each{ grpacct ->
+					def colls = data.findAll{it.parentid == grpacct.objid}
+					def amt = colls.amount.sum()
+					if( colls && amt > 0.0) { 
+						def s = colls.findAll{it.amount > 0 }[-1]
+						if(s.type.matches('detail|subaccount')) s.total = amt 
+					}
+					if (amt > 0.0 && grpacct.amount == 0){
+						grpacct.amount = amt
+					}
+					else if (amt > 0.0 && grpacct.amount != 0){
+						def idx = data.indexOf(grpacct) + colls.size() + 1
+						def otheracct = [objid:'O'+ grpacct.objid, parentid:grpacct.objid, title:(' '*PADDING_SIZE) + grpacct.title + ' (OTHERS)', amount:grpacct.amount, leaf:1, type:'subaccount', level:grpacct.level+1]
+						data.add(idx, otheracct)
+						grpacct.amount += amt
+						grpacct.leaf = null
+					}
+				}
+
+			}
+		}
+
+		//update rootgroups
+		data.findAll{it.level == 0 }.each{ rgrp ->
+			def amt = data.findAll{it.parentid == rgrp.objid}.amount.sum();
+			if (amt > 0.0){
+				rgrp.amount = amt 
+			}
+		}
+
+		if( "extended".equals(reporttype)){
+			data.findAll{ it.type == 'detail' && it.amount > 0.0 }.each{ d -> 
+				if(! data.find{it.parentid == d.objid})
+					d.total = d.amount
+			}
+
+		}
+
+	}
+
+	void buildDateFilter(params){
+		if (params.qtr != null && params.month != null) {
+			params.fromdate = params.year + '-' + params.month.index + '-01 00:00:00'
+			params.todate   = dtsvc.format('yyyy-MM-dd', dtsvc.getMonthEndDate(dtsvc.parse('yyyy-MM-dd', params.fromdate))) + " 23:59:59"
+		}
+		else {
+			params.fromdate = dtsvc.format('yyyy-MM-dd', dtsvc.getBeginningQtrDate( params.qtr, params.year, 1 ) ) + " 00:00:00"
+			params.todate   = dtsvc.format('yyyy-MM-dd', dtsvc.getQtrEndDate( params.qtr, params.year )) + " 23:59:59"
+		}
+	}
+
+}

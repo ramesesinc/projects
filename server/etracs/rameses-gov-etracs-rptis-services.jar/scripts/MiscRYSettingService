@@ -1,0 +1,394 @@
+import com.rameses.annotations.*
+import com.rameses.common.*
+import com.rameses.util.*
+import com.rameses.services.extended.*
+
+
+public class MiscRYSettingService
+{
+    @Env 
+    def env 
+
+    @ActiveDB('miscrysetting')
+    def em
+     
+    @Service('PropertyClassificationService')
+    def pcSvc
+
+    @Service('MiscItemService')
+    def miscItemSvc
+
+    @Service('MiscRYSettingListService')
+    def listSvc 
+    
+    @Service('RYSettingService')
+    def rysettingSvc
+    
+    @Service('RPTParameterService')
+    def paramSvc
+
+    @Service('Var')
+    def var 
+
+    @Service('RPTUtil')
+    def util 
+    
+    def SCHEMA_ASSESSLEVEL  = 'assesslevel' 
+    def SCHEMA_RANGE        = 'range' 
+    def SCHEMA_ITEMVALUE    = 'itemvalue' 
+    
+    def STATE_DRAFT     = 'DRAFT'
+    def STATE_APPROVED  = 'APPROVED'
+
+    def SETTING_TYPE    = 'misc' 
+    
+    
+    @ProxyMethod
+    public boolean settingExists() {
+        def settings = listSvc.getList( null )
+        return settings.size() > 0
+    }
+    
+    
+    @ProxyMethod
+    public List getPropertyClassifications() {
+        return pcSvc.getList([:])
+    }
+    
+    
+    @ProxyMethod
+    public def create( entity ) {
+        entity.state = STATE_DRAFT
+        buildAppliedToInfo(entity)
+        validate( entity )
+        em.create(entity )
+        loadInitialAssessesLevels(entity)
+        loadInitialMiscItems(entity)
+        rysettingSvc.createLgus( SETTING_TYPE, entity )
+        return entity 
+    }
+
+
+    @ProxyMethod 
+    public Map open( entity ) {
+        entity = em.read(entity)
+        if (!entity)
+            throw new Exception('Setting does not exist or has already been deleted.')
+        entity.lgus = rysettingSvc.loadLgus(SETTING_TYPE, entity.objid)
+        return entity
+    }
+
+
+    @ProxyMethod
+    public def update( entity ) {
+        buildAppliedToInfo(entity)
+        validate( entity )
+        em.update(entity)
+        rysettingSvc.createLgus(SETTING_TYPE, entity )
+        return entity 
+    }
+
+
+    @ProxyMethod
+    public void delete( entity ) {
+        em.deleteRangesBySettingId(entity)
+        em.deleteAssessLevelBySettingId(entity)
+        em.deleteItemValueBySettingId(entity)
+        em.delete(entity)
+    }
+
+
+    @ProxyMethod
+    public def approve( entity ) {
+        checkApproved( entity )
+        entity.state = STATE_APPROVED
+        em.update(entity)    
+        return entity
+    }
+    
+
+
+    @ProxyMethod
+    public def getVariableList( ) {
+        return paramSvc.getVariableList()
+    }
+
+    
+
+    /*----------------------------------------------------------
+    * AssessLevel Methods
+    ----------------------------------------------------------*/
+    @ProxyMethod
+    public List getAssessLevels( miscrysettingid )  {
+        return em.getAssessLevels([miscrysettingid:miscrysettingid]).each{
+                it.fixrate = util.toBoolean(it.fixrate, true)
+            }
+    }
+
+
+    @ProxyMethod
+    public void saveAssessLevel( assesslevel ) {
+        em.save(assesslevel, SCHEMA_ASSESSLEVEL)
+        if( util.isTrue(assesslevel.fixrate)) {
+            deleteRangesByAssessLevelId(assesslevel.objid)
+        }
+    }
+
+    
+    @ProxyMethod
+    public void deleteAssessLevel( assesslevel ) {
+        deleteRangesByAssessLevelId(assesslevel.objid)
+        em.delete(assesslevel, SCHEMA_ASSESSLEVEL)
+    }
+
+
+    @ProxyMethod
+    public List getRanges( miscassesslevelid )  {
+        return em.getRanges([miscassesslevelid:miscassesslevelid])
+    }
+
+
+    @ProxyMethod
+    public def saveRange( range  ) {
+        em.save(range, SCHEMA_RANGE)
+    }
+
+
+    @ProxyMethod
+    public def deleteRange( range  ) {
+        em.delete(range, SCHEMA_RANGE)
+    }
+
+    @ProxyMethod
+    public void deleteRangesByAssessLevelId(miscassesslevelid){
+        em.deleteRangesByAssessLevelId([miscassesslevelid:miscassesslevelid])
+    }
+
+
+
+    /*----------------------------------------------------------
+    * MiscItemValue SUPPORT
+    ----------------------------------------------------------*/
+    
+    @ProxyMethod
+    public def getMiscItemValues( miscrysettingid ){
+        return em.getMiscItemValues([miscrysettingid:miscrysettingid])
+    }
+
+    
+    @ProxyMethod
+    public void saveMiscItemValue( itemvalue ) {
+        em.save(itemvalue, SCHEMA_ITEMVALUE)
+    }
+
+    
+    @ProxyMethod
+    public void deleteMiscItemValue( itemvalue ) {
+           em.delete(itemvalue, SCHEMA_ITEMVALUE)
+    }
+
+   
+    @ProxyMethod
+    public void syncData( msg ) {
+        println 'Synching data -> ' + msg.msgtype
+
+        if (msg.msgtype == 'miscrysetting'){
+            em.save( msg.data )
+            rysettingSvc.createLgus( SETTING_TYPE, msg.data )
+        }
+        else if (msg.msgtype == 'assesslevels'){
+            msg.data.each{lvl -> 
+                saveAssessLevel(lvl)
+                lvl.ranges.each{ saveRange(it) }
+            }
+        }
+        else if (msg.msgtype == 'itemvalues'){
+            msg.data.each{
+                saveMiscItemValue(it)
+            }
+        }
+    }
+
+    /*----------------------------------------------------------
+    * COPY Methods
+    ----------------------------------------------------------*/
+    @ProxyMethod
+    public Map copy( objid, ry ) {
+        def oldsettingid = objid
+        def setting = em.read([objid:objid] )
+        if (!setting) 
+        throw new Exception('Setting does not exists or has already been deleted.')
+
+        setting.previd = null
+        setting.objid = util.generateId('MS')
+        setting.ry = ry  
+        setting.appliedto = null
+        em.create(setting )
+
+        copyAssessLevels( setting.objid, oldsettingid )
+        copyItemValues( setting.objid, oldsettingid )
+        return open( setting)
+    }
+
+    
+    @ProxyMethod
+    public Map reviseSettings( newry, copyYear ) {
+        util.required('Copy Year', copyYear )
+        if( newry <= copyYear ) 
+            throw new Exception('New Revision Year must be greater than copy year.')
+        
+        def settings = em.getSettingsByRy([ry:copyYear])
+        if( !settings ) 
+            throw new Exception('Revision Year ' + copyYear  + ' setting is not defined.')
+        
+        settings.each{setting->
+            def oldsettingid = setting.objid 
+            setting = em.read( [objid:oldsettingid] )
+            setting.previd = setting.objid 
+            setting.objid = util.generateId('MRY')
+            setting.ry = newry  
+            if ( ! isDuplicateSetting( setting ) ){
+                em.create(setting )
+                copyAssessLevels( setting.objid, oldsettingid )
+                copyItemValues( setting.objid, oldsettingid )
+                rysettingSvc.copyLgus( SETTING_TYPE, setting.objid, oldsettingid)
+            }
+        }
+        return open( settings[0])
+    }
+
+
+
+    /*----------------------------------------------------------
+    * Support Methods
+    ----------------------------------------------------------*/
+    void validate( entity ) {
+        if( entity.ry <= 0 ) 
+            throw new Exception('Revision Year must be greater than zero.')
+    }
+    
+
+    boolean isDuplicateSetting( entity ) {
+        def data = em.findDuplicate(entity)
+        return data != null 
+    }
+    
+    
+    void buildAppliedToInfo(entity){
+        if (env.ORGCLASS == 'PROVINCE' && entity.lgus == null)
+            entity.lgus = []
+        else if (! entity.lgus ) {
+            entity.lgus = [[rysettingid:entity.objid,lguid:var.lgu_objid, lguname:var.lgu_name, settingtype:SETTING_TYPE]]
+        }
+        else{
+            entity.appliedto = entity.lgus.sort{a,b -> a.lguname <=> b.lguname}.lguname.join(', ')
+        }
+    }
+
+
+
+    void loadInitialAssessesLevels(entity){
+        getPropertyClassifications().each{
+            saveAssessLevel([
+                objid               : it.objid,
+                miscrysettingid     : entity.objid,
+                classification_objid : it.objid,
+                classification      : it,
+                code                : it.code,
+                name                : it.name, 
+                fixrate             : true,
+                rate                : 0.0
+            ])
+        }
+    }
+
+    void loadInitialMiscItems(entity){
+        miscItemSvc.getList([:]).each{
+            saveMiscItemValue([
+                objid           : util.generateId('MIV'),
+                miscrysettingid : entity.objid,
+                miscitem_objid  : it.objid,
+                expr            : 0.00,
+            ])
+        }
+    }
+
+
+    void copyItemValues( newsettingid, oldsettingid ) {
+        def itemvalues = getMiscItemValues( oldsettingid )
+        itemvalues.each {
+            it.previd = it.objid
+            it.objid = util.generateId('IV')
+            it.miscrysettingid = newsettingid
+            saveMiscItemValue( it )
+        }
+    }
+    
+    
+    void copyAssessLevels( newsettingid, oldsettingid ) {
+        def assesslevels = getAssessLevels( oldsettingid )
+        assesslevels.each {
+            it.previd = it.objid 
+            it.objid = util.generateId('AL')
+            it.miscrysettingid = newsettingid
+            saveAssessLevel( it )
+            copyRanges(newsettingid, it)
+        }
+    }
+
+    void copyRanges(newsettingid, assesslevel){
+        getRanges(assesslevel.previd).each{
+            it.previd = it.objid 
+            it.objid = util.generateId('ALR')
+            it.miscrysettingid = newsettingid
+            it.miscassesslevelid = assesslevel.objid 
+            saveRange( it )
+        }
+    }
+
+
+    void checkApproved( entity ){
+        def old = open(entity)
+        if (old.state == STATE_APPROVED)
+        throw new Exception('Setting has already been approved.')
+    }
+
+
+
+
+    @Async
+    @ProxyMethod
+    public def exportData(setting) {
+        setting = open(setting);
+        setting.type = 'misc';
+        setting.levels = getAssessLevels(setting.objid);
+        setting.ranges = [];
+        setting.levels.each{
+            setting.ranges += getRanges(it.objid);
+        }
+        setting.miscitemvalues = getMiscItemValues(setting.objid);
+        return setting
+    }
+
+
+    @Async
+    @ProxyMethod
+    public def importData(setting) {
+        if (setting.type != 'misc')
+            throw new Exception('Invalid data. Imported data is for ' + setting.type.toUpperCase() + ' setting.');
+            
+        try{
+            create(setting);
+        }
+        catch( e){
+            update(setting);
+        }
+        
+        setting.levels.each{ saveAssessLevel(it) }
+        setting.ranges.each{ saveRange(it) }
+        setting.miscitemvalues.each{ saveMiscItemValue(it) }
+    }
+
+
+
+}

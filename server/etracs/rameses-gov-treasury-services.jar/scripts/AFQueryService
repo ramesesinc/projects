@@ -1,0 +1,46 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.common.*
+import com.rameses.services.extended.*
+
+public class AFQueryService extends ActiveListService {
+	
+	@ActiveDB("afquery")
+	def em
+
+	@ProxyMethod
+	public def getColumns( params ) {
+		return [
+			[name:"txnno", caption:"TxnNo", width:100, maxWidth:120],
+			[name:"txndate", caption:"TxnDate", width:100, maxWidth:140],
+			[name:"txntype", caption:"TxnType", width:100, maxWidth:120],
+			[name:"request.reqno", caption:"RequestNo", width:100, maxWidth:120],
+			[name:"user.name", caption:"PerformedBy", width:150, maxWidth:300],
+			[name:"remarks", caption:"INFO"] 
+		]; 
+	} 
+
+
+	void beforeList( params ) {
+		if (params.txntype == 'PURCHASE') {
+			params._listMethod = 'getStockReceipts';
+		} else if (params.txntype == 'SALE') {
+			params._listMethod = 'getStockSales';
+		} else {
+			params._listMethod = 'getStockIssuances';
+		}
+	} 
+
+	void afterList( params, list ) {
+		list.each{ item-> 
+			if (params.txntype == 'PURCHASE') {
+				//do nothing 
+			} else if (params.txntype == 'SALE') {
+				item.remarks = "Sold To: "+ item.soldto?.name; 
+			} else {
+				item.remarks = "Issued To: "+ item.issueto?.name; 
+			}
+		}
+	}
+} 

@@ -1,0 +1,116 @@
+import com.rameses.annotations.*
+import com.rameses.common.*;
+import com.rameses.services.extended.*;
+
+class FaasServiceInterceptor
+{
+	@ActiveDB('faas')
+	def em 
+
+	@Service('RPTLedgerService')
+	def ledgerSvc
+
+	@Service('RPTUtil')
+	def util
+
+	@Service('Var')
+	def var
+
+	@Service('LogService')
+	def logSvc 
+
+
+	@After(pattern="FAASService.(createFaas|updateFaas|submitForApproval|disapproveFaas|approveFaas)") 
+	public void logActions( evt ) {
+		def faas = evt.result 
+		logSvc.log( evt.methodName, 'FAAS', faas.objid)
+	}
+
+	@Before(pattern="FAASService.(createFaas|updateFaas)") 
+	public void validateFaasData( evt ) {
+		def faas = evt.args[0]
+
+		//validate change administrator 
+		if ('CA'.equalsIgnoreCase(faas.txntype.objid)) {
+			util.required('Administrator', faas.administrator)
+			util.required('Administrator', faas.administrator.name)
+			util.required('Administrator Address', faas.administrator.address)
+			if (faas.administrator.name.equalsIgnoreCase(faas.prevadministrator))
+				throw new Exception('New Administrator must not be equal to previous Administrator ' + faas.prevadministrator + '.')
+		}
+
+	}
+
+
+	@Before(pattern="FAASService.approveFaas")
+	public void beforeApproveFaas( evt ) {
+		def faas = evt.args[0]
+		util.required('Property Owner', faas.taxpayer)
+		util.required('Memoranda', faas.memoranda)
+	}
+
+
+	@Before(pattern="FAASService.initTransaction")  
+	public void interceptInitFaasTransaction( evt ) {
+		def info = evt.args[0]
+		if (info.faas && info.faas.objid){
+			ledgerSvc.checkLedgerApprovedState(info.faas.objid)
+			if (info.txntype.checkbalance == null  || info.txntype.checkbalance == true) {
+				if ( util.toBoolean(var.allow_faas_transaction_with_balance, false) == false ){
+					ledgerSvc.checkLedgerBalance(info.faas.objid)
+				}
+			}
+		}
+	}
+
+	@After(pattern="FAASService.initTransaction", eval="#{result.txntype.objid.matches('TR|TRE|TRC')}", index=10) 
+	public void initTransfer( evt ) {
+		def faas = evt.result 
+		clearInfo(faas)
+	}
+
+
+	@After(pattern="FAASService.initTransaction", eval="#{result.txntype.objid == 'CD'}", index=10) 
+	public void initChangeDepreciation( evt ) {
+		def faas = evt.result 
+		if (faas.rpu.rputype == 'land') {
+			throw new Exception('Cannot depreciate Land property.')
+		}
+	}
+
+	
+	@After(pattern="FAASService.initTransaction", eval="#{result.txntype.objid == 'MC'}", index=10) 
+	public void initMultipleClaim( evt ) {
+		def info = evt.args[0]
+		def faas = evt.result 
+		faas.rp.claimno = info.claimno 
+		faas.prevtdno = null
+		faas.prevpin = null
+		faas.prevowner = null
+		faas.prevav = 0.0
+		faas.prevmv = 0.0
+		faas.rpu.previd = null
+		faas.rp.previd = null
+		clearInfo(faas)
+		faas.previousfaases = []
+	}
+
+	/*---------------------------------------------------
+	*
+	* Clear info related to transfer
+	*
+	*--------------------------------------------------*/	
+	void clearInfo(faas){
+		faas.tdno 					= null
+		faas.titletype				= null
+		faas.titleno				= null
+		faas.titledate				= null
+		faas.taxpayer				= [:]
+		faas.owner					= [:]
+		faas.administrator 			= [:]
+		faas.beneficiary 			= [:]
+		faas.memoranda				= null
+	}
+
+}
+

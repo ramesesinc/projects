@@ -1,0 +1,36 @@
+
+import com.rameses.annotations.*;
+import com.rameses.common.*;
+
+class BPMasterListReportService
+{
+	
+	@ActiveDB("bpreport")
+	def em
+
+	@Service('NumberService')
+	def numSvc;
+
+	@ProxyMethod
+	public def getReport( params ) { 
+		params.filter = '';
+		if ( params.state ) {
+			params.filter = ''' AND b.state=$P{state} '''; 
+		}
+
+		def list = em.getTaxpayerMasterList( params );
+		if( ! list ) throw new Exception('No records found.');
+
+		list.each { 
+			it.capital = (it.capital ? numSvc.round( it.capital ) : 0.00 )
+			it.gross = (it.gross ?  numSvc.round( it.gross ) : 0.00 )
+			if ( it.businessaddress ) {
+				it.businessaddress = it.businessaddress.toString().replaceAll("\\s"," ").trim(); 
+			}
+			if ( it.owner?.address ) {
+				it.owner.address = it.owner.address.toString().replaceAll("\\s"," ").trim(); 
+			}
+		} 
+		return list; 
+	} 
+}

@@ -1,0 +1,164 @@
+import com.rameses.annotations.*
+import com.rameses.eserver.*;
+import com.rameses.common.*;
+
+class FAASSupportInterceptor
+{
+	@Env 
+	def env 
+
+	@ActiveDB('faas_support')
+	def em 
+
+	@ActiveDB('landrysetting')
+	def landSettingEm
+
+	@ActiveDB('planttreerysetting')
+	def planttreeSettingEm
+
+	@ActiveDB('planttree')
+	def plantTreeEm	
+
+	
+	@Before(pattern="FAASSupportService.saveFaasData") 
+	public void resolveMissingData( evt ) {
+		def faas = evt.args[0]
+
+		if (faas.tdno != faas.utdno)
+			faas.utdno = faas.tdno 
+			
+		if (faas.rpu.rputype == 'land'){
+			faas.rpu.landdetails.each{ld ->
+				resolveSpecificClass(faas, ld)
+				resolveSubClass(faas, ld)
+			}
+			faas.rpu.planttrees.each{pt ->
+				resolvePlantTree(faas, pt)
+				resolvePlantTreeUnitValue(faas, pt)
+			}
+			faas.rpu.landadjustments.each{adj->
+				resolveLandAdjustmentType(faas, adj)
+			}
+		}
+		else if (faas.rpu.rputype == 'bldg'){
+			resolveLandRpu(faas)
+		}
+		else if (faas.rpu.rputype == 'planttree'){
+			faas.rpu.planttrees.each{pt ->
+				resolvePlantTree(faas, pt)
+				resolvePlantTreeUnitValue(faas, pt)
+			}
+		}
+	}
+
+
+	void resolveSpecificClass(faas, ld){
+		ld.specificclass.ry = faas.rpu.ry 
+		ld.specificclass.lguid = faas.lguid
+		ld.specificclass.classcode = ld.specificclass.classification.code
+
+		def spc = em.findSpecificClassById(ld.specificclass)
+		if (!spc){
+			def landrysetting = em.findLandRySetting(ld.specificclass)
+			try{
+				ld.specificclass.landrysettingid = landrysetting.objid
+				ld.specificclass.classification.objid = landrysetting.classid
+				landSettingEm.create(ld.specificclass, 'lcuvspecificclass')
+			}
+			catch(e){
+				ld.specificclass.code += '-'
+				ld.specificclass.name += '-'
+				landSettingEm.create(ld.specificclass, 'lcuvspecificclass')
+			}
+		}
+		else{
+			ld.specificclass = spc 
+		}
+	}
+	
+	void resolveSubClass(faas, ld){
+		ld.subclass.ry = faas.rpu.ry 
+		ld.subclass.lguid = faas.lguid
+
+		def sub = em.findSubClassById(ld.subclass)
+		if (!sub){
+			try{
+				ld.subclass.landrysettingid = ld.specificclass.landrysettingid 
+				ld.subclass.specificclass = ld.specificclass
+				landSettingEm.create(ld.subclass, 'lcuvsubclass')
+			}
+			catch(e){
+				ld.subclass.code += '-'
+				ld.subclass.name += '-'
+				landSettingEm.create(ld.subclass, 'lcuvsubclass')
+			}
+		}
+	}
+
+	void resolveLandAdjustmentType(faas, adj){
+		def adjtype = em.findLandAdjustmentTypeById(adj.adjustmenttype)
+		if (!adjtype){
+			def rysetting = em.findLandRySettingByAdjustmentType([ry:faas.rpu.ry, lguid:faas.lguid])
+			adj.adjustmenttype.landrysettingid = rysetting.objid 
+			adj.adjustmenttype.appliedto = faas.rpu.classification.name
+			try{
+				landSettingEm.create(adj.adjustmenttype, 'landadjustmenttype')
+			}
+			catch(e){
+				adj.adjustmenttype.code += '-'
+				adj.adjustmenttype.name += '-'
+				landSettingEm.create(adj.adjustmenttype, 'landadjustmenttype')
+			}
+		}
+	}
+
+
+	void resolvePlantTree(faas, pt){
+		def planttree = em.findPlantTreeById(pt.planttree)
+		if (!planttree){
+			try{
+				pt.planttree.state = 'DRAFT'
+				plantTreeEm.create(pt.planttree)
+			}
+			catch(e){
+				pt.planttree.code += '-'
+				pt.planttree.name += '-'
+				plantTreeEm.create(pt.planttree)	
+			}
+		}
+		else {
+			pt.planttree = planttree
+		}
+	}
+
+
+	void resolvePlantTreeUnitValue(faas, pt){
+		def ptuv = em.findPlantTreeUnitValue(pt.planttreeunitvalue)
+		if (!ptuv){
+			try{
+				def rysetting = em.findPlantTreeRySetting([ry:faas.rpu.ry, lguid:faas.lguid])
+				pt.planttreeunitvalue.planttree = pt.planttree
+				pt.planttreeunitvalue.planttreerysettingid = rysetting.objid
+				planttreeSettingEm.create(pt.planttreeunitvalue, 'planttreeunitvalue')
+			}
+			catch(e){
+				println '='*50 
+				println e.message
+				pt.planttreeunitvalue.code += '-'
+				pt.planttreeunitvalue.name += '-'
+				planttreeSettingEm.create(pt.planttreeunitvalue, 'planttreeunitvalue')
+			}
+		}
+	}
+
+
+	void resolveLandRpu(faas){
+		def landrpu = em.findLandRpuById([objid:faas.rpu.landrpuid])
+		if (!landrpu){
+			landrpu = em.findLandRpuByPin(faas.rp)
+		}
+		if (landrpu)
+			faas.rpu.landrpuid = landrpu.objid 
+	}
+}
+

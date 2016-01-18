@@ -1,0 +1,73 @@
+import com.rameses.osiris3.xconnection.*;
+import com.rameses.annotations.*;
+import com.rameses.common.*;
+
+class ProvincePlantTreeSettingSyncHandler
+{   
+	@ActiveDB('planttreerysetting')
+	def em 
+
+
+	@Env
+	def env 
+
+	@Context 
+	def appCtx;
+
+	@Service()
+	def self
+
+	@Service('PlantTreeRYSettingService')
+	def svc  
+
+	@Service('OrgService')
+	def orgSvc 
+
+
+
+	@ProxyMethod 
+	public def syncData( params ) {
+		self.doSync(params)
+		return new AsyncToken()
+	}
+
+
+	@Async 
+	@ProxyMethod
+	public void doSync( params ) {
+		def xconn = appCtx.getResource( XConnection.class, env.ASYNC.CONNECTION ); 
+		def queue = xconn.register( env.ASYNC.ID ); 
+
+		// params : [orgcode:'xxx', ry:xxxx ]
+		//get lguid
+		def org = orgSvc.findByCode([code:params.orgcode])
+		if (! org){
+			queue.push([msgtype:'_ERROR_', msg:'Organization code not found.'])
+			queue.push( new AsyncToken(closed:true) )
+			return
+		}
+		
+
+		//get landrysetting by lguid
+		def settings = em.getSettingsByLguIdRy([lguid:org.objid, ry:params.ry])
+		if (!settings){
+			queue.push([msgtype:'_ERROR_', msg:'Requested revision setting does not exist.'])
+			queue.push( new AsyncToken(closed:true) )
+			return
+		}
+
+		settings.each{setting ->
+			setting = svc.open(setting)
+			queue.push([msgtype:'planttreerysetting', data:setting])
+
+			def assesslevels = svc.getAssessLevels(setting.objid)
+			queue.push([msgtype:'assesslevels', data:assesslevels])
+
+			def unitvalues = svc.getUnitValues(setting.objid, '%')
+			queue.push([msgtype:'planttreeunitvalues', data:unitvalues])
+
+		}
+
+		queue.push( new AsyncToken(closed:true) )
+	}
+}

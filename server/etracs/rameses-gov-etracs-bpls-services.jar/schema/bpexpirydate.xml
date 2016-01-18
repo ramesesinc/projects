@@ -1,0 +1,8 @@
+<schema>
+	<element tablename="bpexpirydate">
+		<field name="year" primary="true"/>
+		<field name="qtr" primary="true"/>
+		<field name="expirydate" required="true"/>
+		<field name="reason" required="true"/>
+	</element>
+</schema>

@@ -1,0 +1,9 @@
+<schema>
+
+	<element tablename="sreaccount_incometarget">
+		<field name="objid" primary="true"/>	
+		<field name="year" primary="true"/>
+		<field name="target" />
+	</element>
+
+</schema>

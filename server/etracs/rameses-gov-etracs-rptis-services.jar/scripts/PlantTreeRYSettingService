@@ -1,0 +1,304 @@
+import com.rameses.annotations.*
+import com.rameses.common.*
+import com.rameses.util.*;
+import com.rameses.services.extended.*;
+
+public class PlantTreeRYSettingService
+{
+    @Env 
+    def env 
+
+    @ActiveDB('planttreerysetting')
+    def em
+     
+    @Service('PropertyClassificationService')
+    def pcSvc
+
+    @Service('PlantTreeRYSettingListService')
+    def listSvc 
+
+    @Service('PlantTreeService')
+    def ptSvc
+    
+    @Service('RYSettingService')
+    def rysettingSvc
+    
+    @Service('Var')
+    def var 
+
+    @Service('RPTUtil')
+    def util 
+    
+    def SCHEMA_ASSESSLEVEL  = 'assesslevel' 
+    def SCHEMA_UNITVALUE    = 'planttreeunitvalue' 
+    
+    def STATE_DRAFT     = 'DRAFT'
+    def STATE_APPROVED  = 'APPROVED'
+
+    def SETTING_TYPE    = 'planttree' 
+    
+    
+    @ProxyMethod
+    public boolean settingExists() {
+        def settings = listSvc.getList( null )
+        return settings.size() > 0
+    }
+    
+
+    @ProxyMethod
+    public def create( entity ) {
+        entity.state = STATE_DRAFT
+        buildAppliedToInfo(entity)
+        validate( entity )
+        em.create( entity )
+        rysettingSvc.createLgus( SETTING_TYPE, entity )
+        return entity 
+    }
+    
+
+    @ProxyMethod 
+    public Map open( entity ) {
+        entity = em.read(entity)
+        if (!entity)
+            throw new Exception('Setting does not exist or has already been deleted.')
+        entity.lgus = rysettingSvc.loadLgus(SETTING_TYPE, entity.objid)
+        return entity
+    }
+
+    
+    @ProxyMethod
+    public def update( entity ) {
+        buildAppliedToInfo(entity)
+        validate( entity )
+        em.update( entity)
+        rysettingSvc.createLgus(SETTING_TYPE, entity )
+        return entity 
+    }
+    
+    
+    @ProxyMethod
+    public void delete( entity ) {
+        em.deleteAssessLevels(entity)
+        em.deleteUnitValues(entity)
+        em.deleteRySettingLgus(entity)
+        em.delete(entity)
+    }
+
+
+    @ProxyMethod
+    public def approve( entity ) {
+        checkApproved( entity )
+        entity.state = STATE_APPROVED
+        em.update(entity)    
+        return entity
+    }
+    
+
+    @ProxyMethod
+    public Map copy( objid, ry ) {
+        //create setting 
+        def oldsettingid = objid
+        def setting = em.read( [objid:objid] )
+        if (!setting) 
+            throw new Exception('Setting does not exist or has already been deleted.')
+
+        setting.previd = oldsettingid
+        setting.objid = util.generateId('PTS')
+        setting.ry = ry  
+        setting.appliedto = null
+        em.create(setting )
+        
+        copyAssessLevels(setting.objid, oldsettingid)
+        copyUnitValues(setting.objid, oldsettingid)
+        return open( setting )
+    }
+    
+
+    @ProxyMethod
+    public Map reviseSettings( newry, copyYear ) {
+        util.required('Copy Year', copyYear )
+        if( newry <= copyYear ) 
+        throw new Exception('New Revision Year must be greater than copy year.')
+        
+        def settings = em.getSettingsByRy([ry:copyYear])
+        if( !settings ) 
+            throw new Exception('Revision Year ' + copyYear  + ' setting is not defined.')
+        
+        settings.each{setting->
+            def oldsettingid = setting.objid 
+            setting          = em.read([objid:oldsettingid] )
+            setting.previd   = setting.objid 
+            setting.objid    = util.generateId('PTS')
+            setting.ry       = newry  
+            if ( ! isDuplicateSetting( setting ) ){
+                em.create(setting )
+                copyAssessLevels(setting.objid, oldsettingid)
+                copyUnitValues(setting.objid, oldsettingid)
+                rysettingSvc.copyLgus( SETTING_TYPE, setting.objid, oldsettingid)
+            }
+        }
+        return open( settings[0] )
+    }
+
+    
+    @ProxyMethod
+    public def getPlantTrees() {
+        return ptSvc.getList([:])
+    }
+    
+
+    /*----------------------------------------------------------
+    * AssessLevel Methods
+    ----------------------------------------------------------*/
+    @ProxyMethod
+    public void saveAssessLevel( assesslevel ) {
+        em.save(assesslevel, SCHEMA_ASSESSLEVEL)
+    }
+    
+
+    @ProxyMethod
+    public void deleteAssessLevel( assesslevel ) {
+        em.delete(assesslevel, SCHEMA_ASSESSLEVEL)
+    }
+    
+
+    @ProxyMethod
+    public List getAssessLevels( planttreerysettingid )  {
+        return em.getAssessLevels([planttreerysettingid:planttreerysettingid]).each{
+            it.fixrate = util.toBoolean(it.fixrate, true)
+        }
+    }
+    
+
+
+    /*----------------------------------------------------------
+    * UnitValue Methods
+    ----------------------------------------------------------*/
+    @ProxyMethod
+    public void saveUnitValue( unitvalue ) {
+        em.save(unitvalue, SCHEMA_UNITVALUE)
+    }
+    
+
+    @ProxyMethod
+    public void deleteUnitValue( unitvalue ) {
+        em.delete(unitvalue, SCHEMA_UNITVALUE)
+    }
+    
+
+    @ProxyMethod
+    public List getUnitValues( planttreerysettingid, planttreeid )  {
+        return  em.getUnitValues([planttreerysettingid:planttreerysettingid, planttree_objid:planttreeid])
+    }
+    
+
+
+    @ProxyMethod
+    public void syncData( msg ) {
+        println 'Synching data -> ' + msg.msgtype
+        if (msg.msgtype == 'planttreerysetting'){
+            em.save( msg.data )
+            rysettingSvc.createLgus( SETTING_TYPE, msg.data )
+        }
+        else if (msg.msgtype == 'assesslevels'){
+            msg.data.each{
+                saveAssessLevel(it)
+            }
+        }
+        else if (msg.msgtype == 'planttreeunitvalues'){
+            msg.data.each{
+                saveUnitValue(it)
+            }
+        }
+    }
+
+    
+    /*----------------------------------------------------------
+    * Support Methods
+    ----------------------------------------------------------*/
+    
+    boolean isDuplicateSetting( entity ) {
+        def data = em.findDuplicate(entity)
+        return data != null 
+    }
+
+    void validate( entity ) {
+        if( entity.ry <= 0 ) 
+            throw new Exception('Revision Year must be greater than zero.')
+    }
+
+
+    void buildAppliedToInfo(entity){
+        if (env.ORGCLASS == 'PROVINCE' && entity.lgus == null)
+            entity.lgus = []
+        else if (! entity.lgus ) {
+            entity.lgus = [[rysettingid:entity.objid,lguid:var.lgu_objid, lguname:var.lgu_name, settingtype:SETTING_TYPE]]
+        }
+        else{
+            entity.appliedto = entity.lgus.sort{a,b -> a.lguname <=> b.lguname}.lguname.join(', ')
+        }
+    }
+ 
+
+      
+    void checkApproved( entity ){
+        def old = open(entity)
+        if (old.state == STATE_APPROVED)
+            throw new Exception('Setting has already been approved.')
+    }
+
+
+    void copyAssessLevels(newsettingid, oldsettingid){
+        getAssessLevels( oldsettingid ).each{
+            it.previd  = it.objid 
+            it.objid   = util.generateId('AL')
+            it.planttreerysettingid  = newsettingid
+            saveAssessLevel( it )
+        }
+    }
+
+    void copyUnitValues(newsettingid, oldsettingid){
+        getPlantTrees().each{pt ->
+            getUnitValues( oldsettingid, pt.objid ).each{ uv ->
+                uv.previd   = uv.objid;
+                uv.objid    = util.generateId('UV')
+                uv.planttreerysettingid  = newsettingid
+                saveUnitValue( uv );
+            }
+        }
+    }
+
+
+
+
+    @Async
+    @ProxyMethod
+    public def exportData(setting) {
+        setting = open(setting);
+        setting.type = 'planttree';
+        setting.levels = getAssessLevels(setting.objid);
+        setting.unitvalues = getUnitValues(setting.objid, "%");
+        return setting
+    }
+
+
+    @Async
+    @ProxyMethod
+    public def importData(setting) {
+        if (setting.type != 'planttree')
+            throw new Exception('Invalid data. Imported data is for ' + setting.type.toUpperCase() + ' setting.');
+            
+        try{
+            create(setting);
+        }
+        catch( e){
+            update(setting);
+        }
+        
+        setting.levels.each{ saveAssessLevel(it) }
+        setting.unitvalues.each{ saveUnitValue(it) }
+    }
+
+
+
+}

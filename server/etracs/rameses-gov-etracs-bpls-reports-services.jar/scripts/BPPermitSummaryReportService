@@ -1,0 +1,27 @@
+import com.rameses.annotations.*;
+import com.rameses.common.*;
+
+class BPPermitSummaryReportService
+{
+	
+	@ActiveDB("bpreport")
+	def em
+
+	@Service("DateService")
+	def dtSvc 
+
+	@ProxyMethod
+	public def getReport(params) { 
+		def list = em.getBusinessPermitSummary( params );
+		if( ! list ) throw new Exception('No records found.');
+
+		list.each { x-> 
+			x.newcount = (x.newcount) ? (Integer)x.newcount : 0;
+			x.renewcount =  (x.renewcount) ? (Integer)x.renewcount : 0;
+			x.retirecount = (x.retirecount)? (Integer)x.retirecount : 0;
+			if ( x.iqtr ) x.sqtr = 'Q'+x.iqtr; 
+		} 
+		return list;
+	}
+
+}

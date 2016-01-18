@@ -1,0 +1,50 @@
+import com.rameses.annotations.*;
+import com.rameses.common.*;
+
+class ProvinceSubdivisionRemoteService
+{   
+	@Env 
+	def env 
+
+	@Service('NotificationService')
+	def notificationService
+
+	@Service('SubdivisionSupportService')
+	def supportSvc
+
+	@Service('SubdivisionWorkflowService')
+	def workflowSvc
+
+
+
+	public void postSubdivisionForApproval(subdivision){
+		supportSvc.postSubdivisionData(subdivision)
+		if (!subdivision._resubmitted){
+			workflowSvc.start([refid:subdivision.objid, data:subdivision])
+			notifyGroup(subdivision)
+		}
+		println 'Submitted subdivision has been successfully created.'
+	}
+
+
+	public void repostSubdivisionRequirements(reqdata){
+		supportSvc.repostSubdivisionRequirements(reqdata)
+	}
+
+
+	void notifyGroup(subdivision){
+		println 'SubdivisionWorkflowService... notifyGroup...'
+        def msg = [
+            objid     		: subdivision.objid,
+            senderid  		: env.REQUESTER.USERID,
+            sender    		: env.REQUESTER.NAME,
+            recipientid   	: 'assign-receiver',
+            recipienttype 	: 'group',
+            message   		: 'Subdivision No. ' + subdivision.txnno + '    (assign-receiver)',
+            filetype  		: subdivision.filetype,
+            data 	  		: [objid: subdivision.objid],
+        ]
+        notificationService.addMessage(msg);
+	}
+
+}

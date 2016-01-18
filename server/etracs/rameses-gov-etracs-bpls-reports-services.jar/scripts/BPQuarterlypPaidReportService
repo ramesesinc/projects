@@ -1,0 +1,18 @@
+import com.rameses.annotations.*;
+import com.rameses.common.*;
+
+class BPQuarterlypPaidReportService
+{
+	
+	@ActiveDB("bpreport")
+	def em
+
+
+	@ProxyMethod
+	public def getReport(params) { 
+		def list = em.getQtrlyPaidBusinessList( params );
+		if( ! list ) throw  new Exception('No records found.');
+		return list;
+	}
+
+}

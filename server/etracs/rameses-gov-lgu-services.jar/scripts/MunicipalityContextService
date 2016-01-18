@@ -1,0 +1,41 @@
+import com.rameses.annotations.*;
+import com.rameses.common.*;
+import java.rmi.server.UID
+import com.rameses.services.extended.*;
+
+class MunicipalityContextService extends ActiveCrudService {
+	
+	@ActiveDB('municipality')	
+	def em
+	
+	@Service("OrgService")
+	def org;
+
+	@Service('ProvinceService')	
+	def provSvc;
+
+	public void beforeOpen(o) {
+		o.objid = org.getRoot().objid;
+	}
+
+	public void afterOpen(o) {
+		def m = org.open(o);
+		o.putAll(m);
+		o.parent = provSvc.open(o.parent);
+		o.parentid = o.parent.objid;
+		if( !o.assessor ) o.assessor = [:];
+		if( !o.mayor ) o.mayor = [:];
+		if( !o.treasurer ) o.treasurer = [:];
+	}
+
+	public void beforeUpdate(o) {
+		org.update(o);
+		provSvc.update(o.parent);
+	}	
+
+	public void beforeRemoveEntity(o) {
+		throw new Exception("City cannot be removed");	
+	}	
+	
+
+}

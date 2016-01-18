@@ -1,0 +1,35 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.common.*
+import com.rameses.services.extended.*
+
+class BankDepositCaptureService  {
+	
+	@ActiveDB('bankdepositcapture')
+	def em
+	
+	@Env
+	def env;
+
+	@ProxyMethod 
+	public def getUndepositedLiquidations(params ) {
+		return em.getUndepositedLiquidations(params).each{ it.selected = true }
+	}
+
+	@ProxyMethod 
+	public def init( params ) {
+		def o = [:]
+		o.fundsummary= em.getUndepositedByFund(params).each {
+			it.allocated = 0;
+			it.balance = it.amount;
+		}
+		o.undepositedChecks = em.getUndepositedChecks( params )
+		return o
+	}
+
+	@ProxyMethod 
+	public def getCashierList( ) {
+		return em.getCashierlist()
+	}
+}

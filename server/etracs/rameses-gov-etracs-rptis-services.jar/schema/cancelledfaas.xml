@@ -1,0 +1,10 @@
+<schema>
+	<element name="cancelledfaas" tablename="cancelledfaas">
+		<field name="objid" primary="true"/>
+		<field name="state" required="true"/>
+		<field name="txndate" required="true" />
+		<field name="faasid" required="true" />
+		<field name="remarks" required="true" />
+		<field name="reason_objid" required="true"/>
+	</element>
+</schema>

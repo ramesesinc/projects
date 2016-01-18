@@ -1,0 +1,793 @@
+import com.rameses.annotations.*;
+import com.rameses.common.*;
+import com.rameses.services.extended.*;
+import rptis.landtax.actions.*
+
+class RPTCompromiseService {
+	@ActiveDB('rptcompromise')
+	def em
+
+	@ActiveDB('rptledger')
+	def ledgerEm 
+	
+	@Env
+	def env 
+	
+	@Service('Var')
+	def var
+	
+	@Service('SequenceService')
+	def seqSvc
+	
+	@Service('LogService')
+	def logSvc
+	
+	@Service('DateService')
+	def dateSvc 
+	
+	@Service('NumberService')
+	def numSvc
+	
+	@Service('RPTBillingService')
+	def billingSvc
+
+	@Service('RPTUtil')
+	def utilSvc
+
+	@Service('RPTReceiptCompromiseService')
+	def receiptSvc
+
+	def SCHEMA_NAME 			= 'rptcompromise'
+	def ITEM_SCHEMA_NAME 		= 'rptcompromise_item'
+	def INSTALLMENT_SCHEMA_NAME	= 'rptcompromise_installment'
+	def CREDIT_SCHEMA_NAME		= 'rptcompromise_credit'
+	def RPTLEDGER_SCHEMA_NAME	= 'rptledger'
+	
+	def STATE_DRAFT 		= 'DRAFT'
+	def STATE_FORPAYMENT 	= 'FORPAYMENT'
+	def STATE_FORAPPROVAL	= 'FORAPPROVAL'
+	def STATE_APPROVED		= 'APPROVED'
+	def STATE_DEFAULTED		= 'DEFAULTED'
+	def STATE_CLOSED		= 'CLOSED' 
+	def TXN_NO_KEY			= 'RPTCompromise'
+	def REF_NAME			= 'RPTCompromise'
+	
+	@ProxyMethod
+	public def getList(params ){
+		if (! params.searchtext ) 
+			params.searchtext = ''
+		params.searchtext += '%'
+		params._pagingKeys = 'c.objid'
+		return em.getList(params)
+	}
+	
+
+	@ProxyMethod
+	public def getColumns( params ) {
+		return [
+            [name:'state', caption:'State'],
+            [name:'txnno', caption:'Txn No.'],
+            [name:'txndate', caption:'Txn Date'],
+            [name:'enddate', caption:'End Date'],
+            [name:'tdno', caption:'TD No.'],
+            [name:'fullpin', caption:'PIN'],
+            [name:'secondpartyname', caption:'Taxpayer Name'],
+            [name:'term', caption:'Term', type:'integer' ],
+            [name:'numofinstallment', caption:'Installments', type:'integer', format:'##'],
+            [name:'downpayment', caption:'Downpayment', type:'decimal'],
+            [name:'amount', caption:'Amount', type:'decimal' ],
+            [name:'amtpaid', caption:'Amount Paid', type:'decimal'],
+            [name:'enddate', caption:'End Date', maxWidth:80],
+        ]
+	}
+
+
+	@ProxyMethod
+	public def create( compromise ) {
+		checkActiveCompromise( compromise.rptledgerid )
+		validateInfo( compromise )
+		if (!compromise.txnno)
+			compromise.txnno = env.ORGID.replaceAll('-', '') + seqSvc.getNextFormattedSeries( TXN_NO_KEY )
+
+		em.create(compromise )
+		em.setLedgerUnderCompromised([objid:compromise.rptledgerid]) 
+		
+		compromise._items.each { 
+			em.create(it, ITEM_SCHEMA_NAME) 
+		}
+		compromise._installments.each { 
+			em.create(it, INSTALLMENT_SCHEMA_NAME) 
+		}
+		
+		logSvc.log( 'CREATE', REF_NAME, compromise.objid )
+		return compromise 
+	}	
+
+
+	@ProxyMethod
+	public def update( compromise ) {
+		validateInfo( compromise )
+		em.update(compromise )
+		logSvc.log( 'UPDATE', REF_NAME, compromise.objid )
+		return compromise 
+	}
+
+
+	@ProxyMethod
+	public def open( objid ) {
+		def compromise = em.read([objid:objid] )
+		if( ! compromise ) {
+			throw new Exception('Compromise does not exists or has already been deleted.')
+		}
+		
+		compromise.putAll( getFaasInfo(compromise) )
+		compromise.cypaymentrequired = utilSvc.toBoolean( compromise.cypaymentrequired, false )
+		compromise.downpaymentrequired = utilSvc.toBoolean( compromise.downpaymentrequired, false )
+		compromise._items = loadItems( compromise.objid )
+		compromise._installments = em.getRPTCompromiseInstallments([rptcompromiseid:objid]).each{
+									it.fullypaid = utilSvc.toBoolean(it.fullypaid, false)
+								}
+		compromise._credits = em.getRPTCompromiseCredits([rptcompromiseid:objid]).each{
+									it.voided = utilSvc.toBoolean(it.voided, false)
+								}
+		compromise.defaulted = getDefaultedStatus(compromise)
+		buildNotarizedInfo(compromise)
+		return compromise
+	}
+
+
+
+	@ProxyMethod
+	public void delete( objid, ledgerid ) {
+		def compromise = em.read([objid:objid])
+
+		def ledger = [
+			objid        : ledgerid, 
+			lastyearpaid : compromise.lastyearpaid, 
+			lastqtrpaid  : compromise.lastqtrpaid,
+			startyear    : compromise.startyear,
+		]
+
+		validateDelete(compromise)
+		em.deleteItems(compromise)
+		em.deleteInstallments(compromise)
+		em.resetLedgerUnderCompromised(ledger)
+		em.deleteLedgerCompromiseCredit(ledger)
+		em.resetLedgerItemsPaidFlag(ledger)
+		em.updateLedgerItemStartYearQtrPaid(ledger)
+		em.updateLastYearQtrPaid(ledger)
+		em.delete(compromise)
+	}	
+
+	void validateDelete(compromise){
+		if (!compromise)
+			throw new Exception('Compromise record does not exist or has already been deleted.')
+		if (!compromise.state.matches('DRAFT|FORPAYMENT'))
+			throw new Exception('Unable to delete Compromise because the state is invalid.\nOnly Draft and For Payment state is allowed.')
+		if (compromise.cypaymentorno || compromise.downpaymentorno)
+			throw new Exception('Unable to delete Compromise because payment has already been made.\nVoid payments if necessary.')
+	}
+
+
+	@ProxyMethod
+	public def submit( compromise ) {
+		validateState( compromise.objid, 'submit' )
+		postCompromiseCreditToLedger( compromise )
+		compromise.state = STATE_FORAPPROVAL
+		if( compromise.cypaymentrequired || compromise.downpaymentrequired ) {
+			compromise.state = STATE_FORPAYMENT
+		}
+		em.update(compromise )
+		logSvc.log('SUBMIT', REF_NAME, compromise.objid, )
+		return compromise
+	}
+
+	@ProxyMethod
+	public def submitForApproval( compromise ) {
+		validateState( compromise.objid, 'submitforapproval')
+		validatePaymentInfo( compromise )
+		compromise.state = STATE_FORAPPROVAL
+		em.update( compromise )
+		return compromise
+	}	
+
+
+	@ProxyMethod
+	public def approve( compromise ) {
+		validateState( compromise.objid, 'approve')
+		validateNotaryInfo(compromise)
+		compromise.state = STATE_APPROVED
+		em.update(compromise )
+		logSvc.log('APPROVE', REF_NAME, compromise.objid, )
+		return compromise
+	}
+
+
+	@ProxyMethod
+	public def postCapturedDownpayment( compromise, pmt ) {
+		compromise.downpaymentorno = pmt.orno
+        compromise.downpaymentordate = pmt.ordate
+		validateInfo( compromise )
+		receiptSvc.postCapturedDownpayment(compromise, pmt)
+		setForApprovalIfPaymentComplied( compromise )
+		em.update(compromise )
+		return compromise 
+	}
+
+	@ProxyMethod
+	public def postCapturedCurrentYearPayment( compromise, pmt ) {
+		compromise.cypaymentorno = pmt.orno
+        compromise.cypaymentordate = pmt.ordate 
+        compromise.cypaymentoramount = pmt.amount 
+		validateInfo( compromise )
+		setForApprovalIfPaymentComplied( compromise )
+		receiptSvc.postCapturedCurrentYearPayment(compromise, pmt)
+		em.update(compromise )
+		return compromise 
+	}	
+
+
+	@ProxyMethod
+	public def closeDefaultedCompromise(compromise) {
+		utilSvc.required('Compromise objid', compromise.objid)
+		utilSvc.required('Compromise rptledgerid', compromise.rptledgerid)
+		utilSvc.required('Compromise txnno', compromise.txnno)
+		utilSvc.required('Compromise startyear', compromise.startyear)
+		utilSvc.required('Compromise endyear', compromise.endyear)
+
+		def lastpaiditem = em.findLastPaidCompromiseItem(compromise)
+		if (!lastpaiditem){
+			lastpaiditem = [
+				year 			: compromise.startyear - 1,
+				basicpaid 		: 0.0,
+				basicintpaid	: 0.0,
+				sefpaid 		: 0.0,
+				sefintpaid 		: 0.0,
+				fullypaid 		: 1,
+			]
+		}
+
+		compromise.lastyearpaid = lastpaiditem.year 
+		compromise.partialbasic = lastpaiditem.basicpaid
+		compromise.partialbasicint = lastpaiditem.basicintpaid
+		compromise.partialbasicdisc = 0
+		compromise.partialsef = lastpaiditem.sefpaid
+		compromise.partialsefint = lastpaiditem.sefintpaid
+		compromise.partialsefdisc = 0
+		compromise.fromyear = (lastpaiditem.fullypaid == 1 ? lastpaiditem.year + 1 : lastpaiditem.year)
+		compromise.toyear = compromise.endyear 
+		em.resetLedgerItemPaidInfo(compromise)
+		em.setDefaultedLedger(compromise)
+		em.setDefaultedCompromise(compromise)
+		compromise.state = STATE_DEFAULTED
+		return compromise 
+	}	
+
+
+	void setForApprovalIfPaymentComplied( compromise ){
+		def complied = true 
+		
+		if( compromise.downpaymentrequired == true && (compromise.downpaymentorno == null || compromise.downpaymentorno.trim().length() == 0)) {
+			complied = false;
+		}
+
+		if( compromise.cypaymentrequired == true && (compromise.cypaymentorno == null || compromise.cypaymentorno.trim().length() ==0)) {
+			complied = false;
+		}
+		
+		if( complied  ) {
+			compromise.state = STATE_FORAPPROVAL
+		}
+	}	
+
+
+
+	@ProxyMethod
+	public def initCompromise( compromise ) {
+		validateLedger([objid:compromise.rptledgerid])
+		validateDownPaymentRate( compromise )
+		validateTermAndNumOfInstallment(compromise)
+		
+		def parsedate = dateSvc.parseDate(compromise.txndate, null)
+
+		def ledger = openRPTLedger(compromise.rptledgerid )
+		if( ledger.state == 'PENDING' )
+			throw new Exception('Ledger is still pending.')
+		if( ledger.state == 'CANCELLED' )
+			throw new Exception('Ledger has already been cancelled.')
+		if( ledger.lastyearpaid == parsedate.year )
+			throw new Exception('Ledger has no arrears.')
+		
+		
+		if( compromise.endyear == null) 
+			compromise.endyear = parsedate.year - 1 
+		if( compromise.endqtr == null ) 
+			compromise.endqtr = 4 
+		if( compromise.term == null ) 
+			compromise.term = 12;		//default 12 months 
+		if( compromise.numofinstallment == null ) 
+			compromise.numofinstallment = 4;		//default quarterly payment
+		
+		compromise.objid 			= 'RC' + new java.rmi.server.UID()
+		compromise.state 			=  STATE_DRAFT
+		compromise.faasid			= ledger.faasid
+		compromise.tdno             = ledger.tdno 
+        compromise.taxpayer     	= ledger.taxpayer
+        compromise.fullpin          = ledger.fullpin
+        compromise.cadastrallotno   = ledger.cadastrallotno
+        compromise.rputype          = ledger.rputype
+        compromise.assessedvalue    = ledger.totalav  
+		compromise.firstpartyname		= var.treasurer_name
+		compromise.firstpartytitle		= var.treasurer_title
+		compromise.secondpartyrepresentative = ledger.taxpayer.name 
+		compromise.secondpartyname     = ledger.taxpayer.name 
+		compromise.secondpartyaddress  = ledger.taxpayer.address
+		compromise.notarizedbytitle		= 'NOTARY PUBLIC'
+		compromise.lastyearpaid			= ledger.lastyearpaid
+		compromise.lastqtrpaid			= ledger.lastqtrpaid
+		compromise.startyear 			= (ledger.lastqtrpaid == 4 ? ledger.lastyearpaid + 1 : ledger.lastyearpaid)
+		compromise.startqtr 			= (ledger.lastqtrpaid == 4 ? 1 : ledger.lastqtrpaid + 1)
+		compromise.endyear				= compromise.endyear
+		compromise.endqtr				= compromise.endqtr
+		compromise.amount				= 0.0
+		compromise.amtforinstallment	= 0.0
+		compromise.amtpaid				= 0.0
+		compromise.signatories 			= []
+		
+		compromise._items 	= getDelinquentItems( compromise, compromise.bill)
+		
+		//calculate compromise amount based on compromise._items 
+		compromise.manualdiff = (compromise.manualdiff != null ? compromise.manualdiff : 0.0)
+		compromise.amount = compromise._items.total.sum()
+		def adjustedamt = compromise.amount - compromise.manualdiff 
+		if( compromise.downpayment >= adjustedamt ) {
+			throw new Exception('Downpayment must be less than the delinquency amount.')
+		}
+
+		if( compromise.downpaymentrequired  ) {
+			if( compromise.downpayment == 0) {
+				compromise.downpayment = numSvc.round( adjustedamt * compromise.downpaymentrate / 100.00 )
+			}
+			else {
+				//compute downpaymentrate and check against minimum rate 
+				def mindownpaymentrate = 20.0 
+				try{
+					mindownpaymentrate = Double.parseDouble(var.rpt_compromise_downpayment_rate)
+				}
+				catch(e){}
+
+				compromise.downpaymentrate = numSvc.roundA( compromise.downpayment / adjustedamt * 100 , 0)
+				if( compromise.downpaymentrate < mindownpaymentrate ) {
+					def minimum_downpayment = numSvc.format('#,##0.00',numSvc.roundA( adjustedamt * mindownpaymentrate / 100, 0))
+					throw new Exception('A minimum downpayment of ' + minimum_downpayment + ' is required.')
+				}	
+				validateDownPaymentRate( compromise)
+			}
+		}
+		compromise.amtforinstallment = adjustedamt - compromise.downpayment
+		compromise.amtpaid = 0.0
+
+		postManualComputationDifference(compromise)
+
+		//build installments 
+		compromise._installments = buildInstallments( compromise )
+		def lastitem = compromise._installments.last();
+		compromise.enddate = lastitem.duedate
+		return compromise
+	}	
+
+	@ProxyMethod
+	public def modifyInstallmentDueDates(firstinstallmentdate, interval, installments){
+		firstinstallmentdate = dateSvc.parse('yyyy-MM-dd', firstinstallmentdate)
+		installments[0].duedate = firstinstallmentdate
+
+		for (int i = 1; i < installments.size(); i++){
+			def sinterval = (interval * i )+ 'M'
+			installments[i].duedate = dateSvc.findNextFromDate(firstinstallmentdate, sinterval )
+		}
+
+		return installments 
+	}
+
+
+	@ProxyMethod
+	public def restructureInstallments(compromise){
+		def installments = buildInstallments(compromise)
+		update(compromise)
+
+		def param = [rptcompromiseid:compromise.objid]
+		em.deleteInstallments(param)
+
+		installments.each { 
+			em.create(it, INSTALLMENT_SCHEMA_NAME) 
+		}
+		return installments
+	}
+
+
+	@ProxyMethod
+	public def validateAndGetDelinquentAmount( ledger, txndate ) {
+		validateLedger(ledger)
+		return getDelinquentAmount(ledger, txndate)
+	}
+
+	@ProxyMethod
+	public def getDelinquentAmount( ledger, txndate ) {
+		if (!txndate) throw new Exception('Date Executed is required.');
+
+		def pdate = dateSvc.parseDate(txndate, null)
+		def compromise = [
+			rptledgerid : ledger.objid, 
+			endyear 	: pdate.year - 1, 
+			endqtr 		: 4,
+			txndate 	: pdate.date
+		]
+		def bill = billingSvc.initBill(ledger.objid)
+		bill.billdate = compromise.txndate
+		bill.putAll(compromise)
+		bill = billingSvc.generateBill(bill)
+		def items = getDelinquentItems(compromise, bill)
+		bill.delinquentamt = items.total.sum()
+		return bill
+	}
+
+	def getDelinquentItems( compromise, bill){
+		def items = em.getBillItems(bill)
+		items.each{
+			it.objid = 'CI' + new java.rmi.server.UID()
+			it.rptcompromiseid = compromise.objid 
+			it.total = it.basic + it.basicint + it.basicidle + it.basicidleint + it.sef + it.sefint + it.firecode 
+			it.payment = 0.0
+			it.fullypaid = false 
+		}
+		return items 
+	}
+
+	@ProxyMethod
+	public void validateTermAndNumOfInstallment( compromise) {
+		if( compromise.term == 1 ) throw new Exception('Term must be more than one (1) month.')
+		if( compromise.numofinstallment == 1 ) throw new Exception('No. of Installment must be more than one (1) month.')
+		//term must be divisible by numofinstallment
+		if( compromise.term % compromise.numofinstallment != 0 ) {
+			throw new Exception('Term must be equally divisible by the Number of Installment.')
+		}
+	}
+
+
+	@ProxyMethod
+	public void validateStartEndYear( compromise ) {
+		if( compromise.startyear > compromise.endyear ) {
+			throw new Exception('Start year must be less than or equal to end year.')
+		}
+	}
+
+
+	void validateLedger(ledger){
+		def oldledger = ledgerEm.read(ledger)
+		if (!oldledger)
+			throw new Exception('Ledger does not exist or has already been deleted.')
+		if (oldledger.state == 'CANCELLED')
+			throw new Exception('Ledger has already been cancelled.')
+
+		def existingcompromise = em.findCompromiseReferenceByLedger(ledger)
+
+		if ( existingcompromise )
+			throw new Exception('Ledger is already referenced by Compromise No. ' + existingcompromise.txnno + '.')
+	}
+
+	void validateDownPaymentRate( compromise) {
+		if( compromise.downpaymentrequired  == false ){
+			compromise.downpayment = 0.0
+			compromise.downpaymentrate = 0.0 
+			return 
+		} 
+
+		if( compromise.downpaymentrate == 0 && compromise.downpayment > 0 ) 
+			return 
+
+		if( compromise.downpaymentrate <= 0 )
+			throw new Exception('Downpayment Rate must be greater than zero.')
+
+		if( compromise.downpaymentrate >= 100  ) 
+			throw new Exception('Downpayment Rate must be less than 100 percent.')
+	}	
+
+
+	def openRPTLedger( objid ) {
+		def ledger = em.findLedgerById([objid:objid] )
+		if( ! ledger )
+			throw new Exception('Ledger does not exists.')
+		return ledger 
+	}
+
+
+	def createBill( ledger, parsedate) {
+		return [
+			objid 				: 'B' + new java.rmi.server.UID(),
+			sessionid      		: 'S' + new java.rmi.server.UID(),
+			taxpayerid     		: ledger.taxpayer.objid,
+			rptledgerid    		: ledger.objid,
+			advancepayment 		: false,
+			billdate       		: parsedate.date,
+			billtoyear     		: parsedate.year,
+			billtoqtr      		: 4,
+			fullpayment    		: true,
+			qtrlypaymentavailed : false, 
+			advancepayment 		: false,
+			currentdate 		: parsedate.date,
+            cy 					: parsedate.year,
+        ]
+    }	
+
+
+	def buildInstallments( compromise ){
+		def installments = []
+		validateTermAndNumOfInstallment( compromise )
+		def numofinstallment = compromise.numofinstallment
+		def interval = (int)(compromise.term / numofinstallment)		/* determine interval in months */
+		def installmentamount = numSvc.round( compromise.amtforinstallment / numofinstallment)
+		def adjamount = compromise.amtforinstallment - (installmentamount * (numofinstallment - 1 ))
+		
+		(1..numofinstallment).each{ num -> 
+			def amount = installmentamount
+			if( num == numofinstallment ) {
+				amount = adjamount
+			}
+			def sinterval = (interval * num )+ 'M'
+			def duedate = dateSvc.findNextFromDate( compromise.txndate, sinterval )
+			installments.add( createInstallment( compromise, num, duedate, amount ) )
+		}
+		return installments
+	}
+
+
+	def createInstallment( compromise, installmentno, duedate, amount ) {
+		return [
+			objid 			: 'RI' + new java.rmi.server.UID(),
+			rptledgerid		: compromise.rptledgerid,
+			rptcompromiseid	: compromise.objid, 
+			installmentno	: installmentno,
+			duedate			: duedate,
+			amount			: amount,
+			amtpaid			: 0.0 ,
+			fullypaid		: false,
+		]
+	}	
+
+
+	void checkActiveCompromise( ledgerid ) {
+		def compromise = em.findActiveCompromiseByLedgerId([ledgerid:ledgerid])
+		if( compromise ) {
+			throw new Exception("Ledger is currently referenced by an active Compromise Agreement No. ${compromise.txnno}.")
+		}	
+	}
+
+
+	void validateInfo( compromise ) {
+	
+		validateStartEndYear( compromise)
+	
+		def txndate = dateSvc.serverDate
+		if( compromise.txndate ) {
+			txndate = dateSvc.parse('yyyy-MM-dd', compromise.txndate )
+			compromise.txndate = txndate 
+		}
+		
+		if( compromise.firstpartyctcdate ) {
+			def firstpartyctcdate = dateSvc.parse('yyyy-MM-dd', compromise.firstpartyctcdate)
+			if( firstpartyctcdate > txndate ) throw new Exception('First Party CTC Issue Date must not be greater than transaction date.')
+			if( dateSvc.getYear( firstpartyctcdate ) < dateSvc.getYear(txndate) ) throw new Exception('First Party CTC must be issued within the transaction year.')
+		}
+		
+		
+		if( compromise.secondpartyctcdate ) {
+			def secondpartyctcdate = dateSvc.parse('yyyy-MM-dd', compromise.secondpartyctcdate)
+			if( secondpartyctcdate > txndate ) throw new Exception('Second Party CTC Issue Date must not be greater than transaction date.')
+			if( dateSvc.getYear( secondpartyctcdate ) < dateSvc.getYear(txndate) ) throw new Exception('Second Party CTC must be issued within the current year.')
+		}
+		
+		if ( compromise.notarizeddate ) {
+			def notarizeddate = dateSvc.parse('yyyy-MM-dd', compromise.notarizeddate)
+			if( notarizeddate < txndate ) throw new Exception('Notarized Date must not be greater than Date Executed.')
+			if( dateSvc.getYear( notarizeddate ) < dateSvc.getYear(txndate) ) throw new Exception('Notarized Date must be less than current date.')
+		}
+
+		//check installment totals 
+		if (compromise.amtforinstallment != compromise._installments.amount.sum())
+			throw new Exception('Total Installment Amount does not match Amount for Installment.\nPlease verify modified installment amounts.')
+	}	
+
+
+	void postCompromiseCreditToLedger( compromise ) {
+		def params = [
+			objid		: compromise.rptledgerid, 
+			lastyearpaid: compromise.endyear,
+			lastqtrpaid : compromise.endqtr,
+		]
+
+		em.updateLastYearQtrPaid(params)
+		em.fullyPayLedgerItems(params)
+		em.fullyPayQtrlyLedgerItems(params)
+		
+		if( compromise._items ) {
+			def pmt 			= [:]
+			pmt.objid			= compromise.objid 
+			pmt.rptledgerid     = compromise.rptledgerid 
+			pmt.type            = 'COMPROMISE'
+			pmt.collector  		= 'SYSTEM'
+			pmt.dtposted        = dateSvc.serverDate
+			pmt.refno     	= compromise.txnno 
+			pmt.refdate     = compromise.txndate 
+			pmt.paidby 		= [name:compromise.secondpartyname, address:compromise.secondpartyaddress]
+			pmt.fromyear        = compromise.startyear 
+			pmt.fromqtr        	= compromise.startqtr 
+			pmt.toyear        	= compromise.endyear 
+			pmt.toqtr        	= compromise.endqtr 
+			pmt.basic	        = compromise._items.basic.sum()
+			pmt.basicint        = compromise._items.basicint.sum()
+			pmt.basicidle       = compromise._items.basicidle.sum()
+			pmt.basicidleint    = compromise._items.basicidleint.sum()
+			pmt.basicidledisc    = 0.0
+			pmt.basicpartial    = 0.0
+			pmt.basicdisc    	= 0.0
+			pmt.basicnet        = pmt.basic + pmt.basicint  
+			pmt.sef          	= compromise._items.sef.sum() 
+			pmt.sefint         	= compromise._items.sefint.sum() 
+			pmt.sefpartial      = 0.0
+			pmt.sefdisc      	= 0.0
+			pmt.sefnet          = pmt.sef + pmt.sefint 
+			pmt.firecode      	= compromise._items.firecode.sum()
+			pmt.total           = pmt.basicnet + pmt.sefnet + pmt.basicidle + pmt.firecode 
+			pmt.voided          = false 
+			pmt.postedby        = env.NAME
+			pmt.postedbytitle   = env.JOBTITLE
+			pmt.amount 			= compromise.amount
+			ledgerEm.create( pmt, 'credit' )         
+		}
+	}
+
+	
+	void validateState( objid, action ) {
+		def old = em.findRPTCompromiseById([objid:objid])
+		if( ! old ) throw new Exception('Compromise does not exists or has already been deleted.')
+		
+		if( action == 'submit' ) {
+			if( old.state != STATE_DRAFT ) throw new Exception('Compromise Agreement has already been submitted.')
+		}
+		else if( action == 'submitforapproval' ) {
+			if( old.state != STATE_FORPAYMENT ) throw new Exception('Only for payment Compromise Agreement can be submitted for approval.')
+		}
+		else if( action == 'approve' ) {
+			if( old.state != STATE_FORAPPROVAL ) throw new Exception('Only for approval Compromise Agreement can be approved.')
+		}
+	}	
+
+	
+	def getFaasInfo(compromise)  {
+		return em.findFaasInfo([objid:compromise.rptledgerid])
+	}	
+
+
+	def loadItems( compromiseid ) {
+		return em.getRPTCompromiseItems([rptcompromiseid:compromiseid])
+	}	
+
+
+	void validatePaymentInfo( compromise ) {
+		if( compromise.downpaymentrequired ) {
+			utilSvc.required( 'Down Payment O.R. No.', compromise.downpaymentorno)
+			utilSvc.required( 'Down Payment O.R. Date', compromise.downpaymentordate)
+		}
+		if( compromise.cypaymentrequired ) {
+			utilSvc.required( 'Current Year O.R. No.', compromise.cypaymentorno)
+			utilSvc.required( 'Current Year O.R. Date', compromise.cypaymentordate)
+		}
+	}	
+
+
+	def getDefaultedStatus(compromise){
+		if (compromise.state == STATE_DEFAULTED)
+			return true;
+		def params = [objid:compromise.objid, currentdate:dateSvc.serverDate]
+		def defaultedinstallment = em.findDefaultedInstallment(params)
+		if (defaultedinstallment)
+			return true 
+		return false 
+	}
+
+	void postManualComputationDifference(compromise){
+		if (compromise.manualdiff == 0)
+			return
+
+		if (compromise.manualdiff > 0)
+			applyDifferenceAsPartialPayment(compromise, compromise._items)
+		else 
+			applyDifferenceAsAdditional(compromise, compromise._items)
+	}
+
+	void applyDifferenceAsPartialPayment(compromise, items){
+		def partial = compromise.manualdiff
+		for (item in items){
+			if (partial > item.total){
+				em.fullyPaidItem(item)
+				partial -= item.total
+
+				item.basicpaid = item.basic
+				item.basicintpaid = item.basicint
+				item.basicidlepaid = item.basicidle
+				item.basicidleintpaid = item.basicidleint
+				item.sefpaid = item.sef
+				item.sefintpaid = item.sefint
+				item.payment += item.total 
+				item.fullypaid = true 
+			}
+			else{
+				item.basicidledisc = 0.0
+				item.basicdisc = 0.0
+				item.sefdisc = 0.0
+				applyPartialPayment(compromise, item, partial)
+				break
+			}
+		}
+	}
+
+	void applyPartialPayment(compromise, item, partial){
+		def itemtotal = item.total 
+		def partialmade = [
+			objid 		: item.objid, 
+			basic 		: numSvc.round( partial * (item.basic / itemtotal) ),
+			basicint 	: numSvc.round( partial * (item.basicint / itemtotal) ),
+			basicidle 		: numSvc.round( partial * (item.basicidle / itemtotal) ),
+			basicidleint 	: numSvc.round( partial * (item.basicidleint / itemtotal) ),
+			sef 		: numSvc.round( partial * (item.sef / itemtotal) ),
+		]
+		partialmade.sefint 	= partial - (partialmade.basic + partialmade.basicint + partialmade.basicidle + partialmade.basicidleint + partialmade.sef )
+		item.basicpaid = partialmade.basic
+		item.basicintpaid = partialmade.basicint
+		item.basicidlepaid = partialmade.basicidle
+		item.basicidleintpaid = partialmade.basicidleint
+		item.sefpaid = partialmade.sef
+		item.sefintpaid = partialmade.sefint
+		item.payment +=  partial 
+		item.fullypaid = false 
+	}	
+
+	void applyDifferenceAsAdditional(compromise, items){
+		def partial = compromise.manualdiff.abs()
+		def item = items.first()
+		def itemtotal = item.total 
+		def additional = [
+			objid 				: item.objid, 
+			basicadditional 	: numSvc.round( partial * (item.basic / itemtotal) ),
+			basicintadditional 	: numSvc.round( partial * (item.basicint / itemtotal) ),
+			basicidleadditional 	: numSvc.round( partial * (item.basicidle / itemtotal) ),
+			basicidleintadditional 	: numSvc.round( partial * (item.basicidleint / itemtotal) ),
+			sefadditional 		: numSvc.round( partial * (item.sef / itemtotal) ),
+		]
+		additional.sefintadditional = partial - (additional.basicadditional + additional.basicintadditional + additional.basicidleadditional + additional.basicidleintadditional +additional.sefadditional )
+		item.basic += additional.basicadditional
+		item.basicint += additional.basicintadditional
+		item.basicidle += additional.basicidleadditional
+		item.basicidleint += additional.basicidleintadditional
+		item.sef += additional.sefadditional
+		item.sefint += additional.sefintadditional
+		item.total += partial 
+	}
+
+
+	void validateNotaryInfo(compromise){
+		utilSvc.required('Notarized By', compromise.notarizedby)
+		utilSvc.required('Notarized By Title', compromise.notarizedbytitle)
+		utilSvc.required('Notarized Date', compromise.notarizeddate)
+	}
+
+	void buildNotarizedInfo(compromise){
+		compromise.notarizedday = '________'
+		compromise.notarizedmonth = '________'
+		if (compromise.notarizeddate){
+			def dt = dateSvc.parseDate(compromise.notarizeddate, null)
+			compromise.notarizedday = utilSvc.formalizeDate(compromise.notarizeddate, 'd')
+			compromise.notarizedmonth = utilSvc.getMonthName(dt.month)
+		}
+	}
+}

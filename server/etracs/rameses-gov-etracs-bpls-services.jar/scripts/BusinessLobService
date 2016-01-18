@@ -1,0 +1,66 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.services.extended.*;
+
+public class BusinessLobService  {
+
+	@ActiveDB("business_application_lob")
+	def lobs;
+
+	@ActiveDB("business_active_lob")
+	def activeLobs;
+
+
+	@ProxyMethod
+	public void addAppLobs(def o) {
+		if(!o.businessid) throw new Exception("businessid is required");
+		if(!o.activeyear) throw new Exception("activeyear is required");
+		if(!o.lobs) throw new Exception("lobs is required");
+		if(!o.applicationid) throw new Exception("applicationid is required");
+
+		//ensure to remove all applications before adding new
+		lobs.removeList( o );
+		o.lobs.each {
+			it.objid = "BUSLOB"+new UID();
+			it.businessid = o.businessid;
+			it.applicationid = o.applicationid;
+			it.activeyear = o.activeyear;
+			lobs.create(it);				
+		}
+	}
+
+
+	//allow only to remove per application
+	@ProxyMethod
+	public def getAppLobs(def o) {
+		if(!o.applicationid) throw new Exception("applicationid is required");
+		return lobs.getList( o );
+	}
+
+	@ProxyMethod
+	public void addActiveLobs(def o) {
+		if(!o.businessid) throw new Exception("businessid is required");
+		if(!o.lobs) throw new Exception("lobs is required");
+		if(o.remove_all == true) activeLobs.removeList( o );
+
+		o.lobs.each {
+			it.objid = "BUSALOB"+new UID();
+			it.businessid = o.businessid; 
+			if ( it.assessmenttype.toString().equalsIgnoreCase('RETIRE') ) {
+				activeLobs.removeLob( it );
+			} else { 
+				def nfo = activeLobs.findLob( it ); 
+				if ( !nfo ) activeLobs.create( it ); 
+			} 
+		} 
+	} 
+
+	@ProxyMethod
+	public def getActiveLobs(def o) {
+		if(!o.businessid) throw new Exception("business is required");
+		return activeLobs.getList( o );
+	}
+
+}
+

@@ -1,0 +1,21 @@
+<schema>
+
+	<element name="barangay" tablename="barangay">
+		<field name="objid" primary="true"/>
+		<field name="state" />
+		<field name="indexno" />
+		<field name="pin" />
+		<field name="name" />
+		<field name="fullname" />
+		<field name="address" />
+		<field name="previd" />
+		<field name="parentid" />
+		<field name="captain_name" />
+		<field name="captain_title" />
+		<field name="captain_office" />
+		<field name="treasurer_name" />
+		<field name="treasurer_title" />
+		<field name="treasurer_office" />
+	</element>
+	
+</schema>

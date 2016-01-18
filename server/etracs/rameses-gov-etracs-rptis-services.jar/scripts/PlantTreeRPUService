@@ -1,0 +1,142 @@
+import com.rameses.annotations.*
+import com.rameses.util.*
+import com.rameses.services.extended.*
+
+class PlantTreeRPUService
+{
+	@ActiveDB('planttreerpu')
+    def em
+
+    @Env
+    def env
+    
+    @Service('RPTUtil')
+    def util
+
+    @Service('DateService')
+    def dateSvc
+
+    @Service('NumberService')
+    def numberSvc
+    
+    @Service('LandRPUService')
+    def rpuSvc
+
+    @Service('PlantTreeRYSettingLookupService')
+    def ptSettingSvc 
+
+    @Service('PlantTreeAssessmentRuleService')
+    def ruleSvc 
+
+    
+    def SCHEMA_DETAIL  = 'planttreedetail'
+    
+
+    @ProxyMethod
+    public def initPlantTreeRpu(rpu) {
+        def landrpu = rpuSvc.getLandRpuByRealPropertyId(rpu.realpropertyid)
+        if (!landrpu) throw new Exception('Land RPU Reference does not exists.')
+
+        rpu.landrpuid   = landrpu.objid 
+        rpu.productive = 0.0
+        rpu.nonproductive = 0.0
+        rpu.planttrees  = []
+        return rpu 
+    }
+
+    @ProxyMethod
+    public def createPlantTreeRpu( rpu ) {
+        em.create(rpu)
+        savePlantTrees(rpu.planttrees)
+        return rpu
+    }
+
+
+    @ProxyMethod
+    public def updatePlantTreeRpu(rpu) { 
+        em.updateImmediate(rpu)
+        savePlantTrees(rpu.planttrees)
+        removeDeletedItems(rpu)
+        return rpu
+    }
+
+
+    @ProxyMethod
+    public def openPlantTreeRpu( objid ) {
+        def rpu = em.read([objid:objid])
+        if (!rpu) {
+            throw new Exception('Plant/Tree RPU does not exists or has been deleted.')
+        }
+        rpu.planttrees  = getPlantTreeDetails(rpu)
+        rpu.assessments = em.getAssessments(rpu)
+        return rpu 
+    }
+
+
+    @ProxyMethod
+    public def deletePlantTreeRpu(rpu){
+    	rpu.planttrees.each{ em.delete(it, SCHEMA_DETAIL) }
+        em.delete(rpu)
+    }
+
+
+    @ProxyMethod
+    public void generateNewIds( rpu ) {
+        rpu.planttrees.each{ pt ->
+            pt.objid     = util.generateId('PT')
+            pt.planttreerpuid = rpu.objid 
+        }
+    }
+
+
+    @ProxyMethod
+    public def getClassifications(  ) {
+        return rpuSvc.getClassifications()
+    }
+
+
+    @ProxyMethod
+    public def getExemptionTypes(){
+        return rpuSvc.getExemptionTypes()
+    }
+
+
+    @ProxyMethod
+    public def getPlantTreeRySetting(objid){
+        return ptSettingSvc.lookupPlantTreeRySettingById(objid)
+    }
+
+
+    /*-----------------------------------------------------------------
+    * 
+    * ASSESSMENT SUPPORT
+    *
+    *----------------------------------------------------------------- */
+    @ProxyMethod
+    public def calculateAssessment( rpu ) {
+        return ruleSvc.execute(rpu)    
+    }
+
+
+    def getRYSetting(){
+    	return [adjustplanttree:1, agriculturalid:'AGRICULTURAL']
+    }
+
+
+
+    def getPlantTreeDetails(rpu){
+        return em.getPlantTreeDetails(rpu)
+    }
+
+    void savePlantTrees(planttrees){
+    	planttrees.each{pt ->
+    		em.save(pt, SCHEMA_DETAIL)
+    	}
+    }
+
+    void removeDeletedItems(rpu){
+    	rpu._planttrees?.each{
+    		em.delete(it,SCHEMA_DETAIL)
+    	}
+    }
+}

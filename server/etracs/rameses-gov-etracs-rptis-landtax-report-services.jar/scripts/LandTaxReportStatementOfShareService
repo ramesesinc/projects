@@ -1,0 +1,159 @@
+import com.rameses.annotations.*
+import com.rameses.common.*;
+import com.rameses.services.extended.*;
+import java.rmi.server.UID
+
+class LandTaxReportStatementOfShareService{
+    @ActiveDB('landtaxreport_statementofshare')
+    def em;
+
+    @Service('DateService')
+    def dtsvc;
+
+    @ProxyMethod
+    def generateIdleLandSharesAbstract(params){
+        String idx = (params.month.index+'').padLeft(2, '0')
+        params.fromdate = dtsvc.parse('yyyy-MM-dd', params.year+"-"+idx+"-01");
+        params.todate = dtsvc.getMonthEndDate(dtsvc.parse("yyyy-MM-dd",params.fromdate));
+        params.todate = dtsvc.add(dtsvc.parse("yyyy-MM-dd",params.todate),"1d");
+
+        def period = 'For the Month of ' + dtsvc.format('MMMMM, yyyy', params.fromdate);
+        def items = em.getIdleLandSharesAbstract(params)
+        if (!items) 
+            throw new Exception('Records not found.')
+
+        return [
+            params : [PERIOD : period],  
+            items  : items 
+        ]
+    }
+
+    @ProxyMethod
+    public def generateIdleLandShares( params ) {
+        String idx = (params.month.index+'').padLeft(2, '0')
+        params.fromdate = dtsvc.parse('yyyy-MM-dd', params.year+"-"+idx+"-01")
+        params.todate = dtsvc.getMonthEndDate(dtsvc.parse("yyyy-MM-dd",params.fromdate))
+        params.todate = dtsvc.add(dtsvc.parse("yyyy-MM-dd",params.todate),"1d")
+
+        def period = 'For the Month of ' + dtsvc.format('MMMMM, yyyy', params.fromdate)
+        def shares = em.getIdleLandShares(params)
+        if (!shares) 
+            throw new Exception('Records not found.')
+        
+        shares[0].totalshare = shares[0].munisharetotal + shares[0].provsharetotal
+
+        return [
+            params : [PERIOD : period],  
+            shares : shares
+        ]
+    }
+
+
+    @ProxyMethod
+    public def generateBasicSharesAbstract( params ) {
+        String idx = (params.month.index+'').padLeft(2, '0')
+        params.fromdate = dtsvc.parse('yyyy-MM-dd', params.year+"-"+idx+"-01")
+        params.todate = dtsvc.getMonthEndDate(dtsvc.parse("yyyy-MM-dd",params.fromdate))
+        params.todate = dtsvc.add(dtsvc.parse("yyyy-MM-dd",params.todate),"1d")
+
+        def period = 'For the Month of ' + dtsvc.format('MMMMM, yyyy', params.fromdate)
+        def shares = em.getBasicSharesAbstract(params)
+        if (!shares) 
+            throw new Exception('Records not found.')
+        
+        shares.each{
+            it.brgytotal = it.brgycurr + it.brgyprev + it.brgypenalty
+            it.brgytotalshare = it.brgycurrshare + it.brgyprevshare + it.brgypenaltyshare 
+            it.provmunitotalshare = it.provmunicurrshare + it.provmuniprevshare + it.provmunipenaltyshare
+        }
+
+        return [
+            params : [PERIOD : period],  
+            shares : shares
+        ]
+    }
+
+
+    @ProxyMethod
+    public def generateBasicShares( params ) {
+        String idx = (params.month.index+'').padLeft(2, '0')
+        params.fromdate = dtsvc.parse('yyyy-MM-dd', params.year+"-"+idx+"-01")
+        params.todate = dtsvc.getMonthEndDate(dtsvc.parse("yyyy-MM-dd",params.fromdate))
+        params.todate = dtsvc.add(dtsvc.parse("yyyy-MM-dd",params.todate),"1d")
+
+        def period = 'For the Month of ' + dtsvc.format('MMMMM, yyyy', params.fromdate)
+        def shares = em.getBasicShares(params)
+        if (!shares) 
+            throw new Exception('Records not found.')
+        
+        shares.each{
+            it.brgytotal = it.brgycurr + it.brgyprev + it.brgypenalty
+            it.munitotalshare = it.municurrshare + it.muniprevshare + it.munipenaltyshare 
+            it.provtotalshare = it.provcurrshare + it.provprevshare + it.provpenaltyshare 
+        }
+
+        return [
+            params : [PERIOD : period],  
+            shares : shares
+        ]
+    }
+
+    @ProxyMethod
+    public def generateBasicSharesSummary( params ) {
+        String idx = (params.month.index+'').padLeft(2, '0')
+        params.fromdate = dtsvc.parse('yyyy-MM-dd', params.year+"-"+idx+"-01")
+        params.todate = dtsvc.getMonthEndDate(dtsvc.parse("yyyy-MM-dd",params.fromdate))
+        params.todate = dtsvc.add(dtsvc.parse("yyyy-MM-dd",params.todate),"1d")
+
+        def period = 'For the Month of ' + dtsvc.format('MMMMM, yyyy', params.fromdate)
+        def shares = em.getBasicSharesSummary(params)
+        if (!shares) 
+            throw new Exception('Records not found.')
+            println 'shares -> ' + shares 
+        return [
+            params : [PERIOD : period],  
+            shares : shares
+        ]
+    }   
+
+
+
+    @ProxyMethod
+    public def generateSefShares( params ) {
+        String idx = (params.month.index+'').padLeft(2, '0')
+        params.fromdate = dtsvc.parse('yyyy-MM-dd', params.year+"-"+idx+"-01")
+        params.todate = dtsvc.getMonthEndDate(dtsvc.parse("yyyy-MM-dd",params.fromdate))
+        params.todate = dtsvc.add(dtsvc.parse("yyyy-MM-dd",params.todate),"1d")
+
+        def period = 'For the Month of ' + dtsvc.format('MMMMM, yyyy', params.fromdate)
+        def shares = em.getSefShares(params)
+        if (!shares) 
+            throw new Exception('Records not found.')
+        
+        shares[0].totalshare = shares[0].munisharetotal + shares[0].provsharetotal
+
+        return [
+            params : [PERIOD : period],  
+            shares : shares
+        ]
+    }
+
+    @ProxyMethod
+    public def getBarangaySharesStandard(params) {
+        String idx = (params.month.index+'').padLeft(2, '0')
+        params.fromdate = dtsvc.parse('yyyy-MM-dd', params.year+"-"+idx+"-01")
+        params.todate = dtsvc.getMonthEndDate(dtsvc.parse("yyyy-MM-dd",params.fromdate))
+        params.todate = dtsvc.add(dtsvc.parse("yyyy-MM-dd",params.todate),"1d")
+
+        def period = 'For the Month of ' + dtsvc.format('MMMMM, yyyy', params.fromdate)
+        def shares = em.getBrgySharesStandard( params) 
+        if(! shares )  throw new Exception('Records not found.')
+        
+        return [
+            params : [PERIOD : period],  
+            shares : shares
+        ]
+    }
+
+   
+}

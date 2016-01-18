@@ -1,0 +1,46 @@
+<schema>
+	<element name="bpapplication_info" tablename="zzzzz_bpapplication_info">
+		<field name="objid" primary="true"/>
+		<field name="businessid" />
+		<field name="applicationid" />
+		<field name="activeyear" />
+		<field name="type" />
+		<field name="attribute_objid" />
+		<field name="attribute_name" />
+		<field name="lob_objid" />
+		<field name="lob_name" />
+		<field name="decimalvalue" />
+		<field name="intvalue" />
+		<field name="stringvalue" />
+		<field name="boolvalue" />
+		<field name="phase" />
+		<field name="level"/>
+	</element> 
+
+	<element name="bpapplication_lob" tablename="zzzzz_bpapplication_lob">
+		<field name="objid" primary="true"/> 
+		<field name="lobid" /> 
+		<field name="name" /> 
+		<field name="classification_objid" /> 
+		<field name="classification_name" /> 
+		<field name="assessmenttype" /> 
+		<field name="applicationid" /> 
+		<field name="businessid" /> 
+	</element> 
+	
+	<element name="bpapplication_taxfee" tablename="zzzzz_bpapplication_taxfee">
+		<field name="objid" primary="key"/> 
+		<field name="applicationid" /> 
+		<field name="businessid" /> 
+		<field name="account_objid" /> 
+		<field name="account_code" /> 
+		<field name="account_title" /> 
+		<field name="account_type" /> 
+		<field name="lob_objid" /> 
+		<field name="lob_name" /> 
+		<field name="taxfeetype" /> 
+		<field name="paymentmode" /> 
+		<field name="assessedvalue" /> 
+		<field name="amount" /> 
+	</element> 
+</schema>

@@ -1,0 +1,128 @@
+import com.rameses.annotations.*
+import com.rameses.common.*;
+import java.util.concurrent.*
+import java.rmi.server.UID
+
+class RPTReportDelinquencyService
+{
+	@Env
+	def env 
+
+	@ActiveDB('report_rptdelinquency')
+	def em
+
+	@Service('RPTBillingService')
+	def billSvc
+
+	@Service('DateService')
+	def dtSvc 
+
+	@Service('NumberService')
+	def numSvc 
+
+	@ProxyMethod
+	public def getBarangayList(  ) {
+		return em.getBarangayList()
+	}
+
+	@ProxyMethod
+	public def getOpenLedgersByBarangay( barangay ) {
+		def params = [barangayid:barangay.objid, cy:dtSvc.serverYear]
+		return em.getOpenLedgersByBarangay(params)
+	}
+
+
+	@Async
+	@ProxyMethod
+	public def cleanup( params ) {
+		if ( params.barangay?.objid ) {
+			params.barangayid = params.barangay.objid; 
+		} else {
+			params.barangayid = '%'; 
+		}
+		
+		em.cleanup( params );
+		return "OK"; 
+	}
+
+
+	@ProxyMethod
+	public void validateDateComputed( dtcomputed  ) {
+		if (!dtcomputed)
+			throw new Exception('Date Computed is required.')
+		/*
+		dtcomputed = dtSvc.parse('yyyy-MM-dd', dtcomputed)
+		if ( dtSvc.add(dtcomputed, '1d') < dtSvc.serverDate )
+			throw new Exception('Date Computed must be greater than or equal to current date.')
+		*/
+	}
+
+
+	@ProxyMethod
+	public void buildDelinquency( rptledger, dtgenerated ) {
+		def items = billSvc.generateBillItemsByLedger(rptledger.objid, dtgenerated)
+		if (!items) return;
+
+		items.each{ item ->
+			if (item.total > 0.0){
+				item.objid = 'I' + new java.rmi.server.UID()
+				item.barangayid = rptledger.barangayid
+				item.dtgenerated = dtgenerated
+				item.generatedby = [name:env.FULLNAME, title:env.TITLE]
+				item.year = (int)item.year
+				item.qtr = (int)item.qtr
+				em.create(item)
+			}
+		}
+	}
+
+
+	@Async
+	@ProxyMethod
+	public def generateDelinquencyReport( params ) {
+		def currentyear = dtSvc.getServerYear(); 
+		if ( !params.year ) params.year = currentyear;
+
+		params.filter = '';
+		if ( params.period?.code == 'FOR_THE_YEAR' ) {
+			params.filter = ''' AND year = $P{year} ''';
+		} else if ( params.period?.code == 'AS_OF_YEAR' ) {
+			params.filter = ''' AND year <= $P{year} ''';
+		} else { 
+			params.filter = ''' AND year < $P{year} ''';
+			params.year = currentyear; 
+		} 
+
+		params.barangayid = params.barangay?.objid; 
+		if ( !params.barangayid ) params.barangayid='%'; 
+
+		params.orderby = ' rl.fullpin '; 
+		if ( params.sorttype == 'taxpayer' ) {
+			params.orderby = ' e.entityname ';
+		} else if ( params.sorttype == 'tdno' ) {
+			params.orderby = ' rl.tdno ';
+		} 
+
+		def list = null; 
+		if ( params.reporttype == 'summary' ) {
+			list = em.getDelinquentLedgersSummary( params ); 
+			if ( !list ) throw new Exception('No records found. Try rebuilding the delinquency')
+
+		} else {
+			list = em.getDelinquentLedgers( params ); 
+			if ( !list ) throw new Exception('No records found. Try rebuilding the delinquency for this barangay.')
+
+			list.each{
+				if (it.classcode.matches('A|AGR')) { 
+					it.area = numSvc.format('#,##0.0000', it.totalareaha) + ' ha.' 
+				} else {  
+					it.area = numSvc.format('#,##0.00', it.totalareasqm) + ' sqm' 
+				} 
+			} 
+		} 
+		return [reportdata:list]; 
+	}
+
+
+}
+

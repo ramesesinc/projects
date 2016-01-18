@@ -1,0 +1,69 @@
+<schema>
+
+	<!--
+	refid,reftype = reference id of transaction. example: stockreceipt	
+	qtyin,qtyout,qtybalance = is based on actual pieces. 
+	startseries,endseries=series assigned when afcontrol was created	
+	currentseries=updated during cancellation if number was affected, during issuance of receipt
+	beginseries=series the collector was using. first time when created, updated during transfer
+	lastremittedseries=updated everytime a remittance is done.
+	-->
+	<element name="af_inventory" tablename="af_inventory">
+		<field name="objid" primary="true"/>
+		<field name="afid" required="true"/>
+		<field name="respcenter_objid" required="true"/>
+		<field name="respcenter_name" required="true"/>
+		<field name="respcenter_type" required="true"/>
+		<field name="startseries" required="true"/>
+		<field name="endseries" required="true"/>
+		<field name="currentseries" required="true"/>
+		<field name="startstub" required="true"/>
+		<field name="endstub" required="true"/>
+		<field name="currentstub" required="true"/>
+		<field name="prefix" />
+		<field name="suffix" />
+		<field name="unit" required="true"/>
+		<field name="qtyin" required="true" />
+		<field name="qtyout" required="true" />
+		<field name="qtycancelled" required="true" />
+		<field name="qtybalance" required="true" />
+		<field name="currentlineno" required="true"/>
+		<field name="cost"/>
+	</element>
+	
+	<element name="detail" tablename="af_inventory_detail">
+		<field name="objid" primary="true" />
+		<field name="controlid" required="true" />
+		<field name="lineno" required="true" />
+		<field name="refid" required="true" />
+		<field name="refno" required="true" />
+		<field name="reftype" required="true" />
+		<field name="refdate" required="true" />
+		<field name="txndate" required="true" />
+		<field name="txntype" required="true" />
+		<field name="receivedstartseries" />
+		<field name="receivedendseries"  />
+		<field name="qtyreceived" required="true" />
+		<field name="beginstartseries" />
+		<field name="beginendseries"  />
+		<field name="qtybegin" required="true" />
+		<field name="issuedstartseries"  />
+		<field name="issuedendseries" />
+		<field name="qtyissued" required="true" />
+		<field name="cancelledstartseries"  />
+		<field name="cancelledendseries" />
+		<field name="qtycancelled" required="true" />
+		<field name="endingstartseries"  />
+		<field name="endingendseries" />
+		<field name="qtyending" required="true" />
+		<field name="remarks" required="true" />
+		<field name="cost"/>
+	</element>
+		
+	<element name="detail_cancelseries" tablename="af_inventory_detail_cancelseries">
+		<field name="objid" primary="true" />
+		<field name="series" required="true" />
+		<field name="controlid" required="true" />
+	</element>	
+
+</schema>

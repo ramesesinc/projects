@@ -1,0 +1,82 @@
+import com.rameses.osiris3.xconnection.*;
+import com.rameses.annotations.*;
+import com.rameses.common.*;
+
+class ProvinceBldgSettingSyncHandler
+{   
+	@ActiveDB('bldgrysetting')
+	def em 
+
+
+	@Env
+	def env 
+
+	@Context 
+	def appCtx;
+
+	@Service()
+	def self
+
+	@Service('BldgRYSettingService')
+	def bldgSvc 
+
+	@Service('OrgService')
+	def orgSvc 
+
+
+
+	@ProxyMethod 
+	public def syncData( params ) {
+		self.doSync(params)
+		return new AsyncToken()
+	}
+
+
+	@Async 
+	@ProxyMethod
+	public void doSync( params ) {
+		def xconn = appCtx.getResource( XConnection.class, env.ASYNC.CONNECTION ); 
+		def queue = xconn.register( env.ASYNC.ID ); 
+
+		// params : [orgcode:'xxx', ry:xxxx ]
+		//get lguid
+		def org = orgSvc.findByCode([code:params.orgcode])
+		if (! org){
+			queue.push([msgtype:'_ERROR_', msg:'Organization code not found.'])
+			queue.push( new AsyncToken(closed:true) )
+			return
+		}
+		
+
+		//get rysetting by lguid
+		def settings = em.getSettingsByLguIdRy([lguid:org.objid, ry:params.ry])
+		if (!settings){
+			queue.push([msgtype:'_ERROR_', msg:'Requested revision setting does not exist.'])
+			queue.push( new AsyncToken(closed:true) )
+			return
+		}
+
+		settings.each{setting ->
+			setting = bldgSvc.open(setting)
+			queue.push([msgtype:'bldgrysetting', data:setting])
+
+			def assesslevels = bldgSvc.getAssessLevels(setting.objid).each{lvl ->
+				lvl.ranges = bldgSvc.getRanges(lvl.objid)
+			}
+			queue.push([msgtype:'assesslevels', data:assesslevels])
+
+
+			def bldgtypes = bldgSvc.getBldgTypes(setting.objid).each{bt ->
+				bt.bldgkindbuccs = bldgSvc.getBldgKindBuccs(bt.objid)
+				bt.depreciations = bldgSvc.getDepreciations(bt.objid)
+				bt.storeyadjustments = bldgSvc.getStoreyAdjustments(bt.objid)
+			}
+			queue.push([msgtype:'bldgtypes', data:bldgtypes])
+
+			def items = bldgSvc.getAdditionalItems(setting.objid)
+			queue.push([msgtype:'bldgadditionalitems', data:items])
+		}
+
+		queue.push( new AsyncToken(closed:true) )
+	}
+}

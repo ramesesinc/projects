@@ -1,0 +1,194 @@
+import com.rameses.annotations.*;
+import com.rameses.common.*;
+import java.rmi.server.UID;
+
+class Etracs250BPApplication 
+{
+	@ActiveDB(value='etracs250_bpapplication')
+	def em;
+
+	@Service
+	def self; 
+
+
+	@ProxyMethod 
+	public void extractAppInfos( params ) { 
+		self.extractAppInfos0( params ); 
+	} 
+
+	@Async
+	@ProxyMethod 
+	public void extractAppInfos0( params ) { 
+		println 'extractAppInfos0 started.' 
+		int counter = 0;
+		def list = em.getExtractAppInfos( params ); 
+		list.each{
+			if ( !it.appinfos ) return;
+
+			def infos = em.serializer.read( it.appinfos ); 
+			counter += 1; 
+			self.insertAppInfo([ 
+				counter      : counter, 
+				applicationid: it.objid, 
+				businessid   : it.businessid, 
+				businessname : it.businessname, 
+				type 		 : 'appinfo', 
+				list         : infos 
+			]); 
+		} 
+		println 'extractAppInfos0 finished.'
+	} 	
+
+	@ProxyMethod 
+	public void extractAssessmentInfos( params ) { 
+		self.extractAssessmentInfos0( params ); 
+	} 
+
+	@Async
+	@ProxyMethod 
+	public void extractAssessmentInfos0( params ) { 
+		println 'extractAssessmentInfos0 started.' 
+		int counter = 0;
+		def list = em.getExtractAssessmentInfos( params ); 
+		list.each{
+			if ( !it.assessmentinfos ) return;
+
+			def infos = em.serializer.read( it.assessmentinfos ); 
+			counter += 1; 
+			self.insertAppInfo([ 
+				counter      : counter, 
+				applicationid: it.objid, 
+				businessid   : it.businessid, 
+				businessname : it.businessname, 
+				type 		 : 'assessmentinfo', 
+				list         : infos 
+			]); 
+		} 
+		println 'extractAssessmentInfos0 finished.' 
+	} 
+
+
+	@Async
+	@ProxyMethod(local=true) 
+	public void insertAppInfo( data ) {
+		if ( !data ) return; 
+		if ( !data.list ) return; 
+
+		println data.counter +') insertAppInfo for '+ data.businessname + '...';
+		em.removeApplicationInfo([ applicationid: data.applicationid, type: data.type ]);
+		data.list.each {
+			it.objid = 'BPINFO' + new UID();
+			it.applicationid = data.applicationid; 
+			it.businessid = data.businessid; 
+			it.type = data.type;
+			if ( it.attribute ) {
+				it.attribute_objid = it.attribute.objid;
+				it.attribute_name  = it.attribute.name;
+
+				if (it.attribute.datatype == 'decimal') {
+					it.decimalvalue = it.value; 
+				} else if (it.attribute.datatype == 'integer') {
+					it.intvalue = it.value; 
+				} else if (it.attribute.datatype == 'boolean') {
+					it.boolvalue = it.value; 
+				} else {
+					it.stringvalue = it.value; 
+				} 
+			}
+			if ( it.lob ) {
+				it.lob_objid = it.lob.objid;
+				it.lob_name  = it.lob.name; 
+			}
+			em.create( it, 'bpapplication_info' );  
+		} 
+	} 
+
+	@ProxyMethod 
+	public void extractAppLobs( params ) { 
+		self.extractAppLobs0( params ); 
+	} 	
+
+	@Async 
+	@ProxyMethod(local=true) 
+	public void extractAppLobs0( params ) { 
+		def list = em.getList( params ); 
+		println 'extractAppLobs0 started.'
+		list.each{
+			if ( !it.lobs ) return;
+
+			def lobs = em.serializer.read( it.lobs ); 
+			self.insertAppLob([ 
+				applicationid: it.objid, 
+				businessid   : it.businessid, 
+				businessname : it.businessname, 
+				list         : lobs 
+			]); 
+		} 
+		println 'extractAppLobs0 finished.'
+	} 
+
+	@Async
+	@ProxyMethod(local=true) 
+	public void insertAppLob( data ) {
+		if ( !data ) return; 
+		if ( !data.list ) return; 
+
+		println 'insertAppLob for ' + data.businessname + '...';
+		em.removeApplicationLob([ applicationid: data.applicationid ]);
+		data.list.each {
+			it.objid = 'BPLOB' + new UID();
+			it.applicationid = data.applicationid; 
+			it.businessid = data.businessid; 
+			it.classification_objid = it.classification?.objid;
+			it.classification_name = it.classification?.name;
+			em.create( it, 'bpapplication_lob' ); 
+		}
+	} 
+
+
+	@ProxyMethod 
+	public void extractTaxFees( params ) { 
+		self.extractTaxFees0( params ); 
+	} 
+
+	@Async 
+	@ProxyMethod(local=true) 
+	public void extractTaxFees0( params ) { 
+		def list = em.getExtractTaxFees( params ); 
+		println 'extractTaxFees0 started.'
+		list.each{
+			if ( !it.taxfees ) return;
+
+			def taxfees = em.serializer.read( it.taxfees ); 
+			self.insertTaxFee([ 
+				applicationid: it.objid, 
+				businessid   : it.businessid, 
+				businessname : it.businessname, 
+				list         : taxfees 
+			]); 
+		} 
+		println 'extractTaxFees0 finished.'
+	} 
+
+	@Async
+	@ProxyMethod(local=true) 
+	public void insertTaxFee( data ) {
+		if ( !data ) return; 
+		if ( !data.list ) return; 
+
+		println 'insertTaxFee for ' + data.businessname + '...';
+		em.removeApplicationTaxFee([ applicationid: data.applicationid ]);
+		data.list.each {
+			it.objid = 'BPTXFEE' + new UID();
+			it.applicationid = data.applicationid; 
+			it.businessid = data.businessid; 
+			it.account_objid = it.account?.objid;
+			it.account_code = it.account?.code;
+			it.account_title = it.account?.title;
+			it.account_type = it.account?.type;
+			it.lob_objid = it.lob?.objid;
+			it.lob_name = it.lob?.name;
+			em.create( it, 'bpapplication_taxfee' ); 
+		} 
+	} 
+}

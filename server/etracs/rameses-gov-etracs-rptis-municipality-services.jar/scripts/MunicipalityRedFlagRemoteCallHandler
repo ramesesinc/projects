@@ -1,0 +1,36 @@
+import com.rameses.annotations.*;
+import com.rameses.common.*;
+
+class MunicipalityRedFlagRemoteCallHandler
+{   
+	@Service('RPTRedFlagService')
+	def redflagSvc 
+
+	@Service('NotificationService')
+	def notifySvc		
+
+	@ActiveDB('faas_task')
+	def task;
+
+
+	public void postRedFlag(redflag){
+		redflagSvc.save(redflag)
+		notifyRecommender(redflag)
+	}
+
+	void notifyRecommender(redflag){
+		def recommendertask = task.findRecommederTask(redflag)
+		def message = 'Red Flag for FAAS No. ' + redflag.refno + ' was created by ' + redflag.filedby.name 
+		def msg = [
+            objid     : redflag.refid,
+            recipientid : (recommendertask.assignee.objid ? recommendertask.assignee.objid : '-'),
+            recipienttype : 'user',
+            senderid  : (redflag.filedby.objid ? redflag.filedby.objid : '-'),
+            sender    : redflag.filedby.name,
+            message   : message,
+            filetype  : 'faas',
+            data 	  : [taskid: recommendertask.objid],
+        ]
+        notifySvc.addMessage(msg)
+	}
+}

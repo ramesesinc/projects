@@ -1,0 +1,39 @@
+
+import com.rameses.annotations.*;
+import com.rameses.common.*;
+
+class BPPermitReportService
+{
+	
+	@ActiveDB("bpreport")
+	def em
+
+	@Service('NumberService')
+	def numSvc;
+
+	@ProxyMethod
+	public def getReport( params ) { 
+		def barangayid = params.barangay?.objid; 
+		params.barangayid = ( barangayid ? barangayid : '%' ); 
+		
+		def list = em.getPermitListByYear( params );
+		if ( !list ) throw new Exception('No records found.');
+
+		list.each { prmt->
+			def lobs = em.getLobListByAppid( prmt );
+			def retirelobs = lobs.findAll{ it.assessmenttype=='RETIRE' }
+			def removelobs = lobs.findAll{ x-> (retirelobs.find{ it.lobid==x.lobid } != null) }
+			lobs.removeAll( removelobs ); 
+			if ( lobs ) {
+				prmt.lobs = lobs.collect{ it.name }.join(", "); 
+			}
+
+			def ornos = em.getBPPaymentsByAppid( prmt );
+			if ( ornos ) {
+				prmt.ornos = ornos.collect{ it.refno }.join(", "); 
+			}
+		} 
+		return list;
+	}
+
+}

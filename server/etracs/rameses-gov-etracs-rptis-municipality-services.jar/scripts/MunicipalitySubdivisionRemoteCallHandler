@@ -1,0 +1,65 @@
+import com.rameses.annotations.*;
+import com.rameses.common.*;
+import com.rameses.services.extended.*
+
+class MunicipalitySubdivisionRemoteCallHandler
+{   
+	@ActiveDB('subdivision')
+	def em 
+
+	@Service('SubdivisionService')
+	def svc
+
+	@Service('SubdivisionSupportService')
+	def supportSvc 
+
+	@ActiveDB('subdivision_task')
+	def taskEm;
+
+	@ActiveDB('faas')
+	def faasEm
+
+	public void postApprovedSubdivisionFromProvince(subdivision){
+		def state = svc.getState( subdivision )
+		if (state == null || state != 'APPROVED'){
+			state = 'FORAPPROVAL'
+			subdivision.state = state
+			subdivision.faases.each{
+				def fstate = faasEm.findState(it)
+				it.state = (fstate == null ? 'PENDING' : fstate.state)
+			}
+			supportSvc.postSubdivisionData(subdivision)
+			subdivision.tasks = taskEm.getTasks(subdivision)
+			doApproveSubdivision(subdivision)
+			println 'Subdivision ' + subdivision.txnno + ' created from Province has been successfully posted and approved.'
+		}
+	}
+
+	public void approveSubdivisionByProvince(subdivision){
+		def state = svc.getState( subdivision )
+		if (state  && ! state.equalsIgnoreCase('APPROVED')){
+			supportSvc.updateFaasesData(subdivision)
+			doApproveSubdivision(subdivision)
+			println 'Subdivision ' + subdivision.txnno + ' has been successfully approved.'
+		}
+	}
+
+	private void doApproveSubdivision(subdivision){
+		svc.getSubdividedLandsForApproval(subdivision.objid).each{
+			svc.approveSubdividedLandFaasRecord(subdivision, it)
+		}
+
+		svc.getAffectedRpusForApproval(subdivision.objid).each{
+			svc.approveAffectedRpuFaasRecord(subdivision, it)
+		}
+
+		taskEm.removeOpenTask(subdivision)
+		subdivision.tasks.each{
+			taskEm.save(it)
+			svc.updateSignatories(it)
+		}
+
+		svc.insertFaasSignatories(subdivision)
+		svc.approveSubdivision(subdivision)
+	}
+}

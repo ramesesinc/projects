@@ -1,0 +1,192 @@
+import com.rameses.annotations.*
+import com.rameses.common.*;
+import com.rameses.util.*;
+import com.rameses.services.extended.*;
+
+class FaasReportService
+{
+	@ActiveDB('faasreport')
+	def em
+	
+	@Service('FAASService')
+	def faasSvc
+
+	@Service('LGUService')
+	def lguSvc 
+
+	@Service('DateService')
+	def dtSvc
+
+	@Service('NumberService')
+	def numberSvc
+
+	@Service('SignatureService')
+	def sigSvc 
+
+	@Service('Var')
+	def var
+
+	@Service('RPTUtil')
+	def util
+
+
+	@ProxyMethod 
+	public def getFaasIds(params) {
+		if (!params.selectiontype)
+			throw new Exception('Selection Type is required.')
+
+		params.barangayid = params.barangay?.objid
+		if(!params.barangayid) params.barangayid = '%'
+
+		if (!params.state)
+			params.state = '%'
+
+		params.sectionfilter = ''
+		if (params.selectiontype.type == 'bysection')
+			params.sectionfilter = ' and rp.section like $P{section} '
+
+		params.starttdnofilter = ''
+		params.endtdnofilter = ''
+
+		if (params.selectiontype.type == 'bytdrange'){
+			params.starttdnofilter = ' and f.tdno >= $P{starttdno} '
+			params.endtdnofilter = ' and f.tdno <= $P{endtdno} '
+		}
+
+		return em.getFaasIds(params)
+	}
+
+	@ProxyMethod
+	public void buildLandReference( faas ) {
+		def landref = [landrpuid:faas.rpu.landrpuid]
+		def info = em.findLandReference(landref)
+		if (!info) info = [:]
+		faas.putAll(info)
+
+    	def areas = em.getLandAreas(landref)
+    	def areatypes = areas.areatype.unique()
+    	def totalarea = 0.0 
+    	if (areatypes.size() == 1){
+    		if (areatypes[0] == 'SQM'){
+    			totalarea = areas.areasqm.sum()
+    			faas.totalareatext = numberSvc.format('#,##0.00', totalarea)
+    			faas.totalareatext += ' sqm';
+    		}
+    		else{
+    			totalarea = areas.areaha.sum()
+    			faas.totalareatext = numberSvc.format('#,##0.0000', totalarea)
+    			faas.totalareatext += ' Ha.';
+    		}
+    	}
+    	else{
+    		totalarea = areas.areaha.sum()
+    		faas.totalareatext = numberSvc.format('#,##0.0000', totalarea)
+    		faas.totalareatext += ' Ha.';
+    	}
+	}
+
+	
+	@ProxyMethod
+	public def getReportData( faas ) {
+		faas = em.findFaasById(faas)
+		if( !faas ) 
+			throw new Exception('Cannot open FAAS with ID No. ' + faas.objid + '.')
+
+		faas.rpu = em.findRpuById(faas.rpu)
+		faas.rp = em.findRealPropertyById(faas.rp)
+		faas.rpu.fullpin = faas.fullpin 
+		buildCancelNote(faas)
+		buildEffectivity(faas)
+		buildLocationInfo(faas)
+		buildOwnerContactNo(faas)
+		buildSignatories(faas)
+		faas.annotations = em.getActiveAnnotations(faas)
+		faas.show_interim_watermark = util.toBoolean(var.show_interim_watermark, false)
+		return faas
+	}
+
+	void buildSignatories(faas){
+		faasSvc.loadSignatories(faas)
+
+		// if recommender and approver are the same 
+		// then the municipal assessor is authorized 
+		// by the provincial assessor to approve the faas record 
+		if (isRecommenderAuthorized(faas)){
+			faas.byauthority = 'By Authority of the Provincial Assessor.'
+		}
+
+		faas.signatories = [:]
+		def retval = sigSvc.decodeSignatories(em.getSignatories(faas))
+		faas.signatories = retval.signatories 
+		faas.signaturetampered = retval.tampered
+		faas.tamperedsigmsg = retval.tamperedsigmsg
+
+	}
+
+	def isRecommenderAuthorized(faas){
+		if (faas.recommender && faas.recommender.name && 
+			   faas.recommender.name.equalsIgnoreCase(faas.approver?.name)){
+			faas.recommender = [name:null, dtsigned:null]
+			return true 
+		}
+
+		// check the if approver has MUNICIPAL_ASSESSOR role 
+		if (faas.approver && userHasRole(faas.approver.objid, 'MUNICIPAL_ASSESSOR')){
+			return true 
+		}
+
+		return false 
+	}
+
+	def userHasRole(userid, role){
+		def user = em.findUserByRole([userid:userid, role:role])
+		return user != null 
+	}
+	
+	private void buildOwnerContactNo( faas ) {
+		def contact = em.findEntityContactInfo(faas.taxpayer)
+		if (contact)
+			faas.owner += contact
+	}
+
+	void buildCancelNote(faas){
+		if (faas.state == 'CANCELLED'){
+			def notes = ''
+			def cfaas = em.getCancellingFaasInfo(faas)
+			if (cfaas){
+				notes  =  'Cancelled By TD/ARP No. ' + cfaas.tdno.join(',') + '.  ' 
+				notes += 'PIN No. ' + cfaas.fullpin.join(',') + '.  ' 
+				notes += 'Effective Year ' + cfaas.first().effectivityyear + '.  ' 
+				notes += 'Date ' + dtSvc.format('MMMMM dd, yyyy' ,faas.canceldate) + '.  ' 
+			}
+			else {
+				//cancel faas transaction
+				def reason = em.findCancelFaasReason(faas)
+				if (reason){
+					notes  = 'Cancelled due to ' + reason.reason + '. '
+					notes += 'Date ' + dtSvc.format('MMMMM dd, yyyy' ,reason.txndate) + '.  ' 
+				}
+			}
+			faas.cancelnote = notes + (faas.cancelnote ? faas.cancelnote : '')
+		}
+	}
+
+	void buildEffectivity(faas){
+		faas.taxeffectivity = faas.effectivityyear + ''
+		if (faas.effectivityqtr != 1)
+			faas.taxeffectivity = faas.effectivityqtr + 'Q, '+ faas.taxeffectivity
+
+		faas.taxability = ( faas.rpu.taxable ? "TAXABLE" : "EXEMPT" )
+	}
+
+	void buildLocationInfo(faas){
+		def muni = lguSvc.lookupMunicipalityById(faas.rp.barangay.parentid)
+		def district = lguSvc.lookupDistrictById(faas.rp.barangay.parentid)
+		def prov = lguSvc.lookupProvinceById(muni?.parentid)
+		def city = lguSvc.lookupCityById(district?.parentid)
+		faas.propertylocation = ( muni ? muni.name + ', ' : '') + ( prov ? prov.name : city.name )
+		faas.munidistrict = (muni ? muni.name : district.name)
+		faas.provcity = (prov  ? prov.name : city.name)
+	}
+
+}

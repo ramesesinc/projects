@@ -1,0 +1,59 @@
+import com.rameses.annotations.*
+import com.rameses.util.*
+
+class MachRPUGRService
+{
+    @PersistenceContext('rpt')
+    def em
+
+    @Service('MachRYSettingLookupService')
+    def lookupSvc
+
+    @Service('MachRPUService')
+    def machRpuSvc 
+    
+    @Service('DateService')
+    def dtSvc
+
+    @ProxyMethod
+    public def reviseMachRpu(rpu){
+        rpu.dtappraised = dtSvc.serverDate 
+        def deletedItems = []
+        rpu.machuses.each { machuse ->
+            def actualuse = lookupSvc.lookupAssessLevelByPrevId(machuse.actualuse.objid)
+            if( actualuse ) {
+                machuse.actualuse   = actualuse 
+                machuse.assesslevel = actualuse.rate 
+                reviseMachDetails(machuse)
+            }
+            else {
+                deletedItems.add( machuse )
+            }
+        }
+        
+        rpu.machuses.removeAll( deletedItems )
+        machRpuSvc.calculateAssessment(rpu)
+        return rpu
+    }
+
+    void reviseMachDetails( machuse ) {
+        machuse.machines.each { mach -> 
+            if( mach.forexid ) {
+                def forex = lookupSvc.lookupForexByPrevId(mach.forexid)
+                if( forex ) {
+                    mach.forexid = forex.objid
+                    mach.forex   = forex.forex 
+                }
+            }
+            if( mach.feracid ) {
+                def ferac = lookupSvc.lookupForexByPrevId(mach.feracid)
+                if( ferac ) {
+                    mach.feracid = ferac.objid
+                    mach.ferac   = ferac.forex 
+                }
+            }
+        }
+    }
+
+}
+ 

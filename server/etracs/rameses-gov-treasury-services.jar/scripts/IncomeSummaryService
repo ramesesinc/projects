@@ -1,0 +1,20 @@
+import com.rameses.annotations.*;
+
+class IncomeSummaryService {
+	
+	@ActiveDB("income_summary")
+	def em;
+
+	@ActiveDB("liquidation")
+	def liq;
+
+	@ProxyMethod
+	public void post( def o ) {
+		if(!o.liquidationid) 
+			throw new Exception("liquidationid is required");
+		em.postIncomeSummary( o );	
+		liq.updatedPosted( [objid: o.liquidationid ]);
+	}
+
+
+}

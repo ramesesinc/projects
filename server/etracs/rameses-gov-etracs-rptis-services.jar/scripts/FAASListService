@@ -1,0 +1,232 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.services.extended.*;
+
+public class FAASListService extends ActiveCrudListService {
+
+    @Env
+    def env 
+
+    @ActiveDB("faas")
+    def em;
+
+    @Service("DateService")
+    def dateSvc;
+
+    @Service('NumberService')
+    def numSvc
+
+    @ProxyMethod
+    public def getColumns(params) {
+        return [
+            [name:"state", caption:"State", minWidth:120, width:120],
+            [name:"ry", caption:"Revision", minWidth:80, width:80],
+            [name:"txntype.objid", caption:"Txn", minWidth:40, width:40],
+            [name:"tdno", caption:"TD No.", minWidth:150, width:150],
+            [name:"prevtdno", caption:"Prev. TD No.", minWidth:150, width:150],
+            [name:"fullpin", caption:"PIN", minWidth:190, width:190],
+            [name:"owner.name", caption:"Owner", minWidth:250, width:250],
+            [name:"rputype", caption:"Type", minWidth:50, width:50],
+            [name:"barangay.name", caption:"Barangay", minWidth:120, width:120],
+            [name:"classification.code", caption:"Class", minWidth:40, width:40],
+            [name:"cadastrallotno", caption:"Lot No.", minWidth:120, width:120],
+            [name:"blockno", caption:"Block No.", minWidth:120, width:120],
+            [name:"surveyno", caption:"Survey", minWidth:120, width:120],
+            [name:"titleno", caption:"Title No.", minWidth:120, width:120],
+            [name:"totalarea", caption:"Area", minWidth:80, width:80, alignment:'center'],
+            [name:"totalmv", caption:"M.V.", type:'decimal', minWidth:100, width:100],
+            [name:"totalav", caption:"A.V.", type:'decimal', minWidth:100, width:100],
+            [name:"effectivityyear", caption:"Effective Yr", type:'integer', minWidth:100, width:100],
+            [name:"effectivityqtr", caption:"Effective Qtr", type:'integer', minWidth:100, width:100],
+            [name:"year", caption:"Year Issued", type:'integer', minWidth:100, width:100],
+        ]
+    }
+
+    @ProxyMethod
+    public def getNodes(o) {
+        if (env.ORGCLASS.equalsIgnoreCase('province')){
+            return [
+               [name:'all', caption:'All Records', leaf:true, folder:true, allowSearch:true],
+               [name:'receiver', caption:'Review and Verification', leaf:true, folder:true, allowSearch:true],
+               [name:'assign-provtaxmapper', caption:'For Taxmapping', leaf:true, folder:true, allowSearch:true],
+               [name:'provtaxmapper', caption:'Taxmapping', leaf:true, folder:true, allowSearch:true],
+               [name:'assign-provtaxmapperchief', caption:'For Taxmapping Chief Approval', leaf:true, folder:true, allowSearch:true],
+                [name:'provtaxmapperchief', caption:'Taxmapping Chief Approval', leaf:true, folder:true, allowSearch:true],
+               [name:'assign-provappraiser', caption:'For Appraisal', leaf:true, folder:true, allowSearch:true],
+               [name:'provappraiser', caption:'Appraisal', leaf:true, folder:true, allowSearch:true],
+               [name:'assign-provappraiserchief', caption:'For Appraisal Chief Approval', leaf:true, folder:true, allowSearch:true],
+               [name:'provappraiserchief', caption:'Appraisal Chief Approval', leaf:true, folder:true, allowSearch:true],
+               [name:'assign-recommender', caption:'For Recommending Approval', leaf:true, folder:true, allowSearch:true],
+                [name:'recommender', caption:'Recommending Approval', leaf:true, folder:true, allowSearch:true],
+               [name:'assign-approver', caption:'For Assessor Approval', leaf:true, folder:true, allowSearch:true],
+               [name:'approver', caption:'Assessor Approval', leaf:true, folder:true, allowSearch:true],
+               [name:'current', caption:'Current', leaf:true, folder:true, allowSearch:true],
+               [name:'cancelled', caption:'Cancelled', leaf:true, folder:true, allowSearch:true],
+               [name:'mytask', caption:'My Tasks', leaf:true, folder:true, allowSearch:true],
+            ];
+        }
+        
+        def nodes = [
+           [name:'all', caption:'All Records', leaf:true, folder:true, allowSearch:true],
+           [name:'receiver', caption:'Review and Verification', leaf:true, folder:true, allowSearch:true],
+           [name:'assign-examiner', caption:'For Examination', leaf:true, folder:true, allowSearch:true],
+           [name:'examiner', caption:'Examination', leaf:true, folder:true, allowSearch:true],
+           [name:'assign-taxmapper', caption:'For Taxmapping', leaf:true, folder:true, allowSearch:true],
+           [name:'taxmapper', caption:'Taxmapping', leaf:true, folder:true, allowSearch:true],
+           [name:'assign-taxmapping-approval', caption:'For Taxmapping Chief Approval', leaf:true, folder:true, allowSearch:true],
+           [name:'taxmapper_chief', caption:'Taxmapping Chief Approval', leaf:true, folder:true, allowSearch:true],
+           [name:'assign-appraiser', caption:'For Appraisal', leaf:true, folder:true, allowSearch:true],
+           [name:'appraiser', caption:'Appraisal', leaf:true, folder:true, allowSearch:true],
+           [name:'assign-appraisal-chief', caption:'For Appraisal Chief Approval', leaf:true, folder:true, allowSearch:true],
+           [name:'appraiser_chief', caption:'Appraisal Chief Approval', leaf:true, folder:true, allowSearch:true],
+           [name:'assign-recommender', caption:'For Recommending Approval', leaf:true, folder:true, allowSearch:true],
+           [name:'recommender', caption:'Recommending Approval', leaf:true, folder:true, allowSearch:true],
+           [name:'assign-approver', caption:'For Assessor Approval', leaf:true, folder:true, allowSearch:true],
+           [name:'approver', caption:'Assessor Approval', leaf:true, folder:true, allowSearch:true],
+           [name:'current', caption:'Current', leaf:true, folder:true, allowSearch:true],
+           [name:'cancelled', caption:'Cancelled', leaf:true, folder:true, allowSearch:true],
+        ]
+
+        if (env.ORGCLASS.equalsIgnoreCase('municipality')){
+            nodes << [name:'provapprover', caption:'For Province Approval', leaf:true, folder:true, allowSearch:true]
+        }
+        nodes << [name:'mytask', caption:'My Tasks', leaf:true, folder:true, allowSearch:true]
+        return nodes;
+    }   
+
+
+    void beforeList( params ) {
+        params.filters = ''
+        params.orderby = ''
+        params._pagingKeys = 'f.objid'
+
+        def whereclause = ''
+        
+        if (params.state ) {
+            if (whereclause) whereclause += ' AND '
+            whereclause += ' f.state = $P{state} '
+        }
+        if (params.ry != null ) {
+            if (whereclause) whereclause += ' AND '
+            whereclause += ' rpu.ry = $P{ry} '
+        }
+        if (params.ownername) {
+            params.ownername += '%' 
+            if (whereclause) whereclause += ' AND '
+            whereclause += ' f.name LIKE $P{ownername} '
+        }
+        if (params.administrator) {
+            params.administrator += '%' 
+            if (whereclause) whereclause += ' AND '
+            whereclause += ' f.administrator_name LIKE $P{administrator} '
+        }
+        if (params.fullpin) {
+            params.fullpin += '%'
+            if (whereclause) whereclause += ' AND '
+            whereclause += ' rpu.fullpin LIKE $P{fullpin} '
+        }
+        if (params.tdno ) {
+            if (whereclause) whereclause += ' AND '
+            whereclause += ' f.tdno = $P{tdno} '
+        }
+        if (params.prevtdno ) {
+            if (whereclause) whereclause += ' AND '
+            whereclause += ' f.prevtdno = $P{prevtdno} '
+        }
+        if (params.lgu){
+            params.lguid = params.lgu.objid
+            if (whereclause) whereclause += ' AND '
+            whereclause += ' b.parentid = $P{lguid} '
+        }
+        if (params.barangay){
+            params.barangayid = params.barangay.objid
+            if (whereclause) whereclause += ' AND '
+            whereclause += ' rp.barangayid = $P{barangayid} '
+        }
+        if (params.rputype){
+            if (whereclause) whereclause += ' AND '
+            whereclause += ' rpu.rputype = $P{rputype} '
+        }
+        if (params.surveyno){ 
+            if (whereclause) whereclause += ' AND '
+            whereclause += ' rp.surveyno = $P{surveyno} '
+        }
+        if (params.blockno){ 
+            if (whereclause) whereclause += ' AND '
+            whereclause += ' rp.blockno = $P{blockno} '
+        }
+        if (params.cadastrallotno){
+            if (whereclause) whereclause += ' AND '
+            whereclause += ' rp.cadastrallotno = $P{cadastrallotno} '
+        }
+        if (params.trackingno){
+            if (whereclause) whereclause += ' AND '
+            whereclause += ' t.trackingno = $P{trackingno} '
+        }
+        if (params.utdno){
+            if (whereclause) whereclause += ' AND '
+            whereclause += ' f.utdno = $P{utdno} '
+        }
+        if (params.titleno){
+            params.titleno += '%'
+            if (whereclause) whereclause += ' AND ' 
+            whereclause += ' f.titleno LIKE $P{titleno} '
+        }
+        if (params.taxpayer){
+            params.taxpayerid = params.taxpayer.objid 
+            if (whereclause) whereclause += ' AND ' 
+            whereclause += ' f.taxpayer_objid LIKE $P{taxpayerid} '
+        }
+
+        switch(params.name) {
+            case 'all':
+                break;
+            case 'current':
+                params.state = 'CURRENT'
+                if (whereclause) whereclause += ' AND ' 
+                whereclause += ' f.state = $P{state}  '
+                break;
+            case 'cancelled':
+                params.state = 'CANCELLED'
+                if (whereclause) whereclause += ' AND ' 
+                whereclause += ' f.state = $P{state}  '
+                break;
+            case 'mytask':
+                params.userid = env.USERID 
+                if (whereclause) whereclause += ' AND ' 
+                whereclause += ' tsk.assignee_objid = $P{userid} AND tsk.enddate IS NULL  '
+                break;
+            default:
+                params.taskstate = params.name
+                if (whereclause) whereclause += ' AND ' 
+                whereclause += ' tsk.state = $P{taskstate} AND tsk.enddate IS NULL  '
+        }
+
+        if (whereclause) {
+            params.filters = ' AND ' + whereclause
+            params.orderby = ' ORDER BY f.tdno, rp.pin, rpu.suffix  '
+        }
+    }   
+
+    void afterList(params, list) {
+        //TODO: temporary and ugly hack: codes must not be hardcoded 
+        list.each{
+            if (it.classification?.code?.matches('A|AGR|a|agr'))
+                it.totalarea = numSvc.roundA(it.totalareaha, 4) + ' ha'
+            else
+                it.totalarea = numSvc.roundA(it.totalareasqm, 2) + ' sqm'
+        } 
+    }
+
+    @ProxyMethod
+    public def getStates(  ) {
+        return [
+            'INTERIM',
+            'FORAPPROVAL',
+            'CURRENT',
+            'CANCELLED',
+        ]
+    }    
+
+}

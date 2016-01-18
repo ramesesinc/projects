@@ -1,0 +1,199 @@
+import com.rameses.common.*
+import com.rameses.annotations.*
+import com.rameses.util.*
+import com.rameses.services.extended.*
+
+class RPTAssessmentNoticeService 
+{
+	@ActiveDB('assessmentnotice')
+	def em
+	
+	@Service('SequenceService')
+	def seqSvc
+	
+	@Service('DateService')
+	def dateSvc
+
+	@Service('RPTUtil')
+	def util 
+
+	@Service('Var')
+	def var 
+
+	@Service('ReportParameterService')
+	def reportSvc
+
+	@Env
+	def env
+	
+	def SCHEMA_ITEM = 'item'
+	
+	def STATE_OPEN 		= 'OPEN' 
+	def STATE_RECEIVED 	= 'RECEIVED' 
+
+	
+	@ProxyMethod
+    public def getList( params ) {
+    	params.searchtext = (params.searchtext ? params.searchtext : '') + '%'
+        def filters = [
+            ' and txnno LIKE $P{searchtext}',
+            ' and taxpayername LIKE $P{searchtext}',
+            ' and receivedby LIKE $P{searchtext}',
+        ]
+        return util.getListFromQuery( 'assessmentnotice:getList' , filters, params, 'objid' )
+    }
+
+
+	@ProxyMethod
+	public Map createNotice( notice ) {
+		if (!notice.items)
+			throw new Exception('At least one property must be included.');
+
+		notice.state  = STATE_OPEN
+		notice.txnno  = getNextSeries(notice)
+		notice.txndate  = dateSvc.serverDate
+		notice.taxpayerid = notice.taxpayer.objid
+		notice.taxpayername = notice.taxpayer.name
+		notice.taxpayeraddress = notice.taxpayer.address
+		if (notice.items.size() == 1){
+			notice.administrator = notice.items[0].administrator
+		}
+		notice.assessmentyear = dateSvc.serverYear 
+		
+		notice.createdbyid =  (env.USERID ? env.USERID : 'SYSTEM')
+		notice.createdbyname =  (env.FULLNAME ? env.FULLNAME : 'SYSTEM')
+		notice.createdbytitle =  (env.JOBTITLE ? env.JOBTITLE : 'SYSTEM')
+
+		notice.approvedbyname = ( var.assessor_name ? var.assessor_name : reportSvc.standardParameter.ASSESSORNAME)
+		notice.approvedbytitle = ( var.assessor_title ? var.assessor_title : reportSvc.standardParameter.ASSESSORTITLE)
+
+		em.create(notice) 
+
+		notice.items.each{
+			it.objid = util.generateId('ANI')
+			it.assessmentnoticeid = notice.objid 
+			em.create(it, SCHEMA_ITEM)
+		}
+		return notice 
+	}
+
+
+	@ProxyMethod
+	public def openNotice( objid ) {
+		def notice = em.read([objid:objid])
+		notice.items = getItems(notice)
+		notice.dtassessed = dateSvc.getServerYear()+""
+		if( notice.items && notice.items[0].dtsigned )	
+			notice.dtassessed = new java.text.SimpleDateFormat("yyyy").format(notice.items[0].dtsigned)
+		return notice
+	}
+
+	@ProxyMethod
+	public def receiveNotice(notice) {
+		def old = openNotice(notice.objid)
+		if (old.state == STATE_RECEIVED)
+			throw new Exception('Notice has already been received.')
+
+		util.required('Received By', notice.receivedby)
+		util.required('Date Delivered', notice.dtdelivered)
+
+		notice.dtdelivered = dateSvc.parse('yyyy-MM-dd', notice.dtdelivered)
+		if (dateSvc.add(notice.dtdelivered, '1d') < notice.txndate)
+			throw new Exception('Date Delivered must be greater than or equal to ' + dateSvc.format('yyyy-MM-dd', notice.txndate) + '.')
+
+		notice.state = STATE_RECEIVED
+		em.update(notice)
+		return notice;
+	}
+
+	@ProxyMethod
+	public def getApprovedFaasList(taxpayerid){
+		def items = em.getApprovedFaasList(buildParams([taxpayerid:taxpayerid]))
+		items.each{faas ->
+			buildAdditionalInfo(faas)
+		}
+		return items
+	}
+
+	@ProxyMethod
+	public def getFaasById( faasid ) {
+		def faas = em.findFaasById(buildParams([faasid:faasid]))
+		buildAdditionalInfo(faas)
+		return faas
+	}
+
+	@ProxyMethod 
+	public def getTaxpayerList(params) {
+		return em.getTaxpayerList(params)
+
+	} 
+
+	@ProxyMethod 
+	public def getTaxpayerPropertyListForBatch(params) {
+		return em.getTaxpayerPropertyListForBatch(params)
+	}
+
+
+	def getItems(notice){
+		def items = em.getItems(buildParams(notice))
+		items.each{faas ->
+			buildAdditionalInfo(faas)
+		}
+		return items
+	}
+
+	def buildParams(info){
+		return [
+			objid  		: info.objid,
+			faasid 		: info.faasid,
+			taxpayerid 	: info.taxpayerid,
+			fields 		: getFields(),
+		]
+	}
+
+	void buildAdditionalInfo(faas){
+		faas.street = (faas.street ? faas.street : faas.barangay)
+		faas.description = faas.cadastrallotno
+		if (faas.rputype == 'bldg')
+			faas.description = em.getBldgTypes(faas).bldgkind.join('/')
+	}
+
+	//Returns the same fields for the following queries:
+	// getItems, findFaasById
+	def getFields(){
+		return '''
+		f.objid AS faasid,
+		f.effectivityyear,
+		f.effectivityqtr,
+		f.tdno,
+		f.administrator_name,
+		f.administrator_address,
+		f.rpuid, 
+		rpu.rputype,
+		rpu.ry,
+		rpu.fullpin ,
+		rpu.taxable,
+		rpu.totalareaha,
+		rpu.totalareasqm,
+		rpu.totalbmv,
+		rpu.totalmv,
+		rpu.totalav,
+		rp.section,
+		rp.parcel,
+		rp.surveyno,
+		rp.cadastrallotno,
+		rp.blockno,
+		rp.claimno,
+		rp.street,
+		b.name AS barangay,
+		pc.code AS classcode
+	'''
+	}
+	
+ 
+ 	def getNextSeries(notice){
+		def cy = dateSvc.serverYear 
+		return env.ORGID.replaceAll('-', '') + '-' + cy +  seqSvc.getNextFormattedSeries('ASSESSMENT_NOTICE-' + cy)
+	}
+
+}

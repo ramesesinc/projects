@@ -1,0 +1,43 @@
+import com.rameses.annotations.*
+import com.rameses.common.*
+import com.rameses.util.*
+import com.rameses.services.extended.*
+
+
+class FAASChangeInfoService
+{
+	@Env 
+	def env
+
+	@ActiveDB('rpt_changeinfo')
+	def em
+
+	@Service('DateService')
+	def dtSvc
+
+	@ProxyMethod
+	public def updateInfo(changeinfo){
+		changeinfo.dtposted = dtSvc.serverDate
+		if (!changeinfo.postedbyid)
+			changeinfo.postedbyid = env.USERID
+		if (!changeinfo.postedby)
+			changeinfo.postedby = env.FULLNAME
+		if (!changeinfo.postedbytitle)
+			changeinfo.postedbytitle = env.JOBTITLE
+
+		def newinfo = [:]
+		newinfo.putAll(changeinfo.newinfo)
+		newinfo.faasid 	= changeinfo.faasid
+		newinfo.rpid   	= changeinfo.rpid
+		newinfo.rpuid  	= changeinfo.rpuid
+
+		changeinfo.newinfo  = em.serializer.write(changeinfo.newinfo)
+		changeinfo.previnfo = em.serializer.write(changeinfo.previnfo)
+
+		em.create(changeinfo);
+		changeinfo.newinfo = newinfo;
+		return changeinfo
+	}
+	
+}
+

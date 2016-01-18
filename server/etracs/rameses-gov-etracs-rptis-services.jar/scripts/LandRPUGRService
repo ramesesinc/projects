@@ -1,0 +1,145 @@
+import com.rameses.annotations.*
+import com.rameses.util.*
+
+class LandRPUGRService
+{
+	@PersistenceContext('rpt')
+	def em
+
+	@Service('LandRYSettingLookupService')
+	def landLookupSvc
+
+	@Service('PlantTreeRYSettingLookupService')
+	def ptLookupSvc 
+
+	@Service('LandRPUService')
+	def landRpuSvc 
+
+	@Service('Var')
+	def var 
+
+	@Service('RPTUtil')
+	def util
+
+	@Service('DateService')
+	def dtSvc 
+
+
+	@ProxyMethod
+	public def reviseLandRpu(rpu){
+		rpu.dtappraised = dtSvc.serverDate 
+		reviseLandDetails( rpu )
+		revisePlantTrees( rpu )
+		reviseAdjustments( rpu )
+		landRpuSvc.calculateAssessment(rpu)
+		return rpu 
+	}
+
+	void reviseLandDetails( rpu) {
+		reviseSubclass( rpu )
+		reviseLandAdjustments( rpu )
+		reviseStripping( rpu )
+	}
+
+	void reviseSubclass(rpu) {
+		def deletedItems = []
+		
+		rpu.landdetails.each { ld ->
+			def subclass = landLookupSvc.lookupSubclassByPrevId(ld.subclass.objid)
+			if( subclass ) {
+				ld.objid 	= util.generateId('LD')
+				ld.subclass = subclass 
+				ld.basevalue = subclass.basevalue 
+				ld.unitvalue = subclass.basevalue 
+
+				def al = landLookupSvc.lookupAssessLevelByPrevId(ld.actualuse.objid)
+
+				ld.actualuse = null 
+				ld.assesslevel = 0.0
+				if (al){
+					ld.actualuse = al 
+					ld.assesslevel = al.rate 		
+				}
+			}
+			else {
+				deletedItems.add( ld )
+			}
+		}
+		
+		rpu.landdetails.removeAll( deletedItems ) 
+	}
+	
+	void reviseLandAdjustments( rpu ) {
+		rpu.landdetails.each { ld ->
+			def deletedItems = [] 
+			ld.actualuseadjustments.each { la ->
+				la.landrpuid = ld.landrpuid 
+				doReviseAdjustment(la, deletedItems)
+			}
+			ld.actualuseadjustments.removeAll( deletedItems ) 
+		}
+	}
+
+	void doReviseAdjustment(la, deletedItems){
+		def adj = landLookupSvc.lookupAdjustmentTypeByPrevId(la.adjustmenttype.objid)
+		if( adj ) {
+			la.objid = util.generateId('LA')
+			la.adjustmenttype = adj 
+			la.expr = adj.expr
+		}
+		else {
+			deletedItems.add( la )
+		}
+	}
+	
+	void reviseStripping( rpu ) {
+		rpu.landdetails.each { ld ->
+			if( ld.stripping ) {
+				def stripping = landLookupSvc.lookupStrippingByPrevId(ld.stripping.objid)
+				if( stripping)  {
+					ld.stripping = stripping 
+					ld.striprate = stripping.rate 
+				}
+				else {
+					ld.striplevel = null 
+					ld.striprate  = 100.0 
+				}
+			}
+		}
+	}
+    
+    void revisePlantTrees( rpu ) {
+		def deletedItems = []
+		rpu.planttrees.each { planttree -> 
+			def ptuv = ptLookupSvc.lookupUnitValueByPrevId(planttree.planttreeunitvalue.objid)
+			if( ptuv ) {
+				planttree.objid = util.generateId('PTD')
+				planttree.planttreeunitvalue = ptuv 
+				planttree.unitvalue = ptuv.unitvalue 
+				
+				def al = ptLookupSvc.lookupAssessLevelByPrevId(planttree.actualuse.objid)
+				if( al ) {
+					planttree.actualuse 	    = al
+					planttree.assesslevel		= al.rate 
+				}
+			}
+			else {
+				deletedItems.add( planttree )
+			}
+		}
+		
+		rpu.planttrees.removeAll( deletedItems ) 
+	}
+
+	
+	void reviseAdjustments( rpu ) {
+		def deletedItems = [] 
+		rpu.landadjustments.each { la -> 
+			doReviseAdjustment(la, deletedItems)
+		}
+		rpu.landadjustments.removeAll( deletedItems ) 
+	}
+
+
+}
+ 

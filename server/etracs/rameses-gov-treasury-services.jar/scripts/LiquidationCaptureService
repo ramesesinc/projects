@@ -1,0 +1,58 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.common.*
+import com.rameses.services.extended.*
+
+class LiquidationCaptureService  {
+
+	@ActiveDB("liquidation_capture")	
+	def em
+
+	@ActiveDB("remittance")
+	def remittanceEm; 
+
+	@Service("CashBookPostService")
+	def cashBook;
+
+	@ProxyMethod
+	public def getColumns( def p ) {
+		return [
+			[name:"txnno", caption:"Liq No", width:120, resizable:false],
+			[name:"dtposted", caption:"Liq Date", width:120, resizable:false],
+			[name:"liquidatingofficer.name", caption:"Liquidating Officer"],
+			[name:"totalcash", caption:"Total Cash", type:"decimal"],
+			[name:"totalnoncash", caption:"Total Noncash", type:"decimal"],
+			[name:"amount", caption:"Amount", type:"decimal"]
+		];	
+	}
+
+	def getList( o ) {
+		o.txnno = (o.searchtext ? o.searchtext : '') +'%'
+		return em.getList( o) 
+	}
+
+
+	@ProxyMethod 
+	public def getLiquidatingOfficers( ){
+		return em.getLiquidatingOfficers();
+	}
+
+	@ProxyMethod 
+	public def getUnliquidatedRemittances(def p) {
+		return em.getUnliquidatedRemittances( p ).each{it.selected=true}
+	}
+	
+	@ProxyMethod 
+	public def init(def params ) {
+		def o = [:]
+		o.fundsummary = em.getUnliquidatedFundSummary( params )
+		o.checks = em.getUnliquidatedChecks( params )
+		return o;
+	}
+
+	
+}
+
+
+

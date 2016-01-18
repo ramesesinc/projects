@@ -1,0 +1,16 @@
+<schema>
+	<element name="rpt_sales_data" tablename="rpt_sales_data">
+		<!-- links to faas.objid -->
+		<field name="objid" primary="true"/>
+        <field name="seller_name" required="true"/>
+        <field name="seller_address" required="true"/>
+        <field name="buyer_name" required="true"/>
+        <field name="buyer_address" required="true"/>
+        <field name="saledate" required="true" />
+        <field name="amount" required="true" type="decimal" />
+        <field name="remarks" />
+    </element>
+</schema>
+
+
+

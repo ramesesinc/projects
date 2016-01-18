@@ -1,0 +1,361 @@
+
+import com.rameses.annotations.*
+import com.rameses.common.*;
+import com.rameses.util.*;
+import com.rameses.services.extended.*;
+
+
+class RPUService
+{
+    @ActiveDB('rpu')
+    def em
+
+    @Service('RealPropertyService')
+    def rpSvc;
+    
+    @Service('PropertyClassificationService')
+    def classSvc 
+
+    @Service('ExemptionTypeService')
+    def exemptSvc 
+
+    @Service('RPTUtil')
+    def util 
+
+    @Service('Var')
+    def var
+
+    
+    def RPUTYPE_LAND       = 'land' 
+    def RPUTYPE_BLDG       = 'bldg'
+    def RPUTYPE_MACH       = 'mach'
+    def RPUTYPE_PLANTTREE  = 'planttree'
+    def RPUTYPE_MISC       = 'misc' 
+
+    def STATE_INTERIM       = 'INTERIM'
+    def STATE_CURRENT       = 'CURRENT'
+    def STATE_CANCELLED     = 'CANCELLED'
+
+    def SCHEMA_ASSESSMENT   = 'assessment'
+    
+
+    @ProxyMethod
+    public def initRpu( info ) {
+        def rputype = getTypeFromSuffix( info.suffix )
+        def ry = (info.ry == null ? var.current_ry : info.ry)
+        checkValidRy(ry)
+        def rpu = [
+            objid           : 'RPU' + new java.rmi.server.UID(),
+            state           : STATE_INTERIM,
+            ry              : util.toInteger(ry),
+            suffix          : info.suffix,
+            subsuffix       : info.subsuffix,
+            fullpin         : info.fullpin,
+            rputype         : rputype,
+            taxable         : true,
+            totalareaha     : 0.0,
+            totalareasqm    : 0.0,
+            totalbmv        : 0.0,
+            totalmv         : 0.0,
+            totalav         : 0.0,
+            hasswornamount  : false,
+            swornamount     : 0.0,
+            useswornamount  : false,
+            reclassed       : false,
+            isnew           : true,
+            realpropertyid  : info.realpropertyid,
+        ]
+        rpu.rpumasterid = rpu.objid 
+        checkDuplicateFullPin( rpu )
+        return rpu
+    }    
+
+
+    /*================================================================================
+    **
+    ** MOST METHODS ARE INTERCEPTED BY SPECIFIC LGU TYPES FOR ITS IMPLEMENTATIONS
+    **
+    ================================================================================*/
+
+    @ProxyMethod
+    public def calculateAssessment( rpu ) {
+        return rpu    
+    }
+
+
+    @ProxyMethod
+    public def generateNewIds( rpu ) {
+        rpu.previd = rpu.objid 
+        rpu.objid = util.generateId('RPU')
+
+        rpu.assessments.each{
+            it.objid   = util.generateId('A')
+            it.rpuid   = rpu.objid 
+        }
+        return rpu 
+    }
+
+
+    @ProxyMethod
+    public def reviseRpu(rpu){
+        return rpu 
+    }
+
+
+    @ProxyMethod
+    public def createRpu(rpu) {
+        validateInfo(rpu)
+        createRpuMaster(rpu)
+        if (!rpu.state )
+            rpu.state = STATE_INTERIM
+        em.create(rpu)
+        saveAssessments(rpu)
+        return rpu 
+    }
+
+
+    @ProxyMethod
+    public def updateRpu( rpu ) {
+        validateInfo(rpu)
+        em.updateImmediate(rpu)
+        saveAssessments(rpu)
+        return rpu
+    }
+
+    void validateInfo(rpu){
+        if (rpu.taxable == 0 || rpu.taxable == false){
+            if (rpu.exemptiontype == null || rpu.exemptiontype.objid == null)
+                throw new Exception('Exemption type is required.')
+        }
+    }
+
+    void saveAssessments(rpu){
+        em.deleteAllAssessments(rpu)
+        rpu.assessments.each{
+            em.create(it, SCHEMA_ASSESSMENT)
+        }
+    }
+
+
+
+    @ProxyMethod
+    public def openRpu( rpu ) {
+        rpu = em.read(rpu)
+        if (!rpu) throw new Exception('Cannot open RPU. The record does not exist or has already been deleted.')
+        updatePin(rpu)
+        rpu.classification  = classSvc.findById(rpu.classification.objid)
+        rpu.exemptiontype   = exemptSvc.findById(rpu.exemptiontype.objid)
+        rpu.taxable         = util.toBoolean(rpu.taxable, true)
+        rpu.hasswornamount  = util.toBoolean(rpu.hasswornamount, false)
+        rpu.useswornamount  = util.toBoolean(rpu.useswornamount, false)
+        rpu.reclassed       = util.toBoolean(rpu.reclassed, false)
+        return rpu 
+    }
+
+
+    @ProxyMethod
+    public def findRpuInfoById( rpuid ) {
+        return em.findRpuInfoById([objid:rpuid])    
+    }
+
+
+    @ProxyMethod
+    public def deleteRpu( rpu ) {
+        em.deleteAllAssessments(rpu)
+        em.deleteRpu(rpu)
+        deleteRpuMaster(rpu)
+    }
+
+
+    @ProxyMethod
+    public def approveRpu( rpu ) {
+        checkLandStateCurrent(rpu)
+        rpu.state = STATE_CURRENT
+        em.updateRpuState(rpu)
+        return rpu 
+    }
+
+
+    /*----------------------------------------------------------
+    *
+    * SUPPORT METHODS
+    *
+    ------------------------------------------------------------*/
+    @ProxyMethod
+    public List getRpuTypes(  ) {
+        return [RPUTYPE_LAND, RPUTYPE_BLDG, RPUTYPE_MACH, RPUTYPE_PLANTTREE, RPUTYPE_MISC]
+    }
+
+
+    @ProxyMethod
+    public def getTypeFromSuffix( suffix ) {
+        def type = null
+        if (suffix == 0) 
+            type = RPUTYPE_LAND
+        else if (suffix >= 1001 && suffix <= 1999) 
+            type = RPUTYPE_BLDG
+        else if (suffix >= 2001 && suffix <= 2999) 
+            type = RPUTYPE_MACH
+        else if (suffix >= 3001 && suffix <= 3999) 
+            type = RPUTYPE_PLANTTREE
+        else if ((suffix >= 5001 && suffix <= 5999) || (suffix >= 7001 && suffix <= 7999)  )
+            type = RPUTYPE_MISC
+        else 
+            throw new Exception('Suffix No. ' + suffix + ' is invalid or not supported.')
+        return type 
+    }
+
+
+    @ProxyMethod
+    public void validateSuffix( rputype, suffix ) { 
+        def type = getTypeFromSuffix(suffix)
+        if (type != rputype)
+            throw new Exception('Suffix is invalid for property type ' + rputype + '.')
+    }
+
+
+    @ProxyMethod
+    public List getClassifications(  ) {
+        return classSvc.getClassifications([:])    
+    }
+
+
+    @ProxyMethod
+    public List getExemptionTypes(){
+        return exemptSvc.getExemptionTypes([:])
+    }
+
+
+    /* City, Municipality or Province interceptor build actual lists */
+    @ProxyMethod
+    public List getLgus( lgutype ) {
+        return []
+    }
+    
+
+    /*----------------------------------------------------------
+    *
+    * HELPER METHODS
+    *
+    ------------------------------------------------------------*/
+
+    void checkLandStateCurrent(rpu){
+        if (rpu.rputype != RPUTYPE_LAND) {
+            def landrpu = em.findLandRpuById([objid:rpu.landrpuid])
+            if (!landrpu)
+                landrpu = em.findLandRpuByRealPropertyId([realpropertyid:rpu.realpropertyid])
+            
+            if (!landrpu) 
+                throw new Exception('Land RPU does not exist.')
+            
+            if (landrpu.state == STATE_INTERIM)
+                throw new Exception('Land RPU is not yet current.')
+        }
+    }
+
+
+
+
+    @ProxyMethod 
+    public void updateSuffix(rpu) {
+        em.updateSuffix(rpu)
+    }
+
+    @ProxyMethod
+    public def openRpuMaster( rpu ) {
+        def master = [objid:rpu.objid]
+        if (rpu.rpumasterid)
+            master.objid = rpu.rpumasterid
+        return em.findRpuMasterById(master)    
+    }
+
+
+    void createRpuMaster(rpu){
+        try {
+            def master = [objid:rpu.objid]
+            if (!rpu.rpumasterid)
+                rpu.rpumasterid = master.objid
+            else 
+                master.objid = rpu.rpumasterid
+            em.createRpuMaster(master)
+        }
+        catch(e){
+            //ignore possible duplicate when there are multiple assessments
+        }
+    }
+
+
+    void deleteRpuMaster(rpu){
+        try{
+            em.deleteRpuMaster([objid:rpu.rpumasterid])
+        }
+        catch(e){
+            //ignore: possible references when there are multiple assessments
+        }
+    }
+
+
+    /*------------------------------------------
+    * 
+    * Check duplicate if previd is null. 
+    * Null previd represents a new rpu
+    *
+    ------------------------------------------*/
+    @ProxyMethod
+    public void checkDuplicateFullPin( rpu ){
+        if (! rpu.previd ) {
+            def data = em.findDuplicateFullPin([objid:rpu.objid, ry:rpu.ry, fullpin:rpu.fullpin])
+            if (data){
+                throw new Exception('PIN ' + rpu.fullpin + ' already exist.' )
+            }
+        }
+    }
+
+
+    void updatePin(rpu){
+        if (! rpu.realpropertyid) return
+        if (rpu.state.matches(STATE_CURRENT + '|' + STATE_CANCELLED)) return 
+        def rp = rpSvc.open([objid:rpu.realpropertyid]);
+        if (rp){
+            def fullpin = rp.pin 
+            if (rpu.rputype != RPUTYPE_LAND){
+                fullpin += '-' + rpu.suffix 
+            }
+            if (rpu.subsuffix){
+                fullpin += '-' + rpu.subsuffix
+            }
+            rpu.fullpin = fullpin 
+        }
+    }
+
+
+    @ProxyMethod
+    public def getNextSuffix(info) {
+        if (info.rputype.equalsIgnoreCase(RPUTYPE_LAND))
+            info.suffix = 0
+        else if (info.rputype.equalsIgnoreCase(RPUTYPE_BLDG))
+            info.suffix = 1001
+        else if (info.rputype.equalsIgnoreCase(RPUTYPE_MACH))
+            info.suffix = 2001
+        else if (info.rputype.equalsIgnoreCase(RPUTYPE_PLANTTREE))
+            info.suffix = 3001
+        else if (info.rputype.equalsIgnoreCase(RPUTYPE_MISC))
+            info.suffix = 5001
+
+        def suffixes = em.getNextSuffixes([realpropertyid:info.realpropertyid])
+        def suffix = suffixes.find{it.rputype == info.rputype}
+        if (suffix){
+            info.suffix = suffix.nextsuffix
+        }
+        return info.suffix 
+    }
+
+    void checkValidRy(ry){
+        //base on landrysetting only
+        def landrysetting = em.findLandRySetting([ry:ry])
+        if (!landrysetting)
+            throw new Exception('Revision Year ' + ry + ' does not exist.')
+    }
+
+
+}

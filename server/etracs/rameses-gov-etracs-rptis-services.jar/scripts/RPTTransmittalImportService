@@ -1,0 +1,187 @@
+import com.rameses.annotations.*
+import com.rameses.common.*;
+import com.rameses.services.extended.*;
+
+class RPTTransmittalImportService
+{
+	@Env 
+	def env 
+
+	@ActiveDB('rpttransmittal')
+	def transmittalEm
+
+	@ActiveDB('rpttransmittal_import')
+	def importEm
+
+	@ActiveDB(value='rpttransmittal_import', em='image')
+	def imageDb
+
+	@ActiveDB('faas_task')
+	def faasTask
+
+	@ActiveDB('subdivision_task')
+	def subdivisionTask
+
+	@ActiveDB('consolidation_task')
+	def consolidationTask
+
+	@Service('FAASWorkflowService')
+	def workflowSvc
+
+	@Service('FAASService')
+	def faasSvc 
+
+	@Service('EntityService')
+	def entitySvc 
+
+	@Service('RPTRequirementService')
+	def requirementSvc 
+
+	@Service('DBImageService')
+	def imageSvc 
+
+	@Service('DateService')
+	def dtSvc
+
+
+	@ProxyMethod
+	public void validateImport(data) {
+		if (data == null || data.filetype != 'transmittal')
+			throw new Exception('Invalid file format.')
+
+		if (data.transmittal.state == 'APPROVED'){
+			if (data.transmittal.lgu.objid != env.ORGID){
+				throw new Exception('Transmittal is not valid for this organization.')
+			}	
+		}
+		else if (data.transmittal.tolgu.objid != env.ORGID){
+			throw new Exception('Transmittal is not valid for this organization.')
+		}
+	}
+
+	@ProxyMethod
+	public void importTransmittal(data) {
+		def exist = transmittalEm.read(data.transmittal)
+		if (!exist){
+			transmittalEm.create(data.transmittal)			
+			data.items.each{
+				transmittalEm.create(it, 'item')
+			}
+		}
+		else{
+			transmittalEm.update(data.transmittal)			
+		}
+	}
+
+	@ProxyMethod
+	public void importFaas( faas, transmittalid ) {
+		def transmittal = importEm.findTransmittalById([objid:transmittalid])
+		if(transmittal.state == 'APPROVED'){
+			approveFaas(faas)
+		}
+		else{
+			updateFaasData(faas, transmittal)
+		}
+	}
+
+	@ProxyMethod
+	public void importSignatory( filetype, signatory, transmittalid ) {
+		try{
+			if (filetype == 'faas')
+				saveFaasSignatory(signatory, transmittalid)
+			else if (filetype == 'subdivision')
+				saveSubdivisionSignatory(signatory, transmittalid)
+			else if (filetype == 'consolidation')
+				saveConsolidationSignatory(signatory, transmittalid)
+			else 
+				throw new Exception('No signatory handler for Type ' + filetype +'.')
+		}
+		catch(e){
+			logError('signatory', signatory.objid, transmittalid, e)
+		}
+	}
+
+
+	@ProxyMethod
+	public void importRequirement( requirement, transmittalid ) {
+		try{
+			requirementSvc.save(requirement)
+		}
+		catch(e){
+			logError('requirement', requirement.objid, transmittalid, e)
+		}
+	}
+
+	@ProxyMethod
+	public void importImageHeader( header, transmittalid ) {
+		try{
+			imageSvc.saveHeader(header)
+		}
+		catch(e){
+			logError('image', header.objid, transmittalid, e)
+		}
+	}
+
+	@ProxyMethod
+	public void importImageChunk( chunk ) {
+		imageSvc.saveItem(chunk)
+	}
+	
+	void logError(filetype, refid, transmittalid, exception){
+		def buffer = new StringWriter();
+		exception.printStackTrace(new PrintWriter(buffer)); 
+		def log = [
+			objid			: 'LT' + new java.rmi.server.UID(),
+			transmittalid   : transmittalid, 
+			refid 			: refid,
+			filetype 		: filetype, 
+			txndate 		: dtSvc.serverDate,
+			error 			: buffer.toString(),
+		]
+		transmittalEm.create(log, 'log');
+	}	
+
+	void saveFaasSignatory(signatory){
+		faasTask.save(signatory)
+	}
+
+	void saveSubdivisionSignatory(signatory){
+		subdivisionTask.save(signatory)
+	}
+
+	void saveConsolidationSignatory(signatory){
+		consolidationTask.save(signatory)
+	}
+
+	void createTask(faas, transmittal){
+		if (transmittal.type == 'FORAPPROVAL'){
+			def tasks = workflowSvc.start([refid:faas.objid, data:faas])
+				if (tasks)
+					faas.taskid = tasks[0].objid
+		}
+
+	}
+
+	void approveFaas(faas){
+		faasSvc.approveFaas(faas)
+	}
+
+	void updateFaasData(faas, transmittal){
+		try{
+			if (faasSvc.faasExist(faas)){
+				entitySvc.update(faas.taxpayer)
+				faasSvc.updateFaas(faas)
+			}
+			else{
+				entitySvc.save(faas.taxpayer)
+				faasSvc.createFaas(faas)
+				createTask(faas, transmittal)
+			}
+		}
+		catch(e){
+			logError('faas', faas.objid, transmittal.objid, e)
+			throw e;
+		}
+	}
+}
+

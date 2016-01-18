@@ -1,0 +1,6 @@
+<schema>
+	<element name="af" tablename="af">
+		<field name="objid" primary="true"/>
+		<field name="serieslength" required="true" />
+	</element>
+</schema>

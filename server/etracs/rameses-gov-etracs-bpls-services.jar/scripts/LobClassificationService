@@ -1,0 +1,20 @@
+import com.rameses.annotations.*;
+import com.rameses.services.extended.*;
+
+class LobClassificationService extends ActiveCrudListService {
+
+	@ActiveDB("lobclassification")
+	def em;
+
+	@ProxyMethod
+	public def getColumns( def p ) {
+		return [
+			[name:'name',caption:'Classification'],
+		]
+	}
+
+	void beforeCreate(o) {
+		o.objid = o.name.trim().toUpperCase().replaceAll("\\s{1,}", "_");
+	}
+
+}

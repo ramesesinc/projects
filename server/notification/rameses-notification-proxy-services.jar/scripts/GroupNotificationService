@@ -1,0 +1,36 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+
+class GroupNotificationService 
+{	
+    @Service(value='GroupNotificationService', connection="notification_proxy")
+    def svc; 
+
+	@Env
+	def env;
+
+    @ProxyMethod
+    public def addMessage( data ) {
+        if (!data.senderid) data.senderid = env.USERID; 
+        if (!data.sender) data.sender = (env.FULLNAME? env.FULLNAME: env.NAME); 
+        
+        return svc.addMessage(data); 
+    }
+
+    @ProxyMethod 
+    public void removeMessage( params ) { 
+        svc.removeMessage( params ); 
+    }
+
+    @ProxyMethod 
+    public def getList( params ) {
+        return svc.getList( params ); 
+    }  
+
+    @ProxyMethod 
+    public void getNotified( params ) {
+        if (!params.groups) return; 
+
+        svc.getNotified(params);
+    }
+}

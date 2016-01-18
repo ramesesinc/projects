@@ -1,0 +1,55 @@
+
+import com.rameses.annotations.*;
+import com.rameses.http.*;
+import com.rameses.util.*;
+
+class SMSNotifierTask   
+{	
+	@XConnection('ws_etracs_channel')
+	def wsconn;
+
+	@ActiveDB('sms')
+	def sms;
+
+	@Service('DateService')
+	def dateSvc;
+
+	@Schedule(interval=2)
+	public void startNotification( task ) {
+		def rundate = dateSvc.serverDate;
+		def list = sms.getPendingMessages([_start:0, _limit:20, _pagingKeys:'d.objid']); 
+		list.each { 
+			try { 
+				if (it.dtexpiry && it.dtexpiry.before(rundate)) {
+					//message is already expired 
+					sms.markInboxAsFailed(it);
+					sms.removeInboxPending(it);
+					return; 
+				} 
+
+				if (it.dtretry && it.dtretry.before(rundate)) {  
+					it.dtretry = dateSvc.add(rundate, '30s'); 
+					sms.rescheduleInboxPending(it); 
+					notify(it); 
+				} else {
+					//rerun on the next schedule 
+				}
+			} catch(Throwable t) {
+				println 'failed to notify pending message caused by ' + t.class.name + ': ' + t.message; 
+			} 
+		} 
+		list.clear(); 
+	} 
+
+	private void notify( data ) { 
+		def msginfo = [ 
+			type    : 'sms', 
+			objid 	: data.objid, 
+			channel : data.channel, 
+			keyword : data.keyword,  
+			phoneno : data.phoneno,  
+			message : data.message 
+		];
+		wsconn.send(msginfo);
+	}
+}

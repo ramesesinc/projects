@@ -1,0 +1,39 @@
+<schema>
+
+	<element name="inbox" tablename="sms_inbox">
+		<field name="objid" primary="true"/>
+		<field name="state" required="true"/>
+		<field name="dtfiled" required="true"/>
+		<field name="channel" />
+		<field name="keyword" />
+		<field name="phoneno" required="true"/>
+		<field name="message"/>
+	</element>
+
+	<element name="inbox_pending" tablename="sms_inbox_pending">
+		<field name="objid" primary="true"/>
+		<field name="dtexpiry" required="true"/>
+		<field name="dtretry" required="true"/>
+		<field name="retrycount" required="true"/>
+	</element>
+
+	<element name="outbox" tablename="sms_outbox">
+		<field name="objid" primary="true"/>
+		<field name="state" required="true"/>
+		<field name="dtfiled" required="true"/>
+		<field name="refid" required="true"/>
+		<field name="phoneno" required="true"/>
+		<field name="message" required="true"/>
+		<field name="creditcount" required="true"/>
+		<field name="remarks"/>
+		<field name="dtsend"/>
+		<field name="traceid"/>
+	</element>	
+
+	<element name="outbox_pending" tablename="sms_outbox_pending">
+		<field name="objid" primary="true"/>
+		<field name="dtexpiry" required="true"/>
+		<field name="dtretry" required="true"/>
+		<field name="retrycount" required="true"/>
+	</element>
+</schema>

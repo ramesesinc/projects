@@ -1,0 +1,16 @@
+
+import com.rameses.annotations.*;
+import com.rameses.http.*;
+import com.rameses.util.*;
+
+class SMSListener 
+{	
+	@Service('SMSInboxService')
+	def inbox; 
+
+	@OnMessage('sms:receiver') 
+	public def receive(Map params) { 
+		println '[SMSListener] receive ' + params;	
+		inbox.create(params); 
+	} 
+}

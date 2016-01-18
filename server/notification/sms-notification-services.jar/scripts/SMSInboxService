@@ -1,0 +1,53 @@
+
+import com.rameses.annotations.*;
+import com.rameses.http.*;
+import com.rameses.util.*;
+
+class SMSInboxService
+{	
+	@ActiveDB('sms')
+	def em;
+
+	@Service('DateService')
+	def dateSvc; 
+
+	@Service 
+	def self;
+
+	@ProxyMethod
+	public Map create( Map entity ) {
+		def inbox = em.read(entity, 'inbox');
+		if (inbox) return inbox;
+		
+		if (!entity.message) entity.message='';		
+		entity.state = 'PENDING'; 		
+		entity.dtfiled = dateSvc.serverDate;
+		em.create(entity, 'inbox'); 
+ 
+		entity.dtexpiry = dateSvc.add(entity.dtfiled, '2m'); 
+		entity.dtretry = dateSvc.add(entity.dtfiled, '30s'); 
+		entity.retrycount = 0; 
+		em.create(entity, 'inbox_pending'); 
+		self.notify(entity); 
+		return entity; 
+	} 
+
+	/* Notifier facility */
+	
+	@XConnection("ws_etracs_channel")
+	def wschannel;
+
+	@ProxyMethod(local=true) 
+	@Async
+	public void notify( data ) { 
+		def msginfo = [
+			type    : 'sms', 		
+			objid 	: data.objid, 
+			channel : data.channel,
+			keyword : data.keyword,
+			phoneno : data.phoneno,
+			message : data.message 
+		];
+		wschannel.send(msginfo); 
+	}	
+} 

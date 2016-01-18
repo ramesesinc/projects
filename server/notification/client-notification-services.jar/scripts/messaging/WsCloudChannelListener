@@ -1,0 +1,58 @@
+import com.rameses.annotations.*;
+import com.rameses.common.*;
+import com.rameses.osiris3.script.*;
+import com.rameses.util.*;
+
+class WsCloudChannelListener
+{   
+	@Service('AsyncNotificationService')
+	def asyncNotificationSvc;
+
+	@Service('NotificationService')
+	def notificationSvc;
+
+	@Service(value='CloudNotificationService', connection='cloud_notification') 
+	def cloudNotificationSvc;
+
+	@Context 
+	def appContext; 
+
+	@OnMessage('ws_cloud_channel') 
+	public void receive( params ) { 
+		println '[WsCloudChannelListener] ' + params; 
+
+		def msgObj = cloudNotificationSvc.getMessage([objid: params.objid]); 
+		if (!msgObj) {
+			println '[WsCloudChannelListener] "'+ params.objid +'" notification message not found'; 
+			return; 
+		}
+
+		def userObj = new Base64Cipher().decode(msgObj.data); 
+		if (userObj instanceof AsyncRequest) { 
+			def data = asyncNotificationSvc.open([objid: msgObj.objid]);
+			if (data) { 
+				//record already exist 
+				return; 
+			} 
+			
+			data = [ 
+				objid 		: msgObj.objid, 
+				data  		: msgObj.data, 
+				messagetype	: msgObj.messagetype 				
+			];
+			asyncNotificationSvc.create( data ); 
+
+		} else { 
+			/* 
+				persist locally to the group notification.
+				after successfully added it will be published to the client immediately  
+			*/ 		
+			notificationSvc.importMessage( msgObj ); 
+		} 
+
+		/*
+			notify the cloud server that this message has been delivered  
+		*/
+		cloudNotificationSvc.markAsDelivered([objid: msgObj.objid]); 
+	} 
+} 

@@ -1,0 +1,54 @@
+
+import com.rameses.annotations.*;
+import com.rameses.http.*;
+import com.rameses.util.*;
+
+class SMSSenderTask   
+{	
+	@ActiveDB('sms')
+	def sms;
+
+	@Service('DateService')
+	def dateSvc;
+
+	@Service 
+	def self; 
+
+	@Schedule(interval=2)
+	public void execute( task ) {
+		def rundate = dateSvc.serverDate;
+		def list = sms.getOutboxPendingMessages([_start:0, _limit:20, _pagingKeys:'o.objid']); 
+		list.each { 
+			try { 
+				if (it.dtexpiry && it.dtexpiry.before(rundate)) {
+					//message is already expired 
+					sms.markOutboxAsFailed(it);
+					sms.removeOutboxPending(it);
+					return; 
+				} 
+
+				if (it.dtretry && it.dtretry.before(rundate)) {  
+					it.dtretry = dateSvc.add(rundate, '30s'); 
+					sms.rescheduleOutboxPending(it); 
+					self.send( it );  
+				} else {
+					//rerun on the next schedule 
+				}
+			} catch(Throwable t) {
+				println 'failed to send sms message caused by ' + t.class.name + ': ' + t.message; 
+			} 
+		} 
+		list.clear(); 
+	} 
+
+
+
+	@Service('SMSRemoteService') 
+	def remote; 
+
+	@Async 
+	@ProxyMethod(local=true) 
+	public void send( data ) { 
+		remote.send( data ); 
+	} 
+}

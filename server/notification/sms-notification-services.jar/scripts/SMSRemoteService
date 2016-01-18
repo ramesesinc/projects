@@ -1,0 +1,27 @@
+
+import com.rameses.annotations.*;
+import com.rameses.http.*;
+import com.rameses.util.*;
+
+class SMSRemoteService 
+{
+	@ActiveDB('sms')
+	def em;
+
+	@Service('DateService')
+	def dateSvc; 
+
+	@Service(value="SMSService", connection="sms:sender")
+	def remote;
+
+
+	@ProxyMethod
+	public void send( entity ) { 
+		def response = remote.send(entity); 
+		entity.dtsend = dateSvc.serverDate; 		
+		entity.remarks = 'MESSAGE SUCCESSFULLY SENT';
+		entity.traceid = response?.traceid; 		
+		em.markOutboxAsSend( entity ); 
+		em.removeOutboxPending( entity ); 
+	}
+} 

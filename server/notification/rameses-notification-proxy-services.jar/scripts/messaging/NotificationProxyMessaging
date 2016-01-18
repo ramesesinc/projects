@@ -1,0 +1,20 @@
+
+import com.rameses.annotations.*;
+import com.rameses.http.*;
+import com.rameses.util.*;
+
+class NotificationProxyMessaging 
+{	
+	@XConnection('ws_sender')
+	def wssender;
+
+	@OnMessage('ws_user_listener') 
+	public def receiveUserNotification( data ) { 
+		wssender.send( [channel:'user', data:data] );
+	} 	
+
+	@OnMessage('ws_group_listener') 
+	public def receiveGroupNotification( data ) { 
+		wssender.send( [channel:'group', data:data] ); 
+	} 
+} 

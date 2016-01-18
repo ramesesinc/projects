@@ -1,0 +1,22 @@
+
+import com.rameses.annotations.*;
+import com.rameses.http.*;
+import com.rameses.util.*;
+
+class ChannelLoaderTask 
+{	
+	@XConnection("ws_sender")
+	def wssender;
+
+	private def CHANNELS = ['user', 'group']; 
+
+	@Schedule(interval=0, immediate=true) 
+	public void startLoading( task ) {
+		if (!task.properties.loaded) {
+			CHANNELS.each {
+				wssender.send([action:'addchannel', channel:it]); 
+			}
+			task.properties.loaded = true; 
+		} 
+	} 
+}

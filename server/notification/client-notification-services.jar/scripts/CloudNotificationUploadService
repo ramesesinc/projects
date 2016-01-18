@@ -1,0 +1,42 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+
+class CloudNotificationUploadService
+{   
+    @ActiveDB(value='cloud_notification', em='notification')
+    def em;
+
+    @Service('DateService')
+    def dateSvc;
+
+    @Service(value='CloudNotificationService', connection='cloud_notification')
+    def remote;
+
+    @Async 
+    @ProxyMethod(local=true)  
+    public void upload( params ) { 
+        if (params.type == 'HEADER') { 
+            def header = em.read( params ); 
+            if (!header) return; 
+            
+            def response = remote.addMessage( header ); 
+            em.removePending( [objid: header.objid] ); 
+            em.removeDelivered([objid: header.objid] );
+            
+            def map = [
+                objid    : header.objid,  
+                dtfiled  : dateSvc.serverDate,  
+                traceid  : response?.traceid,  
+                tracetime: response?.tracetime 
+            ]; 
+            em.create( map, 'delivered' ); 
+
+        } else if (params.type == 'ATTACHMENT') { 
+            def attachment = em.read( params, 'attachment' ); 
+            if (!attachment) return; 
+
+            remote.addAttachment( attachment ); 
+            em.removePending( [objid: attachment.objid] ); 
+        } 
+    } 
+} 

@@ -1,0 +1,65 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.services.extended.*;
+
+
+public class WaterBillAccountLookupService extends ActiveListService {
+
+	@ActiveDB(value="waterbillaccount", em="waterbilling")
+	def em
+	
+	@Service("DateService")
+	def dtSvc
+	
+	String pagingKeys = "Account_No"
+	
+	@ProxyMethod
+	public List getColumns( params ) {
+		return [ 
+			[name:'code', caption:'Acct Code' ],
+			[name:'name', caption:'Acct Name' ]
+		]; 
+	} 
+	
+	@ProxyMethod 
+	public def findAccountInfo( params ) {
+		def info = em.findAccountInfo( params );
+		
+		def per = dtSvc.parseDate( info.period, null) 
+		info.duedate = per.year + "-" + ( per.month + 1 ).toString().padLeft( 2, "0") + "-16"
+		info.penalty = 0.0
+		info.discount = 0.0
+		def dp = computeDiscPenalty(info)
+		if( dp) {
+			if(dp.type == "penalty") {
+				info.penalty = dp.amount
+			} else {
+				info.discount = dp.amount 
+			}
+		}
+		return info;
+	}
+	
+	@ProxyMethod
+	public def computeDiscPenalty( params ) {
+		def dtDue = dtSvc.parse( "yyyy-MM-dd HH:mm:ss", params.duedate + " 23:59:59" ) 
+		def setting = em.findDiscount( params )
+		if(! setting ) return null 
+		
+		def dtDue1 = dtSvc.parse( "yyyy-MM-dd", dtSvc.getServerYear() +  "-" + (dtSvc.getServerMonth() - 1).toString().padLeft( 2, "0") + "-01" ) 
+		if( params.period.before( dtDue1 ) || dtSvc.serverDate.after( dtDue) ) {
+			//computePenalty
+			return [ type:"penalty", amount: params.amountdue *  setting.penalty ]
+			
+		} else {
+			//computeDisc 
+			if( params.amountdue <= setting.minamount ) [ type:"discount", amount: 0.0  ]
+			
+			def amt = (params.amountdue - setting.minamount) * setting.discount 
+			return [ type:"discount", amount: amt ]
+		}
+	}
+	
+
+}

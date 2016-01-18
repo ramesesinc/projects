@@ -1,0 +1,20 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.util.*;
+
+
+class AklanTerminalTicketService {
+	
+	@ActiveDB(value="aklan_terminal_ticket", em="aklanjettyport")
+	def em;
+
+	@ProxyMethod
+	public def create(o) {
+		o.objid = "TKT"+new UID();
+		o.barcode = KeyGen.generateIntKey( null, 10 );
+		em.create(o);
+	}
+
+
+}	

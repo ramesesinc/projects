@@ -1,0 +1,51 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import java.math.*;
+
+
+/*************************************************************************
+* This is a special permit with billing statement. Used by Malay, Aklan     
+**************************************************************************/
+public class BusinessPermitInterceptor {
+
+	@ActiveDB("business_permit_malay")
+	def em;
+
+	/*
+	@After(pattern="BusinessPermitService.getReport")
+	public void voidPrintout(def evt) {
+		def r = evt.result;
+		r.address = r.address?.split("\n").join(", ");
+		r.items = em.getPermitFees([applicationid: r.applicationid]).collect {	
+			def	sq1 = new BigDecimal( (it.q1==null)?0:it.q1 ); 
+			def	sq2 = new BigDecimal( (it.q2==null)?0:it.q2 ); 
+			def	sq3 = new BigDecimal( (it.q3==null)?0:it.q3 );
+			def	sq4 = new BigDecimal( (it.q4==null)?0:it.q4 );
+
+			def	bq2 = it.bq2;
+			def	bq3 = it.bq3;
+			def	bq4 = it.bq4;
+
+			def q1 = sq1;
+			def q2 = (bq2==null) ? sq2: bq2; 
+			def q3 = (bq3==null) ? sq3: bq3;  
+			def q4 = (bq4==null) ? sq4: bq4;
+
+			def amt = new BigDecimal(it.amount+"");
+			def penalty = (q1+q2+q3+q4) - amt;
+
+			[   
+				lobname: it.lob?.name, 
+				acctname: it.account.title, 
+				amount: amt, 
+				taxbase:new BigDecimal((it.taxbase==null)?0:it.taxbase),
+				q1: q1,  q2: q2, q3: q3, q4: q4, 
+				penalty: penalty
+			]
+		};
+		r.payments = em.getPayments([applicationid: r.applicationid]);
+	}
+	*/
+
+}

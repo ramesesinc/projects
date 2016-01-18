@@ -1,0 +1,96 @@
+import com.rameses.annotations.*
+import com.rameses.common.*
+import com.rameses.services.extended.*
+
+
+class SolsonaRPTLedgerInterceptor  
+{
+	@ActiveDB('solsona')
+	def em
+
+	@ActiveDB(value='rptledger', em="main")
+	def ledgerEm
+
+	@ActiveDB(value='ctdcams', em="ctdcams")
+	def ctdcamsEm
+
+	@Service('RPTLedgerService')
+	def ledgerSvc 
+	
+
+	@After(pattern="SolsonaRPTLedgerService.postNewLedger")
+	public void postManualLedgerInfo(evt){
+		migrateLedger(evt.result)
+	}
+
+	@After(pattern="RPTLedgerService.postNewLedger", eval="#{args[0].datacapture == true || args[0].datacapture == 1}")
+	public void postOnlineLedgerInfo(evt){
+		migrateLedger(evt.result)
+	}
+
+	void migrateLedger(ledger){
+		if (ledger.state == 'APPROVED') {
+			println 'Ledger has already been migrated.'
+			return;
+		}
+
+		println 'Migrating ctdcams ledger for tdno '  + ledger.tdno
+
+		try{
+			def pinno = ledger.fullpin.replace('003-21-','');
+			postFaasHistory(ledger, pinno)
+			postLedgerPayments(ledger, pinno)
+		}
+		catch(e){
+			println '='*50 
+			println 'Error posting ctdcams data....'
+			e.printStackTrace();
+		}
+	}
+
+	void postFaasHistory(ledger, pinno){
+		ctdcamsEm.getFaasHistories([pinno:pinno]).each{
+			def lf = [
+				objid 			: 'SLI-' + it.avid,
+				state 			: 'PENDING', 
+				rptledgerid 	: ledger.objid, 
+				faasid 			: ledger.faasid, 
+				tdno 			: ledger.tdno,
+				txntype 		: ledger.txntype,
+				classification  : ledger.classification,
+				actualuse 		: ledger.classification,
+				taxable 		: ledger.taxable, 
+				idleland 		: 0,
+				reclassed		: 0,
+				backtax			: 0,
+				fromyear		: it.fromyear, 
+				fromqtr 		: 1,
+				toyear 			: (it.toyear >= 2015 ? 2014 : it.toyear), 
+				toqtr			: 4,
+				assessedvalue	: it.value, 
+				systemcreated	: 0
+			]
+			ledgerSvc.saveLedgerFaas(lf)
+		}
+	}
+
+	void postLedgerPayments(ledger, pinno){
+		def ledgerpmt = ctdcamsEm.findDelinquency([pinno:pinno])
+
+		if (!ledgerpmt) ledgerpmt = [:]
+		ledgerpmt.objid = ledger.objid 
+		ledgerpmt.lastyearpaid = 2014
+
+		ctdcamsEm.getPayments([pinno:pinno]).each{payment ->
+			payment.objid = 'RC' + payment.acctid
+			payment.rptledgerid = ledger.objid
+			payment.fromqtr = 1
+			payment.toqtr = 4 
+			ledgerEm.create(payment, 'credit')
+			ledgerpmt.lastyearpaid = payment.fromyear 
+		}
+
+		em.updateLedgerLastYearPaid(ledgerpmt)
+		em.approveLedgerFaases(ledger)
+	}
+}

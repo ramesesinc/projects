@@ -1,0 +1,95 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.common.*
+import com.rameses.services.extended.*
+
+class KaliboBankDepositReportService  
+{
+
+	@ActiveDB('kalibo_bankdepositreport')
+	def em;
+
+	@Env 
+	def env 
+
+
+
+	@ProxyMethod 
+	def getFundlist( bankdepositid ) {
+		return em.getFundlist([bankdepositid:bankdepositid]);
+	}
+
+	@ProxyMethod 
+	def generateReportOfCollectionsByFund( deposit, fund ) {
+		def data = deposit.clone();
+		data.fund = fund; 
+		def params = [bankdepositid: data.objid, fundid: fund.objid ]
+		return em.getReportOfCollectionsByFund(params)
+	}
+
+
+	@ProxyMethod 
+	def generateReportOfDepositsByFund( deposit, fund ) {
+		def data = deposit.clone();
+		data.fund = fund; 
+		def params = [bankdepositid: data.objid, fundid: fund.objid ]
+		return em.getReportOfDepositsByFund(params)
+	}
+
+
+	@ProxyMethod 
+	def generateJevEntries( deposit, fund ) {
+		def padding = '      '
+		def revtype = ''
+		if (fund.objid.equalsIgnoreCase('GENERAL')) 
+			revtype = 'basic%'
+		else if (fund.objid.equalsIgnoreCase('SEF')) 
+			revtype = 'sef%'
+
+		def params = [bankdepositid: deposit.objid, fundid: fund.objid, orgtype:env.ORGCLASS, revtype:revtype]
+		def credits = em.getJevEntries(params).each{
+			it.account.title = padding + it.account.title 
+		}
+		def rptreceivable = em.findRPTReceivables(params)
+		if (rptreceivable.credit != null)
+			credits << rptreceivable
+
+		if (!credits)
+			return [:]
+
+		credits.sort{a,b -> a.account.code <=> b.account.code }
+
+		//build debits
+		def debits = [];
+		def rptdiscount = 0.0
+		if (fund.objid.matches('GENERAL|SEF')){
+			rptdiscount = em.findRPTBasicDiscount(params).discount;
+			if (rptdiscount == null) rptdiscount = 0.0;
+		}
+		debits << [account:[title:'Cash in Vault', code:'101'], debit:credits.credit.sum() - rptdiscount, credit:0.0]
+		debits << [account:[title:'Other Receivables', code:'149'], debit:0.0, credit:0.0]
+		if (fund.objid.matches('GENERAL|SEF')){
+			debits << [account:[title:'Discount on RPT', code:'954'], debit:rptdiscount, credit:0.0]
+		}
+
+
+		//rptincomes 
+		def rptincomes = em.getRPTIncomes(params).each{
+			it.account.title = padding + it.account.title 
+		}
+		if (rptincomes)
+			 rptincomes.add(0, [account:[code:'451', title:'DEFERRED RPT INCOME'], credit:0.0, debit:rptincomes.credit.sum()])
+		else 
+			rptincomes = [[debit:0.0, credit:0.0]]
+
+		return [
+			totaldebit  : debits.debit.sum() + rptincomes.debit.sum(),
+			totalcredit : credits.credit.sum() + rptincomes.credit.sum(),
+			items 		: debits + credits,
+			rptincomes 	: rptincomes,
+			shares 		: em.getRPTShares(params).each{it.sharetype = it.sharetype.toUpperCase()},
+		]
+	}
+	
+}

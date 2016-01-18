@@ -1,0 +1,71 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.services.extended.*;
+
+public class RemittanceUpdateService {
+	
+	@ActiveDB("remittanceitemupdate")
+	def em
+
+	@ProxyMethod 
+	def findItem( entity ) {
+		def item  = em.findRemittanceItemByTxnno(entity)
+		if(! item ) {
+			throw new Exception("Item code ${entity.itemcode} could not be found remittance ${entity.txnno}")
+		}
+		return item
+
+	}
+
+	@ProxyMethod 
+	void updateItem( entity ) { 
+		entity.toitem.txnno = entity.txnno
+		entity.toitem.itemcode = entity.itemcode 
+		em.updateItem( entity.toitem )
+	}
+
+	@ProxyMethod 
+	def updateCTCBShare( entity ) {
+		def receipts = em.getReceitpsByTxnno( entity );
+		if(! receipts) throw new Exception("Remittance No ${entity.txnno} could not be found. ")
+
+		for(o in receipts) {
+			def items = em.getReceiptItems( o )
+			if( items.size() == 2) {
+				em.updateReceiptItemAmount( o );
+
+				def item = [
+					objid: "RCTI" + new UID(),
+					receiptid : o.objid, 
+					itemid: entity.item.objid, 
+					itemcode: entity.item.code, 
+					itemtitle: entity.item.title, 
+					amount : o.amount / 2 
+				]
+
+				em.insertctcbrgyshare(item)
+
+			}
+
+		}
+
+	}
+
+	@ProxyMethod 
+	void updateRemittanceFund() {
+		for( o in em.getRemittanceList()){
+			def funds  = em.getRemittanceFund( [remittanceid: o.objid])
+			print "funds -> " + funds;
+			funds.each {
+				it.remittanceid = o.objid
+				it.objid = "RMF" + new UID() 
+				println it;
+				em.recreateRemittanceFund( it );
+			}
+
+		}
+
+	}
+
+}

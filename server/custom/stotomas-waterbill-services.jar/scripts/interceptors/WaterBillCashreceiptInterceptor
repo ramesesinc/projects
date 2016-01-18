@@ -1,0 +1,42 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import java.text.*
+
+public class WaterBillCashreceiptInterceptor {
+
+	@Service('CollectionTypeService')
+	def svc
+	
+	@ActiveDB(value="waterbillaccount",em="waterbilling")
+    def data;  
+
+	@Before(pattern="CashReceiptService.post", eval="#{args[0].collectiontype.handler == 'waterbill'}")
+	public def addRevitem(def evt) { 
+		def cs = evt.args[0] 
+		def setting = svc.findAccount([objid:cs.collectiontype.objid])
+		if (setting){
+			def item = cs.items[0]
+			item.item = setting.account  
+		} else {
+			throw new Exception('Collection Type ' + cs.collectiontype.name + ' account is not set.' )
+		}
+	}
+
+
+	@After(pattern="CashReceiptService.post", eval="#{result.collectiontype.handler == 'waterbill'}")
+	public void postWaterBillPayment(def evt) {
+		// do post code here
+		def o=evt.result;
+		def df = new SimpleDateFormat("MM-dd-yyyy");
+		o.xreceiptdate = df.format(o.receiptdate);
+		data.insertPayment(o);
+	}
+	
+	@After(pattern="CashReceiptVoidService.post", eval="#{result.receipt.collectiontype.handler == 'waterbill'}")
+	public void cancelWaterBillPayment(def evt) {
+	    def o=evt.result;
+		data.cancelPayment(o.receipt);
+	}
+
+}

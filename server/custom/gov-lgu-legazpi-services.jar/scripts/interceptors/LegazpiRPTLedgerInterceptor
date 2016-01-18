@@ -1,0 +1,30 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.services.extended.*;
+
+public class LegazpiRPTLedgerInterceptor 
+{
+    @After(pattern="RPTLedgerService.calcLedgerItemAssessedValue.*")
+    public void postFaasToRPTLedger(evt){
+        /* params: ledger, ledgerfaas, yr, av*/
+        def params = evt.result
+
+        def qav2004 = getLedgerFaasAV(params, 2004)
+        def qav1997 = getLedgerFaasAV(params, 2003)
+        if (qav1997 > 0){
+            if (params.yr >= 2004 && params.yr <= 2007)
+                params.av = (qav2004 - qav1997) * 0.30 + qav1997
+            else if (params.yr >= 2008 && params.yr <= 2010 )
+                params.av = (qav2004 - qav1997) * 0.60 + qav1997
+        }
+        println 'reclassed: [' + params.ledgerfaas.tdno + ']  Recomputed AV: ' + params.av 
+    }
+
+    def getLedgerFaasAV(params, prevyr){
+        def lf = params.ledger.faases.find{ it.state == 'APPROVED' &&  prevyr >= it.fromyear && (prevyr <= it.toyear || it.toyear == 0)}
+        if (lf)
+            return lf.assessedvalue
+        return 0.0
+    }
+}

@@ -1,0 +1,52 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.services.extended.*;
+
+public class EtracsBrgyService {
+
+	@ActiveDB("user")
+	def userSvc
+
+	@ActiveDB("cashbook")
+	def cashbookSvc;
+
+	@ActiveDB("revenueitem")
+	def revSvc
+
+	@ProxyMethod
+	def generateFile( entity ) {
+		StringBuffer sb = new StringBuffer();
+		def user = userSvc.read([objid: entity.collector.objid])
+
+		sb.append(  "insert into sys_user " 
+					+ "(objid, state, dtcreated, createdby, username, pwd, firstname, lastname,middlename,name, jobtitle, "
+					+ " pwdlogincount, pwdexpirydate, usedpwds, lockid, txncode) "
+                 	+ " values  " 
+               		+ " ( '${user.objid}', '${user.state}', '${user.dtcreated}', '${user.createdby}', '${user.username}', '${user.pwd}', '${user.firstname}', '${user.lastname}','${user.middlename}', "
+                 	+ " '${user.name}', '${user.jobtitle}', '${user.pwdlogincount}', '${user.pwdexpirydate}', '${user.usedpwds}', '${user.lockid}', '${entity.txncode}' ); " );
+
+        def cb =  cashbookSvc.findBySubAcctFund( [ fundid:'GENERAL', subacctid:entity.collector.objid, type:'COLLECTOR' ] )     
+        if( !cb) throw new Exception("No cashbook for " + entity.collector.name);
+        sb.append("\n")
+        sb.append( "insert into cashbook " 
+				+ " ( objid, state, code, title, description, type, subacct_objid, subacct_name, fund_objid, "
+				+ "	fund_code, fund_title, beginbalance, forwardbalance, totaldr, totalcr, endbalance, currentlineno) "
+				+ " values "
+				+ " ( '${cb.objid}', '${cb.state}', '${cb.code}', '${cb.title}', '${cb.description}', '${cb.type}', '${cb.subacct.objid}', '${cb.subacct.name}', '${cb.fund.objid}', "
+				+ "	'${cb.fund.code}', '${cb.fund.title}', 0.0, 0.0, 0.0, 0.0, 0.0, 1); " );
+
+        def re = revSvc.read([objid: entity.revenueitem.objid])
+        sb.append("\n")
+        sb.append("insert into itemaccount "
+				+ " ( objid, state, code, title, description, type, fund_objid, fund_code, fund_title, "
+			    + " defaultvalue, valuetype, org_objid, org_name, type	) "
+				+ " values "
+				+ " ( "
+				+ " '${re.objid}', '${re.state}', '${re.code}', '${re.title}', '${re.description}', '${re.type}', '${re.fund.objid}', '${re.fund.code}', '${re.fund.title}', "
+			   + " '${re.defaultvalue}', '${re.valuetype}', '${re.org.objid}', '${re.org.name}', 'INCOME'); ")
+		return sb.toString().replace("'null'", "NULL");	
+
+	}
+
+}

@@ -1,0 +1,33 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.services.extended.*;
+
+public class CashReceiptToolService {
+
+	@ActiveDB("cashreceipttool")
+	def em
+
+	@ProxyMethod
+	def findCashreceipt( entity ) {
+		def r = em.findCashreceipt( entity);
+		if(! r )
+			throw new Exception("Receipt No ${entity.orno} could not be found. Please check. ")
+
+		if( r.totalnoncash > 0.0 )
+			throw new Exception("Payment type for receipt no ${entity.orno} is already check. ")
+
+		return r	
+
+	}
+
+	@ProxyMethod
+	void updateCheckPayment( entity){
+		em.updateCashreceiptNoncash( entity )
+		entity.check.receiptid = entity.objid
+		entity.check.objid = "CPM" + new UID()
+		entity.check.particulars = entity.check.checkno + " (" + entity.check.bank + ") dated " + entity.check.checkdate; 
+		em.insertCheckPayment(entity.check ); 
+	}
+
+}

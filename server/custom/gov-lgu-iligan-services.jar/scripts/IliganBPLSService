@@ -1,0 +1,17 @@
+
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import com.rameses.services.extended.*;
+import java.rmi.server.*;
+
+public class IliganBPLSService 
+{
+	@ActiveDB('iligan_bpls') 
+	def em; 
+
+	@ProxyMethod 
+    public def getAssessmentGrossInfos( params ){ 
+        return em.getAssessmentGrossInfos([ applicationid: params.objid ]);
+    }
+}
+

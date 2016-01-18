@@ -1,0 +1,27 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.services.extended.*;
+
+public class IliganRPTLedgerInterceptor 
+{
+    @After(pattern="RPTLedgerService.calcLedgerItemAssessedValue.*")
+    public void postFaasToRPTLedger(evt){
+        /* params: ledger, ledgerfaas, yr, av*/
+        def params = evt.result
+        if(params.ledgerfaas.reclassed == null || params.ledgerfaas.reclassed == 0 || params.ledgerfaas.reclassed == false ) return;
+
+        def prevyr = 2002
+        def prevledgerfaas = params.ledger.faases.find{ it.state == 'APPROVED' &&  prevyr >= it.fromyear && (prevyr <= it.toyear || it.toyear == 0)}
+
+        if (prevledgerfaas){
+            if (params.yr == 2014){
+                params.av = prevledgerfaas.assessedvalue + ( (params.av - prevledgerfaas.assessedvalue) * 0.30)
+            }
+            else if (params.yr == 2015){
+                params.av = prevledgerfaas.assessedvalue + ( (params.av - prevledgerfaas.assessedvalue) * 0.60)
+            }
+            println 'reclassed: [' + params.ledgerfaas.tdno + ']  Recomputed AV: ' + params.av 
+        }
+    }
+}

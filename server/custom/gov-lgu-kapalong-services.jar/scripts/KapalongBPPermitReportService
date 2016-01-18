@@ -1,0 +1,75 @@
+
+import com.rameses.annotations.*;
+import com.rameses.common.*;
+
+class KapalongBPPermitReportService
+{
+	@ActiveDB("kapalong_bpreport")
+	def em
+
+	@Service('DateService')
+	def dateSvc; 
+
+	@Async
+	@ProxyMethod
+	public def getReport( params ) { 
+		params.barangayid = ( params.barangay ? params.barangay.objid : '%' );
+		if ( params.period == 'yearly' ) {
+			params.startmonth = 1;
+			params.endmonth = 12; 
+		} else if ( params.period == 'quarterly' ) {
+			params.endmonth = params.qtr * 3; 
+			params.startmonth = params.endmonth - 2; 
+		} else if ( params.period == 'monthly' ) {
+			params.startmonth = params.month.index;
+			params.endmonth = params.startmonth; 
+		} else {
+			throw new Exception("'"+ params.period + "' period type not supported");
+		} 
+
+		def list = em.getList( params );
+		if ( !list ) throw new Exception('No records found.');
+
+		list.each { x->
+			x.totalcapital = x.capital + x.extcapital;
+			x.totalgross = x.gross + x.extgross;
+			x.totalcapgross = x.totalcapital + x.totalgross; 
+			x.totaltax = x.tax + x.exttax;
+			x.totalregfee = x.regfee + x.extregfee;
+			x.totalplatestkr = x.platestkr + x.extplatestkr; 
+			x.totalwm = x.wm + x.extwm;
+			x.totalmp = x.mp + x.extmp;
+			x.totalocf = x.ocf + x.extocf;
+			x.totalgf = x.gf + x.extgf; 
+			x.total = x.totaltax + x.totalregfee + x.surcharge + x.interest; 
+
+			def values = [];
+			if (x.orno) values << x.orno; 
+			if (x.extorno) values << x.extorno; 
+			if (values) x.orno = values.join(',').replaceAll(",",", "); 
+
+			values.clear();
+			if (x.ordate) values << x.ordate;
+			if (x.extordate) values << x.extordate;
+			if (values) x.ordate = values.join(',').replaceAll(",",", "); 
+
+			values = null; 
+		} 
+
+		def buff = new StringBuilder();
+		def months = dateSvc.getMonths(); 
+		if ( params.period == 'yearly' ) {
+			buff.append("For The Year "+ params.year);  
+		} else if ( params.period == 'quarterly' ) {
+			buff.append( months[ params.startmonth-1 ].caption ).append(" - "); 
+			buff.append( months[ params.endmonth-1 ].caption ).append(" "+ params.year); 
+		} else if ( params.period == 'monthly' ) { 
+			buff.append( months[ params.startmonth-1 ].caption ).append(" "+ params.year); 
+		}
+
+		return [
+			period : buff.toString().toUpperCase(), 
+			items  : list 
+		]; 
+	} 
+}

@@ -1,0 +1,45 @@
+<%
+	def codeSvc = SERVICE.lookup("QueueCodeService","main");
+	def sectionSvc = SERVICE.lookup("QueueSectionService","main");
+	def categorySvc = SERVICE.lookup("QueueCategoryService","main");
+
+	def sections = sectionSvc.getList([:]);
+	def categories = categorySvc.getList([:]);
+%>
+<div id="stage">
+<%
+	int ccolorindex = 0;
+	categories.each{ category ->
+%>
+		<div class="category-container">
+			<h1 id="category-title">${category.name}</h1>
+			<br>
+<%
+			int scolorindex = 0;
+			sections.each{ section ->
+				def PARAMS = ["sectionid":section.objid, "categoryid":category.objid];
+				def result = codeSvc.getNextNumber(PARAMS);
+				def number = "?";
+				if(result) number = result.name;
+				def sectionid = section ? section.objid : null;
+				def categoryid = category ? category.objid : null;
+				def sectionname = section ? section.name : null;
+				def categoryname = category ? category.name : null;
+%>
+				<button class="queue-button scolor-${scolorindex}" onclick="generate('${sectionid}','${categoryid}','button${ccolorindex}${scolorindex}');">
+					<p>${section.name}</p>
+					<h1 id="button${ccolorindex}${scolorindex}">${number}</h1>
+				</button>
+<%
+			if(scolorindex == 5) scolorindex = 0;
+			scolorindex++;
+			}
+%>
+		</div>
+		<br>
+<%
+		if(ccolorindex == 1) ccolorindex = 0;
+		ccolorindex++;
+	}
+%>
+</div>

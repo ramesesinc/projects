@@ -1,0 +1,38 @@
+<!-- main stage for animation and events -->
+<div id="color">
+	<div id="blue">
+	</div>
+
+	<div id="yellow">
+	</div>
+
+	<div id="red">
+	</div>
+</div>
+<div id="container">
+	
+</div>
+
+<!-- used for cloning purposes -->
+<button class="button group" style="display: none;">
+	Group Button
+</button>
+
+<!-- used for cloning purposes -->
+<button class="button category" style="display: none;">
+	Category Button
+</button>
+
+<!-- used for cloning purposes -->
+<button class="button section" style="display: none;">
+	<span>Section-Title</span>
+	<h1>Queue Code</h1>
+</button>
+
+<!-- Dialog -->
+<div id="dialog" title="Current Number" style="display: none;">
+	<h1 id="number">?</h1>
+	<button id="print" class="button" title="Print" onclick="generateCode()">
+		Print
+	</button>
+</div>

@@ -1,0 +1,10 @@
+<script>
+	//this page is used for making upcalls from JavaScript to JavaFX
+	var socket = Socket.create('queuepoll');
+	socket.start();
+	socket.handlers.myhandler = function(o){
+		var data = o[0];
+		\$("h1").text(data.code);
+	}
+</script>
+<h1>MSG</h1>

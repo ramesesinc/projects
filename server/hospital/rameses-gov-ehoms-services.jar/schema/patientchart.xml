@@ -1,0 +1,20 @@
+<schema>
+	<element name="patientchart" tablename="patientchart">
+		<field name="objid" primary="true" />
+		<field name="chartno" required="true" />
+		<field name="state" required="true" />
+		<field name="section" required="true" />
+		<field name="entrypoint" required="true" />
+
+		<field name="dtfiled" required="true" />
+		<field name="createdby_objid" required="true" />
+		<field name="createdby_name" required="true" />
+		<field name="patient_objid" required="true" />
+		<field name="patient_classification" />
+		<field name="complaint" />
+		<field name="reason" />
+		<field name="attendingphysician_objid" />
+		<field name="attendingphysician_name" />
+		<field name="dtclosed"  />
+	</element>
+</schema>

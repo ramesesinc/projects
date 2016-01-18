@@ -1,0 +1,27 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.services.extended.*;
+
+public class PatientChartDiagnosisService extends ActiveCrudService {
+
+	@ActiveDB("patientchart_diagnosis")
+	def em;
+
+	@Env
+	def env;
+
+	@Service("DateService")
+	def dateSvc;
+
+	void beforeCreate(o) {
+		o.dtfiled  = dateSvc.serverDate;
+		o.user = [objid: env.USERID, name: env.USER];
+	}
+
+	@ProxyMethod
+	public def getList(o) {
+		return em.getList(o);
+	}
+
+}

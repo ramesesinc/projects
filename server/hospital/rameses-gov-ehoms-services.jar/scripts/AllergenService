@@ -1,0 +1,17 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.services.extended.*;
+
+public class AllergenService {
+	
+	@ActiveDB('allergen')
+	def em
+
+	@ProxyMethod 
+	public def getClassifications(){
+		def list = em.getClassifcations()
+		return list*.classification
+	}
+
+}

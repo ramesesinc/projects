@@ -1,0 +1,16 @@
+<schema>
+	<element tablename="payprovider">
+		<field name="objid" primary="true"/>
+		<field name="acctcode" required="true"/>
+		<field name="acctname" required="true"/>
+		<field name="providertype" required="true"/>
+		<field name="description" />
+		<field name="address" required="true"/>
+
+		<field name="phoneno"/>
+		<field name="mobileno"/>
+		<field name="email" />
+
+	</element>
+</schema>
+

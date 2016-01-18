@@ -1,0 +1,24 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.services.extended.*;
+
+public class PatientLookupService extends ActiveListService {
+
+	@ActiveDB("patient")
+	def em;
+
+	String listMethod = "getLookup";
+
+	@ProxyMethod
+	public def getColumns(o) {
+		return [
+			[name:'acctid', caption:'Patient ID'],
+			[name:'lastname', caption:'Lastname'],
+			[name:'firstname', caption:'Firstname'],
+			[name:'middlename', caption:'Middlename'],
+		]
+	}
+
+
+}

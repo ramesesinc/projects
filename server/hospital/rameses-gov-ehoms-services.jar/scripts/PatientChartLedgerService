@@ -1,0 +1,30 @@
+import com.rameses.annotations.*
+import com.rameses.common.*
+import java.rmi.server.UID;
+import com.rameses.util.*;
+import com.rameses.io.*;
+import com.rameses.services.extended.*;
+
+class PatientChartLedgerService extends ActiveCrudListService {
+
+	@ActiveDB('patientchart_ledger')
+	def	em; 
+
+	@Service("DateService")
+	def dateSvc;
+
+	public void beforeCreate(o) {
+		o.objid = "PCLDG"+new UID();
+		o.amtcredit = 0;
+		o.amtpaid = 0;
+		o.dtfiled = dateSvc.serverDate;
+	}
+
+	@ProxyMethod
+	public def getUnpaidBalance( o ) {
+		return em.findUnpaidBalance(o)?.balance;
+	}
+
+}
+
+

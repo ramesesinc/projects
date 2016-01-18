@@ -1,0 +1,16 @@
+<schema>
+	<element  tablename="patientchart_labresult">
+		<field name="objid" primary="true"/>
+		<field name="chartid" required="true"/>
+		<field name="activityid" required="true"/>
+		<field name="workorderid" required="true"/>
+		<field name="groupid" />
+		<field name="dttaken" />
+		<field name="item_objid" required="true"/>
+		<field name="item_name" required="true"/>
+		<field name="value"/>
+		<field name="takenby_objid"/>
+		<field name="takenby_name"/>
+	</element>
+</schema>
+

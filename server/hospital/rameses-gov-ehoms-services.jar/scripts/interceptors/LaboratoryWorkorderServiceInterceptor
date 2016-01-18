@@ -1,0 +1,69 @@
+import com.rameses.annotations.*
+import com.rameses.common.*
+import java.rmi.server.UID;
+import com.rameses.util.*;
+import com.rameses.io.*;
+
+class LaboratoryWorkorderServiceInterceptor  {
+
+	@Service("LabTestItemService")
+	def itemSvc;
+
+	@Service("LabTestTemplateService")
+	def groupSvc;
+
+	@Service("PatientChartLedgerService")
+	def ledgerSvc;
+
+	@Service("PatientChartLabResultService")
+	def labSvc;
+
+	@After(pattern="PatientChartWorkOrderService.createBillItems", eval="args[0].activitytype=='LB'")
+	public void createLabItems( def evt ) {
+		def result = evt.result;
+		def items = result.entity.items;
+		def mitems = [];
+		result.entity.info.each {
+			if(it.reftype=='GROUP') {
+				def z = groupSvc.open( it );
+				mitems << [objid: z.objid, name: z.name, price: z.price, billable:true, type:'group' ];
+
+				def subItems = itemSvc.getBillItems( z.items*.objid );
+				subItems.each { y->
+					mitems << [objid: y.objid, name:y.name, billable:false, groupid: z.objid, type: 'item'];
+				}
+			}
+			else {
+				def z = itemSvc.open( it );
+				mitems << [objid: z.objid, name: z.name, price: z.price, billable:true, type:'item' ];
+			}
+		}
+		result.billitems = mitems;
+		result.total = mitems.findAll{it.price!=null}.sum{ it.price };
+	}
+
+	@After(pattern="PatientChartWorkOrderService.activate", eval="args[0].activitytype=='LB'")
+	public void onAccept( def evt ) {
+		def r = evt.args[0];
+		def activity = evt.result;
+		r.billitems.findAll{it.billable==true}.each {
+			def rr = [:]
+			rr.item = [objid: it.objid, name:it.name, type:r.activitytype];
+			rr.parentid = r.parentid;
+			rr.amtdue = it.price;
+			ledgerSvc.create(rr);
+		}
+		r.billitems.findAll{it.type=='item'}.each {
+			def rr = [:];
+			rr.item = [objid: it.objid, name:it.name];
+			rr.groupid = it.groupid;
+			rr.chartid = r.parentid;
+			rr.workorderid = r.objid;
+			rr.activityid = activity.objid;
+			labSvc.create( rr )
+		}
+	}
+
+}
+
+

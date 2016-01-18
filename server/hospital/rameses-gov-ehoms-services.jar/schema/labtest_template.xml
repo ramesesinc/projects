@@ -1,0 +1,9 @@
+<schema>
+	<element tablename="labtest_template">
+		<field name="objid" primary="true" />
+		<field name="name" required="true" />
+		<field name="description" />
+		<complex name="items" serializer="default" type="list" required="true" />
+		<field name="price" />
+	</element>
+</schema>

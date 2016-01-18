@@ -1,0 +1,60 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.services.extended.*;
+
+public class PatientChartRadiologyService extends ActiveCrudListService {
+
+	@ActiveDB("patientchart_radiology")
+	def em;
+
+
+	@Service("DateService")
+	def dateSvc;
+
+	@Env
+	def env;
+
+	public void beforeCreate(o) {
+		o.objid = 'PCRAD'+new UID();
+	}
+
+	public void beforeList( o ) {
+		if(o.activityid) {
+			o._listMethod = 'getListByActivity';
+		}
+		else if( o.workorderid ) {
+			o._listMethod = 'getListByWorkOrder';
+		}
+	}
+
+	@ProxyMethod
+	public def updateResults(list) {
+		def d = dateSvc.serverDate;
+		list.each {
+			em.save( it );
+		}
+	}
+
+	@ProxyMethod
+	public void addAttachment(o) {
+		em.create( o, "attachment" );
+	}
+
+	@ProxyMethod
+	public void removeAttachment(o) {
+		em.delete( o, "attachment" );
+	}
+
+	@ProxyMethod
+	public def getAttachments(o) {
+		return em.getAttachments(o);
+	}
+
+	@ProxyMethod
+	public def findAttachment(o) {
+		return em.findAttachment(o);
+	}
+
+
+}

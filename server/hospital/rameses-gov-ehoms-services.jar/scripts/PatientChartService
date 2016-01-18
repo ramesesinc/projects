@@ -1,0 +1,128 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.services.extended.*;
+
+public class PatientChartService extends ActiveCrudService {
+
+	@ActiveDB("patientchart")
+	def em;
+
+	@Service("SequenceService")
+	def seqSvc;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@Service("PatientService")
+	def patientSvc;
+
+	@Service("PhysicianService")
+	def physicianSvc;
+
+	@Service("PatientChartDiagnosisService")
+	def diagnosisSvc;
+
+	@Service("PatientChartAllergyService")
+	def allergySvc;
+
+	@ActiveDB("patientchart_admission")
+	def admission;
+
+	@XConnection("email")
+	def email;
+
+	@Env
+	def env;
+
+	public void beforeCreate(o) {
+		o.chartno = "CHT" + seqSvc.getNextFormattedSeries( "PATIENTCHART" ); 
+		o.state = 'NEW';
+		o.createdby = [objid:env.USERID, name:env.USER];
+		o.dtfiled = dateSvc.serverDate;
+		o.entrypoint = o.section;
+	}
+
+	public void afterOpen(o) {
+		if(o.attendingphysician?.objid) {
+			o.attendingphysician = physicianSvc.open(o.attendingphysician);	
+		}
+		o.patient = patientSvc.open( o.patient );
+		o.patient.thumbnail = patientSvc.getThumbnail( o.patient );	
+		o.diagnosis = diagnosisSvc.getList( o );
+		o.allergies = allergySvc.getList(o);
+		o.allergies.each {
+			if(it.allergens) it.allergens = em.serializer.read( it.allergens );
+		}
+	}
+
+	@ProxyMethod
+	public void assignPhysician(o) {
+		em.updatePhysician(o);
+	}
+
+	@ProxyMethod
+	public def getTodoList( def o ) {
+		return em.getTodoList(o);
+	}
+
+	@ProxyMethod
+	public def getActivityList( def o ) {
+		return em.getActivityList(o);		
+	}
+
+	@ProxyMethod
+	public def submitForAssessment(o) {
+		if(!o.attendingphysician?.objid)
+			throw new Exception("Please assign first a physician");
+		
+		if(!o.complaint)
+			throw new Exception("Please specify complaint");
+
+		if(!o.attendingphysician.contactno)	{
+			o.attendingphysician = physicianSvc.open( o.attendingphysician );
+		}		
+		o.state = 'ASSESSMENT';
+		em.updateState(o)
+		return o;
+	}
+
+
+	@ProxyMethod
+	public def sendForHome(o) {
+		o.disposition = 'HOME';
+		o.state = 'CLOSED';
+		o.dtclosed = dateSvc.serverDate;
+		em.updateDisposition(o)
+		return o;
+	}
+
+	@ProxyMethod
+	public def sendForReferral(o) {
+		o.disposition = 'REFERRAL';
+		o.state = 'CLOSED';
+		o.dtclosed = dateSvc.serverDate;
+		em.updateDisposition(o);
+
+		//send email to doctor
+		def m =[:];
+		m.recipients = [ 'worgflores@gmail.com' ];
+		m.subject = 'This is a test email';
+		m.message = 'Hello worgie';
+		email.send( m );
+
+		return o;
+	}
+
+	@ProxyMethod
+	public def sendForAdmission(o) {
+		//we create an admission.
+		admission.create( [objid: 'ADM', chartid: o.objid, dtfiled: dateSvc.serverDate] );
+		o.disposition = 'ADMISSION';
+		o.section = 'IPD';
+		o.state = 'ADMISSION';
+		em.updateAdmission(o);
+		return o;
+	}
+
+}

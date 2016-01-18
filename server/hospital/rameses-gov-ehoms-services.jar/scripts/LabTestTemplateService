@@ -1,0 +1,25 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.services.extended.*;
+
+public class LabTestTemplateService extends ActiveCrudListService {
+
+	@ActiveDB("labtest_template")
+	def em;
+
+	@ProxyMethod
+	public def getColumns(o) {
+		return [
+			[name:'name', caption:'Name', maxWidth:100],
+			[name:'description', caption:'Description']
+		]
+	}
+
+	@ProxyMethod
+	public def findItem(o) {
+		def x = em.findPriceItem(o);
+		if(x.items) x.items 
+	}
+
+}

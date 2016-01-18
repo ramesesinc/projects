@@ -1,0 +1,39 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.services.extended.*;
+
+public class PatientChartLabResultService extends ActiveCrudListService {
+
+	@ActiveDB("patientchart_labresult")
+	def em;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@Env
+	def env;
+
+	public void beforeCreate(o) {
+		o.objid = 'LBRESULT'+new UID();
+	}
+
+	public void beforeList( o ) {
+		if(o.activityid) {
+			o._listMethod = 'getListByActivity';
+		}
+		else if( o.workorderid ) {
+			o._listMethod = 'getListByWorkOrder';
+		}
+	}
+
+	@ProxyMethod
+	public def updateResults(list) {
+		def d = dateSvc.serverDate;
+		list.each {
+			em.save( it );
+		}
+	}
+
+
+}

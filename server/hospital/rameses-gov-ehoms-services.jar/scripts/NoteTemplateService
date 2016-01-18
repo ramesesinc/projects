@@ -1,0 +1,33 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.services.extended.*;
+
+public class NoteTemplateService extends ActiveCrudListService {
+
+	@Service("DateService")
+	def dateSvc;
+
+	@ActiveDB("notetemplate")
+	def em;
+
+	public void beforeCreate(o) {
+		o.dtcreated = dateSvc.serverDate;
+	}
+
+	public void beforeUpdate(o) {
+		o.dtmodified = dateSvc.serverDate;
+	}
+
+	@ProxyMethod
+	public def getTemplates(o) {
+		return em.getTemplateList(o);
+	}
+
+	@ProxyMethod
+	public def getTemplatesByKeyword(o) {
+		return em.getTemplateListByKeyword(o);
+	}
+
+
+}

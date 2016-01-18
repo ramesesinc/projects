@@ -1,0 +1,14 @@
+<schema>
+	<element name="patient_address" tablename="patient_address">
+		<field name="objid" primary="true" />
+		<field name="parentid" required="true" />
+		<field name="addresstype" required="true" />
+		<field name="street1"  />
+		<field name="street2"  />
+		<field name="city"  />
+		<field name="municipality"  />
+		<field name="province"  />
+		<field name="zipcode"  />
+		<field name="barangay"  />
+	</element>
+</schema>

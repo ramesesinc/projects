@@ -1,0 +1,15 @@
+<schema>
+	<element name="physician" tablename="physician">
+		<field name="objid" primary="true" />
+		<field name="firstname" required="true" />
+		<field name="lastname" required="true" />
+		<field name="middlename" />
+		<field name="contactno"  />
+		<field name="email" />
+		<field name="specialization" />
+		<field name="degree" />
+		<field name="gender" />
+		<field name="address" />
+		<field name="username" />
+	</element>
+</schema>

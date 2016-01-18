@@ -1,0 +1,13 @@
+<schema>
+	<element tablename="drug">
+		<field name="objid" primary="true" />
+		<field name="code" required="true" />
+		<field name="name" required="true" />
+		<field name="genericname" />
+		<field name="brand" />
+		<field name="strength" />
+		<field name="purpose" />
+		<field name="availability" />
+		<field name="administration" />
+	</element>
+</schema>

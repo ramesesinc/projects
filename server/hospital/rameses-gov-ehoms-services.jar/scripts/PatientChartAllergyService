@@ -1,0 +1,46 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.services.extended.*;
+
+public class PatientChartAllergyService extends ActiveCrudListService {
+
+	@ActiveDB("patientchart_allergy")
+	def em;
+
+	@Env
+	def env;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@ProxyMethod
+	public def getLookupAllergen(o ) {
+		if(!o.searchtext) o.searchtext = '';
+		o.searchtext += '%';
+		if(!o.allergenclass)
+			throw new Exception("Please specify an allergen class");
+		if(o.allergenclass == 'DRUG')
+			return em.getLookupDrugAllergen(o);
+		else if(o.allergenclass == 'FOOD') 
+			return em.getLookupFoodAllergen(o);
+		else
+			return em.getLookupEnvironmentAllergen(o);
+	}
+
+	void beforeCreate(o) {
+		o.dtfiled  = dateSvc.serverDate;
+		o.user = [objid: env.USERID, name: env.USER];
+	}
+
+	@ProxyMethod
+	public def checkDrugAllergies(def o) {
+		def list = em.getDrugAllergies(o);
+		list.each {
+			if(it.allergens) it.allergens = em.serializer.read(it.allergens);
+		}
+		return list;
+	}
+
+
+}

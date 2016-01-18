@@ -1,0 +1,34 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.services.extended.*;
+
+public class PhysicianLookupService extends ActiveListService {
+	
+	@ActiveDB("physician")
+	def em;
+
+	String listMethod = "getLookup";
+
+	@ProxyMethod
+	public def getColumns(o) {
+		return [
+			[name:'lastname', caption:'Lastname'],
+			[name:'firstname', caption:'Firstname'],
+			[name:'middlename', caption:'Middlename'],
+			[name:'address', caption:'Address'], 
+		]
+	}
+
+	public void afterList(o, items) {
+		items.each {
+			it.name =  it.firstname + (it.middlename ? ' ' + it.middlename + ' ' :' ' )   +  it.lastname + (it.degree ? ', ' + it.degree : '');
+		}
+	}
+
+	@ProxyMethod
+	public def findById(o) {
+		return em.findById( [objid: o.objid] );
+	}
+
+}

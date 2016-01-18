@@ -1,0 +1,17 @@
+<schema>
+	<element  tablename="patientchart_workorder">
+		<field name="objid" primary="true" />
+		<field name="parentid" required="true" />
+		<field name="activitytype" required="true" />
+		<field name="dtfiled" required="true" />
+		<field name="controlno" required="true" />
+		<field name="state" required="true" />
+		<field name="section" required="true" />
+		<field name="info" required="true" />
+		<field name="requester_objid" required="true" />
+		<field name="requester_name" required="true" />
+		<field name="remarks"  />
+		<field name="notifysms" />
+		<field name="text" />
+	</element>
+</schema>

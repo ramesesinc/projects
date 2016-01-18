@@ -1,0 +1,53 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.services.extended.*;
+
+public class PatientChartActivityService extends ActiveCrudListService {
+
+	@ActiveDB("patientchart_activity")
+	def em;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@Service("SequenceService")
+	def seqSvc;
+
+	@Env
+	def env;
+	
+	public void beforeCreate( o ) {
+		o.taskno =  "TSK" + seqSvc.getNextFormattedSeries( "CHART_ACTIVITY" ); 
+		o.startdate = dateSvc.serverDate;
+	}
+
+	@ProxyMethod
+	public def addActivity(o) {
+		if(!o.activitytype) throw new Exception("PatientChartActivity. specify activity type");
+		if(!o.chartid) throw new Exception("PatientChartActivity. specify chartid");
+		def act = [objid:'ACT'+new UID(), parentid:o.chartid];
+		act.activity = [objid:o.activitytype];
+		act.workorderid = o.workorderid;
+		return create( act );
+	}
+
+	@ProxyMethod	
+	public void closeTask( o ) {
+		o.state = 'CARRIED';
+		o.actor = [objid:env.USERID ,name: env.USER];
+		o.enddate = dateSvc.serverDate;
+		em.update(o);
+	}
+
+	@ProxyMethod
+	public boolean getHasPendingActivities(o) {
+		def c = em.findHasPendingActivities(o)?.count;
+		if( c ) 
+			return true; 
+		else 
+			return false;
+	}
+	
+
+}

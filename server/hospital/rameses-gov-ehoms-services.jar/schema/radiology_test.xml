@@ -1,0 +1,7 @@
+<schema>
+	<element tablename="radiology_test">
+		<field name="objid" primary="true" />
+		<field name="name" required="true" />
+		<field name="price" required="true" />
+	</element>
+</schema>

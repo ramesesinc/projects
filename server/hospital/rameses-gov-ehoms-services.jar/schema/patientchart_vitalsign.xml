@@ -1,0 +1,14 @@
+<schema>
+	<element tablename="patientchart_vitalsign">
+		<field name="objid" primary="true"/>
+		<field name="chartid" required="true"/>
+		<field name="activityid" required="true"/>
+		<field name="workorderid" required="true"/>
+		<field name="dttaken" required="true"/>
+		<field name="vitalsignid" required="true"/>
+		<field name="unit" required="true"/>
+		<field name="value" required="true"/>
+		<field name="takenby_objid" required="true"/>
+		<field name="takenby_name" required="true"/>
+	</element>
+</schema>

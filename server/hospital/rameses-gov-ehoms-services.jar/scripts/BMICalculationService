@@ -1,0 +1,14 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.services.extended.*;
+
+public class BMICalculationService {
+
+
+	@ProxyMethod
+	public def calculate( o ) {
+		
+	}
+
+}

@@ -1,0 +1,54 @@
+import com.rameses.annotations.*
+import com.rameses.common.*
+import java.rmi.server.UID;
+import com.rameses.util.*;
+import com.rameses.io.*;
+
+class RadiologyWorkorderServiceInterceptor  {
+
+	@Service("RadiologyService")
+	def lookupSvc;
+
+	@Service("PatientChartLedgerService")
+	def ledgerSvc;
+
+	@Service("PatientChartRadiologyService")
+	def radSvc;
+
+	@After(pattern="PatientChartWorkOrderService.createBillItems", eval="args[0].activitytype=='RD'")
+	public void createItems( def evt ) {
+		def result = evt.result;
+		def items = result.entity.items;
+		def mitems = [];
+		result.entity.info.each {
+			def z = lookupSvc.open( it );
+			mitems << [objid: z.objid, name: z.name, price: z.price, billable:true ];
+		}
+		result.billitems = mitems;
+		result.total = mitems.findAll{it.price!=null}.sum{ it.price };
+	}
+
+	@After(pattern="PatientChartWorkOrderService.activate", eval="args[0].activitytype=='RD'")
+	public void onAccept( def evt ) {
+		def r = evt.args[0];
+		def activity = evt.result;
+		r.billitems.findAll{it.billable==true}.each {
+			def rr = [:]
+			rr.item = [objid: it.objid, name:it.name, type:r.activitytype];
+			rr.parentid = r.parentid;
+			rr.amtdue = it.price;
+			ledgerSvc.create(rr);
+		};
+		r.billitems.each {
+			def rr = [:];
+			rr.item = [objid: it.objid, name:it.name];
+			rr.chartid = r.parentid;
+			rr.workorderid = r.objid;
+			rr.activityid = activity.objid;
+			radSvc.create( rr )
+		}
+	}
+
+}
+
+

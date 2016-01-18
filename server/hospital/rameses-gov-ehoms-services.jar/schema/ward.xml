@@ -1,0 +1,12 @@
+<schema>
+	<element  tablename="ward">
+		<field name="objid" primary="true" />
+		<field name="state"/>
+		<field name="unittype"/>
+		<field name="unitno"/>
+		<field name="floor"/>
+		<field name="building"/>
+		<field name="section"/>
+	</element>
+</schema>
+

@@ -1,0 +1,11 @@
+<schema>
+	<element tablename="patientchart_admission">
+		<field name="objid" primary="true"/>
+		<field name="chartid" required="true"/>
+		<field name="dtfiled" required="true"/>
+		<field name="ward_objid"/>
+		<field name="startdate" />
+		<field name="enddate" />
+	</element>
+</schema>
+

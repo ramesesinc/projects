@@ -1,0 +1,52 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.services.extended.*;
+
+public class PatientChartVitalSignService extends ActiveCrudListService {
+
+	@ActiveDB("patientchart_vitalsign")
+	def em;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@Service("PatientChartActivityService")
+	def activitySvc;
+
+	@Env
+	def env;
+
+	public void beforeCreate(o) {
+		o.objid = 'PCVS'+new UID();
+		o.takenby = [objid:env.USERID ,name: env.USER];
+		o.dttaken = dateSvc.serverDate;
+	}
+
+	@ProxyMethod
+	public def getColumns(o) {
+		def cols = [];
+		cols << [name:'dttaken', caption: 'Time Taken'];
+		cols += em.getColumns(o).collect{ [name:it.name, caption:it.name, maxWidth:100, align:'center'] };
+		cols << [name:'remarks', caption:'Remarks']
+		return cols;	
+	}
+
+	@ProxyMethod
+	public def getAllResults(o) {
+		def _list = em.getAllVitalSigns( o ) ;
+		println "list size " + _list.size();
+		def list = [];
+		def grps = _list.groupBy{ it.dttaken };
+		grps.each{ k,v->
+			def m = [:];
+			m.dttaken = k;
+			v.each{
+				m[(it.name)] = it.value;
+			}
+			list << m;
+		}
+		return list;
+	}
+
+}

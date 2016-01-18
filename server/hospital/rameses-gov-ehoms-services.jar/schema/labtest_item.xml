@@ -1,0 +1,11 @@
+<schema>
+	<element tablename="labtest_item">
+		<field name="objid" primary="true" />
+		<field name="name" required="true" />
+		<field name="category" />
+		<field name="datatype" />
+		<field name="unit" />
+		<field name="range" />
+		<field name="price" />
+	</element>
+</schema>

@@ -1,0 +1,23 @@
+<schema>
+	<element  tablename="patientchart_radiology">
+		<field name="objid" primary="true"/>
+		<field name="chartid" required="true"/>
+		<field name="activityid" required="true"/>
+		<field name="workorderid" required="true"/>
+		<field name="dttaken" />
+		<field name="item_objid" required="true"/>
+		<field name="item_name" required="true"/>
+		<field name="takenby_objid" />
+		<field name="takenby_name" />
+		<field name="notes" />
+	</element>
+
+	<element name="attachment" tablename="patientchart_radiology_attachment">
+		<field name="objid" required="true"/>
+		<field name="parentid" required="true"/>
+		<field name="title" required="true"/>
+		<field name="thumbnail" />
+		<field name="image" required="true"/>
+	</element>
+
+</schema>

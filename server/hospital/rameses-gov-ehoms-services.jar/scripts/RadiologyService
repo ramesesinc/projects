@@ -1,0 +1,12 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.services.extended.*;
+
+public class RadiologyService extends ActiveCrudListService {
+
+	@ActiveDB("radiology_test")
+	def em;
+
+	
+}

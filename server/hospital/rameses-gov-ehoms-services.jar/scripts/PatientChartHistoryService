@@ -1,0 +1,28 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.services.extended.*;
+
+public class PatientChartHistoryService extends ActiveListService {
+
+	@ActiveDB("patientchart")
+	def em;
+
+	String listMethod = 'getHistory'
+
+	@ProxyMethod
+	public def getColumns(o) {
+		return [
+			[name:'chartno', caption:'Chart No'],
+			[name:'dtfiled', caption:'Date Filed'],
+			[name:'state', caption:'Status'],
+			[name:'section', caption:'Section'],
+			[name:'attendingphysician.name', caption:'Physician'],
+			[name:'dtclosed', caption:'Date Closed'],
+			[name:'disposition', caption:'Disposition'],
+		]
+	}
+
+
+
+}

@@ -1,0 +1,10 @@
+import com.rameses.annotations.*;
+
+public class WorkOrderSchedule {
+
+	@Schedule(interval=10)
+	public void fireSchedule( o ) {
+		//println "fired schedule " + o;
+	}
+
+}

@@ -1,0 +1,4 @@
+[getList]
+select * from payprovider
+
+

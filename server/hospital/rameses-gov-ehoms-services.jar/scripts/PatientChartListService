@@ -1,0 +1,78 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.services.extended.*;
+
+public class PatientChartListService extends ActiveCrudListService {
+
+	@ActiveDB("patientchart")
+	def em;
+
+	@Service("DateService")
+	def dateSvc;
+	
+	@Env
+	def env;
+
+	@ProxyMethod
+	public def getNodes(o) {
+		def cols = [];
+		if(o._tag == 'OPD') {
+			cols <<	[state: 'new', caption:'Received', allowSearch:true, leaf:true ];
+			cols <<	[state: 'assessment', caption:'Assessment', allowSearch:true, leaf:true ];
+		} 
+		else if(o._tag == 'IPD') {
+			cols <<	[state: 'admission', caption:'For Admission', allowSearch:true, leaf:true ];
+			cols <<	[state: 'admitted', caption:'Ongoing', allowSearch:true, leaf:true ];
+		}
+		else if(o._tag == 'ER') {
+			cols <<	[state: 'new', caption:'Received', allowSearch:true, leaf:true ];
+		}
+		else {
+			//for physician's view
+			cols <<	[state: 'new', caption:'Pending', allowSearch:true, leaf:true ];
+			cols <<	[state:'assessment', caption:'For Assessment', allowSearch:true, leaf:true ];	
+			cols <<	[state:'admission', caption:'For Admission', allowSearch:true, leaf:true ];	
+		}
+		cols <<	[state: 'closed', caption:'Closed', allowSearch:true, leaf:true ];
+		return cols;
+	}
+
+	@ProxyMethod
+	public def getColumns(o) {
+		return [
+			[name:'chartno', caption:'Chart No', maxWidth:120],
+			[name:'dtfiled', caption:'Date Filed', maxWidth:80],
+			[name:'section', caption:'Section', maxWidth:80],
+			[name:'patient.name', caption:'Patient Name'],
+			[name:'reason', caption:'Reason'],
+			[name:'physician.name', caption:'Physician', maxWidth:200],
+		];
+	}	
+
+	public void beforeList(o) {
+		if( o.activity ) {
+			o._listMethod = 'getListByActivity';
+		}
+		else if( o._tag == 'physician_view') {
+			o._listMethod = 'getListByPhysician';
+			o.physicianid = env.USERID;
+		}
+		else if(o._tag == 'IPD') {
+			o._listMethod = 'getListAdmitted';
+		}
+		o.section = o._tag;
+	}
+
+	public void afterList(o, list) {
+		list.each {
+			it.patient.name = it.patient.lastname + ', ' + it.patient.firstname;
+			it.physician.name = it.physician.lastname + ', ' + it.physician.firstname;
+
+			if(it.patient.birthdate) {
+				it.patient.age = dateSvc.calculateAge( it.patient.birthdate );
+			}
+		}
+	}
+
+}

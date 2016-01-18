@@ -1,0 +1,50 @@
+import com.rameses.annotations.*
+import com.rameses.common.*
+import java.rmi.server.UID;
+import com.rameses.util.*;
+import com.rameses.io.*;
+import com.rameses.services.extended.*;
+
+class PatientChartServiceInterceptor  {
+
+	@Service("PatientChartActivityService")
+	def activitySvc;
+
+	@Service("PatientChartLedgerService")
+	def ledgerSvc;
+
+	@Service("SMSService")
+	def smsSvc;
+
+	@Before(pattern="PatientChartService.send.*", index=0)
+	public void checkDiagnosisForDisposition( def evt ) {
+		def r = evt.args[0];
+		def m = [:];
+		m.objid = r.objid;
+		if(! r.diagnosis ) {
+			throw new Exception("There must be a diagnosis");			
+		}
+	}
+
+	//before disposition check if there is still unpaid balance.
+	@Before(pattern="PatientChartService.(sendForHome|sendForReferral)", index=1)
+	public void checkBalanceForHomeAndReferral( def evt ) {
+		def r = evt.args[0];
+		def m = [:];
+		m.objid = r.objid;
+		if( ledgerSvc.getUnpaidBalance([objid:r.patient.objid]) > 0 ) 
+			throw new Exception("Patient has still some unpaid obligations. Please settle first with the billing department");			
+	}
+	
+	@After(pattern="PatientChartService.submitForAssessment", index=20)
+	public void sendSms( evt ) {
+		def r = evt.result;
+		def e = [objid:'SMS'+new UID()];
+		e.phoneno = r.attendingphysician.contactno;
+        e.message = "Patient for Assessment: " + r.patient.lastname + ", " + r.patient.firstname;
+        smsSvc.send( e );
+	}
+
+}
+
+

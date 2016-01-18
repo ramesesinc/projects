@@ -1,0 +1,11 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.services.extended.*;
+
+public class DrugLookupService extends ActiveListService {
+
+	@ActiveDB("drug")
+	def em;
+
+}

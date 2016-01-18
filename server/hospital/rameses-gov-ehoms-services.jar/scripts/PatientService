@@ -1,0 +1,91 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.services.extended.*;
+
+public class PatientService extends ActiveCrudListService {
+
+	@ActiveDB("patient")
+	def em;
+
+	@Service("SequenceService")
+	def seqSvc;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@ProxyMethod
+	public def getColumns(o) {
+		return [
+			[name:'thumbnail', caption:'', type:'icon', maxWidth:60],
+			[name:'acctid', caption:'Patient ID'],
+			[name:'lastname', caption:'Lastname'],
+			[name:'firstname', caption:'Firstname'],
+			[name:'middlename', caption:'Middlename'],
+		]
+	}
+
+	public void beforeCreate(o) { 
+		o.acctid = "P" + seqSvc.getNextFormattedSeries( "PATIENT" ); 
+		o.uniqueflag = 0;
+	}
+
+	public void afterCreate(o) { 
+		if(o.photo) {
+			updatePhoto(o);			
+		}
+	}
+
+	public void afterOpen(o) { 
+		if(o.birthdate) {
+			o.age = dateSvc.calculateAge( o.birthdate );
+		}
+	}
+
+	@ProxyMethod
+	public def getPhoto( def o ) {
+		return em.findPhoto( o )?.photo;
+	}
+
+	@ProxyMethod
+	public def updatePhoto( def o ) {
+		em.updatePhoto( o );
+	}
+
+	@ProxyMethod
+	public def getThumbnail( def o ) {
+		return em.findThumbnail( o )?.thumbnail;
+	}
+
+	@ProxyMethod
+	public def getLookupNames( def o ) {
+		if(!o.searchtext) o.searchtext = "";
+		o.searchtext+="%";
+		o._start = 0;
+		o._limit = 10;
+
+		if(o.searchtext.indexOf(",")>0) {
+			def arr = o.searchtext.split(",");
+			o.lastname = arr[0].trim() + "%";
+		}
+		else {
+			o.lastname = o.searchtext;
+		}
+		return em.getLookupNames( o );
+	}
+
+
+	@ProxyMethod
+	public def getNationalityList(o) {
+		o.searchtext += "%";
+		return em.getNationalityList( o )*.nationality;
+	}
+
+	@ProxyMethod
+	public def getReligionList(o) {
+		o.searchtext += "%";
+		return em.getReligionList( o )*.religion;
+	}
+
+
+}

@@ -1,0 +1,8 @@
+<schema>
+	<element name="patient_contact" tablename="patient_contact">
+		<field name="objid" primary="true" />
+		<field name="parentid" required="true" />
+		<field name="contacttype" required="true" />
+		<field name="contactno" required="true" />
+	</element>
+</schema>

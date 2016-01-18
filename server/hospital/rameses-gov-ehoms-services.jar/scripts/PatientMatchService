@@ -1,0 +1,67 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.services.extended.*;
+
+public class PatientMatchService {
+
+	@ActiveDB("patient")
+	def em;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@ProxyMethod
+	public def getResults( def info ) {
+		//filter first the data in the database.
+		//let us look first for 100% match in names. 
+		def test = [:];
+		test.lastname = info.lastname;
+		test.firstname = info.firstname;
+		test.filter = ''' lastname = $P{lastname} AND firstname = $P{firstname} '''; 	
+		def exactList = em.getLookupMatches( test );
+		exactList.each { it.match = 100.0 };
+
+		def params = [:];
+		params.exactname = info.lastname+","+info.firstname;
+
+		//retrieve on gender if provided 		
+		def filterList = [];
+		//append on first 2 characters for lastname	
+		if( info.lastname.length() > 1 ) {
+			filterList << ''' lastname LIKE $P{lastname}  ''';
+			params.lastname = info.lastname[0..1]+'%';
+		}
+		filterList << ''' NOT(CONCAT(lastname,',',firstname) = $P{exactname} ) ''';
+
+		params.filter = filterList.join( ' AND ');
+		
+		def matches = [];
+		JaroWinkler matcher = new JaroWinkler( 0.70, 4 );
+		def list = em.getLookupMatches( params );
+
+		//add weight of 2 for lastname
+		list.each {
+			int count = 3;
+			double score = 0;
+			score = matcher.compare( info.lastname, it.lastname )*2;
+			score += matcher.compare( info.firstname, it.firstname );
+			if( info.middlename && it.middlename ) {
+				score += matcher.compare( info.middlename, it.middlename );
+				count += 1;
+			}
+			it.match = NumberUtil.round(score / count); 
+			if( it.match >= 0.80 ) {
+				matches << it;
+			}
+		}
+		def result = exactList + matches.sort{ it.match * -1 };
+		result.each {
+			if(it.birthdate) {
+				it.age = dateSvc.calculateAge( it.birthdate );
+			}		
+		}
+		return result;
+	}
+
+}

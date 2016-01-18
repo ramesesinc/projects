@@ -1,0 +1,15 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.services.extended.*;
+
+public class PatientChartAttachmentService extends ActiveCrudListService {
+
+	@ActiveDB("patientchart_attachment")
+	def em;
+
+	@ProxyMethod
+	public def getFirst() {
+		return em.findFirst();	
+	}
+}

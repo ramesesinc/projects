@@ -1,0 +1,27 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.services.extended.*;
+
+public class WardService extends ActiveCrudListService {
+
+	@ActiveDB("ward")
+	def em;
+
+	@ProxyMethod
+	public def getColumns(def o) {
+		return [
+			[name: 'unittype', caption: 'Unit Type'],
+			[name: 'unitno', caption: 'Unit No'],
+			[name: 'building', caption: 'Building'],
+			[name: 'floor', caption: 'Floor'],
+			[name: 'section', caption: 'Section'],
+		]
+	}
+
+	@ProxyMethod
+	public def getAvalilableList(o) {
+		return em.getAvailableList(o);
+	}
+
+}

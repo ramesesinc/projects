@@ -1,0 +1,20 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.services.extended.*;
+
+public class PayProviderService extends ActiveCrudListService {
+
+	@ActiveDB("payprovider")
+	def em;
+
+	@ProxyMethod
+	public def getColumns(o) {
+		return [
+			[name:'acctcode', caption:'Acct Code', maxWidth:150],
+			[name:'acctname', caption:'Acct Name'],
+			[name:'providertype', caption:'Provider Type', maxWidth:150],
+		]
+	}
+
+}

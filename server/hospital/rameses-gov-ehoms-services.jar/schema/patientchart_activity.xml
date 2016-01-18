@@ -1,0 +1,16 @@
+<schema>
+	<element name="patientchart_activity" tablename="patientchart_activity">
+		<field name="objid" primary="true" />
+		<field name="state"/>
+		<field name="taskno" required="true"/>
+		<field name="parentid" required="true" />
+		<field name="startdate" required="true" />
+		<field name="enddate" />
+		<field name="section" />
+		<field name="workorderid" />
+		<field name="activity_objid" required="true" />
+		<field name="remarks" />
+		<field name="actor_objid" />
+		<field name="actor_name" />
+	</element>
+</schema>

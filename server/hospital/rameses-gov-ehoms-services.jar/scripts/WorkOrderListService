@@ -1,0 +1,42 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.services.extended.*;
+
+public class WorkOrderListService extends ActiveListService {
+
+	@ActiveDB("workorder")
+	def em;
+
+	@ProxyMethod
+	public def getNodes(o) {
+		def cols = [];
+		cols <<	[state: 'open', caption:'Pending', allowSearch:true, leaf:true ];
+		cols <<	[state: 'processing', caption:'Processing', allowSearch:true, leaf:true ];
+		cols <<	[state: 'approval', caption:'For Approval', allowSearch:true, leaf:true ];
+		cols <<	[state: 'closed', caption:'Closed', allowSearch:true, leaf:true ];
+		return cols;
+	}
+
+	@ProxyMethod
+	public def getColumns(o) {
+		return [
+			[name:'controlno', caption:'Work Order No', maxWidth:100],
+			[name:'section', caption:'Section', maxWidth:100],
+			[name:'chartno', caption:'Chart No', maxWidth:100],
+			[name:'state', caption:'Status', maxWidth:50],
+			[name:'dtfiled', caption:'Date Filed', maxWidth:150],
+			[name:'activity.title', caption:'Activity'],
+			[caption:'Patient', type:'label',
+				expression:"#{(item.patient.lastname) ? item.patient.lastname+', '+item.patient.firstname :''}" ],
+			[caption:'Requester', type:'label',expression:'#{item.requester.name}', maxWidth:100],
+		]
+	}
+
+	public void beforeList(o) {
+		if(o._tag) {
+			o.activityid = "'"+o._tag.split(",").join("','")+"'";	
+		}
+	}
+
+}

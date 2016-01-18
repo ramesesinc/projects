@@ -1,0 +1,72 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.services.extended.*;
+
+public class PatientChartWorkOrderService extends ActiveCrudListService {
+
+	@ActiveDB("patientchart_workorder")
+	def em;
+
+	@Env
+	def env;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@Service("SequenceService")
+	def seqSvc;
+
+	@Service("PatientChartActivityService")
+	def activitySvc;
+
+	@Service("PatientChartService")
+	def patientChartSvc;
+
+	public void beforeCreate(o) {
+		o.controlno = "WRK" + seqSvc.getNextFormattedSeries( "WORKORDER" ); 
+		if(!o.requester) {
+			o.requester = [objid:env.USERID, name:env.USER];
+		}
+		o.dtfiled = dateSvc.serverDate;
+		
+		o.state = 'OPEN';
+		o.info = em.serializer.write( o.info );
+	}
+
+	public void afterCreate(o) {
+		o.info = em.serializer.read( o.info );
+	}
+
+	public void afterOpen(o) {
+		if( o.info ) o.info = em.serializer.read( o.info );
+		o.parent = patientChartSvc.open( [objid: o.parentid ]);
+	}
+
+	@ProxyMethod
+	public def createBillItems(def o) {
+		def m = [:];
+		m.entity = open(o);
+		m.billitems = [];
+		return m;
+	}
+
+	@ProxyMethod
+	public def activate(o) {
+		if( o.closeActivity == true ) {
+			o.state = 'CLOSED';
+		}
+		else {
+			o.state = 'PROCESSING';
+		}
+		em.updateState(o);
+		def m = [chartid:o.parentid, activitytype: o.activitytype, workorderid:o.objid];
+		def activity = activitySvc.addActivity( [chartid:o.parentid, activitytype: o.activitytype, workorderid:o.objid] );
+		if(o.closeActivity==true) {
+			activitySvc.closeTask(activity);
+		}
+		return activity;
+	}
+
+
+}

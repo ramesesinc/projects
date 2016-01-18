@@ -1,0 +1,45 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.services.extended.*;
+
+public class PhysicianService extends ActiveCrudListService {
+
+	@ActiveDB("physician")
+	def em;
+
+	@Service("UserService")
+	def userSvc;
+
+	
+	@ProxyMethod
+	public def getColumns(o) {
+		return [
+			[name:'lastname', caption:'Lastname'],
+			[name:'firstname', caption:'Firstname'],
+			[name:'degree', caption:'Degree'],
+			[name:'specializiation', caption:'Specialization'],
+			[name:'contactno', caption:'Contact No'],
+			[name:'email', caption:'Email Address'],
+		]
+	}
+
+	@ProxyMethod
+	public def registerUser(def o) {
+		def m = [objid: o.objid];
+		m.firstname = o.firstname;
+		m.lastname = o.lastname;
+		m.username = o.username;
+		m.middlename = o.middlename;
+		userSvc.create(m);
+
+		def r = [objid: 'HOSPITAL.PHYSICIAN'];
+		def ur = [objid:m.objid+':'+r.objid];
+		ur.usergroup = r;
+		ur.user = m;
+		userSvc.addUsergroup( ur );
+
+		em.updateUsername(o);
+	}
+
+}

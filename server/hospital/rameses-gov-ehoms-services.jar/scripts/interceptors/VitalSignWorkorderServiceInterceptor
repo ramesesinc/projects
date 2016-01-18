@@ -1,0 +1,30 @@
+import com.rameses.annotations.*
+import com.rameses.common.*
+import java.rmi.server.UID;
+import com.rameses.util.*;
+import com.rameses.io.*;
+
+class VitalSignWorkorderServiceInterceptor  {
+
+	@Service("PatientChartVitalSignService")
+	def vitalSignSvc;
+
+	@After(pattern="PatientChartWorkOrderService.activate", eval="args[0].activitytype=='VS'")
+	public void onAccept( def evt ) {
+		def r = evt.args[0];
+		def activity = evt.result;
+		r.info.each {
+			def rr = [:];
+			rr.vitalsignid = it.objid;
+			rr.chartid = r.parentid;
+			rr.workorderid = r.objid;
+			rr.activityid = activity.objid;
+			rr.value = it.value;
+			rr.unit = it.unit;
+			vitalSignSvc.create( rr );
+		}
+	}
+
+}
+
+

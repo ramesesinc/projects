@@ -1,0 +1,153 @@
+<workunit>
+    <invokers>
+        <invoker type="reportschema:create" caption="Report Schema" action="create" target="popup"/>
+        <invoker type="reportschema:open" caption="Report Schema" action="open" target="popup"/>
+    </invokers>
+   
+    <code>
+<![CDATA[
+import com.rameses.rcp.annotations.*;
+import com.rameses.rcp.common.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.common.*;
+
+public class ReportSchemaController extends CRUDController  {
+
+    @Service( "ReportMgmtSchemaService" )
+    def service;
+    
+    String createFocusComponent = 'entity.name';
+    String editFocusComponent = 'entity.name';
+
+    def handler;
+    def mode;
+    
+    boolean isEditMode() {
+        return mode.toString().matches('create|edit'); 
+    } 
+
+    Map createEntity() {
+        return [
+            objid  : "RSCH" + new java.rmi.server.UID(), 
+            fields : [], dependencies : [] 
+        ];
+    }
+    
+    void afterCreate( data ) {
+        fieldHandler.reload();
+        linkHandler.reload();
+    } 
+    void afterOpen( data ) {
+        fieldHandler.reload();
+        linkHandler.reload();
+    }     
+    
+    def selectedField;
+    def fieldHandler = [
+        fetchList: { o-> 
+            return entity.fields;
+        }, 
+        isAllowAdd: {
+            return isEditMode(); 
+        }, 
+        createItem: {
+            return [ objid: "RSCHF" + new java.rmi.server.UID(), parentid: entity.objid ];
+        },
+        isColumnEditable: { item, colname-> 
+            return isEditMode(); 
+        },  
+        afterColumnUpdate: { item,colname-> 
+            if ( !item.caption ) item.caption = item.name; 
+        },
+        addItem : { o-> 
+            entity.fields << o; 
+        },
+        removeItem : { o-> 
+            if ( o ) entity.fields.remove( o ); 
+        } 
+    ] as EditorListModel;
+    
+    def selectedLink;
+    def linkHandler = [
+        fetchList: { o-> 
+            return entity.dependencies;
+        },
+        isAllowAdd: {
+            return isEditMode(); 
+        }, 
+        createItem: {
+            return [ objid: "RSCHD" + new java.rmi.server.UID(), parentid: entity.objid ];
+        },
+        isColumnEditable: { item, colname-> 
+            return isEditMode(); 
+        },  
+        addItem : { o-> 
+            entity.dependencies << o; 
+        },
+        removeItem : { o-> 
+            if ( o ) entity.dependencies.remove( o ); 
+        },
+        commitItem: { o->  
+            if ( !o.source?.objid ) throw new Exception('source.objid is required');
+            if ( !o.source?.key ) throw new Exception('source.key is required');
+            if ( !o.ref?.objid ) throw new Exception('ref.objid is required');
+            if ( !o.ref?.key ) throw new Exception('ref.key is required'); 
+        } 
+    ] as EditorListModel; 
+    
+    void beforeSave( entity ) {
+        if ( !entity.fields ) throw new Exception('Please specify the fields for this schema');
+    }
+    
+    def getSourceKeys() {
+        return entity.fields.collect{[ objid: it.objid, key: it.name ]} 
+    } 
+    def getReferences() {
+        def list = service.getSchemas(); 
+        list.removeAll( list.findAll{ it.objid==entity.objid } );
+        return list; 
+    } 
+    def getReferenceKeys() {
+        if ( !selectedLink?.ref.objid ) return null;
+         
+        def list = service.getFields( selectedLink.ref );
+        return list.collect{[ objid: it.objid, key: it.name ]}
+    } 
+    
+    void moveUpField() {
+        if ( !selectedField ) return;
+        
+        int idx = entity.fields.indexOf( selectedField );
+        if ( idx <= 0 ) return;
+        
+        def o1 = entity.fields[idx-1];
+        def o2 = entity.fields[idx]; 
+        entity.fields[idx-1] = o2; 
+        entity.fields[idx] = o1;
+        fieldHandler.setSelectedItem(idx-1);   
+        fieldHandler.refresh(); 
+    } 
+    void moveDownField() {
+        if ( !selectedField ) return;
+        
+        int idx = entity.fields.indexOf( selectedField );
+        if ( idx <= 0 ) return;
+        
+        int size = entity.fields.size();
+        if ( idx+1 >= size ) return;
+        
+        def o1 = entity.fields[idx];
+        def o2 = entity.fields[idx+1]; 
+        entity.fields[idx] = o2; 
+        entity.fields[idx+1] = o1;
+        fieldHandler.setSelectedItem(idx+1);   
+        fieldHandler.refresh(); 
+    }     
+    
+}
+]]>
+   </code>
+   <pages>
+       <page template="com.rameses.reportmgmt.ui.SchemaPage"/>
+   </pages>
+</workunit>

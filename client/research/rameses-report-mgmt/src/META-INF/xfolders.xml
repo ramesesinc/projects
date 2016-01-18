@@ -1,0 +1,9 @@
+<folders>
+    <folder id="explorer">
+        <folder id="reportmgmt" caption="Report Management" index="100"/> 
+    </folder>    
+    
+    <folder id="home">
+        <folder id="reportmgmt" caption="Report Management" index="100"/> 
+    </folder>
+</folders>

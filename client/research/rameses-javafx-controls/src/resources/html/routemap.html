@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Rameses Geolocation</title>
+        <script src="http://maps.google.com/maps/api/js?sensor=false"></script>
+        <script src="jquery/jquery.js"></script>
+        <style>
+            *
+            {
+                margin: 0;
+            }
+            #map
+            { 
+                height: 400px;
+                width: 100%
+            }
+        </style>
+
+        <script>
+            var map;
+            var polygon;
+            var path = [];
+            var paths = [];
+            var pathValue = null;
+            var state = 'create';
+            var bounds;
+            function initmap(){
+                polygon = new google.maps.Polygon({
+                    strokeColor : "#FF6600",
+                    strokeOpacity : 0.7,
+                    strokeWeight : 2,
+                    fillColor : "#FF6600",
+                    fillOpacity : 0.4,
+                    editable : true
+                });
+                var options = {
+                    zoom: 16,
+                    center: new google.maps.LatLng(10.3034935, 123.91059229999999),
+                    mapTypeId: google.maps.MapTypeId.ROADMAP,
+                    draggable: false,
+                    disableDoubleClickZoom: true
+                }
+                map = new google.maps.Map(document.getElementById("map"), options);
+				
+		google.maps.event.addListener(map, 'click', function(event) {
+                    if(state == 'create'){
+                        path.push(event.latLng);
+                        polygon.setPath(path);
+                        polygon.setMap(map);
+                    }
+                });
+				
+		google.maps.event.addListener(polygon, 'dblclick', function(){
+                    paths = [];
+                    bounds = polygon.getPath();
+                    bounds.forEach(function(coords, i){
+			var loc = {"lat":coords.lat(), "lng":coords.lng()};
+                        paths.push(loc);
+                    });
+                    if(state == 'edit'){
+                        polygon.setEditable(false);
+                        state = 'done';
+                    }else{
+                        google.maps.event.clearListeners(map, 'mousedown');
+                        polygon.setEditable(true);
+                        state = 'edit';
+                    }
+                });
+            }
+        </script>
+
+    </head>
+    <body onload="initmap()">
+        <div id="map"></div>
+    </body>
+</html>

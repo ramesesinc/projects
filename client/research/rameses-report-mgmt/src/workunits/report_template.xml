@@ -1,0 +1,93 @@
+<workunit>
+    <invokers>
+        <invoker type="reporttemplate:create" caption="Report Template" action="create" target="popup" width="725" height="439"/>
+        <invoker type="reporttemplate:open" caption="Report Template" action="open" target="popup" width="725" height="439"/>
+    </invokers>
+   
+    <code>
+<![CDATA[
+import com.rameses.rcp.annotations.*;
+import com.rameses.rcp.common.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.common.*;
+
+public class ReportTemplateController extends CRUDController  {
+
+    @Service( "ReportMgmtTemplateService" )
+    def service;
+    
+    String createFocusComponent = 'entity.name';
+    String editFocusComponent = 'entity.name';
+
+    Map createEntity() {
+        return [
+            objid  : "RTEM" + new java.rmi.server.UID(), 
+            schemas : []  
+        ];
+    }
+    
+    boolean isEditMode() {
+        return mode.toString().matches('create|edit');
+    } 
+    
+    void afterCreate( data ) {
+        selectedSchema = null;     
+        schemaHandler.reload();
+        fieldHandler.reload();
+    } 
+    void afterOpen( data ) {
+        selectedSchema = null;     
+        schemaHandler.reload();
+        fieldHandler.reload();
+    }    
+    
+    def selectedSchema;
+    def schemaHandler = [
+        fetchList: { 
+            return entity.schemas; 
+        }, 
+        removeItem: { o-> 
+            if ( !o ) return; 
+            
+            entity.schemas.remove( o );
+            selectedSchema = null; 
+            fieldHandler.reload(); 
+        } 
+    ] as ListPaneModel; 
+    
+    
+    def selectedField;
+    def fieldHandler = [
+        fetchList: { o-> 
+            if ( !selectedSchema ) return null;
+            
+            return service.getSchemaFields( selectedSchema.schema );
+        }  
+    ] as BasicListModel;
+    
+    
+    def lookupSchema = Inv.lookupOpener('reportschema:lookup', [
+        onselect: { o-> 
+            entity.schemas << [
+                objid    : "RTEMS" + new java.rmi.server.UID(), 
+                parentid : entity.objid, 
+                schema   : o 
+            ]; 
+            
+            
+            
+            schemaHandler.reload(); 
+            fieldHandler.reload();
+        } 
+    ]); 
+        
+    void beforeSave( entity ) {
+        if ( !entity.schemas ) throw new Exception('Please specify the schemas for this template');
+    }    
+}
+]]>
+   </code>
+   <pages>
+       <page template="com.rameses.reportmgmt.ui.TemplatePage"/>
+   </pages>
+</workunit>

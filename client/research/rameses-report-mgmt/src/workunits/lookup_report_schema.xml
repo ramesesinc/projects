@@ -1,0 +1,5 @@
+<workunit extends="wtemplates/ServiceLookupController.xml" serviceName="ReportMgmtSchemaLookupService">
+    <invokers>
+        <invoker type="reportschema:lookup" caption="Lookup Schema" target="popup"/>
+    </invokers>
+</workunit>

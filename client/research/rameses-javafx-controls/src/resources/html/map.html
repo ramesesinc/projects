@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Rameses Geolocation</title>
+        <script src="http://maps.google.com/maps/api/js?sensor=false"></script>
+        <script src="jquery/jquery.js"></script>
+        <style>
+            *
+            {
+                margin: 0;
+            }
+            #map
+            { 
+                height:100vh;
+                width: 100vw;
+            }
+        </style>
+
+        <script>
+            var xmlhttp;
+            var map;
+            var marker;
+            var loc;
+            var addresstext;
+            var info = new google.maps.InfoWindow();
+            var latitude;
+            var longitude;
+			
+            function initmap(){
+                var options = {
+                    zoom: 16,
+                    center: new google.maps.LatLng(10.3034935, 123.91059229999999),
+                    mapTypeId: google.maps.MapTypeId.ROADMAP
+                }
+                map = new google.maps.Map(document.getElementById("map"), options);
+                google.maps.event.addListener(map, 'mousedown', function(event) {
+                    var latlng = event.latLng;
+                    latitude = latlng.lat();
+                    longitude = latlng.lng();
+                    loc = latlng.toString();
+                    if(marker){
+                        marker.setPosition(latlng);
+                    }else{
+                        marker=new google.maps.Marker({
+                            position:latlng
+                        });
+                        marker.setMap(map);
+                    }
+                    var locstring = loc.replace("(","").replace(")","").replace(" ","");
+                    getAddress(locstring);
+                });
+            }
+			
+            function getAddress(location){
+                if(window.XMLHttpRequest){
+                    info.setContent("<p style='color:black; font-size:15px;'>Loading...<p>");
+                    xmlhttp = new XMLHttpRequest();
+                    xmlhttp.onreadystatechange =  function(){
+                        if(xmlhttp.readyState == 4 && xmlhttp.status == 200){
+                            var address = JSON.parse(xmlhttp.responseText);
+                            if(address.results){
+                                addresstext = address.results[0].formatted_address;
+                                var loctitle = "<p style='font-size:13px; font-weight: bold; padding-bottom: 5px'>Location</p>";
+                                var loctext = "<p style='font-size:13px;'>"+addresstext+"</p>";
+                                info.setContent(loctitle + loctext);
+                                info.open(map,marker);
+                            }
+                        }
+                    }
+                    xmlhttp.open("GET","http://maps.googleapis.com/maps/api/geocode/json?latlng="+location+"&sensor=true",true);
+                    xmlhttp.send();
+                }else{
+                    alert("Your browser does not support HTML5! Operation denied!");
+                }
+            }
+
+        </script>
+
+    </head>
+    <body onload="initmap()">
+        <div id="map"></div>
+    </body>
+</html>

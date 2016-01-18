@@ -1,0 +1,291 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.services.extended.*;
+
+class LoanVoidRequestService extends ActiveListService
+{
+	@Env
+	def env;
+
+	/*@ActiveDB(value="void_request")
+	def em;
+
+	@ActiveDB(value="void_payment")
+	def void_payment;*/
+
+	/*@ActiveDB(value="field_collection")
+	def field_collection;
+
+	@ActiveDB(value="online_collection")
+	def online_collection;*/
+
+	@ActiveDB("voidrequest")
+	def em;
+
+	@ActiveDB("fieldcollection")
+	def fieldcollection;
+
+	@ActiveDB("onlinecollection")
+	def onlinecollection;
+
+	@ActiveDB("voidpayment")
+	def voidpayment;
+
+	@Service("CustomerService")
+	def customerSvc;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@Service("InboxService")
+	def inboxSvc;
+
+	@ProxyMethod
+	public def getNodes( params ) {
+		return [
+			[caption: 'FOR_APPROVAL', state: 'FOR_APPROVAL', filetype: 'voidrequest'],
+			[caption: 'APPROVED', state: 'APPROVED', filetype: 'voidrequest'],
+			[caption: 'DISAPPROVED', state: 'DISAPPROVED', filetype: 'voidrequest']
+		];
+	}
+
+	@ProxyMethod
+	public def getColumns( params ) {
+		def cols = [];
+
+		if (!params.state) cols << [name: 'state', caption: 'Status'];
+
+		cols << [name: 'route.name', caption: 'Route'];
+		cols << [name: 'loanapp.appno', caption: 'App. No.'];
+		cols << [name: 'borrower.name', caption: 'Borrower'];
+		cols << [name: 'collector.name', caption: 'Requested By'];
+		cols << [name: 'reason', caption: 'Reason'];
+
+		if (params.state == 'APPROVED') {
+			cols << [name: 'dtposted', caption: 'Date Approved'];
+			cols << [name: 'poster.name', caption: 'Approved By'];
+		} else if (params.state == 'DISAPPROVED') {
+			cols << [name: 'dtposted', caption: 'Date Disapproved'];
+			cols << [name: 'poster.name', caption: 'Disapproved By'];
+		}
+
+		return cols;
+		/*
+		return [
+			[name: 'route.name', caption: 'Route'],
+			[name: 'loanapp.appno', caption: 'App. No.'],
+			[name: 'borrower.name', caption: 'Borrower'],
+			[name: 'collector.name', caption: 'Requested By'],
+			[name: 'reason', caption: 'Reason']
+		]*/
+	}
+
+	void beforeList( params ) {
+		params.searchtext = (params.searchtext? params.searchtext : '') + '%';
+		if (params.state) {
+			params._listMethod = 'getListByState'
+		}
+		//data.state = (data.state? data.state : '%');
+	}
+
+	@ProxyMethod
+	public def getStates() {
+		return [
+			[caption: 'All'],
+			[caption: 'FOR APPROVAL', state: 'FOR_APPROVAL'],
+			[caption: 'APPROVED', state: 'APPROVED'],
+			[caption: 'DISAPPROVED', state: 'DISAPPROVED']
+		]
+	}
+
+	@ProxyMethod
+	public def create( params ) {
+		params.state = 'FOR_APPROVAL';
+		params.dtfiled = dateSvc.serverDate;
+		//params.filedby = (env.NAME? env.NAME : 'NOT IDENTIFIED');
+		params.author = [objid: env.USERID, name: env.NAME];
+		em.create(params);
+
+		def msginfo = [
+			objid		: params.objid,
+			dtcreated 	: params.dtfiled,
+			refid 		: params.objid,
+			filetype 	: 'voidrequest',
+			message 	: 'Void request for approval (Borrower: ' + params.borrower.name + ')',
+			senderid 	: params.author.objid,
+			sendername 	: params.author.name,
+			recipientid : 'APPROVER'
+		];
+		inboxSvc.addMessage( msginfo );
+
+		return open(params)
+	}
+
+	private def changeState( params, state ) {
+		def data = em.read(params);
+		if (!data) throw new Exception('Void request record does not exist or has already been deleted.');
+
+		if (data.state == state) {
+			throw new Exception('Void request record already ' + state + '.');
+		}
+
+		data.state = state;
+		em.changeState(data);
+
+		return open(data);
+	}
+
+	private def post( params, state ) {
+		def data = changeState(params, state);
+
+		data.dtposted = dateSvc.serverDate;
+		data.poster = [objid: env.USERID, name: env.NAME];
+		data.posterremarks = params.posterremarks;
+		em.update(data, 'post');
+
+		inboxSvc.removeMessageByRefid([refid: params.objid]);
+		return open(data);
+	}
+
+	@ProxyMethod
+	public def approve( params ) {
+		def data = post(params, 'APPROVED');
+
+		def item = [
+			objid 		: data.objid,
+			dtfiled 	: dateSvc.serverDate,
+			author 		: [objid: env.USERID, name: env.NAME],
+			collector 	: data.collector,
+			borrower 	: data.borrower,
+			routecode 	: data.routecode,
+			paymentid 	: data.paymentid
+		];
+
+		def payment;
+		if (data.txncode == 'FIELD') {
+			payment = fieldcollection.read([objid: data.paymentid], "fc-payment");
+		} else if (data.txncode == 'ONLINE') {
+			payment = onlinecollection.read([objid: data.paymentid], "oc-detail");
+			item.payoption = 'cash';
+		}
+		
+		if (!payment) throw new Exception("Record does not exist or has already been deleted.");
+
+		item.amount = payment.amount;
+		item.dtpaid = payment.dtpaid;
+		item.paytype = payment.paytype;
+		item.refno = payment.refno;
+		item.paidby = payment.paidby;
+		if (!item.payoption) item.payoption = payment.payoption;
+
+		voidpayment.create(item);
+
+		if (item.payoption == 'check') {
+			item.bank = payment.bank;
+			item.check = payment.check;
+			voidpayment.update(item, "check");
+		}
+
+		return open(data);
+		/*
+		params.dtposted = dateSvc.serverDate;
+		params.poster = [
+			objid 	: (env.USERID? env.USERID : 'NOT IDENTIFIED'),
+			name 	: (env.NAME? env.NAME : 'NOT IDENTIFIED')
+		];
+		em.update(params, "post");
+
+		params.state = "APPROVED";
+		em.changeState(params);
+
+		def item = [
+			objid 		: params.objid,
+			dtfiled 	: dateSvc.serverDate,
+			author 		: params.poster,//(env.NAME? env.NAME : 'NOT IDENTIFIED'),
+			collector 	: params.collector,
+			borrower 	: params.borrower,
+			routecode 	: params.route.code,
+			paymentid 	: params.paymentid
+		];
+		def payment;
+		if (params.txncode == 'FIELD') {
+			payment = fieldcollection.read([objid: params.paymentid], "fc-payment");
+		} else if (params.txncode == 'ONLINE') {
+			payment = onlinecollection.read([objid: params.paymentid], "oc-detail");
+			item.payoption = 'cash';
+		}
+
+		if (!payment) throw new Exception("Record does not exist or has already been deleted.");
+
+		item.amount = payment.amount;
+		item.dtpaid = payment.dtpaid;
+		item.paytype = payment.paytype;
+		item.refno = payment.refno;
+		item.paidby = payment.paidby;
+		if (!item.payoption) item.payoption = payment.payoption;
+
+		voidpayment.create(item);
+
+		if (item.payoption == 'check') {
+			item.bank = payment.bank;
+			item.check = payment.check;
+			voidpayment.update(item, "check");
+		}
+		inboxSvc.removeMessageByRefid([refid: params.objid]);
+		return params;
+		*/
+	}
+
+	@ProxyMethod
+	public def disapprove( params ) {
+		def data = post(params, 'DISAPPROVED');
+		return open(data);
+		/*params.dtdisapproved = dateSvc.serverDate;
+		params.disapprovedby = (env.NAME? env.NAME : 'NOT IDENTIFIED');
+		params.disapprovedremarks = params.remarks;
+		em.update(params, "disapprove");
+		params.state = "DISAPPROVED";
+		em.changeState(params);*/
+		/*
+		params.dtposted = dateSvc.serverDate;
+		params.poster = [objid 	: env.USERID, name: env.NAME];
+		em.update(params, "post");
+
+		params.state = "DISAPPROVED";
+		em.changeState(params);
+		inboxSvc.removeMessageByRefid([refid: params.objid]);
+		return params;
+		*/
+	}
+
+	@ProxyMethod
+	public def open( params ) {
+		def itm = em.read(params);
+		if (!itm) throw new Exception("Void request record does not exist or has already been deleted.");
+		//if (!params.txncode) throw new Exception("Please specify txncode.");
+
+		//println 'params -> ' + params;
+		if (itm.txncode == 'FIELD') {
+			itm = em.findFieldVoidRequest(params);
+		} else if (itm.txncode == 'ONLINE') {
+			itm = em.findOnlineVoidRequest(params);
+		}
+
+		//println 'itm -> '+itm
+		/*if (itm.state == 'APPROVED') {
+			//println 'pass 1'
+			itm.remarks = itm.approvedremarks;
+		} else if (itm.state == 'DISAPPROVED') {
+			//println 'pass 2'
+			itm.remarks = itm.disapprovedremarks;
+		}*/
+		return itm;
+	}
+
+	@ProxyMethod
+	public def openCustomer( params ) {
+		//println 'params ' + params;;
+		def customer = customerSvc.open(params);
+		return [address: customer.address.text, objid: customer.objid, name: customer.name];
+	}
+}

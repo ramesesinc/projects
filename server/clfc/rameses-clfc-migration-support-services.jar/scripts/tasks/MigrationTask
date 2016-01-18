@@ -1,0 +1,665 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.UID;
+
+class MigrationTask
+{
+	@ActiveDB(em="migration", value="borrowerresolver")
+	def borrowerresolver;
+
+	@ActiveDB(em="migration", value="loanresolver")
+	def loanresolver;
+
+	@ActiveDB(em="migration", value="migrationpayment")
+	def migrationpayment;
+
+	@ActiveDB("var")
+	def var;
+
+	@ActiveDB("customer")
+	def customer;
+
+	@ActiveDB("customerindividual")
+	def customerindividual;
+
+	@ActiveDB("customerjuridical")
+	def customerjuridical;
+
+	@ActiveDB("borrower")
+	def borrower;
+
+	@ActiveDB("borrowerindividual")
+	def borrowerindividual;
+
+	@ActiveDB("borrowerjuridical")
+	def borrowerjuridical;
+
+	@ActiveDB('loanapp_borrower')
+	def loanapp_borrower; 
+
+	@ActiveDB("loanapp")
+	def loanapp;
+
+	@ActiveDB("loan_product_type")
+	def producttype;
+
+	@ActiveDB("loan_ledger")
+	def loan_ledger;
+
+	@ActiveDB("loan_ledger_payment")
+	def ledger_payment;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@Service("BranchService")
+	def branchSvc;
+
+	@Service('IndividualEntityService')
+	def entityIndvSvc;
+
+	@Service('EntityService')
+	def entitySvc;
+
+	@Service("LoanLedgerService")
+	def ledgerSvc;
+
+	@Context
+	def currentContext;
+
+	private def getMigrationKey() {		
+		def ctx = currentContext.getConf();
+		if (!ctx) return null;
+
+		if (!ctx.migration_key) return null;
+
+		return ctx.migration_key;
+	}
+
+	@Schedule(interval=8, timeUnit="SECONDS")
+	public void migrationKeyUpdater( task ) {
+		def xlist = loanresolver.getResolvedLoansWithoutKey([_limit: 1]);//borrowerresolver.getResolvedBorrowersWithoutKey([_limit: 1]);
+		if (xlist && xlist.size() > 0) {
+			loanresolver.updateResolvedLoanKey([taskkey: getMigrationKey()]);
+		}
+	}
+
+	@Schedule(interval=5, timeUnit="SECONDS")
+	public void migrationResolvedBorrowersAndLoans( task ) {
+		def sysvar = var.read([name: 'start_migration_task']);
+		def start = false;
+		if (sysvar) {
+			try {
+				start = Boolean.valueOf(sysvar.value);
+			} catch (Exception e) {
+				start = false;
+			}
+		}
+		if (start == false) return;
+
+		//def list;
+		//def list = borrowerresolver.getResolvedList([searchtext: '%']);
+
+		def _page = 1, _start = 0, _limit = 10;
+
+		//println 'migration key ' + getMigrationKey();
+
+		def item, size, cust, extinfo, list;
+		def loanlist, loan, ledger, paymentlist, payment;
+		list = borrowerresolver.getForMigrationList([_start: _start, _limit: _limit+1, taskkey: getMigrationKey()]);
+		//println 'list size ' + list.size();
+
+		for (int i = 0; i < list.size(); i++) {
+			if (i >= _limit) break;
+
+			item = list[i];
+			cust = processCustomer(item);
+			getLoans(item, item, cust);
+		}
+
+		/*
+		def _page = 1, _start = 0, _limit = 1;
+
+		def item, size, cust, extinfo, list;
+		def loanlist, loan, ledger, paymentlist, payment;
+
+		def i, hasMoreResults, xitem;
+		while (true) {
+			_start = (_page*_limit)-_limit;
+			list = borrowerresolver.getForMigrationList([_start: _start, _limit: _limit+1, taskkey: getMigrationKey()]);
+
+			for (i = 0; i < list.size(); i++) {
+				if (i >= _limit) break;
+
+				item = list[i];
+				cust = processCustomer(item);
+				getLoans(item, item, cust);
+			}
+
+			hasMoreResults = false;
+			if (list) {
+				hasMoreResults = (list.size() > _limit);
+			}
+
+			if (hasMoreResults) {
+				_page++;
+			} else {
+				break;
+			}
+		}
+		*/
+	}
+
+	private def processCustomer( data ) {
+		def cust = customer.findCustomerByCustno([custno: String.valueOf(data.objid).trim()]);
+		if (!cust) {
+			/*
+			def extinfo = borrowerresolver.read(data, 'ext-info');
+			cust = [
+				objid 		: 'CUST' + new UID(),
+				custno 		: String.valueOf(data.objid).trim(),
+				birthdate 	: '1980-01-01',
+				address 	: [text: data.address],
+				lastname 	: extinfo.lastname,
+				firstname 	: extinfo.firstname,
+				middlename	: extinfo.middlename,
+				mobileno 	: extinfo.mobileno,
+				phoneno		: extinfo.phoneno,
+				email		: extinfo.email,
+				civilstatus	: extinfo.maritalstatus,
+				gender		: data.gender,
+				citizenship	: extinfo.citizenship
+			];
+			*/
+
+			def extinfo = borrowerresolver.read(data, 'ext-info');
+			cust = [
+				objid 		: 'CUST' + new UID(),
+				state 		: 'ACTIVE', 
+				mode 		: 'CAPTURE',
+				dtcreated 	: dateSvc.serverDate,
+				createdby 	: 'SYSTEM',
+				custno 		: String.valueOf(data.objid).trim(),
+				address 	: [objid: 'A' + new UID(), text: data.address, type: 'LOCAL'],
+				type 		: extinfo?.type
+			];
+
+			def branch = branchSvc.open([:]);
+			cust.branchid = branch?.objid;
+
+			cust.dtmodified = cust.dtcreated;
+			cust.modifiedby = cust.createdby;
+
+			if (!cust.address.street) cust.address.street = cust.address.text;
+
+			if (cust.type == 'INDIVIDUAL') {
+				cust.name = extinfo.lastname + ', ' + extinfo.firstname;
+				if (extinfo.middlename) cust.name += ' ' + extinfo.middlename;
+				customer.create(cust);
+				extinfo.objid = cust.objid;
+				cust = createCustomerIndividual(cust, extinfo);
+			} else if (cust.type == 'JURIDICAL') {
+				cust.name = extinfo.companyname;
+				customer.create(cust);
+				cust = createCustomerJuridical(cust);
+			}
+		}
+		return cust;
+	}
+
+	private def createCustomerIndividual( data, extinfo ) {
+		data.putAll(extinfo);
+		if (!data.entityno) data.entityno = data.custno;
+		entityIndvSvc.create(data);
+		def item = customerindividual.read(data);
+		if (!item) {
+			def br = borrowerresolver.read([objid: data.custno]);
+			def br_extinfo = borrowerresolver.read(br, 'ext-info');
+			item = [
+				objid 		: data.objid,
+				lastname	: data.lastname,
+				firstname	: data.firstname,
+				middlename 	: data.middlename,
+				gender 		: br?.gender,
+				birthdate 	: br?.birthdate,
+				citizenship : data.citizenship,
+				civilstatus	: br_extinfo?.maritalstatus
+			];
+			customerindividual.create(item);
+		}
+		return customer.read(data);
+	}
+
+	private def createCustomerJuridical( data ) {
+		def item = customerjuridical.read(data);
+		if (!item) customerjuridical.create(data);
+		entitySvc.create(data);
+		return customer.read(data);
+	}
+
+	/*
+	private def createCustomer( data ) {
+		data.dtcreated = dateSvc.getServerDateAsString();
+		
+		data.type = 'INDIVIDUAL';
+		data.state = 'ACTIVE';
+		data.mode = 'CAPTURE';
+
+		def branch = branchSvc.open([:])
+
+		data.createdby = 'SYSTEM'; 
+		data.branchid = branch?.objid;
+		if (!data.address.type) data.address.type='HOME'; 
+
+		data.entityno = data.custno;
+		data.dtmodified = data.dtcreated;
+		data.modifiedby = data.createdby;
+		entitySvc.create(data);
+		return customer.read(data);
+	}
+	*/
+
+	private void getLoans( data, borrower, cust ) {
+		def _page = 1, _start = 0, _limit = 1;
+		def list, i, xitem, item, hasMoreResults;
+		def loan, ledger;
+
+		while (true) {
+			_start = (_page*_limit)-_limit;
+			list = loanresolver.getForMigrationList([_start: _start, _limit: _limit+1, borrowerid: borrower.objid]);
+
+			for (i = 0; i < list.size(); i++) {
+				if (i >= _limit) break;
+
+				item = list[i];
+				loan = processLoan(item, borrower, cust);
+				ledger = loan_ledger.findByAppId([appid: loan.objid]);
+				if (!ledger) ledger = createLedger(loan);
+
+				getPayments( item, loan, ledger);
+				xitem = loanresolver.read([objid: item.objid], 'resolved');
+				if (xitem) {
+					xitem.taskkey = 'PROCESSED';
+					loanresolver.update(xitem, 'resolved');
+				}
+			}
+
+			hasMoreResults = false;
+			if (list) {
+				hasMoreResults = (list.size() > _limit);
+			}
+
+			if (hasMoreResults) {
+				_page++;
+			} else {
+				break;
+			}
+		}
+
+		/*
+		loanlist = loanresolver.getBorrowerResolvedLoans([borrowerid: item.objid]);
+		loanlist.each{ l->
+			loan = loanapp.findByAppno([appno: l.objid]);
+			if (!loan) {
+				extinfo = loanresolver.read(l, 'ext-info');
+				cust.address = item.address;
+				loan = [
+					objid		: 'LOAN' + new UID(),
+					appno 		: l.objid,
+					borrower 	: cust,
+					loanamount	: l.loanamount,
+					producttype : extinfo.producttype,
+					route 		: extinfo.route,
+					acctstate 	: extinfo.acctstate,
+					dtreleased	: l.loandate
+				];
+				loan = createLoan(loan);
+			}
+			ledger = loan_ledger.findByAppId([appid: loan.objid]);						
+			if (!ledger) {
+				ledger = createLedger(loan);
+			}
+			paymentlist = migrationpayment.getPaymentsByLoanid([loanid: l.objid]);
+			paymentlist.each{ p->
+				payment = ledger_payment.findByParentidAndRefnoAndTxndate([parentid: ledger.objid, refno: p.orno, txndate: p.ordate]);
+				if (!payment) {
+					payment = [
+						objid 	: 'LLP' + new UID(),
+						parentid: ledger.objid,
+
+						refno 	: p.orno,
+						txndate : p.ordate,
+						amount 	: p.amount,
+						isonline: 0
+					];
+					loan_ledger.create(payment, 'payment');
+				}
+				//migrationpayment.removeByLoanidAndOrnoAndOrdate([loanid: l.objid, orno: p.orno, ordate: p.ordate]);
+			}
+			//loanresolver.removeBorrowerResolvedLoanByLoanidAndBorrowerid([loanid: l.objid, borrowerid: item.objid]);
+			//loanresolver.delete(l, 'resolved');
+			//loanresolver.delete(l, 'ext-info');
+			//loanresolver.delete(l);
+		}
+		*/
+	}
+
+	private def processLoan( data, borrower, cust ) {
+		//println 'data objid ' + data.objid;
+		//println 'borrower objid ' + borrower.objid;
+		def loan = loanapp.findByAppno([appno: String.valueOf(data.objid).trim()]);
+		if (!loan) {
+			def extinfo = loanresolver.read(data, 'ext-info');
+			cust.address = borrower.address;
+			loan = [
+				objid		: 'LOAN' + new UID(),
+				appno 		: String.valueOf(data.objid).trim(),
+				borrower 	: cust,
+				loanamount	: data.loanamount,
+				producttype : extinfo.producttype,
+				route 		: extinfo.route,
+				acctstate 	: extinfo.acctstate,
+				loantype 	: extinfo.apptype,
+				dtreleased	: data.loandate
+			];
+			loan = createLoan(loan);
+		}
+		return loan;
+	}
+ 
+	private def createLoan( data ) {
+		def branch = branchSvc.open([:]);
+		data.branch = [code: branch.code, name: branch.name];
+
+		data.dtcreated = dateSvc.getServerDateAsString();
+		data.createdby = 'SYSTEM';
+		data.dtfiled = data.dtcreated;
+		data.appmode = 'CAPTURE';
+		data.purpose = 'ADDITIONAL CAPITAL';
+		data.apptype = 'RENEW';
+		data.loanno = String.valueOf(data.appno).trim();
+		data.clienttype = 'WALK-IN';
+		if (data.approval == null) data.approval = [:]; 
+		if (!data.approval.amount) data.approval.amount = data.loanamount;
+
+		def xlist = loanapp.getListByBorrowerid([borrowerid: data.borrower.objid]);
+		data.version = (xlist? xlist.size() + 1: 1);
+
+		if (data.acctstate=='CLOSED') {
+			data.state = data.acctstate;
+		} else if (data.acctstate=='OPEN') {
+			data.state = 'RELEASED';
+		}
+
+		//println 'data ' + data;
+		loanapp.create(data);
+		loanapp.create(data, 'loanapp_capture');
+		if (data.state=='RELEASED') {
+			buildSearchIndex(data);
+		}
+		buildBorrower(data);
+		return loanapp.read(data);
+	}
+
+
+	private void buildSearchIndex( data ) { 
+		def name;
+		def cust = customer.read([objid: data.borrower.objid]);
+		if (cust) {
+			if (cust.type == 'INDIVIDUAL') {
+				def custindi = customerindividual.read(cust);
+				 name = new StringBuffer(custindi.lastname + ', ' + custindi.firstname);
+				if (custindi.middlename) name.append(' ' + custindi.middlename);
+			} else {
+				name = data.borrower.name;
+			}
+		} else if (!cust) {
+			name = data.borrower.name;
+		}
+
+		data.fullborrowername = name?.toString(); 
+		data.dtposted = data.dtcreated;  
+		data.postedby = data.createdby; 
+		data.branchcode = data.branch.code; 
+		data.branchname = data.branch.name; 
+		data.routecode  = data.route?.code;
+		loanapp.create(data, 'loanapp_search'); 
+
+		def searchvalues = [data.appno, data.borrower.name]; 
+		for (sval in searchvalues) {
+			def o = [
+				objid: 'IDX' + new UID(), 
+				appid: data.objid, 
+				searchtext: sval 
+			];
+			loanapp.create(o, 'loanapp_search_index'); 		
+		} 
+	} 	
+
+
+	private void buildBorrower( data ) { 
+		def cust = customer.read([objid: data.borrower.objid]);
+		def o = borrower.findByObjid([objid: data.borrower.objid]);
+		def b;
+		if (o == null) { 
+			b = [
+				objid 	: cust.objid,
+				name 	: cust.name,
+				address : cust.address.text,
+				type 	: cust.type
+			];
+			borrower.create(b);
+			if (b.type == 'INDIVIDUAL') {
+				def custindi = customerindividual.read([objid: cust.objid]);
+				borrowerindividual.create(custindi);
+			} else if (b.type == 'JURIDICAL') {
+				borrowerjuridical.create(b);
+			}
+			//borrower.create(data.borrower); 
+		} else {
+			b = [
+				objid 	: cust.objid,
+				name 	: cust.name,
+				address : cust.address.text,
+				type 	: cust.type
+			];
+			borrower.update(b);
+			if (b.type == 'INDIVIDUAL') {
+				def custindi = customerindividual.read([objid: cust.objid]);
+				borrowerindividual.update(custindi);
+			}
+			//o.putAll(data.borrower); 
+			//borrower.update(o); 
+		}
+		
+		o = [
+			objid: 		  'LB' + new UID(), 
+			parentid: 	  data.objid, 
+			borrowerid:   data.borrower.objid, 
+			borrowername: data.borrower.name, 
+			principalid:  data.borrower.objid,
+			type:         'PRINCIPAL' 
+		];
+		loanapp_borrower.create(o); 
+	} 
+
+	private def createLedger( data ) {
+		def extinfo = loanresolver.read([objid: data.appno], 'ext-info');
+		def lc = loanapp.read(data, 'loanapp_capture');
+		def pt = producttype.read(extinfo.producttype);
+
+		def state = 'CLOSE';
+		if (data.state == 'RELEASED') state = 'OPEN';
+		def ledger = [
+			objid 				: 'LEDGER' + new UID(),
+			acctid 				: data.borrower.objid,
+			acctname			: data.borrower.name,
+			appid 				: data.objid,
+			state 				: state,
+			producttypeid 		: extinfo.producttype.name,
+			loancount 			: lc?.version,
+			term 				: extinfo.producttype.term,
+			paymentmethod 		: extinfo.paymentmethod,
+			overpaymentamount 	: (extinfo.overpaymentamount? extinfo.overpaymentamount : 0),
+			totalprincipal 		: data.loanamount,
+			balance 			: data.loanamount,
+			totaldue 			: 0
+		]
+
+		ledger.dtstarted = ledgerSvc.calculateStartDate(lc.dtreleased, data?.loantype, pt);
+		ledger.dtcurrentschedule = ledger.dtstarted;
+		ledger.dtmatured = ledgerSvc.calculateMaturityDate(lc.dtreleased, data?.loantype, pt);
+
+		def result = ledgerSvc.compute([appid: data.objid]);
+		ledger.dailydue = result.dailydue;
+		ledger.interestamount = result.interest;
+		ledger.absentpenalty = result.absentpenalty;
+		//ledger.dailydue = ledgerSvc.computeDailyDue([loanamount: data.loanamount, term: pt.term, interestrate: pt.interestrate]);
+		//ledger.interestamount = ledgerSvc.computeInterestAmount([loanamount: data.loanamount, interestrate: pt.interestrate]);
+		//ledger.absentpenalty = ledgerSvc.computeAbsentPenalty([dailydue: ledger.dailydue, absentrate: pt.absentpenalty]);
+
+
+		/*
+		def cal = Calendar.getInstance();
+		cal.setTime(dt);
+		cal.add(Calendar.DATE, 1);
+		ledger.dtstarted = cal.getTime();
+		ledger.dtcurrentschedule = ledger.dtstarted;
+
+		cal.setTime(dt);
+		cal.add(Calendar.DATE, pt.term);
+		ledger.dtmatured = cal.getTime();
+		*/
+		ledger.updatetype = 0;
+
+		loan_ledger.create(ledger);
+		return ledger;
+	}
+
+	private void getPayments( data, loan, ledger ) {
+		def _page = 1, _start = 0, _limit = 20;
+		def list, i, xitem, item, hasMoreResults;
+		def paymentid, payment;
+
+		while (true) {
+			_start = (_page*_limit)-_limit;
+			list = migrationpayment.getForMigrationList([_start: _start, _limit: _limit+1, loanid: data.objid]);
+
+			for (i = 0; i < list.size(); i++) {				
+				if (i >= _limit) break;
+
+				item = list[i];
+				payment = ledger_payment.findByParentidAndRefnoAndTxndate([parentid: ledger.objid, refno: String.valueOf(item.orno).trim(), txndate: item.ordate]);
+				if (!payment) {
+					payment = [
+						objid 	: 'LLP' + new UID(),
+						parentid: ledger.objid,
+						refno 	: String.valueOf(item.orno).trim(),
+						txndate : item.ordate,
+						amount 	: item.amount,
+						isonline: 1
+					];
+					loan_ledger.create(payment, 'payment');
+				}
+			}
+
+			hasMoreResults = false;
+			if (list) {
+				hasMoreResults = (list.size() > _limit);
+			}
+
+			if (hasMoreResults) {
+				_page++;
+			} else {
+				break;
+			}
+		}
+
+	}
+
+
+	/*
+	while (true) {
+		_start = (_page*_limit)-_limit;
+		size = ((_page*_limit) < list.size()? (_page*_limit) + 1: list.size());
+		for (int i=_start; i<size; i++) {
+			if (i < (_page*_limit)) {
+				item = list[i];
+				cust = customer.findCustomerByCustno([custno: item.objid]);
+				if (!cust) {
+					extinfo = borrowerresolver.read(item, 'ext-info');
+					cust = [
+						objid 		: 'CUST' + new UID(),
+						custno 		: item.objid,
+						birthdate 	: '1980-01-01',
+						address 	: [text: item.address],
+						lastname 	: extinfo.lastname,
+						firstname 	: extinfo.firstname,
+						middlename	: extinfo.middlename,
+						mobileno 	: extinfo.mobileno,
+						phoneno		: extinfo.phoneno,
+						email		: extinfo.email,
+						civilstatus	: extinfo.maritalstatus,
+						gender		: item.gender,
+						citizenship	: extinfo.citizenship
+					];
+					cust = createCustomer(cust);
+				}
+				loanlist = loanresolver.getBorrowerResolvedLoans([borrowerid: item.objid]);
+				loanlist.each{ l->
+					loan = loanapp.findByAppno([appno: l.objid]);
+					if (!loan) {
+						extinfo = loanresolver.read(l, 'ext-info');
+						cust.address = item.address;
+						loan = [
+							objid		: 'LOAN' + new UID(),
+							appno 		: l.objid,
+							borrower 	: cust,
+							loanamount	: l.loanamount,
+							producttype : extinfo.producttype,
+							route 		: extinfo.route,
+							acctstate 	: extinfo.acctstate,
+							dtreleased	: l.loandate
+						];
+						loan = createLoan(loan);
+					}
+					ledger = loan_ledger.findByAppId([appid: loan.objid]);						
+					if (!ledger) {
+						ledger = createLedger(loan);
+					}
+					paymentlist = migrationpayment.getPaymentsByLoanid([loanid: l.objid]);
+					paymentlist.each{ p->
+						payment = ledger_payment.findByParentidAndRefnoAndTxndate([parentid: ledger.objid, refno: p.orno, txndate: p.ordate]);
+						if (!payment) {
+							payment = [
+								objid 	: 'LLP' + new UID(),
+								parentid: ledger.objid,
+								refno 	: p.orno,
+								txndate : p.ordate,
+								amount 	: p.amount,
+								isonline: 0
+							];
+							loan_ledger.create(payment, 'payment');
+						}
+						//migrationpayment.removeByLoanidAndOrnoAndOrdate([loanid: l.objid, orno: p.orno, ordate: p.ordate]);
+					}
+					//loanresolver.removeBorrowerResolvedLoanByLoanidAndBorrowerid([loanid: l.objid, borrowerid: item.objid]);
+					//loanresolver.delete(l, 'resolved');
+					//loanresolver.delete(l, 'ext-info');
+					//loanresolver.delete(l);
+				}
+				//borrowerresolver.delete(item, 'resolved');
+				//borrowerresolver.delete(item, 'ext-info');
+				//borrowerresolver.delete(item);
+				//println list[i]?.objid
+				//processSegregation(list[i], currentdate);
+			}
+		}
+		if (size > (_page*_limit)) {
+			_page++;
+		} else {
+			break;
+		}
+	}
+	*/
+}

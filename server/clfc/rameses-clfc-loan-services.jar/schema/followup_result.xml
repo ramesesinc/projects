@@ -1,0 +1,31 @@
+<schema>
+
+	<element tablename="followup_result">
+		<field name="objid" primary="true" />
+		<field name="dtcreated" required="true" />
+		<field name="author_objid" required="true" />
+		<field name="author_name" required="true" />
+		<field name="txnstate" required="true" />
+		<field name="txndate" required="true" />
+		<field name="refid" required="true" />
+		<field name="refno" required="true" />
+		<field name="ledgerid" required="true" />
+		<field name="loanapp_objid" required="true" />
+		<field name="loanapp_appno" required="true" />
+		<field name="borrower_objid" required="true" />
+		<field name="borrower_name" required="true" />
+		<field name="draft" />
+		<field name="remarks" required="true" />
+		<field name="dtconfirmed" />
+		<field name="confirmedby_objid" />
+		<field name="confirmedby_name" />
+	</element>
+
+	<element name="confirm" tablename="followup_result">
+		<field name="objid" primary="true" />
+		<field name="dtconfirmed" required="true" />
+		<field name="confirmedby_objid" required="true" />
+		<field name="confirmedby_name" required="true" />
+	</element>
+
+</schema>

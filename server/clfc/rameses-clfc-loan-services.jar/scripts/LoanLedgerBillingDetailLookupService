@@ -1,0 +1,34 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.services.extended.*;
+
+class LoanLedgerBillingDetailLookupService
+{
+	@ActiveDB(value="ledger_billing")
+	def em;
+
+	@ProxyMethod
+	public def getColumns( params ) {
+		return [
+			[name: 'loanapp.appno', caption: 'App. No.'],
+			[name: 'loanapp.loanamount', caption: 'Loan Amount', type: 'decimal', format: '#,##0.00'],
+			[name: 'borrower.name', caption: 'Borrower'],
+			[name: 'route.name', caption: 'Route'],
+		];
+	}
+
+	@ProxyMethod
+	public def getList( params ) {
+		params.searchtext = (params.searchtext? params.searchtext : '') + '%';
+		println 'params ' + params;
+		return em.getLookupBillingDetailList(params);
+		//params.state = 'FOR_DOWNLOAD';
+		//params.searchtext = (params.searchtext? params.searchtext+'%' : '%');
+		//println 'params: ' + params;
+		/*def list = ledger_billing.getBillingForSubCollection(params);
+		list.each{ 
+			it.routes = ledger_billing.getUnuploadedRoutesByBillingid([billingid: it.objid]); 
+		}*/
+		//return list;
+	}
+}

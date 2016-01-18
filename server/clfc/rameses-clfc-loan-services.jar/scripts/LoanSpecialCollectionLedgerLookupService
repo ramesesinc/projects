@@ -1,0 +1,30 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+
+class LoanSpecialCollectionLedgerLookupService
+{
+	@ActiveDB(value="specialcollection")
+	def em;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@ProxyMethod
+	public def getColumns( params ) {
+		return [
+			[name:'acctname', caption:'Borrower'],
+			[name:'route.description', caption:'Route Description'],
+			[name:'route.area', caption:'Route Area']
+		];
+	}
+
+	@ProxyMethod
+	public def getList( params ) {
+		params.billdate = params.billdate? params.billdate : dateSvc.serverDate;
+		params.billdate = params.billdate.toString().split(' ')[0];
+		params.collectorid = params.collectorid? params.collectorid : '';
+		params.searchtext = params.searchtext? params.searchtext+'%' : '%';
+		return em.getForSpecialCollectionList(params);
+	}
+	
+}

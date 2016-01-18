@@ -1,0 +1,125 @@
+<schema>
+
+	<element tablename="borrower">
+		<field name="objid" primary="true" />
+		<field name="name" required="true" />
+		<field name="address" required="true" />
+		<field name="contactno" />
+		<field name="type" required="true" />
+		<field name="residency_type" />
+		<field name="residency_since" />
+		<field name="residency_remarks" />
+		<field name="residency_renttype" />
+		<field name="residency_rentamount" />
+		<field name="occupancy_type" />
+		<field name="occupancy_since" />
+		<field name="occupancy_remarks" />
+		<field name="occupancy_renttype" />
+		<field name="occupancy_rentamount" />
+	</element>
+
+	<!--
+	<element name="borrower" tablename="borrower">
+		<field name="objid" primary="true"/> 
+		<field name="lastname" required="true"/> 
+		<field name="firstname" required="true"/> 
+		<field name="middlename"/> 
+		<field name="address"/> 
+		<field name="gender"/> 
+		<field name="birthdate"/> 
+		<field name="civilstatus"/> 
+		<field name="citizenship"/> 
+		<field name="contactno"/> 
+		<field name="residency_type"/> 
+		<field name="residency_since"/> 
+		<field name="residency_remarks"/> 
+		<field name="residency_renttype"/> 
+		<field name="residency_rentamount"/> 
+		<field name="occupancy_type"/> 
+		<field name="occupancy_since"/> 
+		<field name="occupancy_remarks"/> 
+		<field name="occupancy_renttype"/> 
+		<field name="occupancy_rentamount"/> 
+		<field name="spouse_objid"/> 
+		<field name="spouse_lastname"/> 
+		<field name="spouse_firstname"/> 
+		<field name="spouse_middlename"/> 
+		<field name="spouse_address"/> 
+		<field name="spouse_gender"/> 
+		<field name="spouse_birthdate"/> 
+		<field name="spouse_civilstatus"/> 
+		<field name="spouse_citizenship"/> 
+		<field name="spouse_contactno"/> 
+		<field name="spouse_residency_type"/> 
+		<field name="spouse_residency_since"/> 
+		<field name="spouse_residency_remarks"/> 
+		<field name="spouse_residency_renttype"/> 
+		<field name="spouse_residency_rentamount"/> 
+		<field name="spouse_occupancy_type"/> 
+		<field name="spouse_occupancy_since"/> 
+		<field name="spouse_occupancy_remarks"/> 
+		<field name="spouse_occupancy_renttype"/> 
+		<field name="spouse_occupancy_rentamount"/> 
+	</element>
+
+	<element name="children" tablename="borrower_children"> 
+		<field name="objid" primary="true"/> 
+		<field name="parentid" required="true"/> 
+		<field name="name" required="true"/> 
+		<field name="age" required="true"/> 
+		<field name="education"/> 
+		<field name="remarks"/> 
+	</element> 	
+
+	<element name="employment" tablename="employment"> 
+		<field name="objid" primary="true"/> 
+		<field name="refid" required="true"/>
+		<field name="employer" required="true"/>
+		<field name="address"/>
+		<field name="contactno"/>
+		<field name="position"/>
+		<field name="salary"/>
+		<field name="lengthofservice"/>
+		<field name="status"/>
+		<field name="remarks" required="true"/>
+	</element> 	
+-->
+
+<!--
+	<element name="education" tablename="borrower_education"> 
+		<field name="objid" primary="true"/> 
+		<field name="parentid" required="true"/>
+		<field name="attainment" required="true"/> 
+		<field name="school" required="true"/> 
+		<field name="remarks"/> 
+	</element>		
+
+	<element name="parent" tablename="borrower_parent"> 
+		<field name="objid" primary="true"/> 
+		<field name="fathername" required="true"/>
+		<field name="fatherage"  required="true"/>
+		<field name="mothername" required="true"/>
+		<field name="motherage"  required="true"/>
+		<field name="address"    required="true"/>
+		<field name="remarks"/>
+	</element>
+
+	<element name="sibling" tablename="borrower_sibling"> 
+		<field name="objid" primary="true"/> 
+		<field name="parentid" required="true"/>
+		<field name="name" required="true"/>
+		<field name="age" required="true"/>
+		<field name="address" required="true"/>		
+	</element>
+-->
+
+	<element name="bankacct" tablename="borrower_bankacct"> 
+		<field name="objid" primary="true"/> 
+		<field name="borrowerid" required="true"/> 
+		<field name="type"/> 
+		<field name="bankname" required="true"/> 
+		<field name="acctno"/> 
+		<field name="remarks"/> 
+	</element>	
+
+</schema>

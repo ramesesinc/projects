@@ -1,0 +1,69 @@
+<schema>
+
+	<element tablename="borrower">
+		<field name="objid" primary="true" />
+		<field name="borrowername" required="true" />
+		<field name="address" required="true" />
+		<field name="gender" />
+		<field name="birthdate" required="true" />
+		<field name="civilstatus" />
+		<field name="telno" />
+	</element>
+
+	<element name="ext-info"  tablename="borrower_extinfo">
+		<!--
+		<field name="objid" primary="true" />
+		<field name="lastname" required="true" />
+		<field name="firstname" required="true" />
+		<field name="middlename" />
+		<field name="phoneno" />
+		<field name="mobileno" />
+		<field name="email" />
+		<field name="citizenship" required="true" />
+		<field name="maritalstatus" required="true" />
+		-->
+		<field name="objid" primary="true" />
+		<field name="companyname" />
+		<field name="lastname" />
+		<field name="firstname" />
+		<field name="middlename" />
+		<field name="phoneno" />
+		<field name="mobileno" />
+		<field name="email" />
+		<field name="citizenship" />
+		<field name="maritalstatus" />
+		<field name="type" />
+	</element>
+
+	<element name="ext-info-individual" tablename="borrower_extinfo">
+		<field name="objid" primary="true" />
+		<field name="lastname" required="true" />
+		<field name="firstname" required="true" />
+		<field name="middlename" />
+		<field name="phoneno" />
+		<field name="mobileno" />
+		<field name="email" />
+		<field name="citizenship" required="true" />
+		<field name="maritalstatus" required="true" />
+		<field name="type" required="true" />
+	</element>
+
+	<element name="ext-info-juridical" tablename="borrower_extinfo">
+		<field name="objid" primary="true" />
+		<field name="companyname" required="true" />
+		<field name="phoneno" />
+		<field name="mobileno" />
+		<field name="email" />
+		<field name="type" required="true" />
+	</element>
+
+	<element name="resolved" tablename="borrower_resolved">
+		<field name="objid" primary="true" />
+	</element>
+
+	<element name="process" tablename="borrower_process">
+		<field name="objid" primary="true" />
+		<field name="key"/>
+		<field name="isprocessed" required="true" />
+	</element>
+</schema>

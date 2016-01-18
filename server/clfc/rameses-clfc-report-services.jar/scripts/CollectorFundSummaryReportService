@@ -1,0 +1,53 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import java.util.*;
+import java.text.*;
+
+class CollectorFundSummaryReportService{
+
+	@Service("BranchService")
+	def branchSvc;
+
+	@Service("DateService")
+	def dateSvc;
+	
+	@ProxyMethod
+	public def getReportData(){
+
+		def branch = branchSvc.open([:]);
+		def data = [
+			date_period 		: "June to July",//new SimpleDateFormat("yyyy-MMM-dd").format(java.sql.Date.valueOf(params.txndate+"")),
+			dtprinted			: new SimpleDateFormat("MMM-dd-yyyy hh:mm:ss a").format(dateSvc.serverDate),
+			printedby 			: 'Tom',
+			items				: [[collector: 'Tommy', allowance: 2000.00, shortage: 100.00, absent: 3.00, earnedcredits: 1000.00,
+									balance: 1000.00],
+									[collector: 'Tommy', allowance: 2000.00, shortage: 100.00, absent: 3.00, earnedcredits: 1000.00,
+									balance: 1000.00],
+									[collector: 'Tommy', allowance: 2000.00, shortage: 100.00, absent: 3.00, earnedcredits: 1000.00,
+									balance: 1000.00],
+									[collector: 'Tommy', allowance: 2000.00, shortage: 100.00, absent: 3.00, earnedcredits: 1000.00,
+									balance: 1000.00],
+									[collector: 'Tommy', allowance: 2000.00, shortage: 100.00, absent: 3.00, earnedcredits: 1000.00,
+									balance: 1000.00],
+									[collector: 'Tommy', allowance: 2000.00, shortage: 100.00, absent: 3.00, earnedcredits: 1000.00,
+									balance: 1000.00],
+									[collector: 'Tommy', allowance: 2000.00, shortage: 100.00, absent: 3.00, earnedcredits: 1000.00,
+									balance: 1000.00],
+									[collector: 'Tommy', allowance: 2000.00, shortage: 100.00, absent: 3.00, earnedcredits: 1000.00,
+									balance: 1000.00],
+									[collector: 'Tommy', allowance: 2000.00, shortage: 100.00, absent: 3.00, earnedcredits: 1000.00,
+									balance: 1000.00],
+									[collector: 'Tommy', allowance: 2000.00, shortage: 100.00, absent: 3.00, earnedcredits: 1000.00,
+									balance: 1000.00],
+									[collector: 'Tommy', allowance: 2000.00, shortage: 100.00, absent: 3.00, earnedcredits: 1000.00,
+									balance: 1000.00]
+									],
+			verifier			: 'EUTIQUIANO QUIMSON',
+			checker				: 'TERESITA QUIMSON'
+		];
+		branch.each{ k, v->
+			data["branch_"+k] = v;
+		}
+		return data;
+	}
+}

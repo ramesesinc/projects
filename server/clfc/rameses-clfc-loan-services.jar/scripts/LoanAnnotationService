@@ -1,0 +1,38 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.services.extended.*;
+
+class LoanAnnotationService extends ActiveCrudListService
+{
+	@Env
+	def env;
+
+	@ActiveDB(value="annotation")
+	def em;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@ProxyMethod
+	public def getColumns( params ) {
+		return [
+			[name: 'txntype', caption: 'Type'],
+			[name: 'author.name', caption: 'Author'],
+			[name: 'remarks', caption: 'Remarks']
+		]
+	}
+
+	void beforeCreate( data ) {
+		data.dtfiled = dateSvc.serverDate;
+		data.author = [
+			objid 	: (env.USERID? env.USERID : 'NOT IDENTIFIED'),
+			name 	: (env.NAME? env.NAME : 'NOT IDENTIFIED')
+		];
+	}
+
+	void beforeList( params ) {
+		if (params.refid) {
+			params._listMethod = 'getListByRefid';
+		}
+	}
+}

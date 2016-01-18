@@ -1,0 +1,151 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import com.rameses.rules.common.*;
+import loan.facts.*;
+import loan.actions.*;
+import java.rmi.server.UID;
+
+class LoanLedgerTask
+{
+	@ActiveDB("loan_ledger")
+	def ledger;
+
+	@ActiveDB("loan_product_type")
+	def product_type;
+
+	@ActiveDB("loan_ledger_segregationtype")
+	def segregationtype;
+
+	@ActiveDB("loan_ledger_segregation")
+	def segregation;
+
+	@ActiveDB("var")
+	def var;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@Service("LoanLedgerService")
+	def ledgerSvc;
+
+	@Service("RuleExecutorService")
+	def ruleSvc;
+
+	@Schedule(interval=1, timeUnit="DAYS", immediate=true)
+	public void computeOverpaymentPenalty( task ) {
+		def date = dateSvc.serverDate.toString().split(' ')[0];
+		def list = ledger.getOpenLedgersByCurrentDateGreaterThanMaturityDate([date: date]);
+		list.each{ itm->
+			if (itm.overduepenalty == 0.00 && itm.balance > 0) {
+				def p = product_type.read([name: itm.producttypeid]);
+						
+				itm.overduepenalty = ledgerSvc.computeOverduePenalty([balance: itm.balance, pastduerate: (p.pastduerate? p.pastduerate : 0.00)]);
+				ledger.update(itm, 'overduepenalty');
+			}
+		}
+	}
+
+	@Schedule(interval=15, timeUnit="SECONDS")
+	public void executeSegregation( task ) {
+
+		def sysvar = var.read([name: "enable_segregation_task"]);
+		if (!sysvar || sysvar.value.toLowerCase() != 'true') return;
+
+		Calendar c = Calendar.getInstance();
+		//println 'segregation task ' + c.getTime();
+		def currentdate = dateSvc.getServerDateAsString().split(" ")[0];
+		
+		def list = ledger.getListByState([state: 'OPEN', searchtext: '%']);
+		
+		def _page = 1, _limit = 25, _start = 0;
+		def size, item;
+		while (true) {
+			_start = (_page*_limit)-_limit;
+			size = ((_page*_limit) < list.size()? (_page*_limit)+1 : list.size());
+			for (int i=_start; i<size; i++) {
+				if (i < size) {
+					//println list[i]?.objid
+					processSegregation(list[i], currentdate);
+				}
+			}
+			if (size > (_page*_limit)) {
+				_page++;
+			} else {
+				break;
+			}
+		}
+		/*def releasedate;
+		list.each{ o->
+			o.currentdate = currentdate;
+			releasedate = DateUtil.add(o.dtstarted, "-1d");
+			o.dtrelease = new java.text.SimpleDateFormat("yyyy-MM-dd").format(releasedate);
+			facts << new LoanLedger(o);
+		}
+		facts.each{ println it.toMap(); }*/
+	}
+
+	private void processSegregation( item, currentdate ) {
+		//println item;
+		def facts = [];
+		facts << new CurrDate([currentdate: currentdate]);
+		buildSegregationTypeFacts(facts);
+
+		item.currentdate = currentdate;
+		def releasedate  = DateUtil.add(item.dtstarted, "-1d");
+		item.dtrelease = new java.text.SimpleDateFormat("yyyy-MM-dd").format(releasedate);
+		//item.ledgerid = item.objid;
+		facts << new LoanLedger(item);
+
+		def i = facts.find{ (it instanceof LoanLedger) }
+
+		def actions = new RuleAction(); 
+		actions.addCommand( "segregateledger", new SegregateLedger() );
+
+		ruleSvc.execute( "loansegregation", facts, actions, null );
+
+		def l = facts.find{ (it instanceof LoanLedger) }
+		def types = [];
+		if (l) types = l.segregationtypes;
+
+		def list = segregation.getSegregationsByRefid([refid: item.ledgerid]);
+
+		def m;
+		types.each{ o->
+			m = list.find{ it.typeid == o.objid }
+			if (!m) o._action = "add";
+		}
+
+		list.each{ o->
+			m = types.find{ it.objid == o.typeid }
+			if (!m) o._action = "remove";
+		}
+
+		def toaddlist = types.findAll{ it._action == "add" }
+		if (toaddlist) {	
+			//println 'adding new segregation';
+			toaddlist.each{ o->
+				m = [
+					objid	: 'LLS' + new UID(),
+					refid 	: item.ledgerid,
+					typeid 	: o.objid,
+					date 	: currentdate
+				];
+				segregation.create(m);
+			}
+		}	
+
+		def toremovelist = list.findAll{ it._action == "remove" }
+		if (toremovelist) {
+			//println 'removing segregation';
+			toremovelist.each{ o->
+				segregation.delete(o);
+			}			
+		}
+	}
+
+	private void buildSegregationTypeFacts( facts ) {
+		def types = segregationtype.getListByState([state: 'ACTIVATED']);
+		types.each{ facts << new SegregationType(it); };
+	}
+}

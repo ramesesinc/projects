@@ -1,0 +1,35 @@
+<schema>
+
+	<element name="special_collection" tablename="special_collection">
+		<field name="objid" primary="true"/>
+		<field name="state" required="true"/>
+		<field name="billingid" required="true"/>
+		<field name="type" required="true"/>
+		<field name="dtrequested" required="true"/>
+		<field name="requestedby" required="true"/>
+		<field name="collector_objid" required="true"/>
+		<field name="collector_name" required="true"/>
+		<field name="remarks"/>
+		<field name="downloaded" required="true"/>
+		<field name="posted"/>
+	</element>
+
+	<element name="loan" tablename="special_collection_loan">
+		<field name="objid" primary="true"/>
+		<field name="parentid" required="true"/>
+		<field name="billingdetailid" required="true"/>
+		<field name="routecode" required="true"/>
+		<field name="borrower_objid" required="true"/>
+		<field name="borrower_name" required="true"/>
+		<field name="loanapp_objid" required="true"/>
+		<field name="loanapp_appno" required="true"/>
+	</element>
+
+	<element name="route" tablename="special_collection_route">
+		<field name="specialcollectionid" required="true"/>
+		<field name="routecode" required="true"/>
+		<field name="billingid" required="true"/>
+		<field name="uploaded" required="true"/>
+	</element>
+
+</schema>

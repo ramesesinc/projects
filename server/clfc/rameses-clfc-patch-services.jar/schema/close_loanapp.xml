@@ -1,0 +1,35 @@
+<schema>
+
+	<element tablename="close_loanapp">
+		<field name="objid" primary="true" />
+		<field name="txnstate" required="true" />
+		<field name="dtcreated" required="true" />
+		<field name="author_objid" required="true" />
+		<field name="author_name" required="true" />
+		<field name="txndate" required="true" />
+		<field name="remarks" required="true" />
+		<field name="dtposted" />
+		<field name="poster_objid" />
+		<field name="poster_name" />
+	</element>
+
+	<element name="post" tablename="close_loanapp">
+		<field name="objid" primary="true" />
+		<field name="dtposted" required="true" />
+		<field name="poster_objid" required="true" />
+		<field name="poster_name" required="true" />
+	</element>
+
+	<element name="detail" tablename="close_loanapp_detail">
+		<field name="objid" primary="true" />
+		<field name="parentid" required="true" />
+		<field name="loanapp_objid" required="true" />
+		<field name="loanapp_appno" required="true" />
+		<field name="borrower_objid" required="true" />
+		<field name="borrower_name" required="true" />
+		<field name="loanamount" required="true" />
+		<field name="dtreleased" required="true" />
+		<field name="dtmatured" required="true" />
+	</element>
+
+</schema>

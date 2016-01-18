@@ -1,0 +1,166 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.services.extended.*;
+
+class ShortageVoidRequestService extends ActiveCrudListService
+{
+	@Env
+	def env;
+
+	@ActiveDB("shortage_voidrequest")
+	def em;
+
+	@ActiveDB("shortage")
+	def shortage;
+
+	@ActiveDB("collection_remittance")
+	def remittance;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@Service('InboxService')
+	def inboxSvc;
+
+	@ProxyMethod
+	public def getColumns( params ) {
+		def cols = [];
+		if (!params.state) cols << [name: 'txnstate', caption: 'Status'];
+
+		cols << [name: 'shortage.refno', caption: 'Ref. No.'];
+		cols << [name: 'shortage.cbsno', caption: 'CBS No.'];
+		cols << [name: 'shortage.collectorname', caption: 'Collector'];
+		cols << [name: 'dtcreated', caption: 'Date Requested'];
+		cols << [name: 'author.name', caption: 'Requested By'];
+
+		if (params.state == 'APPROVED') {
+			cols << [name: 'dtposted', caption: 'Date Approved'];
+			cols << [name: 'poster.name', caption: 'Approved By'];
+		} else if (params.state == 'DISAPPROVED') {
+			cols << [name: 'dtposted', caption: 'Date Disapproved'];
+			cols << [name: 'poster.name', caption: 'Disapproved By'];
+		}
+
+		return cols;
+	}
+
+	@ProxyMethod
+	public def getStates() {
+		return [
+			[caption: 'All'],
+			[caption: 'DRAFT', state: 'DRAFT'],
+			[caption: 'FOR APPROVAL', state: 'FOR_APPROVAL'],
+			[caption: 'APPROVED', state: 'APPROVED'],
+			[caption: 'DISAPPROVED', state: 'DISAPPROVED']
+		];
+	}
+
+	void beforeList( params ) {
+		params.searchtext = (params.searchtext? params.searchtext : '') + '%';
+		if (params.state) {
+			params._listMethod = 'getListByState';
+		}
+	}
+
+	private void validate( data ) {
+		def item = em.findPendingRequestByShortageid([shortageid: data.shortage.objid]);
+		if (item) throw new Exception("There is a pending request for shortage with ref. no. " + data.shortage.refno);
+	}
+
+	void beforeCreate( data ) {
+		//validate(data);
+		data.dtcreated = dateSvc.serverDate;
+		data.author = [objid: env.USERID, name: env.NAME];
+		if (!data.txnstate) data.txnstate = 'DRAFT';
+	}
+
+	//void beforeUpdate( data ) {
+		//validate(data);
+	//}
+
+	//void afterOpen( data ) {
+	//	println 'data ' + data;
+	//}
+
+	@ProxyMethod
+	public def submitForApproval( params ) {
+		def data = changeState(params, 'FOR_APPROVAL');
+
+		def item = em.findPendingRequestByShortageid([shortageid: data.shortage.objid]);
+		if (item) throw new Exception("There is already a pending request for shortage with ref. no. " + data.shortage.refno);
+
+		def msginfo = [ 
+			objid 		: data.objid, 
+			dtcreated	: dateSvc.serverDate, 
+			refid 		: data.objid, 
+			filetype 	: 'shortagevoidrequest', 
+			message 	: 'Submitted void request for shortage with ref. no. ' + data.shortage.refno + ' for approval.', 
+			senderid	: env.USERID, 
+			sendername 	: env.NAME, 
+			recipientid : 'APPROVER' 
+		]; 
+		inboxSvc.addMessage( msginfo );	
+
+		return open(data);
+		/*
+		def data = em.read(params);
+		if (!data) throw new Exception("Shortage void request record does not exist or has already been deleted.");
+
+		def item = em.findPendingRequestByShortageid([shortageid: data.shortage.objid]);
+		if (item) throw new Exception("There is already a pending request for shortage with ref. no. " + data.shortage.refno);
+
+		data.txnstate = 'FOR_APPROVAL';
+		em.changeState(data);
+
+		return open(data);
+		*/
+	}
+
+	private def changeState( params, state ) {
+		def data = em.read(params);
+		if (!data) throw new Exception('Shortage void request record does not exist or has already been deleted.');
+
+		if (data.txnstate == state) {
+			throw new Exception("Shortage void request record already " + state + ".");
+		}
+
+		data.txnstate = state;
+		em.changeState(data);
+
+		return open(data);
+	}
+
+	@ProxyMethod
+	public def approveDocument( params ) {
+		def data = post(params, "APPROVED");
+
+		def other = remittance.findRemittanceOtherByRefid([refid: data.shortage.objid]);
+		if (other) {
+			remittance.delete(other, "rem-other");
+			shortage.changeState([objid: other.refid, state: 'VOIDED']);
+		}
+
+		return data;
+	}
+
+	@ProxyMethod
+	public def disapprove( params ) {
+		def data = post(params, "DISAPPROVED");
+
+		shortage.changeState([objid: data.shortage.objid, state: 'NOTED']);
+
+		return data;
+	}
+
+	private def post( params, state ) {
+		def data = changeState(params, state);
+
+		data.dtposted = dateSvc.serverDate;
+		data.poster = [objid: env.USERID, name: env.NAME];
+		em.update(data, "post");
+
+		inboxSvc.removeMessageByRefid([refid: data.objid]);
+
+		return open(data);
+	}
+}

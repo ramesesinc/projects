@@ -1,0 +1,47 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+
+class CustomerJuridicalService
+{
+	@Env
+	def env;
+
+	@ActiveDB("customerjuridical")
+	def em;
+
+	@Service("EntityService")
+	def entitySvc;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@Service("SequenceService")
+	def sequenceSvc;
+
+	@ProxyMethod
+	public def open( params ) {
+		return entitySvc.open(params);
+	}
+
+	@ProxyMethod
+	public def create( data ) {	
+		em.create(data);
+		if (!data.custno) {
+			def seqname = 'customer'+data.branchid;
+			data.custno = data.branchid + sequenceSvc.getNextFormattedSeriesA(seqname,7);
+		}
+		if (!data.entityno) data.entityno = data.custno;
+		return entitySvc.create(data);
+	}
+
+	@ProxyMethod
+	public def update( data ) {
+		def d = em.read(data);
+		if (!d) {
+			em.create(data);
+		}
+		data.dtmodified = dateSvc.serverDate;
+		data.modifiedby = env.USER;
+		return entitySvc.update(data);
+	}
+}

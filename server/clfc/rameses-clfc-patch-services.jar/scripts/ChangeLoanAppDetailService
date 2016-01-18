@@ -1,0 +1,109 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.services.extended.*;
+import java.rmi.server.UID;
+
+class ChangeLoanAppDetailService
+{
+	@Env
+	def env;
+
+	@ActiveDB("loanapp")
+	def loanapp;
+
+	@ActiveDB("loanapp_detail")
+	def loanapp_detail;
+
+	@ActiveDB("loan_ledger")
+	def loan_ledger;
+
+	@ActiveDB("loan_product_type")
+	def producttype;
+
+	@ActiveDB("loan_route")
+	def loan_route;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@Service("LoanLedgerService")
+	def ledgerSvc;
+
+	@ProxyMethod
+	public def save( params ) {
+		/*def prm = [
+			objid 		: params.objid,
+			appno		: params.appno,
+			loanamount	: params.loanamount,
+			borrowername: params.borrower.name,
+			routecode 	: params.route.code
+		];*/
+
+		def pt = producttype.read(params.producttype);
+
+		loanapp_detail.update(params, "loanapp");
+
+		loanapp_detail.update(params, "loanapp_capture");
+
+		def app = loanapp.read([objid: params.objid]);
+		def ledger = loan_ledger.findByAppId([appid: params.objid]);
+
+		if (ledger) {
+			def dtreleased = java.sql.Date.valueOf(params.dtreleased);
+
+			ledger.acctname = params.borrower.name;
+			//ledger.dailydue = ledgerSvc.computeDailyDue([loanamount: params.loanamount+"", term: pt?.term, interestrate: pt?.interestrate]);
+			//ledger.dailydue = ledgerSvc.computeDailyDue([appid: params.objid]);
+			//ledger.interestamount = ledgerSvc.computeInterestAmount([appid: params.objid]);
+			//ledger.absentpenalty = ledgerSvc.computeAbsentPenalty([dailydue: ledger.dailydue, absentrate: pt?.absentpenalty]);
+			def result = ledgerSvc.compute([appid: params.objid]);
+			ledger.producttypeid = pt.name;
+			ledger.term = pt.term;
+			ledger.dailydue = result.dailydue;
+			ledger.interestamount = result.interest;
+			ledger.absentpenalty = result.absentpenalty;
+			ledger.totalprincipal = params.loanamount;
+			ledger.dtstarted = ledgerSvc.calculateStartDate(dtreleased, app?.loantype, pt);//dateSvc.add(dtreleased, "1");
+			ledger.dtmatured = ledgerSvc.calculateMaturityDate(dtreleased, app?.loantype, pt);
+			//dateSvc.add(dtreleased, params.producttype.term+"");//dateSvc.parseDate(params.dtreleased, null).date;
+				
+			loanapp_detail.update(ledger, "ledger");
+		}
+
+		def item = [
+			objid 		: "LOG" + new UID(),
+			loanappid 	: params.objid,
+			dtfiled 	: dateSvc.serverDate,
+			author 		: [objid: env.USERID, name: env.NAME],
+			remarks 	: params.remarks
+		];
+		loanapp_detail.create(item);
+
+		return params;
+	}
+
+	private def parseDate( date ) {
+		if (!date) return null;
+		if (date instanceof Date) {
+			return date;
+		} else {
+			return java.sql.Date.valueOf(date);
+		}
+	}
+
+	@ProxyMethod
+	public def open( params ) {
+		def data = loanapp_detail.read(params, 'loanapp');
+
+		def cap = loanapp_detail.read(params, 'loanapp_capture');
+		if (cap) data.dtreleased = cap.dtreleased;
+
+		def pt = producttype.read(data.producttype);
+		if (pt) data.producttype = pt;
+
+		def r = loan_route.read(data.route);
+		if (r) data.route = r;
+
+		return data;
+	}
+}

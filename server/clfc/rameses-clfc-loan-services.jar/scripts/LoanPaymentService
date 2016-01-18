@@ -1,0 +1,1704 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.server.common.*;
+import com.rameses.rules.common.RuleRequest;
+import java.rmi.server.UID;
+import org.joda.time.*;
+
+class LoanPaymentService
+{
+	@Env
+	def env;
+
+	@ActiveDB("loanapp")
+	def loanapp;
+
+	@ActiveDB("loan_ledger")
+	def ledgerdb;
+
+	@ActiveDB("loan_ledger_compromise")
+	def compromise;
+
+	@ActiveDB("loan_product_type")
+	def product_type;
+
+	@ActiveDB("loanpayment")
+	def loanpayment;
+
+	@ActiveDB("loan_ledger_payment")
+	def ledger_payment;
+
+	@ActiveDB("loan_ledger_adjustment")
+	def ledger_adjustment;
+
+	@ActiveDB("controlseries")
+	def controlseries;
+
+	@ActiveDB("amnesty")
+	def amnesty;
+
+	@ActiveDB('ledgeramnesty')
+	def ledgeramnestydb;
+
+	@ActiveDB("loan_ledger_proceeds")
+	def proceeds;
+
+	@ActiveDB("loan_ledger_noncash")
+	def ledger_noncash;
+
+	@Resource("RuleService")
+	def ruleSvc;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@Service("CalendarEventService")
+	def calendarSvc;
+
+	@Service("LoanLedgerService")
+	def ledgerSvc;
+
+	@Service('LoanPaymentAmnestyService')
+	def amnestySvc;
+
+	/*@ProxyMethod
+	public def getUnpostedCollectionSheets( params ) {
+		if(!params.route_code) throw new Exception('Route code is required');
+		def bc = batch_collectionsheet.findByRoutecode(params);
+		def list = []
+		if (bc) {
+			//list = batch_collectionsheet.getPaymentsByParentId([parentid: bc.objid]);
+			list = batch_collectionsheet.getUnpostedCollectionSheets([parentid: bc.objid]);
+			if(bc.totalcount != list.size()) 
+				throw new Exception('Payments for this route was not uploaded successfully.');
+			def voidrequest;
+			list.each{cs->
+				cs.payments = batch_collectionsheet.getPaymentsByDetailid([parentid: cs.objid]);
+				cs.total = 0;
+				cs.payments.each{ 
+					cs.total += it.payamount;
+					voidrequest = void_request.findVoidRequestByPaymentid([paymentid: it.objid]);
+					it.isvoided = 0;
+					if (voidrequest) {
+						if (voidrequest.state == "FOR_APPROVAL") throw new Exception("There are still pending void requests for this billing.");
+						it.voidid = voidrequest.objid;
+						it.isvoided = 0;
+						if (voidrequest.state == 'APPROVED') {
+							it.isvoided = 1;
+							cs.total -= it.payamount;
+						}
+					}
+				}
+				cs.notes = batch_collectionsheet.getNotesByDetailid([parentid: cs.objid]);
+			}
+		}
+		return [entity: bc, list: list];
+	}*/
+
+	private void createPayment( params ) {
+		createPaymentHeader(params);
+		def o = loanpayment.read(params.entity);
+		def item;
+		if (o) {
+			item = loanpayment.read([objid: params.remittancedetailid], 'payment-detail');
+			if (!item) {
+				def series = controlseries.findOpenControlSeriesByUserid([userid: params.collector.objid]);
+				if (!series) throw new Exception("No control series assigned to collector "+params.collector.name);
+
+				item = [
+					objid		: params.remittancedetailid,//'LPDTL'+new UID(),
+					parentid 	: o.objid,
+					borrower 	: params.borrower,
+					loanapp 	: params.loanapp,
+					routecode 	: params.routecode,
+					refno 		: params.refno,
+					amount 		: params.payamount,
+					paytype 	: params.paytype,
+					paidby 		: params.paidby,
+					control 	: [
+						objid	: series.objid,
+						series 	: series.user.txncode + series.prefix + series.nextseries.toString().padLeft(6, "0"),
+						seriesno: series.nextseries
+					]
+				]
+				loanpayment.create(item, "payment-detail");
+
+				if (series.nextseries == series.endseries) {
+					series.state = "CLOSE";
+					controlseries.changeState(series);
+				} else if (series.nextseries < series.endseries) {
+					series.nextseries++;
+					controlseries.update(series, "nextseries");
+				}	
+			}
+		}		
+
+		def ledger = ledgerdb.findByAppId(params);
+		item = ledger_payment.findByParentidAndRefno([parentid: ledger.objid, refno: params.refno]);
+		if (!item) {
+			item = [
+				objid		: 'LLP' + new UID(),
+				parentid 	: ledger.objid,
+				refno		: params.refno,
+				txndate 	: params.entity.txndate,
+				amount 		: params.payamount,
+				isonline	: 1,
+				dtmodified 	: dateSvc.serverDate,
+				modifiedby 	: [objid: env.USERID, name: env.NAME]
+			];
+			ledgerdb.create(item, "payment");
+		}
+		params.ledgerpaymentid = item.objid;
+	}
+	
+	private void createPaymentHeader( params ) {
+		def data = params.entity;
+		def item = loanpayment.read(data);
+		if (!item) {
+			item = [
+				objid 				: data.objid,
+				dtfiled 			: dateSvc.serverDate,
+				author				: [objid: env.USERID, name: env.NAME],
+				txndate 			: data.txndate,
+				totalacctscollected : data.totalacctscollected,
+				totalamount 		: data.totalamount
+				/*objid 		: data.objid,
+				txndate 	: data.txndate,
+				dtcreated 	: dateSvc.serverDate,
+				totalcount 	: data.totalcount,
+				totalamount : data.totalamount*/
+			]
+			loanpayment.create(item);
+		}
+	}
+
+	private def postProceedPayment( params ) {
+		def ledger = ledgerdb.findByAppId(params);
+
+		def txndate;
+		if (params.entity) {
+			txndate = params.entity.txndate;
+		} else {
+			txndate = params.txndate;
+		}
+
+		def ledgeramnesty;
+		def dt = dateSvc.getServerDateAsString().split(" ")[0];
+		def curramnesty = amnesty.findActiveAmnestyByLedgeridAndDate([date: dt, ledgerid: ledger.objid]);
+		if (curramnesty) {
+			ledgeramnesty = amnesty.findActiveAmnestyByLedgeridAndDate([date: txndate, ledgerid: ledger.objid]);
+			if (ledgeramnesty?.balance) {
+				ledger.balance = ledgeramnesty.balance;
+			}
+		}
+
+		ledger.balance -= params.payamount;
+		if (ledger.balance <= 0) {
+			ledger.balance = 0;
+			ledger.state = 'CLOSE';
+			loanapp.update([objid: ledger.appid, state: 'CLOSED']);
+			def l = loanapp.read([objid: ledger.appid], 'loanapp_search');
+			if (l) {
+				l.state = 'CLOSED';
+				loanapp.update(l, 'loanapp_search');
+			}
+		} else if (ledger.balance > 0) {
+			ledger.state = 'OPEN';
+			loanapp.update([objid: ledger.appid, state: 'RELEASED']);
+			def l = loanapp.read([objid: ledger.appid], 'loanapp_search');
+			if (l) {
+				l.state = 'RELEASED';
+				loanapp.update(l, 'loanapp_search');
+			}
+		}
+		ledgerdb.update(ledger);
+
+		def lastitem = ledgerdb.findLastLedgerItemByParentId([parentid: ledger.objid]);
+		def item = [
+			objid			: 'LDTL' + new UID(),
+			parentid 		: ledger.objid,
+			state 			: 'PROCEED',
+			amtdue 			: 0, //(lastitem? lastitem.amtdue : 0),
+			interestdue 	: 0, //(lastitem? lastitem.interestdue : 0),
+			penaltydue 		: 0, //(lastitem? lastitem.penaltydue : 0),
+			amtpaid 		: params.payamount, //(lastitem? lastitem.amtpaid : 0),
+			interestpaid	: 0, //(lastitem? lastitem.interestpaid : 0),
+			penaltypaid		: 0, //(lastitem? lastitem.penaltypaid : 0),
+			amtbal 			: 0, //(lastitem? lastitem.amtbal : 0),
+			interestbal 	: (lastitem? lastitem.interestbal : 0),
+			penaltybal 		: (lastitem? lastitem.penaltybal : 0),
+			dtpaid 			: params.txndate,
+			refno			: params.refno,
+			day 			: lastitem?.day,
+			balance 		: ledger.balance, //(lastitem? lastitem.balance : l.totalprincipal),
+			partialpayment 	: params.payamount,
+			txndate 		: params.txndate,
+			baseamount 		: 0, //(lastitem? lastitem.baseamount : 0),
+			groupbaseamount : 0, //(lastitem? lastitem.groupbaseamount : 0),
+			amnestyid 		: ledgeramnesty?.objid,
+			remarks 		: ''
+		];
+
+		if (!params.entity) {
+			def p = proceeds.findByRefid([refid: params.ledgerpaymentid]);
+			item.remarks = 'Proceed on sale of ' + p.description;
+		} else {
+			item.txndate = params.entity.txndate;
+			item.dtpaid = item.txndate;
+			def p = proceeds.read([objid: params.proceedid]);
+			if (p) {
+				def payment = ledger_payment.findByParentidAndRefno([parentid: ledger.objid, refno: params.refno]);
+				if (payment) {
+					p.refid = payment.objid;
+					proceeds.update(p);
+				}
+				item.remarks = 'Proceed on sale of ' + p.description;
+			}
+		}
+		ledgerdb.create(item, "detail");
+
+		def itm = [:];
+		itm.putAll(item);
+		item.item = itm;
+
+		def list = [];
+		list.add(item);
+
+		return [
+			results 		: list, 
+			amnestyid 		: ledgeramnesty?.objid,
+			isfullpayment 	: (ledger.balance <= 0? true : false),
+			ledgerid 		: ledger.objid
+		];
+	}
+
+	private def postAdjustment( params ) {
+		def ledger = ledgerdb.findByAppId(params);
+		//println 'balance 1 ' + ledger.balance;
+
+		def strdate;
+		if (params.txndate instanceof Date) {
+			strdate = new java.text.SimpleDateFormat("MMM-dd-yyyy").format(params.txndate);
+		} else {
+			strdate = new java.text.SimpleDateFormat("MMM-dd-yyyy").format(java.sql.Date.valueOf(params.txndate));
+		}
+		
+		def ledgeramnesty;
+		def currdate = dateSvc.getServerDateAsString().split(" ")[0];
+		def curramnesty = amnesty.findActiveAmnestyByLedgeridAndDate([date: currdate, ledgerid: ledger.objid]);
+		if (curramnesty) {
+			ledgeramnesty = amnesty.findActiveAmnestyByLedgeridAndDate([date: params.txndate, ledgerid: ledger.objid]);
+			if (ledgeramnesty?.balance) {
+				//ledgeramnesty.balance += params.payamount;
+				//amnesty.update(ledgeramnesty);
+				ledger.balance = ledgeramnesty.balance;
+			}
+		}
+
+		ledger.balance += params.payamount;
+		//println 'balance 2 ' + ledger.balance;
+		if (ledger.balance <= 0) ledger.balance = 0;
+
+		def la = loanapp.read([objid: ledger.appid], 'loanapp_close');
+		if (la || ledger.balance == 0) {
+			ledger.state = 'CLOSE';
+			loanapp.update([objid: ledger.appid, state: 'CLOSED']);
+			def l = loanapp.read([objid: ledger.appid], 'loanapp_search');
+			if (l) {
+				l.state = 'CLOSED';
+				loanapp.update(l, 'loanapp_search');
+			}
+		} else if (ledger.balance > 0) {
+			ledger.state = 'OPEN';
+			loanapp.update([objid: ledger.appid, state: 'RELEASED']);
+			def l = loanapp.read([objid: ledger.appid], 'loanapp_search');
+			if (l) {
+				l.state = 'RELEASED';
+				loanapp.update(l, 'loanapp_search');
+			}
+		}
+		ledgerdb.update(ledger);
+
+		def ad = ledger_adjustment.read([objid: params.adjustmentid]);
+
+		def lastitem = ledgerdb.findLastLedgerItemByParentId([parentid: ledger.objid]);
+		def item = [
+			objid			: 'LDTL' + new UID(),
+			parentid 		: ledger.objid,
+			state 			: 'ADJUSTMENT',
+			amtdue 			: (lastitem? lastitem.amtdue : 0),
+			interestdue 	: (lastitem? lastitem.interestdue : 0),
+			penaltydue 		: (lastitem? lastitem.penaltydue : 0),
+			amtpaid 		: params.payamount,
+			interestpaid	: (lastitem? lastitem.interestpaid : 0),
+			penaltypaid		: (lastitem? lastitem.penaltypaid : 0),
+			amtbal 			: (lastitem? lastitem.amtbal : 0),
+			interestbal 	: (lastitem? lastitem.interestbal : 0),
+			penaltybal 		: (lastitem? lastitem.penaltybal : 0),
+			dtpaid 			: params.txndate,
+			refno			: lastitem?.refno,
+			day 			: lastitem?.day,
+			balance 		: ledger.balance, //(lastitem? lastitem.balance : l.totalprincipal),
+			partialpayment 	: params.payamount,
+			txndate 		: (ad? ad.dtcreated : params.txndate),//params.txndate,
+			baseamount 		: (lastitem? lastitem.baseamount : 0),
+			groupbaseamount : (lastitem? lastitem.groupbaseamount : 0),
+			amnestyid 		: ledgeramnesty?.objid,
+			remarks 		: ad?.remarks//'Adjustment of ' + params.payamount + ' on ' + strdate
+		];
+		//if (ledgeramnesty) item.amnestyid = ledgeramnesty.objid;
+		ledgerdb.create(item, "detail");
+		def list = [];
+		list.add([item: item]);
+		return [
+			results 		: list, 
+			amnestyid 		: ledgeramnesty?.objid, 
+			isfullpayment 	: (ledger.balance <= 0? true : false),
+			ledgerid 		: ledger.objid
+		];
+		//return [results: list];
+	}
+
+	private def parseDate( date ) {
+		if (!date) return null;
+		if (date instanceof Date) {
+			return date;
+		} else {
+			return java.sql.Date.valueOf(date);
+		}
+	}
+
+	@Service("LoanPaymentSemiMonthlyService")
+	def loanSemiMonthySvc;
+
+	private def postPaymentSemiMonthly( params ) {
+		return loanSemiMonthySvc.postPayment(params);
+	}
+
+	@Service("LoanPaymentBranchService")
+	def loanBranchPaymentSvc;
+
+	private def postPaymentBranch( params ) {
+		return loanBranchPaymentSvc.postPayment(params);
+	}
+
+	@ProxyMethod
+	public def postPayment( params ) {
+		def txndate;
+		if(params.entity) {
+			txndate = params.entity.txndate;
+			createPayment(params);
+		} else {
+			txndate = params.txndate;
+		}
+		def xtxndate = txndate;
+		//println 'date: ' + xtxndate;
+		//println 'txndate ' + txndate + ' params ' + params;
+
+		//if (params.isproceedcollection == true) 
+		//	return postProceedPayment(params);
+
+		if (params.isadjustment == true) {
+			return postAdjustment(params);
+		} 
+
+		def data = [:];
+		def ledger = ledgerdb.findByAppId(params);
+		if (params.isfirstbill && params.isfirstbill == 1) {
+			ledgerdb.update([objid: ledger.objid, paymentmethod: params.paytype]);
+			ledger = ledgerdb.read(ledger);
+		}
+		def info = ledgerdb.read([objid: ledger?.objid], 'ledger-info');
+		if (!info && ledger) {
+			info = [objid: ledger?.objid];
+			ledgerdb.create(info, 'ledger-info');
+		}
+		if (ledger.balance <= 0) return;
+
+		def xapp = loanapp.read([objid: ledger.appid]);
+		if (xapp && xapp.loantype == 'BRANCH') {
+			//return postPaymentBranch(params);
+			return;
+		}
+
+		if (ledger.producttypeid) {
+			def xp = product_type.read([name: ledger.producttypeid]);
+			if (xp) {
+				if (xp.paymentschedule == 'SEMIMONTHLY') {
+					return postPaymentSemiMonthly(params);
+				} else if (xp.paymentschedule == 'MONTHLY') {
+					return;
+					//return postPaymentMonthly(params);
+				}
+			}
+		}
+
+		//println 'ledgerid ' + ledger?.objid;
+		//println 'acctname ' + ledger?.acctname;
+		//println 'ledger payment id ' + params.ledgerpaymentid;
+
+		def producttype = product_type.read([name: ledger.producttypeid]);
+		def ledgeritem = ledgerdb.findLastLedgerItemByParentId([parentid: ledger.objid]);
+
+		if (dateSvc.parseDate(txndate, null).date > ledger.dtmatured && ledger.overduepenalty == 0.00) {
+			/*
+			println 'date ' + txndate;
+			println 'name ' + ledger?.acctname;
+			println 'balance ' + ledger.balance;
+			println 'past due rate ' + producttype?.pastduerate;
+			*/
+			//println 'balance = '+ledger.balance;
+			//println 'past due rate = '+producttype.pastduerate;
+			ledger.overduepenalty = ledgerSvc.computeOverduePenalty([balance: ledger.balance, pastduerate: (producttype.pastduerate? producttype.pastduerate : 0.00)]);
+			//throw new Exception('stop')
+			//println 'overdue ' + ledger.overduepenalty;
+			ledgerdb.update(ledger, 'overduepenalty');
+		}
+		//println 'ledger item = '+ledgeritem;
+		def interval = 0;
+		def lastscheduledate = dateSvc.add(ledger.dtstarted, "-1");
+		if (ledgeritem) interval = ledgeritem.day;
+
+		lastscheduledate = dateSvc.add(lastscheduledate, (interval+1)+'');
+		txndate = dateSvc.parseDate(txndate, null).date;
+		def days = dateSvc.getDaysDiff(lastscheduledate, txndate);
+		//if (params.txndate.toString() == '2004-04-29') {
+			//println 'interval -> '+interval;
+			//println 'last schedule date -> '+lastscheduledate;
+		//	println 'overdue penalty ' + ledger.overduepenalty;
+		//}
+		def ref = [
+			term 				: producttype.term,
+			amountDue 			: ledger.dailydue,
+			interest 			: ledger.interestamount,
+			absentPenalty 		: ledger.absentpenalty,
+			balance 			: (ledger.balance? ledger.balance : ledger.totalprincipal),
+			overduePenalty 		: ledger.overduepenalty,
+			underpaymentRate	: producttype.underpaymentpenalty,
+			overpaymentamount 	: (ledger.overpaymentamount? ledger.overpaymentamount : 0)
+		]
+
+		def xpayment = ledgerdb.read([objid: params.ledgerpaymentid], 'payment');
+		if (xpayment) {
+			//println 'xpayment ' + xpayment;
+			xpayment.dtcurrentschedule = ledger.dtcurrentschedule;
+			xpayment.lastscheduledate = lastscheduledate;
+			xpayment.days = days;
+			xpayment.balance = ref.balance;
+			ledgerdb.update(xpayment, 'payment');
+			xpayment = ledgerdb.read(xpayment, 'payment');
+		}
+
+		//if (params.txndate.toString() == '2006-01-24') {
+			//println 'last schedule date -> '+ lastscheduledate;
+			//println 'txndate -> '+txndate;
+			//println 'days -> '+days;
+		//	println 'started';
+		//}
+		
+		def item;
+
+		def isCompromise = false;
+		def ledgeramnesty;// = amnesty.findActiveAmnestyByLedgeridAndDate([date: xtxndate, ledgerid: ledger.objid]);
+		def dt = dateSvc.getServerDateAsString().split(" ")[0];
+		
+		//def curramnesty = amnesty.findActiveAmnestyByLedgeridAndDate([date: dt, ledgerid: ledger.objid]);
+		def curramnesty = ledgeramnestydb.findActiveByDateAndLedgerid([date: xtxndate, ledgerid: ledger?.objid]);
+		if (curramnesty) {
+			return amnestySvc.postPayment(params, curramnesty);
+		}
+		/*
+		if (curramnesty) {
+			ledgeramnesty = amnesty.findActiveAmnestyByLedgeridAndDate([date: xtxndate, ledgerid: ledger.objid]);
+			if (ledgeramnesty) isCompromise = true;
+		}
+		*/
+		//println 'txndate ' + xtxndate;
+		//println 'ledger amnesty ' + ledgeramnesty;
+
+		//def ledgeramnesty = amnesty.findLatestAmnestyByLedgerid([ledger: ledger.objid]);
+		//println 'txndate ' + txndate;
+		/*if (xtxndate.toString() == '2012-12-06') {
+			println 'start';
+		}*/
+		//if (ledgeramnesty) {
+		//	def curramnesty = amnesty.findLatestAmnestyByLedgerid([ledgerid: ledger.objid]);
+			/*if (xtxndate.toString() == '2014-03-07') {
+				println 'txndate ' + xtxndate;
+				println 'ledgerid ' + ledger.objid;
+				println 'amnesty ' + ledgeramnesty;
+				println 'current amnesty ' + curramnesty
+				throw new RuntimeException('stop');
+			}*/
+		//	if (ledgeramnesty.objid == curramnesty?.objid) {
+		//		isCompromise = true;
+		//	} else {
+		//		ledgeramnesty = null;
+		//	}
+		//}
+
+		//println 'days ' + days;
+		data.totalDays = days;
+		data.lackingInterest = 0;
+		data.lackingPenalty = 0;
+		data.type = ledger.paymentmethod;
+		//println 'type ' + data.type;
+
+		/*if (data.totalDays == 1 && params.payamount > ledger.dailydue) data.type = 'over';
+		else data.type = 'schedule';*/
+
+		//if (params.txndate.toString() == '2007-10-10') {
+		//	println ''
+		//	println 'started'
+		//}
+
+		//println 'payment type-> '+data.type;
+		data.isCompromise = isCompromise? 1 : 0;
+		if (ledgeritem) {
+			data.lackingInterest = ledgeritem.interestbal;
+			data.lackingPenalty = ledgeritem.penaltybal;
+			//println 'ledgeritem day: '+ledgeritem.day;
+			data.currentDay = ledgeritem.day;
+			if (data.lackingInterest == 0 && data.lackingPenalty == 0) data.currentDay++;
+			data.totalDays += ledgeritem.day;
+			//if (ledgeritem.balance > 0) ref.balance = ledgeritem.balance;
+		}
+		if (!data.currentDay || data.currentDay == 0) data.currentDay = 1;
+
+		//if (data.currentDay > ledger.term && params.isproceedcollection == true)
+		//	return postProceedPayment(params);
+
+		data.amountPaid = params.payamount;
+		def req = new RuleRequest("loan");
+		//println 'data total days = '+data.totalDays;
+		def paymentFact = [
+			days 		: 1,
+			balance 	: ref.balance,
+			currentDay 	: data.currentDay
+		];
+
+		def referencesFact = [
+			underpaymentRate: producttype.underpaymentpenalty,
+			term			: producttype.term,
+			absentPenalty 	: ledger.absentpenalty,
+			overduePenalty 	: ledger.overduepenalty,
+			amountDue 		: ledger.dailydue,
+			overpaymentAmt 	: (ledger.overpaymentamount > 0)? ledger.overpaymentamount : params.payamount,
+			hasSunday 		: "false",
+			isProceed 		: false//(params.isproceedcollection? params.isproceedcollection : false)
+		];
+
+		if (params.isproceedcollection == true || params.isnoncash == true) {
+			referencesFact.isProceed = true;
+			def allowcompromise = isCompromise;
+			if (isCompromise == true) {
+				def a = (ledgeramnesty?.iswaiveinterest == 1? true : false);
+				if (a == true) {
+					referencesFact.isProceed = false;
+					if (ledgeritem) data.currentDay = ledgeritem.day;
+				}
+			} 
+			if (allowcompromise == false) {
+				data.isCompromise = 0;
+				isCompromise = false;
+			}
+		}
+		//println '\ntxndate: ' + xtxndate;
+
+		def compromiseFact = [ 
+			isCompromise	: data.isCompromise,
+			isWaiveInterest	: false,
+			isWaivePenalty 	: false,
+			isFix			: false
+		];
+		if (data.isCompromise == 1) {
+			compromiseFact.isFix = (ledgeramnesty.amnestyoption == 'FIX'? true : false);
+			compromiseFact.isWaiveInterest = (ledgeramnesty.iswaiveinterest == 1? true : false);
+			compromiseFact.isWaivePenalty = (ledgeramnesty.iswaivepenalty == 1? true : false);
+			compromiseFact.amountPaid = params.payamount;
+			compromiseFact.balance = ledger.balance; //(compromiseFact.isFix? ledgeramnesty.balance : ledger.balance);
+			def intrst = ledger.interestamount;
+			if (compromiseFact.isFix) {
+				compromiseFact.balance = ledgeramnesty.balance;
+				//println 'amnesty bal ' + ledgeramnesty.balance;
+				//println 'ledger bal ' + ledger.balance;
+				intrst = ledgeramnesty.balance - ledger.balance;
+				intrst = (intrst < 0? 0 : intrst);
+			}
+
+			compromiseFact.interest = intrst; //ledger.interestamount;
+			compromiseFact.penalty = ledger.overduepenalty;
+
+			/*if (params.txndate.toString() == '2002-11-21') {
+				println 'compromise fact'
+				println compromiseFact;
+			}*/
+			/*
+			def c = compromise.read([objid: ledger.compromiseid])
+			compromiseFact.amountPaid = params.payamount;
+			compromiseFact.balance = ledger.balance;
+			compromiseFact.compromiseType = c.compromisetype;
+			compromiseFact.interest = ledger.interestamount;
+			compromiseFact.penalty = ledger.overduepenalty;
+			*/
+		}
+		def results = [];
+		def lastPayment = [:];
+		def floating = [:];
+
+		req.addFact("loan", "Payment", paymentFact); 
+		req.addFact("loan", "References", referencesFact);
+		req.addFact("loan", "Compromise", compromiseFact);
+		req.addGlobal("results", results);
+		req.addGlobal("lastPayment", lastPayment);
+		req.addGlobal("floating", floating);
+
+		lastPayment.datePaid = ledger.dtlastpaid? dateSvc.parseDate(ledger.dtlastpaid, null).date : null;
+
+		referencesFact.interest = ref.interest;
+		referencesFact.hasSunday = "false";
+		def cal = Calendar.getInstance();
+		cal.setTime(txndate);
+		if ((cal.get(cal.DAY_OF_WEEK)-1) == 1) {
+			ref.hasSunday = true;
+			referencesFact.hasSunday = "true";
+		}
+		if (ref.hasSunday && ledger.overpaymentamount == 0.00 && ledger.paymentmethod == 'over') {
+			def quotient = new BigDecimal(params.payamount+'').setScale(2, BigDecimal.ROUND_HALF_UP).divideAndRemainder(new BigDecimal("2").setScale(2, BigDecimal.ROUND_HALF_UP));
+			if (quotient[0] > ledger.dailydue) {
+				params.payamount = quotient[0];
+				referencesFact.overpaymentAmt = params.payamount;
+			}
+		}
+		compromiseFact.isCompromise = data.isCompromise;
+
+		/*if (params.txndate.toString() == '2014-07-24') {
+			println 'total days ' + data.totalDays;
+			println 'last schedule date ' + lastscheduledate;
+			println 'txndate ' + txndate;
+		}*/
+		//println 'total payment1 ' + data.totalPayment;
+		if (txndate == lastPayment.datePaid && !isCompromise) {
+			//data.amountPaid += ledgeritem.amtpaid;
+			//data.amountPaid ;
+			def xpayments = ledger_payment.getPaymentsByParentidAndTxndate([parentid: ledger.objid, txndate: txndate]);
+			xpayments.sort{ it.refno }
+
+
+			def idx = 0, xitm;
+			while (idx < xpayments.size()) {
+				xitm = xpayments[idx];
+				if (xitm.objid == params.ledgerpaymentid) {
+					break;
+				}
+				idx++;
+			}
+			idx++;
+
+			while (idx < xpayments.size()) {
+				xitm = xpayments[idx];
+				xpayments.remove(xitm);
+				idx++;
+			}
+
+			def xlist = [];
+			xlist.addAll(xpayments);
+			def cp = xlist.find{ it.refno==params.refno }
+			if (cp) xlist.remove(cp);
+			lastPayment.totalPreviousPayments = (xlist? xlist.amount.sum() : data.amountPaid);
+			lastPayment.previousPenalty = ledgeritem.penaltypaid;
+
+			data.amountPaid = (xpayments? xpayments.amount.sum() : data.amountPaid);
+			data.totalPayment = ledgeritem.amtdue;
+			data.lackingInterest = ledgeritem.interestbal;
+			data.lackingPenalty = ledgeritem.penaltybal;
+			data.days = ledgeritem.day;
+			paymentFact.balance = ledgeritem.balance;
+			def itm = ledgerdb.findLastLedgerItemNotSameDatePaid([parentid: ledger.objid, dtpaid: txndate]);
+			if (itm) {
+				data.currentDay = itm.day+1;
+				paymentFact.balance = itm.balance;
+			} else {
+				paymentFact.balance = ledger.totalprincipal;
+			}
+			//println 'total days ' + data.totalDays;
+			item = offsetLastPayment([item: data, ref: ref, lastledgeritem: ledgeritem]);
+			//println 'offset total payment ' + item.totalPayment;
+			referencesFact.isOffset = 1;
+			paymentFact.lackingInterest = item.lackingInterest;
+			paymentFact.lackingPenalty = item.lackingPenalty;
+			referencesFact.amountPaid = item.amountPaid;
+			//println 'offset';
+			//println 'isoffset ' + referencesFact.isOffset;
+			//println 'trial and error ' + iteamym.trialAndError;
+			//println 'current day ' + data.currentDay;
+			//println 'total days ' + item.totalDays;
+			//println 'payment current day ' + paymentFact.currentDay;
+			//println 'ledger item day ' + ledgeritem.day;
+			//println ''
+			lastPayment.days = ((data.currentDay + (item.totalDays-1)) - paymentFact.currentDay) + 1;//data.days;
+
+			if (item.totaldays > 1) lastPayment.days--;
+			if (item.trialAndError >= 0) {
+				//paymentFact.days = 1;
+				//println 'last payment days ' + lastPayment.days;
+
+				def xxpayment;
+				if (xpayments) {
+					xpayments.sort{ it.refno }
+					xxpayment = ledgerdb.read([objid: xpayments[0].objid], 'payment');
+				}
+				def xdays = 0, xdays2 = 1;
+				if (xxpayment) {
+					if (xxpayment.balance) paymentFact.balance = xxpayment.balance;
+					if( data.totalDays <= ref.term ) {
+						if (xxpayment.days && item.trialAndError == 0) {						
+							item.totalPayment = ref.amountDue * xxpayment.days;
+							if (ref.overpaymentamount > 0) {
+								item.totalPayment = ref.overpaymentamount * xxpayment.days;
+							}
+						}
+					}
+					if (!xxpayment.dtcurrentschedule) xxpayment.dtcurrentschedule = ledger.dtcurrentschedule;
+					xxpayment.dtcurrentschedule = dateSvc.parseDate(xxpayment.dtcurrentschedule, null).date;
+					//println 'current schedule ' + xxpayment.dtcurrentschedule;
+					//println 'txndate ' + txndate;
+					xdays = dateSvc.getDaysDiff(xxpayment.dtcurrentschedule, txndate);
+					xdays2 = dateSvc.getDaysDiff(ledger.dtstarted, xxpayment.dtcurrentschedule);
+					//println 'xdays ' + xdays;
+					//println 'xdays2: ' + xdays2 + ' current day: ' + paymentFact.currentDay;
+				}
+
+				paymentFact.days = item.totalDays;
+
+
+				//lastPayment.days = item.totalDays; //(item.totalDays+1);
+				if (paymentFact.currentDay >= xdays2) {
+					lastPayment.days = 1;
+					if (paymentFact.currentDay == xdays2) lastPayment.days++;
+				} else {
+					lastPayment.days = item.totalDays;
+				}
+
+				def xxpayment2;
+				if (xpayments) {
+					xpayments.sort{ it.refno }
+					xxpayment2 = ledgerdb.read([objid: xpayments[xpayments.size()-1].objid], 'payment');
+				}
+
+				def xdate = lastscheduledate;
+				if (xxpayment) {
+					xdate = dateSvc.add(xxpayment.dtcurrentschedule, "+" + item.totalDays);
+				}
+				//println 'total days ' + item.totalDays;
+				def uptodate = false, hasextradays = false, lackdays = false;
+				if (xxpayment2) {
+					if (!xxpayment2.dtcurrentschedule) xxpayment2.dtcurrentschedule = ledger.dtcurrentschedule;
+					xxpayment2.dtcurrentschedule = dateSvc.parseDate(xxpayment2.dtcurrentschedule, null).date;
+					//println 'dtcurrentschedule ' + xxpayment2.dtcurrentschedule;
+					//println 'xdate ' + xdate;
+					def xis = (xxpayment2.dtcurrentschedule.compareTo(xdate));
+					//println 'xis ' + xis;
+					if (xis == 0) {
+						uptodate = true;
+					} else if (xis > 0) {
+						lackdays = true;
+					} else if (xis < 0) {
+						hasextradays = true;
+					}
+				}
+
+				if (uptodate == true) {
+					lastPayment.days = item.totalDays + 1;
+				} else if (hasextradays == true) {
+					if (xxpayment2) {
+						def xd = dateSvc.getDaysDiff(xxpayment2.dtcurrentschedule, xdate) - 1;
+						lastPayment.days = item.totalDays + 1;
+						lastPayment.days -= xd;
+					}
+				}
+
+				//println 'item total days ' + item.totalDays;
+				//println 'days ' + lastPayment.days;
+				lastPayment.previousPenalty = 0;
+			} else if (item.lackingInterest > 0) {
+				lastPayment.days++;
+			}
+			/*
+			if (item.isOverdue > 0) {
+				def xdays = ledgeritem.day - data.currentDay;
+				//println 'xdays ' + xdays;
+				lastPayment.days = xdays;
+				if (!params.isproceedcollection) {
+					item.totalDays -= xdays;
+				}
+			}
+			*/
+
+			lastPayment.currentDay = ledgeritem.day;
+			lastPayment.totaldays = item.totalDays;
+			lastPayment.amountPaid = data.amountPaid;
+			if (params.isnoncash == true || params.isproceedcollection == true) {
+				paymentFact.days = lastPayment.days;
+			}
+			if (item.isOverdue == 1) {
+				def d = (ledgeritem? (ledgeritem.day - data.currentDay) : 0) + 2;
+				if (data.lackingInterest > 0 || data.lackingPenalty > 0) {
+					paymentFact.currentDay++;
+					//lastPayment.currentDay--;
+					//lastPayment.days--;
+				}
+				if (d > 0) lastPayment.days = d;
+				paymentFact.days = lastPayment.days;
+			}
+		} else if (!isCompromise) {
+			lastPayment.totaldays = 0;
+			//println 'data = '+data;
+			item = preComputation(data, ref);
+			lastPayment.lackingInterest = item.lackingInterest;
+			referencesFact.amountPaid = item.amountPaid;
+			paymentFact.days = 1;
+			referencesFact.isOffset = 0;
+			lastPayment.amountPaid = data.amountPaid;
+			paymentFact.totalInterest = 0;
+			paymentFact.totalPenalty = 0;
+			paymentFact.lackingInterest = item.lackingInterest;
+			paymentFact.lackingPenalty = item.lackingPenalty;
+		} else if (isCompromise) {
+			paymentFact.lackingInterest = data.lackingInterest;
+			paymentFact.lackingPenalty = data.lackingPenalty;
+			//println 'current day: ' + paymentFact.currentDay;
+			//println 'amnesty option: ' + ledgeramnesty?.amnestyoption;
+			//if (ledgeramnesty && ledgeramnesty.amnestyoption == 'WAIVER') {
+			//	paymentFact.currentDay++;
+			//}
+		}
+
+		if (!item) {
+			item = [
+				amountPaid 		: params.payamount,
+				totalPayment	: params.payamount,
+				totalDays 		: 1,
+				trialAndError 	: 0,
+				isOverdue 		: 1,
+				noOfHolidays 	: 0,
+				type 			: 'schedule'
+			];
+		}
+		//item.hasSunday = referencesFact.hasSunday;
+		//item.noOfHolidays = calendarSvc.getNoOfHolidays([item: item, lastscheduledate: lastscheduledate]);
+
+		/*
+		if (xtxndate.toString() == '2014-12-22') {
+			println 'before get no of holidays';
+		}
+		*/
+
+
+		if (!isCompromise) {
+			def xlastscheduledate = lastscheduledate;
+
+			def xpayments = ledger_payment.getPaymentsByParentidAndTxndate([parentid: ledger.objid, txndate: txndate]);
+			xpayments.sort{ it.refno }
+
+			def xxpayment = ledgerdb.read([objid: xpayments[0]?.objid], 'payment');
+			if (xxpayment && xxpayment.lastscheduledate) {
+				xlastscheduledate = xxpayment.lastscheduledate;
+			}
+
+
+			//item.noOfHolidays = calendarSvc.getNoOfHolidays([item: item, lastscheduledate: lastscheduledate, txndate: txndate]);
+			item.noOfHolidays = calendarSvc.getNoOfHolidays([item: item, lastscheduledate: xlastscheduledate, txndate: txndate]);
+			if (item.noOfHolidays > 0) {
+				cal.setTime(dateSvc.add(txndate, "0"))
+				/*if (txndate.toString() == '2014-01-02') {
+					println 'cal-> '+cal;
+				}*/
+				if ((cal.get(cal.DAY_OF_WEEK)-1) == 1) {
+					ref.hasSunday = true;
+					referencesFact.hasSunday = "true";
+					item.noOfHolidays--;
+					if (item.noOfHolidays < 0) item.noOfHolidays = 0;
+				}
+			}
+		}
+		item.hasSunday = referencesFact.hasSunday;
+
+		referencesFact.isFullPayment = checkIsFullPayment(item, ref, ledgeramnesty);
+		referencesFact.type = data.type;//getPaymentType(item, referencesFact);
+
+		paymentFact.amountPaid = item.amountPaid;
+		referencesFact.totalPayment = item.totalPayment;
+
+		def xpayments = ledger_payment.getPaymentsByParentidAndTxndate([parentid: ledger.objid, txndate: txndate]);
+		xpayments.sort{ it.refno }
+
+		def xxpayment, xdtschedule = lastscheduledate;
+		if (xpayments) {
+			xxpayment = ledgerdb.read([objid: xpayments[0].objid], 'payment');
+			xdtschedule = xxpayment.dtcurrentschedule;
+		}
+
+		def sd = new LocalDate(xdtschedule);
+		def ed = new LocalDate(txndate);
+		def xdays = (Days.daysBetween(sd, ed).getDays() + 1);
+		if (xdays <= 0) xdays = 1;
+
+		//println 'xdays ' + xdays;
+
+		//println 'payment method ' + ledger.paymentmethod;
+		if (ledger.paymentmethod == 'over' && item.trialAndError == 0 && item.isOverdue == 0) {
+			//println 'sd ' + sd;
+			//println 'ed ' + ed;
+			//println 'total days ' + data.totalDays;
+			//println 'current day ' + data.currentDay;
+			item.totalDays = xdays;
+		}
+		//println 'last schedule date ' + lastscheduledate;
+		//println 'txndate ' + txndate;
+		//println 'total days ' + item.totalDays;
+		//println 'no of holidays ' + item.noOfHolidays;
+		//println 'trial and error ' + item.trialAndError;
+		//println 'is overdue ' + item.isOverdue;
+		referencesFact.totalDays = item.totalDays;
+		referencesFact.trialAndError = item.trialAndError;
+		referencesFact.isOverdue = item.isOverdue;
+		referencesFact.noOfHolidays = item.noOfHolidays;
+
+		/*
+		if (xtxndate.toString() == '2015-02-25' ) {
+			println '\nlastpayment';
+			for (i in lastPayment) { println i }
+			println '\nreferencesFact';
+			for (i in referencesFact) { println i }
+			println '\ncompromiseFact';
+			for (i in compromiseFact) { println i }
+			println '\npaymentFact';
+			for (i in paymentFact) { println i }
+		}
+		*/
+		/*
+		if (xtxndate.toString() > '2014-10-13') {
+			println '\nnot included';
+		}
+		*/
+
+		/*
+		if (referencesFact.isOffset > 0) {
+			println '\nlastpayment';
+			for (i in lastPayment) { println i }
+			println '\nreferencesFact';
+			for (i in referencesFact) { println i }
+			println '\ncompromiseFact';
+			for (i in compromiseFact) { println i }
+			println '\npaymentFact';
+			for (i in paymentFact) { println i }
+		}
+		*/
+
+		def hasAbsentPenalty = false;
+		if (xdays > 1) hasAbsentPenalty = true;
+		referencesFact.hasAbsentPenalty = hasAbsentPenalty;
+
+		paymentFact.addLacking = false;
+		if (paymentFact.lackingInterest > 0 || paymentFact.lackingPenalty > 0) {
+			paymentFact.addLacking = true;
+		}
+		//println params.txndate;
+		//println 'total payment = '+referencesFact.totalPayment;
+		//if (params.txndate.toString() == '2006-11-16') {
+			//results.each{
+			//	println it
+			//}
+		//	println 'started';
+		//	println "payment fact -> "+paymentFact;
+		//	println "references fact -> "+referencesFact;
+			//throw new Exception("stop");
+		//}
+
+		/*
+		if (xtxndate.toString() == '2001-09-21') {
+			println '\nreferences fact '
+			for (i in referencesFact) { println i; }
+			println '\npayment fact ';
+			for (i in paymentFact) { println i; }
+			println '\nlast payment';
+			for (i in lastPayment) { println i; }
+		}
+		*/
+
+		/*
+		if (referencesFact.isOffset > 0) {
+			println '\n\ndate: ' + params.txndate + ' refno: ' + params.refno;
+			println '\nreferences fact '
+			for (i in referencesFact) { println i; }
+			println '\npayment fact ';
+			for (i in paymentFact) { println i; }
+			println '\nlast payment';
+			for (i in lastPayment) { println i; }
+		}
+		*/
+
+		/*
+		println 'references fact =======>';
+		for (i in referencesFact) {
+			println i;
+		}
+		println 'last payment =======>';
+		for (i in lastPayment) {
+			println i;
+		}
+		*/ 
+		/*
+		println '\ndate ' + xtxndate;
+		*/
+
+		/*
+		if (xtxndate.toString() == '2015-06-01') {
+			println '\nreferences fact '
+			for (i in referencesFact) { println i; }
+			println '\npayment fact ';
+			for (i in paymentFact) { println i; }
+			println '\nlast payment';
+			for (i in lastPayment) { println i; }
+		}
+		*/
+
+		
+		//println '';
+		//println 'current day: ' + data.currentDay + ' payment current day: ' + paymentFact.currentDay;
+		lastPayment.lastcurrentday = paymentFact.currentDay;
+		try {
+			ruleSvc.execute( req );	
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		/*
+		if (xtxndate.toString() == '2015-03-02') {
+			results.each{ println it }
+			println '\n'
+		}
+		*/
+
+		//if (referencesFact.isOffset > 0) {
+		//	results.each{ println it }
+		//}
+		//if (xtxndate.toString() == '2006-11-18') {
+			//results.each{ o->
+			//	println o;
+			//}
+		//	println 'finished';
+		//}
+		/*if (referencesFact.isOffset > 0) {
+			results.each{ println it; }
+		}*/
+		//println params.txndate;
+		//results.each{ println it } 
+		//results.each{ println it; }
+		//throw new Exception('stopping');
+
+		def lastitem;
+		if (results.size() > 0) {
+			lastitem = results[results.size()-1];
+			//lastitem.refno = params.refno;
+			//lastitem.dtpaid = txndate;
+			if (lastitem.penalty) {
+				def lastpenalty = new BigDecimal(lastitem.penalty+"").setScale(2, BigDecimal.ROUND_HALF_UP);
+				lastitem.penalty = ledgerSvc.roundOffAmount(lastpenalty);
+
+				//println 'penalty ' + lastitem.penalty;
+				//println 'lastpenalty ' + lastpenalty;
+				if (lastitem.partialPayment) {
+					//def lastpartial = 
+					//println 'last partial payment ' + lastitem.partialPayment;
+					def lastpartial = lastitem.partialPayment;
+					lastitem.partialPayment = new BigDecimal(lastitem.partialPayment+"").setScale(2, BigDecimal.ROUND_FLOOR);
+
+
+					def amt = lastpenalty - lastitem.penalty;
+					if (amt == 0) {
+						lastitem.partialPayment = lastpartial;
+					} else if (amt != 0) {
+						def xlastpartial = lastitem.partialPayment;
+						lastitem.partialPayment += amt;
+					
+						if (lastitem.balance) {
+							lastitem.balance -= amt;
+							//lastitem.balance = new BigDecimal(lastitem.balance+"").setScale(2, BigDecimal.ROUND_FLOOR);
+							//def amt2 = lastpartial - lastitem.partialPayment;
+							//println 'amt 2 ' + amt2;
+							//println 'balance ' + lastitem.balance;
+						}
+						//println 'partial payment ' + lastitem.partialPayment;
+					}
+					//println 'amt ' + amt;
+					
+					//if (lastitem.balance) {
+					//	lastitem.balance = new BigDecimal(lastitem.balance+"").setScale(2, BigDecimal.ROUND_FLOOR);
+						//def amt2 = lastpartial - lastitem.partialPayment;
+						//println 'amt 2 ' + amt2;
+						//println 'balance ' + lastitem.balance;
+					//}
+					//println 'partial payment ' + lastitem.partialPayment;
+				}
+			}
+
+			if (floating.lackingInterest) {
+				lastitem.interestbal = new BigDecimal(floating.lackingInterest).setScale(2, BigDecimal.ROUND_HALF_UP)
+			}
+
+			if (floating.lackingPenalty){
+				lastitem.penaltybal = new BigDecimal(floating.lackingPenalty).setScale(2, BigDecimal.ROUND_HALF_UP);
+			}
+			//lastitem.paytype = params.paytype;
+			lastitem.baseamount = ledger.dailydue;
+			if (item.type == 'over') {
+				lastitem.baseamount = (ledger.overpaymentamount > 0)? ledger.overpaymentamount : params.payamount;
+				def bd = new BigDecimal(params.payamount+'').setScale(2, BigDecimal.ROUND_HALF_UP);
+				def r = bd.divideAndRemainder(new BigDecimal(lastitem.baseamount+'').setScale(2, BigDecimal.ROUND_HALF_UP));
+				//def mod = params.payamount%lastitem.baseamount;
+				lastitem.groupbaseamount = lastitem.baseamount+r[1];
+			}
+
+			def xledger = ledgerdb.read(ledger);
+			if (lastitem.balance != null && lastitem.balance != '') {
+				//println 'last item balance ' + lastitem.balance;
+				ledgerdb.update([objid: ledger.objid, balance: lastitem.balance], "balance");
+				
+			}
+
+			/*if (params.txndate.toString() == '2002-11-21') {
+				def xl = ledgerdb.read(ledger);
+				println 'ledger ' + xl;
+				println 'references fact ' + referencesFact;
+			}*/
+			def day = data.currentDay;
+			if (lastitem.day) day = lastitem.day;
+			//println '\n';
+			//println 'dtstarted: ' + xledger.dtstarted + ' day: ' + day;
+			//println 'current day: ' + data.currentDay + ' last item day: ' + lastitem?.day;
+			//xledger.dtcurrentschedule = xledger.dtstarted+day;
+			def xcal = Calendar.getInstance();
+			def xdt;
+			if (xledger.dtstarted instanceof Date) {
+				xdt = xledger.dtstarted;
+			} else {
+				xdt = java.sql.Date.valueOf(xledger.dtstarted);
+			}
+			cal.setTime(xdt);
+			//println 'is overdue: ' + referencesFact.isOverdue + ' is proceeds: ' + params.isproceedcollection + ' is noncash: ' + params.isnoncash;
+			if (data.currentDay > ledger.term && (params.isproceedcollection == true || params.isnoncash == true)) {
+				day--;
+			} else if (lastitem?.interestbal && lastitem.interestbal > 0) {
+				day--;
+			}
+			cal.add(Calendar.DATE, day);
+			//println '\ntxndate: ' + xtxndate + ' current schedule: ' + xledger.dtcurrentschedule;
+			xledger.dtcurrentschedule = new java.text.SimpleDateFormat("yyyy-MM-dd").format(cal.getTime());
+			//println 'txndate: ' + xtxndate + ' current schedule: ' + xledger.dtcurrentschedule;
+			ledgerdb.update(xledger, "dtcurrentschedule");
+			if (referencesFact.isOffset > 0) {
+				lastitem.payment = params.payamount;
+				//def xpayments = ledger_payment.getPaymentsByParentidAndTxndate([parentid: ledger.objid, txndate: txndate]);
+				//if (xpayments) lastitem.remarks = 'Total Payment of ' + xpayments.amount.sum();
+			}
+			if (params.isproceedcollection == true) {
+				if (!params.entity) {
+					def p = proceeds.findByRefid([refid: params.ledgerpaymentid]);
+					lastitem.remarks = 'Proceed on sale of ' + p.description;
+				} else {
+					def p = proceeds.read([objid: params.proceedid]);
+					if (p) {
+						//def payment = ledger_payment.findByParentidAndRefno([parentid: ledger.objid, refno: params.refno]);
+						def payment = ledger_payment.findByParentidAndRefnoAndTxndate([parentid: ledger.objid, refno: params.refno, txndate: txndate]);
+						if (payment) {
+							p.refid = payment.objid;
+							proceeds.update(p);
+						}
+						lastitem.remarks = 'Proceed on sale of ' + p.description;
+					}
+				}
+			}
+			if (params.isnoncash == true) {
+				lastitem.remarks = 'Non-cash';
+				if (params.entity) {
+					def p = ledger_noncash.read([objid: params.noncashid]);
+					if (p) {
+						def payment = ledger_payment.findByParentidAndRefnoAndTxndate([parentid: ledger.objid, refno: params.refno, txndate: txndate]);
+						if (payment) {
+							p.refid = payment.objid;
+							ledger_noncash.update(p);
+						}
+					}
+				}
+			}
+		}
+		def la = loanapp.read([objid: ledger.appid], 'loanapp_close');
+		def xledger = ledgerdb.read(ledger);
+		if (la || referencesFact.isFullPayment == true || xledger.balance == 0) {
+			xledger.state = 'CLOSE';
+			ledgerdb.update(xledger);
+			loanapp.update([objid: xledger.appid, state: 'CLOSED']);
+			def xx = loanapp.read([objid: xledger.appid], 'loanapp_search');
+			if (xx) {
+				loanapp.update([objid: xledger.appid, state: 'CLOSED'], 'loanapp_search');	
+			}
+		}
+		//results.each{ println it.day; }
+		//throw new Exception('stopping');
+
+		def groupbaseamount = 0;
+		if (item.type == 'schedule' || item.amountPaid < ledger.dailydue) groupbaseamount = ledger.dailydue;
+		if (item.type == 'over') groupbaseamount = (ledger.overpaymentamount > 0)? ledger.overpaymentamount : params.payamount;
+
+		//results.each{ println it }
+		//throw new Exception('stopping')
+
+
+		//if (params.txndate.toString() == '2006-10-30') {
+		//	results.each{
+		//		println it
+		//	}
+		//	println 'finished';
+		//	println '';
+			//println "payment fact -> "+paymentFact;
+			//println "references fact -> "+referencesFact;
+			//throw new Exception("stop");
+		//}
+
+
+		results.each{
+			//if(it.penalty) it.penalty = new BigDecimal(it.penalty+'').setScale(2, BigDecimal.ROUND_HALF_UP);
+			//println it
+			def itm = createLedgerItem(ledger);
+			if (it.payment) 
+				itm.amtdue = new BigDecimal(it.payment).setScale(2, BigDecimal.ROUND_HALF_UP);
+			else itm.amtdue = 0.00;
+
+			//println 'passing 1'
+			itm.amtpaid = itm.amtdue;
+			if (it.interestPaid)
+				itm.interestdue  = new BigDecimal(it.interestPaid).setScale(2, BigDecimal.ROUND_HALF_UP);
+			else itm.interestdue = 0.00;
+			itm.interestpaid = itm.interestdue;
+
+			//println 'passing 2'
+			if (it.penalty) {
+				itm.penaltydue = new BigDecimal(it.penalty).setScale(2, BigDecimal.ROUND_HALF_UP);
+			}
+			else itm.penaltydue = 0.00;
+			itm.penaltypaid = itm.penaltydue;
+
+			//println 'passing 3'
+			itm.amtbal = 0.00;
+			itm.interestbal = (it.interestbal? it.interestbal : 0.00);
+			itm.penaltybal = (it.penaltybal? it.penaltybal : 0.00);
+
+			itm.dtpaid = txndate;//it.dtpaid? it.dtpaid : null;
+			itm.refno = params.refno;//it.refno? it.refno : null;
+			itm.day = (it.day? it.day : data.currentDay);
+			itm.balance = (it.balance != null && it.balance != ''? it.balance : ref.balance);
+			itm.balance = new BigDecimal(itm.balance).setScale(2, BigDecimal.ROUND_HALF_UP);
+
+			//println 'passing 4'
+			itm.partialpayment = (it.partialPayment? new BigDecimal(it.partialPayment).setScale(2, BigDecimal.ROUND_HALF_UP) : 0.00);
+			itm.baseamount = (it.baseamount? it.baseamount : 0.00);
+			itm.groupbaseamount = (it.groupbaseamount? it.groupbaseamount : groupbaseamount); 
+			//itm.paytype = it.paytype;
+			itm.txndate = dateSvc.serverDate;
+			if (isCompromise) {
+				itm.amnestyid = ledgeramnesty.objid;
+				if (ledgeramnesty.amnestyoption == 'FIX' && ledgeritem) {
+					itm.day = ledgeritem.day;
+				}
+			}
+			if (it.remarks) itm.remarks = it.remarks;
+			if (it.state) itm.state = it.state;
+			//println 'item = '+itm;
+			it.item = itm;
+			//if (params.txndate.toString() == '2006-01-24') println 'current day ' + data.currentDay;
+			ledgerdb.create(itm, "detail");
+		}
+		//println 'overpayment amount = '+ledger.overpaymentamount;
+		//println 'type = '+item.type;
+		//throw new Exception('stopping');
+		ledgerdb.update([objid: ledger.objid, dtlastpaid: txndate], "dtlastpaid");
+		//if (ledger.overpaymentamount == 0 && item.type == "over")
+		//	ledgerdb.update([objid: ledger.objid, overpaymentamount: params.payamount], "overpayment");
+		//throw new Exception('stopping')
+		//payment_temp.removeByAppId(params);
+		return [
+			results 		: results, 
+			amnestyid 		: ledgeramnesty?.objid, 
+			isfullpayment 	: referencesFact.isFullPayment,
+			ledgerid 		: ledger.objid
+		];
+	}
+
+	private def createLedgerItem( ledger ) {
+		return [
+			objid 	: 'LDGRITM'+new UID(),
+			parentid: ledger.objid,
+			state 	: 'RECEIVED'
+		]
+	}
+
+	private boolean checkIsFullPayment( item, ref, ledgeramnesty ) {
+		def flag = false;
+		if (!ledgeramnesty) {
+			def balance = ref.balance;
+			def days = item.totalDays;
+			days -= item.noOfHolidays;
+			if (item.hasSunday == "true") days--;
+			balance += ref.absentPenalty*(days-1);
+			if (item.lackingInterest > 0) balance += item.lackingInterest;
+			if (item.lackingPenalty > 0) balance += item.lackingPenalty
+			if (item.amountPaid >= balance) {
+				def a = new BigDecimal((item.amountPaid - balance)+'').setScale(2);
+				//println 'a-> '+a;
+				def i = new BigDecimal(ref.interest+'').setScale(2);
+				//println 'i-> '+i;
+				def d = a.divideAndRemainder(i);
+				//println 'd-> '+d;
+				if (d[1] == 0.00) {
+					flag = true;
+					//item.totalDays = d[0];
+					//if (item.type == 'schedule') item.totalDays = ref.term;
+				}
+			}
+		} else {
+			if (ledgeramnesty.amnestyoption == 'FIX') {
+				if (item.totalPayment >= ledgeramnesty.balance)
+					flag = true;
+			} else if (ledgeramnesty.amnestyoption == 'WAIVER') {
+				if (item.totalPayment >= ref.balance)
+					flag = true;
+			}
+		}
+		//println 'is fully paid ' + flag;
+		//println 'item-> '+item;
+		//println 'ref-> '+ref;
+		return flag;
+	}
+
+	private def getPaymentType( item, referencesFact ) {
+		def type = 'schedule';
+		if (referencesFact.isFullPayment == false) {
+			if (item.trialAndError == 0 && item.type == 'over') {
+				def oa = new BigDecimal(referencesFact.overpaymentAmt+'').setScale(2);
+				def ap = new BigDecimal(item.amountPaid+'').setScale(2);
+				def d = ap.divideAndRemainder(oa);
+				//println d
+				def days = d[0]
+				if (days > 0) {
+					//item.totalDays = days;
+					type = 'over';
+				}
+				if (days == 0 && item.amountPaid > referencesFact.amountDue) type = 'over';
+			}
+		}
+		return type;
+	}
+
+	private def preComputation( params, ref ) {
+		def item = [:];
+		item.putAll(params);
+		//println 'pass 1'
+		item.trialAndError = 0;
+		if (params.totalDays <= ref.term) {
+			def totaldays = params.totalDays-(params.currentDay-1);
+			if( totaldays < 1 ) totaldays = 1;
+			item.totalDays = totaldays;
+			//println "1total days: "+item.totalDays;
+			item.totalPayment = ref.amountDue*item.totalDays;
+			item.isOverdue = 0;
+		//println 'pass 2'
+			if (item.amountPaid < item.totalPayment) {
+				//println 'total days = '+item.totalDays;
+				//println 'current day = '+item.currentDay;
+				def td = item.totalDays;
+				def totalInterest;
+				def totalAbsentPenalty;
+				def tempAmount;
+				def balance;
+				def underpayment;
+				while( td > 1 ) {
+					tempAmount = item.amountPaid;
+					totalInterest = ref.interest*td;
+					if( item.lackingInterest > 0 ) {
+						totalInterest -= ref.interest;
+						totalInterest += item.lackingInterest;
+					}
+					if( tempAmount > totalInterest ) {
+						tempAmount -= totalInterest;
+						if( tempAmount > item.lackingPenalty ) {
+							tempAmount -= item.lackingPenalty;
+							totalAbsentPenalty = ref.absentPenalty*td;
+							if( td == item.totalDays ) totalAbsentPenalty -= ref.absentPenalty;
+							if( tempAmount > totalAbsentPenalty ) {
+								tempAmount -= totalAbsentPenalty;
+								balance = (ref.amountDue*td)-item.amountPaid;
+								underpayment = balance*ref.underpaymentRate;
+								if( tempAmount > underpayment ) break;
+							}
+						}
+					}
+					td--;
+				}
+				if( td == item.totalDays ) item.trialAndError = 2;
+				else {
+					item.trialAndError = 1;
+					//td++;
+				}
+				item.totalDays = td;
+				item.totalPayment = item.amountPaid;
+				//println 'total days = '+item.totalDays;
+				//println 'amount paid = '+item.amountPaid;
+				/*def td = 0;
+				def tempAmount = item.amountPaid;
+				if (tempAmount > 0 && item.lackingInterest > 0) tempAmount -= item.lackingInterest;
+				if (tempAmount > 0 && item.lackingPenalty > 0) tempAmount -= item.lackingPenalty;
+				if (tempAmount > 0) {
+					def underpayment = ref.amountDue*ref.underpaymentRate;
+					def dividend = new BigDecimal(tempAmount).setScale(2, BigDecimal.ROUND_HALF_UP);
+					println 'dividend = '+dividend;
+					println 'underpayment = '+underpayment;
+					def divisor = new BigDecimal((ref.interest+ref.absentPenalty+underpayment)).setScale(2, BigDecimal.ROUND_HALF_UP);
+					println 'divisor = '+divisor;
+					def quotient = dividend.divideAndRemainder(divisor);
+					println quotient;
+					def remainder = quotient[1];
+					quotient = quotient[0];
+					if (remainder > 0) quotient++;
+					if (quotient >= item.totalDays) td = item.totalDays;
+					else td = quotient;
+				}
+				if (td == item.totalDays) item.trialAndError = 2;
+				else item.trialAndError = 1;
+				item.totalDays = td;
+				item.totalPayment = item.amountPaid;
+				println 'total days = '+item.totalDays;
+				println 'amount paid = '+item.amountPaid;*/
+			}
+		} else {
+		//println 'pass 3'
+			///println 'overdue'
+			//println 'overdue penalty = '+ref.overduePenalty;
+			item.isOverdue = 1;
+			//println 'total days ' + params.totalDays;
+			//println 'current day ' + params.currentDay;
+			def totaldays = params.totalDays-(params.currentDay-1);
+			if( totaldays < 1 ) totaldays = 1;
+			item.totalDays = totaldays;
+			//def td = item.totalDays;
+			def td = 1;
+			def deductions, tempAmount, amt;
+			def prevtd = 1;
+			/*while( td > 1 ) {
+				tempAmount = item.amountPaid;
+				if( item.lackingInterest > 0 ) tempAmount -= item.lackingInterest;
+				if( item.lackingPenalty > 0 ) tempAmount -= item.lackingPenalty;
+				deductions = (ref.interest+ref.overduePenalty)*td;
+				if( tempAmount > deductions ) break;
+				td--;
+			}*/
+			while (td <= item.totalDays) {
+				//println 'td ' + td;0
+				tempAmount = item.amountPaid;
+				if( item.lackingInterest > 0 ) tempAmount -= item.lackingInterest;
+				if( item.lackingPenalty > 0 ) tempAmount -= item.lackingPenalty;
+				deductions = (ref.interest+ref.overduePenalty)*td;
+				amt = tempAmount - deductions;
+				if (amt >= 0) {
+					prevtd = td;
+				} else {
+					break;
+				}
+				td++;
+			}
+			if (prevtd == item.totalDays) {
+				item.trialAndError = 0;
+				//trial and error is 0
+			} else {
+				item.trialAndError = 1;
+				//trial and error is 1
+			}
+			//println 'total days ' + item.totalDays;
+			//println 'td ' + td;
+			//println 'prevtd ' + prevtd;
+			//println 'current day ' + params.currentDay;
+			//println 'params total days ' + params.totalDays;
+			//println 'total days ' + prevtd;
+			item.totalDays = prevtd;
+		}
+		return item;
+	}
+
+	private def offsetLastPayment( params ) {
+		def ledgeritem = params.lastledgeritem;
+		def itm = createLedgerItem([objid: ledgeritem.parentid]);
+		itm.state = 'OFFSET';
+		itm.amtdue = ledgeritem.amtdue*-1;
+		itm.interestdue = ledgeritem.interestdue*-1;
+		itm.penaltydue = ledgeritem.penaltydue*-1;
+		itm.amtpaid = ledgeritem.amtpaid;//*-1;
+		itm.interestpaid = ledgeritem.interestpaid*-1;
+		itm.penaltypaid = ledgeritem.penaltypaid*-1;
+		itm.amtbal = ledgeritem.amtbal*-1;
+		itm.interestbal = ledgeritem.interestbal*-1;
+		itm.penaltybal = ledgeritem.penaltybal*-1;
+		itm.dtpaid = ledgeritem.dtpaid;
+		itm.refno = ledgeritem.refno;
+		itm.day = ledgeritem.day;
+		itm.balance = ledgeritem.balance*-1;
+		itm.partialpayment = ledgeritem.partialpayment*-1;
+		itm.txndate = dateSvc.serverDate;
+		itm.baseamount = 0.00;
+		itm.groupbaseamount = 0.00
+		ledgerdb.create(itm, 'detail');
+
+		def item = [:];
+		item.putAll(params.item);
+		item.lackingInterest -= ledgeritem.interestbal;
+		item.lackingPenalty -= ledgeritem.penaltybal;
+		def ref = params.ref;
+		//println item;
+		//println "item: "+item;
+
+		item.trialAndError = 0;
+		if( item.totalDays <= ref.term ) {
+			def totaldays = item.totalDays-(item.currentDay-1);
+			if( totaldays < 1 ) totaldays = 1;
+			item.totalDays = totaldays;
+			item.totalPayment = ref.amountDue*item.totalDays;
+			if (ref.overpaymentamount > 0) {
+				item.totalPayment = ref.overpaymentamount * item.totalDays;
+			}
+			item.isOverdue = 0;
+			if( item.amountPaid < item.totalPayment ) {
+				/*def td = 0;
+				def tempAmount = item.amountPaid;
+				if (tempAmount > 0 && item.lackingInterest > 0) tempAmount -= item.lackingInterest;
+				if (tempAmount > 0 && item.lackingPenalty > 0) tempAmount -= item.lackingPenalty;
+				if (tempAmount > 0) {
+					def underpayment = ref.amountDue*ref.underpaymentRate;
+					def dividend = new BigDecimal(tempAmount).setScale(2, BigDecimal.ROUND_HALF_UP);
+					def divisor = new BigDecimal((ref.interest+ref.absentPenalty+underpayment)).setScale(2, BigDecimal.ROUND_HALF_UP);
+					def quotient = dividend.divideAndRemainder(divisor);
+					def remainder = quotient[1];
+					quotient = quotient[0];
+					if (remainder > 0) quotient++;
+					if (quotient >= item.totalDays) td = item.totalDays;
+					else td = quotient;
+				}
+				if (td == item.totalDays) item.trialAndError = 2;
+				else item.trialAndError = 1;
+				item.totalDays = td;
+				item.totalPayment = item.amountPaid;*/
+				def td = item.totalDays;
+				def totalInterest;
+				def totalAbsentPenalty;
+				def tempAmount;
+				def balance;
+				def underpayment;
+				while( td > 1 ) {
+					tempAmount = item.amountPaid;
+					totalInterest = (ref.interest*td);
+
+					if( item.lackingInterest > 0 ) {
+						totalInterest -= ref.interest;
+						totalInterest += item.lackingInterest;
+					}
+					if( tempAmount > totalInterest ) {
+						tempAmount -= totalInterest;
+						if( tempAmount > item.lackingPenalty ) {
+							tempAmount -= item.lackingPenalty;
+							totalAbsentPenalty = ref.absentPenalty*td;
+							if( td == item.totalDays ) totalAbsentPenalty -= ref.absentPenalty;
+							if( tempAmount > totalAbsentPenalty ) {
+								tempAmount -= totalAbsentPenalty;
+								balance = (ref.amountDue*td)-item.amountPaid;
+								underpayment = balance*ref.underpaymentRate;								
+								if( tempAmount >= underpayment ) break;
+							}
+						}
+					}
+					td--;
+				}
+				if( td == item.totalDays ) item.trialAndError = 2;
+				else item.trialAndError = 1;
+				item.totalDays = td;//(params.item.currentDay-1) + td;
+				item.totalPayment = item.amountPaid;
+			} else {
+				item.totalDays = Integer.valueOf((item.amountPaid/ref.amountDue).intValue());
+				if (ref.overpaymentamount > 0) {
+					item.totalDays = Integer.valueOf((item.amountPaid/ref.overpaymentamount).intValue());
+				}
+			}
+		} else {
+			item.isOverdue = 1;
+			def totaldays = item.totalDays-(item.currentDay-1);
+			if( totaldays < 1 ) totaldays = 1;
+			item.totalDays = totaldays;
+			def td = 1;//item.totalDays;
+			def deductions, tempAmount, amt;
+			def prevtd = 1;
+
+			while (td <= item.totalDays) {
+				//println 'td ' + td;
+				tempAmount = item.amountPaid;
+				if( item.lackingInterest > 0 ) tempAmount -= item.lackingInterest;
+				if( item.lackingPenalty > 0 ) tempAmount -= item.lackingPenalty;
+				deductions = (ref.interest+ref.overduePenalty)*td;
+				amt = tempAmount - deductions;
+				if (amt >= 0) {
+					prevtd = td;
+				} else {
+					break;
+				}
+				td++;
+			}
+			/*
+			while( td < item.totalDays ) {
+				//println 'count td ' + td;
+				tempAmount = item.amountPaid;
+				if( item.lackingInterest > 0 ) tempAmount -= item.lackingInterest;
+				if( item.lackingPenalty > 0 ) tempAmount -= item.lackingPenalty;
+				deductions = (ref.interest+ref.overduePenalty)*td;
+				//println 'temp amount ' + tempAmount;
+				//println 'deductions ' + deductions;
+				if( (tempAmount - deductions) >= 0 ) {
+					prevtd = td;
+				} else if ( (tempAmount - deductions) < 0 ) {
+					td = prevtd;
+					break;
+				}
+				td++;
+			}
+			*/
+
+			if (prevtd == item.totalDays) {
+				item.trialAndError = 0;
+			} else {
+				item.trialAndError = 1;
+			}
+			//println 'total days ' + td;
+			//println 'prev total days ' + prevtd;
+			/*while( td > 1 ) {
+				tempAmount = item.amountPaid;
+				if( item.lackingInterest > 0 ) tempAmount -= item.lackingInterest;
+				if( item.lackingPenalty > 0 ) tempAmount -= item.lackingPenalty;
+				deductions = (ref.interest+ref.overduePenalty)*td;
+				println 'td ' + td;
+				println 'temp amount ' + tempAmount;
+				println 'deductions ' + deductions;
+				if( tempAmount > deductions ) break;
+				td--;
+			}*/
+			item.totalDays = prevtd;
+			item.days--;
+		}
+		return item;
+	}
+}

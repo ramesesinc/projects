@@ -1,0 +1,255 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.services.extended.*;
+import java.rmi.server.UID;
+
+class LoanLedgerProceedsService extends ActiveCrudListService
+{
+	@Env
+	def env;
+
+	@ActiveDB("loan_ledger_proceeds")
+	def em;
+
+	@ActiveDB("loan_ledger")
+	def ledger;
+
+	@ActiveDB("onlinecollection")
+	def onlinecollection;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@Service("BranchService")
+	def branchSvc;
+
+	@Service("SequenceService")
+	def seqSvc;
+
+	@Service("LoanLedgerBillingService")
+	def billingSvc;
+
+	@ProxyMethod
+	public def getColumns( params ) {
+		def cols = [];
+		if (!params.txnstate) cols << [name: 'txnstate', caption: 'Status'];
+
+		cols << [name: 'borrower.name', caption: 'Borrower'];
+		cols << [name: 'description', caption: 'Description'];
+		
+		if (params.txnstate == 'SOLD') {
+			cols << [name: 'refno', caption: 'RefNo'];
+			cols << [name: 'txndate', caption: 'Txndate', type: 'date', outputFormat: 'MMM-dd-yyyy'];
+			cols << [name: 'amount', caption: 'Amount', type: 'decimal', format: '#,##0.00'];
+		}
+		return cols;
+	}
+
+	@ProxyMethod
+	public def getOptions() {
+		return [
+			[caption: 'All'],
+			[caption: 'DRAFT', state: 'DRAFT'],
+			[caption: 'FOR SELLING', state: 'FOR_SELLING'],
+			[caption: 'SOLD', state: 'SOLD'],
+		]
+	}
+
+	void beforeList( params ) {
+		if (params.state) {
+			params._listMethod = "getListByState";
+		}
+		if (params.ledgerid) {
+			params._listMethod = "getListByLedgerid";
+		}
+		if (params.state && params.ledgerid) {
+			params._listMethod = 'getListByLedgeridAndState';
+		}
+	}
+
+	void afterList( params, list ) {
+		list.each{ o->
+			o.filetype = 'ledgerproceed';
+			if (o.txntype == 'CAPTURE') o.filetype = 'captureledgerproceed';
+		}
+	} 
+
+	void beforeCreate( data ) {
+		data.dtcreated = dateSvc.serverDate;
+		data.author = [objid: env.USERID, name: env.NAME];
+		data.txntype = 'ONLINE';
+	}
+
+	@ProxyMethod
+	public def submitForSelling( params ) {
+		return changeStateImpl(params, 'FOR_SELLING');
+	}
+
+	@ProxyMethod
+	public def sold( params ) {
+		def data = changeStateImpl(params, 'SOLD');		
+		data.amount = params.amount;
+
+		def currdate = dateSvc.serverDate
+		def soldby = [objid: env.USERID, name: env.NAME];
+
+		def collector = onlinecollection.read(soldby, "oc-collector");
+		if (!collector) {
+			onlinecollection.create(soldby, "oc-collector");
+		}
+
+		def prm = [
+			txndate 	: currdate.toString().split(" ")[0], 
+			collectorid	: soldby.objid, 
+			state 		: 'DRAFT'
+		];
+
+		def col = onlinecollection.findCollectionByDateAndCollectorAndState(prm);
+		if (!col || col.state != 'DRAFT') {
+			col = [
+				objid		: 'OC' + new UID(),
+				state		: 'DRAFT',
+				txndate 	: currdate.toString().split(" ")[0],
+				dtfiled 	: currdate,
+				author		: soldby,
+				collector 	: soldby,
+			];
+			onlinecollection.create(col);
+		}
+
+		//println 'collection ' + col;
+		//throw new Exception("stop");
+
+		def mledger = ledger.read([objid: data.parentid]);
+		if (!mledger) throw new Exception("Ledger record does not exist or has already been deleted.");
+
+		def item = em.findByIdWithInfo(data);
+		if (!item) throw new Exception("Proceed record does not exist or has already been deleted.");
+
+		def refno = billingSvc.getRefno([routecode: item?.route?.code]);
+
+		def detail = onlinecollection.findDetailByProceedidAndCollectionid([proceedid: data.objid, collectionid: col.objid]);
+		if (!detail) {
+			detail = [
+				objid 		: 'OCD' + new UID(),
+				parentid 	: col.objid,
+				loanapp 	: item?.loanapp,
+				borrower 	: item?.borrower,
+				route 		: item?.route,
+				dtpaid 		: col.txndate,
+				paidby 		: item?.borrower?.name,
+				refno 		: refno,
+				paytype 	: item.paymentmethod,
+				payoption 	: 'cash',
+				amount 		: data.amount
+			];
+			onlinecollection.create(detail, "oc-detail");
+
+			def i = [
+				objid 		: data.objid,
+				collectionid: col.objid,
+				refid 		: detail.objid,
+				proceedid 	: data.objid
+			];
+			em.create(i, "collection-proceed");
+		}
+
+		data.dtsold = currdate;
+		data.soldby = soldby;
+		data.refno = refno;
+		data.txndate = currdate.toString().split(" ")[0];
+		em.update(data, "proceeds-sold");
+
+		return open(data);
+	}
+
+	private def changeStateImpl( params, state ) {
+		def data = em.read(params);
+		if (!data) throw new Exception("Proceed record does not exist or has already been deleted.");
+
+		if (data.txnstate==state)
+			throw new Exception("Proceed already " + state + ".");
+
+		data.txnstate = state;
+		em.changeState(data);
+
+		return open(data);
+	}
+
+	/*
+	@Async
+	@ProxyMethod
+	public def sold( params ) {
+		def data = em.read(params);
+		if (!data) throw new Exception("Proceed record does not exist or has already been deleted.");
+
+		if (data.txnstate == 'SOLD') throw new Exception("Proceed already sold.");
+
+		def date = dateSvc.serverDateAsString;
+		data.txnstate = 'SOLD';
+		em.changeState(data);
+
+		data.refid = 'LLP' + new UID();
+		data.txndate = params.txndate;
+		data.amount = params.amount;
+
+		def branch = branchSvc.open([:]);
+		def year = date.split(" ")[0];
+		def prefix = "PROC" + branch.code + year[2] + year[3];
+		def seqname = "ledgerproceed-" + year;
+		data.refno = prefix + seqSvc.getNextFormattedSeriesA(seqname, 6);
+
+		def item = ledger.read([objid: data.refid], "payment");
+		if (!item) {
+			item = [
+				objid		: data.refid,
+				parentid 	: data.parentid,
+				refno 		: data.refno,
+				txndate 	: data.txndate,
+				amount 		: data.amount,
+				isonline 	: 1,
+				dtmodified 	: dateSvc.serverDate,
+				modifiedby 	: [objid: env.USERID, name: env.NAME]
+			];
+			ledger.create(item, "payment");
+		}
+
+		data.dtsold = date;
+		data.soldby = [objid: env.USERID, name: env.NAME];
+		em.update(data, "proceeds-sold");
+
+		def l = ledger.read([objid: data.parentid])
+		l.balance -= data.amount;
+		if (l.balance <= 0) l.balance = 0;
+		ledger.update(l);
+
+		def lastitem = ledger.findLastLedgerItemByParentId([parentid: l.objid]);
+		item = [
+			objid			: 'LDTL' + new UID(),
+			parentid 		: l.objid,
+			state 			: 'PROCEED',
+			amtdue 			: 0, //(lastitem? lastitem.amtdue : 0),
+			interestdue 	: 0, //(lastitem? lastitem.interestdue : 0),
+			penaltydue 		: 0, //(lastitem? lastitem.penaltydue : 0),
+			amtpaid 		: 0, //(lastitem? lastitem.amtpaid : 0),
+			interestpaid	: 0, //(lastitem? lastitem.interestpaid : 0),
+			penaltypaid		: 0, //(lastitem? lastitem.penaltypaid : 0),
+			amtbal 			: 0, //(lastitem? lastitem.amtbal : 0),
+			interestbal 	: 0, //(lastitem? lastitem.interestbal : 0),
+			penaltybal 		: 0, //(lastitem? lastitem.penaltybal : 0),
+			dtpaid 			: data.txndate,
+			refno			: data.refno,
+			day 			: lastitem?.day,
+			balance 		: l.balance, //(lastitem? lastitem.balance : l.totalprincipal),
+			partialpayment 	: data.amount,
+			txndate 		: data.txndate,
+			baseamount 		: 0, //(lastitem? lastitem.baseamount : 0),
+			groupbaseamount : 0, //(lastitem? lastitem.groupbaseamount : 0),
+			remarks 		: ''
+		];
+		ledger.create(item, "detail");
+
+		return open(data);
+	}
+	*/
+}

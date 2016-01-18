@@ -1,0 +1,32 @@
+<schema>
+
+	<element tablename='cashexchange'>
+		<field name='objid' primary='true' />
+		<field name='txnstate' required='true' />
+		<field name='dtcreated' required='true' />
+		<field name='author_objid' required='true' />
+		<field name='author_name' required='true' />
+		<field name='txndate' required='true' />
+		<field name='cbs_objid' required='true' />
+		<field name='cbs_cbsno' required='true' />
+		<field name='cbs_txndate' required='true' />
+		<field name='cbs_amount' required='true' />
+		<field name='cbs_collector_objid' required='true' />
+		<field name='cbs_collector_name' required='true' />
+		<complex name='breakdown' required='true' type='list' serializer='default' />
+		<complex name='cashin' required='true' type='list' serializer='default' />
+		<complex name='cashout' required='true' type='list' serializer='default' />
+		<complex name='info' required='false' merge='true' serializer='default' />
+		<field name='dtposted' />
+		<field name='poster_objid' />
+		<field name='poster_name' />
+	</element>
+
+	<element name='post' tablename='cashexchange'>
+		<field name='objid' primary='true' />
+		<field name='dtposted' required='true' />
+		<field name='poster_objid' required='true' />
+		<field name='poster_name' required='true' />
+	</element>
+
+</schema>

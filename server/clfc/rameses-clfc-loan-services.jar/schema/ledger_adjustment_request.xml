@@ -1,0 +1,26 @@
+<schema>
+
+
+	<element name="ledger_adjustment_request" tablename="ledger_adjustment_request">
+		<field name="objid" primary="true" />
+		<field name="txnstate" required="true" />
+		<field name="dtcreated" required="true" />
+		<field name="author_objid" required="true" />
+		<field name="author_name" required="true" />
+		<field name="adjustmentid" required="true" />
+		<field name="txntype" required="true" />
+		<field name="remarks" required="true" />
+		<complex name="info" required="false" merge="true" serializer="default" />
+		<field name="dtposted" />
+		<field name="poster_objid" />
+		<field name="poster_name" />
+	</element>
+
+	<element name="adjustment-delete-post" tablename="ledger_adjustment_request">
+		<field name="objid" primary="true" />
+		<field name="dtposted" required="true" />
+		<field name="poster_objid" required="true" />
+		<field name="poster_name" required="true" />
+	</element>
+
+</schema>

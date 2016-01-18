@@ -1,0 +1,237 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.rules.common.*;
+import com.rameses.util.*;
+import loan.facts.*;
+import loan.actions.*;
+import java.util.*;
+
+class LoanPostingRuleService
+{
+	@Service("RuleExecutorService")
+	def ruleSvc;
+
+	@Service("NumberService")
+	def numSvc;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@Service("LoanLedgerService")
+	def ledgerSvc;
+
+	@Service("CalendarEventService")
+	def calendarSvc;
+
+	@ProxyMethod
+	public def postPayment( params ) {
+		//println 'params ' + params;
+		if (!params.dtlastschedule) params.dtlastschedule = DateUtil.add(params.dtreleased, "1d");
+
+
+		def facts, actions;
+		def results = [];
+
+
+		//params.term = 10;
+		def item, lastday, loanappfact, paymentfact;
+		def xlist, xlist2, ledgerfact, days;
+		def lastpayment = [:];
+		params.payments.each{ o->
+			facts = [];
+			loanappfact = buildLoanappFact(params);			
+			paymentfact = buildPaymentFact(o);
+
+			if (o.dtpaid == lastpayment.dtpaid) {
+				if (lastday) lastday--;
+				if (lastday < 0) lastday = 0;
+
+				results.sort{ it.dtschedule }
+				def lastrecord = results[results.size()-1];
+				def newrecord = [:];
+				newrecord.putAll(lastrecord);
+				newrecord.partialpayment *= -1;
+				newrecord.interest *= -1;
+				newrecord.penalty *= -1;
+				newrecord.remove("amtpaid");
+				newrecord.remove("datepaid");
+				results.add(newrecord);
+
+				paymentfact.amount = (lastpayment.totalamount + o.amount);
+			}
+
+			//println 'last day ' + lastday
+
+			if (lastday) {
+				if (o.lackinginterest > 0 || o.lackingpenalty > 0) lastday--;
+				loanappfact.lastcounter = lastday;
+			}
+
+
+			facts << loanappfact;
+			facts << paymentfact;
+			facts << new BillDate([billdate: o.billdate]);
+
+			item = [
+				dtreleased		: params.dtreleased,
+				dtmatured		: params.dtmatured,
+				lackinginterest	: o.lackinginterest,
+				lackingpenalty	: o.lackingpenalty,
+				paymentmethod 	: params.paymentmethod
+			]
+			facts << buildLedgerFact(item);
+			//ledgerfact = facts.find{ (it instanceof LoanLedger) }
+			//days = ledgerfact.noofdaysfromlastpayment;
+			//if (!days || days < 0) days = 0;
+			//o.totalpaymentuptocurrent = days * params.schedule;
+			//if (params.paymentmethod == 'over') o.totalpaymentuptocurrent = days * params.avgamt;
+
+			actions = new RuleAction();
+			actions.addCommand( "addPostingItem", new AddPostingItem(facts: facts, calendarSvc: calendarSvc) );
+			actions.addCommand( "calcPostingInterest", new CalculatePostingInterest(NS: numSvc));
+			actions.addCommand( "applyPostingPayment", new ApplyPostingPayment(NS: numSvc));
+			actions.addCommand( "applyPostingPaymentWithLacking", new ApplyPostingPaymentWithLacking(NS: numSvc));
+			actions.addCommand( "calcTotalSchedulePaymentUpToCurrent", new CalculateTotalSchedulePaymentUpToCurrent(NS: numSvc));
+			actions.addCommand( "calcTotalOverPaymentUpToCurrent", new CalculateTotalOverPaymentUpToCurrent(NS: numSvc));
+			actions.addCommand( "calcPostingAbsentPenalty", new CalculatePostingAbsentPenalty(NS: numSvc));
+			actions.addCommand( "calcPostingUnderPenalty", new CalculatePostingUnderpaymentPenalty(NS: numSvc));
+			actions.addCommand( "calcPostingPenalty", new CalculatePostingPenalty(NS: numSvc, LS: ledgerSvc));
+			actions.addCommand( "calcPostingTotalDeduction", new CalculatePostingTotalDeduction(NS: numSvc, LS: ledgerSvc));
+			actions.addCommand( "calcLackingInterest", new CalculateLackingInterest(NS: numSvc, LS: ledgerSvc));
+			actions.addCommand( "calcLackingPenalty", new CalculateLackingPenalty(NS: numSvc, LS: ledgerSvc));
+
+			ruleSvc.execute( "loanposting", facts, actions, null );
+
+			/*
+			item = facts.find{ (it instanceof LoanApp) }
+			if (item) println 'loanapp fact ' + item.toMap();
+			*/
+
+			def xledger = facts.find{ (it instanceof LoanLedger) }
+			if (xledger) {
+				xledger = xledger.toMap();
+				//println 'ledger fact ' + xledger;
+			}
+			
+			item = facts.find{ (it instanceof Payment) }
+			if (item) println 'payment ' + item.toMap();
+			println '\n';
+
+			xlist = facts.findAll{ (it instanceof LoanPostingItem && (it.paymentapplied==true || it.forprincipal > 0)) }.collect{ it.toMap() } 
+			xlist.sort{ it.itemno }
+			if (xlist) {
+				def s = xlist.size()-1;
+				xlist.eachWithIndex{ itm, idx-> 
+					if (idx < s) {
+						itm.penalty = 0;
+						itm.lackinginterest = 0;
+						itm.lackingpenalty = 0;
+					}
+				}
+				def i = xlist[s];
+				lastday = (i? i.itemno : 0);
+				i.partialpayment = i.forprincipal;
+				i.amtpaid = o.amount;
+				i.datepaid = o.dtpaid;
+
+				//println 'last item ' + i;
+				//xledger.lackinginterest = i.lackinginterest;
+				//xledger.lackingpenalty = i.lackingpenalty;
+				println 'last item ' + i;
+				println 'ledger ' + xledger;
+				if (xledger?.lackinginterest > 0.00) {
+					i.dtschedule = null;
+				}
+				xlist.sort{ it.itemno }
+			}
+			results.addAll(xlist);
+
+			//xlist = facts.findAll{ (it instanceof LoanPostingItem ) }.collect{ it.toMap() } 
+			//println 'list ';
+			//xlist.each{ println it; }
+			//println '';
+			/*
+			println 'list ';
+			xlist.sort{ it.dtschedule; }
+			xlist.each{ println it; }
+			println ''
+			*/
+			lastpayment.dtpaid = o.dtpaid;
+			lastpayment.amount = o.amount;
+			if (!lastpayment.totalamount) lastpayment.totalamount = 0;
+			lastpayment.totalamount += o.amount;
+		}
+
+		//xlist2 = facts.findAll{ (it instanceof LoanPostingItem && it.itemno > lastday) }.collect{ it.toMap() }
+		//xlist2.each{ it.penalty = 0; }
+		//results.addAll(xlist2);
+		/*
+		println '\n\n';
+		xlist2 = results.findAll{ (it.itemno <= lastday) }
+		xlist2.each{ println it }
+		*/
+
+		//results.each{ println it }
+		//results.sort{ it.dtschedule }
+		//results.each{ println it; }
+
+
+		//println 'actions ' + actions;
+
+		//facts.each{
+		//	println '\n' + it;
+		//	for (i in it.toMap()) { println i }
+		//}
+
+		//def results = facts.findAll{ (it instanceof LoanPostingItem) }.collect{ it.toMap() };
+		//results.sort{ it.dtschedule }
+
+		return results;
+	}
+
+	private def computeAbsentPenalty( params ) {
+		if (!params.absentrate) throw new Exception("Absent penalty rate is required.");
+		if (!params.schedule) throw new Exception("Schedule of payment is required.");
+
+		def amt = params.schedule * params.absentrate;
+		amt = new BigDecimal(amt.toString()).setScale(2);
+		return ledgerSvc.roundOffAmount(amt);
+	}
+
+	private def buildLoanappFact( params ) {
+		def item = [
+			principal		: params.principal,
+			term			: params.term,
+			startdate 		: DateUtil.add(parseDate(params.dtreleased), "1d"),
+			interest 		: params.interest,
+			schedule		: params.schedule,
+			absentpenalty	: computeAbsentPenalty(params),
+			underpytrate	: params.underpytrate
+		];
+		return new LoanApp(item);
+	}
+
+	private def buildLedgerFact( params ) {
+		def item = [
+			dtrelease 		: params.dtreleased,
+			dtmatured		: params.dtmatured,
+			lackinginterest	: params.lackinginterest,
+			lackingpenalty	: params.lackingpenalty,
+			paymentmethod	: params.paymentmethod
+		]
+		return new LoanLedger(item);
+	}
+
+	private def buildPaymentFact( params ) {
+		return new Payment(params);
+	}
+
+	private def parseDate( date ) {
+		if (date instanceof Date) {
+			return date;
+		} else {
+			return java.sql.Date.valueOf(date);
+		}
+	}
+}
+

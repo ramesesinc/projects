@@ -1,0 +1,74 @@
+<schema>
+
+	<element name="capture_payment" tablename="capture_payment">
+		<field name="objid" primary="true" />
+		<field name="state" required="true" />
+		<field name="fieldcollectionid" required="true" />
+		<field name="specialcollectionid" />
+		<field name="trackerid" required="true" />
+		<field name="txndate" required="true" />
+		<field name="dtfiled" required="true" />
+		<field name="author_objid" required="true" />
+		<field name="author_name" required="true" />
+		<field name="collector_objid" required="true" />
+		<field name="collector_name" required="true" />
+		<field name="cbsno" />
+		<field name="dtverified" />
+		<field name="verifier_objid" />
+		<field name="verifier_name" />
+		<field name="dtremitted" />
+		<field name="remittedby_objid" />
+		<field name="remittedby_name" />
+		<complex name='info' required='false' merge='true' serializer='default' /> 
+	</element>
+
+	<element name='sendback' tablename='capture_payment_sendback'>
+		<field name='objid' primary='true' />
+		<field name='parentid' required='true' />
+		<field name='dtcreated' required='true' />
+		<field name='author_objid' required='true' />
+		<field name='author_name' required='true' />
+		<field name='remarks' required='true' />
+	</element>
+
+	<element name='verify' tablename='capture_payment'>
+		<field name="objid" primary="true" />
+		<field name="dtverified" required='true' />
+		<field name="verifier_objid" required='true' />
+		<field name="verifier_name" required='true' />
+	</element>
+
+	<element name='remit' tablename='capture_payment'>
+		<field name="objid" primary="true" />
+		<field name="cbsno" required='true' />
+		<field name="dtremitted" required='true' />
+		<field name="remittedby_objid" required='true' />
+		<field name="remittedby_name" required='true' />
+	</element>
+
+	<element name="cp-detail" tablename="capture_payment_detail">
+		<field name="objid" primary="true" />
+		<field name="parentid" required="true" />
+		<field name="scdetailid" />
+		<field name="ledgerid" />
+		<field name="txnmode" required="true" />
+		<field name="dtpaid" required="true" />
+		<field name="borrowername" required="true" />
+		<field name="paidby" required="true" />
+		<field name="amount" required="true" />
+		<field name="payoption" required="true" />
+	</element>
+
+	<element name="detail-check" tablename="capture_payment_detail">
+		<field name="objid" primary="true" />
+		<field name="bank_objid" required="true" />
+		<field name="bank_name" required="true" />
+		<field name="check_no" required="true" />
+		<field name="check_date" required="true" />
+	</element>
+
+	<element name="cp-pending" tablename="capture_payment_pending">
+		<field name="objid" primary="true" />
+	</element>
+
+</schema>

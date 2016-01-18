@@ -1,0 +1,457 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.services.extended.*;
+import com.rameses.rules.common.RuleRequest;
+import java.rmi.server.UID;
+
+class LoanLedgerBillingService extends ActiveCrudService
+{
+	@Env
+	def env;
+
+	@ActiveDB(value="loan_ledger_billing")
+	def em;
+
+	@ActiveDB(value="loan_ledger")
+	def loan_ledger;
+
+	@ActiveDB(value="loan_product_type")
+	def product_type;
+
+	@ActiveDB(value="loan_exemption")
+	def exemption;
+
+	@ActiveDB(value="loan_ledger_compromise")
+	def ledger_compromise;
+
+	@ActiveDB(value="billing_process")
+	def process;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@Service("SequenceService")
+	def seqSvc;
+
+	@Service("CalendarEventService")
+	def calendarSvc;
+
+	@Service("LoanLedgerService")
+	def ledgerSvc;
+
+	@Resource("RuleService")
+	def ruleSvc;
+
+	@Service
+	def selfSvc;
+
+	@ProxyMethod
+	public def getNodes( params) {
+		return [
+			[caption: 'DRAFT', state: 'DRAFT'], 
+			[caption: 'FOR_DOWNLOAD', state: 'FOR_DOWNLOAD'],
+			[caption: 'CANCELLED', state: 'CANCELLED'], 
+			[caption: 'COMPLETED', state: 'COMPLETED'],
+			[caption: 'UNREMITTED', state: 'UNREMITTED'],
+			[caption: 'UNPOSTED', state: 'UNPOSTED'],
+			[caption: 'UPLOADED', state: 'UPLOADED'],
+			[caption: 'VOIDED', state: 'VOIDED']
+		];
+	}
+
+	@ProxyMethod
+	public def getOptions() {
+		return [
+			[caption: 'FOR_DOWNLOAD', state: 'FOR_DOWNLOAD'],
+			[caption: 'CANCELLED', state: 'CANCELLED'], 
+			[caption: 'COMPLETED', state: 'COMPLETED'],
+			[caption: 'UNREMITTED', state: 'UNREMITTED'],
+			[caption: 'UNPOSTED', state: 'UNPOSTED'],
+			[caption: 'UPLOADED', state: 'UPLOADED'],
+			[caption: 'VOIDED', state: 'VOIDED']
+		];
+	}
+
+	@ProxyMethod
+	public def getColumns( params ) {
+		return [
+			[name:'collector.name', caption:'Collector'],
+			[name:'billdate', caption:'Billing Date'],
+			[name:'createdby', caption:'Created By'],
+			[name:'dtmodified', caption:'Date Modified'],
+			[name:'subcollector.name', caption:'Sub Collector']
+		]
+	}
+
+	@ProxyMethod
+	public def getList( params ) {
+		params.searchtext = (params.searchtext? params.searchtext : '') + '%';
+		println 'params ' + params;
+		def list = params.state? em.getList(params) : em.getDefaultList(params);
+		list.each{ it.filetype = it.subcollector.objid? 'ledgersubbilling' : 'ledgerbilling' }
+		return list;
+	}
+
+	void beforeCreate( data ) {
+		def currentDate = dateSvc.serverDate.toString().split(" ")[0];
+		if (data.billdate.compareTo(currentDate) < 0) throw new Exception('Bill date should be greater than or equal to current date.');
+		def o = em.findBillingByBilldate([collectorid: data.collector.objid, billdate: data.billdate]);
+		if (o) throw new Exception('Billing '+data.billdate+' for collector '+data.collector.name+' has already been created.');
+
+		data.createdby = env.NAME? env.NAME : 'NOT IDENTIFIED';
+		data.dtcreated = dateSvc.serverDate;
+		data.dtmodified = data.dtcreated;
+		data.modifiedby = data.createdby;
+		data.branchid = env.ORGID;
+		setFlags(data);
+	}
+
+	void beforeUpdate( data ) {
+		data.dtmodified = dateSvc.serverDate;
+		data.modifiedby = env.NAME? env.NAME : 'NOT IDENTIFIED';
+		setFlags(data);
+	}
+
+	private void setFlags( data ) {
+		data.totalfordownload = data.routes.size();
+		data.totaldownloaded = 0;
+		data.totalunposted = 0;
+		data.totalposted = 0;
+	}
+
+	void afterCreate( data ) {
+		updateRoute(data);
+		updateBillingDetail(data);
+	}
+
+	void afterUpdate( data ) {
+		updateRoute(data);
+		updateBillingDetail(data);
+	}
+
+	void updateBillingDetail( data ) {
+		em.removeBillingDetailByParentid([parentid: data.objid]);
+		process.create([ objid: data.objid ]);
+		data.routes.each{route->
+			def list = loan_ledger.getCollectionsheets([route_code: route.code]);
+			list.each{
+				process.create([ objid: it.objid, parentid: data.objid ], "detail");
+			}
+			selfSvc.createBillingByRoute(list, data, route);
+			//createBilling(list, data, route);
+		}
+	}
+
+	@ProxyMethod(local=true)
+	public void removeProcessDetailByPrimary( objid ) {
+		process.delete([objid: objid], "detail");
+	}
+
+	@ProxyMethod(local=true)
+	public def getProductType( producttypeid ) {
+		return product_type.read([name: producttypeid]);
+	}
+
+	@ProxyMethod(local=true)
+	public def updateLedgerOverduePenalty( ledger ) {
+		loan_ledger.update(ledger, 'overduepenalty');
+		return ledger;
+	}
+
+	@ProxyMethod(local=true)
+	public def getNoOfDaysExempted( startdate, enddate, ledgerid ) {
+		def params = [
+			startdate 	: startdate,
+			enddate 	: enddate,
+			ledgerid 	: ledgerid
+		];
+		return exemption.getExemptionsByStartdateAndEnddateAndLedgerid(params).size();
+	}
+
+	@Async
+	@ProxyMethod(local=true)
+	public void createBillingByRoute( list, entity, route ) {
+		list.each{
+			selfSvc.calculateBilling(entity, it, route);			
+		}
+	}
+
+	@Async
+	@ProxyMethod(local=true)
+	public void calculateBilling( entity, item, route ) {
+		def days = 0;
+
+		def currentDate = dateSvc.parseDate(entity.billdate, null).date;
+		def maturityDate = dateSvc.parseDate(item.dtmatured, null).date;
+		if (currentDate >  maturityDate && item.overduepenalty == 0.00) {
+			def p = selfSvc.getProductType(item.producttypeid);
+			item.overduepenalty = ledgerSvc.computeOverduePenalty([balance: item.balance, pastduerate: (p.pastduerate? p.pastduerate : 0.00)]);
+			item = selfSvc.updateLedgerOverduePenalty(item);
+		}
+		def detail = [
+			objid				: 'LLBD'+new UID(),
+			parentid 			: entity.objid,
+			ledgerid 			: item.objid,
+			route_code 			: route? route.code : item.route.code,
+			acctid 				: item.acctid,
+			loanappid 			: item.loanappid,
+			acctname 			: item.acctname,
+			loanamount 			: item.loanamount,
+			loandate 			: item.loandate,
+			term 				: item.term,
+			appno 				: item.appno,
+			overpaymentamount 	: item.overpaymentamount,
+			txndate 			: currentDate,
+			dailydue 			: item.dailydue,
+			dtmatured 			: item.dtmatured,
+			producttypeid 		: item.producttypeid,
+			paymentmethod 		: item.paymentmethod,
+			interestamount 		: item.interestamount,
+			homeaddress 		: item.homeaddress,
+			collectionaddress 	: item.collectionaddress? item.collectionaddress : '',
+			interest 			: 0.00,
+			others 				: 0.00,
+			overduepenalty 		: item.overduepenalty
+		];
+		detail.refno = 'B'+seqSvc.getNextFormattedSeriesA('loanbill-'+detail.route_code, 8);
+		
+		def amt = item.dailydue;
+		if (item.paymentmethod == 'over' && item.overpaymentamount > 0) amt = item.overpaymentamount; 
+		days = dateSvc.getDaysDiff(item.dtcurrentschedule, currentDate);
+		detail.amountdue = (amt*days)+detail.others;
+		if (!item.compromiseid) {	
+			def req = new RuleRequest("billing");
+			def referencesFact = [					
+				isFixed				: false,
+				isOverdue			: (currentDate > maturityDate),
+				hasSunday			: false,
+				balance				: item.balance,
+				absentPenalty		: item.absentpenalty,
+				overduePenalty		: detail.overduepenalty,
+				dailyDue			: amt,
+				interest 			: detail.interestamount,
+				overpayment			: item.overpaymentamount,
+				others				: detail.others,
+				totalDays			: days
+			];
+			req.addFact("billing", "References", referencesFact);
+			req.addGlobal("detail", detail);
+			referencesFact.noOfHolidays = calendarSvc.getNoOfHolidays([lastscheduledate: item.dtcurrentschedule, item:[trialAndError: 0, totalDays: days]]);
+			referencesFact.noOfDaysExempted = selfSvc.getNoOfDaysExempted(item.dtcurrentschedule, currentDate,  item.objid);
+			
+			def cal = Calendar.getInstance();
+			cal.setTime(dateSvc.add(currentDate, "-"+referencesFact.noOfHolidays));
+			if ((cal.get(cal.DAY_OF_WEEK)-1) == 1) {
+				referencesFact.hasSunday = true;
+			}
+
+			ruleSvc.execute(req);
+			if (detail.penalty) {
+				detail.penalty = new BigDecimal(detail.penalty+'').setScale(2, BigDecimal.ROUND_HALF_UP);
+			}
+
+			if (detail.amountdue) {
+				detail.amountdue = new BigDecimal(detail.amountdue+'').setScale(0, BigDecimal.ROUND_CEILING);
+			}
+			detail.balance = selfSvc.getBalance(detail, item.balance);
+		} else {
+
+		}
+		em.create(detail, "detail");
+		selfSvc.removeProcessDetailByPrimary(detail.ledgerid);
+	}
+
+	@ProxyMethod
+	public void createBilling( list, data, route ) {
+		try {
+			createBillingImpl(list, data, route);
+		} catch(e) {
+			e.printStackTrace();
+			throw e;
+		}
+	}
+
+	private void createBillingImpl( list, data, route ) {
+		def days = 0;
+
+		list.each{
+			def currentDate = dateSvc.parseDate(data.billdate, null).date;
+			def maturityDate = dateSvc.parseDate(it.dtmatured, null).date;
+			if (currentDate >  maturityDate && it.overduepenalty == 0.00) {
+				def p = product_type.read([name: it.producttypeid])
+				it.overduepenalty = ledgerSvc.computeOverduePenalty([balance: it.balance, pastduerate: (p.pastduerate? p.pastduerate : 0.00)]);
+				loan_ledger.update(it, 'overduepenalty');
+			}
+			def detail = [
+				objid				: 'LLBD'+new UID(),
+				parentid 			: data.objid,
+				ledgerid 			: it.objid,
+				route_code 			: route? route.code : it.route.code,
+				acctid 				: it.acctid,
+				loanappid 			: it.loanappid,
+				acctname 			: it.acctname,
+				loanamount 			: it.loanamount,
+				loandate 			: it.loandate,
+				term 				: it.term,
+				appno 				: it.appno,
+				overpaymentamount 	: it.overpaymentamount,
+				txndate 			: currentDate,
+				dailydue 			: it.dailydue,
+				dtmatured 			: it.dtmatured,
+				producttypeid 		: it.producttypeid,
+				paymentmethod 		: it.paymentmethod,
+				interestamount 		: it.interestamount,
+				homeaddress 		: it.homeaddress,
+				collectionaddress 	: it.collectionaddress? it.collectionaddress : '',
+				interest 			: 0.00,
+				others 				: 0.00,
+				overduepenalty 		: it.overduepenalty
+			];
+			detail.refno = 'B'+seqSvc.getNextFormattedSeriesA('loanbill-'+detail.route_code, 8);
+			
+			def amt = it.dailydue;
+			if (it.paymentmethod == 'over' && it.overpaymentamount > 0) amt = it.overpaymentamount; 
+			days = dateSvc.getDaysDiff(it.dtcurrentschedule, currentDate);
+			detail.amountdue = (amt*days)+detail.others;
+			if (!it.compromiseid) {	
+				def req = new RuleRequest("billing");
+				def referencesFact = [					
+					isFixed				: false,
+					isOverdue			: (currentDate > maturityDate),
+					hasSunday			: false,
+					balance				: it.balance,
+					absentPenalty		: it.absentpenalty,
+					overduePenalty		: detail.overduepenalty,
+					dailyDue			: amt,
+					interest 			: detail.interestamount,
+					overpayment			: it.overpaymentamount,
+					others				: detail.others,
+					totalDays			: days
+				];
+				req.addFact("billing", "References", referencesFact);
+				req.addGlobal("detail", detail);
+				referencesFact.noOfHolidays = calendarSvc.getNoOfHolidays([lastscheduledate: it.dtcurrentschedule, item:[trialAndError: 0, totalDays: days]]);
+				referencesFact.noOfDaysExempted = exemption.getExemptionsByStartdateAndEnddateAndLedgerid([startdate: it.dtcurrentschedule, enddate: currentDate, ledgerid: it.objid]).size();
+				
+				def cal = Calendar.getInstance();
+				cal.setTime(dateSvc.add(currentDate, "-"+referencesFact.noOfHolidays));
+				if ((cal.get(cal.DAY_OF_WEEK)-1) == 1) {
+					referencesFact.hasSunday = true;
+				}
+
+				ruleSvc.execute(req);
+				if (detail.penalty) {
+					detail.penalty = new BigDecimal(detail.penalty+'').setScale(2, BigDecimal.ROUND_HALF_UP);
+				}
+
+				if (detail.amountdue) {
+					detail.amountdue = new BigDecimal(detail.amountdue+'').setScale(0, BigDecimal.ROUND_CEILING);
+				}
+				/*if (currentDate > maturityDate) {
+					detail.penalty = days*it.overduepenalty;
+					def amountdue = new BigDecimal((detail.penalty+(days * detail.interestamount)+it.balance)+'').setScale(0, BigDecimal.ROUND_CEILING);
+					detail.amountdue = new BigDecimal(amountdue+'').setScale(2);
+					detail.days = days;
+				} else {
+					def noofholidays = calendarSvc.getNoOfHolidays([lastscheduledate: it.dtcurrentschedule, item:[trialAndError: 0, totalDays: days]])
+					days -= noofholidays;
+					def cal = Calendar.getInstance();
+					cal.setTime(currentDate);
+					if ((cal.get(cal.DAY_OF_WEEK)-1) == 1) days--;
+					days -= exemption.getExemptionsByStartdateAndEnddateAndLedgerid([startdate: it.dtcurrentschedule, enddate: currentDate, ledgerid: it.objid]).size();
+					detail.penalty = it.absentpenalty * (days > 0? days-1 : 0);
+					detail.amountdue += detail.penalty;
+				}
+				detail.days = days;*/
+				detail.balance = getBalance(detail, it.balance);
+			} else {
+				/*def compromise = ledger_compromise.read([objid: it.compromiseid]);
+				def type = compromise.compromisetype;
+				if (type == 'WAIVED_INTEREST') {
+					detail.penalty = days * it.overduepenalty;
+					detail.balance = it.balance + detail.penalty;
+				} else if (type == 'WAIVED_PENALTY') {
+					detail.balance = it.balance + (days*it.interestamount);
+				}*/
+
+			}
+			em.create(detail, "detail");
+		}
+	}
+
+	@ProxyMethod(local=true)
+	public def getBalance( params, balance ) {
+		def bal = balance? balance : 0.00;
+		if (balance == params.loanamount) {
+			def producttype = product_type.read([name: params.producttypeid]);
+			bal = params.loanamount*(producttype.term/100);
+			params.isfirstbill = 1;
+		} else {
+			def ledgeritem = loan_ledger.findLastLedgerItemByParentId([parentid: params.ledgerid]);
+			if (params.overduepenalty > 0) {
+				bal += params.days*params.interestamount;
+			} else {
+				def avgamount = params.dailydue;
+				if (params.paymentmethod == 'over') avgamount = em.findAvgOverpaymentAmount([parentid: params.ledgerid]).groupbaseamount;
+				BigDecimal b = new BigDecimal(avgamount+'').setScale(2);
+				b = b.subtract(new BigDecimal(params.interestamount+'').setScale(2));
+				BigDecimal bd = new BigDecimal(balance+'').setScale(2)
+				bd = bd.divide(b, BigDecimal.ROUND_HALF_UP);
+				bal += (bd.setScale(0, BigDecimal.ROUND_HALF_UP)*params.interestamount);
+			}
+			
+			if (ledgeritem.interestbal > 0) {
+				params.amountdue += ledgeritem.interestbal;
+				bal += ledgeritem.interestbal;
+				params.interest += ledgeritem.interestbal;
+			}
+			if (ledgeritem.penaltybal > 0) {
+				params.amountdue += ledgeritem.penaltybal;
+				bal += ledgeritem.penaltybal;
+				params.penalty += ledgeritem.penaltybal;
+			}
+			params.isfirstbill = 0;
+		}
+		if (params.penalty > 0) bal += params.penalty;
+		bal = new BigDecimal(bal+'').setScale(0, BigDecimal.ROUND_CEILING);
+		bal = new BigDecimal(bal+'').setScale(2);
+		return bal;
+	}
+
+	void updateRoute( data ) {
+		em.removeRouteByBillingid([billingid: data.objid]);
+		def params;
+		data.routes.each{o->
+			params = [
+				billingid 	: data.objid,
+				routecode 	: o.code,
+				downloaded 	: 0,
+				uploaded 	: 0
+			];
+			em.create(params, 'billing_route');
+		}
+	}
+
+	void afterOpen( data ) {
+		data.routes = em.getRoutesByBillingid([billingid: data.objid]);
+		data.editable = (em.findBillingPayment(data)? true : false)	;
+	}
+
+	@ProxyMethod
+	public def resetBilling( params ) {
+		params.dtmodified = dateSvc.serverDate;
+		params.modifiedby = env.NAME? env.NAME : 'NOT IDENTIFIED';
+		em.update(params, "modify");
+		def map = [
+			objid			: params.objid,
+			totalfordownload: params.routes.size(),
+			totaldownloaded	: 0,
+			totalunposted	: 0,
+			totalposted 	: 0 
+		]
+		em.update(map);
+		updateRoute(params);
+		updateBillingDetail(params);
+		//em.removeBillingLockByBillingid([billingid: params.objid]);
+	}
+}

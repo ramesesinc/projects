@@ -1,0 +1,36 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.services.extended.*;
+
+class CaptureLoanAppLookupService
+{
+	@ActiveDB('loanapp_capture')
+	def em;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@ProxyMethod
+	public def getColumns( params ) { 
+		return [ 
+			[name:'appno', caption:'App No.'],
+			[name:'borrower.name', caption:'Borrower'] 
+		];
+	}
+
+	@ProxyMethod
+	public def getList( params ) {
+		params.searchtext = (params.searchtext? params.searchtext: '')+'%';
+		params._start = (params._start? params.start: 0); 
+		params._limit = (params._limit? params._limit: 10); 
+		def list = em.getList(params);
+		/*
+		list.each{
+			it.dtstarted = dateSvc.add(it.dtreleased, "1");
+			if ()
+			it.dtmatured = dateSvc.add(it.dtreleased, it.producttype.term+'');
+		}
+		*/
+		return list;
+	}
+}

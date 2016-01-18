@@ -1,0 +1,73 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.services.extended.*;
+
+class MigrationBorrowerLoansResolverService extends ActiveListService
+{
+
+	@ActiveDB(em="migration", value="borrowerresolver")
+	def em;
+
+	@ActiveDB(em="migration", value="loanresolver")
+	def loanresolver;
+
+	String listMethod = 'getResolvedList';
+
+	@ProxyMethod
+	public def getColumns( params ) {
+		return [
+			[name: 'objid', caption: "ID"],
+			[name: 'borrowername', caption: 'Borrower'],
+			[name: 'address', caption: 'Address']
+		];
+	}
+
+	@ProxyMethod
+	public def open( params ) {
+		def data = em.read(params);
+		if (!data) throw new Exception("Migration borrower record does not exist or has already been deleted.");
+
+		def ext = em.read(data, 'ext-info');
+		if (!ext) throw new Exception("Info for this borrower has not yet been resolved.");
+		data.putAll(ext);
+
+		data.items = loanresolver.getBorrowerResolvedLoans([borrowerid: data.objid]);
+		data.items.each{ o->
+			ext = getLoanExtendedInfo(o);
+			if (ext) o.putAll(ext);
+		}
+		return data;
+	}
+
+	@ProxyMethod
+	public def create( data ) {
+		return updateInfo(data);
+	}
+
+	@ProxyMethod
+	public def update( data ) {
+		return updateInfo(data);
+	}
+
+	private def updateInfo( data ) {
+		data._removed.each{ o->
+			loanresolver.delete([objid: o.objid], 'loan-borrower');
+		}
+
+		def item;
+		data._added.each{ o->
+			item = [objid: o.objid, borrowerid: data.objid, loanid: o.objid];
+			loanresolver.create(item, 'loan-borrower');
+		}
+
+		return open(data);
+	}
+
+	@ProxyMethod
+	public def getLoanExtendedInfo( params ) {
+		def data = loanresolver.read(params, 'ext-info');
+		if (!data) throw new Exception('Extended info for this loan record does not exist or has already been deleted.');
+
+		return data;
+	}
+}

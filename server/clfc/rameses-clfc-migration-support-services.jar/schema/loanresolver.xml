@@ -1,0 +1,43 @@
+<schema>
+	<element tablename="loan">
+		<field name="objid" primary="true" />
+		<field name="borrowerid" required="true" />
+		<field name="loandate" required="true" />
+		<field name="loanamount" required="true" />
+		<field name="loantype" required="true" />
+		<field name="intrate" required="true" />
+		<field name="term" required="true" />
+		<field name="balance" required="true" />
+	</element>
+
+	<element name="ext-info" tablename="loan_extinfo">
+		<field name="objid" primary="true" />
+		<field name="producttype_name" required="true" />
+		<field name="producttype_term" required="true" />
+		<field name="producttype_interestrate" required="true" />
+		<field name="paymentmethod" required="true" />
+		<field name="overpaymentamount" />
+		<field name="route_code" required="true" />
+		<field name="route_description" required="true" />
+		<field name="route_area" required="true" />
+		<field name="acctstate" required="true" />
+		<field name="apptype" required="true" />
+	</element>
+
+	<element name="resolved" tablename="loan_resolved">
+		<field name="objid" primary="true" />
+		<field name="taskkey" />
+	</element>
+
+	<element name="loan-borrower" tablename="borrower_loan_resolved">
+		<field name="objid" primary="true" />
+		<field name="borrowerid" required="true" />
+		<field name="loanid" required="true" />
+	</element>
+
+	<element name="process" tablename="loan_process">
+		<field name="objid" primary="true" />
+		<field name="key" />
+		<field name="isprocessed" required="true" />
+	</element>
+</schema>

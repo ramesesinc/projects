@@ -1,0 +1,80 @@
+<schema>
+
+	<element name="fieldcollection" tablename="fieldcollection">
+		<field name="objid" primary="true" />
+		<field name="dtfiled" required="true" />
+		<field name="author_objid" required="true" />
+		<field name="author_name" required="true" />
+		<field name="branchid" required="true" />
+		<field name="billdate" required="true" />
+		<field name="collector_objid" required="true" />
+		<field name="collector_name" required="true" />
+	</element>
+
+	<element name="fc-item" tablename="fieldcollection_item">
+		<field name="objid" primary="true" />
+		<field name="parentid" required="true" />
+		<field name="state" required="true" />
+		<field name="dtfiled" required="true" />
+		<field name="author_objid" required="true" />
+		<field name="author_name" required="true" />
+		<field name="item_objid" required="true" />
+		<field name="item_type" required="true" />
+		<field name="trackerid" required="true" />
+		<field name="totalcount" required="true" />
+		<field name="totalamount" required="true" />
+		<field name="cbsno" />
+	</element>
+
+	<element name="item-remit" tablename="fieldcollection_item">
+		<field name="objid" primary="true" />
+		<field name="totalcount" required="true" />
+		<field name="totalamount" required="true" />
+		<field name="cbsno" />
+	</element>
+
+	<element name="fc-loan" tablename="fieldcollection_loan">
+		<field name="objid" primary="true" />
+		<field name="parentid" required="true" />
+		<field name="fieldcollectionid" required="true" />
+		<field name="loanapp_objid" required="true" />
+		<field name="loanapp_appno" required="true" />
+		<field name="borrower_objid" required="true" />
+		<field name="borrower_name" required="true" />
+		<field name="routecode" required="true" />
+		<field name="noofpayments" required="true" />
+		<field name="remarks" />
+	</element>
+
+	<element name="loan-noofpayments" tablename="fieldcollection_loan">
+		<field name="objid" primary="true"/>
+		<field name="noofpayments" required="true"/>
+	</element>
+
+	<element name="fc-payment" tablename="fieldcollection_payment">
+		<field name="objid" primary="true" />
+		<field name="parentid" required="true" />
+		<field name="itemid" required="true" />
+		<field name="fieldcollectionid" required="true" />
+		<field name="dtfiled" required="true" />
+		<field name="author_objid" required="true" />
+		<field name="author_name" required="true" />
+		<field name="txnmode" required="true" />
+		<field name="dtpaid" required="true" />
+		<field name="refno" required="true" />
+		<field name="paytype" required="true" />
+		<field name="amount" required="true" />
+		<field name="paidby" required="true" />
+		<field name="payoption" required="true" />
+		<field name="version" />
+	</element>
+
+	<element name="payment-check" tablename="fieldcollection_payment">
+		<field name="objid" primary="true" />
+		<field name="bank_objid" required="true" />
+		<field name="bank_name" required="true" />
+		<field name="check_no" required="true" />
+		<field name="check_date" required="true" />
+	</element>
+
+</schema>

@@ -1,0 +1,82 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.services.extended.*;
+import java.rmi.server.UID;
+
+class CaptureLoanLedgerNoncashTagService
+{
+	@Env
+	def env;
+
+	@ActiveDB("loan_ledger_noncash")
+	def em;
+
+	@ActiveDB("loan_ledger")
+	def ledger;
+
+	@ActiveDB("borrower")
+	def borrower;
+
+	@Service("CaptureLoanLedgerTagService")
+	def tagSvc;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@ProxyMethod
+	public def getColumns( params ) {
+		return tagSvc.getColumns(params);
+	}
+
+	@ProxyMethod
+	public def getPayments( params ) {
+		params.type = 'NONCASH';
+		return tagSvc.getPayments(params);
+	}
+
+
+	@ProxyMethod
+	public def addTag( params ) {
+		def payment = ledger.read([objid: params.objid], 'payment');
+		if (!payment) throw new Exception("Ledger payment record does not exist or has already been deleted.");
+
+		tagSvc.create([paymentid: payment.objid, type: 'NONCASH', action: 'ADD']);
+
+		def l = ledger.read([objid: payment.parentid]);
+		if (!l) throw new Exception("Ledger record does not exist or has already been deleted.");
+
+		def b = borrower.read([objid: l.acctid]);
+		if (!b) throw new Exception("Borrower record does not exist or has already been deleted.");
+
+		def currdate = dateSvc.serverDate;
+		def user = [objid: env.USERID, name: env.NAME];
+
+		def item = [
+			objid 			: 'CLNC' + new UID(),
+			parentid 		: l.objid,
+			txnstate 		: 'COLLECTED',
+			txntype 		: 'CAPTURE',
+			dtcreated 		: currdate,
+			author 			: user,
+			borrower 		: b,
+			refid 			: payment.objid,
+			refno 			: payment.refno,
+			txndate 		: payment.txndate,
+			amount 			: payment.amount,
+			dtcollected		: currdate,
+			collectedby		: user
+		];
+		em.create(item);
+	}
+
+	@ProxyMethod
+	public def removeTag( params ) {
+		def payment = ledger.read([objid: params.objid], 'payment');
+		if (!payment) throw new Exception("Ledger payment record does not exist or has already been deleted.");
+
+		tagSvc.create([paymentid: payment.objid, type: 'NONCASH', action: 'REMOVE']);
+
+		def nc = em.findByRefid([refid: payment.objid]);
+		if (nc) em.delete(nc);
+	}
+}

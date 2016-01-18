@@ -1,0 +1,1040 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.services.extended.*;
+import java.rmi.server.UID;
+
+class LoanFieldCollectionService
+{
+	@Env
+	def env;
+
+	@ActiveDB("fieldcollection")
+	def collection;
+
+	@ActiveDB("voidrequest")
+	def void_request;
+
+	@ActiveDB("ledger_billing")
+	def ledger_billing;
+
+	@ActiveDB("mobile_tracker")
+	def tracker;
+
+	@ActiveDB("collection_cb")
+	def collection_cb;
+
+	@ActiveDB("datatxnlog")
+	def txnlog; 
+
+	@ActiveDB("shortage")
+	def shortage;
+
+	@ActiveDB("overage")
+	def overage;
+
+	@ActiveDB("shortage_voidrequest")
+	def shortage_voidrequest;
+
+	@ActiveDB("overage_voidrequest")
+	def overage_voidrequest;
+
+	@ActiveDB("collection_remittance")
+	def remittance;
+
+	@ActiveDB("shortage_fundrequest")
+	def shortage_fundrequest;
+
+	@ActiveDB("collection_remittance_sendback")
+	def sendback;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@Service("UsergroupMemberLookupService")
+	def usergroupSvc;
+
+	@Service("LoanPaymentService")
+	def paymentSvc;
+
+	@Service("MobileTrackerService")
+	def trackerSvc;
+
+	@Service("CollectionCashbreakdownService")
+	def cashbreakdownSvc;
+
+	@Service("CheckPaymentService")
+	def checkPaymentSvc;
+
+	@Service("InboxService")
+	def inboxSvc;
+
+	@ProxyMethod
+	public def getCollectors() {
+		return usergroupSvc.getList([_tag: 'FIELD_COLLECTOR']);
+	}
+
+	@ProxyMethod
+	public def getFieldCollection( params ) {
+		if (!params.itemid) throw new Exception('Please specify itemid.');
+
+		def entity = collection.read([objid: params.itemid], 'fc-item');
+		if (!entity) throw new Exception('No collection for this route.');
+
+		def prm = [
+			collectionid 	: entity.parentid,
+			groupid 		: entity.item.objid,
+			grouptype 		: entity.item.type
+		]
+
+		def cb;
+		def rem  = remittance.findCollectionRemittance(prm);
+		if (rem) {
+			def amt = rem.totalcollection + rem.others;
+			if (!amt) amt = 0;
+
+			if (rem.state == 'FOR_POSTING') {
+				entity.alloweditbreakdown = true;
+				entity.allowpost = true;
+			}
+
+			entity.totalamount = amt;
+			def sb = sendback.findByRemittanceidAndState([remittanceid: rem.objid, state: 'DRAFT']);
+			if (sb) {
+				entity.allowpost = false;
+				entity.alloweditbreakdown = false;
+				entity.issendback = true;
+				rem.state += ' - SEND BACK';
+			}
+			entity.remittance = rem;
+
+			sb = sendback.findSendBackByRemittanceid([remittanceid: rem.objid]);
+			if (sb) {
+				entity.hassendback = true;
+			}
+
+			//cb = collection_cb.findCashbreakdown(prm);
+			cb = collection_cb.findCashbreakdownByCbsno([cbsno: rem.cbsno]);
+			if (!cb) throw new Exception('No cbs created for this collection.');
+		}
+		//entity.remittance = remittance.findCollectionRemittance(prm);
+		/*
+		if (entity.remittance) {
+			def rstate = entity.remittance.state;
+			//if (entity.remittance.state == 'POSTED') throw new Exception("Collection already posted.");
+			if (rstate != 'FOR_POSTING' && rstate != 'POSTED') throw new Exception("Collection not yet remitted.");
+			entity.cashbreakdown = collection_cb.findCashbreakdown(prm);	
+
+			entity.totalamount = entity.remittance.totalcollection + entity.remittance.others;		
+		}
+		*/
+
+		if (cb) {
+			def items = collection_cb.getDetails(cb);
+			cb.items = items;
+
+			def s = collection_cb.findCurrentSendbackByState([objid: cb.objid, state: 'DRAFT']);
+			if (s) {
+				entity.alloweditbreakdown = true;
+				cb.sendbackremarks = s.remarks;
+				cb.allowcbssubmitforverification = true;
+			}
+			entity.cashbreakdown = cb;
+		}
+
+		//println 'allow cbs submit for verification ' + entity?.cashbreakdown?.allowcbssubmitforverification;
+
+		return entity;
+	}
+
+	/*
+	@ProxyMethod
+	public def getFieldCollection( params ) {
+		if (!params.collectorid) throw new Exception("Please specify collectorid.");
+		if (!params.billdate) {
+			params.billdate = dateSvc.serverDate.toString().split(" ")[0];
+		}
+
+		def entity
+		if (params.type == 'route') {
+			entity = collection.findRouteFieldcollection([objid: params.collectionid]);
+		} else {
+			entity = collection.read([objid: params.collectionid], "fc-item");			
+		}
+
+		if (!entity) throw new Exception("No collection for this route.");
+		//if (entity.state == 'CLOSED') throw new Exception("Collection already closed.");
+		//if (entity.state == 'DRAFT') throw new Exception("Collection for this route not yet remitted.");
+
+		if (entity) {
+			def prm = [
+				collectionid 	: entity.parentid,
+				groupid 		: entity.item.objid,
+				grouptype 		: entity.item.type
+			]
+			entity.remittance = remittance.findCollectionRemittance(prm);
+			if (entity.remittance) {
+				def rstate = entity.remittance.state;
+				//if (entity.remittance.state == 'POSTED') throw new Exception("Collection already posted.");
+				if (rstate != 'FOR_POSTING' && rstate != 'POSTED') throw new Exception("Collection not yet remitted.");
+				entity.cashbreakdown = collection_cb.findCashbreakdown(prm);	
+
+				entity.totalamount = entity.remittance.totalcollection + entity.remittance.others;		
+			}
+
+			if (entity.cashbreakdown) {
+				def items = collection_cb.getDetails(entity.cashbreakdown);
+				entity.cashbreakdown.items = items;
+				if (entity.cashbreakdown.state=='SEND_BACK') {
+					def s = collection_cb.findCurrentSendback(entity.cashbreakdown);
+					if (s) entity.cashbreakdown.sendbackremarks = s.remarks;
+				}
+			}
+		}
+		return entity;
+	}
+	*/
+
+	@ProxyMethod
+	public def getCollectionPaymentList( params ) {
+		def searchtext = (params.searchtext? params.searchtext : '') + '%';
+		def list = collection.getPaymentsWithLoanInfo([objid: params.collectionid, searchtext: searchtext]);
+
+		def vr;
+		list?.each{ o->
+			o.route.name = o.route.description;
+			if (o.paymentid) {
+				o.payment = collection.read([objid: o.paymentid], 'fc-payment');
+				//println 'paymentid ' + o.payment?.objid;
+				vr = void_request.findVoidRequestByPaymentid([paymentid: o.payment?.objid]);
+				//println 'void request ' + vr;
+				if (vr) {
+					o.voidid = vr.objid;
+					if (vr.state == 'APPROVED') {
+						o.payment?.state = 'VOIDED';
+					} else if (vr.state == 'FOR_APPROVAL') {
+						o.payment?.state = 'PENDING';
+					}
+				}
+			}
+		}
+		return list;
+	}
+
+	@ProxyMethod
+	public def getFieldCollectionList( params ) {
+		if (!params.collectionid) throw new Exception('Please specify collectionid.');
+
+		def result = [payments: getCollectionPaymentList(params), issendback: false];
+
+		//def remitted = false;
+		def item = collection.read([objid: params.collectionid], "fc-item");
+		if (item) {
+			result.state = item.state;
+
+			def prm = [
+				collectionid 	: item.parentid,
+				groupid 		: item.item.objid,
+				grouptype 		: item.item.type
+			];
+
+			def rem = remittance.findCollectionRemittance(prm);
+			if (rem) {
+				result.remittanceid = rem.objid;
+				result.state = rem.state;
+				result.collector = rem.collector;
+				result.txndate = rem.txndate;
+
+				def sb = sendback.findByRemittanceidAndState([remittanceid: rem.objid, state: 'DRAFT']);
+				if (sb) {
+					result.issendback = true;
+					result.state += ' - SEND BACK';
+				}
+
+				/*
+				result.remittanceid = rem.objid;
+				if (rem.state == 'FOR_POSTING' || rem.state == 'POSTED') 
+					remitted = true;
+				result.state = rem.state;
+				result.grouptype = rem.group.type;
+				result.groupid = rem.group.objid;
+				*/
+			}
+		}
+		//throw new Exception('stop');
+		//result.remitted = remitted;
+
+		return result;
+	}
+
+
+	@ProxyMethod
+	public def getCollectionList( params ) {
+		def searchtext = (params.searchtext? params.searchtext : "") + "%";
+		def list = collection.getFieldcollectionLoansWithInfo([objid: params.collectionid, searchtext: searchtext]);
+		
+		list.each{ cs->	
+			cs.route.name = cs.route.description + ' - ' + cs.route.area;
+			cs.payments = collection.getFieldcollectionPayments(cs);
+			cs.total = 0;
+			cs.payments.each{
+				it.voided = 0;
+				it.pending = 0;
+				cs.total += it.amount;
+
+				def voidrequest = void_request.findVoidRequestByPaymentid([paymentid: it.objid]);
+				if (voidrequest) {
+					it.voidid = voidrequest.objid;
+					if (voidrequest.state == 'APPROVED') {
+						it.voided = 1;
+						it.pending = 0;
+						cs.total -= it.amount;
+					} else if (voidrequest.state == 'FOR_APPROVAL') {
+						it.pending = 1;
+					}
+				}
+			}
+		}
+		list.sort{ it.borrower.name }
+
+		return list;
+	}
+
+	@ProxyMethod
+	public def getCollections( params ) {
+		if (!params.collectionid) throw new Exception("Please specify collectionid.");
+
+		def result = [ 
+			collectionsheets: getCollectionList(params),
+			state 			: "FOR_REMITTANCE"
+		];
+
+		def remitted = false;
+		def item = collection.read([objid: params.collectionid], "fc-item");
+		if (item) {
+			if (item.state) result.state = item.state;
+			def prm = [
+				collectionid 	: item.parentid,
+				groupid 		: item.item.objid,
+				grouptype 		: item.item.type
+			]
+			def rem = remittance.findCollectionRemittance(prm);
+			if (rem) {
+				result.remittanceid = rem.objid;
+				if (rem.state == 'FOR_POSTING' || rem.state == 'POSTED') 
+					remitted = true;
+				result.state = rem.state;
+				result.grouptype = rem.group.type;
+				result.groupid = rem.group.objid;
+			}
+		}
+		result.remitted = remitted;
+
+		//println 'result ' + result;
+		return result;
+	}
+
+	@ProxyMethod
+	public def getRoutes( params ) {
+		if (!params.collectorid) throw new Exception("Collectorid is required.");
+
+		params.date = params.billdate;
+		if (!params.date) {
+			params.date = dateSvc.serverDate.toString().split(" ")[0];
+		}
+
+		def billing = ledger_billing.findByCollectorAndBilldate(params);
+		//println 'billing ' + billing;
+		if (!billing) return [];
+
+		def items = ledger_billing.getBillingItemsWithInfo(billing);
+		def list = items.findAll{ it.state == 'CANCELLED' || it.state == 'CLOSED' }
+		def item, prm;
+		list.each{ o->
+			prm = [collectionid: billing.objid, groupid: o.itemid, grouptype: o.type];
+			item = remittance.findCollectionRemittance(prm);
+			if (o.state=='CANCELLED' || !item) items.remove(o); 
+			o.itemid = o.objid;
+		}
+
+		def followups = items.findAll{ it.type == 'followup' }
+		def specials = items.findAll{ it.type == 'special' && it.isrequest == 0 && it.iscapture == 0 }
+		def requests = items.findAll{ it.type == 'special' && it.isrequest == 1 && it.iscapture == 0 }
+		def capturepayments = items.findAll{ it.type == 'special' && it.isrequest == 0 && it.iscapture == 1 }
+
+		followups.sort{ it.dtfiled }
+		followups.eachWithIndex{ itm, idx->
+			itm.description = 'Follow-up ' + (idx+1);
+		} 
+
+		specials.sort{ it.dtfiled }
+		specials.eachWithIndex{ itm, idx->
+			itm.description = 'Special ' + (idx+1)
+		}
+
+		requests.sort{ it.dtfiled }
+		requests.eachWithIndex{ itm, idx->
+			itm.description = 'Request ' + (idx+1);
+		}
+
+		capturepayments.sort{ it.dtfiled }
+		capturepayments.eachWithIndex{ itm, idx-> 
+			itm.description = 'Capture ' + (idx+1);
+		}
+		
+		items.sort{ it.description }
+		//items.each{ println it }
+
+		return items;
+	}
+
+	/*
+	@ProxyMethod
+	public def saveCashBreakdown( params ) {
+		if (!params.cashbreakdown) throw new Exception("Please specify cashbreakdown.");
+
+		def cb = [
+			objid 		: params.cashbreakdown.objid,
+			state 		: 'FOR_VERIFICATION',
+			dtfiled 	: dateSvc.serverDate,
+			author 		: [objid: env.USERID, name: env.NAME],
+			txndate 	: params.remittance.txndate,
+			collector 	: params.remittance.collector,
+			collection 	: params.remittance.collection,
+			group 		: params.remittance.group,
+			cbsno 		: params.remittance.cbsno
+		];
+		collection_cb.create(cb);
+		collection_cb.create(cb, "cb-forverification");
+
+		def msginfo = [ 
+			objid 		: cb.objid, 
+			dtcreated	: cb.dtfiled, 
+			refid 		: cb.objid, 
+			filetype 	: 'cashbreakdown', 
+			message 	: 'For verification CBS No. '+ cb.cbsno, 
+			senderid	: env.USERID, 
+			sendername 	: env.NAME, 
+			recipientid : 'ACCT_ASSISTANT' 
+		]; 
+		inboxSvc.addMessage( msginfo );
+
+		def items = params.cashbreakdown.items;
+		items.each{ o->
+			o.objid = 'CBDTL' + new UID();
+			o.parentid = params.cashbreakdown.objid;			
+
+			collection_cb.create(o, "cb-detail");
+		}
+
+		cb.items = collection_cb.getDetails(cb);
+
+		return cb;
+	}
+	*/
+
+	@ProxyMethod
+	public def updateCashBreakdown( params ) {
+		if (!params.objid) throw new Exception("Please specify cashbreakdownid.");
+		if (!params.items) throw new Exception('Please specify breakdown.');
+
+		def cb = collection_cb.read([objid: params.objid]);
+		if (!cb) throw new Exception("CBS record does not exist or has already been deleted.");
+
+		def sb = collection_cb.findCurrentSendbackByState([objid: cb.objid, state: 'DRAFT']);
+		if (cb.state != 'DRAFT' && !sb) {
+			throw new Exception("CBS has already been " + cb.state + ".");
+		}
+
+		params.items.each{ o->
+			collection_cb.update(o, "cb-detail");
+		}
+		cb = collection_cb.read([objid: params.objid]);
+		cb.items = collection_cb.getDetails(cb);
+
+
+		if (cb.state == 'SEND_BACK') {
+			def s = collection_cb.findCurrentSendback(cb);
+			if (s) cb.sendbackremarks = s.remarks;
+			cb.allowcbssubmitforverification = true;
+		}
+
+
+		return cb;
+	}
+
+	private def validateCollection( params ) {
+		def remittanceid = params?.remittance?.objid;
+		def rem = remittance.read([objid: remittanceid]);
+		if (!rem) throw new Exception("Collection remittance record does not exist or has already been deleted.");
+
+		def others = remittance.getOthers(rem);
+		//def amt = (others? others.amount.sum() : 0);
+		def amt = others?.amount?.sum();
+		if (!amt) amt = 0;
+
+		def totalcollection = amt + rem.totalamount;
+
+		def cashbreakdownid = params?.cashbreakdown?.objid;
+		def cb = collection_cb.read([objid: cashbreakdownid]);
+		if (!cb) throw new Exception('Cash breakdown record does not exist or has already been deleted.');
+
+		def details = collection_cb.getDetails(cb);
+
+		//def totalbreakdown = (details? details.amount?.sum() : 0);
+		def totalbreakdown = details?.amount?.sum();
+		if (!totalbreakdown) totalbreakdown = 0;
+
+		if (totalcollection != totalbreakdown) {
+			throw new Exception('Total collection does not match total breakdown.');
+		}
+	}
+
+	@ProxyMethod
+	public def submitCbsForVerification( params ) {
+		validateCollection(params);
+		validateSubmitForVerification(params);
+
+		def cashbreakdownid = params.cashbreakdown.objid;
+
+		def cb = collection_cb.read([objid: cashbreakdownid]);
+		if (!cb) throw new Exception('Cash breakdown record does not exist or has already been deleted.');
+
+		if (cb.state != 'FOR_VERIFICATION') {
+			cb = cashbreakdownSvc.submitForVerification(cb);
+		}
+
+		def c = collection_cb.read(cb, "cb-forverification");
+		if (!c) {
+			collection_cb.create(cb, "cb-forverification");
+		}
+
+		def sb = collection_cb.findCurrentSendbackByState([objid: cb.objid, state: 'DRAFT']);
+		if (sb) {
+			sb.state = 'CLOSED';
+			collection_cb.update(sb, 'cb-sendback');
+		}
+
+		def msginfo = [ 
+			objid 		: cb.objid, 
+			dtcreated	: dateSvc.serverDate, 
+			refid 		: cb.objid, 
+			filetype 	: 'cashbreakdown', 
+			message 	: 'For verification CBS No. '+ cb.cbsno, 
+			senderid	: env.USERID, 
+			sendername 	: env.NAME, 
+			recipientid : 'ACCT_ASSISTANT' 
+		]; 
+		inboxSvc.addMessage( msginfo );
+
+		submitShortagesForVerification(params);
+		return cb;
+	}
+	
+	private def getCashBreakdown( params ) {
+		return cashbreakdownSvc.getCashBreakdown(params);
+	}
+
+
+	private void validateSubmitForVerification( params ) {
+		def remittanceid = params.remittance.objid;
+
+		def unnotedstates = ['DRAFT', 'FOR_NOTING'];
+		def m;
+		unnotedstates.each{ s->
+			m = shortage.findShortageByRemittanceidAndState([remittanceid: remittanceid, state: s]);
+			if (m) throw new Exception('There are still unnoted shortage documents.');
+		}
+
+		def i = shortage_voidrequest.findPendingRequestByRemittanceid([remittanceid: remittanceid]);
+		if (i) throw new Exception("There are still pending shortage void request(s) that needs approval.");
+
+
+		def list = shortage.getListByRemittanceid([remittanceid: remittanceid]);
+		def prm;
+		def cb;
+		list.each{ o->
+			if (o.state != 'VOIDED') {
+				prm = [
+					collectionid: o.objid,
+					groupid 	: o.objid,
+					grouptype	: 'shortage'
+				];
+				cb = collection_cb.findCashbreakdown(prm);
+				def error = false;
+				if (cb) {
+					def dtls = collection_cb.getDetails(cb);
+					if (!dtls || (dtls.amount.sum() == 0)) {
+						error = true;
+					}
+				} else {
+					error = true;
+				}
+
+				if (error == true) 
+					throw new Exception("Shortage document(s) for this collection has no cash breakdown.");	
+			}
+		}
+		/*
+		m = shortage.findApprovedShortageWithoutBreakdownByRemittanceid([remittanceid: remittanceid]);
+		if (m) throw new Exception("Cannot post collection. There are still shortage documents without cash breakdown.");
+		*/
+
+		/*
+		def list = shortage.getListByRemittanceid([remittanceid: remittanceid]);
+		def prm;
+		def cb;
+		list.each{ o->
+			prm = [
+				collectionid: o.objid,
+				groupid 	: o.objid,
+				grouptype	: 'shortage'
+			];
+			cb = collection_cb.findCashbreakdown(prm);
+			def error = false;
+			if (cb) {
+				if ()
+				def dtls = collection_cb.getDetails(cb);
+				if (!dtls || (dtls.amount.sum() == 0)) {
+					error = true;
+				}
+			} else {
+				error = true;
+			}
+
+			if (error == true) 
+				throw new Exception("Shortage document(s) for this collection has no cash breakdown.");
+		}
+		*/
+		i = overage_voidrequest.findPendingRequestByRemittanceid([remittanceid: remittanceid]);
+		if (i) throw new Exception("There are still pending overage void request(s) that needs approval.");
+
+		//shortage.closeShortageByRemittanceid([remittanceid: remittanceid]);
+
+		m = overage.findUnnotedOverageByRemittanceid([remittanceid: remittanceid]);
+		if (m) throw new Exception("There are still unnoted overage documents.");
+
+		
+	}
+
+	private void validatePost( params ) {
+		validateSubmitForVerification(params);
+		def remittanceid = params.remittance.objid;
+		
+		//def m = shortage.findUnapprovedShortageByRemittanceid([remittanceid: remittanceid]);
+		//if (m) throw new Exception("Cannot post collection. There are still unapproved shortage documents.");
+
+		/*
+		m = shortage.findApprovedShortageWithoutBreakdownByRemittanceid([remittanceid: remittanceid]);
+		if (m) throw new Exception("Cannot post collection. There are still shortage documents without cash breakdown.");
+		*/
+
+		/*def list = shortage.getListByRemittanceid([remittanceid: remittanceid]);
+		def prm;
+		def cb;
+		list.each{ o->
+			prm = [
+				collectionid: o.objid,
+				groupid 	: o.objid,
+				grouptype	: 'shortage'
+			];
+			cb = collection_cb.findCashbreakdown(prm);
+			if (!cb) 
+				throw new Exception("Cannot post collection. Shortage document(s) for this collection has no cash breakdown.");
+		}
+
+		shortage.closeShortageByRemittanceid([remittanceid: remittanceid]);
+
+		m = overage.findUnapprovedOverageByRemittanceid([remittanceid: remittanceid]);
+		if (m) throw new Exception("Cannot post collection. There are still unapproved overage documents.");
+*/
+		def m = shortage_fundrequest.findForapprovalFundRequestByRemittanceid([remittanceid: remittanceid]);
+		if (m) throw new Exception("There is still an unapproved shortage fund request.");
+
+		/*
+		cb = collection_cb.read(params.cashbreakdown);
+		if (cb.state != 'VERIFIED') 
+			throw new Exception("Cannot post collection. CBS for this collection needs verification.");
+		*/
+	}
+
+	@ProxyMethod
+	public void post( params ) {
+		validatePost(params);
+		def remittanceid = params.remittance.objid;
+		
+		//def list = collection.getFieldcollectionLoansWithInfo(params);
+
+		def fc = collection.read([objid: params.parentid]);
+		def xlist = getCollectionList([collectionid: params.objid]);
+		def list = [];
+		xlist.each{ o->
+			if (o.payments.find{ it.version == 1}) list.add(o);
+		}
+		def payments;
+		def pending;
+		list.each{ o->
+			payments = o.payments;//collection.getFieldcollectionPayments(o);
+			pending = payments.findAll{ it.pending == 1 }
+			if (pending) throw new Exception("Cannot post collection. There are still pending void payment request/s.");
+
+			payments.each{ p->
+				if (p.voided == 0) {
+					if (p.payoption == 'cash') {
+						p.collector = fc.collector;
+						p.routecode = o.routecode;
+						p.appid = o.loanapp.objid;
+						p.payamount = p.amount;
+						p.borrower = o.borrower;
+						p.loanapp = o.loanapp;
+
+						p.entity = params.remittance;
+						if (!p.entity) throw new Exception("Remittance record does not exist or has already been deleted.");
+						
+						paymentSvc.postPayment(p);
+					} else if (p.payoption == 'check') {
+						def item = [
+							objid 		: 'CHKPYT' + new UID(),
+							txndate 	: fc.billdate,
+							txntype 	: 'FIELD',
+							refid 		: p.objid,
+							refno 		: p.refno,
+							dtpaid 		: p.dtpaid,
+							paidby		: p.paidby,
+							amount 		: p.amount,
+							checkno 	: p.check.no,
+							checkdate	: p.check.date,
+							bank 		: p.bank,
+							collector 	: fc.collector,
+							payor 		: o.borrower
+						];
+						checkPaymentSvc.create(item)
+					} 
+				}
+			}
+		}
+
+		params.remittance.state = 'POSTED';
+		remittance.changeState(params.remittance);
+
+		params.remittance.dtposted = dateSvc.serverDate;
+		params.remittance.poster = [objid: env.USERID, name: env.NAME];
+		remittance.update(params.remittance, "post-remittance");
+		remittance.delete(params.remittance, "pending-remittance");
+
+		/*
+		def billing = ledger_billing.read(params, "billing-item");
+		if (!billing) throw new Exception("Record does not exist or has already been deleted.");
+
+		billing.state = "POSTED";
+		ledger_billing.changeState(billing);
+		*/
+
+		def t = trackerSvc.open([objid: params.trackerid]);
+		if (t && t.state == 'OPEN') {
+			def trackerItem = tracker.findLastTrackerItemByParentid([parentid: params.trackerid]);
+			def tracker = [
+				trackerid 	: params.trackerid,
+				username	: (env.NAME? env.NAME : 'SYSTEM'),
+				lng 		: (trackerItem? trackerItem.lng : 0.00),
+				lat 		: (trackerItem? trackerItem.lat : 0.00)
+			];
+			trackerSvc.stop(tracker);
+		}
+
+		afterPost(params);
+	}
+
+	void afterPost( params ) {
+		if (!params.cashbreakdown) throw new Exception("Please specify cashbreakdown.");
+
+		def cb = collection_cb.read(params.cashbreakdown);
+
+		cb.state = 'FOR_VERIFICATION';
+		collection_cb.update(cb);
+
+		def c = collection_cb.read(cb, "cb-forverification");
+		if (!c) {
+			collection_cb.create(cb, "cb-forverification");
+			
+			def msginfo = [ 
+				objid 		: cb.objid, 
+				dtcreated	: dateSvc.serverDate, 
+				refid 		: cb.objid, 
+				filetype 	: 'cashbreakdown', 
+				message 	: 'For verification CBS No. '+ cb.cbsno, 
+				senderid	: env.USERID, 
+				sendername 	: env.NAME, 
+				recipientid : 'ACCT_ASSISTANT' 
+			]; 
+			inboxSvc.addMessage( msginfo );
+		}
+		submitShortagesForVerification(params);
+	}
+
+	void submitShortagesForVerification( params ) {	
+		if (!params.cashbreakdown) throw new Exception("Please specify cashbreakdown.");
+		def cb = collection_cb.read(params.cashbreakdown);	
+
+		def prm, dtfiled = dateSvc.serverDate;
+		def shortages = shortage.getListByRemittanceid([remittanceid: params.remittance.objid]);
+		def xlist = shortages.findAll{ it.state=='NOTED' }
+		xlist.each{ o->
+			prm = [
+				collectionid: o.objid,
+				groupid	 	: o.objid,
+				grouptype 	: 'shortage'
+			];
+			cb = collection_cb.findCashbreakdown(prm);
+			cb.state = 'FOR_VERIFICATION';
+			collection_cb.update(cb);
+
+			def c = collection_cb.read(cb, "cb-forverification");
+			if (!c) {
+				collection_cb.create(cb, "cb-forverification");
+				
+				def msginfo = [ 
+					objid 		: cb.objid, 
+					dtcreated	: dtfiled, 
+					refid 		: cb.objid, 
+					filetype 	: 'cashbreakdown', 
+					message 	: 'For verification CBS No. '+ cb.cbsno, 
+					senderid	: env.USERID, 
+					sendername 	: env.NAME, 
+					recipientid : 'ACCT_ASSISTANT' 
+				]; 
+				inboxSvc.addMessage( msginfo );
+			}
+		}
+	}
+
+
+
+	@ProxyMethod
+	public def sendBack( params ) {
+		//if (!params.entity) throw new Exception("Please specify entity.");
+		if (!params.remittance) throw new Exception('Please specify remittance.');
+		if (!params.itemid) throw new Exception('Please specify itemid.');
+
+		def rem = params.remittance;
+
+		if (rem) {
+			def loginfo = [
+				objid 	: 'TLOG' + new UID(), 
+				txnid   : rem.objid, 
+				txndate : dateSvc.serverDate, 			
+				user    : [objid: env.USERID, username: env.USER], 
+				action	: 'SEND BACK', 
+				remarks : 'Sent back to collector for verification'
+			]; 
+			txnlog.create( loginfo ); 
+		}
+		//if (!params.entity) throw new Exception("Please specify entity.");
+		//if (!params.annotation) throw new Exception("Please specify annotation.");
+
+		//annotationSvc.create(params.annotation);
+		//params.entity.remittance.state = "SEND_BACK";
+		//remittance.changeState(params.entity.remittance);
+
+		//params.entity.state = "DRAFT";
+		//collection.changeState(params.entity);
+
+		return getFieldCollection(params);//params.entity;
+	}
+
+	@ProxyMethod
+	public def remit( params ) {
+
+		if (!params.entity) throw new Exception("Please specify entity.");
+
+		def sb = sendback.findSendBackByRemittanceid(params.entity);
+		if (sb?.state == 'DRAFT') throw new Exception("You have not yet replied the send back document sent.");
+
+		def rem = remittance.read([objid: params.entity.remittanceid]);
+		if (!rem) throw new Exception('Remittance record does not exist or has already been deleted.');
+
+		def item = collection.findItemByFieldcollectionidAndItemid([objid: rem.collection.objid, itemid: rem.group.objid]);
+		if (!item) throw new Exception('Field collection item record does not exist or has already been deleted.');
+
+		remittance.removeDetails(rem);
+		def payments = getCollectionPaymentList([collectionid: item.objid]);
+
+		def totalamount = 0, totalaccts = 0;
+		def payment, loan, vr, p;
+		payments?.each{ o->
+			if (o.paymentid) {
+				p = collection.read([objid: o.paymentid], 'fc-payment');
+				vr = void_request.findVoidRequestByPaymentid([paymentid: p?.objid]);
+				if (vr && vr.state=='FOR_APPROVAL') {
+					throw new Exception('Cannot remit collection. There are still pending void request(s).');
+				}
+
+				if (p && !vr) {
+					loan = collection.read([objid: p.parentid], 'fc-loan');
+					if (!loan) throw new Exception('Field collection loan record does not exist or has already been deleted.');
+
+					payment = remittance.findRemittanceDetailByRefid([refid: p?.objid]);
+					if (!payment) {
+						payment = [
+							objid 		: 'REMDTL' + new UID(),
+							parentid 	: rem.objid,
+							refid 		: p.objid,
+							borrower 	: loan.borrower,
+							loanapp 	: loan.loanapp,
+							routecode 	: loan.routecode,
+							refno 		: p.refno,
+							amount 		: p.amount,
+							paytype 	: p.paytype,
+							payoption 	: p.payoption,
+							dtpaid		: p.dtpaid,
+							paidby 		: p.paidby
+						];
+						remittance.create(payment, "rem-detail");
+
+						if (p.payoption == 'check') {
+							payment.bank = p.bank;
+							payment.check = p.check;
+							remittance.update(payment, "rem-detail-check");
+						}
+
+						totalamount += p.amount;
+						totalaccts++;
+					}
+				}
+			}
+		}
+
+
+		/*
+		payments?.each{ o->
+			if (o.paymentid) {
+				def p = collection.read([objid: o.paymentid], 'fc-payment');
+				if (p?.version == 1) {
+					vr = void_request.findVoidRequestByPaymentid([paymentid: p?.objid]);
+					if (vr && vr.state=='FOR_APPROVAL') {
+						throw new Exception('Cannot remit collection. There are still pending void request(s).');
+					}
+
+					loan = collection.read([objid: p.parentid], 'fc-loan');
+					if (!loan) throw new Exception('Field collection loan record does not exist or has already been deleted.');
+
+					payment = remittance.findRemittanceDetailByRefid([refid: p?.objid]);
+					if (!payment) {
+						payment = [
+							objid 		: 'REMDTL' + new UID(),
+							parentid 	: rem.objid,
+							refid 		: p.objid,
+							borrower 	: loan.borrower,
+							loanapp 	: loan.loanapp,
+							routecode 	: loan.routecode,
+							refno 		: p.refno,
+							amount 		: p.amount,
+							paytype 	: p.paytype,
+							payoption 	: p.payoption,
+							dtpaid		: p.dtpaid,
+							paidby 		: p.paidby
+						];
+						remittance.create(payment, "rem-detail");
+
+						if (p.payoption == 'check') {
+							payment.bank = p.bank;
+							payment.check = p.check;
+							remittance.update(payment, "rem-detail-check");
+						}
+
+						totalamount += p.amount;
+						totalaccts++;
+					}
+
+				}
+			}
+		}
+		*/
+
+		rem.totalacctscollected = totalaccts;//params.entity.collectionsheets.size();
+		rem.totalamount = totalamount;
+		remittance.update(rem);
+		//if (rem) {
+		def loginfo = [
+			objid 	: 'TLOG' + new UID(), 
+			txnid   : rem.objid, 
+			txndate : dateSvc.serverDate, 			
+			user    : [objid: env.USERID, username: env.USER], 
+			action	: 'REMITTED', 
+			remarks : 'Collection remitted' 
+		]; 
+		txnlog.create( loginfo ); 
+		//}
+		rem.state = 'FOR_POSTING';
+		remittance.changeState(rem);
+
+		return getFieldCollectionList([collectionid: item.objid])
+		//def collectionsheets = getCollectionList([collectionid: fc_item.objid]);
+
+		/*
+		def payment;
+		def totalamount = 0;
+		def totalaccts = 0;
+		*/
+		/*
+		collectionsheets.each{ o->
+			//println o;
+			o.payments?.each{ p->
+				if (p.pending == 1) throw new Exception("Cannot remit collection. There are still pending void requests.");
+
+				if (p.voided == 0 && p.pending == 0 && p.version == 1) {
+					payment = remittance.findRemittanceDetailByRefid([refid: p.objid]);
+					if (!payment) {
+						payment = [
+							objid 		: 'REMDTL' + new UID(),
+							parentid 	: rem.objid,
+							refid 		: p.objid,
+							borrower 	: o.borrower,
+							loanapp 	: o.loanapp,
+							routecode 	: o.routecode,
+							refno 		: p.refno,
+							amount 		: p.amount,
+							paytype 	: p.paytype,
+							payoption 	: p.payoption,
+							dtpaid		: p.dtpaid,
+							paidby 		: p.paidby,
+							tag 		: 'ONLINE'
+						];
+						remittance.create(payment, "rem-detail");
+
+						if (p.payoption == 'check') {
+							payment.bank = p.bank;
+							payment.check = p.check;
+							remittance.update(payment, "rem-detail-check");
+						}
+						totalamount += p.amount;
+						totalaccts++;
+					}
+					//println p;
+				}
+			}
+		}
+
+		rem.totalacctscollected = totalaccts;//params.entity.collectionsheets.size();
+		rem.totalamount = totalamount;
+		remittance.update(rem);
+		//if (rem) {
+		def loginfo = [
+			objid 	: 'TLOG' + new UID(), 
+			txnid   : rem.objid, 
+			txndate : dateSvc.serverDate, 			
+			user    : [objid: env.USERID, username: env.USER], 
+			action	: 'REMITTED', 
+			remarks : 'Collection remitted' 
+		]; 
+		txnlog.create( loginfo ); 
+		//}
+		rem.state = 'FOR_POSTING';
+		remittance.changeState(rem);
+
+		params.entity.state = rem.state;
+		params.entity.remitted = true;
+
+		return params.entity;
+		*/
+	}
+}

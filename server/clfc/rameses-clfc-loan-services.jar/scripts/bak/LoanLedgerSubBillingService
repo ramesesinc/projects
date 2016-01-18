@@ -1,0 +1,210 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.services.extended.*;
+import java.rmi.server.UID;
+
+class LoanLedgerSubBillingService extends ActiveCrudService
+{
+	@Env
+	def env;
+
+	@ActiveDB(value="ledger_billing_assist")
+	def em;
+
+	@ActiveDB(value="ledger_billing")
+	def ledger_billing;
+
+
+	/*@ActiveDB(value="batch_collectionsheet")
+	def batch_collectionsheet;*/
+
+	@ActiveDB(value="field_collection")
+	def field_collection;
+
+	@ActiveDB(value="void_request")
+	def void_request;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@Service("LoanLedgerBillingService")
+	def billingSvc;
+	
+	void beforeCreate( params ) {
+		/*params.state = "FOR_DOWNLOAD";
+		params.dtcreated = dateSvc.serverDate;
+		params.createdby = (env.NAME? env.NAME : 'NOT IDENTIFIED');
+		params.dtmodified = params.dtcreated;
+		params.modifiedby = params.createdby;
+		params.branchid = (env.ORGID? env.ORGID : '');
+		setFlags(params)*/
+		//println 'params = '+params;
+	}
+
+	@ProxyMethod
+	public def getBillingRoutes( params ) {
+		if (!params.billingid) throw new Exception("Please specify billingid.");
+
+		return ledger_billing.getRoutes([objid: params.billingid]);
+	}
+
+	void afterCreate( params ) {
+		/*def map = [
+			objid	: params.parentid,
+			state 	: "VOIDED"
+		];
+		em.changeState(map);
+		field_collection.changeState(map);//changeBatchCollectionSheetStateVoided([objid: params.parentid]);
+		//println 'params = '+params;
+		sub_billing.create(params);*/
+		/*if (params.specialcollectionid) {
+			map = [
+				subbilling 			: params.objid,
+				specialcollectionid : params.specialcollectionid
+			]
+			em.create(map, "subbilling-specialcollection");
+		}*/
+		/*updateRoute(params);
+		updateBillingDetail(params);*/
+	}
+
+	private void setFlags( data ) {
+		data.totalfordownload = data.routes.size();
+		data.totaldownloaded = 0;
+		data.totalunposted = 0;
+		data.totalposted = 0;
+	}
+
+	void beforeUpdate( params ) {
+		params.dtmodified = dateSvc.serverDate;
+		params.modifiedby = (env.NAME? env.NAME : 'NOT IDENTIFIED');
+		def map = [
+			objid 	: params._parentid,
+			state 	: "FOR_DOWNLOAD"
+		];
+		em.changeState(map);//em.changeStateDraft([objid: params._parentid]);
+		//em.update([objid: params._parentid, dtcancelled: null, cancelledby: null, remarks: null]);
+		field_collection.changeState(map);//em.changeBatchCollectionSheetStateDraft([objid: params._parentid]);
+		/*field_collection.removeVoidRequestByFieldcolletionid([fieldcollectionid: params.objid]);
+		field_collection.removePaymentByFieldcollectionid([fieldcollectionid: params.objid]);
+		field_collection.removeRouteByFieldcollectionid([fieldcollectionid: params.objid]);
+		field_collection.removeLoanByParentid([parentid: params.objid]);
+		field_collection.delete(params);*/
+		setFlags(params);
+	}
+
+	void afterUpdate( params ) {
+		def map = [
+			objid 	: params.parentid,
+			state 	: "VOIDED"
+		];
+		em.changeState(map);
+		field_collection.changeState(map);
+		sub_billing.update(params);
+		updateRoute(params);
+		updateBillingDetail(params);
+	}
+
+	void updateBillingDetail( params ) {
+		em.removeBillingDetailByParentid([parentid: params.objid]);
+
+		def itm;
+		def billings;
+		def payments;
+		def paymentid;
+		def voidrequest;
+		params.routes.each {r->
+			billings = em.getBillingDetailByRoutecode([billingid: params.parentid, route_code: r.code]);
+			billings.each{bill->
+				itm = field_collection.read(bill, "loan");
+
+				bill.objid = "LLSBD"+new UID();
+				bill.parentid = params.objid;
+				em.create(bill, "detail");
+				if (itm) {
+					payments = field_collection.getPaymentsByParentid([parentid: itm.objid]);
+
+					itm.objid = bill.objid;
+					itm.parentid = params.objid;
+					field_collection.create(itm, "loan");
+
+					payments.each{
+						paymentid = "PT"+new UID();
+						voidrequest = void_request.findVoidRequestByPaymentid([paymentid: it.objid]);
+						if (voidrequest) {
+							void_request.changeStateVoided(voidrequest);
+							voidrequest.objid = "VOID"+new UID();
+							voidrequest.paymentid = paymentid;
+							voidrequest.collectionid = params.objid;
+							void_request.create(voidrequest);
+						}
+						it.objid = paymentid;
+						it.parentid = itm.objid;
+						it.fieldcollectionid = params.objid;
+						field_collection.create(it, "payment");
+					}
+				}
+			}
+		}
+	}
+
+	void removeFieldCollection( params ) {
+		field_collection.removeVoidRequestsByFieldcolletionid([fieldcollectionid: params.objid])
+		field_collection.removePaymentsByFieldcollectionid([fieldcollectionid: params.objid]);
+		field_collection.removeLoanByParentid([parentid: params.objid]);
+		field_collection.removeRouteByFieldcollectionid([fieldcollectionid: params.objid]);
+		field_collection.delete(params);
+	}
+
+	void afterOpen( data ) {
+		data.putAll(sub_billing.read(data));
+		data.routes = em.getRoutesByBillingid([billingid: data.objid]);
+	}
+
+	void updateRoute( params ) {
+		removeFieldCollection(params);
+		def itm = field_collection.read([objid: params.parentid]);
+		if (itm) {
+			itm.objid = params.objid;
+			//itm.state = 'FOR_DOWNLOAD';
+			field_collection.create(itm);
+		}
+
+		em.removeRouteByBillingid([billingid: params.objid]);
+		def map;
+		def mRoute;
+		params.routes.each{o->			
+			map = [
+				billingid 	: params.objid,
+				routecode 	: o.code,
+				downloaded	: 0,
+				uploaded 	: 0
+			];
+			em.create(map, 'billing_route');
+
+			mRoute = field_collection.findRouteByFieldcollectionidAndRoutecode([fieldcollectionid: params.parentid, routecode: o.code]);
+			if (mRoute) {
+				mRoute.fieldcollectionid = params.objid;
+				field_collection.create(mRoute, "route");
+			}
+		}
+	}
+
+	@ProxyMethod
+	public def resetBilling( params ) {
+		params.dtmodified = dateSvc.serverDate;
+		params.modifiedby = env.NAME? env.NAME : 'NOT IDENTIFIED';
+		em.update(params, "modify");
+		def map = [
+			objid			: params.objid,
+			totalfordownload: params.routes.size(),
+			totaldownloaded	: 0,
+			totalunposted	: 0,
+			totalposted 	: 0 
+		]
+		em.update(map);
+		updateRoute(params);
+		updateBillingDetail(params);
+		//em.removeBillingLockByBillingid([billingid: params.objid]);
+	}
+}

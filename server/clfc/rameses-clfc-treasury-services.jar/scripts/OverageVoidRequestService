@@ -1,0 +1,147 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.services.extended.*;
+
+class OverageVoidRequestService extends ActiveCrudListService
+{
+	@Env
+	def env;
+
+	@ActiveDB("overage_voidrequest")
+	def em;
+
+	@ActiveDB("overage")
+	def overage;
+
+	@ActiveDB("collection_remittance")
+	def remittance;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@Service('InboxService')
+	def inboxSvc;
+
+	@ProxyMethod
+	public def getColumns( params ) {
+		def cols = [];
+		if (!params.state) cols << [name: 'txnstate', caption: 'Status'];
+
+		cols << [name: 'overage.refno', caption: 'Ref. No.'];
+		cols << [name: 'overage.collectorname', caption: 'Collector'];
+		cols << [name: 'dtcreated', caption: 'Date Requested'];
+		cols << [name: 'author.name', caption: 'Requested By'];
+
+		if (params.state == 'APPROVED') {
+			cols << [name: 'dtposted', caption: 'Date Approved'];
+			cols << [name: 'poster.name', caption: 'Approved By'];
+		} else if (params.state == 'DISAPPROVED') {
+			cols << [name: 'dtposted', caption: 'Date Disapproved'];
+			cols << [name: 'poster.name', caption: 'Disapproved By'];
+		}
+
+		return cols;
+	}
+
+	@ProxyMethod
+	public def getStates() {
+		return [
+			[caption: 'All'],
+			[caption: 'DRAFT', state: 'DRAFT'],
+			[caption: 'FOR APPROVAL', state: 'FOR_APPROVAL'],
+			[caption: 'APPROVED', state: 'APPROVED'],
+			[caption: 'DISAPPROVED', state: 'DISAPPROVED']
+		];
+	}
+
+	void beforeList( params ) {
+		params.searchtext = (params.searchtext? params.searchtext : '') + '%';
+		if (params.state) {
+			params._listMethod = 'getListByState';
+		}
+	}
+
+	private void validate( data ) {
+		def item = em.findPendingRequestByOverageid([overageid: data.overage.objid]);
+		if (item) throw new Exception("There is a pending request for overage with ref. no. " + data.overage.refno);
+	}
+
+	void beforeCreate( data ) {
+		validate(data);
+		data.dtcreated = dateSvc.serverDate;
+		data.author = [objid: env.USERID, name: env.NAME];
+		if (!data.txnstate) data.txnstate = 'DRAFT';
+	}
+
+	void beforeUpdate( data ) {
+		validate(data);
+	}
+
+
+	@ProxyMethod
+	public def submitForApproval( params ) {
+		def data = changeState(params, 'FOR_APPROVAL');
+
+		def msginfo = [ 
+			objid 		: data.objid, 
+			dtcreated	: dateSvc.serverDate, 
+			refid 		: data.objid, 
+			filetype 	: 'overagevoidrequest', 
+			message 	: 'Submitted void request for overage with ref. no. ' + data.overage.refno + ' for approval.', 
+			senderid	: env.USERID, 
+			sendername 	: env.NAME, 
+			recipientid : 'APPROVER' 
+		]; 
+		inboxSvc.addMessage( msginfo );	
+
+		return open(data);
+	}
+
+	@ProxyMethod
+	public def approveDocument( params ) {
+		def data = post(params, "APPROVED");
+
+		def other = remittance.findRemittanceOtherByRefid([refid: data.overage.objid]);
+		if (other) {
+			remittance.delete(other, "rem-other");
+			overage.changeState([objid: other.refid, state: 'VOIDED']);
+		}
+
+		return data;
+	}
+
+	@ProxyMethod
+	public def disapprove( params ) {
+		def data = post(params, "DISAPPROVED");
+
+		overage.changeState([objid: data.overage.objid, state: 'NOTED']);
+
+		return data;
+	}
+
+	private def changeState( params, state ) {
+		def data = em.read(params);
+		if (!data) throw new Exception('Overage void request record does not exist or has already been deleted.');
+
+		if (data.txnstate == state) {
+			throw new Exception('Overage void request record already ' + state + '.');
+		}
+
+		data.txnstate = state;
+		em.changeState(data);
+
+		return open(data);
+	}
+
+	private def post( params, state ) {
+		def data = changeState(params, state);
+
+		data.dtposted = dateSvc.serverDate;
+		data.poster = [objid: env.USERID, name: env.NAME];
+		em.update(data, "post");
+
+		inboxSvc.removeMessageByRefid([refid: data.objid]);
+
+		return open(data);
+	}
+}

@@ -1,0 +1,262 @@
+package loanbranch;
+import java.util.*;
+global List results;
+global Map lastPayment;
+global Map floating;
+global Map resultMap;
+
+declare Payment
+	amountPaid		: double
+	lackingInterest	: double
+	balance			: double
+	days 			: int
+	currentSchedule	: int
+	addLacking 		: Boolean
+end
+
+declare References
+	amountPaid 			: double
+	interest 			: double
+	totalPayment 		: double
+	noOfSchedules 		: int
+	isFullPayment 		: Boolean
+	isOffset 			: Boolean
+	hasPartialPayment 	: Boolean
+end
+
+declare CurrentSchedule
+	allowGet 		: Boolean
+	runningDate 	: Date
+	currentDate		: Date
+	noOfSchedules 	: int
+	day 			: int
+	loantype		: String
+end
+
+declare ResolveScheduleDate
+	allowResolve 	: Boolean
+	runningDate 	: Date
+	currentSchedule : int
+	counter 		: int
+	loantype 		: String
+end
+
+declare ResolveSchedules
+	allowResolve	: Boolean
+	noOfSchedules 	: int
+	interest 		: double
+	amountPaid 		: double
+	lackingInterest : double
+	loantype 		: String
+end
+
+rule "resolve number of schedules monthly"
+	when
+		r: ResolveSchedules(allowResolve == true, loantype == "MONTHLY")
+	then
+		double amountpaid = r.getAmountPaid();
+		double interest = r.getInterest();
+
+		int noofschedules = r.getNoOfSchedules();
+
+		amountpaid -= (noofschedules * interest);
+
+		if (noofschedules <= 0) {
+			amountpaid = 0;
+		}
+
+		Boolean allowupdate = false;
+		if (amountpaid < 0) {
+			allowupdate = true;
+		}
+
+
+		if (allowupdate == true) {
+			noofschedules--;
+			r.setNoOfSchedules(noofschedules);
+			update(r);
+		} else if (allowupdate == false) {
+			if (noofschedules < 0) noofschedules = 0;
+			resultMap.put("noOfSchedules", noofschedules);
+		}
+
+end
+
+rule "resolve schedule date monthly"
+	when
+		r: ResolveScheduleDate(allowResolve == true, loantype == "MONTHLY")
+	then	
+		int counter = r.getCounter();
+		int currentschedule = r.getCurrentSchedule();
+
+		Date runningdate = r.getRunningDate();
+
+		Boolean allowupdate = true;
+		if (counter == currentschedule) {
+			allowupdate = false;
+		}
+
+		if (allowupdate == true) {
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(runningdate);
+			cal.add(Calendar.MONTH, 1);
+
+			counter++;
+			r.setCounter(counter);
+			r.setRunningDate(cal.getTime());
+			update(r);
+		} else if (allowupdate == false) {
+			resultMap.put("scheduledate", new java.text.SimpleDateFormat("yyyy-MM-dd").format(runningdate));
+		}
+end
+
+rule "get current schedule monthly"
+	when
+		c: CurrentSchedule(allowGet == true, loantype == "MONTHLY")
+	then
+		int noofschedules = c.getNoOfSchedules();
+
+		Date runningdate = c.getRunningDate();
+		Date currentdate = c.getCurrentDate();
+
+		Boolean allowupdate = true;
+		if (runningdate.compareTo(currentdate) > 0) {
+			allowupdate = false;
+		}
+
+		if (allowupdate == true) {
+			noofschedules++;
+
+			Calendar runCal = Calendar.getInstance();
+			runCal.setTime(runningdate);
+			runCal.add(Calendar.MONTH, 1);
+
+			c.setNoOfSchedules(noofschedules);
+			c.setRunningDate(runCal.getTime());
+			update(c);
+		} else if (allowupdate == false) {
+			if (noofschedules < 0) noofschedules = 0;
+			resultMap.put("noOfSchedules", noofschedules);
+		}
+end
+
+rule "amount paid less than equal to total payment"
+	when
+		r: References(amtpaid: amountPaid <= totalPayment, hasPartialPayment == false, isOffset == false, isFullPayment == false)
+		p: Payment()
+	then
+		Map listItem = new HashMap();
+
+		int currentschedule = p.getCurrentSchedule();
+		int noofschedules = r.getNoOfSchedules();
+		int days = p.getDays();
+
+		double interest = r.getInterest();
+
+		double lackinginterest = p.getLackingInterest();
+		Boolean addLacking = p.getAddLacking();
+		double interestpaid = 0;
+
+		if (days <= noofschedules) {
+			listItem.put("scheduleday", currentschedule);
+			listItem.put("interestPaid", interest);
+			days++;
+			currentschedule++;
+			results.add(listItem);
+		} else {
+			amtpaid = 0;
+		}
+
+		if (amtpaid == 0) {
+			Map item = new HashMap();
+			if (results.size() > 0) item = (Map) results.get(results.size() - 1);
+
+			double totalinterest = 0;
+
+			if (addLacking == true) {
+				totalinterest = interestpaid;
+			} else if (addLacking == false) {
+				totalinterest = (noofschedules * interest) + lackinginterest;
+			}
+
+			if (totalinterest > 0) item.put("totalinterest", totalinterest);
+
+		} else if (amtpaid > 0) {
+			p.setDays(days);
+			p.setCurrentSchedule(currentschedule);
+			update(p);
+		}
+end
+
+rule "amount paid less than interest"
+	when
+		r: References(amtpaid: amountPaid < interest, isOffset == false)
+		p: Payment()
+	then
+		Map listItem = new HashMap();
+
+		int currentschedule = p.getCurrentSchedule();
+		double lackinginterest = p.getLackingInterest();
+		double interest = r.getInterest();
+
+
+		if (amtpaid > 0 && lackinginterest == 0) {
+			listItem.put("scheduleday", currentschedule);
+			listItem.put("interestPaid", amtpaid);
+			listItem.put("totalinterest", amtpaid);
+			interest -= amtpaid;
+
+			floating.put("lackingInterest", interest);
+		}
+
+		results.add(listItem);
+end
+
+rule "amount paid has partial payment and offset is false"
+	when
+		r: References(hasPartialPayment == true, isOffset == false)
+		p: Payment();
+	then
+		Map listItem = new HashMap();
+
+		double interest = r.getInterest();
+		double amtpaid = r.getAmountPaid();
+		double lackinginterest = p.getLackingInterest();
+
+		int days = p.getDays();
+		int currentschedule = p.getCurrentSchedule();
+		int noofschedules = r.getNoOfSchedules();
+
+		Boolean addLacking = p.getAddLacking();
+		double interestpaid = 0;
+
+		if (days <= noofschedules) {
+			listItem.put("scheduleday", currentschedule);
+			listItem.put("interestPaid", interest);
+			days++;
+			currentschedule++;
+			results.add(listItem);
+		} else {
+			amtpaid = 0;
+		}
+
+		if (amtpaid == 0) {
+			Map item = new HashMap();
+			if (results.size() > 0) item = (Map) results.get(results.size() - 1);
+
+			double totalinterest = 0;
+
+			if (addLacking == true) {
+				totalinterest = interestpaid;
+			} else if (addLacking == false) {
+				totalinterest = (noofschedules * interest) + lackinginterest;
+			}
+
+			if (totalinterest > 0) item.put("totalinterest", totalinterest);
+
+		} else if (amtpaid > 0) {
+			p.setDays(days);
+			p.setCurrentSchedule(currentschedule);
+			update(p);
+		}
+end

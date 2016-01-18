@@ -1,0 +1,34 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.services.extended.*;
+
+class LoanCaptureNewPaymentBorrowerLookupService extends ActiveListService
+{
+	@ActiveDB('capture_payment')
+	def em;
+
+	@ActiveDB("collection_remittance")
+	def remittance;
+
+	String listMethod = 'getBorrowerLookupList';
+
+	@ProxyMethod
+	public def getColumns( params ) {
+		return [
+			[name: 'loanapp.loanamount', caption: 'Loan Amount', type: 'decimal', format: '#,##0.00', maxWidth: 80],
+			[name: 'loanapp.appno', caption: 'App. No.', maxWidth: 90],
+			[name: 'borrower.name', caption: 'Borrower'],
+			[name: 'route.description', caption: 'Route'],
+		];
+	}
+
+	void beforeList( params ) {
+		params.searchtext = (params.searchtext? params.searchtext : '') + '%';
+		if (params.remittanceid) {
+			def rem = remittance.read([objid: params.remittanceid]);
+			if (rem?.group.type == 'route') {
+				params._listMethod = 'getBorrowerLookupListByRemmittanceid';
+			}
+		}
+	}
+}

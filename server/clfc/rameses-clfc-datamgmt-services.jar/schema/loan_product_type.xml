@@ -1,0 +1,15 @@
+<schema>
+
+	<element name="loan_product_type" tablename="loan_product_type">
+		<field name="name" primary="true"/>
+		<field name="description" required="true"/>
+		<field name="term" required="true"/>
+		<field name="interestrate" required="true"/>
+		<field name="pastduerate" required="true"/>
+		<field name="underpaymentpenalty" required="true"/>
+		<field name="absentpenalty" required="true"/>
+		<field name="arrearspenalty" required="true" />
+		<field name="paymentschedule" required="true" />
+	</element>
+
+</schema>

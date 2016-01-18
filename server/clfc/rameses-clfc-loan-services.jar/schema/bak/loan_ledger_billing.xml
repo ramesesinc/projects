@@ -1,0 +1,153 @@
+<schema>
+
+	<element name="loan_ledger_billing" tablename="loan_ledger_billing">
+		<!--
+		<field name="objid" primary="true"/>
+		<field name="state" required="true"/>
+		<field name="dtcreated" required="true"/>
+		<field name="createdby" required="true"/>
+		<field name="dtmodified" required="true"/>
+		<field name="modifiedby" required="true"/>
+		<field name="collector_objid" required="true"/>
+		<field name="collector_username" required="true"/>
+		<field name="billdate" required="true"/>
+		<field name="branchid" required="true"/>
+		<field name="dtcancelled"/>
+		<field name="cancelledby"/>
+		<field name="remarks"/>
+		<field name="totalfordownload" required="true"/>
+		<field name="totaldownloaded" required="true"/>
+		<field name="totalunposted" required="true"/>
+		<field name="totalposted" required="true"/>
+	-->
+		<field name="objid" primary="true"/>
+		<field name="state" required="true"/>
+		<field name="dtcreated" required="true"/>
+		<field name="createdby" required="true"/>
+		<field name="dtmodified" required="true"/>
+		<field name="modifiedby" required="true"/>
+		<field name="collector_objid" required="true"/>
+		<field name="collector_name" required="true"/>
+		<field name="billdate" required="true"/>
+		<field name="branchid" required="true"/>
+		<field name="dtcancelled"/>
+		<field name="cancelledby"/>
+		<field name="remarks"/>
+		<field name="totalfordownload" required="true"/>
+		<field name="totaldownloaded" required="true"/>
+		<field name="totalunposted" required="true"/>
+		<field name="totalposted" required="true"/>
+	</element>
+
+	<element name="detail" tablename="loan_ledger_billing_detail">
+	<!--
+		<field name="objid" primary="true"/>
+		<field name="parentid" required="true"/>
+		<field name="ledgerid" required="true"/>
+		<field name="route_code" required="true"/>
+		<field name="acctid" required="true"/>
+		<field name="acctname" required="true"/>
+		<field name="loanamount" required="true"/>
+		<field name="loandate" required="true"/>
+		<field name="term" required="true"/>
+		<field name="appno" required="true"/>
+		<field name="dailydue" required="true"/>
+		<field name="amountdue" required="true"/>
+		<field name="overpaymentamount" required="true"/>
+		<field name="balance" required="true"/>
+		<field name="refno" required="true"/>
+		<field name="txndate" required="true"/>
+		<field name="dtmatured" required="true"/>
+		<field name="isfirstbill" required="true"/>
+		<field name="paymentmethod" required="true"/>
+		<field name="penalty" required="true"/>
+		<field name="interest" required="true"/>
+		<field name="others" required="true"/>
+		<field name="homeaddress" required="true"/>
+		<field name="collectionaddress"/>
+		<field name="loanappid" required="true"/>
+	-->
+		<field name="objid" primary="true"/>
+		<field name="parentid" required="true"/>
+		<field name="ledgerid" required="true"/>
+		<field name="route_code" required="true"/>
+		<field name="acctid" required="true"/>
+		<field name="acctname" required="true"/>
+		<field name="loanamount" required="true"/>
+		<field name="appno" required="true"/>
+		<field name="dailydue" required="true"/>
+		<field name="amountdue" required="true"/>
+		<field name="overpaymentamount" required="true"/>
+		<field name="balance" required="true"/>
+		<field name="refno" required="true"/>
+		<field name="txndate" required="true"/>
+		<field name="dtmatured" required="true"/>
+		<field name="isfirstbill" required="true"/>
+		<field name="paymentmethod" required="true"/>
+		<field name="loandate" required="true"/>
+		<field name="term" required="true"/>
+		<field name="loanappid" required="true"/>
+		<field name="homeaddress" required="true"/>
+		<field name="collectionaddress"/>
+		<field name="penalty" required="true"/>
+		<field name="interest" required="true"/>
+		<field name="others" required="true"/>
+	</element>
+
+	<element name="billing_route" tablename="loan_ledger_billing_route">
+ 		<field name="billingid" required="true"/>
+ 		<field name="routecode" required="true"/>
+ 		<field name="downloaded" required="true"/>
+ 		<field name="uploaded" required="true"/>
+	</element>
+
+	<element name="lock" tablename="loan_ledger_billing_lock">
+		<field name="billingid" required="true"/>
+		<field name="routecode" required="true"/>
+	</element>
+
+	<element name="modify" tablename="loan_ledger_billing">
+		<field name="objid" primary="true"/>
+		<field name="dtmodified" required="true"/>
+		<field name="modifiedby" required="true"/>
+	</element>	
+
+	<element name="sub-billing" tablename="sub_billing">
+		<field name="objid" primary="true" />
+		<field name="parentid" required="true" />
+		<field name="subcollector_objid" required="true" />
+		<field name="subcollector_name" required="true" />
+	</element>
+
+	<element name="cancel" tablename="loan_ledger_billing">
+		<field name="objid" primary="true"/>
+		<field name="dtcancelled" required="true"/>
+		<field name="cancelledby" required="true"/>
+	</element>
+
+	<element name="state" tablename="loan_ledger_billing">
+		<field name="objid" primary="true"/>
+		<field name="state" required="true"/>
+	</element>
+
+	<element name="totalfordownload" tablename="loan_ledger_billing">
+		<field name="objid" primary="true"/>
+		<field name="totalfordownload" required="true"/>
+	</element>
+
+	<element name="totaldownloaded" tablename="loan_ledger_billing">
+		<field name="objid" primary="true"/>
+		<field name="totaldownloaded" required="true"/>
+	</element>
+
+	<element name="totalunposted" tablename="loan_ledger_billing">
+		<field name="objid" primary="true"/>
+		<field name="totalunposted" required="true"/>
+	</element>
+
+	<element name="totalposted" tablename="loan_ledger_billing">
+		<field name="objid" primary="true"/>
+		<field name="totalposted" required="true"/>
+	</element>
+
+</schema>

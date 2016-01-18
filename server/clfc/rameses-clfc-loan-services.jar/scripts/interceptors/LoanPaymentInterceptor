@@ -1,0 +1,152 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.server.common.*;
+import com.rameses.rules.common.RuleRequest;
+import com.rameses.rules.common.*;
+import java.rmi.server.UID;
+import loan.facts.*;
+import loan.actions.*;
+
+class LoanPaymentInterceptor
+{
+	@ActiveDB("loan_ledger")
+	def em;
+
+	@ActiveDB("loanapp")
+	def loanapp;
+
+	@ActiveDB("loan_product_type")
+	def product_type;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@Service("NumberService")
+	def numSvc;
+
+	@Service("LoanLedgerService")
+	def ledgerSvc;
+
+	@Service("RuleExecutorService")
+	def ruleSvc;
+
+	@After(pattern="LoanPaymentService.postPayment", eval="result?.isfullpayment == true")
+	public void aftePostPayment( evt ) {
+		def result = evt.result;
+
+		//println 'full payment ledgerid: ' + result.ledgerid;
+		def ledger = em.read([objid: result.ledgerid]);
+		if (ledger) {
+			ledger.state = 'CLOSE'
+			ledger.balance = 0;
+			em.update(ledger);
+			loanapp.update([objid: ledger.appid, state: 'CLOSED']);
+			def i = loanapp.read([objid: ledger.appid], 'loanapp_search');
+			if (i) {
+				loanapp.update([objid: ledger.appid, state: 'CLOSED'], 'loanapp_search');
+			}
+		}
+	}
+
+	@Before(pattern="LoanPaymentService.postPayment")
+	public beforePostPaymentSemiMonthly( evt ) {
+		def params = evt.args[0];
+
+		def ledger = em.findByAppId([appid: params.appid]);
+		def pt = product_type.read([name: ledger.producttypeid]);
+		if (pt.paymentschedule == 'SEMIMONTHLY') {
+			def xlist = em.getLedgerDetailsByLedgerid([parentid: ledger?.objid, _start: 0, _limit: 1]);
+			if (!xlist) {
+				def app = loanapp.read([objid: params.appid]);
+
+				def appc = loanapp.read(app, 'loanapp_capture');
+				def dtreleased = appc?.dtreleased;
+				def cal = Calendar.getInstance();
+				cal.setTime(parseDate(dtreleased));
+
+				def day = cal.get(Calendar.DATE);
+				if ((day >= 1 && day <= 5) || (day >= 16 && day <= 20)) {
+					//do nothing
+				} else {
+					if (day <= 15) {
+						cal.set(Calendar.DATE, 15);
+					} else if (day > 15) {
+						cal.set(Calendar.DATE, cal.getActualMaximum(Calendar.DATE));
+					}
+					def interest = getDailyInterest(app?.objid);
+					def days = dateSvc.getDaysDiff(parseDate(dtreleased), cal.getTime()) - 1;
+
+					def i = (days * interest);
+
+					def item = [
+						objid 			: 'LDGRITM'+new UID(),
+						parentid 		: ledger.objid,
+						state 			: 'PREPAIDINTEREST',
+						amtdue 			: 0,
+						interestdue 	: i,
+						penaltydue 		: 0,
+						amtpaid 		: 0,
+						interestpaid	: i,
+						penaltypaid 	: 0,
+						amtbal 			: 0,
+						interestbal 	: 0,
+						penaltybal 		: 0,
+						dtpaid 			: appc?.dtreleased,
+						day 			: 0,
+						balance			: 0,
+						partialpayment 	: 0,
+						txndate 		: dateSvc.serverDate,
+						baseamount 		: 0,
+						groupbaseamount : 0,
+						remarks 		: 'Prepaid Interest'
+					];
+
+					em.create(item, 'detail');
+				}
+			}
+		}
+
+	}
+
+	private def parseDate( date ) {
+		if (!date) return null;
+		if (date instanceof Date) {
+			return date;
+		} else {
+			return java.sql.Date.valueOf(date);
+		}
+	}
+
+	private def getDailyInterest( appid ) {
+		def facts = [];
+		facts << buildDailyLoanappFactByAppid(appid);
+
+		def actions = new RuleAction(); 
+		actions.addCommand( "calcLoanDailyDue", new  CalculateLoanDailyDue(NS: numSvc) );
+		actions.addCommand( "calcLoanInterest", new  CalculateLoanInterest(NS: numSvc, LS: ledgerSvc) );
+		actions.addCommand( "calcLoanAbsentPenalty", new CalculateLoanAbsentPenalty(NS: numSvc, LS: ledgerSvc) );
+
+		ruleSvc.execute( "loanapplication", facts, actions, null );
+
+		def app = facts.find{ (it instanceof LoanApp) }
+		//println 'app ' + app.toMap();
+		return app? app.interest : 0;
+	}
+
+	private def buildDailyLoanappFactByAppid( appid ) {
+		def data = loanapp.read([objid: appid]);
+		def producttype = product_type.read(data.producttype);
+		//println 'product type: ' + producttype;
+		def item = [
+			appid 			: data.objid,
+			principal 		: data.loanamount,
+			absentrate 		: producttype.absentpenalty,
+			underpytrate 	: producttype.underpaymentpenalty,
+			intrate 		: producttype.interestrate,
+			term 			: producttype.term,
+			paymentschedule	: 'DAILY'
+		];
+		//println 'item ' + item;
+		return new LoanApp(item);
+	}
+}

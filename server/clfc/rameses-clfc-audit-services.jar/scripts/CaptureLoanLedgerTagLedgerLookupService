@@ -1,0 +1,23 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.services.extended.*;
+
+class CaptureLoanLedgerTagLedgerLookupService extends ActiveListService
+{
+	@ActiveDB("loan_ledger_payment_tag")
+	def em;
+
+	String listMethod = "getLedgers";
+
+	@ProxyMethod
+	public def getColumns( params ) {
+		return [
+			[name: 'appno', caption: 'AppNo'],
+			[name: 'borrower.name', caption: 'Borrower'],
+		];
+	}
+
+	void beforeList( params ) {
+		params.searchtext = (params.searchtext? params.searchtext : '') + '%';
+	}
+}

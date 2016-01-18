@@ -1,0 +1,10 @@
+<schema>
+
+	<element name="loanapp_approval" tablename="loanapp_approval">
+		<field name="objid" primary="true"/>
+		<field name="shoot"/> 
+		<field name="offers"/> 
+		<field name="option"/> 
+	</element>
+	
+</schema>

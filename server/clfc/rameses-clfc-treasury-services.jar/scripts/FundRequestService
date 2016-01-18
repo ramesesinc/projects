@@ -1,0 +1,156 @@
+import com.rameses.annotations.*;
+import com.rameses.common.*;
+import com.rameses.services.extended.*;
+import com.rameses.util.*;
+import java.rmi.server.UID;
+
+
+class FundRequestService 
+{	
+	@ActiveDB('fundrequest') 
+	def em; 
+
+	@ActiveDB('datatxnlog') 
+	def txnlog; 
+
+	@Service('DateService') 
+	def dateSvc; 
+
+	@Service('FundRequestSeriesService') 
+	def seriesSvc;
+
+	@Service('BranchFundService')
+	def branchFundSvc;			
+
+	@Service('InboxService')
+	def inboxSvc;		
+
+	@Env 
+	def env;
+	
+	@ProxyMethod
+	public def getColumns( params ) {
+		return [
+			[name:"dtcreated", caption:"DateCreated"], 
+			[name:"reqno", caption:"RequestNo"], 
+			[name:"amount", caption:"Amount"], 
+			[name:"remarks", caption:"Remarks"], 
+			[name:"posting.date", caption:"DatePosted"], 
+			[name:"posting.username", caption:"PostedBy"] 
+		]; 
+	} 
+
+	@ProxyMethod 
+	public def getList( params ) {
+		params.searchtext = (params.searchtext? params.searchtext: '')+'%'; 
+		if (params.state == 'PENDING') {
+			return em.getPendingList(params); 
+		} else {
+			return em.getListByState(params); 
+		} 
+	}
+
+
+	@ProxyMethod 
+	public def create( data ) {
+		if (!data.objid) throw new Exception('Please specify objid');
+		if (!data.data) throw new Exception('Please specify data');
+
+		data.reqno = seriesSvc.getFormattedSeriesNo(); 
+		data.dtcreated = dateSvc.serverDate;
+		data.author = [objid: env.USERID, username:env.USER]
+		data.state = 'PENDING';
+		data.posting = [
+			date: 		data.dtcreated, 
+			userid: 	env.USERID, 
+			username: 	env.USER, 
+			remarks:    'Request New Fund ('+data.reqno+')' 
+		]; 
+
+		def encstr = new Base64Cipher().encode(data.data); 
+		data.data = encstr;
+		em.create(data); 
+		em.create([objid:data.objid, dtcreated:data.dtcreated], 'pending'); 
+		seriesSvc.incrementSeries(); 
+
+ 		def msginfo = [ 
+			objid 		: data.objid, 
+			dtcreated	: data.dtcreated, 
+			refid 		: data.objid, 
+			filetype 	: 'fundrequest', 
+			message 	: 'Fund request# ' + data.reqno + ' submitted by ' + env.USER,  
+			senderid	: env.USERID, 
+			sendername 	: env.NAME, 
+			recipientid : 'BRANCH_MANAGER' 
+		]; 
+		inboxSvc.addMessage( msginfo );		
+		return data; 
+	} 
+
+	@ProxyMethod 
+	public def open( params ) {
+		if (!params.objid) throw new Exception('Please specify objid'); 
+
+		def info = em.read( params ); 
+		if (!info) throw new Exception("'"+params.objid+"' fund request not found"); 
+
+		if (info.data) {
+			info.data = new Base64Cipher().decode(info.data); 
+		} 
+		return info; 
+	} 
+
+	@ProxyMethod 
+	public def approve( params ) {	
+		if (!params.objid) throw new Exception('Please specify objid');
+		if (!params.remarks) throw new Exception('Please specify remarks');
+
+		def info = em.read([objid: params.objid]);
+		if (!info) throw new Exception("'"+params.objid+"' fund request not found");
+
+		def data = new Base64Cipher().decode(info.data); 
+		if (!data) data = [:]; 
+
+		info.state = 'APPROVED';
+		info.posting = [
+			date: 		dateSvc.serverDate.toString(), 
+			userid: 	env.USERID, 
+			username: 	env.USER,
+			remarks:    params.remarks 
+		]; 
+		em.update(info); 
+		em.delete(params, 'pending');		
+		inboxSvc.removeMessageByRefid([refid: info.objid]); 
+
+		def funddata = [ 
+			refid:   	info.objid, 				
+			amount: 	info.amount, 
+			remarks: 	info.remarks, 
+			txntype: 	data.txntype, 
+			collectors: data.collectors 			
+		];
+		branchFundSvc.save(funddata);  
+		return info; 
+	}
+
+	@ProxyMethod 
+	public def reject( params ) {	
+		if (!params.objid) throw new Exception('Please specify objid');
+		if (!params.remarks) throw new Exception('Please specify remarks');
+
+		def info = em.read([objid: params.objid]);
+		if (!info) throw new Exception("'"+params.objid+"' fund request not found");
+
+		info.state = 'REJECTED';
+		info.posting = [
+			date: 		dateSvc.serverDate.toString(), 
+			userid: 	env.USERID, 
+			username: 	env.USER,
+			remarks:    params.remarks 
+		]; 
+		em.update(info); 
+		em.delete(params, 'pending');
+		inboxSvc.removeMessageByRefid([refid: info.objid]); 
+		return info; 
+	} 	
+} 

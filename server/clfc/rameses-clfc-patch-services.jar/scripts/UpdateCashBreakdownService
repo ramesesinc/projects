@@ -1,0 +1,175 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.services.extended.*;
+
+class UpdateCashBreakdownService
+{
+	@ActiveDB(value="loan_ledger_billing")
+	def ledger_billing;
+
+	@ActiveDB(value="followup_collection")
+	def followup_collection;
+
+	@ActiveDB(value="special_collection")
+	def special_collection;
+
+	@ActiveDB(value="online_collection")
+	def online_collection;
+
+	@ActiveDB(value="collection_cashbreakdown")
+	def collection_cashbreakdown;
+
+	@Service("UsergroupMemberLookupService")
+	def userGroupSvc;
+
+	@Service("CollectionCashbreakdownService")
+	def cashbreakdownSvc;
+
+	@ProxyMethod
+	public def getCollectors() {
+		def list = userGroupSvc.getList([_tag: 'FIELD_COLLECTOR,CASHIER']);
+		list.unique{ it.objid };
+		return list;
+	}
+
+	@ProxyMethod
+	public def getRoutes( params ) {
+		def list = [];
+
+		def items;
+		def billing = ledger_billing.findBillingByCollectoridAndBilldate(params);
+		if (billing) items = ledger_billing.getRoutesByBillingid([billingid: billing.objid]);
+
+		if (items) {
+			items.each{ 
+				it.objid = billing.objid;
+				it.type = 'route';
+			}
+			list.addAll(items);
+		}
+
+		items = followup_collection.getFollowupCollectionByBillingid(billing);
+		def item;
+		items.eachWithIndex{itm, idx->
+			item = [
+				objid 		: itm.objid,
+				description	: 'Follow-up ' + (idx+1),
+				type 		: 'followup'
+			]
+			list.add(item);
+		}
+
+		items = special_collection.getSpecialCollectionByBillingid(billing);
+		items.eachWithIndex{itm, idx-> 
+			item = [
+				objid		: itm.objid,
+				description	: 'Special ' + (idx+1),
+				type 		: 'special'
+			]
+			list.add(item);
+		}
+
+		def c = online_collection.findCollectionByCollectorAndTxndate([collectorid: params.collectorid, txndate: params.billdate]);
+		if (c) {
+			item = [
+				description : 'Direct',
+				type		: 'online'
+			];
+			list.add(item);
+		}
+		/*list.addAll(online_collection.getRoutesByCollectoridAndTxndate(params));
+		list.unique{ it.code }.sort{ it.description }*/
+
+		return list;
+	}
+
+	@ProxyMethod
+	public def saveCashBreakdown( params ) {
+		if (!params.breakdown) throw new Exception("Please specify breakdown.");
+
+		return cashbreakdownSvc.create(params.breakdown);
+	}
+
+	@ProxyMethod
+	public def updateCashBreakdown( params ) {
+		if (!params.breakdown) throw new Exception("Please specify breakdown.");
+
+		return cashbreakdownSvc.update(params.breakdown);
+	}
+
+	@ProxyMethod
+	public def getCashbreakdown( params ) {
+		if (!params.billdate) throw new Exception("Please specify billdate.");
+
+		def breakdown;
+		if (params.type == 'online') {			
+			breakdown = getOnlineBreakdown(params);
+		} else if (params.type == 'followup') {
+			breakdown = getFollowupBreakdown(params);
+		} else if (params.type == 'special') {
+			breakdown = getSpecialBreakdown(params);
+		} else {			
+			breakdown = collection_cashbreakdown.findByCollectionid([collectionid: params.collectionid, groupid: params.routecode]);
+			if (breakdown) {
+				def prm = [
+					collectionid 	: breakdown.collection.objid,
+					groupid			: breakdown.group.objid,
+					grouptype 		: breakdown.group.type
+				]
+				breakdown.items = collection_cashbreakdown.getBreakdownDetail(prm);	
+			}
+		}
+		
+		if (!breakdown) throw new Exception("No cash breakdown for this collection.");
+		return breakdown;
+	}
+
+	private def getOnlineBreakdown( params ) {
+		//if (!params.collectorid) throw new Exception("Please specify collectorid.");
+		def cashbreakdown = collection_cashbreakdown.findByCollectionid(params);
+		if (cashbreakdown) {
+			def prm = [
+				collectionid 	: cashbreakdown.collection.objid,
+				groupid			: cashbreakdown.group.objid,
+				grouptype 		: cashbreakdown.group.type
+			]
+			cashbreakdown.items = collection_cashbreakdown.getBreakdownDetail(prm);
+		}
+
+		return cashbreakdown;
+	}
+
+	private def getFollowupBreakdown( params ) {
+		if (!params.collectorid) throw new Exception("Please specify collectorid.");
+		if (!params.collectionid) throw new Exception("Please specify collectionid.");
+
+		def cashbreakdown = collection_cashbreakdown.findByCollectionid(params);
+		if (cashbreakdown) {
+			def prm = [
+				collectionid 	: cashbreakdown.collection.objid,
+				groupid			: cashbreakdown.group.objid,
+				grouptype 		: cashbreakdown.group.type
+			]
+			cashbreakdown.items = collection_cashbreakdown.getBreakdownDetail(prm);
+		}
+
+		return cashbreakdown;
+	}
+
+	private def getSpecialBreakdown( params ) {
+		if (!params.collectorid) throw new Exception("Please specify collectorid.");
+		if (!params.collectionid) throw new Exception("Please specify collectionid.");
+
+		def cashbreakdown = collection_cashbreakdown.findByCollectionid(params);
+		if (cashbreakdown) {
+			def prm = [
+				collectionid 	: cashbreakdown.collection.objid,
+				groupid			: cashbreakdown.group.objid,
+				grouptype 		: cashbreakdown.group.type
+			]
+			cashbreakdown.items = collection_cashbreakdown.getBreakdownDetail(prm);
+		}
+
+		return cashbreakdown;
+	}
+}

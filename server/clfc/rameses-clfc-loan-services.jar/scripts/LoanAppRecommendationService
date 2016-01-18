@@ -1,0 +1,16 @@
+import com.rameses.annotations.*;
+import com.rameses.common.*;
+import com.rameses.services.extended.*;
+
+class LoanAppRecommendationService extends ActiveCrudService 
+{	
+	@ActiveDB(value='loanapp_recommendation')
+	def em;
+
+	
+	public Object open(Object params) {
+		def data = em.read(params);
+		if(data == null) data = [:];
+		return data;
+	}
+}

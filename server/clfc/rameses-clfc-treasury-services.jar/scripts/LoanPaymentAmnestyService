@@ -1,0 +1,354 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.server.common.*;
+import com.rameses.rules.common.RuleRequest;
+import java.rmi.server.UID;
+import org.joda.time.*;
+import org.drools.KnowledgeBase;
+
+class LoanPaymentAmnestyService
+{
+	@ActiveDB('ledgeramnesty_fix')
+	def ledgeramnesty_fix;
+
+	@ActiveDB('loan_ledger')
+	def loan_ledger;
+
+	@ActiveDB('loanapp')
+	def loanapp;
+
+	@ActiveDB('loan_ledger_payment')
+	def ledger_payment;
+
+	@Resource('RuleService')
+	def ruleSvc;
+
+	@Service('DateService')
+	def dateSvc;
+
+	@Service
+	def selfSvc;
+
+
+	@ProxyMethod
+	public def postPayment( params, amnesty ) {
+		def type = amnesty?.type;
+		if (type == 'FIX') {
+			return postPaymentFix(params, amnesty);
+		} else if (type == 'BADDEBT') {
+			return postPaymentBadDebt(params, amnesty);
+		}
+	}
+
+	private def postPaymentFix( params, amnesty ) {
+		def txndate;
+		if (params.entity) {
+			txndate = params.entity.txndate;
+		} else {
+			txndate = params.txndate;
+		}
+
+		def am = ledgeramnesty_fix.read([objid: amnesty?.refid]);
+		if (!am) throw new Exception('Amesty fix record does not exist or has already been deleted.');
+
+		def ledger = loan_ledger.read([objid: am.ledger.objid]);
+		if (!ledger) throw new Exception('Ledger record does not exist or has already been deleted.');
+
+		def lastpaymentdate;
+		if (ledger.dtlastpaid) {
+			lastpaymentdate = parseDate(ledger.dtlastpaid);
+		}
+
+		def xdate = parseDate(txndate);
+
+		def day = 1;
+		def lastledgeritem = loan_ledger.findLastLedgerItemByParentId([parentid: ledger.objid]);
+		if (lastledgeritem) {
+			day = lastledgeritem.day;
+		}
+
+
+		def xpayment = loan_ledger.read([objid: params.ledgerpaymentid], 'payment');
+		if (xpayment) {
+			xpayment.balance = ledger.balance;
+			xpayment.amnestybalance = am.balance;
+			loan_ledger.update(xpayment, 'payment');
+			xpayment = loan_ledger.read(xpayment, 'payment');
+		}
+
+		def results = [];
+
+		def paymentFact = [amountPaid: params.payamount];
+
+		def referencesFact = [
+			amountPaid 		: params.payamount,
+			compromiseType 	: amnesty?.type,
+			balance 		: am?.balance,
+			isProceed 		: false,
+		];
+
+		def req = new RuleRequest("loanamnesty");
+
+		req.addFact("loanamnesty", "Payment", paymentFact); 
+		req.addFact("loanamnesty", "References", referencesFact);
+		//req.addFact("loan", "Compromise", compromiseFact);
+		req.addGlobal("results", results);
+
+
+		if (lastpaymentdate && (xdate.compareTo(lastpaymentdate) == 0)) {
+			selfSvc.offSetLastRecord(lastledgeritem);
+
+			def xpayments = ledger_payment.getPaymentsByParentidAndTxndate([parentid: ledger.objid, txndate: txndate]);
+			xpayments.sort{ it.refno }
+
+			def idx = 0, xitm;
+			def xlist = [];
+			while (idx < xpayments.size()) {
+				xitm = xpayments[idx];
+				xlist.add(xitm);
+				if (xitm.objid == params.ledgerpaymentid) {
+					break;
+				}
+				idx++;
+			}
+			xpayments.clear();
+			xpayments.addAll(xlist);
+
+			def cp = xpayments.find{ it.objid == params.ledgerpaymentid }
+			if (cp) xpayments.remove(cp);
+
+			def totalprevious = xpayments?.amount.sum();
+			if (!totalprevious) totalprevious = 0;
+
+			referencesFact.amountPaid = totalprevious + params.payamount;
+
+			xpayments.sort{ it.refno }
+
+			def fp = xpayments[0];
+			if (fp) {
+				fp = loan_ledger.read([objid: fp.objid], 'payment');
+				if (fp.amnestybalance) {
+					referencesFact.balance = fp.amnestybalance;
+				}
+
+			}
+		}
+
+
+		//req.addGlobal("lastPayment", lastPayment);
+		//req.addGlobal("floating", floating);
+
+		try {
+			ruleSvc.execute( req );	
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		def lastitem;
+		if (results) {
+			lastitem = results[results.size()-1];
+			def bal = lastitem.balance;
+
+			if (bal != null && bal != '') {
+
+				loan_ledger.update([objid: ledger.objid, balance: lastitem.balance], "balance");
+				ledgeramnesty_fix.update([objid: am.objid, balance: lastitem.balance], 'balance');
+
+				if (bal == 0) {
+					def xledger = loan_ledger.read(ledger);
+					xledger.state = 'CLOSE';
+					loan_ledger.update(xledger);
+					loanapp.update([objid: xledger.appid, state: 'CLOSED']);
+					def xx = loanapp.read([objid: xledger.appid], 'loanapp_search');
+					if (xx) {
+						loanapp.update([objid: xledger.appid, state: 'CLOSED'], 'loanapp_search');	
+					}
+				}
+			}
+		}
+
+		def la = loanapp.read([objid: ledger.appid], 'loanapp_close');
+		def xledger = loan_ledger.read(ledger);
+		if (la || referencesFact.isFullPayment == true || xledger.balance == 0) {
+			xledger.state = 'CLOSE';
+			loan_ledger.update(xledger);
+			loanapp.update([objid: xledger.appid, state: 'CLOSED']);
+			def xx = loanapp.read([objid: xledger.appid], 'loanapp_search');
+			if (xx) {
+				loanapp.update([objid: xledger.appid, state: 'CLOSED'], 'loanapp_search');	
+			}
+		}
+
+		def currentdate = dateSvc.serverDate;
+		results?.each{ o->
+			def itm = createLedgerItem(ledger);
+			itm.amnestyid = amnesty.objid;
+
+			itm.amtdue = 0;
+			if (o.payment) {
+				itm.amtdue = new BigDecimal(o.payment).setScale(2, BigDecimal.ROUND_HALF_UP);
+			}
+			itm.amtpaid = itm.amtdue;
+
+			itm.interestdue = 0;
+			if (o.interestPaid) {
+				itm.interestdue  = new BigDecimal(o.interestPaid).setScale(2, BigDecimal.ROUND_HALF_UP);
+			}
+			itm.interestpaid = itm.interestdue;
+
+			itm.penaltydue = 0;
+			if (o.penalty) {
+				itm.penaltydue = new BigDecimal(o.penalty).setScale(2, BigDecimal.ROUND_HALF_UP);
+			}
+			itm.penaltypaid = itm.penaltydue;
+
+			itm.amtbal = 0;
+			
+			itm.interestbal = 0;
+			if (o.interestbal) {
+				itm.interestbal = o.interestbal;
+			}
+
+			itm.penaltybal = 0;
+			if (o.penaltybal) {
+				itm.penaltybal = o.penaltybal;
+			}
+
+			itm.dtpaid = txndate;//it.dtpaid? it.dtpaid : null;
+			itm.refno = params.refno;//it.refno? it.refno : null;
+			itm.day = day;
+			if (o.day) {
+				itm.day = o.day;//dateSvc.getDaysDiff(parseDate(appc?.dtreleased), parseDate(o.scheduledate)) - 1;
+			}
+
+			itm.balance = 0;
+			if (o.balance) {
+				itm.balance = new BigDecimal(o.balance).setScale(2, BigDecimal.ROUND_HALF_UP);
+			}
+
+			//println 'passing 4'
+			itm.partialpayment = 0;
+			if (o.partialpayment) {
+				itm.partialpayment = new BigDecimal(o.partialpayment).setScale(2, BigDecimal.ROUND_HALF_UP);
+			}
+
+			itm.baseamount = ledger.dailydue;
+			itm.groupbaseamount = ledger.dailydue;
+
+			//itm.paytype = it.paytype;
+			//itm.txndate = dateSvc.serverDate;
+			itm.txndate = currentdate;
+			//println 'item = '+itm;
+			o.item = itm;
+			//if (txndate.toString() == '2006-01-24') println 'current day ' + data.currentDay;
+			loan_ledger.create(itm, 'detail');
+		}
+
+		loan_ledger.update([objid: ledger.objid, dtlastpaid: txndate], 'dtlastpaid');
+
+		//println 'amnestyid ' + amnesty?.amnestyid;
+		return [results: results, amnestyid: amnesty?.amnestyid, ledgerid: ledger?.objid];
+	}
+
+	private def postPaymentBadDebt( params, amnesty ) {
+		def am = ledgeramnesty_baddebt.read([objid: amnesty?.refid]);
+		if (!am) throw new Exception('Amesty bad debt record does not exist or has already been deleted.');
+
+		def ledger = loan_ledger.read([objid: am.ledger.objid]);
+		if (!ledger) throw new Exception('Ledger record does not exist or has already been deleted.');
+
+		def results = [];
+		def lastitem = loan_ledger.findLastLedgerItemByParentId([parentid: ledger?.objid]);
+		if (lastitem) {
+
+			def item = [
+				objid			: 'AMD' + new UID(),
+				parentid 		: ledger?.objid,
+				state 			: 'ADJUSTMENT',
+				amtdue 			: 0, //(lastitem? lastitem.amtdue : 0),
+				interestdue 	: 0, //(lastitem? lastitem.interestdue : 0),
+				penaltydue 		: 0, //(lastitem? lastitem.penaltydue : 0),
+				amtpaid 		: 0, //(lastitem? lastitem.amtpaid : 0),
+				interestpaid	: 0, //(lastitem? lastitem.interestpaid : 0),
+				penaltypaid		: 0, //balance, //> 0? balance * -1 : 0), //(lastitem? lastitem.penaltypaid : 0),
+				amtbal 			: 0, //(lastitem? lastitem.amtbal : 0),
+				interestbal 	: 0, //(lastitem? lastitem.interestbal : 0),
+				penaltybal 		: 0, //(lastitem? lastitem.penaltybal : 0),
+				dtpaid 			: lastitem?.dtpaid,
+				refno			: lastitem?.refno,
+				day 			: lastitem?.day,
+				balance 		: (am.amount * -1), //(lastitem? lastitem.balance : l.totalprincipal),
+				partialpayment 	: 0,
+				txndate 		: dateSvc.serverDate,
+				amnestyid 		: amnesty?.amnestyid,
+				baseamount 		: 0, //(lastitem? lastitem.baseamount : 0),
+				groupbaseamount : 0, //(lastitem? lastitem.groupbaseamount : 0),
+				remarks 		: 'Bad Debt'
+			]
+			//println 'item ' + item;
+			loan_ledger.create(item, "detail");
+
+			results.add(item);
+			//item.parentid = am.amnestyid;
+			//ledgeramnesty.create(item, 'posting-detail');
+		}
+
+
+		def xledger = loan_ledger.read([objid: l.objid]);
+		xledger.state = 'CLOSE';
+		loan_ledger.update(xledger);
+		loanapp.update([objid: xledger.appid, state: 'CLOSED']);
+		def xx = loanapp.read([objid: xledger.appid], 'loanapp_search');
+		if (xx) {
+			loanapp.update([objid: xledger.appid, state: 'CLOSED'], 'loanapp_search');	
+		}
+
+		return [results: results, amnestyid: amnesty?.amnestyid, ledgerid: ledger?.objid];
+	}
+
+
+	private def createLedgerItem( ledger ) {
+		return [
+			objid 	: 'LDGRITM' + new UID(),
+			parentid: ledger.objid,
+			state 	: 'RECEIVED'
+		];
+	}
+
+	@ProxyMethod
+	public def offSetLastRecord( lastitem ) {		
+		def itm = createLedgerItem([objid: lastitem.parentid]);
+		itm.state = 'OFFSET';
+		itm.amtdue = 0; //lastitem.amtdue*-1;
+		itm.interestdue = 0; //lastitem.interestdue*-1;
+		itm.penaltydue = 0; //lastitem.penaltydue*-1;
+		itm.amtpaid = 0; //lastitem.amtpaid;//*-1;
+		itm.interestpaid = lastitem.interestpaid*-1;
+		itm.penaltypaid = lastitem.penaltypaid*-1;
+		itm.amtbal = 0; //lastitem.amtbal*-1;
+		itm.interestbal = 0; //lastitem.interestbal*-1;
+		itm.penaltybal = 0; //lastitem.penaltybal*-1;
+		itm.dtpaid = lastitem.dtpaid;
+		itm.refno = lastitem.refno;
+		itm.day = lastitem.day;
+		itm.balance = lastitem.balance*-1;
+		itm.partialpayment = lastitem.partialpayment*-1;
+		itm.txndate = dateSvc.serverDate;
+		itm.baseamount = 0;
+		itm.groupbaseamount = 0;
+		itm.amnestyid = lastitem.amnestyid;
+		loan_ledger.create(itm, 'detail');
+
+		return [item: itm, amnestyid: lastitem.amnestyid];
+	}
+
+	private def parseDate( date ) {
+		if (!date) return null;
+
+		if (date instanceof Date) {
+			return date;
+		} else {
+			return java.sql.Date.valueOf(date);
+		}
+	}
+}

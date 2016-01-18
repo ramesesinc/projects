@@ -1,0 +1,15 @@
+<schema>
+
+	<element tablename="branch_report_criteria">
+		<field name="code" primary="true" />
+		<field name="name" required="true" />
+		<field name="dtcreated" required="true" />
+		<field name="author_objid" required="true" />
+		<field name="author_name" required="true" />
+		<field name="dtmodified" />
+		<field name="modifiedby_objid" />
+		<field name="modifiedby_name" />
+		<field name="description" />
+	</element>
+
+</schema>

@@ -1,0 +1,65 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import java.rmi.server.UID;
+
+class CollectionInterceptor
+{
+	@Env
+	def env;
+
+	@ActiveDB("dailycollection")
+	def em;
+
+	@ActiveDB("collection_remittance")
+	def remittance;
+
+	@ActiveDB("collector_remarks")
+	def collector_remarks;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@After(pattern="LoanFieldCollectionService.post")
+	public void afterFieldCollectionPost( evt ) {
+		def params = evt.args[0];
+
+		createDailyCollection(params.remittance);
+	}
+
+	@After(pattern="LoanOnlineCollectionService.post")
+	public void afterOnlineCollectionPost( evt ) {
+		def params = evt.args[0];
+
+		createDailyCollection(params.remittance);
+	}
+
+	private void createDailyCollection( rmt ) {
+		def rem = remittance.read(rmt);
+		if (!rem) throw new Exception("Remittance record does not exist or has already been deleted.");
+
+		if (rem.totalamount <= 0) return;
+
+		def collection = em.findDailyCollectionByTxndate(rem);
+		if (!collection) {
+			collection = [
+				objid			: 'DC' + new UID(),
+				state			: 'DRAFT',
+				txndate 		: rem.txndate,
+				dtcreated		: dateSvc.serverDate,
+				author			: [objid: env.USERID, name: env.NAME],
+				totalcollection	: 0
+			];
+			em.create(collection);
+		}
+
+		/*
+		def list = remittance.getOthers(rem);
+		def others = (list? list.amount.sum() : 0);
+		if (!others) others = 0;
+		*/
+
+		//collection.totalcollection += (rem.totalamount + others);
+		collection.totalcollection += rem.totalamount;
+		em.update(collection, "totalcollection");
+	}
+}

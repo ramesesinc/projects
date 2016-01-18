@@ -1,0 +1,35 @@
+<schema>
+
+	<element name="amnesty_extension" tablename="amnesty_extension">
+		<field name="objid" primary="true" />
+		<field name="txnstate" required="true" />
+		<field name="dtcreated" required="true" />
+		<field name="author_objid" required="true" />
+		<field name="author_name" required="true" />
+		<field name="txndate" required="true" />
+		<field name="refno" required="true" />
+		<field name="amnesty_objid" required="true" />
+		<field name="amnesty_refno" required="true" />
+		<field name="amnesty_dtstarted" required="true" />
+		<field name="amnesty_dtended" required="true" />
+		<field name="amnesty_amount" required="true" />
+		<field name="borrower_objid" required="true" />
+		<field name="borrower_name" required="true" />
+		<field name="extendeddate" required="true" />
+		<field name="extendeddays" required="true" />
+		<field name="remarks" required="true" />
+		<field name="dtposted" />
+		<field name="poster_objid" />
+		<field name="poster_name" />
+		<field name="poster_remarks" />
+	</element>
+
+	<element name="extension-post" tablename="amnesty_extension">
+		<field name="objid" primary="true" />
+		<field name="dtposted" required="true" />
+		<field name="poster_objid" required="true" />
+		<field name="poster_name" required="true" />
+		<field name="poster_remarks" required="true" />
+	</element>
+
+</schema>

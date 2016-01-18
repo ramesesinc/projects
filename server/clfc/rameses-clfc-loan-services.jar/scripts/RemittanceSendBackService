@@ -1,0 +1,58 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.services.extended.*;
+import java.rmi.server.UID;
+
+class RemittanceSendBackService extends ActiveCrudService
+{
+	@Env
+	def env;
+
+	@ActiveDB("collection_remittance_sendback")
+	def em;
+
+	@Service("DateService")
+	def dateSvc;
+
+	void beforeCreate( data ) {
+		def item = em.findSendBackByRemittanceid(data);
+		if (item) em.delete(item);
+
+		data.dtcreated = dateSvc.serverDate;
+		data.author = [objid: env.USERID, name: env.NAME];
+	}
+
+	@ProxyMethod
+	public def accept( params ) {
+		if (!params.reply) throw new Exception('Please specify reply.');
+
+		def data = changeState(params, 'ACCEPTED');
+		
+		data.dtaccepted = dateSvc.serverDate;
+		data.acceptedby = [objid: env.USERID, name: env.NAME];
+		data.reply = params.reply;
+		em.update(data, "accept");
+
+		return open(data);
+	}
+
+	private def changeState( params, state ) {
+		def data = em.read(params);
+		if (!data) throw new Exception('Send back record does not exist or has already been deleted.');
+
+		if (data.state == state) {
+			throw new Exception('Send back record already ' + state + '.');
+		}
+
+		data.state = state;
+		em.changeState(data);
+
+		return open(data);
+	}
+
+	@ProxyMethod
+	public def openByRemittanceid( params ) {
+		if (!params.remittanceid) throw new Exception("Please specify remittanceid.");
+		return em.findSendBackByRemittanceid(params);
+	}
+}

@@ -1,0 +1,11 @@
+<schema>
+
+	<element tablename="smc_condition">
+		<field name="name" primary="true" />
+		<field name="title" required="true" />
+		<field name="datatype" required="true" />
+		<field name="handler" required="true" />
+		<field name="vardatatype" required="true" />
+	</element>
+
+</schema>

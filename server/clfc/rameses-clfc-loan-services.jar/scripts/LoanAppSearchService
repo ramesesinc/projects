@@ -1,0 +1,32 @@
+import com.rameses.annotations.*;
+import com.rameses.common.*;
+import com.rameses.services.extended.*;
+
+class LoanAppSearchService 
+{	
+	@ActiveDB(value='loanapp_search')
+	def em;
+
+	@ProxyMethod 
+	public List getColumns( params ) {
+		return [
+			[name:'appno', caption:'App No.', width:120, maxWidth:120],
+			[name:'dtcreated', caption:'Date Applied', width:140, maxWidth:140, type:'date', outputFormat:'yyyy-MMM-dd'],
+			[name:'fullborrowername', caption:'Borrower Name'],
+			[name:'loanamount', caption:'Applied Amount', width:100, maxWidth:100, type:'decimal'], 
+			//a spacer column 
+			[name:null, caption:''] 
+		];
+	}
+
+	@ProxyMethod 
+	public List getList( params ) { 
+		params.searchtext = (params.searchtext? params.searchtext: '')+'%'; 
+		params.state = (params.state? param.state: params._tag);
+		if (params.appmode == 'CAPTURE') 
+			return em.getCaptureList(params); 
+	    else 
+			return em.getList(params); 
+	}
+
+}

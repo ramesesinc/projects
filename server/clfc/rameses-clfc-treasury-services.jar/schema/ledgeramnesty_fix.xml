@@ -1,0 +1,56 @@
+<schema>
+
+	<element tablename='ledgeramnesty_fix'>
+		<field name='objid' primary='true' />
+		<field name='txnstate' required='true' />
+		<field name='dtcreated' required='true' />
+		<field name='author_objid' required='true' />
+		<field name='author_name' required='true' />
+		<field name='amnestyid' required='true' />
+		<field name='refid' required='true' />
+		<field name='borrower_objid' required='true' />
+		<field name='borrower_name' required='true' />
+		<field name='loanapp_objid' required='true' />
+		<field name='loanapp_appno' required='true' />
+		<field name='ledger_objid' required='true' />
+		<field name='ledger_balance' required='true' />
+		<field name='type_caption' required='true' />
+		<field name='type_value' required='true' />
+		<field name='description' required='true' />
+		<field name='amount' required='true' />
+		<field name='balance' required='true' />
+		<field name='dtstarted' />
+		<field name='dtended' />
+		<field name='dtverified' />
+		<field name='verifier_objid' />
+		<field name='verifier_name' />
+		<complex name='info' required='false' merge='true' serializer='default' />
+	</element>
+
+	<element name='item' tablename='ledgeramnesty_fix_item'>
+		<field name='objid' primary='true' />
+		<field name='parentid' required='true' />
+		<field name='amount' required='true' />
+		<field name='description' required='true' />
+		<field name='days' required='true' />
+		<field name='months' required='true' />
+		<field name='type_caption' required='true' />
+		<field name='type_value' required='true' />
+		<field name='index' required='true' />
+		<field name='totaldays' required='true' />
+		<complex name='info' required='false' merge='true' serializer='default' />
+	</element>
+
+	<element name='verify' tablename='ledgeramnesty_fix'>
+		<field name='objid' primary='true' />
+		<field name='dtverified' required='true' />
+		<field name='verifier_objid' required='true' />
+		<field name='verifier_name' required='true' />
+	</element>
+
+	<element name='balance' tablename='ledgeramnesty_fix'>
+		<field name='objid' primary='true' />
+		<field name='balance' required='true' />
+	</element>
+
+</schema>

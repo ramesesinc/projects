@@ -1,0 +1,121 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.UID;
+import java.text.SimpleDateFormat;
+
+class LegalOverdueReportService
+{
+	@Env
+	def env;
+
+	@ActiveDB("legal_report")
+	def em;
+
+	@ActiveDB("user")
+	def sys_user;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@Service("BranchService")
+	def branchSvc;
+
+	@ProxyMethod
+	public def getReportData( params ) {
+		def currdate = dateSvc.serverDate;
+
+		def list = em.getOverdueList();
+		if (list) list = resolveList(list, currdate);
+
+		def user = [objid: env.USERID, name: env.NAME];
+
+		def notedby;
+		def usr = sys_user.read([objid: params.notedby?.objid]);
+		if (usr) {
+			notedby = [objid: usr.objid, title: usr.jobtitle];
+			notedby.name = usr.lastname + ', ' + usr.firstname;
+			if (usr.middlename) notedby.name += ' ' + usr.middlename;
+		}
+
+		def preparedby;
+		usr = sys_user.read([objid: env.USERID]);
+		if (usr) {
+			preparedby = [objid: usr.objid, title: usr.jobtitle];
+			preparedby.name = usr.lastname + ', ' + usr.firstname;
+			if (usr.middlename) preparedby.name += ' ' + usr.middlename;
+		}
+
+		def branch = branchSvc.open([:]);
+		def data = [
+			date_period 	: new SimpleDateFormat("yyyy-MMM-dd").format(currdate),
+			dtprinted		: new SimpleDateFormat("MMM-dd-yyyy hh:mm:ss a").format(currdate),
+			printedby 		: env.NAME,
+			items			: list,
+			preparedby 		: preparedby,
+			notedby 		: notedby
+		];
+		branch.each{ k, v->
+			data["branch_"+k] = v;
+		}
+
+		return data;
+	}
+
+	private def resolveList( src, currdate ) {
+		def list = [];
+		def date = parseDate(format("yyyy-MM-dd", currdate));
+
+		if (src) {
+			list.addAll(src.collect{ it.route });
+			list.unique{ it.code }
+
+			def xlist, olist;
+			list?.each{ r->
+				xlist = [];
+				xlist.addAll(src.findAll{ it.route.code == r.code });
+				if (xlist) {
+					r.totalaccounts = xlist.size();
+					if (!r.totalaccounts) r.totalaccounts = 0;
+
+					r.totalamount = xlist.loanapp?.balance?.sum();
+					if (!r.totalamount) r.totalamount = 0;
+
+					olist = xlist.findAll{ date.compareTo(parseDate(it.loanapp.dtmatured)) > 0 }
+					if (olist) {
+						r.overduetotalaccounts = olist.size();
+						if (!r.overduetotalaccounts) r.overduetotalaccounts = 0;
+
+						r.overduetotalamount = olist?.loanapp?.balance?.sum();
+						if (!r.overduetotalamount) r.overduetotalamount = 0;
+					}
+				}
+			}
+
+			list?.sort{ it.description }
+		}
+
+		return list;
+	}
+
+	private def parseDate( date ) {
+		if (!date) return null;
+		if (date instanceof Date) {
+			return date;
+		} else {
+			return java.sql.Date.valueOf(date);
+		}
+	}
+
+	private def format( pattern, date ) {
+		if (!pattern) pattern = "yyyy-MM-dd";
+		def dt;
+		if (date instanceof Date) {
+			dt = date;
+		} else {
+			dt = java.sql.Date.valueOf(date);
+		}
+
+		return new SimpleDateFormat(pattern).format(dt);
+	}
+}

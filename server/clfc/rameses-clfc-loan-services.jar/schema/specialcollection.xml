@@ -1,0 +1,67 @@
+<schema>
+
+	<element tablename="specialcollection">
+		<field name="objid" primary="true" />
+		<field name="state" required="true" />
+		<field name="billingid" required="true" />
+		<field name="txntype" required="true" />
+		<field name="txndate" required="true" />
+		<field name="dtfiled" required="true" />
+		<field name="author_objid" required="true" />
+		<field name="author_name" required="true" />
+		<field name="collector_objid" required="true" />
+		<field name="collector_name" required="true" />
+		<field name="remarks" />
+		<field name="dtverified" />
+		<field name="verifiedby_objid" />
+		<field name="verifiedby_name" />
+		<field name="dtposted" />
+		<field name="poster_objid" />
+		<field name="poster_name" />
+		<field name="dtcancelled" />
+		<field name="cancelledby_objid" />
+		<field name="cancelledby_name" />
+		<field name="cancelledby_remarks" />
+	</element>
+
+	<element name="sc-request" tablename="specialcollection">
+		<field name="objid" primary="true" />
+		<field name="dtrequested" required="true" />
+		<field name="requester_objid" required="true" />
+		<field name="requester_name" required="true" />
+	</element>
+
+	<element name="sc-verify" tablename="specialcollection">
+		<field name="objid" primary="true" />
+		<field name="dtverified" required="true" />
+		<field name="verifiedby_objid" required="true" />
+		<field name="verifiedby_name" required="true" />
+	</element>
+
+	<element name="sc-post" tablename="specialcollection">
+		<field name="objid" primary="true" />
+		<field name="dtposted" required="true" />
+		<field name="poster_objid" required="true" />
+		<field name="poster_name" required="true" />
+	</element>
+
+	<element name="sc-cancel" tablename="specialcollection">
+		<field name="objid" primary="true" />
+		<field name="dtcancelled" required="true" />
+		<field name="cancelledby_objid" required="true" />
+		<field name="cancelledby_name" required="true" />
+		<field name="cancelledby_remarks" required="true" />
+	</element>
+
+	<element name="sc-detail" tablename="specialcollection_detail">
+		<field name="objid" primary="true" />
+		<field name="parentid" required="true" />
+		<field name="billingdetailid" required="true" />
+		<field name="routecode" required="true" />
+		<field name="borrower_objid" required="true" />
+		<field name="borrower_name" required="true" />
+		<field name="loanapp_objid" required="true" />
+		<field name="loanapp_appno" required="true" />
+	</element>
+
+</schema>

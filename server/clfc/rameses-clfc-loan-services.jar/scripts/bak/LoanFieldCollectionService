@@ -1,0 +1,466 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.services.extended.*;
+
+class LoanFieldCollectionService
+{
+	@Env
+	def env;
+
+	@ActiveDB(value="field_collection")
+	def collection;
+
+	@ActiveDB(value="void_request")
+	def void_request;
+
+	@ActiveDB(value="loan_ledger_billing")
+	def ledger_billing;
+
+	@ActiveDB(value="mobile_tracker")
+	def tracker;
+
+	@ActiveDB(value="collection_cashbreakdown")
+	def col_cashbreakdown;
+
+	@ActiveDB(value="special_collection")
+	def special_collection;
+
+	@ActiveDB(value="followup_collection")
+	def followup_collection;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@Service("UsergroupMemberLookupService")
+	def usergroupSvc;
+
+	@Service("LoanPaymentService")
+	def paymentSvc;
+
+	@Service("MobileTrackerService")
+	def trackerSvc;
+
+	@Service("CollectionCashbreakdownService")
+	def cashbreakdownSvc;
+
+	@ProxyMethod
+	public def getCollectors() {
+		return usergroupSvc.getList([_tag: 'FIELD_COLLECTOR']);
+	}
+
+	@ProxyMethod
+	public def getFieldCollection( params ) {
+		if (!params.collectorid) throw new Exception("Please specify collectorid.");
+		if (!params.billdate) {
+			params.billdate = dateSvc.serverDate.toString().split(" ")[0];
+		}
+
+		if (params.type == 'followup') return getFollowupFieldCollection(params);
+		if (params.type == 'special') return getSpecialFieldCollection(params);
+
+		def entity = collection.findFieldCollection(params);
+		if (entity) {
+			def prm = [
+				objid				: entity.objid,
+				fieldcollectionid 	: entity.objid,
+				routecode 			: params.routecode
+			]
+			entity.route = collection.findForPostingRouteByFieldcollectionidAndRoutecode(prm);
+			if (!entity.route) throw new Exception("No unposted collection for this route.");
+
+			prm = [
+				collectionid 	: entity.objid,
+				groupid 		: params.routecode
+			]
+			def cashbreakdown = col_cashbreakdown.findByCollectionid(prm);
+			if (cashbreakdown) {
+				cashbreakdown.items = getCashBreakdown([objid: entity.objid, routecode: params.routecode, grouptype: 'route']);
+				entity.cashbreakdown = cashbreakdown;
+			}
+		}
+		return entity;
+	}
+
+	private def getFollowupFieldCollection( params ) {
+		def entity = collection.findFieldCollection(params);
+		if (entity) {
+			entity.routes = special_collection.getFieldCollectionsBySpecialcollectionid([objid: params.collectionid]);
+			if (!entity.routes) throw new Exception("No unposted collection for this follow-up collection.");
+
+			def prm = [
+				collectionid: entity.objid,
+				groupid 	: params.collectionid
+			];
+			def cashbreakdown = col_cashbreakdown.findByCollectionid(prm);
+			if (cashbreakdown) {
+				cashbreakdown.items = getCashBreakdown([objid: entity.objid, collectionid: params.collectionid, grouptype: 'followup']);
+				entity.cashbreakdown = cashbreakdown;
+			}
+		}
+
+		return entity;
+	}
+
+	private def getSpecialFieldCollection( params ) {
+		def entity = collection.findFieldCollection(params);
+		if (entity) {
+			entity.routes = special_collection.getSpecialCollectionsBySpecialcollectionid([objid: params.collectionid]);
+			if (!entity.routes) throw new Exception("No unposted collection for this special collection.");
+
+			def prm = [
+				collectionid: entity.objid,
+				groupid 	: params.collectionid
+			];
+			def cashbreakdown = col_cashbreakdown.findByCollectionid(prm);
+			if (cashbreakdown) {
+				cashbreakdown.items = getCashBreakdown([objid: entity.objid, collectionid: params.collectionid, grouptype: 'special']);
+				entity.cashbreakdown = cashbreakdown;
+			}
+		}
+
+		return entity;
+	} 
+
+	@ProxyMethod
+	public def getCollections( params ) {
+		if (!params.billdate) throw new Exception("Please specify billdate.");
+		if (!params.collectorid) throw new Exception("Please specify collectorid.");
+
+		def list;
+		if (params.type == 'followup') {
+			list = collection.getFollowupCollections(params);
+
+		}
+		else if (params.type == 'special') {
+			list = collection.getSpecialCollections(params);
+
+		} else {
+			list = collection.getFieldCollections(params);
+
+		}
+
+		list.each{ cs->			
+			cs.payments = collection.getPaymentsByParentid([parentid: cs.objid]);
+			cs.total = 0;
+			cs.payments.each{
+				it.voided = 0;
+				it.pending = 0;
+				cs.total += it.payamount;
+
+				def voidrequest = void_request.findVoidRequestByPaymentid([paymentid: it.objid]);
+				if (voidrequest) {
+					it.voidid = voidrequest.objid;
+					if (voidrequest.state == 'APPROVED') {
+						it.voided = 1;
+						it.pending = 0;
+						cs.total -= it.payamount;
+					} else if (voidrequest.state == 'PENDING') {
+						it.pending = 1;
+					}
+				}
+			}
+		}
+		return list;
+	}
+
+	@ProxyMethod
+	public def getRoutes( params ) {
+		if (!params.collectorid) throw new Exception("Collectorid is required.");
+
+		if (!params.billdate) {
+			params.billdate = dateSvc.serverDate.toString().split(" ")[0];
+		}
+
+		def billing = ledger_billing.findBillingByCollectoridAndBilldate(params);
+		if (!billing) return [];
+
+		def routes = ledger_billing.getRoutesByBillingid([billingid: billing.objid]);
+		routes.each{ it.type = 'route'; }
+		
+		def items = followup_collection.getFollowupCollectionByBillingid(billing);
+		def item;
+		items.eachWithIndex{itm, idx->
+			item = [
+				objid 		: itm.objid,
+				description	: 'Follow-up ' + (idx+1),
+				type 		: 'followup'
+			]
+			routes.add(item);
+		}
+
+		items = special_collection.getSpecialCollectionByBillingid(billing);
+		items.eachWithIndex{itm, idx-> 
+			item = [
+				objid		: itm.objid,
+				description	: 'Special ' + (idx+1),
+				type 		: 'special'
+			]
+			routes.add(item);
+		}
+		//if (followup) 
+		return routes;
+	}
+
+	@ProxyMethod
+	public def getLoans( params ) {
+		if (!params.fieldcollectionid) throw new Exception('Please specify fieldcollectionid.');
+		if (!params.routecode) throw new Exception('Please specify routecode.');
+
+		def list;
+		if (params.type == 'followup')
+			list = collection.getFollowupLoansByParentidAndRoutecode(params);
+		else if (params.type == 'special')
+			list = collection.getSpecialLoansByParentidAndRoutecode(params);
+		else 
+			list = collection.getLoansByParentidAndRoutecode(params);
+
+		list.each{cs->
+			cs.payments = collection.getPaymentsByParentid([parentid: cs.objid]);
+			cs.total = 0;
+			cs.payments.each{
+				it.voided = 0;
+				it.pending = 0;
+				cs.total += it.payamount;
+
+				def voidrequest = void_request.findVoidRequestByPaymentid([paymentid: it.objid]);
+				if (voidrequest && voidrequest.state != 'DISAPPROVED') {
+					it.voidid = voidrequest.objid;
+					if (voidrequest.state == 'APPROVED') {
+						it.voided = 1;
+						it.pending = 0;
+						cs.total -= it.payamount;
+					} else if (voidrequest.state == 'PENDING') {
+						it.pending = 1;
+					}
+				}
+			}
+		}
+
+		return list;
+	}
+
+	@ProxyMethod
+	public def saveCashBreakdown( params ) {
+		if (!params.cashbreakdown) throw new Exception("Please specify cashbreakdown.");
+
+		def cashbreakdown = [
+			dtfiled		: dateSvc.serverDate,
+			filedby 	: params.collector.name,
+			collection 	: [
+				objid 	: params.objid,
+				type 	: 'FIELD'
+			],
+			group 		: [
+				objid 	: params.groupid,
+				type 	: params.grouptype
+			]
+
+		];		
+		cashbreakdown.putAll(params.cashbreakdown);
+
+		return cashbreakdownSvc.create(cashbreakdown);
+	}
+
+	@ProxyMethod
+	public def updateCashBreakdown( params ) {
+		if (!params.cashbreakdown) throw new Exception("Please specify cashbreakdown.");
+
+		return cashbreakdownSvc.update(params.cashbreakdown);
+	}
+	
+	private def getCashBreakdown( params ) {
+		return cashbreakdownSvc.getCashBreakdown(params);
+	}
+
+	@ProxyMethod
+	public void post( params ) {
+		if (params.posttype == 'route') {
+			postFieldCollection(params);
+
+		} else {
+			if (params.posttype == 'followup') {
+				postFollowupCollection(params);
+
+			} else if (params.posttype == 'special') {
+				postSpecialCollection(params);
+
+			}
+
+			def prm;
+			params.routes.each{ r->
+				prm = [
+					billingid 	: params.objid,
+					routecode 	: r.route.code
+				]
+				def m = special_collection.findUnpostedCollectionByBillingidAndRoutecode(prm);
+				if (!m) collection.routePosted([fieldcollectionid: params.objid, routecode: prm.routecode]);
+			}
+		}
+
+		def routes = collection.getUnpostedRoutes(params);
+		if (!routes) {
+			collection.changeState([objid: params.objid, state: 'POSTED']);
+			params.dtposted = dateSvc.serverDate;
+			params.postedby = env.NAME? env.NAME : 'SYSTEM';
+			params.postedremarks = 'COLLECTION POSTED';
+			collection.update(params, "post");
+		} 
+		/*if (!params.routes) throw new Exception("Please specify routes.");
+
+		def pending = collection.findPendingVoidRequestByFieldcollectionid([fieldcollectionid: params.objid]);
+		if (pending) throw new Exception("There are still pending void payment request/s. Cannot post collection.");
+
+		def billing = ledger_billing.read([objid: params.objid]);
+		def collectionSheets;
+		params.routes.each{o->
+			collectionSheets = getLoans([routecode: o.route.code, fieldcollectionid: params.objid]);
+			collectionSheets.each{cs->
+				cs.payments.each{
+					if (it.voided == 0) {
+						it.collector = billing.collector;
+						it.routecode = o.route.code;
+						it.appid = cs.loanapp.objid;
+						it.borrowername = cs.borrower.name;
+						it.entity = [
+							objid		: params.objid,
+							txndate		: params.billdate,
+							totalcount	: params.totalcount,
+							totalamount	: params.totalamount 
+						];
+						paymentSvc.postPayment(it);
+					}
+				}
+			}
+			billing.totalunposted -= 1;
+			billing.totalposted += 1;
+
+			def t = trackerSvc.open([objid: o.trackerid]);
+			if (t) {
+				def trackerItem = tracker.findLastTrackerItemByParentid([parentid: o.trackerid]);
+				def tracker = [
+					trackerid 	: o.trackerid,
+					username	: (env.NAME? env.NAME : 'SYSTEM'),
+					lng 		: (trackerItem? trackerItem.lng : 0.00),
+					lat 		: (trackerItem? trackerItem.lat : 0.00)
+				];
+				trackerSvc.stop(tracker);
+			}
+		}
+		ledger_billing.update(billing, "totalunposted");
+		ledger_billing.update(billing, "totalposted");
+		if (billing.totalfordownload == 0 && billing.totalunposted == 0) {
+			ledger_billing.changeStateCompleted(billing);
+		}
+
+		//trackerSvc.stop([trackerid: params.trackerid, username: env.NAME? env.NAME : 'SYSTEM', lng: 0.00, lat: 0.00]);
+		collection.changeState([objid: params.objid, state: 'POSTED']);
+		params.dtposted = dateSvc.serverDate;
+		params.postedby = env.NAME? env.NAME : 'SYSTEM';
+		params.postedremarks = 'COLLECTION POSTED';
+		collection.update(params, "post");*/
+	}
+
+	private void postFieldCollection( params ) {
+		if (!params.route) throw new Exception("Please specify route.");
+
+		params.routecode = params.route.route.code;
+		def pending = collection.findPendingVoidRequestByFieldcollectionidAndRoutecode(params);
+		if (pending) throw new Exception("There are still pending void payment request/s. Cannot post collection.");
+
+		def billing = ledger_billing.read(params);
+		def collectionSheets = getLoans([routecode: params.routecode, fieldcollectionid: params.objid]);
+		
+		postImpl(params, billing, collectionSheets);
+
+		billing.totalunposted -= 1;
+		ledger_billing.update(billing, "totalunposted");
+
+		billing.totalposted += 1;
+		ledger_billing.update(billing, "totalposted");
+
+		collection.routePosted([fieldcollectionid: billing.objid, routecode: params.routecode]);
+	}
+
+	private void postFollowupCollection( params ) {
+		if (!params.routes) throw new Exception("Please specify routes.");
+
+		def pending = collection.findPendingVoidRequestFollowupCollection(params);
+		if (pending) throw new Exception("There are still pending void payment request/s. Cannot post collection.");
+
+		def billing = ledger_billing.read(params);
+		def collectionSheets;
+		params.routes.each{ r->
+			params.route = r;
+			params.routecode = r.route.code;
+			def v = [
+				routecode 			: params.routecode, 
+				fieldcollectionid 	: params.objid, 
+				collectionid 		: params.cashbreakdown.group.objid,
+				type 				: 'followup'
+			];
+			collectionSheets = getLoans(v);
+
+			postImpl(params, billing, collectionSheets);
+		}
+
+		special_collection.collectionPosted([objid: params.collectionid]);
+	}
+
+	private void postSpecialCollection( params ) {
+		if (!params.routes) throw new Exception("Please specify routes.");
+
+		def pending = collection.findPendingVoidRequestSpecialCollection(params);
+		if (pending) throw new Exception("There are still pending void payment request/s. Cannot post collection.");
+
+		def billing = ledger_billing.read(params);
+		def collectionSheets;
+		params.routes.each{ r->
+			params.route = r;
+			params.routecode = r.route.code;
+			def v = [
+				routecode 			: params.routecode, 
+				fieldcollectionid 	: params.objid, 
+				collectionid 		: params.cashbreakdown.group.objid,
+				type 				: 'special'
+			];
+			collectionSheets = getLoans(v);
+			//collectionSheets = getLoans([routecode: params.routecode, fieldcollectionid: params.objid, type: 'special']);
+
+			postImpl(params, billing, collectionSheets);
+		}
+
+		special_collection.collectionPosted([objid: params.collectionid]);
+	}
+
+	private void postImpl( params, billing, collectionSheets ) {
+		collectionSheets.each{ cs->
+			cs.payments.each{
+				if (it.voided == 0) {
+					it.collector = billing.collector;
+					it.routecode = params.routecode;
+					it.appid = cs.loanapp.objid;
+					it.borrowername = cs.borrower.name;
+					it.entity = [
+						objid		: params.objid,
+						txndate		: params.billdate,
+						totalcount	: params.totalcount,
+						totalamount	: params.totalamount 
+					];
+					paymentSvc.postPayment(it);
+				}
+			}
+		}
+
+		def t = trackerSvc.open([objid: params.route.trackerid]);
+		if (t && t.state == 'OPEN') {
+			def trackerItem = tracker.findLastTrackerItemByParentid([parentid: t.objid]);
+			def tracker = [
+				trackerid 	: t.objid,
+				username	: (env.NAME? env.NAME : 'SYSTEM'),
+				lng 		: (trackerItem? trackerItem.lng : 0.00),
+				lat 		: (trackerItem? trackerItem.lat : 0.00)
+			];
+			trackerSvc.stop(tracker);
+		}
+	}
+}

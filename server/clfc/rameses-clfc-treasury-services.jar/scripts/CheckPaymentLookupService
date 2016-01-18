@@ -1,0 +1,37 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.services.extended.*;
+
+class CheckPaymentLookupService extends ActiveListService
+{
+	@ActiveDB('checkpayment')
+	def em; 
+
+	String listMethod = 'getLookupList';
+
+	@ProxyMethod
+	public def getColumns( params ) {
+		def cols = [];
+		if (!params.state) cols << [name: 'state', caption: 'Status'];
+		cols << [name: 'payor.name', caption: 'Payor'];
+		cols << [name: 'checkno', caption: 'CheckNo'];
+		cols << [name: 'checkdate', caption: 'CheckDate', type: 'date', outputFormat: 'MMM-dd-yyyy'];
+		cols << [name: 'bank.name', caption: 'Bank'];
+		return cols;
+	}
+
+	/*@ProxyMethod
+	public def getList( params ) {
+		params.searchtext = (params.searchtext? params.searchtext: '')+'%'; 
+		if (params.state) {
+			return em.getLookupListByState( params );
+		}
+		return em.getLookupList( params ); 
+	} */
+	void beforeList( params ) {
+		params.searchtext = (params.searchtext? params.searchtext : '') + '%';
+		if (params.state) {
+			params._listMethod = 'getLookupListByState';
+		}
+	}
+}

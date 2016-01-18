@@ -1,0 +1,30 @@
+<schema>
+
+	<element name="voidrequest" tablename="voidrequest">
+		<field name="objid" primary="true" />
+		<field name="state" required="true" />
+		<field name="dtfiled" required="true" />
+		<field name="author_objid" required="true" />
+		<field name="author_name" required="true" />
+		<field name="txncode" required="true" />
+		<field name="paymentid" required="true" />
+		<field name="routecode" required="true" />
+		<field name="collectionid" required="true" />
+		<field name="loanapp_objid" required="true" />
+		<field name="loanapp_appno" required="true" />
+		<field name="borrower_objid" required="true" />
+		<field name="borrower_name" required="true" />
+		<field name="collector_objid" required="true" />
+		<field name="collector_name" required="true" />
+		<field name="reason" required="true" />
+	</element>
+
+	<element name="post" tablename="voidrequest">
+		<field name="objid" primary="true" />
+		<field name="dtposted" required="true" />
+		<field name="poster_objid" required="true" />
+		<field name="poster_name" required="true" />
+		<field name="posterremarks" required="true" />
+	</element>
+
+</schema>

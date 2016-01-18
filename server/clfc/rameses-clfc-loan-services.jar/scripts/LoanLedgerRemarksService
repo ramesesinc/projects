@@ -1,0 +1,34 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.services.extended.*;
+
+class LoanLedgerRemarksService extends ActiveListService
+{
+	@ActiveDB('collector_remarks')
+	def em;
+
+	@ProxyMethod
+	public def getColumns( params ) {
+		return [
+			[name: 'dtcreated', caption: 'Date Filed'],
+			[name: 'author.name', caption: 'Filed By'],
+			[name: 'remarks', caption: 'Remarks']
+		]
+	}
+
+	String listMethod = 'getCollectorRemarksByLedgerid';
+
+	void beforeList( params ) {
+		if (params.type == 'followup') {
+			params._listMethod = 'getFollowupRemarksByLedgerid'
+		}
+	}
+
+	@ProxyMethod
+	public def open( params ) {
+		def data = em.read(params);
+		if (!data) throw new Exception("Remarks record does not exist or has already been deleted.");
+
+		return data;
+	}
+}

@@ -1,0 +1,212 @@
+import com.rameses.annotations.*;
+import com.rameses.common.*;
+import com.rameses.services.extended.*;
+import com.rameses.util.*;
+import java.rmi.server.UID;
+
+class BranchFundService 
+{	
+	@ActiveDB('branchfund')
+	def em; 
+
+	@ActiveDB('datatxnlog')
+	def txnlog; 
+
+	@ActiveDB('var')
+	def var;
+
+	@Service('DateService')
+	def dateSvc;
+
+	@Env 
+	def env;
+
+	@ProxyMethod 
+	public def open() {
+		def header = em.read([objid: 'FUND']); 
+		if (!header) {
+			throw new Exception('No fund setting found for this branch'); 
+		}
+
+		header.detail = em.read([objid: header.refid], 'detail'); 
+		header.collectors = em.getCollectors([fundid: header.fundid]); 
+		return header; 
+	} 
+	
+	@ProxyMethod
+	public def save( params ) {
+		if (!params.txntype) throw new Exception('Please specify txntype'); 
+		if (!params.amount) throw new Exception('Please specify amount'); 
+		if (!params.refid) throw new Exception('Please specify refid'); 
+		if (!params.remarks) throw new Exception('Please specify remarks'); 
+
+		def header = em.read([objid: 'FUND']); 
+		if (params.txntype == 'NEW') {
+			return create( header, params ); 
+		} else if (params.txntype == 'RELOAD') {
+			return reload( header, params ); 
+		} else {
+			throw new Exception("'"+params.txntype+"' transaction type not supported"); 
+		}
+	} 
+
+	private def create( header, params ) {
+		if (header != null && header.state != 'CLOSED') { 
+			throw new Exception('Please close the current fund before creating a new one.');
+		}
+
+		def fundid = 'BF' + new UID();
+		def detailid = 'BFD' + new UID(); 
+		def fund = [ 
+			objid:  	'FUND', 
+			state: 		'ACTIVE', 
+			amtuse: 	0.00, 			
+			amtbalance: params.amount, 
+			refid: 		detailid, 
+			fundid: 	fundid 
+		]; 
+		if (header) {
+			em.update(fund); 
+		} else {
+			em.create(fund); 
+		} 
+
+		def detail = [
+			objid: 		detailid, 
+			dtcreated:  dateSvc.serverDate.toString(), 
+			author: 	[objid: env.USERID, username: env.USER], 
+			amount: 	params.amount, 
+			remarks: 	params.remarks, 
+			refid: 		params.refid,
+			fundid: 	fundid,
+			txntype: 	'NEW'  
+		]; 		
+		em.create(detail, 'detail'); 
+
+		params.collectors?.each{ 
+			def item = [ 
+				objid: 		'BFC' + new UID(), 
+				fundid: 	fundid, 				
+				collector:  it.collector, 
+				threshold:  it.threshold, 
+				amtuse: 	0.0 
+			]; 
+			em.create(item, 'collector'); 
+		} 		
+		return fund; 		
+	}
+
+	private def reload( header, params ) {
+		if (!header) {
+			throw new Exception('No fund setting found for this branch'); 
+		} 
+		if (header.state == 'CLOSED') { 
+			throw new Exception('The current fund setting has already been closed'); 
+		} 
+
+		header.lockid = 'LOCK' + new UID(); 
+		em.update(header, 'lock'); 
+
+		header.refid = 'BFD' + new UID(); 
+		header.amtbalance += params.amount; 
+		header.amtuse = 0.0; 
+		em.update(header); 
+
+		def detail = [
+			objid: 		header.refid, 
+			dtcreated:  dateSvc.serverDate.toString(), 
+			author: 	[objid: env.USERID, username: env.USER], 
+			amount: 	params.amount, 
+			remarks: 	params.remarks, 
+			refid: 		params.refid,
+			fundid: 	header.fundid,
+			txntype: 	'RELOAD' 
+		]; 		
+		em.create(detail, 'detail'); 	
+		return header; 
+	}
+
+	@ProxyMethod 
+	public void addUsage( params ) {
+		def sysvar = var.read([name: 'branchfund']);
+		if (sysvar && sysvar.value == 'false') return;
+
+		if (!params.collectorid) throw new Exception('Please specify collectorid');
+		if (!params.amount) throw new Exception('Please specify amount');
+
+		def fund = em.read([objid: 'FUND']);
+		if (!fund) {
+			throw new Exception('No fund setting found for this branch'); 
+		} 
+		if (fund.state == 'CLOSED') { 
+			throw new Exception('The current fund setting has already been closed'); 
+		}
+
+		fund.lockid = 'LOCK' + new UID();
+		em.update(fund, 'lock'); 
+
+		params.fundid = fund.fundid; 
+		def item = em.findByCollector( params );
+		if (!item) throw new Exception('No fund setting found for this collector'); 
+
+		item.lockid = 'LOCK' + new UID();
+		em.update(item, 'collector_lock');
+
+		def amtuse = fund.amtuse + params.amount;
+		if (fund.amtbalance < amtuse) {
+			throw new Exception('Insufficient fund. Please reload immediately');
+		}	
+
+		item.amtuse += params.amount; 
+		em.update(item, 'collector'); 
+
+		fund.amtuse = amtuse; 
+		em.update(fund); 		
+	} 
+
+	@ProxyMethod 
+	public void checkCollectorFund( params ) {
+		def sysvar = var.read([name: 'branchfund']);
+		if (sysvar && sysvar.value == 'false') return;
+		
+		if (!params.collectorid) throw new Exception('Please specify collectorid');
+		if (!params.amount) throw new Exception('Please specify amount');
+		
+		def fund = em.read([objid: 'FUND']);
+		if (!fund) {
+			throw new Exception('No fund setting found for this branch'); 
+		} 
+		if (fund.state == 'CLOSED') { 
+			throw new Exception('The current fund setting has already been closed'); 
+		}
+
+		fund.lockid = 'LOCK' + new UID(); 
+		em.update(fund, 'lock'); 
+
+		params.fundid = fund.fundid; 
+		def item = em.findByCollector( params );
+		if (!item) throw new Exception('No fund setting found for this collector'); 
+
+		def amtuse = fund.amtuse + params.amount;
+		if (fund.amtbalance < amtuse) {
+			throw new Exception('Insufficient fund. Please reload immediately');
+		} 
+	} 
+
+	@ProxyMethod
+	public def close( params ) {
+		if (!params.remarks) throw new Exception('Please specify remarks'); 
+
+		def fund = em.read([objid: 'FUND']);
+		if (!fund) {
+			throw new Exception('No fund setting found for this branch'); 
+		} 
+		if (fund.state == 'CLOSED') { 
+			throw new Exception('The current fund setting has already been closed'); 
+		}
+
+		fund.state = 'CLOSED'; 
+		em.update(fund); 
+		return fund; 
+	}
+} 

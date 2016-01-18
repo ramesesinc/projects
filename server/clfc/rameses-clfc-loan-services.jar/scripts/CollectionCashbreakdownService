@@ -1,0 +1,505 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.services.extended.*;
+import java.rmi.server.UID;
+
+class CollectionCashbreakdownService extends ActiveCrudListService
+{
+	@Env
+	def env;
+
+	@ActiveDB("collection_cb")
+	def em;
+
+	@ActiveDB("ledger_billing")
+	def ledger_billing;
+
+	@ActiveDB("onlinecollection")
+	def onlinecollection;
+
+	@ActiveDB("collection_remittance")
+	def remittance;
+
+	@ActiveDB("shortage")
+	def shortage;
+
+	@ActiveDB('datatxnlog')
+	def txnlog; 
+
+	@ActiveDB("dailycollection")
+	def dailycollection;
+
+	@Service("InboxService")
+	def inboxSvc;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@Service("SequenceService")
+	def seqSvc;
+
+	@Service("BranchService")
+	def branchSvc;
+
+	@ProxyMethod
+	public def getColumns( params ) {
+		def cols = [];
+		if (!params.state) cols << [name: 'state', caption: 'Status'];
+
+		cols << [name: 'txndate', caption: 'Date', type: 'date', outputFormat: 'MMM-dd-yyyy'];
+		cols << [name: 'cbsno', caption: 'CBS No'];
+		cols << [name: 'collector.name', caption: 'Collector'];
+
+		if (params.state == 'VERIFIED') {
+			cols << [name: 'dtverified', caption: 'Date Verified'];
+			cols << [name: 'verifier.name', caption: 'Verified By'];
+		}
+
+		return cols;
+	}
+
+	@ProxyMethod
+	public def getNodes( params ) {
+		def list = [
+			[caption: 'Search', index: 0],
+			[caption: 'DRAFT', state: 'DRAFT', index: 1],
+			[caption: 'SEND BACK', state: 'SEND_BACK', index: 2],
+			[caption: 'FOR VERIFICATION', state: 'FOR_VERIFICATION', index: 3],
+			[caption: 'VERIFIED', state: 'VERIFIED', index: 4],
+			[caption: 'DEPOSITED', state: 'DEPOSITED', index: 5]
+		];
+		list.sort{ it.index }
+		return list;
+	}
+
+	@ProxyMethod
+	public def getOptions() {
+		return [
+			[caption: 'All'],
+			[caption: 'DRAFT', state: 'DRAFT'],
+			[caption: 'FOR VERIFICATION', state: 'FOR_VERIFICATION'],
+			[caption: 'VERIFIED', state: 'VERIFIED'],
+			[caption: 'ENCASHED', state: 'ENCASHED'],
+			[caption: 'DEPOSITED', state: 'DEPOSITED'],
+		]
+	}
+
+	@ProxyMethod
+	public def getRoutes( params ) {
+		if (!params.txndate) throw new Exception("Please specify txndate.");
+		if (!params.collectorid) throw new Exception("Please specify collectorid.");
+
+		params.date = params.txndate;
+		if (!params.date) {
+			params.date = dateSvc.serverDate.toString().split(" ")[0];
+		}
+
+		def onlinecollections = onlinecollection.getCollectionByDateAndCollector(params);
+		def result = [];
+		onlinecollections.sort{ it.dfiled }
+		onlinecollections.eachWithIndex{ itm, idx->
+			itm.type = 'online';
+			itm.description = 'Direct ' + (idx+1);
+			def item = [
+				objid 		: itm.objid,
+				billingid 	: itm.objid,
+				itemid		: itm.objid,
+				description : 'Direct ' + (idx+1),
+				collection  : [objid: itm.objid, type: 'ONLINE'],
+				group		: [objid: itm.objid, type: 'online']
+			];
+			result.add(item);
+		}
+
+		def billing = ledger_billing.findByCollectorAndBilldate(params);
+		if (!billing) return result;
+
+		def items = ledger_billing.getBillingItemsWithInfo(billing);
+		def list = items.findAll{ it.state == 'CANCELLED' || it.state == 'CLOSED' }
+
+		list.each{ 
+			def prm = [collectionid: billing.objid, groupid: it.itemid, grouptype: it.type];
+			def item = remittance.findCollectionRemittance(prm);
+			if (it.state=='CANCELLED' || !item) items.remove(it); 
+		}
+
+		def shortages = shortage.getShortagesByTxndateAndCollectorid(params);
+		shortages.sort{ it.dtfiled }
+		shortages.eachWithIndex{ itm, idx->
+			def item = [
+				objid 		: itm.objid,
+				itemid		: itm.objid,
+				description : 'Shortage ' + (idx+1),
+				type 		: 'shortage',
+				collection 	: [objid: itm.objid, type: 'SHORTAGE'],
+				group 		: [objid: itm.objid, type: 'shortage']
+			];
+			items.add(item);
+		}
+
+		def routes = items.findAll{ it.type == 'route' }
+		def followups = items.findAll{ it.type == 'followup' }
+		def specials = items.findAll{ it.type == 'special' && it.isrequest == 0 && it.iscapture == 0 }
+		def requests = items.findAll{ it.type == 'special' && it.isrequest == 1 && it.iscapture == 0 }
+		def capturepayments = items.findAll{ it.type == 'special' && it.isrequest == 0 && it.iscapture == 1 }
+
+		routes.each{ o->
+			o.collection = [objid: billing.objid, type: 'FIELD'];
+			o.group = [objid: o.itemid, type: 'route'];
+		}
+
+		followups.sort{ it.dtfiled }
+		followups.eachWithIndex{ itm, idx->
+			itm.description = 'Follow-up ' + (idx+1);
+			itm.collection = [objid: billing.objid, type: 'FIELD'];
+			itm.group = [objid: itm.itemid, type: 'followup'];
+		} 
+
+		specials.sort{ it.dtfiled }
+		specials.eachWithIndex{ itm, idx->
+			itm.description = 'Special ' + (idx+1);
+			itm.collection = [objid: billing.objid, type: 'FIELD'];
+			itm.group = [objid: itm.itemid, type: 'special'];
+		}
+
+		requests.sort{ it.dtfiled }
+		requests.eachWithIndex{ itm, idx->
+			itm.description = 'Request ' + (idx+1);
+			itm.collection = [objid: billing.objid, type: 'FIELD'];
+			itm.group = [objid: itm.itemid, type: 'special'];
+		}
+
+		capturepayments.sort{ it.dtfiled } 
+		capturepayments.eachWithIndex{ itm, idx->
+			itm.description = 'Capture ' + (idx+1);
+			itm.collection = [objid: billing.objid, type: 'FIELD'];
+			itm.group = [objid: itm.itemid, type: 'special'];
+		}
+
+		if (!items) items = [];
+		items.sort{ it.description }
+
+		return items;
+	}
+
+	void beforeList( params ) {
+		if (params.state) {
+			params._listMethod = 'getListByState';
+		}
+		if (params.state == 'FOR_VERIFICATION') {
+			params._listMethod = 'getListForVerification';
+		}
+		if (params.state == 'VERIFIED') {
+			params._listMethod = 'getListVerified'
+		}
+		if (params.state == 'DEPOSITED') {
+			params._listMethod = 'getListDeposited';
+		}
+	}
+
+	private void validate( params ) {
+		/*
+		def dateStr = dateSvc.serverDateAsString.split(" ")[0];
+		if (dateStr.compareTo(data.txndate.toString()) > 0) 
+			throw new Exception("Txndate must be greater than or equal to current date.");
+		*/
+		def prm = [
+			collectionid: params.collection.objid,
+			groupid 	: params.group.objid,
+			grouptype 	: params.group.type
+		];
+		def d = em.findCashbreakdown(prm);
+		if (d) throw new Exception("CBS for this collection has already been created.");
+
+		def data = em.read(params);
+		if (data && data.state == 'VERIFIED') 
+			throw new Exception("CBS has already been verified.");
+	}
+
+	void beforeCreate( data ) {
+		validate(data);
+		def date = dateSvc.parseCurrentDate();
+		data.dtfiled = date.date;
+		data.author = [objid: env.USERID, name: env.NAME];
+
+		def branch = branchSvc.open([:]);
+
+		def seqname = 'cbs' + date.year;
+		def year = date.year.toString()[2] + date.year.toString()[3];
+		def prefix = 'CBS' + branch.code + year;
+		data.cbsno = prefix + seqSvc.getNextFormattedSeriesA(seqname,5);
+
+	}
+
+	void afterCreate( data ) {
+		data.items.each{ o->
+			o.objid = 'CBDTL' + new UID();
+			o.parentid = data.objid;
+			em.create(o, "cb-detail");
+		}
+	}
+
+	public def update( data ) {
+		if (!data.allowEdit) {
+			validate(data);
+			em.update(data);
+		}
+		data.items.each{ o->
+			em.update(o, "cb-detail");
+		}	
+		return open(data);
+	}
+
+	void afterOpen( data ) {
+		data.items = em.getDetails(data);
+		data.amount = (data.items? data.items.amount.sum() : 0.00);
+
+		def s = em.findCurrentSendbackByState([objid: data.objid, state: 'DRAFT']);
+		if (s) {
+			data.state += ' - SEND BACK';
+			data.hassendback = true;
+			data.sendbackremarks = s.remarks;
+		}
+		def i = em.read(data, 'cb-forverification');
+		if (!s && i) {
+			data.allowverify = true;
+		}
+		/*
+		if (data.state=='SEND_BACK') {
+			def s = em.findCurrentSendback(data);
+			if (s) data.sendbackremarks = s.remarks;
+		}
+		*/
+		//data.allowEdit = (em.read(data, "cb-reconcile")? true : false);
+
+	}
+
+	private def changeState( params, state ) {
+		def data = em.read(params);
+		if (!data) throw new Exception('Cash breakdown record does not exist or has already been deleted.');
+
+		if (data.state == state) {
+			throw new Exception('Cash breakdown record already ' + state + '.');
+		}
+
+		data.state = state;
+		em.changeState(data);
+
+		def action, remarks;
+
+		switch (state) {
+			case 'VERIFIED'			: action = 'VERIFY';
+							  		  remarks = 'Verified CBS No. ' + data.cbsno;
+							  		  break;
+			case 'SEND_BACK'		: action = 'SEND BACK';
+							  		  remarks = 'Send back CBS No. ' + data.cbsno;
+							  		  break;
+			case 'FOR_VERIFICATION' : action = 'FOR VERIFICATION';
+									  remarks = 'Submitted for Verification CBS No. ' + data.cbsno;
+									  break;
+		}
+
+		if (action && remarks) {
+			def loginfo = [
+				objid 	: 'TLOG' + new UID(), 
+				txndate : dateSvc.serverDate, 
+				txnid   : data.objid, 
+				user    : [objid: env.USERID, username: env.USER], 
+				action	: action, 
+				remarks : remarks
+			]; 
+			txnlog.create( loginfo ); 	
+		}
+
+		return open(data);
+	}
+
+	@ProxyMethod
+	public def verify( params ) {
+		def data = changeState(params, 'VERIFIED');
+		def i = em.read(data, 'cb-deposited');
+		if (i) throw new Exception('Cash breakdown record has already been deposited.');
+
+		data.dtverified = dateSvc.serverDate;
+		data.verifier = [objid: env.USERID, name: env.NAME];
+		em.update(data, "cb-verify");
+
+		i = em.read(data, 'cb-forverification');
+		if (i) {
+			em.delete(data, "cb-forverification");			
+		}
+
+		i = em.read(data, 'cb-active');
+		if (!i) {
+			em.create(data, "cb-active");
+		}
+
+		i = em.read(data, 'cb-forencashment');
+		if (!i) {
+			em.create(data, "cb-forencashment");
+		}
+		/*
+		def c = em.read(data, "cb-deposited");
+		if (!c) {
+		} else {
+			data.state = 'DEPOSITED';
+			em.changeState(data);
+		} 
+		*/
+
+		inboxSvc.removeMessageByRefid([refid: data.objid]); 
+		return open(data);
+	}
+
+	@ProxyMethod
+	public def sendBack( params ) {
+		def data = em.read(params);
+		if (!data) throw new Exception('Cash breakdown record does not exist or has already been deleted.');
+		//def data = changeState(params, 'SEND_BACK');
+
+		//em.delete(data, "cb-forverification");
+
+		//def date = dateSvc.serverDate;
+		def item = em.findCurrentSendbackByState([objid: data.objid, state: 'DRAFT']);
+		if (!item) {
+			item = [
+				objid		: 'CBSS' + new UID(),
+				parentid	: data.objid,
+				dtcreated 	: dateSvc.serverDate,
+				author		: [objid: env.USERID, name: env.NAME],
+				state 		: 'DRAFT',
+				remarks 	: params.remarks
+			];
+			em.create(item, "cb-sendback");
+		}
+
+		inboxSvc.removeMessageByRefid([refid: data.objid]); 
+
+		def prm = [
+			collectionid: data.collection.objid,
+			groupid 	: data.group.objid,
+			grouptype	: data.group.type
+		]
+		def rem = remittance.findCollectionRemittance(prm);
+		if (rem) {			
+			def shortages = shortage.getListByRemittanceid([remittanceid: rem.objid]);			
+			shortages.each{ o->
+				prm = [
+					collectionid: o.objid,
+					groupid	 	: o.objid,
+					grouptype 	: 'shortage'
+				];
+				def cb = em.findCashbreakdown(prm);
+
+				def c = em.read(cb, "cb-forverification");
+				if (c) {
+					cb.state = 'DRAFT';
+					em.update(cb);
+					em.delete(cb, "cb-forverification");					
+
+					inboxSvc.removeMessageByRefid([refid: cb.objid]); 
+				}
+			}
+		}
+
+		return open(data);
+	}
+
+	@ProxyMethod
+	public def submitForVerification( params ) {
+		def data =  changeState(params, 'FOR_VERIFICATION');
+		
+		def a = em.read(data, 'cb-forverification');
+		if (!a) {
+			em.create(data, "cb-forverification");
+		}
+
+		def msginfo = inboxSvc.open([objid: data.objid]);
+		if (!msginfo) {
+			msginfo = [ 
+				objid 		: data.objid, 
+				dtcreated	: dateSvc.serverDate, 
+				refid 		: data.objid, 
+				filetype 	: 'cashbreakdown', 
+				message 	: 'For verification CBS No. '+ data.cbsno, 
+				senderid	: env.USERID, 
+				sendername 	: env.NAME, 
+				recipientid : 'ACCT_ASSISTANT' 
+			]; 
+			inboxSvc.addMessage( msginfo );	
+		}
+
+		return open(data);
+	}
+
+	/*
+	@ProxyMethod
+	public def reconcile( params ) {
+		if (!params.objid) throw new Exception("Please specify objid.");
+		if (!params.remarks) throw new Exception("Please specify remarks.");
+
+		def data = em.read(params);
+		if (!data) throw new Exception("Record does not exist or has already been deleted.");
+
+		data.state = 'DRAFT';
+		em.update(data);
+		em.delete(data, "cb-forverification");
+
+		def reconcile = [
+			objid 		: "CCR" + new UID(),
+			state 		: 'DRAFT',
+			refid 		: data.objid,
+			dtcreated 	: dateSvc.serverDate,
+			author		: [objid: env.USERID, name: env.NAME],
+			reason 		: params.remarks
+		];
+
+		em.create(reconcile, "cb-reconciliation");
+		em.create([objid: data.objid, reconciliationid: reconcile.objid], "cb-reconcile");
+
+		def loginfo = [
+			objid 	: 'TLOG' + new UID(), 
+			txndate : dateSvc.serverDate, 
+			txnid   : data.objid, 
+			user    : [objid: env.USERID, username: env.USER], 
+			action	: 'RECONCILE', 
+			remarks : params.remarks
+		]; 
+		txnlog.create( loginfo ); 
+
+		return open(data);
+	}
+
+	@ProxyMethod
+	public def submitForVerification( params ) {
+		def data = em.read(params);
+		if (!data) throw new Exception("Record does not exist or has already been deleted.");
+
+		data.state = 'FOR_VERIFICATION';
+		em.update(data);
+
+		def item = em.read(data, "cb-reconcile");
+		if (item) {
+			def reconcile = em.read([objid: item.reconciliationid], "cb-reconciliation");
+			if (!reconcile) throw new Exception("Reconciliation record does not exist or has already been deleted.");
+
+			reconcile.state = 'RECONCILED';
+			em.update(reconcile, "cb-reconciliation");
+		}
+		em.delete(data, "cb-reconcile");
+		em.create(data, "cb-forverification");
+
+		def loginfo = [
+			objid 	: 'TLOG' + new UID(), 
+			txndate : dateSvc.serverDate, 
+			txnid   : data.objid, 
+			user    : [objid: env.USERID, username: env.USER], 
+			action	: 'FOR_VERIFICATION', 
+			remarks : 'Submit for verification CBS No. ' + params.cbsno
+		]; 
+		txnlog.create( loginfo ); 
+
+		return open(data);
+	}
+	*/
+}

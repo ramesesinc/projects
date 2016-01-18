@@ -1,0 +1,39 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+
+class LoanAppCaptureRenewInterceptor
+{
+	@Env
+	def env;
+
+	@ActiveDB(value="loan_ledger")
+	def loan_ledger;
+
+	@ActiveDB(value="close_ledger")
+	def close_ledger;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@After(pattern="LoanAppCaptureRenewService.renew")
+	public void afterRenew( evt ) {
+		def params = evt.args[0];
+
+		def ledger = loan_ledger.findByAppId([appid: params.prevloanid]);
+		if (!ledger) throw new Exception("Record does not exist or has already been deleted.");
+
+		def map = close_ledger.read([objid: ledger.objid]);
+		if (!map) {
+			map = [
+				objid 	: ledger.objid,
+				dtclosed: dateSvc.serverDate,
+				closedby: (env.NAME? env.NAME : 'NOT IDENTIFIED'),
+				remarks	: "Closed due to renewal."
+			];	 
+			close_ledger.create(map);
+		}
+
+		ledger.state = 'CLOSE';
+		loan_ledger.changeState(ledger);
+	}
+}

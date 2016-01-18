@@ -1,0 +1,19 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.services.extended.*;
+
+class VariableLookupService extends ActiveListService
+{
+	@ActiveDB('variable')
+	def em;
+
+	@ProxyMethod
+	public def getColumns( params ) {
+		return [
+			[name: 'objid', caption: 'ID'],
+			[name: 'caption', caption: 'Caption'],
+			[name: 'datatype', caption: 'DataType'],
+		]
+	}
+
+}

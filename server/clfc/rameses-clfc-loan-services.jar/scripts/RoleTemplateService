@@ -1,0 +1,200 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.services.extended.*;
+import java.rmi.server.UID;
+
+class RoleTemplateService extends ActiveCrudListService
+{
+	@Env
+	def env;
+
+	@ActiveDB("roletemplate")
+	def em;
+
+	@ActiveDB('datatxnlog')
+	def txnlog; 
+
+	@ActiveDB("user")
+	def sysuser;
+
+	@ActiveDB('usergroup')
+	def usergroup;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@ProxyMethod
+	public def getColumns( params ) {
+		return [
+			[name: 'txnstate', caption: 'Status'],
+			[name: 'name', caption: 'TemplateName'],
+			[name: 'description', caption: 'Description']
+		];
+	}
+
+	private void validate( data ) {
+		if (!data.roles) throw new Exception("At least 1 role is required.");
+	}
+
+	void beforeCreate( data ) {
+		validate(data);
+		data.dtcreated = dateSvc.serverDate;
+		data.author = [objid: env.USERID, name: env.NAME];
+	}
+
+	void beforeUpdate( data ) {
+		validate(data);
+	}
+
+	void afterOpen( data ) {
+		data.roles = em.getRoles(data);
+	}
+
+	void afterCreate( data ) {
+		updateRoles(data);
+	}
+
+	void afterUpdate( data ) {
+		updateRoles(data);
+	}
+
+	private void updateRoles( data ) {
+		data._removedrole.each{ o->
+			em.delete(o, "template-usergroup")
+		}
+
+		data._addedrole.each{ o->
+			em.create(o, "template-usergroup");
+		}
+
+		data.roles.each{ o->
+			println o;
+			if (o._edited == true) em.update(o, 'template-usergroup');
+		}
+		data.roles= em.getRoles(data);
+	}
+
+	@ProxyMethod
+	public def activate( params ) {
+		return changeState(params, 'ACTIVE');
+	}
+
+	@ProxyMethod
+	public def deactivate( params ) {
+		return changeState(params, 'DEACTIVATED');
+	}
+
+	private def changeState( params, state ) {
+		def data = em.read(params);
+		if (!data) throw new Exception("Role template record does not exist or has already been deleted.");
+
+		if (data.txnstate == state)
+			throw new Exception("Role template already " + state + ".");
+
+		data.txnstate = state;
+		em.changeState(data);
+
+		def action, remarks = 'Role template ';
+		switch (state.toUpperCase()) {
+			case 'ACTIVE'		: 	action = 'ACTIVATE';
+									remarks += 'activated.';
+									break;
+			case 'DEACTIVATED' 	: 	action = 'DEACTIVATE';
+									remarks = 'deactivated.';
+									break;
+		}
+
+		def loginfo = [
+			objid 	: 'TLOG' + new UID(), 
+			txndate : dateSvc.serverDate, 
+			txnid   : data.objid, 
+			user    : [objid: env.USERID, username: env.USER], 
+			action	: action, 
+			remarks : remarks
+		]; 
+		txnlog.create( loginfo );
+
+		return open(data);
+	}
+
+	@ProxyMethod
+	public def getTemplatesByUser( params ) {
+		if (!params.userid) throw new Exception("Please specify userid.");
+
+		def list = em.getTemplatesByUserid(params);
+		def domains;
+		list.each{ o->
+			o.roles = em.getRoles(o);
+			domains = o.roles.domain
+			o.domains = domains.unique();
+		}
+	}
+
+	@ProxyMethod
+	public def saveTemplate( params ) {
+		if (!params.templateid) throw new Exception("Please specify templateid.");
+		if (!params.userid) throw new Exception("Please specify userid.");
+
+		def user = sysuser.read([objid: params.userid]);
+		if (!user) throw new Exception("User record does not exists or has already been deleted.");
+
+		def data = em.read([objid: params.templateid]);
+		if (!data) throw new Exception("Role template record does not exist or has already been deleted.");
+
+		def item = [
+			objid		: 'RTU' + new UID(),
+			roletemplate: data,
+			user 		: user
+		];
+		em.create(item, "template-user");
+
+		data.roles = em.getRoles(data);
+		def ug, member;
+		data.roles.each{ o->
+			ug = usergroup.read([objid: o.usergroupid]);
+			member = em.findUsergroupMemberByUseridAndUsergroupid([userid: user.objid, usergroupid: ug.objid]);
+			if (member) usergroup.delete(member, "member");
+
+			member = [
+				objid			: 'UGM' + new UID(),
+				usergroup 		: ug,
+				user 			: user,
+				org 			: o.org,
+				securitygroup 	: o.securitygroup,
+				exclude 		: o.exclude
+			];
+			usergroup.create(member, "member");
+		}
+		def domains = data.roles?.domain;
+		data.domains = (domains? domains.unique() : []);
+
+		//throw new Exception("stop");
+
+		return data;
+	}
+
+	@ProxyMethod
+	public void removeTemplate( params ) {
+		if (!params.templateid) throw new Exception("Please specify templateid.");
+		if (!params.usertemplateid) throw new Exception("Please specify usertemplateid.");
+		if (!params.userid) throw new Exception("Please specify userid.");
+
+		def user = sysuser.read([objid: params.userid]);
+		if (!user) throw new Exception("User record does not exists or has already been deleted.");
+
+		def data = em.read([objid: params.templateid]);
+		if (!data) throw new Exception("Role template record does not exist or has already been deleted.");
+
+		def roles = em.getRoles(data);
+		def ug, member;
+		roles.each{ o->
+			ug = usergroup.read([objid: o.usergroupid]);
+			member = em.findUsergroupMemberByUseridAndUsergroupid([userid: user.objid, usergroupid: ug.objid]);
+			if (member) usergroup.delete(member, "member");
+		}
+
+		//throw new Exception('stop');
+		em.delete([objid: params.usertemplateid], "template-user");
+
+	}
+}

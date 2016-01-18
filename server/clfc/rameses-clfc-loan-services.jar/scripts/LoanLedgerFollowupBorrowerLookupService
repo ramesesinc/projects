@@ -1,0 +1,31 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.services.extended.*;
+
+class LoanLedgerFollowupBorrowerLookupService extends ActiveListService
+{
+	@ActiveDB('followup_result')
+	def em;
+
+	String listMethod = 'getLookupBorrowers';
+
+	@ProxyMethod
+	public def getColumns( params ) {
+		def cols = [];
+
+		cols << [name: 'txntype', caption: 'Type'];
+		cols << [name: 'billdate', caption: 'Follow-upDate'];
+		cols << [name: 'collector.name', caption: 'Collector'];
+		cols << [name: 'borrower.name', caption: 'Borrower'];
+		cols << [name: 'loanapp.appno', caption: 'AppNo'];
+
+		return cols;
+	}
+
+	void beforeList( params ) {
+		//println 'params ' + params;
+		if (params.date) {
+			params._listMethod = 'getLookupBorrowersByDate';
+		}
+	}
+}

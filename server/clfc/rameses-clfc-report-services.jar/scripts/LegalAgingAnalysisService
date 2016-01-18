@@ -1,0 +1,48 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.services.extended.*;
+import java.text.SimpleDateFormat;
+import java.math.*;
+
+class LegalAgingAnalysisService {
+	
+	@ActiveDB('aginganalysis')
+	def em;
+
+	@ProxyMethod
+	def getReportData(){
+		def data = [];
+		def list = em.getList();
+		if(!list){
+			return [];
+		}
+		def routeList = list.collect{ it.route };
+		def routes = routeList.unique{ it.code };
+		routes.each{o ->
+			def item = [:];
+			def below30 = list.findAll{ it.route.code == o.code && it.days <=30 }
+			def below60 = list.findAll{ it.route.code == o.code && it.days <=60 && it.days > 30 }
+			def below90 = list.findAll{ it.route.code == o.code && it.days <=90 && it.days > 60 }
+			def below120 = list.findAll{ it.route.code == o.code && it.days <=120 && it.days > 90 }
+			def over120 = list.findAll{ it.route.code == o.code && it.days >=120 }
+
+			item.route = o.description;
+			item.below30 = below30.sum{ it.balance };
+			item.below60 = below60.sum{ it.balance };
+			item.below90 = below90.sum{ it.balance };
+			item.below120 = below120.sum{ it.balance };
+			item.over120 = over120.sum{ it.balance };
+			item.total = new BigDecimal(0.00);
+
+			if(item.below30) item.total = item.total.add(item.below30);
+			if(item.below60) item.total = item.total.add(item.below60);
+			if(item.below90) item.total = item.total.add(item.below90);
+			if(item.below120) item.total = item.total.add(item.below120);
+			if(item.over120) item.total = item.total.add(item.over120);
+
+			if(item) data << item;	
+		}
+		return data;
+	}
+
+}

@@ -1,0 +1,192 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+
+class LoanAppReportService
+{
+	@Env
+	def env;
+
+	@ActiveDB(value="loanapp")
+	def loanapp;
+
+	@ActiveDB(value="loan_ledger")
+	def loan_ledger;
+
+	@ActiveDB(value="borrower")
+	def borrower;
+
+	@ActiveDB(value="loanapp_collateral")
+	def collateral;
+
+	@ActiveDB(value="var", em="system")
+	def var;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@Service("NumberService")
+	def numberSvc;
+
+	@ProxyMethod
+	public def getLoanapplicationReportData( params ) {
+		if (!params.loanappid) throw new Exception('Please specify loanappid');
+		def app = loanapp.read([objid: params.loanappid]);
+		def pb = borrower.read(app.borrower);
+		def currentyear = dateSvc.parseCurrentDate().year;
+		def birthyear = currentyear;
+		if(pb.birthdate != null) birthyear = dateSvc.parseDate(pb.birthdate, null).year;
+		def spousename;
+		if(pb.spouse.objid != null) {
+			spousename = pb.spouse.lastname+', '+pb.spouse.firstname+' '+(pb.spouse.middlename? pb.spouse.middlename : '')
+		}
+		def list = borrower.getEmployments([refid: pb.objid]);
+		def employment = [:];
+		if(list) employment.putAll(list[0]);
+
+		list = loanapp.getBusinesses([parentid: app.objid]);
+		def business = [:];		
+		if(list) business.putAll(list[0]);
+
+		def spouseemployment = [:];
+		if(pb.spouse.objid) {
+			list = borrower.getEmployments([refid: pb.spouse.objid]);
+			if(list) spouseemployment.putAll(list[0]);
+		}
+		def propertyholdings = [];
+		list = collateral.getProperties([parentid: app.objid]);
+		def counter = (list.size() > 4)? 4 : list.size();
+		if(!list.isEmpty()) {
+			for(i in 1..counter) {
+				propertyholdings.add(list[i-1]);
+			}
+		}
+
+		def varlist = var.getList([category:"BRANCH", searchtext:"branch_%"]);
+
+	    // TEMP DATA
+	    def data = [
+	        branchname		: app.branch.name,,//'BRANCH 1',
+	        branchaddress	: varlist.find{ it.name == "branch_address" }?.value,//'BRANCH ADDR 1',
+	        amountapproved	: app.approval.amount,//10000.00,
+	        purpose			: app.purpose,//'TEST',
+	        term            : app.producttype.term,
+
+	        // APPLICANT INFORMATION
+	       	name		: app.borrower.name,//'SAMANTHA FAYE',
+	        address		: pb.address,//'CEBU CITY',
+	        birthdate	: pb.birthdate, //new Date(),
+	        age			: currentyear - birthyear,//25,
+	        citizenship	: pb.citizenship,//'FILIPINO',
+	        spousename	: spousename, ///pb.spouse.name,//'SUMMER YOUNG',
+	        civilstatus	: pb.civilstatus,//'MARRIED',
+	        //birthplace	: 'CEBU',
+	        telno		: pb.contactno,//'233-8965',
+	        //dependent	: 'TEST TEST',
+	        //acrno		: '5615',
+
+	        // IF EMPLOYED
+	        applicantemployername	    	: employment.employer,//'HULK SMITH',
+	        applicantemployedtelno    		: employment.contactno,//'412-6556',
+	        applicantemployedaddress  		: employment.address,//'CEBU CITY',
+	        applicantemployedposition 		: employment.position,//'CLERK',
+	        applicantemployedsalary   		: employment.salary,//12000.00,
+	        applicantemployedservicelen  	: employment.lengthofservice,//3,
+	        //applicantemployedsuperiortitle 	: 'PRESIDENT',
+	        //applicantemployedcashiername 	 : 'MAYLENE CANOY',
+
+	        // IF IN BUSINESS FOR SELF
+	        applicanttradename 					: business.tradename,//'SARI-SARI STORE',
+	        applicantbusinesstelno 				: business.contactno,//'233-6561',
+	        applicantbusinesstype				: business.kind,//'RETAILER',
+	        applicantbusinessorganization		: business.ownership,//'SOLE PROPRIETORSHIP',
+	        applicantbusinesscapital	 		: business.capital,//20000.00,
+	        applicantbusinessdateestablished 	: business.dtstarted,//new Date(),
+
+	        // SPOUSE INFORMATION
+	        // IF EMPLOYED
+	        spouseemployername	    	: spouseemployment.employer,//'HULK SMITH',
+	        spouseemployedtelno    		: spouseemployment.contactno,//'412-6556',
+	        spouseemployedaddress  		: spouseemployment.address,//'CEBU CITY',
+	        spouseemployedposition 		: spouseemployment.position,//'CLERK',
+	        spouseemployedsalary   		: spouseemployment.salary,//12000.00,
+	        spouseemployedservicelen  	: spouseemployment.lengthofservice,//3,
+	        //spouseemployedsuperiortitle : 'PRESIDENT',
+	        //spouseemployedcashiername 	: 'MAYLENE CANOY',
+
+	        // IF IN BUSINESS FOR SELF
+	        /*spousetradename 	: 'SARI-SARI STORE',
+	        spousebusinesstelno 	: '233-6561',
+	        spousebusinesstype	: 'RETAILER',
+	        spousebusinessorganization	 : 'SOLE PROPRIETORSHIP',
+	        spousebusinesscapital	 : 20000.00,
+	        spousebusinessdateestablished : new Date(),*/
+
+	        // OTHER INFORMATION
+	        /*ctcno		: '46554954',
+	        ctcdateissued 	: new Date(),
+	        ctcplaceissued	: 'CEBU CITY',
+	        tin		: '646611',*/
+
+	        // PROPERTY HOLDINGS
+	        //propertyholdings: propertyholdings
+	        propertyholdings : propertyholdings
+	    ];
+	}
+
+	@ProxyMethod
+	public def getDemandLetterReportData( params ) {
+		if (!params.loanappid) throw new Exception('Please specify loanappid');
+		def app = loanapp.read([objid: params.loanappid]);
+		def ledger = loan_ledger.findByAppId([appid: app.objid]);
+		def varlist = var.getList([category:"BRANCH", searchtext:"branch_%"]);
+		def currentdate = dateSvc.parseCurrentDate().date;
+
+		def data = [
+            //companyname	: 'COMPANY 1',
+            branchname		: app.branch.name,//'BRANCH 1',
+            branchaddress	: varlist.find{ it.name == "branch_address" }?.value,//'BRANCH ADDR 1',
+            name		: app.borrower.name,//'LIAN YOUNG',
+            dtprinted	: currentdate,//new Date(),
+            amtinwords	: numberSvc.doubleToWords(app.approval.amount).toUpperCase(),//'TEN THOUSAND PESOS',
+            amountapproved	: app.approval.amount,//10000.00,
+            name2		: 'RHIU VILLA',
+            maturitydate	: ledger?.dtmatured,//new Date(),
+            //branchlegalofficer : 'PEDRO MARTINEZ'
+        ];
+		return data;
+	}
+
+	@ProxyMethod
+	public def getComakerStatementReportData( params ) {
+		if (!params.loanappid) throw new Exception('Please specify loanappid');
+		if (!params.comakerid) throw new Exception('Please specify comakerid');
+		def app = loanapp.read([objid: params.loanappid]);
+		def varlist = var.getList([category:"BRANCH", searchtext:"branch_%"]);
+		def serverdate = dateSvc.parseCurrentDate();
+
+		def data = borrower.read([objid: params.comakerid]);
+		if (!data.name) data.name = data.lastname+', '+data.firstname+' '+(data.middlename? data.middlename : '');
+		data.age = 0;
+		if (data.birthdate) data.age = serverdate.year - dateSvc.parseDate(data.birthdate, null).year;
+		if (data.spouse.objid) {
+			def spouse = data.spouse;
+			spouse.name = spouse.lastname+', '+spouse.firstname+' '+(spouse.middlename? spouse.middlename : '');
+		}
+		def employments = borrower.getEmployments([refid: data.objid]);
+		data.employment = [:]
+		if (employments) data.employment.putAll(employments[0]);
+
+		data.branchname = app.branch.name;
+		data.branchaddress = varlist.find{ it.name == "branch_address" }?.value;
+		data.loanamount = app.loanamount;
+		data.amountapproved = app.approval.amount;
+		data.amtinwords = numberSvc.doubleToWords(app.approval.amount);
+		data.dtprinted = serverdate.date;
+		data.applicantname = app.borrower.name;
+		data.residency.noofyears = 0;
+		if (data.residency.since) data.residency.noofyears = serverdate.year - dateSvc.parseDate(data.residency.since, null).year;
+		data.printedby = (env.FULLNAME == null? env.USER: env.FULLNAME);
+		data.dtprinted = serverdate.date;
+        return data;
+	}
+}

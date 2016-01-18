@@ -1,0 +1,32 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.services.extended.*;
+
+class LoanTypeService extends ActiveCrudListService
+{
+	@Env
+	def env;
+
+	@ActiveDB("loan_type")
+	def em;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@ProxyMethod
+	public def getColumns( params ) {
+		return [
+			[name: 'name', caption: 'Name'],
+			[name: 'description', caption: 'Description'],
+		]
+	}
+
+	void beforeCreate( data ) {
+		data.dtcreated = dateSvc.serverDate;
+		data.author = [objid: env.USERID, name: env.NAME];
+	}
+
+	void beforeList( params ) {
+		params.searchtext = (params.searchtext? params.searchtext : '') + '%';
+	}
+}

@@ -1,0 +1,41 @@
+import com.rameses.annotations.*;
+
+class LoanLedgetHistoryService
+{
+	@ActiveDB(value="loan_ledger_history")
+	def history;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@ProxyMethod
+	public List getColumns( params ) {
+		return [
+			[name:'dtcreated', caption:'Date Adjusted'],
+			[name:'refno', caption:'Txn No.'],
+			[name:'dtpaid', caption:'Txn Date'],
+			[name:'paytype', caption:'Payment Type'],
+			[name:'amtpaid', caption:'Payment Amount', type:'decimal', format:'#,##0.00']
+		]
+	}
+
+
+	@ProxyMethod
+	public def getList( params ) {
+		params.searchtext = (params.searchtext? params.searchtext+' 23:59:59' : dateSvc.serverDate);
+		def list = history.getList(params);
+		def total = 0;
+		def prevdate;
+		def prevdtcreated;
+		list.eachWithIndex{item, idx->
+			if(item.dtpaid == prevdate && item.dtcreated == prevdtcreated) {
+				if(total == 0) total = list[idx-1].amtpaid
+				item.amtpaid -= total;
+				total += item.amtpaid;
+			} else total = 0;
+			prevdate = item.dtpaid;
+			prevdtcreated = item.dtcreated;
+		}
+		return list;
+	}
+}

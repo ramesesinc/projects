@@ -1,0 +1,161 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.UID;
+import java.text.SimpleDateFormat;
+
+class BranchOutstandingReportService
+{
+	@Env
+	def env;
+
+	@ActiveDB("branch_report")
+	def branch_report;
+
+	@ActiveDB("branch_report_criteria")
+	def report_criteria;
+
+	@ActiveDB("branch_report_generated")
+	def report_generated;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@Service("BranchService")
+	def branchSvc;
+
+	private String reporttype = 'LOANOUTSTANDING';
+
+	@ProxyMethod
+	public def getCriteria() {
+		return report_criteria.getList([searchtext: '%']);
+	}
+
+	private void validate( params ) {
+		def sd = parseDate(params.startdate);
+		def ed = parseDate(params.enddate);
+
+		if (sd.compareTo(ed) > 0) {
+			throw new Exception("Start date must not be greater than end date.");
+		}
+	}
+
+	@ProxyMethod
+	public def generate( params ) {
+		if (!params.startdate) throw new Exception("Please specify start date.");
+		if (!params.enddate) throw new Exception("Please specify end date.");
+		validate(params);
+
+		def startdate = parseDate(params.startdate);
+		def enddate = parseDate(params.enddate);
+		def currdate = dateSvc.serverDate;
+
+		def xdate = parseDate(currdate.toString().split(' ')[0]);
+
+		if ((startdate.compareTo(xdate) <= 0) && (enddate.compareTo(xdate) >= 0)) {
+			//def criteria = (params.criteria? params.criteria.toLowerCase() : null);
+			def xlist = branch_report.getOutstanding();
+			if (xlist) {
+				def br = [
+					objid 		: 'BR' + new UID(),
+					dtcreated 	: currdate,
+					author 		: [objid: env.USERID, name: env.NAME],
+					txndate 	: xdate,
+					reporttype 	: reporttype,
+					value 		: xlist
+				];
+				branch_report.create(br);
+			}
+		}
+	}
+
+	@ProxyMethod
+	public def getReportData( params ) {
+		if (!params.startdate) throw new Exception("Please specify start date.");
+		if (!params.enddate) throw new Exception("Please specify end date.");
+		validate(params);
+
+		def startdate = parseDate(params.startdate);
+		def enddate = parseDate(params.enddate);
+		def currdate = dateSvc.serverDate;
+
+		def df = new SimpleDateFormat("MMM-dd-yyyy");
+
+		def sd = df.format(startdate);
+		def ed = df.format(enddate);
+
+		params.reporttype = reporttype;
+		def xlist = branch_report.getReportData(params);
+		if (!xlist) {
+			throw new Exception("No outstanding(s) from " + sd + " TO " + ed + ".");
+		}
+
+		def list = [];
+		def item;
+		xlist.each{ o->
+			item = branch_report.read(o);
+			if (item) {
+				list.addAll(item.value);
+			}
+		}
+
+		def totalbalance = list?.balance?.sum();
+		if (!totalbalance) totalbalance = 0;
+
+		def totalamount = list?.loanamount?.sum();
+		if (!totalamount) totalamount = 0;
+
+		def noofaccounts = list?.size();
+		if (!noofaccounts) noofaccounts = 0;
+
+		def list2 = [];
+		def datelist = [];
+		datelist.addAll(list.findAll{ it.txndate != null });
+		if (datelist) {
+			datelist.unique{ it.txndate }
+			datelist.sort{ it.txndate }
+			def routelist;
+			datelist.each{ d->
+				routelist = [];
+				routelist.addAll(list.findAll{ it.route.code != null && it.txndate == d.txndate }.collect{ it.route });
+				if (routelist) {
+					routelist.unique{ it.code }
+					routelist.sort{ it.description }
+					routelist.each{ r->
+						r.list = list.findAll{ it.route.code == r.code && it.txndate == d.txndate }
+						if (r.list) {
+							r.list.sort{ it.borrower }
+						}
+					}
+					d.routes = routelist;
+				}
+			}
+			list2.addAll(datelist);
+		}
+
+		def branch = branchSvc.open([:]);
+		def data = [
+			date_period 	: sd + " TO " + ed,//new SimpleDateFormat("yyyy-MMM-dd").format(java.sql.Date.valueOf(params.txndate+"")),
+			dtprinted		: new SimpleDateFormat("MMM-dd-yyyy hh:mm:ss a").format(currdate),
+			printedby 		: env.NAME,
+			items			: list2,
+			totalbalance 	: totalbalance,
+			totalamount 	: totalamount,
+			noofaccounts	: noofaccounts
+		];
+		branch.each{ k, v->
+			data["branch_"+k] = v;
+		}
+
+		return data;
+	}
+
+	private def parseDate( date ) {
+		if (!date) return null;
+		if (date instanceof Date) {
+			return date;
+		} else {
+			return java.sql.Date.valueOf(date);
+		}
+	}
+}

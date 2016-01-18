@@ -1,0 +1,13 @@
+<schema>
+
+	<element name="calendar_event" tablename="calendar_event">
+		<field name="objid" primary="true"/>
+		<field name="state" required="true"/>
+		<field name="dtcreated" required="true"/>
+		<field name="createdby" required="true"/>
+		<field name="name" required="true"/>
+		<field name="date" required="true"/>
+		<field name="description" required="true"/>
+	</element>
+	
+</schema>

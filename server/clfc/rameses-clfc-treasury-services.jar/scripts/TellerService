@@ -1,0 +1,76 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.services.extended.*;
+
+class TellerService extends ActiveCrudListService
+{
+	@Env
+	def env;
+
+	@ActiveDB(value="teller")
+	def em;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@Service("SequenceService")
+	def seqSvc;
+
+	@Service("BranchService")
+	def branchSvc;
+
+	@ProxyMethod
+	public def getColumns( params ) {
+		return [
+			[name: 'tellerno', caption: 'Teller No.'],
+			[name: 'state', caption: 'Status'],
+			[name: 'lastname', caption: 'Last Name'],
+			[name: 'firstname', caption: 'First Name']
+		]
+	}
+
+	void beforeCreate( data ) {
+		data.dtcreated = dateSvc.serverDate;
+		data.author = [objid: env.USERID, name: env.NAME];
+		data.dtmodified = data.dtcreated;
+		data.modifiedby = data.author;
+
+		def branch = branchSvc.open([:]);
+
+		data.branchid = branch.code;
+
+		def seqname = 'teller' + data.branchid;
+		data.tellerno = data.branchid + seqSvc.getNextFormattedSeriesA(seqname, 7);
+		data.name = data.lastname + ', ' + data.firstname + (data.middlename? ' ' + data.middlename : '');
+	}
+
+	void beforeUpdate( data ) {
+		data.dtmodified = dateSvc.serverDate;
+		data.modifiedby = [objid: env.USERID, name: env.NAME];
+		data.name = data.lastname + ", " + data.firstname + (data.middlename? " " + data.middlename : "");
+	}
+
+	@ProxyMethod
+	public def activate( params ) {
+		def data = em.read(params);
+		if (!data) throw new Exception("Record does not exist or has already been deleted.");
+
+		data.state = "ACTIVE";
+		em.changeState(data);
+		em.create(data, "active");
+
+		return data;
+	}
+
+	@ProxyMethod
+	public def deactivate( params ) {
+		def data = em.read(params);
+		if (!data) throw new Exception("Record does not exist or has already been deleted.");
+
+		data.state = "DEACTIVATED";
+		em.changeState(data);
+		em.delete(data, "active");
+
+		return data;
+	}
+}

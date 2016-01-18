@@ -1,0 +1,74 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+
+class CollectionCashbreakdownInterceptor
+{
+	@ActiveDB('collection_cb')
+	def em;
+
+	@ActiveDB('dailycollection')
+	def dailycollection;
+
+	@Before(pattern="CollectionCashbreakdownService.getCashBreakdown", eval="args[0].grouptype == 'online'")
+	public def beforeOnlineCashBreakdown( evt ) {
+		def params = evt.args[0];
+		params.collectionid = params.objid;
+		params.groupid = params.objid;
+	}
+
+	@Before(pattern="CollectionCashbreakdownService.getCashBreakdown", eval="args[0].grouptype == 'route'")
+	public def beforePerRouteCashBreakdown( evt ) {
+		def params = evt.args[0];
+		params.collectionid = params.objid;
+		params.groupid = params.routecode;
+	}
+
+	@Before(pattern="CollectionCashbreakdownService.getCashBreakdown", eval="args[0].grouptype == 'followup'")
+	public def beforeFollowupCashBreakdown( evt ) {
+		def params = evt.args[0];
+		params.groupid = params.collectionid;
+		params.collectionid = params.objid
+	}
+
+	@Before(pattern="CollectionCashbreakdownService.getCashBreakdown", eval="args[0].grouptype == 'special'")
+	public def beforeSpecialCashBreakdown( evt ) {
+		def params = evt.args[0];
+		params.groupid = params.collectionid;
+		params.collectionid = params.objid;
+	}
+
+	//@Before(pattern='CollectionCashbreakdownService.sendBack')
+	public def beforeSendBack( evt ) {
+		def params = evt.args[0];
+
+		def data = em.read(params);
+		if (!data) throw new Exception('Cash breakdown record does not exist or has already been deleted.');
+
+		def i = em.findCurrentSendbackByState([objid: data.objid, state: 'DRAFT']);
+		if (!i) {
+			i = dailycollection.findDailyCollectionByTxndate([txndate: data.txndate]);
+			if (i) {
+				def list = em.getDetails(data);
+				def amt = list?.amount?.sum();
+				if (!amt) amt = 0;
+
+				i.totalcollection -= amt;
+				dailycollection.update(i, "totalcollection");
+			}
+
+		}
+	}
+
+	//@After(pattern='CollectionCashbreakdownService.sendBack')
+	public def afterSendBack( evt ) {
+		def params = evt.args[0];
+
+		def data = em.read(params);
+		if (!data) throw new Exception('Cash breakdown record does not exist or has already been deleted.');
+
+		println 'data ' + data;
+
+		throw new Exception('stopping');
+	}
+
+}

@@ -1,0 +1,127 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.services.extended.*;
+
+class MigrationBorrowerMergeService extends ActiveCrudListService
+{
+	@Env
+	def env;
+
+	@ActiveDB(em="migration", value="borrower_merge")
+	def em;
+
+	@ActiveDB(em="migration", value="borrowerresolver")
+	def borrowerresolver;
+
+	@ActiveDB(em="migration", value="loanresolver")
+	def loanresolver;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@ProxyMethod
+	public def getColumns( params ) {
+		def cols = [];
+		if (!params.state) cols << [name: 'state', caption: 'Status'];
+		cols << [name: 'borrower.name', caption: 'Borrower'];
+		cols << [name: 'dtcreated', caption: 'DateRequested'];
+		cols << [name: 'author.name', caption: 'RequestedBy'];
+		switch (params.state) {
+			case 'APPROVED'		: 	cols << [name: 'dtposted', caption: 'DateApproved'];
+									cols << [name: 'poster.name', caption: 'ApprovedBy'];
+									break;
+			case 'DISAPPROVED' 	: 	cols << [name: 'dtposted', caption: 'DateDisapproved'];
+									cols << [name: 'poster.name', caption: 'DisapprovedBy'];
+									break;
+		}
+
+		return cols;
+	}
+
+	@ProxyMethod
+	public def getStates() {
+		return [
+			[caption: 'All'],
+			[caption: 'FOR APPROVAL', state: 'FOR_APPROVAL'],
+			[caption: 'APPROVE', state: 'APPROVED'],
+			[caption: 'DISAPPROVE', state: 'DISAPPROVED']
+		];
+	}
+
+	void afterOpen( data ) {
+		data.items = em.getItems(data);
+	}
+
+	void beforeList( params ) {
+		params.searchtext = (params.searchtext? params.searchtext : '') + '%';
+		if (params.state) {
+			params._listMethod = 'getListByState';
+		}
+	}
+
+	@ProxyMethod
+	public def approveDocument( params ) {
+		if (!params.items) throw new Exception("Please specify items.");
+
+		def data = approveImpl(params, 'APPROVED');
+
+		def list = params.items;
+		def objid = list[0].borrower.objid;
+
+		def item = list.find{ it.borrower.objid == objid }
+		def xlist = list.findAll{ it.borrower.objid != objid }
+		def itm, loans;
+		xlist.each{ o->
+			itm = borrowerresolver.read([objid: o.borrower.objid], 'ext-info');
+			if (itm) borrowerresolver.delete(itm, 'ext-info');
+
+			itm = borrowerresolver.read([objid: o.borrower.objid], 'resolved');
+			if (itm) borrowerresolver.delete(itm, 'resolved');
+;
+			loans = loanresolver.getListByBorrowerid([searchtext: '%', borrowerid: o.borrower.objid]);
+			loans.each{ l->
+				itm = loanresolver.read([objid: l.objid]);
+				if (itm) {
+					itm.borrowerid = objid;
+					loanresolver.update(itm);
+				}
+
+				itm = loanresolver.findLoanBorrowerConnectionByLoanid([loanid: l.objid]);
+				//println 'itm ' + itm;
+				if (itm) {
+					itm.borrowerid = objid;
+					loanresolver.update(itm, 'loan-borrower');
+				}
+			}
+			borrowerresolver.delete([objid: o.borrower.objid]);
+		}
+
+		return open(data);
+	}
+
+	@ProxyMethod
+	public def disapprove( params ) {
+		return approveImpl(params, 'DISAPPROVED');
+	}
+
+	private def changeState( params, state ) {
+		def data = em.read(params);
+		if (!data) throw new Exception("Migration borrower merge record does not exist or has already been deleted.");
+
+		if (data.state == state) 
+			throw new Exception("Migration borrower merge record already ${state}.");
+
+		data.state = state;
+		em.changeState(data);
+		return open(data);
+	}
+
+	private def approveImpl( params, state ) {
+		def data = changeState(params, state);
+
+		data.dtposted = dateSvc.serverDate;
+		data.poster = [objid: env.USERID, name: env.NAME];
+		em.update(data, 'post');
+		return open(data);
+	} 
+}

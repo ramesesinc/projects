@@ -1,0 +1,42 @@
+import com.rameses.annotations.*;
+
+class CustomerEntityInterceptor
+{
+	@ActiveDB('customer')
+	def customer;
+
+	@After(pattern="IndividualEntityService.open")
+	public void afterOpen( evt ) {
+		def result = evt.result;
+		if (!'individual'.equalsIgnoreCase(result.type+'')) return;
+
+		def data = customer.findCustomer([objid: result.objid]);
+		result.putAll(data);
+	}
+
+	@After(pattern="IndividualEntityService.create")
+	public void afterCreate( evt ) {
+		def result = evt.result;
+		if (!'individual'.equalsIgnoreCase(result.type+'')) return;
+
+		def item = customer.read(result);
+		println 'result ' + result;
+		if (!item) customer.create(result); 
+	}	
+
+	@After(pattern="IndividualEntityService.update")
+	public void afterUpdate( evt ) {
+		def result = evt.result;
+		if (!'individual'.equalsIgnoreCase(result.type+'')) return;
+
+		customer.update(result); 
+	} 
+
+	@After(pattern="IndividualEntityService.removeEntity")
+	public void afterRemove( evt ) {
+		def result = evt.result;
+		if (!'individual'.equalsIgnoreCase(result.type+'')) return;
+
+		customer.delete(result); 
+	} 
+}

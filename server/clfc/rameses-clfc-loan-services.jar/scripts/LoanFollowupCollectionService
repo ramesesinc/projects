@@ -1,0 +1,160 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.services.extended.*;
+import java.rmi.server.UID;
+
+class LoanFollowupCollectionService extends ActiveListService
+{
+	@Env
+	def env;
+
+	@ActiveDB("followupcollection")
+	def em;
+
+	@ActiveDB("specialcollection")
+	def specialcollection;
+
+	@ActiveDB("loan_ledger_billing")
+	def ledger_billing;
+
+	@Service("LoanSpecialCollectionService")
+	def specialColSvc;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@ProxyMethod
+	public def getOptions() {
+		return [
+			[caption: 'All'],
+			[caption: 'DRAFT', state: 'DRAFT'],
+			[caption: 'FOR VERIFICATION', state: 'FOR_VERIFICATION'],
+			[caption: 'VERIFIED', state: 'VERIFIED'],
+			[caption: 'FOR APPROVAL', state: 'FOR_APPROVAL'],
+			[caption: 'APPROVED', state: 'APPROVED'],
+			[caption: 'DISAPPROVED', state: 'DISAPPROVED'],
+			[caption: 'FOR DOWNLOAD', state: 'FOR_DOWNLOAD'],
+			[caption: 'DOWNLOADED', state: 'DOWNLOADED'],
+			[caption: 'REMITTED', state: 'REMITTED'],
+			[caption: 'POSTED', state: 'POSTED'],
+			[caption: 'CANCELLED', state: 'CANCELLED']
+		]
+	}
+
+	@ProxyMethod
+	public def getColumns( params ) {
+		def cols = [];
+		if (!params.state) {
+			cols << [name: 'state', caption: 'Status'];
+		}
+		/*
+		if (params.showstatus == true) {
+			cols << [name: 'state', caption: 'Status'];
+		}
+		*/
+		cols << [name: 'txndate', caption: 'Date', type: 'date', outputFormat: 'MMM-dd-yyyy'];
+		cols << [name: 'collector.name', caption: 'Collector'];
+
+		if (params.state == 'VERIFIED') {
+			cols << [name: 'dtverified', caption: 'Date Verified'];
+			cols << [name: 'verifiedby.name', caption: 'Verified By'];
+		} else if (params.state == 'APPROVED') {
+			cols << [name: 'dtposted', caption: 'Date Approved'];
+			cols << [name: 'poster.name', caption: 'Approved By'];
+		} else if (params.state == 'DISAPPROVED') {
+			cols << [name: 'dtposted', caption: 'Date Disapproved'];
+			cols << [name: 'poster.name', caption: 'Disapproved By'];
+		} else if (params.state == 'CANCELLED') {
+			cols << [name: 'dtcancelled', caption: 'Date Cancelled'];
+			cols << [name: 'cancelledby.name', caption: 'Cancelled By'];
+		}
+
+		return cols;
+	}
+
+	@ProxyMethod
+	public def cancelBilling( params ) {
+		return specialColSvc.cancelBilling(params);
+	}
+
+	@Async
+	@ProxyMethod
+	public def createNewBillingWithoutLedgerValidation( params ) {
+		params.validateledger = false;
+		return specialColSvc.createImpl(params);
+	}
+
+	@Async
+	@ProxyMethod
+	public def createNewBilling( params ) {
+		return specialColSvc.createImpl(params);
+	}
+
+	//@Async
+	@ProxyMethod
+	public def create( data ) {
+		data = specialColSvc.create(data);
+		em.create(data);
+		return data;
+	}
+
+	//@Async
+	@ProxyMethod
+	public def update( data ) {
+		return specialColSvc.update(data);
+	}
+
+	@ProxyMethod
+	public def submitForVerification( params ) {
+		return specialColSvc.submitForVerification(params);
+	}
+
+	@ProxyMethod
+	public def verify( params ) {
+		return specialColSvc.verify(params);
+	}
+
+	@ProxyMethod
+	public def submitForApproval( params ) {
+		return specialColSvc.submitForApproval(params);
+	}
+
+	@ProxyMethod
+	public def approveDocument( params ) {
+		return specialColSvc.approveDocument(params);
+	}
+
+	@ProxyMethod
+	public def disapprove( params ) {
+		return specialColSvc.disapprove(params);
+	}
+
+	@ProxyMethod
+	public def open( data ) {
+		return specialColSvc.open(data);
+	}
+
+	@ProxyMethod
+	public def resetBilling( params ) {
+		specialColSvc.resetBilling(params);
+	}
+
+	void beforeList( params ) {
+		params.searchtext = (params.searchtext? params.searchtext : '') + '%'
+
+		if (params.state) {
+			params._listMethod = 'getListByState';
+		}
+		if (params.billingid) {
+			params._listMethod = 'getListByBilling'
+		}
+	}
+
+	@ProxyMethod
+	public def getCollectorBilling( params ) {
+		if (!params.collectorid) throw new Exception ("Please specify collectorid.");
+
+		if (!params.billdate) params.billdate = dateSvc.serverDate.toString().split(' ')[0];
+		return ledger_billing.findBillingByCollectoridAndBilldate(params);
+	}
+}

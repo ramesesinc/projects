@@ -1,0 +1,287 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.services.extended.*;
+
+class MobilePostingService
+{
+	@Env
+	def env;
+
+	@ActiveDB(value="fieldcollection")
+	def fieldcollection;
+
+	@ActiveDB(value="ledger_billing")
+	def ledger_billing;
+
+	@ActiveDB(value="void_request")
+	def void_request;
+
+	@ActiveDB(value="specialcollection")
+	def specialcollection;
+
+	@ActiveDB(value="sysuser")
+	def sysuser;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@Service("MobileTrackerService")
+	def trackerSvc;
+
+	@ProxyMethod
+	public def postPayment( params ) {
+		if (!params.payment) throw new Exception("Please specify payment.");
+		postFieldCollection(params);
+
+		def itm = field_collection.read(params.payment, "payment");
+		if (!itm) {
+			def fc = field_collection.read([objid: params.sessionid]);
+			if (!fc) throw new Exception("Field collection does not exist or has already been deleted.");
+
+			def loan = field_collection.read([objid: params.collectionsheet.detailid], "loan");
+			itm = [
+				objid 				: params.payment.objid,
+				parentid 			: params.collectionsheet.detailid,
+				fieldcollectionid 	: params.sessionid,
+				dtfiled 			: params.payment.txndate,
+				filedby 			: (params.collector? params.collector.name : 'NOT IDENTIFIED'),
+				txnmode				: params.mode,
+				refno				: params.payment.refno,
+				paytype				: params.payment.type,
+				payamount			: params.payment.amount,
+				paidby				: params.payment.paidby,
+				payoption			: 'cash'
+			];
+			field_collection.create(itm, "payment");
+			loan.noofpayments++;
+			field_collection.update(loan, "loan-noofpayments");
+
+			def tracker = [
+				trackerid	: params.trackerid,
+				txntype		: (params.type? params.type : 'NORMAL'),
+				refid		: params.payment.objid,
+				reftype		: 'PAYMENT',
+				lng 		: params.longitude,
+				lat 		: params.latitude,
+				remarks 	: 'RECEIVED PAYMENT FROM '+params.payment.paidby,
+				state 		: 1
+			];
+			trackerSvc.log(tracker);
+		}
+		//println "post payment";
+		return [response: "success"];
+	}
+
+	@ProxyMethod
+	public def updateRemarks( params ) {
+		if (!params.collectionsheet) throw new Exception("Please specify collection sheet.");
+		postFieldCollection(params)
+
+		def loan = field_collection.read([objid: params.collectionsheet.detailid], "loan");
+		loan.remarks = params.remarks;
+		field_collection.update(loan, "loan");
+		def t = [
+			trackerid 	: params.trackerid,
+			txntype 	: (params.type? params.type : 'NORMAL'),
+			refid 		: params.collectionsheet.detailid,
+			reftype 	: 'REMARKS',
+			lng 		: params.longitude,
+			lat  		: params.latitude,
+			remarks 	: params.remarks,
+			state 		: 1
+		];
+		trackerSvc.log(t);
+		return [response: "success"];
+	}
+
+	@ProxyMethod
+	public def removeRemarks( params ) {
+		if (!params.detailid) throw new Exception("Please specify detailid.");
+		/*def cs = batch_collectionsheet.read([objid: params.detailid], "detail");
+		if (!cs) throw new Exception("Collection sheet does not exist or has already been deleted.");
+
+		cs.remarks = null;
+		batch_collectionsheet.update(cs, "detail");*/
+		def loan = field_collection.read([objid: params.detailid], "loan");
+		loan.remarks = '';
+		field_collection.update(loan, "loan");
+		println "remove remarks";
+		return [response: "success"];
+	}
+
+	private void postFieldCollection( params ) {
+		def itm = field_collection.read([objid: params.sessionid]);
+		if (!itm) {
+			def date = dateSvc.serverDate;
+			def billing = ledger_billing.read([objid: params.sessionid]);
+			itm = [
+				objid		: params.sessionid,
+				state		: 'DRAFT',
+				dtfiled		: date,
+				filedby		: params.collector.name,
+				branchid	: billing.branchid,
+				billdate	: billing.billdate,
+				totalcount	: 0,
+				totalamount : 0.00,
+				collector 	: params.collector
+			];
+			field_collection.create(itm);
+		}
+
+		def map = [
+			fieldcollectionid 	: params.sessionid,
+			routecode 			: params.routecode,
+			loanappid 			: params.collectionsheet.loanapp.objid
+		]
+		def route = field_collection.findRouteByFieldcollectionidAndRoutecode(map);
+		if (!route) {
+			route = [
+				fieldcollectionid 	: params.sessionid,
+				routecode 			: params.routecode,
+				totalcount			: 0,
+				trackerid			: params.trackerid,
+				posted 				: 0
+			];
+			field_collection.create(route, "route");
+
+			itm.state = 'DRAFT';
+			field_collection.changeState(itm);
+		}
+
+		def loan = field_collection.read([objid: params.collectionsheet.detailid], "loan");
+		if (!loan) {
+			loan = [
+				objid 		: params.collectionsheet.detailid,
+				parentid	: params.sessionid,
+				loanapp 	: params.collectionsheet.loanapp,
+				borrower 	: params.collectionsheet.borrower,
+				routecode 	: params.routecode,
+				noofpayments: 0,
+				remarks 	: ''
+			];
+			field_collection.create(loan, "loan");
+		}
+	}
+
+	@ProxyMethod
+	public def checkVoidPaymentRequest( params ) {
+		def itm = void_request.read([objid: params.voidid]);
+		if (!itm) throw new Exception("Void payment record does not exist or has already been deleted.");
+
+		return itm;
+	}
+
+	@ProxyMethod
+	public def voidPayment( params ) {
+		if (!params.paymentid) throw new Exception("Please specify paymentid.");
+		if (!params.loanapp.objid) throw new Exception("Please specify loanappid.");
+
+		def itm = void_request.read([objid: params.objid]);
+		if (!itm) {
+			itm = [
+				objid 		: params.objid,
+				state 		: params.state,
+				dtfiled 	: params.txndate,
+				filedby 	: (params.collector? params.collector.name : 'NOT IDENTIFIED'),
+				txncode 	: 'FIELD',
+				collectionid: params.collectionid,
+				paymentid	: params.paymentid,
+				routecode 	: params.routecode,
+				loanapp 	: params.loanapp,
+				collector 	: params.collector,
+				reason 		: params.reason
+			]
+			void_request.create(itm);
+		}
+		return [response: "success"];
+	}
+
+	@ProxyMethod
+	public def postSpecialCollectionRequest( params ) {
+		if (!params.collector) throw new Exception("Please specify collector.");
+
+		if (!params.billingid) {
+			def date = dateSvc.serverDate;
+			def mParams = [
+				collectorid : params.collector.objid,
+				billdate 	: date.toString().split(' ')[0]
+			];
+			def map = ledger_billing.findBillingByCollectoridAndBilldate(mParams);
+			if (!map) {
+				map = [
+					objid 			: 'DLB'+new java.rmi.server.UID(),
+					state 			: 'DRAFT',
+					dtcreated 		: date,
+					createdby 		: params.collector.name,
+					dtmodified 		: date,
+					modifiedby 		: params.collector.name,
+					collector 		: params.collector,
+					billdate 		: dateSvc.serverDate,
+					branchid 		: (env.ORGID? env.ORGID : 'NOT IDENTIFIED'),
+					totalfordownload: 0,
+					totaldownloaded : 0,
+					totalunposted 	: 0,
+					totalposted 	: 0
+				];
+				ledger_billing.create(map);
+			}
+			params.billingid = map.objid;
+		}
+		params.type = 'FIELD';
+		params.dtrequested = dateSvc.serverDate;
+		params.requestedby = params.collector.name;
+		params.downloaded = 0;
+		special_collection.create(params);	
+		return [ response: "success" ];
+	}
+
+	@ProxyMethod
+	public def remitRouteCollection( params ) {
+		if (!params.sessionid) throw new Exception("Please specify sessionid.");
+		if (!params.routecode) throw new Exception("Please specify routecode.");
+		if (!params.totalcollection) throw new Exception("Please specify total collection sheets for remittance.");
+		if (params.totalamount == null) throw new Exception("Please specify total amount collected.")
+
+		def route = field_collection.findFieldCollectionRouteByFieldcollectionidAndRoutecode([fieldcollectionid: params.sessionid, routecode: params.routecode]);
+		if (route) {
+			route.totalcount = params.totalcollection;
+			field_collection.updateTotalcountByFieldcollectionidAndRoutecode(route);
+		}
+
+		def data = field_collection.read([objid: params.sessionid]);
+		if (data) {
+			data.totalcount += params.totalcollection;
+			data.totalamount += params.totalamount;
+			if (!field_collection.findUnremittedRouteByFieldcollectionid([fieldcollectionid: params.sessionid])) {
+				data.state = 'FOR_POSTING';
+			}
+			field_collection.update(data);
+		}
+
+		/*def billing = ledger_billing.read([objid: params.sessionid]);
+		billing.totalunposted++;
+		ledger_billing.update(billing, "totalunposted");*/
+		route = ledger_billing.findRouteByBillingidAndRoutecode([billingid: params.sessionid, routecode: params.routecode]);
+		if (route) {
+			def billing = ledger_billing.read([objid: params.sessionid]);
+			billing.totalunposted++;
+			ledger_billing.update(billing, "totalunposted");
+			ledger_billing.markRouteAsUploaded([billingid: params.sessionid, routecode: params.routecode]);	
+
+		} else {
+			special_collection.markRouteAsUploaded([billingid: params.sessionid, routecode: params.routecode]);
+		}
+		return [response: "success", state: "REMITTED"];
+	}
+
+	@ProxyMethod
+	public def isBillingPosted( params ) {
+		if (!params.sessionid) throw new Exception("Please specify sessionid.");
+
+		def flag = false;
+		def data = field_collection.read([objid: sessionid]);
+		if (data && data.state == 'POSTED') flag = true;
+
+		return flag;
+	}
+}

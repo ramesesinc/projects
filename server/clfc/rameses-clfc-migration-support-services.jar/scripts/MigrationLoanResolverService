@@ -1,0 +1,209 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.services.extended.*;
+
+class MigrationLoanResolverService extends ActiveCrudListService
+{
+	@ActiveDB(em="migration", value="loanresolver")
+	def em;
+
+	@ActiveDB(em="migration", value="borrowerresolver")
+	def borrowerresolver;
+
+	@ActiveDB(em="migration", value="borrower_merge")
+	def borrower_merge;
+
+	@Service("LoanTypeService")
+	def loanTypeSvc;
+
+	@ProxyMethod
+	public def getColumns( params ) {
+		def cols = [];
+		if (!params.state) cols << [name: 'state', caption: 'Status'];
+
+		cols << [name: 'objid', caption: 'ID'];
+		cols << [name: 'acctname', caption: 'AcctName'];
+		cols << [name: 'loanamount', caption: 'Amount', type: 'decimal', format: '#,##0.00'];
+		cols << [name: 'loandate', caption: 'DateReleased', type: 'date', outputFormat: 'MMM-dd-yyyy'];
+
+		return cols;
+	}
+
+	@ProxyMethod
+	public def getStates() {
+		return [
+			[caption: 'ALS', state: 'ALS'],
+			[caption: 'Unresolved', state: 'UNRESOLVED'],
+			[caption: 'Resolved', state: 'RESOLVED'],
+			[caption: 'All']
+		];
+	}
+
+	@ProxyMethod
+	public def getLoanTypes() {
+		def list = loanTypeSvc.getList([:]);
+		if (!list) return [];
+		return list.collect{ it.name }
+	}
+
+	@ProxyMethod
+	public def getAccountStates() {
+		return ["CLOSED", "OPEN"];
+	}
+
+	private void trimFields( data )  {
+		if (data.objid) data.objid = data.objid.trim();
+		if (data.borrowerid) data.borrowerid = data.borrowerid.trim();
+	}
+
+	void beforeCreate( data ) {
+		trimFields(data);
+	}
+
+	void beforeUpdate( data ) {
+		trimFields(data);
+	}
+
+	void afterCreate( data ) {
+		updateInfo(data);
+	}
+
+	void afterUpdate( data ) {
+		updateInfo(data);
+	}
+
+	private void updateInfo( data ) {
+		if (!data.overpaymentamount) data.overpaymentamount = 0;
+		def ext = em.read(data, 'ext-info');
+		if (!ext) {
+			em.create(data, 'ext-info');
+		} else {
+			em.update(data, 'ext-info');
+		}
+		data.isedited = true;
+		ext = em.read(data , 'loan-borrower');
+		if (!ext) {
+			ext = [
+				objid 		: data.objid,
+				borrowerid 	: data.borrower.objid,
+				loanid 		: data.objid
+			];
+			em.create(ext, 'loan-borrower');
+		} else {
+			ext.borrowerid = data.borrower.objid;
+			em.update(ext, 'loan-borrower');
+		}
+	}
+
+	void afterOpen( data ) {
+		data.isedited = false;
+		def r = em.read(data, 'ext-info');
+		if (r) {
+			data.putAll(r);
+			data.isedited = true;
+		}
+
+		if (!data.acctstate) {
+			data.acctstate = 'CLOSED';
+			if (data.balance > 0) data.acctstate = 'OPEN';
+		}
+
+		r = em.read(data, 'loan-borrower');
+		if (r) {
+			def b = borrowerresolver.read([objid: r.borrowerid], 'ext-info');
+			if (!b.name) {
+				b.name = b.lastname + ', ' + b.firstname;
+				if (b.middlename) b.name += ' ' + b.middlename;
+			}
+			data.borrower = b;
+		}
+		
+		data.isresolved = false;
+		r = em.read(data, 'resolved');
+		if (r) data.isresolved = true;
+
+		def b = borrowerresolver.read([objid: data.borrowerid]);
+		if (!b) throw new Exception("Migration borrower record does not exist or has already been deleted.");
+
+		data.borrowername = b.borrowername;
+	}
+
+	void beforeList( params ) {
+		params.searchtext = (params.searchtext? params.searchtext : '') + '%';
+
+		if (params.borrowerid) params._listMethod = 'getListByBorrowerid';
+
+		def lm;
+		if (params.state == 'RESOLVED') {
+			lm = 'getResolvedList';
+			if (params.borrowerid) lm = 'getResolvedListByBorrowerid';
+		} else if (params.state == 'UNRESOLVED') {
+			lm = 'getUnresolvedList';
+			if (params.borrowerid) lm = 'getUnresolvedListByBorrowerid';
+		} else if (params.state == 'ALS') {
+			lm = 'getALSList';
+			if (params.borrowerid) lm = 'getALSListByBorrowerid';
+		}
+		if (lm) params._listMethod = lm;
+	}
+
+	@ProxyMethod
+	public def getPaymentMethods() {
+		return ["schedule", "over"];
+	}
+
+	private void checkBeforeResolve( params ) {
+		def data = em.read(params);
+		if (!data) throw new Exception("Migration loan record does not exist or has already been deleted.");
+
+		def a = borrower_merge.findByBorroweridAndState([borrowerid: data.borrowerid, state: 'FOR_APPROVAL']);
+		if (a) throw new Exception("Cannot resolve loan. There are still merge request(s) for this borrower that needs approval.");
+	}
+
+	@ProxyMethod
+	public def resolve( params ) {
+		def data = em.read(params);
+		if (!data) throw new Exception("Migration loan record does not exist or has already been deleted.");
+
+		checkBeforeResolve(data);
+
+		def ext = em.read(data, 'ext-info');
+		if (!ext) throw new Exception("Info for this loan has not yet been resolved.");
+
+		ext = em.read(data , 'loan-borrower');
+		//println 'ext ' + ext;
+		//println 'params ' + params;
+		if (!ext) {
+			ext = [
+				objid 		: data.objid,
+				borrowerid 	: params.borrower.objid,
+				loanid 		: data.objid
+			];
+			em.create(ext, 'loan-borrower');
+		} else {
+			ext.borrowerid = params.borrower.objid;
+			em.update(ext, 'loan-borrower');
+		}
+
+		def r = em.read(data, 'resolved');
+		if (r) throw new Exception("Loan has already been resolved.");
+
+		em.create(data, 'resolved');
+
+		return open(data);
+	}
+
+	@ProxyMethod
+	public def resolveAll( params ) {
+		def list = params.list;
+		if (!list) list = em.getUnresolvedList([searchtext: '%']);
+		def item;
+		list.each{ o->
+			item = em.read(o, 'ext-info');
+			if (item) {
+				item = em.read(o, 'resolved');
+				if (!item) em.create(o, 'resolved');
+			}
+		}
+	}
+}

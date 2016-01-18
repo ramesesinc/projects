@@ -1,0 +1,57 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.services.extended.*;
+
+class EncashmentCBSService extends ActiveCrudService
+{
+	@ActiveDB("encashment")
+	def em;
+
+	@ActiveDB("collection_cb")
+	def collection_cb;
+
+	@ActiveDB("loan_route")
+	def route;
+
+	String subSchemaName = 'encashment-cbs';
+
+	void afterOpen( data ) {
+		def item = collection_cb.read([objid: data.cbsid]);
+		if (item) {
+			item.route = item.collection.type;
+			if (item.group.type == 'route') {
+				def r = route.read([code: item.group.objid]);
+				if (r) item.route = r.description + ' - ' + r.area;
+			}
+			item.details = collection_cb.getDetails(item);
+		}
+		data.generated = item;
+	}
+
+	/*
+	def open( params ) {
+		def data = em.read(params, "encashment-cbs");
+		if (!data) throw new Exception("Record does not exist or has already been deleted.");
+
+		data.references = em.getCbsReferences(data);
+		data.details = em.getCbsDetails(data);
+
+		def change = em.getCbsChange(data);
+		data.change = (change? change.amount.sum() : 0);
+
+		data.generated = collection_cb.read([objid: data.cbsid]);
+		if (data.generated) {
+			def generated = data.generated;
+			generated.details = collection_cb.getDetails(data.generated);
+			generated.route = generated.collection.type;
+			if (generated.group.type == 'route') {
+				def r = route.read([code: data.generated.group.objid]);
+				generated.route = r.description + ' - ' + r.area;
+			}
+		}
+
+		return data;
+	}
+	*/
+
+}

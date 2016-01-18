@@ -1,0 +1,33 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.services.extended.*;
+
+class MigrationBorrowerResolverLookupService extends ActiveListService
+{
+	@ActiveDB(em="migration", value="borrowerresolver")
+	def em;
+
+	String listMethod = 'getLookupList';
+
+	@ProxyMethod
+	public def getColumns( params ) {
+		def cols = [];
+		if (!params.state) cols << [name: 'state', caption: 'Status'];
+		cols << [name: 'objid', caption: "ID"];
+		cols << [name: 'borrowername', caption: 'Borrower'];
+		cols << [name: 'address', caption: 'Address'];
+		return cols;
+	}
+
+	void beforeList( params ) {
+		params.searchtext = (params.searchtext? params.searchtext : '') + '%';
+
+		def lm;
+		switch (params.state) {
+			case 'RESOLVED'		: lm = 'getResolvedList'; break;
+			case 'UNRESOLVED' 	: lm = 'getUnresolvedList'; break;
+			case 'ALS' 			: lm = 'getALSList'; break;
+		}
+		if (lm) params._listMethod = lm;
+	}
+}

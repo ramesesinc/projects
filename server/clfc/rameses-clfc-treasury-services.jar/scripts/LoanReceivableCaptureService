@@ -1,0 +1,172 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.services.extended.*;
+import java.rmi.server.UID;
+
+class LoanReceivableCaptureService extends ActiveCrudListService
+{
+	@Env
+	def env;
+
+	@ActiveDB("loanapp_receivable")
+	def em;
+
+	@ActiveDB("loanapp")
+	def loanapp;
+
+	@ActiveDB('datatxnlog')
+	def txnlog; 
+
+	@ActiveDB("receivable")
+	def receivable;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@Service("InboxService")
+	def inboxSvc;
+
+	String listMethod = 'getCaptureList';
+
+	@ProxyMethod
+	public def getColumns( params ) {
+		def cols = [];
+		if (!params.state) cols << [name: 'txnstate', caption: 'Status'];
+		cols << [name: 'loanapp.appno', caption: 'AppNo'];
+		cols << [name: 'borrower.name', caption: 'Borrower'];
+		cols << [name: 'description', caption: 'Description']; 
+		cols << [name: 'amount', caption: 'Amount', type: 'decimal', format: '#,##0.00'];
+		return cols;
+	}
+
+	void beforeCreate( data ) {
+		data.dtcreated = dateSvc.serverDate;
+		data.author = [objid: env.USERID, name: env.NAME];
+		if (!data.txndate) data.txndate = data.dtcreated;//dateSvc.parse("yyyy-MM-dd", data.dtcreated);
+	}
+
+	void afterOpen( data ) {
+		def app = loanapp.read([objid: data.loanappid]);
+		if (!app) throw new Exception("Loanapp record does not exist or has already been deleted.");
+
+		data.loanapp = [objid: app.objid, appno: app.appno];
+		data.borrower = app.borrower;
+
+		data.allowvoid = false;
+		def rec = receivable.read([objid: data.objid]);
+		if (rec && (rec.totaldr==0 || rec.totalcr==0)) {
+			data.allowvoid = true;
+		}
+	}
+
+	void beforeList( params ) {
+		params.searchtext = (params.searchtext? params.searchtext : '') + '%';
+		if (params.txnstate) {
+			params._listMethod = 'getCaptureListByState';
+		}
+	}
+
+	@ProxyMethod
+	public def activate( params ) {
+		def data = changeState(params, 'ACTIVE');
+
+		def item = receivable.read([objid: data.objid]);
+		if (!item) {
+			item = [
+				objid	: data.objid,
+				refid 	: data.objid,
+				reftype : data.txntype,
+				totaldr : data.amount,
+				totalcr : 0,
+				balance	: data.amount
+			];
+			receivable.create(item);
+		}
+
+		def detail = receivable.read([objid: data.objid], 'detail');
+		if (!detail) {
+			detail = [
+				objid		: data.objid,
+				parentid	: item.objid,
+				txndate 	: data.txndate,
+				txnrefid	: data.objid,
+				txnrefno	: data.refno,
+				particulars : data.description,
+				dr 			: data.amount,
+				cr 			: 0
+			];
+			receivable.create(detail, 'detail');
+		}
+
+		return open(data);
+	}
+
+	private def changeState( params, state ) {
+		def data = em.read(params);
+		if (!data) throw new Exception("Loan receivable record does not exist or has already been deleted.");
+
+		if (data.txnstate==state) {
+			throw new Exception("Loan receivable already ${state}.");
+		}
+
+		data.txnstate = state;
+		em.changeState(data);
+
+		def action, remarks;
+		switch (state.toUpperCase()) {
+			case 'VOID_PENDING'	: 	action = 'VOID REQUEST';
+									remarks = 'Receivable void request for approval';
+									break;
+			case 'VOIDED'		: 	action = 'VOIDED';
+									remarks = 'Receivable voided';
+									break;
+			case 'ACTIVE'		: 	action = 'ACTIVE';
+									remarks = 'Receivable activated';
+									break;
+		}
+
+		def loginfo = [
+			objid 	: 'TLOG' + new UID(), 
+			txndate : dateSvc.serverDate, 
+			txnid   : data.objid, 
+			user    : [objid: env.USERID, username: env.USER], 
+			action	: action, 
+			remarks : remarks
+		]; 
+		txnlog.create( loginfo ); 
+
+		return open(data);
+	}
+
+	@ProxyMethod
+	public def voidDocument( params ) {
+		def data = changeState(params, 'VOID_PENDING');
+
+		def req = [
+			objid		: 'LRV' + new UID(),
+			dtcreated 	: dateSvc.serverDate,
+			author		: [objid: env.USERID, name: env.NAME],
+			receivableid: data.objid,
+			txnstate 	: 'FOR_APPROVAL',
+			remarks 	: params.voidremarks
+		];
+		em.create(req, 'voidrequest');
+
+		def app = loanapp.read([objid: data.loanappid]);
+		if (!app) throw new Exception("Loanapp record does not exist or has already been deleted.");
+
+		def msginfo = [ 
+			objid 		: req.objid, 
+			dtcreated	: req.dtcreated, 
+			refid 		: req.objid, 
+			filetype 	: 'loanreceivablevoidrequest', 
+			message 	: 'For approval of void request for receivable of ' + app.borrower.name,
+			senderid	: env.USERID, 
+			sendername 	: env.NAME, 
+			recipientid : 'APPROVER' 
+		]; 
+		inboxSvc.addMessage( msginfo );
+
+		return open(data);
+	}
+}

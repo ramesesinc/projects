@@ -1,0 +1,27 @@
+<schema>
+
+	<element tablename="shortage_voidrequest">
+		<field name="objid" primary="true" />
+		<field name="dtcreated" required="true" />
+		<field name="author_objid" required="true" />
+		<field name="author_name" required="true" />
+		<field name="txnstate" required="true" />
+		<field name="shortage_objid" required="true" />
+		<field name="shortage_refno" required="true" />
+		<field name="shortage_cbsno" />
+		<field name="shortage_collectorname" required="true" />
+		<field name="remarks" required="true" />
+		<complex name="info" required="false" serializer="default" merge="true" />
+		<field name="dtposted" />
+		<field name="poster_objid" />
+		<field name="poster_name" />
+	</element>
+
+	<element name="post" tablename="shortage_voidrequest">
+		<field name="objid" primary="true" />
+		<field name="dtposted" required="true" />
+		<field name="poster_objid" required="true" />
+		<field name="poster_name" required="true" />
+	</element>
+
+</schema>

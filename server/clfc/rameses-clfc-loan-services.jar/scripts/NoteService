@@ -1,0 +1,307 @@
+import com.rameses.annotations.*;
+import com.rameses.common.*;
+import com.rameses.services.extended.*;
+import java.rmi.server.UID;
+
+class NoteService extends ActiveCrudListService 
+{	
+	@ActiveDB('note')
+	def em; 
+
+	@ActiveDB('datatxnlog')
+	def txnlog; 
+
+	@ActiveDB('loan_route')	
+	def loan_route;
+
+	@Env
+	def env;
+
+	@Service('DateService')
+	def dateSvc;
+
+	@Service('InboxService')
+	def inboxSvc;	
+
+	def listMethodName = 'getList';
+
+	String getListMethod() { 
+		return listMethodName; 
+	} 
+
+	@ProxyMethod
+	public def getColumns( params ) { 
+		def columns = [
+			[name:"dtcreated", caption:"Date Created"], 
+			[name:"loanapp.appno", caption:"App.No."], 
+			[name:"borrower.name", caption:"Borrower Name"], 
+			[name:"borrower.address", caption:"Borrower Address"], 			
+			[name:"dtstart", caption:"Start Date"],
+			[name:"dtend", caption:"End Date"]
+		];
+
+		if (params.state == 'APPROVED' || params.state == 'CLOSED') { 
+			columns << [name:"dtapproved", caption:"Date Approved"]; 	
+			columns << [name:"approvedby", caption:"Approved By"]; 
+		} else if (params.state == 'REJECTED') {
+			columns << [name:"dtposted", caption:"Date Posted"]; 
+			columns << [name:"postedby", caption:"Posted By"]; 
+		}
+		return columns; 
+	}
+
+	@ProxyMethod 
+	public def initCreate( params ) { 
+		if (params == null) params = [:]; 
+
+		params.objid = 'NOTE' + new UID();
+		params.dtstart = dateSvc.serverDate.toString(); 
+		params.author = [objid:env.USERID, username:env.USER]; 
+		return params;
+	} 
+
+	void beforeList( params ) {
+		params.searchtext = (params.searchtext? params.searchtext: '')+'%'; 		
+		if (params.state == 'FOR_APPROVAL' || params.state == 'APPROVED') {
+			listMethodName = 'getActiveList';
+		} else {
+			listMethodName = 'getList';
+		}
+	}
+
+	void validateData( data, serverdate ) {
+		def strdate = serverdate.toString().split(' ')[0];
+		def rundate = java.sql.Date.valueOf(strdate);
+		def startdate = convertDate(data.dtstart);
+		def enddate = convertDate(data.dtend); 
+		if (!(startdate.equals(rundate) || startdate.after(rundate))) {
+			throw new Exception('Start Date must be greater than or equal to the server date'); 
+		}
+		if (enddate) {
+			if (!(enddate.equals(startdate) || enddate.after(startdate))) {
+				throw new Exception('End Date must be greater than or equal to the Start Date'); 
+			} 
+			else if (!(enddate.equals(rundate) || enddate.after(rundate))) {
+				throw new Exception('End Date must be greater than or equal to the server date'); 
+			} 
+		}
+		data.rundate = rundate;
+	}
+
+	void beforeCreate( data ) { 
+		def serverdate = dateSvc.serverDate;
+		validateData( data, serverdate ) ;
+
+		data.dtcreated = serverdate.toString(); 
+		data.author = [objid:env.USERID, username:env.USER]; 
+		data.state = 'PENDING'; 
+	} 
+
+	void afterCreate( data ) {
+		em.create( data, 'active' ); 
+		def loginfo = [
+			objid 	: 'TLOG' + new UID(), 
+			txndate : data.dtcreated, 
+			txnid   : data.objid, 
+			user    : data.author, 
+			action	: 'CREATE', 
+			remarks : 'Created a new note' 
+		]; 
+		txnlog.create( loginfo ); 
+	} 
+
+	void beforeUpdate( data ) {
+		def serverdate = dateSvc.serverDate;
+		validateData( data, serverdate );
+	}
+
+	void afterUpdate( data ) {
+		def loginfo = [
+			objid 	: 'TLOG' + new UID(), 
+			txnid   : data.objid, 
+			txndate : dateSvc.serverDate, 			
+			user    : [objid: env.USERID, username: env.USER], 
+			action	: 'UPDATE', 
+			remarks : 'Transaction has been modified' 
+		]; 
+		txnlog.create( loginfo ); 
+	} 
+
+	void afterOpen( data ) {
+		def route = loan_route.read(data.route);
+		if (route) data.route = route;
+	}
+
+	@ProxyMethod 
+	public def submitForApproval( params ) {	
+		if (!params.objid) throw new Exception('Please specify objid');
+
+		def info = em.read([objid: params.objid]);
+		if (!info) throw new Exception("'"+params.objid+"' note record not found");
+
+		info.dtposted = dateSvc.serverDate.toString(); 
+		info.postedremarks = 'Submitted for approval';
+		info.postedby = env.USER; 
+		info.state = 'FOR_APPROVAL';
+		info.approvedremarks = null; 
+		info.dtapproved = null; 
+		info.approvedby = null; 
+		em.update(info); 
+
+		def loginfo = [
+			objid 	: 'TLOG' + new UID(), 
+			txnid   : info.objid, 
+			txndate : info.dtposted, 
+			user    : [objid: env.USERID, username: env.USER], 
+			action	: 'FOR_APPROVAL', 
+			remarks : 'Submitted for approval' 
+		]; 
+		txnlog.create( loginfo );
+
+ 		def msginfo = [ 
+			objid 		: info.objid, 
+			dtcreated	: info.dtposted, 
+			refid 		: info.objid, 
+			filetype 	: 'note', 
+			message 	: 'Note request for approval (Borrower: '+ info.borrower?.name +')', 
+			senderid	: env.USERID, 
+			sendername 	: env.NAME, 
+			recipientid : 'BRANCH_MANAGER' 
+		]; 
+		inboxSvc.addMessage( msginfo );
+		return info;  
+	} 
+
+	@ProxyMethod 
+	public def markAsApproved( params ) {	
+		if (!params.objid) throw new Exception('Please specify objid');
+		if (!params.remarks) throw new Exception('Please specify remarks');
+
+		def info = em.read([objid: params.objid]);
+		if (!info) throw new Exception("'"+params.objid+"' note record not found");
+
+		info.dtposted = dateSvc.serverDate.toString(); 
+		info.postedremarks = params.remarks; 
+		info.postedby = env.USER; 
+		info.state = 'APPROVED';
+		info.approvedremarks = info.postedremarks;		
+		info.dtapproved = info.dtposted;
+		info.approvedby = info.postedby;
+		em.update(info); 
+
+		def loginfo = [
+			objid 	: 'TLOG' + new UID(), 
+			txnid   : info.objid, 
+			txndate : info.dtposted, 
+			user    : [objid: env.USERID, username: env.USER], 
+			action  : info.state, 
+			remarks : info.approvedremarks  
+		]; 
+		txnlog.create( loginfo ); 
+		inboxSvc.removeMessageByRefid([refid: info.objid]); 
+		return info; 
+	} 
+
+	@ProxyMethod 
+	public def markAsDisapproved( params ) {	
+		if (!params.objid) throw new Exception('Please specify objid');
+
+		def info = em.read([objid: params.objid]);
+		if (!info) throw new Exception("'"+params.objid+"' note record not found");
+
+		info.state = 'FOR_APPROVAL'; 
+		info.postedremarks = 'Send back for approval';
+		info.dtposted = dateSvc.serverDate.toString();
+		info.postedby = env.USER; 
+		info.dtapproved = null;
+		info.approvedby = null;
+		info.approvedremarks = null; 
+		em.update( info ); 
+
+		def loginfo = [
+			objid 	: 'TLOG' + new UID(), 
+			txnid   : info.objid, 
+			txndate : info.dtposted, 
+			user    : [objid: env.USERID, username: env.USER], 
+			action  : info.state, 
+			remarks : info.postedremarks  
+		]; 
+		txnlog.create( loginfo ); 
+		inboxSvc.removeMessageByRefid([refid: info.objid]); 	
+		return info; 
+	} 	
+
+	@ProxyMethod 
+	public def markAsRejected( params ) {	
+		if (!params.objid) throw new Exception('Please specify objid');
+		if (!params.remarks) throw new Exception('Please specify remarks');
+
+		def info = em.read([objid: params.objid]);
+		if (!info) throw new Exception("'"+params.objid+"' note record not found");
+
+		info.dtposted = dateSvc.serverDate.toString(); 
+		info.postedremarks = params.remarks; 
+		info.postedby = env.USER; 
+		info.state = 'REJECTED';
+		info.approvedremarks = null; 
+		info.dtapproved = null;
+		info.approvedby = null;
+		em.update(info); 
+		em.delete([objid: info.objid], 'active'); 
+
+		def loginfo = [
+			objid 	: 'TLOG' + new UID(), 
+			txnid   : info.objid, 
+			txndate : info.dtposted, 
+			user    : [objid: env.USERID, username: env.USER], 
+			action  : info.state, 
+			remarks : info.postedremarks  
+		]; 
+		txnlog.create( loginfo ); 
+		inboxSvc.removeMessageByRefid([refid: info.objid]); 
+		return info; 
+	} 	
+
+	@ProxyMethod 
+	public def submitForTermination( params ) {	
+		if (!params.objid) throw new Exception('Please specify objid');
+		if (!params.remarks) throw new Exception('Please specify remarks');
+
+		def info = em.read([objid: params.objid]);
+		if (!info) throw new Exception("'"+params.objid+"' note record not found");
+		if (info.state != 'APPROVED') throw new Exception('Transaction status must be APPROVED'); 
+
+		info.dtposted = dateSvc.serverDate.toString(); 
+		info.postedremarks = params.remarks; 
+		info.postedby = env.USER; 
+		info.state = 'CLOSED';
+		info.dtend = info.dtposted.toString().split(' ')[0]; 
+		em.update(info); 
+		em.delete([objid: info.objid], 'active'); 
+
+		def loginfo = [
+			objid 	: 'TLOG' + new UID(), 
+			txnid   : info.objid, 
+			txndate : info.dtposted, 
+			user    : [objid: env.USERID, username: env.USER], 
+			action  : info.state, 
+			remarks : info.postedremarks  
+		]; 
+		txnlog.create( loginfo ); 		
+		return info; 
+	} 		
+
+	private def convertDate(def value) {
+		if (value instanceof Date) return value; 
+
+		try {
+			return java.sql.Date.valueOf(value); 
+		} catch(Throwable t){;} 
+
+		try {
+			return java.sql.Timestamp.valueOf(value); 
+		} catch(Throwable t){ 
+			return null; 
+		} 		
+	}
+} 

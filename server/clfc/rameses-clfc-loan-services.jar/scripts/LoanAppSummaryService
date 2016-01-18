@@ -1,0 +1,44 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+
+class LoanAppSummaryService
+{
+	@ActiveDB(value='loanapp_borrower')
+	def loanapp_borrower;
+
+	@ActiveDB(value='loanapp_otherlending')
+	def otherlending;
+
+	@ActiveDB(value='loanapp_collateral')
+	def collateral;
+
+	@Service('LoanAppService')
+	def loanAppService;
+
+	@Service('BorrowerService')
+	def borrowerService;
+
+	@Service('LoanAppRecommendationService')
+	def recommendationService;
+
+
+	@ProxyMethod
+	public def open( params ) {
+		if(!params.objid) throw new Exception('Please specify objid');
+
+		def data = loanAppService.open(params);
+		data.borrower = borrowerService.open(data.borrower);
+		data.businesses = loanAppService.getBusinesses(data);
+		data.jointborrowers = loanapp_borrower.getJointBorrowers([parentid: data.objid]);
+		data.comakers = loanapp_borrower.getComakers([parentid: data.objid]);
+		data.otherlendings = otherlending.getList([parentid: data.objid]);
+		data.collateral = [
+			appliances: collateral.getAppliances([parentid: data.objid]),
+			vehicles: collateral.getVehicles([parentid: data.objid]),
+			properties: collateral.getProperties([parentid: data.objid]),
+			other: collateral.findOtherCollateral([objid: data.objid])
+		]
+		data.recommendation = recommendationService.open([objid: data.objid]);
+		return data;
+	}
+}

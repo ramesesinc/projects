@@ -1,0 +1,513 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import java.rmi.server.UID;
+
+class MobileBillingService
+{
+	@ActiveDB("fieldcollection")
+	def fieldcollection;
+
+	@ActiveDB("ledger_billing")
+	def ledger_billing;
+
+	@ActiveDB("specialcollection")
+	def specialcollection;
+
+	@ActiveDB("mobile_tracker")
+	def tracker;
+
+	@ActiveDB("note")
+	def note;
+
+	@ActiveDB("collector_remarks")
+	def collector_remarks;
+
+	@ActiveDB("amnesty")
+	def amnesty;
+
+	@Service('DateService')
+	def dateSvc;
+
+	@Service("MobileTrackerService")
+	def trackerSvc;
+
+	@ProxyMethod
+	public def getForDownloadBilling(params) {
+		if (!params.collectorid) throw new Exception("Please specify collectorid.");
+
+		def result = [
+			routes 		: [],
+			followups	: [],
+			specials	: []
+		];
+		def date = dateSvc.serverDate.toString().split(" ")[0];
+
+		def prm = [
+			objid 	: params.collectorid,
+			date 	: date
+		];
+		def routes = ledger_billing.getRouteBillingByCollector(prm);
+		routes.each{ result.routes.add(it); }
+		result.routes.sort{ it.description }
+
+		prm.itemtype = 'followup';
+		def followups = ledger_billing.getSpecialBillingByCollector(prm);
+		followups.eachWithIndex{ itm, idx->
+			itm.name = 'Follow-up ' + (idx+1);
+			result.followups.add(itm);
+		}
+		result.followups.sort{ it.name }
+
+		prm.itemtype = 'special';
+		def specials = ledger_billing.getSpecialBillingByCollector(prm);
+		specials.eachWithIndex{ itm, idx->
+			itm.name = 'Special ' + (idx+1);
+			result.specials.add(itm);
+		}
+		result.specials.sort{ it.name }
+
+		if (!result.routes && !result.followups && !result.specials)
+			throw new Exception("You have no billing to download for today.")
+
+		return result;
+	}
+
+	@ProxyMethod
+	public def downloadBilling( params ) {
+		if (!params.routecode) throw new Exception("Please specify routecode.");
+		if (!params.itemid) throw new Exception("Please specify itemid.");
+		if (!params.billingid) throw new Exception("Please specify billingid.");
+		if (!params.trackerid) throw new Exception("Please specify trackerid.");
+
+		def billing = ledger_billing.read([objid: params.billingid])
+		if (!billing) throw new Exception("Billing record does not exist or has already been deleted.");
+
+		def billing_item = ledger_billing.read([objid: params.itemid], "billing-item");
+		if (!billing_item) throw new Exception("Billing item record does not exist or has already been deleted.");
+
+		if (billing_item.state == 'DOWNLOADED') throw new Exception("This billing has alreadby been downloaded.");
+		
+		//println 'billing-item ' + billing_item;
+
+		def details = ledger_billing.getBillingDetailsWithNextto([objid: params.itemid]);
+
+		def noNexttoList = details.findAll{ it.nextto == null }
+		def hasNexttoList = details.findAll{ it.nextto != null }
+
+		for(int i=0; i<hasNexttoList.size(); i++) {
+			for(int j=i+1; j<hasNexttoList.size(); j++) {
+				if (hasNexttoList[i].nextto == hasNexttoList[j].acctid) {
+					hasNexttoList.add(i, hasNexttoList.remove(j));
+					i = 0;
+					break;
+				}
+			}
+		}
+
+		def list = [];
+		noNexttoList.each{ list.add(it); }
+		def map;
+		hasNexttoList.each{itm->
+			map = noNexttoList.find{ it.acctid == itm.nextto }
+			if (map) {
+				list.remove(map);
+				list.add(map);
+			}
+			list.add(itm);
+		}
+
+		list = buildList(list, billing.billdate);
+
+		def t = trackerSvc.open([objid: params.trackerid]);
+		if (!t) {
+			def param = [
+				trackerid	: params.trackerid,
+				terminalid	: params.terminalid,
+				userid		: params.userid,
+				lng 		: params.lng,
+				lat 		: params.lat
+			];
+			trackerSvc.start(param);
+		}
+		def prm = [
+			objid 		: "TRKRR" + new UID(),
+			parentid 	: params.trackerid,
+			routecode 	: params.routecode
+		];
+		trackerSvc.addRoute(prm);
+
+		def result = [billings: list, item: billing_item];
+		return result;
+	}
+
+	private def buildList( list, bd ) {	
+		def dt;
+		if (bd instanceof Date) {
+			dt = bd;
+		} else {
+			dt = java.sql.Date.valueOf(bd);
+		}
+		def billdate = new java.text.SimpleDateFormat("yyyy-MM-dd").format(dt);
+		//println 'billdate ' + billdate;
+		def payments;
+		def lst;
+		def m;
+		list.eachWithIndex{ itm, idx->
+			itm.seqno = idx+1;
+			itm.notes = [];
+
+			lst = note.getApprovedListByLedger([ledgerid: itm.ledgerid]);
+			lst.each{ n->
+				m = [
+					objid 		: n.objid,
+					dtcreated 	: n.dtcreated,
+					remarks  	: n.text
+				];
+				itm.notes.add(m);
+			}
+
+			itm.payments = [];
+			lst = fieldcollection.getFieldcollectionPayments(itm);
+			if (lst) {
+				def fc_loan = fieldcollection.read(itm, "fc-loan");
+				lst.each{ p->
+					m = [
+						objid 			: p.objid,
+						parentid 		: p.parentid,
+						state 			: 'CLOSED',
+						itemid 			: p.itemid,
+						billingid 		: p.fieldcollectionid,
+						trackerid 		: 'UPLOADED',
+						borrower_objid 	: fc_loan?.borrower.objid,
+						borrower_name 	: fc_loan?.borrower.name,
+						loanapp_objid 	: fc_loan?.loanapp.objid,
+						loanapp_appno 	: fc_loan?.loanapp.appno,
+						routecode 		: itm.route.code,
+						refno 			: p.refno,
+						txndate 		: p.dtpaid,
+						paytype 		: p.paytype,
+						payoption 		: p.payoption,
+						amount 			: p.amount,
+						paidby			: p.paidby,
+						isfirstbill 	: itm.isfirstbill,
+						lng 			: 0.00,
+						lat 			: 0.00,
+						type 			: 'SYSTEM'
+					];
+
+					if (p.payoption == 'check') {
+						m.bank_objid = p.bank.objid;
+						m.bank_name = p.bank.name;
+						m.check_no = p.check.no;
+						m.check_date = p.check.date;
+					}
+					itm.payments.add(m);
+				}
+			}
+
+			itm.remarkslist = [];
+			lst = collector_remarks.getPreviousCollectorRemarksListByLedgeridAndTxndate([ledgerid: itm.ledgerid, txndate: billdate]);
+			lst.each{ o->
+				m = [
+					objid 			: o.objid,
+					txndate			: o.txndate,
+					collectorname 	: o.collector.name,
+					remarks 		: o.remarks,
+					isfollowup		: 0//o.isfollowup
+				];
+				itm.remarkslist.add(m);
+			}
+
+			lst = collector_remarks.getPreviousFollowupRemarksListByLedgeridAndTxndate([ledgerid: itm.ledgerid, txndate: billdate]);
+			lst.each{ o->
+				m = [
+					objid 			: o.objid,
+					txndate			: o.txndate,
+					collectorname 	: o.collector.name,
+					remarks 		: o.remarks,
+					isfollowup		: 1//o.isfollowup
+				];
+				itm.remarkslist.add(m);
+			}
+
+			m = fieldcollection.read(itm, "fc-loan");
+			if (m && m.remarks) itm.remarks = m.remarks;
+			
+			def prm = [date: billdate, ledgerid: itm.ledgerid];
+			itm.amnesty = amnesty.findActiveAmnestyByLedgeridAndDate(prm);
+			
+		}
+		return list;
+	}
+
+	@ProxyMethod
+	public def downloadBillingx(params) {
+		if (!params.route_code) throw new Exception('Please specify route code');
+		if (!params.billingid) throw new Exception('Please specify billingid');
+
+		def r = ledger_billing.findRouteByBillingidAndRoutecode([billingid: params.billingid, routecode: params.route_code]);
+		if (!r) throw new Exception("Record does not exist or has already been deleted.");
+
+		if (r.downloaded != 0) throw new Exception('This billing has already been downloaded.');
+		
+		def result = ledger_billing.getBillingDetailByRoutecode(params);
+		if (!result) throw new Exception('No billing for route '+params.route_description+' - '+params.route_area);
+
+		def noNexttoList = result.findAll{ it.nextto == null }
+		def hasNexttoList = result.findAll{ it.nextto != null }
+
+		for(int i=0; i<hasNexttoList.size(); i++) {
+			for(int j=i+1; j<hasNexttoList.size(); j++) {
+				if (hasNexttoList[i].nextto == hasNexttoList[j].acctid) {
+					hasNexttoList.add(i, hasNexttoList.remove(j));
+					i = 0;
+					break;
+				}
+			}
+		}
+
+		def list = [];
+		noNexttoList.each{ list.add(it); }
+		def map;
+		hasNexttoList.each{itm->
+			map = noNexttoList.find{ it.acctid == itm.nextto }
+			if (map) {
+				list.remove(map);
+				list.add(map);
+			}
+			list.add(itm);
+		}
+		def payments;
+		list.eachWithIndex{itm, idx->
+			itm.seqno = idx+1;
+			payments = field_collection.getPaymentsByParentid([parentid: itm.objid]);
+			itm.payments = [];
+			payments.each{
+				it.detailid = itm.objid;
+				it.loanappid = itm.loanappid;
+				it.amount = it.payamount;
+				it.type = it.paytype;
+				it.routecode = itm.route.code;
+				it.isfirstbill = itm.isfirstbill;
+				it.txndate = it.dtfiled;
+				itm.payments.add(it);
+			}
+			/*notes = batch_collectionsheet.getNotesByDetailid([parentid: itm.objid]);
+			itm.notes = [];
+			notes.each{
+				it.loanappid = itm.loanappid;
+				itm.notes.add(it);
+			}*/
+			map = field_collection.read(itm);//batch_collectionsheet.findDetailById([objid: itm.objid]);
+			if (map && map.remarks) itm.remarks = map.remarks;
+			else itm.remove("remarks");
+		}
+
+		if (params.trackerid) {			
+			def hasUnuploadedRoute = ledger_billing.findUnuploadedRouteByBillingid(params);
+			if (hasUnuploadedRoute) throw new Exception("There is still unremitted route")
+		}
+		params.trackerid = trackerSvc.create([lng: params.longitude, lat: params.latitude, terminalid: params.terminalid, userid: params.userid, routecode: params.route_code]).objid;
+		def m = [
+			objid 		: "TRKRR" + new UID(),
+			parentid 	: params.trackerid,
+			routecode 	: params.route_code
+		]
+		trackerSvc.addRoute(m);
+
+		//throw new Exception()
+		return [billings: list, trackerid: params.trackerid];
+	}	
+
+	@ProxyMethod
+	public void removeTracker( params ) {
+		trackerSvc.removeTracker(params);
+	}
+
+	@ProxyMethod
+	public void notifyBillingDownloaded( params )	 {
+		if (!params.itemid) throw new Exception("Please specify itemid.");
+		if (!params.billingid) throw new Exception("Please specify billingid.");
+		if (!params.trackerid) throw new Exception("Please specify trackerid.");
+
+		def billing_item = ledger_billing.read([objid: params.itemid], "billing-item");
+		if (!billing_item) throw new Exception("Record does not exist or has already been deleted.");
+
+		if (billing_item.state == "DOWNLOADED") return;
+		billing_item.state = "DOWNLOADED";
+		ledger_billing.changeState(billing_item);
+
+		def billing = ledger_billing.read([objid: params.billingid]);
+		if (billing.totaldownloaded < billing.totalfordownload) {
+			billing.totaldownloaded++;
+			ledger_billing.update(billing, "downloaded");
+		}
+		/*ledger_billing.markRouteAsDownloaded(params);
+		def route = ledger_billing.findRouteByBillingidAndRoutecode(params);
+		if (route.downloaded == 1) return;*/
+
+		/*def bill = ledger_billing.read([objid: params.billingid]);
+		bill.totalfordownload--;
+		ledger_billing.update(bill, "totalfordownload");
+		bill.totaldownloaded++;
+		ledger_billing.update(bill, "totaldownloaded");
+
+		if (bill.totalfordownload == 0) {
+			ledger_billing.changeState([objid: bill.objid, state: 'DOWNLOADED']);
+		}*/
+		//ledger_billing.create([billingid: params.billingid, routecode: params.route_code], "lock");
+		def session = trackerSvc.open([objid: params.trackerid]);
+		if (session) {
+			trackerSvc.start(params);
+		}
+	}
+
+	@ProxyMethod
+	public def downloadSpecialCollection( params ) {
+		if (!params.trackerid) throw new Exception("Please specify trackerid.");
+
+		def data;
+		if (params.type == 'REQUEST') {
+			data = specialcollection.read(params);
+			if (!data) throw new Exception("Record does not exist or has already been deleted.");
+
+			if (data.state=='DISAPPROVED')
+				throw new Exception("Cannot download request. Request is disapproved.");
+
+			if (data.state=='PENDING' || (data.state != 'FOR_DOWNLOAD' && data.state != 'DOWNLOADED')) 
+				throw new Exception("Cannot download request. Request is still pending.");
+
+		}
+
+		data = ledger_billing.read(params, "billing-item");
+		if (!data) throw new Exception("Billing item record does not exist or has already been deleted.");
+
+		def billing = ledger_billing.read([objid: data.parentid]);
+		if (!billing) throw new Exception("Billing record does not exist or has already been deleted.");
+
+		def t = trackerSvc.open([objid: params.trackerid]);
+		if (!t) {
+			def param = [
+				trackerid	: params.trackerid,
+				terminalid	: params.terminalid,
+				userid		: params.userid,
+				lng 		: params.lng,
+				lat 		: params.lat
+			];
+			trackerSvc.start(param);
+		}
+		/*if (!params.trackerid) {
+			def prm = [
+				lng 		: params.lng,
+				lat 		: params.lat,
+				terminalid 	: params.terminalid,
+				userid 		: params.userid
+			];
+			params.trackerid = trackerSvc.create(prm).objid;
+		}*/
+
+
+		def list = ledger_billing.getBillingDetails(params);
+		list = buildList(list, billing.billdate);
+
+		if (!data.billdate) data.billdate = billing.billdate;
+		def result = [
+			list 		: [],
+			item 		: data,
+			//trackerid 	: params.trackerid,
+			billingid 	: data.parentid
+		];
+
+		def r;
+		list.eachWithIndex{ itm, idx->
+			itm.seqno = (idx+1);
+			result.list.add(itm);
+
+			r = tracker.findRouteByParentidAndCode([parentid: params.trackerid, routecode: itm.route.code]);
+			if (!r) {
+				r = [
+					objid 		: "TRKRR" + new UID(),
+					parentid	: params.trackerid,
+					routecode 	: itm.route.code
+				];
+				trackerSvc.addRoute(r);
+			}
+		}
+
+		//println 'result ' + result;
+		return result;
+		/*def mParams = [
+			trackerid	: params.trackerid,
+			lng 		: params.longitude,
+			lat 		: params.latitude,
+			terminalid 	: params.terminalid,
+			userid 		: params.userid
+		];
+
+		params = special_collection.read(params);
+		if (!params) throw new Exception("Special collection request does now exist or has already been deleted.");
+		if (params.state == 'PENDING') throw new Exception("Request is still pending.");
+ 
+
+		def session = trackerSvc.open([objid: mParams.trackerid]);
+		if (!session) {
+			mParams.trackerid = trackerSvc.create([lng: mParams.lng, lat: mParams.lat, terminalid: mParams.terminalid, userid: mParams.userid]).objid;
+		}
+
+		def routes = [];
+		def mRoutes = special_collection.getRoutesBySpecialcollectionid([specialcollectionid: params.objid]);
+		def map;
+		mRoutes.each{
+			map = [
+				code 		: it.route.code,
+				description : it.route.description,
+				area 		: it.route.area
+			];
+			routes.add(map);
+
+			map = [
+				objid 		: "TRKRR" + new UID(),
+				parentid	: mParams.trackerid,
+				routecode 	: it.route.code
+			];
+			trackerSvc.addRoute(map);
+		}
+
+		def loans = [];
+		def mLoans = special_collection.getBillingDetailsBySpecialcollectionid([specialcollectionid: params.objid]);
+		mLoans.each{
+			it.sessionid = params.billingid;
+			it.routecode = it.route.code;
+			it.remove("route");
+			loans.add(it);
+		}
+
+		return [routes: routes, list: loans, request: params, trackerid: mParams.trackerid];*/
+	}
+
+	@ProxyMethod
+	public void notifySpecialCollectionDownloaded( params ) {
+		if (!params.objid) throw new Exception("Please specify objid.");
+		if (!params.trackerid) throw new Exception("Please specify trackerid.");
+
+		def data = ledger_billing.read(params, "billing-item");
+		if (!data) throw new Exception("Record does not exist or has already been deleted.");
+
+		data.state = "DOWNLOADED";
+		ledger_billing.changeState(data);
+		specialcollection.changeState(data);
+
+		def billing = ledger_billing.read([objid: data.parentid]);
+		if (!billing) throw new Exception("Record does not exist or has already been deleted.");
+
+		if (billing.totaldownloaded < billing.totalfordownload) {
+			billing.totaldownloaded++;
+			ledger_billing.update(billing, "downloaded");
+		}
+
+		def session = trackerSvc.open([objid: params.trackerid]);
+		if (session) {
+			trackerSvc.start(params);
+		}
+	}
+}

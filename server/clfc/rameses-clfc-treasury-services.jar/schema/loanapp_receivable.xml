@@ -1,0 +1,38 @@
+<schema>
+
+	<element tablename="loanapp_receivable">
+		<field name="objid" primary="true" />
+		<field name="dtcreated" required="true" />
+		<field name="author_objid" required="true" />
+		<field name="author_name" required="true" />
+		<field name="loanappid" required="true" />
+		<field name="txndate" required="true" />
+		<field name="txnstate" required="true" />
+		<field name="txntype" required="true" />
+		<field name="category" required="true" />
+		<field name="refno" />
+		<field name="description" required="true" />
+		<field name="amount" required="true" />
+	</element>
+
+	<element name="voidrequest" tablename="loanapp_receivable_voidrequest">
+		<field name="objid" primary="true" />
+		<field name="dtcreated" required="true" />
+		<field name="author_objid" required="true" />
+		<field name="author_name" required="true" />
+		<field name="receivableid" required="true" />
+		<field name="txnstate" required="true" />
+		<field name="remarks" required="true" />
+		<field name="dtposted" />
+		<field name="poster_objid" />
+		<field name="poster_name" />
+	</element>
+
+	<element name="voidrequest-post" tablename="loanapp_receivable_voidrequest">
+		<field name="objid" primary="true" />
+		<field name="dtposted" required="true" />
+		<field name="poster_objid" required="true" />
+		<field name="poster_name" required="true" />
+	</element>
+
+</schema>

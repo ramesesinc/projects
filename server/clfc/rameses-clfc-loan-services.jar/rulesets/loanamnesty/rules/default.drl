@@ -1,0 +1,39 @@
+package loanamnesty;
+import java.util.*;
+global List results;
+global Map lastPayment;
+global Map floating;
+global Map resultMap;
+
+declare Payment
+	amountPaid 	: double
+	currentDay	: int
+end
+
+declare References
+	amountPaid 		: double
+	compromiseType	: String
+	balance			: double
+	isProceed		: Boolean
+end
+
+rule "post fix amnesty"
+when
+	p: Payment()
+	r: References(isProceed == false, compromiseType == "FIX")
+then
+	Map item = new HashMap();
+	double balance = r.getBalance();
+	double amountpaid = r.getAmountPaid();
+
+	item.put("payment", p.getAmountPaid());
+	item.put("partialpayment", amountpaid);
+	if (amountpaid >= balance) {
+		balance = 0;
+	} else {
+		balance -= amountpaid;
+	}
+	item.put("balance", balance);
+
+	results.add(item);
+end

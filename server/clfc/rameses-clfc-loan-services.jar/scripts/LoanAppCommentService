@@ -1,0 +1,15 @@
+import com.rameses.annotations.*;
+
+class LoanAppCommentService
+{
+	@ActiveDB('loanapp_log')
+	def log;
+
+	@ProxyMethod
+	public def getComments(params) {
+		if(!params.appid) throw new Exception('Please specify appid');
+
+		return log.getList(params);
+	}
+	
+}

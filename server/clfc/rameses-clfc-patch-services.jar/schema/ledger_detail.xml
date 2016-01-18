@@ -1,0 +1,12 @@
+<schema>
+
+	<element name="ledger_detail" tablename="change_ledger_detail_log">
+		<field name="objid" primary="true" />
+		<field name="ledgerid" required="true" />
+		<field name="dtfiled" required="true" />
+		<field name="author_objid" required="true" />
+		<field name="author_name" required="true" />
+		<field name="remarks" required="true" />
+	</element>
+
+</schema>

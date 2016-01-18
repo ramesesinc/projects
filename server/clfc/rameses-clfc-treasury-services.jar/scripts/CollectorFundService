@@ -1,0 +1,33 @@
+import com.rameses.annotations.*;
+import com.rameses.common.*;
+import com.rameses.services.extended.*;
+import java.rmi.server.UID;
+
+class CollectorFundService 
+{	
+	@ActiveDB('collectorfund')
+	def em; 
+
+	@ActiveDB('datatxnlog') 
+	def txnlog; 
+
+	@Service('DateService')
+	def dateSvc;
+
+	@Env 
+	def env;
+	
+	@ProxyMethod
+	public def getColumns( params ) {
+		return [
+			[name:"dtpaid", caption:"DatePaid"], 
+			[name:"checkno", caption:"CheckNo"], 
+			[name:"checkdate", caption:"CheckDate"], 
+			[name:"amount", caption:"Amount"], 
+			[name:"bank.objid", caption:"Bank"], 
+			[name:"collector.name", caption:"Collector"], 
+			[name:"payor.name", caption:"Payor"] 
+		];
+	}
+
+}

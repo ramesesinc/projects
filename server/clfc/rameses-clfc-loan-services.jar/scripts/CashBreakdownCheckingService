@@ -1,0 +1,97 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.services.extended.*;
+
+class CashBreakdownCheckingService
+{
+	@ActiveDB(value="collection_cb")
+	def collection_cb;
+
+	@ActiveDB(value="collection_remittance")
+	def remittance;
+
+	@ActiveDB(value="shortage")
+	def shortage;
+
+	@ProxyMethod
+	public def getConsolidatedBreakdown( params ) {
+		if (!params.billdate) throw new Exception("Please specify billdate.");
+
+		return collection_cb.getConsolidatedBreakdown(params);
+	}
+
+	@ProxyMethod
+	public def getPercollectorBreakdown( params ) {
+		if (!params.billdate) throw new Exception("Please specify billdate.");
+
+		def prm;
+		if (params.grouptype == 'shortage') {
+			def sh = shortage.read([objid: params.objid]);
+			if (!sh) throw new Exception("Record does not exist or has already been deleted.");
+
+			prm = [
+				collectionid: sh.objid,
+				groupid 	: sh.objid,
+				grouptype	: 'shortage'
+			];
+		} else {
+			def rem = remittance.read([objid: params.objid]);
+			if (!rem) throw new Exception("Record does not exist or has already been deleted.");
+
+			prm = [
+				collectionid: rem.collection.objid,
+				groupid 	: rem.group.objid,
+				grouptype 	: rem.group.type
+			];
+
+		}
+
+		def cb = collection_cb.findCashbreakdown(prm);
+		if (!cb) return [];//throw new Exception("Record does not exist or has already been deleted.");
+
+		return collection_cb.getDetails(cb);
+	}
+
+	@ProxyMethod
+	public def getRoutes( params ) {
+		def items = remittance.getRemittancesWithInfoByCollectorAndDate(params);
+		def followups = items.findAll{ it.group.type == 'followup' }
+		def specials = items.findAll{ it.group.type == 'special' }
+		def onlines = items.findAll{ it.group.type == 'online' }
+		def shortages = shortage.getShortagesWithCBSNoByTxndateAndCollectorid([txndate: params.billdate, collectorid: params.collectorid]);
+
+		shortages.sort{ it.dtfiled }
+		def item;
+		shortages.eachWithIndex{ itm, idx->
+			item = [
+				objid 		: itm.objid,
+				description : 'Shortage ' + (idx+1),
+				group 		: [objid: itm.objid, type: 'shortage'],
+				cbsno 		: itm.cbsno
+			];
+			items.add(item);
+		}
+
+		followups.sort{ it.dtfiled }
+		followups.eachWithIndex{ itm, idx->
+			itm.description = 'Follow-up ' + (idx+1);
+		}
+
+		specials.sort{ it.dtfiled }
+		specials.eachWithIndex{ itm, idx->
+			itm.description = 'Special ' + (idx+1);
+		}
+
+		onlines.sort{ it.dtfiled }
+		onlines.eachWithIndex{ itm, idx->
+			itm.description = 'Direct ' + (idx+1)
+		}
+
+		items.sort{ it.description }
+		items.each{ o->
+			o.name = o.description;
+			if (o.code) o.name += ' - ' + o.area;
+		}
+		return items;
+	}
+}

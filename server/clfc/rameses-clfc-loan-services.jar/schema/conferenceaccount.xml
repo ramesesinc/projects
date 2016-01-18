@@ -1,0 +1,47 @@
+<schema>
+
+	<element tablename='conferenceaccount'>
+		<field name='objid' primary='true' />
+		<field name='dtcreated' required='true' />
+		<field name='author_objid' required='true' />
+		<field name='author_name' required='true' />
+		<field name='txnstate' required='true' />
+		<field name='txndate' required='true' />
+		<field name='refno' required='true' />
+		<field name='dtposted' />
+		<field name='poster_objid' />
+		<field name='poster_name' />
+		<field name='dtclosed' />
+		<field name='closedby_objid' />
+		<field name='closedby_name' />
+	</element>
+
+	<element name='detail' tablename='conferenceaccount_detail'>
+		<field name='objid' primary='true' />
+		<field name='parentid' required='true' />
+		<field name='borrower_objid' required='true' />
+		<field name='borrower_name' required='true' />
+		<field name='borrower_address' required='true' />
+		<field name='loanapp_objid' required='true' />
+		<field name='loanapp_appno' required='true' />
+		<field name='loanapp_amount' required='true' />
+		<field name='ledger_objid' required='true' />
+		<field name='ledger_dtreleased' required='true' />
+		<field name='ledger_dtmatured' required='true' />
+	</element>
+
+	<element name='post' tablename='conferenceaccount'>
+		<field name='objid' primary='true' />
+		<field name='dtposted' required='true' />
+		<field name='poster_objid' required='true' />
+		<field name='poster_name' required='true' />
+	</element>
+
+	<element name='close' tablename='conferenceaccount'>
+		<field name='objid' primary='true' />
+		<field name='dtclosed' required='true' />
+		<field name='closedby_objid' required='true' />
+		<field name='closedby_name' required='true' />
+	</element>
+
+</schema>

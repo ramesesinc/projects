@@ -1,0 +1,57 @@
+
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.services.extended.*;
+
+class LoanBillingGroupOptionAccountsService extends ActiveListService
+{
+	@ActiveDB('specialcollection_billinggroup')
+	def em;
+
+	@ProxyMethod
+	public def getColumns( params ) {
+		def cols = [];
+
+		if (params.type == 'CONFERENCE') cols << [name: 'dtconferenced', caption: 'Conference Date', type: 'date', outputFormat: 'MMM-dd-yyyy'];
+		cols << [name: 'borrower.name', caption: 'Borrower'];
+		cols << [name: 'loanapp.appno', caption: 'App. No.'];
+		cols << [name: 'loanapp.amount', caption: 'Loan Amount', type: 'decimal', format: '#,##0.00'];
+		cols << [name: 'ledger.dtreleased', caption: 'Release Date', type: 'date', outputFormat: 'MMM-dd-yyyy'];
+		cols << [name: 'ledger.dtmatured', caption: 'Maturity Date', type: 'date', outputFormat: 'MMM-dd-yyyy'];
+		cols << [name: 'dtlastfollowup', caption: 'Last Follow-up', type: 'date', outputFormat: 'MMM-dd-yyyy'];
+
+		return cols;
+	}
+
+	@ProxyMethod
+	public def getStates( params ) {
+		def list = [];
+		if (params.type == 'CONFERENCE') {
+			list = [
+				[caption: 'For Follow-up', state: 'FOR_FOLLOWUP'],
+				[caption: 'Follow-up', state: 'FOLLOWUP']
+			];
+		}
+		return list;
+	}
+
+	void beforeList( params ) {
+		params.searchtext = (params.searchtext? params.searchtext : '') + '%';
+		def state = params.state;
+		def type = params.type;
+		def lm;
+		if (type == 'CONFERENCE') {
+			if (state == 'FOR_FOLLOWUP') {
+				lm = 'getConferenceForFollowup';
+			} else if (state == 'FOLLOWUP') {
+				lm = 'getConferenceFollowup';
+			}
+		} else if (type == 'SPECIALBILLING') {
+			lm = 'getSpecialBilling';
+		} else if (type == 'DELINQUENT') {
+			lm = 'getDelinquent';
+		}
+		if (lm) params._listMethod = lm;
+	}
+
+}

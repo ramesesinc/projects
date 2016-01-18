@@ -1,0 +1,213 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import java.sql.Timestamp;
+
+class ClientInformationSheetReportService
+{
+	@ActiveDB(value="loanapp")
+	def loanapp;
+
+	@ActiveDB(value="borrower")
+	def borrower;
+
+	@ActiveDB(value="loanapp_borrower")
+	def loanapp_borrower;
+
+	@ActiveDB(value="loanapp_business")
+	def business;
+
+	@ActiveDB(value="loanapp_otherlending")
+	def otherlending;
+
+	@ActiveDB(value="loanapp_collateral")
+	def collateral;
+
+	@Service("DateService")
+	def dateSvc;
+
+    @Env 
+    def env;
+
+	private def getSiblings( parent ) {
+		def list = borrower.getSiblings([parentid: parent.objid]);
+		list.each{
+			it.employments = borrower.getEmployments([refid: it.objid]);
+			it.otherincomes = borrower.getOtherIncomes([refid: it.objid]);
+		}
+		return list;
+	}
+
+	private def getChildren( parent ) {
+		def list = borrower.getChildren([parentid: parent.objid]);
+		list.each{
+			it.employments = borrower.getEmployments([refid: it.objid]);
+			it.otherincomes = borrower.getOtherIncomes([refid: it.objid]);
+		}
+		return list;
+	}
+
+	private def getJointBorrowers( app, currentdate ) {
+		def list = loanapp_borrower.getJointBorrowers([parentid: app.objid]);
+		list.each{joint->
+            if (!joint.name) joint.name = joint.lastname+', '+joint.firstname+' '+(joint.middlename? joint.middlename : '')
+			joint.age = 0;
+			if (joint.birthdate) joint.age = currentdate.year - dateSvc.parseDate(joint.birthdate, null).year;
+			joint.spouse.name;
+			if (joint.spouse.objid) {
+                joint.spouse.name = joint.spouse.lastname+', '+joint.spouse.firstname+' '+(joint.spouse.middlename? joint.spouse.middlename : '')
+                joint.spouse.age = 0;
+                if (joint.spouse.birthdate) joint.spouse.age = currentdate.year - dateSvc.parseDate(joint.spouse.birthdate, null).year;
+            }
+			joint.children = getChildren(joint);//borrower.getChildren([parentid: joint.objid]);
+			joint.educations = borrower.getEducations([parentid: joint.objid]);
+			joint.employments = borrower.getEmployments([refid: joint.objid]);
+			joint.parents = borrower.findParent(joint);
+			joint.siblings = getSiblings(joint);//borrower.getSiblings(joint);
+			joint.otherincomes = borrower.getOtherIncomes([refid: joint.objid]);
+			joint.savingaccts = borrower.getBankAccts([parentid: joint.objid, type: 'SAVING']);
+			joint.checkingaccts = borrower.getBankAccts([parentid: joint.objid, type: 'CHECKING']);
+		}
+		return list;
+	}
+
+	private def getComakers( app, currentdate ) {
+		def list = loanapp_borrower.getComakers([parentid: app.objid]);
+		list.each{comaker->
+            if (!comaker.name) comaker.name = comaker.lastname+', '+comaker.firstname+' '+(comaker.middlename? comaker.middlename : '')
+			comaker.age = 0;
+			if (comaker.birthdate) comaker.age = currentdate.year - dateSvc.parseDate(comaker.birthdate, null).year;
+			comaker.spouse.name;
+			if (comaker.spouse.objid) {
+                comaker.spouse.name = comaker.spouse.lastname+', '+comaker.spouse.firstname+' '+(comaker.spouse.middlename? comaker.spouse.middlename : '')
+                comaker.spouse.age = 0;
+                if (comaker.spouse.birthdate) comaker.spouse.age = currentdate.year - dateSvc.parseDate(comaker.spouse.birthdate, null).year;
+            }
+			comaker.children = getChildren(comaker);//borrower.getChildren([parentid: comaker.objid]);
+			comaker.educations = borrower.getEducations([parentid: comaker.objid]);
+			comaker.employments = borrower.getEmployments([refid: comaker.objid]);
+			comaker.parents = borrower.findParent(comaker);
+			comaker.siblings = getSiblings(comaker);//borrower.getSiblings(comaker);
+			comaker.otherincomes = borrower.getOtherIncomes([refid: comaker.objid]);
+			comaker.savingaccts = borrower.getBankAccts([parentid: comaker.objid, type: 'SAVING']);
+			comaker.checkingaccts = borrower.getBankAccts([parentid: comaker.objid, type: 'CHECKING']);
+		}
+		return list;		
+	}
+
+	@ProxyMethod
+	public def getReportData( params ) {
+		if (!params.loanappid) throw new Exception('Please specify loanappid');
+
+		def app = loanapp.read([objid: params.loanappid]);
+        if (app.appmode == 'CAPTURE') {
+            def ext = loanapp.findCapture([objid: app.objid]);
+            if (ext != null) app.putAll(ext); 
+
+        } else if (app.apptype == 'NEW') {
+            def ext = loanapp.findNew([objid: app.objid]);
+            if (ext != null) app.putAll(ext); 
+
+        } else if (app.apptype == 'RENEW') {
+            def ext = loanapp.findRenew([objid: app.objid]);
+            if (ext != null) app.putAll(ext); 
+        } 
+
+		def pb = borrower.read(app.borrower);
+		def currentdate = dateSvc.parseCurrentDate();
+        if (!pb.name) pb.name = pb.lastname+', '+pb.firstname+' '+(pb.middlename? pb.middlename : '');
+		pb.age = 0
+		if (pb.birthdate) pb.age = currentdate.year - dateSvc.parseDate(pb.birthdate, null).year
+		pb.spouse.name;
+		if (pb.spouse.objid) {
+            pb.spouse.name = pb.spouse.lastname+', '+pb.spouse.firstname+' '+(pb.spouse.middlename? pb.spouse.middlename : '')
+            pb.spouse.age = 0;
+            if (pb.spouse.birthdate) pb.spouse.age = currentdate.year - dateSvc.parseDate(pb.spouse.birthdate, null).year;
+        }
+		pb.children = getChildren(pb);//borrower.getChildren([parentid: pb.objid]);
+		pb.educations = borrower.getEducations([parentid: pb.objid]);
+		pb.employments = borrower.getEmployments([refid: pb.objid]);
+		pb.parents = borrower.findParent(pb);
+		pb.siblings = getSiblings(pb);
+		pb.otherincomes = borrower.getOtherIncomes([refid: pb.objid]);
+		pb.savingaccts = borrower.getBankAccts([parentid: pb.objid, type:'SAVING']);
+		pb.checkingaccts = borrower.getBankAccts([parentid: pb.objid, type:'CHECKING']);
+
+        //TEMP DATA
+        def data = [
+            branchname	: app.branch?.name, 
+            dtfiled		: dateSvc.serverDate, 
+            filedby		: app.createdby,
+            caoname		: app.caoname, 
+            appno		: app.appno,//'APP. NO',
+            apptype		: app.apptype,//'APP. TYPE',
+            state		: app.state,//'STATE',
+            marketer	: app.marketer,
+            modifiedby	: app.modifiedby, 
+            marketedby	: app.marketedby,
+            printedby	: env.USER, 
+            dtprinted	: currentdate.date,
+            route		: [
+                code        : app.route?.code,
+                description : app.route?.description 
+            ], 
+            borrower	: pb,
+            jointborrowers : getJointBorrowers(app, currentdate),
+            comakers : getComakers(app, currentdate),
+            businesses : business.getList([parentid: app.objid]),
+            otherlendings : otherlending.getList([parentid: app.objid]),
+            loaninfo : [
+                loanamount	: app.loanamount, 
+                purpose	    : app.purpose, 
+                marketedby	: app.marketedby,
+                clienttype	: app.clienttype,
+                producttype	: [
+                    code : app.productype?.name,
+                    term : app.productype?.term
+                ],
+                approval	: [
+                    amount		: app.approval?.amount, 
+                    absencetype	: app.approval?.absencetype,
+                    absencepolicy 	 : app.approval?.absencepolicy,
+                    absenceprovision : app.approval?.absenceprovision,
+                    remarks		    : app.remarks,
+                    creditlimit     : app.approval?.creditlimit,
+                    increase        : app.approval?.increase,
+                    mustcollateral  : [
+                        appliancelist   : [id:1, must:true],
+                        propertylist    : [id:2, must:true],
+                        vehiclelist     : [id:3, must:true]
+                    ]
+                ]
+            ],
+            collateral	: [
+                properties : collateral.getProperties([parentid: app.objid]),
+                appliances : collateral.getAppliances([parentid: app.objid]),
+                vehicles : collateral.getVehicles([parentid: app.objid]),
+                othercollateral : collateral.findOtherCollateral(app)
+            ],
+        ];
+        data.businessesci = data.businesses;
+        data.totalcav = 0.00;
+        def amt = data.collateral.properties.marketvalue.sum();
+        if(amt) data.totalcav += amt;
+        amt = data.collateral.appliances.marketvalue.sum();
+        if(amt) data.totalcav += amt;
+        amt = data.collateral.vehicles.marketvalue.sum();
+        if(amt) data.totalcav += amt;
+        data.jointborrower = [
+            names           : data.jointborrowers.collect{ it.lastname+', '+it.firstname+' '+(it.middlename? it.middlename : '') }.join(', '),
+            ages            : data.jointborrowers.collect{ it.age }.join(', '),
+            civilstatuses   : data.jointborrowers.collect{ it.civilstatus }.join(', '),
+            relations       : data.jointborrowers.collect{ it.relation }.join(', '),
+            addresses       : data.jointborrowers.collect{ it.address }.join(', ')
+        ];
+        data.comaker = [
+            names           : data.comakers.collect{ it.lastname+', '+it.firstname+' '+(it.middlename? it.middlename : '') }.join(', '),
+            ages            : data.comakers.collect{ it.age }.join(', '),
+            civilstatuses   : data.comakers.collect{ it.civilstatus }.join(', '),
+            relations       : data.comakers.collect{ it.relation }.join(', '),
+            addresses       : data.comakers.collect{ it.address }.join(', ')
+        ];
+        return data;
+	}
+}

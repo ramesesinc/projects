@@ -1,0 +1,48 @@
+import com.rameses.annotations.*;
+import com.rameses.common.*;
+import com.rameses.services.extended.*;
+import java.rmi.server.UID;
+
+class InboxService extends ActiveCrudListService 
+{	
+	@ActiveDB(value='inbox')
+	def em;
+
+	@ActiveDB(value='userrole')
+	def userrole;	
+	
+	@Env 
+	def env;
+
+	@ProxyMethod 
+	public List getColumns( params ) {
+		return [
+			[name:'dtcreated', caption:'Date Created', maxWidth:140],
+			[name:'message', caption:'Message'],
+			[name:'sendername', caption:'Sender', maxWidth:200] 
+		]; 
+	} 
+
+	void beforeList(params) {
+		params.searchtext = (params.searchtext? params.searchtext: '')+'%';	
+
+		def groups = userrole.getRolesByUser([userid: env.USERID, filter:'']).collect{ "'"+ it.role +"'" }   
+		groups.add("'"+ env.USERID +"'");
+		params.filter = " recipientid IN ("+ groups.join(',') +") AND "; 
+	} 
+
+	@ProxyMethod 
+	public void addMessage( data ) {
+		create( data ); 
+	} 
+
+	@ProxyMethod 
+	public void removeMessage( params ) {
+		em.removeMessage( [objid: params.objid] ); 
+	}
+
+	@ProxyMethod 
+	public void removeMessageByRefid( params ) {
+		em.removeMessageByRefid( [refid: params.refid] ); 
+	} 
+}

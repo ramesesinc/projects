@@ -1,0 +1,40 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.services.extended.*;
+
+class LoanLedgerCompromiseService extends ActiveCrudService
+{
+	@Env
+	def env;
+
+	@ActiveDB(value="loan_ledger_compromise")
+	def em;
+
+	@ActiveDB(value="loan_ledger")
+	def ledger;
+
+
+	@Service("DateService")
+	def dateSvc;
+
+	void beforeCreate(Object data) {
+		def date = dateSvc.serverDate;
+
+		data.createdby = env.USERNAME? env.USERNAME : 'LOUIE';
+		data.dtcreated = date;
+
+		if (data.compromisetype == 'FIXED AMOUNT') {
+			if (data.fixedamount <= data.balance) throw new Exception("Fixed amount must be greater than balance.");
+			def effectivefrom = dateSvc.parseDate(data.dteffectivefrom, null).date;
+			if (effectivefrom < date) throw new Exception("Effective from must be greater than or equal to current date.");
+			def effectiveto = dateSvc.parseDate(data.dteffectiveto, null).date;
+			if (effectiveto <= effectivefrom) throw new Exception("Effective to must be greater than effective from.");
+		}
+
+		def lr = ledger.read([objid: data.ledgerid]);
+		if (!lr) throw new Exception("Ledger does not exist or has already been deleted.");
+
+		lr.compromiseid = data.objid;
+		ledger.update(lr, "compromise");
+	}
+}

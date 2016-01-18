@@ -1,0 +1,21 @@
+<schema>
+
+	<element name="controlseries" tablename="controlseries">
+		<field name="objid" primary="true"/>
+		<field name="state" required="true"/>
+		<field name="dtfiled" required="true"/>
+		<field name="filedby" required="true"/>
+		<field name="user_objid" required="true"/>
+		<field name="user_name" required="true"/>
+		<field name="user_txncode" required="true"/>
+		<field name="prefix" required="true"/>
+		<field name="startseries" required="true"/>
+		<field name="endseries" required="true"/>
+		<field name="nextseries" required="true"/>
+	</element>
+
+	<element name="nextseries" tablename="controlseries">
+		<field name="objid" primary="true"/>
+		<field name="nextseries" required="true"/>
+	</element>
+</schema>

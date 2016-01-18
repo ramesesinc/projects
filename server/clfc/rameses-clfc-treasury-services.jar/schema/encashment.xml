@@ -1,0 +1,165 @@
+<schema>
+
+	<!--
+	<element name="encashment" tablename="encashment">
+		<field name="objid" primary="true" />
+		<field name="txnstate" required="true" />
+		<field name="txndate" required="true" />
+		<field name="dtcreated" required="true" />
+		<field name="author_objid" required="true" />
+		<field name="author_name" required="true" />
+		<field name="amount" required="true" />
+		<field name="remarks" required="true" />
+		<field name="dtposted" />
+		<field name="poster_objid" />
+		<field name="poster_name" />
+	</element>
+	-->
+
+	<element tablename='encashment'>
+		<field name='objid' primary='true' />
+		<field name='txnstate' required='true' />
+		<field name='txndate' required='true' />
+		<field name='dtcreated' required='true' />
+		<field name='author_objid' required='true' />
+		<field name='author_name' required='true' />
+		<field name='amount' required='true' />
+		<field name='remarks' required='true' />
+		<complex name='overage' required='true' type='list' serializer='default' />
+		<complex name='change' required='true' type='list' serializer='default' />
+		<field name='dtposted' />
+		<field name='poster_objid' />
+		<field name='poster_name' />
+	</element>
+
+	<element name="encashment-post" tablename="encashment">
+		<field name="objid" primary="true" />
+		<field name="dtposted" required="true" />
+		<field name="poster_objid" required="true" />
+		<field name="poster_name" required="true" />
+	</element>
+
+	<!--
+	<element name="encashment-cb" tablename="encashment_cb">
+		<field name="objid" primary="true" />
+		<field name="parentid" required="true" />
+		<field name="dtcreated" required="true" />
+		<field name="author_objid" required="true" />
+		<field name="author_name" required="true" />
+		<field name="cbsno" required="true" />
+	</element>
+	-->
+	<element name='encashment-cb' tablename='encashment_cb'>
+		<field name='objid' primary='true' />
+		<field name='parentid' required='true' />
+		<field name='dtcreated' required='true' />
+		<field name='author_objid' required='true' />
+		<field name='author_name' required='true' />
+		<field name='cbsno' required='true' />
+		<complex name='breakdown' required='true' type='list' serializer='default' />
+	</element>
+
+	<element name="encashment-cb-detail" tablename="encashment_cb_detail">
+		<field name="objid" primary="true" />
+		<field name="parentid" required="true" />
+		<field name="encashmentid" required="true" />
+		<field name="denomination" required="true" />
+		<field name="qty" required="true" />
+		<field name="amount" required="true" />
+	</element>
+
+	<element name="encashment-check" tablename="encashment_check">
+		<field name="objid" primary="true" />
+		<field name="parentid" required="true" />
+		<field name="dtcreated" required="true" />
+		<field name="author_objid" required="true" />
+		<field name="author_name" required="true" />
+		<field name="checkno" required="true" />
+		<field name="txndate" required="true" />
+		<field name="amount" required="true" />
+		<field name="bank_objid" required="true" />
+		<field name="passbook_objid" />
+	</element>
+
+	<element name='encashment-cbs' tablename='encashment_cbs'>
+		<field name='objid' primary='true' />
+		<field name='parentid' required='true' />
+		<field name='refid' required='true' />
+		<field name='cbsno' required='true' />
+		<field name='txndate' required='true' />
+		<field name='collectiontype' required='true' />
+		<field name='amount' required='true' />
+		<field name='cbsid' required='true' />
+		<complex name='breakdown' required='true' type='list' serializer='default' />
+		<complex name='reference' required='true' type='list' serializer='default' />
+		<complex name='change' required='false' type='list' serializer='default' />
+	</element>
+
+	<!--
+	<element name="encashment-change" tablename="encashment_change">
+		<field name="objid" primary="true" />
+		<field name="parentid" required="true" />
+		<field name="denomination" required="true" />
+		<field name="qty" required="true" />
+		<field name="amount" required="true" />
+	</element>
+
+	<element name='encashment-overage' tablename='encashment_overage'>
+		<field name='objid' primary='true' />
+		<field name='parentid' required='true' />
+		<complex name='breakdown' required='true' type='list' serializer='default' />
+	</element>
+	
+	<element name="encashment-cbs" tablename="encashment_cbs">
+		<field name="objid" primary="true" />
+		<field name="parentid" required="true" />
+		<field name="refid" required="true" />
+		<field name="cbsno" required="true" />
+		<field name="txndate" required="true" />
+		<field name="collectiontype" required="true" />
+		<field name="amount" required="true" />
+		<field name="cbsid" required="true" />
+	</element>
+
+	<element name="encashment-cbs-detail" tablename="encashment_cbs_detail">
+		<field name="objid" primary="true" />
+		<field name="parentid" required="true" />
+		<field name="denomination" required="true" />
+		<field name="qty" required="true" />
+		<field name="amount" required="true" />
+	</element>
+
+	<element name="encashment-cbs-reference" tablename="encashment_cbs_reference">
+		<field name="objid" primary="true" />
+		<field name="parentid" required="true" />
+		<field name="denomination" required="true" />
+		<field name="qty" required="true" />
+		<field name="amount" required="true" />
+	</element>
+
+	<element name="encashment-cbs-change" tablename="encashment_cbs_change">
+		<field name="objid" primary="true" />
+		<field name="parentid" required="true" />
+		<field name="denomination" required="true" />
+		<field name="qty" required="true" />
+		<field name="amount" required="true" />
+	</element>
+	-->
+
+	<!--
+	<element name='encashment-cbs' tablename='encashment_cbs'>
+		<field name='objid' primary='true' />
+		<field name='parentid' required='true' />
+		<field name='refid' required='true' />
+		<field name='cbsno' required='true' />
+		<field name='txndate' required='true' />
+		<field name='collectiontype' required='true' />
+		<field name='amount' required='true' />
+		<field name='cbsid' required='true' />
+		<complex name='breakdown' required='true' type='list' serializer='default' />
+		<complex name='reference' required='true' type='list' serializer='default' />
+		<complex name='change' required='true' type='list' serializer='default' />
+	</element>
+	-->
+
+</schema>

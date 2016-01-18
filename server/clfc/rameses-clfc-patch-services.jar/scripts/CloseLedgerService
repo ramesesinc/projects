@@ -1,0 +1,52 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+
+class CloseLedgerService
+{
+	@Env
+	def env;
+
+	@ActiveDB(value="close_ledger")
+	def em;
+
+	@ActiveDB(value="loan_ledger")
+	def loan_ledger;
+
+	@ActiveDB(value="loanapp")
+	def loanapp;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@ProxyMethod
+	public def open( params ) {
+		if (!params.appid) throw new Exception("Please specify appid.");
+
+		def ledger = loan_ledger.read([objid: params.ledgerid]);
+		if (ledger.state == 'CLOSE') throw new Exception("This ledger is already closed.");
+		
+		params.appinfo = em.findAppInfo([objid: params.appid]);
+		return params;
+	}
+
+	@ProxyMethod
+	public def save( params ) {
+		if (!params.ledgerid) throw new Exception("Please specify ledgerid.");
+
+		def map = em.read([objid: params.ledgerid]);
+		if (!map) {
+			map = [
+				objid 	: params.ledgerid,
+				dtclosed: dateSvc.serverDate,
+				closedby: (env.NAME? env.NAME : 'NOT IDENTIFIED'),
+				remarks	: params.remarks
+			];
+			em.create(map);
+		}
+
+		loan_ledger.changeState([objid: params.ledgerid, state: 'CLOSE']);
+		loanapp.changeState([objid: params.appid, state: 'CLOSED']);
+
+		return params;
+	}
+}

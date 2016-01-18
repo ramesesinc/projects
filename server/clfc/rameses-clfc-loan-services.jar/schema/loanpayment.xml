@@ -1,0 +1,30 @@
+<schema>
+
+	<element name="loanpayment" tablename="loanpayment">
+		<field name="objid" primary="true" />
+		<field name="dtfiled" required="true" />
+		<field name="author_objid" required="true" />
+		<field name="author_name" required="true" />
+		<field name="txndate" required="true" />
+		<field name="totalacctscollected" required="true" />
+		<field name="totalamount" required="true" />
+	</element>
+
+	<element name="payment-detail" tablename="loanpayment_detail">
+		<field name="objid" primary="true" />
+		<field name="parentid" required="true" />
+		<field name="borrower_objid" required="true" />
+		<field name="borrower_name" required="true" />
+		<field name="loanapp_objid" required="true" />
+		<field name="loanapp_appno" required="true" />
+		<field name="routecode" required="true" />
+		<field name="refno" required="true" />
+		<field name="amount" required="true" />
+		<field name="paytype" required="true" />
+		<field name="paidby" required="true" />
+		<field name="control_objid" required="true" />
+		<field name="control_series" required="true" />
+		<field name="control_seriesno" required="true" />
+	</element>
+
+</schema>

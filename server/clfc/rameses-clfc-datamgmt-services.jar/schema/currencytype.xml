@@ -1,0 +1,14 @@
+<schema>
+
+	<element name="currencytype" tablename="currencytype">
+		<field name="objid" primary="true" />
+		<field name="txnstate" required="true" />
+		<field name="dtcreated" required="true" />
+		<field name="author_objid" required="true" />
+		<field name="author_name" required="true" />
+		<field name="code" required="true" />
+		<field name="name" required="true" />
+		<field name="description" required="true" />
+	</element>
+
+</schema>

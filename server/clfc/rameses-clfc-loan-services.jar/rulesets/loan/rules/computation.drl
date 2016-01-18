@@ -1,0 +1,2499 @@
+package loan;
+import java.util.*;
+import java.lang.*;
+global java.util.List results;
+global java.util.Map lastPayment;
+global java.util.Map floating;
+
+declare Payment
+	amountPaid		: double
+	datePaid		: String
+	lackingInterest	: double
+	lackingPenalty	: double
+	balance			: double
+	days			: int
+	totalPenalty	: double
+	totalInterest	: double
+	currentDay		: int
+	addLacking 		: Boolean
+end
+
+declare References
+	amountPaid		: double
+	interest		: double
+	totalDays		: int
+	totalPayment	: double
+	term			: int
+	overduePenalty	: double
+	absentPenalty	: double
+	underpaymentRate: double
+	amountDue		: double
+	trialAndError	: int
+	isOverdue		: int
+	isOffset		: int
+	type			: String
+	hasSunday		: String
+	noOfHolidays	: int
+	isFullPayment	: Boolean
+	overpaymentAmt	: double
+	hasAbsentPenalty: Boolean
+	isProceed 		: Boolean
+end
+
+declare Compromise
+	amountPaid		: double
+	balance			: double
+	interest		: double
+	penalty 		: double
+	isCompromise	: int
+	isWaiveInterest	: Boolean
+	isWaivePenalty 	: Boolean
+	isFix 			: Boolean
+	compromiseType	: String
+end
+
+rule "proceed posting: current day within term and isoffset greater than 0"
+	salience 40
+	when
+		Compromise( isCompromise == 0 )
+		References(isFullPayment == false, isProceed == true, isOffset > 0, td: totalDays, isoverdue: isOverdue, i: interest, op: overduePenalty, trm: term, ap: absentPenalty, ad: amountDue, hasSunday: hasSunday, tae: trialAndError, ur: underpaymentRate, amtpaid: amountPaid)
+		p: Payment(amountPaid > 0, currentDay <= trm)
+	then
+		java.util.Map listItem = new java.util.HashMap();
+		double amountPaid = p.getAmountPaid();
+		double totalInterest = p.getTotalInterest();
+		double totalPenalty = p.getTotalPenalty();
+		int days = p.getDays();
+		int currentDay = p.getCurrentDay();
+		int lastDay = currentDay;
+		if (lastPayment.containsKey("currentDay")) {
+			lastDay = java.lang.Integer.parseInt(lastPayment.get("currentDay").toString());
+		}
+
+		double lackinginterest = p.getLackingInterest();
+		double lackingpenalty = p.getLackingPenalty();
+
+		listItem.put("day", currentDay);
+		listItem.put("interestPaid", i);
+		if (isoverdue > 0) {
+			listItem.put("penalty", op);
+		}
+
+		Boolean hasLackingInterest = false;
+		Boolean hasLackingPenalty = false;
+
+		if ((currentDay-1) == lastDay) {
+			listItem.put("day", lastDay);
+			if (lackinginterest > 0 && amountPaid > 0) {
+				hasLackingInterest = true;
+				if (amountPaid >= lackinginterest) {
+					listItem.put("interestPaid", lackinginterest);
+					amountPaid -= lackinginterest;
+					lackinginterest = 0;
+				} else if (amountPaid < lackinginterest) {
+					listItem.put("interestPaid", amountPaid);
+					listItem.remove("penalty");
+					listItem.remove("day");
+					lackinginterest -= amountPaid;
+					//floating.put("lackingInterest", lackinginterest);
+					amountPaid = 0;
+				}
+			}
+
+			if (lackingpenalty > 0 && amountPaid > 0) {
+				hasLackingPenalty = true;
+				if (lackinginterest == 0) listItem.remove("interestPaid");
+				if (amountPaid >= lackingpenalty) {
+					listItem.put("penalty", lackingpenalty);
+					amountPaid -= lackingpenalty;
+					lackingpenalty = 0;
+				} else if (amountPaid < lackingpenalty) {
+					listItem.put("penalty", amountPaid);
+					lackingpenalty -= amountPaid;
+					//floating.put("lackingPenalty", lackingpenalty);
+					amountPaid = 0;
+				}
+			}
+			results.add(listItem);
+			lastPayment.put("currentDay", 0);
+		} else if (days <= td && currentDay < trm) {
+			days++;
+			currentDay++;
+			results.add(listItem);
+		} else {
+			amountPaid = 0;
+		}
+
+		if (amountPaid < 0) amountPaid = 0;
+		if (amountPaid == 0) {
+			int tdays = days;
+			if (days > td) tdays = td;
+
+			totalInterest = (tdays * i) + lackinginterest;
+			p.setLackingInterest(0);
+			if (hasLackingInterest == true) {
+				totalInterest = java.lang.Double.parseDouble(listItem.get("interestPaid").toString());
+				p.setLackingInterest(lackinginterest);
+			} 
+
+			totalPenalty = 0;
+			p.setLackingPenalty(0);
+			if (hasLackingPenalty == true) {
+				totalPenalty = java.lang.Double.parseDouble(listItem.get("penalty").toString());
+				p.setLackingPenalty(lackingpenalty);
+			} else {
+				if (isoverdue > 0) {
+					totalPenalty = (tdays * op) + lackingpenalty;
+				} else if (isoverdue == 0) {
+					totalPenalty = (tdays * ap) + lackingpenalty;
+					if (tae == 0 || tae == 2) {
+						totalPenalty -= ap;
+						if (tae == 0 && hasSunday == "true") {
+							totalPenalty -= ap;
+						}
+					}
+					double t = (tdays * ad);
+					if (amtpaid < t) {
+						double underpayment = (t - amtpaid) * ur;
+						if (underpayment > 0.00) totalPenalty += underpayment;
+					}
+
+					if (totalPenalty > 0) listItem.put("penalty", totalPenalty);
+				}
+			}
+
+			p.setTotalInterest(totalInterest);
+			p.setTotalPenalty(totalPenalty);
+			p.setAmountPaid(amountPaid);
+		}
+
+		//if( (currentDay-1) == lastDay && days <= totaldays ) {
+		//	item.put("day", lastDay);
+		//	item.put("partialPayment", "");
+		//	item.put("balance", "");
+		//	item.put("interestPaid", i);
+		//	item.put("payment", "");
+		//	item.put("penalty", "");
+		//	results.add( item );
+		//	lastPayment.put("currentDay", 0);
+			//days--;
+		//}
+		//else if( days < totaldays ) {
+			//currentDay++;
+			//days++;
+			//results.add( listItem );
+		//}
+
+		p.setDays(days);
+		p.setCurrentDay(currentDay);
+		update( p );
+end
+
+rule "proceed posting: current day within term and amount paid greater than total payment and is over is false"
+	salience 40
+	when
+		Compromise(isCompromise == 0)
+		r: References(amountPaid > totalPayment, isFullPayment == false, isProceed == true, isOffset == 0, isOverdue == 0, trm: term)
+		p: Payment(amountPaid > 0, currentDay <= trm)
+	then
+		Map listItem = new HashMap();
+
+		double interest = r.getInterest();
+		double amountpaid = p.getAmountPaid();
+
+		int currentday = p.getCurrentDay();
+		int days = p.getDays();
+		if (lastPayment.containsKey("days")) {
+			days = Integer.parseInt(lastPayment.get("days").toString());
+		}
+
+		int totaldays = r.getTotalDays();
+
+		double lackinginterest = p.getLackingInterest();
+		double lackingpenalty = p.getLackingPenalty();
+		Boolean addLacking = p.getAddLacking();
+
+		double interestpaid = 0, penaltypaid = 0;
+		if (addLacking == true) {
+			Map item = new HashMap();
+			item.put("day", currentday);
+
+			if (amountpaid > 0 && lackinginterest > 0) {
+				if (amountpaid >= lackinginterest) {
+					item.put("interestPaid", lackinginterest);
+					amountpaid -= lackinginterest;
+					interestpaid = lackinginterest;
+					currentday++;
+				} else if (amountpaid < lackinginterest) {
+					item.put("interestPaid", amountpaid);
+					interestpaid = amountpaid;
+					lackinginterest -= amountpaid;
+					amountpaid = 0;
+				}
+			}
+
+			if (amountpaid > 0 && lackingpenalty > 0) {
+				if (amountpaid >= lackingpenalty) {
+					penaltypaid = lackingpenalty;
+					amountpaid -= lackingpenalty;
+				} else if (amountpaid < lackingpenalty) {
+					penaltypaid = amountpaid;
+					lackingpenalty -= amountpaid;
+					amountpaid = 0;
+				}
+			}
+
+			lastPayment.remove("days");
+			p.setAddLacking(false);
+			results.add(item);
+		}
+
+		if (days <= totaldays) {
+			listItem.put("day", currentday);
+			listItem.put("interestPaid", interest);
+			currentday++;
+			days++;
+			results.add(listItem);
+		} else {
+			int xdays = days - totaldays;
+			if (xdays < 0) xdays = 0;
+
+
+			double ad = r.getAmountDue();
+			double amt = r.getAmountPaid() - (xdays * ad);
+
+			Boolean add = false;
+			if (amt >= ad) {
+				add = true;
+			}
+
+			if (add == true) {
+				listItem.put("day", currentday);
+				listItem.put("interestPaid", interest);
+				days++;
+				currentday++;
+				results.add(listItem);
+			} else if (add == false) {
+				days--;
+				amountpaid = 0;
+			}
+		}
+
+		if (amountpaid == 0) {
+			Map item = new HashMap();
+			if (results.size() > 0) item = (Map) results.get(results.size() - 1);
+
+			double totalinterest = 0, totalpenalty = 0;
+			if (addLacking == true) {
+				totalinterest = interestpaid;
+				totalpenalty = penaltypaid;
+			} else if (addLacking == false) {
+				double ap = r.getAbsentPenalty();
+				totalinterest = (interest * days) + lackinginterest;
+				p.setLackingInterest(0);
+
+				int noofholidays = r.getNoOfHolidays();
+				String hassunday = r.getHasSunday();
+
+				int xd = (totaldays - 1);
+				if (noofholidays > 0) xd -= noofholidays;
+				if (hassunday.equals("true")) xd -= 1;
+
+				if (xd < 0) xd = 0;
+
+				totalpenalty = (xd * ap) + lackingpenalty;
+				p.setLackingPenalty(0);
+			}
+
+			if (totalpenalty > 0) item.put("penalty", totalpenalty);
+
+			p.setAmountPaid(0);
+			p.setTotalPenalty(totalpenalty);
+			p.setTotalInterest(totalinterest);
+		} else if (amountpaid > 0) {
+			p.setDays(days);
+			p.setCurrentDay(currentday);
+		}
+		update(p);
+end
+
+rule "proceed posting: current day within term and amount paid less than equal to total payment"
+	salience 40
+	when
+		Compromise( isCompromise == 0 )
+		References(amountPaid <= totalPayment, isFullPayment == false, isProceed == true, isOffset == 0, isoverdue: isOverdue, i: interest, trm: term, ap: absentPenalty, ur: underpaymentRate, td: totalDays, op: overduePenalty, tae: trialAndError, hasSunday: hasSunday, amtpaid: amountPaid, ad: amountDue)
+		p: Payment(amountPaid > 0, currentDay <= trm)
+	then
+		//System.out.println("proceed posting: current day within term");
+		java.util.Map listItem = new java.util.HashMap();
+		double amountPaid = p.getAmountPaid();
+		double totalInterest = p.getTotalInterest();
+		double totalPenalty = p.getTotalPenalty();
+		double balance = p.getBalance();
+		int currentDay = p.getCurrentDay();
+		int days = p.getDays();
+
+		int lastcurrentday = currentDay;
+		if (lastPayment.containsKey("lastcurrentday")) {
+			lastcurrentday = java.lang.Integer.parseInt(lastPayment.get("lastcurrentday").toString());
+		}
+
+		double lackinginterest = p.getLackingInterest();
+		double lackingpenalty = p.getLackingPenalty();
+
+		listItem.put("day", currentDay);
+		if (currentDay > trm) {
+			listItem.put("state", "PROCEED");
+		}
+		listItem.put("interestPaid", i);
+		if (isoverdue > 0) {
+			listItem.put("penalty", op);
+		}
+
+		Boolean hasLackingInterest = false;
+		Boolean hasLackingPenalty = false; 
+
+		//System.out.println("current day: " + currentDay + " last current date: " + lastcurrentday);
+		//System.out.println("days: " + days);
+		if (currentDay == lastcurrentday) {
+			if (amountPaid > 0 && lackinginterest > 0) {
+				hasLackingInterest = true;
+				listItem.remove("day");
+				if (amountPaid >= lackinginterest) {
+					listItem.put("day", currentDay);
+					listItem.put("interestPaid", lackinginterest);
+					amountPaid -= lackinginterest;
+					lackinginterest = 0;
+					//p.setLackingInterest(0);
+				} else {
+					listItem.put("interestPaid", amountPaid);
+					listItem.remove("penalty");
+					lackinginterest -= amountPaid;
+					//floating.put("lackingInterest", lackinginterest);
+					//p.setLackingInterest(lackingInterest);
+					if (lackingpenalty > 0) {
+						//floating.put("lackingPenalty", lackingpenalty);
+						//p.setLackingPenalty(lackingpenalty);
+					}
+					amountPaid = 0;
+				}
+			}
+			if (amountPaid > 0 && lackingpenalty > 0) {
+				hasLackingPenalty = true;
+				if (p.getLackingInterest() == 0) listItem.remove("interestPaid");
+				if (amountPaid >= lackingpenalty) {
+					listItem.put("penalty", lackingpenalty);
+					amountPaid -= lackingpenalty;
+					lackingpenalty = 0;
+					//p.setLackingPenalty(0);
+				} else if (amountPaid < lackingpenalty) {
+					listItem.put("penalty", amountPaid);
+					lackingpenalty -= amountPaid;
+					//p.setLackingPenalty(lackingpenalty);
+					//floating.put("lackingPenalty", lackingpenalty);
+					amountPaid = 0;
+				}
+			}
+			//System.out.println("last current day " + lastcurrentday);
+			//System.out.println("current day " + currentDay);
+			//System.out.println("listitem " + listItem);
+			if (currentDay < trm) {
+				if (p.getLackingInterest() == 0 && p.getLackingPenalty() == 0) {
+					days++;
+				}
+				results.add(listItem);
+			}
+			//lastPayment.put("lastcurrentday", (lastcurrentday - 1));
+			currentDay++;
+		} else if (days < td && currentDay < trm) {
+			days++;
+			currentDay++;
+			results.add(listItem);
+		} else {
+			amountPaid = 0;	
+		}
+
+		if (currentDay > trm) {
+			amountPaid = 0;
+		}
+
+		if (amountPaid == 0) {
+			int tdays = days;
+			if (days > td) tdays = td;
+			//System.out.println("tdays: " + tdays + " days: " + days + " td: " + td);
+			totalInterest = (days * i) + lackinginterest;
+			p.setLackingInterest(0);
+			if (hasLackingInterest == true) {
+				totalInterest = java.lang.Double.parseDouble(listItem.get("interestPaid").toString());
+				p.setLackingInterest(lackinginterest);
+			}
+			totalPenalty = 0;
+			p.setLackingPenalty(0);
+			if (hasLackingPenalty == true) {
+				totalPenalty = java.lang.Double.parseDouble(listItem.get("penalty").toString());
+				p.setLackingPenalty(lackingpenalty);
+			} else {				
+				if (isoverdue == 0) {			
+					totalPenalty = (tdays * ap) + lackingpenalty;
+					if (tae == 0 || tae == 2) {
+						totalPenalty -= ap;
+						if (tae == 0 && hasSunday == "true") {
+							totalPenalty -= ap;
+						}
+					}
+
+					double t = (tdays * ad);
+					if (amtpaid < t) {
+						double underpayment = (t - amtpaid) * ur;
+						if (underpayment > 0.00) totalPenalty += underpayment;
+					}
+					if (totalPenalty > 0) listItem.put("penalty", totalPenalty);
+				} else if (isoverdue > 0) {
+					totalPenalty = (tdays * op) + lackingpenalty;
+				}
+			}
+			//listItem.put("penalty", totalPenalty);
+			//System.out.println("total interest: " + totalInterest);
+			//System.out.println("total penalty: " + totalPenalty);
+			results.add(listItem);
+			p.setAmountPaid( amountPaid );
+			p.setTotalInterest( totalInterest );
+			p.setTotalPenalty( totalPenalty );
+		}
+
+		p.setDays( days );
+		p.setCurrentDay( currentDay );
+		update( p );
+end
+
+rule "proceed posting: current day beyond term"
+	salience 40
+	when
+		Compromise( isCompromise == 0 )
+		References(isFullPayment == false, isProceed == true, i: interest, trm: term, op: overduePenalty, td: totalDays, tae: trialAndError, ap: absentPenalty, ur: underpaymentRate)
+		p: Payment( amountPaid > 0, currentDay > trm)
+	then
+		//System.out.println("proceed posting: current day beyond term");
+		java.util.Map listItem = new java.util.HashMap();
+		double amountPaid = p.getAmountPaid();
+		double balance = p.getBalance();
+		int currentDay = p.getCurrentDay();
+
+		double lackinginterest = p.getLackingInterest();
+		double lackingpenalty = p.getLackingPenalty();
+
+		double totalInterest = p.getTotalInterest();
+		double totalPenalty = p.getTotalPenalty();
+
+		int lastDay = currentDay;
+		if (lastPayment.containsKey("lastcurrentday")) {
+			lastDay = java.lang.Integer.parseInt(lastPayment.get("lastcurrentday").toString());
+		}
+
+		//listItem.put("day", currentDay);
+		listItem.put("state", "PROCEED");
+
+		//System.out.println("current day: " + currentDay + " last day: " + lastDay);
+		if (currentDay == lastDay) {
+			if (lackinginterest > 0 && amountPaid > 0) {
+				listItem.remove("day");
+				java.util.Map item = new java.util.HashMap();
+				item.put("day", currentDay);
+				if (amountPaid >= lackinginterest) {
+					//item.put("day", currentDay);
+					item.put("interestPaid", lackinginterest);
+					//listItem.put("day", currentDay);
+					//listItem.put("interestPaid", lackinginterest);
+					totalInterest += lackinginterest;
+					amountPaid -= lackinginterest;
+					lackinginterest = 0;
+					currentDay++;
+					p.setLackingInterest(lackinginterest);
+				} else if (amountPaid < lackinginterest) {
+					//listItem.put("day", currentDay);
+					//listItem.put("interestPaid", amountPaid);
+					item.put("interestPaid", amountPaid);
+					totalInterest += amountPaid;
+					lackinginterest -= amountPaid;
+					floating.put("lackingInterest", lackinginterest);
+					p.setLackingInterest(lackinginterest);
+					amountPaid = 0;
+				}
+				results.add(item);
+			}
+
+			if (lackingpenalty > 0 && amountPaid > 0) {
+				java.util.Map item = listItem;
+				if (results.size() > 0) item = (java.util.Map) results.get(results.size() - 1);
+				if (amountPaid >= lackingpenalty) {
+					item.put("penalty", lackingpenalty);
+					totalPenalty += lackingpenalty;
+					amountPaid -= lackingpenalty;
+					lackingpenalty = 0;
+					p.setLackingPenalty(lackingpenalty);
+					floating.put("lackingPenalty", 0);
+				} else if (amountPaid < lackingpenalty) {
+					item.put("penalty", amountPaid);
+					totalPenalty += amountPaid;
+					lackingpenalty -= amountPaid;
+					floating.put("lackingPenalty", lackingpenalty);
+					p.setLackingPenalty(lackingpenalty);
+					amountPaid = 0;
+				}
+			}
+		}
+
+		if (lackinginterest == 0 && lackingpenalty == 0) {
+			if (listItem.containsKey("day") == false) {
+				listItem.put("day", currentDay);
+			}
+
+			results.add(listItem);
+			amountPaid = 0;
+		}
+
+
+		p.setTotalPenalty( totalPenalty );
+		p.setTotalInterest( totalInterest );
+		p.setAmountPaid( amountPaid );
+		update( p );
+end
+
+rule "full payment"
+	salience 40
+	when
+		Compromise( isCompromise == 0 )
+		References( isFullPayment == true, isOverdue == 0, i: interest, offset: isOffset, trm: term, td: totalDays, hasSunday: hasSunday, noOfHolidays: noOfHolidays, ab: absentPenalty )
+		p: Payment( amountPaid > 0 )
+	then
+		//System.out.println("Full Payment");
+		java.util.Map listItem = new java.util.HashMap();
+		double amountPaid = p.getAmountPaid();
+		double totalInterest = p.getTotalInterest();
+		double totalPenalty = p.getTotalPenalty();
+		double balance = p.getBalance();
+		int currentDay = p.getCurrentDay();
+		int days = p.getDays();	
+
+		double interest = (days*i) + p.getLackingInterest();
+		totalPenalty += p.getLackingPenalty();
+		td -= noOfHolidays;
+		if (hasSunday == "true") td--;
+		totalPenalty += ab*(td-1);
+		if (totalPenalty < 0) totalPenalty = 0;
+
+		double amt = balance + interest + totalPenalty;
+		if (amt <= amountPaid) {
+			listItem.put("interestPaid", i);
+			listItem.put("penalty", "");
+			listItem.put("payment", "");
+			listItem.put("balance", "");
+			listItem.put("day", "");
+			if (offset == 0) {
+				listItem.put("day", currentDay);
+				currentDay++;
+				days++;
+				totalInterest += i;
+			}
+			results.add(listItem);
+		} else if (amt > amountPaid) {
+			totalInterest += p.getLackingInterest();
+			//System.out.println("total interest = "+totalInterest);
+			/*totalPenalty += p.getLackingPenalty();
+			td -= noOfHolidays;
+			if (hasSunday == "true") td--;
+			totalPenalty += ab*(td-1);
+			if (totalPenalty < 0) totalPenalty = 0;*/
+			amountPaid = 0;
+			p.setTotalPenalty( totalPenalty );
+		}		
+
+		p.setDays( days );
+		p.setCurrentDay( currentDay );
+		p.setAmountPaid( amountPaid );
+		p.setTotalInterest( totalInterest );
+		update( p );
+end
+
+rule "overpayment"
+	salience 35
+	when
+		Compromise( isCompromise == 0 )
+		References( isOverdue == 0 && isOffset == 0 && type == "over" && trialAndError == 0, isFullPayment == false, ad: amountDue, i: interest, tp: totalPayment, td: totalDays, ap: absentPenalty, offset: isOffset, oa: overpaymentAmt, noOfHolidays: noOfHolidays, hasSunday: hasSunday, amtpaid: amountPaid, trm: term )
+		p: Payment( amountPaid > 0 && balance > 0 )
+	then
+		//System.out.println("overpayment");
+		java.util.Map listItem = new java.util.HashMap();
+		double amountPaid = p.getAmountPaid();
+		double totalInterest = p.getTotalInterest();
+		int currentDay = p.getCurrentDay();
+		double amt = (td * oa);
+		int days = p.getDays();
+		//System.out.println("days " + days);
+		//System.out.println("total days = "+td);
+		//System.out.println("overpayment amount-> "+oa);
+		//totalInterest += td*i;
+		//totalPenalty += (td-1)*ap;
+		
+
+		//System.out.println("amount paid " + amountPaid);
+		//System.out.println("amt paid " + amtpaid);
+		//System.out.println("amount due " + ad);
+		//System.out.println("amount " + amt);
+		//System.out.println("");
+
+		listItem.put("interestPaid", i);
+		listItem.put("penalty", "");
+		listItem.put("payment", "");
+		listItem.put("balance", "");
+		listItem.put("day", "");
+		if (offset == 0) {
+			listItem.put("day", currentDay);
+			currentDay++;
+		}
+
+		//if (amtpaid >= amt && amountPaid >= oa) {
+		if (amtpaid >= amt) {
+			//System.out.println("amount paid " + amountPaid);
+			if (amountPaid >= oa) {
+				amountPaid -= oa;
+				totalInterest += i;
+				results.add(listItem);
+			} else {
+				amountPaid = 0;
+			}
+		} else {
+			amountPaid -= ad;
+			totalInterest += i;
+			results.add(listItem);
+			if (days >= td) amountPaid = 0;
+			//if ()
+			//if (amountPaid < 0) amountPaid = 0;
+		}
+		days++;
+
+		if (amountPaid < 0) amountPaid = 0;
+		//System.out.println("total days " + td + " days " + p.getDays());
+		/*if (amountPaid >= oa) {
+			amountPaid -= oa;
+			totalInterest += i;
+			results.add(listItem);
+		} else if (amountPaid > ad) {
+			amountPaid -= ad;
+			totalInterest += i;
+			results.add(listItem);
+		} else {
+			amountPaid = 0;
+		}*/
+		
+		/*if (days <= td) {
+			if (amountPaid >= oa) {
+				amountPaid -= oa;
+			}
+			totalInterest += i;
+			results.add(listItem);
+			days++;
+		} else {
+			amountPaid = 0;
+		}*/
+
+		if (oa == 0) amountPaid = 0;
+		if (p.getCurrentDay() == trm) amountPaid = 0;
+		if (amountPaid == 0) {
+			double totalPenalty = p.getTotalPenalty();
+			
+			totalInterest += p.getLackingInterest();
+			totalPenalty += p.getLackingPenalty();	
+			td -= noOfHolidays;
+			if (hasSunday == "true") {
+				td--;
+			}
+			totalPenalty += (td-1)*ap;
+			p.setTotalPenalty( totalPenalty );			
+		}
+		p.setAmountPaid( amountPaid );
+		p.setCurrentDay( currentDay );
+		p.setTotalInterest( totalInterest );
+		p.setDays( days );
+		update( p );
+end
+
+/**********************************************************************/
+/*Payments made within the term specified */
+
+rule "currentDay greater than term"
+	salience 21
+	when
+		Compromise( isCompromise == 0 )
+		References( isOverdue == 0, isFullPayment == false, trm: term, amtPaid: amountPaid, ad: amountDue, ap: absentPenalty, td: totalDays, offset: isOffset, i: interest )
+		p: Payment( amountPaid > 0 && currentDay > trm  && balance > 0 )
+	then
+		//System.out.println("passing 10"	);
+		//System.out.println("last payment " + lastPayment);
+		java.util.Map listItem = new java.util.HashMap();
+		java.util.Map item = new java.util.HashMap();
+		if (results.size() > 0) {
+			item = (java.util.HashMap) results.get( results.size()-1 );
+		}
+
+		int currentDay = p.getCurrentDay();
+		int totaldays = java.lang.Integer.parseInt(lastPayment.get("totaldays").toString());
+		double amountPaid = p.getAmountPaid();
+		double totalInterest = p.getTotalInterest();
+		double totalPenalty = 0.00;
+
+		int add = 0;
+		int tempDays = currentDay - trm;
+		int days = p.getDays() - tempDays;
+		if (offset > 0) {
+			days = totaldays - p.getDays();
+		}
+
+		if (days > 0) {
+			totalInterest = days * i;
+		}
+
+		listItem.put("day", trm);
+		listItem.put("interestPaid", "");
+		listItem.put("penalty", "");
+		listItem.put("payment", "");
+		listItem.put("partialPayment", "");
+		if ((currentDay - 1) == trm && days > 0) {
+			listItem = item;
+			add = 1;
+		}
+
+		if (add == 0) {
+			results.add(listItem);
+		}
+		amountPaid = 0;
+
+		//System.out.println("total interest " + totalInterest + " total penalty " + totalPenalty);
+		p.setTotalInterest( totalInterest );
+		p.setTotalPenalty( totalPenalty );
+		p.setAmountPaid( amountPaid );
+		update( p );
+
+		/*
+		java.util.Map listItem = new java.util.HashMap();
+		java.util.Map item = new java.util.HashMap();
+		if (results.size() > 0) {
+			item = (java.util.HashMap) results.get( results.size()-1 );
+		}
+		double amountPaid = p.getAmountPaid();
+		double balance = p.getBalance();
+		double totalInterest = p.getTotalInterest();
+		double totalPenalty = (td-1)*ap;
+		int currentDay = p.getCurrentDay();
+		int totaldays = java.lang.Integer.parseInt(lastPayment.get("totaldays").toString());
+		//System.out.println("current day = "+currentDay);
+		int tempDays = currentDay-trm;
+		//System.out.println("currentday " +  currentDay + "temp days " + tempDays);
+		//System.out.println("payment days " + p.getDays());
+		int days = p.getDays()-tempDays;
+		if( offset > 0 ) {
+			days = totaldays-p.getDays();
+			totalInterest = days*i;
+		}
+
+		double partialPayment = (ad*days)-(totalInterest+totalPenalty);
+		double tempBalance = balance - partialPayment;
+		//System.out.println("partial payment " + partialPayment + " temp balance " + tempBalance);
+		int add = 0;
+		listItem.put("day", "");
+		listItem.put("interestPaid", "");
+		listItem.put("penalty", "");
+		listItem.put("payment", "");
+		listItem.put("partialPayment", "");
+		if( offset > 0 ) 
+			amountPaid = amtPaid-(ad*days);
+		if( (currentDay-1) == trm ) {
+			if( !item.isEmpty() && item.get("partialPayment").toString() == "" ) {
+				listItem = item;
+				add = 1;
+			}
+		}
+		
+		//System.out.println("amount paid " + amountPaid + " temp balance " + tempBalance);
+		System.out.println("days " + days + " total days " + td);
+		if ( amountPaid >= tempBalance ) {
+			if( balance >= tempBalance ) {
+				listItem.put("partialPayment", balance);
+				if( add == 0 ) results.add( listItem );
+			}
+			else {
+				listItem = (java.util.HashMap) results.get( results.size()-1 );
+				listItem.put("partialPayment", balance);
+			}
+			amountPaid -= tempBalance;
+			balance = 0;
+		} else {
+			//System.out.println("days = "+days +" total days = "+td);
+			if( days == td ) {
+		//System.out.println("pass 1");
+				if( balance >= tempBalance ) {
+					balance -= amountPaid;
+					if( add == 0 ) results.add( listItem );
+				}
+			}
+			else if( days < td ) {
+		//System.out.println("pass 2");
+				totalInterest = td*i;
+				double a = (ad*td)-(totalInterest+totalPenalty);
+				balance -= a;
+				p.setTotalInterest( totalInterest );
+				p.setTotalPenalty( totalPenalty );
+				listItem.put("interestPaid", i);
+				results.add( listItem );
+			}
+			amountPaid = 0;
+		}
+		//System.out.println("results -> "+results);
+		System.out.println("total interest " + totalInterest + " total penalty " + totalPenalty);
+		p.setAmountPaid( amountPaid );
+		p.setBalance( balance );
+		update( p );
+		*/
+end
+
+rule "amountPaid greater than equal to totalPayment"
+	salience 19
+	when
+		Compromise( isCompromise == 0 )
+		r: References( isOffset == 0 && trialAndError == 0 && isOverdue == 0 && type != 'over', isFullPayment == false, tp: totalPayment, ap: absentPenalty, ad: amountDue, i: interest, trm: term, offset: isOffset, amtPaid: amountPaid, hasSunday: hasSunday, td: totalDays, noOfHolidays: noOfHolidays )
+		p: Payment( amountPaid >= tp && currentDay <= trm && balance > 0 && lackingInterest == 0 && lackingPenalty == 0 )
+	then
+		//System.out.println("passing 1..");
+		java.util.Map listItem = new java.util.HashMap();
+		double amountPaid = p.getAmountPaid();
+		double totalInterest = p.getTotalInterest();
+		double totalPenalty = p.getTotalPenalty();
+		int currentDay = p.getCurrentDay();
+		int days = p.getDays();
+		int add = offset;
+		listItem.put("interestPaid", i);
+		listItem.put("partialPayment", "");
+		listItem.put("penalty", "");
+		listItem.put("payment", "");
+		if( offset > 0 ) {
+			double paid = 0 ;
+			if( amountPaid == amtPaid ) {
+				java.util.Map item = new java.util.HashMap();
+				item.put("day", "");
+				item.put("partialPayment", "");
+				item.put("penalty", "");
+				item.put("payment", "");
+				item.put("interestPaid", i);
+				results.add( item );
+			}
+			paid = amountPaid-java.lang.Double.parseDouble(lastPayment.get("amountPaid").toString());
+			if( paid >= ad ) add = 0;
+			else amountPaid = 0;
+		}
+		if( add == 0 ) {
+			totalInterest += i;
+			listItem.put("day", currentDay);
+			results.add( listItem );
+			currentDay++;
+			amountPaid -= ad;
+			if( amountPaid < ad ) {		
+				//System.out.println("total days " + td);
+				//System.out.println("has sunday " + hasSunday);
+				if( td > 1 ) totalPenalty += (td-1)*ap;
+				if( hasSunday == "true" ) totalPenalty -= ap;
+				if( noOfHolidays > 0 ) totalPenalty -= (noOfHolidays*ap);
+				if( totalPenalty < 0 ) totalPenalty = 0;
+				amountPaid = 0;
+			} 
+			//if (days > td) amountPaid = 0;
+		}
+		//System.out.println("total penalty " + totalPenalty);
+		//System.out.println("total interest " + totalInterest);
+		p.setTotalPenalty( totalPenalty );
+		p.setTotalInterest( totalInterest );
+		p.setAmountPaid( amountPaid );
+		p.setDays( days+1 );
+		p.setCurrentDay( currentDay );
+		update( p );
+end
+
+rule "amountPaid less than totalPayment"
+	salience 18
+	when
+		Compromise( isCompromise == 0 )
+		References( trialAndError == 0 && isOffset == 0 && isOverdue == 0 && type != 'over', isFullPayment == false, tp: totalPayment, ad: amountDue, i: interest, td: totalDays, ap: absentPenalty, trm: term, hasSunday: hasSunday, noOfHolidays: noOfHolidays )
+		p: Payment( amountPaid < tp && amountPaid > i && balance > 0 && currentDay <= trm && lackingInterest == 0 && lackingPenalty == 0 )
+	then
+		//System.out.println("passing 2");
+		java.util.Map listItem = new java.util.HashMap();
+		double amountPaid = p.getAmountPaid();
+		int days = p.getDays();
+		double totalInterest = p.getTotalInterest();
+		double totalPenalty = p.getTotalPenalty();
+		int currentDay = p.getCurrentDay();
+		//if( days > td ) amountPaid = 0;
+		//System.out.println("amount paid->"+amountPaid+" amount due-> "+ad+" total days->"+td+" days->"+days+" no. of holidays->"+noOfHolidays);
+		if( amountPaid >= ad && days <= td ) {
+			amountPaid -= ad;
+			listItem.put("day", currentDay);
+			listItem.put("partialPayment", "");
+			listItem.put("interestPaid", i);
+			listItem.put("penalty", "");
+			listItem.put("payment", "");
+			results.add( listItem );
+			totalInterest+=i;
+			currentDay++;
+			if( amountPaid < ad ) amountPaid = 0;
+		} else {
+			//System.out.println("current day: "+currentDay);
+			//System.out.println("amount paid = "+amountPaid);
+			//System.out.println("amount due = "+ad);
+			if( amountPaid >= ad ) {
+				amountPaid -= ad;
+				listItem.put("day", currentDay);
+				listItem.put("partialPayment", "");
+				listItem.put("interestPaid", i);
+				listItem.put("penalty", "");
+				listItem.put("payment", "");
+				results.add( listItem );
+				totalInterest+=i;
+				currentDay++;
+				if (amountPaid < ad) amountPaid = 0;
+				//if (amountPaid < i) amountPaid = 0;
+			} else if( amountPaid > 0 ) 
+				amountPaid = 0;
+		}
+		if( amountPaid == 0 ) {
+			if( td > 1 ) totalPenalty += (td-1)*ap;
+			//System.out.println("total penalty1 = "+totalPenalty);
+			if( hasSunday == "true" ) totalPenalty -= ap;
+			//System.out.println("total penalty2 = "+totalPenalty);
+			if( noOfHolidays > 0 ) totalPenalty -= (noOfHolidays*ap);
+			//System.out.println("total penalty3 = "+totalPenalty);
+			if( totalPenalty < 0 ) totalPenalty = 0;
+
+			//System.out.println("total days " + td);
+			//System.out.println("total penalty " + totalPenalty);
+			//System.out.println("total interest " + totalInterest);
+			//System.out.println("total penalty4 = "+totalPenalty);
+		}
+		//if( days == td ) amountPaid = 0;;
+
+		p.setTotalPenalty( totalPenalty );
+		p.setTotalInterest( totalInterest );
+		p.setAmountPaid( amountPaid );
+		p.setDays( days+1 );
+		p.setCurrentDay( currentDay );
+		update( p );
+end
+
+rule "trial and error"
+	salience 17
+	when
+		Compromise( isCompromise == 0 )
+		r: References( trialAndError > 0 && isOffset == 0 && amountPaid == totalPayment, isFullPayment == false, ad: amountDue, td: totalDays, i: interest, t: trialAndError, ap: absentPenalty, ur: underpaymentRate, amtPaid: amountPaid, trm: term )
+		p: Payment( amountPaid > i && currentDay <= trm && balance > 0, lackingInterest == 0 && lackingPenalty == 0 )
+	then
+		//System.out.println("passing 3");
+		//System.out.println("type = " + r.getType());
+		java.util.Map listItem = new java.util.HashMap();
+		int days = p.getDays();
+		double amountPaid = p.getAmountPaid();
+		double totalInterest = p.getTotalInterest();
+		double totalPenalty = p.getTotalPenalty();
+		double lackingPenalty = p.getLackingPenalty();
+		double lackingInterest = p.getLackingInterest();
+		int currentDay = p.getCurrentDay();
+
+		//System.out.println("days = "+days);
+		//System.out.println("total days " + td);
+
+		double amt = 0.00;
+		if( days >= td ) {
+			amountPaid = amtPaid;
+			totalInterest = td*i;
+			if (totalInterest > amountPaid) {
+				lackingInterest = totalInterest-amountPaid;
+				totalInterest -= lackingInterest;
+				i -= lackingInterest;
+				amountPaid = 0;
+			} else {
+				amt = amountPaid - totalInterest;
+				if (amt >= 0) amountPaid -= totalInterest;
+				else {
+					lackingInterest += totalInterest - amountPaid;
+					totalInterest -= amountPaid;
+					amountPaid = 0;
+				} 
+			}
+			//System.out.println("total interest-> "+totalInterest+" lacking interest-> "+lackingInterest+" interest-> "+i);
+			totalPenalty += td*ap;
+			if (t == 2) totalPenalty -= ap;
+			totalPenalty += ((ad*td)-amtPaid)*ur;
+			//System.out.println("total penalty-> "+totalPenalty+" amount paid-> "+amtPaid+" amount due-> "+ad+" total days-> "+td+" underpayment rate-> "+ur);
+			if (totalPenalty > amountPaid) {
+				lackingPenalty = totalPenalty-amountPaid;
+				totalPenalty -= lackingPenalty;
+			} else {
+				amt = amountPaid - totalPenalty;
+				if (amt >= 0) amountPaid -= totalPenalty;
+				else {
+					lackingPenalty += totalPenalty - amountPaid;
+					totalPenalty -= amountPaid;
+					amountPaid = 0;
+				}
+			}
+			//System.out.println("total days = "+td+" amount due = "+ad);
+			amountPaid = 0;
+		}
+		if( days <= td ) {
+			listItem.put("day", currentDay);
+			listItem.put("interestPaid", i);
+			listItem.put("penalty", "");
+			listItem.put("payment", "");
+			listItem.put("partialPayment", "");
+			results.add( listItem );
+			currentDay++;
+		}
+		
+		p.setDays( days+1 );
+		p.setCurrentDay( currentDay );
+		p.setTotalPenalty( totalPenalty );
+		p.setTotalInterest( totalInterest );
+		p.setAmountPaid( amountPaid );
+		p.setLackingPenalty( lackingPenalty );
+		p.setLackingInterest( lackingInterest );
+		update( p );
+end
+
+rule "amountPaid less than equal to interest"
+	when
+		Compromise( isCompromise == 0 )
+		r: References( isOverdue == 0, isFullPayment == false, i: interest, td: totalDays, ap: absentPenalty, ur: underpaymentRate, ad: amountDue, trm: term, hasap: hasAbsentPenalty )
+		p: Payment( amountPaid <= i && amountPaid > 0 && balance > 0 && currentDay <= trm && lackingInterest == 0 && lackingPenalty == 0 )
+	then
+		//System.out.println("passing 4");
+		java.util.Map listItem = new java.util.HashMap();
+		double amountPaid = p.getAmountPaid();
+		double lackingInterest = p.getLackingInterest();
+		double lackingPenalty = p.getLackingPenalty();
+		double totalInterest = p.getTotalInterest();
+		int currentDay = p.getCurrentDay();
+		//Boolean hasap = r.getHasAbsentPenalty();
+		int days = p.getDays();
+		
+		//System.out.println("total days " + td);
+		//System.out.println("days " + days);
+		//System.out.println("amount due " + ad);
+		//System.out.println("has absent penalty " + hasap);
+		//System.out.println("amount paid " + amountPaid);
+		if(hasap == true) {
+			lackingPenalty += ap;
+		}
+		lackingPenalty += (ad-amountPaid)*ur;
+		
+		//System.out.println("lacking penalty " + lackingPenalty);
+
+		if( amountPaid == i ) {
+			listItem.put("day", currentDay);
+			listItem.put("interestPaid", i);
+			days++;
+			totalInterest+=i;
+		}
+		else {
+			listItem.put("day", "");
+			listItem.put("interestPaid", amountPaid);
+			lackingInterest = i-amountPaid;
+			totalInterest+=amountPaid;
+		}
+		
+		listItem.put("partialPayment", "");
+		listItem.put("penalty", "");
+		listItem.put("payment", "");
+		results.add( listItem );
+		
+		p.setDays( days );
+		p.setTotalInterest( totalInterest );
+		p.setLackingInterest( lackingInterest );
+		p.setLackingPenalty( lackingPenalty );
+		p.setAmountPaid( 0 );
+		update( p );
+end
+
+rule "amountPaid greater than 0 and lacking penalty greater than 0: payment made within term"
+	salience 20
+	when
+		Compromise( isCompromise == 0 )
+		References( isOffset == 0 && isOverdue == 0, isFullPayment == false, t: trialAndError, ap: absentPenalty, ur: underpaymentRate, amtPaid: amountPaid, ad: amountDue, i: interest, td: totalDays )
+		p: Payment( amountPaid > 0 && lackingPenalty > 0 && balance > 0 )
+	then
+		//System.out.println("passing 5");
+		java.util.Map listItem = new java.util.HashMap();
+		double amountPaid = p.getAmountPaid();
+		double lackingInterest = p.getLackingInterest();
+		double lackingPenalty = p.getLackingPenalty();
+		double totalInterest = 0;//p.getTotalInterest();
+		double totalPenalty = 0;//p.getTotalPenalty();
+		double underpayment = 0;
+		int days = p.getDays();
+		int currentDay = p.getCurrentDay();
+				
+		//System.out.println("lacking interest " + lackingInterest);
+		//System.out.println("lacking penalty " + lackingPenalty);
+		//System.out.println("amount paid " + amountPaid);
+
+		listItem.put("day" ,"");
+		listItem.put("interestPaid", "");		
+		listItem.put("partialPayment", "");
+		listItem.put("penalty", "");
+		listItem.put("payment", "");
+		if( amountPaid >= lackingInterest && lackingInterest > 0 ) {
+			amountPaid -= lackingInterest;
+			listItem.put("day", currentDay);
+			//currentDay++;
+			listItem.put("interestPaid", lackingInterest);
+			totalInterest += lackingInterest;
+			lackingInterest = 0;
+			//days++;
+		} else if( lackingInterest > 0 ) {
+			lackingInterest -= amountPaid;
+			underpayment = (ad-amountPaid)*ur;
+			lackingPenalty += underpayment+ap;
+			listItem.put("day", "");
+			listItem.put("interestPaid", amountPaid);
+			totalInterest += amountPaid;
+			amountPaid = 0;
+		}
+		
+		if (lackingInterest == 0) {
+			currentDay++;
+		}
+
+		if( amountPaid > 0 ) {
+			if( amountPaid >= lackingPenalty ) {
+				listItem.put("penalty", lackingPenalty);
+				amountPaid -= lackingPenalty;
+				totalPenalty += lackingPenalty;
+				lackingPenalty = 0;
+
+			} else {
+				listItem.put("penalty", amountPaid);
+				lackingPenalty -= amountPaid;
+				totalPenalty += amountPaid;
+				amountPaid = 0;
+
+			}
+		}
+
+		//if (amountPaid < 0) amountPaid = 0;
+		
+		//amountPaid = 0;
+
+		if( amountPaid > 0 ) {
+			//double a = ap+(ad-amtPaid)*ur;
+			//System.out.println("a: "+a);
+			/*if( a > amountPaid ) {
+				double lastPaymentLackingInterest = java.lang.Double.parseDouble(lastPayment.get("lackingInterest").toString());
+				if( lastPaymentLackingInterest > 0 ) {
+					lackingPenalty = a-amountPaid;
+					totalPenalty+=amountPaid;
+				}
+				amountPaid = 0;
+			}
+			if( amountPaid < i && amountPaid > 0 ) {
+				totalPenalty+=a;
+				amountPaid = 0;
+			}*/
+		}
+
+		if (p.getLackingInterest() > 0) {
+			results.add( listItem );
+		} else if (p.getLackingInterest() == 0 && p.getLackingPenalty() > 0) {
+			results.add( listItem );
+		}
+
+		//System.out.println("amount paid " + amountPaid);
+		//System.out.println("amount due " + ad);
+		//System.out.println("amtpaid " + amtPaid);
+		if (amountPaid < i) {
+			amountPaid = 0;
+			if (lackingInterest == 0) {
+				days++;
+			}
+		 } else {
+		 	double intrst = (td * i);
+		 	underpayment = ((td * ad) - amtPaid) * ur;
+		 	double absentpenalty = (td * ap);
+		 	if (t == 2 || t == 0) absentpenalty -= ap;
+		 	double amt = (intrst + absentpenalty + underpayment);
+		 	if (amountPaid >= amt) {
+		 		results.remove(listItem);
+		 	} else {
+		 		amountPaid = 0;
+		 	}
+		 }
+
+		/* else if (amountPaid >= i) {
+			results.remove(listItem);
+		}*/
+		
+		p.setAmountPaid( amountPaid );
+		p.setDays( days );
+		p.setCurrentDay( currentDay );
+		p.setLackingInterest( lackingInterest );
+		p.setLackingPenalty( lackingPenalty );
+		p.setTotalInterest( totalInterest );
+		p.setTotalPenalty( totalPenalty );
+		update( p );
+end
+
+/*********************************************************************/
+
+/**********************************************************************/
+/*Payments made beyond maturity date*/
+
+rule "amountPaid greater than 0 and lacking penalty greater than 0: payment made beyond maturity"
+	salience 10
+	when
+		Compromise( isCompromise == 0 )
+		References( isOffset == 0 && isOverdue > 0, isFullPayment == false, amtpaid: amountPaid, op: overduePenalty, i: interest, tae: trialAndError )
+		p: Payment( amountPaid > 0 && lackingPenalty > 0 && balance > 0 )
+	then
+		//System.out.println("passing 6");
+		java.util.Map listItem = new java.util.HashMap();
+		double amountPaid = p.getAmountPaid();
+		double lackingInterest = p.getLackingInterest();
+		double lackingPenalty = p.getLackingPenalty();
+		double totalInterest = p.getTotalInterest();
+		double totalPenalty = p.getTotalPenalty();
+		int currentDay = p.getCurrentDay();
+		int days = p.getDays();
+
+		if (lackingInterest == 0 && tae == 0) {
+			days++;
+		}
+		
+		listItem.put("day", "");
+		listItem.put("interestPaid", "");
+		listItem.put("penalty", "");
+		listItem.put("partialPayment", "");
+		listItem.put("payment", "");
+		if( amountPaid >= lackingInterest && lackingInterest > 0 ) {
+			totalInterest += lackingInterest;
+			amountPaid -= lackingInterest;
+			listItem.put("day", currentDay);
+			listItem.put("interestPaid", lackingInterest);
+			lackingInterest = 0;
+			//currentDay++;
+		}
+		else if( lackingInterest > 0 ) {
+			totalInterest += amountPaid;
+			lackingInterest -= amountPaid;
+			listItem.put("interestPaid", amountPaid);
+			amountPaid = 0;
+		}
+		if (lackingInterest == 0) {
+			currentDay++;
+		}
+		
+		if( amountPaid > 0 ) {
+			if( amountPaid >= lackingPenalty ) {
+				totalPenalty += lackingPenalty;
+				amountPaid -= lackingPenalty;
+				listItem.put("penalty", lackingPenalty);
+				lackingPenalty = 0;
+			}
+			else {
+				totalPenalty += amountPaid;
+				lackingPenalty -= amountPaid;
+				listItem.put("penalty", amountPaid);
+				amountPaid = 0;
+			}
+		}
+		
+
+		results.add( listItem );
+		if( amountPaid < (i+op) ) {
+			amountPaid = 0;
+		}
+
+		if (amountPaid == 0) {
+			java.util.Map item = new java.util.HashMap();
+			item.put("day", currentDay);
+
+			double amt = amtpaid - (totalInterest + totalPenalty);
+			if (amt > 0) {
+				if (amt >= i) {
+					item.put("interestPaid", i);
+					currentDay++;
+					totalInterest += i;
+					amt -= i;
+				} else if (amt < i) {
+					item.put("interestPaid", amt);
+					totalInterest += amt;
+					i -= amt;
+					lackingInterest = i;
+					lackingPenalty = op;
+					//p.setLackingInterest(i);
+					//p.setLackingPenalty(op);
+					//floating.put("lackingInterest", i);
+					//floating.put("lackingPenalty", op);
+					amt = 0;
+				}
+			}
+
+			if (amt > 0) {				
+				if (amt >= op) {
+					item.put("penalty", op);
+					totalPenalty += op;
+					amt -= op;
+				} else if (amt < op) {
+					item.put("penalty", amt);
+					totalPenalty += amt;
+					op -= amt;
+					//floating.put("lackingPenalty", op);
+					lackingPenalty = op;
+					//p.setLackingPenalty(op);
+					amt = 0;
+				}	
+			}
+
+			results.add(item);
+		}
+
+		//System.out.println("total interest " + totalInterest);
+		//System.out.println("total penalty " + totalPenalty);
+
+		//System.out.println("passing 6.1");
+		p.setDays(days);
+		p.setAmountPaid( amountPaid );
+		p.setCurrentDay( currentDay );
+		p.setTotalInterest( totalInterest );
+		p.setTotalPenalty( totalPenalty );
+		p.setLackingInterest( lackingInterest );
+		p.setLackingPenalty( lackingPenalty );
+		update( p );
+end
+
+rule "amountPaid greater than equal to interest+overdue penalty"
+	salience 9
+	when
+		Compromise( isCompromise == 0 )
+		References( isOffset == 0 && isOverdue > 0, isFullPayment == false, amtpaid: amountPaid, i: interest, op: overduePenalty, td: totalDays, tae: trialAndError )
+		p: Payment( amountPaid >= (i+op) && balance > 0 )
+	then
+		//System.out.println("passing 7");
+		java.util.Map listItem = new java.util.HashMap();
+		double balance = p.getBalance();
+		double amountPaid = p.getAmountPaid();
+		double totalInterest = p.getTotalInterest();
+		double totalPenalty = p.getTotalPenalty();
+		double lackingInterest = p.getLackingInterest();
+		double lackingPenalty = p.getLackingPenalty();
+		int days = p.getDays();
+		int currentDay = p.getCurrentDay();
+		
+		//System.out.println("days " + days);
+		//System.out.println("total days " + td);
+		//System.out.println("trial and error " + tae);
+
+		if (days <= td) {
+			listItem.put("day", currentDay);
+			listItem.put("partialPayment", "");
+			listItem.put("interestPaid", i);
+			listItem.put("penalty", op);
+			listItem.put("payment", "");
+			results.add( listItem );
+
+			totalInterest+=i;
+			totalPenalty+=op;
+			days++;
+			currentDay++;
+			if (days > td) amountPaid = 0;
+
+		} else {
+			amountPaid = 0;
+		}
+
+		if (amountPaid == 0 && tae == 1) {
+			//System.out.println("total days " + td);
+			//System.out.println("amount paid " + amtpaid);
+			//System.out.println("total interest " + totalInterest);
+			//System.out.println("total penalty " + totalPenalty);
+
+			java.util.Map item = new java.util.HashMap();
+			double amt = amtpaid - (totalInterest + totalPenalty);
+			item.put("day", currentDay);
+			//System.out.println("amount " + amt);
+			if (amt > 0) {
+				if (amt >= i) {
+					item.put("interestPaid", i);
+					currentDay++;
+					totalInterest += i;
+					amt -= i;
+				} else if (amt < i) {
+					item.put("interestPaid", amt);
+					totalInterest += amt;
+					i -= amt;
+					p.setLackingInterest(i);
+					p.setLackingPenalty(op);
+					//floating.put("lackingInterest", i);
+					//floating.put("lackingPenalty", op);
+					amt = 0;
+				}
+			}
+
+			if (amt > 0) {				
+				if (amt >= op) {
+					item.put("penalty", op);
+					totalPenalty += op;
+					amt -= op;
+				} else if (amt < op) {
+					item.put("penalty", amt);
+					totalPenalty += amt;
+					op -= amt;
+					//floating.put("lackingPenalty", op);
+					p.setLackingPenalty(op);
+					amt = 0;
+				}	
+			}
+			results.add(item);
+		}
+		/*if( amountPaid >= balance ) {
+			double tempAmountPaid = amountPaid-balance;
+			double tempDeductions = (i+op)*td;
+			listItem.put("interestPaid", i);
+			listItem.put("penalty", op);
+			if( tempAmountPaid >= tempDeductions ) {
+				if( days == td ) {
+					amountPaid-=balance;
+					amountPaid-=(i+op)*td;
+					listItem.put("partialPayment", balance);
+					balance = 0;
+				}
+			}
+			else {
+				amountPaid-=(i+op);
+				if( days == td ) 
+					amountPaid = 0;
+			}
+		}
+		else {*/
+			//amountPaid-=(i+op);
+			
+			//if( days == td ) 
+			//	amountPaid = 0;
+		//}
+		
+
+		p.setAmountPaid( amountPaid );
+		p.setDays( days );
+		p.setCurrentDay( currentDay );
+		p.setBalance( balance );
+		p.setTotalInterest( totalInterest );
+		p.setTotalPenalty( totalPenalty );
+		update( p );
+end
+
+rule "amountPaid less than interest+overdue penalty"
+	salience 8
+	when
+		Compromise( isCompromise == 0 )
+		References( isOffset == 0 && isOverdue > 0, isFullPayment == false, i: interest, op: overduePenalty, ap: amountPaid )
+		p: Payment( amountPaid < (i+op) && amountPaid > 0 && balance > 0 && lackingInterest == 0 && lackingPenalty == 0 )
+	then
+		//System.out.println("passing 8");
+		java.util.Map listItem = new java.util.HashMap();
+		double amountPaid = p.getAmountPaid();
+		double lackingInterest = p.getLackingInterest();
+		double lackingPenalty = p.getLackingPenalty();
+		double totalInterest = p.getTotalInterest();
+		double totalPenalty = p.getTotalPenalty();
+		int currentDay = p.getCurrentDay();
+		
+		listItem.put("day", "");
+		listItem.put("interestPaid", "");
+		listItem.put("penalty", "");
+		listItem.put("payment", "");
+		listItem.put("partialPayment", "");
+
+		//System.out.println("amount paid " + amountPaid);
+		if( amountPaid >= i ) {
+			amountPaid-=i;
+			listItem.put("day", currentDay);
+			listItem.put("interestPaid", i);
+			totalInterest+=i;
+			currentDay++;
+		}
+		else if (amountPaid > 0) {
+			lackingInterest = i-amountPaid;
+			listItem.put("interestPaid", amountPaid);
+			totalInterest+=amountPaid;
+			lackingPenalty = op;
+			amountPaid = 0;
+		}
+		
+		if( amountPaid > 0 ) {
+			if( amountPaid >= op ) {
+				amountPaid-=op;
+				listItem.put("penalty", op);
+				totalPenalty+=op;
+			}
+			else {
+				lackingPenalty = op-amountPaid;
+				listItem.put("penalty", amountPaid);
+				totalPenalty+=amountPaid;
+				amountPaid = 0;
+			}
+		} else {
+			lackingPenalty = op;
+			amountPaid = 0;
+		}
+//		if( ap < (i+op) )
+			results.add( listItem );
+		if (ap < (i+op)) amountPaid = 0;
+		
+		p.setAmountPaid( amountPaid );
+		p.setLackingInterest( lackingInterest );
+		p.setLackingPenalty( lackingPenalty );
+		p.setTotalInterest( totalInterest );
+		p.setTotalPenalty( totalPenalty );
+		p.setCurrentDay( currentDay );
+		update( p );
+end
+
+/**********************************************************************/
+
+rule "amountPaid greater than 0 and balance equal to 0"
+	when
+		Compromise( isCompromise == 0 )
+		References( isFullPayment == false, i: interest )
+		p: Payment( amountPaid > 0 && balance == 0 )
+	then
+		//System.out.println("passing 9");
+		java.util.Map listItem = new java.util.HashMap();
+		double amountPaid = p.getAmountPaid();
+		int currentDay = p.getCurrentDay();
+		
+		listItem.put("day", currentDay);
+		if( amountPaid >= i ) {
+			listItem.put("interestPaid", i);
+			amountPaid-=i;
+		}
+		else {
+			listItem.put("interestPaid", amountPaid);
+			amountPaid = 0;
+		}
+		currentDay++;
+		listItem.put("partialPayment", "");
+		listItem.put("penalty", "");
+		listItem.put("payment", "");
+		results.add( listItem );
+		
+		p.setAmountPaid( amountPaid );
+		p.setCurrentDay( currentDay );
+		update( p );
+end
+
+rule "offset last payment within term, trialAndError equal to 0"
+	salience 29
+	when
+		Compromise( isCompromise == 0 )
+		References( trialAndError == 0 && isOffset > 0 && isOverdue == 0, isFullPayment == false, ptype: type, trm: term, i: interest, ad: amountDue, td: totalDays, ap: absentPenalty, tp: totalPayment, ovramt: overpaymentAmt, hassunday: hasSunday, noofholidays: noOfHolidays )
+		p: Payment( amountPaid > i && balance > 0 && currentDay <= trm )
+	then
+		java.util.Map listItem = new java.util.HashMap();
+		java.util.Map item = new java.util.HashMap();
+		//System.out.println("offset last payment0");
+		double amountPaid = p.getAmountPaid();
+		double totalInterest = 0;//p.getTotalInterest();
+		double totalPenalty = 0;
+		int currentDay = p.getCurrentDay();
+		int days = java.lang.Integer.parseInt(lastPayment.get("days").toString());
+		int totaldays = java.lang.Integer.parseInt(lastPayment.get("totaldays").toString());
+		int lastDay = java.lang.Integer.parseInt(lastPayment.get("currentDay").toString());
+		double lackingInterest = p.getLackingInterest();
+		double lackingPenalty = p.getLackingPenalty();
+		
+		listItem.put("day", currentDay);
+		listItem.put("partialPayment", "");
+		listItem.put("penalty", "");
+		listItem.put("payment", "");
+		listItem.put("interestPaid", i);
+		//System.out.println("last day: " + lastDay + " current day: " + currentDay);
+		//System.out.println("total days " + td);
+		//System.out.println("days: " + days + " total days: " + totaldays);
+		//System.out.println("no of holidays: " + noofholidays);
+		if( (currentDay-1) == lastDay && days <= totaldays ) {
+			item.put("day", lastDay);
+			item.put("partialPayment", "");
+			item.put("balance", "");
+			item.put("interestPaid", i);
+			item.put("payment", "");
+			item.put("penalty", "");
+			results.add( item );
+			lastPayment.put("currentDay", 0);
+			//days--;
+		}
+		else if( days < totaldays ) {
+			currentDay++;
+			days++;
+			results.add( listItem );
+		}
+		else if( days >= totaldays ) {
+			Boolean isLastDay = false;
+			if( (currentDay-1) == lastDay ) isLastDay = true;
+			if (isLastDay == true ) {
+				listItem.put("day", lastDay);
+				lastPayment.put("currentDay", 0);
+			}
+			if( days == totaldays ) currentDay++;
+			int xdays = p.getDays();
+			//System.out.println("is last day " + isLastDay);
+			//System.out.println("xdays " + xdays);
+			//System.out.println("list item " + listItem);
+			double cp = amountPaid;
+			
+			//System.out.println("cp: " + cp);
+			//if (lastPayment.containsKey("totalPreviousPayments")) {
+				//System.out.println(lastPayment.get("totalPreviousPayments").toString());
+			//	cp = Double.parseDouble(lastPayment.get("totalPreviousPayments").toString());
+			//	cp = amountPaid - cp;
+			//}
+			double amt = (xdays * ad) - cp;
+			if (ptype.toLowerCase().equals("over")) {
+				amt = (xdays * ovramt) - cp;
+			}
+			//System.out.println("cp: " + cp + " amt: " + amt);
+			if (amt > 0) {
+				days = xdays;
+				amountPaid = 0;
+			} else if (amt <= 0) {
+				if (isLastDay == false && days != totaldays) currentDay++;
+				if (isLastDay == true && amt == 0) { 
+					days = xdays;
+					amountPaid = 0;
+				} else {
+					xdays++;
+				}
+				p.setDays(xdays);
+				listItem.put("interestPaid", i);
+				results.add( listItem );
+			}
+
+			/*
+			if (amt > 0 ) {
+				//days = totaldays;
+				days = xdays;
+				amountPaid = 0;
+			} else if (amt <= 0) {
+				if (isLastDay == false && days != totaldays) currentDay++;
+				if (isLastDay == true && amt == 0) { /* do nothing */ /*}
+				else {
+					xdays++;
+				}
+				p.setDays(xdays);
+				results.add( listItem );
+			}*/
+			/*double amt = (amountPaid - tp);
+			if (amt <= 0) {
+				amountPaid = 0;
+			} else {
+				amountPaid -= tp;
+				currentDay++;
+			}*/
+			//amountPaid = 0;
+		}
+		//System.out.println("current day " + currentDay);
+		if( amountPaid == 0 ) {
+			//System.out.println("amount paid " + p.getAmountPaid());
+			//System.out.println("total payment " + tp);
+			//System.out.println("amount due " + ad);
+			if( td > 1 && p.getAmountPaid() <= tp) {
+				int xtd = (td-1);
+				if (hassunday == "true") xtd--;
+				if (noofholidays > 0) xtd -= noofholidays;
+				if (xtd < 0) xtd = 0;
+				totalPenalty = (ap*xtd);
+			} else if (p.getAmountPaid() > tp) {
+				Double d = (tp/ad);
+				int xtd = (d.intValue() - 1);
+				//System.out.println("xtd " + xtd);
+				if (hassunday == "true") xtd--;
+				if (noofholidays > 0) xtd -= noofholidays;
+				if (xtd < 0) xtd = 0;
+				totalPenalty = ( ap * xtd);
+			}
+
+			if( lackingInterest > 0 ) {
+				totalInterest = ((td-1)*i)+lackingInterest;
+			} else {
+				totalInterest = (td*i);
+			}
+
+			if( lackingPenalty > 0 )
+				totalPenalty += lackingPenalty;
+
+			double prevPenalty = 0;
+			if (lastPayment.containsKey("previousPenalty")) {
+				prevPenalty = java.lang.Double.parseDouble(lastPayment.get("previousPenalty").toString());
+			}
+			if (prevPenalty > 0) {
+				totalPenalty += prevPenalty;
+			}
+
+			/*
+			System.out.println("td: " + td + " amount paid: " + p.getAmountPaid() + " ad: " + ad);
+			System.out.println("lacking penalty " + lackingPenalty);
+			System.out.println("previous penalty " + prevPenalty);
+			System.out.println("total penalty " + totalPenalty);
+			*/
+
+			lackingInterest = 0;
+			lackingPenalty = 0;
+			p.setDays( days+1 );
+			p.setLackingInterest( lackingInterest );
+			p.setLackingPenalty( lackingPenalty );
+		}
+		lastPayment.put("days", days);
+		p.setAmountPaid( amountPaid );
+		p.setTotalInterest( totalInterest );
+		p.setTotalPenalty( totalPenalty );
+		p.setCurrentDay( currentDay );
+		update( p );
+end
+
+rule "offset last payment and payment made within term, trialAndError greater than 0"
+	salience 28
+	when
+		Compromise( isCompromise == 0 )
+		References( trialAndError > 0 && isOffset > 0 && isOverdue == 0, isFullPayment == false, td: totalDays, i: interest, ap: absentPenalty, ur: underpaymentRate, ad: amountDue, te: trialAndError, trm: term, amtPaid: amountPaid )
+		p: Payment( amountPaid > i && balance > 0 && currentDay <= trm )
+	then
+		java.util.Map listItem = new java.util.HashMap();
+		java.util.Map item = new java.util.HashMap();
+		//System.out.println("passing offset last payment1");
+		int currentDay = p.getCurrentDay();
+		double amountPaid = p.getAmountPaid();
+		double totalInterest = 0;//p.getTotalInterest();
+		double totalPenalty = 0;//p.getTotalPenalty();
+		double lackingInterest = p.getLackingInterest();
+		double lackingPenalty = p.getLackingPenalty();
+		int days = java.lang.Integer.parseInt(lastPayment.get("days").toString());
+		int totaldays = java.lang.Integer.parseInt(lastPayment.get("totaldays").toString());
+		int lastDay = java.lang.Integer.parseInt(lastPayment.get("currentDay").toString());
+		listItem.put("day", currentDay);
+		listItem.put("interestPaid", i);
+		listItem.put("partialPayment", "");
+		listItem.put("penalty", "");
+		listItem.put("payment", "");
+
+		if (lackingInterest > 0 && amountPaid > 0) {
+			if (amountPaid >= lackingInterest) {
+				amountPaid -= lackingInterest;
+				totalInterest += lackingInterest;
+				listItem.put("interestPaid", lackingInterest);
+				lackingInterest = 0;
+			} else if (amountPaid < lackingInterest) {
+				lackingInterest -= amountPaid;
+				totalInterest += amountPaid;
+				listItem.put("interestPaid", amountPaid);
+				amountPaid = 0;
+			}
+		}
+		
+		if (lackingPenalty > 0 && amountPaid > 0) {
+			if (amountPaid >= lackingPenalty) {
+				amountPaid -= lackingPenalty;
+				totalPenalty += lackingPenalty;
+				lackingPenalty = 0;
+			} else if (amountPaid < lackingPenalty) {
+				lackingPenalty -= amountPaid;
+				totalPenalty += amountPaid;
+				amountPaid = 0;
+			}
+		}
+		
+		if( (currentDay-1) == lastDay && days <= td ) {
+			item.put("day", lastDay);
+			item.put("partialPayment", "");
+			if( (td-1) == 1 ) item.put("interestPaid", listItem.get("interestPaid"));
+			else item.put("interestPaid", i);
+			item.put("payment", "");
+			item.put("balance", "");
+			results.add( item );
+			lastPayment.put("currentDay", 0);
+		} else if( days < td ) {
+			days++;
+			if( days > 1 ) listItem.put("interestPaid", i);
+			currentDay++;
+			results.add( listItem );
+		} else if( days >= td ) {			
+			Boolean isLastDay = false;
+			if( (currentDay-1) == lastDay ) isLastDay = true;
+			if (isLastDay == true ) {
+				listItem.put("day", lastDay);
+				lastPayment.put("currentDay", 0);
+			}
+
+			//System.out.println("is last day " + isLastDay);
+
+			if (totalInterest == 0) {
+				totalInterest = td * i;
+			} else {
+				totalInterest = (td-1) * i;
+			}
+
+			double underpayment = ((ad * td) - amtPaid) * ur;
+			double absentPenalty = ap * td;
+			if (te == 2) absentPenalty -= ap;
+
+			if (amountPaid < (underpayment + absentPenalty)) {
+				lackingPenalty = (underpayment + absentPenalty) - amountPaid;
+				totalPenalty += amountPaid;
+			} else {
+				totalPenalty += (underpayment + absentPenalty);
+			}
+			amountPaid = 0;
+			if( (currentDay-1) == lastDay ) listItem.put("day", lastDay);
+			else currentDay++;
+			
+			days = td;
+			if( days == td && td > 1 ) 
+				listItem.put("interestPaid", i);
+
+			//System.out.println("list item " + listItem);
+			results.add( listItem );
+			p.setDays( days );
+			p.setLackingInterest( lackingInterest );
+			p.setLackingPenalty( lackingPenalty );
+			p.setTotalInterest( totalInterest );
+			p.setTotalPenalty( totalPenalty );
+			/*
+			if( totalInterest == 0 ) totalInterest = td*i;
+			else totalInterest+=((td-1)*i);
+			double underpayment = ((ad*td)-amtPaid)*ur;
+			double absentPenalty = (ap*td);
+
+			if( te == 2 ) absentPenalty-=ap;
+			//System.out.println("total penalty 1 " + totalPenalty + " underpayment " + underpayment + " absent penalty " + absentPenalty);
+			if( amountPaid < (underpayment+absentPenalty) ) {
+				lackingPenalty = (underpayment+absentPenalty)-amountPaid;
+				totalPenalty+=amountPaid;
+			}
+			else totalPenalty+=(absentPenalty+underpayment);
+			//System.out.println("total penalty 2 " + totalPenalty);
+			amountPaid = 0;
+			if( (currentDay-1) == lastDay ) listItem.put("day", lastDay);
+			else currentDay++;
+			
+			days = td;
+			if( days == td && td > 1 ) 
+				listItem.put("interestPaid", i);
+
+			//System.out.println("list item " + listItem);
+			results.add( listItem );
+			p.setDays( days );
+			p.setLackingInterest( lackingInterest );
+			p.setLackingPenalty( lackingPenalty );
+			p.setTotalInterest( totalInterest );
+			p.setTotalPenalty( totalPenalty );
+			*/
+		}
+		
+		lastPayment.put("days", days);
+		p.setCurrentDay( currentDay );
+		p.setAmountPaid( amountPaid );
+		update( p );
+end
+
+rule "offset last payment and payment made beyond maturity"
+	when
+		Compromise( isCompromise == 0 )
+		References( isOffset > 0 && isOverdue > 0, isFullPayment == false, amtpaid: amountPaid, td: totalDays, i: interest, op: overduePenalty, tae: trialAndError )
+		p: Payment( amountPaid > 0 && balance > 0 )
+	then
+		//System.out.println("passing 16");
+		java.util.Map listItem = new java.util.HashMap();
+		//int days = p.getDays();
+		int currentDay = p.getCurrentDay();
+		int lastDay = currentDay;
+		if (lastPayment.containsKey("currentDay")) {
+			lastDay = java.lang.Integer.parseInt(lastPayment.get("currentDay").toString());
+		}
+		//int xdays = Integer.parseInt(lastPayment.get("days").toString());
+		int days = p.getDays();//Integer.parseInt(lastPayment.get("days").toString());
+		double lackinginterest = p.getLackingInterest();
+		double lackingpenalty = p.getLackingPenalty();
+
+		double amountPaid = p.getAmountPaid();
+		double totalInterest = p.getTotalInterest();
+		double totalPenalty = p.getTotalPenalty();
+
+		//System.out.println("last payment = "+lastPayment);
+		//System.out.println("amount paid = "+p.getAmountPaid());
+		//System.out.println("total days = "+td);
+		//System.out.println("last day = "+lastDay);
+		//System.out.println("days = " + days);
+		//System.out.println("xdays = " + xdays);
+		//System.out.println("current day " + currentDay);
+
+		listItem.put("day", currentDay);
+		listItem.put("interestPaid", i);
+		listItem.put("penalty", op);
+
+		Boolean hasLackingInterest = false;
+		Boolean hasLackingPenalty = false;
+
+		if ((currentDay-1) == lastDay) {
+			listItem.put("day", lastDay);
+			if (lackinginterest > 0 && amountPaid > 0) {
+				hasLackingInterest = true;
+				if (amountPaid >= lackinginterest) {
+					listItem.put("interestPaid", lackinginterest);
+					amountPaid -= lackinginterest;
+				} else if (amountPaid < lackinginterest) {
+					listItem.put("interestPaid", amountPaid);
+					listItem.remove("penalty");
+					listItem.remove("day");
+					lackinginterest -= amountPaid;
+					floating.put("lackingInterest", lackinginterest);
+					amountPaid = 0;
+				}
+			}
+			if (lackingpenalty > 0 && amountPaid > 0) {
+				hasLackingPenalty = true;
+				if (lackinginterest == 0) listItem.remove("interestPaid");
+				if (amountPaid >= lackingpenalty) {
+					listItem.put("penalty", lackingpenalty);
+					amountPaid -= lackingpenalty;
+				} else if (amountPaid < lackingpenalty) {
+					listItem.put("penalty", amountPaid);
+					amountPaid -= lackingpenalty;
+					floating.put("lackingPenalty", lackingpenalty);
+					amountPaid = 0;
+				}
+			} 
+			results.add(listItem);
+			lastPayment.put("currentDay", 0);
+		} else if (days <= td) {
+			days++;
+			currentDay++;
+			results.add(listItem);
+		} else {
+			amountPaid = 0;
+		}
+
+		if (amountPaid < 0) amountPaid = 0;
+		if (amountPaid == 0) {
+			totalInterest = (td * i) + lackinginterest;
+			if (hasLackingInterest == true) {
+				totalInterest = java.lang.Double.parseDouble(listItem.get("interestPaid").toString());
+			}
+
+			totalPenalty = (td * op) + lackingpenalty;
+			if (hasLackingPenalty == true) {
+				totalPenalty = java.lang.Double.parseDouble(listItem.get("penalty").toString());
+			}
+
+			p.setTotalInterest(totalInterest);
+			p.setTotalPenalty(totalPenalty);
+			p.setAmountPaid(amountPaid);
+		}
+
+		if (amountPaid == 0 && tae == 1 && hasLackingInterest == false && hasLackingPenalty == false) {
+			java.util.Map item = new java.util.HashMap();
+			double amt = amtpaid - (totalInterest + totalPenalty);
+			item.put("day", currentDay);
+			//System.out.println("amount " + amt);
+			if (amt > 0) {
+				if (amt >= i) {
+					item.put("interestPaid", i);
+					currentDay++;
+					totalInterest += i;
+					amt -= i;
+				} else if (amt < i) {
+					item.put("interestPaid", amt);
+					totalInterest += amt;
+					i -= amt;
+					p.setLackingInterest(i);
+					p.setLackingPenalty(op);
+					//floating.put("lackingInterest", i);
+					//floating.put("lackingPenalty", op);
+					amt = 0;
+				}
+			}
+
+			if (amt > 0) {				
+				if (amt >= op) {
+					item.put("penalty", op);
+					totalPenalty += op;
+					amt -= op;
+				} else if (amt < op) {
+					item.put("penalty", amt);
+					totalPenalty += amt;
+					op -= amt;
+					//floating.put("lackingPenalty", op);
+					p.setLackingPenalty(op);
+					amt = 0;
+				}	
+			}
+			if (totalInterest > 0) p.setTotalInterest(totalInterest);
+			if (totalPenalty > 0) p.setTotalPenalty(totalPenalty);
+			results.add(item);
+		}
+		/*
+		if ((currentDay-1) == lastDay) {
+			listItem.put("day", lastDay);
+			listItem.put("interestPaid", i);
+			if (lackingInterest > 0) listItem.put("interestPaid", lackingInterest);
+			listItem.put("penalty", op);
+			if (lackingPenalty > 0) listItem.put("penalty", lackingPenalty);
+			results.add(listItem);
+			lastPayment.put("currentDay", 0);
+		} else if( days <= td ) {
+			listItem.put("day", currentDay);
+			listItem.put("interestPaid", i);
+			listItem.put("penalty", op);
+			listItem.put("partialPayment", "");
+			listItem.put("payment", "");
+			results.add( listItem );
+			currentDay++;
+			days++;
+		}
+		if( days >= td ) {
+			if (xdays < 0) xdays = 0;
+			double totalInterest = ((td + xdays - 1) * i);
+			if (lackingInterest > 0) {
+				totalInterest += lackingInterest;
+			} else {
+				totalInterest += i;
+			}
+			double totalPenalty = ((td + xdays - 1) * op);
+			if (lackingPenalty > 0) {
+				totalPenalty += lackingPenalty;
+			} else {
+				totalPenalty += op;
+			}
+			
+			p.setTotalInterest( totalInterest );
+			p.setTotalPenalty( totalPenalty );
+			p.setLackingInterest( 0 );
+			p.setLackingPenalty( 0 );
+			p.setAmountPaid( 0 );
+		}
+		*/
+		
+		p.setCurrentDay( currentDay );
+		p.setDays( days);
+		update( p );
+end
+
+rule "compromise: fixed amount"
+	salience 30
+	when
+		c: Compromise( isCompromise > 0 && isFix == true )
+	then
+		//System.out.println("passing 11");
+		java.util.Map listItem = new java.util.HashMap();
+		double balance = c.getBalance();
+		double interest = c.getInterest();
+		double amountPaid = c.getAmountPaid();
+		
+		/*
+		System.out.println("interest " + interest);
+		System.out.println("balance " + balance);
+		System.out.println("before posting");
+		*/
+
+		listItem.put("payment", amountPaid);
+		/*if( interest > 0 ) {
+			if( amountPaid >= interest ) {
+				amountPaid -= interest;
+				listItem.put("interestPaid", interest);
+				interest = 0;
+			}
+			else {
+				interest -= amountPaid;
+				listItem.put("interestPaid", amountPaid);
+				//listItem.put("penalty", (interest * -1));
+				listItem.put("balance", balance);
+				amountPaid = 0;
+			}
+		}*/
+		if( amountPaid > 0 ) {
+			if( amountPaid >= balance ) {
+				//System.out.println("passing 1");
+				amountPaid -= balance;
+				listItem.put("partialPayment", balance);
+				balance = 0;
+				listItem.put("balance", balance);
+			}
+			else {
+				balance -= amountPaid;
+				listItem.put("partialPayment", amountPaid);
+				listItem.put("balance", balance);
+			}
+		}
+		/*
+		System.out.println("interest " + interest);
+		System.out.println("balance " + balance);
+		System.out.println("amount paid " + amountPaid);
+		System.out.println("detail " + listItem);
+		*/
+		results.add( listItem );
+		floating.put("balance", balance);
+		floating.put("interestPaid", interest);
+end
+
+rule "compromise: waived interest and penalty"
+	salience 30
+	when
+		References(isproceed: isProceed)
+		c: Compromise( isCompromise > 0 && isFix == false, nointerest: isWaiveInterest, nopenalty: isWaivePenalty )
+		p: Payment()
+	then
+		java.util.Map listItem = new java.util.HashMap();
+		double partialPayment = c.getAmountPaid();
+
+		double lackinginterest = p.getLackingInterest();
+		double lackingpenalty = p.getLackingPenalty();
+
+		double penalty = c.getPenalty();
+		double interest = c.getInterest();
+
+		int currentDay = p.getCurrentDay();
+		int days = p.getDays();
+		/*
+		if (lackinginterest > 0) {
+			if (partialPayment >= lackinginterest) {
+				java.util.Map li = new java.util.HashMap();
+				li.put("interestPaid", lackinginterest);
+				partialPayment -= lackinginterest;
+
+				double a = partialPayment - lackinginterest;
+				if (nointerest == false && a <= interest) {
+					li.put("payment", p.getAmountPaid());
+					double bal = c.getBalance() - partialPayment;
+					li.put("balance", bal);
+					li.put("partialPayment", partialPayment);
+					partialPayment = 0;
+				} 
+				results.add(li);
+			} else if (partialPayment < lackinginterest) {
+				listItem.put("interestPaid", partialPayment);
+				lackinginterest -= partialPayment;
+				floating.put("lackingInterest", lackinginterest);
+				partialPayment = 0;
+			}
+		}
+
+		if (lackingpenalty > 0) {
+			if (partialPayment >= lackingpenalty) {
+				java.util.Map li = new java.util.HashMap();
+				li.put("penalty", lackingpenalty);
+				partialPayment -= lackingpenalty;
+
+				double a = partialPayment - lackingpenalty;
+				if (nopenalty == false && a <= penalty) {
+					li.put("payment", p.getAmountPaid());
+					double bal = c.getBalance() - partialPayment;
+					li.put("balance", bal);
+					li.put("partialPayment", partialPayment);
+					partialPayment = 0;
+				}
+				results.add(li);
+			} else if (partialPayment < lackingpenalty) {
+				listItem.put("penalty", partialPayment);
+				lackingpenalty -= partialPayment;
+				floating.put("lackingPenalty", lackingpenalty);
+				partialPayment = 0;
+			}
+		}
+		*/
+
+		//System.out.println("no interest: " + nointerest);
+		//System.out.println("no penalty: " + nopenalty);
+
+		//System.out.println("current day: " + currentDay + " days: " + days);
+		//if (partialPayment > 0) {
+		double totalInterest = 0;
+		double totalPenalty = 0;
+
+		if (lackinginterest > 0 && partialPayment > 0) {
+			if (partialPayment >= lackinginterest) {
+				//listItem.put("interestPaid", lackinginterest);
+				totalInterest += lackinginterest;
+				partialPayment -= lackinginterest;
+			} else if (partialPayment < lackinginterest) {
+				//listItem.put("interestPaid", partialPayment);
+				totalInterest += partialPayment;
+				lackinginterest -= partialPayment;
+				floating.put("lackingInterest", lackinginterest);
+				partialPayment = 0;
+			}
+		}
+
+		if (lackingpenalty > 0 && partialPayment > 0) {
+			if (partialPayment >= lackingpenalty) {
+				//listItem.put("penalty", lackingpenalty);
+				totalPenalty += lackingpenalty;
+				partialPayment -= lackingpenalty;
+			} else if (partialPayment < lackingpenalty) {
+				//listItem.put("penalty", partialPayment);
+				totalPenalty += partialPayment;
+				lackingpenalty -= partialPayment;
+				floating.put("lackingPenalty", lackingpenalty);
+				partialPayment = 0;
+			}
+		}
+
+		int added = 0;
+		double amountPaid = p.getAmountPaid();
+		if (partialPayment > 0) {
+			if ((nointerest == true && nopenalty == true) || isproceed == true) {
+					amountPaid = 0;
+			} else if (nointerest == true && nopenalty == false) {
+				if (partialPayment >= penalty) {
+					//listItem.put("penalty", penalty);
+					totalPenalty += penalty;
+					partialPayment -= penalty;
+				} else if (partialPayment < penalty) {
+					//if (totalInterest == 0 && totalPenalty == 0) {
+						//listItem.put("penalty", partialPayment);
+					totalPenalty += partialPayment;
+					penalty -= partialPayment;
+					floating.put("lackingPenalty", penalty);
+					partialPayment = 0;	
+					//}
+				}
+				amountPaid = 0;
+			} else if (nointerest == false && nopenalty == true) {
+				/*
+				if (partialPayment >= interest) {
+					//listItem.put("interestPaid", interest);
+					//totalInterest += interest;
+					//partialPayment -= interest;
+
+
+
+				} else if (partialPayment < interest) {
+					//if (totalInterest == 0 && totalPenalty == 0) {
+						//listItem.put("interestPaid", partialPayment);
+					totalInterest += partialPayment;
+					interest -= partialPayment;
+					floating.put("lackingInterest", interest);
+					partialPayment = 0;
+					amountPaid = 0;
+					//}
+				}
+				*/
+				if (partialPayment < interest) {
+					if (lackinginterest == 0) {
+						totalInterest += partialPayment;
+						interest -= partialPayment;
+						floating.put("lackingInterest", interest);
+						partialPayment = 0;
+					} else if (lackinginterest > 0) {
+						/*
+						added = 1;
+						listItem.put("day", currentDay);
+						if (totalInterest > 0) listItem.put("interestPaid", totalInterest);
+						if (totalPenalty > 0) listItem.put("penalty", totalPenalty);
+						results.add(listItem);
+						*/
+					}
+					amountPaid = 0;
+				} else  {
+					added = 1;
+					listItem.put("day", currentDay);
+					listItem.put("interestPaid", interest);
+					double a = (days * interest) + lackinginterest;
+					//System.out.println("total: " + a + " amount paid: " + amountPaid);
+					if (amountPaid >= a) {
+						if (days == 1) {
+							double xi = interest + lackinginterest;
+							listItem.put("interestPaid", xi);
+						}
+						days++;
+						currentDay++;
+						results.add(listItem);
+					} else {
+						days--;
+						amountPaid = 0;
+					}
+				}
+			}
+		} else if (partialPayment <= 0) {
+			amountPaid = 0;
+		}
+
+		if (amountPaid == 0) {
+			listItem.put("payment", p.getAmountPaid());
+			if (totalInterest > 0) listItem.put("interestPaid", totalInterest);
+			if (totalPenalty > 0) listItem.put("penalty", totalPenalty);
+
+			if (added > 0) {
+				double deduction = (days * interest) + lackinginterest + lackingpenalty;
+				//System.out.println("deduction: " + deduction);
+				if (deduction > 0) partialPayment = p.getAmountPaid() - deduction;
+			}
+
+			double balance = c.getBalance() - partialPayment;
+
+			//System.out.println("balance 2 " + balance);
+			if (added == 0) {
+				listItem.put("balance", balance);
+				listItem.put("partialPayment", partialPayment);
+
+				results.add(listItem);	
+			} else if (added > 0) {
+				java.util.Map item = (java.util.Map) results.get(results.size() - 1);
+
+				//System.out.println("item " + item);
+				item.put("balance", balance);
+				item.put("partialPayment", partialPayment);
+				item.put("payment", p.getAmountPaid());
+			}
+		}
+
+		//System.out.println("amount paid: " + amountPaid + " days: " + days + " curent day: " + currentDay);
+
+		if (amountPaid > 0) {
+			p.setDays(days);
+			p.setCurrentDay(currentDay);
+			update(p);
+		}
+		//}
+
+		//System.out.println("balance " + c.getBalance());
+		//System.out.println("partial payment " + partialPayment);
+
+end
+
+/*
+rule "compromise: waived interest and penalty"
+	when
+		c: Compromise( isCompromise > 0 && isFix == false )
+	then
+		java.util.Map listItem = new java.util.HashMap();
+		//double penalty = c.getPenalty();
+		double partialPayment = c.getAmountPaid();
+
+		Boolean iswaiveinterest = c.getIsWaiveInterest();
+		Boolean iswaivepenalty = c.getIsWaivePenalty();
+		if (iswaiveinterest == true && iswaivepenalty == false) {
+			partialPayment -= c.getPenalty();
+		} else if (iswaiveinterest == false && iswaivepenalty == true) {
+			partialPayment -= c.getInterest();
+		}
+		double balance = c.getBalance() - partialPayment;
+
+		listItem.put("penalty", penalty);
+		listItem.put("partialPayment", partialPayment);
+		listItem.put("balance", balance);
+		listItem.put("payment", c.getAmountPaid());
+		results.add(listItem);
+end
+*/
+
+/*
+rule "compromise: waived penalty"
+	when
+		c: Compromise( isCompromise > 0 && isWaivePenalty == true )
+	then
+		java.util.Map listItem = new java.util.HashMap();
+		double interest = c.getInterest();
+		double partialPayment = c.getAmountPaid()-interest;
+		double balance = c.getBalance()-partialPayment;
+
+		listItem.put("interestPaid", interest);
+		listItem.put("partialPayment", partialPayment);
+		listItem.put("balance", balance);
+		listItem.put("payment", c.getAmountPaid());
+		results.add(listItem);
+end
+*/
+
+rule "terminating rule"
+	when
+		Compromise( isCompromise == 0 )
+		r: References()
+		p: Payment( amountPaid <= 0 )
+	then
+		if( results.size() > 0 ) {
+			//System.out.println("Terminating rule");
+			java.util.Map listItem = (java.util.HashMap) results.get( results.size()-1 );
+			double balance = p.getBalance();
+			int isOverdue = r.getIsOverdue();
+			if (balance > 0 && isOverdue == 0) {
+				double partialPayment = r.getAmountPaid();
+			
+				double totalInterest = p.getTotalInterest();			
+				double totalPenalty = p.getTotalPenalty();
+				double lackingPenalty = p.getLackingPenalty();
+
+				//System.out.println("total interest-> "+totalInterest);
+				//System.out.println("total penalty-> "+totalPenalty);
+				//System.out.println("lacking penalty-> "+lackingPenalty);
+
+				if( totalPenalty < 0 ) 
+					totalPenalty = 0;
+				
+				if (lackingPenalty < 0)
+					lackingPenalty = 0;
+
+				if( partialPayment > (totalInterest+totalPenalty+lackingPenalty) ) 
+					partialPayment -= (totalInterest+totalPenalty+lackingPenalty);
+				else if( partialPayment <= (totalInterest+totalPenalty+lackingPenalty) ) 
+					partialPayment = 0;
+
+				if( partialPayment > 0 )
+					balance -= partialPayment;
+				//System.out.println("Partial payment " + partialPayment);
+				//System.out.println("Balance " + balance);
+				
+				if (balance < 0) balance = 0;
+
+				listItem.put("penalty", totalPenalty);
+				
+				if( totalPenalty == 0 )
+					listItem.put("penalty", "");
+				
+				if( partialPayment > 0 ) {
+					listItem.put("partialPayment", partialPayment);
+					listItem.put("balance", balance);
+				}
+				
+				floating.put("totalInterest", totalInterest);
+				floating.put("totalPenalty", totalPenalty);
+			} else if(balance >  0 && isOverdue > 0) {
+				double partialPayment = r.getAmountPaid();
+				double totalInterest = p.getTotalInterest();
+				double totalPenalty = p.getTotalPenalty();
+				
+				//System.out.println("amount paid " + partialPayment);
+				partialPayment -= (totalInterest+totalPenalty);
+				//System.out.println("partial payment " + partialPayment);				
+
+				//listItem.put("penalty", totalPenalty);
+				if( partialPayment > 0 ) {
+					balance -= partialPayment;
+					if (balance < 0) balance = 0;
+
+					listItem.put("partialPayment", partialPayment);
+					listItem.put("balance", balance);
+				}
+				floating.put("totalInterest", totalInterest);
+				floating.put("totalPenalty", totalPenalty);
+			}
+			listItem.put("payment", r.getAmountPaid());
+			//System.out.println("last item " + listItem);
+			
+			floating.put("balance", balance);
+			floating.put("currentDay", p.getCurrentDay());
+			floating.put("lackingInterest", p.getLackingInterest());
+			floating.put("lackingPenalty", p.getLackingPenalty());
+			floating.put("days", p.getDays());
+		}
+end

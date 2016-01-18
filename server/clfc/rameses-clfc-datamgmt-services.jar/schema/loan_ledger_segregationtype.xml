@@ -1,0 +1,14 @@
+<schema>
+
+	<element name="loan_ledger_segregationtype" tablename="loan_ledger_segregationtype">
+		<field name="objid" primary="true" />
+		<field name="state" required="true" />
+		<field name="dtcreated" required="true" />
+		<field name="author_objid" required="true" />
+		<field name="author_name" required="true" />
+		<field name="name" required="true" />
+		<field name="description" required="true" />
+		<field name="category" required="true" />
+	</element>
+
+</schema>

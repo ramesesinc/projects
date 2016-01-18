@@ -1,0 +1,27 @@
+import com.rameses.annotations.*;
+import com.rameses.http.*;
+import com.rameses.osiris3.server.*;
+
+class TestMobileTrackerService02  
+{
+	@ActiveDB('test_mobile_tracker02')
+	def em; 
+
+	@Service('DateService')
+    def dateSvc;
+
+	@ProxyMethod
+	public Map log(Map entity) {
+		def sessionid = entity.objid;
+		entity.objid = "LOG" + new java.rmi.server.UID();
+		entity.txndate = dateSvc.serverDate;
+		entity.sessionid = sessionid;		
+		em.log(entity); 
+		return entity;
+	} 
+
+	@ProxyMethod 	
+	public List getList(Map params) {
+		return em.getList([sessionid: params.trackerid]); 
+	} 
+} 

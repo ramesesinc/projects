@@ -1,0 +1,11 @@
+<schema>
+
+	<element tablename="loan_payment_schedule">
+		<field name="name" primary="true" />
+		<field name="dtcreated" required="true" />
+		<field name="author_objid" required="true" />
+		<field name="author_name" required="true" />
+		<field name="description" required="true" />
+	</element>
+
+</schema>

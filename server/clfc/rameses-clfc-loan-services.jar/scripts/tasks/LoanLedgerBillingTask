@@ -1,0 +1,112 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+
+class LoanLedgerBillingTask
+{
+	@ActiveDB("ledger_billing")
+	def ledger_billing;
+
+	@ActiveDB("billing_process")
+	def process;
+
+	@ActiveDB("collection_remittance")
+	def remittance;
+
+	@Service("DateService")
+	def dateSvc;
+
+
+	@Schedule(interval=1, timeUnit="DAYS", immediate=true)
+	public void cancelPastBillingsNotDownloaded( task ) {
+		def date = dateSvc.serverDate.toString().split(" ")[0];
+		def list = ledger_billing.getPastBillingsNotDownloaded([date: date]);
+		println 'cancelling past billing';
+		list.each{ o->
+			o.state = "CANCELLED";
+			ledger_billing.changeState(o);
+
+			o.dtcancelled = dateSvc.serverDate;
+			o.cancelledby = [objid: 'SYSTEM', name: 'SYSTEM'];
+			ledger_billing.update(o, "cancel-item");
+		}
+	}
+
+	/*@Schedule(interval=1, timeUnit="DAYS", immediate=true)
+	public void changeStateCancelledPastBillingsNotCollected( task ) {
+		def date = dateSvc.serverDate;
+		def list = ledger_billing.getPastBillingsNotCollected([date: date.toString().split(' ')[0]]);
+		//println 'cancel past billing'
+		list.each{
+			it.dtcancelled = date;
+			it.cancelledby = 'SYSTEM';
+			it.state = 'CANCELLED';
+			ledger_billing.update(it, "cancel");
+			ledger_billing.update(it, "state");
+		}
+	}
+
+	@Schedule(interval=1, timeUnit="DAYS", immediate=true)
+	public void changeStateUnpostedPastBillingsCollected( task ) {
+		def list = ledger_billing.getPastBillingsCollected([date: dateSvc.serverDate.toString().split(' ')[0]]);
+		//println 'unposted past billing'
+		list.each{
+			it.state = "UNPOSTED";
+			ledger_billing.update(it, "state");
+		}
+	}
+
+	@Schedule(interval=1, timeUnit="DAYS", immediate=true)
+	public void changeStateUnremittedPastBillingsCollected( task ) {
+		def list = ledger_billing.getPastBillingsNotRemitted([date: dateSvc.serverDate.toString().split(' ')[0]]);
+		//println 'unremitted past billing'
+		list.each{
+			it.state = "UNREMITTED";
+			ledger_billing.update(it, "state");
+		}
+	}
+
+	@Schedule(interval=1, timeUnit="DAYS", immediate=true)
+	public void cancelSpecialCollection( task ) {
+		def list = special_collection.getSpecialCollectionsForCancellation([date: dateSvc.serverDate.toString().split(' ')[0]]);
+		list.each{
+			it.state = 'CANCELLED';
+			special_collection.changeState(it);
+		}
+	}*/
+
+	/*
+	@Schedule(interval=2, immediate=true)
+	public void checkForDownloadBilling( task ) {
+		def item, items, xlist;
+		def list = process.getList();
+		for (obj in list) { 
+			def details = process.getDetailsByParentid([parentid: obj.objid]);
+			if (!details) {
+				obj.state = "FOR_DOWNLOAD";
+				ledger_billing.changeState(obj);
+				process.delete(obj);
+			}
+
+			item = ledger_billing.read(obj, "billing-item");
+			obj.objid = item.parentid;
+			items = ledger_billing.getBillingItems(obj);
+			
+			obj.totalfordownload = items.findAll{o-> o.state == 'FOR_DOWNLOAD' }.size();
+			ledger_billing.update(obj, "fordownload");
+
+			obj.totaldownloaded = items.findAll{o-> o.state == 'DOWNLOADED' }.size();
+			ledger_billing.update(obj, "downloaded");
+
+			xlist = items.findAll{o-> o.state!='FOR_DOWNLOAD' && o.state!='DOWNLOADED' }
+			xlist.each{o-> 
+				def rem = remittance.findCollectionRemittance([collectionid: o.parentid, groupid: o.item.objid, grouptype: o.item.type]);
+				if (rem && rem.state == 'POSTED') {
+					if (!obj.totalposted) obj.totalposted = 0;
+					obj.totalposted++;
+				} 
+			}
+			ledger_billing.update(obj, "posted");
+		}
+	}
+	*/
+}

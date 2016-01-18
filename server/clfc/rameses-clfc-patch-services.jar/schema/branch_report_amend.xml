@@ -1,0 +1,16 @@
+<schema>
+
+	<element tablename="branch_report_amend">
+		<field name="objid" required="true" />
+		<field name="dtcreated" required="true" />
+		<field name="author_objid" required="true" />
+		<field name="author_name" required="true" />
+		<field name="refid" required="true" />
+		<field name="txndate" required="true" />
+		<field name="reporttype" required="true" />
+		<field name="criteria_code" />
+		<field name="criteria_value" />
+		<complex name="value" type="list" serializer="default" required="true" />>
+	</element>
+
+</schema>

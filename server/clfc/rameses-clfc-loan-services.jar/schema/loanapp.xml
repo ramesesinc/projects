@@ -1,0 +1,165 @@
+<schema>
+
+	<element name="loanapp" tablename="loanapp">
+		<field name="objid" primary="true"/>
+		<field name="state" required="true"/> 
+		<field name="appno" required="true"/> 
+		<field name="apptype" required="true"/> 
+		<field name="appmode" required="true"/> 
+		<field name="dtcreated" required="true"/> 
+		<field name="createdby" required="true"/> 
+		<field name="loanamount" required="true"/> 
+		<field name="branch_code" required="true"/> 
+		<field name="branch_name" required="true"/> 
+		<field name="borrower_objid" required="true"/> 
+		<field name="borrower_name" required="true"/> 
+		<field name="producttype_name" required="true"/> 
+		<field name="producttype_term" required="true"/> 
+		<field name="route_code" required="true" />
+		<field name="loantype" required="true" />
+		<field name="purpose" required="true"/> 		
+		<field name="remarks" /> 
+		<field name="approval_type" />  
+		<field name="approval_amount" /> 
+		<field name="approval_absencetype" /> 
+		<field name="approval_absencepolicy"/> 
+		<field name="approval_absenceprovision" />  
+	</element> 
+
+	<element name="loanapp_new" tablename="loanapp_new">
+		<field name="objid" primary="true"/>
+		<field name="version" required="true"/> 
+		<field name="loanno" required="true"/> 
+		<field name="loanamount" required="true"/> 
+		<field name="clienttype" required="true"/> 
+		<field name="marketedby" /> 
+	</element>
+
+	<element name="loanapp_previous" tablename="loanapp">
+		<field name="objid" primary="true"/> 
+		<field name="state" required="true"/> 
+		<field name="appno" required="true"/> 
+		<field name="apptype" required="true"/> 
+		<field name="appmode" required="true"/> 
+		<field name="dtcreated" required="true"/> 
+		<field name="createdby" required="true"/> 
+		<field name="loanamount" required="true"/> 
+		<field name="borrower_objid" required="true"/> 
+		<field name="borrower_name" required="true"/> 
+		<field name="remarks" required="true"/> 
+	</element>
+
+	<element name="loanapp_previous_capture" tablename="loanapp_capture">
+		<field name="objid" primary="true"/>
+		<field name="version" required="true"/> 
+		<field name="loanno" required="true"/> 
+		<field name="dtreleased" required="true"/> 
+		<field name="dtfiled" required="true"/>
+	</element>
+
+	<element name="loanapp_capture" tablename="loanapp_capture">
+		<field name="objid" primary="true"/>
+		<field name="version" required="true"/> 
+		<field name="loanno" required="true"/> 
+		<field name="clienttype" required="true"/> 
+		<field name="marketedby"/> 
+		<field name="dtreleased" required="true"/> 
+		<field name="dtfiled" required="true"/>
+	</element>	
+
+	<element name="loanapp_capture_open" tablename="loanapp_capture_open">
+		<field name="objid" primary="true"/>
+	</element>	
+
+	<element name="loanapp_approval" tablename="loanapp">
+		<field name="objid" primary="true"/>
+		<field name="approval_type" required="true"/> 
+		<field name="approval_amount" required="true"/> 
+		<field name="approval_absencetype" required="true"/> 
+		<field name="approval_absencepolicy" required="true"/> 
+		<field name="approval_absenceprovision" required="true"/> 
+	</element>
+
+	<element name="loanapp_close" tablename="loanapp_close">
+		<field name="objid" primary="true" />
+		<field name="dtclosed" required="true" />
+		<field name="closedby_objid" required="true" />
+		<field name="closedby_name" required="true" />
+		<field name="remarks" required="true" />
+	</element>
+
+	<element name="route" tablename="loanapp">
+		<field name="objid" primary="true"/>
+		<field name="route_code" required="true"/>
+	</element>
+
+	<element name="approval" tablename="loanapp">
+		<field name="objid" primary="true"/>
+		<field name="approval_type" required="true"/>
+		<field name="approval_amount" required="true"/>
+		<field name="approval_absencetype" required="true"/>
+		<field name="approval_absencepolicy" required="true"/>
+		<field name="approval_absenceprovision" required="true"/>
+	</element>	
+
+	<element name="borrower" tablename="loanapp_borrower">
+		<field name="objid" primary="true"/> 
+		<field name="parentid" required="true"/> 
+		<field name="borrowerid" required="true"/> 
+		<field name="borrowername" required="true"/> 
+		<field name="principalid" required="true"/> 
+		<field name="relaterid" /> 
+		<field name="type" required="true"/> 
+		<field name="relation"/> 
+	</element>	
+
+	<element name="loanapp_search" tablename="loanapp_search">
+		<field name="objid" primary="true"/> 
+		<field name="state" required="true"/>
+		<field name="appno" required="true"/>
+		<field name="branchcode" required="true"/>
+		<field name="branchname" required="true"/>
+		<field name="routecode" />
+		<field name="fullborrowername" required="true"/>
+		<field name="loanamount" required="true"/>
+		<field name="dtposted" required="true"/>
+		<field name="postedby" required="true"/>		
+	</element> 
+
+	<element name="loanapp_search_index" tablename="loanapp_search_index">
+		<field name="objid" primary="true"/> 
+		<field name="appid" required="true"/> 
+		<field name="searchtext" required="true"/> 
+	</element>	
+
+	<element name="loanapp_search_borrower_index" tablename="loanapp_search_index">
+		<field name="objid" primary="true"/> 
+		<field name="appid" required="true"/> 
+		<field name="searchtext" required="true"/> 
+		<field name="borrowerid" required="true"/>
+	</element>	
+
+	<element name="ci_recommendation" tablename="loanapp_recommendation">
+		<field name="objid" primary="true"/>
+		<field name="ciremarks" required="true"/>
+	</element>	
+
+	<element name="crecom_recommendation" tablename="loanapp_recommendation">
+		<field name="objid" primary="true"/>
+		<field name="crecomremarks" required="true"/>
+		<field name="marketeramount" required="true"/>
+		<field name="ciamount" required="true"/>
+		<field name="fcaamount" required="true"/>
+		<field name="caoamount" required="true"/>
+		<field name="bcohamount" required="true"/>		
+	</element>	
+
+	<element name="loanapp_log" tablename="loanapp_log">
+		<field name="objid" primary="true"/> 
+		<field name="appid" required="true"/> 
+		<field name="dtposted" required="true"/> 
+		<field name="postedby" required="true"/> 
+		<field name="remarks" required="true"/> 
+	</element>	
+
+</schema>

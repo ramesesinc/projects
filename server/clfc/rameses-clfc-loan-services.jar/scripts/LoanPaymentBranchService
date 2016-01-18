@@ -1,0 +1,378 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.server.common.*;
+import com.rameses.rules.common.RuleRequest;
+import java.rmi.server.UID;
+import org.joda.time.*;
+
+class LoanPaymentBranchService 
+{
+	@ActiveDB("loan_product_type")
+	def product_type;
+
+	@ActiveDB("loanapp")
+	def loanapp;
+
+	@ActiveDB("loan_ledger")
+	def ledgerdb;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@Service("LoanLedgerService")
+	def ledgerSvc;
+
+	@Service("NumberService")
+	def numSvc;
+
+	@Resource("RuleService")
+	def ruleSvc;
+
+	@ProxyMethod
+	public def postPayment( params ) {
+		def txndate;
+		if (params.entity) {
+			txndate = params.entity.txndate;
+		} else { 
+			txndate = params.txndate;
+		}
+
+		def ledger = ledgerdb.findByAppId([appid: params.appid]);
+		def appc = loanapp.read([objid: ledger.appid], 'loanapp_capture');
+
+		def info = ledgerdb.read([objid: ledger?.objid], 'ledger-info');
+		if (!info && ledger) {
+			info = [objid: ledger?.objid, postinginfo: [:]];
+			ledgerdb.create(info, 'ledger-info');
+		}
+
+		def postinginfo = info?.postinginfo;
+		if (!postinginfo) postinginfo = [:];
+
+		def producttype = product_type.read([name: ledger.producttypeid]);
+
+		def schedule = getCurrentSchedule(ledger.dtstarted, txndate, producttype?.paymentschedule);
+		if (!schedule) schedule = 1;
+
+		def lastschedule;
+		if (!postinginfo.lastschedule) {
+			lastschedule = getCurrentSchedule(ledger.dtstarted, ledger.dtcurrentschedule, producttype?.paymentschedule);
+			if (!lastschedule) lastschedule = 1;
+
+		} else if (postinginfo.lastschedule) {
+			lastschedule = postinginfo.lastschedule + 1;
+
+		}
+
+		def noofschedule = schedule - (lastschedule - 1);
+		if (!noofschedule) noofschedule = 1;
+
+		def results = [], lastPayment = [:], floating = [:];
+
+		def paymentFact = [
+			amountPaid		: params.payamount,
+			balance			: (ledger.balance? ledger.balance : ledger.totalprincipal),
+			days 			: 1,
+			currentSchedule	: lastschedule,
+			addLacking 		: false
+		];
+
+		def ledgeritem = ledgerdb.findLastLedgerItemByParentId([parentid: ledger.objid]);
+		if (ledgeritem) {
+			paymentFact.lackingInterest = ledgeritem.interestbal;
+		}
+
+		def referencesFact = [
+			amountPaid 			: params.payamount,
+			interest 			: computeInterest(ledger?.appid, txndate),
+			noOfSchedules 		: noofschedule,
+			isFullPayment 		: false,
+			isOffset 			: false,
+			hasPartialPayment 	: false
+		]
+
+		def req = new RuleRequest("loanbranch");
+
+		req.addFact("loanbranch", "Payment", paymentFact); 
+		req.addFact("loanbranch", "References", referencesFact);
+		//req.addFact("loan", "Compromise", compromiseFact);
+		req.addGlobal("results", results);
+		req.addGlobal("lastPayment", lastPayment);
+		req.addGlobal("floating", floating);
+
+		def xdate = parseDate(txndate);
+		def lastpaymentdate;
+		if (ledger.dtlastpaid) lastpaymentdate = parseDate(ledger.dtlastpaid);
+
+		if (lastpaymentdate && xdate.compareTo(lastpaymentdate) == 0) {
+
+		} else {
+			referencesFact.totalPayment = referencesFact.noOfSchedules * referencesFact.interest;
+		}
+
+		if (referencesFact.amountPaid > referencesFact.totalPayment) {
+			referencesFact.hasPartialPayment = true;
+		}
+
+		def item = resolveNoOfSchedules(referencesFact, paymentFact, producttype?.paymentschedule);
+		if (item) {
+			//println '\nitem ' + item;			
+			if (item.noOfSchedules != null && item.noOfSchedules >= 0) {
+			//	println 'passing 1'
+				referencesFact.noOfSchedules = item.noOfSchedules;
+			}
+		}
+
+		//println '\npayment fact';
+		//for (i in paymentFact) { println i }
+
+		//println '\nreferences fact';
+		//for (i in referencesFact) { println i }
+		
+		try {
+			ruleSvc.execute( req );	
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		if (results) {
+			results = resolveScheduleDates(results, ledger.dtstarted, producttype?.paymentschedule);
+		}
+
+		//results?.each{ println it }
+
+
+
+		def lastitem;
+		if (results.size() > 0) {
+			lastitem = results[results.size()-1];
+
+			lastitem.payment = params.payamount;
+
+			if (!lastitem.totalinterest) lastitem.totalinterest = 0;
+
+			def amtpaid = referencesFact.amountPaid;//params.payamount;
+			amtpaid -= lastitem.totalinterest;
+
+			//ledger.balance;
+			if (referencesFact.hasPartialPayment == true && amtpaid > 0) {
+				def balance = paymentFact.balance;
+
+				lastitem.partialPayment = amtpaid;
+				if (balance > 0) balance -= amtpaid;
+
+				if (balance < 0) balance = 0;
+				lastitem.balance = balance;
+				if ((lastitem.balance != null || lastitem.balance != '') && lastitem.balance >= 0) {
+					//println 'last item balance ' + lastitem.balance;
+					def xledger = ledgerdb.read(ledger);
+					xledger.balance = lastitem.balance;
+					ledgerdb.update([objid: ledger.objid, balance: lastitem.balance], "balance");
+					
+
+					if (balance == 0) {
+						xledger = ledgerdb.read(xledger);
+						xledger.state = 'CLOSE';
+						ledgerdb.update(xledger);
+						loanapp.update([objid: xledger.appid, state: 'CLOSED']);
+						def xx = loanapp.read([objid: xledger.appid], 'loanapp_search');
+						if (xx) {
+							loanapp.update([objid: xledger.appid, state: 'CLOSED'], 'loanapp_search');	
+						}
+					}
+				}
+			}
+
+			if (floating.lackingInterest) {
+				lastitem.interestbal = new BigDecimal(floating.lackingInterest).setScale(2, BigDecimal.ROUND_HALF_UP)
+			}
+
+			def cal = Calendar.getInstance();
+			cal.setTime(parseDate(lastitem.scheduledate));
+			def psched = producttype?.paymentschedule;
+			if (psched == 'MONTHLY') {
+				cal.add(Calendar.MONTH, 1);
+
+			} else if (psched == 'SEMIMONTHly') {
+				def xday = cal.get(Calendar.DATE);
+				def xmax = cal.getActualMaximum(Calendar.DATE);
+				if (xday == xmax) {
+					cal.add(Calendar.DATE, 1);
+					cal.set(Calendar.DATE, 15);
+				} else if (xday == 15) {
+					cal.set(Calendar.DATE, xmax);
+				}
+			}
+			//if (!lastitem.interestbal || lastitem.interestbal == 0) {
+				
+			//}
+			def currsched = new java.text.SimpleDateFormat("yyyy-MM-dd").format(cal.getTime());
+
+			ledgerdb.update([objid: ledger.objid, dtcurrentschedule: currsched], "dtcurrentschedule");
+
+			if (!postinginfo) postinginfo = [:];
+			postinginfo.lastschedule = lastitem.scheduleday;
+		}
+
+		info.postinginfo = postinginfo;
+		ledgerdb.update(info, 'ledger-info');
+
+		def la = loanapp.read([objid: ledger.appid], 'loanapp_close');
+		if (la || referencesFact.isFullPayment == true) {
+			def xledger = ledgerdb.read(ledger);
+			xledger.state = 'CLOSE';
+			ledgerdb.update(xledger);
+			loanapp.update([objid: xledger.appid, state: 'CLOSED']);
+			def xx = loanapp.read([objid: xledger.appid], 'loanapp_search');
+			if (xx) {
+				loanapp.update([objid: xledger.appid, state: 'CLOSED'], 'loanapp_search');	
+			}
+		}
+
+		results.each{ o->
+			def itm = createLedgerItem(ledger);
+
+			itm.amtdue = 0;
+			if (o.payment) {
+				itm.amtdue = new BigDecimal(o.payment).setScale(2, BigDecimal.ROUND_HALF_UP);
+			}
+			itm.amtpaid = itm.amtdue;
+
+			itm.interestdue = 0;
+			if (o.interestPaid) {
+				itm.interestdue  = new BigDecimal(o.interestPaid).setScale(2, BigDecimal.ROUND_HALF_UP);
+			}
+			itm.interestpaid = itm.interestdue;
+
+			itm.penaltydue = 0;
+			if (o.penalty) {
+				itm.penaltydue = new BigDecimal(o.penalty).setScale(2, BigDecimal.ROUND_HALF_UP);
+			}
+			itm.penaltypaid = itm.penaltydue;
+
+			itm.amtbal = 0;
+			
+			itm.interestbal = 0;
+			if (o.interestbal) itm.interestbal = o.interestbal;
+
+			itm.penaltybal = 0;
+			if (o.penaltybal) itm.penaltybal = o.penaltybal;
+
+			itm.dtpaid = txndate;//it.dtpaid? it.dtpaid : null;
+			itm.refno = params.refno;//it.refno? it.refno : null;
+			itm.day = dateSvc.getDaysDiff(parseDate(appc?.dtreleased), parseDate(o.scheduledate)) - 1;
+
+			itm.balance = 0;
+			if (o.balance) itm.balance = new BigDecimal(o.balance).setScale(2, BigDecimal.ROUND_HALF_UP);
+
+			//println 'passing 4'
+			itm.partialpayment = 0;
+			if (o.partialPayment) itm.partialpayment = new BigDecimal(o.partialPayment).setScale(2, BigDecimal.ROUND_HALF_UP);
+
+			itm.baseamount = ledger.dailydue;
+			itm.groupbaseamount = ledger.dailydue;
+
+			//itm.paytype = it.paytype;
+			itm.txndate = dateSvc.serverDate;
+			//println 'item = '+itm;
+			o.item = itm;
+			//if (txndate.toString() == '2006-01-24') println 'current day ' + data.currentDay;
+			ledgerdb.create(itm, "detail");
+		}
+
+		ledgerdb.update([objid: ledger.objid, dtlastpaid: txndate], "dtlastpaid");
+
+		return [
+			results 		: results,
+			isfullpayment 	: false,//referencesFact.isFullPayment,
+			ledgerid 		: ledger?.objid
+		];
+	}
+
+	private def createLedgerItem( ledger ) {
+		return [
+			objid 	: 'LDGRITM' + new UID(),
+			parentid: ledger.objid,
+			state 	: 'RECEIVED'
+		];
+	}
+
+	private def resolveNoOfSchedules( referencesFact, paymentFact, type ) {
+		def references = [
+			allowResolve	: true,
+			noOfSchedules 	: referencesFact.noOfSchedules,
+			interest 		: referencesFact.interest,
+			amountPaid 		: referencesFact.amountPaid,
+			loantype 		: type
+		];
+		if (paymentFact.lackingInterest) references.lackingInterest = paymentFact.lackingInterest;
+
+		def req = new RuleRequest("loanbranch");
+		req.addFact("loanbranch", "ResolveSchedules", references);
+
+		def result = [:];
+		req.addGlobal("resultMap", result);
+		ruleSvc.execute( req );
+
+		return result;
+	}
+
+
+	private def resolveScheduleDates( list, startdate, type ) {
+		def result, fact, req;
+		list.each{ o->
+			fact = [
+				allowResolve 	: true,
+				runningDate 	: startdate,
+				currentSchedule : o.scheduleday,
+				counter 		: 1,
+				loantype 		: type
+			];
+			//println 'fact ' + fact;
+			req = new RuleRequest("loanbranch");
+			req.addFact("loanbranch", "ResolveScheduleDate", fact);
+
+			result = [:];
+			req.addGlobal("resultMap", result);
+			ruleSvc.execute( req );
+
+			if (result.scheduledate) o.scheduledate = result.scheduledate;
+		}
+
+		return list;
+	}
+
+	private def getCurrentSchedule( dtstarted, txndate, type ) {		
+		def fact = [
+			allowGet 	: true,
+			runningDate : parseDate(dtstarted),
+			currentDate : parseDate(txndate),
+			loantype	: type
+		];
+
+		def req = new RuleRequest("loanbranch");
+		req.addFact("loanbranch", "CurrentSchedule", fact);
+		def result = [:];
+		req.addGlobal("resultMap", result);
+		ruleSvc.execute( req );
+
+		def currentschedule = result.noOfSchedules;
+		if (currentschedule == null) currentschedule = 0;
+		return currentschedule;
+	}
+
+	private def computeInterest( appid, date ) {	
+		def item = ledgerSvc.compute([appid: appid, date: date]);
+
+		return item.interest;
+	}
+
+	private def parseDate( date ) {
+		if (!date) return null;
+		if (date instanceof Date) {
+			return date;
+		} else {
+			return java.sql.Date.valueOf(date);
+		}
+	}
+}

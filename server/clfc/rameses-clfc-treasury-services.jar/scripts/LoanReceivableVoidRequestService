@@ -1,0 +1,116 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.services.extended.*;
+
+class LoanReceivableVoidRequestService extends ActiveCrudListService
+{
+	@Env
+	def env;
+
+	@ActiveDB("loanapp_receivable")
+	def em;
+
+	@ActiveDB("receivable")
+	def receivable;
+
+	@ActiveDB("loanapp")
+	def loanapp;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@Service("InboxService")
+	def inboxSvc;
+
+	String subSchemaName = 'voidrequest';
+	String listMethod = 'getVoidRequestList';
+
+	@ProxyMethod
+	public def getColumns( params ) {
+		def cols = [];
+		if (!params.state) cols << [name: 'txnstate', caption: 'Status'];
+		cols << [name: 'loanapp.appno', caption: 'AppNo'];
+		cols << [name: 'borrower.name', caption: 'Borrower'];
+		cols << [name: 'remarks', caption: 'Remarks'];
+		if (params.state!='FOR_APPROVAL') {
+			if (params.state=='APPROVED') {
+				cols << [name: 'dtposted', caption: 'DateApproved'];
+				cols << [name: 'poster.name', caption: 'ApprovedBy'];
+			} else if (params.state=='DISAPPROVED') {
+				cols << [name: 'dtposted', caption: 'DateDisapproved'];
+				cols << [name: 'poster.name', caption: 'DisapprovedBy'];
+			}
+		}
+		return cols;
+	}
+
+	void beforeList( params ) {
+		params.searchtext = (params.searchtext? params.searchtext : '') + '%';
+		if (params.txnstate) {
+			params._listMethod = 'getVoidRequestListByState';
+		}
+	}
+
+	void afterOpen( data ) {
+		def rec = em.read([objid: data.receivableid]);
+		if (!rec) throw new Exception("Loan receivable record does not exist or has already been deleted.");
+
+		def app = loanapp.read([objid: rec.loanappid]);
+		if (!app) throw new Exception("Loanapp record does not exist or has already been deleted.");
+
+		rec.loanapp = [objid: app.objid, appno: app.appno];
+		rec.borrower = app.borrower;
+
+		data.receivable = rec;
+	}
+
+	@ProxyMethod
+	public def approveDocument( params ) {
+		def data = approveImpl(params, 'APPROVED');
+
+		def apprec = em.read([objid: data.receivableid]);
+		if (!apprec) throw new Exception("Loanapp receivable record does not exist or has already been deleted.");
+
+		apprec.txnstate = 'VOIDED';
+		em.changeState(apprec);
+
+		receivable.removeDetail([objid: data.objid]);
+		receivable.delete([objid: data.objid], 'status');
+		receivable.delete([objid: data.objid]);
+
+		return data;
+	}
+
+	@ProxyMethod
+	public def disapprove( params ) {
+		def data = approveImpl(params, 'DISAPPROVED');
+
+		def apprec = em.read([objid: data.receivableid]);
+		if (!apprec) throw new Exception("Loanapp receivable record does not exist or has already been deleted.");
+
+		apprec.txnstate = 'ACTIVE';
+		em.changeState(apprec);
+
+		return data;
+	}
+
+	private def approveImpl( params, state ) {
+		def data = em.read(params, subSchemaName);
+		if (!data) throw new Exception("Receivable void request record does not exist or has already been deleted.");
+
+		if (data.txnstate==state) {
+			throw new Exception("Receivable void request already ${state}.");
+		}
+
+		data.txnstate = state;
+		em.update(data, subSchemaName);
+
+		data.dtposted = dateSvc.serverDate;
+		data.poster = [objid: env.USERID, name: env.NAME];
+		em.update(data, 'voidrequest-post');
+
+		inboxSvc.removeMessageByRefid([refid: data.objid]); 
+
+		return open(data);
+	}
+}

@@ -1,0 +1,233 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import java.rmi.server.UID;
+
+class LoanAppCaptureRenewService
+{
+	@ActiveDB(value='loanapp')
+	def loanapp;
+
+	@ActiveDB(value='loan_product_type')
+	def productType;	
+
+	@ActiveDB(value='borrower')
+	def borrower; 
+
+	@ActiveDB(value='loanapp_borrower')
+	def loanapp_borrower; 	
+
+	@ActiveDB(value='loanapp_business')
+	def loanapp_business; 
+
+	@ActiveDB(value='loanapp_otherlending')
+	def loanapp_otherlending; 	
+
+	@ActiveDB(value='loanapp_collateral')
+	def loanapp_collateral; 	
+
+	@Service('DateService')
+	def dateSvc;
+
+	@Service('BranchService')
+	def branchSvc;
+
+	@Service("LoanTypeService")
+	def loanTypeSvc;
+
+	@Env 
+	def env;
+
+	@ProxyMethod 
+	public def open( params ) { 
+		def entity = loanapp.findByObjid( params ); 
+		if (!entity) throw new Exception("'"+params.objid+"' loan application not found"); 
+
+		entity.borrower = borrower.findByObjid([objid: entity.borrower?.objid]); 
+		entity.apptype = 'RENEW';
+		entity.prevloanid =  entity.objid;
+		entity.objid = 'LOAN' + new UID();
+
+		if (!entity.borrower) entity.borrower = [:];
+		if (!entity.producttype) entity.producttype = [:];
+		if (!entity.branch) entity.branch = [:];
+		if (!entity.approval) entity.approval = [:];
+
+		if (!entity.borrower?.name) {
+			def name = new StringBuffer(entity.borrower.lastname + ', ' + entity.borrower.firstname);
+			if (entity.borrower.middlename) name.append(' ' + entity.borrower.middlename);
+
+			entity.borrower.name = name.toString(); 
+		}
+		return entity; 
+	} 
+
+	@ProxyMethod
+	public def getProductTypes() {
+		return productType.getList([searchtext: '%']);
+	}
+
+	@ProxyMethod
+	public def getLoanTypes() {
+		def list = loanTypeSvc.getList([:]);
+		if (!list) return [];
+		return list.collect{ it.name }
+	}
+
+	@ProxyMethod
+	public def renew( data ) {
+		if (!data.objid) throw new Exception('Please specify objid');
+		if (!data.prevloanid) throw new Exception('Please specify prevloanid');
+
+		def appinfo = loanapp.read([objid: data.prevloanid]); 
+		if (!appinfo) throw new Exception("'"+data.prevloanid+"' loan application not found"); 
+
+		if (appinfo.appmode != 'CAPTURE') throw new Exception('This facility is intended for captured loan applications only.');
+		//if (appinfo.state != 'RELEASED') throw new Exception('Your loan application must be released first');		
+
+		def captureinfo = loanapp.read([objid: appinfo.objid], 'loanapp_capture'); 
+		if (!captureinfo) captureinfo = [version:0];
+
+		if (data.clienttype == 'WALK-IN') {
+			data.marketedby = null; 
+		} else if (data.clienttype == 'MARKETED' && !data.marketedby) { 
+			throw new Exception('Please specify marketedby'); 
+		} 
+
+
+		//close the previous loan application
+		appinfo.state = 'CLOSED';
+		loanapp.changeState([objid: appinfo.objid, state: appinfo.state]); 
+		loanapp.removeSearchIndex([objid: appinfo.objid]);
+		loanapp.removeBorrowerIndices([appid: appinfo.objid]);
+		def closelog = [
+			objid:    'LOG' + new UID(), 
+			appid: 	  appinfo.objid, 
+			dtposted: dateSvc.serverDate, 
+			postedby: env.USER,  
+			remarks:  'APPLICATION CLOSED DUE TO RENEWAL, REFER TO APPNO#'+data.loanno 
+		];
+		loanapp.create(closelog, 'loanapp_log'); 		
+
+
+		data.branch = branchSvc.open([:]);
+		data.dtfiled = dateSvc.serverDate.toString();		
+		data.dtcreated = data.dtreleased.toString();
+		data.createdby = env.USER; 
+		
+		data.state = 'RELEASED'; 
+		data.version = captureinfo.version+1; 
+
+		data.appno = data.loanno; 
+		data.appmode = 'CAPTURE'; 
+		data.approval = [amount: data.loanamount]; 
+
+		loanapp.create(data); 
+		loanapp.create(data, 'loanapp_capture'); 
+		loanapp.create(data, 'loanapp_capture_open'); 
+
+		def newlog = [
+			objid:    'LOG' + new UID(), 
+			appid: 	  data.objid, 
+			dtposted: data.dtfiled, 
+			postedby: data.createdby, 
+			remarks:  'RENEW LOAN APPLICATION #'+data.appno+', PREVIOUS LOAN# '+appinfo.appno   
+		];
+		loanapp.create(newlog, 'loanapp_log'); 
+
+		buildSearchIndex(data);
+		buildBorrower(data);
+		buildBusiness(data);
+		buildOtherLending(data);
+		buildCollateral(data);
+		return data;
+	}
+
+	private void buildSearchIndex(data) { 
+		if (!data.borrower.name) {
+			def b = borrower.read([objid: data.borrower.objid]);
+			if (b) data.borrower.name = b.name;
+		}
+
+		data.fullborrowername = data.borrower.name;//name.toString(); 
+		data.dtposted = data.dtfiled;  
+		data.postedby = data.createdby; 
+		data.branchcode = data.branch.code; 
+		data.branchname = data.branch.name; 
+		data.routecode  = data.route?.code;
+		loanapp.create(data, 'loanapp_search'); 
+
+		def searchvalues = [data.appno, data.borrower.name]; 
+		for (sval in searchvalues) {
+			def o = [
+				objid: 'IDX' + new UID(), 
+				appid: data.objid, 
+				searchtext: sval 
+			];
+			loanapp.create(o, 'loanapp_search_index'); 		
+		} 
+	} 	
+
+	private void buildBorrower(data) { 
+		loanapp.getBorrowerList([parentid: data.prevloanid]).each{o-> 
+			o.objid = 'LB' + new UID(); 
+			o.parentid = data.objid; 
+			loanapp_borrower.create(o); 
+		} 
+	} 
+
+	private void buildBusiness(data) { 
+		loanapp.getBusinessList([parentid: data.prevloanid]).each{o-> 
+			o.objid = 'LBU' + new UID(); 
+			o.parentid = data.objid; 
+			o.ci_physicaloutlook = null;
+			o.ci_evaluation = null;	
+			o.ci_timefiled = null; 
+			o.ci_dtfiled = null; 
+			o.ci_filedby = null; 
+			o.ci_amount = 0.0; 
+			loanapp_business.create(o); 
+		} 
+	} 	
+
+	private void buildOtherLending(data) { 
+		loanapp.getOtherLendingList([objid: data.prevloanid]).each{o-> 
+			o.objid = 'LOL' + new UID(); 
+			o.parentid = data.objid; 
+			loanapp_otherlending.create(o); 
+		} 
+	} 	
+
+	private void buildCollateral(data) { 
+		loanapp.getCollateralApplianceList([parentid: data.prevloanid]).each{o-> 
+			o.objid = 'LCA' + new UID(); 
+			o.parentid = data.objid; 
+			loanapp_collateral.create(o, 'appliance'); 
+		} 
+		loanapp.getCollateralVehicleList([parentid: data.prevloanid]).each{o-> 
+			o.objid = 'LCV' + new UID(); 
+			o.parentid = data.objid; 
+			loanapp_collateral.create(o, 'vehicle'); 
+		} 
+		loanapp.getCollateralPropertyList([parentid: data.prevloanid]).each{o-> 
+			o.objid = 'LCP' + new UID(); 
+			o.parentid = data.objid; 
+			loanapp_collateral.create(o, 'property'); 
+		} 
+		loanapp.getCollateralOtherList([objid: data.prevloanid]).each{o-> 
+			o.objid = 'LCO' + new UID(); 
+			o.parentid = data.objid; 
+			loanapp_collateral.create(o, 'other'); 
+		} 
+	} 
+
+	private String addLeadingChars(value, schar, length) {
+		def buffer = new StringBuffer();
+		def sval = (value == null? "": value.toString()); 
+		def len = length-sval.length();
+		for (int i=0; i<len; i++) {
+			buffer.append(schar); 
+		} 
+		buffer.append(sval);
+		return buffer.toString(); 
+	} 
+}

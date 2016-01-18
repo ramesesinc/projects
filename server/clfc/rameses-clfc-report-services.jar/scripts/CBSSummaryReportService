@@ -1,0 +1,69 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.services.extended.*;
+import java.text.SimpleDateFormat;
+
+class CBSSummaryReportService
+{	
+	@Env
+	def env;
+
+	@ActiveDB(value="collection_cb")
+	def em;
+
+	@ActiveDB(value="loan_route")
+	def loan_route;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@Service("BranchService")
+	def branchSvc;
+
+	@ProxyMethod
+	public def getReportData( params ) {
+		def dateFormat = new SimpleDateFormat("yyyy-MMM-dd");
+		def startdate = dateFormat.format(java.sql.Date.valueOf(params.startdate.toString()));
+		def enddate = dateFormat.format(java.sql.Date.valueOf(params.enddate.toString()));
+		def xitems = em.getCashBreakdownByStartdateAndEnddate(params);
+		if (!xitems) throw new Exception("No cash breakdowns from " + startdate + " to " + enddate + ".");
+
+		def items = xitems.findAll{ (it.isencashed==0 && it.state=='VERIFIED') }
+		def list = [];
+		def item;
+		items.each{ o->
+			o.date = new SimpleDateFormat("MMM-dd-yyyy").format(java.sql.Date.valueOf(o.txndate.toString()));
+			item = list.find{ it.route == o.route }
+			if (!item) {
+				item = [:];
+				item.putAll(o);
+				list.add(item);
+			}
+		}
+
+		def l;
+		list.each{ o->
+			o.list = [];
+			l = items.findAll{ it.route == o.route }
+			l.each{
+				item = [:];
+				item.putAll(it);
+				o.list.add(item);
+			}
+			o.total = l.amount.sum();
+			o.list.sort{ it.txndate }
+		}
+
+		def branch = branchSvc.open([:]);
+		def data = [
+			date_period : startdate + " TO " + enddate,
+			dtprinted	: new SimpleDateFormat("MMM-dd-yyyy hh:mm:ss a").format(dateSvc.serverDate),
+			printedby 	: env.NAME,
+			items		: list
+		];
+		branch.each{ k, v->
+			data["branch_"+k] = v;
+		}
+		return data;
+	}
+}

@@ -1,0 +1,11 @@
+import com.rameses.annotations.*;
+
+class ComakerInterceptor
+{
+	@After(pattern="ComakerService.open")
+	public def afterOpen( evt ) {
+		def result = evt.result;
+		result.comakers = result.borrowers;
+		result.remove('borrowers');
+	}
+}

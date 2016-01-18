@@ -1,0 +1,92 @@
+import com.rameses.annotations.*;
+import com.rameses.common.*;
+import com.rameses.services.extended.*;
+import java.rmi.server.UID;
+
+class ComakerService 
+{	
+	@ActiveDB(value='loanapp_borrower')
+	def loanapp_borrower; 
+	
+	@ActiveDB('borrower')
+	def borrower;
+
+	@ActiveDB('customer')
+	def customer;
+
+	@ActiveDB('customerindividual')
+	def customerindividual;
+
+	@Service('LoanAppService') 
+	def loanAppService; 
+
+	@Service('BorrowerService') 
+	def borrowerService; 
+
+	@ProxyMethod 
+	public def open( params ) { 
+		if (!params.objid) throw new Exception('Please specify objid'); 
+
+		def data = loanAppService.findByObjid(params);
+		if (!data) throw new Exception('\''+params.objid+'\' loan application record not found'); 
+
+		def b = borrower.read([objid: data.borrower.objid]);
+		if (b) {
+			data.borrower.entitytype = b.type;
+			//println 'entity type ' + b.type;
+		}
+		
+		data.borrowers = loanapp_borrower.getComakers([parentid: data.objid]); 
+		return data; 
+	} 
+
+	@ProxyMethod 
+	public def openBorrower( params ) {
+		def data = borrowerService.open(params);
+		return data;
+	}
+
+	@ProxyMethod 
+	public def update ( params ) {
+		if (!params.objid) throw new Exception('Please specify objid'); 
+
+		def data = loanAppService.findByObjid(params);
+		if (!data) throw new Exception('\''+params.objid+'\' loan application record not found'); 
+
+		def borrowers = params.remove('borrowers'); 
+		def cust, custindi;
+		for (o in borrowers) {
+			cust = customer.read([objid: o.objid]);
+			if (cust) {
+				o.type = cust.type;
+				if (cust.type == 'INDIVIDUAL') {
+					custindi = customerindividual.read(cust);
+					if (custindi) {
+						o.name = borrowerService.createFullName(custindi.lastname, custindi.firstname, custindi.middlename); 
+					}
+				} else {
+					o.name = cust.name;
+				}
+			}
+
+			o.principalid = data.borrower.objid; 
+			borrowerService.update(o); 
+		}
+
+		loanapp_borrower.removeComakers([parentid: data.objid]); 
+		for (o in borrowers) {
+			def lb = [
+				objid: 		  'LBRWR' + new UID(), 
+				parentid: 	  data.objid, 
+				borrowerid:   o.objid, 
+				borrowername: o.name, 
+				principalid:  data.borrower.objid, 
+				relaterid:    o.objid, 
+				type: 		  'COMAKER',
+				relation:     o.relation  
+			]; 
+			loanapp_borrower.create(lb, 'comaker'); 
+		} 
+		return data; 
+	} 
+}

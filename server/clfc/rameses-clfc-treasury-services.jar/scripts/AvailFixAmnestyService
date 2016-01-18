@@ -1,0 +1,358 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.services.extended.*;
+import java.rmi.server.UID;
+import org.joda.time.*;
+
+class AvailFixAmnestyService extends ActiveCrudListService
+{
+	@Env
+	def env;
+
+	@ActiveDB('ledgeramnesty_fix')
+	def em;
+
+	@ActiveDB('ledgeramnesty')
+	def ledgeramnesty;
+
+	@ActiveDB("datatxnlog")
+	def txnlog; 
+
+	@Service('DateService')
+	def dateSvc;
+
+	@Service("InboxService")
+	def inboxSvc;
+
+	@ProxyMethod
+	public def getColumns( params ) {
+		def cols = [];
+		if (!params.state) cols << [name: 'txnstate', caption: 'Status'];
+
+		cols << [name: 'loanapp.appno', caption: 'App. No.'];
+		cols << [name: 'borrower.name', caption: 'Borrower'];
+		cols << [name: 'dtstarted', caption: 'Start Date', type: 'date', outputFormat: 'MMM-dd-yyyy'];
+		cols << [name: 'dtended', caption: 'End Date', type: 'date', outputFormat: 'MMM-dd-yyyy'];
+		cols << [name: 'description', caption: 'Availed'];
+
+		if (params.state == 'VERIFIED') {
+			cols << [name: 'dtverified', caption: 'Date Verified'];
+			cols << [name: 'verifier.name', caption: 'Verified By'];
+		}
+
+		return cols;
+	}
+
+	@ProxyMethod
+	public def getStates() {
+		return [
+			[caption: 'All'],
+			[caption: 'DRAFT', state: 'DRAFT'],
+			[caption: 'AVAILED', state: 'AVAILED'],
+			[caption: 'FOR VERIFICATION', state: 'FOR_VERIFICATION'],
+			[caption: 'VERIFIED', state: 'VERIFIED'],
+		]
+	}
+
+	void beforeList( params ) {
+		params.searchtext = (params.searchtext? params.searchtext : '') + '%';
+		if (params.state) {
+			params._listMethod = 'getListByState';
+		} 
+	}
+
+	private void validateBeforeSave( data ) {
+		//if (!data.option) throw new Exception('Please specify an option to avail.');
+
+		if (!data.items) throw new Exception('Please specify at least 1 item.');
+	}
+
+	void beforeCreate( data ) {
+		//validateBeforeSave(data);
+		data.dtcreated = dateSvc.serverDate;
+		data.author = [objid: env.USERID, name: env.NAME];
+		if (!data.txnstate) data.txnstate = 'DRAFT';
+		resolveOption(data);
+	}
+
+	void beforeUpdate( data ) {
+		//validateBeforeSave(data);
+		resolveOption(data);
+	}
+
+	void resolveOption( data ) {
+		if (data.option) {
+			def opt = data.option;
+			data.refid = opt.objid;
+			data.type = opt.type;
+			data.description = opt.description;
+			data.amount = opt.amount;
+			data.balance = data.amount;
+		}
+	}
+
+	void afterCreate( data ) {
+		updateItems(data);
+	}
+
+	void afterUpdate( data ) {
+		updateItems(data);
+	}
+
+	private void updateItems( data ) {
+		data._removeditems?.each{ o->
+			em.delete(o, 'item');
+		}
+
+		data._addeditems?.each{ o->
+			if (!o.index) o.index = 0;
+			if (!o.totaldays) o.totaldays = 0;
+			em.create(o, 'item');
+		}
+
+		data?.item?.each{ o->
+			if (!o.index) o.index = 0;
+			if (!o.totaldays) o.totaldays = 0;
+			em.update(o, 'item');
+		}
+	}
+
+	void afterOpen( data ) {
+		data.items = em.getItems(data);
+
+		def sb = ledgeramnesty.findSendBackByRefidAndState([refid: data.objid, state: 'OPEN']);
+		if (sb) {
+			//data.txnstate += ' - SEND BACK';
+			data.sendbackremarks = sb.remarks;
+		}
+
+		if (data.txnstate == 'FOR_VERIFICATION' && !sb) {
+			data.allowsendback = true;
+		}
+
+		if (data.txnstate == 'DRAFT' || sb) {
+			data.allowavail = true;
+		}
+	}
+
+	@ProxyMethod
+	public def getAmnestyInfo( params ) {
+		def data = ledgeramnesty.read(params);
+		if (!data) throw new Exception('Amnesty record does not exist or has already been deleted.');
+
+		if (data.items) data.remove('items');
+
+		return data;
+	}
+
+	@ProxyMethod
+	public def getItemInfo( params ) {
+		def data = ledgeramnesty.read(params, 'detail');
+		if (!data) throw new Exception('Amnesty option record does not exist or has already been deleted.');
+
+		return data;
+	}
+
+	private def parseDate( date ) {
+		if (!date) return null;
+		if (date instanceof Date) {
+			return date;
+		} else {
+			return java.sql.Date.valueOf(date);
+		}
+	}
+
+	@ProxyMethod
+	public def avail( params ) {
+		def data = changeState(params, 'AVAILED');
+
+		data.remove('items');
+
+		def currentdate = dateSvc.serverDate;
+
+		data.dtstarted = currentdate.toString().split(' ')[0];
+		def opt = data.option;
+		if (opt) {
+			def type = opt.type?.value;
+			if (type == 'spotcash') {
+				data.dtended = data.dtstarted;
+			} else {
+				def cal = Calendar.getInstance();
+				cal.setTime(parseDate(data.dtstarted));	
+
+				if (type == 'term') {
+					if (opt.usedate==1) {
+						cal.setTime(parseDate(opt.date));
+					} else {
+						if (opt.days > 0 ) {
+							cal.add(Calendar.DATE, opt.days);
+						}
+						if (opt.months > 0) {
+							cal.add(Calendar.MONTH, opt.months);
+						}
+					}
+				} else if (type == 'lumpsum') {
+					if (opt.days > 0) {
+						cal.add(Calendar.DATE, opt.days);
+					}
+				}
+
+				data.dtended = dateSvc.parse('yyyy-MM-dd', cal.getTime());
+			}
+			opt.dtstarted = data.dtstarted;
+			opt.dtended = data.dtended;
+		}
+
+		//throw new Exception('stopping');
+
+		data.dtavailed = currentdate;
+		data.availedby = [objid: env.USERID, name: env.NAME];
+		em.update(data);
+
+
+		return open(data);
+	}
+
+	@ProxyMethod
+	public def sendBack( params ) {
+		def data = em.read(params);
+		if (!data) throw new Exception('Avail fix record does not exist or has already been deleted.');
+
+		def sb = ledgeramnesty.findSendBackByRefidAndState([refid: data.objid, state: 'OPEN']);
+		if (!sb) {
+			sb = [
+				objid	 	: 'LSB' + new UID(),
+				refid 		: data.objid,
+				state 		: 'OPEN',
+				dtcreated	: dateSvc.serverDate,
+				author		: [objid: env.USERID, name: env.NAME],
+				remarks 	: params.sendbackremarks
+			];
+			ledgeramnesty.create(sb, 'sendback');
+		}
+
+		return open(data);
+	}
+
+	@ProxyMethod
+	public def submitForVerification( params ) {
+		def data = changeState(params, 'FOR_VERIFICATION');
+
+		data.remove('items');
+
+		def currentdate = dateSvc.serverDate;
+		data.dtsubmittedforverification = currentdate;
+		data.subtmittedforverificationby = [objid: env.USERID, name: env.NAME];
+		em.update(data);
+
+		def msginfo = [ 
+			objid 		: data.objid, 
+			dtcreated	: currentdate, 
+			refid 		: data.objid, 
+			filetype 	: 'availfixamnesty', 
+			message 	: 'For verification amnesty with availed option ' + data.option?.description + ' for ' + data.borrower?.name + '.', 
+			senderid	: env.USERID, 
+			sendername 	: env.NAME, 
+			recipientid : 'APPROVER' 
+		]; 
+		inboxSvc.addMessage( msginfo );
+
+		return open(data);
+	}
+
+	@ProxyMethod
+	public def verify( params ) {
+		def data = changeState(params, 'VERIFIED');
+
+		def items = data.remove('items');
+
+		def dtstarted = parseDate(data.dtstarted);
+		def start = new LocalDate(dtstarted);
+		def end, cal = Calendar.getInstance();
+		items?.each{ o->
+			cal.setTime(dtstarted);
+			if (o.usedate == 1) {
+				cal.setTime(parseDate(o.date));
+			} else {
+				if (o.months > 0) cal.add(Calendar.MONTH, o.months);
+				if (o.days > 0) cal.add(Calendar.DATE, o.days);
+			}
+			end = new LocalDate(cal.getTime());
+			o.totaldays = Days.daysBetween(start, end).getDays();
+		}
+
+		items?.sort{ it.totaldays }
+		items?.eachWithIndex{ itm, idx->
+			itm.index =  idx;
+			em.update(itm, 'item');
+		}
+
+		def currentdate = dateSvc.serverDate;
+		def user = [objid: env.USERID, name: env.NAME];
+
+		data.dtverified = currentdate;
+		data.verifier = user;
+		em.update(data, 'verify');
+
+		inboxSvc.removeMessageByRefid([refid: data.objid]);
+
+		def ac = ledgeramnesty.findActiveByAmnestyidAndRefid([amnestyid: data.amnestyid, refid: data.objid]);
+		if (!ac) {
+			def opt =  data.option;
+			ac = [
+				objid		: data.amnestyid,
+				dtfiled		: currentdate,
+				author		: user,
+				amnestyid 	: data.amnestyid,
+				refid 		: data.objid,
+				type 		: opt?.amnestytype?.value,
+				description	: data.description,
+				dtstarted	: data.dtstarted,
+				dtended 	: data.dtended
+			];
+			ledgeramnesty.create(ac, 'active');
+		}
+
+		return open(data);
+	}
+
+	private def changeState( params, state ) {
+		def data = em.read(params);
+		if (!data) throw new Exception('Avail fix record does not exist or has already been deleted.');
+
+		if (data.txnstate == state) {
+			throw new Exception('Avail fix record already ' + state + '.');
+		}
+
+		data.txnstate = state;
+		em.changeState(data);
+
+		def action, remarks;
+		switch (state) {
+			case 'FOR_VERIFICATION' : action = 'For Verification';
+									  remarks = 'Submit for verification amnesty with availed option ' + data.option?.description + ' for ' + data.borrower?.name + '.';
+									  break;
+			case 'VERIFIED' 		: action = 'Verify';
+									  remarks = 'Verified amnesty with availed option ' + data.option?.description + '.';
+									  break;
+			case 'AVAILED' 			: action = 'Avail';
+									  remarks = 'Avail amnesty with availed option ' + data.option?.description + '.';
+									  break;
+		}
+
+		if (action && remarks) {
+			def loginfo = [
+				objid 	: 'TLOG' + new UID(), 
+				txndate : dateSvc.serverDate, 
+				txnid   : data.objid, 
+				user    : [objid: env.USERID, username: env.USER], 
+				action	: action, 
+				remarks : remarks
+			]; 
+			txnlog.create( loginfo ); 	
+		}
+
+		return open(data);
+	}
+
+}

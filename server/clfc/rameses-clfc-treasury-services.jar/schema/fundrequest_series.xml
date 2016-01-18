@@ -1,0 +1,13 @@
+<schema> 
+	<element name="fundrequest_series" tablename="fundrequest_series"> 
+		<field name="objid" primary="true"/> 
+		<field name="prefix" required="true"/> 
+		<field name="seriesno" required="true"/> 
+		<field name="lockid"/> 
+	</element> 
+
+	<element name="lock" tablename="fundrequest_series"> 
+		<field name="objid" primary="true"/> 
+		<field name="lockid"/> 
+	</element> 	
+</schema> 

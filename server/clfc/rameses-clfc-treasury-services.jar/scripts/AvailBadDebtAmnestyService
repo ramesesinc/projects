@@ -1,0 +1,282 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.services.extended.*;
+import java.rmi.server.UID;
+
+class AvailBadDebtAmnestyService extends ActiveCrudListService
+{
+	@Env
+	def env;
+
+	@ActiveDB('ledgeramnesty_baddebt')
+	def em;
+
+	@ActiveDB('ledgeramnesty')
+	def ledgeramnesty;
+
+	@ActiveDB('loan_ledger')
+	def loan_ledger;
+
+	@ActiveDB('loanapp')
+	def loanapp;
+
+	@Service('DateService')
+	def dateSvc;
+
+	@Service('InboxService')
+	def inboxSvc;
+
+	@ProxyMethod
+	public def getColumns( params ) {
+		def cols = [];
+		if (!params.state) cols << [name: 'txnstate', caption: 'Status'];
+
+		cols << [name: 'dtcreated', caption: 'Date Created'];
+		cols << [name: 'author.name', caption: 'Created By'];
+		cols << [name: 'loanapp.appno', caption: 'App. No.'];
+		cols << [name: 'borrower.name', caption: 'Borrower'];
+
+		if (params.state == 'APPROVED') {
+			cols << [name: 'dtposted', caption: 'Date Approved'];
+			cols << [name: 'poster.name', caption: 'Approved By'];
+		} else if (params.state == 'DISAPPROVED') {
+			cols << [name: 'dtposted', caption: 'Date Disapproved'];
+			cols << [name: 'poster.name', caption: 'Disapproved By'];
+		} else if (params.state == 'VERIFIED') {
+			cols << [name: 'dtverified', caption: 'Date Verified'];
+			cols << [name: 'verifier.name', caption: 'Verified By'];
+		}
+
+		return cols;
+	}
+
+
+	@ProxyMethod
+	public def getStates() {
+		return [
+			[caption: 'All'],
+			[caption: 'DRAFT', state: 'DRAFT'],
+			[caption: 'FOR APPROVAL', state: 'FOR_APPROVAL'],
+			[caption: 'APPROVED', state: 'APPROVED'],
+			[caption: 'DISAPPROVED', state: 'DISAPPROVED'],
+			[caption: 'FOR VERIFICATION', state: 'FOR_VERIFICATION'],
+			[caption: 'VERIFIED', state: 'VERIFIED']
+		];
+	}
+
+	void beforeList( params ) {
+		params.searchtext = (params.searchtext? params.searchtext : '') + '%';
+		if (params.state) {
+			params._listMethod = 'getListByState';
+		}
+	}
+
+	void beforeCreate( data ) {
+		data.dtcreated = dateSvc.serverDate;
+		data.author = [objid: env.USERID, name: env.NAME];
+		if (data.txnstate) data.txnstate = 'DRAFT';
+	}
+
+	void afterOpen( data ) {
+		def states = ['APPROVED': null, 'FOR_VERIFICATION': null, 'VERIFIED': null];
+
+		if (states.containsKey(data.txnstate)) {
+			data.shownoncashinfo = true;
+		}
+	}
+
+	@ProxyMethod
+	public def getAmnestyInfo( params ) {
+		def data = ledgeramnesty.read(params);
+		if (!data) throw new Exception('Amnesty record does not exist or has already been deleted.');
+
+		def items = [];
+		if (data.items) items = data.remove('items');
+
+		data.baddebt = [amount: data.ledger?.balance];
+		if (items) {
+			def i = items?.find{ it.amnestytype?.value == 'BADDEBT' }
+			if (i) {
+				data.baddebt.refid = i.objid;
+				data.baddebt.description = i.description;
+			}
+		}
+
+		return data;
+	}	
+
+	@ProxyMethod
+	public def submitForApproval( params ) {
+		def data = changeState(params, 'FOR_APPROVAL');
+
+		def currentdate = dateSvc.serverDate;
+
+		data.dtsubmitforapproval = currentdate;
+		data.submitforapprovalby = [objid: env.USERID, name: env.NAME];
+		em.update(data);
+
+		def msginfo = [ 
+			objid 		: data.objid, 
+			dtcreated	: currentdate, 
+			refid 		: data.objid, 
+			filetype 	: 'availbaddebtamnesty', 
+			message 	: 'For approval bad debt for ' + data.borrower?.name + '.', 
+			senderid	: env.USERID, 
+			sendername 	: env.NAME, 
+			recipientid : 'APPROVER' 
+		]; 
+		inboxSvc.addMessage( msginfo );
+
+		return open(data);
+	}
+
+	private def changeState( params, state ) {
+		def data = em.read(params);
+		if (!data) throw new Exception('Avail bad debt amnesty record does not exist or has already been deleted.');
+
+		if (data.txnstate == state) {
+			throw new Exception('Avail bad debt record already ' + state + '.');
+		}
+
+		data.txnstate = state;
+		em.changeState(data);
+
+		return open(data);
+	}
+
+	@ProxyMethod
+	public def approveDocument( params ) {
+		def data = approveImpl(params, 'APPROVED');
+
+		/*
+		def currentdate = dateSvc.serverDate;
+
+		def l = data.ledger;
+		def lastitem = loan_ledger.findLastLedgerItemByParentId([parentid: l?.objid]);
+		if (lastitem) {
+
+			def item = [
+				objid			: 'AMD' + new UID(),
+				parentid 		: l?.objid,
+				state 			: 'ADJUSTMENT',
+				amtdue 			: 0, //(lastitem? lastitem.amtdue : 0),
+				interestdue 	: 0, //(lastitem? lastitem.interestdue : 0),
+				penaltydue 		: 0, //(lastitem? lastitem.penaltydue : 0),
+				amtpaid 		: 0, //(lastitem? lastitem.amtpaid : 0),
+				interestpaid	: 0, //(lastitem? lastitem.interestpaid : 0),
+				penaltypaid		: 0, //balance, //> 0? balance * -1 : 0), //(lastitem? lastitem.penaltypaid : 0),
+				amtbal 			: 0, //(lastitem? lastitem.amtbal : 0),
+				interestbal 	: 0, //(lastitem? lastitem.interestbal : 0),
+				penaltybal 		: 0, //(lastitem? lastitem.penaltybal : 0),
+				dtpaid 			: lastitem?.dtpaid,
+				refno			: lastitem?.refno,
+				day 			: lastitem?.day,
+				balance 		: (data.amount * -1), //(lastitem? lastitem.balance : l.totalprincipal),
+				partialpayment 	: 0,
+				txndate 		: currentdate,
+				amnestyid 		: data.amnestyid,
+				baseamount 		: 0, //(lastitem? lastitem.baseamount : 0),
+				groupbaseamount : 0, //(lastitem? lastitem.groupbaseamount : 0),
+				remarks 		: 'Bad Debt'
+			]
+			//println 'item ' + item;
+			loan_ledger.create(item, "detail");
+			item.parentid = data.amnestyid;
+			ledgeramnesty.create(item, 'posting-detail');
+		}
+
+
+		def xledger = loan_ledger.read([objid: l.objid]);
+		xledger.state = 'CLOSE';
+		loan_ledger.update(xledger);
+		loanapp.update([objid: xledger.appid, state: 'CLOSED']);
+		def xx = loanapp.read([objid: xledger.appid], 'loanapp_search');
+		if (xx) {
+			loanapp.update([objid: xledger.appid, state: 'CLOSED'], 'loanapp_search');	
+		}
+		*/
+
+		/*
+		def currentdate = dateSvc.serverDate;
+		def ac = ledgeramnesty.findActiveByAmnestyidAndRefid([amnestyid: data.amnestyid, refid: data.objid]);
+		if (!ac) {
+			ac = [
+				objid		: data.amnestyid,
+				dtfiled		: currentdate,
+				author		: [objid: env.USERID, name: env.NAME],
+				amnestyid 	: data.amnestyid,
+				refidr 		: data.objid,
+				type 		: 'BADDEBT',
+				description	: data.description,
+				dtstarted	: currentdate
+			];
+			ledgeramnesty.create(ac, 'active');
+		}
+		*/
+
+		return open(data);
+	}
+
+	@ProxyMethod
+	public def disapprove( params ) {
+		def data = approveImpl(params, 'DISAPPROVED');
+
+		return open(data);
+	}
+
+	private def approveImpl( params, state ) {
+		def data = changeState(params, state);
+
+		data.dtposted = dateSvc.serverDate;
+		data.poster = [objid: env.USERID, name: env.NAME];
+		em.update(data);
+
+		inboxSvc.removeMessageByRefid([refid: data.objid]);
+
+		return open(data);
+	}
+
+	@ProxyMethod
+	public def submitForVerification( params ) {
+		def data = changeState(params, 'FOR_VERIFICATION');
+
+		def currentdate = dateSvc.serverDate;
+
+		data.dtsubmittedforverification = currentdate;
+		data.submittedforverificationby = [objid: env.USERID, name: env.NAME];
+		em.update(data);
+
+		def msginfo = [ 
+			objid 		: data.objid, 
+			dtcreated	: currentdate, 
+			refid 		: data.objid, 
+			filetype 	: 'availbaddebtamnesty', 
+			message 	: 'For verification bad debt for ' + data.borrower?.name + '.', 
+			senderid	: env.USERID, 
+			sendername 	: env.NAME, 
+			recipientid : 'APPROVER' 
+		]; 
+		inboxSvc.addMessage( msginfo );
+
+		return open(data);
+	}
+
+	@ProxyMethod
+	public def verify( params ) {
+		def data = changeState(params, 'VERIFIED');
+
+		def currentdate = dateSvc.serverDate;
+		def user = [objid: env.USERID, name: env.NAME];
+
+		data.dtverified = currentdate;
+		data.verifier = user;
+		em.update(data, 'verify');
+
+		inboxSvc.removeMessageByRefid([refid: data.objid]);
+
+		throw new Exception('stopping');
+
+		return open(data);
+	}
+
+}

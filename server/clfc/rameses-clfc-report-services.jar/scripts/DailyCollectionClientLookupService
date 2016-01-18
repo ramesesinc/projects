@@ -1,0 +1,34 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.services.extended.*;
+
+class DailyCollectionClientLookupService 
+{
+	@ActiveDB("customer")
+	def em;
+
+	@ProxyMethod
+	public def getColumns( params ) {
+		return [
+			[name: 'name', caption: 'Name'],
+			[name: 'address.text', caption: 'Address']
+		];
+	}
+
+	def searchTypes = [
+		[filter: ' c.name LIKE $P{searchtext} '],
+		[filter: ' c.custno LIKE $P{searchtext} '] 
+	];
+
+	@ProxyMethod
+	public def getList( params ) {
+		params.searchtext = (params.searchtext? params.searchtext : '') + '%';
+		
+		for (o in searchTypes) { 
+			params.putAll(o); 
+			def list = em.getLookupCustomers(params); 
+			if (!list.isEmpty()) return list; 
+		}
+		return [];
+	}
+}

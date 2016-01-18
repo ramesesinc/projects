@@ -1,0 +1,36 @@
+
+import com.rameses.annotations.*;
+import com.rameses.common.*;
+import java.rmi.server.UID;
+
+class HQNotifyInterceptor 
+{ 
+	@Service('CloudNotificationService') 
+	def proxy; 
+
+	@Env 
+	def env; 
+
+	@After(pattern="AmnestyService.submitForApproval")
+	public void submitAmnestyForApproval( evt ) { 
+		def result = evt.result; 
+		def args = [result] as Object[];
+        def asyncreq = new AsyncRequest('HQAmnestyService', 'create', args, env); 
+        asyncreq.contextName = 'clfc';		
+
+        def msg = [
+            sender   	 : env.FULLNAME, 
+            senderid 	 : env.USERID,            
+            origin   	 : env.ORGID,
+            data     	 : asyncreq,             
+            message  	 : 'Amnesty No. ' + result.refno + ' (For-Approval)', 
+            messagetype  : 'amnesty-forapproval',
+            filetype 	 : 'amnesty-forapproval', 
+            groupid  	 : 'amnesty-approver', 
+            channel  	 : 'clfchq', 
+            channelgroup : 'clfchq' 
+        ]; 
+        proxy.addMessage(msg); 
+	} 
+
+} 

@@ -1,0 +1,1347 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.services.extended.*;
+import java.rmi.server.UID;
+
+class EncashmentService extends ActiveCrudListService
+{
+	@Env
+	def env;
+
+	@ActiveDB("encashment")
+	def em;
+
+	@ActiveDB("datatxnlog")
+	def txnlog; 
+
+	@ActiveDB("passbook")
+	def passbook;
+
+	@ActiveDB("checkaccount")
+	def checkaccount;
+
+	@ActiveDB('checkpayment')
+	def checkpayment;
+
+	@ActiveDB("collection_cb")
+	def collection_cb;
+
+	@ActiveDB('cashexchange')
+	def cashexchange;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@Service("CheckAccountService")
+	def checkAcctSvc;
+
+	@Service("InboxService")
+	def inboxSvc;
+
+	@Service("SequenceService")
+	def seqSvc; 
+
+	@Service("BranchService")
+	def branchSvc;
+
+	@ProxyMethod
+	public def getColumns( params ) {
+		def cols = [];
+
+		if (!params.state) cols << [name: 'txnstate', caption: 'Status'];
+
+		cols << [name: 'txndate', caption: 'Date', type: 'date', outputFormat: 'MMM-dd-yyyy'];
+		cols << [name: 'amount', caption: 'Amount', type: 'decimal', format: '#,##0.00'];
+		cols << [name: 'checkno', caption: 'Check No.'];
+		cols << [name: 'bank.objid', caption: 'Bank'];
+
+		if (params.state == 'APPROVED') {
+			cols << [name: 'dtposted', caption: 'Date Approved'];
+			cols << [name: 'poster.name', caption: 'Approved By'];
+		} else if (params.state == 'DISAPPROVED') {
+			cols << [name: 'dtposted', caption: 'Date Disapproved'];
+			cols << [name: 'poster.name', caption: 'Disapproved By'];
+		}
+
+		return cols;
+		/*
+		return [
+			[name: 'txnstate', caption: 'Status'],
+			[name: 'txndate', caption: 'Txndate', type: 'date', outputFormat: 'MMM-dd-yyyy'],
+			[name: 'amount', caption: 'Amount', type: 'decimal', format: '#,##0.00'],
+			[name: 'checkno', caption: 'CheckNo'],
+			[name: 'bank.objid', caption: 'Bank'],
+			[name: 'passbook.passbookno', caption: 'PassbookNo'],
+		]
+		*/
+	}
+
+	void beforeList( params ) {
+		params.searchtext = (params.searchtext? params.searchtext : '') + '%';
+		if (params.state) {
+			params._listMethod = 'getListByState';
+		}
+	}
+
+	@ProxyMethod
+	public def getMainPageItems() {
+		return [
+			[name: 'general', caption: 'General Information', index: 0],
+			[name: 'breakdown', caption: 'Breakdown', index: 1],
+			[name: 'change', caption: 'Change', index: 2],
+			[name: 'overage', caption: 'Overage', index: 3]
+		]
+	}
+
+	@ProxyMethod
+	public def getStates() {
+		return [
+			[caption: 'All'],
+			[caption: 'DRAFT', state: 'DRAFT'],
+			[caption: 'FOR APPROVAL', state: 'FOR_APPROVAL'],
+			[caption: 'APPROVED', state: 'APPROVED'],
+			[caption: 'DISAPPROVED', state: 'DISAPPROVED']
+		]
+	}
+
+	private void validateEncashment( data ) {
+		if (!data.cbs) 
+			throw new Exception("At least 1 cash breakdown sheet to be used for encashment is required.");
+
+		def amt = data?.breakdown?.amount?.sum();
+		if (!amt) amt = 0;
+		if (!data.breakdown || amt == 0)
+			throw new Exception("Please specify encashment breakdown.");
+
+		validateCbsHasCashExchange(data);
+	}
+
+	private void validateCbsHasCashExchange( data ) {
+		def item;
+		data?.cbs?.each{ c->
+			item = cashexchange.findByCbsidAndState([state: 'DRAFT', cbsid: c.refid]);
+			if (item) {
+				throw new Exception('Cannot continue transaction. There is a pending cash exchange request for CBS with CBS No. ' + c.cbsno)
+			}
+
+			item = cashexchange.findByCbsidAndState([state: 'FOR_APPROVAL', cbsid: c.refid]);
+			if (item) {
+				throw new Exception('Cannot continue transaction. There is a pending cash exchange request for CBS with CBS No. ' + c.cbsno)
+			}
+		}
+	}
+
+	void beforeCreate( data ) {
+		validateEncashment(data);
+		data.dtcreated = dateSvc.serverDate;
+		data.author = [objid: env.USERID, name: env.NAME];
+		if (!data.txnstate) data.txnstate = 'DRAFT';
+
+		if (!data.overage) {
+			data.overage = getDenominations();
+		}
+		if (!data.change) {
+			data.change = getDenominations();
+		}
+	}
+
+	void afterCreate( data ) {
+		updateEncashmentInfo(data);
+	}
+
+	void xafterCreate( data ) {
+		if (!data.cashbreakdown) {
+			data.cashbreakdown = [
+				objid	: 'ECB' + new UID(),
+				parentid: data.objid
+			];
+		}
+		data.cashbreakdown.dtcreated = data.dtcreated;
+		data.cashbreakdown.author = data.author;
+		if (!data.cashbreakdown.cbsno) {	
+			def branch = branchSvc.open([:]);
+
+			def date = dateSvc.parseCurrentDate();
+			def seqname = 'encash' + date.year;
+			def year = date.year.toString()[2] + date.year.toString()[3];
+			def prefix = 'ENCASH' + branch.code + year;
+			data.cashbreakdown.cbsno = prefix + seqSvc.getNextFormattedSeriesA(seqname,5);
+		}
+		em.create(data.cashbreakdown, "encashment-cb");
+
+		updateEncashmentInfo(data);
+
+		/*
+		if (data.check) {
+			def item = data.check;
+			item.amount = data.amount;
+			item.dtcreated = data.dtcreated;
+			item.author = data.author;
+			em.create(item, "encashment-check");
+		}
+		*/
+	}
+
+	void beforeUpdate( data ) {		
+		validateEncashment(data);
+		if (!data.overage) {
+			data.overage = [];
+			data.overage.addAll(getDenominations());
+		}
+		if (!data.change) {
+			data.change = [];
+			data.change.addAll(getDenominations());
+		}
+	}
+
+	void afterUpdate( data ) {
+		updateEncashmentInfo(data);
+
+		/*
+		if (data.check) {
+			em.update(data.check, "encashment-check");
+		}
+		*/
+	}
+
+	void updateEncashmentInfo( data ) {
+		//def cb = em.findCashBreakdownByParentid(data);
+		def cb = em.read([objid: data.objid], 'encashment-cb');
+		if (!cb) {
+			cb = [
+				objid		: data.objid,
+				parentid 	: data.objid,
+				dtcreated 	: dateSvc.serverDate,
+				author 		: [objid: env.USERID, name: env.NAME],
+				breakdown 	: (data.breakdown? data.breakdown : [])
+			];
+			def branch = branchSvc.open([:]);
+
+			//def date = dateSvc.parseCurrentDate();
+			def year = dateSvc.getServerYear().toString();
+			def seqname = 'encash' + year;
+			def prefix = 'ENCASH' + branch.code + year[2] + year[3];
+			cb.cbsno = prefix + seqSvc.getNextFormattedSeriesA(seqname,5);
+			em.create(cb, 'encashment-cb');
+		} else {
+			cb.breakdown = data.breakdown;
+			em.update(cb, 'encashment-cb');
+		}
+
+		data._removedcbs?.each{ o->
+			em.delete(o, 'encashment-cbs');
+		}
+
+		data._addedcbs?.each{ o->
+			if (!o.breakdown) o.breakdown = getDenominations();
+			if (!o.change) o.change = getDenominations();
+			if (!o.reference) o.reference = getDenominations();
+			em.create(o, 'encashment-cbs');
+		}
+
+		if (data.check) {
+			def item = em.read(data.check, 'encashment-check');
+			if (!item) {
+				item = data.check;
+				item.amount = data.amount;
+				item.dtcreated = data.dtcreated;
+				item.author = data.author;
+				em.create(item, 'encashment-check');
+			} else {
+				em.update(item, 'encashment-check');
+			}
+
+			//item = data.check;
+			//item.amount = data.amount;
+			//item.dtcreated = data.dtcreated;
+			//item.author = data.author;
+			//em.create(item, "encashment-check");
+		}
+
+		updateCbsReference(data);
+		updateCbsBreakdown(data);
+
+		//updateCbsChange(data);
+		//throw new Exception('stopping');
+	}
+
+	/*
+	void xupdateEncashmentInfo( data ) {
+		data._removedcbs.each{ o->
+			em.removeCbsReferenceByParentid(o);
+			em.delete(o, "encashment-cbs");
+		}
+
+		data._addedcbs.each{ o->
+			em.create(o, "encashment-cbs");
+
+			o.items.each{ i->
+				i.objid = 'ECBSR' + new UID();
+				i.parentid = o.objid;
+				em.create(i, "encashment-cbs-reference");
+			}
+		}
+
+		data.encashments?.each{ o->
+			if (!o.objid) o.objid = 'ECBD' + new UID();
+			if (!o.parentid) o.parentid = data.cashbreakdown.objid;
+			if (!o.encashmentid) o.encashmentid = data.objid;
+			em.save(o, "encashment-cb-detail");
+		}
+
+		data.change.each{ o->
+			if (!o.objid) o.objid = 'EC' + new UID();
+			if (!o.parentid) o.parentid = data.objid;
+			em.save(o, "encashment-change");
+		}
+
+		if (data.overage) {
+			def bd = data.remove('overage');
+			def item = em.findOverage([objid: data.objid]);
+			if (!item) {
+				item = [
+					objid		: 'EO'  + new UID(),
+					parentid 	: data.objid,
+					breakdown 	: bd
+				];
+				em.create(item, 'encashment-overage');
+			} else {
+				item = em.read(item, 'encashment-overage');
+				item.breakdown = bd;
+				em.update(item, 'encashment-overage');
+			}
+
+			data.overage = item.breakdown;
+		}
+
+
+		if (data.check) {
+			def item = em.read(data.check, 'encashment-check');
+			if (!item) {
+				item = data.check;
+				item.amount = data.amount;
+				item.dtcreated = data.dtcreated;
+				item.author = data.author;
+				em.create(item, "encashment-check");
+			} else {
+				em.update(item, 'encashment-check');
+			}
+
+			//item = data.check;
+			//item.amount = data.amount;
+			//item.dtcreated = data.dtcreated;
+			//item.author = data.author;
+			//em.create(item, "encashment-check");
+		}
+	}
+	*/
+
+	void afterOpen( data ) {
+		data.check = em.findCheck(data);
+
+		//def cb = em.findCashBreakdownByParentid(data);
+		def cb = em.read([objid: data.objid], 'encashment-cb');
+		if (cb) {
+			data.breakdown = cb.breakdown;
+		}
+
+		updateCbsReference(data);
+
+		def cbs = em.getCbs(data);
+		data.cbs = [];
+		def references = [], item;
+		cbs?.each{ o->
+			item = em.read(o, 'encashment-cbs');
+			if (item) {
+				data.cbs.add(item);
+				item.reference?.each{ b->
+					def i = references.find{ it.denomination == b.denomination }
+					if (!i) {
+						i = [denomination: b.denomination, caption: b.caption, qty: b.qty];
+						i.amount = i.denomination * i.qty;
+						references.add(i);
+					} else {
+						i.qty += b.qty;
+						i.amount = i.denomination * i.qty;
+					}
+				}
+			}
+		}
+
+		data.references = references;
+
+		/*
+		if (data.check) {
+			def p = passbook.read(data.check.passbook);
+			if (!p) throw new Exception("Passbook record does not exist or has already been deleted.");
+
+			data.check.passbook = p;
+		}
+		*/
+		/*
+		data.cbs = em.getCbs(data);
+		data.cbs.each{ o->
+			o.items = em.getCbsReferences(o);
+			o.items.each{ i->
+				if (!data.references) data.references = [];
+				def item = data.references.find{ it.denomination == i.denomination }
+				if (!item) {
+					item = [
+						denomination: i.denomination,
+						qty			: i.qty
+					];
+					item.amount = item.denomination * item.qty;
+					data.references.add(item);
+
+				} else {
+					item.qty += i.qty;
+					item.amount = item.denomination * item.qty;
+
+				}
+			}
+			o.details = em.getCbsDetails(o);
+
+			if (data.txnstate != 'DRAFT') o._filetype = 'encashmentcbs';
+		}
+
+		data.cashbreakdown = em.findCashBreakdownByParentid(data);		
+		data.encashments = em.getCBDetailsByEncashmentid([encashmentid: data.objid]);
+		data.change = em.getChange(data);
+
+		def o = em.findOverage(data);
+		if (o) {
+			o = em.read(o, 'encashment-overage');
+			data.overage = o.breakdown;
+		}
+		*/
+	}
+
+	private void updateCbsChange( data ) {
+		def list = em.getCbs(data);
+		if (!list) return;
+
+		def amt = data?.change?.amount?.sum();
+
+		def denom = [];
+		denom.addAll(getDenominations());
+
+		def xlist = denom.findAll{ it.denomination >= amt }
+
+		if (xlist) {
+			xlist?.each{ it.denomination = parseBigDecimal(it.denomination) }
+			xlist = xlist.sort{ it.denomination }.reverse();
+
+			def xxlist = [], item;
+			list?.each{ o->
+				item = em.read([objid: o.objid], 'encashment-cbs');
+				if (item) xxlist.add(item);
+			}
+
+			def i, j, xitem;
+			for (i = 0; i < xlist?.size(); i++) {
+				item = xlist[i];
+				for (j = 0; j < xxlist?.size(); j++) {
+					xitem = xxlist[j];
+					def xi = xitem?.breakdown?.find{ it.denomination == item.denomination }
+					if (xi) break;
+				}
+			}
+
+			xitem.change = [];
+			xitem.change.addAll(data.change);
+			if (!xitem.change) xitem.change.addAll(getDenominations());
+
+			em.update(xitem, 'encashment-cbs');
+		}
+	}
+
+	private def parseBigDecimal( num ) {
+		if (num instanceof java.lang.Number) {
+			return new BigDecimal(num.toString()).setScale(2);
+		}
+		return num;
+	}
+
+	private void updateCbsBreakdown( data ) {
+		def list = em.getCbs(data);
+		if (!list) return;
+
+		//def cb = em.findCashBreakdownByParentid(data);
+		def cb = em.read([objid: data.objid], 'encashment-cb');
+		def breakdown = [];
+		if (cb) {
+			//cb = em.read(cb, 'encashment-cb')
+			breakdown.addAll(cb.breakdown);
+		}
+		def xlist = [];
+		xlist.addAll(list.sort{ it.amount }.reverse());
+		def item;
+		list = [];
+		xlist?.eachWithIndex{ itm, idx->
+			item = em.read(itm, 'encashment-cbs');
+			if (item) {
+				item.index = idx;
+				item.breakdown = getDenominations();
+				list.add(item);
+			}
+		}
+
+		breakdown = breakdown.findAll{ it.qty > 0 }
+
+		breakdown.sort{ it.denomination }
+		xlist = [];
+		def items = [], qty;
+		breakdown?.each{ b->
+			items = getCbsSufficient(list, b.denomination);
+
+			items.sort{ it.index }
+			qty = b.qty;
+			for (int i=0; i < items?.size(); i++) {
+				def xitem = items[i];
+				if (!xitem.breakdown) {
+					xitem.breakdown = getDenominations();
+				}
+
+				def r = xitem?.reference?.find{ it.denomination == b.denomination }
+				def bd = xitem?.breakdown?.find{ it.denomination == b.denomination }
+				while (true) {
+					def xqty = r.qty - bd.qty;
+					if (xqty <= 0 || qty <= 0) break;
+
+					bd.qty++;
+					qty--;
+				}
+
+				bd.amount = bd.qty * bd.denomination;
+
+				if (qty <= 0) break;
+			}
+		}
+
+		list?.each{ o->
+			em.update(o, 'encashment-cbs');
+		}
+	}
+
+	@ProxyMethod(local=true)
+	public def getDenominations() {
+		return [
+            [caption: 1000.00, denomination: 1000.00, qty: 0, amount: 0.00],
+            [caption: 500.00, denomination: 500.00, qty: 0, amount: 0.00],
+            [caption: 200.00, denomination: 200.00, qty: 0, amount: 0.00],
+            [caption: 100.00, denomination: 100.00, qty: 0, amount: 0.00],
+            [caption: 50.00, denomination: 50.00, qty: 0, amount: 0.00],
+            [caption: 20.00, denomination: 20.00, qty: 0, amount: 0.00],
+            [caption: 10.00, denomination: 10.00, qty: 0, amount: 0.00],
+            [caption: 5.00, denomination: 5.00, qty: 0, amount: 0.00],
+            [caption: 1.00, denomination: 1.00, qty: 0, amount: 0.00],
+            [caption: 0.25, denomination: 0.25, qty: 0, amount: 0.00],
+            [caption: 0.10, denomination: 0.10, qty: 0, amount: 0.00],
+            [caption: 0.05, denomination: 0.05, qty: 0, amount: 0.00]
+		];
+	}
+
+	private def getCbsSufficient( list, denomination ) {
+		def xlist = [], item;
+		list?.each{ o->
+			item = o.reference?.find{ it.denomination == denomination && it.qty > 0 }
+			if (item) {
+				xlist.add(o);
+			}
+		}
+
+		return xlist;
+	}
+
+
+	private void updateCbsReference( data ) {
+		def list = em.getCbs(data);
+		list?.each{ o->
+			updateCbsReferenceImpl(o);
+		}
+	}
+
+	private void updateCbsReferenceImpl( cbs ) {
+		def data = em.read(cbs, 'encashment-cbs');
+		if (!data) throw new Exception('Encashment CBS does not exist or has already been deleted.');
+
+		def cb = collection_cb.read([objid: data.refid]);
+		def breakdown = collection_cb.getDetails(cb);
+
+		def xlist = em.getEncashmentCbsByRefid([refid: data.refid]);
+		def item;
+		xlist?.each{ o->
+			item = em.read([objid: o.objid], 'encashment-cbs');
+			if (item) {
+				item?.breakdown?.each{ b->
+					def i = breakdown?.find{ it.denomination == b.denomination }
+					//if (i && i.qty > 0) {
+					//	i.qty -= b.qty;
+					//}
+					if (i) {
+						i.qty -= b.qty;
+					}
+				}
+				/*
+				if (item.parentid != data.parentid) {
+					item?.change?.each{ b->
+						def i = breakdown?.find{ it.denomination == b.denomination }
+						if (i) {
+							i.qty += b.qty;
+						}
+					}	
+				}
+				*/
+			}
+		}
+
+		breakdown?.each{ 
+			it.qty = new BigDecimal(it.qty.toString()).setScale(0);
+			it.amount = it.qty * it.denomination;
+		}
+
+
+		/*
+		xlist?.each{ o->
+			item = em.read([objid: o.objid], 'encashment-cbs');
+			if (item) {
+				data?.breakdown?.each{ b->
+					def i = breakdown?.find{ it.denomination == b.denomination }
+					if (i && i.qty > 0) {
+						i.qty -= b.qty;
+					} 
+				}
+			}
+		}
+		*/
+
+		def ref = getDenominations();
+
+		ref?.each{ o->
+			item = breakdown?.find{ it.denomination == o.denomination }
+			if (item) {
+				o.qty += item.qty;
+			}
+			o.amount = o.qty * o.denomination;
+		}
+
+		ref?.each{ o->
+			item = data?.breakdown?.find{ it.denomination == o.denomination }
+			if (item) {
+				o.qty += item.qty;
+			}
+			o.amount = o.qty * o.denomination;
+		}
+
+		ref?.each{ 
+			it.amount = it.qty * it.denomination;
+		}
+
+		def amt = ref?.amount?.sum();
+		if (!amt) amt = 0;
+
+		data.reference = ref;
+		data.amount = amt;
+		em.update(data, 'encashment-cbs');
+		//data.references = ref;
+
+		//ref?.each{ println it.denomination + ' ' +  it.qty; }
+
+		//println 'cbs ' + cb;
+
+		//throw new Exception('stopping');
+		//println 'cbs ' + data;
+	}
+
+	private def changeState( params, state ) {
+		def data = em.read(params);
+		if (!data) throw new Exception('Encashment record does not exist or has already been deleted.');
+
+		if (data.txnstate == state) {
+			throw new Exception('Encashment record already been ' + state + '.');
+		}
+
+		data.txnstate = state;
+		em.changeState(data);
+
+		def action, remarks;
+		switch (state) {
+			case 'FOR_APPROVAL' : action = 'For Approval';
+								  remarks = 'Encashment Submit for Approval';
+								  break;
+			case 'APPROVED'		: action = 'Approved';
+								  remarks = 'Encashment Approved';
+								  break;
+			case 'DISAPPROVED'  : action = 'Disapproved';
+								  remarks = 'Encashment Disapproved';
+								  break;
+		}
+
+		if (action && remarks) {
+			def logdata = [
+				objid 	: 'TLOG' + new UID(), 
+				txndate : dateSvc.serverDate,
+				txnid   : data.objid, 
+				user    : [objid: env.USERID, username: env.USER], 
+				action	: action,  
+				remarks : remarks
+			]; 
+			txnlog.create( logdata ); 				
+		}
+
+		return open(data);
+	}
+
+	private void validateReferenceAndBreakdownDenomination( data ) {
+		def cb = em.read(data, 'encashment-cb');
+		def breakdown = cb?.breakdown;
+		if (!breakdown) {
+			breakdown = [];
+			breakdown.addAll(getDenominations());
+		}
+
+		def ref = [];
+		ref.addAll(getDenominations());
+		def cbs = em.getCbs(data);
+		def item;
+		cbs?.each{ o->
+			item = em.read(o, 'encashment-cbs');
+			if (item) {
+				item.reference?.each{ b->
+					def i = ref?.find{ it.denomination == b.denomination }
+					if (i) {
+						i.qty += b.qty;
+					}
+				}
+			}
+		}
+
+		ref?.each{ b->
+			def i = breakdown?.find{ it.denomination == b.denomination }
+			if (i && i.qty > b.qty) {
+				throw new Exception('Breakdown qty for denomination: ' + b.denomination + ' exceeds available qty.');
+			}
+		}
+	}
+
+	@ProxyMethod
+	public def submitForApproval( params ) {
+		def data = changeState(params, 'FOR_APPROVAL');
+		validateCbsHasCashExchange(data);
+		validateReferenceAndBreakdownDenomination(data);
+
+		def msginfo = [ 
+			objid 		: data.objid, 
+			dtcreated	: dateSvc.serverDate, 
+			refid 		: data.objid, 
+			filetype 	: 'encashment', 
+			message 	: 'For approval encashment with Check No. '+ data.check.checkno, 
+			senderid	: env.USERID, 
+			sendername 	: env.NAME, 
+			recipientid : 'APPROVER' 
+		]; 
+		inboxSvc.addMessage( msginfo );
+		//updateCbsReference(data);
+
+		//throw new Exception('stopping');
+
+		return open(data);
+	}
+
+	//@ProxyMethod
+	public def xsubmitForApproval( params ) {
+		def data = em.read(params);
+		if (!data) throw new Exception("Record does not exist or has already been deleted.");
+
+		if (data.txnstate == 'FOR_APPROVAL')
+			throw new Exception("This document has already been submitted for approval.");
+
+		data.txnstate = 'FOR_APPROVAL';
+		em.changeState(data);
+
+		def cbs = params.cbs;
+		cbs.each{ o->
+			o.totalamount = o.items.amount.sum();
+			if (!o.totalamount) o.totalamount = 0;
+		}
+
+		cbs  = cbs.sort{ it.totalamount }.reverse();
+		cbs.eachWithIndex{ itm, idx->
+			itm.index = (idx+1);
+			//println 'item ' + itm;
+		}
+		//println 'amount ' + data.amount;
+		//cbs.each{ println it }
+		//throw new Exception('stop');
+
+		//random taking of breakdown from cbs
+		//def cbs = params.cbs;
+		def item;
+		cbs.each{ o->
+			if (!o.details) o.details = [];
+			o.items.each{ i->
+				i.remaining = i.qty;
+				item = o.details.find{ it.denomination == i.denomination }
+				if (!item) {
+					item = [
+						objid		: 'ECD' + new UID(),
+						parentid 	: o.objid,
+						denomination: i.denomination,
+						qty			: 0,
+						amount 		: 0.00
+					];
+					o.details.add(item);
+				}
+			}
+		}
+
+
+		def encashments = params.encashments.findAll{ it.qty > 0 };	
+		//encashments.each{ println it }
+		//def items, counter, hasremaining, choice, index, detail;
+		//def size, randomNum;
+		def qty, items, choice, prevqty, detail;
+		encashments.each{ o->
+			qty = o.qty;
+			items = getCbsSufficientForEncashment(cbs, o.denomination);
+			//cbs.items.findAll{ it.denomination == o.denomination && it.remaining > 0 }
+			//items.each{ println it }
+			//println 'items ' + items;
+			//throw new Exception('stop');
+			items.sort{ it.index }
+			for (int i=0; i<items.size(); i++) {
+				prevqty = qty;
+				choice = items[i];
+				item = choice.items.find{ it.denomination == o.denomination }
+				if (item.remaining >= qty) {
+					item.remaining -= qty;
+					qty = 0;
+				} else if (item.remaining < qty) {
+					qty -= item.remaining;
+					item.remaining = 0;
+				}
+				//item.remaining -= 
+
+				detail = choice.details.find{ it.denomination == o.denomination }
+				detail.qty += (prevqty-qty);
+				detail.amount = detail.denomination * detail.qty;
+				if (qty <= 0) break;
+			}
+			//while(qty > 0) {
+			//	items.each{ i->
+			//		if ()
+			//	}
+			//}
+			//items = cbs.items.findAll{ it.denomination == o.denomination && it.remaining > 0 }
+			//items = 
+			//counter = 0;
+			/*while (counter < o.qty) {
+				hasremaining = getHasRemainingList(items, o.denomination);
+				size = hasremaining.size();
+
+				randomNum = (Math.random() * size) + 1;
+				index = (int) randomNum;
+
+				choice = hasremaining[index-1] ;
+				item = choice.items.find{ it.denomination == o.denomination }
+				item.remaining--;
+
+				detail = choice.details.find{ it.denomination == o.denomination }
+				detail.qty++;
+				detail.amount = detail.denomination * detail.qty;
+
+				counter++;
+			}*/
+		}
+
+		//cbs.each{ println it }
+		//throw new Exception('stop')
+		cbs.each{ o->
+			o.totaldetail = o.details.amount.sum();
+			if (!o.totaldetail) o.totaldetail = 0;
+			//amt = o.totalamount - o.totaldetail;
+			//o.hasremaining = (amt <= 0? false : true);
+		}
+		def xlist = cbs.findAll{ it.totaldetail > 0 }
+		def change = em.getChange(data);
+		def totalchange = change.amount.sum();
+		//println 'xlist ';
+		//def denomlist = change.findAll{ it.denomination > totalchange }
+		//denomlist.sort{ it.denomination }
+
+		//def denom = (denomlist? denomlist[0] : change[0]);
+
+		//def a = (totalchange/denom.denomination);
+		//def qtytotake = new BigDecimal(a+'').setScale(0, BigDecimal.ROUND_CEILING);
+		//println 'qty to take ' + qtytotake;
+		//xlist.sort{ it.index }
+		//def amt = data.amount;
+
+		if (xlist) {
+			def i, amt2;
+			def xlist2 = xlist.findAll{ it.denomination > totalchange && it.qty > 0 }
+			if (xlist2) {
+				//xlist2 = xlist2.sort{ it.denomination }.reverse();
+				xlist.sort{ it.totalamount }
+				for (i=0; i<xlist2.size(); i++) {
+					amt2 = item.totalamount - item.totaldetail;
+					if (amt2 > 0) break;
+				}
+				item = xlist2[i];
+			} else {				
+				def amt = data.amount;
+				for (i=0; i<xlist.size(); i++) {
+					item = xlist[i];
+					if (item.totalamount >= amt) {
+						amt = 0;
+					} else {
+						amt -= item.totalamount;
+					}
+
+					if (amt <= 0) break;
+					amt2 = item.totalamount - item.totaldetail;
+					if (amt2 > 0) break;
+				}
+				item = xlist[i];
+			}
+			change.each{ o->
+				o.parentid = item.objid;
+				em.create(o, "encashment-cbs-change");
+			}
+			//change.parentid = item.objid;
+		}
+
+		//def counter = i + 1;
+		//throw new Exception('stop')
+		/*xlist.each{ o->
+			if (o.totalamount)
+
+			if (amt <= 0) {
+				break;
+			}
+		}*/
+		//throw new Exception('stop');
+		cbs.each{ o->
+			if (o.totaldetail > 0) {
+				o.details.each{ d->
+					if (!d.objid) d.objid = 'ECD' + new UID();
+					if (!d.parentid) d.parentid = o.objid;
+					em.create(d, "encashment-cbs-detail");
+				}
+			}
+		}
+
+		data.check = em.findCheck(data);
+		def msginfo = [ 
+			objid 		: data.objid, 
+			dtcreated	: dateSvc.serverDate, 
+			refid 		: data.objid, 
+			filetype 	: 'encashment', 
+			message 	: 'For approval encashment with Check No. '+ data.check.checkno, 
+			senderid	: env.USERID, 
+			sendername 	: env.NAME, 
+			recipientid : 'APPROVER' 
+		]; 
+		inboxSvc.addMessage( msginfo );
+
+		return open(data);
+	}
+
+	@ProxyMethod
+	public def approveDocument( params ) {
+		def data = approveImpl(params, 'APPROVED');
+
+		return data;
+	}
+
+	@ProxyMethod
+	public def disapprove( params ) {
+		def data = approveImpl(params, 'DISAPPROVED');
+
+		return data;
+	}
+
+	private def approveImpl( params, state ) {
+		def data = changeState(params, state);
+		validateCbsHasCashExchange(data);
+
+		data.dtposted = dateSvc.serverDate;
+		data.poster = [objid: env.USERID, name: env.NAME];
+		em.update(data, 'encashment-post');
+
+		inboxSvc.removeMessageByRefid([refid: data.objid]);
+
+		def cbs = em.getCbs(data);
+		def filter, item, xitem;
+		cbs?.each{ o->
+			filter = 'WHERE c.refid = "' + o.refid + '" AND e.txnstate IN ("DRAFT", "FOR_APPROVAL") AND e.objid <> "' + data.objid + '"';
+			item = em.findEncashmentCbsByFilter([filter: filter]);
+			if (!item) {
+				xitem = em.read([objid: o.objid], 'encashment-cbs');
+				def cbsid = xitem.cbsid;
+				def refid = xitem.refid;
+
+				createCashLeft(refid, cbsid);
+			}
+		}
+
+		return open(data);
+	}
+
+	private void createCashLeft( refid, cbsid ) {
+		def data = collection_cb.read([objid: refid]);
+		if (!data) throw new Exception('Cash breakdown record does not exist or has already been deleted.');
+
+		//println 'cbsno ' + data.cbsno;
+
+		def xlist = em.getEncashmentCbsByRefid([refid: refid]);
+		if (!xlist) return;
+		
+		xlist?.each{ o->
+			def xi = em.read([objid: o.objid], 'encashment-cbs');
+			if (xi) {
+				xi.cbsid = cbsid;
+				em.update(xi, 'encashment-cbs');
+			}
+		}
+
+		def reference = [];
+		reference.addAll(getDenominations());
+		def breakdown = collection_cb.getDetails([objid: refid]);
+
+		reference?.each{ o->
+			def i = breakdown?.find{ it.denomination == o.denomination }
+			if (i) {
+				o.qty += i.qty;
+				//println 'denomination ' + o.denomination + ' qty ' + o.qty;
+			}
+		}
+
+		xlist?.each{ o->
+			def xi = em.read([objid: o.objid], 'encashment-cbs');
+			if (xi) {
+				/*
+				def xxlist = xi?.breakdown?.findAll{ it.qty > 0 }
+				xxlist?.each{ b->
+					def xxi = reference?.find{ it.denomination == b.denomination }
+					if (xxi) xxi.qty -= b.qty;
+				}
+				*/
+				xi?.breakdown?.each{ b->
+					def xxi = reference?.find{ it.denomination == b.denomination }
+					if (xxi) xxi.qty -= b.qty;
+				}
+				/*
+				xi?.change?.each{ b->
+					def xxi = reference?.find{ it.denomination == b.denomination }
+					if (xxi) xxi.qty += b.qty;
+				}
+				*/
+			}
+		}
+
+		data.state = 'ENCASHED';
+		collection_cb.update(data);
+		def i = collection_cb.read(data, 'cb-encash');
+		if (!i) {
+			collection_cb.create(data, 'cb-encash');
+		}
+
+		i = collection_cb.read(data, 'cb-forencashment');
+		if (i) {
+			collection_cb.delete(data, 'cb-forencashment');
+		}
+
+		i = collection_cb.read(data, 'cb-active');
+		if (i) {
+			collection_cb.delete(data, 'cb-active');
+		}
+
+		reference?.each{ it.amount = it.denomination * it.qty }
+
+		def amt = 0;
+		amt = reference?.amount?.sum();
+		if (!amt) amt = 0;
+
+		if (!amt || amt == 0) return;
+
+		def item = collection_cb.read([objid: cbsid]);
+		if (!item) {
+			def currentdate = dateSvc.serverDate;
+			def user = [objid: env.USERID, name: env.NAME];
+
+
+			def branch = branchSvc.open([:]);
+
+			def year = dateSvc.getServerYear().toString();
+			def seqname = 'cbs' + year;
+			def prefix = 'CBS' + branch.code + year[2] + year[3];
+			def cbsno = prefix + seqSvc.getNextFormattedSeriesA(seqname, 5);
+
+			item = [
+				objid		: cbsid,
+				state 		: 'VERIFIED',
+				dtfiled 	: currentdate,
+				author 		: user,
+				txndate 	: data.txndate,
+				collector 	: data.collector,
+				collection 	: data.collection,
+				group 		: data.group,
+				cbsno 		: cbsno,
+				dtverified 	: currentdate,
+				verifier 	: data.verifier
+			];
+			collection_cb.create(item);
+
+			i = collection_cb.read(item, 'cb-active');
+			if (!i) {
+				collection_cb.create(item, 'cb-active');
+			}
+
+			i = collection_cb.read(item, 'cb-forencashment');
+			if (!i) {
+				collection_cb.create(item, 'cb-forencashment');
+			}	
+		}
+
+		def dtls = collection_cb.getDetails([objid: cbsid]);
+		dtls?.each{ collection_cb.delete(it, 'cb-detail'); }
+
+		reference?.each{ o->
+			o.objid = 'CBSD' + new UID();
+			o.parentid = cbsid;
+			o.amount = o.qty * o.denomination;
+			collection_cb.create(o, 'cb-detail');
+		}
+
+		//def breakdown = collection_cb.getdetails(item);
+
+
+	}
+
+
+	//@ProxyMethod
+	public def xapproveDocument( params ) {
+		def data = em.read(params);
+		if (!data) throw new Exception("Record does not exist or has already been deleted.");
+
+		if (data.txnstate == 'APPROVED')
+			throw new Exception("This document has already been approved.");
+
+		data.txnstate = 'APPROVED';
+		em.changeState(data);
+
+		data.dtposted = dateSvc.serverDate;
+		data.poster = [objid: env.USERID, name: env.NAME];
+		em.update(data, "encashment-post");
+	
+		def cbs = params.cbs;
+		def m, item, cb, detail, hasremaining;
+		def totalamount, totaldetail, change;
+		cbs.each{ o->
+			if (!o.details) o.details = em.getCbsDetails(o);
+			if (!o.items) o.items = em.getCbsReferences(o);
+
+			totalamount = o.items.amount.sum();
+
+			m = o.details.find{ it.qty > 0 }
+			if (m) {
+				cb = collection_cb.read([objid: o.refid]);
+				if (!cb) 
+					throw new Exception("Cash Breakdown Sheet with CBS No. " + o.cbsno + " does not exist or has already been deleted.");
+
+				item = [:];
+				item.putAll(cb);
+				item.objid = o.cbsid;
+				item.dtfiled = dateSvc.serverDate;
+				item.author = [objid: env.USERID, name: env.NAME];
+
+				def branch = branchSvc.open([:]);
+
+				def date = dateSvc.parseCurrentDate();
+				def seqname = 'cbs' + date.year;
+				def year = date.year.toString()[2] + date.year.toString()[3];
+				def prefix = 'CBS' + branch.code + year;
+				item.cbsno = prefix + seqSvc.getNextFormattedSeriesA(seqname,5);
+				collection_cb.create(item);
+				collection_cb.create(item, "cb-active");
+				collection_cb.create(item, "cb-forencashment");
+
+				cb.state = 'ENCASHED';
+				collection_cb.update(cb);
+				collection_cb.create([objid: o.refid], "cb-encash");
+				collection_cb.delete([objid: o.refid], "cb-forencashment");
+
+
+				def xi = collection_cb.read([objid: o.refid]);
+				println 'status ' + xi.state;
+				throw new Exception('stopping');
+
+				o.details.each{ d->
+					detail = o.items.find{ it.denomination == d.denomination }
+					//detail.parentid = item.objid;
+					detail.qty -= d.qty;
+					detail.amount = detail.denomination * detail.qty;
+					//collection_cb.create(detail, "cb-detail");
+				}
+
+				change = em.getCbsChange(o);
+				if (change) {
+					resolveCashleftWithChange(change, o.items);
+				}
+
+				o.items.each{ d->
+					//println d;
+					d.parentid = item.objid;
+					collection_cb.create(d, "cb-detail");
+				}
+			}
+		}
+		//throw new Exception("stop");
+
+		//create check account
+		def currentdate = dateSvc.serverDate;
+		def check = params.check;
+		def ca = checkaccount.findByRefid([refid: check.objid]);
+		if (!ca) {
+			ca = [
+				objid		: 'CA' + new UID(),
+				state 		: 'CLEARED',
+				reftype		: 'ENCASHMENT',
+				dtcreated	: currentdate,
+				author		: [objid: env.USERID, name: env.NAME],
+				refid 		: check.objid,
+				checkno 	: check.checkno,
+				txndate 	: check.txndate,
+				amount 		: check.amount,
+				bank 		: check.bank,
+				passbook 	: check.passbook
+			];
+			checkaccount.create(ca);
+		}
+
+		inboxSvc.removeMessageByRefid([refid: data.objid]); 
+
+		return open(data);
+	}
+
+	private void resolveCashleftWithChange( changecb, itemscb ) {
+		/*def totalchange = changecb.amount.sum();
+		detailcb.sort{ it.denomination }
+		def xlist = detailcb.findAll{ it.denomination > totalchange }
+		xlist.sort{ it.denomination }
+
+		def i = 0, denom, a, qtytotake, detail;
+		while (i < xlist.size()) {
+			denom = xlist[i];
+			a = (totalchange/denom.denomination);
+			qtytotake = new BigDecimal(a+'').setScale(0, BigDecimal.ROUND_CEILING);
+			detail = detailcb.find{ it.denomination == denom.denomination }
+			if (detail.qty >= qtytotake) {
+				detail.qty -= qtytotake;
+				if (detail.qty < 0) detail.qty = 0;
+				//detail.amount = detail.qty * detail.denomination;
+
+				def mlist = changecb.findAll{ it.qty > 0 }
+				mlist.each{ o->
+					detail = detailcb.find{ it.denomination == o.denomination }
+					detail.qty -= o.qty;
+					//detail.amount = detail.qty * detail.denomination;
+				}
+				break;
+			}
+			i++;
+		}*/
+		def item;
+		changecb.each{ o->
+			item = itemscb.find{ it.denomination == o.denomination }
+			item.qty += o.qty;
+			item.amount = item.qty * item.denomination;
+		}
+	}
+
+	private def getCbsSufficientForEncashment( list, denomination ) {
+		def items = [];
+		def item, flag;
+		list.each{ o->
+			flag = false;
+			item = o.items.find{ it.denomination == denomination }
+			if (item.qty > 0) flag = true;
+
+			if (flag == true) items.add(o);
+		}
+		//print '';
+		return items;
+	}
+
+	private def getHasRemainingList( list, denomination ) {
+		def items = [];
+		def item, flag;
+		list.each{ o->
+			flag = false;
+			item = o.items.find{ it.denomination == denomination }
+			if (item.remaining > 0) flag = true;
+
+			if (flag == true) items.add(o);
+		}
+		return items;
+	}
+
+	//@ProxyMethod
+	public def xdisapprove( params ) {
+		def data = em.read(params);
+		if (!data) throw new Exception("Record does not exist or has already been deleted.");
+
+		if (data.txnstate == 'DISAPPROVED')
+			throw new Exception("This document has already been disapproved.");
+
+		data.txnstate = 'DISAPPROVED';
+		em.changeState(data);
+
+		data.dtposted = dateSvc.serverDate;
+		data.poster = [objid: env.USERID, name: env.NAME];
+		em.update(data, "encashment-post");
+
+		inboxSvc.removeMessageByRefid([refid: data.objid]); 
+
+		return open(data);
+	}
+
+	/*
+	@ProxyMethod
+	public def getEncashmentsByCashBreakdown( params ) {
+		if (!params.objid) throw new Exception("Please specify objid.");
+
+		def list = em.getEncashmentsByCashBreakdown([cbsid: params.objid]);
+		list.each{ o->
+			o.items = em.getCbsDetails(o);
+		}
+		return list;
+	}
+	*/
+
+	@ProxyMethod
+	public def getCbsDetails( params ) {
+		def data = collection_cb.read(params);
+		if (!data) throw new Exception('Cash breakdown record does not exist or has already deen deleted.');
+
+		def list = collection_cb.getDetails(data);
+
+		def xlist = em.getEncashmentCbsByRefid([refid: data.objid]);
+		xlist = xlist?.findAll{ it.parentid != params.encashmentid }
+		def item;
+		xlist?.each{ o->
+			item = em.read([objid: o.objid], 'encashment-cbs');
+			if (item) {
+				item?.breakdown?.each{ b->
+					def i = list?.find{ it.denomination == b.denomination }
+					if (i && i.qty > 0) {
+						i.qty -= b.qty;
+					} 
+				}
+			}
+		}
+
+		return list;
+	}
+}

@@ -1,0 +1,115 @@
+<schema>
+
+	<element tablename="loanar_liquidation">
+		<field name="objid" primary="true" />
+		<field name="dtcreated" required="true" />
+		<field name="author_objid" required="true" />
+		<field name="author_name" required="true" />
+		<field name="txnstate" required="true" />
+		<field name="txndate" required="true" />
+		<field name="refno" required="true" />
+		<field name="totalar" required="true" />
+		<field name="dtverified" />
+		<field name="verifier_objid" />
+		<field name="verifier_name" />
+	</element>
+
+	<element name="liquidation-ar" tablename="loanar_liquidation_ar">
+		<field name="objid" primary="true" />
+		<field name="parentid" required="true" />
+		<field name="ar_objid" required="true" />
+		<field name="ar_refno" required="true" />
+		<field name="ar_txndate" required="true" />
+		<field name="ar_checkno" />
+		<field name="ar_checkdate" />
+		<field name="ar_totalamount" required="true" />
+	</element>
+
+	<element name="liquidation-ardetail" tablename="loanar_liquidation_ardetail">
+		<field name="objid" primary="true" />
+		<field name="parentid" required="true" />
+		<field name="refid" required="true" />
+		<field name="liquidationid" required="true" />
+		<field name="loanapp_objid" required="true" />
+		<field name="loanapp_appno" required="true" />
+		<field name="borrower_objid" required="true" />
+		<field name="borrower_name" required="true" />
+		<field name="particulars" required="true" />
+		<field name="amount" required="true" />
+		<field name="totalbreakdown" required="true" />
+	</element>
+
+	<element name="liquidation-breakdown" tablename="loanar_liquidation_breakdown">
+		<field name="objid" primary="true" />
+		<field name="parentid" required="true" />
+		<field name="arid" required="true" />
+		<field name="liquidationid" required="true" />
+		<field name="particulars" required="true" />
+		<field name="amount" required="true" />
+	</element>
+
+	<element name="liquidation-verify" tablename="loanar_liquidation">
+		<field name="objid" primary="true" />
+		<field name="dtverified" required="true" />
+		<field name="verifier_objid" required="true" />
+		<field name="verifier_name" required="true" />
+	</element>
+
+	<element name="liquidation-sendback" tablename="loanar_liquidation_sendback">
+		<field name="objid" primary="true" />
+		<field name="dtcreated" required="true" />
+		<field name="author_objid" required="true" />
+		<field name="author_name" required="true" />
+		<field name="txnstate" required="true" />
+		<field name="liquidationid" required="true" />
+		<field name="remarks" required="true" />
+	</element>
+
+	<!--
+	<element tablename="loanar_liquidation">
+		<field name="objid" primary="true" />
+		<field name="dtcreated" required="true" />
+		<field name="author_objid" required="true" />
+		<field name="author_name" required="true" />
+		<field name="txnstate" required="true" />
+		<field name="txndate" required="true" />
+		<field name="refno" required="true" />
+		<field name="totalar" required="true" />
+		<field name="totalliquidation" required="true" />
+		<field name="dtverified" />
+		<field name="verifier_objid" />
+		<field name="verifier_name" />
+	</element>
+
+	<element name="arliquidation-verify" tablename="loanar_liquidation">
+		<field name="objid" primary="true" />
+		<field name="dtverified" required="true" />
+		<field name="verifier_objid" required="true" />
+		<field name="verifier_name" required="true" />
+	</element>
+
+	<element name="arliquidation-ar" tablename="loanar_liquidation_ar">
+		<field name="objid" primary="true" />
+		<field name="parentid" required="true" />
+		<field name="ar_objid" required="true" />
+		<field name="ar_refno" required="true" />
+		<field name="ar_txndate" required="true" />
+		<field name="ar_checkno" />
+		<field name="ar_checkdate" />
+		<field name="ar_totalamount" required="true" />
+	</element>
+
+	<element name="arliquidation-detail" tablename="loanar_liquidation_detail">
+		<field name="objid" primary="true" />
+		<field name="parentid" required="true" />
+		<field name="reftype" required="true" />
+		<field name="loanapp_objid" />
+		<field name="loanapp_appno" />
+		<field name="borrower_objid" />
+		<field name="borrower_name" />
+		<field name="particulars" required="true" />
+		<field name="amount" required="true" />
+	</element>
+	-->
+
+</schema>

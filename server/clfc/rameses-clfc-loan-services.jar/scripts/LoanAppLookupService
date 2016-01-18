@@ -1,0 +1,27 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.services.extended.*;
+
+class LoanAppLookupService extends ActiveListService
+{
+	@ActiveDB("loanapp")
+	def em;
+
+	@ProxyMethod
+	public def getColumns( params ) {
+		def cols = [];
+		if (!params.state) cols << [name: 'state', caption: 'Status'];
+		cols << [name: 'appno', caption: 'AppNo'];
+		cols << [name: 'borrower.name', caption: 'Borrower'];
+		cols << [name: 'loanamount', caption: 'LoanAmount', type: 'decimal', format: '#,##0.00'];
+		return cols;
+	}
+
+	void beforeList( params ) {
+		params.searchtext = (params.searchtext? params.searchtext : '') + '%';
+		params._listMethod = 'getLookupList';
+		if (params.state) {
+			params._listMethod = 'getLookupListByState';
+		}
+	}
+}

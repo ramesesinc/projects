@@ -1,0 +1,47 @@
+<schema>
+
+	<element name="loan_ledger_proceeds" tablename="loan_ledger_proceeds">
+		<field name="objid" primary="true" />
+		<field name="parentid" required="true" />
+		<field name="txnstate" required="true" />
+		<field name="txntype" required="true" />
+		<field name="dtcreated" required="true" />
+		<field name="author_objid" required="true" />
+		<field name="author_name" required="true" />
+		<field name="description" required="true" />
+		<field name="borrower_objid" required="true" />
+		<field name="borrower_name" required="true" />
+		<field name="borrower_address" required="true" />
+		<field name="refid" />
+		<field name="refno" />
+		<field name="txndate" />
+		<field name="amount" />
+		<field name="dtsold" />
+		<field name="soldby_objid" />
+		<field name="soldby_name" />
+	</element>
+
+	<element name="proceeds-sold" tablename="loan_ledger_proceeds">
+		<field name="objid" primary="true" />
+		<field name="refid" />
+		<field name="refno" required="true" />
+		<field name="txndate" required="true" />
+		<field name="amount" required="true" />
+		<field name="dtsold" required="true" />
+		<field name="soldby_objid" required="true" />
+		<field name="soldby_name" required="true" />
+	</element>
+
+	<element name="proceeds-refid" tablename="loan_ledger_proceeds">
+		<field name="objid" primary="true" />
+		<field name="refid" required="true" />
+	</element>
+
+	<element name="collection-proceed" tablename="collection_proceed">
+		<field name="objid" primary="true" />
+		<field name="collectionid" required="true" />
+		<field name="refid" required="true" />
+		<field name="proceedid" required="true" />
+	</element>
+
+</schema>

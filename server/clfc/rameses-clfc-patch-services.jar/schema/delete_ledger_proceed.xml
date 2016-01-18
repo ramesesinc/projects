@@ -1,0 +1,30 @@
+<schema>
+
+	<element tablename="loan_ledger_proceeds_delete">
+		<field name="objid" primary="true" />
+		<field name="state" required="true" />
+		<field name="dtfiled" required="true" />
+		<field name="author_objid" required="true" />
+		<field name="author_name" required="true" />
+		<field name="ledgerid" required="true" />
+		<field name="borrower_objid" required="true" />
+		<field name="borrower_name" required="true" />
+		<field name="loanapp_objid" required="true" />
+		<field name="loanapp_appno" required="true" />
+		<field name="refno" required="true" />
+		<field name="amount" required="true" />
+		<field name="remarks" required="true" />
+		<complex name="info" required="false" serializer="default" merge="true" />
+		<field name="dtposted" />
+		<field name="poster_objid" />
+		<field name="poster_name" />
+	</element>
+
+	<element name="post" tablename="loan_ledger_proceeds_delete">
+		<field name="objid" primary="true" />
+		<field name="dtposted" required="true" />
+		<field name="poster_objid" required="true" />
+		<field name="poster_name" required="true" />
+	</element>
+
+</schema>

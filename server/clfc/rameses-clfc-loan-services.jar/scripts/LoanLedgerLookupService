@@ -1,0 +1,34 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.services.extended.*;
+
+class LoanLedgerLookupService extends ActiveListService
+{
+	@ActiveDB("loan_ledger")
+	def em;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@ProxyMethod
+	public def getColumns( params ) {
+		return [
+			[name: 'route.name', caption: 'Route'],
+			[name: 'borrower.name', caption: 'Borrower'],
+			[name: 'loanapp.appno', caption: 'App. No.'],
+			[name: 'dtreleased', caption: 'ReleaseDate', type: 'date', outputFormat: 'MMM-dd-yyyy'],
+			[name: 'dtmatured', caption: 'MaturityDate', type: 'date', outputFormat: 'MMM-dd-yyyy']
+			//[name: 'borrower.address', caption: 'Address'],
+			//[name: 'route.description', caption: 'Route Description'],
+			//[name: 'route.area', caption: 'Route Area']
+		]
+	}
+
+	void beforeList( params ) {
+		params.searchtext = (params.searchtext? params.searchtext : '') + '%';
+		params._listMethod = 'getOpenLedgers';
+		if (params.pastdueledgers == true) {
+			params._listMethod = 'getOpenPastDueLedgers';
+		}
+	}
+}

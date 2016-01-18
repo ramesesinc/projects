@@ -1,0 +1,240 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.services.extended.*;
+import java.rmi.server.UID;
+
+class LoanSpecialCollectionRequestService extends ActiveListService 
+{
+	@ActiveDB("specialcollection")
+	def em;
+
+	@ActiveDB('followupcollection')
+	def followupcollection;
+
+	@ActiveDB("ledger_billing")
+	def ledger_billing;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@Service("InboxService")
+	def inboxSvc;
+
+	@Service("LoanSpecialCollectionService")
+	def specialColSvc;
+
+	@Service("BranchService")
+	def branchSvc;
+
+	String listMethod = 'getRequestList';
+
+	@ProxyMethod
+	public def getOptions() {
+		return [
+			[caption: 'All'],
+			[caption: 'PENDING', state: 'PENDING'],
+			[caption: 'FOR VERIFICATION', state: 'FOR_VERIFICATION'],
+			[caption: 'VERIFIED', state: 'VERIFIED'],
+			[caption: 'FOR APPROVAL', state: 'FOR_APPROVAL'],
+			[caption: 'APPROVED', state: 'APPROVED'],
+			[caption: 'DISAPPROVED', state: 'DISAPPROVED'],
+			[caption: 'FOR DOWNLOAD', state: 'FOR_DOWNLOAD'],
+			[caption: 'DOWNLOADED', state: 'DOWNLOADED'],
+			[caption: 'REMITTED', state: 'REMITTED'],
+			[caption: 'POSTED', state: 'POSTED'],
+			[caption: 'CANCELLED', state: 'CANCELLED']
+		];
+	}
+
+	@ProxyMethod
+	public def getColumns( params ) {
+		def cols = [];
+		if (!params.state) {
+			cols << [name: 'state', caption: 'Status'];
+		}
+
+		cols << [name: 'billingtype', caption: 'Billing Type'];
+		cols << [name: 'dtrequested', caption: 'Date Requested'];
+		cols << [name: 'requester.name', caption: 'Requested By'];
+		cols << [name: 'remarks', caption: 'Reason'];
+
+		if (params.state == 'VERIFIED') {
+			cols << [name: 'dtverified', caption: 'Date Verified'];
+			cols << [name: 'verifiedby.name', caption: 'Verified By'];
+		} else if (params.state == 'APPROVED') {
+			cols << [name: 'dtposted', caption: 'Date Approved'];
+			cols << [name: 'poster.name', caption: 'Approved By'];
+		} else if (params.state == 'DISAPPROVED') {
+			cols << [name: 'dtposted', caption: 'Date Disapproved'];
+			cols << [name: 'poster.name', caption: 'Disapproved By'];
+		} else if (params.state == 'CANCELLED') {
+			cols << [name: 'dtcancelled', caption: 'Date Cancelled'];
+			cols << [name: 'cancelledby.name', caption: 'Cancelled By'];
+		}
+
+		return cols;
+	}
+
+	void beforeList( params ) {
+		params.searchtext = (params.searchtext? params.searchtext : '') + '%';
+		if (params.state) {
+			params._listMethod = 'getRequestListByState';
+		}
+		//data._listMethod = "getRequestList";
+	}
+
+	@ProxyMethod(local=true)
+	public def create( data ) {
+		def date = dateSvc.serverDate;
+
+		data.txntype = 'REQUEST';
+		data.txndate = date.toString().split(" ")[0];
+		data.dtfiled = date;
+		data.author = data.collector;
+		data.dtrequested = date;
+		data.requester = data.collector;
+		//createBilling(data);
+
+		em.create(data);
+		em.update(data, "sc-request");
+
+		if (!data.type) data.type = 'special';
+		if (data.type == 'followup') {
+			followupcollection.create(data);
+		}
+
+		/*
+		def billing_item = [
+			objid 		: data.objid,
+			parentid 	: data.billingid,
+			state 		: 'FOR_DOWNLOAD',
+			dtmodified 	: dateSvc.serverDate,
+			modifiedby 	: data.author,
+			item 		: [objid: data.objid, type: 'special']
+		];
+		ledger_billing.create(billing_item, "billing-item");
+		*/
+	}
+
+
+	@Async
+	@ProxyMethod
+	public def createNewBillingWithoutLedgerValidation( params ) {
+		def data = em.read(params);
+		if (!data) throw new Exception("Request record does not exist or has already been deleted.");
+		
+		createBilling(data);
+		data.validateledger = false;
+		data.ledgers = em.getLedgers(data);
+		return specialColSvc.createImpl(data);
+	}
+
+	@Async
+	@ProxyMethod
+	public def createNewBilling( params ) {
+		def data = em.read(params);
+		if (!data) throw new Exception("Request record does not exist or has already been deleted.");
+
+		createBilling(data);
+		data.validateledger = true;
+		data.ledgers = em.getLedgers(data);
+		return specialColSvc.createImpl(data);
+	}
+
+	private void createBilling( data ) {
+		def billing = ledger_billing.findByCollectorAndBilldate([collectorid: data.collector.objid, date: data.txndate]);
+		if (!billing) {
+			def branch = branchSvc.open([:]);
+
+			billing = [
+				objid 				: data.billingid,
+				dtcreated 			: dateSvc.serverDate,
+				author 				: data.author,
+				collector 			: data.collector,
+				billdate 			: data.txndate,
+				branchid 			: branch.code,
+				totalfordownload 	: 0,
+				totaldownloaded 	: 0,
+				totalposted 		: 0,
+			];
+			ledger_billing.create(billing);
+		}
+
+		data.billingid = billing.objid;
+		em.update(data);
+		def billing_item = ledger_billing.findByBillingidAndItemid([objid: data.billingid, itemid: data.objid]);
+		if (!billing_item) {
+			billing_item = [
+				objid 		: data.objid,
+				parentid 	: data.billingid,
+				state 		: 'FOR_DOWNLOAD',
+				dtmodified 	: dateSvc.serverDate,
+				modifiedby 	: data.author,
+				item 		: [objid: data.objid, type: 'special']
+			];
+			ledger_billing.create(billing_item, "billing-item");
+		}
+	}
+
+	@ProxyMethod
+	public def open( params ) {
+		def data = em.read(params);
+		if (!data) throw new Exception("Record does not exist or has already been deleted.");
+
+		def billingtype = 'Special';
+		data.isfollowup = false;
+		def i = followupcollection.read(data);
+		if (i) {
+			billingtype = 'Follow-up';
+			data.isfollowup = true;
+		}
+
+		data.billingtype = billingtype;
+
+		data.iscreatemode = false;
+		data.ledgers = em.getLedgers(data);
+		if (!data.ledgers) data.iscreatemode = true;
+		return data;
+	}
+
+	//@Async
+	@ProxyMethod
+	public def update( params ) {
+		//def data = em.read(params);
+		//if (!data) throw new Exception("Record does not exist or has already been deleted.");
+
+		//data.state = 'FOR_DOWNLOAD';
+		//em.update(data);
+		return specialColSvc.update(params);
+	}
+
+	@ProxyMethod
+	public def submitForVerification( params ) {
+		return specialColSvc.submitForVerification(params);
+	}
+
+	@ProxyMethod
+	public def verify( params ) {
+		return specialColSvc.verify(params);
+	}
+
+	@ProxyMethod
+	public def submitForApproval( params ) {
+		return specialColSvc.submitForApproval(params);
+	}
+
+	@ProxyMethod
+	public def approveDocument( params ) {
+		return specialColSvc.approveDocument(params);
+	}
+
+	@ProxyMethod
+	public def disapprove( params ) {
+		return specialColSvc.disapprove(params);
+	}
+	
+	@ProxyMethod
+	public def cancelBilling( params ) {
+		return specialColSvc.cancelBilling(params);
+	}
+}

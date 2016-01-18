@@ -1,0 +1,17 @@
+<schema>
+
+	<element name="loanapp_capture" tablename="loanapp_capture">
+		<field name="objid" primary="true"/>
+		<field name="version" required="true"/> 
+		<field name="loanno" required="true"/> 
+		<field name="clienttype" required="true"/> 
+		<field name="marketedby"/> 
+		<field name="dtreleased" required="true"/> 
+		<field name="dtfiled" required="true"/>
+	</element>	
+
+	<element name="capture_open" tablename="loanapp_capture_open">
+		<field name="objid" primary="true"/>
+	</element>	
+
+</schema>	

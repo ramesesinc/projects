@@ -1,0 +1,32 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+
+class LoanFieldCollectionInterceptor
+{
+	@Before(pattern="LoanFieldCollectionService.saveCashBreakdown", eval="args[0].breakdowntype == 'route'")
+	public void beforeRouteSaveCashBreakdown( evt ) {
+		def params = evt.args[0];
+		params.groupid = params.routecode;
+		params.grouptype = 'route';
+		params.remove('breakdowntype');
+		params.remove('routecode');
+	}
+
+	@Before(pattern="LoanFieldCollectionService.saveCashBreakdown", eval="args[0].breakdowntype == 'followup'")
+	public void beforeFollowupSaveCashBreakdown( evt ) {
+		def params = evt.args[0];
+		params.groupid = params.collectionid;
+		params.grouptype = 'followup';
+		params.remove('breakdowntype');
+		params.remove('collectionid');
+	}
+
+	@Before(pattern="LoanFieldCollectionService.saveCashBreakdown", eval="args[0].breakdowntype == 'special'")
+	public void beforeSpecialCashBreakdown( evt ) {
+		def params = evt.args[0];
+		params.groupid = params.collectionid;
+		params.grouptype = 'special';
+		params.remove('breakdowntype');
+		params.remove('collectionid');
+	}
+}

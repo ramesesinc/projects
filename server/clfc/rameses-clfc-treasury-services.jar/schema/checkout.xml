@@ -1,0 +1,51 @@
+<schema>
+
+	<!--
+	<element name="checkout" tablename="checkout">
+		<field name="objid" primary="true" />
+		<field name="dtcreated" required="true" />
+		<field name="author_objid" required="true" />
+		<field name="author_name" required="true" />
+		<field name="txndate" required="true" />
+		<field name="representative1_objid" />
+		<field name="representative1_name" />
+		<field name="representative2_objid" />
+		<field name="representative2_name" />
+	</element>
+	-->
+
+	<element tablename='checkout'>
+		<field name='objid' primary='true' />
+		<field name='txnstate' required='true' />
+		<field name='dtcreated' required='true' />
+		<field name='author_objid' required='true' />
+		<field name='author_name' required='true' />
+		<field name='txndate' required='true' />
+		<field name='representative1_objid' />
+		<field name='representative1_name' />
+		<field name='representative2_objid' />
+		<field name='representative2_name' />
+		<field name='dtconfirmed' />
+		<field name='confirmedby_objid' />
+		<field name='confirmedby_name' />
+	</element>
+
+	<element name="checkout-detail" tablename="checkout_detail">
+		<field name="objid" primary="true" />
+		<field name="parentid" required="true" />
+		<field name="refid" required="true" />
+		<field name="txndate" required="true" />
+		<field name="depositslip_controlno" required="true" />
+		<field name="depositslip_acctno" required="true" />
+		<field name="depositslip_acctname" required="true" />
+		<field name="depositslip_amount" required="true" />
+	</element>
+
+	<element name='confirm' tablename='checkout'>
+		<field name='objid' primary='true' />
+		<field name='dtconfirmed' required='true' />
+		<field name='confirmedby_objid' required='true' />
+		<field name='confirmedby_name' required='true' />
+	</element>
+
+</schema>

@@ -1,0 +1,65 @@
+package billing;
+/*
+global java.util.Map detail;
+
+declare References
+	isFixed				: Boolean
+	isOverdue			: Boolean
+	hasSunday			: Boolean
+	balance				: double
+	absentPenalty		: double
+	overduePenalty		: double
+	dailyDue			: double
+	interest 			: double
+	overpayment			: double
+	others				: double
+	noOfHolidays		: int
+	noOfDaysExempted	: int
+	totalDays			: int
+end
+
+rule "compute billing: within term"
+	when
+		r: References(isOverdue == false, others: others)
+	then
+		int totalDays = r.getTotalDays();
+		int noOfHolidays = r.getNoOfHolidays();
+		int noOfDaysExempted = r.getNoOfDaysExempted();
+		double amountdue = (totalDays * r.getDailyDue()) + others;
+
+		if (r.getHasSunday() == true) {
+			totalDays -= 1;
+		}
+
+		if (noOfHolidays > 0) {
+			totalDays -= noOfHolidays;
+		}
+
+		if (noOfDaysExempted > 0) {
+			totalDays -= noOfDaysExempted;
+		} 
+
+		totalDays = (totalDays > 0? totalDays - 1 : 0);
+		detail.put("days", totalDays);
+
+		double penalty = r.getAbsentPenalty() * totalDays;
+		detail.put("penalty", penalty);
+
+		amountdue += penalty;
+		detail.put("amountdue", amountdue);
+end
+
+rule "compute billing: overdue"
+	when
+		r: References(isOverdue == true)
+	then
+		int totalDays = r.getTotalDays();
+		detail.put("days", totalDays);
+
+		double penalty = totalDays * r.getOverduePenalty();
+		detail.put("penalty", penalty);
+
+		double amountdue = penalty + (totalDays * r.getInterest()) + r.getBalance();
+		detail.put("amountdue", amountdue);
+end
+*/

@@ -1,0 +1,214 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.services.extended.*;
+import java.text.*;
+
+class LedgerAmnestyPreviewService 
+{
+	@ActiveDB('ledgeramnesty')
+	def em;
+
+	@ActiveDB('ledgeramnesty_fix')
+	def ledgeramnesty_fix;
+
+	@ActiveDB('loanapp')
+	def loanapp;
+
+	@ActiveDB('calendar_event')
+	def calendar_event;
+
+	@ActiveDB('loan_ledger_payment')
+	def ledger_payment;
+
+	@Service('DateService')
+	def dateSvc;
+
+	@ProxyMethod
+	public def openAmnesty( params ) {
+		def data = em.read(params);
+		if (!data) throw new Exception('Amnesty record does not exist or has already been deleted.');
+
+		def ac = em.findActiveByAmnestyid([amnestyid: data.objid]);
+		if (ac) {
+			if (!data.availed) data.availed = [:];
+			data.availed.description = ac.description;
+			def type = ac.type;
+			if (type == 'FIX') {
+				def fx = ledgeramnesty_fix.read([objid: ac.refid]);
+				if (!fx) throw new Exception('Amnesty fix record does not exist or has already been deleted.');
+
+				data.availed.dtstarted = fx.dtstarted;
+				data.availed.dtmatured = fx.dtended;
+			}
+		}
+
+		def rows = 30;
+		data.rows = rows;
+
+		def itm = em.findCounterPostingDetail(data);
+		if (itm) {
+			def a = 0;
+			if (itm.counter > 0) {
+				a = itm.counter / rows;
+			}
+			def pageindex = new BigDecimal(a+'').setScale(0, BigDecimal.ROUND_CEILING);
+			if (pageindex <= 0) pageindex = 1;
+			data.lastpageindex = pageindex;
+		}
+
+		return data;
+	}
+
+	@ProxyMethod
+	public def getColumns( params ) {
+		def cols = [];
+		if (params.type == 'WAIVER') {
+			cols << [name: 'paymentschedule', caption: 'Schedule of Payment', type: 'date', outputFormat: 'MMM. dd, yyyy'];
+		}
+		cols << [name: 'partialpayment', caption: 'Partial Payment', type: 'decimal', format: '#,##0.00;(#,##0.00)'];
+		cols << [name: 'balanceamount', caption: 'Balance', type: 'decimal', format: '#,##0.00;(#,##0.00)'];
+
+		if (params.type == 'WAIVER') {
+			cols << [name: 'interestpaid', caption: 'Interest Paid', type: 'decimal', format: '#,##0.00;(#,##0.00)'];
+			cols << [name: 'penaltycharge', caption: 'Penalty Charges', type: 'decimal', format: '#,##0.00;(#,##0.00)'];	
+		}
+		cols << [name: 'totalpayment', caption: 'Total Payment', type: 'decimal', format: '#,##0.00;(#,##0.00)'];
+		cols << [name: 'receiptno', caption: 'OR No.'];
+		cols << [name: 'datepaid', caption: 'Date Paid', type: 'date', outputFormat: 'MMM. dd, yyyy'];
+		cols << [name: 'remarks', caption: 'Remarks'];
+
+		return cols;
+	}
+
+	private def parseDate( date ) {
+		if (!date) return null;
+
+		if (date instanceof Date) {
+			return date;
+		} else {
+			return java.sql.Date.valueOf(date);
+		}
+	}
+
+	@ProxyMethod
+	public def getList( params ) {
+		if (!params.amnestyid) throw new Exception('Please specfy amnestyid');
+
+		def am = em.read([objid: params.amnestyid]);
+		if (!am) throw new Exception('Amnesty record does not exist or has already been deleted.');
+
+		def ac = em.findActiveByAmnestyid([objid: am.objid]);
+		def type = ac?.type;
+
+		def xlist = em.getPostingDetail(am);
+
+		def app = loanapp.read(am.loanapp);
+
+		def dtgranted = app.dtreleased;
+		if (!dtgranted) {
+			def appc = loanapp.read(am.loanapp, 'loanapp_capture');
+			if (appc) {
+				dtgranted = appc.dtreleased;
+			}	
+		}
+
+		def df = new SimpleDateFormat('MMM. dd, yyyy');
+		def decFormat = new DecimalFormat('#,##0.00');
+
+		def list = [];
+		def itm, paymentschedule, state;
+		def cal = Calendar.getInstance(), payments;
+		xlist?.each{ o->
+			state = o.state;
+			itm = [
+				partialpayment		: o.partialpayment,
+				balanceamount		: o.balance,
+				interestpaid		: (o.interestpaid != 0? o.interestpaid : null),
+				penaltycharge		: (o.penaltypaid != 0? o.penaltypaid : null),
+				totalpayment		: (o.amtpaid != 0? o.amtpaid : null),
+				receiptno			: o.refno,
+				datepaid			: o.dtpaid,
+				remarks 			: (o.remarks? o.remarks : ''),
+				txndate 			: o.txndate
+			];
+
+			if (dtgranted) paymentschedule = dateSvc.add(dtgranted, o.day+'')
+			//println 'payment schedule ' + itm.paymentschedule;
+			if (paymentschedule) itm.coldate = df.format(parseDate(paymentschedule));
+
+			if (state == 'AMNESTY') {
+				itm.partialpayment = null;
+				itm.receiptno = null;
+				itm.datepaid = null;
+				itm.totalpayment = null
+			} else if (state == 'OFFSET') {
+				itm.receiptno = null;
+				itm.datepaid = null;
+			} else if (state == 'RECEIVED') {
+				payments = ledger_payment.getPaymentsByParentidAndTxndate([parentid: am?.ledger?.objid, txndate: o.dtpaid]);
+				if (payments) {					
+					payments.sort{ p->
+						p.txndate.toString() + "" + p.refno
+					}
+					def idx = 0, xitm;
+					while (idx < payments.size()) {
+						xitm = payments[idx];
+						if (o.refno == xitm.refno) {
+							break;
+						}
+						idx++;
+					}
+					idx++;
+
+					while (idx < payments.size()) {
+						xitm = payments[idx];
+						payments.remove(xitm);
+						idx++;
+					}
+					if (payments?.size() > 1 && itm.datepaid) {
+						def xitem = payments[payments.size()-1];
+						//println 'it ' + it;
+						//println 'xitem ' + xitem;
+						if (o.refno == xitem.refno) {
+						//if (it.objid == xitem.objid) {
+							if (itm.remarks) itm.remarks += " \n";
+							def amt = payments.amount.sum();
+							if (!amt) amt = 0;
+							itm.remarks += decFormat.format(amt) + " Total Payment";
+						}
+					}
+				}	
+			}
+			if (paymentschedule) {
+				def rem = "";
+				cal.setTime(parseDate(paymentschedule));
+				if (cal.get(Calendar.DAY_OF_WEEK) == 1) {
+					rem = "Sunday";
+					/*
+					if (!itm.remarks) {
+						itm.remarks = "Sunday";
+					} else {
+						itm.remarks = "Sunday \n" + itm.remarks;
+					} 
+					*/
+				}
+				if (itm.coldate) {
+					def evt = calendar_event.findByDate([date: itm.coldate]);
+					if (evt) {
+						if (rem) rem += " \n";
+						rem += evt.name;
+					}
+					if (rem) {
+						def rm = rem + ' \n ' + itm.remarks;
+						//itm.remarks = rem;
+						//if (rm) itm.remarks += ' \n' + rm;
+					}
+				}
+			}
+			list.add(itm);
+		}
+
+		return list;
+	}
+
+}

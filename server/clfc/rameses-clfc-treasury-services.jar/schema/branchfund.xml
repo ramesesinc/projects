@@ -1,0 +1,41 @@
+<schema>
+	<element name="branchfund" tablename="branchfund">
+		<field name="objid" primary="true"/>  		
+		<field name="state" required="true"/> 
+		<field name="amtbalance" required="true"/> 
+		<field name="amtuse" required="true"/>  
+		<field name="refid" required="true"/> 
+		<field name="fundid" required="true"/> 
+	</element>
+
+	<element name="lock" tablename="branchfund">
+		<field name="objid" primary="true"/>  
+		<field name="lockid"/> 
+	</element>	
+
+	<element name="detail" tablename="branchfund_detail">
+		<field name="objid" primary="true"/> 
+		<field name="dtcreated" required="true"/> 
+		<field name="author_objid" required="true"/> 
+		<field name="author_username" required="true"/> 
+		<field name="amount" required="true"/> 
+		<field name="remarks" required="true"/> 
+		<field name="fundid" required="true"/> 
+		<field name="refid" required="true"/>		
+		<field name="txntype" required="true"/>
+	</element>	
+
+	<element name="collector" tablename="branchfund_collector">
+		<field name="objid" primary="true"/> 
+		<field name="fundid" required="true"/> 
+		<field name="collector_objid" required="true"/> 
+		<field name="collector_username" required="true"/> 
+		<field name="threshold" required="true"/> 
+		<field name="amtuse" required="true"/> 
+	</element>	
+
+	<element name="collector_lock" tablename="branchfund_collector">
+		<field name="objid" primary="true"/> 
+		<field name="lockid" required="true"/> 
+	</element>			
+</schema> 

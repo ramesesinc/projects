@@ -1,0 +1,421 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.services.extended.*;
+import java.rmi.server.UID;
+
+class LoanARLiquidationService extends ActiveCrudListService
+{
+	@Env
+	def env;
+
+	@ActiveDB("loanar_liquidation")
+	def em;
+
+	@ActiveDB('datatxnlog')
+	def txnlog; 
+
+	@ActiveDB("receivable")
+	def receivable;
+
+	@ActiveDB("loanapp_receivable")
+	def loanapp_receivable;
+
+	@ActiveDB("loan_ar")
+	def loan_ar;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@Service("SequenceService")
+	def seqSvc;
+
+	@Service("InboxService")
+	def inboxSvc;
+
+	@Service("BranchService")
+	def branchSvc;
+
+	@ProxyMethod
+	public def getColumns( params ) {
+		def cols = [];
+		if (!params.state) cols << [name: 'txnstate', caption: 'Status'];
+		cols << [name: 'txndate', caption: 'Date', type: 'date', outputFormat: 'MMM-dd-yyyy'];
+		cols << [name: 'refno', caption: 'RefNo'];
+		cols << [name: 'totalar', caption: 'Total', type: 'decimal', format: '#,##0.00'];
+		if (params.state=='VERIFIED') {
+			cols << [name: 'dtverified', caption: 'DateVerified'];
+			cols << [name: 'verifier.name', caption: 'VerifiedBy'];
+		}
+		return cols;
+	}
+
+	void beforeList( params ) {
+		params.searchtext  = (params.searchtext? params.searchtext : '') + '%';
+		if (params.txnstate) {
+			params._listMethod = 'getListByState';
+		}
+	}
+
+	private void validate( data ) {
+		if (!data.arlist) throw new Exception("At least 1 AR is required.");
+		data.arlist?.each{ o->
+			println o;
+			o.items?.each{ i->
+				if (!i.items) 
+					throw new Exception("At least 1 breakdown for each AR Request item is required.");
+			}
+		}
+		resolveTotal(data);
+	}
+
+	private void resolveTotal( data ) {		
+		def a = data.arlist?.ar?.totalamount.sum();
+		data.totalar = (a? a : 0);
+	}
+
+	void beforeCreate( data ) {
+		validate(data);
+		def date = dateSvc.getServerDateAsString();//dateSvc.parseCurrentDate();
+		data.dtcreated = date;
+		data.author = [objid: env.USERID, name: env.NAME];
+		if (!data.txnstate) data.txnstate = 'DRAFT';
+		if (!data.txndate) data.txndate = date;//new java.text.SimpleDateFormat("yyyy-MM-dd").format(date.date);//date.split(" ")[0];
+
+		def year = dateSvc.getServerYear().toString();//date.year + '';//new java.text.SimpleDateFormat("yyyy").format(java.sql.Date.valueOf(date)).toString();
+		def branch = branchSvc.open([:]);
+		def prefix = 'LIQ' + (branch? branch.code : '') + year[2] + year[3];
+		def seqname = 'arliquidation' + year;
+		data.refno = prefix + seqSvc.getNextFormattedSeriesA(seqname, 6);
+		resolveTotal(data);
+	}
+
+	void afterCreate( data ) {
+		updateInfo(data);
+	}
+
+	void beforeUpdate( data ) {
+		validate(data);
+		resolveTotal(data);
+	}
+
+	void afterUpdate( data ) {
+		updateInfo(data);
+	}
+
+	private void updateInfo( data ) {
+		//println 'removed ar';
+		data._removedar.each{ o->
+		//	println o;
+			em.delete(o, 'liquidation-ar');
+		}
+		data.remove('_removedar');
+
+		//println 'added ar';
+		data._addedar.each{ o->
+		//	println o;
+			em.create(o, 'liquidation-ar');
+		}
+		data.remove('_addedar');
+
+		//println 'removed ar detail';
+		data._removedardetail.each{ o->
+		//	println o;
+			em.delete(o, 'liquidation-ardetail');
+		}
+		data.remove('_removedardetail');
+
+		//println 'added ar detail';
+		data._addedardetail.each{ o->
+		//	println o;
+			em.create(o, 'liquidation-ardetail');
+		}
+		data.remove('_addedardetail');
+
+		//println 'removed  breakdown';
+		data._removedbreakdown.each{ o->
+		//	println o;
+			em.delete(o, 'liquidation-breakdown');
+		}
+		data.remove('_removedbreakdown');
+
+		//println 'added breakdown';
+		data._addedbreakdown.each{ o->
+		//	println o;
+			em.create(o, 'liquidation-breakdown');
+		}
+		data.remove('_addedbreakdown');
+
+		data.arlist.each{ o->
+			o.items?.each{ i->
+				if (i._edited==true) em.update(i, 'liquidation-ardetail');
+				i.items?.each{ p->
+					//println 'breakdown ' + p;
+					if (p._edited==true) em.update(p, 'liquidation-breakdown');
+				}
+			}
+		}
+
+		data.arlist = em.getArList(data);
+		data.arlist.each{ o->
+			o.items = em.getArDetailList(o);
+			o.items.each{ i->
+				i.items = em.getArDetailBreakdownList(i);
+			}
+		}
+	}
+
+	@ProxyMethod
+	public def getArItems( params ) {
+		return loan_ar.getItems([objid: params.objid]);
+	}
+
+	/*
+	private void updateInfo( data ) {
+		data._removedar.each{ o->
+			em.delete(o, 'arliquidation-ar');
+		}
+
+		data._addedar.each{ o->
+			em.create(o, 'arliquidation-ar');
+		}
+
+		data.arlist = em.getArList(data);
+
+		data._removedliquidation.each{ o->
+			em.delete(o, 'arliquidation-detail');
+		}
+
+		data._addedliquidation.each{ o->
+			em.create(o, 'arliquidation-detail');
+		}
+
+		data.liquidations.each{ o->
+			if (o._edited==true) em.update(o, 'arliquidation-detail');
+		}
+
+		data.liquidations = em.getDetails(data);
+	}
+	*/
+
+	void afterOpen( data ) {
+		data.arlist = em.getArList(data);
+		data.arlist.each{ o->
+			o.items = em.getArDetailList(o);
+			o.items.each{ i->
+				i.items = em.getArDetailBreakdownList(i);
+			}
+		}
+
+		def sb = em.findLiquidationSendBackByLiquidationidAndState([liquidationid: data.objid, state: 'OPEN']);
+		if (sb) {
+			data.hassendback = true;
+			data.sendbackremarks = sb.remarks;
+		}
+	}
+
+	@ProxyMethod
+	public def submitForVerification( params ) {
+		def data = changeState(params, 'FOR_VERIFICATION');
+		def msginfo = [ 
+			objid 		: data.objid, 
+			dtcreated	: dateSvc.serverDate, 
+			refid 		: data.objid, 
+			filetype 	: 'loanarliquidation', 
+			message 	: 'For verification of AR with RefNo. ' + data.refno + '.',
+			senderid	: env.USERID, 
+			sendername 	: env.NAME, 
+			recipientid : 'BRANCH_MANAGER' 
+		]; 
+		inboxSvc.addMessage( msginfo );
+
+		msginfo.objid = data.objid + "1";
+		msginfo.recipientid = 'ASST_BRANCH_MANAGER';
+		inboxSvc.addMessage( msginfo );
+
+		def sb = em.findLiquidationSendBackByLiquidationidAndState([liquidationid: data.objid, state: 'OPEN']);
+		if (sb) {
+			sb.txnstate = 'CLOSED';
+			em.update(sb, 'liquidation-sendback');
+		}
+
+		return open(data);
+	}
+
+	@ProxyMethod
+	public def verify( params ) {
+		def data = changeState(params, 'VERIFIED');
+
+		data.dtverified = dateSvc.serverDate;
+		data.verifier = [objid: env.USERID, name: env.NAME];
+		em.update(data, 'liquidation-verify');
+
+		def rec, item, detail;
+		data.arlist.each{ ar->
+			ar.items.each{ ardetail->
+				ardetail.items.each{ breakdown->
+					rec  = loanapp_receivable.read([objid: breakdown.objid]);
+					if (!rec) {
+						rec = [
+							objid		: breakdown.objid,
+							dtcreated 	: data.dtverified,
+							author		: data.verifier,
+							loanappid 	: ardetail.loanapp.objid,
+							txndate 	: data.dtverified,
+							txnstate 	: 'ACTIVE',
+							txntype 	: 'ONLINE',
+							category	: 'RECEIVABLE',
+							refno 		: data.refno,
+							description	: breakdown.particulars,
+							amount 		: breakdown.amount
+						];
+						loanapp_receivable.create(rec);
+					}
+
+					item = receivable.read([objid: breakdown.objid]);
+					if (!item) {
+						item = [
+							objid	: rec.objid,
+							refid 	: rec.objid,
+							reftype : rec.txntype,
+							totaldr : rec.amount,
+							totalcr : 0,
+							balance	: rec.amount
+						];
+						receivable.create(item);
+					}
+
+					detail = receivable.read([objid: breakdown.objid], 'detail');
+					if (!detail) {
+						detail = [
+							objid		: rec.objid,
+							parentid	: item.objid,
+							txndate 	: rec.txndate,
+							txnrefid	: rec.objid,
+							txnrefno	: rec.refno,
+							particulars : rec.description,
+							dr 			: rec.amount,
+							cr 			: 0
+						];
+						receivable.create(detail, 'detail');
+					}
+				}
+			}
+		}
+		/*
+		def rec, item, detail;
+		data.liquidations.each{ o->
+			if (o.reftype=='BORROWER') {
+				rec = loanapp_receivable.read([objid: o.objid]);
+				if (!rec) {
+					rec = [
+						objid		: o.objid,
+						dtcreated 	: data.dtverified,
+						author		: data.verifier,
+						loanappid 	: o.loanapp.objid,
+						txndate 	: data.dtverified,//new java.text.SimpleDateFormat("yyyy-MM-dd").format(data.dtverified),
+						txnstate 	: 'ACTIVE',
+						txntype 	: 'ONLINE',
+						refno 		: data.refno,
+						description	: o.particulars,
+						amount 		: o.amount
+					];
+					loanapp_receivable.create(rec);
+				}
+
+				item = receivable.read([objid: o.objid]);
+				if (!item) {
+					item = [
+						objid	: rec.objid,
+						refid 	: rec.objid,
+						reftype : rec.txntype,
+						totaldr : rec.amount,
+						totalcr : 0,
+						balance	: rec.amount
+					];
+					receivable.create(item);
+				}
+
+				detail = receivable.read([objid: o.objid], 'detail');
+				if (!detail) {
+					detail = [
+						objid		: rec.objid,
+						parentid	: item.objid,
+						txndate 	: rec.txndate,
+						txnrefid	: rec.objid,
+						txnrefno	: rec.refno,
+						particulars : rec.name,
+						dr 			: rec.amount,
+						cr 			: 0
+					];
+					receivable.create(detail, 'detail');
+				}
+			}
+		}
+		*/
+
+		inboxSvc.removeMessageByRefid([refid: data.objid]); 
+		
+		return open(data);
+	}
+
+	@ProxyMethod
+	public def sendBack( params ) {
+		if (!params.remarks) throw new Exception("Please specify remarks.");
+
+		def data = changeState(params, 'SEND_BACK');
+		inboxSvc.removeMessageByRefid([refid: data.objid]); 
+
+		def sb = em.findLiquidationSendBackByLiquidationidAndState([liquidationid: data.objid, state: 'OPEN']);
+		if (!sb) {
+			sb = [
+				objid 			: 'LASB' + new UID(),
+				dtcreated 		: dateSvc.serverDate,
+				author 			: [objid: env.USERID, name: env.NAME],
+				txnstate 		: 'OPEN',
+				liquidationid 	: data.objid,
+				remarks 		: params.remarks
+			];
+			em.create(sb, 'liquidation-sendback');
+		}
+
+		return open(data);
+	}
+
+
+	private def changeState( params, state ) {
+		def data = em.read(params);
+		if (!data) throw new Exception("AR Request Liqudation record does not exist or has already been deleted.");
+
+		if (data.txnstate == state)
+			throw new Exception("AR Request Liquidation already ${state}.");
+
+		data.txnstate = state;
+		em.changeState(data);
+
+		def action, remarks;
+		switch (state.toUpperCase()) {
+			case 'FOR_VERIFICATION':action = 'FOR VERIFICATION';
+									remarks = 'AR Request Liquidation submitted for verification';
+									break;
+			case 'VERIFIED'		: 	action = 'VERIFY';
+									remarks = 'AR Request Liquidation verified';
+									break;
+			case 'SEND_BACK'	: 	action = 'SEND BACK';
+									remarks = 'AR Request Liquidation sent back';
+									break;
+		}
+
+		def loginfo = [
+			objid 	: 'TLOG' + new UID(), 
+			txndate : dateSvc.serverDate, 
+			txnid   : data.objid, 
+			user    : [objid: env.USERID, username: env.USER], 
+			action	: action, 
+			remarks : remarks
+		]; 
+		txnlog.create( loginfo ); 
+
+		return open(data);
+	}
+
+}

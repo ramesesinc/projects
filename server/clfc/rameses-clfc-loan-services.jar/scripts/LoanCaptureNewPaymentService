@@ -1,0 +1,519 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.services.extended.*;
+import com.rameses.rules.common.*;
+import java.rmi.server.UID;
+import loan.facts.*;
+import loan.actions.*;
+import java.util.*;
+import com.rameses.util.*;
+
+class LoanCaptureNewPaymentService 
+{
+	@Env
+	def env;
+
+	@ActiveDB("fieldcollection")
+	def fieldcollection;
+
+	@ActiveDB("ledger_billing")
+	def ledger_billing;
+
+	@ActiveDB("collection_remittance")
+	def remittance;
+
+	@ActiveDB("loan_ledger")
+	def ledger;
+
+	@ActiveDB("loan_exemption")
+	def exemption;
+
+	@ActiveDB("loanapp")
+	def loanapp;
+
+	@ActiveDB("customer")
+	def customer;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@ActiveDB("loan_product_type")
+	def product_type;
+
+	@ActiveDB("amnesty")
+	def amnesty;
+
+	@Service("LoanLedgerBillingService")
+	def billingSvc;
+
+	@Service("CalendarEventService")
+	def calendarSvc;
+
+	@Service("LoanLedgerService")
+	def ledgerSvc;
+
+	@Service("RuleExecutorService")
+	def ruleSvc;
+
+	@Service("NumberService")
+	def numSvc;
+
+	@ProxyMethod
+	public def create( data ) {
+		def rem = remittance.read([objid: data.remittanceid]);
+		if (!rem) throw new Exception("Remittance record does not exist or has already been deleted.");
+
+		def billing_item = ledger_billing.findByBillingidAndItemid([objid: rem.collection.objid, itemid: rem.group.objid]);
+		if (!billing_item) throw new Exception("Billing item record does not exist or has already been deleted.");
+
+		def billing_detail = ledger_billing.findBillingDetailByBillingidAndAppid([billingid: billing_item.parentid, appid: data.objid]);
+		if (!billing_detail) {
+			def params = [
+				loanappid	: data.objid,
+				routecode 	: data.route.code,
+				billingid 	: billing_item.parentid,
+				itemid 		: billing_item.objid
+			]
+			billing_detail = computeBilling(params);
+			//println 'billing detail ' + billing_detail;
+		}
+		//throw new Exception("stop");
+
+		def fc_loan = fieldcollection.read(billing_detail, "fc-loan");
+		if (!fc_loan) {
+			fc_loan = [
+				objid 				: billing_detail.objid,
+				parentid			: billing_detail.parentid,
+				fieldcollectionid	: billing_detail.billingid,
+				loanapp 			: data.loanapp,
+				borrower 			: data.borrower,
+				routecode 			: data.route.code,
+				noofpayments 		: 0
+			];
+			fieldcollection.create(fc_loan, "fc-loan");
+		}
+
+		def refno = (fc_loan.noofpayments > 0? billingSvc.getRefno([routecode: fc_loan.routecode]) : billing_detail.refno);
+		def fc_payment = [
+			objid 				: data.payment.objid,
+			parentid 			: fc_loan.objid,
+			itemid 				: fc_loan.parentid,
+			fieldcollectionid 	: fc_loan.fieldcollectionid,
+			dtfiled 			: dateSvc.serverDate,
+			author 				: [objid: env.USERID, name: env.NAME],
+			txnmode 			: 'CAPTURE',
+			refno				: refno,
+			paytype 			: billing_detail.paymentmethod,
+			amount 				: data.payment.amount,
+			paidby				: data.payment.paidby,
+			payoption			: data.payment.option,
+			version 			: 1
+		]
+		fc_payment.dtpaid = fc_payment.dtfiled;
+		fieldcollection.create(fc_payment, "fc-payment");
+
+		if (fc_payment.payoption == 'check') {
+			fc_payment.bank = data.payment.bank;
+			fc_payment.check = data.payment.check;
+			fieldcollection.update(fc_payment, "payment-check");
+		}
+		fc_loan.noofpayments++;
+		fieldcollection.update(fc_loan, "loan-noofpayments");
+		//def billing = ledger_billing.read(data, "billing-detail");
+		//if (!billing) throw new Exception("Record does not exist or has already been deleted.");
+
+		/*for (i in data) {
+			println i;
+		}*/
+		/*def fc_item = fieldcollection.read([objid: data.itemid], "fc-item");
+		if (!fc_item) throw new Exception("Record does not exist or has already been deleted.");
+
+		def fc_loan = fieldcollection.read(data, "fc-loan");
+		if (!fc_loan) {
+			fc_loan = [
+				objid 				: data.objid,
+				parentid 			: fc_item.objid,
+				fieldcollectionid 	: fc_item.parentid,
+				loanapp 			: data.loanapp,
+				borrower 			: data.borrower,
+				routecode 			: data.route.code,
+				noofpayments 		: 0
+			];
+			fieldcollection.create(fc_loan, "fc-loan");
+		}
+
+		//def payments = fieldcollection.getFieldcollectionPayments(fc_loan);
+		def refno  = data.refno + (fc_loan.noofpayments > 0? (fc_loan.noofpayments+1) : '');
+		def fc_payment = [
+			objid 				: data.payment.objid,
+			parentid 			: fc_loan.objid,
+			itemid 				: fc_item.objid,
+			fieldcollectionid 	: fc_item.parentid,
+			dtfiled 			: dateSvc.serverDate,
+			author 				: [
+				objid 	: (env.USERID? env.USERID : 'NOT IDENTIFIED'),
+				name 	: (env.NAME? env.NAME : 'NOT IDENTIFIED')
+			],
+			txnmode 			: 'ONLINE',
+			refno				: refno,
+			paytype 			: data.paymentmethod,
+			amount 				: data.payment.amount,
+			paidby				: data.payment.paidby,
+			payoption			: data.payment.option,
+			version 			: 1
+		]
+		fc_payment.dtpaid = fc_payment.dtfiled;
+		fieldcollection.create(fc_payment, "fc-payment");
+
+		if (fc_payment.payoption == 'check') {
+			fc_payment.bank = data.payment.bank;
+			fc_payment.check = data.payment.check;
+			fieldcollection.update(fc_payment, "payment-check");
+		}
+		fc_loan.noofpayments++;
+		fieldcollection.update(fc_loan, "loan-noofpayments");*/
+
+
+		return data;
+	}
+
+	private def computeBilling( params ) {
+		def item = ledger.findByAppId([appid: params.loanappid]);
+		if (!item) throw new Exception("Record does not exist or has already been deleted.");
+
+		def app = loanapp.read([objid: params.loanappid]);
+		if (!app) throw new Exception("Record does not exist or has already been deleted.");
+
+		def cust = customer.read([objid: item.acctid]);
+		if (!cust) throw new Exception("Record does not exist or has already been deleted.");
+
+		def billing = ledger_billing.read([objid: params.billingid]);
+		if (!billing) throw new Exception("Record does not exist or has already been deleted.");
+
+		def days = 0;
+
+		def currentDate = dateSvc.parse("yyyy-MM-dd", billing.billdate);
+		def maturityDate = dateSvc.parse("yyyy-MM-dd", item.dtmatured);
+		if (currentDate >  maturityDate && item.overduepenalty == 0.00) {
+			def p = product_type.read([name: item.producttypeid]);
+			item.overduepenalty = ledgerSvc.computeOverduePenalty([balance: item.balance, pastduerate: (p.pastduerate? p.pastduerate : 0.00)]);
+			ledger.update(item, 'overduepenalty');
+		}
+
+		def detail = [
+			objid				: 'CLBD' + new UID(),
+			parentid 			: params.itemid,
+			billingid 			: params.billingid,
+			ledgerid 			: item.objid,
+			route_code 			: params.routecode,
+			acctid 				: item.acctid,
+			loanappid 			: item.appid,
+			acctname 			: item.acctname,
+			loanamount 			: item.totalprincipal,
+			loandate 			: dateSvc.add(item.dtstarted, "-1"),
+			term 				: item.term,
+			appno 				: app.appno,
+			overpaymentamount 	: item.overpaymentamount,
+			txndate 			: currentDate,
+			dailydue 			: item.dailydue,
+			dtreleased			: dateSvc.add(item.dtstarted, "-1"),
+			dtmatured 			: item.dtmatured,
+			producttypeid 		: item.producttypeid,
+			paymentmethod 		: item.paymentmethod,
+			interestamount 		: item.interestamount,
+			homeaddress 		: cust.address.text,
+			collectionaddress 	: item.collectionaddress? item.collectionaddress : '',
+			interest 			: 0.00,
+			others 				: 0.00,
+			overduepenalty 		: item.overduepenalty,
+			isfirstbill 		: (item.balance == item.loanamount? 1 : 0)
+		];
+		//detail.refno = 'B'+seqSvc.getNextFormattedSeriesA('loanbill-'+detail.route_code, 8);
+		detail.refno = billingSvc.getRefno([routecode: detail.route_code]);
+
+		def facts = [];
+		facts << new CurrDate([currentdate: currentDate]);
+		facts << buildLedgerFact(detail);
+		facts << buildLoanappFact(detail);
+		facts << buildBillingItemFact(detail);
+		facts << buildAmnestyFact(detail);
+
+		def actions = new RuleAction(); 
+		actions.addCommand( "calcInterest", new  CalculateBillingInterest(NS: numSvc) );
+		actions.addCommand( "calcPenalty", new  CalculateBillingPenalty(NS: numSvc) );
+		actions.addCommand( "calcOthers", new CalculateBillingOthers(NS: numSvc) );
+		actions.addCommand( "calcAmountDue", new CalculateBillingAmountDue(NS: numSvc) );
+		actions.addCommand( "calcBalance", new CalculateBillingBalance(NS: numSvc) );
+
+		ruleSvc.execute( "loanbilling", facts, actions, null );
+
+		def billitem = facts.find{ (it instanceof LoanBillingItem) }
+		detail.penalty = billitem.penalty;
+		detail.others = billitem.others;
+		detail.amountdue = billitem.amountdue;
+		detail.balance = billitem.balance;
+
+		def ledgeritem = ledger.findLastLedgerItemByParentId([parentid: detail.ledgerid]);		
+		if (ledgeritem?.interestbal > 0) {
+			detail.amountdue += ledgeritem.interestbal;
+			detail.balance += ledgeritem.interestbal;
+			detail.interest += ledgeritem.interestbal;
+		}
+		if (ledgeritem?.penaltybal > 0) {
+			detail.amountdue += ledgeritem.penaltybal;
+			detail.balance += ledgeritem.penaltybal;
+			detail.penalty += ledgeritem.penaltybal;
+		}
+
+		//detail.refno 
+
+		/*def amt = item.dailydue;
+		if (item.paymentmethod == 'over' && item.overpaymentamount > 0) amt = item.overpaymentamount; 
+		days = dateSvc.getDaysDiff(item.dtcurrentschedule, currentDate);
+		detail.amountdue = (amt*days)+detail.others;
+
+		if (!item.compromiseid) {	
+			def req = new RuleRequest("billing");
+			def referencesFact = [					
+				isFixed				: false,
+				isOverdue			: (currentDate > maturityDate),
+				hasSunday			: false,
+				balance				: item.balance,
+				absentPenalty		: item.absentpenalty,
+				overduePenalty		: detail.overduepenalty,
+				dailyDue			: amt,
+				interest 			: detail.interestamount,
+				overpayment			: item.overpaymentamount,
+				others				: detail.others,
+				totalDays			: days
+			];
+
+			req.addFact("billing", "References", referencesFact);
+			req.addGlobal("detail", detail);
+			referencesFact.noOfHolidays = calendarSvc.getNoOfHolidays([lastscheduledate: item.dtcurrentschedule, item:[trialAndError: 0, totalDays: days]]);
+			def prm = [
+				startdate 	: item.dtcurrentschedule,
+				enddate 	: currentDate,
+				ledgerid 	: item.objid
+			];
+			def e = exemption.findTotaldaysExemptedByStartdateAndEnddateAndLedgerid(prm);
+			referencesFact.noOfDaysExempted = (e.totaldays? e.totaldays : 0);
+			
+			def cal = Calendar.getInstance();
+			cal.setTime(dateSvc.add(currentDate, "-"+referencesFact.noOfHolidays));
+			if ((cal.get(cal.DAY_OF_WEEK)-1) == 1) {
+				referencesFact.hasSunday = true;
+			}
+
+			ruleSvc.execute(req);
+			if (detail.penalty) {
+				detail.penalty = new BigDecimal(detail.penalty+'').setScale(2, BigDecimal.ROUND_HALF_UP);
+			}
+
+			if (detail.amountdue) {
+				detail.amountdue = new BigDecimal(detail.amountdue+'').setScale(0, BigDecimal.ROUND_CEILING);
+			}
+			detail.balance = getBalance(detail, item.balance);
+		} else {
+
+		}*/
+
+		ledger_billing.create(detail, "billing-detail");
+		return detail;
+	}
+
+	private def parse( pattern, date ) {
+		if (!pattern) pattern = "yyyy-MM-dd";
+		def dt;
+		if (date instanceof Date) {
+			dt = date;
+		} else {
+			dt = java.sql.Date.valueOf(date);
+		}
+		return new java.text.SimpleDateFormat(pattern).format(dt);
+	}
+
+	public def buildLedgerFact( params ) {
+		def data = ledger.read([objid: params.ledgerid]);
+		def item = [
+			ledgerid 		: data.objid,
+			appid 			: data.appid,
+			dtmatured		: data.dtmatured,
+			dtrelease 		: DateUtil.add(data.dtstarted, "-1"),
+			dtstarted		: data.dtstarted,
+			dtlastpaid 		: data.dtlastpaid,
+			currentdate 	: params.txndate,
+			balance 		: data.balance,
+			overduepenalty 	: data.overduepenalty,
+			balance 		: data.balance,
+			overpayment 	: data.overpaymentamount,
+			hasamnesty 		: false,
+			paymentmethod 	: data.paymentmethod
+		];
+		def am = amnesty.findActiveAmnestyByLedgeridAndDate([ledgerid: data.objid, date: parse("yyyy-MM-dd", params.txndate)]);
+		if (am) item.hasamnesty = true;
+		return new LoanLedger(item);
+	}
+
+	public def buildLoanappFact( params ) {
+		def data = ledger.read([objid: params.ledgerid]);
+		def producttype = product_type.read([name: data.producttypeid]);
+		def item = [
+			appid 			: data.appid,
+			principal 		: data.totalprincipal,
+			interest 		: data.interestamount,
+			absentrate 		: producttype.absentpenalty,
+			absentpenalty 	: data.absentpenalty,
+			underpytrate 	: producttype.underpaymentpenalty,
+			intrate 		: producttype.interestrate,
+			schedule 		: data.dailydue,
+			term 			: data.term,
+			scheduledate 	: (data.dtcurrentschedule? data.dtcurrentschedule : DateUtil.add(data.dtstarted, "-1"))
+		]
+		return new LoanApp(item);
+	}
+
+	public def buildBillingItemFact( params ) {
+		def data = ledger.read([objid: params.ledgerid]);
+		
+		Calendar c = Calendar.getInstance();
+		c.setTime(params.txndate);
+		def hassunday = false;
+		if ((c.get(Calendar.DAY_OF_WEEK) == 1)) hassunday = true;
+
+		def avgamount = data.dailydue;
+		if (data.paymentmethod == 'over') {
+			def m = ledger_billing.findAvgOverpaymentAmount([parentid: data.objid]);
+			avgamount = (m? m.groupbaseamount : data.overpaymentamount);
+			if (!avgamount) avgamount = data.dailydue;
+		}
+		//if (data.paymentmethod == 'over') avgamount = ledger_billing.findAvgOverpaymentAmount([parentid: data.objid]).groupbaseamount;
+		
+		def item = [
+			ledgerid 		: data.objid,
+			hassunday 		: hassunday,
+			avgamount 		: avgamount,
+			currentdate 	: params.txndate,
+			dtschedule 		: (data.dtcurrentschedule? data.dtcurrentschedule : DateUtil.add(data.dtstarted, "-1")),
+		]
+
+		def days = dateSvc.getDaysDiff(item.dtschedule, item.currentdate);
+		item.noofholidays = calendarSvc.getNoOfHolidays([lastscheduledate: item.dtschedule, item:[trialAndError: 0, totalDays: days]]);
+		def prm = [startdate: item.dtschedule, enddate: item.currentdate, ledgerid: data.objid];
+		def e = exemption.findTotaldaysExemptedByStartdateAndEnddateAndLedgeridWithoutHolidays(prm);
+		item.noofdaysexempted =  (e.totaldays? e.totaldays : 0);
+
+		return new LoanBillingItem(item);
+	}
+
+	private def buildAmnestyFact( params ) {
+		def data = amnesty.findActiveAmnestyByLedgeridAndDate([ledgerid: params.ledgerid, date: parse("yyyy-MM-dd", params.txndate)]);
+		def item = [:];
+		if (data) {
+			item.ledgerid = data.ledgerid;
+			item.balance = data.balance;
+			item.type = data.amnestyoption;
+			item.waivedinterest = (data.iswaiveinterest > 0? true : false);
+			item.waivedpenalty = (data.iswaivepenalty > 0? true : false);
+		}
+		return new Amnesty(item);
+	}
+	/*
+	private def computeBillingx( params ) {
+		def mLedger = ledger.findByAppId([appid: params.loanappid]);
+		if (!mLedger) throw new Exception("Record does not exist or has already been deleted.");
+
+		def billing = [
+			ledgerid 		: mLedger.objid,
+			loanamount 		: mLedger.totalprincipal,
+			dtreleased		: dateSvc.add(mLedger.dtstarted, "-1"),
+			refno			: billingSvc.getRefno([routecode: params.routecode]),
+			interest 		: mLedger.interestamount,
+			dailydue 		: mLedger.dailydue,
+			paymentmethod 	: mLedger.paymentmethod,
+			term			: mLedger.term,
+			overduepenalty 	: mLedger.overduepenalty,
+			overpayment 	: mLedger.overpaymentamount,
+			dtmatured 		: mLedger.dtmatured,
+			others			: 0.00
+		]
+		def currentDate = dateSvc.serverDate;
+		def maturityDate = billing.dtmatured;
+		def amt = mLedger.dailydue;
+		if (mLedger.paymentmethod == 'over' && mLedger.overpaymentamount > 0) amt = mLedger.overpaymentamount; 
+		def days = dateSvc.getDaysDiff(mLedger.dtcurrentschedule, currentDate);
+		//println 'days = '+days;
+		billing.amountdue = (amt*days)+billing.others;
+		if (!mLedger.compromiseid) {					
+			if (currentDate > maturityDate) {
+				billing.penalty = days*mLedger.overduepenalty;
+				def amountdue = new BigDecimal((billing.penalty+(days * billing.interest)+mLedger.balance)+'').setScale(0, BigDecimal.ROUND_CEILING);
+				billing.amountdue = new BigDecimal(amountdue+'').setScale(2);
+				billing.days = days;
+			} else {
+				def noofholidays = calendarSvc.getNoOfHolidays([lastscheduledate: mLedger.dtcurrentschedule, item:[trialAndError: 0, totalDays: days]])
+				days -= noofholidays;
+				def cal = Calendar.getInstance();
+				cal.setTime(currentDate);
+				if ((cal.get(cal.DAY_OF_WEEK)-1) == 1) days--;
+				//days -= exemption.getExemptionsByStartdateAndEnddateAndLedgerid([startdate: mLedger.dtcurrentschedule, enddate: currentDate, ledgerid: mLedger.objid]).size();
+				def e = exemption.findTotaldaysExemptedByStartdateAndEnddateAndLedgerid([startdate: mLedger.dtcurrentschedule, enddate: currentDate, ledgerid: mLedger.objid]);
+				days -= (e.totaldays? e.totaldays : 0);
+				billing.penalty = mLedger.absentpenalty * (days > 0? days-1 : 0);
+				billing.amountdue += billing.penalty;
+			}
+			billing.days = days;
+			billing.balance = getBalance(billing, mLedger.balance);
+		} else {
+			def compromise = ledger_compromise.read([objid: mLedger.compromiseid]);
+			def type = compromise.compromisetype;
+			if (type == 'WAIVED_INTEREST') {
+				billing.penalty = days * mLedger.overduepenalty;
+				billing.balance = mLedger.balance + billing.penalty;
+			} else if (type == 'WAIVED_PENALTY') {
+				billing.balance = mLedger.balance + (days*mLedger.interest);
+			}
+
+		}
+		//println 'billing = '+billing;
+		return billing;
+	}
+
+	private def getBalance( params, balance ) {
+		def bal = balance? balance : 0.00;
+		if (balance == params.loanamount) {
+			def producttype = product_type.read([name: params.producttypeid]);
+			bal = params.loanamount*(producttype.term/100);
+			params.isfirstbill = 1;
+		} else {
+			def ledgeritem = ledger.findLastLedgerItemByParentId([parentid: params.ledgerid]);
+			if (params.overduepenalty > 0) {
+				bal += params.days*params.interest;
+			} else {
+				def avgamount = params.dailydue;
+				if (params.paymentmethod == 'over') avgamount = ledger_billing.findAvgOverpaymentAmount([parentid: params.ledgerid]).groupbaseamount;
+				BigDecimal b = new BigDecimal(avgamount+'').setScale(2);
+				b = b.subtract(new BigDecimal(params.interest+'').setScale(2));
+				BigDecimal bd = new BigDecimal(balance+'').setScale(2)
+				bd = bd.divide(b, BigDecimal.ROUND_HALF_UP);
+				bal += (bd.setScale(0, BigDecimal.ROUND_HALF_UP)*params.interest);
+			}
+			
+			if (ledgeritem.interestbal > 0) {
+				params.amountdue += ledgeritem.interestbal;
+				bal += ledgeritem.interestbal;
+				params.interest += ledgeritem.interestbal;
+			}
+			if (ledgeritem.penaltybal > 0) {
+				params.amountdue += ledgeritem.penaltybal;
+				bal += ledgeritem.penaltybal;
+				params.penalty += ledgeritem.penaltybal;
+			}
+			params.isfirstbill = 0;
+		}
+		if (params.penalty > 0) bal += params.penalty;
+		bal = new BigDecimal(bal+'').setScale(0, BigDecimal.ROUND_CEILING);
+		bal = new BigDecimal(bal+'').setScale(2);
+		return bal;
+	}*/
+}

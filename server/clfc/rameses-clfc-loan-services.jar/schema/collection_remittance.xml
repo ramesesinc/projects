@@ -1,0 +1,65 @@
+<schema>
+
+	<element tablename="collection_remittance">
+		<field name="objid" primary="true" />
+		<field name="state" required="true" />
+		<field name="dtfiled" required="true" />
+		<field name="author_objid" required="true" />
+		<field name="author_name" required="true" />
+		<field name="txndate" required="true" />
+		<field name="collector_objid" required="true" />
+		<field name="collector_name" required="true" />
+		<field name="collection_objid" required="true" />
+		<field name="collection_type" required="true" />
+		<field name="group_objid" required="true" />
+		<field name="group_type" required="true" />
+		<field name="totalacctscollected" required="true" />
+		<field name="totalamount" required="true" />
+		<field name="cbsno" />
+	</element>
+
+	<element name="pending-remittance" tablename="collection_remittance_pending">
+		<field name="objid" primary="true" />
+	</element>
+
+	<element name="post-remittance" tablename="collection_remittance">
+		<field name="objid" primary="true" />
+		<field name="dtposted" required="true" />
+		<field name="poster_objid" required="true" />
+		<field name="poster_name" required="true" />
+	</element>
+
+	<element name="rem-detail" tablename="collection_remittance_detail">
+		<field name="objid" primary="true" />
+		<field name="parentid" required="true" />
+		<field name="refid" required="true" />
+		<field name="borrower_objid" required="true" />
+		<field name="borrower_name" required="true" />
+		<field name="loanapp_objid" required="true" />
+		<field name="loanapp_appno" required="true" />
+		<field name="routecode" required="true" />
+		<field name="refno" required="true" />
+		<field name="amount" required="true" />
+		<field name="paytype" required="true" />
+		<field name="payoption" required="true" />
+		<field name="dtpaid" required="true" />
+		<field name="paidby" required="true" />
+	</element>
+
+	<element name="rem-detail-check" tablename="collection_remittance_detail">
+		<field name="objid" primary="true" />
+		<field name="bank_objid" required="true" />
+		<field name="bank_name" required="true" />
+		<field name="check_no" required="true" />
+		<field name="check_date" required="true" />
+	</element>
+
+	<element name="rem-other" tablename="collection_remittance_other">
+		<field name="objid" primary="true" />
+		<field name="parentid" required="true" />
+		<field name="refid" required="true" />
+		<field name="txntype" required="true" />
+		<field name="amount" required="true" />
+	</element>
+
+</schema>

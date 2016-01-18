@@ -1,0 +1,7 @@
+<schema>
+
+	<element tablename="customerjuridical">
+		<field name="objid" primary="true" />
+	</element>
+
+</schema>

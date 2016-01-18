@@ -1,0 +1,25 @@
+<schema>
+
+	<element tablename="amnesty_update">
+		<field name="objid" primary="true" />
+		<field name="dtcreated" required="true" />
+		<field name="author_objid" required="true" />
+		<field name="author_name" required="true" />
+		<field name="txnstate" required="true" />
+		<field name="amnesty_objid" required="true" />
+		<field name="amnesty_refno" required="true" />
+		<complex name="info" required="false" merge="true" serializer="default" />
+		<field name="remarks" required="true" />
+		<field name="dtposted" />
+		<field name="poster_objid" />
+		<field name="poster_name" />
+	</element>
+
+	<element name="post" tablename="amnesty_update">
+		<field name="objid" primary="true" />
+		<field name="dtposted" required="true" />
+		<field name="poster_objid" required="true" />
+		<field name="poster_name" required="true" />
+	</element>
+
+</schema>

@@ -1,0 +1,45 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.services.extended.*;
+
+class LoanBillingGroupLookupService extends ActiveListService
+{
+	@ActiveDB("specialcollection_billinggroup")
+	def em;
+
+	@ProxyMethod
+	public def getColumns( params ) {
+		return [
+			[name: 'name', caption: 'Group Name'],
+			[name: 'dtstarted', caption: 'Billing Date', type: 'date', outputFormat: 'MMM-dd-yyyy'],
+			//[name: 'dtended', caption: 'DateEnded', type: 'date', outputFormat: 'MMM-dd-yyyy']
+		];
+	}
+
+	void beforeList( params ) {
+		params.searchtext = (params.searchtext? params.searchtext : '') + '%';
+		params._listMethod = 'getLookupList';
+		def filter = "WHERE s.name LIKE '${params.searchtext}' ";
+		if (params.txnstate) {
+			filter += "AND s.txnstate = '${params.txnstate}' ";
+		}
+		if (params.txntype) {
+			filter += "AND s.txntype = '${params.txntype}' ";
+		}
+		if (params.date) {
+			filter += "AND '${params.date}' BETWEEN s.dtstarted AND s.dtended ";
+		}
+		params.filter = filter;
+		/*
+		if (params.txnstate) {
+			params._listMethod = 'getLookupListByState';
+		}
+		if (params.txnype) {
+			params._listMethod = 'getLookupListByType';
+		}
+		if (params.txnstate && params.txntype) {
+			params._listMethod = 'getLookupListByStateAndType';
+		}
+		*/
+	}
+}

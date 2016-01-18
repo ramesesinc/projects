@@ -1,0 +1,44 @@
+<schema>
+
+	<element name="overage" tablename="overage">
+		<field name="objid" primary="true" />
+		<field name="state" required="true" />
+		<field name="dtfiled" required="true" />
+		<field name="author_objid" required="true" />
+		<field name="author_name" required="true" />
+		<field name="refno" required="true" />
+		<field name="txndate" required="true" />
+		<field name="remittanceid" required="true" />
+		<field name="collector_objid" required="true" />
+		<field name="collector_name" required="true" />
+		<field name="amount" required="true" />
+		<field name="balance" required="true" />
+		<field name="remarks" required="true" />
+		<field name="dtposted" />
+		<field name="poster_objid" />
+		<field name="poster_name" />
+		<field name="dtnoted" />
+		<field name="notedby_objid" />
+		<field name="notedby_name" />
+	</element>
+
+	<element name="balance" tablename="overage">
+		<field name="objid" primary="true" />
+		<field name="balance" required="true" />
+	</element>
+
+	<element name="post" tablename="overage">
+		<field name="objid" primary="true" />
+		<field name="dtposted" required="true" />
+		<field name="poster_objid" required="true" />
+		<field name="poster_name" required="true" />
+	</element>
+
+	<element name="noted" tablename="overage">
+		<field name="objid" primary="true" />
+		<field name="dtnoted" required="true" />
+		<field name="notedby_objid" required="true" />
+		<field name="notedby_name" required="true" />
+	</element>
+
+</schema>

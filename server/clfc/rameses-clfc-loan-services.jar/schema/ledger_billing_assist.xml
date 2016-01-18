@@ -1,0 +1,16 @@
+<schema>
+
+	<element name="ledger_billing_assist" tablename="ledger_billing_assist">
+		<field name="objid" primary="true" />
+		<field name="dtcreated" required="true" />
+		<field name="author_objid" required="true" />
+		<field name="author_name" required="true" />
+		<field name="dtmodified" required="true" />
+		<field name="modifiedby_objid" required="true" />
+		<field name="modifiedby_name" required="true" />
+		<field name="prevbillingid" required="true" />
+		<field name="prevcollector_objid" required="true" />
+		<field name="prevcollector_name" required="true" />
+	</element>
+
+</schema>

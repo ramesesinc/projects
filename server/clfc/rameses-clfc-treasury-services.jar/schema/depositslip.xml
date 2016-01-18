@@ -1,0 +1,55 @@
+<schema>
+
+	<element tablename="depositslip">
+		<field name="objid" primary="true" />
+		<field name="state" required="true" />
+		<field name="dtcreated" required="true" />
+		<field name="author_objid" required="true" />
+		<field name="author_name" required="true" />
+		<field name="txndate" required="true" />
+		<field name="controlno" required="true" />
+		<field name="passbook_objid" required="true" />
+		<field name="passbook_passbookno" required="true" />
+		<field name="passbook_acctno" required="true" />
+		<field name="passbook_acctname" required="true" />
+		<field name="amount" required="true" />
+		<field name="type" />
+		<field name="reftype" />
+		<field name="currencytype_objid" />
+		<field name="currencytype_name" />
+		<field name="accounttype_objid" />
+		<field name="accounttype_name" />
+		<field name="deposittype_objid" />
+		<field name="deposittype_name" />
+	</element>
+
+	<element name="check" tablename="depositslip_check">
+		<field name="objid" primary="true" />
+		<field name="parentid" required="true" />
+		<field name="refid" required="true" />
+		<field name="checkno" required="true" />
+		<field name="checkdate" required="true" />
+		<field name="amount" required="true" />
+		<field name="bank_objid" required="true" />
+		<field name="bank_name" required="true" />
+	</element>
+
+	<element name="checkout" tablename="depositslip_checkout">
+		<field name="objid" primary="true" />
+		<field name="dtcheckedout" required="true" />
+		<field name="representative1_objid" required="true" />
+		<field name="representative1_name" required="true" />
+		<field name="representative2_objid" />
+		<field name="representative2_name" />
+	</element>
+
+	<element name="cbs" tablename="depositslip_cbs">
+		<field name="objid" primary="true" />
+		<field name="parentid" required="true" />
+		<field name="cbsid" required="true" />
+		<field name="cbsno" required="true" />
+		<field name="txndate" required="true" />
+		<field name="amount" required="true" />
+	</element>
+
+</schema>

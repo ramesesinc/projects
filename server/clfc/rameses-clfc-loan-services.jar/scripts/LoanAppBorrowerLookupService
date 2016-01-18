@@ -1,0 +1,31 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+
+class LoanAppBorrowerLookupService
+{
+	@ActiveDB(value='loanapp_borrower')
+	def loanapp_borrower;
+	
+	@ProxyMethod
+	public def getColumns( params ) {
+		return [
+			[name:'lastname', caption: 'Last Name'],
+			[name:'firstname', caption: 'First Name'],
+			[name:'address', caption: 'Address']
+		]
+	}
+
+	@ProxyMethod
+	public def getList( params ) {
+		def list;
+		if (params.searchtext) {
+			params.searchtext += '%';
+			list = loanapp_borrower.getListByNames(params);
+		} else {
+			params.searchtext = '%'
+			list = loanapp_borrower.getList(params);
+		}
+		return list;
+	}
+
+}

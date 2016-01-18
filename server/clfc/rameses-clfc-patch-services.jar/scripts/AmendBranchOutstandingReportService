@@ -1,0 +1,104 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import java.rmi.server.UID;
+
+class AmendBranchOutstandingReportService
+{
+	@Env
+	def env;
+
+	@ActiveDB("branch_report")
+	def em;
+
+	@ActiveDB("branch_report_amend")
+	def report_amend;
+
+	@Service("DateService")
+	def dateSvc;
+
+	private String reporttype = 'LOANOUTSTANDING';
+
+	private void validate( params ) {
+		if (!params.txndate) throw new Exception("Please specify txndate.");
+
+		def currdate = parseDate(dateSvc.getServerDateAsString().split(" ")[0]);
+		def date = parseDate(params.txndate);
+
+		if (date.compareTo(currdate) >= 0) {
+			throw new Exception("Date must be lesser than current date.");
+		}
+	}
+
+	private def parseDate( date ) {
+		if (!date) return null;
+		if (date instanceof Date) {
+			return date;
+		} else {
+			return java.sql.Date.valueOf(date);
+		}
+	}
+
+	@ProxyMethod
+	public def getList( params ) {
+		validate(params);
+		params.reporttype = reporttype;
+		def item = em.findReportData(params);
+		if (!item) {
+			throw new Exception("No outstanding on " + new java.text.SimpleDateFormat("MMM-dd-yyyy").format(parseDate(params.txndate)) + ".");
+		}
+
+		item = em.read(item);
+
+		item.list = [];
+		item.list.addAll(item.value);
+		item.remove('value');
+		item.list.sort{ it.borrower }
+		/*
+		def list = [], item;
+		xlist.each{ o->
+			item = em.read([objid: o.objid]);
+			if (item) {
+				list.addAll(item.value);
+			}
+		}
+
+		list.sort{ it.borrower }
+		*/
+
+		return item;
+	}
+
+	@ProxyMethod
+	public def updateList( params ) {
+		params.reporttype = reporttype;
+		def item = em.read([objid: params.entity?.objid]);
+		if (!item) {
+			throw new Exception("Branch report record does not exist or has already been deleted.");
+			//throw new Exception("No outstanding on " + new java.text.SimpleDateFormat("MMM-dd-yyyy").format(parseDate(param.txndate)) + ".");
+		}
+
+		def data = [
+			objid		: 'BRA' + new UID(),
+			dtcreated 	: dateSvc.serverDate,
+			author		: [objid: env.USERID, name: env.NAME],
+			refid 		: item.objid,
+			txndate 	: item.txndate,
+			reporttype 	: reporttype,
+			criteria 	: item.criteria,
+			value 		: params._remove
+		];
+		report_amend.create(data);
+
+		params._remove.each{ r->
+			item.value.remove(r);
+		}
+		em.update(item);
+
+		item.list = [];
+		item.list.addAll(item.value);
+		item.remove('value');
+		item.list.sort{ it.borrower }
+
+		return item;
+	}
+}

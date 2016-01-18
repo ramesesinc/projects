@@ -1,0 +1,17 @@
+<schema>
+
+	<element name="branch" tablename="branch">
+		<field name="objid" primary="true"/>
+		<field name="dtcreated" required="true"/>
+		<field name="createdby" required="true"/>
+		<field name="name" required="true"/>
+		<field name="address" required="true"/>
+		<field name="manager" required="true"/>
+		<field name="contactno" required="true"/>
+		<field name="email" required="true"/>
+		<field name="businesshours" required="true"/>
+		<field name="lng"/>
+		<field name="lat"/>
+	</element>
+	
+</schema>

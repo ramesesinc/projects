@@ -1,0 +1,26 @@
+<schema>
+
+	<element tablename="teller">
+		<field name="objid" primary="true" />
+		<field name="state" required="true" />
+		<field name="mode" required="true" />
+		<field name="dtcreated" required="true" />
+		<field name="author_objid" required="true" />
+		<field name="author_name" required="true" />
+		<field name="dtmodified" required="true" />
+		<field name="modifiedby_objid" required="true" />
+		<field name="modifiedby_name" required="true" />
+		<field name="tellerno" required="true" />
+		<field name="branchid" required="true" />
+		<field name="name" required="true" />
+		<field name="firstname" required="true" />
+		<field name="lastname" required="true" />
+		<field name="middlename" />
+		<field name="connectedto" />
+	</element>
+
+	<element name="active" tablename="teller_active">
+		<field name="objid" primary="true" />
+	</element>
+
+</schema>

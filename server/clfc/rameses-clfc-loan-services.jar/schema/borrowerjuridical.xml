@@ -1,0 +1,7 @@
+<schema>
+
+	<element tablename="borrowerjuridical">
+		<field name="objid" primary="true" />
+	</element>
+
+</schema>

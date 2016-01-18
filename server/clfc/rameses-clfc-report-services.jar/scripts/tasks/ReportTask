@@ -1,0 +1,133 @@
+import com.rameses.annotations.*;
+import java.rmi.server.UID;
+import java.text.SimpleDateFormat;
+
+class ReportTask
+{
+	@ActiveDB("branch_report")
+	def em;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@Schedule(interval=30, timeUnit="SECONDS")
+	public void reportGenerator( task ) {
+		//println 'report generator';
+		def currdate = dateSvc.getServerDateAsString().split(" ")[0];
+		def xdate = currdate;
+		def time1 = parseTimestamp(xdate + ' 03:00:00');
+		def time2 = parseTimestamp(xdate + ' 21:00:00');
+		currdate = xdate + ' 00:00:00';
+
+		def cal = Calendar.getInstance();
+		cal.setTime(java.sql.Date.valueOf(xdate));
+		cal.add(Calendar.DATE, -1);
+
+		def prevdate = new SimpleDateFormat("yyyy-MM-dd").format(cal.getTime());
+		prevdate += ' 00:00:00';
+
+		def xcurrdate = dateSvc.serverDate;
+		if ((time1.compareTo(xcurrdate) <= 0) || (time2.compareTo(xcurrdate) >= 0)) {
+			generateOutstanding(currdate, prevdate);
+			generatePastDue(currdate, prevdate);
+		}
+
+		//computeTotalReleases(currdate);
+		//computeTotalCollection(currdate);
+		//computeExpiries(currdate);
+	}
+
+	private void generateOutstanding( currdate, prevdate ) {
+		def reporttype = 'LOANOUTSTANDING';
+		def currts = parseTimestamp(currdate);
+		def prevts = parseTimestamp(prevdate);
+		/*
+		def item = em.findLastReport([reporttype: reporttype]);
+		if (item) {
+			lastts = parseTimestamp(item.dtcreated);
+		}
+		*/
+
+		//def lastdate = lastts.toString().split(" ")[0];
+		def lastdate = prevts.toString().split(" ")[0];
+		lastdate += ' 23:59:59';
+
+		def flag = false
+		if (prevts && (currts.compareTo(prevts) > 0)) {
+			def x = em.findByDatecreated([dtcreated: lastdate, reporttype: reporttype]);
+			if (!x) flag = true;
+		}
+
+		if (flag == true) {
+			def xlist = em.getOutstanding();
+			if (xlist) {
+				def br = [
+					objid 		: 'BR' + new UID(),
+					dtcreated 	: lastdate,
+					author 		: [objid: 'SYSTEM', name: 'SYSTEM'],
+					txndate 	: lastdate.split(" ")[0],
+					reporttype 	: reporttype,
+					value 		: xlist
+				];
+				em.create(br);
+			}
+		}
+	}
+
+	private void generatePastDue( currdate, prevdate ) {
+		def reporttype = 'LOANPASTDUE';
+		def currts = parseTimestamp(currdate);
+		def prevts = parseTimestamp(prevdate);
+		/*
+		def lastts;
+		def item = em.findLastReport([reporttype: reporttype]);
+		if (item) {
+			lastts = parseTimestamp(item.dtcreated);
+		}
+		*/
+
+		//def lastdate = lastts.toString().split(" ")[0];
+		def lastdate = prevts.toString().split(" ")[0];
+		lastdate += ' 23:59:59';
+
+		def flag = false
+		if (prevts && (currts.compareTo(prevts) > 0)) {
+			def x = em.findByDatecreated([dtcreated: lastdate, reporttype: reporttype]);
+			if (!x) flag = true;
+		}
+
+		if (flag == true) {
+			def xlist = em.getPastDue();
+			if (xlist) {
+				def br = [
+					objid 		: 'BR' + new UID(),
+					dtcreated 	: lastdate,
+					author 		: [objid: 'SYSTEM', name: 'SYSTEM'],
+					txndate 	: lastdate.split(" ")[0],
+					reporttype 	: reporttype,
+					value 		: xlist
+				];
+				em.create(br);
+			}
+		}
+
+	}
+
+	private def parseDate( date ) {
+		if (!date) return null;
+		if (date instanceof Date) {
+			return date;
+		} else {
+			return java.sql.Date.valueOf(date);
+		}
+	}
+
+	private def parseTimestamp( timestamp ) {
+		if (!timestamp) return null;
+		if (timestamp instanceof Date) {
+			return timestamp;
+		} else {
+			return java.sql.Timestamp.valueOf(timestamp);
+		}
+	}
+}

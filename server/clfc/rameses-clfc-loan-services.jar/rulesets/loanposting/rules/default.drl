@@ -1,0 +1,73 @@
+package loanposting;
+
+import loan.facts.*;
+import java.util.*;
+
+global com.rameses.rules.common.RuleAction action;
+
+rule "build-billitems-wo-payment"
+  agenda-group "initial"
+  salience 100000
+  when
+    $L: LoanApp( counter < term, APPID: appid )
+    $LEDGER: LoanLedger( appid == APPID, LEDGERID: ledgerid)
+    $P: Payment( ledgerid == LEDGERID )
+  then
+    Map params = new HashMap();
+    params.put("LOANAPP", $L);
+    params.put("PAYMENT", $P);
+    params.put("LEDGER", $LEDGER);
+    action.execute("addPostingItem", params, drools);
+end
+/*
+rule "build-billitems-wo-payment"
+  agenda-group "initial"
+  salience 100000
+  when 
+  	$L: LoanApp( counter < term )
+    Payment( $a: amount)
+  then
+  	Map params = new HashMap();
+  	params.put( "LOANAPP", $L );
+    params.put("amtpaid", $a);
+  	action.execute(  "additem", params, drools );
+end	
+
+rule "set-intializations"
+  agenda-group "beforepenalty"
+  salience 100000
+  when
+    $L: LoanApp()
+    $ITEM: LoanBillingItem()
+  then
+    Map params = new HashMap();
+    params.put( "LOANAPP", $L );
+    params.put( "BILLITEM", $ITEM );
+    action.execute( "applyinitialization", params, drools );
+end
+
+rule "get-remainder-days"
+  agenda-group "beforepenalty"
+  salience 90000
+  when
+    $P: Payment( hasRemainder == true, days < maxdays )
+  then
+    $P.moveNextDate();
+    update( $P );
+end
+
+rule "get-underpayment-days"
+  agenda-group "afterpenalty"
+  salience 100000
+  when
+    BillDate( $bd: date )
+    LoanApp( $sd: scheduledate )
+    $P: Payment( hasUnderpayment == true, $ad: applydate >= $sd && applydate < $bd, $amount: amount, $days: days )
+    $LB: LoanBillingItem( duedate == $ad, $int: interest, $up: underpytpenalty, $ap: absentpenalty )
+  then
+    double diff = $amount - (($int * $days) + ($ap + $up));
+    if (diff > 0 ) {
+      $P.moveNextDate();
+      update( $P );
+    }
+end*/

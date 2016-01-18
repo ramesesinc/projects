@@ -1,0 +1,786 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.services.extended.*;
+import com.rameses.server.common.*;
+import com.rameses.rules.common.RuleRequest;
+import java.rmi.server.UID;
+
+class LedgerAmnestyService extends ActiveCrudListService
+{
+	@Env
+	def env;
+
+	@ActiveDB('ledgeramnesty')
+	def em;
+
+	@ActiveDB('ledgeramnesty_fix')
+	def ledgeramnesty_fix;
+
+	@ActiveDB('loan_ledger')
+	def loan_ledger;
+
+	@ActiveDB('loanapp')
+	def loanapp;
+
+	@ActiveDB('loan_ledger_payment')
+	def ledger_payment;
+
+	@Resource("RuleService")
+	def ruleSvc;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@Service("SequenceService")
+	def seqSvc;
+
+	@ProxyMethod
+	public def getColumns( params ) {
+		def cols = [];
+
+		if (!params.state) cols << [name: 'txnstate', caption: 'Status'];
+
+		cols << [name: 'dtcreated', caption: 'Date Created'];
+		cols << [name: 'author.name', caption: 'Created By'];
+		cols << [name: 'refno', caption: 'Ref. No.'];
+		cols << [name: 'borrower.name', caption: 'Borrower'];
+		cols << [name: 'loanapp.appno', caption: 'App. No.'];
+
+		return cols;
+	}
+
+
+	@ProxyMethod
+	public def getStates() {
+		def list = [
+			[caption: 'All'],
+			[caption: 'DRAFT', state: 'DRAFT'],
+			[caption: 'FOR APPROVAL', state: 'FOR_APPROVAL'],
+			[caption: 'RETURNED', state: 'RETURNED']
+		];
+		return list;
+	}
+
+	void beforeList( params ) {
+		params.searchtext = (params.searchtext? params.searchtext : '') + '%';
+		def lm;
+		if (params.state) {
+			lm = 'getListByState';
+		}
+		if (params.ledgerid) {
+			lm = 'getListByLedgerid';
+			if (params.state) {
+				lm = 'getListByLedgeridAndState'
+			}
+		}
+
+		if (lm) params._listMethod = lm;
+	}
+
+	void beforeCreate( data ) {
+		def dt = dateSvc.parseCurrentDate();
+		data.dtcreated = dt.date;
+		data.author = [objid: env.USERID, name: env.NAME];
+		if (!data.txnstate) data.txnstate = 'DRAFT';
+		if (!data.txndate) data.txndate = data.dtcreated;
+
+		def year = dt.year + '';
+		def seqname = 'amnesty' + year;
+		def prefix = 'AMNESTY' + year[2] + year[3];
+		data.refno = prefix + seqSvc.getNextFormattedSeriesA(seqname, 6);
+	}
+
+	void afterCreate( data ) {
+		updateItems(data);
+	}
+
+	void afterUpdate( data ) {
+		updateItems(data);
+	}
+
+	void updateItems( data ) {
+		data?._removeditems?.each{ o->
+			em.delete(o, 'detail');
+		}
+
+		data?._addeditems?.each{ o->
+			if (!o.parentid) o.parentid = data.objid;
+			em.create(o, 'detail');
+		}
+
+		def list = data?.items?.findAll{ it._edited==true }
+		list?.each{ o->
+			if (!o.parentid) o.parentid = data.objid;
+			em.update(o, 'detail');
+		}
+	}
+
+	void validateUser( data, lockid ) {
+		if (data.lockid && data.lockid != lockid) {
+			throw new Exception('Cannot open amnesty record. Amnesty record is currently opened by ' + data.user.name + '.');
+		}
+	}
+
+	void beforeOpen( data ) {
+		def xdata = em.read(data);
+		if (xdata) {
+			//if (!xdata) throw new Exception('Amnesty record does not exist or has already been deleted.');
+			validateUser(xdata, data.lockid);
+		}
+
+	}
+
+	void afterOpen( data ) {
+		def items = em.getDetails(data);
+		data.items = [];
+
+		def itm;
+		items?.each{ o->
+			itm = em.read(o, 'detail');
+			if (itm) {
+				data.items.add(itm);
+			}
+		}
+
+		def ac = em.findActiveByAmnestyid([amnestyid: data.objid]);
+		if (ac) {
+			if (!data.availed) data.availed = [:];
+			data.availed.description = ac.description;
+		}
+	}
+
+
+	@ProxyMethod
+	public def getLedgerInfo( params ) {
+		if (!params.ledgerid) throw new Exception("Please specify ledgerid.");
+
+		def ledger = loan_ledger.read([objid: params.ledgerid]);
+		if (!ledger) throw new Exception("Ledger record does not exist or has already been deleted.");
+
+		def app = loanapp.read([objid: ledger?.appid]);
+		if (!app) throw new Exception("Loanapp record does not or has already been deleted.");
+
+		def appc = loanapp.read([objid: app.objid], 'loanapp_capture');
+
+		def ap = [objid: app.objid, appno: app.appno];
+		def borrower = app.borrower;
+		def data = [
+			objid			: ledger?.objid,
+			balance 		: ledger?.balance,
+			dtreleased		: appc?.dtreleased,
+			dtmatured 		: ledger.dtmatured,
+			dtlastpaid 		: ledger?.dtlastpaid,
+			loanamount 		: app?.loanamount,
+			appno 			: app?.appno,
+			loantype 		: app?.loantype,
+			apptype 		: app?.apptype,
+			updatedbalance 	: 0,
+		];
+
+		def payments = ledger_payment.getList([objid: ledger?.objid]);
+		if (payments) {
+			def tp = payments.amount.sum();
+			if (!tp) tp = 0;
+			data.totalpayment = tp;
+		}
+
+		return [ledger: data, loanapp: ap, borrower: borrower];
+	}
+
+	void validateForApproval( params ) {
+		def item = em.findDetail(params);
+		if (!item) throw Exception('Cannot submit for approval. You have no recommendation(s) to submit for approval.');
+	}
+
+	@ProxyMethod
+	public def submitForApproval( params ) {
+		validateForApproval(params);
+		def state = 'FOR_APPROVAL';
+		def data = changeState(params, state);
+		def items = data.remove('items');
+
+		data.dtsubmitforapproval = dateSvc.serverDate;
+		data.submittedforapprovalby = [objid: env.USERID, name: env.NAME];
+		em.update(data);
+
+		def itm;
+		items?.each{ o->
+			itm = em.read([objid: o.objid], 'detail');
+			if (itm) {
+				itm.state = state;
+				itm._allowremove = false;
+				itm._allowedit = false;
+				em.update(itm, 'detail');
+			}
+		}
+
+		return open(data);
+	}
+
+	private def changeState( params, state ) {
+		def data = em.read(params);
+		if (!data) throw new Exception("Amnesty record does not exist or has already been deleted.");
+
+		if (data.txnstate == state) {
+			throw new Exception("Amnesty record already " + state + ".");
+		}
+
+		data.txnstate = state;
+		em.changeState(data);
+
+		return open(data);
+	}
+
+	private void validateReturnDocument( params ) {
+		def item = em.findDetailByState([objid: params.objid, state: 'FOR_APPROVAL']);
+		if (item) throw new Exception("Cannot return document. There are still recommendation(s) that needs approval.");
+	}
+
+	@ProxyMethod
+	public def returnDocument( params ) {
+		validateReturnDocument(params);
+		def data = changeState(params, 'RETURNED');
+		def items = data.remove('items');
+
+		data.dtreturned = dateSvc.serverDate;
+		data.returnedby = [objid: env.USERID, name: env.NAME];
+		em.update(data);
+
+
+		return open(data);
+	}
+
+	@ProxyMethod
+	public def saveRecommendations( data ) {
+		updateItems(data);
+		return open(data);
+	}
+
+	@ProxyMethod
+	public def updateLockid( params ) {
+		return open(params);
+		/*
+		def data = em.read(params);
+		if (!data) throw new Exception('Amnesty record does not exist or has already been deleted.');
+
+		validateUser(data, params.lockid);
+
+		data.user = [objid: env.USERID, name: env.NAME];
+		data.lockid = params.lockid;
+		em.update(data, 'user');
+
+		return open(data);
+		*/
+	}
+
+	@ProxyMethod
+	public def removeLockid( params ) {
+		return open(params);
+		/*
+		def data = em.read(params);
+		if (!data) throw new Exception('Amnesty record does not exist or has already been deleted.');
+
+		data.user = null;
+		data.lockid = null;
+		em.update(data, 'user');
+
+		return data;
+		*/
+	}
+
+	@ProxyMethod
+	public def approveItem( params ) {
+		def data = changeStateItem(params, 'APPROVED');
+
+		data.dtapproved = dateSvc.serverDate;
+		data.approvedby = [objid: env.USERID, name: env.NAME];
+		em.update(data, 'detail');
+
+		return data;
+	}
+
+	@ProxyMethod
+	public def disapproveItem( params ) {
+		def data = changeStateItem(params, 'DISAPPROVED');
+
+		data.dtdisapproved = dateSvc.serverDate;
+		data.disapprovedby = [objid: env.USERID, name: env.NAME];
+		em.update(data, 'detail');
+
+		return data;
+	}
+
+	private def changeStateItem( params, state ) {
+		def data = em.read(params, 'detail');
+		if (!data) throw new Exception('Amnesty item record does not exist or has already been deleted.');
+
+		if (data.state == state) {
+			throw new Exception('Amnesty item record already ' + state + '.');
+		}
+
+		data.state = state;
+		em.update(data, 'detail');
+
+		return data;
+	}
+
+
+	/*
+	@Env
+	def env;
+
+	@ActiveDB("ledgeramnesty")
+	def em;
+
+	@ActiveDB("loan_ledger")
+	def loan_ledger;
+
+	@ActiveDB("loanapp")
+	def loanapp;
+
+	@ActiveDB("loan_ledger_payment")
+	def ledger_payment;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@Service("SequenceService")
+	def seqSvc;
+
+	@ProxyMethod
+	public def getColumns( params ) {
+		def cols = [];
+		if (!params.state) cols << [name: 'txnstate', caption: 'Status'];
+		cols << [name: 'txnmode', caption: 'Mode'];
+		cols << [name: 'borrower.name', caption: 'Borrower'];
+		cols << [name: 'refno', caption: 'RefNo'];
+		cols << [name: 'availed.offertype', caption: 'Availed'];
+
+		if (params.state == 'APPROVED') {
+			cols << [name: 'dtposted', caption: 'DateApproved', type: 'date', outputFormat: 'MMM-dd-yyyy'];
+			cols << [name: 'poster.name', caption: 'ApprovedBy'];
+		} else if (params.state == 'DISAPPROVED') {
+			cols << [name: 'dtposted', caption: 'DateDisapproved', type: 'date', outputFormat: 'MMM-dd-yyyy'];
+			cols << [name: 'poster.name', caption: 'DisapprovedBy'];
+		}
+
+		return cols;
+	}
+
+
+	@ProxyMethod
+	public def getStates() {
+		def states = [
+			[caption: 'All'],
+			[caption: 'DRAFT', state: 'DRAFT'],
+			[caption: 'FOR APPROVAL', state: 'FOR_APPROVAL'],
+			[caption: 'APPROVED', state: 'APPROVED'],
+			[caption: 'DISAPPROVED', state: 'DISAPPROVED'],
+			[caption: 'AVAILED', state: 'AVAILED'],
+			[caption: 'REJECTED', state: 'REJECTED'],
+			[caption: 'FOR VERIFICATION', state: 'FOR_VERIFICATION'],
+			[caption: 'SEND BACK', state: 'SEND_BACK'],
+			[caption: 'ACTIVE', state: 'ACTIVE']
+		];
+		return states;
+	}
+
+	void beforeList( params ) {
+		params.searchtext = (params.searchtext? params.searchtext : '') + '%';
+		if (params.state) {
+			params._listMethod = 'getListByState';
+		}
+	}
+
+	void beforeCreate( data ) {
+		def dt = dateSvc.parseCurrentDate();
+		data.dtcreated = dt.date;
+		data.author = [objid: env.USERID, name: env.NAME];
+		if (!data.txnstate) data.txnstate = 'DRAFT';
+		if (!data.txndate) data.txndate = data.dtcreated;
+
+		def year = dt.year + '';
+		def seqname = 'amnesty' + year;
+		def prefix = 'AMNESTY' + year[2] + year[3];
+		data.refno = prefix + seqSvc.getNextFormattedSeriesA(seqname, 6);
+		updateInfo(data);
+	}
+
+	void beforeUpdate( data ) {
+		validate(data);
+		updateInfo(data);
+	}
+
+	private def updateInfo( data ) {
+		if (data.txnstate == 'DRAFT') {
+			data.recommendations = data.amnestylist;
+		} else {
+			data.offers = data.amnestylist;
+			data.offers.each{ println it }
+		}
+		if (!data.recommendations) data.recommendations = [];
+		if (!data.offers) data.offers = [];
+	}
+
+	private def validate( params ) {
+		def data = em.read(params);
+		def type = data?.availed?.offertype;
+		if (type == 'SMC' && data?.txnstate == 'AVAILED') {
+			if (!params?.availed?.amount) throw new Exception('Please specify amount decided.');
+			def dtstarted = params?.availed?.dtstarted;
+			if (!dtstarted) {
+				throw new Exception('Please specify date started.');
+			} else {
+				def currdate = parseDate(dateSvc.getServerDateAsString().split(' ')[0]);
+				dtstarted = parseDate(dtstarted);
+				if (dtstarted.compareTo(currdate) < 0) {
+					throw new Exception('Date started must be greater than or equal to current date.');
+				}
+			}
+		}
+	}
+
+	void afterCreate( data ) {
+		resolveAmnestyList(data);
+	}
+
+	void afterUpdate( data ) {
+		resolveAmnestyList(data);
+	}
+
+	private void resolveAmnestyList( data ) {
+		if (data.txnstate == 'DRAFT') {
+			data.amnestylist = data.recommendations;
+		} else {
+			data.amnestylist = data.offers;
+		}
+	}
+
+	void afterOpen( data ) {
+		resolveAmnestyList(data);
+
+		def availed = data?.availed;
+		def type = availed?.offertype;
+		def item;
+		if (type == 'FIX') {
+			item = em.read([objid: availed?.objid], 'fix');
+		} else if (type == 'SMC') {
+			item = em.read([objid: availed?.objid], 'smc');
+			if (item?.txnstate == 'FILING') {
+				data.allowSmcEdit = true;
+			}
+		}
+		if (item) data.availed.putAll(item);
+	}
+
+	@ProxyMethod
+	public def getLedgerInfo( params ) {
+		if (!params.ledgerid) throw new Exception("Please specify ledgerid.");
+
+		def ledger = loan_ledger.read([objid: params.ledgerid]);
+		if (!ledger) throw new Exception("Ledger record does not exist or has already been deleted.");
+
+		def app = loanapp.read([objid: ledger?.appid]);
+		if (!app) throw new Exception("Loanapp record does not or has already been deleted.");
+
+		def appc = loanapp.read([objid: app.objid], 'loanapp_capture');
+
+		def ap = [objid: app.objid, appno: app.appno];
+		def borrower = app.borrower;
+		def data = [
+			objid			: ledger?.objid,
+			balance 		: ledger?.balance,
+			dtreleased		: appc?.dtreleased,
+			dtmatured 		: ledger.dtmatured,
+			dtlastpaid 		: ledger?.dtlastpaid,
+			loanamount 		: app?.loanamount,
+			appno 			: app?.appno,
+			loantype 		: app?.loantype,
+			apptype 		: app?.apptype,
+			updatedbalance 	: 0,
+		];
+
+		def payments = ledger_payment.getList([objid: ledger?.objid]);
+		if (payments) {
+			def tp = payments.amount.sum();
+			if (!tp) tp = 0;
+			data.totalpayments = tp;
+		}
+
+		return [ledger: data, loanapp: ap, borrower: borrower];
+	}
+
+	@ProxyMethod
+	public def submitForApproval( params ) {
+		def data = changeState(params, 'FOR_APPROVAL');
+		data.dtsubmittedforapproval = dateSvc.serverDate;
+		data.submittedforapprovalby = [objid: env.USERID, name: env.NAME];
+		data.offers = data.recommendations;
+		em.update(data);
+
+		return open(data);
+	}
+
+	private def changeState( params, state ) {
+		def data = em.read(params);
+		if (!data) throw new Exception("Amnesty record does not exist or has already been deleted.");
+
+		if (data.txnstate == state) {
+			throw new Exception("Amnesty record already " + state + ".");
+		}
+
+		data.txnstate = state;
+		def user = [objid: env.USERID, name: env.NAME];
+		def currdate = dateSvc.serverDate;
+		switch (state) {
+			case 'FOR_APPROVAL'		: data.dtsubmitforapproval = currdate;
+								  	  data.submittedforapprovalby = user;
+								  	  break;
+			case 'FOR_VERIFICATION' : data.dtsubmittedforverification = currdate;
+									  data.submittedforverificationby = user;
+									  break;
+			case 'VERIFIED'			: data.dtverified = currdate;
+									  data.verifiedby = user;
+									  break;
+		}
+		em.update(data);
+
+		return open(data);
+	}
+
+	@ProxyMethod
+	public def approveDocument( params ) {
+		return approveImpl(params, 'APPROVED');
+	}
+
+	@ProxyMethod
+	public def disapprove( params ) {
+		return approveImpl(params, 'DISAPPROVE');
+	}
+
+	private def approveImpl( params, state ) {
+		if (!params.posterremarks) throw new Exception("Please specify remarks.");
+
+		def data = changeState(params, state);
+		data.dtposted = dateSvc.serverDate;
+		data.poster = [objid: env.USERID, name: env.NAME, remarks: params.posterremarks];
+		em.update(data, 'post');
+
+		return open(data);
+	}
+
+	@ProxyMethod
+	public def avail( params ) {
+		if (!params.availed?.objid) throw new Exception('Please specify availed offer.');
+
+		def data = changeState(params, 'AVAILED');
+
+		data.dtavailed = dateSvc.serverDate;
+		data.availedby = [objid: env.USERID, name: env.NAME];
+		em.update(data);
+
+		def availed = params.availed;
+		availed.offertype = availed.amnestytype?.value;
+		def type = availed.offertype;
+
+		switch (type) {
+			case 'FIX'	: return availFix(data, params); break;
+			case 'SMC'	: return availSMC(data, params); break;
+		}
+
+		return open(data);
+	}
+
+	private def availFix( data, params ) {
+		def xdata = em.read(data);
+		if (!xdata) throw new Exception("Amnesty record does not exist or has already been deleted.");
+
+		def availed = params.availed;
+		def type = availed.type?.value;
+
+		def dtstarted = dateSvc.serverDate;
+		def cal = Calendar.getInstance();
+		cal.setTime(dtstarted);
+		if (type == 'lumpsum') {
+			if (availed.usedate == 1) {
+				cal.setTime(parseDate(availed.date));
+			} else if (availed.days > 0) {
+				cal.add(Calendar.DATE, availed.days);
+			}
+		} else if (type == 'term') {
+			if (availed.usedate == 1) {
+				cal.setTime(parseDate(availed.date));
+			} else {
+				if (availed.months > 0) {
+					cal.add(Calendar.MONTH, availed.months);
+				}
+				if (availed.days > 0) {
+					cal.add(Calendar.DATE, availed.days);
+				}
+			}
+		}
+		if (!availed.balance) availed.balance = availed.amount;
+		def dtended = cal.getTime();
+
+		xdata.dtstarted = dtstarted;
+		xdata.dtended = dtended;
+		xdata.availed = availed;
+		em.update(xdata);
+
+		return open(xdata);
+	}
+
+	private def availSMC( data, params ) {
+		def xdata = em.read(data);
+		if (!xdata) throw new Exception("Amnesty record does not exist or has already been deleted.");
+
+		xdata.availed = params.availed;
+		em.update(xdata);
+
+		return open(xdata);
+	}
+
+	private def parseDate( date ) {
+		if (!date) return null;
+		if (date instanceof Date) {
+			return date;
+		} else {
+			return java.sql.Date.valueOf(date);
+		}
+	}
+
+	@ProxyMethod
+	public def reject( params ) {
+		if (!params.rejectionremarks) throw new Exception("Please specify remarks for rejection.");
+
+		def data = changeState(params, 'REJECTED');
+
+		data.dtrejected = dateSvc.serverDate;
+		data.rejectedby = [objid: env.USERID, name: env.NAME, remarks: params.rejectionremarks];
+		em.update(data);
+
+		return open(data);
+	}
+
+	@ProxyMethod
+	public def submitForVerification( params ) {
+		def data = changeState(params, 'FOR_VERIFICATION');
+
+		data.dtsubmittedforverification = dateSvc.serverDate;
+		data.submittedforverificationby = [objid: env.USERID, name: env.NAME];
+		em.update(data);
+
+		return open(data);
+	}
+
+	@ProxyMethod
+	public def verify( params ) {
+		def data = em.read(params);
+		if (!data) throw new Exception('Amnesty record does not exist or has already been deleted.');
+
+		def type = data?.availed?.offertype;
+		if (type == 'FIX') {
+			return verifyFix(params, 'ACTIVE');
+		} else if (type == 'SMC') {
+			return verifySmc(params, 'VERIFIED');
+		}
+
+		return open(data);
+	}
+
+	private def verifyImpl( params, state ) {		
+		def data = changeState(params, state);
+
+		data.dtverified = dateSvc.serverDate;
+		data.verifiedby = [objid: env.USERID, name: env.NAME];
+		em.update(data);
+
+		return open(data);
+	}
+
+	private void activate( params ) {
+		def data = em.read(params);
+		if (!data) throw new Exception('Amnesty record does not exist or has already been deleted.');
+
+		def m = em.read([objid: data.objid], 'active');
+		if (!m) {
+			def dtstarted = data.dtstarted;
+			if (!dtstarted) dtstarted = dateSvc.getServerDateAsString().split(' ')[0];
+
+			m = [
+				objid		: data.objid,
+				dtstarted	: dtstarted
+			];
+			em.create(m, 'active');
+		}
+	}
+
+	private def verifyFix( params, state ) {
+		def data = verifyImpl(params, state);
+
+		activate(params);
+
+		def availed = data.availed;
+		def i = em.read([objid: availed?.objid], 'fix');
+		if (!i) {
+			availed.parentid = data.objid;
+			availed.dtstarted = data.dtstarted;
+			availed.dtended = data.dtended;
+			em.create(availed, 'fix');
+		} else {
+			i.putAll(availed);
+			em.update(i, 'fix');
+		}
+
+		return open(data);
+	}
+
+
+	private def verifySmc( params, state ) {
+		def data = verifyImpl(params, state);
+
+		def availed = params.availed;
+		def i = em.read([objid: availed?.objid], 'smc');
+		if (!i) {
+			availed.parentid = data.objid;
+			availed.txnstate = 'FILING';
+			em.create(availed, 'smc');
+		} else {
+			i.putAll(availed);
+			em.update(i, 'smc');
+		}
+
+		return open(data);
+	}
+
+	@ProxyMethod
+	public def getSmcNodes() {
+		return [
+			[caption: 'SMC', group: 'smc', leaf: true]
+		]
+	}
+
+	@ProxyMethod
+	public def getNodeListItems( node ) {
+		def group = node?.group;
+		if (group == 'smc') {
+			return getSmcNodeListItems(node);
+		}
+		return [];
+	}
+
+	private def getSmcNodeListItems( node ) {
+		def list = [];
+		def smc = em.read([objid: node?.availed?.objid], 'smc');
+		if (smc) {
+			def item;
+			for (i in smc) {
+				item = [caption: i.key, signature: i.key, title: i.key];
+				list.add(item);
+			}
+		}
+
+		return list;
+	}
+	*/
+}

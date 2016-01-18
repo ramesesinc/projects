@@ -1,0 +1,108 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import java.rmi.server.UID;
+
+class DailyCollectionInterceptor
+{
+	@Env
+	def env;
+
+	@ActiveDB("dailycollection")
+	def em;
+
+	@ActiveDB('ledger_billing')
+	def ledger_billing;
+
+	@ActiveDB('collection_remittance')
+	def collection_remittance;
+
+	@ActiveDB('collection_cb')
+	def collection_cb;
+
+	@ActiveDB("overage")
+	def overage;
+
+	@ActiveDB("shortage")
+	def shortage;
+
+	@ActiveDB("overagefund")
+	def overagefund;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@After(pattern="DailyCollectionService.verify")
+	public def afterVerify( evt ) {
+		def result = evt.result;
+
+		def data = em.read([objid: result.objid]);
+		if (!data) throw new Exception("Daily collection record does not exist or has already been deleted.");
+
+		def item, currdate = dateSvc.serverDate, fund;
+		def poster = [objid: env.USERID, name: env.NAME];
+
+		def year = dateSvc.getYear(currdate);
+		def xlist = em.getOverages(data);
+		xlist.each{ o->
+			item = overage.read([objid: o.refid]);
+			if (!item) throw new Exception("Overage record does not exist or has already been deleted.");
+
+			item.state = 'APPROVED';
+			overage.changeState(item);
+
+			item.dtposted = currdate;
+			item.poster = poster;
+			overage.update(item, "post");
+
+			fund = overagefund.findActiveFund([year: year]);
+			if (!fund) {
+				fund = [
+					objid		: 'OF' + new UID(),
+					state		: 'ACTIVE',
+					dtcreated	: currdate,
+					author		: [objid: env.USERID, name: env.NAME],
+					year 		: year,
+					amtbalance	: 0.00,
+					amtuse		: 0.00
+				]
+				overagefund.create(fund);
+			}
+
+			fund.amtbalance += item.amount;
+			overagefund.update(fund, "amtbalance");
+		}
+
+		xlist = em.getShortages(data);
+		xlist.each{ o->
+			item = shortage.read([objid: o.refid]);
+			if (!item) throw new Exception("Shortage record does not exist or has already been deleted.");
+
+			item.state = 'APPROVED';
+			shortage.changeState(item);
+
+			item.dtposted = currdate;
+			item.poster = poster;
+			shortage.update(item, "post");
+		}
+	}
+
+	@Before(pattern='DailyCollectionService.submitForVerification')
+	public def beforeVerification( evt ) {
+		def params = evt.args[0];
+
+		def data = em.read(params);
+		if (!data) throw new Exception('Daily collection record does not exist or has already been deleted.');
+
+		def date = data.txndate;
+
+		def i = ledger_billing.findUnremittedBillingByDate([date: date]);
+		if (i) throw new Exception('Cannot submit daily collection for verification. There are still unremitted field collection(s).');
+
+		i = collection_remittance.findUnpostedRemittanceByDate([date: date]);
+		if (i) throw new Exception('Cannot submit daily collection for verification. There are still unposted collection(s).');
+
+		i = collection_cb.findUnverifiedCashBreakdownByDate([date: date]);
+		if (i) throw new Exception('Cannot submit daily collection for verification. There are still unverified cbs.');
+
+	}
+}

@@ -1,0 +1,12 @@
+<schema>
+
+	<element name="process" tablename="payment_process">
+		<field name="objid" primary="true" />
+		<field name="orno" required="true" />
+		<field name="ordate" required="true" />
+		<field name="loanid" required="true" />
+		<field name="key" />
+		<field name="isprocessed" required="true" />
+	</element>
+
+</schema>

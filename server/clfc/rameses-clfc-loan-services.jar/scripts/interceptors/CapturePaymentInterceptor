@@ -1,0 +1,44 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+
+class CapturePaymentInterceptor
+{
+	@ActiveDB('capture_payment')
+	def em;
+
+	@ActiveDB('collection_remittance')
+	def collection_remittance;
+
+	@ActiveDB('ledger_billing')
+	def ledger_billing;
+
+	@ActiveDB('fieldcollection')
+	def fieldcollection;
+
+	@After(pattern="LoanFieldCollectionService.post")
+	public void afterFieldCollectionPost( evt ) {
+		def params = evt.args[0];
+
+		def rem = params.remittance;
+		rem = collection_remittance.read([objid: rem?.objid]);
+		if (rem && rem.group?.type == 'special') {
+			def cp = em.findBySpecialCollectionid([specialcollectionid: rem?.group?.objid]);
+			if (cp) {
+				cp.state = 'POSTED';
+				em.update(cp);
+			}
+
+			def billing = ledger_billing.read([objid: cp?.specialcollectionid], 'billing-item');
+			if (billing) {
+				billing.state = 'POSTED';
+				ledger_billing.update(billing, 'billing-item');
+			}
+
+			def item = fieldcollection.read([objid: cp?.specialcollectionid], 'fc-item');
+			if (item) {
+				item.state = 'POSTED';
+				fieldcollection.update(item, 'fc-item');
+			}
+		}
+	}
+}

@@ -1,0 +1,28 @@
+<schema>
+
+	<element name="loanapp_business" tablename="loanapp_business">
+		<field name="objid" primary="true"/> 
+		<field name="parentid" required="true"/> 
+		<field name="tradename" required="true"/> 
+		<field name="address" required="true"/> 
+		<field name="kind" required="true"/> 
+		<field name="dtstarted" required="true"/> 
+		<field name="capital" required="true"/> 
+		<field name="ownership" required="true"/> 
+		<field name="stallsize" required="true"/> 
+		<field name="avgsales" required="true"/> 
+		<field name="officehours" required="true"/> 
+		<field name="contactno"/> 
+		<field name="occupancy_type" required="true"/> 
+		<field name="occupancy_remarks" required="true"/> 
+		<field name="occupancy_renttype"/> 
+		<field name="occupancy_rentamount"/> 
+		<field name="ci_evaluation"/> 
+		<field name="ci_physicaloutlook"/> 
+		<field name="ci_dtfiled"/> 
+		<field name="ci_timefiled"/> 
+		<field name="ci_filedby"/> 
+		<field name="ci_amount"/> 
+	</element>
+
+</schema>

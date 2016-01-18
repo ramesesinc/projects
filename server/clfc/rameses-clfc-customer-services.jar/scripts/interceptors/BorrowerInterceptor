@@ -1,0 +1,39 @@
+import com.rameses.annotations.*;
+import com.rameses.common.*;
+import java.rmi.server.UID;
+
+class BorrowerInterceptor
+{
+	@ActiveDB('customer')
+	def customer;
+
+	@After(pattern="BorrowerService.update")
+	public void afterUpdate( evt ) {
+		def result = evt.result;
+		if (result.type=='PRINCIPAL' || result.type=='JOINT' || result.type=='COMAKER') {
+			customer.removePrincipalSpouse([principalid: result.objid]); 
+			if (result.spouse?.objid) { 
+				def o = [
+					principalid:  result.objid, 
+					relaterid:    result.spouse?.objid, 
+					relationship: 'SPOUSE' 
+				];
+				customer.create(o, 'connection'); 
+			} 
+
+			if (result.type != 'PRINCIPAL') { 
+				customer.removeConnection([
+					principalid: result.principalid, 
+					relaterid: 	 result.objid
+				]); 
+
+				def o = [
+					principalid:  result.principalid, 
+					relaterid:    result.objid, 
+					relationship: result.relation 
+				]; 
+				customer.create(o, 'connection');
+			} 
+		}
+	}
+}

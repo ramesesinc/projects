@@ -1,0 +1,33 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.services.extended.*;
+
+class BranchReportTypeService extends ActiveCrudListService
+{
+	@Env
+	def env;
+
+	@ActiveDB("branch_report_type")
+	def em;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@ProxyMethod
+	public def getColumns( params ) {
+		return [
+			[name: 'code', caption: 'Code'],
+			[name: 'name', caption: 'Name']
+		]
+	}
+
+	void beforeCreate( data ) {
+		data.dtcreated = dateSvc.serverDate;
+		data.author = [objid: env.USERID, name: env.NAME];
+	}
+
+	void beforeUpdate( data ) {
+		data.dtmodified = dateSvc.serverDate;
+		data.modifiedby = [objid: env.USERID, name: env.NAME];
+	}
+}

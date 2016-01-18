@@ -1,0 +1,29 @@
+<schema>
+	<element name="fundrequest" tablename="fundrequest">
+		<field name="objid" primary="true"/> 
+		<field name="state" required="true"/> 
+		<field name="dtcreated" required="true"/> 
+		<field name="author_objid" required="true"/> 
+		<field name="author_username" required="true"/> 
+		<field name="reqno" required="true"/> 
+		<field name="amount" required="true"/> 
+		<field name="remarks" required="true"/> 
+		<field name="data" required="true"/> 
+		<field name="posting_date"/> 
+		<field name="posting_userid"/> 
+		<field name="posting_username"/> 
+		<field name="posting_remarks"/> 
+	</element>
+
+	<element name="pending" tablename="fundrequest_pending"> 
+		<field name="objid" primary="true"/> 
+		<field name="dtcreated" required="true"/> 
+	</element> 
+
+	<element name="series" tablename="fundrequest_series"> 
+		<field name="objid" primary="true"/> 
+		<field name="prefix" required="true"/> 
+		<field name="seriesno" required="true"/> 
+		<field name="lockid"/> 
+	</element> 
+</schema> 

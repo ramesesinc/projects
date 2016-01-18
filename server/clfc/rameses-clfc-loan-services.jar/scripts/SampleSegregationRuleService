@@ -1,0 +1,41 @@
+import com.rameses.annotations.*;
+import com.rameses.rules.common.*;
+import loan.facts.*;
+import loan.actions.*;
+import java.util.*;
+import com.rameses.util.*;
+
+class SampleSegregationRuleService
+{	
+	@ActiveDB("loan_ledger_segregationtype")
+	def segregationtype;
+
+	@Service("RuleExecutorService")
+	def ruleSvc;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@ProxyMethod
+	public def execute( o ) {
+		o.currentdate = dateSvc.getServerDateAsString().split(" ")[0];
+		def facts = [];
+		facts << new LoanLedger(o);
+		facts << new CurrDate(o);
+
+		def types = segregationtype.getListByState([state: 'ACTIVATED']);
+		types.each{ facts << new SegregationType(it); }
+
+		def actions = new RuleAction(); 
+		actions.addCommand( "segregateledger", new SegregateLedger() );
+
+		//facts.each{ println it.toMap(); }
+		ruleSvc.execute( "loansegregation", facts, actions, null );
+
+		def item = facts.find{ (it instanceof LoanLedger) };
+		if (!item) return [];
+
+
+		return item.toMap().segregationtypes;
+	}
+}

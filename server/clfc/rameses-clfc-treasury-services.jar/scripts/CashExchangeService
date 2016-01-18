@@ -1,0 +1,217 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.services.extended.*;
+import java.rmi.server.UID;
+
+class CashExchangeService extends ActiveCrudListService
+{
+	@Env
+	def env;
+
+	@ActiveDB('cashexchange')
+	def em;
+
+	@ActiveDB('collection_cb')
+	def collection_cb;
+
+	@ActiveDB('datatxnlog')
+	def txnlog; 
+
+	@Service('DateService')
+	def dateSvc;
+
+	@Service('InboxService')
+	def inboxSvc;
+
+	@ProxyMethod
+	public def getColumns( params ) {
+		def cols = [];
+
+		if (!params.state) cols << [name: 'txnstate', caption: 'Status'];
+
+		cols << [name: 'cbs.cbsno', caption: 'CBS No.'];
+		cols << [name: 'cbs.txndate', caption: 'Collection Date', type: 'date', outputFormat: 'MMM-dd-yyyy'];
+		cols << [name: 'cbs.collector.name', caption: 'Collector'];
+		cols << [name: 'cbs.amount', caption: 'Amount', type: 'decimal', format: '#,##0.00'];
+
+		if (params.state == 'APPROVED') {
+			cols << [name: 'dtposted', caption: 'Date Approved'];
+			cols << [name: 'poster.name', caption: 'Approved By'];
+		} else if (params.state == 'DISAPPROVED') {
+			cols << [name: 'dtposted', caption: 'Date Disapproved'];
+			cols << [name: 'poster.name', caption: 'Disapproved By'];
+		}
+
+		return cols;
+	}
+
+	@ProxyMethod
+	public def getStates() {
+		return [
+			[caption: 'All'],
+			[caption: 'DRAFT', state: 'DRAFT'],
+			[caption: 'FOR APPROVAL', state: 'FOR_APPROVAL'],
+			[caption: 'APPROVED', state: 'APPROVED'],
+			[caption: 'DISAPPROVED', state: 'DISAPPROVED']
+		];
+	}
+
+	void beforeList( params ) {
+		params.searchtext = (params.searchtext? params.searchtext : '') + '%';
+		if (params.state) {
+			params._listMethod = 'getListByState';
+		}
+	}
+
+	private def getUser() {
+		return [objid: env.USERID, name: env.NAME];
+	}
+
+	void validate( data ) {
+		def cbsid = data?.cbs?.objid;
+		def i = em.findExistingRequestByCbsid([cbsid: cbsid]);
+		if (i) throw new Exception('There is still an existing cash exchange request for CBS with CBS No. ' + data?.cbs?.cbsno);
+
+		def totalcashout = data?.cashout?.amount?.sum();
+		if (!totalcashout) totalcashout = 0;
+
+		if (totalcashout == 0) {
+			throw new Exception('Please specify amount to cash out.');
+		}
+
+		def totalcashin = data?.cashin?.amount?.sum();
+		if (!totalcashin) totalcashin = 0;
+
+		if (totalcashin == 0) {
+			throw new Exception('Please specify amount to cash in.');
+		}
+
+		if (totalcashin > totalcashout) {
+			throw new Exception('Total cash in exceeds total cash out.');
+		}
+	}
+
+	void beforeCreate( data ) {
+		validate(data);
+		data.dtcreated = dateSvc.serverDate;
+		data.author = getUser();
+		data.txnstate = 'DRAFT';
+		data.txndate = data.dtcreated;
+	}
+
+	void beforeUpdate( data ) {
+		validate(data);
+	}
+
+	void afterOpen( data ) {
+
+	}
+
+	@ProxyMethod
+	public def getBreakdown( params ) {
+		if (!params.cbsid) throw new Exception('Please specify cbsid.');
+		def list = collection_cb.getDetails([objid: params.cbsid]);
+
+		return list;
+	}
+
+	@ProxyMethod
+	public def submitForApproval( params ) {
+		def data = changeState(params, 'FOR_APPROVAL');
+
+
+		def msginfo = [ 
+			objid 		: data.objid,
+			dtcreated	: dateSvc.serverDate,
+			refid 		: data.objid,
+			filetype 	: 'cashexchange',
+			message 	: 'For approval cash exchange for CBS with CBS No. '+ data.cbs.cbsno,
+			senderid	: env.USERID,
+			sendername 	: env.NAME,
+			recipientid : 'APPROVER'
+		]; 
+		inboxSvc.addMessage( msginfo );
+
+		return open(data);
+	}
+
+	private def changeState( params, state ) {
+		def data = em.read(params);
+		if (!data) throw new Exception('Cash exchange record does not exist or has already been deleted.');
+
+		if (data.txnstate == state) {
+			throw new Exception('Cash exchange record has already been ' + state + '.');
+		}
+
+		data.txnstate = state;
+		em.changeState(data);
+
+		def action, remarks;
+		switch (state) {
+			case 'FOR_APPROVAL'	: action = 'For Approval';
+								  remarks = 'Cash Exchange submit for approval';
+								  break;
+			case 'APPROVED'		: action = 'Approved';
+								  remarks = 'Cash Exchange approved';
+								  break;
+			case 'DISAPPROVED' 	: action = 'Disapproved';
+								  remarks = 'Cash Exchange disapproved';
+								  break;
+		}
+
+		if (action && remarks) {
+			def logdata = [
+				objid 	: 'TLOG' + new UID(), 
+				txndate : dateSvc.serverDate,
+				txnid   : data.objid, 
+				user    : [objid: env.USERID, username: env.USER], 
+				action	: action,  
+				remarks : remarks
+			]; 
+			txnlog.create( logdata ); 				
+		}
+
+		return open(data);
+	}
+
+	@ProxyMethod
+	public def approveDocument( params ) {
+		def data = approveImpl(params, 'APPROVED');
+
+		def breakdown = collection_cb.getDetails([objid: data.cbs.objid]);
+
+		def itm;
+		breakdown?.each{ o->
+			itm = data?.breakdown?.find{ it.denomination == o.denomination }
+			if (itm) {
+				o.qty = itm.qty;
+				o.amount = o.qty * o.denomination;
+			}
+			collection_cb.update(o, 'cb-detail');
+		}
+
+		return open(data);
+	}
+
+	@ProxyMethod
+	public def disapprove( params ) {
+		def data = approveImpl(params, 'DISAPPROVED');
+
+		return open(data);
+	}
+
+	private def approveImpl( params, state ) {
+		def data = changeState(params, state);
+
+		def currentdate = dateSvc.serverDate;
+
+		data.dtposted = currentdate;
+		data.poster = getUser();
+		em.update(data, 'post');
+
+		inboxSvc.removeMessageByRefid([refid: data.objid]);
+
+		return open(data);
+	}
+
+}

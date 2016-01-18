@@ -1,0 +1,1519 @@
+package loansemimonthly;
+import java.util.*;
+global java.util.List results;
+global java.util.Map lastPayment;
+global java.util.Map floating;
+global java.util.Map resultMap;
+
+declare Payment
+	amountPaid		: double
+	datePaid		: String
+	lackingInterest	: double
+	lackingPenalty	: double
+	balance			: double
+	days			: int
+	totalPenalty	: double
+	totalInterest	: double
+	currentSchedule	: int
+	addLacking 		: Boolean
+end
+
+declare References
+	amountPaid 		: double
+	interest 		: double
+	noOfSchedules 	: int
+	noOfDelays		: int
+	term 			: int
+	isOverdue 		: Boolean
+	totalPayment 	: double
+	amountDue 		: double
+	underpaymentRate: double
+	absentRate 		: double
+	arrearsRate 	: double
+	overduePenalty 	: double
+	hasPrepaid 		: Boolean
+	isFullPayment 	: Boolean
+	isOffset 		: Boolean
+	isOffset 		: Boolean
+	arrears 		: double
+	totalSchedule 	: int
+	isDelayed 		: Boolean
+end
+
+declare CurrentSchedule
+	allowGet	: Boolean
+	runningDate : Date
+	currentDate	: Date
+	noOfSchedule: int
+end
+
+declare CountSchedule
+	allowCount		: Boolean
+	noOfSchedule 	: int
+	totalPayment 	: double
+	amountPaid 		: double
+	schedOfPayment 	: double
+end
+
+declare CountDelay
+	allowCount 		: Boolean
+	runningDate 	: Date
+	currentDate 	: Date
+	scheduleDate 	: Date
+	noOfDelays 		: int
+end
+
+declare Resolver
+	allowResolve	: Boolean
+	noOfSchedules 	: int
+	noOfDelays 		: int
+	amountPaid 		: double
+	interest 		: double
+	arrears 		: double
+	underpaymentRate: double
+	absentRate 		: double
+	arrearsRate 	: double
+	overduePenalty 	: double
+	lackingInterest : double
+	lackingPenalty 	: double
+	schedOfPayment 	: double
+end
+
+declare ResolverOverdue
+	allowResolve 	: Boolean
+	noOfSchedules 	: int
+	amountPaid 		: double
+	interest 		: double
+	overduePenalty 	: double
+	lackingInterest : double
+	lackingPenalty 	: double
+end
+
+declare ResolveScheduleDate
+	allowResolve 	: Boolean
+	runningDate		: Date
+	currentSchedule : int
+	counter 		: int
+end
+
+declare OverduePenalty
+	allowCompute 	: Boolean
+	noOfSchedules 	: int
+	interest 		: double
+	balance 		: double
+	penaltyRate 	: double
+end
+
+rule "compute overdue penalty"
+	when
+		o: OverduePenalty(allowCompute == true)
+	then
+		int noofschedule = o.getNoOfSchedules();
+		double interest = o.getInterest();
+		double balance = o.getBalance();
+		double rate = o.getPenaltyRate();
+
+		double amt = (noofschedule * interest) + balance;
+		double penalty = 0;
+		if (amt > 0 ) penalty = (amt * rate);
+
+		resultMap.put("penalty", penalty);
+end
+
+rule "resolve schedule date"
+	when
+		r: ResolveScheduleDate(allowResolve == true)
+	then
+		int counter = r.getCounter();
+		int currentschedule = r.getCurrentSchedule();
+
+		Date runningdate = r.getRunningDate();
+
+		Boolean allowupdate = true;
+		if (counter == currentschedule) {
+			allowupdate = false;
+		}
+
+		if (allowupdate == true) {
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(runningdate);
+
+			int day = cal.get(Calendar.DATE);
+			int max = cal.getActualMaximum(Calendar.DATE);
+
+			if (day == max) {
+				cal.add(Calendar.DATE, 1);
+				cal.set(Calendar.DATE, 15);
+			} else if (day == 15) {
+				cal.set(Calendar.DATE, cal.getActualMaximum(Calendar.DATE));
+			}
+
+			counter++;
+			r.setCounter(counter);
+			r.setRunningDate(cal.getTime());
+			update(r);
+		} else if (allowupdate == false) {
+			resultMap.put("scheduledate", new java.text.SimpleDateFormat("yyyy-MM-dd").format(runningdate));
+		}
+end
+
+rule "resolve number of schedules and delays"
+	when
+		r: Resolver(allowResolve == true)
+	then
+		double amountpaid = r.getAmountPaid();
+		double interest = r.getInterest();
+		double schedpyt = r.getSchedOfPayment();
+		int noofschedules = r.getNoOfSchedules();
+		int noofdelays = r.getNoOfDelays();
+
+		double lackinginterest = r.getLackingInterest();
+		if (amountpaid > 0 && lackinginterest > 0) amountpaid -= lackinginterest;
+
+		double lackingpenalty = r.getLackingPenalty();
+		if (amountpaid > 0 && lackingpenalty > 0) amountpaid -= lackingpenalty;
+
+
+		//System.out.println("lacking interest " + lackinginterest);
+		//System.out.println("lacking penalty " + lackingpenalty);
+		//System.out.println("no of schedules " + noofschedules);
+		//System.out.println("no of delays " + noofdelays);
+
+		if (amountpaid > 0) {
+			double ar = r.getAbsentRate();
+			double arrate = r.getArrearsRate();
+			double totalinterest = interest * noofschedules;
+			double totalpenalty = 0, u = 0, tp = 0;
+			double arrears = r.getArrears();
+			if (arrears > 0) {
+				u = arrears * arrate;
+				if (u > 0) totalpenalty += u;
+			}
+
+			int idx = 1;
+			while (idx <= noofdelays) {
+				u = ((schedpyt * idx) + totalpenalty) * ar;
+				if (u > 0) totalpenalty += u;
+				idx++;
+			}
+
+			double underpyt = (schedpyt * noofschedules) - r.getAmountPaid();
+			if (underpyt > 0) {
+				double ur = r.getUnderpaymentRate();
+				tp = 0;
+				if (arrears > 0) tp += arrears;
+				tp += (schedpyt * noofdelays) + underpyt;
+				u = (tp + totalpenalty) * ur;
+				if (u > 0) totalpenalty += u;
+				//u += tp;
+				//if (tp > 0) totalpenalty = tp;
+			}
+
+			/*
+			System.out.println("\nlacking interest " + lackinginterest);
+			System.out.println("lacking penalty " + lackingpenalty);
+			System.out.println("no of schedules " + noofschedules);
+			System.out.println("no of delays " + noofdelays);
+			System.out.println("total interest " + totalinterest);
+			System.out.println("total penalty " + totalpenalty);
+			*/
+			amountpaid -= (totalinterest + totalpenalty);
+		}
+
+		if (noofschedules <= 0) {
+			amountpaid = 0;
+		}
+
+		Boolean allowupdate = false;
+		if (amountpaid < 0) {
+			allowupdate = true;
+		}
+
+		if (allowupdate == true) {
+			if (noofschedules == noofdelays) {
+				noofdelays--;
+			}
+			noofschedules--;
+			r.setNoOfSchedules(noofschedules);
+			r.setNoOfDelays(noofdelays);
+			update(r);
+		} else if (allowupdate == false) {
+			if (noofschedules < 0) noofschedules = 0;
+			resultMap.put("noOfSchedules", noofschedules);
+
+			if (noofdelays < 0) noofdelays = 0;
+			resultMap.put("noOfDelays", noofdelays);
+		}
+end
+
+rule "resolve number of schedules and delays for overdue accounts"
+	when
+		r: ResolverOverdue(allowResolve == true)
+	then
+		double amountpaid = r.getAmountPaid();
+		double penalty = r.getOverduePenalty();
+		double interest = r.getInterest();
+
+		int noofschedules = r.getNoOfSchedules();
+
+		double lackinginterest = r.getLackingInterest();
+		if (amountpaid > 0 && lackinginterest > 0) amountpaid -= lackinginterest;
+
+		double lackingpenalty = r.getLackingPenalty();
+		if (amountpaid > 0 && lackingpenalty > 0) amountpaid -= lackingpenalty;
+
+		if (amountpaid > 0) {
+			double amt = noofschedules * (interest + penalty);
+			amountpaid -= amt;
+		}
+
+		if (noofschedules <= 0) {
+			amountpaid = 0;
+		}
+
+		Boolean allowupdate = false;
+		if (amountpaid < 0) {
+			allowupdate = true;
+		}
+
+		if (allowupdate == true) {
+			noofschedules--;
+			r.setNoOfSchedules(noofschedules);
+			update(r);
+		} else if (allowupdate == false) {
+			if (noofschedules < 0) noofschedules = 0;
+			resultMap.put("noOfSchedules", noofschedules);
+		}
+end
+
+rule "get current schedule"
+	when
+		c: CurrentSchedule(allowGet == true)
+	then
+		//System.out.println("get current schedule");
+		int noofschedule = c.getNoOfSchedule();
+		Date runningdate = c.getRunningDate();
+		Calendar runCal = Calendar.getInstance();
+		runCal.setTime(runningdate);
+
+		Date currentdate = c.getCurrentDate();
+		Calendar currentCal = Calendar.getInstance();
+		currentCal.setTime(currentdate);
+
+		/*
+		int xday = currentCal.get(Calendar.DATE);
+		int xmax = currentCal.getActualMaximum(Calendar.DATE);
+		if (xday != 15 && xday != xmax) {
+			if (xday < 15) {
+				currentCal.set(Calendar.DATE, 15);
+			} else if (xday > 15) {
+				currentCal.set(Calendar.DATE, xmax);
+			}
+		}
+		*/
+
+		//System.out.println("run cal " + runCal.getTime());
+		//System.out.println("current cal " + currentCal.getTime());
+		boolean allowupdate = true;
+		if (runCal.compareTo(currentCal) > 0) {
+			allowupdate = false;
+		}
+
+		if (allowupdate == true) {
+
+			noofschedule++;
+			runCal.add(Calendar.MONTH, 1);
+			c.setNoOfSchedule(noofschedule);
+			c.setRunningDate(runCal.getTime());
+			update(c);
+		} else if (allowupdate == false) {
+			//System.out.println("no of schedule " + noofschedule);
+			resultMap.put("noOfSchedule", noofschedule);
+		}
+end
+
+rule "count number of delays"
+	when
+		c: CountDelay(allowCount == true)
+	then
+		int noofdelays = c.getNoOfDelays();
+
+		Date runningdate = c.getRunningDate();
+		Calendar runCal = Calendar.getInstance();
+		runCal.setTime(runningdate);
+
+		Date currentdate = c.getCurrentDate();
+		Calendar currentCal = Calendar.getInstance();
+		currentCal.setTime(currentdate);
+
+		Calendar boundaryCal = Calendar.getInstance();
+		boundaryCal.setTime(currentCal.getTime());
+
+		/*
+		int xday = currentCal.get(Calendar.DATE);
+		int xmax = currentCal.getActualMaximum(Calendar.DATE);
+		if (xday != 15 && xday != xmax) {
+			if (xday < 15) {
+				boundaryCal.set(Calendar.DATE, 1);
+				boundaryCal.add(Calendar.DATE, -1);
+			} else if (xday > 15) {
+				boundaryCal.set(Calendar.DATE, 15);
+			}
+		}
+		*/
+
+		Date scheduledate = c.getScheduleDate();
+		if (boundaryCal.getTime().compareTo(scheduledate) < 0) {
+			boundaryCal.setTime(scheduledate);
+		}
+
+		Boolean allowupdate = false;
+		if (runCal.compareTo(boundaryCal) < 0) {
+			allowupdate = true;
+		}
+
+		if (allowupdate == true) {	
+			int day = runCal.get(Calendar.DATE);
+			int max = runCal.getActualMaximum(Calendar.DATE);
+
+			if (day == max) {
+				runCal.add(Calendar.DATE, 1);
+				runCal.set(Calendar.DATE, 15);
+			} else if (day == 15) {
+				runCal.set(Calendar.DATE, runCal.getActualMaximum(Calendar.DATE));
+			}
+			noofdelays++;
+			c.setNoOfDelays(noofdelays);
+			c.setRunningDate(runCal.getTime());
+			update(c);
+		} else if (allowupdate == false) {
+			if (currentCal.compareTo(boundaryCal) > 0) {
+				noofdelays++;
+			}
+			resultMap.put("noOfDelays", noofdelays);
+		}
+end
+
+rule "count number of schedules"
+	when
+		c: CountSchedule( allowCount == true)
+	then
+		//System.out.println("count no of sched 1");
+		int noofschedule = c.getNoOfSchedule();
+		double schedpyt = c.getSchedOfPayment();
+		double totalpayment = c.getTotalPayment();
+
+		double amt = noofschedule * schedpyt;
+		boolean allowupdate = false; 
+		if (amt <= totalpayment) {
+			noofschedule++;
+			c.setNoOfSchedule(noofschedule);
+			allowupdate = true;
+		}
+
+		if (allowupdate == true) {
+			update(c);
+		} else if (allowupdate == false) {
+			resultMap.put("noOfSchedule",noofschedule);
+		}
+end
+
+rule "full payment within term"
+	salience 20
+	when
+		r: References(isFullPayment == true, isOverdue == false)
+		p: Payment(amountPaid > 0)
+	then
+		java.util.Map listItem = new java.util.HashMap();
+
+		double amtpaid = r.getAmountPaid();
+		double arrears = r.getArrears();
+		double i = r.getInterest();
+		double ar = r.getAbsentRate();
+		double ur = r.getUnderpaymentRate();
+		double arrate = r.getArrearsRate();
+		double ad = r.getAmountDue();
+
+		int noofdelays = r.getNoOfDelays();
+		int totalSchedule = r.getTotalSchedule();
+		Boolean isoffset = r.getIsOffset();
+
+
+		int currentSchedule = p.getCurrentSchedule();
+
+		int lastSchedule = currentSchedule;
+		if (lastPayment.containsKey("lastCurrentSchedule")) {
+			lastSchedule = Integer.parseInt(lastPayment.get("lastCurrentSchedule").toString());
+		}
+
+		int days = p.getDays();
+		if (isoffset == true) {
+			if (lastPayment.containsKey("days")) {
+				days = Integer.parseInt(lastPayment.get("days").toString());
+			}
+		}
+
+
+		double lackinginterest = p.getLackingInterest();
+		double lackingpenalty = p.getLackingPenalty();
+
+		if (isoffset==true && (currentSchedule-1) == lastSchedule) {
+			listItem.put("scheduleday", lastSchedule);
+			listItem.put("interestPaid", i);
+			if (lackingpenalty > 0) listItem.put("penalty", lackingpenalty);
+			if (lackinginterest == 0) {
+				days++;
+			} else if (lackinginterest > 0) {
+				listItem.put("interestPaid", lackinginterest);
+			}
+			lastPayment.put("lastCurrentSchedule", 0);
+			lastPayment.remove("days");
+			results.add(listItem);
+		} else if (currentSchedule <= totalSchedule) {
+			listItem.put("scheduleday", currentSchedule);
+			listItem.put("interestPaid", i);
+			days++;
+			currentSchedule++;
+			results.add(listItem);
+		} else {
+			days--;
+			amtpaid = 0;
+		}
+
+
+		if (amtpaid == 0) {
+			java.util.Map item = new java.util.HashMap();
+			if (results.size() > 0) item = (java.util.Map) results.get(results.size() - 1);
+
+			double totalpayment = (days * ad);
+			double totalinterest = (days * i);
+			double totalpenalty = 0;
+			double u = 0, tp = 0;
+
+			if (arrears > 0) {
+				u = arrears * arrate;
+				if (u > 0) totalpenalty += u;
+			}
+
+			int idx = 1;
+			while (idx <= noofdelays) {
+			    u = (((ad * idx) + totalpenalty) * ar);
+			    if (u > 0) totalpenalty += u;
+			    //u += tp;
+				//if (tp > 0) totalpenalty = tp;
+				idx++;
+			}
+
+			double underpayment = totalpayment - p.getAmountPaid();
+			if (underpayment > 0) {
+				tp = 0;
+				if (arrears > 0) tp += arrears;
+				tp += (ad * noofdelays) + underpayment;
+				u = (tp + totalpenalty) * ur;
+				if (u > 0) totalpenalty += u;
+				//u += tp;
+				//if (tp > 0) totalpenalty = tp;
+			}
+
+
+			item.put("totaldays", days);
+			if (totalinterest > 0) item.put("totalinterest", totalinterest);
+			if (totalpenalty > 0) item.put("totalpenalty", totalpenalty);
+
+			p.setAmountPaid(0);
+		}
+
+		if (amtpaid > 0) {
+			p.setDays(days);
+			p.setCurrentSchedule(currentSchedule);
+		}
+		update(p);
+end
+
+rule "amount paid less than equal to interest"
+	when
+		r: References(amountPaid <= interest, isOverdue == false, isFullPayment == false)
+		p: Payment()
+	then
+		java.util.Map listItem = new java.util.HashMap();
+
+		Boolean isoffset = r.getIsOffset();
+
+		int currentSchedule = p.getCurrentSchedule();
+		int lastSchedule = currentSchedule;
+		if (isoffset == true) {
+			if (lastPayment.containsKey("lastCurrentSchedule")) {
+				lastSchedule = Integer.parseInt(lastPayment.get("lastCurrentSchedule").toString());
+			}
+		}
+
+		double amountPaid = p.getAmountPaid();
+
+		double lackinginterest = p.getLackingInterest();
+		double lackingpenalty = p.getLackingPenalty();
+
+		listItem.put("scheduleday", currentSchedule);
+
+		floating.put("lackingInterest", lackinginterest);
+		if (amountPaid > 0 && lackinginterest > 0) {
+			if (amountPaid >= lackinginterest) {
+				listItem.put("scheduleday", currentSchedule);
+				if (isoffset == true && (currentSchedule-1) == lastSchedule) {
+					listItem.put("scheduleday", lastSchedule);
+					lastPayment.put("lastCurrentSchedule", 0);
+				}
+				listItem.put("interestPaid", lackinginterest);
+				amountPaid -= lackinginterest;
+				floating.put("lackingInterest", 0);
+			} else if (amountPaid < lackinginterest) {
+				listItem.put("interestPaid", amountPaid);
+				lackinginterest -= amountPaid;
+				floating.put("lackingInterest", lackinginterest);
+				if (lackingpenalty > 0) floating.put("lackingPenalty", lackingpenalty);
+				amountPaid = 0;
+			}
+		}
+
+		floating.put("lackingPenalty", lackingpenalty);
+		if (amountPaid > 0 && lackingpenalty > 0) {
+			if (amountPaid >= lackingpenalty) {
+				listItem.put("penalty", lackingpenalty);
+				amountPaid -= lackingpenalty;
+				floating.put("lackingPenalty", 0);
+			} else if (amountPaid < lackingpenalty) {
+				listItem.put("penalty", amountPaid);
+				lackingpenalty -= amountPaid;
+				floating.put("lackingPenalty", lackingpenalty);
+				amountPaid = 0;
+			}
+		}
+
+		if (amountPaid > 0 && lackinginterest == 0 && lackingpenalty == 0) {
+			double i = r.getInterest();
+			listItem.put("interestPaid", amountPaid);
+			i -= amountPaid;
+			floating.put("lackingInterest", i);
+			
+			double ad = r.getAmountDue();
+			double ur = r.getUnderpaymentRate();
+			double ar = r.getAbsentRate();
+			double arrears = r.getArrears();
+			double arrate = r.getArrearsRate();
+
+			int noofdelays = r.getNoOfDelays();
+			int noofschedule = r.getNoOfSchedules();
+
+			int idx = 1;
+			double totalpayment = (idx * ad);
+			double totalpenalty = 0;
+			double u = 0, tp = 0;
+
+			if (arrears > 0) {
+				u = arrears * arrate;
+				if (u > 0) totalpenalty += u;
+			}
+
+			Boolean isDelayed = r.getIsDelayed();
+			if (isDelayed == true) {
+				u = ((ad * idx) + totalpenalty) * ar;
+				if (u > 0) totalpenalty += u;
+			}
+
+			double underpayment = totalpayment - p.getAmountPaid();
+			if (underpayment > 0) {
+				tp = 0;
+				if (arrears > 0) tp += arrears;
+				if (isDelayed == true) tp += (ad * idx);
+				tp += underpayment;
+				u = (tp + totalpenalty) * ur;
+				if (u > 0) totalpenalty += u;
+				//u += tp;
+				//if (tp > 0) totalpenalty = tp;
+			}
+
+			if (totalpenalty > 0) floating.put("lackingPenalty", totalpenalty);			
+
+			amountPaid = 0;
+		}
+
+
+		if (amountPaid == 0) {
+			double totalinterest = 0;
+			if (listItem.containsKey("interestPaid")) {
+				totalinterest = Double.parseDouble(listItem.get("interestPaid").toString());
+			}
+
+			if (totalinterest > 0) listItem.put("totalinterest", totalinterest);
+
+			double totalpenalty = 0;
+			if (listItem.containsKey("penalty")) {
+				totalpenalty = Double.parseDouble(listItem.get("penalty").toString());
+			}
+
+			if (totalpenalty > 0) listItem.put("totalpenalty", totalpenalty);
+			results.add(listItem);
+		}
+
+		//if (amountPaid > i) {
+		//	update(p);
+		//}
+end
+
+rule "amount paid greater than equal to total payment"
+	when
+		r: References(amtpaid: amountPaid >= totalPayment, isOffset == false, isOverdue == false, isFullPayment == false)
+		p: Payment()
+	then
+		Map listItem = new HashMap();
+
+		double i = r.getInterest();
+		double ad = r.getAmountDue();
+		double ar = r.getAbsentRate();
+		double arrears = r.getArrears();
+		double arrate = r.getArrearsRate();
+
+		int noofschedule = r.getNoOfSchedules();
+		int noofdelays = r.getNoOfDelays();
+
+		int days = p.getDays();
+		int currentSchedule = p.getCurrentSchedule();
+
+		Boolean addLacking = p.getAddLacking();
+		double lackinginterest = p.getLackingInterest();
+		double lackingpenalty = p.getLackingPenalty();
+		double interestpaid = 0, penaltypaid = 0;
+
+		if (addLacking == true) {
+			Map item = new HashMap();
+			item.put("scheduleday", currentSchedule);
+
+			if (amtpaid > 0 && lackinginterest > 0) {
+				if (amtpaid >= lackinginterest) {
+					item.put("interestPaid", lackinginterest);
+					interestpaid = lackinginterest;
+					amtpaid -= lackinginterest;
+					currentSchedule++;
+				} else if (amtpaid < lackinginterest) {
+					item.put("interestPaid", amtpaid);
+					interestpaid = amtpaid;
+					lackinginterest -= amtpaid;
+					floating.put("lackingInterest", lackinginterest);
+					if (lackingpenalty > 0) floating.put("lackingPenalty", lackingpenalty);
+					amtpaid = 0;
+				}
+			}
+
+			if (amtpaid > 0 && lackingpenalty > 0) {
+				if (amtpaid >= lackingpenalty) {
+					penaltypaid = lackingpenalty;
+					amtpaid -= lackingpenalty;
+				} else if (amtpaid < lackingpenalty) {
+					penaltypaid = amtpaid;
+					lackingpenalty -= amtpaid;
+					floating.put("lackingPenalty", lackingpenalty);
+					amtpaid = 0;
+				}
+			} 
+
+			days++;
+			p.setAddLacking(false);
+			results.add(item);
+		}
+
+		Boolean addItem = false;
+		if (days <= noofschedule) {
+			addItem = true;
+		} else {
+			double amt = p.getAmountPaid() - ((days - noofschedule) * ad);
+			if (amt >= ad) {
+				addItem = true;
+			}
+		}
+
+		if (addItem == true) {
+			listItem.put("scheduleday", currentSchedule);
+			listItem.put("interestPaid", i);
+			days++;
+			currentSchedule++;
+			results.add(listItem);
+		} else if (addItem == false) {
+			amtpaid = 0;
+			days--;
+			if (days < noofschedule) days = noofschedule;
+		}
+
+		if (amtpaid == 0) {
+			Map item = new HashMap();
+			if (results.size() > 0) item = (Map) results.get(results.size() - 1);
+
+			//double totalinterest = (noofschedule * i);
+			double totalinterest = 0, totalpenalty = 0;
+			if (addLacking == true) {
+				totalinterest = interestpaid;
+				totalpenalty = penaltypaid;
+			} else if (addLacking == false) {
+				totalinterest = (days * i) + lackinginterest;
+				double u = 0, tp = 0;
+
+				if (arrears > 0) {
+					u = arrears * arrate;
+					if (u > 0) totalpenalty += u;
+				}
+
+				int idx = 1;
+				while (idx <= noofdelays) {
+					tp = 0;
+					if (arrears > 0) tp += arrears;
+					tp += (ad * idx);
+				    u = (tp + totalpenalty) * ar;
+				    //u += tp;
+					//if (tp > 0) totalpenalty = tp;
+					if (u > 0) totalpenalty += u;
+					idx++;
+				}
+
+				totalpenalty += lackingpenalty;
+			}
+
+			item.put("totaldays", days);
+
+			if (totalinterest > 0) item.put("totalinterest", totalinterest);
+			if (totalpenalty > 0) item.put("totalpenalty", totalpenalty);
+			//System.out.println("total interest: " + totalinterest);
+			//System.out.println("total penalty: " + totalpenalty);
+			//double partial = amountPaid - (totalinterest + totalpenalty);
+			//if (partial < 0) partial = 0;
+			//item.put("partialPayment", partial);
+			//System.out.println("amount paid: " + amountPaid);
+			//double totalinterest = (noofschedule * i);
+			//System.out.println("total interest: " + totalinterest);
+
+			//double balance = p.getBalance();
+			//System.out.println("balance: " + balance);
+			//if (partial > 0) balance -= partial;
+			//item.put("balance", balance);
+		}
+
+		if (amtpaid > 0) {
+			p.setCurrentSchedule(currentSchedule);
+			p.setDays(days);
+			update(p);
+		}
+end
+
+rule "amount paid less than total payment"
+	when
+		r: References(amtpaid: amountPaid < totalPayment, amountPaid > interest, isOffset == false, isOverdue == false, isFullPayment == false)
+		p: Payment()
+	then 
+		Map listItem = new HashMap();
+
+		double i = r.getInterest();
+		double ad = r.getAmountDue();
+		double ar = r.getAbsentRate();
+		double ur = r.getUnderpaymentRate();
+		double arrears = r.getArrears();
+		double arrate = r.getArrearsRate();
+
+		int noofschedule = r.getNoOfSchedules();
+		int noofdelays = r.getNoOfDelays();
+
+		int currentSchedule = p.getCurrentSchedule();
+		int days = p.getDays();
+
+		double lackinginterest = p.getLackingInterest();
+		double lackingpenalty = p.getLackingPenalty();
+
+		Boolean addLacking = p.getAddLacking();
+		double interestpaid = 0, penaltypaid = 0;
+
+		if (addLacking == true) {
+			Map item = new HashMap();
+			item.put("scheduleday", currentSchedule);
+
+			if (amtpaid > 0 && lackinginterest > 0) {
+				if (amtpaid >= lackinginterest) {
+					item.put("interestPaid", lackinginterest);
+					interestpaid = lackinginterest;
+					amtpaid -= lackinginterest;
+					currentSchedule++;
+				} else if (amtpaid < lackinginterest) {
+					item.put("interestPaid", amtpaid);
+					interestpaid = amtpaid;
+					lackinginterest -= amtpaid;
+					floating.put("lackingInterest", lackinginterest);
+					if (lackingpenalty > 0) floating.put("lackingPenalty", lackingpenalty);
+					amtpaid = 0;
+				}
+			}
+
+			if (amtpaid > 0 && lackingpenalty > 0) {
+				if (amtpaid >= lackingpenalty) {
+					penaltypaid = lackingpenalty;
+					amtpaid -= lackingpenalty;
+				} else if (amtpaid < lackingpenalty) {
+					penaltypaid = amtpaid;
+					lackingpenalty -= amtpaid;
+					floating.put("lackingPenalty", lackingpenalty);
+					amtpaid = 0;
+				}
+			}
+
+			days++;
+			p.setAddLacking(false);
+			results.add(item);
+		}
+
+		//System.out.println("amtpaid " + amtpaid);
+		//System.out.println("days " + days);
+
+		if (amtpaid > 0 && days <= noofschedule) {
+			listItem.put("scheduleday", currentSchedule);
+			listItem.put("interestPaid", i);
+			days++;
+			currentSchedule++;
+			results.add(listItem);
+		} else {
+			amtpaid = 0;
+		}
+
+		if (amtpaid == 0) {
+			Map item = new HashMap();
+			if (results.size() > 0) item = (Map) results.get(results.size() - 1);
+
+			double totalinterest = 0, totalpenalty = 0;
+			if (addLacking == true) {
+				totalinterest = interestpaid;
+				totalpenalty = penaltypaid;
+			} else if (addLacking == false) {				
+				double totalpayment = (noofschedule * ad);
+				totalinterest = (noofschedule * i) + lackinginterest;
+				totalpenalty = 0;
+				double u = 0, tp = 0;
+
+				if (arrears > 0) {
+					u = arrears * arrate;
+					if (u > 0) totalpenalty += u;
+				}
+				//System.out.println("total penalty1 " + totalpenalty);
+
+				int idx = 1;
+				while (idx <= noofdelays) {
+				    u = (((ad * idx) + totalpenalty) * ar);
+				    if (u > 0) totalpenalty += u;
+				    //u += tp;
+					//if (tp > 0) totalpenalty = tp;
+					idx++;
+				}
+				//System.out.println("total penalty2 " + totalpenalty);
+
+				double underpayment = totalpayment - p.getAmountPaid();
+				//System.out.println("underpayment " + underpayment);
+				if (underpayment > 0) {
+					tp = 0;
+					if (arrears > 0) tp += arrears;
+					tp += (ad * noofdelays) + underpayment;
+					u = (tp + totalpenalty) * ur;
+					if (u > 0) totalpenalty += u;
+					//u += tp;
+					//if (tp > 0) totalpenalty = tp;
+				}
+				//System.out.println("total penalty3 " + totalpenalty);
+				totalpenalty += lackingpenalty;
+			}
+			item.put("totaldays", noofschedule);
+
+			//System.out.println("total interest " + totalinterest);
+			//System.out.println("total penalty " + totalpenalty);
+
+			if (totalinterest > 0) item.put("totalinterest", totalinterest);
+			if (totalpenalty > 0) item.put("totalpenalty", totalpenalty);
+			//double totalinterest = 
+		} else if (amtpaid > 0) {
+			p.setCurrentSchedule(currentSchedule);
+			p.setDays(days);
+			update(p);
+		}
+end
+
+rule "amount paid greater than equal to total payment and is offset true"
+	when
+		r: References(amtpaid: amountPaid >= totalPayment, isOffset == true, isOverdue == false, isFullPayment == false)
+		p: Payment()
+	then
+		java.util.Map listItem = new java.util.HashMap();
+		double totalpayment = r.getTotalPayment();
+		double i = r.getInterest();
+		double ad = r.getAmountDue();
+		double ar = r.getAbsentRate();
+		double arrears = r.getArrears();
+		double arrate = r.getArrearsRate();
+
+		int noofschedule = r.getNoOfSchedules();
+		int noofdelays = r.getNoOfDelays();
+
+		int currentSchedule = p.getCurrentSchedule();
+		int lastCurrentSchedule = currentSchedule;
+
+		if (lastPayment.containsKey("lastCurrentSchedule")) {
+			lastCurrentSchedule = Integer.parseInt(lastPayment.get("lastCurrentSchedule").toString());
+		}
+		int days = p.getDays();
+		if (lastPayment.containsKey("days")) {
+			days = Integer.parseInt(lastPayment.get("days").toString());
+		}
+
+		//double currentAmountPaid = p.getAmountPaid();
+		//if (lastPayment.containsKey("currentAmountPaid")) {
+		//	currentAmountPaid = Double.parseDouble(lastPayment.get("currentAmountPaid").toString());
+		//}
+
+		//double lastTp = 0;
+		//if (lastPayment.containsKey("totalPreviousPayments")) {
+		//	lastTp = Double.parseDouble(lastPayment.get("totalPreviousPayments").toString());
+		//}
+
+		//double amountPaid = p.getAmountPaid() - (lastTp + currentAmountPaid);
+		//System.out.println("total payment " + totalpayment);
+		//System.out.println("amount paid " + p.getAmountPaid());
+		//double amountPaid = p.getAmountPaid() - totalpayment;
+
+		Boolean addLacking = p.getAddLacking();
+		double lackinginterest = p.getLackingInterest();
+		double lackingpenalty = p.getLackingPenalty();
+		double interestpaid = 0, penaltypaid = 0;
+
+		if (addLacking == true) {
+			if (days == 0) {
+				Map item = new HashMap();
+				int currentsched = currentSchedule;
+				Boolean isLastSchedule = false;
+				if ((currentSchedule - 1) == lastCurrentSchedule) {
+					currentsched = lastCurrentSchedule;
+					isLastSchedule = true;
+				}
+
+				item.put("scheduleday", currentsched);
+
+				if (amtpaid > 0 && lackinginterest > 0) {
+					if (amtpaid >= lackinginterest) {
+						item.put("interestPaid", lackinginterest);
+						interestpaid = lackinginterest;
+						amtpaid -= lackinginterest;
+					} else if (amtpaid < lackinginterest) {
+						item.put("interestPaid", amtpaid);
+						interestpaid = amtpaid;
+						lackinginterest -= amtpaid;
+						floating.put("lackingInterest", lackinginterest);
+						if (lackingpenalty > 0) floating.put("lackingPenalty", lackingpenalty);
+						amtpaid = 0;
+					}
+				}
+
+				if (amtpaid > 0 && lackingpenalty > 0) {
+					if (amtpaid >= lackingpenalty) {
+						penaltypaid = lackingpenalty;
+						amtpaid -= lackingpenalty;
+					} else if (amtpaid < lackingpenalty) {
+						penaltypaid = amtpaid;
+						lackingpenalty -= amtpaid;
+						floating.put("lackingPenalty", lackingpenalty);
+						amtpaid = 0;
+					}
+				}
+
+				if (isLastSchedule == true) {
+					lastCurrentSchedule--;
+					lastPayment.put("lastCurrentSchedule", lastCurrentSchedule);
+					lastPayment.remove("days");
+				}
+
+				days++;
+				results.add(item);
+			} else {
+				addLacking = false;
+			}
+			p.setAddLacking(false);
+		}
+
+		//System.out.println("current schedule " + currentSchedule);
+		//System.out.println("last current schedule " + lastCurrentSchedule);
+		if ((currentSchedule-1) == lastCurrentSchedule) {
+			listItem.put("scheduleday", lastCurrentSchedule);
+			listItem.put("interestPaid", i);
+			lastPayment.put("lastCurrentSchedule", (lastCurrentSchedule - 1));
+			lastPayment.remove("days");
+			days++;
+			//amountPaid = p.getAmountPaid();
+			results.add(listItem);
+		} else {
+			if (currentSchedule <= lastCurrentSchedule) {
+				lastPayment.put("lastCurrentSchedule", currentSchedule - 1);
+				lastPayment.remove("days");
+			}
+
+			Boolean addItem = false;
+			if (days <= noofschedule) {
+				addItem = true;
+			} else {
+				double amt = p.getAmountPaid() - ((days - noofschedule) * ad);
+				if (amt >= ad) {
+					addItem = true;
+				}
+			}
+
+			if (addItem == true) {				
+				listItem.put("scheduleday", currentSchedule);
+				listItem.put("interestPaid", i);
+				days++;
+				currentSchedule++;
+				results.add(listItem);
+			} else if (addItem == false) {
+				//System.out.println("days " + days);
+				days--;
+				if (days < noofschedule) days = noofschedule;
+				amtpaid = 0;
+			}
+		}
+
+		if (amtpaid == 0) {
+			Map item = new HashMap();
+			if (results.size() > 0) item = (Map) results.get(results.size() - 1);
+
+			double totalinterest = 0;
+			double totalpenalty = 0;
+
+			//System.out.println("add lacking " + addLacking);
+			if (addLacking == true) {
+				totalinterest = interestpaid;
+				totalpenalty = penaltypaid;
+			} else if (addLacking == false) {
+				totalinterest = (days * i) + lackinginterest;
+				double u = 0, tp = 0;
+
+				if (arrears > 0) {
+					u = arrears * arrate;
+					if (u > 0) totalpenalty += u;
+				}
+
+				int idx = 1;
+				while (idx <= noofdelays) {
+					tp = 0;
+					if (arrears > 0) tp += arrears;
+					tp += (ad * idx) + totalpenalty;
+				    u = (tp * ar);
+				    if (u > 0) totalpenalty += u;
+				    //u += tp;
+					//if (tp > 0) totalpenalty = tp;
+					idx++;
+				}
+
+				totalpenalty += lackingpenalty;
+			}
+
+			System.out.println("total interest " + totalinterest);
+			System.out.println("total penalty " + totalpenalty);
+
+			item.put("totaldays", days);
+			if (totalpenalty > 0) item.put("totalpenalty", totalpenalty);
+			if (totalinterest > 0) item.put("totalinterest", totalinterest);
+		}
+
+		if (amtpaid > 0) {
+			//p.setAmountPaid(amountPaid);
+			p.setCurrentSchedule(currentSchedule);
+			p.setDays(days);
+			update(p);
+		}
+end
+
+rule "amount paid less than total payment and is offset true"
+	when
+		r: References(amtpaid: amountPaid < totalPayment, amountPaid > interest, isOffset == true, isOverdue == false, isFullPayment == false)
+		p: Payment()
+	then
+		java.util.Map listItem = new java.util.HashMap();
+
+		double i = r.getInterest();
+		double ad = r.getAmountDue();
+		double ar = r.getAbsentRate();
+		double ur = r.getUnderpaymentRate();
+		double arrears = r.getArrears();
+		double arrate = r.getArrearsRate();
+
+		int noofschedule = r.getNoOfSchedules();
+		int noofdelays = r.getNoOfDelays();
+
+		int currentSchedule = p.getCurrentSchedule();
+		int lastSchedule = currentSchedule;
+		if (lastPayment.containsKey("lastCurrentSchedule")) {
+			lastSchedule = Integer.parseInt(lastPayment.get("lastCurrentSchedule").toString());
+		}
+
+		int days = p.getDays();
+		if (lastPayment.containsKey("days")) {
+			days = Integer.parseInt(lastPayment.get("days").toString());
+		}
+
+		Boolean addLacking = p.getAddLacking();
+
+		double lackinginterest = p.getLackingInterest();
+		double lackingpenalty = p.getLackingPenalty();
+		double interestpaid = 0, penaltypaid = 0;
+
+		if (addLacking == true) {
+			if (days == 0) {
+				Map item = new HashMap();
+				int currentsched = currentSchedule;
+				Boolean isLastSchedule = false;
+				if ((currentSchedule - 1) == lastSchedule) {
+					isLastSchedule = true;
+					currentsched = lastSchedule;
+				}
+
+				item.put("scheduleday", currentsched);
+
+				if (amtpaid > 0 && lackinginterest > 0) {
+					if (amtpaid >= lackinginterest) {
+						item.put("interestPaid", lackinginterest);
+						interestpaid = lackinginterest;
+						amtpaid -= lackinginterest;
+					} else if (amtpaid < lackinginterest) {
+						item.put("interestPaid", amtpaid);
+						interestpaid = amtpaid;
+						interestpaid = amtpaid;
+						lackinginterest -= amtpaid;
+						floating.put("lackingInterest", lackinginterest);
+						if (lackingpenalty > 0) floating.put("lackingPenalty", lackingpenalty);
+						amtpaid = 0;
+					}
+				}
+
+				if (amtpaid > 0 && lackingpenalty > 0) {
+					if (amtpaid >= lackingpenalty) {
+						//item.put("penalty", lackingpenalty);
+						penaltypaid = lackingpenalty;
+						amtpaid -= lackingpenalty;
+					} else if (amtpaid < lackingpenalty) {
+						//item.put("penalty", amtpaid);
+						penaltypaid = amtpaid;
+						lackingpenalty -= amtpaid;
+						floating.put("lackingPenalty", lackingpenalty);
+						amtpaid = 0;
+					}
+				}
+
+				if (isLastSchedule == true) {
+					lastSchedule--;
+					lastPayment.put("lastCurrentSchedule", lastSchedule);
+					lastPayment.remove("days");
+				}
+				days++;
+				results.add(item);
+			} else {
+				addLacking = false;
+			}
+			p.setAddLacking(false);
+		}
+
+		if ((currentSchedule-1) == lastSchedule) {
+			listItem.put("scheduleday", lastSchedule);
+			listItem.put("interestPaid", i);
+			lastPayment.put("lastCurrentSchedule", lastSchedule - 1);
+			lastPayment.remove("days");
+			days++;
+			results.add(listItem);
+		} else if (days <= noofschedule) {
+			if (currentSchedule <= lastSchedule) {
+				lastPayment.put("lastCurrentSchedule", currentSchedule - 1);
+				lastPayment.remove("days");
+			}
+			listItem.put("scheduleday", currentSchedule);
+			listItem.put("interestPaid", i);
+			days++;
+			currentSchedule++;
+			results.add(listItem);
+		} else {
+			amtpaid = 0;
+		}
+
+		if (amtpaid == 0) {
+			Map item = new HashMap();
+			if (results.size() > 0) item = (Map) results.get(results.size() - 1);
+
+			double totalinterest = 0;
+			double totalpenalty = 0;
+
+			if (addLacking == true) {
+				totalinterest = interestpaid;
+				totalpenalty = penaltypaid;
+			} else if (addLacking == false) {			
+				double totalpayment = (noofschedule * ad);
+				double u = 0, tp = 0;
+				totalinterest = (noofschedule * i) + lackinginterest;
+
+				if (arrears > 0) {
+					u = arrears * arrate;
+					if (u > 0) totalpenalty += u;
+				}
+
+				int idx = 1;
+				while (idx <= noofdelays) {
+				    u = (((ad * idx) + totalpenalty) * ar);
+				    if (u > 0) totalpenalty += u;
+				    //u += tp;
+					//if (tp > 0) totalpenalty = tp;
+					idx++;
+				}
+
+				double underpayment = totalpayment - p.getAmountPaid();
+				if (underpayment > 0) {
+					tp = 0;
+					if (arrears > 0) tp += arrears;
+					tp +=  (ad * noofdelays) + underpayment;
+					u = (tp + totalpenalty) * ur;
+					if (u > 0) totalpenalty += u;
+					//u += tp;
+					//if (tp > 0) totalpenalty = tp;
+				}
+
+				if (lackingpenalty > 0) totalpenalty += lackingpenalty;
+			}
+
+			item.put("totaldays", noofschedule);
+			if (totalinterest > 0) item.put("totalinterest", totalinterest);
+			if (totalpenalty > 0) item.put("totalpenalty", totalpenalty);
+			//double totalinterest = 
+		} else if (amtpaid > 0) {
+			p.setCurrentSchedule(currentSchedule);
+			p.setDays(days);
+			update(p);
+		}
+end
+
+rule "overdue payment and offset is false"
+	when
+		r: References(isOverdue == true, isOffset == false, amtpaid: amountPaid)
+		p: Payment()
+	then
+		Map listItem = new HashMap();
+
+		int noofschedules = r.getNoOfSchedules();
+		int days = p.getDays();
+		int currentschedule = p.getCurrentSchedule();
+
+		double interest = r.getInterest();
+		double penalty = r.getOverduePenalty();
+
+		Boolean addLacking = p.getAddLacking();
+
+		double lackinginterest = p.getLackingInterest();
+		double lackingpenalty = p.getLackingPenalty();
+
+		double interestpaid = 0, penaltypaid = 0;
+
+		if (addLacking == true) {
+			Map item = new HashMap();
+			item.put("scheduleday", currentschedule);
+			
+			if (amtpaid > 0 && lackinginterest > 0) {
+				if (amtpaid >= lackinginterest) {
+					item.put("interestPaid", lackinginterest);
+					interestpaid = lackinginterest;
+					currentschedule++;
+					amtpaid -= lackinginterest;
+				} else if (amtpaid < lackinginterest) {
+					item.put("interestPaid", amtpaid);
+					interestpaid = amtpaid;
+					lackinginterest -= amtpaid;
+					floating.put("lackingInterest", lackinginterest);
+					if (lackingpenalty > 0) floating.put("lackingPenalty", lackingpenalty);
+					amtpaid = 0;
+				}
+			}
+
+			if (amtpaid > 0 && lackingpenalty > 0) {
+				if (amtpaid >= lackingpenalty) {
+					penaltypaid = lackingpenalty;
+					amtpaid -= lackingpenalty;
+				} else if (amtpaid < lackingpenalty) {
+					penaltypaid = amtpaid;
+					lackingpenalty -= amtpaid;
+					floating.put("lackingPenalty", lackingpenalty);
+					amtpaid = 0;
+				}
+			}
+
+			days++;
+			p.setAddLacking(false);
+			results.add(item);
+		}
+
+		//System.out.println("add lacking " + addLacking);
+		//System.out.println("interest " + interest);
+		//System.out.println("penalty " + penalty);
+
+		if (days <= noofschedules) {
+			listItem.put("scheduleday", currentschedule);
+			listItem.put("interestPaid", interest);
+			//listItem.put("penalty", penalty);
+			days++;
+			currentschedule++;
+			results.add(listItem);
+		} else {
+			amtpaid = 0;
+		}
+
+		if (amtpaid == 0) {
+			Map item = new HashMap();
+			if (results.size() > 0) item = (Map) results.get(results.size() - 1);
+
+			double totalinterest = 0;
+			double totalpenalty = 0;
+
+			if (addLacking == true) {
+				totalinterest = interestpaid;
+				totalpenalty = penaltypaid;
+			} else if (addLacking == false) {
+
+				totalinterest = (interest * noofschedules) + lackinginterest;
+				totalpenalty = (penalty * noofschedules) + lackingpenalty;
+			}
+
+			item.put("totaldays", noofschedules);
+			if (totalinterest > 0) item.put("totalinterest", totalinterest);
+			if (totalpenalty > 0) item.put("totalpenalty", totalpenalty);
+		} else if (amtpaid > 0) {
+			p.setDays(days);
+			p.setCurrentSchedule(currentschedule);
+			update(p);
+		}
+end
+
+rule "overdue payment and offset is true"
+	when
+		r: References(isOverdue == true, isOffset == true, amtpaid: amountPaid)
+		p: Payment()
+	then
+		Map listItem = new HashMap();
+
+		int noofschedules = r.getNoOfSchedules();
+		int currentschedule = p.getCurrentSchedule();
+
+		int lastschedule = currentschedule;
+		if (lastPayment.containsKey("lastCurrentSchedule")) {
+			lastschedule = Integer.parseInt(lastPayment.get("lastCurrentSchedule").toString());
+		}
+
+		int days = p.getDays();
+		if (lastPayment.containsKey("days")) {
+			days = Integer.parseInt(lastPayment.get("days").toString());
+		}
+
+		Boolean addLacking = p.getAddLacking();
+
+		double lackinginterest = p.getLackingInterest();
+		double lackingpenalty = p.getLackingPenalty();
+		//System.out.println("days " + days);
+		double interestpaid = 0, penaltypaid = 0;
+
+		if (addLacking == true) {
+			if (days == 0) {	
+				Map item = new HashMap();	
+				int currentsched = currentschedule;
+				Boolean isLastSchedule = false;
+				if ((currentschedule - 1) == lastschedule) {
+					isLastSchedule = true;
+					currentsched = lastschedule;
+				}
+
+				item.put("scheduleday", currentsched);
+				if (amtpaid > 0 && lackinginterest > 0) {
+					if (amtpaid >= lackinginterest) {
+						item.put("interestPaid", lackinginterest);
+						interestpaid = lackinginterest;
+						amtpaid -= lackinginterest;
+						if (isLastSchedule == false) {
+							currentschedule++;
+						}
+					} else if (amtpaid < lackinginterest) {
+						item.put("interestPaid", amtpaid);
+						interestpaid = amtpaid;
+						lackinginterest -= amtpaid;
+						floating.put("lackingInterest", lackinginterest);
+						if (lackingpenalty > 0) floating.put("lackingPenalty", lackingpenalty);
+						amtpaid = 0;
+					}
+				}
+
+				if (amtpaid > 0 && lackingpenalty > 0) {
+					if (amtpaid >= lackingpenalty) {
+						//item.put("penalty", lackingpenalty);
+						penaltypaid = lackingpenalty;
+						amtpaid -= lackingpenalty;
+					} else if (amtpaid < lackingpenalty) {
+						//item.put("penalty", amtpaid);
+						penaltypaid = amtpaid;
+						lackingpenalty -= amtpaid;
+						floating.put("lackingPenalty", lackingpenalty);
+						amtpaid = 0;
+					}
+				}
+
+				if (isLastSchedule == true) {
+					lastschedule--;
+					lastPayment.put("lastCurrentSchedule", lastschedule);
+					lastPayment.remove("days");
+				}
+				days++;
+				results.add(item);
+			} else {
+				addLacking = false;
+			}
+			p.setAddLacking(false);
+		}
+
+		double interest = r.getInterest();
+		double penalty = r.getOverduePenalty();
+
+		if ((currentschedule - 1) == lastschedule) {
+			listItem.put("scheduleday", lastschedule);
+			listItem.put("interestPaid", interest);
+			lastPayment.put("lastCurrentSchedule", lastschedule - 1);
+			lastPayment.remove("days");
+			days++;
+			results.add(listItem);
+		} else if (days <= noofschedules) {
+			listItem.put("scheduleday", currentschedule);
+			listItem.put("interestPaid", interest);
+			days++;
+			currentschedule++;
+			results.add(listItem);
+		} else {
+			amtpaid = 0;
+		}
+
+		if (amtpaid == 0) {
+			Map item = new HashMap();
+			if (results.size() > 0) item = (Map) results.get(results.size() - 1);
+
+			double totalinterest = 0;
+			double totalpenalty = 0;
+
+			if (addLacking == true) {
+				totalinterest = interestpaid;
+				totalpenalty = penaltypaid;
+			} else if (addLacking == false) {
+				totalinterest = (noofschedules * interest) + lackinginterest;
+				totalpenalty = (noofschedules * penalty) + lackingpenalty;
+			}
+
+			item.put("totaldays", noofschedules);
+			if (totalinterest > 0) item.put("totalinterest", totalinterest);
+			if (totalpenalty > 0) item.put("totalpenalty", totalpenalty);
+		} else if (amtpaid > 0) {
+			p.setDays(days);
+			p.setCurrentSchedule(currentschedule);
+			update(p);
+		}
+end

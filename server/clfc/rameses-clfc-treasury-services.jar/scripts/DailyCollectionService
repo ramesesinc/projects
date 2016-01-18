@@ -1,0 +1,404 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.services.extended.*;
+import java.rmi.server.UID;
+
+class DailyCollectionService extends ActiveCrudListService
+{
+	@Env
+	def env;
+
+	@ActiveDB("dailycollection")
+	def em;
+
+	@ActiveDB("collection_cb")
+	def collection_cb;
+
+	@ActiveDB("depositslip")
+	def depositslip;
+
+	@ActiveDB("shortage")
+	def shortage;
+
+	@ActiveDB("overage")
+	def overage;
+
+	@ActiveDB("encashment")
+	def encashment;
+
+	@ActiveDB("passbook")
+	def passbook;
+
+	@ActiveDB("accounttype")
+	def accounttype;
+
+	@ActiveDB("currencytype")
+	def currencytype;
+
+	@ActiveDB("deposittype")
+	def deposittype;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@Service("InboxService")
+	def inboxSvc;
+
+	@ProxyMethod
+	public def getColumns( params ) {
+		def cols = [];
+
+		if (!params.state) cols << [name: 'state', caption: 'Status'];
+
+		cols << [name: 'txndate', caption: 'Date', type: 'date', outputFormat: 'MMM-dd-yyyy'];
+		cols << [name: 'totalcollection', caption: 'Total Collection', type: 'decimal', format: '#,##0.00'];
+
+		if (params.state == 'VERIFIED') {
+			cols << [name: 'dtverified', caption: 'Date Verified'];
+			cols << [name: 'verifier.name', caption: 'Verified By'];
+		}
+
+		return cols;
+
+		/*
+		return [
+			[name: 'state', caption: 'Status'],
+			[name: 'txndate', caption: 'Date', type: 'date', outputFormat: 'MMM-dd-yyyy'],
+			[name: 'totalcollection', caption: 'Total Collection', type: 'decimal', format: '#,##0']
+		];
+		*/
+	}
+
+	@ProxyMethod
+	public def getStates() {
+		return [
+			[caption: 'All'],
+			[caption: 'DRAFT', state: 'DRAFT'],
+			[caption: 'FOR VERIFICATION', state: 'FOR_VERIFICATION'],
+			[caption: 'VERIFIED', state: 'VERIFIED']
+		]
+	}
+
+	@ProxyMethod
+	public def getMainOptions() {
+		return [
+			[name: 'summary', caption: 'Summary', index: 0],
+			[name: 'cbs', caption: 'Cash Breakdown Sheet', index: 1],
+			[name: 'shortage', caption: 'Shortage', index: 2],
+			[name: 'overage', caption: 'Overage', index: 3],
+			[name: 'encashment', caption: 'Encashment', index: 4],
+			[name: 'depositslip', caption: 'Deposit Slip', index: 5],
+		]
+	}
+
+	void beforeList( params ) {
+		params.searchtext = (params.searchtext? params.searchtext : '') + '%';
+		if (params.state) {
+			params._listMethod = 'getListByState';
+		}
+	}
+
+	void afteCreate( data ) {
+		updateInfo(data);
+	}
+
+	void afterUpdate( data ) {
+		updateInfo(data);
+	}
+
+	private void updateInfo( data ) {
+		/*
+		data._removedcbs.each{ o->
+			em.delete(o, "collection-cbs");
+		}
+
+		data._addedcbs.each{ o->
+			em.create(o, "collection-cbs");
+		}
+
+		data._removedencashment.each{ o->
+			em.delete(o, "collection-encashment");
+		}
+
+		data._addedencashment.each{ o->
+			em.create(o, "collection-encashment");
+		}
+
+		data._removedoverage.each{ o->
+			em.delete(o, "collection-overage");
+		}
+
+		data._addedoverage.each{ o->
+			em.create(o, "collection-overage");
+		}
+
+		data._removedshortage.each{ o->
+			em.delete(o, "collection-shortage");
+		}
+
+		data._addedshortage.each{ o->
+			em.create(o, "collection-shortage");
+		}*/
+
+		data._removeddepositslip.each{ o->
+			em.delete(o, "collection-depositslip");
+		}
+
+		data._addeddepositslip.each{ o->
+			em.create(o, "collection-depositslip");
+		}
+	}
+
+	void afterOpen( data ) {
+		//data.cbs = em.getCbs(data);
+
+		if (data.state != 'VERIFIED') {
+			updateCbsList(data);
+			updateShortageList(data);
+			updateOverageList(data);
+			updateEncashmentList(data);
+		}
+
+
+		def xlist = em.getCbs(data);
+		xlist.each{ o->
+			o.info = collection_cb.read([objid: o.refid]);
+			o.info.amount = o.amount;
+		}
+		data.cbs = xlist;
+
+		data.shortages = em.getShortages(data);
+		data.overages = em.getOverages(data);
+
+		xlist = em.getEncashments(data);
+		xlist.each{ o->
+			o.info = encashment.read([objid: o.refid]);
+			o.info.check = encashment.read([objid: o.refid], 'encashment-check');//encashment.findCheck(o.info);
+			//o.info.check.passbook = passbook.read([objid: o.info.check.passbook.objid]);
+			o.info.overage = o.overage;
+		}
+		data.encashments = xlist;
+
+		data.depositslips = em.getDepositSlips(data);
+		data.depositslips.each{ o->
+			o.info = depositslip.read([objid: o.refid]);
+			o.info.accounttype = accounttype.read([objid: o.info.accounttype?.objid]);
+			o.info.currencytype = currencytype.read([objid: o.info.currencytype?.objid]);
+			o.info.deposittype = deposittype.read([objid: o.info.deposittype?.objid]);
+		}
+		data.allowEdit = false;
+		if (data.state=='DRAFT' || data.state=='SEND_BACK') data.allowEdit = true;
+		if (data.state=='SEND_BACK') {
+			def s = em.findCurrentSendback(data);
+			if (s) data.sendbackremarks = s.remarks;
+		}
+	}
+
+	private void updateCbsList( data ) {
+		def xlist = em.getCbs(data);
+		def xlist2 = collection_cb.getListByTxndateStateNotEncashed([txndate: data.txndate, state: 'VERIFIED']);
+		def xlist3 = collection_cb.getListByTxndateStateNotEncashed([txndate: data.txndate, state: 'DEPOSITED']);
+
+		def xitem;
+		xlist3?.each{ o->
+			xitem = xlist2?.find{ it.objid == o.objid }
+			if (!xitem) {
+				xlist2.add(o);
+			}
+		}
+
+
+		xlist?.each{ o->
+			em.delete(o, "collection-cbs");
+		}
+
+		def item, breakdown, amt;
+		xlist2.each{ o->
+			//item = xlist.find{ it.refid == o.objid }
+			//if (!item) {
+				breakdown = collection_cb.getDetails(o);
+				amt = (breakdown? breakdown.amount.sum() : 0);
+				if (!amt) amt = 0;
+				item = [
+					objid 	 	: 'DCC' + new UID(),
+					parentid 	: data.objid,
+					refid 		: o.objid,
+					txndate 	: o.txndate,
+					cbsno 		: o.cbsno,
+					amount 		: amt,
+					isencashed	: 0
+				];
+				em.create(item, "collection-cbs");
+			//}
+		}
+	}
+
+	private void updateShortageList( data ) {
+		def xlist = em.getShortages(data);
+		def xlist2 = shortage.getListByTxndate([txndate: data.txndate]);
+
+		xlist?.each{ o->
+			em.delete(o, "collection-shortage");
+		}
+
+		def item;
+		xlist2.each{ o->
+			if (o.state == 'NOTED') {
+				item = [
+					objid 		: 'DCS' + new UID(),
+					parentid 	: data.objid,
+					refid 		: o.objid,
+					refno 		: o.refno,
+					txndate 	: o.txndate,
+					cbsno 		: o.cbsno,
+					collector  	: o.collector,
+					amount 		: o.amount,
+					remarks		: o.remarks
+				];
+				em.create(item, 'collection-shortage');
+			}
+			//item = xlist.find{ it.refid == o.objid }
+			//if (!item) {
+			//}
+		}
+	}
+
+	private void updateOverageList( data ) {
+		def xlist = em.getOverages(data);
+		def xlist2 = overage.getListByTxndate([txndate: data.txndate]);
+
+		xlist?.each{ o->
+			em.delete(o, "collection-overage");
+		}
+
+		def item;
+		xlist2.each{ o->
+			if (o.state == 'NOTED') {
+				item = [
+					objid 		: 'DCO' + new UID(),
+					parentid	: data.objid,
+					refid 		: o.objid,
+					refno 		: o.refno,
+					txndate 	: o.txndate,
+					collector 	: o.collector,
+					amount 		: o.amount,
+					remarks 	: o.remarks
+				];
+				em.create(item, 'collection-overage');
+			}
+			//item = xlist.find{ it.refid == o.objid }
+			//if (!item) {
+			//}
+		}
+	}
+
+	private void updateEncashmentList( data ) {
+		def xlist = em.getEncashments(data);
+		def xlist2 = encashment.getListByTxndateAndTxnstate([txndate: data.txndate, txnstate: 'APPROVED']);
+
+		xlist?.each{ o->
+			em.delete(o, "collection-encashment");
+		}
+
+		def item, ov, amt, xi, check;
+		xlist2.each{ o->
+			xi = encashment.read([objid: o.objid]);
+			if (xi) {
+				check = encashment.read([objid: o.objid], 'encashment-check');
+				//item = xlist.find{ it.refid == o.objid }
+				//if (!item) {
+				amt = xi?.overage?.amount?.sum();
+				if (!amt) amt = 0;
+				/*
+				ov = encashment.findOverage([objid: o.objid]);
+				if (ov) {
+					ov = encashment.read(ov, 'encashment-overage');
+					amt = ov.breakdown?.amount.sum();
+					if (!amt) amt = 0;
+				}
+				*/
+				item = [
+					objid 		: 'DCE' + new UID(),
+					parentid	: data.objid,
+					refid 		: o.objid,
+					txndate 	: o.txndate,
+					amount 		: o.amount,
+					checkdate 	: check?.txndate,
+					checkno		: check?.checkno,
+					bank 		: check?.bank,
+					overage 	: amt
+				];
+				em.create(item, 'collection-encashment');	
+			}
+			//}
+		}
+	}
+
+	@ProxyMethod
+	public def submitForVerification( params ) {
+		println 'passing';
+		def data = em.read(params);
+		if (!data) throw new Exception("Record does not exist or has already been deleted.");
+
+		if (data.state == 'VERIFIED')
+			throw new Exception("Daily collection already verified.");
+
+		data.state = 'FOR_VERIFICATION';
+		em.changeState(data);
+		
+		def date = new java.text.SimpleDateFormat("MMM-dd-yyyy").format(data.txndate);
+		def msginfo = [ 
+			objid 		: data.objid, 
+			dtcreated	: dateSvc.serverDate, 
+			refid 		: data.objid, 
+			filetype 	: 'dailycollection', 
+			message 	: 'For verification '+ date + " collection", 
+			senderid	: env.USERID, 
+			sendername 	: env.NAME, 
+			recipientid : 'BRANCH_MANAGER' 
+		]; 
+		inboxSvc.addMessage( msginfo );
+
+		return open(data);
+	}
+
+	@ProxyMethod
+	public def sendBack( params ) {
+		def data = em.read(params);
+		if (!data) throw new Exception("Daily collection record does not exist or has already been deleted.");
+
+		if (data.state == 'VERIFIED')
+			throw new Exception("Daily collection already verified.");
+
+		data.state = 'SEND_BACK';
+		em.changeState(data);
+
+		def item = [
+			objid		: 'DS' + new UID(),
+			parentid	: data.objid,
+			dtcreated 	: dateSvc.serverDate,
+			author		: [objid: env.USERID, name: env.NAME],
+			remarks 	: params.remarks
+		];
+		em.create(item, "collection-sendback");
+
+		inboxSvc.removeMessageByRefid([refid: data.objid]);
+		return open(data);
+	}
+
+	@ProxyMethod
+	public def verify( params ) {
+		def data = em.read(params);
+		if (!data) throw new Exception("Daily collection record does not exist or has already been deleted.");
+
+		data.state = 'VERIFIED';
+		em.changeState(data);
+
+		data.dtverified = dateSvc.serverDate;
+		data.verifier = [objid: env.USERID, name: env.NAME];
+		em.update(data, "verify-collection");
+
+		inboxSvc.removeMessageByRefid([refid: data.objid]);
+		return open(data);
+	}
+}

@@ -1,0 +1,104 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import java.rmi.server.UID;
+
+class MigrationService
+{
+	@PersistenceContext("main")
+	def em;
+
+	@ActiveDB(value="field_collection")
+	def field_collection;
+
+	@ActiveDB(value="collection_cashbreakdown")
+	def collection_cashbreakdown;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@ProxyMethod
+	public void migrateRouteTrackerid() {
+		def list = field_collection.getList();
+
+		def sql;
+		list.each{ o->
+			if (o.trackerid) {
+				o.routes = field_collection.getRoutesByFieldcollectionid([fieldcollectionid: o.objid]);
+				o.routes.each{ r->
+					sql = "update field_collection_route set trackerid='${o.trackerid}' where fieldcollectionid = '${o.objid}' and routecode='${r.routecode}'";
+					em.sqlContext.createExecutor(sql).execute();
+					//field_collection.update(r, "route");
+				}
+			}
+		}
+	}
+
+	@ProxyMethod
+	public void migrateCashBreakdownHeader() {
+		def list = em.sqlContext.createQuery("select * from field_collection_route").resultList;
+
+		def item;
+		def item2;
+		def breakdown;
+		list.each{ o->
+			item = [
+				objid		: 'CB' + new UID(),
+				dtfiled		: dateSvc.serverDate,
+				filedby 	: 'SYSTEM',
+				collection 	: [
+					objid 	: o.fieldcollectionid,
+					type 	: 'FIELD'
+				],
+				group 		: [
+					objid 	: o.routecode,
+					type 	: 'route'
+				]
+			];
+			collection_cashbreakdown.create(item);
+
+			breakdown = field_collection.getCashBreakdownByFieldcollectionid([parentid: o.fieldcollectionid]);
+			if (breakdown) {
+				breakdown.each{ b->
+					item2 = [
+						objid 		: 'CBDTL' + new UID(),
+						parentid	: item.objid,
+						denomination: b.denomination,
+						qty 		: b.qty,
+						amount		: b.amount
+					];
+					collection_cashbreakdown.create(item2, "denomination");
+				}
+			}
+		}
+
+		/*list = em.sqlContext.createQuery("select * from online_collection").resultList;
+		list.each{ o->
+			item = [
+				objid		: 'CB' + new UID(),
+				dtfiled		: dateSvc.serverDate,
+				filedby		: 'SYSTEM',
+				collection 	: [
+					objid	: o.objid,
+					type 	: 'ONLINE'
+				],
+				group 		: [
+					objid 	: o.objid,
+					type 	: 'online'
+				]
+			];
+			collection_cashbreakdown.create(item);
+
+			breakdown = em.sqlContext.createQuery("select * from online_collection_cashbreakdown where parentid='${o.objid}'").resultList;
+			if (breakdown) {
+				item2 = [
+					objid 		: 'CBDTL' + new UID(),
+					parentid	: item.objid,
+					denomination: breakdown.denomination,
+					qty 		: breakdown.qty,
+					amount		: breakdown.amount
+				];
+				collection_cashbreakdown.create(item2, "denomination");
+			}
+		}*/
+	}
+}

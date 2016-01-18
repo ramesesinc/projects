@@ -1,0 +1,63 @@
+<schema>
+
+	<element name="appliance" tablename="loanapp_collateral_appliance">
+		<field name="objid" primary="true"/>
+		<field name="parentid" required="true"/> 
+		<field name="type" required="true"/> 
+		<field name="brand" required="true"/> 
+		<field name="dtacquired" required="true"/> 
+		<field name="modelno" required="true"/> 
+		<field name="serialno" required="true"/> 
+		<field name="marketvalue" required="true"/> 
+		<field name="remarks" required="true"/> 
+	</element>
+
+	<element name="vehicle" tablename="loanapp_collateral_vehicle">
+		<field name="objid" primary="true"/>
+		<field name="parentid" required="true"/>
+		<field name="kind" required="true"/>
+		<field name="make" required="true"/>
+		<field name="model" required="true"/>
+		<field name="bodytype" required="true"/>
+		<field name="usetype" required="true"/>
+		<field name="dtacquired" required="true"/>
+		<field name="acquiredfrom" required="true"/>
+		<field name="registeredname" required="true"/>
+		<field name="chassisno" required="true"/>
+		<field name="plateno" required="true"/>
+		<field name="engineno" required="true"/>
+		<field name="marketvalue" required="true"/>
+		<field name="remarks" required="true"/>
+		<field name="orcr_crno"/>
+		<field name="orcr_fuel"/>
+		<field name="orcr_denomination"/>
+		<field name="orcr_seriesno"/>
+		<field name="orcr_pistondisplacement"/>
+		<field name="orcr_noofcylinders"/>
+		<field name="orcr_netwt"/>
+		<field name="orcr_grosswt"/>
+		<field name="orcr_netcapacity"/>
+		<field name="orcr_shippingwt"/>
+	</element>	
+
+	<element name="property" tablename="loanapp_collateral_property">
+		<field name="objid" primary="true"/>
+		<field name="parentid" required="true"/> 
+		<field name="classification" required="true"/> 
+		<field name="location" required="true"/> 
+		<field name="areauom" required="true"/> 
+		<field name="areavalue" required="true"/> 
+		<field name="zonalvalue" required="true"/> 
+		<field name="dtacquired"/> 
+		<field name="acquiredfrom"/> 
+		<field name="modeofacquisition" required="true"/> 
+		<field name="registeredname" required="true"/> 
+		<field name="marketvalue" required="true"/> 
+		<field name="remarks" required="true"/> 
+	</element>
+
+	<element name="other" tablename="loanapp_collateral_other">
+		<field name="objid" primary="true"/>
+		<field name="remarks" required="true"/> 
+	</element>	
+</schema>

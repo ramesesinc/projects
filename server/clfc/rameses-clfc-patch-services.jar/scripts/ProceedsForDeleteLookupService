@@ -1,0 +1,39 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.services.extended.*;
+
+class ProceedsForDeleteLookupService extends ActiveListService
+{
+	@ActiveDB("proceeds_delete")
+	def em;
+
+	String listMethod = 'getLookupList';
+
+	@ProxyMethod
+	public def getColumns( params ) {
+		def cols = [];
+		cols << [name: 'txnstate', caption: 'Status'];
+		cols << [name: 'txntype', caption: 'Type'];
+		
+		cols << [name: 'loanapp.appno', caption: 'AppNo'];
+		cols << [name: 'borrower.name', caption: 'Borrower'];
+		cols << [name: 'refno', caption: 'RefNo'];
+		cols << [name: 'txndate', caption: 'Date', type: 'date', outputFormat: 'MMM-dd-yyyy'];
+		cols << [name: 'amount', caption: 'Amount'];
+
+		return cols;
+	}
+
+	void beforeList( params ) {
+		params.searchtext = (params.searchtext? params.searchtext : '') + '%';
+		if (params.state) {
+			params._listMethod = 'getLookupListByState';
+		}
+		if (params.txntype) {
+			params._listMethod = 'getLookupListByTxntype';
+		}
+		if (params.state && params.txntype) {
+			params._listMethod = 'getLookupListByStateAndTxntype';
+		}
+	}
+}

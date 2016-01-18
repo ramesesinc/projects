@@ -1,0 +1,126 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.services.extended.*;
+
+class LoanLedgerFollowupResultService extends ActiveCrudListService
+{
+	@Env
+	def env;
+
+	@ActiveDB('followup_result')
+	def em;
+
+	@ActiveDB('loanapp')
+	def loanapp;
+
+	@ActiveDB('fieldcollection')
+	def fieldcollection;
+
+	@ActiveDB('loan_ledger')
+	def loan_ledger;
+
+	@Service('DateService')
+	def dateSvc;
+
+	@Service('SequenceService')
+	def seqSvc;
+
+	@ProxyMethod
+	public def getColumns( params ) {
+		def cols = [];
+		if (!params.state) cols << [name: 'txnstate', caption: 'Status'];
+		cols << [name: 'dtcreated', caption: 'DateCreated'];
+		cols << [name: 'author.name', caption: 'CreatedBy'];
+		cols << [name: 'refno', caption: 'RefNo'];
+		cols << [name: 'txndate', caption: 'Follow-upDate'];
+		cols << [name: 'loanapp.appno', caption: 'AppNo'];
+		cols << [name: 'borrower.name', caption: 'Borrower'];
+
+		if (params.state == 'CONFIRMED') {
+			cols << [name: 'dtconfirmed', caption: 'DateConfirmed'];
+			cols << [name: 'confirmedby.name', caption: 'ConfirmedBy'];
+		}
+
+		return cols;
+	}
+
+	void beforeList( params ) {
+		params.searchtext = (params.searchtext? params.searchtext : '') + '%';
+		if (params.state) {
+			params._listMethod = 'getListByState';
+		}
+	}
+
+	@ProxyMethod
+	public def getStates() {
+		return [
+			[caption: 'All'],
+			[caption: 'Draft', state: 'DRAFT'],
+			[caption: 'Confirmed', state: 'CONFIRMED']
+		];
+	}
+
+	void beforeCreate( data ) {
+		def date = dateSvc.parseCurrentDate();
+		data.dtcreated = date.date;
+		data.author = [objid: env.USERID, name: env.NAME];
+		if (!data.txnstate) data.txnstate = 'DRAFT';
+
+		def year = date.year + "";
+		def seqname = 'followup-result' + year;
+		def prefix = 'FR' + year[2] + year[3];
+		data.refno = prefix + seqSvc.getNextFormattedSeriesA(seqname, 6);
+	}
+
+	@ProxyMethod
+	public def getLedgerInfo( params ) {
+		//println 'params ' + params;
+
+
+		def item = [txndate: params.billdate, refid: params.objid];
+
+		def app = loanapp.read([objid: params.loanapp?.objid]);
+		if (!app) throw new Exception('Loan app record does not exist or has already been deleted.');
+
+		item.borrower = app.borrower;
+		item.loanapp = [objid: app.objid, appno: app.appno];
+
+		def ledger = loan_ledger.findByAppId([appid: app.objid]);
+		ledger = loan_ledger.read([objid: ledger?.objid]);
+		if (!ledger) throw new Exception('Loan ledger record does not exist or has already been deleted.');
+
+		item.ledgerid = ledger.objid;
+
+		def fl = fieldcollection.read([objid: params?.objid], 'fc-loan');
+		item.draft = fl?.remarks;
+
+		return item;
+	}
+
+	@ProxyMethod
+	public def confirm( params ) {
+		def data = changeState(params, 'CONFIRMED');
+
+		data.dtconfirmed = dateSvc.serverDate;
+		data.confirmedby = [objid: env.USERID, name: env.NAME];
+		em.update(data, 'confirm');
+
+		return open(data);
+	}
+
+	private def changeState( params, state ) {
+		def data = em.read(params);
+		if (!data) throw new Exception('Follow-up record does not exist or has already been deleted.');
+
+		if (data.txnstate == state) {
+			throw new Exception('Follow-up record already ' + state + '.');
+		}
+
+		data.txnstate = state;
+		em.update(data);
+
+		return open(data);
+	}
+
+
+}

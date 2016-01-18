@@ -1,0 +1,43 @@
+import com.rameses.annotations.*;
+
+class OrgAdminServiceInterceptor
+{
+	@ActiveDB('branch')
+	def branch;
+
+	//@After(pattern="OrgAdminService.open")
+	public void afterOpen( evt ) { 
+		def result = evt.result;		
+		if (result.orgclass != 'BRANCH') return; 
+
+		def data = branch.findBranchByObjid([objid: result.objid]);
+		if (data) result.putAll(data);
+	} 
+
+	//@After(pattern="OrgAdminService.create")
+	public void afterCreate( evt ) {
+		def result = evt.result;		
+		if (result.orgclass != 'BRANCH') return; 
+
+		branch.create(result); 
+	}	
+
+	//@After(pattern="OrgAdminService.update")
+	public void afterUpdate( evt ) {
+		def result = evt.result;		
+		if (result.orgclass != 'BRANCH') return; 
+
+		def data = branch.findBranchByObjid([objid: result.objid]);
+		if (data) {
+			branch.update(result); 
+		} else {
+			branch.create(result);
+		}
+	} 
+
+	//@Before(pattern="OrgAdminService.removeEntity")
+	public void beforeRemove( evt ) {
+		def params = evt.args[0]; 
+		branch.delete([objid: params.objid]); 
+	} 
+}

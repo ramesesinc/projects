@@ -1,0 +1,47 @@
+<schema>
+
+    <element name="mobile_tracker" tablename="mobile_tracker">
+		<field name="objid" primary="true"/>
+		<field name="state" required="true"/>
+		<field name="terminalid"/>
+		<field name="userid"/>
+		<field name="dtstart" required="true"/>
+		<field name="startlng" required="true"/>
+		<field name="startlat" required="true"/>
+		<field name="dtclosed"/>
+		<field name="closedby"/>
+		<field name="closedremarks"/>
+		<field name="closedlng"/> 
+		<field name="closedlat"/> 
+    </element>
+
+    <element name="detail" tablename="mobile_tracker_detail">
+		<field name="objid" primary="true"/>
+		<field name="parentid" required="true"/>		
+		<field name="txndate" required="true"/>
+		<field name="txntype" required="true"/>
+		<field name="refid" required="true"/>
+		<field name="reftype" required="true"/>
+		<field name="lng" required="true"/>
+		<field name="lat" required="true"/>
+		<field name="remarks"/>
+		<field name="state"/>
+    </element> 
+
+    <element name="route" tablename="mobile_tracker_route">
+    	<field name="objid" primary="true"/>
+		<field name="parentid" required="true"/>
+		<field name="routecode" required="true"/>
+    </element>
+
+    <element name="close-tracker" tablename="mobile_tracker">
+		<field name="objid" primary="true"/>
+		<field name="state" required="true"/>
+		<field name="dtclosed" required="true"/>
+		<field name="closedby" required="true"/>
+		<field name="closedremarks" required="true"/>
+		<field name="closedlng" required="true"/> 
+		<field name="closedlat" required="true"/> 		
+    </element>
+	
+</schema>

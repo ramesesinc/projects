@@ -1,0 +1,26 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+
+class SpecialCollectionTask
+{
+	@ActiveDB("specialcollection")
+	def em;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@Schedule(interval=1, timeUnit="DAYS", immediate=true)
+	public void cancelPastSpecialCollectionNotDownloaded( task ) {
+		def date = dateSvc.getServerDateAsString();//dateSvc.serverDate.toString().split(" ")[0];
+		def list = em.getPastSpecialCollectionNotDownloaded([date: date.split(" ")[0]]);
+		def cancelledby = [objid: 'SYSTEM', name: 'SYSTEM', remarks: 'Cancelled by SYSTEM'];
+		list.each{ o->
+			o.state = 'CANCELLED';
+			em.changeState(o);
+
+			o.dtcancelled = date;
+			o.cancelledby = cancelledby;
+			em.update(o, "sc-cancel");
+		}
+	}
+}

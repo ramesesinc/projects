@@ -1,0 +1,226 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.services.extended.*;
+
+class CashBreakdownCheckingService
+{
+	@ActiveDB(value="fieldcollection")
+	def fieldcollection;
+
+	@ActiveDB(value="collection_cb")
+	def collection_cb;
+
+	@ActiveDB(value="ledger_billing")
+	def ledger_billing;
+
+	@ActiveDB(value="onlinecollection")
+	def onlinecollection;
+
+	@ActiveDB(value="collection_remittance")
+	def remittance;
+	/*@ActiveDB(value="field_collection")
+	def field_collection;
+
+	@ActiveDB(value="online_collection")
+	def online_collection;
+
+	@ActiveDB(value="loan_ledger_billing")
+	def ledger_billing;
+
+	@ActiveDB(value="followup_collection")
+	def followup_collection;
+
+	@ActiveDB(value="special_collection")
+	def special_collection;
+
+	@ActiveDB(value="collection_cashbreakdown")
+	def collection_cashbreakdown;*/
+
+	@ProxyMethod
+	public def getConsolidatedBreakdown( params ) {
+		if (!params.billdate) throw new Exception("Please specify billdate.");
+
+		//params.billdate += '%';
+		return collection_cb.getConsolidatedBreakdown(params);
+		/*def fc_breakdown = field_collection.getConsolidatedBreakdownByBilldate(params);
+		def oc_breakdown = online_collection.getConsolidatedBreakdownByTxndate(params);
+
+		def list = fc_breakdown;
+		if (!list) list = oc_breakdown;
+
+		return getBreakdown(list, fc_breakdown, oc_breakdown);*/
+	}
+
+	private def getBreakdown( list, fc_breakdown, oc_breakdown ) {	
+		def breakdown = [];	
+		def item;
+		list.each{o->
+			if (!breakdown.find{ it.denomination == o.denomination }) {
+				item = [:];
+				item.putAll(o);
+				item.qty = 0;
+				item.amount = 0;
+				breakdown.add(item);
+			}
+		}
+
+		breakdown.each{o->
+			item = fc_breakdown.find{ it.denomination == o.denomination };
+			if (item) {
+				o.qty += item.totalqty;
+				o.amount += item.totalamount;
+			}
+
+			item = oc_breakdown.find{ it.denomination == o.denomination };
+			if (item) {
+				o.qty += item.totalqty;
+				o.amount += item.totalamount;
+			}
+		}
+
+		return breakdown;
+	}
+
+	@ProxyMethod
+	public def getPercollectorBreakdown( params ) {
+		if (!params.billdate) throw new Exception("Please specify billdate.");
+
+		def rem = remittance.read([objid: params.remittanceid]);
+		if (!rem) throw new Exception("Record does not exist or has already been deleted.");
+
+		def prm = [
+			collectionid: rem.collection.objid,
+			groupid 	: rem.group.objid,
+			grouptype 	: rem.group.type
+		];
+
+		def cb = collection_cb.findCashbreakdown(prm);
+		if (!cb) throw new Exception("Record does not exist or has already been deleted.");
+
+		return collection_cb.getDetails(cb);
+		/*def breakdown;
+		if (params.type == 'online') {			
+			breakdown = getOnlineBreakdown(params);
+		} else if (params.type == 'followup') {
+			breakdown = getFollowupBreakdown(params);
+		} else if (params.type == 'special') {
+			breakdown = getSpecialBreakdown(params);
+		} else {
+			if (!params.collectionid) throw new Exception("Please specify collectionid.");
+			breakdown = collection_cashbreakdown.getPerRouteBreakdown(params);
+		}
+		
+		if (!breakdown) throw new Exception("No cash breakdown for this collection.");
+		return breakdown;*/
+		/*def fc_breakdown = field_collection.getPercollectorBreakdownByBilldate(params);
+		def oc_breakdown = online_collection.getPercollectorBreakdownByBilldate(params);
+
+		def list = fc_breakdown;
+		if (!list) list = oc_breakdown;
+
+		return getBreakdown(list, fc_breakdown, oc_breakdown);*/
+	}
+
+	private def getOnlineBreakdown( params ) {
+		if (!params.collectorid) throw new Exception("Please specify collectorid.");
+
+		return collection_cashbreakdown.getOnlineBreakdown(params);
+	}
+
+	private def getFollowupBreakdown( params ) {
+		if (!params.collectorid) throw new Exception("Please specify collectorid.");
+		if (!params.collectionid) throw new Exception("Please specify collectionid.");
+
+		return collection_cashbreakdown.getFollowupBreakdown(params);
+	}
+
+	private def getSpecialBreakdown( params ) {
+		if (!params.collectorid) throw new Exception("Please specify collectorid.");
+		if (!params.collectionid) throw new Exception("Please specify collectionid.");
+
+		return collection_cashbreakdown.getSpecialBreakdown(params);
+	}
+
+	@ProxyMethod
+	public def getRoutes( params ) {
+		def items = remittance.getRemittancesWithInfoByCollectorAndDate(params);
+		def followups = items.findAll{ it.group.type == 'followup' }
+		def specials = items.findAll{ it.group.type == 'special' }
+		def onlines = items.findAll{ it.group.type == 'online' }
+
+		followups.sort{ it.dtfiled }
+		followups.eachWithIndex{ itm, idx->
+			itm.description = 'Follow-up ' + (idx+1);
+		}
+
+		specials.sort{ it.dtfiled }
+		specials.eachWithIndex{ itm, idx->
+			itm.description = 'Special ' + (idx+1);
+		}
+
+		onlines.sort{ it.dtfiled }
+		onlines.eachWithIndex{ itm, idx->
+			itm.description = 'Direct ' + (idx+1)
+		}
+
+		items.sort{ it.description }
+		items.each{ o->
+			o.name = o.description;
+			if (o.code) o.name += ' - ' + o.area;
+		}
+		return items;
+		//def fc_list = items.findAll{ it.group.type != 'online' }
+		//def oc_list = items.findAll{ it.group.type == 'online' }
+		/*def items;
+		def billing = ledger_billing.findBillingByCollectoridAndBilldate(params);
+		if (billing) {
+			items = ledger_billing.getBillingItemsWithInfo(billing);
+			def list = items.findAll{ it.state == 'CANCELLED' || it.state == 'CLOSED' }
+			list.each{ items.remove(it); }
+
+		}*/
+		//items = ledger_billing.getRoutesByBillingid([billingid: billing.objid]);
+
+		/*if (items) {
+			items.each{ 
+				it.objid = billing.objid;
+				it.type = 'route';
+			}
+			list.addAll(items);
+		}
+
+		items = followup_collection.getFollowupCollectionByBillingid(billing);
+		def item;
+		items.eachWithIndex{itm, idx->
+			item = [
+				objid 		: itm.objid,
+				description	: 'Follow-up ' + (idx+1),
+				type 		: 'followup'
+			]
+			list.add(item);
+		}
+
+		items = special_collection.getSpecialCollectionByBillingid(billing);
+		items.eachWithIndex{itm, idx-> 
+			item = [
+				objid		: itm.objid,
+				description	: 'Special ' + (idx+1),
+				type 		: 'special'
+			]
+			list.add(item);
+		}*/
+
+		/*def c = online_collection.findCollectionByCollectorAndTxndate([collectorid: params.collectorid, txndate: params.billdate]);
+		if (c) {
+			item = [
+				description : 'Direct',
+				type		: 'online'
+			];
+			list.add(item);
+		}*/
+		/*list.addAll(online_collection.getRoutesByCollectoridAndTxndate(params));
+		list.unique{ it.code }.sort{ it.description }*/
+
+		//return list;
+	}
+}

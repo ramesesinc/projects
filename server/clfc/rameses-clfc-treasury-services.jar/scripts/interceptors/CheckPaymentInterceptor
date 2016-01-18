@@ -1,0 +1,106 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import java.rmi.server.UID;
+
+class CheckPaymentInterceptor
+{
+	@Env
+	def env;
+
+	@ActiveDB("fieldcollection")
+	def fieldcollection;
+
+	@ActiveDB("loan_route")
+	def loan_route;
+
+	@ActiveDB("bank")
+	def bankdb;
+
+	@ActiveDB("loan_ledger")
+	def ledger;
+
+	@ActiveDB("onlinecollection")
+	def onlinecollection;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@After(pattern="CheckPaymentService.cleared")
+	public void afterCleared( evt ) {
+		def result = evt.result;
+
+		def bank = bankdb.read(result.bank);
+
+		def collector = onlinecollection.read([objid: env.USERID], "oc-collector");
+		if (!collector) {
+			collector = [objid: env.USERID, name: env.NAME];
+			onlinecollection.create(collector, "oc-collector");
+		}
+
+		def date = dateSvc.getServerDateAsString();
+		
+		def prm = [
+			txndate 	: date.split(" ")[0],
+			collectorid : collector.objid, 
+			state 		: 'DRAFT'
+		];
+		def collection = onlinecollection.findCollectionByDateAndCollectorAndState(prm);
+		if (!collection || collection.state != 'DRAFT') {
+			collection = [
+				objid		: 'OC' + new UID(),
+				state		: 'DRAFT',
+				txndate 	: date.split(" ")[0],
+				dtfiled 	: date,
+				author		: collector,
+				collector 	: collector,
+			];
+			onlinecollection.create(collection);
+		}
+
+		def detail = [
+			objid 		: 'OCD' + new UID(),
+			parentid 	: collection.objid,//OC' + new UID(),
+			//loanapp 	: loan.loanapp,
+			//borrower 	: loan.borrower,
+			paidby 		: result.paidby,
+			refno		: result.refno,
+			//paytype 	: payment.paytype,
+			amount 		: result.amount,
+			payoption 	: 'check',
+			collector 	: collector,//[objid: env.USERID, name: env.NAME],
+			//date 		: result.dtresolved,
+			//route 		: route,
+			bank 		: [objid: bank.objid, name: bank.name],
+			check 		: [no: result.checkno, date: result.checkdate]
+		]
+
+		def payment, loan, route;
+		if (result.txntype=='FIELD') {
+			payment = fieldcollection.read([objid: result.refid], "fc-payment");
+			loan = fieldcollection.read([objid: payment.parentid], "fc-loan");
+
+			detail.paytype = payment.paytype;
+			detail.dtpaid = payment.dtpaid;
+			detail.loanapp = loan.loanapp;
+			detail.borrower = loan.borrower;
+
+			route = loan_route.read([code: loan.routecode]);
+		} else if (result.txntype=='ONLINE') {
+			def check = onlinecollection.read([objid: result.refid], "oc-check");
+
+			detail.loanapp = check.loanapp;
+			detail.borrower = check.borrower;
+			detail.dtpaid = check.dtpaid;
+
+			def mledger = ledger.findByAppId([appid: check.loanapp.objid]);
+			detail.paytype = mledger.paymentmethod;
+
+			route = loan_route.read([code: check.routecode]);
+		}
+		detail.route = route;
+
+
+		onlinecollection.create(detail, "oc-detail");
+		onlinecollection.update(detail, "oc-detail-check");
+	}
+}

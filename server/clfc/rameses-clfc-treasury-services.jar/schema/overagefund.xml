@@ -1,0 +1,55 @@
+<schema>
+
+	<element name="overagefund" tablename="overagefund">
+		<field name="objid" primary="true" />
+		<field name="state" required="true" />
+		<field name="dtcreated" required="true" />
+		<field name="author_objid" required="true" />
+		<field name="author_name" required="true" />
+		<field name="year" required="true" />
+		<field name="amtbalance" required="true" />
+		<field name="amtuse" required="true" />
+	</element>
+
+	<element name="amtbalance" tablename="overagefund">
+		<field name="objid" primary="true" />
+		<field name="amtbalance" required="true" />
+	</element>
+
+	<element name="amtuse" tablename="overagefund">
+		<field name="objid" primary="true" />
+		<field name="amtuse" required="true" />
+	</element>
+
+	<element name="of-detail" tablename="overagefund_detail">
+		<field name="objid" primary="true" />
+		<field name="parentid" required="true" />
+		<field name="txnstate" required="true" />
+		<field name="dtcreated" required="true" />
+		<field name="author_objid" required="true" />
+		<field name="author_name" required="true" />
+		<field name="txndate" required="true" />
+		<field name="txntype" required="true" />
+		<field name="refno" required="true" />
+		<field name="overage_objid" required="true" />
+		<field name="overage_refno" required="true" />
+		<field name="overage_balance" required="true" />
+		<field name="loanapp_objid" required="true" />
+		<field name="loanapp_appno" required="true" />
+		<field name="borrower_objid" required="true" />
+		<field name="borrower_name" required="true" />
+		<field name="amount" required="true" />
+		<field name="remarks" required="true" />
+		<field name="dtposted" />
+		<field name="poster_objid" />
+		<field name="poster_name" />
+	</element>
+
+	<element name="of-detail-post" tablename="overagefund_detail">
+		<field name="objid" primary="true" />
+		<field name="dtposted" required="true" />
+		<field name="poster_objid" required="true" />
+		<field name="poster_name" required="true" />
+	</element>
+
+</schema>

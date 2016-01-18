@@ -1,0 +1,25 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.services.extended.*;
+
+class RoleTemplateLookupService extends ActiveListService
+{
+	@ActiveDB("roletemplate")
+	def em;
+
+	@ProxyMethod
+	public def getColumns( params ) {
+		return [
+			[name: 'name', caption: 'TemplateName'],
+			[name: 'description', caption: 'Description'],
+		];
+	}
+
+	void beforeList( params ) {
+		params.searchtext = (params.searchtext? params.searchtext : '') + '%';
+		params._listMethod = 'getLookupList';
+		if (params.state) {
+			params._listMethod = 'getLookupListByState';
+		}
+	}
+}

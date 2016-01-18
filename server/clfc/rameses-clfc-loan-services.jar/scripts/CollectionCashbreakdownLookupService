@@ -1,0 +1,55 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.services.extended.*;
+
+class CollectionCashbreakdownLookupService extends ActiveListService
+{
+	@ActiveDB("collection_cb")
+	def em;
+
+	@ActiveDB("encashment")
+	def encashment;
+
+	@ProxyMethod
+	public def getColumns( params ) {
+		return [
+			[name: 'txndate', caption: 'Txndate', type: 'date', outputFormat: 'yyyy-MM-dd'],
+			[name: 'cbsno', caption: 'CBSNo'],
+			[name: 'collector.name', caption: 'Collector'],
+			[name: 'isencashed', caption: 'Is Encashed?', type: 'checkbox'],
+			[name: 'amount', caption: 'Amount', type: 'decimal', format: '#,##0.00']
+		]
+	}
+
+	void beforeList( params ) {
+		params.searchtext = (params.searchtext? params.searchtext : '') + '%';
+		params._listMethod = 'getLookupList';
+		if (params.state) {
+			params._listMethod = 'getLookupListByState';
+		}
+		if (params.state == 'ACTIVE') {
+			params._listMethod = 'getLookupListActive'
+		}
+		if (params.state == 'FOR_ENCASHMENT') {
+			params._listMethod = 'getLookupListForEncashment';
+		}
+		if (params.state == 'FOR_DAILYCOLLECTION') {
+			params._listMethod = 'getLookupListForDailycollection'
+		}
+	}
+
+	void afterList( params, list ) {
+		def includeencashment = params.includeencashment;
+		list.each{ o->
+			o.items = em.getDetails(o);
+			o.amount = 0;
+			if (o.items) {
+				o.amount = o.items.amount.sum();
+				if (includeencashment == true) {
+					def encashments = encashment.getEncashmentsByCashBreakdown([cbsid: o.objid]);
+					
+				}
+			}
+		}
+	}
+}

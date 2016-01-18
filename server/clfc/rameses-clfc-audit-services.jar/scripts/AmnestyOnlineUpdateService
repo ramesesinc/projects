@@ -1,0 +1,206 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.services.extended.*;
+import java.text.*;
+
+class AmnestyOnlineUpdateService extends ActiveCrudListService
+{
+	@Env
+	def env;
+
+	@ActiveDB("amnesty_update")
+	def em;
+
+	@ActiveDB("amnesty")
+	def amnesty;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@ProxyMethod
+	public def getColumns( params ) {
+		def cols = [];
+		if (!params.state) cols << [name: 'txnstate', caption: 'Status'];
+		cols << [name: 'dtcreated', caption: 'DateRequested', type: 'date', outputFormat: 'MMM-dd-yyyy'];
+		cols << [name: 'author.name', caption: 'RequestedBy'];
+		cols << [name: 'amnesty.refno', caption: 'RefNo'];
+		if (params.state == 'APPROVED') {
+			cols << [name: 'dtposted', caption: 'DateApproved', type: 'date', outputFormat: 'MMM-dd-yyyy'];
+			cols << [name: 'poster.name', caption: 'ApprovedBy'];
+		} else if (params.state == 'DISAPPROVED') {
+			cols << [name: 'dtposted', caption: 'DateDisapproved', type: 'date', outputFormat: 'MMM-dd-yyyy'];
+			cols << [name: 'poster.name', caption: 'DisapprovedBy'];
+		}
+		return cols;
+	}
+
+	void beforeList( params ) {
+		params.searchtext = (params.searchtext? params.searchtext : '') + '%';
+		if (params.state) {
+			params._listMethod = 'getListByState';
+		}
+	}
+
+	void beforeCreate( data ) {
+		data.dtcreated = dateSvc.serverDate;
+		data.author = [objid: env.USERID, name: env.NAME];
+		data.txnstate = 'DRAFT';
+	}
+
+	void afterCreate( data ) {
+		validate(data);
+	}
+
+	void afterUpdate( data ) {
+		validate(data);
+	}
+
+	private void validate( data ) {
+		def am = amnesty.read([objid: data.amnesty.objid]);
+		if (!am) throw new Exception("Amnesty record does not exist or has already been deleted.");
+
+		def up = data.update;
+		def cal = Calendar.getInstance();
+		cal.setTime(parseDate(up.dtstarted));
+
+		if (up.isspotcash == 1) {
+			cal.setTime(parseDate(up.date));
+		} else if (up.isspotcash == 0) {
+			if (up.months > 0) {
+				cal.add(Calendar.MONTH, up.months);
+			}
+			if (up.days > 0) {
+				cal.add(Calendar.DATE, up.days);
+			}
+		}
+
+		def df = new SimpleDateFormat("yyyy-MM-dd");
+		def startdate = df.format(parseDate(up.dtstarted));
+		def enddate = df.format(cal.getTime());
+
+		def m = amnesty.findOverlapping([startdate: startdate, enddate: enddate, ledgerid: am.ledgerid]);
+		if (m && m.objid != am.objid) {
+			def sd = new java.text.SimpleDateFormat("MMM-dd-yyyy").format(m.dtstarted);
+			if (!m.dtended) m.dtended = dateSvc.serverDate;
+			def ed = new java.text.SimpleDateFormat("MMM-dd-yyyy").format(m.dtended);
+			throw new Exception("Amnesty overlaps amnesty with term ${sd} - ${ed}.");
+		}
+	}
+
+	@ProxyMethod
+	public def getStates() {
+		def states = [
+			[caption: 'All'],
+			[caption: 'DRAFT', state: 'DRAFT'],
+			[caption: 'FOR APPROVAL', state: 'FOR_APPROVAL'],
+			[caption: 'APPROVED', state: 'APPROVED'],
+			[caption: 'DISAPPROVED', state: 'DISAPPROVED']
+		];
+		return states;
+	}
+
+	@ProxyMethod
+	public def submitForApproval( params ) {
+		return changeState(params, 'FOR_APPROVAL');
+	}
+
+	private def changeState( params, state ) {
+		def data = em.read(params);
+		if (!data) throw new Exception("Amnesty update request record does not exist or has already been deleted.");
+
+		if (data.txnstate == state) {
+			throw new Exception("Amnesty update request already " + state + ".");
+		}
+
+		data.txnstate = state;
+		em.update(data);
+
+		return open(data);
+	}
+
+	@ProxyMethod
+	public def approveDocument( params ) {
+		def data = approveImpl(params, 'APPROVED');
+
+		def am = amnesty.read([objid: data.amnesty.objid]);
+		if (!am) throw new Exception("Amnesty record does not exist or has already been deleted.");
+
+		def up = data.update;
+		if (up.dtstarted) {
+			am.dtstarted = up.dtstarted;
+		}
+
+		if (data.amnesty.amnestyoption == 'FIX') {
+
+			def hasenddate = false;
+			def cal = Calendar.getInstance();
+			cal.setTime(parseDate(am.dtstarted));
+			if (up.isspotcash == 1) {
+				am.grantedoffer.days = 0;
+				am.grantedoffer.months = 0;
+				am.grantedoffer.isspotcash = up.isspotcash;
+				if (up.date) {
+					am.grantedoffer.date = up.date;
+				}
+				cal.setTime(parseDate(am.grantedoffer.date));
+				hasenddate = true;
+			} else if (up.isspotcash == 0) {
+				am.grantedoffer.isspotcash = up.isspotcash;
+				am.grantedoffer.date = null;
+				if (up.months != null) {
+					am.grantedoffer.months = up.months;
+					hasenddate = true;
+				}
+				if (am.grantedoffer.months >= 0) {
+					cal.add(Calendar.MONTH, am.grantedoffer.months);
+				}
+
+				if (up.days != null) {
+					am.grantedoffer.days = up.days;
+				}
+				if (am.grantedoffer.days >= 0) {
+					cal.add(Calendar.DATE, am.grantedoffer.days);
+					hasenddate = true;
+				}
+			}
+			if (hasenddate == true) {
+				am.dtended = cal.getTime();
+			} else if (hasenddate == false) {
+				am.dtended = null;
+			}
+		}
+
+		if (up.amount) {
+			am.grantedoffer.amount = up.amount;
+		}
+
+		amnesty.update(am);
+		
+		return data;
+	}
+
+	private def parseDate( date ) {
+		if (!date) return null;
+		if (date instanceof Date) {
+			return date;
+		} else {
+			return java.sql.Date.valueOf(date);
+		}
+	}
+
+	@ProxyMethod
+	public def disapprove( params ) {
+		return approveImpl(params, 'DISAPPROVED');
+	}
+
+	private def approveImpl( params, state ) {
+		def data = changeState(params, state);
+
+		data.dtposted = dateSvc.serverDate;
+		data.poster = [objid: env.USERID, name: env.NAME];
+		em.update(data, 'post');
+
+		return open(data);
+	}
+
+}

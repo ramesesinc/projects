@@ -1,0 +1,10 @@
+<schema>
+
+	<element name="loan_ledger_close" tablename="loan_ledger_close">
+		<field name="objid" primary="true" />
+		<field name="dtclosed" required="true" />
+		<field name="closedby" required="true" />
+		<field name="remarks" required="true" />
+	</element>
+
+</schema>

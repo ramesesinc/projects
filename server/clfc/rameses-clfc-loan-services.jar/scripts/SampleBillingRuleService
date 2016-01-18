@@ -1,0 +1,69 @@
+import com.rameses.annotations.*;
+import com.rameses.rules.common.*;
+import loan.facts.*;
+import loan.actions.*;
+import java.util.*;
+import com.rameses.util.*;
+
+class SampleBillingRuleService 
+{
+	
+	@Service("RuleExecutorService")
+	def ruleSvc;
+
+	@Service("NumberService")
+	def numSvc;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@ProxyMethod
+	public def execute(  o ) {	
+		o.currentdate = o.billdate;
+		if (!o.currentdate) o.currentdate = dateSvc.getServerDateAsString().split(" ")[0];
+		if (!o.dtstarted) o.dtstarted = dateSvc.add(java.sql.Date.valueOf(o.dtrelease), "1");
+
+		o.hassunday = false;
+		Calendar c = Calendar.getInstance();
+		c.setTime(java.sql.Date.valueOf(o.currentdate));
+		if ((c.get(Calendar.DAY_OF_WEEK) - 1) == 1) o.hassunday = true;
+
+		def facts = [];
+		facts << new LoanApp(o);
+		facts << new CurrDate(o);
+		facts << new LoanLedger(o);
+		facts << new LoanBillingItem(o);
+		if (o.amnesty) facts << new Amnesty(o.amnesty);
+		//facts.each{ println it; }
+
+		def actions = new RuleAction(); 
+		actions.addCommand( "calcInterest", new  CalculateBillingInterest(NS: numSvc) );
+		actions.addCommand( "calcPenalty", new  CalculateBillingPenalty(NS: numSvc) );
+		actions.addCommand( "calcOthers", new CalculateBillingOthers(NS: numSvc) );
+		actions.addCommand( "calcAmountDue", new CalculateBillingAmountDue(NS: numSvc) );
+		actions.addCommand( "calcBalance", new CalculateBillingBalance(NS: numSvc) );
+		
+		ruleSvc.execute( "loanbilling", facts, actions, null );
+
+		/*
+		def item = facts.find{ (it instanceof LoanLedger) }
+		println 'ledger ' + (item? item.toMap() : null)
+
+		item = facts.find{ (it instanceof LoanBillingItem) }
+		println 'billing item ' + (item? item.toMap() : null)
+
+		item = facts.find{ (it instanceof LoanApp) }
+		println 'loanapp ' + (item? item.toMap() : null);
+		*/
+		
+		def billitem = facts.find{ (it instanceof LoanBillingItem) }
+		if (!billitem) return [:];
+		return [
+			interest 	: (billitem.interest? billitem.interest : 0.00),
+			penalty		: (billitem.penalty? billitem.penalty : 0.00),
+			balance		: (billitem.balance? billitem.balance : 0.00),
+			amountdue 	: (billitem.amountdue? billitem.amountdue : 0.00)
+		];
+	}
+
+}

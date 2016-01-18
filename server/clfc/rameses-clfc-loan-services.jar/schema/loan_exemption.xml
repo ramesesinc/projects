@@ -1,0 +1,34 @@
+<schema>
+
+	<element name="loan_exemption" tablename="loan_exemption">
+		<field name="objid" primary="true"/>
+		<field name="state" required="true"/>
+		<field name="dtcreated" required="true"/>
+		<field name="author_objid" required="true"/>
+		<field name="author_username" required="true"/>
+		<field name="ledger_objid" required="true"/>
+		<field name="route_code" required="true"/>
+		<field name="loanapp_objid" required="true"/>
+		<field name="loanapp_appno" required="true"/>
+		<field name="borrower_objid" required="true"/>
+		<field name="borrower_name" required="true"/>
+		<field name="borrower_address" required="true"/>
+		<field name="type_objid" required="true"/>
+		<field name="dtstart" required="true"/>
+		<field name="dtend" required="true"/>
+		<field name="reason" required="true"/>
+		<field name="dtposted" required="true"/>
+		<field name="postedby" required="true"/>
+		<field name="postedremarks" required="true"/>
+		<field name="dtapproved"/> 
+		<field name="approvedby"/> 
+		<field name="approvedremarks"/> 
+	</element>
+
+	<element name="active" tablename="loan_exemption_active">
+		<field name="objid" primary="true"/> 
+		<field name="loanapp_appno" required="true"/> 
+		<field name="borrower_name" required="true"/> 
+	</element>
+
+</schema>

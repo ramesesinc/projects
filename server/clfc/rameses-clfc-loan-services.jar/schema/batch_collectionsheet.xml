@@ -1,0 +1,68 @@
+<schema>
+	<element name="batch_collectionsheet" tablename="batch_collectionsheet">
+		<field name="objid" primary="true"/>
+		<field name="state" required="true"/>
+		<field name="dtposted" required="true"/>
+		<field name="postedby" required="true"/>
+		<field name="trackerid" required="true"/>
+		<field name="txndate" required="true"/>
+		<field name="dtcreated" required="true"/>
+		<field name="route_code" required="true"/>
+		<field name="totalcount" required="true"/>
+		<field name="totalamount" required="true"/>
+	</element>
+
+	<element name="totalcount" tablename="batch_collectionsheet">
+		<field name="objid" primary="true"/>
+		<field name="totalcount" required="true"/>
+	</element>
+
+	<element name="totalamount" tablename="batch_collectionsheet">
+		<field name="objid" primary="true"/>
+		<field name="totalamount" required="true"/>
+	</element>
+
+	<element name="posted" tablename="batch_collectionsheet">
+		<field name="objid" primary="true"/>
+		<field name="dtposted" required="true"/>
+		<field name="postedby"/>"
+	</element>
+
+	<element name="detail" tablename="batch_collectionsheet_detail">
+		<field name="objid" primary="true"/>
+		<field name="parentid" required="true"/>
+		<field name="appid" required="true"/>
+		<field name="remarks"/>
+	</element>
+
+	<element name="payment" tablename="batch_collectionsheet_detail_payment">
+		<field name="objid" primary="true"/>
+		<field name="parentid" required="true"/>
+		<field name="refno" required="true"/>
+		<field name="paytype" required="true"/>
+		<field name="payamount" required="true"/>
+		<field name="paidby" required="true"/>
+		<field name="dtposted" required="true"/>
+		<field name="postedby" required="true"/>
+ 	</element>
+
+	<element name="note" tablename="batch_collectionsheet_detail_note">
+		<field name="objid" primary="true"/>
+		<field name="parentid" required="true"/>
+		<field name="fromdate" required="true"/>
+		<field name="todate" required="true"/>
+		<field name="remarks" required="true"/>
+		<field name="dtposted" required="true"/>
+		<field name="postedby" required="true"/>
+	</element>
+
+	<element name="cashbreakdown" tablename="batch_collectionsheet_cashbreakdown">
+		<field name="objid" primary="true"/>
+		<field name="parentid" required="true"/>
+		<field name="caption" required="true"/>
+		<field name="denomination" required="true"/>
+		<field name="qty" required="true"/>
+		<field name="amount" required="true"/>
+	</element>
+
+</schema>

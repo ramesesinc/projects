@@ -1,0 +1,81 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+
+class AACashCollectionReportService
+{
+	@Env
+	def env;
+
+	@ActiveDB(value="field_collection")
+	def field_collection;
+
+	@ActiveDB(value="online_collection")
+	def online_collection;
+
+	@ActiveDB(value="loan_payment")
+	def loan_payment;
+
+	@ActiveDB(value="loan_route")
+	def loan_route;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@ProxyMethod
+	public def getReportData( params ) {
+		if (!params.txndate) params.txndate = dateSvc.serverDate.toString().split(' ')[0];
+		def payments = loan_payment.getPaymentsByTxndate(params)
+
+		def field;
+		def online;
+		def route;
+		def details;
+		def collections = [];
+		def item;
+		payments.each{payment->
+			details = loan_payment.getDetailsByParentid([parentid: payment.objid]);
+			details.each{detail->
+				detail.route = loan_route.read([code: detail.routecode]);
+				collections.add(detail);
+			}
+			/*field = field_collection.read(payment);
+			if (field) {
+				def list = field_collection.getRoutesByFieldcollectionid([fieldcollectionid: field.objid]);
+				list.each{r->
+					def data = loan_route.read([code: r.routecode]);
+					routes.add(data);
+				}
+			} else {
+				online = online_collection.read(payment);
+
+			}*/
+
+		}
+
+		/*def data = [
+			branch	: [:],
+			routes: routes
+		]*/
+		/*collections.each{
+			println it;
+		}*/
+		def mCollections = [];
+		mCollections.addAll(collections);
+		def routes = [];
+		collections.unique{ it.route.code }.each{
+			routes.add(it.route);
+		}
+		routes = routes.findAll{ it.dayperiod == params.dayperiod }
+		//println mCollections.findAll{ it.routecode == 'R483284788' }.size();
+		routes.each{r->
+			println 'route-> '+r;
+			println mCollections.findAll{ it.routecode == r.code }.size()
+			
+			println 'collections -> '+r.collections;
+			//r.collections.each{
+			//	println it;
+			//}
+		}
+		return routes;
+	}
+}

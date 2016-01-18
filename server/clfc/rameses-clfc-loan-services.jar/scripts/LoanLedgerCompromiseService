@@ -1,0 +1,158 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.services.extended.*;
+import com.rameses.util.*;
+
+class LoanLedgerCompromiseService extends ActiveCrudListService
+{
+	@Env
+	def env;
+
+	@ActiveDB("compromise")
+	def em;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@ProxyMethod
+	public def getColumns( params ) {
+		return [
+			[name: 'txntype', caption: 'Type'],
+			[name: 'dteffective', caption: 'DateEffective', type: 'date', outputFormat: 'MMM-dd-yyyy'],
+			[name: 'dtended', caption: 'DateEnded', type: 'date', outputFormat: 'MMM-dd-yyyy'],
+			[name: 'offer.amount', caption: 'Offer Amount', type: 'decimal', format: '#,##0.00'],
+			[name: 'offer.months', caption: 'Offer Months', type: 'integer'],
+			[name: 'offer.days', caption: 'Offer Days', type: 'integer'],
+			[name: 'remarks', caption: 'Remarks'],
+		]
+	}
+
+	void beforeList( params ) {
+		if (params.ledgerid) {
+			params._listMethod = "getListByLedgerid";
+		}
+	}
+	
+	void validate( data ) {
+		if (!data.offers) throw new Exception("At least 1 offer is required.");
+	}
+
+	void beforeCreate( data ) {
+		if (!data.changeoffer) {			
+			def date = new java.text.SimpleDateFormat("yyyy-MM-dd").format(dateSvc.serverDate);
+			println date.compareTo(data.dteffective.toString());
+			if (date.compareTo(data.dteffective.toString()) < 0)
+				throw new Exception("Date effective must be greater than or equal to current date.");
+		}
+		validate(data);
+		if (!data.state) data.state = 'DRAFT';
+		data.dtcreated = dateSvc.serverDate;
+		data.author = [objid: env.USERID, name: env.NAME];
+	}
+
+	void beforeUpdate( data ) {
+		validate(data);
+	}
+
+	void afterOpen( data ) {
+		data.offers = em.getOffers(data);
+	}
+
+	void afterCreate( data ) {
+		updatedOffers(data);
+		if (data.changeoffer == true) {
+			def item = [
+				objid			: data.objid,
+				prevcompromiseid: data.prevcompromiseid,
+				prevoffer		: data.prevoffer
+			];
+			em.create(item, "compromise-changeoffer");
+		}
+	}
+
+	void afterUpdate( data ) {
+		updatedOffers(data);
+	}
+
+	void updatedOffers( data ) {
+		if (data._removed) {
+			data._removed.each{ o->
+				em.delete(o, "compromise-offer");
+			}
+		}
+		if (data._added) {
+			data._added.each{ o->
+				if (!o.payuntilamountpaid) o.payuntilamountpaid = 0;
+				em.create(o, "compromise-offer");
+			}
+		}
+		data.offers.each{ o->
+			if (o._edited) em.update(o, "compromise-offer");
+		}
+	}
+
+	void beforeRemoveEntity( data ) {
+		data.offers.each{ o->
+			em.delete(o, "compromise-offer");
+		}
+	}
+
+	@ProxyMethod
+	public def submitForApproval( params ) {
+		def data = em.read(params);
+		if (!data) throw new Exception("Record does not exist or has already been deleted.");
+
+		data.state = 'FOR_APPROVAL';
+		em.changeState(data);
+
+		return open(data);
+	}
+
+	@ProxyMethod
+	public def approveDocument( params ) {
+		def data = em.read(params);
+		if (!data) throw new Exception("Record does not exist or has already been delete.");
+
+		data.state = "APPROVED";
+		em.changeState(data);
+
+		data.dtposted = dateSvc.serverDate;
+		data.poster = [objid: env.USERID, name: env.NAME];
+		em.update(data, "compromise-post");
+
+		data.offer = params.offer;
+
+		Calendar c = Calendar.getInstance();
+		c.setTime(data.dteffective);
+		if (data.offer.days > 0) {
+			c.add(Calendar.DATE, data.offer.days);
+		}
+		if (data.offer.months > 0) {
+			c.add(Calendar.MONTH, data.offer.months);
+		}
+		data.dtended = c.getTime();
+		em.update(data);
+
+		def m = em.read(data, "compromise-changeoffer");
+		if (m) {
+			em.changeState([objid: m.prevcompromiseid, state: 'CLOSED']);
+		}
+
+		return open(data);
+	}
+
+	@ProxyMethod
+	public def disapprove( params ) {
+		def data = em.read(params);
+		if (!data) throw new Exception("Record does not exist or has already been deleted.");
+
+		data.state = "DISAPPROVED";
+		em.changeState(data);
+
+		data.dtposted = dateSvc.serverDate;
+		data.poster = [objid: env.USERID, name: env.NAME];
+		em.update(data, "compromise-post");
+
+		return open(data);
+	}
+}

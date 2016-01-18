@@ -1,0 +1,46 @@
+<schema>
+
+	<element tablename="loan_ledger_noncash">
+		<field name="objid" primary="true" />
+		<field name="parentid" required="true" />
+		<field name="txnstate" required="true" />
+		<field name="txntype" required="true" />
+		<field name='tag' />
+		<field name="dtcreated" required="true" />
+		<field name="author_objid" required="true" />
+		<field name="author_name" required="true" />
+		<field name="borrower_objid" required="true" />
+		<field name="borrower_name" required="true" />
+		<field name="borrower_address" required="true" />
+		<field name="refid" />
+		<field name="refno" />
+		<field name="txndate" />
+		<field name="amount" required="true" />
+		<field name="paidby" />
+		<field name="dtcollected" />
+		<field name="collectedby_objid" />
+		<field name="collectedby_name" />
+	</element>
+
+	<element name="noncash-collect" tablename="loan_ledger_noncash">
+		<field name="objid" primary="true" />
+		<field name="refno" required="true" />
+		<field name="txndate" required="true" />
+		<field name="dtcollected" required="true" />
+		<field name="collectedby_objid" required="true" />
+		<field name="collectedby_name" required="true" />
+	</element>
+
+	<element name="noncash-refid" tablename="loan_ledger_noncash">
+		<field name="objid" primary="true" />
+		<field name="refid" required="true" />
+	</element>
+
+	<element name="collection-noncash" tablename="collection_noncash">
+		<field name="objid" primary="true" />
+		<field name="collectionid" required="true" />
+		<field name="refid" required="true" />
+		<field name="noncashid" required="true" />
+	</element>
+
+</schema>

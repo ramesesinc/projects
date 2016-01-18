@@ -1,0 +1,688 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.server.common.*;
+import com.rameses.rules.common.RuleRequest;
+import java.rmi.server.UID;
+import org.joda.time.*;
+import org.drools.KnowledgeBase;
+
+class LoanPaymentMonthlyService
+{
+	@ActiveDB("loan_ledger")
+	def ledgerdb;
+
+	@ActiveDB("loan_product_type")
+	def product_type;
+
+	@ActiveDB("loanapp")
+	def loanapp;
+
+	@ActiveDB("loan_ledger_payment")
+	def ledger_payment;
+
+	@Service("LoanLedgerService")
+	def ledgerSvc;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@Resource("RuleService")
+	def ruleSvc;
+
+	@ProxyMethod
+	public def postPayment( params ) {
+		def ledger = ledgerdb.findByAppId(params);
+		def appc = loanapp.read([objid: ledger.appid], 'loanapp_capture');
+
+		def info = ledgerdb.read([objid: ledger?.objid], 'ledger-info');
+		if (!info && ledger) {
+			info = [objid: ledger?.objid, postinginfo: [:]];
+			ledgerdb.create(info, 'ledger-info');
+		}
+		//println 'current schedule ' + ledger.dtcurrentschedule;
+
+		def postinginfo = info?.postinginfo;
+		if (!postinginfo) postinginfo = [:];
+
+		def schedule = getCurrentSchedule(ledger.dtstarted, params.txndate);
+		if (schedule <= 0) schedule = 1;
+		//def schedule = 1;
+
+		def lastschedule;
+		if (!postinginfo.lastschedule) {
+			lastschedule = getCurrentSchedule(ledger.dtstarted, ledger.dtcurrentschedule);
+
+		} else if (postinginfo.lastschedule) {
+			lastschedule = postinginfo.lastschedule + 1;
+
+		}
+
+		def noofschedule = schedule - (lastschedule - 1);
+
+		def ledgeramnesty;
+		def results = [], lastPayment = [:], floating = [:];
+
+		def paymentFact = [
+			days 			: 1,
+			currentSchedule : lastschedule,
+			amountPaid		: params.payamount,
+			balance			: (ledger.balance? ledger.balance : ledger.totalprincipal)
+		];
+
+		def ledgeritem = ledgerdb.findLastLedgerItemByParentId([parentid: ledger.objid]);
+		if (ledgeritem) {
+			paymentFact.lackingInterest = ledgeritem.interestbal;
+			paymentFact.lackingPenalty = ledgeritem.penaltybal;
+		}
+
+
+		def ct = getCurrentSchedule(ledger.dtstarted, ledger.dtcurrentschedule);
+
+		def xpayment = ledgerdb.read([objid: params.ledgerpaymentid], 'payment');
+		if (xpayment) {
+			xpayment.dtcurrentschedule = ledger.dtcurrentschedule;
+			xpayment.lastschedule = lastschedule;
+			xpayment.balance = ledger.balance;
+			if (ledgeritem) {
+				xpayment.lackinginterest = ledgeritem.interestbal;
+				xpayment.lackingpenalty = ledgeritem.penaltybal;
+			}
+			ledgerdb.update(xpayment, 'payment');
+			xpayment = ledgerdb.read(xpayment, 'payment');
+		}
+
+		def producttype = product_type.read([name: ledger.producttypeid]);
+
+		def referencesFact = [
+			amountPaid 		: params.payamount,
+			noOfSchedules 	: noofschedule,
+			interest 		: ledger?.interestamount,
+			isOverdue 		: false,
+			amountDue 		: ledger?.dailydue,
+			underpaymentRate: producttype?.underpaymentpenalty,
+			absentRate 		: producttype?.absentpenalty,
+			arrearsRate 	: producttype?.arrearspenalty,
+			isFullPayment 	: false,
+			isOffset 		: false,
+			isOverdue 		: false,
+			isDelayed 		: false
+		];
+
+		def req = new RuleRequest("loansemimonthly");
+
+		req.addFact("loansemimonthly", "Payment", paymentFact); 
+		req.addFact("loansemimonthly", "References", referencesFact);
+		//req.addFact("loan", "Compromise", compromiseFact);
+		req.addGlobal("results", results);
+		req.addGlobal("lastPayment", lastPayment);
+		req.addGlobal("floating", floating);
+
+		def xdate = parseDate(params.txndate);
+		def lastpaymentdate;
+		if (ledger.dtlastpaid) lastpaymentdate = parseDate(ledger.dtlastpaid);
+
+		def maturitydate;
+		if (ledger.dtmatured) maturitydate = parseDate(ledger.dtmatured);
+
+		def isOverdue = false;
+		if (maturitydate && (xdate.compareTo(maturitydate) > 0)) {
+			isOverdue = true;
+			def prm = [
+				noofschedule: noofschedule,
+				balance 	: ledger.balance,
+				interest 	: ledger.interestamount,
+				rate 		: (producttype.pastduerate? producttype.pastduerate : 0.00)
+			]
+			ledger.overduepenalty = computeOverduePenalty(prm);//ledgerSvc.computeOverduePenalty([balance: ledger.balance, pastduerate: (producttype.pastduerate? producttype.pastduerate : 0.00)]);
+			//throw new Exception('stop')
+			//println 'overdue ' + ledger.overduepenalty;
+			referencesFact.overduePenalty = ledger.overduepenalty;
+			ledgerdb.update(ledger, 'overduepenalty');
+		}
+		referencesFact.isOverdue = isOverdue;
+
+		if (lastpaymentdate && (xdate.compareTo(lastpaymentdate) == 0)) {
+			offSetLastRecord(ledgeritem);
+			referencesFact.isOffset = true;
+			def xpayments = ledger_payment.getPaymentsByParentidAndTxndate([parentid: ledger.objid, txndate: params.txndate]);
+			xpayments.sort{ it.refno }
+
+			def idx = 0, xitm;
+			def xlist = [];
+			while (idx < xpayments.size()) {
+				xitm = xpayments[idx];
+				xlist.add(xitm);
+				if (xitm.objid == params.ledgerpaymentid) {
+					break;
+				}
+				idx++;
+			}
+			xpayments.clear();
+			xpayments.addAll(xlist);
+
+			def cp = xpayments.find{ it.objid == params.ledgerpaymentid }
+			if (cp) xpayments.remove(cp);
+
+			lastPayment.totalPreviousPayments = xpayments.amount.sum();
+			if (!lastPayment.totalPreviousPayments) lastPayment.totalPreviousPayments = 0;
+
+			referencesFact.amountPaid = lastPayment.totalPreviousPayments + params.payamount;
+			paymentFact.amountPaid = referencesFact.amountPaid;
+
+			xpayments.sort{ it.refno }
+
+			def fp = xpayments[0];
+			if (fp) {
+				def xitem = ledgerdb.read([objid: fp.objid], 'payment');
+				def lastsched = lastschedule;
+				if (xitem.lastschedule) lastsched = xitem.lastschedule;
+				noofschedule = schedule - (lastsched - 1);
+
+				referencesFact.noOfSchedules = noofschedule;
+				referencesFact.totalPayment = noofschedule * referencesFact.amountDue;
+
+				def currentsched = ledger.dtcurrentschedule;
+				if (xitem.dtcurrentschedule) currentsched = xitem.dtcurrentschedule;
+				referencesFact.noOfDelays = countNoOfDelays(currentsched, currentsched, params.txndate);
+
+				if (xitem.balance) paymentFact.balance = xitem.balance;
+				ct = getCurrentSchedule(ledger.dtstarted, currentsched);
+
+				if (xitem.lackinginterest) paymentFact.lackingInterest = xitem.lackinginterest;
+				if (xitem.lackingpenalty) paymentFact.lackingPenalty = xitem.lackingpenalty;
+
+				if (isOverdue == true) {
+					def balance = ledger.balance;
+					if (xitem.balance) balance = xitem.balance;
+					def prm = [
+						noofschedule: noofschedule,
+						balance 	: balance,
+						interest 	: ledger.interestamount,
+						rate 		: (producttype.pastduerate? producttype.pastduerate : 0.00)
+					]
+					ledger.overduepenalty = computeOverduePenalty(prm);//ledgerSvc.computeOverduePenalty([balance: ledger.balance, pastduerate: (producttype.pastduerate? producttype.pastduerate : 0.00)]);
+					//throw new Exception('stop')
+					//println 'overdue ' + ledger.overduepenalty;
+					referencesFact.overduePenalty = ledger.overduepenalty;
+					ledgerdb.update(ledger, 'overduepenalty');
+				}
+			}
+
+			if (ledgeritem) {
+				def cal = Calendar.getInstance();
+				cal.setTime(appc?.dtreleased);
+				cal.add(Calendar.DATE, ledgeritem.day);
+
+				def lastsched = getCurrentSchedule(ledger.dtstarted, cal.getTime());
+				lastPayment.lastCurrentSchedule = lastsched;
+
+				def currentsched = ledger.dtcurrentschedule;
+				if (fp) {
+					def xitem = ledgerdb.read([objid: fp.objid], 'payment');
+					if (xitem.dtcurrentschedule) currentsched = xitem.dtcurrentschedule;
+				}
+
+				//println '\ncurrent sched ' + currentsched;
+				//println 'date ' + cal.getTime();
+				def count = getCurrentSchedule(currentsched, cal.getTime());
+				lastPayment.days = count;
+
+				//println 'no of schedules ' + referencesFact.noOfSchedules;
+				//println 'count ' + count;
+				//println 'last schedule ' + lastschedule;
+				//println 'last current sched ' + lastsched;
+			}
+
+		} else {
+			referencesFact.totalPayment = noofschedule * referencesFact.amountDue;
+			referencesFact.noOfDelays = countNoOfDelays(ledger.dtcurrentschedule, ledger.dtcurrentschedule, params.txndate);
+		}
+
+		def totalschedpaid = (ct? ct - 1 : 0);
+		if (totalschedpaid > 0) {
+			def expectedbal = ledger.totalprincipal - ((totalschedpaid * ledger.dailydue) - (totalschedpaid * ledger.interestamount));
+			//println 'expected balance ' + expectedbal;
+			def arrears = paymentFact.balance - expectedbal;
+			if (arrears > 0) referencesFact.arrears = arrears;
+		}
+
+		if (referencesFact.noOfDelays &&  referencesFact.noOfDelays > 0) {
+			referencesFact.isDelayed = true;
+		}
+
+		def item;
+		if (isOverdue == false) {
+			item = resolveNoOfSchedulesAndDelays(referencesFact, paymentFact);
+		} else if (isOverdue == true) {
+			item = resolveOverdueNoOfSchedulesAndDelays(referencesFact, paymentFact);
+		}
+
+		if (item) {
+			//println '\nitem ' + item;			
+			if (item.noOfSchedules != null && item.noOfSchedules >= 0) {
+			//	println 'passing 1'
+				referencesFact.noOfSchedules = item.noOfSchedules;
+			}
+			
+			if (item.noOfDelays != null && item.noOfDelays >= 0) {
+			//	println 'passing 2'
+				referencesFact.noOfDelays = item.noOfDelays;
+			}
+		}
+
+		if (paymentFact.lackingInterest > 0 || paymentFact.lackingPenalty > 0 ) {
+			paymentFact.addLacking = true;
+			paymentFact.days--;
+			if (referencesFact.isOffset == false) {
+				paymentFact.currentSchedule--;
+			}
+			//println 'days ' + lastPayment.days;
+			//def xdays = (lastPayment?.days? lastPayment.days : 0) - 1;
+			//println 'xdays ' + xdays;
+			//if (xdays <= 0) {
+			//	lastPayment.days = 0;
+				//if (lastPayment.lastCurrentSchedule) lastPayment.lastCurrentSchedule--;
+			//}
+		}
+
+		if (!paymentFact.addLacking) paymentFact.addLacking = false;
+
+		/*
+		if (referencesFact.isOffset == true) {			
+			println '\nreferences fact';
+			for (i in referencesFact) { println i }
+
+			println '\npayment fact';
+			for (i in paymentFact) { println i }
+
+			println '\nlast payment';
+			for (i in lastPayment) { println i }
+		}
+		*/
+
+		/*
+		if (isOverdue == true && referencesFact.isOffset == true) {
+
+			println '\nreferences fact';
+			for (i in referencesFact) { println i }
+
+			println '\npayment fact';
+			for (i in paymentFact) { println i }
+
+			println '\nlast payment';
+			for (i in lastPayment) { println i }
+		}
+		*/
+
+		//println 'schedule ' + schedule;
+		//println 'last schedule ' + lastschedule;
+
+		//println '\nreferences fact';
+		//for (i in referencesFact) { println i }
+
+		//println '\npayment fact';
+		//for (i in paymentFact) { println i }
+
+		try {
+			ruleSvc.execute( req );	
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		if (results) {
+			results = resolveScheduleDates(results, ledger.dtstarted);
+		}
+
+		//if (paymentFact.addLacking == true) {
+		//	results?.each{ println it }
+		//}
+
+		def lastitem;
+		if (results.size() > 0) {
+			lastitem = results[results.size()-1];
+
+			if (lastitem.totalpenalty) {
+				def lastpenalty = new BigDecimal(lastitem.totalpenalty+"").setScale(2, BigDecimal.ROUND_HALF_UP);
+				lastitem.totalpenalty = ledgerSvc.roundOffAmount(lastpenalty);
+			} else if (!lastitem.totalpenalty) {
+				lastitem.totalpenalty = 0;
+			}
+			lastitem.penalty = lastitem.totalpenalty;
+
+			lastitem.payment = params.payamount;
+
+			if (!lastitem.totalinterest) lastitem.totalinterest = 0;
+			if (!lastitem.totalpenalty) lastitem.totalpenalty = 0;
+
+			def amtpaid = referencesFact.amountPaid;//params.payamount;
+			amtpaid -= (lastitem.totalinterest + lastitem.totalpenalty);
+
+			//ledger.balance;
+			if (amtpaid > 0) {
+				def balance = paymentFact.balance;
+
+				lastitem.partialPayment = amtpaid;
+				if (balance > 0) balance -= amtpaid;
+
+				if (balance < 0) balance = 0;
+				lastitem.balance = balance;
+				if ((lastitem.balance != null || lastitem.balance != '') && lastitem.balance >= 0) {
+					//println 'last item balance ' + lastitem.balance;
+					def xledger = ledgerdb.read(ledger);
+					xledger.balance = lastitem.balance;
+					ledgerdb.update([objid: ledger.objid, balance: lastitem.balance], "balance");
+					
+
+					if (balance == 0) {
+						xledger = ledgerdb.read(xledger);
+						xledger.state = 'CLOSE';
+						ledgerdb.update(xledger);
+						loanapp.update([objid: xledger.appid, state: 'CLOSED']);
+						def xx = loanapp.read([objid: xledger.appid], 'loanapp_search');
+						if (xx) {
+							loanapp.update([objid: xledger.appid, state: 'CLOSED'], 'loanapp_search');	
+						}
+					}
+				}
+			}
+
+			if (floating.lackingInterest) {
+				lastitem.interestbal = new BigDecimal(floating.lackingInterest).setScale(2, BigDecimal.ROUND_HALF_UP)
+			}
+
+			if (floating.lackingPenalty){
+				lastitem.penaltybal = new BigDecimal(floating.lackingPenalty).setScale(2, BigDecimal.ROUND_HALF_UP);
+				lastitem.penaltybal = ledgerSvc.roundOffAmount(lastitem.penaltybal);
+			}
+
+			def cal = Calendar.getInstance();
+			cal.setTime(parseDate(lastitem.scheduledate));
+			//if (!lastitem.interestbal || lastitem.interestbal == 0) {
+				def xday = cal.get(Calendar.DATE);
+				def xmax = cal.getActualMaximum(Calendar.DATE);
+				if (xday == xmax) {
+					cal.add(Calendar.DATE, 1);
+					cal.set(Calendar.DATE, 15);
+				} else if (xday == 15) {
+					cal.set(Calendar.DATE, xmax);
+				}
+			//}
+			def currsched = new java.text.SimpleDateFormat("yyyy-MM-dd").format(cal.getTime());
+
+			ledgerdb.update([objid: ledger.objid, dtcurrentschedule: currsched], "dtcurrentschedule");
+
+			if (!postinginfo) postinginfo = [:];
+			postinginfo.lastschedule = lastitem.scheduleday;
+		}
+
+		info.postinginfo = postinginfo;
+		ledgerdb.update(info, 'ledger-info');
+
+		def la = loanapp.read([objid: ledger.appid], 'loanapp_close');
+		if (la || referencesFact.isFullPayment == true) {
+			def xledger = ledgerdb.read(ledger);
+			xledger.state = 'CLOSE';
+			ledgerdb.update(xledger);
+			loanapp.update([objid: xledger.appid, state: 'CLOSED']);
+			def xx = loanapp.read([objid: xledger.appid], 'loanapp_search');
+			if (xx) {
+				loanapp.update([objid: xledger.appid, state: 'CLOSED'], 'loanapp_search');	
+			}
+		}
+
+		results.each{ o->
+			def itm = createLedgerItem(ledger);
+
+			itm.amtdue = 0;
+			if (o.payment) {
+				itm.amtdue = new BigDecimal(o.payment).setScale(2, BigDecimal.ROUND_HALF_UP);
+			}
+			itm.amtpaid = itm.amtdue;
+
+			itm.interestdue = 0;
+			if (o.interestPaid) {
+				itm.interestdue  = new BigDecimal(o.interestPaid).setScale(2, BigDecimal.ROUND_HALF_UP);
+			}
+			itm.interestpaid = itm.interestdue;
+
+			itm.penaltydue = 0;
+			if (o.penalty) {
+				itm.penaltydue = new BigDecimal(o.penalty).setScale(2, BigDecimal.ROUND_HALF_UP);
+			}
+			itm.penaltypaid = itm.penaltydue;
+
+			itm.amtbal = 0;
+			
+			itm.interestbal = 0;
+			if (o.interestbal) itm.interestbal = o.interestbal;
+
+			itm.penaltybal = 0;
+			if (o.penaltybal) itm.penaltybal = o.penaltybal;
+
+			itm.dtpaid = params.txndate;//it.dtpaid? it.dtpaid : null;
+			itm.refno = params.refno;//it.refno? it.refno : null;
+			itm.day = dateSvc.getDaysDiff(parseDate(appc?.dtreleased), parseDate(o.scheduledate)) - 1;
+
+			itm.balance = 0;
+			if (o.balance) itm.balance = new BigDecimal(o.balance).setScale(2, BigDecimal.ROUND_HALF_UP);
+
+			//println 'passing 4'
+			itm.partialpayment = 0;
+			if (o.partialPayment) itm.partialpayment = new BigDecimal(o.partialPayment).setScale(2, BigDecimal.ROUND_HALF_UP);
+
+			itm.baseamount = ledger.dailydue;
+			itm.groupbaseamount = ledger.dailydue;
+
+			//itm.paytype = it.paytype;
+			itm.txndate = dateSvc.serverDate;
+			//println 'item = '+itm;
+			o.item = itm;
+			//if (params.txndate.toString() == '2006-01-24') println 'current day ' + data.currentDay;
+			ledgerdb.create(itm, "detail");
+		}
+
+		ledgerdb.update([objid: ledger.objid, dtlastpaid: params.txndate], "dtlastpaid");
+
+		//def lastitem = ledgerdb.findLastLedgerItemByParentId([parentid: ledger.objid]);
+		return [
+			results 		: results, 
+			isfullpayment 	: false, //referencesFact.isFullPayment,
+			ledgerid 		: ledger.objid
+		];
+	}
+
+	private def computeOverduePenalty( params ) {
+		def fact = [
+			allowCompute 	: true,
+			noOfSchedules 	: params.noofschedule,
+			interest 		: params.interest,
+			balance 		: params.balance,
+			penaltyRate 	: params.rate
+		];
+		def req = new RuleRequest("loansemimonthly");
+		req.addFact("loansemimonthly", "OverduePenalty", fact);
+
+		def result = [:];
+		req.addGlobal("resultMap", result);
+		ruleSvc.execute( req );
+
+		def penalty = 0;
+		if (result.penalty) {
+			penalty = new BigDecimal(result.penalty).setScale(2, BigDecimal.ROUND_HALF_UP);
+		}
+		if (penalty > 0) penalty = ledgerSvc.roundOffAmount(penalty);
+		return penalty;
+	}
+
+	private def resolveScheduleDates( list, startdate ) {
+		//println 'start date ' + startdate;
+		def result, fact, req;
+		list.each{ o->
+			fact = [
+				allowResolve 	: true,
+				runningDate 	: startdate,
+				currentSchedule : o.scheduleday,
+				counter 		: 1
+			];
+			//println 'fact ' + fact;
+			req = new RuleRequest("loansemimonthly");
+			req.addFact("loansemimonthly", "ResolveScheduleDate", fact);
+
+			result = [:];
+			req.addGlobal("resultMap", result);
+			ruleSvc.execute( req );
+
+			if (result.scheduledate) o.scheduledate = result.scheduledate;
+		}
+
+		return list;
+	}
+
+	private def resolveNoOfSchedulesAndDelays( referencesFact, paymentFact ) {
+		def references = [
+			allowResolve	: true,
+			noOfSchedules 	: referencesFact.noOfSchedules,
+			noOfDelays 		: referencesFact.noOfDelays,
+			schedOfPayment 	: referencesFact.amountDue,
+			interest 		: referencesFact.interest,
+			arrears 		: referencesFact.arrears,
+			amountPaid 		: referencesFact.amountPaid,
+			underpaymentRate: referencesFact.underpaymentRate,
+			absentRate 		: referencesFact.absentRate,
+			arrearsRate 	: referencesFact.arrearsRate
+		];
+		if (paymentFact.lackingInterest) references.lackingInterest = paymentFact.lackingInterest;
+		if (paymentFact.lackingPenalty) references.lackingPenalty = paymentFact.lackingPenalty;
+
+		def req = new RuleRequest("loansemimonthly");
+		req.addFact("loansemimonthly", "Resolver", references);
+
+		def result = [:];
+		req.addGlobal("resultMap", result);
+		ruleSvc.execute( req );
+
+		return result;
+	}
+
+	private def resolveOverdueNoOfSchedulesAndDelays( referencesFact, paymentFact ) {		
+		def references = [
+			allowResolve	: true,
+			noOfSchedules 	: referencesFact.noOfSchedules,
+			interest 		: referencesFact.interest,
+			amountPaid 		: referencesFact.amountPaid,
+			overduePenalty 	: referencesFact.overduePenalty
+		];
+		if (paymentFact.lackingInterest) references.lackingInterest = paymentFact.lackingInterest;
+		if (paymentFact.lackingPenalty) references.lackingPenalty = paymentFact.lackingPenalty;
+
+		def req = new RuleRequest("loansemimonthly");
+		req.addFact("loansemimonthly", "ResolverOverdue", references);
+
+		def result = [:];
+		req.addGlobal("resultMap", result);
+		ruleSvc.execute( req );
+
+		return result;
+	}
+
+	private def getCurrentSchedule( dtstarted, txndate ) {
+		def currentScheduleFact = [
+			allowGet 	: true,
+			runningDate : parseDate(dtstarted),
+			currentDate : parseDate(txndate)
+		]
+
+		def req = new RuleRequest("loansemimonthly");
+		req.addFact("loansemimonthly", "CurrentSchedule", currentScheduleFact);
+		def result = [:];
+		req.addGlobal("resultMap", result);
+		ruleSvc.execute( req );
+
+		def currentschedule = result.noOfSchedule;
+		if (currentschedule == null) currentschedule = 0;
+		return currentschedule;
+	}
+
+	private def countNoOfDelays( currentschedule, runningdate, txndate ) {
+		def countDelayFact = [
+			allowCount		: true,
+			noOfDelays 		: 0,
+			runningDate 	: parseDate(currentschedule),
+			scheduleDate 	: parseDate(runningdate),
+			currentDate 	: parseDate(txndate)
+		]
+
+		def req = new RuleRequest("loansemimonthly");
+		req.addFact("loansemimonthly", "CountDelay", countDelayFact);
+		def result = [:];
+		req.addGlobal("resultMap", result);
+		ruleSvc.execute( req );
+		//req.addFact("loan", "Compromise", compromiseFact);
+
+		def noofdelays = result.noOfDelays;
+		if (!noofdelays) noofdelays = 0;
+		return noofdelays;
+	}
+
+	private def countNoOfSchedules( referencesFact, paymentFact ) {
+
+		def countScheduleFact = [
+			allowCount		: true,
+			noOfSchedule 	: 0,
+			totalPayment	: referencesFact.totalPayment,
+			amountPaid 		: referencesFact.amountPaid,
+			schedOfPayment 	: referencesFact.amountDue
+		]
+
+		def req = new RuleRequest("loansemimonthly");
+		req.addFact("loansemimonthly", "CountSchedule", countScheduleFact);
+		def result = [:];
+		req.addGlobal("resultMap", result);
+		ruleSvc.execute( req );
+		//req.addFact("loan", "Compromise", compromiseFact);
+
+		def noofschedule = result.noOfSchedule;
+		if (!noofschedule) noofschedule = 0;
+		return noofschedule;
+	}
+
+	private def parseDate( date ) {
+		if (!date) return null;
+		if (date instanceof Date) {
+			return date;
+		} else {
+			return java.sql.Date.valueOf(date);
+		}
+	}
+
+	private def createLedgerItem( ledger ) {
+		return [
+			objid 	: 'LDGRITM' + new UID(),
+			parentid: ledger.objid,
+			state 	: 'RECEIVED'
+		];
+	}
+
+	private def offSetLastRecord( lastitem ) {		
+		def itm = createLedgerItem([objid: lastitem.parentid]);
+		itm.state = 'OFFSET';
+		itm.amtdue = lastitem.amtdue*-1;
+		itm.interestdue = lastitem.interestdue*-1;
+		itm.penaltydue = lastitem.penaltydue*-1;
+		itm.amtpaid = lastitem.amtpaid;//*-1;
+		itm.interestpaid = lastitem.interestpaid*-1;
+		itm.penaltypaid = lastitem.penaltypaid*-1;
+		itm.amtbal = lastitem.amtbal*-1;
+		itm.interestbal = lastitem.interestbal*-1;
+		itm.penaltybal = lastitem.penaltybal*-1;
+		itm.dtpaid = lastitem.dtpaid;
+		itm.refno = lastitem.refno;
+		itm.day = lastitem.day;
+		itm.balance = lastitem.balance*-1;
+		itm.partialpayment = lastitem.partialpayment*-1;
+		itm.txndate = dateSvc.serverDate;
+		itm.baseamount = 0;
+		itm.groupbaseamount = 0;
+		ledgerdb.create(itm, 'detail');
+	}
+}

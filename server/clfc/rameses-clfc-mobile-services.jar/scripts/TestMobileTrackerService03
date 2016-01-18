@@ -1,0 +1,35 @@
+import com.rameses.annotations.*;
+import com.rameses.http.*;
+import com.rameses.osiris3.server.*;
+
+class TestMobileTrackerService03  
+{
+	@ActiveDB('test_mobile_tracker03')
+	def em; 
+
+	@Service('DateService')
+    def dateSvc;
+
+	@ProxyMethod
+	public Map log(Map entity) {
+		def sessionid = entity.objid;
+		entity.objid = "LOG" + new java.rmi.server.UID();
+		entity.txndate = dateSvc.serverDate;
+		entity.sessionid = sessionid;		
+		em.log(entity); 
+		return entity;
+	} 
+
+	@ProxyMethod 	
+	public List getList(Map params) {
+		if (params.fromdate && params.todate) {
+			params.filter = " AND txndate BETWEEN '"+params.fromdate+"' AND '"+params.todate+"' ";
+		} else if (params.fromdate) {
+			params.filter = " AND txndate >= '"+params.fromdate+"' "; 
+		} else { 
+			params.filter = '';
+		}
+		params.sessionid = params.trackerid; 
+		return em.getList(params); 
+	}
+} 

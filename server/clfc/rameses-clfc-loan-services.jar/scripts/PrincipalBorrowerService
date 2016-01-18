@@ -1,0 +1,114 @@
+import com.rameses.annotations.*;
+import com.rameses.common.*;
+import com.rameses.services.extended.*;
+import java.rmi.server.UID;
+
+class PrincipalBorrowerService 
+{	
+	@ActiveDB(value='loanapp_borrower')
+	def loanapp_borrower; 
+
+	@ActiveDB('borrower')
+	def borrowerdb;
+
+	@ActiveDB('customer')
+	def customer;
+
+	@ActiveDB('customerindividual')
+	def customerindividual;
+
+	@ActiveDB('borrowerindividual')
+	def borrowerindividual;
+
+	@Service('LoanAppService')
+	def loanAppService; 	
+
+	@Service('BorrowerService')
+	def borrowerService; 	
+
+	@ProxyMethod 
+	public def open( params ) {
+		if (!params.objid) throw new Exception('Please specify objid'); 
+
+		def data = loanAppService.findByObjid(params);
+		if (!data) throw new Exception('\''+params.objid+'\' loan application record not found'); 
+
+		data.borrower = openBorrower([objid: data.borrower.objid]);
+		if (!data.borrower.entitytype) data.borrower.entitytype = data.borrower.type;
+
+		return data; 
+	} 
+
+	@ProxyMethod 
+	public def openBorrower( params ) {
+		return borrowerService.open(params);  
+	}
+
+	@ProxyMethod 
+	public def update ( params ) {
+		if (!params.objid) throw new Exception('Please specify objid'); 
+
+		def data = loanAppService.findByObjid(params);
+		if (!data) throw new Exception('\''+params.objid+'\' loan application record not found'); 
+
+		def borrower = params.remove('borrower'); 
+		data.borrower.objid = borrower.objid;
+
+		def b = borrowerdb.read([objid: borrower.objid]);
+		if (b) {
+			if (b.type == 'INDIVIDUAL') {
+				def xitm = borrowerindividual.read([objid: borrower.objid]);
+				if (xitm) {
+					data.borrower.name = borrowerService.createFullName(xitm.lastname, xitm.firstname, xitm.middlename);
+				}
+			} else {
+				data.borrower.name = b.name;
+			}
+			borrower.type = b.type;
+		}
+
+		loanAppService.em.update(data); 
+		borrowerService.update(borrower); 
+		loanapp_borrower.removePrincipalBorrower([parentid: data.objid]); 
+
+		def lb = [
+			objid: 		  'LBRWR' + new UID(), 
+			parentid: 	  data.objid, 
+			borrowerid:   data.borrower.objid, 
+			borrowername: data.borrower.name,  
+			principalid:  data.borrower.objid, 
+			type: 		  'PRINCIPAL' 
+		];	
+		loanapp_borrower.create(lb); 
+
+
+		def itm, itm2;
+		def list = loanapp_borrower.getBorrowerNames([parentid: data.objid]); 
+		for (o in list) {
+			o.borrowerid = o.objid;
+			o.borrowertype = o.type;
+
+			itm = customer.read([objid: o.objid]);
+			if (itm) {
+				if (itm.type == 'INDIVIDUAL') {
+					if (o.type == 'PRINCIPAL') {
+						itm2 = 	borrowerindividual.read([objid: o.objid]);
+					} else if (o.type == 'JOINT') {
+						itm2 = customerindividual.read([objid: o.objid]);
+					}
+
+					if (itm2) {
+						o.borrowername = borrowerService.createFullName(itm2.lastname, itm2.firstname, itm2.middlename);
+					}
+				} else {
+					o.borrowername = o.name;
+				}
+			} else if (!itm) {
+				o.borrowername = o.name;
+			}
+		}
+		loanAppService.updateBorrowerIndices(data.objid, list);  
+		data.borrower = borrower;
+		return data; 
+	} 
+}

@@ -1,0 +1,14 @@
+<schema>
+
+	<element name="loanapp_recommendation" tablename="loanapp_recommendation">
+		<field name="objid" primary="true"/>
+		<field name="ciremarks" required="true"/>
+		<field name="crecomremarks" required="true"/>
+		<field name="marketeramount" required="true"/>
+		<field name="ciamount" required="true"/>
+		<field name="fcaamount" required="true"/>
+		<field name="caoamount" required="true"/>
+		<field name="bcohamount" required="true"/>		
+	</element>
+
+</schema>

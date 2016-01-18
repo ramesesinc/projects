@@ -1,0 +1,212 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.services.extended.*;
+import java.rmi.server.UID;
+
+class AmnestyExtensionService extends ActiveCrudListService
+{
+	@Env
+	def env;
+
+	@ActiveDB("amnesty_extension")
+	def em;
+
+	@ActiveDB("amnesty")
+	def amnesty;
+
+	@ActiveDB("borrower")
+	def borrower;
+
+	@ActiveDB("datatxnlog")
+	def txnlog; 
+
+	@Service("DateService")
+	def dateSvc;
+
+	@Service("SequenceService")
+	def seqSvc;
+
+	@Service("InboxService")
+	def inboxSvc;
+
+	@ProxyMethod
+	public def getColumns( params ) {
+		def cols = [];
+		if (!params.state) cols << [name: 'txnstate', caption: 'Status'];
+
+		cols << [name: 'dtcreated', caption: 'Date Requested'];
+		cols << [name: 'refno', caption: 'RefNo'];
+		cols << [name: 'borrower.name', caption: 'Borrower'];
+		cols << [name: 'amnesty.refno', caption: 'Amnesty RefNo'];
+		cols << [name: 'extendeddate', caption: 'ExtendedTo'];
+		cols << [name: 'remarks', caption: 'Remarks'];
+		return cols;
+	}
+
+	@ProxyMethod
+	public def getNodes( params ) {
+		def list = [
+			[caption: 'Search', index: 0],
+			[caption: 'DRAFT', state: 'DRAFT', index: 1],
+			[caption: 'FOR APPROVAL', state: 'FOR_APPROVAL', index: 2],
+			[caption: 'APPROVED', state: 'APPROVED', index: 3],
+			[caption: 'DISAPPROVED', state: 'DISAPPROVED', index: 4]
+		];
+		list.sort{ it.index }
+		return list;
+	}
+
+	void validate( data ) {
+		if (!data.amnesty.dtended)
+			throw new Exception("Cannot extend amnesty with no end date.");
+
+		def am = amnesty.read(data.amnesty);
+		if (!am) throw new Exception("Amnesty record does not exist or has already been deleted.");
+
+		def startdate = dateSvc.add(am.dtended, "1");
+
+		def m = amnesty.findOverlapping([startdate: startdate, enddate: data.extendeddate, ledgerid: am.ledgerid]);
+		if (m && m.objid != am.objid) {
+			startdate = new java.text.SimpleDateFormat("MMM-dd-yyyy").format(m.dtstarted);
+			def enddate = new java.text.SimpleDateFormat("MMM-dd-yyyy").format(m.dtended);
+			throw new Exception("Extension for amnesty overlaps amnesty with term ${startdate} - ${enddate}.");
+		}
+		
+		def dtended;
+		if (data.amnesty.dtended instanceof Date) {
+			dtended = data.amnesty.dtended.toString();
+		} else {
+			dtended = data.amnesty.dtended;
+		}
+		def extendeddate;
+		if (data.extendeddate instanceof Date) {
+			extendeddate = data.extendeddate.toString();
+		} else {
+			extendeddate = data.extendeddate;
+		}
+		if (extendeddate.compareTo(dtended) <= 0)
+			throw new Exception("Extend to must be greater than date ended.");
+	}
+
+	void beforeCreate( data ) {
+		validate(data);
+		def date = dateSvc.parseCurrentDate();
+		data.dtcreated = date.date;
+		data.author = [objid: env.USERID, name: env.NAME];
+		if (!data.txndate) data.txndate = data.dtcreated;
+
+		def year = date.year + "";
+		def seqname = 'amnestyextension' + year;
+		def prefix = 'AMEXT' + year[2] + year[3];
+		data.refno = prefix + seqSvc.getNextFormattedSeriesA(seqname, 6);
+
+		def extendeddate;
+		if (data.extendeddate instanceof Date) {
+			extendeddate = data.extendeddate;
+		} else {
+			extendeddate = java.sql.Date.valueOf(data.extendeddate);
+		}
+		def days = dateSvc.getDaysDiff(data.amnesty.dtended, extendeddate);
+		data.extendeddays = (days <= 0? 0 : (days-1));
+	}
+
+	void beforeUpdate( data ) {	
+		validate(data);	
+		def extendeddate;
+		if (data.extendeddate instanceof Date) {
+			extendeddate = data.extendeddate;
+		} else {
+			extendeddate = java.sql.Date.valueOf(data.extendeddate);
+		}
+		def days = dateSvc.getDaysDiff(data.amnesty.dtended, extendeddate);
+		data.extendeddays = (days <= 0? 0 : (days-1));
+	}
+
+	void afterOpen( data ) {
+		def b = borrower.read(data.borrower);
+		if (!b) throw new Exception("Borrower record does not exist or has already been deleted.");
+
+		data.borrower.address = b.address;
+	}
+
+	void beforeList( params ) {
+		params.searchtext = (params.searchtext? params.searchtext : '') + '%';
+		if (params.state) { 
+			params._listMethod = 'getListByState';
+		}	
+	}
+
+	@ProxyMethod
+	public def submitForApproval( params ) {
+		def data = em.read(params);
+		if (!data) throw new Exception("Amnesty extension request does not exist or has already been deleted.");
+
+		data.txnstate = 'FOR_APPROVAL'
+		em.changeState(data);
+
+		def msginfo = [ 
+			objid 		: data.objid, 
+			dtcreated	: dateSvc.serverDate, 
+			refid 		: data.objid, 
+			filetype 	: 'amnestyextension', 
+			message 	: 'For approval amnesty extension for Ref. No. '+ data.refno, 
+			senderid	: env.USERID, 
+			sendername 	: env.NAME, 
+			recipientid : 'APPROVER' 
+		]; 
+		inboxSvc.addMessage( msginfo );
+
+		def loginfo = [
+			objid 	: 'TLOG' + new UID(), 
+			txndate : msginfo.dtcreated, 
+			txnid   : data.objid, 
+			user    : [objid: env.USERID, username: env.USER], 
+			action	: 'FOR_APPROVAL', 
+			remarks : 'Submit for approval amnesty extension for Ref. No. ' + data.refno
+		]; 
+		txnlog.create( loginfo ); 
+
+		return open(data);
+	}
+
+	@ProxyMethod
+	public def approveDocument( params ) {
+		def data = em.read(params);
+		if (!data) throw new Exception("Amnesty extension request does not exist or has already been deleted.");
+
+		data.txnstate = 'APPROVED';
+		em.changeState(data);
+
+		data.dtposted = dateSvc.serverDate;
+		data.poster = [objid: env.USERID, name: env.NAME, remarks: params.posterremarks];
+		em.update(data, "extension-post");
+
+		def am = amnesty.read(data.amnesty)
+		if (!am) throw new Exception("Amnesty record does not exist or has already been deleted.");
+
+		am.dtended = data.extendeddate;
+		am.extendeddate = am.dtended;
+		amnesty.update(am);
+	
+		inboxSvc.removeMessageByRefid([refid: data.objid]); 
+
+		return open(data);
+	}
+
+	@ProxyMethod
+	public def disapprove( params ) {
+		def data = em.read(params);
+		if (!data) throw new Exception("Amnesty extension request does not exist or has already been deleted.");
+
+		data.txnstate = 'DISAPPROVED';
+		em.changeState(data);
+
+		data.dtposted = dateSvc.serverDate;
+		data.poster = [objid: env.USERID, name: env.NAME, remarks: params.posterremarks];
+		em.update(data, "extension-post");
+
+		inboxSvc.removeMessageByRefid([refid: data.objid]); 
+
+		return open(data);
+	}
+}

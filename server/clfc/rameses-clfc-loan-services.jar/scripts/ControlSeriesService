@@ -1,0 +1,87 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.services.extended.*;
+import java.rmi.server.UID;
+
+class ControlSeriesService extends ActiveCrudListService
+{
+	@Env
+	def env;
+
+	@ActiveDB(value="controlseries")
+	def em;
+
+	@ActiveDB(value="loan_payment")
+	def loan_payment;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@ProxyMethod
+	public def getColumns( params ) {
+		return [
+			[name: 'state', caption: 'State'],
+			[name: 'user.name', caption: 'User'],
+			[name: 'prefix', caption: 'Prefix'],
+			[name: 'startseries', caption: 'Start Series'],
+			[name: 'endseries', caption: 'End Series'],
+			[name: 'nextseries', caption: 'Next Series'],
+		]
+	}
+
+	/*@ProxyMethod
+	public def getList( params ) {
+		params.searchtext = (params.searchtext? params.searchtext + '%' : '%');
+		return em.getList(params);
+	}*/
+
+	void beforeCreate( entity ) {
+		def data = em.findPreviousControlSeriesByUserid([userid: entity.user.objid]);
+		if (!data) {
+			data = [
+				objid		: 'CS' + new UID(),
+				state 		: 'CLOSE',
+				dtfiled		: dateSvc.serverDate,
+				filedby		: 'SYSTEM',
+				user 		: entity.user,
+				prefix 		: '0001',
+				startseries	: 1,
+				endseries 	: 999999,
+				nextseries 	: 1
+			];
+			em.create(data);
+		}
+
+		entity.state = 'OPEN';
+		entity.dtfiled = dateSvc.serverDate;
+		entity.filedby = (env.NAME? env.NAME : 'NOT IDENTIFIED');
+		entity.nextseries = entity.startseries;
+	}
+
+	@ProxyMethod
+	public def mapPreviousPaymentSeries() {
+		def payments = loan_payment.getList();
+		def series;
+		def details;
+		payments.each{payment->
+			series = em.findSeriesByPrefixAndUserid([prefix: '0001', userid: payment.collector.objid]);
+			if (!series) throw new Exception("No control series assigned to collector "+payment.collector.name);
+
+			details = loan_payment.getDetailsWithNoControlByParentid([parentid: payment.objid]);
+			details.each{pdetail->
+				//println 'pass 1'
+				pdetail.control = [
+					objid	: series.objid,
+					series 	: series.user.txncode+series.prefix+series.nextseries.toString().padLeft(6, "0"),
+					seriesno: series.nextseries
+				];
+				//println 'pass 2'
+				loan_payment.update(pdetail, "detail");
+				//println 'pass 3'
+				series.nextseries++;
+				//println 'pass 4'
+				em.update(series);
+			}
+		}
+	}
+}

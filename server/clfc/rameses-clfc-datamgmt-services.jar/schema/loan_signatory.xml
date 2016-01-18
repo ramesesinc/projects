@@ -1,0 +1,13 @@
+<schema>
+
+	<element tablename="loan_signatory">
+		<field name="objid" primary="true" />
+		<field name="state" required="true" />
+		<field name="dtcreated" required="true" />
+		<field name="author_objid" required="true" />
+		<field name="author_name" required="true" />
+		<field name="name" required="true" />
+		<field name="position" required="true" />
+	</element>
+
+</schema>

@@ -1,0 +1,134 @@
+<schema>
+
+	<element name="amnesty" tablename="amnesty">
+		<field name="objid" primary="true" />
+		<field name="txnstate" required="true" />
+		<field name="txnmode" required="true" />
+		<field name="dtcreated" required="true" />
+		<field name="author_objid" required="true" />
+		<field name="author_name" required="true" />
+		<field name="txndate" required="true" />
+		<field name="refno" required="true" />
+		<field name="ledgerid" required="true" />
+		<field name="txntype" />
+		<field name="borrower_objid" required="true" />
+		<field name="borrower_name" required="true" />
+		<field name="loanapp_objid" required="true" />
+		<field name="loanapp_appno" required="true" />
+		<field name="dtstarted" />
+		<field name="dtended" />
+		<field name="amnestyoption" required="true" />
+		<field name="iswaiveinterest" required="true" />
+		<field name="iswaivepenalty" required="true" />
+		<field name="remarks" required="true" />
+		<complex name="recommendation" required="false" type="list" serializer="default" />
+		<field name="grantedoffer_amount" />
+		<field name="grantedoffer_days" />
+		<field name="grantedoffer_months" />
+		<field name="grantedoffer_isspotcash" />
+		<field name="grantedoffer_date" />
+		<field name="dtposted" />
+		<field name="poster_objid" />
+		<field name="poster_name" />
+		<field name="poster_remarks" />
+		<field name="version" required="true" />
+		<field name="extendeddate" />
+		<field name="balance" />
+		<complex name="info" required="false" serializer="default" merge="true" />
+	</element>
+
+	<element name="amnesty-detail" tablename="amnesty_detail">
+		<field name="objid" primary="true" />
+		<field name="parentid" required="true" />
+		<field name="state" required="true" />
+		<field name="amtdue" required="true" />
+		<field name="interestdue" required="true" />
+		<field name="penaltydue" required="true" />
+		<field name="amtpaid" required="true" />
+		<field name="interestpaid" required="true" />
+		<field name="penaltypaid" required="true" />
+		<field name="amtbal" required="true" />
+		<field name="interestbal" required="true" />
+		<field name="penaltybal" required="true" />
+		<field name="dtpaid" />
+		<field name="refno" />
+		<field name="day" required="true" />
+		<field name="balance" required="true" />
+		<field name="partialpayment" required="true" />
+		<field name="txndate" required="true" />
+		<field name="remarks" />
+	</element>
+
+	<element name="amnesty-post" tablename="amnesty">
+		<field name="objid" primary="true" />
+		<field name="dtposted" required="true" />
+		<field name="poster_objid" required="true" />
+		<field name="poster_name" required="true" />
+		<field name="poster_remarks" required="true" />
+	</element>
+
+	<element name="amnesty-verify" tablename="amnesty">
+		<field name="objid" primary="true" />
+		<field name="dtverified" required="true" />
+		<field name="verifier_objid" required="true" />
+		<field name="verifier_name" required="true" />
+	</element>
+
+
+	<element name="amnesty-active" tablename="amnesty_active">
+		<field name="objid" primary="true" />
+	</element>
+
+	<element name="amnesty-avail" tablename="amnesty">
+		<field name="objid" primary="true" />
+		<field name="txntype" required="true" />
+		<field name="dtstarted" required="true" />
+		<field name="dtended" />
+		<field name="grantedoffer_amount" required="true" />
+		<field name="grantedoffer_days" required="true" />
+		<field name="grantedoffer_months" required="true" />
+		<field name="grantedoffer_isspotcash" required="true" />
+		<field name="grantedoffer_date" />
+		<field name="balance" required="true" />
+	</element>
+
+	<element name="amnesty-amend" tablename="amnesty">
+		<field name="objid" primary="true" />
+		<field name="dtended" required="true" />
+		<field name="grantedoffer_amount" required="true" />
+		<field name="grantedoffer_days" required="true" />
+		<field name="grantedoffer_months" required="true" />
+		<field name="grantedoffer_isspotcash" required="true" />
+		<field name="grantedoffer_date" />
+		<field name="version" required="true" />
+		<field name="extendeddate" />
+	</element>
+
+	<element name="amnesty-reject" tablename="amnesty">
+		<field name="objid" primary="true" />
+		<field name="txntype" required="true" />
+		<field name="remarks" required="true" />
+	</element>
+
+	<element name="amnesty-offer" tablename="amnesty_offer">
+		<field name="objid" primary="true" />
+		<field name="parentid" required="true" />
+		<field name="amount" required="true" />
+		<field name="days" required="true" />
+		<field name="months" required="true" />
+		<field name="isspotcash" required="true" />
+		<field name="usedate" required="true" />
+		<field name="date" />
+	</element>
+
+	<element name="amnesty-sendback" tablename="amnesty_sendback">
+		<field name="objid" primary="true" />
+		<field name="parentid" required="true" />
+		<field name="dtcreated" required="true" />
+		<field name="author_objid" required="true" />
+		<field name="author_name" required="true" />
+		<field name="state" required="true" />
+		<field name="remarks" required="true" />
+	</element>
+
+</schema>

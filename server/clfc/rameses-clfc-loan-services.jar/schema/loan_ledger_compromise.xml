@@ -1,0 +1,16 @@
+<schema>
+
+	<element name="loan_ledger_compromise" tablename="loan_ledger_compromise">
+		<field name="objid" primary="true" />
+		<field name="compromisetype" required="true" />
+		<field name="isfixedamount" required="true" />
+		<field name="fixedamount" />
+		<field name="dtcreated" required="true" />
+		<field name="createdby" required="true" />
+		<field name="dteffectivefrom" />
+		<field name="dteffectiveto"  />
+		<field name="iswaivepenalty" required="true" />
+		<field name="iswaiveinterest" required="true" />
+	</element>
+	
+</schema>

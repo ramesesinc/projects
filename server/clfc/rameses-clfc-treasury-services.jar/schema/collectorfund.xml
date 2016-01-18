@@ -1,0 +1,7 @@
+<schema>
+	<element name="collectorfund" tablename="collectorfund">
+		<field name="objid" primary="true"/>
+		<field name="state" required="true"/>
+		<field name="dtcreated" required="true"/>
+	</element>
+</schema>

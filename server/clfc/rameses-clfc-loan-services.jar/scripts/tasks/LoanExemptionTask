@@ -1,0 +1,25 @@
+import com.rameses.annotations.*;
+
+class LoanExemptionTask
+{
+	@ActiveDB('loan_exemption')
+	def em; 
+
+	@Service('DateService')
+	def dateSvc;
+
+	@Schedule(interval=30) 
+	public void removeExpiredData( task ) {	
+		def params = [_start:0, _limit: 25]; 
+		def list = em.getActiveExpiredList( params ); 
+		list.each { 
+			em.delete(it, 'active'); 
+			def info = em.read(it); 
+			info.state = 'CLOSED';
+			info.dtposted = dateSvc.serverDate;
+			info.postedby = 'SYSTEM'; 
+			info.postedremarks = 'SYSTEM CLOSED';
+			em.update(info); 
+		}
+	} 
+}

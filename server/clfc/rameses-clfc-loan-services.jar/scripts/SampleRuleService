@@ -1,0 +1,209 @@
+import com.rameses.annotations.*;
+import com.rameses.rules.common.*;
+import loan.facts.*;
+import loan.actions.*;
+import java.util.*;
+import com.rameses.util.*;
+
+class SampleRuleService 
+{
+	
+	@Service("RuleExecutorService")
+	def ruleSvc;
+
+	@Service("NumberService")
+	def numSvc;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@ProxyMethod
+	public def execute(  o ) {
+		def facts = [];
+		facts << new LoanApp(o);
+		facts << new BillDate(o);
+		facts << new Payment([amount: 0, startdate: o.startdate, dtpaid: o.startdate]);
+		//facts.each{ println it; }
+
+		def actions = new RuleAction(); 
+		actions.addCommand( "additem", new  AddBillItem(facts: facts) );
+		actions.addCommand( "calcSchedule", new CalcSchedule(NS: numSvc) );
+		actions.addCommand( "calcInterest", new CalcInterest(NS: numSvc) );
+		actions.addCommand( "calcAbsentPen", new CalcAbsentPenalty(NS: numSvc) );
+		actions.addCommand( "applyinitialization", new ApplyInitializations() );
+
+		println 'passing 1';
+		ruleSvc.execute( "loanapplication", facts, actions, null );
+
+		//facts.each{ println it; }
+
+		def facts2 = []; 
+		facts2.addAll(facts.findAll{ (it instanceof LoanBillingItem) });
+		facts2 << facts.find{ (it instanceof LoanApp) }
+		facts2 << facts.find{ (it instanceof BillDate) }
+
+		actions = new RuleAction();
+		actions.addCommand( "calcUnderpaymentPen", new CalcUnderpaymentPenalty(NS: numSvc) );
+		//actions.addCommand( "calcPenalty", new CalcPenalty(NS: numSvc) );
+		actions.addCommand( "applypayment", new ApplyPayment(NS: numSvc) );
+		actions.addCommand( "applyAbsentPen", new ApplyAbsentPenalty(NS: numSvc) );
+
+		println 'passing 2';
+		//o.payments.each{ println it; }
+		def appfact, pmt, startdate, billdate, totaldays, totaldue;
+		def remainder, rem, billdatefact, date, items = [];
+		def billitems;
+		o.payments.each{ p->
+			billdatefact = facts.find{ (it instanceof BillDate) }
+			if (p.billdate instanceof Date) {
+				date = p.billdate
+			} else {
+				date = java.sql.Date.valueOf(p.billdate);
+			}
+			billdatefact.date = date;
+
+			appfact = facts2.find{ (it instanceof LoanApp) };
+			billitems = facts2.findAll{ (it instanceof LoanBillingItem) && it.duedate >= appfact.scheduledate };
+			billitems.sort{ it.duedate }
+			billitems.eachWithIndex{ itm, idx-> itm.day = (idx+1); }
+			//println 'billitem ' + billitems[0].toMap();
+
+			p.startdate = appfact.scheduledate;
+			pmt = new Payment(p);
+			pmt.days = 1;
+			pmt.paymentmethod = o.paymentmethod.toUpperCase();
+			pmt.avgover = o.avgover;
+			startdate = dateSvc.parseDate(p.startdate, null).date;
+			billdate = dateSvc.parseDate(p.billdate, null).date;
+			totaldays = dateSvc.getDaysDiff(startdate, billdate);
+
+			totaldue = totaldays * o.amtdue;
+			if (p.amount < totaldue) {
+				pmt.hasUnderpayment = true;
+
+			} else if (p.amount == totaldue) {
+				pmt.isExact = true;
+				pmt.days = totaldays;
+
+			} else if (p.amount > totaldue) {
+				pmt.hasRemainder = true;
+
+				def add = 0;
+				if (o.paymentmethod == 'schedule') {
+					remainder = p.amount - totaldue;
+					rem = remainder.divideAndRemainder(appfact.schedule);
+					add = rem[0];
+
+				} else if (o.paymentmethod == 'over') {
+					def amt = totaldays * pmt.avgover;
+					def overdays, normaldays;
+					if (p.amount >= amt) {
+						remainder = new BigDecimal((p.amount - amt) + "").setScale(2);
+						rem = remainder.divideAndRemainder(pmt.avgover);
+						overdays = rem[0];
+
+					} else {
+						remainder = new BigDecimal((p.amount - totaldue) + "").setScale(2);
+						rem = remainder.divideAndRemainder(appfact.schedule);
+						normaldays = rem[0];
+
+					}
+					add = (overdays > normaldays? overdays : normaldays);
+					if (add < 0) add = 0;
+					if (add == 0) pmt.hasRemainderIsExact = true;
+					println 'add ' + add;
+				}
+				pmt.extradays = add;
+				pmt.maxdays = pmt.extradays + totaldays;
+
+			}
+			println 'payment fact ' + pmt.toMap();
+			facts2 << pmt;
+			//facts2.each { println it; }
+
+			ruleSvc.execute( "loanbilling", facts2, actions, null );
+
+			appfact.scheduledate = DateUtil.add( appfact.scheduledate, '1d');
+			def f = facts2.find{ (it instanceof Payment) }
+			facts2.remove(f);//f.each{ facts2.remove(it); }
+
+			/*def m = facts2.find{ (it instanceof LoanBillingItem) && it.amtpaid > 0 }
+			def l = facts2.findAll{ (it instanceof LoanBillingItem) && it.duedate <= m.duedate }
+			items.addAll(l);
+			l.each{ facts2.remove(it); }*/
+			//println 'app fact apply date ' + appfact.scheduledate;
+			//println 'apply date ' + pmt.applydate;
+			//println 'payment fact ' + pmt.toMap();
+		}
+
+		/*if (o.payment) {
+			pmt = new Payment(o); 
+			pmt.days = 1;
+			def startdate = dateSvc.parseDate(o.startdate, null).date;
+			def billdate = dateSvc.parseDate(o.billdate, null).date;
+			def totaldays = dateSvc.getDaysDiff(startdate, billdate);
+
+			def totaldue = totaldays * o.amtdue;
+			//println 'total due ' + totaldue;
+			if (o.payment < totaldue) {
+				pmt.hasUnderpayment = true;
+
+			} else if (o.payment == totaldue) {
+				pmt.isExact = true;
+				pmt.days = totaldays;
+
+			} else if (o.payment > totaldue) {
+				pmt.hasRemainder = true;
+
+				def remainder = o.payment - totaldue;
+				def rem = remainder.divideAndRemainder(o.amtdue);
+				pmt.extradays = rem[0];
+				println 'extra days ' + pmt.extradays;
+				pmt.maxdays = pmt.extradays + totaldays;
+			}
+			//println 'maxdays ' + pmt.maxdays;
+			//println 'has underpayment ' + pmt.hasUnderpayment;
+			facts << pmt;
+		}	*/
+		//actions.addCommand( "calcUnderpaymentPen", new CalcUnderpaymentPenalty(NS: numSvc) );
+		//actions.addCommand( "calcPenalty", new CalcPenalty(NS: numSvc) );
+		//actions.addCommand( "applypayment", new ApplyPayment(NS: numSvc) );
+		//actions.addCommand( "applyAbsentPen", new ApplyAbsentPenalty(NS: numSvc) );
+		//actions.addCommand( "applyinitialization", new ApplyInitializations() );
+		
+		//actions.each{ println it; }
+
+		//println 'actions ' + actions;
+		def result = [:];
+		result.items = facts2.findAll{ (it instanceof LoanBillingItem) }.collect{ it.toMap() };
+		result.items.sort{ it.duedate }
+		def balance = o.principal;
+		result.items.each{
+			if (it.itemno == 1) it.principal = o.principal;
+			if (it.forprincipal > 0) {
+				balance -=  it.forprincipal;
+				println 'due date ' + it.duedate;
+				println 'absent penalty ' + it.absentpenalty;
+				println 'underpayment penalty ' + it.underpytpenalty;
+				it.penalty = it.absentpenalty + it.underpytpenalty;
+				if (it.penalty == 0) it.penalty = null;
+			}
+			it.balance = balance;
+			if (!it.amtpaid || it.amtpaid == 0) {
+				it.forprincipal = null;
+				it.balance = null;
+				it.penalty = null;
+				it.amtpaid = null;
+			}
+		}
+
+		//println "no of days " + pmt.days + " for principal " + pmt.forPrincipal;
+		return result;
+	}	
+
+	@ProxyMethod
+	public def executeSegregationRules( params ) {
+		
+	}
+
+}

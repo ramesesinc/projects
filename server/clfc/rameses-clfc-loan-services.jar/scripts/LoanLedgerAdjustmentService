@@ -1,0 +1,590 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.services.extended.*;
+import java.rmi.server.UID;
+
+class LoanLedgerAdjustmentService extends ActiveCrudListService
+{
+	@Env
+	def env;
+
+	@ActiveDB("loan_ledger_adjustment")
+	def em;
+
+	@ActiveDB("ledger_adjustment_request")
+	def adjustment_request;
+
+	@ActiveDB("var")
+	def var;
+
+	@ActiveDB("borrower")
+	def borrower;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@Service("InboxService")
+	def inboxSvc;
+
+	@ProxyMethod
+	public def getColumns( params ) {
+		def cols = [];
+		if (!params.ledgerid) {
+			cols << [name: 'borrower.name', caption: 'Borrower'];
+		}
+
+		if (!params.state) {
+			cols << [name: 'txnstate', caption: 'Status'];
+		}
+
+		cols << [name: 'txndate', caption: 'Adjustment Date', type: 'date', outputFormat: 'MMM-dd-yyyy'];
+		cols << [name: 'amount', caption: 'Amount', type: 'decimal', format: '#,##0.00'];
+		
+		if (params.state!='DELETED') {
+			cols << [name: 'modifiedby.name', caption: 'Modified By'];
+		}
+
+		if (params.state=='APPROVED') {
+			cols << [name: 'poster.name', caption: 'Approved By'];
+		}
+		if (params.state=='DISAPPROVED') {
+			cols << [name: 'poster.name', caption: 'Disapproved By'];
+		}
+		return cols;
+	}
+
+
+	@ProxyMethod
+	public def getNodes( params ) {
+		def list = [
+			[caption: 'Search', index: 0],
+			[caption: 'FOR APPROVAL', state: 'FOR_APPROVAL', index: 1],
+			[caption: 'APPROVED', state: 'APPROVED', index: 2],
+			[caption: 'DISAPPROVED', state: 'DISAPPROVED', index: 3],
+			[caption: 'DELETED', state: 'DELETED', index: 4],
+		];
+		list.sort{ it.index }
+		return list;
+	}
+
+	@ProxyMethod
+	public def getOptions() {
+		return [
+			[caption: 'FOR APPROVAL', state: 'FOR_APPROVAL'],
+			[caption: 'APPROVED', state: 'APPROVED'],
+			[caption: 'DISAPPROVED', state: 'DISAPPROVED'],
+			[caption: 'DELETED', state: 'DELETED']
+		]
+	}
+
+	void beforeCreate( data ) {
+		data.dtcreated = dateSvc.serverDate;
+		data.author = [objid: env.USERID, name: env.NAME];
+		data.dtmodified = data.dtcreated;
+		data.modifiedby = data.author;
+		if (!data.reftype) data.reftype = 'ADJUSTMENT';
+	}
+
+	/*void beforeUpdate( data ) {
+		data.dtmodified = dateSvc.serverDate;
+		data.modifiedby = [objid: env.USERID, name: env.NAME];
+		data.dtposted = null;
+		data.poster = [objid: null, name: null];
+	}*/
+
+	void afterCreate( data ) {
+		check(data);
+	}
+
+	public def update( params ) {
+		def data = em.read(params);
+		if (!data) throw new Exception("Adjustment record does not exist or has already been deleted.");
+
+		if (data.txnstate == 'FOR_APPROVAL')
+			throw new Exception("Cannot update adjustment. Request needs for approval.");
+
+		data.dtmodified = dateSvc.serverDate;
+		data.modifiedby = [objid: env.USERID, name: env.NAME];
+		data.dtposted = null;
+		data.poster = [objid: null, name: null];
+
+		def olddata = [:];
+		olddata.putAll(data);
+
+		data.requesttype = 'MODIFY';
+		if (params.modifyamount == true) {			
+			data.amount = params.newamount;
+			check(data);
+			params.modifyremarks += ' \nModified amount from ' + olddata.amount + ' to ' + data.amount;
+		}
+
+		if (params.modifydate == true) {
+			data.txndate = params.newdate;
+			data.txnstate = 'FOR_APPROVAL';
+			params.modifyremarks += ' \nModifed date from ' + olddata.txndate + ' to ' +  data.txndate;
+		}
+
+		if (data.txnstate == 'FOR_APPROVAL') {
+			def req = adjustment_request.findRequestByAdjustmentidAndTxnstateAndTxntype([adjustmentid: data.objid, txnstate: 'FOR_APPROVAL', txntype: 'MODIFY']);
+			if (!req) {
+				req = [
+					objid		: 'LAD' + new UID(),
+					txnstate 	: 'FOR_APPROVAL',
+					dtcreated 	: dateSvc.serverDate,
+					author 		: [objid: env.USERID, name: env.NAME],
+					adjustmentid: data.objid,
+					txntype 	: 'MODIFY',
+					remarks 	: params.modifyremarks,
+					olddata		: olddata,
+					newdata 	: data,
+					modifydate 	: params.modifydate,
+					modifyamount: params.modifyamount
+				];
+				adjustment_request.create(req);
+
+				def msginfo = [ 
+					objid 		: data.objid, 
+					dtcreated	: req.dtcreated, 
+					refid 		: data.objid, 
+					filetype 	: 'ledgeradjustment', 
+					message 	: 'For approval of modification request for adjustment of ' + data.borrower.name, 
+					senderid	: env.USERID, 
+					sendername 	: env.NAME, 
+					recipientid : 'APPROVER' 
+				]; 
+				inboxSvc.addMessage( msginfo );
+			}
+			data.amount = olddata.amount;
+			data.txndate = olddata.txndate;
+			em.update(data);
+		}
+
+		return open(data);
+	}
+
+	void check( data ) {
+		def sysvar = var.read([name: "adjustment_amount_threshold"]);
+		if (!sysvar) {
+			data.txnstate = 'FOR_APPROVAL';
+		} else {			
+			def val;
+			def val2 = data.amount;
+			if (val2 < 0) {
+				val2 *= -1;
+			}
+
+			if (sysvar.value instanceof String) {
+				val = new BigDecimal(sysvar.value).setScale(2);
+			} else {
+				val = sysvar.value;
+			}
+
+			if (val2 <= val) {
+				data.txnstate = 'APPROVED'
+			} else {
+				data.txnstate = 'FOR_APPROVAL';
+			}
+		}
+		em.update(data);
+	}
+
+	void beforeList( params ) {
+		params.searchtext = (params.searchtext? params.searchtext : '') + '%';
+		if (params.state) {
+			params._listMethod = 'getListByState';
+			//if (params.state == 'FOR_APPROVAL') {
+			//	params._listMethod = 'getForApprovalList';
+			//}
+			/*if (params.state=='FOR_DELETION') {
+				params.txnstate = 'FOR_APPROVAL';
+				params._listMethod = 'getAdjustmentDeleteRequestList';
+			}
+			if (params.state=='DELETED') {
+				params.txnstate = 'APPROVED';
+				params._listMethod = 'getAdjustmentDeleteRequestList';
+			}*/
+		}
+		if (params.ledgerid) {
+			params._listMethod = 'getListByLedgerid';
+		}
+		if (params.state && params.ledgerid) {
+			params._listMethod = 'getListByStateAndLedgerid';
+			/*if (params.state=='FOR_DELETION') {
+				params.txnstate = 'FOR_APPROVAL';
+				params._listMethod = 'getAdjustmentDeleteRequestListByLedgerid';
+			}
+			if (params.state=='DELETED') {
+				params.txnstate = 'APPROVED';
+				params._listMethod = 'getAdjustmentDeleteRequestListByLedgerid';
+			}*/
+		}
+	}
+
+	void afterOpen( data ) {
+		def b = borrower.read(data.borrower);
+		if (!b) throw new Exception("Borrower record does not exist or has already been deleted.");
+
+		data.borrower.address = b.address;
+		data.allowrequest = false;
+		data.hasdeleterequest = false;
+		data.hasmodifyrequest = false;
+		if (data.txnstate == 'APPROVED') {
+			data.allowrequest = true;
+			def i = adjustment_request.findRequestByAdjustmentidAndTxnstateAndTxntype([adjustmentid: data.objid, txnstate: 'FOR_APPROVAL', txntype: 'DELETE']);
+			if (i) data.allowrequest = false;
+		}
+
+		if (data.requesttype == 'MODIFY') {
+			def i = adjustment_request.findRequestByAdjustmentidAndTxnstateAndTxntype([adjustmentid: data.objid, txnstate: 'FOR_APPROVAL', txntype: 'MODIFY']);
+			if (i) {
+				data.hasmodifyrequest = true;
+				data.modifyremarks = i.remarks;
+				if (data.remarks) data.remarks += ' \n\nModification remarks: \n';
+				data.remarks += i.remarks;
+				def info = [:];
+				if (i.info) {
+					info = em.serializer.read(i.info);
+					i.remove('info');
+				}
+				//println 'i ' + i;
+				if (info.modifyamount == true) data.newamount = info.newdata_amount;
+				if (info.modifydate == true) data.newdate = info.newdata_txndate;
+			}
+		}
+		def req;
+		if (data.requesttype == 'DELETE') {
+			req = adjustment_request.findRequestByAdjustmentidAndTxnstateAndTxntype([adjustmentid: data.objid, txnstate: 'FOR_APPROVAL', txntype: 'DELETE']);
+		}
+		if (data.txnstate == 'DELETED') {
+			req = adjustment_request.findRequestByAdjustmentidAndTxnstateAndTxntype([adjustmentid: data.objid, txnstate: 'APPROVED', txntype: 'DELETE']);
+		}
+		if (req) {
+			data.hasdeleterequest = true;
+			data.deleteremarks = req.remarks;
+			if (data.remarks) data.remarks += ' \n\nDeletion remarks: \n';
+			data.remarks += req.remarks;
+		}
+	}
+
+	@ProxyMethod
+	public def approveDocument( params ) {
+		def data = em.read(params);
+		if (!data) throw new Exception("Adjustment record does not exist or has already been deleted.");
+
+		data.txnstate = 'APPROVED';
+		em.update(data);
+
+		data.dtposted = dateSvc.serverDate;
+		data.poster = [objid: env.USERID, name: env.NAME];
+		em.update(data, 'adjustment-post');
+
+		if (params.requesttype == 'DELETE') {
+			return approveDelete(params);
+		}
+
+		if (params.requesttype == 'MODIFY') {
+			return approveModify(params);
+		}
+
+		inboxSvc.removeMessageByRefid([refid: data.objid]);
+
+		return open(data);
+	}
+
+	private def approveModify( params ) {
+		def data = em.read(params);
+		if (!data) throw new Exception("Adjustment record does not exist or has already been deleted.");
+
+		def req = adjustment_request.findRequestByAdjustmentidAndTxnstateAndTxntype([adjustmentid: data.objid, txnstate: 'FOR_APPROVAL', txntype: 'MODIFY']);
+		if (req) {
+			req.txnstate = 'APPROVED';
+			adjustment_request.changeState(req);
+
+			def info = em.serializer.read(req.info);
+			if (info.modifydate == true) {
+				data.txndate = info.newdata_txndate;
+			}
+			if (info.modifyamount == true) {
+				data.amount = info.newdata_amount;
+			}
+			em.update(data);
+
+			req.dtposted = dateSvc.serverDate;
+			req.poster = [objid: env.USERID, name: env.NAME];
+			adjustment_request.update(req, "adjustment-delete-post");
+		}
+
+		inboxSvc.removeMessageByRefid([refid: data.objid]);
+
+		return open(data);
+	}
+
+	private def approveDelete( params ) {
+		def data = em.read(params);
+		if (!data) throw new Exception("Adjustment record does not exist or has already been deleted.");
+
+		data.txnstate = 'DELETED';
+		em.update(data);
+
+		def req = adjustment_request.findRequestByAdjustmentidAndTxnstateAndTxntype([adjustmentid: data.objid, txnstate: 'FOR_APPROVAL', txntype: 'DELETE']);
+		if (req) {
+			req.txnstate = 'APPROVED';
+			adjustment_request.changeState(req);
+
+			req.dtposted = dateSvc.serverDate;
+			req.poster = [objid: env.USERID, name: env.NAME];
+			adjustment_request.update(req, "adjustment-delete-post");
+		}
+
+		inboxSvc.removeMessageByRefid([refid: data.objid]);
+
+		return open(data);
+	}
+
+	@ProxyMethod
+	public def disapprove( params ) {
+		def data = em.read(params);
+		if (!data) throw new Exception("Adjustment record does not exist or has already been deleted.");
+
+
+		data.txnstate = 'DISAPPROVED';
+		em.update(data);
+
+		data.dtposted = dateSvc.serverDate;
+		data.poster = [objid: env.USERID, name: env.NAME];
+		em.update(data, 'adjustment-post');
+
+		if (params.requesttype == 'MODIFY') {
+			return disapproveModify(params);
+		}
+
+		if (params.requesttype == 'DELETE') {
+			return disapproveDelete(params)
+		}
+
+		inboxSvc.removeMessageByRefid([refid: data.objid]);
+
+		return open(data);
+	}
+
+	private def disapproveModify( params ) {
+		def data = em.read(params);
+		if (!data) throw new Exception("Adjustment record does not exist or has already been deleted.");
+
+		data.txnstate = 'APPROVED';
+
+		def req = adjustment_request.findRequestByAdjustmentidAndTxnstateAndTxntype([adjustmentid: data.objid, txnstate: 'FOR_APPROVAL', txntype: 'MODIFY']);
+		if (req) {
+			req.txnstate = 'DISAPPROVED';
+			adjustment_request.changeState(req);
+
+			def info = em.serializer.read(req.info);
+			data.txnstate = info.olddata_txnstate;
+			data.requesttype = info.olddata_requesttype;
+
+			req.dtposted = dateSvc.serverDate;
+			req.poster = [objid: env.USERID, name: env.NAME];
+			adjustment_request.update(req, "adjustment-delete-post");
+		}
+		em.update(data);
+
+		inboxSvc.removeMessageByRefid([refid: data.objid]);
+
+		return open(data);
+	}
+
+	private def disapproveDelete( params ) {
+		def data = em.read(params);
+		if (!data) throw new Exception("Adjustment record does not exist or has already been deleted.");
+
+		data.txnstate = 'APPROVED';
+		data.requesttype = 'ADJUSTMENT';
+
+		def req = adjustment_request.findRequestByAdjustmentidAndTxnstateAndTxntype([adjustmentid: data.objid, txnstate: 'FOR_APPROVAL', txntype: 'DELETE']);
+		if (req) {
+			req.txnstate = 'DISAPPROVED';
+			adjustment_request.changeState(req);
+
+			def info = em.serializer.read(req.info);
+			data.txnstate = info.olddata_txnstate;
+			data.requesttype = info.olddata_requesttype;
+
+			req.dtposted = dateSvc.serverDate;
+			req.poster = [objid: env.USERID, name: env.NAME];
+			adjustment_request.update(req, "adjustment-delete-post");
+		}
+		//println 'request ' + req;
+		//println 'data ' + data;
+		//throw new Exception("stop");
+		em.update(data);
+
+		inboxSvc.removeMessageByRefid([refid: data.objid]);
+
+		return open(data);
+	}
+
+	@ProxyMethod
+	public def getBorrower( data ) {
+		def b = borrower.read(data);
+		if (!b) throw new Exception("Borrower record does not exist or has already been deleted.");
+
+		if (!b.name) b.name = b.lastname + ', ' + b.firstname + (b.middlename? ' ' + b.middlename : '');
+		return b;
+	}
+
+	@ProxyMethod
+	public def requestForDelete( params ) {
+		def data = em.read(params);
+		if (!data) throw new Exception("Adjustment record does not exist or has already been deleted.");
+
+
+		def req = adjustment_request.findRequestByAdjustmentidAndTxnstateAndTxntype([adjustmentid: data.objid, txnstate: 'FOR_APPROVAL', txntype: 'DELETE']);
+		if (!req) {
+			req = [
+				objid		: 'LAD' + new UID(),
+				txnstate 	: 'FOR_APPROVAL',
+				dtcreated 	: dateSvc.serverDate,
+				author 		: [objid: env.USERID, name: env.NAME],
+				adjustmentid: data.objid,
+				txntype 	: 'DELETE',
+				remarks 	: params.remarks,
+				olddata		: data
+			];
+			adjustment_request.create(req);
+
+			def msginfo = [ 
+				objid 		: data.objid, 
+				dtcreated	: req.dtcreated, 
+				refid 		: data.objid, 
+				filetype 	: 'ledgeradjustment', 
+				message 	: 'For approval of delete request for adjustment of ' + data.borrower.name, 
+				senderid	: env.USERID, 
+				sendername 	: env.NAME, 
+				recipientid : 'APPROVER' 
+			]; 
+			inboxSvc.addMessage( msginfo );
+		}
+
+		data.txnstate = 'FOR_APPROVAL';
+		data.requesttype = 'DELETE';
+		em.update(data);
+
+		return open(data);
+	}
+
+	/*
+	@ProxyMethod
+	public def approveDelete( params ) {
+		def data = em.read(params);
+		if (!data) throw new Exception("Adjustment record does not exist or has already been deleted.");
+
+		data.txnstate = 'DELETED';
+		em.update(data);
+
+		def req = adjustment_request.findRequestByAdjustmentidAndTxnstateAndTxntype([adjustmentid: data.objid, txnstate: 'FOR_APPROVAL']);
+		if (req) {
+			req.txnstate = 'APPROVED';
+			adjustment_request.changeState(req);
+
+			req.dtposted = dateSvc.serverDate;
+			req.poster = [objid: env.USERID, name: env.NAME];
+			adjustment_request.update(req, "adjustment-delete-post");
+		}
+
+		inboxSvc.removeMessageByRefid([refid: data.objid]);
+
+		return open(data);
+	}
+
+	@ProxyMethod
+	public def disapproveDelete( params ) {
+		def data = em.read(params);
+		if (!data) throw new Exception("Adjustment record does not exist or has already been deleted.");
+
+		data.txnstate = 'APPROVED';
+		em.update(data);
+
+		def req = adjustment_request.findRequestByAdjustmentidAndTxnstateAndTxntype([adjustmentid: data.objid, txnstate: 'FOR_APPROVAL']);
+		if (req) {
+			req.txnstate = 'DISAPPROVED';
+			adjustment_request.changeState(req);
+
+			req.dtposted = dateSvc.serverDate;
+			req.poster = [objid: env.USERID, name: env.NAME];
+			adjustment_request.update(req, "adjustment-delete-post");
+		}
+
+		inboxSvc.removeMessageByRefid([refid: data.objid]);
+
+		return open(data);
+	}
+	*/
+
+	/*
+	@ActiveDB(value="loan_ledger_history")
+	def ledger_history;
+
+	@ActiveDB(value="loan_ledger")
+	def ledger;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@Service("LoanPaymentService")
+	def paymentSvc;
+
+	@ProxyMethod
+	public def getPayments( params ) {
+		if (!params.ledgerid) throw new Exception('Please specify ledgerid.');
+
+		def list = ledger.getPaymentsFromLedgerDetail([parentid: params.ledgerid]);
+		def total = 0;
+		def prevdate;
+		list.eachWithIndex{item, idx->
+			if (item.txndate == prevdate) {
+				if(total == 0) total = list[idx-1].payamount;
+				item.payamount -= total;
+				total += item.payamount;
+			} else total = 0;
+			prevdate = item.txndate;
+		}
+		return list;
+	}
+
+	@ProxyMethod
+	public def create( adjustment ) {
+		if (!adjustment.ledgerid) throw new Exception('Please specify ledgerid');
+		if (!adjustment.payments) throw new Exception('Please specify payments');
+
+		def list = ledger.getLedgerDetailsByLedgerid([parentid: adjustment.ledgerid]);
+		def idx = adjustment.payments.findIndexOf{ it.adjusted == true }
+		idx = (idx > 0)? (idx-1) : 0;
+		def payment = adjustment.payments[idx];
+		def startIndex =  list.findIndexOf{ it.refno == payment.refno }
+		if (startIndex == 0) startIndex = -1;
+
+		def serverdate = dateSvc.serverDate;
+		list.eachWithIndex{item, index-> 
+			if (index > startIndex) {
+				item.dtcreated = serverdate;
+				if(list[index-1].state == 'OFFSET') {  }
+				ledger_history.create(item);
+			}
+		}
+
+		ledger.removeLedgerDetail([parentid: adjustment.ledgerid]);
+
+		def dtlastpaid;
+		if (idx == 0) {
+			def l = ledger.read([objid: adjustment.ledgerid]);
+			dtlastpaid = dateSvc.add(l.dtstarted, "-1");
+		} else dtlastpaid = adjustment.payments[idx-1];
+		ledger.update([objid: adjustment.ledgerid, dtlastpaid: dtlastpaid], "dtlastpaid");
+
+		adjustment.payments.each{
+			paymentSvc.postPayment(it);
+		}
+	}
+	*/
+
+}

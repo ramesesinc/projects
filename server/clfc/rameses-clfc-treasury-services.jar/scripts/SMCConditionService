@@ -1,0 +1,18 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.services.extended.*;
+
+class SMCConditionService extends ActiveCrudListService
+{
+	@ActiveDB("smc_condition")
+	def em;
+
+	@ProxyMethod
+	public def getColumns( params ) {
+		return [
+			[name: 'title', caption: 'Title'],
+			[name: 'datatype', caption: 'DataType'],
+			[name: 'handler', caption: 'Handler']
+		];
+	}
+}

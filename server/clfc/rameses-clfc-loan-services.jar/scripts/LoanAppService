@@ -1,0 +1,270 @@
+import com.rameses.annotations.*;
+import com.rameses.common.*;
+import com.rameses.services.extended.*;
+import java.rmi.server.UID;
+
+class LoanAppService 
+{	
+	@ActiveDB("borrower")
+	def borrower;
+
+	@ActiveDB('loanapp')
+	def loanapp;
+
+	@ActiveDB('loanapp_borrower')
+	def loanapp_borrower;
+
+	@ActiveDB('loanapp_business')
+	def business;
+
+	@ActiveDB('loan_product_type')
+	def productType;	
+
+	@ActiveDB('loan_route')
+	def emRoute;	
+
+	@Service('DateService') 
+	def dateService;
+
+	@Service('BorrowerService')
+	def borrowerService;
+
+	@Env 
+	def env;
+
+	@ProxyMethod(local=true) 
+	public def getEm() { return loanapp; } 	
+
+	@ProxyMethod 
+	public def getProductTypes() { 
+		return productType.getList([searchtext: '%']); 
+	} 
+
+	@ProxyMethod 
+	public def open( params ) {
+		def data = findByObjid(params); 
+		if (!data) throw new Exception('\''+params.objid+'\' loan application record not found');
+		
+		def route = emRoute.findByCode([code: data.route?.code]); 
+		if (route) data.route = route;
+
+		def b = borrower.read([objid: data.borrower.objid]);
+		if (b) {
+			data.borrower.entitytype = b.type;
+			//println 'entity type ' + b.type;
+		}
+
+		def nextto = loanapp_borrower.findNextto([borrowerid: data.borrower.objid]);
+		if (nextto) data.nextto = nextto;
+
+
+		return data;
+	}
+
+	@ProxyMethod 
+	public def update( params ) {
+		def data = findByObjid(params); 
+		if (!data) throw new Exception('\''+params.objid+'\' loan application record not found');
+
+		loanapp.update(params);
+		if(params.route) loanapp.update(params, 'route');
+
+		if (params.nextto) {
+			def nextto = loanapp_borrower.findNextto([borrowerid: params.borrower.objid]);
+			if (!nextto) {
+				def itm = [
+					objid: 'LBN'+new UID(),
+					borrowerid: params.borrower.objid,
+					nexttoid: params.nextto.objid
+				]
+				loanapp_borrower.create(itm, 'nextto');
+			} else {
+				loanapp_borrower.update(itm, 'nextto');
+			}
+		}
+
+		return params;
+	} 
+
+
+	@ProxyMethod(local=true) 
+	public def findByObjid( params ) {
+		def data = loanapp.findByObjid(params);
+		return data;
+	} 
+
+	@ProxyMethod(local=true) 
+	public void updateBorrowerIndices(loanappid, list) { 
+		def data = findByObjid([objid: loanappid]); 
+		loanapp.removeBorrowerIndices([appid: data.objid]); 
+		for (o in list) {
+			o.objid = 'IDX' + new UID();
+			o.appid = data.objid;
+			o.searchtext = o.borrowername; 
+			loanapp.create(o, 'loanapp_search_borrower_index'); 
+		}
+
+		data.branchcode = data.branch.code;
+		data.branchname = data.branch.name;
+		data.routecode = data.route?.code;
+		data.fullborrowername = list.collect{ it.borrowername }.join(' AND '); 
+
+		def si = loanapp.findSearchIndex([objid: data.objid]);
+		if (si == null) { 
+			data.dtposted = data.dtcreated;
+			data.postedby = data.createdby;
+			loanapp.create(data, 'loanapp_search');
+		} else {
+			loanapp.update(data, 'loanapp_search');
+		}
+	}
+
+	@ProxyMethod 
+	public def submitForInspection( params ) {
+		if (!params.objid) throw new Exception('Please specify objid');
+		if (!params.remarks) throw new Exception('Please specify remarks');
+
+		def data = loanapp.findByObjid(params);
+		if (data.state != 'PENDING') 
+			throw new Exception('Loan status must be PENDING before submitting for inspection'); 
+
+		data.dtposted = dateService.serverDate.toString(); 
+		data.postedby = env.USERID; 
+		data.state = 'FOR_INSPECTION';
+		loanapp.update(data); 
+
+		def o = loanapp.findSearchIndex(data); 
+		o.state = data.state; 
+		o.dtposted = data.dtposted;
+		o.postedby = data.postedby;
+		loanapp.update(o, 'loanapp_search'); 
+		loanapp.removeRecommendation(data); 
+
+		o = [
+			objid: 		'LOG' + new UID(),
+			appid: 		data.objid, 
+			dtposted: 	data.dtposted,
+			postedby:  	data.postedby,
+			remarks: 	params.remarks 
+		];
+		loanapp.create(o, 'loanapp_log'); 
+		return data; 
+	} 
+
+	@ProxyMethod 
+	public def submitForCrecom( params ) {
+		if (!params.objid) throw new Exception('Please specify objid');
+		if (!params.remarks) throw new Exception('Please specify remarks');
+		if (!params.ciremarks) throw new Exception('Please specify ciremarks');
+
+		def data = loanapp.findByObjid(params);
+		if (data.state != 'FOR_INSPECTION') 
+			throw new Exception('Loan status must be FOR_INSPECTION before submitting for CRECOM'); 
+
+		data.dtposted = dateService.serverDate.toString(); 
+		data.postedby = env.USERID; 
+		data.state = 'FOR_CRECOM';
+		loanapp.update(data); 
+
+		def o = loanapp.findSearchIndex(data); 
+		o.state = data.state; 
+		o.dtposted = data.dtposted;
+		o.postedby = data.postedby;
+		loanapp.update(o, 'loanapp_search'); 
+		loanapp.removeRecommendation(data); 
+
+		o = [objid: data.objid, ciremarks: params.ciremarks];
+		loanapp.create(o, 'ci_recommendation'); 
+
+		o = [
+			objid: 		'LOG' + new UID(),
+			appid: 		data.objid, 
+			dtposted: 	data.dtposted, 
+			postedby:  	data.postedby,
+			remarks: 	params.remarks 
+		];
+		loanapp.create(o, 'loanapp_log'); 
+		return data; 
+	}	
+
+	@ProxyMethod 
+	public def returnForCI( params ) {
+		if (!params.objid) throw new Exception('Please specify objid');
+		if (!params.remarks) throw new Exception('Please specify remarks');
+
+		def data = loanapp.findByObjid(params);
+		if (data.state != 'FOR_CRECOM') 
+			throw new Exception('Loan status must be FOR_CRECOM before submitting back for inspection'); 
+
+		data.dtposted = dateService.serverDate.toString(); 
+		data.postedby = env.USERID; 
+		data.state = 'FOR_INSPECTION';
+		loanapp.update(data); 
+
+		def o = loanapp.findSearchIndex(data); 
+		o.state = data.state; 
+		o.dtposted = data.dtposted;
+		o.postedby = data.postedby;
+		loanapp.update(o, 'loanapp_search'); 
+		loanapp.removeRecommendation(data);
+
+		o = [
+			objid: 		'LOG' + new UID(),
+			appid: 		data.objid, 
+			dtposted: 	data.dtposted,
+			postedby:  	data.postedby,
+			remarks: 	params.remarks 
+		];
+		loanapp.create(o, 'loanapp_log'); 
+		return data; 
+	} 	
+
+	@ProxyMethod 
+	public def submitForApproval( params ) {
+		if (!params.objid) throw new Exception('Please specify objid');
+		if (!params.remarks) throw new Exception('Please specify remarks');
+
+		def data = loanapp.findByObjid(params);
+		if (data.state != 'FOR_CRECOM') 
+			throw new Exception('Loan status must be FOR_CRECOM before submitting for approval'); 
+
+		data.dtposted = dateService.serverDate.toString(); 
+		data.postedby = env.USERID; 
+		data.state = 'FOR_APPROVAL'; 		
+		loanapp.update(data); 
+
+		def o = loanapp.findSearchIndex(data); 
+		o.state = data.state; 
+		o.dtposted = data.dtposted; 
+		o.postedby = data.postedby;
+		loanapp.update(o, 'loanapp_search'); 
+
+		o = loanapp.findRecommendation(data); 
+		if (o == null) throw new Exception('Unable to find previous recommandation. Please check!'); 
+
+		o.crecomremarks  = 	params.crecomremarks;
+		o.marketeramount = 	params.marketeramount;
+		o.ciamount 		 = 	params.ciamount;
+		o.fcaamount 	 = 	params.fcaamount;
+		o.caoamount 	 = 	params.caoamount;
+		o.bcohamount 	 = 	params.bcohamount;
+		loanapp.update(o, 'crecom_recommendation'); 
+
+		o = [
+			objid: 		'LOG' + new UID(),
+			appid: 		data.objid, 
+			dtposted: 	data.dtposted, 
+			postedby:  	data.postedby,
+			remarks: 	params.remarks 
+		]; 
+		loanapp.create(o, 'loanapp_log'); 
+		return data; 
+	}
+
+	@ProxyMethod
+	public def getBusinesses(params) {
+		if(!params.objid) throw new Exception('please specify objid');
+		return business.getList([parentid: params.objid]);
+	}
+
+} 

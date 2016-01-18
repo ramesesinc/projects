@@ -1,0 +1,37 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.services.extended.*;
+
+class AmnestyHistoryService extends ActiveCrudListService
+{
+	@ActiveDB("amnesty_history")
+	def em;
+	
+	@ActiveDB("borrower")
+	def borrower;
+
+	@ProxyMethod
+	public def getColumns( params ) {
+		return [
+			[name: 'dtstarted', caption: 'DateStarted', type: 'date', outputFormat: 'MMM-dd-yyyy'],
+			[name: 'dtended', caption: 'DateEnded', type: 'date', outputFormat: 'MMM-dd-yyyy'],
+			[name: 'amnestyoption', caption: 'Option'],
+			[name: 'grantedoffer.amount', caption: 'Amount', type: 'decimal', format: '#,##0.00'],
+			[name: 'dtstarted', caption: 'DateAmended', type: 'date', outputFormat: 'MMM-dd-yyyy'],
+			[name: 'amendedby.name', caption: 'AmendedBy'],
+		];
+	}
+
+	void afterOpen( data ) {
+		def b = borrower.read(data.borrower);
+		if (!b) throw new Exception("Borrower record does not exist or has already been deleted.");
+
+		data.borrower.address = b.address;
+	}
+
+	void beforeList( params ) {
+		if (params.refno) {
+			params._listMethod = 'getListByRefno';
+		}
+	}
+}

@@ -1,0 +1,21 @@
+<schema>
+
+	<element name="collection_cashbreakdown" tablename="collection_cashbreakdown">
+		<field name="objid" primary="true"/>
+		<field name="dtfiled" required="true"/>
+		<field name="filedby" required="true"/>
+		<field name="collection_objid" required="true"/>
+		<field name="collection_type" required="true"/>
+		<field name="group_objid" required="true"/>
+		<field name="group_type" required="true"/>
+	</element>
+
+	<element name="denomination" tablename="collection_cashbreakdown_detail">
+		<field name="objid" primary="true"/>
+		<field name="parentid" required="true"/>
+		<field name="denomination" required="true"/>
+		<field name="qty" required="true"/>
+		<field name="amount" required="true"/>
+	</element>
+
+</schema>

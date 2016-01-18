@@ -1,0 +1,213 @@
+import com.rameses.annotations.*;
+import com.rameses.common.*;
+import com.rameses.services.extended.*;
+import java.rmi.server.UID;
+
+class CaptureLoanAppService 
+{	
+	@ActiveDB('loanapp')
+	def loanapp;
+
+	@ActiveDB('loanapp_borrower')
+	def loanapp_borrower; 	
+
+	@ActiveDB('loan_product_type')
+	def productType;
+
+	@ActiveDB('borrower')
+	def borrower; 	
+
+	@ActiveDB("customerindividual")
+	def customerindividual;
+
+	@ActiveDB("borrowerindividual")
+	def borrowerindividual;
+
+	@ActiveDB("borrowerjuridical")
+	def borrowerjuridical;
+
+	@Service('DateService') 
+	def dateSvc;
+
+	@Service('SequenceService') 
+	def seqSvc;
+
+	@Service('LoanAppUtil')
+	def loanAppUtil;	
+
+	@Service("BranchService")
+	def branchSvc;
+
+	@Service("LoanTypeService")
+	def loanTypeSvc;
+
+	@Env 
+	def env;
+
+	@ProxyMethod 
+	public def initEntity() { 
+        def entity = [
+            objid: 'LOAN' + new UID(), 
+            borrower: [:], 
+            producttype: [:], 
+            branch: [:], 
+            approval: [:], 
+            productTypes: productType.getList([searchtext: '%'])  
+        ]; 	
+        return entity; 	
+	} 
+
+	@ProxyMethod 
+	public void checkBorrowerForExistingLoan( params ) {
+		loanAppUtil.checkBorrowerForExistingLoan( params ); 
+	}	
+
+	@ProxyMethod
+	public def getLoanTypes() {
+		def list = loanTypeSvc.getList([:]);
+		if (!list) return [];
+		return list.collect{ it.name }
+	}
+
+	@ProxyMethod 
+	public def create(data) { 	
+		
+		//verify the borrower first 
+		checkBorrowerForExistingLoan([borrowerid: data.borrower.objid]); 
+		
+		if (data.clienttype == 'MARKETED' && !data.marketedby) 
+			throw new Exception('Please specify marketedby'); 
+
+		def branch = branchSvc.open([:]);
+
+		data.branch = [code: branch.code, name: branch.name];
+		data.dtcreated = dateSvc.serverDate;//data.dtreleased.toString();
+		data.createdby = env.USER; 
+		data.dtfiled = data.dtcreated;
+		
+		createPreviousLoans(data); 
+		data.state = 'RELEASED'; 
+		data.version = data.previousloans.size()+1;
+
+		data.appno = data.loanno; 
+		data.appmode = 'CAPTURE'; 
+		if (data.approval == null) data.approval = [:]; 
+		if (!data.approval.amount) data.approval.amount = data.loanamount;
+
+		loanapp.create(data); 
+		loanapp.create(data, 'loanapp_capture'); 
+		loanapp.create(data, 'loanapp_capture_open'); 
+
+		def log = [
+			objid:    'LOG' + new UID(), 
+			appid: 	  data.objid, 
+			dtposted: data.dtfiled, 
+			postedby: data.createdby, 
+			remarks:  'CAPTURED LOAN TRANSACTION #'+data.appno 
+		];
+		loanapp.create(log, 'loanapp_log'); 
+
+		buildSearchIndex(data);
+		buildBorrower(data);
+		return data; 
+	} 
+
+	private void createPreviousLoans(data) { 
+		if (data.previousloans == null) data.previousloans = []; 
+
+		int versionno = 1;
+		for (o in data.previousloans) { 
+			o.objid = 'LOANPRV' + new UID(); 
+			o.state = 'CLOSED'; 
+			o.appno = o.loanno; 
+			o.apptype = 'CAPTURE';
+			o.appmode = 'CAPTURE'; 
+			o.dtcreated = data.dtreleased.toString();
+			o.createdby = data.createdby;
+			o.dtfiled = dateSvc.serverDate;
+			o.borrower = data.borrower;
+			loanapp.create(o, 'loanapp_previous');
+
+			o.version = versionno; 
+			loanapp.create(o, 'loanapp_previous_capture'); 
+			versionno++; 
+		} 
+	} 
+
+	private void buildSearchIndex(data) { 
+		if (!data.borrower.name) {				
+			def name = new StringBuffer(data.borrower.lastname + ', ' + data.borrower.firstname);
+			if (data.borrower.middlename) name.append(' ' + data.borrower.middlename);	
+			data.borrower.name = name.toString();
+		}
+
+		data.fullborrowername = data.borrower.name; 
+		data.dtposted = data.dtcreated;  
+		data.postedby = data.createdby; 
+		data.branchcode = data.branch.code; 
+		data.branchname = data.branch.name; 
+		data.routecode  = data.route?.code;
+		loanapp.create(data, 'loanapp_search'); 
+
+		def searchvalues = [data.appno, data.borrower.name]; 
+		for (sval in searchvalues) {
+			def o = [
+				objid: 'IDX' + new UID(), 
+				appid: data.objid, 
+				searchtext: sval 
+			];
+			loanapp.create(o, 'loanapp_search_index'); 		
+		} 
+	} 	
+
+	private void buildBorrower(data) { 
+		def type = data.borrower.type;
+		def o = borrower.findByObjid([objid: data.borrower.objid]); 
+		if (o == null) { 
+			borrower.create(data.borrower); 
+			if (type == 'INDIVIDUAL') {
+				def ci = customerindividual.read([objid: data.borrower.objid]);
+				if (ci) {
+					borrowerindividual.create(ci);
+				}
+			} else if (type == 'JURIDICAL') {
+				borrowerjuridical.create(data.borrower);
+			}
+		} else {
+			o.putAll(data.borrower); 
+			borrower.update(o); 
+			if (type == 'INDIVIDUAL') {
+				def ci = customerindividual.read([objid: data.borrower.objid]);
+				if (ci) {
+					def bi = borrowerindividual.read(ci);
+					if (!bi) {
+						borrowerindividual.create(ci);
+					} else {
+						borrowerindividual.update(ci);
+					}
+				}
+			}
+		}
+		
+		o = [
+			objid: 		  'LB' + new UID(), 
+			parentid: 	  data.objid, 
+			borrowerid:   data.borrower.objid, 
+			borrowername: data.borrower.name, 
+			principalid:  data.borrower.objid,
+			type:         'PRINCIPAL' 
+		];
+		loanapp_borrower.create(o); 
+	} 
+
+	private String addLeadingChars(value, schar, length) {
+		def buffer = new StringBuffer();
+		def sval = (value == null? "": value.toString()); 
+		def len = length-sval.length();
+		for (int i=0; i<len; i++) {
+			buffer.append(schar); 
+		} 
+		buffer.append(sval);
+		return buffer.toString(); 
+	} 
+}

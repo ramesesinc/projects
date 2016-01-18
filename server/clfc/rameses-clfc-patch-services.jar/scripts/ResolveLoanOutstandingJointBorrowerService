@@ -1,0 +1,86 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+
+class ResolveLoanOutstandingJointBorrowerService
+{
+	@ActiveDB('branch_report')
+	def em;
+
+	@ActiveDB('loanapp_borrower')
+	def loanapp_borrower;
+
+	@ActiveDB('loanapp')
+	def loanapp;
+
+	@Service('DateService')
+	def dateSvc;
+
+	@Service
+	def selfSvc;
+
+	private String reporttype = 'LOANOUTSTANDING';
+
+	private void validate( params ) {
+		def date = dateSvc.getServerDateAsString().split(' ')[0];
+		date = parseDate(date);
+
+		def startdate = parseDate(params.startdate);
+		def enddate = parseDate(params.enddate);
+
+		if (startdate.compareTo(date) >= 0) {
+			throw new Exception('Start date must not be greater than current date.');
+		}
+
+		if (enddate.compareTo(date) >= 0) {
+			throw new Exception('End date must not be greater than current date.');
+		}
+
+		if (enddate.compareTo(startdate) < 0) {
+			throw new Exception('End date must not be lesser than start date.');
+		}
+	}
+
+	@Async
+	@ProxyMethod
+	public def resolveJointBorrowers( params ) {
+		validate(params);
+
+		params.reporttype = reporttype;
+		def xlist = em.getReportData(params);
+		def item, list, joint, xitem;
+		xlist?.each{ o->
+			item = em.read(o);
+			if (item) {
+				list = item.value?.findAll{ it.jointid == null }
+				list?.each{ i->
+					if (!i.appid) {
+						xitem = loanapp.findByAppno([appno: i.appno]);
+					} else if (i.appid) {
+						xitem = loanapp.read([objid: i.appid]);
+					}
+					if (xitem) {
+						i.appid = xitem.objid;
+						i.bname = xitem.borrower?.name;
+						joint = loanapp_borrower.findJointBorrower(xitem);
+						if (joint) {
+							i.jointid = joint.objid;
+							i.borrower = i.bname + ' AND ' + joint.borrowername;
+						}
+					}
+				}
+				em.update(item);
+			}
+		}
+
+	}
+
+	private def parseDate( date ) {
+		if (!date) return null;
+
+		if (date instanceof Date) {
+			return date;
+		} else {
+			return java.sql.Date.valueOf(date);
+		}
+	}
+}

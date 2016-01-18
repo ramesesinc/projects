@@ -1,0 +1,699 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.services.extended.*;
+import java.rmi.server.UID;
+
+class AmnestyCaptureService extends ActiveCrudListService
+{
+	@Env
+	def env;
+
+	@ActiveDB("amnesty")
+	def em;
+
+	@ActiveDB("borrower")
+	def borrower;
+
+	@ActiveDB("datatxnlog")
+	def txnlog;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@Service("SequenceService")
+	def seqSvc;
+
+	@Service("InboxService")
+	def inboxSvc;
+
+	@Service("UserRoleService")
+	def roleSvc;
+
+	String listMethod = 'getCaptureList';
+
+	@ProxyMethod
+	public def getColumns( params ) {
+		def cols = [];
+		if (!params.state) cols << [name: 'txnstate', caption: 'Status'];
+		if (!params.state || params.state != 'DISAPPROVED') 
+			cols << [name: 'txntype', caption: 'Txntype'];
+		cols << [name: 'refno', caption: 'RefNo'];
+		cols << [name: 'dtstarted', caption: 'DateStarted', type: 'date', outputFormat: 'MMM-dd-yyyy'];
+		cols << [name: 'dtended', caption: 'DateEnded', type: 'date', outputFormat: 'MMM-dd-yyyy'];
+		cols << [name: 'borrower.name', caption: 'Borrower'];
+		cols << [name: 'amnestyoption', caption: 'Option'];
+
+		return cols;
+	}
+
+	@ProxyMethod
+	public def getNodes( params ) {
+		def list = [
+			[caption: 'Search', index: 0],
+			[caption: 'DRAFT', state: 'DRAFT', index: 1],
+			[caption: 'FOR APPROVAL', state: 'FOR_APPROVAL', index: 2],
+			[caption: 'APPROVED', state: 'APPROVED', index: 3],
+			[caption: 'DISAPPROVED', state: 'DISAPPROVED', index: 4],
+			[caption: 'CLOSED', state: 'CLOSED', index: 5],
+		];
+		list.sort{ it.index }
+		return list;
+	}
+
+	void validate( data ) {
+		def currdate = parseDate(dateSvc.getServerDateAsString().split(" ")[0]);
+		def startdate = parseDate(data.dtstarted);
+
+		if (startdate.compareTo(currdate) >= 0) {
+			throw new Exception("Date started must not be greater than or equal to current date.");
+		}
+
+		if (data.amnestyoption=='FIX') {
+			if (!data.recommendation) throw new Exception("Please specify recommendations.");
+
+			//if (!data.offers) throw new Exception("Please specify offers.");
+			//if (!data.grantedoffer?.amount) throw new Exception("Please select offer.");
+		} else if (data.amnestyoption=='WAIVER') {
+			if (!data.iswaivepenalty && !data.iswaiveinterest)
+				throw new Exception("Please select at least 1 option to waive.");
+		}
+
+		/*Calendar c = Calendar.getInstance();
+		def offer = data.grantedoffer;
+		if (offer.isspotcash!=0) {
+			c.setTime(offer.date);
+		} else if (offer.isspotcash==0) {
+			def date;
+			if (data.dtstarted instanceof Date) {
+				date = data.dtstarted;
+			} else {
+				date = java.sql.Date.valueOf(data.dtstarted);
+			}
+			c.setTime(date);
+			if (offer.days) c.add(Calendar.DATE, offer.days);
+			if (offer.months) c.add(Calendar.MONTH, offer.months);
+		}
+
+		data.dtended = dateSvc.parse('yyyy-MM-dd', c.getTime());*/
+		/*
+		println 'passing 1'
+		def m = em.findOverlapping([startdate: data.dtstarted, enddate: data.dtended, ledgerid: data.ledgerid]);
+		if (m) {
+		println 'passing 3'
+			def startdate = new java.text.SimpleDateFormat("MMM-dd-yyyy").format(parseDate(m.dtstarted));
+			def enddate = new java.text.SimpleDateFormat("MMM-dd-yyyy").format(parseDate(m.dtended));
+			throw new Exception("Amnesty overlaps amnesty with term ${startdate} - ${enddate}.");
+		}
+		println 'passing 2'
+		*/
+	}
+
+	private void resolve( data ) {
+		if (data.amnestyoption=='FIX') {
+			data.iswaivepenalty = 0;
+			data.iswaiveinterest = 0;
+		} else if (data.amnestyoption=='WAIVER') {
+			data.grantedoffer = [:];
+			data.recommendation = [];
+		}
+	}
+
+	void beforeCreate( data ) {
+		def date = dateSvc.parseCurrentDate();
+		data.dtcreated = date.date;
+		data.author = [objid: env.USERID, name: env.NAME];
+		if (!data.txndate) data.txndate = data.dtcreated;
+
+		def year = date.year + "";
+		def seqname = 'amnestycapture' + year;
+		def prefix = 'AMNESTYC' + year[2] + year[3];
+		data.refno = prefix + seqSvc.getNextFormattedSeriesA(seqname, 6);
+
+		validate(data);
+		resolve(data);
+	}
+
+	void afterCreate( data ) {
+		updateAmnestyDetail(data);
+	}
+
+	void updateAmnestyDetail( data ) {
+		/*
+		if (data.amnestyoption == 'WAIVER') {
+			em.removeOffers(data);
+		} else if (data.amnestyoption == 'FIX') {
+			data._removedoffers.each{ o->
+				em.delete(o, "amnesty-offer");
+			}
+			data._addedoffers.each{ o->
+				em.create(o, "amnesty-offer");
+			}
+			data.offers.each{ o->
+				if (o._edited==true) em.update(o, "amnesty-offer");
+			}
+		}*/
+
+		resolveOfferTerm(data.recommendation);
+		//data.offers = em.getOffers(data);
+		//if (!data.offers) data.offers = data.recommendation;
+		//resolveOfferTerm(data);
+	}
+
+	private void resolveOfferTerm( list ) {
+		//def decformat = new java.text.DecimalFormat("#,##0.00");
+		def dateformat = new java.text.SimpleDateFormat("MMM-dd-yyyy");
+		def date;
+		list.each{ o->
+			if (o.usedate == 1) {
+				//o.term = 'Spot cash ' + decformat.format(o.amount) + ' ' + dateformat.format(o.date);
+				date = parseDate(o.date);
+				o.term = '';
+				if (o.isspotcash == 1) o.term += 'Spot cash';
+				o.term += ' until ' + dateformat.format(date);
+			} else if (o.usedate == 0) {
+				o.term = '';//decformat.format(o.amount);
+				if (o.days > 0) o.term += ' ' + o.days + ' day(s)';
+				if (o.months > 0) o.term += ' ' + o.months + ' month(s)';
+				if (o.days==0 && o.months==0) o.term += ' No maturity date';
+			}
+		}
+	}
+
+	void beforeUpdate( data ) {
+		validate(data);
+		resolve(data);
+	}
+
+	void afterUpdate( data ) {
+		updateAmnestyDetail(data);
+	}
+
+	void afterOpen( data ) {
+		resolveOfferTerm(data.recommendation);
+		if (data.txnstate != 'DRAFT') {
+			data.offers = em.getOffers(data);
+			if (!data.offers) data.offers = data.recommendation;
+			resolveOfferTerm(data.offers);
+		}
+
+		def sb = em.findSendBackByParentidAndState([parentid: data.objid, state: 'OPEN']);
+		if (sb) {
+			data.sendbackremarks = sb.remarks;
+		}
+		/*
+		def decformat = new java.text.DecimalFormat("#,##0.00");
+		def dateformat = new java.text.SimpleDateFormat("MMM-dd-yyyy");
+		data.offers.each{ o->
+			if (o.isspotcash == 1) {
+				o.term = 'Spot cash ' + decformat.format(o.amount) + ' ' + dateformat.format(o.date);
+			} else if (o.isspotcash == 0) {
+				o.term = decformat.format(o.amount);
+				if (o.days > 0) o.term += ' ' + o.days + ' day(s)';
+				if (o.months > 0) o.term += ' ' + o.months + ' month(s)';
+			}
+		}
+		*/		
+		
+		def decformat = new java.text.DecimalFormat("#,##0.00");
+		def dateformat = new java.text.SimpleDateFormat("MMM-dd-yyyy");
+		def amountavailed;
+		def offer = data.grantedoffer;
+		if (offer.usedate==1) {
+			amountavailed = decformat.format(offer.amount);
+			if (offer.isspotcash==1) amountavailed += ' Spot cash';
+			amountavailed += " until " + dateformat.format(offer.date);
+		} else if (offer.usedate==0) {
+			amountavailed = decformat.format(offer.amount);
+			if (offer.days > 0) amountavailed += " " + offer.days + " day(s)";
+			if (offer.months > 0) amountavailed += " " + offer.months + " month(s)";
+			if (offer.days==0 && offer.months==0) amountavailed += " No maturity date";
+		}
+		data.amountavailed = amountavailed;
+		println 'amount availed ' + data.amountavailed;
+		//def b = borrower.read(data.borrower);
+		//if (!b) throw new Exception("Borrower record does not exist or has already been deleted.");
+
+		//println 'capture data ' + data;
+		//data.borrower.address = b.address;
+		/*if (data.info) {
+			def info = em.serializer.read(data.info);
+			data.borrower.address = info.borrower_address;
+			def ledger = [
+				loanamount 	: info.ledger_loanamount,
+				dtreleased	: info.ledger_dtreleased,
+				dtmatured	: info.ledger_dtmatured,
+				balance 	: info.ledger_balance
+			];
+			data.ledger = ledger;
+			data.rejectionremarks = info.rejectionremarks;
+			data.remove('info');
+		}*/
+		data.isactive = false;
+		def a = em.read(data, 'amnesty-active');
+		if (a) data.isactive = true;
+	}
+
+	void beforeList( params ) {
+		params.searchtext = (params.searchtext? params.searchtext : '') + '%';
+		if (params.state) {
+			params._listMethod = 'getCaptureListByState';
+		}
+		if (params.state == 'ACTIVE') {
+			params._listMethod = 'getActiveCaptureList';
+		}
+	}
+
+	void afterList( params, list ) {		
+		def roles = roleSvc.getRolesByUser([userid: env.USERID]);
+
+		def isadmin = (roles.find{ it.role == 'ADMIN_SUPPORT' && it.domain == 'ADMIN' }? true : false);//roles.containsKey('ADMIN');
+		def isadminsupport = (roles.find{ it.role == 'ADMIN' && it.domain == 'ADMIN' }? true : false);
+		def xlist = [];
+		if (isadmin==false || isadminsupport==false) {
+			xlist = list.findAll{ it.txnstate=='CLOSED' }
+			xlist.each{ list.remove(it); }
+		}
+		def currdate = dateSvc.serverDate;
+		def enddate, ac;
+		list.each{ o->
+			ac = (em.read([objid: o.objid], "amnesty-active")? true : false);
+			if (ac == true) {
+				o.txnstate = 'ACTIVE';
+			} else if (o.txntype == 'REJECT') {
+				o.txnstate = 'REJECTED';
+			}
+			enddate = o.dtended;
+			if (enddate) {
+				if (((currdate.compareTo(parseDate(enddate))) > 0) && ac == true) {
+					o.txnstate = 'EXPIRED';
+				}
+			}
+		}
+		//def xlist = list.findAll{ it.txnstate == 'CLOSED' }
+		//list.each{ o->
+		//	o.filetype = 'amnestycapture';
+		//	if (o.txnmode == 'CAPTURE') o.filetype = 'amnestycapture';
+		//}
+	}
+
+	@ProxyMethod
+	public def getStates() {
+		def roles = roleSvc.getRolesByUser([userid: env.USERID]);
+
+		def isadmin = (roles.find{ it.role == 'ADMIN_SUPPORT' && it.domain == 'ADMIN' }? true : false);//roles.containsKey('ADMIN');
+		def isadminsupport = (roles.find{ it.role == 'ADMIN' && it.domain == 'ADMIN' }? true : false);
+		def states = [
+			[caption: 'All'],
+			[caption: 'DRAFT', state: 'DRAFT'],
+			[caption: 'FOR APPROVAL', state: 'FOR_APPROVAL'],
+			[caption: 'APPROVED', state: 'APPROVED'],
+			[caption: 'DISAPPROVED', state: 'DISAPPROVED'],
+			[caption: 'FOR VERIFICATION', state: 'FOR_VERIFICATION'],
+			[caption: 'SEND BACK', state: 'SEND_BACK'],
+			[caption: 'ACTIVE', state: 'ACTIVE']
+		];
+		if (isadmin==true && isadminsupport==true) {
+			states << [caption: 'CLOSED', state: 'CLOSED'];
+		}
+		return states;
+	}
+
+	@ProxyMethod
+	public def submitForApproval( params ) {
+		def data = em.read(params);
+		if (!data) throw new Exception("Amnesty record does not exist or has already been deleted.");
+
+		if (data.txnstate=='FOR_APPROVAL') 
+			throw new Exception("Amnesty record has already been submitted for approval.");
+
+		data.txnstate = 'FOR_APPROVAL';
+		em.changeState(data);
+
+		def msginfo = [ 
+			objid 		: data.objid, 
+			dtcreated	: dateSvc.serverDate, 
+			refid 		: data.objid, 
+			filetype 	: 'amnestycapture', 
+			message 	: 'For approval amnesty for Ref. No. '+ data.refno, 
+			senderid	: env.USERID, 
+			sendername 	: env.NAME, 
+			recipientid : 'APPROVER' 
+		]; 
+		inboxSvc.addMessage( msginfo );
+
+		def loginfo = [
+			objid 	: 'TLOG' + new UID(), 
+			txndate : msginfo.dtcreated, 
+			txnid   : data.objid, 
+			user    : [objid: msginfo.senderid, username: env.USER], 
+			action	: 'FOR_APPROVAL', 
+			remarks : 'Submit for approval amnesty for Ref. No. ' + data.refno
+		]; 
+		txnlog.create( loginfo );
+
+		return open(data);
+	}
+
+	@ProxyMethod
+	public def approveDocument( params ) {
+		def data = em.read(params);
+		if (!data) throw new Exception("Amnesty record does not exist or has already been deleted.");
+
+		if (data.txnstate=='APPROVED')
+			throw new Exception("Amnesty record has already been approved.");
+
+		data.txnstate = 'APPROVED';
+		em.changeState(data);
+
+		data.dtposted = dateSvc.serverDate;
+		data.poster = [objid: env.USERID, name: env.NAME, remarks: params.posterremarks];
+		em.update(data, "amnesty-post");
+
+		if (data.amnestyoption == 'WAIVER') {
+			em.create(data, "amnesty-active");
+		} else if (data.amnestyoption == 'FIX') {
+			def item;
+			params.offers.each{ o->
+				if (!o.usedate) o.usedate = 0;
+				item = em.read(o, "amnesty-offer");
+				if (item) {
+					em.update(o, "amnesty-offer");
+				} else {
+					em.create(o, "amnesty-offer");
+				}
+			}
+		}
+
+		/*if (data.amnestyoption=='FIX') {
+			data.txntype = 'AVAIL';
+			data.balance = data.grantedoffer.amount;
+		}*/
+
+
+		def loginfo = [
+			objid 	: 'TLOG' + new UID(), 
+			txndate : data.dtposted, 
+			txnid   : data.objid, 
+			user    : [objid: env.USERID, username: env.USER], 
+			action	: 'APPROVE', 
+			remarks : 'Approve amnesty with Ref. No. ' + data.refno
+		]; 
+		txnlog.create( loginfo ); 
+		
+		inboxSvc.removeMessageByRefid([refid: data.objid]); 
+
+		return open(data);
+	}
+
+	@ProxyMethod
+	public def disapprove( params ) {
+		def data = em.read(params);
+		if (!data) throw new Exception("Amnesty record does not exist or has already been deleted.");
+
+		if (data.txnstate=='DISAPPROVED')
+			throw new Exception("Amnesty record has already been disapproved");
+
+		data.txnstate = 'DISAPPROVED';
+		em.changeState(data);
+
+		data.dtposted = dateSvc.serverDate;
+		data.poster = [objid: env.USERID, name: env.NAME, remarks: params.posterremarks];
+		em.update(data, "amnesty-post");
+		//em.delete(data, "amnesty-active");
+
+		def loginfo = [
+			objid 	: 'TLOG' + new UID(), 
+			txndate : data.dtposted, 
+			txnid   : data.objid, 
+			user    : [objid: env.USERID, username: env.USER], 
+			action	: 'DISAPPROVE', 
+			remarks : 'Disapprove amnesty with Ref. No. ' + data.refno
+		]; 
+		txnlog.create( loginfo ); 
+
+		inboxSvc.removeMessageByRefid([refid: data.objid]); 
+		return open(data);
+	}
+
+	@ProxyMethod
+	public def avail( params ) {
+		if (!params.grantedoffer?.amount) throw new Exception("Please select an offer to avail.");
+		def offer = params.grantedoffer;
+
+		def data = em.read(params);
+		if (!data) throw new Exception("Amnesty record does not exist or has already been deleted.");
+
+		if (data.txntype=='AVAIL')
+			throw new Exception("Amnesty record has already availed an offer.");
+
+		data.txntype = 'AVAIL';
+		data.grantedoffer = offer;
+		data.balance = offer.amount;
+		if (!data.dtstarted) data.dtstarted = parseDate(dateSvc.getServerDateAsString().split(" ")[0]);
+
+		def c = Calendar.getInstance();
+		def hasenddate = false;
+		if (offer.usedate == 0) {			
+			c.setTime(data.dtstarted);
+			if (offer.days > 0) {
+				c.add(Calendar.DATE, offer.days);
+				hasenddate = true;
+			}
+			if (offer.months > 0) {
+				c.add(Calendar.MONTH, offer.months);
+				hasenddate = true;
+			}
+		} else if (offer.usedate == 1) {
+			c.setTime(offer.date);
+			hasenddate = true;
+		}
+		/*
+		if (offer.isspotcash == 0) {
+			c.setTime(data.dtstarted);
+			if (offer.days > 0) {
+				c.add(Calendar.DATE, offer.days);
+				hasenddate = true;
+			}
+			if (offer.months > 0) {
+				c.add(Calendar.MONTH, offer.months);
+				hasenddate = true;
+			}
+		} else if (offer.isspotcash == 1) {
+			c.setTime(offer.date);
+			hasenddate = true;
+		}
+		*/
+
+		def enddate;
+		if (hasenddate == true) {
+			data.dtended = dateSvc.parse('yyyy-MM-dd', c.getTime());
+			enddate = data.dtended;
+		}
+
+		if (!enddate) enddate = dateSvc.getServerDateAsString().split(" ")[0];
+
+		def m = em.findOverlapping([startdate: data.dtstarted, enddate: enddate, ledgerid: data.ledgerid]); 
+		if (m) {
+			//println 'overlapping amnesty ' + m;
+			def startdate = new java.text.SimpleDateFormat("MMM-dd-yyyy").format(m.dtstarted);
+			if (!m.dtended) m.dtended = dateSvc.serverDate;
+			enddate = new java.text.SimpleDateFormat("MMM-dd-yyyy").format(m.dtended);
+			throw new Exception("Amnesty overlaps amnesty with term ${startdate} - ${enddate}.");
+		}
+		
+		em.update(data, "amnesty-avail");
+		em.update(data);
+		//em.create(data, "amnesty-active");
+
+		return open(data);
+	}
+
+	@ProxyMethod
+	public def reject( params ) {
+		def data = em.read(params);
+		if (!data) throw new Exception("Amnesty record does not exist or has already been deleted.");
+
+		if (data.txntype=='REJECT')
+			throw new Exception("Amnesty record has already rejected the offer(s).");
+
+		data.txntype = 'REJECT';
+		data.dtrejected = dateSvc.serverDate;
+		data.rejectedby = [objid: env.USERID, name: env.NAME];
+		data.rejectionremarks = params.rejectionremarks;
+		em.update(data);
+
+		return open(data);
+	}
+
+	@ProxyMethod
+	public def submitForVerification( params ) {
+		def data = em.read(params);
+		if (!data) throw new Exception("Amnesty record does not exist or has already been deleted.");
+
+		if (data.txnstate=='FOR_VERIFICATION')
+			throw new Exception("Amnesty record has already been submitted for verification.");
+
+		data.txnstate = 'FOR_VERIFICATION';
+		em.changeState(data);
+
+		def msginfo = [ 
+			objid 		: data.objid, 
+			dtcreated	: dateSvc.serverDate, 
+			refid 		: data.objid, 
+			filetype 	: 'amnesty', 
+			message 	: 'For verification amnesty for Ref. No. '+ data.refno, 
+			senderid	: env.USERID, 
+			sendername 	: env.NAME, 
+			recipientid : 'APPROVER' 
+		]; 
+		inboxSvc.addMessage( msginfo );
+		
+		def loginfo = [
+			objid 	: 'TLOG' + new UID(), 
+			txndate : dateSvc.serverDate, 
+			txnid   : data.objid, 
+			user    : [objid: env.USERID, username: env.USER], 
+			action	: 'FOR VERIFICATION', 
+			remarks : 'Submitted for verification amnesty with Ref. No. ' + data.refno
+		]; 
+		txnlog.create( loginfo ); 
+
+		def sb = em.findSendBackByParentidAndState([parentid: data.objid, state: 'OPEN']);
+		if (sb) {
+			sb.state = 'CLOSED';
+			em.update(sb, 'amnesty-sendback');
+		}
+
+		return open(data);
+	}
+
+	@ProxyMethod
+	public def verify( params ) {
+		def data = em.read(params);
+		if (!data) throw new Exception("Amnesty record does not exist or has already been deleted.");
+
+		if (data.txnstate == 'VERIFIED')
+			throw new Exception("Amnesty record has already been verified.");
+
+		data.txnstate  = 'VERIFIED';
+		em.changeState(data);
+
+		data.dtverified = dateSvc.serverDate;
+		data.verifier = [objid: env.USERID, name: env.NAME];
+		em.update(data, 'amnesty-verify');
+		def a = em.read(data, 'amnesty-active')
+		if (!a) em.create(data, 'amnesty-active');
+
+		inboxSvc.removeMessageByRefid([refid: data.objid]); 
+
+		def loginfo = [
+			objid 	: 'TLOG' + new UID(), 
+			txndate : data.dtverified, 
+			txnid   : data.objid, 
+			user    : [objid: env.USERID, username: env.USER], 
+			action	: 'VERIFY', 
+			remarks : 'Verified amnesty with Ref. No. ' + data.refno
+		]; 
+		txnlog.create( loginfo ); 
+
+		return open(data);
+	}
+
+	@ProxyMethod
+	public def sendBack( params ) {
+		if (!params.sendbackremarks) throw new Exception("Please specify remarks.");
+
+		def data = em.read(params);
+		if (!data) throw new Exception("Amnesty record does not exists or has already been deleted.");
+
+		if (data.txnstate == 'SEND_BACK')
+			throw new Exception("Amnesty record has already been sent back.");
+
+		data.txnstate = 'SEND_BACK';
+		em.changeState(data);
+
+		def offer = data.grantedoffer;
+		offer.amount = null;
+		offer.days = null;
+		offer.months = null;
+		offer.isspotcash = null;
+		offer.date = null;
+
+		data.txntype = null;
+		data.dtended = null;
+		data.balance = null;
+		data.grantedoffer = offer;
+		em.update(data);
+
+		inboxSvc.removeMessageByRefid([refid: data.objid]); 
+
+		def sb = em.findSendBackByParentidAndState([parentid: data.objid, state: 'OPEN']);
+		if (!sb) {
+			sb = [
+				objid		: 'ASB' + new UID(),
+				parentid 	: data.objid,
+				dtcreated 	: dateSvc.serverDate,
+				author		: [objid: env.USERID, name: env.NAME],
+				state 		: 'OPEN',
+				remarks 	: params.sendbackremarks
+			];
+			em.create(sb, 'amnesty-sendback');
+
+			def loginfo = [
+				objid 	: 'TLOG' + new UID(), 
+				txndate : sb.dtcreated, 
+				txnid   : data.objid, 
+				user    : [objid: env.USERID, username: env.USER], 
+				action	: 'SEND BACK', 
+				remarks : 'Send back amnesty with Ref. No. ' + data.refno
+			]; 
+			txnlog.create( loginfo ); 
+		}
+
+		return open(data);
+	}
+
+	/*
+	@ProxyMethod
+	public def sendBack( params ) {
+		def data = 
+	}
+	*/
+
+	@ProxyMethod
+	public def closeAmnesty( params ) {
+		def data = em.read(params);
+		if (!data) throw new Exception("Amnesty Record does not exist or has already been deleted.");
+
+		if (data.txnstate=='CLOSED')
+			throw new Exception("Amnesty record already closed.");
+
+		data.txnstate = 'CLOSED';
+		em.changeState(data);
+		em.delete(data, "amnesty-active");
+
+		data.closeremarks = params.closeremarks;
+		em.update(data);
+
+		def loginfo = [
+			objid 	: 'TLOG' + new UID(), 
+			txndate : data.dtposted, 
+			txnid   : data.objid, 
+			user    : [objid: env.USERID, username: env.USER], 
+			action	: 'CLOSE', 
+			remarks : 'Close amnesty with Ref. No. ' + data.refno
+		]; 
+		txnlog.create( loginfo ); 
+
+		return open(data);
+	}
+
+	private def parseDate( date ) {
+		//println 'date ' + date;
+		if (date instanceof Date) {
+			return date;
+		} else { 
+			return java.sql.Date.valueOf(date);
+		}
+	}
+}

@@ -1,0 +1,37 @@
+import com.rameses.annotations.*;
+import com.rameses.common.*;
+import com.rameses.services.extended.*;
+import com.rameses.util.*;
+import java.rmi.server.UID;
+
+
+class FundRequestReportService 
+{	
+	@ActiveDB('fundrequest') 
+	def em; 
+
+	@Service('BranchService')
+	def branchSvc;			
+
+	@Service('DateService')
+	def dateSvc;			
+
+	@Env 
+	def env;
+
+	@ProxyMethod 
+	public def getReportData( params ) {
+		if (!params.startdate) throw new Exception('Please specify startdate'); 
+		if (!params.enddate) throw new Exception('Please specify enddate'); 
+
+		return [
+			printedby: env.NAME, 		
+			dtprinted: dateSvc.serverDate.toString(), 
+			list: 	em.getReportList([ 
+						startdate: params.startdate + ' 00:00:00', 
+						enddate:   params.enddate   + ' 23:59:59' 
+					]), 
+			branch: branchSvc.open([:]), 
+		]; 
+	} 
+} 

@@ -1,0 +1,76 @@
+import com.rameses.annotations.*;
+import com.rameses.common.*;
+import com.rameses.services.extended.*;
+import java.rmi.server.UID;
+
+class LoanProductTypeService extends ActiveCrudListService 
+{	
+	@ActiveDB(value='loan_product_type')
+	def em;
+
+	@ActiveDB('datatxnlog') 
+	def txnlog;
+
+	@Service('DateService') 
+	def dateSvc;
+
+	@Env 
+	def env;
+
+	@ProxyMethod
+	public def getColumns( params ) {
+		return [
+			[name:'name', caption:'Name', width:100, maxWidth:100],
+			[name:'description', caption:'Description'],
+			[name:'term', caption:'Term', type:'integer', width:50, maxWidth:50],
+			[name:'interestrate', caption:'Interest Rate', type:'decimal', format: '#,##0.000', width:80, maxWidth:80],
+			[name:'pastduerate', caption:'Past Due Rate', type:'decimal', width:80, maxWidth:80],
+			[name:'underpaymentpenalty', caption:'Underpayment Penalty Rate', type:'decimal', width:130, maxWidth:130],
+			[name:'absentpenalty', caption:'Absent Penalty Rate', type:'decimal', width:130, maxWidth:130],
+			[name: 'arrearspenalty', caption: 'Arrears Penalty Rate', type: 'decimal'],
+			[name: 'paymentschedule', caption: 'Payment Schedule']
+		];  
+	}
+
+	void afterCreate( data ) {
+		def loginfo = [
+			objid 	: 'TLOG' + new UID(), 
+			txndate : dateSvc.serverDate, 
+			txnid   : data.name, 
+			user    : [objid: env.USERID, username: env.USER], 
+			action	: 'CREATE', 
+			remarks : 'New ProductType '+ data.name 
+		]; 
+		txnlog.create( loginfo ); 
+	}
+
+	void afterUpdate( data ) {
+		def loginfo = [
+			objid 	: 'TLOG' + new UID(), 
+			txndate : dateSvc.serverDate, 
+			txnid   : data.name, 
+			user    : [objid: env.USERID, username: env.USER], 
+			action	: 'UPDATE', 
+			remarks : 'Updated ProductType '+data 
+		]; 
+		txnlog.create( loginfo ); 
+	}
+
+	void afterRemoveEntity( data ) {
+		if (!data.remarks) data.remarks = 'Deleted ProductType record'; 
+
+		def loginfo = [
+			objid 	: 'TLOG' + new UID(), 
+			txndate : dateSvc.serverDate, 
+			txnid   : data.name, 
+			user    : [objid: env.USERID, username: env.USER], 
+			action	: 'DELETE', 
+			remarks : data.remarks 
+		]; 
+		txnlog.create( loginfo ); 
+	}
+
+	void beforeList( params ) {
+		params.searchtext = (params.searchtext? params.searchtext : '') + '%';
+	}
+}

@@ -1,0 +1,3 @@
+[getList]
+SELECT * FROM collectorfund
+

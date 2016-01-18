@@ -1,0 +1,11 @@
+import com.rameses.annotations.*;
+
+class JointBorrowerInterceptor
+{
+	@After(pattern="JointBorrowerService.open")
+	public def afterOpen( evt ) {
+		def result = evt.result;
+		result.jointborrowers = result.borrowers;
+		result.remove('borrowers');
+	}
+}

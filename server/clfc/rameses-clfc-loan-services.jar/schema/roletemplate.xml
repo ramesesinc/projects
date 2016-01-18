@@ -1,0 +1,34 @@
+<schema>
+
+	<element tablename="roletemplate">
+		<field name="objid" primary="true" />
+		<field name="txnstate" required="true" />
+		<field name="dtcreated" required="true" />
+		<field name="author_objid" required="true" />
+		<field name="author_name" required="true" />
+		<field name="name" required="true" />
+		<field name="description" />
+	</element>
+
+	<element name="template-usergroup" tablename="roletemplate_usergroup">
+		<field name="objid" primary="true" />
+		<field name="parentid" required="true" />
+		<field name="usergroupid" required="true" />
+		<field name="org_objid" />
+		<field name="org_name" />
+		<field name="org_class" />
+		<field name="securitygroup_objid" />
+		<field name="exclude" />
+	</element>
+
+	<element name="template-user" tablename="roletemplate_user">
+		<field name="objid" primary="true" />
+		<field name="roletemplate_objid" required="true" />
+		<field name="roletemplate_name" required="true" />
+		<field name="user_objid" required="true" />
+		<field name="user_username" required="true" />
+		<field name="user_firstname" required="true" />
+		<field name="user_lastname" required="true" />
+	</element>
+
+</schema>

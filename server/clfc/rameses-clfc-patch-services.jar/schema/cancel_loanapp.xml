@@ -1,0 +1,15 @@
+<schema>
+
+	<element tablename='loanapp_cancel'>
+		<field name='objid' primary='true' />
+		<field name='dtcancelled' required='true' />
+		<field name='cancelledby_objid' required='true' />
+		<field name='cancelledby_name' required='true' />
+		<field name='appno' required='true' />
+		<field name='loanamount' required='true' />
+		<field name='borrower_objid' required='true' />
+		<field name='borrower_name' required='true' />
+		<complex name='info' required='false' merge='true' serializer='default' />
+	</element>
+
+</schema>

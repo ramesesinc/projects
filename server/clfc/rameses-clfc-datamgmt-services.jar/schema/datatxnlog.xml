@@ -1,0 +1,11 @@
+<schema>
+	<element name="datatxnlog" tablename="datatxnlog">
+		<field name="objid" primary="true"/> 
+		<field name="txndate" required="true"/> 
+		<field name="txnid" required="true"/> 
+		<field name="user_objid" required="true"/> 
+		<field name="user_username" required="true"/> 
+		<field name="action" required="true"/> 
+		<field name="remarks" required="true"/> 
+	</element>
+</schema>

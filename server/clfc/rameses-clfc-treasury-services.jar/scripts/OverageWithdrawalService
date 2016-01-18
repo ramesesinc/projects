@@ -1,0 +1,618 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.services.extended.*;
+import java.rmi.server.UID;
+
+class OverageWithdrawalService extends ActiveCrudListService
+{
+	@Env
+	def env;
+
+	@ActiveDB('overagefund')
+	def em;
+
+	@ActiveDB('overage')
+	def overage;
+
+	@ActiveDB('borrower')
+	def borrower;
+
+	@ActiveDB('datatxnlog')
+	def txnlog; 
+
+	@ActiveDB('loan_ledger')
+	def loan_ledger;
+
+	@ActiveDB('loan_ledger_payment')
+	def ledger_payment;
+
+	@Service('DateService')
+	def dateSvc;
+
+	@Service('BranchService')
+	def branchSvc;
+
+	@Service('SequenceService')
+	def seqSvc;
+
+	@Service('InboxService')
+	def inboxSvc;
+
+	@Service('LoanPaymentService')
+	def paymentSvc;
+
+	String subSchemaName = 'of-detail';
+
+	@ProxyMethod
+	public def getColumns( params ) {
+		def cols = [];
+
+		if (!params.state) cols << [name: 'txnstate', caption: 'Status'];
+
+		cols << [name: 'txndate', caption: 'Date', type: 'date', outputFormat: 'MMM-dd-yyyy'];
+		cols << [name: 'refno', caption: 'Ref. No.'];
+		cols << [name: 'loanapp.appno', caption: 'App. No.'];
+		cols << [name: 'borrower.name', caption: 'Borrower'];
+		cols << [name: 'amount', caption: 'Amount', type: 'decimal', format: '#,##0.00'];
+
+		if (params.state == 'APPROVED') {
+			cols << [name: 'dtposted', caption: 'Date Approved'];
+			cols << [name: 'poster.name', caption: 'Approved By'];
+		} else if (params.state == 'DISAPPROVED') {
+			cols << [name: 'dtposted', caption: 'Date Disapproved'];
+			cols << [name: 'poster.name', caption: 'Disapproved By'];
+		}
+
+		return cols;
+	}	
+
+
+	void beforeList( params ) {
+		params.searchtext = (params.searchtext? params.searchtext : '')	 + '%';
+		if (params.state) {
+			params._listMethod = 'getListByState';
+		}
+	}
+
+	@ProxyMethod
+	public def getStates() {
+		return [
+			[caption: 'All'],
+			[caption: 'DRAFT', state: 'DRAFT'],
+			[caption: 'FOR APPROVAL', state: 'FOR_APPROVAL'],
+			[caption: 'APPROVED', state: 'APPROVED'],
+			[caption: 'DISAPPROVED', state: 'DISAPPROVED']
+		]
+	}
+
+	@ProxyMethod
+	public void createFund() {
+		def fund, cal = Calendar.getInstance();
+		def currentdate = dateSvc.serverDate;
+		def overages = overage.getListByState([state: 'APPROVED']);
+		overages.each{ o->
+			cal.setTime(o.txndate);
+
+			fund = em.findActiveFundByYear([year: cal.get(Calendar.YEAR)]);
+			if (!fund) {
+				fund = [
+					objid 		: 'OF' + new UID(),
+					state 		: 'ACTIVE',
+					dtcreated 	: currentdate,
+					author 		: [objid: 'SYSTEM', name: 'SYSTEM'],
+					year 		: cal.get(Calendar.YEAR),
+					amtbalance 	: 0,
+					amtuse 		: 0
+				];
+				em.create(fund);
+			}
+		}
+
+		def list = em.getActiveFunds();
+		def startdate, enddate, balance;
+		list.each{ o->
+			startdate = o.year + '-01-01';
+			enddate = o.year + '-12-31';
+			overages = em.getOveragesByStartdateAndEnddate([startdate: startdate, enddate: enddate]);
+			if (overages) {
+				o.amtbalance = overages.amount.sum();
+				balance = overages.balance.sum();
+				o.amtuse = o.amtbalance - balance;
+				em.update(o);
+			}
+		}
+	}
+
+	private void validate( data ) {
+		def item = overage.read(data.overage);
+		def year = dateSvc.getYear(item.txndate);
+
+		def fund = em.findActiveFundByYear([year: year]);
+		if (!fund) throw new Exception("No active overage fund.");
+	}
+
+	private void resolveFund( data ) {
+		def item = overage.read(data.overage);
+		def year = dateSvc.getYear(item.txndate);
+
+		def fund = em.findActiveFundByYear([year: year]);
+		data.parentid = fund?.objid;
+	}
+
+	void beforeCreate( data ) {
+		validate(data);
+		resolveFund(data);
+		def date = dateSvc.parseCurrentDate();
+		data.dtcreated = date.date;
+		data.author = [objid: env.USERID, name: env.NAME];
+
+		def branch = branchSvc.open([:]);
+		def year = date.year.toString()
+		def prefix = "OW" + branch.code + year[2] + year[3];
+		def seqname = "overagewithdrawal-" + year;
+		data.refno = prefix + seqSvc.getNextFormattedSeriesA(seqname, 6);
+	}
+
+	void beforeUpdate( data ) {
+		validate(data);
+		resolveFund(data);
+	}
+
+	void afterOpen( data ) {
+		def item = overage.read(data.overage);
+		if (!item) throw new Exception("Overage record does not exist or has already been deleted.");
+
+		def balance = data.overage.balance;
+		data.overage = item;
+		data.overage.balance = balance;
+
+		item = borrower.read(data.borrower);
+		if (!item) throw new Exception("Borrower record does not exist or has already been deleted.");
+
+		data.borrower.address = item.address;
+	}
+
+	@ProxyMethod
+	public def submitForApproval( params ) {
+		def data = changeState(params, 'FOR_APPROVAL');
+
+		def msginfo = [ 
+			objid 		: data.objid, 
+			dtcreated	: dateSvc.serverDate, 
+			refid 		: data.objid, 
+			filetype 	: 'overagewithdrawal', 
+			message 	: 'For approval overage withdrawal for Ref. No. '+ data.refno, 
+			senderid	: env.USERID, 
+			sendername 	: env.NAME, 
+			recipientid : 'APPROVER' 
+		]; 
+		inboxSvc.addMessage( msginfo );
+
+		return open(data);	
+	}
+
+	private def changeState( params, state ) {
+		def data = em.read(params, subSchemaName);
+		if (!data) throw new Exception('Overage fund record does not exist or has already been deleted.');
+
+		if (data.txnstate == state) {
+			throw new Exception('Overage fund has already been ' + state + '.');
+		}
+
+		data.txnstate = state;
+		em.changeDetailState(data);
+
+		def action, remarks;
+		switch (state) {
+			case 'FOR_APPROVAL'	: action = 'For Approval';
+								  remarks = 'For Approval overage withdrawal with Ref. No. ' + data.refno;
+								  break;
+			case 'APPROVED'		: action = 'Approve';
+								  remarks = 'Approve overage withdrawal with Ref. No. ' + data.refno;
+								  break;
+			case 'DISAPPROVED' 	: action = 'Disapprove';
+								  remarks = 'Disapprove overage withdrawal with Ref. No. ' + data.refno;
+								  brea;
+		}
+
+		if (action && remarks) {
+			def loginfo = [
+				objid 	: 'TLOG' + new UID(), 
+				txndate : dateSvc.serverDate,
+				txnid   : data.objid, 
+				user    : [objid: env.USERID, username: env.USER], 
+				action	: action, 
+				remarks : remarks
+			]; 
+			txnlog.create( loginfo ); 			
+		}
+
+		return open(data);
+	}
+
+	@ProxyMethod
+	public def approveDocument( params ) {
+		def data = approveImpl(params, 'APPROVED');
+
+		if (data.txntype == 'payment') {
+			rebuild(data);
+		}
+
+		def item = overage.read(data.overage);
+		def year = dateSvc.getYear(item.txndate);
+
+		def fund = em.findActiveFundByYear([year: year]);
+		fund.amtuse += data.amount;
+		em.update(fund, "amtuse");
+
+		item.balance -= data.amount;
+		overage.update(item, "balance");
+
+		return open(data);
+	}
+
+	@ProxyMethod
+	public def disapprove( params ) {
+		def data = approveImpl(params, 'DISAPPROVED');
+
+		return open(data);
+	}
+
+	private def approveImpl( params, state ) {
+		def data = changeState(params, state);
+
+		data.dtposted = dateSvc.serverDate;
+		data.poster = [objid: env.USERID, name: env.NAME];
+		em.update(data, "of-detail-post");
+
+		inboxSvc.removeMessageByRefid([refid: data.objid]);
+
+		return open(data);
+	}
+
+	private void rebuild( data ) {
+		def ledger = loan_ledger.findByAppId([appid: data.loanapp.objid]);
+		if (!ledger) throw new Exception("Ledger record does not exist or has already been deleted.");
+
+		ledger.balance = ledger.totalprincipal;
+		ledger.overpaymentamount = 0.00;
+		ledger.overduepenalty = 0.00;
+		ledger.dtlastpaid = null;
+		ledger.dtcurrentschedule = ledger.dtstarted
+		loan_ledger.update(ledger);
+		loan_ledger.removeLedgerDetail([parentid: ledger.objid]);
+
+		def itm = overage.read(data.overage);
+		def item = [
+			objid	: 'LLP' + new UID(),
+			parentid: ledger.objid,
+			refno 	: data.refno,
+			txndate : itm.txndate,
+			amount 	: data.amount,
+			isonline: 1
+		];
+		loan_ledger.create(item, "payment");
+
+		def payments = ledger_payment.getList(ledger);
+
+		payments.each{
+			//println it;
+			itm = [
+			    appno 		: data.loanapp.appno,
+			    appid 		: ledger.appid,
+			    borrowername: ledger.acctname,
+			    refno 		: it.refno,
+			    txndate 	: it.txndate,
+			    payamount 	: it.amount
+			]
+			paymentSvc.postPayment(itm);
+		}
+	}
+
+}
+
+/*
+class OverageWithdrawalService extends ActiveListService
+{
+	@Env
+	def env;
+
+	@ActiveDB("overagefund")
+	def em;
+
+	@ActiveDB("overage")
+	def overage;
+
+	@ActiveDB("borrower")
+	def borrower;
+
+	@ActiveDB("loan_ledger")
+	def loan_ledger;
+
+	@ActiveDB("loan_ledger_payment")
+	def ledger_payment;
+
+	@ActiveDB("datatxnlog")
+	def txnlog; 
+
+	@Service("DateService")
+	def dateSvc;
+
+	@Service("InboxService")
+	def inboxSvc;
+
+	@Service("BranchService")
+	def branchSvc;
+
+	@Service("SequenceService")
+	def seqSvc;
+
+	@Service("LoanPaymentService")
+	def paymentSvc;
+
+	@ProxyMethod
+	public def getColumns( params ) {
+		return [
+			[name: 'txnstate', caption: 'Status'],
+			[name: 'txndate', caption: 'Date', type: 'date', outputFormat: 'MMM-dd-yyyy'],
+			[name: 'refno', caption: 'RefNo'],
+			[name: 'borrower.name', caption: 'Borrower'],
+			[name: 'amount', caption: 'Amount', type: 'decimal', format: '#,##0.00']
+		];
+	}
+
+	@ProxyMethod
+	public void createFund() {
+		def fund, cal = Calendar.getInstance();
+		def currentdate = dateSvc.serverDate;
+		def overages = overage.getListByState([state: 'APPROVED']);
+		overages.each{ o->
+			cal.setTime(o.txndate);
+
+			fund = em.findActiveFundByYear([year: cal.get(Calendar.YEAR)]);
+			if (!fund) {
+				fund = [
+					objid 		: 'OF' + new UID(),
+					state 		: 'ACTIVE',
+					dtcreated 	: currentdate,
+					author 		: [objid: 'SYSTEM', name: 'SYSTEM'],
+					year 		: cal.get(Calendar.YEAR),
+					amtbalance 	: 0,
+					amtuse 		: 0
+				];
+				em.create(fund);
+			}
+		}
+
+		def list = em.getActiveFunds();
+		def startdate, enddate, balance;
+		list.each{ o->
+			startdate = o.year + '-01-01';
+			enddate = o.year + '-12-31';
+			overages = em.getOveragesByStartdateAndEnddate([startdate: startdate, enddate: enddate]);
+			if (overages) {
+				o.amtbalance = overages.amount.sum();
+				balance = overages.balance.sum();
+				o.amtuse = o.amtbalance - balance;
+				em.update(o);
+			}
+		}
+
+		//def fund = em.findActiveFund();
+		//if (!fund) {
+		//	fund = [
+		//		objid		: 'OF' + new UID(),
+		//		state 		: 'ACTIVE',
+		//		dtcreated	: dateSvc.serverDate,
+		//		author		: [objid: 'SYSTEM', name: 'SYSTEM'],
+		//		amtbalance	: 0.00,
+		//		amtuse 		: 0.00
+		//	]
+		//	def overages = overage.getListByState([state: 'APPROVED']);
+		//	if (overages) {
+		//		fund.amtbalance = overages.amount.sum();
+		//		def balance = overages.balance.sum();
+		//		fund.amtuse = fund.amtbalance - balance;
+		//	}
+		//	em.create(fund);
+		//}
+	}
+
+	@ProxyMethod
+	public def create( data ) {
+		def date = dateSvc.parseCurrentDate();
+		data.dtcreated = date.date;
+		data.author = [objid: env.USERID, name: env.NAME];
+
+		def item = overage.read(data.overage);
+		def year = dateSvc.getYear(item.txndate);
+
+		def fund = em.findActiveFundByYear([year: year]);
+		if (!fund) throw new Exception("No active overage fund.");
+
+		data.parentid = fund.objid;
+
+		def branch = branchSvc.open([:]);
+		year = date.year.toString()
+		def prefix = "OW" + branch.code + year[2] + year[3];
+		def seqname = "overagewithdrawal-" + year;
+		data.refno = prefix + seqSvc.getNextFormattedSeriesA(seqname, 6);
+
+		em.create(data, "of-detail");
+		return open(data);
+	}
+	
+	@ProxyMethod
+	public def update( data ) {
+		em.update(data, "of-detail");
+		return open(data);
+	}
+
+	@ProxyMethod
+	public def open( params ) {
+		def data = em.read(params, "of-detail");
+		if (!data) throw new Exception("Record does not exist or has already been deleted.");
+
+		def item = overage.read(data.overage);
+		if (!item) throw new Exception("Overage record does not exist or has already been deleted.");
+
+		def balance = data.overage.balance;
+		data.overage = item;
+		data.overage.balance = balance;
+
+		item = borrower.read(data.borrower);
+		if (!item) throw new Exception("Borrower record does not exist or has already been deleted.");
+
+		data.borrower.address = item.address;
+
+		return data;
+	}
+
+	@ProxyMethod
+	public def submitForApproval( params ) {
+		def data = em.read(params, "of-detail");
+		if (!data) throw new Exception("Record does not exist or has already been deleted.");
+
+		em.update([objid: data.objid, txnstate: 'FOR_APPROVAL'], "of-detail");
+
+		def msginfo = [ 
+			objid 		: data.objid, 
+			dtcreated	: dateSvc.serverDate, 
+			refid 		: data.objid, 
+			filetype 	: 'overagewithdrawal', 
+			message 	: 'For approval overage withdrawal for Ref. No. '+ data.overage.refno, 
+			senderid	: env.USERID, 
+			sendername 	: env.NAME, 
+			recipientid : 'APPROVER' 
+		]; 
+		inboxSvc.addMessage( msginfo );
+
+		def loginfo = [
+			objid 	: 'TLOG' + new UID(), 
+			txndate : msginfo.dtcreated, 
+			txnid   : data.objid, 
+			user    : [objid: env.USERID, username: env.USER], 
+			action	: 'FOR_APPROVAL', 
+			remarks : 'Submit for approval overage withdrawal for Ref. No. ' + data.overage.refno
+		]; 
+		txnlog.create( loginfo ); 
+
+		return open(data);
+	}
+
+	@Async
+	@ProxyMethod
+	public def approveDocument( params ) {
+		def data = em.read(params, "of-detail");
+		if (!data) throw new Exception("Record does not exist or has already been deleted.");
+
+		data.txnstate = 'APPROVED';
+		em.changeDetailState(data, "of-detail");
+		data.dtposted = dateSvc.serverDate;
+		data.poster = [objid: env.USERID, name: env.NAME];
+		em.update(data, "of-detail-post");
+
+
+		def loginfo = [
+			objid 	: 'TLOG' + new UID(), 
+			txndate : dateSvc.serverDate, 
+			txnid   : data.objid, 
+			user    : [objid: env.USERID, username: env.USER], 
+			action	: 'APPROVED', 
+			remarks : 'Approved overage withdrawal for Ref. No. ' + data.overage.refno
+		]; 
+		txnlog.create( loginfo ); 
+
+		inboxSvc.removeMessageByRefid([refid: data.objid]); 
+		if (data.txntype == 'payment') {
+			rebuild(data);
+		}
+
+		def item = overage.read(data.overage);
+		def year = dateSvc.getYear(item.txndate);
+
+		def fund = em.findActiveFundByYear([year: year]);
+		fund.amtuse += data.amount;
+		em.update(fund, "amtuse");
+
+		item.balance -= data.amount;
+		overage.update(item, "balance");
+
+		return open(data);
+	}
+
+	private void rebuild( data ) {
+		def ledger = loan_ledger.findByAppId([appid: data.loanapp.objid]);
+		if (!ledger) throw new Exception("Ledger record does not exist or has already been deleted.");
+
+		ledger.balance = ledger.totalprincipal;
+		ledger.overpaymentamount = 0.00;
+		ledger.overduepenalty = 0.00;
+		ledger.dtlastpaid = null;
+		ledger.dtcurrentschedule = ledger.dtstarted
+		loan_ledger.update(ledger);
+		loan_ledger.removeLedgerDetail([parentid: ledger.objid]);
+
+		def itm = overage.read(data.overage);
+		def item = [
+			objid	: 'LLP' + new UID(),
+			parentid: ledger.objid,
+			refno 	: data.refno,
+			txndate : itm.txndate,
+			amount 	: data.amount,
+			isonline: 1
+		];
+		loan_ledger.create(item, "payment");
+
+		def payments = ledger_payment.getList(ledger);
+
+		payments.each{
+			//println it;
+			itm = [
+			    appno 		: data.loanapp.appno,
+			    appid 		: ledger.appid,
+			    borrowername: ledger.acctname,
+			    refno 		: it.refno,
+			    txndate 	: it.txndate,
+			    payamount 	: it.amount
+			]
+			paymentSvc.postPayment(itm);
+		}
+	}
+
+	@ProxyMethod
+	public def xdisapprove( params ) {
+		def data = em.read(params, "of-detail");
+		if (!data) throw new Exception("Record does not exist or has already been deleted.");
+
+		data.txnstate = 'DISAPPROVED';
+		em.changeDetailState(data, "of-detail");
+		data.dtposted = dateSvc.serverDate;
+		data.poster = [objid: env.USERID, name: env.NAME];
+		em.update(data, "of-detail-post");
+
+		def loginfo = [
+			objid 	: 'TLOG' + new UID(), 
+			txndate : data.dtposted, 
+			txnid   : data.objid, 
+			user    : [objid: env.USERID, username: env.USER], 
+			action	: 'DISAPPROVED', 
+			remarks : 'Disapproved overage withdrawal for Ref. No. ' + data.overage.refno
+		]; 
+		txnlog.create( loginfo ); 
+
+		inboxSvc.removeMessageByRefid([refid: data.objid]); 
+
+		return open(data);
+	}
+
+	@ProxyMethod
+	public def disapprove( params ) {
+
+	}
+
+	private def changeState( params, state ) {
+		def data = em.read(params, 'of-detail');
+		if (!data) throw new Exception('Overage fund record does not exist or has already been deleted.');
+	}
+}*/

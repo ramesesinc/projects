@@ -1,0 +1,235 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.services.extended.*;
+import java.rmi.server.UID;
+
+class LoanConferenceAccountService extends ActiveCrudListService
+{
+	@Env
+	def env;
+
+	@ActiveDB('conferenceaccount')
+	def em;
+
+	@ActiveDB('datatxnlog')
+	def txnlog; 
+
+	@Service('DateService')
+	def dateSvc;
+
+	@Service('SequenceService')
+	def seqSvc;
+
+	@Service('InboxService')
+	def inboxSvc;
+
+	@ProxyMethod
+	public def getColumns( params ) {
+		def cols = [];
+		if (!params.state) cols << [name: 'txnstate', caption: 'Status'];
+
+		cols << [name: 'dtcreated', caption: 'Date Conferenced'];
+		cols << [name: 'author.name', caption: 'Created By'];
+
+		if (params.state == 'APPROVED') {
+			cols << [name: 'dtposted', caption: 'Date Approved'];
+			cols << [name: 'poster.name', caption: 'Approved By'];
+
+		} else if (params.state == 'DISAPPROVED') {
+			cols << [name: 'dtposted', caption: 'Date Disapproved'];
+			cols << [name: 'poster.name', caption: 'Disapproved By'];
+
+		} else if (params.state == 'CLOSED') {
+			cols << [name: 'dtclosed', caption: 'Date Closed'];
+			cols << [name: 'closedby.name', caption: 'Closed By'];
+
+		}
+
+		return cols;
+	}
+
+	@ProxyMethod
+	public def getStates() {
+		return [
+			[caption: 'All'],
+			[caption: 'DRAFT', state: 'DRAFT'],
+			[caption: 'FOR APPROVAL', state: 'FOR_APPROVAL'],
+			[caption: 'APPROVED', state: 'APPROVED'],
+			[caption: 'DISAPPROVED', state: 'DISAPPROVED'],
+			[caption: 'CLOSED', state: 'CLOSED']
+		]
+	}
+
+	void beforeList( params ) {
+		params.searchtext = (params.searchtext? params.searchtext : '') + '%';
+
+		if (params.state) {
+			params._listMethod = 'getListByState';
+		}
+	}
+
+	private def getYear() {
+		def date = dateSvc.parseCurrentDate();
+		return date.year;
+	}
+
+	private def getSequenceName() {
+		def year = getYear() + '';
+		return getSequenceName(year);
+	}
+
+	private def getSequenceName( year ) {
+		year = year + '';
+		return 'conferenceaccount' + year;
+	}
+
+	private def getRefno() {
+		def year = getYear() + '';
+		return getRefno(getYear());
+	}
+
+	private def getRefno( year ) {
+		year = year + '';
+		def prefix = 'CFA' + year[2] + year[3];
+		return prefix + seqSvc.getNextFormattedSeriesA(getSequenceName(), 6);
+	}
+
+	private void validate( data ) {
+		if (!data.items) throw new Exception('At least 1 account conferenced is required.');
+	}
+
+	void beforeCreate( data ) {
+		validate(data);
+		data.dtcreated = dateSvc.serverDate;
+		data.author = [objid: env.USERID, name: env.NAME];
+		if (!data.txnstate) data.txnstate = 'DRAFT';
+		data.txndate = data.dtcreated;
+		data.refno = getRefno();
+	}
+
+	void beforeUpdate( data ) {
+		validate(data);
+	}
+
+	void afterCreate( data ) {
+		updateDetail(data);
+	}
+
+	void afterUpdate( data ) {
+		updateDetail(data);
+	}
+
+	private void updateDetail( data ) {
+		data._removeditems?.each{ o->
+			em.delete(o, 'detail');
+		}
+
+		data._addeditems?.each{ o->
+			em.create(o, 'detail');
+		}
+
+		data.items?.each{ o->
+			em.update(o, 'detail');
+		}
+	}
+
+	void afterOpen( data ) {
+		data.items = em.getDetails(data);
+	}
+
+
+	@ProxyMethod
+	public def submitForApproval( params ) {
+		def data = changeState(params, 'FOR_APPROVAL');
+
+		def msginfo = [ 
+			objid 		: data.objid, 
+			dtcreated	: dateSvc.serverDate, 
+			refid 		: data.objid, 
+			filetype 	: 'conferenceaccount', 
+			message 	: 'For approval conference account(s) with Ref. No. '+ data.refno, 
+			senderid	: env.USERID, 
+			sendername 	: env.NAME, 
+			recipientid : 'APPROVER' 
+		]; 
+		inboxSvc.addMessage( msginfo );
+
+		return open(data);
+	}
+
+	private def changeState( params, state ) {
+		def data = em.read(params);
+		if (!data) throw new Exception('Conference account record does not exist or has already been deleted.');
+
+		if (data.txnstate == state) {
+			throw new Exception('Conference account record already ' + state + '.');
+		}
+
+		data.txnstate = state;
+		em.changeState(data);
+
+		def action, remarks;
+		switch (state.toUpperCase()) {
+			case 'FOR_APPROVAL'	: 	action = 'For Approval';
+									remarks = 'Conference accounts submitted for approval.';
+									break;
+			case 'APPROVED' 	: 	action = 'APPROVED';
+									remarks = 'Conference accounts approved.';
+									break;
+			case 'DISAPPROVED' 	: 	action = 'DISAPPROVED';
+									remarks = 'Conference accounts disapproved.';
+									break;
+			case 'CLOSED' 		: 	action = 'CLOSED';
+									remarks = 'Conference accounts closed.';
+									break;
+		}
+
+		if (action && remarks) {
+			def loginfo = [
+				objid 	: 'TLOG' + new UID(), 
+				txndate : dateSvc.serverDate, 
+				txnid   : data.objid, 
+				user    : [objid: env.USERID, username: env.USER], 
+				action	: action, 
+				remarks : remarks
+			]; 
+			txnlog.create( loginfo );	
+		}
+
+		return open(data);
+	}
+
+	@ProxyMethod
+	public def approveDocument( params ) {
+		return approveImpl(params, 'APPROVED');
+	}
+
+	@ProxyMethod
+	public def disapprove( params ) {
+		return approveImpl(params, 'DISAPPROVED');
+	}
+
+	private def approveImpl( params, state ) {
+		def data = changeState(params, state);
+
+		data.dtposted = dateSvc.serverDate;
+		data.poster = [objid: env.USERID, name: env.NAME];
+		em.update(data, 'post');
+
+		inboxSvc.removeMessageByRefid([refid: data.objid]);
+
+		return open(data);
+	}
+
+	@ProxyMethod
+	public def closeRecord( params ) {
+		def data = changeState(params, 'CLOSED');
+
+		data.dtclosed = dateSvc.serverDate;
+		data.closedby = [objid: env.USERID, name: env.NAME];
+		em.update(data, 'close');
+
+		return open(data);
+	}
+
+}

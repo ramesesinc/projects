@@ -1,0 +1,113 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.services.extended.*;
+import java.text.SimpleDateFormat;
+
+class ShortageDetailSummaryReportService
+{
+	@Env
+	def env;
+
+	@ActiveDB("shortage")
+	def em;
+
+	@ActiveDB("collection_remittance")
+	def remittance;
+
+	@ActiveDB("loan_route")
+	def loan_route;
+
+	@ActiveDB("user")
+	def user;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@Service("BranchService")
+	def branchSvc;
+
+	@ProxyMethod
+	public def getReportData( params ) {
+		def shortage = em.findShortageByRefno(params);
+		if (!shortage || (shortage.state != 'APPROVED' || shortage.state != 'CLOSED')) 
+			throw new Exception("No shortage document for Ref No. " + params.refno + ".");
+
+		def rem  = remittance.read([objid: shortage.remittanceid]);
+		def route;
+		if (rem) {
+			if (rem.group.type == 'route') {
+				def r = loan_route.read([code: rem.group.objid]);
+				if (r) route = r.description + ' ' + r.area;
+			} else {
+				def t = rem.group.type.toLowerCase();
+				switch (t) {
+					case 'followup': route = 'FOLLOW-UP'; break;
+					case 'special' : route = 'SPECIAL'; break;
+				}
+			}
+		}
+
+		def branch = branchSvc.open([:]);
+		def preparedby = user.read(shortage.author);
+		def approvedby = user.read(shortage.poster);
+		def data = [
+			date_period		: new SimpleDateFormat("yyyy-MMM-dd").format(shortage.txndate),
+			dtprinted 		: new SimpleDateFormat("MMM-dd-yyyy hh:mm:ss a").format(dateSvc.serverDate),
+			printedby 		: env.NAME,
+			refno 			: shortage.refno,
+			collector		: shortage.collector.name,
+			route 			: route,
+			amount 			: shortage.amount,
+			remarks 		: shortage.remarks,
+			preparedby_name : preparedby.firstname + " " + preparedby.lastname,
+			verifiedby_name : params.verifier.name,
+			approvedby_name : approvedby.firstname + " " + approvedby.lastname
+		];
+		branch.each{ k, v->
+			data["branch_"+k] = v;
+		}
+		return data;
+	}
+
+	@ProxyMethod
+	public def getReportDataByShortageid( params ) {
+		def item = em.read(params);
+		if (!item) throw new Exception("Shortage record does not exist or has already been deleted.");
+
+		def rem  = remittance.read([objid: item.remittanceid]);
+		def route;
+		if (rem) {
+			if (rem.group.type == 'route') {
+				def r = loan_route.read([code: rem.group.objid]);
+				if (r) route = r.description + ' ' + r.area;
+			} else {
+				def t = rem.group.type.toLowerCase();
+				switch (t) {
+					case 'followup': route = 'FOLLOW-UP'; break;
+					case 'special' : route = 'SPECIAL'; break;
+				}
+			}
+		}
+
+		def branch = branchSvc.open([:]);
+		def preparedby = user.read(item.author);
+		def approvedby = user.read(item.poster);
+		def data = [
+			date_period		: new SimpleDateFormat("yyyy-MMM-dd").format(item.txndate),
+			dtprinted 		: new SimpleDateFormat("MMM-dd-yyyy hh:mm:ss a").format(dateSvc.serverDate),
+			printedby 		: env.NAME,
+			refno 			: item.refno,
+			collector		: item.collector.name,
+			route 			: route,
+			amount 			: item.amount,
+			remarks 		: item.remarks,
+			preparedby_name : preparedby.firstname + " " + preparedby.lastname,
+			//verifiedby_name : params.verifier.name,
+			approvedby_name : approvedby.firstname + " " + approvedby.lastname
+		];
+		branch.each{ k, v->
+			data["branch_"+k] = v;
+		}
+		return data;
+	}
+}

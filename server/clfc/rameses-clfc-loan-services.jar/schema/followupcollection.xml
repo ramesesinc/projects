@@ -1,0 +1,7 @@
+<schema>
+
+	<element name="followupcollection" tablename="followupcollection">
+		<field name="objid" primary="true" />
+	</element>
+
+</schema>

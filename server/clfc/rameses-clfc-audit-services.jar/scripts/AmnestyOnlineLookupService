@@ -1,0 +1,28 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.services.extended.*;
+
+class AmnestyOnlineLookupService extends ActiveListService
+{
+	@ActiveDB("amnesty_update")
+	def em;
+
+	String listMethod = 'getActiveAmnesty';
+
+	@ProxyMethod
+	public def getColumns( params ) {		
+		return [
+			[name: 'refno', caption: 'RefNo'],
+			[name: 'borrower.name', caption: 'Borrower'],
+			[name: 'dtstarted', caption: 'DateStarted', type: 'date', outputFormat: 'MMM-dd-yyyy'],
+			[name: 'dtended', caption: 'DateEnded', type: 'date', outputFormat: 'MMM-dd-yyyy'],
+			[name: 'grantedoffer.amount', caption: 'Amount', type: 'decimal', format: '#,##0.00']
+		]
+	}
+
+	void beforeList( params ) {
+		params.searchtext = (params.searchtext? params.searchtext : '') + '%';
+		params.mode = 'ONLINE';
+		if (params.mode) params._listMethod = 'getActiveAmnestyByMode'
+	}
+}

@@ -1,0 +1,204 @@
+import com.rameses.annotations.*;
+import com.rameses.http.*;
+import com.rameses.osiris3.server.*;
+import com.rameses.util.*;
+
+class MobileTrackerService  
+{
+	@XConnection("mobile_tracker_poll")
+	def tracker_poll;
+
+	@ActiveDB('mobile_tracker')
+	def em; 
+
+	@Service('DateService')
+    def dateSvc;
+
+	@Service
+    def selfSvc;
+	
+    @ProxyMethod
+    public Map create(Map params) {
+		def entity = [
+			objid 		: (params.trackerid? params.trackerid : 'TRKR' + new java.rmi.server.UID()), 
+			state		: 'OPEN', 
+			terminalid	: params.terminalid,
+			userid 		: params.userid, 
+			dtstart 	: dateSvc.serverDate,
+			startlng	: params.lng, 
+			startlat	: params.lat 
+		];
+		em.create(entity); 
+		return entity;
+    }
+
+    @ProxyMethod
+    public void removeTracker(Map params) {
+    	em.delete([objid: params.trackerid]);
+    }
+
+    @ProxyMethod
+    public void addRoute(Map params) {
+		def entity = em.findByPrimary([objid: params.parentid]); 
+		if (!entity) throw new Exception("'"+params.parentid+"' trackerid not found"); 
+		if (entity.state == 'CLOSED') throw new Exception('This session has already been closed'); 
+
+		def route = em.findRouteByParentidAndCode(params);
+		if (!route) {
+			em.create(params, "route");
+		}
+    }
+
+	@ProxyMethod
+	public Map start(Map params) {
+		//def mparas = [ objid: params.trackerid ];
+		def entity = em.findByPrimary([objid: params.trackerid]); 
+		if (!entity) {
+			entity = create(params);
+		}//throw new Exception("'"+params.trackerid+"' trackerid not found"); 
+
+		def prm = [
+			objid 	: entity.objid,
+			date 	: entity.dtstart
+		]
+		def isStarted = em.findBeginDetailByPrimary(prm);
+		if (!isStarted) {
+			def item = [
+				objid 		: "TRKRI" + new java.rmi.server.UID(), 
+				parentid 	: entity.objid, 
+				txndate 	: entity.dtstart, 
+				txntype 	: 'NORMAL', 
+				refid 		: 'RID' + new java.rmi.server.UID(), 
+				reftype		: 'TRACK', 
+				lng 		: entity.startlng,  
+				lat 		: entity.startlat,
+				remarks 	: 'BEGIN MOBILE TRACKING',   
+				state 		: 1
+			]; 
+			em.create(item, 'detail'); 
+		}
+		return entity; 
+	}
+
+	@ProxyMethod
+	public Map stop(Map params) {
+		def entity = em.findByPrimary([objid: params.trackerid]); 
+		if (!entity) throw new Exception("'"+params.trackerid+"' trackerid not found"); 
+		if (entity.state == 'CLOSED') throw new Exception('This session has already been closed'); 
+
+		entity.dtclosed 	= dateSvc.serverDate;
+		entity.closedby 	= params.username;
+		entity.closedremarks = 'SESSION CLOSED';
+		entity.closedlng	= params.lng;
+		entity.closedlat 	= params.lat;
+		entity.state 		= 'CLOSED';
+		em.update(entity, 'close-tracker'); 
+
+		def item = [
+			objid 		: "TRKRI" + new java.rmi.server.UID(), 
+			parentid 	: entity.objid, 
+			txndate 	: entity.dtclosed, 
+			txntype 	: 'NORMAL', 
+			refid 		: 'RID' + new java.rmi.server.UID(), 
+			reftype		: 'TRACK', 
+			lng 		: entity.closedlng,  
+			lat 		: entity.closedlat, 
+			remarks 	: 'END MOBILE TRACKING', 
+			state 		: 1
+		]; 
+		em.create(item, 'detail'); 
+		return entity; 
+	} 
+
+	@ProxyMethod
+	public Map log(Map entity) {
+		def info = em.findByPrimary([objid: entity.trackerid]); 
+		if (!info) throw new Exception("'"+entity.trackerid+"' trackerid not found"); 
+		//if (info.state == 'CLOSED') throw new Exception('This session has already been closed'); 
+
+		def detail = em.findDetailByParentidAndRefid([parentid: info.objid, refid: entity.refid]);
+		if (!detail) {
+			entity.objid = "TRKRI" + new java.rmi.server.UID();
+			entity.parentid = info.objid; 
+			if (!entity.txndate) entity.txndate = dateSvc.serverDate;
+			em.create(entity, 'detail'); 
+			selfSvc.publish(entity);
+		} 
+		return entity; 
+	} 
+
+	@ProxyMethod
+	public Map open(Map params) { 
+		return em.findByPrimary([objid: params.objid]); 
+	} 
+
+	@ProxyMethod
+	public Map openLog(Map params) { 
+		return em.findLog([objid: params.objid]); 
+	} 
+	
+	@ProxyMethod 	
+	public List getLogs(Map params) {
+		def info = em.findByPrimary([objid: params.trackerid]); 
+		if (!info) return []; 
+
+		params.parentid = info.objid;
+		return em.getLogs(params); 
+	} 
+
+	@ProxyMethod 	
+	public List getDetails(Map params) {
+		params.parentid = params.objid; 
+ 		return em.getDetails( params ); 
+	} 
+
+	@ProxyMethod
+	public List getDetailsWithBorrower(Map params) {
+		params.parentid = params.objid;
+		return em.getDetailsWithBorrower(params);
+	}
+
+	@ProxyMethod 	
+	public void refresh(Map params) {
+		def info = em.findByPrimary([objid: params.trackerid]); 
+		if (!info) return; 
+
+		def logs = em.getLogs([parentid: info.objid]); 
+		while (!logs.isEmpty()) {
+			selfSvc.publish(logs.remove(0)); 
+		}
+	}
+
+	@ProxyMethod
+	@Async
+	public void publish(def data) { 
+		if (data != null) {
+			if (data.txndate) {
+				def s = data.txndate.toString().replaceAll('[-:. ]',''); 
+				data.indexno = Long.parseLong(s); 
+			} 
+			tracker_poll.send(data); 
+		} 
+	} 
+	
+	@ProxyMethod
+	public String getRoutesString( params ) {
+		def routes = em.getRoutes([parentid: params.objid]).collect{ it.route.description }
+		return routes.join(", ");
+	}
+
+
+	@ProxyMethod 
+	public List getList( params ) {
+		if (!params._ordermode) params._ordermode='';
+
+		def formatter = new java.text.SimpleDateFormat('yyyy-MMM-dd'); 
+		def list = em.getList(params); 
+		list.each{o-> 
+			def routes = em.getRoutes([parentid: o.objid]).collect{ it.route.description }; 
+			o.routes = routes.join(", ");
+			o.txndate = formatter.format(o.dtstart);
+		}
+		return list; 
+	} 
+}

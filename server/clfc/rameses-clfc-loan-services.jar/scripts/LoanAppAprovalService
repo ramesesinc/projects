@@ -1,0 +1,9 @@
+import com.rameses.annotations.*;
+import com.rameses.common.*;
+import com.rameses.services.extended.*;
+
+class LoanAppAprovalService extends ActiveCrudService 
+{	
+	@ActiveDB(value='loanapp_approval')
+	def em;
+}

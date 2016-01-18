@@ -1,0 +1,79 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+
+class MobileLocationService
+{
+	@ActiveDB(value="mobile_tracker")
+	def tracker;
+
+	@Service("MobileTrackerService")
+	def trackerSvc;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@ProxyMethod
+	public def postLocationEncrypt( params ) {
+		return postLocation(decode(params));
+	}
+
+	@ProxyMethod
+	public def postLocation( params ) {
+		def response = "fail";
+		if (params.trackerid) {
+			def xitem = tracker.read([objid: params.trackerid]);
+			if (xitem) {
+				def detail = tracker.findDetailByParentidAndRefid([parentid: params.trackerid, refid: params.objid]);
+				if (!detail) {
+					def map = [
+						trackerid	: params.trackerid,
+						txndate 	: params.txndate,
+						txntype		: 'NORMAL',
+						refid		: params.objid,
+						reftype		: 'TRACK',
+						lng 		: params.lng,
+						lat 		: params.lat,
+						state 		: 1
+					];
+					trackerSvc.log(map);
+				}	
+				response = "success";
+			}
+		}
+		return [ response: response ];
+	}
+
+	private def decode( params ) {
+		if (!params.encrypted) throw new Exception("Please specify encrypted data.");
+
+		return new Base64Cipher().decode(params.encrypted);
+	}
+
+
+	@ProxyMethod
+	public def createTrackerEncrypt( params ) {
+		return createTracker(decode(params));
+	}
+
+	@ProxyMethod
+	public def createTracker( params )  {
+		if (!params.terminalid) throw new Exception("Terminalid is required.");
+		if (!params.userid) throw new Exception("Userid is required.");
+
+		def result = [ response: "success" ];
+		def session = trackerSvc.open([objid: params.trackerid]);
+		if (!session) {
+			def prm = [
+				terminalid 	: params.terminalid,
+				userid 		: params.userid,
+				lng 		: params.lng,
+				lat 		: params.lat
+			]
+			result.trackerid = trackerSvc.create(prm).objid;
+			trackerSvc.start(result);
+		}
+
+		return result;
+	}
+}

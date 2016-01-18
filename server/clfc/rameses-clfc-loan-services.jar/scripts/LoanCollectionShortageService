@@ -1,0 +1,595 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.services.extended.*;
+import java.rmi.server.UID;
+
+class LoanCollectionShortageService extends ActiveCrudListService
+{
+	@Env
+	def env;
+
+	@ActiveDB("shortage")
+	def em;
+
+	@ActiveDB("collection_remittance")
+	def remittance;
+
+	@ActiveDB("collection_cb")
+	def collection_cb;
+
+	@ActiveDB("shortage_voidrequest")
+	def shortage_voidrequest;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@Service("SequenceService")
+	def seqSvc;
+
+	@Service("InboxService")
+	def inboxSvc;
+
+	@Service("BranchFundService")
+	def branchFundSvc;
+
+	@Service("CollectionCashbreakdownService")
+	def collectionCbsSvc;
+
+	@ProxyMethod
+	public def getColumns( params ) {
+		def cols = [];
+		if (!params.state) cols << [name: 'state', caption: 'Status'];
+
+		cols << [name: 'txndate', caption: 'Date', type: 'date', outputFormat: 'MMM-dd-yyyy'];
+		cols << [name: 'refno', caption: 'Ref. No.'];
+		cols << [name: 'cbsno', caption: 'CBS No.'];
+		cols << [name: 'collector.name', caption: 'Collector'];
+		cols << [name: 'amount', caption: 'Amount', type: 'decimal', format: '#,##0.00'];
+
+		if (params.state == 'NOTED') {
+			cols << [name: 'dtnoted', caption: 'Date Noted'];
+			cols << [name: 'notedby.name', caption: 'Noted By'];
+		} else if (params.state == 'APPROVED') {
+			cols << [name: 'dtposted', caption: 'Date Approved'];
+			cols << [name: 'poster.name', caption: 'Approved By'];
+		}
+
+		return cols;
+	}
+
+	@ProxyMethod
+	public def getStates() {
+		return [
+			[caption: 'All'],
+			[caption: 'DRAFT', state: 'DRAFT'],
+			[caption: 'FOR NOTING', state: 'FOR_NOTING'],
+			[caption: 'NOTED', state: 'NOTED'],
+			[caption: 'APPROVED', state: 'APPROVED'],
+			[caption: 'VOID PENDING', state: 'VOID_PENDING'],
+			[caption: 'VOIDED', state: 'VOIDED']
+		];
+	}
+
+	void beforeList( params ) {
+		params.searchtext = (params.searchtext? params.searchtext : '') + '%';
+
+		if (params.remittanceid) {
+			params._listMethod = 'getListByRemittanceid';
+		}
+		if (params.state) {
+			params._listMethod = 'getListByState';
+		}
+		if (params.state && params.remittanceid) {
+			params._listMethod = 'getListByRemittanceidAndState';
+		}
+	} 
+
+	void beforeCreate( data ) {
+		data.dtfiled = dateSvc.serverDate;
+		data.author = [objid: env.USERID, name: env.NAME];
+		def year = dateSvc.getServerYear().toString();
+		def seqname = "shortage" + year;
+		data.refno = "SH" + year[2] + year[3] + seqSvc.getNextFormattedSeriesA(seqname, 7);
+	}
+
+	void afterOpen( data ) {
+		def params = [
+			collectionid: data.objid,
+			groupid 	: data.objid,
+			grouptype 	: 'shortage'
+		];
+
+		def cb = collection_cb.findCashbreakdown(params);
+		if (cb) {
+			def items = collection_cb.getDetails(cb);
+			cb.items = items;
+			data.cashbreakdown = cb;
+		}
+
+		if (data.state == 'NOTED') {
+			data.alloweditcbs = true;
+		}
+
+		def rem = remittance.read([objid: data.remittanceid]);
+		if (rem) {
+			def req = shortage_voidrequest.findRequestByShortageidAndState([shortageid: data.objid, txnstate: 'FOR_APPROVAL']);
+			if (!req && data.alloweditcbs==true) {
+				data.allowvoid = true
+			}
+
+			if (!req && data.alloweditcbs==true && !data.allowvoid && cb && (cb?.state=='DRAFT' || cb?.state=='SEND_BACK')) {
+				data.allowvoid = true;
+			}
+			
+			if (req) data.voidremarks = req.remarks;
+		}
+
+		/*
+		def params = [
+			collectionid: data.objid,
+			groupid		: data.objid,
+			grouptype 	: 'shortage'
+		];
+		data.cashbreakdown = collection_cb.findCashbreakdown(params);
+		if (data.cashbreakdown) {
+			def items = collection_cb.getDetails(data.cashbreakdown);
+			data.cashbreakdown.items = items;
+			if (data.cashbreakdown.state=='SEND_BACK') {
+				def s = collection_cb.findCurrentSendback(data.cashbreakdown);
+				if (s) data.cashbreakdown.sendbackremarks = s.remarks;
+			}
+		}
+
+		data.allowEdit = false;
+		if (data.state=='NOTED') {
+			data.allowEdit = true;
+		}
+
+		data.allowVoid = false;
+		def rem = remittance.read([objid: data.remittanceid])
+		if (rem) {
+			def prm = [
+				collectionid 	: rem.collection.objid,
+				groupid 		: rem.group.objid,
+				grouptype 		: rem.group.type
+			];
+			def cb = collection_cb.findCashbreakdown(prm);
+			def req = shortage_voidrequest.findRequestByShortageidAndState([shortageid: data.objid, txnstate: 'FOR_APPROVAL']);
+			if ((cb.state=='DRAFT' || cb.state=='SEND_BACK') && data.state=='NOTED' && data.cbsno && !req) {
+				data.allowVoid = true;
+			}
+			if (req) data.voidremarks = req.remarks;
+		}
+		*/
+	}
+
+	private void validateFund( data ) {
+		branchFundSvc.checkCollectorFund([collectorid: data.collector.objid, amount: data.amount]);
+	}
+
+	private def changeState( params, state ) {
+		def data = em.read(params);
+		if (!data) throw new Exception('Shortage record does not exist or has already been deleted.');
+
+		if (data.state == state) {
+			throw new Exception('Shortage record already ' + state + '.');
+		}
+
+		data.state = state;
+		em.changeState(data);
+
+		return open(data);
+	}
+
+	@ProxyMethod
+	public def submitForNoting( params ) {
+		def data = changeState(params, 'FOR_NOTING');
+
+		def msginfo = [ 
+			objid 		: data.objid, 
+			dtcreated	: dateSvc.serverDate, 
+			refid 		: data.objid, 
+			filetype 	: 'shortage', 
+			message 	: 'Submit shortage document with ref. no. ' + data.refno + ' for noting.', 
+			senderid	: env.USERID, 
+			sendername 	: env.NAME, 
+			recipientid : 'CASHIER' 
+		]; 
+		inboxSvc.addMessage( msginfo );
+
+		return open(data);
+	}
+
+	/*
+	@ProxyMethod
+	public def submitForSignatory( params ) {
+		validateFund(params);
+
+		def data = em.read(params);
+		if (!data) throw new Exception("Shortage record does not exist or has already been deleted.");
+
+		data.state = 'FOR_SIGNATORY';
+		em.changeState(data);
+
+		def msginfo = [ 
+			objid 		: data.objid, 
+			dtcreated	: dateSvc.serverDate, 
+			refid 		: data.objid, 
+			filetype 	: 'shortage', 
+			message 	: 'Submit shortage document for signatory', 
+			senderid	: env.USERID, 
+			sendername 	: env.NAME, 
+			recipientid : 'CASHIER' 
+		]; 
+		inboxSvc.addMessage( msginfo );
+
+		return open(data);
+	}
+	*/
+
+	@ProxyMethod
+	public def noted( params ) {
+		def data = changeState(params, 'NOTED');
+
+		data.dtnoted = dateSvc.serverDate;
+		data.notedby = [objid: env.USERID, name: env.NAME];
+		em.update(data, 'noted');
+
+		def rem_other = remittance.findRemittanceOtherByRefid([refid: data.objid]);
+		if (!rem_other) {
+			rem_other =[
+				objid 	: 'REMOTHR' + new UID(),
+				parentid: data.remittanceid,
+				refid 	: data.objid,
+				txntype : 'SHORTAGE',
+				amount 	: (data.amount * -1)
+			];
+			remittance.create(rem_other, "rem-other");
+		}
+
+		inboxSvc.removeMessageByRefid([refid: data.objid]);
+		branchFundSvc.addUsage([collectorid: data.collector.objid, amount: data.amount]);
+
+		return open(data);
+	}
+
+	/*
+	@ProxyMethod
+	public def noted( params ) {
+		def data = em.read(params);
+		if (!data) throw new Exception("Shortage record does not exist or has already been deleted.");
+
+		data.state = 'NOTED';
+		em.changeState(data);
+
+		data.dtnoted = dateSvc.serverDate;
+		data.notedby = [objid: env.USERID, name: env.NAME];
+		em.update(data, "noted");
+
+		def rem_other = remittance.findRemittanceOtherByRefid([refid: data.objid]);
+		if (!rem_other) {
+			rem_other =[
+				objid 	: 'REMOTHR' + new UID(),
+				parentid: data.remittanceid,
+				refid 	: data.objid,
+				txntype : 'SHORTAGE',
+				amount 	: (data.amount * -1)
+			];
+			remittance.create(rem_other, "rem-other");
+		}
+
+		inboxSvc.removeMessageByRefid([refid: data.objid]);
+		branchFundSvc.addUsage([collectorid: data.collector.objid, amount: data.amount]);
+
+		return open(data);
+	}
+	*/
+
+	@ProxyMethod
+	public def voidShortage( params ) {
+		def data = changeState(params, 'VOID_PENDING');
+
+		def req = shortage_voidrequest.findRequestByShortageidAndState([shortageid: data.objid, txnstate: 'FOR_APPROVAL']);
+		if (!req) {
+			req = [
+				objid		: 'SVR' + new UID(),
+				dtcreated 	: dateSvc.serverDate,
+				author 		: [objid: env.USERID, name: env.NAME],
+				txnstate 	: 'FOR_APPROVAL',
+				shortageid 	: data.objid,
+				remarks 	: params.remarks,
+				shortage 	: data
+			];
+			req.shortage.collectorname = data.collector.name;
+			shortage_voidrequest.create(req);
+
+			def msginfo = [ 
+				objid 		: req.objid, 
+				dtcreated	: req.dtcreated, 
+				refid 		: req.objid, 
+				filetype 	: 'shortagevoidrequest', 
+				message 	: 'Submitted void request for shortage with ref. no. ' + data.refno + ' for approval.', 
+				senderid	: env.USERID, 
+				sendername 	: env.NAME, 
+				recipientid : 'APPROVER' 
+			]; 
+			inboxSvc.addMessage( msginfo );	
+		}
+
+		return open(data);
+	}
+
+	/*
+	@ProxyMethod
+	public def submitForApproval( data ) {
+		data.state = 'FOR_APPROVAL';
+		em.changeState(data);
+
+		validateFund(data);
+
+		def msginfo = [ 
+			objid 		: data.objid, 
+			dtcreated	: dateSvc.serverDate, 
+			refid 		: data.objid, 
+			filetype 	: 'shortage', 
+			message 	: 'Shortage document for approval', 
+			senderid	: env.USERID, 
+			sendername 	: env.NAME, 
+			recipientid : 'APPROVER' 
+		]; 
+		inboxSvc.addMessage( msginfo );
+		return data;
+	}
+
+	@ProxyMethod
+	public def approveDocument( data ) {
+		data.state = 'APPROVED';
+		em.changeState(data);
+
+		data.dtposted = dateSvc.serverDate;
+		data.poster = [ objid: env.USERID, name: env.NAME ];
+		em.update(data, "post");
+
+		def rem_other = [
+			objid 	: 'REMOTHR' + new UID(),
+			parentid: data.remittanceid,
+			refid 	: data.objid,
+			txntype : 'SHORTAGE',
+			amount 	: (data.amount * -1)
+		];
+		remittance.create(rem_other, "rem-other");
+
+		inboxSvc.removeMessageByRefid([refid: data.objid]);
+		branchFundSvc.addUsage([collectorid: data.collector.objid, amount: data.amount]);
+		return data;
+	}
+
+	@ProxyMethod
+	public def disapprove( data ) {
+		def info = em.read(data);
+		if (!info) throw new Exception("Record does not exist or has already been deleted.");
+
+		data.state = 'DISAPPROVED';
+		em.update(data);
+
+		inboxSvc.removeMessageByRefid([refid: data.objid]);
+		return data;
+	}
+	*/
+
+	void validateCashBreakdown( params ) {
+		def prm = [
+			collectionid: params.objid,
+			groupid		: params.objid,
+			grouptype 	: 'shortage'
+		]
+		def cb = collection_cb.findCashbreakdown(prm);
+			if (!cb) throw new Exception("No cash breakdown sheet has been created for this shortage.");
+
+		def cbsno = params.cbsno.toUpperCase();
+		if (cb.cbsno != params.cbsno) 
+			throw new Exception("CBS No. inputted does not match cbs no. generated for this shortage.");
+
+	}
+	
+
+
+/*
+	@ProxyMethod
+	public def saveCashbreakdown( params ) {
+		validateCashBreakdown(params);
+		if (!params.cashbreakdown) throw new Exception("Please specify cashbreakdown.");
+
+		def info = em.read(params);
+		if (!info) throw new Exception("Record does not exist or has already been deleted.");
+
+		em.update(params);
+
+		/*def prm = [
+			collectionid: info.objid,
+			groupid		: info.objid,
+			grouptype 	: 'shortage'
+		];
+		def cb = collection_cb.findCashbreakdown(prm);
+		collection_cb.create(cb, "cb-forverification");
+		
+		def msginfo = [ 
+			objid 		: cb.objid, 
+			dtcreated	: cb.dtfiled, 
+			refid 		: cb.objid, 
+			filetype 	: 'cashbreakdown', 
+			message 	: 'For verification CBS No. '+ cb.cbsno, 
+			senderid	: env.USERID, 
+			sendername 	: env.NAME, 
+			recipientid : 'ACCT_ASSISTANT' 
+		]; 
+		inboxSvc.addMessage( msginfo );*/
+
+		//def cb = collection_cb.read(params.cashbreakdown);
+		/*if (!cb) {
+			cb = [
+				objid 		: params.cashbreakdown.objid,
+				state 		: 'FOR_VERIFICATION',
+				dtfiled 	: dateSvc.serverDate,
+				author 		: [objid: env.USERID, name: env.NAME],
+				txndate 	: params.txndate,
+				collector 	: params.collector,
+				collection  : [objid: params.objid, type: 'SHORTAGE'],
+				group 		: [objid: params.objid, type: 'shortage'],
+				cbsno 		: params.cashbreakdown.cbsno
+			];
+			collection_cb.create(cb);
+			collection_cb.create(cb, "cb-forverification");
+			
+			def msginfo = [ 
+				objid 		: cb.objid, 
+				dtcreated	: cb.dtfiled, 
+				refid 		: cb.objid, 
+				filetype 	: 'cashbreakdown', 
+				message 	: 'For verification CBS No. '+ cb.cbsno, 
+				senderid	: env.USERID, 
+				sendername 	: env.NAME, 
+				recipientid : 'ACCT_ASSISTANT' 
+			]; 
+			inboxSvc.addMessage( msginfo );
+		}*/
+/*
+		def items = params.cashbreakdown.items;
+		items.each{ o->
+			o.objid = 'CBDTL' + new UID();
+			o.parentid = cb.objid;			
+
+			collection_cb.create(o, "cb-detail");
+		}
+
+		cb.items = collection_cb.getDetails(cb);
+
+		return cb;
+	}
+*/
+
+	@ProxyMethod
+	public def updateCashBreakdown( params ) {
+		validateCashBreakdown(params);
+		if (!params.cashbreakdown) throw new Exception('Please specify cahs breakdown.');
+
+		def data = em.read(params);
+		if (!data) throw new Exception('Shortage record does not exist or has already been deleted.');
+
+		data.cbsno = params.cbsno;
+		em.update(data);
+
+		def prm = [
+			collectionid: params.objid,
+			groupid 	: params.objid,
+			grouptype 	: 'shortage'
+		];
+		def cb = collection_cb.findCashbreakdown(prm);
+		if (!cb) throw new Exception("No cash breakdown sheet has been created for this shortage.");
+
+		if (cb.state != 'DRAFT') {
+			throw new Exception('CBS has already been ' + cb.state + '.');
+		}
+
+		cb.cbsno = params.cbsno;
+		collection_cb.update(cb);
+		def item;
+		params.cashbreakdown.items.each{ o->
+			if (!o.objid) o.objid = 'CBDTL' + new UID();
+			if (!o.parentid) o.parentid = cb.objid;
+			item = collection_cb.read(o, 'cb-detail');
+			if (!item) {
+				collection_cb.create(o, 'cb-detail');
+			} else {
+				collection_cb.update(o, "cb-detail");	
+			}
+		}
+		cb = collection_cb.read(cb);
+		cb.items = collection_cb.getDetails(cb);
+
+		return cb; 	
+	}
+
+
+/*
+	@ProxyMethod
+	public def updateCashbreakdown( params ) {
+		validateCashBreakdown(params);
+		if (!params.cashbreakdown) throw new Exception("Please specify cashbreakdown.");
+
+		def info = em.read(params);
+		if (!info) throw new Exception("Record does not exist or has already been deleted.");
+
+		em.update(params);
+
+		//def cb = collection_cb.read(params.cashbreakdown);
+		def prm = [
+			collectionid: params.objid,
+			groupid 	: params.objid,
+			grouptype 	: 'shortage'
+		];
+		def cb = collection_cb.findCashbreakdown(prm);
+		if (!cb) throw new Exception("Record does not exist or has already been deleted.");
+
+		def i = collection_cb.read(cb, "cb-forverification");
+		if (i) throw new Exception("CBS has already been submitted for verification.");
+
+		if (cb.state == 'VERIFIED')
+			throw new Exception("CBS has already been verified.");
+
+		/*
+		def c = collection_cb.read(cb, "cb-forverification");
+		if (!c) {
+			cb.state = 'FOR_VERIFICATION';
+			collection_cb.update(cb);
+			collection_cb.create(cb, "cb-forverification");
+			
+			def msginfo = [ 
+				objid 		: cb.objid, 
+				dtcreated	: cb.dtfiled, 
+				refid 		: cb.objid, 
+				filetype 	: 'cashbreakdown', 
+				message 	: 'For verification CBS No. '+ cb.cbsno, 
+				senderid	: env.USERID, 
+				sendername 	: env.NAME, 
+				recipientid : 'ACCT_ASSISTANT' 
+			]; 
+			inboxSvc.addMessage( msginfo );
+		}
+		*/
+/*
+		collection_cb.update(cb);
+		params.cashbreakdown.items.each{ o->
+			if (!o.objid) o.objid = 'CBDTL' + new UID();
+			if (!o.parentid) o.parentid = cb.objid;
+			collection_cb.update(o, "cb-detail");
+		}
+		cb = collection_cb.read(cb);
+		cb.items = collection_cb.getDetails(cb);
+		return cb;
+	}
+*/
+	@ProxyMethod
+	public def submitCbsForVerification( params ) {
+		if (!params.cashbreakdown) throw new Exception("Cashbreakdown is required");
+
+		def cb = collectionCbsSvc.submitForVerification(params.cashbreakdown);
+		def c = collection_cb.read(cb, "cb-forverification");
+		if (!c) {
+			collection_cb.create(cb, "cb-forverification");
+			
+			def msginfo = [ 
+				objid 		: cb.objid, 
+				dtcreated	: dateSvc.serverDate, 
+				refid 		: cb.objid, 
+				filetype 	: 'cashbreakdown', 
+				message 	: 'For verification CBS No. '+ cb.cbsno, 
+				senderid	: env.USERID, 
+				sendername 	: env.NAME, 
+				recipientid : 'ACCT_ASSISTANT' 
+			]; 
+			inboxSvc.addMessage( msginfo );
+		}
+		return cb;
+	}
+}

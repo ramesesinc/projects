@@ -1,0 +1,57 @@
+<schema>
+
+	<element name="compromise" tablename="compromise">
+		<field name="objid" primary="true" />
+		<field name="state" required="true" />
+		<field name="txntype" required="true" />
+		<field name="dtcreated" required="true" />
+		<field name="author_objid" required="true" />
+		<field name="author_name" required="true" />
+		<field name="ledgerid" required="true" />
+		<field name="dteffective" required="true" />
+		<field name="dtended" />
+		<field name="offer_objid" />
+		<field name="offer_months" />
+		<field name="offer_days" />
+		<field name="offer_amount" />
+		<field name="offer_payuntilamountpaid" />
+		<field name="remarks" required="true" />
+		<field name="dtposted" />
+		<field name="poster_objid" />
+		<field name="poster_name" />
+	</element>
+
+	<element name="compromise-post" tablename="compromise">
+		<field name="objid" primary="true" />
+		<field name="dtposted" required="true" />
+		<field name="poster_objid" required="true" />
+		<field name="poster_name" required="true" />
+	</element>
+
+	<element name="compromise-offer" tablename="compromise_offer">
+		<field name="objid" primary="true" />
+		<field name="parentid" required="true" />
+		<field name="term_months" required="true" />
+		<field name="term_days" required="true" />
+		<field name="amount" required="true" />
+		<field name="payuntilamountpaid" required="true" />
+	</element>
+
+	<element name="compromise-extension" tablename="compromise_extension">
+		<field name="objid" primary="true" />
+		<field name="parentid" required="true" />
+		<field name="months" required="true" />
+		<field name="days" required="true" />
+	</element>
+
+	<element name="compromise-changeoffer" tablename="compromise_changeoffer">
+		<field name="objid" primary="true" />
+		<field name="prevcompromiseid" required="true" />
+		<field name="prevoffer_objid" required="true" />
+		<field name="prevoffer_amount" required="true" />
+		<field name="prevoffer_months" required="true" />
+		<field name="prevoffer_days" required="true" />
+		<field name="prevoffer_payuntilamountpaid" required="true" />
+	</element>
+
+</schema>

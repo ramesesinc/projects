@@ -1,0 +1,59 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.services.extended.*;
+
+class EncashmentCBSLookupService extends ActiveListService
+{
+	@ActiveDB('collection_cb')
+	def em;
+
+	@ActiveDB('encashment')
+	def encashment;
+
+	String listMethod = 'getLookupListForEncashment';
+
+	@ProxyMethod
+	public def getColumns( params ) {
+		def cols = [];
+
+		cols << [name: 'txndate', caption: 'Date', type: 'date', outputFormat: 'MMM-dd-yyyy'];
+		cols << [name: 'cbsno', caption: 'CBS No.'];
+		cols << [name: 'collector.name', caption: 'Collector'];
+		cols << [name: 'amount', caption: 'Amount', type: 'decimal', format: '#,##0.00'];
+
+		return cols;
+	}
+
+	void beforeList( params ) {
+		params.searchtext = (params.searchtext? params.searchtext : '') + '%';
+		if (params.txndate) {
+			params._listMethod = 'getLookupListForEncashmentByDate';
+		}
+	}
+
+	void afterList( params, list ) {
+		def amt, xlist, item;
+		list?.each{ o->
+			amt = 0;
+			xlist = encashment.getEncashmentCbsByRefid([refid: o.objid]);
+			xlist = xlist?.findAll{ it.parentid != params.encashmentid }
+			xlist?.each{ i->
+				item = encashment.read([objid: i.objid], 'encashment-cbs');
+				if (item) {
+					def a = item.breakdown?.amount?.sum();
+					if (!a) a = 0;
+					amt += a;
+
+					/*
+					a = item.change?.amount?.sum();
+					if (!a) a = 0;
+					amt -= a;
+					*/
+				}
+			}
+
+			if (!o.amount) o.amount = 0;
+			o.amount -= amt;
+		}
+	}
+}

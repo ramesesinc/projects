@@ -1,0 +1,19 @@
+<schema>
+
+	<element name="loan_ledger_specialcollection" tablename="loan_ledger_specialcollection">
+		<field name="objid" primary="true"/>
+		<field name="billingid"/>
+		<field name="dtrequested" required="true"/>
+		<field name="requestedby" required="true"/>
+		<field name="collector_objid" required="true"/>
+		<field name="collector_name" required="true"/>
+		<field name="state" required="true"/>
+		<field name="remarks" required="true"/>
+	</element>
+
+	<element name="billingid" tablename="loan_ledger_specialcollection">
+		<field name="objid" primary="true"/>
+		<field name="billingid" required="true"/>
+	</element>
+
+</schema>

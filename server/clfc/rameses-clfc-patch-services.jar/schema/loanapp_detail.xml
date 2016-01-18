@@ -1,0 +1,41 @@
+<schema>
+
+	<element name="loanapp_detail" tablename="change_loanapp_detail_log">
+		<field name="objid" primary="true" />
+		<field name="loanappid" required="true" />
+		<field name="dtfiled" required="true" />
+		<field name="author_objid" required="true" />
+		<field name="author_name" required="true" />
+		<field name="remarks" required="true" />
+	</element>
+
+	<element name="loanapp" tablename="loanapp">
+		<field name="objid" primary="true" />
+		<field name="appno" required="true" />
+		<field name="apptype" required="true" />
+		<field name="loanamount" required="true" />
+		<field name="borrower_name" required="true" />
+		<field name="route_code" required="true" />
+		<field name="producttype_name" required="true" />
+		<field name="producttype_term" required="true" />
+	</element>
+
+	<element name="loanapp_capture" tablename="loanapp_capture">
+		<field name="objid" primary="true" />
+		<field name="dtreleased" required="true" />
+	</element>
+
+	<element name="ledger" tablename="loan_ledger">
+		<field name="objid" primary="true" />
+		<field name="producttypeid" required="true" />
+		<field name="term" required="true" />
+		<field name="acctname" required="true" />
+		<field name="dailydue" required="true" />
+		<field name="interestamount" required="true" />
+		<field name="absentpenalty" required="true" />
+		<field name="totalprincipal" required="true" />
+		<field name="dtstarted" required="true" />
+		<field name="dtmatured" />
+	</element>
+
+</schema>

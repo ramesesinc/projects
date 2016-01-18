@@ -1,0 +1,415 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.services.extended.*;
+
+class LoanLedgerPreviewService //extends ActiveListService
+{
+	@ActiveDB("loan_ledger")
+	def em;
+
+	@ActiveDB("calendar_event")
+	def calendar_event;
+
+	@ActiveDB("loan_ledger_payment")
+	def ledger_payment;
+
+	@ActiveDB("loanapp")
+	def loanapp;
+
+	@ActiveDB("amnesty")
+	def amnesty;
+
+	@ActiveDB('ledgeramnesty')
+	def ledgeramnesty;
+
+	@ActiveDB("var")
+	def var;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@ProxyMethod
+	public def getColumns( params ) {
+		return [
+			[name: 'paymentschedule', caption: 'Schedule of Payment', type: 'date', outputFormat: 'MMM. dd, yyyy'],
+			[name: 'partialpayment', caption: 'Partial Payment', type: 'decimal', format: '#,##0.00;(#,##0.00)'],
+			[name: 'balanceamount', caption: 'Balance', type: 'decimal', format: '#,##0.00;(#,##0.00)'],
+			[name: 'interestpaid', caption: 'Interest Paid', type: 'decimal', format: '#,##0.00;(#,##0.00)'],
+			[name: 'penaltycharge', caption: 'Penalty Charges', type: 'decimal', format: '#,##0.00;(#,##0.00)'],
+			[name: 'totalpayment', caption: 'Total Payment', type: 'decimal', format: '#,##0.00;(#,##0.00)'],
+			[name: 'receiptno', caption: 'OR No.'],
+			[name: 'datepaid', caption: 'Date Paid', type: 'date', outputFormat: 'MMM. dd, yyyy'],
+			[name: 'remarks', caption: 'Remarks']
+		];
+	}
+
+	@ProxyMethod
+	public def getList( params ) {
+		params.parentid = params.ledgerid;
+
+		def sysvar = var.read([name: 'show_amnesty_posting']);
+		def xlist = [];
+		if (!sysvar || sysvar.value == 'false') {
+			xlist = em.getLedgerDetailsByLedgeridWithoutAmnesty(params);
+		} else if (sysvar.value == 'true') {
+			xlist = em.getLedgerDetailsByLedgerid(params);
+		}
+
+		def ledger = em.read([objid: params.ledgerid]);
+		def appc = loanapp.read([objid: ledger.appid], 'loanapp_capture');
+		if (appc) {
+			ledger.dategranted = appc.dtreleased;
+		}
+		if (!ledger.dategranted) ledger.dategranted = dateSvc.add(ledger.dtstarted, "-1");
+
+		def list = [];
+
+		def prevrefno, prevbal, cal = Calendar.getInstance();
+		def exemptedamt = 0;
+		def lastday = 0;
+		def offsettotalpayment, prevday;
+		def payments;
+		def df = new java.text.SimpleDateFormat("yyyy-MM-dd");
+		def am;
+		xlist.each{ 
+			am = null;
+			def itm = [
+				originalamount		: null,
+				partialpayment		: it.partialpayment,
+				balanceamount		: it.balance,
+				interestpaid		: (it.interestpaid != 0)? it.interestpaid : null,
+				penaltycharge		: it.penaltypaid,
+				totalpayment		: (it.amtpaid != 0)? it.amtpaid : null,
+				receiptno			: it.refno,
+				datepaid			: it.dtpaid,
+				remarks 			: (it.remarks? it.remarks : ''),
+				txndate 			: it.txndate
+			];
+
+			if (!it.amnestyid) {
+				//println 'date granted: ' + ledger.dategranted + ' day: ' + it.day;
+				itm.paymentschedule = dateSvc.add(ledger.dategranted, it.day+'')
+				itm.coldate = df.format(itm.paymentschedule);
+			} else if (it.amnestyid && it.state == 'RECEIVED') {
+				/*
+				am = amnesty.read([objid: it.amnestyid]);
+				if (am?.amnestyoption == 'WAIVER') {
+					itm.paymentschedule = dateSvc.add(ledger.dategranted, it.day+'')
+					itm.coldate = df.format(itm.paymentschedule);
+				}
+				*/
+			}
+			if (it.state == "RECEIVED") {
+				if (!it.amnestyid) {
+
+					//def e = exemption.findExemptionByDateAndLedgerid([txndate: itm.paymentschedule, ledgerid: ledger.objid]);
+					//if (e) {
+					//	exemptedamt += ledger.absentpenalty;
+					//	itm.remarks = 'WAIVED By '+e.author.username;
+					//}
+					//if (it.balance == ledger.totalprincipal) {
+					//	itm.balanceamount = null;
+					//}
+					/*
+					if (!it.refno || (it.balance == prevbal && (!it.amnestyid || am?.amnestyoption == 'WAIVER'))) {
+						//println 'balance ' + it.balance;
+						//println 'prev balance ' + prevbal;
+						itm.balanceamount = null;
+					}
+					*/
+					if (!it.refno && it.balance != prevbal) {
+						itm.balanceamount = null;
+					}
+					if (it.balance == prevbal) {
+						if ((!it.amnestyid && (!it.amtpaid || it.interestbal > 0)) || am?.amnestyoption == 'WAIVER') {
+							itm.balanceamount = null;
+						}
+					}
+
+					
+					if (it.partialpayment == 0 && (!it.amtpaid || it.interestbal > 0)) {
+						itm.partialpayment = null;
+					}
+
+					//if (!flag && it.interestbal == 0 && it.penaltybal == 0) {
+					//	itm.originalamount = ledger.totalprincipal;
+					//	flag = true;
+					//}
+					if (!it.balance && !it.partialpayment) {
+						itm.balanceamount = null;
+					}
+					if (it.refno == prevrefno || (am && it.amtpaid == 0)) {
+						itm.receiptno = null;
+						itm.datepaid = null
+					} 
+
+					if (it.interestbal > 0) {
+						if (!itm.remarks) itm.remarks = '';
+						else itm.remarks += ' \n';
+						itm.remarks += 'lacking interest: '+it.interestbal;
+						itm.paymentschedule = null;
+					}
+					if (it.penaltybal > 0) {
+						if(!itm.remarks) itm.remarks = '';
+						else itm.remarks += ' \n';
+						itm.remarks += 'lacking penalty: '+it.penaltybal;
+					}
+					if (it.penaltypaid == 0) itm.penaltycharge = null;
+					if (it.amtpaid != 0) {
+						def total = (it.day - lastday)*ledger.dailydue;
+						if (it.amtpaid == total && itm.penaltycharge) {
+							itm.penaltycharge -= exemptedamt;
+						}
+						lastday = it.day;
+						prevrefno = it.refno;
+						exemptedamt = 0;
+						//offsettotalpayment += it.amtpaid;
+					} else if (!am || am.amnestyoption != 'WAIVER') {
+						itm.receiptno = null;
+						itm.datepaid = null;
+					}
+
+					if (am?.amnestyoption == 'WAIVER' && am?.iswaiveinterest == 1) {
+						itm.paymentschedule = null;
+					}
+
+				} else if (it.amnestyid) {
+					if (it.amtpaid != null && it.amtpaid > 0) {
+						prevrefno = it.refno;
+						lastday = it.day;
+					}
+					def xam = ledgeramnesty.read([objid: it.amnestyid], 'active');
+					def type = xam?.type;
+					if (type == 'FIX') {
+						itm.coldate = null;
+						itm.penaltycharge = null;
+					}
+				}
+
+				payments = ledger_payment.getPaymentsByParentidAndTxndate([parentid: ledger.objid, txndate: it.dtpaid]);
+				if (payments) {					
+					payments.sort{ o->
+						o.txndate.toString() + "" + o.refno
+					}
+					def idx = 0, xitm;
+					while (idx < payments.size()) {
+						xitm = payments[idx];
+						if (it.refno == xitm.refno) {
+							break;
+						}
+						idx++;
+					}
+					idx++;
+
+					while (idx < payments.size()) {
+						xitm = payments[idx];
+						payments.remove(xitm);
+						idx++;
+					}
+					if (payments?.size() > 1 && itm.datepaid) {
+						def xitem = payments[payments.size()-1];
+						//println 'it ' + it;
+						//println 'xitem ' + xitem;
+						if (it.refno == xitem.refno) {
+						//if (it.objid == xitem.objid) {
+							if (itm.remarks) itm.remarks += " \n";
+							itm.remarks += "Total Payment of " + payments.amount.sum();
+						}
+					}
+				}	
+				//println 'current bal ' + it.balance; 
+				prevbal = it.balance;
+
+			} else if (it.state == 'PROCEED' || it.state == 'ADJUSTMENT') {
+				itm.paymentschedule = null;
+				if (!itm.interestpaid || itm.interestpaid == 0) itm.interestpaid = null;
+				if (!itm.penaltycharge || itm.penaltycharge == 0) itm.penaltycharge = null;
+				if (it.state == 'ADJUSTMENT') {
+					itm.receiptno = null;
+					itm.datepaid = null;
+				}
+				if (it.state == 'PROCEED') {
+					if (it.interestbal > 0) {
+						if (!itm.remarks) itm.remarks = '';
+						else itm.remarks += ' \n';
+						itm.remarks += 'lacking interest: ' + it.interestbal;
+					}
+					if (it.penaltybal > 0) {
+						if(!itm.remarks) itm.remarks = '';
+						else itm.remarks += ' \n';
+						itm.remarks += 'lacking penalty: ' + it.penaltybal;
+					}
+				}
+
+			} else if (it.state == 'PREPAIDINTEREST') {
+				itm.paymentschedule = null;
+				itm.datepaid = null;
+				itm.coldate = null;
+				itm.partialpayment = null;
+				itm.balanceamount = null;
+				itm.penaltycharge = null;
+			} else {
+				def xam;
+				if (it.amnestyid) {
+					//println 'record ' + it;
+					//println 'itm ' + itm;
+					xam = ledgeramnesty.read([objid: it.amnestyid], 'active');
+				}
+				def type = xam?.type;
+				if (type == 'FIX' || (it.state == 'OFFSET' && it.interestbal != 0 && it.interestbal != null)) {
+					itm.paymentschedule = null;
+				}
+				if (itm.penaltycharge == 0) itm.penaltycharge = null; 
+				itm.receiptno = null;
+				itm.datepaid = null;
+				if (itm.partialpayment == 0) {
+					itm.partialpayment = null;
+					if (type != 'FIX' && it.state != 'AMNESTY') {
+						itm.balanceamount = null;
+					}
+				}
+				itm.totalpayment = null;	
+			}
+			if (itm.paymentschedule) {
+				def rem = "";
+				cal.setTime(itm.paymentschedule);
+				if (cal.get(Calendar.DAY_OF_WEEK) == 1) {
+					rem = "Sunday";
+					/*
+					if (!itm.remarks) {
+						itm.remarks = "Sunday";
+					} else {
+						itm.remarks = "Sunday \n" + itm.remarks;
+					} 
+					*/
+				}
+				def evt = calendar_event.findByDate([date: itm.coldate]);
+				if (evt) {
+					if (rem) rem += " \n";
+					rem += evt.name;
+				}
+				if (rem) {
+					def rm = itm.remarks;
+					itm.remarks = rem;
+					if (rm) itm.remarks += ' \n' + rm;
+				}
+			}
+			list.add(itm);
+		}
+		//list.each{ println it; }
+		return list;
+	}
+
+	/*
+	void beforeList( params ) {
+		params.parentid = params.ledgerid;
+		params._listMethod = 'getLedgerDetailsByLedgerid';
+	}
+
+	void afterList( params, list ) {
+		def xlist = [];
+		xlist.addAll(list);
+
+		def ledger = em.read([objid: params.ledgerid]);
+		if (!ledger.dategranted) ledger.dategranted = dateSvc.add(ledger.dtstarted, "-1");
+
+		list = [];
+
+		def prevrefno;
+		def prevbal;
+		def exemptedamt = 0;
+		def lastday = 0;
+		def offsettotalpayment, prevday;
+		xlist.each{ 
+			def itm = [
+				originalamount		: null,
+				partialpayment		: it.partialpayment,
+				balanceamount		: it.balance,
+				interestpaid		: (it.interestpaid != 0)? it.interestpaid : null,
+				penaltycharge		: it.penaltypaid,
+				totalpayment		: (it.amtpaid != 0)? it.amtpaid : null,
+				receiptno			: it.refno,
+				datepaid			: it.dtpaid,
+				remarks 			: it.remarks
+			];
+
+			if (!it.amnestyid) itm.paymentschedule = dateSvc.add(ledger.dategranted, it.day+'')
+			if (it.state == "RECEIVED") {
+				//def e = exemption.findExemptionByDateAndLedgerid([txndate: itm.paymentschedule, ledgerid: ledger.objid]);
+				//if (e) {
+				//	exemptedamt += ledger.absentpenalty;
+				//	itm.remarks = 'WAIVED By '+e.author.username;
+				//}
+				//if (it.balance == ledger.totalprincipal) {
+				//	itm.balanceamount = null;
+				//}
+				if (it.balance == prevbal && !it.amnestyid) {
+					//println 'balance ' + it.balance;
+					//println 'prev balance ' + prevbal;
+					itm.balanceamount = null;
+				}
+				if (it.partialpayment == 0) {
+					itm.partialpayment = null;
+				}
+
+				//if (!flag && it.interestbal == 0 && it.penaltybal == 0) {
+				//	itm.originalamount = ledger.totalprincipal;
+				//	flag = true;
+				//}
+				if (it.refno == prevrefno) {
+					itm.receiptno = null;
+					itm.datepaid = null
+				}
+				if (it.interestbal > 0) {
+					if (!itm.remarks) itm.remarks = '';
+					else itm.remarks += '\n';
+					itm.remarks += 'lacking interest: '+it.interestbal;
+					itm.paymentschedule = null;
+				}
+				if (it.penaltybal > 0) {
+					if(!itm.remarks) itm.remarks = '';
+					else itm.remarks += '\n';
+					itm.remarks += 'lacking penalty: '+it.penaltybal;
+				}
+				if (it.penaltypaid == 0) itm.penaltycharge = null;
+				if (it.amtpaid != 0) {
+					def total = (it.day - lastday)*ledger.dailydue;
+					if (it.amtpaid == total && itm.penaltycharge) {
+						itm.penaltycharge -= exemptedamt;
+					}
+					lastday = it.day;
+					prevrefno = it.refno;
+					exemptedamt = 0;
+					//offsettotalpayment += it.amtpaid;
+				}
+				else {
+					itm.receiptno = null;
+					itm.datepaid = null;
+				}
+				//println 'current bal ' + it.balance; 
+				prevbal = it.balance;
+
+			} else if (it.state == 'PROCEED' || it.state == 'ADJUSTMENT') {
+				itm.paymentschedule = null;
+				itm.interestpaid = null;
+				itm.penaltycharge = null;
+				if (it.state == 'ADJUSTMENT') {
+					itm.receiptno = null;
+					itm.datepaid = null;
+				}
+
+			} else {
+				if (itm.penaltycharge == 0) itm.penaltycharge = null;
+				itm.receiptno = null;
+				itm.datepaid = null;
+				if (itm.partialpayment == 0) {
+					itm.partialpayment = null;
+					itm.balanceamount = null;
+				}
+				itm.totalpayment = null;
+			}
+			list.add(itm);
+		}
+	}
+	*/
+}

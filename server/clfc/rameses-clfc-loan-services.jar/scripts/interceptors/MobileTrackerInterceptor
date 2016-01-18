@@ -1,0 +1,20 @@
+import com.rameses.annotations.*;
+import com.rameses.common.*;
+
+class MobileTrackerInterceptor
+{
+	@ActiveDB('fieldcollection')
+	def em;
+
+	@After(pattern='MobileTrackerService.openLog') 
+	public void afterOpenLog( evt ) { 
+		def result = evt.result;
+		if (result.reftype == 'PAYMENT') {
+			result.info = em.findDetailPayment([objid: result.refid]);
+		} 
+		if (result.reftype == 'REMARKS') {
+			result.info = em.findDetail([objid: result.refid]);
+		}
+	} 
+
+}  

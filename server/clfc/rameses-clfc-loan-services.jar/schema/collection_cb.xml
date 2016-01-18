@@ -1,0 +1,84 @@
+<schema>
+
+	<element name="collection_cb" tablename="collection_cb">
+		<field name="objid" primary="true" />
+		<field name="state" required="true" />
+		<field name="dtfiled" required="true" />
+		<field name="author_objid" required="true" />
+		<field name="author_name" required="true" />
+		<field name="txndate" required="true" />
+		<field name="collector_objid" required="true" />
+		<field name="collector_name" required="true" />
+		<field name="collection_objid" required="true" />
+		<field name="collection_type" required="true" />
+		<field name="group_objid" required="true" />
+		<field name="group_type" required="true" />
+		<field name="cbsno" required="true" />
+		<field name="dtverified"  />
+		<field name="verifier_objid"  />
+		<field name="verifier_name"  />
+	</element>
+
+	<element name="cb-detail" tablename="collection_cb_detail">
+		<field name="objid" primary="true" />
+		<field name="parentid" required="true" />
+		<field name="denomination" required="true" />
+		<field name="qty" required="true" />
+		<field name="amount" required="true" />
+	</element>
+
+	<element name="cb-verify" tablename="collection_cb">
+		<field name="objid" primary="true" />
+		<field name="dtverified" required="true" />
+		<field name="verifier_objid" required="true" />
+		<field name="verifier_name" required="true" />
+	</element>
+
+	<element name="cb-active" tablename="collection_cb_active">
+		<field name="objid" primary="true"/>
+	</element>
+
+	<element name="cb-forverification" tablename="collection_cb_forverification">
+		<field name="objid" primary="true"/>
+	</element>
+
+	<element name="cb-encash" tablename="collection_cb_encash">
+		<field name="objid" primary="true" />
+	</element>
+
+	<element name="cb-forencashment" tablename="collection_cb_forencashment">
+		<field name="objid" primary="true" />
+	</element>
+
+	<element name="cb-deposited" tablename="collection_cb_deposited">
+		<field name="objid" primary="true" />
+	</element>
+
+	<!--
+	<element name="cb-reconcile" tablename="collection_cb_reconcile">
+		<field name="objid" primary="true" />
+		<field name="reconciliationid" required="true" />
+	</element>
+
+	<element name="cb-reconciliation" tablename="collection_cb_reconciliation">
+		<field name="objid" primary="true" />
+		<field name="state" required="true" />
+		<field name="refid" required="true" />
+		<field name="dtcreated" required="true" />
+		<field name="author_objid" required="true" />
+		<field name="author_name" required="true" />
+		<field name="reason" required="true" />
+	</element>
+-->
+
+	<element name="cb-sendback" tablename="collection_cb_sendback">
+		<field name="objid" primary="true" />
+		<field name="parentid" required="true" />
+		<field name="dtcreated" required="true" />
+		<field name="author_objid" required="true" />
+		<field name="author_name" required="true" />
+		<field name='state' required='true' />
+ 		<field name="remarks" required="true" />
+	</element>
+
+</schema>

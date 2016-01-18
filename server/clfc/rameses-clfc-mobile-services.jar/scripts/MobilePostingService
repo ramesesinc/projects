@@ -1,0 +1,682 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import com.rameses.services.extended.*;
+import java.rmi.server.UID;
+
+class MobilePostingService
+{
+	@Env
+	def env;
+
+	@ActiveDB('mobile_tracker')
+	def mobile_tracker;
+
+	@ActiveDB("fieldcollection")
+	def fieldcollection;
+
+	@ActiveDB("ledger_billing")
+	def ledger_billing;
+
+	@ActiveDB("voidrequest")
+	def void_request;
+
+	@ActiveDB("specialcollection")
+	def specialcollection;
+
+	@ActiveDB("sysuser")
+	def sysuser;
+
+	@ActiveDB("capture_payment")
+	def capture_payment;
+
+	@ActiveDB("collection_remittance")
+	def remittance;
+
+	@ActiveDB("collector_remarks")
+	def collector_remarks;
+
+	@ActiveDB("collection_cb")
+	def collection_cb;
+
+	@ActiveDB("loan_ledger")
+	def ledger;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@Service("MobileTrackerService")
+	def trackerSvc;
+
+	@Service("LoanSpecialCollectionRequestService")
+	def requestSvc;
+
+	@Service("InboxService")
+	def inboxSvc;
+
+	@ProxyMethod
+	public def postPaymentEncrypt( params ) {
+		return postPayment(decode(params));
+	}
+
+	@ProxyMethod
+	public def postPayment( params ) {
+		if (!params.payment) throw new Exception("Please specify payment.");
+		postFieldCollection(params);
+
+		def l = ledger.findByAppId([appid: params.collectionsheet.loanapp.objid]);
+		if (l && params.payment?.type) {
+			if (l.paymentmethod != params.payment.type) {
+				l.paymentmethod = params.payment.type;
+				ledger.update(l);
+			}
+		}
+
+		if (l.paymentmethod == 'over' && l.overpaymentamount == 0) {
+			l.overpaymentamount = params.payment.overpaymentamount;
+			ledger.update(l);
+		}
+		
+		def item = fieldcollection.read(params.payment, "fc-payment");
+		if (!item) {
+			def fc = fieldcollection.read([objid: params.sessionid]);
+			if (!fc) throw new Exception("Field collection does not exist or has already been deleted.");
+
+			fc = fieldcollection.read([objid: params.itemid], "fc-item");
+			if (!fc) throw new Exception("Field collection item does not exist or has already been deleted.");
+
+			def loan = fieldcollection.read([objid: params.collectionsheet.detailid], "fc-loan");
+			if (!loan) throw new Exception("Field collection loan does not exist or has already been deleted.");
+
+			item = [
+				objid 				: params.payment.objid,
+				parentid 			: params.collectionsheet.detailid,
+				itemid 				: params.itemid,
+				fieldcollectionid 	: params.sessionid,
+				dtfiled 			: dateSvc.serverDate,
+				author				: params.collector,
+				txnmode				: params.mode,
+				dtpaid 				: params.payment.txndate,
+				refno				: params.payment.refno,
+				paytype				: params.payment.type,
+				amount				: params.payment.amount,
+				paidby				: params.payment.paidby,
+				payoption			: params.payment.option,//'cash',
+				version 			: 1
+			];
+			fieldcollection.create(item, "fc-payment");
+
+			if (item.payoption == 'check') {
+				item.bank = params.payment.bank;
+				item.check = params.payment.check;
+				fieldcollection.update(item, "payment-check");
+			}
+
+			loan.noofpayments++;
+			fieldcollection.update(loan, "loan-noofpayments");
+
+			def xitem = mobile_tracker.read([objid: params.trackerid]);
+			if (xitem) {
+				def tracker = [
+					trackerid	: params.trackerid,
+					txntype		: (params.type? params.type : 'NORMAL'),
+					txndate		: params.payment.txndate,
+					refid		: params.payment.objid,
+					reftype		: 'PAYMENT',
+					lng 		: params.longitude,
+					lat 		: params.latitude,
+					remarks 	: 'RECEIVED PAYMENT FROM '+params.payment.paidby,
+					state 		: 1
+				];
+				trackerSvc.log(tracker);
+			}
+
+		}
+		//println "post payment";
+		return [response: "success"];
+	}
+
+	@ProxyMethod
+	public def updateRemarksEncrypt( params ) {
+		return updateRemarks(decode(params));
+	}
+
+	@ProxyMethod
+	public def updateRemarks( params ) {
+		if (!params.collectionsheet) throw new Exception("Please specify collection sheet.");
+		//println 'params ' + params;
+		postFieldCollection(params)
+
+		def loan = fieldcollection.read([objid: params.collectionsheet.detailid], "fc-loan");
+		if (!loan) throw new Exception("Field collection loan does not exist or has already been deleted.");
+
+		loan.remarks = params.remarks;
+		fieldcollection.update(loan, "fc-loan");
+
+		def detail = ledger_billing.read([objid: params.collectionsheet.detailid], "billing-detail");
+		if (detail) {
+			def item = collector_remarks.read(detail);
+			if (!item) {
+				item = [
+					objid 		: detail.objid,
+					ledgerid	: detail.ledgerid,
+					dtcreated 	: params.txndate,
+					author		: params.collector,
+					txndate 	: params.txndate,
+					collector 	: params.collector,
+					remarks 	: params.remarks
+				];
+				collector_remarks.create(item);
+
+				if (params.type && params.type == 'FOLLOWUP') 
+					collector_remarks.create(item, "followup-remarks");
+			} else {
+				collector_remarks.update([objid: item.objid, remarks: params.remarks]);
+			}
+		}
+
+		def xitem = mobile_tracker.read([objid: params.trackerid]);
+		if (xitem) {
+			def t = [
+				trackerid 	: params.trackerid,
+				txntype 	: (params.type? params.type : 'NORMAL'),
+				txndate 	: params.txndate,
+				refid 		: params.collectionsheet.detailid,
+				reftype 	: 'REMARKS',
+				lng 		: params.longitude,
+				lat  		: params.latitude,
+				remarks 	: params.remarks,
+				state 		: 1
+			];
+			//println 'log ' + t;
+			trackerSvc.log(t);
+		}
+		return [response: "success"];
+	}
+
+	@ProxyMethod
+	public def removeRemarksEncrypt( params ) {
+		return removeRemarks(decode(params));
+	}
+
+	@ProxyMethod
+	public def removeRemarks( params ) {
+		if (!params.detailid) throw new Exception("Please specify detailid.");
+		/*def cs = batch_collectionsheet.read([objid: params.detailid], "detail");
+		if (!cs) throw new Exception("Collection sheet does not exist or has already been deleted.");
+
+		cs.remarks = null;
+		batch_collectionsheet.update(cs, "detail");*/
+		//println 'detailid ' + params.detailid;
+		def loan = fieldcollection.read([objid: params.detailid], "fc-loan");
+		if (loan) {
+			loan.remarks = null;
+			fieldcollection.update(loan, "fc-loan");	
+		}
+		//if (!loan) throw new Exception("Field collection loan does not exist or has already been deleted.");
+		
+
+		def detail = ledger_billing.read([objid: params.detailid], "billing-detail");
+		if (detail) {
+			collector_remarks.delete(detail, "followup-remarks");
+			collector_remarks.delete(detail);
+		}
+		//println "remove remarks";
+		return [response: "success"];
+	}
+
+	private def createFieldCollection( params ) {
+		def item = fieldcollection.read([objid: params.sessionid]);
+		if (!item) {
+			def billing = ledger_billing.read([objid: params.sessionid]);
+			item  = [
+				objid 		: params.sessionid,
+				dtfiled 	: dateSvc.serverDate,
+				author 		: params.collector,
+				branchid 	: billing.branchid,
+				billdate 	: billing.billdate,
+				collector 	: params.collector
+			]
+			fieldcollection.create(item);
+		}
+
+		return item;
+	}
+
+	private def createFieldCollectionItem( params, fc ) {
+		def item = fieldcollection.read([objid: params.itemid], "fc-item");
+		if (!item) {
+			def bi = ledger_billing.read([objid: params.itemid], "billing-item");
+			item = [
+				objid 		: params.itemid,
+				state 		: 'DRAFT',
+				parentid	: fc.objid,
+				dtfiled 	: dateSvc.serverDate,
+				author 		: params.collector,
+				item 		: bi.item,
+				trackerid 	: params.trackerid,
+				totalcount 	: 0,
+				totalamount : 0
+			];
+			fieldcollection.create(item, "fc-item");
+		}
+		if (item.trackerid != params.trackerid) {
+			item.trackerid = params.trackerid;
+			fieldcollection.update(item, "fc-item");
+		}
+		return item;
+	}
+
+	private def createFieldCollectionLoan( params ) {
+		def item = fieldcollection.read([objid: params.collectionsheet.detailid], "fc-loan");
+		if (!item) {
+			item = [
+				objid 				: params.collectionsheet.detailid,
+				parentid			: params.itemid,
+				fieldcollectionid 	: params.sessionid,
+				loanapp 			: params.collectionsheet.loanapp,
+				borrower 			: params.collectionsheet.borrower,
+				routecode 			: params.routecode,
+				noofpayments 		: 0
+			];
+			fieldcollection.create(item, "fc-loan");
+		}
+		return item;
+	}
+
+	private void postFieldCollection( params ) {
+		if (!params.sessionid) throw new Exception("Please specify sessionid.");
+		if (!params.itemid) throw new Exception("Please specify itemid.");
+
+		def item = createFieldCollection(params);
+		createFieldCollectionItem(params, item);
+		createFieldCollectionLoan(params);
+
+	}
+
+	@ProxyMethod
+	public def checkVoidPaymentRequestEncrypt( params ) {
+		return checkVoidPaymentRequest(decode(params));
+	}
+
+	@ProxyMethod
+	public def checkVoidPaymentRequest( params ) {
+		def itm = void_request.read([objid: params.voidid]);
+		if (!itm) throw new Exception("Void payment record does not exist or has already been deleted.");
+
+		return itm;
+	}
+
+	@ProxyMethod
+	public def voidPaymentEncrypt( params ) {
+		return voidPayment(decode(params));
+	}
+
+	@ProxyMethod
+	public def voidPayment( params ) {
+		if (!params.paymentid) throw new Exception("Please specify paymentid.");
+		if (!params.loanapp.objid) throw new Exception("Please specify loanappid.");
+
+		def itm = void_request.read([objid: params.objid]);
+		if (!itm) {
+			itm = [
+				objid 		: params.objid,
+				state 		: 'FOR_APPROVAL',
+				dtfiled 	: params.txndate,
+				author 		: params.collector,
+				//filedby 	: (params.collector? params.collector.name : 'NOT IDENTIFIED'),
+				txncode 	: 'FIELD',
+				collectionid: params.collectionid,
+				paymentid	: params.paymentid,
+				routecode 	: params.routecode,
+				loanapp 	: params.loanapp,
+				borrower 	: params.borrower,
+				collector 	: params.collector,
+				reason 		: params.reason
+			]
+			void_request.create(itm);
+
+			def msginfo = [
+				objid		: itm.objid,
+				dtcreated 	: itm.dtfiled,
+				refid 		: itm.objid,
+				filetype 	: 'voidrequest',
+				message 	: 'Void request for approval (Borrower: ' + itm.borrower.name + ')',
+				senderid 	: itm.author.objid,
+				sendername 	: itm.author.name,
+				recipientid : 'APPROVER'
+			];
+			inboxSvc.addMessage( msginfo );
+		}
+		return [response: "success"];
+	}
+
+	@ProxyMethod
+	public def postSpecialCollectionRequestEncrypt( params ) {
+		return postSpecialCollectionRequest(decode(params));
+	}
+
+	@ProxyMethod
+	public def postSpecialCollectionRequest( params ) {
+		if (!params.specialcollectionid) throw new Exception("Please specify specialcollectionid.");
+		if (!params.collector) throw new Exception("Please specify collector.");
+
+		def billingid = (params.billingid? params.billingid : 'LB' + new UID());
+		def data = specialcollection.read([objid: params.specialcollectionid]);
+		if (!data) {
+			data = [
+				objid 		: params.specialcollectionid,
+				state 		: params.state,
+				collector 	: params.collector,
+				remarks 	: params.remarks,
+				billingid 	: billingid,
+				orgid 		: (params.orgid? params.orgid : null)
+			];
+			requestSvc.create(data);
+
+			/*
+			def msginfo = [
+				objid		: params.specialcollectionid,
+				dtcreated 	: dateSvc.serverDate,
+				refid 		: params.specialcollectionid,
+				filetype 	: 'screquest',
+				message 	: 'Special collection request by ' + params.collector.name,
+				senderid 	: params.collector.objid,
+				sendername 	: params.collector.name,
+				recipientid : 'BRANCH_MANAGER'
+			];
+			inboxSvc.addMessage( msginfo );
+
+			msginfo.objid += "1";
+			msginfo.recipientid = 'ACCT_ASSISTANT';
+			inboxSvc.addMessage( msginfo );
+
+			msginfo.objid += "2";
+			msginfo.recipientid = 'ASST_BRANCH_MANAGER';
+			inboxSvc.addMessage( msginfo );
+			*/
+		}
+		return [response: "success"];
+	}
+
+	@ProxyMethod
+	public def postCapturePaymentEncrypt( params ) {
+		return postCapturePayment(decode(params));
+	}
+
+	@ProxyMethod
+	public def postCapturePayment( params ) {
+		if (!params.captureid) throw new Exception("Please specify captureid.");
+		if (!params.payment) throw new Exception("Please specify payment.");
+		if (!params.collector) throw new Exception("Please specify collector.");
+
+		def data = capture_payment.read([objid: params.captureid]);
+		if (!data) { 
+			data = [
+				objid 				: params.captureid,
+				state 				: params.state,
+				trackerid 			: params.trackerid,
+				txndate 			: params.txndate,
+				fieldcollectionid 	: params.sessionid,
+				dtfiled 			: dateSvc.serverDate,
+				author				: params.collector,
+				collector 			: params.collector
+			];
+			capture_payment.create(data);
+			capture_payment.create(data, "cp-pending");
+		}
+
+		data = capture_payment.read(params.payment, "cp-detail");
+		if (!data) {
+			data = [
+				objid 			: params.payment.objid,
+				parentid		: params.captureid,
+				txnmode 		: params.mode,
+				dtpaid	 		: params.payment.dtpaid,
+				paidby 			: params.payment.paidby,
+				borrowername 	: params.payment.borrowername,
+				amount			: params.payment.amount,
+				payoption 		: params.payment.option
+			];
+			capture_payment.create(data, "cp-detail");
+
+			if (data.payoption == 'check') {
+				data.bank = params.payment.bank;
+				data.check = params.payment.check;
+				capture_payment.update(data, "detail-check");
+			}
+
+			def tracker = [
+				trackerid	: params.trackerid,
+				txntype		: (params.type? params.type : 'NORMAL'),
+				refid		: params.payment.objid,
+				reftype		: 'PAYMENT',
+				lng 		: params.lng,
+				lat 		: params.lat,
+				remarks 	: 'RECEIVED PAYMENT FROM '+params.payment.paidby,
+				state 		: 1
+			];
+			trackerSvc.log(tracker);
+		}
+
+		return [ response: "success" ];
+	}
+
+	private def decode( params ) {
+		if (!params.encrypted) throw new Exception("Please specify encrypted data.");
+
+		return new Base64Cipher().decode(params.encrypted);
+	}
+
+	@ProxyMethod
+	public def remitCollectionEncrypt( params ) {
+		return remitCollection(decode(params));
+	}
+
+	private def postTracker( tracker ) {
+		def list = tracker.list;
+		if (list) {
+			def item, xitem;
+			list?.each{ o->
+				xitem = mobile_tracker.read([objid: o.trackerid]);
+				if (xitem) {
+					item = mobile_tracker.findDetailByParentidAndRefid([parentid: o.trackerid, refid: o.objid]);
+					if (!item) {
+						item = [
+							trackerid	: o.trackerid,
+							txndate 	: o.txndate,
+							txntype		: 'NORMAL',
+							refid		: o.objid,
+							reftype		: 'TRACK',
+							lng 		: o.lng,
+							lat 		: o.lat,
+							state 		: 1
+						];
+						trackerSvc.log(item);
+					}	
+				}
+			}
+			//list.each{ println it }
+		}
+		//throw new Exception('stopping');
+		/*
+		if (params.trackerid) {
+			def detail = tracker.findDetailByParentidAndRefid([parentid: params.trackerid, refid: params.objid]);
+			if (!detail) {
+				def map = [
+					trackerid	: params.trackerid,
+					txndate 	: params.txndate,
+					txntype		: 'NORMAL',
+					refid		: params.objid,
+					reftype		: 'TRACK',
+					lng 		: params.lng,
+					lat 		: params.lat,
+					state 		: 1
+				];
+				trackerSvc.log(map);
+			}
+			response = "success";
+		}
+		*/
+	}
+
+	@ProxyMethod
+	public def remitCollection( params ) {
+		if (!params.sessionid) throw new Exception("Please specify sessionid.");
+
+		def c = capture_payment.findPendingByFieldcollection([objid: params.sessionid]);
+		if (c) throw new Exception("Cannot remit collection. There are still pending captured payments to be mapped.");
+		
+		if (params.tracker) {
+			postTracker(params.tracker);
+		}
+
+		if (!params.itemid) throw new Exception("Please specify itemid.");
+		if (!params.cbsno) throw new Exception("Please specify cbsno.");
+		if (params.totalcollection == null) throw new Exception("Please specify total collection sheets for remittance.");
+		if (params.totalamount == null) throw new Exception("Please specify total amount collected.");
+
+		if (params.haspayment) {
+			if (!params.payments) throw new Exception("Please specify payments.");
+		}
+		
+		def fc_item = fieldcollection.read([objid: params.itemid], "fc-item");
+		if (!fc_item) {
+			def item = createFieldCollection(params);
+			createFieldCollectionItem(params, item);
+			//throw new Exception("Record does not exist or has already been deleted.");
+		}
+
+		fc_item = fieldcollection.read([objid: params.itemid], "fc-item");
+		if (!fc_item) throw new Exception("Record does not exist or has already been deleted.");
+
+		if (fc_item.state != 'REMITTED' && fc_item.state != 'POSTED') {
+
+			fc_item.totalcount = (params.totalcollection? params.totalcollection : 0);
+			fc_item.totalamount = (params.totalamount? params.totalamount : 0);
+			//fc_item.cbsno = params.cbsno;
+			fieldcollection.update(fc_item, "item-remit");
+
+			fc_item.state = 'REMITTED';
+			fieldcollection.changeState(fc_item);
+		}
+
+		def billing = ledger_billing.read([objid: params.itemid], "billing-item");
+		if (!billing) throw new Exception("Record does not exist or has already been deleted.");
+
+		if (billing.state != 'CLOSED') {
+			billing.state = 'CLOSED';
+			ledger_billing.changeState(billing);
+		}
+
+		//println 'params ' + params;
+		//throw new Exception('stopping');
+		
+		def prm = [
+			collectionid: fc_item.parentid,
+			groupid		: fc_item.item.objid,
+			grouptype 	: fc_item.item.type
+		];
+
+		def rem_cbsno = fc_item.cbsno;
+
+		def cb;
+		def rem2 = remittance.findCollectionRemittance(prm);
+		if (!rem2) {
+			cb = collection_cb.findCashbreakdown(prm);
+		}
+
+		/*
+		else {
+			cb = collection_cb.findCashbreakdownByCbsno([cbsno: fc_item.cbsno]);
+		}
+		*/
+		//def cb = collection_cb.findCashbreakdown(prm);
+		if (!cb) throw new Exception("No cash breakdown sheet has been created for this collection.");
+
+		rem_cbsno = cb?.cbsno;
+
+		def cbsno = params.cbsno.toUpperCase();
+		//if (cb.cbsno != cbsno) 
+		if (rem_cbsno != cbsno)
+			throw new Exception("CBS No. inputted does not match cbs no. generated for this collection.");
+
+
+		if (!fc_item.cbsno) {
+			fc_item.cbsno = cbsno;
+			fieldcollection.update([objid: fc_item.objid, cbsno: cbsno], "fc-item");
+		}
+
+		def rem = remittance.findCollectionRemittance(prm);
+		if (!rem) {
+			def fc = fieldcollection.read([objid: params.sessionid]);
+			if (!fc) throw new Exception("Record does not exist or has already been deleted.");
+
+			def xlist = [];
+			if (params.payments) {
+				xlist.addAll(params.payments);
+				xlist.unique{ it.loanapp?.objid }
+			}
+
+			rem = [
+				objid 				: 'REM' + new UID(),
+				state 				: 'FOR_POSTING',
+				dtfiled 			: dateSvc.serverDate,
+				author 				: params.collector,
+				txndate 			: fc.billdate,
+				collector 			: params.collector,
+				collection 			: [objid: fc.objid,	type: 'FIELD'],
+				group 				: [objid: fc_item.item.objid, type: fc_item.item.type],
+				totalacctscollected : (xlist? xlist.size() : 0),//fc_item.totalcount,
+				totalamount 		: fc_item.totalamount,
+				cbsno 				: fc_item.cbsno
+			];
+			remittance.create(rem);
+			remittance.create(rem, "pending-remittance");
+		}
+
+		/* remittance detail implementation*/
+		def detail;
+		//println 'payments ' + params.payments;
+		params.payments?.each{ o->
+			detail = remittance.findRemittanceDetailByRefid([refid: o.objid]);
+			if (!detail) {
+				detail = [
+					objid 		: 'REMDTL' + new UID(),
+					parentid	: rem.objid,
+					refid 		: o.objid,
+					borrower 	: o.borrower,
+					loanapp  	: o.loanapp,
+					routecode 	: o.routecode,
+					refno 		: o.refno,
+					amount 		: o.amount,
+					paytype 	: o.type,
+					payoption 	: o.option,
+					dtpaid 		: o.dtpaid,
+					paidby 		: o.paidby
+				];
+
+				remittance.create(detail, "rem-detail");
+
+				if (o.payoption == 'check') {
+					detail.bank = o.bank;
+					detail.check = o.check;
+					remittance.update(detail, "rem-detail-check");
+				}
+			}
+		}
+
+		return [response: "success", state: "REMITTED"];
+	}
+
+	@ProxyMethod
+	public def isBillingPosted( params ) {
+		if (!params.sessionid) throw new Exception("Please specify sessionid.");
+
+		def flag = false;
+		def data = field_collection.read([objid: sessionid]);
+		if (data && data.state == 'POSTED') flag = true;
+
+		return flag;
+	}
+}

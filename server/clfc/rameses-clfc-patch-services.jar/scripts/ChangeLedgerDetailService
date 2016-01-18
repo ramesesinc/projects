@@ -1,0 +1,37 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import java.rmi.server.UID;
+
+class ChangeLedgerDetailService
+{
+	@Env
+	def env;
+
+	@ActiveDB("ledger_detail")
+	def em;
+
+	@ActiveDB("loan_ledger") 
+	def ledger;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@ProxyMethod
+	public def save( params ) {
+		def l = ledger.read([objid: params.ledgerid]);
+		if (!l) throw new Exception("Ledger record does not exist or has already been deleted.");
+
+		l.paymentmethod = params.paymentmethod;
+		l.overpaymentamount = params.overpaymentamount;
+		ledger.update(l);
+
+		def item = [
+			objid	: 'LOG' + new UID(),
+			ledgerid: params.ledgerid,
+			dtfiled : dateSvc.serverDate,
+			author	: [objid: env.USERID, name: env.NAME],
+			remarks	: params.remarks
+		]
+		em.create(item);
+	}
+}

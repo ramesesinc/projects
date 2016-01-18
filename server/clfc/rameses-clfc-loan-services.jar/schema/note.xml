@@ -1,0 +1,32 @@
+<schema>
+
+	<element name="note" tablename="note">
+		<field name="objid" primary="true"/> 
+		<field name="state" required="true"/> 
+		<field name="dtcreated" required="true"/> 
+		<field name="author_objid" required="true"/> 
+		<field name="author_username" required="true"/> 
+		<field name="ledger_objid" required="true"/> 
+		<field name="route_code" required="true"/> 
+		<field name="loanapp_objid" required="true"/> 
+		<field name="loanapp_appno" required="true"/> 
+		<field name="borrower_objid" required="true"/> 
+		<field name="borrower_name" required="true"/> 
+		<field name="borrower_address" required="true"/> 
+		<field name="dtstart" required="true"/> 
+		<field name="dtend"/> 
+		<field name="text" required="true"/> 
+		<field name="dtapproved"/> 
+		<field name="approvedby"/> 
+		<field name="approvedremarks"/> 
+		<field name="dtposted"/> 
+		<field name="postedby"/> 
+		<field name="postedremarks"/> 		
+	</element>
+
+	<element name="active" tablename="note_active">
+		<field name="objid" primary="true"/> 
+		<field name="loanapp_appno" required="true"/> 
+		<field name="borrower_name" required="true"/> 
+	</element>
+</schema>

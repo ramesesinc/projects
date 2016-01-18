@@ -1,0 +1,28 @@
+<schema>
+
+	<element tablename="receivable">
+		<field name="objid" primary="true" />
+		<field name="refid" required="true" />
+		<field name="reftype" required="true" />
+		<field name="totaldr" required="true" />
+		<field name="totalcr" required="true" />
+		<field name="balance" required="true" />
+	</element>
+
+	<element name="detail" tablename="receivable_detail">
+		<field name="objid" primary="true" />
+		<field name="parentid" required="true" />
+		<field name="txndate" required="true" />
+		<field name="txnrefid" required="true" />
+		<field name="txnrefno" />
+		<field name="particulars" required="true" />
+		<field name="dr" required="true" />
+		<field name="cr" required="true" />
+	</element>
+
+	<element name="status" tablename="receivable_status">
+		<field name="objid" primary="true" />
+		<field name="state" required="true" />
+	</element>
+
+</schema>

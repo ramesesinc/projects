@@ -1,0 +1,12 @@
+<schema>
+
+	<element name="billing_process" tablename="billing_process">
+		<field name="objid" primary="true"/>
+	</element>
+
+	<element name="detail" tablename="billing_process_detail">
+		<field name="objid" primary="true"/>
+		<field name="parentid" required="true"/>
+	</element>
+
+</schema>

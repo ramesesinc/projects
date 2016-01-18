@@ -1,0 +1,29 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.services.extended.*;
+
+class LoanARLookupService extends ActiveListService
+{
+	@ActiveDB("loan_ar")
+	def em;
+
+	@ProxyMethod
+	public def getColumns( params ) {
+		def cols = [];
+		if (!params.state) cols << [name: 'txnstate', caption: 'Status'];
+		cols << [name: 'txndate', caption: 'Date', type: 'date', outputFormat: 'MMM-dd-yyyy'];
+		cols << [name: 'refno', caption: 'RefNo'];
+		cols << [name: 'check.no', caption: 'CheckNo'];
+		cols << [name: 'check.date', caption: 'CheckDate', type: 'date', outputFormat: 'MMM-dd-yyyy'];
+		cols << [name: 'totalamount', caption: 'Total', type: 'decimal', format: '#,##0.00'];
+		return cols;
+	}
+
+	void beforeList( params ) {
+		params.searchtext = (params.searchtext? params.searchtext : '') + '%';
+		params._listMethod = 'getLookupList';
+		if (params.txnstate) {
+			params._listMethod = 'getLookupListByState';
+		}
+	}
+}

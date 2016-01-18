@@ -1,0 +1,251 @@
+import com.rameses.annotations.*;
+import com.rameses.common.*;
+import com.rameses.services.extended.*;
+
+class LoanLedgerPaymentService extends ActiveListService
+{
+	@Env
+	def env;
+
+	@ActiveDB('loan_ledger_payment')
+	def em;
+
+	@ActiveDB('loan_ledger')
+	def ledgerdb;
+
+	@ActiveDB("loanapp")
+	def loanapp;
+
+	@ActiveDB("loan_product_type")
+	def producttype;
+
+	@ActiveDB("loan_ledger_proceeds")
+	def proceeds;
+
+	@ActiveDB("loan_ledger_adjustment")
+	def adjustment;
+
+	@ActiveDB("loan_ledger_noncash")
+	def ledger_noncash;
+
+	@ActiveDB("amnesty")
+	def amnesty;
+
+	@Service("LoanPaymentService")
+	def paymentSvc;
+
+	@Service("LoanLedgerService")
+	def ledgerSvc;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@Async
+	@ProxyMethod(local=true)
+	public def rebuild( data ) {
+		def ledger = ledgerdb.read(data);
+		ledgerdb.removeLedgerDetail([parentid: ledger.objid]);
+		
+		ledger.state = 'OPEN';
+		ledger.balance = (data.loanamount? data.loanamount : ledger.totalprincipal);
+		//ledger.overpaymentamount = 0.00;
+		ledger.overduepenalty = 0.00;
+		ledger.dtlastpaid = null;
+		ledger.dtcurrentschedule = ledger.dtstarted;
+		ledgerdb.update(ledger);
+		loanapp.update([objid: ledger.appid, state: 'RELEASED']);
+
+		def linfo = ledgerdb.read([objid: ledger.objid], 'ledger-info');
+		if (linfo) {
+			linfo.postinginfo = [:];
+			ledgerdb.update(linfo, 'ledger-info');
+		}
+
+		def l = loanapp.read([objid: ledger.appid], 'loanapp_search');
+		if (l) {
+			l.state = 'RELEASED';
+			loanapp.update(l, 'loanapp_search');
+		}
+
+		/*def xlist = amnesty.getActiveAmnestiesByLedgerid([ledgerid: ledger.objid]);
+		xlist.each{ o->
+			o.balance = o.grantedoffer.amount;
+			amnesty.update(o);
+			amnesty.removeDetails(o);
+		}*/
+		def dt = dateSvc.getServerDateAsString().split(" ")[0];
+		def am = amnesty.findActiveAmnestyByLedgeridAndDate([date: dt, ledgerid: ledger.objid]);
+		if (am) {
+			def xlist = amnesty.getActiveAmnestiesByLedgerid([ledgerid: ledger.objid]);
+			//def mlist = xlist.findAll{ it.amnestyoption == 'FIX' }
+
+			def item;
+			xlist.each{ o->
+				item  = amnesty.read([objid: o.objid]);
+				if (o.amnestyoption == 'FIX') {
+					item.balance = item.grantedoffer.amount;
+					amnesty.update(item);
+				}
+				amnesty.removeDetails(item);
+			}
+			/*if (am.amnestyoption == 'FIX') {
+				am.balance = am.grantedoffer.amount;
+				amnesty.update(am);
+			}
+			amnesty.removeDetails(am);*/
+		}
+
+		data._removed.each{ o->
+			ledgerdb.delete(o, "payment");
+		}
+
+		data._added.each{ o->
+			def item = ledgerdb.read([objid: o.objid], "payment");
+			if (!item) {
+				item = [
+					objid		: o.objid,
+					parentid	: ledger.objid,
+					refno		: o.refno,
+					txndate		: o.txndate,
+					amount 		: o.amount,
+					isonline	: 0,
+					dtmodified 	: dateSvc.serverDate,
+					modifiedby	: [objid: env.USERID, name: env.NAME]
+				];
+				ledgerdb.create(item, "payment");
+			}
+		}
+
+		def adjustments = adjustment.getActiveListByLedgerid([ledgerid: ledger.objid]);
+		adjustments.each{ o->
+			def item = [
+				adjustmentid: o.objid,
+				txndate		: o.txndate,
+				amount 		: o.amount,
+				isadjustment: true	
+			];	
+			data.payments.add(item);
+		}
+
+		data.payments.sort{ it.txndate.toString()+''+it.refno }
+		def lp;
+		if (data.payments) {
+			lp = data.payments[data.payments.size() - 1];
+		}
+		data.payments.each{
+			//println it;
+			if (it._edited) {
+				it.dtmodified = dateSvc.serverDate;
+				it.modifiedby = [objid: env.USERID, name: env.NAME];
+				//println 'it ' + it;
+				ledgerdb.update(it, "payment");
+			}
+			def itm = [
+			    appno 			: data.appno,
+			    appid 			: data.appid,
+			    borrowername	: data.acctname,
+			    ledgerpaymentid	: it.objid,
+			    refno 			: it.refno,
+			    txndate 		: it.txndate,
+			    payamount 		: it.amount,
+			    isadjustment	: (it.isadjustment? it.isadjustment : false),
+			    adjustmentid	: it.adjustmentid
+			]
+			//println 'amount ' + itm.payamount;
+			//println itm;
+			itm.isproceedcollection = false;
+			def i = proceeds.findByRefid([refid: it.objid]);
+			if (i) {
+				itm.isproceedcollection = true;
+				itm.proceedid = i.objid;
+			}
+
+			itm.isnoncash = false;
+			i = ledger_noncash.findByRefid([refid: it.objid]);
+			if (i) {
+				itm.isnoncash = true;
+				itm.noncashid = i.objid;
+			}
+
+			itm.islastpayment = false;
+			if (it.objid == lp?.objid) {
+				itm.islastpayment = true;
+			}
+
+			paymentSvc.postPayment(itm);
+			//if (!it.parentid) it.parentid = data.objid;
+			/*if (it._edited) {
+				it.remove('_edited');
+				em.updateLedgerPayment(it);
+				//em.save(it, "payment");	
+			}*/
+		}
+
+		def xledger = ledgerdb.read([objid: data.objid]);
+		def xapp = loanapp.read([objid: xledger.appid]);
+		if (xledger && xledger.overduepenalty == 0 && xapp?.loantype != 'BRANCH') {
+			def currentday = parseDate(dateSvc.getServerDateAsString().split(" ")[0]);
+			def dtmatured = parseDate(xledger.dtmatured);
+			if (currentday.compareTo(dtmatured) > 0 && xledger.balance > 0) {
+				def  p = producttype.read([name: xledger.producttypeid]);
+				xledger.overduepenalty = ledgerSvc.computeOverduePenalty([balance: xledger.balance, pastduerate: (p.pastduerate? p.pastduerate : 0.00)]);
+				//throw new Exception('stop')
+				ledgerdb.update(xledger, 'overduepenalty');
+			}
+		}
+
+		
+
+		data.ledgerid = data.objid;
+		data = ledgerSvc.open(data);
+		data.payments = getList(data);
+		def info;
+		data.payments.each{ o->
+			info = null;
+			if (o.info) info = em.serializer.read(o.info);
+			if (info) o.putAll(info);
+		}
+
+		return data;
+	}
+
+	private def parseDate( date ) {
+		if (!date) return null;
+		if (date instanceof Date) {
+			return date;
+		} else {
+			return java.sql.Date.valueOf(date);
+		}
+	}
+
+	@ProxyMethod
+	public def refresh( params ) {
+		def rows = (params.rows? params.rows : 30);
+		def list = getList(params);
+		def info;
+		list.each{ o->
+			info = null;
+			if (o.info) info = em.serializer.read(o.info);
+			if (info) o.putAll(info);
+		}
+		def data = ledgerdb.findLedgerById([ledgerid: params.objid]);
+
+		def a = (data.ledgercount/rows);
+		data.lastpageindex = new BigDecimal(a+'').setScale(0, BigDecimal.ROUND_CEILING);
+
+		return [list: list, lastpageindex: data.lastpageindex];
+	}
+
+	void afterList( params, list ) {
+		def info;
+		list.each{ o->
+			info = null;
+			if (o.info) info = em.serializer.read(o.info);
+			if (info) o.putAll(info);
+			o.allowRemove = true;
+			if (o.isonline == 1 || o.isproceedcollection == 1 || o.isnoncash == 1) {
+				o.allowRemove = false;
+			}
+		}
+	} 
+}

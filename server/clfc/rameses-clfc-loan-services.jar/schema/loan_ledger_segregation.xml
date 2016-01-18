@@ -1,0 +1,10 @@
+<schema>
+
+	<element name="loan_ledger_segregation" tablename="loan_ledger_segregation">
+		<field name="objid" primary="true" />
+		<field name="refid" required="true" />
+		<field name="typeid" required="true" />
+		<field name="date" required="true" />
+	</element>
+
+</schema>

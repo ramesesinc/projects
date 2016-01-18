@@ -1,0 +1,776 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.services.extended.*;
+import com.rameses.rules.common.*;
+import java.rmi.server.UID;
+import loan.facts.*;
+import loan.actions.*;
+import java.util.*;
+import com.rameses.util.*;
+import java.math.MathContext;
+
+class LoanLedgerService extends ActiveListService
+{	
+	@Env
+	def env;
+
+	@ActiveDB('loan_ledger')
+	def em;
+
+	@ActiveDB("loanapp")
+	def loanapp;
+
+	@ActiveDB("ledger_billing")
+	def ledger_billing;
+
+	@ActiveDB("loan_ledger_payment")
+	def ledger_payment;
+
+	@ActiveDB('loanapp_borrower')
+	def loanapp_borrower; 
+
+	@ActiveDB("loan_ledger_segregationtype")
+	def segregationtype;
+
+	@ActiveDB('customer')
+	def customer;
+
+	@ActiveDB('customerindividual')
+	def customerindividual;
+
+	@ActiveDB("borrower")
+	def borrower;
+
+	@ActiveDB("borrowerindividual")
+	def borrowerindividual;
+
+	@ActiveDB("branch_loan_settings")
+	def branch_loan_settings;
+
+	@ActiveDB("amnesty")
+	def amnesty;
+
+	@ActiveDB('ledgeramnesty')
+	def ledgeramnesty;
+
+	@ActiveDB("var")
+	def var;
+
+	@ActiveDB("loan_product_type")
+	def product_type;
+
+	@ActiveDB("loan_exemption")
+	def exemption;
+
+	@Service('LoanPaymentService')
+	def paymentSvc;
+
+	@Service('LoanLedgerAdjustmentService')
+	def adjustmentSvc;
+
+	@Service("MobileTrackerService")
+	def trackerSvc;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@Service("RuleExecutorService")
+	def ruleSvc;
+
+	@Service("NumberService")
+	def numSvc;
+
+	@Service("CalendarEventService")
+	def calendarSvc;
+
+	@ProxyMethod
+	public def getColumns( params ) {
+		return [
+			[name: 'appno', caption: 'App. No.', width:150],
+			[name: 'state', caption: 'State'],
+			[name: 'route.description', caption: 'Route'],
+			[name: 'borrower.name', caption: 'Borrower Name', width:250],
+			[name: 'dailydue', caption: 'Sched. of Payment'],
+			[name: 'interest', caption: 'Interest'],
+			[name: 'dtstarted', caption: 'Date Started', type: 'date', outputFormat: 'MMM-dd-yyyy'],
+			[name: 'dtmatured', caption: 'Date Matured', type: 'date', outputFormat: 'MMM-dd-yyyy']
+		]
+	}
+
+	@ProxyMethod
+	public def getNodes( params ) {
+		//o.userid = env.USERID;
+		//o.usergroupfilter = "";
+		//if (o.usergroupid) o.domain = o.usergroupid;
+
+		//println 'params ' + params;
+
+		def list;
+		if( params.root ) {
+			list = segregationtype.getRootNodes();
+		} else if ( params.filestate == 'loanstate') {
+			list = segregationtype.getChildNodes();
+		}
+
+		list.each { 
+			it.allowSearch = true;
+			if (params.root) { 
+				it.folder = true;
+			} else {
+				//it.filetype = 'loanledger';
+				it.children = [[filetype:'loanledger']];
+			}
+			if (params.filestate == 'loanstate') {
+				it.rootid = params.rootid;
+				it.leaf = true;
+			}
+			//	
+			//}
+		}
+		list.sort{ it.caption }
+		return list;
+	}
+
+	@ProxyMethod
+	public def getSegregationTypes() {
+		def types = segregationtype.getList();
+		def item, list = [];
+		types.each{ o->
+			item = [
+				type 	: o.objid,
+				caption : o.name
+			];
+			list.add(item);
+		}
+		return list;
+	}
+
+	@ProxyMethod
+	public def resolveEntity( entity ) {
+		def a = loanapp.read([objid: entity.appid]);
+		if (!a) throw new Exception("Loan App record does not exist or has already been deleted.");
+
+		def p = product_type.read([name: a.producttype.name]);
+		entity.dtstarted = calculateStartDate(entity.dtreleased, a?.loantype, p);
+		entity.dtmatured = calculateMaturityDate(entity.dtreleased, a?.loantype, p);
+
+		return entity;
+	}
+
+	@ProxyMethod
+	public def open( params ) {
+		def rows = (params.rows? params.rows : 30);
+		def data;
+		def sysvar = var.read([name: 'show_amnesty_posting']);
+		if (!sysvar || sysvar.value == 'false') {
+			data = em.findLedgerByIdWithoutAmnestyCount(params);
+		} else if (sysvar.value == 'true') {
+			data = em.findLedgerById(params);
+		}
+		if (!data) throw new Exception('Record does not exist or has already been deleted.');
+
+		def xapp = loanapp.read([objid: data.appid]);
+		if (xapp) {
+			if (data.state == 'OPEN' && xapp.loantype == 'BRANCH') {
+				def c = compute([appid: xapp.objid]);
+				if (c) {
+					em.update([objid: data.objid, interestamount: c.interest]);
+					data.interestamount = c.interest;
+				}
+			}
+
+			def lc = loanapp.read([objid: xapp.objid], 'loanapp_capture');
+			if (lc) data.dtreleased = lc.dtreleased;
+		}
+
+		def a = (data.ledgercount/rows);
+		data.lastpageindex = new BigDecimal(a+'').setScale(0, BigDecimal.ROUND_CEILING);
+		if (data.lastpageindex <= 0) data.lastpageindex = 1;
+
+		//data.dtreleased = dateSvc.add(data.dtstarted, "-1");
+
+		def pm;
+		if (data.paymentmethod == 'schedule') {
+			pm = 'Schedule/Regular';
+		} else if (data.paymentmethod == 'over') {
+			pm = 'Overpayment';
+		}
+		data.paymentmethod = pm;
+
+		def date = dateSvc.serverDateAsString.split(" ")[0];
+		def am = ledgeramnesty.findActiveByDateAndLedgerid([date: date, ledgerid: data.objid]);
+		if (am) {
+			data.amnesty = [
+				objid		: am.amnestyid,
+				type 		: am.type,
+				description : am.description
+			];
+		}
+		/*
+		def am = amnesty.findActiveAmnestyByLedgeridAndDate([date: date, ledgerid: data.objid]);
+		if (am) {
+			a = (am.ledgercount/rows);
+			am.lastpageindex = new BigDecimal(a+'').setScale(0, BigDecimal.ROUND_CEILING);
+			if (am.lastpageindex <= 0) am.lastpageindex = 1;
+			data.currentamnesty = am;
+			//data.balance = am.balance;
+		}
+		*/
+
+		/*def amlist = amnesty.getActiveAmnestiesByLedgerid([ledgerid: data.objid]);
+		if (amlist) {
+			amlist.each{ o->
+				a = (o.ledgercount/rows);
+				o.lastpageindex = new BigDecimal(a+'').setScale(0, BigDecimal.ROUND_CEILING);
+			}
+			data.amnestylist = amlist;
+		}*/
+
+		def b = borrower.read([objid: data.acctid]);
+		if (b) {
+			if (b.type == 'JURIDICAL') {
+				data.name = b.name;
+			} else if (b.type == 'INDIVIDUAL') {
+				def bi = borrowerindividual.read([objid: b.objid]);
+				data.name = bi.lastname;
+			}
+		}
+
+		def itm, itm2;
+		def joints = loanapp_borrower.getJointBorrowers([parentid: data.appid]); 
+		joints.each{ o->
+			itm = customer.read([objid: o.objid]);
+			if (itm) {
+				if (itm.type == 'INDIVIDUAL') {
+					itm2 = customerindividual.read([objid: itm.objid]);
+					data.acctname += " AND " + itm2.lastname + ', ' + itm2.firstname;
+				}
+			}
+			//data.acctname += " AND " + o.name;
+		}
+
+		if (data.state == 'OPEN') {
+			def item = [
+				ledgerid 	: data.objid,
+				txndate 	: date
+			];
+			
+			def facts = [];
+			facts << new CurrDate([currentdate: item.txndate]);
+			facts << buildLedgerFact(item);
+			facts << buildLoanappFact(item);
+			facts << buildBillingItemFact(item);
+			facts << buildAmnestyFact(item);
+
+			def actions = new RuleAction(); 
+			actions.addCommand( "calcInterest", new  CalculateBillingInterest(NS: numSvc) );
+			actions.addCommand( "calcPenalty", new  CalculateBillingPenalty(NS: numSvc) );
+			actions.addCommand( "calcOthers", new CalculateBillingOthers(NS: numSvc) );
+			actions.addCommand( "calcAmountDue", new CalculateBillingAmountDue(NS: numSvc) );
+			actions.addCommand( "calcBalance", new CalculateBillingBalance(NS: numSvc) );
+
+			ruleSvc.execute( "loanbilling", facts, actions, null );
+
+			data.updatedbalance = data.balance;
+			def billitem = facts.find{ (it instanceof LoanBillingItem) }
+			if (billitem) {
+				data.updatedbalance = billitem.balance;
+			}
+		} else if (data.state == 'CLOSE') {
+			data.updatedbalance = 0;
+		}
+
+		//facts.each{ println it.toMap() }
+
+		//data.payments = ledger_payment.getList(data);
+		//data.payments = adjustmentSvc.getPayments([ledgerid: data.objid]);	
+		return data;
+	}
+
+	private def parseDate( date ) {
+		if (!date) return null;
+
+		if (date instanceof Date) {
+			return date;
+		} else {
+			return java.sql.Date.valueOf(date);
+		}
+	}
+
+	private def parse( pattern, date ) {
+		if (!pattern) pattern = "yyyy-MM-dd";
+		def dt;
+		if (date instanceof Date) {
+			dt = date;
+		} else {
+			dt = java.sql.Date.valueOf(date);
+		}
+		return new java.text.SimpleDateFormat(pattern).format(dt);
+	}
+
+	public def buildLedgerFact( params ) {
+		def data = em.read([objid: params.ledgerid]);
+		def lastitem = em.findLastLedgerItemByParentId([parentid: params.ledgerid]);
+		def item = [
+			ledgerid 		: data.objid,
+			appid 			: data.appid,
+			dtmatured		: data.dtmatured,
+			dtreleased 		: DateUtil.add(data.dtstarted, "-1"),
+			dtstarted		: data.dtstarted,
+			dtlastpaid 		: data.dtlastpaid,
+			currentdate 	: params.txndate,
+			balance 		: data.balance,
+			overduepenalty 	: data.overduepenalty,
+			balance 		: data.balance,
+			overpayment 	: data.overpaymentamount,
+			hasamnesty 		: false,
+			paymentmethod 	: data.paymentmethod,
+			lackinginterest : lastitem?.interestbal,
+			lackingpenalty 	: lastitem?.penaltybal
+		];
+		def am = amnesty.findActiveAmnestyByLedgeridAndDate([ledgerid: data.objid, date: parse("yyyy-MM-dd", params.txndate)]);
+		if (am) item.hasamnesty = true;
+		//println 'ledger: ' + item;
+		return new LoanLedger(item);
+	}
+
+	public def buildLoanappFact( params ) {
+		def data = em.read([objid: params.ledgerid]);
+		def producttype = product_type.read([name: data.producttypeid]);
+		def app = loanapp.read([objid: data.appid]);
+		def item = [
+			appid 			: data.appid,
+			principal 		: data.totalprincipal,
+			interest 		: data.interestamount,
+			absentrate 		: producttype.absentpenalty,
+			absentpenalty 	: data.absentpenalty,
+			underpytrate 	: producttype.underpaymentpenalty,
+			intrate 		: producttype.interestrate,
+			schedule 		: data.dailydue,
+			term 			: data.term,
+			scheduledate 	: data.dtcurrentschedule,
+			paymentschedule	: producttype.paymentschedule,
+			loantype 		: app.loantype,
+		]
+		//println 'loanapp: ' + item;
+		return new LoanApp(item);
+	}
+
+	public def buildBillingItemFact( params ) {
+		def data = em.read([objid: params.ledgerid]);
+		
+		if (!(params.txndate instanceof Date)) {
+			params.txndate = java.sql.Date.valueOf(params.txndate);
+		}
+		Calendar c = Calendar.getInstance();
+		c.setTime(params.txndate);
+		def hassunday = false;
+		if ((c.get(Calendar.DAY_OF_WEEK) - 1) == 1) 
+			hassunday = true;
+
+		def avgamount = data.dailydue;
+		if (data.paymentmethod == 'over') {
+			def m = ledger_billing.findAvgOverpaymentAmount([parentid: data.objid]);
+			avgamount = (m? m.groupbaseamount : data.overpaymentamount);
+			if (!avgamount) avgamount = data.dailydue;
+		}
+		
+		def item = [
+			ledgerid 		: data.objid,
+			hassunday 		: hassunday,
+			avgamount 		: avgamount,
+			currentdate 	: params.txndate,
+			dtschedule 		: data.dtcurrentschedule,
+		]
+
+		def days = dateSvc.getDaysDiff(item.dtschedule, item.currentdate);
+		item.noofholidays = calendarSvc.getNoOfHolidays([lastscheduledate: item.dtschedule, item:[trialAndError: 0, totalDays: days]]);
+		def prm = [startdate: item.dtschedule, enddate: item.currentdate, ledgerid: data.objid];
+		def e = exemption.findTotaldaysExemptedByStartdateAndEnddateAndLedgeridWithoutHolidays(prm);
+		item.noofdaysexempted =  (e.totaldays? e.totaldays : 0);
+
+		//println 'billing item: ' + item;
+		return new LoanBillingItem(item);
+	}
+
+	private def buildAmnestyFact( params ) {
+		def data = amnesty.findActiveAmnestyByLedgeridAndDate([ledgerid: params.ledgerid, date: parse("yyyy-MM-dd", params.txndate)]);
+		def item = [:];
+		if (data) {
+			item.ledgerid = data.ledgerid;
+			item.balance = data.balance;
+			item.type = data.amnestyoption;
+			item.waivedinterest = (data.iswaiveinterest > 0? true : false);
+			item.waivedpenalty = (data.iswaivepenalty > 0? true : false);
+		}
+		//println 'amnesty: ' + item;
+		return new Amnesty(item);
+	}
+
+	private void validate( data ) {
+		def a = loanapp.read([objid: data.appid]);
+		if (!a) throw new Exception("Loan App record does not exist or has already been deleted.");
+
+		if (a.loantype != 'BRANCH' && !data.dtmatured) {
+			throw new Exception("Maturity Date is required.");
+		}
+	}
+
+	@ProxyMethod 
+	public def create(data) { 
+		if (!data.txnmode) throw new Exception('Please specify txnmode.');
+
+		validate(data);
+
+		def loancount = em.findLoanCountByAcctid([acctid: data.acctid]).loancount; 
+		data.loancount = loancount+1;
+		data.totalprincipal = data.loanamount;
+		data.balance = data.loanamount;
+
+		def result = compute(data);
+		data.dailydue = result.dailydue;//computeDailyDue(data);
+		data.interestamount = result.interest;//computeInterestAmount(data);
+		data.absentpenalty = result.absentpenalty;//computeAbsentPenalty(data);
+		data.overpaymentamount = 0.00
+		if (data.overpayment) data.overpaymentamount = data.overpayment;
+		data.overduepenalty = 0.00;
+		data.totaldue = 0.00;
+		data.state = 'OPEN';
+		data.dtcurrentschedule = data.dtstarted;
+		data.updatetype = (data.txnmode == 'CAPTURE'? 0 : 1);
+		em.create(data);
+
+		def item;
+		data.payments.each{
+			def itm = [
+			    appno 		: data.appno,
+			    appid 		: data.appid,
+			    borrowername: data.borrower.name,
+			    refno 		: it.refno,
+			    txndate 	: it.txndate,
+			    payamount 	: it.amount
+			]
+			paymentSvc.postPayment(itm);
+
+			item = [
+				objid		: 'LLP' + new UID(),
+				parentid 	: data.objid,
+				refno		: it.refno,
+				txndate		: it.txndate,
+				amount 		: it.amount,
+				isonline	: 0,
+				dtmodified 	: dateSvc.serverDate,
+				modifiedby 	: [objid: env.USERID, name: env.NAME]
+			];
+			em.create(item, "payment");
+		}
+	}
+
+	@ProxyMethod
+	public def roundOffAmount( amt ) {
+		def amount = amt+'';
+		def result = 0;
+		def ld = Integer.parseInt(amount[amount.length()-1]);
+		if(ld > 0 && ld < 5) {
+			result = new BigDecimal(amount.substring(0, amount.length()-1)+'5');
+			result = result.setScale(2);
+		} else if(ld > 5) {
+		    def a = '0.0'+(10 - ld)
+		    result = new BigDecimal(amount).add(new BigDecimal(a)).setScale(2);
+		} else {
+			result = new BigDecimal(amount).setScale(2); 
+		} 
+		return result;
+	}
+
+	private def buildLoanappFactByAppid( params ) {
+		def data = loanapp.read([objid: params.appid]);
+		def producttype = product_type.read(data.producttype);
+		def item = [
+			appid 			: data.objid,
+			principal 		: data.loanamount,
+			absentrate 		: producttype.absentpenalty,
+			underpytrate 	: producttype.underpaymentpenalty,
+			intrate 		: producttype.interestrate,
+			term 			: producttype.term,
+			paymentschedule	: producttype.paymentschedule,
+			loantype 		: data.loantype,
+		];
+		if (data.loantype == 'BRANCH') {
+			def ledger = em.findByAppId([appid: data.objid]);
+			if (ledger) item.principal = ledger.balance;
+			
+			//def year = dateSvc.getServerYear();
+			def year, xdate = params.date;
+			if (!xdate) {
+				def appc = loanapp.read([objid: data.objid], "loanapp_capture");
+				xdate = appc?.dtreleased;
+			}
+
+			if (xdate) year = dateSvc.getYear(xdate);
+			if (!year) year = dateSvc.getServerYear();
+
+			def settings = branch_loan_settings.findActiveSettingByYear([year: year]);
+			if (settings) item.intrate = settings.intrate;
+		}
+		//println 'item ' + item;
+		return new LoanApp(item);
+	}
+
+	@ProxyMethod
+	public def calculateStartDate( dtreleased, loantype, producttype ) {
+		def cal = Calendar.getInstance();
+		cal.setTime(parseDate(dtreleased));
+
+		def pschedule = producttype.paymentschedule;
+		if (loantype == 'BRANCH') {
+			if (pschedule == 'DAILY') {
+				cal.add(Calendar.DATE, 1);
+			} else if (pschedule == 'SEMIMONTHLY') {
+				def xday = cal.get(Calendar.DATE);
+				if (xday < 15) {
+					cal.set(Calendar.DATE, 15);
+				} else if (xday >= 15) {
+					cal.set(Calendar.DATE, cal.getActualMaximum(Calendar.DATE));
+				}
+			} else if (pschedule == 'MONTHLY') {
+				cal.add(Calendar.MONTH, 1);
+			} else {
+				cal.add(Calendar.MONTH, 1);
+			}
+		} else {			
+			if (pschedule == 'DAILY') {
+				cal.add(Calendar.DATE, 1);
+			} else if (pschedule == 'SEMIMONTHLY') {
+				def xday = cal.get(Calendar.DATE);
+				if ((xday >= 1 && xday <= 5) || (xday >= 16 && xday <= 20)) {
+					if (xday <= 5) {
+						cal.set(Calendar.DATE, 15);
+					} else if (xday >= 16) {
+						cal.set(Calendar.DATE, cal.getActualMaximum(Calendar.DATE));
+					}
+				} else {
+					if (xday <= 15) {
+						cal.set(Calendar.DATE, cal.getActualMaximum(Calendar.DATE));
+					} else if (xday > 15) {
+						cal.add(Calendar.MONTH, 1);
+						cal.set(Calendar.DATE, 	15);
+					}
+				}
+			} else if (pschedule == 'MONTHLY') {
+				cal.add(Calendar.MONTH, 1);
+			} else {
+				cal.add(Calendar.DATE, 1);
+			}
+		}
+ 
+		return cal.getTime();
+	}
+
+	@ProxyMethod
+	public def calculateMaturityDate( dtreleased, loantype, producttype) {
+		def cal = Calendar.getInstance();
+		cal.setTime(parseDate(dtreleased));
+
+		def pschedule = producttype.paymentschedule;
+		if (loantype == 'BRANCH') {
+			return null;
+		} else {
+			if (pschedule == 'DAILY') {
+				cal.add(Calendar.DATE, producttype.term);
+			} else if (pschedule == 'SEMIMONTHLY' || pschedule == 'MONTHLY') {
+				if (pschedule == 'SEMIMONTHLY') {				
+					def xday = cal.get(Calendar.DATE);
+					if ((xday >= 1 && xday <= 5) || (xday >= 16 && xday <= 20)) {
+						if (xday > 15) {
+							cal.set(Calendar.DATE, 15);
+						} else if (xday < 6) {
+							cal.set(Calendar.DATE, 1);
+							cal.add(Calendar.DATE, -1);
+						}
+					} else {
+						if (xday <= 15) {
+							cal.set(Calendar.DATE, 15);
+							//cal.set(Calendar.DATE, cal.getActualMaximum(Calendar.DATE));
+						} else if (xday > 15) {
+							cal.set(Calendar.DATE, cal.getActualMaximum(Calendar.DATE));
+							//cal.add(Calendar.MONTH, 1);
+							//cal.set(Calendar.DATE, 15);
+						}
+					}
+				}
+
+				double d = (producttype.term/30);
+				cal.add(Calendar.MONTH, d.toInteger());
+			} else {
+				cal.add(Calendar.DATE, producttype.term);
+			}
+		}
+
+		return cal.getTime();
+	}
+
+	@ProxyMethod
+	public def computeDailyDue( params ) {
+		if (!params.loanamount) throw new Exception('Please specify loan amount');
+		if (!params.term) throw new Exception('Please specify term');
+		if (!params.interestrate) throw new Exception("Please specify interest rate.");
+
+		//println 'params ' + params 
+		//throw new Exception('stop');
+		
+
+		def result = new BigDecimal(params.loanamount.toString()).setScale(2, BigDecimal.ROUND_HALF_UP);
+		def term = new BigDecimal(params.term.toString());
+		def intrate = new BigDecimal(params.interestrate.toString());
+
+		result = result.multiply(intrate).setScale(2, BigDecimal.ROUND_HALF_UP);
+		result = result.multiply(term).setScale(2, BigDecimal.ROUND_HALF_UP);
+		result = result.divide(new BigDecimal("30").setScale(2), 2, BigDecimal.ROUND_HALF_UP);
+		result = result.add(new BigDecimal(params.loanamount.toString()).setScale(2));
+		result = result.divide(term, 0, BigDecimal.ROUND_HALF_UP);
+
+		//println 'result ' + result;
+		//throw new Exception('stop');
+		//def result = new BigDecimal(params.loanamount+'');
+		//def term = new BigDecimal(params.term+'').divide(new BigDecimal("100")).setScale(2, BigDecimal.ROUND_HALF_UP);
+		//result = result.setScale(2, BigDecimal.ROUND_HALF_UP).multiply(term);
+		//result = result.divide(new BigDecimal(params.term+'')).setScale(2, BigDecimal.ROUND_HALF_UP); 
+		return result;
+	}
+
+	@ProxyMethod
+	public def computeInterestAmount( params ) {
+		if(!params.loanamount) throw new Exception('Please specify loan amount');
+		if(!params.interestrate) throw new Exception('Please specify interest rate');
+
+		def result = new BigDecimal(params.loanamount.toString()).setScale(2, BigDecimal.ROUND_HALF_UP);
+		def intrate = new BigDecimal(params.interestrate.toString());
+		result = result.multiply(intrate);
+		result = result.divide(new BigDecimal("30"), 2, BigDecimal.ROUND_HALF_UP);
+
+		//result.setScale(2, BigDecimal.ROUND_HALF_UP);
+		//println 'pass 4';
+		//def result = new BigDecimal(params.loanamount+'').setScale(2).multiply(new BigDecimal(params.interestrate+'').setScale(2), new MathContext(4));
+		//result = result.setScale(2).divide(30, BigDecimal.ROUND_HALF_UP);
+		return roundOffAmount(result);
+	}
+
+	@ProxyMethod
+	public def compute( params ) {
+		if (!params.appid) throw new Exception("Please specify appid.");
+
+		def facts = [];
+		facts << buildLoanappFactByAppid(params);
+
+		def actions = new RuleAction(); 
+		actions.addCommand( "calcLoanDailyDue", new  CalculateLoanDailyDue(NS: numSvc) );
+		actions.addCommand( "calcLoanInterest", new  CalculateLoanInterest(NS: numSvc, LS: this) );
+		actions.addCommand( "calcLoanAbsentPenalty", new CalculateLoanAbsentPenalty(NS: numSvc, LS: this) );
+
+		ruleSvc.execute( "loanapplication", facts, actions, null );
+
+		def app = facts.find{ (it instanceof LoanApp) }
+		//println 'app ' + app.toMap();
+		return [
+			dailydue 		: (app? app.schedule : 0),
+			interest 		: (app? app.interest : 0),
+			absentpenalty 	: (app? app.absentpenalty : 0)
+		]
+	}
+
+	@ProxyMethod
+	public def computeAbsentPenalty( params ) {
+		if(!params.dailydue) throw new Exception('Please specify daily due.');
+		if(!params.absentrate) throw new Exception('Please specify absent penalty rate.');
+
+		def result = new BigDecimal(params.dailydue.toString()).setScale(2, BigDecimal.ROUND_HALF_UP);
+		def absrate = new BigDecimal(params.absentrate.toString());
+
+		result = result.multiply(absrate);
+		//def result = new BigDecimal(params.dailydue+'').setScale(2).multiply(new BigDecimal(params.absentrate+'').setScale(2), new MathContext(4));
+		return roundOffAmount(result.setScale(2));
+	}
+
+	@ProxyMethod
+	public def computeOverduePenalty( params ) {
+		if (!params.balance) throw new Exception('Please specify balance.');
+		if (!params.pastduerate) throw new Exception('Please specify past due rate.');
+
+		def result = new BigDecimal(params.balance+'').setScale(2).multiply(new BigDecimal(params.pastduerate+'').setScale(2));
+		result = result.divide(new BigDecimal("30").setScale(2), 2, BigDecimal.ROUND_HALF_UP);
+		return roundOffAmount(result.setScale(2, BigDecimal.ROUND_HALF_UP));
+	}
+
+	void beforeList( params ) {
+		//println 'list params ' + params;
+		params.searchtext = (params.searchtext? params.searchtext : '') + '%';
+		if (params.rootid || params.typeid) {
+			if (params.rootid) params.type = params.rootid;
+			if (params.typeid) params.type = params.typeid;
+			params._listMethod = 'getListBySegregationType';
+		}
+		if (params.rootid && params.typeid) {
+			params._listMethod = 'getListByRootidAndTypeid';
+		}
+		if (params.state) {
+			params._listMethod = 'getListByState';
+		}
+	}
+	/*@ProxyMethod
+	public def approveBatchPayment( params ) {
+		if (!params.unpostedcollectionsheets) throw new Exception('Please specify unposted collection sheets');
+		if (!params.entity) throw new Exception('Please specify entity');
+
+		def ledger;
+		params.unpostedcollectionsheets.each{cs->
+			def m = ledger_billing.read(cs, "detail");
+			if (!m) throw new Exception("No billing for borrower "+cs.borrowername);
+
+			ledger = em.read([objid: m.ledgerid]);
+			if (ledger.updatetype == 0) {
+				ledger.updatetype = 1;
+				em.update(ledger, "updatetype");
+			}
+
+			cs.payments.each{
+				if (!it.isvoided) {
+					it.borrowername = cs.borrowername;
+					it.appid = cs.appid;
+					it.entity = params.entity;
+					paymentSvc.postPayment(it);
+				}
+			}
+		}
+		trackerSvc.stop([trackerid: params.entity.trackerid]);
+		batch_collectionsheet.changeStateApproved(params.entity);
+		ledger_billing.changeStateCompleted(params.entity);
+		return params;
+	}*/
+
+	@ProxyMethod
+	public def getLedgers( params ) {
+		if (!params.routecode) throw new Exception("Please specify routecode.");
+
+		params.searchtext = '%';
+		def list = em.getOpenLedgersByRoute(params);
+		list.sort{ it.borrower.name }
+		list.each{ it.selected = true; }
+		return list;
+	}
+
+	@ProxyMethod
+	public def routeTransfer( params ) {
+		if (!params.list) throw new Exception("Please specify list.");
+		if (!params.route) throw new Exception("Please specify route.");
+
+		def item;
+		params.list.each{ o->
+			item = loanapp.read([objid: o.loanapp.objid]);
+			if (item) {
+				item.route.code = params.route.code;
+				loanapp.update(item);
+			}
+		}
+	}
+}

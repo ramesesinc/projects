@@ -1,0 +1,48 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.services.extended.*;
+
+class AmnestyLookupService extends ActiveListService
+{
+	@ActiveDB("amnesty")
+	def em;
+
+	@ProxyMethod
+	public def getColumns( params ) {
+		return [
+			[name: 'refno', caption: 'RefNo'],
+			[name: 'borrower.name', caption: 'Borrower'],
+			[name: 'dtstarted', caption: 'DateStarted', type: 'date', outputFormat: 'MMM-dd-yyyy'],
+			[name: 'dtended', caption: 'DateEnded', type: 'date', outputFormat: 'MMM-dd-yyyy'],
+			[name: 'grantedoffer.amount', caption: 'Amount', type: 'decimal', format: '#,##0.00']
+		]
+	}
+
+	void beforeList( params ) {
+		params._listMethod = 'getLookupList';
+		def filter = '';
+		if (params.txnstate) {
+			filter += buildFilter(filter) + ' b.txnstate = $P{txnstate} '
+		}
+		if (params.amnestyoption) {
+			filter += buildFilter(filter) + ' b.amnestyoption = $P{amnestyoption} '
+		}
+		if (params.txntype) {
+			filter += buildFilter(filter) + ' b.txntype = $P{txntype} '
+		}
+		//if (params.current==true) {
+		//	filter += ' HAVING b.objid = currentid '
+		//}
+		params.filter = filter;
+	}
+
+	def buildFilter( filter ) {
+		def text = '';
+		if (!filter) {
+			text = 'WHERE ';
+		} else {
+			text = 'AND ';
+		}
+		return text;
+	}
+}

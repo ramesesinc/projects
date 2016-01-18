@@ -1,0 +1,28 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+
+class CBSPrintoutReportService{
+	
+	@Env
+	def env;
+
+	@Service('SequenceService')
+	def seqSvc;
+
+	@Service('DateService')
+	def dateSvc;
+
+	@ProxyMethod
+	public def getReportData(){
+
+		def date=dateSvc.parseCurrentDate();
+		def seqname = 'cbs'+date.year;
+		def prefix='CBS'+env.ORGID+date.year.toString()[2]+date.year.toString()[3];
+		return [
+			cbsno1: prefix+seqSvc.getNextFormattedSeriesA(seqname,8), 
+			cbsno2: prefix+seqSvc.getNextFormattedSeriesA(seqname,8), 
+			cbsno3: prefix+seqSvc.getNextFormattedSeriesA(seqname,8), 
+			cbsno4: prefix+seqSvc.getNextFormattedSeriesA(seqname,8)
+		];
+	}
+}

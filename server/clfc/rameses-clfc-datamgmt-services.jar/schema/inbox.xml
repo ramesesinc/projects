@@ -1,0 +1,14 @@
+<schema>
+
+	<element name="inbox" tablename="inbox">
+		<field name="objid" primary="true"/> 
+		<field name="dtcreated" required="true"/> 
+		<field name="refid" required="true"/> 
+		<field name="filetype" required="true"/> 
+		<field name="message" required="true"/> 
+		<field name="senderid" required="true"/> 
+		<field name="sendername" required="true"/> 
+		<field name="recipientid" required="true"/> 
+	</element>
+
+</schema>

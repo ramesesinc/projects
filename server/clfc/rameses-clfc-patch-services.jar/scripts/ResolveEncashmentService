@@ -1,0 +1,120 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import java.text.*;
+
+class ResolveEncashmentService
+{
+	@ActiveDB('resolve_encashment')
+	def em;
+
+	@ActiveDB('encashment')
+	def encashment;
+
+	@Service('DateService')
+	def dateSvc;
+
+	@Service('EncashmentService')
+	def encashmentSvc;
+
+	def dateFormat = new SimpleDateFormat('yyyy-MMM-dd');
+
+	private void validate( params ) {
+		def currentdate = parseDate(dateSvc.getServerDateAsString().split(' ')[0]);
+		def sd = parseDate(params.startdate);
+		def ed = parseDate(params.enddate);
+
+		if (sd.compareTo(currentdate) >= 0) {
+			throw new Exception('Start Date must not be greater than or equal to Current Date.');
+		} 
+
+		if (ed.compareTo(currentdate) >= 0) {
+			throw new Exception('End Date must not be greater than or equal to Current Date.');
+		}
+
+		if (sd.compareTo(ed) > 0) {
+			throw new Exception('Start Date must not be greater than End Date.');
+		}
+	}
+
+	@ProxyMethod
+	public def resolve( params ) {
+		if (!params.startdate) throw new Exception('Please specify start date.');
+		if (!params.enddate) throw new Exception('Please specify end date.');
+
+		validate(params);
+
+		def list = em.getForResolve(params);
+		if (!list) {
+			def sd = parseDate(params.startdate);
+			def ed = parseDate(params.enddate);
+			throw new Exception('No encashments to resolve from ' + sd + ' to ' + ed + '.');
+		}
+
+		def cbs, cb, breakdown;
+		list?.each{ o->
+			cb = encashment.findCashBreakdownByParentid([objid: o.objid]);
+			if (cb) {
+				if (!cb.breakdown) cb.breakdown = encashmentSvc.getDenominations();
+
+				breakdown = encashment.getCBDetails([objid: cb.objid]);
+				breakdown?.each{ b->
+					def i = cb.breakdown?.find{ it.denomination == b.denomination }
+					if (i) {
+						i.qty = b.qty;
+						i.amount = i.qty * i.denomination;
+					}
+				}
+			}
+			cbs = encashment.getCbs([objid: o.objid]);
+			cbs?.each{ c->
+				cb = encashment.read([objid: c.objid], 'encashment-cbs');
+				if (cb) {
+					if (!cb.breakdown) cb.breakdown = encashmentSvc.getDenominations();
+
+					breakdown = encashment.getCbsDetails([objid: c.objid]);
+					breakdown?.each{ b->
+						def i = cb.breakdown?.find{ it.denomination == b.denomination }
+						if (i) {
+							i.qty = b.qty;
+							i.amount = i.qty * i.denomination;
+						}
+					}
+
+					if (!cb.reference) cb.reference = encashmentSvc.getDenominations();
+					breakdown = encashment.getCbsReferences([objid: o.objid]);
+					breakdown?.each{ b->
+						def i = cb.reference?.find{ it.denomination == b.denomination }
+						if (i) {
+							i.qty = b.qty;
+							i.amount = i.qty * i.denomination;
+						}
+					}
+
+					if (!cb.change) cb.change = encashmentSvc.getDenominations();
+					breakdown = encashment.getCbsChange([objid: o.objid]);
+					breakdown?.each{ b->
+						def i = cb.change?.find{ it.denomination == b.denomination }
+						if (i) {
+							i.qty = b.qty;
+							i.amount = i.qty * i.denomination;
+						}
+					}
+
+					encashment.update(cb, 'encashment-cbs');
+				}
+			}
+		}
+
+
+	}
+
+	private def parseDate( date ) {
+		if (!date) return null;
+
+		if (date instanceof Date) {
+			return date;
+		} else {
+			return java.sql.Date.valueOf(date);
+		}
+	}
+}

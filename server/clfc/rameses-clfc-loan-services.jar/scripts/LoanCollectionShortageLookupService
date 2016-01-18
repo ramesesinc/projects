@@ -1,0 +1,27 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.services.extended.*;
+
+class LoanCollectionShortageLookupService extends ActiveListService
+{
+	@ActiveDB("shortage")
+	def em;
+
+	@ProxyMethod
+	public def getColumns( params ) {
+		return [
+			[name: 'txndate', caption: 'Date', type: 'date', outputFormat: 'MMM-dd-yyyy'],
+			[name: 'refno', caption: 'RefNo'],
+			[name: 'cbsno', caption: 'CBSNo'],
+			[name: 'collector.name', caption: 'Collector'],
+			[name: 'amount', caption: 'Amount', type: 'decimal', format: '#,##0.00']
+		]
+	}
+
+	void beforeList( params ) {
+		params._listMethod = 'getLookupList';
+		if (params.state) {
+			params._listMethod = 'getLookupListByState';
+		}
+	}
+}

@@ -1,0 +1,20 @@
+import com.rameses.annotations.*;
+import com.rameses.common.*;
+import java.rmi.server.UID;
+
+class LoanAppServiceInterceptor
+{
+	@ActiveDB(value='loanapp_capture')
+	def em;
+
+	@After(pattern='LoanAppService.open') 
+	public void open( evt ) { 
+		def result = evt.result;
+		def data = em.read( [objid: result.objid] ); 
+		if (data) {
+			result.putAll(data); 
+			result.loancount = data.version; 
+		} 
+	} 
+
+}  

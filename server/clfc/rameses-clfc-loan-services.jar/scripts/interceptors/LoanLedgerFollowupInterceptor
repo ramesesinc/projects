@@ -1,0 +1,40 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+
+class LoanLedgerFollowupInterceptor
+{
+	@ActiveDB('followup_result')
+	def em;
+
+	@ActiveDB('collection_remittance')
+	def collection_remittance;
+
+	@ActiveDB('fieldcollection')
+	def fieldcollection;
+
+	@Before(pattern='LoanFieldCollectionService.post')
+	public void beforePost( evt ) {
+		def params = evt.args[0];
+		def remittance = params.remittance;
+		if (remittance?.group?.type == 'followup') {
+			def prm = [parentid: remittance?.collection?.objid, itemid: remittance?.group?.objid];
+			def item = fieldcollection.findItemByParentidAndItemid(prm);
+			if (item) {
+				def list = fieldcollection.getDetails([objid: item?.objid]);
+				if (list) {
+					def i = em.findFieldCollectionLoanWithNoFollowupResultByItemid([itemid: item?.objid]);
+					if (i) throw new Exception('There are still client(s) that has no follow-up result created.');
+
+					i = em.findBillingDetailWithFollowupResultByItemid([itemid: item?.objid]);
+					if (!i) throw new Exception('There are still client(s) that has follow-up result with no confirmation.');
+				}
+				/*else if (!list) {
+					def i = em.findBillingDetailWithFollowupResultByItemid([itemid: item?.objid]);
+					if (!i) throw new Exception('There are no follow-up result created for this collection.');
+				}*/
+			}
+		}
+
+		//throw new Exception('stop');
+	}
+}

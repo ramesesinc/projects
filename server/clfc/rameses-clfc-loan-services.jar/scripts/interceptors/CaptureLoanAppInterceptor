@@ -1,0 +1,16 @@
+import com.rameses.annotations.*;
+import com.rameses.common.*;
+import java.rmi.server.UID;
+
+class CaptureLoanAppInterceptor
+{
+	@ActiveDB(value='loanapp_capture')
+	def em;
+
+	@After(pattern='LoanLedgerService.create') 
+	public void afterCreateLoanLedger( evt ) { 
+		def data = evt.args[0];		
+		em.removeOpenApplication([objid: data.appid]); 
+	} 
+
+}  

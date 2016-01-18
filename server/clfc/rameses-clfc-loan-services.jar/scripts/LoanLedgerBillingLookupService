@@ -1,0 +1,29 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.services.extended.*;
+
+class LoanLedgerBillingLookupService
+{
+	@ActiveDB(value="loan_ledger_billing")
+	def ledger_billing;
+
+	@ProxyMethod
+	public def getColumns( params ) {
+		return [
+			[name: 'billdate', caption: 'Billing Date'],
+			[name: 'collector.name', caption: 'Collector']
+		]
+	}
+
+	@ProxyMethod
+	public def getList( params ) {
+		//params.state = 'FOR_DOWNLOAD';
+		params.searchtext = (params.searchtext? params.searchtext+'%' : '%');
+		//println 'params: ' + params;
+		def list = ledger_billing.getBillingForSubCollection(params);
+		list.each{ 
+			it.routes = ledger_billing.getUnuploadedRoutesByBillingid([billingid: it.objid]); 
+		}
+		return list;
+	}
+}

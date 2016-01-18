@@ -1,0 +1,226 @@
+import com.rameses.annotations.*;
+import com.rameses.common.*;
+import com.rameses.services.extended.*;
+import java.rmi.server.UID;
+
+class BorrowerService 
+{	
+	@ActiveDB('borrower') 
+	def em; 
+
+	@ActiveDB("borrowerindividual")
+	def borrowerindividual;
+
+	@ProxyMethod 
+	public def open( data ) {
+		def o = em.findByObjid(data); 
+		if (o == null) throw new Exception('borrower record not found');
+
+		//o.name = createFullName(o.lastname, o.firstname, o.middlename);
+
+		if (o.type == 'INDIVIDUAL') {
+			def bi = borrowerindividual.read([objid: o.objid]);
+			if (bi?.spouse?.objid != null) {
+				o.spouse.name = createFullName(bi.spouse.lastname, bi.spouse.firstname, bi.spouse.middlename); 
+			}
+			
+			if (o.spouse == null) o.spouse = [:];
+
+			o.children = em.getChildren([borrowerid: o.objid]); 
+			for (item in o.children) {
+				item.employments = em.getEmployments([refid: item.objid]); 
+				item.otherincomes = em.getOtherIncomes([refid: item.objid]); 
+			} 
+
+			o.educations = em.getEducations([borrowerid: o.objid]);
+			o.employments = em.getEmployments([refid: o.objid]);
+			o.parent = em.findParent(data);
+			if (o.parent == null) o.parent = [:]; 
+
+			o.siblings = em.getSiblings([borrowerid: o.objid]);
+			for (item in o.siblings) {
+				item.employments = em.getEmployments([refid: item.objid]); 
+				item.otherincomes = em.getOtherIncomes([refid: item.objid]); 
+			}
+			
+			o.otherincomes = em.getOtherIncomes([refid: data.objid]);
+		}
+
+		o.savingaccts = em.getBankAccts([borrowerid: data.objid, type:'SAVING']); 
+		o.checkingaccts = em.getBankAccts([borrowerid: data.objid, type:'CHECKING']); 
+		o.otheracct = em.findBankAcct([borrowerid: data.objid, type:'OTHER']);
+		return o;
+	}
+
+	@ProxyMethod 
+	public def update( data ) {
+		def o = em.findByObjid([objid: data.objid]); 
+		if (o == null) {
+			em.create(data); 
+		} else {
+			em.update(data);
+		}
+
+		updateChildren(data);
+		updateEducations(data);
+		updateEmployments(data);
+		updateParent(data);
+		updateSiblings(data);
+		updateOtherIncomes(data);
+		updateBankAccts(data);
+		return data; 		
+	}
+
+	@ProxyMethod(local=true)
+	public String createFullName(lname, fname, mname) {
+		def s = lname + ', ' + fname; 
+		if (mname) s = s + ' ' + mname; 
+
+		return s;
+	} 
+
+	private void updateChildren(data) {
+		def list = em.getChildren([parentid: data.objid]); 
+		list?.each {
+			em.removeEmployments([refid: it.objid]); 
+			em.removeOtherIncomes([refid: it.objid]);
+		}
+
+		em.removeChildren([parentid: data.objid]); 
+		if (data.children == null) data.children = [];
+
+		for (o in data.children) {
+			o.objid = 'BCHLD'+new UID();
+			o.parentid = data.objid; 
+			em.create(o, 'children'); 
+
+			if (o.employments == null) o.employments = [];
+			for (oo in o.employments) { 
+				oo.objid = 'EMPL'+new UID();
+				oo.refid =  o.objid; 
+				em.create(oo, 'employment'); 
+			} 
+
+			if (o.otherincomes == null) o.otherincomes = [];
+			for (oo in o.otherincomes) { 
+				oo.objid = 'SOI'+new UID();
+				oo.refid =  o.objid; 
+				em.create(oo, 'sourceofincome'); 
+			} 
+		} 
+	} 
+
+	private void updateEducations(data) {
+		em.removeEducations([parentid: data.objid]); 
+		if (data.educations == null) data.educations = [];
+
+		for (o in data.educations) { 
+			o.objid = 'EDUC'+new UID();
+			o.parentid =  data.objid; 
+			em.create(o, 'education'); 
+		} 
+	} 
+
+	private void updateEmployments(data) {	
+		em.removeEmployments([refid: data.objid]);
+		if (data.employments == null) data.employments = []; 
+
+		for (o in data.employments) { 
+			o.objid = 'EMPL'+new UID();
+			o.refid =  data.objid; 
+			em.create(o, 'employment'); 
+		} 
+	}
+
+	private void updateParent(data) { 
+		if (!data.parent) {
+			em.removeParent([objid: data.objid]); 
+			return;
+		}
+
+		def o = data.parent;
+		def hasEntry = (o.fathername || o.fatherage || o.mothername || o.motherage || o.address); 
+		if (!hasEntry) {
+			em.removeParent([objid: data.objid]); 
+			return;
+		}
+
+		data.parent.objid = data.objid;
+		o = em.findParent([objid: data.objid]); 
+		if (o == null) { 
+			em.create(data.parent, 'parent'); 
+		} else {
+			em.update(data.parent, 'parent'); 
+		} 
+	} 
+
+	private void updateSiblings(data) {
+		def list = em.getSiblings([parentid: data.objid]); 
+		list?.each {
+			em.removeEmployments([refid: it.objid]); 
+			em.removeOtherIncomes([refid: it.objid]);
+		}
+
+		em.removeSiblings([parentid: data.objid]); 
+		if (data.siblings == null) data.siblings = [];
+
+		for (o in data.siblings) {
+			o.objid = 'SIBL'+new UID();
+			o.parentid = data.objid; 
+			em.create(o, 'sibling'); 
+
+			if (o.employments == null) o.employments = [];
+			for (oo in o.employments) { 
+				oo.objid = 'EMPL'+new UID();
+				oo.refid =  o.objid; 
+				em.create(oo, 'employment'); 
+			} 
+
+			if (o.otherincomes == null) o.otherincomes = [];
+			for (oo in o.otherincomes) { 
+				oo.objid = 'SOI'+new UID();
+				oo.refid =  o.objid; 
+				em.create(oo, 'sourceofincome'); 
+			} 
+		} 
+	} 
+
+	private void updateOtherIncomes(data) { 
+		em.removeOtherIncomes([refid: data.objid]); 
+
+		if (data.otherincomes == null) data.otherincomes = [];
+		for (o in data.otherincomes) {
+			o.objid = 'SOI'+new UID();
+			o.refid = data.objid; 
+			em.create(o, 'sourceofincome');
+		}
+	} 
+
+	private void updateBankAccts(data) { 
+		em.removeAllBankAccts([parentid: data.objid]); 
+
+		if (data.savingaccts == null) data.savingaccts = [];
+		for (o in data.savingaccts) { 
+			o.objid = 'BACCT'+new UID();
+			o.parentid = data.objid;  
+			o.type = 'SAVING';
+			em.create(o, 'bankacct'); 
+		} 
+
+		if (data.checkingaccts == null) data.checkingaccts = [];
+		for (o in data.checkingaccts) {
+			o.objid = 'BACCT'+new UID();
+			o.parentid = data.objid; 
+			o.type = 'CHECKING';
+			em.create(o, 'bankacct');
+		}
+
+		if (data.otheracct != null) {
+			data.otheracct.objid = 'BACCT'+new UID();
+			data.otheracct.parentid = data.objid;
+			data.otheracct.bankname = 'OTHER';
+			data.otheracct.type = 'OTHER';
+			em.create(data.otheracct, 'bankacct'); 
+		} 
+	} 
+}

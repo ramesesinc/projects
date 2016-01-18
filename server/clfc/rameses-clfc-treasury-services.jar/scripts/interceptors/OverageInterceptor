@@ -1,0 +1,46 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import java.rmi.server.UID;
+
+class OverageInterceptor
+{
+	@Env
+	def env;
+
+	@ActiveDB("overagefund")
+	def em;
+
+	@ActiveDB("overage")
+	def overage;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@After(pattern="LoanCollectionOverageService.approveDocument")
+	public void afterApprove( evt ) {
+		def result = evt.result;
+
+		def data = overage.read(result);
+		if (!data) 
+			throw new Exception("Overage record does not exist or has already been deleted.");
+
+		def year = dateSvc.getYear(data.txndate);
+
+		def fund = em.findActiveFund([year: year]);
+		if (!fund) {
+			fund = [
+				objid		: 'OF' + new UID(),
+				state		: 'ACTIVE',
+				dtcreated	: dateSvc.serverDate,
+				author		: [objid: env.USERID, name: env.NAME],
+				year 		: year,
+				amtbalance	: 0.00,
+				amtuse		: 0.00
+			]
+			em.create(fund);
+		}
+
+		fund.amtbalance += data.amount;
+		em.update(fund, "amtbalance");
+	}
+}

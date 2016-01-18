@@ -1,0 +1,15 @@
+<schema>
+
+	<element name="payment_transfer" tablename="loan_ledger_payment_transfer">
+		<field name="objid" primary="true" />
+		<field name="dtfiled" required="true" />
+		<field name="author_objid" required="true" />
+		<field name="author_name" required="true" />
+		<field name="ledgerid" required="true" />
+		<field name="prevledgerid" required="true" />
+		<field name="fromdate" required="true" />
+		<field name="todate" required="true" />
+		<field name="remarks" required="true" />
+	</element>
+
+</schema>

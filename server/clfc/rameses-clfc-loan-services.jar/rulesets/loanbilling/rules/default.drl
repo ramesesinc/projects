@@ -1,0 +1,127 @@
+package loanbilling;
+
+/*
+import loan.facts.*;
+
+import java.util.*;
+
+global com.rameses.rules.common.RuleAction action;
+
+rule "build-billitems-wo-payment"
+  agenda-group "initial"
+  salience 100000
+  when 
+  	$L: LoanApp( counter < term )
+    Payment( $a: amount)
+  then
+  	Map params = new HashMap();
+  	params.put( "LOANAPP", $L );
+    params.put("amtpaid", $a);
+  	action.execute(  "additem", params, drools );
+end	
+
+rule "set-intializations"
+  agenda-group "beforepenalty"
+  salience 100000
+  when
+    $L: LoanApp()
+    $ITEM: LoanBillingItem()
+  then
+    Map params = new HashMap();
+    params.put( "LOANAPP", $L );
+    params.put( "BILLITEM", $ITEM );
+    action.execute( "applyinitialization", params, drools );
+end
+
+rule "get-remainder-days"
+  agenda-group "beforepenalty"
+  salience 90000
+  when
+    $P: Payment( hasRemainder == true, days < maxdays )
+  then
+    $P.moveNextDate();
+    update( $P );
+end
+
+rule "get-underpayment-days"
+  agenda-group "afterpenalty"
+  salience 100000
+  when
+    BillDate( $bd: date )
+    LoanApp( $sd: scheduledate )
+    $P: Payment( hasUnderpayment == true, $ad: applydate >= $sd && applydate < $bd, $amount: amount, $days: days )
+    $LB: LoanBillingItem( duedate == $ad, $int: interest, $up: underpytpenalty, $ap: absentpenalty )
+  then
+    double diff = $amount - (($int * $days) + ($ap + $up));
+    if (diff > 0 ) {
+      $P.moveNextDate();
+      update( $P );
+    }
+end
+
+##################################################################
+# rules to handle underpayment before billdate
+###################################################################
+rule "underpayment"
+   agenda-group "payment"
+   when
+     BillDate( $bd: date )
+     $L: LoanBillingItem( $d:duedate < $bd, $deduction: deduction, $i: interest, $p: penalty )
+     $P: Payment( applydate == $d, hasUnderpayment == true, amount > $deduction )
+   then
+     //$P.moveNextDate();
+     //$P.setDeduction( $deduction );
+     //$P.accumulateAbsent( $p );
+     //update( $P );
+end
+
+rule "current-w-underpayment"
+   agenda-group "payment"
+   when
+     BillDate( $bd: date )
+     $L: LoanBillingItem( $d:duedate == $bd, $deduction: deduction, $n: itemno )
+     $P: Payment( applydate == $d, hasUnderpayment == true, $ap: absent, amount > $deduction )
+   then
+     //$P.moveNextDate();
+     //$P.setDeduction( $deduction + $ap );
+     //update( $P );
+end
+
+rule "exact"
+   agenda-group "payment"
+   when
+     BillDate( $bd: date )
+     LoanBillingItem( $d:duedate <= $bd, $n: itemno, $p: penalty, $i: interest )
+     $P: Payment( applydate == $d, isExact == true, $ap: absent )
+   then
+     //$P.moveNextDate();
+     //$P.accumulateAbsent( $p );
+     //$P.setDeduction( ($n * $i) + $ap );
+     //update( $P );
+end
+
+rule "remainder"
+   agenda-group "payment"
+   when
+     BillDate( $bd: date )
+     LoanBillingItem( $d:duedate <= $bd, $n: itemno, $p: penalty, $i: interest )
+     $P: Payment( applydate == $d, hasRemainder == true, $ap: absent )
+   then
+     //$P.moveNextDate();
+     //$P.accumulateAbsent( $p );
+     //$P.setDeduction( ($n * $i) + $ap );
+     //update( $P );
+end
+
+rule "remainder-w-maxdays"
+   agenda-group "payment"
+   when
+     BillDate( $bd: date )
+     LoanBillingItem( $d:duedate > $bd, $n: itemno, $p: penalty, $i: interest )
+     $P: Payment( applydate == $d, hasRemainder == true, days < maxdays, $ap: absent )
+   then
+     //$P.moveNextDate();
+     //$P.setDeduction( ($n * $i) + $ap );
+     //update( $P );
+end
+*/

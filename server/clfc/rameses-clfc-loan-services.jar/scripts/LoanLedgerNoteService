@@ -1,0 +1,67 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.services.extended.*;
+
+class LoanLedgerNoteService extends ActiveListService
+{
+	@ActiveDB("note")
+	def em;
+
+	@ActiveDB('loan_route')
+	def loan_route;
+
+	String listMethod = 'getListByLedgerid';
+
+	@ProxyMethod
+	public def getColumns( params ) { 
+		def cols = [];
+		if (!params.state) cols << [name: 'state', caption: 'Status'];
+
+		cols << [name:"dtcreated", caption:"Date Created"];
+		cols << [name:"loanapp.appno", caption:"App.No."];
+		cols << [name:"borrower.name", caption:"Borrower Name"];
+		cols << [name:"borrower.address", caption:"Borrower Address"];
+		cols << [name:"dtstart", caption:"Start Date"];
+		cols << [name:"dtend", caption:"End Date"];
+
+		if (params.state == 'APPROVED' || params.state == 'CLOSED') { 
+			cols << [name:"dtapproved", caption:"DateApproved"]; 	
+			cols << [name:"approvedby", caption:"ApprovedBy"]; 
+		} else if (params.state == 'REJECTED') {
+			cols << [name:"dtposted", caption:"DateRejected"]; 
+			cols << [name:"postedby", caption:"RejectedBy"]; 
+		}
+		return cols; 
+	}
+
+	@ProxyMethod
+	public def getStates() {
+	    def states = [
+	    	[caption: 'All'],
+	        [caption:'Pending', state:'PENDING'],
+	        [caption:'For Approval', state:'FOR_APPROVAL'],
+	        [caption:'Approved', state:'APPROVED'], 
+	        [caption:'Closed', state:'CLOSED'],
+	        [caption:'Rejected', state:'REJECTED']
+	    ];  
+	}
+
+	void beforeList( params ) {
+		if (params.state) {
+			params._listMethod = 'getListByLedgeridAndState';
+		}
+	}
+
+	@ProxyMethod
+	public def open( params ) {
+		def data = em.read(params);
+		if (!data) throw new Exception("Note record does not exist or has already been deleted.");
+
+		def route = loan_route.read(data.route);
+		if (route) data.route = route;
+
+		return data;
+	}
+
+
+}

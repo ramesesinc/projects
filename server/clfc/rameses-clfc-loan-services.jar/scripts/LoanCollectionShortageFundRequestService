@@ -1,0 +1,80 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.services.extended.*;
+
+class LoanCollectionShortageFundRequestService extends ActiveCrudListService
+{
+	@Env
+	def env;
+
+	@ActiveDB(value="shortage_fundrequest")
+	def em;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@Service("InboxService")
+	def inboxSvc;
+
+	@ProxyMethod
+	public def getColumns( params ) {
+		return [
+			[name: 'state', caption: 'Status'],
+			[name: 'dtrequested', caption: 'Date Requested', type: 'date', outputFormat: 'MMM-dd-yyyy hh:mm:ss a'],
+			[name: 'requester.name', caption: 'Requested By'],
+			[name: 'amount', caption: 'Amout', type: 'decimal', format: '#,##0.00'],
+			[name: 'remarks', caption: 'Remarks'],
+		]
+	}
+
+	void beforeCreate( data ) {
+		data.dtrequested = dateSvc.serverDate;
+		data.requester = [objid: env.USERID, name: env.NAME];
+	}
+
+	@ProxyMethod
+	public def submitForApproval( params ) {
+		def data = em.read(params);
+		if (!data) throw new Exception("Record does not exist or has already been deleted.");
+
+		data.state = 'FOR_APPROVAL';
+		em.changeState(data);
+
+		def msginfo = [ 
+			objid 		: data.objid, 
+			dtcreated	: dateSvc.serverDate, 
+			refid 		: data.objid, 
+			filetype 	: 'shortagefundrequest', 
+			message 	: 'Shortage fund request for approval (Collector: '+ data.collector.name +')', 
+			senderid	: env.USERID, 
+			sendername 	: env.NAME, 
+			recipientid : 'ACCT_ASSISTANT' 
+		]; 
+		inboxSvc.addMessage( msginfo );
+
+		return open(data);
+	}
+
+	@ProxyMethod
+	public def approveDocument( params ) {
+		def data = em.read(params);
+		if (!data) throw new Exception("Record does not exist or has already been deleted.")
+
+		data.state = 'APPROVED';
+		em.changeState(data);
+		inboxSvc.removeMessageByRefid([refid: data.objid]); 
+
+		return open(data);
+	}
+
+	public def reject( params ) {
+		def data = em.read(params);
+		if (!data) throw new Exception("Record does not exist or has already been deleted.");
+
+		data.state = 'REJECTED';
+		em.changeState(data);
+		inboxSvc.removeMessageByRefid([refid: data.objid]); 
+
+		return open(data);
+	}
+}

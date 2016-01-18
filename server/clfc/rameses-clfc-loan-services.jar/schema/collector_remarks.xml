@@ -1,0 +1,19 @@
+<schema>
+
+	<element name="collector_remarks" tablename="collector_remarks">
+		<field name="objid" primary="true" />
+		<field name="ledgerid" required="true" />
+		<field name="dtcreated" required="true" />
+		<field name="author_objid" required="true" />
+		<field name="author_name" required="true" />
+		<field name="txndate" required="true" />
+		<field name="collector_objid" required="true" />
+		<field name="collector_name" required="true" />
+		<field name="remarks" required="true" />
+	</element>
+
+	<element name="followup-remarks" tablename="followup_remarks">
+		<field name="objid" primary="true" />
+	</element>
+
+</schema>

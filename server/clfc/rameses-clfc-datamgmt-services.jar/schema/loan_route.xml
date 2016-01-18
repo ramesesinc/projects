@@ -1,0 +1,11 @@
+<schema>
+
+	<element name="loan_route" tablename="loan_route">
+		<field name="code" primary="true"/>
+		<field name="description" required="true"/>
+		<field name="area" required="true"/>
+		<field name="dayperiod" required="true"/>
+		<field name="prefix" required="true" />
+	</element>
+
+</schema>

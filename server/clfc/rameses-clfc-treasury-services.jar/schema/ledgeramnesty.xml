@@ -1,0 +1,168 @@
+<schema>
+
+	<element tablename='ledgeramnesty'>
+		<field name='objid' primary='true' />
+		<field name='dtcreated' required='true' />
+		<field name='author_objid' required='true' />
+		<field name='author_name' required='true' />
+		<field name='txnstate' required='true' />
+		<field name='txndate' required='true' />
+		<field name='txnmode' required='true' />
+		<field name='refno' required='true' />
+		<field name='borrower_objid' required='true' />
+		<field name='borrower_name' required='true' />
+		<field name='loanapp_objid' required='true' />
+		<field name='loanapp_appno' required='true' />
+		<field name='ledger_objid' required='true' />
+		<field name='ledger_balance' required='true' />
+		<field name='remarks' required='true' />
+		<complex name="info" required="false" merge="true" serializer="default" />
+		<field name='user_objid' />
+		<field name='user_name' />
+		<field name='lockid' />
+	</element>
+
+	<element name='user' tablename='ledgeramnesty'>
+		<field name='objid' primary='true' />
+		<field name='user_objid' />
+		<field name='user_name' />
+		<field name='lockid' />
+	</element>
+
+	<element name='detail' tablename='ledgeramnesty_detail'>
+		<field name='objid' primary='true' />
+		<field name='parentid' required='true' />
+		<field name='state' required='true' />
+		<field name='amnestytype_caption' required='true' />
+		<field name='amnestytype_value' required='true' />
+		<field name='description' required='true' />
+		<complex name='info' required='false' merge='true' serializer='default' />
+	</element>
+
+	<element name='sendback' tablename='ledgeramnesty_sendback'>
+		<field name='objid' primary='true' />
+		<field name='refid' required='true' />
+		<field name='state' required='true' />
+		<field name='dtcreated' required='true' />
+		<field name='author_objid' required='true' />
+		<field name='author_name' required='true' />
+		<field name='remarks' required='true' />
+	</element>
+
+	<element name='active' tablename='ledgeramnesty_active'>
+		<field name='objid' primary='true' />
+		<field name='dtfiled' required='true' />
+		<field name='author_objid' required='true' />
+		<field name='author_name' required='true' />
+		<field name='amnestyid' required='true' />
+		<field name='refid' required='true' />
+		<field name='type' required='true' />
+		<field name='description' required='true' />
+		<field name='dtstarted' required='true' />
+		<field name='dtended' />
+	</element>
+
+	<element name='posting-detail' tablename='ledgeramnesty_postingdetail'>
+		<field name='objid' primary='true' />
+		<field name='parentid' required='true' />
+		<field name='state' required='true' />
+		<field name='amtdue' required='true' />
+		<field name='interestdue' required='true' />
+		<field name='penaltydue' required='true' />
+		<field name='amtpaid' required='true' />
+		<field name='interestpaid' required='true' />
+		<field name='penaltypaid' required='true' />
+		<field name='amtbal' required='true' />
+		<field name='interestbal' required='true' />
+		<field name='penaltybal' required='true' />
+		<field name='dtpaid' />
+		<field name='refno' />
+		<field name='day' required='true' />
+		<field name='balance' required='true' />
+		<field name='partialpayment' required='true' />
+		<field name='txndate' required='true' />
+		<field name='baseamount' required='true' />
+		<field name='groupbaseamount' required='true' />
+		<field name='remarks' />
+	</element>
+
+	<!--
+	<element tablename="ledgeramnesty">
+		<field name="objid" primary="true" />
+		<field name="dtcreated" required="true" />
+		<field name="author_objid" required="true" />
+		<field name="author_name" required="true" />
+		<field name="txndate" required="true" />
+		<field name="txnstate" required="true" />
+		<field name="txnmode" required="true" />
+		<field name="refno" required="true" />
+		<field name="ledger_objid" required="true" />
+		<field name="ledger_balance" required="true" />
+		<field name="borrower_objid" required="true" />
+		<field name="borrower_name" required="true" />
+		<field name="loanapp_objid" required="true" />
+		<field name="loanapp_appno" required="true" />
+		<field name="dtstarted" />
+		<field name="dtended" />
+		<complex name="recommendations" required="true" serializer="default" merge="false" type="list" />
+		<complex name="offers" required="true" serializer="default" merge="false" type="list" />
+		<field name="availed_objid" />
+		<field name="availed_offertype" />
+		<field name="availed_amount" />
+		<field name="availed_balance" />
+		<field name="remarks" required="true" />
+		<field name="dtposted" />
+		<field name="poster_objid" />
+		<field name="poster_name" />
+		<field name="poster_remarks" />
+		<complex name="info" required="false" merge="true" serializer="default" />
+	</element>
+
+	<element name="post" tablename="ledgeramnesty">
+		<field name="objid" primary="true" />
+		<field name="dtposted" required="true" />
+		<field name="poster_objid" required="true" />
+		<field name="poster_name" required="true" />
+		<field name="poster_remarks" required="true" />
+	</element>
+
+	<element name="avail" tablename="ledgeramnesty">
+		<field name="objid" primary="true" />
+		<field name="dtstarted" />
+		<field name="dtended" />
+		<field name="availed_objid" required="true" />
+		<field name="availed_offertype" required="true" />
+		<field name="availed_amount" />
+		<field name="availed_balance" />
+	</element>
+
+	<element name="active" tablename="ledgeramnesty_active">
+		<field name="objid" primary="true" />
+		<field name="dtstarted" required="true" />
+		<field name="dtended" />
+	</element>
+
+	<element name="fix" tablename="ledgeramnesty_fix">
+		<field name="objid" primary="true" />
+		<field name="parentid" required="true" />
+		<field name="type_caption" required="true" />
+		<field name="type_value" required="true" />
+		<field name="amount" required="true" />
+		<field name="balance" required="true" />
+		<field name="dtstarted" required="true" />
+		<field name="dtended" required="true" />
+		<complex name="info" required="false" merge="true" serializer="default" />
+	</element>
+
+	<element name="smc" tablename="ledgeramnesty_smc">
+		<field name="objid" primary="true" />
+		<field name="parentid" required="true" />
+		<field name="txnstate" required="true" />
+		<field name="amount" />
+		<field name="balance" />
+		<field name="dtstarted" />
+		<complex name="info" required="false" merge="true" serializer="default" />
+	</element>
+	-->
+
+</schema>

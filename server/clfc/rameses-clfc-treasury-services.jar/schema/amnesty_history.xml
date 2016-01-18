@@ -1,0 +1,38 @@
+<schema>
+
+	<element name="amnesty_history" tablename="amnesty_history">
+		<field name="objid" primary="true" />
+		<field name="dtcreated" required="true" />
+		<field name="author_objid" required="true" />
+		<field name="author_name" required="true" />
+		<field name="txndate" required="true" />
+		<field name="refno" required="true" />
+		<field name="ledgerid" required="true" />
+		<field name="borrower_objid" required="true" />
+		<field name="borrower_name" required="true" />
+		<field name="loanapp_objid" required="true" />
+		<field name="loanapp_appno" required="true" />
+		<field name="dtstarted" />
+		<field name="dtended" />
+		<field name="amnestyoption" required="true" />
+		<field name="iswaiveinterest" required="true" />
+		<field name="iswaivepenalty" required="true" />
+		<field name="remarks" />
+		<field name="grantedoffer_amount" />
+		<field name="grantedoffer_days" />
+		<field name="grantedoffer_months" />
+		<field name="grantedoffer_isspotcash" />
+		<field name="grantedoffer_date" />
+		<field name="dtposted" />
+		<field name="poster_objid" />
+		<field name="poster_name" />
+		<field name="poster_remarks" />
+		<field name="version" />
+		<field name="extendeddate" />
+		<complex name="info" merge="true" serializer="default" required="false" />
+		<field name="dtamended" required="true" />
+		<field name="amendedby_objid" required="true" />
+		<field name="amendedby_name" required="true" />
+	</element>
+
+</schema>

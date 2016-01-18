@@ -1,0 +1,332 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.services.extended.*;
+import java.rmi.server.UID;
+
+class CheckoutService extends ActiveCrudListService
+{
+	@Env
+	def env;
+
+	@ActiveDB("checkout")
+	def em;
+
+	@ActiveDB("depositslip")
+	def depositslip;
+
+	@ActiveDB("collection_cb")
+	def collection_cb;
+
+	@ActiveDB("datatxnlog")
+	def txnlog; 
+
+	@Service("DateService")
+	def dateSvc;
+
+	@ProxyMethod
+	public def getColumns( params ) {
+		def cols = [];
+
+		if (!params.state) cols << [name: 'txnstate', caption: 'Status'];
+
+		cols << [name: 'txndate', caption: 'Date Prepared', type: 'date', outputFormat: 'MMM-dd-yyyy'];
+		cols << [name: 'author.name', caption: 'Prepared By'];
+		cols << [name: 'representative1.name', caption: 'Representative #1'];
+		cols << [name: 'representative2.name', caption: 'Representative #2'];
+
+		if (params.state == 'CONFIRMED') {
+			cols << [name: 'dtconfirmed', caption: 'Date Confirmed'];
+			cols << [name: 'confirmedby.name', caption: 'Confirmed By'];
+		}
+
+		return cols;
+	}
+
+	@ProxyMethod
+	public def getStates() {
+		return [
+			[caption: 'All'],
+			[caption: 'DRAFT', state: 'DRAFT'],
+			[caption: 'CONFIRMED', state: 'CONFIRMED']
+		];
+	}
+
+	void beforeList( params ) {
+		params.searchtext = (params.seachtext? params.searchtext : '') + '%';
+		if (params.state) {
+			params._listMethod = 'getListByState';
+		}
+	}
+
+	/*
+	void beforeCreate( data ) {
+		if (!data.depositslips) throw new Exception("At least 1 deposit slip to check-out is required.");
+
+		data.dtcreated = dateSvc.serverDate;
+		data.author = [objid: env.USERID, name: env.NAME];
+	}
+
+	void afterCreate( data ) {
+		def item;
+		data.depositslips.each{ o->
+			em.create(o, "checkout-detail");
+
+			item = depositslip.read([objid: o.refid]);
+			if (item) {
+				item.state = 'APPROVED';
+				item.reftype = null;
+				depositslip.update(item);
+
+				def cbslist = depositslip.getCbs(item);
+				def itm;
+				cbslist.each{ cbs->
+					itm = [objid: cbs.cbsid, state: 'VERIFIED'];
+					collection_cb.changeState(itm);
+					collection_cb.create(itm, "cb-active");
+					collection_cb.create(itm, "cb-forencashment");
+					collection_cb.delete(itm, "cb-deposited");
+				}
+			}
+		}
+	}
+	*/
+
+
+	void validate( data ) {
+		if (!data.depositslips) throw new Exception('At least 1 deposit slip to check-out is required.');
+
+		def item;
+		data?.depositslips?.each{ o->
+			item = em.findDetailByRefid([refid: o.refid]);
+			if (item && item.parentid != data.objid) {
+				throw new Exception('Deposit Slip with Control No. ' + item?.depositslip?.controlno + ' already has check-out document created.');
+			}
+		}
+	}
+
+	void beforeCreate( data ) {
+		validate(data);
+
+		data.dtcreated = dateSvc.serverDate;
+		data.author = [objid: env.USERID, name: env.NAME];
+		if (!data.txnstate) data.txnstate = 'DRAFT';
+	}
+
+	void afterCreate( data ) {
+		updateInfo(data);
+	}
+
+	void beforeUpdate( data ) {
+		validate(data);
+	}
+
+	void afterUpdate( data ) {
+		updateInfo(data);
+	}
+
+	void updateInfo( data ) {
+		data?._removedds?.each{ o->
+			em.delete(o, 'checkout-detail');
+		}
+
+		data?._addedds?.each{ o->
+			em.create(o, 'checkout-detail');
+		}
+
+		/*
+		def item;
+		data.depositslips.each{ o->
+			em.create(o, "checkout-detail");
+
+			item = depositslip.read([objid: o.refid]);
+			if (item) {
+				item.state = 'APPROVED';
+				item.reftype = null;
+				depositslip.update(item);
+
+				def cbslist = depositslip.getCbs(item);
+				def itm;
+				cbslist.each{ cbs->
+					itm = [objid: cbs.cbsid, state: 'VERIFIED'];
+					collection_cb.changeState(itm);
+					collection_cb.create(itm, "cb-active");
+					collection_cb.create(itm, "cb-forencashment");
+					collection_cb.delete(itm, "cb-deposited");
+				}
+			}
+		}
+		*/
+	}
+
+	void afterOpen( data ) {
+		data.depositslips = em.getDetails(data);
+	}
+
+	void beforeConfirm( params ) {
+		if (!params.representative1 || !params.representative1.objid) 
+			throw new Exception('Please specify representative #1.');
+
+		if (!params.representative2 || !params.representative2.objid) 
+			throw new Exception('Please specify representative #2.');
+	}
+
+	@ProxyMethod
+	public def confirm( params ) {
+		beforeConfirm(params);
+		def data = changeState(params, 'CONFIRMED');
+
+		data.dtconfirmed = dateSvc.serverDate;
+		data.confirmedby = [objid: env.USERID, name: env.NAME];
+		em.update(data, 'confirm');
+
+		def list = data.remove('depositslips');
+		def item, cbslist, itm;
+		list?.each{ o->
+
+			item = depositslip.read([objid: o.refid]);
+			if (item) {
+				item.state = 'APPROVED';
+				item.reftype = null;
+				depositslip.update(item);
+
+				cbslist = depositslip.getCbs(item);
+				cbslist?.each{ c->
+					itm = [objid: c.cbsid, state: 'VERIFIED'];
+					collection_cb.changeState(itm);
+					def i = collection_cb.read(itm, 'cb-active');
+					if (!i) {
+						collection_cb.create(itm, 'cb-active');
+					}
+
+					i = collection_cb.read(itm, 'cb-forencashment');
+					if (!i) {
+						collection_cb.create(itm, 'cb-forencashment');
+					}
+
+					i = collection_cb.read(itm, 'cb-deposited');
+					if (i) {
+						collection_cb.delete(itm, 'cb-deposited');
+					}
+				}
+			}
+		}
+
+		return open(data);
+	}
+
+	def changeState( params, state ) {
+		def data = em.read(params);
+		if (!data) throw new Exception('Check out record does not exist or has already been deleted.');
+
+		if (data.txnstate == state) {
+			throw new Exception('Check out record has already been ' + state + '.');
+		}
+
+		data.txnstate = state;
+		em.changeState(data);
+
+		def action, remarks;
+		switch (state) {
+			case 'CONFIRMED'	: action = 'Confirm';
+								  remarks = 'Check-out Confirmed';
+								  break;
+		}
+
+
+		if (action && remarks) {
+			def logdata = [
+				objid 	: 'TLOG' + new UID(), 
+				txndate : dateSvc.serverDate,
+				txnid   : data.objid, 
+				user    : [objid: env.USERID, username: env.USER], 
+				action	: action,  
+				remarks : remarks
+			]; 
+			txnlog.create( logdata ); 				
+		}
+
+		return open(data);
+	}
+
+	@ProxyMethod
+	public def migrateCheckouts() {
+		def list = depositslip.getCheckouts();
+
+		def checkout, detail, txndate, ds;
+		list.each{ o->
+			txndate = new java.text.SimpleDateFormat("yyyy-MM-dd").format(o.dtcheckedout);
+			checkout = em.findByTxndate([txndate: txndate]);
+			if (!checkout) {
+				checkout = [
+					objid			: 'CO' + new UID(),
+					dtcreated 		: o.dtcheckedout,
+					author			: [objid: 'SYSTEM', name: 'SYSTEM'],
+					txndate 		: txndate,
+					representative1	: o.representative1,
+					representative2 : o.representative2
+				];
+				em.create(checkout);
+			}
+			ds = depositslip.read(o);
+			if (!ds) throw new Exception("Deposit slip record does not exist or has already been deleted.");
+
+			detail = [
+				objid		: 'COD' + new UID(),
+				parentid	: checkout.objid,
+				refid		: ds.objid,
+				txndate 	: ds.txndate,
+				depositslip : [
+					controlno	: ds.controlno,
+					acctno 		: ds.passbook.acctno,
+					acctname 	: ds.passbook.acctname,
+					amount		: ds.amount
+				]
+			];
+			em.create(detail, "checkout-detail");
+		}
+	}
+
+	/*@ProxyMethod
+	public def checkout( data ) {
+		if (!data.depositslips) throw new Exception("At least 1 deposit slip to check-out is required.");
+
+		data.dtcreated = dateSvc.serverDate;
+		data.author = [objid: env.USERID, name: env.NAME];
+		em.create(data);
+
+		def ds;
+		data.depositslips.each{ o->
+			ds = depositslip.read([objid: o.refid]);
+			if (!ds) throw new Exception("Deposit slip record does not exist or has already been deleted.");
+
+			ds.state = 'APPROVED';
+			ds.reftype = null
+			depositslip.update(ds);
+
+			em.create(o, "checkout-detail");
+		}
+
+
+		if (!params.depositslips) throw new Exception("At least 1 deposit slip to check out is required.");
+
+		def checkedout = dateSvc.serverDate;
+		params.depositslips.each{ o->
+			o.state = 'APPROVED';
+			o.reftype = null;
+			em.update(o);
+
+			o.dtcheckedout = checkedout;
+			o.representative1 = params.representative1;
+			if (params.representative2) o.representative2 = params.representative2;
+			em.create(o, "checkout");
+
+			def cbslist = em.getCbs(o);
+			def itm;
+			cbslist.each{ cbs->
+				itm = [objid: cbs.cbsid, state: 'VERIFIED'];
+				collection_cb.changeState(itm);
+				collection_cb.create(itm, "cb-active");
+			}
+		}
+	}*/
+}

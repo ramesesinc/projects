@@ -1,0 +1,28 @@
+<schema>
+
+	<element tablename="borrower_merge">
+		<field name="objid" primary="true" />
+		<field name="state" required="true" />
+		<field name="dtcreated" required="true" />
+		<field name="author_objid" required="true" />
+		<field name="author_name" required="true" />
+		<field name="dtposted" />
+		<field name="poster_objid" />
+		<field name="poster_name" />
+	</element>
+
+	<element name="post" tablename="borrower_merge">
+		<field name="objid" primary="true" />
+		<field name="dtposted" required="true" />
+		<field name="poster_objid" required="true" />
+		<field name="poster_name" required="true" />
+	</element>
+
+	<element name="detail" tablename="borrower_merge_detail">
+		<field name="objid" primary="true" />
+		<field name="parentid" required="true" />
+		<field name="borrower_objid" required="true" />
+		<field name="borrower_name" required="true" />
+	</element>
+
+</schema>

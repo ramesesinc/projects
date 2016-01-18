@@ -1,0 +1,187 @@
+import com.rameses.annotations.*
+import com.rameses.common.*
+import com.rameses.services.extended.*
+
+
+public class XRPTISTestUtilService
+{
+    @Env
+    def env 
+
+    @ActiveDB(value='rptunittest', em='rpttest')
+    def em 
+
+    @ActiveDB(value='rptunittest', em='main')
+    def emMain 
+
+    @Service('FAASService')
+    def faasSvc
+
+    @Service('FAASWorkflowService')
+    def workflowSvc        
+
+
+    @ProxyMethod
+    public def getCurrentSubdivisionTask( oid ) {
+        def task = emMain.findCurrenSubdivisionTask(oid)
+        if (!task)
+            task = emMain.findCurrenSubdivisionTask(getData(oid))
+        if (!task)
+            throw new Exception('Cannot open Task for ' + oid + '.')
+        return task   
+    }
+
+    @ProxyMethod
+    public def getCurrentFaasTask( code ) {
+        def data = getDataByCode(code)
+        if (!data) throw new Exception('Data for ' + code + ' does not exist.')
+        def task = emMain.findCurrentFaasTask(data)
+        if (!task)
+            throw new Exception('Cannot open Task for ' + data + '.')
+        return task
+    }    
+
+    @ProxyMethod
+    public def getCurrentFaasTaskByRefId(objid ) {
+        def task = emMain.findCurrentFaasTask([objid:objid])
+        if (!task)
+            throw new Exception('Cannot open Task for ' + objid + '.')
+        return task
+    }       
+
+
+
+
+    @ProxyMethod
+    public def assignToMe( task ) {
+        return signal(workflowSvc, task, null, false)    
+    }
+
+
+    @ProxyMethod
+    public def testReceive(task){
+        openTask(workflowSvc, task)
+        return signal(workflowSvc, task, 'submit', true)
+    }
+
+    @ProxyMethod
+    public def testExamination(task){
+        task.putAll(assignToMe(task))
+        return signal(workflowSvc, task, 'submit', true)
+    }
+
+    @ProxyMethod
+    public def testTaxmapping(task){
+        task.putAll(assignToMe(task))
+        return signal(workflowSvc, task, 'submit', true)
+    }
+
+    @ProxyMethod
+    public def testTaxmappingApproval(task){
+        task.putAll(assignToMe(task))
+        return signal(workflowSvc, task, 'submit', true)
+    }    
+
+
+    @ProxyMethod
+    public def testAppraisal(task){
+        task.putAll(assignToMe(task))
+        return signal(workflowSvc, task, 'submit', true)
+    }   
+
+    @ProxyMethod
+    public def testAppraisalApproval(task){
+        task.putAll(assignToMe(task))
+        return signal(workflowSvc, task, 'submit', true)
+    }    
+
+    @ProxyMethod
+    public def testRecommender(task){
+        task.putAll(assignToMe(task))
+        return signal(workflowSvc, task, 'submit', true)
+    }   
+
+    @ProxyMethod
+    public def testMunicipalApproval(task){
+        task.putAll(assignToMe(task))
+        return signal(workflowSvc, task, 'approve', true)
+    }   
+
+
+    
+    @ProxyMethod
+    public def getData(oid){
+        def entity = em.read(oid)
+        return em.serializer.read(entity.data)
+    }
+
+    @ProxyMethod
+    public def getDataByCode(code){
+        def entity = em.findDataByCode([code:code])
+        if (!entity) throw new Exception('Data ' + entity.code + ' does not exist.' )
+        return em.serializer.read(entity.data)
+    }
+
+    @ProxyMethod
+    public def updateData(code, data){
+        def p =[
+            code : code, 
+            objid: data.objid,
+            data : em.serializer.write(data)
+        ]
+        em.updateDataByCode(p)
+    }
+    
+    @ProxyMethod
+    public void openTask(workflowSvc, task){
+        setTaskRequiredInfo(task)
+        task.putAll( workflowSvc.openTask(task) )
+        task.taskid = task.data.taskid  
+        task.refid = task.data.objid 
+    }
+
+    @ProxyMethod
+    public def signal(workflowSvc, task, action, isopen){
+        if (isopen)
+            openTask(workflowSvc, task)
+
+        setTaskRequiredInfo(task)
+        if (action) 
+            task.action = action
+        task = workflowSvc.signal(task).task
+        if (task)
+            task.taskid = task.objid 
+        return task;
+    }
+
+    @ProxyMethod
+    public void setTaskRequiredInfo(task){
+        if (!task.taskid) task.taskid = task.objid 
+        if (!task.taskid) task.taskid = task.data?.taskid 
+        if (!task.taskid) throw new Exception('Task ID is required.')
+    }
+
+    @ProxyMethod
+    public def getUpdatedFaas(oldentity, NEWFAAS){
+        def oldfaas = faasSvc.openFaas(oldentity)
+        def newfaas = getDataByCode(NEWFAAS)
+        newfaas.objid = oldfaas.objid 
+        newfaas.rpuid = oldfaas.rpuid 
+        newfaas.rpu.objid = oldfaas.rpu.objid 
+        newfaas.rpu.rpumasterid = oldfaas.rpu.rpumasterid 
+        newfaas.rpu.realpropertyid = oldfaas.rpu.realpropertyid
+        newfaas.realpropertyid = oldfaas.realpropertyid 
+        newfaas.rp.objid = oldfaas.rp.objid 
+        newfaas.rpu.assessments.each{
+            it.rpuid = oldfaas.rpu.objid 
+        }
+        newfaas.rpu.landdetails.each{
+            it.landrpuid = oldfaas.rpu.objid 
+        }
+        newfaas.rpu.adjustments.each{
+            it.landrpuid = oldfaas.rpu.objid 
+        }
+        return newfaas 
+    } 
+
+}

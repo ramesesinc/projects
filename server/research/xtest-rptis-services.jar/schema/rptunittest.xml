@@ -1,0 +1,10 @@
+<schema>
+	<element name="rptunittest" tablename="testdata">
+		<field name="code" primary="true" />
+		<field name="objid" />
+        <field name="data" />
+    </element>
+</schema>
+
+
+

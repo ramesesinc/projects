@@ -1,0 +1,175 @@
+import com.rameses.annotations.*
+import com.rameses.common.*
+import com.rameses.services.extended.*
+
+
+public class XConsolidationMunicipalityUnitTestService
+{
+	@Env
+	def env 
+
+    @ActiveDB(value='rptunittest', em='rpttest')
+    def em 
+
+    @ActiveDB(value='rptunittest', em='main')
+    def emMain    
+
+    @Service('ConsolidationService')
+    def svc 
+
+    @Service('ExaminationService')
+    def examSvc 
+
+    @Service('FAASService')
+    def faasSvc 
+
+    @Service('ConsolidationWorkflowService')
+    def workflowSvc 
+
+    @Service('XRPTISTestUtilService')
+    def testUtil 
+
+    @Service('XFAASDataCaptureUnitTestService')
+    def captureSvc 
+
+    def FAAS_FOR_CONSOLIDATION_01   = 'CS01-FAAS-FOR-CONSOLIDATION-01'
+    def FAAS_FOR_CONSOLIDATION_02   = 'CS01-FAAS-FOR-CONSOLIDATION-02'
+
+    def CONSOLIDATION               = 'CS01'
+    def CONSOLIDATION_EXAM          = 'CS01-EXAM'
+    def CONSOLDATED_LAND_01         = 'CS01-CONSOLDATED_LAND_01'
+    def CONSOLDATED_LAND_02         = 'CS01-CONSOLDATED_LAND_02'
+
+    def CONSOLIDATION_FAAS_TAXMAPPER_UPDATE       = 'CS01-FAAS-TAXMAPPER-UPDATE'
+    def CONSOLIDATION_FAAS_APPRAISER_UPDATE       = 'CS01-FAAS-APPRAISER-UPDATE'
+
+    
+    @ProxyMethod
+    public def getCurrentConsolidationTask() {
+        def consolidation = testUtil.getDataByCode(CONSOLIDATION)
+        return emMain.findCurrentConsolidationTask(consolidation)
+    }
+
+    @ProxyMethod
+    public def createConsolidation() {
+        captureSvc.testApproveDataCapture(FAAS_FOR_CONSOLIDATION_01);
+        captureSvc.testApproveDataCapture(FAAS_FOR_CONSOLIDATION_02);
+
+        def consolidation = testUtil.getDataByCode(CONSOLIDATION)
+        consolidation = svc.createConsolidation(consolidation)
+        def task = [:]
+        task.putAll(consolidation.task)
+        consolidation.remove('task')
+        task.data = consolidation 
+        println 'createSubdivision ... done'
+        return task
+    }
+
+    @ProxyMethod
+    public def assignToMe( task ) {
+        return testUtil.signal(workflowSvc, task, null, false)    
+    }
+
+
+    @ProxyMethod
+    public def testReceive(task){
+        return testUtil.signal(workflowSvc, task, 'submit', true)
+    }
+
+    @ProxyMethod
+    public def testExamination(task){
+        task.putAll(assignToMe(task))
+        examSvc.create(testUtil.getDataByCode(CONSOLIDATION_EXAM))
+        return testUtil.signal(workflowSvc, task, 'submit', true)
+    }
+
+    @ProxyMethod
+    public def testTaxmapping(task){
+        task.putAll(assignToMe(task))
+        testUtil.openTask(workflowSvc, task)
+
+        svc.saveConsolidatedLand(testUtil.getDataByCode(CONSOLDATED_LAND_01))
+        svc.saveConsolidatedLand(testUtil.getDataByCode(CONSOLDATED_LAND_02))
+
+        //update faas 
+        def consolidation = task.data 
+        def faas = loadFaas(consolidation, CONSOLIDATION_FAAS_TAXMAPPER_UPDATE)
+        faasSvc.updateFaas(faas)
+
+        if (task.signal == null || task.signal == true)
+            return  testUtil.signal(workflowSvc, task, 'submit', true)
+        return null;
+    }
+
+    @ProxyMethod
+    public def testTaxmappingApproval(task){
+        task.putAll(assignToMe(task))
+        return testUtil.signal(workflowSvc, task, 'submit', true)
+    }    
+
+
+    @ProxyMethod
+    public def testAppraisal(task){
+        task.putAll(assignToMe(task))
+        testUtil.openTask(workflowSvc, task)
+        
+        //update faas 
+        def consolidation = task.data 
+        def faas = loadFaas(consolidation, CONSOLIDATION_FAAS_APPRAISER_UPDATE)
+        def oldfaas = faasSvc.openFaasOnly([objid:consolidation.newfaasid])
+        faas.prevtdno = oldfaas.prevtdno
+        faas.prevpin = oldfaas.prevpin
+        faas.prevowner = oldfaas.prevowner
+        faas.prevav = oldfaas.prevav
+        faas.prevmv = oldfaas.prevmv
+        faas.prevareaha = oldfaas.prevareaha
+        faas.prevareasqm = oldfaas.prevareasqm
+        faasSvc.updateFaas(faas)
+
+        return testUtil.signal(workflowSvc, task, 'submit', true)
+    }   
+
+    @ProxyMethod
+    public def testAppraisalApproval(task){
+        task.putAll(assignToMe(task))
+        return testUtil.signal(workflowSvc, task, 'submit', true)
+    }    
+
+    @ProxyMethod
+    public def testRecommender(task){
+        task.putAll(assignToMe(task))
+        return task;
+    }   
+
+    def loadFaas(consolidation, code){
+        def newfaas = faasSvc.openFaas([objid:consolidation.newfaasid])
+        def faas = testUtil.getDataByCode(code)
+
+        //set test objids to current objids 
+        faas.objid = newfaas.objid 
+        faas.rpuid = newfaas.rpu.objid 
+        faas.realpropertyid = newfaas.rp.objid 
+
+        faas.rp.objid = newfaas.rp.objid 
+        faas.rpu.objid = newfaas.rpu.objid 
+        faas.rpu.realpropertyid = newfaas.rp.objid
+        faas.rpu.rpumasterid = newfaas.rpu.rpumasterid
+
+        faas.rpu.assessments.each{
+            it.rpuid = faas.rpuid 
+        }
+
+        faas.rpu.landdetails.each{
+            it.landrpuid = faas.rpuid 
+        }
+        
+        return faas 
+    }
+/*
+    @ProxyMethod
+    public def testProvinceSubmission(task){
+        task.putAll(assignToMe(task))
+        return testUtil.signal(workflowSvc, task, 'completed', true)
+    }       
+*/
+}

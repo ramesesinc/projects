@@ -1,0 +1,56 @@
+import com.rameses.annotations.*
+import com.rameses.common.*
+import com.rameses.services.extended.*
+
+
+public class XFAASDataCaptureUnitTestService
+{
+    @Env
+    def env 
+
+    @Service('XRPTISTestUtilService')
+    def testUtil
+
+    @ActiveDB(value='rptunittest', em='rpttest')
+    def em 
+
+    @ActiveDB(value='rptunittest', em='main')
+    def emMain 
+
+    @Service('FAASService')
+    def faasSvc 
+
+    @Service('RPTLedgerService')
+    def ledgerSvc
+
+
+    @ProxyMethod
+    public def getCurrentTask( oid ) {
+        return emMain.findCurrenTask(oid)
+    }
+
+
+    @ProxyMethod
+    public def testApproveDataCapture(code) {
+        return doApprove(testUtil.getDataByCode(code))
+    }
+
+
+    def doApprove(faas){
+        faas += faasSvc.createFaas(faas)
+        faas += faasSvc.submitForApproval(faas)
+        faasSvc.approveFaas(faas)
+        def ledger = emMain.findLedgerByFaasId(faas)
+        ledgerSvc.approveLedger(ledger)
+        println  'testDataCaptureCreate ... done'
+        return faas 
+    }
+
+    @ProxyMethod
+    public def testDataCaptureCreate(code) {
+        def faas = testUtil.getDataByCode(code)
+        faas += faasSvc.createFaas(faas)
+        return faas 
+    }
+
+}

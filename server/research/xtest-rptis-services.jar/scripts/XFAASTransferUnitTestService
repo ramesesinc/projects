@@ -1,0 +1,121 @@
+import com.rameses.annotations.*
+import com.rameses.common.*
+import com.rameses.services.extended.*
+
+
+public class XFAASTransferUnitTestService
+{
+	@Env
+	def env 
+
+    @ActiveDB(value='rptunittest', em='rpttest')
+    def em 
+
+    @ActiveDB(value='rptunittest', em='main')
+    def emMain 
+
+    @Service('XRPTISTestUtilService')
+    def testUtil
+
+    @Service('FAASService')
+    def faasSvc 
+
+    @Service('FAASLookupService')
+    def faasLookup 
+
+    @Service('FAASWorkflowService')
+    def workflowSvc    
+
+    @Service('ExaminationService')
+    def examSvc 
+
+    @Service('XFAASDataCaptureUnitTestService')
+    def captureSvc 
+
+    def FAASID          = 'FDC02'
+    def FAASTDNO        = 'FDC02'
+    def TR_INITID       = 'FDC02-TR01-INIT'
+    def TR_FAAS         = 'FDC02-TR01-FAAS'
+    def TR_FAAS_UPDATED = 'FDC02-TR01-FAAS-UPDATED'
+    def TR_FAAS_EXAMID  = 'FDC02-TR01-EXAMID'
+
+    
+    @ProxyMethod
+    public def createSimpleTransfer() {
+        captureSvc.testApproveDataCapture(FAASID)
+
+        def info = testUtil.getDataByCode(TR_INITID)
+        def list = faasLookup.lookupFaas([searchtext:FAASTDNO])
+        if (!list) throw new Exception('Test FAAS for ' + FAASID + ' does not exist.')
+        info.faas = list[0]
+        def faas = faasSvc.initOnlineTransaction(info)
+        testUtil.updateData(TR_FAAS, faas)
+        return faas 
+    }
+
+    @ProxyMethod
+    public def assignToMe( task ) {
+        return testUtil.signal(workflowSvc, task, null, false)    
+    }
+
+
+    @ProxyMethod
+    public def testReceive(task){
+        def faas = testUtil.getDataByCode(TR_FAAS)
+        emMain.setFaasRequirementsAsComplied(faas)
+        testUtil.openTask(workflowSvc, task)
+        return testUtil.signal(workflowSvc, task, 'submit', true)
+    }
+
+    @ProxyMethod
+    public def testExamination(task){
+        task.putAll(assignToMe(task))
+        def faas = testUtil.getDataByCode(TR_FAAS)
+        def exam = testUtil.getDataByCode(TR_FAAS_EXAMID)
+        exam.parent = [objid:faas.objid]
+        examSvc.create(exam)
+        return testUtil.signal(workflowSvc, task, 'submit', true)
+    }
+
+    @ProxyMethod
+    public def testTaxmapping(task){
+        task.putAll(assignToMe(task))
+        return  testUtil.signal(workflowSvc, task, 'submit', true)
+    }
+
+    @ProxyMethod
+    public def testTaxmappingApproval(task){
+        task.putAll(assignToMe(task))
+        return testUtil.signal(workflowSvc, task, 'submit', true)
+    }    
+
+
+    @ProxyMethod
+    public def testAppraisal(task){
+        task.putAll(assignToMe(task))
+        def oldfaas = testUtil.getDataByCode(TR_FAAS)
+        def faas = testUtil.getUpdatedFaas(oldfaas, TR_FAAS_UPDATED)
+        faasSvc.updateFaas(faas)
+        testUtil.updateData(TR_FAAS, faas)
+        return testUtil.signal(workflowSvc, task, 'submit', true)
+    }   
+
+    @ProxyMethod
+    public def testAppraisalApproval(task){
+        task.putAll(assignToMe(task))
+        return testUtil.signal(workflowSvc, task, 'submit', true)
+    }    
+
+    @ProxyMethod
+    public def testRecommender(task){
+        task.putAll(assignToMe(task))
+        return testUtil.signal(workflowSvc, task, 'submit', true)
+    }   
+
+    @ProxyMethod
+    public def testMunicipalApproval(task){
+        task.putAll(assignToMe(task))
+        return testUtil.signal(workflowSvc, task, 'approve', true)
+    }   
+
+}

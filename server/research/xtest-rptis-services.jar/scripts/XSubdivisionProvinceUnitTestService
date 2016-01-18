@@ -1,0 +1,85 @@
+import com.rameses.annotations.*
+import com.rameses.common.*
+import com.rameses.services.extended.*
+
+
+public class XSubdivisionProvinceUnitTestService
+{
+	@Env
+	def env 
+
+    @ActiveDB(value='rptunittest', em='rpttest')
+    def em 
+
+    @ActiveDB(value='rptunittest', em='main')
+    def emMain
+
+    @Service('SubdivisionService')
+    def svc 
+
+    @Service('SubdivisionWorkflowService')
+    def workflowSvc 
+
+    @Service('XRPTISTestUtilService')
+    def testUtil
+
+
+    @ProxyMethod
+    public def getCurrentSubdivisionTask( code ) {
+        def subdivision = testUtil.getDataByCode(code)
+        return emMain.findCurrentSubdivisionTask(subdivision)
+    }
+
+    @ProxyMethod
+    public def assignToMe( task ) {
+        return testUtil.signal(workflowSvc, task, null, false)    
+    }
+
+
+    @ProxyMethod
+    public def testReceive(task){
+        task.putAll(assignToMe(task))
+        return testUtil.signal(workflowSvc, task, 'submit', true)
+    }
+
+    @ProxyMethod
+    public def testExamination(task){
+        task.putAll(assignToMe(task))
+        testUtil.openTask(workflowSvc, task)
+        return testUtil.signal(workflowSvc, task, 'submit', true)
+    }
+
+    @ProxyMethod
+    public def testTaxmapping(task){
+        task.putAll(assignToMe(task))
+        testUtil.openTask(workflowSvc, task)
+        return testUtil.signal(workflowSvc, task, 'submit', true)
+    }
+
+    @ProxyMethod
+    public def testTaxmappingApproval(task){
+        task.putAll(assignToMe(task))
+        testUtil.openTask(workflowSvc, task)
+        return testUtil.signal(workflowSvc, task, 'submit', true)
+    }
+
+    @ProxyMethod
+    public def testAppraisal(task){
+        task.putAll(assignToMe(task))
+        testUtil.openTask(workflowSvc, task)
+        return testUtil.signal(workflowSvc, task, 'submit', true)
+    }
+
+    @ProxyMethod
+    public def testAppraisalApproval(task){
+        task.putAll(assignToMe(task))
+        testUtil.openTask(workflowSvc, task)
+        return testUtil.signal(workflowSvc, task, 'submit', true)
+    }    
+
+    @ProxyMethod
+    public def testProvApproval(task){
+        return assignToMe(task)
+    }    
+
+}

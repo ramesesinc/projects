@@ -1,0 +1,75 @@
+import com.rameses.annotations.*
+import com.rameses.common.*
+import com.rameses.services.extended.*
+
+
+public class XFAASAnnotationUnitTestService
+{
+	@Env
+	def env 
+
+    @ActiveDB(value='rptunittest', em='rpttest')
+    def em 
+
+    @ActiveDB(value='rptunittest', em='main')
+    def emMain 
+
+    @Service('XRPTISTestUtilService')
+    def testUtil
+
+    @Service('XFAASDataCaptureUnitTestService')
+    def captureSvc 
+
+    @Service('FAASAnnotationService')
+    def annotationSvc 
+
+    @Service('CancelAnnotationService')
+    def cancelSvc  
+
+
+    def FAAS            = 'FDC03'
+    def FAAS_ANNOTATION = 'FDC03-ANNOTATION'
+    def FAAS_ANNOTATION_CANCEL = 'FDC03-ANNOTATION-CANCEL'
+
+    
+    @ProxyMethod
+    public void testAnnotationCreate( ) {
+        captureSvc.testApproveDataCapture(FAAS)
+        def annotation = testUtil.getDataByCode(FAAS_ANNOTATION)
+        annotationSvc.createAnnotation(annotation)
+    }
+
+    @ProxyMethod
+    public void testSubmitAnnotation(  ) {
+        def annotation = testUtil.getDataByCode(FAAS_ANNOTATION)
+        annotationSvc.submitAnnotationForApproval(annotation)   
+    }
+
+    @ProxyMethod
+    public void testApproveAnnotation(  ) {
+        def annotation = testUtil.getDataByCode(FAAS_ANNOTATION)
+        annotationSvc.approveAnnotation(annotation)   
+    }
+
+
+
+
+
+    @ProxyMethod
+    public void testCancelAnnotationCreate( ) {
+        def annotation = testUtil.getDataByCode(FAAS_ANNOTATION_CANCEL)
+        cancelSvc.createCancelAnnotation(annotation)
+    }
+
+    @ProxyMethod
+    public void testSubmitCancelAnnotation(  ) {
+        def annotation = testUtil.getDataByCode(FAAS_ANNOTATION_CANCEL)
+        cancelSvc.submitCancelAnnotationForApproval(annotation)
+    }
+
+    @ProxyMethod
+    public void testApproveCancelAnnotation(  ) {
+        def annotation = testUtil.getDataByCode(FAAS_ANNOTATION_CANCEL)
+        cancelSvc.approveCancelAnnotation(annotation)
+    }
+}

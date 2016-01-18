@@ -1,0 +1,121 @@
+import com.rameses.annotations.*
+import com.rameses.common.*
+import com.rameses.services.extended.*
+
+
+public class XFAASRevisionUnitTestService
+{
+	@Env
+	def env 
+
+    @ActiveDB(value='rptunittest', em='rpttest')
+    def em 
+
+    @ActiveDB(value='rptunittest', em='main')
+    def emMain 
+
+    @Service('XRPTISTestUtilService')
+    def testUtil
+
+    @Service('FAASRevisionService')
+    def revisionSvc 
+
+    @Service('FAASService')
+    def faasSvc 
+
+    @Service('FAASWorkflowService')
+    def workflowSvc    
+
+    @Service('ExaminationService')
+    def examSvc 
+
+    @Service('XFAASDataCaptureUnitTestService')
+    def captureSvc 
+
+    def FAAS_DC_LAND       = 'REV-01-FAASLAND'
+    def FAAS_DC_BLDG       = 'REV-01-FAASBLDG'
+    
+    def REV_INIT        = 'REV-01-INIT'
+    def REV_EXAM01      = 'REV-01-EXAM01'
+    def REV_BLDG01_FAAS    = 'REV-01-BLDG-FAAS'
+    
+
+    
+    @ProxyMethod
+    public def createBldgRevision() {
+        captureSvc.testApproveDataCapture(FAAS_DC_LAND)
+        captureSvc.testApproveDataCapture(FAAS_DC_BLDG)
+
+        def info = testUtil.getDataByCode(REV_INIT)
+        def faas = revisionSvc.initImprovementRevision(info)
+        testUtil.updateData(REV_BLDG01_FAAS, faas)
+        return faas 
+    }
+
+    @ProxyMethod
+    public def assignToMe( task ) {
+        return testUtil.signal(workflowSvc, task, null, false)    
+    }
+
+
+    @ProxyMethod
+    public def testReceive(task){
+        def faas = testUtil.getDataByCode(REV_BLDG01_FAAS)
+        testUtil.openTask(workflowSvc, task)
+        return testUtil.signal(workflowSvc, task, 'submit', true)
+    }
+
+    @ProxyMethod
+    public def testExamination(task){
+        task.putAll(assignToMe(task))
+        def faas = testUtil.getDataByCode(REV_BLDG01_FAAS)
+        def exam = testUtil.getDataByCode(REV_EXAM01)
+        exam.parent = [objid:faas.objid]
+        examSvc.create(exam)
+        return testUtil.signal(workflowSvc, task, 'submit', true)
+    }
+
+    @ProxyMethod
+    public def testTaxmapping(task){
+        task.putAll(assignToMe(task))
+        return  testUtil.signal(workflowSvc, task, 'submit', true)
+    }
+
+    @ProxyMethod
+    public def testTaxmappingApproval(task){
+        task.putAll(assignToMe(task))
+        return testUtil.signal(workflowSvc, task, 'submit', true)
+    }    
+
+
+    @ProxyMethod
+    public def testAppraisal(task){
+        task.putAll(assignToMe(task))
+
+        def faas = testUtil.getDataByCode(REV_BLDG01_FAAS)
+        faas.memoranda = 'REVISION OF BLDG'
+        faasSvc.updateFaas(faas)
+        testUtil.updateData(REV_BLDG01_FAAS, faas)
+
+        return testUtil.signal(workflowSvc, task, 'submit', true)
+    }   
+
+    @ProxyMethod
+    public def testAppraisalApproval(task){
+        task.putAll(assignToMe(task))
+        return testUtil.signal(workflowSvc, task, 'submit', true)
+    }    
+
+    @ProxyMethod
+    public def testRecommender(task){
+        task.putAll(assignToMe(task))
+        return testUtil.signal(workflowSvc, task, 'submit', true)
+    }   
+
+    @ProxyMethod
+    public def testMunicipalApproval(task){
+        task.putAll(assignToMe(task))
+        return testUtil.signal(workflowSvc, task, 'approve', true)
+    }   
+
+}

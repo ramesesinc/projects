@@ -1,0 +1,161 @@
+import com.rameses.annotations.*
+import com.rameses.common.*
+import com.rameses.services.extended.*
+
+
+public class XSubdivisionMunicipalityWithImprovementUnitTestService
+{
+	@Env
+	def env 
+
+    @ActiveDB(value='rptunittest', em='rpttest')
+    def em 
+
+    @ActiveDB(value='rptunittest', em='main')
+    def emMain    
+
+    @Service('SubdivisionService')
+    def svc 
+
+    @Service('ExaminationService')
+    def examSvc 
+
+    @Service('FAASService')
+    def faasSvc 
+
+    @Service('SubdivisionWorkflowService')
+    def workflowSvc 
+
+    @Service('XRPTISTestUtilService')
+    def testUtil 
+
+    @Service('XFAASDataCaptureUnitTestService')
+    def captureSvc 
+
+    def SUBDIVISION = 'SD0002'
+    def FAASLAND = 'FDC01'
+    def FAASBLDG = 'FBLDG001'
+
+    def EXAMID = 'SD0002-E01'
+
+    def SLAND01 = 'SD0002-L01'
+    def SLAND02 = 'SD0002-L02'
+    
+    def ARPU01UPDATE = 'SD0002-ARPU-01-UPDATE'
+
+    def SLAND01UPDATE = 'SD0002-L01-UPDATE'
+    def SLAND02UPDATE = 'SD0002-L02-UPDATE'
+
+
+    @ProxyMethod
+    public def getCurrentSubdivisionTask() {
+        def subdivision = testUtil.getDataByCode(SUBDIVISION)
+        return emMain.findCurrentSubdivisionTask(subdivision)
+    }
+
+
+    @ProxyMethod
+    public def createSubdivision() {
+        captureSvc.testApproveDataCapture(FAASLAND);
+        println 'created faas land...'
+        captureSvc.testApproveDataCapture(FAASBLDG);
+        println 'created faas bldg...'
+
+        def subdivision = testUtil.getDataByCode(SUBDIVISION)
+        subdivision = svc.createSubdivision(subdivision)
+
+        def task = [:]
+        task.putAll(subdivision.task)
+        subdivision.remove('task')
+        task.data = subdivision 
+        println 'createSubdivision ... done'
+        return task
+    }
+
+    @ProxyMethod
+    public def assignToMe( task ) {
+        return testUtil.signal(workflowSvc, task, null, false)    
+    }
+
+
+    @ProxyMethod
+    public def testReceive(task){
+        return testUtil.signal(workflowSvc, task, 'submit', true)
+    }
+
+    @ProxyMethod
+    public def testExamination(task){
+        task.putAll(assignToMe(task))
+        examSvc.create(testUtil.getDataByCode(EXAMID))
+        return testUtil.signal(workflowSvc, task, 'submit', true)
+    }
+
+    @ProxyMethod
+    public def testTaxmapping(task){
+        task.putAll(assignToMe(task))
+        testUtil.openTask(workflowSvc, task)
+        def subdivision  = task.data 
+
+        def sland01 = svc.createSubdividedLand(testUtil.getDataByCode(SLAND01), task.data)
+        testUtil.updateData(SLAND01, sland01)
+        def sland02 = svc.createSubdividedLand(testUtil.getDataByCode(SLAND02), task.data)
+        testUtil.updateData(SLAND02, sland02)
+
+        def arpus = svc.getAffectedRpus(subdivision.objid)
+        if (arpus){
+            def arpudata = testUtil.getDataByCode(ARPU01UPDATE)
+            def arpu = arpus[0]
+            arpu.subdividedlandid = sland01.objid 
+            arpu.newsuffix = arpudata.newsuffix
+            arpu.newpin = arpudata.newpin 
+            arpu.newrpid = sland01.newrpid 
+
+            println 'arpu -> ' + arpu 
+            svc.saveAffectedRpuAndFaas(arpu)
+            testUtil.updateData(ARPU01UPDATE, arpu)
+        }
+
+        
+        if (task.signal == null || task.signal == true)
+            return  testUtil.signal(workflowSvc, task, 'submit', true)
+        return null;
+    }
+
+    @ProxyMethod
+    public def testTaxmappingApproval(task){
+        task.putAll(assignToMe(task))
+        return testUtil.signal(workflowSvc, task, 'submit', true)
+    }    
+
+
+    @ProxyMethod
+    public def testAppraisal(task){
+        task.putAll(assignToMe(task))
+        testUtil.openTask(workflowSvc, task)
+        def land01 = testUtil.getDataByCode(SLAND01)
+        faasSvc.updateFaas(testUtil.getUpdatedFaas([objid:land01.newfaasid], SLAND01UPDATE))
+        def land02 = testUtil.getDataByCode(SLAND02)
+        faasSvc.updateFaas(testUtil.getUpdatedFaas([objid:land02.newfaasid], SLAND02UPDATE))
+        return testUtil.signal(workflowSvc, task, 'submit', true)
+    }   
+
+    @ProxyMethod
+    public def testAppraisalApproval(task){
+        task.putAll(assignToMe(task))
+        return testUtil.signal(workflowSvc, task, 'submit', true)
+    }    
+
+    @ProxyMethod
+    public def testRecommender(task){
+        task.putAll(assignToMe(task))
+        return task;
+    }   
+
+
+    @ProxyMethod
+    public def testProvinceSubmission(task){
+        task.putAll(assignToMe(task))
+        return testUtil.signal(workflowSvc, task, 'completed', true)
+    }       
+
+}

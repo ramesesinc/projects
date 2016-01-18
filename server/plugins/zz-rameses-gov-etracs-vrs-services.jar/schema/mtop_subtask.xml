@@ -1,0 +1,16 @@
+<schema adapter="vrs">
+	
+	<element tablename="mtop_subtask">
+		<field name="objid" primary="true"/>
+		<field name="taskid" required="true"/>
+		<field name="refid" required="true"/>
+		<field name="startdate" />
+		<field name="enddate" />
+		<field name="assignee_objid"/>
+		<field name="assignee_name"/>
+		<field name="message"/>
+		<field name="comment"/>
+		<field name="dtconfirmed" />
+	</element>	
+
+</schema>

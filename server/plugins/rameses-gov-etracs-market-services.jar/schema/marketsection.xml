@@ -1,0 +1,8 @@
+<schema>
+	<element tablename="marketsection">
+		<field name="objid" primary="true"/>
+		<field name="state" required="true"/>
+		<field name="name" required="true" />
+		<field name="title" required="true"/>
+	</element>
+</schema>

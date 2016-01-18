@@ -1,0 +1,25 @@
+<schema adapter="waterworks">
+	<element tablename="waterworks_account">
+		<field name="objid" primary="true"/>
+		<field name="state" required="true"/>
+		<field name="dtstarted" required="true"/>
+		<field name="acctno" required="true"/>
+		<field name="acctname" required="true"/>
+		<field name="applicationid" required="true"/>
+		<field name="owner_objid" required="true"/>
+		<field name="owner_name" required="true"/>
+		<field name="address_objid" required="true"/>
+		<field name="address_text" required="true"/>
+		<field name="mobileno" required="true"/>
+		<field name="phoneno" required="true"/>
+		<field name="email" required="true"/>
+		<field name="meterid" required="true"/>
+		<field name="classificationid" required="true"/>
+		<field name="areaid" required="true"/>
+		<field name="currentreading" required="true"/>
+		<field name="balance" required="true"/>
+		<field name="lastreadingdate" required="true"/>
+		<field name="lastreadingmonth" required="true"/>
+		<field name="lastreadingyear" required="true"/>
+	</element>
+</schema>

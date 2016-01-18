@@ -1,0 +1,55 @@
+import com.rameses.annotations.*;
+
+import com.rameses.rules.common.*;
+import vrs.facts.*;
+import treasury.facts.*;
+import treasury.actions.*;
+
+/**********************************************************
+* This service handles computation of what fees to charge 
+***********************************************************/
+class VrsAssessmentService {
+	
+	@Service("RuleExecutorService")
+	def ruleSvc;
+
+	@Service("VrsBillingService")
+	def billSvc;
+
+	@DataContext("vrs_application")
+	def app;
+
+	def buildFacts(def app) {
+		def facts = [];
+		facts << new VrsApplication(app);
+		return facts;
+	}
+
+	def buildActions(def res) {
+		def actions = new RuleAction();
+		actions.addCommand( "compute-fee", new ComputeFee(res: res)); 
+		return actions;
+	}
+
+
+	@ProxyMethod
+	public def assess( def o ) {
+		def res = [billItemList:new BillItemList()];	
+
+		def facts = buildFacts( o );
+		def actions = buildActions( res );
+
+		ruleSvc.execute( "vrsassessment", facts, actions, null );
+
+		//automatically calculate also the billing.
+		facts.addAll( res.billItemList.items );
+
+		billSvc.processAssessmentBill( facts, res, o );
+
+		def result = [:];
+		result.billitems = res.billItemList.buildBillItems();
+		return result;
+	}
+
+
+}

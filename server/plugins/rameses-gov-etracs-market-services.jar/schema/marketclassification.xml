@@ -1,0 +1,9 @@
+<schema>
+	<element tablename="marketclassification">
+		<field name="objid" primary="true"/>
+		<field name="state" required="true"/>
+		<field name="name" required="true" />
+		<field name="title" required="true"/>
+		<field name="system" />
+	</element>
+</schema>

@@ -1,0 +1,49 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.services.extended.*;
+
+public class MarketService extends ActiveCrudListService {
+
+	@ActiveDB("org")
+	def org;
+
+	@ActiveDB(value="market", em="market")
+	def em;
+
+	@Service("MarketClassificationService")
+	def marketClassification;
+
+	@ProxyMethod
+	public def getColumns(o) {
+		return [
+			[name:'code', caption:'Code', maxWidth:150],
+			[name:'name', caption:'Name'],
+			[name:'address', caption:'Address'],
+		];
+	}
+
+	public void afterOpen(o) {
+		def z = org.read( [objid: o.objid] );
+		o.putAll( z );
+		o.classification = marketClassification.open( [objid: o.classification.objid] );
+	}
+
+	public void beforeUpdate(o) {
+		org.update(o);
+	}	
+
+	public void beforeCreate(o) {
+		o.orgclass = 'MARKET';
+		o.root = 0;
+		o.parentid = o?.parent?.objid;
+		org.create(o);	
+	}	
+
+	@ProxyMethod(local=true)
+	public void findMarketName(o) {
+			
+	}
+
+
+}

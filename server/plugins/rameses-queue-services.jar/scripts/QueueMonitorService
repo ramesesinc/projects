@@ -1,0 +1,15 @@
+import com.rameses.annotations.*;
+import com.rameses.common.*;
+import com.rameses.util.*;
+
+class QueueMonitorService { 
+
+	@DataContext(value='queue_counter', adapter='queue') 
+	def qm;
+
+	@ProxyMethod 
+	public def getCounters( groupid ) {
+		return qm.getCounters([ groupid: groupid ]); 
+	} 	
+
+} 

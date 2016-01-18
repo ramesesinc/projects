@@ -1,0 +1,130 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.services.extended.*;
+import market.facts.*;
+
+public class MarketCashReceiptService  {
+
+	@ActiveDB(value="market_cashreceipt", em="market")
+	def em;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@Service("MarketBillRuleService")
+	def billSvc;
+
+	@Service("MarketAccountService")
+	def acctSvc;
+
+	@ActiveDB(value="market_billing", em="market")
+	def billingEm;
+
+	@ActiveDB(value="market_payment", em="market")
+	def paymentEm;
+
+	@ProxyMethod
+	public def getLedger( o ) {
+		if( !o?.ownerid )
+			throw new Exception("Please specify ownerid");
+		return em.getLedger(o);
+	}
+
+	@ProxyMethod
+	public def getLedgerList( o ) {
+		if( o.ownername ) o.ownername +="%";
+		if( o.acctno ) o.acctno +="%";
+		return em.getLedgerList(o);
+	}
+
+
+	@ProxyMethod
+	public def getBillItems(o) {
+		if( !o.objid && !o.acctno )
+			throw new Exception("Please specify acct objid or acctno");
+		def mu = null;
+		if( o.objid ) {
+			mu = acctSvc.open( [objid: o.objid] ); 
+		}
+		else {
+			mu = acctSvc.findByAcctno( [acctno: o.acctno] ); 
+		}
+		def m = [objid: mu.objid, acctno:mu.acctno];
+		m.putAll(mu);
+		m.startdate = mu.startdate;
+		m.billdate  = o.billdate;
+		m.billingtype = 0;
+		if( o.compromise ) {
+			m.compromise = billingEm.findCompromise( o );
+			m.billingtype = 1;
+		}
+		if(o.totalpaid) {
+			m.totalpaid = o.totalpaid;
+		}
+		m.rate = mu.rate;
+		
+		//determine the last paid month year
+		m.lastyearmonthpaid = acctSvc.findLastYearMonthPaid([acctid: mu.objid]);
+		
+		def r = billSvc.execute(m);
+		if( !r.items ) {
+        	throw new Exception("No items for payment found");
+        }
+		def res = [:];
+		res.billitems = r.items;
+		res.items = [];
+
+		def months = dateSvc.getMonths();
+		res.billitems.each {b->
+			b.smonth = months.find{mon->b.month==mon.index}.name;
+		}
+		def minx = res.billitems.min{ it.year +"-"+ it.month };
+		def maxx = res.billitems.max{ it.year +"-"+it.month };
+		def rem = " from " + minx.smonth +" "+minx.year;
+		rem+= " to " + maxx.smonth + " " + maxx.year;
+
+		res.particulars = rem;
+		res.items << [ item: r.account, amount: r.items.sum{it.amtdue}, remarks:rem ];
+
+		//calc surcharge		
+		def surcharge = r.items.sum{ it.surcharge }
+		if(surcharge>0) {
+			res.items << [ item: r.surchargeaccount, amount: surcharge, remarks:'surcharge' ];			
+		}
+		//calc interest
+		def interest = r.items.sum{ it.interest }
+		if(interest>0) {
+			res.items << [ item: r.interestaccount, amount: interest, remarks:'interest' ];			
+		}
+		return res;
+	}
+
+	@ProxyMethod
+	public def postReceivables(o) throws Exception {
+		if( !o.acctid )
+			throw new Exception("Please specify acctid");
+		
+		def pmt = [:];
+		pmt.objid = o.objid;
+		pmt.txnno = o.info.serialno;
+		pmt.txndate = new DateBean(o.info.txndate).date;
+		pmt.acctid = o.acctid;
+		pmt.particulars = 'payment for months ' + o.billitems.min{it.month}.month + " to " + o.billitems.max{it.month}.month;
+		pmt.amount = o.info.amount;
+		paymentEm.create( pmt );
+
+		o.billitems.each {
+			def r = [:];
+			r.objid = "PMTITEM"+new UID();
+			r.parentid = pmt.objid;
+			r.amtpaid = it.amtdue;
+			r.surchargepaid = it.surcharge;
+			r.interestpaid = it.interest;
+			r.imonth = it.month;
+			r.iyear = it.year;
+			paymentEm.create( r, "item" );
+		}
+	}
+
+}

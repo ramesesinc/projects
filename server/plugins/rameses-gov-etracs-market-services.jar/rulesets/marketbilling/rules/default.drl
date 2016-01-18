@@ -1,0 +1,162 @@
+package marketbilling;
+
+import java.util.*;
+import market.facts.*;
+import com.rameses.rules.common.*;
+import java.math.*;
+
+global RuleAction action;
+
+###############################################
+# initial rules
+# bill info types
+#	0 - basic billing
+#	1 - compromise
+###############################################
+rule "initiate-non-compromise-type-wo-compromise"
+	agenda-group "billing"
+	when
+		BillInfo( $from:startdate, $to:billdate, $rate: rate, type == 0 )
+		not Compromise()
+	then
+		BillItemCounter c = new BillItemCounter($from, $to, $rate);
+		action.execute("init_billing", c, drools);
+end	
+
+rule "initiate-non-compromise-type-with-existing-compromise"
+	agenda-group "billing"
+	when
+		BillInfo( $to:billdate, $rate: rate, type == 0, $day:day )
+		C: Compromise()
+	then
+		Date $from = C.getMonthAfterEnddate($day);
+		BillItemCounter c =  new BillItemCounter($from, $to, $rate);
+		action.execute("init_billing", c, drools);
+end	
+
+rule "initiate-compromise"
+	agenda-group "billing"
+	when
+		BillInfo( $from: startdate, $rate: rate, type == 1 )
+		Compromise( $to: todate )
+	then
+		BillItemCounter c =  new BillItemCounter($from, $to, $rate );
+		action.execute("init_billing", c, drools );
+end	
+
+rule "set-payment-first-date"
+	agenda-group "billing"
+	when
+		BillItemCounter( $from:fromdate, $todate: todate )
+		P: Payment()
+	then
+		P.setDate( $from );
+		P.setTodate( $todate );
+end	
+
+############################################################
+# create bill items
+############################################################
+rule "add-bill-items"
+	agenda-group "billing"
+	when
+		B: BillItemCounter( date <= todate ,  $date:date, $rate:rate )
+	then
+		BillItem bi = new BillItem( $date, $rate );
+		action.execute( "add_item",bi,drools);
+		B.moveNext();
+		update(B);
+end		
+
+rule "set-expired"
+	agenda-group "billing"
+	when
+		BillInfo( type == 0, $bd: billdate)
+		B: BillItem( duedate < $bd )
+	then
+		B.setExpired(true);
+end		
+
+
+############################################################
+# post-billing
+############################################################
+rule "remove-penalty-in-compromise"
+	agenda-group "postbilling"
+	no-loop
+	when
+		BillInfo( type == 1 )
+		B: BillItem()
+	then
+		B.setSurcharge(0);
+		B.setInterest(0);
+end		
+
+############################################################
+# payment-distribution
+############################################################
+rule "payment-full"
+	agenda-group "payment"
+	when
+		B: BillItem( $date: date, amtpaid == 0, $due:total )
+		P: Payment( balance >= $due, hasNext == true, date==$date  )
+	then
+		B.updatePayment( $due );
+		update(B);
+		P.deduct( $due );
+		P.moveNext();
+		update(P);
+end	
+
+
+rule "payment-partial"
+	agenda-group "payment"
+	when
+		B: BillItem( $date: date, amtpaid == 0, $due:total )
+		P: Payment( $bal: balance < $due, balance > 0, hasNext == true, date == $date  )
+	then
+		B.updatePayment( $bal );
+		update(B);
+		retract( P );
+end		
+
+rule "overpayment-full"
+	agenda-group "payment"
+	salience -100
+	when
+		BillInfo( type== 0, $rate:rate )
+		P: Payment( balance >= $rate, hasNext == false, $date:date )
+	then
+		BillItem bi = new BillItem( $date, $rate );
+		bi.updatePayment( $rate );
+		action.execute( "add_item",bi,drools);
+		P.deduct( $rate );
+		P.moveNext();
+		update(P);
+end	
+
+rule "overpayment-partial"
+	agenda-group "payment"
+	when
+		BillInfo( type== 0, $rate:rate )
+		P: Payment( $bal: balance < $rate, hasNext == false, $date:date )
+	then
+		BillItem bi = new BillItem( $date, $rate );
+		bi.updatePayment( $bal );
+		action.execute( "add_item",bi,drools);
+		retract(P);
+end	
+
+
+############################################################
+# summary
+############################################################
+rule "remove-unpaid-if-has-payment"
+	agenda-group "summary"
+	no-loop
+	when
+		B: BillItem( $date: date, amtpaid == 0, $due:total )
+		Payment()
+	then
+		action.execute("remove_item", B, drools );
+end		

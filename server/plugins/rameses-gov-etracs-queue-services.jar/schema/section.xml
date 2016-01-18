@@ -1,0 +1,8 @@
+<schema>
+	<element name="section" tablename="queue_section">
+		<field name="objid" primary="true"/>
+		<field name="name" required="true"/>
+		<field name="prefix" required="true"/>
+		<field name="sortorder" required="true"/>
+	</element>
+</schema>

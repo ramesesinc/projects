@@ -1,0 +1,9 @@
+<schema adapter="waterworks">
+	<element tablename="waterworks_meter">
+		<field name="objid" primary="true" />
+		<field name="serialno" required="true" />
+		<field name="brand" required="true" />
+		<field name="size" required="true" />
+		<field name="capacity" required="true" />
+	</element>
+</schema>

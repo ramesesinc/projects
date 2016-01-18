@@ -1,0 +1,9 @@
+<schema adapter="waterworks">
+	<element tablename="waterworks_area">
+		<field name="objid" primary="true" />
+		<field name="name" required="true" />
+		<field name="description" required="true" />
+		<field name="assignee_objid" required="true" />
+		<field name="assignee_name" required="true" />
+	</element>
+</schema>

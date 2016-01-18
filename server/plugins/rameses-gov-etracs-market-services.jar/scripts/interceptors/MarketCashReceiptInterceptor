@@ -1,0 +1,51 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+
+
+/**********************************************************
+* This routine is hooked in the CashReceiptService and 
+* CashReceiptVoidService services. It will update each
+* receivable based on amount paid. It will update billing.
+* Billing is the key to determine if license can be
+* released.     
+**********************************************************/
+public class MarketCashReceiptInterceptor {
+
+	@Service("MarketPaymentService")
+	def pmtSvc;
+
+	@After(pattern="CashReceiptService.post", eval="#{result.collectiontype?.handler == 'marketrental'}")
+	public void postBusinessPayment(def evt) {
+		def r = evt.args[0];
+		def m = [:];
+		m.objid = r.objid;
+		m.txnno = r.receiptno;
+		m.txndate = r.receiptdate;
+		m.acctid = r.acctid;
+
+		//find the items that is not surcharge or interest.
+		m.particulars = r.particulars;
+		m.amount = r.amount;
+		m.items = [];
+		r.billitems.each { bi->
+			m.items << [ 
+				parentid:m.objid, 
+				amtpaid: bi.amtdue, 
+				surchargepaid: bi.surcharge, 
+				interestpaid: bi.interest,
+				imonth: bi.month,
+				iyear: bi.year
+			];
+		}
+		pmtSvc.create( m );
+	} 
+
+	@After(pattern="CashReceiptVoidService.post",index=0,eval="#{result.receipt.collectiontype.handler=='marketrental'}")
+	public void voidTxn(def evt) {
+		def r = evt.args[0].receipt;
+		def receiptid = r.objid;
+		pmtSvc.voidPayment([receiptid: receiptid]); 		
+		pmtSvc.removePaymentItems([receiptid: receiptid]); 
+	}
+}

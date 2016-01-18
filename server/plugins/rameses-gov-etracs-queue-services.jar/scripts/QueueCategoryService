@@ -1,0 +1,23 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.common.*;
+import com.rameses.services.extended.*;
+
+class QueueCategoryService extends ActiveCrudListService{
+	@ActiveDB('category')
+	def em;
+
+	@ProxyMethod
+	public def getColumns( def params ){
+		return [
+			[name: 'name', caption:'Name'],
+			[name: 'prefix', caption:'Prefix'],
+			[name: 'sortorder', caption:'Sort Order']
+		];
+	}
+
+	void beforeList( params ){
+		params.searchtext = params.searchtext ? params.searchtext + '%' : '%';
+	}
+}

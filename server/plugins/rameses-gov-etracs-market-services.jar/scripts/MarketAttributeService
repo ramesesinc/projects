@@ -1,0 +1,19 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.services.extended.*;
+
+public class MarketAttributeService extends ActiveCrudListService {
+
+	@ActiveDB(value="marketattribute", em="market")
+	def em;
+
+	@ProxyMethod
+	public def getColumns(o) {
+		return [
+			[name:'name', caption:'Name'],
+			[name:'description', caption:'Description']
+		];
+	}
+
+}

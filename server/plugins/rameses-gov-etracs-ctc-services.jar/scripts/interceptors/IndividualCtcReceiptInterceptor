@@ -1,0 +1,41 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import com.rameses.services.extended.*;
+
+class IndividualCtcReceiptInterceptor 
+{
+
+	@ActiveDB('ctc_individual')
+	def em
+
+	@Service('IndividualEntityService')
+	def entitySvc
+
+	@Service('DateService')
+	def dtSvc 
+
+	
+	@After(pattern="CashReceiptService.post", eval="#{result.formno=='0016' && result.txnmode != 'CAPTURE'}")
+	public def interceptCashReceipPost(def evt) { 
+		def ctc = evt.result;	
+		if (ctc.payer.birthdate){
+			ctc.payer.birthdate = dtSvc.parse('yyyy-MM-dd', ctc.payer.birthdate)
+		}
+		em.create(ctc)
+		entitySvc.update(ctc.payer)
+	}
+
+	@After(pattern="CashReceiptService.open", eval="#{result.formno=='0016' && result.txnmode != 'CAPTURE'}")
+	public def onOpenReceipt(def evt) { 
+		def ctc = evt.result 
+		def ctcext = em.read(ctc)
+		ctc.payer.putAll(ctcext.payer)
+		ctcext.remove('payer')
+		ctc.putAll(ctcext)
+		def individual = entitySvc.open(ctc.payer)
+		individual.putAll(ctc.payer)
+		ctc.payer.putAll( individual )
+		evt.result.putAll( ctc );
+	}
+
+}

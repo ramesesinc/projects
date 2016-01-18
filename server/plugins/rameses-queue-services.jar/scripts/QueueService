@@ -1,0 +1,72 @@
+import com.rameses.annotations.*;
+import com.rameses.common.*;
+import com.rameses.util.*;
+
+class QueueService { 
+
+    @XConnection('ws_sender')
+    def wssender;
+
+	@XConnection("queue_poll")
+	def queue_poll;
+
+	@DataContext(value='queue_group', adapter='queue') 
+	def qg; 
+
+	@DataContext(value='queue_counter', adapter='queue') 
+	def qc; 
+
+	@DataContext(value='queue_section', adapter='queue') 
+	def qs; 
+
+	@DataContext(value='queue_number', adapter='queue') 
+	def qn; 
+
+	@DataContext(value='queue_number_counter', adapter='queue') 
+	def qnc; 
+
+	@Service('DateService')
+	def dateSvc;
+
+	@Service 
+	def self; 
+
+
+	/* initiated by taxpayer to get the next current series number  */
+	@ProxyMethod 
+	public def fetchNextNumber( o ) {
+		if ( !o.sectionid ) throw new Exception('sectionid parameter is required');
+
+		def m = qs.find([ objid: o.sectionid ]).first(); 
+		if ( !m ) throw new Exception('queue section does not exist'); 
+
+		def prefix = m.prefix; 
+		def m1 = [ 
+			groupid: m.groupid, sectionid: m.objid, 
+			txndate: dateSvc.getServerDate(), 
+			seriesno: m.currentseries+1, 			
+			state : 'PENDING' 
+		]; 
+		qn.create( m1 ); 
+
+		qs.find([ objid: o.sectionid ]).update([ currentseries: m1.seriesno ]); 
+		
+		//fire notification here...
+		//notify([ objid: m1.objid, seriesno: m1.seriesno, type:'FETCH_NEXT' ]);  
+		return formatSeriesNumber([ seriesno: m1.seriesno, prefix: prefix ]); 
+	} 
+
+	@ProxyMethod
+	def formatSeriesNumber( data ) {
+		if ( data.seriesno ) {
+			def prefix = (data.prefix? data.prefix : ''); 
+			def snum = data.seriesno.toString();
+			if ( snum.length() < 4 ) { 
+				snum = snum.padLeft(4,'0'); 
+			} 
+			return ''+prefix+snum; 
+		} else { 
+			return ''; 
+		} 
+	} 	
+} 

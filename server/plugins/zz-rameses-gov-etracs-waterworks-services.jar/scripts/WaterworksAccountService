@@ -1,0 +1,31 @@
+import com.rameses.annotations.*;
+
+class WaterworksAccountService {
+	
+	@DataContext("waterworks_account")
+	def acct;
+
+	@DataContext("waterworks_account_consumption")
+	def wac;
+
+	@Service("WaterworksBillingService")
+	def billSvc;
+
+	@ProxyMethod
+	public def getList( def o ) {
+		//display all usa
+		return acct.list();
+	}
+
+	@ProxyMethod
+	public def open(def o) {
+		return acct.find(o).first();
+	}
+
+	@ProxyMethod
+	public def getConsumption(def o) {
+		def feeList = wac.find([acctid: o.objid]).list();
+		return billSvc.processBilling(feeList);
+	}
+
+}

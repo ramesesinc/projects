@@ -1,0 +1,108 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.common.*;
+import com.rameses.services.extended.*;
+
+class QueueCodeService extends ActiveListService{
+	@ActiveDB('code')
+	def em;
+
+	@Service('SequenceService')
+	def seqSvc;
+
+	@Service('DateService')
+	def dateSvc;
+
+	@Env
+	def env;
+
+	def getColumns(params){
+		return [
+			['name':'name', 'caption':'Name'],
+			['name':'user_name', 'name':'User']
+		];
+	}
+
+	@ProxyMethod
+	def create(params){
+		return em.create(params);
+	}
+
+	@ProxyMethod
+	def update(params){
+		def result = em.update(params);
+		return result;
+	}
+
+	@ProxyMethod
+	def getNextNumber(params){
+		def next = [:];
+		params.state = 'DRAFT';
+		def list = em.getNumber(params);
+		if(list) next = list.get(0);
+		return next;
+	}
+
+	@ProxyMethod
+	def getNumber(params){
+		return em.getNumber(params);
+	}
+
+	@ProxyMethod
+	def getNumberByState(params){
+		return em.getNumberByState(params);
+	}
+
+	@ProxyMethod
+	def getCurrentCodeIndex(params){
+		int index = 0;
+		def prefix = params.section.code + params.category.code;
+		def p = [:];
+        p.sectionid = params.section.objid;
+        p.categoryid = params.category.objid;
+		def indexes = em.getIndexes(p);
+		if(indexes){
+			def lastindex = indexes.get(indexes.size()-1).codeindex;
+			index = Integer.parseInt(lastindex.toString());
+		} 
+		return index;
+	}
+
+	@ProxyMethod
+	def generate(params){
+		if(params.sequence){
+			for(int i = 1; i<=params.quantity; i++){
+				def data = [:];
+				data.objid = 'COD' + new UID().toString();
+				data.dtcreated = dateSvc.getServerDate();
+				data.state = 'DRAFT';
+				data.name = params.section.prefix + params.category.prefix + (params.index + i);
+				data.codeindex = i + params.index;
+				data.buzz = 0;
+				data.section = params.section;
+				data.category = params.category;
+				create(data);
+			}
+		}else{
+			def p = [:];
+	        p.sectionid = params.section.objid;
+	        p.categoryid = params.category.objid;
+			em.deleteDraft(p);
+			params.index = 0;
+			for(int i = 1; i<=params.quantity; i++){
+				def data = [:];
+				data.objid = 'COD' + new UID().toString();
+				data.dtcreated = dateSvc.getServerDate();
+				data.state = 'DRAFT';
+				data.name = params.section.prefix + params.category.prefix + (params.index + i);
+				data.codeindex = i + params.index;
+				data.buzz = 0;
+				data.section = params.section;
+				data.category = params.category;
+				create(data);
+			}
+		}
+	}
+	
+}

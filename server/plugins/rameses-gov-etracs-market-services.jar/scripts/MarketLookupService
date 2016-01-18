@@ -1,0 +1,17 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.services.extended.*;
+
+public class MarketLookupService extends ActiveListService {
+
+	@ProxyMethod
+	public def getColumns(o) {
+		return [
+			[name:'code', caption:'Code'],
+			[name:'name', caption:'Name'],
+			[name:'address', caption:'Address'],
+		];
+	}
+
+}

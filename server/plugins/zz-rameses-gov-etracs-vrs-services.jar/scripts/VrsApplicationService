@@ -1,0 +1,15 @@
+import com.rameses.annotations.*;
+
+class VrsApplicationService {
+	
+	@DataContext("vrs_application")
+	def app;
+
+	@ProxyMethod
+	public def getList( def o ) {
+		//display all usa
+		return app.list();
+	}
+
+
+}

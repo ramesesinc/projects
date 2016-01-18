@@ -1,0 +1,71 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.services.extended.*;
+
+public class MarketAccountService extends ActiveCrudListService {
+
+	@ActiveDB(value="marketaccount", em="market")
+	def em;
+
+	@Service("SequenceService")
+	def seqSvc;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@Service("MarketRentalRuleService")
+	def rentalSvc;
+
+	@Service("MarketRentalUnitService")
+	def rentalUnitSvc;
+
+	@ProxyMethod
+	public def getColumns(o) {
+		return [
+			[name:'acctno', caption:'Acct No'],
+			[name:'owner.name', caption:'Owner'],
+			[name:'rentalunit.name', caption:'Rental Unit'],
+			[name:'rentalunit.market.name', caption:'Market'],
+			[name:'rentalunit.section.title', caption:'Section'],
+		];
+	}
+
+	@ProxyMethod
+	public def computeRate(o) {
+		def ru = rentalUnitSvc.open( [objid: o.rentalunit.objid] );
+
+		def z = [:];
+		z.bldgid = o.rentalunit.bldgid;
+        z.unittype = o.rentalunit.unittype;
+        z.section = o.rentalunit.section;
+        z.attributes = ru.attributes*.attribute;
+        return rentalSvc.execute( z );
+	}
+
+	public void beforeCreate(o) {
+		if(!o.rate)
+			throw new Exception("Please compute the rate first");
+		o.acctno = "ACCT" + seqSvc.getNextFormattedSeries( "MARKET_ACCOUNT" );
+		o.state = 'DRAFT'	
+		o.dtcreated = dateSvc.serverDate;
+	}
+
+	public void afterOpen(o) {
+		o.rentalunit = rentalUnitSvc.open( [objid: o.rentalunit.objid ]);
+	}	
+
+	public void afterApprove(o) {
+		rentalUnitSvc.addLessee( [objid:o.rentalunit.objid, acctid: o.objid ] );
+	}	
+
+	public def findByAcctno(o) {
+		em.findByAcctno( [acctno: o.acctno] );
+	}	
+
+	@ProxyMethod
+	public def findLastYearMonthPaid(o) {
+		return em.findLastYearMonthPaid( o );
+	}	
+
+}

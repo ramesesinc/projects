@@ -1,0 +1,38 @@
+import com.rameses.annotations.*;
+
+class QueueCounterService {
+	
+	@DataContext(value="queue_counter", adapter="queue")
+	def em;
+
+	@DataContext(value="queue_counter_section", adapter="queue")
+	def sect;
+
+	@Env
+	def env;
+
+	@ProxyMethod
+	public def create( def o ) {
+		em.create( o );
+		o.sections.each {
+			sect.create( [counterid: env.TERMINALID,  sectionid: it.objid]);
+		}
+	}
+
+	@ProxyMethod
+	public def update( def o ) {
+		em.update( o );
+	}
+
+
+	@ProxyMethod
+	public void removeSection( def o ) {
+		sect.find(o).delete();
+	}
+
+	@ProxyMethod
+	public void addSection( def o ) {
+		sect.create( [counterid: env.TERMINALID,  sectionid: o.sectionid]);
+	}
+
+}

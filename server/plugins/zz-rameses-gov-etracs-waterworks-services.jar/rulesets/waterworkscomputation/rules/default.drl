@@ -1,0 +1,8 @@
+package waterworkscomputation;
+
+import java.util.*;
+import waterworks.facts.*;
+import com.rameses.rules.common.*;
+import java.math.*;
+
+global RuleAction action;

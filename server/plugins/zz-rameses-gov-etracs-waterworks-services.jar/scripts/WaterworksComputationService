@@ -1,0 +1,74 @@
+import com.rameses.annotations.*;
+
+import com.rameses.rules.common.*;
+import waterworks.facts.*;
+import treasury.facts.*;
+import treasury.actions.*;
+
+class WaterworksComputationService {
+	
+	@Service("RuleExecutorService")
+	def ruleSvc;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@DataContext("waterworks_account")
+	def acct;
+
+	//find account by acctno or by objid
+	def findAccount(def o) {
+		def p = null;    
+		if( o.objid ) {
+			p = [objid: o.objid];
+		}
+		else if(o.acctno) {
+			p = [acctno:o.acctno];
+		}
+		if(!p )
+		    throw new Exception('Please specify objid or acctno');
+		def m = acct.find( p ).first();
+		if( !m ) 
+			throw new Exception("Waterworks account not found");
+		return m;	
+	}
+
+
+	/***********************************************************************
+	* It only requires the acct no or objid, then retrieve the classification
+	* then specify the volume, month and year
+	***********************************************************************/
+	@ProxyMethod
+	public def compute( def o ) {
+		def classification = o.classificationid;
+		if(!classification) {
+			def m = findAccount( o );
+			classification = m.classificationid;
+		}
+		if(!o.volume) 
+			throw new Exception('Classification Volume is required.');
+		
+		int vol = Integer.parseInt( ""+ o.volume );	
+
+		def facts = [];
+		facts << new WaterConsumption( volume: vol );
+		facts << new WaterAccount( classification: classification );
+
+		def res = [:];
+		res.billItemList = new BillItemList();
+
+		def actions = new RuleAction();
+		actions.addCommand( "compute-fee", new ComputeFee(res:res));
+
+		ruleSvc.execute( "waterworkscomputation", facts, actions, null );
+
+		def item = res.billItemList.items[0];
+		if(!item) 
+			throw new Exception('There is no computation applied. Please check rule fatcs')
+
+		println item;	
+		return item.toItem();
+	}
+
+
+}

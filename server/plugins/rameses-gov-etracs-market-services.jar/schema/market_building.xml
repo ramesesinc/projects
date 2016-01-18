@@ -1,0 +1,9 @@
+<schema>
+	<element tablename="market_building">
+		<field name="objid" primary="true"/>
+		<field name="state" required="true" />
+		<field name="name" required="true" />
+		<field name="address" required="true"/>
+		<field name="marketid" required="true"/>
+	</element>
+</schema>

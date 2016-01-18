@@ -1,0 +1,183 @@
+import com.rameses.annotations.*;
+import com.rameses.common.*;
+import com.rameses.util.*;
+
+class UserQueueService { 
+
+    @XConnection('ws_sender')
+    def wssender;
+
+	@XConnection("queue_poll")
+	def queue_poll;
+
+	@DataContext(value='queue_group', adapter='queue') 
+	def qg; 
+
+	@DataContext(value='queue_counter', adapter='queue') 
+	def qc; 
+
+	@DataContext(value='queue_section', adapter='queue') 
+	def qs; 
+
+	@DataContext(value='queue_number', adapter='queue') 
+	def qn; 
+
+	@DataContext(value='queue_number_counter', adapter='queue') 
+	def qnc; 
+
+	@DataContext(value='queue_counter_section', adapter='queue') 
+	def qcs; 
+
+	@Service('DateService')
+	def dateSvc;
+
+	@Service('QueueService')
+	def queueSvc;
+
+	@Service 
+	def self; 
+
+	@Env 
+	def env;
+
+	@ProxyMethod 
+	public def init() {
+		def m = qc.find([ objid: env.TERMINALID ]).first(); 
+		if( m == null ) return [objid:env.TERMINALID, sections: [] ];
+
+		if ( !m ) throw new Exception('No queue counter registered for this terminal. Please contact queue administrator');
+
+		m.sections = qcs.getCounterSections([ counterid: m.objid ]); 
+		if ( !m.sections ) throw new Exception('No queue sections defined for this counter. Please contact your queue administrator'); 
+
+		//find if there is a current number assigned
+		def c = qc.findCurrentNumber( [counterid: env.TERMINALID] );
+		if(c) {
+			m.current = c;
+			m.current.currentno = queueSvc.formatSeriesNumber(c);
+		}	
+		return m;  
+	}
+
+	/*
+		initiated by operator 
+	*/
+	@ProxyMethod 
+	public def takeNextNumber( o ) { 
+		if ( !o.sectionid ) throw new Exception('sectionid parameter is required');
+		if ( !o.counterid ) throw new Exception('counterid parameter is required');
+
+		def a = qs.find([ objid: o.sectionid ]).first(); 
+		if ( !a ) throw new Exception('queue section does not exist'); 
+
+		def m = qn.findNextAvailableNumber( o ); 
+		if ( !m ) throw new Exception('No available queue number'); 
+
+		def z = [objid: m.objid, counterid: o.counterid]; 
+		qnc.create( z ); 
+
+		notify([ 
+			sectionid: o.sectionid, counterid: o.counterid, prefix: a.prefix, 
+			seriesno: m.seriesno, type:'TAKE_NUMBER' 
+		]);  
+		m.prefix = a.prefix;
+		return queueSvc.formatSeriesNumber(m);  
+	} 
+
+	@ProxyMethod 
+	public void consumeNumber( o ) {
+		if ( !o.counterid ) throw new Exception('counterid parameter is required'); 
+
+		def qncdata = qnc.find( o ).first(); 
+		if ( !qncdata ) return; 
+
+		qnc.find( qncdata ).delete(); 
+
+		def qndata = qn.find( qncdata ).first(); 
+		qn.find( qncdata ).delete(); 
+
+		def qsdata = qs.find([ objid: qndata.sectionid ]).first(); 
+		println qsdata;
+		notify([ 
+			counterid: o.counterid, sectionid: qsdata.objid, prefix: qsdata.prefix, 
+			seriesno: qndata.seriesno, type:'CONSUME_NUMBER' 
+		]); 
+	} 
+
+	@ProxyMethod 
+	public void buzzNumber( o ) {
+		if ( !o.counterid ) throw new Exception('counterid parameter is required'); 
+
+		def qncdata = qnc.find( o ).first(); 
+		if ( !qncdata ) throw new Exception('No available queue number for this counter');
+
+		def qndata = qn.find( qncdata ).first(); 
+		def qsdata = qs.find([ objid: qndata.sectionid ]).first(); 
+
+		notify([ 
+			counterid: o.counterid, sectionid: qsdata.objid, prefix: qsdata.prefix, 
+			seriesno: qndata.seriesno, type:'BUZZ_NUMBER' 
+		]); 
+	} 	
+
+	@ProxyMethod 
+	public void skipNumber( o ) {
+		if ( !o.counterid ) throw new Exception('counterid parameter is required'); 
+
+		def m = qnc.find( o ).first(); 
+		qn.find( m ).update([ state: 'HOLD' ]); 
+		qnc.find( m ).delete(); 
+	} 
+
+	void notify( data ) { 
+		def uuid = ''+ data.sectionid +'_'+ data.counterid; 
+		data.uuid = uuid.toLowerCase(); 
+		data.formattedseriesno = formatSeriesNumber( data ); 
+		self.notifyHttp( data ); 
+		self.notifyWs( data ); 
+	} 
+
+	def formatSeriesNumber( data ) {
+		if ( data.seriesno ) {
+			def prefix = (data.prefix? data.prefix : ''); 
+			def snum = data.seriesno.toString();
+			if ( snum.length() < 4 ) { 
+				snum = snum.padLeft(4,'0'); 
+			} 
+			return ''+prefix+snum; 
+		} else { 
+			return ''; 
+		} 
+	} 
+
+	@Async 
+	@ProxyMethod(local=true) 
+	public void notifyHttp( data ) { 
+		if ( data ) { 
+			queue_poll.send( data );  
+		} 
+	} 
+	@Async 
+	@ProxyMethod(local=true) 
+	public void notifyWs( data ) { 
+		if ( !data ) return; 
+
+		data.channel = data.group = 'queue'; 
+
+		wssender.send([ 
+            channel : data.channel, 
+            group   : data.group, 
+            data    : resolveData( data )  
+        ]); 
+	} 	
+
+	def resolveData( data ) {
+        try {
+            return new Base64Cipher().decode( data ); 
+        } catch(Throwable t) { 
+            return data; 
+        } 
+    }  
+
+
+} 

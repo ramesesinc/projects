@@ -1,0 +1,35 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import com.rameses.functions.*;
+
+import java.rmi.server.*;
+import com.rameses.services.extended.*;
+import com.rameses.rules.common.*;
+import market.facts.*;
+import market.actions.*;
+
+public class MarketRentalRuleService  {
+
+	@Service("RuleExecutorService")
+	def ruleSvc;
+
+	@Service("MarketRentalUnitService")
+	def unitSvc;
+
+	@ProxyMethod
+	public def execute( def o ) {
+		def mu = new MarketUnit(o);
+		def facts = [];
+		facts <<  mu;
+
+		def req = [facts:facts];
+		def actions = new RuleAction();
+		actions.addCommand( "calc_rate", new CalcRate( request:req) );
+
+		ruleSvc.execute( "marketrental", facts, actions, null );
+		return [
+			rate: mu.rate
+		];
+	}
+}
+

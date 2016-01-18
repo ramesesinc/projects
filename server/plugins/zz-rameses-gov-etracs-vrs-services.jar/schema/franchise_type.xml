@@ -1,0 +1,8 @@
+<schema adapter="vrs">
+	<element tablename="franchise_type">
+		<field name="objid" primary="true"/>
+		<field name="vehicletype" required="true"/>
+		<field name="prefix" required="true"/>
+		<field name="controlno" required="true"/>
+	</element>
+</schema>

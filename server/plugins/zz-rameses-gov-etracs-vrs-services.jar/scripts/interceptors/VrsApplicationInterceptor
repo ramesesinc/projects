@@ -1,0 +1,40 @@
+import com.rameses.annotations.*;
+import java.rmi.server.UID;
+
+class VrsApplicationInterceptor {
+	
+	@DataContext("vrs_application_fee")
+	def fees;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@Before(pattern="PersistenceService.create", eval="#{args[0]._schemaname == 'vrs_application' }")
+	public void beforeCreate(def evt) {
+		def o = evt.args[0];
+		if(!o.activeyear) {
+			o.activeyear = dateSvc.getServerYear();
+		}	
+	}
+
+	@After(pattern="PersistenceService.create", eval="#{args[0]._schemaname == 'vrs_application' }")
+	public void afterCreate(def evt) {
+		def o = evt.args[0];
+		o.items.each {
+			def p = [:];
+			p.parentid = o.objid;
+			p.item = it.item;
+			p.amount = it.amount;
+			p.amtpaid = 0;
+			p.remarks = null;
+			fees.create( p );
+		}
+	}
+
+	@After(pattern="PersistenceService.read", eval="#{args[0]._schemaname == 'vrs_application' }")
+	public void afterRead(def evt) {
+		def o = evt.args[0];
+		o.items = fees.find( [parentid: o.objid] ).list();
+	}
+
+}

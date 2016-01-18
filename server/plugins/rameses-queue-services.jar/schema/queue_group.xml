@@ -1,0 +1,6 @@
+<schema adapter="queue">
+	<element tablename="queue_group">
+		<field name="objid" primary="true" title="Group Name" visible="true"/>
+		<field name="title" caption="Title" title="Group Title" required="true"/>
+	</element> 
+</schema>

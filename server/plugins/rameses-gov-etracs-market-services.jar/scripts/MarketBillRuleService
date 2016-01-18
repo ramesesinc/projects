@@ -1,0 +1,67 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import com.rameses.functions.*;
+import java.rmi.server.*;
+import com.rameses.services.extended.*;
+import com.rameses.rules.common.*;
+import market.facts.*;
+import market.actions.*;
+
+public class MarketBillRuleService  {
+
+	@Service("RuleExecutorService")
+	def ruleSvc;
+
+	@Service("NumberService")
+	def numberSvc;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@Service("RevenueItemAccountService")
+	def ba;
+
+	@Service("MarketPaymentService")
+	def marketPmtSvc;
+
+	@ProxyMethod
+	public def execute( def o ) {
+		o.today = dateSvc.serverDate;
+		def pmt = null;
+
+		def facts = [];
+		facts <<  new MarketUnit(o);
+		facts << new BillInfo( o );
+
+		if(o.compromise?.todate) {
+			facts << new Compromise(o.compromise);
+		}
+		if( o.totalpaid ) {
+			pmt = new Payment(o);
+			facts << pmt;
+		}
+
+		def req = [facts:facts];
+		req.acctid = o.objid;
+		def actions = new RuleAction();
+		actions.addCommand( "init_billing", new InitBilling( request:req, PS: marketPmtSvc ));
+		actions.addCommand( "add_item", new AddBillItem( request:req));
+		actions.addCommand( "remove_item", new RemoveBillItem( request:req ));
+		actions.addCommand( "calc_surcharge", new CalcSurcharge( request:req ));
+		actions.addCommand( "calc_interest",  new CalcInterest( request:req ));
+		actions.addCommand( "set_accounts",  new SetAccounts( request:req, BA:ba ));
+
+		ruleSvc.execute("marketbilling", facts, actions, null );
+		
+		def items = facts.findAll{ (it instanceof BillItem) }.collect{ it.toItem() };
+		return [
+			account: req.account,
+			surchargeaccount: req.surchargeaccount,
+			interestaccount: req.interestaccount,
+			items: items,
+			overpayment: (pmt!=null)?pmt.balance: 0,
+			total : items.sum{ it.total }			
+		];
+	}
+}
+

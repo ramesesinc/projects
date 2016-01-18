@@ -1,0 +1,15 @@
+<schema>
+	<element name="mtopreceivable" tablename="mtopreceivable">
+		<field name="objid" primary="true" />
+		<field name="ledgerid" required="true" />
+		<field name="applicationid" required="true" />
+		<field name="year" required="true" type="integer" />
+		<field name="acctid" required="true" />
+		<field name="acctno" />
+		<field name="accttitle" required="true" />
+		<field name="amount" required="true" type="decimal" />
+		<field name="amtpaid" type="decimal" />
+		<field name="surchargepaid" type="decimal" />
+		<field name="interestpaid" type="decimal" />
+	</element>
+</schema>

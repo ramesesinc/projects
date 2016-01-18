@@ -1,0 +1,8 @@
+package vrsbilling;
+
+import com.rameses.rules.common.*;
+import java.util.*;
+import vrs.facts.*;
+import treasury.facts.*;
+
+global RuleAction action;

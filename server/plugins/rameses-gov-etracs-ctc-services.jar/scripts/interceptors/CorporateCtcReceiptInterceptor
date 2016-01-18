@@ -1,0 +1,35 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import com.rameses.services.extended.*;
+
+class CorporateCtcReceiptInterceptor 
+{
+
+	@ActiveDB('ctc_corporate')
+	def em
+
+	@Service('JuridicalEntityService')
+	def entitySvc
+
+	@Service('DateService')
+	def dtSvc 
+
+	
+	@After(pattern="CashReceiptService.post", eval="#{result.formno=='907' && result.txnmode != 'CAPTURE'}")
+	public def interceptCashReceipPost(def evt) { 
+		def ctc = evt.result;	
+		if (ctc.payer.dtregistered){
+			ctc.payer.dtregistered = dtSvc.parse('yyyy-MM-dd', ctc.payer.dtregistered)
+		}
+		em.create(ctc)
+		entitySvc.update(ctc.payer)
+	}
+
+	@After(pattern="CashReceiptService.open", eval="#{result.formno=='907' && result.txnmode != 'CAPTURE'}")
+	public def onOpenReceipt(def evt) { 
+		def ctc = em.read(evt.result)
+		ctc.payer.putAll( evt.result.payer)
+		evt.result.putAll( ctc );
+	}
+
+}

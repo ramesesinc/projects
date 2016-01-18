@@ -1,0 +1,17 @@
+<schema>
+	<element name="code" tablename="queue_code">
+		<field name="objid" primary="true"/>
+		<field name="dtcreated" required="false"/>
+		<field name="dtgenerated" required="false"/>
+		<field name="state" required="true"/>
+		<field name="name" required="true"/>
+		<field name="codeindex" required="true"/>
+		<field name="buzz" required="true"/>
+		<field name="section_objid" required="true"/>
+		<field name="section_name" required="true"/>
+		<field name="category_objid" required="true"/>
+		<field name="category_name" required="false"/>
+		<field name="user_objid" required="false"/>
+		<field name="user_name" required="false"/>
+	</element>
+</schema>

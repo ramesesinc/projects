@@ -1,0 +1,10 @@
+<schema adapter="queue">
+	<element tablename="queue_section">
+		<field name="objid" primary="true" visible="true"/>
+		<field name="groupid" required="true"/>
+		<field name="title" caption="Title" required="true"/>
+		<field name="currentseries" required="true"/>
+		<field name="prefix" required="true"/>
+		<field name="sortorder" required="true"/>
+	</element>	
+</schema>

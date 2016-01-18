@@ -1,0 +1,18 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.services.extended.*;
+
+class MarketCompromiseService extends ActiveCrudListService {
+
+	@ActiveDB(value="market_compromise", em="market")
+	def em;
+
+	@Service("DateService")
+	def dateSvc;
+
+	void beforeCreate( o ) {
+		o.dtcreated = dateSvc.serverDate;
+	}
+
+}	

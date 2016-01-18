@@ -1,0 +1,7 @@
+<schema adapter="vrs">
+	<element tablename="franchise_control">
+		<field name="objid" primary="true"/>
+		<field name="currentappid" required="true"/>
+		<field name="dtexpiry" required="true"/>
+	</element>
+</schema>

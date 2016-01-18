@@ -1,0 +1,448 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="11.5.1">
+  <zoom_level>8</zoom_level>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>624</x>
+      <y>0</y>
+      <w>200</w>
+      <h>248</h>
+    </coordinates>
+    <panel_attributes>teller
+bg=yellow
+--
+objid
+state (ACTIVE|DEACTIVATED)
+mode
+dtcreated
+author_objid
+author_name
+dtmodified
+modifiedby_objid
+modifiedby_name
+tellerno
+branchid
+name
+lastname
+firstname
+middlename
+connection
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>912</x>
+      <y>64</y>
+      <w>112</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>teller_active
+bg=yellow
+--
+objid</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>800</x>
+      <y>48</y>
+      <w>128</w>
+      <h>56</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+objid..objid</panel_attributes>
+    <additional_attributes>24;40;112;40</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>584</x>
+      <y>336</y>
+      <w>320</w>
+      <h>296</h>
+    </coordinates>
+    <panel_attributes>depositslip
+bg=yellow
+--
+objid
+state (DRAFT|APPROVED|CLOSED)
+dtcreated
+author_objid
+author_name
+txndate
+controlno
+passbook_objid
+passbook_passbookno
+passbook_acctno
+passbook_acctname
+amount
+type (cash|check) -- remove
+reftype (SAFE_KEEP|DEPOSIT)
+currencytype_objid
+currencytype_name
+accounttype_objid
+accounttype_name
+deposittype_objid
+deposittype_name</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1056</x>
+      <y>40</y>
+      <w>232</w>
+      <h>160</h>
+    </coordinates>
+    <panel_attributes>deposit
+bg=yellow
+--
+objid
+dtcreated
+author_objid
+author_name
+txndate
+txntype (vault|bank)
+representative1_objid
+representative1_name
+representative2_objid
+representative2_name
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>912</x>
+      <y>768</y>
+      <w>216</w>
+      <h>136</h>
+    </coordinates>
+    <panel_attributes>depositslip_check
+bg=yellow
+--
+objid
+parentid
+refid
+amount
+checkno
+checkdate
+bank_objid
+bank_name
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>840</x>
+      <y>608</y>
+      <w>192</w>
+      <h>176</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+objid..parentid</panel_attributes>
+    <additional_attributes>24;24;176;160</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>0</x>
+      <y>360</y>
+      <w>176</w>
+      <h>128</h>
+    </coordinates>
+    <panel_attributes>loan_signatory
+bg=yellow
+--
+objid
+state
+dtcreated
+author_objid
+author_name
+name
+position</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1088</x>
+      <y>264</y>
+      <w>184</w>
+      <h>136</h>
+    </coordinates>
+    <panel_attributes>deposit_detail
+bg=yellow
+--
+objid
+parentid
+refid
+txndate
+depositslip_controlno
+depositslip_acctno
+depositslip_acctname
+depositslip_amount</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1096</x>
+      <y>176</y>
+      <w>114</w>
+      <h>104</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+objid..parentid</panel_attributes>
+    <additional_attributes>64;24;64;88</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>880</x>
+      <y>304</y>
+      <w>224</w>
+      <h>144</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+objid..refid</panel_attributes>
+    <additional_attributes>24;128;208;24</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1160</x>
+      <y>656</y>
+      <w>192</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>depositslip_checkout
+
+--
+objid
+dtcheckedout
+representative1_objid
+representative1_name
+representative2_objid
+representative2_name</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>880</x>
+      <y>480</y>
+      <w>296</w>
+      <h>248</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+objid..objid</panel_attributes>
+    <additional_attributes>24;24;280;232</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>336</x>
+      <y>368</y>
+      <w>168</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>depositslip_cbs
+bg=yellow
+--
+objid
+parentid
+cbsid
+cbsno
+txndate
+amount
+isencashed</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>480</x>
+      <y>392</y>
+      <w>120</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>104;24;24;24</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>376</x>
+      <y>768</y>
+      <w>200</w>
+      <h>128</h>
+    </coordinates>
+    <panel_attributes>currencytype
+bg=yellow
+--
+objid
+txnstate
+dtcreated
+author_objid
+author_name
+code
+name
+description</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>224</x>
+      <y>584</y>
+      <w>216</w>
+      <h>128</h>
+    </coordinates>
+    <panel_attributes>accounttype
+bg=yellow
+--
+objid
+txnstate
+dtcreated
+author_objid
+author_name
+code
+name
+description</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>632</x>
+      <y>784</y>
+      <w>216</w>
+      <h>128</h>
+    </coordinates>
+    <panel_attributes>deposittype
+bg=yellow
+--
+objid
+txnstate
+dtcreated
+author_objid
+author_name
+code
+name
+description</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>416</x>
+      <y>544</y>
+      <w>184</w>
+      <h>112</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+objid..accounttype_objid</panel_attributes>
+    <additional_attributes>24;96;168;24</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>480</x>
+      <y>608</y>
+      <w>160</w>
+      <h>176</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+objid..currencytype_objid</panel_attributes>
+    <additional_attributes>40;160;128;24</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>656</x>
+      <y>608</y>
+      <w>160</w>
+      <h>192</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+objid..deposittype_objid</panel_attributes>
+    <additional_attributes>80;176;88;24</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1384</x>
+      <y>184</y>
+      <w>232</w>
+      <h>152</h>
+    </coordinates>
+    <panel_attributes>checkout
+bg=yellow
+--
+objid
+dtcreated
+author_objid
+author_name
+txndate
+representative1_objid
+representative1_name
+representative2_objid
+representative2_name
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1232</x>
+      <y>440</y>
+      <w>184</w>
+      <h>136</h>
+    </coordinates>
+    <panel_attributes>checkout_detail
+bg=yellow
+--
+objid
+parentid
+refid
+txndate
+depositslip_controlno
+depositslip_acctno
+depositslip_acctname
+depositslip_amount</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1304</x>
+      <y>312</y>
+      <w>208</w>
+      <h>144</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+objid..parentid</panel_attributes>
+    <additional_attributes>192;24;24;128</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>880</x>
+      <y>432</y>
+      <w>368</w>
+      <h>88</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+objid..refid</panel_attributes>
+    <additional_attributes>24;24;352;72</additional_attributes>
+  </element>
+</diagram>

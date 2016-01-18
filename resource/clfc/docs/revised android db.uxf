@@ -1,0 +1,532 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="11.5.1">
+  <zoom_level>10</zoom_level>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1000</x>
+      <y>380</y>
+      <w>270</w>
+      <h>470</h>
+    </coordinates>
+    <panel_attributes>collectionsheet
+bg=yellow
+--
+objid
+billingid
+itemid
+seqno
+borrower_objid
+borrower_name
+loanapp_objid
+loanapp_appno
+loanapp_loanamount
+amountdue
+overpaymentamount
+refno
+routecode
+term
+releasedate
+maturitydate
+dailydue
+balance
+interest
+penalty
+others
+homeaddress
+collectionaddress
+type (NORMAL|SPECIAL|FOLLOWUP)
+paymentmethod (schedule|over)
+totaldays
+isfirstbill
+
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1400</x>
+      <y>380</y>
+      <w>240</w>
+      <h>130</h>
+    </coordinates>
+    <panel_attributes>notes
+bg=yellow
+--
+objid
+parentid
+itemid
+txndate
+dtcreated
+remarks
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1240</x>
+      <y>380</y>
+      <w>180</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+objid..parentid</panel_attributes>
+    <additional_attributes>30;50;160;50</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1410</x>
+      <y>540</y>
+      <w>180</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>sys_var
+--
+name
+value</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1420</x>
+      <y>640</y>
+      <w>310</w>
+      <h>170</h>
+    </coordinates>
+    <panel_attributes>collection_group
+bg=yellow
+--
+objid
+state (ACTIVE|REMITTED)
+description (4AM|FOLLOW UP 1| SPECIAL 1)
+area
+billingid
+billdate
+collectorid
+type (route|followup|special)</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1700</x>
+      <y>390</y>
+      <w>300</w>
+      <h>140</h>
+    </coordinates>
+    <panel_attributes>specialcollection
+bg=yellow
+--
+objid
+state (FOR_DOWNLOAD|DOWNLOADED)
+txndate
+name
+remarks
+collector_objid
+collector_name</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>940</x>
+      <y>930</y>
+      <w>330</w>
+      <h>300</h>
+    </coordinates>
+    <panel_attributes>payment
+bg=yellow
+--
+objid
+parentid
+itemid
+billingid
+txndate
+refno
+posttype (Underpayment|Schedule|Overpayment)
+paytype (schedule|over)
+payoption (cash|check)
+amount
+paidby
+bank_objid
+bank_name
+check_no
+check_date
+collector_objid</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>600</x>
+      <y>390</y>
+      <w>260</w>
+      <h>130</h>
+    </coordinates>
+    <panel_attributes>remarks
+bg=yellow
+--
+objid
+billingid
+itemid
+remarks
+collector_objid
+collector_name</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1030</x>
+      <y>820</y>
+      <w>146</w>
+      <h>130</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+objid..parentid</panel_attributes>
+    <additional_attributes>80;30;80;110</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>830</x>
+      <y>400</y>
+      <w>190</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+objid..objid</panel_attributes>
+    <additional_attributes>170;50;30;50</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>340</x>
+      <y>810</y>
+      <w>210</w>
+      <h>110</h>
+    </coordinates>
+    <panel_attributes>remarks_removed
+bg=yellow
+--
+objid
+billingid
+itemid
+state (PENDING|CLOSED)
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1450</x>
+      <y>930</y>
+      <w>230</w>
+      <h>140</h>
+    </coordinates>
+    <panel_attributes>void_request
+bg=yellow
+--
+objid
+state (PENDING|APPROVED)
+csid
+paymentid
+itemid
+collector_objid</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1240</x>
+      <y>940</y>
+      <w>230</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+objid..paymentid</panel_attributes>
+    <additional_attributes>30;50;210;50</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1820</x>
+      <y>580</y>
+      <w>200</w>
+      <h>140</h>
+    </coordinates>
+    <panel_attributes>location_tracker
+bg=yellow
+--
+objid
+seqno
+txndate
+trackerid
+collectorid
+lng
+lat
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>2060</x>
+      <y>580</y>
+      <w>160</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>prev_location
+bg=yellow
+--
+objid
+lng
+lat</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1410</x>
+      <y>1120</y>
+      <w>280</w>
+      <h>360</h>
+    </coordinates>
+    <panel_attributes>capture_payment
+bg=yellow
+--
+objid
+captureid
+state (PENDING|CLOSED)
+billingid
+txndate
+borrowername
+amount
+payoption
+paidby
+dtpaid
+bank_objid
+bank_name
+check_no
+check_date
+lng
+lat
+type (CAPTURE)
+collector_objid
+collector_name
+trackerid</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>2050</x>
+      <y>390</y>
+      <w>130</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>bank
+bg=yellow
+--
+objid
+name</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>320</x>
+      <y>1000</y>
+      <w>270</w>
+      <h>320</h>
+    </coordinates>
+    <panel_attributes>remarks
+bg=yellow
+--
+objid
+billingid
+itemid
+state (PENDING|CLOSED)
+trackerid
+txndate
+borrower_objid
+borrower_name
+loanapp_objid
+loanapp_appno
+collector_objid
+collector_name
+routecode
+remarks
+lng
+lat
+type (NORMAL|FOLLOWUP|SPECIAL)</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>0</x>
+      <y>940</y>
+      <w>280</w>
+      <h>490</h>
+    </coordinates>
+    <panel_attributes>payment
+bg=yellow
+--
+objid
+parentid
+state (PENDING|CLOSED)
+itemid
+billingid
+trackerid
+collector_objid
+collector_name
+borrower_objid
+borrower_name
+loanapp_objid
+loanapp_appno
+routecode
+refno
+txndate
+paytype (schedule|over)
+payoption (cash|check)
+amount
+paidby
+bank_objid
+bank_name
+check_no
+check_date
+isfirstbill
+lng
+lat
+type (NORMAL|FOLLOWUP|SPECIAL)</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>320</x>
+      <y>1370</y>
+      <w>320</w>
+      <h>180</h>
+    </coordinates>
+    <panel_attributes>void_request
+bg=yellow
+--
+objid
+state (PENDING|APPROVED|DISAPPROVED)
+csid
+paymentid
+itemid
+txndate
+collector_objid
+collector_name
+reason</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>600</x>
+      <y>590</y>
+      <w>260</w>
+      <h>110</h>
+    </coordinates>
+    <panel_attributes>collector_remarks
+bg=yellow
+--
+objid
+parentid
+txndate
+collectorname
+remarks</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>830</x>
+      <y>550</y>
+      <w>190</w>
+      <h>100</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+parentid..objid</panel_attributes>
+    <additional_attributes>170;30;30;80</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>600</x>
+      <y>740</y>
+      <w>260</w>
+      <h>110</h>
+    </coordinates>
+    <panel_attributes>followup_remarks
+bg=yellow
+--
+objid
+parentid
+txndate
+collectorname
+remarks</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>830</x>
+      <y>700</y>
+      <w>190</w>
+      <h>100</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+parentid..objid</panel_attributes>
+    <additional_attributes>170;30;30;80</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>830</x>
+      <y>0</y>
+      <w>290</w>
+      <h>260</h>
+    </coordinates>
+    <panel_attributes>amnesty
+bg=yellow
+--
+objid
+parentid
+refno
+dtstarted
+dtended
+amnestyoption (WAIVER|FIX)
+iswaivepenalty (0=false|1=true)
+iswaiveinterest (0=false|1=true)
+grantedoffer_amount
+grantedoffer_days
+grantedoffer_months
+grantedoffer_isspotcash (0=false|1=true)
+grantedoffer_date
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>960</x>
+      <y>230</y>
+      <w>150</w>
+      <h>170</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+objid..parentid</panel_attributes>
+    <additional_attributes>130;150;30;30</additional_attributes>
+  </element>
+</diagram>

@@ -1,0 +1,404 @@
+====================================================================
+ COLLECTION REPORT
+====================================================================
+
+[HEADER]
+Company Name
+Branch Name
+Branch Address
+Contact#
+Date Range
+
+REPORT NAME
+
+[FOOTER]
+PageInfo
+Date & Time
+Prepared By
+
+
+[Content]
+Route
+Txndate
+Series
+Voided
+Collector
+CBS#
+Amount
+
+====================================================================
+ DAILY COLLECTION DETAILED REPORT
+====================================================================
+
+[HEADER]
+Company Name
+Branch Name
+Branch Address
+Contact#
+Date
+Route 
+
+REPORT NAME
+
+[Content]
+--------------------------------------------------------------------------
+Borrower        Loan#        Ref#       Time      Amount   Payment Option 
+   Collector      Paid By                                    Bank 
+--------------------------------------------------------------------------
+Flores, Worgi   20390392304  P023402934 11:00:00  100.00   CASH 
+   Jojo C.        FLores, Worg sdlkflsfl    
+Pernito, Louie. 20390392304  P023402934 11:00:00  100.00   CHECK  
+   Jojo C.        Pernito, Louie.                             BDO 
+
+[FOOTER]
+PageInfo
+Date & Time
+Prepared By
+
+
+====================================================================
+ Cash Breakdown Summary Report 
+====================================================================
+
+[HEADER: align=center]
+Company Name
+Branch Name
+Branch Address
+Contact#
+Date
+
+REPORT NAME
+
+[Content]
+1. CBS#
+2. Collector
+3. Route
+--------------------------------------
+Denomination | No. of pieces | Amount 
+--------------------------------------
+
+--------------------------------------
+              TOTAL: 
+--------------------------------------
+
+Prepared By:    Verified By:   Approved By:
+(collector)     (aa)           (bm)
+-----------     ------------   ------------
+
+
+[Footer]
+Date & Time 
+Printed By;
+
+
+====================================================================
+ CBS Summary Report
+====================================================================
+
+[HEADER]
+Company Name
+Branch Name
+Branch Address
+Contact#
+Date Range
+
+REPORT NAME
+
+[Content]
+-----------------------------------------
+Route | Date | Collector | CBS# | Amount      
+-----------------------------------------
+
+-----------------------------------------
+              Sub-Total: 
+-----------------------------------------
+
+-----------------------------------------
+              Grand Total: 
+-----------------------------------------
+
+[Footer]
+PageInfo
+Date & Time 
+Printed By;
+
+
+====================================================================
+ Shortage Report 
+====================================================================
+
+[HEADER: align=center]
+Company Name
+Branch Name
+Branch Address
+Contact#
+Date
+
+REPORT NAME
+
+[Content]
+1. REF#
+2. Collector
+3. Route
+4. Amount
+5. Remarks
+
+
+Prepared By:    Verified By:   Approved By:
+(collector)     (aa)           (bm)
+-----------     ------------   ------------
+
+
+[Footer]
+Date & Time 
+Printed By;
+
+
+====================================================================
+ Overage Report 
+====================================================================
+
+[HEADER: align=center]
+Company Name
+Branch Name
+Branch Address
+Contact#
+Date
+
+REPORT NAME
+
+[Content]
+1. REF#
+2. Collector
+3. Route
+4. Amount
+5. Remarks
+
+
+Prepared By:    Verified By:   Approved By:
+(collector)     (aa)           (bm)
+-----------     ------------   ------------
+
+
+[Footer]
+Date & Time 
+Printed By;
+
+
+====================================================================
+ Overage Summary Report
+====================================================================
+
+[HEADER]
+Company Name
+Branch Name
+Branch Address
+Contact#
+Date Range
+
+REPORT NAME
+
+[Content]
+-----------------------------------------
+Route | Date | Collector | REF# | Amount      
+-----------------------------------------
+
+-----------------------------------------
+              Sub-Total: 
+-----------------------------------------
+
+-----------------------------------------
+              Grand Total: 
+-----------------------------------------
+
+[Footer]
+PageInfo
+Date & Time 
+Printed By;
+
+
+====================================================================
+ Shortage Summary Report
+====================================================================
+
+[HEADER]
+Company Name
+Branch Name
+Branch Address
+Contact#
+Date Range
+
+REPORT NAME
+
+[Content]
+-----------------------------------------
+Route | Date | Collector | REF# | Amount      
+-----------------------------------------
+
+-----------------------------------------
+              Sub-Total: 
+-----------------------------------------
+
+-----------------------------------------
+              Grand Total: 
+-----------------------------------------
+
+[Footer]
+PageInfo
+Date & Time 
+Printed By;
+
+
+====================================================================
+ Vault Deposit Report
+====================================================================
+
+[HEADER]
+Company Name
+Branch Name
+Branch Address
+Contact#
+Date
+
+REPORT NAME
+
+[Content]
+-----------------------------------------
+Slip# | Bank | CBS# | Amount      
+-----------------------------------------
+
+-----------------------------------------
+     	  Sub-Total: 
+-----------------------------------------
+
+-----------------------------------------
+        Grand Total: 
+-----------------------------------------
+
+Prepared By:    Assigned To: 
+
+-----------     ----------------   ----------------
+(bm)            Representative#1   Representative#2
+
+[Footer]
+Date & Time 
+Printed By;
+
+====================================================================
+ Vault Deposit Summary Report
+====================================================================
+
+[HEADER]
+Company Name
+Branch Name
+Branch Address
+Contact#
+Date Range 
+
+REPORT NAME
+
+[Content]
+---------------------------------------------------------------
+Date | Slip# | Bank | CBS# | Amount  | PreparedBy | AssignedTo
+---------------------------------------------------------------
+
+---------------------------------------------------------------
+                  Sub-Total: 
+---------------------------------------------------------------
+
+---------------------------------------------------------------
+                Grand Total: 
+---------------------------------------------------------------
+
+[Footer]
+PageInfo
+Date & Time 
+Printed By;
+
+
+====================================================================
+ Branch Fund Report
+====================================================================
+
+[HEADER]
+Company Name
+Branch Name
+Branch Address
+Contact#
+Date Range
+
+REPORT NAME
+
+[Content]
+---------------------------------------------------
+Date | Requester | Approver | Amount | Remarks 
+---------------------------------------------------
+
+[Footer]
+PageInfo
+Date & Time 
+Printed By;
+
+
+====================================================================
+ Collectors Fund Report
+====================================================================
+
+[HEADER]
+Company Name
+Branch Name
+Branch Address
+Contact#
+Cut-off Date
+
+REPORT NAME
+
+[Content]
+----------------------------------------------------------------------
+Collector | Allowance | Shortage | Absent | Earned Credits | Balance 
+----------------------------------------------------------------------
+
+----------------------------------------------------------------------
+                                                     TOTAL: 
+----------------------------------------------------------------------
+
+Verified By:               Checked By: 
+
+------------               -----------
+  ( AA )                      (BM)
+
+[Footer]
+PageInfo
+Date & Time 
+Printed By;
+
+====================================================================
+ Collectors Fund Summary Report
+====================================================================
+
+[HEADER]
+Company Name
+Branch Name
+Branch Address
+Contact#
+Date Range
+
+REPORT NAME
+
+[Content]
+-----------------------------------------------------------------------------------
+Collector | Cut-off Date| Allowance | Shortage | Absent | Earned Credits | Balance 
+-----------------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------------
+                                                               Sub-TOTAL: 
+-----------------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------------
+                                                             Grand TOTAL: 
+-----------------------------------------------------------------------------------
+
+[Footer]
+PageInfo
+Date & Time 
+Printed By;

@@ -1,0 +1,1819 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="11.5.1">
+  <zoom_level>8</zoom_level>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>2336</x>
+      <y>616</y>
+      <w>248</w>
+      <h>192</h>
+    </coordinates>
+    <panel_attributes>ledger_billing
+bg=yellow
+--
+objid
+dtcreated
+author_objid
+author_name
+collector_objid
+collector_name
+billdate
+branchid
+totalfordownload
+totaldowloaded
+totalposted
+remarks</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>2704</x>
+      <y>576</y>
+      <w>480</w>
+      <h>192</h>
+    </coordinates>
+    <panel_attributes>ledger_billing_item
+bg=yellow
+--
+objid
+parentid
+state (FOR_DOWNLOAD|DOWNLOADED|REMITTED|POSTED|CANCELLED|CLOSED)
+dtmodified
+modifiedby_objid
+modifiedby_name
+item_objid
+item_type (route|special|followup)
+dtcancelled
+cancelledby_objid
+cancelledby_name</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>2560</x>
+      <y>672</y>
+      <w>160</w>
+      <h>56</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+objid..parentid</panel_attributes>
+    <additional_attributes>24;40;144;40</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>2968</x>
+      <y>824</y>
+      <w>232</w>
+      <h>384</h>
+    </coordinates>
+    <panel_attributes>ledger_billing_detail
+bg=yellow
+--
+objid
+parentid
+billingid
+ledgerid
+route_code
+acctid
+acctname
+loanamount
+appno
+dailydue
+amountdue
+overpaymentamount
+balance
+refno
+txndate
+dtmatured
+isfirstbill
+paymentmethod (schedule|over)
+loandate
+term
+loanappid
+homeaddress
+collectionaddress
+penalty
+interest
+others</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>3000</x>
+      <y>744</y>
+      <w>112</w>
+      <h>96</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+objid..parentid</panel_attributes>
+    <additional_attributes>64;24;64;80</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>2472</x>
+      <y>136</y>
+      <w>232</w>
+      <h>136</h>
+    </coordinates>
+    <panel_attributes>fieldcollection
+bg=yellow
+--
+objid
+dtfiled
+author_objid
+author_name
+branchid
+billdate
+collector_objid
+collector_name
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>2424</x>
+      <y>336</y>
+      <w>344</w>
+      <h>192</h>
+    </coordinates>
+    <panel_attributes>fieldcollection_item
+bg=yellow
+--
+objid
+parentid
+state (DRAFT|REMITTED|CLOSED)
+dtfiled
+author_objid
+author_name
+item_objid
+item_type (route|special|followup)
+trackerid
+totalcount
+totalamount
+cbsno
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>2512</x>
+      <y>248</y>
+      <w>112</w>
+      <h>104</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+objid..parentid</panel_attributes>
+    <additional_attributes>64;24;64;88</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>2944</x>
+      <y>320</y>
+      <w>264</w>
+      <h>168</h>
+    </coordinates>
+    <panel_attributes>fieldcollection_loan
+bg=yellow
+--
+objid
+parentid
+fieldcollectionid
+loanapp_objid
+loanapp_appno
+borrower_objid
+borrower_name
+routecode
+noofpayments
+remarks</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>2744</x>
+      <y>368</y>
+      <w>216</w>
+      <h>56</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+objid..parentid</panel_attributes>
+    <additional_attributes>24;40;200;40</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>2848</x>
+      <y>0</y>
+      <w>384</w>
+      <h>272</h>
+    </coordinates>
+    <panel_attributes>fieldcollection_payment
+bg=yellow
+--
+objid
+parentid
+itemid
+fieldcollectionid
+dtfiled
+author_objid
+author_name
+txnmode (ONLINE_MOBILE|ONLINE_WIFI|ONLINE)
+dtpaid
+refno
+paytype (schedule|over)
+amount
+paidby
+payoption (cash|check)
+bank_objid
+bank_name
+check_no
+check_date
+version</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>2936</x>
+      <y>248</y>
+      <w>112</w>
+      <h>88</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+parentid..objid</panel_attributes>
+    <additional_attributes>64;72;64;24</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1888</x>
+      <y>504</y>
+      <w>360</w>
+      <h>248</h>
+    </coordinates>
+    <panel_attributes>specialcollection
+(insert new billing record if no billing created and insert
+new item record, otherwise, insert new item record only)
+bg=yellow
+--
+objid
+state (PENDING|CANCELLED|FOR_DOWNLOAD|DOWNLOADED)
+billingid
+txntype (REQUEST|ONLINE|CAPTURE)
+txndate
+dtfiled
+author_objid
+author_name
+dtrequested
+requester_objid
+requester_name
+collector_objid
+collector_name
+remarks
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1904</x>
+      <y>376</y>
+      <w>160</w>
+      <h>48</h>
+    </coordinates>
+    <panel_attributes>followupcollection
+bg=yellow
+--
+objid</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1904</x>
+      <y>400</y>
+      <w>96</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+objid..objid</panel_attributes>
+    <additional_attributes>56;104;56;24</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1568</x>
+      <y>576</y>
+      <w>216</w>
+      <h>152</h>
+    </coordinates>
+    <panel_attributes>specialcollection_detail
+bg=yellow
+--
+objid
+parentid
+billingdetailid
+routecode
+borrower_objid
+borrower_name
+loanapp_objid
+loanapp_appno</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1760</x>
+      <y>616</y>
+      <w>144</w>
+      <h>56</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+parentid..objid</panel_attributes>
+    <additional_attributes>128;40;24;40</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>2384</x>
+      <y>864</y>
+      <w>224</w>
+      <h>160</h>
+    </coordinates>
+    <panel_attributes>ledger_billing_assist
+bg=yellow
+--
+objid
+dtcreated
+author_objid
+author_name
+dtmodified
+modifiedby_objid
+modifiedby_name
+prevbillingid
+prevcollector_objid
+prevcollector_name</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>2464</x>
+      <y>784</y>
+      <w>128</w>
+      <h>96</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+objid..prevbillingid</panel_attributes>
+    <additional_attributes>72;24;72;80</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1376</x>
+      <y>904</y>
+      <w>280</w>
+      <h>280</h>
+    </coordinates>
+    <panel_attributes>collection_remittance
+bg=yellow
+--
+objid
+state (DRAFT|FOR_POSTING|POSTED)
+dtfiled
+author_objid
+author_name
+txndate
+collector_objid
+collector_name
+collection_objid
+collection_type (FIELD|ONLINE)
+group_objid
+group_type (route|online|followup|special)
+totalacctscollected
+totalamount
+cbsno
+dtposted
+poster_objid
+poster_name
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1784</x>
+      <y>992</y>
+      <w>232</w>
+      <h>272</h>
+    </coordinates>
+    <panel_attributes>collection_remittance_detail
+bg=yellow
+--
+objid
+parentid
+refid
+borrower_objid
+borrower_name
+loanapp_objid
+loanapp_appno
+routecode
+refno
+amount
+paytype (schedule|over)
+payoption (cash|check)
+dtpaid
+paidby
+bank_objid
+bank_name
+check_no
+check_date</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1632</x>
+      <y>1064</y>
+      <w>168</w>
+      <h>64</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+objid..parentid</panel_attributes>
+    <additional_attributes>24;48;152;24</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1200</x>
+      <y>1656</y>
+      <w>440</w>
+      <h>240</h>
+    </coordinates>
+    <panel_attributes>collection_cb
+bg=yellow
+--
+objid
+state (FOR_VERIFICATION|VERIFIED|DEPOSITED)
+dtfiled
+author_objid
+author_name
+txndate
+collector_objid
+collector_name
+collection_objid
+collection_type (FIELD|ONLINE|SHORTAGE)
+group_objid
+group_type (route|followup|special|online|shortage)
+cbsno
+dtverified
+verifier_objid
+verifier_name
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1752</x>
+      <y>1648</y>
+      <w>208</w>
+      <h>96</h>
+    </coordinates>
+    <panel_attributes>collection_cb_detail
+bg=yellow
+--
+objid
+parentid
+denomination
+qty
+amount
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1616</x>
+      <y>1656</y>
+      <w>152</w>
+      <h>56</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+objid..parentid</panel_attributes>
+    <additional_attributes>24;40;136;40</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>2344</x>
+      <y>1064</y>
+      <w>288</w>
+      <h>152</h>
+    </coordinates>
+    <panel_attributes>onlinecollection
+bg=yellow
+--
+objid
+state (DRAFT|REMITTED)
+txndate
+dtfiled
+author_objid
+author_name
+collector_objid
+collector_name
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>2352</x>
+      <y>1280</y>
+      <w>320</w>
+      <h>288</h>
+    </coordinates>
+    <panel_attributes>onlinecollection_detail
+bg=yellow
+--
+objid
+parentid
+loanapp_objid
+loanapp_appno
+borrower_objid
+borrower_name
+route_code
+route_description
+route_area
+dtpaid
+paidby
+refno
+paytype (schedule|over)
+payoption (cash|check)
+amount
+bank_objid
+bank_name
+check_no
+check_date</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>2408</x>
+      <y>1192</y>
+      <w>112</w>
+      <h>104</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+objid..parentid</panel_attributes>
+    <additional_attributes>64;24;64;88</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>2720</x>
+      <y>1296</y>
+      <w>192</w>
+      <h>56</h>
+    </coordinates>
+    <panel_attributes>onlinecollection_collector
+bg=yellow
+--
+objid
+name</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>3360</x>
+      <y>64</y>
+      <w>288</w>
+      <h>288</h>
+    </coordinates>
+    <panel_attributes>voidrequest
+bg=yellow
+--
+objid
+state (FOR_APPROVAL|APPROVED|DISAPPROVED)
+dtfiled
+author_objid
+author_name
+txncode (FIELD|ONLINE)
+paymentid
+routecode
+collectionid
+loanapp_objid
+loanapp_appno
+borrower_objid
+borrower_name
+collector_objid
+collector_name
+reason
+dtposted
+poster_objid
+poster_name
+posterremarks
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>2360</x>
+      <y>784</y>
+      <w>112</w>
+      <h>96</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+objid..parentid</panel_attributes>
+    <additional_attributes>64;24;64;80</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>2096</x>
+      <y>112</y>
+      <w>224</w>
+      <h>200</h>
+    </coordinates>
+    <panel_attributes>capture_payment
+(corresponds 1 special collection record)
+bg=yellow
+--
+objid
+state (PENDING|CLOSED)
+fieldcollectionid
+specialcollectionid
+trackerid
+txndate
+dtfiled
+author_objid
+author_name
+collector_objid
+collector_name
+cbsno
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>2120</x>
+      <y>0</y>
+      <w>176</w>
+      <h>48</h>
+    </coordinates>
+    <panel_attributes>capture_payment_pending
+bg=yellow
+--
+objid</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1736</x>
+      <y>112</y>
+      <w>224</w>
+      <h>192</h>
+    </coordinates>
+    <panel_attributes>capture_payment_detail
+bg=yellow
+--
+objid
+parentid
+ledgerid
+txnmode
+dtpaid
+borrowername
+amount
+payoption (cash|check)
+bank_objid
+bank_name
+check_no
+check_date
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1936</x>
+      <y>152</y>
+      <w>176</w>
+      <h>56</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+parentid..objid</panel_attributes>
+    <additional_attributes>160;40;24;40</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>2144</x>
+      <y>24</y>
+      <w>96</w>
+      <h>104</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+objid..objid</panel_attributes>
+    <additional_attributes>56;88;56;24</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>2296</x>
+      <y>160</y>
+      <w>192</w>
+      <h>56</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+fieldcollectionid.objid</panel_attributes>
+    <additional_attributes>176;40;24;40</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1368</x>
+      <y>768</y>
+      <w>224</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>collection_remittance_pending
+bg=yellow
+--
+objid</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1408</x>
+      <y>784</y>
+      <w>96</w>
+      <h>136</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+objid..objid</panel_attributes>
+    <additional_attributes>56;120;56;24</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>2192</x>
+      <y>1656</y>
+      <w>184</w>
+      <h>152</h>
+    </coordinates>
+    <panel_attributes>loanpayment
+bg=yellow
+--
+objid
+dtfiled
+author_objid
+author_name
+collector_objid
+remittanceid
+txndate
+totalacctscollected
+totalamount</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>2512</x>
+      <y>1656</y>
+      <w>208</w>
+      <h>216</h>
+    </coordinates>
+    <panel_attributes>loanpayment_detail
+bg=yellow
+--
+objid
+parentid
+borrower_objid
+borrower_name
+loanapp_objid
+loanapp_appno
+routecode
+refno
+amount
+paytype (schedule|over)
+paidby
+control_objid
+control_series
+control_seriesno</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>2352</x>
+      <y>1680</y>
+      <w>176</w>
+      <h>56</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+objid..parentid</panel_attributes>
+    <additional_attributes>24;40;160;40</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>2088</x>
+      <y>288</y>
+      <w>160</w>
+      <h>232</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+specialcollectionid..objid</panel_attributes>
+    <additional_attributes>88;216;88;24</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>3744</x>
+      <y>64</y>
+      <w>248</w>
+      <h>304</h>
+    </coordinates>
+    <panel_attributes>voidpayment
+bg=yellow
+--
+objid
+dtfiled
+author_objid
+author_name
+borrower_objid
+borrower_name
+collector_objid
+collector_name
+routecode
+paymentid
+dtpaid
+refno
+amount
+paidby
+paytype (schedule|over)
+payoption (cash|check)
+bank_objid
+bank_name
+check_no
+check_date</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>3624</x>
+      <y>144</y>
+      <w>136</w>
+      <h>56</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+objid..objid</panel_attributes>
+    <additional_attributes>24;40;120;40</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1328</x>
+      <y>1288</y>
+      <w>368</w>
+      <h>232</h>
+    </coordinates>
+    <panel_attributes>shortage
+bg=yellow
+--
+objid
+state (DRAFT|FOR_APPROVAL|APPROVED|DISAPPROVED|CLOSED)
+dtfiled
+author_objid
+author_name
+refno
+txndate
+remittanceid
+collector_objid
+collector_name
+amount
+remarks
+cbsno
+dtposted
+poster_objid
+poster_name</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>928</x>
+      <y>1112</y>
+      <w>328</w>
+      <h>232</h>
+    </coordinates>
+    <panel_attributes>overage
+bg=yellow
+--
+objid
+state (DRAFT|FOR_APPROVAL|APPROVED|DISAPPROVED)
+dtfiled
+author_objid
+author_name
+refno
+txndate
+remittanceid
+collector_objid
+collector_name
+amount
+balance
+remarks
+dtposted
+poster_objid
+poster_name</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1824</x>
+      <y>872</y>
+      <w>192</w>
+      <h>88</h>
+    </coordinates>
+    <panel_attributes>collection_remittance_other
+bg=yellow
+--
+objid
+parentid
+refid
+txntype (SHORTAGE|OVERAGE)
+amount</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1632</x>
+      <y>888</y>
+      <w>208</w>
+      <h>144</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+objid..parentid</panel_attributes>
+    <additional_attributes>24;128;192;24</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>912</x>
+      <y>920</y>
+      <w>304</w>
+      <h>160</h>
+    </coordinates>
+    <panel_attributes>shortage_fundrequest
+bg=yellow
+--
+objid
+state (DRAFT|FOR_APPROVAL|APPROVED|REJECTED)
+remittanceid
+dtrequested
+requester_objid
+requester_name
+collector_objid
+collector_name
+amount
+remarks</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1192</x>
+      <y>912</y>
+      <w>200</w>
+      <h>56</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+remittanceid..objid</panel_attributes>
+    <additional_attributes>184;40;24;40</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1448</x>
+      <y>1160</y>
+      <w>136</w>
+      <h>144</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+objid..remtittanceid</panel_attributes>
+    <additional_attributes>72;24;72;128</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1232</x>
+      <y>1104</y>
+      <w>160</w>
+      <h>64</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+remittanceid..objid</panel_attributes>
+    <additional_attributes>144;32;24;48</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1752</x>
+      <y>1296</y>
+      <w>216</w>
+      <h>176</h>
+    </coordinates>
+    <panel_attributes>collection_remittance_sendback
+bg=yellow
+--
+objid
+state (DRAFT|ACCEPTED)
+dtcreated
+author_objid
+author_name
+remittanceid
+remarks
+reply
+dtaccepted
+acceptedby_objid
+acceptedby_name</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1624</x>
+      <y>1160</y>
+      <w>176</w>
+      <h>152</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+objid..remittanceid</panel_attributes>
+    <additional_attributes>24;24;160;136</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1424</x>
+      <y>1552</y>
+      <w>152</w>
+      <h>64</h>
+    </coordinates>
+    <panel_attributes>collection_cb_active
+bg=yellow
+--
+objid</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1440</x>
+      <y>1592</y>
+      <w>96</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+objid..objid</panel_attributes>
+    <additional_attributes>56;64;56;24</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1224</x>
+      <y>1552</y>
+      <w>152</w>
+      <h>56</h>
+    </coordinates>
+    <panel_attributes>collection_cb_forverification
+bg=yellow
+--
+objid</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1248</x>
+      <y>1584</y>
+      <w>96</w>
+      <h>88</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+objid..objid</panel_attributes>
+    <additional_attributes>56;72;56;24</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1744</x>
+      <y>1808</y>
+      <w>176</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>collection_cb_reconciliation
+bg=yellow
+--
+objid
+state (DRAFT|RECONCILED)
+refid
+dtcreated
+author_objid
+author_name
+reason</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1616</x>
+      <y>1808</y>
+      <w>144</w>
+      <h>56</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+objid..refid</panel_attributes>
+    <additional_attributes>24;40;128;40</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1696</x>
+      <y>2008</y>
+      <w>152</w>
+      <h>64</h>
+    </coordinates>
+    <panel_attributes>collection_cb_reconcile
+bg=yellow
+--
+objid
+reconciliationid</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1544</x>
+      <y>1872</y>
+      <w>168</w>
+      <h>192</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+objid..objid</panel_attributes>
+    <additional_attributes>56;24;56;176;152;176</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1736</x>
+      <y>1904</y>
+      <w>144</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+reconciliationid..objid</panel_attributes>
+    <additional_attributes>80;24;80;104</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>800</x>
+      <y>1576</y>
+      <w>344</w>
+      <h>160</h>
+    </coordinates>
+    <panel_attributes>encashment
+bg=yellow
+--
+objid
+txnstate (DRAFT|FOR_APPROVAL|APPROVED|DISAPPROVED)
+txndate
+dtcreated
+author_objid
+author_name
+amount
+dtposted
+poster_objid
+poster_name
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>856</x>
+      <y>1784</y>
+      <w>224</w>
+      <h>128</h>
+    </coordinates>
+    <panel_attributes>encashment_cbs
+bg=yellow
+--
+objid
+parentid
+refid
+cbsno
+txndate
+collectiontype
+amount
+cbsid</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>512</x>
+      <y>1800</y>
+      <w>192</w>
+      <h>104</h>
+    </coordinates>
+    <panel_attributes>encashment_cbs_detail
+bg=yellow
+--
+objid
+parentid
+denomination
+qty
+amount</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>896</x>
+      <y>1712</y>
+      <w>112</w>
+      <h>88</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+parentid..objid</panel_attributes>
+    <additional_attributes>64;24;64;72</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>680</x>
+      <y>1816</y>
+      <w>192</w>
+      <h>56</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+objid..parentid</panel_attributes>
+    <additional_attributes>176;40;24;40</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1056</x>
+      <y>1776</y>
+      <w>160</w>
+      <h>56</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+refid..objid</panel_attributes>
+    <additional_attributes>144;40;24;40</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>448</x>
+      <y>1576</y>
+      <w>240</w>
+      <h>160</h>
+    </coordinates>
+    <panel_attributes>encashment_check
+bg=yellow
+--
+objid
+parentid
+dtcreated
+author_objid
+author_name
+checkno
+txndate
+amount
+bank_objid
+passbook_objid</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>664</x>
+      <y>1600</y>
+      <w>152</w>
+      <h>56</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+parentid..objid</panel_attributes>
+    <additional_attributes>136;40;24;40</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>448</x>
+      <y>1200</y>
+      <w>264</w>
+      <h>176</h>
+    </coordinates>
+    <panel_attributes>checkaccount
+bg=yellow
+--
+objid
+reftype (COLLECTION|ENCASHMENT)
+dtcreated
+author_objid
+author_name
+refid
+checkno
+txndate
+amount
+bank_objid
+passbook_objid</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>600</x>
+      <y>1408</y>
+      <w>192</w>
+      <h>104</h>
+    </coordinates>
+    <panel_attributes>encashment_cb_detail
+bg=yellow
+--
+objid
+parentid
+encashmentid
+denomination
+qty
+amount</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>768</x>
+      <y>1424</y>
+      <w>144</w>
+      <h>56</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+parentid..objid</panel_attributes>
+    <additional_attributes>128;40;24;40</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>864</x>
+      <y>1984</y>
+      <w>192</w>
+      <h>104</h>
+    </coordinates>
+    <panel_attributes>encashment_cbs_reference
+bg=yellow
+--
+objid
+parentid
+denomination
+qty
+amount</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>872</x>
+      <y>1888</y>
+      <w>112</w>
+      <h>112</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+objid..parentid</panel_attributes>
+    <additional_attributes>64;24;64;96</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>896</x>
+      <y>1408</y>
+      <w>192</w>
+      <h>104</h>
+    </coordinates>
+    <panel_attributes>encashment_cb
+bg=yellow
+--
+objid
+parentid
+dtcreated
+author_objid
+author_name
+cbsno</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>896</x>
+      <y>1488</y>
+      <w>114</w>
+      <h>104</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+parentid..objid</panel_attributes>
+    <additional_attributes>64;88;64;24</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1200</x>
+      <y>1960</y>
+      <w>168</w>
+      <h>48</h>
+    </coordinates>
+    <panel_attributes>collection_cb_encash
+bg=yellow
+--
+objid</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1240</x>
+      <y>1872</y>
+      <w>96</w>
+      <h>104</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+objid..objid</panel_attributes>
+    <additional_attributes>56;24;56;88</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1056</x>
+      <y>1832</y>
+      <w>160</w>
+      <h>56</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+cbsid..objid</panel_attributes>
+    <additional_attributes>144;40;24;40</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1408</x>
+      <y>1960</y>
+      <w>168</w>
+      <h>48</h>
+    </coordinates>
+    <panel_attributes>collection_cb_forencashment
+bg=yellow
+--
+objid</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1432</x>
+      <y>1872</y>
+      <w>96</w>
+      <h>104</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+objid..objid</panel_attributes>
+    <additional_attributes>56;24;56;88</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>672</x>
+      <y>392</y>
+      <w>328</w>
+      <h>160</h>
+    </coordinates>
+    <panel_attributes>dailycollection
+bg=yellow
+--
+objid
+state (DRAFT,SEND_BACK,FOR_VERIFICATION|VERIFIED)
+txndate
+dtcreated
+author_objid	
+author_name
+totalcollection
+dtverified
+verifier_objid
+verifier_name
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1144</x>
+      <y>392</y>
+      <w>216</w>
+      <h>176</h>
+    </coordinates>
+    <panel_attributes>dailycollection_sendback
+bg=yellow
+--
+objid
+state (DRAFT|ACCEPTED)
+dtcreated
+author_objid
+author_name
+dailycollectionid
+remarks
+dtaccepted
+acceptedby_objid
+acceptedby_name
+reply</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>976</x>
+      <y>424</y>
+      <w>184</w>
+      <h>56</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+objid..dailycollectionid</panel_attributes>
+    <additional_attributes>24;40;168;40</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>344</x>
+      <y>400</y>
+      <w>216</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>dailycollection_cbs
+bg=yellow
+--
+objid
+parentid
+refid
+txndate
+cbsno
+amount
+isencashed</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>536</x>
+      <y>416</y>
+      <w>152</w>
+      <h>56</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+parentid..objid</panel_attributes>
+    <additional_attributes>136;40;24;40</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>584</x>
+      <y>616</y>
+      <w>216</w>
+      <h>144</h>
+    </coordinates>
+    <panel_attributes>dailycollection_encashment
+bg=yellow
+--
+objid
+parentid
+refid
+txndate
+amount
+checkdate
+checkno
+bank_objid
+passbook_objid</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>672</x>
+      <y>528</y>
+      <w>114</w>
+      <h>104</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+parentid..objid</panel_attributes>
+    <additional_attributes>96;24;32;88</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>848</x>
+      <y>616</y>
+      <w>192</w>
+      <h>128</h>
+    </coordinates>
+    <panel_attributes>dailycollection_depositslip
+bg=yellow
+--
+objid
+parentid
+refid
+txndate
+controlno
+amount
+passbook_objid</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>864</x>
+      <y>528</y>
+      <w>114</w>
+      <h>104</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+parentid..objid</panel_attributes>
+    <additional_attributes>48;24;80;88</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>672</x>
+      <y>144</y>
+      <w>168</w>
+      <h>152</h>
+    </coordinates>
+    <panel_attributes>dailycollection_shortage
+bg=yellow
+--
+objid
+parentid
+refid
+refno
+txndate
+cbsno
+collector_objid
+collector_name
+amount
+remarks</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>696</x>
+      <y>272</y>
+      <w>114</w>
+      <h>136</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+parentid..objid</panel_attributes>
+    <additional_attributes>72;120;48;24</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>880</x>
+      <y>144</y>
+      <w>168</w>
+      <h>144</h>
+    </coordinates>
+    <panel_attributes>dailycollection_overage
+bg=yellow
+--
+objid
+parentid
+refid
+refno
+txndate
+collector_objid
+collector_name
+amount
+remarks</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>880</x>
+      <y>264</y>
+      <w>114</w>
+      <h>144</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+parentid..objid</panel_attributes>
+    <additional_attributes>48;128;72;24</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>224</x>
+      <y>872</y>
+      <w>168</w>
+      <h>136</h>
+    </coordinates>
+    <panel_attributes>overagefund
+bg=yellow
+--
+objid
+state
+dtcreated
+author_objid
+author_name
+year
+amtbalance
+amtuse</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>504</x>
+      <y>880</y>
+      <w>344</w>
+      <h>288</h>
+    </coordinates>
+    <panel_attributes>overagefund_detail
+bg=yellow
+--
+objid
+parentid
+txnstate (DRAFT,FOR_APPROVAL,APPROVED,DISAPPROVED)
+dtcreated
+author_objid
+author_name
+txndate
+refno
+overage_objid
+overage_refno
+overage_balance
+loanapp_objid
+loanapp_appno
+borrower_objid
+borrower_name
+amount
+remarks
+dtposted
+poster_objid
+poster_name</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>368</x>
+      <y>888</y>
+      <w>152</w>
+      <h>56</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+objid..parentid</panel_attributes>
+    <additional_attributes>24;40;136;40</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>824</x>
+      <y>1032</y>
+      <w>120</w>
+      <h>168</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+refid..objid</panel_attributes>
+    <additional_attributes>104;152;24;24</additional_attributes>
+  </element>
+</diagram>

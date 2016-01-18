@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="11.5.1">
+  <zoom_level>10</zoom_level>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>200</x>
+      <y>120</y>
+      <w>160</w>
+      <h>100</h>
+    </coordinates>
+    <panel_attributes>loan_ledger
+bg=yellow
+--
+objid</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>180</x>
+      <y>350</y>
+      <w>220</w>
+      <h>130</h>
+    </coordinates>
+    <panel_attributes>loan_ledger_payment
+bg=yellow
+--
+objid
+parentid
+refno
+txndate
+amount</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>200</x>
+      <y>190</y>
+      <w>146</w>
+      <h>180</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+objid..parentid</panel_attributes>
+    <additional_attributes>80;30;80;160</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>540</x>
+      <y>120</y>
+      <w>280</w>
+      <h>300</h>
+    </coordinates>
+    <panel_attributes>loan_ledger_proceeds
+bg=yellow
+--
+objid
+parentid
+txnstate (DRAFT|FOR_SELLING|SOLD)
+txntype (ONLINE|CAPTURE)
+dtcreated
+author_objid
+author_name
+description
+refid
+refno
+txndate
+amount
+dtsold
+soldby_objid
+soldby_name
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>330</x>
+      <y>130</y>
+      <w>230</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+objid..parentid</panel_attributes>
+    <additional_attributes>30;50;210;50</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>370</x>
+      <y>210</y>
+      <w>190</w>
+      <h>210</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+objid..refid</panel_attributes>
+    <additional_attributes>30;190;170;30</additional_attributes>
+  </element>
+</diagram>

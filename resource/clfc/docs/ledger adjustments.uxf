@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="11.5.1">
+  <zoom_level>10</zoom_level>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>70</x>
+      <y>110</y>
+      <w>160</w>
+      <h>100</h>
+    </coordinates>
+    <panel_attributes>loan_ledger
+bg=yellow
+--
+objid</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>370</x>
+      <y>100</y>
+      <w>270</w>
+      <h>260</h>
+    </coordinates>
+    <panel_attributes>loan_ledger_adjustment
+bg=yellow
+--
+objid
+txnstate
+dtcreated
+author_objid
+author_name
+ledgerid
+borrower_objid
+borrower_name
+txndate
+amount
+dtmodified
+modifiedby_objid
+modifiedby_name
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>200</x>
+      <y>100</y>
+      <w>190</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+objid..ledgerid</panel_attributes>
+    <additional_attributes>30;50;170;50</additional_attributes>
+  </element>
+</diagram>

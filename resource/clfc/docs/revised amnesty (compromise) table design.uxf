@@ -1,0 +1,372 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="11.5.1">
+  <zoom_level>9</zoom_level>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1620</x>
+      <y>108</y>
+      <w>531</w>
+      <h>513</h>
+    </coordinates>
+    <panel_attributes>amnesty
+bg=yellow
+--
+objid
+txnstate (DRAFT|FOR_APPROVAL|APPROVED|DISAPPROVED|CLOSED)
+txnmode (ONLINE|CAPTURE)
+dtcreated
+author_objid
+author_name
+txndate
+refno
+txntype (AVAIL|REJECT)
+ledgerid
+borrower_objid
+borrower_name
+loanapp_objid
+loanapp_appno
+dtstarted
+dtended
+amnestyoption (WAIVER|FIX)
+iswaivepenalty (0=false|1=true)
+iswaiveinterest (0=false|1=true)
+remarks
+grantedoffer_amount
+grantedoffer_days
+grantedoffer_months
+grantedoffer_isspotcash (0=false|1=true)
+grantedoffer_date
+dtposted (APPROVE|DISAPPROVE)
+poster_objid
+poster_name
+poster_remarks
+version
+extendeddate
+balance
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>2286</x>
+      <y>108</y>
+      <w>252</w>
+      <h>135</h>
+    </coordinates>
+    <panel_attributes>amnesty_offer
+bg=yellow
+--
+objid
+parentid
+amount
+days
+months
+isspotcash (0=false|1=true)
+date</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>2124</x>
+      <y>126</y>
+      <w>179</w>
+      <h>63</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+objid..parentid</panel_attributes>
+    <additional_attributes>27;45;162;45</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1260</x>
+      <y>108</y>
+      <w>297</w>
+      <h>513</h>
+    </coordinates>
+    <panel_attributes>amnesty_history
+bg=yellow
+--
+objid
+dtcreated
+author_objid
+author_name
+txndate
+refno
+ledgerid
+borrower_objid
+borrower_name
+loanapp_objid
+loanapp_appno
+dtstarted
+dtended
+amnestyoption (WAIVER|FIX)
+iswaivepenalty (0=false|1=true)
+iswaiveinterest (0=false|1=true)
+remarks
+grantedoffer_amount
+grantedoffer_days
+grantedoffer_months
+grantedoffer_isspotcash (0=false|1=true)
+grantedoffer_date
+dtposted (APPROVE|DISAPPROVE)
+poster_objid
+poster_name
+poster_remarks
+version
+extendeddate
+info
+dtamended
+amendedby_objid
+amendedby_name
+
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>2313</x>
+      <y>297</y>
+      <w>387</w>
+      <h>351</h>
+    </coordinates>
+    <panel_attributes>amnesty_extension
+bg=yellow
+--
+objid
+txnstate (DRAFT|FOR_APPROVAL|APPROVED|DISAPPROVED)
+dtcreated
+author_objid
+author_name
+txndate
+refno
+amnesty_objid
+amnesty_refno
+amnesty_dtstarted
+amnesty_dtended
+amnesty_amount
+borrower_objid
+borrower_name
+extendeddate
+extendeddays
+remarks
+dtposted
+poster_objid
+poster_name
+poster_remarks</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>2124</x>
+      <y>306</y>
+      <w>206</w>
+      <h>63</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+objid..amnesty_objid</panel_attributes>
+    <additional_attributes>27;45;189;45</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1674</x>
+      <y>0</y>
+      <w>189</w>
+      <h>45</h>
+    </coordinates>
+    <panel_attributes>amnesty_active
+bg=yellow
+--
+objid</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1719</x>
+      <y>18</y>
+      <w>110</w>
+      <h>107</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+objid..objid</panel_attributes>
+    <additional_attributes>63;90;63;27</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>558</x>
+      <y>693</y>
+      <w>261</w>
+      <h>387</h>
+    </coordinates>
+    <panel_attributes>loan_ledger
+bg=yellow
+--
+objid
+acctid
+acctname
+appid
+state
+producttypeid
+loancount
+term
+paymentmethod
+balance
+dailydue
+interestamount
+overpaymentamount
+overduepenalty
+absentpenalty
+totalprincipal
+totaldue
+compromiseid
+dtstarted
+dtmatured
+dtlastpaid
+dtcurrentschedule
+updatetype</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>963</x>
+      <y>702</y>
+      <w>279</w>
+      <h>369</h>
+    </coordinates>
+    <panel_attributes>loan_ledger_detail
+bg=yellow
+--
+objid
+parentid
+state
+amtdue
+interestdue
+penaltydue
+amtpaid
+interestpaid
+penaltypaid
+amtbal
+interestbal
+penaltybal
+dtpaid
+refno
+day
+balance
+partialpayment
+txndate
+baseamount
+groupbaseamount
+amnestyid
+remarks</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>792</x>
+      <y>810</y>
+      <w>188</w>
+      <h>71</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+objid..parentid</panel_attributes>
+    <additional_attributes>27;27;171;54</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>0</x>
+      <y>756</y>
+      <w>216</w>
+      <h>432</h>
+    </coordinates>
+    <panel_attributes>billing-info
+bg=yellow
+--
+objid
+parentid
+billingid
+ledgerid
+route_code
+acctid
+acctname
+loanamount
+appno
+dailydue
+amountdue
+overpaymentamount
+balance
+refno
+txndate
+dtreleased
+dtmatured
+isfirstbill
+paymentmethod
+loandate
+term
+loanappid
+homeaddress
+collectionaddress
+penalty
+interest
+others</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1737</x>
+      <y>702</y>
+      <w>279</w>
+      <h>351</h>
+    </coordinates>
+    <panel_attributes>amnesty_detail
+bg=yellow
+--
+objid
+parentid
+state
+amtdue
+interestdue
+penaltydue
+amtpaid
+interestpaid
+penaltypaid
+amtbal
+interestbal
+penaltybal
+dtpaid
+refno
+day
+balance
+partialpayment
+txndate
+baseamount
+groupbaseamount
+remarks</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1800</x>
+      <y>594</y>
+      <w>128</w>
+      <h>125</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+objid..parentid</panel_attributes>
+    <additional_attributes>72;27;72;108</additional_attributes>
+  </element>
+</diagram>

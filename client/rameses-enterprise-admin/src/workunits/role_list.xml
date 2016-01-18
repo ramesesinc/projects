@@ -1,0 +1,7 @@
+<workunit extends="wtemplates/ListController.xml" serviceName="RoleService"  entityName="role">
+    <invokers>
+        <invoker folderid="/explorer/admin" caption="Roles" role="SYSADMIN" permission="system" index="2"/>
+        <invoker folderid="/home/admin" caption="Manage Roles" role="SYSADMIN" 
+            permission="system" index="0" icon="home/icons/admin-role.png"/>
+   </invokers>
+</workunit>

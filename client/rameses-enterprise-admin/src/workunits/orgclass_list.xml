@@ -1,0 +1,7 @@
+<workunit extends="wtemplates/ListController.xml" serviceName="OrgClassService" 
+    entityName="orgclass" rows="20">
+    <invokers>
+        <invoker type="orgmain.action" caption="Manage Organization Types" role="SYSADMIN" 
+                 permission="system" index="0" target="window" actiontitle="Manage Org Types"/> 
+   </invokers>
+</workunit>

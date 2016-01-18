@@ -1,0 +1,58 @@
+<workunit>
+
+    <code>
+    <![CDATA[
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        import java.rmi.server.UID;
+
+        public class EntityIDListController  {
+            
+            @Service("EntityIdService")
+            def service;
+        
+            def entity;
+            def selectedItem;
+            def type;
+            
+            
+            def listModel = [
+                fetchList: {
+                    return service.getList( [entityid: entity.objid] );
+                }
+            ] as BasicListModel;
+            
+            def addId() {
+                def saveHandler = { o->
+                    listModel.reload();
+                }
+                return Inv.lookupOpener( "entityid:create", [ entity: entity, saveHandler: saveHandler ] );
+            }
+            
+            def editId() {
+                def saveHandler = { o->
+                    listModel.reload();
+                }
+                return Inv.lookupOpener( "entityid:edit", [ entity: entity, item:selectedItem, saveHandler: saveHandler] );
+            }
+            
+            def removeId() {
+                if( !selectedItem )
+                    throw new Exception("Please select an item" );
+                if( MsgBox.confirm( "You are about to remove this entry. Proceed?")) {
+                    service.removeEntity( selectedItem );
+                    listModel.reload();
+                }
+            }
+            
+            
+        }        
+   ]]>
+   </code>
+   
+   <pages>
+       <page template="com.rameses.entity.ui.EntityIDListPage"/>
+   </pages>   
+</workunit>

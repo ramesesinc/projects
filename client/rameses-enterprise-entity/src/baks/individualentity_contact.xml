@@ -1,0 +1,5 @@
+<workunit extends="workunits/entity_contact.xml">
+    <invokers>
+        <invoker type="individualentity:option" caption="Contact Info" index="1"/>
+    </invokers>
+</workunit>

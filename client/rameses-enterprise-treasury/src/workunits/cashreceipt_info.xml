@@ -1,0 +1,58 @@
+<workunit>
+    
+   <invokers>
+         <invoker type="cashreceiptinfo:open" caption="Cash Receipt Info" action="open" />
+         
+         <invoker type="formActions" caption="Reprint" action="reprint" shortcut="ctrl P" mnemonic="p" role="COLLECTOR" />
+         <invoker type="formActions" caption="Edit" action="edit" visibleWhen="#{entity.txnmode!='ONLINE' &amp;&amp; entity.remitted!=1}"/>
+   </invokers>
+   
+   <code>
+       <![CDATA[
+        import com.rameses.osiris2.common.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.reports.*;
+        import com.rameses.util.*;
+        
+        class CashReceiptController extends CRUDController {
+        
+            @Service("CashReceiptService")
+            def service;
+
+            String entityName = "cashreceiptinfo";
+            
+            boolean allowCreate = false;
+            boolean allowEdit = false;
+        
+            def getInfoHtml() {
+                return TemplateProvider.instance.getResult( "com/rameses/enterprise/treasury/cashreceipt/cashreceipt.gtpl", [entity:entity] );
+            }
+            
+            void reprint() {
+                if( MsgBox.prompt("Please enter security code")!="etracs"){
+                    return;
+                }
+
+                //check fist if form handler exists.
+                def o = InvokerUtil.lookupOpener( "cashreceipt-form:"+entity.formno, [reportData:entity] );
+                if ( !o ) throw new Exception("Handler not found");
+                
+                def handle = o.handle;
+                handle.viewReport();
+                ReportUtil.print(handle.report,true);
+            }
+
+            def edit() {
+                return Inv.lookupOpener("cashreceipt:edit", [entity: entity] );
+            }
+        }      
+       ]]>
+   </code>
+   
+   <pages>
+        <page template="com.rameses.enterprise.treasury.cashreceipt.CashReceiptInfoPage"/>
+   </pages>
+   
+</workunit>

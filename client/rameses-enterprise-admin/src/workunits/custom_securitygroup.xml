@@ -1,0 +1,99 @@
+<workunit>
+    <invokers>
+        <invoker type="securitygroup:custom" action="init" caption="Customize Security Group" 
+            resizable="false" target="popup" />
+   </invokers>
+   
+   <code>
+        <![CDATA[
+
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        import java.rmi.server.*;
+
+        public class SecurityGroupPermissionController {
+        
+            @Service('UsergroupService')
+            def svc; 
+            
+            def usergroup;
+            def permissions;
+            def securitygroup;
+            def securitygroupname;
+            
+            def objectList;
+            def selectedObject;
+
+            def forceExclude;
+            def customExclude;
+            def handler;
+            
+            void init() { 
+                if(!securitygroup) 
+                    securitygroupname = 'DEFAULT';
+                else
+                    securitygroupname = securitygroup.name;
+                 permissions = svc.getPermissions(usergroup);
+                
+                 def removals = [];
+                 permissions.each {
+                    it.checked = true;
+                    String n = it.object +"."+it.permission;
+                    if( forceExclude && n.matches(forceExclude)) {
+                        removals.add( it );
+                    }
+                    else if( customExclude && n.matches(customExclude)) {
+                        it.checked = false;
+                    }
+                }
+                permissions.removeAll( removals );
+                objectList = permissions*.object.unique();
+            } 
+            
+            def permissionListModel = [
+                fetchList: {o-> 
+                    if (!selectedObject) return []; 
+                    def list = permissions.findAll {
+                        it.object == selectedObject;
+                    };
+                    return list;
+                }
+            ] as EditorListModel;
+            
+            def buildExclude() {
+                def excludes = [];
+                permissions.groupBy{ it.object }.each{ k,v->
+                    def checkedList = v.findAll{ it.checked };
+                    if(checkedList.size()==0) {
+                        excludes << k + ".*";
+                    }   
+                    else {
+                        def uncheckedList = v.findAll{ !it.checked }; 
+                        if(uncheckedList.size() >0) {
+                            excludes << k + ".(" + uncheckedList*.permission.join("|") + ")";
+                        }
+                    } 
+                }
+                return excludes.join("|");
+            }             
+            
+            def doOk() {
+                def exc = buildExclude(); 
+                if(handler) handler( exc );
+                return '_close';
+            } 
+            
+            def doCancel() {
+                return '_close';
+            }
+        }
+        
+       ]]>
+   </code>
+   
+   <pages>
+       <page template="com.rameses.admin.usergroup.SecurityGroupPage"/>
+   </pages>
+</workunit>

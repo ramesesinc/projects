@@ -1,0 +1,7 @@
+"entity.*" [searching==false] {
+    enabled: true;
+}
+
+"entity.*" [searching==true] {
+    enabled: false;
+}

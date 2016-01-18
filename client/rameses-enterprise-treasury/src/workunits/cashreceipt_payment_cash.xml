@@ -1,0 +1,52 @@
+<workunit>
+    <invokers>
+          <invoker type="cashreceipt:payment-cash" caption="Cash" target="popup"/>
+    </invokers>
+    <code>
+        <![CDATA[
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+
+        class CashReceiptCashPaymentController {        
+        
+            def entity;
+        
+            def cash = 0.0;
+            def change = 0.0;
+            def saveHandler;
+            
+            @PropertyChangeListener
+            def listener = [
+                "cash" : { o->
+                    def amtdue = entity.amount - entity.totalnoncash;
+                    if(amtdue < cash && amtdue>0) {
+                        change = cash - amtdue;
+                    }
+                    else {
+                        change = 0;
+                    }
+                }
+            ]
+            
+            def doOk() {
+                if(cash<=0)
+                     throw new Exception("Cash amount must be greater than 0");
+                saveHandler( [cash:cash, change:change] );
+                return "_close";
+            }
+            
+            def doCancel() {
+                return "_close";
+            }
+            
+        }
+        ]]>
+    </code>
+    
+    <pages>
+        <page template="com.rameses.enterprise.treasury.cashreceipt.CashPaymentPage"/>
+    </pages>
+    
+</workunit>

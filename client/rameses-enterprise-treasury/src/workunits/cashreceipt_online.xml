@@ -1,0 +1,124 @@
+<workunit>
+    
+   <invokers>
+         <invoker folderid="home/collection" caption="Cash Receipt (Online)" action="init" index="-5" role="COLLECTOR,SUBCOLLECTOR" target="window"/>
+   </invokers>
+   
+   <code>
+       <![CDATA[
+        import com.rameses.osiris2.common.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.util.*;
+        
+        class CashReceiptOnlineController  {
+        
+            @Binding
+            def binding;
+            
+            def clientContext = com.rameses.rcp.framework.ClientContext.currentContext;
+            def session = OsirisContext.getSession();
+        
+            @Service("CashReceiptService")
+            def cashReceiptSvc;
+        
+            @Service("CollectionTypeService")
+            def collectionTypeSvc;
+            
+            String title = "Cash Receipts (Online)";
+            
+            def items = [];
+            def formTypes;
+            def formType;
+            def homeicon;
+            
+            void init() {
+                formTypes = collectionTypeSvc.getFormTypes()*.objid;
+                def appEnv = clientContext.appEnv; 
+                def customfolder = appEnv['app.custom']; 
+                homeicon = 'images/' + customfolder + '/home-icon.png';  
+                def custom_homeicon = clientContext.getResource(homeicon); 
+                if (!custom_homeicon) homeicon = 'home/icons/folder.png';                  
+                Inv.lookupOpeners('cashreceipt:online', [:]).each{
+                    def m = [
+                        caption : it.caption, 
+                        icon    : it.properties.icon, 
+                        opener  : it 
+                    ];
+                    def iicon = clientContext.getResource(m.icon);
+                    if (!iicon) m.icon = homeicon; 
+                    items << m;
+                }                 
+            } 
+            
+            def model = [
+                fetchList: {o-> 
+                    def p = [formtype: formType];        
+                    def xlist = [];
+                    xlist.addAll( items );
+                    def list = collectionTypeSvc.getOnlineCollectionTypes(p).each{
+                        it.caption = it.title;
+                        it.icon = homeicon;
+                        xlist << it;
+                    }
+                    return xlist;
+                }, 
+                onOpenItem: {o-> 
+                    if (o.opener) {
+                        try { 
+                            def result = o.opener.handle.init(); 
+                            if (result == null) throw new BreakException();
+
+                            return result; 
+                        } catch(BreakException be) {
+                            return null; 
+                        } 
+                    }
+                
+                    def entity = [
+                        txnmode         : 'ONLINE', 
+                        formno          : o.formno, 
+                        formtype        : o.formtype, 
+                        collectiontype  : o 
+                    ]; 
+                    return findOpener( entity ); 
+                }
+            ] as TileViewModel
+            
+            def findOpener( o ) {
+                try { 
+                    def info = cashReceiptSvc.init( o );
+                    def openerParams = [entity: info]; 
+                    
+                    openerParams.createHandler = {
+                        def op = findOpener( o ); 
+                        if ( !op ) return;
+                        
+                        binding.fireNavigation( op ); 
+                    } 
+
+                    def opener = Inv.lookupOpener("cashreceipt:"+ o.collectiontype.handler, openerParams);  
+                    if (opener) {
+                        opener.target = 'self';
+                        return opener; 
+                    } else {
+                        throw new Exception('No available handler found');
+                    } 
+                } catch(BreakException be) { 
+                    return null;
+
+                } catch(Warning w) { 
+                    String m = "cashreceipt:" + w.message;
+                    return InvokerUtil.lookupOpener(m, [entity: o]);
+                }
+            } 
+        }      
+       ]]>
+   </code>
+   
+   <pages>
+       <page template="com.rameses.enterprise.treasury.cashreceipt.CashReceiptSelectionPage" />
+   </pages>
+   
+</workunit>

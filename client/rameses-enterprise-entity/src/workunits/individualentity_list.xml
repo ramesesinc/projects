@@ -1,0 +1,9 @@
+<workunit extends="wtemplates/ListController.xml" serviceName="IndividualEntityService"
+    entityName="individualentity" allowCreate="false"  allowOpen="false" formName="individualentity:list">
+    <invokers>
+        <invoker folderid="/explorer/master/entity" caption="Individual" role="MASTER" />
+        <invoker type="formActions" caption="New" action="create" role="MASTER" permission="individualentity.create" />
+        <invoker type="formActions" caption="Open" action="open" role="MASTER" permission="individualentity.open" />
+   </invokers>
+   
+</workunit>

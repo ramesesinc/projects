@@ -1,0 +1,7 @@
+"handler"[mode=='read'] {
+    enabled: false;
+} 
+
+"handler"[mode!='read'] {
+    enabled: true;
+}

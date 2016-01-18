@@ -1,0 +1,48 @@
+<workunit>
+    <invokers>
+        <invoker type="terminal:formActions" caption="Generate Keys" target="popup" resizable="false"/>        
+        <invoker type="terminal:formActions" caption="Unassign" action="unassign" 
+            target="process" resizable="false" visibleWhen="#{selectedEntity != null &amp;&amp; selectedEntity.macaddress != null}"/>
+    </invokers>
+   
+    <code>
+    <![CDATA[
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+
+        public class TerminalController {
+
+            @Service('TerminalAdminService') 
+            def svc;
+        
+            @Caller
+            def caller;
+            
+            def entity = [:];
+            
+            def doOk() {
+                svc.generateKeys([size: entity.size]); 
+                caller?.reload(); 
+                return '_close';
+            } 
+            
+            def doCancel() {
+                return '_close';
+            }
+            
+            void unassign() {
+                if (MsgBox.confirm('You are about to unassign this terminal. Do you want to continue?')) {
+                    svc.unassign(caller?.selectedEntity); 
+                    caller?.reload();
+                } 
+            } 
+        }        
+       ]]>
+   </code>
+   
+   <pages>
+       <page template="com.rameses.admin.terminal.GenerateTerminalPage"/> 
+   </pages>
+</workunit>

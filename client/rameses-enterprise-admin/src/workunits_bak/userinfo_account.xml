@@ -1,0 +1,32 @@
+<workunit>
+    <invokers>
+        <invoker type="userinfo:option" caption="User Account" index="1"/>
+    </invokers>
+   
+    <code>
+    <![CDATA[
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        import java.rmi.server.*;
+
+        public class UserInfoAccountController  {
+        
+            @Caller
+            def caller;
+        
+            def entity;
+            
+            def resetPassword() {
+                return InvokerUtil.lookupOpener("user:resetpwd", [entity:entity]);
+            }
+            
+        }
+        
+       ]]>
+   </code>
+   <pages>
+       <page template="com.rameses.admin.user.UserInfoAccountPage"/>
+   </pages>
+</workunit>

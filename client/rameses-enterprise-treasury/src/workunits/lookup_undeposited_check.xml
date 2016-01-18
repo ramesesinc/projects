@@ -1,0 +1,69 @@
+<workunit >
+    <invokers>
+        <invoker type="undepositedcheck:lookup" caption="Lookup Checks" target="popup" action="init"/>
+    </invokers>
+    <code>
+         <![CDATA[
+        import com.rameses.osiris2.common.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import java.rmi.server.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.util.*;
+        import com.rameses.osiris2.reports.*;
+        
+        class UndepositedCheckLookupController  {
+        
+            @Binding 
+            def binding 
+        
+            def undepositedChecks;
+            
+            def onselect 
+            def totalamount = 0.0
+            
+            void init() {
+                undepositedChecks.each{ it.selected = false }
+                totalamount = 0.0
+            }
+            
+            def checkModel = [
+                fetchList: { o-> return undepositedChecks },
+                onColumnUpdate: {item, colname-> 
+                    if (colname == 'selected'){
+                        if( item.selected == true) {
+                            totalamount += item.amount
+                        } else {
+                            totalamount -= item.amount
+                        }
+                        binding.refresh("totalamount")
+                    }
+                        
+                }
+            ] as EditorListModel;
+            
+            def select() {
+                if( onselect) onselect( undepositedChecks.findAll{it.selected == true } )
+                return "_close" 
+            }
+            
+            def deselectAll() {
+                undepositedChecks.each{ it.selected = false } 
+                totalamount= 0.0 
+                binding.refresh("totalamount") 
+            }
+            
+            def selectAll() {
+                undepositedChecks.each{ it.selected = true } 
+                totalamount = undepositedChecks.amount.sum() 
+                binding.refresh("totalamount") 
+            }
+            
+            
+        }      
+       ]]>
+    </code>
+    <pages>
+        <page template="com.rameses.enterprise.treasury.bankdeposit.BankDepositCheckLookupPage"/>
+    </pages>
+</workunit>

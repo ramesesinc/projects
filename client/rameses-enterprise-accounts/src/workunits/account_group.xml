@@ -1,0 +1,54 @@
+<workunit>
+        
+    <invokers>
+         <invoker type="account-group:open" caption="Account Group" action="open"/>
+         <invoker type="account-group:create" caption="Account Group" action="create"/>
+   </invokers>
+   
+   <code>
+       <![CDATA[
+        import com.rameses.osiris2.common.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        
+        class AccountGroupController extends CRUDController {
+        
+            @Caller
+            def caller;
+            
+            String entityName = "account";
+            def node;
+            boolean showConfirmOnSave = false;
+
+            public String getServiceName() {
+                return caller.getServiceName();
+            }
+            
+            public String getTitle() {
+                return caller.getTitle();
+            }  
+            
+            public String getPrefixId() {
+                return caller.getPrefixId();
+            }
+            
+            public def getAccountService() {
+                return caller.accountService;
+            }
+
+            Map createEntity() {
+                def m = [parentid:node.objid, type:'group'];
+                m.parent = [code:node.code, title: node.title];
+                return m;
+            }
+            
+        }      
+       ]]>
+   </code>
+   
+   <pages>
+       <page template="com.rameses.enterprise.accounts.AccountPage"/>
+   </pages>
+   
+</workunit>

@@ -1,0 +1,7 @@
+"cashBreakdown:item.*" [ mode == 'open' ] {
+    enabled: false;
+}
+
+"cashBreakdown:item.qty" [ mode == 'create' ] {
+    enabled: true;
+}

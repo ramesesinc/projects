@@ -1,0 +1,103 @@
+<workunit>
+    
+   <invokers>
+         <invoker folderid="/explorer/txn/treasury/tools" caption="New Cashbook (Batch)" action="init" role="MASTER" target="popup" permission="cashbook.create"/>
+         <invoker type="cashbook:create" caption="New Cashbook (Batch)" action="init" role="MASTER" target="popup" permission="cashbook.create" index="-1"/>
+         
+         <invoker type="formActions" caption="Cancel" action="doCancel" visibleWhen="#{mode == 'init'}" immediate="true"/> 
+         <invoker type="formActions" caption="Close" action="_close" visibleWhen="#{mode != 'init'}" immediate="true"/> 
+         <invoker type="formActions" caption="Save" action="doSave" visibleWhen="#{mode == 'init'}"/> 
+   </invokers>
+   
+   <code>
+       <![CDATA[
+        import com.rameses.osiris2.common.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.util.*;
+        
+        class CashBookBatchController {
+        
+            @Binding
+            def binding;
+        
+            @Service("CashBookService")
+            def service;
+            
+            @Service("FundLookupService")
+            def fundSvc 
+           
+            def funds = []
+            def mode = 'init'
+            def entity = [:]
+            def title = "New Cashbook (Batch)"
+            
+            void init() {
+                 mode = 'init'
+                 entity = [:]
+                 entity.subacct = [:]
+            }
+            
+            def getFunds() {
+                if(! funds) {
+                    funds = fundSvc.getList([:]).each{
+                        it.selected = false 
+                    } 
+                }
+                return funds 
+            }
+            
+            def getLookupSubAccounts() {
+                return InvokerUtil.lookupOpener( "cashbook_subacct:lookup", [
+                    onselect : { o->
+                        entity.subacct.name = o.name + "("+o.role+")";
+                        entity.subacct.objid = o.objid;
+                        entity.type = o.role;
+                        binding.refresh("entity.type");
+                    }
+                ]);
+            }
+            
+            def fundlistHandler = [
+                
+                fetchList : {
+                    return funds 
+                }   
+            
+            ] as EditorListModel 
+           
+            void doSave() {
+                if(! funds.find{it.selected == true}) throw new Exception("Please specify the allowed funds. ");
+            
+                entity.funds = funds.findAll{it.selected == true}
+                service.saveBatch(entity) 
+                MsgBox.confirm("Cashbook successfully saved.   ")
+                mode = 'saved';
+            }
+            
+            def doCancel() {
+                if(! MsgBox.confirm("This will discard any changes made. Continue? ")) return;
+                
+                return "_close" 
+            }
+            
+            def selectAll() {
+                funds.each{ it.selected = true};
+                fundlistHandler.reload()
+            }
+            
+            def deselectAll() {
+                funds.each{ it.selected = false};
+                fundlistHandler.reload()
+            }
+            
+        }      
+       ]]>
+   </code>
+   
+   <pages>
+       <page template="com.rameses.enterprise.treasury.cashbook.CashBookBatchPage" />
+    </pages>
+   
+</workunit>

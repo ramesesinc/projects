@@ -1,0 +1,58 @@
+<workunit>
+    <invokers>
+        <invoker type="user:open" action="open" caption="User" />
+        <invoker type="formActions" action="_close" caption="Close" visibleWhen="#{initiator!='create'}"/>
+        <invoker type="formActions" action="_exit" caption="Close" visibleWhen="#{initiator=='create'}"/>
+    </invokers>
+   
+    <code>
+    <![CDATA[
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        import java.rmi.server.*;
+
+        public class UserInfoController  {
+        
+            @Service("UserService")
+            def service;
+        
+            @Binding
+            def binding;
+            
+            @FormTitle
+            def title;
+            
+            def entity;
+            def optionList;
+            def selectedOption;
+            def initiator = 'edit';
+            
+            void initList() {
+                optionList = Inv.lookupOpeners( "userinfo:option", [entity: entity] );
+                if(optionList.size() > 0 ) {
+                    selectedOption = optionList[0];
+                }
+            }
+            
+            void refresh() {
+                title = entity.name;
+            }
+            
+            void open() {
+                entity = service.open( [objid: entity.objid]);
+                initList();
+                refresh();
+            }
+            
+           
+           
+        }
+        
+       ]]>
+   </code>
+   <pages>
+       <page template="com.rameses.admin.user.UserInfoPage"/>
+   </pages>
+</workunit>

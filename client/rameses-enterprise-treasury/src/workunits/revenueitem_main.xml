@@ -1,0 +1,70 @@
+<workunit>
+    <invokers>
+        <invoker type="revenueitem:open" caption="Item Account" action="open"  role="MASTER" permission="revenueitem.open"/>
+        <invoker type="formActions" caption="Close" action="_exit" visibleWhen="#{initiator == 'create'}"/>
+        <invoker type="formActions" caption="Close" action="_close" visibleWhen="#{initiator != 'create'}"/>
+        <invoker type="formActions" caption="New" action="create" role="MASTER" permission="revenueitem.create" />
+        <invoker type="formActions" caption="Remove" action="remove" role="MASTER" permission="revenueitem.delete" />
+    </invokers>
+    
+    <code>
+    <![CDATA[
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        import java.rmi.server.UID;
+
+        public class RevenueItemController  {
+            
+            @Binding
+            def binding;
+            
+            @Service("RevenueItemAccountService")
+            def service;
+            
+            @FormTitle
+            def title;
+            
+            def entity;
+            def optionList;
+            def selectedOption;
+            def initiator = 'edit';
+            
+            void initList() {
+                optionList = Inv.lookupOpeners( "revenueitem:option", [entity: entity] );
+                if(optionList.size() > 0 ) {
+                    selectedOption = optionList[0];
+                }
+            }
+
+            void refresh() {
+                title = "("+ entity.code + ") " + entity.title;
+            }
+            
+            void open() {
+                entity = service.open( [objid: entity.objid] );
+                initList();
+                refresh();
+            }
+            
+            def remove() {
+                if( MsgBox.confirm("You are about to remove this record. Continue?")) {
+                    service.removeEntity( entity );
+                    return "_exit";
+                }
+            }
+            
+            def create() {
+                return InvokerUtil.lookupOpener( "revenueitem:create" ); 
+            }
+            
+        }        
+   ]]>
+   </code>
+   
+   <pages>
+       <page template="com.rameses.enterprise.treasury.revitem.RevenueItemMainPage"/>
+   </pages>   
+   
+</workunit>

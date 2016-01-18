@@ -1,0 +1,28 @@
+<workunit>
+    <invokers>
+        <invoker type="cashreceipt:misc:editor:open" action="init" target="popup"/>
+        <invoker type="formActions" action="_close" caption="Close"/>
+    </invokers>
+    
+    <code>
+        <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import com.rameses.enterprise.treasury.cashreceipt.*
+        
+        class  MiscCashReceiptController extends BasicCashReceipt {
+            void init() {
+                
+            }
+        }
+        ]]>
+        
+    </code>
+    
+    <pages>
+        <page template="com.rameses.enterprise.treasury.cashreceipt.MiscCashReceiptPage"/>
+    </pages>
+    
+</workunit>

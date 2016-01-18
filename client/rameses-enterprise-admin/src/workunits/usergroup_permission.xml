@@ -1,0 +1,49 @@
+<workunit>
+    <invokers>
+         <invoker type="usergroup-folder:formActions" action="init" caption="Permissions" target="popup" />    
+            
+    </invokers>
+   
+    <code>
+    <![CDATA[
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        import java.rmi.server.*;
+        import com.rameses.common.*;
+
+        public class UsergroupPermission  {
+            
+            @Service("UsergroupService")
+            def service;
+            
+            def node;
+            def selectedItem;
+            
+            void init() {
+               
+            }
+            
+            def listHandler = [
+                fetchList: { o->
+                    return service.getPermissions([objid: node.usergroupid]);
+                }
+            ] as EditorListModel;
+            
+            def doOk() {
+                
+            }
+
+            def doCancel() {
+                return "_close";
+            }
+
+        }
+        
+       ]]>
+   </code>
+   <pages>
+       <page template="com.rameses.admin.usergroup.UserGroupPermission"/>
+   </pages>
+</workunit>

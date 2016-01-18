@@ -1,0 +1,54 @@
+<workunit>
+    
+   <invokers>
+         <invoker type="account:detail" />
+   </invokers>
+   
+   <code>
+       <![CDATA[
+        import com.rameses.osiris2.common.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        
+        class AccountEntriesController  {
+        
+            def entity;
+            def service;
+            
+            def title;
+            
+            void init() {
+                title = entity.title;
+            }
+            
+            void reload( e ) {
+                entity = e;
+                init();
+                listModel.reload();
+            }
+            
+            def listModel = [
+                fetchList: { o->
+                    o.objid = entity.objid;
+                    return service.getEntries( o );
+                }
+            
+            ] as PageListModel;
+            
+            void nextPage() {
+                 listModel.moveNextPage();
+            }
+            
+            void prevPage() {
+                listModel.moveBackPage();
+           }
+        }      
+       ]]>
+   </code>
+   
+   <pages>
+       <page template="com.rameses.enterprise.treasury.shared.AccountEntriesPage" />
+   </pages>
+   
+</workunit>

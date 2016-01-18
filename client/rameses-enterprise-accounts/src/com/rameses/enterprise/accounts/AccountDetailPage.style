@@ -1,0 +1,15 @@
+"subAccountModel.item.*" [ mode == 'create' ] {
+    editable:false;
+}
+
+"subAccountModel.item.*" [mode != 'create' ] {
+    editable:true;
+}
+
+"transferParent" [ mode == 'create' ] {
+    visible:false;
+}
+
+"transferParent" [ mode != 'create' ] {
+    visible:true;
+}

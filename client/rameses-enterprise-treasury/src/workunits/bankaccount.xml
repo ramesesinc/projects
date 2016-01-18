@@ -1,0 +1,68 @@
+<workunit>
+    
+   <invokers>
+         <invoker type="bankaccount:open" caption="Bank Account" action="open"/>
+         <invoker type="bankaccount:create" caption="New Bank Account" action="create"/>
+         <invoker type="formActions" caption="Details" action="showDetails" visibleWhen="#{mode=='read' &amp;&amp; page == 'default' }"/>
+         <invoker type="formActions" caption="Back" action="viewMain" visibleWhen="#{page=='details'}"/>
+   </invokers>
+   
+   <code>
+       <![CDATA[
+        import com.rameses.osiris2.common.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        
+        class BankAccountController extends CRUDController {
+            @Binding
+            def binding;
+        
+            @Service("BankAccountService")
+            def service;
+            
+            String entityName = "bankaccount";
+            boolean showConfirmOnSave = false;
+            def acctTypes = ["CHECKING", "CURRENT"];
+            def currencyTypes = [ "PHP", "USD" ];
+            
+            def detailHandler = InvokerUtil.lookupOpener("account:detail");
+            def page = "default";
+            
+            Map createEntity() {
+                return [:];
+            }
+            
+            void entityChanged() {
+                if(page!='details') return;
+                detailHandler.handle.reload( entity );
+            }
+            
+            def showDetails() {
+                detailHandler.handle.service = service;
+                detailHandler.handle.entity = entity;
+                detailHandler.handle.init();
+                page = "details";
+                return page;
+            }
+            
+            def viewMain() {
+                page = "default";
+                return page;
+            }
+            
+            
+            def getLookupBank(){
+                return InvokerUtil.lookupOpener('bank:lookup', ['query.depository': 1])
+            }
+            
+        }      
+       ]]>
+   </code>
+   
+   <pages>
+       <page template="com.rameses.enterprise.treasury.bank.BankAccountPage" />
+       <page name="details" template="com.rameses.enterprise.treasury.shared.AccountDetailsPage" />
+   </pages>
+   
+</workunit>

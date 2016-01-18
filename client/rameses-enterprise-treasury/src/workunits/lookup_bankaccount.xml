@@ -1,0 +1,7 @@
+<workunit extends="wtemplates/ServiceLookupController.xml" serviceName="BankAccountLookupService">
+    
+   <invokers>
+         <invoker type="bankaccount:lookup" caption="Bank Account Lookup" />
+   </invokers>
+   
+</workunit>

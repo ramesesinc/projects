@@ -1,0 +1,91 @@
+<workunit>
+    <invokers>
+        <invoker type="userinfo:option" action="init" caption="Roles"  index="2"/>
+    </invokers>
+   
+    <code>
+    <![CDATA[
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        import java.rmi.server.*;
+
+        public class UserInfoRoleController  {
+        
+            @Service("UserService")
+            def service;
+        
+            @Binding
+            def binding;
+        
+            def entity;
+            def domainList;
+            def selectedDomain;
+            def selectedUsergroup;
+            def usergroups;
+            
+            void initList() {
+                usergroups = service.getUsergroups( [objid: entity.objid] );
+                domainList = usergroups*.domain?.unique();
+            }
+            
+            void init() {
+                initList();
+            }
+            
+            def addUsergroup() { 
+                def params = [
+                    entity:[objid:"UGM"+ new UID(), user: entity], 
+                    view: 'user',
+                    saveHandler:{ o->
+                        if( !usergroups ) usergroups = [];
+                        usergroups << o; 
+                        initList();
+                        binding.refresh();
+                        usergroupList.reload(); 
+                    }
+                ]; 
+                return InvokerUtil.lookupOpener('usergroup:add', params); 
+            } 
+            
+            def editUsergroup() { 
+                if(!selectedUsergroup) return;
+                def params = [
+                    view: 'user',
+                    entity: selectedUsergroup,
+                    saveHandler: { o->
+                        initList();
+                        binding.refresh();
+                        usergroupList.reload(); 
+                    }
+                ];
+                return InvokerUtil.lookupOpener( 'usergroup:edit', params );
+            }
+            
+            
+            void removeUsergroup() { 
+                if(!selectedUsergroup) return;
+                if( MsgBox.confirm("You are about to remove this entry. Continue?")) {
+                    service.removeUsergroup(selectedUsergroup);
+                    usergroups.remove(selectedUsergroup);
+                    initList();
+                    usergroupList.reload(); 
+                }
+            }
+            
+            def usergroupList = [
+                fetchList: { 
+                    if(!selectedDomain ) return [];
+                    return usergroups.findAll{ it.domain == selectedDomain };
+                }
+            ] as BasicListModel;
+            
+        }
+        
+       ]]>
+   </code>
+   <pages>
+       <page template="com.rameses.admin.user.UserInfoRolePage"/>
+   </pages>
+</workunit>

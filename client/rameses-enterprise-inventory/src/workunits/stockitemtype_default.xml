@@ -1,0 +1,25 @@
+<!-- REQUISITION ISSUE SLIP -->
+<workunit>
+    <invokers>
+       <!--
+       <invoker type="stockitem:types" caption="Default" itemtype="DEFAULT"/>
+       --> 
+    </invokers>
+    <code>
+         <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import com.rameses.enterprise.treasury.cashreceipt.*
+        
+        class StockItemTypeDefaultController {
+             
+        }
+        ]]>
+    </code>
+    
+    <pages>
+        <page template="com.rameses.enterprise.inventory.stock.StockItemTypeDefault"/>
+    </pages>
+</workunit>

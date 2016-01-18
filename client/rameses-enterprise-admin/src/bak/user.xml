@@ -1,0 +1,98 @@
+<workunit serviceName="UserService" entityName="user">
+    <invokers>
+        <invoker type="user:create" action="init" caption="User Information" resizable="false"/>
+        <invoker type="user:open" action="open" caption="User Information" resizable="false"/>
+
+        <!-- extended actions -->
+        <invoker type="extActions" caption="Reset Password" action="resetPassword"  
+            visibleWhen="#{mode=='read'}" resizable="false" /> 
+    </invokers>
+   
+    <code>
+    <![CDATA[
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        import java.rmi.server.*;
+
+        public class UserController extends BasicCRUDController {
+        
+            String prefixId = "USR";
+         
+            def selectedUsergroup;
+            def pwd = [:];
+            def domainList;
+            def selectedDomain;
+        
+            @Binding
+            def binding;
+            
+            public void afterOpen(p) {
+                initList();
+            }
+            
+            void entityChanged() {
+                initList();
+                usergroupList.reload(); 
+            }
+            
+            void initList() {
+                domainList = entity.usergroups*.domain?.unique();
+            }
+            
+            def resetPassword() {
+                return InvokerUtil.lookupOpener("user:resetpwd", [entity:entity]);
+            }
+            
+            def addUsergroup() { 
+                def params = [
+                    entity:[objid:"UGM"+ new UID(), user: entity], 
+                    view: 'user',
+                    saveHandler:{ o->
+                        if( !entity.usergroups ) entity.usergroups = [];
+                        entity.usergroups << o; 
+                        initList();
+                        binding.refresh();
+                        usergroupList.reload(); 
+                    }
+                ]; 
+                return InvokerUtil.lookupOpener('usergroup:add', params); 
+            } 
+            
+            def editUsergroup() { 
+                if(!selectedUsergroup) return;
+                def params = [
+                    view: 'user',
+                    entity: selectedUsergroup
+                ];
+                return InvokerUtil.lookupOpener( 'usergroup:edit', params );
+            }
+            
+            
+            void removeUsergroup() { 
+                if(!selectedUsergroup) return;
+                if( MsgBox.confirm("You are about to remove this entry. Continue?")) {
+                    service.removeUsergroup(selectedUsergroup);
+                    entity.usergroups.remove(selectedUsergroup);
+                    initList();
+                    usergroupList.reload(); 
+                }
+            }
+            
+            def usergroupList = [
+                fetchList: { 
+                    if(!selectedDomain ) return [];
+                    return entity.usergroups.findAll{ it.domain == selectedDomain };
+                }
+            ] as BasicListModel;
+            
+           
+        }
+        
+       ]]>
+   </code>
+   <pages>
+       <page template="com.rameses.admin.user.UserPage"/>
+   </pages>
+</workunit>

@@ -1,0 +1,209 @@
+<workunit>
+    <invokers>
+        <invoker type="batchcapture:misc:open" caption="Batch Item Information" action="init" target="popup"/>
+    </invokers>
+    
+    <code>
+    <![CDATA[    
+import com.rameses.rcp.annotations.*
+import com.rameses.rcp.common.*
+import com.rameses.osiris2.client.*
+import com.rameses.osiris2.common.*
+import java.rmi.server.*;
+import com.rameses.gov.treasury.controllers.*
+import com.rameses.osiris2.reports.*;
+
+class BatchCaptureItemController  {
+    
+    //to be feed by the caller
+    def entity, callerListModel, calculateHandler;
+    
+    def selectedItem;
+    def payment = [:];
+    def mode;
+    
+    @Binding 
+    def binding; 
+    
+    void init() { 
+        if ( entity.paymentitems == null ) entity.paymentitems = []; 
+        payment = ( entity.paymentitems ? entity.paymentitems[0] : null ); 
+        mode = (entity.items ? 'edit' : 'create'); 
+        rebuildTotals(); 
+    } 
+
+    def getTotalAmount() {
+        rebuildTotals(); 
+        return entity.amount;  
+    } 
+
+    def getLookupAccount() {
+        return InvokerUtil.lookupOpener("cashreceiptitem:lookup", [ 
+            "query.txntype": "cashreceipt", 
+            "query.collectorid": entity.collector.objid,
+            "query.collectiontype": entity.collectiontype,
+            "query.fund" : entity.collectiontype?.fund,
+            onselect: { o->
+                selectedItem.item = o;
+                selectedItem.fund = o.fund;
+                selectedItem.amount = o.defaultvalue; 
+                selectedItem.valuetype = o.valuetype; 
+            }
+        ]);
+    }
+    
+    def listModel = [
+        fetchList: { o->
+            if (entity.items == null) entity.items = []; 
+            
+            return entity.items;
+        },
+        isColumnEditable: { o,colname-> 
+            if ( colname != 'amount' ) return true; 
+            
+            def valuetype = o.valuetype.toString().toUpperCase();
+            return ( valuetype == 'FIXED'? false : true ); 
+        }, 
+        validateItem: { o-> 
+            validateReceiptItem( o ); 
+        }, 
+        addItem: {o-> 
+            o.uid = "ITM" + new UID();
+            entity.items << o;
+        },
+        commitItem:{o-> 
+            rebuildTotals(); 
+        }, 
+        onRemoveItem:{o-> 
+            if ( !MsgBox.confirm("You are about to remove this entry. Proceed?") ) return false;
+            
+            entity.items.remove( o ); 
+            entity.amount = entity.items.sum{( it.amount? it.amount: 0.0 )} 
+            binding.refresh("entity.amount"); 
+            return true; 
+        } 
+    ] as EditorListModel;
+    
+    void validateReceiptItem( item ) {
+        if ( !item.item?.objid ) throw new Exception('Account is required     '); 
+        if ( item.amount==null ) throw new Exception('Amount is required      '); 
+    }
+
+    void rebuildTotals() {
+        entity.amount = entity.items?.sum{( it.amount? it.amount: 0.0 )} 
+        if ( entity.amount == null ) entity.amount = 0.0;
+
+        entity.totalnoncash = ( payment?.amount ? payment.amount : 0.0 ); 
+        if ( entity.totalnoncash > entity.amount ) {
+            throw new Exception('Your check amount must be equal to total amount'); 
+        } 
+
+        if ( entity.amount == entity.totalnoncash ) {
+            entity.totalcash = 0.0; 
+        } else {
+            entity.totalcash = entity.amount - entity.totalnoncash;     
+        }
+    } 
+
+    void validateCheckPayment() { 
+        if ( !payment ) return; 
+
+        if ( !payment.bank  ) throw new Exception("Bank is required.          ");
+        if ( !payment.refno ) throw new Exception("Check No is required.      ");
+        if ( !payment.refdate ) throw new Exception("Check Date is required.  ");
+        if ( !payment.amount) throw new Exception("Check Amount is required.  ");
+
+        if ( !(payment.amount > 0.0) ) 
+            throw new Exception("Check Amount must be greater than zero       ");
+
+        def amount = entity.items?.sum{( it.amount? it.amount: 0.0 )} 
+        if ( amount == null ) amount = 0.0;
+
+        if ( payment.amount > amount ) 
+            throw new Exception("Check Amount must not be greater than amount to be paid.  "); 
+    } 
+    
+    def doOk() {
+        if ( !entity.items ) throw new Exception("Please enter an item   "); 
+
+        entity.items.each { 
+            if ( !it.item ) throw new Exception("Account is required     ");  
+            if ( !it.amount ) throw new Exception("Amount must not be equals to zero ");  
+        } 
+        
+        validateCheckPayment();
+
+        if ( payment ) { 
+            entity.totalnoncash = payment.amount; 
+            entity.totalcash = entity.amount - payment.amount;  
+            payment.reftype = 'CHECK';
+            payment.particulars = payment.refno + " (" + payment.bank + ") dated " + payment.refdate; 
+            
+            entity.paymentitems?.clear(); 
+            entity.paymentitems << payment; 
+        } else { 
+            entity.totalnoncash = 0.0; 
+            entity.totalcash = entity.amount;
+            entity.paymentitems = []; 
+        } 
+        
+        if ( entity.items.size() > 1 ) { 
+            entity.acctinfo = '( Multiple Accounts )'; 
+        } else { 
+            entity.acctinfo = entity.items[0].item.title;
+        } 
+        
+        if ( callerListModel ) callerListModel.refreshSelectedItem(); 
+        if ( calculateHandler ) calculateHandler( entity, mode ); 
+        
+        return "_close"; 
+    } 
+
+    def doCancel() {
+        return "_close";
+    }
+    
+    def getCollectionGroupHandler() {
+        return InvokerUtil.lookupOpener("collectiongroup:lookup", [ 
+            selectHandler: { items-> 
+                items.each{ it.fund = it.item.fund } 
+                entity.items.addAll( items );
+                rebuildTotals(); 
+                listModel.reload(); 
+                if (binding) binding.refresh(".*");
+            }
+        ]);
+    }
+    
+    def getLookupBank(){
+        return InvokerUtil.lookupOpener('bank:lookup', [
+            onselect : {
+                payment = [:]
+                payment.bankid = it.objid;
+                payment.bank   = it.code;
+                payment.deposittype = it.deposittype;
+            },
+            
+            onempty  : {
+                payment = [:] 
+                binding.refresh("payment.*");
+            }
+        ]); 
+    }
+    
+    def clearAll() {
+        entity.items = []; 
+        entity.amount = 0; 
+        rebuildTotals(); 
+        listModel.reload();
+        binding.refresh("entity.*");
+    } 
+}
+    ]]>        
+    </code>
+    
+    <pages>
+        <page template="com.rameses.enterprise.treasury.cashreceipt.BatchCollectionItemPage"/>
+    </pages>
+    
+</workunit>

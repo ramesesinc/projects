@@ -1,0 +1,48 @@
+<workunit>
+    <invokers>
+        <invoker type="individualentity_general:formActions" caption="Edit Address"  index="5"
+            action="edit" role="MASTER" permission="individualentity.editaddress" target="process"/>
+        <invoker type="formActions" caption="Close" action="_close" immediate="true"/>    
+    </invokers>
+    
+    <code>
+    <![CDATA[
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        import java.rmi.server.UID;
+        import com.rameses.util.*;
+
+        public class IndividualEntityEditAddressController {
+            
+            @Service("EntityAddressService")
+            def service;
+            
+            @Caller
+            def caller;
+            
+            def entity;
+            
+            def edit() {
+                if( !entity.address?.objid ) 
+                    throw new Exception('There is no existing address yet. Click edit instead');
+                def h = { o->
+                    service.update( o ); 
+                    try {
+                        caller.entity.address = o;
+                        caller.refresh();
+                    }
+                    catch(e){;}
+                }
+                def addr = [:];
+                addr.putAll( entity.address );
+                addr.asdefault = 1;
+                return Inv.lookupOpener( "address:editor", [handler:h, entity:addr] );
+            }
+            
+        }        
+   ]]>
+   </code>
+   
+</workunit>

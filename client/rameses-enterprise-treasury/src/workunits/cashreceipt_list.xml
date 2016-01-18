@@ -1,0 +1,6 @@
+<workunit extends="wtemplates/ListController.xml" serviceName="CashReceiptQueryService" 
+    entityName="cashreceiptinfo" allowCreate="false">
+    <invokers>
+        <invoker folderid="/explorer/txn/treasury" caption="Cash Receipts Query" index="11" role="SHARED" permission="cashreceipt.query"/>
+   </invokers>
+</workunit>

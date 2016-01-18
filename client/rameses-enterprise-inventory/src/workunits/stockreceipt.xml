@@ -1,0 +1,91 @@
+<!-- REQUISITION ISSUE SLIP -->
+<workunit>
+    <invokers>
+       <invoker type="stockrequest:purchase:formActions" caption="Receive" action="create" 
+            visibleWhen="#{mode=='read' &amp;&amp; entity?.state == 'OPEN'}" role="AFO"/>
+
+       <invoker type="formActions" caption="Close" action="_exit" visibleWhen="#{mode=='read'}"/>  
+       <invoker type="formActions" caption="Close" action="_close" visibleWhen="#{mode=='create'}" />  
+       <invoker type="formActions" caption="Submit" action="save" visibleWhen="#{mode=='create'}" />  
+    </invokers>
+    
+    <code>
+        <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import java.rmi.server.*
+        
+        class  StockReceiptController  {
+        
+            @Service("StockReceiptService")
+            def service;
+        
+            String title;
+            def entity;
+            def selectedItem;
+            def mode = "read";
+            
+            void create() {
+                def e = [items: [] ];
+                e.objid = "STKRCT"+new UID();
+                e.request = entity;
+                e.reqtype = entity.reqtype;
+                e.itemclass = entity.itemclass;
+                entity.items.each {
+                    def o = [:];
+                    o.item = it.item;
+                    o.handler = it.handler;
+                    o.unit = it.unit;
+                    o.qtyrequested = it.qty;
+                    o.qtyreceived = 0;
+                    e.items << o;
+                }
+                title = "Stock Receipt";
+                mode = "create";
+                entity = e;
+            }
+            
+            def itemModel = [
+                fetchList: { o->
+                    return entity.items;
+                }
+            ] as EditorListModel;
+            
+            def getDetailHandler() {
+                if(!selectedItem) return null;
+                if(selectedItem.handler ) {
+                    String n = "stockreceiptitem:" + selectedItem.handler
+                    try {
+                        return InvokerUtil.lookupOpener( n, [item:selectedItem] );
+                    }
+                    catch(e) {
+                        println e.message;
+                    }
+                }
+                else {
+                    return null;
+                }
+            }
+            
+            def save() {
+                if( !entity.items.findAll{ it.qtyreceived > 0 } )
+                    throw new Exception("Please receive at least one item");
+                    
+                if( MsgBox.confirm("You are about to submit this transaction. Proceed?")) {
+                    entity = service.create(entity);
+                    mode = "read";
+                    MsgBox.alert("Record successfully saved!");
+                }
+            }
+        }
+        ]]>
+        
+    </code>
+    
+    <pages>
+        <page template="com.rameses.enterprise.inventory.stock.StockReceiptPage"/>
+    </pages>
+    
+</workunit>

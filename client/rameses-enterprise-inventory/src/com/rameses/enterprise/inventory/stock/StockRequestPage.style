@@ -1,0 +1,12 @@
+"addItems|reqType|entity.requester"[mode=='create'] {
+    enabled: true;
+}
+
+"addItems|reqType|entity.requester"[mode!='create'] {
+    enabled: false;
+}
+
+"itemModel:.*"[mode!='create'] {
+    editable: false;
+}
+

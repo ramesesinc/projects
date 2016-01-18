@@ -1,0 +1,6 @@
+"entity.code" [mode == 'edit'] {
+    enabled : false;
+}
+"entity.code" [mode != 'edit'] {
+    enabled : true; 
+}

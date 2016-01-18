@@ -1,0 +1,15 @@
+"entity.*" [mode == 'read'] {
+    readonly:true;
+}
+
+"entity.*" [mode != 'read'] {
+    readonly:false;
+}
+
+"entity.objid" [mode == 'create'] {
+    readonly:false;
+}
+
+"entity.objid" [mode != 'create'] {
+    readonly:true;
+}

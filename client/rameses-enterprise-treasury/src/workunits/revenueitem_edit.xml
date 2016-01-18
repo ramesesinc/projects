@@ -1,0 +1,85 @@
+<workunit>
+    <invokers>
+        <invoker type="revenueitem:create" caption="Item Account (New)" action="create"/>
+        <invoker type="revenueitem:edit" caption="Item Account (Edit)" action="edit"/>
+        <invoker type="formActions" caption="Cancel" action="_close" immediate="true"/>
+        <invoker type="formActions" caption="Save" action="save"/>
+    </invokers>
+    
+   <code>
+    <![CDATA[
+    import com.rameses.osiris2.common.*;
+    import com.rameses.rcp.common.*;
+    import com.rameses.rcp.annotations.*;
+    import com.rameses.osiris2.client.*;
+    import com.rameses.common.*;
+    import java.rmi.server.UID;
+
+    public class RevenueItemAccountController  {
+    
+        @Service("RevenueItemAccountService")
+        def service;
+        
+        def saveHandler;
+        def mode;
+        def entity;
+        
+        def valueTypes = [ "ANY", "FIXED", "FIXEDUNIT" ];
+        def itemTypes = LOV.ITEM_ACCOUNT_TYPES*.key; 
+        
+        void create() {
+            this.mode = 'create'
+            this.entity = [objid: 'ITEMACCT' + new UID(), defaultvalue:0.0, state:'APPROVED'];
+            this.entity.type = 'REVENUE';
+            this.entity.tags = [];
+        }
+        
+        void edit() {
+            this.mode = 'edit'
+            this.entity = service.open( [objid: entity.objid] );
+            if(! entity.defaultvalue ) entity.defaultvalue = 0.0 
+        }
+        
+        def save() {
+            if( mode == 'create' ) {
+                if(MsgBox.confirm( "You are about to  save this item. Proceed?")) {
+                    entity = service.create( entity );
+                    if(saveHandler) {
+                        def r = saveHandler(entity);
+                        if ( r != null) return r
+                    }    
+                    return Inv.lookupOpener("revenueitem:open", [entity:entity, initiator: 'create']);
+                }
+            }
+            else {
+                entity = service.update( entity );
+                if(saveHandler) {
+                    def r = saveHandler(entity);
+                    if ( r != null) return r
+                }    
+                return "_close";
+            }
+        }
+        
+        
+        def selectedTag;
+        
+        void addTag() {
+            def t = MsgBox.prompt('Enter Tag');
+            if(!t) return;
+            entity.tags << t.toUpperCase();
+        }
+
+        void removeTag() {
+            if(!selectedTag) return;
+            entity.tags.remove( selectedTag );
+        }
+    }    
+    ]]>
+   </code>
+   
+   <pages>
+       <page template="com.rameses.enterprise.treasury.revitem.RevenueItemEditPage"/>
+   </pages>
+   
+</workunit>

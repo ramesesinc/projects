@@ -1,0 +1,50 @@
+<workunit extends="wtemplates/enterprise/treasury/BasicCashReceiptController.xml">
+    <invokers>
+        <invoker type="cashreceipt:paymentorder" action="initPaymentOrder" />
+    </invokers>
+    
+    <code>
+        <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import com.rameses.enterprise.treasury.cashreceipt.*
+        
+        class  PaymentOrderReceiptController extends BasicCashReceipt {
+                
+            String entityName = "misc_cashreceipt"
+                
+            def paymentorder  
+                
+            @Service("CashReceiptService")
+            def cashReceiptSvc;
+                
+            void initPaymentOrder() {
+                entity = [formtype: "serial", formno:"51", txnmode: 'ONLINE'];
+                entity = cashReceiptSvc.init( entity );
+                entity.payer = paymentorder.info.payer 
+                entity.paidby = paymentorder.info.paidby;
+                entity.paidbyaddress = paymentorder.info.paidbyaddress;
+                entity.collectiontype = paymentorder.info.collectiontype;
+                entity.items = paymentorder.info.items 
+                entity.txnid = paymentorder.txnid 
+                entity.txntype = paymentorder.txntype 
+                entity.type = 'paymentorder' 
+                entity.amount = paymentorder.info.amount 
+                entity.totalcash = 0.0
+                entity.totalnoncash = 0.0
+                super.init() 
+                super.updateBalances();
+            }   
+                
+        }       
+        ]]>
+        
+    </code>
+    
+    <pages>
+        <page template="com.rameses.enterprise.treasury.cashreceipt.PaymentOrderCashReceiptPage"/>
+    </pages>
+    
+</workunit>

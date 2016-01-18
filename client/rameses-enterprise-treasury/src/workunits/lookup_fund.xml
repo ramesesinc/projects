@@ -1,0 +1,5 @@
+<workunit extends="wtemplates/BasicLookupController.xml" serviceName="FundLookupService" tag="lookup">
+    <invokers>
+        <invoker type="fund:lookup" caption="Lookup Fund" target="popup"/>
+    </invokers>
+</workunit>

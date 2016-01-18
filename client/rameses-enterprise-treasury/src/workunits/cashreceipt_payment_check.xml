@@ -1,0 +1,59 @@
+<workunit>
+    <invokers>
+          <invoker type="cashreceipt:payment-check" caption="Check Payment" target="popup"/>
+    </invokers>
+    <code>
+        <![CDATA[
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+
+        class CashReceiptCheckPaymentController {        
+        
+            @Service("CashReceiptService")
+            def cashReceiptSvc;
+            
+            def entity;
+            def check = [amount:0];
+            def saveHandler;
+            
+            def doOk() {
+                if( check.amount <= 0 )
+                    throw new Exception("Amount must be greater than 0"); 
+                cashReceiptSvc.validateCheckDate( check.refdate );
+                check.reftype = "CHECK";
+                check.particulars = check.refno + " (" + check.bank + ") dated " + check.refdate;
+                saveHandler( check );
+                return "_close";
+            }
+            
+            def doCancel() {
+                return "_close";
+            }
+            
+            def getLookupBank(){
+                return InvokerUtil.lookupOpener('bank:lookup', [
+                    onselect : {
+                        check.bankid = it.objid;
+                        check.bank   = it.code;
+                        check.deposittype = it.deposittype;
+                    },
+                    
+                    onempty  : {
+                        check.bankid = null;
+                        check.bank   = null;
+                        check.deposittype = null;
+                    }
+                ])
+            }
+            
+        }
+        ]]>
+    </code>
+    
+    <pages>
+        <page template="com.rameses.enterprise.treasury.cashreceipt.CheckPaymentPage"/>
+    </pages>
+    
+</workunit>

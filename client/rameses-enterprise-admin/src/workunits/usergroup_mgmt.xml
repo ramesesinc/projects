@@ -1,0 +1,10 @@
+<workunit extends="wtemplates/ExplorerViewController.xml" 
+        serviceName="UsergroupService" context="usergroup" 
+        defaultFileType="usergroup" autoSelect="true">
+        
+    <invokers>
+        <invoker folderid="/explorer/admin" caption="User Groups" role="SYSADMIN" permission="system" index="2" action="init"/>
+        <invoker folderid="/home/admin" caption="User Groups" action="init" role="SYSADMIN" 
+            permission="system" index="0" icon="home/icons/admin-usergroup.png"/> 
+   </invokers>
+</workunit>

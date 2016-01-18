@@ -1,0 +1,13 @@
+"entity.*" [ mode == 'read' ] {
+    enabled: false;
+}
+"entity.*" [ mode != 'read' ] {
+    enabled: true;
+}
+
+"add.*|edit.*|remove.*" [mode=='create' || mode=='edit'] { 
+    visible: true; 
+} 
+"add.*|edit.*|remove.*" [!(mode=='create' || mode=='edit')] { 
+    visible: false; 
+} 

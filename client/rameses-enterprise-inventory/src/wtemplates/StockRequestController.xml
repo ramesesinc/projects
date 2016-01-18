@@ -1,0 +1,17 @@
+<!-- REQUISITION ISSUE SLIP -->
+<workunit>
+    
+    <invokers>
+       <invoker type="formActions" caption="Close" action="_close" visibleWhen="#{mode == 'create'}"  shortcut="ctrl C" mnemonic="c" icon="images/toolbars/cancel.png" immediate="true"/>
+       <invoker type="formActions" caption="Submit" action="save" visibleWhen="#{mode == 'create'}" shortcut="ctrl S" mnemonic="s" icon="images/toolbars/save.png"/>
+       <invoker type="formActions" caption="Close" action="_exit" visibleWhen="#{mode != 'create'}" shortcut="ctrl C" mnemonic="c" icon="images/toolbars/cancel.png"/>
+       <invoker type="formActions" caption="Print" action="print" visibleWhen="#{mode != 'create'}" shortcut="ctrl P" mnemonic="p"/>
+    </invokers>
+    
+    <code class="com.rameses.enterprise.inventory.stock.StockRequestController" />
+    
+    <pages>
+        <page template="com.rameses.enterprise.inventory.stock.StockRequestPage"/>
+    </pages>
+    
+</workunit>

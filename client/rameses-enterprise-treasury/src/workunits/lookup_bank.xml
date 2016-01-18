@@ -1,0 +1,22 @@
+<workunit extends="wtemplates/LookupController.xml">
+    
+   <invokers>
+         <invoker type="bank:lookup" caption="Bank" />
+   </invokers>
+   
+   <code>
+       <![CDATA[
+        import com.rameses.osiris2.common.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        
+        class BankController extends BasicLookupController {
+            String serviceName = "BankService";
+            String entityName = "bank";
+            String title = "Bank";
+            String formName = "bank-lookup";
+        }      
+       ]]>
+   </code>
+</workunit>

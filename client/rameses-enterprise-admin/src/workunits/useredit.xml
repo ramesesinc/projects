@@ -1,0 +1,60 @@
+<workunit>
+    <invokers>
+        <invoker type="user:create" action="create" caption="Create New User" target="popup"/>
+        <invoker type="user:edit" action="edit" caption="Edit User"/>
+        
+        <invoker type="formActions" action="_close" caption="Cancel" immediate="true"/>
+        <invoker type="formActions" action="save" caption="Save"/>
+    </invokers>
+   
+    <code>
+    <![CDATA[
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        import java.rmi.server.*;
+
+        public class UserEditController  {
+        
+            @Service( "UserService" )
+            def service;
+            
+            def entity = [:];
+            def handler;
+            def mode;
+            
+            void create() {
+                entity = [objid: "USR" + new UID()];
+                mode = 'create'
+            }
+            
+            void edit() {
+                entity = service.open( [objid: entity.objid] ); 
+                mode = 'edit'
+            }
+            
+            def save() {
+                entity.name = entity.lastname + ", " + entity.firstname;
+                if( entity.middlename ) entity.name += ' ' + entity.middlename;
+                if(mode=='create') {
+                    if( MsgBox.confirm("You are about to save this record. Proceed?")) {
+                        service.create( entity );
+                        return Inv.lookupOpener( "user:open", [entity:entity, initiator: 'create']);
+                    }
+                }
+                else {
+                    service.update( entity );
+                    if(handler) handler(entity);
+                    return "_close";
+                }
+            }
+            
+        }
+        
+       ]]>
+   </code>
+   <pages>
+       <page template="com.rameses.admin.user.UserEditPage"/>
+   </pages>
+</workunit>

@@ -1,0 +1,38 @@
+<workunit>
+    <invokers>
+        <invoker type="userinfo:option" caption="General"/>
+        <invoker type="formActions" caption="Edit" action="edit"/>
+    </invokers>
+   
+    <code>
+    <![CDATA[
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        import java.rmi.server.*;
+
+        public class UserInfoGeneralController  {
+        
+            @Caller
+            def caller;
+        
+            def entity;
+            String entityName = "userinfo:general";
+            
+            void edit() {
+                def h = { o->
+                    entity.putAll( o );
+                    caller.refresh();
+                }
+                caller.binding.fireNavigation( Inv.lookupOpener( "user:edit", [entity: entity, handler: h] ) );
+            }
+            
+        }
+        
+       ]]>
+   </code>
+   <pages>
+       <page template="com.rameses.admin.user.UserInfoGeneralPage"/>
+   </pages>
+</workunit>

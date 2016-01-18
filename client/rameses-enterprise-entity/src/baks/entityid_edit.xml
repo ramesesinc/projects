@@ -1,0 +1,64 @@
+<workunit>
+    <invokers>
+        <invoker type="entityid:create" caption="Add ID" action="create" target="popup"/>
+        <invoker type="entityid:edit" caption="Edit ID"  action="edit"  target="popup"/>
+    </invokers>
+    
+    <code>
+    <![CDATA[
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        import java.rmi.server.UID;
+
+        public class EntityIDController  {
+            
+            @Binding
+            def binding;
+            
+            @Service("EntityIdService")
+            def service;
+            
+            def saveHandler;
+            def entity;
+            def item;
+            def idTypes;
+            def mode = 'edit'
+            
+            void init() {
+                idTypes = LOV.get(entity.type+'_ID_TYPES');
+            }
+            
+            void create() {
+                init();
+                mode = 'create'
+                item = [objid: 'ENTID'+ new UID(), entityid: entity.objid];
+            }
+            
+            void edit() {
+                init();
+                mode = 'edit';
+            }
+            
+            def doOk() {
+                if( mode == 'create' ) 
+                    service.create( item );
+                else
+                    service.update( item );
+                if(saveHandler) saveHandler( item );    
+                return "_close";    
+            }
+            
+            def doCancel() {
+                return "_close";
+            }
+            
+        }        
+   ]]>
+   </code>
+   
+   <pages>
+       <page template="com.rameses.entity.ui.EntityIDPage"/>
+   </pages>   
+</workunit>

@@ -1,0 +1,8 @@
+"selectedItem" [mode == 'read'] {
+    enabled:false;
+}
+
+"selectedItem" [mode != 'read'] {
+    enabled:true;
+}
+

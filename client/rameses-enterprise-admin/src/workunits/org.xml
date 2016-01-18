@@ -1,0 +1,45 @@
+<workunit>
+    <invokers>
+        <invoker type="org:create" caption="Org Information" action="create"/>
+        <invoker type="org:open" caption="Org Information" action="open"/>
+    </invokers>
+    <code>
+        <![CDATA[
+        import com.rameses.osiris2.common.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        
+        class OrgController extends BasicCRUDController {
+        
+            String createFocusComponent = 'entity.name'; 
+            String editFocusComponent = 'entity.name'; 
+            String serviceName = "OrgService";
+            String entityName;
+            String parentclass;
+            
+            @FormTitle
+            String title;
+            
+            def getLookupOrgclass() {
+                return Inv.lookupOpener( "org:lookup", [includes:parentclass] );
+            }
+            
+            Map createEntity() {
+                 return [orgclass:entityName];
+            }
+            
+            public void beforeSave(o) {
+                if(mode == 'create') {
+                    o.objid = o.code;
+                }
+            }
+            
+        }
+        
+        ]]>
+    </code>    
+    <pages>
+        <page template="com.rameses.admin.org.OrgPage"/>
+    </pages>
+</workunit>

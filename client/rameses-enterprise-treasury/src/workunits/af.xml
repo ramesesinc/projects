@@ -1,0 +1,36 @@
+<workunit>
+    
+   <invokers>
+         <invoker type="af:create" caption="Accountable Form" action="create" />
+         <invoker type="af:open" caption="Accountable Form" action="open" />
+   </invokers>
+   
+   <code>
+       <![CDATA[
+        import com.rameses.osiris2.common.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        
+        class AFController extends CRUDController {
+            
+            @Service("AFService")
+            def service;
+            def entityName = "af";
+            
+            def useTypes = ["collection", "disbursement", "general"];
+            def formTypes = [ "serial", "cashticket" ];
+            
+            Map createEntity() {
+                return [ objid: '', system:0, serieslength:0, denomination:0 ]
+            }
+            
+        }      
+       ]]>
+   </code>
+   
+   <pages>
+       <page template="com.rameses.enterprise.treasury.af.AFPage" />
+   </pages>
+   
+</workunit>

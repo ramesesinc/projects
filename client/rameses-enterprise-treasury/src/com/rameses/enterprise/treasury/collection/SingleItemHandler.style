@@ -1,0 +1,11 @@
+"entity.*" [ caller.mode == 'read' ] {
+    readonly: true;
+    editable: false;
+    enabled:false;
+}
+
+"entity.*" [ caller.mode != 'read' ] {
+    readonly: false;
+    editable: true;
+    enabled:true;
+}

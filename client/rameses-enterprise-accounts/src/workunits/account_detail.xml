@@ -1,0 +1,90 @@
+<workunit>
+        
+    <invokers>
+         <invoker type="account-detail:open" caption="Account Detail" action="open"/>
+         <invoker type="account-detail:create" caption="Account Detail" action="create"/>
+   </invokers>
+   
+   <code>
+       <![CDATA[
+        import com.rameses.osiris2.common.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import java.rmi.server.*;
+        
+        class AccountDetailController extends CRUDController {
+        
+            @Caller
+            def caller;
+        
+            String entityName = "account";
+            def node;
+            
+            public String getServiceName() {
+                return caller.getServiceName();
+            }
+            
+            public String getTitle() {
+                return caller.getTitle();
+            }  
+            
+            public String getPrefixId() {
+                return caller.getPrefixId();
+            }
+            
+            public def getAccountService() {
+                return caller.accountService;
+            }
+            
+            Map createEntity() {
+                def m = [parentid:node.objid, type:'detail'];
+                m.parent = [code:node.code, title: node.title];
+                return m;
+            }
+            
+            def transferParent() {
+                return InvokerUtil.lookupOpener( "accountgroup:lookup", [
+                    onselect: { o->
+                        if( MsgBox.confirm('You are about to transfer this account to another group. Continue?') ) {
+                            service.changeParent( [parentid:o.objid, objid:entity.objid] );
+                            entity.parentid = o.objid;
+                            entity.parent = o;
+                            binding.refresh();
+                        }
+                    }
+                ]);
+            }
+            
+            def subAccountModel = [
+                fetchList: { o->
+                    return service.getSubAccounts( entity );
+                },
+                onAddItem: { o->
+                    o.objid = "SUBACCT" + new UID();
+                    o.state = 'APPROVED';
+                    o.type = "subaccount";
+                    o.acctgroup = entity.acctgroup;
+                    o.parentid = entity.objid;
+                },
+                onRemoveItem: { o->
+                    if( MsgBox.confirm("Remove this item. Continue?")) {
+                        service.removeEntity( o ); 
+                        subAccountModel.reload();
+                    }
+                },
+                onCommitItem: {o ->
+                    service.saveSubAccount(o);
+                }
+            ] as EditorListModel;
+            
+            
+        }      
+       ]]>
+   </code>
+   
+   <pages>
+       <page template="com.rameses.enterprise.accounts.AccountDetailPage"/>
+   </pages>
+   
+</workunit>

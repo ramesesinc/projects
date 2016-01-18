@@ -1,0 +1,72 @@
+<workunit>
+    <invokers>
+        <invoker type="accountsegment:open" caption="Segment Mapping" action="init"/>
+        
+        <invoker type="formActions" caption="Back" action="_close"/>
+   </invokers>
+   <code>
+    <![CDATA[
+    import com.rameses.osiris2.common.*;
+    import com.rameses.rcp.common.*;
+    import com.rameses.rcp.annotations.*;
+    import com.rameses.osiris2.client.*;
+    import com.rameses.common.*;
+
+    public class SegmentMappingController {
+    
+        @Service("AccountSegmentService")
+        def segmentSvc;
+
+        def entity;
+        def entityName;
+        def segments; 
+        def selectedSegment;
+
+        String title = "Account Segments";    
+        
+        void init() {
+            def m = [objid:entity.objid, objectname:entityName];
+            segments = segmentSvc.getSegments(m);
+        }
+        
+        def segmentList = [
+            fetchList: { o->
+                return segments;
+            }
+        ] as EditorListModel;
+        
+        def getSegmentLookup() {
+            if( !selectedSegment) return null;
+            
+            def parent = null;
+            if(selectedSegment.depends) {
+                //find the dependency account.
+                parent =  segments.find{ it.name == selectedSegment.depends };
+            }
+            //build lookup params
+            def params = [:];
+            params.put( "query.entity", entity );
+            if( parent ) params.put( "query.parent", parent );
+            
+            params.onselect = { o -> 
+                def m = [
+                    segment:selectedSegment.name, 
+                    objectname: entityName,
+                    objid:entity.objid, 
+                    acctid: o.objid, 
+                ];
+                segmentSvc.addSegment(m);
+                selectedSegment.acctid = o.objid;
+                selectedSegment.value = o.code +"-" + o.title; 
+             }
+            return InvokerUtil.lookupOpener( selectedSegment.source+":lookup", params);
+        }
+    }    
+    ]]>
+   </code>
+   
+   <pages>
+       <page template="com.rameses.enterprise.accounts.SegmentMappingPage"/>
+   </pages>
+   
+</workunit>

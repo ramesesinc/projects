@@ -1,0 +1,5 @@
+<workunit extends="wtemplates/ServiceLookupController.xml" serviceName="UsergroupMemberLookupService" tag="LIQUIDATING_OFFICER">
+    <invokers>
+        <invoker type="liquidatingofficer:lookup" caption="Lookup Liquidating Officer" target="popup"/>
+    </invokers>
+</workunit>

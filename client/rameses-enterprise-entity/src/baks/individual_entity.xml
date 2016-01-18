@@ -1,0 +1,70 @@
+<workunit>
+    <invokers>
+        <!--
+        <invoker type="individualentity:create" caption="Individual" action="create" target="popup" permission="system"/>
+        <invoker type="quick_launcher" code="TP01" caption="Individual" action="create" target="popup" permission="system"/>
+        -->
+        <!--
+         <invoker type="individualentity:open" caption="Individual" action="open" target="popup" permission="system"/>
+         -->
+    </invokers>
+    
+    <code>
+    <![CDATA[
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        import java.rmi.server.UID;
+
+        public class IndividualEntityController extends CRUDController {
+        
+            String prefixId = 'INDI';         
+            String serviceName = 'EntityService'; 
+            String entityType = 'INDIVIDUAL';
+            String title = 'Individual Entity';
+            String createFocusComponent = 'entity.lastname';
+            String editFocusComponent = 'entity.lastname';
+            boolean allowDelete = false; 
+            boolean allowApprove = false; 
+            boolean showConfirmOnSave = false; 
+            
+            def saveHandler;
+            def initial;
+            
+            def genderList = [
+                [name:'M', caption:'MALE'],
+                [name:'F', caption:'FEMALE']
+            ];
+            
+            def civilStatusList = [
+                [name: 'SINGLE', caption:'SINGLE'],
+                [name: 'MARRIED', caption:'MARRIED'],
+                [name: 'COUPLE', caption:'COUPLE'],
+                [name: 'SEPARATED', caption:'SEPARATED'],
+                [name: 'WIDOW', caption:'WIDOW/WIDOWER'],
+            ]
+            
+            void beforeCreate( entity ) {
+                entity.type = 'INDIVIDUAL';
+                if(initial) {
+                    entity.putAll( initial );
+                }
+            } 
+            
+            void afterSave(Object data){
+                entity.name = entity.lastname+', '+entity.firstname;
+		if (entity.middlename) entity.name += ' '+entity.middlename;            
+                if(saveHandler) saveHandler(data);
+            }
+            
+            
+            
+        }        
+   ]]>
+   </code>
+   
+   <pages>
+       <page template="com.rameses.entity.ui.IndividualEntityPage"/>
+   </pages>   
+</workunit>

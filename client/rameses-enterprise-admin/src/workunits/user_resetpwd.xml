@@ -1,0 +1,52 @@
+<workunit>
+    <invokers>
+        <invoker type="userinfo:general:formActions" caption="Reset Password" target="popup" resizable="false"/>
+    </invokers>
+   
+    <code>
+    <![CDATA[
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        import com.rameses.util.*;
+
+        public class UserResetPwdController  {
+            
+            @Service('PasswordService') 
+            def svc;
+            
+            def entity;
+            def pwd = [:];
+            
+            def doOk() {
+                if (pwd.newpwd != pwd.confirmpwd) 
+                    throw new Exception('New password and Confirm password does not matched');
+                   
+                def params = [
+                    userid:     entity.objid, 
+                    password:   Encoder.MD5.encode(pwd.newpwd, entity.username) 
+                ];
+                
+                svc.resetPassword(params); 
+                def profile = OsirisContext.clientContext.properties.PROFILE;
+                if (profile != null) profile.pwd = params.password; 
+                
+                return '_close';
+            }
+            
+            def doCancel() {
+                if (MsgBox.confirm('Are you sure you want to close this window?'))
+                    return '_close'; 
+                else 
+                    return null;
+            }
+        }
+        
+    ]]>
+    </code>
+    
+    <pages>
+        <page template="com.rameses.admin.user.ResetPasswordPage"/>
+    </pages>
+</workunit>

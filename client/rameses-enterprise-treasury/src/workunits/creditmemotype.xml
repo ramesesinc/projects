@@ -1,0 +1,89 @@
+<workunit>
+    
+   <invokers>
+         <invoker type="creditmemotype:open" caption="Credit Memo Type" action="open" role="MASTER" permission="creditmemotype.open"/>
+         <invoker type="creditmemotype:create" caption="Credit Memo Type" action="create" role="MASTER" permission="creditmemotype.create"/>
+   </invokers>
+   
+   <code>
+       <![CDATA[
+        import com.rameses.osiris2.common.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        
+        class CreditTypeController extends CRUDController {
+        
+            @Service("CreditMemoTypeService")
+            def service;
+
+            String entityName = "creditmemotype";
+            String prefixId = "CRTYPE";
+            boolean showConfirmOnSave = false;
+            def valueTypes = [ "ANY", "FIXED", "FIXEDUNIT" ];
+            
+            def selectedAccount;
+            def selectedFund;
+           
+            Map createEntity() { 
+                def m = [objid:''];
+                m.sortorder = 0; 
+                m.issuereceipt = true;
+                m.accounts = []; 
+                m.funds = []; 
+                return m; 
+            } 
+            
+            def getHandlers() {
+                return InvokerUtil.lookupOpeners( "creditmemo:handler" )*.properties.name;
+            }
+            
+            def getLookupAccount() {
+                return Inv.lookupOpener( "creditmemoaccount:lookup", ["query.typeid":entity.objid] );
+            }
+
+            def removeAccount() {
+                if(!selectedAccount) throw new Exception("Please select an account");
+                entity.accounts.remove(selectedAccount); 
+                accountModel.reload();
+            }
+            
+            def accountModel = [
+                fetchList: { o-> 
+                    return entity.accounts; 
+                },
+                sync: {
+                    entity.accounts = service.getAccounts( [objid: entity.objid] ); 
+                    accountModel.reload(); 
+                },
+                onAddItem: { o->
+                    o.typeid = entity.objid; 
+                    entity.accounts << o;
+                },
+                onRemoveItem: { o->
+                    entity.accounts.remove(o);
+                }, 
+                isColumnEditable : { o, col->
+                    return mode.matches('edit|create');
+                }        
+            ] as EditorListModel;
+
+            void afterCreate( o ) {
+                accountModel.reload();
+            } 
+            void afterOpen( o ) {
+                accountModel.reload();
+            }             
+            void afterSave( o ) {
+                accountModel.sync();
+            } 
+            
+       }
+       ]]>
+   </code>
+   
+   <pages>
+       <page template="com.rameses.enterprise.treasury.creditmemo.CreditMemoTypePage" />
+   </pages>
+   
+</workunit>

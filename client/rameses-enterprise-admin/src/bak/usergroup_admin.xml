@@ -1,0 +1,65 @@
+<workunit>
+    <invokers>
+        <invoker type="usergroup-folder:formActions" caption="Admins" action="init" 
+            role="SYSADMIN" target="popup" icon="images/admins.png"/>
+    </invokers>
+    <code>
+        
+        <![CDATA[ 
+            import com.rameses.rcp.annotations.*;
+            import com.rameses.rcp.common.*;
+            import com.rameses.osiris2.client.*;
+            import com.rameses.osiris2.common.*;
+            import java.rmi.server.*;
+            import com.rameses.admin.controller.*;
+            
+            class UserGroupAdmin {
+            
+                @Service("UsergroupAdminService")
+                def usergroupAdminSvc;
+                
+                def node, filetype;
+                def selectedEntity;
+                def usergroupid;
+                
+                String title;
+                
+                void init() {
+                    usergroupid = node.usergroupid;
+                    title = usergroupid;
+                }
+                
+                def adminListModel = [
+                    fetchList: { o->
+                        return usergroupAdminSvc.getList( [usergroupid:usergroupid] );
+                    }
+                ] as BasicListModel;
+                
+                def add() {
+                    return InvokerUtil.lookupOpener("user:lookup", [
+                        onselect: { o->
+                            def entity = [:];
+                            entity.objid = "UGA"+ new UID();
+                            entity.user = o;
+                            entity.usergroupid = usergroupid;
+                            println 'onselect-> '+entity;
+                            usergroupAdminSvc.create(entity);
+                            adminListModel.reload();
+                        }
+                    ]);
+                }
+                
+                def remove() {
+                    if( MsgBox.confirm("You are about to remove this user. Proceed?")) {
+                        usergroupAdminSvc.removeEntity(selectedEntity);
+                        adminListModel.reload();
+                    }
+                }
+            }
+        
+        ]]>
+    </code>
+    <pages>
+        <page template="com.rameses.admin.usergroup.UsergroupAdminPage"/> 
+    </pages>
+</workunit>

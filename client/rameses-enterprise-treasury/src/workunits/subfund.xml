@@ -1,0 +1,37 @@
+<workunit>
+        
+    <invokers>
+         <invoker type="subfund:open" action="open"/>
+         <invoker type="subfund:create" action="create"/>
+   </invokers>
+   
+   <code>
+       <![CDATA[
+        import com.rameses.osiris2.common.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        
+        class FundController extends CrudFileType {
+        
+            String serviceName = "FundService";
+            String entityName = "subfund";
+            String title = "Sub Fund";
+            String prefixId = "SUBFND";
+            def node;
+            
+            Map createEntity() {
+                def m = [type:"subfund"];
+                m.parentid = node.objid;
+                m.parent = [code:node.code, title: node.title];
+                return m;
+            }
+        }      
+       ]]>
+   </code>
+   
+   <pages>
+       <page template="com.rameses.enterprise.accounts.FundPage"/>
+   </pages>
+   
+</workunit>

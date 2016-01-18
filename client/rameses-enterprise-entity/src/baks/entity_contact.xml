@@ -1,0 +1,53 @@
+<workunit>
+    <code>
+    <![CDATA[
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        import java.rmi.server.UID;
+
+        public class IndividualEntityContactController  {
+            
+            @Binding
+            def binding;
+            
+            @Service("EntityContactService")
+            def service;
+            
+            def entity;
+            def selectedContact;
+            
+            def contactTypes = LOV.CONTACT_TYPES;
+            
+            def contactListHandler = [
+                fetchList: {o-> 
+                    return service.getList( [entityid: entity.objid] );
+                },
+                
+                onAddItem: {item-> 
+                    item.objid = 'CONT'+new UID();
+                    item.entityid = entity.objid; 
+                    service.create( item );
+                }, 
+                
+                onUpdateItem: { item ->
+                    service.update( item );
+                },
+                
+                onRemoveItem: {item-> 
+                    if (!MsgBox.confirm('Are you sure you want to remove this item?')) return false;
+                    service.removeEntity(item); 
+                    contactListHandler.reload();
+                    return true;
+                }                
+            ] as EditorListModel;
+            
+        }        
+   ]]>
+   </code>
+   
+   <pages>
+       <page template="com.rameses.entity.ui.EntityContactPage"/>
+   </pages>   
+</workunit>

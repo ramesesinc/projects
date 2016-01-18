@@ -1,0 +1,8 @@
+<workunit extends="wtemplates/ListController.xml" serviceName="BankService" entityName="bank" >
+    <invokers>
+        <invoker type="bankaccount:formActions" caption="Bank List" immediate="true" target="popup"/>
+        <invoker folderid="/explorer/master/treasury" caption="Banks" index="1"  role="MASTER" permission="bank.view"/> 
+       
+        <invoker type="quick_launcher" code="BANK00" caption="Banks"  role="MASTER" permission="bank.view"/> 
+   </invokers>
+</workunit>

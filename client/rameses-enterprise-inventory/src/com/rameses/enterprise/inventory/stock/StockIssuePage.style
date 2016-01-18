@@ -1,0 +1,11 @@
+"requestItems:item.remarks"[item.remarks!='OK'] {
+    color: red;
+} 
+
+"loadStock"[mode=='create'] {
+    enabled: true;
+}
+
+"loadStock"[mode!='create'] {
+    enabled: false;
+}

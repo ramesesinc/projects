@@ -1,0 +1,55 @@
+<workunit>
+    <invokers>
+          <invoker type="cashreceipt:payment-creditmemo" caption="Credit Memo" target="popup"/>
+    </invokers>
+    <code>
+        <![CDATA[
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+
+        class CashReceiptCreditMemoController {        
+        
+            @Binding
+            def binding;
+        
+            def entity;
+            def memo = [amount:0];
+            def saveHandler;
+            
+            def doOk() {
+                if( memo.amount <= 0 )
+                    throw new Exception("Please specify amount");
+                memo.type = "CREDITMEMO";
+                memo.particulars = memo.type + " " + memo.refno + " (" + memo.account.bank + ") dated " + memo.refdate;
+                saveHandler( memo );
+                return "_close";
+            }
+            
+            def doCancel() {
+                return "_close";
+            }
+            
+            def getLookupAccount(){
+                return InvokerUtil.lookupOpener('bankaccount:lookup', [
+                    onselect : { 
+                         memo.account = [ objid: it.objid, bank: it.bank.name, code:it.code, 
+                            fund:[ objid: it.fund.objid, name: it.fund.title] ];
+                         binding.refresh();   
+                    },
+                    onempty  : {
+                        memo.account = null;
+                    }
+                ])
+            }
+            
+        }
+        ]]>
+    </code>
+    
+    <pages>
+        <page template="com.rameses.enterprise.treasury.cashreceipt.CreditMemoPaymentPage"/>
+    </pages>
+    
+</workunit>

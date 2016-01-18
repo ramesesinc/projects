@@ -1,0 +1,74 @@
+<workunit>
+    <invokers>
+        <invoker type="individualentity:edit"  caption="Individual Entity (Edit)" action="init" role="MASTER" permission="individualentity.edit" />
+        <invoker type="formActions" caption="Close" action="_close" immediate="true"/>
+        <invoker type="formActions" caption="Save" action="save"/>
+    </invokers>
+    
+    <code>
+    <![CDATA[
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        import java.rmi.server.UID;
+
+        public class IndividualEntityController  {
+        
+            @Service("IndividualEntityService")
+            def service;
+            
+            def saveHandler;
+            def entity;
+            
+            def genderList = LOV.GENDER.collect{[name:it.key, caption:it.value]};
+            def civilStatusList = LOV.CIVIL_STATUS.collect{[name:it.key, caption:it.value]};
+            
+            def photoHandler;
+            def addressComponent; 
+
+            def citizenshipLookup = [
+                fetchList: { o->
+                    return service.getCitizenshipList(o);
+                }
+            ] as SuggestModel;
+            
+            def religionLookup = [
+                fetchList: { o->
+                    return service.getReligionList(o);
+                }
+            ] as SuggestModel;   
+            
+            def professionLookup = [
+                fetchList: { o->
+                    return service.getProfessionList(o);
+                }
+            ] as SuggestModel; 
+                        
+            void init() {
+                addressComponent = Inv.lookupOpener('address:component', [
+                    entity: entity.address
+                ]); 
+                photoHandler = Inv.lookupOpener( 'photo:component', [
+                    handler: {o->entity.photo = o.image; entity.thumbnail = o.thumbnail;},
+                    photo: entity.photo
+                ] );                
+            }
+
+            
+            def save() {
+                entity = service.update( entity );
+                if(saveHandler) {
+                    def r =  saveHandler(entity);
+                    if( r == '_close' ) return '_close'; 
+                }    
+                return "_close";
+            }
+        }        
+        ]]>
+   </code>
+   
+   <pages>
+       <page template="com.rameses.entity.ui.IndividualEntityEditPage"/>
+   </pages>   
+</workunit>

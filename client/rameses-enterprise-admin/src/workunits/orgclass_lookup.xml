@@ -1,0 +1,5 @@
+<workunit extends="wtemplates/ServiceLookupController.xml" serviceName="OrgClassLookupService">
+    <invokers>
+        <invoker type="orgclass:lookup" caption="Lookup Org Class" target="popup"/>
+    </invokers>
+</workunit>

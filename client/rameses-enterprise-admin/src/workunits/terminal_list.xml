@@ -1,0 +1,10 @@
+<workunit extends="wtemplates/ListController.xml" serviceName="TerminalAdminService" 
+    entityName="terminal" allowCreate="false" allowOpen="false" allowSearch="false" 
+    formName="terminal" rows="20">  
+    
+    <invokers>
+        <invoker folderid="/explorer/admin" caption="Terminals" role="SYSADMIN" permission="system" index="10"/>
+        <invoker folderid="/home/admin" caption="Terminals" role="SYSADMIN" 
+            permission="system" index="10" icon="home/icons/admin-terminal.png"/>
+   </invokers>
+</workunit>

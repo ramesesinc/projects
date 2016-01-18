@@ -1,0 +1,45 @@
+<workunit>
+    <invokers>
+        <invoker type="cashreceipt-initial:formActions" caption="Barcode"
+            shortcut="ctrl B" mnemonic="b" target="process" action="init" index="50"/>
+        
+        <invoker type="cashreceipt:online" caption="Barcode" target="process" index="50" 
+            icon="images/toolbars/barcode_global.png"/>
+                
+    </invokers>    
+    <code>
+    <![CDATA[
+        import com.rameses.osiris2.common.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.util.*;
+        
+        class CashReceiptBarcode {
+        
+            @Service("CashReceiptBarcodeService")
+            def barcodeSvc;
+        
+            def init() {
+                def p = MsgBox.prompt("Enter barcode");
+                if( p == null || p.toString().length() <= 5 ) return;
+                def prefix = p.substring(0,5); 
+                def barcodeid = p.substring(6);
+                try {
+                    def e = barcodeSvc.init( [barcodeid: barcodeid, prefix: prefix] );
+                    def m = [barcodeid: barcodeid];
+                    m.entity = e;
+                    return InvokerUtil.lookupOpener( "cashreceipt:barcode:"+prefix, m);
+                }
+                catch(e) {
+                    //MsgBox.err("No appropriate handler found for this particular barcode.[ cashreceipt:barcode:"+prefix+"]->"+barcodeid);
+                    MsgBox.err( e );
+                    return null;
+                }
+            }
+        }
+        
+        ]]>
+    </code>    
+    
+</workunit>

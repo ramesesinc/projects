@@ -1,0 +1,120 @@
+<workunit>
+    <invokers>
+        <invoker type="individualentity_general:formActions" caption="Edit Name" 
+            action="init" role="MASTER" permission="individualentity.editname" target="self"/>
+    </invokers>
+    
+    <code>
+    <![CDATA[
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        import java.rmi.server.UID;
+
+        public class IndividualEntityEditNameController extends PageFlowController {
+            
+            @Caller 
+            def caller
+        
+            @Service("IndividualEntityService")
+            def service;
+            
+            @Service("IndividualEntityNameMatchService")
+            def matchService;
+            
+            def onselect;
+            def entity;
+            boolean hasMatch;
+            def matchList;
+            def selectedItem;
+            
+            def savehandler;
+            def mode = "edit";
+            
+            def temp;
+            
+            def init() {
+                temp = [:];
+                temp.lastname = entity.lastname;
+                temp.firstname = entity.firstname;
+                temp.middlename = entity.middlename;
+                return super.start();
+            }
+            
+            void checkHasMatch() {
+                hasMatch = false;
+                matchList =  matchService.getMatches(temp);
+                def o = matchList.find{it.objid == entity.objid}
+                if(o) matchList.remove( o );
+                if(matchList.size()>0){
+                    hasMatch = true;
+                    selectedItem = matchList[0];
+                }    
+            }
+            
+            def getInfo() {
+                return temp;
+            }
+            
+            def listModel = [
+                fetchList: { o->
+                    return matchList;
+                }
+            ] as BasicListModel;
+            
+            
+            def getSelectedPhoto() {
+                if(!selectedItem) return null;
+                if(!selectedItem.photo) {
+                    selectedItem.photo = service.getPhoto( [objid: selectedItem.objid] );
+                }
+                return selectedItem.photo;
+            }
+            
+            def saveUpdate() {
+              if( matchList.find{ it.match == 100.0 } ) {
+                    boolean allowed = false;
+                    try {
+                        def test = Inv.lookupOpener( "individualentity:approveduplicate", [:] );
+                        if(test) allowed = true;
+                    }
+                    catch(e) {;}
+                    if( !allowed )  {
+                        throw new Exception("There is an exact match for the record. You do not have enough rights to override.");                    
+                    }    
+                }    
+                entity.lastname = temp.lastname;
+                entity.firstname = temp.firstname;
+                entity.middlename = temp.middlename;
+                entity = service.editName( entity );
+                if(caller?.binding) caller.binding.refresh();
+            }
+            
+            
+        }        
+   ]]>
+   </code>
+   <pageflow>
+       <start>
+           <transition to="initial"/>
+       </start>
+       <page name="initial" title="Edit Entity Name">
+           <transition to="end" caption="Close" immediate="false" />
+           <transition to="check-has-match" caption="Next" immediate="false"/>
+       </page>
+       <process name="check-has-match" action="checkHasMatch">
+           <transition to="match" cond="#{hasMatch == true}"/> 
+           <transition to="end" cond="#{hasMatch == false}" action="saveUpdate"/> 
+       </process>
+       <page name="match" title="New Individual Entity (Possible Duplicate Match)">
+           <transition to="initial" caption="Back" name="back"/>
+           <transition to="end" caption="Continue with Update" action="saveUpdate"/> 
+       </page>
+       <end/>
+   </pageflow>
+   <pages>
+       <page name="initial" template="com.rameses.entity.ui.IndividualEntityEditNamePage"/>
+       <page name="match" template="com.rameses.entity.ui.MatchNameListPage"/>
+   </pages>   
+</workunit>

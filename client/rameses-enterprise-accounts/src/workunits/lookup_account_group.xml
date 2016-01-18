@@ -1,0 +1,5 @@
+<workunit extends="wtemplates/BasicLookupController.xml" serviceName="AccountService" tag='group'>
+    <invokers>
+        <invoker type="accountgroup:lookup" caption="Lookup Account Group" target="popup"/>
+    </invokers>
+</workunit>

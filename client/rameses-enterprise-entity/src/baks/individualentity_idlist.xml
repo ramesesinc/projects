@@ -1,0 +1,5 @@
+<workunit extends="workunits/entity_idlist.xml">
+    <invokers>
+        <invoker type="individualentity:option" caption="ID" index="5" />
+    </invokers>
+</workunit>

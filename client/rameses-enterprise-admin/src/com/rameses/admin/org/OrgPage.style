@@ -1,0 +1,6 @@
+"entity.code" [mode != 'create'] {
+    enabled : false;
+}
+"entity.code" [mode == 'create'] {
+    enabled : true; 
+}

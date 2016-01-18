@@ -1,0 +1,48 @@
+<workunit extends="wtemplates/ListController.xml" serviceName="RemittanceListService" entityName="remittance">
+
+    <invokers>
+        <invoker folderid="/explorer/txn/treasury" caption="Remittances" role="SHARED,COLLECTOR" index="42">
+            <action name="doInit" role="SHARED" tag="all" permission="remittance.view"/> 
+            <action name="doInit" role="COLLECTOR" tag="bycollector"/>             
+        </invoker>
+        
+        <invoker folderid="home/remittance" caption="Remittances" role="SHARED,COLLECTOR" target="window">
+            <action name="doInit" role="SHARED" tag="all" permission="remittance.view"/> 
+            <action name="doInit" role="COLLECTOR" tag="bycollector"/>             
+        </invoker>
+    </invokers>
+    
+    <code> 
+    <![CDATA[ 
+    
+import com.rameses.rcp.annotations.*;
+import com.rameses.rcp.common.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.common.*;
+import com.rameses.rcp.framework.ClientContext;
+
+class RemittanceListController extends DefaultListController 
+{
+    boolean is_shared_owner;
+    
+    def invo; 
+    
+    void doInit( invo ) {
+        this.invo = invo;
+        this.is_shared_owner = (invo.properties.tag == 'all'); 
+    } 
+
+    boolean isAllowCreate() { 
+        return (is_shared_owner? false: true); 
+    }
+
+    void beforeFetchList( Map params ) { 
+        params.admin = is_shared_owner; 
+        params._tag = invo.properties.tag; 
+    }
+} 
+
+    ]]> 
+    </code>
+        
+</workunit>

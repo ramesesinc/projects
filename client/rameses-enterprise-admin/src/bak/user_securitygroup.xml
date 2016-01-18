@@ -1,0 +1,83 @@
+<workunit>
+    <invokers>
+        <invoker type="user-securitygroup:open" action="init" caption="User Security Group" 
+            resizable="false" target="popup" role="SYSADMIN"/>
+   </invokers>
+   
+   <code>
+        <![CDATA[
+
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+
+        public class UserSecurityGroupController {
+        
+            @Service('SecuritygroupAdminService')
+            def svc; 
+            
+            @Service('UsergroupService') 
+            def usergroupSvc;
+            
+            def entity;
+            def permissions;
+            
+            def objectList;
+            def selectedObject;
+            
+            void init() { 
+                permissions = svc.getSecurityGroupPermissions(entity); 
+                permissions.each {
+                    it.checked = (!entity.exclude || !it.code.matches(entity.exclude));
+                }
+                objectList = permissions*.object.unique();
+            } 
+            
+            def permissionListModel = [
+            
+                fetchList: {o-> 
+                    if (!selectedObject) return []; 
+                    
+                    def list = permissions.findAll {
+                        it.object == selectedObject;
+                    };
+                    return list;
+                }
+            
+            ] as EditorListModel;
+            
+            def buildExclude() {
+                def excludes = [];
+                permissions.groupBy{ it.object }.each{ k,v->
+                    def checkedList = v.findAll{ it.checked };
+                    if(checkedList.size()==0) {
+                        excludes << k + ".*";
+                    }   
+                    else {
+                        def uncheckedList = v.findAll{ !it.checked }; 
+                        if(uncheckedList.size() >0) {
+                            excludes << k + ".(" + uncheckedList*.permission.join("|") + ")";
+                        }
+                    } 
+                }
+                return excludes.join("|");
+            }             
+            
+            def doOk() {
+                entity.exclude = buildExclude(); 
+                usergroupSvc.updatePermission([objid: entity.objid, exclude: entity.exclude]); 
+                return '_close';
+            } 
+            
+            def doCancel() {
+                return '_close';
+            }
+        }
+        
+       ]]>
+   </code>
+   <pages>
+       <page template="com.rameses.admin.usergroup.UserSecurityGroupInfoPage"/>
+   </pages>
+</workunit>

@@ -1,0 +1,23 @@
+<workunit extends="wtemplates/ListController.xml">
+    
+    <invokers>
+        <invoker folderid="/explorer/master/treasury" caption="Credit Memo Types" role="MASTER"
+                    index="1" permission="creditmemotype.view" />
+    </invokers>
+    
+    <code>
+         <![CDATA[
+        import com.rameses.osiris2.common.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.util.*;
+        
+        class CreditMemoTypeList extends ListController {
+            String serviceName = "CreditMemoTypeService";
+            String entityName  = "creditmemotype"; 
+        }
+        ]]>
+    </code>
+      
+</workunit>

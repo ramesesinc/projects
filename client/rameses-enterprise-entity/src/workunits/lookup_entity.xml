@@ -1,0 +1,43 @@
+<workunit extends="wtemplates/ServiceLookupController.xml" serviceName="EntityLookupService" allowSearch="true">
+   <invokers>
+         <invoker type="entity:lookup" caption="Lookup Entity" action="init" target="popup" height="350"/>
+   </invokers>
+   <code>
+       <![CDATA[
+       import com.rameses.rcp.annotations.*;
+       import com.rameses.rcp.common.*;
+       import com.rameses.osiris2.client.*;
+       import com.rameses.osiris2.common.*;
+       
+       class EntityLookup extends ServiceLookupController {
+              
+            @Service("EntityService")
+            def typeSvc;
+
+            boolean allowSelectEntityType = true;
+                        
+            def entityTypes; 
+            def selectedType;
+            
+            void init() {
+                entityTypes = typeSvc.getTypes();
+                if ( query.allowSelectEntityType == false ) {
+                    allowSelectEntityType = false; 
+                } 
+            }
+            
+            void setSelectedType( selectedType ) {
+                if ( allowSelectEntityType ) { 
+                    this.selectedType = selectedType; 
+
+                    query.type = selectedType; 
+                    if ( binding ) search(); 
+                } 
+            } 
+       } 
+       ]]>
+   </code> 
+   <pages> 
+       <page name="queryform" template="com.rameses.entity.ui.EntityLookupQueryForm"/>
+   </pages> 
+</workunit>

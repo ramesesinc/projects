@@ -1,0 +1,16 @@
+"addDeposit" [entity.depositbyaccount == false]{
+    visible:true;
+}
+
+"addDeposit" [entity.depositbyaccount == true]{
+    visible:false;
+}
+
+
+"addDepositByBankAccount" [entity.depositbyaccount == false]{
+    visible:false;
+}
+
+"addDepositByBankAccount" [entity.depositbyaccount == true]{
+    visible:true;
+}

@@ -1,7 +1,6 @@
-<workunit>
+<workunit extends="wtemplates/SimpleReportController.xml" >
     <invokers>
         <invoker type="business_application:unifiedform" caption="Print Back" action="viewReport" index="2"/>
-        <invoker type="formActions" action="_close" caption="Close"/>
     </invokers>
     
     <code>
@@ -27,9 +26,9 @@
             @Service("BusinessApplicationUnifiedFormService") 
             def service;
             
-            void viewReport() {
+            def viewReport() {
                 data = service.getReport2( [objid: entity.objid] );
-                report.viewReport();
+                return report.viewReport();
             } 
             
             def report = [
@@ -44,10 +43,5 @@
            
         }
         ]]>
-    </code>
-    
-    <pages>
-        <page template="com.rameses.osiris2.common.ui.ReportPreviewPage"/>
-    </pages>
-    
+    </code>     
 </workunit>

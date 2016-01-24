@@ -1,4 +1,4 @@
-<workunit extends="wtemplates/gov/bp/ReportController.xml" >
+<workunit extends="wtemplates/ReportController.xml" >
     <invokers>
         <invoker folderid="/explorer/report/bpls" action="init" role="REPORT" 
             caption="Quarterly Paid Business Listing" target="window" index="-80"/>
@@ -13,7 +13,7 @@
         import com.rameses.osiris2.client.*;
         import com.rameses.osiris2.reports.*;
         
-        public class QuarterlyPaidBusinessListingReportController extends com.rameses.etracs.shared.ReportController 
+        public class QuarterlyPaidBusinessListingReportController extends ReportController 
         {
         
             @Service('BPQuarterlypPaidReportService')
@@ -40,7 +40,6 @@
                 reportdata = svc.generateQtrlyPaidBusinessListing( [year:year] );
                 report.viewReport();
             }
-            
         }
     ]]>
     </code>

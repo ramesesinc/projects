@@ -1,8 +1,6 @@
-<workunit>
+<workunit extends="wtemplates/SimpleReportController.xml" >
     <invokers>
         <invoker type="business_application:unifiedform" caption="Print Front" action="preview" index="1"/>
-        
-        <invoker type="formActions" caption="Close" action="_close"/>
     </invokers>
     
     <code>
@@ -53,9 +51,4 @@ class BusinessApplicationPrintoutReportController extends ReportController {
 } 
     ]]>
     </code>
-    
-    <pages>
-        <page name="report" template="com.rameses.osiris2.common.ui.ReportPreviewPage"/>
-    </pages>
-    
 </workunit>

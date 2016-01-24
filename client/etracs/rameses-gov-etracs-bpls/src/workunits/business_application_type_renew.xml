@@ -60,13 +60,12 @@
             void loadBusiness( def businessid ) {
                 try {
                     application.init( [businessid:businessid, apptype: 'RENEW'] );
-                    lob.reset();
-                }
-                catch(Warning w) {
+                    lob.reset(); 
+                    requirement.reset(); 
+                } catch(Warning w) {
                     Modal.show( 'business_redflag:warning', [list: w.info.list] );
                     throw new BreakException();
-                }
-                catch(e) {
+                } catch(e) {
                     throw e;
                 }
             }
@@ -92,6 +91,16 @@
                 appinfo.handler = {
                     test = true;
                 }
+
+                def renewapp = entity.lobs.find{ it.assessmenttype.toString().toUpperCase()=='RENEW' }
+                def retireapp = entity.lobs.find{ it.assessmenttype.toString().toUpperCase()=='RETIRE' }
+                def newapp = entity.lobs.find{ it.assessmenttype.toString().toUpperCase()=='NEW' }
+                if ( retireapp?.objid && !renewapp?.objid && !newapp?.objid ) { 
+                    throw new Exception('Please use the Retire Application facility if all lines of business were marked as RETIRE'); 
+                } 
+
+                requirement.fetch(); 
+
                 Modal.show( appinfo.update());
                 if(!test) throw new BreakException();
                 appinfo.verify();
@@ -109,7 +118,11 @@
                 if(!b) throw new Exception("Business does not exist");
                 loadBusiness( b.objid );
             }
-            
+
+            void save() { 
+                requirement.verify();
+                application.save(); 
+            } 
         }
         ]]>
     </code>    
@@ -142,12 +155,12 @@
 
         <page name="edit-lob" title="Edit Line of Business">
             <transition to="edit-contact" caption="Back" mnemonic="B" name="back"/>
-            <transition to="confirm" caption="Next" mnemonic="B" name="next" action="updateInfo"/>
+            <transition to="confirm" caption="Next" mnemonic="N" name="next" action="updateInfo"/>
         </page>
 
         <page name="confirm" title="Confirm (For Renewal)">
             <transition to="edit-lob" caption="Back" mnemonic="B" name="back"/>
-            <transition to="save-success" caption="Submit" mnemonic="S" name="save" action="application.save"
+            <transition to="save-success" caption="Submit" mnemonic="S" name="save" action="save"
             confirm="You are about to save this transaction. Continue?"/>
         </page>
         

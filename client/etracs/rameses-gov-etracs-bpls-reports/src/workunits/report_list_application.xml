@@ -1,4 +1,4 @@
-<workunit extends="wtemplates/gov/bp/ReportController.xml" >
+<workunit extends="wtemplates/ReportController.xml" >
     <invokers>
         <invoker folderid="/explorer/report/bpls" action="init" role="REPORT" 
             caption="Application Listing" target="window" index="-90"/>
@@ -59,6 +59,10 @@ public class ApplicationListingReportController extends com.rameses.etracs.share
                 [type:'combo', caption:'Barangay', name:'entity.barangay', items:'barangaylist',  expression:'#{item.name}', preferredSize:'0,20', captionWidth:100],
                 [type:'combo', caption:'Classification', name:'entity.classification', items:'classificationlist', expression:'#{item.name}', preferredSize:'0,20', captionWidth:100],
                 [type:'lookup', caption:'Line of Business', name:'entity.lob', handler:'lookupLOB', expression:'#{item.name}', depends:'entity.classification', preferredSize:'0,20', captionWidth:100],
+
+                [type:'label', caption:'', expression:' ', preferredSize:'0,10', showCaption:false],
+                [type:'checkbox', caption:'',  text:'With Capital', name:'entity.withcapital', immediate:true, preferredSize:'0,20', captionWidth:100 ], 
+                [type:'checkbox', caption:'',  text:'With Gross', name:'entity.withgross', immediate:true, preferredSize:'0,20', captionWidth:100 ] 
             ]; 
         } 
     ] as FormPanelModel; 
@@ -67,6 +71,7 @@ public class ApplicationListingReportController extends com.rameses.etracs.share
         def outcome = super.initReport(); 
         entity.state_completed = true; 
         entity.period = periodUtil.types[0]; 
+        entity.withgross = entity.withcapital = true; 
         return outcome; 
     } 
     
@@ -125,6 +130,8 @@ public class ApplicationListingReportController extends com.rameses.etracs.share
             BARANGAYNAME   : ( entity.barangay? entity.barangay.name : '(ALL)' ),
             CLASSIFICATION : ( entity.classification? entity.classification.name : '(ALL)' ),
             LOB            : ( entity.lob? entity.lob.name : '(ALL)' ),
+            WITH_CAPITAL   : ( entity.withcapital ? 1 : 0 ),
+            WITH_GROSS     : ( entity.withgross ? 1 : 0 )
         ]; 
     }
 

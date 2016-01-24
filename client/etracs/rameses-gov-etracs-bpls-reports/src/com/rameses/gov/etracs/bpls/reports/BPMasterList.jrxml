@@ -35,7 +35,7 @@
 	<parameter name="TREASURERTITLE" isForPrompting="false" class="java.lang.String"/>
 	<parameter name="TREASUREROFFICENAME" isForPrompting="false" class="java.lang.String"/>
 	<parameter name="PARENTLGUFORMALNAME" isForPrompting="false" class="java.lang.String"/>
-	<parameter name="YEAR" isForPrompting="false" class="java.lang.Number"/>
+	<parameter name="YEAR" isForPrompting="false" class="java.lang.Object"/>
 	<parameter name="TXNSTATE" isForPrompting="false" class="java.lang.String"/>
 
 	<field name="activeyear" class="java.lang.Integer"/>
@@ -410,7 +410,7 @@
 					</textElement>
 				<text><![CDATA[REPUBLIC OF THE PHILIPPINES]]></text>
 				</staticText>
-				<image  scaleImage="FillFrame" vAlign="Top" hAlign="Left" isUsingCache="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<image  scaleImage="RetainShape" vAlign="Top" hAlign="Center" onErrorType="Blank" isUsingCache="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Opaque"
 						x="279"
@@ -428,7 +428,7 @@
 					<graphicElement stretchType="NoStretch" fill="Solid" >
 					<pen lineWidth="0.0" lineStyle="Solid"/>
 </graphicElement>
-					<imageExpression class="java.io.InputStream"><![CDATA[$P{LOGOLGU}]]></imageExpression>
+					<imageExpression class="java.lang.String"><![CDATA["classpath://images/lgu-logo.png"]]></imageExpression>
 				</image>
 				<staticText>
 					<reportElement
@@ -525,7 +525,7 @@
 					<textElement textAlignment="Left" verticalAlignment="Middle">
 						<font fontName="Tahoma" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.Number"><![CDATA[$P{YEAR}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[""+$P{YEAR}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement

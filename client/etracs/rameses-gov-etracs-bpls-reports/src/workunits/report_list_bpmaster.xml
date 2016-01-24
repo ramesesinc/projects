@@ -1,4 +1,4 @@
-<workunit extends="wtemplates/gov/bp/ReportController.xml" >
+<workunit extends="wtemplates/ReportController.xml" >
     <invokers>
         <invoker folderid="/explorer/report/bpls" action="init" role="REPORT" 
             caption="Taxpayer Listing" target="window" index="-90"/>
@@ -13,7 +13,7 @@ import com.rameses.osiris2.common.*;
 import com.rameses.osiris2.client.*;
 import com.rameses.osiris2.reports.*;
 
-public class BPMasterListReportController extends com.rameses.etracs.shared.ReportController  
+public class BPMasterListReportController extends ReportController  
 {
     @Service('BPMasterListReportService')
     def svc;

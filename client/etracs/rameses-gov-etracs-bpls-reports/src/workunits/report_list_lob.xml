@@ -1,4 +1,4 @@
-<workunit>
+<workunit extends="wtemplates/SimpleReportController.xml" >
     <invokers>
         <invoker folderid="/explorer/report/bpls" action="preview" role="REPORT" 
             caption="Line of Business Listing" target="window" index="-100"/>
@@ -32,8 +32,4 @@
         }
     ]]>        
     </code>
-    
-    <pages>
-        <page name="preview" template="com.rameses.osiris2.common.ui.ReportPreviewPage" />
-    </pages>
 </workunit>

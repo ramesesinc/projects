@@ -21,6 +21,7 @@
             public def doOk() {
                 if(info.completed && !info.refno)
                     throw new Exception("Please provide refno");
+
                 handler(info);
                 return "_close";
             }

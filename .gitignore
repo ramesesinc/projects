@@ -28,3 +28,6 @@ android/*/Thumbs.db
 
 server/*/_tmp
 server/*/_dev
+/client/custom/gov-lgu-iligan-bpls/nbproject/private/
+/client/custom/gov-lgu-iligan-bpls/dist/
+/client/custom/gov-lgu-iligan-bpls/build/

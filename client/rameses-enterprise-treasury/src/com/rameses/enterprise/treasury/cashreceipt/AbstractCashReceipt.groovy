@@ -26,7 +26,11 @@ public abstract class AbstractCashReceipt {
     void init() {
         title = entity.collectiontype.title;
         completed = false;
-    }
+
+        if ( entity.txnmode.toString().toUpperCase()=='OFFLINE' ) {
+            service.verifyOffline( entity ); 
+        } 
+    } 
     
     def createAnother() { 
         if (createHandler) { 

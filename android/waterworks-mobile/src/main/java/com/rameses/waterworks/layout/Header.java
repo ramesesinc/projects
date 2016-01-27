@@ -1,7 +1,9 @@
 package com.rameses.waterworks.layout;
 
 import com.rameses.Main;
+import com.rameses.waterworks.dialog.Dialog;
 import com.rameses.waterworks.page.ConnectionSetting;
+import com.rameses.waterworks.page.UserAccount;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -12,16 +14,15 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
 public class Header {
     
     public static Text TITLE;
     private BorderPane root;
-    private static VBox settingContainer;
+    private static HBox settingContainer;
     private Button setting;
+    public static Button useraccount;
     
     public Header(){
         TITLE = new Text();
@@ -43,21 +44,47 @@ public class Header {
         }
         
         setting = new Button();
+        setting.setStyle("-fx-base: white;");
         setting.setGraphic(image);
         setting.setFocusTraversable(false);
         setting.setOnAction(new EventHandler<ActionEvent>(){
             @Override
             public void handle(ActionEvent event) {
-                Main.prevScreen = Main.ROOT.getCenter();
-                Main.prevTitle = TITLE.getText();
-                Main.ROOT.setCenter(new ConnectionSetting().getLayout());
+                if(!Header.TITLE.getText().equals("Connection Setting")){
+                    Main.prevScreen = Main.ROOT.getCenter();
+                    Main.prevTitle = TITLE.getText();
+                    Main.ROOT.setCenter(new ConnectionSetting().getLayout());
+                }
             }
         });
         
-        settingContainer = new VBox();
+        ImageView image2 = new ImageView(new Image("icon/user1.png"));
+        
+        if(Main.HEIGHT > 800){
+            image2.setFitWidth(35);
+            image2.setFitHeight(35);
+        }else{
+            image2.setFitWidth(25);
+            image2.setFitHeight(25);
+        }
+        
+        useraccount = new Button();
+        useraccount.setStyle("-fx-base: white;");
+        useraccount.setGraphic(image2);
+        useraccount.setFocusTraversable(false);
+        useraccount.setVisible(false);
+        useraccount.setOnAction(new EventHandler<ActionEvent>(){
+            @Override
+            public void handle(ActionEvent event) {
+                Node node = new UserAccount().getLayout();
+                Dialog.show("User Account", node);
+            }
+        });
+        
+        settingContainer = new HBox(8);
         settingContainer.setPadding(new Insets(8));
         settingContainer.setAlignment(Pos.CENTER);
-        settingContainer.getChildren().add(setting);
+        settingContainer.getChildren().addAll(useraccount, setting);
         
         root = new BorderPane();
         root.setId("header-container");

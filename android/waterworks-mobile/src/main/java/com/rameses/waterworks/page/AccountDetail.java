@@ -80,10 +80,10 @@ public class AccountDetail {
         btnContainer.getChildren().addAll(print,close);
         
         Database db = DatabasePlatformFactory.getPlatform().getDatabase();
-        Reading reading = db.findReadingByMeter(account.getMeterid());
+        Reading reading = db.findReadingByAccount(account.getObjid());
         if(reading != null){
             present = String.valueOf(Integer.parseInt(reading.getReading()));
-            consumption = String.valueOf(Integer.parseInt(present)-Integer.parseInt(account.getPrevReading()));
+            consumption = String.valueOf(Integer.parseInt(present)-Integer.parseInt(account.getLastReading()));
             account.setConsumption(reading.getConsumption());
             account.setAmtDue(reading.getAmtDue());
             account.setTotalDue(reading.getTotalDue());
@@ -98,7 +98,7 @@ public class AccountDetail {
         readingContainer.setStyle("-fx-skin: \"com.sun.javafx.scene.control.skin.ButtonSkin\"; -fx-background-color: -fx-shadow-highlight-color, -fx-outer-border, -fx-inner-border, -fx-body-color;");
         readingContainer.setAlignment(Pos.CENTER);
         readingContainer.getChildren().addAll(
-            createColumnField("Previous",account.getPrevReading()),
+            createColumnField("Previous",account.getLastReading()),
             createColumnField("Present",present),
             createColumnField("Consumption",consumption)
         );
@@ -119,13 +119,18 @@ public class AccountDetail {
         }
         root.setAlignment(Pos.CENTER);
         root.setPadding(new Insets(20));
-        root.getChildren().add(createDetail("Account No",account.getAcctno()));
-        root.getChildren().add(createDetail("Name",account.getName()));
+        root.getChildren().add(createDetail("Account No",account.getAcctNo()));
+        root.getChildren().add(createDetail("Name",account.getAcctName()));
         root.getChildren().add(createDetail("Address",account.getAddress()));
-        root.getChildren().add(createDetail("Cellphone No",account.getCellphoneno()));
-        root.getChildren().add(createDetail("Serial No",account.getSerialno()));
-        root.getChildren().add(createDetail("Area",account.getArea()));
+        root.getChildren().add(createDetail("Mobile No",account.getMobileNo()));
+        root.getChildren().add(createDetail("Phone No",account.getPhoneNo()));
+        root.getChildren().add(createDetail("Email",account.getEmail()));
+        root.getChildren().add(createDetail("Serial No",account.getSerialNo()));
+        root.getChildren().add(createDetail("Classification",account.getClassificationId()));
+        root.getChildren().add(createDetail("Area",account.getAreaName()));
         root.getChildren().add(createDetail("Balance",account.getBalance()));
+        root.getChildren().add(createDetail("Penalty",account.getPenalty()));
+        root.getChildren().add(createDetail("Other Charge",account.getOtherCharge()));
         root.getChildren().add(createDetail("Amount Due",amtdue));
         root.getChildren().add(createDetail("TOTAL DUE",totaldue));
         root.getChildren().add(readingContainer);

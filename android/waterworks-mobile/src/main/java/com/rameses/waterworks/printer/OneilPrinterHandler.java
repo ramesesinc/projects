@@ -1,9 +1,7 @@
 package com.rameses.waterworks.printer;
 
-import application.WaterworksBillCalculator;
 import com.rameses.waterworks.bean.Account;
 import com.rameses.waterworks.util.SystemPlatformFactory;
-import java.text.DecimalFormat;
 
 public class OneilPrinterHandler implements PrinterHandler{
     
@@ -18,13 +16,13 @@ public class OneilPrinterHandler implements PrinterHandler{
         sb.append("@90,0:MF204|             (034) 7293131               |");
         sb.append("@150,0:MF204|For the month of Jan 2016               |");
         sb.append("@180,0:MF204|---------------------------------------|");
-        sb.append("@210,0:MF204|Acct No.   :  "+a.getAcctno()+"|");
-        sb.append("@240,0:MF204|Meter No.  :  "+a.getSerialno()+"|");
+        sb.append("@210,0:MF204|Acct No.   :  "+a.getAcctNo()+"|");
+        sb.append("@240,0:MF204|Meter No.  :  "+a.getSerialNo()+"|");
         sb.append("@270,0:MF204|Class Type :  RESIDENTIAL|");
-        sb.append("@300,0:MF204|"+a.getName()+"|");
+        sb.append("@300,0:MF204|"+a.getAcctName()+"|");
         sb.append("@330,0:MF204|"+a.getAddress()+"|");
         sb.append("@360,0:MF204|---------------------------------------|");
-        sb.append("@390,0:MF204|Prev Reading   :  "+a.getPrevReading()+"|");
+        sb.append("@390,0:MF204|Prev Reading   :  "+a.getLastReading()+"|");
         sb.append("@420,0:MF204|Pres Reading   :  "+a.getPresReading()+"|");
         sb.append("@450,0:MF204|Consumption    :  "+a.getConsumption()+"|");
         sb.append("@480,0:MF204|---------------------------------------|");
@@ -48,8 +46,8 @@ public class OneilPrinterHandler implements PrinterHandler{
         sb.append("@1000,0:MF226|date to avoid paying penalty|");
         sb.append("@1030,0:MF226|*Disregard arrears if payment has been|");
         sb.append("@1070,0:MF226|made.|");
-        sb.append("@1100,35:BC39N,HIGH 15,WIDE 2|51030-"+a.getAcctno()+"|");
-        sb.append("@1180,35:MF204|51030-"+a.getAcctno()+"|");
+        sb.append("@1100,35:BC39N,HIGH 15,WIDE 2|51030-"+a.getAcctNo()+"|");
+        sb.append("@1180,35:MF204|"+a.getBarCode()+"|");
         sb.append("@1260,2:MF204|.|");
         sb.append("}");
     }

@@ -1,13 +1,15 @@
 package com.rameses.waterworks.page;
 
-import application.WaterworksBillCalculator;
 import com.rameses.Main;
 import com.rameses.waterworks.bean.Account;
+import com.rameses.waterworks.bean.Formula;
 import com.rameses.waterworks.bean.Reading;
+import com.rameses.waterworks.calc.BillCalculator;
 import com.rameses.waterworks.database.Database;
 import com.rameses.waterworks.database.DatabasePlatformFactory;
 import com.rameses.waterworks.dialog.Dialog;
 import com.rameses.waterworks.layout.Header;
+import com.rameses.waterworks.util.SystemPlatformFactory;
 import java.text.DecimalFormat;
 import java.util.List;
 import java.util.UUID;
@@ -38,7 +40,7 @@ import javafx.util.Callback;
 public class ReadingSheet {
     
     private VBox root;
-    private TextField field_serialno, field_name, field_address, field_prev;
+    private TextField field_serialno, field_name, field_class, field_prev;
     private Button save;
     private FlowPane button_container1;
     private Account account;
@@ -64,16 +66,16 @@ public class ReadingSheet {
                 if(result.size() > 0){
                     account = result.get(0);
                     if(account != null){
-                        field_serialno.setText(account.getSerialno());
-                        field_name.setText(account.getName());
-                        field_address.setText(account.getAddress());
-                        field_prev.setText(account.getPrevReading());
+                        field_serialno.setText(account.getSerialNo());
+                        field_name.setText(account.getAcctName());
+                        field_class.setText(account.getClassificationId());
+                        field_prev.setText(account.getLastReading());
 
                         Database db2 = DatabasePlatformFactory.getPlatform().getDatabase();
-                        reading = db2.findReadingByMeter(account.getMeterid());
+                        reading = db2.findReadingByAccount(account.getObjid());
                         if(!db2.getError().isEmpty()) Dialog.showError(db2.getError());
                         if(reading == null){
-                            initMeterReadingValue(account.getPrevReading());
+                            initMeterReadingValue(account.getLastReading());
                         }else{
                             initMeterReadingValue(reading.getReading());
                         }
@@ -104,15 +106,15 @@ public class ReadingSheet {
         field_name.setEditable(false);
         field_name.setFocusTraversable(false);
         
-        Label label_month = new Label("Address");
-        label_month.getStyleClass().add("account-field-name");
-        label_month.setMinWidth(200);
+        Label label_class = new Label("Classification");
+        label_class.getStyleClass().add("account-field-name");
+        label_class.setMinWidth(200);
         
-        field_address = new TextField();
-        field_address.getStyleClass().add("account-field-value");
-        field_address.setPrefWidth(Main.WIDTH);
-        field_address.setEditable(false);
-        field_address.setFocusTraversable(false);
+        field_class = new TextField();
+        field_class.getStyleClass().add("account-field-value");
+        field_class.setPrefWidth(Main.WIDTH);
+        field_class.setEditable(false);
+        field_class.setFocusTraversable(false);
         
         Label label_prev = new Label("Prev. Reading");
         label_prev.getStyleClass().add("account-field-name");
@@ -130,11 +132,11 @@ public class ReadingSheet {
         
         grid.add(label_serialno, 0, 0);
         grid.add(label_name, 0, 1);
-        grid.add(label_month, 0, 2);
+        grid.add(label_class, 0, 2);
         grid.add(label_prev, 0, 3);
         grid.add(field_serialno, 1, 0);
         grid.add(field_name, 1, 1, 2, 1);
-        grid.add(field_address, 1, 2, 2, 1);
+        grid.add(field_class, 1, 2, 2, 1);
         grid.add(field_prev, 1, 3, 2, 1);
         grid.add(search, 2, 0);
         
@@ -174,33 +176,41 @@ public class ReadingSheet {
     }
     
     private void saveReading(){
-        int prev = Integer.parseInt(account.getPrevReading());
+        int prev = Integer.parseInt(account.getLastReading());
         int curr = Integer.parseInt(getMeterReadingValue());
         if(prev >= curr){
             Dialog.showAlert("The latest reading must be greater than the previous reading!");
             return;
         }
         Database sdb = DatabasePlatformFactory.getPlatform().getDatabase();
-        Reading r = sdb.findReadingByMeter(account.getMeterid());
+        Reading r = sdb.findReadingByAccount(account.getObjid());
         
         String objid = UUID.randomUUID().toString();
-        String meterid = account.getMeterid();
+        String acctid = account.getObjid();
         String value = getMeterReadingValue();
         account.setPresReading(Integer.valueOf(value));
+        
+        //CHECK FOR WATER-RATES
+        Database db2 = DatabasePlatformFactory.getPlatform().getDatabase();
+        List<Formula> flist = db2.getFormula();
+        if(flist.isEmpty()){
+            Dialog.showError("Water-rate could not be found!");
+            return;
+        }
         
         //COMPUTE THE BILL
         int consumption = 0;
         double charge = 0.00;
         DecimalFormat df = new DecimalFormat("####0.00");
         try{
-            consumption = Integer.valueOf(account.getPresReading()) -  Integer.valueOf(account.getPrevReading());
+            consumption = Integer.valueOf(account.getPresReading()) -  Integer.valueOf(account.getLastReading());
         }catch(Exception e){
             consumption = Integer.valueOf(account.getPresReading());
             System.err.println(e);
         }
         try{
-            WaterworksBillCalculator calc = new WaterworksBillCalculator();
-            charge = calc.compute("RESIDENTIAL", consumption);
+            BillCalculator calc = new BillCalculator();
+            charge = calc.compute(account.getClassificationId(), consumption);
         }catch(Exception e){
             System.err.println(e);
         }
@@ -212,11 +222,12 @@ public class ReadingSheet {
         
         //STORE DATA TO THE DATABASE
         Database db = DatabasePlatformFactory.getPlatform().getDatabase();
+        String datetime = SystemPlatformFactory.getPlatform().getSystem().getDate() + " " + SystemPlatformFactory.getPlatform().getSystem().getTime();
         if(r == null){
-            Reading reading = new Reading(objid,meterid,value,account.getConsumption(),account.getAmtDue(),account.getTotalDue(),"OPEN");
+            Reading reading = new Reading(objid,acctid,value,account.getConsumption(),account.getAmtDue(),account.getTotalDue(),"OPEN",datetime);
             db.createReading(reading);
         }else{
-            Reading reading = new Reading(objid,meterid,value,account.getConsumption(),account.getAmtDue(),account.getTotalDue(),"OPEN");
+            Reading reading = new Reading(objid,acctid,value,account.getConsumption(),account.getAmtDue(),account.getTotalDue(),"OPEN",datetime);
             db.updateMeterReading(reading);
         }
         
@@ -232,7 +243,7 @@ public class ReadingSheet {
         reading = null;
         field_serialno.clear();
         field_name.clear();
-        field_address.clear();
+        field_class.clear();
         field_prev.clear();
         for(RButton r: rb){
             r.setValue(0);
@@ -304,16 +315,16 @@ public class ReadingSheet {
             public void handle(ActionEvent event) {
                 account = listView.getSelectionModel().getSelectedItem();
                 if(account != null){
-                    field_serialno.setText(account.getSerialno());
-                    field_name.setText(account.getName());
-                    field_address.setText(account.getAddress());
-                    field_prev.setText(account.getPrevReading());
+                    field_serialno.setText(account.getSerialNo());
+                    field_name.setText(account.getAcctName());
+                    field_class.setText(account.getAddress());
+                    field_prev.setText(account.getLastReading());
                     
                     Database db = DatabasePlatformFactory.getPlatform().getDatabase();
-                    reading = db.findReadingByMeter(account.getMeterid());
+                    reading = db.findReadingByAccount(account.getObjid());
                     if(!db.getError().isEmpty()) Dialog.showError(db.getError());
                     if(reading == null){
-                        initMeterReadingValue(account.getPrevReading());
+                        initMeterReadingValue(account.getLastReading());
                     }else{
                         initMeterReadingValue(reading.getReading());
                     }
@@ -350,7 +361,7 @@ public class ReadingSheet {
         @Override
         protected void updateItem(Account account, boolean empty){
             super.updateItem(account, empty);
-            if(!empty) setText(account.getSerialno());
+            if(!empty) setText(account.getSerialNo());
         }
     }
     

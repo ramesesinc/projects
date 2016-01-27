@@ -14,4 +14,6 @@ public interface System {
     
     public String getTime();
     
+    public String getExternalStorageDir();
+    
 }

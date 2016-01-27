@@ -1,6 +1,7 @@
 package com.rameses.waterworks.database;
 
 import com.rameses.waterworks.bean.Account;
+import com.rameses.waterworks.bean.Formula;
 import com.rameses.waterworks.bean.Reading;
 import com.rameses.waterworks.bean.Setting;
 import java.util.List;
@@ -32,7 +33,7 @@ public interface Database {
     
     public List<Account> getResultBySerialno(String serialno);
     
-    public void deleteAccountByMeter(String meterid);
+    public void deleteAccountById(String acctid);
     
     public int getNoOfTotalRecords();
     
@@ -41,15 +42,26 @@ public interface Database {
     //READING TABLE
     public void createReading(Reading reading);
     
-    public Reading findReadingByMeter(String meterid);
+    public Reading findReadingByAccount(String acctid);
     
     public void updateMeterReading(Reading reading);
     
-    public void deleteReadingByMeter(String meterid);
+    public void deleteReadingByMeter(String acctid);
     
     public List<Reading> getReadingByUser();
     
     //AREA
     public boolean downloadableArea(String areaid);
+    
+    //FORMULA
+    public void createFormula(Formula formula);
+    
+    public List<Formula> getFormula();
+    
+    public boolean formulaExist(Formula formula);
+    
+    public void updateFormula(Formula formula);
+    
+    public Formula getFormula(String classification);
     
 }

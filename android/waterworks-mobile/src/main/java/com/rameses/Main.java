@@ -16,6 +16,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javafx.application.Application;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
@@ -59,6 +60,12 @@ public class Main extends Application {
         
         Scene scene = new Scene(PAGE, WIDTH, HEIGHT);
         scene.getStylesheets().add("css/Style1.css");
+        
+        if(Main.HEIGHT > 800){
+            scene.getStylesheets().add("css/Style1.css");
+        }else{
+            scene.getStylesheets().add("css/Style2.css");
+        }
 
         stage.setScene(scene);
         stage.show();

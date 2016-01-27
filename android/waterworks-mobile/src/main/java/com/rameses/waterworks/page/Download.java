@@ -8,7 +8,7 @@ import com.rameses.waterworks.database.DatabasePlatformFactory;
 import com.rameses.waterworks.dialog.Dialog;
 import com.rameses.waterworks.layout.Header;
 import com.rameses.waterworks.service.AreaService;
-import com.rameses.waterworks.service.DownloadService;
+import com.rameses.waterworks.service.MobileService;
 import com.rameses.waterworks.util.SystemPlatformFactory;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -49,6 +49,7 @@ public class Download {
     ProgressBar progressbar;
     Button download;
     List<Map> indexlist;
+    List<Map> accountList;
     int downloadsize;
     int indexposition = 1;
     Task<Void> task;
@@ -65,28 +66,10 @@ public class Download {
         
         Callback<ListView<Area>, ListCell<Area>> forListView = CheckBoxListCell.forListView(property);
         
-        Map params = new HashMap();
-        params.put("userid", SystemPlatformFactory.getPlatform().getSystem().getUserID());
-        
-        AreaService areaSvc = new AreaService();
-        List<Map> result = areaSvc.getMyAssignedAreas(params);
-        if(!areaSvc.ERROR.isEmpty()){
-            Dialog.showError(areaSvc.ERROR);
-        }
-        
-        ObservableList<Area> data = FXCollections.observableArrayList();
-        for(Map m : result){
-            String objid = m.get("objid").toString();
-            String name = m.get("name").toString();
-            String description = m.get("description").toString();
-            data.add(new Area(objid,name,description,true));
-        }
-        
         listView = new ListView<Area>();
         listView.setStyle("-fx-font-size: 25px;");
         listView.setPrefHeight(Main.HEIGHT*0.5);
         listView.setCellFactory(forListView);
-        listView.setItems(data);
         
         label = new Label("Downloading... Please wait...");
         label.setStyle("-fx-font-size: 28px; -fx-padding: 25 0 0 0;");
@@ -105,7 +88,7 @@ public class Download {
         download.setOnAction(new EventHandler<ActionEvent>(){
             @Override
             public void handle(ActionEvent event) {
-                List areas = new ArrayList();
+                List<Map> areas = new ArrayList();
                 for(Area a : listView.getItems()){
                     Map map = new HashMap();
                     map.put("objid", a.getObjid());
@@ -118,12 +101,21 @@ public class Download {
                         }
                     }
                 }
-                DownloadService downSvc = new DownloadService();
-                indexlist = downSvc.getDownloadIndexes(areas);
-                Main.LOG.debug("INDEXLIST", indexlist.toString());
-                downloadsize = indexlist.size();
-                if(!downSvc.ERROR.isEmpty()) {
-                    Dialog.showError(downSvc.ERROR);
+                
+                String error = "";
+                accountList = new ArrayList<Map>();
+                for(Map map : areas){
+                    MobileService mobileSvc = new MobileService();
+                    List<Map> result = mobileSvc.download(map);
+                    if(!mobileSvc.ERROR.isEmpty()) error = mobileSvc.ERROR;
+                    for(Map account: result){
+                        accountList.add(account);
+                    }
+                }
+                
+                downloadsize = accountList.size();
+                if(!error.isEmpty()) {
+                    Dialog.showError(error.toString());
                     return;
                 }
                 if(downloadsize < 1){
@@ -156,15 +148,15 @@ public class Download {
             }
         });
         
+        loadData();
+        
         task = new Task<Void>(){
             @Override
             protected Void call() throws Exception {
-                DownloadService downSvc = new DownloadService();
-                Iterator<Map> it = indexlist.iterator();
+                Iterator<Map> it = accountList.iterator();
                 while(it.hasNext()){
-                    Map map = it.next();
-                    String objid = map.get("objid") != null ? map.get("objid").toString() : "";
-                    Map account = downSvc.getAccount(map);
+                    Map account = it.next();
+                    String objid = account.get("objid") != null ? account.get("objid").toString() : "";
                     Database db = DatabasePlatformFactory.getPlatform().getDatabase();
                     Account result = db.findAccountByID(objid);
                     if(result == null){
@@ -200,6 +192,38 @@ public class Download {
                 return null;
             }
         };
+    }
+    
+    private void loadData(){ 
+        Thread t2 = new Thread(){
+            public void run(){
+                Platform.runLater(new Runnable(){
+                    @Override
+                    public void run() {
+                        Map params = new HashMap();
+                        params.put("userid", SystemPlatformFactory.getPlatform().getSystem().getUserID());
+
+                        AreaService areaSvc = new AreaService();
+                        List<Map> result = areaSvc.getListByAssignee(params);
+
+                        ObservableList<Area> data = FXCollections.observableArrayList();
+                        for(Map m : result){
+                            String objid = m.get("objid").toString();
+                            String name = m.get("name").toString();
+                            String description = m.get("description").toString();
+                            data.add(new Area(objid,name,description,true));
+                        }
+                        listView.setItems(data);
+                        
+                        Dialog.hide();
+                        if(!areaSvc.ERROR.isEmpty()){
+                            Dialog.showError(areaSvc.ERROR);
+                        }
+                    }
+                });
+            }
+        };
+        t2.start();
     }
     
     public Node getLayout(){

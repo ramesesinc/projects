@@ -3,6 +3,7 @@ package com.rameses.waterworks.util;
 import android.content.Context;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.os.Environment;
 import com.rameses.Main;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -53,5 +54,10 @@ public class AndroidSystem implements System{
         DateFormat dateFormat = new SimpleDateFormat("hh:mm");
         Date date = new Date();
         return  dateFormat.format(date);
+    }
+    
+    @Override
+    public String getExternalStorageDir(){
+        return Environment.getExternalStorageDirectory().getAbsolutePath();
     }
 }

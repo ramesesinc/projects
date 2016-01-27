@@ -26,7 +26,7 @@ public class Area {
     
     @Override
     public String toString(){
-        return getName();
+        return getObjid() + " - " + getName();
     }
     
 }

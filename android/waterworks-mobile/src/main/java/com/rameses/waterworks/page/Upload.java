@@ -6,15 +6,13 @@ import com.rameses.waterworks.database.Database;
 import com.rameses.waterworks.database.DatabasePlatformFactory;
 import com.rameses.waterworks.dialog.Dialog;
 import com.rameses.waterworks.layout.Header;
-import com.rameses.waterworks.service.ReadingService;
+import com.rameses.waterworks.service.MobileService;
 import com.rameses.waterworks.util.SystemPlatformFactory;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -23,12 +21,8 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
 import javafx.scene.control.ProgressBar;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Separator;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
@@ -87,24 +81,20 @@ public class Upload {
                 Iterator<Reading> it = indexlist.iterator();
                 while(it.hasNext()){
                     Reading r = it.next();
-                    Map user = new HashMap();
-                    user.put("objid", SystemPlatformFactory.getPlatform().getSystem().getUserID());
-                    user.put("name", SystemPlatformFactory.getPlatform().getSystem().getFullName());
                     
                     Map map = new HashMap();
                     map.put("objid", r.getObjid());
-                    map.put("meterid", r.getMeterid());
                     map.put("reading", r.getReading());
-                    map.put("state", r.getState());
-                    map.put("readingmethod", "MOBILE");
-                    map.put("reader", user);
+                    map.put("dtreading", r.getReadingDate());
+                    map.put("userid", SystemPlatformFactory.getPlatform().getSystem().getUserID());
+                    map.put("consumption", r.getConsumption());
                     
-                    ReadingService service = new ReadingService();
-                    Map result = service.create(map);
+                    MobileService service = new MobileService();
+                    Map result = service.upload(map);
                     if(!result.isEmpty()){
                         Database db = DatabasePlatformFactory.getPlatform().getDatabase();
-                        db.deleteReadingByMeter(r.getMeterid());
-                        db.deleteAccountByMeter(r.getMeterid());
+                        db.deleteReadingByMeter(r.getAcctId());
+                        db.deleteAccountById(r.getAcctId());
                     }
                     
                     double percent = indexposition/uploadsize;

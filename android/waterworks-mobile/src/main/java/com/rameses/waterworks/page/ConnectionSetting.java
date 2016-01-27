@@ -19,7 +19,6 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
 
 public class ConnectionSetting {
     
@@ -105,6 +104,8 @@ public class ConnectionSetting {
                 Main.CONNECTION_SETTING.put("timeout", timeout.getText());
                 Main.CONNECTION_SETTING.put("context", context.getText());
                 Main.CONNECTION_SETTING.put("cluster", cluster.getText());
+                
+                Header.TITLE.setText(Main.prevTitle);
                 Main.ROOT.setCenter(Main.prevScreen);
             }
         });

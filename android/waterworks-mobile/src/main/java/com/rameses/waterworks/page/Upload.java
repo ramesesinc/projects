@@ -23,6 +23,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.Separator;
+import javafx.scene.control.TextArea;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
@@ -38,10 +39,12 @@ public class Upload {
     private VBox root;
     Label label;
     ProgressBar progressbar;
+    TextArea textArea;
     List<Reading> indexlist;
     int indexposition = 1;
     int uploadsize;
     Button upload;
+    boolean continueUpload = true;
     
     public Upload(){
         Header.TITLE.setText("Upload Data");
@@ -62,7 +65,7 @@ public class Upload {
         textContainer.getChildren().addAll(size_text,record_text,new Separator());
         
         label = new Label("Uploading... Please wait...");
-        label.setStyle("-fx-font-size: 28px; -fx-padding: 25 0 0 0;");
+        label.setStyle("-fx-font-size: 28px; -fx-padding: 10 0 0 0;");
         label.setVisible(false);
         
         progressbar = new ProgressBar();
@@ -79,7 +82,11 @@ public class Upload {
             @Override
             protected Void call() throws Exception {
                 Iterator<Reading> it = indexlist.iterator();
+                String error = "";
                 while(it.hasNext()){
+                    if(!continueUpload){
+                        return null;
+                    }
                     Reading r = it.next();
                     
                     Map map = new HashMap();
@@ -91,16 +98,31 @@ public class Upload {
                     
                     MobileService service = new MobileService();
                     Map result = service.upload(map);
+                    if(!service.ERROR.isEmpty()){
+                        error = service.ERROR;
+                        textArea.setVisible(true);
+                        textArea.appendText(error + "\n");
+                    }
+                    
                     if(!result.isEmpty()){
                         Database db = DatabasePlatformFactory.getPlatform().getDatabase();
                         db.deleteReadingByMeter(r.getAcctId());
                         db.deleteAccountById(r.getAcctId());
                     }
-                    
-                    double percent = indexposition/uploadsize;
                     updateProgress(indexposition,uploadsize);
                     indexposition++;
                 }
+                if(!error.isEmpty()){
+                    Dialog.showError(error);
+                    upload.setText("Back");
+                    upload.setOnAction(new EventHandler<ActionEvent>(){
+                        @Override
+                        public void handle(ActionEvent event) {
+                            Main.ROOT.setCenter(new Home().getLayout());
+                        }
+                    });
+                }
+                
                 Thread t = new Thread(){
                     @Override
                     public void run(){
@@ -145,9 +167,25 @@ public class Upload {
                 public void handle(ActionEvent event) {
                     label.setVisible(true);
                     progressbar.setVisible(true);
-                    upload.setDisable(true);
                     progressbar.progressProperty().bind(task.progressProperty());
                     new Thread(task).start();
+                    upload.setText("Cancel");
+                    upload.setOnAction(new EventHandler<ActionEvent>(){
+                        @Override
+                        public void handle(ActionEvent event) {
+                            continueUpload = false;
+                            label.setVisible(false);
+                            progressbar.setVisible(false);
+                            textArea.setVisible(false);
+                            upload.setText("Back");
+                            upload.setOnAction(new EventHandler<ActionEvent>(){
+                                @Override
+                                public void handle(ActionEvent event) {
+                                    Main.ROOT.setCenter(new Home().getLayout());
+                                }
+                            });
+                        }
+                    });
                 }
             });
         }
@@ -157,7 +195,15 @@ public class Upload {
         buttonContainer.setPadding(new Insets(10, 0, 0, 0));
         buttonContainer.getChildren().add(upload);
         
-        root.getChildren().addAll(textContainer, buttonContainer, label, progressbar);
+        textArea = new TextArea();
+        textArea.getStyleClass().add("login-label");
+        textArea.setStyle("-fx-text-fill: red;");
+        textArea.setPrefHeight(Main.HEIGHT * 0.5);
+        textArea.setPrefWidth(Main.WIDTH);
+        textArea.setVisible(false);
+        textArea.setEditable(false);
+        
+        root.getChildren().addAll(textContainer, buttonContainer, label, progressbar, textArea);
         root.setOnKeyReleased(new EventHandler<KeyEvent>(){
             @Override
             public void handle(KeyEvent event) {

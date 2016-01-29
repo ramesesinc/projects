@@ -54,6 +54,7 @@ public class MobileService {
             result = service.upload(params);
         }catch(Exception e){
             ERROR = "MobileService Error: " + e.toString();
+            result = new HashMap();
             if(Main.LOG != null){
                 Main.LOG.error("MobileService Error",e.toString());
             }else{

@@ -30,6 +30,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.cell.CheckBoxListCell;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -68,7 +69,7 @@ public class Download {
         
         listView = new ListView<Area>();
         listView.setStyle("-fx-font-size: 25px;");
-        listView.setPrefHeight(Main.HEIGHT*0.5);
+        listView.setPrefHeight(Main.HEIGHT*0.50);
         listView.setCellFactory(forListView);
         
         label = new Label("Downloading... Please wait...");

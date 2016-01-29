@@ -19,19 +19,20 @@ public class BillCalculator {
         try{
             Database db = DatabasePlatformFactory.getPlatform().getDatabase();
             Formula f = db.getFormula(classificationid);
-            Main.LOG.error("EXPRESSION", f.getExpr());
+            
             if(!db.getError().isEmpty()){
                 Dialog.showAlert(db.getError());
             }
+            
             if(f == null){
                 Dialog.showAlert("Formula cannot be found!");
                 return 0.00;
             }
+            
             Interpreter i = new Interpreter();
             i.set("VOL", vol);
             Object o = i.eval(f.getExpr());
             value = Double.parseDouble(o.toString());
-            Main.LOG.error("VALUE", String.valueOf(value));
         }catch(EvalError e){
             e.printStackTrace();
             Dialog.showAlert("ERROR: " +  e.toString());

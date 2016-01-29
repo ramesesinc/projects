@@ -163,6 +163,7 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
         String areaid = acct.get("areaid") != null ? acct.get("areaid").toString() : "";
         String balance = acct.get("balance") != null ? acct.get("balance").toString() : "";
         String penalty = acct.get("penalty") != null ? acct.get("penalty").toString() : "";
+        String othercharge = acct.get("othercharge") != null ? acct.get("othercharge").toString() : "";
         String lastreading = acct.get("lastreading") != null ? acct.get("lastreading").toString() : "";
         String lasttxndate = acct.get("lasttxndate") != null ? acct.get("lasttxndate").toString() : "";
         String areaname = acct.get("areaname") != null ? acct.get("areaname").toString() : "";
@@ -186,6 +187,7 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
         values.put("areaid", areaid);
         values.put("balance", balance);
         values.put("penalty", penalty);
+        values.put("othercharge", othercharge);
         values.put("lastreading", lastreading);
         values.put("lasttxndate", lasttxndate);
         values.put("areaname", areaname);
@@ -220,6 +222,7 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
         String areaid = acct.get("areaid") != null ? acct.get("areaid").toString() : "";
         String balance = acct.get("balance") != null ? acct.get("balance").toString() : "";
         String penalty = acct.get("penalty") != null ? acct.get("penalty").toString() : "";
+        String othercharge = acct.get("othercharge") != null ? acct.get("othercharge").toString() : "";
         String lastreading = acct.get("lastreading") != null ? acct.get("lastreading").toString() : "";
         String lasttxndate = acct.get("lasttxndate") != null ? acct.get("lasttxndate").toString() : "";
         String areaname = acct.get("areaname") != null ? acct.get("areaname").toString() : "";
@@ -241,6 +244,7 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
         values.put("areaid", areaid);
         values.put("balance", balance);
         values.put("penalty", penalty);
+        values.put("othercharge", othercharge);
         values.put("lastreading", lastreading);
         values.put("lasttxndate", lasttxndate);
         values.put("areaname", areaname);
@@ -416,7 +420,7 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
         try{
             String[] args = new String[]{acctid};
             SQLiteDatabase db = this.getWritableDatabase();
-            db.execSQL("DELETE FROM account WHERE acctid = ?",args);
+            db.execSQL("DELETE FROM account WHERE objid = ?",args);
             db.close();
         }catch(Exception e){
             ERROR = "Database Error: " + e.toString();

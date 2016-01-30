@@ -7,6 +7,10 @@ import com.rameses.waterworks.database.Database;
 import com.rameses.waterworks.database.DatabasePlatformFactory;
 import com.rameses.waterworks.dialog.Dialog;
 import com.rameses.waterworks.layout.Header;
+import com.rameses.waterworks.util.SystemPlatformFactory;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.util.List;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -17,6 +21,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TextArea;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
@@ -66,6 +71,12 @@ public class Setting {
             }
         });
         
+        TextArea textArea = new TextArea();
+        textArea.setEditable(false);
+        textArea.setPrefHeight(Main.HEIGHT);
+        textArea.setPrefWidth(Main.WIDTH);
+        textArea.setText(SystemPlatformFactory.getPlatform().getSystem().getReportData());
+        
         root = new VBox(10);
         root.setAlignment(Pos.TOP_CENTER);
         if(Main.HEIGHT > 800) root.setPadding(new Insets(20, 20, 20, 20));
@@ -78,7 +89,7 @@ public class Setting {
                 }
             }
         });
-        root.getChildren().addAll(createTitle("Printer"), listview, set);
+        root.getChildren().addAll(createTitle("Printer"), listview, set, createTitle("Report Data"), textArea);
     }
     
     private VBox createTitle(String title){

@@ -16,4 +16,6 @@ public interface System {
     
     public String getExternalStorageDir();
     
+    public String getReportData();
+    
 }

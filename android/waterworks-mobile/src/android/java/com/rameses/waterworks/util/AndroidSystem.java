@@ -5,6 +5,9 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Environment;
 import com.rameses.Main;
+import com.rameses.waterworks.dialog.Dialog;
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -59,5 +62,27 @@ public class AndroidSystem implements System{
     @Override
     public String getExternalStorageDir(){
         return Environment.getExternalStorageDirectory().getAbsolutePath();
+    }
+    
+    @Override
+    public String getReportData(){
+        String textline = "";
+        String filepath = SystemPlatformFactory.getPlatform().getSystem().getExternalStorageDir() + "/WATERWORKS/reportdata.txt";
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(filepath));
+            StringBuilder sb = new StringBuilder();
+            String line = br.readLine();
+
+            while (line != null) {
+                sb.append(line);
+                sb.append(java.lang.System.lineSeparator());
+                line = br.readLine();
+            }
+            textline = sb.toString();
+            br.close();
+        }catch(Exception e){
+            Dialog.showError(e.toString());
+        }
+        return textline;
     }
 }

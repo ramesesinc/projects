@@ -9,14 +9,11 @@ import com.rameses.waterworks.log.Log;
 import com.rameses.waterworks.log.LogPlatformFactory;
 import com.rameses.waterworks.page.Login;
 import com.rameses.waterworks.page.PreTerminalRegistration;
-import com.rameses.waterworks.service.TerminalService;
-import com.rameses.waterworks.util.SystemPlatformFactory;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javafx.application.Application;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
@@ -69,7 +66,6 @@ public class Main extends Application {
 
         stage.setScene(scene);
         stage.show();
-        
     }
     
     private void loadSysVar(){

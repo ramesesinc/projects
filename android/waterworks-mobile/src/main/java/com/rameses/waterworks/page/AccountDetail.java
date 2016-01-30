@@ -8,7 +8,7 @@ import com.rameses.waterworks.bluetooth.BluetoothPort;
 import com.rameses.waterworks.database.Database;
 import com.rameses.waterworks.database.DatabasePlatformFactory;
 import com.rameses.waterworks.dialog.Dialog;
-import com.rameses.waterworks.printer.OneilPrinterHandler;
+import com.rameses.waterworks.printer.PrinterHandler;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -60,7 +60,7 @@ public class AccountDetail {
                     return;
                 }
                 account.setPresReading(i);
-                OneilPrinterHandler handler = new OneilPrinterHandler(account);
+                PrinterHandler handler = new PrinterHandler(account);
                 BluetoothPort printer = BluetoothPlatformFactory.getPlatform().getBluetoothPrinter();
                 printer.setPrinter(Main.PRINTERNAME);
                 printer.openBT();

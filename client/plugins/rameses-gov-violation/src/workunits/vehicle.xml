@@ -27,7 +27,7 @@
                         binding.refresh("entity.*");
                     }
                     return Inv.lookupOpener("entity:lookup",[onselect:h]);
-                }
+               }
                
            }
         ]]>

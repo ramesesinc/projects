@@ -1,0 +1,28 @@
+<workunit>
+    <invokers>
+        <invoker type="violation:create" caption="Violation" action="create" target="popup" role="MASTER"/>
+        <invoker type="violation:open" caption="Violation" action="open" target="popup" role="MASTER"/>
+    </invokers>
+    
+    <code>
+        <![CDATA[
+           import com.rameses.osiris2.common.*;
+           import com.rameses.rcp.common.*;
+           import com.rameses.rcp.annotations.*;
+           import com.rameses.osiris2.client.*;
+
+           class VehicleController extends CRUDController{
+           
+               def title='Violation';
+               String serviceName='ViolationService';
+               String entityName='violation';
+               boolean allowApprove = false;
+               
+           }
+        ]]>
+    </code>
+    
+    <pages>
+        <page template="com.gov.violation.ViolationPage"/>
+    </pages>
+</workunit>

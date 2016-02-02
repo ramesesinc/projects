@@ -3,12 +3,14 @@ package com.rameses.waterworks.page;
 import com.rameses.Main;
 import com.rameses.waterworks.bean.Account;
 import com.rameses.waterworks.bean.Area;
+import com.rameses.waterworks.bean.Formula;
 import com.rameses.waterworks.database.Database;
 import com.rameses.waterworks.database.DatabasePlatformFactory;
 import com.rameses.waterworks.dialog.Dialog;
 import com.rameses.waterworks.layout.Header;
 import com.rameses.waterworks.service.AreaService;
-import com.rameses.waterworks.service.DownloadService;
+import com.rameses.waterworks.service.MobileCalcService;
+import com.rameses.waterworks.service.MobileService;
 import com.rameses.waterworks.util.SystemPlatformFactory;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -49,9 +51,11 @@ public class Download {
     ProgressBar progressbar;
     Button download;
     List<Map> indexlist;
+    List<Map> accountList;
     int downloadsize;
     int indexposition = 1;
     Task<Void> task;
+    boolean continueDownload = true;
     
     public Download(){
         Header.TITLE.setText("Download");
@@ -65,28 +69,10 @@ public class Download {
         
         Callback<ListView<Area>, ListCell<Area>> forListView = CheckBoxListCell.forListView(property);
         
-        Map params = new HashMap();
-        params.put("userid", SystemPlatformFactory.getPlatform().getSystem().getUserID());
-        
-        AreaService areaSvc = new AreaService();
-        List<Map> result = areaSvc.getMyAssignedAreas(params);
-        if(!areaSvc.ERROR.isEmpty()){
-            Dialog.showError(areaSvc.ERROR);
-        }
-        
-        ObservableList<Area> data = FXCollections.observableArrayList();
-        for(Map m : result){
-            String objid = m.get("objid").toString();
-            String name = m.get("name").toString();
-            String description = m.get("description").toString();
-            data.add(new Area(objid,name,description,true));
-        }
-        
         listView = new ListView<Area>();
         listView.setStyle("-fx-font-size: 25px;");
-        listView.setPrefHeight(Main.HEIGHT*0.5);
+        listView.setPrefHeight(Main.HEIGHT*0.50);
         listView.setCellFactory(forListView);
-        listView.setItems(data);
         
         label = new Label("Downloading... Please wait...");
         label.setStyle("-fx-font-size: 28px; -fx-padding: 25 0 0 0;");
@@ -105,7 +91,7 @@ public class Download {
         download.setOnAction(new EventHandler<ActionEvent>(){
             @Override
             public void handle(ActionEvent event) {
-                List areas = new ArrayList();
+                List<Map> areas = new ArrayList();
                 for(Area a : listView.getItems()){
                     Map map = new HashMap();
                     map.put("objid", a.getObjid());
@@ -118,12 +104,21 @@ public class Download {
                         }
                     }
                 }
-                DownloadService downSvc = new DownloadService();
-                indexlist = downSvc.getDownloadIndexes(areas);
-                Main.LOG.debug("INDEXLIST", indexlist.toString());
-                downloadsize = indexlist.size();
-                if(!downSvc.ERROR.isEmpty()) {
-                    Dialog.showError(downSvc.ERROR);
+                
+                String error = "";
+                accountList = new ArrayList<Map>();
+                for(Map map : areas){
+                    MobileService mobileSvc = new MobileService();
+                    List<Map> result = mobileSvc.download(map);
+                    if(!mobileSvc.ERROR.isEmpty()) error = mobileSvc.ERROR;
+                    for(Map account: result){
+                        accountList.add(account);
+                    }
+                }
+                
+                downloadsize = accountList.size();
+                if(!error.isEmpty()) {
+                    Dialog.showError(error.toString());
                     return;
                 }
                 if(downloadsize < 1){
@@ -133,9 +128,32 @@ public class Download {
                 
                 label.setVisible(true);
                 progressbar.setVisible(true);
-                download.setDisable(true);
                 progressbar.progressProperty().bind(task.progressProperty());
                 new Thread(task).start();
+                download.setText("Cancel");
+                    download.setOnAction(new EventHandler<ActionEvent>(){
+                        @Override
+                        public void handle(ActionEvent event) {
+                            continueDownload = false;
+                            label.setVisible(false);
+                            progressbar.setVisible(false);
+                            download.setText("Back");
+                            download.setOnAction(new EventHandler<ActionEvent>(){
+                                @Override
+                                public void handle(ActionEvent event) {
+                                    Main.ROOT.setCenter(new Home().getLayout());
+                                }
+                            });
+                            root.setOnKeyReleased(new EventHandler<KeyEvent>(){
+                                @Override
+                                public void handle(KeyEvent event) {
+                                    if(event.getCode() == KeyCode.ESCAPE){
+                                        Main.ROOT.setCenter(new Home().getLayout());
+                                    }
+                                }
+                            });
+                        }
+                    });
             }
         });
         
@@ -147,24 +165,19 @@ public class Download {
         root = new VBox(10);
         root.setPadding(new Insets(20));
         root.getChildren().addAll(listView,bcontainer,label,progressbar);
-        root.setOnKeyReleased(new EventHandler<KeyEvent>(){
-            @Override
-            public void handle(KeyEvent event) {
-                if(event.getCode() == KeyCode.ESCAPE){
-                    Main.ROOT.setCenter(new Home().getLayout());
-                }
-            }
-        });
+        
+        loadData();
         
         task = new Task<Void>(){
             @Override
             protected Void call() throws Exception {
-                DownloadService downSvc = new DownloadService();
-                Iterator<Map> it = indexlist.iterator();
+                Iterator<Map> it = accountList.iterator();
                 while(it.hasNext()){
-                    Map map = it.next();
-                    String objid = map.get("objid") != null ? map.get("objid").toString() : "";
-                    Map account = downSvc.getAccount(map);
+                    if(!continueDownload){
+                        return null;
+                    }
+                    Map account = it.next();
+                    String objid = account.get("objid") != null ? account.get("objid").toString() : "";
                     Database db = DatabasePlatformFactory.getPlatform().getDatabase();
                     Account result = db.findAccountByID(objid);
                     if(result == null){
@@ -176,6 +189,27 @@ public class Download {
                     updateProgress(indexposition,downloadsize);
                     indexposition++;
                 }
+                
+                //download water-rates
+                MobileCalcService service = new MobileCalcService();
+                List<Map> list = service.getFormula();
+                if(!service.ERROR.isEmpty()){
+                    Dialog.showError(service.ERROR);
+                }
+                for(Map m : list){
+                    String classificationid = m.get("classificationid") != null ? m.get("classificationid").toString() : "";
+                    String var = m.get("var") != null ? m.get("var").toString() : "";
+                    String expr= m.get("expr") != null ? m.get("expr").toString() : "";
+                    
+                    Formula f = new Formula(classificationid,var,expr);
+                    Database db = DatabasePlatformFactory.getPlatform().getDatabase();
+                    if(!db.formulaExist(f)){
+                        db.createFormula(f);
+                    }else{
+                        db.updateFormula(f);
+                    }
+                }
+                
                 Thread t = new Thread(){
                     @Override
                     public void run(){
@@ -191,6 +225,14 @@ public class Download {
                                         Main.ROOT.setCenter(new Home().getLayout());
                                     }
                                 });
+                                root.setOnKeyReleased(new EventHandler<KeyEvent>(){
+                                    @Override
+                                    public void handle(KeyEvent event) {
+                                        if(event.getCode() == KeyCode.ESCAPE){
+                                            Main.ROOT.setCenter(new Home().getLayout());
+                                        }
+                                    }
+                                });
                             }
                         });
                     }
@@ -200,6 +242,38 @@ public class Download {
                 return null;
             }
         };
+    }
+    
+    private void loadData(){ 
+        Thread t2 = new Thread(){
+            public void run(){
+                Platform.runLater(new Runnable(){
+                    @Override
+                    public void run() {
+                        Map params = new HashMap();
+                        params.put("userid", SystemPlatformFactory.getPlatform().getSystem().getUserID());
+
+                        AreaService areaSvc = new AreaService();
+                        List<Map> result = areaSvc.getListByAssignee(params);
+
+                        ObservableList<Area> data = FXCollections.observableArrayList();
+                        for(Map m : result){
+                            String objid = m.get("objid").toString();
+                            String name = m.get("name").toString();
+                            String description = m.get("description").toString();
+                            data.add(new Area(objid,name,description,true));
+                        }
+                        listView.setItems(data);
+                        
+                        Dialog.hide();
+                        if(!areaSvc.ERROR.isEmpty()){
+                            Dialog.showError(areaSvc.ERROR);
+                        }
+                    }
+                });
+            }
+        };
+        t2.start();
     }
     
     public Node getLayout(){

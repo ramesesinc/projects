@@ -4,87 +4,101 @@ public class Account {
     
     private String 
             objid,
-            state,
-            dtstarted,
             acctno,
-            applicationid,
-            name,
+            acctname,
             address,
-            cellphoneno,
-            meterid,
-            areaid,
-            area,
-            balance,
-            lasttxndate,
+            mobileno,
+            phoneno,
+            email,
             serialno,
-            prevreading,
-            presreading,
-            assignee_objid,
-            assignee_name;
+            areaid,
+            balance,
+            penalty,
+            othercharge,
+            lastreading,
+            lasttxndate,
+            areaname,
+            classificationid,
+            lastreadingyear,
+            lastreadingmonth,
+            lastreadingdate,
+            barcode;
     
     private String
             consumption,
             amtdue,
-            totaldue;
+            totaldue,
+            presreading;
+    
+    private String
+            assignee_objid,
+            assignee_name;
     
     public Account(
-           String objid,
-           String state,
-           String dtstarted,
-           String acctno,
-           String applicationid,
-           String name,
-           String address,
-           String cellphoneno,
-           String meterid,
-           String areaid,
-           String area,
-           String balance,
-           String lasttxndate,
-           String serialno,
-           String prevreading,
-           String presreading,
-           String assignee_objid,
-           String assignee_name
+            String objid,
+            String acctno,
+            String acctname,
+            String address,
+            String mobileno,
+            String phoneno,
+            String email,
+            String serialno,
+            String areaid,
+            String balance,
+            String penalty,
+            String othercharge,
+            String lastreading,
+            String lasttxndate,
+            String areaname,
+            String classificationid,
+            String lastreadingyear,
+            String lastreadingmonth,
+            String lastreadingdate,
+            String barcode
     ){
         this.objid = objid;
-        this.state = state;
-        this.dtstarted = dtstarted;
         this.acctno = acctno;
-        this.applicationid = applicationid;
-        this.name = name;
+        this.acctname = acctname;
         this.address = address;
-        this.cellphoneno = cellphoneno;
-        this.meterid = meterid;
-        this.areaid = areaid;
-        this.area = area;
-        this.balance = balance;
-        this.lasttxndate = lasttxndate;
+        this.mobileno = mobileno;
+        this.phoneno = phoneno;
+        this.email = email;
         this.serialno = serialno;
-        this.prevreading = prevreading;
-        this.presreading = presreading;
-        this.assignee_objid = assignee_objid;
-        this.assignee_name = assignee_name;
+        this.areaid = areaid;
+        this.balance = balance;
+        this.penalty = penalty;
+        this.othercharge = othercharge;
+        this.lastreading = lastreading;
+        this.lasttxndate = lasttxndate;
+        this.areaname = areaname;
+        this.classificationid = classificationid;
+        this.lastreadingyear = lastreadingyear;
+        this.lastreadingmonth = lastreadingmonth;
+        this.lastreadingdate = lastreadingdate;
+        this.barcode = barcode;
     }
     
     public String getObjid(){ return objid; }
-    public String getState(){ return state; }
-    public String getDtstarted(){ return dtstarted; }
-    public String getAcctno(){ return acctno; }
-    public String getApplicationid(){ return applicationid; }
-    public String getName(){ return name; }
+    public String getAcctNo(){ return acctno; }
+    public String getAcctName(){ return acctname; }
     public String getAddress(){ return address; }
-    public String getCellphoneno(){ return cellphoneno; }
-    public String getMeterid(){ return meterid; }
-    public String getAreaid(){ return areaid; }
-    public String getArea(){ return area; }
+    public String getMobileNo(){ return mobileno; }
+    public String getPhoneNo(){ return phoneno; }
+    public String getEmail(){ return email; }
+    public String getSerialNo(){ return serialno; }
+    public String getAreaId(){ return areaid; }
     public String getBalance(){ return balance; }
-    public String getLasttxndate(){ return lasttxndate; }
-    public String getSerialno(){ return serialno; }
-    public String getPrevReading(){ return prevreading; }
+    public String getPenalty(){ return penalty; }
+    public String getOtherCharge(){ return othercharge; }
+    public String getLastReading(){ return lastreading; }
     public String getPresReading(){ return presreading; }
-    public String getAssigneeObjid(){ return assignee_objid; }
-    public String getAssigneeName(){ return assignee_name; }
+    public String getLastTxnDate(){ return lasttxndate; }
+    public String getAreaName(){ return areaname; }
+    public String getClassificationId(){ return classificationid; }
+    public String getLastReadingYear(){ return lastreadingyear; }
+    public String getLastReadingMonth(){ return lastreadingmonth; }
+    public String getLastReadingDate(){ return lastreadingdate; }
+    public String getBarCode(){ return barcode; }
     
     public String getConsumption(){ return consumption; }
     public String getAmtDue(){ return amtdue; }

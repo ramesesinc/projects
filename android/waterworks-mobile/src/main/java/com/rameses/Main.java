@@ -9,8 +9,6 @@ import com.rameses.waterworks.log.Log;
 import com.rameses.waterworks.log.LogPlatformFactory;
 import com.rameses.waterworks.page.Login;
 import com.rameses.waterworks.page.PreTerminalRegistration;
-import com.rameses.waterworks.service.TerminalService;
-import com.rameses.waterworks.util.SystemPlatformFactory;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -59,10 +57,15 @@ public class Main extends Application {
         
         Scene scene = new Scene(PAGE, WIDTH, HEIGHT);
         scene.getStylesheets().add("css/Style1.css");
+        
+        if(Main.HEIGHT > 800){
+            scene.getStylesheets().add("css/Style1.css");
+        }else{
+            scene.getStylesheets().add("css/Style2.css");
+        }
 
         stage.setScene(scene);
         stage.show();
-        
     }
     
     private void loadSysVar(){

@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import com.rameses.waterworks.bean.Account;
+import com.rameses.waterworks.bean.Formula;
 import com.rameses.waterworks.bean.Reading;
 import com.rameses.waterworks.bean.Setting;
 import com.rameses.waterworks.util.SystemPlatformFactory;
@@ -32,31 +33,42 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
         
         sqld.execSQL("CREATE TABLE account ("
                 + " objid VARCHAR(50) PRIMARY KEY,"
-                + " state VARCHAR(30),"
-                + " dtstarted VARCHAR(50),"
-                + " acctno VARCHAR(50), "
-                + " applicationid VARCHAR(50), "
-                + " name TEXT, "
-                + " address TEXT, "
-                + " cellphoneno VARCHAR(50), "
-                + " meterid VARCHAR(50), "
-                + " areaid VARCHAR(50), "
-                + " area VARCHAR(50), "
-                + " balance VARCHAR(50), "
-                + " lasttxndate VARCHAR(50), "
-                + " serialno VARCHAR(50), "
-                + " reading VARCHAR(50),"
+                + " acctno VARCHAR(50),"
+                + " acctname TEXT,"
+                + " address TEXT,"
+                + " mobileno VARCHAR(50),"
+                + " phoneno VARCHAR(50),"
+                + " email VARCHAR(50),"
+                + " serialno VARCHAR(50),"
+                + " areaid VARCHAR(50),"
+                + " balance VARCHAR(50),"
+                + " penalty VARCHAR(50),"
+                + " othercharge VARCHAR(50),"
+                + " lastreading VARCHAR(50),"
+                + " lasttxndate VARCHAR(50),"
+                + " areaname VARCHAR(50),"
+                + " classificationid VARCHAR(50),"
+                + " lastreadingyear VARCHAR(50),"
+                + " lastreadingmonth VARCHAR(50),"
+                + " lastreadingdate VARCHAR(50),"
+                + " barcode VARCHAR(50),"
                 + " assignee_objid VARCHAR(50),"
                 + " assignee_name VARCHAR(50))");
         
         sqld.execSQL("CREATE TABLE reading ("
                 + " objid VARCHAR(50) PRIMARY KEY,"
-                + " meterid VARCHAR(50), "
+                + " acctid VARCHAR(50), "
                 + " reading VARCHAR(50),"
                 + " consumption VARCHAR(50),"
                 + " amtdue VARCHAR(50),"
                 + " totaldue VARCHAR(50), "
-                + " state VARCHAR(50))");
+                + " state VARCHAR(50), "
+                + " dtreading VARCHAR(50))");
+        
+        sqld.execSQL("CREATE TABLE formula ("
+                + " classificationid TEXT PRIMARY KEY,"
+                + " var TEXT,"
+                + " expr TEXT)");
        
     }
 
@@ -65,6 +77,7 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
         sqld.execSQL("DROP TABLE IF EXIST setting");
         sqld.execSQL("DROP TABLE IF EXIST account");
         sqld.execSQL("DROP TABLE IF EXIST reading");
+        sqld.execSQL("DROP TABLE IF EXIST formula");
         onCreate(sqld);
     }
     
@@ -140,39 +153,49 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
     public void createAccount(Map acct) {
         ERROR = "";
         String objid = acct.get("objid") != null ? acct.get("objid").toString() : "";
-        String state = acct.get("state") != null ? acct.get("state").toString() : "";
-        String dtstarted = acct.get("dtstarted") != null ? acct.get("dtstarted").toString() : "";
         String acctno = acct.get("acctno") != null ? acct.get("acctno").toString() : "";
-        String applicationid = acct.get("applicationid") != null ? acct.get("applicationid").toString() : "";
-        String name = acct.get("name") != null ? acct.get("name").toString() : "";
+        String acctname = acct.get("acctname") != null ? acct.get("acctname").toString() : "";
         String address = acct.get("address") != null ? acct.get("address").toString() : "";
-        String cellphoneno = acct.get("cellphoneno") != null ? acct.get("cellphoneno").toString() : "";
-        String meterid = acct.get("meterid") != null ? acct.get("meterid").toString() : "";
-        String areaid = acct.get("areaid") != null ? acct.get("areaid").toString() : "";
-        String area = acct.get("area") != null ? acct.get("area").toString() : "";
-        String balance = acct.get("balance") != null ? acct.get("balance").toString() : "";
-        String lasttxndate = acct.get("lasttxndate") != null ? acct.get("lasttxndate").toString() : "";
+        String mobileno = acct.get("mobileno") != null ? acct.get("mobileno").toString() : "";
+        String phoneno = acct.get("phoneno") != null ? acct.get("phoneno").toString() : "";
+        String email = acct.get("email") != null ? acct.get("email").toString() : "";
         String serialno = acct.get("serialno") != null ? acct.get("serialno").toString() : "";
-        String prevreading = acct.get("reading") != null ? acct.get("reading").toString() : "0";
+        String areaid = acct.get("areaid") != null ? acct.get("areaid").toString() : "";
+        String balance = acct.get("balance") != null ? acct.get("balance").toString() : "";
+        String penalty = acct.get("penalty") != null ? acct.get("penalty").toString() : "";
+        String othercharge = acct.get("othercharge") != null ? acct.get("othercharge").toString() : "";
+        String lastreading = acct.get("lastreading") != null ? acct.get("lastreading").toString() : "";
+        String lasttxndate = acct.get("lasttxndate") != null ? acct.get("lasttxndate").toString() : "";
+        String areaname = acct.get("areaname") != null ? acct.get("areaname").toString() : "";
+        String classificationid = acct.get("classificationid") != null ? acct.get("classificationid").toString() : "";
+        String lastreadingyear = acct.get("lastreadingyear") != null ? acct.get("lastreadingyear").toString() : "";
+        String lastreadingmonth = acct.get("lastreadingmonth") != null ? acct.get("lastreadingmonth").toString() : "";
+        String lastreadingdate = acct.get("lastreadingdate") != null ? acct.get("lastreadingdate").toString() : "";
+        String barcode = acct.get("barcode") != null ? acct.get("barcode").toString() : "";
         String assignee_objid = SystemPlatformFactory.getPlatform().getSystem().getUserID();
         String assignee_name = SystemPlatformFactory.getPlatform().getSystem().getFullName();
         
         ContentValues values = new ContentValues();
         values.put("objid", objid);
-        values.put("state", state);
-        values.put("dtstarted", dtstarted);
         values.put("acctno", acctno);
-        values.put("applicationid", applicationid);
-        values.put("name", name);
+        values.put("acctname", acctname);
         values.put("address", address);
-        values.put("cellphoneno", cellphoneno);
-        values.put("meterid", meterid);
-        values.put("areaid", areaid);
-        values.put("area", area);
-        values.put("balance", balance);
-        values.put("lasttxndate", lasttxndate);
+        values.put("mobileno", mobileno);
+        values.put("phoneno", phoneno);
+        values.put("email", email);
         values.put("serialno", serialno);
-        values.put("reading", prevreading);
+        values.put("areaid", areaid);
+        values.put("balance", balance);
+        values.put("penalty", penalty);
+        values.put("othercharge", othercharge);
+        values.put("lastreading", lastreading);
+        values.put("lasttxndate", lasttxndate);
+        values.put("areaname", areaname);
+        values.put("classificationid", classificationid);
+        values.put("lastreadingyear", lastreadingyear);
+        values.put("lastreadingmonth", lastreadingmonth);
+        values.put("lastreadingdate", lastreadingdate);
+        values.put("barcode", barcode);
         values.put("assignee_objid", assignee_objid);
         values.put("assignee_name", assignee_name);
         
@@ -189,37 +212,47 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
     public void updateAccount(Map acct) {
         ERROR = "";
         String objid = acct.get("objid") != null ? acct.get("objid").toString() : "";
-        String state = acct.get("state") != null ? acct.get("state").toString() : "";
-        String dtstarted = acct.get("dtstarted") != null ? acct.get("dtstarted").toString() : "";
         String acctno = acct.get("acctno") != null ? acct.get("acctno").toString() : "";
-        String applicationid = acct.get("applicationid") != null ? acct.get("applicationid").toString() : "";
-        String name = acct.get("name") != null ? acct.get("name").toString() : "";
+        String acctname = acct.get("acctname") != null ? acct.get("acctname").toString() : "";
         String address = acct.get("address") != null ? acct.get("address").toString() : "";
-        String cellphoneno = acct.get("cellphoneno") != null ? acct.get("cellphoneno").toString() : "";
-        String meterid = acct.get("meterid") != null ? acct.get("meterid").toString() : "";
-        String areaid = acct.get("areaid") != null ? acct.get("areaid").toString() : "";
-        String area = acct.get("area") != null ? acct.get("area").toString() : "";
-        String balance = acct.get("balance") != null ? acct.get("balance").toString() : "";
-        String lasttxndate = acct.get("lasttxndate") != null ? acct.get("lasttxndate").toString() : "";
+        String mobileno = acct.get("mobileno") != null ? acct.get("mobileno").toString() : "";
+        String phoneno = acct.get("phoneno") != null ? acct.get("phoneno").toString() : "";
+        String email = acct.get("email") != null ? acct.get("email").toString() : "";
         String serialno = acct.get("serialno") != null ? acct.get("serialno").toString() : "";
-        String prevreading = acct.get("reading") != null ? acct.get("reading").toString() : "";
+        String areaid = acct.get("areaid") != null ? acct.get("areaid").toString() : "";
+        String balance = acct.get("balance") != null ? acct.get("balance").toString() : "";
+        String penalty = acct.get("penalty") != null ? acct.get("penalty").toString() : "";
+        String othercharge = acct.get("othercharge") != null ? acct.get("othercharge").toString() : "";
+        String lastreading = acct.get("lastreading") != null ? acct.get("lastreading").toString() : "";
+        String lasttxndate = acct.get("lasttxndate") != null ? acct.get("lasttxndate").toString() : "";
+        String areaname = acct.get("areaname") != null ? acct.get("areaname").toString() : "";
+        String classificationid = acct.get("classificationid") != null ? acct.get("classificationid").toString() : "";
+        String lastreadingyear = acct.get("lastreadingyear") != null ? acct.get("lastreadingyear").toString() : "";
+        String lastreadingmonth = acct.get("lastreadingmonth") != null ? acct.get("lastreadingmonth").toString() : "";
+        String lastreadingdate = acct.get("lastreadingdate") != null ? acct.get("lastreadingdate").toString() : "";
+        String barcode = acct.get("barcode") != null ? acct.get("barcode").toString() : "";
         
         ContentValues values = new ContentValues();
         values.put("objid", objid);
-        values.put("state", state);
-        values.put("dtstarted", dtstarted);
         values.put("acctno", acctno);
-        values.put("applicationid", applicationid);
-        values.put("name", name);
+        values.put("acctname", acctname);
         values.put("address", address);
-        values.put("cellphoneno", cellphoneno);
-        values.put("meterid", meterid);
-        values.put("areaid", areaid);
-        values.put("area", area);
-        values.put("balance", balance);
-        values.put("lasttxndate", lasttxndate);
+        values.put("mobileno", mobileno);
+        values.put("phoneno", phoneno);
+        values.put("email", email);
         values.put("serialno", serialno);
-        values.put("reading", prevreading);
+        values.put("areaid", areaid);
+        values.put("balance", balance);
+        values.put("penalty", penalty);
+        values.put("othercharge", othercharge);
+        values.put("lastreading", lastreading);
+        values.put("lasttxndate", lasttxndate);
+        values.put("areaname", areaname);
+        values.put("classificationid", classificationid);
+        values.put("lastreadingyear", lastreadingyear);
+        values.put("lastreadingmonth", lastreadingmonth);
+        values.put("lastreadingdate", lastreadingdate);
+        values.put("barcode", barcode);
         
         SQLiteDatabase db = this.getWritableDatabase();
         
@@ -243,7 +276,7 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
             Cursor cursor = db.rawQuery("SELECT * FROM account WHERE objid = ?", args);
             if(cursor.moveToFirst()){
                 do{
-                    account = new Account(cursor.getString(0),cursor.getString(1),cursor.getString(2),cursor.getString(3),cursor.getString(4),cursor.getString(5),cursor.getString(6),cursor.getString(7),cursor.getString(8),cursor.getString(9),cursor.getString(10),cursor.getString(11),cursor.getString(12),cursor.getString(13),cursor.getString(14),null,cursor.getString(15),cursor.getString(16));
+                    account = new Account(cursor.getString(0),cursor.getString(1),cursor.getString(2),cursor.getString(3),cursor.getString(4),cursor.getString(5),cursor.getString(6),cursor.getString(7),cursor.getString(8),cursor.getString(9),cursor.getString(10),cursor.getString(11),cursor.getString(12),cursor.getString(13),cursor.getString(14),cursor.getString(15),cursor.getString(16),cursor.getString(17),cursor.getString(18),cursor.getString(19));
                 }while(cursor.moveToNext());
             }
             db.close();
@@ -262,46 +295,51 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
         String[] args = new String[]{searchtext, searchtext, searchtext, userid};
         try{
             SQLiteDatabase db = this.getWritableDatabase();
-            Cursor cursor = db.rawQuery("SELECT * FROM account WHERE (name LIKE ? OR acctno LIKE ? OR serialno LIKE ?) AND assignee_objid = ?", args);
+            Cursor cursor = db.rawQuery("SELECT * FROM account WHERE (acctname LIKE ? OR acctno LIKE ? OR serialno LIKE ?) AND assignee_objid = ?", args);
             if(cursor.moveToFirst()){
                 do{
                     String objid = cursor.getString(0);
-                    String state = cursor.getString(1);
-                    String dtstarted = cursor.getString(2);
-                    String acctno = cursor.getString(3);
-                    String applicationid = cursor.getString(4);
-                    String name = cursor.getString(5);
-                    String address = cursor.getString(6);
-                    String cellphoneno = cursor.getString(7);
-                    String meterid = cursor.getString(8);
-                    String areaid = cursor.getString(9);
-                    String area = cursor.getString(10);
-                    String balance = cursor.getString(11);
-                    String lasttxndate = cursor.getString(12);
-                    String serialno = cursor.getString(13);
-                    String reading = cursor.getString(14);
-                    String assignee_objid = cursor.getString(15);
-                    String assignee_name = cursor.getString(16);
+                    String acctno = cursor.getString(1);
+                    String acctname = cursor.getString(2);
+                    String address = cursor.getString(3);
+                    String mobileno = cursor.getString(4);
+                    String phoneno = cursor.getString(5);
+                    String email = cursor.getString(6);
+                    String serialno = cursor.getString(7);
+                    String areaid = cursor.getString(8);
+                    String balance = cursor.getString(9);
+                    String penalty = cursor.getString(10);
+                    String othercharge = cursor.getString(11);
+                    String lastreading = cursor.getString(12);
+                    String lasttxndate = cursor.getString(13);
+                    String areaname = cursor.getString(14);
+                    String classificationid = cursor.getString(15);
+                    String lastreadingyear = cursor.getString(16);
+                    String lastreadingmonth = cursor.getString(17);
+                    String lastreadingdate = cursor.getString(18);
+                    String barcode = cursor.getString(19);
 
                     Account acct = new Account(
                         objid,
-                        state,
-                        dtstarted,
                         acctno,
-                        applicationid,
-                        name,
+                        acctname,
                         address,
-                        cellphoneno,
-                        meterid,
-                        areaid,
-                        area,
-                        balance,
-                        lasttxndate,
+                        mobileno,
+                        phoneno,
+                        email,
                         serialno,
-                        reading,
-                        null,
-                        assignee_objid,
-                        assignee_name
+                        areaid,
+                        balance,
+                        penalty,
+                        othercharge,
+                        lastreading,
+                        lasttxndate,
+                        areaname,
+                        classificationid,
+                        lastreadingyear,
+                        lastreadingmonth,
+                        lastreadingdate,
+                        barcode
                     );
                     list.add(acct);
                 }while(cursor.moveToNext());
@@ -317,49 +355,55 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
     public List<Account> getResultBySerialno(String serial){
         ERROR = "";
         List<Account> result = new ArrayList<Account>();
-        String UserID = SystemPlatformFactory.getPlatform().getSystem().getUserID();
+        String userid = SystemPlatformFactory.getPlatform().getSystem().getUserID();
+        String[] args = new String[]{serial, userid};
         try{
             SQLiteDatabase db = this.getWritableDatabase();
-            Cursor cursor = db.rawQuery("SELECT * FROM account WHERE serialno = '"+serial+"' AND assignee_objid = \'"+UserID+"\'", null);
+            Cursor cursor = db.rawQuery("SELECT * FROM account WHERE serialno = ? AND assignee_objid = ?", args);
             if(cursor.moveToFirst()){
                 do{
                     String objid = cursor.getString(0);
-                    String state = cursor.getString(1);
-                    String dtstarted = cursor.getString(2);
-                    String acctno = cursor.getString(3);
-                    String applicationid = cursor.getString(4);
-                    String name = cursor.getString(5);
-                    String address = cursor.getString(6);
-                    String cellphoneno = cursor.getString(7);
-                    String meterid = cursor.getString(8);
-                    String areaid = cursor.getString(9);
-                    String area = cursor.getString(10);
-                    String balance = cursor.getString(11);
-                    String lasttxndate = cursor.getString(12);
-                    String serialno = cursor.getString(13);
-                    String reading = cursor.getString(14);
-                    String assignee_objid = cursor.getString(15);
-                    String assignee_name = cursor.getString(16);
+                    String acctno = cursor.getString(1);
+                    String acctname = cursor.getString(2);
+                    String address = cursor.getString(3);
+                    String mobileno = cursor.getString(4);
+                    String phoneno = cursor.getString(5);
+                    String email = cursor.getString(6);
+                    String serialno = cursor.getString(7);
+                    String areaid = cursor.getString(8);
+                    String balance = cursor.getString(9);
+                    String penalty = cursor.getString(10);
+                    String othercharge = cursor.getString(11);
+                    String lastreading = cursor.getString(12);
+                    String lasttxndate = cursor.getString(13);
+                    String areaname = cursor.getString(14);
+                    String classificationid = cursor.getString(15);
+                    String lastreadingyear = cursor.getString(16);
+                    String lastreadingmonth = cursor.getString(17);
+                    String lastreadingdate = cursor.getString(18);
+                    String barcode = cursor.getString(19);
 
                     Account acct = new Account(
                         objid,
-                        state,
-                        dtstarted,
                         acctno,
-                        applicationid,
-                        name,
+                        acctname,
                         address,
-                        cellphoneno,
-                        meterid,
-                        areaid,
-                        area,
-                        balance,
-                        lasttxndate,
+                        mobileno,
+                        phoneno,
+                        email,
                         serialno,
-                        reading,
-                        null,
-                        assignee_objid,
-                        assignee_name
+                        areaid,
+                        balance,
+                        penalty,
+                        othercharge,
+                        lastreading,
+                        lasttxndate,
+                        areaname,
+                        classificationid,
+                        lastreadingyear,
+                        lastreadingmonth,
+                        lastreadingdate,
+                        barcode
                     );
                     result.add(acct);
                 }while(cursor.moveToNext());
@@ -372,11 +416,11 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
     }
     
     @Override
-    public void deleteAccountByMeter(String meterid){
+    public void deleteAccountById(String acctid){
         try{
-            String[] args = new String[]{meterid};
+            String[] args = new String[]{acctid};
             SQLiteDatabase db = this.getWritableDatabase();
-            db.execSQL("DELETE FROM account WHERE meterid = ?",args);
+            db.execSQL("DELETE FROM account WHERE objid = ?",args);
             db.close();
         }catch(Exception e){
             ERROR = "Database Error: " + e.toString();
@@ -404,7 +448,7 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
         try{
             String[] args = new String[]{SystemPlatformFactory.getPlatform().getSystem().getUserID()};
             SQLiteDatabase db = this.getWritableDatabase();
-            Cursor c = db.rawQuery("SELECT * FROM account a INNER JOIN reading r ON a.meterid = r.meterid WHERE a.assignee_objid = ?", args);
+            Cursor c = db.rawQuery("SELECT * FROM account a INNER JOIN reading r ON a.objid = r.acctid WHERE a.assignee_objid = ?", args);
             i = c.getCount();
             db.close();
         }catch(Exception e){
@@ -422,7 +466,7 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
         ERROR = "";
         ContentValues values = new ContentValues();
         values.put("objid", reading.getObjid());
-        values.put("meterid", reading.getMeterid());
+        values.put("acctid", reading.getAcctId());
         values.put("reading", reading.getReading());
         values.put("consumption", reading.getConsumption());
         values.put("amtdue", reading.getAmtDue());
@@ -439,16 +483,16 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
     }
     
     @Override
-    public Reading findReadingByMeter(String meterid) {
+    public Reading findReadingByAccount(String acctid) {
         ERROR = "";
         Reading reading = null;
-        String[] args = new String[]{meterid};
+        String[] args = new String[]{acctid};
         try{
             SQLiteDatabase db = this.getWritableDatabase();
-            Cursor cursor = db.rawQuery("SELECT * FROM reading WHERE meterid = ? AND state = 'OPEN'", args);
+            Cursor cursor = db.rawQuery("SELECT * FROM reading WHERE acctid = ? AND state = 'OPEN'", args);
             if(cursor.moveToFirst()){
                 do{
-                    reading = new Reading(cursor.getString(0),cursor.getString(1),cursor.getString(2),cursor.getString(3),cursor.getString(4),cursor.getString(5),cursor.getString(6));
+                    reading = new Reading(cursor.getString(0),cursor.getString(1),cursor.getString(2),cursor.getString(3),cursor.getString(4),cursor.getString(5),cursor.getString(6),cursor.getString(7));
                 }while(cursor.moveToNext());
             }
             db.close();
@@ -469,10 +513,10 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
         values.put("amtdue", reading.getAmtDue());
         values.put("totaldue", reading.getTotalDue());
         
-        String[] args = new String[]{reading.getMeterid()};
+        String[] args = new String[]{reading.getAcctId()};
         
         try{
-            db.update("reading", values, "meterid = ?", args);
+            db.update("reading", values, "acctid = ?", args);
         }catch(Exception e){
             ERROR = "Database Error: " + e.toString();
         }
@@ -480,11 +524,11 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
     }
     
     @Override
-    public void deleteReadingByMeter(String meterid){
+    public void deleteReadingByMeter(String acctid){
         try{
-            String[] args = new String[]{meterid};
+            String[] args = new String[]{acctid};
             SQLiteDatabase db = this.getWritableDatabase();
-            db.execSQL("DELETE FROM reading WHERE meterid = ?",args);
+            db.execSQL("DELETE FROM reading WHERE acctid = ?",args);
             db.close();
         }catch(Exception e){
             ERROR = "Database Error: " + e.toString();
@@ -498,10 +542,10 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
         String[] args = new String[]{userid};
         try{
             SQLiteDatabase db = this.getWritableDatabase();
-            Cursor cursor = db.rawQuery("SELECT r.* FROM account a INNER JOIN reading r ON a.meterid = r.meterid WHERE a.assignee_objid = ?", args);
+            Cursor cursor = db.rawQuery("SELECT r.* FROM account a INNER JOIN reading r ON a.objid = r.acctid WHERE a.assignee_objid = ?", args);
             if(cursor.moveToFirst()){
                 do{
-                    Reading reading = new Reading(cursor.getString(0),cursor.getString(1),cursor.getString(2),cursor.getString(3),cursor.getString(4),cursor.getString(5),cursor.getString(6));
+                    Reading reading = new Reading(cursor.getString(0),cursor.getString(1),cursor.getString(2),cursor.getString(3),cursor.getString(4),cursor.getString(5),cursor.getString(6),cursor.getString(7));
                     if(reading != null) list.add(reading);
                 }while(cursor.moveToNext());
             }
@@ -546,12 +590,99 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
         try{
             String[] args = new String[]{areaid};
             SQLiteDatabase db = this.getWritableDatabase();
-            Cursor cursor = db.rawQuery("SELECT * FROM account a INNER JOIN reading r ON a.meterid = r.meterid WHERE a.areaid = ? ",args);
+            Cursor cursor = db.rawQuery("SELECT * FROM account a INNER JOIN reading r ON a.objid = r.acctid WHERE a.areaid = ? ",args);
             if(cursor.getCount() > 0) b = false;
         }catch(Exception e){
             ERROR = "Database Error: " + e.toString();
         }
         return b;
+    }
+    
+    @Override
+    public void createFormula(Formula formula) {
+        ERROR = "";
+        ContentValues values = new ContentValues();
+        values.put("classificationid", formula.getClassificationId());
+        values.put("var", formula.getVar());
+        values.put("expr", formula.getExpr());
+        
+        SQLiteDatabase db = this.getWritableDatabase();
+        try{
+            db.insert("formula", null, values);
+        }catch(Exception e){
+            ERROR = "Database Error: " + e.toString();
+        }
+        db.close();
+    }
+    
+    @Override
+    public List<Formula> getFormula() {
+        ERROR = "";
+        List<Formula> list = new ArrayList<Formula>();
+        try{
+            SQLiteDatabase db = this.getWritableDatabase();
+            Cursor cursor = db.rawQuery("SELECT * FROM formula", null);
+            if(cursor.moveToFirst()){
+                do{
+                    Formula formula = new Formula(cursor.getString(0),cursor.getString(1),cursor.getString(2));
+                    list.add(formula);
+                }while(cursor.moveToNext());
+            }
+            db.close();
+        }catch(Exception e){
+            ERROR = "Database Error: " + e.toString();
+        }
+        return list;
+    }
+    
+    @Override
+    public boolean formulaExist(Formula formula){
+        boolean b = false;
+        List<Formula> list = getFormula();
+        Iterator<Formula> i = list.iterator();
+        while(i.hasNext()){
+            Formula f = i.next();
+            if(formula.getClassificationId().equals(f.getClassificationId())) b = true;
+        }
+        return b;
+    }
+    
+    @Override
+    public void updateFormula(Formula formula) {
+        ERROR = "";
+        ContentValues values = new ContentValues();
+        values.put("var", formula.getVar());
+        values.put("expr", formula.getExpr());
+        
+        SQLiteDatabase db = this.getWritableDatabase();
+        String[] args = new String[]{ formula.getClassificationId() };
+        try{
+            db.update("account", values, "classificationid = ?", args);
+        }catch(Exception e){
+            ERROR = "Database Error: " + e.toString();
+        }
+        db.close();
+    }
+    
+    @Override
+    public Formula getFormula(String classificationid) {
+        ERROR = "";
+        Formula formula = null;
+        try{
+            classificationid = "%" + classificationid + "%";
+            String[] args = new String[]{classificationid};
+            SQLiteDatabase db = this.getWritableDatabase();
+            Cursor cursor = db.rawQuery("SELECT * FROM formula WHERE classificationid LIKE ?", args);
+            if(cursor.moveToFirst()){
+                do{
+                    formula = new Formula(cursor.getString(0),cursor.getString(1),cursor.getString(2));
+                }while(cursor.moveToNext());
+            }
+            db.close();
+        }catch(Exception e){
+            ERROR = "Database Error: " + e.toString();
+        }
+        return formula;
     }
     
 }

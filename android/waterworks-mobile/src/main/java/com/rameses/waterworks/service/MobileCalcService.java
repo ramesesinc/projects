@@ -3,7 +3,6 @@ package com.rameses.waterworks.service;
 import com.rameses.Main;
 import com.rameses.service.ScriptServiceContext;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -11,44 +10,45 @@ import java.util.Map;
  *
  * @author Dino
  */
-public class ReadingService {
+public class MobileCalcService {
     
     private Service service;
     public String ERROR;
     
-    public ReadingService(){
+    public MobileCalcService(){
         ERROR = "";
         try{
             ScriptServiceContext ctx = ServiceProxy.getContext();
-            service = (Service) ctx.create("WaterworksMeterReadingService", Service.class);
+            service = (Service) ctx.create("WaterworksMobileCalcService", Service.class);
         }catch(Exception e){
-            ERROR = "ReadingService Error: " + e.toString();
+            ERROR = "MobileCalcService Error: " + e.toString();
             if(Main.LOG != null){
-                Main.LOG.error("ReadingService Error",e.toString());
+                Main.LOG.error("MobileCalcService Error",e.toString());
             }else{
                 e.printStackTrace();
             }
         }
     }
     
-    public Map create(Object params){
-        Map data = new HashMap();
+    public List<Map> getFormula(){
+        ERROR = "";
+        List result = new ArrayList();
         try{
-            data = service.create(params);
+            result = service.getFormula();
         }catch(Exception e){
-            ERROR = "ReadingService Error: " + e.toString();
+            ERROR = "MobileCalcService: " + e.toString();
             if(Main.LOG != null){
-                Main.LOG.error("ReadingService Error",e.toString());
+                Main.LOG.error("MobileCalcService",e.toString());
             }else{
                 e.printStackTrace();
             }
         }
-        return data;
+        return result;
     }
     
     static interface Service{
         
-        public Map create(Object params);
+        public List<Map> getFormula();
         
     }
     

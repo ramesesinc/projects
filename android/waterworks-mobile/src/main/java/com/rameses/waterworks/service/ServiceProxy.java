@@ -15,8 +15,8 @@ public class ServiceProxy {
         String setting_cluster = Main.CONNECTION_SETTING.get("cluster") != null ? Main.CONNECTION_SETTING.get("cluster").toString() : "osiris3";
         
         Map env = new HashMap();
-        env.put("app.context", setting_context);
-        env.put("app.cluster", setting_cluster);
+        env.put("app.context", "etracs25");
+        env.put("app.cluster", "osiris3");
         env.put("app.host", setting_ip+":"+setting_port);
         env.put("readTimeout",setting_timeout);
         return new ScriptServiceContext(env);

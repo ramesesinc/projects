@@ -1,0 +1,5 @@
+<workunit extends="wtemplates/ServiceLookupController.xml" serviceName="ViolationService">
+    <invokers>
+        <invoker type="violation:lookup" caption="Violation Lookup"/>
+    </invokers>
+</workunit>

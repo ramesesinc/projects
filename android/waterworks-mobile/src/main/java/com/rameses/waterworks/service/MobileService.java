@@ -11,35 +11,35 @@ import java.util.Map;
  *
  * @author Dino
  */
-public class DownloadService {
+public class MobileService {
     
     private Service service;
     public String ERROR;
     
-    public DownloadService(){
+    public MobileService(){
         ERROR = "";
         try{
             ScriptServiceContext ctx = ServiceProxy.getContext();
-            service = (Service) ctx.create("WaterworksDownloadService", Service.class);
+            service = (Service) ctx.create("WaterworksMobileService", Service.class);
         }catch(Exception e){
-            ERROR = "DownloadService Error: " + e.toString();
+            ERROR = "MobileService Error: " + e.toString();
             if(Main.LOG != null){
-                Main.LOG.error("DownloadService Error",e.toString());
+                Main.LOG.error("MobileService Error",e.toString());
             }else{
                 e.printStackTrace();
             }
         }
     }
     
-    public List<Map> getDownloadIndexes(Object params){
+    public List<Map> download(Object params){
         ERROR = "";
         List result = new ArrayList();
         try{
-            result = service.getDownloadIndexes(params);
+            result = service.download(params);
         }catch(Exception e){
-            ERROR = "DownloadService Error: " + e.toString();
+            ERROR = "MobileService Error: " + e.toString();
             if(Main.LOG != null){
-                Main.LOG.error("DownloadService Error",e.toString());
+                Main.LOG.error("MobileService Error",e.toString());
             }else{
                 e.printStackTrace();
             }
@@ -47,15 +47,16 @@ public class DownloadService {
         return result;
     }
     
-    public Map getAccount(Object params){
+    public Map upload(Object params){
         ERROR = "";
         Map result = new HashMap();
         try{
-            result = service.getAccount(params);
+            result = service.upload(params);
         }catch(Exception e){
-            ERROR = "DownloadService Error: " + e.toString();
+            ERROR = "MobileService Error: " + e.toString();
+            result = new HashMap();
             if(Main.LOG != null){
-                Main.LOG.error("DownloadService Error",e.toString());
+                Main.LOG.error("MobileService Error",e.toString());
             }else{
                 e.printStackTrace();
             }
@@ -65,8 +66,9 @@ public class DownloadService {
     
     static interface Service{
         
-        public List<Map> getDownloadIndexes(Object params);
-        public Map getAccount(Object params);
+        public List<Map> download(Object params);
+        
+        public Map upload(Object params);
         
     }
     

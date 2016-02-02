@@ -1,6 +1,5 @@
 package com.rameses.waterworks.util;
 
-import com.rameses.waterworks.log.LogPlatform;
 import com.rameses.waterworks.log.LogPlatformFactory;
 import java.util.logging.Level;
 import java.util.logging.Logger;

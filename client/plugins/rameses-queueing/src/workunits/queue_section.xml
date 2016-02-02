@@ -1,4 +1,4 @@
-<workunit extends="seti2/templates/CrudFormController.xml" schemaName="queue_section">
+<workunit extends="com/rameses/seti2/templates/CrudForm.xml" schemaName="queue_section">
     <invokers>
         <!--
         <invoker type="home.action" caption="Add Queue Section" action="create" target="popup"/> 

@@ -1,0 +1,19 @@
+import com.rameses.annotations.*;
+
+class WaterworksAreaService {
+	
+	@DataContext("waterworks_area")
+	def wa;
+
+	@ProxyMethod
+	public def getListByAssignee( def o ) {
+		if(!o.userid) 
+			throw new Exception("userid is required in WaterworksAreaService.getList");
+		wa.debug = true;
+		wa.select("objid,name,description");
+		wa.find(['assignee_objid': o.userid]);	
+		return wa.list();
+	}
+
+
+}

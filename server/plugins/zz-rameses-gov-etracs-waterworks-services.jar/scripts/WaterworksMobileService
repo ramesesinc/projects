@@ -1,0 +1,35 @@
+import com.rameses.annotations.*;
+
+class WaterworksMobileService {
+	
+	@DataContext("vw_waterworks_billing")
+	def acct;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@ProxyMethod
+	public def download( def o ) {
+		if(!o.areaid)	
+			throw new Exception("Areaid is required in WaterworksMobileService.download");
+
+		def y = dateSvc.getServerYear();
+		def m = dateSvc.getServerMonth()-1;
+		if(m==0) {
+			m = 12;
+			y = y-1;
+		}	
+		def list = acct.find( [areaid: o.areaid, lastreadingmonth: m, lastreadingyear: y ] ).list();
+		list.each {
+			it.penalty = 0;
+			it.barcode = '51030:'+it.acctno;
+		}
+		return list;
+	}
+
+	@ProxyMethod
+	public def upload( def o ) {
+		//areaid
+	}
+
+}

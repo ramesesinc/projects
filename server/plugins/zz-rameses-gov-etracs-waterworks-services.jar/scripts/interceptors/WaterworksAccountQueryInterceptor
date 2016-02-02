@@ -1,0 +1,45 @@
+import com.rameses.annotations.*;
+
+class WaterworksAccountQueryInterceptor {
+	
+	@After(pattern="QueryService.getNodeList", eval="#{args[0].schemaname == 'vw_waterworks_account'}")
+	public void getAcctNodeList(def evt) {
+		def result = evt.result;
+		result << [ title: 'Active', id:'active'];
+		result << [ title: 'For Reading', id:'for-reading'];
+		result << [ title: 'Processing', id:'processing'];
+		result << [ title: 'For Disconnection', id:'for-disconnection'];
+		result << [ title: 'Disconnected', id:'disconnected'];
+		result << [ title: 'For Reconnection', id:'for-reconnection'];
+	}
+
+	@Before(pattern="QueryService.getList", eval="#{args[0].schemaname == 'vw_waterworks_account'}")
+	public void loadList(def evt) {
+		def o = evt.args[0];
+		switch( o.node.id ) {
+			case 'active':
+				o.where = [ "state = 'ACTIVE' " ];
+				break;
+			case 'for-reading':
+				o.where = [ "state = 'FOR-READING' " ];
+				break;
+
+			case 'processing':
+				o.where = [ "state = 'PROCESSING' " ];
+				break;
+
+			case 'for-disconnection':
+				o.where = [ "state = 'FOR-DISCONNECTION' " ];
+				break;
+
+			case 'disconnected':
+				o.where = [ "state = 'DISCONNECTED' " ];
+				break;
+
+			case 'for-reconnection':
+				o.where = [ "state = 'FOR-RECONNECTION' " ];
+				break;
+		}
+	}
+
+}

@@ -1,0 +1,15 @@
+import com.rameses.annotations.*;
+
+class GorioService {
+	
+
+	@ProxyMethod
+	public def getList(def o) {
+		return [
+			[name:'gorio', amount: 250],
+			[name:'elmo', amount: 320],
+			[name:'trixie', amount: 150],
+		];
+	}
+
+}

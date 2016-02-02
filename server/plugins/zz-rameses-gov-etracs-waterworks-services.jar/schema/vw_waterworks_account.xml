@@ -1,25 +1,28 @@
 <schema adapter="waterworks">
-	<element tablename="waterworks_account">
+	<element tablename="vw_waterworks_account">
 		<field name="objid" primary="true"/>
 		<field name="state" required="true"/>
 		<field name="dtstarted" required="true"/>
 		<field name="acctno" required="true"/>
 		<field name="acctname" required="true"/>
-		<field name="applicationid" required="true"/>
-		<field name="owner_objid" required="true"/>
-		<field name="owner_name" required="true"/>
-		<field name="address_objid" required="true"/>
-		<field name="address_text" required="true" caption="Address"/>
+		<field name="ownerid" required="true"/>
+		<field name="ownername" required="true"/>
+		<field name="address" required="true"/>
 		<field name="mobileno" required="true"/>
 		<field name="phoneno" required="true"/>
 		<field name="email" required="true"/>
-		<field name="meterid" required="true"/>
 		<field name="classificationid" required="true"/>
-		<field name="areaid" required="true"/>
+		<field name="lastreading" required="true"/>
 		<field name="balance" required="true"/>
 		<field name="lastreadingdate" required="true"/>
 		<field name="lastreadingmonth" required="true"/>
 		<field name="lastreadingyear" required="true"/>
-		<field name="lastreading" required="true"/>
+		<field name="lasttxndate" required="true"/>
+		<field name="prevreading" required="true"/>
+		<field name="brand" required="true"/>
+		<field name="serialno" required="true"/>
+		<field name="capacity" required="true"/>
+		<field name="assigneeid" required="true"/>
+		<field name="assigneename" required="true"/>
 	</element>
 </schema>

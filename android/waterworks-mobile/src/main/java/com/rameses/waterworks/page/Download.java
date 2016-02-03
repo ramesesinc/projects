@@ -3,11 +3,13 @@ package com.rameses.waterworks.page;
 import com.rameses.Main;
 import com.rameses.waterworks.bean.Account;
 import com.rameses.waterworks.bean.Area;
+import com.rameses.waterworks.bean.Formula;
 import com.rameses.waterworks.database.Database;
 import com.rameses.waterworks.database.DatabasePlatformFactory;
 import com.rameses.waterworks.dialog.Dialog;
 import com.rameses.waterworks.layout.Header;
 import com.rameses.waterworks.service.AreaService;
+import com.rameses.waterworks.service.MobileCalcService;
 import com.rameses.waterworks.service.MobileService;
 import com.rameses.waterworks.util.SystemPlatformFactory;
 import java.util.ArrayList;
@@ -30,7 +32,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ProgressBar;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.cell.CheckBoxListCell;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -54,6 +55,7 @@ public class Download {
     int downloadsize;
     int indexposition = 1;
     Task<Void> task;
+    boolean continueDownload = true;
     
     public Download(){
         Header.TITLE.setText("Download");
@@ -126,9 +128,32 @@ public class Download {
                 
                 label.setVisible(true);
                 progressbar.setVisible(true);
-                download.setDisable(true);
                 progressbar.progressProperty().bind(task.progressProperty());
                 new Thread(task).start();
+                download.setText("Cancel");
+                    download.setOnAction(new EventHandler<ActionEvent>(){
+                        @Override
+                        public void handle(ActionEvent event) {
+                            continueDownload = false;
+                            label.setVisible(false);
+                            progressbar.setVisible(false);
+                            download.setText("Back");
+                            download.setOnAction(new EventHandler<ActionEvent>(){
+                                @Override
+                                public void handle(ActionEvent event) {
+                                    Main.ROOT.setCenter(new Home().getLayout());
+                                }
+                            });
+                            root.setOnKeyReleased(new EventHandler<KeyEvent>(){
+                                @Override
+                                public void handle(KeyEvent event) {
+                                    if(event.getCode() == KeyCode.ESCAPE){
+                                        Main.ROOT.setCenter(new Home().getLayout());
+                                    }
+                                }
+                            });
+                        }
+                    });
             }
         });
         
@@ -140,14 +165,6 @@ public class Download {
         root = new VBox(10);
         root.setPadding(new Insets(20));
         root.getChildren().addAll(listView,bcontainer,label,progressbar);
-        root.setOnKeyReleased(new EventHandler<KeyEvent>(){
-            @Override
-            public void handle(KeyEvent event) {
-                if(event.getCode() == KeyCode.ESCAPE){
-                    Main.ROOT.setCenter(new Home().getLayout());
-                }
-            }
-        });
         
         loadData();
         
@@ -156,6 +173,9 @@ public class Download {
             protected Void call() throws Exception {
                 Iterator<Map> it = accountList.iterator();
                 while(it.hasNext()){
+                    if(!continueDownload){
+                        return null;
+                    }
                     Map account = it.next();
                     String objid = account.get("objid") != null ? account.get("objid").toString() : "";
                     Database db = DatabasePlatformFactory.getPlatform().getDatabase();
@@ -169,6 +189,27 @@ public class Download {
                     updateProgress(indexposition,downloadsize);
                     indexposition++;
                 }
+                
+                //download water-rates
+                MobileCalcService service = new MobileCalcService();
+                List<Map> list = service.getFormula();
+                if(!service.ERROR.isEmpty()){
+                    Dialog.showError(service.ERROR);
+                }
+                for(Map m : list){
+                    String classificationid = m.get("classificationid") != null ? m.get("classificationid").toString() : "";
+                    String var = m.get("var") != null ? m.get("var").toString() : "";
+                    String expr= m.get("expr") != null ? m.get("expr").toString() : "";
+                    
+                    Formula f = new Formula(classificationid,var,expr);
+                    Database db = DatabasePlatformFactory.getPlatform().getDatabase();
+                    if(!db.formulaExist(f)){
+                        db.createFormula(f);
+                    }else{
+                        db.updateFormula(f);
+                    }
+                }
+                
                 Thread t = new Thread(){
                     @Override
                     public void run(){
@@ -182,6 +223,14 @@ public class Download {
                                     @Override
                                     public void handle(ActionEvent event) {
                                         Main.ROOT.setCenter(new Home().getLayout());
+                                    }
+                                });
+                                root.setOnKeyReleased(new EventHandler<KeyEvent>(){
+                                    @Override
+                                    public void handle(KeyEvent event) {
+                                        if(event.getCode() == KeyCode.ESCAPE){
+                                            Main.ROOT.setCenter(new Home().getLayout());
+                                        }
                                     }
                                 });
                             }

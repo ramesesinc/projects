@@ -3,6 +3,7 @@ package com.rameses.waterworks.page;
 
 import com.rameses.Main;
 import com.rameses.waterworks.dialog.Dialog;
+import com.rameses.waterworks.layout.Header;
 import com.rameses.waterworks.util.SystemPlatformFactory;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -47,6 +48,7 @@ public class UserAccount {
             public void handle(ActionEvent event) {
                 Main.MYACCOUNT = null;
                 Main.ROOT.setCenter(new Login().getLayout());
+                Header.useraccount.setVisible(false);
                 Dialog.hide();
             }
         });

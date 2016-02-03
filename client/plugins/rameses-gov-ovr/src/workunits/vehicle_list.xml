@@ -1,5 +1,5 @@
 <workunit extends="wtemplates/ListController.xml" serviceName="VehicleService" entityName="vehicle">
     <invokers>
-        <invoker folderid="/explorer/master/violation" caption="Vehicles" index="1" role="MASTER"/>
+        <invoker folderid="/explorer/master/violation" caption="Vehicle" index="1" role="MASTER"/>
     </invokers>
 </workunit>

@@ -1,5 +1,0 @@
-<workunit extends="wtemplates/ListController.xml" serviceName="ViolatorService" entityName="violator">
-    <invokers>
-        <invoker folderid="/explorer/master/violation" caption="Violators" index="2" role="MASTER"/>
-    </invokers>
-</workunit>

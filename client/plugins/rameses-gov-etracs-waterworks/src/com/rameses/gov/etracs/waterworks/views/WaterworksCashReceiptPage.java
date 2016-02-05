@@ -63,7 +63,7 @@ public class WaterworksCashReceiptPage extends javax.swing.JPanel {
 
         xTextField2.setCaption("Meter No");
         xTextField2.setEnabled(false);
-        xTextField2.setName("entity.meterno"); // NOI18N
+        xTextField2.setName("entity.serialno"); // NOI18N
         xTextField2.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel2.add(xTextField2);
 

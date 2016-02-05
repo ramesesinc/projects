@@ -52,6 +52,7 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
                 + " lastreadingmonth VARCHAR(50),"
                 + " lastreadingdate VARCHAR(50),"
                 + " barcode VARCHAR(50),"
+                + " batchid VARCHAR(50),"
                 + " assignee_objid VARCHAR(50),"
                 + " assignee_name VARCHAR(50))");
         
@@ -63,7 +64,8 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
                 + " amtdue VARCHAR(50),"
                 + " totaldue VARCHAR(50), "
                 + " state VARCHAR(50), "
-                + " dtreading VARCHAR(50))");
+                + " dtreading VARCHAR(50), "
+                + " batchid VARCHAR(50))");
         
         sqld.execSQL("CREATE TABLE formula ("
                 + " classificationid TEXT PRIMARY KEY,"
@@ -161,9 +163,9 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
         String email = acct.get("email") != null ? acct.get("email").toString() : "";
         String serialno = acct.get("serialno") != null ? acct.get("serialno").toString() : "";
         String areaid = acct.get("areaid") != null ? acct.get("areaid").toString() : "";
-        String balance = acct.get("balance") != null ? acct.get("balance").toString() : "";
-        String penalty = acct.get("penalty") != null ? acct.get("penalty").toString() : "";
-        String othercharge = acct.get("othercharge") != null ? acct.get("othercharge").toString() : "";
+        String balance = acct.get("balance") != null ? acct.get("balance").toString() : "0.00";
+        String penalty = acct.get("penalty") != null ? acct.get("penalty").toString() : "0.00";
+        String othercharge = acct.get("othercharge") != null ? acct.get("othercharge").toString() : "0.00";
         String lastreading = acct.get("lastreading") != null ? acct.get("lastreading").toString() : "";
         String lasttxndate = acct.get("lasttxndate") != null ? acct.get("lasttxndate").toString() : "";
         String areaname = acct.get("areaname") != null ? acct.get("areaname").toString() : "";
@@ -174,6 +176,7 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
         String barcode = acct.get("barcode") != null ? acct.get("barcode").toString() : "";
         String assignee_objid = SystemPlatformFactory.getPlatform().getSystem().getUserID();
         String assignee_name = SystemPlatformFactory.getPlatform().getSystem().getFullName();
+        String batchid = acct.get("batchid") != null ? acct.get("batchid").toString() : "";
         
         ContentValues values = new ContentValues();
         values.put("objid", objid);
@@ -198,6 +201,7 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
         values.put("barcode", barcode);
         values.put("assignee_objid", assignee_objid);
         values.put("assignee_name", assignee_name);
+        values.put("batchid", batchid);
         
         SQLiteDatabase db = this.getWritableDatabase();
         try{
@@ -220,9 +224,9 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
         String email = acct.get("email") != null ? acct.get("email").toString() : "";
         String serialno = acct.get("serialno") != null ? acct.get("serialno").toString() : "";
         String areaid = acct.get("areaid") != null ? acct.get("areaid").toString() : "";
-        String balance = acct.get("balance") != null ? acct.get("balance").toString() : "";
-        String penalty = acct.get("penalty") != null ? acct.get("penalty").toString() : "";
-        String othercharge = acct.get("othercharge") != null ? acct.get("othercharge").toString() : "";
+        String balance = acct.get("balance") != null ? acct.get("balance").toString() : "0.00";
+        String penalty = acct.get("penalty") != null ? acct.get("penalty").toString() : "0.00";
+        String othercharge = acct.get("othercharge") != null ? acct.get("othercharge").toString() : "0.00";
         String lastreading = acct.get("lastreading") != null ? acct.get("lastreading").toString() : "";
         String lasttxndate = acct.get("lasttxndate") != null ? acct.get("lasttxndate").toString() : "";
         String areaname = acct.get("areaname") != null ? acct.get("areaname").toString() : "";
@@ -231,6 +235,7 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
         String lastreadingmonth = acct.get("lastreadingmonth") != null ? acct.get("lastreadingmonth").toString() : "";
         String lastreadingdate = acct.get("lastreadingdate") != null ? acct.get("lastreadingdate").toString() : "";
         String barcode = acct.get("barcode") != null ? acct.get("barcode").toString() : "";
+        String batchid = acct.get("batchid") != null ? acct.get("batchid").toString() : "";
         
         ContentValues values = new ContentValues();
         values.put("objid", objid);
@@ -253,6 +258,7 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
         values.put("lastreadingmonth", lastreadingmonth);
         values.put("lastreadingdate", lastreadingdate);
         values.put("barcode", barcode);
+        values.put("batchid", batchid);
         
         SQLiteDatabase db = this.getWritableDatabase();
         
@@ -276,7 +282,7 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
             Cursor cursor = db.rawQuery("SELECT * FROM account WHERE objid = ?", args);
             if(cursor.moveToFirst()){
                 do{
-                    account = new Account(cursor.getString(0),cursor.getString(1),cursor.getString(2),cursor.getString(3),cursor.getString(4),cursor.getString(5),cursor.getString(6),cursor.getString(7),cursor.getString(8),cursor.getString(9),cursor.getString(10),cursor.getString(11),cursor.getString(12),cursor.getString(13),cursor.getString(14),cursor.getString(15),cursor.getString(16),cursor.getString(17),cursor.getString(18),cursor.getString(19));
+                    account = new Account(cursor.getString(0),cursor.getString(1),cursor.getString(2),cursor.getString(3),cursor.getString(4),cursor.getString(5),cursor.getString(6),cursor.getString(7),cursor.getString(8),cursor.getString(9),cursor.getString(10),cursor.getString(11),cursor.getString(12),cursor.getString(13),cursor.getString(14),cursor.getString(15),cursor.getString(16),cursor.getString(17),cursor.getString(18),cursor.getString(19),cursor.getString(20));
                 }while(cursor.moveToNext());
             }
             db.close();
@@ -318,6 +324,7 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
                     String lastreadingmonth = cursor.getString(17);
                     String lastreadingdate = cursor.getString(18);
                     String barcode = cursor.getString(19);
+                    String batchid = cursor.getString(20);
 
                     Account acct = new Account(
                         objid,
@@ -339,7 +346,8 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
                         lastreadingyear,
                         lastreadingmonth,
                         lastreadingdate,
-                        barcode
+                        barcode,
+                        batchid
                     );
                     list.add(acct);
                 }while(cursor.moveToNext());
@@ -382,6 +390,7 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
                     String lastreadingmonth = cursor.getString(17);
                     String lastreadingdate = cursor.getString(18);
                     String barcode = cursor.getString(19);
+                    String batchid = cursor.getString(20);
 
                     Account acct = new Account(
                         objid,
@@ -403,7 +412,8 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
                         lastreadingyear,
                         lastreadingmonth,
                         lastreadingdate,
-                        barcode
+                        barcode,
+                        batchid
                     );
                     result.add(acct);
                 }while(cursor.moveToNext());
@@ -464,14 +474,17 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
     @Override
     public void createReading(Reading reading) {
         ERROR = "";
+        String date = SystemPlatformFactory.getPlatform().getSystem().getDate();
         ContentValues values = new ContentValues();
         values.put("objid", reading.getObjid());
         values.put("acctid", reading.getAcctId());
         values.put("reading", reading.getReading());
+        values.put("dtreading", date);
         values.put("consumption", reading.getConsumption());
         values.put("amtdue", reading.getAmtDue());
         values.put("totaldue", reading.getTotalDue());
         values.put("state", reading.getState());
+        values.put("batchid", reading.getBatchId());
         
         SQLiteDatabase db = this.getWritableDatabase();
         try{
@@ -492,7 +505,7 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
             Cursor cursor = db.rawQuery("SELECT * FROM reading WHERE acctid = ? AND state = 'OPEN'", args);
             if(cursor.moveToFirst()){
                 do{
-                    reading = new Reading(cursor.getString(0),cursor.getString(1),cursor.getString(2),cursor.getString(3),cursor.getString(4),cursor.getString(5),cursor.getString(6),cursor.getString(7));
+                    reading = new Reading(cursor.getString(0),cursor.getString(1),cursor.getString(2),cursor.getString(3),cursor.getString(4),cursor.getString(5),cursor.getString(6),cursor.getString(7),cursor.getString(8));
                 }while(cursor.moveToNext());
             }
             db.close();
@@ -545,7 +558,7 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
             Cursor cursor = db.rawQuery("SELECT r.* FROM account a INNER JOIN reading r ON a.objid = r.acctid WHERE a.assignee_objid = ?", args);
             if(cursor.moveToFirst()){
                 do{
-                    Reading reading = new Reading(cursor.getString(0),cursor.getString(1),cursor.getString(2),cursor.getString(3),cursor.getString(4),cursor.getString(5),cursor.getString(6),cursor.getString(7));
+                    Reading reading = new Reading(cursor.getString(0),cursor.getString(1),cursor.getString(2),cursor.getString(3),cursor.getString(4),cursor.getString(5),cursor.getString(6),cursor.getString(7),cursor.getString(8));
                     if(reading != null) list.add(reading);
                 }while(cursor.moveToNext());
             }
@@ -592,6 +605,7 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
             SQLiteDatabase db = this.getWritableDatabase();
             Cursor cursor = db.rawQuery("SELECT * FROM account a INNER JOIN reading r ON a.objid = r.acctid WHERE a.areaid = ? ",args);
             if(cursor.getCount() > 0) b = false;
+            db.close();
         }catch(Exception e){
             ERROR = "Database Error: " + e.toString();
         }
@@ -683,6 +697,18 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
             ERROR = "Database Error: " + e.toString();
         }
         return formula;
+    }
+    
+    @Override
+    public void clearFormula(){
+        ERROR = "";
+        try{
+            SQLiteDatabase db = this.getWritableDatabase();
+            db.execSQL("DELETE FROM formula");
+            db.close();
+        }catch(Exception e){
+            ERROR = "Database Error: " + e.toString();
+        }
     }
     
 }

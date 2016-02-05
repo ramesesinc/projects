@@ -31,11 +31,43 @@ public class MobileService {
         }
     }
     
+    public Map initForDownload(Object params){
+        ERROR = "";
+        Map result = new HashMap();
+        try{
+            result = service.initForDownload(params);
+        }catch(Exception e){
+            ERROR = "MobileService Error: " + e.toString();
+            if(Main.LOG != null){
+                Main.LOG.error("MobileService Error",e.toString());
+            }else{
+                e.printStackTrace();
+            }
+        }
+        return result;
+    }
+    
     public List<Map> download(Object params){
         ERROR = "";
         List result = new ArrayList();
         try{
             result = service.download(params);
+        }catch(Exception e){
+            ERROR = "MobileService Error: " + e.toString();
+            if(Main.LOG != null){
+                Main.LOG.error("MobileService Error",e.toString());
+            }else{
+                e.printStackTrace();
+            }
+        }
+        return result;
+    }
+    
+    public String confirmDownload(Object params){
+        ERROR = "";
+        String result = "";
+        try{
+            result = service.confirmDownload(params);
         }catch(Exception e){
             ERROR = "MobileService Error: " + e.toString();
             if(Main.LOG != null){
@@ -66,7 +98,11 @@ public class MobileService {
     
     static interface Service{
         
+        public Map initForDownload(Object params);
+        
         public List<Map> download(Object params);
+        
+        public String confirmDownload(Object params);
         
         public Map upload(Object params);
         

@@ -6,9 +6,9 @@ package com.rameses.waterworks.bean;
  */
 public class Reading {
     
-    String objid, acctid, reading, consumption, amtdue, totaldue, state, readingdate;
+    String objid, acctid, reading, consumption, amtdue, totaldue, state, readingdate, batchid;
     
-    public Reading(String objid, String acctid, String reading, String consumption, String amtdue, String totaldue, String state, String readingdate){
+    public Reading(String objid, String acctid, String reading, String consumption, String amtdue, String totaldue, String state, String readingdate, String batchid){
         this.objid = objid;
         this.acctid = acctid;
         this.reading = reading;
@@ -17,6 +17,7 @@ public class Reading {
         this.totaldue = totaldue;
         this.state = state;
         this.readingdate = readingdate;
+        this.batchid = batchid;
     }
     
     public String getObjid(){ return objid; };
@@ -27,5 +28,6 @@ public class Reading {
     public String getTotalDue() { return totaldue; };
     public String getState() { return state; };
     public String getReadingDate() { return readingdate; };
+    public String getBatchId() { return batchid; };
     
 }

@@ -64,4 +64,6 @@ public interface Database {
     
     public Formula getFormula(String classification);
     
+    public void clearFormula();
+    
 }

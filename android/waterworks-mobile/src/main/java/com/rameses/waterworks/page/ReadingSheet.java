@@ -211,6 +211,10 @@ public class ReadingSheet {
         try{
             BillCalculator calc = new BillCalculator();
             charge = calc.compute(account.getClassificationId(), consumption);
+            if(!calc.getError().isEmpty()){
+                Dialog.showError(calc.getError());
+                return;
+            }
         }catch(Exception e){
             System.err.println(e);
         }
@@ -224,10 +228,10 @@ public class ReadingSheet {
         Database db = DatabasePlatformFactory.getPlatform().getDatabase();
         String datetime = SystemPlatformFactory.getPlatform().getSystem().getDate() + " " + SystemPlatformFactory.getPlatform().getSystem().getTime();
         if(r == null){
-            Reading reading = new Reading(objid,acctid,value,account.getConsumption(),account.getAmtDue(),account.getTotalDue(),"OPEN",datetime);
+            Reading reading = new Reading(objid,acctid,value,account.getConsumption(),account.getAmtDue(),account.getTotalDue(),"OPEN",datetime,account.getBatchId());
             db.createReading(reading);
         }else{
-            Reading reading = new Reading(objid,acctid,value,account.getConsumption(),account.getAmtDue(),account.getTotalDue(),"OPEN",datetime);
+            Reading reading = new Reading(objid,acctid,value,account.getConsumption(),account.getAmtDue(),account.getTotalDue(),"OPEN",datetime,account.getBatchId());
             db.updateMeterReading(reading);
         }
         

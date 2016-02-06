@@ -67,6 +67,10 @@ public class Rates {
                     Dialog.showError(service.ERROR);
                     return;
                 }
+                if(!list.isEmpty()){
+                    Database db = DatabasePlatformFactory.getPlatform().getDatabase();
+                    db.clearFormula();
+                }
                 for(Map m : list){
                     String classificationid = m.get("classificationid") != null ? m.get("classificationid").toString() : "";
                     String var = m.get("var") != null ? m.get("var").toString() : "";
@@ -74,13 +78,9 @@ public class Rates {
                     
                     Formula f = new Formula(classificationid,var,expr);
                     Database db = DatabasePlatformFactory.getPlatform().getDatabase();
-                    if(!db.formulaExist(f)){
-                        db.createFormula(f);
-                    }else{
-                        db.updateFormula(f);
-                    }
+                    db.createFormula(f);
                 }
-                Dialog.showAlert("Download Finish!");
+                Dialog.showAlert("Sync Finish!");
                 Database db = DatabasePlatformFactory.getPlatform().getDatabase();
                 List<Formula> lst = db.getFormula();
                 tableView.setItems(FXCollections.observableArrayList(lst));

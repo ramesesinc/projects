@@ -91,10 +91,13 @@ public class Upload {
                     
                     Map map = new HashMap();
                     map.put("objid", r.getObjid());
-                    map.put("reading", r.getReading());
+                    map.put("acctid", r.getAcctId());
+                    map.put("reading", Integer.parseInt(r.getReading()));
                     map.put("dtreading", r.getReadingDate());
                     map.put("userid", SystemPlatformFactory.getPlatform().getSystem().getUserID());
-                    map.put("consumption", r.getConsumption());
+                    map.put("username", SystemPlatformFactory.getPlatform().getSystem().getFullName());
+                    map.put("amount", r.getAmtDue());
+                    map.put("batchid", r.getBatchId());
                     
                     MobileService service = new MobileService();
                     Map result = service.upload(map);

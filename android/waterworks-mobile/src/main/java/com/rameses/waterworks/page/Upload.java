@@ -95,7 +95,7 @@ public class Upload {
                     map.put("reading", Integer.parseInt(r.getReading()));
                     map.put("dtreading", r.getReadingDate());
                     map.put("userid", SystemPlatformFactory.getPlatform().getSystem().getUserID());
-                    map.put("username", SystemPlatformFactory.getPlatform().getSystem().getFullName());
+                    map.put("name", SystemPlatformFactory.getPlatform().getSystem().getFullName());
                     map.put("amount", r.getAmtDue());
                     map.put("batchid", r.getBatchId());
                     

@@ -13,20 +13,28 @@ class WaterworksAccountGeneralInformation {
 
    def entity;
    def title;
+   def months;
 
    void init(){
        title = "General Information";
        entity = caller.entity;
-       entity.each{k,v -> 
-            println k + ' = ' + v;
-       }
-   }
-
-   def selectedItem;
-   def tableHandler = [
-        fetchList: {
-            return [];
+       months = [
+            [id: 1, name: "JANUARY"],
+            [id: 2, name: "FEBRUARY"],
+            [id: 3, name: "MARCH"],
+            [id: 4, name: "APRIL"],
+            [id: 5, name: "MAY"],
+            [id: 6, name: "JUNE"],
+            [id: 7, name: "JULY"],
+            [id: 8, name: "AUGUST"],
+            [id: 9, name: "SEPTEMBER"],
+            [id: 10, name: "OCTOBER"],
+            [id: 11, name: "NOVEMBER"],
+            [id: 12, name: "DECEMBER"]
+        ];
+        months.each{
+            if(it.id == entity.lastreadingmonth) entity.lastreadingmonth = it.name;
         }
-   ] as BasicListModel;
+   }
 
 }

@@ -55,6 +55,7 @@ public class CaptureAccountPage extends javax.swing.JPanel {
         xDateField2 = new com.rameses.rcp.control.XDateField();
         xPanel5 = new com.rameses.rcp.control.XPanel();
         xFormPanel5 = new com.rameses.rcp.control.XFormPanel();
+        xDateField3 = new com.rameses.rcp.control.XDateField();
         xDateField1 = new com.rameses.rcp.control.XDateField();
         xDecimalField1 = new com.rameses.rcp.control.XDecimalField();
 
@@ -98,7 +99,7 @@ public class CaptureAccountPage extends javax.swing.JPanel {
             xPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(xPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 560, Short.MAX_VALUE)
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 610, Short.MAX_VALUE)
                 .addContainerGap())
         );
         xPanel1Layout.setVerticalGroup(
@@ -192,7 +193,7 @@ public class CaptureAccountPage extends javax.swing.JPanel {
         xIntegerField3.setText("xIntegerField1");
         xIntegerField3.setCaption("Last Reading Year");
         xIntegerField3.setName("entity.lastreadingyear"); // NOI18N
-        xIntegerField3.setPreferredSize(new java.awt.Dimension(80, 20));
+        xIntegerField3.setPreferredSize(new java.awt.Dimension(150, 20));
         xIntegerField3.setRequired(true);
         xFormPanel6.add(xIntegerField3);
 
@@ -200,7 +201,7 @@ public class CaptureAccountPage extends javax.swing.JPanel {
         xComboBox2.setExpression("#{item.name}");
         xComboBox2.setItems("months");
         xComboBox2.setName("entity.month"); // NOI18N
-        xComboBox2.setPreferredSize(new java.awt.Dimension(80, 20));
+        xComboBox2.setPreferredSize(new java.awt.Dimension(150, 20));
         xComboBox2.setRequired(true);
         xFormPanel6.add(xComboBox2);
 
@@ -218,7 +219,7 @@ public class CaptureAccountPage extends javax.swing.JPanel {
             .addGroup(xPanel4Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(xFormPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(38, 38, 38)
                 .addComponent(xFormPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -226,10 +227,11 @@ public class CaptureAccountPage extends javax.swing.JPanel {
             xPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(xPanel4Layout.createSequentialGroup()
                 .addGap(6, 6, 6)
-                .addGroup(xPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(xFormPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(xFormPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(11, 11, 11))
+                .addComponent(xFormPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(xPanel4Layout.createSequentialGroup()
+                .addComponent(xFormPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder4 = new com.rameses.rcp.control.border.XTitledBorder();
@@ -238,15 +240,24 @@ public class CaptureAccountPage extends javax.swing.JPanel {
 
         xFormPanel5.setCaptionWidth(140);
 
+        xDateField3.setText("xDateField1");
+        xDateField3.setCaption("Date Started");
+        xDateField3.setName("entity.dtstarted"); // NOI18N
+        xDateField3.setPreferredSize(new java.awt.Dimension(150, 20));
+        xDateField3.setRequired(true);
+        xFormPanel5.add(xDateField3);
+
         xDateField1.setText("xDateField1");
         xDateField1.setCaption("Last Transaction Date");
         xDateField1.setName("entity.lasttxndate"); // NOI18N
+        xDateField1.setPreferredSize(new java.awt.Dimension(150, 20));
         xDateField1.setRequired(true);
         xFormPanel5.add(xDateField1);
 
         xDecimalField1.setText("xDecimalField1");
         xDecimalField1.setCaption("Remaining Balance");
         xDecimalField1.setName("entity.balance"); // NOI18N
+        xDecimalField1.setPreferredSize(new java.awt.Dimension(150, 20));
         xDecimalField1.setRequired(true);
         xFormPanel5.add(xDecimalField1);
 
@@ -257,14 +268,14 @@ public class CaptureAccountPage extends javax.swing.JPanel {
             .addGroup(xPanel5Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(xFormPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(320, Short.MAX_VALUE))
         );
         xPanel5Layout.setVerticalGroup(
             xPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(xPanel5Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, xPanel5Layout.createSequentialGroup()
                 .addGap(6, 6, 6)
                 .addComponent(xFormPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(11, 11, 11))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -278,7 +289,7 @@ public class CaptureAccountPage extends javax.swing.JPanel {
                     .addComponent(xPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(xPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(xPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(0, 108, Short.MAX_VALUE))
+                .addGap(0, 58, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -291,7 +302,7 @@ public class CaptureAccountPage extends javax.swing.JPanel {
                 .addComponent(xPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(xPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(60, Short.MAX_VALUE))
+                .addContainerGap(28, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -301,6 +312,7 @@ public class CaptureAccountPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XComboBox xComboBox2;
     private com.rameses.rcp.control.XDateField xDateField1;
     private com.rameses.rcp.control.XDateField xDateField2;
+    private com.rameses.rcp.control.XDateField xDateField3;
     private com.rameses.rcp.control.XDecimalField xDecimalField1;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XFormPanel xFormPanel3;

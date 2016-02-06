@@ -34,89 +34,99 @@ public class WaterworksAccountGeneralInformationPage extends javax.swing.JPanel 
 
         jPanel1 = new javax.swing.JPanel();
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
-        xLabel1 = new com.rameses.rcp.control.XLabel();
-        xLabel2 = new com.rameses.rcp.control.XLabel();
-        xLabel3 = new com.rameses.rcp.control.XLabel();
-        xLabel11 = new com.rameses.rcp.control.XLabel();
-        xLabel12 = new com.rameses.rcp.control.XLabel();
-        xLabel6 = new com.rameses.rcp.control.XLabel();
-        xLabel7 = new com.rameses.rcp.control.XLabel();
-        xLabel15 = new com.rameses.rcp.control.XLabel();
-        xLabel16 = new com.rameses.rcp.control.XLabel();
+        xTextField1 = new com.rameses.rcp.control.XTextField();
+        xDateField1 = new com.rameses.rcp.control.XDateField();
+        xTextField2 = new com.rameses.rcp.control.XTextField();
+        xTextField3 = new com.rameses.rcp.control.XTextField();
+        xTextField4 = new com.rameses.rcp.control.XTextField();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        xTextArea1 = new com.rameses.rcp.control.XTextArea();
+        xTextField5 = new com.rameses.rcp.control.XTextField();
+        xTextField6 = new com.rameses.rcp.control.XTextField();
+        xTextField7 = new com.rameses.rcp.control.XTextField();
+        xPanel1 = new com.rameses.rcp.control.XPanel();
+        xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
+        xFormPanel3 = new com.rameses.rcp.control.XFormPanel();
+        xTextField8 = new com.rameses.rcp.control.XTextField();
+        xTextField9 = new com.rameses.rcp.control.XTextField();
+        xTextField10 = new com.rameses.rcp.control.XTextField();
+        xTextField11 = new com.rameses.rcp.control.XTextField();
+        xTextField12 = new com.rameses.rcp.control.XTextField();
+        xTextField13 = new com.rameses.rcp.control.XTextField();
+        xPanel2 = new com.rameses.rcp.control.XPanel();
+        xFormPanel4 = new com.rameses.rcp.control.XFormPanel();
+        xTextField14 = new com.rameses.rcp.control.XTextField();
+        xTextField15 = new com.rameses.rcp.control.XTextField();
+        xTextField16 = new com.rameses.rcp.control.XTextField();
+        xTextField17 = new com.rameses.rcp.control.XTextField();
+        xFormPanel5 = new com.rameses.rcp.control.XFormPanel();
+        xTextField18 = new com.rameses.rcp.control.XTextField();
+        xTextField19 = new com.rameses.rcp.control.XTextField();
+        xTextField20 = new com.rameses.rcp.control.XTextField();
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
-        xTitledBorder1.setTitle("General Information");
+        xTitledBorder1.setTitle("Account Information");
         jPanel1.setBorder(xTitledBorder1);
 
-        xFormPanel1.setCaption("Account No.");
-        xFormPanel1.setCaptionWidth(120);
+        xFormPanel1.setCaptionWidth(100);
 
-        com.rameses.rcp.control.border.XLineBorder xLineBorder1 = new com.rameses.rcp.control.border.XLineBorder();
-        xLineBorder1.setLineColor(new java.awt.Color(204, 204, 204));
-        xLabel1.setBorder(xLineBorder1);
-        xLabel1.setCaption("Account No.");
-        xLabel1.setExpression("#{entity.acctno}");
-        xLabel1.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        xLabel1.setPreferredSize(new java.awt.Dimension(0, 23));
-        xFormPanel1.add(xLabel1);
+        xTextField1.setEditable(false);
+        xTextField1.setCaption("State");
+        xTextField1.setName("entity.state"); // NOI18N
+        xTextField1.setPreferredSize(new java.awt.Dimension(150, 20));
+        xFormPanel1.add(xTextField1);
 
-        com.rameses.rcp.control.border.XLineBorder xLineBorder2 = new com.rameses.rcp.control.border.XLineBorder();
-        xLineBorder2.setLineColor(new java.awt.Color(204, 204, 204));
-        xLabel2.setBorder(xLineBorder2);
-        xLabel2.setCaption("State");
-        xLabel2.setExpression("#{entity.state}");
-        xLabel2.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        xLabel2.setPreferredSize(new java.awt.Dimension(0, 23));
-        xFormPanel1.add(xLabel2);
+        xDateField1.setEditable(false);
+        xDateField1.setText("xDateField1");
+        xDateField1.setCaption("Date Started");
+        xDateField1.setName("entity.dtstarted"); // NOI18N
+        xDateField1.setPreferredSize(new java.awt.Dimension(150, 20));
+        xFormPanel1.add(xDateField1);
 
-        xLabel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-        xLabel3.setCaption("Date Started");
-        xLabel3.setExpression("#{entity.dtstarted}");
-        xLabel3.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        xLabel3.setPreferredSize(new java.awt.Dimension(0, 23));
-        xFormPanel1.add(xLabel3);
+        xTextField2.setEditable(false);
+        xTextField2.setCaption("Account No");
+        xTextField2.setName("entity.acctno"); // NOI18N
+        xTextField2.setPreferredSize(new java.awt.Dimension(200, 20));
+        xFormPanel1.add(xTextField2);
 
-        xLabel11.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-        xLabel11.setCaption("Name");
-        xLabel11.setExpression("#{entity.acctname}");
-        xLabel11.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        xLabel11.setPreferredSize(new java.awt.Dimension(0, 23));
-        xFormPanel1.add(xLabel11);
+        xTextField3.setEditable(false);
+        xTextField3.setCaption("Account Name");
+        xTextField3.setName("entity.acctname"); // NOI18N
+        xTextField3.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel1.add(xTextField3);
 
-        xLabel12.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-        xLabel12.setCaption("Address");
-        xLabel12.setExpression("#{entity.address}");
-        xLabel12.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        xLabel12.setPreferredSize(new java.awt.Dimension(0, 23));
-        xFormPanel1.add(xLabel12);
+        xTextField4.setEditable(false);
+        xTextField4.setCaption("Owner");
+        xTextField4.setName("entity.ownername"); // NOI18N
+        xTextField4.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel1.add(xTextField4);
 
-        xLabel6.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-        xLabel6.setCaption("Serial No.");
-        xLabel6.setExpression("#{entity.serialno}");
-        xLabel6.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        xLabel6.setPreferredSize(new java.awt.Dimension(0, 23));
-        xFormPanel1.add(xLabel6);
+        jScrollPane1.setPreferredSize(new java.awt.Dimension(0, 43));
 
-        xLabel7.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-        xLabel7.setCaption("Area");
-        xLabel7.setExpression("#{entity.areaname}");
-        xLabel7.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        xLabel7.setPreferredSize(new java.awt.Dimension(0, 23));
-        xFormPanel1.add(xLabel7);
+        xTextArea1.setEditable(false);
+        xTextArea1.setCaption("Address");
+        xTextArea1.setName("entity.address"); // NOI18N
+        xTextArea1.setPreferredSize(new java.awt.Dimension(0, 41));
+        jScrollPane1.setViewportView(xTextArea1);
 
-        xLabel15.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-        xLabel15.setCaption("Last Txn Date");
-        xLabel15.setExpression("#{entity.lasttxndate}");
-        xLabel15.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        xLabel15.setPreferredSize(new java.awt.Dimension(0, 23));
-        xFormPanel1.add(xLabel15);
+        xFormPanel1.add(jScrollPane1);
 
-        xLabel16.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-        xLabel16.setCaption("Balance");
-        xLabel16.setExpression("#{entity.balance}");
-        xLabel16.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        xLabel16.setPreferredSize(new java.awt.Dimension(0, 23));
-        xFormPanel1.add(xLabel16);
+        xTextField5.setEditable(false);
+        xTextField5.setCaption("Classification");
+        xTextField5.setName("entity.classificationid"); // NOI18N
+        xTextField5.setPreferredSize(new java.awt.Dimension(200, 20));
+        xFormPanel1.add(xTextField5);
+
+        xTextField6.setEditable(false);
+        xTextField6.setCaption("Area");
+        xTextField6.setName("entity.areaname"); // NOI18N
+        xTextField6.setPreferredSize(new java.awt.Dimension(200, 20));
+        xFormPanel1.add(xTextField6);
+
+        xTextField7.setEditable(false);
+        xTextField7.setCaption("Balance");
+        xTextField7.setName("entity.balance"); // NOI18N
+        xFormPanel1.add(xTextField7);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -124,15 +134,147 @@ public class WaterworksAccountGeneralInformationPage extends javax.swing.JPanel 
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 524, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(29, Short.MAX_VALUE))
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 465, Short.MAX_VALUE)
+                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 243, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(46, 46, 46))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 235, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        com.rameses.rcp.control.border.XTitledBorder xTitledBorder2 = new com.rameses.rcp.control.border.XTitledBorder();
+        xTitledBorder2.setTitle("Transaction Information");
+        xPanel1.setBorder(xTitledBorder2);
+
+        xFormPanel3.setCaptionWidth(150);
+
+        xTextField8.setEditable(false);
+        xTextField8.setCaption("Last Reading");
+        xTextField8.setName("entity.lastreading"); // NOI18N
+        xTextField8.setPreferredSize(new java.awt.Dimension(150, 20));
+        xFormPanel3.add(xTextField8);
+
+        xTextField9.setEditable(false);
+        xTextField9.setCaption("Previous Reading");
+        xTextField9.setName("entity.prevreading"); // NOI18N
+        xTextField9.setPreferredSize(new java.awt.Dimension(150, 20));
+        xFormPanel3.add(xTextField9);
+
+        xTextField10.setEditable(false);
+        xTextField10.setCaption("Last Reading Date");
+        xTextField10.setName("entity.lastreadingdate"); // NOI18N
+        xTextField10.setPreferredSize(new java.awt.Dimension(150, 20));
+        xFormPanel3.add(xTextField10);
+
+        xTextField11.setEditable(false);
+        xTextField11.setCaption("Last Reading Month");
+        xTextField11.setName("entity.lastreadingmonth"); // NOI18N
+        xTextField11.setPreferredSize(new java.awt.Dimension(150, 20));
+        xFormPanel3.add(xTextField11);
+
+        xTextField12.setEditable(false);
+        xTextField12.setCaption("Last Reading Year");
+        xTextField12.setName("entity.lastreadingyear"); // NOI18N
+        xTextField12.setPreferredSize(new java.awt.Dimension(150, 20));
+        xFormPanel3.add(xTextField12);
+
+        xTextField13.setEditable(false);
+        xTextField13.setCaption("Last Transaction Date");
+        xTextField13.setName("entity.lasttxndate"); // NOI18N
+        xTextField13.setPreferredSize(new java.awt.Dimension(150, 20));
+        xFormPanel3.add(xTextField13);
+
+        javax.swing.GroupLayout xPanel1Layout = new javax.swing.GroupLayout(xPanel1);
+        xPanel1.setLayout(xPanel1Layout);
+        xPanel1Layout.setHorizontalGroup(
+            xPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(xPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(xFormPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(116, 116, 116)
+                .addComponent(xFormPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        xPanel1Layout.setVerticalGroup(
+            xPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(xPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(xPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(xFormPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        com.rameses.rcp.control.border.XTitledBorder xTitledBorder3 = new com.rameses.rcp.control.border.XTitledBorder();
+        xTitledBorder3.setTitle("Meter & Contact Information");
+        xPanel2.setBorder(xTitledBorder3);
+
+        xFormPanel4.setCaptionWidth(100);
+
+        xTextField14.setEditable(false);
+        xTextField14.setCaption("Serial No");
+        xTextField14.setName("entity.serialno"); // NOI18N
+        xTextField14.setPreferredSize(new java.awt.Dimension(150, 20));
+        xFormPanel4.add(xTextField14);
+
+        xTextField15.setEditable(false);
+        xTextField15.setCaption("Brand");
+        xTextField15.setName("entity.brand"); // NOI18N
+        xTextField15.setPreferredSize(new java.awt.Dimension(250, 20));
+        xFormPanel4.add(xTextField15);
+
+        xTextField16.setEditable(false);
+        xTextField16.setCaption("Size");
+        xTextField16.setName("entity.size"); // NOI18N
+        xFormPanel4.add(xTextField16);
+
+        xTextField17.setEditable(false);
+        xTextField17.setCaption("Capacity");
+        xTextField17.setName("entity.capacity"); // NOI18N
+        xFormPanel4.add(xTextField17);
+
+        xFormPanel5.setCaptionWidth(100);
+
+        xTextField18.setEditable(false);
+        xTextField18.setCaption("Mobile No");
+        xTextField18.setName("entity.mobileno"); // NOI18N
+        xTextField18.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel5.add(xTextField18);
+
+        xTextField19.setEditable(false);
+        xTextField19.setCaption("Phone No");
+        xTextField19.setName("entity.phoneno"); // NOI18N
+        xTextField19.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel5.add(xTextField19);
+
+        xTextField20.setEditable(false);
+        xTextField20.setCaption("Email");
+        xTextField20.setName("entity.email"); // NOI18N
+        xTextField20.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel5.add(xTextField20);
+
+        javax.swing.GroupLayout xPanel2Layout = new javax.swing.GroupLayout(xPanel2);
+        xPanel2.setLayout(xPanel2Layout);
+        xPanel2Layout.setHorizontalGroup(
+            xPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(xPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(xFormPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(xFormPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 427, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        xPanel2Layout.setVerticalGroup(
+            xPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(xPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(xPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(xFormPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(xFormPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(51, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -140,29 +282,58 @@ public class WaterworksAccountGeneralInformationPage extends javax.swing.JPanel 
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(524, Short.MAX_VALUE))
+                .addGap(6, 6, 6)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(xPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(xPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 342, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(439, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 297, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(223, Short.MAX_VALUE))
+                .addGap(6, 6, 6)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(xPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(xPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(6, 6, 6))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private com.rameses.rcp.control.XDateField xDateField1;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
-    private com.rameses.rcp.control.XLabel xLabel1;
-    private com.rameses.rcp.control.XLabel xLabel11;
-    private com.rameses.rcp.control.XLabel xLabel12;
-    private com.rameses.rcp.control.XLabel xLabel15;
-    private com.rameses.rcp.control.XLabel xLabel16;
-    private com.rameses.rcp.control.XLabel xLabel2;
-    private com.rameses.rcp.control.XLabel xLabel3;
-    private com.rameses.rcp.control.XLabel xLabel6;
-    private com.rameses.rcp.control.XLabel xLabel7;
+    private com.rameses.rcp.control.XFormPanel xFormPanel2;
+    private com.rameses.rcp.control.XFormPanel xFormPanel3;
+    private com.rameses.rcp.control.XFormPanel xFormPanel4;
+    private com.rameses.rcp.control.XFormPanel xFormPanel5;
+    private com.rameses.rcp.control.XPanel xPanel1;
+    private com.rameses.rcp.control.XPanel xPanel2;
+    private com.rameses.rcp.control.XTextArea xTextArea1;
+    private com.rameses.rcp.control.XTextField xTextField1;
+    private com.rameses.rcp.control.XTextField xTextField10;
+    private com.rameses.rcp.control.XTextField xTextField11;
+    private com.rameses.rcp.control.XTextField xTextField12;
+    private com.rameses.rcp.control.XTextField xTextField13;
+    private com.rameses.rcp.control.XTextField xTextField14;
+    private com.rameses.rcp.control.XTextField xTextField15;
+    private com.rameses.rcp.control.XTextField xTextField16;
+    private com.rameses.rcp.control.XTextField xTextField17;
+    private com.rameses.rcp.control.XTextField xTextField18;
+    private com.rameses.rcp.control.XTextField xTextField19;
+    private com.rameses.rcp.control.XTextField xTextField2;
+    private com.rameses.rcp.control.XTextField xTextField20;
+    private com.rameses.rcp.control.XTextField xTextField3;
+    private com.rameses.rcp.control.XTextField xTextField4;
+    private com.rameses.rcp.control.XTextField xTextField5;
+    private com.rameses.rcp.control.XTextField xTextField6;
+    private com.rameses.rcp.control.XTextField xTextField7;
+    private com.rameses.rcp.control.XTextField xTextField8;
+    private com.rameses.rcp.control.XTextField xTextField9;
     // End of variables declaration//GEN-END:variables
 }

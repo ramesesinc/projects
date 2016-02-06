@@ -33,18 +33,18 @@ public class WaterworksAccountCapture {
         title = 'Capture Account';
         classifications = classSvc.getList();
         months = [
-            [id: 1, name: "JAN"],
-            [id: 2, name: "FEB"],
-            [id: 3, name: "MAR"],
-            [id: 4, name: "APR"],
+            [id: 1, name: "JANUARY"],
+            [id: 2, name: "FEBRUARY"],
+            [id: 3, name: "MARCH"],
+            [id: 4, name: "APRIL"],
             [id: 5, name: "MAY"],
-            [id: 6, name: "JUN"],
-            [id: 7, name: "JUL"],
-            [id: 8, name: "AUG"],
-            [id: 9, name: "SEP"],
-            [id: 10, name: "OCT"],
-            [id: 11, name: "NOV"],
-            [id: 12, name: "DEC"]
+            [id: 6, name: "JUNE"],
+            [id: 7, name: "JULY"],
+            [id: 8, name: "AUGUST"],
+            [id: 9, name: "SEPTEMBER"],
+            [id: 10, name: "OCTOBER"],
+            [id: 11, name: "NOVEMBER"],
+            [id: 12, name: "DECEMBER"]
         ];
     }
 

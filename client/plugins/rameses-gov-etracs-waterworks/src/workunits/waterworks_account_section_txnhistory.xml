@@ -1,6 +1,7 @@
 <workunit>
     <invokers>
         <invoker type="waterworks_account:section" caption="Transaction History" index="2" action="init"/>
+        <invoker type="formActions" caption="Refresh" action="refresh"/>
     </invokers>
     <code class="com.rameses.gov.etracs.waterworks.models.WaterworksAccountTxnHistory"/>
     <pages>

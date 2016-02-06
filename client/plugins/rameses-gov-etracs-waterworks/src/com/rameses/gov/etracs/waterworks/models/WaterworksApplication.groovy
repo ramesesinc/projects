@@ -7,7 +7,7 @@ import com.rameses.osiris2.common.*;
 import com.rameses.rcp.annotations.*;
 
 
-public class WaterworksAccount extends PageFlowController {
+public class WaterworksApplication extends PageFlowController {
     
     @Service("WaterworksClassificationService")
     def classificationSvc;

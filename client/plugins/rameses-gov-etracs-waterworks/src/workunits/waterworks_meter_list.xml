@@ -1,0 +1,5 @@
+<workunit extends="wtemplates/ListController.xml" serviceName="WaterWorksMeterService" entityName="meter">
+    <invokers>
+        <invoker folderid="/explorer/master/waterworks" caption="Meter" index="0" srole="MASTER"/>
+    </invokers>
+</workunit>

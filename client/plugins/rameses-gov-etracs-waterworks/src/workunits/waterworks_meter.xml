@@ -1,0 +1,34 @@
+<workunit>
+    <invokers>
+        <invoker type="meter:create" caption="Meter" action="create" target="popup" srole="MASTER"/>
+        <invoker type="meter:open" caption="Meter" action="open" target="popup" srole="MASTER"/>
+    </invokers>
+    
+    <code>
+        <![CDATA[
+           import com.rameses.osiris2.common.*;
+           import com.rameses.rcp.common.*;
+           import com.rameses.rcp.annotations.*;
+           import com.rameses.osiris2.client.*;
+
+           class MeterController extends CRUDController{
+           
+               @Service("WaterworksMeterSizeService")
+               def svc;
+               
+               @Binding
+               def binding;
+
+               def title='Meter';
+               String serviceName='WaterWorksMeterService';
+               String entityName='meter';
+               boolean allowApprove = false;
+               
+           }
+        ]]>
+    </code>
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.waterworks.views.WaterworksMeterPage"/>
+    </pages>
+</workunit>

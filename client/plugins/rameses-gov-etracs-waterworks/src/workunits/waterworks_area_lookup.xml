@@ -1,0 +1,5 @@
+<workunit extends="wtemplates/ServiceLookupController.xml" serviceName="WaterworksAreaService">
+    <invokers>
+        <invoker type="area:lookup" caption="Lookup Area"/>
+    </invokers>
+</workunit>

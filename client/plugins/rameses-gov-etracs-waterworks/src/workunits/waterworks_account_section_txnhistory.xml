@@ -1,0 +1,9 @@
+<workunit>
+    <invokers>
+        <invoker type="waterworks_account:section" caption="Transaction History" index="2" action="init"/>
+    </invokers>
+    <code class="com.rameses.gov.etracs.waterworks.models.WaterworksAccountTxnHistory"/>
+    <pages>
+        <page template="com.rameses.gov.etracs.waterworks.views.WaterworksAccountTxnHistoryPage"/>
+    </pages>
+</workunit>

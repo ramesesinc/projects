@@ -1,0 +1,27 @@
+<workunit extends="com/rameses/seti2/templates/CrudForm.xml">
+    <invokers>
+        <invoker Xfolderid="/home/waterworks" caption="Capture Account" action="start" index="4"/>
+    </invokers>
+    <code class="com.rameses.gov.etracs.waterworks.models.WaterworksAccount" />
+    <pageflow>
+        <start>
+            <transition to="initial" action="init"/>
+        </start>
+        <page name="initial" title="Waterworks Account Initial">
+            <transition to="info" caption="Next"/>
+        </page>
+        <page name="info" title="Enter Waterworks Account Info">
+            <transition to="initial" caption="Back"/>
+            <transition to="begin-balance" caption="Next" />
+        </page>
+         <page name="begin-balance" title="Enter Beginning Balance">
+            <transition to="begin-balance" caption="Next" />
+        </page>
+        <end/>
+    </pageflow>    
+    <pages>
+        <page name="initial" template="com.rameses.gov.etracs.waterworks.views.NewAccountInitialPage"/>
+        <page name="info" template="com.rameses.gov.etracs.waterworks.views.NewAccountInfoPage"/>
+        <page name="default" template="com.rameses.gov.etracs.waterworks.views.WaterworksAccountPage"/>
+    </pages>
+</workunit>

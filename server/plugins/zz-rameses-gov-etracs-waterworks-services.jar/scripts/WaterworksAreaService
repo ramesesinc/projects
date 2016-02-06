@@ -1,9 +1,21 @@
 import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.common.*;
+import com.rameses.services.extended.*;
 
-class WaterworksAreaService {
+class WaterworksAreaService{
 	
 	@DataContext("waterworks_area")
 	def wa;
+
+	def getColumns(params){
+		return [
+			[name:'name', caption:'Area'],
+			[name:'description', caption:'Description'],
+			[name: 'assignto.name', caption: 'Assign To']
+		];
+	}
 
 	@ProxyMethod
 	public def getListByAssignee( def o ) {
@@ -15,5 +27,14 @@ class WaterworksAreaService {
 		return wa.list();
 	}
 
+	@ProxyMethod
+	public def getList(def o){
+		return wa.list();
+	}
+
+	@ProxyMethod
+	public def open(def o){
+		return wa.find([objid:o.objid]).first();
+	}
 
 }

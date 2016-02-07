@@ -55,6 +55,7 @@ public class WaterworksAccountCapture {
         entity.lastreadingmonth = entity.month.id;
         if(entity.lastreading < entity.prevreading) throw new Exception('Last Reading must be greater than Prev. Reading!');
         acctSvc.create(entity);
+        MsgBox.alert('Record successfully saved!');
         return '_close';
     }
 

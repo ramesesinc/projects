@@ -49,10 +49,10 @@ public class WaterworksAccountGeneralInformationPage extends javax.swing.JPanel 
         xFormPanel3 = new com.rameses.rcp.control.XFormPanel();
         xTextField8 = new com.rameses.rcp.control.XTextField();
         xTextField9 = new com.rameses.rcp.control.XTextField();
-        xTextField10 = new com.rameses.rcp.control.XTextField();
         xTextField11 = new com.rameses.rcp.control.XTextField();
         xTextField12 = new com.rameses.rcp.control.XTextField();
-        xTextField13 = new com.rameses.rcp.control.XTextField();
+        xDateField2 = new com.rameses.rcp.control.XDateField();
+        xDateField3 = new com.rameses.rcp.control.XDateField();
         xPanel2 = new com.rameses.rcp.control.XPanel();
         xFormPanel4 = new com.rameses.rcp.control.XFormPanel();
         xTextField14 = new com.rameses.rcp.control.XTextField();
@@ -163,12 +163,6 @@ public class WaterworksAccountGeneralInformationPage extends javax.swing.JPanel 
         xTextField9.setPreferredSize(new java.awt.Dimension(150, 20));
         xFormPanel3.add(xTextField9);
 
-        xTextField10.setEditable(false);
-        xTextField10.setCaption("Last Reading Date");
-        xTextField10.setName("entity.lastreadingdate"); // NOI18N
-        xTextField10.setPreferredSize(new java.awt.Dimension(150, 20));
-        xFormPanel3.add(xTextField10);
-
         xTextField11.setEditable(false);
         xTextField11.setCaption("Last Reading Month");
         xTextField11.setName("entity.lastreadingmonth"); // NOI18N
@@ -181,11 +175,19 @@ public class WaterworksAccountGeneralInformationPage extends javax.swing.JPanel 
         xTextField12.setPreferredSize(new java.awt.Dimension(150, 20));
         xFormPanel3.add(xTextField12);
 
-        xTextField13.setEditable(false);
-        xTextField13.setCaption("Last Transaction Date");
-        xTextField13.setName("entity.lasttxndate"); // NOI18N
-        xTextField13.setPreferredSize(new java.awt.Dimension(150, 20));
-        xFormPanel3.add(xTextField13);
+        xDateField2.setEditable(false);
+        xDateField2.setText("xDateField1");
+        xDateField2.setCaption("Last Reading Date");
+        xDateField2.setName("entity.lastreadingdate"); // NOI18N
+        xDateField2.setPreferredSize(new java.awt.Dimension(150, 20));
+        xFormPanel3.add(xDateField2);
+
+        xDateField3.setEditable(false);
+        xDateField3.setText("xDateField1");
+        xDateField3.setCaption("Last Transaction Date");
+        xDateField3.setName("entity.lasttxndate"); // NOI18N
+        xDateField3.setPreferredSize(new java.awt.Dimension(150, 20));
+        xFormPanel3.add(xDateField3);
 
         javax.swing.GroupLayout xPanel1Layout = new javax.swing.GroupLayout(xPanel1);
         xPanel1.setLayout(xPanel1Layout);
@@ -307,6 +309,8 @@ public class WaterworksAccountGeneralInformationPage extends javax.swing.JPanel 
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private com.rameses.rcp.control.XDateField xDateField1;
+    private com.rameses.rcp.control.XDateField xDateField2;
+    private com.rameses.rcp.control.XDateField xDateField3;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XFormPanel xFormPanel2;
     private com.rameses.rcp.control.XFormPanel xFormPanel3;
@@ -316,10 +320,8 @@ public class WaterworksAccountGeneralInformationPage extends javax.swing.JPanel 
     private com.rameses.rcp.control.XPanel xPanel2;
     private com.rameses.rcp.control.XTextArea xTextArea1;
     private com.rameses.rcp.control.XTextField xTextField1;
-    private com.rameses.rcp.control.XTextField xTextField10;
     private com.rameses.rcp.control.XTextField xTextField11;
     private com.rameses.rcp.control.XTextField xTextField12;
-    private com.rameses.rcp.control.XTextField xTextField13;
     private com.rameses.rcp.control.XTextField xTextField14;
     private com.rameses.rcp.control.XTextField xTextField15;
     private com.rameses.rcp.control.XTextField xTextField16;

@@ -19,10 +19,10 @@ public abstract class ReportController extends com.rameses.osiris2.reports.Repor
         return super.init(); 
     }
     
-    List getQuarters() {
+    List getQuarters() { 
         return [1,2,3,4]; 
     }
-        
+    
     List getMonthsByQtr() {
         return dtSvc.getMonthsByQtr( entity.qtr );
     }
@@ -30,4 +30,9 @@ public abstract class ReportController extends com.rameses.osiris2.reports.Repor
     List getMonths(){
         return getMonthsByQtr();
     }
+
+    def preview() { 
+        super.preview(); 
+        return 'preview'; 
+    } 
 }

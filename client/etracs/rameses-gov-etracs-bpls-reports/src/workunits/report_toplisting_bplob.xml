@@ -33,7 +33,7 @@ public class LobTopListingReportController extends ReportController
                 [type:'combo', caption:'Permit Type', name:'entity.permittype', required:true, preferredSize:'0,20', captionWidth:100, items:'permitTypes',  expression:'#{item.title}'],
                 [type:'integer', caption:'Year', name:'entity.year', required:true, preferredSize:'100,20', captionWidth:100 ], 
                 [type:'integer', caption:'Top', name:'entity.topsize', required:true, preferredSize:'100,20', captionWidth:100 ], 
-                [type:'combo', caption:'Type', name:'entity.txntype', required:true, preferredSize:'0,20', captionWidth:100, items:'typelist'],
+                [type:'combo', caption:'Type', name:'entity.txntype', preferredSize:'0,20', captionWidth:100, items:'typelist'],
                 [type:'combo', caption:'Classification', name:'entity.classification', preferredSize:'0,20', captionWidth:100, items:'classificationlist', expression:'#{item.name}'] 
             ]; 
         } 

@@ -35,7 +35,7 @@
 	<parameter name="TREASURERTITLE" isForPrompting="false" class="java.lang.String"/>
 	<parameter name="TREASUREROFFICENAME" isForPrompting="false" class="java.lang.String"/>
 	<parameter name="PARENTLGUFORMALNAME" isForPrompting="false" class="java.lang.String"/>
-	<parameter name="YEAR" isForPrompting="false" class="java.lang.Object"/>
+	<parameter name="YEAR" isForPrompting="false" class="java.lang.Number"/>
 	<parameter name="TXNSTATE" isForPrompting="false" class="java.lang.String"/>
 
 	<field name="activeyear" class="java.lang.Integer"/>
@@ -525,7 +525,7 @@
 					<textElement textAlignment="Left" verticalAlignment="Middle">
 						<font fontName="Tahoma" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[""+$P{YEAR}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$P{YEAR}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement

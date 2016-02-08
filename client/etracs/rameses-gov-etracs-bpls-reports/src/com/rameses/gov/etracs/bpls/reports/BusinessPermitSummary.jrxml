@@ -377,10 +377,10 @@
 				<image  scaleImage="RetainShape" vAlign="Top" hAlign="Center" onErrorType="Blank" isUsingCache="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Opaque"
-						x="124"
+						x="86"
 						y="0"
-						width="43"
-						height="43"
+						width="50"
+						height="50"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
 						key="image-1"/>

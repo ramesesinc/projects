@@ -519,7 +519,7 @@
 			</band>
 		</pageFooter>
 		<summary>
-			<band height="114"  isSplitAllowed="true" >
+			<band height="121"  isSplitAllowed="true" >
 				<staticText>
 					<reportElement
 						mode="Transparent"

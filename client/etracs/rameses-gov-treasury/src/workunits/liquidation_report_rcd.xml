@@ -38,10 +38,10 @@
             }
             
             void setFund( fund ){
-                this.fund = fund 
-                buildReport()
+                this.fund = fund; 
+                report.viewReport(); 
 
-                if( binding) binding.refresh()
+                if ( binding ) binding.refresh()
             }
             
             def getReportData(){

@@ -22,6 +22,8 @@ public abstract class AbstractCashReceipt {
 
     //handlers pass by the caller
     def createHandler; 
+
+    def YMD = new java.text.SimpleDateFormat('yyyy-MM-dd');  
     
     void init() {
         title = entity.collectiontype.title;
@@ -231,13 +233,20 @@ public abstract class AbstractCashReceipt {
         } 
     }
 
-    def findReportOpener(def reportData) {
-        //check fist if form handler exists.
+    def findReportOpener( reportData ) { 
+        //check first if form handler exists. 
         def o = InvokerUtil.lookupOpener( "cashreceipt-form:"+entity.formno, [reportData:reportData] );
-        if(!o)
-            throw new Exception("Handler not found");
-        return o.handle;
-    }
+        if ( !o ) throw new Exception("Handler not found"); 
+
+        if ( reportData.receiptdate instanceof String ) { 
+            // this is only true when txnmode is OFFLINE 
+            try {
+                def dateobj = YMD.parse( reportData.receiptdate ); 
+                reportData.receiptdate = dateobj;  
+            } catch( Throwable t ) {;} 
+        } 
+        return o.handle; 
+    } 
 
     void print() {
         def handle = findReportOpener(entity);
@@ -248,6 +257,8 @@ public abstract class AbstractCashReceipt {
     void reprint() {
         if( verifyReprint() ){
             print();
+        } else {
+            MsgBox.alert('Invalid security code'); 
         }
     }
     

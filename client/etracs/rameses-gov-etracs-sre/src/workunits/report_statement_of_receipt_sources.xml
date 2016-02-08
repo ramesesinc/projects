@@ -1,4 +1,4 @@
-<workunit extends="wtemplates/gov/bp/ReportController.xml" >
+<workunit extends="wtemplates/ReportController.xml" >
     <invokers>
         <invoker folderid="/explorer/report/treasury" action="init" caption="Statement of Receipts Sources" target="window" index="3" 
             role="REPORT" permission="srs.viewreport" />
@@ -95,6 +95,5 @@ class StatementOfReceiptsController extends com.rameses.etracs.shared.AsyncRepor
 
     <pages>
         <page template="com.rameses.gov.treasury.accounts.SRSCriteriaPage" />
-        <page name="preview" template="com.rameses.osiris2.common.ui.ReportPreviewPage"/>
     </pages> 
 </workunit>

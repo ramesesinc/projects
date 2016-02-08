@@ -64,12 +64,14 @@
                 remaining = entity.totalcash      
                 entity.cashbreakdown = [];
                 cashBreakdown = InvokerUtil.lookupOpener("cash:breakdown", [
-                    entries: entity.cashbreakdown, onupdate: { o->
-                        breakdown = o;
-                        total = entity.totalnoncash+breakdown;
+                    entries: entity.cashbreakdown, 
+                    onupdate: { o->
+                        breakdown = o; 
+                        total = entity.totalnoncash + breakdown;
                         remaining = entity.totalcash - breakdown 
                         binding.refresh("breakdown|total|remaining");
-                    }] );      
+                    }
+                ]);      
                 mode = "create";    
                 return "main"
             }

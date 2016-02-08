@@ -17,27 +17,43 @@ public class EmployerListReportController extends ReportController
     @Service('BPEmployerListReportService')
     def svc;
 
+    @Service('BusinessPermitTypeService')
+    def permitTypeSvc;    
+
+
     String title = "List of Employers";
     String reportpath = 'com/rameses/gov/etracs/bpls/reports/'
     String reportName = reportpath + 'EmployerList.jasper' 
 
-    def formControl = [
-        getFormControls: {
+    def formControl = [ 
+        getControlList: { 
             return [
-                new FormControl( "integer", [caption:'Year', name:'entity.year', required:true, preferredSize:'100,20', captionWidth:100])
-            ]    
-        },
+                [type:'combo', caption:'Permit Type', name:'entity.permittype', required:true, preferredSize:'0,20', captionWidth:100, items:'permitTypes', expression:'#{item.title}'], 
+                [type:'integer', caption:'Year', name:'entity.year', required:true, preferredSize:'100,20', captionWidth:100 ] 
+            ]; 
+        }     
     ] as FormPanelModel; 
+
+    def params = [:];
+    def permitTypes;
+
+    def initReport() {
+        def outcome = super.initReport(); 
+        permitTypes = permitTypeSvc.getList(); 
+        entity.permittype = (permitTypes? permitTypes[0] : null); 
+        entity.year = new java.sql.Date( System.currentTimeMillis() ).toString().split("-")[0]; 
+        return outcome; 
+    } 
 
     def getReportData(){
         return svc.getReport( entity ); 
     }
 
-    Map getParameters(){
-        return [ YEAR : entity.year ] 
+    Map getParameters() { 
+        params.YEAR = entity.year; 
+        return params; 
    }
 }
     ]]>
     </code>
-    
 </workunit>

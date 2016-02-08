@@ -21,7 +21,10 @@ public class ApplicationListingReportController extends com.rameses.etracs.share
     def brgySvc;
 
     @Service('BPApplicationListingReportService')
-    def svc 
+    def svc; 
+
+    @Service('BusinessPermitTypeService')
+    def permitTypeSvc;     
 
     String title = "Application Listing";
     String reportpath = 'com/rameses/gov/etracs/bpls/reports/'; 
@@ -40,6 +43,8 @@ public class ApplicationListingReportController extends com.rameses.etracs.share
     def formControl = [
         getControlList: { 
             return [
+                [type:'combo', caption:'Permit Type', name:'entity.permittype', required:true, items:'permitTypes',  expression:'#{item.title}', preferredSize:'0,20', captionWidth:100],
+            
                 [type:'combo', caption:'Period', name:'entity.period', required:true, items:'periodUtil.types',  expression:'#{item.title}', preferredSize:'100,20', captionWidth:100],
                 [type:'integer', caption:'Year', name:'entity.year', required:true, depends:'entity.period', visibleWhen:'#{ entity.period.type.matches("yearly|quarterly|monthly")==true }', preferredSize:'100,20', captionWidth:100 ],
                 [type:'combo', caption:'Quarter', name:'entity.qtr', required:true, items:'periodUtil.quarters', depends:'entity.period', visibleWhen:'#{ entity.period.type=="quarterly" }', preferredSize:'100,20', captionWidth:100],
@@ -67,11 +72,15 @@ public class ApplicationListingReportController extends com.rameses.etracs.share
         } 
     ] as FormPanelModel; 
 
+    def permitTypes;
+
     def initReport() {
         def outcome = super.initReport(); 
         entity.state_completed = true; 
         entity.period = periodUtil.types[0]; 
         entity.withgross = entity.withcapital = true; 
+        permitTypes = permitTypeSvc.getList(); 
+        entity.permittype = (permitTypes? permitTypes[0] : null);         
         return outcome; 
     } 
     

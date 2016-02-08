@@ -6,71 +6,80 @@
 
     <code>
     <![CDATA[
-        import com.rameses.rcp.common.*;
-        import com.rameses.rcp.annotations.*;
-        import com.rameses.osiris2.common.*;
-        import com.rameses.osiris2.client.*;
-        import com.rameses.osiris2.reports.*;
-        
-        public class LobTopListingReportController extends ReportController  
-        {
-            @Service('LobClassificationService') 
-            def lobClassficationSvc;
-        
-            @Service('BPLobTopListingReportService')
-            def svc;
-            
-            String title = "Top Business Listing (Capital/Gross)";
-            String reportpath = 'com/rameses/gov/etracs/bpls/reports/'
-            String reportName = reportpath + 'TopBusinessListing.jasper'
-            
-            def formControl = [
-                getFormControls: {
-                    return [
-                        new FormControl( "integer", [caption:'Year', name:'entity.year', required:true, preferredSize:'100,20', captionWidth:100]),
-                        new FormControl( "integer", [caption:'Top', name:'entity.topsize', required:true, preferredSize:'100,20', captionWidth:100]),
-                        new FormControl( "combo", [caption:'Type', name:'entity.txntype', required:true, items:'typelist',  immediate:true, preferredSize:'0,20', captionWidth:100 ]),
-                        new FormControl( "combo", [caption:'Classification', name:'entity.classification', items:'classificationlist', expression:'#{item.name}', preferredSize:'0,20', captionWidth:100])
-                    ]    
-                },
-            ] as FormPanelModel; 
-            
-            def APP_TYPES = ['NEW','RENEW']; 
-            def data;
-            
-            def init() {
-                def result = super.init(); 
-                entity.txntype = APP_TYPES[0]; 
-                entity.topsize = 10;                 
-                return result; 
-            } 
-            
-            def getReportData(){
-                data = svc.getReport( entity ); 
-                return data.items;
-            }
-            
-            Map getParameters(){
-                def map = [
-                    TITLE : data.title.toString(), 
-                    APPYEAR : entity.year, 
-                    CLASSIFICATION : "ALL" 
-                ];
-                
-                if ( entity.classification ) { 
-                    map.CLASSIFICATION = entity.classification.name; 
-                } 
-                return map; 
-            }
-         
-            List getTypelist() {
-                return APP_TYPES; 
-            }
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+import com.rameses.osiris2.common.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.reports.*;
 
-            List getClassificationlist() {
-                return lobClassficationSvc.getList([:]);
-            }
-        }
+public class LobTopListingReportController extends ReportController  
+{
+    @Service('LobClassificationService') 
+    def lobClassficationSvc;
+
+    @Service('BPLobTopListingReportService')
+    def svc;
+
+    @Service('BusinessPermitTypeService')
+    def permitTypeSvc;            
+    
+    String title = "Top Business Listing (Capital/Gross)";
+    String reportpath = 'com/rameses/gov/etracs/bpls/reports/'
+    String reportName = reportpath + 'TopBusinessListing.jasper'
+    
+    def formControl = [ 
+        getControlList: { 
+            return [
+                [type:'combo', caption:'Permit Type', name:'entity.permittype', required:true, preferredSize:'0,20', captionWidth:100, items:'permitTypes',  expression:'#{item.title}'],
+                [type:'integer', caption:'Year', name:'entity.year', required:true, preferredSize:'100,20', captionWidth:100 ], 
+                [type:'integer', caption:'Top', name:'entity.topsize', required:true, preferredSize:'100,20', captionWidth:100 ], 
+                [type:'combo', caption:'Type', name:'entity.txntype', required:true, preferredSize:'0,20', captionWidth:100, items:'typelist'],
+                [type:'combo', caption:'Classification', name:'entity.classification', preferredSize:'0,20', captionWidth:100, items:'classificationlist', expression:'#{item.name}'] 
+            ]; 
+        } 
+    ] as FormPanelModel; 
+    
+    def APP_TYPES = ['NEW','RENEW']; 
+    def data;
+
+    def permitTypes;
+
+    def initReport() {
+        def outcome = super.initReport(); 
+        permitTypes = permitTypeSvc.getList(); 
+        entity.permittype = (permitTypes? permitTypes[0] : null); 
+        entity.year = new java.sql.Date( System.currentTimeMillis() ).toString().split("-")[0]; 
+        entity.txntype = APP_TYPES[0]; 
+        entity.topsize = 10;         
+        return outcome; 
+    } 
+
+    def getReportData(){
+        data = svc.getReport( entity ); 
+        return data.items;
+    }
+    
+    Map getParameters(){
+        def map = [
+            TITLE : data.title.toString(), 
+            APPYEAR : entity.year, 
+            CLASSIFICATION : "ALL" 
+        ];
+        
+        if ( entity.classification ) { 
+            map.CLASSIFICATION = entity.classification.name; 
+        } 
+        return map; 
+    }
+ 
+    List getTypelist() {
+        return APP_TYPES; 
+    }
+
+    List getClassificationlist() {
+        return lobClassficationSvc.getList([:]);
+    }
+}
     ]]>
     </code>
     

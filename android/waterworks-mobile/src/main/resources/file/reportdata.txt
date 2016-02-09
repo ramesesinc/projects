@@ -39,7 +39,7 @@
 + "@1100,0:MF226|date to avoid paying penalty|"
 + "@1130,0:MF226|*Disregard arrears if payment has been|"
 + "@1170,0:MF226|made.|"
-+ "@1200,35:BC39N,HIGH 15,WIDE 2|"+a.getBarCode()+"|"
++ "@1200,35:EN128,HIGH 15,WIDE 2|"+a.getBarCode()+"|"
 + "@1280,35:MF204|"+a.getBarCode()+"|"
 + "@1360,2:MF204|.|"
 + "}"

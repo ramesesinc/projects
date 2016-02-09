@@ -209,7 +209,9 @@
         </Container>
         <Component class="com.rameses.rcp.control.XButton" name="xButton1">
           <Properties>
-            <Property name="text" type="java.lang.String" value="..."/>
+            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+              <Image iconType="3" name="/images/pencil_icon.png"/>
+            </Property>
             <Property name="immediate" type="boolean" value="true"/>
             <Property name="name" type="java.lang.String" value="editAddress" noResource="true"/>
           </Properties>

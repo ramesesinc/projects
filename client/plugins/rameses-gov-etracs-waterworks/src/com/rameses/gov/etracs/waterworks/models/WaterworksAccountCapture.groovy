@@ -63,6 +63,7 @@ public class WaterworksAccountCapture {
         def h = {o ->
             entity.owner = o;
             binding.refresh("entity.*");
+            println entity.owner;
         }
         return Inv.lookupOpener("entity:lookup",[onselect:h]);
    }

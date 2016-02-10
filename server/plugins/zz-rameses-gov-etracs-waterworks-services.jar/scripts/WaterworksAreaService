@@ -4,7 +4,7 @@ import java.rmi.server.*;
 import com.rameses.common.*;
 import com.rameses.services.extended.*;
 
-class WaterworksAreaService{
+class WaterworksAreaService {
 	
 	@DataContext("waterworks_area")
 	def wa;
@@ -13,7 +13,7 @@ class WaterworksAreaService{
 		return [
 			[name:'name', caption:'Area'],
 			[name:'description', caption:'Description'],
-			[name: 'assignto.name', caption: 'Assign To']
+			[name: 'assignee.name', caption: 'Assign To']
 		];
 	}
 
@@ -34,7 +34,24 @@ class WaterworksAreaService{
 
 	@ProxyMethod
 	public def open(def o){
-		return wa.find([objid:o.objid]).first();
+		def data = wa.find([objid:o.objid]).first();
+		println data;
+		return data;
+	}
+
+	@ProxyMethod
+	public def create(def o){
+		wa.create(o);
+	}
+
+	@ProxyMethod
+	public def update(def o){
+		return wa.find([objid:o.objid]).update(o);
+	}
+
+	@ProxyMethod
+	public void removeEntity(def o){
+		 wa.find([objid:o.objid]).delete();
 	}
 
 }

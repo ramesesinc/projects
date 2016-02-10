@@ -4,7 +4,7 @@
 		<field name="state" required="true"/>
 		<field name="dtstarted" required="true"/>
 		<field name="acctno" required="true"/>
-		<field name="acctname" required="true"/>
+		<field name="acctname" caption="Account Name"/>
 		<field name="ownerid" required="true"/>
 		<field name="ownername" required="true"/>
 		<field name="address" required="true"/>
@@ -24,5 +24,6 @@
 		<field name="capacity" required="true"/>
 		<field name="assigneeid" required="true"/>
 		<field name="assigneename" required="true"/>
+		<field name="areaname" required="true"/>
 	</element>
 </schema>

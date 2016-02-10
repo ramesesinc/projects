@@ -1,0 +1,49 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.common.*;
+import com.rameses.services.extended.*;
+
+class WaterworksMeterService {
+	
+	@DataContext("waterworks_meter")
+	def wm;
+
+	def getColumns(params){
+		return [
+			[name:'serialno', caption:'Serial No.'],
+			[name:'brand', caption:'Brand'],
+			[name:'size', caption:'Size'],
+			[name:'capacity', caption:'Capacity']
+		];
+	}
+
+	@ProxyMethod
+	public def getList(def o){
+		println o.searchtext;
+		o.searchtext = o.searchtext + "%";
+		println o.searchtext;
+		return wm.list();
+	}
+
+	@ProxyMethod
+	public def open(def o){
+		return wm.find([objid:o.objid]).first();
+	}
+
+	@ProxyMethod
+	public def create(def o){
+		wm.create(o);
+	}
+
+	@ProxyMethod
+	public def update(def o){
+		return wm.find([objid:o.objid]).update(o);
+	}
+
+	@ProxyMethod
+	public void removeEntity(def o){
+		 wm.find([objid:o.objid]).delete();
+	}
+
+}

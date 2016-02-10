@@ -1,0 +1,7 @@
+<schema adapter="waterworks">
+	<element tablename="waterworks_mobile">
+		<field name="objid" primary="true"/>
+		<field name="batchid" required="true"/>
+		<field name="state" required="true"/>
+	</element>
+</schema>

@@ -1,25 +1,42 @@
 import com.rameses.annotations.*;
+import java.rmi.server.*;
 
 class WaterworksMobileService {
 	
-	@DataContext("vw_waterworks_billing")
-	def acct;
+	@DataContext("waterworks_mobile_info")
+	def wm;
+
+	@DataContext("waterworks_account")
+	def wa;
+
+	@DataContext("waterworks_account_consumption")
+	def wac;
 
 	@Service("DateService")
 	def dateSvc;
 
 	@ProxyMethod
-	public def download( def o ) {
-		if(!o.areaid)	
-			throw new Exception("Areaid is required in WaterworksMobileService.download");
-
-		def y = dateSvc.getServerYear();
+	public def initForDownload( def o ){
+		if(!o.areaids)	
+			throw new Exception("Areaids is required in WaterworksMobileService.download");
+		def batchid = 'BTC' + new UID();
+        def y = dateSvc.getServerYear();
 		def m = dateSvc.getServerMonth()-1;
 		if(m==0) {
 			m = 12;
 			y = y-1;
-		}	
-		def list = acct.find( [areaid: o.areaid, lastreadingmonth: m, lastreadingyear: y ] ).list();
+		}
+
+		def ai = "'" + o.areaids.join("','") + "'";
+		wm.insertForDownload([areaids:ai, year:y, month:m, batchid: batchid]);
+		def x = wm.findBatchCount([batchid:batchid]);
+		return [batchid:batchid, count: x.batchcount];
+	}
+
+	@ProxyMethod
+	public def download( def o ) {
+		if(!o.batchid) throw new Exception("Please specify batchid!"); 
+		def list = wm.getListForDownload(o);
 		list.each {
 			it.penalty = 0;
 			it.barcode = '51030:'+it.acctno;
@@ -28,8 +45,54 @@ class WaterworksMobileService {
 	}
 
 	@ProxyMethod
+	public def confirmDownload( def o ){
+		if(!o.batchid) throw new Exception("Please specify batchid!"); 
+		wm.confirmDownload(o);
+		return "OK";
+	}
+
+	@ProxyMethod
 	public def upload( def o ) {
-		//areaid
+		if(!o.objid) throw new Exception("Please specify objid!");
+		if(!o.reading) throw new Exception("Please specify reading!");
+		if(!o.dtreading) throw new Exception("Please specify dtreading!");
+		if(!o.userid) throw new Exception("Please specify userid!");
+		if(!o.name) throw new Exception("Please specify reader_name!");
+		if(!o.amount) throw new Exception("Please specify amount!");
+
+		def a = wa.find([objid: o.acctid]).first();
+		if(!a) throw new Exception("Account does not exist!");
+		
+		o.readingmonth = dateSvc.getServerMonth();
+		o.readingyear =  dateSvc.getServerYear();
+
+		def c = [:];
+		c.acctid = o.acctid
+		c.dtreading = o.dtreading;
+		c.year = o.readingyear;
+		c.month = o.readingmonth;
+		c.prevreading = a.lastreading;
+		c.reading = o.reading;
+		c.readingmethod = 'ONLINE';
+		c.reader = [objid:o.userid, name: o.name]; 
+		c.volume = o.reading - a.lastreading;
+		c.amount = o.amount;
+		c.amtpaid = 0.00;
+		wac.create(c);
+
+		def data = wa.find([objid: o.acctid]).update(
+			[
+				lastreadingdate : c.dtreading,
+				lastreadingmonth : c.month,
+				lastreadingyear : c.year,
+				lastreading : c.reading,
+				prevreading : c.prevreading
+			]
+		);
+
+		wm.deleteDownload(o);
+
+		return data;
 	}
 
 }

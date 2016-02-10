@@ -129,13 +129,13 @@ public class CaptureAccountPage extends javax.swing.JPanel {
 
         xLookupField2.setCaption("Area");
         xLookupField2.setExpression("#{entity.area.name}");
-        xLookupField2.setHandler("area:lookup");
+        xLookupField2.setHandler("waterworksarea:lookup");
         xLookupField2.setName("entity.area"); // NOI18N
         xLookupField2.setPreferredSize(new java.awt.Dimension(0, 20));
         xLookupField2.setRequired(true);
         xFormPanel3.add(xLookupField2);
 
-        xButton1.setText("...");
+        xButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/pencil_icon.png"))); // NOI18N
         xButton1.setImmediate(true);
         xButton1.setName("editAddress"); // NOI18N
 

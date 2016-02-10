@@ -18,6 +18,9 @@ public class WaterworksAccountCapture {
     @Service('DateService')
     def dateSvc;
 
+    @Service("EntityService")
+    def entitySvc;
+
     @Binding
     def binding;
     
@@ -55,6 +58,7 @@ public class WaterworksAccountCapture {
         entity.lastreadingmonth = entity.month.id;
         if(entity.lastreading < entity.prevreading) throw new Exception('Last Reading must be greater than Prev. Reading!');
         acctSvc.create(entity);
+        MsgBox.alert('Record successfully saved!');
         return '_close';
     }
 
@@ -62,6 +66,11 @@ public class WaterworksAccountCapture {
         def h = {o ->
             entity.owner = o;
             binding.refresh("entity.*");
+            println entity.owner;
+            def owner = entitySvc.open(o);
+            entity.phoneno = owner.phoneno;
+            entity.mobileno = owner.mobileno;
+            entity.email = owner.email;
         }
         return Inv.lookupOpener("entity:lookup",[onselect:h]);
    }

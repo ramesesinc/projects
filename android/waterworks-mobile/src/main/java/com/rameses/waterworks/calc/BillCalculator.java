@@ -2,7 +2,6 @@ package com.rameses.waterworks.calc;
 
 import bsh.EvalError;
 import bsh.Interpreter;
-import com.rameses.Main;
 import com.rameses.waterworks.bean.Formula;
 import com.rameses.waterworks.database.Database;
 import com.rameses.waterworks.database.DatabasePlatformFactory;
@@ -33,7 +32,7 @@ public class BillCalculator {
             Object o = i.eval(f.getExpr());
             value = Double.parseDouble(o.toString());
         }catch(EvalError e){
-            Dialog.showAlert("ERROR: " +  e.toString());
+            error = "ERROR: " +  e.toString();
         }
         return value;
     }

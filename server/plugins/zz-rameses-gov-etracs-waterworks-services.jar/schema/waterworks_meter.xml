@@ -1,9 +1,10 @@
 <schema adapter="waterworks">
 	<element tablename="waterworks_meter">
-		<field name="objid" primary="true" />
+		<field name="objid" primary="true" prefix="WM"/>
 		<field name="serialno" required="true" />
 		<field name="brand" required="true" />
 		<field name="size" required="true" />
 		<field name="capacity" required="true" />
+		<field name="currentacctid" required="true" />
 	</element>
 </schema>

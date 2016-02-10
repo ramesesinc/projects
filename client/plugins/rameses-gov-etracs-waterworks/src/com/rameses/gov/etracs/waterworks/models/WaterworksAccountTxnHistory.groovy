@@ -16,10 +16,16 @@ class WaterworksAccountTxnHistory {
    def entity;
 
    void init(){
-       println 'id : ' + entity.objid;
        title = "Transaction History";
        txns = svc.getConsumption(entity);
-       println 'txns : ' + txns;
+   }
+
+   def capture(){
+        def handler = {
+            txns = svc.getConsumption(entity);
+            tableHandler.reload();
+        }
+        return Inv.lookupOpener("waterworks_consumption:capture",[entity:[acctid:entity.objid, classificationid:entity.classificationid], handler:handler]);
    }
 
    def selectedItem;

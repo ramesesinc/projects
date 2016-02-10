@@ -1,6 +1,7 @@
 <workunit>
     <invokers>
         <invoker folderid="/home/waterworks" caption="Capture Account" action="init" index="4"/>
+        <invoker type="waterworks_account:create" caption="Waterworks Account" action="init" target="window"/>
         <invoker type="formActions" caption="Close" action="_close" immediate="true"/>
         <invoker type="formActions" caption="Save" action="save"/>
         

@@ -36,5 +36,4 @@ class WaterworksAccountGeneralInformation {
             if(it.id == entity.lastreadingmonth) entity.lastreadingmonth = it.name;
         }
    }
-
 }

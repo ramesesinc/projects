@@ -218,7 +218,7 @@ public class ReadingSheet {
         }catch(Exception e){
             System.err.println(e);
         }
-        double total = Double.parseDouble(account.getBalance()) + charge;
+        double total = Double.parseDouble(account.getBalance()) +Double.parseDouble(account.getPenalty()) + Double.parseDouble(account.getOtherCharge()) + charge;
         
         account.setConsumption(String.valueOf(consumption));
         account.setAmtDue(df.format(charge));

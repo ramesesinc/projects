@@ -11,6 +11,9 @@ class WaterworksAccountMain {
    @Service('WaterworksAccountService')
    def svc;
 
+   @Service("EntityService")
+   def entitySvc;
+
    @Binding
    def binding;
 

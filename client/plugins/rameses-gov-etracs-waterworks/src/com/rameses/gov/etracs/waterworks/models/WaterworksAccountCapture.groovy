@@ -18,6 +18,9 @@ public class WaterworksAccountCapture {
     @Service('DateService')
     def dateSvc;
 
+    @Service("EntityService")
+    def entitySvc;
+
     @Binding
     def binding;
     
@@ -64,6 +67,10 @@ public class WaterworksAccountCapture {
             entity.owner = o;
             binding.refresh("entity.*");
             println entity.owner;
+            def owner = entitySvc.open(o);
+            entity.phoneno = owner.phoneno;
+            entity.mobileno = owner.mobileno;
+            entity.email = owner.email;
         }
         return Inv.lookupOpener("entity:lookup",[onselect:h]);
    }

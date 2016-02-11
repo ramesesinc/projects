@@ -85,6 +85,7 @@
               <Properties>
                 <Property name="editable" type="boolean" value="false"/>
                 <Property name="caption" type="java.lang.String" value="State"/>
+                <Property name="focusable" type="boolean" value="false"/>
                 <Property name="name" type="java.lang.String" value="entity.state" noResource="true"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[150, 20]"/>
@@ -96,6 +97,7 @@
                 <Property name="editable" type="boolean" value="false"/>
                 <Property name="text" type="java.lang.String" value="xDateField1"/>
                 <Property name="caption" type="java.lang.String" value="Date Started"/>
+                <Property name="focusable" type="boolean" value="false"/>
                 <Property name="name" type="java.lang.String" value="entity.dtstarted" noResource="true"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[150, 20]"/>
@@ -106,6 +108,7 @@
               <Properties>
                 <Property name="editable" type="boolean" value="false"/>
                 <Property name="caption" type="java.lang.String" value="Account No"/>
+                <Property name="focusable" type="boolean" value="false"/>
                 <Property name="name" type="java.lang.String" value="entity.acctno" noResource="true"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[200, 20]"/>
@@ -116,6 +119,7 @@
               <Properties>
                 <Property name="editable" type="boolean" value="false"/>
                 <Property name="caption" type="java.lang.String" value="Account Name"/>
+                <Property name="focusable" type="boolean" value="false"/>
                 <Property name="name" type="java.lang.String" value="entity.acctname" noResource="true"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[0, 20]"/>
@@ -126,6 +130,7 @@
               <Properties>
                 <Property name="editable" type="boolean" value="false"/>
                 <Property name="caption" type="java.lang.String" value="Owner"/>
+                <Property name="focusable" type="boolean" value="false"/>
                 <Property name="name" type="java.lang.String" value="entity.ownername" noResource="true"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[0, 20]"/>
@@ -148,6 +153,7 @@
                   <Properties>
                     <Property name="editable" type="boolean" value="false"/>
                     <Property name="caption" type="java.lang.String" value="Address"/>
+                    <Property name="focusable" type="boolean" value="false"/>
                     <Property name="name" type="java.lang.String" value="entity.address" noResource="true"/>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                       <Dimension value="[0, 41]"/>
@@ -160,6 +166,7 @@
               <Properties>
                 <Property name="editable" type="boolean" value="false"/>
                 <Property name="caption" type="java.lang.String" value="Classification"/>
+                <Property name="focusable" type="boolean" value="false"/>
                 <Property name="name" type="java.lang.String" value="entity.classificationid" noResource="true"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[200, 20]"/>
@@ -170,7 +177,8 @@
               <Properties>
                 <Property name="editable" type="boolean" value="false"/>
                 <Property name="caption" type="java.lang.String" value="Area"/>
-                <Property name="name" type="java.lang.String" value="entity.areaname" noResource="true"/>
+                <Property name="focusable" type="boolean" value="false"/>
+                <Property name="name" type="java.lang.String" value="entity.area.name" noResource="true"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[200, 20]"/>
                 </Property>
@@ -180,6 +188,7 @@
               <Properties>
                 <Property name="editable" type="boolean" value="false"/>
                 <Property name="caption" type="java.lang.String" value="Balance"/>
+                <Property name="focusable" type="boolean" value="false"/>
                 <Property name="name" type="java.lang.String" value="entity.balance" noResource="true"/>
               </Properties>
             </Component>
@@ -233,6 +242,7 @@
               <Properties>
                 <Property name="editable" type="boolean" value="false"/>
                 <Property name="caption" type="java.lang.String" value="Last Reading"/>
+                <Property name="focusable" type="boolean" value="false"/>
                 <Property name="name" type="java.lang.String" value="entity.lastreading" noResource="true"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[150, 20]"/>
@@ -243,6 +253,7 @@
               <Properties>
                 <Property name="editable" type="boolean" value="false"/>
                 <Property name="caption" type="java.lang.String" value="Previous Reading"/>
+                <Property name="focusable" type="boolean" value="false"/>
                 <Property name="name" type="java.lang.String" value="entity.prevreading" noResource="true"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[150, 20]"/>
@@ -253,6 +264,7 @@
               <Properties>
                 <Property name="editable" type="boolean" value="false"/>
                 <Property name="caption" type="java.lang.String" value="Last Reading Month"/>
+                <Property name="focusable" type="boolean" value="false"/>
                 <Property name="name" type="java.lang.String" value="entity.lastreadingmonth" noResource="true"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[150, 20]"/>
@@ -263,6 +275,7 @@
               <Properties>
                 <Property name="editable" type="boolean" value="false"/>
                 <Property name="caption" type="java.lang.String" value="Last Reading Year"/>
+                <Property name="focusable" type="boolean" value="false"/>
                 <Property name="name" type="java.lang.String" value="entity.lastreadingyear" noResource="true"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[150, 20]"/>
@@ -274,6 +287,7 @@
                 <Property name="editable" type="boolean" value="false"/>
                 <Property name="text" type="java.lang.String" value="xDateField1"/>
                 <Property name="caption" type="java.lang.String" value="Last Reading Date"/>
+                <Property name="focusable" type="boolean" value="false"/>
                 <Property name="name" type="java.lang.String" value="entity.lastreadingdate" noResource="true"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[150, 20]"/>
@@ -285,6 +299,7 @@
                 <Property name="editable" type="boolean" value="false"/>
                 <Property name="text" type="java.lang.String" value="xDateField1"/>
                 <Property name="caption" type="java.lang.String" value="Last Transaction Date"/>
+                <Property name="focusable" type="boolean" value="false"/>
                 <Property name="name" type="java.lang.String" value="entity.lasttxndate" noResource="true"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[150, 20]"/>
@@ -339,7 +354,8 @@
               <Properties>
                 <Property name="editable" type="boolean" value="false"/>
                 <Property name="caption" type="java.lang.String" value="Serial No"/>
-                <Property name="name" type="java.lang.String" value="entity.serialno" noResource="true"/>
+                <Property name="focusable" type="boolean" value="false"/>
+                <Property name="name" type="java.lang.String" value="entity.meter.serialno" noResource="true"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[150, 20]"/>
                 </Property>
@@ -349,7 +365,8 @@
               <Properties>
                 <Property name="editable" type="boolean" value="false"/>
                 <Property name="caption" type="java.lang.String" value="Brand"/>
-                <Property name="name" type="java.lang.String" value="entity.brand" noResource="true"/>
+                <Property name="focusable" type="boolean" value="false"/>
+                <Property name="name" type="java.lang.String" value="entity.meter.brand" noResource="true"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[250, 20]"/>
                 </Property>
@@ -359,14 +376,16 @@
               <Properties>
                 <Property name="editable" type="boolean" value="false"/>
                 <Property name="caption" type="java.lang.String" value="Size"/>
-                <Property name="name" type="java.lang.String" value="entity.size" noResource="true"/>
+                <Property name="focusable" type="boolean" value="false"/>
+                <Property name="name" type="java.lang.String" value="entity.meter.size" noResource="true"/>
               </Properties>
             </Component>
             <Component class="com.rameses.rcp.control.XTextField" name="xTextField17">
               <Properties>
                 <Property name="editable" type="boolean" value="false"/>
                 <Property name="caption" type="java.lang.String" value="Capacity"/>
-                <Property name="name" type="java.lang.String" value="entity.capacity" noResource="true"/>
+                <Property name="focusable" type="boolean" value="false"/>
+                <Property name="name" type="java.lang.String" value="entity.meter.capacity" noResource="true"/>
               </Properties>
             </Component>
           </SubComponents>
@@ -380,6 +399,7 @@
               <Properties>
                 <Property name="editable" type="boolean" value="false"/>
                 <Property name="caption" type="java.lang.String" value="Mobile No"/>
+                <Property name="focusable" type="boolean" value="false"/>
                 <Property name="name" type="java.lang.String" value="entity.mobileno" noResource="true"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[0, 20]"/>
@@ -390,6 +410,7 @@
               <Properties>
                 <Property name="editable" type="boolean" value="false"/>
                 <Property name="caption" type="java.lang.String" value="Phone No"/>
+                <Property name="focusable" type="boolean" value="false"/>
                 <Property name="name" type="java.lang.String" value="entity.phoneno" noResource="true"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[0, 20]"/>
@@ -400,6 +421,7 @@
               <Properties>
                 <Property name="editable" type="boolean" value="false"/>
                 <Property name="caption" type="java.lang.String" value="Email"/>
+                <Property name="focusable" type="boolean" value="false"/>
                 <Property name="name" type="java.lang.String" value="entity.email" noResource="true"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[0, 20]"/>

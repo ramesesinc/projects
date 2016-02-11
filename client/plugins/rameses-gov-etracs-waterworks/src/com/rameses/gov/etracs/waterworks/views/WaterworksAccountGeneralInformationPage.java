@@ -72,6 +72,7 @@ public class WaterworksAccountGeneralInformationPage extends javax.swing.JPanel 
 
         xTextField1.setEditable(false);
         xTextField1.setCaption("State");
+        xTextField1.setFocusable(false);
         xTextField1.setName("entity.state"); // NOI18N
         xTextField1.setPreferredSize(new java.awt.Dimension(150, 20));
         xFormPanel1.add(xTextField1);
@@ -79,24 +80,28 @@ public class WaterworksAccountGeneralInformationPage extends javax.swing.JPanel 
         xDateField1.setEditable(false);
         xDateField1.setText("xDateField1");
         xDateField1.setCaption("Date Started");
+        xDateField1.setFocusable(false);
         xDateField1.setName("entity.dtstarted"); // NOI18N
         xDateField1.setPreferredSize(new java.awt.Dimension(150, 20));
         xFormPanel1.add(xDateField1);
 
         xTextField2.setEditable(false);
         xTextField2.setCaption("Account No");
+        xTextField2.setFocusable(false);
         xTextField2.setName("entity.acctno"); // NOI18N
         xTextField2.setPreferredSize(new java.awt.Dimension(200, 20));
         xFormPanel1.add(xTextField2);
 
         xTextField3.setEditable(false);
         xTextField3.setCaption("Account Name");
+        xTextField3.setFocusable(false);
         xTextField3.setName("entity.acctname"); // NOI18N
         xTextField3.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(xTextField3);
 
         xTextField4.setEditable(false);
         xTextField4.setCaption("Owner");
+        xTextField4.setFocusable(false);
         xTextField4.setName("entity.ownername"); // NOI18N
         xTextField4.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(xTextField4);
@@ -105,6 +110,7 @@ public class WaterworksAccountGeneralInformationPage extends javax.swing.JPanel 
 
         xTextArea1.setEditable(false);
         xTextArea1.setCaption("Address");
+        xTextArea1.setFocusable(false);
         xTextArea1.setName("entity.address"); // NOI18N
         xTextArea1.setPreferredSize(new java.awt.Dimension(0, 41));
         jScrollPane1.setViewportView(xTextArea1);
@@ -113,18 +119,21 @@ public class WaterworksAccountGeneralInformationPage extends javax.swing.JPanel 
 
         xTextField5.setEditable(false);
         xTextField5.setCaption("Classification");
+        xTextField5.setFocusable(false);
         xTextField5.setName("entity.classificationid"); // NOI18N
         xTextField5.setPreferredSize(new java.awt.Dimension(200, 20));
         xFormPanel1.add(xTextField5);
 
         xTextField6.setEditable(false);
         xTextField6.setCaption("Area");
-        xTextField6.setName("entity.areaname"); // NOI18N
+        xTextField6.setFocusable(false);
+        xTextField6.setName("entity.area.name"); // NOI18N
         xTextField6.setPreferredSize(new java.awt.Dimension(200, 20));
         xFormPanel1.add(xTextField6);
 
         xTextField7.setEditable(false);
         xTextField7.setCaption("Balance");
+        xTextField7.setFocusable(false);
         xTextField7.setName("entity.balance"); // NOI18N
         xFormPanel1.add(xTextField7);
 
@@ -153,24 +162,28 @@ public class WaterworksAccountGeneralInformationPage extends javax.swing.JPanel 
 
         xTextField8.setEditable(false);
         xTextField8.setCaption("Last Reading");
+        xTextField8.setFocusable(false);
         xTextField8.setName("entity.lastreading"); // NOI18N
         xTextField8.setPreferredSize(new java.awt.Dimension(150, 20));
         xFormPanel3.add(xTextField8);
 
         xTextField9.setEditable(false);
         xTextField9.setCaption("Previous Reading");
+        xTextField9.setFocusable(false);
         xTextField9.setName("entity.prevreading"); // NOI18N
         xTextField9.setPreferredSize(new java.awt.Dimension(150, 20));
         xFormPanel3.add(xTextField9);
 
         xTextField11.setEditable(false);
         xTextField11.setCaption("Last Reading Month");
+        xTextField11.setFocusable(false);
         xTextField11.setName("entity.lastreadingmonth"); // NOI18N
         xTextField11.setPreferredSize(new java.awt.Dimension(150, 20));
         xFormPanel3.add(xTextField11);
 
         xTextField12.setEditable(false);
         xTextField12.setCaption("Last Reading Year");
+        xTextField12.setFocusable(false);
         xTextField12.setName("entity.lastreadingyear"); // NOI18N
         xTextField12.setPreferredSize(new java.awt.Dimension(150, 20));
         xFormPanel3.add(xTextField12);
@@ -178,6 +191,7 @@ public class WaterworksAccountGeneralInformationPage extends javax.swing.JPanel 
         xDateField2.setEditable(false);
         xDateField2.setText("xDateField1");
         xDateField2.setCaption("Last Reading Date");
+        xDateField2.setFocusable(false);
         xDateField2.setName("entity.lastreadingdate"); // NOI18N
         xDateField2.setPreferredSize(new java.awt.Dimension(150, 20));
         xFormPanel3.add(xDateField2);
@@ -185,6 +199,7 @@ public class WaterworksAccountGeneralInformationPage extends javax.swing.JPanel 
         xDateField3.setEditable(false);
         xDateField3.setText("xDateField1");
         xDateField3.setCaption("Last Transaction Date");
+        xDateField3.setFocusable(false);
         xDateField3.setName("entity.lasttxndate"); // NOI18N
         xDateField3.setPreferredSize(new java.awt.Dimension(150, 20));
         xFormPanel3.add(xDateField3);
@@ -218,42 +233,49 @@ public class WaterworksAccountGeneralInformationPage extends javax.swing.JPanel 
 
         xTextField14.setEditable(false);
         xTextField14.setCaption("Serial No");
-        xTextField14.setName("entity.serialno"); // NOI18N
+        xTextField14.setFocusable(false);
+        xTextField14.setName("entity.meter.serialno"); // NOI18N
         xTextField14.setPreferredSize(new java.awt.Dimension(150, 20));
         xFormPanel4.add(xTextField14);
 
         xTextField15.setEditable(false);
         xTextField15.setCaption("Brand");
-        xTextField15.setName("entity.brand"); // NOI18N
+        xTextField15.setFocusable(false);
+        xTextField15.setName("entity.meter.brand"); // NOI18N
         xTextField15.setPreferredSize(new java.awt.Dimension(250, 20));
         xFormPanel4.add(xTextField15);
 
         xTextField16.setEditable(false);
         xTextField16.setCaption("Size");
-        xTextField16.setName("entity.size"); // NOI18N
+        xTextField16.setFocusable(false);
+        xTextField16.setName("entity.meter.size"); // NOI18N
         xFormPanel4.add(xTextField16);
 
         xTextField17.setEditable(false);
         xTextField17.setCaption("Capacity");
-        xTextField17.setName("entity.capacity"); // NOI18N
+        xTextField17.setFocusable(false);
+        xTextField17.setName("entity.meter.capacity"); // NOI18N
         xFormPanel4.add(xTextField17);
 
         xFormPanel5.setCaptionWidth(100);
 
         xTextField18.setEditable(false);
         xTextField18.setCaption("Mobile No");
+        xTextField18.setFocusable(false);
         xTextField18.setName("entity.mobileno"); // NOI18N
         xTextField18.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel5.add(xTextField18);
 
         xTextField19.setEditable(false);
         xTextField19.setCaption("Phone No");
+        xTextField19.setFocusable(false);
         xTextField19.setName("entity.phoneno"); // NOI18N
         xTextField19.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel5.add(xTextField19);
 
         xTextField20.setEditable(false);
         xTextField20.setCaption("Email");
+        xTextField20.setFocusable(false);
         xTextField20.setName("entity.email"); // NOI18N
         xTextField20.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel5.add(xTextField20);

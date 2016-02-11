@@ -22,9 +22,7 @@ class WaterworksMeterLookupService {
 
 	@ProxyMethod
 	public def getList( def o ) {
-		return em.createQuery( '''
-			SELECT * FROM waterworks_meter WHERE currentacctid IS NULL
-		''').resultList;
+		return em.where("currentacctid is NULL").list();
 	}
 
 

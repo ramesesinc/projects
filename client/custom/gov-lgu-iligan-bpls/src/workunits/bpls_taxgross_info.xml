@@ -1,9 +1,9 @@
 <workunit>
     
     <invokers>
-        <invoker type="business_application_gross:open" 
-                 caption="Gross Information" role="ASSESSOR,APPROVER" 
-                 target="popup" action="init"/>
+        <invoker type="business_application:assessment:formActions" 
+                 caption="Tax and Gross Information" action="init" 
+                 role="ADMIN,ASSESSOR,APPROVER" target="popup" index="1000"/> 
         
         <invoker type="formActions" caption="Close" action="_close" immediate="true"/> 
     </invokers>
@@ -18,9 +18,9 @@
         import java.rmi.server.*
         import com.rameses.util.*;
         
-        class BusinessAssessmentGrossInfoController {
+        class IliganBplsTaxGrossInfoController {
         
-            @Service('BusinessGrossService') 
+            @Service('IliganBusinessTaxGrossService') 
             def service; 
         
             @Binding
@@ -29,7 +29,7 @@
             @Caller
             def caller;
             
-            def title = 'Gross Information';
+            def title = 'Tax and Gross Information';
             def entity = [:]; 
             def infos = []; 
                         
@@ -41,14 +41,16 @@
             ] as BasicListModel 
             
             public void init() { 
-                println entity;
-                infos = service.getAssessmentGrossList([ businessid: entity.objid ]); 
+                infos = service.getAssessmentTaxGrossList([ 
+                    businessid: entity.business?.objid, 
+                    appno : entity.appno 
+                ]); 
             }  
         }
     ]]>
     </code> 
     
     <pages>
-        <page template="com.rameses.gov.etracs.bpls.view.AssessmentGrossInfoPage"/>
+        <page template="gov.lgu.iligan.bpls.view.AssessmentGrossInfoPage"/>
     </pages>   
 </workunit> 

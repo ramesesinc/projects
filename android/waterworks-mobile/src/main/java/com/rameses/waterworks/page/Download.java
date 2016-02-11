@@ -100,11 +100,6 @@ public class Download {
                 for(Area a : listView.getItems()){
                     if(a.isSelected()){
                         areas.add(a.getObjid());
-                        Database db = DatabasePlatformFactory.getPlatform().getDatabase();
-                        if(!db.downloadableArea(a.getObjid())){
-                            Dialog.showAlert(a.getName() + " has already been downloaded. You must upload the data first.");
-                            return;
-                        }
                     }
                 }
                 

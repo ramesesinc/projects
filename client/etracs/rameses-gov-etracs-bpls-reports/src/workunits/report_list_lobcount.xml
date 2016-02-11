@@ -23,9 +23,6 @@ public class LobCountListingReportController extends ReportController {
     @Service('BarangayLookupService') 
     def brgySvc;
     
-    @Service('BPApplicationListingReportService')
-    def appSvc;
-
     @Service('BusinessPermitTypeService')
     def permitTypeSvc;    
     

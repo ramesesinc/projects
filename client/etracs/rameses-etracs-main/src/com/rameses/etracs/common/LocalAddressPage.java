@@ -35,6 +35,7 @@ public class LocalAddressPage extends javax.swing.JPanel {
         xTextField2 = new com.rameses.rcp.control.XTextField();
         xTextField5 = new com.rameses.rcp.control.XTextField();
         xLookupField1 = new com.rameses.rcp.control.XLookupField();
+        xTextField6 = new com.rameses.rcp.control.XTextField();
 
         xFormPanel1.setCaptionWidth(100);
 
@@ -76,6 +77,12 @@ public class LocalAddressPage extends javax.swing.JPanel {
         xLookupField1.setPreferredSize(new java.awt.Dimension(0, 22));
         xFormPanel1.add(xLookupField1);
 
+        xTextField6.setCaption("PIN");
+        xTextField6.setCaptionWidth(120);
+        xTextField6.setName("entity.pin"); // NOI18N
+        xTextField6.setPreferredSize(new java.awt.Dimension(0, 22));
+        xFormPanel1.add(xTextField6);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -103,6 +110,7 @@ public class LocalAddressPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XTextField xTextField3;
     private com.rameses.rcp.control.XTextField xTextField4;
     private com.rameses.rcp.control.XTextField xTextField5;
+    private com.rameses.rcp.control.XTextField xTextField6;
     // End of variables declaration//GEN-END:variables
     
 }

@@ -76,7 +76,7 @@
 			</band>
 		</background>
 		<title>
-			<band height="745"  isSplitAllowed="true" >
+			<band height="626"  isSplitAllowed="true" >
 				<textField isStretchWithOverflow="false" pattern="MMMMM dd, yyyy" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Transparent"

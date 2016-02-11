@@ -10,7 +10,7 @@ class IndividualEntityService extends ActiveCrudListService {
 	@ActiveDB("entityindividual")
 	def	em; 
 
-	@ActiveDB("entity")
+	@DataContext("entity") 
 	def	entityDB; 
 
 	@Env

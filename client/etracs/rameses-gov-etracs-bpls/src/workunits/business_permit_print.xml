@@ -1,4 +1,4 @@
-<workunit>
+<workunit extends="wtemplates/SimpleReportController.xml" >
     <invokers>
        <invoker type="business_permit:print" index="50" action="printReport"/>    
        <invoker type="business_permit:open" index="50" action="openReport" target="window"/>    
@@ -17,7 +17,7 @@
         import java.text.SimpleDateFormat;
         import com.rameses.osiris2.reports.*;
         
-        class  BusinessPermitReportController extends com.rameses.etracs.shared.ReportController {
+        class  BusinessPermitReportController extends ReportController {
         
             @Service("BusinessPermitService") 
             def permitSvc
@@ -49,16 +49,16 @@
                 return data;
             }
             
-            void printReport() {
+            def printReport() {
                 applicationid = entity.objid;
-                buildReport();
+                return preview(); 
             } 
             
-            void openReport() {
+            def openReport() {
                 formTitle = entity.permitno;
                 formId = entity.objid;
                 applicationid = entity.applicationid;
-                buildReport();
+                preview(); 
             } 
 
             SubReport[] getSubReports(){ 
@@ -68,7 +68,7 @@
                 ] as SubReport[]
             }
             
-            void updatePlateno() {
+            def updatePlateno() {
                 def p = MsgBox.prompt( 'Enter updated Plate No:' );
                 if(!p) return;
                 
@@ -76,15 +76,9 @@
                 if ( !permitid ) permitid = entity.objid;
                 
                 permitSvc.updatePlateno([objid: permitid, plateno: p]);
-                buildReport();
+                preview();
             }
-                                    
          }   
         ]]>
     </code>
-    
-    <pages>
-         <page name="preview" template="com.rameses.osiris2.common.ui.ReportPreviewPage"/>
-    </pages>
-    
 </workunit>

@@ -101,6 +101,16 @@
             </Property>
           </Properties>
         </Component>
+        <Component class="com.rameses.rcp.control.XTextField" name="xTextField6">
+          <Properties>
+            <Property name="caption" type="java.lang.String" value="PIN"/>
+            <Property name="captionWidth" type="int" value="120"/>
+            <Property name="name" type="java.lang.String" value="entity.pin" noResource="true"/>
+            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[0, 22]"/>
+            </Property>
+          </Properties>
+        </Component>
       </SubComponents>
     </Container>
   </SubComponents>

@@ -20,7 +20,7 @@ public abstract class CertificationController
     
     
     @Binding 
-    def binding;
+    def binding; 
     
     @Invoker
     def inv;
@@ -96,7 +96,7 @@ public abstract class CertificationController
     }
     
     
-    def doPreview(){
+    def doPreview(){ 
         report.viewReport();
         return "preview";
     }

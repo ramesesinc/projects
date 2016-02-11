@@ -29,8 +29,8 @@ class WaterworksMobileService {
 
 		def ai = "'" + o.areaids.join("','") + "'";
 		wm.insertForDownload([areaids:ai, year:y, month:m, batchid: batchid]);
-		def x = wm.findBatchCount([batchid:batchid]);
-		return [batchid:batchid, count: x.batchcount];
+		def x = wm.find([batchid:batchid]);
+		return [batchid:batchid, count: x.size()];
 	}
 
 	@ProxyMethod
@@ -47,7 +47,7 @@ class WaterworksMobileService {
 	@ProxyMethod
 	public def confirmDownload( def o ){
 		if(!o.batchid) throw new Exception("Please specify batchid!"); 
-		wm.confirmDownload(o);
+		wm.find([batchid:o.batchid]).update([state:"DOWNLOADED"]);
 		return "OK";
 	}
 
@@ -90,7 +90,7 @@ class WaterworksMobileService {
 			]
 		);
 
-		wm.deleteDownload(o);
+		wm.find([batchid:o.batchid, objid:o.acctid, state: "DOWNLOADED"]).delete();
 
 		return data;
 	}

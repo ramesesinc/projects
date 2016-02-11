@@ -43,7 +43,7 @@ class LiquidationReportByFundController extends com.rameses.etracs.shared.Report
 
   void setFund( fund ) { 
     this.fund = fund 
-    buildReport();
+    report.viewReport(); 
 
     if( binding ) binding.refresh(); 
   }

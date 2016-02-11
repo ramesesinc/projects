@@ -374,13 +374,13 @@
 					</textElement>
 				<text><![CDATA[REPUBLIC OF THE PHILIPPINES]]></text>
 				</staticText>
-				<image  scaleImage="FillFrame" vAlign="Top" hAlign="Left" onErrorType="Icon" isUsingCache="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<image  scaleImage="RetainShape" vAlign="Top" hAlign="Center" onErrorType="Blank" isUsingCache="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Opaque"
-						x="124"
+						x="86"
 						y="0"
-						width="43"
-						height="43"
+						width="50"
+						height="50"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
 						key="image-1"/>
@@ -392,7 +392,7 @@
 					<graphicElement stretchType="NoStretch" fill="Solid" >
 					<pen lineWidth="0.0" lineStyle="Solid"/>
 </graphicElement>
-					<imageExpression class="java.io.InputStream"><![CDATA[$P{LOGOLGU}]]></imageExpression>
+					<imageExpression class="java.lang.String"><![CDATA["classpath://images/lgu-logo.png"]]></imageExpression>
 				</image>
 				<staticText>
 					<reportElement

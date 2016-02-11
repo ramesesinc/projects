@@ -8,8 +8,8 @@
         <invoker type="afstockreceipt:create" caption="AF Receipt" action="create" role="AFO" target="window"/> 
         <invoker type="afstockreceipt:open" caption="AF Receipt" action="open" role="AFO" target="window"/> 
         
-        <invoker type="issueafrequest_PURCHASE:open" caption="Accountable Form Reciept" action="open" role="AFO" target="window"/>
-        <invoker type="afquery_PURCHASE:open" caption="Accountable Form Reciept" action="open" role="AFO" target="window"/>
+        <invoker type="issueafrequest_PURCHASE:open" caption="Accountable Form Receipt" action="open" role="AFO" target="window"/>
+        <invoker type="afquery_PURCHASE:open" caption="Accountable Form Receipt" action="open" role="AFO" target="window"/>
     </invokers>
     
     <code>

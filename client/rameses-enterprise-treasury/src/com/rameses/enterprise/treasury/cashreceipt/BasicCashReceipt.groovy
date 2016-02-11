@@ -56,7 +56,7 @@ public class BasicCashReceipt extends AbstractCashReceipt {
             "query.txntype" : "cashreceipt",
             "query.collectorid" : entity.collector.objid,
             "query.fund" : entity.collectiontype.fund,
-            "query.collectiontype": entity.collectiontype,    
+            "query.collectiontype": entity.collectiontype, 
             onselect:{ o->
                 selectedItem.item = o;
                 selectedItem.amount = o.defaultvalue;
@@ -73,6 +73,9 @@ public class BasicCashReceipt extends AbstractCashReceipt {
     
     def getCollectionGroupHandler() {
         return InvokerUtil.lookupOpener("collectiongroup:lookup", [ 
+            "query.txntype" : "cashreceipt", 
+            "query.fund" : entity.collectiontype.fund, 
+            "query.collectiontype": entity.collectiontype, 
             selectHandler: { o-> 
                     entity.items.addAll(o);
                     itemListModel.reload();

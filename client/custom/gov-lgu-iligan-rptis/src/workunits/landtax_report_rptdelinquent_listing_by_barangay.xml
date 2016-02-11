@@ -1,0 +1,55 @@
+<workunit extends="rpt_wtemplates/ReportController.xml" >
+    <invokers>
+        <invoker folderid="/explorer/report/landtax/custom" action="init" 
+                 caption="Realty Tax Delinquents" target="window" 
+                 domain="LANDTAX" role="REPORT"/>  
+    </invokers> 
+    <code>
+    <![CDATA[
+
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.reports.*;
+
+class IliganRPTReportDelinquencyController extends com.rameses.gov.etracs.rpt.report.AsyncReportController
+{
+    @Service('IliganRPTReportDelinquencyService') 
+    def svc
+    
+    String title = 'Realty Tax Delinquents';
+    String reportName = 'gov/lgu/iligan/rpt/report/landtax/rptdelinquencylist.jasper';
+    
+    def task;
+    def msg;
+
+    def periods = [
+        [code:'AS_OF_YEAR', name:' AS OF YEAR '],  
+        [code:'FOR_THE_YEAR', name:' FOR THE YEAR '] 
+    ];    
+
+    def initReport() { 
+        def outcome = super.initReport(); 
+        entity.period = periods[0]; 
+        return outcome; 
+    }
+        
+    void buildReportData(entity, asyncHandler){
+        entity.reporttype = 'listing';
+        svc.getReport(entity, asyncHandler);
+    }
+    
+    Map getParameters(){
+        return [
+            REPORT_TITLE  : 'Realty Tax Delinquency Listing', 
+            REPORT_PERIOD : entity.period.name.trim() + ' ' + entity.year, 
+            REPORT_YEAR   : entity.year 
+        ]; 
+    } 
+}
+]]>        
+    </code>
+    <pages>
+        <page template="gov.lgu.iligan.rpt.report.landtax.RPTDeliquencyReportInitPage"/>
+    </pages> 
+</workunit>

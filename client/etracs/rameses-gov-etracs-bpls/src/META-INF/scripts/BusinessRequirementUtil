@@ -54,8 +54,9 @@ public class BusinessRequirementUtil {
     }
 
     void verify() {
-        //do nothing
-    }
+        def info = entity.requirements?.find{( it.completed && !it.refno )} 
+        if ( info ) throw new Exception('Please provide a refno for '+ info.title + ' requirement'); 
+    } 
 
     void reset(){
         listModel.reload();
@@ -64,7 +65,4 @@ public class BusinessRequirementUtil {
     /******************************************
     * used by application section
     ******************************************/
-
-   
-
 }

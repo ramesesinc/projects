@@ -1,4 +1,4 @@
-<workunit extends="wtemplates/gov/bp/ReportController.xml" >
+<workunit extends="wtemplates/ReportController.xml" >
     <invokers>
         <invoker folderid="/explorer/report/bpls" action="init" role="REPORT" 
             caption="Taxpayer Listing" target="window" index="-90"/>
@@ -13,10 +13,13 @@ import com.rameses.osiris2.common.*;
 import com.rameses.osiris2.client.*;
 import com.rameses.osiris2.reports.*;
 
-public class BPMasterListReportController extends com.rameses.etracs.shared.ReportController  
+public class BPMasterListReportController extends ReportController  
 {
     @Service('BPMasterListReportService')
-    def svc;
+    def svc; 
+
+    @Service('BusinessPermitTypeService')
+    def permitTypeSvc;     
 
     String title = "Business Taxpayer Masterlist";
     String reportpath = 'com/rameses/gov/etracs/bpls/reports/'
@@ -25,28 +28,34 @@ public class BPMasterListReportController extends com.rameses.etracs.shared.Repo
     def statuslist = ['ACTIVE','PROCESSING','RETIRED']; 
     def rptparams = [:];
     
-    def formControl = [
-        getFormControls: {
+    def formControl = [ 
+        getControlList: { 
             return [
-                new FormControl( "integer", [caption:'Year', name:'entity.year', required:true, preferredSize:'100,20', captionWidth:100]), 
-                new FormControl( "combo", [caption:'Status', name:'entity.state', required:true, items:'statuslist', allowNull:false, captionWidth:100]) 
-            ]    
-        },
+                [type:'combo', caption:'Permit Type', name:'entity.permittype', required:true, items:'permitTypes',  expression:'#{item.title}', captionWidth:100, preferredSize:'0,20'],
+                [type:'combo', caption:'Status', name:'entity.state', required:true, items:'statuslist', captionWidth:100, preferredSize:'0,20'], 
+                [type:'integer', caption:'Year', name:'entity.year', required:true, preferredSize:'100,20', captionWidth:100]                 
+            ]; 
+        } 
     ] as FormPanelModel; 
 
-    def init() {
-        def outcome = super.init(); 
+    def permitTypes = []; 
+
+    def initReport() { 
+        def outcome = super.initReport(); 
         entity.state = statuslist[0]; 
+        permitTypes = permitTypeSvc.getList(); 
+        entity.permittype = (permitTypes? permitTypes[0] : null); 
+        entity.year = new java.sql.Date( System.currentTimeMillis() ).toString().split("-")[0]; 
         return outcome; 
     } 
-    
+
     Map getParameters() { 
         return rptparams; 
     }
 
     def getReportData(){
-        rptparams.YEAR = entity.year;
         rptparams.TXNSTATE = entity.state;
+        rptparams.YEAR = entity.year; 
         return svc.getReport( entity ); 
     }
 }

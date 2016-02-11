@@ -1,4 +1,4 @@
-<workunit extends="wtemplates/gov/bp/ReportController.xml" >
+<workunit extends="wtemplates/ReportController.xml" >
     <invokers>
         <invoker folderid="/explorer/report/bpls" action="init" role="REPORT" 
             caption="Quarterly Paid Business Listing" target="window" index="-80"/>
@@ -7,42 +7,62 @@
     
     <code>
     <![CDATA[
-        import com.rameses.rcp.common.*;
-        import com.rameses.rcp.annotations.*;
-        import com.rameses.osiris2.common.*;
-        import com.rameses.osiris2.client.*;
-        import com.rameses.osiris2.reports.*;
-        
-        public class QuarterlyPaidBusinessListingReportController extends com.rameses.etracs.shared.ReportController 
-        {
-        
-            @Service('BPQuarterlypPaidReportService')
-            def svc;
-            
-            String title = "Quarterly Paid Business Listing";
-            String reportpath = 'com/rameses/gov/etracs/bpls/reports/'
-            String reportName = reportpath + 'QtrlyPaidBusinessListing.jasper' 
-            
-            
-            def formControl = [
-                getFormControls: {
-                    return [
-                        new FormControl( "integer", [caption:'Year', name:'entity.year', required:true, preferredSize:'100,20', captionWidth:100])
-                    ]    
-                },
-            ] as FormPanelModel; 
-            
-            def getReportData(){
-                return svc.getReport( entity ); 
-            }
-            
-            void generateReport(){
-                reportdata = svc.generateQtrlyPaidBusinessListing( [year:year] );
-                report.viewReport();
-            }
-            
-        }
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+import com.rameses.osiris2.common.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.reports.*;
+
+public class QuarterlyPaidBusinessListingReportController extends ReportController 
+{
+
+    @Service('BPQuarterlypPaidReportService')
+    def svc;
+
+    @Service('BusinessPermitTypeService')
+    def permitTypeSvc;    
+    
+    String title = "Quarterly Paid Business Listing";
+    String reportpath = 'com/rameses/gov/etracs/bpls/reports/'
+    String reportName = reportpath + 'QtrlyPaidBusinessListing.jasper' 
+    
+    
+    def formControl = [
+        getControlList: { 
+            return [
+                [type:'combo', caption:'Permit Type', name:'entity.permittype', required:true, preferredSize:'0,20', captionWidth:100, items:'permitTypes',  expression:'#{item.title}'],
+                [type:'integer', caption:'Year', name:'entity.year', required:true, preferredSize:'100,20', captionWidth:100 ], 
+                [type:'checkbox', caption:'Status', text:'RELEASE', name:'entity.state_release', immediate:true, preferredSize:'0,20', captionWidth:100 ],
+                [type:'checkbox', caption:'', text:'COMPLETED', name:'entity.state_completed', immediate:true, preferredSize:'0,20', captionWidth:100 ],                 
+            ]; 
+        } 
+    ] as FormPanelModel; 
+
+    def permitTypes; 
+    def params = [:]; 
+
+    def initReport() {
+        def outcome = super.initReport(); 
+        permitTypes = permitTypeSvc.getList(); 
+        entity.permittype = (permitTypes? permitTypes[0] : null); 
+        entity.year = new java.sql.Date( System.currentTimeMillis() ).toString().split("-")[0]; 
+        entity.state_completed = true; 
+        return outcome; 
+    } 
+    
+    def getReportData() { 
+        def appstates = []; 
+        if ( entity.state_release ) appstates << 'RELEASE';
+        if ( entity.state_completed ) appstates << 'COMPLETED';
+
+        params.APP_STATE = appstates.join(', '); 
+        return svc.getReport( entity ); 
+    } 
+
+    Map getParameters() {
+        return params; 
+    }
+}
     ]]>
     </code>
-    
 </workunit>

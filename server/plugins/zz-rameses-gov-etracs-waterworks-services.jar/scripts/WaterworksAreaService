@@ -21,7 +21,6 @@ class WaterworksAreaService {
 	public def getListByAssignee( def o ) {
 		if(!o.userid) 
 			throw new Exception("userid is required in WaterworksAreaService.getList");
-		wa.debug = true;
 		wa.select("objid,name,description");
 		wa.find(['assignee_objid': o.userid]);	
 		return wa.list();
@@ -34,14 +33,12 @@ class WaterworksAreaService {
 
 	@ProxyMethod
 	public def open(def o){
-		def data = wa.find([objid:o.objid]).first();
-		println data;
-		return data;
+		return wa.find([objid:o.objid]).first();
 	}
 
 	@ProxyMethod
 	public def create(def o){
-		wa.create(o);
+		return wa.create(o);
 	}
 
 	@ProxyMethod

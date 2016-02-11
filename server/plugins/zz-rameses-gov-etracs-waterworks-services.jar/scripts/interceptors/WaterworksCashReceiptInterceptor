@@ -26,12 +26,6 @@ class WaterworksCashReceiptInterceptor {
 		pmt.items = [];
 		wp.create(pmt);
 
-		def ex = wc.createExecutor('''
-			UPDATE waterworks_account_consumption 
-			SET amtpaid=amtpaid + $P{amount}
-			WHERE objid=$P{txnrefid}
-		''');
-
 		o.billitems.each {
 			def p = [:];
 			p.parentid = pmt.objid;
@@ -42,7 +36,8 @@ class WaterworksCashReceiptInterceptor {
 			p.interest = it.interest;
 			wpi.create(p);
 			pmt.items << p;
-			ex.setParameters( p ).execute();
+
+			wc.find( [objid: p.txnrefid ] ).update( [amtpaid: '{amtpaid + :amount}'], [amount: p.amount] );
 		}
 	}
 
@@ -55,15 +50,8 @@ class WaterworksCashReceiptInterceptor {
 		
 		wp.find( [objid: pmt.objid] ).update([voided:1]);
 
-		def ex = wc.createExecutor('''
-			UPDATE waterworks_account_consumption 
-			SET amtpaid=amtpaid - $P{amount}
-			WHERE objid=$P{txnrefid}
-		''');
-
 		items.each {
-			def p = [txnrefid: it.txnrefid, amount: it.amount]; 
-			ex.setParameters( p ).execute();
+			wc.find( [objid: it.txnrefid ] ).update( [amtpaid: '{amtpaid - :amount}'], [amount: it.amount] );
 		}
 	}
 

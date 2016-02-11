@@ -30,11 +30,11 @@ public class AreaService {
         }
     }
     
-    public List<Map> getMyAssignedAreas(Object params){
+    public List<Map> getListByAssignee(Object params){
         ERROR = "";
         List result = new ArrayList();
         try{
-            result = service.getMyAssignedAreas(params);
+            result = service.getListByAssignee(params);
         }catch(Exception e){
             ERROR = "AreaService Error: " + e.toString();
             if(Main.LOG != null){
@@ -48,7 +48,7 @@ public class AreaService {
     
     static interface Service{
         
-        public List<Map> getMyAssignedAreas(Object params);
+        public List<Map> getListByAssignee(Object params);
         
     }
     

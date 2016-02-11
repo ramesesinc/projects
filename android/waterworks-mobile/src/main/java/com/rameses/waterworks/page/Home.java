@@ -1,19 +1,19 @@
 package com.rameses.waterworks.page;
 
 import com.rameses.Main;
-import com.rameses.waterworks.database.Database;
 import com.rameses.waterworks.database.DatabasePlatformFactory;
+import com.rameses.waterworks.dialog.Dialog;
 import com.rameses.waterworks.layout.Header;
-import java.util.Iterator;
+import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.input.TouchEvent;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
@@ -22,7 +22,7 @@ import javafx.scene.text.Text;
 
 public class Home {
     
-    private VBox root;
+    private ScrollPane root;
     private ImageView logo;
     private FlowPane pane;
     
@@ -37,12 +37,6 @@ public class Home {
                 Main.ROOT.setCenter(new AccountList().getLayout());
             }
         });
-        accountItem.getLayout().setOnTouchPressed(new EventHandler<TouchEvent>(){
-            @Override
-            public void handle(TouchEvent event) {
-                Main.ROOT.setCenter(new AccountList().getLayout());
-            }
-        });
         
         MenuItem sheetItem = new MenuItem("icon/meter.png","Reading Sheet","Update the the account's meter reading history by capturing its new meter reading.");
         Node sheet = sheetItem.getLayout();
@@ -52,25 +46,35 @@ public class Home {
                 Main.ROOT.setCenter(new ReadingSheet().getLayout());
             }
         });
-        sheetItem.getLayout().setOnTouchPressed(new EventHandler<TouchEvent>(){
-            @Override
-            public void handle(TouchEvent event) {
-                Main.ROOT.setCenter(new ReadingSheet().getLayout());
-            }
-        });
         
         MenuItem downloadItem = new MenuItem("icon/download.png","Download","Download account and meter information from the server database.");
         Node download = downloadItem.getLayout();
         downloadItem.getLayout().setOnMousePressed(new EventHandler<MouseEvent>(){
             @Override
             public void handle(MouseEvent event) {
-                 Main.ROOT.setCenter(new Download().getLayout());
-            }
-        });
-        downloadItem.getLayout().setOnTouchPressed(new EventHandler<TouchEvent>(){
-            @Override
-            public void handle(TouchEvent event) {
-                 Main.ROOT.setCenter(new Download().getLayout());
+                Thread t1 = new Thread(){
+                    public void run(){
+                        Platform.runLater(new Runnable(){
+                            @Override
+                            public void run() {
+                                Dialog.wait("Please wait ...");
+                            }
+                        });
+                    }
+                };
+                t1.start();
+        
+                Thread t2 = new Thread(){
+                    public void run(){
+                        Platform.runLater(new Runnable(){
+                            @Override
+                            public void run() {
+                                Main.ROOT.setCenter(new Download().getLayout());
+                            }
+                        });
+                    }
+                };
+                t2.start();
             }
         });
         
@@ -82,14 +86,17 @@ public class Home {
                 Main.ROOT.setCenter(new Upload().getLayout());
             }
         });
-        uploadItem.getLayout().setOnTouchPressed(new EventHandler<TouchEvent>(){
+        
+        MenuItem ratesItem = new MenuItem("icon/rates.png","Water Rates","View the list of water-rates.");
+        Node rates = ratesItem.getLayout();
+        ratesItem.getLayout().setOnMousePressed(new EventHandler<MouseEvent>(){
             @Override
-            public void handle(TouchEvent event) {
-                Main.ROOT.setCenter(new Upload().getLayout());
+            public void handle(MouseEvent event) {
+                Main.ROOT.setCenter(new Rates().getLayout());
             }
         });
         
-        MenuItem settingItem = new MenuItem("icon/mysetting1.png","Setting","Manage your user account and system setting.");
+        MenuItem settingItem = new MenuItem("icon/mysetting1.png","Setting","Manage the system settings.");
         Node setting = settingItem.getLayout();
         settingItem.getLayout().setOnMousePressed(new EventHandler<MouseEvent>(){
             @Override
@@ -97,28 +104,28 @@ public class Home {
                 Main.ROOT.setCenter(new Setting().getLayout());
             }
         });
-        settingItem.getLayout().setOnTouchPressed(new EventHandler<TouchEvent>(){
-            @Override
-            public void handle(TouchEvent event) {
-                Main.ROOT.setCenter(new Setting().getLayout());
-            }
-        });
         
         StackPane stack = new StackPane();
         stack.setAlignment(Pos.CENTER);
-        stack.setPadding(new Insets(0,15,0,15));
+        stack.setPadding(new Insets(0,5,0,5));
         stack.getChildren().add(createReadingBulletin());
         
-        root = new VBox();
-        root.setAlignment(Pos.TOP_CENTER);
+        VBox container = new VBox();
+        container.setMaxWidth(Main.WIDTH);
+        container.setAlignment(Pos.TOP_CENTER);
         if(Main.HEIGHT > 800){
-            root.setSpacing(30);
-            root.setPadding(new Insets(50, 50, 50, 50));
+            container.setSpacing(15);
+            container.setPadding(new Insets(20, 50, 20, 50));
         }else{
-            root.setSpacing(15);
-            root.setPadding(new Insets(15, 15, 15, 15));
+            container.setSpacing(8);
+            container.setPadding(new Insets(10, 15, 10, 15));
         }
-        root.getChildren().addAll(account,sheet,download,upload,setting,stack);
+        container.getChildren().addAll(account,sheet,download,upload,rates,setting,stack);
+        
+        root = new ScrollPane();
+        root.setMaxWidth(Main.WIDTH);
+        root.setContent(container);
+        root.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
     }
     
     private StackPane createReadingBulletin(){
@@ -144,9 +151,9 @@ public class Home {
         box.getChildren().addAll(check,read,space,cancel,unread);
         
         StackPane root = new StackPane();
+        root.setPadding(new Insets(8,0,8,0));
         root.setId("readingbulletin-container");
         root.setAlignment(Pos.CENTER);
-        root.setPadding(new Insets(15));
         root.getChildren().add(box);
         return root;
     }

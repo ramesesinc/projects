@@ -1,0 +1,33 @@
+import com.rameses.annotations.*;
+
+import com.rameses.rules.common.*;
+import waterworks.facts.*;
+import treasury.facts.*;
+import treasury.actions.*;
+
+class BusinessLookupService {
+	
+	@DataContext("business")
+	def business;
+
+	@ProxyMethod
+	public def getColumns( def o ) {
+		return [
+			[name:'bin', caption:'BIN'],
+			[name:'owner.name', caption:'Owner'],
+			[name:'businessname', caption:'Business Name'],
+			[name:'address.text', caption:'Business Address'],
+			[name:'activeyear', caption:'Last Year Active'],
+		];
+	}
+
+	@ProxyMethod
+	public def getList( def o ) {
+		business.debug = true;
+		business.select( "objid, bin, owner.name,owner.objid,businessname,address_text,activeyear");
+		business.where( " owner_objid = :ownerid", [ownerid: o.ownerid ] );
+		return business.list();
+	}
+
+
+}

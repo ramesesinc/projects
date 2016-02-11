@@ -1,0 +1,14 @@
+<workunit>
+    
+   <invokers>
+         <invoker type="cashreceipt:preview" target="popup"/>
+         <invoker type="formActions" caption="Close" action="_close" />
+   </invokers>
+   
+   <code class="com.rameses.enterprise.treasury.models.CashReceiptPreview" />
+   
+   <pages>
+       <page template="com.rameses.enterprise.treasury.views.CashReceiptPreviewPage" />
+   </pages>
+   
+</workunit>

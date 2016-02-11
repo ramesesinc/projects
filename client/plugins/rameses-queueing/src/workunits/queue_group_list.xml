@@ -1,4 +1,4 @@
-<workunit extends="seti2/templates/CrudListController.xml" schemaName="queue_group">
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" schemaName="queue_group">
     <invokers>
         <invoker folderid="home/admin/queueing" caption="Groups" action="init" role="ADMIN"/> 
     </invokers>

@@ -228,10 +228,6 @@
 
 #sheet-buttons
 {
-    //-fx-skin: "com.sun.javafx.scene.control.skin.ButtonSkin";
-    //-fx-background-color: -fx-shadow-highlight-color, -fx-outer-border, -fx-inner-border, -fx-body-color;
-    //-fx-background-insets: 0 0 -1 0, 0, 1, 2;
-    //-fx-background-radius: 5, 5, 4, 3;
     -fx-background-color: #242021;
     -fx-border-width: 6px;
     -fx-border-color: #bfb7ae;
@@ -277,18 +273,6 @@
     -fx-background-color: transparent;
 }
 
-#upload-container1
-{
-    //-fx-border-width: 0px 2px 2px 0px;
-    //-fx-border-color: black;
-}
-
-#upload-container2
-{
-    //-fx-border-width: 0px 0px 2px 0px;
-    //-fx-border-color: black;
-}
-
 #upload-detail-container
 {
     -fx-border-width: 2px 2px 2px 2px;
@@ -318,6 +302,7 @@
 
 .setting-container
 {
+    -fx-background-color: white;
     -fx-border-width: 5px 5px 5px 5px;
     -fx-border-color: #7dbce8;
     -fx-border-radius: 15px;
@@ -325,9 +310,9 @@
 
 #readingbulletin-container
 {
-    -fx-border-width: 5px 5px 5px 5px;
+    -fx-background-color: #AACBFC;
+    -fx-background-radius: 15px;
     -fx-border-radius: 15px;
-    -fx-border-color: #2e609b;
 }
 
 .readingbulletin-label
@@ -372,4 +357,12 @@
     -fx-font-size: 40px;
     -fx-font-style: italic;
     -fx-fill: black;
+}
+
+.setting-text
+{
+    -fx-font-family: "Tahoma";
+    -fx-font-size: 30px;
+    -fx-font-weight: bold;
+    -fx-text-fill: black;
 }

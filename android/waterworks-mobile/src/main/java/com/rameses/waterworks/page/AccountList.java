@@ -242,7 +242,7 @@ public class AccountList {
             super.updateItem(account, empty);
             if(!empty){
                 Database db = DatabasePlatformFactory.getPlatform().getDatabase();
-                Reading reading = db.findReadingByMeter(account.getMeterid());
+                Reading reading = db.findReadingByAccount(account.getObjid());
                 
                 ImageView image = new ImageView(new Image("icon/useraccount.png"));
                 ImageView image2 = new ImageView(new Image("icon/useraccount-check.png"));
@@ -255,9 +255,9 @@ public class AccountList {
                     imgContainer.getChildren().add(image2);
                 }
                 
-                Label acctno = new Label(account.getAcctno());
+                Label acctno = new Label(account.getAcctNo());
                 
-                Label name = new Label(account.getName()+" ( "+account.getSerialno()+" )");
+                Label name = new Label(account.getAcctName()+" ( "+account.getSerialNo()+" )");
                 
                 String addr = account.getAddress().replaceAll("\n", "");
                 Label address = new Label(addr);

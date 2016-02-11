@@ -1,0 +1,31 @@
+import com.rameses.annotations.*;
+
+import com.rameses.rules.common.*;
+import waterworks.facts.*;
+import treasury.facts.*;
+import treasury.actions.*;
+
+class WaterworksMeterLookupService {
+	
+	@DataContext("waterworks_meter")
+	def em;
+
+	@ProxyMethod
+	public def getColumns( def o ) {
+		return [
+			[name:'serialno', caption:'Serial No'],
+			[name:'brand', caption:'Brand'],
+			[name:'size', caption:'Size'],
+			[name:'capacity', caption:'Capacity'],
+		];
+	}
+
+	@ProxyMethod
+	public def getList( def o ) {
+		return em.createQuery( '''
+			SELECT * FROM waterworks_meter WHERE currentacctid IS NULL
+		''').resultList;
+	}
+
+
+}

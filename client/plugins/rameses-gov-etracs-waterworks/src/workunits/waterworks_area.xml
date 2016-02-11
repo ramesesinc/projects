@@ -1,0 +1,39 @@
+<workunit>
+    <invokers>
+        <invoker type="area:create" caption="Area" action="create" target="popup" srole="MASTER"/>
+        <invoker type="area:open" caption="Area" action="open" target="popup" srole="MASTER"/>
+    </invokers>
+    
+    <code>
+        <![CDATA[
+           import com.rameses.osiris2.common.*;
+           import com.rameses.rcp.common.*;
+           import com.rameses.rcp.annotations.*;
+           import com.rameses.osiris2.client.*;
+
+           class AreaController extends CRUDController{
+           
+               @Binding
+               def binding;
+
+               def title='Area';
+               String serviceName='WaterWorksAreaService';
+               String entityName='area';
+               boolean allowApprove = false;
+               
+               def getLookupUser(){
+                    def h = {o ->
+                        entity.assignto = [objid:o.objid, name: o.firstname+" "+o.lastname];
+                        binding.refresh("entity.*");
+                    }
+                    return Inv.lookupOpener("user:lookup",[onselect:h]);
+               }
+
+           }
+        ]]>
+    </code>
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.waterworks.views.WaterworksAreaPage"/>
+    </pages>
+</workunit>

@@ -1,0 +1,5 @@
+<workunit extends="wtemplates/ServiceLookupController.xml" serviceName="WaterworksMeterLookupService">
+    <invokers>
+        <invoker type="meter:lookup" caption="Lookup Meter"/>
+    </invokers>
+</workunit>

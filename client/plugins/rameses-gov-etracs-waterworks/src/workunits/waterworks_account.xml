@@ -1,0 +1,10 @@
+<workunit>
+    <invokers>
+        <invoker type="waterworks_account:open" caption="Waterworks Account" action="open" target="window"/>
+        <invoker type="formActions" caption="Close" action="_close" immediate="true"/>
+    </invokers>
+    <code class="com.rameses.gov.etracs.waterworks.models.WaterworksAccountMain" />   
+    <pages>
+        <page template="com.rameses.gov.etracs.waterworks.views.WaterworksAccountMainPage"/>
+    </pages>
+</workunit>

@@ -1,11 +1,13 @@
-<workunit extends="com/rameses/seti2/templates/CrudForm.xml">
+<workunit>
     <invokers>
-        <invoker folderid="/home/waterworks" caption="Capture Account" action="create" index="4"/>
+        <invoker folderid="/home/waterworks" caption="Capture Account" action="init" index="4"/>
+        <invoker type="waterworks_account:create" caption="Waterworks Account" action="init" target="window"/>
+        <invoker type="formActions" caption="Close" action="_close" immediate="true"/>
+        <invoker type="formActions" caption="Save" action="save"/>
+        
     </invokers>
-    <code class="com.rameses.gov.etracs.waterworks.models.WaterworksAccount" />
+    <code class="com.rameses.gov.etracs.waterworks.models.WaterworksAccountCapture" />   
     <pages>
-        <page name="create" template="com.rameses.gov.etracs.waterworks.views.WaterworksAccountPage"/>
-        <page name="read" template="com.rameses.gov.etracs.waterworks.views.WaterworksAccountPage"/>
-        <page name="edit" template="com.rameses.gov.etracs.waterworks.views.WaterworksAccountPage"/>
+        <page name="default" template="com.rameses.gov.etracs.waterworks.views.CaptureAccountPage"/>
     </pages>
 </workunit>

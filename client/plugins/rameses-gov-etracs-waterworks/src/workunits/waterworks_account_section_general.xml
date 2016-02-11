@@ -1,0 +1,9 @@
+<workunit>
+    <invokers>
+        <invoker type="waterworks_account:section" caption="General Information" index="0" action="init"/>
+    </invokers>
+    <code class="com.rameses.gov.etracs.waterworks.models.WaterworksAccountGeneralInformation"/>
+    <pages>
+        <page template="com.rameses.gov.etracs.waterworks.views.WaterworksAccountGeneralInformationPage"/>
+    </pages>
+</workunit>

@@ -6,24 +6,28 @@ package com.rameses.waterworks.bean;
  */
 public class Reading {
     
-    String objid, meterid, reading, consumption, amtdue, totaldue, state;
+    String objid, acctid, reading, consumption, amtdue, totaldue, state, readingdate, batchid;
     
-    public Reading(String objid, String meterid, String reading, String consumption, String amtdue, String totaldue, String state){
+    public Reading(String objid, String acctid, String reading, String consumption, String amtdue, String totaldue, String state, String readingdate, String batchid){
         this.objid = objid;
-        this.meterid = meterid;
+        this.acctid = acctid;
         this.reading = reading;
         this.consumption = consumption;
         this.amtdue = amtdue;
         this.totaldue = totaldue;
         this.state = state;
+        this.readingdate = readingdate;
+        this.batchid = batchid;
     }
     
     public String getObjid(){ return objid; };
-    public String getMeterid(){ return meterid; };
+    public String getAcctId(){ return acctid; };
     public String getReading(){ return reading; };
     public String getConsumption() { return consumption; };
     public String getAmtDue() { return amtdue; };
     public String getTotalDue() { return totaldue; };
     public String getState() { return state; };
+    public String getReadingDate() { return readingdate; };
+    public String getBatchId() { return batchid; };
     
 }

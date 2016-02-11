@@ -10,6 +10,13 @@ class WaterworksBillingService {
 	@Service("RuleExecutorService")
 	def ruleSvc;
 
+	@DataContext("collectiontype")
+	def colType;
+
+	@DataContext("collectiontype_account")
+	def colTypeAcct;
+
+
 	@Service("DateService")
 	def dateSvc;
 
@@ -42,7 +49,7 @@ class WaterworksBillingService {
 		return ra;
 	}
 
-	//find account by acctno or by objid
+	//find the waterworks account by acctno or by objid
 	def findAccount(def o) {
 		def p = null;    
 		if( o.objid ) {
@@ -59,6 +66,20 @@ class WaterworksBillingService {
 		return m;	
 	}
 
+	//find the waterworks item account used. This is defined in the collection type
+	def findItemAccount( def o ) {
+	    if(!o.tag) throw new Exception('Please specify tag whether BASIC, SURCHARGE or PENALTY');	
+	    def wct = colType.find( [handler: 'waterworks'] ).first();
+	    if(!wct)
+		throw new Exception( "Collection type handler waterworks not found"  );
+	    def wctacct = colTypeAcct.find( [collectiontypeid: wct.objid, tag: o.tag] ).first();
+	    if(!wctacct) throw new Exception( 'water account specified with tag ' + o.tag + ' not defined in collection type waterworks' )
+
+	    def revItem = itemAcct.find([objid:wctacct.account.objid]).first();
+	    if( !revItem )
+		throw new Exception("Revneue Item Account not found" );
+	    return revItem;  	
+	} 
 
 	@ProxyMethod
 	public def processBilling( def feeList ) {
@@ -67,16 +88,16 @@ class WaterworksBillingService {
 		def res = [:];
 		res.billItemList = new BillItemList();
 
+		def itemAcct = findItemAccount( [tag: 'BASIC' ] ); 
+		
+
 		//build the facts   
 		def facts = [];
 		feeList.each {
 			def bi = new WaterBillItem();
 			bi.refid = it.objid;
 			bi.item = it;
-			bi.account = new Account(
-				[objid:'ITEMACCT-2dba729c:1518064b16c:-7964', 
-				title: 'WATERWORKS']
-			);
+			bi.account = new Account(itemAcct);
 			bi.year = it.year;
 			bi.month = it.month;
 			bi.smonth = monthList[it.month-1];
@@ -98,6 +119,8 @@ class WaterworksBillingService {
 	}
 
 
+
+
 	/***********************************************************************
 	* this is called by other services. This returns the billing head 
 	* and its items
@@ -110,18 +133,9 @@ class WaterworksBillingService {
 		if(!feeList)
 		   throw new Exception("There are no upaid items for this account");
 
-		//prepare an item account lookup
-		def acctMap = [:];
-		def lookupAcct = { obj->
-			def id = obj.objid;
-		    if( !acctMap.containsKey(id)) {
-		    	def a = itemAcct.find([objid:id]).first();
-		    	if(!a) throw new Exception("Cannot find item account id " +obj.title);
-		    	acctMap.put(id, a);
-		    }
-	    	return acctMap.get(id);
-		}
 
+		def itemAcct = findItemAccount( [tag: 'BASIC' ] ); 
+		
 		//setup resource  
 		def res = [:];
 		res.billItemList = new BillItemList();
@@ -133,10 +147,7 @@ class WaterworksBillingService {
 			def bi = new WaterBillItem();
 			bi.refid = it.objid;
 			bi.item = it;
-			bi.account = new Account(lookupAcct( 
-				[objid:'ITEMACCT-2dba729c:1518064b16c:-7964', 
-				title: 'WATERWORKS']
-			));
+			bi.account = new Account(itemAcct);
 			bi.year = it.year;
 			bi.month = it.month;
 			bi.smonth = monthList[it.month-1];

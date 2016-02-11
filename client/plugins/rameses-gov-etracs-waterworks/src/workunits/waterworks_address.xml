@@ -1,0 +1,41 @@
+<workunit>
+    <invokers>
+        <invoker type="address:lookup" caption="Address" action="init" target="popup"/>
+    </invokers>
+    
+    <code>
+        <![CDATA[
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*
+        import java.rmi.server.UID;
+        
+        class AddressController{
+        
+           @Binding
+           def binding;
+        
+           def opener;
+           def entity;
+           def handler;
+        
+            void init(){
+                entity = [:];
+                opener = Inv.lookupOpener("address:component:local",[entity:entity]);
+            }
+            
+            def doOk(){
+                handler(entity);
+                return "_close";
+            }
+            
+        }
+        ]]>
+    </code>
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.waterworks.views.WaterworksAddressPage"/>
+    </pages>
+    
+</workunit>

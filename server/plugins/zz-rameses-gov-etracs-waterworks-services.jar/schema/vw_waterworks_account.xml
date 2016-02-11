@@ -19,11 +19,12 @@
 		<field name="lastreadingyear" required="true"/>
 		<field name="lasttxndate" required="true"/>
 		<field name="prevreading" required="true"/>
-		<field name="brand" required="true"/>
-		<field name="serialno" required="true"/>
-		<field name="capacity" required="true"/>
-		<field name="assigneeid" required="true"/>
-		<field name="assigneename" required="true"/>
-		<field name="areaname" required="true"/>
+		<field name="meter_brand" required="true"/>
+		<field name="meter_serialno" required="true"/>
+		<field name="meter_capacity" required="true"/>
+		<field name="meter_size" required="true"/>
+		<field name="assignee_objid" required="true"/>
+		<field name="assignee_name" required="true"/>
+		<field name="area_name" required="true"/>
 	</element>
 </schema>

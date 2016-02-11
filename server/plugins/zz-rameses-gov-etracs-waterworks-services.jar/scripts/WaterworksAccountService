@@ -51,6 +51,10 @@ class WaterworksAccountService {
 		return vwacct.find(o).first();
 	}
 
+	public def createConsumption( def o ){
+		return wac.create(o);
+	}
+
 	@ProxyMethod
 	public def getConsumption(def o) {
 		def feeList = wac.find([acctid: o.objid]).list();

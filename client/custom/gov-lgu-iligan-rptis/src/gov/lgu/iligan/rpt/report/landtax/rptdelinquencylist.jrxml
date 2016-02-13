@@ -1212,7 +1212,7 @@
 					<textElement textAlignment="Right" verticalAlignment="Top">
 						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="10" isBold="true"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.Number"><![CDATA[$V{GT_BASIC}+$V{GT_SEF} ]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$V{GT_BASIC}+$V{GT_SEF}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement

@@ -156,19 +156,18 @@ class NumberService {
     }
     
     @ProxyMethod(local=true)
-    public String convertDouble(double number) {
+    public String convertDouble(double number) { 
 		String str 	= format('#0.00000000', number )
 		String strDec	= "";
         String wn 	= convertLong((long)number);
         if (number > 0 && str.indexOf(".") >= 0) {
-            strDec = str.replaceAll( ((long)number) + ".","");
-            
-            if ( Long.parseLong(strDec) > 0)
-                strDec = " AND " + getCents(strDec) + "/100";
-            else
-                strDec = "";
+            strDec = str.replaceAll( ((long)number) + ".",""); 
+            if ( strDec && Long.parseLong(strDec) > 0)  {  
+                strDec = " AND " + getCents(strDec) + "/100"; 
+            } else {  
+                strDec = ""; 
+            } 
         }
-        
         return wn + strDec;
     }
     

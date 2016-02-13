@@ -33,7 +33,7 @@ class ReportParameterService{
 		]
 		
 		var.getList([category:'REPORT']).each{
-			params[it.name] = it.value 
+			params[it.name.toUpperCase()] = it.value 
 		}
 
 		return params; 

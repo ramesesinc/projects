@@ -91,7 +91,7 @@ class RuleMgmtService extends ActiveCrudListService {
 		o.actions.each { a->
 			a.params = em.getRuleActionParams(a);
 			a.params.each {
-				if(it.listvalue) it.listvalue = em.serializer.read(it.listvalue);
+				if(it.listvalue && it.listvalue != 'null') it.listvalue = em.serializer.read(it.listvalue);
 			}
 		}
 	}

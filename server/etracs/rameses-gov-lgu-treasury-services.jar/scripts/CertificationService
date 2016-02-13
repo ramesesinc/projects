@@ -50,10 +50,21 @@ class CertificationService extends ActiveCrudListService
 		entity.givenday = formalizeDate(entity.txndate, 'd' )
 		entity.givenmonth = formalizeDate(entity.txndate, 'MMMMM' )
 		entity.givenyear = formalizeDate(entity.txndate, 'yyyy' )
-		entity.givenat  = paramSvc.standardParameter.LGUADDRESS
-	}
+		entity.givenat  = paramSvc.standardParameter.LGUADDRESS 
 
+		def info = [:]; 
+		entity.each{k,v-> info[k]=v } 
+		entity.info = info; 
+	} 
 
+	public void afterOpen( data ) {
+		def info = data.remove('info'); 
+		if ( info ) {
+			info.putAll( data );  
+			data.clear(); 
+			data.putAll( info );  
+		} 
+	} 
 
     def formalizeDate( date,  format ){
         def dt = new java.text.SimpleDateFormat( format ).format(dtSvc.parse('yyyy-MM-dd', date)).toString();

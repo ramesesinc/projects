@@ -128,7 +128,8 @@ select
   case when xx.voided=0 then cr.paidby else '***VOIDED***' END AS payer,
   case when xx.voided=0 then cri.item_title else '***VOIDED***' END AS particulars,
   case when xx.voided=0 then cr.paidbyaddress else '' END AS payeraddress,
-  case when xx.voided=0 then cri.amount else 0.0 END AS amount 
+  case when xx.voided=0 then cri.amount else 0.0 END AS amount, 
+  case when xx.voided=0 then cri.remarks else null end AS itemremarks 
 from ( 
   select rc.*, 
     (select count(*) from cashreceipt_void where receiptid=rc.objid) as voided 

@@ -1,2 +1,11 @@
 [getList]
-SELECT *, type AS _filetype FROM certification WHERE requestedby LIKE $P{searchtext} ORDER BY txnno DESC  
+select c.*, c.type AS _filetype 
+from ( 
+	select objid from certification where requestedby like $P{searchtext}  
+	union 
+	select objid from certification where txnno like $P{searchtext} 
+	union 
+	select objid from certification where orno like $P{searchtext} 
+)xx 
+	inner join certification c on xx.objid=c.objid 
+ order by txnno desc 

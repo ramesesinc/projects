@@ -22,7 +22,7 @@ class AFStockIssueInterceptor {
 	def em;
 
 	@After(pattern="StockIssueService.create")
-	public void postReceipt( def evt ) { 
+	public void postReceipt( evt ) { 
 		def o = evt.result;
 		def list = o.items.findAll{ it.qtyissued > 0 && it.items!=null };
 		for( z in list ) {
@@ -95,17 +95,38 @@ class AFStockIssueInterceptor {
 	}
 
 	@After(pattern="StockIssueService.open")
-	public void afterOpen(evt) {
-		def o = evt.result;
-		o.items.each{
-			def params = [afid: it.item.objid, unit: it.unit, stockissueid: it.parentid , respcentertype: 'COLLECTOR']
-			it.handler =  it.aftype.toLowerCase() 
-			it.items = afInventoryDb.getAFDetails(params).each {
-				if( "cashticket".equals(it.aftype)) {
-					it.startseries = null;
-					it.endseries = null
-				}
+	public void afterOpen( evt ) { 
+		def o = evt.result; 
+
+		o.items.each{ a-> 
+			a.handler = a.aftype.toLowerCase(); 
+			a.items = afInventoryDb.getAFDetails([ 
+				unit: a.unit, 
+				afid: a.item.objid, 
+				stockissueid: a.parentid, 
+				respcentertype: 'COLLECTOR' 
+			]);
+			
+			a.items.each{ b-> 
+				resolveStub( b );
+
+				b.items = afInventoryDb.getIssuanceReceipts([ refid: o.objid, afid: a.item.objid ]);
+				b.items.each{ 
+					it.qtyissued = it.qty; 
+					it.aftype = b.aftype; 
+					resolveStub( it ); 
+				} 
 			} 
-		}
+		} 
 	}
+
+	void resolveStub( o ) { 
+		def is_cashticket = ( o.aftype == 'cashticket' ); 
+		if ( is_cashticket==true ) { 
+			o.startseries = o.endseries = null; 
+		} else {
+			o.sstartseries = o.startseries;
+			o.sendseries = o.endseries; 
+		} 
+	} 
 }

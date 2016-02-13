@@ -22,6 +22,6 @@
 		<field name="createdby" required="true" />
 		<field name="createdbytitle" required="true" />
 		<field name="office" required="true" />
-		<complex name="info" required="false" serializer="default" merge="true" />
+		<complex name="info" required="false" serializer="default" /> 
 	</element>
 </schema>

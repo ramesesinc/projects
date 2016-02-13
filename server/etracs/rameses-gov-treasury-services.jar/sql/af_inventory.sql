@@ -105,3 +105,14 @@ select * from af_inventory
 where afid=$P{afid} and unit=$P{unit} 
    and startseries <= $P{startseries} 
    and endseries >= $P{startseries} 
+
+[getIssuanceReceipts]
+select 
+   afi.objid, afi.afid, afi.startstub as stubno, 
+   afi.startseries, afi.endseries, afi.qtyin as qty 
+from af_inventory_detail afd 
+   inner join af_inventory afi on afd.controlid=afi.objid 
+where afd.refid=$P{refid} 
+   and afd.txntype='ISSUANCE-RECEIPT' 
+   and afi.afid = $P{afid} 
+order by afi.startseries 

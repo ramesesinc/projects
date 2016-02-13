@@ -5,6 +5,6 @@
 		<field name="brand" required="true" />
 		<field name="size" required="true" />
 		<field name="capacity" required="true" />
-		<field name="currentacctid" required="true" />
+		<field name="currentacctid"/>
 	</element>
 </schema>

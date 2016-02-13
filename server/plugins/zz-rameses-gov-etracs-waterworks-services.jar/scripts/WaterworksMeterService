@@ -20,9 +20,7 @@ class WaterworksMeterService {
 
 	@ProxyMethod
 	public def getList(def o){
-		println o.searchtext;
 		o.searchtext = o.searchtext + "%";
-		println o.searchtext;
 		return wm.list();
 	}
 

@@ -5,9 +5,6 @@ class WaterworksAccountService {
 	@DataContext("waterworks_account")
 	def acct;
 
-	@DataContext("vw_waterworks_account")
-	def vwacct;
-
 	@DataContext("waterworks_account_consumption")
 	def wac;
 
@@ -30,7 +27,7 @@ class WaterworksAccountService {
 		wm.find([objid:o.meter.objid]).update([currentacctid:a.objid]);
 		if(o.lastreading){
 			def c = [:];
-			c.acctid = a.objid
+			c.account = a;
 			c.dtreading = a.lastreadingdate;
 			c.year = a.lastreadingyear;
 			c.month = a.lastreadingmonth;
@@ -48,7 +45,7 @@ class WaterworksAccountService {
 
 	@ProxyMethod
 	public def open(def o) {
-		return vwacct.find(o).first();
+		return acct.find(o).first();
 	}
 
 	public def createConsumption( def o ){
@@ -58,8 +55,7 @@ class WaterworksAccountService {
 	@ProxyMethod
 	public def getConsumption(def o) {
 		def feeList = wac.find([acctid: o.objid]).list();
-		//return billSvc.processBilling(feeList);
-		return feeList;
+		return billSvc.processBilling(feeList);
 	}
 
 }

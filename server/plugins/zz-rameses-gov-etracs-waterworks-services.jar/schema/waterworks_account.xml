@@ -1,6 +1,6 @@
 <schema adapter="waterworks">
 	<element tablename="waterworks_account">
-		<field name="objid" primary="true"/>
+		<field name="objid" primary="true" prefix="WA"/>
 		<field name="state" required="true"/>
 		<field name="dtstarted" required="false"/>
 		<field name="acctno" required="true"/>
@@ -13,9 +13,13 @@
 		<field name="mobileno" required="false"/>
 		<field name="phoneno" required="false"/>
 		<field name="email" required="false"/>
-		<field name="meterid" required="true"/>
+		<complex name="meter" jointype="many-to-one" ref="waterworks_meter" required="true">
+			<key field="meterid" target="objid"/>
+		</complex>
 		<field name="classificationid" required="true"/>
-		<field name="areaid" required="true"/>
+		<complex name="area" jointype="many-to-one" ref="waterworks_area" required="true">
+			<key field="areaid" target="objid"/>
+		</complex>
 		<field name="balance" required="true"/>
 		<field name="lastreadingdate" required="true"/>
 		<field name="lasttxndate" required="true"/>

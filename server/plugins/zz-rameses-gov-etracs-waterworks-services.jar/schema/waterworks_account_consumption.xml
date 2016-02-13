@@ -1,8 +1,10 @@
 <schema adapter="waterworks">
 	<element tablename="waterworks_account_consumption">
-		<field name="objid" primary="true"/>
-		<field name="acctid" required="true"/>
-		<field name="dtreading" required="true" type="date"/>
+		<field name="objid" primary="true" prefix="WAC"/>
+		<complex name="account" jointype="many-to-one" ref="waterworks_account" required="true">
+			<key field="acctid" target="objid"/>
+		</complex>
+		<field name="dtreading" required="true"/>
 		<field name="year" required="true"/>
 		<field name="month" required="true"/>
 		<field name="prevreading" required="true"/>

@@ -12,13 +12,31 @@ class CollectionGroupService extends ActiveCrudListService {
 	@ProxyMethod
 	public def getColumns( def o ) {
 		return [
-			[name:'name', caption:'Name' ],
-			[name:'org.name', caption:'Org Name (For Remote)' ] 
+			[name:'name', caption:'Name'], 
+			[name:'org.name', caption:'Org Name (For Remote)']  
 		];
 	} 
 
-	void beforeList(o) {
-		o.searchtext = (o.searchtext ? o.searchtext : '') +'%'
+	void beforeList(o) { 
+		o.searchtext = (o.searchtext ? o.searchtext : '')+'%'; 
+		o.filter = ''; 
+
+		def filters = []; 
+		if ( o.fund?.objid ) { 
+			o.fundid = o.fund.objid; 
+			filters << ''' ia.fund_objid LIKE $P{fundid} '''; 
+		} 
+		if ( o.collectiontype?.org?.objid ) {
+			o.orgid = o.collectiontype.org.objid; 
+			filters << ''' cg.org_objid LIKE $P{orgid} '''; 
+		} 
+		if ( filters ) { 
+			o.filter = ' AND ' + filters.join(' AND '); 
+		} 
+
+		o.each{k,v-> 
+			println '>>> '+ k +'=== '+ v; 
+		}
 	} 
 
 	protected void beforeCreate(def entity){

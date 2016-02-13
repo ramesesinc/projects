@@ -65,7 +65,6 @@ class CashReceiptInterceptor {
 		//validate balance for cashticket 
 		if ("cashticket".equalsIgnoreCase(o.formtype)) {
 			def afsum = afControlSvc.findAFSummary([ controlid: o.controlid ]); 
-			println afsum; 
 			def qtyin = afsum.endseries - afsum.startseries + 1; 
 			def qtybalance = qtyin; 
 			def qtyissued = 0; 

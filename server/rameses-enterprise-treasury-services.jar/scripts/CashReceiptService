@@ -131,4 +131,31 @@ class CashReceiptService  {
 	public void updateState( o ) {
 		cashreceipt.updateState( o ); 
 	} 
+
+	@ProxyMethod 
+	public void verifyOffline( params ) {
+		// check receipt date against the current date 
+		def rundate = toDate( dateService.getServerDate() ); 
+		def receiptdate = toDate( params.receiptdate ); 
+		if ( receiptdate.after(rundate) ) 
+			throw new Exception('Receipt date must be less than or equal to the current date'); 
+
+		def info = cashreceipt.findMaxReceiptDateByControlid([ controlid : params.controlid ]); 
+		if ( !info?.receiptdate ) return; 
+
+		// check receipt date against the max receipt date 
+		def maxreceiptdate = toDate( info.receiptdate ); 
+		if ( receiptdate.compareTo( maxreceiptdate ) < 0 ) { 
+			def sdate = dateService.format( 'yyyy-MM-dd', maxreceiptdate ); 
+			throw new Exception('Receipt date must not be less than the previous transaction date ('+ sdate +')'); 
+		} 
+	}
+
+	private def toDate( value ) { 
+		if ( value == null ) return value; 
+
+		def time = dateService.resolveDate( value ).time; 
+		def sdate = new java.sql.Date( time ).toString(); 
+		return dateService.parse('yyyy-MM-dd', sdate); 
+	} 
 }

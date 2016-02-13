@@ -77,3 +77,8 @@ from cashreceipt cr
 where controlid=$P{controlid} 
 	and objid not in (select receiptid from cashreceipt_void where receiptid=cr.objid) 
 order by series 
+
+[findMaxReceiptDateByControlid]
+select max(receiptdate) as receiptdate 
+from cashreceipt 
+where controlid=$P{controlid} 

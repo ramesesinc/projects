@@ -9,10 +9,28 @@ class BPQuarterlypPaidReportService
 
 
 	@ProxyMethod
-	public def getReport(params) { 
-		def list = em.getQtrlyPaidBusinessList( params );
-		if( ! list ) throw  new Exception('No records found.');
-		return list;
-	}
+	public def getReport( params ) { 
+		if ( !params.year ) throw new Exception('year parameter is required'); 
 
+		params.filter = '';
+
+		def states = []; 
+		if ( params.state_release ) states << "RELEASE";
+		if ( params.state_completed ) states << "COMPLETED";
+		if ( states ) { 
+			params.filter += " AND a.state IN ('" + states.join("','") + "')"; 
+		} else { 
+			throw new Exception('Please select at least one status');
+		} 
+
+		if ( params.permittype?.objid ) { 
+			params.permittypeid = params.permittype.objid; 
+			params.filter += ''' AND b.permittype=$P{permittypeid} '''; 	
+		} 
+
+		def list = em.getQtrlyPaidBusinessList( params );
+		if ( !list ) throw new Exception('No records found.'); 
+
+		return list;
+	} 
 }

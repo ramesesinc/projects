@@ -155,7 +155,7 @@ public class BusinessApplicationService  {
 	}
 
 	@ProxyMethod
-	public def updateInfos(def b) {
+	public def updateInfos( b ) {
 		lobSvc.addAppLobs( b );
 		infoSvc.addAppInfos( b );
 		reqSvc.addRequirements( b );
@@ -196,4 +196,9 @@ public class BusinessApplicationService  {
 		def info = em.read([objid: params.objid]); 
 		return info?.state; 
 	}
+
+	@ProxyMethod 
+	public void revert( params ) {
+		/* interceptors will handle other revert routines */
+	} 
 }

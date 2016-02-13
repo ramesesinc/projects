@@ -21,9 +21,9 @@ from (
 		inner join business_application_lob alob on a.objid=alob.applicationid 
 		inner join lob on alob.lobid = lob.objid 
 		left join business_address ba on b.address_objid = ba.objid 
-	where $P{completed}=1 and a.appyear=$P{year} 
+	where $P{showcompleted}=1 and a.appyear=$P{year} 
 		and a.dtfiled between $P{startdate} and $P{enddate}  
-		and a.parentapplicationid is null ${filter} 
+		and a.parentapplicationid is null ${otherfilter} 
 		and a.state='COMPLETED' 
 
 	union all
@@ -46,9 +46,9 @@ from (
 		inner join business_application_lob alob on a.objid=alob.applicationid 
 		inner join lob on alob.lobid = lob.objid 
 		left join business_address ba on b.address_objid = ba.objid 
-	where $P{completed}=0 and a.appyear=$P{year}  
+	where $P{showprocessing}=1 and a.appyear=$P{year}  
 		and a.dtfiled between $P{startdate} and $P{enddate}  
-		and a.parentapplicationid is null ${filter} 
+		and a.parentapplicationid is null ${statefilter} ${otherfilter} 
 		and a.state <> 'COMPLETED' 
 )xx 
 order by appno, lobname 

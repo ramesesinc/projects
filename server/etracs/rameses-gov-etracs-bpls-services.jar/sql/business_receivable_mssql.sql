@@ -14,11 +14,15 @@ ORDER BY br.iyear DESC, br.lob_name DESC, r.code ASC
 SELECT br.*, 
   r.code AS account_code, 
   br.taxfeetype AS account_taxfeetype, 
-  br.amount - br.amtpaid - br.discount AS total,
-  br.amount - br.amtpaid - br.discount AS balance,
+  case 
+    when br.amount <> br.amtpaid then br.amount-br.amtpaid-br.discount else 0.0 
+  end as total, 
+  case 
+    when br.amount <> br.amtpaid then br.amount-br.amtpaid-br.discount else 0.0 
+  end as balance, 
   app.appno, br.iyear AS [year] 
 FROM business_receivable br 
-  LEFT JOIN itemaccount r ON  r.objid=br.account_objid 
+  LEFT JOIN itemaccount r ON r.objid=br.account_objid 
   LEFT JOIN business_application app ON app.objid=br.applicationid
 WHERE ${filter}  
 ORDER BY br.lob_name DESC, r.code ASC
@@ -47,14 +51,16 @@ FROM (
          WHEN 'REGFEE' THEN 1
          ELSE 2
       END AS sortorder, 
-      (br.amount - br.amtpaid ) AS amtdue,
+      case 
+        when br.amount <> br.amtpaid then br.amount-br.amtpaid else 0.0 
+      end as amtdue, 
       br.iyear AS [year]
    FROM business_receivable br
       LEFT JOIN business_application ba ON ba.objid=br.applicationid
       LEFT JOIN business_application_lob bl ON bl.applicationid=br.applicationid AND br.lob_objid=bl.lobid
       LEFT JOIN itemaccount ri ON ri.objid=br.account_objid
    WHERE ${filter}
-) a
+) a  
 ORDER BY a.sortorder ASC 
 
 #########################################

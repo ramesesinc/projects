@@ -13,6 +13,13 @@ class BPCollectionSummaryReportService
 
 	@ProxyMethod
 	public def getReport(params) { 
+		params.filter = '';
+
+		if ( params.permittype?.objid ) { 
+			params.permittypeid = params.permittype.objid; 
+			params.filter += ''' AND b.permittype=$P{permittypeid} '''; 	
+		} 
+
 		def list = em.getBPCollectionSummary( params );
 		if( ! list ) throw new Exception('No records found.');
 

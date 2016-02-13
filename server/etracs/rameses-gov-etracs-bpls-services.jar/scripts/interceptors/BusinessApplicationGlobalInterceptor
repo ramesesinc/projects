@@ -1,0 +1,23 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.services.extended.*;
+
+public class BusinessApplicationGlobalInterceptor {
+
+	@Service("BusinessPaymentService")
+	def paySvc;
+
+	@After(pattern="BusinessApplicationService.revert") 
+	void afterRevert( evt ) { 
+		def params = evt.args[0]; 
+		params.applicationid = params.objid; 
+
+		if ( params.action=='revert' && params.fromstate=='release' ) { 
+			def list = paySvc.getApplicationPayments( params ); 
+			if ( list ) { 
+				throw new Exception('Cannot revert since payments have already been made');  
+			} 
+		} 
+	} 
+} 

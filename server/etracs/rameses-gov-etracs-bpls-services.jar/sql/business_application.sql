@@ -221,3 +221,23 @@ select * from business_application_info where applicationid=$P{applicationid} an
 
 [getAssessmentInfos]
 select * from business_application_info where applicationid=$P{applicationid} and type='assessmentinfo'
+
+[findLatestApplication]
+select a.* 
+from ( 
+    select business_objid, max(appyear) as appyear, max(txndate) as txndate 
+    from business_application 
+    where business_objid = $P{businessid} 
+    group by business_objid 
+)xx 
+    inner join business_application a on a.business_objid=xx.business_objid 
+where a.appyear = xx.appyear and a.txndate = xx.txndate 
+
+[getDelinquentApplications]
+select distinct 
+    br.businessid, br.applicationid, ba.appyear, ba.txndate 
+from business_receivable br 
+    inner join business_application ba on br.applicationid=ba.objid 
+where br.businessid=$P{businessid} 
+    and (br.amount-br.amtpaid) <> 0.0  
+order by ba.txndate 

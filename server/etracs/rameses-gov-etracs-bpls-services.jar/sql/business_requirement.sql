@@ -29,3 +29,8 @@ FROM (
 	INNER JOIN businessrequirementtype brq ON br.reftype=brq.objid	
 ORDER BY br.title 
 
+[removeApplicationRequirements]
+delete from business_requirement where applicationid=$P{applicationid} 
+
+[removeNonApplicationRequirements]
+delete from business_requirement where businessid=$P{businessid} and applicationid is null 

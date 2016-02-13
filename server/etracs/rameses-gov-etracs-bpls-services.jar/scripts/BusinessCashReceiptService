@@ -59,17 +59,17 @@ public class BusinessCashReceiptService  {
 	} 
 
 	@ProxyMethod 
-	public def findInfo( param ) {
+	public def findInfo( param ) { 
 		def info = null; 
-		if ( param.appno ) {
-			if (param.appno.contains('-')) 
+		if ( param.appno ) { 
+			if (param.appno.contains('-')) { 
 				info = app.findInfoByAppno( param ); 
-			else 
+			} else { 
 				info = app.findInfoByBIN([ bin: param.appno ]); 
-		} 
-		else if ( param.applicationid ) {
+			} 
+		} else if ( param.applicationid ) {
 			info = app.findInfoByAppid( param ); 
-		}
+		} 
 
 		if (!info.state.toLowerCase().matches('payment|release|completed')) 
 			throw new Exception('This application is not available for payment. Current state is ' + info.state);  
@@ -84,6 +84,14 @@ public class BusinessCashReceiptService  {
         m.appyear = info.appyear;
         m.appno = info.appno; 
         m.dtfiled = info.dtfiled;
+
+        def list = app.getDelinquentApplications([ businessid : m.businessid ]); 
+        if ( list ) {
+        	def dapp = list.first(); 
+        	if ( dapp.applicationid != m.applicationid ) {
+        		throw new Exception('This business is delinquent in '+ dapp.appyear +'. Please verify.'); 
+        	}
+        }
         return m; 
 	}
 

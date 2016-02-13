@@ -16,6 +16,13 @@ class BPPermitReportService
 		def barangayid = params.barangay?.objid; 
 		params.barangayid = ( barangayid ? barangayid : '%' ); 
 		
+		params.filter = '';
+		
+		if ( params.permittype?.objid ) { 
+			params.permittypeid = params.permittype.objid; 
+			params.filter += ''' AND b.permittype=$P{permittypeid} '''; 	
+		} 
+
 		def list = em.getPermitListByYear( params );
 		if ( !list ) throw new Exception('No records found.');
 

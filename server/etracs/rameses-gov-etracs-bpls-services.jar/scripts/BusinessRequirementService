@@ -8,10 +8,6 @@ public class BusinessRequirementService  {
 	@ActiveDB("business_requirement")
 	def em;
 
-	@DataContext("business_requirement")
-	def br;
-
-
 	@Service("DateService")
 	def dateSvc;
 
@@ -19,19 +15,24 @@ public class BusinessRequirementService  {
 	def ruleSvc;
 
 	@ProxyMethod
-	public void addRequirements(def o) {
-		if(!o.businessid) throw new Exception("businessid is required");
+	public void addRequirements( o ) {
+		if ( !o.businessid ) throw new Exception("businessid is required");
 
-		o.requirements?.each {
-			it.objid = "BUSREQ"+new UID();
-			it.businessid = o.businessid;
-			it.applicationid = o.applicationid;
-			if ( it.completed ) { 
-				it.dtcompleted = dateSvc.serverDate; 
+		em.removeApplicationRequirements( o );
+		em.removeNonApplicationRequirements( o );
+		
+		o.requirements?.each { a-> 
+			a.objid = "BUSREQ" + new UID();
+			a.businessid = o.businessid;
+			a.applicationid = o.applicationid;
+			if ( !a.completedby ) a.completedby = [:]; 
+
+			if ( a.completed ) { 
+				a.dtcompleted = dateSvc.serverDate; 
 			} 
-			em.create(it); 
-		}
-	}
+			em.create( a ); 
+		} 
+	} 
 
 	@ProxyMethod
 	public def getList(def o) {
@@ -41,33 +42,35 @@ public class BusinessRequirementService  {
 
 	@ProxyMethod
 	public def fetchRequirements(def o) {
-		if(!o.business?.objid) throw new Exception("business objid is required");
-		if(!o.objid) throw new Exception("application objid is required");
+		if ( !o.business?.objid ) throw new Exception("business objid is required");
+		if ( !o.objid ) throw new Exception("application objid is required");
+
 		def p = [:];
 		p.businessid = o.business.objid; 
 		p.applicationid = o.objid;
 
-		def list = em.getApplicationRequirements( p);
+		def reftypes = em.getApplicationRequirements( p ).groupBy{ it.reftype } 
+		em.removeApplicationRequirements( p );
+		em.removeNonApplicationRequirements( p );
+
 		def rlist = ruleSvc.execute( o )?.requirements;
-		for(z in rlist) {
-			if( list.find{ it.reftype == z.reftype } ) continue;
-			z.objid = "BUSREQ"+new UID();
-			z.businessid = o.business.objid;
-			z.applicationid = o.objid;
-			em.create(z);				
+		for ( z in rlist ) { 
+			def v = reftypes[ z.reftype ];  
+			if ( v ) {
+				z = v.first(); 
+			} else { 
+				z.businessid = p.businessid; 
+				z.applicationid = p.applicationid;
+			} 
+			z.objid = "BUSREQ"+new UID(); 
+			em.create( z );				
 		} 
-		def r = em.getApplicationRequirements( p );
-		return r;
+		return em.getApplicationRequirements( p );
 	}
 
 	@ProxyMethod
 	public def updateRequirement(o) {
 		em.update( o );	
-	}
-
-	@ProxyMethod
-	public def removeRequirement(o) {
-		br.find( [objid: o.objid] ).delete();	
 	}
 
 }

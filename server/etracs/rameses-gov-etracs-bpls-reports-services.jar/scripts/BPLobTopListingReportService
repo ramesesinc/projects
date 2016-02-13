@@ -9,24 +9,30 @@ class BPLobTopListingReportService
 
 	@ProxyMethod
 	public def getReport( params ) { 
-
-		params.classificationid = ( params.classification ? params.classification.objid : '%' );
-		params.varname = ( params.txntype == 'NEW' ? 'CAPITAL' : 'GROSS');
-
-		def list = em.getBusinessTopList( params );
-		if ( !list ) throw new Exception('No records found.')
-
-		def prevamount = -1.0; 
-		def rankno = 1; 
-		list.each {
-			if (it.amount != prevamount) {
-				prevamount = it.amount; 
-				it.rankno = rankno;				
-				rankno += 1; 
-			} 
+		params.filter = '';
+		if ( params.txntype ) {
+			params.filter = ''' AND ba.apptype=$P{txntype} '''; 
+		} else { 
+			params.filter = " AND ba.apptype IN ('NEW','RENEW') "; 
 		} 
 
-		return [
+		if ( params.classification?.objid ) { 
+			params.classificationid = params.classification.objid; 
+			params.filter += ''' AND lob.classification_objid=$P{classificationid} '''; 	
+		} 		
+		if ( params.permittype?.objid ) { 
+			params.permittypeid = params.permittype.objid; 
+			params.filter += ''' AND b.permittype=$P{permittypeid} '''; 	
+		} 
+
+		def list = em.getBusinessTopList( params );
+		if ( !list ) throw new Exception('No records found.'); 
+
+		list.eachWithIndex { o,idx->  
+			o.rankno = idx+1;	
+		} 
+
+		return [ 
 			title : buildTitle( params ), 
 			items : list 
 		]; 

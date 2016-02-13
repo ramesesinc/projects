@@ -9,24 +9,23 @@ class BPTaxFeeTopListingReportService
 
 	@ProxyMethod
 	public def getReport( params ) { 
-		
+		params.filter = '';
 		if ( params.txntype ) {
 			params.filter = ''' AND ba.apptype=$P{txntype} '''; 
-		} else {
-			params.filter = ''' AND ba.apptype IN ('NEW','RENEW') '''; 
-		}
+		} else { 
+			params.filter = " AND ba.apptype IN ('NEW','RENEW') "; 
+		} 
+
+		if ( params.permittype?.objid ) { 
+			params.permittypeid = params.permittype.objid; 
+			params.filter += ''' AND b.permittype=$P{permittypeid} '''; 	
+		} 
 
 		def list = em.getBPTaxFeeTopList( params );
 		if ( !list ) throw new Exception('No records found')
 
-		def prevtotal = -1.0; 
-		def rankno = 1; 
-		list.each {
-			if (it.total != prevtotal) {
-				prevtotal = it.total; 
-				it.rankno = rankno;				
-				rankno += 1; 				
-			} 
+		list.eachWithIndex { o,idx->  
+			o.rankno = idx+1;	
 		} 
 
 		return [

@@ -18,38 +18,46 @@ class BPApplicationListingReportService {
     @Async
 	@ProxyMethod
 	public def getReport( params ) { 
-		params.filter = '';
-		params.completed = 0;
+		params.showcompleted = (params.state_completed ? 1 : 0);
+		params.showprocessing = 0; 
+		params.statefilter = ''; 
+		params.otherfilter = ''; 
 
 		def states = []; 
 		if ( params.state_info ) states << "'INFO'"; 
 		if ( params.state_assessment ) states << "'ASSESSMENT'"; 
 		if ( params.state_payment ) states << "'PAYMENT'";
 		if ( params.state_release ) states << "'RELEASE'";
-		if ( params.state_completed ) params.completed = 0; 
-		if ( states ) params.filter += " AND a.state IN (" + states.join(',') + ")";
+		if ( states ) {
+			params.statefilter += " AND a.state IN (" + states.join(',') + ")"; 
+			params.showprocessing = 1; 
+		} 
 
 		def apptypes = [];
 		if ( params.type_new ) apptypes << "'NEW'";
 		if ( params.type_renew ) apptypes << "'RENEW'"; 
 		if ( params.type_retire ) apptypes << "'RETIRE'";
 		if ( apptypes ) {  
-			params.filter += " AND alob.assessmenttype IN (" + apptypes.join(',') + ")";
+			params.otherfilter += " AND alob.assessmenttype IN (" + apptypes.join(',') + ")";
 		} 
 
 		if( params.barangay?.objid ) {
 			params.barangayid = params.barangay.objid;
-			params.filter = ''' AND ba.barangay_objid = $P{barangayid} ''';
+			params.otherfilter = ''' AND ba.barangay_objid = $P{barangayid} ''';
 		}
 		if( params.classification?.objid ) {
 			params.classificationid =  params.classification.objid;
-			params.filter += ''' AND lob.classification_objid = $P{classificationid} ''';
+			params.otherfilter += ''' AND lob.classification_objid = $P{classificationid} ''';
 		}
 		if( params.lob?.objid ) {
 			params.lobid = params.lob.objid;
-			params.filter += ''' AND lob.objid = $P{lobid} ''';
+			params.otherfilter += ''' AND lob.objid = $P{lobid} ''';
 		}
-		
+		if ( params.permittype?.objid ) { 
+			params.permittypeid = params.permittype.objid; 
+			params.otherfilter += ''' AND b.permittype=$P{permittypeid} '''; 	
+		} 
+
 		def zlist = bpapplication_report.getList( params );
 		if( ! zlist ) throw new Exception('No records found.');
 

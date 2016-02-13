@@ -124,6 +124,11 @@ public class BusinessAssessmentService  {
 			return  m; 
 		}
 
+		m.taxfees.each{ 
+			it.surcharge = it.interest = 0.0; 
+			if ( it.amount == it.amtpaid ) it.discount = 0.0; 
+		} 
+
 		def appstate = bapp.read([objid: o.objid])?.state; 
 		if (appstate.toString().toUpperCase().matches('RELEASE|COMPLETED|CANCELLED')) {
 			def tamtdue = m.taxfees.sum{ (it.amtdue? it.amtdue: 0.0) } 
@@ -131,7 +136,9 @@ public class BusinessAssessmentService  {
 				m.totals = [tax:0,regfee:0,othercharge:0,total:0,excess:0, q1:0,q2:0,q3:0,q4:0];
 				m.taxfees.each { 
 					def amtdue = (it.amtdue? it.amtdue: 0.0);
-					it.total = (amtdue + it.surcharge + it.interest);
+					def amtsur = (it.surcharge? it.surcharge: 0.0); 
+					def amtint = (it.interest? it.interest: 0.0); 
+					it.total = (amtdue + amtsur + amtint);
 				} 
 				return m; 
 			} 

@@ -3,7 +3,7 @@ import com.rameses.util.*;
 import java.rmi.server.*;
 import com.rameses.services.extended.*;
 
-public class BusinessCaptureApplicationInterceptor {
+public class CaptureBusinessApplicationInterceptor {
 
 	@Env
 	def env;
@@ -31,6 +31,9 @@ public class BusinessCaptureApplicationInterceptor {
 
 	@Service("BusinessPaymentService")
 	def paymentSvc;
+
+	@ActiveDB('business_application') 
+	def business_application;
 
 
 	@After(pattern="BusinessApplicationService.initNew", eval="#{args[0].txnmode == 'CAPTURE' }")
@@ -123,5 +126,26 @@ public class BusinessCaptureApplicationInterceptor {
 			}
 			paymentSvc.create(it);	
 		}
-	}
+	} 
+
+	@After(pattern="BusinessApplicationService.updateInfos")
+	void afterUpdateInfos( evt ) { 
+		def params = evt.args[0]; 
+		def app = business_application.read([ objid: params.applicationid ]); 
+		if ( !app ) return; 
+		
+		if ( app.txnmode.toString().toUpperCase() != 'CAPTURE' ) return; 
+		if ( app.state.toString().toUpperCase() != 'COMPLETED' ) return; 
+
+		def latestapp = business_application.findLatestApplication([ businessid: params.businessid ]); 
+		if ( latestapp.objid != params.applicationid ) 
+			throw new Exception('Process failed. This facility is applicable only to the current application.'); 
+
+		/*def lobs = lobSvc.getAppLobs( params ); 
+		lobs.each{
+			println '>>> ' + it; 
+		}
+		//lobSvc.addActiveLobs( bb );
+		throw new Exception('stop'); */
+	} 
 }

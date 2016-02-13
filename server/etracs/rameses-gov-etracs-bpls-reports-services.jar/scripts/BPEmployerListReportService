@@ -1,8 +1,7 @@
 import com.rameses.annotations.*;
 import com.rameses.common.*;
 
-class BPEmployerListReportService
-{
+class BPEmployerListReportService { 
 	
 	@ActiveDB("bpreport")
 	def em
@@ -10,8 +9,18 @@ class BPEmployerListReportService
 
 	@ProxyMethod
 	public def getReport(params) { 
+		if ( !params.year ) throw new Exception('year parameter is required'); 
+
+		params.filter = '';
+
+		if ( params.permittype?.objid ) { 
+			params.permittypeid = params.permittype.objid; 
+			params.filter += ''' AND b.permittype=$P{permittypeid} '''; 	
+		} 
+
 		def list = em.getEmployerList( params );
-		if( ! list ) throw new Exception('No records found.');
+		if ( !list ) throw new Exception('No records found.');
+
 		return list;
 	}
 

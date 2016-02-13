@@ -109,7 +109,11 @@ public class BusinessApplicationWorkflowService extends ActiveWorkflowService {
 			ba.update( [objid:data.objid, state:'RELEASE'] );
 		}
 		else if(r.state=='release' && r.action == 'revert') { 
-			ba.update( [objid:data.objid, state:'PAYMENT'] ); 
+			ba.update([ objid: data.objid, state: 'PAYMENT' ]); 
+			appSvc.revert([
+				objid: data.objid, apptype: data.apptype, txnmode: data.txnmode, 
+				action: r.action, fromstate: r.state, tostate: 'payment' 
+			]); 
 			env.TASK_ASSIGNEE = data.approver; 
 		}
 		else if( r.state == 'release') {

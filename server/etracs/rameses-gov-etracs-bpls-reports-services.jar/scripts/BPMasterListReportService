@@ -2,9 +2,8 @@
 import com.rameses.annotations.*;
 import com.rameses.common.*;
 
-class BPMasterListReportService
-{
-	
+class BPMasterListReportService {
+
 	@ActiveDB("bpreport")
 	def em
 
@@ -13,10 +12,15 @@ class BPMasterListReportService
 
 	@ProxyMethod
 	public def getReport( params ) { 
-		params.filter = '';
-		if ( params.state ) {
-			params.filter = ''' AND b.state=$P{state} '''; 
-		}
+		if ( !params.year ) throw new Exception('year parameter is required');
+		if ( !params.state ) throw new Exception('state parameter is required');
+
+		params.filter = ''' AND b.state=$P{state} '''; 
+
+		if ( params.permittype?.objid ) { 
+			params.permittypeid = params.permittype.objid; 
+			params.filter += ''' AND b.permittype=$P{permittypeid} '''; 	
+		} 
 
 		def list = em.getTaxpayerMasterList( params );
 		if( ! list ) throw new Exception('No records found.');
@@ -33,4 +37,4 @@ class BPMasterListReportService
 		} 
 		return list; 
 	} 
-}
+} 

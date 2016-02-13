@@ -44,6 +44,7 @@ public class NewBusinessApplicationInterceptor {
 	@ActiveDB('business_receivable') 
 	def business_receivable;	
 
+
 	@After(pattern="BusinessApplicationService.initNew", eval="#{args[0].apptype=='NEW' && args[0].txnmode == 'ONLINE' }")
 	public void initNew(def evt) { 
 		def entity = evt.result;

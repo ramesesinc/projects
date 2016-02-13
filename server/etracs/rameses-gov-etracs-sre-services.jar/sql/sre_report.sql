@@ -30,26 +30,15 @@ order by a.parentid, a.code
 
 [getIncomeSummary]
 select 
-	x.objid, x.type, x.title, sum(x.amount) as amount 
-from ( 
-	select 
-		a.objid, a.type, a.title, 
-		sum(amount) as amount, 
-		rm.revenueitemid  
-	from income_summary inc 
-		inner join sre_revenue_mapping rm on inc.acctid=rm.revenueitemid 
-		inner join sreaccount a on rm.acctid=a.objid 
-	where inc.refdate between $P{startdate} AND $P{enddate} 
-		and inc.fundid in (
-			select objid from fund where objid LIKE $P{fundid} 
-			union 
-			select objid from fund where parentid LIKE $P{fundid} 
-		) 
-	group by a.objid, a.type, a.title, rm.revenueitemid  
-)x 
-	inner join itemaccount ia on x.revenueitemid=ia.objid
-where ia.type LIKE $P{acctgroup} 
-group by x.objid, x.type, x.title 
+	a.objid, a.type, a.title,  
+	sum(inc.amount) as amount  
+from income_summary inc 
+	inner join sre_revenue_mapping rm on inc.acctid=rm.revenueitemid 
+	inner join itemaccount ia on rm.revenueitemid=ia.objid 
+	inner join sreaccount a on rm.acctid=a.objid 
+where inc.refdate between $P{startdate} AND $P{enddate} 
+	${filter} 
+group by a.objid, a.type, a.title 
 
 
 [getIncomeTargets]
@@ -62,21 +51,14 @@ where t.year=$P{year} and t.target is not null
 
 
 [getIncomeSummaryByItemAccounts]
-select x.*, ia.code, ia.title  
-from ( 
-	select 
-		a.parentid, sum(amount) as amount, rm.revenueitemid  
-	from income_summary inc 
-		inner join sre_revenue_mapping rm on inc.acctid=rm.revenueitemid 
-		inner join sreaccount a on rm.acctid=a.objid 
-	where inc.refdate between $P{startdate} AND $P{enddate}  
-		and inc.fundid in (
-			select objid from fund where objid LIKE $P{fundid} 
-			union 
-			select objid from fund where parentid LIKE $P{fundid} 
-		) 
-	group by a.parentid, rm.revenueitemid  
-)x 
-	inner join itemaccount ia on x.revenueitemid=ia.objid
-where ia.type LIKE $P{acctgroup}  
-order by x.parentid, ia.code 
+select 
+	rm.acctid as parentid, rm.revenueitemid, 
+	ia.code, ia.title, sum(inc.amount) as amount 
+from income_summary inc 
+	inner join sre_revenue_mapping rm on inc.acctid=rm.revenueitemid 
+	inner join itemaccount ia on rm.revenueitemid=ia.objid 
+	inner join sreaccount a on rm.acctid=a.objid 
+where inc.refdate between $P{startdate} AND $P{enddate} 
+	${filter} 
+group by rm.acctid, rm.revenueitemid, ia.code, ia.title 
+order by rm.acctid, ia.code 

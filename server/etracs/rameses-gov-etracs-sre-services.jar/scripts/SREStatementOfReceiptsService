@@ -22,6 +22,19 @@ class SREStatementOfReceiptsService {
 	@ProxyMethod
 	public def getReport( params ) {
 		buildParams( params ); 
+		params.filter = '';
+		if ( params.acctgroup ) {
+			params.filter += ''' AND ia.type LIKE $P{acctgroup} ''';
+		}
+		if ( params.fundid ) {
+			params.filter += ''' 
+				AND inc.fundid in ( 
+					select objid from fund where objid LIKE $P{fundid} 
+					union 
+					select objid from fund where parentid LIKE $P{fundid} 
+				) 
+			'''; 
+		} 
 
 		def incomesummaries = em.getIncomeSummary( params ); 
 		if ( !incomesummaries ) throw new Exception('No available income summary'); 
@@ -336,20 +349,7 @@ class SREStatementOfReceiptsService {
 			} 
 		}
 		params.strperiod = period.toString(); 
+		params.fundid = params.fund?.objid; 
 		params.compress = false; 
-		params.hasfund = false; 
-		params.hasacctgroup = false; 
-
-		def fundid = params.fund?.objid; 
-		if ( fundid ) params.hasfund = true; 
-		if ( params.acctgroup ) params.hasacctgroup = true; 
-
-		if ( !params.hasacctgroup ) params.acctgroup = '%'; 
-
-		params.fundid = (fundid? fundid: '%'); 
-		params.filter = ' 1=1 '; 
-		if ( params.type=='standard' ) { 
-			params.filter = ''' a.type in ('group','detail') '''; 
-		} 
 	} 
 } 

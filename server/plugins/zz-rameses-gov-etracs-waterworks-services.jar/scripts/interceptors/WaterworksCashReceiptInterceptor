@@ -37,7 +37,7 @@ class WaterworksCashReceiptInterceptor {
 			wpi.create(p);
 			pmt.items << p;
 
-			wc.find( [objid: p.txnrefid ] ).update( [amtpaid: '{amtpaid + :amount}'], [amount: p.amount] );
+			wc.find( [objid: p.txnrefid ] ).update( [amtpaid: '{amtpaid + :amt}'], [amt: p.amount] );
 		}
 	}
 
@@ -51,7 +51,7 @@ class WaterworksCashReceiptInterceptor {
 		wp.find( [objid: pmt.objid] ).update([voided:1]);
 
 		items.each {
-			wc.find( [objid: it.txnrefid ] ).update( [amtpaid: '{amtpaid - :amount}'], [amount: it.amount] );
+			wc.find( [objid: it.txnrefid ] ).update( [amtpaid: '{amtpaid - :amt}'], [amt: it.amount] );
 		}
 	}
 

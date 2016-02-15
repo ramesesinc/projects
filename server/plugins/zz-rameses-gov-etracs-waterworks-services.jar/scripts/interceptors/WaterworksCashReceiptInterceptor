@@ -1,7 +1,7 @@
 import com.rameses.annotations.*;
 import java.rmi.server.UID;
 
-class WaterworksCashReceiptInterceptor {
+class WaterworksCashReceiptInterceptor{
 
 	@DataContext("waterworks_account")
 	def wa;

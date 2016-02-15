@@ -1,6 +1,6 @@
 <schema adapter="waterworks">
 	<element tablename="waterworks_meter">
-		<field name="objid" primary="true" prefix="WM"/>
+		<field name="objid" primary="true"  prefix="WM"/>
 		<field name="serialno" required="true" indexed="true" caption="Meter Serial No."/>
 		<field name="brand" required="true" indexed="true" caption="Meter Brand"/>
 		<field name="size" required="true" caption="Size"/>

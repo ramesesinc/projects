@@ -1,6 +1,6 @@
 import com.rameses.annotations.*;
 
-class WaterworksMobileCalcService {
+class WaterworksMobileCalcService  {
 	
 
 	@Service("RuleMgmtService")

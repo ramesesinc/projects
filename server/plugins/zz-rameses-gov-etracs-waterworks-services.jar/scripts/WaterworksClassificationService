@@ -1,6 +1,6 @@
 import com.rameses.annotations.*;
 
-class WaterworksClassificationService {
+class WaterworksClassificationService  {
 	
 	@DataContext("waterworks_classification")
 	def em;

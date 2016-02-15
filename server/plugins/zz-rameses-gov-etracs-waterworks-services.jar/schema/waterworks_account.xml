@@ -1,6 +1,6 @@
 <schema adapter="waterworks">
 	<element tablename="waterworks_account">
-		<field name="objid" primary="true" prefix="WA"/>
+		<field name="objid" primary="true"  prefix="WA"/>
 		<field name="state" required="true"/>
 		<field name="dtstarted" required="false" indexed="true" type="date" caption="Date Started"/>
 		<field name="acctno" required="true" indexed="true" caption="Acct No"/>

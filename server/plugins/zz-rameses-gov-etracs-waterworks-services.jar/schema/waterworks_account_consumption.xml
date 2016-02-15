@@ -1,6 +1,6 @@
 <schema adapter="waterworks">
 	<element tablename="waterworks_account_consumption">
-		<field name="objid" primary="true" prefix="WAC"/>
+		<field name="objid" primary="true"  prefix="WAC"/>
 		<complex name="account" jointype="many-to-one" ref="waterworks_account" required="true">
 			<key field="acctid" target="objid"/>
 		</complex>

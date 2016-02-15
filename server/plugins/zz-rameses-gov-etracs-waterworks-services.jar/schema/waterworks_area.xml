@@ -1,6 +1,6 @@
 <schema adapter="waterworks">
 	<element tablename="waterworks_area">
-		<field name="objid" primary="true" prefix="AR"/>
+		<field name="objid" primary="true"  prefix="AR"/>
 		<field name="name" required="true" indexed="true" caption="Area Name"/>
 		<field name="description" required="true" indexed="true" caption="Description"/>
 		<field name="assignee_objid" required="true" caption="Assignee ID" visible="false"/>

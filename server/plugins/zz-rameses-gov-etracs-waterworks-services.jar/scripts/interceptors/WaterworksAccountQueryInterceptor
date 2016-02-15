@@ -1,6 +1,6 @@
 import com.rameses.annotations.*;
 
-class WaterworksAccountQueryInterceptor {
+class WaterworksAccountQueryInterceptor{
 	
 	@After(pattern="QueryService.getNodeList", eval="#{args[0].schemaname == 'waterworks_account'}")
 	public void getAcctNodeList(def evt) {

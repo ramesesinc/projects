@@ -4,7 +4,7 @@ import java.rmi.server.*;
 import com.rameses.common.*;
 import com.rameses.services.extended.*;
 
-class WaterworksAreaService {
+class WaterworksAreaService  {
 	
 	@DataContext("waterworks_area")
 	def wa;

@@ -16,7 +16,6 @@ class WaterworksAccountService {
 
 	@ProxyMethod
 	public def getList( def o ) {
-		//display all usa
 		return acct.list();
 	}
 

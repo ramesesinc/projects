@@ -4,7 +4,7 @@ import java.rmi.server.*;
 import com.rameses.common.*;
 import com.rameses.services.extended.*;
 
-class WaterworksMeterService {
+class WaterworksMeterService  {
 	
 	@DataContext("waterworks_meter")
 	def wm;

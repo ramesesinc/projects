@@ -5,7 +5,7 @@ import waterworks.facts.*;
 import treasury.facts.*;
 import treasury.actions.*;
 
-class WaterworksBillingService {
+class WaterworksBillingService  {
 	
 	@Service("RuleExecutorService")
 	def ruleSvc;

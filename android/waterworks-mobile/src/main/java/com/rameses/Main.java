@@ -1,7 +1,6 @@
 package com.rameses;
 
 import com.rameses.waterworks.bean.Setting;
-import com.rameses.waterworks.bluetooth.BluetoothPlatformFactory;
 import com.rameses.waterworks.bluetooth.BluetoothPort;
 import com.rameses.waterworks.database.Database;
 import com.rameses.waterworks.database.DatabasePlatformFactory;
@@ -74,7 +73,7 @@ public class Main extends Application {
     private void loadSysVar(){
         CONNECTION_SETTING = new HashMap();
         USER_SETTING = new HashMap();
-        //loadsysvar
+        
         Database db = DatabasePlatformFactory.getPlatform().getDatabase();
         List<Setting> settings = db.getAllSettings();
         Iterator<Setting> it = settings.iterator();

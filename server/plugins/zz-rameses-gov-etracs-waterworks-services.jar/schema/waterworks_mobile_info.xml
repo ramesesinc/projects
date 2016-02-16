@@ -3,5 +3,14 @@
 		<field name="objid" primary="true"  prefix="WM"/>
 		<field name="batchid" required="true"/>
 		<field name="state" required="true"/>
+		<field name="penalty" required="true"/>
+		<field name="othercharge" required="true"/>
+		<field name="month" required="true"/>
+		<field name="year" required="true"/>
+		<field name="duedate" required="true"/>
+		<field name="fromdate" required="true"/>
+		<field name="todate" required="true"/>
+		<field name="discodate" required="true"/>
+		<field name="rundate" required="true"/>
 	</element>
 </schema>

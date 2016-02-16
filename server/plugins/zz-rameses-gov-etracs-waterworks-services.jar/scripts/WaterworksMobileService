@@ -1,5 +1,6 @@
 import com.rameses.annotations.*;
 import java.rmi.server.*;
+import com.rameses.util.*;
 
 class WaterworksMobileService {
 	
@@ -30,8 +31,34 @@ class WaterworksMobileService {
 			y = y-1;
 		}
 
+		def penalty = 0.00;
+		def othercharge = 0.00;
+		def duemonth = dateSvc.getServerMonth();
+		def dueyear = dateSvc.getServerYear();
+		def duedate = new DateBean(dueyear + "-" + duemonth + "-" + 20).getDate();
+		def fromdate = new DateBean(y + "-" + m + "-" + 20).getDate();
+		def todate = new DateBean(dueyear + "-" + duemonth + "-" + 20).getDate();
+		def discodate = new DateBean(dueyear + "-" + duemonth + "-" + 28).getDate();
+		def rundate = dateSvc.getServerDate();
+
 		def ai = "'" + o.areaids.join("','") + "'";
-		wm.insertForDownload([areaids:ai, year:y, month:m, batchid: batchid]);
+		wm.insertForDownload(
+			[
+				areaids    : ai,
+				year       : y, 
+				month      : m, 
+				batchid    : batchid,
+				penalty    : penalty,
+				othercharge: othercharge,
+				duemonth   : duemonth,
+				dueyear    : dueyear,
+				duedate    : duedate,
+				fromdate   : fromdate,
+				todate     : todate,
+				discodate  : discodate,
+				rundate    : rundate
+			]
+		);
 		def x = wm.find([batchid:batchid]).list();
 		return [batchid:batchid, count: x.size()];
 	}
@@ -40,14 +67,10 @@ class WaterworksMobileService {
 	public def download( def o ) {
 		if(!o.batchid) throw new Exception("Please specify batchid!"); 
 		def list = wm.getListForDownload(o);
-		def data = [];
 		list.each {
-			def bill = billingSvc.getBillingForMobile(it);
-			it = it + bill;
 			it.barcode = '51030:'+it.acctno;
-			data << it;
 		}
-		return data;
+		return list;
 	}
 
 	@ProxyMethod

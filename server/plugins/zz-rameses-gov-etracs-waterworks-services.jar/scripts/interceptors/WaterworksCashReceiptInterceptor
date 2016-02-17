@@ -2,6 +2,9 @@ import com.rameses.annotations.*;
 import java.rmi.server.UID;
 
 class WaterworksCashReceiptInterceptor {
+
+	@DataContext("waterworks_account")
+	def wa;
 	
 	@DataContext("waterworks_account_consumption")
 	def wc;
@@ -16,7 +19,7 @@ class WaterworksCashReceiptInterceptor {
 	public void postPayment(def evt) {
 		def o = evt.args[0];
 		def pmt = [:];
-		pmt.acctid = o.acctid;
+		pmt.account = [objid : o.acctid];
 		pmt.reftype = "cashreceipt";
 		pmt.refid = o.objid;
 		pmt.refno = o.receiptno;
@@ -24,11 +27,22 @@ class WaterworksCashReceiptInterceptor {
 		pmt.amount = o.amount;
 		pmt.voided = 0;
 		pmt.items = [];
-		wp.create(pmt);
+		def paymentitem = wp.create(pmt);
+
+		def acct = wa.find([objid:o.acctid]);
+		def balance = acct.first().balance - pmt.amount;
+		if(balance < 0) balance = 0;
+		acct.update([balance:balance]);
+
+		def ex = wc.createExecutor('''
+			UPDATE waterworks_account_consumption 
+			SET amtpaid=amtpaid + $P{amount}
+			WHERE objid=$P{txnrefid}
+		''');
 
 		o.billitems.each {
 			def p = [:];
-			p.parentid = pmt.objid;
+			p.paymentitem = [objid:paymentitem.objid];
 			p.txnrefid = it.refid;
 			p.amount = it.amount;
 			p.discount = it.discount;
@@ -36,8 +50,7 @@ class WaterworksCashReceiptInterceptor {
 			p.interest = it.interest;
 			wpi.create(p);
 			pmt.items << p;
-
-			wc.find( [objid: p.txnrefid ] ).update( [amtpaid: '{amtpaid + :amt}'], [amt: p.amount] );
+			ex.setParameters( p ).execute();
 		}
 	}
 
@@ -50,8 +63,15 @@ class WaterworksCashReceiptInterceptor {
 		
 		wp.find( [objid: pmt.objid] ).update([voided:1]);
 
+		def ex = wc.createExecutor('''
+			UPDATE waterworks_account_consumption 
+			SET amtpaid=amtpaid - $P{amount}
+			WHERE objid=$P{txnrefid}
+		''');
+
 		items.each {
-			wc.find( [objid: it.txnrefid ] ).update( [amtpaid: '{amtpaid - :amt}'], [amt: it.amount] );
+			def p = [txnrefid: it.txnrefid, amount: it.amount]; 
+			ex.setParameters( p ).execute();
 		}
 	}
 

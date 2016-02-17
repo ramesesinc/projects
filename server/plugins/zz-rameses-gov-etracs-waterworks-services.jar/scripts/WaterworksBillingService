@@ -115,6 +115,7 @@ class WaterworksBillingService {
 
 		ruleSvc.execute( "waterworksbilling", facts, zactions, null );
 		def list = res.billItemList.buildBillItems();
+
 		return list;
 	}
 
@@ -188,5 +189,18 @@ class WaterworksBillingService {
 		return app;
 	}
 
+	@ProxyMethod
+	def getBillingForMobile(def acct){
+		return [
+			month       : 2,
+			year        : 2016,
+			penalty     : 0.00,
+			othercharge : 0.00,
+			period      : "01/03/2016 - 02/08/2016",
+			duedate     : "02/20/2016",
+			discodate   : "02/28/2016",
+			rundate     : "02/12/2016"
+		];
+	}
 
 }

@@ -58,4 +58,9 @@ class WaterworksAccountService {
 		return billSvc.processBilling(feeList);
 	}
 
+	@ProxyMethod
+	public def getTxnHistory(def o){
+		return wac.find([acctid: o.objid]).list();
+	}
+
 }

@@ -15,6 +15,9 @@ class WaterworksMobileService {
 	@Service("DateService")
 	def dateSvc;
 
+	@Service("WaterworksBillingService")
+	def billingSvc;
+
 	@ProxyMethod
 	public def initForDownload( def o ){
 		if(!o.areaids)	
@@ -29,7 +32,7 @@ class WaterworksMobileService {
 
 		def ai = "'" + o.areaids.join("','") + "'";
 		wm.insertForDownload([areaids:ai, year:y, month:m, batchid: batchid]);
-		def x = wm.find([batchid:batchid]);
+		def x = wm.find([batchid:batchid]).list();
 		return [batchid:batchid, count: x.size()];
 	}
 
@@ -37,11 +40,14 @@ class WaterworksMobileService {
 	public def download( def o ) {
 		if(!o.batchid) throw new Exception("Please specify batchid!"); 
 		def list = wm.getListForDownload(o);
+		def data = [];
 		list.each {
-			it.penalty = 0;
+			def bill = billingSvc.getBillingForMobile(it);
+			it = it + bill;
 			it.barcode = '51030:'+it.acctno;
+			data << it;
 		}
-		return list;
+		return data;
 	}
 
 	@ProxyMethod
@@ -60,14 +66,14 @@ class WaterworksMobileService {
 		if(!o.name) throw new Exception("Please specify reader_name!");
 		if(!o.amount) throw new Exception("Please specify amount!");
 
-		def a = wa.find([objid: o.acctid]).first();
+		def a = wa.find([objid: o.account.objid]).first();
 		if(!a) throw new Exception("Account does not exist!");
 		
 		o.readingmonth = dateSvc.getServerMonth();
 		o.readingyear =  dateSvc.getServerYear();
 
 		def c = [:];
-		c.acctid = o.acctid
+		c.account = o.account;
 		c.dtreading = o.dtreading;
 		c.year = o.readingyear;
 		c.month = o.readingmonth;
@@ -80,17 +86,19 @@ class WaterworksMobileService {
 		c.amtpaid = 0.00;
 		wac.create(c);
 
-		def data = wa.find([objid: o.acctid]).update(
+		def acct = wa.find([objid: o.account.objid]);
+		def data = acct.update(
 			[
 				lastreadingdate : c.dtreading,
 				lastreadingmonth : c.month,
 				lastreadingyear : c.year,
 				lastreading : c.reading,
-				prevreading : c.prevreading
+				prevreading : c.prevreading,
+				balance : c.amount
 			]
 		);
 
-		wm.find([batchid:o.batchid, objid:o.acctid, state: "DOWNLOADED"]).delete();
+		wm.find([batchid:o.batchid, objid:o.account.objid, state: "DOWNLOADED"]).delete();
 
 		return data;
 	}

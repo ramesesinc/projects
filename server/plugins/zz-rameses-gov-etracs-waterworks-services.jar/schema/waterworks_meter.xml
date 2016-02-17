@@ -1,10 +1,10 @@
 <schema adapter="waterworks">
 	<element tablename="waterworks_meter">
 		<field name="objid" primary="true" prefix="WM"/>
-		<field name="serialno" required="true" />
-		<field name="brand" required="true" />
-		<field name="size" required="true" />
-		<field name="capacity" required="true" />
-		<field name="currentacctid"/>
+		<field name="serialno" required="true" indexed="true" caption="Meter Serial No."/>
+		<field name="brand" required="true" indexed="true" caption="Meter Brand"/>
+		<field name="size" required="true" caption="Size"/>
+		<field name="capacity" required="true" caption="Capacity" />
+		<field name="currentacctid" visible="false"/>
 	</element>
 </schema>

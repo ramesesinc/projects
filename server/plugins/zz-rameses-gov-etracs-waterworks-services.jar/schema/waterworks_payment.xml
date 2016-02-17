@@ -1,7 +1,7 @@
 <schema adapter="waterworks">
 	<element tablename="waterworks_payment">
 		<field name="objid" primary="true" prefix="WP"/>
-		<complex name="account" jointype="one-to-many" ref="waterworks_account" required="true">
+		<complex name="account" jointype="many-to-one" ref="waterworks_account" required="true">
 			<key field="acctid" target="objid"/>
 		</complex>
 		<field name="refno" required="true"/>

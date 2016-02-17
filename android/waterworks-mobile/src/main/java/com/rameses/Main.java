@@ -74,7 +74,7 @@ public class Main extends Application {
     private void loadSysVar(){
         CONNECTION_SETTING = new HashMap();
         USER_SETTING = new HashMap();
-        
+        //loadsysvar
         Database db = DatabasePlatformFactory.getPlatform().getDatabase();
         List<Setting> settings = db.getAllSettings();
         Iterator<Setting> it = settings.iterator();

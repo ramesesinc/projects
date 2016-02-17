@@ -14,6 +14,8 @@ public interface BluetoothPort {
     
     String getError();
     
+    void setError(String e);
+    
     void openBT();
     
     void closeBT();

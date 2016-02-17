@@ -53,6 +53,12 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
                 + " lastreadingdate VARCHAR(50),"
                 + " barcode VARCHAR(50),"
                 + " batchid VARCHAR(50),"
+                + " month VARCHAR(50),"
+                + " year VARCHAR(50),"
+                + " period VARCHAR(50),"
+                + " duedate VARCHAR(50),"
+                + " discodate VARCHAR(50),"
+                + " rundate VARCHAR(50),"
                 + " assignee_objid VARCHAR(50),"
                 + " assignee_name VARCHAR(50))");
         
@@ -177,6 +183,12 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
         String assignee_objid = SystemPlatformFactory.getPlatform().getSystem().getUserID();
         String assignee_name = SystemPlatformFactory.getPlatform().getSystem().getFullName();
         String batchid = acct.get("batchid") != null ? acct.get("batchid").toString() : "";
+        String month = acct.get("month") != null ? acct.get("month").toString() : "";
+        String year = acct.get("year") != null ? acct.get("year").toString() : "";
+        String period = acct.get("period") != null ? acct.get("period").toString() : "";
+        String duedate = acct.get("duedate") != null ? acct.get("duedate").toString() : "";
+        String discodate = acct.get("discodate") != null ? acct.get("discodate").toString() : "";
+        String rundate = acct.get("rundate") != null ? acct.get("rundate").toString() : "";
         
         ContentValues values = new ContentValues();
         values.put("objid", objid);
@@ -202,6 +214,12 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
         values.put("assignee_objid", assignee_objid);
         values.put("assignee_name", assignee_name);
         values.put("batchid", batchid);
+        values.put("month", month);
+        values.put("year", year);
+        values.put("period", period);
+        values.put("duedate", duedate);
+        values.put("discodate", discodate);
+        values.put("rundate", rundate);
         
         SQLiteDatabase db = this.getWritableDatabase();
         try{
@@ -236,6 +254,12 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
         String lastreadingdate = acct.get("lastreadingdate") != null ? acct.get("lastreadingdate").toString() : "";
         String barcode = acct.get("barcode") != null ? acct.get("barcode").toString() : "";
         String batchid = acct.get("batchid") != null ? acct.get("batchid").toString() : "";
+        String month = acct.get("month") != null ? acct.get("month").toString() : "";
+        String year = acct.get("year") != null ? acct.get("year").toString() : "";
+        String period = acct.get("period") != null ? acct.get("period").toString() : "";
+        String duedate = acct.get("duedate") != null ? acct.get("duedate").toString() : "";
+        String discodate = acct.get("discodate") != null ? acct.get("discodate").toString() : "";
+        String rundate = acct.get("rundate") != null ? acct.get("rundate").toString() : "";
         
         ContentValues values = new ContentValues();
         values.put("objid", objid);
@@ -259,6 +283,12 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
         values.put("lastreadingdate", lastreadingdate);
         values.put("barcode", barcode);
         values.put("batchid", batchid);
+        values.put("month", month);
+        values.put("year", year);
+        values.put("period", period);
+        values.put("duedate", duedate);
+        values.put("discodate", discodate);
+        values.put("rundate", rundate);
         
         SQLiteDatabase db = this.getWritableDatabase();
         
@@ -282,7 +312,7 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
             Cursor cursor = db.rawQuery("SELECT * FROM account WHERE objid = ?", args);
             if(cursor.moveToFirst()){
                 do{
-                    account = new Account(cursor.getString(0),cursor.getString(1),cursor.getString(2),cursor.getString(3),cursor.getString(4),cursor.getString(5),cursor.getString(6),cursor.getString(7),cursor.getString(8),cursor.getString(9),cursor.getString(10),cursor.getString(11),cursor.getString(12),cursor.getString(13),cursor.getString(14),cursor.getString(15),cursor.getString(16),cursor.getString(17),cursor.getString(18),cursor.getString(19),cursor.getString(20));
+                    account = new Account(cursor.getString(0),cursor.getString(1),cursor.getString(2),cursor.getString(3),cursor.getString(4),cursor.getString(5),cursor.getString(6),cursor.getString(7),cursor.getString(8),cursor.getString(9),cursor.getString(10),cursor.getString(11),cursor.getString(12),cursor.getString(13),cursor.getString(14),cursor.getString(15),cursor.getString(16),cursor.getString(17),cursor.getString(18),cursor.getString(19),cursor.getString(20),cursor.getString(21),cursor.getString(22),cursor.getString(23),cursor.getString(24),cursor.getString(25),cursor.getString(26));
                 }while(cursor.moveToNext());
             }
             db.close();
@@ -325,6 +355,12 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
                     String lastreadingdate = cursor.getString(18);
                     String barcode = cursor.getString(19);
                     String batchid = cursor.getString(20);
+                    String month = cursor.getString(21);
+                    String year = cursor.getString(22);
+                    String period = cursor.getString(23);
+                    String duedate = cursor.getString(24);
+                    String discodate = cursor.getString(25);
+                    String rundate = cursor.getString(26);
 
                     Account acct = new Account(
                         objid,
@@ -347,7 +383,13 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
                         lastreadingmonth,
                         lastreadingdate,
                         barcode,
-                        batchid
+                        batchid,
+                        month,
+                        year,
+                        period,
+                        duedate,
+                        discodate,
+                        rundate
                     );
                     list.add(acct);
                 }while(cursor.moveToNext());
@@ -391,6 +433,12 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
                     String lastreadingdate = cursor.getString(18);
                     String barcode = cursor.getString(19);
                     String batchid = cursor.getString(20);
+                    String month = cursor.getString(21);
+                    String year = cursor.getString(22);
+                    String period = cursor.getString(23);
+                    String duedate = cursor.getString(24);
+                    String discodate = cursor.getString(25);
+                    String rundate = cursor.getString(26);
 
                     Account acct = new Account(
                         objid,
@@ -413,7 +461,13 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
                         lastreadingmonth,
                         lastreadingdate,
                         barcode,
-                        batchid
+                        batchid,
+                        month,
+                        year,
+                        period,
+                        duedate,
+                        discodate,
+                        rundate
                     );
                     result.add(acct);
                 }while(cursor.moveToNext());

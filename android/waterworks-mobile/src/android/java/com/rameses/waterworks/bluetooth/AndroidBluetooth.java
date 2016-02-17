@@ -32,7 +32,7 @@ public class AndroidBluetooth implements BluetoothPort
     volatile boolean stopWorker;
     
     String printerName;
-    String ERROR = "NO ERROR.\n";
+    String ERROR = "";
 
     @Override
     public List<String> findDevices() {
@@ -52,7 +52,7 @@ public class AndroidBluetooth implements BluetoothPort
             }
         }catch(Exception e){
             Logger.getLogger(AndroidBluetooth.class.getName()).log(Level.SEVERE, null, e);
-            ERROR += e.toString();
+            ERROR = e.toString();
         }
         return list;
     }
@@ -70,13 +70,10 @@ public class AndroidBluetooth implements BluetoothPort
     @Override
     public void print(String message) {
         try{
-            if(mmOutputStream == null){
-                openBT();
-            }
             mmOutputStream.write(message.getBytes());
         }catch(Exception e){
             Logger.getLogger(AndroidBluetooth.class.getName()).log(Level.SEVERE, null, e);
-            ERROR += e.toString();
+            ERROR = e.toString();
         }
     }
     
@@ -154,7 +151,7 @@ public class AndroidBluetooth implements BluetoothPort
             beginListenForData();
         }catch(Exception e){
             Logger.getLogger(AndroidBluetooth.class.getName()).log(Level.SEVERE, null, e);
-            ERROR += e.toString();
+            ERROR = e.toString();
         }
     }
     
@@ -165,8 +162,14 @@ public class AndroidBluetooth implements BluetoothPort
             mmInputStream.close();
             mmSocket.close();
         }catch(Exception e){
+            ERROR = e.toString();
             Logger.getLogger(AndroidBluetooth.class.getName()).log(Level.SEVERE, null, e);
         }
+    }
+
+    @Override
+    public void setError(String e) {
+        ERROR = e;
     }
 
 }

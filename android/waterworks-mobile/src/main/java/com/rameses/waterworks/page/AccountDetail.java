@@ -1,6 +1,7 @@
 package com.rameses.waterworks.page;
 
 import com.rameses.Main;
+import static com.rameses.Main.PRINTER;
 import com.rameses.waterworks.bean.Account;
 import com.rameses.waterworks.bean.Reading;
 import com.rameses.waterworks.bluetooth.BluetoothPlatformFactory;
@@ -61,13 +62,20 @@ public class AccountDetail {
                 }
                 account.setPresReading(i);
                 PrinterHandler handler = new PrinterHandler(account);
-                BluetoothPort printer = BluetoothPlatformFactory.getPlatform().getBluetoothPrinter();
-                printer.setPrinter(Main.PRINTERNAME);
-                printer.openBT();
-                printer.print(handler.getData());
-                //printer.closeBT();
-                if(!printer.getError().equals("NO ERROR.\n")){
-                    Dialog.showError(printer.getError());
+                
+                if(Main.PRINTER ==  null){
+                    PRINTER = BluetoothPlatformFactory.getPlatform().getBluetoothPrinter();
+                    PRINTER.setPrinter(Main.PRINTERNAME);
+                    PRINTER.openBT();
+                }
+                PRINTER.setError("");
+                PRINTER.print(handler.getData());
+                if(!PRINTER.getError().isEmpty()){
+                    Dialog.showError(PRINTER.getError());
+                    PRINTER.closeBT();
+                    PRINTER = BluetoothPlatformFactory.getPlatform().getBluetoothPrinter();
+                    PRINTER.setPrinter(Main.PRINTERNAME);
+                    PRINTER.openBT();
                 }else{
                     Dialog.hide();
                 }

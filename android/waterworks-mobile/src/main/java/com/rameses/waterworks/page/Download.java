@@ -108,10 +108,12 @@ public class Download {
                 params.put("areaids", areas);
                 MobileService s1  = new MobileService();
                 Map initialData = s1.initForDownload(params);
+                Main.LOG.error("INIT DATA", initialData.toString());
                 
                 batchid = initialData.get("batchid") != null ? initialData.get("batchid").toString() : "";
                 initCount = initialData.get("count") != null ? Integer.parseInt(initialData.get("count").toString()) : 0;
                 
+                //START DOWNLOAD
                 String error = "";
                 accountList = new ArrayList<Map>();
                 Map params2 = new HashMap();

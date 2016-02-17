@@ -89,14 +89,17 @@ public class Upload {
                     }
                     Reading r = it.next();
                     
+                    Map account = new HashMap();
+                    account.put("objid", r.getAcctId());
+                    
                     Map map = new HashMap();
                     map.put("objid", r.getObjid());
-                    map.put("acctid", r.getAcctId());
+                    map.put("account", account);
                     map.put("reading", Integer.parseInt(r.getReading()));
                     map.put("dtreading", r.getReadingDate());
                     map.put("userid", SystemPlatformFactory.getPlatform().getSystem().getUserID());
                     map.put("name", SystemPlatformFactory.getPlatform().getSystem().getFullName());
-                    map.put("amount", r.getTotalDue());
+                    map.put("amount", Double.parseDouble(r.getTotalDue()));
                     map.put("batchid", r.getBatchId());
                     
                     MobileService service = new MobileService();

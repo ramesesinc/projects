@@ -1,6 +1,8 @@
 package com.rameses;
 
 import com.rameses.waterworks.bean.Setting;
+import com.rameses.waterworks.bluetooth.BluetoothPlatformFactory;
+import com.rameses.waterworks.bluetooth.BluetoothPort;
 import com.rameses.waterworks.database.Database;
 import com.rameses.waterworks.database.DatabasePlatformFactory;
 import com.rameses.waterworks.layout.Footer;
@@ -34,6 +36,7 @@ public class Main extends Application {
     public static StackPane PAGE;
     public static Map MYACCOUNT;
     public static String PRINTERNAME = "";
+    public static BluetoothPort PRINTER;
 
     @Override
     public void start(Stage stage) {

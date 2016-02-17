@@ -23,7 +23,13 @@ public class Account {
             lastreadingmonth,
             lastreadingdate,
             barcode,
-            batchid;
+            batchid,
+            month,
+            year,
+            period,
+            duedate,
+            discodate,
+            rundate;
     
     private String
             consumption,
@@ -56,7 +62,13 @@ public class Account {
             String lastreadingmonth,
             String lastreadingdate,
             String barcode,
-            String batchid
+            String batchid,
+            String month,
+            String year,
+            String period,
+            String duedate,
+            String discodate,
+            String rundate
     ){
         this.objid = objid;
         this.acctno = acctno;
@@ -79,6 +91,12 @@ public class Account {
         this.lastreadingdate = lastreadingdate;
         this.barcode = barcode;
         this.batchid = batchid;
+        this.month = month;
+        this.year = year;
+        this.period = period;
+        this.duedate = duedate;
+        this.discodate = discodate;
+        this.rundate = rundate;
     }
     
     public String getObjid(){ return objid; }
@@ -103,6 +121,12 @@ public class Account {
     public String getLastReadingDate(){ return lastreadingdate; }
     public String getBarCode(){ return barcode; }
     public String getBatchId(){ return batchid; }
+    public String getMonth(){ return month; }
+    public String getYear(){ return year; }
+    public String getPeriod(){ return period; }
+    public String getDueDate(){ return duedate; }
+    public String getDiscoDate(){ return discodate; }
+    public String getRunDate(){ return rundate; }
     
     public String getConsumption(){ return consumption; }
     public String getAmtDue(){ return amtdue; }

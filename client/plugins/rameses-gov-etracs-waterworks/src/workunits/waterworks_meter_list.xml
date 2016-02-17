@@ -1,5 +1,7 @@
-<workunit extends="wtemplates/ListController.xml" serviceName="WaterWorksMeterService" entityName="meter">
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" 
+          schemaName="waterworks_meter" allowCreate="true" allowOpen="false" allowDelete="false">
     <invokers>
-        <invoker folderid="/explorer/master/waterworks" caption="Meter" index="0" srole="MASTER"/>
+        <invoker folderid="/explorer/master/waterworks" caption="Meter" 
+                 index="0" srole="MASTER" action="init"/>
     </invokers>
 </workunit>

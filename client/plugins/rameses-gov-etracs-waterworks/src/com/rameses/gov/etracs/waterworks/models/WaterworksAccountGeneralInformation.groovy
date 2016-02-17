@@ -18,7 +18,6 @@ class WaterworksAccountGeneralInformation {
    void init(){
        title = "General Information";
        entity = caller.entity;
-       entity.each{k,v-> println k + " : " +v }
        months = [
             [id: 1, name: "JANUARY"],
             [id: 2, name: "FEBRUARY"],

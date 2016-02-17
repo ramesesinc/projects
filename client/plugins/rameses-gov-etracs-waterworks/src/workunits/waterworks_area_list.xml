@@ -1,5 +1,6 @@
-<workunit extends="wtemplates/ListController.xml" serviceName="WaterWorksAreaService" entityName="area">
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" 
+          schemaName="waterworks_area">
     <invokers>
-        <invoker folderid="/explorer/master/waterworks" caption="Area" index="0" srole="MASTER"/>
+        <invoker folderid="/explorer/master/waterworks" caption="Area" index="0" srole="MASTER" action="init"/>
     </invokers>
 </workunit>

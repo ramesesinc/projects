@@ -1,0 +1,7 @@
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" 
+          schemaName="waterworks_classification" allowCreate="false" allowOpen="false" allowDelete="false">
+    <invokers>
+        <invoker folderid="/explorer/master/waterworks" caption="Classification" 
+                 index="0" srole="MASTER" action="init"/>
+    </invokers>
+</workunit>

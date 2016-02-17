@@ -98,7 +98,7 @@ public class WaterworksAccountTxnHistoryPage extends javax.swing.JPanel {
             }),
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "reading"}
-                , new Object[]{"caption", "Present Reading"}
+                , new Object[]{"caption", "Last Reading"}
                 , new Object[]{"width", 100}
                 , new Object[]{"minWidth", 0}
                 , new Object[]{"maxWidth", 0}

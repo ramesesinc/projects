@@ -7,13 +7,13 @@ package com.rameses.gov.etracs.waterworks.views;
 import com.rameses.osiris2.themes.FormPage;
 import com.rameses.rcp.ui.annotations.StyleSheet;
 import com.rameses.rcp.ui.annotations.Template;
+import com.rameses.seti2.views.CrudFormPage;
 
 /**
  *
  * @author Dino
  */
-@Template(FormPage.class)
-@StyleSheet
+@Template(CrudFormPage.class)
 public class WaterworksMeterPage extends javax.swing.JPanel {
 
     /**

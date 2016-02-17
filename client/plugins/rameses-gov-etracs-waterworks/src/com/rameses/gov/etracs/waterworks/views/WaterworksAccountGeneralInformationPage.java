@@ -102,7 +102,7 @@ public class WaterworksAccountGeneralInformationPage extends javax.swing.JPanel 
         xTextField4.setEditable(false);
         xTextField4.setCaption("Owner");
         xTextField4.setFocusable(false);
-        xTextField4.setName("entity.ownername"); // NOI18N
+        xTextField4.setName("entity.owner.name"); // NOI18N
         xTextField4.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(xTextField4);
 
@@ -111,7 +111,7 @@ public class WaterworksAccountGeneralInformationPage extends javax.swing.JPanel 
         xTextArea1.setEditable(false);
         xTextArea1.setCaption("Address");
         xTextArea1.setFocusable(false);
-        xTextArea1.setName("entity.address"); // NOI18N
+        xTextArea1.setName("entity.address.text"); // NOI18N
         xTextArea1.setPreferredSize(new java.awt.Dimension(0, 41));
         jScrollPane1.setViewportView(xTextArea1);
 

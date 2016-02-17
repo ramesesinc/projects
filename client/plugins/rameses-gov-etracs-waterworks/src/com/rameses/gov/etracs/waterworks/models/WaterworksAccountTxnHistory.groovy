@@ -17,7 +17,8 @@ class WaterworksAccountTxnHistory {
 
    void init(){
        title = "Transaction History";
-       txns = svc.getConsumption(entity);
+       txns = svc.getTxnHistory(entity);
+       txns.each{ println it; }
    }
 
    def capture(){

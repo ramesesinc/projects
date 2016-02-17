@@ -25,7 +25,6 @@ class WaterworksConsumptionCapture {
    void init(){
        title = "Capture Consumption";
        if(entity) entity.year = dtSvc.getServerYear();
-       println entity;
        months = [
             [id: 1, name: "JANUARY"],
             [id: 2, name: "FEBRUARY"],
@@ -44,6 +43,7 @@ class WaterworksConsumptionCapture {
 
    def save(){
        if(!MsgBox.confirm('You are about to create this record. Continue?')) return;
+       entity.account = [objid : entity.objid];
        entity.volume = entity.reading - entity.prevreading;
        entity.month = entity.selectedMonth.id;
        if(entity.volume < 1) throw new Exception("Last reading must be greater than previous reading!");

@@ -28,9 +28,10 @@ public class WaterworksAccountCapture {
     def entity;
     def classifications;
     def months;
+    def addressComponent;
 
     void init(){
-        entity = [:];
+        entity = [address:[street:"street 1"]];
         entity.state = 'ACTIVE';
         entity.lastreadingyear = dateSvc.getServerYear();
         title = 'Capture Account';
@@ -49,12 +50,12 @@ public class WaterworksAccountCapture {
             [id: 11, name: "NOVEMBER"],
             [id: 12, name: "DECEMBER"]
         ];
+        addressComponent = Inv.lookupOpener("address:component",[entity:entity.address]);
     }
 
     def save(){
         if(!MsgBox.confirm("You are about to create this record. Continue?")) return;
         entity.classificationid = entity.classification.objid;
-        entity.areaid = entity.area.objid;
         entity.lastreadingmonth = entity.month.id;
         if(entity.lastreading < entity.prevreading) throw new Exception('Last Reading must be greater than Prev. Reading!');
         acctSvc.create(entity);
@@ -84,22 +85,5 @@ public class WaterworksAccountCapture {
         return Inv.lookupOpener("meter:lookup",[onselect:h]);
    }
 
-    def editAddress(){
-        def handler = {o ->
-            def text = "";
-            if(o.unitno) text = text + o.unitno + ", ";
-            if(o.bldgno) text = text + o.bldgno + ", ";
-            if(o.bldgname) text = text + o.bldgname + ", ";
-            if(o.subdivision) text = text + o.subdivision + ", ";
-            if(o.street) text = text + o.street + ", \n";
-            if(o.barangay.name) text = text + o.barangay.name + ", ";
-            if(o.municipality) text = text + o.municipality + "";
-            entity.address = o;
-            entity.address.barangay = o.barangay.name;
-            entity.address.text = text;
-            binding.refresh("entity.*");
-        }
-        return Inv.lookupOpener("address:lookup",[entity:entity.address,handler:handler]);
-    }
     
 }

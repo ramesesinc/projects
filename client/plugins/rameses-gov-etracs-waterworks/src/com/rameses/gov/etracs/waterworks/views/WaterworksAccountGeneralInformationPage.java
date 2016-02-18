@@ -150,7 +150,7 @@ public class WaterworksAccountGeneralInformationPage extends javax.swing.JPanel 
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 235, Short.MAX_VALUE)
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -248,7 +248,7 @@ public class WaterworksAccountGeneralInformationPage extends javax.swing.JPanel 
         xTextField16.setEditable(false);
         xTextField16.setCaption("Size");
         xTextField16.setFocusable(false);
-        xTextField16.setName("entity.meter.size"); // NOI18N
+        xTextField16.setName("entity.metersize.objid"); // NOI18N
         xFormPanel4.add(xTextField16);
 
         xTextField17.setEditable(false);
@@ -298,7 +298,7 @@ public class WaterworksAccountGeneralInformationPage extends javax.swing.JPanel 
                 .addGroup(xPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(xFormPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(xFormPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(51, Short.MAX_VALUE))
+                .addContainerGap(62, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);

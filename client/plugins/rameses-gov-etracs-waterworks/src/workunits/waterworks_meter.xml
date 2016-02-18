@@ -13,9 +13,25 @@
            import com.rameses.seti2.models.*;
 
            class MeterController extends SinglePageCrudFormModel{
+           
+               @Service("WaterworksMeterSizeService")
+               def sizeSvc;
 
                def title='Meter';
                String schemaName='waterworks_meter';
+               def sizes;
+               
+               def create() {
+                   super.create();
+                   sizes = sizeSvc.getList([searchtext:'%']);
+                   return null;
+               }
+               
+               def open() {
+                   super.open();
+                   sizes = sizeSvc.getList([searchtext:'%']);
+                   return null;
+               }
                
            }
         ]]>

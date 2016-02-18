@@ -1,0 +1,27 @@
+<workunit>
+    <invokers>
+        <invoker type="waterworks_metersize:create" caption="Meter Size" action="create" target="popup" srole="MASTER"/>
+        <invoker type="waterworks_metersize:open" caption="Meter Size" action="open" target="popup" srole="MASTER"/>
+    </invokers>
+    
+    <code>
+        <![CDATA[
+           import com.rameses.osiris2.common.*;
+           import com.rameses.rcp.common.*;
+           import com.rameses.rcp.annotations.*;
+           import com.rameses.osiris2.client.*;
+           import com.rameses.seti2.models.*;
+
+           class MeterSizeController extends SinglePageCrudFormModel{
+
+               def title='Meter Size';
+               String schemaName='waterworks_metersize';
+               
+           }
+        ]]>
+    </code>
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.waterworks.views.WaterworksMeterSizePage"/>
+    </pages>
+</workunit>

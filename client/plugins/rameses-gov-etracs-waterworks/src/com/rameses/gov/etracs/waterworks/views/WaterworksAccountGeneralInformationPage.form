@@ -69,7 +69,7 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="xFormPanel1" pref="235" max="32767" attributes="0"/>
+                  <Component id="xFormPanel1" max="32767" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
@@ -339,7 +339,7 @@
                       <Component id="xFormPanel5" min="-2" max="-2" attributes="0"/>
                       <Component id="xFormPanel4" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace pref="51" max="32767" attributes="0"/>
+                  <EmptySpace pref="62" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -377,7 +377,7 @@
                 <Property name="editable" type="boolean" value="false"/>
                 <Property name="caption" type="java.lang.String" value="Size"/>
                 <Property name="focusable" type="boolean" value="false"/>
-                <Property name="name" type="java.lang.String" value="entity.meter.size" noResource="true"/>
+                <Property name="name" type="java.lang.String" value="entity.metersize.objid" noResource="true"/>
               </Properties>
             </Component>
             <Component class="com.rameses.rcp.control.XTextField" name="xTextField17">

@@ -14,12 +14,12 @@ import com.rameses.seti2.views.CrudFormPage;
  * @author Dino
  */
 @Template(CrudFormPage.class)
-public class WaterworksMeterPage extends javax.swing.JPanel {
+public class WaterworksMeterSizePage extends javax.swing.JPanel {
 
     /**
      * Creates new form MeterPage
      */
-    public WaterworksMeterPage() {
+    public WaterworksMeterSizePage() {
         initComponents();
     }
 
@@ -35,42 +35,30 @@ public class WaterworksMeterPage extends javax.swing.JPanel {
         jPanel1 = new javax.swing.JPanel();
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
         xTextField1 = new com.rameses.rcp.control.XTextField();
-        xTextField2 = new com.rameses.rcp.control.XTextField();
-        xComboBox1 = new com.rameses.rcp.control.XComboBox();
-        xTextField4 = new com.rameses.rcp.control.XTextField();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        xTextArea1 = new com.rameses.rcp.control.XTextArea();
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
-        xTitledBorder1.setTitle("Meter Information");
+        xTitledBorder1.setTitle("Meter Size Information");
         jPanel1.setBorder(xTitledBorder1);
 
         xFormPanel1.setCaptionWidth(120);
 
-        xTextField1.setCaption("Serial Number");
-        xTextField1.setName("entity.serialno"); // NOI18N
+        xTextField1.setCaption("Code");
+        xTextField1.setName("entity.objid"); // NOI18N
         xTextField1.setPreferredSize(new java.awt.Dimension(0, 20));
         xTextField1.setRequired(true);
         xFormPanel1.add(xTextField1);
 
-        xTextField2.setCaption("Brand Name");
-        xTextField2.setName("entity.brand"); // NOI18N
-        xTextField2.setPreferredSize(new java.awt.Dimension(0, 20));
-        xTextField2.setRequired(true);
-        xFormPanel1.add(xTextField2);
+        jScrollPane1.setPreferredSize(new java.awt.Dimension(0, 63));
 
-        xComboBox1.setCaption("Size");
-        xComboBox1.setExpression("#{item.objid}");
-        xComboBox1.setItemKey("objid");
-        xComboBox1.setItems("sizes");
-        xComboBox1.setName("entity.sizeid"); // NOI18N
-        xComboBox1.setPreferredSize(new java.awt.Dimension(150, 20));
-        xComboBox1.setRequired(true);
-        xFormPanel1.add(xComboBox1);
+        xTextArea1.setCaption("Title");
+        xTextArea1.setName("entity.title"); // NOI18N
+        xTextArea1.setPreferredSize(new java.awt.Dimension(0, 61));
+        xTextArea1.setRequired(true);
+        jScrollPane1.setViewportView(xTextArea1);
 
-        xTextField4.setCaption("Capacity");
-        xTextField4.setName("entity.capacity"); // NOI18N
-        xTextField4.setPreferredSize(new java.awt.Dimension(200, 20));
-        xTextField4.setRequired(true);
-        xFormPanel1.add(xTextField4);
+        xFormPanel1.add(jScrollPane1);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -85,8 +73,8 @@ public class WaterworksMeterPage extends javax.swing.JPanel {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -102,16 +90,15 @@ public class WaterworksMeterPage extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanel1;
-    private com.rameses.rcp.control.XComboBox xComboBox1;
+    private javax.swing.JScrollPane jScrollPane1;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
+    private com.rameses.rcp.control.XTextArea xTextArea1;
     private com.rameses.rcp.control.XTextField xTextField1;
-    private com.rameses.rcp.control.XTextField xTextField2;
-    private com.rameses.rcp.control.XTextField xTextField4;
     // End of variables declaration//GEN-END:variables
 }

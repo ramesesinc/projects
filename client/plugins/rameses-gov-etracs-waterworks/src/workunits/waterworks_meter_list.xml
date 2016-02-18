@@ -1,5 +1,6 @@
 <workunit extends="com/rameses/seti2/templates/CrudList.xml" 
-          schemaName="waterworks_meter" allowCreate="true" allowOpen="false" allowDelete="false">
+          schemaName="waterworks_meter" allowCreate="true" allowOpen="false" allowDelete="false"
+          cols="serialno, brand, sizeid, capacity">
     <invokers>
         <invoker folderid="/explorer/master/waterworks" caption="Meter" 
                  index="0" srole="MASTER" action="init"/>

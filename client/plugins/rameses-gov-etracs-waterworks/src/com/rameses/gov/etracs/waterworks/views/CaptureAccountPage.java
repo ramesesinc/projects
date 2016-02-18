@@ -40,10 +40,7 @@ public class CaptureAccountPage extends javax.swing.JPanel {
         xLookupField1 = new com.rameses.rcp.control.XLookupField();
         xPanel3 = new com.rameses.rcp.control.XPanel();
         xFormPanel3 = new com.rameses.rcp.control.XFormPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        xTextArea1 = new com.rameses.rcp.control.XTextArea();
-        xLookupField2 = new com.rameses.rcp.control.XLookupField();
-        xButton1 = new com.rameses.rcp.control.XButton();
+        xSubFormPanel1 = new com.rameses.rcp.control.XSubFormPanel();
         xPanel4 = new com.rameses.rcp.control.XPanel();
         xFormPanel4 = new com.rameses.rcp.control.XFormPanel();
         xLookupField3 = new com.rameses.rcp.control.XLookupField();
@@ -116,28 +113,22 @@ public class CaptureAccountPage extends javax.swing.JPanel {
 
         xFormPanel3.setCaptionWidth(140);
 
-        jScrollPane1.setPreferredSize(new java.awt.Dimension(0, 43));
+        xSubFormPanel1.setCaption("Address");
+        xSubFormPanel1.setHandler("addressComponent");
+        xSubFormPanel1.setPreferredSize(new java.awt.Dimension(0, 40));
 
-        xTextArea1.setEditable(false);
-        xTextArea1.setCaption("Address");
-        xTextArea1.setName("entity.address.text"); // NOI18N
-        xTextArea1.setPreferredSize(new java.awt.Dimension(0, 41));
-        xTextArea1.setRequired(true);
-        jScrollPane1.setViewportView(xTextArea1);
+        javax.swing.GroupLayout xSubFormPanel1Layout = new javax.swing.GroupLayout(xSubFormPanel1);
+        xSubFormPanel1.setLayout(xSubFormPanel1Layout);
+        xSubFormPanel1Layout.setHorizontalGroup(
+            xSubFormPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 424, Short.MAX_VALUE)
+        );
+        xSubFormPanel1Layout.setVerticalGroup(
+            xSubFormPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 40, Short.MAX_VALUE)
+        );
 
-        xFormPanel3.add(jScrollPane1);
-
-        xLookupField2.setCaption("Area");
-        xLookupField2.setExpression("#{entity.area.name}");
-        xLookupField2.setHandler("waterworksarea:lookup");
-        xLookupField2.setName("entity.area"); // NOI18N
-        xLookupField2.setPreferredSize(new java.awt.Dimension(0, 20));
-        xLookupField2.setRequired(true);
-        xFormPanel3.add(xLookupField2);
-
-        xButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/pencil_icon.png"))); // NOI18N
-        xButton1.setImmediate(true);
-        xButton1.setName("editAddress"); // NOI18N
+        xFormPanel3.add(xSubFormPanel1);
 
         javax.swing.GroupLayout xPanel3Layout = new javax.swing.GroupLayout(xPanel3);
         xPanel3.setLayout(xPanel3Layout);
@@ -145,19 +136,14 @@ public class CaptureAccountPage extends javax.swing.JPanel {
             xPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(xPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(xButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addComponent(xFormPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, 574, Short.MAX_VALUE)
+                .addGap(46, 46, 46))
         );
         xPanel3Layout.setVerticalGroup(
             xPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(xPanel3Layout.createSequentialGroup()
                 .addGap(6, 6, 6)
-                .addGroup(xPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(xFormPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(xButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(11, 11, 11))
+                .addComponent(xFormPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, 56, Short.MAX_VALUE))
         );
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder3 = new com.rameses.rcp.control.border.XTitledBorder();
@@ -302,12 +288,10 @@ public class CaptureAccountPage extends javax.swing.JPanel {
                 .addComponent(xPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(xPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(28, Short.MAX_VALUE))
+                .addContainerGap(58, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JScrollPane jScrollPane1;
-    private com.rameses.rcp.control.XButton xButton1;
     private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XComboBox xComboBox2;
     private com.rameses.rcp.control.XDateField xDateField1;
@@ -323,13 +307,12 @@ public class CaptureAccountPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XIntegerField xIntegerField2;
     private com.rameses.rcp.control.XIntegerField xIntegerField3;
     private com.rameses.rcp.control.XLookupField xLookupField1;
-    private com.rameses.rcp.control.XLookupField xLookupField2;
     private com.rameses.rcp.control.XLookupField xLookupField3;
     private com.rameses.rcp.control.XPanel xPanel1;
     private com.rameses.rcp.control.XPanel xPanel3;
     private com.rameses.rcp.control.XPanel xPanel4;
     private com.rameses.rcp.control.XPanel xPanel5;
-    private com.rameses.rcp.control.XTextArea xTextArea1;
+    private com.rameses.rcp.control.XSubFormPanel xSubFormPanel1;
     private com.rameses.rcp.control.XTextField xTextField1;
     private com.rameses.rcp.control.XTextField xTextField2;
     // End of variables declaration//GEN-END:variables

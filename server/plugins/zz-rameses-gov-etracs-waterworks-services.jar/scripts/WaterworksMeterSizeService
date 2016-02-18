@@ -4,9 +4,9 @@ import java.rmi.server.*;
 import com.rameses.common.*;
 import com.rameses.services.extended.*;
 
-class WaterworksMeterService  {
+class WaterworksMeterSizeService  {
 	
-	@DataContext("waterworks_meter")
+	@DataContext("waterworks_metersize")
 	def wm;
 
 	@ProxyMethod

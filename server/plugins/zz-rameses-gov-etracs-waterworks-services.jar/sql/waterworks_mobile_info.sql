@@ -1,7 +1,7 @@
 [insertForDownload]
 INSERT INTO waterworks_mobile_info
 SELECT wa.objid, $P{batchid}, 'PENDING', $P{penalty}, $P{othercharge}, $P{duemonth}, 
-$P{dueyear}, $P{duedate}, $P{fromdate}, $P{todate}, $P{discodate}, $P{rundate} 
+$P{dueyear}, $P{duedate}, $P{fromdate}, $P{todate}, $P{discodate}, $P{rundate},""
 FROM waterworks_account wa
 WHERE wa.objid NOT IN (SELECT objid FROM waterworks_mobile_info)
 AND wa.areaid  IN (${areaids})

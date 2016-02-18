@@ -12,5 +12,6 @@
 		<field name="todate" required="true"/>
 		<field name="discodate" required="true"/>
 		<field name="rundate" required="true"/>
+		<field name="rulekey" required="true"/>
 	</element>
 </schema>

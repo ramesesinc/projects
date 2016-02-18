@@ -18,7 +18,7 @@ class WaterworksAccountQueryInterceptor{
 		def o = evt.args[0];
 		def w = null;
 
-		switch( o.node.id ) {
+		switch( o.node?.id ) {
 			case 'active':
 				w = "state = 'ACTIVE' ";
 				break;

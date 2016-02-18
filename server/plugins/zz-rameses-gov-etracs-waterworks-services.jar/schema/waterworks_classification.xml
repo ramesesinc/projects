@@ -1,6 +1,6 @@
 <schema adapter="waterworks">
 	<element tablename="waterworks_classification">
 		<field name="objid" primary="true"  prefix="CL" visible="true"/>
-		<field name="description"/>
+		<field name="description" caption="Description"/>
 	</element>
 </schema>

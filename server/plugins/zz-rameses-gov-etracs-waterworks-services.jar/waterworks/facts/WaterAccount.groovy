@@ -6,13 +6,10 @@ import treasury.facts.*;
 public class WaterAccount {
 
     String classification;
-    String metersize;	
-    String barangay;
-
-	public WaterAccount( def app ) {
-		this.classification = app.classificationid;
-		this.metersize = app.meter?.sizeid;
-		this.barangay = app.barangay?.objid;
+	
+	public WaterAccount(def app) {
+		this.classification = app.classification;
 	}
+
 
 }

@@ -1,8 +1,8 @@
 package com.rameses.waterworks.database;
 
 import com.rameses.waterworks.bean.Account;
-import com.rameses.waterworks.bean.Formula;
 import com.rameses.waterworks.bean.Reading;
+import com.rameses.waterworks.bean.Rule;
 import com.rameses.waterworks.bean.Setting;
 import java.util.List;
 import java.util.Map;
@@ -53,17 +53,11 @@ public interface Database {
     //AREA
     public boolean downloadableArea(String areaid);
     
-    //FORMULA
-    public void createFormula(Formula formula);
+    //RULE
+    public void createRule(Rule rule);
     
-    public List<Formula> getFormula();
+    public List<Rule> getRules();
     
-    public boolean formulaExist(Formula formula);
-    
-    public void updateFormula(Formula formula);
-    
-    public Formula getFormula(String classification);
-    
-    public void clearFormula();
+    public void clearRule();
     
 }

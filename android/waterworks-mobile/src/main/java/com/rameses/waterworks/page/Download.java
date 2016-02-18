@@ -3,13 +3,13 @@ package com.rameses.waterworks.page;
 import com.rameses.Main;
 import com.rameses.waterworks.bean.Account;
 import com.rameses.waterworks.bean.Area;
-import com.rameses.waterworks.bean.Formula;
+import com.rameses.waterworks.bean.Rule;
 import com.rameses.waterworks.database.Database;
 import com.rameses.waterworks.database.DatabasePlatformFactory;
 import com.rameses.waterworks.dialog.Dialog;
 import com.rameses.waterworks.layout.Header;
 import com.rameses.waterworks.service.AreaService;
-import com.rameses.waterworks.service.MobileCalcService;
+import com.rameses.waterworks.service.MobileRuleService;
 import com.rameses.waterworks.service.MobileService;
 import com.rameses.waterworks.util.SystemPlatformFactory;
 import java.util.ArrayList;
@@ -219,24 +219,26 @@ public class Download {
                 }
                 
                 //download water-rates
-                MobileCalcService service = new MobileCalcService();
-                List<Map> list = service.getFormula();
+                MobileRuleService service = new MobileRuleService();
+                List<Map> list = service.getRules();
                 if(!service.ERROR.isEmpty()){
                     Dialog.showError(service.ERROR);
                 }
                 if(!list.isEmpty()){
                     Database db = DatabasePlatformFactory.getPlatform().getDatabase();
-                    db.clearFormula();
+                    db.clearRule();
                 }
                 for(Map m : list){
-                    String classificationid = m.get("classificationid") != null ? m.get("classificationid").toString() : "";
-                    String var = m.get("var") != null ? m.get("var").toString() : "";
-                    String expr= m.get("expr") != null ? m.get("expr").toString() : "";
+                    int salience = m.get("salience") != null ? Integer.parseInt(m.get("salience").toString()) : 0;
+                    String condition = m.get("condition") != null ? m.get("condition").toString() : "";
+                    String var= m.get("var") != null ? m.get("var").toString() : "";
+                    String action= m.get("action") != null ? m.get("action").toString() : "";
                     
-                    Formula f = new Formula(classificationid,var,expr);
+                    Rule rule = new Rule(salience, condition, var, action);
                     Database db = DatabasePlatformFactory.getPlatform().getDatabase();
-                    db.createFormula(f);
+                    db.createRule(rule);
                 }
+                Main.loadRules();
                 
                 Thread t = new Thread(){
                     @Override

@@ -2,8 +2,8 @@ package com.rameses.waterworks.page;
 
 import com.rameses.Main;
 import com.rameses.waterworks.bean.Account;
-import com.rameses.waterworks.bean.Formula;
 import com.rameses.waterworks.bean.Reading;
+import com.rameses.waterworks.bean.Rule;
 import com.rameses.waterworks.calc.BillCalculator;
 import com.rameses.waterworks.database.Database;
 import com.rameses.waterworks.database.DatabasePlatformFactory;
@@ -192,9 +192,9 @@ public class ReadingSheet {
         
         //CHECK FOR WATER-RATES
         Database db2 = DatabasePlatformFactory.getPlatform().getDatabase();
-        List<Formula> flist = db2.getFormula();
-        if(flist.isEmpty()){
-            Dialog.showError("Water-rate could not be found!");
+        List<Rule> rlist = Main.RULES;
+        if(rlist.isEmpty()){
+            Dialog.showError("No rules found!");
             return;
         }
         
@@ -210,7 +210,7 @@ public class ReadingSheet {
         }
         try{
             BillCalculator calc = new BillCalculator();
-            charge = calc.compute(account.getClassificationId(), consumption);
+            charge = calc.compute(account.getInfo(), consumption);
             if(!calc.getError().isEmpty()){
                 Dialog.showError(calc.getError());
                 return;

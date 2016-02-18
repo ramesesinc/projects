@@ -1,7 +1,0 @@
-<workunit extends="com/rameses/seti2/templates/CrudList.xml" 
-          schemaName="entityindividual" allowDelete="false" allowCreate="true" allowOpen="true"
-          cols="entityno, lastname, firstname">
-    <invokers>
-        <invoker folderid="/home/waterworks" caption="Sample Entity List"  action="init"/>
-    </invokers>
-</workunit>

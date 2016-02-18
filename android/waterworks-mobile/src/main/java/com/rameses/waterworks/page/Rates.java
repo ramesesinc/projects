@@ -1,12 +1,12 @@
 package com.rameses.waterworks.page;
 
 import com.rameses.Main;
-import com.rameses.waterworks.bean.Formula;
+import com.rameses.waterworks.bean.Rule;
 import com.rameses.waterworks.database.Database;
 import com.rameses.waterworks.database.DatabasePlatformFactory;
 import com.rameses.waterworks.dialog.Dialog;
 import com.rameses.waterworks.layout.Header;
-import com.rameses.waterworks.service.MobileCalcService;
+import com.rameses.waterworks.service.MobileRuleService;
 import java.util.List;
 import java.util.Map;
 import javafx.collections.FXCollections;
@@ -30,28 +30,31 @@ public class Rates {
     public Rates(){
         Header.TITLE.setText("Water Rates");
         
-        TableColumn classCol = new TableColumn("Classification");
+        TableColumn salienceCol = new TableColumn("Salience");
+        TableColumn conditionCol = new TableColumn("Condition");
         TableColumn varCol = new TableColumn("Variable");
-        TableColumn exprCol = new TableColumn("Expression");
+        TableColumn actionCol = new TableColumn("Action");
         
-        classCol.setStyle( "-fx-alignment: TOP-CENTER;");
+        salienceCol.setStyle( "-fx-alignment: TOP-CENTER;");
         varCol.setStyle( "-fx-alignment: TOP-CENTER;");
         
-        classCol.setMinWidth(Main.WIDTH * 0.20);
-        varCol.setMinWidth(Main.WIDTH * 0.20);
-        exprCol.setMinWidth(Main.WIDTH * 0.60);
+        salienceCol.setMinWidth(Main.WIDTH * 0.10);
+        conditionCol.setMinWidth(Main.WIDTH * 0.35);
+        varCol.setMinWidth(Main.WIDTH * 0.10);
+        actionCol.setMinWidth(Main.WIDTH * 0.45);
         
-        classCol.setCellValueFactory(new PropertyValueFactory<Formula, String>("classificationId"));
-        varCol.setCellValueFactory(new PropertyValueFactory<Formula, String>("var"));
-        exprCol.setCellValueFactory(new PropertyValueFactory<Formula, String>("expr"));
+        salienceCol.setCellValueFactory(new PropertyValueFactory<Rule, Integer>("salience"));
+        conditionCol.setCellValueFactory(new PropertyValueFactory<Rule, String>("condition"));
+        varCol.setCellValueFactory(new PropertyValueFactory<Rule, String>("var"));
+        actionCol.setCellValueFactory(new PropertyValueFactory<Rule, String>("action"));
         
-        TableView<Formula> tableView = new TableView<Formula>();
+        TableView<Rule> tableView = new TableView<Rule>();
         tableView.setPrefHeight(Main.HEIGHT);
         tableView.setFocusTraversable(false);
-        tableView.getColumns().addAll(classCol,varCol,exprCol);
+        tableView.getColumns().addAll(salienceCol,conditionCol,varCol,actionCol);
         
         Database db = DatabasePlatformFactory.getPlatform().getDatabase();
-        List<Formula> list = db.getFormula();
+        List<Rule> list = db.getRules();
         tableView.setItems(FXCollections.observableArrayList(list));
         
         Button download = new Button("Sync");
@@ -61,29 +64,30 @@ public class Rates {
         download.setOnAction(new EventHandler<ActionEvent>(){
             @Override
             public void handle(ActionEvent event) {
-                MobileCalcService service = new MobileCalcService();
-                List<Map> list = service.getFormula();
+                MobileRuleService service = new MobileRuleService();
+                List<Map> list = service.getRules();
                 if(!service.ERROR.isEmpty()){
                     Dialog.showError(service.ERROR);
                     return;
                 }
                 if(!list.isEmpty()){
                     Database db = DatabasePlatformFactory.getPlatform().getDatabase();
-                    db.clearFormula();
+                    db.clearRule();
                 }
                 for(Map m : list){
-                    String classificationid = m.get("classificationid") != null ? m.get("classificationid").toString() : "";
-                    String var = m.get("var") != null ? m.get("var").toString() : "";
-                    String expr= m.get("expr") != null ? m.get("expr").toString() : "";
+                    int salience = m.get("salience") != null ? Integer.parseInt(m.get("salience").toString()) : 0;
+                    String condition = m.get("condition") != null ? m.get("condition").toString() : "";
+                    String var= m.get("var") != null ? m.get("var").toString() : "";
+                    String action= m.get("action") != null ? m.get("action").toString() : "";
                     
-                    Formula f = new Formula(classificationid,var,expr);
+                    Rule rule = new Rule(salience,condition,var,action);
                     Database db = DatabasePlatformFactory.getPlatform().getDatabase();
-                    db.createFormula(f);
+                    db.createRule(rule);
                 }
                 Dialog.showAlert("Sync Finish!");
                 Database db = DatabasePlatformFactory.getPlatform().getDatabase();
-                List<Formula> lst = db.getFormula();
-                tableView.setItems(FXCollections.observableArrayList(lst));
+                Main.loadRules();
+                tableView.setItems(FXCollections.observableArrayList(Main.RULES));
             }
         });
        

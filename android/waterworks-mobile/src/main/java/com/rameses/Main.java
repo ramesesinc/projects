@@ -1,5 +1,6 @@
 package com.rameses;
 
+import com.rameses.waterworks.bean.Rule;
 import com.rameses.waterworks.bean.Setting;
 import com.rameses.waterworks.bluetooth.BluetoothPort;
 import com.rameses.waterworks.database.Database;
@@ -36,6 +37,7 @@ public class Main extends Application {
     public static Map MYACCOUNT;
     public static String PRINTERNAME = "";
     public static BluetoothPort PRINTER;
+    public static List<Rule> RULES;
 
     @Override
     public void start(Stage stage) {
@@ -85,6 +87,11 @@ public class Main extends Application {
             if(setting.getName().equals("printer")) PRINTERNAME = setting.getValue();
             if(setting.getName().equals("registered")) ROOT.setCenter(new Login().getLayout());
         }
+    }
+    
+    public static void loadRules(){
+        Database db = DatabasePlatformFactory.getPlatform().getDatabase();
+        RULES = db.getRules();
     }
 
 }

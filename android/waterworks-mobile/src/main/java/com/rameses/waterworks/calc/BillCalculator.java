@@ -2,10 +2,11 @@ package com.rameses.waterworks.calc;
 
 import bsh.EvalError;
 import bsh.Interpreter;
-import com.rameses.waterworks.bean.Formula;
-import com.rameses.waterworks.database.Database;
-import com.rameses.waterworks.database.DatabasePlatformFactory;
-import com.rameses.waterworks.dialog.Dialog;
+import com.rameses.Main;
+import com.rameses.util.ObjectDeserializer;
+import com.rameses.waterworks.bean.Rule;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  *
@@ -15,25 +16,38 @@ public class BillCalculator {
     
     private String error = "";
     
-    public double compute(String classificationid, int vol){
+    public double compute(String info, int vol){
         double value = 0.00;
+        boolean found = false;
+        Map map;
+        Interpreter interpreter;
         try{
-            Database db = DatabasePlatformFactory.getPlatform().getDatabase();
-            Formula f = db.getFormula(classificationid);
-            error = db.getError();
-            
-            if(f == null){
-                error = "Formula cannot be found!";
-                return 0.00;
+            map = (Map) ObjectDeserializer.getInstance().read(info);
+            interpreter = new Interpreter();
+            for(Object o : map.entrySet()){
+                Map.Entry me = (Map.Entry) o;
+                interpreter.set(me.getKey().toString(), me.getValue().toString());
             }
             
-            Interpreter i = new Interpreter();
-            i.set("VOL", vol);
-            Object o = i.eval(f.getExpr());
-            value = Double.parseDouble(o.toString());
+            Rule rule = null;
+            Iterator<Rule> i = Main.RULES.iterator();
+            while(i.hasNext()){
+                rule = i.next();
+                boolean test = (boolean) interpreter.eval(rule.getCondition());
+                if(test) break;
+                rule = null;
+            }
+
+            if(rule == null){
+                error = "Rule cannot be found!";
+                return 0.00;
+            }
+            interpreter.set(rule.getVar(), vol);
+            return (double) interpreter.eval(rule.getAction());
         }catch(EvalError e){
             error = "ERROR: " +  e.toString();
         }
+
         return value;
     }
     

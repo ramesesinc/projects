@@ -6,8 +6,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import com.rameses.waterworks.bean.Account;
-import com.rameses.waterworks.bean.Formula;
 import com.rameses.waterworks.bean.Reading;
+import com.rameses.waterworks.bean.Rule;
 import com.rameses.waterworks.bean.Setting;
 import com.rameses.waterworks.util.SystemPlatformFactory;
 import java.util.ArrayList;
@@ -59,6 +59,7 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
                 + " duedate VARCHAR(50),"
                 + " discodate VARCHAR(50),"
                 + " rundate VARCHAR(50),"
+                + " info TEXT,"
                 + " assignee_objid VARCHAR(50),"
                 + " assignee_name VARCHAR(50))");
         
@@ -73,10 +74,11 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
                 + " dtreading VARCHAR(50), "
                 + " batchid VARCHAR(50))");
         
-        sqld.execSQL("CREATE TABLE formula ("
-                + " classificationid TEXT PRIMARY KEY,"
+        sqld.execSQL("CREATE TABLE rule ("
+                + " salience INTEGER ,"
+                + " condition TEXT,"
                 + " var TEXT,"
-                + " expr TEXT)");
+                + " action TEXT)");
        
     }
 
@@ -85,7 +87,7 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
         sqld.execSQL("DROP TABLE IF EXIST setting");
         sqld.execSQL("DROP TABLE IF EXIST account");
         sqld.execSQL("DROP TABLE IF EXIST reading");
-        sqld.execSQL("DROP TABLE IF EXIST formula");
+        sqld.execSQL("DROP TABLE IF EXIST rule");
         onCreate(sqld);
     }
     
@@ -190,6 +192,7 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
         String duedate = acct.get("duedate") != null ? acct.get("duedate").toString() : "";
         String discodate = acct.get("discodate") != null ? acct.get("discodate").toString() : "";
         String rundate = acct.get("rundate") != null ? acct.get("rundate").toString() : "";
+        String info = acct.get("info") != null ? acct.get("info").toString() : "";
         
         ContentValues values = new ContentValues();
         values.put("objid", objid);
@@ -221,6 +224,7 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
         values.put("duedate", duedate);
         values.put("discodate", discodate);
         values.put("rundate", rundate);
+        values.put("info", info);
         
         SQLiteDatabase db = this.getWritableDatabase();
         try{
@@ -262,6 +266,7 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
         String duedate = acct.get("duedate") != null ? acct.get("duedate").toString() : "";
         String discodate = acct.get("discodate") != null ? acct.get("discodate").toString() : "";
         String rundate = acct.get("rundate") != null ? acct.get("rundate").toString() : "";
+        String info = acct.get("info") != null ? acct.get("info").toString() : "";
         
         ContentValues values = new ContentValues();
         values.put("objid", objid);
@@ -291,6 +296,7 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
         values.put("duedate", duedate);
         values.put("discodate", discodate);
         values.put("rundate", rundate);
+        values.put("info", info);
         
         SQLiteDatabase db = this.getWritableDatabase();
         
@@ -314,7 +320,7 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
             Cursor cursor = db.rawQuery("SELECT * FROM account WHERE objid = ?", args);
             if(cursor.moveToFirst()){
                 do{
-                    account = new Account(cursor.getString(0),cursor.getString(1),cursor.getString(2),cursor.getString(3),cursor.getString(4),cursor.getString(5),cursor.getString(6),cursor.getString(7),cursor.getString(8),cursor.getString(9),cursor.getString(10),cursor.getString(11),cursor.getString(12),cursor.getString(13),cursor.getString(14),cursor.getString(15),cursor.getString(16),cursor.getString(17),cursor.getString(18),cursor.getString(19),cursor.getString(20),cursor.getString(21),cursor.getString(22),cursor.getString(23),cursor.getString(24),cursor.getString(25),cursor.getString(26));
+                    account = new Account(cursor.getString(0),cursor.getString(1),cursor.getString(2),cursor.getString(3),cursor.getString(4),cursor.getString(5),cursor.getString(6),cursor.getString(7),cursor.getString(8),cursor.getString(9),cursor.getString(10),cursor.getString(11),cursor.getString(12),cursor.getString(13),cursor.getString(14),cursor.getString(15),cursor.getString(16),cursor.getString(17),cursor.getString(18),cursor.getString(19),cursor.getString(20),cursor.getString(21),cursor.getString(22),cursor.getString(23),cursor.getString(24),cursor.getString(25),cursor.getString(26),cursor.getString(27));
                 }while(cursor.moveToNext());
             }
             db.close();
@@ -363,6 +369,7 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
                     String duedate = cursor.getString(24);
                     String discodate = cursor.getString(25);
                     String rundate = cursor.getString(26);
+                    String info = cursor.getString(27);
 
                     Account acct = new Account(
                         objid,
@@ -391,7 +398,8 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
                         period,
                         duedate,
                         discodate,
-                        rundate
+                        rundate,
+                        info
                     );
                     list.add(acct);
                 }while(cursor.moveToNext());
@@ -441,6 +449,7 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
                     String duedate = cursor.getString(24);
                     String discodate = cursor.getString(25);
                     String rundate = cursor.getString(26);
+                    String info = cursor.getString(27);
 
                     Account acct = new Account(
                         objid,
@@ -469,7 +478,8 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
                         period,
                         duedate,
                         discodate,
-                        rundate
+                        rundate,
+                        info
                     );
                     result.add(acct);
                 }while(cursor.moveToNext());
@@ -669,16 +679,17 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
     }
     
     @Override
-    public void createFormula(Formula formula) {
+    public void createRule(Rule rule) {
         ERROR = "";
         ContentValues values = new ContentValues();
-        values.put("classificationid", formula.getClassificationId());
-        values.put("var", formula.getVar());
-        values.put("expr", formula.getExpr());
+        values.put("salience", rule.getSalience());
+        values.put("condition", rule.getCondition());
+        values.put("var", rule.getVar());
+        values.put("action", rule.getAction());
         
         SQLiteDatabase db = this.getWritableDatabase();
         try{
-            db.insert("formula", null, values);
+            db.insert("rule", null, values);
         }catch(Exception e){
             ERROR = "Database Error: " + e.toString();
         }
@@ -686,16 +697,16 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
     }
     
     @Override
-    public List<Formula> getFormula() {
+    public List<Rule> getRules() {
         ERROR = "";
-        List<Formula> list = new ArrayList<Formula>();
+        List<Rule> list = new ArrayList<Rule>();
         try{
             SQLiteDatabase db = this.getWritableDatabase();
-            Cursor cursor = db.rawQuery("SELECT * FROM formula", null);
+            Cursor cursor = db.rawQuery("SELECT * FROM rule ORDER  BY salience DESC", null);
             if(cursor.moveToFirst()){
                 do{
-                    Formula formula = new Formula(cursor.getString(0),cursor.getString(1),cursor.getString(2));
-                    list.add(formula);
+                    Rule rule = new Rule(cursor.getInt(0),cursor.getString(1),cursor.getString(2),cursor.getString(3));
+                    list.add(rule);
                 }while(cursor.moveToNext());
             }
             db.close();
@@ -706,61 +717,11 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
     }
     
     @Override
-    public boolean formulaExist(Formula formula){
-        boolean b = false;
-        List<Formula> list = getFormula();
-        Iterator<Formula> i = list.iterator();
-        while(i.hasNext()){
-            Formula f = i.next();
-            if(formula.getClassificationId().equals(f.getClassificationId())) b = true;
-        }
-        return b;
-    }
-    
-    @Override
-    public void updateFormula(Formula formula) {
-        ERROR = "";
-        ContentValues values = new ContentValues();
-        values.put("var", formula.getVar());
-        values.put("expr", formula.getExpr());
-        
-        SQLiteDatabase db = this.getWritableDatabase();
-        String[] args = new String[]{ formula.getClassificationId() };
-        try{
-            db.update("account", values, "classificationid = ?", args);
-        }catch(Exception e){
-            ERROR = "Database Error: " + e.toString();
-        }
-        db.close();
-    }
-    
-    @Override
-    public Formula getFormula(String classificationid) {
-        ERROR = "";
-        Formula formula = null;
-        try{
-            classificationid = "%" + classificationid + "%";
-            String[] args = new String[]{classificationid};
-            SQLiteDatabase db = this.getWritableDatabase();
-            Cursor cursor = db.rawQuery("SELECT * FROM formula WHERE classificationid LIKE ?", args);
-            if(cursor.moveToFirst()){
-                do{
-                    formula = new Formula(cursor.getString(0),cursor.getString(1),cursor.getString(2));
-                }while(cursor.moveToNext());
-            }
-            db.close();
-        }catch(Exception e){
-            ERROR = "Database Error: " + e.toString();
-        }
-        return formula;
-    }
-    
-    @Override
-    public void clearFormula(){
+    public void clearRule(){
         ERROR = "";
         try{
             SQLiteDatabase db = this.getWritableDatabase();
-            db.execSQL("DELETE FROM formula");
+            db.execSQL("DELETE FROM rule");
             db.close();
         }catch(Exception e){
             ERROR = "Database Error: " + e.toString();

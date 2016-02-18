@@ -29,7 +29,8 @@ public class Account {
             period,
             duedate,
             discodate,
-            rundate;
+            rundate,
+            info;
     
     private String
             consumption,
@@ -68,7 +69,8 @@ public class Account {
             String period,
             String duedate,
             String discodate,
-            String rundate
+            String rundate,
+            String info
     ){
         this.objid = objid;
         this.acctno = acctno;
@@ -97,6 +99,7 @@ public class Account {
         this.duedate = duedate;
         this.discodate = discodate;
         this.rundate = rundate;
+        this.info = info;
     }
     
     public String getObjid(){ return objid; }
@@ -127,6 +130,7 @@ public class Account {
     public String getDueDate(){ return duedate; }
     public String getDiscoDate(){ return discodate; }
     public String getRunDate(){ return rundate; }
+    public String getInfo(){ return info; }
     
     public String getConsumption(){ return consumption; }
     public String getAmtDue(){ return amtdue; }

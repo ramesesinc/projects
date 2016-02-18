@@ -183,9 +183,10 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
         String assignee_objid = SystemPlatformFactory.getPlatform().getSystem().getUserID();
         String assignee_name = SystemPlatformFactory.getPlatform().getSystem().getFullName();
         String batchid = acct.get("batchid") != null ? acct.get("batchid").toString() : "";
-        String month = acct.get("month") != null ? acct.get("month").toString() : "";
+        String month = acct.get("month") != null ? getMonth(acct.get("month").toString()) : "";
         String year = acct.get("year") != null ? acct.get("year").toString() : "";
-        String period = acct.get("period") != null ? acct.get("period").toString() : "";
+        String fromdate = acct.get("fromdate") != null ? acct.get("fromdate").toString() : "";
+        String todate = acct.get("todate") != null ? acct.get("todate").toString() : "";
         String duedate = acct.get("duedate") != null ? acct.get("duedate").toString() : "";
         String discodate = acct.get("discodate") != null ? acct.get("discodate").toString() : "";
         String rundate = acct.get("rundate") != null ? acct.get("rundate").toString() : "";
@@ -216,7 +217,7 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
         values.put("batchid", batchid);
         values.put("month", month);
         values.put("year", year);
-        values.put("period", period);
+        values.put("period", fromdate + " - " + todate);
         values.put("duedate", duedate);
         values.put("discodate", discodate);
         values.put("rundate", rundate);
@@ -256,7 +257,8 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
         String batchid = acct.get("batchid") != null ? acct.get("batchid").toString() : "";
         String month = acct.get("month") != null ? acct.get("month").toString() : "";
         String year = acct.get("year") != null ? acct.get("year").toString() : "";
-        String period = acct.get("period") != null ? acct.get("period").toString() : "";
+        String fromdate = acct.get("fromdate") != null ? acct.get("fromdate").toString() : "";
+        String todate = acct.get("todate") != null ? acct.get("todate").toString() : "";
         String duedate = acct.get("duedate") != null ? acct.get("duedate").toString() : "";
         String discodate = acct.get("discodate") != null ? acct.get("discodate").toString() : "";
         String rundate = acct.get("rundate") != null ? acct.get("rundate").toString() : "";
@@ -285,7 +287,7 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
         values.put("batchid", batchid);
         values.put("month", month);
         values.put("year", year);
-        values.put("period", period);
+        values.put("period", fromdate + " - " + todate);
         values.put("duedate", duedate);
         values.put("discodate", discodate);
         values.put("rundate", rundate);
@@ -763,6 +765,26 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
         }catch(Exception e){
             ERROR = "Database Error: " + e.toString();
         }
+    }
+    
+    String getMonth(String m){
+        String result = "?";
+        try{
+            int month = Integer.parseInt(m);
+            if(month == 1) result = "January";
+            if(month == 2) result = "February";
+            if(month == 3) result = "March";
+            if(month == 4) result = "April";
+            if(month == 5) result = "May";
+            if(month == 6) result = "June";
+            if(month == 7) result = "July";
+            if(month == 8) result = "August";
+            if(month == 9) result = "September";
+            if(month == 10) result = "October";
+            if(month == 11) result = "November";
+            if(month == 12) result = "December";
+        }catch(Exception e){}
+        return result;
     }
     
 }

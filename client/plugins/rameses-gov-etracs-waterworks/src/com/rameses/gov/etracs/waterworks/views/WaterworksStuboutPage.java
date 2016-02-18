@@ -4,16 +4,14 @@
  */
 package com.rameses.gov.etracs.waterworks.views;
 
-import com.rameses.osiris2.themes.FormPage;
-import com.rameses.rcp.ui.annotations.StyleSheet;
 import com.rameses.rcp.ui.annotations.Template;
+import com.rameses.seti2.views.CrudFormPage;
 
 /**
  *
  * @author Rameses
  */
-@Template(FormPage.class)
-@StyleSheet
+@Template(CrudFormPage.class)
 public class WaterworksStuboutPage extends javax.swing.JPanel {
 
     /**
@@ -38,13 +36,14 @@ public class WaterworksStuboutPage extends javax.swing.JPanel {
         jScrollPane1 = new javax.swing.JScrollPane();
         xTextArea1 = new com.rameses.rcp.control.XTextArea();
         xLookupField4 = new com.rameses.rcp.control.XLookupField();
+        xLabel1 = new com.rameses.rcp.control.XLabel();
         xDataTable3 = new com.rameses.rcp.control.XDataTable();
         xButton1 = new com.rameses.rcp.control.XButton();
         xButton2 = new com.rameses.rcp.control.XButton();
         xButton3 = new com.rameses.rcp.control.XButton();
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
-        xTitledBorder1.setTitle("Stubout Information");
+        xTitledBorder1.setTitle("  General Information   ");
         xPanel1.setBorder(xTitledBorder1);
 
         xFormPanel1.setCaptionWidth(110);
@@ -65,13 +64,21 @@ public class WaterworksStuboutPage extends javax.swing.JPanel {
 
         xFormPanel1.add(jScrollPane1);
 
-        xLookupField4.setCaption("Assign To");
-        xLookupField4.setExpression("#{entity.assignee.name}");
-        xLookupField4.setHandler("waterworksreader:lookup");
-        xLookupField4.setName("entity.assignee"); // NOI18N
+        xLookupField4.setCaption("Reading Group");
+        xLookupField4.setExpression("#{entity.readinggroup.title}");
+        xLookupField4.setHandler("waterworks_readinggroup:lookup");
+        xLookupField4.setName("entity.readinggroup"); // NOI18N
         xLookupField4.setPreferredSize(new java.awt.Dimension(0, 20));
         xLookupField4.setRequired(true);
         xFormPanel1.add(xLookupField4);
+
+        xLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
+        xLabel1.setCaption("Assignee");
+        xLabel1.setDepends(new String[] {"entity.readinggroup"});
+        xLabel1.setExpression("#{entity.readinggroup.assignee.name}");
+        xLabel1.setPreferredSize(new java.awt.Dimension(43, 20));
+        xLabel1.setStretchWidth(100);
+        xFormPanel1.add(xLabel1);
 
         javax.swing.GroupLayout xPanel1Layout = new javax.swing.GroupLayout(xPanel1);
         xPanel1.setLayout(xPanel1Layout);
@@ -80,14 +87,14 @@ public class WaterworksStuboutPage extends javax.swing.JPanel {
             .addGroup(xPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 527, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(69, Short.MAX_VALUE))
+                .addContainerGap(61, Short.MAX_VALUE))
         );
         xPanel1Layout.setVerticalGroup(
             xPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(xPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder2 = new com.rameses.rcp.control.border.XTitledBorder();
@@ -95,7 +102,7 @@ public class WaterworksStuboutPage extends javax.swing.JPanel {
         xDataTable3.setBorder(xTitledBorder2);
         xDataTable3.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "item"}
+                new Object[]{"name", "account"}
                 , new Object[]{"caption", "Account No."}
                 , new Object[]{"width", 100}
                 , new Object[]{"minWidth", 0}
@@ -106,11 +113,11 @@ public class WaterworksStuboutPage extends javax.swing.JPanel {
                 , new Object[]{"editable", true}
                 , new Object[]{"editableWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
-                , new Object[]{"expression", "#{item.item.acctno}"}
+                , new Object[]{"expression", "#{item.account.acctno}"}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.LookupColumnHandler(null, "lookupAccount")}
             }),
             new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "item.acctname"}
+                new Object[]{"name", "account.acctname"}
                 , new Object[]{"caption", "Account Name"}
                 , new Object[]{"width", 100}
                 , new Object[]{"minWidth", 0}
@@ -123,7 +130,7 @@ public class WaterworksStuboutPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             }),
             new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "item.address.text"}
+                new Object[]{"name", "account.address.text"}
                 , new Object[]{"caption", "Address"}
                 , new Object[]{"width", 100}
                 , new Object[]{"minWidth", 0}
@@ -136,7 +143,7 @@ public class WaterworksStuboutPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             }),
             new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "item.meter.serialno"}
+                new Object[]{"name", "account.meter.serialno"}
                 , new Object[]{"caption", "Serial No."}
                 , new Object[]{"width", 100}
                 , new Object[]{"minWidth", 0}
@@ -153,17 +160,17 @@ public class WaterworksStuboutPage extends javax.swing.JPanel {
         xDataTable3.setName("selectedItem"); // NOI18N
         xDataTable3.setVarStatus("itemstat");
 
-        xButton1.setText("Up");
         xButton1.setImmediate(true);
         xButton1.setName("up"); // NOI18N
+        xButton1.setText("Up");
 
-        xButton2.setText("Down");
         xButton2.setImmediate(true);
         xButton2.setName("down"); // NOI18N
+        xButton2.setText("Down");
 
-        xButton3.setText("Remove Account");
         xButton3.setImmediate(true);
         xButton3.setName("removeAccount"); // NOI18N
+        xButton3.setText("Remove Account");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -188,7 +195,7 @@ public class WaterworksStuboutPage extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(xPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(xDataTable3, javax.swing.GroupLayout.DEFAULT_SIZE, 385, Short.MAX_VALUE)
+                .addComponent(xDataTable3, javax.swing.GroupLayout.DEFAULT_SIZE, 316, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(xButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -204,6 +211,7 @@ public class WaterworksStuboutPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XButton xButton3;
     private com.rameses.rcp.control.XDataTable xDataTable3;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
+    private com.rameses.rcp.control.XLabel xLabel1;
     private com.rameses.rcp.control.XLookupField xLookupField4;
     private com.rameses.rcp.control.XPanel xPanel1;
     private com.rameses.rcp.control.XTextArea xTextArea1;

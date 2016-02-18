@@ -1,0 +1,34 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.common.*;
+import com.rameses.services.extended.*;
+
+class WaterworksStuboutService  {
+	
+	@DataContext("waterworks_stubout")
+	def wstubout;
+
+	@DataContext("waterworks_stubout_account")
+	def wstuboutacct;
+
+
+	@ProxyMethod 
+	public def save( entity ) {
+		def info = wstubout.save( entity ); 
+		entity.accounts.eachWithIndex{ o,idx-> 
+			o.parentid = info.objid;
+			o.sortorder = idx; 
+			wstuboutacct.save( o ); 
+		} 
+		entity.objid = info.objid;
+		return entity; 
+	}
+
+	@ProxyMethod 
+	public def open( params ) {
+		def o = wstubout.read( params ); 
+		o.accounts = wstuboutacct.find([parentid: o.objid]).sort("sortorder").list();
+		return o; 
+	}
+} 

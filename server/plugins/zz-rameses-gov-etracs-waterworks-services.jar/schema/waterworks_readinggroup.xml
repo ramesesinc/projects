@@ -1,0 +1,10 @@
+<schema adapter="waterworks">
+
+	<element tablename="waterworks_readinggroup">
+		<field name="objid" primary="true"/> 
+		<field name="title" required="true" caption="Group Title"/> 
+		<field name="assignee_objid" required="true" visible="false"/> 
+		<field name="assignee_name" required="true" caption="Assignee Name"/> 
+		<field name="duedate" required="true" caption="Due Date"/> 
+	</element>
+</schema>

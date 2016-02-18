@@ -1,0 +1,35 @@
+<workunit>
+    <invokers>
+        <invoker type="waterworks_readinggroup:create" caption="Reading Group" action="create" target="popup" srole="MASTER"/>
+        <invoker type="waterworks_readinggroup:open" caption="Reading Group" action="open" target="popup" srole="MASTER"/>
+    </invokers>
+    
+    <code>
+        <![CDATA[
+           import com.rameses.osiris2.common.*;
+           import com.rameses.rcp.common.*;
+           import com.rameses.rcp.annotations.*;
+           import com.rameses.osiris2.client.*;
+           import com.rameses.seti2.models.*;
+
+           class ReadingGroupController extends SinglePageCrudFormModel{
+
+               def title='Reading Group';
+               String schemaName='waterworks_readinggroup';
+               
+               def getLookupUser(){
+                    def h = {o ->
+                        entity.assignto = [objid:o.objid, name: o.firstname+" "+o.lastname];
+                        binding.refresh("entity.*");
+                    }
+                    return Inv.lookupOpener("user:lookup",[onselect:h]);
+               }
+
+           }
+        ]]>
+    </code>
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.waterworks.views.WaterworksReadingGroupPage"/>
+    </pages>
+</workunit>

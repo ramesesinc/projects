@@ -1,9 +1,11 @@
 <schema adapter="waterworks">
+
 	<element tablename="waterworks_stubout">
-		<field name="objid" primary="true"  prefix="SO"/>
+		<field name="objid" primary="true" prefix="SO"/>
 		<field name="title" required="true" indexed="true" caption="Title"/>
 		<field name="description" required="true" indexed="true" caption="Description"/>
-		<field name="assignee_objid" required="true" caption="Assignee ID" visible="false"/>
-		<field name="assignee_name" required="true" indexed="true" caption="Assignee"/>
+		<complex name="readinggroup" ref="waterworks_readinggroup" jointype="many-to-one" required="true" caption="Reading Group">
+			<key field="readinggroup_objid" target="objid"/> 
+		</complex> 
 	</element>
 </schema>

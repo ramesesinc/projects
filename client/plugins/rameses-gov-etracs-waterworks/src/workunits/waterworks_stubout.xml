@@ -1,6 +1,13 @@
-<workunit extends="com/rameses/seti2/templates/CrudList.xml"
-          schemaName="waterworks_stubout" allowCreate="true" allowOpen="true" allowDelete="true">
+<workunit>
     <invokers>
-        <invoker folderid="/home/waterworks" caption="Stub-out List" action="init" index="5"/>  
+        <invoker type="waterworks_stubout:create" caption="Stub-out" action="init" index="5" target="popup"/>
+        <invoker type="waterworks_stubout:open" caption="Stub-out" action="open" index="5" target="popup"/>    
+        <invoker type="formActions" caption="Close" action="_close" immediate="true"/>  
     </invokers>
+    
+    <code class="com.rameses.gov.etracs.waterworks.models.WaterworksStubout" />   
+    
+    <pages>
+        <page name="default" template="com.rameses.gov.etracs.waterworks.views.WaterworksStuboutPage"/>
+    </pages>
 </workunit>

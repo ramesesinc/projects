@@ -1,0 +1,6 @@
+<workunit extends="com/rameses/seti2/templates/CrudList.xml"
+          schemaName="waterworks_stubout" allowCreate="true" allowOpen="true" allowDelete="true">
+    <invokers>
+        <invoker folderid="/home/waterworks" caption="Stub-out List" action="init" index="5"/>  
+    </invokers>
+</workunit>

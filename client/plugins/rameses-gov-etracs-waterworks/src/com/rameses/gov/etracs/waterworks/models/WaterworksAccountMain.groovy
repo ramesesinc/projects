@@ -14,6 +14,9 @@ class WaterworksAccountMain {
    @Service("EntityService")
    def entitySvc;
 
+   @Service('WaterworksClassificationService')
+   def classSvc;
+
    @Binding
    def binding;
 
@@ -34,6 +37,11 @@ class WaterworksAccountMain {
         formId = entity.objid;
         formtitle = entity.acctno;
         sections = Inv.lookupOpeners("waterworks_account:section",[entity:entity]);
+   }
+
+   def edit(){
+        title = entity.acctno + " (" + entity.acctname + ")";
+        return Inv.lookupOpener("waterworks_account:edit",[entity:entity])
    }
 
 }

@@ -35,9 +35,9 @@ public class CaptureAccountPage extends javax.swing.JPanel {
         xPanel1 = new com.rameses.rcp.control.XPanel();
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
         xTextField1 = new com.rameses.rcp.control.XTextField();
+        xLookupField1 = new com.rameses.rcp.control.XLookupField();
         xTextField2 = new com.rameses.rcp.control.XTextField();
         xComboBox1 = new com.rameses.rcp.control.XComboBox();
-        xLookupField1 = new com.rameses.rcp.control.XLookupField();
         xPanel3 = new com.rameses.rcp.control.XPanel();
         xFormPanel3 = new com.rameses.rcp.control.XFormPanel();
         xSubFormPanel1 = new com.rameses.rcp.control.XSubFormPanel();
@@ -68,6 +68,14 @@ public class CaptureAccountPage extends javax.swing.JPanel {
         xTextField1.setRequired(true);
         xFormPanel1.add(xTextField1);
 
+        xLookupField1.setCaption("Owner Name");
+        xLookupField1.setExpression("#{entity.owner.name}");
+        xLookupField1.setHandler("lookupEntity");
+        xLookupField1.setName("entity.owner"); // NOI18N
+        xLookupField1.setPreferredSize(new java.awt.Dimension(0, 20));
+        xLookupField1.setRequired(true);
+        xFormPanel1.add(xLookupField1);
+
         xTextField2.setCaption("Account Name");
         xTextField2.setName("entity.acctname"); // NOI18N
         xTextField2.setPreferredSize(new java.awt.Dimension(0, 20));
@@ -81,14 +89,6 @@ public class CaptureAccountPage extends javax.swing.JPanel {
         xComboBox1.setPreferredSize(new java.awt.Dimension(200, 20));
         xComboBox1.setRequired(true);
         xFormPanel1.add(xComboBox1);
-
-        xLookupField1.setCaption("Owner Name");
-        xLookupField1.setExpression("#{entity.owner.name}");
-        xLookupField1.setHandler("lookupEntity");
-        xLookupField1.setName("entity.owner"); // NOI18N
-        xLookupField1.setPreferredSize(new java.awt.Dimension(0, 20));
-        xLookupField1.setRequired(true);
-        xFormPanel1.add(xLookupField1);
 
         javax.swing.GroupLayout xPanel1Layout = new javax.swing.GroupLayout(xPanel1);
         xPanel1.setLayout(xPanel1Layout);
@@ -143,7 +143,8 @@ public class CaptureAccountPage extends javax.swing.JPanel {
             xPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(xPanel3Layout.createSequentialGroup()
                 .addGap(6, 6, 6)
-                .addComponent(xFormPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, 56, Short.MAX_VALUE))
+                .addComponent(xFormPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, 66, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder3 = new com.rameses.rcp.control.border.XTitledBorder();
@@ -213,11 +214,10 @@ public class CaptureAccountPage extends javax.swing.JPanel {
             xPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(xPanel4Layout.createSequentialGroup()
                 .addGap(6, 6, 6)
-                .addComponent(xFormPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(xPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(xFormPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(xFormPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(xPanel4Layout.createSequentialGroup()
-                .addComponent(xFormPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder4 = new com.rameses.rcp.control.border.XTitledBorder();
@@ -288,7 +288,7 @@ public class CaptureAccountPage extends javax.swing.JPanel {
                 .addComponent(xPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(xPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(58, Short.MAX_VALUE))
+                .addContainerGap(37, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables

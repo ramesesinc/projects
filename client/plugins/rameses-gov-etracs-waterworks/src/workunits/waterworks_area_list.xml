@@ -1,5 +1,5 @@
 <workunit extends="com/rameses/seti2/templates/CrudList.xml" 
-          schemaName="waterworks_area">
+          schemaName="waterworks_area" cols="name,description,assignee.name">
     <invokers>
         <invoker folderid="/explorer/master/waterworks" caption="Area" index="0" srole="MASTER" action="init"/>
     </invokers>

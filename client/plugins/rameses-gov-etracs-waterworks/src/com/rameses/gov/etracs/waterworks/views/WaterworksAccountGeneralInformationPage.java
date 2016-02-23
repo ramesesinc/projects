@@ -42,7 +42,6 @@ public class WaterworksAccountGeneralInformationPage extends javax.swing.JPanel 
         jScrollPane1 = new javax.swing.JScrollPane();
         xTextArea1 = new com.rameses.rcp.control.XTextArea();
         xTextField5 = new com.rameses.rcp.control.XTextField();
-        xTextField6 = new com.rameses.rcp.control.XTextField();
         xTextField7 = new com.rameses.rcp.control.XTextField();
         xPanel1 = new com.rameses.rcp.control.XPanel();
         xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
@@ -123,13 +122,6 @@ public class WaterworksAccountGeneralInformationPage extends javax.swing.JPanel 
         xTextField5.setName("entity.classificationid"); // NOI18N
         xTextField5.setPreferredSize(new java.awt.Dimension(200, 20));
         xFormPanel1.add(xTextField5);
-
-        xTextField6.setEditable(false);
-        xTextField6.setCaption("Area");
-        xTextField6.setFocusable(false);
-        xTextField6.setName("entity.area.name"); // NOI18N
-        xTextField6.setPreferredSize(new java.awt.Dimension(200, 20));
-        xFormPanel1.add(xTextField6);
 
         xTextField7.setEditable(false);
         xTextField7.setCaption("Balance");
@@ -248,7 +240,7 @@ public class WaterworksAccountGeneralInformationPage extends javax.swing.JPanel 
         xTextField16.setEditable(false);
         xTextField16.setCaption("Size");
         xTextField16.setFocusable(false);
-        xTextField16.setName("entity.metersize.objid"); // NOI18N
+        xTextField16.setName("entity.meter.sizeid"); // NOI18N
         xFormPanel4.add(xTextField16);
 
         xTextField17.setEditable(false);
@@ -298,7 +290,7 @@ public class WaterworksAccountGeneralInformationPage extends javax.swing.JPanel 
                 .addGroup(xPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(xFormPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(xFormPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(62, Short.MAX_VALUE))
+                .addContainerGap(81, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -355,7 +347,6 @@ public class WaterworksAccountGeneralInformationPage extends javax.swing.JPanel 
     private com.rameses.rcp.control.XTextField xTextField3;
     private com.rameses.rcp.control.XTextField xTextField4;
     private com.rameses.rcp.control.XTextField xTextField5;
-    private com.rameses.rcp.control.XTextField xTextField6;
     private com.rameses.rcp.control.XTextField xTextField7;
     private com.rameses.rcp.control.XTextField xTextField8;
     private com.rameses.rcp.control.XTextField xTextField9;

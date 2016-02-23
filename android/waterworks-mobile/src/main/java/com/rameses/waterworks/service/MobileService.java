@@ -79,6 +79,20 @@ public class MobileService {
         return result;
     }
     
+    public void cancelDownload(Object params){
+        ERROR = "";
+        try{
+            service.cancelDownload(params);
+        }catch(Exception e){
+            ERROR = "MobileService Error: " + e.toString();
+            if(Main.LOG != null){
+                Main.LOG.error("MobileService Error",e.toString());
+            }else{
+                e.printStackTrace();
+            }
+        }
+    }
+    
     public Map upload(Object params){
         ERROR = "";
         Map result = new HashMap();
@@ -103,6 +117,8 @@ public class MobileService {
         public List<Map> download(Object params);
         
         public String confirmDownload(Object params);
+        
+        public void cancelDownload(Object params);
         
         public Map upload(Object params);
         

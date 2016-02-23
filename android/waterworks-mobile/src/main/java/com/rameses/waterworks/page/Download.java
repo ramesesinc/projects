@@ -2,15 +2,15 @@ package com.rameses.waterworks.page;
 
 import com.rameses.Main;
 import com.rameses.waterworks.bean.Account;
-import com.rameses.waterworks.bean.Area;
+import com.rameses.waterworks.bean.ReadingGroup;
 import com.rameses.waterworks.bean.Rule;
 import com.rameses.waterworks.database.Database;
 import com.rameses.waterworks.database.DatabasePlatformFactory;
 import com.rameses.waterworks.dialog.Dialog;
 import com.rameses.waterworks.layout.Header;
-import com.rameses.waterworks.service.AreaService;
 import com.rameses.waterworks.service.MobileRuleService;
 import com.rameses.waterworks.service.MobileService;
+import com.rameses.waterworks.service.ReadingGroupService;
 import com.rameses.waterworks.util.SystemPlatformFactory;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,7 +46,7 @@ import javafx.util.Callback;
 public class Download {
     
     VBox root;
-    ListView<Area> listView;
+    ListView<ReadingGroup> listView;
     Label label;
     ProgressBar progressbar;
     Button download;
@@ -60,20 +60,21 @@ public class Download {
     int counter = 0;
     String batchid;
     String status = "";
+    List<String> downloadedList;
     
     public Download(){
         Header.TITLE.setText("Download");
         
-        Callback<Area,ObservableValue<Boolean>> property = new Callback<Area,ObservableValue<Boolean>>(){
+        Callback<ReadingGroup,ObservableValue<Boolean>> property = new Callback<ReadingGroup,ObservableValue<Boolean>>(){
             @Override
-            public ObservableValue<Boolean> call(Area a) {
+            public ObservableValue<Boolean> call(ReadingGroup a) {
                 return a.selected;
             }
         };
         
-        Callback<ListView<Area>, ListCell<Area>> forListView = CheckBoxListCell.forListView(property);
+        Callback<ListView<ReadingGroup>, ListCell<ReadingGroup>> forListView = CheckBoxListCell.forListView(property);
         
-        listView = new ListView<Area>();
+        listView = new ListView<ReadingGroup>();
         listView.setStyle("-fx-font-size: 25px;");
         listView.setPrefHeight(Main.HEIGHT*0.50);
         listView.setCellFactory(forListView);
@@ -96,19 +97,24 @@ public class Download {
             @Override
             public void handle(ActionEvent event) {
                 //GET THE SELECTED AREAS FOR DOWNLOAD
-                List<String> areas = new ArrayList();
-                for(Area a : listView.getItems()){
+                List<String> groupids = new ArrayList();
+                for(ReadingGroup a : listView.getItems()){
                     if(a.isSelected()){
-                        areas.add(a.getObjid());
+                        groupids.add(a.getObjid());
                     }
+                }
+                
+                if(groupids.size() > 1){
+                    Dialog.showAlert("Multiple downloads are not supported!");
+                    return;
                 }
                 
                 //INIT DOWNLOAD
                 Map params = new HashMap();
-                params.put("areaids", areas);
+                params.put("assigneeid", SystemPlatformFactory.getPlatform().getSystem().getUserID());
+                params.put("groupids", groupids);
                 MobileService s1  = new MobileService();
                 Map initialData = s1.initForDownload(params);
-                Main.LOG.error("INIT DATA", initialData.toString());
                 
                 batchid = initialData.get("batchid") != null ? initialData.get("batchid").toString() : "";
                 initCount = initialData.get("count") != null ? Integer.parseInt(initialData.get("count").toString()) : 0;
@@ -140,29 +146,35 @@ public class Download {
                 progressbar.progressProperty().bind(task.progressProperty());
                 new Thread(task).start();
                 download.setText("Cancel");
-                    download.setOnAction(new EventHandler<ActionEvent>(){
-                        @Override
-                        public void handle(ActionEvent event) {
-                            continueDownload = false;
-                            label.setVisible(false);
-                            progressbar.setVisible(false);
-                            download.setText("Back");
-                            download.setOnAction(new EventHandler<ActionEvent>(){
-                                @Override
-                                public void handle(ActionEvent event) {
+                download.setOnAction(new EventHandler<ActionEvent>(){
+                    @Override
+                    public void handle(ActionEvent event) {
+                        continueDownload = false;
+                        label.setVisible(false);
+                        progressbar.setVisible(false);
+                        download.setText("Back");
+                        download.setOnAction(new EventHandler<ActionEvent>(){
+                            @Override
+                            public void handle(ActionEvent event) {
+                                Main.ROOT.setCenter(new Home().getLayout());
+                            }
+                        });
+                        root.setOnKeyReleased(new EventHandler<KeyEvent>(){
+                            @Override
+                            public void handle(KeyEvent event) {
+                                if(event.getCode() == KeyCode.ESCAPE){
                                     Main.ROOT.setCenter(new Home().getLayout());
                                 }
-                            });
-                            root.setOnKeyReleased(new EventHandler<KeyEvent>(){
-                                @Override
-                                public void handle(KeyEvent event) {
-                                    if(event.getCode() == KeyCode.ESCAPE){
-                                        Main.ROOT.setCenter(new Home().getLayout());
-                                    }
-                                }
-                            });
-                        }
-                    });
+                            }
+                        });
+                        Map params = new HashMap();
+                        params.put("batchid", batchid);
+                        params.put("downloadedlist", downloadedList);
+                        Main.LOG.error("DOWNLOADED LIST", downloadedList.toString());
+                        MobileService svc = new MobileService();
+                        svc.cancelDownload(params);
+                    }
+                });
             }
         });
         
@@ -188,6 +200,7 @@ public class Download {
         task = new Task<Void>(){
             @Override
             protected Void call() throws Exception {
+                downloadedList = new ArrayList<String>();
                 counter = 0;
                 Iterator<Map> it = accountList.iterator();
                 while(it.hasNext()){
@@ -201,10 +214,16 @@ public class Download {
                     Account result = db.findAccountByID(objid);
                     if(result == null){
                         db.createAccount(account);
-                        if(db.getError().isEmpty()) ++counter;
+                        if(db.getError().isEmpty()){
+                            ++counter;
+                            downloadedList.add(objid);
+                        }
                     }else{
                         db.updateAccount(account);
-                        if(db.getError().isEmpty()) ++counter;
+                        if(db.getError().isEmpty()){
+                            ++counter;
+                            downloadedList.add(objid);
+                        }
                     }
                     double percent = indexposition/downloadsize;
                     updateProgress(indexposition,downloadsize);
@@ -281,23 +300,26 @@ public class Download {
                     @Override
                     public void run() {
                         Map params = new HashMap();
-                        params.put("userid", SystemPlatformFactory.getPlatform().getSystem().getUserID());
+                        params.put("assigneeid", SystemPlatformFactory.getPlatform().getSystem().getUserID());
 
-                        AreaService areaSvc = new AreaService();
-                        List<Map> result = areaSvc.getListByAssignee(params);
+                        ReadingGroupService readingGroupSvc = new ReadingGroupService();
+                        List<Map> result = readingGroupSvc.getListByAssignee(params);
 
-                        ObservableList<Area> data = FXCollections.observableArrayList();
+                        ObservableList<ReadingGroup> data = FXCollections.observableArrayList();
                         for(Map m : result){
                             String objid = m.get("objid").toString();
-                            String name = m.get("name").toString();
-                            String description = m.get("description").toString();
-                            data.add(new Area(objid,name,description,true));
+                            String title = m.get("title").toString();
+                            Map assignee = (Map) m.get("assignee");
+                            String assigneeid = assignee.get("objid").toString();
+                            String assigneename = assignee.get("name").toString();
+                            String duedate = m.get("duedate").toString();
+                            data.add(new ReadingGroup(objid,title,assigneeid,assigneename,duedate,false));
                         }
                         listView.setItems(data);
                         
                         Dialog.hide();
-                        if(!areaSvc.ERROR.isEmpty()){
-                            Dialog.showError(areaSvc.ERROR);
+                        if(!readingGroupSvc.ERROR.isEmpty()){
+                            Dialog.showError(readingGroupSvc.ERROR);
                         }
                     }
                 });

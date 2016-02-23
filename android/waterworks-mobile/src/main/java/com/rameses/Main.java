@@ -58,6 +58,7 @@ public class Main extends Application {
         PAGE.getChildren().add(ROOT);
      
         loadSysVar();
+        loadRules();
         
         Scene scene = new Scene(PAGE, WIDTH, HEIGHT);
         scene.getStylesheets().add("css/Style1.css");

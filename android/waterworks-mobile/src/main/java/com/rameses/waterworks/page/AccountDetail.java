@@ -135,7 +135,6 @@ public class AccountDetail {
         root.getChildren().add(createDetail("Email",account.getEmail()));
         root.getChildren().add(createDetail("Serial No",account.getSerialNo()));
         root.getChildren().add(createDetail("Classification",account.getClassificationId()));
-        root.getChildren().add(createDetail("Area",account.getAreaName()));
         root.getChildren().add(createDetail("Balance",account.getBalance()));
         root.getChildren().add(createDetail("Penalty",account.getPenalty()));
         root.getChildren().add(createDetail("Other Charge",account.getOtherCharge()));

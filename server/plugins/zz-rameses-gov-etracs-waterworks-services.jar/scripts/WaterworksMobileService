@@ -21,9 +21,10 @@ class WaterworksMobileService {
 
 	@ProxyMethod
 	public def initForDownload( def o ){
-		if(!o.areaids)	
-			throw new Exception("Areaids is required in WaterworksMobileService.download");
+		if(!o.assigneeid)	
+			throw new Exception("Assignee ID is required!");
 		def batchid = 'BTC' + new UID();
+		def groupids = "('" + o.groupids.join("','") + "')";
         def y = dateSvc.getServerYear();
 		def m = dateSvc.getServerMonth() - 1;
 		if(m==0) {
@@ -41,10 +42,10 @@ class WaterworksMobileService {
 		def discodate = new DateBean(dueyear + "-" + duemonth + "-" + 28).getDate();
 		def rundate = dateSvc.getServerDate();
 
-		def ai = "'" + o.areaids.join("','") + "'";
 		wm.insertForDownload(
 			[
-				areaids    : ai,
+				assigneeid : o.assigneeid,
+				groupids   : groupids,
 				year       : y, 
 				month      : m, 
 				batchid    : batchid,
@@ -69,6 +70,18 @@ class WaterworksMobileService {
 		def list = wm.getListForDownload(o);
 		list.each {
 			it.barcode = '51030:'+it.acctno;
+
+			def sb = new StringBuilder();
+			sb.append("[classification:");
+			sb.append("\""+it.classificationid+"\"");
+			sb.append(",");
+			sb.append("metersize:");
+			sb.append("\""+it.metersize+"\"");
+			sb.append(",");
+			sb.append("barangay:");
+			sb.append("\""+it.barangay+"\"");
+			sb.append("]");
+			it.info = sb.toString();
 		}
 		return list;
 	}
@@ -78,6 +91,15 @@ class WaterworksMobileService {
 		if(!o.batchid) throw new Exception("Please specify batchid!"); 
 		wm.find([batchid:o.batchid]).update([state:"DOWNLOADED"]);
 		return "OK";
+	}
+
+	@ProxyMethod
+	public void cancelDownload( def o ){
+		if(!o.batchid) throw new Exception("Please specify batchid!"); 
+		def list = "('" + o.downloadedlist.join("','") + "')";
+		println 'BATCHID : ' + o.batchid;
+		println 'LIST : ' + o.list;
+		wm.cancelDownload([batchid: o.batchid, downloadedlist: list]);
 	}
 
 	@ProxyMethod

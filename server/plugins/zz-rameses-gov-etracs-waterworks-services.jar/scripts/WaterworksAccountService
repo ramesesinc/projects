@@ -43,6 +43,11 @@ class WaterworksAccountService {
 	}
 
 	@ProxyMethod
+	public def update( def o ){
+		return acct.update(o);
+	}
+
+	@ProxyMethod
 	public def open(def o) {
 		return acct.find(o).first();
 	}

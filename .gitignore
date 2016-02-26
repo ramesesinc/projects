@@ -25,3 +25,6 @@ android/*/Thumbs.db
 /**/nbproject/groovy-build.xml
 /**/.terminal
 /**/Thumbs.db
+
+/**/.gradle
+/**/.nb-gradle

@@ -96,7 +96,7 @@ public class BackTaxController
         if( item.mv < 0.0 ) throw new Exception('Market Value must be greater than or equal to zero.')
         if( item.av < 0.0 ) throw new Exception('Assessed Value must be greater than or equal to zero.')
         if( item.av > item.mv) throw new Exception('Assessed Value must be less than Market Value.')
-        if( item.ry >= entity.rpu.ry ) throw new Exception("RY must be less than current FAAS revision year $entity.rpu.ry")
+        if( item.ry > entity.rpu.ry ) throw new Exception("RY must be less than current FAAS revision year $entity.rpu.ry")
         if( item.effectivityyear < item.ry ) throw new Exception('Effectivity must be greater than or equal to RY')
         validateRySequence( item )
         entity.backtaxyrs = svc.validateAndGetNumberBackTaxYears(entity.effectivityyear, item)
@@ -108,7 +108,7 @@ public class BackTaxController
         if( ! item.objid ) {
             //new item 
             if( item.ry > entity.rpu.ry ) throw new Exception('RY must be less than ' + entity.rpu.ry + '.')
-            list = entity.backtaxes.findAll{ it.ry <= item.ry }
+            list = entity.backtaxes.findAll{ it.ry < item.ry }
         }
         else {
             def index = entity.backtaxes.findIndexOf{ it.objid == item.objid }

@@ -2,7 +2,9 @@
 <workunit>
     <invokers>
         <invoker type="image:view" action="init" caption="Image Viewer" target="popup" width="800" height="600" alwaysOnTop="true" />
-        <invoker type="formActions" action="_close" caption="Close" mnemonic="c" />
+        <invoker type="formActions" action="_close" caption="Close" mnemonic="c" visibleWhen="#{mode=='read'}" />
+        <invoker type="formActions" action="back" caption="Back" mnemonic="b" visibleWhen="#{mode=='preview'}" />
+        <invoker type="formActions" action="preview" caption="Preview" mnemonic="p" visibleWhen="#{mode=='read'}" />
     </invokers>
     
     <code lang="groovy">
@@ -12,6 +14,8 @@
 import com.rameses.rcp.common.*
 import com.rameses.rcp.annotations.*
 import com.rameses.osiris2.client.*
+import com.rameses.osiris2.reports.*;
+import com.rameses.etracs.shared.*;
 import com.rameses.gov.etracs.rpt.util.*;
 
 public class ImageViewerController 
@@ -20,18 +24,54 @@ public class ImageViewerController
     @Binding
     def binding;
     
+    def MODE_READ = 'read';
+    def MODE_PREVIEW = 'preview';
+    
+    @Service('ReportParameterService')
+    def paramSvc;
+    
     def entity;
+    def mode;
     
     public String getTitle(){
         return entity.title + ' Image'
     }
     
     void init(){
+        mode = MODE_READ;
     }
     
     def getImage(){
         return DBImageUtil.getInstance().getImage(entity.objid);
     }
+    
+    def back(){
+        mode = MODE_READ;
+        return 'default';
+    }
+    
+    def preview(){
+        report.viewReport();
+        mode = MODE_PREVIEW;
+        return 'preview'
+    }
+    
+    
+    def reportPath = 'com/rameses/gov/etracs/rpt/requirement/ui/'
+    
+    def report = [
+        getReportName : { return reportPath + 'requirement.jasper'},
+        getSubReports : { return null; },
+        getReportData : { return entity },
+        getParameters : {
+            def params = paramSvc.getStandardParameter()
+            params.LOGOLGU = EtracsReportUtil.getInputStream("lgu-logo.png")
+            params.REQIMAGE = DBImageUtil.getInstance().getInputStream(entity.objid)
+            params.LOGOASSESSOR = EtracsReportUtil.getInputStream("lgu-assessor.png")
+            params.LOGOBLGF = EtracsReportUtil.getInputStream("lgu-blgf.png")
+            return params 
+        },
+    ] as ReportModel
     
     
 }
@@ -41,6 +81,7 @@ public class ImageViewerController
     
     <pages>
         <page template="com.rameses.gov.etracs.rpt.util.ImageViewerPage" />
+        <page name="preview" template="com.rameses.gov.treasury.report.PreviewPage" />
     </pages>
 </workunit>
 

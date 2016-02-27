@@ -44,8 +44,11 @@ class ReportRoaController extends com.rameses.gov.etracs.rpt.report.AsyncReportC
     }
     
    def getReporttypes(){
-        return ['PERIOD', 'AS OF DATE']
-   }
+        return [
+            [type:'period', caption:'PERIOD'],
+            [type:'asof', caption:'AS OF DATE'],
+        ]
+   }    
 }
 
 ]]>        

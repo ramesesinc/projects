@@ -147,7 +147,8 @@ class FAASSupportService
 
 	@ProxyMethod
 	public void changeModeToDataCapture( tdno ) {
-		if (!tdno) throw new Exception('TD No. if required.')
+		if (!tdno) 
+			return
 
 		def faas = faasSvc.getFaasByTdNo(tdno)
 		if (faas.state != 'INTERIM')
@@ -161,7 +162,7 @@ class FAASSupportService
 	@ProxyMethod
 	public def deleteApprovedFaas( params ) {
 		if (!params.tdno) 
-			throw new Exception('TD No. if required.')
+			return
 
 		def faas = faasSvc.getFaasByTdNo(params.tdno)
 		if (!faas)

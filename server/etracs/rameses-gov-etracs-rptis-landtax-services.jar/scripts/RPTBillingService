@@ -420,7 +420,7 @@ public class RPTBillingService
         bill.items = em.getBillLedgerItems(bill)
         bill.items.each{
         	it._pdate = bill._pdate
-	        it.taxdifference = (it.taxdifference == 1)
+	        it.taxdifference = (it.taxdiffrence == true || it.taxdifference == 1)
         }
 	}
 

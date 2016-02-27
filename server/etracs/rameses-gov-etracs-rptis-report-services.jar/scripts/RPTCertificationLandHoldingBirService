@@ -4,79 +4,45 @@ import com.rameses.common.*;
 
 class RPTCertificationLandHoldingBirService 
 {
-    @ActiveDB('rptcertification')
+    @ActiveDB('rptcertification_bir')
     def em;
 
     @Service('RPTCertificationService')
     def certSvc 
 
+
+    @ProxyMethod
+    public def getPropertiesForBIR(entity){
+    	validateAndSetParams(entity)
+		def items = em.getLandHoldingBirItems(entity)
+		return getBirRuleApplicableProperties(entity, items)
+    }    
+
+
+    @ProxyMethod
+    public def getPropertiesWithImprovementForBIR( entity ) {
+    	validateAndSetParams(entity)
+		def items = em.getLandHoldingWithImprovementBirItems(entity)
+		return getBirRuleApplicableProperties(entity, items)
+    }
+
+    @ProxyMethod
+    public def getPropertiesWithNoImprovementForBIR( entity ) {
+    	validateAndSetParams(entity)
+		def items = em.getLandHoldingWithNoImprovementBirItems(entity)
+		return getBirRuleApplicableProperties(entity, items)
+    }
+
 	
 	@ProxyMethod
 	public def createCertification( cert ) {
 		certSvc.createCertification(cert)
-		certSvc.buildFilter(cert)
-		em.insertLandHoldingItems(cert)
+		cert.properties.each{
+			em.createItem([objid:cert.objid, refid:it.objid])
+		}
 		cert.items = getLandHoldingItems(cert)
 		return cert 
 	}
-
-	@ProxyMethod
-	public def createLandHoldingWithImprovement(cert){
-		certSvc.createCertification(cert)
-		certSvc.buildFilter(cert)
-		em.insertLandHoldingWithImprovementItems(cert)
-		cert.items = getLandHoldingItems(cert)
-		return cert 
-	}
-
-	@ProxyMethod
-	public def createLandHoldingWithNoImprovement( cert ) {
-		certSvc.createCertification(cert)
-		certSvc.buildFilter(cert)
-		em.insertLandHoldingWithNoImprovementItems(cert)
-		cert.items = getLandHoldingItems(cert)
-		return cert 
-	}
-
-	@ProxyMethod
-	public def createLandHoldingBir(cert){
-		certSvc.createCertification(cert)
-		certSvc.buildFilter(cert)
-		 
-		//adjust filter based on asyofyear
-		cert.asoffilter = " and f.state in ('CURRENT', 'CANCELLED') "
-		cert.asoffilter += ' and f.year <= $P{asofyear} '
-
-		def items = em.getLandHoldingBirItems(cert)
-
-		//rule 1: do not include GR transactions approved on asofyear 
-		def gritems = items.findAll{ it.year == cert.asofyear && it.txntype.objid == 'GR'}
-		if (gritems){
-			items.removeAll(gritems)
-		}
-
-		// group by pin and in case of duplicate, include only the latest year
-		// this is a case where a property is processed several time before the 
-		// specified as of year
-		def pingroup = items.groupBy{it.pin}
-		def holdings = []
-		
-		pingroup.each{k, v ->
-			holdings << v.last()
-		}
-
-		holdings.each{
-			it.rptcertificationid = cert.objid
-			it.refid = it.faasid 
-			em.create(it, 'item')
-		}
-
-		if (!holdings)
-			throw new Exception('There are no registered properties found.')
-
-		cert.items = getLandHoldingItems(cert)
-		return cert 
-	}		
 
 
 	@ProxyMethod
@@ -90,7 +56,7 @@ class RPTCertificationLandHoldingBirService
 
 
 	def getLandHoldingItems(cert){
-		def items = em.getLandHoldingItems(cert).each{
+		def items = em.getItems(cert).each{
 			it.street = (it.street ? it.street : it.barangay)
 			it.description = it.cadastrallotno
 		}
@@ -99,5 +65,45 @@ class RPTCertificationLandHoldingBirService
 			throw new Exception('There are no land properties registered for this taxpayer.')
 		return items
 	}
+
+
+	void validateAndSetParams(entity){
+		entity.taxpayerid = entity.taxpayer.objid 
+
+    	def data = em.findRyForAsOfYear(entity)
+    	if (!data) 
+    		throw new Exception('Revision year cannot be determined for the specified As of Year.')
+    	entity.ry = data.ry 
+	}
+
+	def getBirRuleApplicableProperties(entity, items){
+
+		//rule 1: do not include GR transactions approved on asofyear 
+		def gritems = items.findAll{ it.year == entity.asofyear && it.txntype.objid == 'GR'}
+		if (gritems){
+			items.removeAll(gritems)
+		}
+
+		// group by pin and in case of duplicate, include only the latest year
+		// this is a case where a property is processed several time before the 
+		// specified as of year
+		def pingroup = items.groupBy{it.fullpin}
+		def holdings = []
+		
+		pingroup.each{k, v ->
+			holdings << v.last()
+		}
+
+		if (!holdings){
+			if (entity.opener == 'landholdingwithimprov')
+				throw new Exception('There are no existing land properties with improvements.')
+			if (entity.opener == 'landholdingwithnoimprovbir')
+				throw new Exception('There are no existing land properties with no improvements.')
+			throw new Exception('There are no registered properties found.')
+		}
+
+		return holdings 
+    }
+
 
 }

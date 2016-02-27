@@ -10,6 +10,8 @@
         <field name="effectivityyear" required="true" type="integer" />
         <field name="effectivityqtr" required="true" type="integer" />
         <field name="motherfaasid" />
+        <field name="mothertdnos" />
+        <field name="motherpins" />
         <field name="memoranda" required="true" />
         <field name="lguid" required="true" />
         <field name="filetype" required="true" />

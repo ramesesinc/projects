@@ -1,67 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit extends="rpt_wtemplates/CertificationController.xml">
     <invokers>
-        <invoker folderid="/explorer/txn/rpt/cert" action="init" caption="Land Holding (BIR)" opener="landholding" index="1" 
-            role="CERTIFICATION_ISSUER,RECORD" permission="certification.landholding"/>
+        <invoker folderid="/explorer/txn/rpt/cert/bir" action="init" 
+                 caption="Land Holding" 
+                 opener="landholdingbir" index="1" 
+                role="CERTIFICATION_ISSUER,RECORD" 
+                 permission="certification.landholding"/>
             
-        <invoker folderid="/menu/txn/rpt/cert" action="init" caption="Land Holding (BIR)" opener="landholding" index="1" 
-            role="CERTIFICATION_ISSUER,RECORD" permission="certification.landholding"/>
-            
-        <invoker type="landholding:open" action="open" caption="Land Holding" /> 
+        <invoker type="landholdingbir:open" action="open" caption="Land Holding" /> 
     </invokers>
-    
-    <code>
-        
-<![CDATA[        
-
-
-package com.rameses.gov.etracs.rpt.report.certification;
-
-
-import com.rameses.rcp.annotations.*
-import com.rameses.rcp.common.*
-import com.rameses.osiris2.client.*
-import com.rameses.osiris2.reports.*;
-
-public class RPTCertificationsLandHoldingController extends com.rameses.gov.etracs.rpt.report.certification.AbstractCertificationController
-{
-    @Service('RPTCertificationLandHoldingBirService')
-    def svc;
-    
-    boolean showasofyear = true;
-    
-    def getService(){
-        return svc;
-    }
-    
-    def reportPath = 'com/rameses/gov/etracs/rpt/report/certification/'
-    String reportName = reportPath + 'LandHoldingCertification.jasper'
-
-    def save(){
-        return svc.createLandHoldingBir(entity)
-    }
-    
-    SubReport[] getSubReports() {
-        return [
-            new SubReport('LandHoldingCertificationItem', reportPath + 'LandHoldingCertificationItem.jasper'),
-            new SubReport('FootNoteItem', reportPath + 'FootNoteItem.jasper'),
-        ] as SubReport[]
-    }
-    
-    Map getParameters(){
-        return [REPORTTITLE:'Land Holdings']
-    }
-    
-    def getCertificationTypes(){
-        return [
-            [type:'bytaxpayer', caption:'By Taxpayer'],
-        ]
-    }
-    
-}
-
-
-]]>
-
-    </code>
+    <code class="com.rameses.gov.etracs.rpt.report.certification.LandHoldingBIRController"/>
+    <pages>
+        <page template="com.rameses.gov.etracs.rpt.report.certification.BIRCertificationPage"/>
+    </pages>
 </workunit>

@@ -19,7 +19,27 @@ class RPTReportORFService
 			total += it.totalav 
 			it.runningtotal = total
 			it.taxpayer.address = it.taxpayer.address.replaceAll('[^\\S]',' ');
+			it.location = buildLocation(it)
 		}
 		return [reportdata:list]
+	}
+
+	def buildLocation(entity){
+		def location = ''
+
+		if (entity.purok) {
+			if ( location.length() > 0 ) location += ', '
+			location += entity.purok
+		}
+		
+		if (entity.street) {
+			if ( location.length() > 0 ) location += ', '
+			location += entity.street
+		}
+
+		if ( location.length() > 0 ) location += ', '
+		location += entity.barangay 
+
+		return location 
 	}
 }

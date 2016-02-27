@@ -268,6 +268,7 @@ from rptledgeritem rli
 	inner join rptledgeritem_qtrly rliq on rli.objid = rliq.parentid 
 where rli.rptledgerid = $P{rptledgerid}
  and ( rliq.year < $P{billtoyear} or (rliq.year = $P{billtoyear} and rliq.qtr <= $P{billtoqtr}))
+ and rli.fullypaid = 0
  and rliq.fullypaid = 0
 order by rliq.year, rliq.qtr 
 

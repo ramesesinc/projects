@@ -277,7 +277,7 @@
                     <Property name="cellPadding" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
                       <Insets value="[0, 0, 0, 3]"/>
                     </Property>
-                    <Property name="expression" type="java.lang.String" value="#{entity.taxpayer.name}"/>
+                    <Property name="expression" type="java.lang.String" value="#{entity.taxpayer.entityno} - #{entity.taxpayer.name}"/>
                     <Property name="handler" type="java.lang.String" value="lookupTaxpayer"/>
                     <Property name="name" type="java.lang.String" value="entity.taxpayer" noResource="true"/>
                     <Property name="stretchWidth" type="int" value="50"/>

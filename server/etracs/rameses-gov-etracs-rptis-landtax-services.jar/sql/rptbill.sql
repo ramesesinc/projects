@@ -83,6 +83,7 @@ from rptledger rl
 	inner join rptledgerfaas lf on rli.rptledgerfaasid = lf.objid 
 where rl.objid = $P{rptledgerid}
 and rli.fullypaid = 0
+and rli.av > 0.0
 
 
 [getItemsForPenaltyDiscountComputation]
@@ -128,6 +129,7 @@ from (
 	where rl.objid = $P{rptledgerid}
 		and rli.qtrly = 0 
 		and rli.fullypaid = 0 
+		and rli.av > 0.0
 
 	UNION all 
 
@@ -172,6 +174,7 @@ from (
 	where rl.objid = $P{rptledgerid}
 		and rli.qtrly = 1
 		and rliq.fullypaid = 0 
+		and rli.av > 0.0
 ) x
 order by x.year, x.qtr 
 
@@ -268,6 +271,7 @@ from rptledgeritem rli
 	inner join rptledgeritem_qtrly rliq on rli.objid = rliq.parentid 
 where rli.rptledgerid = $P{rptledgerid}
  and ( rliq.year < $P{billtoyear} or (rliq.year = $P{billtoyear} and rliq.qtr <= $P{billtoqtr}))
+ and rli.fullypaid = 0
  and rliq.fullypaid = 0
 order by rliq.year, rliq.qtr 
 

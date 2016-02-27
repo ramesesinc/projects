@@ -49,7 +49,7 @@ public class LandRySettingController extends RYSettingPageFlowController
 
     def specificClassListHandler = [
         createItem : { return createSpecificClass() },
-        getRows    : { return 150 },
+        getRows    : { return specificClasses.size() + 2 },
                 
         getColumns : { return [
             new Column(name:'code', caption:'Code*', maxWidth:60, editable:true ),
@@ -205,7 +205,7 @@ public class LandRySettingController extends RYSettingPageFlowController
     
     
     def landAdjustmentTypeListHandler = [
-        getRows    : { return 100 },
+        getRows    : { return landAdjustmentTypes.size()+1},
         getColumns : { return [
             new Column(name:'code', caption:'Code', maxWidth:60),
             new Column(name:'name', caption:'Name'),
@@ -227,7 +227,7 @@ public class LandRySettingController extends RYSettingPageFlowController
             landAdjustmentTypes = []
         }
         landAdjustmentTypes.add( item )
-        landAdjustmentTypeListHandler.load()
+        landAdjustmentTypeListHandler.reload()
     }
     
 

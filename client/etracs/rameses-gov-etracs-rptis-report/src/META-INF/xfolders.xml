@@ -8,7 +8,9 @@
                 <folder id="list" caption="Listings" index="1" />
                 <folder id="online" caption="Online" index="2" />
                 <folder id="txn" caption="Manual Support" index="3" />
-                <folder id="cert" caption="Certification" index="4" />
+                <folder id="cert" caption="Certification" index="4">
+                    <folder id="bir" caption="BIR" index="1" />
+                </folder>
                 <folder id="report" caption="Report" index="5" />
                 <folder id="util" caption="Utilities" index="6" />
             </folder>

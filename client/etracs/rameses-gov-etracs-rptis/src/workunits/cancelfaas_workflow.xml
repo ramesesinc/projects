@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="cancelledfaas:online:open" action="open" caption="FAAS Cancellation" target="window"  />
+   </invokers>
+   
+   <code>
+       
+<![CDATA[       
+
+import com.rameses.rcp.annotations.* 
+import com.rameses.rcp.common.* 
+import com.rameses.osiris2.client.*
+import com.rameses.osiris2.common.*
+import com.rameses.util.*;
+import com.rameses.common.*;
+import com.rameses.gov.etracs.rpt.workflow.RPTWorkflowController
+
+public class CancellationFaasWorkflowController extends RPTWorkflowController
+{
+    @Service('CancelledFAASWorkflowService')
+    def service;
+    
+    @Service('CancelledFAASService')
+    def svc;
+    
+    def getService() {return service; }
+    String getFileType(){ return 'cancelledfaas'; }
+    
+    void afterOpen(o){
+        super.afterOpen(o);
+        formId = 'Cancelled FAAS: ' + (entity.faas.tdno ? entity.faas.tdno : entity.faas.utdno);
+        formTitle = formId
+    }
+
+    String getTitle(){
+        return 'Cancelled FAAS ' + entity.faas.tdno;
+    }
+    
+    def getSections(){
+        return InvokerUtil.lookupOpeners( "cancelledfaas:info", [entity:entity, svc:svc ] ).findAll {
+            def vw = it.properties.visibleWhen;
+            return  ((!vw)  ||  ExpressionResolver.getInstance().evalBoolean( vw, [entity:entity] ));
+        }
+    }
+}
+
+]]>
+
+   </code>    
+    <pages> 
+        <page template="com.rameses.gov.etracs.rpt.workflow.InfoPage"/>
+    </pages>
+</workunit>
+
+

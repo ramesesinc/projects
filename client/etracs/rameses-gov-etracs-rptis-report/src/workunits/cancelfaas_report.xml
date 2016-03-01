@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="cancelledfaas:formActions"  action="preview" caption="Preview" visibleWhen="#{entity.state=='APPROVED'}"/>        
+        <invoker type="formActions" action="_close" caption="Back" mnemonic="b" immediate="true"/>
+   </invokers>
+   <code>       
+<![CDATA[
+
+import com.rameses.rcp.annotations.* 
+import com.rameses.rcp.common.* 
+import com.rameses.osiris2.client.*
+import com.rameses.osiris2.common.*
+import com.rameses.osiris2.reports.*
+
+public class CancelledFAASReportController extends ReportController
+{
+    @Service("ReportParameterService")
+    def svcParams;
+    
+    @Service('CancelledFAASService')
+    def svc 
+    
+    def entity;
+    
+    String title = 'Cancelled FAAS Report';
+    
+    def reportPath = 'com/rameses/gov/etracs/rpt/report/cancelledfaas/';
+    
+    public String getReportName(){
+        return reportPath + 'cancelledfaas.jasper';
+    }
+    
+    public def getReportData(){
+        return svc.buildReportData(entity);
+    }
+}
+
+]]>       
+   </code>
+    <pages> 
+        <page name="report" template="com.rameses.gov.etracs.rpt.report.PreviewPage" />
+    </pages>
+</workunit>
+
+

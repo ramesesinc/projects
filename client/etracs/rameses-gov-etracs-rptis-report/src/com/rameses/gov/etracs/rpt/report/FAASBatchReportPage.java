@@ -37,6 +37,7 @@ public class FAASBatchReportPage extends javax.swing.JPanel {
         xIntegerField2 = new com.rameses.rcp.control.XIntegerField();
         xSeparator2 = new com.rameses.rcp.control.XSeparator();
         xComboBox1 = new com.rameses.rcp.control.XComboBox();
+        xComboBox5 = new com.rameses.rcp.control.XComboBox();
         xComboBox3 = new com.rameses.rcp.control.XComboBox();
         xTextField3 = new com.rameses.rcp.control.XTextField();
         xTextField1 = new com.rameses.rcp.control.XTextField();
@@ -81,7 +82,7 @@ public class FAASBatchReportPage extends javax.swing.JPanel {
         xIntegerField2.setRequired(true);
         formPanel1.add(xIntegerField2);
 
-        xSeparator2.setPreferredSize(new java.awt.Dimension(0, 20));
+        xSeparator2.setPreferredSize(new java.awt.Dimension(0, 10));
 
         org.jdesktop.layout.GroupLayout xSeparator2Layout = new org.jdesktop.layout.GroupLayout(xSeparator2);
         xSeparator2.setLayout(xSeparator2Layout);
@@ -91,7 +92,7 @@ public class FAASBatchReportPage extends javax.swing.JPanel {
         );
         xSeparator2Layout.setVerticalGroup(
             xSeparator2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 20, Short.MAX_VALUE)
+            .add(0, 10, Short.MAX_VALUE)
         );
 
         formPanel1.add(xSeparator2);
@@ -107,8 +108,18 @@ public class FAASBatchReportPage extends javax.swing.JPanel {
         xComboBox1.setRequired(true);
         formPanel1.add(xComboBox1);
 
+        xComboBox5.setCaption("LGU");
+        xComboBox5.setDepends(new String[] {"params.selectiontype"});
+        xComboBox5.setExpression("#{item.name}");
+        xComboBox5.setIndex(2);
+        xComboBox5.setItems("lgus");
+        xComboBox5.setName("params.lgu"); // NOI18N
+        xComboBox5.setPreferredSize(new java.awt.Dimension(0, 21));
+        formPanel1.add(xComboBox5);
+
         xComboBox3.setCaption("Barangay");
-        xComboBox3.setDepends(new String[] {"params.selectiontype"});
+        xComboBox3.setDepends(new String[] {"params.selectiontype", "params.lgu"});
+        xComboBox3.setDynamic(true);
         xComboBox3.setExpression("#{item.name}");
         xComboBox3.setIndex(2);
         xComboBox3.setItems("barangays");
@@ -183,7 +194,7 @@ public class FAASBatchReportPage extends javax.swing.JPanel {
                 .add(formPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 342, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(xLabel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(34, Short.MAX_VALUE))
+                .addContainerGap(53, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     
@@ -195,6 +206,7 @@ public class FAASBatchReportPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XComboBox xComboBox2;
     private com.rameses.rcp.control.XComboBox xComboBox3;
     private com.rameses.rcp.control.XComboBox xComboBox4;
+    private com.rameses.rcp.control.XComboBox xComboBox5;
     private com.rameses.rcp.control.XIntegerField xIntegerField1;
     private com.rameses.rcp.control.XIntegerField xIntegerField2;
     private com.rameses.rcp.control.XLabel xLabel1;

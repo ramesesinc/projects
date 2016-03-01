@@ -68,13 +68,15 @@ SELECT
 	tsk.objid AS taskid,
 	tsk.state AS taskstate,
 	tsk.message AS taskmsg,
-	tsk.assignee_objid
+	tsk.assignee_objid,
+	e.entityno as taxpayer_entityno
 FROM faas f
-	LEFT JOIN rpu rpu ON f.rpuid = rpu.objid
+	INNER JOIN rpu rpu ON f.rpuid = rpu.objid
 	LEFT JOIN propertyclassification pc ON rpu.classification_objid = pc.objid 
-	LEFT JOIN faas_task tsk ON f.objid = tsk.refid AND tsk.enddate IS NULL
 	INNER  JOIN realproperty rp ON f.realpropertyid = rp.objid
 	INNER JOIN barangay b ON rp.barangayid = b.objid 
+	LEFT JOIN faas_task tsk ON f.objid = tsk.refid AND tsk.enddate IS NULL
+	left join entity e on f.taxpayer_objid = e.objid 
 WHERE f.objid = $P{objid}
 
 
@@ -113,13 +115,15 @@ SELECT
 	tsk.objid AS taskid,
 	tsk.state AS taskstate,
 	tsk.message AS taskmsg,
-	tsk.assignee_objid
+	tsk.assignee_objid,
+	e.entityno as taxpayer_entityno
 FROM faas f
 	INNER JOIN rpu rpu ON f.rpuid = rpu.objid
 	INNER JOIN propertyclassification pc ON rpu.classification_objid = pc.objid 
 	INNER  JOIN realproperty rp ON f.realpropertyid = rp.objid
 	INNER JOIN barangay b ON rp.barangayid = b.objid 
 	LEFT JOIN faas_task tsk ON f.objid = tsk.refid AND tsk.enddate IS NULL
+	LEFT join entity e on f.taxpayer_objid = e.objid 
 WHERE f.tdno = $P{tdno}
 
 
@@ -419,9 +423,11 @@ SELECT
 	tsk.objid AS taskid,
 	tsk.state AS taskstate,
 	tsk.message AS taskmsg,
-	tsk.assignee_objid
+	tsk.assignee_objid,
+	e.entityno as taxpayer_entityno
 FROM faas f
 	LEFT JOIN faas_task tsk ON f.objid = tsk.refid AND tsk.enddate IS NULL
+	left join entity e on f.taxpayer_objid = e.objid 
 WHERE f.objid = $P{objid}
 
 

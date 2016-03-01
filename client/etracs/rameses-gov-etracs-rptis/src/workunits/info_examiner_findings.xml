@@ -7,6 +7,7 @@
         <invoker type="consolidation:info" action="init" caption="Examination Findings" index="10" />
         <invoker type="resection:info" action="init" caption="Examination Findings" index="10" />
         <invoker type="mcsettlement:info" action="init" caption="Examination Findings" index="10" />
+        <invoker type="cancelledfaas:info" action="init" caption="Examination Findings" index="10" />
         
         <invoker type="formActions" action="refresh" caption="Refresh" mnemonic="r" />
         

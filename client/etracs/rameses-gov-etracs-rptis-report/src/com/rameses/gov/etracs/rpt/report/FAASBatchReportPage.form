@@ -38,7 +38,7 @@
               <Component id="formPanel1" min="-2" pref="342" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="xLabel1" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="34" max="32767" attributes="0"/>
+              <EmptySpace pref="53" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -103,7 +103,7 @@
         <Container class="com.rameses.rcp.control.XSeparator" name="xSeparator2">
           <Properties>
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="[0, 20]"/>
+              <Dimension value="[0, 10]"/>
             </Property>
           </Properties>
 
@@ -115,7 +115,7 @@
             </DimensionLayout>
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <EmptySpace min="0" pref="20" max="32767" attributes="0"/>
+                  <EmptySpace min="0" pref="10" max="32767" attributes="0"/>
               </Group>
             </DimensionLayout>
           </Layout>
@@ -137,14 +137,33 @@
             <Property name="required" type="boolean" value="true"/>
           </Properties>
         </Component>
-        <Component class="com.rameses.rcp.control.XComboBox" name="xComboBox3">
+        <Component class="com.rameses.rcp.control.XComboBox" name="xComboBox5">
           <Properties>
-            <Property name="caption" type="java.lang.String" value="Barangay"/>
+            <Property name="caption" type="java.lang.String" value="LGU"/>
             <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
               <StringArray count="1">
                 <StringItem index="0" value="params.selectiontype"/>
               </StringArray>
             </Property>
+            <Property name="expression" type="java.lang.String" value="#{item.name}"/>
+            <Property name="index" type="int" value="2"/>
+            <Property name="items" type="java.lang.String" value="lgus"/>
+            <Property name="name" type="java.lang.String" value="params.lgu" noResource="true"/>
+            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[0, 21]"/>
+            </Property>
+          </Properties>
+        </Component>
+        <Component class="com.rameses.rcp.control.XComboBox" name="xComboBox3">
+          <Properties>
+            <Property name="caption" type="java.lang.String" value="Barangay"/>
+            <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
+              <StringArray count="2">
+                <StringItem index="0" value="params.selectiontype"/>
+                <StringItem index="1" value="params.lgu"/>
+              </StringArray>
+            </Property>
+            <Property name="dynamic" type="boolean" value="true"/>
             <Property name="expression" type="java.lang.String" value="#{item.name}"/>
             <Property name="index" type="int" value="2"/>
             <Property name="items" type="java.lang.String" value="barangays"/>

@@ -7,21 +7,21 @@
 
 
 
-"entity.(year|quarter|month|asofdate)" [true == true]{
+"entity.(year|qtr|month|asofdate)" [true == true]{
     visible:false;
     required:false;
 }   
 
-"entity.(year|quarter)" [entity.reporttype == 'PERIOD']{
+"entity.(year|qtr)" [entity.reporttype.type == 'period']{
     visible:true;
     required:true;
 }   
 
-"entity.month" [entity.reporttype == 'PERIOD']{
+"entity.month" [entity.reporttype.type == 'period']{
     visible:true;
 }   
 
-"entity.asofdate" [entity.reporttype != 'PERIOD']{
+"entity.asofdate" [entity.reporttype.type != 'period']{
     visible:true;
     required:true;
 }   

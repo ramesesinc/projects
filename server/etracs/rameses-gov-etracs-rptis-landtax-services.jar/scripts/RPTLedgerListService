@@ -26,6 +26,7 @@ class RPTLedgerListService
         def filters = [
             whereclause +  ' AND rl.tdno = $P{tdno}',
             whereclause +  ' AND e.entityname LIKE $P{searchtext}',
+            whereclause +  ' AND rl.administrator_name LIKE $P{searchtext}',
             whereclause +  ' AND rl.fullpin LIKE $P{searchtext}',
             whereclause +  ' AND rl.cadastrallotno LIKE $P{searchtext}',
             whereclause +  ' AND rl.prevtdno = $P{prevtdno}',

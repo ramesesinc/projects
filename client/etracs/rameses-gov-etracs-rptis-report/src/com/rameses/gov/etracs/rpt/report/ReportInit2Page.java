@@ -49,6 +49,7 @@ public class ReportInit2Page extends javax.swing.JPanel {
 
         xComboBox1.setAllowNull(false);
         xComboBox1.setCaption("Report Type");
+        xComboBox1.setExpression("#{item.caption}");
         xComboBox1.setItems("reporttypes");
         xComboBox1.setName("entity.reporttype"); // NOI18N
         xComboBox1.setPreferredSize(new java.awt.Dimension(120, 20));

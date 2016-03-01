@@ -152,6 +152,9 @@ WHERE rp.ry = $P{ry}
   AND rp.state <> 'CANCELLED' 
 
 
+[deleteLandAdjustments]
+delete from landadjustment where landrpuid = $P{objid}
+	
 [deleteAdjustmentParameters]
 DELETE FROM landadjustmentparameter WHERE landadjustmentid = $P{objid}
 

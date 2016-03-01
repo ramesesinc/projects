@@ -45,21 +45,16 @@ class PersistenceService  {
 
 	@ProxyMethod
 	public def update( def o ) {
+
 		if(!o._schemaname) throw new Exception('Please provide a _schemaname');
 		def finders = buildFinders(o);
 		if(!finders)
 			throw new Exception('update error. Please indicate at least a findBy map or primary keys')
 		def em = db.lookup(o._schemaname);
+		//em.debug = true;
 		em.find(finders);
 		return em.update(o);
 	}
-
-	/*
-	@ProxyMethod
-	public def merge( def o ) {
-		return em.merge(o);
-	}
-	*/
 
 	@ProxyMethod
 	public void removeEntity( def o ) {
@@ -72,5 +67,13 @@ class PersistenceService  {
 		em.delete();		
 	}
 
+	@ProxyMethod
+	public def save( def o ) {
+		if(!o._schemaname) throw new Exception('Please provide a _schemaname');
+		def em = db.lookup(o._schemaname);
+		em.debug = true;
+		o.debug = true;
+		return em.save( o );
+	}
 
 }

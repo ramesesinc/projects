@@ -1,7 +1,7 @@
 <workunit>
     <invokers>
-        <invoker type="vehicle:create" caption="Vehicle" action="create" target="popup" role="MASTER"/>
-        <invoker type="vehicle:open" caption="Vehicle" action="open" target="popup" role="MASTER"/>
+        <invoker type="ovr_vehicle:create" caption="Vehicle" action="create" target="popup" srole="MASTER"/>
+        <invoker type="ovr_vehicle:open" caption="Vehicle" action="open" target="popup" srole="MASTER"/>
     </invokers>
     
     <code>
@@ -10,16 +10,12 @@
            import com.rameses.rcp.common.*;
            import com.rameses.rcp.annotations.*;
            import com.rameses.osiris2.client.*;
+           import com.rameses.seti2.models.*;
 
-           class ViolationController extends CRUDController{
-           
-               @Binding
-               def binding;
+           class VehicleController extends SinglePageCrudFormModel{
            
                def title='Vehicle';
-               String serviceName='VehicleService';
-               String entityName='vehicle';
-               boolean allowApprove = false;
+               String schemaName='ovr_vehicle';
                
                def getLookupEntity(){
                     def h = {o ->
@@ -34,6 +30,6 @@
     </code>
     
     <pages>
-        <page template="com.gov.violation.VehiclePage"/>
+        <page template="com.gov.ovr.VehiclePage"/>
     </pages>
 </workunit>

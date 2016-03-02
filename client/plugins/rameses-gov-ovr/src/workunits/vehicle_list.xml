@@ -1,5 +1,7 @@
-<workunit extends="wtemplates/ListController.xml" serviceName="VehicleService" entityName="vehicle">
+<workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" 
+          schemaName="ovr_vehicle" 
+          cols="name,plateno,orcr,owner.name">
     <invokers>
-        <invoker folderid="/explorer/master/violation" caption="Vehicle" index="1" role="MASTER"/>
+        <invoker folderid="/home/ovr" caption="Vehicles" index="1" action="init"/>
     </invokers>
 </workunit>

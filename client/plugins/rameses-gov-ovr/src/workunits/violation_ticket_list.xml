@@ -1,5 +1,7 @@
-<workunit extends="wtemplates/ListController.xml" serviceName="ViolationTicketService" entityName="violation_ticket">
+<workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" 
+          schemaName="ovr_violation_ticket" 
+          cols="dtcreated, ticketno, violator.name, apprehensionofficer.name, apprehensionaddress, apprehensiondate">
     <invokers>
-        <invoker folderid="/explorer/master/violation" caption="Violation Ticket" index="2" role="MASTER"/>
+        <invoker folderid="/home/ovr" caption="Violation Tickets" index="3" action="init"/>
     </invokers>
 </workunit>

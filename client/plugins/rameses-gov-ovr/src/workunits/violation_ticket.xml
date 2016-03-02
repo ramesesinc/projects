@@ -1,7 +1,7 @@
 <workunit>
     <invokers>
-        <invoker type="violation_ticket:create" caption="Violation Ticket" action="init" target="window"/>
-        <invoker type="violation_ticket:open" caption="Violation Ticket" action="open" target="window"/>
+        <invoker type="ovr_violation_ticket:create" caption="Violation Ticket" action="init" target="popup"/>
+        <invoker type="ovr_violation_ticket:open" caption="Violation Ticket" action="open" target="popup"/>
         <invoker type="formActions" caption="Close" action="_close" immediate="true"/>
         <invoker type="formActions" caption="Next" action="next" visibleWhen="#{mode == 'INIT'}"/>
         <invoker type="formActions" caption="Back" action="back" visibleWhen="#{mode == 'NEXT'}"/>
@@ -16,6 +16,9 @@
         import java.rmi.server.UID;
         
         class ViolationTicketController {
+        
+            @Service("ViolationTicketService")
+            def ticketSvc;
         
             @Binding
             def binding;
@@ -40,13 +43,22 @@
                 if(!violations) throw new Exception("Violations are required!");
                 totaldue = 0.00;
                 fees = violations;
-                fees.each{ it.amount = 100.00; totaldue += it.amount }
+                fees.each{ it.amount = 0.00; totaldue += it.amount }
                 return 'feePg';
             }
             
             def back(){
                 mode = 'INIT';
                 return 'initPg';
+            }
+            
+            def save(){
+                if(!MsgBox.confirm("You are about to create this record. Continue?")) return;
+                entity.objid = 'T' + new UID().toString();
+                entity.entry = [];
+                fees.each{ entity.entry << [parentid: entity.objid, violationid: it.objid, amount:it.amount] }
+                ticketSvc.create(entity);
+                return '_close';
             }
             
             def selectedItem;
@@ -102,7 +114,7 @@
         ]]>
     </code>
     <pages>
-        <page name = 'initPg' template="com.gov.violation.ViolationTicketPage"/>
-        <page name = 'feePg' template="com.gov.violation.ViolationFeePage"/>
+        <page name = 'initPg' template="com.gov.ovr.ViolationTicketPage"/>
+        <page name = 'feePg' template="com.gov.ovr.ViolationFeePage"/>
     </pages>
 </workunit>

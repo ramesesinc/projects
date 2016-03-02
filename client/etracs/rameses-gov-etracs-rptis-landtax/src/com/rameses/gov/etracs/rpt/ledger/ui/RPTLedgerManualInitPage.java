@@ -38,6 +38,7 @@ public class RPTLedgerManualInitPage extends javax.swing.JPanel {
         xSeparator5 = new com.rameses.rcp.control.XSeparator();
         xLookupField1 = new com.rameses.rcp.control.XLookupField();
         xLabel3 = new com.rameses.rcp.control.XLabel();
+        xTextField7 = new com.rameses.rcp.control.XTextField();
         xSeparator2 = new com.rameses.rcp.control.XSeparator();
         xComboBox4 = new com.rameses.rcp.control.XComboBox();
         xComboBox5 = new com.rameses.rcp.control.XComboBox();
@@ -122,6 +123,11 @@ public class RPTLedgerManualInitPage extends javax.swing.JPanel {
         xLabel3.setExpression("#{entity.taxpayer.address.text}");
         xLabel3.setPreferredSize(new java.awt.Dimension(0, 20));
         formPanel1.add(xLabel3);
+
+        xTextField7.setCaption("Administrator");
+        xTextField7.setName("entity.administrator.name"); // NOI18N
+        xTextField7.setPreferredSize(new java.awt.Dimension(0, 19));
+        formPanel1.add(xTextField7);
 
         xSeparator2.setPreferredSize(new java.awt.Dimension(0, 10));
 
@@ -392,9 +398,9 @@ public class RPTLedgerManualInitPage extends javax.swing.JPanel {
             .add(layout.createSequentialGroup()
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
-                    .add(formPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 487, Short.MAX_VALUE)
+                    .add(formPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .add(formPanel2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(13, Short.MAX_VALUE))
+                .addContainerGap(12, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -434,5 +440,6 @@ public class RPTLedgerManualInitPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XTextField xTextField4;
     private com.rameses.rcp.control.XTextField xTextField5;
     private com.rameses.rcp.control.XTextField xTextField6;
+    private com.rameses.rcp.control.XTextField xTextField7;
     // End of variables declaration//GEN-END:variables
 }

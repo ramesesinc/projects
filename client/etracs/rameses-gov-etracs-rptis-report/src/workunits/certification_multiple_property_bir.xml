@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit extends="rpt_wtemplates/CertificationController.xml">
+    <invokers>
+        <invoker folderid="/explorer/txn/rpt/cert/bir" 
+            action="init" 
+            caption="Multiple Property" 
+            opener="multiplebir" index="2" 
+            role="CERTIFICATION_ISSUER,RECORD" 
+            permission="certification.multipleproperty"/>
+
+        <invoker type="multiplebir:open" action="open" caption="Multiple Property" /> 
+    </invokers>
+    
+    <code class="com.rameses.gov.etracs.rpt.report.certification.MultiplePropertyBIRController"/>
+    <pages>
+        <page template="com.rameses.gov.etracs.rpt.report.certification.BIRCertificationPage"/>
+    </pages>
+        
+</workunit>

@@ -1,0 +1,15 @@
+ASSESSOR:
+- Add administrator name in realty tax ledger to support query
+- Display mother land info in subdivision list
+- Add lgu and state query option to subdivision 
+- Increase specific class number of rows displayed
+- Do not allow editing of sketch boundary info for improvements
+- Support "as of date" on Record of Assessment
+- Support "as of date" on Report on Real Property Assessment 
+- Display entityno in FAAS Property Owner info field (San Carlos request)
+- Property Holding Certification for BIR with selection support
+- Fix disabled FAAS Title No and Title Date entry field
+
+LANDTAX: 
+- Exclude zero av in billing
+

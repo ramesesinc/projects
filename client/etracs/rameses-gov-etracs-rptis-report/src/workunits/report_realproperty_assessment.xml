@@ -38,7 +38,10 @@ class GenerateRPAReportController extends com.rameses.gov.etracs.rpt.report.Asyn
     }
     
    def getReporttypes(){
-        return ['PERIOD', 'AS OF DATE']
+        return [
+            [type:'period', caption:'PERIOD'],
+            [type:'asof', caption:'AS OF DATE'],
+        ]
    }    
    
     def getPropertyClassifications(){

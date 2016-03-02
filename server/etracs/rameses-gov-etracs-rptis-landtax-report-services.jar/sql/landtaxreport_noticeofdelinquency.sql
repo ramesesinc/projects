@@ -28,6 +28,7 @@ FROM rptledger rl
 			FROM rptledger rl
 				INNER JOIN rptbill_ledger_item bi ON rl.objid = bi.rptledgerid
 			WHERE ${filters}
+			  AND bi.billid = $P{billid}
 			  AND rl.state = 'APPROVED'
 			  AND bi.year <= $P{cy}
 			GROUP BY rl.objid

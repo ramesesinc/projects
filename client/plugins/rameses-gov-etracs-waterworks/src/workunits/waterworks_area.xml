@@ -3,7 +3,6 @@
         <invoker type="waterworks_area:create" caption="Area" action="create" target="popup" srole="MASTER"/>
         <invoker type="waterworks_area:open" caption="Area" action="open" target="popup" srole="MASTER"/>
     </invokers>
-    
     <code>
         <![CDATA[
            import com.rameses.osiris2.common.*;

@@ -77,7 +77,8 @@ class RPTLedgerNoticeOfDelinquencyController
         
         def bill = billingSvc.initBill(null)
         bill.billdate = dtcomputed;
-
+        params.billid = bill.billid;
+        
         def rptledgerids = []
         if (entity) {
             rptledgerids << entity.objid

@@ -70,6 +70,7 @@ public class RPTLedgerPage extends javax.swing.JPanel {
         xDecimalField12 = new com.rameses.rcp.control.XDecimalField();
         xDateField1 = new com.rameses.rcp.control.XDateField();
         formPanel10 = new com.rameses.rcp.util.FormPanel();
+        xLabel28 = new com.rameses.rcp.control.XLabel();
         xLabel20 = new com.rameses.rcp.control.XLabel();
         formPanel11 = new com.rameses.rcp.util.FormPanel();
         xLabel22 = new com.rameses.rcp.control.XLabel();
@@ -83,7 +84,6 @@ public class RPTLedgerPage extends javax.swing.JPanel {
         formPanel18 = new com.rameses.rcp.util.FormPanel();
         xDecimalField8 = new com.rameses.rcp.control.XDecimalField();
         xDecimalField9 = new com.rameses.rcp.control.XDecimalField();
-        xCheckBox1 = new com.rameses.rcp.control.XCheckBox();
 
         setLayout(new java.awt.BorderLayout());
 
@@ -1081,9 +1081,9 @@ public class RPTLedgerPage extends javax.swing.JPanel {
         formPanel6.add(xLabel11);
 
         xLabel26.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
-        xLabel26.setCaption("Barangay");
+        xLabel26.setCaption("Administrator");
         xLabel26.setCaptionWidth(80);
-        xLabel26.setExpression("#{entity.barangay.name}");
+        xLabel26.setExpression("#{entity.administrator.name}");
         xLabel26.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
         xLabel26.setPreferredSize(new java.awt.Dimension(0, 19));
         formPanel6.add(xLabel26);
@@ -1169,6 +1169,14 @@ public class RPTLedgerPage extends javax.swing.JPanel {
         xTitledBorder3.setTitle("Property Information");
         formPanel10.setBorder(xTitledBorder3);
         formPanel10.setPreferredSize(new java.awt.Dimension(380, 164));
+
+        xLabel28.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
+        xLabel28.setCaption("Barangay");
+        xLabel28.setCaptionWidth(100);
+        xLabel28.setExpression("#{entity.barangay.name}");
+        xLabel28.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
+        xLabel28.setPreferredSize(new java.awt.Dimension(0, 19));
+        formPanel10.add(xLabel28);
 
         xLabel20.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
         xLabel20.setCaption("PIN ");
@@ -1284,12 +1292,6 @@ public class RPTLedgerPage extends javax.swing.JPanel {
 
         formPanel10.add(formPanel18);
 
-        xCheckBox1.setCaption("Taxable");
-        xCheckBox1.setCaptionWidth(100);
-        xCheckBox1.setEnabled(false);
-        xCheckBox1.setName("entity.taxable"); // NOI18N
-        formPanel10.add(xCheckBox1);
-
         jPanel4.add(formPanel10, java.awt.BorderLayout.CENTER);
 
         jPanel3.add(jPanel4, java.awt.BorderLayout.EAST);
@@ -1344,7 +1346,6 @@ public class RPTLedgerPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XButton xButton5;
     private com.rameses.rcp.control.XButton xButton6;
     private com.rameses.rcp.control.XButton xButton7;
-    private com.rameses.rcp.control.XCheckBox xCheckBox1;
     private com.rameses.rcp.control.XDataTable xDataTable1;
     private com.rameses.rcp.control.XDataTable xDataTable4;
     private com.rameses.rcp.control.XDataTable xDataTable5;
@@ -1372,6 +1373,7 @@ public class RPTLedgerPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XLabel xLabel25;
     private com.rameses.rcp.control.XLabel xLabel26;
     private com.rameses.rcp.control.XLabel xLabel27;
+    private com.rameses.rcp.control.XLabel xLabel28;
     private com.rameses.rcp.control.XSeparator xSeparator4;
     // End of variables declaration//GEN-END:variables
     

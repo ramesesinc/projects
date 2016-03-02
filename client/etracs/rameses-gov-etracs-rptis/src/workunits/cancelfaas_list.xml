@@ -1,0 +1,64 @@
+
+
+<workunit extends="wtemplates/ExplorerViewController.xml" defaultFileType="cancelledfaaslist" autoSelect="true">
+    <invokers>
+        <invoker folderid="/home/rpt" caption="Cancelled FAAS Listing"  role="ASSESSOR_SHARED" index="102"/>
+        <invoker type="quick_launcher" code="CF00" caption="Cancelled FAAS Listing"  role="ASSESSOR_SHARED" index="102"/>
+        <invoker type="formActions" action="open" caption="Open" mnemonic="o" shortcut="ctrl O" visibleWhen="#{selectedEntity != null}" depends="listHandler.selectedEntity" index="-100" target="window"/>        
+    </invokers>
+        <code>
+     import com.rameses.rcp.common.*
+    import com.rameses.rcp.annotations.*
+    import com.rameses.osiris2.client.*
+    import com.rameses.osiris2.common.*
+    import com.rameses.gov.etracs.rpt.util.RPTUtil;
+            
+    class CancelledFAASExplorerViewController extends ExplorerViewController
+    {
+          @Service('CancelledFAASListService')
+            def svc 
+            
+            String formTarget = 'window'
+            String serviceName = 'CancelledFAASListService'
+            String formName = 'cancelledfaas:list';
+            String entityName = 'cancelledfaaslist';
+            
+            boolean allowOpen = false;
+            
+            
+            int getRows() { return 25 }
+                        
+            def open(){
+                if (!selectedEntity) return;
+                
+                if ( RPTUtil.toBoolean(selectedEntity?.online, false) == false)
+                    return InvokerUtil.lookupOpener('cancelledfaas:open', [entity:selectedEntity])
+                
+                if (selectedEntity.state.matches('APPROVED'))
+                    return InvokerUtil.lookupOpener('cancelledfaas:online:closed', [entity:selectedEntity])
+                
+                return InvokerUtil.lookupOpener('cancelledfaas:online:open', [entity:selectedEntity])
+            }
+            
+            def onOpenItem(Object item, String columnName) { 
+                return doOpen();
+            }
+            
+           void clear(){
+               query.clear()
+               search();
+               binding.refresh('.*');
+
+           }
+        
+        
+            def getEntity(){
+                return selectedEntity;
+            }  
+            
+    }  
+    </code>   
+    <pages>
+        <page template="com.rameses.osiris2.themes.ExplorerViewPage" />
+    </pages>
+</workunit>

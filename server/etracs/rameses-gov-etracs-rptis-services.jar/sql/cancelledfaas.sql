@@ -3,18 +3,26 @@ SELECT
 	cf.*,
 	f.tdno AS faas_tdno,
 	f.owner_name AS faas_owner_name,
-	r.fullpin AS faas_fullpin,
-	r.rputype AS faas_rputype,
-	r.totalareasqm AS faas_totalareasqm,
-	r.totalareaha AS faas_totalareaha,
-	r.totalmv AS faas_totalmv,
-	r.totalav AS faas_totalav,
+	rpu.fullpin AS faas_fullpin,
+	rpu.rputype AS faas_rputype,
+	rpu.classification_objid as faas_classification_objid,
+	rpu.totalareasqm AS faas_totalareasqm,
+	rpu.totalareaha AS faas_totalareaha,
+	rpu.totalmv AS faas_totalmv,
+	rpu.totalav AS faas_totalav,
+	b.name as barangay, 
 	ctr.code AS reason_code,
-	ctr.name AS reason_name
+	ctr.name AS reason_name,
+	tsk.objid AS taskid,
+	tsk.state AS taskstate,
+	tsk.assignee_objid
 FROM cancelledfaas cf 
 	INNER JOIN faas f ON cf.faasid = f.objid 
-	INNER JOIN rpu r ON f.rpuid = r.objid 
-	INNER JOIN canceltdreason ctr ON cf.reason_objid = ctr.objid 
+	INNER JOIN rpu rpu ON f.rpuid = rpu.objid 
+	INNER JOIN realproperty rp ON f.realpropertyid = rp.objid 
+	INNER JOIN barangay b on rp.barangayid = b.objid 
+	LEFT JOIN canceltdreason ctr ON cf.reason_objid = ctr.objid 
+	LEFT JOIN cancelledfaas_task tsk ON cf.objid = tsk.refid AND tsk.enddate IS NULL
 where 1=1 ${filters}	
 ORDER BY txndate DESC 
 
@@ -27,22 +35,39 @@ SELECT
 	f.rpuid AS faas_rpuid,
 	r.fullpin AS faas_fullpin,
 	r.rputype AS faas_rputype,
+	r.classification_objid as faas_classification_objid,
 	r.realpropertyid AS faas_realpropertyid,
 	r.totalareasqm AS faas_totalareasqm,
 	r.totalareaha AS faas_totalareaha,
 	r.totalmv AS faas_totalmv,
 	r.totalav AS faas_totalav,
+	b.objid AS barangayid, 
+	b.name as barangay, 
 	ctr.code AS reason_code,
-	ctr.name AS reason_name
+	ctr.name AS reason_name,
+	tsk.objid AS taskid,
+	tsk.state AS taskstate,
+	tsk.assignee_objid
 FROM cancelledfaas cf 
 	INNER JOIN faas f ON cf.faasid = f.objid 
 	INNER JOIN rpu r ON f.rpuid = r.objid 
-	INNER JOIN canceltdreason ctr ON cf.reason_objid = ctr.objid 
+	INNER JOIN realproperty rp ON f.realpropertyid = rp.objid 
+	INNER JOIN barangay b on rp.barangayid = b.objid 
+	LEFT JOIN canceltdreason ctr ON cf.reason_objid = ctr.objid 
+	LEFT JOIN cancelledfaas_task tsk ON cf.objid = tsk.refid AND tsk.enddate IS NULL
 WHERE cf.objid = $P{objid}
 
 
 [cancelFaas]
-UPDATE faas SET state = 'CANCELLED' WHERE objid = $P{objid} 
+UPDATE faas SET 
+	state = 'CANCELLED', 
+	cancelreason = $P{cancelreason},
+	canceldate = $P{canceldate},
+	cancelledyear = $P{cancelledyear},
+	cancelledqtr = $P{cancelledqtr},
+	cancelledmonth = $P{cancelledmonth},
+	cancelledday = $P{cancelledday}
+WHERE objid = $P{objid} 
 
 [cancelRpu]
 UPDATE rpu SET state = 'CANCELLED' WHERE objid = $P{objid}
@@ -60,3 +85,33 @@ WHERE r.realpropertyid = $P{realpropertyid}
   AND f.state <> 'CANCELLED'	
 ORDER BY f.tdno   
 
+
+[updateSignatoryInfo]
+update cancelledfaas_signatory set 
+	${updatefields}
+where objid = $P{objid}
+
+
+[deleteSignatories]
+delete from cancelledfaas_signatory where objid = $P{objid}
+
+
+[deleteRequirements]	
+delete from rpt_requirement where refid = $P{objid}
+
+[deleteTasks]	
+delete from cancelledfaas_task where refid = $P{objid}
+
+
+
+[findParetLguByBarangayId]
+select 
+	case when m.objid is null then d.name else m.name end as munidistrict,
+	case when p.objid is null then c.name else p.name end as cityprov,
+	case when p.objid is null then 1 else 0 end as iscity 
+from barangay b 
+	left join municipality m on b.parentid = m.objid 
+	left join province p on m.parentid = p.objid 
+	left join district d on b.parentid = d.objid 
+	left join city c on d.parentid = c.objid 
+where b.objid = $P{barangayid}	

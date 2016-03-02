@@ -20,8 +20,6 @@ abstract class AbstractBatchReportController
     def title='FAAS Batch Printing'
 
     def params;
-    def lgu;
-    def barangays;
             
     def msg 
     def mode 
@@ -40,7 +38,6 @@ abstract class AbstractBatchReportController
         params.printinterval = 1;
         params.copies = 1;
         params.showprinterdialog = false;
-        barangays = lguSvc.getBarangaysByParentId(null);
         mode='init';
     }
             
@@ -85,5 +82,27 @@ abstract class AbstractBatchReportController
         if (!pagetypes)
         pagetypes = ['FRONT', 'BACK']
         return pagetypes;
+    }
+    
+    def getLgus(){
+        def orgclass = OsirisContext.env.ORGCLASS
+        def orgid = OsirisContext.env.ORGID
+
+        if ('PROVINCE'.equalsIgnoreCase(orgclass)) {
+            return lguSvc.lookupMunicipalities([:])
+        }
+        else if ('MUNICIPALITY'.equalsIgnoreCase(orgclass)) {
+            return [lguSvc.lookupMunicipalityById(orgid)]
+        }
+        else if ('CITY'.equalsIgnoreCase(orgclass)) {
+            return [lguSvc.lookupCityById(orgid)]
+        }
+        return []
+    }
+    
+    def getBarangays(){
+        if (! params.lgu)
+            return [];
+        return lguSvc.lookupBarangaysByRootId(params.lgu?.objid);
     }
 }

@@ -323,15 +323,3 @@ from bldgrpu_structuraltype st
 	inner join bldgtype bt on st.bldgtype_objid = bt.objid 
 where st.bldgrpuid = $P{rpuid}
 
-
-
-[getLandHoldingBirItems]
-SELECT 
-	f.objid as faasid, f.state, f.txntype_objid, f.year, rp.pin  
-FROM faas f
-	INNER JOIN rpu r ON f.rpuid = r.objid 
-	INNER JOIN realproperty rp ON f.realpropertyid = rp.objid 
-WHERE f.taxpayer_objid	= $P{taxpayerid}
-  AND r.rputype = 'land'
-  ${asoffilter}
-order by rp.pin, f.year 

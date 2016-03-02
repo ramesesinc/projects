@@ -1,8 +1,12 @@
-"entity.*" [ allowEdit == true ] {
-    enabled:true;
+"entity.*" [ mode == 'read'] {
+    enabled:false;
 }
 
 
-"entity.*" [allowEdit == false] {
+"entity.*" [mode == 'edit'] {
+    enabled:true;
+}
+
+"entity.faas"[entity.online==1 || entity.online==true]{
     enabled:false;
 }

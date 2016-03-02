@@ -48,6 +48,7 @@ public class RPTLedgerManualController extends RPTLedgerController
             partialsefint: 0.0,
             manualdiff: 0.0,
             subledger : [:],
+            administrator : [:],
         ]
         mode = MODE_CREATE
         return 'init'

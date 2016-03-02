@@ -1,7 +1,7 @@
 package com.rameses.waterworks.dialog;
 
 import com.rameses.Main;
-import javafx.application.Platform;
+import com.rameses.waterworks.page.Home;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -11,6 +11,9 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -27,6 +30,14 @@ public class Dialog {
         black = new StackPane();
         black.setStyle("-fx-background-color: black; -fx-opacity: 0.7;");
         black.setPrefSize(Main.WIDTH, Main.HEIGHT);
+        black.setOnKeyReleased(new EventHandler<KeyEvent>(){
+            @Override
+            public void handle(KeyEvent event) {
+                if(event.getCode() == KeyCode.ESCAPE){
+                    Dialog.hide();
+                }
+            }
+        });
 
         if(!Main.PAGE.getChildren().contains(black)){
             Main.PAGE.getChildren().add(black);
@@ -49,6 +60,14 @@ public class Dialog {
         black = new StackPane();
         black.setStyle("-fx-background-color: black; -fx-opacity: 0.7;");
         black.setPrefSize(Main.WIDTH, Main.HEIGHT);
+        black.setOnKeyReleased(new EventHandler<KeyEvent>(){
+            @Override
+            public void handle(KeyEvent event) {
+                if(event.getCode() == KeyCode.ESCAPE){
+                    Dialog.hide();
+                }
+            }
+        });
 
         Label label = new Label(message);
         label.setStyle("-fx-font-size: 22px;");
@@ -85,6 +104,14 @@ public class Dialog {
         black = new StackPane();
         black.setStyle("-fx-background-color: black; -fx-opacity: 0.7;");
         black.setPrefSize(Main.WIDTH, Main.HEIGHT);
+        black.setOnKeyReleased(new EventHandler<KeyEvent>(){
+            @Override
+            public void handle(KeyEvent event) {
+                if(event.getCode() == KeyCode.ESCAPE){
+                    Dialog.hide();
+                }
+            }
+        });
 
         Label label = new Label(message);
         label.setStyle("-fx-font-size: 22px;");
@@ -140,6 +167,12 @@ public class Dialog {
         container.setStyle("-fx-background-color: #3897ee;");
         container.setPadding(new Insets(15));
         container.getChildren().add(title);
+        container.setOnMouseClicked(new EventHandler<MouseEvent>(){
+            @Override
+            public void handle(MouseEvent event) {
+                if(event.getClickCount() == 1) Dialog.hide();
+            }
+        });
         
         return container;
     }

@@ -1,0 +1,7 @@
+<schema adapter="violation">
+	<element name="ovr_violation_ticket_entry" tablename="violation_ticket_entry">
+		<field name="parentid" required="true"/>
+		<field name="violationid" required="true"/>
+		<field name="amount" required="false"/>
+	</element>
+</schema>

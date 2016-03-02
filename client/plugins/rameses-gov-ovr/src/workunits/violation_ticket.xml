@@ -38,6 +38,11 @@
                 return 'initPg';
             }
             
+            def open(){
+                title = entity.ticketno;
+                return 'mainPg';
+            }
+            
             def next(){
                 mode = 'NEXT';
                 if(!violations) throw new Exception("Violations are required!");
@@ -116,5 +121,6 @@
     <pages>
         <page name = 'initPg' template="com.gov.ovr.ViolationTicketPage"/>
         <page name = 'feePg' template="com.gov.ovr.ViolationFeePage"/>
+        <page name = 'mainPg' template="com.gov.ovr.MainViolationTicketPage"/>
     </pages>
 </workunit>

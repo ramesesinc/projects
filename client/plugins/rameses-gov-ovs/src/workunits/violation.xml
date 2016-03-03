@@ -22,6 +22,6 @@
     </code>
     
     <pages>
-        <page template="com.gov.ovr.ViolationPage"/>
+        <page template="com.gov.ovs.ViolationPage"/>
     </pages>
 </workunit>

@@ -40,6 +40,8 @@
             
             def open(){
                 title = entity.ticketno;
+                entity.balance = 0.00;
+                entity.vehicle = ticketSvc.getVehiclePerTicket(entity);
                 return 'mainPg';
             }
             
@@ -80,6 +82,12 @@
                  }
             ] as EditorListModel;
             
+            def violationHandler = [
+                 fetchList: {
+                     return ticketSvc.getViolationsPerTicket(entity);
+                 }
+            ] as EditorListModel;
+            
             void remove(){
                 if(!selectedItem) throw new Exception("No item selected!");
                 violations.remove(selectedItem);
@@ -114,13 +122,21 @@
                 }
                 return Inv.lookupOpener("violation:lookup",[onselect:h]);
            }
+           
+           def getLookupVehicle(){
+                def h = {o ->
+                    entity.vehicle = o;
+                    binding.refresh("entity.*");
+                }
+                return Inv.lookupOpener("vehicle:lookup",[onselect:h]);
+           }
             
         }
         ]]>
     </code>
     <pages>
-        <page name = 'initPg' template="com.gov.ovr.ViolationTicketPage"/>
-        <page name = 'feePg' template="com.gov.ovr.ViolationFeePage"/>
-        <page name = 'mainPg' template="com.gov.ovr.MainViolationTicketPage"/>
+        <page name = 'initPg' template="com.gov.ovs.ViolationTicketPage"/>
+        <page name = 'feePg' template="com.gov.ovs.ViolationFeePage"/>
+        <page name = 'mainPg' template="com.gov.ovs.MainViolationTicketPage"/>
     </pages>
 </workunit>

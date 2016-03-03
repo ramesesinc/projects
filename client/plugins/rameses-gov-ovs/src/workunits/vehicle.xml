@@ -30,6 +30,6 @@
     </code>
     
     <pages>
-        <page template="com.gov.ovr.VehiclePage"/>
+        <page template="com.gov.ovs.VehiclePage"/>
     </pages>
 </workunit>

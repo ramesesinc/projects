@@ -2,6 +2,6 @@
           schemaName="ovr_vehicle" 
           cols="name,plateno,orcr,owner.name">
     <invokers>
-        <invoker folderid="/home/ovr" caption="Vehicles" index="1" action="init"/>
+        <invoker folderid="/home/ovr" caption="Vehicles" index="5" action="init"/>
     </invokers>
 </workunit>

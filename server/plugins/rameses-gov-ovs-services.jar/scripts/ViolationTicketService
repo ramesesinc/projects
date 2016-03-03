@@ -12,6 +12,9 @@ class ViolationTicketService {
 	@DataContext("ovr_violation_ticket_entry")
 	def ovte;
 
+	@DataContext("ovr_violation_ticket_vehicle")
+	def ovtv;
+
 	@Service("DateService")
 	def dateSvc;
 
@@ -31,6 +34,7 @@ class ViolationTicketService {
 		o.dtcreated = dateSvc.getServerDate();
 		def data = ovt.create(o);
 		o.entry.each{ ovte.create(it); }
+		ovtv.create([parentid:o.objid,vehicleid:o.vehicle.objid]);
 		return data;
 	}
 
@@ -38,17 +42,30 @@ class ViolationTicketService {
 	public def update(def o){
 		ovte.find([parentid:o.objid]).delete();
 		o.entry.each{ ovte.create(it); }
+		ovtv.find([parentid:o.objid]).delete();
+		ovtv.create([parentid:o.objid,vehicleid:o.vehicle.objid]);
 		return ovt.find([objid:o.objid]).update(o);
 	}
 
 	@ProxyMethod
 	public void removeEntity(def o){
 		ovte.find([parentid:o.objid]).delete();
+		ovtv.find([parentid:o.objid]).delete();
 		ovt.find([objid:o.objid]).delete();
 	}
 
 	@ProxyMethod
 	def getViolations(params){
 		return ovt.getViolations(params);
+	}
+
+	@ProxyMethod
+	def getViolationsPerTicket(params){
+		return ovt.getViolationsPerTicket(params);
+	}
+
+	@ProxyMethod
+	def getVehiclePerTicket(params){
+		return ovt.findVehiclePerTicket(params);
 	}
 }

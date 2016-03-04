@@ -15,6 +15,16 @@
     {
         String serviceName = 'SubdivisionListService'
             
+        @Service('LGUService')
+        def lguSvc
+            
+        @PropertyChangeListener
+        def listener = [
+            'query.(lgu|state)' : {
+                search();
+            }
+        ]
+            
         String formTarget = 'window'
         boolean allowCreate = false;
         boolean allowSearch = false;
@@ -27,9 +37,30 @@
         }
 
         int getRows() { return 50 }
+            
+        def getStates(){
+            return ['DRAFT', 'FORAPPROVAL', 'APPROVED'];
+        }
+            
+        def getLgus(){
+            def orgclass = OsirisContext.env.ORGCLASS
+            def orgid = OsirisContext.env.ORGID
+
+            if ('PROVINCE'.equalsIgnoreCase(orgclass)) {
+                return lguSvc.lookupMunicipalities([:])
+            }
+            else if ('MUNICIPALITY'.equalsIgnoreCase(orgclass)) {
+                return [lguSvc.lookupMunicipalityById(orgid)]
+            }
+            else if ('CITY'.equalsIgnoreCase(orgclass)) {
+                return [lguSvc.lookupCityById(orgid)]
+            }
+            return []
+        }
 
     }  
     </code>   
     <pages>
+        <page name="queryform" template="com.rameses.gov.etracs.rpt.subdivision.ui.SubdivisionListQueryPage" />
     </pages>
 </workunit>

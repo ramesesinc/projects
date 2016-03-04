@@ -7,8 +7,11 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import com.rameses.waterworks.bean.Account;
 import com.rameses.waterworks.bean.Reading;
+import com.rameses.waterworks.bean.ReadingGroup;
 import com.rameses.waterworks.bean.Rule;
 import com.rameses.waterworks.bean.Setting;
+import com.rameses.waterworks.bean.Stubout;
+import com.rameses.waterworks.bean.StuboutAccount;
 import com.rameses.waterworks.util.SystemPlatformFactory;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -80,6 +83,23 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
                 + " var TEXT,"
                 + " action TEXT)");
        
+        sqld.execSQL("CREATE TABLE readinggroup ("
+                + " objid VARCHAR(50) PRIMARY KEY,"
+                + " title VARCHAR(50), "
+                + " duedate VARCHAR(50), "
+                + " assigneeid VARCHAR(50))");
+        
+        sqld.execSQL("CREATE TABLE stubout ("
+                + " objid VARCHAR(50) PRIMARY KEY,"
+                + " title VARCHAR(50), "
+                + " description TEXT, "
+                + " readinggroupid VARCHAR(50))");
+        
+        sqld.execSQL("CREATE TABLE stubout_account ("
+                + " objid VARCHAR(50) PRIMARY KEY,"
+                + " parentid VARCHAR(50), "
+                + " acctid TEXT, "
+                + " sortorder INTEGER)");
     }
 
     @Override
@@ -88,6 +108,9 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
         sqld.execSQL("DROP TABLE IF EXIST account");
         sqld.execSQL("DROP TABLE IF EXIST reading");
         sqld.execSQL("DROP TABLE IF EXIST rule");
+        sqld.execSQL("DROP TABLE IF EXIST readinggroup");
+        sqld.execSQL("DROP TABLE IF EXIST stubout");
+        sqld.execSQL("DROP TABLE IF EXIST stubout_account");
         onCreate(sqld);
     }
     
@@ -331,7 +354,7 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
     }
     
     @Override
-    public List<Account> getSearchResult(String searchtext) {
+    public List<Account> getSearchAccountResult(String searchtext) {
         ERROR = "";
         searchtext = searchtext + "%";
         List<Account> list = new ArrayList<Account>();
@@ -746,6 +769,211 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
             if(month == 12) result = "December";
         }catch(Exception e){}
         return result;
+    }
+
+    @Override
+    public void createReadingGroup(ReadingGroup r) {
+        ERROR = "";
+        ContentValues values = new ContentValues();
+        values.put("objid", r.getObjid());
+        values.put("title", r.getTitle());
+        values.put("duedate", r.getDueDate());
+        values.put("assigneeid", r.getAssigneeId());
+        
+        SQLiteDatabase db = this.getWritableDatabase();
+        try{
+            db.insert("readinggroup", null, values);
+        }catch(Exception e){
+            ERROR = "Database Error: " + e.toString();
+        }
+        db.close();
+    }
+
+    @Override
+    public void createStubout(Stubout s) {
+        ERROR = "";
+        ContentValues values = new ContentValues();
+        values.put("objid", s.getObjid());
+        values.put("title", s.getTitle());
+        values.put("description", s.getDescription());
+        values.put("readinggroupid", s.getReadingGroupId());
+        
+        SQLiteDatabase db = this.getWritableDatabase();
+        try{
+            db.insert("stubout", null, values);
+        }catch(Exception e){
+            ERROR = "Database Error: " + e.toString();
+        }
+        db.close();
+    }
+
+    @Override
+    public void createStuboutAccount(StuboutAccount sa) {
+        ERROR = "";
+        ContentValues values = new ContentValues();
+        values.put("objid", sa.getObjid());
+        values.put("parentid", sa.getParentId());
+        values.put("acctid", sa.getAcctId());
+        values.put("sortorder", sa.getSortOrder());
+        
+        SQLiteDatabase db = this.getWritableDatabase();
+        try{
+            db.insert("stubout_account", null, values);
+        }catch(Exception e){
+            ERROR = "Database Error: " + e.toString();
+        }
+        db.close();
+    }
+
+    @Override
+    public void clearReadingGroup() {
+        ERROR = "";
+        try{
+            String userid = SystemPlatformFactory.getPlatform().getSystem().getUserID();
+            String[] args = new String[]{userid};
+            SQLiteDatabase db = this.getWritableDatabase();
+            db.execSQL("DELETE FROM readinggroup where assigneeid = ?",args);
+            db.close();
+        }catch(Exception e){
+            ERROR = "Database Error: " + e.toString();
+        }
+    }
+
+    @Override
+    public void clearStubout() {
+        ERROR = "";
+        try{
+            String userid = SystemPlatformFactory.getPlatform().getSystem().getUserID();
+            String[] args = new String[]{userid};
+            SQLiteDatabase db = this.getWritableDatabase();
+            db.execSQL("DELETE s FROM stubout s INNER JOIN readinggroup r ON s.readinggroupid = r.objid WHERE r.assigneeid = ?",args);
+            db.close();
+        }catch(Exception e){
+            ERROR = "Database Error: " + e.toString();
+        }
+    }
+
+    @Override
+    public void clearStuboutAccount() {
+        ERROR = "";
+        try{
+            String userid = SystemPlatformFactory.getPlatform().getSystem().getUserID();
+            String[] args = new String[]{userid};
+            SQLiteDatabase db = this.getWritableDatabase();
+            db.execSQL("DELETE sa FROM stubout_account sa INNER JOIN stubout s ON sa.parentid = s.objid INNER JOIN readinggroup r ON s.readinggroupid = r.objid WHERE r.assigneeid = ?",args);
+            db.close();
+        }catch(Exception e){
+            ERROR = "Database Error: " + e.toString();
+        }
+    }
+    
+    @Override
+    public List<Stubout> getSearchStuboutResult(String searchtext) {
+        ERROR = "";
+        searchtext = searchtext + "%";
+        List<Stubout> list = new ArrayList<Stubout>();
+        String userid = SystemPlatformFactory.getPlatform().getSystem().getUserID();
+        String[] args = new String[]{searchtext, userid};
+        try{
+            SQLiteDatabase db = this.getWritableDatabase();
+            Cursor cursor = db.rawQuery("SELECT s.* FROM stubout s INNER JOIN readinggroup g ON s.readinggroupid = g.objid WHERE s.title LIKE ? AND g.assigneeid = ?", args);
+            if(cursor.moveToFirst()){
+                do{
+                    String objid = cursor.getString(0);
+                    String title = cursor.getString(1);
+                    String description = cursor.getString(2);
+                    String readinggroupid = cursor.getString(3);
+                    
+                    Stubout stubout = new Stubout(objid, title, description, readinggroupid, null);
+                    list.add(stubout);
+                }while(cursor.moveToNext());
+            }
+            db.close();
+        }catch(Exception e){
+            ERROR = "Database Error: " + e.toString();
+        }
+        return list;
+    }
+    
+    @Override
+    public List<Account> getAccountByStubout(Stubout s,String searchtext) {
+        ERROR = "";
+        searchtext = searchtext + "%";
+        List<Account> list = new ArrayList<Account>();
+        String userid = SystemPlatformFactory.getPlatform().getSystem().getUserID();
+        String[] args = new String[]{searchtext, searchtext, searchtext, s.getObjid()};
+        try{
+            SQLiteDatabase db = this.getWritableDatabase();
+            Cursor cursor = db.rawQuery("SELECT a.* FROM account a INNER JOIN stubout_account sa ON a.objid = sa.acctid INNER JOIN stubout s ON sa.parentid = s.objid WHERE (a.acctname LIKE ? OR a.acctno LIKE ? OR a.serialno LIKE ?) AND s.objid = ? ORDER BY sa.sortorder", args);
+            if(cursor.moveToFirst()){
+                do{
+                    String objid = cursor.getString(0);
+                    String acctno = cursor.getString(1);
+                    String acctname = cursor.getString(2);
+                    String address = cursor.getString(3);
+                    String mobileno = cursor.getString(4);
+                    String phoneno = cursor.getString(5);
+                    String email = cursor.getString(6);
+                    String serialno = cursor.getString(7);
+                    String areaid = cursor.getString(8);
+                    String balance = cursor.getString(9);
+                    String penalty = cursor.getString(10);
+                    String othercharge = cursor.getString(11);
+                    String lastreading = cursor.getString(12);
+                    String lasttxndate = cursor.getString(13);
+                    String areaname = cursor.getString(14);
+                    String classificationid = cursor.getString(15);
+                    String lastreadingyear = cursor.getString(16);
+                    String lastreadingmonth = cursor.getString(17);
+                    String lastreadingdate = cursor.getString(18);
+                    String barcode = cursor.getString(19);
+                    String batchid = cursor.getString(20);
+                    String month = cursor.getString(21);
+                    String year = cursor.getString(22);
+                    String period = cursor.getString(23);
+                    String duedate = cursor.getString(24);
+                    String discodate = cursor.getString(25);
+                    String rundate = cursor.getString(26);
+                    String info = cursor.getString(27);
+
+                    Account acct = new Account(
+                        objid,
+                        acctno,
+                        acctname,
+                        address,
+                        mobileno,
+                        phoneno,
+                        email,
+                        serialno,
+                        areaid,
+                        balance,
+                        penalty,
+                        othercharge,
+                        lastreading,
+                        lasttxndate,
+                        areaname,
+                        classificationid,
+                        lastreadingyear,
+                        lastreadingmonth,
+                        lastreadingdate,
+                        barcode,
+                        batchid,
+                        month,
+                        year,
+                        period,
+                        duedate,
+                        discodate,
+                        rundate,
+                        info
+                    );
+                    list.add(acct);
+                }while(cursor.moveToNext());
+            }
+            db.close();
+        }catch(Exception e){
+            ERROR = "Database Error: " + e.toString();
+        }
+        return list;
     }
     
 }

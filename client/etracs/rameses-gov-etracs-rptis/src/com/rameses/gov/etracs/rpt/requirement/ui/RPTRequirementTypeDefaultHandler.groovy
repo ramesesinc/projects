@@ -95,6 +95,7 @@ public class RPTRequirementTypeDefaultHandler
             
     def viewImage(){
         if (!selectedItem) return null;
+        selectedItem.info = svc.getEntityInfo(entity.refid)
         return InvokerUtil.lookupOpener('image:view', [
                 entity : selectedItem,
             ]);

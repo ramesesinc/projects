@@ -8,7 +8,7 @@ class RPTReportAssessmentRollService
     @ActiveDB('rptreport_assessmentroll')
     def em
 
-    
+
     @Async
     @ProxyMethod
     public def generateAssessmentRollTaxable( params ){
@@ -26,6 +26,15 @@ class RPTReportAssessmentRollService
 		def list = em.getAssessmentRollExempt(params)
 		if( ! list ) throw new Exception('Records not found.')
 		return [reportdata:list]
+    }
+
+    @Async
+    @ProxyMethod
+    public def generateContinuousAssessmentRoll( params ) {
+        params.lguid = params.lgu.objid 
+        def list = em.getContinuousAssessmentRoll(params)
+        if( ! list ) throw new Exception('Records not found.')
+        return [reportdata:list]
     }
 
 

@@ -33,7 +33,7 @@ class MunicipalityFAASService
         faas.approver = entity.approver   
         faasSvc.approveFaas(faas)
 
-        updateSignatory(currfaas)
+        updateSignatory(faas)
         closeCurrentTask(faas, currtask)
     }
 

@@ -47,8 +47,9 @@ public class ReadingSheet {
     private RButton[] rb;
     private int capacity = 6;
     private Reading reading;
+    boolean goBackToList = false;
     
-    public ReadingSheet(){
+    public ReadingSheet(Account a){
         Header.TITLE.setText("Reading Sheet");
         
         Button search = new Button();
@@ -66,19 +67,7 @@ public class ReadingSheet {
                 if(result.size() > 0){
                     account = result.get(0);
                     if(account != null){
-                        field_serialno.setText(account.getSerialNo());
-                        field_name.setText(account.getAcctName());
-                        field_class.setText(account.getClassificationId());
-                        field_prev.setText(account.getLastReading());
-
-                        Database db2 = DatabasePlatformFactory.getPlatform().getDatabase();
-                        reading = db2.findReadingByAccount(account.getObjid());
-                        if(!db2.getError().isEmpty()) Dialog.showError(db2.getError());
-                        if(reading == null){
-                            initMeterReadingValue(account.getLastReading());
-                        }else{
-                            initMeterReadingValue(reading.getReading());
-                        }
+                        loadAccountData();
                     }
                 }else{
                     Dialog.showAlert("No record found!");
@@ -169,10 +158,21 @@ public class ReadingSheet {
             @Override
             public void handle(KeyEvent event) {
                 if(event.getCode() == KeyCode.ESCAPE){
-                    Main.ROOT.setCenter(new Home().getLayout());
+                    if(goBackToList){
+                        Main.ROOT.setCenter(Main.prevScreen);
+                        Header.TITLE.setText("Accounts");
+                    }else{
+                        Main.ROOT.setCenter(new Home().getLayout());
+                    }
                 }
             }
         });
+        
+        if(a != null){
+            account = a;
+            loadAccountData();
+            goBackToList = true;
+        }
     }
     
     private void saveReading(){
@@ -297,6 +297,22 @@ public class ReadingSheet {
             value += rb[i].getValue();
         }
         return value;
+    }
+    
+    private void loadAccountData(){
+        field_serialno.setText(account.getSerialNo());
+        field_name.setText(account.getAcctName());
+        field_class.setText(account.getClassificationId());
+        field_prev.setText(account.getLastReading());
+
+        Database db2 = DatabasePlatformFactory.getPlatform().getDatabase();
+        reading = db2.findReadingByAccount(account.getObjid());
+        if(!db2.getError().isEmpty()) Dialog.showError(db2.getError());
+        if(reading == null){
+            initMeterReadingValue(account.getLastReading());
+        }else{
+            initMeterReadingValue(reading.getReading());
+        }
     }
     
     private VBox createMeterListView(List<Account> accounts){

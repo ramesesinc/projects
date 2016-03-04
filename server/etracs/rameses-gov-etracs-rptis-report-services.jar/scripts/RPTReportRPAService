@@ -29,16 +29,24 @@ class RPTReportRPAService
     @Service('ReportParameterService')
     def paramSvc 
 
+    @Service('DateService')
+    def dtSvc 
+
 
     @Async
 	@ProxyMethod
 	public Map generateReportOnRPA( params ) {
 		params.lguid = params.lgu?.objid 
-		util.buildReportTitlePeriod('REPORT ON REAL PROPERTY ASSESSMENTS', params)
-		if ('PERIOD'.equalsIgnoreCase(params.reporttype))
+		def title = 'REPORT ON REAL PROPERTY ASSESSMENTS'
+		if ('period'.equalsIgnoreCase(params.reporttype.type)){
+			util.buildReportTitlePeriod(title, params)
 			util.buildEndingPeriodFilter(params)
-		else 
+		}
+		else {
 			params.filter = ' f.dtapproved <= $P{asofdate} '
+			params.title = title 
+			params.period = 'As of ' + dtSvc.format('MMMMM dd, yyyy', dtSvc.parse('yyyy-MM-dd', params.asofdate))
+		}
 
 		if (params.barangay){
 			params.filter += ' AND rp.barangayid = $P{barangayid} ' 
@@ -99,8 +107,8 @@ class RPTReportRPAService
 			FORLGUNAME  : (params.lgu ? params.lgu.name : (env.ORGCLASS + ' OF ' + env.ORGNAME)),
 			LGUTYPE     : (params.lgu ? params.lgu.lgutype : env.ORGCLASS), 
 			BRGYCOUNT   : getBarangays(params).size(),
+			BARANGAY    : params.barangay?.name,
 		]
-
 		
 		return [
 			parameters  : p, 

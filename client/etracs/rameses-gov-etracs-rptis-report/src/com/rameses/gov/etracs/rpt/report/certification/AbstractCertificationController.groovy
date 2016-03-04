@@ -57,6 +57,8 @@ public abstract class AbstractCertificationController
         return [:]
     }
     
+    void afterInit(){}
+    
     def init() {
          entity = createEntity();
         entity.objid            = RPTUtil.generateId('RC');
@@ -70,6 +72,7 @@ public abstract class AbstractCertificationController
         entity.office           = 'assessor';
         entity.official         = false;
         officialuse             = false;
+        afterInit();
         mode = MODE_CREATE;
         binding?.refresh('entity.*');
         return 'default'
@@ -88,6 +91,9 @@ public abstract class AbstractCertificationController
         return doPreview();
     }
 
+    void afterLookupTaxpayer(){
+        
+    }
     
     def getLookupTaxpayer(){
         return InvokerUtil.lookupOpener('entity:lookup',[
@@ -95,6 +101,7 @@ public abstract class AbstractCertificationController
                 entity.taxpayer = [objid:it.objid, name:it.name, address:it.address.text];
                 entity.requestedby = it.name;
                 entity.requestedbyaddress = it.address.text;
+                afterLookupTaxpayer();
             },
             onempty  : { 
                 entity.taxpayer = null;
@@ -154,7 +161,10 @@ public abstract class AbstractCertificationController
     ] as ReportModel;
 
     
+    void beforeSave(){}
+    
     def save(){
+        beforeSave();
         return service.createCertification( entity )
     }
     

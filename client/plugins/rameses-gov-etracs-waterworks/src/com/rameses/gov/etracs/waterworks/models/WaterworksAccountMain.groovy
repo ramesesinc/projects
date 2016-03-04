@@ -14,6 +14,12 @@ class WaterworksAccountMain {
    @Service("EntityService")
    def entitySvc;
 
+   @Service('WaterworksClassificationService')
+   def classSvc;
+
+   @Service('WaterworksReadingGroupService')
+   def readingGroupSvc;
+
    @Binding
    def binding;
 
@@ -34,6 +40,19 @@ class WaterworksAccountMain {
         formId = entity.objid;
         formtitle = entity.acctno;
         sections = Inv.lookupOpeners("waterworks_account:section",[entity:entity]);
+   }
+
+   def edit(){
+        title = entity.acctno + " (" + entity.acctname + ")";
+        return Inv.lookupOpener("waterworks_account:edit",[entity:entity])
+   }
+
+   void preview(){
+       def list = readingGroupSvc.getListByAssignee([assigneeid:'USR-2e68d039:152b3cdd128:-7f7d']);
+       list.each{
+           println it;
+           println '';
+       }
    }
 
 }

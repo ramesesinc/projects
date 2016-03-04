@@ -3,5 +3,6 @@
           cols="acctno,acctname,owner.name,address,meter.serialno,lastreading,balance">
     <invokers>
         <invoker folderid="/home/waterworks" caption="Waterworks Account List" action="init" />
+        <invoker type="waterworks_account:list" caption="Waterworks Account List" action="init"/>
     </invokers>
 </workunit>

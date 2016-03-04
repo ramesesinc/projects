@@ -1,7 +1,7 @@
 [getList]
 SELECT 
 	rl.objid, rl.state, rl.faasid, rl.tdno, rl.prevtdno, rl.titleno,
-	rl.taxpayer_objid, e.name AS taxpayer_name,
+	rl.taxpayer_objid, e.name AS taxpayer_name, rl.administrator_name,
 	rl.fullpin, rl.cadastrallotno, rl.totalareaha, rl.classcode, rl.rputype,  
 	rl.totalmv, rl.totalav, rl.lastyearpaid, rl.lastqtrpaid,
 	CASE WHEN rl.faasid IS NULL THEN 'M' ELSE '' END AS type,
@@ -748,13 +748,15 @@ where rptledgerid = $P{rptledgerid}
 [fixLedgerDeleteQtrlyItems]  
 delete from rptledgeritem_qtrly 
 where rptledgerid = $P{rptledgerid}
-and ((year = $P{lastyearpaid} and qtr > $P{lastqtrpaid}) or year > $P{lastyearpaid} )
+and  year > $P{lastyearpaid}
+and exists(select * from rptledgeritem where objid = rptledgeritem_qtrly.parentid and taxdifference = 0)
 
 
 [fixLedgerDeleteLedgerItems]
 delete from rptledgeritem  
 where rptledgerid = $P{rptledgerid}
 and year > $P{lastyearpaid} 
+and taxdifference = 0 
 
 
 [fixLedgerSetQtrlyItemFullyPaid]

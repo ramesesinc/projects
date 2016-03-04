@@ -1,0 +1,18 @@
+/* v2.5.04.031-03005 */
+- ASSESSOR
+	- Add Subdivision and Consolidation Summary Report
+	- Clear Improvement Signatories for Subdivision/Consolidation
+	- Fix Subdivision/Consolidation new suffix bug
+	- FAAS Cancellation workflow support 
+	- Printing requirement support
+	- Allow changes to boundary in FAAS Sketch screen
+	- Support for Change Administrator Transaction
+	- Fix entity address in text format error
+	- Update on notification info
+	- Handle missing recommender when FAAS is sent from province
+	- Display PENDING FAAS records
+
+- LANDTAX: 
+	- Support qtrly effectivity billing
+	- Update on split by qtr billing sql support statement
+	- Adjustment on the computation of backtax years

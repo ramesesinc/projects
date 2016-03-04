@@ -54,5 +54,16 @@ class RPTRequirementService extends ActiveCrudListService
 		}
 		return requirement
 	}
+
+	@ProxyMethod
+	public def getEntityInfo(refid){
+		def param = [objid:refid]
+		def info = em.findFaasInfo(param)
+		if (!info)
+			info = em.findSubdivisionInfo(param)
+		if (!info)
+			info = em.findConsolidationInfo(param)
+		return info
+	}
 	
 }

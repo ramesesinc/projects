@@ -64,7 +64,7 @@ from (
       bi.basicidle + bi.basicidleint - bi.basicidledisc +
       bi.firecode) as total,
     rl.barangayid,
-    bi.taxdifference
+    rli.taxdifference
   from rptledger rl 
     inner join rptbill_ledger_item bi on rl.objid = bi.rptledgerid 
     inner join rptledgerfaas rlf on bi.rptledgerfaasid = rlf.objid
@@ -78,7 +78,7 @@ from (
     rlf.assessedvalue,
     rl.barangayid,
     bi.year, 
-    bi.taxdifference
+    rli.taxdifference
 
   union all 
 
@@ -109,7 +109,7 @@ from (
       bi.basicidle + bi.basicidleint - bi.basicidledisc +
       bi.firecode) as total,
     rl.barangayid,
-    bi.taxdifference
+    rli.taxdifference
   from rptledger rl 
     inner join rptbill_ledger_item bi on rl.objid = bi.rptledgerid 
     inner join rptledgerfaas rlf on bi.rptledgerfaasid = rlf.objid

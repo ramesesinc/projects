@@ -2,7 +2,8 @@
 SELECT
 	b.name AS barangay, rp.cadastrallotno, pc.code AS classcode, r.fullpin, 
 	f.prevtdno, f.taxpayer_address, f.taxpayer_name, f.tdno, 
-	r.totalareasqm, r.totalareaha, r.totalav, f.txntype_objid AS txntype
+	r.totalareasqm, r.totalareaha, r.totalav, f.txntype_objid AS txntype,
+	rp.street, rp.purok, rp.blockno 
 FROM faas f
 	INNER JOIN rpu r ON f.rpuid = r.objid 
 	INNER JOIN realproperty rp ON f.realpropertyid = rp.objid

@@ -240,7 +240,7 @@ class ConsolidationService
         rpuSvc.validateSuffix( arpu.rputype, arpu.newsuffix )
         checkDuplicateAffectedRpuSuffix(arpu)
         def consolidation = em.findById([objid:arpu.consolidationid])
-        if (arpu.newrpuid && arpu.newrpid ) {
+        if (arpu.newrpid ) {
             em.updateAffectedRpuRealPropertyId([rpuid:arpu.newrpuid, realpropertyid:arpu.newrpid])
 
             def faas = null 
@@ -384,6 +384,7 @@ class ConsolidationService
 
     void updateAffectedRpuFaasInfo(faas, consolidation, arpu){
         arpu.rpu = rpuSvc.openRpu([objid:arpu.newrpuid])
+        arpu.rpu.suffix = arpu.newsuffix
         arpu.rpu.fullpin = consolidation.rp.pin + '-' + arpu.newsuffix 
         rpuSvc.updateRpu(arpu.rpu)
         faas.rpu = arpu.rpu 
@@ -519,6 +520,7 @@ class ConsolidationService
 
         arpu.rpu = rpuSvc.openRpu([objid:arpu.newrpuid])
         arpu.rpu.realpropertyid = arpu.newrpid 
+        arpu.rpu.suffix = arpu.newsuffix
         arpu.rpu.fullpin = consolidation.rp.pin + '-' + arpu.newsuffix 
         rpuSvc.updateRpu(arpu.rpu)
 
@@ -539,14 +541,17 @@ class ConsolidationService
         faas.txntype  = faasSvc.getTxnType(TXNTYPE_CS)
         faas.effectivityyear = pdate.year
         faas.effectivityqtr = pdate.qtr
+        faas.datacapture = 0
         faas.memoranda = consolidation.memoranda
         faas.tdno = null
         faas.utdno = null
+        faas.fullpin = arpu.rpu.fullpin
         faas.rpu = arpu.rpu 
         faas.rpuid = arpu.rpu.objid 
         faas.realpropertyid = arpu.newrpid 
         faas.previousfaases = [[faasid:faas.objid, prevfaasid:arpu.prevfaasid]]
         faas.originlguid = consolidation.originlguid
+        faasSvc.clearSignatoryInfo(faas)
         return faas 
     }
 

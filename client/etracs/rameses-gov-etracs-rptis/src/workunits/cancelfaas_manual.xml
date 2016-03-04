@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="cancelledfaas:create" action="init" caption="FAAS Cancellation (Manual)" target="window"  
+            role="RECORD,APPRAISER" permission="cancelfaas.create"/>
+        
+        <invoker type="cancelledfaas:open" action="open" caption="Cancelled FAAS (Manual)" target="window"  />
+            
+        <invoker folderid="/explorer/txn/rpt/manual" action="init"  caption="Cancel FAAS" index="22" 
+            role="RECORD,APPRAISER" permission="cancelfaas.create"/>
+        
+   </invokers>
+   <code>       
+<![CDATA[
+
+import com.rameses.rcp.annotations.* 
+import com.rameses.rcp.common.* 
+import com.rameses.osiris2.client.*
+import com.rameses.osiris2.common.*
+import com.rameses.util.MapBeanUtils;
+
+public class CancelledFAASController extends PageFlowController
+{
+
+    @Binding
+    def binding;
+    
+    @Service('CancelledFAASService')
+    def svc 
+            
+    @Invoker
+    def invoker 
+    
+    def MODE_CREATE = 'create';
+    def MODE_EDIT   = 'edit';
+    def MODE_READ   = 'read';
+    
+    def STATE_DRAFT       = 'DRAFT';
+    def STATE_FORAPPROVAL = 'FORAPPROVAL';
+    def STATE_APPROVED    = 'APPPROVED';
+    
+    
+    def mode;
+    def entity;
+    
+    @FormId
+    def formId;
+    
+    @FormTitle
+    String formTitle;
+    
+    String title = 'Cancelled FAAS'
+    
+    String entityName = 'cancelledfaas';
+    
+    def init(){
+        createEntity();
+        mode = MODE_CREATE;
+        return super.signal('init');
+    }
+    
+    def createEntity(){
+        entity = [
+            objid : 'CF' + new java.rmi.server.UID(),
+            state : 'DRAFT',
+            online: 0,
+        ]
+    }
+    
+    
+    def open(){
+        entity = svc.openCancelledFaas(entity)
+        entity.reason = cancelReasons.find{it.objid == entity.reason.objid}
+        formId = entity.faas.tdno 
+        formTitle = 'Cancelled FAAS: ' + formId
+        mode = MODE_READ;
+        return super.signal('open');
+    }
+    
+    def getLookupFaas() {
+        return InvokerUtil.lookupOpener('faas:lookup', [:])
+    }
+    
+    
+    List getCancelReasons(){
+        return svc.getCancelReasons()
+    }
+    
+    boolean getAllowEdit(){
+        if ( entity.state == STATE_APPROVED  )
+                return false;
+        if (mode == MODE_READ )
+                return false;
+        return true 
+    }
+    
+    
+
+    /*-----------------------------------------------------
+     * 
+     * DOCUMENT SUPPORT 
+     *
+     *----------------------------------------------------*/
+    def oldEntity 
+            
+    void edit(){
+        oldEntity = MapBeanUtils.copy(entity)
+        mode = MODE_EDIT;
+    }
+    
+    
+    void cancelEdit(){
+        if (oldEntity){
+            entity.putAll(oldEntity)
+        }
+        oldEntity = null
+        mode = MODE_READ;
+    }
+    
+    void save(){
+        if (mode == MODE_CREATE)
+            entity = svc.createCancelledFaas(entity)
+        else 
+            entity = svc.updateCancelledFaas(entity)
+        mode = MODE_READ;
+    }    
+   
+    
+    void delete(){
+        svc.deleteCancelledFaas(entity)
+    }
+    
+    
+
+    /*-----------------------------------------------------
+     * 
+     * WORKFLOW ACTIONS
+     *
+     *----------------------------------------------------*/
+    void submitForApproval(){
+        entity = svc.submitForApproval(entity);
+    }
+    
+    
+    void disapproveFaasCancellation(){
+        entity = svc.disapproveFaasCancellation(entity)
+    }
+    
+    
+    void approveFaasCancellation() {
+        entity = svc.approveFaasCancellation(entity);
+    }
+
+    
+}
+
+]]>       
+   </code>
+
+    <pageflow>
+        <start>
+            <transition name="init" to="init"/>
+            <transition name="open" to="open"/>
+        </start>
+        
+        <process name="open">
+            <transition to="default" cond="#{entity.state == 'DRAFT'}"/>
+            <transition to="forapproval" cond="#{entity.state == 'FORAPPROVAL'}"/>
+            <transition to="approved" cond="#{entity.state == 'APPROVED'}"/>
+        </process>
+        
+        <page name="init" title="FAAS Cancellation (Draft)">
+            <transition caption="Cancel"  to="end"  mnemonic="c" icon="images/toolbars/cancel.png" />
+            <transition caption="Save"   to="default" action="save" name="save" mnemonic="s" shortcut="ctrl S" icon="images/toolbars/save.png"  visibleWhen="#{mode != 'read'}" />
+        </page>
+        
+        <page name="default" title="FAAS Cancellation (Draft)">
+            <transition caption="Close"  to="end"      mnemonic="c" icon="images/toolbars/cancel.png" visibleWhen="#{mode == 'read'}"/>
+            <transition caption="Edit"   to="back-to-default" action="edit"  name="edit" mnemonic="e" shortcut="ctrl E" icon="images/toolbars/edit.png"  visibleWhen="#{mode == 'read'}" role="APPRAISER"/>
+            <transition caption="Cancel" to="back-to-default" action="cancelEdit" name="cancel" mnemonic="c" icon="images/toolbars/cancel.png" visibleWhen="#{mode != 'read'}"/>
+            <transition caption="Save"   to="back-to-default" action="save" name="save" mnemonic="s" shortcut="ctrl S" icon="images/toolbars/save.png"  visibleWhen="#{mode != 'read'}" />
+            <transition caption="Delete" to="delete"  action="delete" confirm="Delete record?"    mnemonic="d" icon="images/toolbars/trash.png"  visibleWhen="#{mode == 'read'}" role="APPRAISER"/>
+            <transition caption="Submit" to="forapproval" action="submitForApproval"  mnemonic="m"  visibleWhen="#{mode == 'read'}" confirm="Submit for approval?" role="APPRAISER"/>
+        </page>
+        
+        <process name="back-to-default">
+            <transition to="default" />
+        </process>
+        
+        <process name="delete">
+            <transition to="end"/>
+        </process>
+        
+        
+        <page name="forapproval" title="FAAS Cancellation (For Approval)">
+            <transition caption="Close" to="end" mnemonic="c" icon="images/toolbars/cancel.png" visibleWhen="#{mode == 'read'}" />
+            <transition caption="Edit"   to="back-to-forapproval" action="edit" name="edit" mnemonic="e" shortcut="ctrl E" icon="images/toolbars/edit.png"  visibleWhen="#{mode == 'read'}" role="APPROVER"/>
+            <transition caption="Cancel" to="back-to-forapproval" action="cancelEdit" name="cancel"  mnemonic="c" icon="images/toolbars/cancel.png" visibleWhen="#{mode != 'read'}"/>
+            <transition caption="Save"   to="back-to-forapproval" action="save" name="save" mnemonic="s" shortcut="ctrl S" icon="images/toolbars/save.png"  visibleWhen="#{mode != 'read'}" />
+            <transition caption="Disapprove" to="default" action="disapproveFaasCancellation" mnemonic="d" visibleWhen="#{mode == 'read'}" confirm="Disapprove record?" role="APPROVER"/>
+            <transition caption="Approve" to="approved" action="approveFaasCancellation" mnemonic="v" icon="images/toolbars/approve.png" visibleWhen="#{mode == 'read'}" confirm="Approve record?" role="APPROVER"/>
+        </page>
+        
+        <process name="back-to-forapproval">
+            <transition to="forapproval"/>
+        </process>
+        
+        <page name="approved" title="Cancelled FAAS">
+            <transition caption="Close" to="end" mnemonic="c" icon="images/toolbars/cancel.png"/>
+        </page>
+        
+        <end />
+        
+    </pageflow>
+    
+    <pages> 
+        <page name="init" template="com.rameses.gov.etracs.rpt.cancelledfaas.ui.CancelledFAASPage"/>
+        <page name="default" template="com.rameses.gov.etracs.rpt.cancelledfaas.ui.CancelledFAASPage"/>
+        <page name="forapproval" template="com.rameses.gov.etracs.rpt.cancelledfaas.ui.CancelledFAASPage"/>
+        <page name="approved" template="com.rameses.gov.etracs.rpt.cancelledfaas.ui.CancelledFAASPage"/>
+    </pages>
+</workunit>
+
+

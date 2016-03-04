@@ -391,7 +391,8 @@ class FAASService
     }
 
 
-    void clearSignatoryInfo(faas){
+    @ProxyMethod 
+    public void clearSignatoryInfo(faas){
 		faas.taxmapper = [:]
 		faas.taxmapperchief = [:]
 		faas.appraiser = [:]
@@ -402,6 +403,8 @@ class FAASService
 		faas.provtaxmapperchief = [:]
 		faas.provappraiser = [:]
 		faas.provappraiserchief = [:]
+		faas.provrecommender = [:]
+		faas.provapprover = [:]
 		faas.approver = [:]
     }
 

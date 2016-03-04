@@ -7,6 +7,7 @@
 	- 
 		
 - ASSESSOR
+	- New Assessment Roll continuous format (San Carlos City)
 	- Allow changes to boundary in FAAS Sketch screen
 	- Support for Change Administrator Transaction
 	- Fix entity address in text format error

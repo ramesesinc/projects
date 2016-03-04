@@ -1,0 +1,19 @@
+import com.rameses.annotations.*
+import com.rameses.common.*;
+
+class CityCancelledFAASWorkflowInterceptor
+{
+	@Env
+	def env
+
+	@Service('CancelledFAASService')
+	def svc
+
+	@Before(pattern="CancelledFAASWorkflowService.signal", eval="#{args[0].state.matches('approver')  && (args[0].action == null || !args[0].action.matches('return.*'))}") 
+	public void approveCancelledFaas( evt ) {
+		def cancelledfaas = evt.args[0].data;
+		svc.approveFaasCancellation(cancelledfaas)
+	}
+
+}
+

@@ -266,7 +266,9 @@ class RPTLedgerService
         item.qtrly = (item.year >= curryear ? 1 : 0)
         item.partialled = 0
         em.save(item, SCHEMA_ITEM)
-        createLedgerItemQtrlyData(item, 1)
+        for (int qtr = 1; qtr <= 4; qtr++){
+            createLedgerItemQtrlyData(item, qtr)
+        }
         
         def params = [
             objid           : item.rptledgerid, 
@@ -277,16 +279,12 @@ class RPTLedgerService
             lastqtrpaid     : (item.fullypaid == 1 ? 4 : item.paidqtr),
             toqtr     : (item.fullypaid == 1 ? 4 : item.paidqtr)
         ]
-
         em.fixLedgerDeleteBillLedgerItems(params)
         em.fixLedgerDeleteQtrlyItems(params)
         em.fixLedgerDeleteLedgerItems(params)
         em.fixLedgerSetQtrlyItemFullyPaid(params)
         em.fixLedgerSetItemFullyPaid(params)
-        if (item.isnew)
-            em.clearNextBillDateByLedger(params)
-        else 
-            em.updateLastYearQtrPaid(params)
+        em.clearNextBillDateByLedger(params)
         generateLedgerBill(params.rptledgerid)
         em.fixLedgerSetQtrlyItemFullyPaid(params)
         em.fixLedgerSetItemFullyPaid(params)
@@ -814,6 +812,7 @@ class RPTLedgerService
         ledger.faasid          = faas.objid 
         ledger.taxpayer        = faas.taxpayer
         ledger.owner           = faas.owner
+        ledger.administrator   = faas.administrator
         ledger.fullpin         = faas.fullpin
         ledger.tdno            = faas.tdno
         ledger.cadastrallotno  = faas.rp.cadastrallotno
@@ -892,6 +891,7 @@ class RPTLedgerService
             barangayid              : faas.rp.barangay.objid,
             taxpayer                : faas.taxpayer,
             owner                   : faas.owner,
+            administrator           : faas.administrator,
             fullpin                 : faas.fullpin,
             tdno                    : faas.tdno,
             cadastrallotno          : faas.rp.cadastrallotno,

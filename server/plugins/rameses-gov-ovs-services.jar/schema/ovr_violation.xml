@@ -1,0 +1,9 @@
+<schema adapter="violation">
+	<element name="ovr_violation" tablename="violation">
+		<field name="objid" primary="true" prefix="VIO"/>
+		<field name="title" required="true" caption="Title"/>
+		<field name="section" required="true" caption="Section"/>
+		<field name="article" required="true" caption="Article"/>
+		<field name="description" required="true" caption="Description"/>
+	</element>
+</schema>

@@ -5,12 +5,10 @@ import com.rameses.rcp.common.*;
 import com.rameses.osiris2.client.*;
 import com.rameses.osiris2.common.*;
 import com.rameses.rcp.annotations.*;
+import com.rameses.seti2.models.*;
 
+public class WaterworksAccountCapture extends CrudFormModel {
 
-public class WaterworksAccountCapture {
-
-    @Service('WaterworksAccountService')
-    def acctSvc;
 
     @Service('WaterworksClassificationService')
     def classSvc;
@@ -21,60 +19,58 @@ public class WaterworksAccountCapture {
     @Service("EntityService")
     def entitySvc;
 
-    @Binding
-    def binding;
+    String schemaName = "waterworks_account";
     
-    def title;
-    def entity;
     def classifications;
-    def months;
-    def addressComponent;
+    
+    def months = [
+        [id: 1, name: "JANUARY"],
+        [id: 2, name: "FEBRUARY"],
+        [id: 3, name: "MARCH"],
+        [id: 4, name: "APRIL"],
+        [id: 5, name: "MAY"],
+        [id: 6, name: "JUNE"],
+        [id: 7, name: "JULY"],
+        [id: 8, name: "AUGUST"],
+        [id: 9, name: "SEPTEMBER"],
+        [id: 10, name: "OCTOBER"],
+        [id: 11, name: "NOVEMBER"],
+        [id: 12, name: "DECEMBER"]
+    ];
 
-    void init(){
-        entity = [address:[street:"street 1"]];
+    void afterInit() {
+        //title = 'Capture Account';
+        classifications = classSvc.getList();
+    }
+    
+    void afterCreate() {
+        entity = [address:[:]];
         entity.state = 'ACTIVE';
         entity.lastreadingyear = dateSvc.getServerYear();
-        title = 'Capture Account';
-        classifications = classSvc.getList();
-        months = [
-            [id: 1, name: "JANUARY"],
-            [id: 2, name: "FEBRUARY"],
-            [id: 3, name: "MARCH"],
-            [id: 4, name: "APRIL"],
-            [id: 5, name: "MAY"],
-            [id: 6, name: "JUNE"],
-            [id: 7, name: "JULY"],
-            [id: 8, name: "AUGUST"],
-            [id: 9, name: "SEPTEMBER"],
-            [id: 10, name: "OCTOBER"],
-            [id: 11, name: "NOVEMBER"],
-            [id: 12, name: "DECEMBER"]
-        ];
-        addressComponent = Inv.lookupOpener("address:component",[entity:entity.address]);
     }
 
-    def save(){
-        if(!MsgBox.confirm("You are about to create this record. Continue?")) return;
-        entity.classificationid = entity.classification.objid;
-        entity.lastreadingmonth = entity.month.id;
-        if(entity.lastreading < entity.prevreading) throw new Exception('Last Reading must be greater than Prev. Reading!');
-        acctSvc.create(entity);
-        MsgBox.alert('Record successfully saved!');
-        return '_close';
+    void beforeSave( def mode ) {
+        if(entity.lastreading < entity.prevreading) 
+            throw new Exception('Last Reading must be greater than Prev. Reading!');
     }
+    
+    /*
+    void edit(){
+        title = entity.acctno + " (" + entity.acctname + ")";
+    }
+    */
 
-    def getLookupEntity(){
-        def h = {o ->
-            entity.owner = o;
-            binding.refresh("entity.*");
-            println entity.owner;
+    @PropertyChangeListener
+    def listener = [
+        "entity.owner": { o->
+            entity.acctname = o.name;
             def owner = entitySvc.open(o);
             entity.phoneno = owner.phoneno;
             entity.mobileno = owner.mobileno;
             entity.email = owner.email;
+            binding.refresh("entity.*");
         }
-        return Inv.lookupOpener("entity:lookup",[onselect:h]);
-   }
+    ]
 
     def getLookupMeter(){
         def h = {o ->

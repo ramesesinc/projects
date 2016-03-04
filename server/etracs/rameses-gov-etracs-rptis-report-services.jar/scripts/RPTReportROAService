@@ -18,17 +18,26 @@ class RPTReportROAService
     @Async
     @ProxyMethod
     public def getROA(params){
-
-        if ('PERIOD'.equalsIgnoreCase(params.reporttype))
+        params.title = 'RECORD OF ASSESSMENTS'
+        if ('period'.equalsIgnoreCase(params.reporttype.type)){
+            util.buildReportTitlePeriod(params.title, params)
+            if (params.periodtype.equalsIgnoreCase('quarter'))
+                params.period = 'PERIOD: ' + params.period
+            else if (params.periodtype.equalsIgnoreCase('month'))
+                params.period = 'FOR THE MONTH OF ' + params.period
+            
             util.buildCurrentPeriodFilter(params)    
-        else
+        }
+        else{
             params.filter = ' f.dtapproved <= $P{asofdate} '
+            params.period = 'As of ' + dtsvc.format('MMMMM dd, yyyy', dtsvc.parse('yyyy-MM-dd', params.asofdate))
+        }
 
         def barangay = params.barangay ? params.barangay.name : 'ALL'
         def classification = params.classification ? params.classification.name : 'ALL';
         params.lguid = params.lgu?.objid 
         
-
+        def barangayname = params.barangay?.name 
         params.barangay = params.barangay ? params.barangay.objid : '%';
         params.classification = params.classification ? params.classification.objid : '%';
         params.ry = dtsvc? dtsvc.getServerYear() : '';
@@ -64,6 +73,7 @@ class RPTReportROAService
             PERIOD      : params.period,
             PERIODTYPE  : params.periodtype,
             TITLE       : params.title,
+            BARANGAY    : barangayname,
         ]
 
         if (params.lgu)

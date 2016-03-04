@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="subdivision:info" action="preview" caption="Summary Report" index="1500"/>
+        <invoker type="formActions" action="refresh" caption="Refresh"/>
+   </invokers>
+   <code>
+
+<![CDATA[
+
+import com.rameses.rcp.annotations.* 
+import com.rameses.rcp.common.* 
+import com.rameses.osiris2.client.*
+import com.rameses.osiris2.common.*
+import com.rameses.osiris2.reports.*
+
+class SummaryReportInfoController extends ReportController
+{
+    @Binding
+    def binding;
+    
+    def entity;
+    
+    String title = 'Summary Report'
+    
+    @Service('RPTReportSubdivisionService')
+    def reportSvc  
+    
+    def reportPath = 'com/rameses/gov/etracs/rpt/report/subdivision/';
+    
+    public String getReportName(){
+        return reportPath + 'subdivision_summary.jasper';
+    }
+    
+    public def getReportData(){
+        return reportSvc.buildSummaryData([objid:entity.objid]);
+    }
+    
+    SubReport[] getSubReports() { 
+        return [
+            new SubReport( 'SUBDIVIDEDLANDS',  reportPath + 'subdivided_lands.jasper'),
+            new SubReport( 'PREVSUMMARY',  reportPath + 'previtems_summary.jasper'),
+
+        ]
+    }
+    
+    void refresh(){
+        buildReport();
+        binding.refresh();
+    }
+    
+}
+]]>
+   </code>
+    
+    <pages> 
+         <page name="report" template="com.rameses.gov.etracs.rpt.report.PreviewPage" />
+    </pages>
+</workunit>
+
+

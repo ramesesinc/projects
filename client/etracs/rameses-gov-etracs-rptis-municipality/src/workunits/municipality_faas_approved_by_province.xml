@@ -10,7 +10,7 @@
         <invoker type="formActions" action="_close" caption="Close" immediate="true" visibleWhen="#{mode!='init'}"/>
         
         <invoker type="formActions" action="init" caption="New" visibleWhen="#{mode!='init'}"/>
-        <invoker type="formActions" action="approve" caption="Approve" visibleWhen="#{mode=='init'}"/>
+        <invoker type="formActions" action="approve" caption="Approve" visibleWhen="#{mode=='init'}" immediate="true"/>
     </invokers>
     <code>
 <![CDATA[

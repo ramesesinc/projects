@@ -1,35 +1,22 @@
 [getList]
 SELECT 
 	s.*,
-	f.tdno AS tdno,
-	f.tdno AS motherfaas_tdno,
-	f.owner_name, 
-	f.owner_address,
-	r.totalareaha,
-	r.totalareasqm,
-	r.fullpin,
-	r.totalmv, 
-	r.totalav,
-	rp.surveyno,
-	rp.cadastrallotno,
-	rp.blockno,
-	pc.code AS classfication_code,
-	pc.name AS classification_name,
 	t.trackingno,
 	tsk.objid AS taskid,
 	tsk.state AS taskstate,
 	tsk.assignee_objid 
 FROM subdivision s
-	LEFT JOIN faas f ON s.motherfaasid = f.objid 
-	LEFT JOIN rpu r ON f.rpuid = r.objid 
-	LEFT JOIN realproperty rp ON r.realpropertyid = rp.objid 
-	LEFT JOIN propertyclassification pc ON r.classification_objid = pc.objid 
 	LEFT JOIN rpttracking t ON s.objid = t.objid 
 	LEFT JOIN subdivision_task tsk ON s.objid = tsk.refid AND tsk.enddate IS NULL
-WHERE (s.state LIKE $P{searchtext} OR
-  	s.txnno LIKE $P{searchtext} OR f.tdno LIKE $P{searchtext} OR 
-    f.owner_name LIKE $P{searchtext} OR r.fullpin LIKE $P{searchtext} OR t.trackingno LIKE $P{searchtext})
-    ${filters}
+WHERE s.lguid LIKE $P{lguid} 
+   and s.state LIKE $P{state}
+   and (s.txnno LIKE $P{searchtext}
+   		 OR t.trackingno LIKE $P{searchtext}
+   		 OR mothertdnos LIKE $P{searchtext}
+   		 OR motherpins LIKE $P{searchtext}
+   	)
+	${filters}
+
 
 
 [findSubdivisionById]
@@ -488,3 +475,10 @@ update ml set
 from subdivision_motherland ml, faas f 
 where ml.subdivisionid = $P{objid}
   and ml.landfaasid = f.objid   
+
+
+[updateMotherLandsInfo]  
+update subdivision set 
+	mothertdnos = $P{mothertdnos},
+	motherpins = $P{motherpins}
+where objid = $P{objid}	  

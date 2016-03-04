@@ -1,0 +1,17 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.common.*;
+import com.rameses.services.extended.*;
+
+class WaterworksReadingGroupService  {
+	
+	@DataContext("waterworks_readinggroup")
+	def wr;
+
+	@ProxyMethod
+	def getListByAssignee( params ){
+		return wr.find([assignee_objid:params.assigneeid]).list();
+	}
+
+} 

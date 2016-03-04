@@ -17,18 +17,28 @@ class WaterworksMobileRuleService  {
 		fct.constraints.each {
 			if( j++ > 0 ) sb1.append( " && " );
 			sb1.append( it.fieldname);
-			sb1.append( " " +  it.operator.symbol  + " ");
+			if( it.operator.symbol == 'matches') {
+				sb1.append( ".matches(");
+			}
+			else {
+				sb1.append( " " +  it.operator.symbol  + " ");
+			}
 			if( it.listvalue && it.listvalue.size() > 0 ) {
-				sb1.append( "'" + it.listvalue*.key.join("|") + "'" ) ;			
+				sb1.append( "\"" + it.listvalue*.key.join("|") + "\"" ) ;			
 			}
 			else if( it.stringvalue ) {
-				sb1.append( "'" + it.stringvalue + "'" );
+				sb1.append( "\"" + it.stringvalue + "\"" );
 			}
 			else if( it.decimalvalue ) {
 				sb1.append( it.decimalvalue );
 			}
 			else if( it.intvalue ) {
 				sb1.append( it.intvalue );
+			}
+
+			//close the matches
+			if( it.operator.symbol == 'matches') {
+				sb1.append( ")");
 			}
 		}
 		mm.condition = sb1.toString();

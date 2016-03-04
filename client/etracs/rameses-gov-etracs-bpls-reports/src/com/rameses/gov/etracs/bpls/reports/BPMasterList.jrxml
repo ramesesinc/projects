@@ -47,12 +47,20 @@
 	<field name="owner.name" class="java.lang.String"/>
 	<field name="owner.address" class="java.lang.String"/>
 	<field name="apptype" class="java.lang.String"/>
-	<field name="capital" class="java.math.BigDecimal"/>
-	<field name="gross" class="java.math.BigDecimal"/>
+	<field name="capital" class="java.lang.Number"/>
+	<field name="gross" class="java.lang.Number"/>
 	<field name="objid" class="java.lang.String"/>
+	<field name="declaredcapital" class="java.lang.Number"/>
+	<field name="declaredgross" class="java.lang.Number"/>
 
 	<variable name="TOTALCOUNT" class="java.lang.Integer" resetType="Report" calculation="Count">
 		<variableExpression><![CDATA[($F{tradename}? 1: 0)]]></variableExpression>
+	</variable>
+	<variable name="CAPITAL" class="java.lang.Number" resetType="None" calculation="Nothing">
+		<variableExpression><![CDATA[$F{declaredcapital}]]></variableExpression>
+	</variable>
+	<variable name="GROSS" class="java.lang.Number" resetType="None" calculation="Nothing">
+		<variableExpression><![CDATA[$F{declaredgross}]]></variableExpression>
 	</variable>
 
 		<group  name="data1" >
@@ -61,12 +69,12 @@
 			<band height="17"  isSplitAllowed="true" >
 				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="833"
+						x="765"
 						y="4"
 						width="66"
 						height="12"
-						key="textField-27">
-							<printWhenExpression><![CDATA[($F{gross}? false: true)]]></printWhenExpression>
+						key="textField-26">
+							<printWhenExpression><![CDATA[($V{CAPITAL}? false: true)]]></printWhenExpression>
 						</reportElement>
 					<box leftPadding="5" rightPadding="3">					<topPen lineWidth="0.0" lineStyle="Solid"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid"/>
@@ -77,6 +85,63 @@
 						<font fontName="Tahoma" size="8"/>
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA["-"]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="833"
+						y="4"
+						width="66"
+						height="12"
+						key="textField-27">
+							<printWhenExpression><![CDATA[($V{GROSS}? false: true)]]></printWhenExpression>
+						</reportElement>
+					<box leftPadding="5" rightPadding="3">					<topPen lineWidth="0.0" lineStyle="Solid"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid"/>
+</box>
+					<textElement textAlignment="Right" verticalAlignment="Top">
+						<font fontName="Tahoma" size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["-"]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="833"
+						y="4"
+						width="66"
+						height="12"
+						key="textField">
+							<printWhenExpression><![CDATA[($V{GROSS}? true: false)]]></printWhenExpression>
+						</reportElement>
+					<box leftPadding="5" rightPadding="3">					<topPen lineWidth="0.0" lineStyle="Solid"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid"/>
+</box>
+					<textElement textAlignment="Right" verticalAlignment="Top">
+						<font fontName="Tahoma" size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$V{GROSS}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="765"
+						y="4"
+						width="66"
+						height="12"
+						key="textField">
+							<printWhenExpression><![CDATA[($V{CAPITAL}? true: false)]]></printWhenExpression>
+						</reportElement>
+					<box leftPadding="5" rightPadding="3">					<topPen lineWidth="0.0" lineStyle="Solid"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid"/>
+</box>
+					<textElement textAlignment="Right" verticalAlignment="Top">
+						<font fontName="Tahoma" size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$V{CAPITAL}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -145,63 +210,6 @@
 						<font fontName="Tahoma" size="8"/>
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$F{apptype}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="765"
-						y="4"
-						width="66"
-						height="12"
-						key="textField">
-							<printWhenExpression><![CDATA[($F{capital}? true: false)]]></printWhenExpression>
-						</reportElement>
-					<box leftPadding="5" rightPadding="3">					<topPen lineWidth="0.0" lineStyle="Solid"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid"/>
-					<bottomPen lineWidth="0.0" lineStyle="Solid"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid"/>
-</box>
-					<textElement textAlignment="Right" verticalAlignment="Top">
-						<font fontName="Tahoma" size="8"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.Number"><![CDATA[$F{capital}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="833"
-						y="4"
-						width="66"
-						height="12"
-						key="textField">
-							<printWhenExpression><![CDATA[($F{gross}? true: false)]]></printWhenExpression>
-						</reportElement>
-					<box leftPadding="5" rightPadding="3">					<topPen lineWidth="0.0" lineStyle="Solid"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid"/>
-					<bottomPen lineWidth="0.0" lineStyle="Solid"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid"/>
-</box>
-					<textElement textAlignment="Right" verticalAlignment="Top">
-						<font fontName="Tahoma" size="8"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.Number"><![CDATA[$F{gross}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="765"
-						y="4"
-						width="66"
-						height="12"
-						key="textField-26">
-							<printWhenExpression><![CDATA[($F{capital}? false: true)]]></printWhenExpression>
-						</reportElement>
-					<box leftPadding="5" rightPadding="3">					<topPen lineWidth="0.0" lineStyle="Solid"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid"/>
-					<bottomPen lineWidth="0.0" lineStyle="Solid"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid"/>
-</box>
-					<textElement textAlignment="Right" verticalAlignment="Top">
-						<font fontName="Tahoma" size="8"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA["-"]]></textFieldExpression>
 				</textField>
 			</band>
 			</groupHeader>

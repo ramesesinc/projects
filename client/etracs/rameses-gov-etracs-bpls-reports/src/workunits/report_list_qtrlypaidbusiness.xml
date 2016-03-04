@@ -32,8 +32,10 @@ public class QuarterlyPaidBusinessListingReportController extends ReportControll
             return [
                 [type:'combo', caption:'Permit Type', name:'entity.permittype', required:true, preferredSize:'0,20', captionWidth:100, items:'permitTypes',  expression:'#{item.title}'],
                 [type:'integer', caption:'Year', name:'entity.year', required:true, preferredSize:'100,20', captionWidth:100 ], 
-                [type:'checkbox', caption:'Status', text:'RELEASE', name:'entity.state_release', immediate:true, preferredSize:'0,20', captionWidth:100 ],
-                [type:'checkbox', caption:'', text:'COMPLETED', name:'entity.state_completed', immediate:true, preferredSize:'0,20', captionWidth:100 ],                 
+
+                [type:'checkbox', caption:'Status', text:'COMPLETED', name:'entity.state_completed', immediate:true, preferredSize:'0,20', captionWidth:100 ], 
+                [type:'checkbox', caption:'', text:'RELEASE', name:'entity.state_release', immediate:true, preferredSize:'0,20', captionWidth:100 ], 
+                [type:'checkbox', caption:'', text:'PAYMENT', name:'entity.state_payment', immediate:true, preferredSize:'0,20', captionWidth:100 ] 
             ]; 
         } 
     ] as FormPanelModel; 

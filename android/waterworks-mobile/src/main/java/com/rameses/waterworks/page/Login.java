@@ -1,7 +1,6 @@
 package com.rameses.waterworks.page;
 
 import com.rameses.Main;
-import com.rameses.waterworks.bean.Account;
 import com.rameses.waterworks.database.Database;
 import com.rameses.waterworks.database.DatabasePlatformFactory;
 import com.rameses.waterworks.dialog.Dialog;
@@ -73,6 +72,7 @@ public class Login {
             @Override
             public void handle(ActionEvent event) {
                 Thread t = new Thread(){
+                    @Override
                     public void run(){
                         String usrname = username.getText();
                         String pwd = password.getText();

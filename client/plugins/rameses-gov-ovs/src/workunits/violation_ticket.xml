@@ -1,0 +1,142 @@
+<workunit>
+    <invokers>
+        <invoker type="ovr_violation_ticket:create" caption="Violation Ticket" action="init" target="popup"/>
+        <invoker type="ovr_violation_ticket:open" caption="Violation Ticket" action="open" target="popup"/>
+        <invoker type="formActions" caption="Close" action="_close" immediate="true"/>
+        <invoker type="formActions" caption="Next" action="next" visibleWhen="#{mode == 'INIT'}"/>
+        <invoker type="formActions" caption="Back" action="back" visibleWhen="#{mode == 'NEXT'}"/>
+        <invoker type="formActions" caption="Save" action="save" visibleWhen="#{mode == 'NEXT'}"/>
+    </invokers>
+    <code>
+        <![CDATA[
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        import java.rmi.server.UID;
+        
+        class ViolationTicketController {
+        
+            @Service("ViolationTicketService")
+            def ticketSvc;
+        
+            @Binding
+            def binding;
+        
+            def entity;
+            def title;
+            def mode;
+            def violations;
+            def totaldue = 0.00;
+            def fees;
+            
+            def init(){
+                entity = [:];
+                title = 'New Violation Ticket';
+                mode = 'INIT';
+                violations = [];
+                return 'initPg';
+            }
+            
+            def open(){
+                title = entity.ticketno;
+                entity.balance = 0.00;
+                entity.vehicle = ticketSvc.getVehiclePerTicket(entity);
+                return 'mainPg';
+            }
+            
+            def next(){
+                mode = 'NEXT';
+                if(!violations) throw new Exception("Violations are required!");
+                totaldue = 0.00;
+                fees = violations;
+                fees.each{ it.amount = 0.00; totaldue += it.amount }
+                return 'feePg';
+            }
+            
+            def back(){
+                mode = 'INIT';
+                return 'initPg';
+            }
+            
+            def save(){
+                if(!MsgBox.confirm("You are about to create this record. Continue?")) return;
+                entity.objid = 'T' + new UID().toString();
+                entity.entry = [];
+                fees.each{ entity.entry << [parentid: entity.objid, violationid: it.objid, amount:it.amount] }
+                ticketSvc.create(entity);
+                return '_close';
+            }
+            
+            def selectedItem;
+            def tableHandler = [
+                 fetchList: {
+                     return violations;
+                 }
+            ] as EditorListModel;
+            
+            def selectedFee;
+            def tableHandler2 = [
+                 fetchList: {
+                     return fees;
+                 }
+            ] as EditorListModel;
+            
+            def violationHandler = [
+                 fetchList: {
+                     return ticketSvc.getViolationsPerTicket(entity);
+                 }
+            ] as EditorListModel;
+            
+            void remove(){
+                if(!selectedItem) throw new Exception("No item selected!");
+                violations.remove(selectedItem);
+                tableHandler.reload();
+            }
+            
+            def getLookupEntity(){
+                def h = {o ->
+                    entity.violator = o;
+                    entity.violator.addresstext = o.address.text;
+                    binding.refresh("entity.*");
+                }
+                return Inv.lookupOpener("entity:lookup",[onselect:h]);
+           }
+           
+           def getLookupOfficer(){
+                def h = {o ->
+                    println o;
+                    entity.apprehensionofficer = o;
+                    entity.apprehensionofficer.name = o.firstname + " " + o.lastname;
+                    binding.refresh("entity.*");
+                }
+                return Inv.lookupOpener("user:lookup",[onselect:h]);
+           }
+           
+           def getLookupViolation(){
+                def h = {o ->
+                    o.selected = false;
+                    if(violations.contains(o)) throw new Exception("Item already exists!");
+                    violations.add(o);
+                    tableHandler.reload();
+                }
+                return Inv.lookupOpener("violation:lookup",[onselect:h]);
+           }
+           
+           def getLookupVehicle(){
+                def h = {o ->
+                    entity.vehicle = o;
+                    binding.refresh("entity.*");
+                }
+                return Inv.lookupOpener("vehicle:lookup",[onselect:h]);
+           }
+            
+        }
+        ]]>
+    </code>
+    <pages>
+        <page name = 'initPg' template="com.gov.ovs.ViolationTicketPage"/>
+        <page name = 'feePg' template="com.gov.ovs.ViolationFeePage"/>
+        <page name = 'mainPg' template="com.gov.ovs.MainViolationTicketPage"/>
+    </pages>
+</workunit>

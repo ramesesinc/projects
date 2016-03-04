@@ -1,0 +1,27 @@
+<workunit>
+    <invokers>
+        <invoker type="ovr_violation:create" caption="Violation" action="create" target="popup" srole="MASTER"/>
+        <invoker type="ovr_violation:open" caption="Violation" action="open" target="popup" srole="MASTER"/>
+    </invokers>
+    
+    <code>
+        <![CDATA[
+           import com.rameses.osiris2.common.*;
+           import com.rameses.rcp.common.*;
+           import com.rameses.rcp.annotations.*;
+           import com.rameses.osiris2.client.*;
+           import com.rameses.seti2.models.*;
+
+           class VehicleController extends SinglePageCrudFormModel{
+           
+               def title='Violation';
+               String schemaName='ovr_violation';
+               
+           }
+        ]]>
+    </code>
+    
+    <pages>
+        <page template="com.gov.ovs.ViolationPage"/>
+    </pages>
+</workunit>

@@ -5,7 +5,6 @@ import static com.rameses.Main.PRINTER;
 import com.rameses.waterworks.bean.Account;
 import com.rameses.waterworks.bean.Reading;
 import com.rameses.waterworks.bluetooth.BluetoothPlatformFactory;
-import com.rameses.waterworks.bluetooth.BluetoothPort;
 import com.rameses.waterworks.database.Database;
 import com.rameses.waterworks.database.DatabasePlatformFactory;
 import com.rameses.waterworks.dialog.Dialog;
@@ -33,7 +32,6 @@ public class AccountDetail {
     public AccountDetail(Account account){
         Button close = new Button("Close");
         close.getStyleClass().add("terminal-button");
-        close.setPrefWidth(120);
         close.setFocusTraversable(true);
         close.setOnAction(new EventHandler<ActionEvent>(){
             @Override
@@ -42,9 +40,20 @@ public class AccountDetail {
             }
         });
         
+        Button capture = new Button("Capture");
+        capture.getStyleClass().add("terminal-button");
+        capture.setFocusTraversable(true);
+        capture.setOnAction(new EventHandler<ActionEvent>(){
+            @Override
+            public void handle(ActionEvent event) {
+                Dialog.hide();
+                Main.LOG.error("Account Data", account.toString());
+                Main.ROOT.setCenter(new ReadingSheet(account).getLayout());
+            }
+        });
+        
         Button print = new Button("Print");
         print.getStyleClass().add("terminal-button");
-        print.setPrefWidth(120);
         print.setFocusTraversable(true);
         print.setOnAction(new EventHandler<ActionEvent>(){
             @Override
@@ -85,7 +94,7 @@ public class AccountDetail {
         HBox btnContainer = new HBox(10);
         btnContainer.setAlignment(Pos.CENTER_RIGHT);
         btnContainer.setPadding(new Insets(15, 0, 0, 0));
-        btnContainer.getChildren().addAll(print,close);
+        btnContainer.getChildren().addAll(print,capture,close);
         
         Database db = DatabasePlatformFactory.getPlatform().getDatabase();
         Reading reading = db.findReadingByAccount(account.getObjid());

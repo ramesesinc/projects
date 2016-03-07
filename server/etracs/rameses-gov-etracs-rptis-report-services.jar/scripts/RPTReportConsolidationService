@@ -9,9 +9,20 @@ class RPTReportConsolidationService
 
     @ProxyMethod
     public def buildSummaryData( subdivision ) {
-		return [
-			items : em.getConsolidations(subdivision),
-			previtems : em.getConsolidatedLandsSummary(subdivision)
+    	def items = em.getConsolidations(subdivision)
+    	def previtems = em.getConsolidatedLands(subdivision)
+
+    	if (previtems){
+    		items << [
+    			cadastrallotno 	: 'TOTAL',
+    			totalareaha    	: previtems.totalareaha.sum(),
+    			totalmv    		: previtems.totalmv.sum(),
+    			totalav    		: previtems.totalav.sum(),
+    		]
+    	}
+    	return [
+			items : items,
+			previtems : previtems 
 		]
     }
 }

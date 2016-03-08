@@ -618,7 +618,7 @@ class FAASService
 	}
 
     void checkTxnReference(faas){
-		if (faas.previousfaases && ! faas.txntype.objid.matches('SD|CS')){
+		if (faas.previousfaases && ! faas.txntype.objid.matches('SD|CS') && (faas._checkTxnRef == null || faas._checkTxnRef == true)){
 			def prevfaasid = faas.previousfaases[0].prevfaasid
 			txnRef.checkReference(prevfaasid)
 		}

@@ -256,6 +256,7 @@ class SubdivisionSupportService
         subdivision.faases.each{
             entitySvc.save(it.taxpayer)
             it.taxpayer.address = it.taxpayer.address?.text
+            it._checkTxnRef = false;
             if (existFaas(it))
                 faasSvc.updateFaas(it)
             else

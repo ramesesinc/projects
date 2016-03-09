@@ -1,33 +1,10 @@
-<workunit>
+<workunit schemaName="ovs_vehicle">
     <invokers>
-        <invoker type="ovr_vehicle:create" caption="Vehicle" action="create" target="popup" srole="MASTER"/>
-        <invoker type="ovr_vehicle:open" caption="Vehicle" action="open" target="popup" srole="MASTER"/>
+        <invoker type="ovs_vehicle:create" caption="Vehicle" action="create" target="popup" srole="MASTER"/>
+        <invoker type="ovs_vehicle:open" caption="Vehicle" action="open" target="popup" srole="MASTER"/>
     </invokers>
     
-    <code>
-        <![CDATA[
-           import com.rameses.osiris2.common.*;
-           import com.rameses.rcp.common.*;
-           import com.rameses.rcp.annotations.*;
-           import com.rameses.osiris2.client.*;
-           import com.rameses.seti2.models.*;
-
-           class VehicleController extends SinglePageCrudFormModel{
-           
-               def title='Vehicle';
-               String schemaName='ovr_vehicle';
-               
-               def getLookupEntity(){
-                    def h = {o ->
-                        entity.owner = o;
-                        binding.refresh("entity.*");
-                    }
-                    return Inv.lookupOpener("entity:lookup",[onselect:h]);
-               }
-               
-           }
-        ]]>
-    </code>
+    <code class="com.rameses.seti2.models.CrudFormModel"/>
     
     <pages>
         <page template="com.gov.ovs.VehiclePage"/>

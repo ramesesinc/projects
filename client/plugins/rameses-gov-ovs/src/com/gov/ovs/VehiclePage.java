@@ -62,7 +62,7 @@ public class VehiclePage extends javax.swing.JPanel {
 
         xLookupField1.setCaption("Owner");
         xLookupField1.setExpression("#{entity.owner.name}");
-        xLookupField1.setHandler("lookupEntity");
+        xLookupField1.setHandler("individualentity:lookup");
         xLookupField1.setName("entity.owner"); // NOI18N
         xLookupField1.setPreferredSize(new java.awt.Dimension(0, 20));
         xLookupField1.setRequired(true);

@@ -7,6 +7,10 @@
             <folder id="master" caption="Master">
                 <folder id="violation" caption="OVS" index="2000"/>
             </folder>
+            
+            <folder id="rulemgmt" caption="Rule Management">
+                <folder id="ovs" caption="Ordinance Violation System" index="5"/>
+            </folder>
     </folder>
     
     <folder id="menu">

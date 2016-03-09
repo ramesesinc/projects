@@ -1,5 +1,5 @@
-<workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" 
-          schemaName="ovr_violation" 
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" 
+          schemaName="ovs_violation" 
           cols="title,section,article,description">
     <invokers>
         <invoker folderid="/home/ovr" caption="Violations" index="2" action="init"/>

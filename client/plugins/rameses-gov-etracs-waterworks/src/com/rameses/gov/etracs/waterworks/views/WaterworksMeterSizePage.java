@@ -4,8 +4,6 @@
  */
 package com.rameses.gov.etracs.waterworks.views;
 
-import com.rameses.osiris2.themes.FormPage;
-import com.rameses.rcp.ui.annotations.StyleSheet;
 import com.rameses.rcp.ui.annotations.Template;
 import com.rameses.seti2.views.CrudFormPage;
 
@@ -47,7 +45,7 @@ public class WaterworksMeterSizePage extends javax.swing.JPanel {
         xTextField1.setCaption("Code");
         xTextField1.setName("entity.objid"); // NOI18N
         xTextField1.setPreferredSize(new java.awt.Dimension(0, 20));
-        xTextField1.setRequired(true);
+        xTextField1.setTextCase(com.rameses.rcp.constant.TextCase.NONE);
         xFormPanel1.add(xTextField1);
 
         jScrollPane1.setPreferredSize(new java.awt.Dimension(0, 63));
@@ -55,7 +53,6 @@ public class WaterworksMeterSizePage extends javax.swing.JPanel {
         xTextArea1.setCaption("Title");
         xTextArea1.setName("entity.title"); // NOI18N
         xTextArea1.setPreferredSize(new java.awt.Dimension(0, 61));
-        xTextArea1.setRequired(true);
         jScrollPane1.setViewportView(xTextArea1);
 
         xFormPanel1.add(jScrollPane1);

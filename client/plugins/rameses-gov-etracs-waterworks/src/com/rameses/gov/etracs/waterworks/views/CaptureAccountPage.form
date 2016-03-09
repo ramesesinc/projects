@@ -39,7 +39,7 @@
               <Component id="xPanel4" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="xPanel5" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="37" max="32767" attributes="0"/>
+              <EmptySpace pref="23" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -68,7 +68,7 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" attributes="0">
                   <EmptySpace min="-2" pref="6" max="-2" attributes="0"/>
-                  <Component id="xFormPanel1" pref="93" max="32767" attributes="0"/>
+                  <Component id="xFormPanel1" max="32767" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
@@ -94,7 +94,7 @@
               <Properties>
                 <Property name="caption" type="java.lang.String" value="Owner Name"/>
                 <Property name="expression" type="java.lang.String" value="#{entity.owner.name}"/>
-                <Property name="handler" type="java.lang.String" value="lookupEntity"/>
+                <Property name="handler" type="java.lang.String" value="entity:lookup"/>
                 <Property name="name" type="java.lang.String" value="entity.owner" noResource="true"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[0, 20]"/>
@@ -116,12 +116,12 @@
               <Properties>
                 <Property name="caption" type="java.lang.String" value="Classification"/>
                 <Property name="expression" type="java.lang.String" value="#{item.objid}"/>
+                <Property name="itemKey" type="java.lang.String" value="objid"/>
                 <Property name="items" type="java.lang.String" value="classifications"/>
-                <Property name="name" type="java.lang.String" value="entity.classification" noResource="true"/>
+                <Property name="name" type="java.lang.String" value="entity.classificationid" noResource="true"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[200, 20]"/>
                 </Property>
-                <Property name="required" type="boolean" value="true"/>
               </Properties>
             </Component>
           </SubComponents>
@@ -141,52 +141,27 @@
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Component id="xFormPanel3" pref="574" max="32767" attributes="0"/>
-                  <EmptySpace min="-2" pref="46" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="32" max="-2" attributes="0"/>
+                  <Component id="localAddressPanel1" min="-2" pref="514" max="-2" attributes="0"/>
+                  <EmptySpace max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Group type="102" attributes="0">
-                  <EmptySpace min="-2" pref="6" max="-2" attributes="0"/>
-                  <Component id="xFormPanel3" pref="66" max="32767" attributes="0"/>
-                  <EmptySpace max="-2" attributes="0"/>
+              <Group type="102" alignment="0" attributes="0">
+                  <Component id="localAddressPanel1" min="-2" pref="123" max="-2" attributes="0"/>
+                  <EmptySpace min="0" pref="10" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
       </Layout>
       <SubComponents>
-        <Container class="com.rameses.rcp.control.XFormPanel" name="xFormPanel3">
+        <Component class="com.rameses.etracs.common.LocalAddressPanel" name="localAddressPanel1">
           <Properties>
-            <Property name="captionWidth" type="int" value="140"/>
+            <Property name="name" type="java.lang.String" value="entity.address" noResource="true"/>
           </Properties>
-          <SubComponents>
-            <Container class="com.rameses.rcp.control.XSubFormPanel" name="xSubFormPanel1">
-              <Properties>
-                <Property name="caption" type="java.lang.String" value="Address"/>
-                <Property name="handler" type="java.lang.String" value="addressComponent"/>
-                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[0, 40]"/>
-                </Property>
-              </Properties>
-
-              <Layout>
-                <DimensionLayout dim="0">
-                  <Group type="103" groupAlignment="0" attributes="0">
-                      <EmptySpace min="0" pref="424" max="32767" attributes="0"/>
-                  </Group>
-                </DimensionLayout>
-                <DimensionLayout dim="1">
-                  <Group type="103" groupAlignment="0" attributes="0">
-                      <EmptySpace min="0" pref="40" max="32767" attributes="0"/>
-                  </Group>
-                </DimensionLayout>
-              </Layout>
-            </Container>
-          </SubComponents>
-        </Container>
+        </Component>
       </SubComponents>
     </Container>
     <Container class="com.rameses.rcp.control.XPanel" name="xPanel4">
@@ -206,7 +181,7 @@
                   <Component id="xFormPanel4" min="-2" max="-2" attributes="0"/>
                   <EmptySpace min="-2" pref="38" max="-2" attributes="0"/>
                   <Component id="xFormPanel6" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace max="32767" attributes="0"/>
+                  <EmptySpace pref="42" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -218,7 +193,7 @@
                       <Component id="xFormPanel6" min="-2" max="-2" attributes="0"/>
                       <Component id="xFormPanel4" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace max="32767" attributes="0"/>
+                  <EmptySpace pref="23" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -243,7 +218,6 @@
             </Component>
             <Component class="com.rameses.rcp.control.XIntegerField" name="xIntegerField1">
               <Properties>
-                <Property name="text" type="java.lang.String" value="xIntegerField1"/>
                 <Property name="caption" type="java.lang.String" value="Last Reading"/>
                 <Property name="name" type="java.lang.String" value="entity.lastreading" noResource="true"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
@@ -254,7 +228,6 @@
             </Component>
             <Component class="com.rameses.rcp.control.XIntegerField" name="xIntegerField2">
               <Properties>
-                <Property name="text" type="java.lang.String" value="xIntegerField1"/>
                 <Property name="caption" type="java.lang.String" value="Prev. Reading"/>
                 <Property name="name" type="java.lang.String" value="entity.prevreading" noResource="true"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
@@ -272,7 +245,6 @@
           <SubComponents>
             <Component class="com.rameses.rcp.control.XIntegerField" name="xIntegerField3">
               <Properties>
-                <Property name="text" type="java.lang.String" value="xIntegerField1"/>
                 <Property name="caption" type="java.lang.String" value="Last Reading Year"/>
                 <Property name="name" type="java.lang.String" value="entity.lastreadingyear" noResource="true"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
@@ -285,8 +257,9 @@
               <Properties>
                 <Property name="caption" type="java.lang.String" value="Last Reading Month"/>
                 <Property name="expression" type="java.lang.String" value="#{item.name}"/>
+                <Property name="itemKey" type="java.lang.String" value="id"/>
                 <Property name="items" type="java.lang.String" value="months"/>
-                <Property name="name" type="java.lang.String" value="entity.month" noResource="true"/>
+                <Property name="name" type="java.lang.String" value="entity.lastreadingmonth" noResource="true"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[150, 20]"/>
                 </Property>
@@ -295,7 +268,6 @@
             </Component>
             <Component class="com.rameses.rcp.control.XDateField" name="xDateField2">
               <Properties>
-                <Property name="text" type="java.lang.String" value="xDateField2"/>
                 <Property name="caption" type="java.lang.String" value="Last Reading Date"/>
                 <Property name="name" type="java.lang.String" value="entity.lastreadingdate" noResource="true"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
@@ -345,7 +317,6 @@
           <SubComponents>
             <Component class="com.rameses.rcp.control.XDateField" name="xDateField3">
               <Properties>
-                <Property name="text" type="java.lang.String" value="xDateField1"/>
                 <Property name="caption" type="java.lang.String" value="Date Started"/>
                 <Property name="name" type="java.lang.String" value="entity.dtstarted" noResource="true"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
@@ -356,7 +327,6 @@
             </Component>
             <Component class="com.rameses.rcp.control.XDateField" name="xDateField1">
               <Properties>
-                <Property name="text" type="java.lang.String" value="xDateField1"/>
                 <Property name="caption" type="java.lang.String" value="Last Transaction Date"/>
                 <Property name="name" type="java.lang.String" value="entity.lasttxndate" noResource="true"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
@@ -367,7 +337,6 @@
             </Component>
             <Component class="com.rameses.rcp.control.XDecimalField" name="xDecimalField1">
               <Properties>
-                <Property name="text" type="java.lang.String" value="xDecimalField1"/>
                 <Property name="caption" type="java.lang.String" value="Remaining Balance"/>
                 <Property name="name" type="java.lang.String" value="entity.balance" noResource="true"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">

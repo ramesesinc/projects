@@ -52,6 +52,7 @@
 	<field name="bin" class="java.lang.String"/>
 	<field name="malecount" class="java.lang.Integer"/>
 	<field name="femalecount" class="java.lang.Integer"/>
+	<field name="owner.objid" class="java.lang.String"/>
 
 	<variable name="TOTALCOUNT" class="java.lang.Integer" resetType="Report" calculation="Count">
 		<variableExpression><![CDATA[($F{tradename}? 1: 0)]]></variableExpression>
@@ -74,6 +75,10 @@
 	</variable>
 	<variable name="TOTAL_OWNED_BY_FEMALE" class="java.lang.Integer" resetType="Report" calculation="Sum">
 		<variableExpression><![CDATA[$F{femalecount}]]></variableExpression>
+		<initialValueExpression><![CDATA[0]]></initialValueExpression>
+	</variable>
+	<variable name="TOTAL_EMPLOYER_COUNT" class="java.lang.Integer" resetType="Report" calculation="DistinctCount">
+		<variableExpression><![CDATA[$F{owner.objid}]]></variableExpression>
 		<initialValueExpression><![CDATA[0]]></initialValueExpression>
 	</variable>
 		<background>
@@ -725,12 +730,12 @@ Employees]]></text>
 			</band>
 		</pageFooter>
 		<summary>
-			<band height="144"  isSplitAllowed="true" >
+			<band height="171"  isSplitAllowed="true" >
 				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Transparent"
 						x="708"
-						y="109"
+						y="128"
 						width="192"
 						height="13"
 						forecolor="#000000"
@@ -750,7 +755,7 @@ Employees]]></text>
 					<reportElement
 						mode="Transparent"
 						x="708"
-						y="122"
+						y="141"
 						width="192"
 						height="13"
 						forecolor="#000000"
@@ -770,7 +775,7 @@ Employees]]></text>
 					<reportElement
 						mode="Transparent"
 						x="708"
-						y="83"
+						y="102"
 						width="192"
 						height="12"
 						forecolor="#000000"
@@ -791,7 +796,7 @@ Employees]]></text>
 					<reportElement
 						mode="Transparent"
 						x="72"
-						y="109"
+						y="128"
 						width="192"
 						height="13"
 						forecolor="#000000"
@@ -811,7 +816,7 @@ Employees]]></text>
 					<reportElement
 						mode="Transparent"
 						x="72"
-						y="122"
+						y="141"
 						width="192"
 						height="13"
 						forecolor="#000000"
@@ -831,7 +836,7 @@ Employees]]></text>
 					<reportElement
 						mode="Transparent"
 						x="72"
-						y="83"
+						y="102"
 						width="192"
 						height="12"
 						forecolor="#000000"
@@ -865,7 +870,7 @@ Employees]]></text>
 					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 						<font fontName="SansSerif" pdfFontName="Helvetica" size="9" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<text><![CDATA[Total No. of Businesses :]]></text>
+				<text><![CDATA[Total No. of Records    :]]></text>
 				</staticText>
 				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -984,7 +989,7 @@ Employees]]></text>
 					<reportElement
 						mode="Transparent"
 						x="0"
-						y="35"
+						y="45"
 						width="178"
 						height="14"
 						forecolor="#000000"
@@ -1004,7 +1009,7 @@ Employees]]></text>
 					<reportElement
 						mode="Transparent"
 						x="0"
-						y="49"
+						y="59"
 						width="178"
 						height="14"
 						forecolor="#000000"
@@ -1024,7 +1029,7 @@ Employees]]></text>
 					<reportElement
 						mode="Transparent"
 						x="178"
-						y="35"
+						y="45"
 						width="9"
 						height="14"
 						forecolor="#000000"
@@ -1044,7 +1049,7 @@ Employees]]></text>
 					<reportElement
 						mode="Transparent"
 						x="178"
-						y="49"
+						y="59"
 						width="9"
 						height="14"
 						forecolor="#000000"
@@ -1064,7 +1069,7 @@ Employees]]></text>
 					<reportElement
 						mode="Transparent"
 						x="191"
-						y="35"
+						y="45"
 						width="161"
 						height="14"
 						forecolor="#000000"
@@ -1084,7 +1089,7 @@ Employees]]></text>
 					<reportElement
 						mode="Transparent"
 						x="191"
-						y="49"
+						y="59"
 						width="161"
 						height="14"
 						forecolor="#000000"
@@ -1099,6 +1104,46 @@ Employees]]></text>
 						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="9" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
 				<textFieldExpression   class="java.lang.Integer"><![CDATA[$V{TOTAL_OWNED_BY_FEMALE}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="0"
+						y="25"
+						width="111"
+						height="14"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="staticText-62"/>
+					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="SansSerif" pdfFontName="Helvetica" size="9" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<text><![CDATA[Total No. of Employers :]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="112"
+						y="25"
+						width="180"
+						height="14"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-36"/>
+					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="9" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.Integer"><![CDATA[$V{TOTAL_EMPLOYER_COUNT}]]></textFieldExpression>
 				</textField>
 			</band>
 		</summary>

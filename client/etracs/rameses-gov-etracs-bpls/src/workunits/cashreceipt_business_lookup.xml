@@ -72,12 +72,12 @@
             <transition to="business"/>
         </start>
         <page name="business" title="Select Business">
-            <transition to="end" caption="Close"/>
-            <transition to="app" caption="Next" action="verifyBusiness" />
+            <transition to="end" caption="Close" mnemonic="C"/>
+            <transition to="app" caption="Next" action="verifyBusiness" mnemonic="N"/>
         </page>
         <page name="app" title="Select Application">
-            <transition to="business" caption="Back"/>
-            <transition to="end" caption="Next" action="verifyApp" />
+            <transition to="business" caption="Back" mnemonic="B"/>
+            <transition to="end" caption="Next" action="verifyApp" mnemonic="N"/>
         </page>
         <end/>
     </pageflow>    

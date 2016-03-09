@@ -71,6 +71,11 @@ public class AccountDetail {
                 }
                 account.setPresReading(i);
                 PrinterHandler handler = new PrinterHandler(account);
+                if(!handler.getError().isEmpty()){
+                    Dialog.showError(handler.getError());
+                    return;
+                }
+                Main.LOG.error("HANDLER ERROR", handler.getError());
                 
                 if(Main.PRINTER ==  null){
                     PRINTER = BluetoothPlatformFactory.getPlatform().getBluetoothPrinter();

@@ -19,13 +19,17 @@ public class RuleDetail {
     private GridPane root;
     
     public RuleDetail(Rule r){
-        Label salience_lb = new Label("Salience");
+        Label salience_lb = new Label("SALIENCE");
+        salience_lb.setStyle("-fx-font-weight: bold;");
         
-        Label condition_lb = new Label("Condition");
+        Label condition_lb = new Label("CONDITION");
+        condition_lb.setStyle("-fx-font-weight: bold;");
         
-        Label var_lb = new Label("Variable");
+        Label var_lb = new Label("VARIABLE");
+        var_lb.setStyle("-fx-font-weight: bold;");
         
-        Label action_lb = new Label("Action");
+        Label action_lb = new Label("ACTION");
+        action_lb.setStyle("-fx-font-weight: bold;");
         
         TextField salience_tf = new TextField(String.valueOf(r.getSalience()));
         salience_tf.setEditable(false);
@@ -44,18 +48,20 @@ public class RuleDetail {
         root.setMaxWidth(Main.HEIGHT > 800 ? Main.WIDTH - 100 : Main.WIDTH - 50);
         root.setPadding(new Insets(Main.HEIGHT > 800 ? 10 : 5));
         root.setAlignment(Pos.TOP_LEFT);
-        root.setVgap(10);
-        root.setHgap(10);
+        root.setVgap(5);
+        root.setHgap(5);
         
         root.add(salience_lb, 0, 0);
-        root.add(condition_lb, 0, 1);
-        root.add(var_lb, 0, 2);
-        root.add(action_lb, 0, 3);
+        root.add(salience_tf, 0, 1);
         
-        root.add(salience_tf, 1, 0);
-        root.add(condition_ta, 1, 1);
-        root.add(var_tf, 1, 2);
-        root.add(action_ta, 1, 3);
+        root.add(condition_lb, 0, 4);
+        root.add(condition_ta, 0, 5);
+        
+        root.add(var_lb, 0, 8);
+        root.add(var_tf, 0, 9);
+        
+        root.add(action_lb, 0, 12);
+        root.add(action_ta, 0, 13);
     }
     
     public Node getLayout(){

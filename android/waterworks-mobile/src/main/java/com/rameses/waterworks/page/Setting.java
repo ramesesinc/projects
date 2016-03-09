@@ -1,6 +1,7 @@
 package com.rameses.waterworks.page;
 
 import com.rameses.Main;
+import static com.rameses.Main.PRINTER;
 import com.rameses.waterworks.bluetooth.BluetoothPlatformFactory;
 import com.rameses.waterworks.bluetooth.BluetoothPort;
 import com.rameses.waterworks.database.Database;
@@ -8,10 +9,8 @@ import com.rameses.waterworks.database.DatabasePlatformFactory;
 import com.rameses.waterworks.dialog.Dialog;
 import com.rameses.waterworks.layout.Header;
 import com.rameses.waterworks.util.SystemPlatformFactory;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.util.List;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -33,25 +32,30 @@ import javafx.scene.layout.VBox;
 public class Setting {
     
     private VBox root;
+    private ListView<String> listview;
     
     public Setting(){
         Header.TITLE.setText("System Setting");
         
-        BluetoothPort bt = BluetoothPlatformFactory.getPlatform().getBluetoothPrinter();
-        List<String> devices = bt.findDevices();
+        Thread t = new Thread(){
+            @Override
+            public void run(){
+                Platform.runLater(new Runnable(){
+                    @Override
+                    public void run() {
+                        Dialog.wait("Please wait ...");
+                    }
+                });
+            }
+        };
+        t.start();
 
-        ListView<String> listview = new ListView<String>();
+        listview = new ListView<String>();
         listview.setStyle("-fx-font-size: 20px;");
         listview.setPrefWidth(Main.WIDTH * 0.5);
         listview.setMinHeight(170);
         listview.setMaxHeight(170);
         listview.setFocusTraversable(true);
-        listview.setItems(FXCollections.observableArrayList(devices));
-        for(String device: devices){
-            if(Main.PRINTERNAME.equals(device)){
-                listview.getSelectionModel().select(device);
-            }
-        }
         
         Button set = new Button("Set Printer");
         set.getStyleClass().add("terminal-button");
@@ -60,6 +64,10 @@ public class Setting {
             @Override
             public void handle(ActionEvent event) {
                 Main.PRINTERNAME = listview.getSelectionModel().getSelectedItem();
+                if(PRINTER != null) PRINTER.closeBT();
+                PRINTER = BluetoothPlatformFactory.getPlatform().getBluetoothPrinter();
+                PRINTER.setPrinter(Main.PRINTERNAME);
+                PRINTER.openBT();
                 Dialog.showAlert("Printer is now set to " + Main.PRINTERNAME + ".");
                 com.rameses.waterworks.bean.Setting printersetting = new com.rameses.waterworks.bean.Setting("printer",Main.PRINTERNAME);
                 Database db = DatabasePlatformFactory.getPlatform().getDatabase();
@@ -90,6 +98,31 @@ public class Setting {
             }
         });
         root.getChildren().addAll(createTitle("Printer"), listview, set, createTitle("Report Data"), textArea);
+        
+        loadPrinterData();
+    }
+    
+    private void loadPrinterData(){
+        Thread t = new Thread(){
+            @Override
+            public void run(){
+                BluetoothPort bt = BluetoothPlatformFactory.getPlatform().getBluetoothPrinter();
+                List<String> devices = bt.findDevices();
+                Platform.runLater(new Runnable(){
+                    @Override
+                    public void run() {
+                        listview.setItems(FXCollections.observableArrayList(devices));
+                        for(String device: devices){
+                            if(Main.PRINTERNAME.equals(device)){
+                                listview.getSelectionModel().select(device);
+                            }
+                        }
+                        Dialog.hide();
+                    }
+                });
+            }
+        };
+        t.start();
     }
     
     private VBox createTitle(String title){

@@ -1,71 +1,50 @@
 import com.rameses.annotations.*;
-import com.rameses.util.*;
-import java.rmi.server.*;
-import com.rameses.common.*;
-import com.rameses.services.extended.*;
 
 class ViolationTicketService {
 
-	@DataContext("ovr_violation_ticket")
-	def ovt;
+	@DataContext("ovs_violation_ticket_entry")
+	def ove;
 
-	@DataContext("ovr_violation_ticket_entry")
-	def ovte;
-
-	@DataContext("ovr_violation_ticket_vehicle")
-	def ovtv;
-
-	@Service("DateService")
-	def dateSvc;
+    @Service("RuleExecutorService")
+    def ruleSvc;
 
 	@ProxyMethod
-	public def getList(def o){
-		o.searchtext = o.searchtext ? o.searchtext : '%';
-		return ovt.where("ticketno LIKE :searchtext",[searchtext:o.searchtext]).list();
-	}
+	public def getViolationInfo(def o){
+		if( !o.violationid ) throw new Exception("Violation id is required");
+		if( !o.violatorid ) throw new Exception("Violator id is required");
+		//ove.debug = true;
+		//def z = ove.find( [violationid: o.violationid, 'parent.violator.objid': o.violatorid] ).select( 'violationcount:{COUNT(*)}' ).first(); 
 
-	@ProxyMethod
-	public def open(def o){
-		return ovt.find([objid:o.objid]).first();
-	}
+        //def facts = [];
+        //facts << new ViolationTicket( violationid: o.violationid, violationcount: z.  )
+        //ruleSvc.execute( "ovscomputation", def facts, def actions, null )
 
-	@ProxyMethod
-	public def create(def o){
-		o.dtcreated = dateSvc.getServerDate();
-		def data = ovt.create(o);
-		o.entry.each{ ovte.create(it); }
-		ovtv.create([parentid:o.objid,vehicleid:o.vehicle.objid]);
-		return data;
+		def z = [:];
+		z.violationcount = 1;
+		z.violationtext = getViolationText( z.violationcount );
+		z.amount = 100;
+		z.amtpaid = 0;
+		return z;
 	}
+	
+	String getViolationText(int i){
+        def prefix;
+        def s = String.valueOf(i);
+        def n = Integer.parseInt(s.charAt(s.length() - 1).toString());
+        if(i % 100 == 11 || i % 100 == 12 || i % 100 == 13){
+            prefix = s + "th";
+        }else{
+            if(n == 1){
+                prefix = s + "st";
+            }else if(n == 2){
+                prefix = s + "nd";
+            }else if(n == 3){
+                prefix = s + "rd";
+            }else{
+                prefix = s + "th";
+            }
+        }
+        return prefix + " Violation";
+   }      
 
-	@ProxyMethod
-	public def update(def o){
-		ovte.find([parentid:o.objid]).delete();
-		o.entry.each{ ovte.create(it); }
-		ovtv.find([parentid:o.objid]).delete();
-		ovtv.create([parentid:o.objid,vehicleid:o.vehicle.objid]);
-		return ovt.find([objid:o.objid]).update(o);
-	}
-
-	@ProxyMethod
-	public void removeEntity(def o){
-		ovte.find([parentid:o.objid]).delete();
-		ovtv.find([parentid:o.objid]).delete();
-		ovt.find([objid:o.objid]).delete();
-	}
-
-	@ProxyMethod
-	def getViolations(params){
-		return ovt.getViolations(params);
-	}
-
-	@ProxyMethod
-	def getViolationsPerTicket(params){
-		return ovt.getViolationsPerTicket(params);
-	}
-
-	@ProxyMethod
-	def getVehiclePerTicket(params){
-		return ovt.findVehiclePerTicket(params);
-	}
 }

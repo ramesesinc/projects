@@ -1,0 +1,13 @@
+import com.rameses.annotations.*;
+
+class ViolationTicketInterceptor {
+
+	@Service("DateService")
+    def dateSvc;
+
+    @Before(pattern="PersistenceService.create", eval="#{args[0]._schemaname == 'ovs_violation_ticket'}")
+    def beforeCreate(evt){
+        evt.args[0].dtcreated = dateSvc.getServerDate();
+    }
+
+}

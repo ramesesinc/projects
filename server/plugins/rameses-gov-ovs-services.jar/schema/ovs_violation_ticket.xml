@@ -1,5 +1,5 @@
 <schema adapter="violation">
-	<element name="ovr_violation_ticket" tablename="violation_ticket">
+	<element name="ovs_violation_ticket" tablename="violation_ticket">
 		<field name="objid" primary="true" prefix="VIT"/>
 		<field name="dtcreated" required="true" caption="Date Created"/>
 		<field name="ticketno" required="true" caption="Ticket No."/>
@@ -9,5 +9,12 @@
 		<field name="apprehensionofficer_name" required="true" caption="Apprehending Officer"/>
 		<field name="apprehensionaddress" required="true" caption="Apprehension Address"/>
 		<field name="apprehensiondate" required="true" caption="Apprehension Date"/>
+		<field name="licenseno" required="false" caption="Drivers License"/>
+		<complex name="entries" ref="ovs_violation_ticket_entry" jointype="one-to-many">
+			<key field="objid" target="parentid"/>
+		</complex>
+		<complex name="vehicle" ref="ovs_vehicle" jointype="many-to-one" required="false">
+			<key field="vehicleid" target="objid"/>
+		</complex>
 	</element>
 </schema>

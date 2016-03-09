@@ -1,6 +1,0 @@
-<schema adapter="violation">
-	<element name="ovr_violation_ticket_vehicle" tablename="violation_ticket_vehicle">
-		<field name="parentid" required="true"/>
-		<field name="vehicleid" required="true"/>
-	</element>
-</schema>

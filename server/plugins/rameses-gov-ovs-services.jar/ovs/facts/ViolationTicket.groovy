@@ -3,7 +3,7 @@ package ovs.facts;
 class ViolationTicket
 {
 	
-	String violationid;
+	String violation;
 	int violationcount;
 
 }

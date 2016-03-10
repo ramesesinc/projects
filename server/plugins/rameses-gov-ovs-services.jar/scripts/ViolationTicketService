@@ -1,4 +1,8 @@
 import com.rameses.annotations.*;
+import treasury.facts.*;
+import treasury.actions.*;
+import ovs.facts.*;
+import com.rameses.rules.common.*;
 
 class ViolationTicketService {
 
@@ -12,22 +16,30 @@ class ViolationTicketService {
 	public def getViolationInfo(def o){
 		if( !o.violationid ) throw new Exception("Violation id is required");
 		if( !o.violatorid ) throw new Exception("Violator id is required");
-		//ove.debug = true;
-		//def z = ove.find( [violationid: o.violationid, 'parent.violator.objid': o.violatorid] ).select( 'violationcount:{COUNT(*)}' ).first(); 
+		def z = ove.where("violationid = :v1 AND parent.violator.objid = :v2", [v1: o.violationid, v2: o.violatorid] ).select( 'violationcount:{COUNT(*)}' ).first(); 
+        z.violationcount = z.violationcount + 1;
 
-        //def facts = [];
-        //facts << new ViolationTicket( violationid: o.violationid, violationcount: z.  )
-        //ruleSvc.execute( "ovscomputation", def facts, def actions, null )
+        def facts = [];
+        facts << new ViolationTicket( violation: o.violationid, violationcount: z.violationcount );      
 
-		def z = [:];
-		z.violationcount = 1;
+        def res = [:];
+        res.billItemList = new BillItemList();
+
+        def actions = new RuleAction();
+        actions.addCommand( "compute-fee", new ComputeFee(res:res));
+
+        ruleSvc.execute( "ovscomputation", facts, actions, null );
+		
+        if(!res.billItemList.items) throw new Exception("No rule found!");
+
 		z.violationtext = getViolationText( z.violationcount );
-		z.amount = 100;
+        z.account = res.billItemList.items[0].account.toItem();
+		z.amount = res.billItemList.items[0].amount;
 		z.amtpaid = 0;
 		return z;
 	}
 	
-	String getViolationText(int i){
+	String getViolationText(def i){
         def prefix;
         def s = String.valueOf(i);
         def n = Integer.parseInt(s.charAt(s.length() - 1).toString());

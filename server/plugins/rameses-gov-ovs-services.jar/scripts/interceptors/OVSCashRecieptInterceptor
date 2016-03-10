@@ -1,0 +1,47 @@
+import com.rameses.annotations.*;
+import java.rmi.server.UID;
+
+class OVSCashReceiptInterceptor{
+
+	@DataContext("ovs_payment")
+	def p;
+
+	@DataContext("ovs_violation_ticket_entry")
+	def e;
+
+	@After(pattern="CashReceiptService.post", eval="#{result.collectiontype?.handler == 'ovs'}")
+	public void postPayment(def evt) {
+		def o = evt.args[0];
+		def pmt = [:];
+		pmt.reftype = "cashreceipt";
+		pmt.refid = o.objid;
+		pmt.refno = o.receiptno;
+		pmt.refdate = o.receiptdate;
+		pmt.amount = o.amount;
+		pmt.voided = 0;
+		pmt.items = [];
+		
+		o.billitems.each {
+			def pi = [:];
+			pi.refid = it.objid;
+			pi.amount = it.balance;
+			pmt.items << pi;
+			e.find([objid:it.objid]).update([amtpaid: it.balance]);
+		}
+
+		p.create(pmt);
+	}
+
+	@After(pattern="CashReceiptVoidService.post",index=0,eval="#{result.receipt.collectiontype.handler=='ovs'}")
+	public void voidPayment(def evt) {
+		def rct = evt.result.receipt;
+
+		p.find( [refid: rct.objid ] ).update( [voided:1]);
+
+		def items = wpi.where( "parent.refid = :r", [r: rct.objid] ).list();
+		items.each {
+			//e.find([objid:it.objid]).update([amtpaid: it.amtpaid]);
+		}
+	}
+
+}

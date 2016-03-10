@@ -2,5 +2,6 @@
           allowCreate="false" allowEdit="false" allowOpen="false">
     <invokers>
         <invoker type="violation:lookup" caption="Violation Lookup" action="init"/>
+        <invoker type="ovs_violation:lookup" caption="Violation Lookup" action="init"/>
     </invokers>
 </workunit>

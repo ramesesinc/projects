@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.gov.ovs;
+package com.rameses.gov.etracs.ovs.views;
 
 import com.rameses.rcp.ui.annotations.Template;
 import com.rameses.seti2.views.CrudFormPage;
@@ -12,12 +12,12 @@ import com.rameses.seti2.views.CrudFormPage;
  * @author Rameses
  */
 @Template(CrudFormPage.class)
-public class ViolationPage extends javax.swing.JPanel {
+public class VehiclePage extends javax.swing.JPanel {
 
     /**
      * Creates new form ViolationPage
      */
-    public ViolationPage() {
+    public VehiclePage() {
         initComponents();
     }
 
@@ -35,41 +35,38 @@ public class ViolationPage extends javax.swing.JPanel {
         xTextField1 = new com.rameses.rcp.control.XTextField();
         xTextField2 = new com.rameses.rcp.control.XTextField();
         xTextField3 = new com.rameses.rcp.control.XTextField();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        xTextArea1 = new com.rameses.rcp.control.XTextArea();
+        xLookupField1 = new com.rameses.rcp.control.XLookupField();
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
-        xTitledBorder1.setTitle("Violation Information");
+        xTitledBorder1.setTitle("Vehicle Information");
         xPanel1.setBorder(xTitledBorder1);
 
         xFormPanel1.setCaptionWidth(100);
 
-        xTextField1.setCaption("Title");
-        xTextField1.setName("entity.title"); // NOI18N
+        xTextField1.setCaption("Name");
+        xTextField1.setName("entity.name"); // NOI18N
         xTextField1.setPreferredSize(new java.awt.Dimension(0, 20));
         xTextField1.setRequired(true);
         xFormPanel1.add(xTextField1);
 
-        xTextField2.setCaption("Section");
-        xTextField2.setName("entity.section"); // NOI18N
+        xTextField2.setCaption("Plate No.");
+        xTextField2.setName("entity.plateno"); // NOI18N
         xTextField2.setPreferredSize(new java.awt.Dimension(0, 20));
         xTextField2.setRequired(true);
         xFormPanel1.add(xTextField2);
 
-        xTextField3.setCaption("Article");
-        xTextField3.setName("entity.article"); // NOI18N
+        xTextField3.setCaption("OR/CR");
+        xTextField3.setName("entity.orcr"); // NOI18N
         xTextField3.setPreferredSize(new java.awt.Dimension(0, 20));
-        xTextField3.setRequired(true);
         xFormPanel1.add(xTextField3);
 
-        jScrollPane1.setPreferredSize(new java.awt.Dimension(0, 63));
-
-        xTextArea1.setCaption("Description");
-        xTextArea1.setName("entity.description"); // NOI18N
-        xTextArea1.setRequired(true);
-        jScrollPane1.setViewportView(xTextArea1);
-
-        xFormPanel1.add(jScrollPane1);
+        xLookupField1.setCaption("Owner");
+        xLookupField1.setExpression("#{entity.owner.name}");
+        xLookupField1.setHandler("individualentity:lookup");
+        xLookupField1.setName("entity.owner"); // NOI18N
+        xLookupField1.setPreferredSize(new java.awt.Dimension(0, 20));
+        xLookupField1.setRequired(true);
+        xFormPanel1.add(xLookupField1);
 
         javax.swing.GroupLayout xPanel1Layout = new javax.swing.GroupLayout(xPanel1);
         xPanel1.setLayout(xPanel1Layout);
@@ -84,8 +81,8 @@ public class ViolationPage extends javax.swing.JPanel {
             xPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(xPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(36, Short.MAX_VALUE))
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(58, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -106,10 +103,9 @@ public class ViolationPage extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JScrollPane jScrollPane1;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
+    private com.rameses.rcp.control.XLookupField xLookupField1;
     private com.rameses.rcp.control.XPanel xPanel1;
-    private com.rameses.rcp.control.XTextArea xTextArea1;
     private com.rameses.rcp.control.XTextField xTextField1;
     private com.rameses.rcp.control.XTextField xTextField2;
     private com.rameses.rcp.control.XTextField xTextField3;

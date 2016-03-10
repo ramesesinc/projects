@@ -35,6 +35,6 @@
         ]]>
     </code>
     <pages>
-        <page template="com.gov.ovs.ViolationTicketPage"/>        
+        <page template="com.rameses.gov.etracs.ovs.views.ViolationTicketPage"/>        
     </pages>
 </workunit>

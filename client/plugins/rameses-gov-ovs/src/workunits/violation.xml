@@ -7,6 +7,6 @@
     <code class="com.rameses.seti2.models.CrudFormModel"/>
     
     <pages>
-        <page template="com.gov.ovs.ViolationPage"/>
+        <page template="com.rameses.gov.etracs.ovs.views.ViolationPage"/>
     </pages>
 </workunit>

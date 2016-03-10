@@ -1,0 +1,9 @@
+<workunit extends="wtemplates/enterprise/treasury/BasicCashReceiptController.xml">
+    <invokers>
+        <invoker type="cashreceipt:ovs" action="init" />
+    </invokers>
+    <code class="com.rameses.gov.etracs.ovs.models.OVSCashReceipt" />
+    <pages>
+        <page template="com.rameses.gov.etracs.ovs.views.OVSCashreceiptPage"/>
+    </pages>
+</workunit>

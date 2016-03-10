@@ -1,8 +1,8 @@
 <workunit>
     <invokers>
-        <invoker type="waterworks_account:section" caption="General Information" index="0" action="init"/>
+        <invoker type="waterworks_account:section" caption="General Information" index="0"/>
     </invokers>
-    <code class="com.rameses.gov.etracs.waterworks.models.WaterworksAccountGeneralInformation"/>
+    <code class="com.rameses.seti2.models.MdiChildModel"/>
     <pages>
         <page template="com.rameses.gov.etracs.waterworks.views.WaterworksAccountGeneralInformationPage"/>
     </pages>

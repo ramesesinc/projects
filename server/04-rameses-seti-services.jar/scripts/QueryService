@@ -2,18 +2,18 @@ import com.rameses.annotations.*
 
 class QueryService {
 
+	@Service("SchemaService")
+	def schemaSvc;
+
 	@DataContext(dynamic=true)
 	def db;
 
 	@ProxyMethod
 	public def getList( def o ) {
-		o.debug = true;
-		println o.select;
-
-		if(!o.schemaname) 
+		if(!o._schemaname) 
 			throw new Exception('Please specify a name in QueryService.getList');
 
-		def em = db.lookup(o.schemaname);
+		def em = db.lookup(o._schemaname);
 		if(o.debug) em.debug = true;
 		
 		if( !o.where && !o.findBy && !o._limit )
@@ -24,7 +24,7 @@ class QueryService {
 			if(o.where.size() == 1) {
 				em.where( o.where[0] )		
 			}
-			else if (o.where.size==2) {
+			else if (o.where.size()==2) {
 				em.where( o.where[0], o.where[1] );			
 			}
 		}
@@ -53,6 +53,11 @@ class QueryService {
 	@ProxyMethod
 	public def getNodeList( def o ) {
 		return [];
+	}
+
+	@ProxyMethod
+	public def getSchema( def o ) {
+		return  schemaSvc.getSchema(o);
 	}
 
 }

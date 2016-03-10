@@ -1,12 +1,9 @@
-<workunit>
+<workunit extends="com/rameses/seti2/templates/MdiForm.xml" schemaName="waterworks_account">
     <invokers>
-        <invoker type="waterworks_account:open" caption="Waterworks Account" action="open" target="window"/>
-        <invoker type="formActions" caption="Close" action="_close" immediate="true"/>
-        <invoker type="formActions" caption="Edit" action="edit" immediate="true"/>
-        <invoker type="formActions" caption="Preview Bill" action="preview" immediate="true"/>
+        <invoker type="waterworks_account:open" 
+                 formTitle="Waterworks Account (#{acctno}) #{acctname}" 
+                 formId="#{objid}"
+                 caption="Waterworks Account"
+                 action="open" target="window"/>
     </invokers>
-    <code class="com.rameses.gov.etracs.waterworks.models.WaterworksAccountMain" />   
-    <pages>
-        <page template="com.rameses.gov.etracs.waterworks.views.WaterworksAccountMainPage"/>
-    </pages>
 </workunit>

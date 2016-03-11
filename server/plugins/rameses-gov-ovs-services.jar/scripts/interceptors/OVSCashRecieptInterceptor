@@ -6,8 +6,14 @@ class OVSCashReceiptInterceptor{
 	@DataContext("ovs_payment")
 	def p;
 
+	@DataContext("ovs_payment_item")
+	def pi;
+
 	@DataContext("ovs_violation_ticket_entry")
-	def e;
+	def vte;
+
+	@DataContext("ovs_violation_ticket")
+	def vt;
 
 	@After(pattern="CashReceiptService.post", eval="#{result.collectiontype?.handler == 'ovs'}")
 	public void postPayment(def evt) {
@@ -21,15 +27,25 @@ class OVSCashReceiptInterceptor{
 		pmt.voided = 0;
 		pmt.items = [];
 		
+		def set = new HashSet();
 		o.billitems.each {
+			set.add(it.parent.objid);
 			def pi = [:];
 			pi.refid = it.objid;
 			pi.amount = it.balance;
 			pmt.items << pi;
-			e.find([objid:it.objid]).update([amtpaid: it.balance]);
+			vte.debug = true;
+			vte.find([objid:it.objid]).update([amtpaid: "{amtpaid + :amt}"],[amt:pi.amount]);
 		}
 
 		p.create(pmt);
+		def gl = vte.select("parent.objid,xtotal:{SUM(amount - amtpaid)}").find(["parent.violator.objid":o.payer.objid]).where("state = 'OPEN'").groupBy("parent.objid").list();
+		gl.each{
+			println it;
+			if(it.xtotal == 0) {
+				vt.find([objid:it.parent.objid]).update([state:'CLOSED']);
+			}
+		}
 	}
 
 	@After(pattern="CashReceiptVoidService.post",index=0,eval="#{result.receipt.collectiontype.handler=='ovs'}")
@@ -37,10 +53,17 @@ class OVSCashReceiptInterceptor{
 		def rct = evt.result.receipt;
 
 		p.find( [refid: rct.objid ] ).update( [voided:1]);
-
-		def items = wpi.where( "parent.refid = :r", [r: rct.objid] ).list();
+		def set = new HashSet();
+		def items = pi.where( "parent.refid = :r", [r: rct.objid] ).list();
 		items.each {
-			//e.find([objid:it.objid]).update([amtpaid: it.amtpaid]);
+			vte.debug = true;
+			vte.find([objid:it.refid]).update([amtpaid: "{amtpaid - :amt}"],[amt: it.amount]);
+		}
+		def gl = vte.select("parent.objid,xtotal:{SUM(amount - amtpaid)}").find(["parent.violator.objid":rct.payer.objid]).where("state = 'CLOSED'").groupBy("parent.objid").list();
+		gl.each{
+			if(it.xtotal > 0) {
+				vt.find([objid:it.parent.objid]).update([state:'OPEN']);
+			}
 		}
 	}
 

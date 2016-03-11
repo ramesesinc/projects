@@ -16,7 +16,7 @@ class ViolationTicketService {
 	public def getViolationInfo(def o){
 		if( !o.violationid ) throw new Exception("Violation id is required");
 		if( !o.violatorid ) throw new Exception("Violator id is required");
-		def z = ove.where("violationid = :v1 AND parent.violator.objid = :v2", [v1: o.violationid, v2: o.violatorid] ).select( 'violationcount:{COUNT(*)}' ).first(); 
+		def z = ove.find([violationid:o.violationid,"parent.violator.objid":o.violatorid]).select( 'violationcount:{COUNT(*)}' ).first(); 
         z.violationcount = z.violationcount + 1;
 
         def facts = [];

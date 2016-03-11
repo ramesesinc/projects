@@ -10,23 +10,15 @@ class OVSCashReceiptService {
 
     @ProxyMethod
     public def getUnpaidViolations(def o){
-        entries.debug = true;
-        entries.select("objid,violation.title,amount,amtpaid,violationcount,balance:{amount-amtpaid}, account.objid");
-        def list = entries.where("parent.violator_objid = :x AND amount - amtpaid > 0",[x:o.objid]).list();
+        entries.select("objid,parent.objid,parent.ticketno,violation.title,violationcount,balance:{amount-amtpaid}, account.objid");
+        def list = entries.find(["parent.violator.objid":o.objid]).where("amount - amtpaid > 0").orderBy("parent.dtcreated").list();
         if(!list) throw new Exception("There are no unpaid violations for this payer.");
-        def m = [:];
-        m.items = [];
 
         list.each{
-            def a = [:];
-            a.item = itemaccount.find([objid:it.account.objid]).first();
-            a.amount = it.balance;
-            a.remarks = it.violationcount;
-            m.items << a;
+            it.item = itemaccount.find([objid:it.account.objid]).first();
+            it.amount = 0;
         }
-        
-        m.billitems = list;
-        return m;
+        return list;
     }
 
 }

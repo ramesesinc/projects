@@ -1,7 +1,7 @@
 <schema adapter="violation">
 	<element name="ovs_payment_item" tablename="payment_item">
 		<field name="objid" primary="true" prefix="OVSPMTI"/>
-		<complex name="parent" ref="ovs_payment" type="inverse">
+		<complex name="parent" ref="ovs_payment" jointype="many-to-one" required="false">
 			<key field="parentid" target="objid"/>
 		</complex>	
 		<field name="refid" required="true"/>

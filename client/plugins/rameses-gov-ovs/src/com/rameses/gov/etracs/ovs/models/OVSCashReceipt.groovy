@@ -15,12 +15,12 @@ public class OVSCashReceipt extends BasicCashReceipt {
      //we specify this so print detail will appear.
      String entityName = "misc_cashreceipt";
      String title = "Ordinance Violation";
+     def selectedItem;
+     def status;
      
      def payerChanged(def o){
-        def m = cashreceiptSvc.getUnpaidViolations([objid:o.objid]);
-        entity.billitems = m.billitems;
-        entity.items = m.items;
-        entity.amount = m.items.sum{it.amount};
+        entity.billitems = cashreceiptSvc.getUnpaidViolations([objid:o.objid]);
+        entity.amount = 0;
         itemListHandler.reload();
         updateBalances();
         return null;
@@ -34,7 +34,27 @@ public class OVSCashReceipt extends BasicCashReceipt {
     def itemListHandler = [
         fetchList : {o ->
             return entity.billitems;
+        },
+        afterColumnUpdate : {o,colname ->
+            reloadListModel(status.index);
         }
-    ] as BasicListModel;
+    ] as EditorListModel;
+
+    void reloadListModel(def index){
+        entity.items = [];
+        (0..(entity.billitems.size()-1)).each {
+             def item = entity.billitems[it];
+             if(it <= index){
+                item.checked = true;
+                item.amount = item.balance;
+                entity.items << [item:item.item, amount: item.amount, remarks: item.remarks];
+             }else{
+                item.checked = false;
+                item.amount = 0;
+             }
+             entity.amount = entity.items.sum{it.amount};
+        }
+        updateBalances();
+    }
    
 }

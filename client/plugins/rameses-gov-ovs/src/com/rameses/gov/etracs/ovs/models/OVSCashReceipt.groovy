@@ -20,6 +20,7 @@ public class OVSCashReceipt extends BasicCashReceipt {
      
      def payerChanged(def o){
         entity.billitems = cashreceiptSvc.getUnpaidViolations([objid:o.objid]);
+        entity.items = [];
         entity.amount = 0;
         itemListHandler.reload();
         updateBalances();
@@ -41,19 +42,26 @@ public class OVSCashReceipt extends BasicCashReceipt {
     ] as EditorListModel;
 
     void reloadListModel(def index){
-        entity.items = [];
-        (0..(entity.billitems.size()-1)).each {
-             def item = entity.billitems[it];
-             if(it <= index){
-                item.checked = true;
-                item.amount = item.balance;
-                entity.items << [item:item.item, amount: item.amount, remarks: item.remarks];
-             }else{
-                item.checked = false;
-                item.amount = 0;
+        entity.items.clear();
+        entity.billitems.eachWithIndex { o, idx->
+             if(idx <= index){
+                if( idx < index ) {
+                    o.checked = true;
+                }
+                if(o.checked ) {
+                    o.amount = o.balance;
+                    entity.items << [item:o.item, amount: o.amount, remarks: o.remarks];
+                }
+                else {
+                    o.amount = 0;
+                }
              }
-             entity.amount = entity.items.sum{it.amount};
+             else{
+                o.checked = false;
+                o.amount = 0;
+             }
         }
+        entity.amount = entity.items.sum{it.amount};
         updateBalances();
     }
    

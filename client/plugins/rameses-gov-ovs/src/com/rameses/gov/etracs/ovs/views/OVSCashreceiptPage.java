@@ -78,8 +78,8 @@ public class OVSCashreceiptPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             }),
             new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "violationcount"}
-                , new Object[]{"caption", "No. of Offense"}
+                new Object[]{"name", "remarks"}
+                , new Object[]{"caption", "Remarks"}
                 , new Object[]{"width", 100}
                 , new Object[]{"minWidth", 0}
                 , new Object[]{"maxWidth", 0}
@@ -128,7 +128,6 @@ public class OVSCashreceiptPage extends javax.swing.JPanel {
         xButton1.setName("previewReceipt"); // NOI18N
 
         xDecimalField1.setEditable(false);
-        xDecimalField1.setText("xDecimalField1");
         xDecimalField1.setName("entity.amount"); // NOI18N
 
         xLabel1.setText("TOTAL :");

@@ -19,6 +19,7 @@ class OVSCashReceiptInterceptor{
 	public void postPayment(def evt) {
 		def o = evt.args[0];
 		def pmt = [:];
+		pmt.objid = "PMT"+ new UID();
 		pmt.reftype = "cashreceipt";
 		pmt.refid = o.objid;
 		pmt.refno = o.receiptno;
@@ -27,25 +28,23 @@ class OVSCashReceiptInterceptor{
 		pmt.voided = 0;
 		pmt.items = [];
 		
-		def set = new HashSet();
-		o.billitems.each {
-			set.add(it.parent.objid);
+		def uniqueIds = new HashSet();
+		o.billitems.findAll{it.amount>0}.each {
+			uniqueIds.add(it.parent.objid);
 			def pi = [:];
 			pi.refid = it.objid;
-			pi.amount = it.balance;
+			pi.amount = it.amount;
+			pi.parentid = pmt.objid;
 			pmt.items << pi;
-			vte.debug = true;
 			vte.find([objid:it.objid]).update([amtpaid: "{amtpaid + :amt}"],[amt:pi.amount]);
 		}
 
 		p.create(pmt);
-		def gl = vte.select("parent.objid,xtotal:{SUM(amount - amtpaid)}").find(["parent.violator.objid":o.payer.objid]).where("state = 'OPEN'").groupBy("parent.objid").list();
-		gl.each{
-			println it;
-			if(it.xtotal == 0) {
-				vt.find([objid:it.parent.objid]).update([state:'CLOSED']);
-			}
-		}
+
+		uniqueIds.each { id->
+			def m = vte.select("total:{SUM(amount - amtpaid)}").find(["parent.objid": id]).groupBy("parent.objid").first();			
+			if( m.total==0 ) vt.find( [objid: id]).update( [state:'CLOSED']);
+		}		
 	}
 
 	@After(pattern="CashReceiptVoidService.post",index=0,eval="#{result.receipt.collectiontype.handler=='ovs'}")
@@ -53,18 +52,18 @@ class OVSCashReceiptInterceptor{
 		def rct = evt.result.receipt;
 
 		p.find( [refid: rct.objid ] ).update( [voided:1]);
-		def set = new HashSet();
-		def items = pi.where( "parent.refid = :r", [r: rct.objid] ).list();
+		
+		//retrieve each payment item linked to its transaction
+		def items = pi.select("txnref.parentid,txnref.objid,amount").where( "parent.refid = :r", [r: rct.objid] ).list();
+		def uniqueIds = new HashSet();
+		
 		items.each {
-			vte.debug = true;
-			vte.find([objid:it.refid]).update([amtpaid: "{amtpaid - :amt}"],[amt: it.amount]);
+			uniqueIds.add(it.txnref.parentid);
+			vte.find([objid:it.txnref.objid]).update([amtpaid: "{amtpaid - :amt}"],[amt: it.amount]);
 		}
-		def gl = vte.select("parent.objid,xtotal:{SUM(amount - amtpaid)}").find(["parent.violator.objid":rct.payer.objid]).where("state = 'CLOSED'").groupBy("parent.objid").list();
-		gl.each{
-			if(it.xtotal > 0) {
-				vt.find([objid:it.parent.objid]).update([state:'OPEN']);
-			}
-		}
+		uniqueIds.each { id->
+			vt.find( [objid: id]).update( [state:'OPEN']);
+		}		
 	}
 
 }

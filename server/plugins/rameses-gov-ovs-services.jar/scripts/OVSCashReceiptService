@@ -17,8 +17,25 @@ class OVSCashReceiptService {
         list.each{
             it.item = itemaccount.find([objid:it.account.objid]).first();
             it.amount = 0;
+            it.remarks = it.violation.title + " (" + getOrdinal( it.violationcount ) + " offense)";
         }
         return list;
     }
+
+    def getOrdinal( n ) {
+       def s = ["th","st","nd","rd"];
+       def v = n % 100;
+       int j = (v-20)%10;
+       if( j >= 0 && j <=3 ) {
+           return n+s[j];
+       }
+       else if( v >=0 && v<= 3) {
+           return n+s[v];
+       }
+       else {
+           return n+s[0];
+       }
+    }   
+  
 
 }

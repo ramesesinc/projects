@@ -1,7 +1,7 @@
 <schema adapter="violation">
 	<element name="ovs_violation_ticket_entry" tablename="violation_ticket_entry">
 		<field name="objid" primary="true" prefix="VTE"/>
-		<complex name="parent" ref="ovs_violation_ticket" jointype="inverse">
+		<complex name="parent" ref="ovs_violation_ticket" jointype="many-to-one" required="false">
 			<key field="parentid" target="objid"/>
 		</complex>
 		<complex name="violation" ref="ovs_violation" jointype="many-to-one">
@@ -12,5 +12,6 @@
 		<field name="amtpaid" required="false" defaultValue="0.00"/>
 		<field name="account_objid" required="true"/>
 		<field name="account_title" required="true"/>
+		<field name="xbalance" expr="amount-amtpaid"/>
 	</element>
 </schema>

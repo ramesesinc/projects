@@ -6,13 +6,20 @@ class OVSCashReceiptInterceptor{
 	@DataContext("ovs_payment")
 	def p;
 
+	@DataContext("ovs_payment_item")
+	def pi;
+
 	@DataContext("ovs_violation_ticket_entry")
-	def e;
+	def vte;
+
+	@DataContext("ovs_violation_ticket")
+	def vt;
 
 	@After(pattern="CashReceiptService.post", eval="#{result.collectiontype?.handler == 'ovs'}")
 	public void postPayment(def evt) {
 		def o = evt.args[0];
 		def pmt = [:];
+		pmt.objid = "PMT"+ new UID();
 		pmt.reftype = "cashreceipt";
 		pmt.refid = o.objid;
 		pmt.refno = o.receiptno;
@@ -21,15 +28,23 @@ class OVSCashReceiptInterceptor{
 		pmt.voided = 0;
 		pmt.items = [];
 		
-		o.billitems.each {
+		def uniqueIds = new HashSet();
+		o.billitems.findAll{it.amount>0}.each {
+			uniqueIds.add(it.parent.objid);
 			def pi = [:];
 			pi.refid = it.objid;
-			pi.amount = it.balance;
+			pi.amount = it.amount;
+			pi.parentid = pmt.objid;
 			pmt.items << pi;
-			e.find([objid:it.objid]).update([amtpaid: it.balance]);
+			vte.find([objid:it.objid]).update([amtpaid: "{amtpaid + :amt}"],[amt:pi.amount]);
 		}
 
 		p.create(pmt);
+
+		uniqueIds.each { id->
+			def m = vte.select("total:{SUM(amount - amtpaid)}").find(["parent.objid": id]).groupBy("parent.objid").first();			
+			if( m.total==0 ) vt.find( [objid: id]).update( [state:'CLOSED']);
+		}		
 	}
 
 	@After(pattern="CashReceiptVoidService.post",index=0,eval="#{result.receipt.collectiontype.handler=='ovs'}")
@@ -37,11 +52,18 @@ class OVSCashReceiptInterceptor{
 		def rct = evt.result.receipt;
 
 		p.find( [refid: rct.objid ] ).update( [voided:1]);
-
-		def items = wpi.where( "parent.refid = :r", [r: rct.objid] ).list();
+		
+		//retrieve each payment item linked to its transaction
+		def items = pi.select("txnref.parentid,txnref.objid,amount").where( "parent.refid = :r", [r: rct.objid] ).list();
+		def uniqueIds = new HashSet();
+		
 		items.each {
-			//e.find([objid:it.objid]).update([amtpaid: it.amtpaid]);
+			uniqueIds.add(it.txnref.parentid);
+			vte.find([objid:it.txnref.objid]).update([amtpaid: "{amtpaid - :amt}"],[amt: it.amount]);
 		}
+		uniqueIds.each { id->
+			vt.find( [objid: id]).update( [state:'OPEN']);
+		}		
 	}
 
 }

@@ -22,7 +22,7 @@ public class ViolationTicketPage extends javax.swing.JPanel {
     public ViolationTicketPage() {
         initComponents();
     }
-
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -37,17 +37,19 @@ public class ViolationTicketPage extends javax.swing.JPanel {
         xTextField2 = new com.rameses.rcp.control.XTextField();
         xLookupField1 = new com.rameses.rcp.control.XLookupField();
         xLookupField2 = new com.rameses.rcp.control.XLookupField();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        xTextArea2 = new com.rameses.rcp.control.XTextArea();
+        xTextField5 = new com.rameses.rcp.control.XTextField();
         xDateField1 = new com.rameses.rcp.control.XDateField();
+        xCheckBox1 = new com.rameses.rcp.control.XCheckBox();
         xPanel2 = new com.rameses.rcp.control.XPanel();
-        xDataTable1 = new com.rameses.rcp.control.XDataTable();
-        jPanel1 = new javax.swing.JPanel();
-        xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
+        xFormPanel3 = new com.rameses.rcp.control.XFormPanel();
         xLookupField4 = new com.rameses.rcp.control.XLookupField();
         xTextField3 = new com.rameses.rcp.control.XTextField();
         xTextField4 = new com.rameses.rcp.control.XTextField();
         xTextField1 = new com.rameses.rcp.control.XTextField();
+        xPanel3 = new com.rameses.rcp.control.XPanel();
+        xDataTable1 = new com.rameses.rcp.control.XDataTable();
+
+        setLayout(new com.rameses.rcp.control.layout.YLayout());
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder1.setTitle("Violator Information");
@@ -77,40 +79,101 @@ public class ViolationTicketPage extends javax.swing.JPanel {
         xLookupField2.setRequired(true);
         xFormPanel1.add(xLookupField2);
 
-        jScrollPane2.setPreferredSize(new java.awt.Dimension(0, 43));
+        xTextField5.setCaption("Place of Apprehension");
+        xTextField5.setName("entity.apprehensionaddress"); // NOI18N
+        xTextField5.setPreferredSize(new java.awt.Dimension(0, 20));
+        xTextField5.setRequired(true);
+        xFormPanel1.add(xTextField5);
 
-        xTextArea2.setCaption("Place of Apprehension");
-        xTextArea2.setName("entity.apprehensionaddress"); // NOI18N
-        xTextArea2.setRequired(true);
-        jScrollPane2.setViewportView(xTextArea2);
-
-        xFormPanel1.add(jScrollPane2);
-
-        xDateField1.setText("xDateField1");
         xDateField1.setCaption("Date of Apprehension");
         xDateField1.setName("entity.apprehensiondate"); // NOI18N
         xDateField1.setRequired(true);
         xFormPanel1.add(xDateField1);
 
+        xCheckBox1.setCaption("");
+        xCheckBox1.setCheckValue(1);
+        xCheckBox1.setName("entity.forvehicle"); // NOI18N
+        xCheckBox1.setText("for vehicle");
+        xCheckBox1.setUncheckValue(0);
+        xFormPanel1.add(xCheckBox1);
+        xCheckBox1.getAccessibleContext().setAccessibleName("for vehicle");
+
         javax.swing.GroupLayout xPanel1Layout = new javax.swing.GroupLayout(xPanel1);
         xPanel1.setLayout(xPanel1Layout);
         xPanel1Layout.setHorizontalGroup(
             xPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(xPanel1Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, xPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 566, Short.MAX_VALUE)
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 825, Short.MAX_VALUE)
                 .addContainerGap())
         );
         xPanel1Layout.setVerticalGroup(
             xPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, xPanel1Layout.createSequentialGroup()
-                .addGap(6, 6, 6)
+            .addGroup(xPanel1Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
+        add(xPanel1);
+
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder2 = new com.rameses.rcp.control.border.XTitledBorder();
-        xTitledBorder2.setTitle("Violations");
+        xTitledBorder2.setTitle("Vehicle Information");
         xPanel2.setBorder(xTitledBorder2);
+        xPanel2.setDepends(new String[] {"entity.forvehicle"});
+        xPanel2.setPreferredSize(new java.awt.Dimension(849, 150));
+        xPanel2.setVisibleWhen("#{entity.forvehicle == 1}");
+
+        xFormPanel3.setCaptionWidth(160);
+
+        xLookupField4.setCaption("Plate No.");
+        xLookupField4.setExpression("#{entity.vehicle.plateno}");
+        xLookupField4.setHandler("vehicle:lookup");
+        xLookupField4.setName("entity.vehicle"); // NOI18N
+        xLookupField4.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel3.add(xLookupField4);
+
+        xTextField3.setEditable(false);
+        xTextField3.setCaption("Vehicle Name");
+        xTextField3.setDepends(new String[]{"entity.vehicle"});
+        xTextField3.setName("entity.vehicle.name"); // NOI18N
+        xTextField3.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel3.add(xTextField3);
+
+        xTextField4.setEditable(false);
+        xTextField4.setCaption("Owner Name");
+        xTextField4.setDepends(new String[]{"entity.vehicle"});
+        xTextField4.setName("entity.vehicle.owner.name"); // NOI18N
+        xTextField4.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel3.add(xTextField4);
+
+        xTextField1.setCaption("Driver's License");
+        xTextField1.setEnabled(false);
+        xTextField1.setName("entity.licenseno"); // NOI18N
+        xTextField1.setPreferredSize(new java.awt.Dimension(300, 20));
+        xFormPanel3.add(xTextField1);
+
+        javax.swing.GroupLayout xPanel2Layout = new javax.swing.GroupLayout(xPanel2);
+        xPanel2.setLayout(xPanel2Layout);
+        xPanel2Layout.setHorizontalGroup(
+            xPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(xPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(xFormPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 667, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(168, Short.MAX_VALUE))
+        );
+        xPanel2Layout.setVerticalGroup(
+            xPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(xPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(xFormPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(24, Short.MAX_VALUE))
+        );
+
+        add(xPanel2);
+
+        com.rameses.rcp.control.border.XTitledBorder xTitledBorder3 = new com.rameses.rcp.control.border.XTitledBorder();
+        xTitledBorder3.setTitle("Violations");
+        xPanel3.setBorder(xTitledBorder3);
 
         xDataTable1.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
@@ -173,112 +236,38 @@ public class ViolationTicketPage extends javax.swing.JPanel {
         xDataTable1.setImmediate(true);
         xDataTable1.setName("selectedItem"); // NOI18N
 
-        javax.swing.GroupLayout xPanel2Layout = new javax.swing.GroupLayout(xPanel2);
-        xPanel2.setLayout(xPanel2Layout);
-        xPanel2Layout.setHorizontalGroup(
-            xPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(xPanel2Layout.createSequentialGroup()
+        javax.swing.GroupLayout xPanel3Layout = new javax.swing.GroupLayout(xPanel3);
+        xPanel3.setLayout(xPanel3Layout);
+        xPanel3Layout.setHorizontalGroup(
+            xPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(xPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xDataTable1, javax.swing.GroupLayout.DEFAULT_SIZE, 566, Short.MAX_VALUE)
+                .addComponent(xDataTable1, javax.swing.GroupLayout.DEFAULT_SIZE, 825, Short.MAX_VALUE)
                 .addContainerGap())
         );
-        xPanel2Layout.setVerticalGroup(
-            xPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(xPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(xDataTable1, javax.swing.GroupLayout.DEFAULT_SIZE, 158, Short.MAX_VALUE)
-                .addContainerGap())
+        xPanel3Layout.setVerticalGroup(
+            xPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(xDataTable1, javax.swing.GroupLayout.DEFAULT_SIZE, 158, Short.MAX_VALUE)
         );
 
-        com.rameses.rcp.control.border.XTitledBorder xTitledBorder3 = new com.rameses.rcp.control.border.XTitledBorder();
-        xTitledBorder3.setTitle("Vehicle Information");
-        jPanel1.setBorder(xTitledBorder3);
-
-        xFormPanel2.setCaptionWidth(160);
-
-        xLookupField4.setCaption("Plate No.");
-        xLookupField4.setExpression("#{entity.vehicle.plateno}");
-        xLookupField4.setHandler("vehicle:lookup");
-        xLookupField4.setName("entity.vehicle"); // NOI18N
-        xLookupField4.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel2.add(xLookupField4);
-
-        xTextField3.setEditable(false);
-        xTextField3.setCaption("Vehicle Name");
-        xTextField3.setDepends(new String[]{"entity.vehicle"});
-        xTextField3.setName("entity.vehicle.name"); // NOI18N
-        xTextField3.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel2.add(xTextField3);
-
-        xTextField4.setEditable(false);
-        xTextField4.setCaption("Owner Name");
-        xTextField4.setDepends(new String[]{"entity.vehicle"});
-        xTextField4.setName("entity.vehicle.owner.name"); // NOI18N
-        xTextField4.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel2.add(xTextField4);
-
-        xTextField1.setCaption("Driver's License");
-        xTextField1.setEnabled(false);
-        xTextField1.setName("entity.licenseno"); // NOI18N
-        xTextField1.setPreferredSize(new java.awt.Dimension(300, 20));
-        xFormPanel2.add(xTextField1);
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(xFormPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 566, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-        );
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(6, 6, 6)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(xPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(xPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(6, 6, 6))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(6, 6, 6)
-                .addComponent(xPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(xPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(6, 6, 6))
-        );
+        add(xPanel3);
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JScrollPane jScrollPane2;
+    private com.rameses.rcp.control.XCheckBox xCheckBox1;
     private com.rameses.rcp.control.XDataTable xDataTable1;
     private com.rameses.rcp.control.XDateField xDateField1;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
-    private com.rameses.rcp.control.XFormPanel xFormPanel2;
+    private com.rameses.rcp.control.XFormPanel xFormPanel3;
     private com.rameses.rcp.control.XLookupField xLookupField1;
     private com.rameses.rcp.control.XLookupField xLookupField2;
     private com.rameses.rcp.control.XLookupField xLookupField4;
     private com.rameses.rcp.control.XPanel xPanel1;
     private com.rameses.rcp.control.XPanel xPanel2;
-    private com.rameses.rcp.control.XTextArea xTextArea2;
+    private com.rameses.rcp.control.XPanel xPanel3;
     private com.rameses.rcp.control.XTextField xTextField1;
     private com.rameses.rcp.control.XTextField xTextField2;
     private com.rameses.rcp.control.XTextField xTextField3;
     private com.rameses.rcp.control.XTextField xTextField4;
+    private com.rameses.rcp.control.XTextField xTextField5;
     // End of variables declaration//GEN-END:variables
 }

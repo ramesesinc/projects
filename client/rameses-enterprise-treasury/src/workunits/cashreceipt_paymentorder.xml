@@ -3,7 +3,9 @@
         <invoker type="cashreceipt-initial:formActions" caption="Payment Order"
             shortcut="ctrl O" mnemonic="o" target="process" action="init" index="100"/>
         
+        <!--
         <invoker type="cashreceipt:online" caption="Payment Order" target="process" index="100"/> 
+        -->
     </invokers> 
     <code>
         <![CDATA[

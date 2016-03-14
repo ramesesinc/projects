@@ -15,12 +15,13 @@ public class OVSCashReceipt extends BasicCashReceipt {
      //we specify this so print detail will appear.
      String entityName = "misc_cashreceipt";
      String title = "Ordinance Violation";
+     def selectedItem;
+     def status;
      
      def payerChanged(def o){
-        def m = cashreceiptSvc.getUnpaidViolations([objid:o.objid]);
-        entity.billitems = m.billitems;
-        entity.items = m.items;
-        entity.amount = m.items.sum{it.amount};
+        entity.billitems = cashreceiptSvc.getUnpaidViolations([objid:o.objid]);
+        entity.items = [];
+        entity.amount = 0;
         itemListHandler.reload();
         updateBalances();
         return null;
@@ -34,7 +35,34 @@ public class OVSCashReceipt extends BasicCashReceipt {
     def itemListHandler = [
         fetchList : {o ->
             return entity.billitems;
+        },
+        afterColumnUpdate : {o,colname ->
+            reloadListModel(status.index);
         }
-    ] as BasicListModel;
+    ] as EditorListModel;
+
+    void reloadListModel(def index){
+        entity.items.clear();
+        entity.billitems.eachWithIndex { o, idx->
+             if(idx <= index){
+                if( idx < index ) {
+                    o.checked = true;
+                }
+                if(o.checked ) {
+                    o.amount = o.balance;
+                    entity.items << [item:o.item, amount: o.amount, remarks: o.remarks];
+                }
+                else {
+                    o.amount = 0;
+                }
+             }
+             else{
+                o.checked = false;
+                o.amount = 0;
+             }
+        }
+        entity.amount = entity.items.sum{it.amount};
+        updateBalances();
+    }
    
 }

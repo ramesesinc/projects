@@ -1,4 +1,4 @@
-<workunit schemaName="ovs_violation_ticket" allowEdit="false">
+<workunit schemaName="ovs_violation_ticket" allowEdit="true">
     <invokers>
         <invoker type="ovs_violation_ticket:create" caption="Violation Ticket" action="create" target="popup"/>
         <invoker type="ovs_violation_ticket:open" caption="Violation Ticket" action="open" target="popup"/>
@@ -14,16 +14,15 @@
         
         class ViolationTicketController extends CrudFormModel{
         
-           @Service('ViolationTicketService')
-           def violationSvc;
-        
+            @Service('ViolationTicketService')
+            def violationSvc;
+
             public void afterColumnUpdate(String itemName, Object item, String colName){
-                println 'Entity : ' + entity;
                 def m = [violationid: item.violation.objid, violatorid: entity.violator.objid ];
                 def z = violationSvc.getViolationInfo( m );
                 item.putAll( z );
             }
-            
+
             @PropertyChangeListener
             def listener = [
                 "entity.apprehensionofficer" : {o ->

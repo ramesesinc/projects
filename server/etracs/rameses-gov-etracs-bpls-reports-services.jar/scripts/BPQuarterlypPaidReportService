@@ -15,8 +15,9 @@ class BPQuarterlypPaidReportService
 		params.filter = '';
 
 		def states = []; 
-		if ( params.state_release ) states << "RELEASE";
 		if ( params.state_completed ) states << "COMPLETED";
+		if ( params.state_release ) states << "RELEASE";
+		if ( params.state_payment ) states << "PAYMENT";
 		if ( states ) { 
 			params.filter += " AND a.state IN ('" + states.join("','") + "')"; 
 		} else { 

@@ -37,7 +37,6 @@ public class CollectPartialPayment implements RuleActionHandler {
 
 		def b = tf.toItem();
 		b.partial = true;
-		println "added partial ->"+b;
 		request.items << b;
 	}
 }

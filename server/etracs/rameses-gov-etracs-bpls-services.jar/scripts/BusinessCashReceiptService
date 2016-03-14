@@ -85,12 +85,10 @@ public class BusinessCashReceiptService  {
         m.appno = info.appno; 
         m.dtfiled = info.dtfiled;
 
-        def list = app.getDelinquentApplications([ businessid : m.businessid ]); 
+        def list = app.getDelinquentApplications([ businessid: m.businessid, appyear: m.appyear ]); 
         if ( list ) {
         	def dapp = list.first(); 
-        	if ( dapp.applicationid != m.applicationid ) {
-        		throw new Exception('This business is delinquent in '+ dapp.appyear +'. Please verify.'); 
-        	}
+        	throw new Exception('This business is delinquent in '+ dapp.iyear +'. Please verify.'); 
         }
         return m; 
 	}

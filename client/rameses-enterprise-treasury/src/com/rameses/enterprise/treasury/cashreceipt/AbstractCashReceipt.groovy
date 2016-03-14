@@ -143,7 +143,7 @@ public abstract class AbstractCashReceipt {
     }
 
     public def payerChanged( o ) {
-        //for overrides
+        //do nothing for now
     }
     
     protected String getLookupEntityName() {
@@ -157,13 +157,19 @@ public abstract class AbstractCashReceipt {
     def getLookupEntity() {
         def params = [:]; 
         beforeLookupEntity( params ); 
+
         params.onselect = { o-> 
+            def newdata = entity.clone();
+            newdata.payer = o;
+            newdata.items = null; 
+            service.validatePayer( newdata );  
+             
             entity.payer = o;
             entity.paidby = o.name;
             entity.paidbyaddress = o.address.text;
             binding.refresh("entity.(payer.*|paidby.*)");
             binding.refresh('createEntity|openEntity');
-            
+                        
             def opener = payerChanged( o );
             if( opener != null ) { 
                 return opener;
@@ -176,7 +182,7 @@ public abstract class AbstractCashReceipt {
             binding.refresh('createEntity|openEntity'); 
         } 
         return InvokerUtil.lookupOpener( getLookupEntityName(), params );
-    }
+    } 
 
     /*
     def cancelSeries(){

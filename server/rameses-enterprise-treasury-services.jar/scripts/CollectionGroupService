@@ -33,10 +33,6 @@ class CollectionGroupService extends ActiveCrudListService {
 		if ( filters ) { 
 			o.filter = ' AND ' + filters.join(' AND '); 
 		} 
-
-		o.each{k,v-> 
-			println '>>> '+ k +'=== '+ v; 
-		}
 	} 
 
 	protected void beforeCreate(def entity){

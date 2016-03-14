@@ -292,4 +292,8 @@ public abstract class AbstractCashReceipt {
     def createEntity() { 
         return null; 
     } 
+
+    def previewReceipt() {
+        return Inv.lookupOpener( "cashreceipt:preview", [entity: entity] );
+    }    
 }

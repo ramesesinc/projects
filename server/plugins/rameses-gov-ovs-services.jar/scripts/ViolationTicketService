@@ -16,7 +16,9 @@ class ViolationTicketService {
 	public def getViolationInfo(def o){
 		if( !o.violationid ) throw new Exception("Violation id is required");
 		if( !o.violatorid ) throw new Exception("Violator id is required");
-		def z = ove.find([violationid:o.violationid,"parent.violator.objid":o.violatorid]).select( 'violationcount:{COUNT(*)}' ).first(); 
+
+        def pp = [violationid:o.violationid,"parent.violator.objid":o.violatorid];
+		def z = ove.find(pp).select( 'violationcount:{COUNT(*)}' ).first(); 
         z.violationcount = z.violationcount + 1;
 
         def facts = [];
@@ -56,7 +58,7 @@ class ViolationTicketService {
                 prefix = s + "th";
             }
         }
-        return prefix + " Violation";
+        return prefix + " offense";
    }      
 
 }

@@ -1,6 +1,6 @@
 <workunit extends="com/rameses/seti2/templates/CrudList.xml" 
           schemaName="ovs_violation_ticket_entry"
-          cols="violation.title,violationcount,parent.ticketno,amount,amtpaid,xbalance,parent.apprehensiondate"
+          cols="violation.title,violationcount,parent.ticketno,balance,parent.apprehensiondate"
           allowOpen="false" allowCreate="false">
     <invokers>
         <invoker type="individualentity:option" caption="Violations" index="100" action="init"/>
@@ -10,18 +10,12 @@
         import com.rameses.seti2.models.*;
         
         class IndividualOptionViolationList extends CrudListModel {
-        
             @Caller
             def caller;
         
-            String getCustomFilter() {
-                return "violator.objid=:entityid";
+            def getCustomFilter() {
+                return ["violator.objid=:entityid", [entityid:caller.entity.objid]];
             }
-        
-            def getCustomFilterParams() {
-                return [entityid:caller.entity.objid]
-            }
-        
         }
     </code>    
 </workunit>

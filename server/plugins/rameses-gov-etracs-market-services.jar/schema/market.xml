@@ -1,4 +1,4 @@
-<schema>
+<schema adapter="market">
 	<element tablename="market">
 		<field name="objid" primary="true"/>
 		<field name="name" required="true" />

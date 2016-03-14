@@ -1,35 +1,33 @@
 <folders>
     <folder id="explorer">
             <folder id="txn" caption="Transaction">
-                <folder id="violation" caption="OVS" index="2000"/>
+                <folder id="ovs" caption="Ordinance Violation" index="2000"/>
             </folder>
             
             <folder id="master" caption="Master">
-                <folder id="violation" caption="OVS" index="2000"/>
+                <folder id="ovs" caption="Ordinance Violation" index="2000"/>
             </folder>
             
             <folder id="rulemgmt" caption="Rule Management">
-                <folder id="ovs" caption="Ordinance Violation System" index="5"/>
+                <folder id="ovs" caption="Ordinance Violation" index="5"/>
             </folder>
     </folder>
     
     <folder id="menu">
             <folder id="master">
-                <folder id="violation" caption="OVS" index="2000"/>
+                <folder id="ovs" caption="Ordinance Violation" index="2000"/>
             </folder>
 
             <folder id="txn">
-                <folder id="violation" caption="OVS" index="2000"/>
+                <folder id="ovs" caption="Ordinance Violation" index="2000"/>
             </folder>
 
             <folder id="report">
-
+                <folder id="ovs" caption="Ordinance Violation" index="2000"/>
             </folder>
     </folder>
     
     <folder id="home">
-            <folder id="ovr" caption="OVS">
-
-            </folder>
+            <folder id="ovs" caption="Ordinance Violation"/>
     </folder>
 </folders>

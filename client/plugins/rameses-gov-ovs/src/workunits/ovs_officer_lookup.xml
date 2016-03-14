@@ -1,0 +1,5 @@
+<workunit extends="wtemplates/ServiceLookupController.xml" serviceName="SysUsergroupMemberLookupService" tag="OVS.OFFICER">
+    <invokers>
+        <invoker type="ovs_officer:lookup" caption="Lookup Officer"/>
+    </invokers>
+</workunit>

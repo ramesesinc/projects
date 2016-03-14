@@ -22,14 +22,6 @@
                 def z = violationSvc.getViolationInfo( m );
                 item.putAll( z );
             }
-
-            @PropertyChangeListener
-            def listener = [
-                "entity.apprehensionofficer" : {o ->
-                    entity.apprehensionofficer.name = o.firstname + " " + o.lastname;
-                }
-            ];
-            
         }
         ]]>
     </code>

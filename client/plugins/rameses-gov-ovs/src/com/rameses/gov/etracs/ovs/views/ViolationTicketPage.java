@@ -71,7 +71,7 @@ public class ViolationTicketPage extends javax.swing.JPanel {
 
         xLookupField2.setCaption("Apprehending Officer");
         xLookupField2.setExpression("#{entity.apprehensionofficer.name}");
-        xLookupField2.setHandler("user:lookup");
+        xLookupField2.setHandler("ovs_officer:lookup");
         xLookupField2.setName("entity.apprehensionofficer"); // NOI18N
         xLookupField2.setPreferredSize(new java.awt.Dimension(0, 20));
         xLookupField2.setRequired(true);

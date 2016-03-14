@@ -1,4 +1,4 @@
-<schema>
+<schema  adapter="market">
 	
 	<element tablename="market_payment">
 		<field name="objid" primary="true"/>
@@ -10,15 +10,6 @@
 		<field name="voided"/>
 	</element>
 
-	<element name="item" tablename="market_payment_item">
-		<field name="objid" primary="true"/>
-		<field name="parentid" required="true"/>
-		<field name="amtpaid" required="true"/>	
-		<field name="surchargepaid" required="true"/>	
-		<field name="interestpaid" required="true"/>	
-		<field name="imonth" required="true"/>	
-		<field name="iyear" required="true"/>	
-	</element>
 
 </schema>
 

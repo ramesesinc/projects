@@ -40,6 +40,4 @@ public class BusinessCashReceiptBarcodeInterceptor {
 		r.paidbyaddress = b.address.text;
 		r.barcodeid = barcodeid;
 	}
-
-
 }

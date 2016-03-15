@@ -188,6 +188,6 @@ from (
 
 
 [findUnpaidBalance]
-select sum(amount-amtpaid-discount) as balance 
+select sum(amount-amtpaid) as balance 
 from business_receivable 
-where applicationid=$P{applicationid}
+where applicationid=$P{applicationid} 

@@ -44,7 +44,9 @@ public class BusinessPaymentService extends ActiveCrudListService {
 		} 
 	}	
 
-	public void afterOpen( def o ) {
+	public void afterOpen( def o ) { 
+		if ( !o ) return;  
+
 		o.items = em.getItems(o);
 	}
 

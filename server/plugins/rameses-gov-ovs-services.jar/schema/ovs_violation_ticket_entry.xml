@@ -12,6 +12,6 @@
 		<field name="amtpaid" required="false" defaultValue="0.00"/>
 		<field name="account_objid" required="true"/>
 		<field name="account_title" required="true"/>
-		<field name="xbalance" expr="amount-amtpaid"/>
+		<field name="balance" expr="amount-amtpaid"/>
 	</element>
 </schema>

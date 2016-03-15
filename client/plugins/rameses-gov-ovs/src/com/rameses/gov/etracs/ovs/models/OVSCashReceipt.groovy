@@ -27,11 +27,6 @@ public class OVSCashReceipt extends BasicCashReceipt {
         return null;
      }
     
-   
-    def previewReceipt() {
-        return Inv.lookupOpener( "cashreceipt:preview", [entity: entity] );
-    }
-    
     def itemListHandler = [
         fetchList : {o ->
             return entity.billitems;

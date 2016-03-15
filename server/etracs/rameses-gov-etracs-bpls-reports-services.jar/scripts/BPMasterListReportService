@@ -13,9 +13,27 @@ class BPMasterListReportService {
 	@ProxyMethod
 	public def getReport( params ) { 
 		if ( !params.year ) throw new Exception('year parameter is required');
-		if ( !params.state ) throw new Exception('state parameter is required');
 
-		params.filter = ''' AND b.state=$P{state} '''; 
+		params.filter = '';
+
+		def buffer = []; 
+		if ( params.state_active ) { 
+			params.state_active = 'ACTIVE'; 
+			buffer << '''$P{state_active}''';
+		} 
+		if ( params.state_processing ) { 
+			params.state_processing = 'PROCESSING'; 
+			buffer << '''$P{state_processing}''';
+		} 
+		if ( params.state_retired ) { 
+			params.state_retired = 'RETIRED'; 
+			buffer << '''$P{state_retired}'''; 
+		} 
+		if ( buffer ) { 
+			params.filter += " AND b.state IN (" + buffer.join(',') + ")"; 
+		} else { 
+			throw new Exception('Please select at least one status'); 
+		} 
 
 		if ( params.permittype?.objid ) { 
 			params.permittypeid = params.permittype.objid; 

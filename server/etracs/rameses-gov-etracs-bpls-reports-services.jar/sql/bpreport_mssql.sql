@@ -39,14 +39,22 @@ from (
 		(
 			select sum(decimalvalue) from business_application_info 
 			where businessid=b.objid and activeyear=b.activeyear and attribute_objid='DECLARED_CAPITAL'
-		) AS capital,
+		) AS declaredcapital, 
 		(
 			select sum(decimalvalue) from business_application_info 
 			where businessid=b.objid and activeyear=b.activeyear and attribute_objid='DECLARED_GROSS'
+		) AS declaredgross, 
+		(
+			select sum(decimalvalue) from business_application_info 
+			where businessid=b.objid and activeyear=b.activeyear and attribute_objid='CAPITAL'
+		) AS capital, 
+		(
+			select sum(decimalvalue) from business_application_info 
+			where businessid=b.objid and activeyear=b.activeyear and attribute_objid='GROSS'
 		) AS gross, 
 		(
 			select max(version) from business_permit 
-			where businessid=b.objid and activeyear=b.activeyear
+			where businessid=b.objid and activeyear=b.activeyear and state='ACTIVE' 
 		) as permitver 
 	from business b 
 		left join business_application ba on b.currentapplicationid=ba.objid 
@@ -62,14 +70,14 @@ SELECT
 	b.tradename, b.objid as businessid 
 FROM ( 
 	SELECT businessid, activeyear, MAX(version) AS version 
-	FROM business_permit WHERE activeyear=$P{year}  
+	FROM business_permit 
+	WHERE activeyear=$P{year} and state='ACTIVE'  
 	GROUP BY businessid, activeyear 
 )xx  
 	INNER JOIN business_permit bp ON xx.businessid=bp.businessid 
 	INNER JOIN business b ON bp.businessid=b.objid 
 	LEFT JOIN business_address addr ON b.address_objid=addr.objid  
 WHERE bp.activeyear=xx.activeyear and bp.version=xx.version  
-	and ISNULL(addr.barangay_objid,'') LIKE $P{barangayid} 
 	${filter} 
 ORDER BY b.owner_name 
 
@@ -97,39 +105,29 @@ group by a.appyear, lob.name
 
 
 [getBusinessTopList]
-select top ${topsize}
-	businessid, appyear, tradename, businessaddress, 
-	ownername, owneraddress, sum(decimalvalue) as amount, 
+select top ${topsize} 
+	xx.businessid, xx.appyear, b.tradename, b.address_text as businessaddress, 
+	b.owner_name as ownername, b.owner_address_text as owneraddress, xx.amount, 
 	(
 		select top 1 permitno from business_permit 
-		where businessid=xx.businessid and activeyear=xx.appyear 
+		where businessid=xx.businessid and activeyear=xx.appyear and state='ACTIVE' 
 		order by version desc 
 	) as permitno 
 from ( 
-	select 
-		bal.businessid, ba.appyear, ba.tradename, ba.businessaddress, 
-		ba.ownername, ba.owneraddress, 
-		(
-			select sum(decimalvalue) from business_application_info 
-			where applicationid=bal.applicationid and lob_objid=bal.lobid 
-				and attribute_objid in ('CAPITAL','GROSS') 
-		) as decimalvalue 
-	from ( 
-		select 
-			bal.businessid, bal.activeyear, bal.lobid, max(ba.txndate) as txndate  
-		from business_application ba 
-			inner join business_application_lob bal on ba.objid=bal.applicationid 
-			inner join business b on ba.business_objid=b.objid 
-			inner join lob on bal.lobid=lob.objid 			
-		where ba.appyear=$P{year} and ba.state in ('RELEASE','COMPLETED') ${filter} 
-		group by bal.businessid, bal.activeyear, bal.lobid 
-	)xx 
-		inner join business_application_lob bal on xx.businessid=bal.businessid 
-		inner join business_application ba on bal.applicationid=ba.objid 
-	where bal.activeyear=xx.activeyear and bal.lobid=xx.lobid and ba.txndate=xx.txndate 
+	select  
+		ba.business_objid as businessid, ba.appyear, sum(decimalvalue) as amount 
+	from business_application ba 
+		inner join business_application_info bai on bai.applicationid=ba.objid 
+		inner join lob on lob.objid=bai.lob_objid 
+		inner join business b on b.objid=ba.business_objid 
+	where ba.appyear=$P{year} and ba.state in ('COMPLETED','RELEASE','PAYMENT') 
+		and (select count(*) from business_payment where applicationid=ba.objid and voided=0)>0  
+		and bai.attribute_objid in ('CAPITAL','GROSS')  
+		${filter} 
+	group by ba.business_objid, ba.appyear 
 )xx 
-group by businessid, appyear, tradename, businessaddress, ownername, owneraddress
-order by sum(decimalvalue) desc, tradename 
+	inner join business b on b.objid=xx.businessid 
+order by xx.amount desc, b.tradename  
 
 
 [getBusinessPermitSummary]
@@ -144,56 +142,49 @@ select
 	SUM(a.amount) AS total 
 from ( 
 	select 
-		bp.activeyear, MONTH(bp.dtissued) as imonth,
-		CASE
-			WHEN MONTH(bp.dtissued) BETWEEN 1 and 3 then 1 
-			WHEN MONTH(bp.dtissued) BETWEEN 4 and 6 then 2 
-			WHEN MONTH(bp.dtissued) BETWEEN 7 and 9 then 3 
-			WHEN MONTH(bp.dtissued) BETWEEN 10 and 12 then 4 
-		END AS iqtr, 
-		CASE 
-			WHEN MONTH(bp.dtissued) = 1 THEN 'JANUARY'
-			WHEN MONTH(bp.dtissued) = 2 THEN 'FEBRUARY'
-			WHEN MONTH(bp.dtissued) = 3 THEN 'MARCH'
-			WHEN MONTH(bp.dtissued) = 4 THEN 'APRIL'
-			WHEN MONTH(bp.dtissued) = 5 THEN 'MAY'
-			WHEN MONTH(bp.dtissued) = 6 THEN 'JUNE'
-			WHEN MONTH(bp.dtissued) = 7 THEN 'JULY'
-			WHEN MONTH(bp.dtissued) = 8 THEN 'AUGUST'
-			WHEN MONTH(bp.dtissued) = 9 THEN 'SEPTEMBER'
-			WHEN MONTH(bp.dtissued) = 10 THEN 'OCTOBER'
-			WHEN MONTH(bp.dtissued) = 11 THEN 'NOVEMBER'
-			WHEN MONTH(bp.dtissued) = 12 THEN 'DECEMBER'
-		END AS strmonth, 
-		(CASE WHEN ba.apptype IN ('NEW','ADDITIONAL') THEN 1 ELSE 0 END) AS newcount,
-		(CASE WHEN ba.apptype IN ('NEW', 'ADDITIONAL') THEN bpy.amount ELSE 0.0 END) AS newamount,
-		(CASE WHEN ba.apptype = 'RENEW' THEN 1 ELSE 0 END) AS renewcount,
-		(CASE WHEN ba.apptype = 'RENEW' THEN bpy.amount ELSE 0.0 END) AS renewamount,
-		(CASE WHEN ba.apptype IN ('RETIRE', 'RETIRELOB') THEN 1 ELSE 0 END) AS retirecount,
-		(CASE WHEN ba.apptype IN ('RETIRE', 'RETIRELOB') THEN bpy.amount ELSE 0.0 END) AS retireamount,
-		bpy.amount 
+		xx.activeyear, xx.imonth, xx.amount, 
+		case  
+			when xx.imonth=1 then 'JANUARY'
+			when xx.imonth=2 then 'FEBRUARY'
+			when xx.imonth=3 then 'MARCH'
+			when xx.imonth=4 then 'APRIL'
+			when xx.imonth=5 then 'MAY'
+			when xx.imonth=6 then 'JUNE'
+			when xx.imonth=7 then 'JULY'
+			when xx.imonth=8 then 'AUGUST'
+			when xx.imonth=9 then 'SEPTEMBER'
+			when xx.imonth=10 then 'OCTOBER'
+			when xx.imonth=11 then 'NOVEMBER'
+			when xx.imonth=12 then 'DECEMBER' 
+			else null 
+		end as strmonth,
+		case 
+			when xx.imonth between 1 and 3 then 1 
+			when xx.imonth between 4 and 6 then 2 
+			when xx.imonth between 7 and 9 then 3 
+			when xx.imonth between 10 and 12 then 4 
+			else 0 
+		end as iqtr, 
+		(case when xx.apptype in ('NEW','ADDITIONAL') then 1 else 0 end) as newcount,
+		(case when xx.apptype in ('NEW', 'ADDITIONAL') then xx.amount else 0.0 end) as newamount,
+		(case when xx.apptype = 'RENEW' then 1 else 0 end) as renewcount,
+		(case when xx.apptype = 'RENEW' then xx.amount else 0.0 end) as renewamount,
+		(case when xx.apptype in ('RETIRE', 'RETIRELOB') then 1 else 0 end) as retirecount,
+		(case when xx.apptype in ('RETIRE', 'RETIRELOB') then xx.amount else 0.0 end) as retireamount 
 	from ( 
-		select bpmin.businessid, bpmin.applicationid, bpmax.objid as permitid 
-		from ( 
-			select 
-				businessid, activeyear, 
-				min(version) as minver, 
-				max(version) as maxver 
-			from business_permit 
-			where activeyear=$P{year} 
-			group by businessid, activeyear
-		)xx 
-			inner join business_permit bpmin on (xx.businessid=bpmin.businessid and xx.minver=bpmin.version)  
-			inner join business_permit bpmax on (xx.businessid=bpmax.businessid and xx.maxver=bpmax.version) 
-			inner join business b on bpmin.businessid=b.objid 
-		where bpmin.activeyear=xx.activeyear and bpmax.activeyear=xx.activeyear and b.permittype=$P{permittypeid} 
+		select 
+			ba.appyear as activeyear, bp.businessid, bp.applicationid, ba.apptype, 
+			month(bp.refdate) as imonth, sum(bp.amount) as amount  
+		from business_application ba 
+			inner join business_payment bp on bp.applicationid=ba.objid 
+			inner join business b on b.objid=ba.business_objid  
+		where ba.appyear=$P{year} and bp.voided=0 and ba.state='COMPLETED' 
+			and (select count(*) from business_permit where businessid=ba.business_objid and activeyear=ba.appyear and state='ACTIVE')>0  
+			${filter} 
+		group by ba.appyear, bp.businessid, bp.applicationid, ba.apptype, month(bp.refdate) 
 	)xx 
-		inner join business_permit bp on xx.permitid=bp.objid 
-		inner join business_application ba on xx.applicationid=ba.objid 
-		inner join business_payment bpy on xx.businessid=bpy.businessid 
-	where bpy.voided=0 
-)a  
-group by a.activeyear, a.iqtr, a.imonth, a.strmonth
+)a 
+group by a.activeyear, a.iqtr, a.imonth, a.strmonth 
 order by a.activeyear, a.iqtr, a.imonth 
 
 
@@ -223,6 +214,7 @@ from (
 	where a.appyear=$P{year} ${filter} 
 )xx 
 group by xx.bin, xx.businessname, xx.businessaddress 
+having sum(ISNULL(xx.q1,0)+ISNULL(xx.q2,0)+ISNULL(xx.q3,0)+ISNULL(xx.q4,0)) > 0 
 order by xx.bin 
 
 
@@ -231,8 +223,7 @@ select xx.*, (xx.numfemale + xx.nummale) as numemployee
 from ( 
 	select 
 		b.objid, b.bin, b.tradename, b.address_text as businessaddress, b.owner_name, 
-		ba.objid as appid, ba.apptype, ba.appno, ba.state as appstate, 
-		(select top 1 permitno from business_permit where businessid=b.objid order by version desc) as permitno, 
+		ba.objid as appid, ba.apptype, ba.appno, ba.state as appstate, b.owner_objid, 
 		(select sum(intvalue) from business_active_info where businessid=b.objid and attribute_objid='NUM_EMPLOYEE_FEMALE') AS numfemale,
 		(select sum(intvalue) from business_active_info where businessid=b.objid and attribute_objid='NUM_EMPLOYEE_MALE') AS nummale,
 		(select sum(intvalue) from business_active_info where businessid=b.objid and attribute_objid='NUM_EMPLOYEE_RESIDENT') AS numresident,
@@ -241,14 +232,22 @@ from (
 		case 
 			when b.orgtype='SING' then (select tin from entityindividual WHERE objid=b.owner_objid) 
 			else (select tin FROM entityjuridical WHERE objid=b.owner_objid) 
-		end as tin, '' as sss 
+		end as tin, '' as sss, 
+		case 
+			when b.state='ACTIVE' then (
+				select top 1 permitno from business_permit 
+				where businessid=b.objid and activeyear=ba.appyear and state='ACTIVE' 
+				order by version desc 
+			) 
+			else null 
+		end as permitno 
 	from business b 
-		inner join business_application ba on b.currentapplicationid=ba.objid 
+		left join business_application ba on b.currentapplicationid=ba.objid 
 	where b.activeyear=$P{year} and b.state='ACTIVE' ${filter} 
 	union all 
 	select 
 		b.objid, b.bin, b.tradename, b.address_text AS businessaddress, b.owner_name, 
-		ba.objid AS appid, ba.apptype, ba.appno, ba.state as appstate, null as permitno, 
+		ba.objid AS appid, ba.apptype, ba.appno, ba.state as appstate, b.owner_objid, 
 		(select sum(intvalue) from business_application_info where applicationid=ba.objid and attribute_objid='NUM_EMPLOYEE_FEMALE') AS numfemale,
 		(select sum(intvalue) from business_application_info where applicationid=ba.objid and attribute_objid='NUM_EMPLOYEE_MALE') AS nummale,
 		(select sum(intvalue) from business_application_info where applicationid=ba.objid and attribute_objid='NUM_EMPLOYEE_RESIDENT') AS numresident,
@@ -257,9 +256,9 @@ from (
 		case 
 			when b.orgtype='SING' then (select tin from entityindividual WHERE objid=b.owner_objid) 
 			else (select tin FROM entityjuridical WHERE objid=b.owner_objid) 
-		end as tin, '' as sss 
+		end as tin, '' as sss, null as permitno  
 	from business b 
-		inner join business_application ba on b.currentapplicationid=ba.objid 
+		left join business_application ba on b.currentapplicationid=ba.objid 
 	where b.activeyear=$P{year} and b.state='PROCESSING' ${filter} 
 )xx 
 order by xx.tradename 
@@ -289,41 +288,50 @@ select
 	SUM(a.amount) AS total 
 from ( 
 	select 
-		bp.appyear AS activeyear, MONTH(bp.refdate) AS imonth, 
-		CASE
-			WHEN MONTH(bp.refdate) >= 1 AND MONTH(bp.refdate) <= 3 THEN 1
-			WHEN MONTH(bp.refdate) >= 4 AND MONTH(bp.refdate) <= 6 THEN 2
-			WHEN MONTH(bp.refdate) >= 7 AND MONTH(bp.refdate) <= 9 THEN 3
-			WHEN MONTH(bp.refdate) >= 10 AND MONTH(bp.refdate) <= 12 THEN 4
-		END AS iqtr, 
-		CASE 
-			WHEN MONTH(bp.refdate) = 1 THEN 'JANUARY'
-			WHEN MONTH(bp.refdate) = 2 THEN 'FEBRUARY'
-			WHEN MONTH(bp.refdate) = 3 THEN 'MARCH'
-			WHEN MONTH(bp.refdate) = 4 THEN 'APRIL'
-			WHEN MONTH(bp.refdate) = 5 THEN 'MAY'
-			WHEN MONTH(bp.refdate) = 6 THEN 'JUNE'
-			WHEN MONTH(bp.refdate) = 7 THEN 'JULY'
-			WHEN MONTH(bp.refdate) = 8 THEN 'AUGUST'
-			WHEN MONTH(bp.refdate) = 9 THEN 'SEPTEMBER'
-			WHEN MONTH(bp.refdate) = 10 THEN 'OCTOBER'
-			WHEN MONTH(bp.refdate) = 11 THEN 'NOVEMBER'
-			WHEN MONTH(bp.refdate) = 12 THEN 'DECEMBER'
-		END AS strmonth, 
-		(CASE WHEN ba.apptype IN ('NEW','ADDITIONAL') THEN 1 ELSE 0 END) AS newcount,
-		(CASE WHEN ba.apptype IN ('NEW', 'ADDITIONAL') THEN bp.amount ELSE 0.0 END) AS newamount,
-		(CASE WHEN ba.apptype = 'RENEW' THEN 1 ELSE 0 END) AS renewcount,
-		(CASE WHEN ba.apptype = 'RENEW' THEN bp.amount ELSE 0.0 END) AS renewamount,
-		(CASE WHEN ba.apptype IN ('RETIRE', 'RETIRELOB') THEN 1 ELSE 0 END) AS retirecount,
-		(CASE WHEN ba.apptype IN ('RETIRE', 'RETIRELOB') THEN bp.amount ELSE 0.0 END) AS retireamount, 
-		bp.amount 
-	from business_payment bp 
-		inner join business_application ba on bp.applicationid=ba.objid 
-		inner join business b on ba.business_objid=b.objid 
-	where bp.appyear=$P{year} and bp.voided=0 ${filter} 
+		xx.activeyear, xx.imonth, xx.amount, 
+		case  
+			when xx.imonth=1 then 'JANUARY'
+			when xx.imonth=2 then 'FEBRUARY'
+			when xx.imonth=3 then 'MARCH'
+			when xx.imonth=4 then 'APRIL'
+			when xx.imonth=5 then 'MAY'
+			when xx.imonth=6 then 'JUNE'
+			when xx.imonth=7 then 'JULY'
+			when xx.imonth=8 then 'AUGUST'
+			when xx.imonth=9 then 'SEPTEMBER'
+			when xx.imonth=10 then 'OCTOBER'
+			when xx.imonth=11 then 'NOVEMBER'
+			when xx.imonth=12 then 'DECEMBER' 
+			else null 
+		end as strmonth,
+		case 
+			when xx.imonth between 1 and 3 then 1 
+			when xx.imonth between 4 and 6 then 2 
+			when xx.imonth between 7 and 9 then 3 
+			when xx.imonth between 10 and 12 then 4 
+			else 0 
+		end as iqtr, 
+		(case when xx.apptype in ('NEW','ADDITIONAL') then 1 else 0 end) as newcount,
+		(case when xx.apptype in ('NEW', 'ADDITIONAL') then xx.amount else 0.0 end) as newamount,
+		(case when xx.apptype = 'RENEW' then 1 else 0 end) as renewcount,
+		(case when xx.apptype = 'RENEW' then xx.amount else 0.0 end) as renewamount,
+		(case when xx.apptype in ('RETIRE', 'RETIRELOB') then 1 else 0 end) as retirecount,
+		(case when xx.apptype in ('RETIRE', 'RETIRELOB') then xx.amount else 0.0 end) as retireamount 
+	from ( 
+		select 
+			ba.appyear as activeyear, bp.businessid, bp.applicationid, ba.apptype, 
+			month(bp.refdate) as imonth, sum(bp.amount) as amount  
+		from business_application ba 
+			inner join business_payment bp on bp.applicationid=ba.objid 
+			inner join business b on b.objid=ba.business_objid  
+		where ba.appyear=$P{year} and bp.voided=0 
+			and ba.state in ('COMPLETED','RELEASE','PAYMENT') 
+			${filter} 
+		group by ba.appyear, bp.businessid, bp.applicationid, ba.apptype, month(bp.refdate) 
+	)xx 
 )a 
 group by a.activeyear, a.iqtr, a.imonth, a.strmonth 
-order by a.activeyear, a.iqtr, a.imonth
+order by a.activeyear, a.iqtr, a.imonth 
 
 
 [getBPTaxFeeTopList]
@@ -333,7 +341,7 @@ select top ${topsize}
 	sum(tax + regfee + othercharge) as total, 
 	(
 		select top 1 permitno from business_permit 
-		where businessid=xx.businessid and activeyear=xx.appyear 
+		where businessid=xx.businessid and activeyear=xx.appyear and state='ACTIVE' 
 		order by version desc 
 	) as permitno 
 from ( 

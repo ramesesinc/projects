@@ -1,54 +1,37 @@
 [getList]
-select xx.*, 
-	(case when xx.lobid=xx.baselobid then 1 else 0 end) as businesscount 
-from ( 
-	select 
-		alob.assessmenttype as apptype, a.state, a.appno, a.appyear, b.orgtype, ba.barangay_name, 
-		b.tradename, b.address_text as businessaddress, b.owner_name, b.owner_address_text as owner_address, 
-		alob.lobid, alob.name AS lobname, lob.classification_objid,  
-		(SELECT dtissued FROM business_permit WHERE businessid=b.objid and activeyear=a.appyear ORDER BY version DESC LIMIT 1) AS dtissued, 
-		(SELECT lobid FROM business_application_lob WHERE applicationid=a.objid LIMIT 1) AS baselobid, 
-		IFNULL((
-			SELECT SUM(decimalvalue) FROM business_application_info 
-			WHERE attribute_objid='DECLARED_CAPITAL' AND applicationid=a.objid AND lob_objid=alob.lobid
-		),0.0) AS capital,
-		IFNULL((
-			SELECT SUM(decimalvalue) FROM business_application_info 
-			WHERE attribute_objid='DECLARED_GROSS' AND applicationid=a.objid AND lob_objid=alob.lobid
-		),0.0) AS gross 
-	from business_application a 
-		inner join business b on a.business_objid=b.objid 
-		inner join business_application_lob alob on a.objid=alob.applicationid 
-		inner join lob on alob.lobid = lob.objid 
-		left join business_address ba on b.address_objid = ba.objid 
-	where $P{showcompleted}=1 and a.appyear=$P{year} 
-		and a.dtfiled between $P{startdate} and $P{enddate}  
-		and a.parentapplicationid is null ${otherfilter} 
-		and a.state='COMPLETED' 
-
-	union all
-	 
-	select 
-		alob.assessmenttype as apptype, a.state, a.appno, a.appyear, b.orgtype, ba.barangay_name, 
-		b.tradename, b.address_text as businessaddress, b.owner_name, b.owner_address_text as owner_address, 
-		alob.lobid, alob.name AS lobname, lob.classification_objid,  null AS dtissued, 
-		(SELECT lobid FROM business_application_lob WHERE applicationid=a.objid LIMIT 1) AS baselobid, 
-		IFNULL((
-			SELECT SUM(decimalvalue) FROM business_application_info 
-			WHERE attribute_objid='DECLARED_CAPITAL' AND applicationid=a.objid AND lob_objid=alob.lobid
-		),0.0) AS capital,
-		IFNULL((
-			SELECT SUM(decimalvalue) FROM business_application_info 
-			WHERE attribute_objid='DECLARED_GROSS' AND applicationid=a.objid AND lob_objid=alob.lobid
-		),0.0) AS gross 
-	from business_application a 
-		inner join business b on a.business_objid=b.objid 
-		inner join business_application_lob alob on a.objid=alob.applicationid 
-		inner join lob on alob.lobid = lob.objid 
-		left join business_address ba on b.address_objid = ba.objid 
-	where $P{showprocessing}=1 and a.appyear=$P{year}  
-		and a.dtfiled between $P{startdate} and $P{enddate}  
-		and a.parentapplicationid is null ${statefilter} ${otherfilter}  
-		and a.state <> 'COMPLETED' 
-)xx 
-order by appno, lobname 
+select 
+	alob.assessmenttype as apptype, a.state, a.appno, a.appyear, b.orgtype, ba.barangay_name, 
+	b.tradename, b.address_text as businessaddress, b.owner_name, b.owner_address_text as owner_address, 
+	lob.objid as lobid, lob.name as lobname, lob.classification_objid, alob.businessid, 
+	case 
+		when a.state='COMPLETED' then (
+			select dtissued from business_permit 
+			where businessid=b.objid and activeyear=a.appyear and state='ACTIVE' 
+			order by version desc limit 1
+		) else null 
+	end as dtissued, 
+	IFNULL((
+		select SUM(decimalvalue) from business_application_info 
+		WHERE attribute_objid='DECLARED_CAPITAL' and applicationid=a.objid and lob_objid=alob.lobid
+	),0.0) AS declaredcapital,
+	IFNULL((
+		select SUM(decimalvalue) from business_application_info 
+		WHERE attribute_objid='DECLARED_GROSS' and applicationid=a.objid and lob_objid=alob.lobid
+	),0.0) AS declaredgross , 
+	IFNULL((
+		select SUM(decimalvalue) from business_application_info 
+		WHERE attribute_objid='CAPITAL' and applicationid=a.objid and lob_objid=alob.lobid
+	),0.0) AS capital,
+	IFNULL((
+		select SUM(decimalvalue) from business_application_info 
+		WHERE attribute_objid='GROSS' and applicationid=a.objid and lob_objid=alob.lobid
+	),0.0) AS gross 
+from business_application_lob alob 
+	inner join business_application a on a.objid=alob.applicationid 
+	inner join business b on b.objid=a.business_objid 
+	inner join lob on alob.lobid=lob.objid 
+	left join business_address ba on ba.objid=b.address_objid 
+where a.appyear=$P{year} 
+	and a.dtfiled between $P{startdate} and $P{enddate}  
+	${filter} 
+order by a.appno, lob.name 

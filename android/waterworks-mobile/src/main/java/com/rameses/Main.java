@@ -11,6 +11,9 @@ import com.rameses.waterworks.log.Log;
 import com.rameses.waterworks.log.LogPlatformFactory;
 import com.rameses.waterworks.page.Login;
 import com.rameses.waterworks.page.PreTerminalRegistration;
+import com.rameses.waterworks.printer.OneilPrinterHandler;
+import com.rameses.waterworks.printer.PrinterHandler;
+import com.rameses.waterworks.printer.ZebraPrinterHandler;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -36,6 +39,7 @@ public class Main extends Application {
     public static StackPane PAGE;
     public static Map MYACCOUNT;
     public static String PRINTERNAME = "";
+    public static PrinterHandler PRINTERHANDLER = null;
     public static BluetoothPort PRINTER;
     public static List<Rule> RULES;
 
@@ -87,6 +91,11 @@ public class Main extends Application {
             if(setting.getName().equals("timeout")) CONNECTION_SETTING.put("timeout", setting.getValue());
             if(setting.getName().equals("printer")) PRINTERNAME = setting.getValue();
             if(setting.getName().equals("registered")) ROOT.setCenter(new Login().getLayout());
+            if(setting.getName().equals("handler")){
+                String h = setting.getValue();
+                if(h.equals("ZEBRA")) PRINTERHANDLER = new ZebraPrinterHandler();
+                if(h.equals("ONEIL")) PRINTERHANDLER = new OneilPrinterHandler();
+            }
         }
     }
     

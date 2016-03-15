@@ -8,7 +8,6 @@ import com.rameses.waterworks.bluetooth.BluetoothPlatformFactory;
 import com.rameses.waterworks.database.Database;
 import com.rameses.waterworks.database.DatabasePlatformFactory;
 import com.rameses.waterworks.dialog.Dialog;
-import com.rameses.waterworks.printer.PrinterHandler;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -70,12 +69,10 @@ public class AccountDetail {
                     return;
                 }
                 account.setPresReading(i);
-                PrinterHandler handler = new PrinterHandler(account);
-                if(!handler.getError().isEmpty()){
-                    Dialog.showError(handler.getError());
+                if(!Main.PRINTERHANDLER.getError().isEmpty()){
+                    Dialog.showError(Main.PRINTERHANDLER.getError());
                     return;
                 }
-                Main.LOG.error("HANDLER ERROR", handler.getError());
                 
                 if(Main.PRINTER ==  null){
                     PRINTER = BluetoothPlatformFactory.getPlatform().getBluetoothPrinter();
@@ -83,7 +80,7 @@ public class AccountDetail {
                     PRINTER.openBT();
                 }
                 PRINTER.setError("");
-                PRINTER.print(handler.getData());
+                PRINTER.print(Main.PRINTERHANDLER.getData(account));
                 if(!PRINTER.getError().isEmpty()){
                     Dialog.showError(PRINTER.getError());
                     PRINTER.closeBT();

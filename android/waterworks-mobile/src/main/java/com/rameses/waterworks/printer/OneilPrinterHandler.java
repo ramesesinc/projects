@@ -1,0 +1,68 @@
+package com.rameses.waterworks.printer;
+
+import bsh.EvalError;
+import bsh.Interpreter;
+import com.rameses.waterworks.bean.Account;
+import com.rameses.waterworks.util.SystemPlatformFactory;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
+public class OneilPrinterHandler implements PrinterHandler{
+    
+    String data = "";
+    String error = "";
+    StringBuilder sb;
+    StringBuilder code;
+    
+    public OneilPrinterHandler(){
+        sb = new StringBuilder();
+        code = new StringBuilder();
+        InputStream in = null;
+        try{
+            in = getClass().getResourceAsStream("/file/oneil.txt");
+            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+            String line = null;
+            while((line = reader.readLine()) != null){
+                sb.append(line);
+                code.append(line + "\n");
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        finally {
+            try { in.close(); } catch(Exception e){ System.err.println(e); }
+        }
+    }
+
+    @Override
+    public String getName() {
+        return "ONEIL";
+    }
+
+    @Override
+    public String getData(Account a) {
+        try{
+            Interpreter i = new Interpreter();
+            i.set("a", a);
+            i.set("userfullname",SystemPlatformFactory.getPlatform().getSystem().getFullName());
+            i.set("datetime",SystemPlatformFactory.getPlatform().getSystem().getDate()+" "+SystemPlatformFactory.getPlatform().getSystem().getTime());
+            Object o = i.eval(sb.toString());
+            data = o.toString();
+        }catch(EvalError e){
+            error = "Error in Report Data: " + e.toString();
+        }
+        return data;
+    }
+
+    @Override
+    public String getError() {
+        return error;
+    }
+
+    @Override
+    public String getScriptCode() {
+        return code.toString();
+    }
+    
+}

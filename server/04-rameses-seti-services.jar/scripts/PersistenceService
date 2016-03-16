@@ -77,7 +77,7 @@ class PersistenceService  {
 
 	@ProxyMethod
 	public def getSchema( def o ) {
-		return  schemaService.getSchema(o);
+		return schemaService.getSchema(o);
 	}
 
 }

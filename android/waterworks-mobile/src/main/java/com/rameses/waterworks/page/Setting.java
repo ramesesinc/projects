@@ -129,8 +129,7 @@ public class Setting {
         
         root = new VBox(10);
         root.setAlignment(Pos.TOP_CENTER);
-        if(Main.HEIGHT > 800) root.setPadding(new Insets(20, 20, 20, 20));
-        if(Main.HEIGHT < 800) root.setPadding(new Insets(10, 10, 10, 10));
+        root.setPadding(Main.HEIGHT > 700 ? new Insets(20, 20, 20, 20) : new Insets(10, 10, 10, 10));
         root.setOnKeyReleased(new EventHandler<KeyEvent>(){
             @Override
             public void handle(KeyEvent event) {

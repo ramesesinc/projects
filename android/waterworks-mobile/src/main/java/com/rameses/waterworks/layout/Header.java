@@ -34,14 +34,8 @@ public class Header {
         titleContainer.getChildren().addAll(TITLE);
         
         ImageView image = new ImageView(new Image("icon/setting.png"));
-        
-        if(Main.HEIGHT > 800){
-            image.setFitWidth(35);
-            image.setFitHeight(35);
-        }else{
-            image.setFitWidth(25);
-            image.setFitHeight(25);
-        }
+        image.setFitWidth(Main.HEIGHT > 700 ? 35 : 23);
+        image.setFitHeight(Main.HEIGHT > 700 ? 35 : 23);
         
         setting = new Button();
         setting.setStyle("-fx-base: white;");
@@ -59,14 +53,8 @@ public class Header {
         });
         
         ImageView image2 = new ImageView(new Image("icon/user1.png"));
-        
-        if(Main.HEIGHT > 800){
-            image2.setFitWidth(35);
-            image2.setFitHeight(35);
-        }else{
-            image2.setFitWidth(25);
-            image2.setFitHeight(25);
-        }
+        image2.setFitWidth(Main.HEIGHT > 700 ? 35 : 23);
+        image2.setFitHeight(Main.HEIGHT > 700 ? 35 : 23);
         
         useraccount = new Button();
         useraccount.setStyle("-fx-base: white;");

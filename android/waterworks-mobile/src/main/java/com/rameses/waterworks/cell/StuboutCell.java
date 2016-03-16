@@ -21,6 +21,10 @@ public class StuboutCell extends ListCell<Stubout>{
         super.updateItem(stubout, empty);
         if(!empty){
             ImageView image = new ImageView(new Image("icon/stubout.png"));
+            if(Main.HEIGHT < 700){
+                image.setFitWidth(75);
+                image.setFitHeight(75);
+            }
 
             StackPane imgContainer = new StackPane();
             imgContainer.setAlignment(Pos.CENTER);
@@ -34,10 +38,8 @@ public class StuboutCell extends ListCell<Stubout>{
                 title.setStyle("-fx-font-size: 28px; -fx-font-weight: bold;");
                 description.setStyle("-fx-font-size: 22px;");
             }else{
-                image.setFitWidth(image.getFitWidth()*0.75);
-                image.setFitHeight(image.getFitHeight()*0.75);
-                title.setStyle("-fx-font-size: 22px; -fx-font-weight: bold;");
-                description.setStyle("-fx-font-size: 18px;");
+                title.setStyle("-fx-font-size: 15px; -fx-font-weight: bold;");
+                description.setStyle("-fx-font-size: 14px;");
             }
 
             VBox detail = new VBox(3);

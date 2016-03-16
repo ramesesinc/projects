@@ -42,18 +42,23 @@ public class Login {
         
         ImageView image = new ImageView(new Image("icon/userlogin.png"));
         
+        if(Main.HEIGHT < 700){
+            image.setFitWidth(image.getImage().getWidth() * 0.50);
+            image.setFitHeight(image.getImage().getHeight() * 0.50);
+        }
+        
         VBox imageContainer = new VBox();
         imageContainer.setAlignment(Pos.CENTER);
         imageContainer.getChildren().add(image);
         
         username = new TextField();
         username.getStyleClass().add("login-field");
-        username.setPrefWidth(300);
+        username.setPrefWidth(Main.HEIGHT > 700 ? 300 : 180);
         username.setFocusTraversable(false);
         
         password = new PasswordField();
         password.getStyleClass().add("login-field");
-        password.setPrefWidth(300);
+        password.setPrefWidth(Main.HEIGHT > 700 ? 300 : 180);
         password.setFocusTraversable(false);
         
         Label username_lb = new Label("Username");
@@ -95,17 +100,13 @@ public class Login {
             }
         });
         
-        HBox buttonContainer = new HBox(15);
+        HBox buttonContainer = new HBox(Main.HEIGHT > 700 ? 15 : 10);
         buttonContainer.setAlignment(Pos.CENTER_RIGHT);
         buttonContainer.getChildren().addAll(offline, login);
         
         grid = new GridPane();
-        grid.setAlignment(Pos.CENTER);
-        if(Main.HEIGHT > 800){
-            grid.setPadding(new Insets(50, 50, 50, 50));
-        }else{
-            grid.setPadding(new Insets(15, 15, 15, 15));
-        }
+        grid.setAlignment(Main.HEIGHT > 700 ? Pos.CENTER : Pos.TOP_CENTER);
+        grid.setPadding(Main.HEIGHT > 700 ? new Insets(50, 50, 50, 50) : new Insets(15, 15, 15, 15));
         grid.setVgap(10);
         grid.setHgap(10);
         

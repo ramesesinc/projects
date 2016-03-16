@@ -64,14 +64,10 @@ public class Main extends Application {
         loadSysVar();
         loadRules();
         
-        Scene scene = new Scene(PAGE, WIDTH, HEIGHT);
-        scene.getStylesheets().add("css/Style1.css");
+        System.out.println("Width: " + WIDTH + "   Height : " + HEIGHT);
         
-        if(Main.HEIGHT > 800){
-            scene.getStylesheets().add("css/Style1.css");
-        }else{
-            scene.getStylesheets().add("css/Style2.css");
-        }
+        Scene scene = new Scene(PAGE, WIDTH, HEIGHT);
+        scene.getStylesheets().add(Main.HEIGHT > 700 ? "css/Style1.css" : "css/Style2.css");
 
         stage.setScene(scene);
         stage.show();

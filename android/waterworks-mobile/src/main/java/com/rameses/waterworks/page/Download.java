@@ -77,12 +77,12 @@ public class Download {
         Callback<ListView<ReadingGroup>, ListCell<ReadingGroup>> forListView = CheckBoxListCell.forListView(property);
         
         listView = new ListView<ReadingGroup>();
-        listView.setStyle("-fx-font-size: 25px;");
+        listView.setId("download-listview");
         listView.setPrefHeight(Main.HEIGHT*0.50);
         listView.setCellFactory(forListView);
         
         label = new Label("Downloading... Please wait...");
-        label.setStyle("-fx-font-size: 28px; -fx-padding: 25 0 0 0;");
+        label.setId("download-status");
         label.setVisible(false);
         
         progressbar = new ProgressBar();
@@ -93,8 +93,7 @@ public class Download {
         
         download = new Button("Download");
         download.getStyleClass().add("terminal-button");
-        download.setStyle("-fx-font-size: 26px;");
-        download.setPrefWidth(180);
+        download.setPrefWidth(Main.HEIGHT > 700 ? 180 : 140);
         download.setOnAction(new EventHandler<ActionEvent>(){
             @Override
             public void handle(ActionEvent event) {
@@ -193,8 +192,8 @@ public class Download {
         bcontainer.setPadding(new Insets(10, 0, 0, 0));
         bcontainer.getChildren().add(download);
         
-        root = new VBox(10);
-        root.setPadding(new Insets(20));
+        root = new VBox(Main.HEIGHT > 700 ? 10 : 5);
+        root.setPadding(Main.HEIGHT > 700 ? new Insets(20) : new Insets(10));
         root.getChildren().addAll(listView,bcontainer,label,progressbar);
         root.setOnKeyReleased(new EventHandler<KeyEvent>(){
             @Override

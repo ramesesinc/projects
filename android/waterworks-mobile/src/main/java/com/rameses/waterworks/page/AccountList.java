@@ -126,13 +126,13 @@ public class AccountList {
         loadFirstPage();
         
         ImageView firstPageImg = new ImageView(new Image("icon/firstpage.png"));
-        firstPageImg.setFitWidth(50);
-        firstPageImg.setFitHeight(30);
+        firstPageImg.setFitWidth(Main.HEIGHT > 700 ? 50 : 30);
+        firstPageImg.setFitHeight(Main.HEIGHT > 700 ? 30 : 15);
         
         Button firstPage = new Button();
         firstPage.setGraphic(firstPageImg);
         firstPage.getStyleClass().add("nav-button");
-        firstPage.setPrefWidth(80);
+        firstPage.setPrefWidth(60);
         firstPage.setOnAction(new EventHandler<ActionEvent>(){
             @Override
             public void handle(ActionEvent event) {
@@ -141,13 +141,13 @@ public class AccountList {
         });
         
         ImageView prevImg = new ImageView(new Image("icon/previous.png"));
-        prevImg.setFitWidth(50);
-        prevImg.setFitHeight(30);
+        prevImg.setFitWidth(Main.HEIGHT > 700 ? 50 : 30);
+        prevImg.setFitHeight(Main.HEIGHT > 700 ? 30 : 15);
         
         Button prev = new Button();
         prev.setGraphic(prevImg);
         prev.getStyleClass().add("nav-button");
-        prev.setPrefWidth(80);
+        prev.setPrefWidth(60);
         prev.setOnAction(new EventHandler<ActionEvent>(){
             @Override
             public void handle(ActionEvent event) {
@@ -156,13 +156,13 @@ public class AccountList {
         });
         
         ImageView nextImg = new ImageView(new Image("icon/next.png"));
-        nextImg.setFitWidth(50);
-        nextImg.setFitHeight(30);
+        nextImg.setFitWidth(Main.HEIGHT > 700 ? 50 : 30);
+        nextImg.setFitHeight(Main.HEIGHT > 700 ? 30 : 15);
         
         Button next = new Button();
         next.setGraphic(nextImg);
         next.getStyleClass().add("nav-button");
-        next.setPrefWidth(80);
+        next.setPrefWidth(60);
         next.setOnAction(new EventHandler<ActionEvent>(){
             @Override
             public void handle(ActionEvent event) {
@@ -171,13 +171,13 @@ public class AccountList {
         });
         
         ImageView lastPageImg = new ImageView(new Image("icon/lastpage.png"));
-        lastPageImg.setFitWidth(50);
-        lastPageImg.setFitHeight(30);
+        lastPageImg.setFitWidth(Main.HEIGHT > 700 ? 50 : 30);
+        lastPageImg.setFitHeight(Main.HEIGHT > 700 ? 30 : 15);
         
         Button lastPage = new Button();
         lastPage.setGraphic(lastPageImg);
         lastPage.getStyleClass().add("nav-button");
-        lastPage.setPrefWidth(80);
+        lastPage.setPrefWidth(60);
         lastPage.setOnAction(new EventHandler<ActionEvent>(){
             @Override
             public void handle(ActionEvent event) {
@@ -189,8 +189,8 @@ public class AccountList {
         navContainer.setAlignment(Pos.CENTER_LEFT);
         navContainer.getChildren().addAll(firstPage,prev,next,lastPage,recordsize,pagesize);
         
-        VBox account_root = new VBox(Main.HEIGHT > 800 ? 10 : 5);
-        account_root.setPadding(new Insets(Main.HEIGHT > 800 ? 20 : 10));
+        VBox account_root = new VBox(Main.HEIGHT > 700 ? 10 : 5);
+        account_root.setPadding(new Insets(Main.HEIGHT > 700 ? 20 : 10));
         account_root.getChildren().addAll(search_account,accountList,navContainer);
         //LAYOUT FOR THE ACCOUNT TAB (END)
         
@@ -232,8 +232,8 @@ public class AccountList {
             }
         });
         
-        VBox stubout_root = new VBox(Main.HEIGHT > 800 ? 10 : 5);
-        stubout_root.setPadding(new Insets(Main.HEIGHT > 800 ? 20 : 10));
+        VBox stubout_root = new VBox(Main.HEIGHT > 700 ? 10 : 5);
+        stubout_root.setPadding(new Insets(Main.HEIGHT > 700 ? 20 : 10));
         stubout_root.getChildren().addAll(search_stubout, stuboutList);
         //LAYOUT FOR THE STUBOUT TAB (END)
         
@@ -250,7 +250,7 @@ public class AccountList {
         tabPane = new TabPane();
         tabPane.getTabs().addAll(stubout_tab, account_tab);
         
-        root = new VBox(Main.HEIGHT > 800 ? 10 : 5);
+        root = new VBox(Main.HEIGHT > 700 ? 10 : 5);
         root.getChildren().add(tabPane);
         root.setOnKeyReleased(new EventHandler<KeyEvent>(){
             @Override

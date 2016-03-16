@@ -70,7 +70,7 @@ public class Dialog {
         });
 
         Label label = new Label(message);
-        label.setStyle("-fx-font-size: 22px;");
+        label.getStyleClass().add("dialog-label");
         label.setWrapText(true);
 
         Button okBtn = new Button("OK");
@@ -89,8 +89,8 @@ public class Dialog {
 
         VBox root = new VBox(30);
         root.setStyle("-fx-background-color: white;");
-        root.setPadding(new Insets(20));
-        root.setPrefWidth(Main.WIDTH - 200);
+        root.setPadding(Main.HEIGHT > 700 ? new Insets(20) : new Insets(10));
+        root.setPrefWidth(Main.HEIGHT > 700 ? Main.WIDTH - 200 : Main.WIDTH - 30);
         root.getChildren().addAll(label,btnContainer);
 
         Group container = new Group();
@@ -114,7 +114,7 @@ public class Dialog {
         });
 
         Label label = new Label(message);
-        label.setStyle("-fx-font-size: 22px;");
+        label.getStyleClass().add("dialog-label");
         label.setWrapText(true);
 
         Button okBtn = new Button("OK");
@@ -133,8 +133,8 @@ public class Dialog {
 
         VBox root = new VBox(30);
         root.setStyle("-fx-background-color: white;");
-        root.setPadding(new Insets(20));
-        root.setPrefWidth(Main.WIDTH - 200);
+        root.setPadding(Main.HEIGHT > 700 ? new Insets(20) : new Insets(10));
+        root.setPrefWidth(Main.HEIGHT > 700 ? Main.WIDTH - 200 : Main.WIDTH - 30);
         root.getChildren().addAll(label,btnContainer);
 
         Group container = new Group();
@@ -150,10 +150,10 @@ public class Dialog {
         Label label = new Label(title);
         label.getStyleClass().add("login-label");
         
-        HBox container = new HBox(20);
+        HBox container = new HBox(Main.HEIGHT > 700 ? 20 : 10);
         container.setStyle("-fx-background-color: white;");
         container.setAlignment(Pos.CENTER);
-        container.setPadding(new Insets(20,30,20,30));
+        container.setPadding(Main.HEIGHT > 700 ? new Insets(20,30,20,30) : new Insets(10,15,10,15));
         container.getChildren().addAll(progress,label);
         
         show("", container);
@@ -161,7 +161,8 @@ public class Dialog {
     
     private static HBox createTitle(String s){
         Label title = new Label(s);
-        title.setStyle("-fx-text-fill: white; -fx-font-size: 25px; -fx-font-weight: bold;");
+        title.getStyleClass().add("dialog-label");
+        title.setStyle("-fx-text-fill: white; -fx-font-weight: bold;");
         
         HBox container = new HBox();
         container.setStyle("-fx-background-color: #3897ee;");

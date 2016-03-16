@@ -76,8 +76,8 @@ public class StuboutAccountList {
             }
         });
 
-        root = new VBox(Main.HEIGHT > 800 ? 10 : 5);
-        root.setPadding(new Insets(Main.HEIGHT > 800 ? 20 : 10));
+        root = new VBox(Main.HEIGHT > 700 ? 10 : 5);
+        root.setPadding(new Insets(Main.HEIGHT > 700 ? 20 : 10));
         root.setStyle("-fx-background-color: white;");
         root.getChildren().addAll(search_account, listView);
         root.setOnKeyReleased(new EventHandler<KeyEvent>(){

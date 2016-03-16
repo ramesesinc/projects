@@ -27,12 +27,12 @@ public class Footer {
 
         logo = new ImageView(new Image("icon/rameses.png"));
         
-        if(Main.HEIGHT < 800){
-            logo.setFitWidth(logo.getFitWidth() * 0.75);
-            logo.setFitHeight(logo.getFitHeight() * 0.75);
+        if(Main.HEIGHT < 700){
+            logo.setFitWidth(logo.getImage().getWidth() * 0.60);
+            logo.setFitHeight(logo.getImage().getHeight() * 0.60);
         }
 
-        VBox titleContainer = new VBox(5);
+        VBox titleContainer = new VBox(Main.HEIGHT > 700 ? 5 : 2);
         titleContainer.setAlignment(Pos.CENTER);
         titleContainer.getChildren().addAll(title1, title2);
 

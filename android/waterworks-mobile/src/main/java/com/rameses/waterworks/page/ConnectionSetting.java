@@ -57,27 +57,27 @@ public class ConnectionSetting {
         
         ip = new TextField(setting_ip);
         ip.getStyleClass().add("terminal-field");
-        ip.setPrefWidth(350);
+        ip.setPrefWidth(Main.HEIGHT > 700 ? 350 : 180);
         ip.setFocusTraversable(false);
         
         port = new TextField(setting_port);
         port.getStyleClass().add("terminal-field");
-        port.setPrefWidth(350);
+        port.setPrefWidth(Main.HEIGHT > 700 ? 350 : 180);
         port.setFocusTraversable(false);
         
         timeout = new TextField(setting_timeout);
         timeout.getStyleClass().add("terminal-field");
-        timeout.setPrefWidth(350);
+        timeout.setPrefWidth(Main.HEIGHT > 700 ? 350 : 180);
         timeout.setFocusTraversable(false);
         
         context = new TextField(setting_context);
         context.getStyleClass().add("terminal-field");
-        context.setPrefWidth(350);
+        context.setPrefWidth(Main.HEIGHT > 700 ? 350 : 180);
         context.setFocusTraversable(false);
         
         cluster = new TextField(setting_cluster);
         cluster.getStyleClass().add("terminal-field");
-        cluster.setPrefWidth(350);
+        cluster.setPrefWidth(Main.HEIGHT > 700 ? 350 : 180);
         cluster.setFocusTraversable(false);
         
         save = new Button("Save");
@@ -116,13 +116,8 @@ public class ConnectionSetting {
         
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
-        if(Main.HEIGHT > 800){
-            grid.setVgap(10);
-            grid.setHgap(20); 
-        }else{
-            grid.setVgap(5);
-            grid.setHgap(10);
-        }
+        grid.setVgap(Main.HEIGHT > 700 ? 10 : 5);
+        grid.setHgap(Main.HEIGHT > 700 ? 20 : 10); 
         
         grid.add(ip_label, 0, 0);
         grid.add(port_label, 0, 1);
@@ -140,13 +135,8 @@ public class ConnectionSetting {
         
         root = new VBox();
         root.setAlignment(Pos.TOP_CENTER);
-        if(Main.HEIGHT > 800){
-            root.setSpacing(30);
-            root.setPadding(new Insets(50));
-        }else{
-            root.setSpacing(15);
-            root.setPadding(new Insets(20));
-        }
+        root.setSpacing(Main.HEIGHT > 700 ? 30 : 15);
+        root.setPadding(Main.HEIGHT > 700 ? new Insets(50) : new Insets(20));
         root.getChildren().addAll(notice,grid);
         root.setOnKeyReleased(new EventHandler<KeyEvent>(){
             @Override

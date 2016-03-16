@@ -45,8 +45,8 @@ public class RuleDetail {
         
         root = new GridPane();
         root.setStyle("-fx-background-color: white;");
-        root.setMaxWidth(Main.HEIGHT > 800 ? Main.WIDTH - 100 : Main.WIDTH - 50);
-        root.setPadding(new Insets(Main.HEIGHT > 800 ? 10 : 5));
+        root.setMaxWidth(Main.HEIGHT > 700 ? Main.WIDTH - 100 : Main.WIDTH - 50);
+        root.setPadding(new Insets(Main.HEIGHT > 700 ? 10 : 5));
         root.setAlignment(Pos.TOP_LEFT);
         root.setVgap(5);
         root.setHgap(5);

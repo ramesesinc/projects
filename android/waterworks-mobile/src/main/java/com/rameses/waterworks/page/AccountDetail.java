@@ -8,7 +8,6 @@ import com.rameses.waterworks.bluetooth.BluetoothPlatformFactory;
 import com.rameses.waterworks.database.Database;
 import com.rameses.waterworks.database.DatabasePlatformFactory;
 import com.rameses.waterworks.dialog.Dialog;
-import com.rameses.waterworks.printer.PrinterHandler;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -70,12 +69,10 @@ public class AccountDetail {
                     return;
                 }
                 account.setPresReading(i);
-                PrinterHandler handler = new PrinterHandler(account);
-                if(!handler.getError().isEmpty()){
-                    Dialog.showError(handler.getError());
+                if(!Main.PRINTERHANDLER.getError().isEmpty()){
+                    Dialog.showError(Main.PRINTERHANDLER.getError());
                     return;
                 }
-                Main.LOG.error("HANDLER ERROR", handler.getError());
                 
                 if(Main.PRINTER ==  null){
                     PRINTER = BluetoothPlatformFactory.getPlatform().getBluetoothPrinter();
@@ -83,7 +80,7 @@ public class AccountDetail {
                     PRINTER.openBT();
                 }
                 PRINTER.setError("");
-                PRINTER.print(handler.getData());
+                PRINTER.print(Main.PRINTERHANDLER.getData(account));
                 if(!PRINTER.getError().isEmpty()){
                     Dialog.showError(PRINTER.getError());
                     PRINTER.closeBT();
@@ -112,11 +109,8 @@ public class AccountDetail {
         }
         
         HBox readingContainer = new HBox(10);
-        if(Main.HEIGHT > 800){
-            readingContainer.setPadding(new Insets(20, 10, 20, 10));
-        }else{
-            readingContainer.setPadding(new Insets(10, 5, 10, 5));
-        }
+        readingContainer.setPadding(Main.HEIGHT > 700 ? new Insets(20, 10, 20, 10) : new Insets(10, 5, 10, 5));
+            
         readingContainer.setStyle("-fx-skin: \"com.sun.javafx.scene.control.skin.ButtonSkin\"; -fx-background-color: -fx-shadow-highlight-color, -fx-outer-border, -fx-inner-border, -fx-body-color;");
         readingContainer.setAlignment(Pos.CENTER);
         readingContainer.getChildren().addAll(
@@ -134,11 +128,7 @@ public class AccountDetail {
         
         root = new VBox(15);
         root.setStyle("-fx-background-color: white;");
-        if(Main.HEIGHT > 800){
-            root.setMinWidth(Main.WIDTH-150);
-        }else{
-            root.setMinWidth(Main.WIDTH-40);
-        }
+        root.setMinWidth(Main.HEIGHT > 700 ? Main.WIDTH-150 : Main.WIDTH-40);
         root.setAlignment(Pos.CENTER);
         root.setPadding(new Insets(20));
         root.getChildren().add(createDetail("Account No",account.getAcctNo()));
@@ -170,7 +160,7 @@ public class AccountDetail {
         
         Label label3 = new Label(value);
 
-        if(Main.HEIGHT > 800){
+        if(Main.HEIGHT > 700){
             label1.setStyle("-fx-font-size: 25px;");
             label2.setStyle("-fx-font-size: 25px;");
             label3.setStyle("-fx-font-size: 24px; -fx-font-weight: bold;");

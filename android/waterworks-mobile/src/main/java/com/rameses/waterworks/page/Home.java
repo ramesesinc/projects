@@ -113,13 +113,8 @@ public class Home {
         VBox container = new VBox();
         container.setMaxWidth(Main.WIDTH);
         container.setAlignment(Pos.TOP_CENTER);
-        if(Main.HEIGHT > 800){
-            container.setSpacing(15);
-            container.setPadding(new Insets(20, 50, 20, 50));
-        }else{
-            container.setSpacing(8);
-            container.setPadding(new Insets(10, 15, 10, 15));
-        }
+        container.setSpacing(Main.HEIGHT > 700 ? 15 : 8);
+        container.setPadding(Main.HEIGHT > 700 ? new Insets(20, 50, 20, 50) : new Insets(10, 15, 10, 15));
         container.getChildren().addAll(account,sheet,download,upload,rates,setting,stack);
         
         root = new ScrollPane();
@@ -134,8 +129,13 @@ public class Home {
         int unreadrecords = totalrecords - readrecords;
         
         ImageView check = new ImageView(new Image("icon/check.png"));
-        
         ImageView cancel = new ImageView(new Image("icon/cancel.png"));
+        if(Main.HEIGHT < 700){
+            check.setFitWidth(check.getImage().getWidth() * 0.5);
+            check.setFitHeight(check.getImage().getHeight() * 0.5);
+            cancel.setFitWidth(cancel.getImage().getWidth() * 0.5);
+            cancel.setFitHeight(cancel.getImage().getHeight() * 0.5);
+        }
         
         Label read = new Label(readrecords + " Records");
         read.getStyleClass().add("readingbulletin-label");
@@ -167,6 +167,10 @@ public class Home {
         
         public MenuItem(String image_url, String title, String desc){
             this.image = new ImageView(new Image(image_url));
+            if(Main.HEIGHT < 700){
+                this.image.setFitWidth(150);
+                this.image.setFitHeight(150);
+            }
             
             VBox imageContainer = new VBox();
             imageContainer.setAlignment(Pos.CENTER);
@@ -180,16 +184,12 @@ public class Home {
             this.desc.setWrapText(true);
             
             VBox textContainer = new VBox();
-            if(Main.HEIGHT > 800){
-                textContainer.setSpacing(10);
-            }else{
-                textContainer.setSpacing(5);
-            }
+            textContainer.setSpacing(Main.HEIGHT > 700 ? 10 : 5);
             textContainer.setAlignment(Pos.CENTER_LEFT);
             textContainer.getChildren().addAll(this.title,this.desc);
             
             container = new HBox();
-            if(Main.HEIGHT > 800){
+            if(Main.HEIGHT > 700){
                 container.setSpacing(20);
             }else{
                 container.setSpacing(10);

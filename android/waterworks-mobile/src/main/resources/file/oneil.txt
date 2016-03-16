@@ -2,7 +2,7 @@
 + "@0,0:MF204|                                         |"
 + "@30,0:MF204|     SAN CARLOS CITY WATER DISTRICT      |"
 + "@60,0:MF204|   SAN CARLOS CITY, NEGROS OCCIDENTAL    |"
-+ "@90,0:MF204|             (034) 7293131               |"
++ "@90,0:MF204|             (032) 505-9301               |"
 + "@150,0:MF204|For the month of "+a.getMonth()+" "+a.getYear()+"|"
 + "@180,0:MF204|---------------------------------------|"
 + "@210,0:MF204|Acct No.   :  "+a.getAcctNo()+"|"

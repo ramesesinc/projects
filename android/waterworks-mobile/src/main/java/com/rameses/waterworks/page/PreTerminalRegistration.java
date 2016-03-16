@@ -21,6 +21,7 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.TextAlignment;
 
 public class PreTerminalRegistration {
 
@@ -94,11 +95,7 @@ public class PreTerminalRegistration {
 
         root = new StackPane();
         root.setAlignment(Pos.TOP_CENTER);
-        if(Main.HEIGHT > 800){
-            root.setPadding(new Insets(50, 50, 50, 50));
-        }else{
-            root.setPadding(new Insets(15, 15, 15, 15));
-        }
+        root.setPadding(Main.HEIGHT > 700 ? new Insets(50, 50, 50, 50) : new Insets(15, 15, 15, 15));
         root.getChildren().add(container);
     }
 

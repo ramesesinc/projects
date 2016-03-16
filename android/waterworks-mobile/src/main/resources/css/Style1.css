@@ -241,6 +241,11 @@
     -fx-font-weight: bold;
 }
 
+#download-listview
+{
+    -fx-font-size: 25px;
+}
+
 #download-title
 {
     -fx-font-size: 45px;
@@ -266,6 +271,12 @@
     -fx-background-color: #5cb1e1;
     -fx-background-radius: 10px;
     -fx-border-radius: 10px;
+}
+
+#download-status
+{
+    -fx-font-size: 28px; 
+    -fx-padding: 25 0 0 0;
 }
 
 #upload-container
@@ -365,4 +376,9 @@
     -fx-font-size: 30px;
     -fx-font-weight: bold;
     -fx-text-fill: black;
+}
+
+.dialog-label
+{
+    -fx-font-size: 22px;
 }

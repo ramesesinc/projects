@@ -1,8 +1,23 @@
-<workunit>
+<workunit schemaName="market_rentalunit">
     <invokers>
-        <invoker type="market_rentalunit:create" caption="New Market Rental Unit" index="4" action="create"/>
-        <invoker type="market_rentalunit:open" caption="View Market Rental Unit" index="4" action="open"/>
+        <invoker type="market_rentalunit:create" caption="New Market Rental Unit" index="4" 
+                 action="create" target="popup"/>
+        <invoker type="market_rentalunit:open" caption="View Market Rental Unit" index="4" 
+                 action="open" target="popup"/>
     </invokers>
+    <code>
+        class MarketRentalUnitController extends com.rameses.seti2.models.CrudFormModel {
+            /*
+            public void afterCreateData(String name, def data){
+                println "name " + name + " data is " + data;
+                data.attribute = [:];
+                println data;
+            }
+            */
+        }
+    </code>
+    
+    <!--
     <code>
          <![CDATA[
             import com.rameses.rcp.common.*
@@ -76,7 +91,8 @@
             }
             ]]>
     </code>
+    -->
     <pages>
-        <page template="com.rameses.gov.etracs.market.MarketRentalUnit"/>
+        <page template="com.rameses.gov.etracs.market.views.MarketRentalUnit"/>
     </pages>
 </workunit>

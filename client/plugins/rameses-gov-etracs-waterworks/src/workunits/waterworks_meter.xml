@@ -1,41 +1,12 @@
-<workunit>
+<workunit schemaName="waterworks_meter">
     <invokers>
         <invoker type="waterworks_meter:create" caption="Meter" action="create" target="popup" srole="MASTER"/>
         <invoker type="waterworks_meter:open" caption="Meter" action="open" target="popup" srole="MASTER"/>
+        
+        <invoker type="formActions" caption="My Provo" />
     </invokers>
     
-    <code>
-        <![CDATA[
-           import com.rameses.osiris2.common.*;
-           import com.rameses.rcp.common.*;
-           import com.rameses.rcp.annotations.*;
-           import com.rameses.osiris2.client.*;
-           import com.rameses.seti2.models.*;
-
-           class MeterController extends CrudFormModel{
-           
-               @Service("WaterworksMeterSizeService")
-               def sizeSvc;
-
-               def title='Meter';
-               String schemaName='waterworks_meter';
-               def sizes;
-               
-               def create() {
-                   super.create();
-                   sizes = sizeSvc.getList([searchtext:'%']);
-                   return null;
-               }
-               
-               def open() {
-                   super.open();
-                   sizes = sizeSvc.getList([searchtext:'%']);
-                   return null;
-               }
-               
-           }
-        ]]>
-    </code>
+    <code class="com.rameses.seti2.models.CrudFormModel"/>
     
     <pages>
         <page template="com.rameses.gov.etracs.waterworks.views.WaterworksMeterPage"/>

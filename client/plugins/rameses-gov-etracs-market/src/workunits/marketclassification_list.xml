@@ -1,5 +1,0 @@
-<workunit extends="wtemplates/ListController.xml" serviceName="MarketClassificationService" entityName="marketclassification">
-    <invokers>
-        <invoker folderid="/explorer/master/market" caption="Market Classification" index="1"/>
-    </invokers>
-</workunit>

@@ -1,9 +1,13 @@
 <schema adapter="waterworks">
+
 	<element tablename="waterworks_area">
-		<field name="objid" primary="true"  prefix="AR"/>
-		<field name="name" required="true" indexed="true" caption="Area Name"/>
-		<field name="description" required="true" indexed="true" caption="Description"/>
-		<field name="assignee_objid" required="true" caption="Assignee ID" visible="false"/>
-		<field name="assignee_name" required="true" indexed="true" caption="Assignee"/>
+		<field name="objid" primary="true"/> 
+		<field name="title" required="true" caption="Group Title"/> 
+		<field name="assignee_objid" required="true" visible="false"/> 
+		<field name="assignee_name" required="true" caption="Assignee Name"/> 
+		<field name="duedate" required="true" caption="Due Date"/> 
+
+		<field name="zone" required="true" /> 
+		<field name="sector" required="true"/> 
 	</element>
 </schema>

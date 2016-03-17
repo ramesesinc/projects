@@ -1,11 +1,12 @@
 <schema adapter="waterworks">
-	
 	<element tablename="waterworks_stubout_account">
 		<field name="objid" primary="true"  prefix="SO"/>
-		<field name="parentid" required="true" visible="false"/>
+		<complex name="parent" ref="waterworks_stubout" jointype="many-to-one">
+			<key field="parentid" target="objid" />	
+		</complex>	
 		<complex name="account" jointype="many-to-one" ref="waterworks_account" required="true">
 			<key field="acctid" target="objid"/>
 		</complex>
-		<field name="sortorder" required="true" visible="false"/>
+		<field name="sortorder" required="true" visible="false" sortindex="0"/>
 	</element>
 </schema>

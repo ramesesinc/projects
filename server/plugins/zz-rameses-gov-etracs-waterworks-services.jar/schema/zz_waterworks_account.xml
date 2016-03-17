@@ -1,0 +1,11 @@
+<schema adapter="waterworks">
+	<element tablename="waterworks_account">
+		<field name="objid" primary="true"  prefix="WA"/>
+		<field name="acctname" required="true" indexed="true" caption="Acct Name"/>
+		<field name="owner_name" required="true" indexed="true" caption="Owner Name"/>
+		<field name="mobileno" required="false" caption="Mobile No"/>
+		<field name="phoneno" required="false" caption="Phone No"/>
+		<field name="email" required="false" caption="Email"/>
+		<field name="address" expr="CONCAT(address_city,' ',address_province,' ',address_municipality)"/>
+	</element>
+</schema>

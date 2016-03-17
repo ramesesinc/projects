@@ -1,5 +1,0 @@
-<workunit extends="wtemplates/ServiceLookupController.xml" serviceName="MarketAttributeService" entityName="marketattribute">
-    <invokers>
-        <invoker type="marketattribute:lookup" caption="Market Attributes" target="popup"/>
-    </invokers>
-</workunit>

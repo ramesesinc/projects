@@ -10,5 +10,7 @@
 		<field name="surcharge" required="true" />
 		<field name="interest" required="true" />
 		<field name="remarks"  />
+		<field name="item_objid" required="true" />
+		<field name="item_title" required="true" />
 	</element>
 </schema>

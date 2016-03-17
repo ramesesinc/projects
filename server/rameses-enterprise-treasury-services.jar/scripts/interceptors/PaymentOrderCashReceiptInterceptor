@@ -7,12 +7,11 @@ class PaymentOrderCashReceiptInterceptor {
 	@Service("PaymentOrderService")
 	def svc;
 
-	@After(pattern="CashReceiptService.post", eval="#{args[0].type=='paymentorder'}", index=100)
+	@After(pattern="CashReceiptService.post", eval="#{args[0].paymentorder!=null}", index=1000)
 	public def deletePaymentOrder(def evt) { 
 		def result = evt.result;
-		def paymentorder = svc.open( [txnid:result.txnid]);
-		paymentorder.receipt = result; 
-		svc.close( paymentorder );
+		def pmtOrder = evt.args[0].paymentorder;
+		svc.close( [txnid: pmtOrder.txnid] );
 	} 
 
 }

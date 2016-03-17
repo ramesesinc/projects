@@ -4,7 +4,5 @@
 		<field name="name" required="true" />
 		<field name="state" required="true" />
 		<field name="code" required="true" />
-		<field name="address" required="true"/>
-		<field name="classification_objid" required="true"/>
 	</element>
 </schema>

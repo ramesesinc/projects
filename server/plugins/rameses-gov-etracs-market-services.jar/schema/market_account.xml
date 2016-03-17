@@ -1,0 +1,18 @@
+<schema  adapter="market">
+	<element tablename="market_account">
+		<field name="objid" primary="true"/>
+		<field name="state" required="true" />
+		<field name="acctno" required="true" />
+		<field name="dtcreated" required="true" />
+		<field name="owner_objid" required="true" />
+		<field name="owner_name" required="true" />
+		<field name="owner_address" required="true" />
+		<complex name="rentalunit" ref="market_rental_unit" jointype="many-to-one">
+		    <key field="rentalunit_objid" target="objid"/>
+		</complex>
+		<field name="rate" required="true" type="decimal"/>
+		<field name="startdate" required="true"/>
+		<field name="lastpmtdate" required="true"/>
+		<field name="totalprincipalpaid" required="true"/>
+	</element>
+</schema>

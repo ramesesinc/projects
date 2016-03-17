@@ -3,8 +3,12 @@
 		<field name="objid" primary="true"  prefix="WM"/>
 		<field name="serialno" required="true" indexed="true" caption="Serial No."/>
 		<field name="brand" required="true" indexed="true" caption="Brand"/>
-		<field name="sizeid" required="true" indexed="true" caption="Size"/>
+		<complex name="size" ref="waterworks_metersize" jointype="many-to-one">
+			<key field="sizeid" target="objid"/>
+		</complex>
 		<field name="capacity" required="true" caption="Capacity" />
-		<field name="currentacctid" visible="false"/>
+		<complex name="account" ref="zz_waterworks_account" jointype="many-to-one" required="false">
+			<key field="currentacctid" target="objid"/>
+		</complex>
 	</element>
 </schema>

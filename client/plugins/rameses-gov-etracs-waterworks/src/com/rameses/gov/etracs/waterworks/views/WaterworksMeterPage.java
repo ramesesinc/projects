@@ -58,9 +58,9 @@ public class WaterworksMeterPage extends javax.swing.JPanel {
         xFormPanel1.add(xTextField2);
 
         xComboBox1.setCaption("Size");
-        xComboBox1.setExpression("#{item.objid}");
+        xComboBox1.setExpression("#{item.title}");
         xComboBox1.setItemKey("objid");
-        xComboBox1.setItems("sizes");
+        xComboBox1.setItems("listTypes.size");
         xComboBox1.setName("entity.sizeid"); // NOI18N
         xComboBox1.setPreferredSize(new java.awt.Dimension(150, 20));
         xComboBox1.setRequired(true);

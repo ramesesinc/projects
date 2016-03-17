@@ -6,5 +6,4 @@
         <invoker type="waterworks_meter_unused:lookup" caption="Lookup Unused Water Meter" 
                  action="init" target="popup"/>
     </invokers>
-    
 </workunit>

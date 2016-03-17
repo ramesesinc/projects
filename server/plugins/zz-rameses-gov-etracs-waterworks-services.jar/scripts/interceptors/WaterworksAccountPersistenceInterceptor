@@ -1,0 +1,16 @@
+import com.rameses.annotations.*;
+
+class WaterworksAccountPersistenceInterceptor{
+	
+	@Before(pattern="PerisistenceService.create", eval="#{args[0].schemaname == 'waterworks_account'}")
+	public void beforeCreate(def evt) {
+		def o  = evt.args[0];
+		
+	}
+
+	@After(pattern="PersistenceService.create", eval="#{args[0].schemaname == 'waterworks_account'}")
+	public void afterCreate(def evt) {
+		def o = evt.result;
+	}
+
+}

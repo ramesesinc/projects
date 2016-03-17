@@ -21,6 +21,10 @@ public class WaterworksStubout extends CrudFormModel {
         };
     }
     
+    public void afterFetchItems( String name, def items ) {
+        items.sort{ it.sortorder };
+    }
+    
     void up(){
         def idx0 = itemstat.index; 
         if ( idx0 <= 0 ) return;
@@ -43,4 +47,7 @@ public class WaterworksStubout extends CrudFormModel {
         itemHandlers.accounts.refresh(); 
         itemHandlers.accounts.setSelectedItem(idx0+1);
     }
+    
+    
+    
 }

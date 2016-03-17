@@ -1,6 +1,7 @@
 <workunit extends="wtemplates/enterprise/treasury/BasicCashReceiptController.xml">
     <invokers>
-        <invoker type="cashreceipt:paymentorder" action="initPaymentOrder" />
+        <invoker type="cashreceipt:barcode:PMO" action="loadBarcode" 
+                 caption="Cash Receipt - Order of Payment"/>
     </invokers>
     
     <code>
@@ -12,32 +13,28 @@
         import com.rameses.enterprise.treasury.cashreceipt.*
         
         class  PaymentOrderReceiptController extends BasicCashReceipt {
+            @Service("PaymentOrderService")
+            def pmtSvc;        
                 
             String entityName = "misc_cashreceipt"
-                
-            def paymentorder  
-                
-            @Service("CashReceiptService")
-            def cashReceiptSvc;
-                
-            void initPaymentOrder() {
+            def barcodeid;
+                    
+            void loadBarcode() {
+                def pmtOrder = pmtSvc.open( [txnid: barcodeid] ); 
+                def info = pmtOrder.info;
+
                 entity = [formtype: "serial", formno:"51", txnmode: 'ONLINE'];
-                entity = cashReceiptSvc.init( entity );
-                entity.payer = paymentorder.info.payer 
-                entity.paidby = paymentorder.info.paidby;
-                entity.paidbyaddress = paymentorder.info.paidbyaddress;
-                entity.collectiontype = paymentorder.info.collectiontype;
-                entity.items = paymentorder.info.items 
-                entity.txnid = paymentorder.txnid 
-                entity.txntype = paymentorder.txntype 
-                entity.type = 'paymentorder' 
-                entity.amount = paymentorder.info.amount 
-                entity.totalcash = 0.0
-                entity.totalnoncash = 0.0
-                super.init() 
-                super.updateBalances();
-            }   
+                entity.collectiontype = info.collectiontype;
+                entity = service.init( entity );
                 
+                entity.paymentorder = [txnid: pmtOrder.txnid, txntype: pmtOrder.txntype]; 
+                entity.payer = info.payer;
+                entity.items = info.items;
+                entity.amount = info.amount;
+                entity.paidby = info.paidby;
+                entity.paidbyaddress = info.paidbyaddress;
+                super.init(); 
+            }   
         }       
         ]]>
         

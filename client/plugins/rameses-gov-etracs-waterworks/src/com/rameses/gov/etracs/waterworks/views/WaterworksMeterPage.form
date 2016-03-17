@@ -92,9 +92,9 @@
             <Component class="com.rameses.rcp.control.XComboBox" name="xComboBox1">
               <Properties>
                 <Property name="caption" type="java.lang.String" value="Size"/>
-                <Property name="expression" type="java.lang.String" value="#{item.objid}"/>
+                <Property name="expression" type="java.lang.String" value="#{item.title}"/>
                 <Property name="itemKey" type="java.lang.String" value="objid"/>
-                <Property name="items" type="java.lang.String" value="sizes"/>
+                <Property name="items" type="java.lang.String" value="listTypes.size"/>
                 <Property name="name" type="java.lang.String" value="entity.sizeid" noResource="true"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[150, 20]"/>

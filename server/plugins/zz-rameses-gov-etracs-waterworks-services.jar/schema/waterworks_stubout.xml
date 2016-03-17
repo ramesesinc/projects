@@ -4,8 +4,11 @@
 		<field name="objid" primary="true" prefix="SO"/>
 		<field name="title" required="true" indexed="true" caption="Title"/>
 		<field name="description" required="true" indexed="true" caption="Description"/>
-		<complex name="readinggroup" ref="waterworks_readinggroup" jointype="many-to-one" required="true" caption="Reading Group">
-			<key field="readinggroup_objid" target="objid"/> 
+		<complex name="area" ref="waterworks_area" jointype="many-to-one" required="true" caption="Area">
+			<key field="areaid" target="objid"/> 
+		</complex>
+		<complex name="accounts" ref="waterworks_stubout_account" jointype="one-to-many">
+			<key field="objid" target="parentid"/>
 		</complex> 
 	</element>
 </schema>

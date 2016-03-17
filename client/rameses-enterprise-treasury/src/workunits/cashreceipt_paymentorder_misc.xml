@@ -27,12 +27,17 @@
                 entity.collectiontype = info.collectiontype;
                 entity = service.init( entity );
                 
-                entity.paymentorder = [txnid: pmtOrder.txnid, txntype: pmtOrder.txntype]; 
+                entity.paymentorder = [ 
+                    txnid: pmtOrder.txnid, 
+                    txntype: pmtOrder.txntype,
+                    refid: pmtOrder.refid 
+                ]; 
                 entity.payer = info.payer;
                 entity.items = info.items;
                 entity.amount = info.amount;
                 entity.paidby = info.paidby;
                 entity.paidbyaddress = info.paidbyaddress;
+                entity.remarks = info.remarks;
                 super.init(); 
             }   
         }       

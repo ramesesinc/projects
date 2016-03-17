@@ -32,10 +32,16 @@ class PaymentOrderService  {
 		if(!entity.collectiontype)
 			throw new Exception("Collection type not found!");
 
-		entity.items.each {
-			if( !it.item?.objid ) throw new Exception("Items item must have an objid");
-			if( !it.amount ) throw new Exception("Items item must have an amount");
-			it.item = revItem.find([objid: it.item.objid]).first(); 
+		entity.items.eachWithIndex{ o,idx-> 
+			println idx;
+			if( !o.item?.objid ) throw new Exception("Items item must have an objid");
+			if( !o.amount ) throw new Exception("Items item must have an amount");
+
+
+			def item = revItem.find([objid: o.item.objid]).first(); 
+			if ( !item ) throw new Exception('Item #'+ (idx+1)  +' account '+ o.item.title +' does not exist'); 
+
+			o.item = item; 
 		}
 		if( entity.items.sum{it.amount} != entity.amount)
 			throw new Exception("Amount must be equal sum of amount of items");
@@ -47,6 +53,7 @@ class PaymentOrderService  {
 		m.payer = entity.payer;
 		m.txntype = entity.txntype;
 		m.amount = entity.amount;
+		m.refid = entity.refid;
 		pmt.create(m);
 		return m; 
 	}
@@ -62,7 +69,9 @@ class PaymentOrderService  {
 
 	@ProxyMethod
 	def close( params ){ 
-		pmt.find([txnid: params.txnid]).delete();
+		def data = pmt.find([txnid: params.txnid]).first(); 
+		pmt.find([txnid: params.txnid]).delete(); 
+		return data; 
 	}
 
 

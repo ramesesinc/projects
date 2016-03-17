@@ -11,7 +11,7 @@ class PaymentOrderCashReceiptInterceptor {
 	public def deletePaymentOrder(def evt) { 
 		def result = evt.result;
 		def pmtOrder = evt.args[0].paymentorder;
-		svc.close( [txnid: pmtOrder.txnid] );
+		svc.close( pmtOrder );
 	} 
 
 }

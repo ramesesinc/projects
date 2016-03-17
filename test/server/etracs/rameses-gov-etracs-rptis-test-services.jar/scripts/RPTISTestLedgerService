@@ -1,0 +1,89 @@
+import com.rameses.annotations.*;
+import com.rameses.common.*;
+import com.rameses.util.*;
+import com.rameses.services.extended.*;
+
+public class RPTISTestLedgerService
+{
+	@ActiveDB('rptis_test_faas')
+	def em 
+
+	@Service('RPTLedgerService')
+	def ledgerSvc
+
+	@Service('FAASService')
+	def faasSvc 
+
+	@Service('RPTISUnitTestService')
+	def test
+
+	@Service('RPTUtil')
+	def util 
+
+
+	@ProxyMethod
+	public void testLedgerDataFromFaas(ledger, faas) {
+		test.testEqual('rptledger.taxpayerid', ledger.taxpayer.objid , faas.taxpayer.objid)
+		test.testEqual('rptledger.tdno', ledger.tdno , faas.tdno)
+		test.testEqual('rptledger.cadastrallotno', ledger.cadastrallotno , faas.rp.cadastrallotno)
+		test.testEqual('rptledger.rputype', ledger.rputype , faas.rpu.rputype)
+		test.testEqual('rptledger.txntype', ledger.txntype.objid , faas.txntype.objid)
+		test.testEqual('rptledger.classcode', ledger.classcode , faas.rpu.classification.code)
+		test.testEqual('rptledger.totalmv', ledger.totalmv , faas.rpu.totalmv)
+		test.testEqual('rptledger.totalav', ledger.totalav , faas.rpu.totalav)
+		test.testEqual('rptledger.taxable', ledger.taxable , faas.rpu.taxable)
+		test.testEqual('rptledger.owner', ledger.owner.name , faas.owner.name)
+		test.testEqual('rptledger.prevtdno', ledger.prevtdno , faas.prevtdno)
+		test.testEqual('rptledger.titleno', ledger.titleno , faas.titleno)
+		test.testEqual('rptledger.administrator', ledger.administrator?.name , faas.administrator?.name)
+	}
+
+
+    @ProxyMethod
+	public def testPendingLedgerFromFaas( faas ) {
+		def ledger = em.findLedgerByFaasId(faas)
+		test.testNotNull('rptledger', ledger)
+
+		ledger += ledgerSvc.openLedger(ledger)
+		faas += faasSvc.openFaas(faas)
+		testLedgerDataFromFaas(ledger, faas)
+		
+		ledger = ledgerSvc.openLedger(ledger)
+		test.testEqual('rptledger.faases', ledger.faases.size(), 1)
+
+		def ledgerfaas = ledger.faases.first()
+		test.testTrue('rptledger.faases[0]', ledgerfaas.systemcreated)
+
+		return '[ledgertest] Pending Ledger tested'
+	}
+
+
+	@ProxyMethod
+	public def approveLedgerFromFaas(faas, fullypaid) {
+		def ledger = em.findLedgerByFaasId(faas)
+        if (!ledger){
+            faas += faasSvc.openFaas(faas)
+            ledger = ledgerSvc.postNewLedger(faas)
+        }
+        if (ledger.state == 'PENDING'){
+            ledgerSvc.approveLedger(ledger)
+            if (fullypaid)
+            	em.fullyPaidLedger(ledger)
+        }
+        return ledger 
+	}
+
+
+
+	@ProxyMethod
+	public def testApprovedLedger(ledger) {
+		ledger += ledgerSvc.openLedger(ledger)
+		test.testEqual('ledger.state', ledger.state, 'APPROVED')
+		test.testNotEmpty('ledgerfaases', ledger.faases)
+
+		def pendingfaases = ledger.faases.findAll{it.state == 'PENDING'}
+		test.testEmpty('pending-ledgerfaases', pendingfaases)
+		return '[ledgertest] Approved ledger tested.'
+	}
+
+}

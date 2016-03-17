@@ -1,0 +1,91 @@
+
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.services.extended.*;
+
+public class RPTISTestFAASDataCaptureService
+{
+	@Env 
+	def env 
+
+	@ActiveDB('rptis_test_faas')
+	def em 
+
+	@Service('FAASService')
+	def faasSvc 
+
+	@Service('RPTLedgerService')
+	def ledgerSvc 
+
+	@Service('RPTISTestFAASDataService')
+	def dataSvc 
+
+	@Service('RPTISUnitTestService')
+	def test
+
+	
+	@ProxyMethod
+	public def createDataCapture(initinfo) {
+		def faas = dataSvc.createDataCaptureLandFaas(initinfo)
+		faasSvc.createFaas(faas)
+		return faas 
+	}
+
+
+	@ProxyMethod
+	public def submitDataCaptureForApproval( faas ) {
+		return faasSvc.submitForApproval(faas)	
+	}
+
+	@ProxyMethod
+	public def testSubmittedDataCapture( faas ) {
+		faas += faasSvc.openFaasOnly(faas)
+		test.testEqual('faas.state', faas.state, 'FORAPPROVAL')
+		return 'Data Captured FAAS submission tested.' 
+	}
+
+
+	@ProxyMethod
+	public def approveDataCapture( faas ) {
+		faas += faasSvc.openFaas(faas)
+		return faasSvc.approveFaas(faas)	
+	}
+
+	@ProxyMethod
+	public def testApprovedDataCapture(faas){
+		faas += faasSvc.openFaas(faas)
+		test.testEqual('faas.state', faas.state, 'CURRENT')
+		test.testNotNull('faas.appraiser', faas.appraiser)
+		test.testNotNull('faas.approver', faas.approver)
+		return 'Approved data capture tested.'
+	}
+
+
+	@ProxyMethod
+	public def deleteDataCapturedFaas( faas ) {
+		faas += faasSvc.openFaas(faas)
+		faasSvc.deleteFaas(faas)	
+		return faas 
+	}
+
+	@ProxyMethod
+	public def testDeletedDataCapturedFaas(faas) {
+		if (faas.rpu.rputype == 'land'){
+			def rp = em.findRealPropertyById(faas.rp)
+			test.testNull('realproperty', rp)
+		}
+
+		def rpu = em.findRpuById(faas.rpu)
+		test.testNull('rpu', rpu)
+
+		def oldfaas = em.findFaasById(faas)
+		test.testNull('faas', oldfaas)
+
+		def tasks = faasSvc.getTasks(faas)
+		test.testEmpty('faas.tasks', tasks)
+		return 'Deleted data captured FAAS tested.'
+	}
+
+
+}

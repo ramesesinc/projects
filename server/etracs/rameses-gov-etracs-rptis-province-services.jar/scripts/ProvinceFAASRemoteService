@@ -41,7 +41,7 @@ class ProvinceFAASRemoteService
 		def oldfaas = supportSvc.findFaasById(faas)
 		if (!oldfaas){
 			supportSvc.saveFaasData(faas)
-			faasSvc.approveFaasByRemote(faas)
+			faasSvc.approveFaasByMunicipality(faas)
 			println 'Municipality approved FAAS successfully posted.'
 		}
 	}

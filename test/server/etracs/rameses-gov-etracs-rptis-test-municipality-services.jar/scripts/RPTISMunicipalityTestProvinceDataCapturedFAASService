@@ -1,0 +1,62 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.services.extended.*;
+
+public class RPTISMunicipalityTestProvinceDataCapturedFAASService
+{
+	@Env 
+	def env 
+
+	@ActiveDB('rptis_test_faas')
+	def em 
+
+	@Service('FAASService')
+	def faasSvc 
+
+	@Service('RPTLedgerService')
+	def ledgerSvc 
+
+	@Service('RPTISUnitTestService')
+	def test
+
+	@Service('RPTISTestLedgerService')
+	def ledgerTest
+
+
+	@ProxyMethod
+	public def testProvinceCreatedDataCapture( faas ) {
+		faas += faasSvc.openFaas(faas)
+		test.testEqual('faas.state', faas.state, 'CURRENT')
+		test.testNotNull('faas.appraiser', faas.appraiser)
+		test.testNotNull('faas.approver', faas.approver)
+		ledgerTest.testPendingLedgerFromFaas(faas)
+		return '[municipality] Data Capture FAAS tested'
+	}
+
+	@ProxyMethod
+	public void approveLedger( faas ) {
+		def ledger = em.findLedgerByFaasId(faas)
+        if (!ledger){
+            faas += faasSvc.openFaas(faas)
+            ledger = ledgerSvc.postNewLedger(faas)
+        }
+        if (ledger.state == 'PENDING'){
+            ledgerSvc.approveLedger(ledger)
+            em.fullyPaidLedger(ledger)
+        }
+	}
+
+
+	@ProxyMethod
+	public def testApprovedLedger( faas ) {
+		def ledger = em.findLedgerByFaasId(faas)
+		if (ledger){
+			ledger += ledgerSvc.openLedger(ledger)
+			ledgerTest.testApprovedLedger(ledger)
+		}
+		return '[municipality] Data Capture FAAS Ledger tested'
+	}
+
+
+}

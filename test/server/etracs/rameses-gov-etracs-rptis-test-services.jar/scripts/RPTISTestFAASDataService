@@ -1,0 +1,186 @@
+import com.rameses.annotations.*;
+import com.rameses.common.*;
+import com.rameses.util.*;
+import com.rameses.services.extended.*;
+
+public class RPTISTestFAASDataService
+{
+	@Env 
+	def env 
+
+	@Service('LGUService')
+	def lguSvc 
+
+	@Service('FAASService')
+	def faasSvc 
+
+	@Service('RPUService')
+	def rpuSvc 
+
+	@Service('PropertyClassificationService')
+	def propSvc
+
+	@Service('Var')
+	def var
+
+	@Service('EntityLookupService')
+	def entityLookup
+
+	@Service('DateService')
+	def dtSvc 
+
+	@Service('LandRYSettingLookupService')
+	def landSettingLookup
+
+	@Service('RPTUtil')
+	def util 
+
+	String LGUID = '063-06'
+	String BRGYID = '063-06-0001'
+
+
+	@ProxyMethod
+	public def createDataCaptureLandFaas(initinfo) {
+		initinfo.rputype = 'land'
+		initinfo.suffix = 0
+		initinfo.datacapture = true;
+
+		def info = createInitInfo(initinfo)
+		def faas = faasSvc.initCapture(info)
+		
+		if (initinfo.objid) 
+			faas.objid = initinfo.objid 
+
+		buildRealPropertyData(faas)
+		buildLandRpuData(faas)
+		buildFaasData(faas)
+		return faas 	
+	}
+
+	@ProxyMethod
+	public def createExaminationFinding(faas){
+		return [
+			objid 			: faas.objid, 
+			parent		 	: faas, 
+			dtinspected 	: dtSvc.serverDate,
+			findings 		: 'TEST FINDINGS',
+			recommendations : 'TEST RECOMMENDATIONS',
+			notedby 		: env.FULLNAME, 
+			notedbytitle    : env.JOBTITLE,
+			inspectors      : [],
+		]
+	}
+
+	def createInitInfo(initinfo){
+		def info =  [
+			pintype 	: var.pin_type,
+			ry 			: var.current_ry, 
+			lgu 		: lguSvc.lookupMunicipalityById(LGUID),
+			barangay    : lguSvc.lookupBarangayById(BRGYID),
+			txntype 	: faasSvc.getTxnType('GR'),
+			autonumber  : false,
+		]
+		info.putAll(initinfo)
+		util.buildPin(info)
+		return info 
+	}
+
+	void buildRealPropertyData(faas){
+		faas.rp.purok = 'PUROK 1'
+		faas.rp.surveyno = 'PSD 01'
+		faas.rp.cadastrallotno = 'LOT 1'
+		faas.rp.blockno = '1'
+		faas.rp.street = 'MAIN STREET'
+		faas.rp.north = 'LOT 2'
+		faas.rp.east = 'LOT 2'
+		faas.rp.south = 'LOT 2'
+		faas.rp.west = 'LOT 2'
+	}
+
+	void buildLandRpuData(faas){
+		faas.rpu.classification = propSvc.findById('RESIDENTIAL')
+		def subclass = getSubclass(faas);
+		faas.rpu.landdetails << [
+			objid 			: 'LD' + new java.rmi.server.UID(),
+			landrpuid 		: faas.rpu.objid,
+			subclass 		: subclass,
+			specificclass   : subclass.specificclass,
+			actualuse       : getActualUse(faas),
+			stripping 		: null, 
+			addlinfo 		: null, 
+			striprate		: 0.0,
+			areatype 		: subclass.specificclass.areatype,
+			area 			: 100.00,
+			areasqm 		: 100.00,
+			areaha 			: 0.0100,
+			basevalue 		: 0.0,
+			unitvalue		: 0.0,
+			taxable			: true,
+			basemarketvalue	: 0.0,
+			adjustment		: 0.0,
+			landvalueadjustment	: 0.0,
+			actualuseadjustment	: 0.0,
+			marketvalue		: 0.0,
+			assesslevel		: 0.0,
+			assessedvalue	: 0.0,
+		]
+
+		faas.rpu.putAll(rpuSvc.calculateAssessment(faas.rpu))
+	}
+
+	void buildFaasData(faas){
+		faas.effectivityyear = faas.rpu.ry + 1
+		faas.effectivityqtr = 1
+		faas.titleno = 'OCT-2939'
+		faas.titledate = null
+		def taxpayer = entityLookup.getList([searchtext:'a']).first()
+		taxpayer.address = taxpayer.address.text 
+		faas.taxpayer = taxpayer
+		faas.owner = [name:faas.taxpayer.name, address: faas.taxpayer.address]
+		faas.administrator = null 
+		faas.beneficiary = null 
+		faas.memoranda = 'GENERAL REVISION ' + faas.rpu.ry 
+		faas.cancelnote = null  
+		faas.restrictionid = null 
+
+		faas.appraiser = buildSignatory('APPRAISER A. APPRAISER', 'LAOO I', faas.rpu.ry)
+		faas.taxmapper = buildSignatory('TAXMAPPER T. TAXMAPPER', 'TAXMAPPER I', faas.rpu.ry)
+		faas.recommender = buildSignatory('RECOMMENDER R. RECOMMENDER', 'MUNICIPAL ASSESSOR', faas.rpu.ry)
+		faas.approver = buildSignatory('APPROVER R. APPROVER', 'PROVINCIAL ASSESSOR', faas.rpu.ry)
+	}
+
+	def buildSignatory(name, title, year){
+		return [
+			name  	: name, 
+			title 	: title, 
+			dtsigned : dtSvc.parse('yyyy-MM-dd', year + '-05-01')
+		]
+	}
+
+	def getSubclass(faas){
+		def params = [
+			ry   		: faas.rpu.ry,
+			lguid 		: faas.lguid,
+			searchtext 	: 'R1',
+		]
+
+		def subclasses = landSettingLookup.lookupSubclasses(params)
+		if (!subclasses)
+			throw new Exception('Subclass does not exist.')
+		return subclasses[0]
+	}
+
+	def getActualUse(faas){
+		def params = [
+			ry   		: faas.rpu.ry,
+			lguid 		: faas.lguid,
+			searchtext 	: 'AR',
+		]
+
+		def levels = landSettingLookup.lookupAssessLevels(params)
+		if (!levels)
+			throw new Exception('Actual Use does not exist.')
+		return levels[0]
+	}
+
+}

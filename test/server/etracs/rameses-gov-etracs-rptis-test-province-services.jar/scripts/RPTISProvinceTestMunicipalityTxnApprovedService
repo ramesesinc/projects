@@ -1,0 +1,52 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.services.extended.*;
+
+public class RPTISProvinceTestMunicipalityTxnApprovedService
+{
+	@Env 
+	def env 
+
+	@ActiveDB('rptis_test_faas')
+	def em 
+
+	@Service('FAASService')
+	def faasSvc 
+
+	@Service('RPTLedgerService')
+	def ledgerSvc 
+
+	@Service('RPTISUnitTestService')
+	def test
+
+	@Service('RPTISTestFAASOnlineService')
+	def faasOnlineTest
+
+
+	@Service('RPTISTestLedgerService')
+	def ledgerTest
+
+
+	@ProxyMethod
+	public def testMunicipalityApprovedFaasTxn( faas ) {
+		faasOnlineTest.testApprovedOnlineFaas(faas)
+		return '[province] Municipality approved Simple Transferred FAAS tested'
+	}
+
+	@ProxyMethod
+	public def testMunicipalityApprovedFaasTxnLedgerByFaas( faas ) {
+		faas += faasSvc.openFaas(faas)
+		def ledger = em.findLedgerByFaasId(faas)
+		if (ledger){
+			ledger += ledgerSvc.openLedger(ledger)
+			test.testNotEmpty('ledgerfaases', ledger.faases)
+			def currfaas = ledger.faases.find{it.faasid == faas.objid}
+			test.testNotNull('current-ledgerfaas', currfaas)
+			test.testEqual('current-ledgerfaas', currfaas.state, 'APPROVED')
+		}
+        return '[province] Municipality approved Simple Transferred Ledger tested'
+	}
+
+
+}

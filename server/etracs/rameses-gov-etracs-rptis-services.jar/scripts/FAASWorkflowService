@@ -83,7 +83,9 @@ class FAASWorkflowService extends ActiveWorkflowService
 
 
 	void removeNotification(task) {
-        notificationService.removeMessage([objid:task.refid])
+		if (task){
+        	notificationService.removeMessage([objid:task.refid])
+		}
 	}
 
 

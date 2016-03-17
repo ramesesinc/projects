@@ -1,0 +1,44 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.services.extended.*;
+
+public class RPTISMunicipalityTestProvinceTransferredFAASService
+{
+	@Env 
+	def env 
+
+	@ActiveDB('rptis_test_faas')
+	def em 
+
+	@Service('FAASService')
+	def faasSvc 
+
+	@Service('RPTLedgerService')
+	def ledgerSvc 
+
+	@Service('RPTISUnitTestService')
+	def test
+
+	@Service('RPTISTestFAASOnlineService')
+	def faasOnlineTest
+
+
+	@Service('RPTISTestLedgerService')
+	def ledgerTest
+
+
+	@ProxyMethod
+	public def testProvinceSimpleTransferredFaas( faas ) {
+		faasOnlineTest.testApprovedOnlineFaas(faas)
+		return '[municipality] Province Simple Transferred FAAS tested'
+	}
+
+	@ProxyMethod
+	public def testProvinceSimpleTransferredLedgerFromFaas( faas ) {
+		faasOnlineTest.testApprovedOnlineLedgerFromFaas(faas)
+        return '[municipality] Province Simple Transferred Ledger tested'
+	}
+
+
+}

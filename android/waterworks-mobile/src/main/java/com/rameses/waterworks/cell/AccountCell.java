@@ -28,6 +28,13 @@ public class AccountCell extends ListCell<Account>{
 
             ImageView image = new ImageView(new Image("icon/useraccount.png"));
             ImageView image2 = new ImageView(new Image("icon/useraccount-check.png"));
+            
+            if(Main.HEIGHT < 700){
+                image.setFitWidth(100);
+                image.setFitHeight(100);
+                image2.setFitWidth(100);
+                image2.setFitHeight(100);
+            }
 
             StackPane imgContainer = new StackPane();
             imgContainer.setAlignment(Pos.CENTER);
@@ -44,15 +51,13 @@ public class AccountCell extends ListCell<Account>{
             String addr = account.getAddress().replaceAll("\n", "");
             Label address = new Label(addr);
 
-            if(Main.HEIGHT > 800){
+            if(Main.HEIGHT > 700){
                 serialno.setStyle("-fx-font-size: 28px; -fx-font-weight: bold;");
                 name.setStyle("-fx-font-size: 22px;");
                 address.setStyle("-fx-font-size: 24px; -fx-font-style: italic;");
             }else{
-                image.setFitWidth(image.getFitWidth()*0.75);
-                image.setFitHeight(image.getFitHeight()*0.75);
-                serialno.setStyle("-fx-font-size: 22px; -fx-font-weight: bold;");
-                name.setStyle("-fx-font-size: 18px;");
+                serialno.setStyle("-fx-font-size: 15px; -fx-font-weight: bold;");
+                name.setStyle("-fx-font-size: 14px;");
                 address.setStyle("-fx-font-size: 12px; -fx-font-style: italic;");
             }
 

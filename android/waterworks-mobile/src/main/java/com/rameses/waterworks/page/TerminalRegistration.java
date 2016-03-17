@@ -47,12 +47,12 @@ public class TerminalRegistration {
         
         key = new TextField();
         key.getStyleClass().add("terminal-field");
-        key.setPrefWidth(350);
+        key.setPrefWidth(Main.HEIGHT > 700 ? 350 : 180);
         key.setFocusTraversable(false);
         
         user = new TextField();
         user.getStyleClass().add("terminal-field");
-        user.setPrefWidth(350);
+        user.setPrefWidth(Main.HEIGHT > 700 ? 350 : 180);
         user.setFocusTraversable(false);
         
         submit = new Button("Submit");
@@ -89,25 +89,21 @@ public class TerminalRegistration {
         
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
-        grid.setVgap(10);
-        grid.setHgap(20); 
+        grid.setVgap(Main.HEIGHT > 700 ? 10 : 5);
+        grid.setHgap(Main.HEIGHT > 700 ? 20 : 10); 
         grid.add(key_lb, 0, 0);
         grid.add(key, 1, 0);
         grid.add(user_lb, 0, 1);
         grid.add(user, 1, 1);
         grid.add(bcontainer, 1, 4);
         
-        VBox container = new VBox(30);
+        VBox container = new VBox(Main.HEIGHT > 700 ? 30 : 15);
         container.setAlignment(Pos.TOP_CENTER);
         container.getChildren().addAll(head,grid);
         
         root = new StackPane();
         root.setAlignment(Pos.CENTER);
-        if(Main.HEIGHT > 800){
-            root.setPadding(new Insets(50, 50, 50, 50));
-        }else{
-            root.setPadding(new Insets(15, 15, 15, 15));
-        }
+        root.setPadding(Main.HEIGHT > 700 ? new Insets(50, 50, 50, 50) : new Insets(15, 15, 15, 15));
         root.getChildren().add(container);
         root.setOnKeyReleased(new EventHandler<KeyEvent>(){
             @Override

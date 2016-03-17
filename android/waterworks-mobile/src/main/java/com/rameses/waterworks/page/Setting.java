@@ -8,7 +8,11 @@ import com.rameses.waterworks.database.Database;
 import com.rameses.waterworks.database.DatabasePlatformFactory;
 import com.rameses.waterworks.dialog.Dialog;
 import com.rameses.waterworks.layout.Header;
+import com.rameses.waterworks.printer.OneilPrinterHandler;
+import com.rameses.waterworks.printer.ZebraPrinterHandler;
 import com.rameses.waterworks.util.SystemPlatformFactory;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -20,7 +24,9 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
@@ -33,6 +39,8 @@ public class Setting {
     
     private VBox root;
     private ListView<String> listview;
+    private TextArea textArea;
+    String handler = "";
     
     public Setting(){
         Header.TITLE.setText("System Setting");
@@ -57,6 +65,24 @@ public class Setting {
         listview.setMaxHeight(170);
         listview.setFocusTraversable(true);
         
+        ToggleGroup group = new ToggleGroup();
+        
+        RadioButton oneil_btn = new RadioButton("Datamax Oneil");
+        oneil_btn.setToggleGroup(group);
+        oneil_btn.getStyleClass().add("login-label");
+        
+        RadioButton zebra_btn = new RadioButton("Zebra");
+        zebra_btn.setToggleGroup(group);
+        zebra_btn.getStyleClass().add("login-label");
+        
+        if(Main.PRINTERHANDLER != null){
+            if(Main.PRINTERHANDLER.getName().equals("ZEBRA")) zebra_btn.setSelected(true);
+            if(Main.PRINTERHANDLER.getName().equals("ONEIL")) oneil_btn.setSelected(true);
+        }
+        
+        VBox groupContainer = new VBox(5);
+        groupContainer.getChildren().addAll(zebra_btn, oneil_btn);
+        
         Button set = new Button("Set Printer");
         set.getStyleClass().add("terminal-button");
         set.setPrefWidth(200);
@@ -68,27 +94,42 @@ public class Setting {
                 PRINTER = BluetoothPlatformFactory.getPlatform().getBluetoothPrinter();
                 PRINTER.setPrinter(Main.PRINTERNAME);
                 PRINTER.openBT();
+                
+                if(zebra_btn.isSelected()){
+                    handler = "ZEBRA";
+                    Main.PRINTERHANDLER = new ZebraPrinterHandler();
+                }
+                if(oneil_btn.isSelected()){
+                    handler = "ONEIL";
+                    Main.PRINTERHANDLER = new OneilPrinterHandler();
+                }
+                
                 Dialog.showAlert("Printer is now set to " + Main.PRINTERNAME + ".");
-                com.rameses.waterworks.bean.Setting printersetting = new com.rameses.waterworks.bean.Setting("printer",Main.PRINTERNAME);
-                Database db = DatabasePlatformFactory.getPlatform().getDatabase();
-                if(!db.settingExist(printersetting)){
-                    db.createSetting(printersetting);
-                }else{
-                    db.updateSetting(printersetting);
+                textArea.setText(Main.PRINTERHANDLER.getScriptCode());
+                List<com.rameses.waterworks.bean.Setting> settings = new ArrayList<com.rameses.waterworks.bean.Setting>();
+                settings.add(new com.rameses.waterworks.bean.Setting("printer",Main.PRINTERNAME));
+                settings.add(new com.rameses.waterworks.bean.Setting("handler",handler));
+                Iterator<com.rameses.waterworks.bean.Setting> it = settings.iterator();
+                while(it.hasNext()){
+                    Database db = DatabasePlatformFactory.getPlatform().getDatabase();
+                    if(!db.settingExist(it.next())){
+                        db.createSetting(it.next());
+                    }else{
+                        db.updateSetting(it.next());
+                    }
                 }
             }
         });
         
-        TextArea textArea = new TextArea();
+        textArea = new TextArea();
         textArea.setEditable(false);
         textArea.setPrefHeight(Main.HEIGHT);
         textArea.setPrefWidth(Main.WIDTH);
-        textArea.setText(SystemPlatformFactory.getPlatform().getSystem().getReportData());
+        if(Main.PRINTERHANDLER != null) textArea.setText(Main.PRINTERHANDLER.getScriptCode());
         
         root = new VBox(10);
         root.setAlignment(Pos.TOP_CENTER);
-        if(Main.HEIGHT > 800) root.setPadding(new Insets(20, 20, 20, 20));
-        if(Main.HEIGHT < 800) root.setPadding(new Insets(10, 10, 10, 10));
+        root.setPadding(Main.HEIGHT > 700 ? new Insets(20, 20, 20, 20) : new Insets(10, 10, 10, 10));
         root.setOnKeyReleased(new EventHandler<KeyEvent>(){
             @Override
             public void handle(KeyEvent event) {
@@ -97,7 +138,7 @@ public class Setting {
                 }
             }
         });
-        root.getChildren().addAll(createTitle("Printer"), listview, set, createTitle("Report Data"), textArea);
+        root.getChildren().addAll(createTitle("Printer"), listview, groupContainer, set, createTitle("Report Data"), textArea);
         
         loadPrinterData();
     }

@@ -32,8 +32,6 @@ class WaterworksMobileService {
 			y = y-1;
 		}
 
-		def penalty = 0.00;
-		def othercharge = 0.00;
 		def duemonth = dateSvc.getServerMonth();
 		def dueyear = dateSvc.getServerYear();
 		def duedate = new DateBean(dueyear + "-" + duemonth + "-" + 20).getDate();
@@ -41,6 +39,10 @@ class WaterworksMobileService {
 		def todate = new DateBean(dueyear + "-" + duemonth + "-" + 20).getDate();
 		def discodate = new DateBean(dueyear + "-" + duemonth + "-" + 28).getDate();
 		def rundate = dateSvc.getServerDate();
+		def items = [
+			[account: 'Materials', amount:205.50],
+			[account: 'Compromise', amount:45.75]
+		];
 
 		wm.insertForDownload(
 			[
@@ -49,8 +51,6 @@ class WaterworksMobileService {
 				year       : y, 
 				month      : m, 
 				batchid    : batchid,
-				penalty    : penalty,
-				othercharge: othercharge,
 				duemonth   : duemonth,
 				dueyear    : dueyear,
 				duedate    : duedate,

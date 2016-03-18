@@ -156,7 +156,6 @@ class MunicipalityFAASRemoteCallHandler
 		}
 	}
 
-
 	void notifyRecommender(faasdata){
 		//get recommender and set taskid to approver task 
 		//to open the faas record in approve state 
@@ -173,17 +172,22 @@ class MunicipalityFAASRemoteCallHandler
 
 
 	void doNotifyRecommender(currtask, info){
-		def msg = [
-            objid     : currtask.refid,
-            recipientid : (currtask.assignee.objid ? currtask.assignee.objid : '-'),
-            recipienttype : 'user',
-            senderid  : (info.sender.objid ? info.sender.objid : '-'),
-            sender    : info.sender.name,
-            message   : info.message,
-            filetype  : 'faas',
-            data 	  : [taskid: currtask.objid],
-        ]
-        notifySvc.addMessage(msg)
+		try{
+			def msg = [
+	            objid     : currtask.refid,
+	            recipientid : (currtask.assignee.objid ? currtask.assignee.objid : '-'),
+	            recipienttype : 'user',
+	            senderid  : (info.sender.objid ? info.sender.objid : '-'),
+	            sender    : info.sender.name,
+	            message   : info.message,
+	            filetype  : 'faas',
+	            data 	  : [taskid: currtask.objid],
+	        ]
+	        notifySvc.addMessage(msg)
+		}
+		catch(e){
+			println 'Cannot notify recommender. [sender] ' + info.sender 
+		}
 	}
 
 

@@ -112,7 +112,8 @@ class SubdivisionSupportService
     @ProxyMethod
     public def postSubdivisionData(subdivision){
         println 'Saving subdivision'
-        if (!subdivision._resubmitted){
+        def oldsub = em.findSubdivisionById(subdivision)
+        if (!subdivision._resubmitted || !oldsub){
             txnRef.delete(subdivision.objid)
             em.save(subdivision)
         }

@@ -1,4 +1,4 @@
-/* v2.5.04.032 */
+/* v2.5.04.032-03001 */
 
 - TREAURY
 	- 
@@ -9,6 +9,7 @@
 - ASSESSOR
 	- Fix cancelledfaas missing fields
 	- Resend Province RedFlag to municipality support
+	- Fix subdivision reposting bug 
 	
 - LANDTAX: 
 	-

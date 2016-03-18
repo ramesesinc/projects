@@ -112,7 +112,8 @@ class SubdivisionSupportService
     @ProxyMethod
     public def postSubdivisionData(subdivision){
         println 'Saving subdivision'
-        if (!subdivision._resubmitted){
+        def oldsub = em.findSubdivisionById(subdivision)
+        if (!subdivision._resubmitted || !oldsub){
             txnRef.delete(subdivision.objid)
             em.save(subdivision)
         }
@@ -256,10 +257,13 @@ class SubdivisionSupportService
         subdivision.faases.each{
             entitySvc.save(it.taxpayer)
             it.taxpayer.address = it.taxpayer.address?.text
-            if (existFaas(it))
+            if (existFaas(it)){
                 faasSvc.updateFaas(it)
-            else
+            }
+            else{
+                it._checkreference = false
                 faasSvc.createFaas(it)
+            }
         }
     }
 }

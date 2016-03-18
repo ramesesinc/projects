@@ -202,5 +202,42 @@ class WaterworksBillingService  {
 			rundate     : "02/12/2016"
 		];
 	}
+	
+	@ProxyMethod
+	def generateReportData(def entity){
+		def billing = [
+            [account: 'WATER FEE', amount: 252.80],
+            [account: 'FRNCHSE TAX', amount: 5.88],
+            [account: 'PCA', amount: 35.76],
+            [account: 'PWA', amount: 5.22]
+        ];
+        def chartdata = [
+            [month: 'Jan', consumption: 37],
+            [month: 'Feb', consumption: 40],
+            [month: 'Mar', consumption: 58],
+            [month: 'Apr', consumption: 94],
+            [month: 'May', consumption: 102],
+            [month: 'Jun', consumption: 70],
+        ];
+        entity.statementno = 'ST-084-0032';
+        entity.printdate = dateSvc.getServerDate();
+        entity.lastpaymentdate = dateSvc.getServerDate();
+        entity.previousamount = 308.00;
+        entity.barcode = '1264939847';
+        entity.consumercode = '89937';
+        entity.consumertype = 'REGULAR';
+        entity.billsequence = 'SEQ-9483-933';
+        entity.duedate = dateSvc.getServerDate();
+        entity.nextduedate = dateSvc.getServerDate();
+        entity.periodfrom = dateSvc.getServerDate();
+        entity.periodto = dateSvc.getServerDate();
+        entity.prevreadingdate = dateSvc.getServerDate();
+        entity.presreadingdate = dateSvc.getServerDate();
+        entity.consumption = entity.lastreading - entity.prevreading;
+        entity.averageconsumption = 22.35;
+        entity.billingdetails = billing;
+        entity.chartdata = chartdata;
+		return entity;
+	}
 
 }

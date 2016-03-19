@@ -1,5 +1,5 @@
 [findFaasById]
-select objid from faas where objid = $P{objid}
+select objid, state from faas where objid = $P{objid}
 
 [findRpuById]
 select objid from rpu where objid = $P{objid}

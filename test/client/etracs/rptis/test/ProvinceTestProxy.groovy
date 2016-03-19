@@ -29,22 +29,4 @@ class ProvinceTestProxy
         }
         return instance.createService(serviceName)
     }
-
-
-    public static void waitForFaas(faas, helper){
-        println 'Waiting for faas data...'  
-        def available = helper.findFaas(faas)
-        while(!available){
-            sleep(3000)
-            available = helper.findFaas(faas)
-        }
-    }
-
-    public static void sleep(ms){
-        try{ 
-            Thread.sleep(ms)
-        }catch(e){
-            println e.printStackTrace()
-        }
-    }
 }

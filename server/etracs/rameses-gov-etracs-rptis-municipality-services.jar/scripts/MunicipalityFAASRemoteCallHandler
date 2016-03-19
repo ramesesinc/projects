@@ -36,6 +36,7 @@ class MunicipalityFAASRemoteCallHandler
 
 	@ProxyMethod
 	public void postMunicipalFaasApprovedByProvince( faasdata ) {
+		println '[postMunicipalFaasApprovedByProvince] Posting FAAS approval from province.'
 		def state = faasSvc.getState( faasdata.objid )
 		if (! state.toLowerCase().matches('current|cancelled')){
 			def faas = faasSvc.openFaas(faasdata)
@@ -55,7 +56,7 @@ class MunicipalityFAASRemoteCallHandler
 
 
 	public void approveFaasByProvince(faasdata){
-		println 'Processing FAAS approval by province...'
+		println '[approveFaasByProvince] Processing FAAS approval by province.'
 		def state = null;
 		try{
 			state = faasSvc.getState( faasdata.objid )
@@ -89,52 +90,6 @@ class MunicipalityFAASRemoteCallHandler
 		doNotifyRecommender(recommendertask, disapproveinfo)
 	}
 
-/*
-	private void doCreateFaas(state, faasdata){
-		if (state == null || "current".equalsIgnoreCase(state))
-			supportSvc.saveFaasData(faasdata)
-			
-		if (state == null){
-			faasSvc.approveFaasByRemote(faasdata)
-			postLedger(faasdata)
-		}
-		println 'FAAS has been successfully created.'
-	}
-
-	void postLedger(faas){
-		if (faas.txntype.objid.matches('SD|CS') && faas.rpu.rputype == 'land'){
-            ledgerSvc.postNewLedger(faas)
-        }
-        else if (faas.txntype.objid.matches('SD|CS') && faas.rpu.rputype != 'land'){
-            ledgerSvc.postLedgerFaasData(faas);
-        }
-		else if ( faas.txntype.newledger || util.isTrue(faas.datacapture) ) {
-            postNewLedger(faas)
-        }
-        else {
-        	ledgerSvc.postLedgerFaasData(faas);
-        }		
-	}
-
-    void postNewLedger(faas){
-        def manualledger = ledgerSvc.findLedgerbyTdNo(faas)
-            
-        if (!manualledger)
-            manualledger = ledgerSvc.findLedgerbyPrevTdNo(faas)
-
-        if (!manualledger)
-            manualledger = ledgerSvc.findLedgerByFullPin(faas)
-
-        if (!manualledger){
-            ledgerSvc.postNewLedger(faas);
-        }
-        else {
-            ledgerSvc.reconcileManualLedger(faas, manualledger)
-        }
-    }
-    */
-
-
 	void doApproveFaas(faasdata){
 		def faas = faasSvc.openFaas(faasdata)
 		faas.approver = faasdata.approver
@@ -151,7 +106,6 @@ class MunicipalityFAASRemoteCallHandler
 	void saveTasks( faas ) {
 		task.deleteOpenTask(faas)
 		faas.tasks.each{
-			println 'task -> ' + it.state + ': ' + it.actor.name 
 			task.save(it)
 		}
 	}
@@ -172,22 +126,17 @@ class MunicipalityFAASRemoteCallHandler
 
 
 	void doNotifyRecommender(currtask, info){
-		try{
-			def msg = [
-	            objid     : currtask.refid,
-	            recipientid : (currtask.assignee.objid ? currtask.assignee.objid : '-'),
-	            recipienttype : 'user',
-	            senderid  : (info.sender.objid ? info.sender.objid : '-'),
-	            sender    : info.sender.name,
-	            message   : info.message,
-	            filetype  : 'faas',
-	            data 	  : [taskid: currtask.objid],
-	        ]
-	        notifySvc.addMessage(msg)
-		}
-		catch(e){
-			println 'Cannot notify recommender. [sender] ' + info.sender 
-		}
+		def msg = [
+            objid     : currtask.refid,
+            recipientid : (currtask.assignee.objid ? currtask.assignee.objid : '-'),
+            recipienttype : 'user',
+            senderid  : (info.sender.objid ? info.sender.objid : '-'),
+            sender    : info.sender.name,
+            message   : info.message,
+            filetype  : 'faas',
+            data 	  : [taskid: currtask.objid],
+        ]
+        notifySvc.addMessage(msg)
 	}
 
 

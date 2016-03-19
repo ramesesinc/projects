@@ -8,16 +8,12 @@ class MunicipalityTestFaas_DCTR_Approve
         def provhelper = ProvinceTestProxy.create('RPTISTestHelperService')
         def munihelper = MunicipalityTestProxy.create('RPTISTestHelperService')
 
-        if (!faas.objid){
-            faas.objid = 'DC' + faas.iparcel
-        }
-
         /*=================================================
         * MUNICIPALITY: CREATE DATACAPTURE FAAS 
         =================================================*/
         println '[municipality] Capturing FAAS'
         def munisvc = MunicipalityTestProxy.create('RPTISTestFAASDataCaptureService')
-        munisvc.createDataCapture(faas)
+        faas = munisvc.createDataCapture(faas)
         munisvc.submitDataCaptureForApproval(faas)
         println munisvc.testSubmittedDataCapture(faas)
         munisvc.approveDataCapture(faas)
@@ -38,7 +34,7 @@ class MunicipalityTestFaas_DCTR_Approve
         * MUNICIPALITY: TEST SIMPLE TRANSFER FAAS 
         =================================================*/
         println '[municipality] Processing FAAS Simple Transfer'
-        munisvc = MunicipalityTestProxy.create('RPTISMunicipalityTestTransferFAASService')
+        munisvc = MunicipalityTestProxy.create('RPTISMunicipalityTestTRFAASService')
         def task = munisvc.createSimpleTransferFaas(faas)
         def trfaas = [objid:task.objid]
 

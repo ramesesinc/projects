@@ -3,7 +3,7 @@ import com.rameses.util.*;
 import java.rmi.server.*;
 import com.rameses.services.extended.*;
 
-public class RPTISProvinceTestTransferFAASService
+public class RPTISMunicipalityTestTRFAASService
 {
     @Env 
     def env 
@@ -19,6 +19,9 @@ public class RPTISProvinceTestTransferFAASService
 
     @Service('RPTISTestHelperService')
     def helper 
+
+    @Service('RPTISTestFAASOnlineService')
+    def faasOnlineTest
 
 
     @Service('FAASService')
@@ -36,19 +39,6 @@ public class RPTISProvinceTestTransferFAASService
     @Service('RPTLedgerService')
     def ledgerSvc 
 
-
-    @ProxyMethod
-    public void postProvinceLedger(faas) {
-        def ledger = em.findLedgerByFaasId(faas)
-        if (!ledger){
-            faas += faasSvc.openFaas(faas)
-            ledger = ledgerSvc.postNewLedger(faas)
-        }
-        if (ledger.state == 'PENDING'){
-            ledgerSvc.approveLedger(ledger)
-            em.fullyPaidLedger(ledger)
-        }
-    }
 
     @ProxyMethod
     public def createSimpleTransferFaas(faas) {
@@ -69,8 +59,9 @@ public class RPTISProvinceTestTransferFAASService
 
     @ProxyMethod
     public def doReceive(task){
-        task += assignToMe(task)
+        //task += assignToMe(task)
         helper.openTask(workflowSvc, task)
+        println 'task.obid -> ' + task.objid + '  data.obid -> ' + task.data?.objid 
         def faas = task.data 
         def taxpayer = entityLookup.getList([searchtext:'b']).first()
         taxpayer.address = taxpayer.address.text 
@@ -79,7 +70,7 @@ public class RPTISProvinceTestTransferFAASService
         faas.memoranda = 'TRANSFER TEST'
         faasSvc.updateFaas(faas)
         em.setFaasRequirementsAsComplied(faas)
-        return helper.signal(workflowSvc, task, 'submit_examiner', false)
+        return helper.signal(workflowSvc, task, 'submit', false)
     }
 
 
@@ -118,9 +109,35 @@ public class RPTISProvinceTestTransferFAASService
     }    
 
     @ProxyMethod
+    public def doRecommenderSubmitToProvince(task){
+        return helper.doRecommenderSubmitToProvince(workflowSvc, task)
+    }    
+
+    @ProxyMethod
     public def doApprover(task){
         return helper.doApprover(workflowSvc, task)
     }    
+
+
+    @ProxyMethod
+    public def testApprovedTransfer(faas){
+        faasOnlineTest.testApprovedOnlineFaas(faas)
+        return '[municipality] Approved Simple Transfer FAAS tested.'
+    }
+
+    @ProxyMethod
+    public def testApprovedLedgerFromFaas(faas){
+        faasOnlineTest.testApprovedOnlineLedgerFromFaas(faas)
+        return '[municipality] Approved Simple Transfer Ledger tested.'
+    }
+
+
+    @ProxyMethod
+    public def testSubmittedToProvinceOnlineFaas(trfaas){
+        trfaas += faasSvc.openFaas(trfaas)
+        test.testEqual('trfaas.state', trfaas.state, 'INTERIM')
+        test.testEqual('trfaas.taskstate', trfaas.taskstate, 'provapprover')
+    }
 
 
 }

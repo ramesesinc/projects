@@ -5,9 +5,8 @@ class ProvinceTestFaas_DC_Delete
         println '[province] Data capture FAAS and Delete Test'
         println '='*50
 
-        def svc = ProvinceTestProxy.create('RPTISProvinceTestDataCaptureFAASService')
-        faas.objid = 'DC' + faas.iparcel
-        svc.createDataCapture(faas)
+        def svc = ProvinceTestProxy.create('RPTISProvinceTestDCFAASService')
+        faas = svc.createDataCapture(faas)
 
         svc.submitDataCaptureForApproval(faas)
         println svc.testSubmittedDataCapture(faas)

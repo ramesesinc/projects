@@ -3,7 +3,7 @@ import com.rameses.util.*;
 import java.rmi.server.*;
 import com.rameses.services.extended.*;
 
-public class RPTISMunicipalityTestProvinceTransferredFAASService
+public class RPTISMunicipalityTestProvinceDCTRApproveService
 {
 	@Env 
 	def env 
@@ -29,13 +29,13 @@ public class RPTISMunicipalityTestProvinceTransferredFAASService
 
 
 	@ProxyMethod
-	public def testProvinceSimpleTransferredFaas( faas ) {
+	public def testProvinceTransferredFaas( faas ) {
 		faasOnlineTest.testApprovedOnlineFaas(faas)
 		return '[municipality] Province Simple Transferred FAAS tested'
 	}
 
 	@ProxyMethod
-	public def testProvinceSimpleTransferredLedgerFromFaas( faas ) {
+	public def testProvinceTransferredLedger( faas ) {
 		faasOnlineTest.testApprovedOnlineLedgerFromFaas(faas)
         return '[municipality] Province Simple Transferred Ledger tested'
 	}

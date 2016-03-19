@@ -3,6 +3,9 @@ import com.rameses.util.*;
 import java.rmi.server.*;
 import com.rameses.services.extended.*;
 
+/*
+* Test a Data Capture FAAS created and approved from the Province
+*/
 public class RPTISProvinceTestMunicipalityTxnApprovedService
 {
 	@Env 

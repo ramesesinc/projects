@@ -6,8 +6,7 @@ class MunicipalityTestFaas_DC_Delete
         println '='*50
 
         def svc = MunicipalityTestProxy.create('RPTISTestFAASDataCaptureService')
-        faas.objid = 'DC' + faas.iparcel
-        svc.createDataCapture(faas)
+        faas = svc.createDataCapture(faas)
 
         svc.submitDataCaptureForApproval(faas)
         println svc.testSubmittedDataCapture(faas)

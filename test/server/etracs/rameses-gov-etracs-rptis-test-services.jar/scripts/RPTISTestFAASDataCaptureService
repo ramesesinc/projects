@@ -27,6 +27,9 @@ public class RPTISTestFAASDataCaptureService
 	
 	@ProxyMethod
 	public def createDataCapture(initinfo) {
+		if (!initinfo.objid)
+			initinfo.objid = 'F' + initinfo.isection + '-' + initinfo.iparcel
+
 		def faas = dataSvc.createDataCaptureLandFaas(initinfo)
 		faasSvc.createFaas(faas)
 		return faas 

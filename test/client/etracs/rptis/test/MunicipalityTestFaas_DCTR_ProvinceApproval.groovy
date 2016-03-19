@@ -8,16 +8,12 @@ class MunicipalityTestFaas_DCTR_ProvinceApproval
         def provhelper = ProvinceTestProxy.create('RPTISTestHelperService')
         def munihelper = MunicipalityTestProxy.create('RPTISTestHelperService')
 
-        if (!faas.objid){
-            faas.objid = 'DC' + faas.iparcel
-        }
-
         /*=================================================
         * MUNICIPALITY: CREATE DATACAPTURE FAAS 
         =================================================*/
         println '[municipality] Capturing FAAS'
         def munisvc = MunicipalityTestProxy.create('RPTISTestFAASDataCaptureService')
-        munisvc.createDataCapture(faas)
+        faas = munisvc.createDataCapture(faas)
         munisvc.submitDataCaptureForApproval(faas)
         println munisvc.testSubmittedDataCapture(faas)
         munisvc.approveDataCapture(faas)
@@ -31,6 +27,7 @@ class MunicipalityTestFaas_DCTR_ProvinceApproval
         println munisvc.testPendingLedgerFromFaas(faas)
         def ledger = munisvc.approveLedgerFromFaas(faas, true)
         println munisvc.testApprovedLedger(ledger)
+        println '[municipality] Approved ledger tested'
 
 
 
@@ -38,7 +35,7 @@ class MunicipalityTestFaas_DCTR_ProvinceApproval
         * MUNICIPALITY: TEST SIMPLE TRANSFER FAAS 
         =================================================*/
         println '[municipality] Processing FAAS Simple Transfer'
-        munisvc = MunicipalityTestProxy.create('RPTISMunicipalityTestTransferFAASService')
+        munisvc = MunicipalityTestProxy.create('RPTISMunicipalityTestTRFAASService')
         def task = munisvc.createSimpleTransferFaas(faas)
         def trfaas = [objid:task.objid]
 
@@ -46,13 +43,35 @@ class MunicipalityTestFaas_DCTR_ProvinceApproval
         task = munisvc.doTaxmapping(task)
         task = munisvc.doAppraisal(task)
         task = munisvc.doRecommenderSubmitToProvince(task)
-        println '[municipality] Simple Transfer approved.'
+        munisvc.testSubmittedToProvinceOnlineFaas(trfaas)
+        println '[municipality] Simple Transfer submitted to province for approval'
 
 
         /*=================================================
-        * MUNICIPALITY: TEST MUNICIPALITY SUBMISSION TO PROVINCE SIMPLE TRANSFER FAAS 
+        * PROVINCE: APPROVE AND TEST TRANSFERRED FAAS FROM MUNICIPALITY 
         =================================================*/
-        munisvc.testSubmittedToProvinceOnlineFaas(trfaas)
+        println '[province] Approve and test FAAS Transfer submitted to Province'
+        TestHelper.waitForFaas(trfaas, provhelper)
+        def provsvc = ProvinceTestProxy.create('RPTISProvinceTestMunicipalityTRProvinceApprovalService')
+        task = provsvc.openFaas(trfaas)
+        task = provsvc.doReceive(task)
+        task = provsvc.doTaxmapping(task)
+        task = provsvc.doTaxmappingApproval(task)
+        task = provsvc.doAppraisal(task)
+        task = provsvc.doAppraisalApproval(task)
+        task = provsvc.doRecommender(task)
+        task = provsvc.doApprover(task)
+        provsvc.testApprovedTransfer(trfaas)
+        println '[province] Transfer FAAS approved and tested'
+
+
+        /*=================================================
+        * PROVINCE: TEST MUNICIPALITY APPROVED SIMPLE TRANSFER FAAS 
+        =================================================*/
+        munisvc = MunicipalityTestProxy.create('RPTISMunicipalityTestTRFAASService')
+        TestHelper.waitForCurrentFaas(trfaas, munihelper)
+        println munisvc.testApprovedTransfer(trfaas)
+        println munisvc.testApprovedLedgerFromFaas(trfaas)
         println 'Test Completed.'
     }
 }

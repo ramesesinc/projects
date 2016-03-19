@@ -5,11 +5,9 @@ import static com.rameses.Main.PRINTER;
 import com.rameses.waterworks.bean.Account;
 import com.rameses.waterworks.bean.Reading;
 import com.rameses.waterworks.bluetooth.BluetoothPlatformFactory;
-import com.rameses.waterworks.bluetooth.BluetoothPort;
 import com.rameses.waterworks.database.Database;
 import com.rameses.waterworks.database.DatabasePlatformFactory;
 import com.rameses.waterworks.dialog.Dialog;
-import com.rameses.waterworks.printer.PrinterHandler;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -33,7 +31,6 @@ public class AccountDetail {
     public AccountDetail(Account account){
         Button close = new Button("Close");
         close.getStyleClass().add("terminal-button");
-        close.setPrefWidth(120);
         close.setFocusTraversable(true);
         close.setOnAction(new EventHandler<ActionEvent>(){
             @Override
@@ -42,9 +39,20 @@ public class AccountDetail {
             }
         });
         
+        Button capture = new Button("Capture");
+        capture.getStyleClass().add("terminal-button");
+        capture.setFocusTraversable(true);
+        capture.setOnAction(new EventHandler<ActionEvent>(){
+            @Override
+            public void handle(ActionEvent event) {
+                Dialog.hide();
+                Main.LOG.error("Account Data", account.toString());
+                Main.ROOT.setCenter(new ReadingSheet(account).getLayout());
+            }
+        });
+        
         Button print = new Button("Print");
         print.getStyleClass().add("terminal-button");
-        print.setPrefWidth(120);
         print.setFocusTraversable(true);
         print.setOnAction(new EventHandler<ActionEvent>(){
             @Override
@@ -61,7 +69,10 @@ public class AccountDetail {
                     return;
                 }
                 account.setPresReading(i);
-                PrinterHandler handler = new PrinterHandler(account);
+                if(!Main.PRINTERHANDLER.getError().isEmpty()){
+                    Dialog.showError(Main.PRINTERHANDLER.getError());
+                    return;
+                }
                 
                 if(Main.PRINTER ==  null){
                     PRINTER = BluetoothPlatformFactory.getPlatform().getBluetoothPrinter();
@@ -69,7 +80,7 @@ public class AccountDetail {
                     PRINTER.openBT();
                 }
                 PRINTER.setError("");
-                PRINTER.print(handler.getData());
+                PRINTER.print(Main.PRINTERHANDLER.getData(account));
                 if(!PRINTER.getError().isEmpty()){
                     Dialog.showError(PRINTER.getError());
                     PRINTER.closeBT();
@@ -82,10 +93,10 @@ public class AccountDetail {
             }
         });
         
-        HBox btnContainer = new HBox(10);
+        HBox btnContainer = new HBox(Main.HEIGHT > 700 ? 10 : 5);
         btnContainer.setAlignment(Pos.CENTER_RIGHT);
-        btnContainer.setPadding(new Insets(15, 0, 0, 0));
-        btnContainer.getChildren().addAll(print,close);
+        btnContainer.setPadding(Main.HEIGHT > 700 ? new Insets(15, 0, 0, 0) : new Insets(5, 0, 0, 0));
+        btnContainer.getChildren().addAll(print,capture,close);
         
         Database db = DatabasePlatformFactory.getPlatform().getDatabase();
         Reading reading = db.findReadingByAccount(account.getObjid());
@@ -97,12 +108,9 @@ public class AccountDetail {
             account.setTotalDue(reading.getTotalDue());
         }
         
-        HBox readingContainer = new HBox(10);
-        if(Main.HEIGHT > 800){
-            readingContainer.setPadding(new Insets(20, 10, 20, 10));
-        }else{
-            readingContainer.setPadding(new Insets(10, 5, 10, 5));
-        }
+        HBox readingContainer = new HBox(Main.HEIGHT > 700 ? 10 : 5);
+        readingContainer.setPadding(Main.HEIGHT > 700 ? new Insets(20, 10, 20, 10) : new Insets(10, 5, 10, 5));
+            
         readingContainer.setStyle("-fx-skin: \"com.sun.javafx.scene.control.skin.ButtonSkin\"; -fx-background-color: -fx-shadow-highlight-color, -fx-outer-border, -fx-inner-border, -fx-body-color;");
         readingContainer.setAlignment(Pos.CENTER);
         readingContainer.getChildren().addAll(
@@ -118,15 +126,12 @@ public class AccountDetail {
         account.setAmtDue(amtdue);
         account.setTotalDue(totaldue);
         
-        root = new VBox(15);
+        root = new VBox(Main.HEIGHT > 700 ? 15 : 2);
         root.setStyle("-fx-background-color: white;");
-        if(Main.HEIGHT > 800){
-            root.setMinWidth(Main.WIDTH-150);
-        }else{
-            root.setMinWidth(Main.WIDTH-40);
-        }
+        root.setMinWidth(Main.HEIGHT > 700 ? Main.WIDTH-150 : Main.WIDTH-40);
+        root.setMaxWidth(Main.HEIGHT > 700 ? Main.WIDTH-150 : Main.WIDTH-8);
         root.setAlignment(Pos.CENTER);
-        root.setPadding(new Insets(20));
+        root.setPadding(Main.HEIGHT > 700 ? new Insets(20) : new Insets(10));
         root.getChildren().add(createDetail("Account No",account.getAcctNo()));
         root.getChildren().add(createDetail("Name",account.getAcctName()));
         root.getChildren().add(createDetail("Address",account.getAddress()));
@@ -147,26 +152,26 @@ public class AccountDetail {
     
     private HBox createDetail(String key,String value){
         Label label1 = new Label(key);
-        label1.setPrefWidth(180);
+        label1.setMinWidth(Main.HEIGHT > 700 ? 180 : 90);
         label1.setTextAlignment(TextAlignment.RIGHT);
         
         Label label2 = new Label(":");
         
-        label2.setPrefWidth(30);
+        label2.setPrefWidth(Main.HEIGHT > 700 ? 30 : 10);
         
         Label label3 = new Label(value);
 
-        if(Main.HEIGHT > 800){
+        if(Main.HEIGHT > 700){
             label1.setStyle("-fx-font-size: 25px;");
             label2.setStyle("-fx-font-size: 25px;");
             label3.setStyle("-fx-font-size: 24px; -fx-font-weight: bold;");
         }else{
-            label1.setStyle("-fx-font-size: 19px;");
-            label2.setStyle("-fx-font-size: 19px;");
-            label3.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
+            label1.setStyle("-fx-font-size: 14px;");
+            label2.setStyle("-fx-font-size: 14px;");
+            label3.setStyle("-fx-font-size: 13px; -fx-font-weight: bold;");
         }
         
-        HBox container = new HBox(10);
+        HBox container = new HBox(Main.HEIGHT > 700 ? 10 : 5);
         container.getChildren().addAll(label1,label2,label3);
         
         return container;
@@ -176,13 +181,14 @@ public class AccountDetail {
         Label label1 = new Label(key);
         label1.getStyleClass().add("account-field-name");
         label1.getStyleClass().add("account-columnar-name");
-        label1.setPrefWidth(180);
+        label1.setPrefWidth(Main.HEIGHT > 700 ? 180 : 90);
         
         Label label2 = new Label(value);
         label2.getStyleClass().add("account-field-value");
         label2.getStyleClass().add("account-columnar-value");
-        label2.setStyle("-fx-background-color: white; -fx-font-size: 28px; -fx-font-weight: bold;");
-        label2.setPrefWidth(180);
+        label2.setStyle("-fx-background-color: white; -fx-font-weight: bold;");
+        label2.setStyle(Main.HEIGHT > 700 ? "-fx-font-size: 28px;" : "-fx-font-size: 16px;");
+        label2.setPrefWidth(Main.HEIGHT > 700 ? 180 : 90);
         
         VBox container = new VBox();
         container.setStyle("-fx-border-width: 1px; -fx-border-color: #7dbce8;");

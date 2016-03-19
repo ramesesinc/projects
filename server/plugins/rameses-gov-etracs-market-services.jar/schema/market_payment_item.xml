@@ -1,0 +1,15 @@
+<schema  adapter="market">
+
+	<element tablename="market_payment_item">
+		<field name="objid" primary="true"/>
+		<complex name="parent" ref="market_payment" jointype="many-to-one">
+			<key field="parentid" target="objid"/>
+		</complex>	
+		<field name="amtpaid" required="true"/>	
+		<field name="surchargepaid" required="true"/>	
+		<field name="interestpaid" required="true"/>	
+		<field name="imonth" required="true"/>	
+		<field name="iyear" required="true"/>	
+	</element>
+</schema>
+

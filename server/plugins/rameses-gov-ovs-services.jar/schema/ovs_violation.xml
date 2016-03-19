@@ -1,0 +1,9 @@
+<schema adapter="violation">
+	<element name="ovs_violation" tablename="violation">
+		<field name="objid" primary="true" prefix="VIO"/>
+		<field name="title" required="true" caption="Title" indexed="true" searchable="true"/>
+		<field name="section" required="true" caption="Section" indexed="true" searchable="true"/>
+		<field name="article" required="true" caption="Article" indexed="true" searchable="true"/>
+		<field name="description" required="true" caption="Description"/>
+	</element>
+</schema>

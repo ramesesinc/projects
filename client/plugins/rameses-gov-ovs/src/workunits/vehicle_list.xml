@@ -1,0 +1,8 @@
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" 
+          schemaName="ovs_vehicle" 
+          cols="name,plateno,orcr,owner.name" allowDelete="true">
+    <invokers>
+        <invoker folderid="/explorer/master/ovs" caption="Vehicles" index="5" action="init"/>
+        <invoker folderid="/home/ovs" caption="Vehicles" index="5" action="init"/>
+    </invokers>
+</workunit>

@@ -1,8 +1,7 @@
-<workunit>
+<workunit schemaName="waterworks_stubout">
     <invokers>
-        <invoker type="waterworks_stubout:create" caption="Stub-out" action="init" index="5" target="popup"/>
+        <invoker type="waterworks_stubout:create" caption="Stub-out" action="create" index="5" target="popup"/>
         <invoker type="waterworks_stubout:open" caption="Stub-out" action="open" index="5" target="popup"/>    
-        <invoker type="formActions" caption="Close" action="_close" immediate="true"/>  
     </invokers>
     
     <code class="com.rameses.gov.etracs.waterworks.models.WaterworksStubout" />   

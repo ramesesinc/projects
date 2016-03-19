@@ -6,7 +6,7 @@
 
 package com.rameses.enterprise.treasury.cashreceipt;
 
-import com.rameses.enterprise.treasury.cashreceipt.SerialCashReceiptPage;
+import com.rameses.rcp.ui.annotations.StyleSheet;
 import com.rameses.rcp.ui.annotations.Template;
 
 /**
@@ -15,6 +15,7 @@ import com.rameses.rcp.ui.annotations.Template;
  */
 
 @Template(value=SerialCashReceiptPage.class, target="content")
+@StyleSheet
 public class PaymentOrderCashReceiptPage extends javax.swing.JPanel {
     
     /** Creates new form BPCashReceipt */

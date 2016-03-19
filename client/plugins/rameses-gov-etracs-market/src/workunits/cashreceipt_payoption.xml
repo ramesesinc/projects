@@ -45,7 +45,7 @@
     </code>
     
     <pages>
-        <page template="com.rameses.gov.etracs.market.cashreceipt.PaymentOption"/>
+        <page template="com.rameses.gov.etracs.market.views.PaymentOption"/>
     </pages>
     
 </workunit>

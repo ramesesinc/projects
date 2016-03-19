@@ -1,0 +1,64 @@
+import com.rameses.annotations.*;
+import treasury.facts.*;
+import treasury.actions.*;
+import ovs.facts.*;
+import com.rameses.rules.common.*;
+
+class ViolationTicketService {
+
+	@DataContext("ovs_violation_ticket_entry")
+	def ove;
+
+    @Service("RuleExecutorService")
+    def ruleSvc;
+
+	@ProxyMethod
+	public def getViolationInfo(def o){
+		if( !o.violationid ) throw new Exception("Violation id is required");
+		if( !o.violatorid ) throw new Exception("Violator id is required");
+
+        def pp = [violationid:o.violationid,"parent.violator.objid":o.violatorid];
+		def z = ove.find(pp).select( 'violationcount:{COUNT(*)}' ).first(); 
+        z.violationcount = z.violationcount + 1;
+
+        def facts = [];
+        facts << new ViolationTicket( violation: o.violationid, violationcount: z.violationcount );      
+
+        def res = [:];
+        res.billItemList = new BillItemList();
+
+        def actions = new RuleAction();
+        actions.addCommand( "compute-fee", new ComputeFee(res:res));
+
+        ruleSvc.execute( "ovscomputation", facts, actions, null );
+		
+        if(!res.billItemList.items) throw new Exception("No rule found!");
+
+		z.violationtext = getViolationText( z.violationcount );
+        z.account = res.billItemList.items[0].account.toItem();
+		z.amount = res.billItemList.items[0].amount;
+		z.amtpaid = 0;
+		return z;
+	}
+	
+	String getViolationText(def i){
+        def prefix;
+        def s = String.valueOf(i);
+        def n = Integer.parseInt(s.charAt(s.length() - 1).toString());
+        if(i % 100 == 11 || i % 100 == 12 || i % 100 == 13){
+            prefix = s + "th";
+        }else{
+            if(n == 1){
+                prefix = s + "st";
+            }else if(n == 2){
+                prefix = s + "nd";
+            }else if(n == 3){
+                prefix = s + "rd";
+            }else{
+                prefix = s + "th";
+            }
+        }
+        return prefix + " offense";
+   }      
+
+}

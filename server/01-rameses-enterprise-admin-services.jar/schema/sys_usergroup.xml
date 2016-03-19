@@ -1,0 +1,12 @@
+<schema>
+
+	<element tablename="sys_usergroup">
+		<field name="objid" primary="true"/>	
+		<field name="title" />
+		<field name="domain" />
+		<field name="userclass"/>
+		<field name="orgclass"/>
+		<field name="role"/>
+	</element>
+
+</schema> 

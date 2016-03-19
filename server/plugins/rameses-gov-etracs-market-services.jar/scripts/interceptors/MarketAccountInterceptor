@@ -1,0 +1,23 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+
+
+public class MarketAccountInterceptor {
+
+	@Service("SequenceService")
+	def seqSvc;
+
+	@Service("DateService")
+	def dateSvc;
+
+
+	@Before( pattern="PersistenceService.create", eval="#{args[0]._schemaname == 'marketaccount'}")
+	void beforeSave( evt ) {
+		def o = evt.args[0];
+		o.acctno = "ACCT" + seqSvc.getNextFormattedSeries( "MARKET_ACCOUNT" );
+		o.state = 'DRAFT'	
+		o.dtcreated = dateSvc.serverDate;
+	}
+
+}

@@ -1,10 +1,10 @@
 <workunit>
     <invokers>
-        <invoker folderid="/home/waterworks" caption="Capture Account" action="init" index="4"/>
-        <invoker type="waterworks_account:create" caption="Waterworks Account" action="init" target="window"/>
-        <invoker type="waterworks_account:edit" caption="Waterworks Account" action="edit" target="self"/>
-        <invoker type="formActions" caption="Close" action="_close" immediate="true"/>
-        <invoker type="formActions" caption="Save" action="save"/>
+        <invoker folderid="/home/waterworks" caption="Capture Account" action="create" index="4"/>
+        <invoker type="waterworks_account:create" caption="Waterworks Account" action="create" target="window"/>
+        <!--
+        <invoker type="waterworks_account:open" caption="Waterworks Account" action="open" target="self"/>
+        -->
     </invokers>
     <code class="com.rameses.gov.etracs.waterworks.models.WaterworksAccountCapture" />   
     <pages>

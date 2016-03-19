@@ -1,0 +1,6 @@
+<workunit extends="com/rameses/seti2/templates/CrudLookup.xml" 
+          schemaName="waterworks_account">
+    <invokers>
+        <invoker type="waterworks_account:lookup" caption="Lookup Accounts"/>
+    </invokers>
+</workunit>

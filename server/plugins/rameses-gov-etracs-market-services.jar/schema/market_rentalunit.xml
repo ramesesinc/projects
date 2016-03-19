@@ -1,27 +1,21 @@
-<schema>
+<schema  adapter="market">
 	<element tablename="market_rentalunit">
 		<field name="objid" primary="true"/>
 		<field name="state" required="true"/>
-		<field name="marketid" required="true" />
-		<field name="unittype" required="true"/>
+		<complex name="market" ref="market" jointype="many-to-one">
+			<key field="marketid" target="objid" />
+		</complex>
+		<field name="unittype" required="true" />
 		<field name="code" required="true"/>
 		<field name="name" required="true"/>
 		<field name="location" required="true"/>
-		<field name="bldg_objid" srequired="true"/>
-		<field name="section_objid" required="true"/>
+		<complex name="bldg" ref="market_building" jointype="many-to-one" required="false">
+			<key field="bldg_objid" target="objid"/>
+		</complex>
+		<complex name="section" ref="market_section" jointype="many-to-one">
+			<key field="section_objid" target="objid" />
+		</complex>
 		<field name="lng"/>
 		<field name="lat"/>
 	</element>
-
-	<element name="attribute" tablename="market_rentalunit_attribute">
-		<field name="objid" primary="true"/>
-		<field name="parentid" required="true" />
-		<field name="attribute_objid" required="true"/>
-	</element>
-
-	<element name="lessee" tablename="market_rentalunit_lessee">
-		<field name="objid" primary="true"/>
-		<field name="acctid" required="true" />
-	</element>
-	
 </schema>

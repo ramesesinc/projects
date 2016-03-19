@@ -1,0 +1,12 @@
+<workunit schemaName="ovs_violation">
+    <invokers>
+        <invoker type="ovs_violation:create" caption="Violation" action="create" target="popup" role="MASTER"/>
+        <invoker type="ovs_violation:open" caption="Violation" action="open" target="popup" role="MASTER"/>
+    </invokers>
+    
+    <code class="com.rameses.seti2.models.CrudFormModel"/>
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.ovs.views.ViolationPage"/>
+    </pages>
+</workunit>

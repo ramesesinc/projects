@@ -149,6 +149,11 @@ class CashReceiptService  {
 			def sdate = dateService.format( 'yyyy-MM-dd', maxreceiptdate ); 
 			throw new Exception('Receipt date must not be less than the previous transaction date ('+ sdate +')'); 
 		} 
+	} 
+
+	@ProxyMethod 
+	public void validatePayer( params ) {
+		//do nothing 
 	}
 
 	private def toDate( value ) { 

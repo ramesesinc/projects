@@ -21,9 +21,10 @@ class SchemaService {
 			throw new Exception("QueryService.getSchema. Please indicate an adapter");
 		def em = db.lookup( adapter );			
 		em.name = o.name;
-		return em.getSchema();			
+		if ( o.colnames ) {
+			return em.getSchema( o.colnames ); 
+		} else { 
+			return em.getSchema(); 
+		}
 	}
-
-
-
 }

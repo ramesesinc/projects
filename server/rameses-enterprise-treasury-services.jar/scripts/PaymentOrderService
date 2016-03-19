@@ -2,66 +2,76 @@ import com.rameses.annotations.*;
 import com.rameses.util.*;
 import java.rmi.server.*;
 import com.rameses.common.*
-import com.rameses.services.extended.*
 
 class PaymentOrderService  {
 	
-	@ActiveDB("paymentorder")
-	def em 
-
+	@DataContext("paymentorder")
+	def pmt;
 	
-	@Service("SequenceService")
-	def seqSvc 
-
 	@Service("DateService")
 	def dtSvc 
 
-	@Service("RevenueItemAccountService")
-	def revenueItem;
-
-	@Service("CollectionTypeService")
+	@DataContext("collectiontype")
 	def collectionType;
+
+	@DataContext("revenueitem")
+	def revItem;
 
 	@ProxyMethod
 	public def create(def entity){	
+		if(! entity.payer ) throw new Exception("payer is required. ")
 		if(! entity.items ) throw new Exception("items is required. ")
 		if(! entity.amount ) throw new Exception("amount is required. ") 
 		if(! entity.paidby) throw new Exception("paidby is required. ") 
 		if(! entity.paidbyaddress) throw new Exception("paidbyaddress is required. ");
 		if(! entity.txntype) throw new Exception("txntype is required. ") 
 
-		
 		if(!entity.collectiontype) {
-			entity.collectiontype = collectionType.findByHandler([handler:'misc']);
+			entity.collectiontype = collectionType.find([barcodekey:'PMO']).first();
 		}	
-		entity.items.each {
-			if( !it.item?.objid ) throw new Exception("Items item must have an objid");
-			if( !it.amount ) throw new Exception("Items item must have an amount");
-			it.item = revenueItem.findAccount([objid: it.item.objid]); 
+		if(!entity.collectiontype)
+			throw new Exception("Collection type not found!");
+
+		entity.items.eachWithIndex{ o,idx-> 
+			println idx;
+			if( !o.item?.objid ) throw new Exception("Items item must have an objid");
+			if( !o.amount ) throw new Exception("Items item must have an amount");
+
+
+			def item = revItem.find([objid: o.item.objid]).first(); 
+			if ( !item ) throw new Exception('Item #'+ (idx+1)  +' account '+ o.item.title +' does not exist'); 
+
+			o.item = item; 
 		}
 		if( entity.items.sum{it.amount} != entity.amount)
 			throw new Exception("Amount must be equal sum of amount of items");
 
 		def m = [:];
-		m.txnid = 'P' + seqSvc.getNextFormattedSeriesA("PAYMENTORDER", 6)
-		m.expirydate = dtSvc.findNextDate('1y')
-		m.info = em.serializer.write( entity );
+		m.txnid = KeyGen.generateAlphanumKey( "PMO:", 6 );
+		m.expirydate = dtSvc.findNextDate('1y');
+		m.info = entity;
+		m.payer = entity.payer;
 		m.txntype = entity.txntype;
-		em.create(m);
+		m.amount = entity.amount;
+		m.refid = entity.refid;
+		pmt.create(m);
 		return m; 
 	}
 
 	@ProxyMethod
-	def open( params){
-		def entity = em.read( params )
-		if( !entity ) throw new Exception("Payment Order Code does not exist.     ")
-		entity.info =  em.serializer.read( entity.info) 
-		return entity 
+	def open( params) {
+		def entity = pmt.find([txnid: 'PMO:'+params.txnid]).first();
+		if( !entity || entity.size()==0 ) {
+			throw new Exception("Payment Order Code does not exist. ")
+		}	
+		return entity; 
 	}
 
 	@ProxyMethod
 	def close( params ){ 
-		em.delete(params)
+		def data = pmt.find([txnid: params.txnid]).first(); 
+		pmt.find([txnid: params.txnid]).delete(); 
+		return data; 
 	}
 
 

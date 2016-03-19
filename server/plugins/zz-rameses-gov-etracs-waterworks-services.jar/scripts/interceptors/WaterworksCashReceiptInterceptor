@@ -27,6 +27,19 @@ class WaterworksCashReceiptInterceptor{
 		pmt.amount = o.amount;
 		pmt.voided = 0;
 		pmt.items = [];
+
+		o.billitems.each {
+			def p = [:];
+			p.txnrefid = it.refid;
+			p.amount = it.amount;
+			p.discount = it.discount;
+			p.surcharge = it.surcharge;
+			p.interest = it.interest;
+			pmt.items << p;
+		}
+
+		wp.create( pmt );
+
 		def paymentitem = wp.create(pmt);
 
 		def acct = wa.find([objid:o.acctid]);

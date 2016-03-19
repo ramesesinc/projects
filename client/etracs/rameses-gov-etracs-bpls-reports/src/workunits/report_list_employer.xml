@@ -29,7 +29,10 @@ public class EmployerListReportController extends ReportController
         getControlList: { 
             return [
                 [type:'combo', caption:'Permit Type', name:'entity.permittype', required:true, preferredSize:'0,20', captionWidth:100, items:'permitTypes', expression:'#{item.title}'], 
-                [type:'integer', caption:'Year', name:'entity.year', required:true, preferredSize:'100,20', captionWidth:100 ] 
+                [type:'integer', caption:'Year', name:'entity.year', required:true, preferredSize:'100,20', captionWidth:100 ], 
+                
+                [type:'checkbox', caption:'Status', text:'ACTIVE', name:'entity.state_active', immediate:true, preferredSize:'0,20', captionWidth:100 ],
+                [type:'checkbox', caption:'',  text:'PROCESSING', name:'entity.state_processing',immediate:true, preferredSize:'0,20', captionWidth:100 ]            
             ]; 
         }     
     ] as FormPanelModel; 
@@ -42,6 +45,7 @@ public class EmployerListReportController extends ReportController
         permitTypes = permitTypeSvc.getList(); 
         entity.permittype = (permitTypes? permitTypes[0] : null); 
         entity.year = new java.sql.Date( System.currentTimeMillis() ).toString().split("-")[0]; 
+        entity.state_active = true; 
         return outcome; 
     } 
 
@@ -52,7 +56,7 @@ public class EmployerListReportController extends ReportController
     Map getParameters() { 
         params.YEAR = entity.year; 
         return params; 
-   }
+    }
 }
     ]]>
     </code>

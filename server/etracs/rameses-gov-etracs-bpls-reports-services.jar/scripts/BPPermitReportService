@@ -12,12 +12,13 @@ class BPPermitReportService
 	def numSvc;
 
 	@ProxyMethod
-	public def getReport( params ) { 
-		def barangayid = params.barangay?.objid; 
-		params.barangayid = ( barangayid ? barangayid : '%' ); 
-		
+	public def getReport( params ) { 		
 		params.filter = '';
 		
+		if ( params.barangay?.objid ) { 
+			params.barangayid = params.barangay.objid; 
+			params.filter += ''' AND addr.barangay_objid=$P{barangayid} '''; 	
+		}		
 		if ( params.permittype?.objid ) { 
 			params.permittypeid = params.permittype.objid; 
 			params.filter += ''' AND b.permittype=$P{permittypeid} '''; 	

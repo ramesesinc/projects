@@ -2,7 +2,9 @@ package com.rameses.waterworks.page;
 
 import com.rameses.Main;
 import com.rameses.waterworks.bean.Account;
-import com.rameses.waterworks.bean.Reading;
+import com.rameses.waterworks.bean.Stubout;
+import com.rameses.waterworks.cell.AccountCell;
+import com.rameses.waterworks.cell.StuboutCell;
 import com.rameses.waterworks.database.Database;
 import com.rameses.waterworks.database.DatabasePlatformFactory;
 import com.rameses.waterworks.dialog.Dialog;
@@ -21,6 +23,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -28,30 +32,34 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Callback;
 
 public class AccountList {
    
-    private TextField search;
-    private VBox listContainer;
     private Database db;
+    private TextField search_account;
+    private TextField search_stubout;
+    private VBox root;
     private ListView<Account> accountList;
-    private List<Account> data;
-    private int datasize = 0;
+    private ListView<Stubout> stuboutList;
     private Label recordsize;
     private Label pagesize;
+    private TabPane tabPane;
+    private List<Account> accountData;
+    private List<Stubout> stuboutData;
+    private int datasize = 0;
     private int psize;
     private int position = 0;
     
     public AccountList(){
         Header.TITLE.setText("Accounts");
         
+        //LOAD THE THE FIRST 20 RECORDS
         db = DatabasePlatformFactory.getPlatform().getDatabase();
-        data = db.getSearchResult("");
-        ObservableList<Account> dataitems = FXCollections.observableArrayList(data);
-        datasize = data.size();
+        accountData = db.getSearchAccountResult("");
+        ObservableList<Account> dataitems = FXCollections.observableArrayList(accountData);
+        datasize = accountData.size();
         psize = (int) datasize / 20;
         int remainder = datasize % 20;
         if(remainder > 0){
@@ -60,17 +68,18 @@ public class AccountList {
         
         if(!db.getError().isEmpty()) Dialog.showError(db.getError());
         
-        search = new TextField();
-        search.setId("search-account");
-        search.setPromptText("Search Account");
-        search.setFocusTraversable(false);
-        search.textProperty().addListener(new ChangeListener<String>(){
+        //LAYOUT FOR THE ACCOUNT TAB (START)
+        search_account = new TextField();
+        search_account.setId("search-account");
+        search_account.setPromptText("Search Account");
+        search_account.setFocusTraversable(false);
+        search_account.textProperty().addListener(new ChangeListener<String>(){
             @Override
             public void changed(ObservableValue<? extends String> observable, String so, String value) {
-                data = db.getSearchResult(value);
+                accountData = db.getSearchAccountResult(value);
                 if(!db.getError().isEmpty()) Dialog.showError(db.getError());
-                ObservableList<Account> dataitems = FXCollections.observableArrayList(data);
-                datasize = data.size();
+                ObservableList<Account> dataitems = FXCollections.observableArrayList(accountData);
+                datasize = accountData.size();
                 psize = (int) datasize / 20;
                 int remainder = datasize % 20;
                 if(remainder > 0){
@@ -107,21 +116,23 @@ public class AccountList {
             public void handle(MouseEvent event) {
                 if(event.getClickCount()==2){
                     Account account = accountList.getSelectionModel().getSelectedItem();
-                    Node child = new AccountDetail(account).getLayout();
-                    Dialog.show("Account Information", child);
+                    if(account != null){
+                        Node child = new AccountDetail(account).getLayout();
+                        Dialog.show("Account Information", child);
+                    }
                 }
             }
         });
         loadFirstPage();
         
         ImageView firstPageImg = new ImageView(new Image("icon/firstpage.png"));
-        firstPageImg.setFitWidth(50);
-        firstPageImg.setFitHeight(30);
+        firstPageImg.setFitWidth(Main.HEIGHT > 700 ? 50 : 30);
+        firstPageImg.setFitHeight(Main.HEIGHT > 700 ? 30 : 15);
         
         Button firstPage = new Button();
         firstPage.setGraphic(firstPageImg);
         firstPage.getStyleClass().add("nav-button");
-        firstPage.setPrefWidth(80);
+        firstPage.setPrefWidth(60);
         firstPage.setOnAction(new EventHandler<ActionEvent>(){
             @Override
             public void handle(ActionEvent event) {
@@ -130,13 +141,13 @@ public class AccountList {
         });
         
         ImageView prevImg = new ImageView(new Image("icon/previous.png"));
-        prevImg.setFitWidth(50);
-        prevImg.setFitHeight(30);
+        prevImg.setFitWidth(Main.HEIGHT > 700 ? 50 : 30);
+        prevImg.setFitHeight(Main.HEIGHT > 700 ? 30 : 15);
         
         Button prev = new Button();
         prev.setGraphic(prevImg);
         prev.getStyleClass().add("nav-button");
-        prev.setPrefWidth(80);
+        prev.setPrefWidth(60);
         prev.setOnAction(new EventHandler<ActionEvent>(){
             @Override
             public void handle(ActionEvent event) {
@@ -145,13 +156,13 @@ public class AccountList {
         });
         
         ImageView nextImg = new ImageView(new Image("icon/next.png"));
-        nextImg.setFitWidth(50);
-        nextImg.setFitHeight(30);
+        nextImg.setFitWidth(Main.HEIGHT > 700 ? 50 : 30);
+        nextImg.setFitHeight(Main.HEIGHT > 700 ? 30 : 15);
         
         Button next = new Button();
         next.setGraphic(nextImg);
         next.getStyleClass().add("nav-button");
-        next.setPrefWidth(80);
+        next.setPrefWidth(60);
         next.setOnAction(new EventHandler<ActionEvent>(){
             @Override
             public void handle(ActionEvent event) {
@@ -160,13 +171,13 @@ public class AccountList {
         });
         
         ImageView lastPageImg = new ImageView(new Image("icon/lastpage.png"));
-        lastPageImg.setFitWidth(50);
-        lastPageImg.setFitHeight(30);
+        lastPageImg.setFitWidth(Main.HEIGHT > 700 ? 50 : 30);
+        lastPageImg.setFitHeight(Main.HEIGHT > 700 ? 30 : 15);
         
         Button lastPage = new Button();
         lastPage.setGraphic(lastPageImg);
         lastPage.getStyleClass().add("nav-button");
-        lastPage.setPrefWidth(80);
+        lastPage.setPrefWidth(60);
         lastPage.setOnAction(new EventHandler<ActionEvent>(){
             @Override
             public void handle(ActionEvent event) {
@@ -178,16 +189,70 @@ public class AccountList {
         navContainer.setAlignment(Pos.CENTER_LEFT);
         navContainer.getChildren().addAll(firstPage,prev,next,lastPage,recordsize,pagesize);
         
-        listContainer = new VBox();
-        if(Main.HEIGHT > 800){
-            listContainer.setSpacing(10);
-            listContainer.setPadding(new Insets(20));
-        }else{
-            listContainer.setSpacing(5);
-            listContainer.setPadding(new Insets(10));
-        }
-        listContainer.getChildren().addAll(search,accountList,navContainer);
-        listContainer.setOnKeyReleased(new EventHandler<KeyEvent>(){
+        VBox account_root = new VBox(Main.HEIGHT > 700 ? 10 : 5);
+        account_root.setPadding(new Insets(Main.HEIGHT > 700 ? 20 : 10));
+        account_root.getChildren().addAll(search_account,accountList,navContainer);
+        //LAYOUT FOR THE ACCOUNT TAB (END)
+        
+        //LAYOUT FOR THE STUBOUT TAB (START)
+        search_stubout = new TextField();
+        search_stubout.setId("search-account");
+        search_stubout.setPromptText("Search Account");
+        search_stubout.setFocusTraversable(false);
+        search_stubout.textProperty().addListener(new ChangeListener<String>(){
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String so, String value) {
+                stuboutData = DatabasePlatformFactory.getPlatform().getDatabase().getSearchStuboutResult(value);
+                stuboutList.setItems(FXCollections.observableArrayList(stuboutData));
+            }
+        });
+
+        stuboutData = DatabasePlatformFactory.getPlatform().getDatabase().getSearchStuboutResult("");
+        
+        stuboutList = new ListView();
+        stuboutList.setPrefHeight(Main.HEIGHT);
+        stuboutList.setItems(FXCollections.observableArrayList(stuboutData));
+        stuboutList.setFocusTraversable(true);
+        stuboutList.setCellFactory(new Callback<ListView<Stubout>, ListCell<Stubout>>() {
+            @Override
+            public ListCell<Stubout> call(ListView<Stubout> param) {
+                return new StuboutCell();
+            }
+        });
+        stuboutList.setOnMouseClicked(new EventHandler<MouseEvent>(){
+            @Override
+            public void handle(MouseEvent event) {
+                if(event.getClickCount()==2){
+                    Stubout stubout = stuboutList.getSelectionModel().getSelectedItem();
+                    if(stubout != null){
+                        Node child = new StuboutAccountList(stubout).getLayout();
+                        Main.ROOT.setCenter(child);
+                    }
+                }
+            }
+        });
+        
+        VBox stubout_root = new VBox(Main.HEIGHT > 700 ? 10 : 5);
+        stubout_root.setPadding(new Insets(Main.HEIGHT > 700 ? 20 : 10));
+        stubout_root.getChildren().addAll(search_stubout, stuboutList);
+        //LAYOUT FOR THE STUBOUT TAB (END)
+        
+        Tab account_tab = new Tab("Accounts");
+        account_tab.getStyleClass().add("login-label");
+        account_tab.setClosable(false);
+        account_tab.setContent(account_root);
+        
+        Tab stubout_tab = new Tab("Stubouts");
+        stubout_tab.getStyleClass().add("login-label");
+        stubout_tab.setClosable(false);
+        stubout_tab.setContent(stubout_root);
+        
+        tabPane = new TabPane();
+        tabPane.getTabs().addAll(stubout_tab, account_tab);
+        
+        root = new VBox(Main.HEIGHT > 700 ? 10 : 5);
+        root.getChildren().add(tabPane);
+        root.setOnKeyReleased(new EventHandler<KeyEvent>(){
             @Override
             public void handle(KeyEvent event) {
                 if(event.getCode() == KeyCode.ESCAPE){
@@ -195,6 +260,7 @@ public class AccountList {
                 }
             }
         });
+        Main.prevScreen = getLayout();
     }
     
     private void load(int pos){
@@ -204,7 +270,7 @@ public class AccountList {
             if(end > datasize){
                 end = datasize;
             }
-            List<Account> list = data.subList(start, end);
+            List<Account> list = accountData.subList(start, end);
             accountList.setItems(FXCollections.observableArrayList(list));
             recordsize.setText(list.size() + " records");
             pagesize.setText("Page " + (pos+1) + " of " + psize);
@@ -236,60 +302,8 @@ public class AccountList {
         load(position);
     }
     
-    class AccountCell extends ListCell<Account>{
-        @Override
-        protected void updateItem(Account account, boolean empty){
-            super.updateItem(account, empty);
-            if(!empty){
-                Database db = DatabasePlatformFactory.getPlatform().getDatabase();
-                Reading reading = db.findReadingByAccount(account.getObjid());
-                
-                ImageView image = new ImageView(new Image("icon/useraccount.png"));
-                ImageView image2 = new ImageView(new Image("icon/useraccount-check.png"));
-                
-                StackPane imgContainer = new StackPane();
-                imgContainer.setAlignment(Pos.CENTER);
-                if(reading == null){
-                    imgContainer.getChildren().add(image);
-                }else{
-                    imgContainer.getChildren().add(image2);
-                }
-                
-                Label acctno = new Label(account.getAcctNo());
-                
-                Label name = new Label(account.getAcctName()+" ( "+account.getSerialNo()+" )");
-                
-                String addr = account.getAddress().replaceAll("\n", "");
-                Label address = new Label(addr);
-                
-                if(Main.HEIGHT > 800){
-                    acctno.setStyle("-fx-font-size: 28px; -fx-font-weight: bold;");
-                    name.setStyle("-fx-font-size: 22px;");
-                    address.setStyle("-fx-font-size: 24px; -fx-font-style: italic;");
-                }else{
-                    image.setFitWidth(image.getFitWidth()*0.75);
-                    image.setFitHeight(image.getFitHeight()*0.75);
-                    acctno.setStyle("-fx-font-size: 22px; -fx-font-weight: bold;");
-                    name.setStyle("-fx-font-size: 18px;");
-                    address.setStyle("-fx-font-size: 12px; -fx-font-style: italic;");
-                }
-                
-                VBox detail = new VBox(3);
-                detail.setAlignment(Pos.CENTER_LEFT);
-                detail.getChildren().addAll(acctno,name,address);
-                
-                HBox root = new HBox(5);
-                root.getChildren().addAll(imgContainer,detail);
-                
-                setGraphic(root);
-            }else{
-                setGraphic(null);
-            }
-        }
-    }
-    
     public Node getLayout(){
-        return listContainer;
+        return root;
     }
     
 }

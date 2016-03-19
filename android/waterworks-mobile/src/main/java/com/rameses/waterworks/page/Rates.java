@@ -21,6 +21,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 
 public class Rates {
@@ -56,6 +57,18 @@ public class Rates {
         Database db = DatabasePlatformFactory.getPlatform().getDatabase();
         List<Rule> list = db.getRules();
         tableView.setItems(FXCollections.observableArrayList(list));
+        tableView.setOnMouseClicked(new EventHandler<MouseEvent>(){
+            @Override
+            public void handle(MouseEvent event) {
+                if(event.getClickCount() == 2){
+                    Rule r = tableView.getSelectionModel().getSelectedItem();
+                    if(r != null){
+                        Node node = new RuleDetail(r).getLayout();
+                        Dialog.show("Rule Information", node);
+                    }
+                }
+            }
+        });
         
         Button download = new Button("Sync");
         download.getStyleClass().add("terminal-button");

@@ -1,0 +1,19 @@
+<schema>
+
+	<element tablename="sys_user">
+		<field name="objid" primary="true"/>
+		<field name="state" />
+		<field name="dtcreated" />
+		<field name="createdby" />
+		<field name="username" required="true"/>
+		<field name="pwd" />
+		<field name="lastname" required="true" searchable="true" indexed="true"/>		
+		<field name="firstname" required="true" searchable="true" indexed="true"/>
+		<field name="middlename" />
+		<field name="jobtitle" />
+		<field name="name" />
+		<field name="txncode" />
+		<field name="fullname" expr="CONCAT(firstname,' ',lastname)"/> 
+	</element>
+	
+</schema>

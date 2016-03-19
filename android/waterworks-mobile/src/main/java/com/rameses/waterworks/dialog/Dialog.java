@@ -1,7 +1,7 @@
 package com.rameses.waterworks.dialog;
 
 import com.rameses.Main;
-import javafx.application.Platform;
+import com.rameses.waterworks.page.Home;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -11,6 +11,9 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -27,6 +30,14 @@ public class Dialog {
         black = new StackPane();
         black.setStyle("-fx-background-color: black; -fx-opacity: 0.7;");
         black.setPrefSize(Main.WIDTH, Main.HEIGHT);
+        black.setOnKeyReleased(new EventHandler<KeyEvent>(){
+            @Override
+            public void handle(KeyEvent event) {
+                if(event.getCode() == KeyCode.ESCAPE){
+                    Dialog.hide();
+                }
+            }
+        });
 
         if(!Main.PAGE.getChildren().contains(black)){
             Main.PAGE.getChildren().add(black);
@@ -49,9 +60,17 @@ public class Dialog {
         black = new StackPane();
         black.setStyle("-fx-background-color: black; -fx-opacity: 0.7;");
         black.setPrefSize(Main.WIDTH, Main.HEIGHT);
+        black.setOnKeyReleased(new EventHandler<KeyEvent>(){
+            @Override
+            public void handle(KeyEvent event) {
+                if(event.getCode() == KeyCode.ESCAPE){
+                    Dialog.hide();
+                }
+            }
+        });
 
         Label label = new Label(message);
-        label.setStyle("-fx-font-size: 22px;");
+        label.getStyleClass().add("dialog-label");
         label.setWrapText(true);
 
         Button okBtn = new Button("OK");
@@ -70,8 +89,8 @@ public class Dialog {
 
         VBox root = new VBox(30);
         root.setStyle("-fx-background-color: white;");
-        root.setPadding(new Insets(20));
-        root.setPrefWidth(Main.WIDTH - 200);
+        root.setPadding(Main.HEIGHT > 700 ? new Insets(20) : new Insets(10));
+        root.setPrefWidth(Main.HEIGHT > 700 ? Main.WIDTH - 200 : Main.WIDTH - 30);
         root.getChildren().addAll(label,btnContainer);
 
         Group container = new Group();
@@ -85,9 +104,17 @@ public class Dialog {
         black = new StackPane();
         black.setStyle("-fx-background-color: black; -fx-opacity: 0.7;");
         black.setPrefSize(Main.WIDTH, Main.HEIGHT);
+        black.setOnKeyReleased(new EventHandler<KeyEvent>(){
+            @Override
+            public void handle(KeyEvent event) {
+                if(event.getCode() == KeyCode.ESCAPE){
+                    Dialog.hide();
+                }
+            }
+        });
 
         Label label = new Label(message);
-        label.setStyle("-fx-font-size: 22px;");
+        label.getStyleClass().add("dialog-label");
         label.setWrapText(true);
 
         Button okBtn = new Button("OK");
@@ -106,8 +133,8 @@ public class Dialog {
 
         VBox root = new VBox(30);
         root.setStyle("-fx-background-color: white;");
-        root.setPadding(new Insets(20));
-        root.setPrefWidth(Main.WIDTH - 200);
+        root.setPadding(Main.HEIGHT > 700 ? new Insets(20) : new Insets(10));
+        root.setPrefWidth(Main.HEIGHT > 700 ? Main.WIDTH - 200 : Main.WIDTH - 30);
         root.getChildren().addAll(label,btnContainer);
 
         Group container = new Group();
@@ -123,10 +150,10 @@ public class Dialog {
         Label label = new Label(title);
         label.getStyleClass().add("login-label");
         
-        HBox container = new HBox(20);
+        HBox container = new HBox(Main.HEIGHT > 700 ? 20 : 10);
         container.setStyle("-fx-background-color: white;");
         container.setAlignment(Pos.CENTER);
-        container.setPadding(new Insets(20,30,20,30));
+        container.setPadding(Main.HEIGHT > 700 ? new Insets(20,30,20,30) : new Insets(10,15,10,15));
         container.getChildren().addAll(progress,label);
         
         show("", container);
@@ -134,12 +161,19 @@ public class Dialog {
     
     private static HBox createTitle(String s){
         Label title = new Label(s);
-        title.setStyle("-fx-text-fill: white; -fx-font-size: 25px; -fx-font-weight: bold;");
+        title.getStyleClass().add("dialog-label");
+        title.setStyle("-fx-text-fill: white; -fx-font-weight: bold;");
         
         HBox container = new HBox();
         container.setStyle("-fx-background-color: #3897ee;");
         container.setPadding(new Insets(15));
         container.getChildren().add(title);
+        container.setOnMouseClicked(new EventHandler<MouseEvent>(){
+            @Override
+            public void handle(MouseEvent event) {
+                if(event.getClickCount() == 1) Dialog.hide();
+            }
+        });
         
         return container;
     }

@@ -22,9 +22,13 @@
         
             def init() {
                 def p = MsgBox.prompt("Enter barcode");
-                if( p == null || p.toString().length() <= 5 ) return;
-                def prefix = p.substring(0,5); 
-                def barcodeid = p.substring(6);
+                if(!p) return null;
+                int i = p.indexOf(":");
+                if( i <=0 )
+                    throw new Exception("Barcode key is invalid. There must be a colon");
+                
+                def prefix = p.substring(0,i); 
+                def barcodeid = p.substring(i+1);
                 try {
                     def e = barcodeSvc.init( [barcodeid: barcodeid, prefix: prefix] );
                     def m = [barcodeid: barcodeid];

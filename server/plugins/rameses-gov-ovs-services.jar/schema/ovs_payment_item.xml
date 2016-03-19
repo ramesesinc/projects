@@ -1,0 +1,12 @@
+<schema adapter="violation">
+	<element name="ovs_payment_item" tablename="payment_item">
+		<field name="objid" primary="true" prefix="OVSPMTI"/>
+		<complex name="parent" ref="ovs_payment" jointype="many-to-one" required="false">
+			<key field="parentid" target="objid"/>
+		</complex>	
+		<complex name="txnref" ref="ovs_violation_ticket_entry" jointype="many-to-one" required="false">
+			<key field="refid" target="objid"/>
+		</complex>
+		<field name="amount" required="true"/>
+	</element>
+</schema>

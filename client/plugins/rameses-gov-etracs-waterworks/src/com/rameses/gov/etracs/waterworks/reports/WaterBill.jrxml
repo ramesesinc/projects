@@ -28,6 +28,7 @@
 	<parameter name="PARENTLGUNAME" isForPrompting="false" class="java.lang.String"/>
 	<parameter name="LOGOLGU" isForPrompting="false" class="java.io.InputStream"/>
 	<parameter name="BillingDetails" isForPrompting="false" class="java.lang.Object"/>
+	<parameter name="BarChart" isForPrompting="false" class="java.lang.Object"/>
 	<queryString><![CDATA[select * from data]]></queryString>
 
 	<field name="statementno" class="java.lang.String"/>
@@ -35,16 +36,16 @@
 	<field name="lastpaymentdate" class="java.sql.Timestamp"/>
 	<field name="previousamount" class="java.lang.Double"/>
 	<field name="barcode" class="java.lang.String"/>
-	<field name="ownername" class="java.lang.String"/>
-	<field name="address" class="java.lang.String"/>
-	<field name="contactno" class="java.lang.String"/>
+	<field name="acctname" class="java.lang.String"/>
+	<field name="address.text" class="java.lang.String"/>
+	<field name="mobileno" class="java.lang.String"/>
 	<field name="consumercode" class="java.lang.String"/>
 	<field name="consumertype" class="java.lang.String"/>
 	<field name="acctno" class="java.lang.String"/>
 	<field name="billsequence" class="java.lang.String"/>
-	<field name="brand" class="java.lang.String"/>
-	<field name="serialno" class="java.lang.String"/>
-	<field name="size" class="java.lang.String"/>
+	<field name="meter.brand" class="java.lang.String"/>
+	<field name="meter.serialno" class="java.lang.String"/>
+	<field name="meter.sizeid" class="java.lang.String"/>
 	<field name="duedate" class="java.lang.String"/>
 	<field name="periodfrom" class="java.lang.String"/>
 	<field name="periodto" class="java.lang.String"/>
@@ -52,10 +53,12 @@
 	<field name="prevreadingdate" class="java.util.Date"/>
 	<field name="presreadingdate" class="java.util.Date"/>
 	<field name="prevreading" class="java.lang.Integer"/>
-	<field name="presreading" class="java.lang.Integer"/>
+	<field name="lastreading" class="java.lang.Integer"/>
 	<field name="consumption" class="java.lang.Integer"/>
 	<field name="billingdetails" class="java.lang.Object"/>
 	<field name="averageconsumption" class="java.math.BigDecimal"/>
+	<field name="chartdata" class="java.lang.Object"/>
+	<field name="meter" class="java.lang.Object"/>
 
 		<background>
 			<band height="0"  isSplitAllowed="true" >
@@ -332,7 +335,7 @@
 					<textElement verticalAlignment="Middle">
 						<font pdfFontName="Helvetica-Bold" size="11" isBold="true"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{ownername}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{acctname}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -345,7 +348,7 @@
 					<textElement verticalAlignment="Middle">
 						<font pdfFontName="Helvetica" size="9" isBold="false"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{address}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{address.text}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement
@@ -371,7 +374,7 @@
 					<textElement verticalAlignment="Middle">
 						<font size="9"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{contactno}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{mobileno}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement
@@ -680,7 +683,7 @@
 					<textElement verticalAlignment="Middle">
 						<font size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{brand}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{meter.brand}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -693,7 +696,7 @@
 					<textElement verticalAlignment="Middle">
 						<font size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{serialno}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{meter.serialno}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -706,7 +709,7 @@
 					<textElement verticalAlignment="Middle">
 						<font size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{size}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{meter.sizeid}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement
@@ -953,7 +956,7 @@
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.Integer"><![CDATA[$F{presreading}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.Integer"><![CDATA[$F{lastreading}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -978,34 +981,6 @@
 					<dataSourceExpression><![CDATA[$F{billingdetails}]]></dataSourceExpression>
 					<subreportExpression  class="net.sf.jasperreports.engine.JasperReport"><![CDATA[$P{BillingDetails}]]></subreportExpression>
 				</subreport>
-				<lineChart>
-					<chart  hyperlinkTarget="Self" >
-					<reportElement
-						x="23"
-						y="386"
-						width="236"
-						height="67"
-						key="element-1"/>
-					<box></box>
-						<chartLegend textColor="#000000" backgroundColor="#FFFFFF" >
-					</chartLegend>
-					</chart>
-					<categoryDataset>
-						<dataset >
-						</dataset>
-					</categoryDataset>
-					<linePlot >
-						<plot />
-						<categoryAxisFormat>
-							<axisFormat >
-							</axisFormat>
-						</categoryAxisFormat>
-						<valueAxisFormat>
-							<axisFormat >
-							</axisFormat>
-						</valueAxisFormat>
-					</linePlot>
-				</lineChart>
 				<staticText>
 					<reportElement
 						x="0"
@@ -1022,7 +997,7 @@
 				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="0"
-						y="456"
+						y="470"
 						width="280"
 						height="13"
 						key="textField-26"/>
@@ -1075,6 +1050,16 @@
 					</textElement>
 				<text><![CDATA[Enhanced Tax Revenue Assessment and Collection System (ETRACS 2.5)]]></text>
 				</staticText>
+				<subreport  isUsingCache="true">
+					<reportElement
+						x="9"
+						y="386"
+						width="262"
+						height="81"
+						key="subreport-2"/>
+					<dataSourceExpression><![CDATA[$F{chartdata}]]></dataSourceExpression>
+					<subreportExpression  class="net.sf.jasperreports.engine.JasperReport"><![CDATA[$P{BarChart}]]></subreportExpression>
+				</subreport>
 			</band>
 		</title>
 		<pageHeader>

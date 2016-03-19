@@ -1,0 +1,11 @@
+<workunit schemaName="market_section">
+    <invokers>
+        <invoker type="market_section:create" caption="Market Section" action="create" target="popup"/>
+        <invoker type="market_section:open" caption="Market Section" action="open" target="popup"/>
+    </invokers>
+    <code class="com.rameses.seti2.models.CrudFormModel"/>
+    <pages>
+        <page template="com.rameses.gov.etracs.market.views.MarketSection"/>
+    </pages>
+    
+</workunit>

@@ -1,0 +1,7 @@
+<workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" 
+          schemaName="ovs_violation_ticket" allowDelete="true"
+          cols="ticketno, violator.name, apprehensionofficer.name, apprehensionaddress, apprehensiondate">
+    <invokers>
+        <invoker folderid="/home/ovs" caption="Violation Tickets" index="3" action="init"/>
+    </invokers>
+</workunit>

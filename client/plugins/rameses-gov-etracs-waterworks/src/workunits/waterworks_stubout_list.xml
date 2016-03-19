@@ -1,6 +1,6 @@
 <workunit extends="com/rameses/seti2/templates/CrudList.xml"
           schemaName="waterworks_stubout" allowCreate="true" allowOpen="true" allowDelete="true"
-          cols="title, description, readinggroup.title, readinggroup.assignee.name, readinggroup.duedate">
+          cols="title, description, area.title, area.assignee.name">
     <invokers>
         <invoker folderid="/home/waterworks" caption="Stub-out List" action="init" index="5"/>  
     </invokers>

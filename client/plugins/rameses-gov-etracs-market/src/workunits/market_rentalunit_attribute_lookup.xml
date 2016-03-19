@@ -1,0 +1,5 @@
+<workunit extends="com/rameses/seti2/templates/CrudLookup.xml" schemaName="market_rentalunit_attribute">
+    <invokers>
+        <invoker type="market_rentalunit_attribute:lookup" caption="Lookup Rental Unit Attribute" target="popup" action="init"/> 
+    </invokers> 
+</workunit> 

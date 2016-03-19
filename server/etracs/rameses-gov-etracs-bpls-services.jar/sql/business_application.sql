@@ -234,10 +234,11 @@ from (
 where a.appyear = xx.appyear and a.txndate = xx.txndate 
 
 [getDelinquentApplications]
-select distinct 
-    br.businessid, br.applicationid, ba.appyear, ba.txndate 
-from business_receivable br 
-    inner join business_application ba on br.applicationid=ba.objid 
-where br.businessid=$P{businessid} 
-    and (br.amount-br.amtpaid) <> 0.0  
-order by ba.txndate 
+select 
+    businessid, iyear, sum(amount) as amount, sum(amtpaid) as amtpaid  
+from business_receivable 
+where businessid=$P{businessid} 
+    and iyear < $P{appyear}  
+    and (amount-amtpaid) > 0.0 
+group by businessid, iyear 
+order by iyear 

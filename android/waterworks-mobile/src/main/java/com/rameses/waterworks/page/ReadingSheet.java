@@ -47,13 +47,14 @@ public class ReadingSheet {
     private RButton[] rb;
     private int capacity = 6;
     private Reading reading;
+    boolean goBackToList = false;
     
-    public ReadingSheet(){
+    public ReadingSheet(Account a){
         Header.TITLE.setText("Reading Sheet");
         
         Button search = new Button();
         search.setId("sheet-search");
-        search.setMinWidth(100);
+        search.setMinWidth(Main.HEIGHT > 700 ? 100 : 50);
         search.setFocusTraversable(true);
         search.setOnAction(new EventHandler<ActionEvent>(){
             @Override
@@ -66,19 +67,7 @@ public class ReadingSheet {
                 if(result.size() > 0){
                     account = result.get(0);
                     if(account != null){
-                        field_serialno.setText(account.getSerialNo());
-                        field_name.setText(account.getAcctName());
-                        field_class.setText(account.getClassificationId());
-                        field_prev.setText(account.getLastReading());
-
-                        Database db2 = DatabasePlatformFactory.getPlatform().getDatabase();
-                        reading = db2.findReadingByAccount(account.getObjid());
-                        if(!db2.getError().isEmpty()) Dialog.showError(db2.getError());
-                        if(reading == null){
-                            initMeterReadingValue(account.getLastReading());
-                        }else{
-                            initMeterReadingValue(reading.getReading());
-                        }
+                        loadAccountData();
                     }
                 }else{
                     Dialog.showAlert("No record found!");
@@ -88,7 +77,7 @@ public class ReadingSheet {
         
         Label label_serialno = new Label("Serial No.");
         label_serialno.getStyleClass().add("account-field-name");
-        label_serialno.setMinWidth(200);
+        label_serialno.setMinWidth(Main.HEIGHT > 700 ? 200 : 100);
         
         field_serialno = new TextField();
         field_serialno.getStyleClass().add("account-field-value");
@@ -98,7 +87,7 @@ public class ReadingSheet {
         
         Label label_name = new Label("Name");
         label_name.getStyleClass().add("account-field-name");
-        label_name.setMinWidth(200);
+        label_name.setMinWidth(Main.HEIGHT > 700 ? 200 : 100);
         
         field_name = new TextField();
         field_name.getStyleClass().add("account-field-value");
@@ -108,7 +97,7 @@ public class ReadingSheet {
         
         Label label_class = new Label("Classification");
         label_class.getStyleClass().add("account-field-name");
-        label_class.setMinWidth(200);
+        label_class.setMinWidth(Main.HEIGHT > 700 ? 200 : 100);
         
         field_class = new TextField();
         field_class.getStyleClass().add("account-field-value");
@@ -118,7 +107,7 @@ public class ReadingSheet {
         
         Label label_prev = new Label("Prev. Reading");
         label_prev.getStyleClass().add("account-field-name");
-        label_prev.setMinWidth(200);
+        label_prev.setMinWidth(Main.HEIGHT > 700 ? 200 : 100);
         
         field_prev = new TextField();
         field_prev.getStyleClass().add("account-field-value");
@@ -127,8 +116,8 @@ public class ReadingSheet {
         field_prev.setFocusTraversable(false);
         
         GridPane grid = new GridPane();
-        grid.setPadding(new Insets(10,0,0,0));
-        grid.setVgap(10);
+        grid.setPadding(Main.HEIGHT > 700 ? new Insets(10,0,0,0) : new Insets(5,0,0,0));
+        grid.setVgap(Main.HEIGHT > 700 ? 10 : 3);
         
         grid.add(label_serialno, 0, 0);
         grid.add(label_name, 0, 1);
@@ -143,8 +132,8 @@ public class ReadingSheet {
         save = new Button("Save");
         save.getStyleClass().add("terminal-button");
         save.setStyle("-fx-font-size: 30px;");
-        save.setPrefWidth(180);
-        save.setGraphicTextGap(10);
+        save.setPrefWidth(Main.HEIGHT > 700 ? 180 : 100);
+        save.setGraphicTextGap(Main.HEIGHT > 700 ? 10 : 3);
         save.setOnAction(new EventHandler<ActionEvent>(){
             @Override
             public void handle(ActionEvent event) {
@@ -154,14 +143,14 @@ public class ReadingSheet {
         
         button_container1 = new FlowPane();
         button_container1.setAlignment(Pos.CENTER_RIGHT);
-        button_container1.setVgap(10);
-        button_container1.setHgap(10);
-        button_container1.setPadding(new Insets(10,0,10,0));
+        button_container1.setVgap(Main.HEIGHT > 700 ? 10 : 5);
+        button_container1.setHgap(Main.HEIGHT > 700 ? 10 : 5);
+        button_container1.setPadding(Main.HEIGHT > 700 ? new Insets(10,0,10,0) : new Insets(5,0,5,0));
         button_container1.getChildren().addAll(save);
         
-        root = new VBox(10);
+        root = new VBox(Main.HEIGHT > 700 ? 10 : 5);
         root.setAlignment(Pos.TOP_CENTER);
-        root.setPadding(new Insets(25));
+        root.setPadding(Main.HEIGHT > 700 ? new Insets(25) : new Insets(10));
         root.getChildren().add(grid);
         root.getChildren().add(createReadingLayout());
         root.getChildren().add(button_container1);
@@ -169,10 +158,21 @@ public class ReadingSheet {
             @Override
             public void handle(KeyEvent event) {
                 if(event.getCode() == KeyCode.ESCAPE){
-                    Main.ROOT.setCenter(new Home().getLayout());
+                    if(goBackToList){
+                        Main.ROOT.setCenter(Main.prevScreen);
+                        Header.TITLE.setText("Accounts");
+                    }else{
+                        Main.ROOT.setCenter(new Home().getLayout());
+                    }
                 }
             }
         });
+        
+        if(a != null){
+            account = a;
+            loadAccountData();
+            goBackToList = true;
+        }
     }
     
     private void saveReading(){
@@ -259,21 +259,22 @@ public class ReadingSheet {
         for(int i = 0; i < rb.length; i++){
             rb[i] = new RButton();
         }
-        HBox buttons = new HBox(10);
+        HBox buttons = new HBox(Main.HEIGHT > 700 ? 10 : 5);
         buttons.setId("sheet-buttons");
         buttons.setAlignment(Pos.CENTER);
-        buttons.setPadding(new Insets(20,5,20,5));
+        buttons.setPadding(Main.HEIGHT > 700 ? new Insets(20,5,20,5) : new Insets(10,2,10,2));
         for(RButton r: rb){
             buttons.getChildren().add(r.getLayout());
         }
         
         Label label = new Label("Capture the new meter reading by turning the dices above. Swipe-Up the dice to increment its value and Swipe-Down the dice to decrement its value.");
         label.setWrapText(true);
-        label.setStyle("-fx-font-size: 18px; -fx-font-weight: bold; -fx-alignment: center;");
+        label.setStyle("-fx-font-weight: bold; -fx-alignment: center;");
+        label.setStyle(Main.HEIGHT > 700 ? "-fx-font-size: 18px;" : "-fx-font-size: 12px;");
         label.setAlignment(Pos.CENTER);
         label.setTextAlignment(TextAlignment.JUSTIFY);
         
-        VBox root = new VBox(5);
+        VBox root = new VBox(Main.HEIGHT > 700 ? 5 : 2);
         root.setAlignment(Pos.CENTER);
         root.getChildren().addAll(buttons,label);
         return root;
@@ -299,6 +300,22 @@ public class ReadingSheet {
         return value;
     }
     
+    private void loadAccountData(){
+        field_serialno.setText(account.getSerialNo());
+        field_name.setText(account.getAcctName());
+        field_class.setText(account.getClassificationId());
+        field_prev.setText(account.getLastReading());
+
+        Database db2 = DatabasePlatformFactory.getPlatform().getDatabase();
+        reading = db2.findReadingByAccount(account.getObjid());
+        if(!db2.getError().isEmpty()) Dialog.showError(db2.getError());
+        if(reading == null){
+            initMeterReadingValue(account.getLastReading());
+        }else{
+            initMeterReadingValue(reading.getReading());
+        }
+    }
+    
     private VBox createMeterListView(List<Account> accounts){
         ObservableList<Account> data = FXCollections.observableList(accounts);
         ListView<Account> listView = new ListView<Account>();
@@ -313,7 +330,7 @@ public class ReadingSheet {
         
         Button okBtn = new Button("OK");
         okBtn.getStyleClass().add("terminal-button");
-        okBtn.setPrefWidth(145);
+        okBtn.setPrefWidth(Main.HEIGHT > 700 ? 145 : 90);
         okBtn.setOnAction(new EventHandler<ActionEvent>(){
             @Override
             public void handle(ActionEvent event) {
@@ -339,7 +356,7 @@ public class ReadingSheet {
         
         Button cancelBtn = new Button("Cancel");
         cancelBtn.getStyleClass().add("terminal-button");
-        cancelBtn.setPrefWidth(145);
+        cancelBtn.setPrefWidth(Main.HEIGHT > 700 ? 145 : 90);
         cancelBtn.setOnAction(new EventHandler<ActionEvent>(){
             @Override
             public void handle(ActionEvent event) {
@@ -347,15 +364,15 @@ public class ReadingSheet {
             }
         });
         
-        HBox btnContainer = new HBox(5);
+        HBox btnContainer = new HBox(Main.HEIGHT > 700 ? 5 : 2);
         btnContainer.setAlignment(Pos.CENTER_RIGHT);
         btnContainer.getChildren().addAll(okBtn,cancelBtn);
         
-        VBox root = new VBox(10);
+        VBox root = new VBox(Main.HEIGHT > 700 ? 10 : 5);
         root.setAlignment(Pos.TOP_CENTER);
-        root.setPadding(new Insets(20));
+        root.setPadding(Main.HEIGHT > 700 ? new Insets(20) : new Insets(10));
         root.setStyle("-fx-background-color: white;");
-        root.setMinWidth(Main.WIDTH-150);
+        root.setMinWidth(Main.HEIGHT > 700 ? Main.WIDTH-150 : Main.WIDTH-50);
         root.getChildren().addAll(listView,btnContainer);
         
         return root;
@@ -386,9 +403,14 @@ public class ReadingSheet {
             root = new StackPane();
             root.getStyleClass().add("rbutton-container");
             root.setAlignment(Pos.CENTER);
-            root.setMaxSize(100, 150);
-            root.setMinSize(100, 150);
             root.getChildren().add(text);
+            if(Main.HEIGHT > 700){
+                root.setMaxSize(100, 150);
+                root.setMinSize(100, 150);
+            }else{
+                root.setMaxSize(40, 65);
+                root.setMinSize(40, 65);
+            }
             root.setOnSwipeUp(new EventHandler<SwipeEvent>(){
                 @Override
                 public void handle(SwipeEvent event) {

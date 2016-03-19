@@ -2,8 +2,11 @@ package com.rameses.waterworks.database;
 
 import com.rameses.waterworks.bean.Account;
 import com.rameses.waterworks.bean.Reading;
+import com.rameses.waterworks.bean.ReadingGroup;
 import com.rameses.waterworks.bean.Rule;
 import com.rameses.waterworks.bean.Setting;
+import com.rameses.waterworks.bean.Stubout;
+import com.rameses.waterworks.bean.StuboutAccount;
 import java.util.List;
 import java.util.Map;
 
@@ -29,7 +32,7 @@ public interface Database {
     
     public Account findAccountByID(String objid);
     
-    public List<Account> getSearchResult(String searchtext);
+    public List<Account> getSearchAccountResult(String searchtext);
     
     public List<Account> getResultBySerialno(String serialno);
     
@@ -59,5 +62,21 @@ public interface Database {
     public List<Rule> getRules();
     
     public void clearRule();
+    
+    public void createReadingGroup(ReadingGroup r);
+    
+    public void createStubout(Stubout s);
+    
+    public void createStuboutAccount(StuboutAccount sa);
+    
+    public void clearReadingGroup();
+    
+    public void clearStubout();
+    
+    public void clearStuboutAccount();
+    
+    public List<Stubout> getSearchStuboutResult(String searchtext);
+    
+    public List<Account> getAccountByStubout(Stubout s,String searchtext);
     
 }

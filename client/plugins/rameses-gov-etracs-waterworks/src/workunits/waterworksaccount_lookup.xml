@@ -1,7 +1,7 @@
 <workunit extends="com/rameses/seti2/templates/CrudLookup.xml" schemaName="waterworks_account"
     cols="objid,acctno,acctname,address.text,meter.serialno">
     <invokers>
-        <invoker type="waterworksaccount:lookup" action="init"
+        <invoker type="waterworks_account:lookup" action="init"
                  caption="Account Lookup" target="popup" />
     </invokers>
 </workunit>

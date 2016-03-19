@@ -46,6 +46,6 @@
         
     </code>
     <pages>
-        <page template="com.rameses.gov.etracs.market.cashreceipt.LookupMarketAccountPage"/>
+        <page template="com.rameses.gov.etracs.market.views.LookupMarketAccountPage"/>
     </pages>
 </workunit>

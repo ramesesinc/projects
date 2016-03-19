@@ -18,55 +18,72 @@ class BPApplicationListingReportService {
     @Async
 	@ProxyMethod
 	public def getReport( params ) { 
-		params.showcompleted = (params.state_completed ? 1 : 0);
-		params.showprocessing = 0; 
-		params.statefilter = ''; 
-		params.otherfilter = ''; 
+		params.filter = ''; 
 
-		def states = []; 
-		if ( params.state_info ) states << "'INFO'"; 
-		if ( params.state_assessment ) states << "'ASSESSMENT'"; 
-		if ( params.state_payment ) states << "'PAYMENT'";
-		if ( params.state_release ) states << "'RELEASE'";
-		if ( states ) {
-			params.statefilter += " AND a.state IN (" + states.join(',') + ")"; 
-			params.showprocessing = 1; 
+		def buffer = []; 
+		if ( params.state_info ) { 
+			params.state_info = 'INFO'; 
+			buffer << '''$P{state_info}''';
+		} 
+		if ( params.state_assessment ) { 
+			params.state_assessment = 'ASSESSMENT'; 
+			buffer << '''$P{state_assessment}''';
+		} 
+		if ( params.state_payment ) { 
+			params.state_payment = 'PAYMENT'; 
+			buffer << '''$P{state_payment}''';
+		} 
+		if ( params.state_release ) { 
+			params.state_release = 'RELEASE'; 
+			buffer << '''$P{state_release}''';
+		} 
+		if ( params.state_completed ) { 
+			params.state_completed = 'COMPLETED'; 
+			buffer << '''$P{state_completed}''';
+		} 
+		if ( buffer ) {
+			params.filter += " AND a.state IN (" + buffer.join(',') + ")"; 
 		} 
 
-		def apptypes = [];
-		if ( params.type_new ) apptypes << "'NEW'";
-		if ( params.type_renew ) apptypes << "'RENEW'"; 
-		if ( params.type_retire ) apptypes << "'RETIRE'";
-		if ( apptypes ) {  
-			params.otherfilter += " AND alob.assessmenttype IN (" + apptypes.join(',') + ")";
+		buffer.clear();
+		if ( params.type_new ) {
+			params.type_new = 'NEW';
+			buffer << '''$P{type_new}''';
+		} 
+		if ( params.type_renew ) {
+			params.type_renew = 'RENEW';
+			buffer << '''$P{type_renew}''';
+		} 	
+		if ( params.type_retire ) {
+			params.type_retire = 'RETIRE';
+			buffer << '''$P{type_retire}''';
+		} 				
+		if ( buffer ) {  
+			params.filter += " AND alob.assessmenttype IN (" + buffer.join(',') + ")";
 		} 
 
 		if( params.barangay?.objid ) {
 			params.barangayid = params.barangay.objid;
-			params.otherfilter = ''' AND ba.barangay_objid = $P{barangayid} ''';
+			params.filter = ''' AND ba.barangay_objid = $P{barangayid} ''';
 		}
 		if( params.classification?.objid ) {
 			params.classificationid =  params.classification.objid;
-			params.otherfilter += ''' AND lob.classification_objid = $P{classificationid} ''';
+			params.filter += ''' AND lob.classification_objid = $P{classificationid} ''';
 		}
 		if( params.lob?.objid ) {
 			params.lobid = params.lob.objid;
-			params.otherfilter += ''' AND lob.objid = $P{lobid} ''';
+			params.filter += ''' AND lob.objid = $P{lobid} ''';
 		}
 		if ( params.permittype?.objid ) { 
 			params.permittypeid = params.permittype.objid; 
-			params.otherfilter += ''' AND b.permittype=$P{permittypeid} '''; 	
+			params.filter += ''' AND b.permittype = $P{permittypeid} '''; 	
 		} 
 
 		def zlist = bpapplication_report.getList( params );
-		if( ! zlist ) throw new Exception('No records found.');
+		if ( !zlist ) throw new Exception('No records found.');
 
-		zlist.each { 
-			it.capital = (it.capital ? numSvc.round( it.capital ) : 0.0 );
-			it.gross = (it.gross ?  numSvc.round( it.gross ) : 0.0 );
-		} 
 		return zlist;	
-	}
+	} 
 
 	@ProxyMethod
 	public def getApplicationStates() {

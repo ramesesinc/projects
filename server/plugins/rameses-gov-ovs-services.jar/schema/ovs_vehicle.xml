@@ -1,0 +1,10 @@
+<schema adapter="violation">
+	<element name="ovs_vehicle" tablename="vehicle">
+		<field name="objid" primary="true" prefix="VEH"/>
+		<field name="name" required="true" caption="Name"/>
+		<field name="plateno" required="true" caption="Plate No." indexed="true" searchable="true"/>
+		<field name="orcr" required="false" caption="ORCR"/>
+		<field name="owner_objid" required="true"/>
+		<field name="owner_name" required="true" caption="Owner"/>
+	</element>
+</schema>

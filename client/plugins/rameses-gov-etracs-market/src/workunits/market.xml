@@ -1,31 +1,10 @@
-<workunit>
+<workunit schemaName="market">
     <invokers>
-        <invoker type="market:create" caption="New Market" index="4" action="create"/>
-        <invoker type="market:open" caption="View Market" index="4" action="open"/>
+        <invoker type="market:create" caption="New Market" index="4" action="create" target="popup"/>
+        <invoker type="market:open" caption="View Market" index="4" action="open"  target="popup"/>
     </invokers>
-    <code>
-         <![CDATA[
-            import com.rameses.rcp.common.*
-            import com.rameses.rcp.annotations.*
-            import com.rameses.osiris2.client.*
-            import com.rameses.osiris2.common.*
-            import com.rameses.rulemgmt.constraint.*;
-            import com.rameses.rulemgmt.*;
-            import java.rmi.server.*;
-            import com.rameses.gov.etracs.bpls.*;
-            
-            class MarketPageController extends CRUDController {
-            
-                @Service("MarketService")
-                def service;
-                
-                String entityName  = 'market'
-                String prefixId    = 'MKT';
-
-            }
-            ]]>
-    </code>
+    <code class="com.rameses.seti2.models.CrudFormModel" />
     <pages>
-        <page template="com.rameses.gov.etracs.market.MarketPage"/>
+        <page template="com.rameses.gov.etracs.market.views.MarketPage"/>
     </pages>
 </workunit>

@@ -4,6 +4,8 @@ import com.rameses.Main;
 import com.rameses.waterworks.bean.Account;
 import com.rameses.waterworks.bean.ReadingGroup;
 import com.rameses.waterworks.bean.Rule;
+import com.rameses.waterworks.bean.Stubout;
+import com.rameses.waterworks.bean.StuboutAccount;
 import com.rameses.waterworks.database.Database;
 import com.rameses.waterworks.database.DatabasePlatformFactory;
 import com.rameses.waterworks.dialog.Dialog;
@@ -75,12 +77,12 @@ public class Download {
         Callback<ListView<ReadingGroup>, ListCell<ReadingGroup>> forListView = CheckBoxListCell.forListView(property);
         
         listView = new ListView<ReadingGroup>();
-        listView.setStyle("-fx-font-size: 25px;");
+        listView.setId("download-listview");
         listView.setPrefHeight(Main.HEIGHT*0.50);
         listView.setCellFactory(forListView);
         
         label = new Label("Downloading... Please wait...");
-        label.setStyle("-fx-font-size: 28px; -fx-padding: 25 0 0 0;");
+        label.setId("download-status");
         label.setVisible(false);
         
         progressbar = new ProgressBar();
@@ -91,16 +93,15 @@ public class Download {
         
         download = new Button("Download");
         download.getStyleClass().add("terminal-button");
-        download.setStyle("-fx-font-size: 26px;");
-        download.setPrefWidth(180);
+        download.setPrefWidth(Main.HEIGHT > 700 ? 180 : 140);
         download.setOnAction(new EventHandler<ActionEvent>(){
             @Override
             public void handle(ActionEvent event) {
                 //GET THE SELECTED AREAS FOR DOWNLOAD
                 List<String> groupids = new ArrayList();
-                for(ReadingGroup a : listView.getItems()){
-                    if(a.isSelected()){
-                        groupids.add(a.getObjid());
+                for(ReadingGroup r : listView.getItems()){
+                    if(r.isSelected()){
+                        groupids.add(r.getObjid());
                     }
                 }
                 
@@ -139,6 +140,14 @@ public class Download {
                 if(downloadsize < 1){
                     Dialog.showError("No data to download");
                     return;
+                }
+                
+                //STORE THE READING GROUPS, STUBOUTS, STUBOUT_ACCOUNTS
+                clearReadingGroups();
+                for(ReadingGroup r : listView.getItems()){
+                    if(r.isSelected()){
+                        saveReadingGroup(r);
+                    }
                 }
                 
                 label.setVisible(true);
@@ -183,8 +192,8 @@ public class Download {
         bcontainer.setPadding(new Insets(10, 0, 0, 0));
         bcontainer.getChildren().add(download);
         
-        root = new VBox(10);
-        root.setPadding(new Insets(20));
+        root = new VBox(Main.HEIGHT > 700 ? 10 : 5);
+        root.setPadding(Main.HEIGHT > 700 ? new Insets(20) : new Insets(10));
         root.getChildren().addAll(listView,bcontainer,label,progressbar);
         root.setOnKeyReleased(new EventHandler<KeyEvent>(){
             @Override
@@ -313,7 +322,8 @@ public class Download {
                             String assigneeid = assignee.get("objid").toString();
                             String assigneename = assignee.get("name").toString();
                             String duedate = m.get("duedate").toString();
-                            data.add(new ReadingGroup(objid,title,assigneeid,assigneename,duedate,false));
+                            Object stubout = m.get("stubouts");
+                            data.add(new ReadingGroup(objid,title,assigneeid,duedate,false,stubout));
                         }
                         listView.setItems(data);
                         
@@ -326,6 +336,41 @@ public class Download {
             }
         };
         t2.start();
+    }
+    
+    private void saveReadingGroup(ReadingGroup r){
+        DatabasePlatformFactory.getPlatform().getDatabase().createReadingGroup(r);
+        List<Map> stubouts = (List<Map>) r.getStubout();
+        Iterator<Map> i = stubouts.iterator();
+        while(i.hasNext()){
+            Map m = i.next();
+            String objid = m.get("objid")!=null ? m.get("objid").toString() : "";
+            String title = m.get("title")!=null ? m.get("title").toString() : "";
+            String description = m.get("description")!=null ? m.get("description").toString() : "";
+            Map reading = (Map) m.get("readinggroup");
+            String readinggroupid = reading!=null ? reading.get("objid").toString() : "";
+            List<Map> accounts = m.get("accounts")!=null ? (List<Map>)m.get("accounts") : new ArrayList();
+            
+            Stubout stubout = new Stubout(objid,title,description,readinggroupid,accounts);
+            DatabasePlatformFactory.getPlatform().getDatabase().createStubout(stubout);
+            
+            Iterator<Map> it = accounts.iterator();
+            while(it.hasNext()){
+                Map mm = it.next();
+                String acct_objid = mm.get("objid")!=null ? mm.get("objid").toString() : "";
+                String acct_parentid = mm.get("parentid")!=null ? mm.get("parentid").toString() : "";
+                String acct_acctid = mm.get("acctid")!=null ? mm.get("acctid").toString() : "";
+                int acct_sortorder = mm.get("sortorder")!=null ? Integer.parseInt(mm.get("sortorder").toString()) : 0;
+                StuboutAccount sa = new StuboutAccount(acct_objid, acct_parentid, acct_acctid, acct_sortorder);
+                DatabasePlatformFactory.getPlatform().getDatabase().createStuboutAccount(sa);
+            }
+        }
+    }
+    
+    private void clearReadingGroups(){
+        DatabasePlatformFactory.getPlatform().getDatabase().clearStuboutAccount();
+        DatabasePlatformFactory.getPlatform().getDatabase().clearStubout();
+        DatabasePlatformFactory.getPlatform().getDatabase().clearReadingGroup();
     }
     
     public Node getLayout(){

@@ -26,6 +26,7 @@
             
             def municityname
             def municitynameList
+            def resultdata; 
             
             def initReport() {
                 municitynameList = svc.getMuniCityByRemittance( entity.objid ) 
@@ -42,7 +43,8 @@
             
             
             def getReportData(){
-               return svc.generateAbstractOfRPTCollectionByRemittance( entity, municityname );
+               resultdata = svc.generateAbstractOfRPTCollectionByRemittance( entity, municityname );
+               return resultdata; 
             }
             
             SubReport[] getSubReports() {
@@ -54,7 +56,7 @@
             
             
             Map getParameters(){
-                return reportdata.header 
+                return resultdata?.header  
             }
         }      
        ]]>

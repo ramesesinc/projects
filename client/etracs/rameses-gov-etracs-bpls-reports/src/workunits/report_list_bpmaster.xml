@@ -25,15 +25,16 @@ public class BPMasterListReportController extends ReportController
     String reportpath = 'com/rameses/gov/etracs/bpls/reports/'
     String reportName = reportpath + 'BPMasterList.jasper'
 
-    def statuslist = ['ACTIVE','PROCESSING','RETIRED']; 
     def rptparams = [:];
     
     def formControl = [ 
         getControlList: { 
             return [
                 [type:'combo', caption:'Permit Type', name:'entity.permittype', required:true, items:'permitTypes',  expression:'#{item.title}', captionWidth:100, preferredSize:'0,20'],
-                [type:'combo', caption:'Status', name:'entity.state', required:true, items:'statuslist', captionWidth:100, preferredSize:'0,20'], 
-                [type:'integer', caption:'Year', name:'entity.year', required:true, preferredSize:'100,20', captionWidth:100]                 
+                [type:'integer', caption:'Year', name:'entity.year', required:true, preferredSize:'100,20', captionWidth:100], 
+
+                [type:'checkbox', caption:'Status', text:'ACTIVE', name:'entity.state_active', immediate:true, preferredSize:'0,20', captionWidth:100 ], 
+                [type:'checkbox', caption:'',  text:'PROCESSING', name:'entity.state_processing',immediate:true, preferredSize:'0,20', captionWidth:100 ] 
             ]; 
         } 
     ] as FormPanelModel; 
@@ -42,20 +43,24 @@ public class BPMasterListReportController extends ReportController
 
     def initReport() { 
         def outcome = super.initReport(); 
-        entity.state = statuslist[0]; 
         permitTypes = permitTypeSvc.getList(); 
         entity.permittype = (permitTypes? permitTypes[0] : null); 
         entity.year = new java.sql.Date( System.currentTimeMillis() ).toString().split("-")[0]; 
+        entity.state_active = true;         
         return outcome; 
     } 
 
     Map getParameters() { 
+        def buff = [];
+        if ( entity.state_active ) buff << 'ACTIVE'; 
+        if ( entity.state_processing ) buff << 'PROCESSING'; 
+
+        rptparams.TXNSTATE = buff.join(','); 
+        rptparams.YEAR = entity.year; 
         return rptparams; 
     }
 
-    def getReportData(){
-        rptparams.TXNSTATE = entity.state;
-        rptparams.YEAR = entity.year; 
+    def getReportData() { 
         return svc.getReport( entity ); 
     }
 }

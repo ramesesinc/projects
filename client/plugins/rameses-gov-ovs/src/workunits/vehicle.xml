@@ -1,0 +1,12 @@
+<workunit schemaName="ovs_vehicle">
+    <invokers>
+        <invoker type="ovs_vehicle:create" caption="Vehicle" action="create" target="popup" role="MASTER"/>
+        <invoker type="ovs_vehicle:open" caption="Vehicle" action="open" target="popup" role="MASTER"/>
+    </invokers>
+    
+    <code class="com.rameses.seti2.models.CrudFormModel"/>
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.ovs.views.VehiclePage"/>
+    </pages>
+</workunit>

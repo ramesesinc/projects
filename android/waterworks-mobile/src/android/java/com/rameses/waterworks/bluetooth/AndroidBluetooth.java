@@ -70,6 +70,7 @@ public class AndroidBluetooth implements BluetoothPort
     @Override
     public void print(String message) {
         try{
+            System.out.println("message-> " + message);
             mmOutputStream.write(message.getBytes());
         }catch(Exception e){
             Logger.getLogger(AndroidBluetooth.class.getName()).log(Level.SEVERE, null, e);
@@ -92,6 +93,7 @@ public class AndroidBluetooth implements BluetoothPort
             readBuffer = new byte[1024];
 
             workerThread = new Thread(new Runnable() {
+                @Override
                 public void run() {
                     while (!Thread.currentThread().isInterrupted()
                             && !stopWorker) {
@@ -158,9 +160,9 @@ public class AndroidBluetooth implements BluetoothPort
     @Override
      public void closeBT() {
         try{
-            mmOutputStream.close();
-            mmInputStream.close();
-            mmSocket.close();
+            if(mmOutputStream != null) mmOutputStream.close();
+            if(mmInputStream != null) mmInputStream.close();
+            if(mmSocket != null) mmSocket.close();
         }catch(Exception e){
             ERROR = e.toString();
             Logger.getLogger(AndroidBluetooth.class.getName()).log(Level.SEVERE, null, e);

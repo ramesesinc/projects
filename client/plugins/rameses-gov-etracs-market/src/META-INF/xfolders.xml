@@ -1,21 +1,24 @@
 <folders>
     <folder id="explorer">
-        <folder id="master">
+        <folder id="master"  caption="Master">
             <folder id="market" caption="Market" index="5"/>
         </folder>
-        <folder id="txn">
+        <folder id="txn" caption="Transactions">
             <folder id="market" caption="Market" index="5"/>
         </folder>
-        <folder id="report">
+        <folder id="report" caption="Reports">
             <folder id="market" caption="Market" index="5"/>
         </folder>
         <folder id="rulemgmt" caption="Rule Management">
             <folder id="market" caption="Market" index="5"/>
         </folder>
     </folder>
-     <folder id="menu">
-        <folder id="txn">
-            <folder id="bpls" caption="BPLS"/>
+    <folder id="menu">
+        <folder id="txn" caption="Transactions">
+            <folder id="market" caption="Market"/>
         </folder>
+    </folder>
+    <folder id="home">
+        <folder id="market" caption="Market"/>
     </folder>
 </folders>

@@ -36,7 +36,7 @@ class PersistenceService  {
 			def schema = schemaService.getSchema([name: o._schemaname]);
 			//loop thru the schema for primary keys
 			finders = [:];
-			schema.columns.findAll{it.primary}.each {
+			schema.fields.findAll{it.primary  && it.source == o._schemaname}.each {
 				finders.put( it.name, o.get(it.name));
 			}
 		}
@@ -50,16 +50,10 @@ class PersistenceService  {
 		if(!finders)
 			throw new Exception('update error. Please indicate at least a findBy map or primary keys')
 		def em = db.lookup(o._schemaname);
+		//em.debug = true;
 		em.find(finders);
 		return em.update(o);
 	}
-
-	/*
-	@ProxyMethod
-	public def merge( def o ) {
-		return em.merge(o);
-	}
-	*/
 
 	@ProxyMethod
 	public void removeEntity( def o ) {
@@ -69,8 +63,21 @@ class PersistenceService  {
 			throw new Exception('removeEntity error. Please indicate at least a findBy map or primary keys')
 		def em = db.lookup(o._schemaname);
 		em.find(finders);
-		em.delete();		
+		em.delete();
 	}
 
+	@ProxyMethod
+	public def save( def o ) {
+		if(!o._schemaname) throw new Exception('Please provide a _schemaname');
+		def em = db.lookup(o._schemaname);
+		em.debug = true;
+		o.debug = true;
+		return em.save( o );
+	}
+
+	@ProxyMethod
+	public def getSchema( def o ) {
+		return schemaService.getSchema(o);
+	}
 
 }

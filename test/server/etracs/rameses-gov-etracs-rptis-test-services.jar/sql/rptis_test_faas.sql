@@ -22,7 +22,7 @@ select *
 from faas_task 
 where refid = $P{objid} and enddate is null
 
-[setFaasRequirementsAsComplied]
+[setRequirementsAsComplied]
 update rpt_requirement set 
 	complied = 1
 where refid = $P{objid}

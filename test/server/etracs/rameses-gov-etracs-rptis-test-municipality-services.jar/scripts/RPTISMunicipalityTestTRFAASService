@@ -69,7 +69,7 @@ public class RPTISMunicipalityTestTRFAASService
         faas.owner = [name:faas.taxpayer.name, address: faas.taxpayer.address]
         faas.memoranda = 'TRANSFER TEST'
         faasSvc.updateFaas(faas)
-        em.setFaasRequirementsAsComplied(faas)
+        em.setRequirementsAsComplied(faas)
         return helper.signal(workflowSvc, task, 'submit', false)
     }
 

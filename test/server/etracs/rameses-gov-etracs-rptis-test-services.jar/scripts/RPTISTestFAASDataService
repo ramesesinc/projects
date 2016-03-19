@@ -97,7 +97,8 @@ public class RPTISTestFAASDataService
 		faas.rp.west = 'LOT 2'
 	}
 
-	void buildLandRpuData(faas){
+	@ProxyMethod
+	public void buildLandRpuData(faas){
 		faas.rpu.classification = propSvc.findById('RESIDENTIAL')
 		def subclass = getSubclass(faas);
 		faas.rpu.landdetails << [

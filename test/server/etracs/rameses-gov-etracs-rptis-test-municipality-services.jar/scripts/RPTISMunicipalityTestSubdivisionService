@@ -1,0 +1,195 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.services.extended.*;
+
+public class RPTISMunicipalityTestSubdivisionService
+{
+    @Env 
+    def env 
+
+    @ActiveDB('rptis_test_faas')
+    def em 
+
+    @Service('RPTISUnitTestService')
+    def test
+
+    @Service('RPTISTestFAASDataService')
+    def dataSvc
+
+    @Service('RPTISTestHelperService')
+    def helper 
+
+    @Service('RPTISTestFAASOnlineService')
+    def faasOnlineTest
+
+
+    @Service('SubdivisionService')
+    def subdivisionSvc 
+
+    @Service('FAASService')
+    def faasSvc 
+
+    @Service('SubdivisionWorkflowService')
+    def workflowSvc    
+
+    @Service('ExaminationService')
+    def examSvc 
+
+    @Service('EntityLookupService')
+    def entityLookup
+
+    @Service('RPTLedgerService')
+    def ledgerSvc 
+
+    @Service('RPTUtil')
+    def util 
+
+
+    @ProxyMethod
+    public def createSubdivision() {
+        def entity = [
+        	memoranda : 'SUBDIVISION TEST',
+        	filetype  : 'subdivision'
+        ]
+        return subdivisionSvc.createSubdivision(entity)
+    }
+
+    @ProxyMethod
+    public void deleteSubdivision(task) {
+    	helper.openTask(workflowSvc, task)
+    	subdivisionSvc.deleteSubdivision(task.data)	
+    }
+
+
+    @ProxyMethod
+    public def assignToMe( task ) {
+        return helper.signal(workflowSvc, task, null, true)    
+    }
+
+
+    @ProxyMethod
+    public def doReceive(task){
+    	helper.openTask(workflowSvc, task)
+        def subdivision = task.data 
+        em.setRequirementsAsComplied(subdivision)
+        return helper.signal(workflowSvc, task, 'submit', true)
+    }
+
+
+    @ProxyMethod
+    public def doExamination(task){
+        task += assignToMe(task)
+        def finding = dataSvc.createExaminationFinding(task.data)
+        examSvc.create(finding)
+        return helper.signal(workflowSvc, task, 'submit', true)
+    }    
+
+    @ProxyMethod
+    public def doReturnExaminer(task){
+        task += assignToMe(task)
+        return helper.signal(workflowSvc, task, 'returnexaminer', true)
+    }        
+
+    @ProxyMethod
+    public def doReturnReceiver(task){
+        return helper.signal(workflowSvc, task, 'returnreceiver', true)
+    }        
+
+
+    @ProxyMethod
+    public def doTaxmapping(task, motherfaas){
+        task += assignToMe(task)
+        def subdivision = task.data 
+
+        //add mother land
+        motherfaas += faasSvc.openFaas(motherfaas)
+        def motherland = createMotherLand(subdivision, motherfaas)
+        subdivisionSvc.addMotherLand(motherland)
+
+        //add subdivided lands
+        subdivisionSvc.createSubdividedLand(createLand(subdivision, motherfaas, 1), subdivision)
+        subdivisionSvc.createSubdividedLand(createLand(subdivision, motherfaas, 2), subdivision)
+        return helper.signal(workflowSvc, task, 'submit', true)
+    }    
+
+    @ProxyMethod
+    public def doTaxmappingApproval(task){
+        return helper.doTaxmappingApproval(workflowSvc, task)
+    }    
+
+    @ProxyMethod
+    public def doAppraisal(task){
+        task += assignToMe(task)
+        def subdivision = task.data 
+        subdivisionSvc.getSubdividedLands(subdivision.objid).each{
+        	appraiseFaas(it)
+        }
+        return helper.signal(workflowSvc, task, 'submit', true)
+    }    
+
+    @ProxyMethod
+    public def doAppraisalApproval(task){
+        return helper.doAppraisalApproval(workflowSvc, task)
+    }    
+
+    @ProxyMethod
+    public def doRecommender(task){
+        task.putAll(assignToMe(workflowSvc, task))
+        return signal(workflowSvc, task, 'submit', true)
+    }    
+
+
+     def createMotherLand(subdivision, faas){
+        def mland = [:]
+        mland.objid = 'SML' + new java.rmi.server.UID()
+        mland.subdivisionid = subdivision.objid
+		mland.landfaasid = faas.objid
+        mland.rpuid = faas.rpuid
+        mland.rpid = faas.realpropertyid
+        mland.realpropertyid = faas.realpropertyid
+        mland.lguid = faas.lguid
+        mland.lgutype = faas.lgutype
+        mland.tdno = faas.tdno
+        mland.owner = faas.owner
+        mland.fullpin = faas.fullpin
+        mland.totalmv = faas.totalmv 
+        mland.totalav = faas.totalav 
+        mland.totalareaha = faas.totalareaha 
+        mland.totalareasqm = faas.totalareasqm 
+        mland.barangayid = faas.barangayid      
+        return mland 
+     }
+
+     def createLand(subdivision, motherfaas, parcelincrement){
+     	def rp = motherfaas.rp 
+     	rp.objid = rp.objid + parcelincrement
+     	rp.state = 'INTERIM'
+     	rp.north += parcelincrement
+     	rp.east += parcelincrement
+     	rp.west += parcelincrement
+     	rp.south += parcelincrement
+     	def parcellen = rp.parcel.length()
+     	def newparcel = util.toInteger(rp.parcel) + parcelincrement
+     	rp.pin = rp.pin.substring(1, rp.pin.length()-parcellen) + newparcel
+     	return [
+     		objid 			: 'SL' + new java.rmi.server.UID(),
+     		subdivisionid 	: subdivision.objid,
+     		newfaasid 		: rp.objid,
+     		newpin 			: rp.pin,
+     		rp 				: rp, 
+     	]
+     }
+
+
+     void appraiseFaas(sland){
+     	def faas = faasSvc.openFaas([objid:sland.newfaasid])
+     	def taxpayer = entityLookup.getList([searchtext:'c']).first()
+        taxpayer.address = taxpayer.address.text 
+        faas.taxpayer = taxpayer
+        faas.owner = [name:faas.taxpayer.name, address: faas.taxpayer.address]
+        dataSvc.buildLandRpuData(faas)
+        faasSvc.updateFaas(faas)
+     }
+
+}

@@ -59,7 +59,7 @@ public class RPTISProvinceTestMunicipalityTRProvinceApprovalService
         task += assignToMe(task)
         helper.openTask(workflowSvc, task)
         def faas = task.data 
-        em.setFaasRequirementsAsComplied(faas)
+        em.setRequirementsAsComplied(faas)
         return helper.signal(workflowSvc, task, 'submit_taxmapper', false)
     }
 

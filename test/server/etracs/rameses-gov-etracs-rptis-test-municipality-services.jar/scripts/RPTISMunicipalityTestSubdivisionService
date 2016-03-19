@@ -63,6 +63,16 @@ public class RPTISMunicipalityTestSubdivisionService
 
 
     @ProxyMethod
+    public void submitToProvince( task ) {
+    	helper.openTask(workflowSvc, task)
+    	def subdivision = task.data 
+    	subdivisionSvc.initApproveSubdivision(subdivision)
+        subdivisionSvc.assignNewTdNos(subdivision)
+        subdivisionSvc.submitToProvinceSubdivision(subdivision)
+		helper.signal(workflowSvc, task, 'completed', false)
+    }
+
+    @ProxyMethod
     public def assignToMe( task ) {
         return helper.signal(workflowSvc, task, null, true)    
     }
@@ -135,8 +145,8 @@ public class RPTISMunicipalityTestSubdivisionService
 
     @ProxyMethod
     public def doRecommender(task){
-        task.putAll(assignToMe(workflowSvc, task))
-        return signal(workflowSvc, task, 'submit', true)
+        task += assignToMe(task)
+        return helper.signal(workflowSvc, task, 'submit', true)
     }    
 
 
@@ -170,8 +180,8 @@ public class RPTISMunicipalityTestSubdivisionService
      	rp.west += parcelincrement
      	rp.south += parcelincrement
      	def parcellen = rp.parcel.length()
-     	def newparcel = util.toInteger(rp.parcel) + parcelincrement
-     	rp.pin = rp.pin.substring(1, rp.pin.length()-parcellen) + newparcel
+     	def newparcel = (util.toInteger(rp.parcel) + parcelincrement).toString().padLeft(parcellen, '0')
+     	rp.pin = rp.pin.substring(1, rp.pin.length()-parcellen-1) + newparcel
      	return [
      		objid 			: 'SL' + new java.rmi.server.UID(),
      		subdivisionid 	: subdivision.objid,

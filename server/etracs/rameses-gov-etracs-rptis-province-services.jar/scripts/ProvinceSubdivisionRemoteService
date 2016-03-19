@@ -34,13 +34,14 @@ class ProvinceSubdivisionRemoteService
 
 	void notifyGroup(subdivision){
 		println 'SubdivisionWorkflowService... notifyGroup...'
+		def sender = (env.REQUESTER.FULLNAME ? env.REQUESTER.FULLNAME : env.REQUESTER.USER )
         def msg = [
             objid     		: subdivision.objid,
             senderid  		: env.REQUESTER.USERID,
-            sender    		: env.REQUESTER.NAME,
+            sender    		: sender,
             recipientid   	: 'assign-receiver',
             recipienttype 	: 'group',
-            message   		: 'Subdivision No. ' + subdivision.txnno + '    (assign-receiver)',
+            message   		: 'Subdivision No. ' + subdivision.txnno + ' submitted by ' + sender + '   (assign-receiver) ',
             filetype  		: subdivision.filetype,
             data 	  		: [objid: subdivision.objid],
         ]

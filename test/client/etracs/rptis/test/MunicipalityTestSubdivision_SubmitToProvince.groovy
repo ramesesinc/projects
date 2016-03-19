@@ -1,4 +1,4 @@
-class MunicipalityTestSubdivision_SubmitToProvince.groovy
+class MunicipalityTestSubdivision_SubmitToProvince
 {
     public static void runTest(faas){
         println '='*50
@@ -37,11 +37,23 @@ class MunicipalityTestSubdivision_SubmitToProvince.groovy
         println '[municipality] Creating Subdivision'
         munisvc = MunicipalityTestProxy.create('RPTISMunicipalityTestSubdivisionService')
         def subdivision = munisvc.createSubdivision()
-        subdivision = munisvc.doReceive(subdivision)
-        subdivision = munisvc.doExamination(subdivision)
-        subdivision = munisvc.doTaxmapping(subdivision, faas)
-        subdivision = munisvc.doAppraisal(subdivision)
-        subdivision = munisvc.doRecommender(subdivision)
-        println '[municipality] Subdivision submitted to province'
+        def task = munisvc.doReceive(subdivision)
+        println 'doReceive...done'
+        task = munisvc.doExamination(task)
+        println 'doExamination...done'
+        task = munisvc.doTaxmapping(task, faas)
+        println 'doTaxmapping...done'
+        task = munisvc.doAppraisal(task)
+        println 'doAppraisal...done'
+        task = munisvc.doRecommender(task)
+        munisvc.submitToProvince(task)
+        println 'doRecommender...done'
+        println '[municipality] Subdivision creation and submission to province tested'
 
+
+        /*=================================================
+        * PROVINCE: TEST SUBMITTED SUBDIVISION
+        =================================================*/
+
+    }
 }

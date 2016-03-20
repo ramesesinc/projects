@@ -1,0 +1,14 @@
+<workunit>
+    <invokers>
+        <invoker type="receiver:lookup" caption="Lookup Receiver" action="init" target="popup"/> 
+        
+        <invoker type="formActions" caption="Close" action="closeForm"/> 
+        <invoker type="formActions" caption="Add" action="addReceiver" icon="images/toolbars/create.png"/> 
+        <invoker type="formActions" caption="Select" action="selectReceiver" 
+                 depends="selectedReceiver" visibleWhen="#{selectedReceiver != null}"/> 
+    </invokers>
+    <code class="com.rameses.julies.mt.models.LookupReceiverModel"/>
+    <pages>
+        <page template="com.rameses.julies.mt.views.LookupReceiverPage"/>        
+    </pages>    
+</workunit>

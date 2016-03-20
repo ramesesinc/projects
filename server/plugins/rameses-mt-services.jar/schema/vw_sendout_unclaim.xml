@@ -1,0 +1,16 @@
+<schema adapter="main">
+
+	<element tablename="vw_sendout_unclaim">
+		<field name="objid" primary="true"/> 
+		<field name="dtfiled" required="true"/> 
+		<field name="controlno" required="true"/> 
+		<field name="txnno" required="true"/> 
+		<field name="sender_objid" required="true"/> 
+		<field name="sender_name" required="true"/> 
+		<field name="receiver_objid" required="true"/> 
+		<field name="receiver_name" required="true"/> 
+		<field name="principal" required="true" type="decimal"/> 
+		<field name="currency" required="true"/> 
+	</element> 
+
+</schema>

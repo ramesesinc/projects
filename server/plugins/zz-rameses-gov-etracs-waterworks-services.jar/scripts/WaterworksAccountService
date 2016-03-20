@@ -15,48 +15,6 @@ class WaterworksAccountService {
 	def wm;
 
 	@ProxyMethod
-	public def getList( def o ) {
-		return acct.list();
-	}
-
-	@ProxyMethod
-	public def create( def o ){
-		if(!o.meter) throw new Exception("Please specify the meter.");
-		def a = acct.create(o);
-		wm.find([objid:o.meter.objid]).update([currentacctid:a.objid]);
-		if(o.lastreading){
-			def c = [:];
-			c.account = a;
-			c.dtreading = a.lastreadingdate;
-			c.year = a.lastreadingyear;
-			c.month = a.lastreadingmonth;
-			c.prevreading = a.prevreading;
-			c.reading = a.lastreading;
-			c.readingmethod = 'CAPTURE';
-			c.reader = [:]; 
-			c.volume = a.lastreading - a.prevreading;
-			c.amount = a.balance;
-			c.amtpaid = 0.00;
-			wac.create(c);
-		}
-		return a;
-	}
-
-	@ProxyMethod
-	public def update( def o ){
-		return acct.update(o);
-	}
-
-	@ProxyMethod
-	public def open(def o) {
-		return acct.find(o).first();
-	}
-
-	public def createConsumption( def o ){
-		return wac.create(o);
-	}
-
-	@ProxyMethod
 	public def getConsumption(def o) {
 		def feeList = wac.find([acctid: o.objid]).list();
 		return billSvc.processBilling(feeList);

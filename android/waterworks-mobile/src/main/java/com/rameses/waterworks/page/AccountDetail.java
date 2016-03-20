@@ -93,9 +93,9 @@ public class AccountDetail {
             }
         });
         
-        HBox btnContainer = new HBox(10);
+        HBox btnContainer = new HBox(Main.HEIGHT > 700 ? 10 : 5);
         btnContainer.setAlignment(Pos.CENTER_RIGHT);
-        btnContainer.setPadding(new Insets(15, 0, 0, 0));
+        btnContainer.setPadding(Main.HEIGHT > 700 ? new Insets(15, 0, 0, 0) : new Insets(5, 0, 0, 0));
         btnContainer.getChildren().addAll(print,capture,close);
         
         Database db = DatabasePlatformFactory.getPlatform().getDatabase();
@@ -108,7 +108,7 @@ public class AccountDetail {
             account.setTotalDue(reading.getTotalDue());
         }
         
-        HBox readingContainer = new HBox(10);
+        HBox readingContainer = new HBox(Main.HEIGHT > 700 ? 10 : 5);
         readingContainer.setPadding(Main.HEIGHT > 700 ? new Insets(20, 10, 20, 10) : new Insets(10, 5, 10, 5));
             
         readingContainer.setStyle("-fx-skin: \"com.sun.javafx.scene.control.skin.ButtonSkin\"; -fx-background-color: -fx-shadow-highlight-color, -fx-outer-border, -fx-inner-border, -fx-body-color;");
@@ -126,11 +126,12 @@ public class AccountDetail {
         account.setAmtDue(amtdue);
         account.setTotalDue(totaldue);
         
-        root = new VBox(15);
+        root = new VBox(Main.HEIGHT > 700 ? 15 : 2);
         root.setStyle("-fx-background-color: white;");
         root.setMinWidth(Main.HEIGHT > 700 ? Main.WIDTH-150 : Main.WIDTH-40);
+        root.setMaxWidth(Main.HEIGHT > 700 ? Main.WIDTH-150 : Main.WIDTH-8);
         root.setAlignment(Pos.CENTER);
-        root.setPadding(new Insets(20));
+        root.setPadding(Main.HEIGHT > 700 ? new Insets(20) : new Insets(10));
         root.getChildren().add(createDetail("Account No",account.getAcctNo()));
         root.getChildren().add(createDetail("Name",account.getAcctName()));
         root.getChildren().add(createDetail("Address",account.getAddress()));
@@ -151,12 +152,12 @@ public class AccountDetail {
     
     private HBox createDetail(String key,String value){
         Label label1 = new Label(key);
-        label1.setPrefWidth(180);
+        label1.setMinWidth(Main.HEIGHT > 700 ? 180 : 90);
         label1.setTextAlignment(TextAlignment.RIGHT);
         
         Label label2 = new Label(":");
         
-        label2.setPrefWidth(30);
+        label2.setPrefWidth(Main.HEIGHT > 700 ? 30 : 10);
         
         Label label3 = new Label(value);
 
@@ -165,12 +166,12 @@ public class AccountDetail {
             label2.setStyle("-fx-font-size: 25px;");
             label3.setStyle("-fx-font-size: 24px; -fx-font-weight: bold;");
         }else{
-            label1.setStyle("-fx-font-size: 19px;");
-            label2.setStyle("-fx-font-size: 19px;");
-            label3.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
+            label1.setStyle("-fx-font-size: 14px;");
+            label2.setStyle("-fx-font-size: 14px;");
+            label3.setStyle("-fx-font-size: 13px; -fx-font-weight: bold;");
         }
         
-        HBox container = new HBox(10);
+        HBox container = new HBox(Main.HEIGHT > 700 ? 10 : 5);
         container.getChildren().addAll(label1,label2,label3);
         
         return container;
@@ -180,13 +181,14 @@ public class AccountDetail {
         Label label1 = new Label(key);
         label1.getStyleClass().add("account-field-name");
         label1.getStyleClass().add("account-columnar-name");
-        label1.setPrefWidth(180);
+        label1.setPrefWidth(Main.HEIGHT > 700 ? 180 : 90);
         
         Label label2 = new Label(value);
         label2.getStyleClass().add("account-field-value");
         label2.getStyleClass().add("account-columnar-value");
-        label2.setStyle("-fx-background-color: white; -fx-font-size: 28px; -fx-font-weight: bold;");
-        label2.setPrefWidth(180);
+        label2.setStyle("-fx-background-color: white; -fx-font-weight: bold;");
+        label2.setStyle(Main.HEIGHT > 700 ? "-fx-font-size: 28px;" : "-fx-font-size: 16px;");
+        label2.setPrefWidth(Main.HEIGHT > 700 ? 180 : 90);
         
         VBox container = new VBox();
         container.setStyle("-fx-border-width: 1px; -fx-border-color: #7dbce8;");

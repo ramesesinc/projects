@@ -63,18 +63,18 @@ public class WaterworksStuboutPage extends javax.swing.JPanel {
 
         xFormPanel1.add(jScrollPane1);
 
-        xLookupField4.setCaption("Reading Group");
-        xLookupField4.setExpression("#{entity.readinggroup.title}");
-        xLookupField4.setHandler("waterworks_readinggroup:lookup");
-        xLookupField4.setName("entity.readinggroup"); // NOI18N
+        xLookupField4.setCaption("Area");
+        xLookupField4.setExpression("#{entity.area.title}");
+        xLookupField4.setHandler("waterworks_area:lookup");
+        xLookupField4.setName("entity.area"); // NOI18N
         xLookupField4.setPreferredSize(new java.awt.Dimension(0, 20));
         xLookupField4.setRequired(true);
         xFormPanel1.add(xLookupField4);
 
         xLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
         xLabel1.setCaption("Assignee");
-        xLabel1.setDepends(new String[] {"entity.readinggroup"});
-        xLabel1.setExpression("#{entity.readinggroup.assignee.name}");
+        xLabel1.setDepends(new String[] {"entity.area"});
+        xLabel1.setExpression("#{entity.area.assignee.name}");
         xLabel1.setPreferredSize(new java.awt.Dimension(43, 20));
         xLabel1.setStretchWidth(100);
         xFormPanel1.add(xLabel1);
@@ -113,7 +113,7 @@ public class WaterworksStuboutPage extends javax.swing.JPanel {
                 , new Object[]{"editableWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
                 , new Object[]{"expression", "#{item.account.acctno}"}
-                , new Object[]{"typeHandler", new com.rameses.rcp.common.LookupColumnHandler(null, "waterworksaccount:lookup")}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.LookupColumnHandler(null, "waterworks_account:lookup")}
             }),
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "account.acctname"}
@@ -156,17 +156,16 @@ public class WaterworksStuboutPage extends javax.swing.JPanel {
             })
         });
         xDataTable3.setHandler("itemHandlers.accounts");
-        xDataTable3.setId("itemHandlers.accounts");
         xDataTable3.setName("selectedItem"); // NOI18N
         xDataTable3.setVarStatus("itemstat");
 
+        xButton1.setText("Up");
         xButton1.setImmediate(true);
         xButton1.setName("up"); // NOI18N
-        xButton1.setText("Up");
 
+        xButton2.setText("Down");
         xButton2.setImmediate(true);
         xButton2.setName("down"); // NOI18N
-        xButton2.setText("Down");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);

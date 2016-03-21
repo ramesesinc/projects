@@ -1,0 +1,7 @@
+<workunit extends="com/rameses/seti2/templates/CrudList.xml"
+          schemaName="waterworks_area" allowCreate="true" allowOpen="true" allowDelete="true"
+          cols="title, assignee.name, duedate">
+    <invokers>
+        <invoker folderid="/home/waterworks" caption="Area" action="init" index="5"/>  
+    </invokers>
+</workunit>

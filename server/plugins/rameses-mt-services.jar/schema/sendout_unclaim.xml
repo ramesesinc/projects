@@ -1,7 +1,0 @@
-<schema adapter="main">
-
-	<element tablename="sendout_unclaim">
-		<field name="objid" primary="true"/> 
-	</element> 
-
-</schema>

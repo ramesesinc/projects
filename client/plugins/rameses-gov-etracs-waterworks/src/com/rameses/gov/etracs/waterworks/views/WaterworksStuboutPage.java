@@ -63,7 +63,7 @@ public class WaterworksStuboutPage extends javax.swing.JPanel {
 
         xFormPanel1.add(jScrollPane1);
 
-        xLookupField4.setCaption("Assigned Area");
+        xLookupField4.setCaption("Area");
         xLookupField4.setExpression("#{entity.area.title}");
         xLookupField4.setHandler("waterworks_area:lookup");
         xLookupField4.setName("entity.area"); // NOI18N
@@ -126,7 +126,7 @@ public class WaterworksStuboutPage extends javax.swing.JPanel {
                 , new Object[]{"editableWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
                 , new Object[]{"expression", "#{item.account.acctno}"}
-                , new Object[]{"typeHandler", new com.rameses.rcp.common.LookupColumnHandler(null, "waterworksaccount:lookup")}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.LookupColumnHandler(null, "waterworks_account:lookup")}
             }),
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "account.acctname"}
@@ -172,14 +172,14 @@ public class WaterworksStuboutPage extends javax.swing.JPanel {
         xDataTable3.setName("selectedItem"); // NOI18N
         xDataTable3.setVarStatus("itemstat");
 
+        xButton1.setText("Up");
         xButton1.setImmediate(true);
         xButton1.setName("up"); // NOI18N
-        xButton1.setText("Up");
         xButton1.setVisibleWhen("#{mode!='read'}");
 
+        xButton2.setText("Down");
         xButton2.setImmediate(true);
         xButton2.setName("down"); // NOI18N
-        xButton2.setText("Down");
         xButton2.setVisibleWhen("#{mode!='read'}");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);

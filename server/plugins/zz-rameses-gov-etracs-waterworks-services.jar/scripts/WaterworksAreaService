@@ -1,0 +1,27 @@
+import com.rameses.annotations.*;
+
+class WaterworksAccountService {
+	
+	@DataContext("waterworks_area")
+	def wa;
+
+	@DataContext("waterworks_stubout")
+	def ws;
+
+	@DataContext("waterworks_stubout_account")
+	def wsa;
+
+	@ProxyMethod
+	def getListByAssignee(def o){
+		def a = wa.find(['assignee_objid' : o.assigneeid]).list();
+		a.each{ 
+			def stubouts = ws.find([areaid:it.objid]).list();
+			stubouts.each{
+				it.accounts = wsa.select("objid,parentid,acctid,sortorder").find([parentid:it.objid]).list();
+			}
+			it.stubouts = stubouts;
+		}
+		return a;
+	}
+
+}

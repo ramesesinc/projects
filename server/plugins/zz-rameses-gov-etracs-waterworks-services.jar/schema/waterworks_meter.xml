@@ -7,7 +7,7 @@
 			<key field="sizeid" target="objid"/>
 		</complex>
 		<field name="capacity" required="true" caption="Capacity" />
-		<field name="currentacctid"/>
+		<field name="currentacctid" visible="false"/>
 		<!--
 		<complex name="account" ref="zz_waterworks_account" jointype="many-to-one" required="false">
 			<key field="currentacctid" target="objid"/>

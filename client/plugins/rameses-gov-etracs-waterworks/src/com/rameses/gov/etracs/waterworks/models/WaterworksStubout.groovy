@@ -8,21 +8,19 @@ import com.rameses.rcp.annotations.*;
 import com.rameses.seti2.models.*;
 
 public class WaterworksStubout extends CrudFormModel {
-   
+    
+    def itemstat;
+    
     public boolean beforeColumnUpdate(String name, def item, String colName, def newValue) {
         if ( colName == 'account' && entity.accounts.find{ it.account.objid==newValue.objid }) 
                 throw new Exception("Account already exists!");
         return true;        
     }
     
-    public void beforeSave(def mode){
+    public void afterAddItem(String name, def item ) {
         entity.accounts.eachWithIndex { o,idx->
             o.sortorder = idx;
         };
-    }
-    
-    public void afterFetchItems( String name, def items ) {
-        items.sort{ it.sortorder };
     }
     
     void up(){
@@ -31,7 +29,13 @@ public class WaterworksStubout extends CrudFormModel {
         def obj1 = entity.accounts[idx0];
         def obj2 = entity.accounts[idx0-1];
         entity.accounts[idx0-1]=obj1;
+        
         entity.accounts[idx0]=obj2;
+        
+        int s = obj1.sortorder;
+        obj1.sortorder = obj2.sortorder;
+        obj2.sortorder = s;
+        
         itemHandlers.accounts.refresh(); 
         itemHandlers.accounts.setSelectedItem(idx0-1);
     }
@@ -44,6 +48,11 @@ public class WaterworksStubout extends CrudFormModel {
         def obj2 = entity.accounts[idx0+1];
         entity.accounts[idx0+1]=obj1;        
         entity.accounts[idx0]=obj2;
+        
+        int s = obj1.sortorder;
+        obj1.sortorder = obj2.sortorder;
+        obj2.sortorder = s;
+        
         itemHandlers.accounts.refresh(); 
         itemHandlers.accounts.setSelectedItem(idx0+1);
     }

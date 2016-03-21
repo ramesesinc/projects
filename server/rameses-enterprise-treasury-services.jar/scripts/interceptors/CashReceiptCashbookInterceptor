@@ -1,0 +1,67 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.common.*
+import com.rameses.services.extended.*
+
+//This interceptor posts to the cashbook after post. It also reverses the entry during void
+class CashReceiptCashbookInterceptor { 
+
+	@Service("CashBookPostService")
+	def cashBookSvc;
+
+	@ActiveDB("creditmemo")
+	def cm;
+	
+	@After(pattern="CashReceiptService.post", index=-10)
+	public def postReceiptCashbook(def evt) { 
+		def p = evt.args[0];
+		def fundTest = p.items.findAll{ !it.item.fund?.objid };
+		if( fundTest ) {
+			String msg = fundTest*.item?.title.join(",");
+			throw new Exception("The following items must have a fund: \n" + msg);
+		}
+		//summarize receipts by fund, locate the fund and update 
+		def z = p.items.groupBy{ it.item.fund.objid };
+		z.each { k,v->
+			def entry = [:]
+			entry.fundid = k;
+			entry.fundtitle = v[0].item.fund.title;   //get the first element
+			entry.subacctid = p.collector.objid;
+			entry.type = 'COLLECTOR'
+			entry.refid = p.objid;
+			entry.refno = p.receiptno;
+			entry.refdate = p.receiptdate;
+			entry.reftype = "cashreceipt";
+			entry.particulars = p.collectiontype?.name + "("+p.paidby+")";
+			//deduct credit memo payments per fund.
+			entry.amount = v.sum{ it.amount };
+			cashBookSvc.postDR( entry ); 
+		}
+	}
+
+	@After(pattern="CashReceiptVoidService.post", index=-10)
+	public def postVoidReceiptCashbook(def evt) { 
+		//summarize receipts by fund, locate the fund and update 
+		def p = evt.args[0];
+		def v = evt.result;
+		def z = p.receipt.items.groupBy{ it.item.fund.objid };
+		z.each { k, c->
+			def entry = [:]
+			entry.fundid = k;
+			entry.fundtitle = c[0].item.fund.title;   //get the first element 
+			entry.subacctid = p.receipt.collector.objid;
+			entry.type = 'COLLECTOR'
+			entry.refid = v.objid;
+			entry.refno = p.receipt.receiptno;
+			entry.refdate = v.txndate;
+			entry.reftype = "cashreceipt:void";
+			entry.particulars = "VOID " + p.reason;
+			entry.amount = c.sum{ it.amount };
+			cashBookSvc.postCR( entry ); 
+		}
+	}
+
+	
+}
+

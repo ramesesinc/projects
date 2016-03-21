@@ -1,0 +1,12 @@
+
+import com.rameses.annotations.*;
+import com.rameses.common.*;
+
+class XXXService {
+	
+	@ProxyMethod
+	public String getTest() {
+		return "Hello";
+	}
+
+} 

@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import com.rameses.waterworks.bean.Account;
 import com.rameses.waterworks.bean.Reading;
-import com.rameses.waterworks.bean.ReadingGroup;
+import com.rameses.waterworks.bean.Area;
 import com.rameses.waterworks.bean.Rule;
 import com.rameses.waterworks.bean.Setting;
 import com.rameses.waterworks.bean.Stubout;
@@ -83,7 +83,7 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
                 + " var TEXT,"
                 + " action TEXT)");
        
-        sqld.execSQL("CREATE TABLE readinggroup ("
+        sqld.execSQL("CREATE TABLE area ("
                 + " objid VARCHAR(50) PRIMARY KEY,"
                 + " title VARCHAR(50), "
                 + " duedate VARCHAR(50), "
@@ -93,7 +93,7 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
                 + " objid VARCHAR(50) PRIMARY KEY,"
                 + " title VARCHAR(50), "
                 + " description TEXT, "
-                + " readinggroupid VARCHAR(50))");
+                + " areaid VARCHAR(50))");
         
         sqld.execSQL("CREATE TABLE stubout_account ("
                 + " objid VARCHAR(50) PRIMARY KEY,"
@@ -108,7 +108,7 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
         sqld.execSQL("DROP TABLE IF EXIST account");
         sqld.execSQL("DROP TABLE IF EXIST reading");
         sqld.execSQL("DROP TABLE IF EXIST rule");
-        sqld.execSQL("DROP TABLE IF EXIST readinggroup");
+        sqld.execSQL("DROP TABLE IF EXIST area");
         sqld.execSQL("DROP TABLE IF EXIST stubout");
         sqld.execSQL("DROP TABLE IF EXIST stubout_account");
         onCreate(sqld);
@@ -129,6 +129,7 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
         try{
             db.insert("setting", null, values);
         }catch(Exception e){
+            e.printStackTrace();
             ERROR = "Database Error: " + e.toString();
         }
         db.close();
@@ -141,6 +142,7 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
         try{
             db.execSQL("UPDATE setting SET value = '"+s.getValue()+"' WHERE name = '"+s.getName()+"'");
         }catch(Exception e){
+            e.printStackTrace();
             ERROR = "Database Error: " + e.toString();
         }
         db.close();
@@ -161,6 +163,7 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
             }
             db.close();
         }catch(Exception e){
+            e.printStackTrace();
             ERROR = "Database Error: " + e.toString();
         }
         return list;
@@ -253,6 +256,7 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
         try{
             db.insert("account", null, values);
         }catch(Exception e){
+            e.printStackTrace();
             ERROR = "Database Error: " + e.toString();
         }
         db.close();
@@ -328,6 +332,7 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
         try{
             db.update("account", values, "objid = ?", args);
         }catch(Exception e){
+            e.printStackTrace();
             ERROR = "Database Error: " + e.toString();
         }
         db.close();
@@ -348,6 +353,7 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
             }
             db.close();
         }catch(Exception e){
+            e.printStackTrace();
             ERROR = "Database Error: " + e.toString();
         }
         return account;
@@ -429,6 +435,7 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
             }
             db.close();
         }catch(Exception e){
+            e.printStackTrace();
             ERROR = "Database Error: " + e.toString();
         }
         return list;
@@ -509,6 +516,7 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
             }
             db.close();
         }catch(Exception e){
+            e.printStackTrace();
             ERROR = "Database Error: " + e.toString();
         }
         return result;
@@ -522,6 +530,7 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
             db.execSQL("DELETE FROM account WHERE objid = ?",args);
             db.close();
         }catch(Exception e){
+            e.printStackTrace();
             ERROR = "Database Error: " + e.toString();
         }
     }
@@ -536,6 +545,7 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
             i = c.getCount();
             db.close();
         }catch(Exception e){
+            e.printStackTrace();
             ERROR = "Database Error: " + e.toString();
         }
         return i;
@@ -551,6 +561,7 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
             i = c.getCount();
             db.close();
         }catch(Exception e){
+            e.printStackTrace();
             ERROR = "Database Error: " + e.toString();
         }
         return i;
@@ -579,6 +590,7 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
         try{
             db.insert("reading", null, values);
         }catch(Exception e){
+            e.printStackTrace();
             ERROR = "Database Error: " + e.toString();
         }
         db.close();
@@ -599,6 +611,7 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
             }
             db.close();
         }catch(Exception e){
+            e.printStackTrace();
             ERROR = "Database Error: " + e.toString();
         }
         return reading;
@@ -620,6 +633,7 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
         try{
             db.update("reading", values, "acctid = ?", args);
         }catch(Exception e){
+            e.printStackTrace();
             ERROR = "Database Error: " + e.toString();
         }
         db.close();
@@ -633,6 +647,7 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
             db.execSQL("DELETE FROM reading WHERE acctid = ?",args);
             db.close();
         }catch(Exception e){
+            e.printStackTrace();
             ERROR = "Database Error: " + e.toString();
         }
     }
@@ -653,6 +668,7 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
             }
             db.close();
         }catch(Exception e){
+            e.printStackTrace();
             ERROR = "Database Error: " + e.toString();
         }
         return list;
@@ -681,6 +697,7 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
             }
             db.close();
         }catch(Exception e){
+            e.printStackTrace();
             ERROR = "Database Error: " + e.toString();
         }
         return list;
@@ -696,6 +713,7 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
             if(cursor.getCount() > 0) b = false;
             db.close();
         }catch(Exception e){
+            e.printStackTrace();
             ERROR = "Database Error: " + e.toString();
         }
         return b;
@@ -714,6 +732,7 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
         try{
             db.insert("rule", null, values);
         }catch(Exception e){
+            e.printStackTrace();
             ERROR = "Database Error: " + e.toString();
         }
         db.close();
@@ -734,6 +753,7 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
             }
             db.close();
         }catch(Exception e){
+            e.printStackTrace();
             ERROR = "Database Error: " + e.toString();
         }
         return list;
@@ -747,6 +767,7 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
             db.execSQL("DELETE FROM rule");
             db.close();
         }catch(Exception e){
+            e.printStackTrace();
             ERROR = "Database Error: " + e.toString();
         }
     }
@@ -772,7 +793,7 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
     }
 
     @Override
-    public void createReadingGroup(ReadingGroup r) {
+    public void createReadingGroup(Area r) {
         ERROR = "";
         ContentValues values = new ContentValues();
         values.put("objid", r.getObjid());
@@ -782,8 +803,9 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
         
         SQLiteDatabase db = this.getWritableDatabase();
         try{
-            db.insert("readinggroup", null, values);
+            db.insert("area", null, values);
         }catch(Exception e){
+            e.printStackTrace();
             ERROR = "Database Error: " + e.toString();
         }
         db.close();
@@ -796,12 +818,13 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
         values.put("objid", s.getObjid());
         values.put("title", s.getTitle());
         values.put("description", s.getDescription());
-        values.put("readinggroupid", s.getReadingGroupId());
+        values.put("areaid", s.getAreaId());
         
         SQLiteDatabase db = this.getWritableDatabase();
         try{
             db.insert("stubout", null, values);
         }catch(Exception e){
+            e.printStackTrace();
             ERROR = "Database Error: " + e.toString();
         }
         db.close();
@@ -820,6 +843,7 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
         try{
             db.insert("stubout_account", null, values);
         }catch(Exception e){
+            e.printStackTrace();
             ERROR = "Database Error: " + e.toString();
         }
         db.close();
@@ -832,9 +856,10 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
             String userid = SystemPlatformFactory.getPlatform().getSystem().getUserID();
             String[] args = new String[]{userid};
             SQLiteDatabase db = this.getWritableDatabase();
-            db.execSQL("DELETE FROM readinggroup where assigneeid = ?",args);
+            db.execSQL("DELETE FROM area where assigneeid = ?",args);
             db.close();
         }catch(Exception e){
+            e.printStackTrace();
             ERROR = "Database Error: " + e.toString();
         }
     }
@@ -846,9 +871,10 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
             String userid = SystemPlatformFactory.getPlatform().getSystem().getUserID();
             String[] args = new String[]{userid};
             SQLiteDatabase db = this.getWritableDatabase();
-            db.execSQL("DELETE s FROM stubout s INNER JOIN readinggroup r ON s.readinggroupid = r.objid WHERE r.assigneeid = ?",args);
+            db.execSQL("DELETE FROM stubout WHERE areaid IN (SELECT objid FROM area WHERE assigneeid = ?)",args);
             db.close();
         }catch(Exception e){
+            e.printStackTrace();
             ERROR = "Database Error: " + e.toString();
         }
     }
@@ -860,9 +886,10 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
             String userid = SystemPlatformFactory.getPlatform().getSystem().getUserID();
             String[] args = new String[]{userid};
             SQLiteDatabase db = this.getWritableDatabase();
-            db.execSQL("DELETE sa FROM stubout_account sa INNER JOIN stubout s ON sa.parentid = s.objid INNER JOIN readinggroup r ON s.readinggroupid = r.objid WHERE r.assigneeid = ?",args);
+            db.execSQL("DELETE FROM stubout_account WHERE parentid IN (SELECT s.objid FROM stubout s INNER JOIN area a ON s.areaid = a.objid WHERE a.assigneeid = ?)",args);
             db.close();
         }catch(Exception e){
+            e.printStackTrace();
             ERROR = "Database Error: " + e.toString();
         }
     }
@@ -876,20 +903,21 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
         String[] args = new String[]{searchtext, userid};
         try{
             SQLiteDatabase db = this.getWritableDatabase();
-            Cursor cursor = db.rawQuery("SELECT s.* FROM stubout s INNER JOIN readinggroup g ON s.readinggroupid = g.objid WHERE s.title LIKE ? AND g.assigneeid = ?", args);
+            Cursor cursor = db.rawQuery("SELECT s.* FROM stubout s INNER JOIN area g ON s.areaid = g.objid WHERE s.title LIKE ? AND g.assigneeid = ?", args);
             if(cursor.moveToFirst()){
                 do{
                     String objid = cursor.getString(0);
                     String title = cursor.getString(1);
                     String description = cursor.getString(2);
-                    String readinggroupid = cursor.getString(3);
+                    String areaid = cursor.getString(3);
                     
-                    Stubout stubout = new Stubout(objid, title, description, readinggroupid, null);
+                    Stubout stubout = new Stubout(objid, title, description, areaid, null);
                     list.add(stubout);
                 }while(cursor.moveToNext());
             }
             db.close();
         }catch(Exception e){
+            e.printStackTrace();
             ERROR = "Database Error: " + e.toString();
         }
         return list;
@@ -971,6 +999,7 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
             }
             db.close();
         }catch(Exception e){
+            e.printStackTrace();
             ERROR = "Database Error: " + e.toString();
         }
         return list;

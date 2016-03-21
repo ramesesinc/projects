@@ -1,7 +1,0 @@
-<workunit extends="com/rameses/seti2/templates/CrudList.xml"
-          schemaName="waterworks_readinggroup" allowCreate="true" allowOpen="true" allowDelete="true"
-          cols="title, assignee.name, duedate">
-    <invokers>
-        <invoker folderid="/home/waterworks" caption="Reading Groups" action="init" index="5"/>  
-    </invokers>
-</workunit>

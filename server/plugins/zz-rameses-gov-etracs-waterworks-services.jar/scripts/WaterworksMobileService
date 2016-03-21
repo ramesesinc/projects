@@ -40,8 +40,10 @@ class WaterworksMobileService {
 		def discodate = new DateBean(dueyear + "-" + duemonth + "-" + 28).getDate();
 		def rundate = dateSvc.getServerDate();
 		def items = [
-			[account: 'Materials', amount:205.50],
-			[account: 'Compromise', amount:45.75]
+			[account: 'Materials', amount:0.00],
+			[account: 'Compromise', amount:0.00],
+			[account: 'Penalty', amount:0.00],
+			[account: 'Other Charge', amount:0.00]
 		];
 
 		wm.insertForDownload(
@@ -57,7 +59,8 @@ class WaterworksMobileService {
 				fromdate   : fromdate,
 				todate     : todate,
 				discodate  : discodate,
-				rundate    : rundate
+				rundate    : rundate,
+				items      : wm.serializer.write( items ) 
 			]
 		);
 		def x = wm.find([batchid:batchid]).list();

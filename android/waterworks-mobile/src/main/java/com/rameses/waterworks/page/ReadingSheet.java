@@ -131,7 +131,7 @@ public class ReadingSheet {
         
         save = new Button("Save");
         save.getStyleClass().add("terminal-button");
-        save.setStyle("-fx-font-size: 30px;");
+        save.setStyle(Main.HEIGHT > 700 ? "-fx-font-size: 30px;" : "-fx-font-size: 17px;");
         save.setPrefWidth(Main.HEIGHT > 700 ? 180 : 100);
         save.setGraphicTextGap(Main.HEIGHT > 700 ? 10 : 3);
         save.setOnAction(new EventHandler<ActionEvent>(){

@@ -46,7 +46,12 @@ class QueryService {
 				em.orWhere( it[0], it[1] );
 			}
 		}
-
+		if( o.orderBy ) {
+			em.orderBy = o.orderBy;
+		}
+		if( o.groupBy ) {
+			em.groupBy = o.groupBy;
+		}
 		return em.list();
 	}
 

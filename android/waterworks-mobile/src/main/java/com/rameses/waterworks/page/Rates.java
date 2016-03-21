@@ -50,6 +50,7 @@ public class Rates {
         actionCol.setCellValueFactory(new PropertyValueFactory<Rule, String>("action"));
         
         TableView<Rule> tableView = new TableView<Rule>();
+        if(Main.HEIGHT < 700) tableView.setStyle("-fx-font-size: 11px;");
         tableView.setPrefHeight(Main.HEIGHT);
         tableView.setFocusTraversable(false);
         tableView.getColumns().addAll(salienceCol,conditionCol,varCol,actionCol);
@@ -72,7 +73,7 @@ public class Rates {
         
         Button download = new Button("Sync");
         download.getStyleClass().add("terminal-button");
-        download.setPrefWidth(180);
+        download.setPrefWidth(Main.HEIGHT > 700 ? 180 : 90);
         download.setFocusTraversable(true);
         download.setOnAction(new EventHandler<ActionEvent>(){
             @Override

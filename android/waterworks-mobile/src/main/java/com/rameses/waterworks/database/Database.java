@@ -2,7 +2,7 @@ package com.rameses.waterworks.database;
 
 import com.rameses.waterworks.bean.Account;
 import com.rameses.waterworks.bean.Reading;
-import com.rameses.waterworks.bean.ReadingGroup;
+import com.rameses.waterworks.bean.Area;
 import com.rameses.waterworks.bean.Rule;
 import com.rameses.waterworks.bean.Setting;
 import com.rameses.waterworks.bean.Stubout;
@@ -63,7 +63,7 @@ public interface Database {
     
     public void clearRule();
     
-    public void createReadingGroup(ReadingGroup r);
+    public void createReadingGroup(Area r);
     
     public void createStubout(Stubout s);
     

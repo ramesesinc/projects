@@ -11,6 +11,9 @@ class SendoutModel extends com.rameses.seti2.models.CrudFormModel {
     @Service('SendoutService')
     def sendoutSvc;
     
+    @Service('EntityFinderService')
+    def entityFinderSvc;
+    
     def currencylist = LOV.CURRENCY_TYPES;
     
     @PropertyChangeListener 
@@ -38,4 +41,15 @@ class SendoutModel extends com.rameses.seti2.models.CrudFormModel {
         entity.charge = charge; 
         entity.total = entity.principal + ((charge + othercharge)-discount);
     }
+    
+    void findSenderByBarcode() {
+        def barcode = MsgBox.prompt("Enter barcode");
+        if(!barcode) return;
+        def qry = [:];
+        qry._schemaname = 'vw_entityindividual_lookup';
+        qry.findBy = [entityno: barcode];
+        entity.sender = qryService.findFirst( qry );
+        binding.refresh();
+    }
+    
 }

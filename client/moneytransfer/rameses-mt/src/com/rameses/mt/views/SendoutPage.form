@@ -28,7 +28,7 @@
                   <Component id="jPanel3" alignment="1" max="32767" attributes="0"/>
                   <Component id="jPanel2" alignment="1" max="32767" attributes="0"/>
               </Group>
-              <EmptySpace max="32767" attributes="0"/>
+              <EmptySpace pref="309" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -37,7 +37,7 @@
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Component id="jPanel1" min="-2" max="-2" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="28" max="-2" attributes="0"/>
               <Component id="jPanel2" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="jPanel3" min="-2" max="-2" attributes="0"/>
@@ -265,17 +265,40 @@
             </Property>
           </Properties>
           <SubComponents>
-            <Component class="com.rameses.rcp.control.XLookupField" name="xLookupField1">
+            <Container class="com.rameses.rcp.control.XFormPanel" name="xFormPanel8">
               <Properties>
-                <Property name="caption" type="java.lang.String" value="Name"/>
-                <Property name="expression" type="java.lang.String" value="#{entity.sender.name}"/>
-                <Property name="handler" type="java.lang.String" value="sender:lookup"/>
-                <Property name="name" type="java.lang.String" value="entity.sender" noResource="true"/>
-                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[270, 19]"/>
+                <Property name="caption" type="java.lang.String" value="Sender"/>
+                <Property name="captionPadding" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
+                  <Insets value="[0, 0, 0, 0]"/>
+                </Property>
+                <Property name="cellspacing" type="int" value="0"/>
+                <Property name="orientation" type="java.lang.String" value="HORIZONTAL"/>
+                <Property name="padding" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
+                  <Insets value="[0, 0, 0, 0]"/>
                 </Property>
               </Properties>
-            </Component>
+              <SubComponents>
+                <Component class="com.rameses.rcp.control.XLookupField" name="xLookupField1">
+                  <Properties>
+                    <Property name="caption" type="java.lang.String" value="Name"/>
+                    <Property name="expression" type="java.lang.String" value="#{entity.sender.name}"/>
+                    <Property name="handler" type="java.lang.String" value="sender:lookup"/>
+                    <Property name="name" type="java.lang.String" value="entity.sender" noResource="true"/>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[270, 19]"/>
+                    </Property>
+                    <Property name="showCaption" type="boolean" value="false"/>
+                  </Properties>
+                </Component>
+                <Component class="com.rameses.rcp.control.XButton" name="xButton2">
+                  <Properties>
+                    <Property name="name" type="java.lang.String" value="findSenderByBarcode" noResource="true"/>
+                    <Property name="showCaption" type="boolean" value="false"/>
+                    <Property name="text" type="java.lang.String" value="Barcode"/>
+                  </Properties>
+                </Component>
+              </SubComponents>
+            </Container>
             <Component class="com.rameses.rcp.control.XLabel" name="xLabel5">
               <Properties>
                 <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">

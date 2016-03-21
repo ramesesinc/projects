@@ -41,7 +41,9 @@ public class SendoutPage extends javax.swing.JPanel {
         xLabel19 = new com.rameses.rcp.control.XLabel();
         jPanel2 = new javax.swing.JPanel();
         xFormPanel3 = new com.rameses.rcp.control.XFormPanel();
+        xFormPanel8 = new com.rameses.rcp.control.XFormPanel();
         xLookupField1 = new com.rameses.rcp.control.XLookupField();
+        xButton2 = new com.rameses.rcp.control.XButton();
         xLabel5 = new com.rameses.rcp.control.XLabel();
         xFormPanel4 = new com.rameses.rcp.control.XFormPanel();
         xLabel6 = new com.rameses.rcp.control.XLabel();
@@ -162,12 +164,26 @@ public class SendoutPage extends javax.swing.JPanel {
 
         xFormPanel3.setPadding(new java.awt.Insets(5, 0, 0, 0));
 
+        xFormPanel8.setCaption("Sender");
+        xFormPanel8.setCaptionPadding(new java.awt.Insets(0, 0, 0, 0));
+        xFormPanel8.setCellspacing(0);
+        xFormPanel8.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
+        xFormPanel8.setPadding(new java.awt.Insets(0, 0, 0, 0));
+
         xLookupField1.setCaption("Name");
         xLookupField1.setExpression("#{entity.sender.name}");
         xLookupField1.setHandler("sender:lookup");
         xLookupField1.setName("entity.sender"); // NOI18N
         xLookupField1.setPreferredSize(new java.awt.Dimension(270, 19));
-        xFormPanel3.add(xLookupField1);
+        xLookupField1.setShowCaption(false);
+        xFormPanel8.add(xLookupField1);
+
+        xButton2.setName("findSenderByBarcode"); // NOI18N
+        xButton2.setShowCaption(false);
+        xButton2.setText("Barcode");
+        xFormPanel8.add(xButton2);
+
+        xFormPanel3.add(xFormPanel8);
 
         xLabel5.setBackground(new java.awt.Color(245, 245, 245));
         xLabel5.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(200, 200, 200)));
@@ -509,14 +525,14 @@ public class SendoutPage extends javax.swing.JPanel {
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(309, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(28, 28, 28)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -536,6 +552,7 @@ public class SendoutPage extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel6;
     private javax.swing.JScrollPane jScrollPane1;
     private com.rameses.rcp.control.XButton xButton1;
+    private com.rameses.rcp.control.XButton xButton2;
     private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XDecimalField xDecimalField1;
     private com.rameses.rcp.control.XDecimalField xDecimalField2;
@@ -551,6 +568,7 @@ public class SendoutPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XFormPanel xFormPanel5;
     private com.rameses.rcp.control.XFormPanel xFormPanel6;
     private com.rameses.rcp.control.XFormPanel xFormPanel7;
+    private com.rameses.rcp.control.XFormPanel xFormPanel8;
     private com.rameses.rcp.control.XFormPanel xFormPanel9;
     private com.rameses.rcp.control.XLabel xLabel1;
     private com.rameses.rcp.control.XLabel xLabel10;

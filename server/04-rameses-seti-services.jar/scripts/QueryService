@@ -8,16 +8,15 @@ class QueryService {
 	@DataContext(dynamic=true)
 	def db;
 
-	@ProxyMethod
-	public def getList( def o ) {
+	def buildEm(def o ) {
 		if(!o._schemaname) 
-			throw new Exception('Please specify a name in QueryService.getList');
+			throw new Exception('Please specify a name in QueryService.getList or findFirst');
 
 		def em = db.lookup(o._schemaname);
 		if(o.debug) em.debug = true;
 		
 		if( !o.where && !o.findBy && !o._limit )
-			throw new Exception("QueryService.getList. Please indicate a where,findBy or limit property");
+			throw new Exception("QueryService.getList or findFirst. Please indicate a where,findBy or limit property");
 
 		//for where first argument is the condition, second is the value.	
 		if( o.where ) {
@@ -52,6 +51,19 @@ class QueryService {
 		if( o.groupBy ) {
 			em.groupBy = o.groupBy;
 		}
+		return em;
+	}
+
+
+	@ProxyMethod
+	public def findFirst( def o ) {
+		def em = buildEm(o);
+		return em.first();
+	}
+
+	@ProxyMethod
+	public def getList( def o ) {
+		def em = buildEm(o);
 		return em.list();
 	}
 

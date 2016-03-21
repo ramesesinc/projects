@@ -1,5 +1,0 @@
-<workunit extends="com/rameses/seti2/templates/CrudList.xml" schemaName="branch">
-    <invokers>
-        <invoker type="branch:manage" caption="Branches" action="init"/> 
-    </invokers> 
-</workunit>

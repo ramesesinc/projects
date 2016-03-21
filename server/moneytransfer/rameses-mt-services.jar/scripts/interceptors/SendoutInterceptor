@@ -1,0 +1,52 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+
+class SendoutInterceptor {
+	
+	@DataContext('sendout_unclaim') 
+	def sendout_unclaim; 
+
+	@DataContext('formcontrol') 
+	def formcontrol; 
+
+	@DataContext('branch') 
+	def branch; 
+
+	@Service('DateService')
+	def dateSvc; 
+
+	@Env 
+	def env; 
+
+	@Before( pattern="PersistenceService.create", eval="#{args[0]._schemaname=='sendout'}" ) 
+	void beforeCreate( evt ) { 
+		def o = evt.args[0]; 
+		if ( !o.branch?.objid ) throw new Exception('branch.objid parameter is required');  
+
+		def branchinfo = branch.find([ objid: o.branch.objid ]).first(); 
+		if ( !branchinfo ) throw new Exception(''+ o.branch.objid +' branch record not found'); 
+		if ( !branchinfo.code ) throw new Exception('Branch code must be set first');
+
+		def prefix = branchinfo.code.replaceAll("[-_:\\s]",""); 
+		o.txnno = prefix +'-'+ KeyGen.newProvider().generateAlphanumKey(null, 9); 
+		o.dtfiled = dateSvc.getServerDate(); 
+	} 
+
+	@After( pattern="PersistenceService.create", eval="#{args[0]._schemaname=='sendout'}" ) 
+	void afterCreate( evt ) { 
+		def o = evt.result; 
+		sendout_unclaim.create( o ); 
+
+		def ctrl = formcontrol.find([ objid: o.controlid ]).first();
+		formcontrol.find([ objid: ctrl.objid ]).update([ currentseries: ctrl.currentseries+1 ]);  
+
+		def branchinfo = branch.find([ objid: o.branch.objid ]).first(); 
+		if ( branchinfo.debit ) {
+			branchinfo.debit += o.principal; 
+		} else { 
+			branchinfo.debit = o.principal; 
+		} 
+		branch.find([objid: branchinfo.objid ]).update([debit: branchinfo.debit]); 
+	} 
+
+}

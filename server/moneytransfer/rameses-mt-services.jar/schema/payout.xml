@@ -1,0 +1,18 @@
+<schema adapter="main">
+
+	<element tablename="payout">
+		<field name="objid" primary="true" prefix="POUT"/> 
+		<field name="dtfiled" required="true"/> 
+		<field name="controlid" required="true"/> 
+		<field name="controlno" required="true"/> 
+		<field name="partnerid" /> 
+		<field name="terminalid" required="true"/> 
+		<field name="branch_objid" required="true"/> 
+		<field name="user_objid" required="true"/> 
+		<field name="sendout_objid" required="true"/> 
+		<field name="currency" required="true"/> 
+		<field name="amount" required="true"/> 
+		<complex name="info" serializer="default" required="false"/> 
+	</element> 
+
+</schema>

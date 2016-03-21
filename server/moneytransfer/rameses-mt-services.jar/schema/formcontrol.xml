@@ -1,0 +1,16 @@
+<schema adapter="main">
+
+	<element tablename="formcontrol">
+		<field name="objid" primary="true" prefix="FCTRL"/> 
+		<field name="state" caption="State" defaultValue="ACTIVE" required="true"/> 
+		<field name="dtfiled" caption="DateField" required="true"/> 
+		<field name="formtype" caption="FormType" required="true"/> 
+		<field name="prefix" caption="Prefix" required="true"/> 
+		<field name="branchid" caption="Branch" required="true"/> 
+		<field name="terminalid" caption="Terminal" required="true"/> 
+		<field name="startseries" caption="StartSeries" required="true"/> 
+		<field name="endseries" caption="EndSeries" required="true"/> 
+		<field name="currentseries" caption="CurrentSeries" required="true"/> 
+	</element> 
+
+</schema>

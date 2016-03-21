@@ -1,0 +1,37 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+
+class AMLPayoutInterceptor {
+
+	@DataContext('payout_daily') 
+	def payout_daily; 
+
+	@Service('RuleExecutorService')
+	def ruleSvc; 
+
+	@After( pattern="PayoutService.submit", index=100 ) 
+	void afterSubmit( evt ) { 
+		def o = evt.result; 
+		def dateBean = new DateBean( o.dtfiled ); 
+		def params = [
+			receiverid: o.sendout.receiver.objid, 
+			year: dateBean. year,
+			month: dateBean.month, 
+			day  : dateBean.day, 
+			currency: o.currency 
+		];
+
+		def pd = payout_daily.find( params ).first();
+		if ( pd ) { 
+			payout_daily.find( params ).update([amount:'{amount+:amount}'], [amount: o.amount]);  
+			params.amount = pd.amount + o.amount; 
+			params.date = pd.date; 
+		} else { 
+			params.amount = o.amount; 
+			params.date = o.dtfiled;
+			payout_daily.create( params );  
+		} 
+
+	} 
+} 
+	

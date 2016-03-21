@@ -1,0 +1,13 @@
+<schema adapter="main">
+
+	<element tablename="payout_daily">
+		<field name="receiverid" primary="true"/> 
+		<field name="year" primary="true"/> 
+		<field name="month" primary="true"/> 
+		<field name="day" primary="true"/> 
+		<field name="currency" primary="true"/> 
+		<field name="amount" required="true"/> 
+		<field name="date" required="true"/> 
+	</element> 
+
+</schema>

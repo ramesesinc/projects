@@ -1,0 +1,31 @@
+<schema adapter="main">
+
+	<element tablename="sendout">
+		<field name="objid" primary="true" prefix="SOUT"/> 
+		<field name="dtfiled" required="true"/> 
+		<field name="controlid"/> 
+		<field name="controlno"/> 
+		<field name="txnno"/> 
+		<field name="txnrefid" /> 
+		<field name="sendouttype" /> 
+		<field name="partnerid" /> 
+		<field name="branch_objid" required="true"/> 
+		<field name="user_objid" required="true"/> 
+		<field name="terminalid" required="true"/> 
+		<field name="sender_objid" required="true"/> 
+		<field name="sender_name" required="true"/> 
+		<field name="sender_addresstext" required="true"/> 
+		<field name="receiver_objid" required="true"/> 
+		<field name="receiver_name" required="true"/> 
+		<field name="receiver_addresstext" required="true"/> 
+		<field name="purpose" required="true"/> 
+		<field name="messagetoreceiver"/> 
+		<field name="principal" required="true"/> 
+		<field name="charge" required="true"/> 
+		<field name="othercharge" required="true"/> 
+		<field name="currency" required="true"/> 
+		<field name="discount" defaultValue="0.0"/> 
+		<complex name="info" serializer="default" required="false"/> 
+	</element> 
+
+</schema>

@@ -1,0 +1,28 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+
+class BranchOrgInterceptor {
+	
+	@DataContext('org') 
+	def org; 
+
+	@Env 
+	def env; 
+
+	@Before( pattern="PersistenceService.create", eval="#{args[0]._schemaname=='branch'}" ) 
+	void beforeCreate( evt ) { 
+		def o = evt.args[0]; 
+		o.orgclass = 'BRANCH';
+		o.state = 'ACTIVE';
+
+		def root = org.find([root:1]).first();
+		if ( !root ) throw new Exception("Root org does not exist");
+
+		o.parent = root; 
+		o.root = 0; 
+
+		//println '--- env ---'
+		//println env; 
+	} 
+
+}

@@ -7,7 +7,7 @@
 		<complex name="area" ref="waterworks_area" jointype="many-to-one" required="true" caption="Area">
 			<key field="areaid" target="objid"/> 
 		</complex>
-		<complex name="accounts" ref="waterworks_stubout_account" jointype="one-to-many">
+		<complex name="accounts" ref="waterworks_stubout_account" jointype="one-to-many" orderBy="sortorder">
 			<key field="objid" target="parentid"/>
 		</complex> 
 	</element>

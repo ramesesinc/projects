@@ -1,7 +1,7 @@
 <schema adapter="waterworks">
 	<element tablename="waterworks_stubout_account">
 		<field name="objid" primary="true"  prefix="SO"/>
-		<complex name="parent" ref="waterworks_stubout" jointype="many-to-one">
+		<complex name="parent" ref="waterworks_stubout" jointype="many-to-one" required="false">
 			<key field="parentid" target="objid" />	
 		</complex>	
 		<complex name="account" jointype="many-to-one" ref="waterworks_account" required="true">

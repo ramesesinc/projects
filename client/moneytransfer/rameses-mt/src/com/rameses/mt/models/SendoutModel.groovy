@@ -48,7 +48,10 @@ class SendoutModel extends com.rameses.seti2.models.CrudFormModel {
         def qry = [:];
         qry._schemaname = 'vw_entityindividual_lookup';
         qry.findBy = [entityno: barcode];
-        entity.sender = qryService.findFirst( qry );
+        def z = qryService.findFirst( qry );
+        if ( !z ) throw new Exception('Record not found');
+        
+        entity.sender = z; 
         binding.refresh();
     }
     

@@ -178,6 +178,7 @@ public class SendoutPage extends javax.swing.JPanel {
         xLookupField1.setShowCaption(false);
         xFormPanel8.add(xLookupField1);
 
+        xButton2.setImmediate(true);
         xButton2.setName("findSenderByBarcode"); // NOI18N
         xButton2.setShowCaption(false);
         xButton2.setText("Barcode");

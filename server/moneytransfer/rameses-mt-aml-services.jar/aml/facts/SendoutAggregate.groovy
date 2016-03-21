@@ -7,7 +7,7 @@ class SendoutAggregate {
 	double amount;
 	int days;
 
-	public Sendout( o ) { 
+	public SendoutAggregate( o ) { 
 		senderid = o.senderid;
 		currency = o.currency;
 		amount = o.amount;

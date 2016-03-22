@@ -9,7 +9,7 @@ public class RPTISTestFAASDataCaptureService
 	@Env 
 	def env 
 
-	@ActiveDB('rptis_test_faas')
+	@ActiveDB('rptis_test')
 	def em 
 
 	@Service('FAASService')

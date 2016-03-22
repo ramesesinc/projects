@@ -30,3 +30,24 @@ where refid = $P{objid}
 [fullyPaidLedger]
 update rptledger set lastyearpaid = year(now()), lastqtrpaid = 4 where objid = $P{objid}
 
+
+
+
+[findSubdivisionById]
+select objid, state from subdivision where objid = $P{objid}
+
+
+[getSubdivisionTasks]
+select 
+	objid,
+	state,
+	startdate,
+	enddate,
+	assignee_objid,
+	assignee_name,
+	assignee_title,
+	actor_objid,
+	actor_name,
+	actor_title
+from subdivision_task 
+where refid = $P{objid}

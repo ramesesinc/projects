@@ -11,7 +11,7 @@ public class RPTISProvinceTestMunicipalityTxnApprovedService
 	@Env 
 	def env 
 
-	@ActiveDB('rptis_test_faas')
+	@ActiveDB('rptis_test')
 	def em 
 
 	@Service('FAASService')
@@ -23,8 +23,8 @@ public class RPTISProvinceTestMunicipalityTxnApprovedService
 	@Service('RPTISUnitTestService')
 	def test
 
-	@Service('RPTISTestFAASOnlineService')
-	def faasOnlineTest
+	@Service('RPTISTestFAASService')
+	def faasTestSvc
 
 
 	@Service('RPTISTestLedgerService')
@@ -33,7 +33,8 @@ public class RPTISProvinceTestMunicipalityTxnApprovedService
 
 	@ProxyMethod
 	public def testMunicipalityApprovedFaasTxn( faas ) {
-		faasOnlineTest.testApprovedOnlineFaas(faas)
+		faas += faasSvc.openFaas(faas)
+		faasTestSvc.testApprovedFaas(faas)
 		return '[province] Municipality approved Simple Transferred FAAS tested'
 	}
 

@@ -29,3 +29,11 @@ select * from subdivision_task where refid = $P{objid}
 
 [removeOpenTask]
 delete from subdivision_task where refid = $P{objid} and enddate is null
+
+
+[findRecommederTask]
+select * 
+from subdivision_task 
+where refid = $P{refid}
+and state = 'recommender' 
+order by startdate desc 

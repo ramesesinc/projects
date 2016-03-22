@@ -5,12 +5,17 @@ import com.rameses.services.extended.*
 
 public class RPTISTestHelperService
 {
-    @ActiveDB('rptis_test_faas')
+    @ActiveDB('rptis_test')
     def em
 
     @ProxyMethod
     public def findFaas( faas ) {
         em.findFaasById(faas)    
+    }
+
+    @ProxyMethod
+    public def findSubdivision( subdivision ) {
+        em.findSubdivisionById(subdivision)    
     }
 
     @ProxyMethod
@@ -32,7 +37,7 @@ public class RPTISTestHelperService
 
     @ProxyMethod
     public def assignToMe( workflowSvc, task ) {
-        return signal(workflowSvc, task, null, false)    
+        return signal(workflowSvc, task, null, true)    
     }
 
 

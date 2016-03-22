@@ -1,0 +1,179 @@
+import com.rameses.annotations.*
+import com.rameses.util.*
+import java.rmi.server.*
+import com.rameses.services.extended.*
+
+/*
+* APPROVE and TEST Transferred FAAS from Municipality
+*/
+public class RPTISProvinceTestMunicipalitySDForApproval
+{
+	@Env 
+    def env 
+
+    @ActiveDB('rptis_test')
+    def em 
+
+    @Service('RPTISUnitTestService')
+    def test
+
+    @Service('RPTISTestFAASDataService')
+    def dataSvc
+
+    @Service('RPTISTestHelperService')
+    def helper 
+
+    @Service('RPTISTestFAASService')
+    def faasTestSvc
+
+
+    @Service('SubdivisionService')
+    def subdivisionSvc
+
+    @Service('FAASService')
+    def faasSvc 
+
+    @Service('SubdivisionWorkflowService')
+    def workflowSvc    
+
+    @Service('ExaminationService')
+    def examSvc 
+
+    @Service('EntityLookupService')
+    def entityLookup
+
+    @Service('RPTLedgerService')
+    def ledgerSvc 
+
+    @Service('RPTISTestSubdivisionService')
+    def subdivisionTestSvc 
+
+
+
+    @ProxyMethod
+    public def openSubdivision( subdivision ) {
+        return subdivisionSvc.openSubdivision(subdivision.objid)    
+    }
+
+    
+    @ProxyMethod
+    public void approveSubdivision( task ) {
+        helper.openTask(workflowSvc, task)
+        def subdivision = task.data 
+
+        subdivisionSvc.initApproveSubdivision(subdivision)
+        subdivisionSvc.assignNewTdNos(subdivision)
+        subdivisionSvc.getSubdividedLandsForApproval(subdivision.objid).each{ land ->
+            subdivisionSvc.approveSubdividedLandFaasRecord(subdivision, land)
+        }
+        subdivisionSvc.getAffectedRpusForApproval(subdivision.objid).each{ arpu ->
+            subdivisionSvc.approveAffectedRpuFaasRecord(subdivision, arpu)
+        }
+        subdivisionSvc.approveSubdivision(subdivision)
+        helper.signal(workflowSvc, task, 'completed', false)
+    }
+
+    
+    @ProxyMethod
+    public def testSubmittedSubdivisionForApproval( subdivision, munisubdivision ) {
+        subdivision += subdivisionSvc.openSubdivision(subdivision.objid)
+        test.testEqual('subdivision.state', subdivision.state, 'FORAPPROVAL')
+
+        subdivision += subdivisionTestSvc.getSubdivisionForTesting(subdivision)
+        test.testEqual('subdivision.motherlands', munisubdivision.motherlands.size(), subdivision.motherlands.size())
+        test.testEqual('subdivision.subdividedlands', munisubdivision.subdividedlands.size(), subdivision.subdividedlands.size())
+        test.testEqual('subdivision.affectedrpus', munisubdivision.affectedrpus.size(), subdivision.affectedrpus.size())
+        test.testEqual('subdivision.tasks', munisubdivision.tasks.size(), subdivision.tasks.size())
+        test.testEqual('subdivision.requirements', munisubdivision.requirements.size(), subdivision.requirements.size())
+        test.testEqual('subdivision.faases', munisubdivision.faases.size(), subdivision.faases.size())
+        return '[province] Submitted subdivision for province approval tested.'
+    }
+
+
+    @ProxyMethod
+    public def testApprovedSubdivision( subdivision ) {
+        subdivisionTestSvc.testApprovedSubdivision(subdivision)
+        return '[province] Approved subdivision tested.'
+    }
+
+
+
+
+
+    /*==========================================================
+    * WORKFLOW SUPPORT
+    ===========================================================*/
+
+    @ProxyMethod
+    public def assignToMe( task ) {
+        return helper.signal(workflowSvc, task, null, true)    
+    }
+
+    @ProxyMethod
+    public def doReceive(task){
+        task += assignToMe(task)
+        helper.openTask(workflowSvc, task)
+        return helper.signal(workflowSvc, task, 'submit', false)
+    }
+
+
+    @ProxyMethod
+    public def doExamination(task){
+        task += assignToMe(task)
+        return helper.signal(workflowSvc, task, 'submit', false)
+    }    
+
+    @ProxyMethod
+    public def doTaxmapping(task){
+        return helper.doTaxmapping(workflowSvc, task)
+    }    
+
+    @ProxyMethod
+    public def doTaxmappingApproval(task){
+        return helper.doTaxmappingApproval(workflowSvc, task)
+    }    
+
+    @ProxyMethod
+    public def doAppraisal(task){
+        return helper.doAppraisal(workflowSvc, task)
+    }    
+
+    @ProxyMethod
+    public def doAppraisalApproval(task){
+        return helper.doAppraisalApproval(workflowSvc, task)
+    }    
+
+    @ProxyMethod
+    public def doRecommender(task){
+        return helper.doRecommender(workflowSvc, task)
+    }    
+
+    @ProxyMethod
+    public def doApprover(task){
+        return helper.doApprover(workflowSvc, task)
+    }    
+
+
+    @ProxyMethod
+    public def testApprovedTransfer(faas){
+        faas += faasSvc.openFaas(faas)
+        faasTestSvc.testApprovedFaas(faas)
+        return '[municipality] Approved Simple Transfer FAAS tested.'
+    }
+
+    @ProxyMethod
+    public def testApprovedLedgerFromFaas(faas){
+        faas += faasSvc.openFaas(faas)
+        faasTestSvc.testApprovedLedgerFromFaas(faas)
+        return '[municipality] Approved Simple Transfer Ledger tested.'
+    }
+
+
+    @ProxyMethod
+    public def testSubmittedToProvinceOnlineFaas(trfaas){
+        trfaas += faasSvc.openFaas(trfaas)
+        test.testEqual('trfaas.state', trfaas.state, 'INTERIM')
+        test.testEqual('trfaas.taskstate', trfaas.taskstate, 'provapprover')
+    }
+
+}

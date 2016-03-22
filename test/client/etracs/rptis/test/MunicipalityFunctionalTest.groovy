@@ -1,4 +1,4 @@
-def faas = [isection:2, iparcel:1]
+def faas = [isection:2, iparcel:4]
 /*
 MunicipalityTestFaas_DC_Delete.runTest(faas)
 faas = [isection:2, iparcel:2]
@@ -7,4 +7,4 @@ faas = [isection:2, iparcel:3]
 MunicipalityTestFaas_DCTR_ProvinceApproval.runTest(faas)
 MunicipalityTestSubdivision_CreateDelete.runTest(faas)
 */
-MunicipalityTestSubdivision_SubmitToProvince.runTest(faas)
+MunicipalityTestSubdivision_ProvinceApproval.runTest(faas)

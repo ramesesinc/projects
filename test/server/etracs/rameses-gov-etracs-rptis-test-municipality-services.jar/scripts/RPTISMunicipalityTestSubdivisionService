@@ -8,7 +8,7 @@ public class RPTISMunicipalityTestSubdivisionService
     @Env 
     def env 
 
-    @ActiveDB('rptis_test_faas')
+    @ActiveDB('rptis_test')
     def em 
 
     @Service('RPTISUnitTestService')
@@ -20,12 +20,15 @@ public class RPTISMunicipalityTestSubdivisionService
     @Service('RPTISTestHelperService')
     def helper 
 
-    @Service('RPTISTestFAASOnlineService')
-    def faasOnlineTest
+    @Service('RPTISTestFAASService')
+    def faasTestSvc
 
 
     @Service('SubdivisionService')
     def subdivisionSvc 
+
+    @Service('RPTISTestSubdivisionService')
+    def subdivisionTestSvc
 
     @Service('FAASService')
     def faasSvc 
@@ -42,8 +45,12 @@ public class RPTISMunicipalityTestSubdivisionService
     @Service('RPTLedgerService')
     def ledgerSvc 
 
+    @Service('RPTISTestLedgerService')
+    def ledgerTestSvc
+
     @Service('RPTUtil')
     def util 
+
 
 
     @ProxyMethod
@@ -72,6 +79,33 @@ public class RPTISMunicipalityTestSubdivisionService
 		helper.signal(workflowSvc, task, 'completed', false)
     }
 
+    @ProxyMethod
+    public def getSubdivisionForTesting( subdivision ) {
+        return subdivisionTestSvc.getSubdivisionForTesting(subdivision)
+    }
+
+
+    @ProxyMethod
+    public def testApprovedSubdivision( subdivision ) {
+        subdivisionTestSvc.testApprovedSubdivision(subdivision)
+
+        def ledger = null;
+        subdivisionSvc.getSubdividedLands(subdivision.objid).each{
+            ledger = [objid:it.newfaasid]
+            ledgerTestSvc.testApprovedLedger(ledger)
+        }
+        subdivisionSvc.getAffectedRpus(subdivision.objid).each{
+            def faas = faasSvc.openFaas([objid:it.newfaasid])
+            faasTestSvc.testApprovedLedgerFromFaas(faas)  
+        }
+        return '[municipality] Province APPROVED subdivision tested.'
+    }
+
+
+
+    /*==============================================================
+    * WORKFLOW SUPPORT 
+    ==============================================================*/
     @ProxyMethod
     public def assignToMe( task ) {
         return helper.signal(workflowSvc, task, null, true)    

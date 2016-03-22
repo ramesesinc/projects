@@ -4,12 +4,12 @@ import com.rameses.util.*;
 import java.rmi.server.*;
 import com.rameses.services.extended.*;
 
-public class RPTISTestFAASOnlineService
+public class RPTISTestFAASService
 {
 	@Env 
 	def env 
 
-	@ActiveDB('rptis_test_faas')
+	@ActiveDB('rptis_test')
 	def em 
 
 	@Service('FAASService')
@@ -26,8 +26,7 @@ public class RPTISTestFAASOnlineService
 
 
 	@ProxyMethod
-	public def testApprovedOnlineFaas( faas ) {
-		faas += faasSvc.openFaas(faas)
+	public def testApprovedFaas( faas ) {
 		test.testEqual('faas.state', faas.state, 'CURRENT')
 		test.testNotNull('faas.appraiser', faas.appraiser)
 		test.testNotNull('faas.approver', faas.approver)
@@ -58,8 +57,22 @@ public class RPTISTestFAASOnlineService
 
 
 	@ProxyMethod
-	public def testApprovedOnlineLedgerFromFaas( faas ) {
+	public def testCancelledFaas( faas ) {
 		faas += faasSvc.openFaas(faas)
+		test.testEqual('faas.state', faas.state, 'CANCELLED')
+		test.testNotNull('faas.cancelreason', faas.cancelreason)
+		test.testNotNull('faas.canceldate', faas.canceldate)
+		test.testNotNull('faas.cancelledbytdnos', faas.cancelledbytdnos)
+		test.testNotNull('faas.cancelledyear', faas.cancelledyear)
+		test.testNotNull('faas.cancelledqtr', faas.cancelledqtr)
+		test.testNotNull('faas.cancelledmonth', faas.cancelledmonth)
+		test.testNotNull('faas.cancelledday', faas.cancelledday)
+		return 'Cancelled FAAS tested'
+	}
+
+
+	@ProxyMethod
+	public def testApprovedLedgerFromFaas( faas ) {
 		test.testNotNull('faas', faas)
 
 		def ledger = em.findLedgerByFaasId(faas)

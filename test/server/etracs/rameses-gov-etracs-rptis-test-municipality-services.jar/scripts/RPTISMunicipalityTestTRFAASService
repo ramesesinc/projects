@@ -8,7 +8,7 @@ public class RPTISMunicipalityTestTRFAASService
     @Env 
     def env 
 
-    @ActiveDB('rptis_test_faas')
+    @ActiveDB('rptis_test')
     def em 
 
     @Service('RPTISUnitTestService')
@@ -20,8 +20,8 @@ public class RPTISMunicipalityTestTRFAASService
     @Service('RPTISTestHelperService')
     def helper 
 
-    @Service('RPTISTestFAASOnlineService')
-    def faasOnlineTest
+    @Service('RPTISTestFAASService')
+    def faasTestSvc
 
 
     @Service('FAASService')
@@ -121,13 +121,15 @@ public class RPTISMunicipalityTestTRFAASService
 
     @ProxyMethod
     public def testApprovedTransfer(faas){
-        faasOnlineTest.testApprovedOnlineFaas(faas)
+        faas += faasSvc.openFaas(faas)
+        faasTestSvc.testApprovedFaas(faas)
         return '[municipality] Approved Simple Transfer FAAS tested.'
     }
 
     @ProxyMethod
     public def testApprovedLedgerFromFaas(faas){
-        faasOnlineTest.testApprovedOnlineLedgerFromFaas(faas)
+        faas += faasSvc.openFaas(faas)
+        faasTestSvc.testApprovedLedgerFromFaas(faas)
         return '[municipality] Approved Simple Transfer Ledger tested.'
     }
 

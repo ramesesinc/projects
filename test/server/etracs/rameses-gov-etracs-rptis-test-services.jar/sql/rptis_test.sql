@@ -51,3 +51,25 @@ select
 	actor_title
 from subdivision_task 
 where refid = $P{objid}
+
+
+
+
+[findConsolidationById]
+select objid, state from consolidation where objid = $P{objid}
+
+
+[getConsolidationTasks]
+select 
+	objid,
+	state,
+	startdate,
+	enddate,
+	assignee_objid,
+	assignee_name,
+	assignee_title,
+	actor_objid,
+	actor_name,
+	actor_title
+from consolidation_task 
+where refid = $P{objid}

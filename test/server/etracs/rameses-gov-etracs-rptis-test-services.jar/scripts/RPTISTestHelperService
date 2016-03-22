@@ -19,6 +19,11 @@ public class RPTISTestHelperService
     }
 
     @ProxyMethod
+    public def findConsolidation( consolidation ) {
+        em.findConsolidationById(consolidation)    
+    }
+
+    @ProxyMethod
     public def getCurrentTask(faas) {
         def task = em.findCurrentTask(faas)
         if (!task)

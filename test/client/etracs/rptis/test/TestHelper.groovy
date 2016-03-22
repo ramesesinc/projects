@@ -28,12 +28,30 @@ class TestHelper
         }
     }
 
-    public static void waitForApprovedFaas(subdivision, helper){
+    public static void waitForApprovedSubdivision(subdivision, helper){
         println 'Waiting for remote approved subdivision -> ' + subdivision.objid 
         def available = helper.findSubdivision(subdivision)
         while(!available || !available.state.equalsIgnoreCase('APPROVED')){
             sleep(3000)
             available = helper.findSubdivision(subdivision)
+        }
+    }
+
+    public static void waitForConsolidation(consolidation, helper){
+        println 'Waiting for remote consolidation data -> ' + consolidation.objid 
+        def available = helper.findConsolidation(consolidation)
+        while(!available){
+            sleep(3000)
+            available = helper.findConsolidation(consolidation)
+        }
+    }
+
+    public static void waitForApprovedConsolidation(consolidation, helper){
+        println 'Waiting for remote approved consolidation -> ' + consolidation.objid 
+        def available = helper.findConsolidation(consolidation)
+        while(!available || !available.state.equalsIgnoreCase('APPROVED')){
+            sleep(3000)
+            available = helper.findConsolidation(consolidation)
         }
     }
 

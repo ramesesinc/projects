@@ -80,7 +80,7 @@ class MunicipalityTestSubdivision_ProvinceApproval
         =================================================*/
         println '='*50
         println '[municipality] Test APPROVED subdivision from province'
-        TestHelper.waitForApprovedFaas(subdivision, munihelper)
+        TestHelper.waitForApprovedSubdivision(subdivision, munihelper)
         println munisvc.testApprovedSubdivision(subdivision)
         println 'Test Completed.'
     }

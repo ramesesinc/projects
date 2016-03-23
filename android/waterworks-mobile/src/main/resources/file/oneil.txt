@@ -3,7 +3,7 @@ data += "@" + (y += textgap) + ",0:MF204|                                       
 data += "@" + (y += textgap) + ",0:MF204|     SAN CARLOS CITY WATER DISTRICT      |";
 data += "@" + (y += textgap) + ",0:MF204|   SAN CARLOS CITY, NEGROS OCCIDENTAL    |";
 data += "@" + (y += textgap) + ",0:MF204|             (032) 505-9301               |";
-data += "@" + (y += textgap) + ",0:MF204|For the month of "+a.getMonth()+" "+a.getYear()+"|";
+data += "@" + (y += textgap+20) + ",0:MF204|For the month of "+a.getMonth()+" "+a.getYear()+"|";
 data += "@" + (y += textgap) + ",0:MF204|---------------------------------------|";
 data += "@" + (y += textgap) + ",0:MF204|Acct No.   :  "+a.getAcctNo()+"|";
 data += "@" + (y += textgap) + ",0:MF204|Meter No.  :  "+a.getSerialNo()+"|";
@@ -15,15 +15,13 @@ data += "@" + (y += textgap) + ",0:MF204|Prev Reading   :  "+a.getLastReading()+
 data += "@" + (y += textgap) + ",0:MF204|Pres Reading   :  "+a.getPresReading()+"|";
 data += "@" + (y += textgap) + ",0:MF204|Consumption    :  "+a.getConsumption()+"|";
 data += "@" + (y += textgap) + ",0:MF204|---------------------------------------|";
-data += "@" + (y += textgap) + ",0:MF107|Balance|";
-data += "@" + y + ",265:MF107|"+a.getBalance()+"|";
-data += "@" + (y += textgap) + ",0:MF107|Penalty|";
-data += "@" + y + ",265:MF107|"+a.getPenalty()+"|";
-data += "@" + (y += textgap) + ",0:MF107|Other Charge|";
-data += "@" + y + ",265:MF107|"+a.getOtherCharge()+"|";
-data += "@" + (y += textgap) + ",0:MF107|Charge|";
+for(com.rameses.waterworks.bean.ItemAccount act : items){
+    data += "@" + (y += textgap+20) + ",0:MF107|" + act.getAccount() + "|";
+    data += "@" + y + ",265:MF107|"+act.getAmount()+"|";
+}
+data += "@" + (y += textgap+20) + ",0:MF107|Current Due|";
 data += "@" + y + ",265:MF107|"+a.getAmtDue()+"|";
-data += "@" + (y += textgap) + ",0:MF107|TOTAL DUE|";
+data += "@" + (y += textgap+20) + ",0:MF107|TOTAL DUE|";
 data += "@" + y + ",265:MF107|"+a.getTotalDue()+"|";
 data += "@" + (y += textgap) + ",0:MF204|---------------------------------------|";
 data += "@" + (y += textgap) + ",0:MF204|Period       :  "+a.getPeriod()+"|";
@@ -40,6 +38,6 @@ data += "@" + (y += textgap) + ",0:MF226|date to avoid paying penalty|";
 data += "@" + (y += textgap) + ",0:MF226|*Disregard arrears if payment has been|";
 data += "@" + (y += textgap) + ",0:MF226|made.|";
 data += "@" + (y += textgap) + ",35:EN128,HIGH 15,WIDE 2|"+a.getBarCode()+"|";
-data += "@" + (y += textgap) + ",35:MF204|"+a.getBarCode()+"|";
-data += "@" + (y += textgap) + ",2:MF204|.|";
+data += "@" + (y += textgap+60) + ",35:MF204|"+a.getBarCode()+"|";
+data += "@" + (y += textgap+100) + ",2:MF204|.|";
 data += "}";

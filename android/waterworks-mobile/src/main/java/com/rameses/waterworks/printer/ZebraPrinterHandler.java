@@ -49,11 +49,12 @@ public class ZebraPrinterHandler implements PrinterHandler{
             i.set("datetime",SystemPlatformFactory.getPlatform().getSystem().getDate()+" "+SystemPlatformFactory.getPlatform().getSystem().getTime());
             i.set("data", "INVALID DATA");
             i.set("items", a.getItemList());
-            i.set("x", 0);
+            i.set("y", 0);
             i.set("textgap",40);
             i.eval(sb.toString());
             data = i.get("data").toString();
         }catch(EvalError e){
+            e.printStackTrace();
             error = "Error in Report Data: " + e.toString();
         }
         return data;

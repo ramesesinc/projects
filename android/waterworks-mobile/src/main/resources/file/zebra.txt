@@ -1,4 +1,4 @@
-data = "! 0 200 200 1500 1\n";
+data = "! 0 200 200 1400 1\n";
 data += "CENTER\n";
 data += "TEXT 5 0 0 " + (y += textgap) + " SAN CARLOS CITY WATER DISTRICT\n";
 data += "CENTER\n";
@@ -6,7 +6,7 @@ data += "TEXT 5 0 0 " + (y += textgap) + " SAN CARLOS CITY, NEGROS OCCIDENTAL\n"
 data += "CENTER\n";
 data += "TEXT 5 0 0 " + (y += textgap) + " (032) 505-9301\n";
 data += "LEFT\n";
-data += "TEXT 5 0 0 " + (y += textgap) + " For the month of " + a.getMonth() + " " + a.getYear() + "\n";
+data += "TEXT 5 0 0 " + (y += textgap+20) + " For the month of " + a.getMonth() + " " + a.getYear() + "\n";
 data += "CENTER\n";
 data += "TEXT 5 0 0 " + (y += textgap) + " ---------------------------------------\n";
 data += "LEFT\n";
@@ -35,13 +35,11 @@ data += "TEXT 5 0 0 " + (y += textgap) + " Consumption\n";
 data += "TEXT 5 0 230 " + y + " :\n";
 data += "TEXT 5 0 260 " + y + " " + a.getConsumption() +"\n";
 data += "TEXT 5 0 0 " + (y += textgap) + " ---------------------------------------\n";
-data += "TEXT 5 0 0 " + (y += textgap) + " BALANCE\n";
-data += "TEXT 0 3 370 " + y + " " + a.getBalance() +"\n";
-data += "TEXT 5 0 0 " + (y += textgap) + " PENALTY\n";
-data += "TEXT 0 3 370 " + y + " " + a.getPenalty() +"\n";
-data += "TEXT 5 0 0 " + (y += textgap) + " OTHER CHARGE\n";
-data += "TEXT 0 3 370 " + y + " " + a.getOtherCharge() +"\n";
-data += "TEXT 5 0 0 " + (y += textgap) + " AMOUNT DUE\n";
+for(com.rameses.waterworks.bean.ItemAccount act : items){
+    data += "TEXT 5 0 0 " + (y += textgap) + " " + act.getAccount() + "\n";
+    data += "TEXT 0 3 370 " + y + " " + act.getAmount() +"\n";
+}
+data += "TEXT 5 0 0 " + (y += textgap) + " Current Due\n";
 data += "TEXT 0 3 370 " + y + " " + a.getAmtDue() +"\n";
 data += "TEXT 5 0 0 " + (y += textgap) + " ---------------------------------------\n";
 data += "TEXT 5 0 0 " + (y += textgap) + " TOTAL DUE\n";
@@ -65,6 +63,6 @@ data += "TEXT 5 0 260 " + y + " " + datetime +"\n";
 data += "TEXT 5 0 0 " + (y += textgap) + " ---------------------------------------\n";
 data += "CENTER\n";
 data += "BARCODE 128 2 1 100 0 " + (y += textgap) + " " + a.getBarCode() + "\n";
-data += "TEXT 0 3 0 " + (y += textgap) + " " + a.getBarCode() + "\n";
+data += "TEXT 0 3 0 " + (y += textgap+70) + " " + a.getBarCode() + "\n";
 data += "FORM\n";
 data += "PRINT\n";

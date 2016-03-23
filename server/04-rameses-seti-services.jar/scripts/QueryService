@@ -46,10 +46,10 @@ class QueryService {
 			}
 		}
 		if( o.orderBy ) {
-			em.orderBy = o.orderBy;
+			em.orderBy(o.orderBy);
 		}
 		if( o.groupBy ) {
-			em.groupBy = o.groupBy;
+			em.groupBy(o.groupBy);
 		}
 		return em;
 	}

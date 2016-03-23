@@ -1,0 +1,54 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import mt.facts.*;
+import mt.actions.*;
+
+class SendoutService {
+
+	@Service('FormControlService') 
+	def controlSvc; 
+
+	@Service('RuleExecutorService')
+	def ruleSvc; 
+
+	@DataContext('branch') 
+	def branch; 
+
+	@Env 
+	def env; 
+
+	@ProxyMethod 
+	def init() {
+		def map = [
+			branch     : [ objid: env.ORGID, name: env.ORGCODE+' '+ env.ORGNAME ], 
+			user       : [ objid: env.USERID, name: env.USER ], 
+			terminalid : env.TERMINALID 
+		]; 
+		def ctrl = controlSvc.getAvailable([ 
+			branchid   : map.branch.objid, 
+			terminalid : map.terminalid, 
+			formtype   : 'SENDOUT', 
+			formcode   : 'S' 
+		]); 
+		map.controlid = ctrl.objid;
+		map.controlno = ctrl.seriesno; 
+		return map;
+	}
+
+	@ProxyMethod 
+	public def calculateCharge( params ) { 
+		def facts = [];
+		facts << new Sendout( params ); 
+
+		def result = [:]; 
+		def actions = [:];
+		actions.calculatecharge = new CalculateCharge( result: result ); 
+		ruleSvc.execute('sendout', facts, actions, null ); 
+		return [ 
+			charge      : result.charge, 
+			othercharge : result.othercharge, 
+			discount    : result.discount 
+		]; 
+	}
+
+} 

@@ -1,0 +1,53 @@
+import aml.facts.*;
+import aml.actions.*;
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+
+class AMLSendoutInterceptor {
+
+	@DataContext('sendout_daily') 
+	def sendout_daily; 
+
+	@Service('RuleExecutorService')
+	def ruleSvc; 
+
+	@After( pattern="PersistenceService.create", eval="#{args[0]._schemaname=='sendout'}", index=100 ) 
+	void afterCreate( evt ) { 
+		def o = evt.result; 
+		def dateBean = new DateBean( o.dtfiled ); 
+		def params = [
+			senderid: o.sender.objid, 
+			year: dateBean. year,
+			month: dateBean.month, 
+			day  : dateBean.day, 
+			currency: o.currency 
+		];
+
+		def sd = sendout_daily.find( params ).first();
+		if ( sd ) { 
+			sendout_daily.find( params ).update([amount:'{amount+:amount}'], [amount: o.principal]);  
+			params.amount = sd.amount + o.principal; 
+			params.date = sd.date; 
+		} else { 
+			params.amount = o.principal; 
+			params.date = o.dtfiled;
+			sendout_daily.create( params );  
+		}		
+
+		params.date = o.dtfiled; 
+		def facts = []; 
+		facts << new SendoutDaily( params ); 
+
+		def result = [:]; 
+		def actions = [:]; 
+		actions.collectexception = new CollectException( result: result ); 
+		actions.aggregatesendout = new AggregateSendout( result: result, em: sendout_daily);  
+		ruleSvc.execute('aml', facts, actions, null); 
+
+		if ( result.exceptions ) {
+			def msg = result.exceptions.join('\n'); 
+			throw new Exception( msg ); 
+		}
+	} 
+} 
+

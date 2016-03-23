@@ -5,13 +5,13 @@ class SendoutAggregate {
 	String senderid;
 	String currency;
 	double amount;
-	int days;
+	String days;
 
 	public SendoutAggregate( o ) { 
 		senderid = o.senderid;
 		currency = o.currency;
 		amount = o.amount;
-		days = o.days;
+		days = o.days.toString();
 	}
 
 }

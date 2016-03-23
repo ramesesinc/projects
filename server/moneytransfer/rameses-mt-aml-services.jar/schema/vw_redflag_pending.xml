@@ -1,7 +1,7 @@
 <schema adapter="main">
 
-	<element tablename="redflag">
-		<field name="objid" primary="true" prefix="REDF"/> 
+	<element tablename="vw_redflag_pending">
+		<field name="objid" primary="true"/> 
 		<field name="dtfiled" required="true" caption="DateFiled"/> 
 		<field name="state" required="true" caption="Status"/> 
 		<field name="txntype" required="true" caption="TxnType"/> 

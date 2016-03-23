@@ -11,5 +11,7 @@ public class RequireInfo implements RuleActionHandler {
 		if ( !result.requireinfos ) {
 			result.requireinfos = [];
 		} 
+
+		result.requireinfos << [id: params.infotype, message: params.message.stringValue]; 
 	} 
 }

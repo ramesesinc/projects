@@ -1,0 +1,6 @@
+<workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" 
+    schemaName="redflag" allowCreate="false" allowEdit="false">
+    <invokers>
+        <invoker folderid="/home/mt" caption="Red Flags" action="init" index="100"/> 
+    </invokers> 
+</workunit>

@@ -1,0 +1,9 @@
+<schema adapter="main">
+
+	<element tablename="redflag_detail">
+		<field name="objid" primary="true" prefix="REDFI"/> 
+		<field name="parentid" required="true" visible="false" hidden="true"/> 
+		<field name="message" required="true" caption="Message"/> 
+	</element> 
+
+</schema>

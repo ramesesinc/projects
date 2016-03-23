@@ -1,6 +1,6 @@
 <workunit>
     <invokers>
-        <invoker folderid="/home/mt" caption="Payout" action="init" target="window"/> 
+        <invoker folderid="/home/mt" caption="Payout" action="init" target="window" index="2"/> 
     </invokers>
     
     <code class="com.rameses.mt.models.PayoutSearchModel"/>

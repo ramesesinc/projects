@@ -1,0 +1,47 @@
+import com.rameses.annotations.*;
+
+class AMLRequireTypeService {
+
+	@DataContext('vw_entityindividual')
+	def vw_entityindividual; 
+
+	@DataContext('entityid')
+	def entityid; 
+
+	def types = [
+		'ANYID': { o-> 
+			def icount = entityid.find([ entityid: o.objid ]).select('counter:{COUNT(*)}').val(); 
+			return (icount > 0); 
+		},
+		'SSS' : { o-> 
+			def icount = entityid.find([ entityid: o.objid, idtype:'SSS' ]).select('counter:{COUNT(*)}').val(); 
+			return (icount > 0); 
+		} 
+	]; 
+
+	/*
+		use by AMLLOVInterceptor 
+	*/
+	@ProxyMethod 
+	public Map getKeys() {
+		def map = [:]; 
+		types.each{ k,v-> 
+			map.put( k, k ); 
+		} 
+		return map; 
+	} 
+
+	@ProxyMethod
+	public def validate( params ) {
+		def errs = []; 
+		def entitydata = vw_entityindividual.find([ objid: params.entityid ]).first();
+		params.requireinfos.each{ o-> 
+			def func = types.get( o.id ); 
+			if ( func ) {
+				boolean b = func( entitydata ); 
+				if ( !b ) errs << o; 
+			} 
+		} 
+		return errs; 
+	}
+}

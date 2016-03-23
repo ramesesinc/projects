@@ -1,0 +1,5 @@
+<workunit extends="wtemplates/RuleMgmtController.xml" serviceName="RuleMgmtService" tag="sendout">
+    <invokers>
+        <invoker folderid="/explorer/rulemgmt/mt" caption="Sendout Rules" action="init" index="1" srole="RULE_AUTHOR"/>
+    </invokers>
+</workunit>

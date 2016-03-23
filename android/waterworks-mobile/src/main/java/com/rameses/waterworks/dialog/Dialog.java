@@ -75,7 +75,7 @@ public class Dialog {
 
         Button okBtn = new Button("OK");
         okBtn.getStyleClass().add("terminal-button");
-        okBtn.setPrefWidth(100);
+        okBtn.setPrefWidth(Main.HEIGHT > 700 ? 100 : 70);
         okBtn.setOnAction(new EventHandler<ActionEvent>(){
             @Override
             public void handle(ActionEvent event) {
@@ -87,7 +87,7 @@ public class Dialog {
         btnContainer.setAlignment(Pos.CENTER);
         btnContainer.getChildren().add(okBtn);
 
-        VBox root = new VBox(30);
+        VBox root = new VBox(Main.HEIGHT > 700 ? 30 : 10);
         root.setStyle("-fx-background-color: white;");
         root.setPadding(Main.HEIGHT > 700 ? new Insets(20) : new Insets(10));
         root.setPrefWidth(Main.HEIGHT > 700 ? Main.WIDTH - 200 : Main.WIDTH - 30);
@@ -119,7 +119,7 @@ public class Dialog {
 
         Button okBtn = new Button("OK");
         okBtn.getStyleClass().add("terminal-button");
-        okBtn.setPrefWidth(100);
+        okBtn.setPrefWidth(Main.HEIGHT > 700 ? 100 : 70);
         okBtn.setOnAction(new EventHandler<ActionEvent>(){
             @Override
             public void handle(ActionEvent event) {
@@ -166,7 +166,7 @@ public class Dialog {
         
         HBox container = new HBox();
         container.setStyle("-fx-background-color: #3897ee;");
-        container.setPadding(new Insets(15));
+        container.setPadding(Main.HEIGHT > 700 ? new Insets(15) : new Insets(10));
         container.getChildren().add(title);
         container.setOnMouseClicked(new EventHandler<MouseEvent>(){
             @Override

@@ -1,32 +1,36 @@
 package com.rameses.waterworks.bean;
 
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleStringProperty;
 
 /**
  *
- * @author Dino
+ * @author Rameses
  */
 public class Area {
     
-    private SimpleStringProperty objid, name, description;
+    private String objid, title, assigneeid, duedate;
     public SimpleBooleanProperty selected;
+    private Object stubout;
     
-    public Area(String objid, String name, String description, boolean selected){
-        this.objid = new SimpleStringProperty(objid);
-        this.name = new SimpleStringProperty(name);
-        this.description = new SimpleStringProperty(description);
+    public Area(String objid, String title, String assigneeid, String duedate, boolean selected, Object stubout){
+        this.objid = objid;
+        this.title = title;
+        this.assigneeid = assigneeid;
+        this.duedate = duedate;
         this.selected = new SimpleBooleanProperty(selected);
+        this.stubout = stubout;
     }
     
-    public String getObjid(){ return objid.get(); }
-    public String getName(){ return name.get(); }
-    public String getDescription(){ return description.get(); }
+    public String getObjid(){ return objid; }
+    public String getTitle(){ return title; }
+    public String getAssigneeId(){ return assigneeid; }
+    public String getDueDate(){ return duedate; }
     public boolean isSelected(){ return selected.get(); }
+    public Object getStubout(){ return stubout; }
     
     @Override
     public String toString(){
-        return getName();
+        return getTitle();
     }
     
 }

@@ -197,7 +197,7 @@ public class AccountList {
         //LAYOUT FOR THE STUBOUT TAB (START)
         search_stubout = new TextField();
         search_stubout.setId("search-account");
-        search_stubout.setPromptText("Search Account");
+        search_stubout.setPromptText("Search Stubout");
         search_stubout.setFocusTraversable(false);
         search_stubout.textProperty().addListener(new ChangeListener<String>(){
             @Override

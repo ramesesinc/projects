@@ -1,0 +1,15 @@
+<schema adapter="system">
+
+	<element tablename="sys_wf_transition">
+		<field name="parentid" primary="true"/>
+		<field name="processname" primary="true"/>
+		<field name="to" primary="true"/>
+		<field name="action"/>
+		<field name="idx" />
+		<field name="eval" />
+		<field name="properties" />
+		<field name="permission" />
+	</element>	
+
+</schema>	
+

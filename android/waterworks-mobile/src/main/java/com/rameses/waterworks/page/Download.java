@@ -2,7 +2,7 @@ package com.rameses.waterworks.page;
 
 import com.rameses.Main;
 import com.rameses.waterworks.bean.Account;
-import com.rameses.waterworks.bean.ReadingGroup;
+import com.rameses.waterworks.bean.Area;
 import com.rameses.waterworks.bean.Rule;
 import com.rameses.waterworks.bean.Stubout;
 import com.rameses.waterworks.bean.StuboutAccount;
@@ -12,7 +12,7 @@ import com.rameses.waterworks.dialog.Dialog;
 import com.rameses.waterworks.layout.Header;
 import com.rameses.waterworks.service.MobileRuleService;
 import com.rameses.waterworks.service.MobileService;
-import com.rameses.waterworks.service.ReadingGroupService;
+import com.rameses.waterworks.service.AreaService;
 import com.rameses.waterworks.util.SystemPlatformFactory;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -48,7 +48,7 @@ import javafx.util.Callback;
 public class Download {
     
     VBox root;
-    ListView<ReadingGroup> listView;
+    ListView<Area> listView;
     Label label;
     ProgressBar progressbar;
     Button download;
@@ -67,16 +67,16 @@ public class Download {
     public Download(){
         Header.TITLE.setText("Download");
         
-        Callback<ReadingGroup,ObservableValue<Boolean>> property = new Callback<ReadingGroup,ObservableValue<Boolean>>(){
+        Callback<Area,ObservableValue<Boolean>> property = new Callback<Area,ObservableValue<Boolean>>(){
             @Override
-            public ObservableValue<Boolean> call(ReadingGroup a) {
+            public ObservableValue<Boolean> call(Area a) {
                 return a.selected;
             }
         };
         
-        Callback<ListView<ReadingGroup>, ListCell<ReadingGroup>> forListView = CheckBoxListCell.forListView(property);
+        Callback<ListView<Area>, ListCell<Area>> forListView = CheckBoxListCell.forListView(property);
         
-        listView = new ListView<ReadingGroup>();
+        listView = new ListView<Area>();
         listView.setId("download-listview");
         listView.setPrefHeight(Main.HEIGHT*0.50);
         listView.setCellFactory(forListView);
@@ -99,7 +99,7 @@ public class Download {
             public void handle(ActionEvent event) {
                 //GET THE SELECTED AREAS FOR DOWNLOAD
                 List<String> groupids = new ArrayList();
-                for(ReadingGroup r : listView.getItems()){
+                for(Area r : listView.getItems()){
                     if(r.isSelected()){
                         groupids.add(r.getObjid());
                     }
@@ -143,10 +143,10 @@ public class Download {
                 }
                 
                 //STORE THE READING GROUPS, STUBOUTS, STUBOUT_ACCOUNTS
-                clearReadingGroups();
-                for(ReadingGroup r : listView.getItems()){
+                clearArea();
+                for(Area r : listView.getItems()){
                     if(r.isSelected()){
-                        saveReadingGroup(r);
+                        saveArea(r);
                     }
                 }
                 
@@ -304,6 +304,7 @@ public class Download {
     
     private void loadData(){ 
         Thread t2 = new Thread(){
+            @Override
             public void run(){
                 Platform.runLater(new Runnable(){
                     @Override
@@ -311,10 +312,10 @@ public class Download {
                         Map params = new HashMap();
                         params.put("assigneeid", SystemPlatformFactory.getPlatform().getSystem().getUserID());
 
-                        ReadingGroupService readingGroupSvc = new ReadingGroupService();
-                        List<Map> result = readingGroupSvc.getListByAssignee(params);
+                        AreaService areaSvc = new AreaService();
+                        List<Map> result = areaSvc.getListByAssignee(params);
 
-                        ObservableList<ReadingGroup> data = FXCollections.observableArrayList();
+                        ObservableList<Area> data = FXCollections.observableArrayList();
                         for(Map m : result){
                             String objid = m.get("objid").toString();
                             String title = m.get("title").toString();
@@ -323,13 +324,13 @@ public class Download {
                             String assigneename = assignee.get("name").toString();
                             String duedate = m.get("duedate").toString();
                             Object stubout = m.get("stubouts");
-                            data.add(new ReadingGroup(objid,title,assigneeid,duedate,false,stubout));
+                            data.add(new Area(objid,title,assigneeid,duedate,false,stubout));
                         }
                         listView.setItems(data);
                         
                         Dialog.hide();
-                        if(!readingGroupSvc.ERROR.isEmpty()){
-                            Dialog.showError(readingGroupSvc.ERROR);
+                        if(!areaSvc.ERROR.isEmpty()){
+                            Dialog.showError(areaSvc.ERROR);
                         }
                     }
                 });
@@ -338,8 +339,8 @@ public class Download {
         t2.start();
     }
     
-    private void saveReadingGroup(ReadingGroup r){
-        DatabasePlatformFactory.getPlatform().getDatabase().createReadingGroup(r);
+    private void saveArea(Area r){
+        DatabasePlatformFactory.getPlatform().getDatabase().createArea(r);
         List<Map> stubouts = (List<Map>) r.getStubout();
         Iterator<Map> i = stubouts.iterator();
         while(i.hasNext()){
@@ -347,11 +348,9 @@ public class Download {
             String objid = m.get("objid")!=null ? m.get("objid").toString() : "";
             String title = m.get("title")!=null ? m.get("title").toString() : "";
             String description = m.get("description")!=null ? m.get("description").toString() : "";
-            Map reading = (Map) m.get("readinggroup");
-            String readinggroupid = reading!=null ? reading.get("objid").toString() : "";
             List<Map> accounts = m.get("accounts")!=null ? (List<Map>)m.get("accounts") : new ArrayList();
             
-            Stubout stubout = new Stubout(objid,title,description,readinggroupid,accounts);
+            Stubout stubout = new Stubout(objid,title,description,r.getObjid(),accounts);
             DatabasePlatformFactory.getPlatform().getDatabase().createStubout(stubout);
             
             Iterator<Map> it = accounts.iterator();
@@ -367,10 +366,10 @@ public class Download {
         }
     }
     
-    private void clearReadingGroups(){
+    private void clearArea(){
         DatabasePlatformFactory.getPlatform().getDatabase().clearStuboutAccount();
         DatabasePlatformFactory.getPlatform().getDatabase().clearStubout();
-        DatabasePlatformFactory.getPlatform().getDatabase().clearReadingGroup();
+        DatabasePlatformFactory.getPlatform().getDatabase().clearArea();
     }
     
     public Node getLayout(){

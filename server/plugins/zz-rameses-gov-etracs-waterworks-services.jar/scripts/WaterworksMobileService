@@ -1,6 +1,7 @@
 import com.rameses.annotations.*;
 import java.rmi.server.*;
 import com.rameses.util.*;
+import java.text.*;
 
 class WaterworksMobileService {
 	
@@ -21,8 +22,7 @@ class WaterworksMobileService {
 
 	@ProxyMethod
 	public def initForDownload( def o ){
-		if(!o.assigneeid)	
-			throw new Exception("Assignee ID is required!");
+		if(!o.assigneeid) throw new Exception("Assignee ID is required!");
 		def batchid = 'BTC' + new UID();
 		def groupids = "('" + o.groupids.join("','") + "')";
         def y = dateSvc.getServerYear();
@@ -39,27 +39,30 @@ class WaterworksMobileService {
 		def todate = new DateBean(dueyear + "-" + duemonth + "-" + 20).getDate();
 		def discodate = new DateBean(dueyear + "-" + duemonth + "-" + 28).getDate();
 		def rundate = dateSvc.getServerDate();
-		def items = [
-			[account: 'Materials', amount:205.50],
-			[account: 'Compromise', amount:45.75]
-		];
+		DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
+		
+		def params = [assigneeid: o.assigneeid, groupids: groupids];
+		def list = wm.getDownloadableAccount(params);
+		list.each {
+			it.state = 'PENDING';
+			it.barcode = '51030:' + it.acctno;
+			it.batchid = batchid;
+			it.month = duemonth;
+			it.year = dueyear;
+			it.period = df.format(fromdate) + " - " + df.format(todate);
+			it.duedate = duedate;
+			it.discodate = discodate;
+			it.rundate = rundate;
+			it.items = wm.serializer.write([
+				[account: 'Materials', amount:100.00],
+				[account: 'Compromise', amount:50.00],
+				[account: 'Penalty', amount:0.00],
+				[account: 'Other Charge', amount:0.00]
+			]);
+			it.info = wm.serializer.write([classification: it.classificationid, metersize: it.metersize, barangay: it.barangayid]);
+			wm.create(it);
+		}
 
-		wm.insertForDownload(
-			[
-				assigneeid : o.assigneeid,
-				groupids   : groupids,
-				year       : y, 
-				month      : m, 
-				batchid    : batchid,
-				duemonth   : duemonth,
-				dueyear    : dueyear,
-				duedate    : duedate,
-				fromdate   : fromdate,
-				todate     : todate,
-				discodate  : discodate,
-				rundate    : rundate
-			]
-		);
 		def x = wm.find([batchid:batchid]).list();
 		return [batchid:batchid, count: x.size()];
 	}
@@ -67,23 +70,7 @@ class WaterworksMobileService {
 	@ProxyMethod
 	public def download( def o ) {
 		if(!o.batchid) throw new Exception("Please specify batchid!"); 
-		def list = wm.getListForDownload(o);
-		list.each {
-			it.barcode = '51030:'+it.acctno;
-
-			def sb = new StringBuilder();
-			sb.append("[classification:");
-			sb.append("\""+it.classificationid+"\"");
-			sb.append(",");
-			sb.append("metersize:");
-			sb.append("\""+it.metersize+"\"");
-			sb.append(",");
-			sb.append("barangay:");
-			sb.append("\""+it.barangay+"\"");
-			sb.append("]");
-			it.info = sb.toString();
-		}
-		return list;
+		return wm.find([batchid:o.batchid]).list();
 	}
 
 	@ProxyMethod
@@ -97,8 +84,6 @@ class WaterworksMobileService {
 	public void cancelDownload( def o ){
 		if(!o.batchid) throw new Exception("Please specify batchid!"); 
 		def list = "('" + o.downloadedlist.join("','") + "')";
-		println 'BATCHID : ' + o.batchid;
-		println 'LIST : ' + o.list;
 		wm.cancelDownload([batchid: o.batchid, downloadedlist: list]);
 	}
 

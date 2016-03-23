@@ -1,0 +1,11 @@
+<workunit schemaName="payout" allowEdit="false">
+    <invokers>
+        <invoker type="default-payout:create" caption="Payout" action="create" />
+        
+        <invoker type="formActions" caption="Submit" action="submit"/> 
+    </invokers>
+    <code class="com.rameses.mt.models.PayoutModel"/>
+    <pages>
+        <page template="com.rameses.mt.views.PayoutPage"/>        
+    </pages>
+</workunit>

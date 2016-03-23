@@ -132,6 +132,9 @@
     -fx-text-fill: white;
     -fx-background-color: #7dbce8;
     -fx-background-radius: 5px 0px 0px 5px;
+    -fx-border-width: 1px;
+    -fx-border-color: #7dbce8;
+    -fx-border-radius: 5px 0px 0px 5px;
 }
 
 .account-field-value
@@ -205,7 +208,7 @@
     -fx-border-width: 1px;
     -fx-border-color: #7dbce8;
     -fx-border-radius: 0px 5px 5px 0px;
-    -fx-background-image: url("search.png");
+    -fx-background-image: url("search2.png");
     -fx-background-position: center;
     -fx-background-repeat: no-repeat;
 }
@@ -383,3 +386,6 @@
     -fx-font-size: 14px;
 }
 
+#account-detail-readingcontainer{
+    -fx-background-color: aliceblue;
+}

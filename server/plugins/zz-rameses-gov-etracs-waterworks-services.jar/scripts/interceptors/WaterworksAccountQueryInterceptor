@@ -2,7 +2,7 @@ import com.rameses.annotations.*;
 
 class WaterworksAccountQueryInterceptor{
 	
-	@After(pattern="QueryService.getNodeList", eval="#{args[0].schemaname == 'waterworks_account'}")
+	@After(pattern="QueryService.getNodeList", eval="#{args[0]._schemaname == 'waterworks_account'}")
 	public void getAcctNodeList(def evt) {
 		def result = evt.result;
 		result << [ title: 'Active', id:'active'];
@@ -13,7 +13,7 @@ class WaterworksAccountQueryInterceptor{
 		result << [ title: 'For Reconnection', id:'for-reconnection'];
 	}
 
-	@Before(pattern="QueryService.getList", eval="#{args[0].schemaname == 'waterworks_account'}")
+	@Before(pattern="QueryService.getList", eval="#{args[0]._schemaname == 'waterworks_account'}")
 	public void loadList(def evt) {
 		def o = evt.args[0];
 		def w = null;

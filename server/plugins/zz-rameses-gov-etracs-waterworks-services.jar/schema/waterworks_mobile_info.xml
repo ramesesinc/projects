@@ -1,15 +1,29 @@
 <schema adapter="waterworks">
 	<element tablename="waterworks_mobile_info">
 		<field name="objid" primary="true"  prefix="WM"/>
-		<field name="batchid" required="true"/>
 		<field name="state" required="true"/>
+		<field name="acctno" required="true"/>
+		<field name="acctname" required="true"/>
+		<field name="address" required="false"/>
+		<field name="mobileno" required="false"/>
+		<field name="serialno" required="true"/>
+		<field name="areaid" required="true"/>
+		<field name="lastreading" required="true"/>
+		<field name="lasttxndate" required="true"/>
+		<field name="areaname" required="true"/>
+		<field name="classificationid" required="true"/>
+		<field name="lastreadingyear" required="true"/>
+		<field name="lastreadingmonth" required="true"/>
+		<field name="lastreadingdate" required="true"/>
+		<field name="barcode" required="true"/>
+		<field name="batchid" required="true"/>
 		<field name="month" required="true"/>
 		<field name="year" required="true"/>
+		<field name="period" required="true"/>
 		<field name="duedate" required="true"/>
-		<field name="fromdate" required="true"/>
-		<field name="todate" required="true"/>
 		<field name="discodate" required="true"/>
 		<field name="rundate" required="true"/>
-		<complex name="items" serializer="default"/>
+		<field name="items" required="true"/>
+		<field name="info" required="true"/>
 	</element>
 </schema>

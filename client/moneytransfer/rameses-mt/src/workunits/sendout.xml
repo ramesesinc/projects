@@ -1,0 +1,9 @@
+<workunit schemaName="sendout" allowEdit="false">
+    <invokers>
+        <invoker folderid="/home/mt" caption="Sendout" action="create" target="window"/>
+    </invokers>
+    <code class="com.rameses.mt.models.SendoutModel"/>
+    <pages>
+        <page template="com.rameses.mt.views.SendoutPage"/>        
+    </pages>
+</workunit>

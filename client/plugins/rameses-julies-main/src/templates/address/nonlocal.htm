@@ -1,0 +1,3 @@
+<%def fmt = {o,p->((o==null || o.trim().size()==0)?'':o + p) }%>${fmt(entity.unitno,' ')}${fmt(entity.bldgno, ' ')}${fmt(entity.bldgname, ' ')}${fmt(entity.street, ' ')}${fmt(entity.subdivision, '')}
+${fmt(entity.barangay?.name, ', ')}${fmt(entity.municipality,'')}${fmt(entity.city,'')}
+${fmt(entity.province,'')}

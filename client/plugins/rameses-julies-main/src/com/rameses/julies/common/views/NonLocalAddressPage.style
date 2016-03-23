@@ -1,0 +1,12 @@
+"entity.municipality" [ entity.addresstype == 'MUNICIPALITY' ] {
+    visible: true;
+}
+"entity.municipality" [ entity.addresstype != 'MUNICIPALITY' ] {
+    visible: false;
+}
+"entity.city" [ entity.addresstype == 'CITY' ] {
+    visible: true;
+}
+"entity.city" [ entity.addresstype != 'CITY' ] {
+    visible: false;
+}

@@ -382,3 +382,7 @@
 {
     -fx-font-size: 22px;
 }
+
+#account-detail-readingcontainer{
+    -fx-background-color: aliceblue;
+}

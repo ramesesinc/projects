@@ -47,8 +47,12 @@ public class OneilPrinterHandler implements PrinterHandler{
             i.set("a", a);
             i.set("userfullname",SystemPlatformFactory.getPlatform().getSystem().getFullName());
             i.set("datetime",SystemPlatformFactory.getPlatform().getSystem().getDate()+" "+SystemPlatformFactory.getPlatform().getSystem().getTime());
-            Object o = i.eval(sb.toString());
-            data = o.toString();
+            i.set("data", "INVALID DATA");
+            i.set("items", a.getItemList());
+            i.set("x", 0);
+            i.set("textgap",30);
+            i.eval(sb.toString());
+            data = i.get("data").toString();
         }catch(EvalError e){
             error = "Error in Report Data: " + e.toString();
         }

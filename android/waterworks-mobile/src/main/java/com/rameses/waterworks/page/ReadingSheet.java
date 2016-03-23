@@ -2,6 +2,7 @@ package com.rameses.waterworks.page;
 
 import com.rameses.Main;
 import com.rameses.waterworks.bean.Account;
+import com.rameses.waterworks.bean.ItemAccount;
 import com.rameses.waterworks.bean.Reading;
 import com.rameses.waterworks.bean.Rule;
 import com.rameses.waterworks.calc.BillCalculator;
@@ -205,6 +206,7 @@ public class ReadingSheet {
         try{
             consumption = Integer.valueOf(account.getPresReading()) -  Integer.valueOf(account.getLastReading());
         }catch(Exception e){
+            e.printStackTrace();
             consumption = Integer.valueOf(account.getPresReading());
             System.err.println(e);
         }
@@ -216,9 +218,15 @@ public class ReadingSheet {
                 return;
             }
         }catch(Exception e){
+            e.printStackTrace();
             System.err.println(e);
         }
-        double total = Double.parseDouble(account.getBalance()) +Double.parseDouble(account.getPenalty()) + Double.parseDouble(account.getOtherCharge()) + charge;
+        //GET THE ACCOUNT'S PAYMENTS
+        double subtotal = 0.00;
+        for(ItemAccount a: account.getItemList()){
+            subtotal += a.getAmount();
+        }
+        double total = subtotal + charge;
         
         account.setConsumption(String.valueOf(consumption));
         account.setAmtDue(df.format(charge));

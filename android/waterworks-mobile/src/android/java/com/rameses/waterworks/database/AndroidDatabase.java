@@ -44,9 +44,6 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
                 + " email VARCHAR(50),"
                 + " serialno VARCHAR(50),"
                 + " areaid VARCHAR(50),"
-                + " balance VARCHAR(50),"
-                + " penalty VARCHAR(50),"
-                + " othercharge VARCHAR(50),"
                 + " lastreading VARCHAR(50),"
                 + " lasttxndate VARCHAR(50),"
                 + " areaname VARCHAR(50),"
@@ -62,6 +59,7 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
                 + " duedate VARCHAR(50),"
                 + " discodate VARCHAR(50),"
                 + " rundate VARCHAR(50),"
+                + " items TEXT,"
                 + " info TEXT,"
                 + " assignee_objid VARCHAR(50),"
                 + " assignee_name VARCHAR(50))");
@@ -197,9 +195,6 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
         String email = acct.get("email") != null ? acct.get("email").toString() : "";
         String serialno = acct.get("serialno") != null ? acct.get("serialno").toString() : "";
         String areaid = acct.get("areaid") != null ? acct.get("areaid").toString() : "";
-        String balance = acct.get("balance") != null ? acct.get("balance").toString() : "0.00";
-        String penalty = acct.get("penalty") != null ? acct.get("penalty").toString() : "0.00";
-        String othercharge = acct.get("othercharge") != null ? acct.get("othercharge").toString() : "0.00";
         String lastreading = acct.get("lastreading") != null ? acct.get("lastreading").toString() : "";
         String lasttxndate = acct.get("lasttxndate") != null ? acct.get("lasttxndate").toString() : "";
         String areaname = acct.get("areaname") != null ? acct.get("areaname").toString() : "";
@@ -213,11 +208,11 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
         String batchid = acct.get("batchid") != null ? acct.get("batchid").toString() : "";
         String month = acct.get("month") != null ? getMonth(acct.get("month").toString()) : "";
         String year = acct.get("year") != null ? acct.get("year").toString() : "";
-        String fromdate = acct.get("fromdate") != null ? acct.get("fromdate").toString() : "";
-        String todate = acct.get("todate") != null ? acct.get("todate").toString() : "";
         String duedate = acct.get("duedate") != null ? acct.get("duedate").toString() : "";
+        String period = acct.get("period") != null ? acct.get("period").toString() : "";
         String discodate = acct.get("discodate") != null ? acct.get("discodate").toString() : "";
         String rundate = acct.get("rundate") != null ? acct.get("rundate").toString() : "";
+        String items = acct.get("items") != null ? acct.get("items").toString() : "";
         String info = acct.get("info") != null ? acct.get("info").toString() : "";
         
         ContentValues values = new ContentValues();
@@ -230,9 +225,6 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
         values.put("email", email);
         values.put("serialno", serialno);
         values.put("areaid", areaid);
-        values.put("balance", balance);
-        values.put("penalty", penalty);
-        values.put("othercharge", othercharge);
         values.put("lastreading", lastreading);
         values.put("lasttxndate", lasttxndate);
         values.put("areaname", areaname);
@@ -246,11 +238,12 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
         values.put("batchid", batchid);
         values.put("month", month);
         values.put("year", year);
-        values.put("period", fromdate + " - " + todate);
+        values.put("period", period);
         values.put("duedate", duedate);
         values.put("discodate", discodate);
         values.put("rundate", rundate);
-        values.put("info", info);
+        values.put("items", items);
+        values.put("info",info);
         
         SQLiteDatabase db = this.getWritableDatabase();
         try{
@@ -274,9 +267,6 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
         String email = acct.get("email") != null ? acct.get("email").toString() : "";
         String serialno = acct.get("serialno") != null ? acct.get("serialno").toString() : "";
         String areaid = acct.get("areaid") != null ? acct.get("areaid").toString() : "";
-        String balance = acct.get("balance") != null ? acct.get("balance").toString() : "0.00";
-        String penalty = acct.get("penalty") != null ? acct.get("penalty").toString() : "0.00";
-        String othercharge = acct.get("othercharge") != null ? acct.get("othercharge").toString() : "0.00";
         String lastreading = acct.get("lastreading") != null ? acct.get("lastreading").toString() : "";
         String lasttxndate = acct.get("lasttxndate") != null ? acct.get("lasttxndate").toString() : "";
         String areaname = acct.get("areaname") != null ? acct.get("areaname").toString() : "";
@@ -288,11 +278,11 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
         String batchid = acct.get("batchid") != null ? acct.get("batchid").toString() : "";
         String month = acct.get("month") != null ? acct.get("month").toString() : "";
         String year = acct.get("year") != null ? acct.get("year").toString() : "";
-        String fromdate = acct.get("fromdate") != null ? acct.get("fromdate").toString() : "";
-        String todate = acct.get("todate") != null ? acct.get("todate").toString() : "";
+        String period = acct.get("period") != null ? acct.get("period").toString() : "";
         String duedate = acct.get("duedate") != null ? acct.get("duedate").toString() : "";
         String discodate = acct.get("discodate") != null ? acct.get("discodate").toString() : "";
         String rundate = acct.get("rundate") != null ? acct.get("rundate").toString() : "";
+        String items = acct.get("items") != null ? acct.get("items").toString() : "";
         String info = acct.get("info") != null ? acct.get("info").toString() : "";
         
         ContentValues values = new ContentValues();
@@ -305,9 +295,6 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
         values.put("email", email);
         values.put("serialno", serialno);
         values.put("areaid", areaid);
-        values.put("balance", balance);
-        values.put("penalty", penalty);
-        values.put("othercharge", othercharge);
         values.put("lastreading", lastreading);
         values.put("lasttxndate", lasttxndate);
         values.put("areaname", areaname);
@@ -319,11 +306,12 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
         values.put("batchid", batchid);
         values.put("month", month);
         values.put("year", year);
-        values.put("period", fromdate + " - " + todate);
+        values.put("period", period);
         values.put("duedate", duedate);
         values.put("discodate", discodate);
         values.put("rundate", rundate);
-        values.put("info", info);
+        values.put("items", items);
+        values.put("info",info);
         
         SQLiteDatabase db = this.getWritableDatabase();
         
@@ -348,7 +336,7 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
             Cursor cursor = db.rawQuery("SELECT * FROM account WHERE objid = ?", args);
             if(cursor.moveToFirst()){
                 do{
-                    account = new Account(cursor.getString(0),cursor.getString(1),cursor.getString(2),cursor.getString(3),cursor.getString(4),cursor.getString(5),cursor.getString(6),cursor.getString(7),cursor.getString(8),cursor.getString(9),cursor.getString(10),cursor.getString(11),cursor.getString(12),cursor.getString(13),cursor.getString(14),cursor.getString(15),cursor.getString(16),cursor.getString(17),cursor.getString(18),cursor.getString(19),cursor.getString(20),cursor.getString(21),cursor.getString(22),cursor.getString(23),cursor.getString(24),cursor.getString(25),cursor.getString(26),cursor.getString(27));
+                    account = new Account(cursor.getString(0),cursor.getString(1),cursor.getString(2),cursor.getString(3),cursor.getString(4),cursor.getString(5),cursor.getString(6),cursor.getString(7),cursor.getString(8),cursor.getString(9),cursor.getString(10),cursor.getString(11),cursor.getString(12),cursor.getString(13),cursor.getString(14),cursor.getString(15),cursor.getString(16),cursor.getString(17),cursor.getString(18),cursor.getString(19),cursor.getString(20),cursor.getString(21),cursor.getString(22),cursor.getString(23),cursor.getString(24),cursor.getString(25));
                 }while(cursor.moveToNext());
             }
             db.close();
@@ -380,25 +368,23 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
                     String email = cursor.getString(6);
                     String serialno = cursor.getString(7);
                     String areaid = cursor.getString(8);
-                    String balance = cursor.getString(9);
-                    String penalty = cursor.getString(10);
-                    String othercharge = cursor.getString(11);
-                    String lastreading = cursor.getString(12);
-                    String lasttxndate = cursor.getString(13);
-                    String areaname = cursor.getString(14);
-                    String classificationid = cursor.getString(15);
-                    String lastreadingyear = cursor.getString(16);
-                    String lastreadingmonth = cursor.getString(17);
-                    String lastreadingdate = cursor.getString(18);
-                    String barcode = cursor.getString(19);
-                    String batchid = cursor.getString(20);
-                    String month = cursor.getString(21);
-                    String year = cursor.getString(22);
-                    String period = cursor.getString(23);
-                    String duedate = cursor.getString(24);
-                    String discodate = cursor.getString(25);
-                    String rundate = cursor.getString(26);
-                    String info = cursor.getString(27);
+                    String lastreading = cursor.getString(9);
+                    String lasttxndate = cursor.getString(10);
+                    String areaname = cursor.getString(11);
+                    String classificationid = cursor.getString(12);
+                    String lastreadingyear = cursor.getString(13);
+                    String lastreadingmonth = cursor.getString(14);
+                    String lastreadingdate = cursor.getString(15);
+                    String barcode = cursor.getString(16);
+                    String batchid = cursor.getString(17);
+                    String month = cursor.getString(18);
+                    String year = cursor.getString(19);
+                    String period = cursor.getString(20);
+                    String duedate = cursor.getString(21);
+                    String discodate = cursor.getString(22);
+                    String rundate = cursor.getString(23);
+                    String items = cursor.getString(24);
+                    String info = cursor.getString(25);
 
                     Account acct = new Account(
                         objid,
@@ -410,9 +396,6 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
                         email,
                         serialno,
                         areaid,
-                        balance,
-                        penalty,
-                        othercharge,
                         lastreading,
                         lasttxndate,
                         areaname,
@@ -428,6 +411,7 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
                         duedate,
                         discodate,
                         rundate,
+                        items,
                         info
                     );
                     list.add(acct);
@@ -461,25 +445,23 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
                     String email = cursor.getString(6);
                     String serialno = cursor.getString(7);
                     String areaid = cursor.getString(8);
-                    String balance = cursor.getString(9);
-                    String penalty = cursor.getString(10);
-                    String othercharge = cursor.getString(11);
-                    String lastreading = cursor.getString(12);
-                    String lasttxndate = cursor.getString(13);
-                    String areaname = cursor.getString(14);
-                    String classificationid = cursor.getString(15);
-                    String lastreadingyear = cursor.getString(16);
-                    String lastreadingmonth = cursor.getString(17);
-                    String lastreadingdate = cursor.getString(18);
-                    String barcode = cursor.getString(19);
-                    String batchid = cursor.getString(20);
-                    String month = cursor.getString(21);
-                    String year = cursor.getString(22);
-                    String period = cursor.getString(23);
-                    String duedate = cursor.getString(24);
-                    String discodate = cursor.getString(25);
-                    String rundate = cursor.getString(26);
-                    String info = cursor.getString(27);
+                    String lastreading = cursor.getString(9);
+                    String lasttxndate = cursor.getString(10);
+                    String areaname = cursor.getString(11);
+                    String classificationid = cursor.getString(12);
+                    String lastreadingyear = cursor.getString(13);
+                    String lastreadingmonth = cursor.getString(14);
+                    String lastreadingdate = cursor.getString(15);
+                    String barcode = cursor.getString(16);
+                    String batchid = cursor.getString(17);
+                    String month = cursor.getString(18);
+                    String year = cursor.getString(19);
+                    String period = cursor.getString(20);
+                    String duedate = cursor.getString(21);
+                    String discodate = cursor.getString(22);
+                    String rundate = cursor.getString(23);
+                    String items = cursor.getString(24);
+                    String info = cursor.getString(25);
 
                     Account acct = new Account(
                         objid,
@@ -491,9 +473,6 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
                         email,
                         serialno,
                         areaid,
-                        balance,
-                        penalty,
-                        othercharge,
                         lastreading,
                         lasttxndate,
                         areaname,
@@ -509,6 +488,7 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
                         duedate,
                         discodate,
                         rundate,
+                        items,
                         info
                     );
                     result.add(acct);
@@ -793,7 +773,7 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
     }
 
     @Override
-    public void createReadingGroup(Area r) {
+    public void createArea(Area r) {
         ERROR = "";
         ContentValues values = new ContentValues();
         values.put("objid", r.getObjid());
@@ -850,7 +830,7 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
     }
 
     @Override
-    public void clearReadingGroup() {
+    public void clearArea() {
         ERROR = "";
         try{
             String userid = SystemPlatformFactory.getPlatform().getSystem().getUserID();
@@ -944,25 +924,23 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
                     String email = cursor.getString(6);
                     String serialno = cursor.getString(7);
                     String areaid = cursor.getString(8);
-                    String balance = cursor.getString(9);
-                    String penalty = cursor.getString(10);
-                    String othercharge = cursor.getString(11);
-                    String lastreading = cursor.getString(12);
-                    String lasttxndate = cursor.getString(13);
-                    String areaname = cursor.getString(14);
-                    String classificationid = cursor.getString(15);
-                    String lastreadingyear = cursor.getString(16);
-                    String lastreadingmonth = cursor.getString(17);
-                    String lastreadingdate = cursor.getString(18);
-                    String barcode = cursor.getString(19);
-                    String batchid = cursor.getString(20);
-                    String month = cursor.getString(21);
-                    String year = cursor.getString(22);
-                    String period = cursor.getString(23);
-                    String duedate = cursor.getString(24);
-                    String discodate = cursor.getString(25);
-                    String rundate = cursor.getString(26);
-                    String info = cursor.getString(27);
+                    String lastreading = cursor.getString(9);
+                    String lasttxndate = cursor.getString(10);
+                    String areaname = cursor.getString(11);
+                    String classificationid = cursor.getString(12);
+                    String lastreadingyear = cursor.getString(13);
+                    String lastreadingmonth = cursor.getString(14);
+                    String lastreadingdate = cursor.getString(15);
+                    String barcode = cursor.getString(16);
+                    String batchid = cursor.getString(17);
+                    String month = cursor.getString(19);
+                    String year = cursor.getString(19);
+                    String period = cursor.getString(20);
+                    String duedate = cursor.getString(21);
+                    String discodate = cursor.getString(22);
+                    String rundate = cursor.getString(23);
+                    String items = cursor.getString(24);
+                    String info = cursor.getString(25);
 
                     Account acct = new Account(
                         objid,
@@ -974,9 +952,6 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
                         email,
                         serialno,
                         areaid,
-                        balance,
-                        penalty,
-                        othercharge,
                         lastreading,
                         lasttxndate,
                         areaname,
@@ -992,6 +967,7 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
                         duedate,
                         discodate,
                         rundate,
+                        items,
                         info
                     );
                     list.add(acct);

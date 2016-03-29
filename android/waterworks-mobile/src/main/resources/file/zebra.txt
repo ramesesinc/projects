@@ -36,14 +36,21 @@ data += "TEXT 5 0 230 " + y + " :\n";
 data += "TEXT 5 0 260 " + y + " " + a.getConsumption() +"\n";
 data += "TEXT 5 0 0 " + (y += textgap) + " ---------------------------------------\n";
 for(com.rameses.waterworks.bean.ItemAccount act : items){
+    data += "LEFT\n";
     data += "TEXT 5 0 0 " + (y += textgap) + " " + act.getAccount() + "\n";
-    data += "TEXT 0 3 370 " + y + " " + act.getAmount() +"\n";
+    data += "RIGHT\n";
+    data += "TEXT 0 3 370 " + y + " " + act.getAmount() +"    \n";
 }
+data += "LEFT\n";
 data += "TEXT 5 0 0 " + (y += textgap) + " Current Due\n";
-data += "TEXT 0 3 370 " + y + " " + a.getAmtDue() +"\n";
+data += "RIGHT\n";
+data += "TEXT 0 3 370 " + y + " " + a.getAmtDue() +"    \n";
+data += "LEFT\n";
 data += "TEXT 5 0 0 " + (y += textgap) + " ---------------------------------------\n";
 data += "TEXT 5 0 0 " + (y += textgap) + " TOTAL DUE\n";
-data += "TEXT 0 3 370 " + y + " " + a.getTotalDue() +"\n";
+data += "RIGHT\n";
+data += "TEXT 0 3 370 " + y + " " + a.getTotalDue() +"    \n";
+data += "LEFT\n";
 data += "TEXT 5 0 0 " + (y += textgap) + " ---------------------------------------\n";
 data += "TEXT 5 0 0 " + (y += textgap) + " Period\n";
 data += "TEXT 5 0 230 " + y + " :\n";

@@ -24,14 +24,7 @@ class ViolationTicketService {
         def facts = [];
         facts << new ViolationTicket( violation: o.violationid, violationcount: z.violationcount );      
 
-        def res = [:];
-        res.billItemList = new BillItemList();
-
-        def actions = new RuleAction();
-        actions.addCommand( "compute-fee", new ComputeFee(res:res));
-
-        ruleSvc.execute( "ovscomputation", facts, actions, null );
-		
+        def res = ruleSvc.execute( "ovscomputation", facts, null, null );
         if(!res.billItemList.items) throw new Exception("No rule found!");
 
 		z.violationtext = getViolationText( z.violationcount );

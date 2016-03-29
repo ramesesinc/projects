@@ -16,39 +16,43 @@ class WaterworksAccountQueryInterceptor{
 	@Before(pattern="QueryService.getList", eval="#{args[0]._schemaname == 'waterworks_account'}")
 	public void loadList(def evt) {
 		def o = evt.args[0];
-		def w = null;
+		if( !o.node?.id ) return;
 
-		switch( o.node?.id ) {
+		def str = "state=:state";
+		def m = [:];
+
+		switch( o.node.id ) {
 			case 'active':
-				w = "state = 'ACTIVE' ";
+				m.state = 'ACTIVE';
 				break;
 			case 'for-reading':
-				w = "state = 'FOR-READING' ";
+				m.state  = 'FOR-READING';
 				break;
 
 			case 'processing':
-				w = "state = 'PROCESSING' ";
+				m.state = 'PROCESSING';
 				break;
 
 			case 'for-disconnection':
-				w = "state = 'FOR-DISCONNECTION' ";
+				m.state = 'FOR-DISCONNECTION';
 				break;
 
 			case 'disconnected':
-				w = "state = 'DISCONNECTED' ";
+				m.state = 'DISCONNECTED';
 				break;
 
 			case 'for-reconnection':
-				w = "state = 'FOR-RECONNECTION' ";
+				m.state = 'FOR-RECONNECTION';
 				break;
 		}
 
 		//add to first position of where
-		if( o.where && w!=null) {
-			o.where[0] += " AND " + w;	
+		if( o.where ) {
+			o.where[0] = str + " AND " + o.where[0];	
+			o.where[1].putAll( m );
 		}
-		else if( w!=null) {
-			o.where = [w];
+		else {
+			o.where = [str, m];
 		}
 	}
 

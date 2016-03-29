@@ -5,6 +5,8 @@ import com.rameses.util.*;
 import java.util.*;
 import treasury.facts.*;
 
+import com.rameses.osiris3.common.*;
+
 public class ComputeDiscount implements RuleActionHandler {
 
 	def res;	//resources

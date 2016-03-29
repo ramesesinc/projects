@@ -1,0 +1,31 @@
+import com.rameses.annotations.*;
+
+class WaterworksApplicationPersistenceInterceptor{
+	
+	@DataContext("waterworks_application")
+	def app;
+
+	@Service("SequenceService")
+	def seqSvc;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@Service("WorkflowTaskService")
+	def workflowTaskSvc;
+
+	@Before(pattern="PersistenceService.create", eval="#{args[0]._schemaname == 'waterworks_application'}")
+	public void beforeCreate(def evt) {
+		def o  = evt.args[0];
+		o.appno = 'WA'+seqSvc.getNextFormattedSeriesA('water_application', 6);
+		o.dtfiled  = dateSvc.getServerDate();
+	}
+
+	@After(pattern="PersistenceService.create", eval="#{args[0]._schemaname == 'waterworks_application'}")
+	public void afterCreate(def evt) {
+		def o  = evt.result;
+		workflowTaskSvc.start( [refid:o.objid, processname: 'waterworks_application' ] );
+	}
+
+
+}

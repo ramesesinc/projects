@@ -183,3 +183,10 @@ DELETE FROM sys_rule_fact_field WHERE parentid=$P{objid}
 
 [removeFact]
 DELETE FROM sys_rule_fact WHERE objid=$P{objid}
+
+
+[getRuleActionsForLoading]
+SELECT a.* FROM sys_rule_actiondef a
+WHERE a.objid IN ( 
+	SELECT actiondef FROM sys_ruleset_actiondef WHERE ruleset=$P{ruleset} 
+)

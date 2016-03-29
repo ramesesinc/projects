@@ -12,14 +12,6 @@ public class WaterworksAccountCapture extends CrudFormModel {
     @Service("DateService")
     def dateSvc;
 
-    String schemaName = "waterworks_account";
-    
-    def months;
-
-    void afterInit() {
-        months = dateSvc.getMonths();
-    }   
-    
     void afterCreate() {
         entity.address = [:];
         entity.lastreadingyear = dateSvc.getServerYear();

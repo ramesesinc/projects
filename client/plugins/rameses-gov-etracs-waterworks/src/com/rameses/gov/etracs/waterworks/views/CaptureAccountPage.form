@@ -257,7 +257,7 @@
                 <Property name="caption" type="java.lang.String" value="Last Reading Month"/>
                 <Property name="expression" type="java.lang.String" value="#{item.name}"/>
                 <Property name="itemKey" type="java.lang.String" value="index"/>
-                <Property name="items" type="java.lang.String" value="months"/>
+                <Property name="items" type="java.lang.String" value="listTypes.months"/>
                 <Property name="name" type="java.lang.String" value="entity.lastreadingmonth" noResource="true"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[150, 20]"/>

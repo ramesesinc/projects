@@ -1,4 +1,6 @@
-<workunit extends="wtemplates/ServiceLookupController.xml" serviceName="UsergroupMemberLookupService" tag="READER">
+<workunit extends="wtemplates/ServiceLookupController.xml" 
+          serviceName="SysUserLookupService" 
+          tag="WATERWORKS.READER">
     <invokers>
         <invoker type="waterworksreader:lookup" caption="Lookup Reader"/>
     </invokers>

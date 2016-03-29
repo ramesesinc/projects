@@ -3,7 +3,8 @@ import com.rameses.util.*;
 import java.rmi.server.*;
 import com.rameses.common.*
 import com.rameses.services.extended.*;
-
+import java.util.*;
+import com.rameses.rules.common.*;
 
 class RuleExecutorService {
 
@@ -13,18 +14,49 @@ class RuleExecutorService {
 	@ActiveDB("rule")
 	def ruleDB;
 		
-	@ProxyMethod(local=true)	
-	public void execute( String ruleset, def facts, def actions, def handler )	{
+	private static Map metaClasses = Collections.synchronizedMap(new HashMap());
+
+
+	private def getClassInstance( String ruleset, String actionName, String actionClassname) {
+		if( !metaClasses.containsKey(ruleset)  ) metaClasses.put(ruleset, [:] );
+		def rsMap = metaClasses.get(ruleset);
+		if( !rsMap.containsKey(actionName) ) {
+			rsMap.put( actionName, getClass().getClassLoader().loadClass(actionClassname).newInstance() );
+		}
+		return rsMap.get(actionName);
+	}
+
+	@ProxyMethod	
+	public def execute( String ruleset, def facts, def actions, def handler )	{
+		def ctx = null;
 		try {
+			ctx = new RuleExecutionContext(facts);
+
+			def ruleAction = actions;
+
+			if(ruleAction==null) {
+				ruleAction = new RuleAction();
+				def actionList = ruleDB.getRuleActionsForLoading([ruleset: ruleset]);
+				actionList.each {
+						def obj = getClassInstance(ruleset, it.actionname, it.actionclass );
+						ruleAction.addCommand( it.actionname, obj ); 
+				}
+			}
+
 			def grps = ruleDB.getRulegroups( [ruleset: ruleset] );
 			for( g in grps ) {
-				ruleSvc.execute( ruleset, facts, actions, g.name );
+				ruleSvc.execute( ruleset, facts, ruleAction, g.name );
 				if(handler) handler( g.name );
 			}
 		}
+		catch(BreakException be) {
+			return ctx.result;
+		}
 		catch(e) {
-			e.printStackTrace();
 			throw e;
+		}
+		finally {
+			ctx.close();
 		}
 	}
 

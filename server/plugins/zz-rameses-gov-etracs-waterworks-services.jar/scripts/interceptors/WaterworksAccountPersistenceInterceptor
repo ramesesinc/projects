@@ -8,7 +8,7 @@ class WaterworksAccountPersistenceInterceptor{
 	@DataContext("waterworks_account_consumption")
 	def wac;
 
-	@Before(pattern="PerisistenceService.create", eval="#{args[0]._schemaname == 'waterworks_account'}")
+	@Before(pattern="PersistenceService.create", eval="#{args[0]._schemaname == 'waterworks_account'}")
 	public void beforeCreate(def evt) {
 		def o  = evt.args[0];
 		if(o.lastreading < o.prevreading) 

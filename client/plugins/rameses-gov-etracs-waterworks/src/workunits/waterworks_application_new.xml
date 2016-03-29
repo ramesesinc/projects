@@ -1,0 +1,35 @@
+<workunit  schemaName="waterworks_application">
+    <invokers>
+        <invoker type="waterworks_application:create"
+                 formTitle="New Water Application" 
+                 formId="waterworks_new"
+                 action="start" />
+    </invokers>
+    <code>
+        import com.rameses.seti2.models.*;
+        class WaterworksNewApplication extends CrudPageFlowModel {
+            void afterCreate() {
+                entity.address = [:];
+            }
+        }
+    </code>
+    <pageflow>
+        <start>
+            <transition to="initial"/>
+        </start>
+        <page name="initial" title="Waterworks Application Initial Page">
+            <transition to="compute-fees" caption="Next" />
+        </page>
+        <page name="compute-fees" title="Compute Fees">
+            <transition to="initial" caption="Back" />
+            <transition to="end" caption="Submit" confirm="You are about to save the record. Proceed?" 
+                        action="saveCreate"/>
+        </page>
+        <end/>
+    </pageflow>        
+    <pages>
+        <page name="initial" template="com.rameses.gov.etracs.waterworks.views.WaterworksApplicationInitialPage"/>
+        <page name="compute-fees" template="com.rameses.gov.etracs.waterworks.views.WaterworksApplicationComputeFeePage"/>
+    </pages>
+      
+</workunit>

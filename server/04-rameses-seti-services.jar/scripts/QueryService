@@ -51,6 +51,12 @@ class QueryService {
 		if( o.groupBy ) {
 			em.groupBy = o.groupBy;
 		}
+
+		//additional customizations for the query.
+		if( o._queryHandler ) {
+			o._queryHandler( em );
+		}
+
 		return em;
 	}
 

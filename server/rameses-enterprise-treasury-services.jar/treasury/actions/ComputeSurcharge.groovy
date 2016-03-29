@@ -2,7 +2,7 @@ package treasury.actions;
 
 import com.rameses.rules.common.*;
 import com.rameses.util.*;
-import com.rameses.osiris3.script.*;
+import com.rameses.osiris3.common.*;
 import treasury.facts.*;
 
 public class ComputeSurcharge implements RuleActionHandler {

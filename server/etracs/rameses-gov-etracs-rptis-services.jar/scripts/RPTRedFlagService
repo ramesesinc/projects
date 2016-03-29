@@ -55,6 +55,14 @@ public class RPTRedFlagService
 		return entity
 	}
 
+	@ProxyMethod
+	public def openByCaseNo(entity) {
+		entity = em.findByCaseNo(entity)
+		if (!entity) 
+			throw new Exception('Record does not exist.')
+		return open(entity)
+	}
+
 
 	@ProxyMethod
 	public def resolveRedFlag(entity){

@@ -54,12 +54,13 @@ class MunicipalityConsolidationRemoteCallHandler
 
 		svc.approveConsolidation(consolidation)
 
-		taskEm.removeOpenTask(consolidation)
 		consolidation.tasks.each{
 			it.data = consolidation
 			taskEm.save(it)
 			svc.updateSignatories(it)
 		}
+		
+		taskEm.removeOpenTask(consolidation)
 
 		svc.insertFaasSignatories(consolidation)
 	}

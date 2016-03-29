@@ -24,6 +24,14 @@ class ProvinceRedFlagService
 		return entity
 	}
 
+	@ProxyMethod
+	public void resendToMunicipality( entity ) {
+		entity += redflagSvc.openByCaseNo(entity)
+		if (entity.state == 'RESOLVED')
+			throw new Exception('Red Flag has already been resolved.')
+		notifyMunicipality(entity)
+	}
+
 	void notifyMunicipality(entity){
 		def asyncreq = cloudSvc.createAsyncRequest('MunicipalityRedFlagRemoteCallHandler', 'postRedFlag', entity)
 		cloudSvc.sendAsyncMessage(asyncreq[0], entity.lguid)

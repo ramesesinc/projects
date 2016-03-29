@@ -89,6 +89,8 @@ class ConsolidationService
             objid           : util.generateId('CS'),
             state        	: STATE_DRAFT,
             ry              : ry,
+            pintype         : 'land',
+            suffix          : 0,
             txntype         : faasSvc.getTxnType(TXNTYPE_CS),
             effectivityyear : dtSvc.serverYear  + 1 ,
             filetype        : 'consolidation',
@@ -96,6 +98,7 @@ class ConsolidationService
             consolidatedlands : [],
             affectedrpus : [],
             lguid       : env.ORGID,
+            originlguid : env.ORGID, 
         ]
     }
 
@@ -610,5 +613,11 @@ class ConsolidationService
     public def resendToMunicipality(consolidation){
         return consolidation;
     }
+
+    @ProxyMethod
+    public def getTasks( consolidation ) {
+        return em.getTasks(consolidation)    
+    }
+
 }
 

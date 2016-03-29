@@ -154,6 +154,8 @@ class ConsolidationSupportService
     @ProxyMethod
     public void saveFaas(faas){
         entitySvc.save(faas.taxpayer)
+        def address = faas.taxpayer.address 
+        faas.taxpayer.address = address.text 
         if (existFaas(faas))
             faasSvc.updateFaas(faas)
         else

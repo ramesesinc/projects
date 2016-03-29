@@ -41,7 +41,7 @@ class ProvinceFAASRemoteService
 		def oldfaas = supportSvc.findFaasById(faas)
 		if (!oldfaas){
 			supportSvc.saveFaasData(faas)
-			faasSvc.approveFaasByRemote(faas)
+			faasSvc.approveFaasByMunicipality(faas)
 			println 'Municipality approved FAAS successfully posted.'
 		}
 	}
@@ -92,13 +92,14 @@ class ProvinceFAASRemoteService
 	}
 
 	void notifyGroup(faas){
+		def sender = (env.REQUESTER.FULLNAME ? env.REQUESTER.FULLNAME : env.REQUESTER.USER)
         def msg = [
             objid     		: faas.objid,
             senderid  		: env.REQUESTER.USERID,
-            sender    		: env.REQUESTER.NAME,
+            sender    		: sender,
             recipientid   	: 'assign-receiver',
             recipienttype 	: 'group',
-            message   		: 'FAAS No. ' + (faas.tdno ? faas.tdno : faas.utdno) + '    (assign-receiver) submitted by ' + env.REQUESTER.NAME + '.',
+            message   		: 'FAAS No. ' + (faas.tdno ? faas.tdno : faas.utdno) + '    (assign-receiver) submitted by ' + sender + '.',
             filetype  		: 'faas',
             data 	  		: [objid: faas.objid, taskid:faas.taskid],
         ]

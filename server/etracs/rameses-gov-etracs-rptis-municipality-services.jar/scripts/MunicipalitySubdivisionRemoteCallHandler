@@ -19,6 +19,9 @@ class MunicipalitySubdivisionRemoteCallHandler
 	@ActiveDB('faas')
 	def faasEm
 
+	@Service('NotificationService')
+	def notifySvc		
+
 	public void postApprovedSubdivisionFromProvince(subdivision){
 		def state = svc.getState( subdivision )
 		if (state == null || state != 'APPROVED'){
@@ -40,6 +43,7 @@ class MunicipalitySubdivisionRemoteCallHandler
 		if (state  && ! state.equalsIgnoreCase('APPROVED')){
 			supportSvc.updateFaasesData(subdivision)
 			doApproveSubdivision(subdivision)
+			notifyRecommender(subdivision)
 			println 'Subdivision ' + subdivision.txnno + ' has been successfully approved.'
 		}
 	}
@@ -53,13 +57,32 @@ class MunicipalitySubdivisionRemoteCallHandler
 			svc.approveAffectedRpuFaasRecord(subdivision, it)
 		}
 
-		taskEm.removeOpenTask(subdivision)
 		subdivision.tasks.each{
 			taskEm.save(it)
 			svc.updateSignatories(it)
 		}
+		taskEm.removeOpenTask(subdivision)
 
 		svc.insertFaasSignatories(subdivision)
 		svc.approveSubdivision(subdivision)
 	}
+
+	void notifyRecommender(subdivision){
+		def recommendertask = taskEm.findRecommederTask([refid:subdivision.objid])
+		def approvertask = subdivision.tasks.find{it.state.matches('approver|provapprover')}
+		if (recommendertask && approvertask){
+			def msg = [
+	            objid     : recommendertask.refid,
+	            recipientid : (recommendertask.assignee.objid ? recommendertask.assignee.objid : '-'),
+	            recipienttype : 'user',
+	            senderid  : '-',
+	            sender    : approvertask.actor.name,
+	            message   : 'Subdivision ' + subdivision.txnno + ' has already been approved by ' + approvertask.actor.name + '.',
+	            filetype  : 'subdivision',
+	            data 	  : [:],
+	        ]
+	        notifySvc.addMessage(msg)
+		}		
+	}
+
 }

@@ -40,7 +40,7 @@ class SubdivisionMainInfoController
     }
     
     def getShowSupport(){
-        if (entity.state != 'APPROVED') 
+        if (entity.state == 'DRAFT') 
             return false;
         return true;
     }

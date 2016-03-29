@@ -19,10 +19,15 @@ order by cadastrallotno
 
 [getMotherLandsSummary]
 select 
-	sum(r.totalareaha) as totalareaha,
-	sum(r.totalareasqm) as totalareasqm,
-	sum(r.totalmv) as totalmv,
-	sum(r.totalav) as totalav
+	f.tdno,
+	f.titleno, 
+	f.fullpin,
+	rp.cadastrallotno,
+	rp.surveyno,
+	r.totalareaha,
+	r.totalareasqm,
+	r.totalmv,
+	r.totalav 
 from subdivision_motherland m
 	inner join faas f on m.landfaasid = f.objid 
 	inner join rpu r on f.rpuid = r.objid 

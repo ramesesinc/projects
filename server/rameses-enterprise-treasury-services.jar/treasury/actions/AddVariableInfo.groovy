@@ -26,6 +26,9 @@ public class AddVariableInfo implements RuleActionHandler {
 
 			//add facts to be processed in next pass
 			VariableInfo vf = new VariableInfo( z.objid, z.name,  z.datatype, defaultvalue );
+			vf.category = z.category;
+			vf.sortorder = z.sortorder;
+			vf.caption = z.caption;
 			ct.facts << vf;
 
 			//add infos in result.

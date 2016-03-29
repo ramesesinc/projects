@@ -132,7 +132,7 @@ public class AccountList {
         Button firstPage = new Button();
         firstPage.setGraphic(firstPageImg);
         firstPage.getStyleClass().add("nav-button");
-        firstPage.setPrefWidth(60);
+        firstPage.setPrefWidth(Main.HEIGHT > 700 ? 60 : 40);
         firstPage.setOnAction(new EventHandler<ActionEvent>(){
             @Override
             public void handle(ActionEvent event) {
@@ -147,7 +147,7 @@ public class AccountList {
         Button prev = new Button();
         prev.setGraphic(prevImg);
         prev.getStyleClass().add("nav-button");
-        prev.setPrefWidth(60);
+        prev.setPrefWidth(Main.HEIGHT > 700 ? 60 : 40);
         prev.setOnAction(new EventHandler<ActionEvent>(){
             @Override
             public void handle(ActionEvent event) {
@@ -162,7 +162,7 @@ public class AccountList {
         Button next = new Button();
         next.setGraphic(nextImg);
         next.getStyleClass().add("nav-button");
-        next.setPrefWidth(60);
+        next.setPrefWidth(Main.HEIGHT > 700 ? 60 : 40);
         next.setOnAction(new EventHandler<ActionEvent>(){
             @Override
             public void handle(ActionEvent event) {
@@ -177,7 +177,7 @@ public class AccountList {
         Button lastPage = new Button();
         lastPage.setGraphic(lastPageImg);
         lastPage.getStyleClass().add("nav-button");
-        lastPage.setPrefWidth(60);
+        lastPage.setPrefWidth(Main.HEIGHT > 700 ? 60 : 40);
         lastPage.setOnAction(new EventHandler<ActionEvent>(){
             @Override
             public void handle(ActionEvent event) {

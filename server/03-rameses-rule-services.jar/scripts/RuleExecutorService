@@ -21,7 +21,12 @@ class RuleExecutorService {
 		if( !metaClasses.containsKey(ruleset)  ) metaClasses.put(ruleset, [:] );
 		def rsMap = metaClasses.get(ruleset);
 		if( !rsMap.containsKey(actionName) ) {
-			rsMap.put( actionName, getClass().getClassLoader().loadClass(actionClassname).newInstance() );
+			try {
+				rsMap.put( actionName, getClass().getClassLoader().loadClass(actionClassname).newInstance() );
+			}
+			catch(Exception ex) {
+				println "error loading action class " + actionName + " ->" + ex.message;
+			}
 		}
 		return rsMap.get(actionName);
 	}
@@ -48,6 +53,7 @@ class RuleExecutorService {
 				ruleSvc.execute( ruleset, facts, ruleAction, g.name );
 				if(handler) handler( g.name );
 			}
+			return ctx.result;
 		}
 		catch(BreakException be) {
 			return ctx.result;

@@ -16,7 +16,7 @@ public class SetAccounts implements RuleActionHandler {
 		if(!sur_acct) throw new Exception("Surcharge account must not be null");
 		if(!int_acct) throw new Exception("Interest account must not be null");
 
-		def em = EntityManager.lookup("itemaccount");
+		def em = EntityManagerUtil.lookup("itemaccount");
 
 		ct.result.account = em.find( [objid: acct.key] ).first();
 		if(!ct.result.account) {

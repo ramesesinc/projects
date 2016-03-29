@@ -7,6 +7,9 @@ public class VariableInfo {
     String objid;
     String name;
     String datatype;
+    String category;
+    String caption;
+    int sortorder;
     String stringvalue;
     int intvalue;
     boolean booleanvalue;
@@ -49,6 +52,9 @@ public class VariableInfo {
         def m = [:];
         m.objid = objid;
         m.name = name;
+        m.category = category;
+        m.sortorder = sortorder;
+        m.caption = caption;
         m.datatype = datatype;
         if( datatype == "string" ) {
             m.value = stringvalue;

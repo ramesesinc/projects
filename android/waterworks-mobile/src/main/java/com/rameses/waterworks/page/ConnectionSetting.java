@@ -6,7 +6,10 @@ import com.rameses.waterworks.database.Database;
 import com.rameses.waterworks.database.DatabasePlatformFactory;
 import com.rameses.waterworks.dialog.Dialog;
 import com.rameses.waterworks.layout.Header;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -88,15 +91,25 @@ public class ConnectionSetting {
             @Override
             public void handle(ActionEvent event) {
                 if(ip.getText().isEmpty() || port.getText().isEmpty() || timeout.getText().isEmpty()) return;
-                Database db = DatabasePlatformFactory.getPlatform().getDatabase();
-                db.createSetting(new Setting("ip",ip.getText()));
-                db.createSetting(new Setting("port",port.getText()));
-                db.createSetting(new Setting("timeout",timeout.getText()));
-                db.createSetting(new Setting("context",context.getText()));
-                db.createSetting(new Setting("cluster",cluster.getText()));
-                if(!db.getError().isEmpty()){
-                    Dialog.showError(db.getError());
-                    return;
+                List<Setting> settings = new ArrayList<Setting>();
+                settings.add(new Setting("ip",ip.getText()));
+                settings.add(new Setting("port",port.getText()));
+                settings.add(new Setting("timeout",timeout.getText()));
+                settings.add(new Setting("context",context.getText()));
+                settings.add(new Setting("cluster",cluster.getText()));
+                Iterator<Setting> it = settings.iterator();
+                while(it.hasNext()){
+                    Setting s = it.next();
+                    Database db = DatabasePlatformFactory.getPlatform().getDatabase();
+                    if(!db.settingExist(s)){
+                        db.createSetting(s);
+                    }else{
+                        db.updateSetting(s);
+                    }
+                    if(!db.getError().isEmpty()){
+                        Dialog.showError(db.getError());
+                        return;
+                    }
                 }
                 Main.CONNECTION_SETTING = new HashMap();
                 Main.CONNECTION_SETTING.put("ip", ip.getText());

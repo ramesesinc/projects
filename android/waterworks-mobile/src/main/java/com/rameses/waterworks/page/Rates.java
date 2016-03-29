@@ -31,29 +31,20 @@ public class Rates {
     public Rates(){
         Header.TITLE.setText("Water Rates");
         
-        TableColumn salienceCol = new TableColumn("Salience");
         TableColumn conditionCol = new TableColumn("Condition");
-        TableColumn varCol = new TableColumn("Variable");
         TableColumn actionCol = new TableColumn("Action");
         
-        salienceCol.setStyle( "-fx-alignment: TOP-CENTER;");
-        varCol.setStyle( "-fx-alignment: TOP-CENTER;");
+        conditionCol.setPrefWidth(Main.WIDTH * 0.50);
+        actionCol.setPrefWidth(Main.WIDTH * 0.50);
         
-        salienceCol.setMinWidth(Main.WIDTH * 0.10);
-        conditionCol.setMinWidth(Main.WIDTH * 0.35);
-        varCol.setMinWidth(Main.WIDTH * 0.10);
-        actionCol.setMinWidth(Main.WIDTH * 0.45);
-        
-        salienceCol.setCellValueFactory(new PropertyValueFactory<Rule, Integer>("salience"));
         conditionCol.setCellValueFactory(new PropertyValueFactory<Rule, String>("condition"));
-        varCol.setCellValueFactory(new PropertyValueFactory<Rule, String>("var"));
         actionCol.setCellValueFactory(new PropertyValueFactory<Rule, String>("action"));
         
         TableView<Rule> tableView = new TableView<Rule>();
         if(Main.HEIGHT < 700) tableView.setStyle("-fx-font-size: 11px;");
         tableView.setPrefHeight(Main.HEIGHT);
         tableView.setFocusTraversable(false);
-        tableView.getColumns().addAll(salienceCol,conditionCol,varCol,actionCol);
+        tableView.getColumns().addAll(conditionCol,actionCol);
         
         Database db = DatabasePlatformFactory.getPlatform().getDatabase();
         List<Rule> list = db.getRules();
@@ -64,7 +55,7 @@ public class Rates {
                 if(event.getClickCount() == 2){
                     Rule r = tableView.getSelectionModel().getSelectedItem();
                     if(r != null){
-                        Node node = new RuleDetail(r).getLayout();
+                        Node node = new RateDetail(r).getLayout();
                         Dialog.show("Rule Information", node);
                     }
                 }

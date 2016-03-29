@@ -10,7 +10,6 @@ import com.rameses.waterworks.dialog.Dialog;
 import com.rameses.waterworks.layout.Header;
 import com.rameses.waterworks.printer.OneilPrinterHandler;
 import com.rameses.waterworks.printer.ZebraPrinterHandler;
-import com.rameses.waterworks.util.SystemPlatformFactory;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -44,25 +43,12 @@ public class Setting {
     
     public Setting(){
         Header.TITLE.setText("System Setting");
-        
-        Thread t = new Thread(){
-            @Override
-            public void run(){
-                Platform.runLater(new Runnable(){
-                    @Override
-                    public void run() {
-                        Dialog.wait("Please wait ...");
-                    }
-                });
-            }
-        };
-        t.start();
 
         listview = new ListView<String>();
-        listview.setStyle("-fx-font-size: 20px;");
+        listview.setStyle(Main.HEIGHT > 700 ? "-fx-font-size: 20px;" : "-fx-font-size: 11px;");
         listview.setPrefWidth(Main.WIDTH * 0.5);
-        listview.setMinHeight(170);
-        listview.setMaxHeight(170);
+        listview.setMaxHeight(Main.HEIGHT > 700 ? 170 : 70);
+        listview.setMinHeight(Main.HEIGHT > 700 ? 170 : 70);
         listview.setFocusTraversable(true);
         
         ToggleGroup group = new ToggleGroup();
@@ -85,7 +71,7 @@ public class Setting {
         
         Button set = new Button("Set Printer");
         set.getStyleClass().add("terminal-button");
-        set.setPrefWidth(200);
+        set.setPrefWidth(Main.HEIGHT > 700 ? 200 : 150);
         set.setOnAction(new EventHandler<ActionEvent>(){
             @Override
             public void handle(ActionEvent event) {
@@ -111,11 +97,12 @@ public class Setting {
                 settings.add(new com.rameses.waterworks.bean.Setting("handler",handler));
                 Iterator<com.rameses.waterworks.bean.Setting> it = settings.iterator();
                 while(it.hasNext()){
+                    com.rameses.waterworks.bean.Setting s = it.next();
                     Database db = DatabasePlatformFactory.getPlatform().getDatabase();
-                    if(!db.settingExist(it.next())){
-                        db.createSetting(it.next());
+                    if(!db.settingExist(s)){
+                        db.createSetting(s);
                     }else{
-                        db.updateSetting(it.next());
+                        db.updateSetting(s);
                     }
                 }
             }
@@ -125,6 +112,7 @@ public class Setting {
         textArea.setEditable(false);
         textArea.setPrefHeight(Main.HEIGHT);
         textArea.setPrefWidth(Main.WIDTH);
+        if(Main.HEIGHT < 700) textArea.setStyle("-fx-font-size: 11px;");
         if(Main.PRINTERHANDLER != null) textArea.setText(Main.PRINTERHANDLER.getScriptCode());
         
         root = new VBox(10);

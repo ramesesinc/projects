@@ -2,7 +2,6 @@ import com.rameses.annotations.*;
 import com.rameses.util.*;
 import java.rmi.server.*;
 import com.rameses.common.*;
-import com.rameses.rules.common.*;
 import treasury.facts.*;
 import treasury.actions.*;
 
@@ -14,9 +13,7 @@ class PaymentOrderService {
 	@Service("DateService")
 	def dtSvc 
 
-	@Service("RuleExecutorService")
-	def ruleSvc;
-
+	
 	@DataContext("collectiontype")
 	def collectionType;
 
@@ -80,31 +77,6 @@ class PaymentOrderService {
 		return data; 
 	}
 
-	@ProxyMethod
-	public def assess( def p ) {
-		def facts = [];
-		def h = { o->
-			if(o == 'precomputefee' ) {
-				throw new BreakException();
-			}
-		};
-		
-		facts << new Transaction(type: p.txntype );
-		if( p.infos ) {
-			p.infos.each {
-				facts << new VariableInfo( it );
-			}
-		}
-
-		def res = ruleSvc.execute( "paymentorder", facts, null, h );
-
-		if( res.infos ) {
-			return [id:'ask-info', infos: res.infos ];
-		}
-		else {
-			return [id: 'fees', items: res.items ];
-		}
-	}
-
+	
 
 }

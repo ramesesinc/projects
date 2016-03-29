@@ -9,6 +9,9 @@
         <folder id="rulemgmt" caption="Rule Management">
             <folder id="mt" caption="Money Transfer"/>
         </folder>
+        <folder id="report" caption="Reports">
+            <folder id="mt" caption="Money Transfer"/>
+        </folder>
     </folder>
     
     <folder id="menu">

@@ -18,6 +18,10 @@ class SendoutModel extends com.rameses.seti2.models.CrudFormModel {
     
     @PropertyChangeListener 
     def changelisteners = [
+       'entity.sender' : {
+            entity.receiver = null; 
+            binding.refresh('entity.receiver'); 
+       }, 
        'entity.principal' : {
             calculateCharge(); 
        } 
@@ -55,4 +59,14 @@ class SendoutModel extends com.rameses.seti2.models.CrudFormModel {
         binding.refresh();
     }
     
+    def openSender() {
+        if ( !entity.sender ) return;
+        
+        return Inv.lookupOpener('individualentity:open', [entity: entity.sender]); 
+    }
+    def openReceiver() {
+        if ( !entity.receiver ) return;
+        
+        return Inv.lookupOpener('individualentity:open', [entity: entity.receiver]); 
+    }    
 }

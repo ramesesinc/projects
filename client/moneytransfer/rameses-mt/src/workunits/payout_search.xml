@@ -1,6 +1,7 @@
 <workunit>
     <invokers>
-        <invoker folderid="/home/mt" caption="Payout" action="init" target="window" index="2"/> 
+        <invoker folderid="/home/mt" caption="Payout" action="init" 
+                 target="window" index="2" icon="images/payout.png"/> 
     </invokers>
     
     <code class="com.rameses.mt.models.PayoutSearchModel"/>
@@ -10,21 +11,22 @@
             <transition to="search"/>
         </start>
         <page name="search" title="Payout Search">
-            <transition to="end" caption="Close" />
-            <transition to="test-result" caption="Next" immediate="false" action="fetchList"/>
+            <transition to="end" caption="Close" mnemonic="C"/>
+            <transition to="test-result" caption="Next" action="fetchList" immediate="false" mnemonic="N"/>
+            <transition to="test-result" caption="Barcode" action="searchByBarcode" name="barcode" immediate="true" icon="images/toolbars/barcode.png"/>
         </page>
         <process name="test-result">
             <transition to="payout-form" cond="#{ results.size()==1 }" action="loadHandler"/>
             <transition to="result-list" cond="#{ results.size() &gt; 1 }"/>
         </process>  
         <page name="result-list">
-            <transition to="search" caption="Back"/>
-            <transition to="payout-form" caption="Next" action="loadHandler" depends="selectedItem" visibleWhen="#{selectedItem != null}"/>
+            <transition to="search" caption="Back" mnemonic="B"/>
+            <transition to="payout-form" caption="Next" action="loadHandler" depends="selectedItem" visibleWhen="#{selectedItem != null}" mnemonic="N"/>
         </page>
         <page name="payout-form">  
             <transition to="end" caption="Close" />
-            <transition to="submit-form" caption="Submit" action="submit"/>
-        </page>        
+            <transition to="submit-form" caption="Submit" action="submit" mnemonic="S" shortcut="ctrl S"/>
+        </page> 
         <end/>
     </pageflow>
     

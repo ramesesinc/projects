@@ -1,6 +1,7 @@
 <workunit schemaName="sendout" allowEdit="false">
     <invokers>
-        <invoker folderid="/home/mt" caption="Sendout" action="create" target="window" index="1"/>
+        <invoker folderid="/home/mt" caption="Sendout" action="create" 
+                 target="window" index="1" icon="images/sendout.png"/>
     </invokers>
     <code class="com.rameses.mt.models.SendoutModel"/>
     <pages>

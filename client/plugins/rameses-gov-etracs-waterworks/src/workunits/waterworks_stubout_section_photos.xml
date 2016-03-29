@@ -1,0 +1,9 @@
+<workunit schemaName="waterworks_stubout">
+    <invokers>
+        <invoker type="waterworks_stubout:section" caption="Photos" index="-10"/>
+    </invokers>
+    <code class="com.rameses.seti2.models.MdiChildModel"/>
+    <pages>
+       <page template="com.rameses.gov.etracs.waterworks.views.BlankPage"/>
+    </pages>
+</workunit>

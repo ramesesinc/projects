@@ -1,0 +1,10 @@
+<workunit schemaName="waterworks_stubout" closeOnSave="true">
+    <invokers>
+        <invoker type="waterworks_stubout:create" formTitle="New Stubout" 
+                 action="create" target="popup"/>
+    </invokers>
+    <code class="com.rameses.seti2.models.CrudFormModel"/>
+    <pages>
+       <page template="com.rameses.gov.etracs.waterworks.views.NewStuboutPage"/>
+    </pages>
+</workunit>

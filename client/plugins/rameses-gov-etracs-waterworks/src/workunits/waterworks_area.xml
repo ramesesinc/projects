@@ -1,7 +1,7 @@
 <workunit schemaName="waterworks_area">
     <invokers>
-        <invoker type="waterworks_area:create" caption="Reading Group" action="create" target="popup" srole="MASTER"/>
-        <invoker type="waterworks_area:open" caption="Reading Group" action="open" target="popup" srole="MASTER"/>
+        <invoker type="waterworks_area:create" caption="Waterworks Area" action="create" target="popup" srole="MASTER"/>
+        <invoker type="waterworks_area:open" caption="Waterworks Area" action="open" target="popup" srole="MASTER"/>
     </invokers>
     <code class="com.rameses.seti2.models.CrudFormModel"/>
     <pages>

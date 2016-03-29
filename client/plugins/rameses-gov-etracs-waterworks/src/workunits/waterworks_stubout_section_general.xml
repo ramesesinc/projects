@@ -1,0 +1,34 @@
+<workunit schemaName="waterworks_stubout">
+    <invokers>
+        <invoker type="waterworks_stubout:section" caption="General Information" index="-30"/>
+        
+        <invoker type="formActions" caption="Edit" action="edit" visibleWhen="#{mode=='read'}"/>
+        
+    </invokers>
+    <code>
+    <![CDATA[ 
+import com.rameses.rcp.annotations.*;
+import com.rameses.rcp.common.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.common.*;
+
+public class StuboutSectionGeneralModel  {
+
+    @Caller 
+    def caller;
+
+    def title = 'General Information'; 
+    
+    def getEntity() {
+        return caller?.entity; 
+    }
+    def getMode() {
+        return caller?.mode; 
+    }
+}    
+    ]]> 
+    </code>
+    <pages>
+       <page template="com.rameses.gov.etracs.waterworks.views.StuboutGeneralPage"/>
+    </pages>
+</workunit>

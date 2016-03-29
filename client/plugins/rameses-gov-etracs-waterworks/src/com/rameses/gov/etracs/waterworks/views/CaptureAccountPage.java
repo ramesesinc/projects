@@ -161,7 +161,7 @@ public class CaptureAccountPage extends javax.swing.JPanel {
         xComboBox2.setCaption("Last Reading Month");
         xComboBox2.setExpression("#{item.name}");
         xComboBox2.setItemKey("index");
-        xComboBox2.setItems("months");
+        xComboBox2.setItems("listTypes.months");
         xComboBox2.setName("entity.lastreadingmonth"); // NOI18N
         xComboBox2.setPreferredSize(new java.awt.Dimension(150, 20));
         xComboBox2.setRequired(true);

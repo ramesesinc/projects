@@ -32,13 +32,13 @@ class ProvinceSubdivisionWorkflowInterceptor
 	}
 
 	void doNotifyMunicipality(subdivision){
-		if (subdivision.originlguid.replaceAll('-.*?','') != env.ORGID.replaceAll('-.*?', '')){
-			// notify municipality of the approve subdivision
-			notifyMunicipality(subdivision)
-		}
-		else {
+		if (isSubdivisionFromProvince(subdivision)){
 			//post province created subdivision to municipality
 			postSubdivisionToMunicipality(subdivision)
+		}
+		else {
+			// notify municipality of the approve subdivision
+			notifyMunicipality(subdivision)
 		}
 	}
 
@@ -47,13 +47,28 @@ class ProvinceSubdivisionWorkflowInterceptor
 		subdivision.tasks = taskEm.getTasks(subdivision)
 		supportSvc.buildFaasesData(subdivision)
 		def asyncreq = svc.createAsyncRequest('MunicipalitySubdivisionRemoteCallHandler', 'approveSubdivisionByProvince',  subdivision)
-		svc.sendAsyncMessage(asyncreq[0], subdivision.lguid)
+		def msg = svc.createAsyncMessage(asyncreq[0], subdivision.lguid)
+		msg.filetype = 'subdivision'
+		msg.messagetype = 'subdivision-prov-approved'
+		msg.txnid = subdivision.objid 
+		msg.txnno = subdivision.txnno 
+		svc.sendMessage(msg)
 	}
 
 	void postSubdivisionToMunicipality(subdivision){
 		println 'Post subdivision to municipality....'
 		def data = supportSvc.buildSubdivisionData(subdivision)
 		def asyncreq = svc.createAsyncRequest('MunicipalitySubdivisionRemoteCallHandler', 'postApprovedSubdivisionFromProvince',  data)
-		svc.sendAsyncMessage(asyncreq[0], subdivision.lguid)
+		def msg = svc.createAsyncMessage(asyncreq[0], subdivision.lguid)
+		msg.filetype = 'subdivision'
+		msg.messagetype = 'subdivision-prov-created'
+		msg.txnid = subdivision.objid 
+		msg.txnno = subdivision.txnno 
+		svc.sendMessage(msg)
 	}
+
+	def isSubdivisionFromProvince(subdivision){
+		return subdivision.originlguid.replaceAll('-.*?','') == env.ORGID.replaceAll('-.*?', '')
+	}
+
 }

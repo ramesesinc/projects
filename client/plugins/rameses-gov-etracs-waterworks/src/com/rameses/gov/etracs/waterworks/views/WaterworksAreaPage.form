@@ -91,10 +91,16 @@
                 <Property name="required" type="boolean" value="true"/>
               </Properties>
             </Component>
-            <Component class="com.rameses.rcp.control.XDateField" name="xDateField1">
+            <Component class="com.rameses.rcp.control.XTextField" name="xTextField2">
               <Properties>
-                <Property name="caption" type="java.lang.String" value="Due Date"/>
-                <Property name="name" type="java.lang.String" value="entity.duedate" noResource="true"/>
+                <Property name="caption" type="java.lang.String" value="Zone"/>
+                <Property name="name" type="java.lang.String" value="entity.zone" noResource="true"/>
+              </Properties>
+            </Component>
+            <Component class="com.rameses.rcp.control.XTextField" name="xTextField3">
+              <Properties>
+                <Property name="caption" type="java.lang.String" value="Sector"/>
+                <Property name="name" type="java.lang.String" value="entity.sector" noResource="true"/>
               </Properties>
             </Component>
           </SubComponents>

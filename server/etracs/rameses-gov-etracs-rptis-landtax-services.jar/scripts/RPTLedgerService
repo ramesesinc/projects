@@ -596,7 +596,7 @@ class RPTLedgerService
     @ProxyMethod
     public def postLedgerFaas( ledgerfaas ) {
         def ledgerfaases = getLedgerFaases(ledgerfaas.rptledgerid)
-        def latestledgerfaas = ledgerfaases.find{it.toyear == 0}
+        def latestledgerfaas = ledgerfaases.first()
         if (latestledgerfaas) {
             if (latestledgerfaas.fromyear == ledgerfaas.fromyear && latestledgerfaas.fromqtr == ledgerfaas.fromqtr){
                 latestledgerfaas.state = STATE_CANCELLED 

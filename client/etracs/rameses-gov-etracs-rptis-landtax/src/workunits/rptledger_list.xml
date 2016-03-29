@@ -31,7 +31,7 @@
             Column[] getColumns(){
                 return [
                     new Column(name:"state", caption:"State", width:80),
-                    new Column(name:"tdno", caption:"TD No.", width:100),
+                    new Column(name:"tdno", caption:"TD No.", width:140),
                     new Column(name:"taxpayer.name", caption:"Owner Name", width:250),
                     new Column(name:"administrator.name", caption:"Administrator", width:250),
                     new Column(name:"fullpin", caption:"PIN", width:150),

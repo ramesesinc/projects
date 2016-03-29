@@ -867,3 +867,7 @@ set
 	rli.firecode = x.firecode
 where rli.rptledgerid = $P{rptledgerid}
   and rli.objid = x.rptledgeritemid 
+
+
+[findLedgerFaasById]
+select objid from rptledgerfaas where objid = $P{objid}

@@ -59,7 +59,7 @@ class FAASSupportService
 		faasdata.tasks = faasSvc.getTasks(faas)
 		faasdata.signatory = faasSvc.findSignatory(faas)
 		return faasdata 
-	}
+	} 
 
 	@ProxyMethod
 	public void saveFaasData( faasdata ) {
@@ -78,13 +78,27 @@ class FAASSupportService
 
 		faasdata.tasks.each{
 			taskEm.save(it)
-			faasSvc.updateSignatoryInfo(it)
 		}
 
 		faasSvc.saveSignatory(faasdata.signatory)
 
 		saveImageData(faasdata)
 	}
+
+
+	@ProxyMethod
+	public def getApprovedFaasData( faas ) {
+		def faasdata = faasSvc.openFaas(faas)
+		faasdata.rpu.rpumaster = rpuSvc.openRpuMaster(faas.rpu)
+		faasdata.taxpayer = entitySvc.open(faas.taxpayer)
+		faasdata.tasks = em.getApproverTasks(faas)
+		faasdata.signatory = faasSvc.findSignatory(faas)
+		return faasdata 
+	}
+
+
+
+
 
 	@ProxyMethod
 	public def getImageByIds(imageids){

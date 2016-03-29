@@ -1,0 +1,82 @@
+
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.services.extended.*;
+
+public class RPTISTestConsolidationService
+{
+	@Env 
+	def env 
+
+	@ActiveDB('rptis_test')
+	def em 
+
+	@Service('ConsolidationService')
+	def consolidationSvc 
+
+	@Service('RPTISTestFAASService')
+	def faasTestSvc 
+
+    @Service('RPTISTestLedgerService')
+    def ledgerTestSvc
+
+
+	
+	@Service('RPTISUnitTestService')
+	def test
+
+    @Service('RPTRequirementService')
+    def reqSvc 
+
+    @Service('FAASService')
+    def faasSvc 
+
+
+
+	@ProxyMethod
+    public def getConsolidationForTesting( consolidation ) {
+        consolidation += consolidationSvc.openConsolidation(consolidation.objid)
+        consolidation.consolidatedlands = consolidationSvc.getConsolidatedLands(consolidation.objid)
+        consolidation.affectedrpus = consolidationSvc.getAffectedRpus(consolidation.objid)
+        consolidation.tasks = consolidationSvc.getTasks(consolidation)
+        consolidation.requirements = reqSvc.getRequirements(consolidation.objid)
+
+        consolidation.faases = []
+        consolidation.faases << faasSvc.openFaas([objid:consolidation.newfaasid])
+        consolidation.affectedrpus.each{
+            consolidation.faases << faasSvc.openFaas([objid:it.newfaasid])
+        }
+        return consolidation
+    }
+
+
+	@ProxyMethod
+	public def testApprovedConsolidation( consolidation ) {
+		consolidation += consolidationSvc.openConsolidation(consolidation.objid)    
+        test.testEqual('consolidation.state', consolidation.state, 'APPROVED')
+
+        def tasks = em.getConsolidationTasks(consolidation)
+		test.testNotEmpty('consolidation.tasks', tasks)
+		def opentasks = tasks.findAll{it.enddate == null}
+		test.testEmpty('consolidation.opentasks', opentasks)
+		def approvertask = tasks.find{it.state.matches('approver|provapprover')}
+		test.testNotNull('consolidation.approvertask', approvertask)
+
+        def faas = faasSvc.openFaas([objid:consolidation.newfaasid])
+        faasTestSvc.testApprovedFaas(faas)
+
+        consolidationSvc.getConsolidatedLands(consolidation.objid).each{
+        	faas = [objid:it.landfaasid]
+        	faasTestSvc.testCancelledFaas(faas)
+        }
+
+        consolidationSvc.getAffectedRpus(consolidation.objid).each{
+        	faas = faasSvc.openFaas([objid:it.newfaasid])
+        	faasTestSvc.testApprovedFaas(faas)	
+        }
+        return '[province] Approved consolidation tested.'
+	
+	}
+
+}

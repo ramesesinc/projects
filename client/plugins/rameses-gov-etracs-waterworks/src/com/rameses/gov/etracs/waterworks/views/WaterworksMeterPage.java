@@ -36,8 +36,8 @@ public class WaterworksMeterPage extends javax.swing.JPanel {
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
         xTextField1 = new com.rameses.rcp.control.XTextField();
         xTextField2 = new com.rameses.rcp.control.XTextField();
-        xComboBox1 = new com.rameses.rcp.control.XComboBox();
         xTextField4 = new com.rameses.rcp.control.XTextField();
+        xComboBox1 = new com.rameses.rcp.control.XComboBox();
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder1.setTitle("Meter Information");
@@ -57,20 +57,18 @@ public class WaterworksMeterPage extends javax.swing.JPanel {
         xTextField2.setRequired(true);
         xFormPanel1.add(xTextField2);
 
-        xComboBox1.setCaption("Size");
-        xComboBox1.setExpression("#{item.title}");
-        xComboBox1.setItemKey("objid");
-        xComboBox1.setItems("listTypes.size");
-        xComboBox1.setName("entity.sizeid"); // NOI18N
-        xComboBox1.setPreferredSize(new java.awt.Dimension(150, 20));
-        xComboBox1.setRequired(true);
-        xFormPanel1.add(xComboBox1);
-
         xTextField4.setCaption("Capacity");
         xTextField4.setName("entity.capacity"); // NOI18N
         xTextField4.setPreferredSize(new java.awt.Dimension(200, 20));
         xTextField4.setRequired(true);
         xFormPanel1.add(xTextField4);
+
+        xComboBox1.setCaption("Size");
+        xComboBox1.setExpression("#{item.title}");
+        xComboBox1.setItems("listTypes.size");
+        xComboBox1.setName("entity.size"); // NOI18N
+        xComboBox1.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel1.add(xComboBox1);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);

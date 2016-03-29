@@ -16,6 +16,7 @@ WHERE s.lguid LIKE $P{lguid}
    		 OR motherpins LIKE $P{searchtext}
    	)
 	${filters}
+order by s.txnno desc 	
 
 
 [findSubdivisionById]

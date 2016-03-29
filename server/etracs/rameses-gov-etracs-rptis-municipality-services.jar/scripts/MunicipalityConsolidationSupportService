@@ -17,6 +17,8 @@ class MunicipalityConsolidationSupportService
     public void submitToProvince( consolidationdata ) {
         def asyncreq    = svc.createAsyncRequest('ProvinceConsolidationRemoteService', 'postConsolidationForApproval', consolidationdata, svc.buildEnvMap(env))
         def msg         = svc.createAsyncMessage(asyncreq[0])
+        msg.txnid       = consolidationdata.objid
+        msg.txnno       = consolidationdata.txnno 
         msg.groupid     = 'assign-receiver'
         msg.filetype    = consolidationdata.filetype
         msg.message     = 'Consolidation No. ' + consolidationdata.txnno + ' (assign-receiver)'
@@ -37,6 +39,8 @@ class MunicipalityConsolidationSupportService
         def data        = supportSvc.buildRequirementsData(consolidation)
         def asyncreq    = svc.createAsyncRequest('ProvinceConsolidationRemoteService', 'repostConsolidationRequirements', data, svc.buildEnvMap(env))
         def msg         = svc.createAsyncMessage(asyncreq[0])
+        msg.txnid       = consolidation.objid
+        msg.txnno       = consolidation.txnno 
         msg.message     = 'Repost Consolidation No. ' + consolidation.txnno + ' requirements.'
         msg.messagetype = 'consolidation-repost-requirements'
         svc.sendAsyncMessage(msg)

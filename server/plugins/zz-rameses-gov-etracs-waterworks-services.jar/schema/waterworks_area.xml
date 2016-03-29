@@ -4,6 +4,8 @@
 		<field name="title" required="true" indexed="true" caption="Title"/>
 		<field name="assignee_objid" required="true" caption="Assignee ID" visible="false"/>
 		<field name="assignee_name" required="true" caption="Assignee Name"/>
-		<field name="duedate" required="true" caption="Due Date" type="date"/>
+		
+		<field name="zone" caption="Zone"/>
+		<field name="sector" caption="Sector"/>
 	</element>
 </schema>

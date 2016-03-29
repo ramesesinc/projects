@@ -1,0 +1,231 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.services.extended.*;
+
+public class RPTISMunicipalityTestConsolidationService
+{
+    @Env 
+    def env 
+
+    @ActiveDB('rptis_test')
+    def em 
+
+    @Service('RPTISUnitTestService')
+    def test
+
+    @Service('RPTISTestFAASDataService')
+    def dataSvc
+
+    @Service('RPTISTestHelperService')
+    def helper 
+
+    @Service('RPTISTestFAASService')
+    def faasTestSvc
+
+
+    @Service('ConsolidationService')
+    def consolidationSvc 
+
+    @Service('RPTISTestConsolidationService')
+    def consolidationTestSvc
+
+    @Service('FAASService')
+    def faasSvc 
+
+    @Service('ConsolidationWorkflowService')
+    def workflowSvc    
+
+    @Service('ExaminationService')
+    def examSvc 
+
+    @Service('EntityLookupService')
+    def entityLookup
+
+    @Service('RPTLedgerService')
+    def ledgerSvc 
+
+    @Service('RPTISTestLedgerService')
+    def ledgerTestSvc
+
+    @Service('RPTUtil')
+    def util 
+
+    @Service('LGUService')
+    def lguSvc 
+
+
+
+    String LGUID = '063-06'
+    String BRGYID = '063-06-0001'
+
+
+    @ProxyMethod
+    public def createConsolidation(info) {
+        def consolidation = consolidationSvc.initConsolidation()
+        def entity = [
+            ry          : consolidation.ry,
+            rputype     : 'land',
+            suffix      : 0,
+            lgu         : lguSvc.lookupMunicipalityById(LGUID),
+            barangay    : lguSvc.lookupBarangayById(BRGYID),
+            isuffix     : 0,
+            isection    : info.isection,
+            iparcel     : info.iparcel,
+            txntype     : consolidation.txntype,
+            pintype     : consolidation.pintype,
+        ]
+        util.buildPin(entity)
+        consolidation._info = entity
+        consolidation.memoranda = 'CONSOLIDATION TEST'
+        return consolidationSvc.createConsolidation(consolidation)
+    }
+
+    @ProxyMethod
+    public void deleteConsolidation(task) {
+    	helper.openTask(workflowSvc, task)
+    	consolidationSvc.deleteConsolidation(task.data)	
+    }
+
+
+    @ProxyMethod
+    public void submitToProvince( task ) {
+    	helper.openTask(workflowSvc, task)
+    	def consolidation = task.data 
+        consolidationSvc.initApproveConsolidation(consolidation)
+        consolidationSvc.assignNewTdNos(consolidation)
+        consolidationSvc.submitToProvinceConsolidation(consolidation)
+		helper.signal(workflowSvc, task, 'completed', false)
+    }
+
+
+    @ProxyMethod
+    public def getConsolidationForTesting( consolidation ) {
+        return consolidationTestSvc.getConsolidationForTesting(consolidation)
+    }
+
+
+    @ProxyMethod
+    public def testApprovedConsolidation( consolidation ) {
+        consolidationTestSvc.testApprovedConsolidation(consolidation)
+
+        def ledger = [objid:consolidation.newfaasid]
+        ledgerTestSvc.testApprovedLedger(ledger)
+
+        consolidationSvc.getAffectedRpus(consolidation.objid).each{
+            def faas = faasSvc.openFaas([objid:it.newfaasid])
+            faasTestSvc.testApprovedLedgerFromFaas(faas)  
+        }
+        return '[municipality] Province APPROVED consolidation tested.'
+    }
+
+
+
+    /*==============================================================
+    * WORKFLOW SUPPORT 
+    ==============================================================*/
+    @ProxyMethod
+    public def assignToMe( task ) {
+        return helper.signal(workflowSvc, task, null, true)    
+    }
+
+
+    @ProxyMethod
+    public def doReceive(task){
+    	helper.openTask(workflowSvc, task)
+        def consolidation = task.data 
+        em.setRequirementsAsComplied(consolidation)
+        return helper.signal(workflowSvc, task, 'submit', true)
+    }
+
+
+    @ProxyMethod
+    public def doExamination(task){
+        task += assignToMe(task)
+        def finding = dataSvc.createExaminationFinding(task.data)
+        examSvc.create(finding)
+        return helper.signal(workflowSvc, task, 'submit', true)
+    }    
+
+    @ProxyMethod
+    public def doReturnExaminer(task){
+        task += assignToMe(task)
+        return helper.signal(workflowSvc, task, 'returnexaminer', true)
+    }        
+
+    @ProxyMethod
+    public def doReturnReceiver(task){
+        return helper.signal(workflowSvc, task, 'returnreceiver', true)
+    }        
+
+
+    @ProxyMethod
+    public def doTaxmapping(task, faas1, faas2){
+        task += assignToMe(task)
+        def consolidation = task.data 
+
+        //add consolidated faas
+        def cland = createConsolidatedLand(consolidation, faas1)
+        consolidationSvc.validateConsolidatedLand(cland)
+        consolidationSvc.saveConsolidatedLand(cland)
+
+        cland = createConsolidatedLand(consolidation, faas2)
+        consolidationSvc.validateConsolidatedLand(cland)
+        consolidationSvc.saveConsolidatedLand(cland)
+
+        return helper.signal(workflowSvc, task, 'submit', true)
+    }    
+
+
+    @ProxyMethod
+    public def doTaxmappingApproval(task){
+        return helper.doTaxmappingApproval(workflowSvc, task)
+    }    
+
+
+    @ProxyMethod
+    public def doAppraisal(task){
+        task += assignToMe(task)
+        def consolidation = task.data 
+        appraiseFaas([objid:consolidation.newfaasid])
+        return helper.signal(workflowSvc, task, 'submit', true)
+    }    
+
+    @ProxyMethod
+    public def doAppraisalApproval(task){
+        return helper.doAppraisalApproval(workflowSvc, task)
+    }    
+
+    @ProxyMethod
+    public def doRecommender(task){
+        task += assignToMe(task)
+        return helper.signal(workflowSvc, task, 'submit', true)
+    }    
+
+
+     def createConsolidatedLand(consolidation, faas){
+        def cland = [:]
+        faas += faasSvc.openFaas(faas)
+        cland.objid = 'CL' + new java.rmi.server.UID()
+        cland.consolidationid = consolidation.objid
+        cland.txnno = consolidation.txnno
+        cland.txnno = consolidation.txnno
+        cland.faas = faas 
+        cland.rpuid = faas.rpuid 
+        cland.rpid = faas.realpropertyid
+        cland.landfaasid = faas.objid 
+        cland.rpu = faas.rpu 
+        return cland 
+     }
+
+     void appraiseFaas(faas){
+     	faas += faasSvc.openFaas(faas)
+     	def taxpayer = entityLookup.getList([searchtext:'c']).first()
+        taxpayer.address = taxpayer.address.text 
+        faas.taxpayer = taxpayer
+        faas.owner = [name:faas.taxpayer.name, address: faas.taxpayer.address]
+        dataSvc.buildLandRpuData(faas)
+        faasSvc.updateFaas(faas)
+     }
+
+}

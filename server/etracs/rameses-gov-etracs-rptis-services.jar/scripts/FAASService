@@ -328,6 +328,11 @@ class FAASService
 		return faas 
 	}
 
+	@ProxyMethod
+	public def approveFaasByMunicipality( faas ) {
+		return approveFaasByRemote(faas)
+	}	
+
 
 	@ProxyMethod
 	public def disapproveFaas( faas ) {
@@ -561,10 +566,11 @@ class FAASService
 			objid 		  	: util.generateId('F'),
 			state 		  	: STATE_INTERIM,
 			autonumber   	: util.toBoolean(var.td_autonumber, false),
-			prevav		  	: 0.0,
-			prevmv		  	: 0.0,
-			prevareaha      : 0.0,
-			prevareasqm     : 0.0,
+			prevav		  	: '0.00',
+			prevmv		  	: '0.00',
+			prevareaha      : '0.000000',
+			prevareasqm     : '0.00',
+			prevpin     	: info.fullpin,
 			effectivityyear : dtSvc.serverYear + 1,
 			effectivityqtr  : 1,
 			backtaxyrs		: 0,
@@ -573,11 +579,13 @@ class FAASService
 			datacapture     : false,
 			txntype 		: info.txntype,
 			lguid			: info.lgu.objid,
+			lgu 			: info.lgu,
 			taxpayer		: [:],
 			owner 			: [:],
 			administrator   : [:],
 			backtaxes       : [:],
 			previousfaases  : [:],
+			originlguid 	: env.ORGID,
 		]
 		return faas 
 	}
@@ -618,7 +626,7 @@ class FAASService
 	}
 
     void checkTxnReference(faas){
-		if (faas.previousfaases && ! faas.txntype.objid.matches('SD|CS')){
+		if (faas.previousfaases && ! faas.txntype.objid.matches('SD|CS') && (faas._checkTxnRef == null || faas._checkTxnRef == true)){
 			def prevfaasid = faas.previousfaases[0].prevfaasid
 			txnRef.checkReference(prevfaasid)
 		}
@@ -785,6 +793,7 @@ class FAASService
 		newfaas.utdno 			= null
 		newfaas.memoranda		= null
 		newfaas.lgutype 		= (newfaas.lgutype ? newfaas.lgutype : var.lgu_type)
+		newfaas.originlguid 	= env.ORGID
 		clearSignatoryInfo(newfaas)
 	}
 
@@ -855,8 +864,8 @@ class FAASService
 
     //to be intercepted by province/muni codes 
     @ProxyMethod
-    public def resendToMunicipality(subdivision){
-        return subdivision
+    public def resendToMunicipality(faas){
+        return faas
     }
 
     @ProxyMethod

@@ -22,23 +22,24 @@ class ProvinceFAASWorkflowInterceptor
 	public void resendToLguOnlineFaas( evt ) {
 		println 'Resend faas to municipality...'
 		def faas = evt.result
-		notifyMunicipality(faas)
+		if ( util.isTrue(faas.datacapture))
+			submitDataCapturedFaas(faas)
+		else
+			notifyMunicipalityOfOnlineApproval(faas)
 	}	
 
 
 	@After(pattern="FAASWorkflowService.signal", eval="#{args[0].state == 'approver' && args[0].action == 'approve'}") 
 	public void submitToLguOnlineFaas( evt ) {
-		println 'submitToLguOnlineFaas...'
 		def faas = evt.args[0].data;
 		faasSvc.approveFaas(faas)
-		notifyMunicipality(faas)
+		notifyMunicipalityOfOnlineApproval(faas)
 	}
 
-	@After(pattern="FAASService.approveFaas", eval="#{result.datacapture == 1 || result.datacapture == true}") 
+	@After(pattern="FAASService.approveFaas", eval="#{result.datacapture == 1 || result.datacapture==true}") 
 	public void submitToLguDataCaptureFaas( evt ) {
-		println 'submitToLguDataCaptureFaas....'
 		def faas = evt.result
-		notifyMunicipality(faas)
+		submitDataCapturedFaas(faas)
 	}
 
 	@After(pattern="ProvinceFAASService.disapproveFaas") 
@@ -53,13 +54,37 @@ class ProvinceFAASWorkflowInterceptor
 			disapprovedby: [objid:env.USERID, name:env.NAME]
 		]
 		def asyncreq = svc.createAsyncRequest('MunicipalityFAASRemoteCallHandler', 'disapproveFaasByProvince', disapproveinfo)
-		svc.sendAsyncMessage(asyncreq[0], faas.lguid)
+		svc.sendMessage(createAsyncMessage('prov-faas-disapprove-txn', asyncreq[0], faas))
 	}
 
-	void notifyMunicipality(faas){
-		println 'notify municipality....'
-		def asyncreq = svc.createAsyncRequest('MunicipalityFAASRemoteCallHandler', 'approveFaasByProvince',  supportSvc.getFaasData(faas))
-		svc.sendAsyncMessage(asyncreq[0], faas.lguid)
+
+	void submitDataCapturedFaas(faas){
+		println 'Submit data captured FAAS to municipality.'
+		def asyncreq = svc.createAsyncRequest('MunicipalityFAASRemoteCallHandler', 'postDataCapturedFaas',  supportSvc.getFaasData(faas))
+		svc.sendMessage(createAsyncMessage('prov-faas-datacaptured', asyncreq[0], faas))
+	}
+
+
+	void notifyMunicipalityOfOnlineApproval(faas){
+		def asyncreq = null;
+		if (faas.originlguid == env.ORGID){
+			asyncreq = svc.createAsyncRequest('MunicipalityFAASRemoteCallHandler', 'approveFaasByProvince',  supportSvc.getFaasData(faas))
+			svc.sendMessage(createAsyncMessage('prov-faas-online-txn', asyncreq[0], faas))
+			println 'Submit province online FAAS to municipality.'
+		}
+		else{
+			asyncreq = svc.createAsyncRequest('MunicipalityFAASRemoteCallHandler', 'postMunicipalFaasApprovedByProvince',  supportSvc.getApprovedFaasData(faas))
+			svc.sendMessage(createAsyncMessage('prov-faas-online-approval', asyncreq[0], faas))
+			println 'Submit online FAAS approval to municipality.'
+		}
+	}
+
+	def createAsyncMessage(messagetype, asyncreq, faas){
+		def msg = svc.createAsyncMessage(asyncreq, faas.lguid)
+		msg.messagetype =  messagetype 
+		msg.txnid = faas.objid
+		msg.txnno = faas.tdno 
+		return msg 
 	}
 
 }

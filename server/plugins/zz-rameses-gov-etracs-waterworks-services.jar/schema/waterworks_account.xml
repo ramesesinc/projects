@@ -5,11 +5,7 @@
 		<field name="dtstarted" required="false" indexed="true" type="date" caption="Date Started"/>
 		<field name="acctno" required="true" indexed="true" caption="Acct No"/>
 		<field name="acctname" required="true" indexed="true" caption="Acct Name"/>
-		<!--
-		<complex name="application" ref="waterworks_application" jointype="many-to-one" required="false"> 
-			<field name="applicationid" target="objid"/>
-		</complex>
-		-->
+
 		<field name="owner_objid" required="true" visible="false" caption="Owner ID"/>
 		<field name="owner_name" required="true" indexed="true" caption="Owner Name"/>
 		<field name="address_type" caption="Address Type" visible="false"/>
@@ -36,7 +32,6 @@
 			<key field="classificationid" target="objid"/>
 		</complex>	
 		
-
 		<field name="balance" required="true" indexed="true" type="decimal" caption="Balance"/>
 		<field name="lastreadingdate" required="true" indexed="true" type="date" caption="Last Reading Date"/>
 		<field name="lasttxndate" required="true" indexed="true" type="date" caption="Last Txn Date"/>
@@ -44,12 +39,6 @@
 		<field name="lastreadingyear" required="true" indexed="true" type="integer" caption="Last Reading Year"/>
 		<field name="lastreading" required="true" indexed="true" type="integer" caption="Last Reading"/>
 		<field name="prevreading" required="true" indexed="true" type="integer" caption="Previous Reading"/>
-
-		<!--
-		<complex name="stubout" ref="waterworks_account_stubout_link" jointype="many-to-one" required="false">
-			<key field="objid" target="acctid"/>
-		</complex>
-		-->
 		
 	</element>
 

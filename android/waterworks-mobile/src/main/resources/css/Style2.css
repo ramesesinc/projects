@@ -64,6 +64,7 @@
 .terminal-notice
 {
     -fx-background-color: yellow;
+    -fx-background-radius: 8px;
     -fx-font-size: 13px;
     -fx-border-width: 1px;
     -fx-border-color: grey;
@@ -361,7 +362,7 @@
 
 #size-text
 {
-    -fx-font-size: 30px;
+    -fx-font-size: 42px;
     -fx-font-weight: bold;
     -fx-fill: black;
 }
@@ -376,7 +377,7 @@
 .setting-text
 {
     -fx-font-family: "Tahoma";
-    -fx-font-size: 22px;
+    -fx-font-size: 15px;
     -fx-font-weight: bold;
     -fx-text-fill: black;
 }

@@ -136,9 +136,15 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
     @Override
     public void updateSetting(Setting s) {
         ERROR = "";
+        ContentValues values = new ContentValues();
+        values.put("name", s.getName());
+        values.put("value", s.getValue());
+        
+        String[] args = new String[]{ s.getName() };
+        
         SQLiteDatabase db = this.getWritableDatabase();
         try{
-            db.execSQL("UPDATE setting SET value = '"+s.getValue()+"' WHERE name = '"+s.getName()+"'");
+            db.update("setting", values, "name = ?", args);
         }catch(Exception e){
             e.printStackTrace();
             ERROR = "Database Error: " + e.toString();

@@ -65,7 +65,7 @@ public class Upload {
         textContainer.getChildren().addAll(size_text,record_text,new Separator());
         
         label = new Label("Uploading... Please wait...");
-        label.setStyle("-fx-font-size: 28px; -fx-padding: 10 0 0 0;");
+        label.setStyle(Main.HEIGHT > 700 ? "-fx-font-size: 28px; -fx-padding: 10 0 0 0;" : "-fx-font-size: 17px; -fx-padding: 7 0 0 0;");
         label.setVisible(false);
         
         progressbar = new ProgressBar();
@@ -156,8 +156,8 @@ public class Upload {
         
         upload = new Button("Upload");
         upload.getStyleClass().add("terminal-button");
-        upload.setStyle("-fx-font-size: 26px;");
-        upload.setPrefWidth(180);
+        upload.setStyle(Main.HEIGHT > 700 ? "-fx-font-size: 26px;" : "-fx-font-size: 17px;");
+        upload.setPrefWidth(Main.HEIGHT > 700 ? 180 : 100);
         if(uploadsize < 1){
             Dialog.showAlert("No data to upload!");
             upload.setText("Back");

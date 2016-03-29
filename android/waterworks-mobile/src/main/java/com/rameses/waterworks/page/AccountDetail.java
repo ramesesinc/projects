@@ -141,7 +141,7 @@ public class AccountDetail {
         root.getChildren().add(createDetail("Classification",account.getClassificationId()));
         List<ItemAccount> items = account.getItemList();
         for(ItemAccount a : items){
-            root.getChildren().add(createDetail(a.getAccount(),String.valueOf(a.getAmount())));
+            root.getChildren().add(createDetail(a.getAccount(),String.valueOf(a.getAmount()).replaceAll(" ", "")));
         }
         root.getChildren().add(createDetail("Amount Due",amtdue));
         root.getChildren().add(createDetail("TOTAL DUE",totaldue));

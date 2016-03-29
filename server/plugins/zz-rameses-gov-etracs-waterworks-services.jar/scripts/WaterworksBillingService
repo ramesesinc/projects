@@ -16,7 +16,6 @@ class WaterworksBillingService  {
 	@DataContext("collectiontype_account")
 	def colTypeAcct;
 
-
 	@Service("DateService")
 	def dateSvc;
 
@@ -37,16 +36,6 @@ class WaterworksBillingService  {
 		facts << new EffectiveDate( currDate );
 		facts << new CurrentDate(currDate);
 		facts << new BillDate((!o?.billdate)?currDate:o?.billdate);
-	}
-
-	def buildActions(def res) {
-		def ra = new RuleAction();
-		ra.addCommand( "set-duedate", new SetDueDate(res: res)); 
-		ra.addCommand( "set-billitem-duedate", new SetBillItemDueDate(res: res)); 
-		ra.addCommand( "compute-discount", new ComputeDiscount(res: res)); 
-		ra.addCommand( "compute-surcharge", new ComputeSurcharge(res:res));
-		ra.addCommand( "compute-interest", new ComputeInterest(res:res));
-		return ra;
 	}
 
 	//find the waterworks account by acctno or by objid
@@ -83,14 +72,9 @@ class WaterworksBillingService  {
 
 	@ProxyMethod
 	public def processBilling( def feeList ) {
-		
-		//setup resource  
-		def res = [:];
-		res.billItemList = new BillItemList();
 
 		def itemAcct = findItemAccount( [tag: 'BASIC' ] ); 
 		
-
 		//build the facts   
 		def facts = [];
 		feeList.each {
@@ -111,15 +95,12 @@ class WaterworksBillingService  {
 			facts.add( bi );
 		}
 		buildBillingFacts( facts, null );
-		def zactions = buildActions(res);	
 
-		ruleSvc.execute( "waterworksbilling", facts, zactions, null );
-		def list = res.billItemList.buildBillItems();
-
-		return list;
+		def res = ruleSvc.execute( "waterworksbilling", facts, null, null );
+		if( res.billItemList)
+			throw new Exception("No compute fee rules executed");
+		return res.billItemList.buildBillItems();
 	}
-
-
 
 
 	/***********************************************************************
@@ -137,10 +118,6 @@ class WaterworksBillingService  {
 
 		def itemAcct = findItemAccount( [tag: 'BASIC' ] ); 
 		
-		//setup resource  
-		def res = [:];
-		res.billItemList = new BillItemList();
-
 		//build the facts   
 		def facts = [];
 		facts << new WaterAccount(app);
@@ -156,12 +133,11 @@ class WaterworksBillingService  {
 			bi.amount = it.amount - it.amtpaid;
 			bi.amtdue = bi.amount;
 			bi.sortorder = (it.year*100)+it.month;
-			res.billItemList.addItem( bi );
+			facts << bi;
 		}
-		facts.addAll( res.billItemList.items ); 
 		
 		buildBillingFacts( facts, o );
-		def actions = buildActions(res);
+		
 
 		//check if there is payment option, use this handler 
 		//if the payoption is partial
@@ -181,7 +157,7 @@ class WaterworksBillingService  {
 			}
 		}
 
-		ruleSvc.execute( "waterworksbilling", facts, actions, handler );
+		def res = ruleSvc.execute( "waterworksbilling", facts, null, handler );
 		app.billitems = res.billItemList.buildBillItems();
 		app.items = res.billItemList.buildReceiptItems();
 		app.amount = app.items.sum{ it.amount };
@@ -189,20 +165,6 @@ class WaterworksBillingService  {
 		return app;
 	}
 
-	@ProxyMethod
-	def getBillingForMobile(def acct){
-		return [
-			month       : 2,
-			year        : 2016,
-			penalty     : 0.00,
-			othercharge : 0.00,
-			period      : "01/03/2016 - 02/08/2016",
-			duedate     : "02/20/2016",
-			discodate   : "02/28/2016",
-			rundate     : "02/12/2016"
-		];
-	}
-	
 	@ProxyMethod
 	def generateReportData(def entity){
 		def billing = [

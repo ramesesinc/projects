@@ -1,23 +1,69 @@
 import com.rameses.annotations.*;
 import com.rameses.util.*;
-import java.rmi.server.*;
-import com.rameses.services.extended.*;
 
-/***********************************************************************
-* This is a generic workflow service. 
-* The em is a dynamic active db. pass the name of the workflow instance
-* workflow instance must have the standard field names
-************************************************************************/
-class WorkflowTaskListService extends ActiveListService {		
 
-	@ActiveDB("wf")
-	def em;
+class WorkflowTaskListService  {		
 
-	String listMethod = "getTaskListByRef"
+	@Service("QueryService")
+	def querySvc;
 
-	public void beforeList(o) {
-		o.taskTablename = o.processname + "_task";
-	}
+    @DataContext("sys_wf_node")
+    def wfNode;
+
+    @Env 
+    def env;
+
+    @ProxyMethod
+    public def getNodeList( def o ) {
+        if(!o.processname) throw new Exception("processname is required");
+        def nodes = [];
+        nodes << [title:'My Tasks', name:'mytask'];
+        wfNode.find( [processname: o.processname] ).where("nodetype = 'state'").orderBy("idx").list().each {
+            nodes << [title: it.title, name: it.name]
+        }
+        nodes << [title:'Completed', name:'end'];
+        return nodes;
+    }
+
+    @ProxyMethod
+    public def getList( def o ) {
+        def cols = "taskid,refid,startdate,assignee.name,message";
+        if(o.select) cols += "," + o.select;
+
+        o.select = cols;
+
+        if(o.node?.name) {
+            def s = null;
+            def p = [:];
+            switch(o.node.name) {
+                case 'all':
+                    break;
+
+                case 'end':
+                    s = "state='end' AND NOT( enddate IS NULL)";
+                    break;
+
+                case 'mytask': 
+                    s = "enddate IS NULL AND (assignee.objid IS NULL OR assignee.objid=:assignee)";
+                    p.assignee = env.USERID;
+                    break;    
+
+                default:
+                    s = "state=:state AND enddate IS NULL ";
+                    p.state = o.node.name;
+                    
+            }
+            if( !o.where ) {
+                o.where = [s,  p ];
+            }
+            else {
+                o.where[0] = s + " AND " + o.where[0];
+                o.where[1] = p + o.where[1];
+            }
+        }
+        return querySvc.getList(o);    
+    }
 
 
 }
+

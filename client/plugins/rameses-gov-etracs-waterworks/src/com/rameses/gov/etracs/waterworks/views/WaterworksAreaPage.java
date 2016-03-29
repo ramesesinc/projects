@@ -34,7 +34,8 @@ public class WaterworksAreaPage extends javax.swing.JPanel {
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
         xTextField1 = new com.rameses.rcp.control.XTextField();
         xLookupField1 = new com.rameses.rcp.control.XLookupField();
-        xDateField1 = new com.rameses.rcp.control.XDateField();
+        xTextField2 = new com.rameses.rcp.control.XTextField();
+        xTextField3 = new com.rameses.rcp.control.XTextField();
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder1.setTitle("  General Information  ");
@@ -56,9 +57,13 @@ public class WaterworksAreaPage extends javax.swing.JPanel {
         xLookupField1.setRequired(true);
         xFormPanel1.add(xLookupField1);
 
-        xDateField1.setCaption("Due Date");
-        xDateField1.setName("entity.duedate"); // NOI18N
-        xFormPanel1.add(xDateField1);
+        xTextField2.setCaption("Zone");
+        xTextField2.setName("entity.zone"); // NOI18N
+        xFormPanel1.add(xTextField2);
+
+        xTextField3.setCaption("Sector");
+        xTextField3.setName("entity.sector"); // NOI18N
+        xFormPanel1.add(xTextField3);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -96,9 +101,10 @@ public class WaterworksAreaPage extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanel1;
-    private com.rameses.rcp.control.XDateField xDateField1;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XLookupField xLookupField1;
     private com.rameses.rcp.control.XTextField xTextField1;
+    private com.rameses.rcp.control.XTextField xTextField2;
+    private com.rameses.rcp.control.XTextField xTextField3;
     // End of variables declaration//GEN-END:variables
 }

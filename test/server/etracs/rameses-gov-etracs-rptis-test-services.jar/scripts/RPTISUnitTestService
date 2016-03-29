@@ -1,0 +1,68 @@
+import com.rameses.annotations.*;
+import com.rameses.common.*;
+
+public class RPTISUnitTestService
+{
+	@Service('RPTUtil')
+	def util
+
+
+	@ProxyMethod
+	public void testEqual(caption, value, expectedvalue){
+		if (value != expectedvalue){
+			throw new Exception('TestEqual ' + caption + ':  Value => ' + value + ' Expected => ' + expectedvalue)
+		}
+	}
+
+	@ProxyMethod
+	public void testNotEqual(caption, value, expectedvalue){
+		if (value == expectedvalue){
+			throw new Exception('TestNotEqual ' + caption + ':  Value => ' + value + ' Expected => ' + expectedvalue)
+		}
+	}
+
+
+	@ProxyMethod
+	public void testNull(caption,  expectedvalue){
+		if (expectedvalue != null){
+			throw new Exception('TestNull: ' + caption + ' is NOT NULL')
+		}
+	}
+
+	@ProxyMethod
+	public void testNotNull(caption, expectedvalue){
+		if (expectedvalue == null){
+			throw new Exception('TestNotNull: ' + caption + ' is NULL')
+		}
+	}
+
+	@ProxyMethod
+	public void testEmpty(caption, listvalue){
+		if (listvalue != null && (listvalue instanceof List) && listvalue.size() != 0){
+			throw new Exception('TestEmpty: ' + caption + ' is NOT EMPTY.')
+		}
+	}
+
+	@ProxyMethod
+	public void testNotEmpty(caption, listvalue){
+		if (listvalue != null && (listvalue instanceof List) && listvalue.size() == 0){
+			throw new Exception('TestNotEmpty: ' + caption + ' is EMPTY.')
+		}
+	}
+
+	@ProxyMethod
+	public void testTrue(caption, expectedvalue){
+		def value = util.toBoolean(expectedvalue, false)
+		if (value == false){
+			throw new Exception('TestTrue: ' + caption + ' is FALSE')
+		}
+	}
+
+	@ProxyMethod
+	public void testFalse(caption, expectedvalue){
+		def value = util.toBoolean(expectedvalue, true)
+		if (value == false){
+			throw new Exception('TestTrue: ' + caption + ' is TRUE')
+		}
+	}
+}

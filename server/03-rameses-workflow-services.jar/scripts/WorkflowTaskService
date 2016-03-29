@@ -1,0 +1,144 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+
+
+class WorkflowTaskService  {		
+
+	@DataContext(dynamic=true)
+	def db;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@DataContext("sys_wf_node")
+	def wfNode;
+
+	@DataContext("sys_wf_transition")
+	def wfTransitions;
+
+	@Env
+	def env;
+
+	@Service
+	def self;
+
+    @ProxyMethod
+	public def start( def r ) {
+		if( !r.refid ) throw new Exception("refid is required in WorkflowService.start");
+		if( !r.processname ) throw new Exception("processname is required  in SysWorkflowService.start");
+		
+
+		//check first if there is already the same refid at start 
+		def em = db.lookup( r.processname +"_task" );
+		
+
+		r.prevstate = 'start';
+		def t = findNextTransition( r );
+		r.state = t.to;
+
+		//check before inserting if a state already exists
+		def z = em.select("taskid").find( [refid: r.refid, state:r.state] ).first();
+		if(z) throw new Exception("The reference already has a task associated for it");
+
+		def ti = createTaskInstance( r );
+		return findTask( [taskid: ti.taskid, processname: r.processname ] )
+    }
+
+    private def createTaskInstance( r ) {
+    	def em = db.lookup( r.processname +"_task" );
+        if(!r.refid)
+            throw new Exception("createTaskInstance error. refid is required");
+    	def t = [:];
+    	t.putAll( r );
+        t.taskid = null;    //we must recreate the id.
+    	t.startdate = dateSvc.getServerDate();
+    	t.actor = null;
+    	t = em.create(t);
+    	return t;
+    }
+
+    private closeTaskInstance( r ) {
+		def em = db.lookup( r.processname +"_task" );
+ 		def m = [:];
+ 		m.enddate = dateSvc.getServerDate();
+ 		m.actor = [objid:env.USERID, name:env.FULLNAME];
+ 		em.find([taskid: r.taskid]).update( m );
+    }
+
+    private def findNextTransition( def r ) {
+    	def transitions = wfTransitions.find( [processname: r.processname, parentid: r.prevstate ]).list();
+    	if(transitions.size() == 1 ) return transitions[0];
+    	for(t in transitions ) {
+    		if( r.action &&  (r.action!=t.action) ) continue;
+    		return t;
+    	}
+    	throw new Exception("Next transition not found!");
+    }
+
+    @ProxyMethod
+    public def findTask( def r ) {
+    	def em = db.lookup( r.processname +"_task" );
+    	def ti = em.select("taskid,startdate,state,prevtaskid,assignee.*").find( [taskid: r.taskid ]).first(); 
+    	if(!ti) throw new Exception("Task not found for " + r.taskid);
+    	ti += wfNode.select("title,domain,role").find( [name:ti.state, processname: r.processname] ).first();
+    	ti.transitions = wfTransitions.select("action,to,idx,eval,properties,permission")
+    			.find( [processname: r.processname, parentid: ti.state ]).list();
+        ti.transitions.each {
+            if(it.properties) it.properties = em.serializer.read( it.properties );
+            def action = it.action;
+            if(action?.startsWith("revert")) {
+                int idx = action.indexOf("_");
+                String returnState = null;
+                if( idx > 0 ) returnState = action.substring(idx+1);
+                it.assignee = findReturnSender( em, returnState, ti.prevtaskid );       
+            }
+            else {
+                //find the next state in the transition and the role
+                def z = wfNode.select("domain,role").find( [name:it.to, processname: r.processname] ).first();
+                it.domain = z.domain;
+                it.role = z.role;
+            }
+        }   
+		return ti;
+    }
+
+    //this will find each until it reaches the state
+    private def findReturnSender( def em, def state, def prevTaskId ) {
+        if( !prevTaskId ) return null;
+        def g = em.select("state, actor.*,prevtaskid").find([taskid: prevTaskId]).first();
+        if(!g) return null;
+        if( state == null ) {
+            return g.actor;
+        }    
+        if( g.state == state ) {
+            return g.actor;
+        }
+        return findReturnSender( em, state, g.prevtaskid );
+    }
+ 
+ 	@ProxyMethod
+ 	public def signal( def t ) {
+       
+        if(!t.processname) throw new Exception("processname is required for signal");
+ 		if(!t.taskid) throw new Exception("taskid is required for signal");
+ 		if(!t.action && !t.to) throw new Exception("Action or to state is required in signal");
+
+ 		def em = db.lookup( t.processname +"_task" );
+ 		def tsk = em.select("enddate,state,refid").find( [taskid: t.taskid] ).first(); 
+ 		if( tsk.enddate ) throw new Exception("This task has already ended");
+
+ 		//close the task
+ 		closeTaskInstance( [processname:t.processname, taskid: t.taskid] );
+
+        //find next transition:
+        def m = [processname: t.processname, prevstate: tsk.state, action:t.action, to:t.to, refid: tsk.refid];
+        def trans = findNextTransition( m );
+        m.state = trans.to;        
+        m.assignee = t.assignee;
+        m.prevtaskid = t.taskid;
+        m.message = t.message;
+        def ti = createTaskInstance( m );
+        return findTask( [taskid: ti.taskid, processname: t.processname ] )
+ 	}
+
+}

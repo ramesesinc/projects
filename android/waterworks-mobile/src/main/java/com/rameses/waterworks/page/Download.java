@@ -143,10 +143,10 @@ public class Download {
                 }
                 
                 //STORE THE READING GROUPS, STUBOUTS, STUBOUT_ACCOUNTS
-                clearReadingGroups();
+                clearArea();
                 for(Area r : listView.getItems()){
                     if(r.isSelected()){
-                        saveReadingGroup(r);
+                        saveArea(r);
                     }
                 }
                 
@@ -339,8 +339,8 @@ public class Download {
         t2.start();
     }
     
-    private void saveReadingGroup(Area r){
-        DatabasePlatformFactory.getPlatform().getDatabase().createReadingGroup(r);
+    private void saveArea(Area r){
+        DatabasePlatformFactory.getPlatform().getDatabase().createArea(r);
         List<Map> stubouts = (List<Map>) r.getStubout();
         Iterator<Map> i = stubouts.iterator();
         while(i.hasNext()){
@@ -348,11 +348,9 @@ public class Download {
             String objid = m.get("objid")!=null ? m.get("objid").toString() : "";
             String title = m.get("title")!=null ? m.get("title").toString() : "";
             String description = m.get("description")!=null ? m.get("description").toString() : "";
-            Map reading = (Map) m.get("readinggroup");
-            String readinggroupid = reading!=null ? reading.get("objid").toString() : "";
             List<Map> accounts = m.get("accounts")!=null ? (List<Map>)m.get("accounts") : new ArrayList();
             
-            Stubout stubout = new Stubout(objid,title,description,readinggroupid,accounts);
+            Stubout stubout = new Stubout(objid,title,description,r.getObjid(),accounts);
             DatabasePlatformFactory.getPlatform().getDatabase().createStubout(stubout);
             
             Iterator<Map> it = accounts.iterator();
@@ -368,10 +366,10 @@ public class Download {
         }
     }
     
-    private void clearReadingGroups(){
+    private void clearArea(){
         DatabasePlatformFactory.getPlatform().getDatabase().clearStuboutAccount();
         DatabasePlatformFactory.getPlatform().getDatabase().clearStubout();
-        DatabasePlatformFactory.getPlatform().getDatabase().clearReadingGroup();
+        DatabasePlatformFactory.getPlatform().getDatabase().clearArea();
     }
     
     public Node getLayout(){

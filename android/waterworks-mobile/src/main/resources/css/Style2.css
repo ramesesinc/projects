@@ -386,3 +386,6 @@
     -fx-font-size: 14px;
 }
 
+#account-detail-readingcontainer{
+    -fx-background-color: aliceblue;
+}

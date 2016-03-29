@@ -32,7 +32,7 @@ class RPTLedgerInterceptor
         logSvc.log( evt.methodName, 'RPTLEDGER', ledger.objid)
     }
 
-	@After(pattern="FAASService.approveFaas", eval="#{!env.ORGCLASS?.equalsIgnoreCase('province')}")
+	@After(pattern="FAASService.(approveFaas|approveFaasByRemote)", eval="#{!env.ORGCLASS?.equalsIgnoreCase('province')}")
 	public void postFaasToRPTLedger(evt){
         def faas = evt.result 
         if ((faas.txntype.objid.matches('SD|CS') || isFAASFromSubdivision(faas)) && faas.rpu.rputype == 'land'){

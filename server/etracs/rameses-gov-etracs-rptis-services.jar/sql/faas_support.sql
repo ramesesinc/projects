@@ -95,3 +95,11 @@ from landrysetting rs
 where rs.ry = $P{ry}
 and rl.settingtype = 'land'
 and rl.lguid = $P{lguid}
+
+
+
+[getApproverTasks]
+select * from faas_task 
+where refid = $P{objid}
+and exists(select * from sys_user where objid = faas_task.actor_objid)
+order by startdate

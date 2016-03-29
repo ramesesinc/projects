@@ -1,4 +1,4 @@
-<workunit>
+<workunit schemaName="waterworks_account">
     <invokers>
         <invoker folderid="/home/waterworks" caption="Capture Account" action="create" index="4"/>
         <invoker type="waterworks_account:create" caption="Waterworks Account" action="create" target="window"/>
@@ -8,6 +8,6 @@
     </invokers>
     <code class="com.rameses.gov.etracs.waterworks.models.WaterworksAccountCapture" />   
     <pages>
-        <page name="default" template="com.rameses.gov.etracs.waterworks.views.CaptureAccountPage"/>
+        <page template="com.rameses.gov.etracs.waterworks.views.CaptureAccountPage"/>
     </pages>
 </workunit>

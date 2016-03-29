@@ -53,6 +53,7 @@ public class Home {
             @Override
             public void handle(MouseEvent event) {
                 Thread t1 = new Thread(){
+                    @Override
                     public void run(){
                         Platform.runLater(new Runnable(){
                             @Override
@@ -65,6 +66,7 @@ public class Home {
                 t1.start();
         
                 Thread t2 = new Thread(){
+                    @Override
                     public void run(){
                         Platform.runLater(new Runnable(){
                             @Override

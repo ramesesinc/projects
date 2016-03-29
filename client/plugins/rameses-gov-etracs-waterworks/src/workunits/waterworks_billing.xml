@@ -1,5 +1,0 @@
-<workunit>
-    <invokers>
-        <invoker type="waterworks_meter:form:formActions" caption="Billing" />                 
-    </invokers>
-</workunit>

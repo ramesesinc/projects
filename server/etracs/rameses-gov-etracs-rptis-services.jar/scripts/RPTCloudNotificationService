@@ -44,17 +44,21 @@ class RPTCloudNotificationService
 
     @ProxyMethod
     public def sendAsyncMessage( asyncreq, lguid ) {
-        def msg = [
+        sendMessage(createAsyncMessage(asyncreq, lguid))
+    }
+
+    @ProxyMethod
+    public def createAsyncMessage( asyncreq, lguid ) {
+        return [
             origin   : env.ORGID.replaceAll('-.*?', ''),
             data     : asyncreq,
             channel  : (appContext.conf.cloud_channel ? appContext.conf.cloud_channel : 'etracs'),
             channelgroup : buildOrgCodeFromLguId(lguid),
             groupid  : 'n/a',
             filetype : '-',
+            messagetype : '-',
         ]
-        sendMessage(msg)
     }
-
 
     def buildOrgCodeFromLguId(lguid){
         def org = orgSvc.open([objid:lguid])

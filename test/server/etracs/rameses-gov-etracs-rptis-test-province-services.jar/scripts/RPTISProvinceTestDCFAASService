@@ -1,0 +1,70 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.services.extended.*;
+
+
+/*
+* Test a Data Capture FAAS created and approved from the Province
+*/
+public class RPTISProvinceTestDCFAASService
+{
+	@Env 
+	def env 
+
+	@ActiveDB('rptis_test')
+	def em 
+
+    @Service('RPTISUnitTestService')
+    def test
+
+	@Service('RPTISTestFAASDataCaptureService')
+	def datacaptureTest
+
+	
+	@ProxyMethod
+	public def createDataCapture(initinfo) {
+		return datacaptureTest.createDataCapture(initinfo)
+	}
+
+
+	@ProxyMethod
+	public def submitDataCaptureForApproval( faas ) {
+		return datacaptureTest.submitDataCaptureForApproval(faas)
+	}
+
+	@ProxyMethod
+	public def testSubmittedDataCapture( faas ) {
+		datacaptureTest.testSubmittedDataCapture(faas)
+		return '[province] Data Captured FAAS submission tested.' 
+	}
+
+
+	@ProxyMethod
+	public def approveDataCapture( faas ) {
+		return datacaptureTest.approveDataCapture(faas)
+	}
+
+	@ProxyMethod
+	public def testApprovedDataCapture(faas){
+		datacaptureTest.testApprovedDataCapture(faas)
+		
+		def ledger = em.findLedgerByFaasId(faas)
+		test.testNull('rptledger', ledger)
+		return '[province] Data Captured FAAS approval tested.' 
+	}
+
+
+	@ProxyMethod
+	public def deleteDataCapturedFaas( faas ) {
+		return datacaptureTest.deleteDataCapturedFaas(faas)
+	}
+
+	@ProxyMethod
+	public def testDeletedDataCapturedFaas(faas) {
+		datacaptureTest.testDeletedDataCapturedFaas(faas)
+		return '[province] Deleted data captured FAAS tested.'
+	}
+
+
+}

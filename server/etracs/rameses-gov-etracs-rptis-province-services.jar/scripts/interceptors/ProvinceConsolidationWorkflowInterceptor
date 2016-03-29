@@ -47,13 +47,23 @@ class ProvinceConsolidationWorkflowInterceptor
 		consolidation.tasks = taskEm.getTasks(consolidation)
 		supportSvc.buildFaasesData(consolidation)
 		def asyncreq = svc.createAsyncRequest('MunicipalityConsolidationRemoteCallHandler', 'approveConsolidationByProvince',  consolidation)
-		svc.sendAsyncMessage(asyncreq[0], consolidation.lguid)
+		def msg = svc.createAsyncMessage(asyncreq[0], consolidation.lguid)
+		msg.filetype = 'consolidation'
+		msg.messagetype = 'consolidation-prov-approved'
+		msg.txnid = consolidation.objid 
+		msg.txnno = consolidation.txnno 
+		svc.sendMessage(msg)
 	}	
 
 	void postToMunicipality(consolidation){
 		println 'Post consolidation to municipality....'
 		def data = supportSvc.buildConsolidationData(consolidation)
 		def asyncreq = svc.createAsyncRequest('MunicipalityConsolidationRemoteCallHandler', 'postApprovedConsolidationFromProvince',  data)
-		svc.sendAsyncMessage(asyncreq[0], consolidation.lguid)
+		def msg = svc.createAsyncMessage(asyncreq[0], consolidation.lguid)
+		msg.filetype = 'consolidation'
+		msg.messagetype = 'consolidation-prov-created'
+		msg.txnid = consolidation.objid 
+		msg.txnno = consolidation.txnno 
+		svc.sendMessage(msg)
 	}
 }

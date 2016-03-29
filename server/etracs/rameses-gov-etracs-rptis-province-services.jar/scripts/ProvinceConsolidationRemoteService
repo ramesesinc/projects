@@ -30,14 +30,14 @@ class ProvinceConsolidationRemoteService
 	}	
 
 	void notifyGroup(consolidation){
-		println 'ProvinceConsolidationRemoteService... notifyGroup...'
+		def sender = (env.REQUESTER.FULLNAME ? env.REQUESTER.FULLNAME : env.REQUESTER.USER)
         def msg = [
             objid     		: consolidation.objid,
             senderid  		: env.REQUESTER.USERID,
-            sender    		: env.REQUESTER.NAME,
+            sender    		: sender,
             recipientid   	: 'assign-receiver',
             recipienttype 	: 'group',
-            message   		: 'Consolidation No. ' + consolidation.txnno + '    (assign-receiver)',
+            message   		: 'Consolidation No. ' + consolidation.txnno + ' submitted for approval by ' + sender + ' (assign-receiver)',
             filetype  		: 'consolidation',
             data 	  		: [objid: consolidation.objid],
         ]

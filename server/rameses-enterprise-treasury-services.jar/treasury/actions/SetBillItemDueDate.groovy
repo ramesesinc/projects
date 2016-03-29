@@ -7,8 +7,6 @@ import treasury.facts.*;
 
 public class SetBillItemDueDate implements RuleActionHandler {
 
-	def res;	//resources
-
 	public void execute(def params, def drools) {
 		def billitem = params.billitem;
 		if( billitem == null ) 

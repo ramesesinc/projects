@@ -1,0 +1,106 @@
+
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.services.extended.*;
+
+public class RPTISTestFAASService
+{
+	@Env 
+	def env 
+
+	@ActiveDB('rptis_test')
+	def em 
+
+	@Service('FAASService')
+	def faasSvc 
+
+	@Service('RPTLedgerService')
+	def ledgerSvc 
+
+	@Service('RPTISTestLedgerService')
+	def ledgerTest
+
+	@Service('RPTISUnitTestService')
+	def test
+
+
+	@ProxyMethod
+	public def testApprovedFaas( faas ) {
+		test.testEqual('faas.state', faas.state, 'CURRENT')
+		test.testNotNull('faas.appraiser', faas.appraiser)
+		test.testNotNull('faas.approver', faas.approver)
+		test.testNotEmpty('faas.previousfaases', faas.previousfaases)
+
+		def tasks = faasSvc.getTasks(faas)
+		test.testNotEmpty('faas.tasks', tasks)
+		def opentasks = tasks.findAll{it.enddate == null}
+		test.testEmpty('faas.opentasks', opentasks)
+		def approvertask = tasks.find{it.state == 'approver'}
+		test.testNotNull('faas.approvertask', approvertask)
+
+		def prevfaas = [objid:faas.previousfaases.first().prevfaasid]
+		prevfaas += faasSvc.openFaas(prevfaas)
+		test.testEqual('prevfaas.state', prevfaas.state, 'CANCELLED')
+		test.testNotNull('prevfaas.cancelreason', prevfaas.cancelreason)
+		test.testNotNull('prevfaas.canceldate', prevfaas.canceldate)
+		test.testNotNull('prevfaas.cancelledbytdnos', prevfaas.cancelledbytdnos)
+		test.testNotNull('prevfaas.cancelledyear', prevfaas.cancelledyear)
+		test.testNotNull('prevfaas.cancelledqtr', prevfaas.cancelledqtr)
+		test.testNotNull('prevfaas.cancelledmonth', prevfaas.cancelledmonth)
+		test.testNotNull('prevfaas.cancelledday', prevfaas.cancelledday)
+
+		test.testNotEqual('faas.taxpayer', faas.taxpayer.objid, prevfaas.taxpayer.objid)
+		test.testNotEqual('faas.owner', faas.owner.name, prevfaas.owner.name)
+		return 'Online FAAS tested'
+	}
+
+
+	@ProxyMethod
+	public def testCancelledFaas( faas ) {
+		faas += faasSvc.openFaas(faas)
+		test.testEqual('faas.state', faas.state, 'CANCELLED')
+		test.testNotNull('faas.cancelreason', faas.cancelreason)
+		test.testNotNull('faas.canceldate', faas.canceldate)
+		test.testNotNull('faas.cancelledbytdnos', faas.cancelledbytdnos)
+		test.testNotNull('faas.cancelledyear', faas.cancelledyear)
+		test.testNotNull('faas.cancelledqtr', faas.cancelledqtr)
+		test.testNotNull('faas.cancelledmonth', faas.cancelledmonth)
+		test.testNotNull('faas.cancelledday', faas.cancelledday)
+		return 'Cancelled FAAS tested'
+	}
+
+
+	@ProxyMethod
+	public def testApprovedLedgerFromFaas( faas ) {
+		test.testNotNull('faas', faas)
+
+		def ledger = em.findLedgerByFaasId(faas)
+		test.testNotNull('rptledger', ledger)
+
+		ledger += ledgerSvc.openLedger(ledger)
+		ledgerTest.testLedgerDataFromFaas(ledger, faas)
+		test.testNotEmpty('ledgerfaases', ledger.faases)
+		test.testEqual('ledgerfaases', ledger.faases.size(), 2)
+
+		def first = ledger.faases.first()
+		test.testEqual('ledgerfaas[0].state',  first.state, 'APPROVED')
+		test.testEqual('ledgerfaas[0].fromyear',  first.fromyear, faas.effectivityyear)
+		test.testEqual('ledgerfaas[0].fromqtr',  first.fromqtr, faas.effectivityqtr)
+		test.testEqual('ledgerfaas[0].toyear',  first.toyear, 0)
+		test.testEqual('ledgerfaas[0].toqtr',  first.toqtr, 0)
+		test.testEqual('ledgerfaas[0].txntype', first.txntype.objid, faas.txntype.objid)
+		test.testEqual('ledgerfaas[0].classification', first.classification.objid, faas.rpu.classification.objid)
+		test.testEqual('ledgerfaas[0].taxable', first.taxable, faas.rpu.taxable)
+		test.testEqual('ledgerfaas[0].assessedvalue', first.assessedvalue, faas.rpu.totalav)
+
+		def last = ledger.faases.last()
+		def lasttoyear = (first.fromqtr == 1 ? first.fromyear - 1 : first.fromyear)
+		def lasttoqtr = (first.fromqtr == 1 ? 4 : first.fromqtr - 1)
+		test.testEqual('ledgerfaas[1].state',  last.state, 'APPROVED')
+		test.testEqual('ledgerfaas[1].toyear',  last.toyear, lasttoyear)
+		test.testEqual('ledgerfaas[1].toqtr',  last.toqtr, lasttoqtr)
+        return 'Online Ledger tested'
+	}
+
+}

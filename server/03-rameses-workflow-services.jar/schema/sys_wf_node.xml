@@ -9,6 +9,12 @@
 		<field name="salience" />
 		<field name="domain" />
 		<field name="role" />
+
+		<complex name="transitions" ref="sys_wf_transition" jointype="one-to-many" orderBy="idx" required="false">
+			<key field="name" target="parentid"/>
+			<key field="processname" target="processname"/>
+		</complex>	
+
 	</element>	
 
 </schema>	

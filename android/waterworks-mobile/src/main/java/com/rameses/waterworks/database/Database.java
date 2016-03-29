@@ -63,13 +63,13 @@ public interface Database {
     
     public void clearRule();
     
-    public void createReadingGroup(Area r);
+    public void createArea(Area r);
     
     public void createStubout(Stubout s);
     
     public void createStuboutAccount(StuboutAccount sa);
     
-    public void clearReadingGroup();
+    public void clearArea();
     
     public void clearStubout();
     

@@ -3,11 +3,13 @@ package com.rameses.waterworks.page;
 import com.rameses.Main;
 import static com.rameses.Main.PRINTER;
 import com.rameses.waterworks.bean.Account;
+import com.rameses.waterworks.bean.ItemAccount;
 import com.rameses.waterworks.bean.Reading;
 import com.rameses.waterworks.bluetooth.BluetoothPlatformFactory;
 import com.rameses.waterworks.database.Database;
 import com.rameses.waterworks.database.DatabasePlatformFactory;
 import com.rameses.waterworks.dialog.Dialog;
+import java.util.List;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -109,9 +111,8 @@ public class AccountDetail {
         }
         
         HBox readingContainer = new HBox(Main.HEIGHT > 700 ? 10 : 5);
-        readingContainer.setPadding(Main.HEIGHT > 700 ? new Insets(20, 10, 20, 10) : new Insets(10, 5, 10, 5));
-            
-        readingContainer.setStyle("-fx-skin: \"com.sun.javafx.scene.control.skin.ButtonSkin\"; -fx-background-color: -fx-shadow-highlight-color, -fx-outer-border, -fx-inner-border, -fx-body-color;");
+        readingContainer.setId("account-detail-readingcontainer");
+        readingContainer.setPadding(Main.HEIGHT > 700 ? new Insets(20, 20, 20, 20) : new Insets(10, 10, 10, 10));    
         readingContainer.setAlignment(Pos.CENTER);
         readingContainer.getChildren().addAll(
             createColumnField("Previous",account.getLastReading()),
@@ -136,13 +137,12 @@ public class AccountDetail {
         root.getChildren().add(createDetail("Name",account.getAcctName()));
         root.getChildren().add(createDetail("Address",account.getAddress()));
         root.getChildren().add(createDetail("Mobile No",account.getMobileNo()));
-        root.getChildren().add(createDetail("Phone No",account.getPhoneNo()));
-        root.getChildren().add(createDetail("Email",account.getEmail()));
         root.getChildren().add(createDetail("Serial No",account.getSerialNo()));
         root.getChildren().add(createDetail("Classification",account.getClassificationId()));
-        root.getChildren().add(createDetail("Balance",account.getBalance()));
-        root.getChildren().add(createDetail("Penalty",account.getPenalty()));
-        root.getChildren().add(createDetail("Other Charge",account.getOtherCharge()));
+        List<ItemAccount> items = account.getItemList();
+        for(ItemAccount a : items){
+            root.getChildren().add(createDetail(a.getAccount(),String.valueOf(a.getAmount())));
+        }
         root.getChildren().add(createDetail("Amount Due",amtdue));
         root.getChildren().add(createDetail("TOTAL DUE",totaldue));
         root.getChildren().add(readingContainer);

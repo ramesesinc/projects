@@ -637,6 +637,12 @@ class SubdivisionService
     }
 
 
+    @ProxyMethod
+    public def getTasks( subdivision ) {
+        return em.getTasks(subdivision)    
+    }
+
+
 }
 
 

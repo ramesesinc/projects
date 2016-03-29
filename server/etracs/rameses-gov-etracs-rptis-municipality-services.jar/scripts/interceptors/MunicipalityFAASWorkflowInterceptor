@@ -28,6 +28,8 @@ class MunicipalityFAASWorkflowInterceptor
 		def asyncreq    = svc.createAsyncRequest('ProvinceFAASRemoteService', methodname, supportSvc.getFaasData(faas), svc.buildEnvMap(env))
         def msg         = svc.createAsyncMessage(asyncreq[0])
         msg.filetype    = 'faas'
+        msg.txnid       = faas.objid
+        msg.txnno       = (faas.tdno ? faas.tdno : faas.prevtdno)
         msg.messagetype = 'faas-datacaptured'
         msg.message     = 'Post data captured FAAS No. ' + (faas.tdno ? faas.tdno : faas.utdno) + '.'
         svc.sendAsyncMessage(msg)
@@ -43,6 +45,8 @@ class MunicipalityFAASWorkflowInterceptor
 		def asyncreq    = svc.createAsyncRequest('ProvinceFAASRemoteService', 'postMunicipalityApprovedFaas', supportSvc.getFaasData(faas), svc.buildEnvMap(env))
         def msg         = svc.createAsyncMessage(asyncreq[0])
         msg.filetype    = 'faas'
+        msg.txnid       = faas.objid
+        msg.txnno       = (faas.tdno ? faas.tdno : faas.prevtdno)
         msg.messagetype = 'faas-municipality-approved'
         msg.message     = 'FAAS No. ' + (faas.tdno ? faas.tdno : faas.utdno) + '.'
         svc.sendAsyncMessage(msg)
@@ -65,6 +69,8 @@ class MunicipalityFAASWorkflowInterceptor
         def asyncreq = svc.createAsyncRequest('ProvinceFAASRemoteService', 'postFaasForProvinceApproval', supportSvc.getFaasData(faas), svc.buildEnvMap(env))
         def msg         = svc.createAsyncMessage(asyncreq[0])
         msg.filetype    = 'faas'
+        msg.txnid       = faas.objid
+        msg.txnno       = (faas.tdno ? faas.tdno : faas.prevtdno)
         msg.groupid     = 'assign-receiver'
         msg.messagetype = 'faas-forprovapproval'
         msg.message     = 'FAAS No. ' + (faas.tdno ? faas.tdno : faas.utdno) + ' (assign-receiver).' 

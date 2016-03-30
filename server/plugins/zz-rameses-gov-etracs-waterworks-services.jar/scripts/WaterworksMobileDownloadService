@@ -14,6 +14,12 @@ class WaterworksMobileService {
 	@DataContext("waterworks_account_consumption")
 	def wac;
 
+	@DataContext("waterworks_area")
+	def wr;
+
+	@DataContext("waterworks_stubout")
+	def ws;
+
 	@Service("DateService")
 	def dateSvc;
 
@@ -22,9 +28,8 @@ class WaterworksMobileService {
 
 	@ProxyMethod
 	public def initForDownload( def o ){
-		if(!o.assigneeid) throw new Exception("Assignee ID is required!");
+		if(!o.areaid) throw new Exception("areaid is required!");
 		def batchid = 'BTC' + new UID();
-		def groupids = "('" + o.groupids.join("','") + "')";
         def y = dateSvc.getServerYear();
 		def m = dateSvc.getServerMonth() - 1;
 		if(m==0) {
@@ -41,8 +46,8 @@ class WaterworksMobileService {
 		def rundate = dateSvc.getServerDate();
 		DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
 		
-		def params = [assigneeid: o.assigneeid, groupids: groupids];
-		def list = wm.getDownloadableAccount(params);
+		def params = [areaid:o.areaid];
+		def list = wm.getListForDownload(params);
 		list.each {
 			it.state = 'PENDING';
 			it.barcode = '51030:' + it.acctno;
@@ -131,6 +136,18 @@ class WaterworksMobileService {
 		wm.find([batchid:o.batchid, objid:o.account.objid, state: "DOWNLOADED"]).delete();
 
 		return data;
+	}
+
+	@ProxyMethod
+	def getAreasByUser( def o ){
+		if(!o.userid) throw new Exception("userid is required!");
+		return wr.find(['assignee.objid':o.userid]).list();
+	}
+
+	@ProxyMethod
+	def getStuboutsByArea(def o){
+		if(!o.areaid) throw new Exception("areaid is required!");
+		return ws.select('objid,title,description,areaid').find(['areaid':o.areaid]).list();
 	}
 
 }

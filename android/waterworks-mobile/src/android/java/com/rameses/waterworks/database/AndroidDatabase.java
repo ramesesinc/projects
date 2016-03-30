@@ -11,7 +11,6 @@ import com.rameses.waterworks.bean.Area;
 import com.rameses.waterworks.bean.Rule;
 import com.rameses.waterworks.bean.Setting;
 import com.rameses.waterworks.bean.Stubout;
-import com.rameses.waterworks.bean.StuboutAccount;
 import com.rameses.waterworks.util.SystemPlatformFactory;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -61,6 +60,8 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
                 + " rundate VARCHAR(50),"
                 + " items TEXT,"
                 + " info TEXT,"
+                + " stuboutid VARCHAR(50),"
+                + " sortorder INTEGER,"
                 + " assignee_objid VARCHAR(50),"
                 + " assignee_name VARCHAR(50))");
         
@@ -84,7 +85,8 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
         sqld.execSQL("CREATE TABLE area ("
                 + " objid VARCHAR(50) PRIMARY KEY,"
                 + " title VARCHAR(50), "
-                + " duedate VARCHAR(50), "
+                + " zone VARCHAR(50), "
+                + " sector VARCHAR(50), "
                 + " assigneeid VARCHAR(50))");
         
         sqld.execSQL("CREATE TABLE stubout ("
@@ -93,11 +95,6 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
                 + " description TEXT, "
                 + " areaid VARCHAR(50))");
         
-        sqld.execSQL("CREATE TABLE stubout_account ("
-                + " objid VARCHAR(50) PRIMARY KEY,"
-                + " parentid VARCHAR(50), "
-                + " acctid TEXT, "
-                + " sortorder INTEGER)");
     }
 
     @Override
@@ -108,7 +105,6 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
         sqld.execSQL("DROP TABLE IF EXIST rule");
         sqld.execSQL("DROP TABLE IF EXIST area");
         sqld.execSQL("DROP TABLE IF EXIST stubout");
-        sqld.execSQL("DROP TABLE IF EXIST stubout_account");
         onCreate(sqld);
     }
     
@@ -220,6 +216,8 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
         String rundate = acct.get("rundate") != null ? acct.get("rundate").toString() : "";
         String items = acct.get("items") != null ? acct.get("items").toString() : "";
         String info = acct.get("info") != null ? acct.get("info").toString() : "";
+        String stuboutid = acct.get("stuboutid") != null ? acct.get("stuboutid").toString() : "";
+        int sortorder = acct.get("sortorder") != null ? Integer.parseInt(acct.get("sortorder").toString()) : -1;
         
         ContentValues values = new ContentValues();
         values.put("objid", objid);
@@ -250,6 +248,8 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
         values.put("rundate", rundate);
         values.put("items", items);
         values.put("info",info);
+        values.put("stuboutid",stuboutid);
+        values.put("sortorder",sortorder);
         
         SQLiteDatabase db = this.getWritableDatabase();
         try{
@@ -290,6 +290,8 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
         String rundate = acct.get("rundate") != null ? acct.get("rundate").toString() : "";
         String items = acct.get("items") != null ? acct.get("items").toString() : "";
         String info = acct.get("info") != null ? acct.get("info").toString() : "";
+        String stuboutid = acct.get("stuboutid") != null ? acct.get("stuboutid").toString() : "";
+        int sortorder = acct.get("sortorder") != null ? Integer.parseInt(acct.get("sortorder").toString()) : -1;
         
         ContentValues values = new ContentValues();
         values.put("objid", objid);
@@ -318,6 +320,8 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
         values.put("rundate", rundate);
         values.put("items", items);
         values.put("info",info);
+        values.put("stuboutid",stuboutid);
+        values.put("sortorder",sortorder);
         
         SQLiteDatabase db = this.getWritableDatabase();
         
@@ -784,7 +788,8 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
         ContentValues values = new ContentValues();
         values.put("objid", r.getObjid());
         values.put("title", r.getTitle());
-        values.put("duedate", r.getDueDate());
+        values.put("zone", r.getZone());
+        values.put("sector", r.getSector());
         values.put("assigneeid", r.getAssigneeId());
         
         SQLiteDatabase db = this.getWritableDatabase();
@@ -809,25 +814,6 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
         SQLiteDatabase db = this.getWritableDatabase();
         try{
             db.insert("stubout", null, values);
-        }catch(Exception e){
-            e.printStackTrace();
-            ERROR = "Database Error: " + e.toString();
-        }
-        db.close();
-    }
-
-    @Override
-    public void createStuboutAccount(StuboutAccount sa) {
-        ERROR = "";
-        ContentValues values = new ContentValues();
-        values.put("objid", sa.getObjid());
-        values.put("parentid", sa.getParentId());
-        values.put("acctid", sa.getAcctId());
-        values.put("sortorder", sa.getSortOrder());
-        
-        SQLiteDatabase db = this.getWritableDatabase();
-        try{
-            db.insert("stubout_account", null, values);
         }catch(Exception e){
             e.printStackTrace();
             ERROR = "Database Error: " + e.toString();
@@ -897,7 +883,7 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
                     String description = cursor.getString(2);
                     String areaid = cursor.getString(3);
                     
-                    Stubout stubout = new Stubout(objid, title, description, areaid, null);
+                    Stubout stubout = new Stubout(objid, title, description, areaid);
                     list.add(stubout);
                 }while(cursor.moveToNext());
             }
@@ -918,7 +904,7 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
         String[] args = new String[]{searchtext, searchtext, searchtext, s.getObjid()};
         try{
             SQLiteDatabase db = this.getWritableDatabase();
-            Cursor cursor = db.rawQuery("SELECT a.* FROM account a INNER JOIN stubout_account sa ON a.objid = sa.acctid INNER JOIN stubout s ON sa.parentid = s.objid WHERE (a.acctname LIKE ? OR a.acctno LIKE ? OR a.serialno LIKE ?) AND s.objid = ? ORDER BY sa.sortorder", args);
+            Cursor cursor = db.rawQuery("SELECT * FROM account WHERE (acctname LIKE ? OR acctno LIKE ? OR serialno LIKE ?) AND stuboutid = ? ORDER BY sortorder", args);
             if(cursor.moveToFirst()){
                 do{
                     String objid = cursor.getString(0);

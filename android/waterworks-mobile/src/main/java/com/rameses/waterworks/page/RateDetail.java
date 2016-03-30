@@ -20,36 +20,40 @@ public class RateDetail {
     
     public RateDetail(Rule r){
         Label salience_lb = new Label("SALIENCE");
+        salience_lb.getStyleClass().add("login-label");
         salience_lb.setStyle("-fx-font-weight: bold;");
-        if(Main.HEIGHT < 700) salience_lb.setStyle("-fx-font-size: 11px;");
         
         Label condition_lb = new Label("CONDITION");
+        condition_lb.getStyleClass().add("login-label");
         condition_lb.setStyle("-fx-font-weight: bold;");
-        if(Main.HEIGHT < 700) condition_lb.setStyle("-fx-font-size: 11px;");
         
         Label var_lb = new Label("VARIABLE");
+        var_lb.getStyleClass().add("login-label");
         var_lb.setStyle("-fx-font-weight: bold;");
-        if(Main.HEIGHT < 700) var_lb.setStyle("-fx-font-size: 11px;");
         
         Label action_lb = new Label("ACTION");
+        action_lb.getStyleClass().add("login-label");
         action_lb.setStyle("-fx-font-weight: bold;");
-        if(Main.HEIGHT < 700) action_lb.setStyle("-fx-font-size: 11px;");
         
-        Label salience_tf = new Label(String.valueOf(r.getSalience()));
-        salience_tf.getStyleClass().add("terminal-notice");
+        TextField salience_tf = new TextField(String.valueOf(r.getSalience()));
+        salience_tf.getStyleClass().add("login-label");
         salience_tf.setPrefWidth(Main.WIDTH);
+        salience_tf.setEditable(false);
         
-        Label condition_ta = new Label(r.getCondition());
-        condition_ta.getStyleClass().add("terminal-notice");
+        TextField condition_ta = new TextField(r.getCondition());
+        condition_ta.getStyleClass().add("login-label");
         condition_ta.setPrefWidth(Main.WIDTH);
+        condition_ta.setEditable(false);
         
-        Label var_tf = new Label(r.getVar());
-        var_tf.getStyleClass().add("terminal-notice");
+        TextField var_tf = new TextField(r.getVar());
+        var_tf.getStyleClass().add("login-label");
         var_tf.setPrefWidth(Main.WIDTH);
+        var_tf.setEditable(false);
         
-        Label action_ta = new Label(r.getAction());
-        action_ta.getStyleClass().add("terminal-notice");
+        TextArea action_ta = new TextArea(r.getAction());
+        action_ta.getStyleClass().add("login-label");
         action_ta.setPrefWidth(Main.WIDTH);
+        action_ta.setEditable(false);
         
         root = new GridPane();
         root.setStyle("-fx-background-color: white;");

@@ -23,6 +23,7 @@ class WaterworksApplicationPersistenceInterceptor{
 		o.appno = 'WA'+seqSvc.getNextFormattedSeriesA('water_application', 6);
 		o.account.acctno = 'TMP-'+ o.appno; 
 		o.account.state = 'PENDING';
+		o.account.address.text = formatAddress( o.account.address ); 
 		o.dtfiled  = dateSvc.getServerDate();
 		def z = waterworks_account.create( o.account );
 		o.acctid = z.objid; 
@@ -33,13 +34,25 @@ class WaterworksApplicationPersistenceInterceptor{
 		def o = evt.result;
 		def p = evt.args[0]; 
 		p.items.each{
-			it.parentid = o.objid; 
+			it.parentid = o.account.objid; 
 			it.amtpaid = 0;
 			it.txntype = 'REG'; 
+			it.duedate = o.dtfiled; 
 			waterworks_account_ledger.create( it );
 		}
 		workflowTaskSvc.start( [refid:o.objid, processname: 'waterworks_application' ] );
 	}
 
+	def formatAddress( addr ) {
+		def buff = []; 
+		def values = [ addr.unitno, addr.bldgno, addr.bldgname ]; 
+		def text = values.findAll{ it != null }.join(' ');
+		if ( text ) buff << text; 
 
+		values = [ addr.street, addr.subdivision, addr.barangay?.name, addr.municipality, addr.city, addr.province ]; 
+		text = values.findAll{ it != null }.join(', ');
+		if ( text ) buff << text; 
+
+		return buff.join('\n'); 
+	} 
 }

@@ -22,7 +22,7 @@ class WaterworksBillingService  {
 	@DataContext("waterworks_account")
 	def acct;
 
-	@DataContext("waterworks_account_consumption")
+	@DataContext("waterworks_account_ledger")
 	def wac;
 
 	@DataContext("itemaccount")
@@ -111,12 +111,9 @@ class WaterworksBillingService  {
 	public def getBilling( def o ) {
 		//get the head. then get the receivables
 		def app = findAccount( o );
-		def feeList = wac.find([acctid: app.objid]).where('amount - amtpaid > 0').list();	
+		def feeList = wac.find([parentid: app.objid]).where('amount - amtpaid > 0').list();	
 		if(!feeList)
 		   throw new Exception("There are no upaid items for this account");
-
-
-		def itemAcct = findItemAccount( [tag: 'BASIC' ] ); 
 		
 		//build the facts   
 		def facts = [];

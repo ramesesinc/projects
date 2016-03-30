@@ -1,7 +1,7 @@
 <schema adapter="waterworks">
 	<element tablename="waterworks_account">
 		<field name="objid" primary="true"  prefix="WA"/>
-		<field name="state" required="true" visible="false" defaultValue="ACTIVE"/>
+		<field name="state"  visible="false" defaultValue="ACTIVE"/>
 		<field name="dtstarted" required="false" indexed="true" type="date" caption="Date Started"/>
 		<field name="acctno" required="true" indexed="true" caption="Acct No"/>
 		<field name="acctname" required="true" indexed="true" caption="Acct Name"/>
@@ -25,20 +25,20 @@
 		<field name="phoneno" required="false" caption="Phone No"/>
 		<field name="email" required="false" caption="Email"/>
 		
-		<complex name="meter" ref="waterworks_meter" jointype="many-to-one"  required="true">
+		<complex name="meter" ref="waterworks_meter" jointype="many-to-one"  required="false">
 			<key field="meterid" target="objid"/>
 		</complex>
 		<complex name="classification" ref="waterworks_classification" jointype="many-to-one">
 			<key field="classificationid" target="objid"/>
 		</complex>	
 		
-		<field name="balance" required="true" indexed="true" type="decimal" caption="Balance"/>
-		<field name="lastreadingdate" required="true" indexed="true" type="date" caption="Last Reading Date"/>
-		<field name="lasttxndate" required="true" indexed="true" type="date" caption="Last Txn Date"/>
-		<field name="lastreadingmonth" required="true" indexed="true" type="integer" caption="Last Reading Month"/>
-		<field name="lastreadingyear" required="true" indexed="true" type="integer" caption="Last Reading Year"/>
-		<field name="lastreading" required="true" indexed="true" type="integer" caption="Last Reading"/>
-		<field name="prevreading" required="true" indexed="true" type="integer" caption="Previous Reading"/>
+		<field name="balance" required="false" indexed="true" type="decimal" caption="Balance"/>
+		<field name="lastreadingdate" required="false" indexed="true" type="date" caption="Last Reading Date"/>
+		<field name="lasttxndate" required="false" indexed="true" type="date" caption="Last Txn Date"/>
+		<field name="lastreadingmonth" required="false" indexed="true" type="integer" caption="Last Reading Month"/>
+		<field name="lastreadingyear" required="false" indexed="true" type="integer" caption="Last Reading Year"/>
+		<field name="lastreading" required="false" indexed="true" type="integer" caption="Last Reading"/>
+		<field name="prevreading" required="false" indexed="true" type="integer" caption="Previous Reading"/>
 		
 	</element>
 

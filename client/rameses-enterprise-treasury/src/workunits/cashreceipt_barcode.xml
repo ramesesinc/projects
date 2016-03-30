@@ -19,16 +19,25 @@
         
             @Service("CashReceiptBarcodeService")
             def barcodeSvc;
+            
+            @Service('PaymentOrderService')
+            def paySvc; 
         
             def init() {
                 def p = MsgBox.prompt("Enter barcode");
                 if(!p) return null;
-                int i = p.indexOf(":");
-                if( i <=0 )
-                    throw new Exception("Barcode key is invalid. There must be a colon");
                 
-                def prefix = p.substring(0,i); 
-                def barcodeid = p.substring(i+1);
+                def prefix = null; 
+                def barcodeid = null; 
+                int i = p.indexOf(":");
+                if( i <=0 ) {
+                    prefix = 'PMO';
+                    barcodeid = p; 
+                } else {
+                    prefix = p.substring(0,i); 
+                    barcodeid = p.substring(i+1);
+                } 
+                
                 try {
                     def e = barcodeSvc.init( [barcodeid: barcodeid, prefix: prefix] );
                     def m = [barcodeid: barcodeid];

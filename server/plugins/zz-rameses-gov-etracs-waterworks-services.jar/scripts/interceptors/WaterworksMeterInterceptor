@@ -1,0 +1,36 @@
+import com.rameses.annotations.*;
+
+class WaterworksMeterInterceptor{
+	
+	@DataContext("waterworks_account")
+	def waterworks_account;
+
+	@After(pattern="PersistenceService.read", eval="#{args[0]._schemaname=='waterworks_meter'}")
+	public void afterRead( evt ) {
+		def result = evt.result;
+		if ( result.currentacctid ) {
+			def o = waterworks_account.find([ objid: result.currentacctid ]).first(); 
+			if ( o ) {
+				def acct = [:]; 
+				acct.acctno = o.acctno; 
+				acct.acctname = o.acctname; 
+				acct.addresstext = formatAddress( o.address );
+				result.account = acct; 
+			}
+		} 
+	} 
+
+	def formatAddress( addr ) {
+		def buff = []; 
+		def values = [ addr.unitno, addr.bldgno, addr.bldgname ]; 
+		def text = values.findAll{ it != null }.join(' ');
+		if ( text ) buff << text; 
+
+		values = [ addr.street, addr.subdivision, addr.barangay?.name, addr.municipality, addr.city, addr.province ]; 
+		text = values.findAll{ it != null }.join(', ');
+		if ( text ) buff << text; 
+
+		return buff.join('\n'); 
+	} 
+
+}

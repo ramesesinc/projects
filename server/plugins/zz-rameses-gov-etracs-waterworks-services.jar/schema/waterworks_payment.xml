@@ -11,7 +11,7 @@
 		<field name="amount" required="true"/>
 		<field name="voided" required="true"/>
 		<complex name="items" ref="waterworks_payment_item" jointype="one-to-many">
-			<key field="objid" target="objid"/>
+			<key field="objid" target="parentid"/>
 		</complex>	
 	</element>
 </schema>

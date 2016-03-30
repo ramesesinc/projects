@@ -6,8 +6,8 @@ class WaterworksCashReceiptInterceptor{
 	@DataContext("waterworks_account")
 	def wa;
 	
-	@DataContext("waterworks_account_consumption")
-	def wc;
+	@DataContext("waterworks_account_ledger")
+	def waterworks_account_ledger;
 
 	@DataContext("waterworks_payment")
 	def wp;
@@ -17,9 +17,11 @@ class WaterworksCashReceiptInterceptor{
 
 	@After(pattern="CashReceiptService.post", eval="#{result.collectiontype?.handler == 'waterworks'}")
 	public void postPayment(def evt) {
-		def o = evt.args[0];
+		def o = evt.args[0]; 
+		if ( !o.info?.acctid ) throw new Exception('info.acctid is required');
+		
 		def pmt = [:];
-		pmt.account = [objid : o.acctid];
+		pmt.account = [objid : o.info.acctid];
 		pmt.reftype = "cashreceipt";
 		pmt.refid = o.objid;
 		pmt.refno = o.receiptno;
@@ -35,57 +37,24 @@ class WaterworksCashReceiptInterceptor{
 			p.discount = it.discount;
 			p.surcharge = it.surcharge;
 			p.interest = it.interest;
+			p.item = it.item;
+			waterworks_account_ledger.find([ objid: it.refid]).update([amtpaid:'{amtpaid+:amount}'],[amount:it.amount]); 
 			pmt.items << p;
 		}
 
 		wp.create( pmt );
-
-		def paymentitem = wp.create(pmt);
-
-		def acct = wa.find([objid:o.acctid]);
-		def balance = acct.first().balance - pmt.amount;
-		if(balance < 0) balance = 0;
-		acct.update([balance:balance]);
-
-		def ex = wc.createExecutor('''
-			UPDATE waterworks_account_consumption 
-			SET amtpaid=amtpaid + $P{amount}
-			WHERE objid=$P{txnrefid}
-		''');
-
-		o.billitems.each {
-			def p = [:];
-			p.paymentitem = [objid:paymentitem.objid];
-			p.txnrefid = it.refid;
-			p.amount = it.amount;
-			p.discount = it.discount;
-			p.surcharge = it.surcharge;
-			p.interest = it.interest;
-			wpi.create(p);
-			pmt.items << p;
-			ex.setParameters( p ).execute();
-		}
 	}
 
 	@After(pattern="CashReceiptVoidService.post",index=0,eval="#{result.receipt.collectiontype.handler=='waterworks'}")
 	public void voidPayment(def evt) {
 		def rct = evt.result.receipt;
-
-		def pmt = wp.find([refid: rct.objid ]).first();
-		def items = wpi.find( [parentid: pmt.objid] ).list();
+		def pmt = wp.find([refid: rct.objid ]).select('objid').first();
+		def items = wpi.find( [parentid: pmt.objid] ).select('txnrefid,amount').list();
+		items.each{ 
+			waterworks_account_ledger.find([ objid: it.txnrefid]).update([amtpaid:'{amtpaid-:amount}'],[amount:it.amount]); 
+		}
 		
 		wp.find( [objid: pmt.objid] ).update([voided:1]);
-
-		def ex = wc.createExecutor('''
-			UPDATE waterworks_account_consumption 
-			SET amtpaid=amtpaid - $P{amount}
-			WHERE objid=$P{txnrefid}
-		''');
-
-		items.each {
-			def p = [txnrefid: it.txnrefid, amount: it.amount]; 
-			ex.setParameters( p ).execute();
-		}
 	}
 
 }

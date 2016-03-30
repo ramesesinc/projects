@@ -20,6 +20,9 @@ class PaymentOrderService {
 	@DataContext("revenueitem")
 	def revItem;
 
+	@Env 
+	def env; 
+
 	@ProxyMethod
 	public def create(def entity){	
 		if(! entity.payer ) throw new Exception("payer is required. ")
@@ -62,12 +65,17 @@ class PaymentOrderService {
 	}
 
 	@ProxyMethod
-	def open( params) {
-		def entity = pmt.find([txnid: 'PMO:'+params.txnid]).first();
-		if( !entity || entity.size()==0 ) {
-			throw new Exception("Payment Order Code does not exist. ")
-		}	
-		return entity; 
+	def open( params) { 
+		if ( env.paymentorder ) { 
+			return env.paymentorder; 
+
+		} else {
+			def entity = pmt.find([txnid: 'PMO:'+params.txnid]).first();
+			if( !entity || entity.size()==0 ) {
+				throw new Exception("Payment Order Code does not exist. ")
+			}	
+			return entity; 
+		}
 	}
 
 	@ProxyMethod

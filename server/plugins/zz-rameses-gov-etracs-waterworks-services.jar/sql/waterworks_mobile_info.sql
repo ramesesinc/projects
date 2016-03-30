@@ -17,3 +17,11 @@ AND wr.objid IN ${groupids}
 DELETE FROM waterworks_mobile_info
 WHERE batchid = $P{batchid}
 AND objid NOT IN ${downloadedlist}
+
+[findConsumptionAccount]
+SELECT ia.* 
+FROM collectiontype ct, collectiontype_account cta, itemaccount ia 
+WHERE ct.handler='waterworks' and cta.tag='CON' 
+	AND ct.objid=cta.collectiontypeid 
+	AND cta.account_objid=ia.objid 
+	

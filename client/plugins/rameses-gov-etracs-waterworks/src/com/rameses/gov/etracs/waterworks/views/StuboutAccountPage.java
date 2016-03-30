@@ -31,14 +31,19 @@ public class StuboutAccountPage extends javax.swing.JPanel {
     private void initComponents() {
 
         xDataTable3 = new com.rameses.rcp.control.XDataTable();
+        xButton1 = new com.rameses.rcp.control.XButton();
+        xButton2 = new com.rameses.rcp.control.XButton();
+        xButton3 = new com.rameses.rcp.control.XButton();
+        xButton4 = new com.rameses.rcp.control.XButton();
+        xButton5 = new com.rameses.rcp.control.XButton();
 
         xDataTable3.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "sortorder"}
                 , new Object[]{"caption", "-"}
-                , new Object[]{"width", 50}
-                , new Object[]{"minWidth", 50}
-                , new Object[]{"maxWidth", 50}
+                , new Object[]{"width", 30}
+                , new Object[]{"minWidth", 30}
+                , new Object[]{"maxWidth", 30}
                 , new Object[]{"required", false}
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
@@ -47,7 +52,7 @@ public class StuboutAccountPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.IntegerColumnHandler(null, -1, -1)}
             }),
             new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "account"}
+                new Object[]{"name", "account.acctno"}
                 , new Object[]{"caption", "Account No."}
                 , new Object[]{"width", 100}
                 , new Object[]{"minWidth", 0}
@@ -58,8 +63,7 @@ public class StuboutAccountPage extends javax.swing.JPanel {
                 , new Object[]{"editable", true}
                 , new Object[]{"editableWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
-                , new Object[]{"expression", "#{item.account.acctno}"}
-                , new Object[]{"typeHandler", new com.rameses.rcp.common.LookupColumnHandler(null, "waterworks_account:lookup")}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             }),
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "account.acctname"}
@@ -101,22 +105,77 @@ public class StuboutAccountPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             })
         });
-        xDataTable3.setHandler("acctListHandler");
-        xDataTable3.setId("acctListHandler");
+        xDataTable3.setHandler("listHandler");
+        xDataTable3.setId("listHandler");
         xDataTable3.setName("selectedItem"); // NOI18N
+
+        xButton1.setDepends(new String[] {"selectedItem"});
+        xButton1.setDisableWhen("#{selectedItem==null}");
+        xButton1.setMargin(new java.awt.Insets(2, 5, 2, 5));
+        xButton1.setName("moveUp"); // NOI18N
+        xButton1.setText("Up");
+
+        xButton2.setDepends(new String[] {"selectedItem"});
+        xButton2.setDisableWhen("#{selectedItem==null}");
+        xButton2.setMargin(new java.awt.Insets(2, 5, 2, 5));
+        xButton2.setName("moveDown"); // NOI18N
+        xButton2.setText("Down");
+
+        xButton3.setDepends(new String[] {"selectedItem"});
+        xButton3.setDisableWhen("#{selectedItem==null}");
+        xButton3.setMargin(new java.awt.Insets(2, 5, 2, 5));
+        xButton3.setName("removeAccount"); // NOI18N
+        xButton3.setText("Remove");
+
+        xButton4.setDepends(new String[] {"selectedItem"});
+        xButton4.setMargin(new java.awt.Insets(2, 5, 2, 5));
+        xButton4.setName("addAccount"); // NOI18N
+        xButton4.setText("Add");
+
+        xButton5.setDepends(new String[] {"selectedItem"});
+        xButton5.setDisableWhen("#{selectedItem==null}");
+        xButton5.setMargin(new java.awt.Insets(2, 5, 2, 5));
+        xButton5.setName("swap"); // NOI18N
+        xButton5.setText("Swap");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(xDataTable3, javax.swing.GroupLayout.DEFAULT_SIZE, 607, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(xButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(xButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(xButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(xButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(xButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(xDataTable3, javax.swing.GroupLayout.DEFAULT_SIZE, 175, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(xDataTable3, javax.swing.GroupLayout.DEFAULT_SIZE, 375, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(xButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(xButton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(xButton3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(xButton4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(xButton5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private com.rameses.rcp.control.XButton xButton1;
+    private com.rameses.rcp.control.XButton xButton2;
+    private com.rameses.rcp.control.XButton xButton3;
+    private com.rameses.rcp.control.XButton xButton4;
+    private com.rameses.rcp.control.XButton xButton5;
     private com.rameses.rcp.control.XDataTable xDataTable3;
     // End of variables declaration//GEN-END:variables
 }

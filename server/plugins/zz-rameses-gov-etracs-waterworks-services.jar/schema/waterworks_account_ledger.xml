@@ -3,7 +3,7 @@
 	<element tablename="waterworks_account_ledger">
 		<field name="objid" primary="true"  prefix="WAL"/>
 		<field name="parentid" required="true"/> 
-		<field name="txndate" required="true"/> 
+		<field name="duedate" required="true"/> 
 		<field name="txntype" required="true"/> 
 		<field name="item_objid" required="true"/>
 		<field name="item_code" required="true"/>

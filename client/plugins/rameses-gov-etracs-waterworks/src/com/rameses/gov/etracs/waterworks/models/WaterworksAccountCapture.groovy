@@ -22,6 +22,14 @@ public class WaterworksAccountCapture extends CrudFormModel {
         "entity.owner": { o->
             entity.acctname = o.name;
             binding.refresh("entity.*");
+        },
+        "entity.meter": { o-> 
+            if ( !o ) return; 
+            
+            if ( o.account?.objid ) { 
+                entity.meter = [:]; 
+                MsgBox.alert('This meter is already in used. Please select another one.');  
+            } 
         }
     ]
 

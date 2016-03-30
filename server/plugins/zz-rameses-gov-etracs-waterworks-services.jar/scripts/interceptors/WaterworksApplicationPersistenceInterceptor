@@ -35,6 +35,7 @@ class WaterworksApplicationPersistenceInterceptor{
 		p.items.each{
 			it.parentid = o.objid; 
 			it.amtpaid = 0;
+			it.txntype = 'REG'; 
 			waterworks_account_ledger.create( it );
 		}
 		workflowTaskSvc.start( [refid:o.objid, processname: 'waterworks_application' ] );

@@ -12,12 +12,12 @@ import com.rameses.seti2.views.CrudFormPage;
  * @author Rameses
  */
 @Template(CrudFormPage.class)
-public class NewStuboutPage extends javax.swing.JPanel {
+public class StuboutPage extends javax.swing.JPanel {
 
     /**
      * Creates new form NewStuboutPage
      */
-    public NewStuboutPage() {
+    public StuboutPage() {
         initComponents();
     }
 

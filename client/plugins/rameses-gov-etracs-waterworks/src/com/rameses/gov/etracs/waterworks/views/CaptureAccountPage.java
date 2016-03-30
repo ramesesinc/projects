@@ -132,7 +132,7 @@ public class CaptureAccountPage extends javax.swing.JPanel {
 
         xLookupField3.setCaption("Serial No.");
         xLookupField3.setExpression("#{entity.meter.serialno}");
-        xLookupField3.setHandler("waterworks_meter_unused:lookup");
+        xLookupField3.setHandler("waterworks_meter:lookup");
         xLookupField3.setName("entity.meter"); // NOI18N
         xLookupField3.setPreferredSize(new java.awt.Dimension(150, 20));
         xLookupField3.setRequired(true);

@@ -10,7 +10,9 @@ public class BillItem {
     def refid;
     int sortorder = 0;
     int pmtorder = 0;
-    
+
+    //if payment is required this must be paid based on its order. We cannot choose to pay what we want.
+    boolean required = true;    
 
     boolean compromise;             //if true, this line is under compromise so no penalty
     double amtdue = 0;              //the original amount due

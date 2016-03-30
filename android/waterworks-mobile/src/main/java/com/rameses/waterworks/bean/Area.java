@@ -8,25 +8,24 @@ import javafx.beans.property.SimpleBooleanProperty;
  */
 public class Area {
     
-    private String objid, title, assigneeid, duedate;
+    private String objid, title, assigneeid, zone, sector;
     public SimpleBooleanProperty selected;
-    private Object stubout;
     
-    public Area(String objid, String title, String assigneeid, String duedate, boolean selected, Object stubout){
+    public Area(String objid, String title, String assigneeid, String zone, String sector, boolean selected){
         this.objid = objid;
         this.title = title;
         this.assigneeid = assigneeid;
-        this.duedate = duedate;
+        this.zone = zone;
+        this.sector = sector;
         this.selected = new SimpleBooleanProperty(selected);
-        this.stubout = stubout;
     }
     
     public String getObjid(){ return objid; }
     public String getTitle(){ return title; }
     public String getAssigneeId(){ return assigneeid; }
-    public String getDueDate(){ return duedate; }
+    public String getZone(){ return zone; }
+    public String getSector(){ return sector; };
     public boolean isSelected(){ return selected.get(); }
-    public Object getStubout(){ return stubout; }
     
     @Override
     public String toString(){

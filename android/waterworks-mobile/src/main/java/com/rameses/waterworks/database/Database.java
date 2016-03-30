@@ -6,7 +6,6 @@ import com.rameses.waterworks.bean.Area;
 import com.rameses.waterworks.bean.Rule;
 import com.rameses.waterworks.bean.Setting;
 import com.rameses.waterworks.bean.Stubout;
-import com.rameses.waterworks.bean.StuboutAccount;
 import java.util.List;
 import java.util.Map;
 
@@ -66,8 +65,6 @@ public interface Database {
     public void createArea(Area r);
     
     public void createStubout(Stubout s);
-    
-    public void createStuboutAccount(StuboutAccount sa);
     
     public void clearArea();
     

@@ -11,16 +11,16 @@ import java.util.Map;
  *
  * @author Dino
  */
-public class MobileService {
+public class MobileDownloadService {
     
     private Service service;
     public String ERROR;
     
-    public MobileService(){
+    public MobileDownloadService(){
         ERROR = "";
         try{
             ScriptServiceContext ctx = ServiceProxy.getContext();
-            service = (Service) ctx.create("WaterworksMobileService", Service.class);
+            service = (Service) ctx.create("WaterworksMobileDownloadService", Service.class);
         }catch(Exception e){
             ERROR = "MobileService Error: " + e.toString();
             if(Main.LOG != null){
@@ -110,6 +110,38 @@ public class MobileService {
         return result;
     }
     
+    public List<Map> getAreasByUser(Object params){
+        ERROR = "";
+        List result = new ArrayList();
+        try{
+            result = service.getAreasByUser(params);
+        }catch(Exception e){
+            ERROR = "MobileService Error: " + e.toString();
+            if(Main.LOG != null){
+                Main.LOG.error("MobileService Error",e.toString());
+            }else{
+                e.printStackTrace();
+            }
+        }
+        return result;
+    }
+    
+    public List<Map> getStuboutsByArea(Object params){
+        ERROR = "";
+        List result = new ArrayList();
+        try{
+            result = service.getStuboutsByArea(params);
+        }catch(Exception e){
+            ERROR = "MobileService Error: " + e.toString();
+            if(Main.LOG != null){
+                Main.LOG.error("MobileService Error",e.toString());
+            }else{
+                e.printStackTrace();
+            }
+        }
+        return result;
+    }
+    
     static interface Service{
         
         public Map initForDownload(Object params);
@@ -121,6 +153,10 @@ public class MobileService {
         public void cancelDownload(Object params);
         
         public Map upload(Object params);
+        
+        public List<Map> getAreasByUser(Object params);
+        
+        public List<Map> getStuboutsByArea(Object params);
         
     }
     

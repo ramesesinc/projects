@@ -1,0 +1,17 @@
+import com.rameses.annotations.*;
+
+class WaterworksListServiceInterceptor {
+	
+	@Service('QueryService')
+	def querySvc; 
+
+	@After( pattern="ListService.getList", eval="#{args[0].name=='waterworks_classification'}")
+	public void afterList( evt ) {
+		def result = evt.result; 
+		def m = [_schemaname:'waterworks_classification'];
+		m.where = ['1=1']; 
+		
+		def list = querySvc.getList( m );
+		result.addAll( list ); 
+	}
+}

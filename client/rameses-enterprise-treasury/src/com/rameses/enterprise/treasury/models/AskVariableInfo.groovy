@@ -67,6 +67,7 @@ public class AskVariableInfo {
                 categoryid: x.category,
                 name:x.name, 
                 bean: x,
+                required: true,
                 properties: [:],
                 value: x.value
             ];

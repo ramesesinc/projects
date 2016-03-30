@@ -1,4 +1,5 @@
-<workunit extends="com/rameses/seti2/templates/CrudList.xml" schemaName="branch">
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" schemaName="branch"
+    cols="state,code,name,fullname,address,contactno,debit,credit,balance">
     <invokers>
         <invoker type="branch:manage" caption="Branches" action="init"/> 
     </invokers> 

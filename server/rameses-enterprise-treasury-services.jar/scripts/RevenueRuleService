@@ -42,9 +42,14 @@ class RevenueRuleService  {
 			return [state:'ask-info', infos: res.infos ];
 		}
 		else {
-			def items = [];
-			if( res.billItemList ) items = res.billItemList.buildReceiptItems();
-			return [state: 'end', items: items, infos: res.infos ];
+			def m = [state: 'end' ];
+			m.items = [];
+			if( res.billItemList ) { 
+				m.items = res.billItemList.buildReceiptItems(); 
+				m.total = m.items.sum{( it.amount? it.amount : 0.0 )}
+			} 	
+			m.infos = res.infos;
+			return m; 
 		}
 	}
 

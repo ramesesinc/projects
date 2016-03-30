@@ -7,10 +7,10 @@ import com.rameses.osiris3.script.*;
 
 public class CalculateCharge implements RuleActionHandler {
 
-	def result; 
+	def soutfact;
 
 	public void execute( params, drools ) {
 		double charge = NumberUtil.round(params.amount.doubleValue).doubleValue();
-		result.charge = charge; 
+		soutfact.charge = charge; 
 	} 
 }

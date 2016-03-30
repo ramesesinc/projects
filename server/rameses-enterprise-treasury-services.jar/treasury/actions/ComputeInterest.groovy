@@ -8,6 +8,7 @@ import treasury.facts.*;
 public class ComputeInterest implements RuleActionHandler {
 	
 	public void execute(def params, def drools) {
+		
 		def ct = RuleExecutionContext.getCurrentContext();
 
 		def billItem = params.billitem;

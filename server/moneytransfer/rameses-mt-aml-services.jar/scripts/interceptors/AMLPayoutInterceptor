@@ -6,8 +6,23 @@ class AMLPayoutInterceptor {
 	@DataContext('payout_daily') 
 	def payout_daily; 
 
+	@DataContext('redflag') 
+	def redflag; 	
+
+	@DataContext('redflag_detail') 
+	def redflag_detail; 	
+
 	@Service('RuleExecutorService')
 	def ruleSvc; 
+
+	@After( pattern="PayoutService.init", index=100 ) 
+	void afterInit( evt ) { 
+		def result = evt.result;
+		def rflag = redflag.find([ txnid: result.sendout.objid ]).first(); 
+		if ( rflag && rflag.state != 'CLOSED' ) { 
+			throw new Exception('This transaction has been blocked. Please contact your security compliance officer'); 
+		} 
+	} 
 
 	@After( pattern="PayoutService.submit", index=100 ) 
 	void afterSubmit( evt ) { 

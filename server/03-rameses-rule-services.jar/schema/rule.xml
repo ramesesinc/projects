@@ -153,7 +153,7 @@
 		<field name="objid" primary="true"/>
 		<field name="name" required="true"/>
 		<field name="actionname" required="true"/>
-		<field name="actionclass" required="true"/>
+		<field name="actionclass" required="false"/>
 		<field name="sortorder" required="true"/>
 		<field name="title" required="true"/>
 		<field name="domain"/>

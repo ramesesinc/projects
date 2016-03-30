@@ -51,9 +51,9 @@
         <Component class="com.rameses.rcp.control.XLookupField" name="xLookupField1">
           <Properties>
             <Property name="caption" type="java.lang.String" value="Applicant"/>
-            <Property name="expression" type="java.lang.String" value="#{entity.owner.name}"/>
+            <Property name="expression" type="java.lang.String" value="#{entity.account.owner.name}"/>
             <Property name="handler" type="java.lang.String" value="entity:lookup"/>
-            <Property name="name" type="java.lang.String" value="entity.owner" noResource="true"/>
+            <Property name="name" type="java.lang.String" value="entity.account.owner" noResource="true"/>
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[0, 20]"/>
             </Property>
@@ -62,7 +62,7 @@
         <Component class="com.rameses.rcp.control.XTextField" name="xTextField1">
           <Properties>
             <Property name="caption" type="java.lang.String" value="Acct Name"/>
-            <Property name="name" type="java.lang.String" value="entity.acctname" noResource="true"/>
+            <Property name="name" type="java.lang.String" value="entity.account.acctname" noResource="true"/>
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[0, 20]"/>
             </Property>
@@ -72,8 +72,8 @@
           <Properties>
             <Property name="caption" type="java.lang.String" value="Classification"/>
             <Property name="expression" type="java.lang.String" value="#{item.objid}"/>
-            <Property name="items" type="java.lang.String" value="listTypes.classification"/>
-            <Property name="name" type="java.lang.String" value="entity.classification" noResource="true"/>
+            <Property name="items" type="java.lang.String" value="listTypes.waterworks_classification"/>
+            <Property name="name" type="java.lang.String" value="entity.account.classification" noResource="true"/>
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[200, 20]"/>
             </Property>
@@ -111,7 +111,7 @@
       <SubComponents>
         <Component class="com.rameses.etracs.common.LocalAddressPanel" name="localAddressPanel1">
           <Properties>
-            <Property name="name" type="java.lang.String" value="entity.address" noResource="true"/>
+            <Property name="name" type="java.lang.String" value="entity.account.address" noResource="true"/>
           </Properties>
         </Component>
       </SubComponents>

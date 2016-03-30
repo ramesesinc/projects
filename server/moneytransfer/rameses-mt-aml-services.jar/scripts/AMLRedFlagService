@@ -1,0 +1,40 @@
+import com.rameses.annotations.*;
+
+class AMLRedFlagService {
+
+	@DataContext('redflag') 
+	def redflag; 
+
+	@DataContext('redflag_detail') 
+	def redflag_detail; 
+
+	@Service('DateService')
+	def dateSvc; 
+
+	@Env 
+	def env; 
+
+	@ProxyMethod 
+	public def read( params ) { 
+		if (!params.objid) throw new Exception('objid parameter is required'); 
+
+		def o = redflag.find([ objid: params.objid ]).first(); 
+		if ( !o ) return null; 
+
+		o.items = redflag_detail.find([ parentid: o.objid ]).list();
+		return o; 
+	} 
+
+	@ProxyMethod 
+	public def resolve( params ) {
+		if (!params.objid) throw new Exception('objid parameter is required'); 
+
+		def data = [ 
+			state      : 'CLOSED', 
+			dtapproved : dateSvc.getServerDate(), 
+			approvedby : [ objid: env.USERID, name: env.FULLNAME ] 
+		]; 
+		redflag.find([ objid: params.objid ]).update( data ); 
+		return redflag.find([ objid: params.objid ]).first(); 
+	}
+} 

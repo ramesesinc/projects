@@ -14,11 +14,11 @@ import javafx.scene.layout.GridPane;
  *
  * @author Rameses
  */
-public class RuleDetail {
+public class RateDetail {
     
     private GridPane root;
     
-    public RuleDetail(Rule r){
+    public RateDetail(Rule r){
         Label salience_lb = new Label("SALIENCE");
         salience_lb.setStyle("-fx-font-weight: bold;");
         if(Main.HEIGHT < 700) salience_lb.setStyle("-fx-font-size: 11px;");
@@ -35,26 +35,25 @@ public class RuleDetail {
         action_lb.setStyle("-fx-font-weight: bold;");
         if(Main.HEIGHT < 700) action_lb.setStyle("-fx-font-size: 11px;");
         
-        TextField salience_tf = new TextField(String.valueOf(r.getSalience()));
-        salience_tf.setEditable(false);
-        if(Main.HEIGHT < 700) salience_tf.setStyle("-fx-font-size: 11px;");
+        Label salience_tf = new Label(String.valueOf(r.getSalience()));
+        salience_tf.getStyleClass().add("terminal-notice");
+        salience_tf.setPrefWidth(Main.WIDTH);
         
-        TextArea condition_ta = new TextArea(r.getCondition());
-        condition_ta.setEditable(false);
-        if(Main.HEIGHT < 700) condition_ta.setStyle("-fx-font-size: 11px;");
-        condition_ta.setPrefHeight(Main.HEIGHT > 700 ? 200 : 100);
+        Label condition_ta = new Label(r.getCondition());
+        condition_ta.getStyleClass().add("terminal-notice");
+        condition_ta.setPrefWidth(Main.WIDTH);
         
-        TextField var_tf = new TextField(r.getVar());
-        var_tf.setEditable(false);
-        if(Main.HEIGHT < 700) var_tf.setStyle("-fx-font-size: 11px;");
+        Label var_tf = new Label(r.getVar());
+        var_tf.getStyleClass().add("terminal-notice");
+        var_tf.setPrefWidth(Main.WIDTH);
         
-        TextArea action_ta = new TextArea(r.getAction());
-        action_ta.setEditable(false);
-        if(Main.HEIGHT < 700) action_ta.setStyle("-fx-font-size: 11px;");
+        Label action_ta = new Label(r.getAction());
+        action_ta.getStyleClass().add("terminal-notice");
+        action_ta.setPrefWidth(Main.WIDTH);
         
         root = new GridPane();
         root.setStyle("-fx-background-color: white;");
-        root.setMaxWidth(Main.HEIGHT > 700 ? Main.WIDTH - 100 : Main.WIDTH - 50);
+        root.setMaxWidth(Main.HEIGHT > 700 ? Main.WIDTH - 100 : Main.WIDTH - 20);
         root.setPadding(new Insets(Main.HEIGHT > 700 ? 10 : 5));
         root.setAlignment(Pos.TOP_LEFT);
         root.setVgap(5);

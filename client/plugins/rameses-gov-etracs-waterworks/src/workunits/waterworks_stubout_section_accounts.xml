@@ -1,0 +1,8 @@
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" 
+    schemaName="waterworks_stubout_account" formTitle="Accounts" 
+    cols="account.acctno,account.acctname,account.address.text,account.meter.serialno"> 
+    <invokers>
+        <invoker type="waterworks_stubout:section" caption="Accounts" action="init" index="-20"/>
+    </invokers>
+    <code class="com.rameses.gov.etracs.waterworks.models.StuboutSectionAccountModel"/>
+</workunit>

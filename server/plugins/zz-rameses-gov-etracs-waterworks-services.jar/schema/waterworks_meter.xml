@@ -4,7 +4,7 @@
 		<field name="serialno" required="true" indexed="true" caption="Serial No."/>
 		<field name="brand" required="true" indexed="true" caption="Brand"/>
 
-		<complex name="size" ref="waterworks_metersize" jointype="many-to-one" required="true">
+		<complex name="size" ref="waterworks_metersize" jointype="many-to-one" required="false">
 			<key field="sizeid" target="objid"/>
 		</complex>
 		<field name="capacity" required="true" caption="Capacity" />

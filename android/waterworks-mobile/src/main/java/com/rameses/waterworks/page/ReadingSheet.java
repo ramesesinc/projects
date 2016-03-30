@@ -224,7 +224,7 @@ public class ReadingSheet {
         //GET THE ACCOUNT'S PAYMENTS
         double subtotal = 0.00;
         for(ItemAccount a: account.getItemList()){
-            subtotal += a.getAmount();
+            subtotal += Double.parseDouble(a.getAmount());
         }
         double total = subtotal + charge;
         

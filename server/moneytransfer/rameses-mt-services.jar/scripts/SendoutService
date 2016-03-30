@@ -1,5 +1,6 @@
 import com.rameses.annotations.*;
 import com.rameses.util.*;
+import com.rameses.rules.common.*;
 import mt.facts.*;
 import mt.actions.*;
 
@@ -10,6 +11,9 @@ class SendoutService {
 
 	@Service('RuleExecutorService')
 	def ruleSvc; 
+
+	@Service('DateService')
+	def dateSvc;
 
 	@DataContext('branch') 
 	def branch; 
@@ -37,18 +41,17 @@ class SendoutService {
 
 	@ProxyMethod 
 	public def calculateCharge( params ) { 
-		def facts = [];
-		facts << new Sendout( params ); 
+		params.date = dateSvc.parse( 'yyyy-MM-dd', dateSvc.getServerDate() );
+		def soutfact = new Sendout( params ); 
+		def facts = [];		
+		facts << new CurrentDate( params.date ); 
+		facts << soutfact; 
 
-		def result = [:]; 
 		def actions = [:];
-		actions.calculatecharge = new CalculateCharge( result: result ); 
+		actions.calculatecharge = new CalculateCharge( soutfact: soutfact ); 
+		actions.updatecharge = new UpdateCharge( soutfact: soutfact ); 
 		ruleSvc.execute('sendout', facts, actions, null ); 
-		return [ 
-			charge      : result.charge, 
-			othercharge : result.othercharge, 
-			discount    : result.discount 
-		]; 
+		return [ charge : soutfact.charge ]; 
 	}
 
 } 

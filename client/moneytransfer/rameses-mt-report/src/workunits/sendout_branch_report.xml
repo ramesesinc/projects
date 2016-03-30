@@ -1,0 +1,8 @@
+<workunit extends="wtemplates/ReportController.xml" >
+    <invokers>
+        <invoker folderid="/explorer/report/mt" action="init" srole="REPORT" 
+            caption="Sendout Report By Branch" target="window"/>
+    </invokers>
+    
+    <code class="com.rameses.mt.models.SendoutBranchReportModel"/>
+</workunit>

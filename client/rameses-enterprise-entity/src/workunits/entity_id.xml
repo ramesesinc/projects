@@ -1,0 +1,15 @@
+<workunit schemaName="entityid">
+    <invokers>
+        <invoker type="entityid:create" caption="Identification" action="create"/>
+        <invoker type="entityid:open" caption="Identification" action="open"/> 
+        
+        <invoker type="formActions" caption="Take A Photo" action="takePhoto" />
+        <invoker type="formActions" caption="Remove Photo" action="removePhoto" depends="image" visibleWhen="#{image != null}"/>
+    </invokers>
+    
+    <code class="com.rameses.entity.models.EntityIdentificationModel"/>
+    
+    <pages>
+        <page template="com.rameses.entity.views.EntityIdentificationPage"/>        
+    </pages>
+</workunit>

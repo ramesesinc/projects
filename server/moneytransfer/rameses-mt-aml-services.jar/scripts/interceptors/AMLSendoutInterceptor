@@ -2,14 +2,24 @@ import aml.facts.*;
 import aml.actions.*;
 import com.rameses.annotations.*;
 import com.rameses.util.*;
+import com.rameses.rules.common.*;
 
 class AMLSendoutInterceptor {
 
 	@DataContext('sendout_daily') 
 	def sendout_daily; 
 
+	@DataContext('redflag') 
+	def redflag; 	
+
+	@DataContext('redflag_detail') 
+	def redflag_detail;  	
+
 	@Service('RuleExecutorService')
 	def ruleSvc; 
+
+	@Service('AMLRequireTypeService')
+	def reqTypeSvc;
 
 	@After( pattern="PersistenceService.create", eval="#{args[0]._schemaname=='sendout'}", index=100 ) 
 	void afterCreate( evt ) { 
@@ -36,18 +46,48 @@ class AMLSendoutInterceptor {
 
 		params.date = o.dtfiled; 
 		def facts = []; 
+		facts << new CurrentDate( params.date ); 
 		facts << new SendoutDaily( params ); 
 
 		def result = [:]; 
 		def actions = [:]; 
 		actions.collectexception = new CollectException( result: result ); 
-		actions.aggregatesendout = new AggregateSendout( result: result, em: sendout_daily);  
+		actions.aggregatesendout = new AggregateSendout( result: result, em: sendout_daily, facts: facts);  
+		actions.requireinfo = new RequireInfo( result: result );  
+		actions.redflag = new AddRedFlag( result: result );  
 		ruleSvc.execute('aml', facts, actions, null); 
 
 		if ( result.exceptions ) {
 			def msg = result.exceptions.join('\n'); 
 			throw new Exception( msg ); 
 		}
+		if ( result.requireinfos ) {
+			def errs = reqTypeSvc.validate([ 
+							entityid: params.senderid, 
+							requireinfos: result.requireinfos.unique() 
+						]); 
+			if ( errs ) {
+				throw new Exception( errs*.message.join('\n') ); 
+			} 
+		}
+
+		if ( result.redflags ) { 
+			def data = [ 
+				name   : o.sender.name, 
+				dtfiled: o.dtfiled, 
+				txnid  : o.objid, 
+				txntype: 'sendout', 
+				state  : 'OPEN',
+			];
+			data = redflag.create( data ); 
+			result.redflags.each{ x-> 
+				redflag_detail.create([  
+					parentid : data.objid, 
+					message  : x 
+				]); 
+			} 
+		} 
 	} 
+
 } 
 

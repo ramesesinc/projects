@@ -6,11 +6,23 @@
                  action="start" />
     </invokers>
     <code>
+        import com.rameses.rcp.annotations.*;
         import com.rameses.seti2.models.*;
-        class WaterworksNewApplication extends CrudPageFlowModel {
-            void afterCreate() {
-                entity.address = [:];
+        class WaterworksNewApplication extends CrudPageFlowModel { 
+        
+            @Script('RevenueRules')
+            def ruleScript; 
+        
+            void afterCreate() { 
+                entity.account = [address:[:]]; 
             }
+        
+            void computeFee() { 
+                def m = [txntype: getSchemaName()]; 
+                def result = ruleScript.execute( m );
+                entity.items = result.items; 
+                entity.total = result.total;
+            } 
         }
     </code>
     <pageflow>
@@ -18,7 +30,7 @@
             <transition to="initial"/>
         </start>
         <page name="initial" title="Waterworks Application Initial Page">
-            <transition to="compute-fees" caption="Next" />
+            <transition to="compute-fees" caption="Next" action="computeFee"/>
         </page>
         <page name="compute-fees" title="Compute Fees">
             <transition to="initial" caption="Back" />

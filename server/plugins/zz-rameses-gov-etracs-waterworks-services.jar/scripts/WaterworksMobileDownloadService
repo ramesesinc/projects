@@ -52,9 +52,9 @@ class WaterworksMobileService {
 		def acct = cta.findAccountByHandlerAndTag([handler:'waterworks', tag:'CON']); 
 		if ( !acct ) throw new Exception('Please provide an itemaccount ');
 
-		def params = [areaid:o.areaid];
+		def params = [areaid:o.areaid, year:dueyear, month:duemonth];
 		def list = wm.getListForDownload(params);
-		list.each {
+		list.each { 
 			it.state = 'PENDING';
 			it.barcode = '51030:' + it.acctno;
 			it.batchid = batchid;

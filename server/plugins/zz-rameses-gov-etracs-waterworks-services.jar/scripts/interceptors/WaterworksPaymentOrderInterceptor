@@ -2,52 +2,18 @@ import com.rameses.annotations.*;
 
 class WaterworksPaymentOrderInterceptor {
 	
+	@Service('WaterworksCashReceiptService') 
+	def cashReceiptSvc; 
+
 	@Env
 	def env; 
-
-	@DataContext('waterworks_application')
-	def waterworks_application;
-
-	@DataContext('waterworks_account_ledger')
-	def waterworks_account_ledger;
-
-	@DataContext("collectiontype")
-	def collectionType;
-
-	@DataContext("itemaccount")
-	def itemaccount;
 
 	@Before( pattern="PaymentOrderService.open", eval="#{args[0].txnid.startsWith('WA')}" )
 	public void beforeOpen( evt ) {
 		def params = evt.args[0]; 
 		def txnid = params.txnid; 
-		def o = waterworks_application.find([ appno: txnid ]).first(); 
-		if ( !o ) throw new Exception('Barcode not found'); 
-
-		def p = [:];
-		p.collectiontype = collectionType.find([barcodekey:'51030']).first();
-		p.paidby = o.account.acctname; 
-		p.paidbyaddress = o.account.address?.text; 
-		p.payer = o.account.owner; 
-		p.items = [];
-
-		def list = waterworks_account_ledger.find([ parentid: o.objid ]).where('amount-amtpaid > 0').list(); 
-		if ( !list ) throw new Exception('No unpaid balance for this account'); 
-
-		list.each{ 
-			def t = [:];
-			t.item = itemaccount.find([objid: it.item.objid]).first();
-			t.amount = it.balance;
-			t.refid = it.objid;
-			t.surcharge = 0;
-			t.interest = 0;
-			t.discount = 0;
-			t.total = t.amount;
-			p.items << t; 
-		}
-		p.amount = p.items.sum{ it.amount }
-		p.billitems = p.items; 
-		p.info = [acctid: o.acctid]; 
-		env.paymentorder = [info:p, txntype:'waterworks_application',txnid:o.objid,refid:o.objid]; 
+		def p = cashReceiptSvc.getBilling([ refno: txnid ]); 
+		def info = p.info; 
+		env.paymentorder = [info:p, txntype:'waterworks_application',txnid:info.acctid,refid:info.acctid];  
 	}
 }	

@@ -3,58 +3,21 @@ import java.rmi.server.UID;
 
 class WaterworksCashReceiptInterceptor{
 
-	@DataContext("waterworks_account")
-	def wa;
-	
-	@DataContext("waterworks_account_ledger")
-	def waterworks_account_ledger;
-
-	@DataContext("waterworks_payment")
-	def wp;
-
-	@DataContext("waterworks_payment_item")
-	def wpi;
+	@Service('WaterworksCashReceiptService')
+	def cashReceiptSvc;
 
 	@After(pattern="CashReceiptService.post", eval="#{result.collectiontype?.handler == 'waterworks'}")
 	public void postPayment(def evt) {
 		def o = evt.args[0]; 
 		if ( !o.info?.acctid ) throw new Exception('info.acctid is required');
 		
-		def pmt = [:];
-		pmt.account = [objid : o.info.acctid];
-		pmt.reftype = "cashreceipt";
-		pmt.refid = o.objid;
-		pmt.refno = o.receiptno;
-		pmt.refdate = o.receiptdate;
-		pmt.amount = o.amount;
-		pmt.voided = 0;
-		pmt.items = [];
-
-		o.billitems.each {
-			def p = [:];
-			p.txnrefid = it.refid;
-			p.amount = it.amount;
-			p.discount = it.discount;
-			p.surcharge = it.surcharge;
-			p.interest = it.interest;
-			p.item = it.item;
-			waterworks_account_ledger.find([ objid: it.refid]).update([amtpaid:'{amtpaid+:amount}'],[amount:it.amount]); 
-			pmt.items << p;
-		}
-
-		wp.create( pmt );
+		cashReceiptSvc.post( o );  
 	}
 
 	@After(pattern="CashReceiptVoidService.post",index=0,eval="#{result.receipt.collectiontype.handler=='waterworks'}")
 	public void voidPayment(def evt) {
 		def rct = evt.result.receipt;
-		def pmt = wp.find([refid: rct.objid ]).select('objid').first();
-		def items = wpi.find( [parentid: pmt.objid] ).select('txnrefid,amount').list();
-		items.each{ 
-			waterworks_account_ledger.find([ objid: it.txnrefid]).update([amtpaid:'{amtpaid-:amount}'],[amount:it.amount]); 
-		}
-		
-		wp.find( [objid: pmt.objid] ).update([voided:1]);
+		cashReceiptSvc.postVoid( rct );
 	}
 
 }

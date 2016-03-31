@@ -1,0 +1,17 @@
+import com.rameses.annotations.*;
+
+class WaterworksAccountService {
+	
+	@DataContext('entity')
+	def entity; 
+
+	@ProxyMethod 
+	public def initChangeOwner( params ) {
+		return entity.find([ objid: params.ownerid ]).select('name,address.text').first(); 
+	}
+
+	@ProxyMethod 
+	public def postChangeOwner( params ) {
+		
+	}
+}

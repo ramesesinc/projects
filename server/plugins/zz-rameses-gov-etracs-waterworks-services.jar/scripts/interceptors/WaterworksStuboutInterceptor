@@ -41,12 +41,8 @@ class WaterworksStuboutInterceptor {
 	@Before(pattern="PersistenceService.update", eval="#{args[0]._schemaname=='waterworks_stubout_account' && args[0]._tag=='swap'}")
 	public void swap( evt ) {
 		def params = evt.args[0];
-		def o = waterworks_stubout_account.find([ objid: params.objid ]).select('parentid,sortorder').first(); 
-		if ( o ) {
-			waterworks_stubout_account.find([ parentid: o.parentid, sortorder: params.sortorder ])
-									  .update([sortorder: o.sortorder]); 
-		}
-
-		throw new Exception('unsupported at this time');
+		def src = waterworks_stubout_account.find([ objid: params.objid ]).select('parentid,sortorder').first(); 
+		def dest = waterworks_stubout_account.find([ parentid: src.parentid, sortorder: params.sortorder ]).select('objid').first(); 
+		waterworks_stubout_account.find([ objid: dest.objid ]).update([sortorder: src.sortorder]);
 	}		
 }

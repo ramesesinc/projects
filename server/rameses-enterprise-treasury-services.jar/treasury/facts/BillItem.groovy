@@ -22,6 +22,9 @@ public class BillItem {
     double interest = 0;            //interest paid
     def category;
 
+    String title;                   //this is used in lieu of account. if account is not specified.
+    String remarks;             
+
     Account account;                //the principal account
     Account surchargeAccount;       //surcharge account
     Account interestAccount;        //interest account
@@ -37,7 +40,7 @@ public class BillItem {
     //for display
     def toItem() {
         return [
-            item: account.toItem(),
+            item: account?.toItem(),
             refid: refid,
             amtdue: amtdue,
             amount: amount,
@@ -47,7 +50,9 @@ public class BillItem {
             total: total,
             duedate: duedate,
             compromise: compromise,
-            sortorder: sortorder
+            sortorder: sortorder,
+            title: title,
+            remarks: remarks
         ];
     }
     

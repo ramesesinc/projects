@@ -9,6 +9,7 @@ class QueryService {
 	def db;
 
 	def buildEm(def o ) {
+		//o.debug = true;
 		if(!o._schemaname) 
 			throw new Exception('Please specify a name in QueryService.getList or findFirst');
 

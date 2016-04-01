@@ -2,29 +2,23 @@ package com.rameses.waterworks.bean;
 
 import javafx.beans.property.SimpleBooleanProperty;
 
-/**
- *
- * @author Rameses
- */
 public class Area {
     
-    private String objid, title, assigneeid, zone, sector;
+    private String objid, title, assigneeid, sectorid;
     public SimpleBooleanProperty selected;
     
-    public Area(String objid, String title, String assigneeid, String zone, String sector, boolean selected){
+    public Area(String objid, String title, String assigneeid, String sectorid, boolean selected){
         this.objid = objid;
         this.title = title;
         this.assigneeid = assigneeid;
-        this.zone = zone;
-        this.sector = sector;
+        this.sectorid = sectorid;
         this.selected = new SimpleBooleanProperty(selected);
     }
     
     public String getObjid(){ return objid; }
     public String getTitle(){ return title; }
     public String getAssigneeId(){ return assigneeid; }
-    public String getZone(){ return zone; }
-    public String getSector(){ return sector; };
+    public String getSectorId(){ return sectorid; };
     public boolean isSelected(){ return selected.get(); }
     
     @Override

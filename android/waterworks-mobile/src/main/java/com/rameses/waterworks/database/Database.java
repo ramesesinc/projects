@@ -6,6 +6,7 @@ import com.rameses.waterworks.bean.Area;
 import com.rameses.waterworks.bean.Rule;
 import com.rameses.waterworks.bean.Setting;
 import com.rameses.waterworks.bean.Stubout;
+import com.rameses.waterworks.bean.Zone;
 import java.util.List;
 import java.util.Map;
 
@@ -64,16 +65,20 @@ public interface Database {
     
     public void createArea(Area r);
     
-    public void createStubout(Stubout s);
-    
     public void clearArea();
+    
+    public void createStubout(Stubout s);
     
     public void clearStubout();
     
-    public void clearStuboutAccount();
-    
-    public List<Stubout> getSearchStuboutResult(String searchtext);
+    public List<Stubout> getSearchStuboutResult(String searchtext,Zone zone);
     
     public List<Account> getAccountByStubout(Stubout s,String searchtext);
+    
+    public void createZone(Zone zone);
+    
+    public void clearZone();
+    
+    public List<Zone> getSearchZoneResult(String searchtext);
     
 }

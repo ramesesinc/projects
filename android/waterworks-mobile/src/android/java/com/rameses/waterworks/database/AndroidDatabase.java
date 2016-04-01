@@ -11,6 +11,7 @@ import com.rameses.waterworks.bean.Area;
 import com.rameses.waterworks.bean.Rule;
 import com.rameses.waterworks.bean.Setting;
 import com.rameses.waterworks.bean.Stubout;
+import com.rameses.waterworks.bean.Zone;
 import com.rameses.waterworks.util.SystemPlatformFactory;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -86,14 +87,28 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
                 + " objid VARCHAR(50) PRIMARY KEY,"
                 + " title VARCHAR(50), "
                 + " zone VARCHAR(50), "
-                + " sector VARCHAR(50), "
+                + " sectorid VARCHAR(50), "
                 + " assigneeid VARCHAR(50))");
         
         sqld.execSQL("CREATE TABLE stubout ("
                 + " objid VARCHAR(50) PRIMARY KEY,"
                 + " title VARCHAR(50), "
-                + " description TEXT, "
-                + " areaid VARCHAR(50))");
+                + " description VARCHAR(255), "
+                + " zoneid VARCHAR(50), "
+                + " zonecode VARCHAR(50), "
+                + " zonedesc VARCHAR(255), "
+                + " sectorid VARCHAR(50), "
+                + " sectorcode VARCHAR(50), "
+                + " areaid VARCHAR(50), "
+                + " areatitle VARCHAR(50), "
+                + " assigneeid VARCHAR(50), "
+                + " assigneename VARCHAR(255))");
+        
+        sqld.execSQL("CREATE TABLE zone ("
+                + " objid VARCHAR(50) PRIMARY KEY,"
+                + " code VARCHAR(50), "
+                + " description VARCHAR(255), "
+                + " sector VARCHAR(255))");
         
     }
 
@@ -788,8 +803,7 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
         ContentValues values = new ContentValues();
         values.put("objid", r.getObjid());
         values.put("title", r.getTitle());
-        values.put("zone", r.getZone());
-        values.put("sector", r.getSector());
+        values.put("sectorid", r.getSectorId());
         values.put("assigneeid", r.getAssigneeId());
         
         SQLiteDatabase db = this.getWritableDatabase();
@@ -801,26 +815,7 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
         }
         db.close();
     }
-
-    @Override
-    public void createStubout(Stubout s) {
-        ERROR = "";
-        ContentValues values = new ContentValues();
-        values.put("objid", s.getObjid());
-        values.put("title", s.getTitle());
-        values.put("description", s.getDescription());
-        values.put("areaid", s.getAreaId());
-        
-        SQLiteDatabase db = this.getWritableDatabase();
-        try{
-            db.insert("stubout", null, values);
-        }catch(Exception e){
-            e.printStackTrace();
-            ERROR = "Database Error: " + e.toString();
-        }
-        db.close();
-    }
-
+    
     @Override
     public void clearArea() {
         ERROR = "";
@@ -837,6 +832,33 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
     }
 
     @Override
+    public void createStubout(Stubout s) {
+        ERROR = "";
+        ContentValues values = new ContentValues();
+        values.put("objid", s.getObjid());
+        values.put("title", s.getTitle());
+        values.put("description", s.getDescription());
+        values.put("zoneid", s.getZoneId());
+        values.put("zonecode", s.getZoneCode());
+        values.put("zonedesc", s.getZoneDesc());
+        values.put("sectorid", s.getSectorId());
+        values.put("sectorcode", s.getSectorCode());
+        values.put("areaid", s.getAreaId());
+        values.put("areatitle", s.getAreaTitle());
+        values.put("assigneeid", s.getAssigneeId());
+        values.put("assigneename", s.getAssigneeName());
+        
+        SQLiteDatabase db = this.getWritableDatabase();
+        try{
+            db.insert("stubout", null, values);
+        }catch(Exception e){
+            e.printStackTrace();
+            ERROR = "Database Error: " + e.toString();
+        }
+        db.close();
+    }
+
+    @Override
     public void clearStubout() {
         ERROR = "";
         try{
@@ -850,40 +872,20 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
             ERROR = "Database Error: " + e.toString();
         }
     }
-
-    @Override
-    public void clearStuboutAccount() {
-        ERROR = "";
-        try{
-            String userid = SystemPlatformFactory.getPlatform().getSystem().getUserID();
-            String[] args = new String[]{userid};
-            SQLiteDatabase db = this.getWritableDatabase();
-            db.execSQL("DELETE FROM stubout_account WHERE parentid IN (SELECT s.objid FROM stubout s INNER JOIN area a ON s.areaid = a.objid WHERE a.assigneeid = ?)",args);
-            db.close();
-        }catch(Exception e){
-            e.printStackTrace();
-            ERROR = "Database Error: " + e.toString();
-        }
-    }
     
     @Override
-    public List<Stubout> getSearchStuboutResult(String searchtext) {
+    public List<Stubout> getSearchStuboutResult(String searchtext, Zone zone) {
         ERROR = "";
         searchtext = searchtext + "%";
         List<Stubout> list = new ArrayList<Stubout>();
         String userid = SystemPlatformFactory.getPlatform().getSystem().getUserID();
-        String[] args = new String[]{searchtext, userid};
+        String[] args = new String[]{searchtext,zone.getObjid()};
         try{
             SQLiteDatabase db = this.getWritableDatabase();
-            Cursor cursor = db.rawQuery("SELECT s.* FROM stubout s INNER JOIN area g ON s.areaid = g.objid WHERE s.title LIKE ? AND g.assigneeid = ?", args);
+            Cursor cursor = db.rawQuery("SELECT * FROM stubout WHERE title LIKE ?  AND zoneid = ?", args);
             if(cursor.moveToFirst()){
-                do{
-                    String objid = cursor.getString(0);
-                    String title = cursor.getString(1);
-                    String description = cursor.getString(2);
-                    String areaid = cursor.getString(3);
-                    
-                    Stubout stubout = new Stubout(objid, title, description, areaid);
+                do{   
+                    Stubout stubout = new Stubout(cursor.getString(0),cursor.getString(1),cursor.getString(2),cursor.getString(3),cursor.getString(4),cursor.getString(5),cursor.getString(6),cursor.getString(7),cursor.getString(8),cursor.getString(9),cursor.getString(10),cursor.getString(11));
                     list.add(stubout);
                 }while(cursor.moveToNext());
             }
@@ -969,6 +971,68 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
         }catch(Exception e){
             e.printStackTrace();
             ERROR = "Database Error: " + e.toString();
+        }
+        return list;
+    }
+    
+    @Override
+    public void createZone(Zone z) {
+        ERROR = "";
+        ContentValues values = new ContentValues();
+        values.put("objid", z.getObjid());
+        values.put("code", z.getCode());
+        values.put("description", z.getDesc());
+        values.put("sector", z.getSector());
+        
+        SQLiteDatabase db = this.getWritableDatabase();
+        try{
+            db.insert("zone", null, values);
+        }catch(Exception e){
+            e.printStackTrace();
+            ERROR = "Database Error: " + e.toString();
+        }
+        db.close();
+    }
+    
+    @Override
+    public void clearZone() {
+        ERROR = "";
+        try{
+            String userid = SystemPlatformFactory.getPlatform().getSystem().getUserID();
+            String[] args = new String[]{userid};
+            SQLiteDatabase db = this.getWritableDatabase();
+            db.execSQL("DELETE FROM zone WHERE objid IN (SELECT zoneid FROM stubout WHERE assigneeid = ?)",args);
+            db.close();
+        }catch(Exception e){
+            e.printStackTrace();
+            ERROR = "Database Error: " + e.toString();
+        }
+    }
+    
+    @Override
+    public List<Zone> getSearchZoneResult(String searchtext) {
+        ERROR = "";
+        searchtext = searchtext + "%";
+        List<Zone> list = new ArrayList<Zone>();
+        String userid = SystemPlatformFactory.getPlatform().getSystem().getUserID();
+        String[] args = new String[]{searchtext,userid};
+        SQLiteDatabase db = null;
+        try{
+            db = this.getWritableDatabase();
+            Cursor cursor = db.rawQuery("SELECT z.* FROM zone z INNER JOIN stubout s ON z.objid = s.zoneid WHERE z.code LIKE ?  AND s.assigneeid = ?", args);
+            if(cursor.moveToFirst()){
+                do{   
+                    Zone zone = new Zone(cursor.getString(0),cursor.getString(1),cursor.getString(2),cursor.getString(3));
+                    list.add(zone);
+                }while(cursor.moveToNext());
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+            ERROR = "Database Error: " + e.toString();
+        }finally{
+            try{
+                db.close();
+            }catch(Throwable t){}
         }
         return list;
     }

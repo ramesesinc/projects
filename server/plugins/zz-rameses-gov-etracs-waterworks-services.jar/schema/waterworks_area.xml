@@ -10,6 +10,5 @@
 		<complex name="zones" ref="waterworks_area_zone" jointype="one-to-many">
 			<key field="objid" target="areaid"/>
 		</complex>
-
 	</element>
 </schema>

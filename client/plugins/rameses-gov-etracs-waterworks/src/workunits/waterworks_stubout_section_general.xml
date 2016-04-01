@@ -2,8 +2,8 @@
     <invokers>
         <invoker type="waterworks_stubout:section" caption="General Information" index="-30"/>
         
-        <invoker type="formActions" caption="Edit" action="edit" visibleWhen="#{mode=='read'}"/>
-        <invoker type="formActions" caption="Cancel" action="cancel" visibleWhen="#{mode=='edit'}"/>
+        <invoker type="formActions" caption="Edit" action="edit" visibleWhen="#{mode=='read'}" immediate="true"/>
+        <invoker type="formActions" caption="Cancel" action="cancel" visibleWhen="#{mode=='edit'}" immediate="true"/>
         <invoker type="formActions" caption="Save" action="save" visibleWhen="#{mode=='edit'}"/>
         
     </invokers>

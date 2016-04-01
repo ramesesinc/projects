@@ -4,18 +4,20 @@
  */
 package com.rameses.gov.etracs.waterworks.views;
 
+import com.rameses.osiris2.themes.FormPage;
+import com.rameses.rcp.ui.annotations.StyleSheet;
 import com.rameses.rcp.ui.annotations.Template;
-import com.rameses.seti2.views.CrudFormPage;
 
 /**
  *
  * @author Rameses
  */
-@Template(CrudFormPage.class)
+@StyleSheet
+@Template(FormPage.class)
 public class StuboutPage extends javax.swing.JPanel {
 
     /**
-     * Creates new form NewStuboutPage
+     * Creates new form StuboutPage
      */
     public StuboutPage() {
         initComponents();

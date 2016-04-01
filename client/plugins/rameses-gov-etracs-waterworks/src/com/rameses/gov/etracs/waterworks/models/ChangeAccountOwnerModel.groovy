@@ -25,7 +25,7 @@ class ChangeAccountOwnerModel {
         return '_close';
     }
     
-    def doClose() { 
+    def doCancel() { 
         return '_close'; 
     }
 }

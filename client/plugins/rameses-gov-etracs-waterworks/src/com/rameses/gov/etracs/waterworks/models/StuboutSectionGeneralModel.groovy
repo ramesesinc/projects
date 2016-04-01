@@ -22,6 +22,9 @@ public class StuboutSectionGeneralModel {
     }
     
     void cancel() {
+        mode = 'read'; 
+    }
+    void save() {
         
     }
 } 

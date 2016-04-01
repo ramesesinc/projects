@@ -1,6 +1,6 @@
 "entity.*" [ mode != 'read' ] {
-    enabled: false;
+    enabled: true;
 }
 "entity.*" [ mode == 'read' ] {
-    enabled: true;
+    enabled: false;
 }

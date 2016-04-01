@@ -1,0 +1,9 @@
+<schema adapter="waterworks">
+	<element tablename="vw_waterworks_sector_zone">
+		<field name="objid" primary="true"/> 
+		<field name="sector_objid" hidden="true" visible="false"/> 
+		<field name="sector_code" caption="Sector" searchable="true"/> 
+		<field name="code" caption="ZoneCode" searchable="true"/> 
+		<field name="description" caption="ZoneDescription"/> 
+	</element>
+</schema>

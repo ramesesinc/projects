@@ -3,7 +3,7 @@ import java.rmi.server.*;
 import com.rameses.util.*;
 import java.text.*;
 
-class WaterworksMobileService {
+class WaterworksMobileDownloadService {
 	
 	@DataContext("waterworks_mobile_info")
 	def wm;
@@ -17,17 +17,20 @@ class WaterworksMobileService {
 	@DataContext("waterworks_area")
 	def wr;
 
+	@DataContext("vw_waterworks_stubout")
+	def vw_waterworks_stubout;
+
 	@DataContext("waterworks_stubout")
 	def ws;
+
+	@DataContext('collectiontype_account') 
+	def cta;
 
 	@Service("DateService")
 	def dateSvc;
 
 	@Service("WaterworksBillingService")
 	def billingSvc;
-
-	@DataContext('collectiontype_account') 
-	def cta;
 
 	@ProxyMethod
 	public def initForDownload( def o ){
@@ -112,14 +115,17 @@ class WaterworksMobileService {
 	}
 
 	@ProxyMethod
-	def getAreasByUser( def o ){
+	def getAreasByUser( o ){
 		if(!o.userid) throw new Exception("userid is required!");
 		return wr.find(['assignee.objid':o.userid]).list();
 	}
 
 	@ProxyMethod
-	def getStuboutsByArea(def o){
-		if(!o.areaid) throw new Exception("areaid is required!");
-		return ws.select('objid,title,description,areaid').find(['areaid':o.areaid]).list();
+	def getStuboutsByArea( o ){
+		if (!o.areaid) throw new Exception("areaid is required!");
+
+		return vw_waterworks_stubout.find(['area.objid': o.areaid])
+					   			    .select('objid,title,description,area.objid')
+							 		.list(); 
 	}
 }

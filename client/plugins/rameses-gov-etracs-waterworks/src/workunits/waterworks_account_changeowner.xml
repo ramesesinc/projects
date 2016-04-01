@@ -1,6 +1,6 @@
 <workunit>
     <invokers>
-        <invoker type="waterworks_account:changeowner" caption="Change Owner" action="init"/>
+        <invoker type="waterworks_account:changeowner" caption="Change Owner" action="init" target="popup"/>
     </invokers>
     <code class="com.rameses.gov.etracs.waterworks.models.ChangeAccountOwnerModel"/>
     <pages>

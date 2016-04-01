@@ -4,16 +4,20 @@
  */
 package com.rameses.gov.etracs.waterworks.views;
 
+import com.rameses.osiris2.themes.FormPage;
+import com.rameses.rcp.ui.annotations.Template;
+
 /**
  *
  * @author Dino
  */
-public class WaterworksAccountGeneralInformationPage extends javax.swing.JPanel {
+@Template(FormPage.class)
+public class WaterworksAccountGeneralPage extends javax.swing.JPanel {
 
     /**
      * Creates new form AccountInformationPage
      */
-    public WaterworksAccountGeneralInformationPage() {
+    public WaterworksAccountGeneralPage() {
         initComponents();
     }
 

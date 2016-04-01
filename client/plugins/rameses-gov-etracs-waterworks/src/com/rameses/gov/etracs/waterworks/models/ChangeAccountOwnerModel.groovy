@@ -10,18 +10,22 @@ class ChangeAccountOwnerModel {
     @Service('WaterworksAccountService') 
     def svc; 
     
-    def account = [:];
     def entity = [:];
-    
-    @PropertyChangeListener 
-    def changelisteners = [
-        'entity.newowner': { o-> 
-            println o;
-        }
-    ]; 
-    
+    def handler;
+        
     void init() {
-        def o = svc.initChangeOwner([ ownerid: account.owner.objid ]); 
-        entity.currentowner = o; 
+    }
+    
+    def doOk() { 
+        if ( !entity.newowner?.objid ) throw new Exception('Please specify the new owner'); 
+        if ( !entity.acctname ) throw new Exception('Please specify the account name'); 
+        
+        if ( handler ) handler( entity ); 
+        
+        return '_close';
+    }
+    
+    def doClose() { 
+        return '_close'; 
     }
 }

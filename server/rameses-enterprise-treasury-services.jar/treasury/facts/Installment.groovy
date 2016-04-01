@@ -7,6 +7,7 @@ class Installment {
 	String id;
 	Date startdate;
 	int term;
+	String txntype;
 
 	Account account;
 	double amount;

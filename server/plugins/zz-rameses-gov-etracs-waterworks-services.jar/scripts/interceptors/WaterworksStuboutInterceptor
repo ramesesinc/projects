@@ -5,7 +5,6 @@ class WaterworksStuboutInterceptor {
 	@DataContext('waterworks_stubout_account')
 	def waterworks_stubout_account;
 
-
 	@Before(pattern="PersistenceService.removeEntity", eval="#{args[0]._schemaname == 'waterworks_stubout_account'}")
 	public void beforeRemoveEntity( evt) {
 		def params = evt.args[0];

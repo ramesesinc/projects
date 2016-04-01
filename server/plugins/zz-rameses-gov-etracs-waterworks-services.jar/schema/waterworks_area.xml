@@ -1,11 +1,15 @@
 <schema adapter="waterworks">
 	<element tablename="waterworks_area">
-		<field name="objid" primary="true" prefix="SO"/>
+		<field name="objid" primary="true" prefix="WAR"/>
 		<field name="title" required="true" indexed="true" caption="Title"/>
 		<field name="assignee_objid" required="true" caption="Assignee ID" visible="false"/>
 		<field name="assignee_name" required="true" caption="Assignee Name"/>
-		
-		<field name="zone" caption="Zone"/>
-		<field name="sector" caption="Sector"/>
+		<complex name="sector" ref="waterworks_sector" jointype="many-to-one">
+			<key field="sectorid" target="objid"/>
+		</complex>
+		<complex name="zones" ref="waterworks_area_zone" jointype="one-to-many">
+			<key field="objid" target="areaid"/>
+		</complex>
+
 	</element>
 </schema>

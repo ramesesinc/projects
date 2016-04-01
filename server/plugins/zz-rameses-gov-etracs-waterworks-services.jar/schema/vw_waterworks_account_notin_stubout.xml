@@ -1,0 +1,11 @@
+<schema adapter="waterworks">
+	<element tablename="vw_waterworks_account_notin_stubout">
+		<field name="objid" primary="true"/> 
+		<field name="acctno"/> 
+		<field name="acctname"/> 
+		<field name="owner_name"/> 
+		<field name="address_text"/> 
+		<field name="meter_serialno"/> 
+	</element>
+</schema>
+

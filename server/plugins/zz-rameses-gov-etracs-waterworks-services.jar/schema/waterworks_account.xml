@@ -39,7 +39,14 @@
 		<field name="lastreadingyear" required="false" indexed="true" type="integer" caption="Last Reading Year"/>
 		<field name="lastreading" required="false" indexed="true" type="integer" caption="Last Reading"/>
 		<field name="prevreading" required="false" indexed="true" type="integer" caption="Previous Reading"/>
-		
+
+		<!-- These are flag fields to check if the date is subject for disconnection -->
+		<field name="disconnectiondate" required="false" />
+		<field name="paymentvaliditydate" required="false" />
+		<complex name="stubout" ref="waterworks_stubout" jointype="many-to-one" required="false">
+			<key field="stuboutid" target="objid"/> 
+		</complex>
+		<field name="stuboutindex"/> 
 	</element>
 
 

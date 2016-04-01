@@ -1,0 +1,11 @@
+<schema adapter="waterworks">
+	<element tablename="waterworks_area_zone">
+		<field name="objid" primary="true" prefix="WARZ"/>
+		<complex name="area" ref="waterworks_area" jointype="many-to-one">
+			<key field="areaid" target="objid"/>
+		</complex>	
+		<complex name="zone" ref="waterworks_sector_zone" jointype="many-to-one">
+			<key field="zoneid" target="objid"/>
+		</complex>	
+	</element>
+</schema>

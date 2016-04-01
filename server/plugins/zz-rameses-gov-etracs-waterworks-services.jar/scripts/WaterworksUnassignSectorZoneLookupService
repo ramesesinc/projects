@@ -1,0 +1,21 @@
+import com.rameses.annotations.*;
+
+class WaterworksUnassignSectorZoneLookupService {
+	
+	@DataContext('waterworks_area') 
+	def wa; 
+
+	@ProxyMethod 
+	public def getColumns( params ) {
+		return [
+			[name:'code', caption:'Code'],
+			[name:'description', caption:'Description']
+		]; 
+	}
+
+
+	@ProxyMethod
+	public def getList( params ) { 
+		return wa.getUnassignSectorZonesLookup( params ); 
+	}
+}

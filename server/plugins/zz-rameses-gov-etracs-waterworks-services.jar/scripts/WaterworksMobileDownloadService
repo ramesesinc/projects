@@ -32,6 +32,10 @@ class WaterworksMobileService {
 	@ProxyMethod
 	public def initForDownload( def o ){
 		if(!o.areaid) throw new Exception("areaid is required!");
+
+		//we need to get this first since it will be used for billing.
+		def area = wr.find([objid:o.areaid]).first();
+
 		def batchid = 'BTC' + new UID();
         def y = dateSvc.getServerYear();
 		def m = dateSvc.getServerMonth() - 1;
@@ -49,7 +53,7 @@ class WaterworksMobileService {
 		def rundate = dateSvc.getServerDate();
 		DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
 		
-		def acct = cta.findAccountByHandlerAndTag([handler:'waterworks', tag:'CON']); 
+		def acct = cta.findAccountByHandlerAndTag([handler:'waterworks', tag:'WFEE']); 
 		if ( !acct ) throw new Exception('Please provide an itemaccount ');
 
 		def params = [areaid:o.areaid, year:dueyear, month:duemonth];
@@ -61,18 +65,25 @@ class WaterworksMobileService {
 			it.month = duemonth;
 			it.year = dueyear;
 			it.period = df.format(fromdate) + " - " + df.format(todate);
-			it.duedate = duedate;
-			it.discodate = discodate;
 			it.rundate = rundate;
 			it.itemaccountid = acct.account.objid; 
-			/*it.items = wm.serializer.write([
+			it.duedate = duedate;
+			it.discodate = discodate;
+			it.info = wm.serializer.write([classification: it.classificationid, metersize: it.metersize, barangay: it.barangayid]);
+
+			/*			
+			def result = billingSvc.processBilling( [acctid:it.acctid, area:area] );
+			it.items = wm.serializer.write( result.billitems );			
+			it.duedate = result.duedate;
+			it.discodate = result.disconnectiondate;
+
+			it.items = wm.serializer.write([
 				[account: 'Materials', amount:100.00],
 				[account: 'Compromise', amount:50.00],
 				[account: 'Penalty', amount:0.00],
 				[account: 'Other Charge', amount:0.00]
 			]);*/
 			it.items = '[]';
-			it.info = wm.serializer.write([classification: it.classificationid, metersize: it.metersize, barangay: it.barangayid]);
 			wm.create(it);
 		}
 

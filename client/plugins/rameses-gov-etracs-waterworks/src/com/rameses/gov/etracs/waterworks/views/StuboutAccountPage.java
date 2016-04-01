@@ -39,7 +39,7 @@ public class StuboutAccountPage extends javax.swing.JPanel {
 
         xDataTable3.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "sortorder"}
+                new Object[]{"name", "stuboutindex"}
                 , new Object[]{"caption", "-"}
                 , new Object[]{"width", 30}
                 , new Object[]{"minWidth", 30}
@@ -106,7 +106,6 @@ public class StuboutAccountPage extends javax.swing.JPanel {
             })
         });
         xDataTable3.setHandler("listHandler");
-        xDataTable3.setId("listHandler");
         xDataTable3.setName("selectedItem"); // NOI18N
 
         xButton1.setDepends(new String[] {"selectedItem"});

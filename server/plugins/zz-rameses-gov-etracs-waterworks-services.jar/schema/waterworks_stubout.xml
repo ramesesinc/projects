@@ -4,11 +4,9 @@
 		<field name="objid" primary="true" prefix="SO"/>
 		<field name="title" required="true" indexed="true" caption="Title"/>
 		<field name="description" required="true" indexed="true" caption="Description"/>
-		<complex name="area" ref="waterworks_area" jointype="many-to-one" required="true" caption="Area">
-			<key field="areaid" target="objid"/> 
-		</complex>
-		<complex name="accounts" ref="waterworks_stubout_account" jointype="one-to-many" orderBy="sortorder">
-			<key field="objid" target="parentid"/>
-		</complex> 
+		<complex name="zone" ref="waterworks_sector_zone" jointype="many-to-one" required="false">
+			<key field="zoneid" target="objid"/>	
+		</complex>	
 	</element>
+
 </schema>

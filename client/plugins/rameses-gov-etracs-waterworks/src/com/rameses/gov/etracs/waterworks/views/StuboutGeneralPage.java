@@ -34,10 +34,7 @@ public class StuboutGeneralPage extends javax.swing.JPanel {
         xLabel2 = new com.rameses.rcp.control.XLabel();
         xLabel3 = new com.rameses.rcp.control.XLabel();
         xLabel8 = new com.rameses.rcp.control.XLabel();
-        xLabel4 = new com.rameses.rcp.control.XLabel();
-        xLabel6 = new com.rameses.rcp.control.XLabel();
         xLabel7 = new com.rameses.rcp.control.XLabel();
-        xLabel5 = new com.rameses.rcp.control.XLabel();
 
         xFormPanel1.setCaptionWidth(110);
 
@@ -62,37 +59,13 @@ public class StuboutGeneralPage extends javax.swing.JPanel {
         xLabel8.setShowCaption(false);
         xFormPanel1.add(xLabel8);
 
-        xLabel4.setBackground(new java.awt.Color(250, 250, 250));
-        xLabel4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(190, 190, 190)));
-        xLabel4.setCaption("Area");
-        xLabel4.setExpression("#{entity.area.title}");
-        xLabel4.setOpaque(true);
-        xLabel4.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel1.add(xLabel4);
-
-        xLabel6.setBackground(new java.awt.Color(250, 250, 250));
-        xLabel6.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(190, 190, 190)));
-        xLabel6.setCaption("Zone");
-        xLabel6.setExpression("#{entity.area.zone}");
-        xLabel6.setOpaque(true);
-        xLabel6.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel1.add(xLabel6);
-
         xLabel7.setBackground(new java.awt.Color(250, 250, 250));
         xLabel7.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(190, 190, 190)));
         xLabel7.setCaption("Sector");
-        xLabel7.setExpression("#{entity.area.sector}");
+        xLabel7.setExpression("#{entity.zone.sector.title}");
         xLabel7.setOpaque(true);
         xLabel7.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(xLabel7);
-
-        xLabel5.setBackground(new java.awt.Color(250, 250, 250));
-        xLabel5.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(190, 190, 190)));
-        xLabel5.setCaption("Assignee");
-        xLabel5.setExpression("#{entity.area.assignee.name}");
-        xLabel5.setOpaque(true);
-        xLabel5.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel1.add(xLabel5);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -115,9 +88,6 @@ public class StuboutGeneralPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XLabel xLabel2;
     private com.rameses.rcp.control.XLabel xLabel3;
-    private com.rameses.rcp.control.XLabel xLabel4;
-    private com.rameses.rcp.control.XLabel xLabel5;
-    private com.rameses.rcp.control.XLabel xLabel6;
     private com.rameses.rcp.control.XLabel xLabel7;
     private com.rameses.rcp.control.XLabel xLabel8;
     // End of variables declaration//GEN-END:variables

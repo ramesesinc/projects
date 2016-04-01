@@ -7,40 +7,28 @@ import com.rameses.osiris2.common.*;
 
 public class StuboutSectionAccountModel {
     
-    @Service('QueryService')
-    def querySvc; 
-
-    @Service('PersistenceService')
-    def persistenceSvc; 
+    @Service('WaterworksStuboutService')
+    def svc; 
     
     @Caller 
     def caller;
 
+    def schemaName = 'waterworks_stubout';
     def title = 'Accounts'; 
     def accounts = [];
-    def schemaName = 'waterworks_stubout_account';
     def selectedItem;
-    int sortorder;
-    
     
     def getEntity() {
         return caller?.entity; 
     } 
     
-    void init() { 
-        
+    void init() {         
     }
 
     def listHandler = [
         fetchList: { o-> 
             if ( !accounts ) { 
-                def m = [:];
-                m._schemaname = schemaName;
-                m.findBy = [parentid:entity.objid];
-                m.orderBy = 'sortorder';
-                m.putAll( o );
-                accounts = querySvc.getList( m );
-                sortorder = accounts.size();
+                accounts = svc.getAccounts([ stuboutid: entity.objid ]);
             } 
             return accounts; 
         }        
@@ -48,9 +36,9 @@ public class StuboutSectionAccountModel {
     
     def addAccount() {
         def h = { o-> 
-            def m = [ parentid: entity.objid, account: o, _schemaname: schemaName, sortorder:sortorder+1 ]; 
-            persistenceSvc.create( m ); 
-            accounts.clear();
+            def m = [ stuboutid: entity.objid, accountid: o.objid ];
+            svc.addAccount( m ); 
+            accounts.clear(); 
             listHandler.reload(); 
         }
         return Inv.lookupOpener("waterworks_account_notin_stubout:lookup", [ onselect: h])
@@ -59,9 +47,27 @@ public class StuboutSectionAccountModel {
     void removeAccount() { 
         if ( !selectedItem ) return;
         
-        persistenceSvc.removeEntity([ _schemaname: schemaName, objid: selectedItem.objid ]); 
+        svc.removeAccount([ stuboutid: entity.objid, accountid: selectedItem.objid ]); 
         accounts.clear();
         listHandler.reload(); 
+    }
+    
+    
+    void moveUp() { 
+        if ( !selectedItem ) return; 
+        
+        svc.moveUp([ stuboutid: entity.objid, accountid: selectedItem.objid ]);
+        accounts.clear(); 
+        listHandler.reload(); 
+        updateSelection( listHandler.selectedItem.index-1 ); 
+    }
+    void moveDown() { 
+        if ( !selectedItem ) return; 
+        
+        svc.moveDown([ stuboutid: entity.objid, accountid: selectedItem.objid ]);
+        accounts.clear(); 
+        listHandler.reload(); 
+        updateSelection( listHandler.selectedItem.index+1 ); 
     }
     
     void swap() {
@@ -71,44 +77,20 @@ public class StuboutSectionAccountModel {
         if ( !val ) return; 
         
         def sortorder = val.toInteger(); 
-        if ( selectedItem.sortorder != sortorder ) { 
-            if ( !accounts.find{ it.sortorder==sortorder }) {
+        if ( selectedItem.stuboutindex != sortorder ) { 
+            if ( !accounts.find{ it.stuboutindex==sortorder }) {
                 throw new Exception('Invalid sort order number'); 
             }
-
-            persistenceSvc.update([ 
-                _schemaname: schemaName, _tag:'swap', 
-                objid: selectedItem.objid, 
-                sortorder: sortorder  
-            ]); 
+            
+            svc.swap([ stuboutid: entity.objid, accountid: selectedItem.objid, stuboutindex:sortorder ]);
             accounts.clear(); 
             listHandler.reload(); 
+            updateSelection( sortorder-1 ); 
         }
     }
-    void moveUp() { 
-        if ( !selectedItem ) return; 
-        
-        int sortorder = selectedItem.sortorder-1;
-        if (sortorder < 1) sortorder = 1; 
-        
-        persistenceSvc.update([ 
-            _schemaname: schemaName, _tag:'moveup', 
-            objid: selectedItem.objid, sortorder: sortorder  
-        ]); 
-        accounts.clear(); 
-        listHandler.reload(); 
-    }
-    void moveDown() { 
-        if ( !selectedItem ) return; 
-        
-        int sortorder = selectedItem.sortorder+1;
-        if (sortorder > accounts.size()) sortorder = accounts.size(); 
-        
-        persistenceSvc.update([ 
-            _schemaname: schemaName, _tag:'movedown', 
-            objid: selectedItem.objid, sortorder: sortorder  
-        ]); 
-        accounts.clear(); 
-        listHandler.reload(); 
+    void updateSelection( int index ) {
+        if ( index >= 0 && index < accounts.size()) {
+            listHandler.setSelectedItem( index );  
+        } 
     }
 }

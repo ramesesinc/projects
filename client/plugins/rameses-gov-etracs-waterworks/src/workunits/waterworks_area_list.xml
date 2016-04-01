@@ -1,7 +1,7 @@
 <workunit extends="com/rameses/seti2/templates/CrudList.xml"
           schemaName="waterworks_area" formTitle="Waterworks Area" 
           allowCreate="true" allowOpen="true" allowDelete="true"
-          cols="title, assignee.name, duedate">
+          cols="title,assignee.name,sector.code">
     <invokers>
         <invoker folderid="/explorer/master/waterworks" caption="Area" action="init" index="-5"/>  
     </invokers>

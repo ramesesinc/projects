@@ -50,7 +50,7 @@ class WaterworksMobileUploadService {
 		def r = wm.find([batchid:o.batchid, objid:o.account.objid]).first(); 
 		def smonth = dateSvc.getMonths().find{ it.index==c.month }.name; 
 		wal.create([ 
-			txntype : 'CON', 
+			txntype : 'WFEE', 
 			parentid: a.objid,  
 			amount  : o.amount, 
 			amtpaid : 0, 

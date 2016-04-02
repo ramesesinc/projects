@@ -37,13 +37,15 @@ public class StuboutPage extends javax.swing.JPanel {
         xTextField1 = new com.rameses.rcp.control.XTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         xTextArea1 = new com.rameses.rcp.control.XTextArea();
-        xLookupField4 = new com.rameses.rcp.control.XLookupField();
+        xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
+        xLookupField5 = new com.rameses.rcp.control.XLookupField();
+        xLabel1 = new com.rameses.rcp.control.XLabel();
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder1.setTitle("  General Information   ");
         xPanel1.setBorder(xTitledBorder1);
 
-        xFormPanel1.setCaptionWidth(110);
+        xFormPanel1.setCaptionWidth(100);
 
         xTextField1.setCaption("Title");
         xTextField1.setName("entity.title"); // NOI18N
@@ -62,13 +64,33 @@ public class StuboutPage extends javax.swing.JPanel {
 
         xFormPanel1.add(jScrollPane1);
 
-        xLookupField4.setCaption("Zone");
-        xLookupField4.setExpression("#{entity.zone.title}");
-        xLookupField4.setHandler("waterworks_sector_zone:lookup");
-        xLookupField4.setName("entity.zone"); // NOI18N
-        xLookupField4.setPreferredSize(new java.awt.Dimension(0, 20));
-        xLookupField4.setRequired(true);
-        xFormPanel1.add(xLookupField4);
+        xFormPanel2.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
+        xFormPanel2.setCaptionWidth(100);
+        xFormPanel2.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
+        xFormPanel2.setPadding(new java.awt.Insets(0, 0, 0, 0));
+        xFormPanel2.setShowCaption(false);
+        xFormPanel2.setStretchWidth(100);
+
+        xLookupField5.setCaption("Zone");
+        xLookupField5.setExpression("#{entity.zone.code}");
+        xLookupField5.setHandler("waterworks_sector_zone:lookup");
+        xLookupField5.setName("entity.zone"); // NOI18N
+        xLookupField5.setRequired(true);
+        xLookupField5.setStretchWidth(50);
+        xFormPanel2.add(xLookupField5);
+
+        xLabel1.setBackground(new java.awt.Color(245, 245, 245));
+        xLabel1.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(200, 200, 200)), javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1)));
+        xLabel1.setCaption("Sector");
+        xLabel1.setCaptionWidth(60);
+        xLabel1.setCellPadding(new java.awt.Insets(0, 10, 0, 0));
+        xLabel1.setDepends(new String[] {"entity.zone"});
+        xLabel1.setExpression("#{entity.zone.sector.code}");
+        xLabel1.setOpaque(true);
+        xLabel1.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel2.add(xLabel1);
+
+        xFormPanel1.add(xFormPanel2);
 
         javax.swing.GroupLayout xPanel1Layout = new javax.swing.GroupLayout(xPanel1);
         xPanel1.setLayout(xPanel1Layout);
@@ -77,7 +99,7 @@ public class StuboutPage extends javax.swing.JPanel {
             .addGroup(xPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 527, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(61, Short.MAX_VALUE))
+                .addContainerGap(82, Short.MAX_VALUE))
         );
         xPanel1Layout.setVerticalGroup(
             xPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -107,7 +129,9 @@ public class StuboutPage extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane jScrollPane1;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
-    private com.rameses.rcp.control.XLookupField xLookupField4;
+    private com.rameses.rcp.control.XFormPanel xFormPanel2;
+    private com.rameses.rcp.control.XLabel xLabel1;
+    private com.rameses.rcp.control.XLookupField xLookupField5;
     private com.rameses.rcp.control.XPanel xPanel1;
     private com.rameses.rcp.control.XTextArea xTextArea1;
     private com.rameses.rcp.control.XTextField xTextField1;

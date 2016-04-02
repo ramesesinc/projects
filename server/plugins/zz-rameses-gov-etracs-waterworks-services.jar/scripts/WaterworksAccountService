@@ -17,8 +17,22 @@ class WaterworksAccountService {
 	}
 
 	@ProxyMethod 
+	public def postChangeAddress( params ) { 
+		if (!params.accountid) throw new Exception('accountid parameter is required');
+		if (!params.address) throw new Exception('address parameter is required');
+
+		def addr = params.address; 
+		if ( !addr.barangay?.objid ) throw new Exception('Please specify barangay'); 
+
+		addr.text = formatAddress( addr ); 
+		if ( !addr.text ) throw new Exception('Please specify address'); 
+
+		waterworks_account.find([ objid: params.accountid ]).update([ address: addr ]);
+		return params;  
+	}	
+
+	@ProxyMethod 
 	public def postChangeOwner( params ) {
-		println params; 
 		def newowner = vw_entityindividual.find([ objid: params.ownerid ]).first();
 		if ( !newowner?.objid ) throw new Exception('Entity record does not exist');
 
@@ -40,7 +54,6 @@ class WaterworksAccountService {
 		if ( params.acctname ) m.acctname = params.acctname; 
 
 		waterworks_account.find([ objid: params.accountid ]).update( m );
-		println m; 
 		return m; 
 	}
 

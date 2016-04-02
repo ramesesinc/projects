@@ -3,8 +3,8 @@
 		<field name="objid" primary="true"  prefix="WA"/>
 		<field name="state"  visible="false" defaultValue="ACTIVE"/>
 		<field name="dtstarted" required="false" indexed="true" type="date" caption="Date Started"/>
-		<field name="acctno" required="true" indexed="true" caption="Acct No"/>
-		<field name="acctname" required="true" indexed="true" caption="Acct Name"/>
+		<field name="acctno" required="true" indexed="true" caption="Acct No" searchable="true"/>
+		<field name="acctname" required="true" indexed="true" caption="Acct Name" searchable="true"/>
 
 		<field name="owner_objid" required="true" visible="false" caption="Owner ID"/>
 		<field name="owner_name" required="true" indexed="true" caption="Owner Name"/>

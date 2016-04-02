@@ -2,7 +2,7 @@
     <invokers>
         <invoker type="waterworks_account:section" caption="General Information" index="0"/>
         
-        <invoker type="formActions" caption="Change Owner" action="changeOwner"/>
+        <invoker type="formActions" caption="Change Address" action="changeAddress"/>
         <invoker type="formActions" caption="Change Meter" action="changeMeter"/>
     </invokers>
     <code class="com.rameses.gov.etracs.waterworks.models.AccountSectionGeneralModel"/>

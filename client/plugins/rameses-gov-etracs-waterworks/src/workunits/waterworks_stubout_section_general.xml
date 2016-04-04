@@ -9,6 +9,6 @@
     </invokers>
     <code class="com.rameses.gov.etracs.waterworks.models.StuboutSectionGeneralModel"/>
     <pages>
-       <page template="com.rameses.gov.etracs.waterworks.views.StuboutPage"/>
+       <page template="com.rameses.gov.etracs.waterworks.views.StuboutGeneralPage"/>
     </pages>
 </workunit>

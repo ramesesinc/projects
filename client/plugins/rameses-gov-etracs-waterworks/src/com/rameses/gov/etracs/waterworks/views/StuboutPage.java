@@ -4,16 +4,16 @@
  */
 package com.rameses.gov.etracs.waterworks.views;
 
-import com.rameses.osiris2.themes.FormPage;
 import com.rameses.rcp.ui.annotations.StyleSheet;
 import com.rameses.rcp.ui.annotations.Template;
+import com.rameses.seti2.views.CrudFormPage;
 
 /**
  *
  * @author Rameses
  */
 @StyleSheet
-@Template(FormPage.class)
+@Template(CrudFormPage.class)
 public class StuboutPage extends javax.swing.JPanel {
 
     /**
@@ -47,8 +47,8 @@ public class StuboutPage extends javax.swing.JPanel {
 
         xFormPanel1.setCaptionWidth(100);
 
-        xTextField1.setCaption("Title");
-        xTextField1.setName("entity.title"); // NOI18N
+        xTextField1.setCaption("Code");
+        xTextField1.setName("entity.code"); // NOI18N
         xTextField1.setPreferredSize(new java.awt.Dimension(0, 20));
         xTextField1.setRequired(true);
         xFormPanel1.add(xTextField1);

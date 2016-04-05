@@ -92,7 +92,7 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
         
         sqld.execSQL("CREATE TABLE stubout ("
                 + " objid VARCHAR(50) PRIMARY KEY,"
-                + " title VARCHAR(50), "
+                + " code VARCHAR(50), "
                 + " description VARCHAR(255), "
                 + " zoneid VARCHAR(50), "
                 + " zonecode VARCHAR(50), "
@@ -836,7 +836,7 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
         ERROR = "";
         ContentValues values = new ContentValues();
         values.put("objid", s.getObjid());
-        values.put("title", s.getTitle());
+        values.put("code", s.getCode());
         values.put("description", s.getDescription());
         values.put("zoneid", s.getZoneId());
         values.put("zonecode", s.getZoneCode());
@@ -882,7 +882,7 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
         String[] args = new String[]{searchtext,zone.getObjid()};
         try{
             SQLiteDatabase db = this.getWritableDatabase();
-            Cursor cursor = db.rawQuery("SELECT * FROM stubout WHERE title LIKE ?  AND zoneid = ?", args);
+            Cursor cursor = db.rawQuery("SELECT * FROM stubout WHERE code LIKE ?  AND zoneid = ?", args);
             if(cursor.moveToFirst()){
                 do{   
                     Stubout stubout = new Stubout(cursor.getString(0),cursor.getString(1),cursor.getString(2),cursor.getString(3),cursor.getString(4),cursor.getString(5),cursor.getString(6),cursor.getString(7),cursor.getString(8),cursor.getString(9),cursor.getString(10),cursor.getString(11));
@@ -1019,7 +1019,7 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
         SQLiteDatabase db = null;
         try{
             db = this.getWritableDatabase();
-            Cursor cursor = db.rawQuery("SELECT z.* FROM zone z INNER JOIN stubout s ON z.objid = s.zoneid WHERE z.code LIKE ?  AND s.assigneeid = ?", args);
+            Cursor cursor = db.rawQuery("SELECT * FROM zone WHERE code LIKE ?  AND objid IN (SELECT zoneid FROM stubout WHERE assigneeid = ?)", args);
             if(cursor.moveToFirst()){
                 do{   
                     Zone zone = new Zone(cursor.getString(0),cursor.getString(1),cursor.getString(2),cursor.getString(3));

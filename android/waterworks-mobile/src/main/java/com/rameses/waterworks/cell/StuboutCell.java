@@ -31,7 +31,7 @@ public class StuboutCell extends ListCell<Stubout>{
             imgContainer.getChildren().add(image);
 
 
-            Label title = new Label(stubout.getTitle());
+            Label title = new Label(stubout.getCode());
             Label description = new Label(stubout.getDescription());
 
             if(Main.HEIGHT > 800){

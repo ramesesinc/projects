@@ -79,6 +79,7 @@ public class AccountList {
             @Override
             public void handle(KeyEvent event) {
                 if(event.getCode() == KeyCode.ESCAPE){
+                    if(Dialog.isOpen){ Dialog.hide(); return; }
                     Main.ROOT.setCenter(new Home().getLayout());
                 }
             }
@@ -159,12 +160,10 @@ public class AccountList {
         accountList.setOnMouseClicked(new EventHandler<MouseEvent>(){
             @Override
             public void handle(MouseEvent event) {
-                if(event.getClickCount()==2){
-                    Account account = accountList.getSelectionModel().getSelectedItem();
-                    if(account != null){
-                        Node child = new AccountDetail(account).getLayout();
-                        Dialog.show("Account Information", child);
-                    }
+                Account account = accountList.getSelectionModel().getSelectedItem();
+                if(account != null){
+                    Node child = new AccountDetail(account).getLayout();
+                    Dialog.show("Account Information", child);
                 }
             }
         });
@@ -269,19 +268,31 @@ public class AccountList {
         stuboutList.setOnMouseClicked(new EventHandler<MouseEvent>(){
             @Override
             public void handle(MouseEvent event) {
-                if(event.getClickCount()==2){
-                    Stubout stubout = stuboutList.getSelectionModel().getSelectedItem();
-                    if(stubout != null){
-                        Node child = new StuboutAccountList(stubout).getLayout();
-                        Main.ROOT.setCenter(child);
-                    }
+                Stubout stubout = stuboutList.getSelectionModel().getSelectedItem();
+                if(stubout != null){
+                    Node child = new StuboutAccountList(stubout).getLayout();
+                    Main.ROOT.setCenter(child);
                 }
             }
         });
         
+        Button back = new Button("Back");
+        back.getStyleClass().add("terminal-button");
+        back.setStyle(Main.HEIGHT > 700 ? "-fx-font-size: 30px;" : "-fx-font-size: 17px;");
+        back.setGraphicTextGap(Main.HEIGHT > 700 ? 10 : 3);
+        back.setPrefWidth(Main.HEIGHT > 700 ? 180 : 100);
+        back.setOnAction(new EventHandler<ActionEvent>(){
+            @Override
+            public void handle(ActionEvent event) {
+                if(Dialog.isOpen){ Dialog.hide(); return; }
+                Main.ROOT.setCenter(new AccountList().getLayout());
+            }
+        });
+        
         VBox stubout_root = new VBox(Main.HEIGHT > 700 ? 10 : 5);
+        stubout_root.setAlignment(Pos.CENTER_RIGHT);
         stubout_root.setPadding(new Insets(Main.HEIGHT > 700 ? 20 : 10));
-        stubout_root.getChildren().addAll(search_stubout, stuboutList);
+        stubout_root.getChildren().addAll(search_stubout, stuboutList, back);
         
         Main.prevScreen = stubout_root;
         return stubout_root;
@@ -315,11 +326,9 @@ public class AccountList {
         zoneList.setOnMouseClicked(new EventHandler<MouseEvent>(){
             @Override
             public void handle(MouseEvent event) {
-                if(event.getClickCount()==2){
-                    Zone zone = zoneList.getSelectionModel().getSelectedItem();
-                    if(zone != null){
-                        Main.ROOT.setCenter(createStuboutLayout(zone));
-                    }
+                Zone zone = zoneList.getSelectionModel().getSelectedItem();
+                if(zone != null){
+                    Main.ROOT.setCenter(createStuboutLayout(zone));
                 }
             }
         });

@@ -1,6 +1,6 @@
 data = "EZ{PRINT,";
 data += "@" + (y += textgap) + ",0:MF204|                                         |";
-data += "@" + (y += textgap) + ",0:MF204|     SAN CARLOS CITY WATER DISTRICT      |";
+data += "@" + (y += textgap) + ",0:MF204| SAN CARLOS CITY WATERWORKS DEPARTMENT   |";
 data += "@" + (y += textgap) + ",0:MF204|   SAN CARLOS CITY, NEGROS OCCIDENTAL    |";
 data += "@" + (y += textgap) + ",0:MF204|             (032) 505-9301               |";
 data += "@" + (y += textgap+20) + ",0:MF204|For the month of "+a.getMonth()+" "+a.getYear()+"|";

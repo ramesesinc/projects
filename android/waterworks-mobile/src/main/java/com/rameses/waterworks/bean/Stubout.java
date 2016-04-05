@@ -2,11 +2,11 @@ package com.rameses.waterworks.bean;
 
 public class Stubout {
     
-    String objid, title, description, zoneid, zonecode, zonedesc, sectorid, sectorcode, areaid, areatitle, assigneeid, assigneename;
+    String objid, code, description, zoneid, zonecode, zonedesc, sectorid, sectorcode, areaid, areatitle, assigneeid, assigneename;
     
     public Stubout(
             String objid,
-            String title, 
+            String code, 
             String description, 
             String zoneid,
             String zonecode,
@@ -19,7 +19,7 @@ public class Stubout {
             String assigneename
             ){
         this.objid = objid;
-        this.title = title;
+        this.code = code;
         this.description = description;
         this.zoneid = zoneid;
         this.zonecode = zonecode;
@@ -33,7 +33,7 @@ public class Stubout {
     }
     
     public String getObjid(){ return objid; }
-    public String getTitle(){ return title; }
+    public String getCode(){ return code; }
     public String getDescription(){ return description; }
     public String getZoneId(){ return zoneid; }
     public String getZoneCode(){ return zonecode; }

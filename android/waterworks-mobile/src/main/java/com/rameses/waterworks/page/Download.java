@@ -169,6 +169,7 @@ public class Download {
                             @Override
                             public void handle(KeyEvent event) {
                                 if(event.getCode() == KeyCode.ESCAPE){
+                                    if(Dialog.isOpen){ Dialog.hide(); return; }
                                     Main.ROOT.setCenter(new Home().getLayout());
                                 }
                             }
@@ -195,6 +196,7 @@ public class Download {
             @Override
             public void handle(KeyEvent event) {
                 if(event.getCode() == KeyCode.ESCAPE){
+                    if(Dialog.isOpen){ Dialog.hide(); return; }
                     Main.ROOT.setCenter(new Home().getLayout());
                 }
             }
@@ -283,6 +285,7 @@ public class Download {
                                     @Override
                                     public void handle(KeyEvent event) {
                                         if(event.getCode() == KeyCode.ESCAPE){
+                                            if(Dialog.isOpen){ Dialog.hide(); return; }
                                             Main.ROOT.setCenter(new Home().getLayout());
                                         }
                                     }
@@ -348,7 +351,7 @@ public class Download {
         while(i.hasNext()){
             Map m = i.next();
             String objid = m.get("objid")!=null ? m.get("objid").toString() : "";
-            String title = m.get("title")!=null ? m.get("title").toString() : "";
+            String code = m.get("code")!=null ? m.get("code").toString() : "";
             String description = m.get("description")!=null ? m.get("description").toString() : "";
             String zoneid = "", zonecode = "", zonedesc = "";
             String sectorid ="", sectorcode = "";
@@ -379,7 +382,7 @@ public class Download {
                 }
             }
             
-            Stubout stubout = new Stubout(objid, title, description, zoneid, zonecode, zonedesc, sectorid, sectorcode, areaid, areatitle, assigneeid, assigneename);
+            Stubout stubout = new Stubout(objid, code, description, zoneid, zonecode, zonedesc, sectorid, sectorcode, areaid, areatitle, assigneeid, assigneename);
             DatabasePlatformFactory.getPlatform().getDatabase().createZone(new Zone(zoneid, zonecode, zonedesc, sectorcode));
             DatabasePlatformFactory.getPlatform().getDatabase().createStubout(stubout);
         }

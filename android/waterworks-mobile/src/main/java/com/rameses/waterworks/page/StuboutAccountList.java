@@ -7,8 +7,6 @@ import com.rameses.waterworks.cell.AccountCell;
 import com.rameses.waterworks.database.DatabasePlatformFactory;
 import com.rameses.waterworks.dialog.Dialog;
 import com.rameses.waterworks.layout.Header;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -84,6 +82,7 @@ public class StuboutAccountList {
             @Override
             public void handle(KeyEvent event) {
                 if(event.getCode() == KeyCode.ESCAPE){
+                    if(Dialog.isOpen){ Dialog.hide(); return; }
                     Main.ROOT.setCenter(new AccountList().getLayout());
                 }
             }

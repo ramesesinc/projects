@@ -24,9 +24,11 @@ import javafx.scene.layout.VBox;
  */
 public class Dialog {
 
+    public static boolean isOpen = false;
     private static StackPane black;
     
     public static void show(String title,Node child){
+        isOpen = true;
         black = new StackPane();
         black.setStyle("-fx-background-color: black; -fx-opacity: 0.7;");
         black.setPrefSize(Main.WIDTH, Main.HEIGHT);
@@ -57,6 +59,7 @@ public class Dialog {
     }
     
     public static void showAlert(String message){
+        isOpen = true;
         black = new StackPane();
         black.setStyle("-fx-background-color: black; -fx-opacity: 0.7;");
         black.setPrefSize(Main.WIDTH, Main.HEIGHT);
@@ -101,6 +104,7 @@ public class Dialog {
     }
     
     public static void showError(String message){
+        isOpen = true;
         black = new StackPane();
         black.setStyle("-fx-background-color: black; -fx-opacity: 0.7;");
         black.setPrefSize(Main.WIDTH, Main.HEIGHT);
@@ -145,6 +149,7 @@ public class Dialog {
     }
     
     public static void wait(String title){
+        isOpen = true;
         ProgressIndicator progress = new ProgressIndicator(-1);
         
         Label label = new Label(title);
@@ -179,6 +184,7 @@ public class Dialog {
     }
     
     public static void hide(){
+        isOpen = false;
         Main.PAGE.getChildren().removeAll(Main.PAGE.getChildren());
         Main.PAGE.getChildren().add(Main.ROOT);
     }

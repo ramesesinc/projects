@@ -65,7 +65,7 @@ public class UserAccount {
         root = new HBox(Main.HEIGHT > 700 ? 10 : 5);
         root.setStyle("-fx-background-color: white;");
         root.setPadding(Main.HEIGHT > 700 ? new Insets(15) : new Insets(10));
-        root.setMaxWidth(Main.HEIGHT > 700 ? Main.WIDTH * 0.80 : Main.WIDTH * 0.95);
+        root.setMaxWidth(Main.HEIGHT > 700 ? Main.WIDTH * 0.90 : Main.WIDTH * 0.95);
         root.getChildren().add(img_container);
         root.getChildren().add(vbox1);
         root.setOnMousePressed(new EventHandler<MouseEvent>(){

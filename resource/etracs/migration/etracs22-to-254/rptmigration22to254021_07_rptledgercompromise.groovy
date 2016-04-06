@@ -4,20 +4,19 @@ def env = [
 ]
 
 def proxy = new TestProxy(env);
-def svc = proxy.create('ETRACS22To254RPTLedgerMigrationService');
-
-svc.initMigrationTables();
+def svc = proxy.create('ETRACS22To254RPTCompromiseMigrationService');
 
 void migrate(svc, params){
-  def size = svc.migrateLedgers(params);
+  def size = svc.migrateCompromises(params);
   while( size > 0 ){
     params.migrated += size;
-    println 'Migrated Ledger Count -> ' + params.migrated
-    size = svc.migrateLedgers(params);  
+    println 'Migrated Ledger Compromises Count -> ' + params.migrated
+    size = svc.migrateCompromises(params);  
   }
 }
 
-// svc.initMigrationTables();
+svc.initMigrationTables();
+
 
 def status = svc.getMigrationStatus()
 while(status == 'PROCESSING'){

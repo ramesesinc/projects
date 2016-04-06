@@ -6,24 +6,24 @@ def env = [
 def proxy = new TestProxy(env);
 def svc = proxy.create('ETRACS22To254RPTLedgerMigrationService');
 
-svc.initMigrationTables();
+svc.initPaymentMigrationTables();
 
 void migrate(svc, params){
-  def size = svc.migrateLedgers(params);
+  def size = svc.migrateLedgerPayments(params);
   while( size > 0 ){
     params.migrated += size;
-    println 'Migrated Ledger Count -> ' + params.migrated
-    size = svc.migrateLedgers(params);  
+    println 'Migrated Ledger Payment Count -> ' + params.migrated
+    size = svc.migrateLedgerPayments(params);  
   }
 }
 
-// svc.initMigrationTables();
+svc.initPaymentMigrationTables();
 
-def status = svc.getMigrationStatus()
+def status = svc.getPaymentMigrationStatus()
 while(status == 'PROCESSING'){
     println 'status -> ' + status 
     try {sleep(5000) }catch(e){}
-    status = svc.getMigrationStatus()
+    status = svc.getPaymentMigrationStatus()
 }
 
 def params = [migrated:0, count:10]

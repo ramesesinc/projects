@@ -219,6 +219,8 @@ class ETRACS22To254MasterMigrationService
 
 			struct.materials = em22.serializer.read(struct.materials);
 			struct.materials.material.each{mat->
+				println 'structur -> ' + struct 
+				println 'mat -> ' + mat 
 				def sm = [
 					structure : struct,
 					material  : mat,
@@ -229,6 +231,8 @@ class ETRACS22To254MasterMigrationService
 					structEm.save(sm, 'structurematerial')
 				}
 				catch(e){
+					println 'migrateStructures [ERROR]: '
+					e.printStackTrace();
 					//ignore dups
 				}
 			}

@@ -42,23 +42,16 @@ public class Login {
         
         ImageView image = new ImageView(new Image("icon/userlogin.png"));
         
-        if(Main.HEIGHT < 700){
-            image.setFitWidth(image.getImage().getWidth() * 0.50);
-            image.setFitHeight(image.getImage().getHeight() * 0.50);
-        }
-        
         VBox imageContainer = new VBox();
         imageContainer.setAlignment(Pos.CENTER);
         imageContainer.getChildren().add(image);
         
         username = new TextField();
         username.getStyleClass().add("login-field");
-        username.setPrefWidth(Main.HEIGHT > 700 ? 300 : 180);
         username.setFocusTraversable(false);
         
         password = new PasswordField();
         password.getStyleClass().add("login-field");
-        password.setPrefWidth(Main.HEIGHT > 700 ? 300 : 180);
         password.setFocusTraversable(false);
         
         Label username_lb = new Label("Username");
@@ -106,7 +99,6 @@ public class Login {
         
         grid = new GridPane();
         grid.setAlignment(Main.HEIGHT > 700 ? Pos.CENTER : Pos.TOP_CENTER);
-        grid.setPadding(Main.HEIGHT > 700 ? new Insets(50, 50, 50, 50) : new Insets(15, 15, 15, 15));
         grid.setVgap(10);
         grid.setHgap(10);
         
@@ -116,6 +108,24 @@ public class Login {
         grid.add(password_lb, 0, 2);
         grid.add(password, 1, 2);
         grid.add(buttonContainer, 1, 3);
+        
+        if(Main.HEIGHT < 700){
+            image.setFitWidth(image.getImage().getWidth() * 0.50);
+            image.setFitHeight(image.getImage().getHeight() * 0.50);
+            username.setPrefWidth(180);
+            password.setPrefWidth(180);
+            grid.setPadding(new Insets(15, 15, 15, 15));
+        }else if(Main.HEIGHT < 1200){
+            image.setFitWidth(image.getImage().getWidth() * 0.75);
+            image.setFitHeight(image.getImage().getHeight() * 0.75);
+            username.setPrefWidth(250);
+            password.setPrefWidth(250);
+            grid.setPadding(new Insets(35, 35, 35, 35));
+        }else{
+            username.setPrefWidth(300);
+            password.setPrefWidth(300);
+            grid.setPadding(new Insets(50, 50, 50, 50));
+        }
     }
     
     private void onlineLogin(Map parameter){

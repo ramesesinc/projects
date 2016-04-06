@@ -6,7 +6,6 @@ import com.rameses.waterworks.database.Database;
 import com.rameses.waterworks.database.DatabasePlatformFactory;
 import com.rameses.waterworks.dialog.Dialog;
 import com.rameses.waterworks.layout.Header;
-import com.rameses.waterworks.service.MobileDownloadService;
 import com.rameses.waterworks.service.MobileUploadService;
 import com.rameses.waterworks.util.SystemPlatformFactory;
 import java.util.HashMap;

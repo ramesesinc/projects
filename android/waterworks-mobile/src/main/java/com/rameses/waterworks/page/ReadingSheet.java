@@ -138,15 +138,19 @@ public class ReadingSheet {
         
         save = new Button("Save");
         save.getStyleClass().add("terminal-button");
-        save.setStyle(Main.HEIGHT > 700 ? "-fx-font-size: 30px;" : "-fx-font-size: 17px;");
-        save.setPrefWidth(Main.HEIGHT > 700 ? 180 : 100);
-        save.setGraphicTextGap(Main.HEIGHT > 700 ? 10 : 3);
         save.setOnAction(new EventHandler<ActionEvent>(){
             @Override
             public void handle(ActionEvent event) {
                 if(account != null) saveReading();
             }
         });
+        if(Main.HEIGHT < 700){
+            save.setStyle("-fx-font-size: 17px;");
+        }else if(Main.HEIGHT < 1200){
+            save.setStyle("-fx-font-size: 23px;");
+        }else{
+            save.setStyle("-fx-font-size: 30px;");
+        }
         
         button_container1 = new FlowPane();
         button_container1.setAlignment(Pos.CENTER);
@@ -167,11 +171,10 @@ public class ReadingSheet {
         
         root = new VBox(Main.HEIGHT > 700 ? 10 : 5);
         root.setAlignment(Pos.TOP_CENTER);
-        root.setPadding(Main.HEIGHT > 700 ? new Insets(25) : new Insets(10));
         root.getChildren().add(grid);
         root.getChildren().add(createReadingLayout());
         root.getChildren().add(button_container1);
-        root.getChildren().add(numpad);
+        if(Main.HEIGHT > 700) root.getChildren().add(numpad);
         root.setOnKeyReleased(new EventHandler<KeyEvent>(){
             @Override
             public void handle(KeyEvent event) {
@@ -186,6 +189,14 @@ public class ReadingSheet {
                 }
             }
         });
+        
+        if(Main.HEIGHT < 700){
+            root.setPadding(new Insets(10));
+        }else if(Main.HEIGHT < 1200){
+            root.setPadding(new Insets(15));
+        }else{
+            root.setPadding(new Insets(25));
+        }
         
         if(a != null){
             account = a;
@@ -288,15 +299,20 @@ public class ReadingSheet {
         HBox buttons = new HBox(Main.HEIGHT > 700 ? 10 : 5);
         buttons.setId("sheet-buttons");
         buttons.setAlignment(Pos.CENTER);
-        buttons.setPadding(Main.HEIGHT > 700 ? new Insets(20,5,20,5) : new Insets(10,2,10,2));
+        if(Main.HEIGHT < 700){
+            buttons.setPadding(new Insets(10,2,10,2));
+        }else if(Main.HEIGHT < 1200){
+            buttons.setPadding(new Insets(15,3,15,3));
+        }else{
+            buttons.setPadding(new Insets(20,5,20,5));
+        }
         for(RButton r: rb){
             buttons.getChildren().add(r.getLayout());
         }
         
         Label label = new Label("Capture the new meter reading by turning the dices above. Swipe-Up the dice to increment its value and Swipe-Down the dice to decrement its value.");
         label.setWrapText(true);
-        label.setStyle("-fx-font-weight: bold; -fx-alignment: center;");
-        label.setStyle(Main.HEIGHT > 700 ? "-fx-font-size: 18px;" : "-fx-font-size: 12px;");
+        label.getStyleClass().add("login-label");
         label.setAlignment(Pos.CENTER);
         label.setTextAlignment(TextAlignment.JUSTIFY);
         
@@ -396,10 +412,18 @@ public class ReadingSheet {
         
         VBox root = new VBox(Main.HEIGHT > 700 ? 10 : 5);
         root.setAlignment(Pos.TOP_CENTER);
-        root.setPadding(Main.HEIGHT > 700 ? new Insets(20) : new Insets(10));
         root.setStyle("-fx-background-color: white;");
-        root.setMinWidth(Main.HEIGHT > 700 ? Main.WIDTH-150 : Main.WIDTH-50);
         root.getChildren().addAll(listView,btnContainer);
+        if(Main.HEIGHT < 700){
+            root.setPadding(new Insets(10));
+            root.setMinWidth(Main.WIDTH-50);
+        }else if(Main.HEIGHT < 1200){
+            root.setPadding(new Insets(15));
+            root.setMinWidth(Main.WIDTH-100);
+        }else{
+            root.setPadding(new Insets(20));
+            root.setMinWidth(Main.WIDTH-150);
+        }
         
         return root;
     }
@@ -430,12 +454,15 @@ public class ReadingSheet {
             root.getStyleClass().add("rbutton-container");
             root.setAlignment(Pos.CENTER);
             root.getChildren().add(text);
-            if(Main.HEIGHT > 700){
-                root.setMaxSize(100, 150);
-                root.setMinSize(100, 150);
-            }else{
+            if(Main.HEIGHT < 700){
                 root.setMaxSize(40, 65);
                 root.setMinSize(40, 65);
+            }else if(Main.HEIGHT < 1200){
+                root.setMaxSize(70, 110);
+                root.setMinSize(70, 110);
+            }else{
+                root.setMaxSize(100, 150);
+                root.setMinSize(100, 150);
             }
             root.setOnSwipeUp(new EventHandler<SwipeEvent>(){
                 @Override

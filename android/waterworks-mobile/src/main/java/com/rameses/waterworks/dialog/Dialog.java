@@ -78,23 +78,40 @@ public class Dialog {
 
         Button okBtn = new Button("OK");
         okBtn.getStyleClass().add("terminal-button");
-        okBtn.setPrefWidth(Main.HEIGHT > 700 ? 100 : 70);
         okBtn.setOnAction(new EventHandler<ActionEvent>(){
             @Override
             public void handle(ActionEvent event) {
                 Dialog.hide();
             }
         });
+        if(Main.HEIGHT < 700){
+            okBtn.setPrefWidth(70);
+        }else if(Main.HEIGHT < 1200){
+            okBtn.setPrefWidth(90);
+        }else{
+            okBtn.setPrefWidth(100);
+        }
 
         HBox btnContainer = new HBox();
         btnContainer.setAlignment(Pos.CENTER);
         btnContainer.getChildren().add(okBtn);
 
-        VBox root = new VBox(Main.HEIGHT > 700 ? 30 : 10);
+        VBox root = new VBox();
         root.setStyle("-fx-background-color: white;");
-        root.setPadding(Main.HEIGHT > 700 ? new Insets(20) : new Insets(10));
-        root.setPrefWidth(Main.HEIGHT > 700 ? Main.WIDTH - 200 : Main.WIDTH - 30);
         root.getChildren().addAll(label,btnContainer);
+        if(Main.HEIGHT < 700){
+            root.setSpacing(10);
+            root.setPadding(new Insets(10));
+            root.setPrefWidth(Main.WIDTH - 30);
+        }else if(Main.HEIGHT < 1200){
+            root.setSpacing(20);
+            root.setPadding(new Insets(15));
+            root.setPrefWidth(Main.WIDTH - 100);
+        }else{
+            root.setSpacing(30);
+            root.setPadding(new Insets(20));
+            root.setPrefWidth(Main.WIDTH - 200);
+        }
 
         Group container = new Group();
         container.getChildren().add(root);
@@ -123,23 +140,40 @@ public class Dialog {
 
         Button okBtn = new Button("OK");
         okBtn.getStyleClass().add("terminal-button");
-        okBtn.setPrefWidth(Main.HEIGHT > 700 ? 100 : 70);
         okBtn.setOnAction(new EventHandler<ActionEvent>(){
             @Override
             public void handle(ActionEvent event) {
                 Dialog.hide();
             }
         });
+        if(Main.HEIGHT < 700){
+            okBtn.setPrefWidth(70);
+        }else if(Main.HEIGHT < 1200){
+            okBtn.setPrefWidth(90);
+        }else{
+            okBtn.setPrefWidth(100);
+        }
 
         HBox btnContainer = new HBox();
         btnContainer.setAlignment(Pos.CENTER);
         btnContainer.getChildren().add(okBtn);
 
-        VBox root = new VBox(30);
+        VBox root = new VBox();
         root.setStyle("-fx-background-color: white;");
-        root.setPadding(Main.HEIGHT > 700 ? new Insets(20) : new Insets(10));
-        root.setPrefWidth(Main.HEIGHT > 700 ? Main.WIDTH - 200 : Main.WIDTH - 30);
         root.getChildren().addAll(label,btnContainer);
+        if(Main.HEIGHT < 700){
+            root.setSpacing(10);
+            root.setPadding(new Insets(10));
+            root.setPrefWidth(Main.WIDTH - 30);
+        }else if(Main.HEIGHT < 1200){
+            root.setSpacing(20);
+            root.setPadding(new Insets(15));
+            root.setPrefWidth(Main.WIDTH - 100);
+        }else{
+            root.setSpacing(30);
+            root.setPadding(new Insets(20));
+            root.setPrefWidth(Main.WIDTH - 200);
+        }
 
         Group container = new Group();
         container.getChildren().add(root);
@@ -155,11 +189,20 @@ public class Dialog {
         Label label = new Label(title);
         label.getStyleClass().add("login-label");
         
-        HBox container = new HBox(Main.HEIGHT > 700 ? 20 : 10);
+        HBox container = new HBox();
         container.setStyle("-fx-background-color: white;");
         container.setAlignment(Pos.CENTER);
-        container.setPadding(Main.HEIGHT > 700 ? new Insets(20,30,20,30) : new Insets(10,15,10,15));
         container.getChildren().addAll(progress,label);
+        if(Main.HEIGHT < 700){
+            container.setSpacing(10);
+            container.setPadding(new Insets(10,15,10,15));
+        }else if(Main.HEIGHT < 1200){
+            container.setSpacing(15);
+            container.setPadding(new Insets(15,20,15,20));
+        }else{
+            container.setSpacing(20);
+            container.setPadding(new Insets(20,30,20,30));
+        }
         
         show("", container);
     }
@@ -171,7 +214,6 @@ public class Dialog {
         
         HBox container = new HBox();
         container.setStyle("-fx-background-color: #3897ee;");
-        container.setPadding(Main.HEIGHT > 700 ? new Insets(15) : new Insets(10));
         container.getChildren().add(title);
         container.setOnMouseClicked(new EventHandler<MouseEvent>(){
             @Override
@@ -179,6 +221,13 @@ public class Dialog {
                 if(event.getClickCount() == 1) Dialog.hide();
             }
         });
+        if(Main.HEIGHT < 700){
+            container.setPadding(new Insets(10));
+        }else if(Main.HEIGHT < 1200){
+            container.setPadding(new Insets(13));
+        }else{
+            container.setPadding(new Insets(15));
+        }
         
         return container;
     }

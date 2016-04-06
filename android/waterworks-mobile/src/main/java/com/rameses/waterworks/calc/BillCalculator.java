@@ -21,13 +21,17 @@ public class BillCalculator {
         boolean found = false;
         Map map;
         Interpreter interpreter;
+        System.out.println("INFO : " + info);
         try{
             map = (Map) ObjectDeserializer.getInstance().read(info);
             interpreter = new Interpreter();
             for(Object o : map.entrySet()){
                 Map.Entry me = (Map.Entry) o;
-                interpreter.set(me.getKey().toString(), me.getValue().toString());
-                Main.LOG.error("Interpreter Data",me.getKey().toString()+" = "+me.getValue().toString());
+                Object key  = me.getKey();
+                Object val = me.getValue();
+                if(key == null) error = "Rule Error : Info key could not be found!";
+                if(val == null) error = "Rule Error : Info value could not be found!";
+                interpreter.set(key != null ? key.toString() : "", val != null ? val.toString() : "");
             }
             
             Rule rule = null;

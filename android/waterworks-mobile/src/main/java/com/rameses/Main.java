@@ -67,7 +67,15 @@ public class Main extends Application {
         System.out.println("Width: " + WIDTH + "   Height : " + HEIGHT);
         
         Scene scene = new Scene(PAGE, WIDTH, HEIGHT);
-        scene.getStylesheets().add(Main.HEIGHT > 700 ? "css/Style1.css" : "css/Style2.css");
+        String styleSheet = "css/Style1.css";
+        if(Main.HEIGHT <700){
+            styleSheet = "css/Style3.css";
+        }else if(Main.HEIGHT < 1200){
+            styleSheet = "css/Style2.css";
+        }else{
+            styleSheet = "css/Style1.css";
+        }
+        scene.getStylesheets().add(styleSheet);
 
         stage.setScene(scene);
         stage.show();

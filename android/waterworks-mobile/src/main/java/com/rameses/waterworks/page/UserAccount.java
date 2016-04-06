@@ -31,22 +31,23 @@ public class UserAccount {
             user_img.setFitHeight(130);
         }
         
+        if(Main.HEIGHT < 1200){
+            user_img.setFitWidth(150);
+            user_img.setFitHeight(150);
+        }
+        
         HBox img_container = new HBox();
         img_container.setStyle("-fx-border-color: gray; -fx-border-width: 2px;");
         img_container.getChildren().add(user_img);
         
         Label username = new Label(SystemPlatformFactory.getPlatform().getSystem().getUserName());
         username.getStyleClass().add("terminal-label");
-        username.setStyle(Main.HEIGHT > 700 ? "-fx-font-size: 32px; -fx-underline: true;" : "-fx-font-size: 18px; -fx-underline: true;");
         
         Label fullname = new Label(SystemPlatformFactory.getPlatform().getSystem().getFullName());
         fullname.getStyleClass().add("terminal-label");
-        fullname.setStyle(Main.HEIGHT > 700 ? "-fx-font-size: 32px;" : "-fx-font-size: 18px;");
         
         Button logout = new Button("Logout");
         logout.getStyleClass().add("terminal-button");
-        logout.setStyle(Main.HEIGHT > 700 ? "-fx-font-size: 28px;" : "-fx-font-size: 16px;");
-        logout.setPrefWidth(Main.HEIGHT > 700 ? 180 : 120);
         logout.setOnAction(new EventHandler<ActionEvent>(){
             @Override
             public void handle(ActionEvent event) {
@@ -65,7 +66,7 @@ public class UserAccount {
         root = new HBox(Main.HEIGHT > 700 ? 10 : 5);
         root.setStyle("-fx-background-color: white;");
         root.setPadding(Main.HEIGHT > 700 ? new Insets(15) : new Insets(10));
-        root.setMaxWidth(Main.HEIGHT > 700 ? Main.WIDTH * 0.80 : Main.WIDTH * 0.95);
+        root.setMaxWidth(Main.HEIGHT > 700 ? Main.WIDTH * 0.90 : Main.WIDTH * 0.95);
         root.getChildren().add(img_container);
         root.getChildren().add(vbox1);
         root.setOnMousePressed(new EventHandler<MouseEvent>(){
@@ -82,6 +83,22 @@ public class UserAccount {
                 }
             }
         });
+        if(Main.HEIGHT < 700){
+            username.setStyle("-fx-font-size: 18px; -fx-underline: true;");
+            fullname.setStyle("-fx-font-size: 18px; -fx-underline: true;");
+            logout.setStyle("-fx-font-size: 16px;");
+            logout.setPrefWidth(120);
+        }else if(Main.HEIGHT < 1200){
+            username.setStyle("-fx-font-size: 25px; -fx-underline: true;");
+            fullname.setStyle("-fx-font-size: 18px; -fx-underline: true;");
+            logout.setStyle("-fx-font-size: 22px;");
+            logout.setPrefWidth(150);
+        }else{
+            username.setStyle("-fx-font-size: 32px; -fx-underline: true;");
+            fullname.setStyle("-fx-font-size: 18px; -fx-underline: true;");
+            logout.setStyle("-fx-font-size: 28px;");
+            logout.setPrefWidth(180);
+        }
     }
     
     public Node getLayout(){

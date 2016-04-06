@@ -5,6 +5,7 @@ import com.rameses.waterworks.bean.Account;
 import com.rameses.waterworks.bean.Area;
 import com.rameses.waterworks.bean.Rule;
 import com.rameses.waterworks.bean.Stubout;
+import com.rameses.waterworks.bean.Zone;
 import com.rameses.waterworks.database.Database;
 import com.rameses.waterworks.database.DatabasePlatformFactory;
 import com.rameses.waterworks.dialog.Dialog;
@@ -39,10 +40,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.Callback;
 
-/**
- *
- * @author Dino
- */
 public class Download {
     
     VBox root;
@@ -172,6 +169,7 @@ public class Download {
                             @Override
                             public void handle(KeyEvent event) {
                                 if(event.getCode() == KeyCode.ESCAPE){
+                                    if(Dialog.isOpen){ Dialog.hide(); return; }
                                     Main.ROOT.setCenter(new Home().getLayout());
                                 }
                             }
@@ -198,6 +196,7 @@ public class Download {
             @Override
             public void handle(KeyEvent event) {
                 if(event.getCode() == KeyCode.ESCAPE){
+                    if(Dialog.isOpen){ Dialog.hide(); return; }
                     Main.ROOT.setCenter(new Home().getLayout());
                 }
             }
@@ -286,6 +285,7 @@ public class Download {
                                     @Override
                                     public void handle(KeyEvent event) {
                                         if(event.getCode() == KeyCode.ESCAPE){
+                                            if(Dialog.isOpen){ Dialog.hide(); return; }
                                             Main.ROOT.setCenter(new Home().getLayout());
                                         }
                                     }
@@ -325,9 +325,8 @@ public class Download {
                                 assigneeid = assignee.get("objid").toString();
                                 assigneename = assignee.get("name").toString();
                             }
-                            String zone = m.get("zone") != null ? m.get("zone").toString() : "";
-                            String sector = m.get("sector") != null ? m.get("sector").toString() : "";
-                            data.add(new Area(objid,title,assigneeid,zone,sector,false));
+                            String sectorid = m.get("sectorid") != null ? m.get("sectorid").toString() : "";
+                            data.add(new Area(objid,title,assigneeid,sectorid,false));
                         }
                         listView.setItems(data);
                         
@@ -344,6 +343,7 @@ public class Download {
     
     private void saveArea(Area r){
         DatabasePlatformFactory.getPlatform().getDatabase().createArea(r);
+        
         Map params = new HashMap();
         params.put("areaid", r.getObjid());
         List<Map> stubouts = (List<Map>) new MobileDownloadService().getStuboutsByArea(params);
@@ -351,17 +351,45 @@ public class Download {
         while(i.hasNext()){
             Map m = i.next();
             String objid = m.get("objid")!=null ? m.get("objid").toString() : "";
-            String title = m.get("title")!=null ? m.get("title").toString() : "";
+            String code = m.get("code")!=null ? m.get("code").toString() : "";
             String description = m.get("description")!=null ? m.get("description").toString() : "";
-            String areaid = m.get("areaid")!=null ? m.get("areaid").toString() : "";
+            String zoneid = "", zonecode = "", zonedesc = "";
+            String sectorid ="", sectorcode = "";
+            String areaid = "", areatitle = "";
+            String assigneeid = "", assigneename = "";
             
-            Stubout stubout = new Stubout(objid,title,description,areaid);
+            Map zone = (Map) m.get("zone");
+            if(zone!=null){
+                zoneid = zone.get("objid") != null ? zone.get("objid").toString() : "";
+                zonecode = zone.get("code") != null ? zone.get("code").toString() : "";
+                zonedesc = zone.get("description") != null ? zone.get("description").toString() : "";
+            }
+            
+            Map sector = (Map) m.get("sector");
+            if(sector!=null){
+                sectorid = sector.get("objid") != null ? sector.get("objid").toString() : "";
+                sectorcode = sector.get("code") != null ? sector.get("code").toString() : "";
+            }
+            
+            Map area = (Map) m.get("area");
+            if(area!=null){
+                areaid = area.get("objid") != null ? area.get("objid").toString() : "";
+                areatitle = area.get("title") != null ? area.get("title").toString() : "";
+                Map assignee = (Map) area.get("assignee");
+                if(assignee != null){
+                    assigneeid = assignee.get("objid") != null ? assignee.get("objid").toString() : "";
+                    assigneename = assignee.get("name") != null ? assignee.get("name").toString() : "";
+                }
+            }
+            
+            Stubout stubout = new Stubout(objid, code, description, zoneid, zonecode, zonedesc, sectorid, sectorcode, areaid, areatitle, assigneeid, assigneename);
+            DatabasePlatformFactory.getPlatform().getDatabase().createZone(new Zone(zoneid, zonecode, zonedesc, sectorcode));
             DatabasePlatformFactory.getPlatform().getDatabase().createStubout(stubout);
         }
     }
     
     private void clearArea(){
-        DatabasePlatformFactory.getPlatform().getDatabase().clearStuboutAccount();
+        DatabasePlatformFactory.getPlatform().getDatabase().clearZone();
         DatabasePlatformFactory.getPlatform().getDatabase().clearStubout();
         DatabasePlatformFactory.getPlatform().getDatabase().clearArea();
     }

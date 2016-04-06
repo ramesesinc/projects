@@ -22,9 +22,9 @@ public class MobileDownloadService {
             ScriptServiceContext ctx = ServiceProxy.getContext();
             service = (Service) ctx.create("WaterworksMobileDownloadService", Service.class);
         }catch(Exception e){
-            ERROR = "MobileService Error: " + e.toString();
+            ERROR = "MobileDownloadService Error: " + e.toString();
             if(Main.LOG != null){
-                Main.LOG.error("MobileService Error",e.toString());
+                Main.LOG.error("MobileDownloadService Error",e.toString());
             }else{
                 e.printStackTrace();
             }
@@ -37,9 +37,9 @@ public class MobileDownloadService {
         try{
             result = service.initForDownload(params);
         }catch(Exception e){
-            ERROR = "MobileService Error: " + e.toString();
+            ERROR = "MobileDownloadService Error: " + e.toString();
             if(Main.LOG != null){
-                Main.LOG.error("MobileService Error",e.toString());
+                Main.LOG.error("MobileDownloadService Error",e.toString());
             }else{
                 e.printStackTrace();
             }
@@ -53,9 +53,9 @@ public class MobileDownloadService {
         try{
             result = service.download(params);
         }catch(Exception e){
-            ERROR = "MobileService Error: " + e.toString();
+            ERROR = "MobileDownloadService Error: " + e.toString();
             if(Main.LOG != null){
-                Main.LOG.error("MobileService Error",e.toString());
+                Main.LOG.error("MobileDownloadService Error",e.toString());
             }else{
                 e.printStackTrace();
             }
@@ -69,9 +69,9 @@ public class MobileDownloadService {
         try{
             result = service.confirmDownload(params);
         }catch(Exception e){
-            ERROR = "MobileService Error: " + e.toString();
+            ERROR = "MobileDownloadService Error: " + e.toString();
             if(Main.LOG != null){
-                Main.LOG.error("MobileService Error",e.toString());
+                Main.LOG.error("MobileDownloadService Error",e.toString());
             }else{
                 e.printStackTrace();
             }
@@ -84,30 +84,13 @@ public class MobileDownloadService {
         try{
             service.cancelDownload(params);
         }catch(Exception e){
-            ERROR = "MobileService Error: " + e.toString();
+            ERROR = "MobileDownloadService Error: " + e.toString();
             if(Main.LOG != null){
-                Main.LOG.error("MobileService Error",e.toString());
+                Main.LOG.error("MobileDownloadService Error",e.toString());
             }else{
                 e.printStackTrace();
             }
         }
-    }
-    
-    public Map upload(Object params){
-        ERROR = "";
-        Map result = new HashMap();
-        try{
-            result = service.upload(params);
-        }catch(Exception e){
-            ERROR = "MobileService Error: " + e.toString();
-            result = new HashMap();
-            if(Main.LOG != null){
-                Main.LOG.error("MobileService Error",e.toString());
-            }else{
-                e.printStackTrace();
-            }
-        }
-        return result;
     }
     
     public List<Map> getAreasByUser(Object params){
@@ -116,9 +99,9 @@ public class MobileDownloadService {
         try{
             result = service.getAreasByUser(params);
         }catch(Exception e){
-            ERROR = "MobileService Error: " + e.toString();
+            ERROR = "MobileDownloadService Error: " + e.toString();
             if(Main.LOG != null){
-                Main.LOG.error("MobileService Error",e.toString());
+                Main.LOG.error("MobileDownloadService Error",e.toString());
             }else{
                 e.printStackTrace();
             }
@@ -132,9 +115,9 @@ public class MobileDownloadService {
         try{
             result = service.getStuboutsByArea(params);
         }catch(Exception e){
-            ERROR = "MobileService Error: " + e.toString();
+            ERROR = "MobileDownloadService Error: " + e.toString();
             if(Main.LOG != null){
-                Main.LOG.error("MobileService Error",e.toString());
+                Main.LOG.error("MobileDownloadService Error",e.toString());
             }else{
                 e.printStackTrace();
             }
@@ -151,8 +134,6 @@ public class MobileDownloadService {
         public String confirmDownload(Object params);
         
         public void cancelDownload(Object params);
-        
-        public Map upload(Object params);
         
         public List<Map> getAreasByUser(Object params);
         

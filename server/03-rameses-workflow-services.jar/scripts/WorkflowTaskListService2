@@ -8,7 +8,7 @@ import com.rameses.services.extended.*;
 * The em is a dynamic active db. pass the name of the workflow instance
 * workflow instance must have the standard field names
 ************************************************************************/
-class WorkflowTaskListService extends ActiveListService {		
+class WorkflowTaskListService2 extends ActiveListService {		
 
 	@ActiveDB("wf")
 	def em;

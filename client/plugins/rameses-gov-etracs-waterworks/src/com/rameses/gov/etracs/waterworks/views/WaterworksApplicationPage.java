@@ -31,7 +31,6 @@ public class WaterworksApplicationPage extends javax.swing.JPanel {
     private void initComponents() {
 
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
-        xLabel6 = new com.rameses.rcp.control.XLabel();
         xLabel2 = new com.rameses.rcp.control.XLabel();
         xLabel3 = new com.rameses.rcp.control.XLabel();
         xLabel5 = new com.rameses.rcp.control.XLabel();
@@ -45,29 +44,29 @@ public class WaterworksApplicationPage extends javax.swing.JPanel {
         xLabel10 = new com.rameses.rcp.control.XLabel();
         xLabel11 = new com.rameses.rcp.control.XLabel();
         xLabel12 = new com.rameses.rcp.control.XLabel();
+        xFormPanel4 = new com.rameses.rcp.control.XFormPanel();
+        xLabel16 = new com.rameses.rcp.control.XLabel();
+        xLabel17 = new com.rameses.rcp.control.XLabel();
+        xLabel18 = new com.rameses.rcp.control.XLabel();
+        xLabel19 = new com.rameses.rcp.control.XLabel();
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
-        xTitledBorder1.setTitle("Meter Info");
+        xTitledBorder1.setTitle("Stubout Info");
         xFormPanel1.setBorder(xTitledBorder1);
-
-        xLabel6.setCaption("Serial No");
-        xLabel6.setExpression("#{entity.account.meter.serialno}");
-        xLabel6.setPreferredSize(new java.awt.Dimension(0, 16));
-        xFormPanel1.add(xLabel6);
+        xFormPanel1.setCaptionWidth(100);
 
         xLabel2.setCaption("Stubout");
-        xLabel2.setCellPadding(new java.awt.Insets(20, 0, 0, 0));
-        xLabel2.setExpression("#{entity.account.stubout.code}");
+        xLabel2.setExpression("#{entity.stubout.code}");
         xLabel2.setPreferredSize(new java.awt.Dimension(0, 16));
         xFormPanel1.add(xLabel2);
 
         xLabel3.setCaption("Sector");
-        xLabel3.setExpression("#{entity.account.stubout.zone.sector.code}");
+        xLabel3.setExpression("#{entity.stubout.zone.sector.code}");
         xLabel3.setPreferredSize(new java.awt.Dimension(0, 16));
         xFormPanel1.add(xLabel3);
 
         xLabel5.setCaption("Zone");
-        xLabel5.setExpression("#{entity.account.stubout.zone.code}");
+        xLabel5.setExpression("#{entity.stubout.zone.code}");
         xLabel5.setPreferredSize(new java.awt.Dimension(0, 16));
         xFormPanel1.add(xLabel5);
 
@@ -145,7 +144,7 @@ public class WaterworksApplicationPage extends javax.swing.JPanel {
         xFormPanel3.add(xLabel7);
 
         xLabel8.setCaption("Acct Name");
-        xLabel8.setExpression("#{entity.account.acctname}");
+        xLabel8.setExpression("#{entity.acctname}");
         xLabel8.setPreferredSize(new java.awt.Dimension(0, 16));
         xFormPanel3.add(xLabel8);
 
@@ -156,19 +155,44 @@ public class WaterworksApplicationPage extends javax.swing.JPanel {
 
         xLabel10.setCaption("Owner");
         xLabel10.setCellPadding(new java.awt.Insets(20, 0, 0, 0));
-        xLabel10.setExpression("#{entity.account.owner.name}");
+        xLabel10.setExpression("#{entity.owner.name}");
         xLabel10.setPreferredSize(new java.awt.Dimension(0, 16));
         xFormPanel3.add(xLabel10);
 
         xLabel11.setCaption("Classification");
-        xLabel11.setExpression("#{entity.account.classificationid}");
+        xLabel11.setExpression("#{entity.classificationid}");
         xLabel11.setPreferredSize(new java.awt.Dimension(0, 16));
         xFormPanel3.add(xLabel11);
 
         xLabel12.setCaption("Address");
-        xLabel12.setExpression("#{entity.account.address.text}");
+        xLabel12.setExpression("#{entity.address.text}");
         xLabel12.setPreferredSize(new java.awt.Dimension(0, 16));
         xFormPanel3.add(xLabel12);
+
+        com.rameses.rcp.control.border.XTitledBorder xTitledBorder4 = new com.rameses.rcp.control.border.XTitledBorder();
+        xTitledBorder4.setTitle("Meter Info");
+        xFormPanel4.setBorder(xTitledBorder4);
+        xFormPanel4.setCaptionWidth(100);
+
+        xLabel16.setCaption("Serial No");
+        xLabel16.setExpression("#{entity.meter.serialno}");
+        xLabel16.setPreferredSize(new java.awt.Dimension(0, 16));
+        xFormPanel4.add(xLabel16);
+
+        xLabel17.setCaption("Initial Reading");
+        xLabel17.setExpression("#{entity.initialreading}");
+        xLabel17.setPreferredSize(new java.awt.Dimension(0, 16));
+        xFormPanel4.add(xLabel17);
+
+        xLabel18.setCaption("Installed by");
+        xLabel18.setExpression("#{entity.installer.name}");
+        xLabel18.setPreferredSize(new java.awt.Dimension(0, 16));
+        xFormPanel4.add(xLabel18);
+
+        xLabel19.setCaption("Installed on");
+        xLabel19.setExpression("#{entity.installer.dtinstalled}");
+        xLabel19.setPreferredSize(new java.awt.Dimension(0, 16));
+        xFormPanel4.add(xLabel19);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -176,23 +200,30 @@ public class WaterworksApplicationPage extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(xDataTable1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(xFormPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, 423, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 245, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 443, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(xDataTable1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(0, 346, Short.MAX_VALUE)
+                                .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 245, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(468, 468, 468))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(xFormPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 370, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 232, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(xFormPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 276, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(xFormPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(xFormPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, 163, Short.MAX_VALUE)
+                    .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(xFormPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(xDataTable1, javax.swing.GroupLayout.PREFERRED_SIZE, 295, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -206,13 +237,17 @@ public class WaterworksApplicationPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XFormPanel xFormPanel2;
     private com.rameses.rcp.control.XFormPanel xFormPanel3;
+    private com.rameses.rcp.control.XFormPanel xFormPanel4;
     private com.rameses.rcp.control.XLabel xLabel10;
     private com.rameses.rcp.control.XLabel xLabel11;
     private com.rameses.rcp.control.XLabel xLabel12;
+    private com.rameses.rcp.control.XLabel xLabel16;
+    private com.rameses.rcp.control.XLabel xLabel17;
+    private com.rameses.rcp.control.XLabel xLabel18;
+    private com.rameses.rcp.control.XLabel xLabel19;
     private com.rameses.rcp.control.XLabel xLabel2;
     private com.rameses.rcp.control.XLabel xLabel3;
     private com.rameses.rcp.control.XLabel xLabel5;
-    private com.rameses.rcp.control.XLabel xLabel6;
     private com.rameses.rcp.control.XLabel xLabel7;
     private com.rameses.rcp.control.XLabel xLabel8;
     private com.rameses.rcp.control.XLabel xLabel9;

@@ -1,0 +1,12 @@
+import com.rameses.annotations.*;
+
+class WaterworksApplicationTaskInterceptor{
+	
+	@Before(pattern="WorkflowTaskService.signal", eval="#{args[0].processname == 'waterworks_application' && args[0].to=='for-approval-mo'}", index=1)
+	public void beforeSignalForMayorsAprpoval(def evt) {
+		def t = evt.args[0];
+	}
+
+
+
+}

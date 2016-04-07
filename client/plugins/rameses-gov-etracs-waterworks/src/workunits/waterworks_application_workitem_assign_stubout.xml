@@ -1,0 +1,87 @@
+<workunit>
+    <invokers>
+        <invoker type="waterworks_application:form:formActions" 
+                 visibleWhen="#{task.state=='for-assessment' 
+                    &amp;&amp; task.assignee?.objid!=null
+                    &amp;&amp; entity.stubout?.code == null }"
+                 caption="Specify Stubout"
+                 target="process"
+                 action="assignStubout"
+                 />
+                 
+        <invoker type="waterworks_application:form:formActions" 
+                 visibleWhen="#{task.state=='for-assessment' 
+                    &amp;&amp; task.assignee?.objid!=null
+                    &amp;&amp; entity.stubout?.code != null }"
+                 caption="Change Stubout"
+                 target="process"
+                 action="changeStubout"
+                 />
+
+        <invoker type="waterworks_application:form:formActions" 
+                 visibleWhen="#{task.state=='for-assessment' 
+                    &amp;&amp; task.assignee?.objid!=null
+                    &amp;&amp; entity.stubout?.code != null }"
+                 caption="Change Stubout Position"
+                 target="process"
+                 action="changePosition"
+                 />
+                 
+    </invokers>
+    <code>
+        <![CDATA[
+        
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        import com.rameses.common.*;
+        import com.rameses.util.*;
+        
+        class AssignStubout {
+        
+            @Service("WaterworksStuboutService")
+            def stuboutSvc;
+
+            @Caller
+            def caller;
+
+            def getEntity() {
+                return caller.entity;
+            }
+
+            void assignStubout() {
+                def h = { o->
+                    def p = [:];
+                    p.stuboutid = o.objid;
+                    p.accountid = entity.objid;
+                    def m = stuboutSvc.addAccount( p );
+                    entity.stubout = o;
+                    entity.stuboutindex = m.stuboutindex;
+                    caller.refresh();
+                }
+                Modal.show( "waterworks_stubout:lookup", [onselect: h] ); 
+            }
+            
+            void changeStubout() {
+                def h = { o->
+                    entity.stubout = o;
+                    caller.binding.refresh();
+                }
+                Modal.show( "waterworks_stubout:lookup", [onselect: h] ); 
+            }
+                                    
+            def changeStuboutPosition() {
+                if( !entity.stubout?.objid ) throw new Exception("Specify stubout first");
+                def h = { o->
+                    ;
+                }
+                Modal.show("stubout:open", [entity:entity.stubout] );
+            }
+                                    
+        }
+        
+        ]]>
+    </code>
+  
+</workunit>

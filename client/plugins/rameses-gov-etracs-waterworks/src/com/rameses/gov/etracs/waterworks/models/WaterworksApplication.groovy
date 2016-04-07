@@ -11,17 +11,27 @@ public class WaterworksApplication extends WorkflowTaskModel {
     
     def feeList = [
         fetchList: {o->
-            def m = [:];
-            m._schemaname = "waterworks_account_ledger";
-            m.findBy = [parentid: entity.account.objid];
-            m.orderBy = "duedate";
-            def list = getQueryService().getList(m);
-            entity.total = list.sum{ it.balance };
+            def  m = [:];
+            m._schemaname = 'waterworks_application_fee';
+            m.findBy = [parentid: entity.objid];
+            entity.fees = getQueryService().getList(m);
+            entity.total = entity.fees.sum{ it.balance };
             binding.refresh("entity.total");
-            return list;
+            return entity.fees;
         }
     ] as BasicListModel;
     
-    
-    
+    def requirementList = [
+        fetchList: {o->
+            def  m = [:];
+            m._schemaname = 'waterworks_application_requirement';
+            m.findBy = [parentid: entity.objid];
+            entity.requirements = getQueryService().getList(m);
+            return entity.requirements;
+        }
+    ] as EditorListModel;
+ 
+    void refresh() {
+        binding.refresh();
+    }
 }

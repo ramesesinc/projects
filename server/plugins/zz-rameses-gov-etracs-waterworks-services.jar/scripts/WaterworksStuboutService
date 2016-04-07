@@ -24,7 +24,7 @@ class WaterworksStuboutService {
     }
 
     @ProxyMethod 
-    public void addAccount( params ) {
+    public def addAccount( params ) {
     	if (!params.stuboutid) throw new Exception('stuboutid parameter is required'); 
     	if (!params.accountid) throw new Exception('accountid parameter is required'); 
     	
@@ -34,6 +34,7 @@ class WaterworksStuboutService {
 
   		def m = [stubout:[objid: params.stuboutid], stuboutindex: icount+1 ]; 
     	waterworks_account.find([ objid: params.accountid ]).update( m ); 
+        return m;
     }
 
     @ProxyMethod 

@@ -38,6 +38,10 @@ class RevenueRuleService  {
 		};
 
 		def res = ruleSvc.execute( "revenue", facts, null, flowHandler );
+		if(res.errs) {
+			throw new Exception( res.errs.join("\n") );
+		}
+
 		if( res.infos ) {
 			return [state:'ask-info', infos: res.infos ];
 		}

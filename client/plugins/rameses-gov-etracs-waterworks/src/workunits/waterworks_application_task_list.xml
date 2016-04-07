@@ -1,5 +1,5 @@
 <workunit extends="com/rameses/seti2/templates/WorkflowTaskList.xml" processName="waterworks_application" 
-          cols="app.appno,app.account.owner.name,app.account.acctname,app.account.dtfiled,assignee.name,state,message">
+          cols="app.appno,app.owner.name,app.acctname,app.dtfiled,assignee.name,state,message">
     <invokers>
         <invoker folderid="home/waterworks" caption="Water Application Task" action="init"/>
     </invokers>

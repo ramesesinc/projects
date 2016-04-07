@@ -9,6 +9,7 @@
 		<field name="eval" />
 		<field name="properties" />
 		<field name="permission" />
+		<field name="caption"/>
 	</element>	
 
 </schema>	

@@ -1,0 +1,29 @@
+<workunit>
+    <invokers>
+        <invoker type="waterworks_application:form:formActions" 
+                 visibleWhen="#{task.state=='for-activation' &amp;&amp; task.assignee?.objid!=null}"
+                 caption="Attach Meter"
+                 target="popup"
+                 />
+    </invokers>
+    <code>
+        <![CDATA[
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        import com.rameses.common.*;
+        import com.rameses.util.*;
+        
+        class AttachMeter {
+        
+            def entity = [items:[]];
+        
+        }
+        
+        ]]>
+    </code>
+    <pages>
+        <page template="com.rameses.gov.etracs.waterworks.views.WaterBillOfMaterialsPage"/>
+    </pages>
+</workunit>

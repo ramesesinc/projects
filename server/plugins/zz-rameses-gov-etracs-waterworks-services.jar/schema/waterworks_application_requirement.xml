@@ -1,0 +1,12 @@
+<schema adapter="waterworks">
+
+	<element tablename="waterworks_application_requirement">
+		<field name="objid" primary="true" prefix="WARQ"/>
+		<field name="parentid" required="true"/>
+		<field name="code" required="true"/>
+		<field name="title" required="true"/>
+		<field name="sortorder" required="true"/>
+		<field name="required" required="true"/>
+	</element>
+
+</schema>

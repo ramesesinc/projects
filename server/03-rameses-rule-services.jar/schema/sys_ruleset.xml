@@ -1,0 +1,17 @@
+<schema>
+
+	<element tablename="sys_ruleset">
+		<field name="name" primary="true"/>
+		<field name="title" required="true"/>
+		<field name="packagename" required="true"/>
+		<field name="domain" required="true" indexed="true"/>
+		<field name="role" required="true" indexed="true"/>
+		<field name="permission" required="true"/>
+
+		<complex name="groups" ref="sys_rulegroup" jointype="one-to-many" orderBy="sortorder">
+			<key field="name" target="ruleset"/>
+		</complex>	
+	</element>	
+
+</schema>	
+

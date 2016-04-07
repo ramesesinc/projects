@@ -5,8 +5,8 @@ class WaterworksApplicationPersistenceInterceptor{
 	@DataContext("waterworks_account")
 	def waterworks_account;	
 
-	@DataContext("waterworks_account_ledger")
-	def waterworks_account_ledger;
+	@DataContext("waterworks_application_fee")
+	def waterworks_application_fee;
 
 	@Service("SequenceService")
 	def seqSvc;
@@ -21,25 +21,17 @@ class WaterworksApplicationPersistenceInterceptor{
 	public void beforeCreate(def evt) {
 		def o  = evt.args[0];
 		o.appno = 'WA'+seqSvc.getNextFormattedSeriesA('water_application', 6);
-		o.account.acctno = 'TMP-'+ o.appno; 
-		o.account.state = 'PENDING';
-		o.account.address.text = formatAddress( o.account.address ); 
+		o.address.text = formatAddress( o.address ); 
 		o.dtfiled  = dateSvc.getServerDate();
-		def z = waterworks_account.create( o.account );
-		o.acctid = z.objid; 
+		o.fees.each{
+			it.amtpaid = 0;
+			it.txntype = 'REG'; 
+		}
 	}
 
 	@After(pattern="PersistenceService.create", eval="#{args[0]._schemaname == 'waterworks_application'}")
 	public void afterCreate(def evt) {
 		def o = evt.result;
-		def p = evt.args[0]; 
-		p.items.each{
-			it.parentid = o.account.objid; 
-			it.amtpaid = 0;
-			it.txntype = 'REG'; 
-			it.duedate = o.dtfiled; 
-			waterworks_account_ledger.create( it );
-		}
 		workflowTaskSvc.start( [refid:o.objid, processname: 'waterworks_application' ] );
 	}
 

@@ -1,0 +1,6 @@
+<workunit extends="com/rameses/seti2/templates/CrudLookup.xml" 
+          schemaName="waterworks_stubout">
+    <invokers>
+        <invoker type="waterworks_stubout:lookup" caption="Lookup Stubout" action="init"/>
+    </invokers>
+</workunit>

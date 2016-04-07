@@ -16,22 +16,28 @@
         
         class WaterworksNewApplication extends CrudPageFlowModel { 
         
-            @Script('RevenueRules')
-            def ruleScript; 
+            @Service('WaterworksApplicationRuleService')
+            def appSvc; 
         
             void afterCreate() { 
-                entity.account = [address:[:]]; 
+                entity.address = [:]; 
             }
         
             void computeFee() { 
-                def m = [txntype: getSchemaName()]; 
-                def result = ruleScript.execute( m );
-                entity.items = result.items; 
+                def result = appSvc.getInitialInfo( [:] );
+                entity.fees = result.fees; 
                 entity.total = result.total;
+                entity.requirements = result.requirements; 
+                feeList.reload();
+                requirementList.reload();
             } 
         
             def feeList = [
-                fetchList: {o-> return entity.items; }
+                fetchList: {o-> return entity.fees; }
+            ] as BasicListModel;
+            
+            def requirementList = [
+                fetchList: {o-> return entity.requirements; }
             ] as BasicListModel;
         }
         ]]>
@@ -43,7 +49,7 @@
         <page name="initial" title="Waterworks Application Initial Page">
             <transition to="compute-fees" caption="Next" action="computeFee"/>
         </page>
-        <page name="compute-fees" title="Compute Fees">
+        <page name="compute-fees" title="Fees and Requirements">
             <transition to="initial" caption="Back" />
             <transition to="success" caption="Submit" confirm="You are about to save the record. Proceed?" 
                         action="saveCreate"/>

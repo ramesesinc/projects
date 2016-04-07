@@ -43,21 +43,21 @@ public class WaterworksApplicationInitialPage extends javax.swing.JPanel {
         xFormPanel1.setBorder(xTitledBorder1);
 
         xLookupField1.setCaption("Applicant");
-        xLookupField1.setExpression("#{entity.account.owner.name}");
+        xLookupField1.setExpression("#{entity.owner.name}");
         xLookupField1.setHandler("entity:lookup");
-        xLookupField1.setName("entity.account.owner"); // NOI18N
+        xLookupField1.setName("entity.owner"); // NOI18N
         xLookupField1.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(xLookupField1);
 
         xTextField1.setCaption("Acct Name");
-        xTextField1.setName("entity.account.acctname"); // NOI18N
+        xTextField1.setName("entity.acctname"); // NOI18N
         xTextField1.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(xTextField1);
 
         xComboBox1.setCaption("Classification");
         xComboBox1.setExpression("#{item.objid}");
         xComboBox1.setItems("listTypes.waterworks_classification");
-        xComboBox1.setName("entity.account.classification"); // NOI18N
+        xComboBox1.setName("entity.classification"); // NOI18N
         xComboBox1.setPreferredSize(new java.awt.Dimension(200, 20));
         xFormPanel1.add(xComboBox1);
 
@@ -65,7 +65,7 @@ public class WaterworksApplicationInitialPage extends javax.swing.JPanel {
         xTitledBorder2.setTitle("Location Information");
         xPanel3.setBorder(xTitledBorder2);
 
-        localAddressPanel1.setName("entity.account.address"); // NOI18N
+        localAddressPanel1.setName("entity.address"); // NOI18N
 
         javax.swing.GroupLayout xPanel3Layout = new javax.swing.GroupLayout(xPanel3);
         xPanel3.setLayout(xPanel3Layout);

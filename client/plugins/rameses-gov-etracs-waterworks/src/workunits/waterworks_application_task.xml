@@ -10,5 +10,6 @@
     <code class="com.rameses.gov.etracs.waterworks.models.WaterworksApplication"/>
     <pages>
         <page template="com.rameses.gov.etracs.waterworks.views.WaterworksApplicationPage"/>
+        <page name="for-review-requirement" template="com.rameses.gov.etracs.waterworks.views.WaterworksApplicationReviewRequirementPage"/>
     </pages>
 </workunit>

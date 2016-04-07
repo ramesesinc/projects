@@ -7,7 +7,8 @@
 		</complex>
 		<field name="parentprocessid" />
 		<field name="state" required="true"/>
-		<field name="startdate" required="true"/>
+		<field name="dtcreated" required="true"/>
+		<field name="startdate" />
 		<field name="enddate" />
 		<field name="assignee_objid" />
 		<field name="assignee_name" />
@@ -15,6 +16,7 @@
 		<field name="actor_name" />
 		<field name="message" />	
 		<field name="prevtaskid" />	
+		<field name="info_myname" />	
 	</element>
 
 </schema>

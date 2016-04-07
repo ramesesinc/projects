@@ -1,0 +1,6 @@
+<schema>
+	<element  tablename="requirement_type">
+		<field name="code" primary="true" style="code"/>
+		<field name="title"/>
+	</element>
+</schema>

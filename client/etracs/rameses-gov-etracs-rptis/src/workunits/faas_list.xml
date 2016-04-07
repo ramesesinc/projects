@@ -1,5 +1,3 @@
-
-
 <workunit extends="wtemplates/ExplorerViewController.xml" defaultFileType="faaslist" autoSelect="true">
     <invokers>
         <invoker folderid="/home/rpt" caption="FAAS Management"  role="ASSESSOR_SHARED" index="101"/>
@@ -23,6 +21,9 @@
             
             @Service('RPUService')
             def rpuSvc;
+            
+            @Service('Var')
+            def var 
     
             def states 
             
@@ -120,6 +121,12 @@
             }
             return []
         }
+            
+        def getShowRevision(){
+            def show = var.get('gr_show_revision_in_faaslist')
+            if (show == null) return false
+            return show.toString().toLowerCase().matches('1|y|yes|t|true')
+        }            
             
     }  
     </code>   

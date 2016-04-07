@@ -122,8 +122,10 @@ class FAASService
 	@ProxyMethod
 	public def createFaas( faas ) {
 		checkTxnReference(faas)
-		faas.ryordinanceno = var.gr_ordinance_no
-		faas.ryordinancedate = var.gr_ordinance_date
+		if (!faas.ryordinanceno){
+			faas.ryordinanceno = var.gr_ordinance_no
+			faas.ryordinancedate = var.gr_ordinance_date
+		}
 		faas.originlguid = (faas.originlguid ? faas.originlguid : env.ORGID )
 		generateUniqueTdNo(faas)
 		updateNameInfo(faas)

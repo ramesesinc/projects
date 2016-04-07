@@ -56,5 +56,16 @@ class MachRpuInterceptor
 		svc.deleteMachRpu(evt.args[0])
 	}
 
+	@After(pattern="RPUService.reviseRpu", eval="#{result.rputype == 'mach'}") 
+	public void reviseRpu( evt ) {
+		try {
+			grSvc.reviseMachRpu(evt.result)
+		}
+		catch(Exception e) {
+			throw e			
+		}
+		
+	}
+
 }
 

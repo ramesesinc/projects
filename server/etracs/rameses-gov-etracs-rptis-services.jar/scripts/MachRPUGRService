@@ -15,6 +15,12 @@ class MachRPUGRService
     @Service('DateService')
     def dtSvc
 
+    @Service('Var')
+    def var
+
+    @Service('RPTUtil')
+    def util 
+
     @ProxyMethod
     public def reviseMachRpu(rpu){
         rpu.dtappraised = dtSvc.serverDate 
@@ -52,6 +58,20 @@ class MachRPUGRService
                     mach.ferac   = ferac.forex 
                 }
             }
+
+            println 'mach -> ' + mach
+
+            if ((mach.estimatedlife == null || mach.estimatedlife == 0) && (mach.yearacquired != null && mach.yearacquired != 0)){
+                def rate = util.toInteger2(var.mach_rpu_standard_depreciation_rate, 5)
+                def age = dtSvc.serverYear - mach.yearacquired
+                if (age > 0) {
+                    mach.depreciation = age * rate
+                    if (mach.depreciation > 80){
+                        mach.depreciation = 80
+                    }
+                }
+            }
+            println  'mach.depreciation -> ' + mach.depreciation
         }
     }
 

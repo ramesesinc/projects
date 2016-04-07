@@ -29,17 +29,17 @@ public class BldgUse
         this.entity             = bu
         this.bldgstructure      = bldgstructure
         this.objid              = bu.objid 
-        this.actualuseid        = bu.actualuse.objid 
+        this.actualuseid        = bu.actualuse?.objid 
         this.swornamount        = bu.swornamount
         this.useswornamount     = bu.useswornamount
 
         this.fixrate = false;
-        if ( bu.actualuse && (bu.actualuse.fixrate == 1 || bu.actualuse.fixrate == true))
+        if ( bu.actualuse && (bu.actualuse?.fixrate == 1 || bu.actualuse?.fixrate == true))
             this.fixrate = true 
 
         setAssesslevel(0.0)
         if (this.fixrate && bu.actualuse?.rate > 0.0)
-            setAssesslevel(bu.actualuse.rate)
+            setAssesslevel(bu.actualuse?.rate)
 
         setBasevalue(bu.basevalue)
 

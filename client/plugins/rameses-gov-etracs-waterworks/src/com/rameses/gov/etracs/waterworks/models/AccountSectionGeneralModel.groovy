@@ -22,26 +22,22 @@ class AccountSectionGeneralModel {
         return caller?.entity; 
     }
     
-    def changeOwner(){ 
-        def currentowner = acctSvc.initChangeOwner([ ownerid: entity.owner?.objid ]); 
-        def params = [entity: [currentowner: currentowner ]];
-        params.entity.acctname = entity.acctname; 
-        params.entity.acctno = entity.acctno;
+    def changeAddress(){ 
+        def map = [ acctname: entity.acctname, address: entity.address ]; 
+        map.newaddress = entity.address?.clone(); 
+        if ( map.newaddress==null ) map.newaddress=[:];
+        
+        def params = [ entity: map ]; 
         params.handler = { o-> 
-            def resp = acctSvc.postChangeOwner([ 
+            def resp = acctSvc.postChangeAddress([ 
                             accountid: entity.objid, 
-                            acctname: o.acctname, 
-                            prevownerid: currentowner?.objid, 
-                            ownerid: o.newowner.objid
-                        ]);
-                    
-            entity.owner = resp?.owner;
-            entity.address = resp?.address; 
-            if ( resp?.acctname ) entity.acctname = resp.acctname; 
+                            address: o.newaddress 
+                        ]); 
+            if ( resp?.address ) entity.address = resp.address; 
             
             binding.refresh();
         }
-        return Inv.lookupOpener("waterworks_account:changeowner", params );
+        return Inv.lookupOpener("waterworks_account:changeaddress", params );
     }
     
     def changeMeter(){

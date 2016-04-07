@@ -2,7 +2,7 @@
 
 	<element tablename="vw_waterworks_stubout">
 		<field name="objid" primary="true"/> 
-		<field name="title"/> 
+		<field name="code"/> 
 		<field name="description"/> 
 		<field name="zone_objid"/> 
 		<field name="zone_code"/> 

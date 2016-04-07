@@ -124,8 +124,6 @@ class WaterworksMobileDownloadService {
 	def getStuboutsByArea( o ){
 		if (!o.areaid) throw new Exception("areaid is required!");
 
-		return vw_waterworks_stubout.find(['area.objid': o.areaid])
-					   			    .select('objid,title,description,area.objid')
-							 		.list(); 
+		return vw_waterworks_stubout.find(['area.objid': o.areaid]).list(); 
 	}
 }

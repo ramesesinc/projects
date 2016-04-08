@@ -19,6 +19,9 @@ class FAASWorkflowService extends ActiveWorkflowService
 	@Service('RPTTrackingService')
 	def trackingSvc;
 
+	@ActiveDB('faas_list')
+	def faaslistEm
+
 	String processname = 'faas'
 
 
@@ -48,6 +51,7 @@ class FAASWorkflowService extends ActiveWorkflowService
 			msg = 'FAAS is already submitted ' + task.title + '.'
 		else
 			msg = 'FAAS is currently for ' + task.title + ' by ' + task.assignee.name + '.'
+		faaslistEm.updateFaasList(env.data)
 	}
 	
 

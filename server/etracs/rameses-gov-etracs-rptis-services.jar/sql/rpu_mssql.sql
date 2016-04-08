@@ -61,11 +61,11 @@ UPDATE rpu SET suffix = $P{suffix}, fullpin = $P{fullpin} WHERE objid = $P{objid
 
 
 [getLandImprovementsRpuByRealPropertyId]
-SELECT rpu.objid, rpu.suffix, f.fullpin 
+SELECT f.objid as faasid, rpu.objid, rpu.suffix, f.fullpin 
 FROM rpu rpu
   INNER JOIN realproperty rp ON rpu.realpropertyid = rp.objid 
   INNER JOIN faas f ON rpu.objid = f.rpuid 
-WHERE rpu.realpropertyid = $P{realpropertyid} 
+WHERE f.realpropertyid = $P{realpropertyid} 
   AND rpu.rputype != 'land'   
 
 

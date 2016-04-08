@@ -5,6 +5,8 @@
         <invoker type="formActions" action="doOpen" caption="Open" mnemonic="o" shortcut="ctrl O" visibleWhen="#{selectedEntity != null}" depends="listHandler.selectedEntity" index="-100"/>        
     </invokers>
         <code>
+<![CDATA[
+            
      import com.rameses.rcp.common.*
     import com.rameses.rcp.annotations.*
     import com.rameses.osiris2.client.*
@@ -24,6 +26,9 @@
             
             @Service('Var')
             def var 
+            
+            @Service('GeneralRevisionService')
+            def grSvc;
     
             def states 
             
@@ -121,14 +126,26 @@
             }
             return []
         }
+        
+        def getRevisionyears(){
+            if (!selectedEntity) 
+                return []
+            return grSvc.getRyList(selectedEntity.lguid, selectedEntity.ry, selectedEntity.rputype );
+        }
             
         def getShowRevision(){
-            def show = var.get('gr_show_revision_in_faaslist')
-            if (show == null) return false
-            return show.toString().toLowerCase().matches('1|y|yes|t|true')
+            if (!selectedEntity) return false;
+            if (selectedEntity.state != 'CURRENT') return false;
+            def rys = getRevisionyears();
+            if( !rys ) return false;
+            def maxry = rys.ry.max()
+            if (selectedEntity.ry >= maxry) return false;
+            return true;
         }            
             
     }  
+    
+]]>    
     </code>   
     <pages>
         <page template="com.rameses.gov.etracs.rpt.faas.ui.FaasExplorerViewPage" />

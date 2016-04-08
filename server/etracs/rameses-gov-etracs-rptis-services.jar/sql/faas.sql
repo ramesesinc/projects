@@ -1,34 +1,6 @@
 [getList]
-SELECT 
-	f.*,
-	rpu.rputype,
-	rpu.ry,
-	rpu.taxable,
-	rpu.totalareaha,
-	rpu.totalareasqm,
-	rpu.totalbmv,
-	rpu.totalmv,
-	rpu.totalav,
-	rp.section,
-	rp.parcel,
-	rp.surveyno,
-	rp.cadastrallotno,
-	rp.blockno,
-	rp.claimno,
-	b.name AS barangay_name,
-	pc.code AS classification_code,
-	t.trackingno,
-	tsk.objid AS taskid,
-	tsk.state AS taskstate,
-	tsk.assignee_objid 
-FROM faas f
-	INNER JOIN rpu rpu ON f.rpuid = rpu.objid
-	INNER  JOIN realproperty rp ON f.realpropertyid = rp.objid
-	INNER JOIN barangay b ON rp.barangayid = b.objid 
-	LEFT JOIN propertyclassification pc ON rpu.classification_objid = pc.objid 
-	LEFT JOIN faas_task tsk ON f.objid = tsk.refid AND tsk.enddate IS NULL
-	LEFT JOIN rpttracking t ON f.objid = t.objid 
-WHERE 1=1
+SELECT * 
+from faas_list f 
 ${filters}
 ${orderby}
 

@@ -34,13 +34,18 @@ public class WaterworksApplication extends WorkflowTaskModel {
     }
     
     public boolean beforeSignal(def param) {
-        boolean pass = false;
-        def h = { o->
-            param.data = o;
-            pass = true;
+        if(task.state == 'for-billing' && !param.action?.startsWith('return') ) {
+            boolean pass = false;
+            def h = { o->
+                param.data = o;
+                pass = true;
+            }
+            Modal.show("waterworks_application:initial_billing", [entity:entity, handler: h]);
+            return pass;
         }
-        Modal.show("waterworks_application:initial_billing", [entity:entity, handler: h]);
-        return pass;
+        else {
+            return super.beforeSignal(param);
+        }
     }
     
     

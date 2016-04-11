@@ -80,7 +80,7 @@ class GeneralRevisionService
 		faas.appraiser = [name:var.gr_default_appraiser_name, title:var.gr_default_appraiser_title, dtsigned:var.gr_default_dtsigned]
 		faas.recommender = [name:var.gr_default_recommender_name, title:var.gr_default_recommender_title, dtsigned:var.gr_default_dtsigned]
 		faas.approver = [name:var.gr_default_approver_name, title:var.gr_default_approver_title, dtsigned:var.gr_default_approver_dtsigned]
-
+		faas.rpu.preveffectivity = faas.preveffectivity
 		rpuSvc.reviseRpu(faas.rpu)
 		return faas 
 	}

@@ -104,3 +104,9 @@ SELECT
 FROM bldgrpu_land bl 
   INNER JOIN faas f ON bl.landfaas_objid = f.objid 
 WHERE bl.bldgrpuid = $P{objid}  
+
+
+[getStandardStructures]
+select * 
+from structure 
+where name in ('FLO', 'ROF', 'WAP')

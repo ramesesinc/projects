@@ -43,8 +43,10 @@ class BldgRPUGRService
 			rpu.bldgage = 0
 			
 		if (!rpu.dtcompleted && !rpu.dtoccupied) {
-			def yrcompleted =  rpu.preveffectivity - rpu.bldgage
-			rpu.dtcompleted = dtSvc.parse('yyyy-MM-dd', yrcompleted + '-01-01')
+			if (rpu.preveffectivity != null && rpu.preveffectivity > 0){
+				def yrcompleted =  rpu.preveffectivity - rpu.bldgage
+				rpu.dtcompleted = dtSvc.parse('yyyy-MM-dd', yrcompleted + '-01-01')
+			}
 		}
 		if (!rpu.dtoccupied){
 			rpu.dtoccupied = rpu.dtcompleted

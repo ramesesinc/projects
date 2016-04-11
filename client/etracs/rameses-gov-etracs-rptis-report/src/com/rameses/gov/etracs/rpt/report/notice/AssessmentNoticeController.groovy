@@ -176,7 +176,10 @@ class AssessmentNoticeController
                 new SubReport( 'NoticeItem', reportpath + 'noticeitem.jasper' ),
             ] as SubReport[]
         },
-        getReportData : { return entity },
+        getReportData : { 
+            entity.items2 = entity.items
+            return entity 
+        },
         getParameters : { 
             def params = paramSvc.getStandardParameter()
             params.LOGOLGU = EtracsReportUtil.getInputStream("lgu-logo.png")

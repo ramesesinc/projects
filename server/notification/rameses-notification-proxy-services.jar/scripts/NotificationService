@@ -31,4 +31,9 @@ class NotificationService
     public void removeMessage( params ) { 
         svc.removeMessage( params ); 
     } 
+
+    @ProxyMethod 
+    public def getCount( params ) { 
+        return svc.getCount( params ); 
+    }
 }

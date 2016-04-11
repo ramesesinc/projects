@@ -70,3 +70,18 @@ from bldgrpu_structuraltype st
 	inner join bldgkind bk on bucc.bldgkind_objid = bk.objid 
 where st.bldgrpuid = $P{rpuid}
 
+
+
+[getFaasIds]
+select
+  f.objid, f.tdno
+from faas f  
+  inner join rpu r on r.objid = f.rpuid 
+  inner join realproperty rp on rp.objid = r.realpropertyid 
+where rp.barangayid LIKE $P{barangayid}
+	and r.ry = $P{revisionyear} 
+	and f.state LIKE $P{state}
+	${sectionfilter}
+	${starttdnofilter}
+	${endtdnofilter}
+order by f.tdno 

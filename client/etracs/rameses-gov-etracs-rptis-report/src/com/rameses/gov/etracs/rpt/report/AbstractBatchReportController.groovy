@@ -65,9 +65,12 @@ abstract class AbstractBatchReportController
         binding.refresh();
     }
 
-    public abstract void print();
-
-
+    public void print() {
+        mode = 'printing';
+        Thread t = new Thread( batchTask)
+        t.start();
+    }
+    
     def getSelectiontypes(){
         if (!selectiontypes)
         selectiontypes = [
@@ -105,4 +108,60 @@ abstract class AbstractBatchReportController
             return [];
         return lguSvc.lookupBarangaysByRootId(params.lgu?.objid);
     }
+    
+    public def getItems(params){}
+    public def getReportData(entity){}
+    public def getReportInvokerName(){}    
+    public def getReportParameters(){ return [:] }
+        
+    
+    def batchTask = [
+        run : {
+            def list = null;
+            try {
+                list = getItems(params);
+            }
+            catch(e){
+                onError(e.message);
+                return;
+            }
+
+            if( !list){
+                onError('No records found.');
+                return;
+            }
+
+            try { 
+                def data = list.remove(0);
+                while(!interrupt && data) {
+                    def reportdata = getReportData(data);
+                    
+                    def reportparams = [PRINTPAGE:params.pagetype?.toLowerCase()];
+                    def p = getReportParameters();
+                    if(!p) p = [:];
+                    reportparams += p;
+                    
+                    def reportInvoker = Inv.lookupOpener(getReportInvokerName(), [entity:reportdata, reportparams:reportparams])
+                    def report = reportInvoker.handle.report.report
+                    
+                    1.upto(params.copies){copycnt -> 
+                        ReportUtil.print( report, params.showprinterdialog) ;
+                        updateMessage("Printing copy # " + copycnt + "." );
+                        Thread.sleep(params.printinterval * 1000)
+                    }
+                    data = (list ? list.remove(0) : null);
+                }    
+                def msg = "Batch printing has been successfully completed."
+                if(interrupt) 
+                    msg = 'Batch printing has been interrupted.    '
+                onFinish(msg );
+           } catch(e) {
+                e.printStackTrace();
+                onError( e );
+           }
+        }
+    ] as Runnable
+            
+    
+    
 }

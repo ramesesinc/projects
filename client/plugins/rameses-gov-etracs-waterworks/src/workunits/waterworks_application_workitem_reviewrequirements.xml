@@ -1,0 +1,66 @@
+<workunit>
+    <invokers>
+        <invoker type="waterworks_application:form:formActions" 
+                 visibleWhen="#{task.state=='for-review-requirement' 
+                    &amp;&amp; task.assignee?.objid!=null}"
+                 caption="Review Requirement"
+                 target="self"
+                 />
+                 
+         <invoker type="formActions" caption="Close" action="doCancel" immediate="true"/> 
+         <invoker type="formActions" caption="Update" action="doUpdate"/>        
+    </invokers>
+    <code>
+        <![CDATA[
+        
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        import com.rameses.common.*;
+        import com.rameses.util.*;
+        
+        class ReviewRequirement {
+        
+            String title = "Review Requirements"
+        
+            @Service("PersistenceService")
+            def persistenceSvc;
+            
+            @Service("QueryService")
+            def querySvc;
+
+            @Caller
+            def caller;
+
+            String schemaName = "waterworks_application_requirement";
+            def requirements = [];
+
+            def getEntity() {
+                return caller.entity;
+            }
+            
+            def doCancel() {
+                return "_close";
+            }
+            
+            def doUpdate() {
+                return "_close";
+            }
+            
+             def requirementList = [
+                fetchList: {o->
+                    def  m = [_schemaname:schemaName];
+                    m.findBy = [parentid: entity.objid];
+                    requirements = querySvc.getList(m);
+                    return requirements;
+                }
+            ] as EditorListModel;
+        }
+        
+        ]]>
+    </code>
+    <pages>
+        <page template="com.rameses.gov.etracs.waterworks.views.ReviewRequirementPage" />
+    </pages>    
+</workunit>

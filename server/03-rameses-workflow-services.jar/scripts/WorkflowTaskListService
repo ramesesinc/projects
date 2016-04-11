@@ -19,7 +19,7 @@ class WorkflowTaskListService  {
         def nodes = [];
         nodes << [title:'My Tasks', name:'mytask'];
         wfNode.find( [processname: o.processname] ).where("nodetype = 'state'").orderBy("idx").list().each {
-            nodes << [title: it.title, name: it.name]
+            nodes << [title: it.title , name: it.name, domain: it.domain, role:it.role ]
         }
         nodes << [title:'Completed', name:'end'];
         return nodes;
@@ -44,7 +44,7 @@ class WorkflowTaskListService  {
                     break;
 
                 case 'mytask': 
-                    s = "state NOT IN ('start','end') AND enddate IS NULL AND (assignee.objid IS NULL OR assignee.objid=:assignee)";
+                    s = "state NOT IN ('start','end') AND enddate IS NULL AND assignee.objid=:assignee";
                     p.assignee = env.USERID;
                     break;    
 

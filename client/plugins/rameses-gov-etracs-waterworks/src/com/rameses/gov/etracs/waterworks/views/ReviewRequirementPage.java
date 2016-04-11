@@ -4,20 +4,20 @@
  */
 package com.rameses.gov.etracs.waterworks.views;
 
+import com.rameses.osiris2.themes.FormPage;
 import com.rameses.rcp.ui.annotations.Template;
-import com.rameses.seti2.views.CrudFormPage;
 
 /**
  *
  * @author dell
  */
-@Template(CrudFormPage.class)
-public class WaterworksApplicationReviewRequirementPage extends javax.swing.JPanel {
+@Template(FormPage.class)
+public class ReviewRequirementPage extends javax.swing.JPanel {
 
     /**
      * Creates new form WaterworksApplicationPage
      */
-    public WaterworksApplicationReviewRequirementPage() {
+    public ReviewRequirementPage() {
         initComponents();
     }
 
@@ -30,51 +30,8 @@ public class WaterworksApplicationReviewRequirementPage extends javax.swing.JPan
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        xFormPanel3 = new com.rameses.rcp.control.XFormPanel();
-        xLabel7 = new com.rameses.rcp.control.XLabel();
-        xLabel8 = new com.rameses.rcp.control.XLabel();
-        xLabel9 = new com.rameses.rcp.control.XLabel();
-        xLabel10 = new com.rameses.rcp.control.XLabel();
-        xLabel11 = new com.rameses.rcp.control.XLabel();
-        xLabel12 = new com.rameses.rcp.control.XLabel();
         xDataTable2 = new com.rameses.rcp.control.XDataTable();
         jLabel1 = new javax.swing.JLabel();
-
-        com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
-        xTitledBorder1.setTitle("Application Info");
-        xFormPanel3.setBorder(xTitledBorder1);
-
-        xLabel7.setCaption("App No");
-        xLabel7.setExpression("#{entity.appno}");
-        xLabel7.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        xLabel7.setPreferredSize(new java.awt.Dimension(0, 16));
-        xFormPanel3.add(xLabel7);
-
-        xLabel8.setCaption("Acct Name");
-        xLabel8.setExpression("#{entity.acctname}");
-        xLabel8.setPreferredSize(new java.awt.Dimension(0, 16));
-        xFormPanel3.add(xLabel8);
-
-        xLabel9.setCaption("Date Applied");
-        xLabel9.setExpression("#{entity.dtfiled}");
-        xLabel9.setPreferredSize(new java.awt.Dimension(0, 16));
-        xFormPanel3.add(xLabel9);
-
-        xLabel10.setCaption("Owner");
-        xLabel10.setCellPadding(new java.awt.Insets(20, 0, 0, 0));
-        xLabel10.setExpression("#{entity.owner.name}");
-        xLabel10.setPreferredSize(new java.awt.Dimension(0, 16));
-        xFormPanel3.add(xLabel10);
-
-        xLabel11.setCaption("Classification");
-        xLabel11.setExpression("#{entity.classificationid}");
-        xLabel11.setPreferredSize(new java.awt.Dimension(0, 16));
-        xFormPanel3.add(xLabel11);
-
-        xLabel12.setCaption("Address");
-        xLabel12.setExpression("#{entity.address.text}");
-        xLabel12.setPreferredSize(new java.awt.Dimension(0, 16));
-        xFormPanel3.add(xLabel12);
 
         xDataTable2.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
@@ -133,7 +90,7 @@ public class WaterworksApplicationReviewRequirementPage extends javax.swing.JPan
         });
         xDataTable2.setHandler("requirementList");
 
-        jLabel1.setText("Check completed if requirment is sufficient");
+        jLabel1.setText("Check completed if requirement is sufficient");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -141,33 +98,23 @@ public class WaterworksApplicationReviewRequirementPage extends javax.swing.JPan
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(xFormPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(xDataTable2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 528, Short.MAX_VALUE))
-                .addContainerGap(354, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 528, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(xDataTable2, javax.swing.GroupLayout.PREFERRED_SIZE, 705, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(177, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(13, 13, 13)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(xDataTable2, javax.swing.GroupLayout.PREFERRED_SIZE, 285, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(25, Short.MAX_VALUE))
+                .addComponent(xDataTable2, javax.swing.GroupLayout.PREFERRED_SIZE, 337, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(149, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
     private com.rameses.rcp.control.XDataTable xDataTable2;
-    private com.rameses.rcp.control.XFormPanel xFormPanel3;
-    private com.rameses.rcp.control.XLabel xLabel10;
-    private com.rameses.rcp.control.XLabel xLabel11;
-    private com.rameses.rcp.control.XLabel xLabel12;
-    private com.rameses.rcp.control.XLabel xLabel7;
-    private com.rameses.rcp.control.XLabel xLabel8;
-    private com.rameses.rcp.control.XLabel xLabel9;
     // End of variables declaration//GEN-END:variables
 }

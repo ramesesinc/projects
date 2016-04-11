@@ -58,8 +58,8 @@ class WorkflowTaskService  {
         st.state = 'start';
         st.refid = r.refid;
         //try to check if there are handlers before creating the task.
-        if( env.handler?.beforeStartProcess ) {
-            env.handler.beforeStartProcess( t );
+        if( env.startProcessHandler ) {
+            env.startProcessHandler( t );
         }
         st = em.create( st );
         return st;
@@ -86,8 +86,8 @@ class WorkflowTaskService  {
     	t.actor = null;
 
         //try to check if there are handlers before creating the task.
-        if( env.handler?.beforeCreateTask ) {
-            env.handler.beforeCreateTask( t );
+        if( env.createTaskHandler ) {
+            env.createTaskHandler( t );
         }
     	t = em.create(t);
     	return t;
@@ -126,7 +126,7 @@ class WorkflowTaskService  {
         ti.transitions.each {
             if(it.properties) it.properties = em.serializer.read( it.properties );
             def action = it.action;
-            if(action?.startsWith("revert")) {
+            if(action?.startsWith("return")) {
                 int idx = action.indexOf("_");
                 String returnState = null;
                 if( idx > 0 ) returnState = action.substring(idx+1);

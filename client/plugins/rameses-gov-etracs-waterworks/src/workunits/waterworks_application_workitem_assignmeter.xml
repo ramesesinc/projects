@@ -4,6 +4,7 @@
                  visibleWhen="#{task.state=='for-installation' &amp;&amp; task.assignee?.objid!=null}"
                  caption="Assign Meter"
                  target="popup"
+                 action="init"
                  />
     </invokers>
     <code>
@@ -17,15 +18,37 @@
         
         class AssignMeter {
         
-            @Binding
-            def binding;
+            @Service("PersistenceService")
+            def persistenceSvc;
+
+            @Caller
+            def caller;
             
-        
+            def info = [_schemaname:'waterworks_application'];
+            
+            void init() {
+                def e = caller.entity;
+                info.meter = e.meter;
+                info.installer = e.installer;
+                info.dtinstalled = e.dtinstalled;
+                info.initialreading = e.initialreding;
+            }
+            
+            def doCancel() {
+                return "_close";
+            }          
+                           
+            def doOk() {
+                persistenceSvc.update(info);
+                caller.entity.putAll( info );
+                caller.refresh();
+                return "_close";
+            }                              
         }
         
         ]]>
     </code>
     <pages>
-        <page template="com.rameses.gov.etracs.waterworks.views.WaterBillOfMaterialsPage"/>
+        <page template="com.rameses.gov.etracs.waterworks.views.AssignMeterPage"/>
     </pages>
 </workunit>

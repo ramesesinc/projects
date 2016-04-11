@@ -1,0 +1,10 @@
+<workunit schemaName="waterworks_material">
+    <invokers>
+        <invoker type="waterworks_material:create" caption="Waterworks Material" action="create" target="popup" srole="MASTER"/>
+        <invoker type="waterworks_material:open" caption="Waterworks Material" action="open" target="popup" srole="MASTER"/>
+    </invokers>
+    <code class="com.rameses.seti2.models.CrudFormModel"/>
+    <pages>
+        <page template="com.rameses.gov.etracs.waterworks.views.MaterialPage"/>
+    </pages>
+</workunit>

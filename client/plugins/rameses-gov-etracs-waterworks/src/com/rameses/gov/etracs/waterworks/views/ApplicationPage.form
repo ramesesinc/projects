@@ -97,6 +97,15 @@
             </Property>
           </Properties>
         </Component>
+        <Component class="com.rameses.rcp.control.XLabel" name="xLabel4">
+          <Properties>
+            <Property name="caption" type="java.lang.String" value="Stubout Position"/>
+            <Property name="expression" type="java.lang.String" value="#{entity.stuboutindex}"/>
+            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[0, 16]"/>
+            </Property>
+          </Properties>
+        </Component>
       </SubComponents>
     </Container>
     <Component class="com.rameses.rcp.control.XDataTable" name="xDataTable1">
@@ -212,6 +221,15 @@
             </Property>
           </Properties>
         </Component>
+        <Component class="com.rameses.rcp.control.XLabel" name="xLabel20">
+          <Properties>
+            <Property name="caption" type="java.lang.String" value="Meter Brand"/>
+            <Property name="expression" type="java.lang.String" value="#{entity.meter.brand}"/>
+            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[0, 16]"/>
+            </Property>
+          </Properties>
+        </Component>
         <Component class="com.rameses.rcp.control.XLabel" name="xLabel17">
           <Properties>
             <Property name="caption" type="java.lang.String" value="Initial Reading"/>
@@ -233,7 +251,7 @@
         <Component class="com.rameses.rcp.control.XLabel" name="xLabel19">
           <Properties>
             <Property name="caption" type="java.lang.String" value="Installed on"/>
-            <Property name="expression" type="java.lang.String" value="#{entity.installer.dtinstalled}"/>
+            <Property name="expression" type="java.lang.String" value="#{entity.dtinstalled}"/>
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[0, 16]"/>
             </Property>

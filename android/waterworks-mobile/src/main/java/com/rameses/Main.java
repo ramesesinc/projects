@@ -1,5 +1,8 @@
 package com.rameses;
 
+import com.gluonhq.charm.down.common.PlatformFactory;
+import com.gluonhq.charm.down.common.Position;
+import com.gluonhq.charm.down.common.PositionService;
 import com.rameses.waterworks.bean.Rule;
 import com.rameses.waterworks.bean.Setting;
 import com.rameses.waterworks.bluetooth.BluetoothPort;
@@ -19,6 +22,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
@@ -42,6 +47,7 @@ public class Main extends Application {
     public static PrinterHandler PRINTERHANDLER = null;
     public static BluetoothPort PRINTER;
     public static List<Rule> RULES;
+    public static double LATITUDE = 0.00, LONGITUDE = 0.00;
 
     @Override
     public void start(Stage stage) {
@@ -63,6 +69,7 @@ public class Main extends Application {
      
         loadSysVar();
         loadRules();
+        loadPosition();
         
         System.out.println("Width: " + WIDTH + "   Height : " + HEIGHT);
         
@@ -106,6 +113,17 @@ public class Main extends Application {
     public static void loadRules(){
         Database db = DatabasePlatformFactory.getPlatform().getDatabase();
         RULES = db.getRules();
+    }
+    
+    public static void loadPosition(){
+        PositionService positionService = PlatformFactory.getPlatform().getPositionService();
+        positionService.positionProperty().addListener(new ChangeListener<Position>(){
+            @Override
+            public void changed(ObservableValue<? extends Position> observable, Position p1, Position p2) {
+                LATITUDE = p2.getLatitude();
+                LONGITUDE = p2.getLongitude();
+            }
+        });
     }
 
 }

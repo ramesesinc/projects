@@ -4,6 +4,9 @@ import com.rameses.util.*;
 
 class WorkflowTaskService  {		
 
+    @Service(value='NotificationService', connection='notification_proxy')
+    def notificationSvc;
+
 	@DataContext(dynamic=true)
 	def db;
 
@@ -21,6 +24,19 @@ class WorkflowTaskService  {
 
 	@Service
 	def self;
+
+    private void notify( data ) { 
+        if ( notificationSvc ) { 
+            def msg = [:];
+            msg.recipienttype='group';
+            msg.senderid = env.USERID;
+            msg.sender = env.NAME;
+            msg.recipientid = data.assignee?.objid; 
+            msg.tag = data.processname +':'+ data.state; 
+            msg.message = (data.message? data.message: msg.tag);             
+            notificationSvc.addMessage( msg );
+         } 
+    }
 
     @ProxyMethod
 	public def start( def r ) {
@@ -42,7 +58,9 @@ class WorkflowTaskService  {
 
         r.prevtaskid = prevState.taskid;
 		def ti = createTaskInstance( r );
-		return findTask( [taskid: ti.taskid, processname: r.processname ] )
+		def ntask =  findTask( [taskid: ti.taskid, processname: r.processname ] );
+        notify( ntask ); 
+        return ntask ;
     }
 
     private def createStartTaskInstance( r ) {
@@ -139,6 +157,7 @@ class WorkflowTaskService  {
                 it.role = z.role;
             }
         }   
+        ti.processname = r.processname; 
 		return ti;
     }
 
@@ -178,7 +197,9 @@ class WorkflowTaskService  {
         m.prevtaskid = t.taskid;
         m.message = t.message;
         def ti = createTaskInstance( m );
-        return findTask( [taskid: ti.taskid, processname: t.processname ] )
+        def ntask = findTask( [taskid: ti.taskid, processname: t.processname ] )
+        notify( ntask );
+        return ntask;
  	}
 
     @ProxyMethod

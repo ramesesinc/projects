@@ -3,56 +3,37 @@ import com.rameses.common.*;
 import com.rameses.osiris3.script.*;
 import com.rameses.util.*;
 
-class WsCloudChannelListener
-{   
-	@Service('AsyncNotificationService')
-	def asyncNotificationSvc;
+class WsCloudChannelListener { 
 
-	@Service('NotificationService')
-	def notificationSvc;
+	@Service('AsyncRequestExecutor')
+	def asyncReqExecutor;
+
+	@Service(value='CloudNotificationService') 
+	def localSvc;
 
 	@Service(value='CloudNotificationService', connection='cloud_notification') 
-	def cloudNotificationSvc;
+	def remoteSvc;
 
-	@Context 
-	def appContext; 
+	@Service 
+	def self;
 
 	@OnMessage('ws_cloud_channel') 
 	public void receive( params ) { 
-		println '[WsCloudChannelListener] ' + params; 
-
-		def msgObj = cloudNotificationSvc.getMessage([objid: params.objid]); 
-		if (!msgObj) {
-			println '[WsCloudChannelListener] "'+ params.objid +'" notification message not found'; 
-			return; 
-		}
-
-		def userObj = new Base64Cipher().decode(msgObj.data); 
-		if (userObj instanceof AsyncRequest) { 
-			def data = asyncNotificationSvc.open([objid: msgObj.objid]);
-			if (data) { 
-				//record already exist 
-				return; 
-			} 
-			
-			data = [ 
-				objid 		: msgObj.objid, 
-				data  		: msgObj.data, 
-				messagetype	: msgObj.messagetype 				
-			];
-			asyncNotificationSvc.create( data ); 
+		if ( params.immediate == true ) {  
+			println '[WsCloudChannelListener] Received immediate message from '+ params.origin; 
+			self.processImmediateMessage( params ); 
 
 		} else { 
-			/* 
-				persist locally to the group notification.
-				after successfully added it will be published to the client immediately  
-			*/ 		
-			notificationSvc.importMessage( msgObj ); 
-		} 
+			println '[WsCloudChannelListener] Notified for incoming messages (status='+ params.status +')'; 
+			def var = em.read([objid: 'fetch_notification'], 'setting'); 
+			var.value = 'true'; 
+			em.update( var, 'setting' );  
+		}
+	} 
 
-		/*
-			notify the cloud server that this message has been delivered  
-		*/
-		cloudNotificationSvc.markAsDelivered([objid: msgObj.objid]); 
+	@Async 
+	@ProxyMethod(local=true) 
+	void processImmediateMessage( params ) { 
+		asyncReqExecutor.process( params ); 
 	} 
 } 

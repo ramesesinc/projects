@@ -41,11 +41,12 @@ class NotificationService
             throw new Exception('recipient type must be a "user" or "group"'); 
         } 
 
-        if (!params.senderid) params.senderid = env.USERID; 
-        if (!params.sender) params.sender = (env.FULLNAME? env.FULLNAME: env.NAME); 
-
         params.notificationid = 'MSG' + new UID(); 
         params.dtfiled = dateSvc.serverDate.toString(); 
+
+        if (!params.objid) params.objid = params.notificationid; 
+        if (!params.sender) params.sender = (env.FULLNAME? env.FULLNAME: env.NAME); 
+        if (!params.senderid) params.senderid = env.USERID; 
 
         def userObj = (params.data? params.data: [:]); 
         params.data = new Base64Cipher().encode(userObj); 
@@ -110,6 +111,7 @@ class NotificationService
         msg.channel = channel;
         msg.group   = channel;
         msg.data    = resolveData(msg.data);
+        println msg; 
         wssender.send([
             channel : msg.channel, 
             group   : msg.group, 

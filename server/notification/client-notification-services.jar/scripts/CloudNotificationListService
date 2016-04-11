@@ -27,15 +27,13 @@ class CloudNotificationListService extends ActiveListService
         ]; 
     } 
 
-    void beforeList( params ) {
+    void beforeList( params ) { 
+        params._pagingKeys = 'n.objid'; 
         if ( params.filtertype == 'pending' ) {
-            params._pagingKeys = 'n.objid'; 
             params._listMethod = 'getPendingNotifications'; 
-        } else if ( params.filtertype == 'delivered' ) { 
-            params._pagingKeys = 'n.objid'; 
+        } else if ( params.filtertype == 'delivered' ) {
             params._listMethod = 'getDeliveredNotifications'; 
-        } else if ( params.filtertype == 'failed' ) { 
-            params._pagingKeys = 'n.objid';             
+        } else if ( params.filtertype == 'failed' ) {
             params._listMethod = 'getFailedNotifications'; 
         } else {
             params._listMethod = 'getAllNotifications'; 

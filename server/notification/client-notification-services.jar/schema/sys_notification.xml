@@ -6,11 +6,12 @@
 		<field name="dtfiled" required="true"/>
 		<field name="sender" required="true"/>
 		<field name="senderid" required="true"/>
-		<field name="recipientid" required="true"/>
-		<field name="recipienttype" required="true"/>
+		<field name="recipientid" />
+		<field name="recipienttype" />
 		<field name="message" required="true"/>
-		<field name="filetype" required="true"/>
+		<field name="filetype" />
 		<field name="data"/>
+		<field name="tag"/>
 	</element>
 	
 </schema>

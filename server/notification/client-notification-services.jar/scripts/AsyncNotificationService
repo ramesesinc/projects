@@ -27,11 +27,12 @@ class AsyncNotificationService
 
     @ProxyMethod 
     public void removeEntity( params ) { 
-        em.delete(params, 'pending');
-        em.delete(params, 'processing');
-        em.delete(params, 'delivered');
-        em.delete(params, 'failed');
-        em.delete(params);
+        params.refid = params.objid; 
+        em.delete(params, 'pending'); 
+        em.delete(params, 'processing'); 
+        em.delete(params, 'delivered'); 
+        em.delete(params, 'failed'); 
+        em.delete(params); 
     } 
 
     @ProxyMethod 
@@ -45,10 +46,12 @@ class AsyncNotificationService
     }
 
     @ProxyMethod 
-    public void markAsFailed( params ) {
-    	em.removePending([objid: params.objid]); 
+    public void markAsFailed( params ) { 
+        em.removePending( params ); 
+        em.removeProcess( params ); 
+        em.removeFailed([ refid: params.objid ]); 
 
-    	params.refid = params.objid;
+    	params.refid = params.objid; 
     	params.objid = 'FMSG' + new UID(); 
     	params.dtfiled = dateSvc.serverDate.toString(); 
     	em.create( params, 'failed' ); 
@@ -56,8 +59,12 @@ class AsyncNotificationService
 
     @ProxyMethod 
     public void markAsDelivered( params ) { 
-    	em.removePending([objid: params.objid]); 
-        em.removeProcess([objid: params.objid]); 
+        def data = em.findMessage( params ); 
+        if ( !data ) return; 
+
+    	em.removePending( params ); 
+        em.removeProcess( params ); 
+        em.removeDelivered([ refid: params.objid ]); 
 
     	params.refid = params.objid; 
     	params.objid = 'DMSG' + new UID(); 
@@ -77,5 +84,11 @@ class AsyncNotificationService
             em.update( data, 'pending' ); 
         } 
         em.delete( params, 'processing' ); 
+    } 
+
+    @ProxyMethod 
+    public boolean containsMessage( msgid ) {
+        def data = em.findMessage([ objid: msgid ]); 
+        return ( data ? true : false ); 
     } 
 } 

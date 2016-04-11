@@ -36,3 +36,10 @@ dependencies {
     compile fileTree(dir: 'lib', include: '*.jar')
 }
 
+dependencies {
+    compile 'com.gluonhq:charm-down-common:2.0.0';
+    desktopRuntime 'com.gluonhq:charm-down-desktop:2.0.0';
+    androidRuntime 'com.gluonhq:charm-down-android:2.0.0';
+    iosRuntime 'com.gluonhq:charm-down-ios:2.0.0';
+}
+

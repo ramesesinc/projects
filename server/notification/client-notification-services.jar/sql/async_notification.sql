@@ -6,11 +6,21 @@ FROM async_notification_pending p
 WHERE pr.objid IS NULL 
 ORDER BY t.dtfiled 
 
+[moveToProcessing]
+INSERT INTO async_notification_processing ( objid, dtfiled ) 
+SELECT a.objid, a.dtretry 
+FROM async_notification_pending a 
+WHERE a.dtretry <= $P{rundate}  
+	AND a.objid NOT IN (SELECT objid FROM async_notification_processing WHERE objid=a.objid)  
+
 [getProcessList]
-SELECT t.*, p.dtfiled as dtprocess
-FROM async_notification_processing p 
-	INNER JOIN async_notification t ON p.objid=t.objid 
-ORDER BY t.dtfiled 
+SELECT * FROM ( 
+	SELECT t.*, p.dtfiled as dtprocess, pe.dtretry 
+	FROM async_notification_processing p 
+		INNER JOIN async_notification_pending pe on p.objid=pe.objid 
+		INNER JOIN async_notification t ON p.objid=t.objid 
+)xx 
+ORDER BY dtfiled 
 
 [getFailedList]
 SELECT t.*, p.dtfiled as dtprocess 
@@ -36,3 +46,9 @@ DELETE FROM async_notification_processing WHERE dtfiled <= $P{dtfiled}
 
 [removeFailed]
 DELETE FROM async_notification_failed WHERE refid=$P{refid} 
+
+[removeDelivered]
+DELETE FROM async_notification_delivered WHERE refid=$P{refid} 
+
+[findMessage]
+SELECT objid FROM async_notification WHERE objid=$P{objid} 

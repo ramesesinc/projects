@@ -12,17 +12,25 @@ class CloudNotificationUploadService
     @Service(value='CloudNotificationService', connection='cloud_notification')
     def remote;
 
-    @Async 
     @ProxyMethod(local=true)  
     public void upload( params ) { 
+        def immediate = params.immediate; 
         if (params.type == 'HEADER') { 
             def header = em.read( params ); 
             if (!header) return; 
+
+            println 'Uploading message to cloud... Type='+ header.messagetype +', Msg='+ header.message; 
             
             def response = remote.addMessage( header ); 
-            em.removePending( [objid: header.objid] ); 
-            em.removeDelivered([objid: header.objid] );
+            em.removePending([ objid: header.objid ]); 
+            em.removeDelivered([ objid: header.objid ]); 
+            em.removeFailed([ refid: header.objid ]); 
             
+            if ( immediate ) { 
+                em.delete([ objid: header.objid ]); 
+                return; 
+            } 
+
             def map = [
                 objid    : header.objid,  
                 dtfiled  : dateSvc.serverDate,  
@@ -36,7 +44,8 @@ class CloudNotificationUploadService
             if (!attachment) return; 
 
             remote.addAttachment( attachment ); 
-            em.removePending( [objid: attachment.objid] ); 
+            em.removePending([ objid: attachment.objid ]); 
+            em.removeFailed([ refid: attachment.objid ]); 
         } 
     } 
 } 

@@ -33,8 +33,12 @@ class WorkflowTaskService  {
             msg.sender = env.NAME;
             msg.recipientid = data.assignee?.objid; 
             msg.tag = data.processname +':'+ data.state; 
-            msg.message = (data.message? data.message: msg.tag);             
-            notificationSvc.addMessage( msg );
+            msg.message = (data.message? data.message: msg.tag);   
+            try {           
+                notificationSvc.addMessage( msg ); 
+            } catch(Throwable t) {
+                println 'failed to send notification message caused by '+ t.message;                
+            }
          } 
     }
 

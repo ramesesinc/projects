@@ -1,0 +1,33 @@
+
+import com.rameses.annotations.*;
+import com.rameses.http.*;
+import com.rameses.util.*;
+
+class UploadImmediateMessageTask 
+{	
+    @ActiveDB(value='cloud_notification', em='notification')
+    def em;
+
+	@Service('DateService')
+	def dateSvc;   
+
+	@Service('CloudNotificationUploadService')
+	def uploadSvc;	
+
+	//@Schedule(interval=2)
+	public void startUpload( task ) {
+		def rundate = dateSvc.serverDate;
+		def list = em.getPendingImmediateMessages([ _start:0, _limit:5, _pagingKeys:'p.objid' ]); 
+		while (!list.isEmpty()) {
+			def data = list.remove(0); 
+			data.rundate = rundate; 
+			data.immediate = true; 
+			try { 
+				uploadSvc.upload( data ); 
+			} catch(Throwable t) {
+				println '[UploadImmediateMessageTask] failed to upload pending message caused by ' + t.class.name + ': ' + t.message; 
+				break; 
+			}	
+		}
+	} 
+}

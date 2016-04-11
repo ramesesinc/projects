@@ -11,8 +11,7 @@ public class WaterworksApplication extends WorkflowTaskModel {
     
     def feeList = [
         fetchList: {o->
-            def  m = [:];
-            m._schemaname = 'waterworks_application_fee';
+            def  m = [_schemaname:'waterworks_application_fee'];
             m.findBy = [parentid: entity.objid];
             entity.fees = getQueryService().getList(m);
             entity.total = entity.fees.sum{ it.balance };
@@ -23,15 +22,26 @@ public class WaterworksApplication extends WorkflowTaskModel {
     
     def requirementList = [
         fetchList: {o->
-            def  m = [:];
-            m._schemaname = 'waterworks_application_requirement';
+            def  m = [_schemaname :'waterworks_application_requirement'];
             m.findBy = [parentid: entity.objid];
             entity.requirements = getQueryService().getList(m);
             return entity.requirements;
         }
-    ] as EditorListModel;
+    ] as BasicListModel;
  
     void refresh() {
         binding.refresh();
     }
+    
+    public boolean beforeSignal(def param) {
+        boolean pass = false;
+        def h = { o->
+            param.data = o;
+            pass = true;
+        }
+        Modal.show("waterworks_application:initial_billing", [entity:entity, handler: h]);
+        return pass;
+    }
+    
+    
 }

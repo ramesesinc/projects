@@ -28,14 +28,16 @@
 		<complex name="stubout" ref="waterworks_stubout" jointype="many-to-one" required="false">
 			<key field="stuboutid" target="objid"/>	
 		</complex>	
-		<field name="stuboutindex"/> 
+		<field name="stuboutindex" type="integer"/> 
 
 		<field name="meter_objid"/> 
 		<field name="meter_serialno"/> 
 		<field name="meter_brand"/> 
 
 		<field name="initialreading"/> 
-		<field name="installedby_name"/> 
+		<field name="installer_name"/> 
+		<field name="installer_objid"/> 
+		<field name="dtinstalled"/> 
 
 		<complex name="fees" ref="waterworks_application_fee" jointype="one-to-many" lazy="true">
 			<key field="objid" target="parentid"/>	
@@ -45,7 +47,7 @@
 			<key field="objid" target="parentid"/>	
 		</complex>	
 
-		<complex name="bom" ref="waterworks_application_bom" jointype="one-to-many" required="false">
+		<complex name="materials" ref="waterworks_application_bom" jointype="one-to-many" required="false" lazy="true">
 			<key field="objid" target="parentid"/>	
 		</complex>	
 

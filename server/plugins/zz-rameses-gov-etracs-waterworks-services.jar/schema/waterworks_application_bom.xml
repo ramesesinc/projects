@@ -6,10 +6,12 @@
 		<field name="item_objid" required="true"/>
 		<field name="item_code" required="true"/>
 		<field name="item_title" required="true"/>
-		<field name="unit" />
+		<field name="item_unit" />
+		<field name="item_unitprice" required="true" defaultValue="0"/>
 		<field name="qty" required="true"/>
-		<field name="unitprice" required="true" defaultValue="0"/>
-		<field name="linetotal" expr="qty*unitprice"/>
+		<field name="linetotal" expr="qty*item.unitprice"/>
+		<field name="cwdsupplied" />
+		<field name="remarks" />
 	</element>
 
 </schema>

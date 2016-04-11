@@ -1,0 +1,13 @@
+<schema adapter="waterworks">
+
+	<element tablename="waterworks_material">
+		<field name="objid" primary="true" prefix="WTRMAT"/>
+		<field name="code" required="true" indexed="true" searchable="true"/>
+		<field name="title" required="true" indexed="true" searchable="true"/>
+		<field name="unitprice" required="true" type="decimal"/>
+		<field name="unit" required="true" lov="WATERWORKS_MATERIAL_UNIT"/>
+	</element>
+
+</schema>
+
+

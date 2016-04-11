@@ -72,7 +72,11 @@ class WaterworksMobileDownloadService {
 			it.itemaccountid = acct.account.objid; 
 			it.duedate = duedate;
 			it.discodate = discodate;
-			it.info = wm.serializer.write([classification: it.classificationid, metersize: it.metersize, barangay: it.barangayid]);
+			it.info = wm.serializer.write([
+				barangay: (it.barangayid? it.barangayid: ''), 
+				classification: it.classificationid, 
+				metersize: it.metersize 
+			]);
 
 			/*			
 			def result = billingSvc.processBilling( [acctid:it.acctid, area:area] );

@@ -4,44 +4,13 @@
                  visibleWhen="#{task.state=='for-assessment' &amp;&amp; task.assignee?.objid!=null}"
                  caption="Bill of Materials"
                  target="popup"
+                 action="addQty"
                  />
+                 
     </invokers>
-    <code>
-        <![CDATA[
-        
-        
-        import com.rameses.rcp.common.*;
-        import com.rameses.rcp.annotations.*;
-        import com.rameses.osiris2.client.*;
-        import com.rameses.osiris2.common.*;
-        import com.rameses.common.*;
-        import com.rameses.util.*;
-        
-        class BOM {
-        
-            @Binding
-            def binding;
-            
-            def bom = [items:[]];
-            
-            def listHandler = [
-                fetchList: { o->
-                    return bom.items;
-                },
-                onColumnUpdate: { item, colname->
-                    if(colname.matches('unit|qty')) {
-                        item.linetotal = item.qty*item.unitprice;
-                        bom.total = bom.items.sum{it.linetotal};
-                        binding.refesh('bom.total');
-                    }
-                }
-            ] as EditorListModel;
-        
-        }
-        
-        ]]>
-    </code>
+    <code class="com.rameses.gov.etracs.waterworks.models.BillOfMaterialsModel"/>
     <pages>
-        <page template="com.rameses.gov.etracs.waterworks.views.WaterBillOfMaterialsPage"/>
+        <page name="add-qty" template="com.rameses.gov.etracs.waterworks.views.BillOfMaterialsQtyPage"/>
+        <page name="add-price" template="com.rameses.gov.etracs.waterworks.views.BillOfMaterialsPricePage"/>
     </pages>
 </workunit>

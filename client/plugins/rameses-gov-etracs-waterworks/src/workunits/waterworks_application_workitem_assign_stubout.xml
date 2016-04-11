@@ -2,8 +2,7 @@
     <invokers>
         <invoker type="waterworks_application:form:formActions" 
                  visibleWhen="#{task.state=='for-assessment' 
-                    &amp;&amp; task.assignee?.objid!=null
-                    &amp;&amp; entity.stubout?.code == null }"
+                    &amp;&amp; task.assignee?.objid!=null}"
                  caption="Specify Stubout"
                  target="process"
                  action="assignStubout"
@@ -13,18 +12,9 @@
                  visibleWhen="#{task.state=='for-assessment' 
                     &amp;&amp; task.assignee?.objid!=null
                     &amp;&amp; entity.stubout?.code != null }"
-                 caption="Change Stubout"
-                 target="process"
-                 action="changeStubout"
-                 />
-
-        <invoker type="waterworks_application:form:formActions" 
-                 visibleWhen="#{task.state=='for-assessment' 
-                    &amp;&amp; task.assignee?.objid!=null
-                    &amp;&amp; entity.stubout?.code != null }"
                  caption="Change Stubout Position"
                  target="process"
-                 action="changePosition"
+                 action="changeStuboutPosition"
                  />
                  
     </invokers>
@@ -40,11 +30,13 @@
         
         class AssignStubout {
         
-            @Service("WaterworksStuboutService")
-            def stuboutSvc;
+            @Service("PersistenceService")
+            def persistenceSvc;
 
             @Caller
             def caller;
+
+            String schemaName = "waterworks_application";
 
             def getEntity() {
                 return caller.entity;
@@ -52,31 +44,21 @@
 
             void assignStubout() {
                 def h = { o->
-                    def p = [:];
-                    p.stuboutid = o.objid;
-                    p.accountid = entity.objid;
-                    def m = stuboutSvc.addAccount( p );
+                    persistenceSvc.update( [objid:entity.objid, stubout: o, _schemaname: schemaName] ); 
                     entity.stubout = o;
-                    entity.stuboutindex = m.stuboutindex;
                     caller.refresh();
                 }
                 Modal.show( "waterworks_stubout:lookup", [onselect: h] ); 
             }
-            
-            void changeStubout() {
-                def h = { o->
-                    entity.stubout = o;
-                    caller.binding.refresh();
-                }
-                Modal.show( "waterworks_stubout:lookup", [onselect: h] ); 
-            }
-                                    
+
             def changeStuboutPosition() {
                 if( !entity.stubout?.objid ) throw new Exception("Specify stubout first");
-                def h = { o->
-                    ;
+                def p = MsgBox.prompt("Enter stubout position" );
+                if(p) {
+                    persistenceSvc.update( [objid:entity.objid, stuboutindex: p.toInteger(), _schemaname: schemaName ] ); 
+                    entity.stuboutindex = p;
+                    caller.refresh();
                 }
-                Modal.show("stubout:open", [entity:entity.stubout] );
             }
                                     
         }

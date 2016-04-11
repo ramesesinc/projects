@@ -16,7 +16,6 @@
 		<field name="actor_name" />
 		<field name="message" />	
 		<field name="prevtaskid" />	
-		<field name="info_myname" />	
 	</element>
 
 </schema>

@@ -4,6 +4,7 @@
  */
 package com.rameses.gov.etracs.waterworks.views;
 
+
 import com.rameses.rcp.ui.annotations.Template;
 import com.rameses.seti2.views.CrudFormPage;
 
@@ -12,12 +13,12 @@ import com.rameses.seti2.views.CrudFormPage;
  * @author dell
  */
 @Template(CrudFormPage.class)
-public class WaterworksApplicationPage extends javax.swing.JPanel {
+public class ApplicationPage extends javax.swing.JPanel {
 
     /**
      * Creates new form WaterworksApplicationPage
      */
-    public WaterworksApplicationPage() {
+    public ApplicationPage() {
         initComponents();
     }
 
@@ -34,6 +35,7 @@ public class WaterworksApplicationPage extends javax.swing.JPanel {
         xLabel2 = new com.rameses.rcp.control.XLabel();
         xLabel3 = new com.rameses.rcp.control.XLabel();
         xLabel5 = new com.rameses.rcp.control.XLabel();
+        xLabel4 = new com.rameses.rcp.control.XLabel();
         xDataTable1 = new com.rameses.rcp.control.XDataTable();
         xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
         xDecimalField1 = new com.rameses.rcp.control.XDecimalField();
@@ -46,6 +48,7 @@ public class WaterworksApplicationPage extends javax.swing.JPanel {
         xLabel12 = new com.rameses.rcp.control.XLabel();
         xFormPanel4 = new com.rameses.rcp.control.XFormPanel();
         xLabel16 = new com.rameses.rcp.control.XLabel();
+        xLabel20 = new com.rameses.rcp.control.XLabel();
         xLabel17 = new com.rameses.rcp.control.XLabel();
         xLabel18 = new com.rameses.rcp.control.XLabel();
         xLabel19 = new com.rameses.rcp.control.XLabel();
@@ -69,6 +72,11 @@ public class WaterworksApplicationPage extends javax.swing.JPanel {
         xLabel5.setExpression("#{entity.stubout.zone.code}");
         xLabel5.setPreferredSize(new java.awt.Dimension(0, 16));
         xFormPanel1.add(xLabel5);
+
+        xLabel4.setCaption("Stubout Position");
+        xLabel4.setExpression("#{entity.stuboutindex}");
+        xLabel4.setPreferredSize(new java.awt.Dimension(0, 16));
+        xFormPanel1.add(xLabel4);
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder2 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder2.setTitle("Fees");
@@ -179,6 +187,11 @@ public class WaterworksApplicationPage extends javax.swing.JPanel {
         xLabel16.setPreferredSize(new java.awt.Dimension(0, 16));
         xFormPanel4.add(xLabel16);
 
+        xLabel20.setCaption("Meter Brand");
+        xLabel20.setExpression("#{entity.meter.brand}");
+        xLabel20.setPreferredSize(new java.awt.Dimension(0, 16));
+        xFormPanel4.add(xLabel20);
+
         xLabel17.setCaption("Initial Reading");
         xLabel17.setExpression("#{entity.initialreading}");
         xLabel17.setPreferredSize(new java.awt.Dimension(0, 16));
@@ -190,7 +203,7 @@ public class WaterworksApplicationPage extends javax.swing.JPanel {
         xFormPanel4.add(xLabel18);
 
         xLabel19.setCaption("Installed on");
-        xLabel19.setExpression("#{entity.installer.dtinstalled}");
+        xLabel19.setExpression("#{entity.dtinstalled}");
         xLabel19.setPreferredSize(new java.awt.Dimension(0, 16));
         xFormPanel4.add(xLabel19);
 
@@ -246,7 +259,9 @@ public class WaterworksApplicationPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XLabel xLabel18;
     private com.rameses.rcp.control.XLabel xLabel19;
     private com.rameses.rcp.control.XLabel xLabel2;
+    private com.rameses.rcp.control.XLabel xLabel20;
     private com.rameses.rcp.control.XLabel xLabel3;
+    private com.rameses.rcp.control.XLabel xLabel4;
     private com.rameses.rcp.control.XLabel xLabel5;
     private com.rameses.rcp.control.XLabel xLabel7;
     private com.rameses.rcp.control.XLabel xLabel8;

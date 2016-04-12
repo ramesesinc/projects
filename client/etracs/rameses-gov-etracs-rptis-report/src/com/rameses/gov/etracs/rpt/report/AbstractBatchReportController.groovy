@@ -66,7 +66,7 @@ abstract class AbstractBatchReportController
     }
 
     public void print() {
-        mode = 'printing';
+        mode = 'processing';
         Thread t = new Thread( batchTask)
         t.start();
     }
@@ -110,13 +110,21 @@ abstract class AbstractBatchReportController
     }
     
     public def getItems(params){}
-    public def getReportData(entity){}
     public def getReportInvokerName(){}    
     public def getReportParameters(){ return [:] }
+    public def continueOnError(){return false}
+    public def getItemMessage(data, copycount){
+        return "Printing copy # " + copycount + "." 
+    }
+    
+    public def getReportData(entity){
+        return [entity:reportdata]
+    }
         
     
     def batchTask = [
         run : {
+            def error = false;
             def list = null;
             try {
                 list = getItems(params);
@@ -131,34 +139,43 @@ abstract class AbstractBatchReportController
                 return;
             }
 
-            try { 
-                def data = list.remove(0);
-                while(!interrupt && data) {
-                    def reportdata = getReportData(data);
+            def data = list.remove(0);
+            def reportparams = [PRINTPAGE:params.pagetype?.toLowerCase()];
+
+            while(!interrupt && data) {
+                def reportdata = getReportData(data);
+
+                def p = getReportParameters();
+                if(!p) p = [:];
+                reportparams += p;
+                reportdata.reportparams = reportparams
+
+                try{
+                    updateMessage(getItemMessage(data, 0));
                     
-                    def reportparams = [PRINTPAGE:params.pagetype?.toLowerCase()];
-                    def p = getReportParameters();
-                    if(!p) p = [:];
-                    reportparams += p;
-                    
-                    def reportInvoker = Inv.lookupOpener(getReportInvokerName(), [entity:reportdata, reportparams:reportparams])
+                    def reportInvoker = Inv.lookupOpener(getReportInvokerName(), reportdata )
                     def report = reportInvoker.handle.report.report
-                    
+
                     1.upto(params.copies){copycnt -> 
                         ReportUtil.print( report, params.showprinterdialog) ;
-                        updateMessage("Printing copy # " + copycnt + "." );
+                        updateMessage(getItemMessage(data, copycnt));
                         Thread.sleep(params.printinterval * 1000)
                     }
-                    data = (list ? list.remove(0) : null);
-                }    
-                def msg = "Batch printing has been successfully completed."
-                if(interrupt) 
-                    msg = 'Batch printing has been interrupted.    '
+                } catch(e) {
+                    e.printStackTrace();
+                    if (!continueOnError()){
+                        error = true;
+                        onError( e );
+                        break;
+                    }
+               }
+               data = (list ? list.remove(0) : null);
+            }    
+            def msg = "Batch printing has been successfully completed."
+            if(interrupt) 
+                msg = 'Batch printing has been interrupted.'
+            else if (!error)
                 onFinish(msg );
-           } catch(e) {
-                e.printStackTrace();
-                onError( e );
-           }
         }
     ] as Runnable
             

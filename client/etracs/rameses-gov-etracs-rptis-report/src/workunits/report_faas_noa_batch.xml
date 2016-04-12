@@ -29,7 +29,7 @@
                 entity.items << item;
                 entity.taxpayer = item.taxpayer
                 entity = svc.createNotice(entity);
-                return entity;
+                return [entity:entity];
             }
             
             public def getReportInvokerName(){ 

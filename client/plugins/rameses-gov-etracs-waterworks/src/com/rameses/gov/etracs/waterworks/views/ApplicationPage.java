@@ -6,13 +6,13 @@ package com.rameses.gov.etracs.waterworks.views;
 
 
 import com.rameses.rcp.ui.annotations.Template;
-import com.rameses.seti2.views.CrudFormPage;
+import com.rameses.seti2.views.WorkflowTaskFormPage;
 
 /**
  *
  * @author dell
  */
-@Template(CrudFormPage.class)
+@Template(WorkflowTaskFormPage.class)
 public class ApplicationPage extends javax.swing.JPanel {
 
     /**

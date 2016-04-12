@@ -1,4 +1,4 @@
-package treasury.actions;
+package common.actions;
 
 import com.rameses.rules.common.*;
 import com.rameses.util.*;

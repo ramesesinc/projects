@@ -1,0 +1,8 @@
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" 
+          schemaName="requirement_type" allowCreate="true" allowOpen="true" allowDelete="true"
+          cols="code,title,handler">
+    <invokers>
+        <invoker folderid="/explorer/master/enterprise" caption="Requirement Type" 
+                 index="10" zrole="MASTER" action="init"/>
+    </invokers>
+</workunit>

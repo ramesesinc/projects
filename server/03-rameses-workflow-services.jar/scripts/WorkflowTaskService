@@ -4,7 +4,7 @@ import com.rameses.util.*;
 
 class WorkflowTaskService  {		
 
-    @Service(value='NotificationService', connection='notification_proxy')
+    @Service(value='NotificationService')
     def notificationSvc;
 
 	@DataContext(dynamic=true)
@@ -26,20 +26,19 @@ class WorkflowTaskService  {
 	def self;
 
     private void notify( data ) { 
-        if ( notificationSvc ) { 
-            def msg = [:];
-            msg.recipienttype='group';
-            msg.senderid = env.USERID;
-            msg.sender = env.NAME;
-            msg.recipientid = data.assignee?.objid; 
-            msg.tag = data.processname +':'+ data.state; 
-            msg.message = (data.message? data.message: msg.tag);   
-            try {           
-                notificationSvc.addMessage( msg ); 
-            } catch(Throwable t) {
-                println 'failed to send notification message caused by '+ t.message;                
-            }
-         } 
+        def msg = [:];
+        msg.objid = data.taskid;
+        msg.recipienttype='group';
+        msg.senderid = env.USERID;
+        msg.sender = env.NAME;
+        msg.recipientid = data.assignee?.objid; 
+        msg.tag = data.processname +':'+ data.state; 
+        msg.message = (data.message? data.message: msg.tag);   
+        try {           
+            notificationSvc.addMessage( msg ); 
+        } catch(Throwable t) {
+            println 'failed to send notification message caused by '+ t.message;                
+        }
     }
 
     @ProxyMethod
@@ -104,7 +103,7 @@ class WorkflowTaskService  {
         if( t.assignee?.objid ) {
             t.startdate = currDate;
         }
-
+        
     	t.actor = null;
 
         //try to check if there are handlers before creating the task.
@@ -140,7 +139,7 @@ class WorkflowTaskService  {
     @ProxyMethod
     public def findTask( def r ) {
     	def em = db.lookup( r.processname +"_task" );
-    	def ti = em.select("taskid,startdate,dtcreated,state,prevtaskid,assignee.*,refid").find( [taskid: r.taskid ]).first(); 
+    	def ti = em.select("taskid,startdate,dtcreated,state,prevtaskid,assignee.*,refid,message").find( [taskid: r.taskid ]).first(); 
     	if(!ti) throw new Exception("Task not found for " + r.taskid);
     	ti += wfNode.select("title,domain,role").find( [name:ti.state, processname: r.processname] ).first();
     	ti.transitions = wfTransitions.select("action,to,idx,eval,properties,permission,caption")
@@ -198,10 +197,12 @@ class WorkflowTaskService  {
         def trans = findNextTransition( m );
         m.state = trans.to;        
         m.assignee = t.assignee;
+
         m.prevtaskid = t.taskid;
         m.message = t.message;
         def ti = createTaskInstance( m );
-        def ntask = findTask( [taskid: ti.taskid, processname: t.processname ] )
+        def ntask = findTask( [taskid: ti.taskid, processname: t.processname ] );
+
         notify( ntask );
         return ntask;
  	}
@@ -220,6 +221,9 @@ class WorkflowTaskService  {
         m.assignee = [objid:env.USERID, name:env.FULLNAME];
         m.startdate =  dateSvc.getServerDate();  
         em.find([taskid: t.taskid]).update(m); 
+
+
+        notificationSvc.updateRecipient([objid: t.taskid, recipientid:m.assignee.objid]);
         return m;
     }
 

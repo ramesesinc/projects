@@ -176,7 +176,7 @@ public class FAASListService extends ActiveCrudListService {
         }
 
         if (whereclause) {
-            params.filters = ' WHERE ' + whereclause
+            params.filters = ' AND ' + whereclause
             params.orderby = ' ORDER BY f.tdno, f.pin '
         }
     }   

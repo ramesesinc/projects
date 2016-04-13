@@ -12,6 +12,9 @@ class FAASService
 	@ActiveDB('faas')	
 	def em 
 
+	@ActiveDB('faas_list')	
+	def faasListEm
+
 	@Service('Var')
 	def var 
 
@@ -223,7 +226,7 @@ class FAASService
 	@ProxyMethod
 	public void deleteFaasById( faasid ) {
 		if (faasid) {
-			deleteFaas(faasSvc.openFaas([objid:faasid]))
+			faasSvc.deleteFaas(faasSvc.openFaas([objid:faasid]))
 		}
 	}	
 
@@ -678,6 +681,7 @@ class FAASService
 				cancelledday 		: pdate.day 
 			]
 			em.cancelFaas(params)
+			faasListEm.updateFaasList(params)
 			if (faas.txntype.newrpu){
 				em.cancelRpu([objid:it.prevrpuid])
 			}

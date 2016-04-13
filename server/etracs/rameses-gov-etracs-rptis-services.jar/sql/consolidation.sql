@@ -1,3 +1,14 @@
+[getNodes]
+select n.name, n.title as caption
+from sys_wf_node n
+where n.processname = 'consolidation'
+and n.name not like 'assign%'
+and n.name not in ('start', 'provapprover')
+and n.name not like 'for%'
+and exists(select * from sys_wf_transition where processname='consolidation' and parentid = n.name)
+order by n.idx
+
+
 [getList]
 SELECT 
 	c.*,

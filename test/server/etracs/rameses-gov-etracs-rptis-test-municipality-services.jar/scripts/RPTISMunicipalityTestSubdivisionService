@@ -11,6 +11,9 @@ public class RPTISMunicipalityTestSubdivisionService
     @ActiveDB('rptis_test')
     def em 
 
+    @ActiveDB('faas_list')
+    def faasListEm
+
     @Service('RPTISUnitTestService')
     def test
 
@@ -64,8 +67,24 @@ public class RPTISMunicipalityTestSubdivisionService
 
     @ProxyMethod
     public void deleteSubdivision(task) {
-    	helper.openTask(workflowSvc, task)
-    	subdivisionSvc.deleteSubdivision(task.data)	
+        helper.openTask(workflowSvc, task)
+
+        def subdivision = task.data 
+        def lands = subdivisionSvc.getSubdividedLands(subdivision.objid)
+        def affectedrpus = subdivisionSvc.getAffectedRpus(subdivision.objid)
+
+    	subdivisionSvc.deleteSubdivision(subdivision)	
+
+        //test 
+        lands.each{
+            def f = faasListEm.findById([objid:it.newfaasid])
+            test.testNull('faas_list', f)
+        }
+        affectedrpus.each{
+            def f = faasListEm.findById([objid:it.newfaasid])
+            test.testNull('faas_list', f)
+        }
+
     }
 
 
@@ -156,6 +175,18 @@ public class RPTISMunicipalityTestSubdivisionService
         subdivisionSvc.createSubdividedLand(createLand(subdivision, motherfaas, 2), subdivision)
         return helper.signal(workflowSvc, task, 'submit', true)
     }    
+
+    @ProxyMethod
+    public void testTaxmapping(subdivision){
+        subdivisionSvc.getSubdividedLands(subdivision.objid).each{
+            def f = faasListEm.findById([objid:it.newfaasid])
+            test.testNotNull('faas_list', f)
+        }
+        subdivisionSvc.getAffectedRpus(subdivision.objid).each{
+            def f = faasListEm.findById([objid:it.newfaasid])
+            test.testNotNull('faas_list', f)
+        }
+    }
 
     @ProxyMethod
     public def doTaxmappingApproval(task){

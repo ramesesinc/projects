@@ -7,6 +7,7 @@ and n.name <> 'start'
 and exists(select * from sys_wf_transition where processname='faas' and parentid = n.name)
 order by n.idx
 
+
 [insertFaasList]
 insert into faas_list(
 	objid,
@@ -63,7 +64,7 @@ select
 	f.utdno,
 	f.prevtdno,
 	f.fullpin as displaypin,
-	case when r.rputype = 'land' then rp.pin else concat(rp.pin, '-', r.suffix) end as pin,
+	case when r.rputype = 'land' then rp.pin else rp.pin + '-' + convert(varchar(4),r.suffix) end as pin,
 	f.taxpayer_objid,
 	f.owner_name,
 	f.owner_address,
@@ -101,13 +102,13 @@ where f.objid = $P{objid}
 
 
 [updateFaasList]
-update faas_list fl, faas f, rpu r, realproperty rp, propertyclassification pc set 
+update fl set 
 	fl.state = f.state,
 	fl.datacapture = f.datacapture,
 	fl.tdno = f.tdno,
 	fl.utdno = f.utdno,
 	fl.displaypin = f.fullpin,
-	fl.pin = case when r.rputype = 'land' then rp.pin else concat(rp.pin, '-', r.suffix) end,
+	fl.pin = case when r.rputype = 'land' then rp.pin else rp.pin + '-' + convert(varchar(4),r.suffix) end,
 	fl.prevtdno = f.prevtdno,
 	fl.taxpayer_objid = f.taxpayer_objid,
 	fl.owner_name = f.owner_name,
@@ -133,6 +134,7 @@ update faas_list fl, faas f, rpu r, realproperty rp, propertyclassification pc s
 	fl.taskstate = (select state from faas_task where refid = f.objid and enddate is null),
 	fl.assignee_objid = (select assignee_objid from faas_task where refid = f.objid and enddate is null),
 	fl.trackingno = (select trackingno from rpttracking where objid = f.objid)
+from faas_list fl, faas f, rpu r, realproperty rp, propertyclassification pc 
 where fl.objid = $P{objid}	
  	and fl.objid = f.objid 
 	and f.rpuid = r.objid 

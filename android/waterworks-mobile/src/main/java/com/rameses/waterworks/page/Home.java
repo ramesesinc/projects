@@ -162,10 +162,10 @@ public class Home {
             cancel.setFitHeight(cancel.getImage().getHeight() * 0.7);
         }
         
-        Label read = new Label(readrecords + " Records");
+        Label read = new Label("READ : " + readrecords);
         read.getStyleClass().add("readingbulletin-label");
         
-        Label unread = new Label(unreadrecords + " Records");
+        Label unread = new Label("UNREAD : " + unreadrecords);
         unread.getStyleClass().add("readingbulletin-label");
         
         HBox space = new HBox();

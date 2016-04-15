@@ -234,7 +234,7 @@ public class Dialog {
     
     public static void hide(){
         isOpen = false;
-        Main.PAGE.getChildren().removeAll(Main.PAGE.getChildren());
+        Main.PAGE.getChildren().clear();
         Main.PAGE.getChildren().add(Main.ROOT);
     }
     

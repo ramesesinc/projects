@@ -35,13 +35,16 @@ class RPTLedgerInterceptor
 	@After(pattern="FAASService.(approveFaas|approveFaasByRemote)", eval="#{!env.ORGCLASS?.equalsIgnoreCase('province')}")
 	public void postFaasToRPTLedger(evt){
         def faas = evt.result 
-        if ((faas.txntype.objid.matches('SD|CS') || isFAASFromSubdivision(faas)) && faas.rpu.rputype == 'land'){
+        if (util.isTrue(faas.datacapture)) {
+            postNewLedger(faas)
+        }
+        else if ((faas.txntype.objid.matches('SD|CS') || isFAASFromSubdivision(faas)) && faas.rpu.rputype == 'land'){
             svc.postNewLedger(faas)
         }
         else if ((faas.txntype.objid.matches('SD|CS') || isFAASFromSubdivision(faas)) && faas.rpu.rputype != 'land'){
             svc.postLedgerFaasData(faas);
         }
-		else if ( faas.txntype.newledger || util.isTrue(faas.datacapture)) {
+		else if ( faas.txntype.newledger ) {
             postNewLedger(faas)
         }
         else {

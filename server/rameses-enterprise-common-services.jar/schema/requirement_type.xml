@@ -1,0 +1,7 @@
+<schema>
+	<element  tablename="requirement_type">
+		<field name="code" primary="true" style="code" visible="true"/>
+		<field name="title"/>
+		<field name="handler" openerlist="requirement_type:handler"/>
+	</element>
+</schema>

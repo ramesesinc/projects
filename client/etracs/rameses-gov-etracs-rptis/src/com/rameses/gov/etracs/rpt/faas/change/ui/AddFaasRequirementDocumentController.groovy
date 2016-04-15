@@ -9,7 +9,7 @@ import com.rameses.gov.etracs.rpt.util.*;
 import javax.swing.JFileChooser;
 
 
-public class AddFaasRequirementAttachmentController 
+public class AddFaasRequirementDocumentController 
 {
     String title = 'Add Requirement Document';
     
@@ -37,8 +37,8 @@ public class AddFaasRequirementAttachmentController
         changeinfo = [
             objid       : 'CI' + new java.rmi.server.UID(),
             faasid      : entity.objid,
-            rpid        : entity.rp.objid,
-            rpuid       : entity.rpu.objid,
+            rpid        : entity.rp?.objid,
+            rpuid       : entity.rpu?.objid,
             action      : invoker.properties.actiontype,
             newinfo     : [:],
             previnfo    : [:],

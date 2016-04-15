@@ -47,6 +47,9 @@ class SubdivisionService
     @Service('NumberService')
     def numSvc
 
+    @Service('RPTRedFlagService')
+    def redFlagSvc 
+
 
     def SCHEMA_SUBDIVISION      = 'subdivision'
     def SCHEMA_SUBDIVIDED_LAND  = 'subdividedland'
@@ -642,6 +645,18 @@ class SubdivisionService
         return em.getTasks(subdivision)    
     }
 
+    @ProxyMethod
+    public def getOpenRedflagCount(entity){
+        return redFlagSvc.getOpenRedflagCount(entity)
+    }
+
+    @ProxyMethod
+    public def findOpenTask( faas ) {
+        def tsk = em.findOpenTask(faas)    
+        if (!tsk)
+            tsk = em.findOpenTaskFromFaas(faas) 
+        return tsk 
+    }
 
 }
 

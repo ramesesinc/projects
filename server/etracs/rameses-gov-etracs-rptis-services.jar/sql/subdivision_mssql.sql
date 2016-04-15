@@ -265,10 +265,6 @@ WHERE f.objid in (
 ORDER BY f.tdno 
 
 
-[findOpenTask]
-SELECT * FROM rpttask WHERE objid = $P{objid} AND enddate IS NULL 
-
-
 [getMotherLands]
 SELECT cl.*,
 	cl.rpid as realpropertyid, 
@@ -493,3 +489,17 @@ update subdivision set
 	mothertdnos = $P{mothertdnos},
 	motherpins = $P{motherpins}
 where objid = $P{objid}	  
+
+
+[findOpenTask]  
+select * from subdivision_task where refid = $P{objid} and enddate is null
+
+
+[findOpenTaskFromFaas]
+select * from subdivision_task 
+where refid in (
+	select subdivisionid from subdividedland where newfaasid = $P{objid}
+	union 
+	select subdivisionid from subdivisionaffectedrpu where newfaasid = $P{objid}
+)
+and enddate is null

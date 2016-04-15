@@ -48,6 +48,9 @@ class FAASService
     @Service('NumberService')
     def numSvc 
 
+    @Service('RPTRedFlagService')
+    def redFlagSvc 
+
     
     def SCHEMA_PREVIOUSFAAS		= 'previousfaas'
 	def SCHEMA_BACKTAX			= 'backtax'
@@ -868,15 +871,23 @@ class FAASService
         return backtaxyears
 	}
 
+
     //to be intercepted by province/muni codes 
     @ProxyMethod
     public def resendToMunicipality(faas){
         return faas
     }
 
+
     @ProxyMethod
-    public def getRedFlagCount(faasid){
-    	return em.findOpenRedFlagCount([objid:faasid])
+    public def getOpenRedflagCount(faasid){
+    	return redFlagSvc.getOpenRedflagCount([objid:faasid])
+    }
+
+
+    @ProxyMethod
+    public def findOpenTask( faas ) {
+    	return em.findOpenTask(faas)	
     }
     
 

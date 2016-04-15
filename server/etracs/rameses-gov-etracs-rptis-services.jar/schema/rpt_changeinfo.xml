@@ -1,9 +1,10 @@
 <schema>
 	<element name="rpt_changeinfo" tablename="rpt_changeinfo">
 		<field name="objid" primary="true" />
-		<field name="faasid" required="true" />
-		<field name="rpid" required="true" />
-		<field name="rpuid" required="true" />
+		<field name="refid" />
+		<field name="faasid"  />
+		<field name="rpid"  />
+		<field name="rpuid"  />
 		<field name="action" required="true" />
 		<field name="reason" required="true" />
 		<field name="newinfo" required="true"/>

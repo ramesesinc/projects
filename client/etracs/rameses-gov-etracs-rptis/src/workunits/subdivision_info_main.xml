@@ -23,6 +23,7 @@ class SubdivisionMainInfoController
     def caller;
     
     def entity;
+    String entityName = 'subdivision:info:main'
     
     String title = 'General Information'
     

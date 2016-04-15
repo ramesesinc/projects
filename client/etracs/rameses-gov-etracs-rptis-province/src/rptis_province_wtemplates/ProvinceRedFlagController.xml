@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="formActions" action="_close" caption="Cancel" mnemonic="c" immediate="true" visibleWhen="#{mode=='create'}"/>
+        <invoker type="formActions" action="_close" caption="Close" mnemonic="c" immediate="true" visibleWhen="#{mode!='create'}"/>
+        <invoker type="formActions" action="post" caption="Post" mnemonic="p"  visibleWhen="#{mode=='create'}"/>
+    </invokers>
+    <code class="com.rameses.gov.etracs.rptis.province.redflag.ProvinceRedFlagController" />
+    <pages>
+        <page template="com.rameses.gov.etracs.rpt.faas.redflag.ui.RedFlagPage" />
+    </pages>
+</workunit>

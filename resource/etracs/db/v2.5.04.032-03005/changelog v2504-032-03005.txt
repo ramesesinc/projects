@@ -7,7 +7,9 @@
 	- 
 		
 - ASSESSOR
-	-
-		
+	- Red Flag support for Subdivision and Consolidation
+	- Batch printing of Notice of Assessment 
+	- Modified faas, subdivision, consolidation listing page 
+
 - LANDTAX: 
 	- Batch printing of Realty Tax Billing Support

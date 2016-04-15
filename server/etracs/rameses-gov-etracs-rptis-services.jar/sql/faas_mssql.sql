@@ -621,4 +621,6 @@ where r.objid = f.rpuid
   and lr.rputype = 'land'
   and f.objid = $P{objid}
   
-  
+
+[findOpenTask]  
+select * from faas_task where refid = $P{objid} and enddate is null   

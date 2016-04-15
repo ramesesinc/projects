@@ -2,10 +2,11 @@
 <workunit>
     <invokers>
         <invoker type="faas:info" action="init" caption="Red Flags" index="1005" />
-        <!-- 
         <invoker type="subdivision:info" action="init" caption="Red Flags" index="1005" />
-        <invoker type="subdivisionfromcs:info" action="init" caption="Red Flags" index="1005" />
         <invoker type="consolidation:info" action="init" caption="Red Flags" index="1005" />
+        
+        <!-- 
+        <invoker type="subdivisionfromcs:info" action="init" caption="Red Flags" index="1005" />
         <invoker type="resection:info" action="init" caption="Red Flags" index="1005" />
         <invoker type="mcsettlement:info" action="init" caption="Red Flags" index="1005" />
         -->
@@ -70,7 +71,8 @@ class RedFlagsInfoController
         if (selectedItem.state != 'OPEN')
             throw new Exception('Only OPEN red flag can be resolved.')
         selectedItem.putAll(redflagSvc.open(selectedItem));
-        return Inv.lookupOpener('redflag:resolve', [entity:entity, redflag:selectedItem, oncomplete:oncomplete]);
+        def data = redflagSvc.getEntity(selectedItem);
+        return Inv.lookupOpener('redflag:resolve', [entity:data, redflag:selectedItem, oncomplete:oncomplete]);
     }
     
     

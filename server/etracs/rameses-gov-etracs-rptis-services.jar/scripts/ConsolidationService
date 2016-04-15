@@ -45,6 +45,9 @@ class ConsolidationService
     @Service('NumberService')
     def numSvc 
 
+    @Service('RPTRedFlagService')
+    def redFlagSvc     
+
     def SCHEMA_CONSOLIDATION 		= 'consolidation'
     def SCHEMA_CONSOLIDATED_LAND 	= 'consolidatedland'
     def SCHEMA_AFFECTED_RPU 		= 'affectedrpu'
@@ -617,6 +620,20 @@ class ConsolidationService
     @ProxyMethod
     public def getTasks( consolidation ) {
         return em.getTasks(consolidation)    
+    }
+
+
+    @ProxyMethod
+    public def getOpenRedflagCount(entity){
+        return redFlagSvc.getOpenRedflagCount(entity)
+    }
+
+    @ProxyMethod
+    public def findOpenTask( faas ) {
+        def tsk = em.findOpenTask(faas)    
+        if (!tsk)
+            tsk = em.findOpenTaskFromFaas(faas) 
+        return tsk 
     }
 
 }

@@ -5,6 +5,14 @@
             caption="Add Requirement Document" index="8" 
             actiontype="add_faas_requirement_document"/>        
         
+        <invoker type="subdivision:redflag:action" action="init" 
+            caption="Add Requirement Document" index="8" 
+            actiontype="add_faas_requirement_document"/>        
+        
+        <invoker type="consolidation:redflag:action" action="init" 
+            caption="Add Requirement Document" index="8" 
+            actiontype="add_faas_requirement_document"/>        
+        
         <invoker type="redflag:add_faas_requirement_document" action="init"/>
         
         <invoker type="formActions" action="_close" caption="Cancel" mnemonic="c" immediate="true" />

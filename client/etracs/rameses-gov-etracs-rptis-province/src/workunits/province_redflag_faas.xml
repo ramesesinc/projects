@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit extends="rptis_province_wtemplates/ProvinceRedFlagController.xml"> 
+    <invokers>
+        <invoker type="faas:formActions" action="init" caption="Add Red Flag" index="100000" visibleWhen="#{!entity.state.matches('CURRENT|CANCELLED') &amp;&amp; !entity.taskstate.matches('assign.*')}" target="popup"/>
+    </invokers>
+</workunit>

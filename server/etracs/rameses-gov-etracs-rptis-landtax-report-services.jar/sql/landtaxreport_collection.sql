@@ -102,7 +102,7 @@ from (
 		and cr.objid not in (select receiptid from cashreceipt_void where receiptid=cr.objid) 
 		and ri.revperiod = 'advance'
 
-	union 
+	union all 
 
 	select 
 		pc.name as classname, pc.orderno, pc.special,  

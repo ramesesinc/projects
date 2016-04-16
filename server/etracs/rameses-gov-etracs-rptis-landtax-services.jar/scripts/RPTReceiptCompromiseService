@@ -189,19 +189,46 @@ class RPTReceiptCompromiseService
 		compromise.cypaymentreceiptid = null
 		compromise.cypaymentorno = null
 		compromise.cypaymentordate = null
-		compromise.cypaymentoramount = null
+		compromise.debitamount = receipt.amount 
 
-		if (oldcomp.downpaymentreceiptid == compromise.rptreceiptid)
+		if (oldcomp.downpaymentreceiptid == compromise.rptreceiptid){
 			em.updateDownpaymentPaymentInfo(compromise)
-		else 
+		}
+		else if (oldcomp.cypaymentreceiptid == compromise.rptreceiptid){
+			compromise.debitamount = 0.0 
 			em.updateCurrentYearPaymentInfo(compromise)
-
+			em.updateLedgerLastYearQtrPaid(oldcomp)
+			fixLedgerInfo(oldcomp)
+		}
+		
 		em.voidCompromiseCredit(compromise)
 		em.voidItemCredits(compromise)
 		em.voidInstallmentCredits(compromise)
 		em.deleteVoidedItemCredit(compromise)
 		em.deleteVoidedCredit(compromise)
 
+	}
+
+	void fixLedgerInfo(compromise){
+		def ledger = em.findLedgerById([objid:compromise.rptledgerid])
+		if (!ledger) 
+			throw new Exception('Ledger does not exist or has already been deleted.')
+
+		def info = [:]
+		info.objid = ledger.objid
+		info.tdno = ledger.tdno
+		info.fullpin = ledger.fullpin
+		info.taxpayer = ledger.taxpayer
+		info.lastyearpaid = compromise.endyear 
+		info.lastqtrpaid = compromise.endqtr 
+		info.taxable = ledger.taxable 
+		info.basicpaid = 0.0
+		info.basicintpaid = 0.0
+		info.basicdisctaken = 0.0
+		info.sefpaid = 0.0
+		info.sefintpaid = 0.0
+		info.sefdisctaken = 0.0
+		ledgerSvc.fixLedger(info)
 	}
 
 	

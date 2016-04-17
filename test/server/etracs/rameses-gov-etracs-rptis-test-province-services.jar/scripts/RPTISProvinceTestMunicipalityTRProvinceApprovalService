@@ -65,6 +65,27 @@ public class RPTISProvinceTestMunicipalityTRProvinceApprovalService
 
 
     @ProxyMethod
+    public def doDisapprove(task){
+        task += assignToMe(task)
+        helper.openTask(workflowSvc, task)
+        def faas = task.data 
+        helper.signal(workflowSvc, task, 'disapprove', true)
+        return task
+    }
+
+    @ProxyMethod
+    public void testFaasDisapproved(faas) {
+        try{
+            faasSvc.openFaas(faas);
+            test.testExceptionThrown('FAAS does not exist', null)
+        }
+        catch(e){
+            // expected
+        }
+    }
+
+
+    @ProxyMethod
     public def doExamination(task){
         task += assignToMe(task)
         helper.openTask(workflowSvc, task)

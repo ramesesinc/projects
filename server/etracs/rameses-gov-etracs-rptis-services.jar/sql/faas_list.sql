@@ -147,3 +147,8 @@ delete from faas_list where objid = $P{objid}
 
 [findById]
 select * from faas_list where objid  = $P{objid}
+
+
+[updateTaskId]
+update faas_list set taskid = $P{objid} where objid = $P{refid}
+	

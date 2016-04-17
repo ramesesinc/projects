@@ -1,8 +1,8 @@
-class MunicipalityTestFaas_DCTR_ProvinceApproval
+class MunicipalityTestFaas_DCTR_ProvinceDisapproval
 {
     public static void runTest(faas){
         println '='*50
-        println '[municipality] Data capture FAAS, Simple Transfer Test and Province Approval'
+        println '[municipality] Data capture FAAS, Simple Transfer Test and Province Submission'
         println '='*50
 
         def provhelper = ProvinceTestProxy.create('RPTISTestHelperService')
@@ -48,30 +48,23 @@ class MunicipalityTestFaas_DCTR_ProvinceApproval
 
 
         /*=================================================
-        * PROVINCE: APPROVE AND TEST TRANSFERRED FAAS FROM MUNICIPALITY 
+        * PROVINCE: RECEIVE TRANSFER TRANSACTION
         =================================================*/
-        println '[province] Approve and test FAAS Transfer submitted to Province'
+        println '[province] Disapprove FAAS Transfer submitted to Province'
         TestHelper.waitForFaas(trfaas, provhelper)
         def provsvc = ProvinceTestProxy.create('RPTISProvinceTestMunicipalityTRProvinceApprovalService')
         task = provsvc.openFaas(trfaas)
-        task = provsvc.doReceive(task)
-        task = provsvc.doTaxmapping(task)
-        task = provsvc.doTaxmappingApproval(task)
-        task = provsvc.doAppraisal(task)
-        task = provsvc.doAppraisalApproval(task)
-        task = provsvc.doRecommender(task)
-        task = provsvc.doApprover(task)
-        provsvc.testApprovedTransfer(trfaas)
-        println '[province] Transfer FAAS approved and tested'
+        task = provsvc.doDisapprove(task)
+        provsvc.testFaasDisapproved(trfaas)
+        println '[province] Transfer FAAS disapproved.'
 
 
         /*=================================================
-        * MUNICIPALITY: TEST MUNICIPALITY APPROVED SIMPLE TRANSFER FAAS 
+        * MUNICIPALITY: TEST MUNICIPALITY TRANSFER DISAPPROVAL
         =================================================*/
         munisvc = MunicipalityTestProxy.create('RPTISMunicipalityTestTRFAASService')
-        TestHelper.waitForCurrentFaas(trfaas, munihelper)
-        println munisvc.testApprovedTransfer(trfaas)
-        println munisvc.testApprovedLedgerFromFaas(trfaas)
+        TestHelper.waitForFaasTask(task, munihelper)
+        println munisvc.testDisapprovedTransfer(trfaas, [objid:task.objid])
         println 'Test Completed.'
     }
 }

@@ -7,6 +7,7 @@
 	- 
 		
 - ASSESSOR
+	- Province disapproval support for FAAS transactions
 	- Red Flag support for Subdivision and Consolidation
 	- Batch printing of Notice of Assessment 
 	- Modified faas, subdivision, consolidation listing page 

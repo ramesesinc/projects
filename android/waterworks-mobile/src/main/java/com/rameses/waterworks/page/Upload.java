@@ -65,7 +65,7 @@ public class Upload {
         textContainer.getChildren().addAll(size_text,record_text,new Separator());
         
         label = new Label("Uploading... Please wait...");
-        label.setStyle(Main.HEIGHT > 700 ? "-fx-font-size: 28px; -fx-padding: 10 0 0 0;" : "-fx-font-size: 17px; -fx-padding: 7 0 0 0;");
+        label.setId("download-status");
         label.setVisible(false);
         
         progressbar = new ProgressBar();

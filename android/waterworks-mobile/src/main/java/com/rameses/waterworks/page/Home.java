@@ -174,12 +174,6 @@ public class Home {
         HBox box = new HBox(5);
         box.setAlignment(Pos.CENTER);
         box.getChildren().addAll(check,read,space,cancel,unread);
-        box.setOnMouseClicked(new EventHandler<MouseEvent>(){
-            @Override
-            public void handle(MouseEvent event) {
-                Main.ROOT.setCenter(new GpsPage().getLayout());
-            }
-        });
         
         StackPane root = new StackPane();
         root.setPadding(new Insets(8,0,8,0));

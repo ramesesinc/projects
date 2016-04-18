@@ -162,10 +162,10 @@ public class Home {
             cancel.setFitHeight(cancel.getImage().getHeight() * 0.7);
         }
         
-        Label read = new Label(readrecords + " Records");
+        Label read = new Label("READ : " + readrecords);
         read.getStyleClass().add("readingbulletin-label");
         
-        Label unread = new Label(unreadrecords + " Records");
+        Label unread = new Label("UNREAD : " + unreadrecords);
         unread.getStyleClass().add("readingbulletin-label");
         
         HBox space = new HBox();
@@ -174,12 +174,6 @@ public class Home {
         HBox box = new HBox(5);
         box.setAlignment(Pos.CENTER);
         box.getChildren().addAll(check,read,space,cancel,unread);
-        box.setOnMouseClicked(new EventHandler<MouseEvent>(){
-            @Override
-            public void handle(MouseEvent event) {
-                Main.ROOT.setCenter(new GpsPage().getLayout());
-            }
-        });
         
         StackPane root = new StackPane();
         root.setPadding(new Insets(8,0,8,0));

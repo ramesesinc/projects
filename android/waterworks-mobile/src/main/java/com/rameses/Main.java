@@ -69,7 +69,7 @@ public class Main extends Application {
      
         loadSysVar();
         loadRules();
-        loadPosition();
+        ///loadPosition();
         
         System.out.println("Width: " + WIDTH + "   Height : " + HEIGHT);
         

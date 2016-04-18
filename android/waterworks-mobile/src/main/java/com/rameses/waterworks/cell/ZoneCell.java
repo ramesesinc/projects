@@ -21,25 +21,27 @@ public class ZoneCell extends ListCell<Zone>{
         super.updateItem(zone, empty);
         if(!empty){
             ImageView image = new ImageView(new Image("icon/stubout.png"));
-            if(Main.HEIGHT < 700){
-                image.setFitWidth(75);
-                image.setFitHeight(75);
-            }
 
             StackPane imgContainer = new StackPane();
             imgContainer.setAlignment(Pos.CENTER);
             imgContainer.getChildren().add(image);
-
-
+            
             Label title = new Label(zone.getCode() + " - " + zone.getDesc());
             Label description = new Label("Sector " + zone.getSector());
 
-            if(Main.HEIGHT > 800){
-                title.setStyle("-fx-font-size: 28px; -fx-font-weight: bold;");
-                description.setStyle("-fx-font-size: 22px;");
-            }else{
+            if(Main.HEIGHT < 700){
+                image.setFitWidth(80);
+                image.setFitHeight(80);
                 title.setStyle("-fx-font-size: 15px; -fx-font-weight: bold;");
                 description.setStyle("-fx-font-size: 14px;");
+            }else if(Main.HEIGHT < 1200){
+                image.setFitWidth(110);
+                image.setFitHeight(110);
+                title.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
+                description.setStyle("-fx-font-size: 17px;");
+            }else{
+                title.setStyle("-fx-font-size: 28px; -fx-font-weight: bold;");
+                description.setStyle("-fx-font-size: 22px;");
             }
 
             VBox detail = new VBox(3);

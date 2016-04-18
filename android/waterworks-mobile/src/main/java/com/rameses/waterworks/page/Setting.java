@@ -75,6 +75,18 @@ public class Setting {
         set.setOnAction(new EventHandler<ActionEvent>(){
             @Override
             public void handle(ActionEvent event) {
+                Thread t = new Thread(){
+                    @Override
+                    public void run(){
+                        Platform.runLater(new Runnable(){
+                            @Override
+                            public void run() {
+                                set.setDisable(true);
+                            }
+                        });
+                    }
+                };
+                t.start();
                 Main.PRINTERNAME = listview.getSelectionModel().getSelectedItem();
                 if(PRINTER != null) PRINTER.closeBT();
                 PRINTER = BluetoothPlatformFactory.getPlatform().getBluetoothPrinter();
@@ -90,7 +102,11 @@ public class Setting {
                     Main.PRINTERHANDLER = new OneilPrinterHandler();
                 }
                 
-                Dialog.showAlert("Printer is now set to " + Main.PRINTERNAME + ".");
+                if(handler.isEmpty()){
+                    Dialog.showAlert("You must select the handler!");
+                    return;
+                }
+                
                 textArea.setText(Main.PRINTERHANDLER.getScriptCode());
                 List<com.rameses.waterworks.bean.Setting> settings = new ArrayList<com.rameses.waterworks.bean.Setting>();
                 settings.add(new com.rameses.waterworks.bean.Setting("printer",Main.PRINTERNAME));
@@ -105,6 +121,8 @@ public class Setting {
                         db.updateSetting(s);
                     }
                 }
+                Dialog.showAlert("Printer is now set to " + Main.PRINTERNAME + ".");
+                set.setDisable(false);
             }
         });
         

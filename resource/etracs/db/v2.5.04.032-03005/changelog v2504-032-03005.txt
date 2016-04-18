@@ -13,4 +13,5 @@
 	- Modified faas, subdivision, consolidation listing page 
 
 - LANDTAX: 
+	- Improve partial payment distribution computation
 	- Batch printing of Realty Tax Billing Support

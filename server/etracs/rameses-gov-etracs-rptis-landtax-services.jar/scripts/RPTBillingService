@@ -999,13 +999,20 @@ public class RPTBillingService
 				}
 				else {
 					def linetotal 			= item.total - item.firecode - idletaxtotal
-					def partialbasic     	= numSvc.round(  partialpmt * (item.basic - item.basicdisc) / linetotal )
-					def partialbasicint  	= numSvc.round(  partialpmt * item.basicint / linetotal )
-					def partialbasicdisc 	= numSvc.round(  partialpmt * item.basicdisc / linetotal )
 
-					def partialsefint  		= numSvc.round(  partialpmt * item.sefint / linetotal )
-					def partialsefdisc 		= numSvc.round(  partialpmt * item.sefdisc / linetotal )
-					def partialsef 			= numSvc.round( partialpmt - partialsefint - partialbasic - partialbasicint  )
+					def totalbasic 			= item.basic - item.basicdisc + item.basicint 
+					def totalsef 			= item.sef - item.sefdisc + item.sefint 
+
+					def partialpmtbasic    = numSvc.roundA(partialpmt * totalbasic / linetotal, 2);
+					def partialpmtsef      = numSvc.roundA(partialpmt - partialpmtbasic, 2);
+
+					def partialbasic     	= numSvc.round(  partialpmtbasic * (item.basic - item.basicdisc) / totalbasic )
+					def partialbasicint  	= numSvc.round(  partialpmtbasic * item.basicint / totalbasic )
+					def partialbasicdisc 	= numSvc.round(  partialpmtbasic - partialbasic - partialbasicint )
+
+					def partialsef     	= numSvc.round(  partialpmtsef * (item.sef - item.sefdisc) / totalsef )
+					def partialsefint  	= numSvc.round(  partialpmtsef * item.sefint / totalsef )
+					def partialsefdisc 	= numSvc.round(  partialpmtsef - partialsef - partialsefint )
 
 					item.basic 		= partialbasic + partialbasicdisc
 					item.basicdisc 	= partialbasicdisc

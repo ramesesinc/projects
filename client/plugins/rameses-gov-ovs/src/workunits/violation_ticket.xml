@@ -17,10 +17,13 @@
             @Service('ViolationTicketService')
             def violationSvc;
 
-            public void afterColumnUpdate(String itemName, Object item, String colName){
+            public void afterColumnUpdate(String itemName, Object item, String colName){ 
+                if ( !entity.violator?.objid ) throw new Exception('Please specify a violator first');
+                if ( !item.violation?.objid ) throw new Exception('Please specify a violation');
+
                 def m = [violationid: item.violation.objid, violatorid: entity.violator.objid ];
                 def z = violationSvc.getViolationInfo( m );
-                item.putAll( z );
+                item.putAll( z ); 
             }
         }
         ]]>

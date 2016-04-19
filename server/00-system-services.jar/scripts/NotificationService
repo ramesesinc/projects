@@ -1,0 +1,39 @@
+import com.rameses.annotations.*;
+
+class NotificationService {
+
+    @ProxyMethod 
+    public List getColumns( Map params ) {
+        return [ 
+            [name:'dtfiled', caption:'Date Filed', maxWidth:130],
+            [name:'message', caption:'Message', type:'label'],
+            [name:'sender', caption:'Sender', maxWidth:150] 
+        ]; 
+    }  
+
+    @ProxyMethod 
+    public List getList( params ) { 
+        return []; 
+    } 
+
+    @ProxyMethod 
+    public def addMessage( params ) { 
+        return params; 
+    } 
+
+    @ProxyMethod 
+    public void removeMessage( params ) { 
+        //do nothing 
+    } 
+
+    @ProxyMethod 
+    public void getNotified( params ) {    
+        //do nothing 
+    } 
+
+
+    @ProxyMethod 
+    public def getCount( params ) { 
+        return 0; 
+    } 
+} 

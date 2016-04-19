@@ -2,6 +2,9 @@ import com.rameses.annotations.*;
 
 class NotificationService {
 
+    @Service
+    def self;
+
     @ProxyMethod 
     public List getColumns( Map params ) {
         return [ 
@@ -31,9 +34,18 @@ class NotificationService {
         //do nothing 
     } 
 
+    @ProxyMethod(local=true) 
+    public def getCount( params ) { 
+        def result = self.getCountImpl( params ); 
+        if ( result?.value ) {
+            return result.value; 
+        } else { 
+            return 0; 
+        } 
+    } 
 
     @ProxyMethod 
-    public def getCount( params ) { 
-        return 0; 
-    } 
+    public Map getCountImpl( params ) {
+        return [:]; 
+    }
 } 

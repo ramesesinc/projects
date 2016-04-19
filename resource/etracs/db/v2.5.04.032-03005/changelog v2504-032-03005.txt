@@ -7,6 +7,7 @@
 	- 
 		
 - ASSESSOR
+	- PIN Renumbering and FAAS Approval support for general revision 
 	- Province disapproval support for FAAS transactions
 	- Red Flag support for Subdivision and Consolidation
 	- Batch printing of Notice of Assessment 

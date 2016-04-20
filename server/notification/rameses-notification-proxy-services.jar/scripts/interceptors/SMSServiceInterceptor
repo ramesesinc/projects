@@ -1,0 +1,21 @@
+import com.rameses.annotations.*; 
+
+class SMSServiceInterceptor {
+	
+	@Service(value='SMSService', connection="notification_proxy")
+    def proxy; 
+
+	@After( pattern="SMSService.send", index=-9999 ) 
+	public void send( evt ) { 
+		if ( !proxy ) return; 
+
+		def o = proxy.send( evt.args[0] ); 
+		if ( !o ) return; 
+
+		def result = evt.result; 		
+		if ( result ) {  
+			result.putAll( o ); 
+		} 
+	} 
+
+}

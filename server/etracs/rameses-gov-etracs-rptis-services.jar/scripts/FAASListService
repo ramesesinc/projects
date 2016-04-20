@@ -184,7 +184,7 @@ public class FAASListService extends ActiveCrudListService {
     void afterList(params, list) {
         //TODO: temporary and ugly hack: codes must not be hardcoded 
         list.each{
-            if (it.classcode?.toLowerCase().matches('a|agr'))
+            if (it.classcode?.toLowerCase()?.matches('a|agr'))
                 it.totalarea = numSvc.roundA(it.totalareaha, 4) + ' ha'
             else
                 it.totalarea = numSvc.roundA(it.totalareasqm, 2) + ' sqm'

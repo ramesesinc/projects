@@ -7,11 +7,19 @@ class UploadNotificationTask {
     @ActiveDB(value='notification', em='notification')
     def em;
 
+    @Service('CloudSettings') 
+    def settings;     
+
     @Service(value='CloudNotificationService', connection='cloud_notification')
     def remote;
 
-	//@Schedule(interval=1)
-	public void onUpload( task ) {
+	@Schedule(interval=1)
+	public void onUpload( task ) { 
+        if ( !settings.isEnabled() ) { 
+            //facility is disabled, exit immediately 
+            return; 
+        } 
+
 		def pendingdata = em.findPendingMessage(); 
 		if ( !pendingdata ) return; 
 

@@ -11,10 +11,18 @@ class NotificationAsyncTask {
     def em;
 
 	@Service('AsyncRequestExecutor')
-	def asyncReqExecutor;    	
+	def asyncReqExecutor;    
 
-	//@Schedule(interval=2)
+    @Service('CloudSettings') 
+    def settings;  		
+
+	@Schedule(interval=2)
 	public void execute( task ) { 
+        if ( !settings.isEnabled() ) { 
+            //facility is disabled, exit immediately 
+            return;  
+        } 
+        		
 		def info = em.findAsyncPendingMessage();  
 		if ( !info ) return; 
 

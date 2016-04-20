@@ -6,11 +6,19 @@ class ForDownloadNotificationTask {
     @ActiveDB(value='notification', em='notification')
     def em;
 
+    @Service('CloudSettings') 
+    def settings;     
+
     @Service(value='CloudNotificationService', connection='cloud_notification')
     def remoteSvc;
 
-	//@Schedule(interval=1) 
+	@Schedule(interval=1) 
 	public void download( task ) { 
+        if ( !settings.isEnabled() ) { 
+            //facility is disabled, exit immediately 
+            return;  
+        } 
+        
 		em.getChannelsForDownload().each{ o-> 
 			downloadByChannel( o );  
 		} 
@@ -21,7 +29,7 @@ class ForDownloadNotificationTask {
 		if ( !inc ) return; 
 
 		def chksum = em.findCheckSum( inc ); 
-		if ( chksum.datacount != chksum.maxindexno ) {
+		if ( chksum && chksum.datacount > 0 && chksum.datacount != chksum.maxindexno ) {
 			//the downloaded data are not sync anymore 
 			//update the indexno to re-download the previous batch 
 			em.update([ objid: inc.objid, indexno:chksum.datacount+1 ], 'fordownload'); 
@@ -43,7 +51,10 @@ class ForDownloadNotificationTask {
 		inc.startindexno = inc.indexno; 
 		inc.endindexno = inc.indexno+4;
 
-		remoteSvc.getItems( inc ).each{ o-> 
+		def list = remoteSvc.getItems( inc ); 
+		if ( !list ) return; 
+
+		list.each{ o-> 
 			def old = em.findData([ objid: o.objid ]); 
 			if ( !old ) em.create( o, 'data' ); 
 		} 

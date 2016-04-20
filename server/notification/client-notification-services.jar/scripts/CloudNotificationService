@@ -13,6 +13,9 @@ class CloudNotificationService
     @Service('CloudNotificationData') 
     def dataUtil; 
 
+    @Service('CloudSettings') 
+    def settings;
+
     @Service 
     def self; 
 
@@ -21,6 +24,11 @@ class CloudNotificationService
 
     @ProxyMethod 
     public def addMessage( msg ) { 
+        if ( !settings.isEnabled() ) { 
+            //facility is disabled, exit immediately 
+            return msg;  
+        } 
+
         if (!msg) throw new Exception('Please provide parameters'); 
 
         boolean hasMessageType = (msg.messagetype? true : false); 
@@ -82,6 +90,11 @@ class CloudNotificationService
 
     @ProxyMethod 
     public void removeMessage( params ) { 
+        if ( !settings.isEnabled() ) { 
+            //facility is disabled, exit immediately 
+            return;  
+        } 
+
         if ( !params.objid ) throw new Exception('objid parameter is required');
 
         em.removeData([ parentid: params.objid ]); 
@@ -91,7 +104,12 @@ class CloudNotificationService
     } 
 
     @ProxyMethod 
-    public def getList( params ) {
+    public def getList( params ) { 
+        if ( !settings.isEnabled() ) { 
+            //facility is disabled, exit immediately 
+            return []; 
+        } 
+
         return em.getList( params ); 
     } 
 
@@ -139,6 +157,11 @@ Downloading message from ${params.channel}_$P{params.origin}:
     @Async 
     @ProxyMethod 
     public void postAsyncMessage( data ) { 
+        if ( !settings.isEnabled() ) { 
+            //facility is disabled, exit immediately 
+            return;  
+        } 
+                
         println 'Post AsyncMessage to cloud... Type='+ data.messagetype; 
         remote.postAsyncMessage( data ); 
     } 

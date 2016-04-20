@@ -10,11 +10,19 @@ class ForProcessNotificationTask {
     @ActiveDB(value='notification', em='notification')
     def em;
 
+    @Service('CloudSettings') 
+    def settings; 
+    
 	@Service('NotificationService')
 	def notificationSvc;
 
-	//@Schedule(interval=2)
+	@Schedule(interval=2)
 	public void execute( task ) { 
+        if ( !settings.isEnabled() ) { 
+            //facility is disabled, exit immediately 
+            return;  
+        } 
+
 		def info = em.findMessageForProcess(); 
 		if ( !info ) return; 
 

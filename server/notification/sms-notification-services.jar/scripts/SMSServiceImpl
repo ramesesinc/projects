@@ -3,14 +3,13 @@ import com.rameses.annotations.*;
 import com.rameses.http.*;
 import com.rameses.util.*;
 
-class SMSService 
-{	
+class SMSServiceImpl {	
+
 	@ActiveDB('sms')
 	def em;
 
 	@Service('DateService')
 	def dateSvc; 
-
 
 	@ProxyMethod
 	public def send( Map entity ) { 

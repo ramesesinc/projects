@@ -2,11 +2,8 @@ import com.rameses.annotations.*;
 
 class SMSService {
 
-	@Service(value='SMSService', connection='notification_proxy') 
-	def proxy; 
-
 	@ProxyMethod
-	public def send( Map data ) {  
-		return proxy.send( data ); 
+	public Map send( Map data ) {  
+		return data; 
 	} 
-}
+} 

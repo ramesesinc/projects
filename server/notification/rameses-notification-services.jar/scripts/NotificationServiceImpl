@@ -74,6 +74,26 @@ class NotificationServiceImpl {
         } 
     } 
 
+    @ProxyMethod(local=true)  
+    public void importMessage( params ) {
+        if ( !params.notificationid ) params.notificationid = params.objid; 
+
+        def old = em.find([ notificationid: params.notificationid ]).first(); 
+        if ( old ) return; 
+
+        params.dtfiled = dateSvc.serverDate.toString(); 
+
+        def userObj = (params.data? params.data: [:]); 
+        params.data = new Base64Cipher().encode(userObj); 
+        params.recipientid = params.groupid; 
+        params.recipienttype = 'group'; 
+        em.create( params ); 
+
+        params.data = userObj; 
+        self.notifySend( params ); 
+    } 
+
+
     @ProxyMethod(local=true) 
     public def getCount( params ) { 
         def fmap = [ tag: params.tag ];

@@ -32,7 +32,13 @@ class NotificationServiceInterceptor {
 		} else {
 			svc.notifyUser( params ); 
 		}
-	}
+	} 
+
+	@After( pattern="NotificationService.importMessage", index=-9999 ) 
+	public void afterImportMessage( evt ) {
+		def params = evt.args[0]; 
+		svc.importMessage( params ); 
+	}	
 
 	@After( pattern="NotificationService.getCountImpl", index=-9999 ) 
 	public void afterGetCountImpl( evt ) { 

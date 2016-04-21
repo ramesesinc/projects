@@ -14,8 +14,16 @@ class CloudNotificationUpgradeTask
     @Service('CloudNotificationData') 
     def dataUtil;     
 
-	//@Schedule(interval=2)
-	public void process( task ) {
+    @Service('CloudSettings') 
+    def settings;     
+
+	@Schedule(interval=2)
+	public void process( task ) { 
+        if ( !settings.isEnabled() ) { 
+            //facility is disabled, exit immediately 
+            return;  
+        } 
+
 		def info = em_old.findPendingDurableMessage([ _start:0, _limit:1, _pagingKeys:'p.objid' ]); 
 		if ( !info ) return; 
 

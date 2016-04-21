@@ -11,40 +11,51 @@ order by respcenter_name, afid, startseries
 
 
 [getDetails]
-SELECT  
-   MIN( d.refdate) AS refdate, MIN(d.refno) AS refno, MIN( d.reftype) AS reftype,
-   MIN( d.receivedstartseries ) AS receivedstartseries, 
-   MAX( d.receivedendseries ) AS receivedendseries, 
-   MIN( d.qtyreceived) AS qtyreceived,
-   (SELECT endingstartseries FROM af_inventory_detail 
-      WHERE controlid = d.controlid 
-         AND lineno = (MIN(d.lineno) - 1) ) AS beginstartseries,
-   (SELECT endingendseries FROM af_inventory_detail 
-      WHERE controlid = d.controlid 
-         AND lineno = (MIN(d.lineno) - 1) ) AS beginendseries,
-   (SELECT qtyending FROM af_inventory_detail 
-      WHERE controlid = d.controlid 
-         AND lineno = (MIN(d.lineno) - 1) ) AS qtybegin,
-   MAX( d.issuedstartseries ) AS issuedstartseries,
-   MAX( d.issuedendseries ) AS issuedendseries,
-   MAX( d.qtyissued) AS qtyissued, 
-   MAX( d.endingstartseries ) AS endingstartseries,
-   MAX( d.endingendseries ) AS endingendseries,    
-   MAX( d.qtyending) AS qtyending, 
-   MAX( d.cancelledstartseries ) AS cancelledstartseries,
-   MAX( d.cancelledendseries ) AS cancelledendseries, 
-   MAX( d.qtycancelled) AS qtycancelled, 
-   MIN( d.remarks ) AS remarks
-FROM af_inventory_detail d
-WHERE controlid=$P{controlid}
-GROUP BY refid
-ORDER BY MIN(txndate)
+select xx.*, 
+   case  
+      when xx.indexno = 1 then 'RECEIVED'
+      when xx.qtyending > 0 then 'FORWARDED' 
+      when xx.qtyissued > 0 and (xx.qtybegin-xx.qtyissued)=0 then 'CONSUMED' 
+      else '' 
+   end as remarks 
+from ( 
+   select 
+      xx.refid, xx.refno, xx.reftype, xx.refdate, min(xx.indexno) as indexno,  
+      min( xx.beginstartseries ) as beginstartseries, min( xx.beginendseries ) as beginendseries, 
+      (min( xx.beginendseries ) - min( xx.beginstartseries ) + 1) as qtybegin, 
+      min( xx.receivedstartseries ) as receivedstartseries, min( xx.receivedendseries ) as receivedendseries, 
+      (min( xx.receivedendseries ) - min( xx.receivedstartseries ) + 1) as qtyreceived, 
+      min( xx.issuedstartseries ) as issuedstartseries, min( xx.issuedendseries ) as issuedendseries, 
+      (min( xx.issuedendseries ) - min( xx.issuedstartseries ) + 1) as qtyissued, 
+      max( xx.endingstartseries ) as endingstartseries, max( xx.endingendseries ) as endingendseries, 
+      (max( xx.endingendseries ) - max( xx.endingstartseries ) + 1) as qtyending  
+   from ( 
+      SELECT  
+         d.lineno as indexno, d.refid, d.refno, d.reftype, convert(d.refdate,DATE) as refdate, 
+         (SELECT endingstartseries FROM af_inventory_detail WHERE controlid=d.controlid AND lineno=(d.lineno-1)) AS beginstartseries,
+         (SELECT endingendseries FROM af_inventory_detail WHERE controlid=d.controlid AND lineno=(d.lineno-1)) AS beginendseries,
+         (SELECT qtyending FROM af_inventory_detail WHERE controlid=d.controlid AND lineno=(d.lineno-1)) AS qtybegin,
+         d.receivedstartseries, d.receivedendseries, d.qtyreceived, 
+         d.issuedstartseries, d.issuedendseries, d.qtyissued, 
+         d.endingstartseries, d.endingendseries, d.qtyending, 
+         d.cancelledstartseries, d.cancelledendseries, d.qtycancelled 
+      FROM af_inventory_detail d
+      WHERE d.controlid=$P{controlid}
+      order by d.lineno 
+   )xx 
+   group by xx.refid, xx.refno, xx.reftype, xx.refdate 
+   order by min(xx.indexno) 
+)xx 
+
 
 [getRespCenters]
-select distinct 
-   respcenter_objid as objid, respcenter_name as name 
+select 
+   respcenter_objid as objid, 
+    min(respcenter_name) as name 
 from af_inventory 
-order by respcenter_name 
+group by respcenter_objid 
+order by min(respcenter_name)  
+
 
 [getIssuancesOnHand]
 SELECT 
@@ -52,10 +63,10 @@ SELECT
    currentseries as startseries,
    endseries as endseries,
    qtybalance
-FROM 
-   af_inventory 
+FROM af_inventory 
 WHERE respcenter_objid = $P{issuetoid}
-AND qtybalance > 0
+AND qtybalance > 0 
+
 
 [findAllAvailable]
 SELECT 
@@ -105,6 +116,7 @@ select * from af_inventory
 where afid=$P{afid} and unit=$P{unit} 
    and startseries <= $P{startseries} 
    and endseries >= $P{startseries} 
+
 
 [getIssuanceReceipts]
 select 

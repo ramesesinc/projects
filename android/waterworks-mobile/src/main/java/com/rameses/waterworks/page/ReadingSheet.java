@@ -272,6 +272,10 @@ public class ReadingSheet {
             db.updateMeterReading(reading);
         }
         
+        //STORE GPS LOCATION
+        Database mdb = DatabasePlatformFactory.getPlatform().getDatabase();
+        mdb.updateLocation(acctid, String.valueOf(Main.LATITUDE), String.valueOf(Main.LONGITUDE));
+        
         if(!db.getError().isEmpty()) Dialog.showError(db.getError());
         if(db.getError().isEmpty()){
             Dialog.show("Account Information", new AccountDetail(account).getLayout());

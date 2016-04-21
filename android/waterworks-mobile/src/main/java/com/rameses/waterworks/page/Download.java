@@ -92,6 +92,18 @@ public class Download {
         download.setOnAction(new EventHandler<ActionEvent>(){
             @Override
             public void handle(ActionEvent event) {
+                Thread t = new Thread(){
+                    @Override
+                    public void run(){
+                        Platform.runLater(new Runnable(){
+                            @Override
+                            public void run() {
+                                download.setDisable(true);
+                            }
+                        });
+                    }
+                };
+                t.start();
                 //GET THE SELECTED AREAS FOR DOWNLOAD
                 List<String> selectedAreas = new ArrayList();
                 String areaid = null;
@@ -103,6 +115,7 @@ public class Download {
                 }
                 
                 if(selectedAreas.size() > 1){
+                    Dialog.hide();
                     Dialog.showAlert("Multiple downloads are not supported!");
                     return;
                 }
@@ -131,10 +144,12 @@ public class Download {
                 
                 downloadsize = accountList.size();
                 if(!error.isEmpty()) {
+                    Dialog.hide();
                     Dialog.showError(error.toString());
                     return;
                 }
                 if(downloadsize < 1){
+                    Dialog.hide();
                     Dialog.showError("No data to download");
                     return;
                 }
@@ -181,6 +196,7 @@ public class Download {
                         svc.cancelDownload(params);
                     }
                 });
+                download.setDisable(false);
             }
         });
         

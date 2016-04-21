@@ -8,6 +8,9 @@ class NotificationPollTask {
     @ActiveDB(value='notification', em='notification')
     def em;
 
+    @Service('CloudSettings') 
+    def settings; 
+    
 	@Service(value='CloudNotificationService') 
 	def localSvc;
 
@@ -19,6 +22,11 @@ class NotificationPollTask {
 
 	//@Schedule(interval=2)
 	public void execute( task ) { 
+        if ( !settings.isEnabled() ) { 
+            //facility is disabled, exit immediately 
+            return;  
+        } 
+
 		def var = em.read([objid: 'fetch_notification'], 'setting'); 
 		if ( !task.properties.loaded ) { 
 			//the server has just started 

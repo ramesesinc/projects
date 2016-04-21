@@ -1,0 +1,17 @@
+import com.rameses.annotations.*; 
+
+class SMSServiceInterceptor { 
+	
+	@Service('SMSServiceImpl') 
+	def svc; 
+
+	@After( pattern="SMSService.send", index=-9999 ) 
+	public void send( evt ) {
+		def o = svc.send( evt.args[0] ); 
+		def result = evt.result; 
+		if ( result ) {
+			result.putAll(o ? o : [:]); 
+		} 
+	} 
+
+}

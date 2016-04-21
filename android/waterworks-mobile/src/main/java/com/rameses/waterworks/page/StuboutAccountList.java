@@ -3,11 +3,13 @@ package com.rameses.waterworks.page;
 import com.rameses.Main;
 import com.rameses.waterworks.bean.Account;
 import com.rameses.waterworks.bean.Stubout;
+import com.rameses.waterworks.bean.Zone;
 import com.rameses.waterworks.cell.AccountCell;
 import com.rameses.waterworks.database.DatabasePlatformFactory;
 import com.rameses.waterworks.dialog.Dialog;
 import com.rameses.waterworks.layout.Header;
 import java.util.List;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -23,10 +25,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.util.Callback;
 
-/**
- *
- * @author Rameses
- */
 public class StuboutAccountList {
     
     private VBox root;
@@ -34,7 +32,7 @@ public class StuboutAccountList {
     private TextField search_account;
     private List<Account> data;
     
-    StuboutAccountList(Stubout s){
+    StuboutAccountList(Stubout s,Zone zone){
         Header.TITLE.setText("Accounts");
         
         data = DatabasePlatformFactory.getPlatform().getDatabase().getAccountByStubout(s,"");
@@ -48,6 +46,7 @@ public class StuboutAccountList {
             public void changed(ObservableValue<? extends String> observable, String so, String value) {
                 data = DatabasePlatformFactory.getPlatform().getDatabase().getAccountByStubout(s,value);
                 listView.setItems(FXCollections.observableArrayList(data));
+                if(data.size()>0) listView.getSelectionModel().select(0);
             }
         });
 
@@ -55,6 +54,7 @@ public class StuboutAccountList {
         listView.setItems(FXCollections.observableArrayList(data));
         listView.setFocusTraversable(true);
         listView.setPrefHeight(Main.HEIGHT);
+        if(data.size()>0) listView.getSelectionModel().select(0);
         listView.setCellFactory(new Callback<ListView<Account>, ListCell<Account>>() {
             @Override
             public ListCell<Account> call(ListView<Account> param) {
@@ -64,13 +64,19 @@ public class StuboutAccountList {
         listView.setOnMouseClicked(new EventHandler<MouseEvent>(){
             @Override
             public void handle(MouseEvent event) {
-                if(event.getClickCount()==2){
-                    Account account = listView.getSelectionModel().getSelectedItem();
-                    if(account != null){
-                        Node child = new AccountDetail(account).getLayout();
-                        Dialog.show("Account Information", child);
+                Platform.runLater(new Runnable(){
+                    @Override
+                    public void run() {
+                        try{
+                            Thread.sleep(1000);
+                        }catch(Exception e){ System.err.println(e); }
+                        Account account = listView.getSelectionModel().getSelectedItem();
+                        if(account != null){
+                            Node child = new AccountDetail(account).getLayout();
+                            Dialog.show("Account Information", child);
+                        }
                     }
-                }
+                });
             }
         });
 
@@ -83,12 +89,11 @@ public class StuboutAccountList {
             public void handle(KeyEvent event) {
                 if(event.getCode() == KeyCode.ESCAPE){
                     if(Dialog.isOpen){ Dialog.hide(); return; }
-                    Main.ROOT.setCenter(new AccountList().getLayout());
+                    Main.ROOT.setCenter(new StuboutList(zone).getLayout());
                 }
             }
         });
         Main.prevScreen = getLayout();
-        
         }
         
         public Node getLayout(){

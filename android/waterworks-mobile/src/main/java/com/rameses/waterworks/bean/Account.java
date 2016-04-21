@@ -33,7 +33,9 @@ public class Account {
             discodate,
             rundate,
             items,
-            info;
+            info,
+            latitude,
+            longitude;
     
     private String
             consumption,
@@ -71,7 +73,9 @@ public class Account {
             String discodate,
             String rundate,
             String items,
-            String info
+            String info,
+            String latitude,
+            String longitude
     ){
         this.objid = objid;
         this.acctno = acctno;
@@ -99,6 +103,8 @@ public class Account {
         this.rundate = rundate;
         this.items = items;
         this.info = info;
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
     
     public String getObjid(){ return objid; }
@@ -128,6 +134,8 @@ public class Account {
     public String getRunDate(){ return rundate; }
     public String getItems(){ return items; }
     public String getInfo(){ return info; }
+    public String getLatitude(){ return latitude; }
+    public String getLongitude(){ return longitude; }
     
     public String getConsumption(){ return consumption; }
     public String getAmtDue(){ return amtdue; }

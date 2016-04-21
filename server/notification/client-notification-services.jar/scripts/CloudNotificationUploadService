@@ -6,6 +6,9 @@ class CloudNotificationUploadService
     @ActiveDB(value='cloud_notification', em='notification')
     def em;
 
+    @Service('CloudSettings') 
+    def settings;    
+
     @Service('DateService')
     def dateSvc;
 
@@ -14,6 +17,11 @@ class CloudNotificationUploadService
 
     @ProxyMethod(local=true)  
     public void upload( params ) { 
+        if ( !settings.isEnabled() ) { 
+            //facility is disabled, exit immediately 
+            return;  
+        } 
+
         def immediate = params.immediate; 
         if (params.type == 'HEADER') { 
             def header = em.read( params ); 

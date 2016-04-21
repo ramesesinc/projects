@@ -81,4 +81,6 @@ public interface Database {
     
     public List<Zone> getSearchZoneResult(String searchtext);
     
+    public void updateLocation(String acctid, String latitude, String longitude);
+    
 }

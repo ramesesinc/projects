@@ -28,13 +28,6 @@ public class AccountCell extends ListCell<Account>{
 
             ImageView image = new ImageView(new Image("icon/useraccount.png"));
             ImageView image2 = new ImageView(new Image("icon/useraccount-check.png"));
-            
-            if(Main.HEIGHT < 700){
-                image.setFitWidth(100);
-                image.setFitHeight(100);
-                image2.setFitWidth(100);
-                image2.setFitHeight(100);
-            }
 
             StackPane imgContainer = new StackPane();
             imgContainer.setAlignment(Pos.CENTER);
@@ -50,15 +43,29 @@ public class AccountCell extends ListCell<Account>{
 
             String addr = account.getAddress().replaceAll("\n", "");
             Label address = new Label(addr);
-
-            if(Main.HEIGHT > 700){
-                serialno.setStyle("-fx-font-size: 28px; -fx-font-weight: bold;");
-                name.setStyle("-fx-font-size: 22px;");
-                address.setStyle("-fx-font-size: 24px; -fx-font-style: italic;");
-            }else{
+            
+            if(Main.HEIGHT < 700){
+                image.setFitWidth(80);
+                image.setFitHeight(80);
+                image2.setFitWidth(80);
+                image2.setFitHeight(80);
+                
                 serialno.setStyle("-fx-font-size: 15px; -fx-font-weight: bold;");
                 name.setStyle("-fx-font-size: 14px;");
                 address.setStyle("-fx-font-size: 12px; -fx-font-style: italic;");
+            }else if(Main.HEIGHT < 1200){
+                image.setFitWidth(110);
+                image.setFitHeight(110);
+                image2.setFitWidth(110);
+                image2.setFitHeight(110);
+                
+                serialno.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
+                name.setStyle("-fx-font-size: 17px;");
+                address.setStyle("-fx-font-size: 15px; -fx-font-style: italic;");
+            }else{
+                serialno.setStyle("-fx-font-size: 28px; -fx-font-weight: bold;");
+                name.setStyle("-fx-font-size: 22px;");
+                address.setStyle("-fx-font-size: 24px; -fx-font-style: italic;");
             }
 
             VBox detail = new VBox(3);

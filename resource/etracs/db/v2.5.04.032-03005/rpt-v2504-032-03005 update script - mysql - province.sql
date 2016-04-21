@@ -15,3 +15,23 @@ VALUES ('receiver', 'subdivision', 'disapprove', 'end', '7', NULL, '[caption:\'D
 INSERT INTO `sys_wf_transition` (`parentid`, `processname`, `action`, `to`, `idx`, `eval`, `properties`, `permission`) 
 VALUES ('receiver', 'consolidation', 'disapprove', 'end', '7', NULL, '[caption:\'Disapprove\', confirm:\'Disapprove Consolidation?\', messagehandler:\'default\']', '');
 
+
+
+/* LEDGER RESTRICTION SUPPORT */
+create table rptledger_restriction
+(
+	objid varchar(50) not null,
+	parentid varchar(50) not null, 
+	restrictionid varchar(50) not null,
+	remarks varchar(150),
+	primary key (objid)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+alter table rptledger_restriction 
+	add constraint FK_rptledger_restriction_rptledger 
+	foreign key(parentid) references rptledger(objid);
+
+create unique index ux_rptledger_restriction on rptledger_restriction(parentid, restrictionid);
+
+
+	

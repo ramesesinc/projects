@@ -14,5 +14,6 @@
 	- Modified faas, subdivision, consolidation listing page 
 
 - LANDTAX: 
+	- Ledger Restriction Support
 	- Improve partial payment distribution computation
 	- Batch printing of Realty Tax Billing Support

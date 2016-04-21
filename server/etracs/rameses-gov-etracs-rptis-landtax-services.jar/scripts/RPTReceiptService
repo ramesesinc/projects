@@ -25,6 +25,9 @@ class RPTReceiptService
 	@Service('RPTBillingService')
 	def billingSvc
 
+	@DataContext('rptledger_restriction')
+	def rptledger_restrictionDb
+
 	def SCHEMA_RECEIPT 		= 'cashreceiptrpt'
 	def SCHEMA_ITEM 		= 'cashreceiptrptitem'
 
@@ -94,6 +97,7 @@ class RPTReceiptService
 			em.insertPaidOnlineAccounts(params)
 
 			em.clearFaasRestrictions(params)
+			rptledger_restrictionDb.find([parentid:it.rptledgerid]).delete()
 
 			em.updateLedgerItemQrtrlyPayment(params)
 			em.updateLedgerItemQrtrlyFullyPaidFlag(params)

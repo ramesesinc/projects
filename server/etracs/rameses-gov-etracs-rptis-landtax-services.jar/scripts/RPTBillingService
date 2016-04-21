@@ -42,6 +42,9 @@ public class RPTBillingService
 	@Service('LGUService')
 	def lguSvc 
 
+	@DataContext('rptledger_restriction')
+	def rptledger_restrictionDb;
+
 	@Service()
 	def self 
 
@@ -1051,5 +1054,12 @@ public class RPTBillingService
         	it._pdate = bill._pdate
 	        it.taxdifference = (it.taxdifference == 1)
         }
+	}
+
+	@ProxyMethod
+	public void checkRestrictions( ledgerid ) {
+		def restriction = rptledger_restrictionDb.find([parentid:ledgerid]).first();
+		if (restriction)
+			throw new Exception('Unable to generate billing statement.\nThe Ledger is currently under restrictions.')
 	}
 }

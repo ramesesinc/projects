@@ -26,11 +26,14 @@ class RPTLedgerBillController
     def preview(){
         if (!entity)
             entity = caller.selectedEntity;
+        
+        billSvc.checkRestrictions(entity.objid);
+        
         def bill = billSvc.initBill(entity.objid);
         bill.taxpayer = entity.taxpayer;
         return InvokerUtil.lookupOpener('rptbill:print', [bill:bill, caller:this])
     }
-    
+            
 }
         
     </code>

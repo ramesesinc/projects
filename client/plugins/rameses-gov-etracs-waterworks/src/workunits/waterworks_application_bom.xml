@@ -1,0 +1,40 @@
+<workunit>
+    <invokers>
+        <invoker type="waterworks_application:form:formActions" 
+                 visibleWhen="#{task.state=='for-assessment' 
+                    &amp;&amp; task.assignee?.objid==user.objid}"
+                 caption="Bill of Materials"
+                 target="popup"
+                 action="initQty"
+                 />
+
+        <invoker type="waterworks_application:form:formActions" 
+                 visibleWhen="#{task.state=='for-material-availability' 
+                    &amp;&amp; task?.assignee?.objid==user.objid}"
+                 caption="Check Availability"
+                 target="popup"
+                 action="initAvailability"
+                 />                       
+                 
+        <invoker type="waterworks_application:form:formActions" 
+                 visibleWhen="#{task.state=='for-billing' 
+                    &amp;&amp; task?.assignee?.objid==user.objid}"
+                 caption="Post Materials For Billing"
+                 target="popup"
+                 action="initBilling"
+                 />                       
+
+        <!-- internal actions -->
+        <invoker type="formActions" caption="Close" action="close" />
+        <invoker type="formActions" caption="Save" action="save" visibleWhen="#{state=='qty'}"/>
+        <invoker type="formActions" caption="Verify Materials" action="verifyMaterials" visibleWhen="#{state=='availability'}"/>
+        <invoker type="formActions" caption="Apply Payment" action="showPayOption"  visibleWhen="#{state=='billing'}"/>
+        <invoker type="formActions" caption="Post Billing" action="postBill"  visibleWhen="#{state=='payoption'}"/>        
+    </invokers>
+    <code class="com.rameses.gov.etracs.waterworks.models.BillOfMaterialsModel"/>
+    <pages>
+        <page name="default" template="com.rameses.gov.etracs.waterworks.views.BillOfMaterialsPage"/>
+        <page name="payoption" template="com.rameses.gov.etracs.waterworks.views.BillOfMaterialsPayOptionPage"/>
+    </pages>
+    
+</workunit>

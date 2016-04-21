@@ -4,60 +4,7 @@
                  caption="Cash Receipt - Order of Payment"/>
     </invokers>
     
-    <code>
-        <![CDATA[    
-        import com.rameses.rcp.annotations.*
-        import com.rameses.rcp.common.*
-        import com.rameses.osiris2.client.*
-        import com.rameses.osiris2.common.*
-        import com.rameses.enterprise.treasury.cashreceipt.*
-        
-        class  PaymentOrderReceiptController extends BasicCashReceipt {
-            @Service("PaymentOrderService")
-            def pmtSvc;        
-                
-            String entityName = "misc_cashreceipt"
-            def barcodeid;
-                    
-            def loadBarcode() {
-                def pmtOrder = pmtSvc.open( [txnid: barcodeid] ); 
-                def info = pmtOrder.info;
-
-                entity = [formtype: "serial", formno:"51", txnmode: 'ONLINE'];
-                entity.collectiontype = info.collectiontype;
-                entity = service.init( entity );
-                
-                entity.paymentorder = [ 
-                    txnid: pmtOrder.txnid, 
-                    txntype: pmtOrder.txntype,
-                    refid: pmtOrder.refid 
-                ]; 
-                entity.payer = info.payer;
-                entity.items = info.items;
-                entity.amount = info.amount;
-                entity.paidby = info.paidby;
-                entity.paidbyaddress = info.paidbyaddress;
-                entity.remarks = info.remarks;
-                entity.info = info.info; 
-                super.init(); 
-                
-                if ( info.billitems ) {
-                    entity.billitems = info.billitems; 
-                    return 'billing';
-                } else { 
-                    return 'default';
-                } 
-            }   
-            
-            def billItemListModel = [
-                fetchList: { o-> 
-                    return entity.billitems; 
-                } 
-            ] as EditorListModel;
-        }       
-        ]]>
-        
-    </code>
+    <code class="com.rameses.enterprise.treasury.models.PaymentOrderCashReceiptModel" />
     
     <pages>
         <page template="com.rameses.enterprise.treasury.views.PaymentOrderCashReceiptPage"/>

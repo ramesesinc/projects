@@ -1,0 +1,89 @@
+import com.rameses.annotations.*;
+import java.rmi.server.UID;
+import treasury.facts.*;
+
+class WaterworksBillOfMaterialService  {
+	
+	@Service("RuleExecutorService")
+	def ruleService;
+
+	@Service("DateService")
+	def dateSvc;
+
+
+	@DataContext('waterworks_application_bom')
+	def bom;
+
+	@DataContext('waterworks_application')
+	def app;
+
+	@DataContext('waterworks_application_fee')
+	def appfee;
+
+	@DataContext('waterworks_installment')
+	def appinst;
+
+	@ProxyMethod
+	public def getList( def o ) {
+		return bom.find([parentid: o.objid]).list();
+	}
+
+	@ProxyMethod
+	public def update( def o ) {
+		o.materials.each {
+			it.state = 'OPEN';
+		}
+		app.find([objid: o.objid]).update(o);
+	}
+
+	@ProxyMethod
+	public def verify( def o ) {
+		o.materials.each {
+			it.state = 'VERIFIED';
+		}
+		app.find([objid: o.objid]).update(o);
+	}
+
+	@ProxyMethod
+	public def post( def o ) {
+		def payOption = o.payOption;
+		//this will search update all items inside app. see materials relationship
+		def txntype = "BOM";
+		o.materials.each {
+			it.state = 'POSTED';
+		}
+		app.find([objid: o.objid]).update(o);
+
+		//update the app fee. add txntype BOM bill of materials summary.
+		def billItem = new BillItem(txntype:txntype, amount:payOption.amount);
+		ruleService.execute("waterworksapplication", [billItem], null, null);
+
+		def d = billItem.toItem();
+		d.parentid = o.objid;
+		d.txntype = txntype;
+		d.amtpaid = 0;
+
+		
+		def m = [:];
+		if( payOption.type == 'installment' ) {
+			m.dtfiled = dateSvc.getServerDate();
+			m.startdate = m.dtfiled;
+			m.controlno = "BMI-"+new UID();
+			m.state = 'OPEN';
+			m.doctype = txntype;
+			m.particulars = payOption.particulars;
+			m.amount = payOption.amount;
+			m.amtpaid = 0;
+			m.amortization = payOption.amortization;
+			m.term = payOption.term;
+			m.downpayment = payOption.downpayment;
+			m = appinst.create( m );
+		}
+
+		d.installmentid = m.objid;
+		appfee.create( d );
+
+	}
+
+
+}

@@ -1,0 +1,42 @@
+<workunit>
+    
+   <invokers>
+         <invoker type="sys_requirement_type:handler" caption="Basic Handler" name="basic"/>
+         <invoker type="sys_requirement_type:basic" caption="Basic" action="init"/>
+   </invokers>
+   
+   <code>
+       <![CDATA[
+        import com.rameses.enterprise.models.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import com.rameses.rulemgmt.constraint.*;
+        import com.rameses.rulemgmt.*;
+
+        class BasicHandler extends AbstractRequirementModel {
+            
+            void update() {
+                boolean pass = false;
+                def h = { o->
+                    entry.putAll( o );
+                    entry.complied = 1;
+                    entry._schemaname = schemaname;
+                    requirementService.update( entry ); 
+                    entry.remove("_schemaname");
+                    pass = true;
+                    caller.refresh();
+                }
+                Modal.show("requirement:basic", [handler: h]);
+            }
+            
+        }      
+       ]]>
+   </code>
+   
+   <pages>
+       <page template="com.rameses.enterprise.views.RequirementHandlerBasicPage" />
+   </pages>
+   
+</workunit>

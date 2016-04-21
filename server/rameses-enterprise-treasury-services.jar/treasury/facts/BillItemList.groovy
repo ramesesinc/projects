@@ -79,8 +79,21 @@ public class BillItemList  {
 				paidItems << bi;
 			}
 			else {
-				//distribute the payment
-				bi.applyPayment( amtpaid );
+				double d = amtpaid;
+		        if( d < bi.total ) {
+		            double _total = total;
+		            bi.amount = NumberUtil.round( (bi.amount / _total) * d );
+		            if( bi.discount > 0.0) {
+		                bi.discount = NumberUtil.round( (bi.discount / _total) * d );
+		            }    
+		            if( bi.surcharge > 0.0 ) {
+		                bi.surcharge = NumberUtil.round( (bi.surcharge / _total) * d );
+		            }
+		            if( bi.interest > 0.0 ) {
+		                bi.interest = NumberUtil.round( d - (bi.amount - bi.discount) - bi.surcharge );
+		            }
+		        }
+
 				amtpaid = 0;
 				paidItems << bi;
 				break;

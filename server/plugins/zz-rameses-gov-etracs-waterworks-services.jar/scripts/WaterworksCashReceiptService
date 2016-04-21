@@ -3,14 +3,14 @@ import com.rameses.rules.common.*;
 
 class WaterworksCashReceiptService  {
 	
+	@Service('WaterworksBillingService')
+	def billingService;
+
 	@DataContext('waterworks_application')
 	def waterworks_application;
 
 	@DataContext('waterworks_account')
 	def waterworks_account;
-
-	@DataContext('waterworks_account_ledger')
-	def waterworks_account_ledger;
 
 	@DataContext("collectiontype")
 	def collectionType;
@@ -18,24 +18,20 @@ class WaterworksCashReceiptService  {
 	@DataContext("itemaccount")
 	def itemaccount;
 
-	@DataContext("waterworks_payment")
-	def wp;	
-
-	@DataContext("waterworks_payment_item")
-	def wpi;	
 
 	@ProxyMethod 
 	public def getBilling( params ) { 
-		def acct = null; 
 		def refno = params.refno; 
-		def o = waterworks_account.find([ acctno: refno ]).first(); 
-		if ( o ) {
-			acct = o; 
-		} else {
-			o = waterworks_application.find([ appno: refno ]).first(); 
-			if ( o ) acct = o.account;  
+		def parm = [:];
+		def acct = waterworks_account.find([ acctno: refno ]).first(); 
+		if( acct ) {
+			parm.acctid = acct.objid;
+		}
+		else {
+			acct = waterworks_application.find([ appno: refno ]).first(); 
+			if ( !acct ) throw new Exception('Reference number not found'); 
+			parm.applicationid = acct.objid;
 		} 
-		if ( !o ) throw new Exception('Reference number not found'); 
 
 		def p = [:];
 		p.collectiontype = collectionType.find([barcodekey:'51030']).first();
@@ -43,63 +39,19 @@ class WaterworksCashReceiptService  {
 		p.paidbyaddress = acct.address?.text; 
 		p.payer = acct.owner; 
 		p.items = [];
+		p.billitems = [];
 
-		def list = waterworks_account_ledger.find([ parentid: acct.objid ]).where('amount-amtpaid > 0').list(); 
+		def list = billingService.getBilling( parm );
 		if ( !list ) throw new Exception('No unpaid balance for this account'); 
-
-		list.each{ 
-			def t = [:];
-			t.item = itemaccount.find([objid: it.item.objid]).first();
-			t.amount = it.balance;
-			t.refid = it.objid;
-			t.surcharge = 0;
-			t.interest = 0;
-			t.discount = 0;
-			t.total = t.amount;
-			t.remarks = it.remarks; 
-			p.items << t; 
-		}
+		p.items.addAll(list);
 		p.amount = p.items.sum{ it.amount }
-		p.billitems = p.items; 
-		p.info = [acctid: acct.objid]; 
+		p.billitems.addAll( list ); 
+		p.info = parm; 
+
+		if(parm.applicationid) p.applicationid = parm.applicationid;
+		if(parm.acctid) p.acctid = parm.acctid;
+
 		return p;
 	}
 
-	@ProxyMethod 
-	public void post( o ) {
-		def pmt = [:];
-		pmt.account = [objid : o.info.acctid];
-		pmt.reftype = "cashreceipt";
-		pmt.refid = o.objid;
-		pmt.refno = o.receiptno;
-		pmt.refdate = o.receiptdate;
-		pmt.amount = o.amount;
-		pmt.voided = 0;
-		pmt.items = [];
-
-		o.billitems.each {
-			def p = [:];
-			p.txnrefid = it.refid;
-			p.amount = it.amount;
-			p.discount = it.discount;
-			p.surcharge = it.surcharge;
-			p.interest = it.interest;
-			p.item = it.item;
-			waterworks_account_ledger.find([ objid: it.refid]).update([amtpaid:'{amtpaid+:amount}'],[amount:it.amount]); 
-			pmt.items << p;
-		}
-
-		wp.create( pmt );
-	} 
-
-	@ProxyMethod 
-	public void postVoid( rct ) {
-		def pmt = wp.find([refid: rct.objid ]).select('objid').first();
-		def items = wpi.find( [parentid: pmt.objid] ).select('txnrefid,amount').list();
-		items.each{ 
-			waterworks_account_ledger.find([ objid: it.txnrefid]).update([amtpaid:'{amtpaid-:amount}'],[amount:it.amount]); 
-		}
-		
-		wp.find( [objid: pmt.objid] ).update([voided:1]);
-	} 
 }

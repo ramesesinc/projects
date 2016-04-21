@@ -13,7 +13,12 @@ class WaterworksPaymentOrderInterceptor {
 		def params = evt.args[0]; 
 		def txnid = params.txnid; 
 		def p = cashReceiptSvc.getBilling([ refno: txnid ]); 
-		def info = p.info; 
-		env.paymentorder = [info:p, txntype:'waterworks_application',txnid:info.acctid,refid:info.acctid];  
+
+		//this is needed for posting back to the server during CashReceiptService.post
+		p.info = [applicationid: p.applicationid, txntype:'waterworks_application']
+		env.paymentorder = [info:p, txntype:'waterworks_application',txnid:p.applicationid,refid:p.applicationid];  
 	}
+
+	
+
 }	

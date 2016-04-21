@@ -3,21 +3,94 @@ import java.rmi.server.UID;
 
 class WaterworksCashReceiptInterceptor{
 
-	@Service('WaterworksCashReceiptService')
-	def cashReceiptSvc;
+	@Service('WaterworksBillingService')
+	def billingSvc;
+
+	@DataContext('waterworks_application_fee')
+	def appFee;
+
+	@DataContext("waterworks_account_ledger")
+	def ledger;	
+
+	@Service('WorkflowTaskService')
+	def taskSvc;
+
+	@DataContext("waterworks_installment")
+	def installment;	
+
+
+	@DataContext("waterworks_payment")
+	def wp;	
+
 
 	@After(pattern="CashReceiptService.post", eval="#{result.collectiontype?.handler == 'waterworks'}")
 	public void postPayment(def evt) {
 		def o = evt.args[0]; 
-		if ( !o.info?.acctid ) throw new Exception('info.acctid is required');
-		
-		cashReceiptSvc.post( o );  
+		def m = [:]
+		if(!o.info.applicationid || o.info.acctid) 
+			throw new Exception("WaterworksCashreceipt.post interceptor error. applicationid or acctod is required!");
+		def appid = o.info.applicationid;
+		def acctid = o.info.acctid;
+
+		//post waterworks_payment. This is different from cashreceipt bec. this allows us to reverse transactions
+		def pmt = [:];
+		if(acctid) {
+			pmt.acctid = acctid;
+		}
+		else {
+			pmt.applicationid = appid;
+		}
+		pmt.reftype = "cashreceipt";
+		pmt.refid = o.objid;			//the cash receipt objid
+		pmt.refno = o.receiptno;		
+		pmt.refdate = o.receiptdate;
+		pmt.amount = o.amount;
+		pmt.voided = 0;
+		pmt.items = [];
+		o.billitems.findAll{it.amount>0}.each {
+			if(it.installmentid) {
+				installment.find([objid:it.installmentid]).update( [amtpaid: "{amtpaid+:amt}"], [amt: it.amount] );
+			}
+			def p = [:];
+			p.txnrefid = it.refid;
+			p.amount = it.amount;
+			p.discount = it.discount;
+			p.surcharge = it.surcharge;
+			p.interest = it.interest;
+			p.item = it.item;
+			pmt.items << p;
+			if(pmt.acctid ) {
+				ledger.find([objid: it.refid]).update( [amtpaid: "{amtpaid+:amt}" ], [amt: it.amount] );
+			}
+			else {
+				appFee.find([objid: it.refid]).update( [amtpaid: "{amtpaid+:amt}" ], [amt: it.amount] );
+			}
+		}
+		wp.create(pmt);
+
+		def hasItems = billingSvc.getBilling( [applicationid: appid ]);
+		//check if were allowed to signal the process by checking the billing balance
+		if(!hasItems) {
+			taskSvc.signal( [processname:'waterworks_application', refid: appid, state:'for-payment', action:'submit'] );
+		}
 	}
 
 	@After(pattern="CashReceiptVoidService.post",index=0,eval="#{result.receipt.collectiontype.handler=='waterworks'}")
 	public void voidPayment(def evt) {
 		def rct = evt.result.receipt;
-		cashReceiptSvc.postVoid( rct );
+		def pmt = wp.find([refid: rct.objid ]).first();
+		if( !pmt.items) throw new Exception("WaterworksCashReceiptVoid.post error. No items loaded")
+
+		//def items = wpi.find( [parentid: pmt.objid] ).select('txnrefid,amount').list();
+		pmt.items.each{ 
+			if(pmt.acctid) {
+				ledger.find( [acctid:it.txnrefid]).update([amtpaid:'{amtpaid-:amount}'],[amount:it.amount]); 
+			}
+			else {
+				appFee.find([ objid: it.txnrefid]).update([amtpaid:'{amtpaid-:amount}'],[amount:it.amount]); 
+			}
+		}
+		wp.find( [objid: pmt.objid] ).update([voided:1]);
 	}
 
 }

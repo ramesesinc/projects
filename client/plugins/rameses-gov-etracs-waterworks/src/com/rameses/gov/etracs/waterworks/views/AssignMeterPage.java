@@ -39,10 +39,9 @@ public class AssignMeterPage extends javax.swing.JPanel {
 
         xFormPanel1.setCaptionWidth(100);
 
-        xLookupField1.setText("#{info.meter.serialno}");
         xLookupField1.setCaption("Meter Serial No");
-        xLookupField1.setExpression("#{info.waterworks.meter.serialno}");
-        xLookupField1.setHandler("waterworks_meter_unused:lookup");
+        xLookupField1.setExpression("#{info.meter.serialno}");
+        xLookupField1.setHandler("waterworks_unused_meter_application:lookup");
         xLookupField1.setName("info.meter"); // NOI18N
         xLookupField1.setPreferredSize(new java.awt.Dimension(200, 20));
         xLookupField1.setRequired(true);
@@ -53,10 +52,10 @@ public class AssignMeterPage extends javax.swing.JPanel {
         xIntegerField1.setRequired(true);
         xFormPanel1.add(xIntegerField1);
 
-        xLookupField2.setCaption("Meter Serial No");
+        xLookupField2.setCaption("Installed By");
         xLookupField2.setExpression("#{info.installer.name}");
-        xLookupField2.setHandler("waterworks_meter_unused:lookup");
-        xLookupField2.setName("info.meter"); // NOI18N
+        xLookupField2.setHandler("waterworksreader:lookup");
+        xLookupField2.setName("info.installer"); // NOI18N
         xLookupField2.setPreferredSize(new java.awt.Dimension(200, 20));
         xLookupField2.setRequired(true);
         xFormPanel1.add(xLookupField2);
@@ -71,7 +70,7 @@ public class AssignMeterPage extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 437, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(

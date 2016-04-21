@@ -1,7 +1,7 @@
 <schema adapter="waterworks">
 	<element tablename="waterworks_application">
 		<field name="objid" primary="true"  prefix="WAPP"/>
-		<field name="state" required="true" visible="false" defaultValue="ACTIVE"/>
+		<field name="state" required="true" visible="false" defaultValue="OPEN"/>
 		<field name="dtfiled" required="false" indexed="true" type="date" caption="Date Filed"/>
 		<field name="appno" required="true" indexed="true" caption="App No" searchable="true"/>
 		<field name="acctname" required="true" indexed="true" caption="Acct Name" searchable="true"/>
@@ -21,6 +21,9 @@
 		<field name="address_bldgname"  caption="Building Name"/>
 		<field name="address_pin" caption="PIN"/>
 
+		<!-- link to account -->
+		<field name="acctid" required="false"/>
+
 		<complex name="classification" ref="waterworks_classification" jointype="many-to-one">
 			<key field="classificationid" target="objid"/>
 		</complex>
@@ -30,14 +33,14 @@
 		</complex>	
 		<field name="stuboutindex" type="integer"/> 
 
-		<field name="meter_objid"/> 
-		<field name="meter_serialno"/> 
-		<field name="meter_brand"/> 
+		<complex name="meter" ref="waterworks_meter" jointype="many-to-one"  required="false">
+			<key field="meterid" target="objid"/>
+		</complex>
 
-		<field name="initialreading"/> 
-		<field name="installer_name"/> 
-		<field name="installer_objid"/> 
-		<field name="dtinstalled"/> 
+		<field name="initialreading" /> 
+		<field name="installer_name" /> 
+		<field name="installer_objid" /> 
+		<field name="dtinstalled" /> 
 
 		<complex name="fees" ref="waterworks_application_fee" jointype="one-to-many" lazy="true">
 			<key field="objid" target="parentid"/>	
@@ -47,7 +50,8 @@
 			<key field="objid" target="parentid"/>	
 		</complex>	
 
-		<complex name="materials" ref="waterworks_application_bom" jointype="one-to-many" required="false" lazy="true">
+		<!-- do not remove it -->
+		<complex name="materials" ref="waterworks_application_bom" jointype="one-to-many" lazy="true" required="false">
 			<key field="objid" target="parentid"/>	
 		</complex>	
 

@@ -1,9 +1,11 @@
-<workunit extends="com/rameses/seti2/templates/MdiForm.xml" schemaName="waterworks_account" 
-          allowCreate="false" allowEdit="false">
+<workunit schemaName="waterworks_account" allowCreate="false" allowEdit="false">
     <invokers>
         <invoker type="waterworks_account:open" 
                  formTitle="Waterworks Account (#{entity.acctno}) #{entity.acctname}" 
                  formId="#{entity.objid}"
                  action="open" target="window"/>
     </invokers>
+    <pages>
+        <page template=""/>
+    </pages>    
 </workunit>

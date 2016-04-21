@@ -116,6 +116,12 @@
                 <Property name="name" type="java.lang.String" value="payOption.amortization" noResource="true"/>
               </Properties>
             </Component>
+            <Component class="com.rameses.rcp.control.XIntegerField" name="xIntegerField2">
+              <Properties>
+                <Property name="caption" type="java.lang.String" value="Downpayment"/>
+                <Property name="name" type="java.lang.String" value="payOption.downpayment" noResource="true"/>
+              </Properties>
+            </Component>
           </SubComponents>
         </Container>
         <Component class="com.rameses.rcp.control.XRadio" name="xRadio1">

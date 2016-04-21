@@ -1,0 +1,10 @@
+<workunit schemaName="sys_requirement_type">
+    <invokers>
+        <invoker type="sys_requirement_type:create" caption="Requirement Type" action="create" target="popup" zrole="MASTER"/>
+        <invoker type="sys_requirement_type:open" caption="Requirement Type" action="open" target="popup" zrole="MASTER"/>
+    </invokers>
+    <code class="com.rameses.seti2.models.CrudFormModel"/>
+    <pages>
+        <page template="com.rameses.enterprise.views.RequirementTypePage"/>
+    </pages>
+</workunit>

@@ -3,18 +3,12 @@ import com.rameses.annotations.*;
 import com.rameses.rules.common.*;
 import waterworks.facts.*;
 import treasury.facts.*;
-import treasury.actions.*;
+import com.rameses.functions.*;
 
 class WaterworksBillingService  {
 	
 	@Service("RuleExecutorService")
 	def ruleSvc;
-
-	@DataContext("collectiontype")
-	def colType;
-
-	@DataContext("collectiontype_account")
-	def colTypeAcct;
 
 	@Service("DateService")
 	def dateSvc;
@@ -22,13 +16,20 @@ class WaterworksBillingService  {
 	@DataContext("waterworks_account")
 	def acct;
 
+	@DataContext("waterworks_application")
+	def app;
+
 	@DataContext("waterworks_account_ledger")
-	def wac;
+	def ledger;
+
+	@DataContext("waterworks_application_fee")
+	def appFee;
+	
+	@DataContext("waterworks_installment")
+	def installment;
 
 	@DataContext("itemaccount")
-	def itemAcct;
-
- 	def monthList = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
+	def itemaccount;
 
 	//for billing 
 	def buildBillingFacts(def facts, def o) {
@@ -38,165 +39,112 @@ class WaterworksBillingService  {
 		facts << new BillDate((!o?.billdate)?currDate:o?.billdate);
 	}
 
-	//find the waterworks account by acctno or by objid
-	def findAccount(def o) {
-		def p = null;    
-		if( o.objid ) {
-			p = [objid: o.objid];
-		}
-		else if(o.acctno) {
-			p = [acctno:o.acctno];
-		}
-		if(!p )
-		    throw new Exception('Please specify objid or acctno');
-		def m = acct.find( p ).first();
-		if( !m ) 
-			throw new Exception("Waterworks account not found");
-		return m;	
+	private def findItemAccount( def item ) {
+		return itemaccount.find([objid: item.objid]).first();
 	}
 
-	//find the waterworks item account used. This is defined in the collection type
-	def findItemAccount( def o ) {
-	    if(!o.tag) throw new Exception('Please specify tag whether BASIC, SURCHARGE or PENALTY');	
-	    def wct = colType.find( [handler: 'waterworks'] ).first();
-	    if(!wct)
-		throw new Exception( "Collection type handler waterworks not found"  );
-	    def wctacct = colTypeAcct.find( [collectiontypeid: wct.objid, tag: o.tag] ).first();
-	    if(!wctacct) throw new Exception( 'water account specified with tag ' + o.tag + ' not defined in collection type waterworks' )
+	//populate the impt. ids which is applicationid and acctid
+	private def buildIds(def o ) {
+		if(!o.applicationid && !o.appno && !o.acctid && !o.acctno )
+			throw new Exception("getBilling.buildIds error.There must be an applicationid,appno,acctno, or acctid param");
 
-	    def revItem = itemAcct.find([objid:wctacct.account.objid]).first();
-	    if( !revItem )
-		throw new Exception("Revneue Item Account not found" );
-	    return revItem;  	
-	} 
+		def m = [:];
+		if( o.acctno ) {
+			def ac = acct.find([acctno:o.acctno]).first();
+			m.acctid = ac.objid;
+			m.applicationid = ac.applicationid;
+		}	
+		else if( o.acctid ) {
+			def ac = acct.find([objid:o.acctid]).first();
+			m.acctid = ac.objid;
+			m.applicationid = ac.applicationid;
+		}
+		else if( o.appno ) {
+			def ap = app.find([appno:o.appno]).first();
+			m.applicationid = ap.objid;
+		}
+
+		//the last should be applicationid only
+		return m;
+	}
+
+	private def buildAppFees( def o, def findAcct ) {
+		def itemList = [];
+		def fees = appFee.find([parentid: o.applicationid])
+			.where("amount-amtpaid > 0 AND installmentid IS NULL").list();
+		fees.each {
+			itemList << [refid: it.objid, item: findAcct(it.item), 
+				amount:it.amount-it.amtpaid, surcharge:0, interest:0, discount:0, total: it.amount-it.amtpaid];	
+		}
+		return itemList;
+	}
+	
+	private def buildInstallmentFees(def o, def findAcct) {
+		def feeList = [];
+		if(o.applicationid) {
+			def fees = appFee.select("objid,item.*,amtpaid,installmentid")
+				.find([parentid: o.applicationid])
+				.where("amount-amtpaid > 0 AND NOT(installmentid IS NULL)").list();
+			feeList.addAll( fees );
+		}
+		if( o.acctid ) {
+			def fees = ledger.select("objid:{installmentid},item.*,installmentid,amtpaid:{SUM(amtpaid)}")
+				.find([parentid: o.acctid])
+				.where("amount-amtpaid > 0 AND NOT(installmentid IS NULL)")
+				.groupBy("item.objid,item.code,item.title,installmentid").list();
+			feeList.addAll( fees );
+		}
+		def itemList = [];
+		feeList.each {
+			def install = installment.find([objid: it.installmentid]).first();
+			if(!install) throw new Exception("error buildInstallmentFees. Installmentid " + it.installmentid + " does not exist!");
+
+			//bill only a portion of the installment.
+			def monthDiff = DateFunc.monthsDiff( install.startdate, dateSvc.getServerDate() ) + 1;
+			def amtdue = (install.amount / install.term) * monthDiff;  
+			def remarks = "installment " + monthDiff + " of " + install.term;
+			if(it.amtpaid<=0) {
+				amtdue = amtdue + install.downpayment;
+			}
+			else {
+				amtdue = amtdue - it.amtpaid;
+			}
+			if( amtdue > 0 ) {
+				itemList << [refid: it.objid, item:findAcct(it.item), installmentid: it.installmentid,
+					amount:amtdue, surcharge:0, interest:0, discount:0, total: amtdue, remarks:remarks];				
+			}
+		}
+		return itemList;
+	}
+
+	
 
 	@ProxyMethod
-	public def processBilling( def feeList ) {
+	public def getBilling( def o ) {
+		def acctMap = [:];
+		def findAcct = { i->
+			if(!acctMap.containsKey(i.objid)) {
+				acctMap.put(i.objid, itemaccount.find([objid: i.objid]).first());
+			}
+			return acctMap.get( i.objid );
+		};
 
-		def itemAcct = findItemAccount( [tag: 'BASIC' ] ); 
-		
-		//build the facts   
-		def facts = [];
-		feeList.each {
-			def bi = new WaterBillItem();
-			bi.refid = it.objid;
-			bi.item = it;
-			bi.account = new Account(itemAcct);
-			bi.year = it.year;
-			bi.month = it.month;
-			bi.smonth = monthList[it.month-1];
-			bi.reading = it.reading;
-			bi.prevreading = it.prevreading;
-			bi.volume = it.volume;
-			bi.amount = it.amount - it.amtpaid;
-			bi.amtdue = bi.amount;
-			bi.sortorder = (it.year*100)+it.month;
-			res.billItemList.addItem( bi );
-			facts.add( bi );
-		}
-		buildBillingFacts( facts, null );
+		def m = buildIds(o);
+		def itemList = buildAppFees( o, findAcct );
+		def instList = buildInstallmentFees(o, findAcct );
 
-		def res = ruleSvc.execute( "waterworksbilling", facts, null, null );
+		return itemList + instList;
+
+		/*
+		def ledgerFacts = buildLedgerFacts(o);
+		def res = ruleSvc.execute( "waterworksbilling", appFacts + ledgerFacts, null, null );
 		if( res.billItemList)
 			throw new Exception("No compute fee rules executed");
 		return res.billItemList.buildBillItems();
+		*/
+		return itemList;
 	}
 
 
-	/***********************************************************************
-	* this is called by other services. This returns the billing head 
-	* and its items
-	***********************************************************************/
-	@ProxyMethod
-	public def getBilling( def o ) {
-		//get the head. then get the receivables
-		def app = findAccount( o );
-		def feeList = wac.find([parentid: app.objid]).where('amount - amtpaid > 0').list();	
-		if(!feeList)
-		   throw new Exception("There are no upaid items for this account");
-		
-		//build the facts   
-		def facts = [];
-		facts << new WaterAccount(app);
-		feeList.each {
-			def bi = new WaterBillItem();
-			bi.refid = it.objid;
-			bi.item = it;
-			bi.account = new Account(itemAcct);
-			bi.year = it.year;
-			bi.month = it.month;
-			bi.smonth = monthList[it.month-1];
-			bi.volume = it.volume;
-			bi.amount = it.amount - it.amtpaid;
-			bi.amtdue = bi.amount;
-			bi.sortorder = (it.year*100)+it.month;
-			facts << bi;
-		}
-		
-		buildBillingFacts( facts, o );
-		
-
-		//check if there is payment option, use this handler 
-		//if the payoption is partial
-		def handler = { n->
-			if( n == 'payment') {
-				//for partial payment 
-				res.monthList = res.billItemList.items.collect { [month:it.month, year:it.year, smonth:it.smonth] };
-				if(o.payOption?.type=='PARTIAL') {
-					res.billItemList.applyPayment(  o.payOption.amount );
-				}
-				else if(o.payOption?.type=='MONTH') {
-					def mm = o.payOption.month;
-					res.billItemList.items = res.billItemList.items.findAll{  
-						return ((it.year * 100)+it.month) <=  ((mm.year*100)+mm.month) 
-					};
-				} 
-			}
-		}
-
-		def res = ruleSvc.execute( "waterworksbilling", facts, null, handler );
-		app.billitems = res.billItemList.buildBillItems();
-		app.items = res.billItemList.buildReceiptItems();
-		app.amount = app.items.sum{ it.amount };
-		app.monthList = res.monthList;
-		return app;
-	}
-
-	@ProxyMethod
-	def generateReportData(def entity){
-		def billing = [
-            [account: 'WATER FEE', amount: 252.80],
-            [account: 'FRNCHSE TAX', amount: 5.88],
-            [account: 'PCA', amount: 35.76],
-            [account: 'PWA', amount: 5.22]
-        ];
-        def chartdata = [
-            [month: 'Jan', consumption: 37],
-            [month: 'Feb', consumption: 40],
-            [month: 'Mar', consumption: 58],
-            [month: 'Apr', consumption: 94],
-            [month: 'May', consumption: 102],
-            [month: 'Jun', consumption: 70],
-        ];
-        entity.statementno = 'ST-084-0032';
-        entity.printdate = dateSvc.getServerDate();
-        entity.lastpaymentdate = dateSvc.getServerDate();
-        entity.previousamount = 308.00;
-        entity.barcode = '1264939847';
-        entity.consumercode = '89937';
-        entity.consumertype = 'REGULAR';
-        entity.billsequence = 'SEQ-9483-933';
-        entity.duedate = dateSvc.getServerDate();
-        entity.nextduedate = dateSvc.getServerDate();
-        entity.periodfrom = dateSvc.getServerDate();
-        entity.periodto = dateSvc.getServerDate();
-        entity.prevreadingdate = dateSvc.getServerDate();
-        entity.presreadingdate = dateSvc.getServerDate();
-        entity.consumption = entity.lastreading - entity.prevreading;
-        entity.averageconsumption = 22.35;
-        entity.billingdetails = billing;
-        entity.chartdata = chartdata;
-		return entity;
-	}
 
 }

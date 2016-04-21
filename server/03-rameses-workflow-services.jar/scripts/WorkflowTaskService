@@ -180,12 +180,21 @@ class WorkflowTaskService  {
  
  	@ProxyMethod
  	public def signal( def t ) {
-       
         if(!t.processname) throw new Exception("processname is required for signal");
- 		if(!t.taskid) throw new Exception("taskid is required for signal");
+
+        def em = db.lookup( t.processname +"_task" );
+ 		if(!t.taskid && t.refid) {
+            //find the first open taskid based on refid
+            def pp = [refid: t.refid];
+            if( t.state ) pp.state = t.state;
+            def tt = em.select("taskid").find( pp ).where( "NOT(state IN ('start','end')) AND enddate IS NULL").first();
+            if(!tt) throw new Exception("Error in signalling " + t.processname + ". refid does not exist");
+            t.taskid = tt.taskid;
+        }    
+        if(!t.taskid)
+            throw new Exception("taskid is required for signal");
  		if(!t.action && !t.to) throw new Exception("Action or to state is required in signal");
 
- 		def em = db.lookup( t.processname +"_task" );
  		def tsk = em.select("enddate,state,refid").find( [taskid: t.taskid] ).first(); 
  		if( tsk.enddate ) throw new Exception("This task has already ended");
 

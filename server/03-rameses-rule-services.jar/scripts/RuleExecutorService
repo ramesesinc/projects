@@ -25,7 +25,7 @@ class RuleExecutorService {
 				rsMap.put( actionName, getClass().getClassLoader().loadClass(actionClassname).newInstance() );
 			}
 			catch(Exception ex) {
-				println "error loading action class " + actionName + " ->" + ex.message;
+				throw new Exception("Error loading action class " + actionName + " ->" + ex.message);
 			}
 		}
 		return rsMap.get(actionName);
@@ -42,7 +42,11 @@ class RuleExecutorService {
 			if(ruleAction==null) {
 				ruleAction = new RuleAction();
 				def actionList = ruleDB.getRuleActionsForLoading([ruleset: ruleset]);
+				if(!actionList)
+					throw new Exception("There are no actions registered in ruleset " + ruleset);
 				actionList.each {
+						if( !it.actionname ) throw new Exception("Error loading action. actionname is required for " + it.name);
+						if( !it.actionclass ) throw new Exception("Error loading action. actionclass is required for " + it.name);
 						def obj = getClassInstance(ruleset, it.actionname, it.actionclass );
 						ruleAction.addCommand( it.actionname, obj ); 
 				}

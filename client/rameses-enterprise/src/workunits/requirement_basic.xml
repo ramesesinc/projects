@@ -1,0 +1,34 @@
+<workunit>
+    <invokers>
+       <invoker type="requirement:basic" caption="Requirement" />
+    </invokers>
+    <code>
+        <![CDATA[
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import com.rameses.rulemgmt.constraint.*;
+        import com.rameses.rulemgmt.*;
+
+        class BasicRequirement {    
+        
+            def handler;
+            def entry = [:];
+            
+            def doOk() {
+                handler(entry);
+                return "_close";
+            }
+        
+            def doCancel() {
+                return "_close";
+            }
+        }
+        
+        ]]>
+    </code>    
+    <pages>
+        <page template="com.rameses.enterprise.views.BasicRequirementPage" />
+    </pages>
+</workunit>

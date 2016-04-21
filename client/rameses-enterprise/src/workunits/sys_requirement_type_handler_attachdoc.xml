@@ -1,0 +1,22 @@
+<workunit>
+    
+   <invokers>
+         <invoker type="sys_requirement_type:handler" caption="Attach Document" name="attach_doc"/>
+         <invoker type="sys_requirement_type:attach_doc" caption="Attach Document" action="init"/>
+   </invokers>
+   
+   <code>
+       <![CDATA[
+        import com.rameses.enterprise.models.*;
+        
+        class AttachDoc extends AbstractRequirementModel {
+            
+        }      
+       ]]>
+   </code>
+   
+   <pages>
+       <page template="com.rameses.enterprise.views.RequirementHandlerAttachDocumentPage" />
+   </pages>
+   
+</workunit>

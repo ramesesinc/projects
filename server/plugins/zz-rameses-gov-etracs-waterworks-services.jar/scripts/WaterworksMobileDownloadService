@@ -79,7 +79,7 @@ class WaterworksMobileDownloadService {
 			]);
 
 			/*			
-			def result = billingSvc.processBilling( [acctid:it.acctid, area:area] );
+			def result = billingSvc.getBilling( [acctid:it.acctid, area:area] );
 			it.items = wm.serializer.write( result.billitems );			
 			it.duedate = result.duedate;
 			it.discodate = result.disconnectiondate;

@@ -1,0 +1,46 @@
+<workunit>
+    <invokers>
+        <invoker type="waterworks_application:form:formActions" 
+                 visibleWhen="#{task.state=='for-assessment' 
+                    &amp;&amp; task.assignee?.objid==user.objid}"
+                 caption="Attach Sketch"
+                 target="popup"
+                 />
+    </invokers>
+    <code>
+        <![CDATA[
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        import com.rameses.common.*;
+        import com.rameses.util.*;
+        
+        class AttachSketch {
+        
+            @Binding
+            def binding;
+            
+            def bom = [items:[]];
+            
+            def listHandler = [
+                fetchList: { o->
+                    return bom.items;
+                },
+                onColumnUpdate: { item, colname->
+                    if(colname.matches('unit|qty')) {
+                        item.linetotal = item.qty*item.unitprice;
+                        bom.total = bom.items.sum{it.linetotal};
+                        binding.refesh('bom.total');
+                    }
+                }
+            ] as EditorListModel;
+        
+        }
+        
+        ]]>
+    </code>
+    <pages>
+        <page template="com.rameses.gov.etracs.waterworks.views.WaterBillOfMaterialsPage"/>
+    </pages>
+</workunit>

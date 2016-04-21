@@ -14,7 +14,7 @@
 		<field name="lookupdatatype" visible="false"/>
 		<field name="dynamicfieldname" visible="false"/>
 		<field name="builtinconstraints" visible="false"/>
-		<field name="domain" indexed="true"/>
+		<field name="domain" indexed="true" searchable="true"/>
 		<complex name="fields" ref="sys_rule_fact_field" jointype="one-to-many">
 			<key field="objid" target="parentid"/>
 		</complex>	

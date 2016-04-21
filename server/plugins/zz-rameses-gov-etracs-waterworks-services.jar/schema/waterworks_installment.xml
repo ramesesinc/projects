@@ -8,12 +8,12 @@
 
 		<field name="particulars" required="true" caption="Particulars"/>
 		<field name="startdate" type="date" caption="Start Date"/>
-		<field name="enddate" type="date" caption="End Date"/>
 		<field name="term" required="true" type="integer" caption="Term"/>
 
 		<field name="amortization" required="true" type="decimal" caption="Amortization"/>
 		<field name="amount" required="true" type="decimal" caption="Amount"/>
 		<field name="amtpaid" required="true" type="decimal" caption="Amt Paid"/>		
+		<field name="downpayment" required="true" type="decimal" caption="Downpayment"/>
 		<field name="balance" expr="amount-amtpaid"/>		
 	</element>
 

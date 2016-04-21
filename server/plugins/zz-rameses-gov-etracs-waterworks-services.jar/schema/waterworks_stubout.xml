@@ -7,6 +7,8 @@
 		<complex name="zone" ref="waterworks_sector_zone" jointype="many-to-one" required="false">
 			<key field="zoneid" target="objid"/>	
 		</complex>	
+		<field name="barangay_objid" />
+		<field name="barangay_name" />
 	</element>
 
 </schema>

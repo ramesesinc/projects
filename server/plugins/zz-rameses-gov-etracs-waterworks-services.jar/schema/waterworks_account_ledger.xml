@@ -12,6 +12,7 @@
 		<field name="amount" required="true"/>
 		<field name="amtpaid" required="true"/>
 		<field name="balance" expr="amount-amtpaid"/>
+		<field name="installmentid" />
 	</element>
 
 </schema>

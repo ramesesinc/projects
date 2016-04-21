@@ -6,8 +6,8 @@
 		<field name="actionname" required="true" indexed="true"/>
 		<field name="actionclass" required="false" indexed="true"/>
 		<field name="sortorder" required="true"/>
-		<field name="title" required="true" indexed="true"/>
-		<field name="domain" indexed="true"/>
+		<field name="title" required="true" indexed="true" />
+		<field name="domain" indexed="true" searchable="true"/>
 
 		<complex name="params" ref="sys_rule_actiondef_param" jointype="one-to-many">
 			<key field="objid" target="parentid"/>

@@ -2,7 +2,7 @@
     schemaName="waterworks_stubout">
     
     <invokers>
-        <invoker type="waterworks_stubout:open" caption="Stub-out" action="open" 
+        <invoker type="waterworks_stubout:open1" caption="Stub-out" action="open" 
                  index="5" target="popup" width="800" height="600"/> 
     </invokers> 
 </workunit>

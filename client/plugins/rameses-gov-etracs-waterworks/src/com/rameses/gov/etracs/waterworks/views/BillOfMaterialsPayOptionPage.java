@@ -36,6 +36,7 @@ public class BillOfMaterialsPayOptionPage extends javax.swing.JPanel {
         xDecimalField1 = new com.rameses.rcp.control.XDecimalField();
         xTextField1 = new com.rameses.rcp.control.XTextField();
         xDecimalField2 = new com.rameses.rcp.control.XDecimalField();
+        xIntegerField2 = new com.rameses.rcp.control.XIntegerField();
         xRadio1 = new com.rameses.rcp.control.XRadio();
         xRadio2 = new com.rameses.rcp.control.XRadio();
 
@@ -66,6 +67,10 @@ public class BillOfMaterialsPayOptionPage extends javax.swing.JPanel {
         xDecimalField2.setEnabled(false);
         xDecimalField2.setName("payOption.amortization"); // NOI18N
         xFormPanel1.add(xDecimalField2);
+
+        xIntegerField2.setCaption("Downpayment");
+        xIntegerField2.setName("payOption.downpayment"); // NOI18N
+        xFormPanel1.add(xIntegerField2);
 
         xRadio1.setName("payOption.type"); // NOI18N
         xRadio1.setOptionValue("fullpayment");
@@ -124,6 +129,7 @@ public class BillOfMaterialsPayOptionPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XDecimalField xDecimalField2;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XIntegerField xIntegerField1;
+    private com.rameses.rcp.control.XIntegerField xIntegerField2;
     private com.rameses.rcp.control.XRadio xRadio1;
     private com.rameses.rcp.control.XRadio xRadio2;
     private com.rameses.rcp.control.XTextField xTextField1;

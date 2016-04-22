@@ -9,8 +9,8 @@ class MunicipalityRedFlagRemoteCallHandler
 	@Service('NotificationService')
 	def notifySvc		
 
-	@ActiveDB('faas_task')
-	def task;
+	@Service('RPTUtil')
+	def util
 
 
 	public void postRedFlag(redflag){
@@ -19,17 +19,19 @@ class MunicipalityRedFlagRemoteCallHandler
 	}
 
 	void notifyRecommender(redflag){
-		def recommendertask = task.findRecommederTask(redflag)
-		def message = 'Red Flag for FAAS No. ' + redflag.refno + ' was created by ' + redflag.filedby.name 
+		def currtask = redflagSvc.getCurrentTask(redflag)
+		def message = util.capitalize(currtask.filetype) + ' ' + redflag.refno + ' Red Flag #' + redflag.caseno 
+		message += ' was submitted by ' + redflag.filedby.name 
+
 		def msg = [
             objid     : redflag.refid,
-            recipientid : (recommendertask.assignee.objid ? recommendertask.assignee.objid : '-'),
+            recipientid : (currtask.assignee.objid ? currtask.assignee.objid : '-'),
             recipienttype : 'user',
             senderid  : (redflag.filedby.objid ? redflag.filedby.objid : '-'),
             sender    : redflag.filedby.name,
             message   : message,
-            filetype  : 'faas',
-            data 	  : [taskid: recommendertask.objid],
+            filetype  : (currtask?.filetype ? currtask.filetype : '-'),
+            data 	  : [taskid: currtask.objid],
         ]
         notifySvc.addMessage(msg)
 	}

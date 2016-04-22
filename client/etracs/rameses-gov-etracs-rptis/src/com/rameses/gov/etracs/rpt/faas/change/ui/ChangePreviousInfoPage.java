@@ -33,12 +33,12 @@ public class ChangePreviousInfoPage extends javax.swing.JPanel {
         xFormPanel16 = new com.rameses.rcp.control.XFormPanel();
         xTextField29 = new com.rameses.rcp.control.XTextField();
         xTextField22 = new com.rameses.rcp.control.XTextField();
-        xFormPanel14 = new com.rameses.rcp.control.XFormPanel();
-        xDecimalField3 = new com.rameses.rcp.control.XDecimalField();
-        xDecimalField4 = new com.rameses.rcp.control.XDecimalField();
-        xFormPanel15 = new com.rameses.rcp.control.XFormPanel();
-        xDecimalField7 = new com.rameses.rcp.control.XDecimalField();
-        xDecimalField8 = new com.rameses.rcp.control.XDecimalField();
+        xFormPanel20 = new com.rameses.rcp.control.XFormPanel();
+        xTextField1 = new com.rameses.rcp.control.XTextField();
+        xTextField2 = new com.rameses.rcp.control.XTextField();
+        xFormPanel21 = new com.rameses.rcp.control.XFormPanel();
+        xTextField3 = new com.rameses.rcp.control.XTextField();
+        xTextField4 = new com.rameses.rcp.control.XTextField();
         xTextField26 = new com.rameses.rcp.control.XTextField();
         xTextField30 = new com.rameses.rcp.control.XTextField();
         jPanel2 = new javax.swing.JPanel();
@@ -47,12 +47,12 @@ public class ChangePreviousInfoPage extends javax.swing.JPanel {
         xFormPanel17 = new com.rameses.rcp.control.XFormPanel();
         xTextField32 = new com.rameses.rcp.control.XTextField();
         xTextField33 = new com.rameses.rcp.control.XTextField();
-        xFormPanel18 = new com.rameses.rcp.control.XFormPanel();
-        xDecimalField5 = new com.rameses.rcp.control.XDecimalField();
-        xDecimalField6 = new com.rameses.rcp.control.XDecimalField();
-        xFormPanel19 = new com.rameses.rcp.control.XFormPanel();
-        xDecimalField9 = new com.rameses.rcp.control.XDecimalField();
-        xDecimalField10 = new com.rameses.rcp.control.XDecimalField();
+        xFormPanel22 = new com.rameses.rcp.control.XFormPanel();
+        xTextField5 = new com.rameses.rcp.control.XTextField();
+        xTextField6 = new com.rameses.rcp.control.XTextField();
+        xFormPanel23 = new com.rameses.rcp.control.XFormPanel();
+        xTextField7 = new com.rameses.rcp.control.XTextField();
+        xTextField8 = new com.rameses.rcp.control.XTextField();
         xTextField34 = new com.rameses.rcp.control.XTextField();
         xTextField35 = new com.rameses.rcp.control.XTextField();
 
@@ -89,47 +89,45 @@ public class ChangePreviousInfoPage extends javax.swing.JPanel {
 
         xFormPanel2.add(xFormPanel16);
 
-        xFormPanel14.setCaptionWidth(120);
-        xFormPanel14.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
-        xFormPanel14.setPadding(new java.awt.Insets(0, 0, 0, 0));
-        xFormPanel14.setPreferredSize(new java.awt.Dimension(0, 21));
-        xFormPanel14.setShowCaption(false);
+        xFormPanel20.setCaptionWidth(120);
+        xFormPanel20.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
+        xFormPanel20.setPadding(new java.awt.Insets(0, 0, 0, 0));
+        xFormPanel20.setPreferredSize(new java.awt.Dimension(0, 21));
+        xFormPanel20.setShowCaption(false);
 
-        xDecimalField3.setCaption("Previous M.V.");
-        xDecimalField3.setCellPadding(new java.awt.Insets(0, 0, 0, 5));
-        xDecimalField3.setName("changeinfo.newinfo.prevmv"); // NOI18N
-        xDecimalField3.setStretchWidth(50);
-        xFormPanel14.add(xDecimalField3);
+        xTextField1.setCaption("Previous M.V.");
+        xTextField1.setCellPadding(new java.awt.Insets(0, 0, 0, 5));
+        xTextField1.setName("changeinfo.newinfo.prevmv"); // NOI18N
+        xTextField1.setStretchWidth(50);
+        xFormPanel20.add(xTextField1);
 
-        xDecimalField4.setCaption("A.V.");
-        xDecimalField4.setCaptionWidth(55);
-        xDecimalField4.setName("changeinfo.newinfo.prevav"); // NOI18N
-        xDecimalField4.setStretchWidth(50);
-        xFormPanel14.add(xDecimalField4);
+        xTextField2.setCaption("A.V");
+        xTextField2.setCaptionWidth(55);
+        xTextField2.setName("changeinfo.newinfo.prevav"); // NOI18N
+        xTextField2.setStretchWidth(50);
+        xFormPanel20.add(xTextField2);
 
-        xFormPanel2.add(xFormPanel14);
+        xFormPanel2.add(xFormPanel20);
 
-        xFormPanel15.setCaptionWidth(120);
-        xFormPanel15.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
-        xFormPanel15.setPadding(new java.awt.Insets(0, 0, 0, 0));
-        xFormPanel15.setPreferredSize(new java.awt.Dimension(0, 21));
-        xFormPanel15.setShowCaption(false);
+        xFormPanel21.setCaptionWidth(120);
+        xFormPanel21.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
+        xFormPanel21.setPadding(new java.awt.Insets(0, 0, 0, 0));
+        xFormPanel21.setPreferredSize(new java.awt.Dimension(0, 21));
+        xFormPanel21.setShowCaption(false);
 
-        xDecimalField7.setCaption("Prev. Area (sqm)");
-        xDecimalField7.setCellPadding(new java.awt.Insets(0, 0, 0, 5));
-        xDecimalField7.setName("changeinfo.newinfo.prevareasqm"); // NOI18N
-        xDecimalField7.setStretchWidth(50);
-        xFormPanel15.add(xDecimalField7);
+        xTextField3.setCaption("Prev. Area (sqm)");
+        xTextField3.setCellPadding(new java.awt.Insets(0, 0, 0, 5));
+        xTextField3.setName("changeinfo.newinfo.prevareasqm"); // NOI18N
+        xTextField3.setStretchWidth(50);
+        xFormPanel21.add(xTextField3);
 
-        xDecimalField8.setCaption("(ha)");
-        xDecimalField8.setCaptionWidth(55);
-        xDecimalField8.setName("changeinfo.newinfo.prevareaha"); // NOI18N
-        xDecimalField8.setPattern("#,##0.000000");
-        xDecimalField8.setScale(6);
-        xDecimalField8.setStretchWidth(50);
-        xFormPanel15.add(xDecimalField8);
+        xTextField4.setCaption("(ha)");
+        xTextField4.setCaptionWidth(55);
+        xTextField4.setName("changeinfo.newinfo.prevareaha"); // NOI18N
+        xTextField4.setStretchWidth(50);
+        xFormPanel21.add(xTextField4);
 
-        xFormPanel2.add(xFormPanel15);
+        xFormPanel2.add(xFormPanel21);
 
         xTextField26.setCaption("Previous Owner");
         xTextField26.setCellPadding(new java.awt.Insets(0, 0, 2, 0));
@@ -202,55 +200,49 @@ public class ChangePreviousInfoPage extends javax.swing.JPanel {
 
         xFormPanel3.add(xFormPanel17);
 
-        xFormPanel18.setCaptionWidth(120);
-        xFormPanel18.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
-        xFormPanel18.setPadding(new java.awt.Insets(0, 0, 0, 0));
-        xFormPanel18.setPreferredSize(new java.awt.Dimension(0, 21));
-        xFormPanel18.setShowCaption(false);
+        xFormPanel22.setCaptionWidth(120);
+        xFormPanel22.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
+        xFormPanel22.setPadding(new java.awt.Insets(0, 0, 0, 0));
+        xFormPanel22.setPreferredSize(new java.awt.Dimension(0, 21));
+        xFormPanel22.setShowCaption(false);
 
-        xDecimalField5.setCaption("Previous M.V.");
-        xDecimalField5.setCellPadding(new java.awt.Insets(0, 0, 0, 5));
-        xDecimalField5.setDisabledTextColor(new java.awt.Color(0, 0, 0));
-        xDecimalField5.setEnabled(false);
-        xDecimalField5.setName("changeinfo.previnfo.prevmv"); // NOI18N
-        xDecimalField5.setStretchWidth(50);
-        xFormPanel18.add(xDecimalField5);
+        xTextField5.setCaption("Previous M.V.");
+        xTextField5.setCellPadding(new java.awt.Insets(0, 0, 0, 5));
+        xTextField5.setEnabled(false);
+        xTextField5.setName("changeinfo.previnfo.prevmv"); // NOI18N
+        xTextField5.setStretchWidth(50);
+        xFormPanel22.add(xTextField5);
 
-        xDecimalField6.setCaption("A.V.");
-        xDecimalField6.setCaptionWidth(55);
-        xDecimalField6.setDisabledTextColor(new java.awt.Color(0, 0, 0));
-        xDecimalField6.setEnabled(false);
-        xDecimalField6.setName("changeinfo.previnfo.prevav"); // NOI18N
-        xDecimalField6.setStretchWidth(50);
-        xFormPanel18.add(xDecimalField6);
+        xTextField6.setCaption("A.V");
+        xTextField6.setCaptionWidth(55);
+        xTextField6.setEnabled(false);
+        xTextField6.setName("changeinfo.previnfo.prevav"); // NOI18N
+        xTextField6.setStretchWidth(50);
+        xFormPanel22.add(xTextField6);
 
-        xFormPanel3.add(xFormPanel18);
+        xFormPanel3.add(xFormPanel22);
 
-        xFormPanel19.setCaptionWidth(120);
-        xFormPanel19.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
-        xFormPanel19.setPadding(new java.awt.Insets(0, 0, 0, 0));
-        xFormPanel19.setPreferredSize(new java.awt.Dimension(0, 21));
-        xFormPanel19.setShowCaption(false);
+        xFormPanel23.setCaptionWidth(120);
+        xFormPanel23.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
+        xFormPanel23.setPadding(new java.awt.Insets(0, 0, 0, 0));
+        xFormPanel23.setPreferredSize(new java.awt.Dimension(0, 21));
+        xFormPanel23.setShowCaption(false);
 
-        xDecimalField9.setCaption("Prev. Area (sqm)");
-        xDecimalField9.setCellPadding(new java.awt.Insets(0, 0, 0, 5));
-        xDecimalField9.setDisabledTextColor(new java.awt.Color(0, 0, 0));
-        xDecimalField9.setEnabled(false);
-        xDecimalField9.setName("changeinfo.previnfo.prevareasqm"); // NOI18N
-        xDecimalField9.setStretchWidth(50);
-        xFormPanel19.add(xDecimalField9);
+        xTextField7.setCaption("Prev. Area (sqm)");
+        xTextField7.setCellPadding(new java.awt.Insets(0, 0, 0, 5));
+        xTextField7.setEnabled(false);
+        xTextField7.setName("changeinfo.previnfo.prevareasqm"); // NOI18N
+        xTextField7.setStretchWidth(50);
+        xFormPanel23.add(xTextField7);
 
-        xDecimalField10.setCaption("(ha)");
-        xDecimalField10.setCaptionWidth(55);
-        xDecimalField10.setDisabledTextColor(new java.awt.Color(0, 0, 0));
-        xDecimalField10.setEnabled(false);
-        xDecimalField10.setName("changeinfo.previnfo.prevareaha"); // NOI18N
-        xDecimalField10.setPattern("#,##0.000000");
-        xDecimalField10.setScale(6);
-        xDecimalField10.setStretchWidth(50);
-        xFormPanel19.add(xDecimalField10);
+        xTextField8.setCaption("(ha)");
+        xTextField8.setCaptionWidth(55);
+        xTextField8.setEnabled(false);
+        xTextField8.setName("changeinfo.previnfo.prevareaha"); // NOI18N
+        xTextField8.setStretchWidth(50);
+        xFormPanel23.add(xTextField8);
 
-        xFormPanel3.add(xFormPanel19);
+        xFormPanel3.add(xFormPanel23);
 
         xTextField34.setCaption("Previous Owner");
         xTextField34.setCellPadding(new java.awt.Insets(0, 0, 2, 0));
@@ -302,7 +294,7 @@ public class ChangePreviousInfoPage extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 253, Short.MAX_VALUE)
+                .addComponent(jTabbedPane1)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -310,31 +302,31 @@ public class ChangePreviousInfoPage extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JTabbedPane jTabbedPane1;
-    private com.rameses.rcp.control.XDecimalField xDecimalField10;
-    private com.rameses.rcp.control.XDecimalField xDecimalField3;
-    private com.rameses.rcp.control.XDecimalField xDecimalField4;
-    private com.rameses.rcp.control.XDecimalField xDecimalField5;
-    private com.rameses.rcp.control.XDecimalField xDecimalField6;
-    private com.rameses.rcp.control.XDecimalField xDecimalField7;
-    private com.rameses.rcp.control.XDecimalField xDecimalField8;
-    private com.rameses.rcp.control.XDecimalField xDecimalField9;
-    private com.rameses.rcp.control.XFormPanel xFormPanel14;
-    private com.rameses.rcp.control.XFormPanel xFormPanel15;
     private com.rameses.rcp.control.XFormPanel xFormPanel16;
     private com.rameses.rcp.control.XFormPanel xFormPanel17;
-    private com.rameses.rcp.control.XFormPanel xFormPanel18;
-    private com.rameses.rcp.control.XFormPanel xFormPanel19;
     private com.rameses.rcp.control.XFormPanel xFormPanel2;
+    private com.rameses.rcp.control.XFormPanel xFormPanel20;
+    private com.rameses.rcp.control.XFormPanel xFormPanel21;
+    private com.rameses.rcp.control.XFormPanel xFormPanel22;
+    private com.rameses.rcp.control.XFormPanel xFormPanel23;
     private com.rameses.rcp.control.XFormPanel xFormPanel3;
+    private com.rameses.rcp.control.XTextField xTextField1;
+    private com.rameses.rcp.control.XTextField xTextField2;
     private com.rameses.rcp.control.XTextField xTextField20;
     private com.rameses.rcp.control.XTextField xTextField22;
     private com.rameses.rcp.control.XTextField xTextField26;
     private com.rameses.rcp.control.XTextField xTextField29;
+    private com.rameses.rcp.control.XTextField xTextField3;
     private com.rameses.rcp.control.XTextField xTextField30;
     private com.rameses.rcp.control.XTextField xTextField31;
     private com.rameses.rcp.control.XTextField xTextField32;
     private com.rameses.rcp.control.XTextField xTextField33;
     private com.rameses.rcp.control.XTextField xTextField34;
     private com.rameses.rcp.control.XTextField xTextField35;
+    private com.rameses.rcp.control.XTextField xTextField4;
+    private com.rameses.rcp.control.XTextField xTextField5;
+    private com.rameses.rcp.control.XTextField xTextField6;
+    private com.rameses.rcp.control.XTextField xTextField7;
+    private com.rameses.rcp.control.XTextField xTextField8;
     // End of variables declaration//GEN-END:variables
 }

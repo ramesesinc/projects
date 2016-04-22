@@ -4,6 +4,9 @@ import com.rameses.services.extended.*;
 
 class SubdivisionListService extends ActiveListService
 {
+    @Env 
+    def env 
+    
 	@ActiveDB('subdivision')
 	def em
 	
@@ -28,29 +31,21 @@ class SubdivisionListService extends ActiveListService
         ]
     }
 
-	@ProxyMethod
+    @ProxyMethod
     public def getNodes(o) {
-        return [
-           [name:'all', caption:'All', leaf:true, folder:true, allowSearch:true],
-           [name:'receiver', caption:'Review and Verification', leaf:true, folder:true, allowSearch:true],
-           [name:'assign-examiner', caption:'For Examination', leaf:true, folder:true, allowSearch:true],
-           [name:'examiner', caption:'Examination', leaf:true, folder:true, allowSearch:true],
-           [name:'assign-taxmapper', caption:'For Taxmapping', leaf:true, folder:true, allowSearch:true],
-           [name:'taxmapper', caption:'Taxmapping', leaf:true, folder:true, allowSearch:true],
-           [name:'assign-taxmapping-approval', caption:'For Taxmapping Chief Approval', leaf:true, folder:true, allowSearch:true],
-           [name:'taxmapper_chief', caption:'Taxmapping Chief Approval', leaf:true, folder:true, allowSearch:true],
-           [name:'assign-appraiser', caption:'For Appraisal', leaf:true, folder:true, allowSearch:true],
-           [name:'appraiser', caption:'Appraisal', leaf:true, folder:true, allowSearch:true],
-           [name:'assign-appraisal-chief', caption:'For Appraisal Chief Approval', leaf:true, folder:true, allowSearch:true],
-           [name:'appraiser_chief', caption:'Appraisal Chief Approval', leaf:true, folder:true, allowSearch:true],
-           [name:'assign-recommender', caption:'For Recommending Approval', leaf:true, folder:true, allowSearch:true],
-           [name:'recommender', caption:'Recommending Approval', leaf:true, folder:true, allowSearch:true],
-           [name:'assign-approver', caption:'For Assessor Approval', leaf:true, folder:true, allowSearch:true],
-           [name:'forapproval', caption:'Assessor Approval', leaf:true, folder:true, allowSearch:true],
-           [name:'draft', caption:'Draft', leaf:true, folder:true, allowSearch:true],
-           [name:'approved', caption:'Approved', leaf:true, folder:true, allowSearch:true],
-        ];
-    }   
+        def nodes = []
+        nodes << [name:'all', caption:'All']
+        nodes += em.getNodes();
+        nodes << [name:'mytask', caption:'My Tasks']
+        nodes << [name:'unassigned', caption:'Unassigned Tasks']
+
+        nodes.each{
+            it.leaf = true
+            it.folder = true 
+            it.allowSearch = true 
+        }
+        return nodes
+    }  
 
     void beforeList( params ) {
         params.state = (params.state ? params.state : '%')
@@ -64,26 +59,19 @@ class SubdivisionListService extends ActiveListService
         switch(params.name) {
             case 'all':
                 break;
-            case 'draft':
-                params.state = 'DRAFT'
+            case 'mytask':
+                params.userid = env.USERID 
                 if (whereclause) whereclause += ' AND ' 
-                whereclause += ' s.state = $P{state}  '
+                whereclause += ' tsk.assignee_objid = $P{userid} '
                 break;
-            case 'approved':
-                params.state = 'APPROVED'
+            case 'unassigned':
                 if (whereclause) whereclause += ' AND ' 
-                whereclause += ' s.state = $P{state}  '
+                whereclause += " tsk.state like 'assign%'"
                 break;
             default:
                 params.taskstate = params.name
                 if (whereclause) whereclause += ' AND ' 
                 whereclause += ' tsk.state = $P{taskstate} AND tsk.enddate IS NULL  '
-
-                if (params.mytask ){
-                    params.userid = env.USERID 
-                    if (whereclause) whereclause += ' AND ' 
-                    whereclause += ' tsk.assignee_objid = $P{userid} '
-                }
         }
 
         if (whereclause) {

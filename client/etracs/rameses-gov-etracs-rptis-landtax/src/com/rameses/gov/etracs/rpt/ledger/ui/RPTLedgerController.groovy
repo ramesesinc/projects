@@ -25,7 +25,7 @@ public class RPTLedgerController
     def billSvc;
     
     def entity = [state:'PENDING'];
-    def mode 
+    def mode;
 
     def STATE_PENDING = 'PENDING'
     def STATE_APPROVED = 'APPROVED'
@@ -35,7 +35,7 @@ public class RPTLedgerController
     
     String entityName = 'rptledger'
     String type = 'online';
-            
+    
     String getTitle(){
         return 'Realty Tax Ledger (' + entity.state + ')'
     }
@@ -335,5 +335,57 @@ public class RPTLedgerController
         }
         return inv;
     }
+    
+    
+    
+
+    /*--------------------------------------------------------------
+    *
+    * RESTRICTION SUPPORT 
+    *
+    --------------------------------------------------------------*/    
+    def selectedRestriction;
+    def restriction; 
+    
+    def restrictionListHandler = [
+        fetchList : { return entity.restrictions }        
+    ] as BasicListModel;
+    
+    
+    
+    def addRestriction(){
+        restriction = [:]
+        restriction.objid = 'RLR' + new java.rmi.server.UID();
+        restriction.parentid = entity.objid 
+        return new PopupOpener(outcome:'restriction');
+    }
+    
+    def doAddRestriction(){
+        svc.addRestriction(restriction);
+        entity.restrictions << restriction;
+        restrictionListHandler.reload();
+        binding.refresh('restrictioninfo'); //TODO: not functioning
+        return '_close';
+    }
+    
+    void removeRestriction(){
+        if (!selectedRestriction) return;
+        if (MsgBox.confirm('Remove restriction?')){
+            svc.removeRestriction(selectedRestriction);
+            entity.restrictions.remove(selectedRestriction);
+            restrictionListHandler.reload();
+        }
+    }
+    
+    List getRestrictions(){
+         return LOV.RPT_FAAS_RESTRICTIONS*.key
+     }
+     
+    def getRestrictioninfo(){
+        def info = '';
+        if (entity.restrictions)
+           info = 'Ledger is currently under restriction.';
+        return info;
+    }     
 }
 

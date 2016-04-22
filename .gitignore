@@ -43,3 +43,6 @@ android/*/Thumbs.db
 /client/etracs/rameses-gov-etracs-city/dist/
 /client/etracs/rameses-gov-etracs-province/build/
 /client/etracs/rameses-gov-etracs-province/dist/
+/client/plugins/rameses-gov-etracs-ctc/nbproject/private/
+/client/plugins/rameses-gov-etracs-ctc/build/
+/client/plugins/rameses-gov-etracs-ctc/dist/

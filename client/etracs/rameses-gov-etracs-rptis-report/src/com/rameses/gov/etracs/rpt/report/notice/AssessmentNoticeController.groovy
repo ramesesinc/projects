@@ -6,6 +6,7 @@ import com.rameses.osiris2.common.*;
 import com.rameses.osiris2.client.*;
 import com.rameses.osiris2.reports.*;
 import com.rameses.gov.etracs.rpt.util.*;
+import com.rameses.etracs.shared.*;
 
 class AssessmentNoticeController
 {
@@ -175,7 +176,17 @@ class AssessmentNoticeController
                 new SubReport( 'NoticeItem', reportpath + 'noticeitem.jasper' ),
             ] as SubReport[]
         },
-        getReportData : { return entity },
-        getParameters : { paramSvc.getStandardParameter() }
+        getReportData : { 
+            entity.items2 = entity.items
+            return entity 
+        },
+        getParameters : { 
+            def params = paramSvc.getStandardParameter()
+            params.LOGOLGU = EtracsReportUtil.getInputStream("lgu-logo.png")
+            params.BACKGROUND = EtracsReportUtil.getInputStream("background.png")
+            params.LOGOASSESSOR = EtracsReportUtil.getInputStream("lgu-assessor.png")
+            params.LOGOBLGF = EtracsReportUtil.getInputStream("lgu-blgf.png")
+            return params
+        }
     ] as ReportModel
 }

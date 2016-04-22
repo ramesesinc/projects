@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker folderid="/explorer/txn/rpt/util" action="init" caption="General Revision Renumber PIN" role="ADMIN" />
+        <invoker type="quick_launcher" code="GR02" action="init" caption="General Revision Renumber PIN" role="ADMIN" />
+        
+        <invoker type="formActions" action="_close" caption="Close" mnemonic="c" immediate="true" visibleWhen="#{mode == 'init'}"/>
+        <invoker type="formActions" action="process" caption="Process" mnemonic="p" visibleWhen="#{mode == 'init'}" />
+        <invoker type="formActions" action="cancelProcess" caption="Cancel" mnemonic="c" visibleWhen="#{mode == 'processing'}" />
+   </invokers>
+   
+   <code class="com.rameses.gov.etracs.rpt.faas.ui.GeneralRevisionPinRenumberModel">
+   </code>
+    <pages>
+        <page template="com.rameses.gov.etracs.rpt.faas.ui.GeneralRevisionPinRenumberPage"/>
+    </pages>    
+</workunit>
+
+

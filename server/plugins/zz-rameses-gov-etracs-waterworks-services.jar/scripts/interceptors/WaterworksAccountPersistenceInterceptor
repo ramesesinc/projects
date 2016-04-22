@@ -17,9 +17,6 @@ class WaterworksAccountPersistenceInterceptor{
 	@Before(pattern="PersistenceService.create", eval="#{args[0]._schemaname == 'waterworks_account'}")
 	public void beforeCreate(def evt) {
 		def o  = evt.args[0];
-		if(o.lastreading < o.prevreading) 
-            throw new Exception('Last Reading must be greater than Prev. Reading!');
-
         if( !o.acctno ) {
         	def prefix = "WACC" + dateSvc.getServerYear();
         	o.acctno = prefix  + seqSvc.getNextFormattedSeriesA( prefix, 5 );

@@ -18,6 +18,9 @@ class RPTUtilityService
 	@Service('RealPropertyService')
 	def rpSvc 
 
+	@ActiveDB('faas_list')
+	def faasListEm
+
 
 	
 	 //info: faasid, oldpin, tdno, pintype, municipality, barangay, 
@@ -55,8 +58,10 @@ class RPTUtilityService
 						realpropertyid : rp.objid,
 					]
 					modifyInfo(param)
+					faasListEm.updateFaasList([objid:it.faasid])
 				}
 			}
+			faasListEm.updateFaasList([objid:info.faasid])
 			return rp
 			
 		} else {
@@ -70,6 +75,7 @@ class RPTUtilityService
 
 			info.realpropertyid = landrp.objid 
 			modifyInfo(info)
+			faasListEm.updateFaasList([objid:info.faasid])
 			return null
 		}
 	}

@@ -65,4 +65,11 @@ public class RPTISUnitTestService
 			throw new Exception('TestTrue: ' + caption + ' is TRUE')
 		}
 	}
+
+	@ProxyMethod
+	public void testExceptionThrown(msg, ex){
+		if (ex && ex instanceof Exception)
+			throw new Exception('Exception ' + ex.class.name + ' is expected to be thrown.')
+		throw new Exception(msg)
+	}
 }

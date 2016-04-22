@@ -1,23 +1,11 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<workunit>
-    <invokers>
-        <invoker type="faas:formActions" action="init" caption="Add Red Flag" index="100000" visibleWhen="#{!entity.state.matches('CURRENT|CANCELLED') &amp;&amp; !entity.taskstate.matches('assign.*')}" target="popup"/>
-        
-        <invoker type="formActions" action="_close" caption="Cancel" mnemonic="c" immediate="true" visibleWhen="#{mode=='create'}"/>
-        <invoker type="formActions" action="_close" caption="Close" mnemonic="c" immediate="true" visibleWhen="#{mode!='create'}"/>
-        <invoker type="formActions" action="post" caption="Post" mnemonic="p"  visibleWhen="#{mode=='create'}"/>
-    </invokers>
-    <code>
-        
-<![CDATA[
-
+package com.rameses.gov.etracs.rptis.province.redflag;
 
 import com.rameses.rcp.common.*;
 import com.rameses.rcp.annotations.*;
 import com.rameses.osiris2.client.*;
 import com.rameses.osiris2.common.*;
 
-class ProvinceFaasRedFlagController 
+class ProvinceRedFlagController 
 {
     @Service('ProvinceRedFlagService')
     def svc;
@@ -36,13 +24,20 @@ class ProvinceFaasRedFlagController
             parentid : entity.objid,
             state   : 'OPEN',
             refid   : entity.objid,
-            refno   : (entity.tdno ? entity.tdno : entity.utdno) ,
+            refno   : getRefNo(entity),
             lguid   : entity.lguid,
             filedby : getFiledBy(),
             info    : [:],
         ]
         entity.redflag = redflag;
         mode = MODE_CREATE;
+    }
+    
+    def getRefNo(entity){
+        def refno = entity.tdno;
+        if (!refno) refno = entity.utdno;
+        if (!refno) refno = entity.txnno;
+        return refno;
     }
     
     void post(){
@@ -60,11 +55,14 @@ class ProvinceFaasRedFlagController
         ]
     }
     
+    String getOpenerName(){
+        return 'faas:redflag:action';
+    }
     
     def atypes;
     def getActiontypes(){
         if (!atypes){
-            atypes = Inv.lookupOpeners('faas:redflag:action').collect{
+            atypes = Inv.lookupOpeners(getOpenerName()).collect{
                 return [caption:it.caption, action:it.properties.actiontype]
             }
         }
@@ -80,10 +78,3 @@ class ProvinceFaasRedFlagController
 }
 
     
-]]>
-
-    </code>
-    <pages>
-        <page template="com.rameses.gov.etracs.rpt.faas.redflag.ui.RedFlagPage" />
-    </pages>
-</workunit>

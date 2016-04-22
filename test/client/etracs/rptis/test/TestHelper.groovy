@@ -1,5 +1,14 @@
 class TestHelper
 {
+    public static void waitForFaasTask(task, helper){
+        println 'Waiting for remote faas task  -> ' + task.objid
+        def available = helper.findFaasTask(task)
+        while(!available){
+            sleep(3000)
+            available = helper.findFaasTask(task)
+        }
+    }
+
     public static void waitForFaas(faas, helper){
         println 'Waiting for remote faas data -> ' + faas.objid 
         def available = helper.findFaas(faas)

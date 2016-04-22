@@ -1,9 +1,10 @@
 import com.rameses.annotations.*
 import com.rameses.util.*
+import com.rameses.services.extended.*
 
 class BldgRPUGRService
 {
-	@PersistenceContext('rpt')
+	@ActiveDB('bldgrpu')
 	def em
 
 	@Service('BldgRYSettingLookupService')
@@ -12,9 +13,6 @@ class BldgRPUGRService
 	@Service('BldgRPUService')
 	def bldgRpuSvc 
 
-	@Service('PinService')
-	def pinSvc
-    
 	@Service('Var')
 	def var 
 
@@ -32,19 +30,55 @@ class BldgRPUGRService
 			rpu.floorcount = 1
 		}
 		rpu.basevalue = 0.0;
-		rpu.effectiveage = null;
+
+		updateBldgDateInfo(rpu)
+		updateBldgStructure(rpu)
 		reviseStructuralTypes(rpu)
 		bldgRpuSvc.calculateAssessment(rpu)
 		return rpu
 	}
 
+	void updateBldgDateInfo(rpu){
+		if (rpu.bldgage == null)
+			rpu.bldgage = 0
+			
+		if (!rpu.dtcompleted && !rpu.dtoccupied) {
+			if (rpu.preveffectivity != null && rpu.preveffectivity > 0){
+				def yrcompleted =  rpu.preveffectivity - rpu.bldgage
+				rpu.dtcompleted = dtSvc.parse('yyyy-MM-dd', yrcompleted + '-01-01')
+			}
+		}
+		if (!rpu.dtoccupied){
+			rpu.dtoccupied = rpu.dtcompleted
+		}
+		else {
+			rpu.dtcompleted = rpu.dtoccupied
+		}
+		rpu.effectiveage = null;
+	}
+
+	void updateBldgStructure(rpu){
+		if (!rpu.structures){
+			em.getStandardStructures().each{
+				rpu.structures << [
+					objid 		: 'BS' + new java.rmi.server.UID(),
+					bldgrpuid 	: rpu.objid,
+					structure 	: it,
+					floor 		: 1,
+				]
+			}
+		}
+	}
+
 	void reviseStructuralTypes(rpu){
 		rpu.structuraltypes.each{ st ->
+			if (!st.bldgtype) st.bldgtype = [:]
+			if (!st.bldgkindbucc) st.bldgkindbucc = [:]
 			st.bldgtype = lookupSvc.lookupBldgTypeByPrevId(st.bldgtype.objid)
 			st.bldgkindbucc = lookupSvc.lookupBldgKindBuccByPrevId(st.bldgkindbucc.objid)
 			if (st.bldgkindbucc ){
 				st.basevalue = st.bldgkindbucc.basevalue 
-				if (rpu.bldgkindbucc.basevaluetype == 'range'){
+				if (st.bldgtype.basevaluetype == 'range'){
 					st.basevalue = st.bldgkindbucc.maxbasevalue 
 				}
 				st.unitvalue = st.basevalue
@@ -60,21 +94,18 @@ class BldgRPUGRService
 	}
 	
 	void reviseActualUse( rpu, st  ) {
-		def deletedUses = []
 		st.bldguses.each{ bu ->
+			bu.basevalue = st.basevalue 
 			bu.actualuse =  lookupSvc.lookupAssessLevelByPrevId(bu.actualuse.objid)
-			if( !bu.actualuse  ) {
-				deletedUses.add( bu )
-			}
 		}
-		if (st.bldguses)
-			st.bldguses.removeAll( deletedUses )
 	}
 	
 	void reviseFloors(rpu, st) {
 		st.bldguses.each{ bu ->
 			bu.floors.each{ floor -> 
 				def deletedItems = []
+				floor.basevalue = st.basevalue
+				floor.unitvalue = st.basevalue 
 				floor.additionals.each{  addl ->
 					addl.additionalitem = lookupSvc.lookupAdditionalItemByPrevId(addl.objid)
 					if (addl.additionalitem) {

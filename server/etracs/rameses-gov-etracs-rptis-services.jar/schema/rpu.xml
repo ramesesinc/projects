@@ -1,4 +1,4 @@
-<schema>
+<schema adapter="main">
     <element name="rpu" tablename="rpu">
         <field name="objid" primary="true" />
         <field name="state" required="true" />

@@ -1,0 +1,12 @@
+<workunit extends="rpt_wtemplates/BatchReportController.xml">
+    <invokers>
+        <invoker folderid="/explorer/report/landtax" action="init" 
+                 caption="Batch Realty Tax Billing Printing" 
+                 target="window" index="602" 
+                 role="REPORT" />
+    </invokers>
+    <code class="com.rameses.gov.etracs.rpt.landtax.billing.ui.RPTBillingBatchController"/>
+    <pages>
+        <page name="default" template="com.rameses.gov.etracs.rpt.landtax.billing.ui.RPTBillingBatchReportPage"/>
+    </pages>
+</workunit>

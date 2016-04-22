@@ -23,6 +23,7 @@ public class ChangeAppraisalInfoController extends com.rameses.gov.etracs.rpt.fa
         previnfo.putAll(entity.rpu);
         changeinfo = [
             objid       : 'CI' + new java.rmi.server.UID(),
+            refid       : entity.objid,
             faasid      : entity.objid,
             rpid        : entity.rp.objid,
             rpuid       : entity.rpu.objid,

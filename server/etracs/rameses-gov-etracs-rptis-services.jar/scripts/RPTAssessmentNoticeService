@@ -31,6 +31,32 @@ class RPTAssessmentNoticeService
 	def STATE_OPEN 		= 'OPEN' 
 	def STATE_RECEIVED 	= 'RECEIVED' 
 
+
+	@ProxyMethod
+	public def getFaasIds( params ) {
+		if (!params.selectiontype)
+		throw new Exception('Selection Type is required.')
+
+		params.barangayid = params.barangay?.objid
+		if(!params.barangayid) params.barangayid = '%'
+
+		if (!params.state)
+			params.state = '%'
+
+		params.sectionfilter = ''
+		if (params.selectiontype.type == 'bysection')
+			params.sectionfilter = ' and rp.section like $P{section} '
+
+		params.starttdnofilter = ''
+		params.endtdnofilter = ''
+
+		if (params.selectiontype.type == 'bytdrange'){
+			params.starttdnofilter = ' and f.tdno >= $P{starttdno} '
+			params.endtdnofilter = ' and f.tdno <= $P{endtdno} '
+		}
+		return em.getFaasIds(params)
+	}
+
 	
 	@ProxyMethod
     public def getList( params ) {
@@ -166,6 +192,11 @@ class RPTAssessmentNoticeService
 		f.effectivityyear,
 		f.effectivityqtr,
 		f.tdno,
+		f.taxpayer_objid,
+		f.taxpayer_name,
+		f.taxpayer_address,
+		f.owner_name,
+		f.owner_address,
 		f.administrator_name,
 		f.administrator_address,
 		f.rpuid, 

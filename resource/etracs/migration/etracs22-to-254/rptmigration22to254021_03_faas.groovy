@@ -1,12 +1,12 @@
 def env = [
-'app.host':'localhost:8071',
+'app.host':'localhost:8070',
 'app.context':'etracs25'
 ]
 
 def proxy = new TestProxy(env);
 def svc = proxy.create('ETRACS22To254FaasMigrationService');
 
-def count = 25
+def count = 10
 
 void migrate(svc, params){
   def size = svc.migrateFaasData(params);
@@ -23,10 +23,11 @@ svc.initMigrationTables();
 svc.insertXFaasData();
 svc.deleteXFaasMigratedData();
 
-
 def params = [rputype:'land', count:count, migrated:0]
 migrate(svc, params)
 println 'Done migrating land...'
+
+/*
 
 params.rputype = 'bldg'
 migrate(svc, params)
@@ -49,5 +50,5 @@ void migratePrevFaas(svc, params){
 params = [count:count, migrated:0]
 migratePrevFaas(svc, params)
 
-
+*/
 print 'Migration completed.'

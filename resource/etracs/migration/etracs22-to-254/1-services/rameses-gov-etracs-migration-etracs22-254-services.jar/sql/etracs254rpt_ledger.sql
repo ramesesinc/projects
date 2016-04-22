@@ -23,3 +23,6 @@ from faas f
   inner join realproperty rp on f.realpropertyid = rp.objid 
   inner join propertyclassification pc on r.classification_objid = pc.objid 
 where f.objid = $P{objid}
+
+[findBarangayByName]
+select objid from barangay where name = $P{name}

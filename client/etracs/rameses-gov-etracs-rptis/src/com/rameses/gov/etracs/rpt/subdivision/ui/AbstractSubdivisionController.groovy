@@ -10,6 +10,7 @@ import com.rameses.gov.etracs.rpt.util.RPTUtil;
 import com.rameses.util.MapBeanUtils;
 import com.rameses.gov.etracs.rpt.workflow.RPTWorkflowController;
 import com.rameses.gov.etracs.rpt.subdivision.task.*;
+import java.util.List;
 
 public abstract class AbstractSubdivisionController extends RPTWorkflowController
 {
@@ -38,6 +39,7 @@ public abstract class AbstractSubdivisionController extends RPTWorkflowControlle
         super.afterOpen(o);
         formId = entity.txnno;
         formTitle = 'Subdivision: ' + formId;
+        buildQueryInfo();
     }
     
     public void beforeSignal(Object tsk){
@@ -134,7 +136,22 @@ public abstract class AbstractSubdivisionController extends RPTWorkflowControlle
         if (processing)
             throw new Exception('Subdivision Approval is ongoing.');
     }
-
+    
+    
+    def queryinfo;
+    void buildQueryInfo(){
+        queryinfo = null;
+        def redflagCount = svc.getOpenRedflagCount([objid:entity.objid]);
+        if (redflagCount > 0){
+            queryinfo = redflagCount + ' Red Flag' + (redflagCount == 1 ? ' needs' : 's need') + ' to be resolved.';
+        }
+    }
+    
+    List getMessagelist(){
+        if (queryinfo)
+            return [queryinfo];
+        return null;
+    }
         
 }
 

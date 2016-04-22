@@ -45,24 +45,27 @@ class LandRPUGRService
 		def deletedItems = []
 		
 		rpu.landdetails.each { ld ->
+			ld.objid 	= util.generateId('LD')
+
 			def subclass = landLookupSvc.lookupSubclassByPrevId(ld.subclass.objid)
-			if( subclass ) {
-				ld.objid 	= util.generateId('LD')
+			if (subclass){
 				ld.subclass = subclass 
 				ld.basevalue = subclass.basevalue 
 				ld.unitvalue = subclass.basevalue 
-
-				def al = landLookupSvc.lookupAssessLevelByPrevId(ld.actualuse.objid)
-
-				ld.actualuse = null 
-				ld.assesslevel = 0.0
-				if (al){
-					ld.actualuse = al 
-					ld.assesslevel = al.rate 		
-				}
 			}
 			else {
-				deletedItems.add( ld )
+				ld.subclass = null
+				ld.basevalue = 0.0
+				ld.unitvalue = 0.0	
+			}
+
+			def al = landLookupSvc.lookupAssessLevelByPrevId(ld.actualuse.objid)
+
+			ld.actualuse = null 
+			ld.assesslevel = 0.0
+			if (al){
+				ld.actualuse = al 
+				ld.assesslevel = al.rate 		
 			}
 		}
 		

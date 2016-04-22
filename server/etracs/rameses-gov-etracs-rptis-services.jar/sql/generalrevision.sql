@@ -69,3 +69,40 @@ FROM rpu rpu
 	INNER JOIN landrpu lr ON rpu.objid = lr.objid 
 WHERE rpu.realpropertyid = $P{realpropertyid}
  AND rpu.ry = $P{ry}
+
+
+
+[getLandsForRepinning]
+select f.objid, f.rpuid, f.realpropertyid, f.tdno, rp.pin, rp.barangayid  
+from realproperty rp 
+	inner join faas f on rp.objid = f.realpropertyid 
+	inner join rpu r on f.rpuid = r.objid 
+where rp.barangayid = $P{barangayid}
+and rp.ry = $P{ry}
+and rp.section = $P{section}
+and r.rputype = 'land'
+and f.state not in ('CANCELLED')
+order by rp.pin
+
+
+[getImprovementsForRepinning]
+select f.objid, f.rpuid, f.fullpin, r.suffix 
+from faas f 
+	inner join rpu r on f.rpuid = r.objid 
+where f.realpropertyid = $P{rpid}
+and r.rputype = $P{rputype}
+and f.state not in ('CANCELLED')
+order by r.suffix 
+
+
+
+[getFaasForApproval]
+select f.objid, f.state, f.tdno, f.fullpin
+from realproperty rp 
+	inner join faas f on rp.objid = f.realpropertyid 
+	inner join rpu r on f.rpuid = r.objid 
+where rp.barangayid = $P{barangayid}
+and rp.ry = $P{ry}
+and rp.section = $P{section}
+and f.state not in ('CANCELLED')
+order by rp.pin, r.suffix 

@@ -20,7 +20,6 @@ class ETRACS22To254BldgMigrationInterceptor
 
 	@After(pattern="ETRACS22To254FaasMigrationService.migrateFaas", eval="#{result.rpu.rputype == 'bldg'}")
 	public void migrateBldgRpu(evt){
-		println 'ETRACS22To254BldgMigrationInterceptor...'
 		def faas22 = evt.result 
 		try{
 			doMigrateBldgRpu(faas22)
@@ -42,165 +41,205 @@ class ETRACS22To254BldgMigrationInterceptor
 
 	void doMigrateBldgRpu(faas22){
 		def rpu = faas22.rpu 
-		def landfaas254 = util.findLandFaas254(rpu)
-		def newrpu = [
-			objid 			: rpu.objid,
-			landrpuid 		: landfaas254.rpuid,
-			houseno 		: rpu.info.houseno,
-			psic 			: rpu.info.psic,
-			permitno 		: rpu.info.permitno,
-			permitdate 		: rpu.info.permitdate,
-			permitissuedby 	: rpu.info.permitissuedby,
-			bldgtype 		: null, 
-			bldgkindbucc  	: null, 
-			basevalue 		: rpu.info.firstfloorbasevalue,
-			dtcompleted 	: rpu.info.dtcompleted,
-			dtoccupied 		: rpu.info.dtoccupied,
-			floorcount 		: 0,
-			depreciation 	: rpu.info.depreciation,
-			depreciationvalue : rpu.info.depreciationvalue,
-			totaladjustment : rpu.info.totaladjustment,
-			additionalinfo  : rpu.info.additionalinfo,
-			bldgage 		: util.toInteger(rpu.info.bldgage),
-			effectiveage 	: util.toInteger(rpu.info.bldgage),
-			percentcompleted : 100,
-			bldgassesslevel : [objid:rpu.info.assesslevelid],
-			assesslevel 	: rpu.info.assesslevel,
-			condominium 	: util.toBoolean(rpu.info.condominium, false),
-			bldgclass 		: rpu.info.bldgclass,
-			predominant		: 0, 
-		]
+		if (!existBldgRpu(rpu)){
+			def landfaas254 = util.findLandFaas254(rpu)
+			def newrpu = [
+				objid 			: rpu.objid,
+				landrpuid 		: landfaas254.rpuid,
+				houseno 		: rpu.info.houseno,
+				psic 			: rpu.info.psic,
+				permitno 		: rpu.info.permitno,
+				permitdate 		: rpu.info.permitdate,
+				permitissuedby 	: rpu.info.permitissuedby,
+				bldgtype 		: null, 
+				bldgkindbucc  	: null, 
+				basevalue 		: rpu.info.firstfloorbasevalue,
+				dtcompleted 	: rpu.info.dtcompleted,
+				dtoccupied 		: rpu.info.dtoccupied,
+				floorcount 		: 0,
+				depreciation 	: rpu.info.depreciation,
+				depreciationvalue : rpu.info.depreciationvalue,
+				totaladjustment : rpu.info.totaladjustment,
+				additionalinfo  : rpu.info.additionalinfo,
+				bldgage 		: util.toInteger(rpu.info.bldgage),
+				effectiveage 	: util.toInteger(rpu.info.bldgage),
+				percentcompleted : 100,
+				bldgassesslevel : [objid:rpu.info.assesslevelid],
+				assesslevel 	: rpu.info.assesslevel,
+				condominium 	: util.toBoolean(rpu.info.condominium, false),
+				bldgclass 		: rpu.info.bldgclass,
+				predominant		: 0, 
+			]
+			rpuEm.create(newrpu)
+		}
+	}
 
-		rpuEm.save(newrpu)
+	boolean existBldgRpu(rpu){
+		return em254.findBldgRpuById(rpu) != null 
 	}
 
 	void doMigrateBldgStructures(rpu){
 		rpu.bldgstructures.each{
-			resolveStructure(it)
-			resolveMaterial(it)
+			if (!existBldgStructure(it)){
+				
+				resolveStructure(it)
+				resolveMaterial(it)
 
-			def newstructure = [
-				objid 		: it.objid,
-				bldgrpuid 	: rpu.objid, 
-				floor 		: 1, 
-				structure   : [objid:it.structureid],
-				material    : null, 
-			]
+				def newstructure = [
+					objid 		: it.objid,
+					bldgrpuid 	: rpu.objid, 
+					floor 		: 1, 
+					structure   : [objid:it.structureid],
+					material    : null, 
+				]
+				rpuEm.create(newstructure, 'structure')
 
-			rpuEm.save(newstructure, 'structure')
-
-			if (it.materialid){
-				newstructure.material = [objid:it.materialid]
-				rpuEm.save(newstructure, 'structure')	
+				if (it.materialid){
+					newstructure.material = [objid:it.materialid]
+					rpuEm.update(newstructure, 'structure')	
+				}
 			}
 		}
 	}
 
+	boolean existBldgStructure(structure){
+		return em254.findBldgStructureById(structure) != null 
+	}
+
 	void doMigrateBldgStructuralTypes(rpu){
-		resolveBldgType(rpu)
-		resolveBldgKindBucc(rpu)
+		if (!existBldgStructuralType(rpu)){
+			
+			resolveBldgType(rpu)
+			resolveBldgKindBucc(rpu)
 
-		def newst = [
-			objid 			: rpu.objid,
-			bldgrpuid 		: rpu.objid,
-			classification  : [objid:rpu.classid],
-			bldgtype 		: [objid:rpu.info.bldgtype.bldgtypeid],
-			bldgkindbucc 	: [objid:rpu.info.bldgkindbucc.bldgkindbuccid],
-			floorcount 		: rpu.info.floorcount,
-			basefloorarea 	: rpu.info.totalarea,
-			totalfloorarea  : rpu.info.totalarea,
-			basevalue  		: rpu.info.firstfloorbasevalue,
-			unitvalue	    : rpu.info.firstfloorbasevalue,
-		]
-
-		rpuEm.save(newst, 'structuraltype')
-		
+			def newst = [
+				objid 			: rpu.objid,
+				bldgrpuid 		: rpu.objid,
+				classification  : [objid:rpu.classid],
+				bldgtype 		: [objid:rpu.info.bldgtype.bldgtypeid],
+				bldgkindbucc 	: [objid:rpu.info.bldgkindbucc.bldgkindbuccid],
+				floorcount 		: rpu.info.floorcount,
+				basefloorarea 	: rpu.info.totalarea,
+				totalfloorarea  : rpu.info.totalarea,
+				basevalue  		: rpu.info.firstfloorbasevalue,
+				unitvalue	    : rpu.info.firstfloorbasevalue,
+			]
+			rpuEm.create(newst, 'structuraltype')
+		}
 		doMigrateBldgUses(rpu)
 	}
 
-	
+	boolean existBldgStructuralType(rpu){
+		return em254.findBldgStructuralTypeById(rpu) != null
+	}
+
+
 	void doMigrateBldgUses(rpu){
 		rpu.info.bldguses.each{bu->
-			resolveBldgAssessLevel(rpu, bu)
-			def newbu = [
-				objid 			: bu.objid,
-				bldgrpuid 		: rpu.objid,
-				structuraltype  : [objid:rpu.objid],
-				actualuse       : [objid:bu.actualuse.actualuseid],
-				basevalue 		: rpu.info.firstfloorbasevalue,
-				area 			: bu.area,
-				basemarketvalue : bu.basemarketvalue,
-				depreciationvalue 	: bu.depreciationvalue,
-				adjustment 			: bu.adjustment,
-				marketvalue 		: bu.marketvalue,
-				assesslevel 		: bu.assesslevel,
-				assessedvalue 		: bu.assessedvalue,
-			]
-
-			rpuEm.save(newbu, 'bldguse')
 			
+			resolveBldgAssessLevel(rpu, bu)
+
+			if (!existBldgUse(bu)){
+				def newbu = [
+					objid 			: bu.objid,
+					bldgrpuid 		: rpu.objid,
+					structuraltype  : [objid:rpu.objid],
+					actualuse       : [objid:bu.actualuse.actualuseid],
+					basevalue 		: rpu.info.firstfloorbasevalue,
+					area 			: bu.area,
+					basemarketvalue : bu.basemarketvalue,
+					depreciationvalue 	: bu.depreciationvalue,
+					adjustment 			: bu.adjustment,
+					marketvalue 		: bu.marketvalue,
+					assesslevel 		: bu.assesslevel,
+					assessedvalue 		: bu.assessedvalue,
+				]
+				rpuEm.create(newbu, 'bldguse')
+			}
 			doMigrateFloors(rpu, bu)
 		}
 	}
 
 
+	boolean existBldgUse(bu){
+		return em254.findBldgUseById(bu) != null 
+	}
+
 	void doMigrateFloors(rpu, bu){
 		bu.floors.each{floor ->
-			def newfloor = [
-				objid 		: floor.objid,
-				bldguseid 	: bu.objid,
-				bldgrpuid 	: rpu.objid,
-				floorno 	: floor.floorno,
-				area 		: floor.area,
-				storeyrate 	: floor.storeyrate,
-				basevalue 	: floor.basevalue,
-				unitvalue 	: floor.unitvalue,
-				basemarketvalue : floor.basemarketvalue,
-				adjustment 	: floor.adjustment,
-				marketvalue : floor.marketvalue,
-			]
+			if (!existFloor(floor)){
+				def newfloor = [
+					objid 		: floor.objid,
+					bldguseid 	: bu.objid,
+					bldgrpuid 	: rpu.objid,
+					floorno 	: floor.floorno,
+					area 		: floor.area,
+					storeyrate 	: floor.storeyrate,
+					basevalue 	: floor.basevalue,
+					unitvalue 	: floor.unitvalue,
+					basemarketvalue : floor.basemarketvalue,
+					adjustment 	: floor.adjustment,
+					marketvalue : floor.marketvalue,
+				]
 
-			rpuEm.save(newfloor, 'floor')
-
+				rpuEm.create(newfloor, 'floor')
+			}
 			doMigrateAdditionalItems(rpu, floor)
 		}
 	}
 
+	boolean existFloor(floor){
+		return em254.findFloorById(floor) != null
+	}
+
 	void doMigrateAdditionalItems(rpu, floor){
 		floor.additionalitems.each{item ->
-			resolveBldgAdditionalItem(rpu, item)
+			if (!existBldgFloorAdditional(item)){
 
-			def newitem = [
-				objid 			: item.objid,
-				bldgfloorid 	: floor.objid,
-				bldgrpuid 		: rpu.objid,
-				additionalitem  : [objid:item.addlitemid],
-				amount 			: item.amount,
-				expr			: item.expr,
-			]
+				resolveBldgAdditionalItem(rpu, item)
 
-			rpuEm.save(newitem, 'additional')
-
+				def newitem = [
+					objid 			: item.objid,
+					bldgfloorid 	: floor.objid,
+					bldgrpuid 		: rpu.objid,
+					additionalitem  : [objid:item.addlitemid],
+					amount 			: item.amount,
+					expr			: item.expr,
+				]
+				rpuEm.create(newitem, 'additional')
+			}
 			doMigrateAdditionalParams(rpu, item)
 		}
 	}
 
+	boolean existBldgFloorAdditional(item){
+		return em254.findBldgFloorAdditionalById(item) != null 
+	}
+
+
 	void doMigrateAdditionalParams(rpu, item){
 		item.params.each{param ->
 			def objid = item.objid + param.addlitemcode
-			resolveRptParameter(rpu, param)
-			
-			def newparam = [
-				objid 					: objid,
-				bldgflooradditionalid 	: item.objid,
-				bldgrpuid 				: rpu.objid,
-				param 					: [objid:param.paramid],
-				intvalue 				: (param.datatype.matches('.*integer.*') ? util.toInteger(param.paramvalue) : 0),
-				decimalvalue 			: (param.datatype.matches('.*decimal.*') ? util.toDecimal(param.paramvalue) : 0.0),
-			]
+			if (!existBldgFloorAdditionalParam([objid:objid])){
 
-			rpuEm.save(newparam, 'param')
+				resolveRptParameter(rpu, param)
+				
+				def newparam = [
+					objid 					: objid,
+					bldgflooradditionalid 	: item.objid,
+					bldgrpuid 				: rpu.objid,
+					param 					: [objid:param.paramid],
+					intvalue 				: (param.datatype.matches('.*integer.*') ? util.toInteger(param.paramvalue) : 0),
+					decimalvalue 			: (param.datatype.matches('.*decimal.*') ? util.toDecimal(param.paramvalue) : 0.0),
+				]
+
+				rpuEm.create(newparam, 'param')
+			}
 		}
+	}
+
+	boolean existBldgFloorAdditionalParam(param){
+		return em254.findBldgFloorAdditionalParamById(param) != null
 	}
 
 	void doUpdateBldgRpuInfo(rpu){
@@ -374,7 +413,12 @@ class ETRACS22To254BldgMigrationInterceptor
 	void resolveBldgAdditionalItem(rpu, item){
 		def addlinfo = item.addlitem
 		def setting = findBldgSetting(rpu)
+
 		def addl = em254.findBldgAdditionalItemById([objid:addlinfo.addlitemid])
+		if(!addl)
+			addl = em254.findBldgAdditionalItemByCode([code:addlinfo.addlitemcode])
+		if(!addl)
+			addl = em254.findBldgAdditionalItemByName([name:addlinfo.addlitemname])
 		if (!addl){
 			addl = [
 				objid 	: addlinfo.addlitemid,
@@ -386,12 +430,16 @@ class ETRACS22To254BldgMigrationInterceptor
 				expr 	: addlinfo.expr,
 				previd  : addlinfo.previd, 
 			]
+			try{
+				bldgsettingEm.save(addl, 'bldgadditionalitem')
+			}
+			catch(e){
+				//ignore if duplicate 
+			}
 		}
-		try{
-			bldgsettingEm.save(addl, 'bldgadditionalitem')
-		}
-		catch(e){
-			//ignore if duplicate 
+		else{
+			item.addlitemid = addl.objid 
+			item.addlitem.addlitemid = addl.objid 
 		}
 	}
 

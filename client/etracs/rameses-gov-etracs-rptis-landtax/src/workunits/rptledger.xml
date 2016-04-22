@@ -43,6 +43,7 @@
     <pages>
         <page name="open" template="com.rameses.gov.etracs.rpt.ledger.ui.RPTLedgerPage" />
         <page template="com.rameses.gov.etracs.rpt.ledger.ui.RPTLedgerPage" />
+        <page name="restriction" template="com.rameses.gov.etracs.rpt.ledger.ui.RPTLedgerRestrictionPage" />
         <page name="preview" template="com.rameses.gov.etracs.rpt.common.PreviewPage"/>
     </pages>
 </workunit>

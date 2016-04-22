@@ -12,6 +12,9 @@ class MunicipalityFAASRemoteCallHandler
 	@ActiveDB('faas_task')
 	def task;
 
+	@ActiveDB('faas_list')
+	def faasListEm;
+
 	@Service('RPTUtil')
 	def util
 
@@ -80,10 +83,11 @@ class MunicipalityFAASRemoteCallHandler
 
 		def recommendertask = task.findRecommederTask([refid:disapproveinfo.objid])
 		recommendertask.message = 'Disapproved by ' + disapproveinfo.disapprovedby.name + ':     ' + disapproveinfo.reason
-		recommendertask.objid = 'TSK' + new java.rmi.server.UID()
+		recommendertask.objid = disapproveinfo.taskid 
 		recommendertask.startdate = dtSvc.serverDate
 		recommendertask.enddate = null
 		task.create(recommendertask)
+		faasListEm.updateTaskId(recommendertask)
 
 		disapproveinfo.sender = disapproveinfo.disapprovedby
 		disapproveinfo.message = 'Submitted FAAS No. ' + disapproveinfo.tdno + ' was disapproved by ' + disapproveinfo.disapprovedby.name

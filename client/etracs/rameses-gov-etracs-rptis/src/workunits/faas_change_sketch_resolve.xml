@@ -40,6 +40,7 @@ class ChangeSketchController extends com.rameses.gov.etracs.rpt.faas.ui.FaasSket
         super.init();
         changeinfo = [
             objid       : 'CI' + new java.rmi.server.UID(),
+            refid       : entity.objid,
             faasid      : entity.objid,
             rpid        : entity.rp.objid,
             rpuid       : entity.rpu.objid,

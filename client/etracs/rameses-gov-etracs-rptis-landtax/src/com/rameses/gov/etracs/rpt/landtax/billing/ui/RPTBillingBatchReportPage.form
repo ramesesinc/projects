@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<Form version="1.3" maxVersion="1.3" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
+  <Properties>
+    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+      <Dimension value="[603, 291]"/>
+    </Property>
+  </Properties>
+  <AuxValues>
+    <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0"/>
+    <AuxValue name="FormSettings_autoSetComponentName" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_generateFQN" type="java.lang.Boolean" value="true"/>
+    <AuxValue name="FormSettings_generateMnemonicsCode" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_i18nAutoMode" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_layoutCodeTarget" type="java.lang.Integer" value="2"/>
+    <AuxValue name="FormSettings_listenerGenerationStyle" type="java.lang.Integer" value="0"/>
+    <AuxValue name="FormSettings_variablesLocal" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_variablesModifier" type="java.lang.Integer" value="2"/>
+  </AuxValues>
+
+  <Layout>
+    <DimensionLayout dim="0">
+      <Group type="103" groupAlignment="0" attributes="0">
+          <Group type="102" attributes="0">
+              <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Component id="xLabel1" max="32767" attributes="0"/>
+                  <Group type="102" attributes="0">
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="formPanel1" min="-2" pref="406" max="-2" attributes="1"/>
+                          <Component id="xPanel2" alignment="0" min="-2" pref="436" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace min="0" pref="147" max="32767" attributes="0"/>
+                  </Group>
+              </Group>
+              <EmptySpace max="-2" attributes="0"/>
+          </Group>
+      </Group>
+    </DimensionLayout>
+    <DimensionLayout dim="1">
+      <Group type="103" groupAlignment="0" attributes="0">
+          <Group type="102" alignment="0" attributes="0">
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="xPanel2" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="formPanel1" min="-2" pref="183" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="xLabel1" min="-2" pref="32" max="-2" attributes="0"/>
+              <EmptySpace max="32767" attributes="0"/>
+          </Group>
+      </Group>
+    </DimensionLayout>
+  </Layout>
+  <SubComponents>
+    <Container class="com.rameses.rcp.util.FormPanel" name="formPanel1">
+      <Properties>
+        <Property name="captionWidth" type="int" value="120"/>
+        <Property name="padding" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
+          <Insets value="[5, 10, 5, 25]"/>
+        </Property>
+      </Properties>
+      <SubComponents>
+        <Component class="com.rameses.rcp.control.XIntegerField" name="xIntegerField2">
+          <Properties>
+            <Property name="caption" type="java.lang.String" value="No. of Copies"/>
+            <Property name="name" type="java.lang.String" value="params.copies" noResource="true"/>
+            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[50, 20]"/>
+            </Property>
+            <Property name="required" type="boolean" value="true"/>
+          </Properties>
+        </Component>
+        <Container class="com.rameses.rcp.control.XSeparator" name="xSeparator2">
+          <Properties>
+            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[0, 10]"/>
+            </Property>
+          </Properties>
+
+          <Layout>
+            <DimensionLayout dim="0">
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <EmptySpace min="0" pref="371" max="32767" attributes="0"/>
+              </Group>
+            </DimensionLayout>
+            <DimensionLayout dim="1">
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <EmptySpace min="0" pref="10" max="32767" attributes="0"/>
+              </Group>
+            </DimensionLayout>
+          </Layout>
+        </Container>
+        <Component class="com.rameses.rcp.control.XComboBox" name="xComboBox5">
+          <Properties>
+            <Property name="caption" type="java.lang.String" value="LGU"/>
+            <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
+              <StringArray count="1">
+                <StringItem index="0" value="params.selectiontype"/>
+              </StringArray>
+            </Property>
+            <Property name="expression" type="java.lang.String" value="#{item.name}"/>
+            <Property name="index" type="int" value="2"/>
+            <Property name="items" type="java.lang.String" value="lgus"/>
+            <Property name="name" type="java.lang.String" value="params.lgu" noResource="true"/>
+            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[0, 21]"/>
+            </Property>
+            <Property name="required" type="boolean" value="true"/>
+          </Properties>
+        </Component>
+        <Component class="com.rameses.rcp.control.XComboBox" name="xComboBox3">
+          <Properties>
+            <Property name="caption" type="java.lang.String" value="Barangay"/>
+            <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
+              <StringArray count="2">
+                <StringItem index="0" value="params.selectiontype"/>
+                <StringItem index="1" value="params.lgu"/>
+              </StringArray>
+            </Property>
+            <Property name="dynamic" type="boolean" value="true"/>
+            <Property name="expression" type="java.lang.String" value="#{item.name}"/>
+            <Property name="index" type="int" value="2"/>
+            <Property name="items" type="java.lang.String" value="barangays"/>
+            <Property name="name" type="java.lang.String" value="params.barangay" noResource="true"/>
+            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[0, 21]"/>
+            </Property>
+            <Property name="required" type="boolean" value="true"/>
+          </Properties>
+        </Component>
+        <Container class="com.rameses.rcp.control.XSeparator" name="xSeparator1">
+          <Properties>
+            <Property name="cellPadding" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
+              <Insets value="[10, 0, 0, 0]"/>
+            </Property>
+            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[0, 20]"/>
+            </Property>
+          </Properties>
+
+          <Layout>
+            <DimensionLayout dim="0">
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <EmptySpace min="0" pref="371" max="32767" attributes="0"/>
+              </Group>
+            </DimensionLayout>
+            <DimensionLayout dim="1">
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <EmptySpace min="0" pref="20" max="32767" attributes="0"/>
+              </Group>
+            </DimensionLayout>
+          </Layout>
+        </Container>
+        <Component class="com.rameses.rcp.control.XIntegerField" name="xIntegerField1">
+          <Properties>
+            <Property name="caption" type="java.lang.String" value="Print Interval (sec)"/>
+            <Property name="name" type="java.lang.String" value="params.printinterval" noResource="true"/>
+            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[50, 20]"/>
+            </Property>
+            <Property name="required" type="boolean" value="true"/>
+          </Properties>
+        </Component>
+        <Component class="com.rameses.rcp.control.XCheckBox" name="xCheckBox1">
+          <Properties>
+            <Property name="name" type="java.lang.String" value="params.showprinterdialog" noResource="true"/>
+            <Property name="showCaption" type="boolean" value="false"/>
+            <Property name="text" type="java.lang.String" value="Show Printer Dialog?"/>
+          </Properties>
+        </Component>
+      </SubComponents>
+    </Container>
+    <Component class="com.rameses.rcp.control.XLabel" name="xLabel1">
+      <Properties>
+        <Property name="expression" type="java.lang.String" value="#{msg}"/>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="Arial" size="11" style="1"/>
+        </Property>
+        <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+          <Color blue="0" green="0" red="99" type="rgb"/>
+        </Property>
+        <Property name="name" type="java.lang.String" value="msg" noResource="true"/>
+      </Properties>
+    </Component>
+    <Container class="com.rameses.rcp.control.XPanel" name="xPanel2">
+      <Properties>
+        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+          <Border info="org.netbeans.modules.form.compat2.border.EmptyBorderInfo">
+            <EmptyBorder bottom="10" left="0" right="0" top="0"/>
+          </Border>
+        </Property>
+        <Property name="visibleWhen" type="java.lang.String" value="#{mode == &apos;processing&apos;}"/>
+      </Properties>
+
+      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
+      <SubComponents>
+        <Component class="com.rameses.rcp.control.XLabel" name="xLabel3">
+          <Properties>
+            <Property name="fontStyle" type="java.lang.String" value="font-weight:bold;font-size:12;"/>
+            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="33" green="33" red="33" type="rgb"/>
+            </Property>
+            <Property name="padding" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
+              <Insets value="[1, 5, 1, 1]"/>
+            </Property>
+            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[150, 20]"/>
+            </Property>
+            <Property name="text" type="java.lang.String" value="Processing request please wait..."/>
+          </Properties>
+          <Constraints>
+            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
+              <BorderConstraints direction="Center"/>
+            </Constraint>
+          </Constraints>
+        </Component>
+        <Component class="com.rameses.rcp.control.XLabel" name="xLabel4">
+          <Properties>
+            <Property name="iconResource" type="java.lang.String" value="com/rameses/rcp/icons/loading16.gif"/>
+          </Properties>
+          <Constraints>
+            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
+              <BorderConstraints direction="West"/>
+            </Constraint>
+          </Constraints>
+        </Component>
+      </SubComponents>
+    </Container>
+  </SubComponents>
+</Form>

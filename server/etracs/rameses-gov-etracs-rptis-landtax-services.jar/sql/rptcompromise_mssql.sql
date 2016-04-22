@@ -306,11 +306,10 @@ WHERE rptreceiptid = $P{objid}
 
 [voidCompromiseCredit]
 UPDATE rc SET
-	rc.amtpaid = rc.amtpaid - cr.amount,
+	rc.amtpaid = rc.amtpaid - $P{debitamount},
 	rc.state = case when rc.state = 'CLOSED' then 'APPROVED' else rc.state END 
-from rptledger_compromise rc, cashreceipt cr 
+from rptledger_compromise rc 
 WHERE rc.objid = $P{rptcompromiseid}
-  AND cr.objid = $P{rptreceiptid}
 
 
 [voidItemCredits]
@@ -359,8 +358,7 @@ WHERE objid = $P{rptcompromiseid}
 UPDATE rptledger_compromise SET 
 	cypaymentreceiptid = $P{objid},
 	cypaymentorno = $P{receiptno},
-	cypaymentordate = $P{receiptdate},
-	cypaymentoramount = $P{amount}
+	cypaymentordate = $P{receiptdate}
 WHERE objid = $P{rptcompromiseid}
 
 
@@ -501,3 +499,11 @@ select c.*
 from rptledger_compromise c 
 	inner join rptledger_compromise_credit cr on c.objid = cr.rptcompromiseid  
 where cr.rptreceiptid = $P{objid}
+
+
+[updateLedgerLastYearQtrPaid]
+update rptledger set 
+	lastyearpaid = $P{endyear},
+	lastqtrpaid = $P{endqtr}
+where objid = 	$P{rptledgerid}
+

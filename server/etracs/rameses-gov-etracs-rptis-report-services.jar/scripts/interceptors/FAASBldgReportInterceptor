@@ -218,8 +218,38 @@ class FaasBldgReportInterceptor
 				}
 			}
 		}
-		util.buildEmptyRows(faas.additionalitems, 2)
+		if (!faas.additionalitems){
+			faas.additionalitems << [:]
+			faas.additionalitems << [:]
+		}
+		else {
+			sortAdditionalItems(faas)
+			if (faas.additionalitems.size() > 5){
+				def additionalitems2 = faas.additionalitems[5..faas.additionalitems.size()-1];
+				def additionalitems = faas.additionalitems - additionalitems2
+				additionalitems << [
+					floorno 		: null, 
+					addlitemname	: 'PAGE 3 ADDITIONAL ITEMS TOTAL ', 
+					expr 			: null, 
+					amount 			: additionalitems2.amount.sum()
+				]
+
+				faas.additionalitems = [] 
+				faas.additionalitems.addAll(additionalitems)
+				faas.additionalitems2 = []
+				faas.additionalitems2.addAll(additionalitems2)
+			}
+		}
+		
 	}	
+
+	void sortAdditionalItems(faas){
+		faas.additionalitems.sort{a,b -> 
+			def stra = a.floorno + a.addlitemcode
+			def strb = b.floorno + b.addlitemcode
+			return stra <=> strb 
+		}
+	}
 
 	private def buildFieldBindings(item) {
 		return [

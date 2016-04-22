@@ -65,9 +65,12 @@ abstract class AbstractBatchReportController
         binding.refresh();
     }
 
-    public abstract void print();
-
-
+    public void print() {
+        mode = 'processing';
+        Thread t = new Thread( batchTask)
+        t.start();
+    }
+    
     def getSelectiontypes(){
         if (!selectiontypes)
         selectiontypes = [
@@ -105,4 +108,77 @@ abstract class AbstractBatchReportController
             return [];
         return lguSvc.lookupBarangaysByRootId(params.lgu?.objid);
     }
+    
+    public def getItems(params){}
+    public def getReportInvokerName(){}    
+    public def getReportParameters(){ return [:] }
+    public def continueOnError(){return false}
+    public def getItemMessage(data, copycount){
+        return "Printing copy # " + copycount + "." 
+    }
+    
+    public def getReportData(entity){
+        return [entity:reportdata]
+    }
+        
+    
+    def batchTask = [
+        run : {
+            def error = false;
+            def list = null;
+            try {
+                list = getItems(params);
+            }
+            catch(e){
+                onError(e.message);
+                return;
+            }
+
+            if( !list){
+                onError('No records found.');
+                return;
+            }
+
+            def data = list.remove(0);
+            def reportparams = [PRINTPAGE:params.pagetype?.toLowerCase()];
+
+            while(!interrupt && data) {
+                def reportdata = getReportData(data);
+
+                def p = getReportParameters();
+                if(!p) p = [:];
+                reportparams += p;
+                reportdata.reportparams = reportparams
+
+                try{
+                    updateMessage(getItemMessage(data, 0));
+                    
+                    def reportInvoker = Inv.lookupOpener(getReportInvokerName(), reportdata )
+                    def report = reportInvoker.handle.report.report
+
+                    1.upto(params.copies){copycnt -> 
+                        ReportUtil.print( report, params.showprinterdialog) ;
+                        updateMessage(getItemMessage(data, copycnt));
+                        Thread.sleep(params.printinterval * 1000)
+                    }
+                } catch(e) {
+                    e.printStackTrace();
+                    if (!continueOnError()){
+                        error = true;
+                        onError( e );
+                        break;
+                    }
+               }
+               data = (list ? list.remove(0) : null);
+            }    
+            def msg = "Batch printing has been successfully completed."
+            if(interrupt) 
+                msg = 'Batch printing has been interrupted.'
+            else if (!error)
+                onFinish(msg );
+        }
+    ] as Runnable
+            
+    
+    
 }

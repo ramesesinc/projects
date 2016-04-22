@@ -1,0 +1,12 @@
+"entity.*" [mode != 'processing'] {
+    enabled: true; 
+} 
+
+
+"entity.*" [mode == 'processing'] {
+    enabled: false; 
+} 
+
+"entity.ry"[1==1]{
+    enabled:false;
+}

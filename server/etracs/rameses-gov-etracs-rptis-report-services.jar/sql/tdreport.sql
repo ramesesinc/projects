@@ -64,6 +64,9 @@ GROUP BY
 [getDetailedLandAssessment]
 SELECT 
 	'land' AS propertytype,
+	dc.code AS dominantclasscode,
+	dc.name AS dominantclassification,
+	pc.code AS classcode,
 	pc.name AS classification,
 	lal.name AS actualuse,
 	ld.areatype,
@@ -83,8 +86,9 @@ FROM faas f
 	INNER JOIN lcuvsubclass sub ON ld.subclass_objid = sub.objid 
 	INNER JOIN lcuvspecificclass spc ON ld.specificclass_objid = spc.objid 
 	INNER JOIN propertyclassification pc ON spc.classification_objid = pc.objid 
+	INNER JOIN propertyclassification dc ON r.classification_objid = dc.objid 
 WHERE f.objid = $P{faasid}
-GROUP BY pc.code, pc.name, lal.code, lal.name, ld.areatype, ld.assesslevel,
+GROUP BY dc.code, dc.name, pc.code, pc.name, lal.code, lal.name, ld.areatype, ld.assesslevel,
 	spc.code, spc.name, sub.code, sub.name 
 
 

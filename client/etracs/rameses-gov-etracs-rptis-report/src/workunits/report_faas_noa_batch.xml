@@ -1,0 +1,42 @@
+<workunit  extends="rpt_wtemplates/BatchReportController.xml">
+    <invokers>
+        <invoker folderid="/explorer/report/rpt" action="init" caption="Notice of Assessment Batch Printing" target="window" index="605" 
+            role="ASSESSOR_REPORT,REPORT" />
+    </invokers>
+    <code >
+    <![CDATA[
+       import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+
+        class NoaBatchReportController extends com.rameses.gov.etracs.rpt.report.AbstractBatchReportController
+        {
+            @Service("RPTAssessmentNoticeService")
+            def svc
+
+            def title='Notice of Assessment Batch Printing'
+            
+            public def getItems(params){
+                return svc.getFaasIds(params);
+            }
+            
+            public def getReportData(faas){
+                def entity = [:] 
+                entity.objid = 'AN' + new java.rmi.server.UID();
+                entity.items = [];
+
+                def item = svc.getFaasById(faas.objid);
+                item.included = true;
+                entity.items << item;
+                entity.taxpayer = item.taxpayer
+                entity = svc.createNotice(entity);
+                return [entity:entity];
+            }
+            
+            public def getReportInvokerName(){ 
+                return 'faas:noa:batch'
+            }
+    }        
+  
+    ]]>    
+    </code>
+</workunit>

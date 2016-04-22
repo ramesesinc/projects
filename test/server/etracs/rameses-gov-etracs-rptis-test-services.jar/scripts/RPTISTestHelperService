@@ -9,6 +9,11 @@ public class RPTISTestHelperService
     def em
 
     @ProxyMethod
+    public def findFaasTask( task ) {
+        em.findFaasTaskById(task)    
+    }
+
+    @ProxyMethod
     public def findFaas( faas ) {
         em.findFaasById(faas)    
     }

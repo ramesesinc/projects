@@ -14,7 +14,7 @@
 		 leftMargin="30"
 		 rightMargin="30"
 		 topMargin="36"
-		 bottomMargin="108"
+		 bottomMargin="95"
 		 whenNoDataType="NoPages"
 		 isTitleNewPage="false"
 		 isSummaryNewPage="false">
@@ -33,6 +33,7 @@
 	<parameter name="ImageInputStream" isForPrompting="false" class="java.lang.Object"/>
 	<parameter name="Signatories" isForPrompting="false" class="java.lang.Object"/>
 	<parameter name="PRINTPAGE" isForPrompting="false" class="java.lang.String"/>
+	<parameter name="AdditionalItem2" isForPrompting="false" class="java.lang.Object"/>
 
 	<field name="provappraiser.dtsigned" class="java.util.Date"/>
 	<field name="provappraiser.name" class="java.lang.String"/>
@@ -138,6 +139,7 @@
 	<field name="tdno" class="java.lang.String"/>
 	<field name="txntype.displaycode" class="java.lang.String"/>
 	<field name="show_interim_watermark" class="java.lang.Boolean"/>
+	<field name="additionalitems2" class="java.lang.Object"/>
 
 
 		<group  name="Part1" isStartNewPage="true" >
@@ -1165,6 +1167,18 @@
 			<groupHeader>
 			<band height="288"  isSplitAllowed="true" >
 				<printWhenExpression><![CDATA[new Boolean($P{PRINTPAGE} == null || $P{PRINTPAGE} == "front")]]></printWhenExpression>
+				<rectangle>
+					<reportElement
+						x="0"
+						y="119"
+						width="551"
+						height="131"
+						forecolor="#000066"
+						key="rectangle-1"/>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="0.5"/>
+</graphicElement>
+				</rectangle>
 				<staticText>
 					<reportElement
 						mode="Transparent"
@@ -1207,18 +1221,6 @@
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{rpu.groundfloorarea}]]></textFieldExpression>
 				</textField>
-				<rectangle>
-					<reportElement
-						x="0"
-						y="119"
-						width="551"
-						height="131"
-						forecolor="#000066"
-						key="rectangle-1"/>
-					<graphicElement stretchType="NoStretch">
-					<pen lineWidth="0.5"/>
-</graphicElement>
-				</rectangle>
 				<image  scaleImage="RetainShape" vAlign="Middle" hAlign="Center" onErrorType="Blank" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="185"
@@ -1962,14 +1964,14 @@
 		<group  name="Part2" isStartNewPage="true" >
 			<groupExpression><![CDATA[]]></groupExpression>
 			<groupHeader>
-			<band height="474"  isSplitAllowed="true" >
+			<band height="442"  isSplitAllowed="true" >
 				<printWhenExpression><![CDATA[new Boolean($P{PRINTPAGE} == null || $P{PRINTPAGE} == "back")]]></printWhenExpression>
 				<staticText>
 					<reportElement
 						x="295"
 						y="46"
 						width="256"
-						height="102"
+						height="88"
 						key="staticText-297"
 						positionType="Float"/>
 					<box leftPadding="3" topPadding="3">					<pen lineWidth="0.5" lineStyle="Solid" lineColor="#0000CC"/>
@@ -2011,7 +2013,7 @@
 				<staticText>
 					<reportElement
 						x="0"
-						y="180"
+						y="164"
 						width="552"
 						height="14"
 						forecolor="#0000CC"
@@ -2026,7 +2028,7 @@
 				<subreport  isUsingCache="true">
 					<reportElement
 						x="0"
-						y="195"
+						y="179"
 						width="551"
 						height="14"
 						key="subreport-4"
@@ -2044,9 +2046,9 @@
 					<reportElement
 						mode="Transparent"
 						x="0"
-						y="411"
+						y="390"
 						width="551"
-						height="63"
+						height="52"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
 						key="textField-7"
@@ -2082,7 +2084,7 @@
 						x="0"
 						y="46"
 						width="295"
-						height="102"
+						height="88"
 						forecolor="#0000CC"
 						key="staticText-291"
 						positionType="Float"/>
@@ -2100,7 +2102,7 @@
 				<staticText>
 					<reportElement
 						x="0"
-						y="148"
+						y="134"
 						width="106"
 						height="14"
 						forecolor="#0000CC"
@@ -2120,7 +2122,7 @@
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="106"
-						y="148"
+						y="134"
 						width="160"
 						height="14"
 						key="textField"
@@ -2139,7 +2141,7 @@
 				<staticText>
 					<reportElement
 						x="0"
-						y="162"
+						y="148"
 						width="106"
 						height="14"
 						forecolor="#0000CC"
@@ -2159,7 +2161,7 @@
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="106"
-						y="162"
+						y="148"
 						width="160"
 						height="14"
 						key="textField"
@@ -2178,7 +2180,7 @@
 				<staticText>
 					<reportElement
 						x="266"
-						y="148"
+						y="134"
 						width="79"
 						height="14"
 						forecolor="#0000CC"
@@ -2198,7 +2200,7 @@
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="345"
-						y="148"
+						y="134"
 						width="206"
 						height="14"
 						key="textField"
@@ -2217,7 +2219,7 @@
 				<staticText>
 					<reportElement
 						x="266"
-						y="162"
+						y="148"
 						width="79"
 						height="14"
 						forecolor="#0000CC"
@@ -2237,7 +2239,7 @@
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="345"
-						y="162"
+						y="148"
 						width="206"
 						height="14"
 						key="textField"
@@ -2258,7 +2260,7 @@
 						x="4"
 						y="60"
 						width="285"
-						height="84"
+						height="70"
 						key="textField-18"
 						positionType="Float"/>
 					<box></box>
@@ -2270,7 +2272,7 @@
 				<staticText>
 					<reportElement
 						x="0"
-						y="213"
+						y="196"
 						width="40"
 						height="14"
 						forecolor="#0000CC"
@@ -2285,7 +2287,7 @@
 				<staticText>
 					<reportElement
 						x="198"
-						y="213"
+						y="196"
 						width="175"
 						height="14"
 						forecolor="#0000CC"
@@ -2300,7 +2302,7 @@
 				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="373"
-						y="213"
+						y="196"
 						width="163"
 						height="14"
 						key="textField-38"
@@ -2319,7 +2321,7 @@
 				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="41"
-						y="213"
+						y="196"
 						width="35"
 						height="14"
 						key="textField-39"
@@ -2338,7 +2340,7 @@
 				<staticText>
 					<reportElement
 						x="87"
-						y="213"
+						y="196"
 						width="42"
 						height="14"
 						forecolor="#0000CC"
@@ -2353,7 +2355,7 @@
 				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="130"
-						y="213"
+						y="196"
 						width="35"
 						height="14"
 						key="textField-40"
@@ -2372,9 +2374,9 @@
 				<staticText>
 					<reportElement
 						x="373"
-						y="227"
+						y="210"
 						width="82"
-						height="14"
+						height="10"
 						forecolor="#0000CC"
 						key="staticText-347"
 						positionType="Float"/>
@@ -2387,9 +2389,9 @@
 				<staticText>
 					<reportElement
 						x="455"
-						y="227"
+						y="210"
 						width="82"
-						height="14"
+						height="10"
 						forecolor="#0000CC"
 						key="staticText-348"
 						positionType="Float"/>
@@ -2399,12 +2401,12 @@
 					</textElement>
 				<text><![CDATA[Year]]></text>
 				</staticText>
-				<image  scaleImage="RetainShape" hAlign="Center" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<image  scaleImage="RetainShape" hAlign="Center" onErrorType="Blank" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="376"
-						y="333"
+						y="317"
 						width="176"
-						height="53"
+						height="46"
 						key="image-2"
 						positionType="Float">
 							<printWhenExpression><![CDATA[$F{signatories}.source.approver != null && $F{signatories}.source.approver.signatureis != null]]></printWhenExpression>
@@ -2413,10 +2415,10 @@
 					<graphicElement stretchType="NoStretch"/>
 					<imageExpression class="java.io.InputStream"><![CDATA[$F{signatories}.source.approver.signatureis]]></imageExpression>
 				</image>
-				<image  scaleImage="RetainShape" hAlign="Center" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<image  scaleImage="RetainShape" hAlign="Center" onErrorType="Blank" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="1"
-						y="250"
+						y="234"
 						width="174"
 						height="46"
 						key="image-3"
@@ -2425,10 +2427,10 @@
 					<graphicElement stretchType="NoStretch"/>
 					<imageExpression class="java.io.InputStream"><![CDATA[$F{signatories}.source.taxmapper.signatureis]]></imageExpression>
 				</image>
-				<image  scaleImage="RetainShape" hAlign="Center" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<image  scaleImage="RetainShape" hAlign="Center" onErrorType="Blank" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="376"
-						y="250"
+						y="234"
 						width="176"
 						height="46"
 						key="image-4"
@@ -2440,7 +2442,7 @@
 				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="376"
-						y="300"
+						y="284"
 						width="176"
 						height="12"
 						key="textField-68"
@@ -2454,7 +2456,7 @@
 				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="376"
-						y="386"
+						y="366"
 						width="176"
 						height="12"
 						key="textField-69"
@@ -2468,7 +2470,7 @@
 				<staticText>
 					<reportElement
 						x="1"
-						y="241"
+						y="225"
 						width="176"
 						height="14"
 						forecolor="#3300FF"
@@ -2483,7 +2485,7 @@
 				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="1"
-						y="286"
+						y="270"
 						width="176"
 						height="14"
 						key="textField-70"
@@ -2502,7 +2504,7 @@
 				<staticText>
 					<reportElement
 						x="376"
-						y="242"
+						y="226"
 						width="176"
 						height="14"
 						forecolor="#3300FF"
@@ -2517,7 +2519,7 @@
 				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="376"
-						y="286"
+						y="270"
 						width="176"
 						height="14"
 						key="textField-71"
@@ -2536,7 +2538,7 @@
 				<staticText>
 					<reportElement
 						x="376"
-						y="323"
+						y="307"
 						width="176"
 						height="14"
 						forecolor="#3300FF"
@@ -2551,7 +2553,7 @@
 				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="376"
-						y="373"
+						y="366"
 						width="176"
 						height="14"
 						key="textField-72"
@@ -2570,7 +2572,7 @@
 				<textField isStretchWithOverflow="false" pattern="yyyy-MM-dd" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="376"
-						y="396"
+						y="376"
 						width="176"
 						height="12"
 						key="textField-73"
@@ -2584,7 +2586,7 @@
 				<textField isStretchWithOverflow="false" pattern="yyyy-MM-dd" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="1"
-						y="310"
+						y="294"
 						width="176"
 						height="12"
 						key="textField-74"
@@ -2598,7 +2600,7 @@
 				<textField isStretchWithOverflow="false" pattern="yyyy-MM-dd" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="376"
-						y="310"
+						y="294"
 						width="176"
 						height="12"
 						key="textField-75"
@@ -2612,7 +2614,7 @@
 				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="1"
-						y="300"
+						y="284"
 						width="176"
 						height="12"
 						key="textField-76"
@@ -2623,10 +2625,10 @@
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$F{taxmapper.title}]]></textFieldExpression>
 				</textField>
-				<image  scaleImage="RetainShape" hAlign="Center" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<image  scaleImage="RetainShape" hAlign="Center" onErrorType="Blank" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="190"
-						y="249"
+						y="233"
 						width="176"
 						height="46"
 						key="image-5"
@@ -2638,7 +2640,7 @@
 				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="190"
-						y="299"
+						y="283"
 						width="176"
 						height="12"
 						key="textField-78"
@@ -2652,7 +2654,7 @@
 				<staticText>
 					<reportElement
 						x="190"
-						y="241"
+						y="225"
 						width="176"
 						height="14"
 						forecolor="#3300FF"
@@ -2667,7 +2669,7 @@
 				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="190"
-						y="285"
+						y="269"
 						width="176"
 						height="14"
 						key="textField-79"
@@ -2686,7 +2688,7 @@
 				<textField isStretchWithOverflow="false" pattern="yyyy-MM-dd" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="190"
-						y="309"
+						y="293"
 						width="176"
 						height="12"
 						key="textField-80"
@@ -2697,12 +2699,12 @@
 					</textElement>
 				<textFieldExpression   class="java.util.Date"><![CDATA[$F{appraiser.dtsigned}]]></textFieldExpression>
 				</textField>
-				<image  scaleImage="RetainShape" hAlign="Center" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<image  scaleImage="RetainShape" hAlign="Center" onErrorType="Blank" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="190"
-						y="333"
+						y="317"
 						width="176"
-						height="53"
+						height="46"
 						key="image-6"
 						positionType="Float">
 							<printWhenExpression><![CDATA[new Boolean($F{byauthority} == null)]]></printWhenExpression>
@@ -2714,7 +2716,7 @@
 				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="190"
-						y="386"
+						y="366"
 						width="176"
 						height="12"
 						key="textField-81"
@@ -2730,7 +2732,7 @@
 				<staticText>
 					<reportElement
 						x="190"
-						y="323"
+						y="307"
 						width="176"
 						height="14"
 						forecolor="#3300FF"
@@ -2747,7 +2749,7 @@
 				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="190"
-						y="373"
+						y="366"
 						width="176"
 						height="14"
 						key="textField-82"
@@ -2768,7 +2770,7 @@
 				<textField isStretchWithOverflow="false" pattern="yyyy-MM-dd" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="190"
-						y="396"
+						y="376"
 						width="176"
 						height="12"
 						key="textField-83"
@@ -2781,12 +2783,12 @@
 					</textElement>
 				<textFieldExpression   class="java.util.Date"><![CDATA[$F{provappraiser.dtsigned}]]></textFieldExpression>
 				</textField>
-				<image  scaleImage="RetainShape" hAlign="Center" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<image  scaleImage="RetainShape" hAlign="Center" onErrorType="Blank" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="0"
-						y="333"
+						y="317"
 						width="174"
-						height="53"
+						height="46"
 						key="image-7"
 						positionType="Float">
 							<printWhenExpression><![CDATA[new Boolean($F{byauthority} == null)]]></printWhenExpression>
@@ -2798,7 +2800,7 @@
 				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="0"
-						y="373"
+						y="366"
 						width="176"
 						height="14"
 						key="textField-84"
@@ -2819,7 +2821,7 @@
 				<textField isStretchWithOverflow="false" pattern="yyyy-MM-dd" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="0"
-						y="396"
+						y="376"
 						width="176"
 						height="12"
 						key="textField-85"
@@ -2835,7 +2837,7 @@
 				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="0"
-						y="386"
+						y="366"
 						width="176"
 						height="12"
 						key="textField-86"
@@ -2851,7 +2853,7 @@
 				<staticText>
 					<reportElement
 						x="0"
-						y="323"
+						y="307"
 						width="176"
 						height="14"
 						forecolor="#3300FF"
@@ -2868,9 +2870,9 @@
 				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="1"
-						y="326"
-						width="363"
-						height="80"
+						y="310"
+						width="364"
+						height="78"
 						key="textField-87"
 						positionType="Float">
 							<printWhenExpression><![CDATA[new Boolean($F{byauthority} != null)]]></printWhenExpression>
@@ -2888,9 +2890,9 @@
 				</textField>
 				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="15"
-						y="254"
-						width="522"
+						x="32"
+						y="238"
+						width="493"
 						height="66"
 						forecolor="#FF0000"
 						key="textField-77"
@@ -2911,14 +2913,14 @@
 		<group  name="ANNOTATIONS" >
 			<groupExpression><![CDATA[]]></groupExpression>
 			<groupHeader>
-			<band height="21"  isSplitAllowed="true" >
+			<band height="9"  isSplitAllowed="true" >
 				<printWhenExpression><![CDATA[new Boolean($F{annotations}.source.size()>0 && ($P{PRINTPAGE} == null || $P{PRINTPAGE} == "back"))]]></printWhenExpression>
 				<subreport  isUsingCache="true">
 					<reportElement
 						x="0"
 						y="0"
 						width="551"
-						height="18"
+						height="9"
 						key="subreport-5"
 						positionType="Float"/>
 					<dataSourceExpression><![CDATA[$F{annotations}]]></dataSourceExpression>
@@ -2934,12 +2936,12 @@
 		<group  name="PREVIOUS_INFO" >
 			<groupExpression><![CDATA[]]></groupExpression>
 			<groupHeader>
-			<band height="49"  isSplitAllowed="true" >
+			<band height="41"  isSplitAllowed="true" >
 				<printWhenExpression><![CDATA[new Boolean($P{PRINTPAGE} == null || $P{PRINTPAGE} == "back")]]></printWhenExpression>
 				<staticText>
 					<reportElement
 						x="0"
-						y="35"
+						y="27"
 						width="267"
 						height="14"
 						forecolor="#0000CC"
@@ -2954,7 +2956,7 @@
 				<staticText>
 					<reportElement
 						x="0"
-						y="18"
+						y="13"
 						width="551"
 						height="14"
 						forecolor="#0000CC"
@@ -2969,7 +2971,7 @@
 				<staticText>
 					<reportElement
 						x="373"
-						y="29"
+						y="24"
 						width="34"
 						height="14"
 						key="staticText-353"
@@ -3014,14 +3016,14 @@
 		<group  name="PREV_PIN" >
 			<groupExpression><![CDATA[]]></groupExpression>
 			<groupHeader>
-			<band height="14"  isSplitAllowed="true" >
+			<band height="12"  isSplitAllowed="true" >
 				<printWhenExpression><![CDATA[new Boolean($P{PRINTPAGE} == null || $P{PRINTPAGE} == "back")]]></printWhenExpression>
 				<staticText>
 					<reportElement
 						x="0"
 						y="0"
 						width="267"
-						height="14"
+						height="12"
 						forecolor="#0000CC"
 						key="staticText-350"
 						stretchType="RelativeToBandHeight"
@@ -3042,7 +3044,7 @@
 						x="267"
 						y="0"
 						width="284"
-						height="14"
+						height="12"
 						forecolor="#0000CC"
 						key="staticText-351"
 						stretchType="RelativeToBandHeight"
@@ -3063,7 +3065,7 @@
 						x="28"
 						y="0"
 						width="236"
-						height="14"
+						height="12"
 						key="textField-43"
 						stretchType="RelativeToBandHeight"
 						positionType="Float"/>
@@ -3078,7 +3080,7 @@
 						x="312"
 						y="0"
 						width="238"
-						height="14"
+						height="12"
 						key="textField-44"
 						stretchType="RelativeToBandHeight"
 						positionType="Float"/>
@@ -3098,14 +3100,14 @@
 		<group  name="PREV_ARPNO" >
 			<groupExpression><![CDATA[]]></groupExpression>
 			<groupHeader>
-			<band height="14"  isSplitAllowed="true" >
+			<band height="12"  isSplitAllowed="true" >
 				<printWhenExpression><![CDATA[new Boolean($P{PRINTPAGE} == null || $P{PRINTPAGE} == "back")]]></printWhenExpression>
 				<staticText>
 					<reportElement
 						x="0"
 						y="0"
 						width="267"
-						height="14"
+						height="12"
 						forecolor="#0000CC"
 						key="staticText-354"
 						stretchType="RelativeToBandHeight"
@@ -3126,7 +3128,7 @@
 						x="267"
 						y="0"
 						width="284"
-						height="14"
+						height="12"
 						forecolor="#0000CC"
 						key="staticText-355"
 						stretchType="RelativeToBandHeight"
@@ -3147,7 +3149,7 @@
 						x="366"
 						y="0"
 						width="184"
-						height="14"
+						height="12"
 						key="textField-46"
 						stretchType="RelativeToBandHeight"
 						positionType="Float"/>
@@ -3162,7 +3164,7 @@
 						x="49"
 						y="0"
 						width="191"
-						height="14"
+						height="12"
 						key="textField"
 						stretchType="RelativeToBandHeight"
 						positionType="Float"/>
@@ -3182,14 +3184,14 @@
 		<group  name="PREV_AV" >
 			<groupExpression><![CDATA[]]></groupExpression>
 			<groupHeader>
-			<band height="14"  isSplitAllowed="true" >
+			<band height="12"  isSplitAllowed="true" >
 				<printWhenExpression><![CDATA[new Boolean($P{PRINTPAGE} == null || $P{PRINTPAGE} == "back")]]></printWhenExpression>
 				<staticText>
 					<reportElement
 						x="0"
 						y="0"
 						width="551"
-						height="14"
+						height="12"
 						forecolor="#0000CC"
 						key="staticText-356"
 						stretchType="RelativeToBandHeight"
@@ -3210,7 +3212,7 @@
 						x="106"
 						y="0"
 						width="158"
-						height="14"
+						height="12"
 						key="textField-42"
 						stretchType="RelativeToBandHeight"
 						positionType="Float"/>
@@ -3225,7 +3227,7 @@
 						x="267"
 						y="0"
 						width="284"
-						height="14"
+						height="12"
 						forecolor="#0000CC"
 						key="staticText-365"
 						stretchType="RelativeToBandHeight"
@@ -3246,7 +3248,7 @@
 						x="339"
 						y="0"
 						width="212"
-						height="14"
+						height="12"
 						key="textField-57"
 						stretchType="RelativeToBandHeight"
 						positionType="Float"/>
@@ -3266,14 +3268,14 @@
 		<group  name="PREV_INFO_OWNER" >
 			<groupExpression><![CDATA[]]></groupExpression>
 			<groupHeader>
-			<band height="14"  isSplitAllowed="true" >
+			<band height="12"  isSplitAllowed="true" >
 				<printWhenExpression><![CDATA[new Boolean($P{PRINTPAGE} == null || $P{PRINTPAGE} == "back")]]></printWhenExpression>
 				<staticText>
 					<reportElement
 						x="0"
 						y="0"
 						width="551"
-						height="14"
+						height="12"
 						forecolor="#0000CC"
 						key="staticText-357"
 						stretchType="RelativeToBandHeight"
@@ -3294,7 +3296,7 @@
 						x="76"
 						y="0"
 						width="468"
-						height="14"
+						height="12"
 						key="textField-41"
 						stretchType="RelativeToBandHeight"
 						positionType="Float"/>
@@ -3314,14 +3316,14 @@
 		<group  name="PREV_ADMIN" >
 			<groupExpression><![CDATA[]]></groupExpression>
 			<groupHeader>
-			<band height="14"  isSplitAllowed="true" >
+			<band height="12"  isSplitAllowed="true" >
 				<printWhenExpression><![CDATA[new Boolean($P{PRINTPAGE} == null || $P{PRINTPAGE} == "back")]]></printWhenExpression>
 				<staticText>
 					<reportElement
 						x="0"
 						y="0"
 						width="551"
-						height="14"
+						height="12"
 						forecolor="#0000CC"
 						key="staticText-378"
 						stretchType="RelativeToBandHeight"
@@ -3342,7 +3344,7 @@
 						x="76"
 						y="0"
 						width="468"
-						height="14"
+						height="12"
 						key="textField-88"
 						stretchType="RelativeToBandHeight"
 						positionType="Float"/>
@@ -3362,14 +3364,14 @@
 		<group  name="PREV_INFO_FOOTER" >
 			<groupExpression><![CDATA[]]></groupExpression>
 			<groupHeader>
-			<band height="45"  isSplitAllowed="true" >
+			<band height="37"  isSplitAllowed="true" >
 				<printWhenExpression><![CDATA[new Boolean($P{PRINTPAGE} == null || $P{PRINTPAGE} == "back")]]></printWhenExpression>
 				<staticText>
 					<reportElement
 						x="0"
-						y="-1"
+						y="0"
 						width="551"
-						height="14"
+						height="12"
 						forecolor="#0000CC"
 						key="staticText-358"
 						positionType="Float"/>
@@ -3387,9 +3389,9 @@
 				<staticText>
 					<reportElement
 						x="0"
-						y="13"
+						y="12"
 						width="551"
-						height="16"
+						height="12"
 						forecolor="#0000CC"
 						key="staticText-359"
 						positionType="Float"/>
@@ -3407,9 +3409,9 @@
 				<staticText>
 					<reportElement
 						x="0"
-						y="28"
+						y="25"
 						width="551"
-						height="16"
+						height="12"
 						forecolor="#0000CC"
 						key="staticText-360"
 						positionType="Float"/>
@@ -3438,6 +3440,239 @@
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$F{preveffectivity}]]></textFieldExpression>
 				</textField>
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupFooter>
+		</group>
+		<group  name="PART3" isStartNewPage="true" >
+			<groupExpression><![CDATA[]]></groupExpression>
+			<groupHeader>
+			<band height="128"  isSplitAllowed="true" >
+				<staticText>
+					<reportElement
+						x="0"
+						y="111"
+						width="552"
+						height="17"
+						forecolor="#0000CC"
+						key="staticText-380"
+						stretchType="RelativeToBandHeight"/>
+					<box leftPadding="3">					<pen lineWidth="0.5" lineStyle="Solid" lineColor="#0000CC"/>
+					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000CC"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000CC"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000CC"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000CC"/>
+</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="Helvetica" size="9" isBold="false"/>
+					</textElement>
+				<text><![CDATA[ARP NO.:]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="41"
+						y="111"
+						width="180"
+						height="17"
+						key="textField-89"
+						stretchType="RelativeToBandHeight"/>
+					<box leftPadding="3"></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="10" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{tdno}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						x="221"
+						y="111"
+						width="26"
+						height="17"
+						forecolor="#0000CC"
+						key="staticText-381"
+						stretchType="RelativeToBandHeight"/>
+					<box leftPadding="3"></box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="Helvetica" size="9" isBold="false"/>
+					</textElement>
+				<text><![CDATA[PIN.:]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="247"
+						y="111"
+						width="280"
+						height="17"
+						key="textField-90"
+						stretchType="RelativeToBandHeight"/>
+					<box leftPadding="3"></box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{rpu.fullpin}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						x="0"
+						y="74"
+						width="552"
+						height="19"
+						forecolor="#0000CC"
+						key="staticText-384"/>
+					<box></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="11" isBold="true"/>
+					</textElement>
+				<text><![CDATA[REAL PROPERTY FIELD APPRAISAL AND ASSESSMENT SHEET - BUILDING & OTHER STUCTURES]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="399"
+						y="91"
+						width="117"
+						height="14"
+						forecolor="#0000CC"
+						key="staticText-385"/>
+					<box rightPadding="3" topPadding="2">					<topPen lineWidth="0.0" lineStyle="Solid"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid"/>
+</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="Helvetica" size="9" isBold="false"/>
+					</textElement>
+				<text><![CDATA[Transaction Code :]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="516"
+						y="91"
+						width="36"
+						height="14"
+						forecolor="#0000CC"
+						key="textField-93"/>
+					<box topPadding="2"></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{txntype.displaycode}]]></textFieldExpression>
+				</textField>
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupFooter>
+		</group>
+		<group  name="P3OWNER" >
+			<groupExpression><![CDATA[]]></groupExpression>
+			<groupHeader>
+			<band height="19"  isSplitAllowed="true" >
+				<staticText>
+					<reportElement
+						x="0"
+						y="0"
+						width="552"
+						height="19"
+						forecolor="#0000CC"
+						key="staticText-382"
+						stretchType="RelativeToBandHeight"/>
+					<box leftPadding="3">					<pen lineWidth="0.5" lineStyle="Solid" lineColor="#0000CC"/>
+					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000CC"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000CC"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000CC"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000CC"/>
+</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="Helvetica" size="9" isBold="false"/>
+					</textElement>
+				<text><![CDATA[Owner.:]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="40"
+						y="0"
+						width="338"
+						height="19"
+						key="textField-91"
+						stretchType="RelativeToBandHeight"/>
+					<box leftPadding="3"></box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{owner.name}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						x="377"
+						y="0"
+						width="38"
+						height="19"
+						forecolor="#0000CC"
+						key="staticText-383"
+						stretchType="RelativeToBandHeight"/>
+					<box leftPadding="3">					<pen lineWidth="0.0" lineColor="#0000CC"/>
+					<topPen lineWidth="0.0" lineColor="#0000CC"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000CC"/>
+					<bottomPen lineWidth="0.0" lineColor="#0000CC"/>
+					<rightPen lineWidth="0.0" lineColor="#0000CC"/>
+</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Tahoma" size="9"/>
+					</textElement>
+				<text><![CDATA[Tel No.:]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="414"
+						y="0"
+						width="137"
+						height="19"
+						key="textField-92"
+						stretchType="RelativeToBandHeight"/>
+					<box leftPadding="3"></box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{owner.contactno}]]></textFieldExpression>
+				</textField>
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupFooter>
+		</group>
+		<group  name="P3ADDITIONAL" >
+			<groupExpression><![CDATA[]]></groupExpression>
+			<groupHeader>
+			<band height="63"  isSplitAllowed="true" >
+				<staticText>
+					<reportElement
+						x="0"
+						y="8"
+						width="552"
+						height="14"
+						forecolor="#0000CC"
+						key="staticText-379"/>
+					<box leftPadding="2"></box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[ADDITIONAL ITEMS / ADJUSTMENTS (continued)]]></text>
+				</staticText>
+				<subreport  isUsingCache="true">
+					<reportElement
+						x="0"
+						y="23"
+						width="552"
+						height="14"
+						key="subreport-6"
+						positionType="Float"/>
+					<dataSourceExpression><![CDATA[$F{additionalitems2}]]></dataSourceExpression>
+					<subreportExpression  class="net.sf.jasperreports.engine.JasperReport"><![CDATA[$P{AdditionalItem2}]]></subreportExpression>
+				</subreport>
 			</band>
 			</groupHeader>
 			<groupFooter>

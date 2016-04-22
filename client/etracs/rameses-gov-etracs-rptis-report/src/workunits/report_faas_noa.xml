@@ -4,6 +4,8 @@
         <invoker type="faas:formActions" action="viewNoa" caption="Notice of Assessment" target="popup" visibleWhen="#{mode == 'read' &amp;&amp; entity.state == 'CURRENT'}" index="100"/>
         <invoker type="faasmain:formActions" action="viewNoa" caption="Notice of Assessment" visibleWhen="#{mode == 'read' &amp;&amp; entity.state == 'CURRENT'}" index="100"/>
         <invoker type="formActions" action="_close" caption="Close" mnemonic="c" immediate="true" icon="images/toolbars/cancel.png"/>
+        
+        <invoker type="faas:noa:batch" action="preview" caption="Notice of Assessment Batch" />
     </invokers>
         
     <code>

@@ -35,6 +35,7 @@ FROM rptledger rl
 WHERE rl.objid = $P{rptledgerid}
  AND rl.state = 'APPROVED'
  AND ( rl.lastyearpaid < $P{billtoyear} OR (rl.lastyearpaid = $P{billtoyear} AND rl.lastqtrpaid < $P{billtoqtr}))
+ and not exists(select * from rptledger_restriction where parentid = rl.objid )
 
 
 [getIncentivesByLedgerId]
@@ -445,6 +446,7 @@ WHERE rl.objid IN (
 			OR ( rl.lastyearpaid = $P{billtoyear} AND rl.lastqtrpaid < $P{billtoqtr})
 	 )
 )
+and not exists(select * from rptledger_restriction where parentid = rl.objid )
 ORDER BY rl.tdno  
 
 
@@ -465,7 +467,10 @@ AND billid = $P{objid}
 SELECT * FROM rptbill  WHERE barcode = $P{barcodeid}
 
 [getBillLedgers]  
-SELECT * FROM rptbill_ledger WHERE billid = $P{objid}
+SELECT * 
+FROM rptbill_ledger rbl 
+WHERE billid = $P{objid}
+and not exists(select * from rptledger_restriction where parentid = rbl.rptledgerid)
 
 
 [getBillLedgerAccounts]

@@ -66,7 +66,7 @@ class MunicipalityTestFaas_DCTR_ProvinceApproval
 
 
         /*=================================================
-        * PROVINCE: TEST MUNICIPALITY APPROVED SIMPLE TRANSFER FAAS 
+        * MUNICIPALITY: TEST MUNICIPALITY APPROVED SIMPLE TRANSFER FAAS 
         =================================================*/
         munisvc = MunicipalityTestProxy.create('RPTISMunicipalityTestTRFAASService')
         TestHelper.waitForCurrentFaas(trfaas, munihelper)

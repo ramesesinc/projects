@@ -674,13 +674,17 @@ class RPTCompromiseService {
 
 
 	void validatePaymentInfo( compromise ) {
-		if( compromise.downpaymentrequired ) {
-			utilSvc.required( 'Down Payment O.R. No.', compromise.downpaymentorno)
-			utilSvc.required( 'Down Payment O.R. Date', compromise.downpaymentordate)
+		def oldcomp = em.read(compromise)
+		if (!oldcomp) 
+			throw new Exception('Compromise does not exist or has already been deleted.')
+
+		if( oldcomp.downpaymentrequired ) {
+			utilSvc.required( 'Down Payment O.R. No.', oldcomp.downpaymentorno)
+			utilSvc.required( 'Down Payment O.R. Date', oldcomp.downpaymentordate)
 		}
-		if( compromise.cypaymentrequired ) {
-			utilSvc.required( 'Current Year O.R. No.', compromise.cypaymentorno)
-			utilSvc.required( 'Current Year O.R. Date', compromise.cypaymentordate)
+		if( oldcomp.cypaymentrequired ) {
+			utilSvc.required( 'Current Year O.R. No.', oldcomp.cypaymentorno)
+			utilSvc.required( 'Current Year O.R. Date', oldcomp.cypaymentordate)
 		}
 	}	
 
@@ -788,6 +792,31 @@ class RPTCompromiseService {
 			def dt = dateSvc.parseDate(compromise.notarizeddate, null)
 			compromise.notarizedday = utilSvc.formalizeDate(compromise.notarizeddate, 'd')
 			compromise.notarizedmonth = utilSvc.getMonthName(dt.month)
+		}
+	}
+
+
+	@ProxyMethod
+	public void checkRequiredPaymentMade(params){
+		def paid = false;
+		def compromise = em.read(params)
+		if (!compromise) throw new Exception('Compromise does not exist or has already been deleted.')
+		if ('downpayment'.equalsIgnoreCase(params.paytype.type)){
+			if (compromise.downpaymentreceiptid)
+				paid = true;
+		}
+		else if ('cypayment'.equalsIgnoreCase(params.paytype.type)){
+			if (compromise.cypaymentreceiptid)
+				paid = true;
+		}
+		else {
+			throw new Exception('Payment type ' + params.paytype.type + ' is invalid.')
+		}
+
+		if (paid){
+			def msg = 'Compromise ' + params.paytype.caption + ' is already paid.\n'
+			msg += 'Click the Refresh button to update the payment information.'
+			throw new Exception(msg)
 		}
 	}
 }

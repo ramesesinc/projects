@@ -27,7 +27,7 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jTabbedPane1" pref="253" max="32767" attributes="0"/>
+              <Component id="jTabbedPane1" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
@@ -133,7 +133,7 @@
                     </Component>
                   </SubComponents>
                 </Container>
-                <Container class="com.rameses.rcp.control.XFormPanel" name="xFormPanel14">
+                <Container class="com.rameses.rcp.control.XFormPanel" name="xFormPanel20">
                   <Properties>
                     <Property name="captionWidth" type="int" value="120"/>
                     <Property name="orientation" type="java.lang.String" value="HORIZONTAL"/>
@@ -146,7 +146,7 @@
                     <Property name="showCaption" type="boolean" value="false"/>
                   </Properties>
                   <SubComponents>
-                    <Component class="com.rameses.rcp.control.XDecimalField" name="xDecimalField3">
+                    <Component class="com.rameses.rcp.control.XTextField" name="xTextField1">
                       <Properties>
                         <Property name="caption" type="java.lang.String" value="Previous M.V."/>
                         <Property name="cellPadding" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
@@ -156,9 +156,9 @@
                         <Property name="stretchWidth" type="int" value="50"/>
                       </Properties>
                     </Component>
-                    <Component class="com.rameses.rcp.control.XDecimalField" name="xDecimalField4">
+                    <Component class="com.rameses.rcp.control.XTextField" name="xTextField2">
                       <Properties>
-                        <Property name="caption" type="java.lang.String" value="A.V."/>
+                        <Property name="caption" type="java.lang.String" value="A.V"/>
                         <Property name="captionWidth" type="int" value="55"/>
                         <Property name="name" type="java.lang.String" value="changeinfo.newinfo.prevav" noResource="true"/>
                         <Property name="stretchWidth" type="int" value="50"/>
@@ -166,7 +166,7 @@
                     </Component>
                   </SubComponents>
                 </Container>
-                <Container class="com.rameses.rcp.control.XFormPanel" name="xFormPanel15">
+                <Container class="com.rameses.rcp.control.XFormPanel" name="xFormPanel21">
                   <Properties>
                     <Property name="captionWidth" type="int" value="120"/>
                     <Property name="orientation" type="java.lang.String" value="HORIZONTAL"/>
@@ -179,7 +179,7 @@
                     <Property name="showCaption" type="boolean" value="false"/>
                   </Properties>
                   <SubComponents>
-                    <Component class="com.rameses.rcp.control.XDecimalField" name="xDecimalField7">
+                    <Component class="com.rameses.rcp.control.XTextField" name="xTextField3">
                       <Properties>
                         <Property name="caption" type="java.lang.String" value="Prev. Area (sqm)"/>
                         <Property name="cellPadding" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
@@ -189,13 +189,11 @@
                         <Property name="stretchWidth" type="int" value="50"/>
                       </Properties>
                     </Component>
-                    <Component class="com.rameses.rcp.control.XDecimalField" name="xDecimalField8">
+                    <Component class="com.rameses.rcp.control.XTextField" name="xTextField4">
                       <Properties>
                         <Property name="caption" type="java.lang.String" value="(ha)"/>
                         <Property name="captionWidth" type="int" value="55"/>
                         <Property name="name" type="java.lang.String" value="changeinfo.newinfo.prevareaha" noResource="true"/>
-                        <Property name="pattern" type="java.lang.String" value="#,##0.000000"/>
-                        <Property name="scale" type="int" value="6"/>
                         <Property name="stretchWidth" type="int" value="50"/>
                       </Properties>
                     </Component>
@@ -343,7 +341,7 @@
                     </Component>
                   </SubComponents>
                 </Container>
-                <Container class="com.rameses.rcp.control.XFormPanel" name="xFormPanel18">
+                <Container class="com.rameses.rcp.control.XFormPanel" name="xFormPanel22">
                   <Properties>
                     <Property name="captionWidth" type="int" value="120"/>
                     <Property name="orientation" type="java.lang.String" value="HORIZONTAL"/>
@@ -356,27 +354,21 @@
                     <Property name="showCaption" type="boolean" value="false"/>
                   </Properties>
                   <SubComponents>
-                    <Component class="com.rameses.rcp.control.XDecimalField" name="xDecimalField5">
+                    <Component class="com.rameses.rcp.control.XTextField" name="xTextField5">
                       <Properties>
                         <Property name="caption" type="java.lang.String" value="Previous M.V."/>
                         <Property name="cellPadding" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
                           <Insets value="[0, 0, 0, 5]"/>
-                        </Property>
-                        <Property name="disabledTextColor" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                          <Color blue="0" green="0" red="0" type="rgb"/>
                         </Property>
                         <Property name="enabled" type="boolean" value="false"/>
                         <Property name="name" type="java.lang.String" value="changeinfo.previnfo.prevmv" noResource="true"/>
                         <Property name="stretchWidth" type="int" value="50"/>
                       </Properties>
                     </Component>
-                    <Component class="com.rameses.rcp.control.XDecimalField" name="xDecimalField6">
+                    <Component class="com.rameses.rcp.control.XTextField" name="xTextField6">
                       <Properties>
-                        <Property name="caption" type="java.lang.String" value="A.V."/>
+                        <Property name="caption" type="java.lang.String" value="A.V"/>
                         <Property name="captionWidth" type="int" value="55"/>
-                        <Property name="disabledTextColor" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                          <Color blue="0" green="0" red="0" type="rgb"/>
-                        </Property>
                         <Property name="enabled" type="boolean" value="false"/>
                         <Property name="name" type="java.lang.String" value="changeinfo.previnfo.prevav" noResource="true"/>
                         <Property name="stretchWidth" type="int" value="50"/>
@@ -384,7 +376,7 @@
                     </Component>
                   </SubComponents>
                 </Container>
-                <Container class="com.rameses.rcp.control.XFormPanel" name="xFormPanel19">
+                <Container class="com.rameses.rcp.control.XFormPanel" name="xFormPanel23">
                   <Properties>
                     <Property name="captionWidth" type="int" value="120"/>
                     <Property name="orientation" type="java.lang.String" value="HORIZONTAL"/>
@@ -397,31 +389,23 @@
                     <Property name="showCaption" type="boolean" value="false"/>
                   </Properties>
                   <SubComponents>
-                    <Component class="com.rameses.rcp.control.XDecimalField" name="xDecimalField9">
+                    <Component class="com.rameses.rcp.control.XTextField" name="xTextField7">
                       <Properties>
                         <Property name="caption" type="java.lang.String" value="Prev. Area (sqm)"/>
                         <Property name="cellPadding" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
                           <Insets value="[0, 0, 0, 5]"/>
-                        </Property>
-                        <Property name="disabledTextColor" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                          <Color blue="0" green="0" red="0" type="rgb"/>
                         </Property>
                         <Property name="enabled" type="boolean" value="false"/>
                         <Property name="name" type="java.lang.String" value="changeinfo.previnfo.prevareasqm" noResource="true"/>
                         <Property name="stretchWidth" type="int" value="50"/>
                       </Properties>
                     </Component>
-                    <Component class="com.rameses.rcp.control.XDecimalField" name="xDecimalField10">
+                    <Component class="com.rameses.rcp.control.XTextField" name="xTextField8">
                       <Properties>
                         <Property name="caption" type="java.lang.String" value="(ha)"/>
                         <Property name="captionWidth" type="int" value="55"/>
-                        <Property name="disabledTextColor" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                          <Color blue="0" green="0" red="0" type="rgb"/>
-                        </Property>
                         <Property name="enabled" type="boolean" value="false"/>
                         <Property name="name" type="java.lang.String" value="changeinfo.previnfo.prevareaha" noResource="true"/>
-                        <Property name="pattern" type="java.lang.String" value="#,##0.000000"/>
-                        <Property name="scale" type="int" value="6"/>
                         <Property name="stretchWidth" type="int" value="50"/>
                       </Properties>
                     </Component>

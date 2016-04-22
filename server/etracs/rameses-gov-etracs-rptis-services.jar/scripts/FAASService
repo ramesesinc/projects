@@ -12,6 +12,9 @@ class FAASService
 	@ActiveDB('faas')	
 	def em 
 
+	@ActiveDB('faas_list')	
+	def faasListEm
+
 	@Service('Var')
 	def var 
 
@@ -44,6 +47,9 @@ class FAASService
 
     @Service('NumberService')
     def numSvc 
+
+    @Service('RPTRedFlagService')
+    def redFlagSvc 
 
     
     def SCHEMA_PREVIOUSFAAS		= 'previousfaas'
@@ -122,8 +128,10 @@ class FAASService
 	@ProxyMethod
 	public def createFaas( faas ) {
 		checkTxnReference(faas)
-		faas.ryordinanceno = var.gr_ordinance_no
-		faas.ryordinancedate = var.gr_ordinance_date
+		if (!faas.ryordinanceno){
+			faas.ryordinanceno = var.gr_ordinance_no
+			faas.ryordinancedate = var.gr_ordinance_date
+		}
 		faas.originlguid = (faas.originlguid ? faas.originlguid : env.ORGID )
 		generateUniqueTdNo(faas)
 		updateNameInfo(faas)
@@ -221,7 +229,7 @@ class FAASService
 	@ProxyMethod
 	public void deleteFaasById( faasid ) {
 		if (faasid) {
-			deleteFaas(faasSvc.openFaas([objid:faasid]))
+			faasSvc.deleteFaas(faasSvc.openFaas([objid:faasid]))
 		}
 	}	
 
@@ -676,6 +684,7 @@ class FAASService
 				cancelledday 		: pdate.day 
 			]
 			em.cancelFaas(params)
+			faasListEm.updateFaasList(params)
 			if (faas.txntype.newrpu){
 				em.cancelRpu([objid:it.prevrpuid])
 			}
@@ -862,15 +871,23 @@ class FAASService
         return backtaxyears
 	}
 
+
     //to be intercepted by province/muni codes 
     @ProxyMethod
     public def resendToMunicipality(faas){
         return faas
     }
 
+
     @ProxyMethod
-    public def getRedFlagCount(faasid){
-    	return em.findOpenRedFlagCount([objid:faasid])
+    public def getOpenRedflagCount(faasid){
+    	return redFlagSvc.getOpenRedflagCount([objid:faasid])
+    }
+
+
+    @ProxyMethod
+    public def findOpenTask( faas ) {
+    	return em.findOpenTask(faas)	
     }
     
 

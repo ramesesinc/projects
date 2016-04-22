@@ -16,14 +16,19 @@ class MunicipalityRedFlagService
     def notificationSvc
 
     @Service('FAASChangeInfoService')
-    def changeinfoSvc 
+    def changeinfoSvc
+
+    @Service('NotificationService')
+	def userNotificationService
 
 	@ProxyMethod
 	public resolveRedFlag(redflag, changeinfo){
+		changeinfo.refid = redflag.refid
 		redflag.remarks = changeinfo.reason
 		changeinfoSvc.updateInfo(changeinfo)
 		redflag.putAll(redflagSvc.resolveRedFlag(redflag))
 		notifyFiledBy(redflag)
+		userNotificationService.removeMessage([objid:redflag.refid])
 		return redflag 
 	}
 

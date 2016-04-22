@@ -9,11 +9,17 @@ class ETRACS22To254RPTLedgerMigrationService
 	@ActiveDB('etracs254rpt_ledger')
 	def em254
 
+	@ActiveDB('etracs254rpt')
+	def entity254
+
 	@ActiveDB(value='etracs22rpt_ledger', em='etracs22')
 	def em22
 
 	@ActiveDB('rptledger')	
 	def ledgerEm
+
+	@ActiveDB('entity')
+	def entityEm
 
 	@Service()
 	def self 
@@ -27,13 +33,38 @@ class ETRACS22To254RPTLedgerMigrationService
 	}
 
 	@ProxyMethod
+	public def getPaymentMigrationStatus(  ) {
+		def item = em22.findLedgerPaymentForMigrationCount()
+		if (item.count == 0)
+			return 'PROCESSING'
+		return 'DONE'
+	}
+
+	@ProxyMethod
 	public void initMigrationTables(  ) {
 		try{
 			try{ em22.dropXLedgerTable() }catch(e){}
 			try{ em22.createXLedgerTable() }catch(e){}
 			try{ em22.createLedgerMigrateTable() }catch(e){}
 			try{ em22.createLedgerMigrateLogTable() }catch(e){}
+			em22.deleteLedgerLog()
 			self.insertLedgers()
+		}
+		catch(ign){
+			ign.printStackTrace();
+			throw ign;
+		}
+	}
+
+	@ProxyMethod
+	public void initPaymentMigrationTables(  ) {
+		try{
+			try{ em22.dropXLedgerPaymentTable() }catch(e){}
+			try{ em22.createXLedgerPaymentTable() }catch(e){}
+			try{ em22.createLedgerPaymentMigrateTable() }catch(e){}
+			try{ em22.createLedgerPaymentMigrateLogTable() }catch(e){}
+			em22.deleteLedgerPaymentLog()
+			self.insertLedgerPayments()
 		}
 		catch(ign){
 			ign.printStackTrace();
@@ -43,9 +74,16 @@ class ETRACS22To254RPTLedgerMigrationService
 
 	@Async
 	@ProxyMethod
+	public void insertLedgerPayments(){
+		println 'Inserting rptleder payments for migration...'
+		em22.insertLedgerPayments([a:'-'])
+	}
+
+	@Async
+	@ProxyMethod
 	public void insertLedgers(){
 		println 'Inserting rptleders for migration...'
-		em22.insertLedgers()
+		em22.insertLedgers([a:'-'])
 	}
 
 	@ProxyMethod
@@ -59,6 +97,7 @@ class ETRACS22To254RPTLedgerMigrationService
 		}
 		catch(e){
 			try{
+				e.printStackTrace();
 				println 'Migrate Ledger [ERROR] ' + e.message 
 				em22.logMigrateError([objid:ledgerid, log:e.message])
 			}
@@ -116,10 +155,16 @@ class ETRACS22To254RPTLedgerMigrationService
 		if (!ledger) throw new Exception('Ledger does not exist.')
 
 		def faas = em254.findFaasById([objid:ledger.faasid])
-		if (!faas) throw new Exception('Faas does not exists.')
+		if (!faas) {
+			ledger.faasid = null;
+		}
+		else {
+			ledger.putAll(faas)
+		}
 		
-		ledger.putAll(faas)
-
+		def brgy  = em254.findBarangayByName([name:ledger.barangay])
+		if (brgy)
+			ledger.barangayid = brgy.objid 
 		ledger.quarterlyinstallmentpaidontime = toBoolean(ledger.quarterlyinstallmentpaidontime, false)
 		ledger.qtrlypaymentpaidontime = toBoolean(ledger.qtrlypaymentpaidontime, false)
 		ledger.firstqtrpaidontime = toBoolean(ledger.firstqtrpaidontime, false)
@@ -134,6 +179,8 @@ class ETRACS22To254RPTLedgerMigrationService
 		ledger.partialbasicdisc = toDecimal(ledger.partialbasicdisc, 0.0)
 		ledger.partialsefdisc = toDecimal(ledger.partialsefdisc, 0.0)
 		
+		migrateEntity(ledger)
+
 		ledgerEm.save(ledger)
 		
 		saveLedgerFaases(ledger)
@@ -147,6 +194,64 @@ class ETRACS22To254RPTLedgerMigrationService
 		}
 	}
 
+
+	@ProxyMethod
+    public def migrateLedgerPayments(params) {
+		if (!params.count) throw new Exception('Count is required')
+		
+		params._limit = params.count 
+
+	    def payments = em22.getLedgerPaymentsForMigration(params);
+		migrateLedgerPaymentByIds(payments.objid)
+        return payments.size()
+    }  
+
+
+	@ProxyMethod
+    public void migrateLedgerPaymentByIds(payments) {
+    	println 'Migrating Ledger Payment .... ' + payments.size()
+    	def paymentid = null;
+    	def pmt = null;
+		payments.each{
+			try{
+				pmt = [objid:it]
+				migrateLedgerPayment(pmt)
+			}
+			catch(e){
+				try{
+					println 'Migrate Ledger Payment [ERROR] ' + e.message 
+					em22.logPaymentMigrateError([objid:pmt.objid, log:e.message])
+				}
+				catch(ign){
+					//ignore duplicate
+				}
+			}
+			finally{
+				em22.deleteXLedgerPayment(pmt)
+			}
+		}
+    } 
+
+    void migrateLedgerPayment(payment){
+    	def pmt = em22.findLedgerPayment(payment)	
+    	if (pmt){
+    		println 'Migrate ledger payment : ' + pmt.objid 
+    		if (!pmt.paidby.address)
+    			pmt.paidby.address = '.'
+
+    		ledgerEm.save(pmt, 'credit')
+    		try{
+				em22.logMigratedLedgerPayment(pmt)
+			}
+			catch(ign){
+				//ignore duplicate
+			}
+			
+    	}
+    }
+
+
+
 	void saveLedgerFaases(ledger){
 		em22.getLedgerFaases(ledger).each{
 			it.backtax = toBoolean(it.backtax, false)
@@ -158,6 +263,8 @@ class ETRACS22To254RPTLedgerMigrationService
 			it.fromqtr = toInteger(it.fromqtr, 0)
 			it.toqtr = toInteger(it.toqtr, 0)
 
+			if (!ledger.faasid )
+				it.faasid = null 
 			ledgerEm.save(it, 'ledgerfaas')
 		}
 	}
@@ -221,4 +328,79 @@ class ETRACS22To254RPTLedgerMigrationService
 			return defvalue 
 		}
 	}
+
+	def migrateEntity(ledger){
+		def taxpayer = ledger.taxpayer 
+		def entity = entity254.findEntityById(taxpayer)
+		if (!entity){
+			entity = em22.findEntityById(taxpayer)
+			if (entity.info == null || entity.info.toString().trim().length()==0 || entity.info == '"[:]"')  
+				entity.info = '[:]'
+			entity.info = em22.serializer.read(entity.info)
+
+			entity.lastname = entity.info.lastname
+			entity.firstname = entity.info.firstname
+			entity.middlename = entity.info.middlename
+			entity.fullname = entity.info.fullname 
+			entity.type = entity.type.toUpperCase()
+			if (entity.type.equalsIgnoreCase('individual')){
+				if (!entity.lastname || !entity.firstname)
+					entity.type = 'MULTIPLE'
+			}
+
+			if (!entity.address || 	!entity.address.text?.trim() ){
+				entity.address = [objid:entity.objid, street:'-', text:'-']
+			}
+
+			entityEm.create(entity)
+
+			migrateEntityAddress(entity)
+
+			if (entity.type.equalsIgnoreCase('individual'))
+				migrateIndividual(entity)
+			else if (entity.type.equalsIgnoreCase('juridical'))
+				migrateJuridical(entity)
+			else 
+				migrateMultiple(entity)
+		}
+
+		return entity 
+	}	
+
+
+	void migrateEntityAddress(entity){
+		def addr = entity254.findEntityAddressByParentId([parentid:entity.objid])
+		if (!addr){
+			addr = [
+				objid		: entity.objid,
+				parentid 	: entity.objid,
+				type 		: 'local',
+				addresstype	: 'local',
+				street 		: '-'
+			]
+			entityEm.create(addr, 'address')
+		}
+	}
+
+	void migrateIndividual(entity){
+		def ind = entity254.findIndividualById(entity)
+		if (!ind){
+			individualEm.create(entity)
+		}
+	}
+
+	void migrateJuridical(entity){
+		def jur = entity254.findJuridicalById(entity)
+		if (!jur){
+			juridicalEm.create(entity)
+		}
+	}
+
+	void migrateMultiple(entity){
+		def mul = entity254.findMultipleById(entity)
+		if (!mul){
+			multipleEm.create(entity)
+		}
+	}
+
 }

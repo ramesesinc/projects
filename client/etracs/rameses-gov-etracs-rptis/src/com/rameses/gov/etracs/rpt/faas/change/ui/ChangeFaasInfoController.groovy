@@ -38,6 +38,7 @@ public abstract class ChangeFaasInfoController
     void init(){
         changeinfo = [
             objid       : 'CI' + new java.rmi.server.UID(),
+            refid   : entity.objid,
             faasid 	: entity.objid,
             rpid   	: entity.rp.objid,
             rpuid  	: entity.rpu.objid,

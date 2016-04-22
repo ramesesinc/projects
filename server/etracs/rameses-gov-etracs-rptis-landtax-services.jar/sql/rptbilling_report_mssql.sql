@@ -28,6 +28,7 @@ FROM rptledger rl
   LEFT JOIN faas f ON rl.faasid = f.objid 
 WHERE rl.objid = $P{rptledgerid}
   AND rl.state = 'APPROVED'
+  and not exists(select * from rptledger_restriction where parentid = rl.objid )
 
 
 [getBilledItems]

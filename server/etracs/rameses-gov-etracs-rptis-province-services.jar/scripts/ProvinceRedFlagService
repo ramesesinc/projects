@@ -16,6 +16,9 @@ class ProvinceRedFlagService
 	@ActiveDB('faas_task')
 	def taskEm
 
+	@Service('RPTUtil')
+	def util
+
 
 	@ProxyMethod
 	public def postRedFlag( entity ) {
@@ -45,8 +48,8 @@ class ProvinceRedFlagService
 	}
 
 	void notifyFiledBy(redflag){
-		def currtask = taskEm.findOpenTask([objid:redflag.refid])
-		def message = 'FAAS No. ' + redflag.refno + ' was resolved by by ' + redflag.resolvedby.name 
+		def currtask = redflagSvc.getCurrentTask(redflag)
+		def message = util.capitalize(currtask.filetype) + ' ' + redflag.refno + ' Red Flag #' + redflag.caseno + ' resolved.'
 		def msg = [
             objid     : redflag.refid,
             recipientid : redflag.filedby.objid,
@@ -54,11 +57,11 @@ class ProvinceRedFlagService
             senderid  : redflag.resolvedby.objid,
             sender    : redflag.resolvedby.name,
             message   : message,
-            filetype  : 'faas',
+            filetype  : (currtask?.filetype ? currtask.filetype : '-'),
             data 	  : [taskid: currtask.objid],
         ]
         notifySvc.addMessage(msg)
+        println msg.message 
 	}
-
 
 }

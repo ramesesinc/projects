@@ -1,3 +1,6 @@
+[findFaasTaskById]
+select * from faas_task where objid = $P{objid}
+
 [findFaasById]
 select objid, state from faas where objid = $P{objid}
 
@@ -21,6 +24,7 @@ select objid, state from rptledger where faasid = $P{objid}
 select * 
 from faas_task 
 where refid = $P{objid} and enddate is null
+
 
 [setRequirementsAsComplied]
 update rpt_requirement set 

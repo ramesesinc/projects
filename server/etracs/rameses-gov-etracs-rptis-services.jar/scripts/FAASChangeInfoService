@@ -27,6 +27,7 @@ class FAASChangeInfoService
 
 		def newinfo = [:]
 		newinfo.putAll(changeinfo.newinfo)
+		newinfo.refid    = changeinfo.refid 
 		newinfo.faasid 	= changeinfo.faasid
 		newinfo.rpid   	= changeinfo.rpid
 		newinfo.rpuid  	= changeinfo.rpuid

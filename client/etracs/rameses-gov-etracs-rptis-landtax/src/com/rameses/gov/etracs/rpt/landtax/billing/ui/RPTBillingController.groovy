@@ -1,4 +1,4 @@
-package com.rameses.gov.etracs.rpt.billing.ui;
+package com.rameses.gov.etracs.rpt.landtax.billing.ui;
 
 
 import com.rameses.rcp.common.*
@@ -35,6 +35,7 @@ public class RPTBillingController
     def parsedate;
     def bill;
     def billto;
+    def taxpayer;
     
     String title = 'Realty Tax Billing'
     
@@ -95,8 +96,13 @@ public class RPTBillingController
             selectedItems = items.findAll{it.bill == true}
             if (!selectedItems) selectedItems = items;
             selectedItems.each{
-                bill.rptledgerid = it.objid 
-                bill.ledgers << billReportSvc.getBilledLedger([objid:bill.objid, rptledgerid:bill.rptledgerid])
+                try{
+                    bill.rptledgerid = it.objid 
+                    bill.ledgers << billReportSvc.getBilledLedger([objid:bill.objid, rptledgerid:bill.rptledgerid])
+                }
+                catch(e){
+                    e.printStackTrace();
+                }
             }
         }
         else {
@@ -115,6 +121,13 @@ public class RPTBillingController
         bill.barcode = b.barcode 
         buildBillReportInfo()
         ReportUtil.print( report.report, true )
+    }
+    
+    void initBatch(){
+        init();
+        bill.taxpayer = taxpayer;
+        loadProperties();
+        previewBill();
     }
     
     def previewBill() {

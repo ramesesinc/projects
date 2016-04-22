@@ -637,4 +637,12 @@ class RPTUtil
         }
         return len;
     }
+
+    @ProxyMethod
+    public def capitalize(s) { 
+        if (!s) return ''
+        if (s.length() == 1) return s.toUpperCase();
+        return s[0].toUpperCase() + s[1..-1].toLowerCase() 
+    }
+
 }

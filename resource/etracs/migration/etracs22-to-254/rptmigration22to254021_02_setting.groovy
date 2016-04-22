@@ -1,18 +1,17 @@
 def env = [
-    'app.host'    :'localhost:8071',
+    'app.host'    :'localhost:8070',
     'app.context' :'etracs25'
 ]
 
 def proxy = new TestProxy(env);
 def svc = proxy.create('ETRACS22To254SettingMigrationService');
 
-def lgutype = 'MUNICIPALITY'
+def lgutype = 'CITY'
 
 /*=== LAND ========================== */
 svc.migrateLandSettings(lgutype);
 svc.migrateLandAssessLevels();
 svc.migrateSpecificClasses();
-svc.migrateSubClasses();
 svc.migrateStrippings();
 svc.migrateLandAdjustments();
 
@@ -21,7 +20,6 @@ svc.migrateLandAdjustments();
 svc.migrateBldgSettings(lgutype);
 svc.migrateBldgAssessLevels();
 svc.migrateBldgTypes();
-svc.migrateBldgKindBuccs();
 svc.migrateBldgAdditionalItems();
 
 

@@ -46,78 +46,92 @@ class ETRACS22To254LandMigrationInterceptor
 	}
 
 	void doMigrateLandRpu(rpu){
-		def newrpu = [
-			objid 			: rpu.objid,
-			idleland 		: util.toBoolean(rpu.info.idleland, false),
-			totallandbmv 	: rpu.info.landtotal.basemarketvalue,
-			totallandmv 	: rpu.info.landtotal.marketvalue,
-			totallandav 	: rpu.info.landtotal.assessedvalue,
-			totalplanttreebmv 	: rpu.info.planttotal.basemarketvalue,
-			totalplanttreeadjustment : rpu.info.planttotal.adjustment,
-			totalplanttreemv 	: rpu.info.planttotal.marketvalue,
-			totalplanttreeav 	: rpu.info.planttotal.assessedvalue,
-			landvalueadjustment : rpu.info.landvalueadjustment,
-		]
-
-		newrpu.totallandbmv = (newrpu.totallandbmv == null ? 0.0 : newrpu.totallandbmv)
-		newrpu.totallandmv = (newrpu.totallandmv == null ? 0.0 : newrpu.totallandmv)
-		newrpu.totallandav = (newrpu.totallandav == null ? 0.0 : newrpu.totallandav)
-		newrpu.totalplanttreebmv = (newrpu.totalplanttreebmv == null ? 0.0 : newrpu.totalplanttreebmv)
-		newrpu.totalplanttreeadjustment = (newrpu.totalplanttreeadjustment == null ? 0.0 : newrpu.totalplanttreeadjustment)
-		newrpu.totalplanttreemv = (newrpu.totalplanttreemv == null ? 0.0 : newrpu.totalplanttreemv)
-		newrpu.totalplanttreeav = (newrpu.totalplanttreeav == null ? 0.0 : newrpu.totalplanttreeav)
-		newrpu.landvalueadjustment = (newrpu.landvalueadjustment == null ? 0.0 : newrpu.landvalueadjustment)
-
-		landrpuEm.save(newrpu)
-	}
-
-	
-	void doMigrateLandDetail(rpu){
-		rpu.info.landdetails.each{ld ->
-			resolveActualUse(rpu, ld)
-			resolveSpecificClass(rpu, ld)
-			resolveSubClass(rpu, ld)
-			resolveStripping(rpu, ld)
-
-			def newld = [
-				objid  			: ld.objid, 
-				landrpuid 		: rpu.objid, 
-				subclass 	 	: [objid:ld.subclassid],
-				specificclass   : [objid:ld.specificclassid], 
-				actualuse 		: [objid:ld.assesslevelid], 
-				stripping 		: [objid:ld.strippingid], 
-				addlinfo 		: ld.addlinfo, 
-				striprate 		: (ld.striprate == null ? 0.0 : ld.striprate), 
-				areatype 		: ld.areatype, 
-				area 			: ld.area, 
-				areasqm 		: ld.areasqm, 
-				areaha 			: ld.areaha, 
-				basevalue 		: ld.basevalue, 
-				unitvalue 		: ld.unitvalue, 
-				taxable 		: util.toBoolean(ld.taxable, true), 
-				basemarketvalue : ld.basemarketvalue, 
-				adjustment 		: ld.adjustment, 
-				landvalueadjustment : ld.landvalueadjustment, 
-				actualuseadjustment : ld.actualuseadjustment, 
-				marketvalue 		: ld.marketvalue, 
-				assesslevel 		: ld.assesslevel, 
-				assessedvalue 		: ld.assessedvalue, 
+		if (!existLandRpu(rpu)){
+			def newrpu = [
+				objid 			: rpu.objid,
+				idleland 		: util.toBoolean(rpu.info.idleland, false),
+				totallandbmv 	: rpu.info.landtotal.basemarketvalue,
+				totallandmv 	: rpu.info.landtotal.marketvalue,
+				totallandav 	: rpu.info.landtotal.assessedvalue,
+				totalplanttreebmv 	: rpu.info.planttotal.basemarketvalue,
+				totalplanttreeadjustment : rpu.info.planttotal.adjustment,
+				totalplanttreemv 	: rpu.info.planttotal.marketvalue,
+				totalplanttreeav 	: rpu.info.planttotal.assessedvalue,
+				landvalueadjustment : rpu.info.landvalueadjustment,
 			]
 
-			landrpuEm.save(newld, 'landdetail')
-			doMigrateLandAdjustments(rpu, ld.adjustments, null, ld.objid, 'AU')
+			newrpu.totallandbmv = (newrpu.totallandbmv == null ? 0.0 : newrpu.totallandbmv)
+			newrpu.totallandmv = (newrpu.totallandmv == null ? 0.0 : newrpu.totallandmv)
+			newrpu.totallandav = (newrpu.totallandav == null ? 0.0 : newrpu.totallandav)
+			newrpu.totalplanttreebmv = (newrpu.totalplanttreebmv == null ? 0.0 : newrpu.totalplanttreebmv)
+			newrpu.totalplanttreeadjustment = (newrpu.totalplanttreeadjustment == null ? 0.0 : newrpu.totalplanttreeadjustment)
+			newrpu.totalplanttreemv = (newrpu.totalplanttreemv == null ? 0.0 : newrpu.totalplanttreemv)
+			newrpu.totalplanttreeav = (newrpu.totalplanttreeav == null ? 0.0 : newrpu.totalplanttreeav)
+			newrpu.landvalueadjustment = (newrpu.landvalueadjustment == null ? 0.0 : newrpu.landvalueadjustment)
+
+			landrpuEm.create(newrpu)
 		}
+	}
+
+	boolean existLandRpu(rpu){
+		return em254.findLandRpuById(rpu) != null 
+	}
+
+	void doMigrateLandDetail(rpu){
+		rpu.info.landdetails.each{ld ->
+			if (!existLandDetail(ld)){
+
+				resolveActualUse(rpu, ld)
+				resolveSpecificClass(rpu, ld)
+				resolveSubClass(rpu, ld)
+				resolveStripping(rpu, ld)
+
+				def newld = [
+					objid  			: ld.objid, 
+					landrpuid 		: rpu.objid, 
+					subclass 	 	: [objid:ld.subclassid],
+					specificclass   : [objid:ld.specificclassid], 
+					actualuse 		: [objid:ld.assesslevelid], 
+					stripping 		: [objid:ld.strippingid], 
+					addlinfo 		: ld.addlinfo, 
+					striprate 		: (ld.striprate == null ? 0.0 : ld.striprate), 
+					areatype 		: ld.areatype, 
+					area 			: ld.area, 
+					areasqm 		: ld.areasqm, 
+					areaha 			: ld.areaha, 
+					basevalue 		: ld.basevalue, 
+					unitvalue 		: ld.unitvalue, 
+					taxable 		: util.toBoolean(ld.taxable, true), 
+					basemarketvalue : ld.basemarketvalue, 
+					adjustment 		: ld.adjustment, 
+					landvalueadjustment : ld.landvalueadjustment, 
+					actualuseadjustment : ld.actualuseadjustment, 
+					marketvalue 		: ld.marketvalue, 
+					assesslevel 		: ld.assesslevel, 
+					assessedvalue 		: ld.assessedvalue, 
+				]
+				landrpuEm.create(newld, 'landdetail')
+				doMigrateLandAdjustments(rpu, ld.adjustments, null, ld.objid, 'AU')
+			}
+		}
+	}
+
+	boolean existLandDetail(ld){
+		return em254.findLandDetailById(ld) != null 
 	}
 
 	void doMigrateLandAdjustments(rpu, adjustments, landrpuid, landdetailid, type){
 		adjustments.each{adj ->
-			resolveAdjustmentType(rpu, adj)
-			
-			def newadj = createAdjustment(adj, type)
-			newadj.landrpuid = landrpuid 
-			newadj.landdetailid = landdetailid 
-			landrpuEm.save(newadj, 'landadjustment')
-			doMigrateAdjustmentParams(rpu, adj, newadj)
+			if (!existLandAdjustment(adj)){
+				
+				resolveAdjustmentType(rpu, adj)
+
+				def newadj = createAdjustment(adj, type)
+				newadj.landrpuid = landrpuid 
+				newadj.landdetailid = landdetailid 
+				landrpuEm.create(newadj, 'landadjustment')
+				doMigrateAdjustmentParams(rpu, adj, newadj)
+			}
 		}
 		em254land.updateLandAdjustments(rpu)
 		em254land.updateLandDetailAdjustments(rpu)
@@ -176,34 +190,43 @@ class ETRACS22To254LandMigrationInterceptor
 
 	void doMigratePlantTrees(rpu){
 		rpu.info.planttrees.each{pt->
-			resolvePlantTree(rpu, pt)
-			resolvePlantTreeUnitValue(rpu, pt)
-			resolvePlantTreeActualuse(rpu, pt)
+			if (!existPlantTreeDetail(pt)){
+				println 'Migrating planttreedetail ' + pt.objid
 
-			def newpt = [
-				objid 				: pt.objid,
-				planttreerpuid 		: null,
-				landrpuid 			: rpu.objid,
-				planttreeunitvalue  : [objid:pt.unitvalueid],
-				planttree  			: [objid:pt.planttreeid],
-				actualuse  			: [objid:pt.assesslevelid],
-				productive 			: util.toDecimal(pt.bearing),
-				nonproductive 		: util.toDecimal(pt.nonbearing),
-				nonproductiveage 	: util.toDecimal(pt.nonbearingage),
-				unitvalue 			: pt.unitvalue,
-				basemarketvalue 	: pt.basemarketvalue,
-				adjustment 			: pt.adjustment,
-				adjustmentrate 		: pt.adjustmentrate,
-				marketvalue 		: pt.marketvalue,
-				assesslevel 		: pt.assesslevel,
-				assessedvalue 		: pt.assessedvalue,
-				areacovered 		: 0.0,
-			]
-			plantTreeEm.save(newpt, 'planttreedetail')
+				resolvePlantTree(rpu, pt)
+				resolvePlantTreeUnitValue(rpu, pt)
+				resolvePlantTreeActualuse(rpu, pt)
+
+				def newpt = [
+					objid 				: pt.objid,
+					planttreerpuid 		: null,
+					landrpuid 			: rpu.objid,
+					planttreeunitvalue  : [objid:pt.unitvalueid],
+					planttree  			: [objid:pt.planttreeid],
+					actualuse  			: [objid:pt.assesslevelid],
+					productive 			: util.toDecimal(pt.bearing),
+					nonproductive 		: util.toDecimal(pt.nonbearing),
+					nonproductiveage 	: util.toDecimal(pt.nonbearingage),
+					unitvalue 			: pt.unitvalue,
+					basemarketvalue 	: pt.basemarketvalue,
+					adjustment 			: pt.adjustment,
+					adjustmentrate 		: pt.adjustmentrate,
+					marketvalue 		: pt.marketvalue,
+					assesslevel 		: pt.assesslevel,
+					assessedvalue 		: pt.assessedvalue,
+					areacovered 		: 0.0,
+				]
+				plantTreeEm.create(newpt, 'planttreedetail')
+			}
 		}
 	}
 
-	
+	boolean existPlantTreeDetail(pt){
+		return em254.findPlantTreeDetailById(pt) != null
+	}
+
+
+
 	void doMigrateAssessment(rpu){
 		em254.getLandRpuAssessments(rpu).each{
 			try{
@@ -244,6 +267,8 @@ class ETRACS22To254LandMigrationInterceptor
 		def au = em254.findLandAssessLevelById([objid:ld.assesslevelid])
 		if (!au){
 			def rysetting = em254.findLandRySettingByRy(rpu)
+			println '='*50 
+			println rysetting
 			au = [
 				objid 			: ld.assesslevelid,
 				landrysettingid	: rysetting.objid,

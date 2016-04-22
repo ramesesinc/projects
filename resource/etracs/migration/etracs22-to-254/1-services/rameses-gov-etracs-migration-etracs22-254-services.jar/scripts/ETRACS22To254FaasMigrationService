@@ -33,7 +33,7 @@ class ETRACS22To254FaasMigrationService
 	@Service('ETRACS22To254UtilService')
 	def util 
 
-	def LGUID = '142'
+	def LGUID = '218'
 
 
 	@ActiveDB('propertyclassification')
@@ -44,6 +44,9 @@ class ETRACS22To254FaasMigrationService
 
 	@ActiveDB('faasannotation')
 	def annotationEm
+
+	@Service('NumberService')
+	def numSvc 
 
 
 	@ProxyMethod
@@ -109,16 +112,10 @@ class ETRACS22To254FaasMigrationService
 
 	@ProxyMethod
 	public def migrateFaasByTdNo(tdno) {
+		println 'tdno => ' + tdno 
 		def faas = em22.findFaasByTdno([tdno:tdno])
 		if (!faas)
 			throw new Exception('FAAS does not exist for TD No. ' + tdno + '.')
-		doMigrateFaasByTdNo(faas)
-	}
-
-	@Async
-	@ProxyMethod
-	public void doMigrateFaasByTdNo(faas){
-		em22.deleteMigratedFaas(faas)
 		self.migrateFaas(faas)
 	}
 
@@ -249,6 +246,9 @@ class ETRACS22To254FaasMigrationService
 		rpu.objid += ('-' + rpu.ry)
 		faas22.rpuid = rpu.objid 
 
+		if (existRpu(faas22.rpu))
+			return 
+
 		resolveClassification(rpu)
 		resolveExemptionType(rpu)
 
@@ -276,7 +276,7 @@ class ETRACS22To254FaasMigrationService
 			rpumasterid 	: rpu.rpumasterid,
 			reclassed 		: false,
 		]
-		rpuEm.save(newrpu)
+		rpuEm.create(newrpu)
 	}
 
 
@@ -286,32 +286,39 @@ class ETRACS22To254FaasMigrationService
 
 
 	void resolveClassification(rpu){
-		def cls = classEm.read([objid:rpu.classid])
-		if (!cls)
-			cls = findClass(rpu, rpu.classcode)
-		if (!cls)
-			cls = findClass(rpu, rpu.classname)
+		def cls = null
 
-		if (!cls){
-			cls = [:]
-			if (rpu.classid){
-				cls = [
-					objid	: rpu.classid, 
-					state   : 'APPROVED',
-					code    : rpu.classcode,
-					name 	: rpu.classname,
-					special : 0,
-					orderno : 100,
-				]
-				try{
-					classEm.create(cls)
-				}
-				catch(e){
-					cls.code += '.'
-					cls.name += '.'
-					classEm.create(cls)
+		if (rpu.classid) {
+			cls = classEm.read([objid:rpu.classid])
+			if (!cls)
+				cls = findClass(rpu, rpu.classcode)
+			if (!cls)
+				cls = findClass(rpu, rpu.classname)
+
+			if (!cls){
+				cls = [:]
+				if (rpu.classid){
+					cls = [
+						objid	: rpu.classid, 
+						state   : 'APPROVED',
+						code    : rpu.classcode,
+						name 	: rpu.classname,
+						special : 0,
+						orderno : 100,
+					]
+					try{
+						classEm.create(cls)
+					}
+					catch(e){
+						cls.code += '.'
+						cls.name += '.'
+						classEm.create(cls)
+					}
 				}
 			}
+		}
+		else {
+			cls = em254.findResidentialClass()
 		}
 		rpu.classid = cls.objid 
 		rpu.classcode = cls.code 
@@ -350,7 +357,12 @@ class ETRACS22To254FaasMigrationService
 	*
 	*==============================================================*/
 	void doMigrateFaas(faas22)	{
+		if (existFaas(faas22))
+			return 
+		
 		def taxpayer = migrateEntity(faas22)
+		def addr = taxpayer.address 
+		taxpayer.address = addr.text 
 
 		if (faas22.rpu.rputype != 'land')
 			updateFaasRealPropertyInfo(faas22)
@@ -407,11 +419,10 @@ class ETRACS22To254FaasMigrationService
 			day 			: pdate.day,
 		]
 
-		if (existFaas(faas22)){
-			faasEm.update(newfaas)
-			return 
-		}
-		
+		newfaas.prevav 		= numSvc.format('#,##0.00', newfaas.prevav)
+		newfaas.prevmv 		= numSvc.format('#,##0.00', newfaas.prevmv)
+		newfaas.prevareasqm = numSvc.format('#,##0.00', newfaas.prevareasqm)
+		newfaas.prevareaha 	= numSvc.format('#,##0.000000', newfaas.prevareaha)
 
 		if (faas22.docstate=='CANCELLED'){
 			if (faas22.info.canceldate && faas22.info.canceldate.trim().length() > 0){
@@ -420,7 +431,7 @@ class ETRACS22To254FaasMigrationService
 				newfaas.cancelledqtr = cdate.qtr
 				newfaas.cancelledmonth = cdate.month 
 				newfaas.cancelledday = cdate.day
-				newfaas.canceldate = cdate 
+				newfaas.canceldate = cdate.date 
 			}
 		}
 		else{
@@ -432,8 +443,8 @@ class ETRACS22To254FaasMigrationService
 	}
 
 	def getTxnType(faas22){
-		if (faas22.info.txntype)
-			return faas22.info.txntype
+		if (faas22.info.txn)
+			return faas22.info.txn.txntype 
 		if (faas22.info.txnype)
 			return faas22.info.txnype
 		return 'DC'

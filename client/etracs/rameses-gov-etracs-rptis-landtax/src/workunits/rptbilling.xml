@@ -12,6 +12,8 @@
             
         <invoker type="rptbill:print" action="previewBill"  caption="RPT Billing" target="popup" />
         
+        <invoker type="rptbill:batch" caption="Batch Realty Tax Billing" action="initBatch" />
+        
         
         <invoker type="formActions" action="_close" caption="Close" shortcut="ctrl W" mnemonic="c" icon="images/toolbars/cancel.png" immediate="true" visibleWhen="#{mode=='init'}"/>
         <invoker type="formActions" action="printBill" caption="Print" shortcut="ctrl P" mnemonic="p" icon="images/toolbars/print.ping" visibleWhen="#{mode=='init'}"/>

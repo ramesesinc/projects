@@ -1,3 +1,14 @@
+[getNodes]
+select n.name, n.title as caption
+from sys_wf_node n
+where n.processname = 'consolidation'
+and n.name not like 'assign%'
+and n.name not in ('start', 'provapprover')
+and n.name not like 'for%'
+and exists(select * from sys_wf_transition where processname='consolidation' and parentid = n.name)
+order by n.idx
+
+
 [getList]
 SELECT 
 	c.*,
@@ -298,10 +309,6 @@ ORDER BY f.tdno
 SELECT trackingno FROM rpttracking WHERE objid = $P{objid}
 
 
-[findOpenTask]
-SELECT action, msg FROM rpttask WHERE objid = $P{objid} AND enddate IS NULL 
-
-
 [deleteTasks]
 DELETE FROM consolidation_task WHERE refid = $P{objid}
 
@@ -485,3 +492,17 @@ from consolidationaffectedrpu arpu
 where arpu.consolidationid = $P{consolidationid}
 and arpu.objid <> $P{objid}
 and arpu.newsuffix = $P{newsuffix}
+
+
+[findOpenTask]  
+select * from consolidation_task where refid = $P{objid} and enddate is null
+
+
+[findOpenTaskFromFaas]
+select * from consolidation_task 
+where refid in (
+	select objid from consolidation where newfaasid = $P{objid}
+	union 
+	select consolidationid from consolidationaffectedrpu where newfaasid = $P{objid}
+)
+and enddate is null

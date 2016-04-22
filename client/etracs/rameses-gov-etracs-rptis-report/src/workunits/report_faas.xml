@@ -43,8 +43,9 @@
             void saveSignatures(reportdata){
                 reportdata.signatories.each{ k, v ->
                     def objid = v.objid + '-' + v.state 
-                    if (v.signature?.image)
+                    if (v.signature?.image){
                         v.signatureis = DBImageUtil.getInstance().saveImageToFile(objid, v.signature.image)
+                    }
                 }
             }
             
@@ -78,9 +79,9 @@
                     return [
                         new SubReport( 'BuildingStructure', reportPath + 'bldg/BuildingStructure.jasper'),
                         new SubReport( 'AdditionalItem', reportPath + 'bldg/AdditionalItem.jasper'),
+                        new SubReport( 'AdditionalItem2', reportPath + 'bldg/AdditionalItem2.jasper'),
                         new SubReport( 'PropertyAssessment', reportPath + 'bldg/PropertyAssessment.jasper'),
                         new SubReport( 'AnnotationList', reportPath + 'bldg/FAASAnnotationList.jasper'),
-                        new SubReport( 'Signatories', reportPath + 'Signatories.jasper'),
                     ] as SubReport[]
                 }
                 if( rputype == 'mach' ) {

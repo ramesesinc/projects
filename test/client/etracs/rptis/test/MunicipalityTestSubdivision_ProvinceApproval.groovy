@@ -43,6 +43,7 @@ class MunicipalityTestSubdivision_ProvinceApproval
         def task = munisvc.doReceive(subdivision)
         task = munisvc.doExamination(task)
         task = munisvc.doTaxmapping(task, faas)
+        munisvc.testTaxmapping(subdivision)
         task = munisvc.doAppraisal(task)
         task = munisvc.doRecommender(task)
         munisvc.submitToProvince(task)

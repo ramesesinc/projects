@@ -1,0 +1,69 @@
+<workunit  schemaName="waterworks_application">
+    <invokers>
+        <invoker type="waterworks_application:create"
+                 formTitle="New Water Application" 
+                 formId="waterworks_new"
+                 action="start" />
+    </invokers>
+    <code>
+        <![CDATA[
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.seti2.models.*;
+        
+        class WaterworksNewApplication extends CrudPageFlowModel { 
+        
+            @Service('WaterworksApplicationRuleService')
+            def appSvc; 
+        
+            void afterCreate() { 
+                entity.address = [:]; 
+            }
+        
+            void computeFee() { 
+                def result = appSvc.getInitialInfo( [:] );
+                entity.fees = result.fees; 
+                entity.total = result.total;
+                entity.requirements = result.requirements; 
+                feeList.reload();
+                requirementList.reload();
+            } 
+        
+            def feeList = [
+                fetchList: {o-> return entity.fees; }
+            ] as BasicListModel;
+            
+            def requirementList = [
+                fetchList: {o-> return entity.requirements; }
+            ] as BasicListModel;
+        }
+        ]]>
+    </code>
+    <pageflow>
+        <start>
+            <transition to="initial"/>
+        </start>
+        <page name="initial" title="Waterworks Application Initial Page">
+            <transition to="compute-fees" caption="Next" action="computeFee"/>
+        </page>
+        <page name="compute-fees" title="Fees and Requirements">
+            <transition to="initial" caption="Back" />
+            <transition to="success" caption="Submit" confirm="You are about to save the record. Proceed?" 
+                        action="saveCreate"/>
+        </page>
+        <page name="success" title="Application"> 
+            <transition to="end" caption="Close"/>
+        </page>
+        <end/>
+    </pageflow>        
+    
+    <pages>
+        <page name="initial" template="com.rameses.gov.etracs.waterworks.views.WaterworksApplicationInitialPage"/>
+        <page name="compute-fees" template="com.rameses.gov.etracs.waterworks.views.WaterworksApplicationComputeFeePage"/>
+        <page name="success" template="com.rameses.gov.etracs.waterworks.views.WaterworksApplicationSuccessPage"/>
+    </pages>
+      
+</workunit>

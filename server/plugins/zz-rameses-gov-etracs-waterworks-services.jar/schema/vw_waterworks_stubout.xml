@@ -1,0 +1,17 @@
+<schema adapter="waterworks"> 
+
+	<element tablename="vw_waterworks_stubout">
+		<field name="objid" primary="true"/> 
+		<field name="code"/> 
+		<field name="description"/> 
+		<field name="zone_objid"/> 
+		<field name="zone_code"/> 
+		<field name="zone_description"/> 
+		<field name="sector_objid"/> 
+		<field name="sector_code"/> 
+		<field name="area_objid"/> 
+		<field name="area_title"/> 
+		<field name="area_assignee_objid"/> 
+		<field name="area_assignee_name"/> 		
+	</element> 
+</schema>

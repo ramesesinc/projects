@@ -5,14 +5,13 @@ import com.rameses.waterworks.bean.Account;
 import com.rameses.waterworks.bean.Area;
 import com.rameses.waterworks.bean.Rule;
 import com.rameses.waterworks.bean.Stubout;
-import com.rameses.waterworks.bean.StuboutAccount;
+import com.rameses.waterworks.bean.Zone;
 import com.rameses.waterworks.database.Database;
 import com.rameses.waterworks.database.DatabasePlatformFactory;
 import com.rameses.waterworks.dialog.Dialog;
 import com.rameses.waterworks.layout.Header;
 import com.rameses.waterworks.service.MobileRuleService;
-import com.rameses.waterworks.service.MobileService;
-import com.rameses.waterworks.service.AreaService;
+import com.rameses.waterworks.service.MobileDownloadService;
 import com.rameses.waterworks.util.SystemPlatformFactory;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,10 +40,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.Callback;
 
-/**
- *
- * @author Dino
- */
 public class Download {
     
     VBox root;
@@ -97,15 +92,30 @@ public class Download {
         download.setOnAction(new EventHandler<ActionEvent>(){
             @Override
             public void handle(ActionEvent event) {
+                Thread t = new Thread(){
+                    @Override
+                    public void run(){
+                        Platform.runLater(new Runnable(){
+                            @Override
+                            public void run() {
+                                download.setDisable(true);
+                            }
+                        });
+                    }
+                };
+                t.start();
                 //GET THE SELECTED AREAS FOR DOWNLOAD
-                List<String> groupids = new ArrayList();
+                List<String> selectedAreas = new ArrayList();
+                String areaid = null;
                 for(Area r : listView.getItems()){
                     if(r.isSelected()){
-                        groupids.add(r.getObjid());
+                        selectedAreas.add(r.getObjid());
+                        areaid = r.getObjid();
                     }
                 }
                 
-                if(groupids.size() > 1){
+                if(selectedAreas.size() > 1){
+                    Dialog.hide();
                     Dialog.showAlert("Multiple downloads are not supported!");
                     return;
                 }
@@ -113,8 +123,8 @@ public class Download {
                 //INIT DOWNLOAD
                 Map params = new HashMap();
                 params.put("assigneeid", SystemPlatformFactory.getPlatform().getSystem().getUserID());
-                params.put("groupids", groupids);
-                MobileService s1  = new MobileService();
+                params.put("areaid", areaid);
+                MobileDownloadService s1  = new MobileDownloadService();
                 Map initialData = s1.initForDownload(params);
                 
                 batchid = initialData.get("batchid") != null ? initialData.get("batchid").toString() : "";
@@ -125,7 +135,7 @@ public class Download {
                 accountList = new ArrayList<Map>();
                 Map params2 = new HashMap();
                 params2.put("batchid", batchid);
-                MobileService mobileSvc = new MobileService();
+                MobileDownloadService mobileSvc = new MobileDownloadService();
                 List<Map> result = mobileSvc.download(params2);
                 if(!mobileSvc.ERROR.isEmpty()) error = mobileSvc.ERROR;
                 for(Map account: result){
@@ -134,15 +144,17 @@ public class Download {
                 
                 downloadsize = accountList.size();
                 if(!error.isEmpty()) {
+                    Dialog.hide();
                     Dialog.showError(error.toString());
                     return;
                 }
                 if(downloadsize < 1){
+                    Dialog.hide();
                     Dialog.showError("No data to download");
                     return;
                 }
                 
-                //STORE THE READING GROUPS, STUBOUTS, STUBOUT_ACCOUNTS
+                //SAVE AREA, STUBOUTS
                 clearArea();
                 for(Area r : listView.getItems()){
                     if(r.isSelected()){
@@ -172,6 +184,7 @@ public class Download {
                             @Override
                             public void handle(KeyEvent event) {
                                 if(event.getCode() == KeyCode.ESCAPE){
+                                    if(Dialog.isOpen){ Dialog.hide(); return; }
                                     Main.ROOT.setCenter(new Home().getLayout());
                                 }
                             }
@@ -179,11 +192,11 @@ public class Download {
                         Map params = new HashMap();
                         params.put("batchid", batchid);
                         params.put("downloadedlist", downloadedList);
-                        Main.LOG.error("DOWNLOADED LIST", downloadedList.toString());
-                        MobileService svc = new MobileService();
+                        MobileDownloadService svc = new MobileDownloadService();
                         svc.cancelDownload(params);
                     }
                 });
+                download.setDisable(false);
             }
         });
         
@@ -199,6 +212,7 @@ public class Download {
             @Override
             public void handle(KeyEvent event) {
                 if(event.getCode() == KeyCode.ESCAPE){
+                    if(Dialog.isOpen){ Dialog.hide(); return; }
                     Main.ROOT.setCenter(new Home().getLayout());
                 }
             }
@@ -242,7 +256,7 @@ public class Download {
                 if(counter == initCount){
                     Map params = new HashMap();
                     params.put("batchid", batchid);
-                    MobileService svc = new MobileService();
+                    MobileDownloadService svc = new MobileDownloadService();
                     status = svc.confirmDownload(params);
                 }
                 
@@ -287,6 +301,7 @@ public class Download {
                                     @Override
                                     public void handle(KeyEvent event) {
                                         if(event.getCode() == KeyCode.ESCAPE){
+                                            if(Dialog.isOpen){ Dialog.hide(); return; }
                                             Main.ROOT.setCenter(new Home().getLayout());
                                         }
                                     }
@@ -310,27 +325,30 @@ public class Download {
                     @Override
                     public void run() {
                         Map params = new HashMap();
-                        params.put("assigneeid", SystemPlatformFactory.getPlatform().getSystem().getUserID());
+                        params.put("userid", SystemPlatformFactory.getPlatform().getSystem().getUserID());
 
-                        AreaService areaSvc = new AreaService();
-                        List<Map> result = areaSvc.getListByAssignee(params);
+                        MobileDownloadService mobileSvc = new MobileDownloadService();
+                        List<Map> result = mobileSvc.getAreasByUser(params);
+                        System.out.println("AREAS : " + result);
 
                         ObservableList<Area> data = FXCollections.observableArrayList();
                         for(Map m : result){
-                            String objid = m.get("objid").toString();
-                            String title = m.get("title").toString();
+                            String objid = m.get("objid") != null ? m.get("objid").toString() : "";
+                            String title = m.get("title") != null ? m.get("title").toString() : "";
                             Map assignee = (Map) m.get("assignee");
-                            String assigneeid = assignee.get("objid").toString();
-                            String assigneename = assignee.get("name").toString();
-                            String duedate = m.get("duedate").toString();
-                            Object stubout = m.get("stubouts");
-                            data.add(new Area(objid,title,assigneeid,duedate,false,stubout));
+                            String assigneeid = "", assigneename = "";
+                            if(assignee != null){
+                                assigneeid = assignee.get("objid").toString();
+                                assigneename = assignee.get("name").toString();
+                            }
+                            String sectorid = m.get("sectorid") != null ? m.get("sectorid").toString() : "";
+                            data.add(new Area(objid,title,assigneeid,sectorid,false));
                         }
                         listView.setItems(data);
                         
                         Dialog.hide();
-                        if(!areaSvc.ERROR.isEmpty()){
-                            Dialog.showError(areaSvc.ERROR);
+                        if(!mobileSvc.ERROR.isEmpty()){
+                            Dialog.showError(mobileSvc.ERROR);
                         }
                     }
                 });
@@ -341,33 +359,53 @@ public class Download {
     
     private void saveArea(Area r){
         DatabasePlatformFactory.getPlatform().getDatabase().createArea(r);
-        List<Map> stubouts = (List<Map>) r.getStubout();
+        
+        Map params = new HashMap();
+        params.put("areaid", r.getObjid());
+        List<Map> stubouts = (List<Map>) new MobileDownloadService().getStuboutsByArea(params);
         Iterator<Map> i = stubouts.iterator();
         while(i.hasNext()){
             Map m = i.next();
             String objid = m.get("objid")!=null ? m.get("objid").toString() : "";
-            String title = m.get("title")!=null ? m.get("title").toString() : "";
+            String code = m.get("code")!=null ? m.get("code").toString() : "";
             String description = m.get("description")!=null ? m.get("description").toString() : "";
-            List<Map> accounts = m.get("accounts")!=null ? (List<Map>)m.get("accounts") : new ArrayList();
+            String zoneid = "", zonecode = "", zonedesc = "";
+            String sectorid ="", sectorcode = "";
+            String areaid = "", areatitle = "";
+            String assigneeid = "", assigneename = "";
             
-            Stubout stubout = new Stubout(objid,title,description,r.getObjid(),accounts);
-            DatabasePlatformFactory.getPlatform().getDatabase().createStubout(stubout);
-            
-            Iterator<Map> it = accounts.iterator();
-            while(it.hasNext()){
-                Map mm = it.next();
-                String acct_objid = mm.get("objid")!=null ? mm.get("objid").toString() : "";
-                String acct_parentid = mm.get("parentid")!=null ? mm.get("parentid").toString() : "";
-                String acct_acctid = mm.get("acctid")!=null ? mm.get("acctid").toString() : "";
-                int acct_sortorder = mm.get("sortorder")!=null ? Integer.parseInt(mm.get("sortorder").toString()) : 0;
-                StuboutAccount sa = new StuboutAccount(acct_objid, acct_parentid, acct_acctid, acct_sortorder);
-                DatabasePlatformFactory.getPlatform().getDatabase().createStuboutAccount(sa);
+            Map zone = (Map) m.get("zone");
+            if(zone!=null){
+                zoneid = zone.get("objid") != null ? zone.get("objid").toString() : "";
+                zonecode = zone.get("code") != null ? zone.get("code").toString() : "";
+                zonedesc = zone.get("description") != null ? zone.get("description").toString() : "";
             }
+            
+            Map sector = (Map) m.get("sector");
+            if(sector!=null){
+                sectorid = sector.get("objid") != null ? sector.get("objid").toString() : "";
+                sectorcode = sector.get("code") != null ? sector.get("code").toString() : "";
+            }
+            
+            Map area = (Map) m.get("area");
+            if(area!=null){
+                areaid = area.get("objid") != null ? area.get("objid").toString() : "";
+                areatitle = area.get("title") != null ? area.get("title").toString() : "";
+                Map assignee = (Map) area.get("assignee");
+                if(assignee != null){
+                    assigneeid = assignee.get("objid") != null ? assignee.get("objid").toString() : "";
+                    assigneename = assignee.get("name") != null ? assignee.get("name").toString() : "";
+                }
+            }
+            
+            Stubout stubout = new Stubout(objid, code, description, zoneid, zonecode, zonedesc, sectorid, sectorcode, areaid, areatitle, assigneeid, assigneename);
+            DatabasePlatformFactory.getPlatform().getDatabase().createZone(new Zone(zoneid, zonecode, zonedesc, sectorcode));
+            DatabasePlatformFactory.getPlatform().getDatabase().createStubout(stubout);
         }
     }
     
     private void clearArea(){
-        DatabasePlatformFactory.getPlatform().getDatabase().clearStuboutAccount();
+        DatabasePlatformFactory.getPlatform().getDatabase().clearZone();
         DatabasePlatformFactory.getPlatform().getDatabase().clearStubout();
         DatabasePlatformFactory.getPlatform().getDatabase().clearArea();
     }

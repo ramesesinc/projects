@@ -25,5 +25,8 @@
 		<field name="rundate" required="true"/>
 		<field name="items" required="true"/>
 		<field name="info" required="true"/>
+		<field name="itemaccountid" required="true"/>
+		<field name="stuboutid" required="true"/>
+		<field name="sortorder" required="true"/>
 	</element>
 </schema>

@@ -1,7 +1,7 @@
 <workunit>
     
    <invokers>
-         <invoker folderid="home/collection" caption="Cash Receipt (Online)" action="init" index="-5" role="COLLECTOR,SUBCOLLECTOR" target="window"/>
+         <invoker folderid="home/collection" caption="Online Cash Receipt" action="init" index="-5" role="COLLECTOR,SUBCOLLECTOR" target="window"/>
    </invokers>
    
    <code>

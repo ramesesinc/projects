@@ -1,0 +1,19 @@
+import com.rameses.annotations.*;
+
+class AMLLOVInterceptor {
+
+	@Service('AMLRequireTypeService')
+	def reqSvc;
+
+	@Cache 
+	def cache; 
+
+	@Before( pattern="LOVService.getKey(Values|List)", eval="#{args[0]=='REQUIRE_INFO_TYPES'}" ) 
+	void beforeGet( evt ) { 
+		def name = evt.args[0]; 
+		def props = cache.get( name ); 
+		if ( props == null ) { 
+			cache.put( name, reqSvc.getKeys() ); 
+		}
+	}  
+} 

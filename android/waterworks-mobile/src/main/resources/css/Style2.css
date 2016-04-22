@@ -6,7 +6,7 @@
 #header-title
 {
     -fx-font-family: "Tahoma";
-    -fx-font-size: 15px;
+    -fx-font-size: 18px;
     -fx-font-weight: bold;
     -fx-fill: white;
 }
@@ -19,7 +19,7 @@
 .footer-title
 {
     -fx-font-family: "Tahoma";
-    -fx-font-size: 11px;
+    -fx-font-size: 13px;
     -fx-fill: white;
 }
 
@@ -30,14 +30,14 @@
 
 #login-title{
     -fx-font-family: "Tahoma";
-    -fx-font-size: 17px;
+    -fx-font-size: 20px;
     -fx-font-weight: bold;
 }
 
 .login-field
 {
     -fx-font-family: "Tahoma";
-    -fx-font-size: 13px;
+    -fx-font-size: 16px;
     -fx-background-color: white;
     -fx-border-radius: 8px;
     -fx-border-color: grey;
@@ -47,13 +47,13 @@
 .login-label
 {
     -fx-font-family: "Tahoma";
-    -fx-font-size: 13px;
+    -fx-font-size: 17px;
 }
 
 #login-button
 {
     -fx-font-family: "Arial";
-    -fx-font-size: 15px;
+    -fx-font-size: 18px;
     -fx-font-weight: bold;
     -fx-padding: 7px 20px 7px 20px; 
     -fx-border-radius: 8px;
@@ -64,29 +64,30 @@
 .terminal-notice
 {
     -fx-background-color: yellow;
-    -fx-font-size: 13px;
+    -fx-background-radius: 8px;
+    -fx-font-size: 16px;
     -fx-border-width: 1px;
     -fx-border-color: grey;
     -fx-border-radius: 8px;
-    -fx-padding: 5px 10px;
+    -fx-padding: 10px 15px;
 }
 
 .terminal-radio
 {
-    -fx-font-size: 13px;
+    -fx-font-size: 16px;
     -fx-font-weigh: bold;
 }
 
 .terminal-label
 {
-    -fx-font-size: 13px;
+    -fx-font-size: 16px;
     -fx-font-weigh: bold;
 }
 
 .terminal-field
 {
     -fx-font-family: "Tahoma";
-    -fx-font-size: 13px;
+    -fx-font-size: 16px;
     -fx-background-color: white;
     -fx-border-radius: 8px;
     -fx-border-color: grey;
@@ -96,7 +97,7 @@
 .terminal-button
 {
     -fx-font-family: "Arial";
-    -fx-font-size: 15px;
+    -fx-font-size: 18px;
     -fx-font-weight: bold;
     -fx-padding: 7px 20px 7px 20px; 
     -fx-border-radius: 8px;
@@ -109,38 +110,35 @@
 }
 
 .home-title{
-    -fx-font-size: 16px;
+    -fx-font-size: 19px;
     -fx-fill: black;
 }
 
 .home-desc{
-    -fx-font-size: 12px;
+    -fx-font-size: 15px;
     -fx-fill: grey;
 }
 
 #search-account
 {
-    -fx-font-size: 14px;
+    -fx-font-size: 17px;
     -fx-padding: 5px;
 }
 
 .account-field-name
 {
-    -fx-font-size: 13px;
+    -fx-font-size: 18px;
     -fx-font-weight: bold;
-    -fx-padding: 5px;
+    -fx-padding: 8px;
     -fx-text-fill: white;
     -fx-background-color: #7dbce8;
     -fx-background-radius: 5px 0px 0px 5px;
-    -fx-border-width: 1px;
-    -fx-border-color: #7dbce8;
-    -fx-border-radius: 5px 0px 0px 5px;
 }
 
 .account-field-value
 {
-    -fx-font-size: 13px;
-    -fx-padding: 5px;
+    -fx-font-size: 18px;
+    -fx-padding: 7px;
     -fx-background-radius: 0px 5px 5px 0px;
     -fx-border-width: 1px;
     -fx-border-color: #7dbce8;
@@ -172,7 +170,7 @@
 
 .account-label
 {
-    -fx-font-size: 12px;
+    -fx-font-size: 15px;
     -fx-font-weight: bold;
 }
 
@@ -202,13 +200,13 @@
 
 #sheet-search
 {
-    -fx-font-size: 13px;
-    -fx-padding: 5px;
+    -fx-font-size: 18px;
+    -fx-padding: 7px;
     -fx-background-radius: 0px 5px 5px 0px;
     -fx-border-width: 1px;
     -fx-border-color: #7dbce8;
     -fx-border-radius: 0px 5px 5px 0px;
-    -fx-background-image: url("search2.png");
+    -fx-background-image: url("search.png");
     -fx-background-position: center;
     -fx-background-repeat: no-repeat;
 }
@@ -224,7 +222,7 @@
 
 .rbutton-text
 {
-    -fx-font-size: 30px;
+    -fx-font-size: 60px;
     -fx-font-weight: bold;
     -fx-fill: #dedfe0;
 }
@@ -246,12 +244,12 @@
 
 #download-listview
 {
-    -fx-font-size: 15px;
+    -fx-font-size: 18px;
 }
 
 #download-title
 {
-    -fx-font-size: 22px;
+    -fx-font-size: 35px;
     -fx-font-weight: bold;
     -fx-underline: true;
     -fx-text-fill: #336699;
@@ -270,7 +268,7 @@
 {
     -fx-padding: 5 10 5 10;
     -fx-text-fill: white;
-    -fx-font-size: 15px;
+    -fx-font-size: 18px;
     -fx-background-color: #5cb1e1;
     -fx-background-radius: 10px;
     -fx-border-radius: 10px;
@@ -278,7 +276,7 @@
 
 #download-status
 {
-    -fx-font-size: 17px; 
+    -fx-font-size: 22px; 
     -fx-padding: 15 0 0 0;
 }
 
@@ -296,20 +294,20 @@
 
 #upload-zone-lb
 {
-    -fx-font-size: 20px;
+    -fx-font-size: 24px;
     -fx-font-weight: bold;
     -fx-text-fill: #336699;
 }
 
 #upload-sector-lb
 {
-    -fx-font-size: 17px;
+    -fx-font-size: 21px;
     -fx-text-fill: #424141;
 }
 
 #upload-sectorsize-lb
 {
-    -fx-font-size: 17px;
+    -fx-font-size: 21px;
     -fx-font-weight: bold;
     -fx-text-fill: #336699;
 }
@@ -331,14 +329,14 @@
 
 .readingbulletin-label
 {
-    -fx-font-size: 15px;
+    -fx-font-size: 18px;
     -fx-font-weight: bold;
 }
 
 .nav-button
 {
     -fx-font-family: "Arial";
-    -fx-font-size: 17px;
+    -fx-font-size: 21px;
     -fx-font-weight: bold;
     -fx-padding: 7px 20px 7px 20px; 
     -fx-border-radius: 0px;
@@ -349,7 +347,7 @@
 .accountlist-label
 {
     -fx-font-family: "Arial";
-    -fx-font-size: 17px;
+    -fx-font-size: 21px;
     -fx-font-weight: bold;
     -fx-padding: 7px 12px 7px 12px; 
     -fx-border-radius: 10px;
@@ -361,14 +359,14 @@
 
 #size-text
 {
-    -fx-font-size: 30px;
+    -fx-font-size: 70px;
     -fx-font-weight: bold;
     -fx-fill: black;
 }
 
 #record-text
 {
-    -fx-font-size: 22px;
+    -fx-font-size: 25px;
     -fx-font-style: italic;
     -fx-fill: black;
 }
@@ -376,16 +374,25 @@
 .setting-text
 {
     -fx-font-family: "Tahoma";
-    -fx-font-size: 22px;
+    -fx-font-size: 20px;
     -fx-font-weight: bold;
     -fx-text-fill: black;
 }
 
 .dialog-label
 {
-    -fx-font-size: 14px;
+    -fx-font-size: 17px;
 }
 
 #account-detail-readingcontainer{
     -fx-background-color: aliceblue;
+}
+
+#numpad-container{
+    -fx-background-color: #B1B2B4;
+}
+
+.numpad-button{
+    -fx-base: white;
+    -fx-font-size: 25px;
 }

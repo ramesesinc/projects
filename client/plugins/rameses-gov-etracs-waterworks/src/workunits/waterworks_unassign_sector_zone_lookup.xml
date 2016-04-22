@@ -1,0 +1,6 @@
+<workunit extends="wtemplates/ServiceLookupController.xml" 
+          serviceName="WaterworksUnassignSectorZoneLookupService">
+    <invokers>
+        <invoker type="waterworks_unassign_sector_zone:lookup" caption="Lookup Zones" action="init"/>  
+    </invokers>
+</workunit>

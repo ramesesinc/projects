@@ -1,8 +1,20 @@
+<!--
 <workunit extends="wtemplates/ListController.xml" serviceName="UserService" 
     entityName="user" rows="20">
     <invokers>
         <invoker folderid="/explorer/admin" caption="Users" role="SYSADMIN" permission="system" index="0"/>
         <invoker folderid="/home/admin" caption="Manage Users" role="SYSADMIN" 
             permission="system" index="0" icon="home/icons/admin-user.png"/>
+   </invokers>
+</workunit>
+-->
+
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" schemaName="sys_user"
+        cols="username,lastname,firstname,middlename,jobtitle">
+    <invokers>
+        <invoker folderid="/explorer/admin" caption="Users" role="SYSADMIN" 
+            permission="system" index="0" action="init"/>
+        <invoker folderid="/home/admin" caption="Manage Users" role="SYSADMIN" 
+            permission="system" index="0" icon="home/icons/admin-user.png"  action="init"/>
    </invokers>
 </workunit>

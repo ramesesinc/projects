@@ -1,0 +1,23 @@
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" schemaName="entityid"
+          cols="idtype,idno,dtissued,dtexpiry">
+    <invokers>
+        <invoker type="individualentity:option" caption="Identifications" index="200" action="init"/>
+    </invokers>
+    <code>
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.seti2.models.*;
+        
+        class IndividualOptionIdentificationList extends CrudListModel {
+            @Caller
+            def caller;
+        
+            def getEntityid() {
+                return caller?.entity?.objid; 
+            } 
+        
+            def getCustomFilter() {
+                return ["entityid=:entityid", [entityid:caller.entity.objid]];
+            }
+        }
+    </code>    
+</workunit>

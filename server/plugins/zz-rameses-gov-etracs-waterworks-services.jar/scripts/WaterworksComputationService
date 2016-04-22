@@ -48,25 +48,18 @@ class WaterworksComputationService  {
 		if(!o.volume) 
 			throw new Exception('Classification Volume is required.');
 		
-		int vol = Integer.parseInt( ""+ o.volume );	
+		int vol = o.volume.toInteger();	
 
 		def facts = [];
 		facts << new WaterConsumption( volume: vol );
 		facts << new WaterAccount( classification: classification );
 
-		def res = [:];
-		res.billItemList = new BillItemList();
-
-		def actions = new RuleAction();
-		actions.addCommand( "compute-fee", new ComputeFee(res:res));
-
-		ruleSvc.execute( "waterworkscomputation", facts, actions, null );
+		def res = ruleSvc.execute( "waterworkscomputation", facts, null, null );
 
 		def item = res.billItemList.items[0];
 		if(!item) 
 			throw new Exception('There is no computation applied. Please check rule fatcs')
 
-		println item;	
 		return item.toItem();
 	}
 

@@ -1,0 +1,22 @@
+<workunit>
+    
+   <invokers>
+         <invoker type="sys_requirement_type:handler" caption="Any Valid ID Handler" name="any_valid_id"/>
+         <invoker type="sys_requirement_type:any_valid_id" caption="Any Valid ID Handler" action="init"/>
+   </invokers>
+   
+   <code>
+       <![CDATA[
+        import com.rameses.enterprise.models.*;
+        
+        class AnyValidIDHandler  extends AbstractRequirementModel {
+       
+        }      
+       ]]>
+   </code>
+   
+   <pages>
+       <page template="com.rameses.enterprise.views.RequirementHandlerAnyIDPage" />
+   </pages>
+   
+</workunit>

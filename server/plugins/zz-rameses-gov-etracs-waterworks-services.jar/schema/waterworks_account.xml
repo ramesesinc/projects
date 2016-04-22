@@ -1,17 +1,15 @@
 <schema adapter="waterworks">
 	<element tablename="waterworks_account">
-		<field name="objid" primary="true"  prefix="WA"/>
-		<field name="state" required="true" visible="false" defaultValue="ACTIVE"/>
+		<field name="objid" primary="true"  prefix="WACC"/>
+		<field name="state"  visible="false" defaultValue="ACTIVE"/>
 		<field name="dtstarted" required="false" indexed="true" type="date" caption="Date Started"/>
-		<field name="acctno" required="true" indexed="true" caption="Acct No"/>
-		<field name="acctname" required="true" indexed="true" caption="Acct Name"/>
-		<!--
-		<complex name="application" ref="waterworks_application" jointype="many-to-one" required="false"> 
-			<field name="applicationid" target="objid"/>
-		</complex>
-		-->
-		<field name="owner_objid" required="true" visible="false" caption="Owner ID"/>
-		<field name="owner_name" required="true" indexed="true" caption="Owner Name"/>
+		<field name="acctno" required="true" indexed="true" caption="Acct No" searchable="true"/>
+		<field name="acctname" required="true" indexed="true" caption="Acct Name" searchable="true"/>
+
+		<field name="applicationid" required="false"/>
+
+		<field name="owner_objid" visible="false" caption="Owner ID"/>
+		<field name="owner_name" indexed="true" caption="Owner Name"/>
 		<field name="address_type" caption="Address Type" visible="false"/>
 		<field name="address_text" caption="Address"/>
 		<field name="address_barangay_objid" required="true" caption="Barangay ID"/>
@@ -25,9 +23,6 @@
 		<field name="address_bldgno" caption="Building No"/>
 		<field name="address_bldgname"  caption="Building Name"/>
 		<field name="address_pin" caption="PIN"/>
-		<field name="mobileno" required="false" caption="Mobile No"/>
-		<field name="phoneno" required="false" caption="Phone No"/>
-		<field name="email" required="false" caption="Email"/>
 		
 		<complex name="meter" ref="waterworks_meter" jointype="many-to-one"  required="true">
 			<key field="meterid" target="objid"/>
@@ -36,22 +31,21 @@
 			<key field="classificationid" target="objid"/>
 		</complex>	
 		
+		<!-- Dates -->
+		<field name="fromperiod"  indexed="true" type="date" required="true"/>
+		<field name="toperiod"  indexed="true" type="date" required="true"/>
+		<field name="duedate"  indexed="true" type="date" required="true"/>
+		<field name="readingdate"  indexed="true" type="date" caption="Last Reading Date" required="true"/>
+		<field name="disconnectiondate" indexed="true" type="date" caption="Disconnection Date" required="true"/>
+		<field name="lastdateread" required="false" indexed="true" type="timestamp" caption="Last Date Read"/>
+		<field name="lastdatepaid" required="false" indexed="true" type="timestamp" caption="Last Date Paid"/>
 
-		<field name="balance" required="true" indexed="true" type="decimal" caption="Balance"/>
-		<field name="lastreadingdate" required="true" indexed="true" type="date" caption="Last Reading Date"/>
-		<field name="lasttxndate" required="true" indexed="true" type="date" caption="Last Txn Date"/>
-		<field name="lastreadingmonth" required="true" indexed="true" type="integer" caption="Last Reading Month"/>
-		<field name="lastreadingyear" required="true" indexed="true" type="integer" caption="Last Reading Year"/>
-		<field name="lastreading" required="true" indexed="true" type="integer" caption="Last Reading"/>
-		<field name="prevreading" required="true" indexed="true" type="integer" caption="Previous Reading"/>
-
-		<!--
-		<complex name="stubout" ref="waterworks_account_stubout_link" jointype="many-to-one" required="false">
-			<key field="objid" target="acctid"/>
+		<!-- These are flag fields to check if the date is subject for disconnection -->
+		<complex name="stubout" ref="waterworks_stubout" jointype="many-to-one" required="true">
+			<key field="stuboutid" target="objid"/> 
 		</complex>
-		-->
-		
+		<field name="stuboutindex" required="true"/> 
+		<field name="currentreading" required="true"/>
 	</element>
-
 
 </schema>

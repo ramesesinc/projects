@@ -6,7 +6,7 @@ import com.rameses.waterworks.database.Database;
 import com.rameses.waterworks.database.DatabasePlatformFactory;
 import com.rameses.waterworks.dialog.Dialog;
 import com.rameses.waterworks.layout.Header;
-import com.rameses.waterworks.service.MobileService;
+import com.rameses.waterworks.service.MobileUploadService;
 import com.rameses.waterworks.util.SystemPlatformFactory;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -65,7 +65,7 @@ public class Upload {
         textContainer.getChildren().addAll(size_text,record_text,new Separator());
         
         label = new Label("Uploading... Please wait...");
-        label.setStyle("-fx-font-size: 28px; -fx-padding: 10 0 0 0;");
+        label.setId("download-status");
         label.setVisible(false);
         
         progressbar = new ProgressBar();
@@ -102,7 +102,7 @@ public class Upload {
                     map.put("amount", Double.parseDouble(r.getTotalDue()));
                     map.put("batchid", r.getBatchId());
                     
-                    MobileService service = new MobileService();
+                    MobileUploadService service = new MobileUploadService();
                     Map result = service.upload(map);
                     if(!service.ERROR.isEmpty()){
                         error = service.ERROR;
@@ -156,8 +156,8 @@ public class Upload {
         
         upload = new Button("Upload");
         upload.getStyleClass().add("terminal-button");
-        upload.setStyle("-fx-font-size: 26px;");
-        upload.setPrefWidth(180);
+        upload.setStyle(Main.HEIGHT > 700 ? "-fx-font-size: 26px;" : "-fx-font-size: 17px;");
+        upload.setPrefWidth(Main.HEIGHT > 700 ? 180 : 100);
         if(uploadsize < 1){
             Dialog.showAlert("No data to upload!");
             upload.setText("Back");
@@ -214,6 +214,7 @@ public class Upload {
             @Override
             public void handle(KeyEvent event) {
                 if(event.getCode() == KeyCode.ESCAPE){
+                    if(Dialog.isOpen){ Dialog.hide(); return; }
                     Main.ROOT.setCenter(new Home().getLayout());
                 }
             }

@@ -1,0 +1,9 @@
+<schema adapter="waterworks">
+	<element tablename="waterworks_sector">
+		<field name="objid" primary="true" editable="false" caption="Code"/>
+		<field name="code"/>
+		<complex name="zones" ref="waterworks_sector_zone" jointype="one-to-many" orderBy="code">
+			<key field="objid" target="sectorid"/>
+		</complex>	
+	</element>
+</schema>

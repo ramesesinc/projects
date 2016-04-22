@@ -26,7 +26,10 @@ class PersistenceService  {
 	@ProxyMethod
 	public def read( def o ) {
 		if(!o._schemaname) throw new Exception('Please provide a _schemaname');
-		return db.lookup(o._schemaname).read(o);
+
+		def em = db.lookup(o._schemaname);
+		if ( o.debug ) em.debug = o.debug;
+		return em.read(o);
 	}
 
 	private def buildFinders(def o) {

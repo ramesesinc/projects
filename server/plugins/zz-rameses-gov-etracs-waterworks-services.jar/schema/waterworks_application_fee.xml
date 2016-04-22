@@ -1,0 +1,17 @@
+<schema adapter="waterworks">
+
+	<element tablename="waterworks_application_fee">
+		<field name="objid" primary="true"  prefix="WAF"/>
+		<field name="parentid" required="true"/> 
+		<field name="item_objid" required="true"/>
+		<field name="item_code" required="true"/>
+		<field name="item_title" required="true"/>
+		<field name="remarks" />
+		<field name="txntype" required="true"/>
+		<field name="amount" required="true"/>
+		<field name="amtpaid" required="true"/>
+		<field name="balance" expr="amount-amtpaid"/>
+		<field name="installmentid" />
+	</element>
+
+</schema>

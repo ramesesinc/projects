@@ -1,0 +1,202 @@
+import com.rameses.annotations.*;
+
+import com.rameses.rules.common.*;
+import waterworks.facts.*;
+
+import treasury.facts.*;
+
+class WaterworksBillingService  {
+	
+	@Service("RuleExecutorService")
+	def ruleSvc;
+
+	@DataContext("collectiontype")
+	def colType;
+
+	@DataContext("collectiontype_account")
+	def colTypeAcct;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@DataContext("waterworks_account")
+	def acct;
+
+	@DataContext("waterworks_account_ledger")
+	def wac;
+
+	@DataContext("itemaccount")
+	def itemAcct;
+
+ 	def monthList = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
+
+	//for billing 
+	def buildBillingFacts(def facts, def o) {
+		def currDate = dateSvc.getServerDate();
+		facts << new EffectiveDate( currDate );
+		facts << new CurrentDate(currDate);
+		facts << new BillDate((!o?.billdate)?currDate:o?.billdate);
+	}
+
+	//find the waterworks account by acctno or by objid
+	def findAccount(def o) {
+		def p = null;    
+		if( o.objid ) {
+			p = [objid: o.objid];
+		}
+		else if(o.acctno) {
+			p = [acctno:o.acctno];
+		}
+		if(!p )
+		    throw new Exception('Please specify objid or acctno');
+		def m = acct.find( p ).first();
+		if( !m ) 
+			throw new Exception("Waterworks account not found");
+		return m;	
+	}
+
+	//find the waterworks item account used. This is defined in the collection type
+	def findItemAccount( def o ) {
+	    if(!o.tag) throw new Exception('Please specify tag whether BASIC, SURCHARGE or PENALTY');	
+	    def wct = colType.find( [handler: 'waterworks'] ).first();
+	    if(!wct)
+		throw new Exception( "Collection type handler waterworks not found"  );
+	    def wctacct = colTypeAcct.find( [collectiontypeid: wct.objid, tag: o.tag] ).first();
+	    if(!wctacct) throw new Exception( 'water account specified with tag ' + o.tag + ' not defined in collection type waterworks' )
+
+	    def revItem = itemAcct.find([objid:wctacct.account.objid]).first();
+	    if( !revItem )
+		throw new Exception("Revneue Item Account not found" );
+	    return revItem;  	
+	} 
+
+	@ProxyMethod
+	public def processBilling( def feeList ) {
+
+		def itemAcct = findItemAccount( [tag: 'BASIC' ] ); 
+		
+		//build the facts   
+		def facts = [];
+		feeList.each {
+			def bi = new WaterBillItem();
+			bi.refid = it.objid;
+			bi.item = it;
+			bi.account = new Account(itemAcct);
+			bi.year = it.year;
+			bi.month = it.month;
+			bi.smonth = monthList[it.month-1];
+			bi.reading = it.reading;
+			bi.prevreading = it.prevreading;
+			bi.volume = it.volume;
+			bi.amount = it.amount - it.amtpaid;
+			bi.amtdue = bi.amount;
+			bi.sortorder = (it.year*100)+it.month;
+			res.billItemList.addItem( bi );
+			facts.add( bi );
+		}
+		buildBillingFacts( facts, null );
+
+		def res = ruleSvc.execute( "waterworksbilling", facts, null, null );
+		if( res.billItemList)
+			throw new Exception("No compute fee rules executed");
+		return res.billItemList.buildBillItems();
+	}
+
+
+	/***********************************************************************
+	* this is called by other services. This returns the billing head 
+	* and its items
+	***********************************************************************/
+	@ProxyMethod
+	public def getBilling( def o ) {
+		//get the head. then get the receivables
+		def app = findAccount( o );
+		def feeList = wac.find([parentid: app.objid]).where('amount - amtpaid > 0').list();	
+		if(!feeList)
+		   throw new Exception("There are no upaid items for this account");
+		
+		//build the facts   
+		def facts = [];
+		facts << new WaterAccount(app);
+		feeList.each {
+			def bi = new WaterBillItem();
+			bi.refid = it.objid;
+			bi.item = it;
+			bi.account = new Account(itemAcct);
+			bi.year = it.year;
+			bi.month = it.month;
+			bi.smonth = monthList[it.month-1];
+			bi.volume = it.volume;
+			bi.amount = it.amount - it.amtpaid;
+			bi.amtdue = bi.amount;
+			bi.sortorder = (it.year*100)+it.month;
+			facts << bi;
+		}
+		
+		buildBillingFacts( facts, o );
+		
+
+		//check if there is payment option, use this handler 
+		//if the payoption is partial
+		def handler = { n->
+			if( n == 'payment') {
+				//for partial payment 
+				res.monthList = res.billItemList.items.collect { [month:it.month, year:it.year, smonth:it.smonth] };
+				if(o.payOption?.type=='PARTIAL') {
+					res.billItemList.applyPayment(  o.payOption.amount );
+				}
+				else if(o.payOption?.type=='MONTH') {
+					def mm = o.payOption.month;
+					res.billItemList.items = res.billItemList.items.findAll{  
+						return ((it.year * 100)+it.month) <=  ((mm.year*100)+mm.month) 
+					};
+				} 
+			}
+		}
+
+		def res = ruleSvc.execute( "waterworksbilling", facts, null, handler );
+		app.billitems = res.billItemList.buildBillItems();
+		app.items = res.billItemList.buildReceiptItems();
+		app.amount = app.items.sum{ it.amount };
+		app.monthList = res.monthList;
+		return app;
+	}
+
+	@ProxyMethod
+	def generateReportData(def entity){
+		def billing = [
+            [account: 'WATER FEE', amount: 252.80],
+            [account: 'FRNCHSE TAX', amount: 5.88],
+            [account: 'PCA', amount: 35.76],
+            [account: 'PWA', amount: 5.22]
+        ];
+        def chartdata = [
+            [month: 'Jan', consumption: 37],
+            [month: 'Feb', consumption: 40],
+            [month: 'Mar', consumption: 58],
+            [month: 'Apr', consumption: 94],
+            [month: 'May', consumption: 102],
+            [month: 'Jun', consumption: 70],
+        ];
+        entity.statementno = 'ST-084-0032';
+        entity.printdate = dateSvc.getServerDate();
+        entity.lastpaymentdate = dateSvc.getServerDate();
+        entity.previousamount = 308.00;
+        entity.barcode = '1264939847';
+        entity.consumercode = '89937';
+        entity.consumertype = 'REGULAR';
+        entity.billsequence = 'SEQ-9483-933';
+        entity.duedate = dateSvc.getServerDate();
+        entity.nextduedate = dateSvc.getServerDate();
+        entity.periodfrom = dateSvc.getServerDate();
+        entity.periodto = dateSvc.getServerDate();
+        entity.prevreadingdate = dateSvc.getServerDate();
+        entity.presreadingdate = dateSvc.getServerDate();
+        entity.consumption = entity.lastreading - entity.prevreading;
+        entity.averageconsumption = 22.35;
+        entity.billingdetails = billing;
+        entity.chartdata = chartdata;
+		return entity;
+	}
+
+}

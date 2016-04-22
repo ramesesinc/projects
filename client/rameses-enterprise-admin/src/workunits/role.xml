@@ -1,7 +1,12 @@
 <workunit>
     <invokers>
+        <!--
         <invoker type="role:create" caption="Role" action="create" target="popup"/>
         <invoker type="role:open" caption="Role" action="open" target="popup"/>
+        -->
+        
+        <invoker type="sys_usergroup:create" caption="Role" action="create" target="popup"/>
+        <invoker type="sys_usergroup:open" caption="Role" action="open" target="popup"/>
     </invokers>
     <code>
         <![CDATA[

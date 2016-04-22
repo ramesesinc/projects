@@ -1,0 +1,14 @@
+<workunit schemaName="waterworks_stubout">
+    <invokers>
+        <invoker type="waterworks_stubout:section" caption="General Information" action="init" index="-30"/>
+        
+        <invoker type="formActions" caption="Edit" action="edit" visibleWhen="#{mode=='read'}" immediate="true"/>
+        <invoker type="formActions" caption="Cancel" action="cancel" visibleWhen="#{mode=='edit'}" immediate="true"/>
+        <invoker type="formActions" caption="Save" action="save" visibleWhen="#{mode=='edit'}"/>
+        
+    </invokers>
+    <code class="com.rameses.gov.etracs.waterworks.models.StuboutSectionGeneralModel"/>
+    <pages>
+       <page template="com.rameses.gov.etracs.waterworks.views.StuboutGeneralPage"/>
+    </pages>
+</workunit>

@@ -8,33 +8,30 @@ class WaterworksAccountPersistenceInterceptor{
 	@DataContext("waterworks_account_consumption")
 	def wac;
 
-	@Before(pattern="PerisistenceService.create", eval="#{args[0]._schemaname == 'waterworks_account'}")
+	@Service("SequenceService")
+	def seqSvc;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@Before(pattern="PersistenceService.create", eval="#{args[0]._schemaname == 'waterworks_account'}")
 	public void beforeCreate(def evt) {
 		def o  = evt.args[0];
 		if(o.lastreading < o.prevreading) 
             throw new Exception('Last Reading must be greater than Prev. Reading!');
+
+        if( !o.acctno ) {
+        	def prefix = "WACC" + dateSvc.getServerYear();
+        	o.acctno = prefix  + seqSvc.getNextFormattedSeriesA( prefix, 5 );
+        }    
 	}
 
 	@After(pattern="PersistenceService.create", eval="#{args[0]._schemaname == 'waterworks_account'}")
 	public void afterCreate(def evt) {
 		def o = evt.result;
-		wm.find([objid:o.meter.objid]).update([currentacctid:o.objid]);
 
-		if(o.lastreading){
-			def c = [:];
-			c.account = o;
-			c.dtreading = o.lastreadingdate;
-			c.year = o.lastreadingyear;
-			c.month = o.lastreadingmonth;
-			c.prevreading = o.prevreading;
-			c.reading = o.lastreading;
-			c.readingmethod = 'CAPTURE';
-			c.reader = [:]; 
-			c.volume = o.lastreading - o.prevreading;
-			c.amount = o.balance;
-			c.amtpaid = 0.00;
-			wac.create(c);
-		}
+		//update the meter information
+		wm.find([objid:o.meter.objid]).update([currentacctid:o.objid]);
 	}
 
 }

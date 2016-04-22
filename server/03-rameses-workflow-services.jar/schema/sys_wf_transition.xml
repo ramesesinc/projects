@@ -1,6 +1,6 @@
 <schema adapter="system">
 
-	<element tablename="sys_wf_transition">
+	<element tablename="sys_wf_transition" orderBy="idx">
 		<field name="parentid" primary="true"/>
 		<field name="processname" primary="true"/>
 		<field name="to" primary="true"/>
@@ -9,6 +9,7 @@
 		<field name="eval" />
 		<field name="properties" />
 		<field name="permission" />
+		<field name="caption"/>
 	</element>	
 
 </schema>	

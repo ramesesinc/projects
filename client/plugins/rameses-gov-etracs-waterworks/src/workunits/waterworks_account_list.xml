@@ -1,8 +1,7 @@
 <workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" 
-          schemaName="waterworks_account" 
-          cols="acctno,acctname,owner.name,address,meter.serialno,lastreading,balance">
+          schemaName="waterworks_account" allowCreate="false" 
+          cols="acctno,acctname,address.text,address.barangay.name,meter.serialno,lastdateread,stubout.code">
     <invokers>
         <invoker folderid="/home/waterworks" caption="Waterworks Account List" action="init" />
-        <invoker type="waterworks_account:list" caption="Waterworks Account List" action="init"/>
     </invokers>
 </workunit>

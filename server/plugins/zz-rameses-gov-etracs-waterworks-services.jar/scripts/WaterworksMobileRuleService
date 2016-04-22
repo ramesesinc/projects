@@ -12,6 +12,8 @@ class WaterworksMobileRuleService  {
 		mm.salience = r.salience;
 
 		def fct = r.conditions.find{it.fact.factclass == 'waterworks.facts.WaterAccount'};
+		if ( !fct ) throw new Exception('Please provide a WaterAccount factclass'); 
+
 		def sb1 = new StringBuilder();
 		int j = 0; 
 		fct.constraints.each {

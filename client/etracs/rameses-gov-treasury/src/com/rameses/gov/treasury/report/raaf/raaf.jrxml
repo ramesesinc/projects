@@ -59,11 +59,11 @@
 			</band>
 		</background>
 		<title>
-			<band height="113"  isSplitAllowed="true" >
+			<band height="124"  isSplitAllowed="true" >
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="0"
-						y="54"
+						y="65"
 						width="563"
 						height="15"
 						key="textField-15"/>
@@ -76,7 +76,7 @@
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="0"
-						y="91"
+						y="102"
 						width="563"
 						height="15"
 						key="textField-3"/>
@@ -89,7 +89,7 @@
 				<staticText>
 					<reportElement
 						x="0"
-						y="75"
+						y="86"
 						width="563"
 						height="15"
 						key="staticText-2"/>
@@ -138,16 +138,16 @@
 					</textElement>
 				<text><![CDATA[REPUBLIC OF THE PHILIPPINES]]></text>
 				</staticText>
-				<image  evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<image  scaleImage="RetainShape" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="47"
-						y="17"
+						x="105"
+						y="12"
 						width="60"
 						height="60"
 						key="image-1"/>
 					<box></box>
 					<graphicElement stretchType="NoStretch"/>
-					<imageExpression class="java.net.URL"><![CDATA[$P{LOGOLGUURL}]]></imageExpression>
+					<imageExpression class="java.lang.String"><![CDATA["classpath://images/lgu-logo.png"]]></imageExpression>
 				</image>
 				<staticText>
 					<reportElement
@@ -292,7 +292,7 @@ Inclusive Serial No.]]></text>
 					<textElement verticalAlignment="Middle">
 						<font fontName="Tahoma" size="9" isUnderline="false"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$P{COLLECTORNAME}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA["   "+ $P{COLLECTORNAME}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement
@@ -512,7 +512,7 @@ Inclusive Serial No.]]></text>
 				</staticText>
 				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="365"
+						x="408"
 						y="0"
 						width="155"
 						height="16"
@@ -526,11 +526,11 @@ Inclusive Serial No.]]></text>
 					<textElement verticalAlignment="Middle">
 						<font fontName="Tahoma" size="9" isUnderline="false"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$P{COLLECTORTITLE}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA["   "+ $P{COLLECTORTITLE}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement
-						x="307"
+						x="350"
 						y="0"
 						width="58"
 						height="16"

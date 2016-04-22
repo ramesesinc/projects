@@ -1,0 +1,33 @@
+<workunit>
+    <invokers>
+	<invoker type="global_notification:handler" action="init"/>
+    </invokers>	
+    <code>
+        class WorkflowTask implements GlobalNotificationHandler {
+        
+            @Script("TaskNotifier")
+            def taskNotifier;
+        
+            @Script("WorkflowTaskListService")
+            def taskListSvc;
+
+            def nodeList;
+        
+            void init() {
+                nodeList = taskListSvd.getNodeList([processname:'waterworks_application']);
+            }
+        
+            def handle( def MQ ) {
+                int cnt = 0;
+                nodeList.each { o->
+                    int xcnt = taskNotifier.getCount( o.name );
+                    cnt += xcnt;    
+                }
+                if(cnt>0) {
+                    MQ.add( "Waterworks Todo", cnt ); 
+                }
+            }
+        
+        }
+    </code>
+</workunit>

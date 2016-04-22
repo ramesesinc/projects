@@ -1,6 +1,6 @@
 <workunit>
     <invokers>
-        <invoker type="user:open" action="open" caption="User" />
+        <invoker type="sys_user:open" action="open" caption="User"  target="popup"/>
         <invoker type="formActions" action="_close" caption="Close" visibleWhen="#{initiator!='create'}"/>
         <invoker type="formActions" action="_exit" caption="Close" visibleWhen="#{initiator=='create'}"/>
     </invokers>

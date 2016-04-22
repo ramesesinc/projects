@@ -2,27 +2,78 @@ import com.rameses.annotations.*;
 
 class WaterworksAccountService {
 	
-	@DataContext("waterworks_account")
-	def acct;
+	@DataContext('vw_entityindividual')
+	def vw_entityindividual; 
 
-	@DataContext("waterworks_account_consumption")
-	def wac;
+	@DataContext('entity_address') 
+	def entity_address; 
 
-	@Service("WaterworksBillingService")
-	def billSvc;
+	@DataContext('waterworks_account')
+	def waterworks_account; 
 
-	@DataContext("waterworks_meter")
-	def wm;
-
-	@ProxyMethod
-	public def getConsumption(def o) {
-		def feeList = wac.find([acctid: o.objid]).list();
-		return billSvc.processBilling(feeList);
+	@ProxyMethod 
+	public def initChangeOwner( params ) {
+		return vw_entityindividual.find([ objid: params.ownerid ]).select('name,address.text').first(); 
 	}
 
-	@ProxyMethod
-	public def getTxnHistory(def o){
-		return wac.find([acctid: o.objid]).list();
+	@ProxyMethod 
+	public def postChangeAddress( params ) { 
+		if (!params.accountid) throw new Exception('accountid parameter is required');
+		if (!params.address) throw new Exception('address parameter is required');
+
+		def addr = params.address; 
+		if ( !addr.barangay?.objid ) throw new Exception('Please specify barangay'); 
+
+		addr.text = formatAddress( addr ); 
+		if ( !addr.text ) throw new Exception('Please specify address'); 
+
+		waterworks_account.find([ objid: params.accountid ]).update([ address: addr ]);
+		return params;  
+	}	
+
+	@ProxyMethod 
+	public def postChangeOwner( params ) {
+		def newowner = vw_entityindividual.find([ objid: params.ownerid ]).first();
+		if ( !newowner?.objid ) throw new Exception('Entity record does not exist');
+
+		if ( newowner.address==null ) newowner.address = [:]; 
+
+		def o = entity_address.find([ objid: newowner.address?.objid ]).first();
+		if ( o ) { 
+			o.text = formatAddress( o ); 
+			newowner.address = [
+				type: o.type, text: o.text, barangay: o.barangay, 
+				city: o.city, province: o.province, municipality: o.municipality, 
+				unitno: o.unitno, street: o.street, subdivision: o.subdivision, 
+				bldgno: o.bldgno, bldgname: o.bldgname, pin: o.pin 
+			]; 
+		} 
+
+		def m = [ address: newowner.address ]; 
+		m.owner = [ objid: newowner.objid, name: newowner.name ]; 
+		if ( params.acctname ) m.acctname = params.acctname; 
+
+		waterworks_account.find([ objid: params.accountid ]).update( m );
+		return m; 
 	}
+
+
+	def formatAddress( addr ) {
+		def buff = []; 
+		def values = [ addr.unitno, addr.bldgno, addr.bldgname ]; 
+		def text = values.findAll{ it != null }.join(' ');
+		if ( text ) buff << text; 
+
+		values = [ addr.street, addr.subdivision, addr.barangay?.name, addr.municipality, addr.city, addr.province ]; 
+		text = values.findAll{ it != null }.join(', ');
+		if ( text ) buff << text; 
+
+		return buff.join('\n'); 
+	} 	
+
+
+
+
+
 
 }

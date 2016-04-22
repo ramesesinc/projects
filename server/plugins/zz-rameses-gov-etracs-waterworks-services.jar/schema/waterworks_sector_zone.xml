@@ -1,0 +1,17 @@
+<schema adapter="waterworks">
+
+	<element tablename="waterworks_sector_zone">
+		<field name="objid" primary="true"  prefix="WSZ"/>
+		<field name="code"/>
+		<field name="description"/>
+		<complex name="sector" ref="waterworks_sector" jointype="many-to-one" required="false">
+			<key field="sectorid" target="objid" />
+		</complex>	
+		<!--
+		<complex name="reader" ref="waterworks_sector_reader" jointype="many-to-one" required="false">
+			<key field="readerid" target="objid" />
+		</complex>	
+		-->
+	</element>
+
+</schema>

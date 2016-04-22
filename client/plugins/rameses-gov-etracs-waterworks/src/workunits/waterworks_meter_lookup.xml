@@ -1,5 +1,9 @@
-<workunit extends="wtemplates/ServiceLookupController.xml" serviceName="WaterworksMeterLookupService">
+<workunit extends="com/rameses/seti2/templates/CrudLookup.xml" 
+          schemaName="vw_waterworks_meter" 
+          cols="serialno,brand,capacity,account.acctname">
     <invokers>
-        <invoker type="meter:lookup" caption="Lookup Meter"/>
+        <invoker type="waterworks_meter:lookup" 
+                 caption="Lookup Water Meter" 
+                 action="init" target="popup"/>
     </invokers>
 </workunit>

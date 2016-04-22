@@ -10,7 +10,9 @@ public class BillItem {
     def refid;
     int sortorder = 0;
     int pmtorder = 0;
-    
+
+    //if payment is required this must be paid based on its order. We cannot choose to pay what we want.
+    boolean required = true;    
 
     boolean compromise;             //if true, this line is under compromise so no penalty
     double amtdue = 0;              //the original amount due
@@ -19,6 +21,10 @@ public class BillItem {
     double surcharge = 0;           //surcharge paid
     double interest = 0;            //interest paid
     def category;
+
+    String title;                   //this is used in lieu of account. if account is not specified.
+    String remarks;             
+    String txntype;                 //this is used for short codes. System specified txntype
 
     Account account;                //the principal account
     Account surchargeAccount;       //surcharge account
@@ -29,13 +35,10 @@ public class BillItem {
         return NumberUtil.round( (amount - discount) + surcharge + interest);
     }
 
-    public BillItem() {
-    }
-        
     //for display
     def toItem() {
         return [
-            item: account.toItem(),
+            item: account?.toItem(),
             refid: refid,
             amtdue: amtdue,
             amount: amount,
@@ -45,37 +48,26 @@ public class BillItem {
             total: total,
             duedate: duedate,
             compromise: compromise,
-            sortorder: sortorder
+            sortorder: sortorder,
+            title: title,
+            remarks: remarks
         ];
     }
     
-    //if amtpaid less than total, we need to correct how much proportion is applied to 
-    void applyPayment(double d) {
-        if( d < total ) {
-            double _total = total;
-            amount = NumberUtil.round( (amount / _total) * d );
-            if( discount > 0.0) {
-                discount = NumberUtil.round( (discount / _total) * d );
-            }    
-            if( surcharge > 0.0 ) {
-                surcharge = NumberUtil.round( (surcharge / _total) * d );
-            }
-            if( interest > 0.0 ) {
-                interest = NumberUtil.round( d - (amount - discount) - surcharge );
-            }
-        }
-    }
 
     public boolean equals(def obj) {
         return hashCode() == obj.hashCode();
     }    
 
     public int hashCode() {
-        if( category!=null ) {
+        if( category!=null  && account?.objid!=null) {
             return (category + ":" + account.objid).hashCode();        
         }
-        else {
+        else if(account?.objid!=null){
             return account.objid.hashCode();
+        }
+        else {
+            return super.hashCode();
         }
     }
 

@@ -1,16 +1,13 @@
 package treasury.actions;
 
 import com.rameses.rules.common.*;
-import market.facts.*;
 import com.rameses.util.*;
 import java.util.*;
 
 public class InitBilling implements RuleActionHandler {
 
-	def request;
-	def PS;
-
 	public void execute(def billitem, def drools) {
+		throw new Exception("InitBilling Error. Please check rule action init billing")	
 		//add here if there are payments made. if payment already made, do not add in list.
 		//check first if there is an acctid
 		if(request.acctid) {

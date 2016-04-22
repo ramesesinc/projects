@@ -1,0 +1,59 @@
+<workunit>
+    <invokers>
+        <invoker type="waterworks_application:form:formActions" 
+                 visibleWhen="#{task.state=='for-billing'}"
+                 caption="View Billing"
+                 target="popup"
+                 action="init"
+                 />
+        <invoker type="waterworks_application:form:formActions" 
+                 visibleWhen="#{task.state=='for-payment'}"
+                 caption="View Billing"
+                 target="popup"
+                 action="init"
+                 />
+        <invoker type="formActions" caption="Close" action="_close"/>
+    </invokers>
+    <code>
+         <![CDATA[
+            import com.rameses.rcp.common.*
+            import com.rameses.rcp.annotations.*
+            import com.rameses.osiris2.client.*
+            import com.rameses.osiris2.common.*
+            import com.rameses.rulemgmt.constraint.*;
+            import com.rameses.rulemgmt.*;
+            import java.rmi.server.*;
+            
+            class ViewBilling  {
+            
+                @Service("WaterworksBillingService")
+                def billingService;
+
+                @Caller
+                def caller;
+                
+                def feeList;
+                def total;
+                
+                def getEntity() {
+                    return caller.entity;
+                }
+                                    
+                void init() {
+                    feeList = billingService.getBilling( [applicationid: entity.objid] );
+                    total = feeList.sum{ it.total };
+                }
+            
+                def feeListModel = [
+                    fetchList: {o->
+                        return feeList;
+                    }
+                ] as BasicListModel;
+                
+            }
+        ]]>  
+    </code>    
+    <pages>
+        <page template="com.rameses.gov.etracs.waterworks.views.BillingItemPage" />
+    </pages>    
+</workunit>

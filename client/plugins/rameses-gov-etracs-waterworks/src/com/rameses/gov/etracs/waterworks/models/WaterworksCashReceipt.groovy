@@ -9,11 +9,10 @@ import com.rameses.util.*;
 
 public class WaterworksCashReceiptPage extends BasicCashReceipt {
     
-     @Service("WaterworksBillingService")
-     def billSvc;
+     @Service("WaterworksCashReceiptService")
+     def cashReceiptSvc;
     
      def payOption = [type:'FULL']; 
-     def monthList;
     
      //we specify this so print detail will appear.
      String entityName = "misc_cashreceipt";
@@ -31,12 +30,28 @@ public class WaterworksCashReceiptPage extends BasicCashReceipt {
         Modal.show( Inv.lookupOpener( "cashreceipt:waterworks:lookup", params ) );
         if(!pass) throw new BreakException();
     }
-            
-    void loadBarcode() {
-        loadInfo( [acctno: barcodeid] );
-    }   
     
-    void loadInfo( def e ) {
+    def loadBarcode() { 
+        def info = cashReceiptSvc.getBilling([ refno: barcodeid ]);
+        entity = [formtype: "serial", formno:"51", txnmode: 'ONLINE'];
+        entity.collectiontype = info.collectiontype;
+        entity = service.init( entity );
+
+        entity.payer = info.payer;
+        entity.items = info.items;
+        entity.amount = info.amount;
+        entity.paidby = info.paidby;
+        entity.paidbyaddress = info.paidbyaddress;
+        entity.remarks = info.remarks;
+        entity.info = info.info; 
+        super.init(); 
+
+        entity.billitems = info.billitems; 
+        return 'default';
+    }      
+
+    
+    /*void loadInfo( def e ) {
         e.payOption = payOption; 
         def m = billSvc.getBilling( e ); 
         entity.payer = [objid: m.owner.objid, name: m.owner.name ];
@@ -59,7 +74,7 @@ public class WaterworksCashReceiptPage extends BasicCashReceipt {
             itemListModel.reload();
         }
         return Inv.lookupOpener( "cashreceipt:payoption:waterworks", [monthList: monthList, payOption: payOption, handler:h]);
-    }
+    }*/
     
     /*
     void removeTaxcredits() {
@@ -93,10 +108,10 @@ public class WaterworksCashReceiptPage extends BasicCashReceipt {
         return Inv.lookupOpener( "cashreceipt:preview", [entity: entity] );
     }
     
-    def itemListModel = [
-        fetchList: { o->
-            return entity.billitems;
-        }
-    ]as BasicListModel;
+    def billItemListModel = [
+        fetchList: { o-> 
+            return entity.billitems; 
+        } 
+    ] as BasicListModel;
     
 }

@@ -19,11 +19,11 @@ from (
          where e.entityname like $P{ownername} and 2=$P{searchlevel}  
       )xx 
          inner join bpapplication ba on xx.objid = ba.businessid 
-      where ba.docstate in ('ACTIVE','PERMIT_PENDING','RENEWED') 
+      where ba.docstate in ('ACTIVE','PERMIT_PENDING','RENEWED','EXPIRED') 
       group by ba.businessid 
    )xx 
       inner join bpapplication ba on (xx.businessid=ba.businessid and ba.iyear=xx.appyear) 
-   where ba.docstate in ('ACTIVE','PERMIT_PENDING','RENEWED')  
+   where ba.docstate in ('ACTIVE','PERMIT_PENDING','RENEWED','EXPIRED') 
    group by xx.businessid, xx.appyear 
 )xx 
    inner join bpapplication ba on (xx.businessid=ba.businessid and ba.iyear=xx.appyear and ba.txndate=xx.txndate) 
@@ -31,7 +31,7 @@ from (
    left join entity e on b.taxpayerid = e.objid 
 where 
    b.objid not in (select oldbusinessid from etracs25_capture_business where oldbusinessid=b.objid)     
-   and ba.docstate in ('ACTIVE','PERMIT_PENDING','RENEWED')    
+   and ba.docstate in ('ACTIVE','PERMIT_PENDING','RENEWED','EXPIRED') 
 order by ba.iyear desc, b.tradename 
 
 
@@ -48,6 +48,7 @@ select
    END as apptype,
    ba.objid AS applicationid, 
    ba.iyear AS activeyear,
+   ba.txndate AS dtfiled,   
    case when e.objid is null then b.taxpayername else e.entityname end as business_owner_name, 
    case when e.objid is null then b.taxpayerid else e.objid end as business_owner_oldid, 
    case when e.objid is null then b.taxpayeraddress else e.entityaddress end as business_owner_address_text,  
@@ -72,7 +73,7 @@ select
 from ( 
    select objid from bpapplication 
    where businessid = $P{objid} and iyear = $P{activeyear}  
-      and docstate in ('ACTIVE','PERMIT_PENDING','RENEWED') 
+      and docstate in ('ACTIVE','PERMIT_PENDING','RENEWED','EXPIRED') 
 )xx 
    inner join bpapplication ba on xx.objid = ba.objid 
    inner join business b on ba.businessid = b.objid 
@@ -96,9 +97,10 @@ from bpapplication ba
    inner join bploblisting bl ON ba.objid = bl.applicationid 
    inner join lob ON bl.lobid = lob.objid 
    left join etracs25_capture_lob c ON lob.objid = c.oldlob_objid 
-where ba.businessid = $P{businessid} and ba.iyear = $P{activeyear}  
+where ba.businessid = $P{businessid} 
+   and ba.iyear = $P{activeyear} and bl.iyear = ba.iyear 
    and ba.txntype IN ('NEW','RENEW','RENEWAL','ADDLOB') 
-   and ba.docstate IN ('ACTIVE','PERMIT_PENDING','RENEWED') 
+   and ba.docstate IN ('ACTIVE','PERMIT_PENDING','RENEWED','EXPIRED') 
 
 
 [getApplications]
@@ -107,7 +109,7 @@ SELECT
 FROM bpapplication  
 where businessid = $P{businessid} and iyear = $P{activeyear}  
    and txntype IN ('NEW','RENEW','RENEWAL','ADDLOB') 
-   and docstate IN ('ACTIVE','PERMIT_PENDING','RENEWED') 
+   and docstate IN ('ACTIVE','PERMIT_PENDING','RENEWED','EXPIRED') 
 
 
 [findAccount]
@@ -160,7 +162,7 @@ from (
          inner join bpreceivable br on ba.objid = br.applicationid 
       where ba.businessid = $P{businessid} and ba.iyear = $P{activeyear} 
          and ba.txntype IN ('NEW','RENEW','RENEWAL','ADDLOB') 
-         and ba.docstate IN ('ACTIVE') 
+         and ba.docstate IN ('ACTIVE','PERMIT_PENDING','RENEWED','EXPIRED') 
    )xx 
    group by xx.applicationid, xx.businessid, xx.iyear, xx.lobid, xx.acctid, xx.assessmenttype 
    order by xx.lobid, xx.acctid, xx.iyear  

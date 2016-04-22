@@ -13,6 +13,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
@@ -115,14 +117,30 @@ public class Home {
         VBox container = new VBox();
         container.setMaxWidth(Main.WIDTH);
         container.setAlignment(Pos.TOP_CENTER);
-        container.setSpacing(Main.HEIGHT > 700 ? 15 : 8);
-        container.setPadding(Main.HEIGHT > 700 ? new Insets(20, 50, 20, 50) : new Insets(10, 15, 10, 15));
         container.getChildren().addAll(account,sheet,download,upload,rates,setting,stack);
+        if(Main.HEIGHT < 700){
+            container.setSpacing(8);
+            container.setPadding(new Insets(10, 15, 10, 15));
+        }else if(Main.HEIGHT < 1200){
+            container.setSpacing(12);
+            container.setPadding(new Insets(15, 30, 15, 30));
+        }else{
+            container.setSpacing(15);
+            container.setPadding(new Insets(20, 50, 20, 50));
+        }
         
         root = new ScrollPane();
         root.setMaxWidth(Main.WIDTH);
         root.setContent(container);
         root.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        root.setOnKeyReleased(new EventHandler<KeyEvent>(){
+            @Override
+            public void handle(KeyEvent event) {
+                if(event.getCode() == KeyCode.ESCAPE){
+                    if(Dialog.isOpen){ Dialog.hide(); return; }
+                }
+            }
+        });
     }
     
     private StackPane createReadingBulletin(){
@@ -137,12 +155,17 @@ public class Home {
             check.setFitHeight(check.getImage().getHeight() * 0.5);
             cancel.setFitWidth(cancel.getImage().getWidth() * 0.5);
             cancel.setFitHeight(cancel.getImage().getHeight() * 0.5);
+        }else if(Main.HEIGHT < 1200){
+            check.setFitWidth(check.getImage().getWidth() * 0.7);
+            check.setFitHeight(check.getImage().getHeight() * 0.7);
+            cancel.setFitWidth(cancel.getImage().getWidth() * 0.7);
+            cancel.setFitHeight(cancel.getImage().getHeight() * 0.7);
         }
         
-        Label read = new Label(readrecords + " Records");
+        Label read = new Label("READ : " + readrecords);
         read.getStyleClass().add("readingbulletin-label");
         
-        Label unread = new Label(unreadrecords + " Records");
+        Label unread = new Label("UNREAD : " + unreadrecords);
         unread.getStyleClass().add("readingbulletin-label");
         
         HBox space = new HBox();
@@ -170,8 +193,12 @@ public class Home {
         public MenuItem(String image_url, String title, String desc){
             this.image = new ImageView(new Image(image_url));
             if(Main.HEIGHT < 700){
-                this.image.setFitWidth(150);
-                this.image.setFitHeight(150);
+                this.image.setFitWidth(50);
+                this.image.setFitHeight(50);
+            }
+            if(Main.HEIGHT < 1200){
+                this.image.setFitWidth(100);
+                this.image.setFitHeight(100);
             }
             
             VBox imageContainer = new VBox();
@@ -191,14 +218,15 @@ public class Home {
             textContainer.getChildren().addAll(this.title,this.desc);
             
             container = new HBox();
-            if(Main.HEIGHT > 700){
-                container.setSpacing(20);
-            }else{
-                container.setSpacing(10);
-                image.setFitWidth(image.getFitWidth()*0.5);
-                image.setFitHeight(image.getFitHeight()*0.5);
-            }
             container.getChildren().addAll(imageContainer,textContainer);
+            
+            if(Main.HEIGHT < 700){
+                container.setSpacing(10);
+            }else if(Main.HEIGHT < 1200){
+                container.setSpacing(15);
+            }else{
+                container.setSpacing(20);
+            }
         }
   
         public Node getLayout(){

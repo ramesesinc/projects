@@ -1,13 +1,16 @@
 <schema adapter="main">
 
 	<element tablename="redflag">
-		<field name="objid" primary="true"/> 
-		<field name="state" primary="true"/> 
-		<field name="month" primary="true"/> 
-		<field name="day" primary="true"/> 
-		<field name="currency" primary="true"/> 
-		<field name="amount" required="true"/> 
-		<field name="date" required="true"/> 
+		<field name="objid" primary="true" prefix="REDF"/> 
+		<field name="dtfiled" required="true" caption="DateFiled"/> 
+		<field name="state" required="true" caption="Status"/> 
+		<field name="txntype" required="true" caption="TxnType"/> 
+		<field name="txnid" required="true" visible="false" hidden="true"/> 
+		<field name="txnno" required="true" caption="TxnNo" indexed="true" searchable="true"/> 
+		<field name="name" required="true" caption="Name" indexed="true" searchable="true"/> 
+		<field name="approvedby_objid" visible="false" hidden="true"/> 
+		<field name="approvedby_name" caption="Approver"/> 
+		<field name="dtapproved" caption="DateApproved"/> 
 	</element> 
 
 </schema>

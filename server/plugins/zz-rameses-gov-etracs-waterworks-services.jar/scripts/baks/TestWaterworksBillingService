@@ -1,0 +1,86 @@
+import com.rameses.annotations.*;
+
+import com.rameses.rules.common.*;
+import waterworks.facts.*;
+import treasury.facts.*;
+
+/*****************************************
+* Given an account, display all 
+* accounts. Some might be in ledger 
+* and some might be in the application
+* This is also called from the receipt
+*****************************************/
+
+class TestWaterworksBillingService  {
+	
+	@Service("RuleExecutorService")
+	def ruleSvc;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@DataContext("waterworks_account")
+	def acct;
+
+	@DataContext("itemaccount")
+	def itemacct;
+
+	@DataContext("waterworks_account_ledger")
+	def ledger;
+
+	@DataContext("waterworks_application_fee")
+	def fees;
+
+
+	/*
+	public def buildFacts( def o ) {
+		def facts = [];
+		def m = findAccount( o );
+		def currDate = dateSvc.getServerDate();
+		facts << new EffectiveDate( currDate );
+		facts << new CurrentDate(currDate);
+		facts << new Stubout(zone: m.stubout.zone.objid, sector: m.stubout.zone.sector.objid, barangay:m.stubout.barangay.objid);
+		return facts;	
+	}
+	*/
+ 
+	@ProxyMethod
+	public def getBillingItems( def o ) {
+		//retrieve first account if there is applicationid
+		def wa = acct.select("objid,applicationid").find([objid: o.objid]).first();
+		if( !wa?.objid ) throw new Exception("Account not found!");
+
+		def selcols = "objid,item.*,amount,amtpaid,installmentid";
+		
+		def items = [];
+		if( wa.applicationid ) {
+			def filter = [parentid: wa.applicationid];
+			def feeList = fees.select(selcols).find( filter ).where("amount-amtpaid>0").list();
+			items.addAll( feeList );
+		}
+		def ledgerList = ledger.select(selcols).find( [parentid: wa.objid] ).where("amount-amtpaid>0").list();
+		items.addAll( ledgerList );
+
+		def acctMap = [:]
+		def lookup = { x->
+			if( !acctMap.containsKey(x.objid) ) {
+				def zz = itemacct.find([objid:x.objid]).first();
+				if( !zz ) throw new Exception("Account " + x.title + " does not exist in item account");
+				acctMap.put(x.objid,  new Account(zz));
+			}
+			return acctMap.get(x.objid);
+		}
+
+		def facts = [];
+		items.each {
+			facts << new BillItem(refid:it.objid, item: lookup(it.item), amtdue: it.amount, amount:it.amount-it.amtpaid);
+		}
+
+		def res = ruleSvc.execute( "waterworksbilling", facts, null, null);
+		def list = res.billItems.items; 
+		return items;
+	}
+
+
+
+}

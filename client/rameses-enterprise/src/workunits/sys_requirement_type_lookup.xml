@@ -1,0 +1,7 @@
+<workunit extends="com/rameses/seti2/templates/CrudLookup.xml" 
+          schemaName="sys_requirement_type" 
+          cols="code,title">
+    <invokers>
+        <invoker type="sys_requirement_type:lookup" caption="Requirement Type Lookup"  action="init"/>
+    </invokers>
+</workunit>

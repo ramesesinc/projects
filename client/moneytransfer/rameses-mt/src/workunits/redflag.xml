@@ -1,0 +1,14 @@
+<workunit allowEdit="false" allowCreate="false">
+    <invokers>
+        <invoker type="redflag:open" caption="RedFlag" action="open" target="popup"/>
+        
+        <invoker type="formActions" caption="Close" action="_close"/> 
+        <invoker type="formActions" caption="Resolve" action="resolve" visibleWhen="#{entity.state=='OPEN'}"/> 
+    </invokers>
+    
+    <code class="com.rameses.mt.models.RedFlagModel"/>
+    
+    <pages>
+        <page template="com.rameses.mt.views.RedFlagPage"/>        
+    </pages>
+</workunit>

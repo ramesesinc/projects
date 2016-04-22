@@ -5,49 +5,34 @@ import com.rameses.rcp.common.*;
 import com.rameses.osiris2.client.*;
 import com.rameses.osiris2.common.*;
 import com.rameses.rcp.annotations.*;
+import com.rameses.seti2.models.*;
 
-
-public class WaterworksApplication extends PageFlowController {
+public class WaterworksApplication extends WorkflowTaskModel {
     
-    @Service("WaterworksClassificationService")
-    def classificationSvc;
+    def tabList;
     
-    String title = "Waterworks Account";
-    String schemaName = "waterworks_account";
-
-    boolean forbusiness = false;
-    
-    def ownerTypes = LOV.ORG_TYPES;
-    def classificationTypes;
-    def entity;
-    
-    void init() {
-        entity = [:];
-        classificationTypes = classificationSvc.getList()*.objid;
+    void afterOpen() {
+        tabList = [];
+        def m = [schemaname:getSchemaName(), refid:entity.objid];
+        tabList.add( Inv.lookupOpener( "waterworks_application_fee:list", [entity:entity] ));
+        tabList.add( Inv.lookupOpener( "requirements:list", m ));
     }
     
-    def getLookupEntity() {
-        def h = { o->
-            entity.owner = o;
-            binding.refresh("entity.owner.*");
-        }    
-        String s = (entity.ownertype=='SING'?'individual':'juridical') + "entity:lookup";
-        return Inv.lookupOpener( s, [onselect:h] );
+    void refresh() {
+        tabList.each { op->
+            try {
+                op.code.refresh();    
+            }catch(e){println e.message;}
+        }
+        binding.refresh();
     }
     
-    def viewOwner() {
-        if(!entity.owner?.objid ) throw new Exception("Please select an owner first");
-        String s = (entity.ownertype=='SING'?'individual':'juridical') + "entity:open";
-        return Inv.lookupOpener( s, [entity: entity.owner] );
+    public void afterSignal() {
+        if(task.acctno) {
+            MsgBox.alert("Account created " + task.acctno);
+        }
     }
     
-    def getLookupArea() {
-        def h = { o->
-            entity.area = o;
-            binding.refresh("entity.area.*");
-        }    
-        return Inv.lookupOpener( "waterworksarea:lookup", [onselect:h] );
-    }
-   
+    
     
 }

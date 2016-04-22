@@ -1,0 +1,25 @@
+import com.rameses.annotations.*;
+
+class AMLRedFlagListInterceptor {
+
+	@After(pattern="QueryService.getNodeList", eval="#{args[0]._schemaname == 'redflag'}")
+	public void getAcctNodeList(def evt) {
+		def result = evt.result;
+		result << [ title: 'OPEN', id:'OPEN'];
+		result << [ title: 'CLOSED', id:'CLOSED'];
+	}
+
+	@Before(pattern="QueryService.getList", eval="#{args[0]._schemaname == 'redflag'}")
+	public void loadList(def evt) { 
+		def o = evt.args[0];
+		def w = 'state=:state';
+		def p = [state: o.node.id]; 
+		if ( o.where ) {
+			o.where[0] += " AND "+ w; 
+			o.where[1] += p;
+		} else {
+			o.where = [w, p]; 
+		}
+	}
+	
+}

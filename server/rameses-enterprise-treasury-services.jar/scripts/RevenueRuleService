@@ -1,0 +1,61 @@
+import com.rameses.annotations.*;
+import com.rameses.rules.common.*;
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.common.*;
+import treasury.facts.*;
+import treasury.actions.*;
+
+
+class RevenueRuleService  {
+
+	@Service("RuleExecutorService")
+	def ruleSvc;
+
+
+	@ProxyMethod
+	public def assess( def p ) {
+		def facts = [];
+		facts << new Transaction(type: p.txntype );
+		if( p.infos ) {
+			p.infos.each {
+				facts << new VariableInfo( it );
+			}
+		}
+		if( p.attributes ) {
+			p.attributes.each {
+				facts << new Attribute( it );
+			}
+		}
+
+		def flowHandler = { rulegroup->
+			if(rulegroup == 'info' ) {
+				//if there are still infos after info phase, we need to break to give chance for input.
+				def ct = RuleExecutionContext.getCurrentContext();
+				if( ct.result.infos ) throw new BreakException();
+			}
+		};
+
+		def res = ruleSvc.execute( "revenue", facts, null, flowHandler );
+		if(res.errs) {
+			throw new Exception( res.errs.join("\n") );
+		}
+
+		if( res.infos ) {
+			return [state:'ask-info', infos: res.infos ];
+		}
+		else {
+			def m = [state: 'end' ];
+			m.items = [];
+			if( res.billItemList ) { 
+				m.items = res.billItemList.buildReceiptItems(); 
+				m.total = m.items.sum{( it.amount? it.amount : 0.0 )}
+			} 	
+			m.infos = res.infos;
+			return m; 
+		}
+	}
+
+
+}

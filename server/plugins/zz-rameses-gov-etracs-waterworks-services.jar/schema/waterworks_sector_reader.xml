@@ -1,0 +1,11 @@
+<schema adapter="waterworks">
+	<element tablename="waterworks_sector_reader">
+		<field name="objid" primary="true" prefix="WSR"/>
+		<field name="name" required="true" indexed="true" caption="Name"/>
+		<field name="assignee_objid" required="true" caption="Assignee ID" visible="false"/>
+		<field name="assignee_name" required="true" caption="Assignee Name"/>
+		<complex name="sector" ref="waterworks_sector" jointype="many-to-one">
+			<key field="sectorid" target="objid"/>
+		</complex>
+	</element>
+</schema>

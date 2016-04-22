@@ -16,7 +16,8 @@
             
             @Service("AFService")
             def service;
-            def entityName = "af";
+            
+            String entityName = "af";
             
             def useTypes = ["collection", "disbursement", "general"];
             def formTypes = [ "serial", "cashticket" ];

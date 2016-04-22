@@ -4,151 +4,141 @@ import com.rameses.util.*;
 
 class CloudNotificationService
 {   
-    @ActiveDB(value='cloud_notification', em='notification')
+    @ActiveDB(value='notification', em='notification')
     def em;
 
-    @Service('DateService')
-    def dateSvc;
+    @Service('DateService') 
+    def dateSvc; 
+
+    @Service('CloudNotificationData') 
+    def dataUtil; 
+
+    @Service('CloudSettings') 
+    def settings;
+
+    @Service 
+    def self; 
 
     @Env
     def env;
 
     @ProxyMethod 
     public def addMessage( msg ) { 
+        if ( !settings.isEnabled() ) { 
+            //facility is disabled, exit immediately 
+            return msg;  
+        } 
+
         if (!msg) throw new Exception('Please provide parameters'); 
-        if (!msg.objid) msg.objid = 'MSG'+new java.rmi.server.UID(); 
+
+        boolean hasMessageType = (msg.messagetype? true : false); 
+        boolean hasAsyncRequest = (msg.data instanceof AsyncRequest); 
+        msg.datatype = (hasAsyncRequest ? 'async_request': 'object'); 
+        msg.build_version = 2.0; 
+
         if (!msg.senderid) msg.senderid = env.USERID; 
         if (!msg.sender) msg.sender = (env.FULLNAME? env.FULLNAME: env.NAME); 
         if (!msg.channelgroup) msg.channelgroup = msg.channel; 
         if (!msg.messagetype) msg.messagetype = 'notification'; 
-        if (!msg.attachmentcount) msg.attachmentcount = 0;
+        if (!msg.attachmentcount) msg.attachmentcount = 0; 
 
-        def userObj = (msg.data? msg.data: [:]); 
-        if (userObj instanceof AsyncRequest) { 
+        if ( hasAsyncRequest ) {            
             if (!msg.message) msg.message = 'New Async Request';         
             if (!msg.messagetype) msg.messagetype = 'async_request'; 
             if (!msg.filetype) msg.filetype = 'async_request'; 
             if (!msg.groupid) msg.groupid = 'async_request'; 
-        } 
+        }
 
         def rundate = dateSvc.serverDate;
         msg.dtfiled = rundate.toString(); 
-        msg.data = new Base64Cipher().encode(userObj); 
-        em.create( msg ); 
-        msg.data = userObj; 
 
-        def pendingdata = [
-            objid:      msg.objid,
-            dtfiled:    msg.dtfiled, 
-            dtexpiry:   dateSvc.add(rundate, '5m'), 
-            dtretry:    msg.dtfiled,
-            type:       'HEADER' 
+        if ( hasAsyncRequest && !hasMessageType ) { 
+            msg.immediate = true; 
+            msg.asyncdata = msg.data; 
+            msg.messagetype = 'async_request'; 
+            msg.filetype = msg.groupid = msg.messagetype; 
+            msg.data = null; 
+            self.postAsyncMessage( msg ); 
+            //
+            //exit immediately after posting this message 
+            //
+            return msg;  
+        } 
+
+        if ( !msg.objid ) { 
+            msg.objid = 'MSG'+new java.rmi.server.UID(); 
+        } 
+        msg.origintype = 'local'; 
+        msg.chunkcount = 0;
+        msg.chunksize = 0; 
+        em.create( msg ); 
+
+        dataUtil.save([ 
+            objid  : msg.objid, 
+            data   : msg.data 
+        ]); 
+        em.updateChunkInfo( msg );  
+        msg.data = null; 
+
+        def pendingdata = [ 
+            objid  : msg.objid, 
+            indexno: 0 
         ]; 
         em.create( pendingdata, 'pending' ); 
-
-        msg.traceid = 'RCVMSG' + new java.rmi.server.UID(); 
-        msg.tracetime = msg.dtfiled; 
-        em.create( msg, 'received' ); 
         return msg; 
     } 
 
     @ProxyMethod 
     public void removeMessage( params ) { 
-        def data = em.read( params ); 
-        if (!data) return; 
+        if ( !settings.isEnabled() ) { 
+            //facility is disabled, exit immediately 
+            return;  
+        } 
 
-        em.removeFailed( [refid: data.objid] ); 
-        em.removePending( data ); 
-        em.removeDelivered( data ); 
-        em.removeReceived( data ); 
-        em.delete( data ); 
-    } 
+        if ( !params.objid ) throw new Exception('objid parameter is required');
 
-
-    @ProxyMethod 
-    public def addAttachment( data ) { 
-        if (!data) throw new Exception('Please provide parameters'); 
-
-        def header = em.read([objid: data.parentid]); 
-        if (!header) throw new Exception("'"+data.parentid+"' header record not found"); 
-        if (!data.objid) data.objid = 'ATTC'+new java.rmi.server.UID(); 
-
-        def rundate = dateSvc.serverDate;
-        data.dtfiled = rundate.toString(); 
-        em.create( data, 'attachment' ); 
-
-        def pendingdata = [
-            objid:      data.objid,
-            dtfiled:    data.dtfiled, 
-            dtexpiry:   dateSvc.add(rundate, '5m'), 
-            dtretry:    data.dtfiled,
-            type:       'ATTACHMENT' 
-        ]; 
-        em.create( pendingdata, 'pending' ); 
-        return data;  
+        em.removeData([ parentid: params.objid ]); 
+        em.removePending( params ); 
+        em.removeForDownload( params ); 
+        em.delete( params ); 
     } 
 
     @ProxyMethod 
-    public void removeAttachment( params ) { 
-        def data = em.read( params, 'attachment' ); 
-        if (!data) return; 
+    public def getList( params ) { 
+        if ( !settings.isEnabled() ) { 
+            //facility is disabled, exit immediately 
+            return []; 
+        } 
 
-        em.removeFailed( [refid: data.objid] ); 
-        em.removePending( data );         
-        em.delete( data, 'attachment' ); 
-    }  
-
-    @ProxyMethod 
-    public def getAttachments( params ) {
-        return em.getAttachments( params ); 
-    }
-
-    @ProxyMethod 
-    public def getList( params ) {
         return em.getList( params ); 
     } 
 
-    @Async 
-    @ProxyMethod
-    public void markAsFailed( params ) {
-        em.removePending( [objid: params.objid] );   
+    @ProxyMethod 
+    public def findHeader( params ) {
+        return em.findHeader( params ); 
+    }
 
-        def data = [
-            objid:          'FMSG'+new java.rmi.server.UID(), 
-            dtfiled:        dateSvc.serverDate, 
-            refid:          params.objid, 
-            reftype:        params.type, 
-            errormessage:   params.errormessage 
-        ];
-        em.create( data, 'failed' ); 
+    @ProxyMethod 
+    public void createMessageForDownload( params ) {
+        println ''' 
+Downloading message from ${params.channel}_$P{params.origin}: 
+  Sender= ${params.sender}, Msg= ${params.message}, Objid= ${params.objid}  
+        '''; 
+
+        params.origintype='remote'; 
+        params.completed=0; 
+        em.create( params ); 
+        em.create([ objid: params.objid, indexno:0 ], 'fordownload'); 
     } 
 
     @ProxyMethod 
     public void rescheduleFailedMessage( params ) {
-        if ( !params.objid ) throw new Exception('objid parameter is required');
-
-        rescheduleFailedMessages([ objid: params.objid ]); 
+        //do nothing 
     } 
 
     @ProxyMethod 
     public void rescheduleFailedMessages( params ) {
-        if ( !params.items ) throw new Exception('items parameter is required');
-
-        params.items.each { o-> 
-            def data = em.findFailedMessage( o ); 
-            if ( !data ) return; 
-
-            def rundate = dateSvc.serverDate; 
-            def pendingdata = [
-                objid:      data.objid,
-                dtfiled:    rundate, 
-                dtexpiry:   dateSvc.add(rundate, '5m'), 
-                dtretry:    rundate,
-                type:       'HEADER' 
-            ]; 
-            em.create( pendingdata, 'pending' ); 
-            em.removeFailed([ refid: data.objid ]); 
-        }        
+        //do nothing 
     } 
 
 
@@ -162,5 +152,17 @@ class CloudNotificationService
     @ProxyMethod
     public def markAsDelivered( params ) { 
         return remote.markAsDelivered( params ); 
-    }     
+    } 
+
+    @Async 
+    @ProxyMethod 
+    public void postAsyncMessage( data ) { 
+        if ( !settings.isEnabled() ) { 
+            //facility is disabled, exit immediately 
+            return;  
+        } 
+                
+        println 'Post AsyncMessage to cloud... Type='+ data.messagetype; 
+        remote.postAsyncMessage( data ); 
+    } 
 } 

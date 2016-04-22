@@ -32,20 +32,36 @@ public class WaterworksMeterPage extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        xPanel1 = new com.rameses.rcp.control.XPanel();
         jPanel1 = new javax.swing.JPanel();
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
         xTextField1 = new com.rameses.rcp.control.XTextField();
         xTextField2 = new com.rameses.rcp.control.XTextField();
-        xComboBox1 = new com.rameses.rcp.control.XComboBox();
         xTextField4 = new com.rameses.rcp.control.XTextField();
+        xComboBox1 = new com.rameses.rcp.control.XComboBox();
+        xPanel2 = new com.rameses.rcp.control.XPanel();
+        xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
+        xLabel1 = new com.rameses.rcp.control.XLabel();
+        xLabel2 = new com.rameses.rcp.control.XLabel();
+        xLabel3 = new com.rameses.rcp.control.XLabel();
+
+        setPreferredSize(new java.awt.Dimension(510, 344));
+
+        xPanel1.setName("xpanel"); // NOI18N
+        com.rameses.rcp.control.layout.YLayout yLayout2 = new com.rameses.rcp.control.layout.YLayout();
+        yLayout2.setAutoFill(true);
+        xPanel1.setLayout(yLayout2);
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder1.setTitle("Meter Information");
         jPanel1.setBorder(xTitledBorder1);
+        jPanel1.setPreferredSize(new java.awt.Dimension(440, 151));
 
-        xFormPanel1.setCaptionWidth(120);
+        xFormPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
+        xFormPanel1.setCaptionWidth(100);
 
         xTextField1.setCaption("Serial Number");
+        xTextField1.setIndex(-1);
         xTextField1.setName("entity.serialno"); // NOI18N
         xTextField1.setPreferredSize(new java.awt.Dimension(0, 20));
         xTextField1.setRequired(true);
@@ -57,20 +73,18 @@ public class WaterworksMeterPage extends javax.swing.JPanel {
         xTextField2.setRequired(true);
         xFormPanel1.add(xTextField2);
 
-        xComboBox1.setCaption("Size");
-        xComboBox1.setExpression("#{item.title}");
-        xComboBox1.setItemKey("objid");
-        xComboBox1.setItems("listTypes.size");
-        xComboBox1.setName("entity.sizeid"); // NOI18N
-        xComboBox1.setPreferredSize(new java.awt.Dimension(150, 20));
-        xComboBox1.setRequired(true);
-        xFormPanel1.add(xComboBox1);
-
         xTextField4.setCaption("Capacity");
         xTextField4.setName("entity.capacity"); // NOI18N
-        xTextField4.setPreferredSize(new java.awt.Dimension(200, 20));
+        xTextField4.setPreferredSize(new java.awt.Dimension(0, 20));
         xTextField4.setRequired(true);
         xFormPanel1.add(xTextField4);
+
+        xComboBox1.setCaption("Size");
+        xComboBox1.setExpression("#{item.title}");
+        xComboBox1.setItems("listTypes.size");
+        xComboBox1.setName("entity.size"); // NOI18N
+        xComboBox1.setPreferredSize(new java.awt.Dimension(0, 21));
+        xFormPanel1.add(xComboBox1);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -78,31 +92,86 @@ public class WaterworksMeterPage extends javax.swing.JPanel {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 406, Short.MAX_VALUE)
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 466, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE)
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 105, Short.MAX_VALUE)
                 .addContainerGap())
         );
+
+        xPanel1.add(jPanel1);
+
+        com.rameses.rcp.control.border.XTitledBorder xTitledBorder2 = new com.rameses.rcp.control.border.XTitledBorder();
+        xTitledBorder2.setTitle("Account Information");
+        xPanel2.setBorder(xTitledBorder2);
+        xPanel2.setName("acctsection"); // NOI18N
+        xPanel2.setPreferredSize(new java.awt.Dimension(440, 150));
+        xPanel2.setVisibleWhen("#{mode=='read' && entity.currentacctid != null}");
+
+        xFormPanel2.setCaptionWidth(100);
+
+        xLabel1.setBackground(new java.awt.Color(250, 250, 250));
+        xLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(190, 190, 190)));
+        xLabel1.setCaption("Account No.");
+        xLabel1.setExpression("#{entity.account.acctno}");
+        xLabel1.setOpaque(true);
+        xLabel1.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel2.add(xLabel1);
+
+        xLabel2.setBackground(new java.awt.Color(250, 250, 250));
+        xLabel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(190, 190, 190)));
+        xLabel2.setCaption("Account Name");
+        xLabel2.setExpression("#{entity.account.acctname}");
+        xLabel2.setOpaque(true);
+        xLabel2.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel2.add(xLabel2);
+
+        xLabel3.setVerticalAlignment(javax.swing.SwingConstants.TOP);
+        xLabel3.setBackground(new java.awt.Color(250, 250, 250));
+        xLabel3.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(190, 190, 190)), javax.swing.BorderFactory.createEmptyBorder(2, 0, 0, 0)));
+        xLabel3.setCaption("Address");
+        xLabel3.setExpression("#{entity.account.addresstext}");
+        xLabel3.setOpaque(true);
+        xLabel3.setPreferredSize(new java.awt.Dimension(0, 50));
+        xFormPanel2.add(xLabel3);
+
+        javax.swing.GroupLayout xPanel2Layout = new javax.swing.GroupLayout(xPanel2);
+        xPanel2.setLayout(xPanel2Layout);
+        xPanel2Layout.setHorizontalGroup(
+            xPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(xPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(xFormPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 466, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        xPanel2Layout.setVerticalGroup(
+            xPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, xPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(xFormPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 122, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        xPanel1.add(xPanel2);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(xPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 490, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(xPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 321, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -110,6 +179,12 @@ public class WaterworksMeterPage extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel1;
     private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
+    private com.rameses.rcp.control.XFormPanel xFormPanel2;
+    private com.rameses.rcp.control.XLabel xLabel1;
+    private com.rameses.rcp.control.XLabel xLabel2;
+    private com.rameses.rcp.control.XLabel xLabel3;
+    private com.rameses.rcp.control.XPanel xPanel1;
+    private com.rameses.rcp.control.XPanel xPanel2;
     private com.rameses.rcp.control.XTextField xTextField1;
     private com.rameses.rcp.control.XTextField xTextField2;
     private com.rameses.rcp.control.XTextField xTextField4;

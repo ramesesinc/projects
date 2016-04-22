@@ -21,10 +21,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.TextAlignment;
 
-/**
- *
- * @author Dino
- */
 public class AccountDetail {
     
     private VBox root;
@@ -37,7 +33,9 @@ public class AccountDetail {
         close.setOnAction(new EventHandler<ActionEvent>(){
             @Override
             public void handle(ActionEvent event) {
-                Dialog.hide();
+                if(Dialog.isOpen){
+                    Dialog.hide();
+                }
             }
         });
         
@@ -48,7 +46,6 @@ public class AccountDetail {
             @Override
             public void handle(ActionEvent event) {
                 Dialog.hide();
-                Main.LOG.error("Account Data", account.toString());
                 Main.ROOT.setCenter(new ReadingSheet(account).getLayout());
             }
         });
@@ -129,8 +126,8 @@ public class AccountDetail {
         
         root = new VBox(Main.HEIGHT > 700 ? 15 : 2);
         root.setStyle("-fx-background-color: white;");
-        root.setMinWidth(Main.HEIGHT > 700 ? Main.WIDTH-150 : Main.WIDTH-40);
-        root.setMaxWidth(Main.HEIGHT > 700 ? Main.WIDTH-150 : Main.WIDTH-8);
+        root.setMinWidth(Main.HEIGHT > 700 ? Main.WIDTH-100 : Main.WIDTH-40);
+        root.setMaxWidth(Main.HEIGHT > 700 ? Main.WIDTH-100 : Main.WIDTH-8);
         root.setAlignment(Pos.CENTER);
         root.setPadding(Main.HEIGHT > 700 ? new Insets(20) : new Insets(10));
         root.getChildren().add(createDetail("Account No",account.getAcctNo()));
@@ -141,7 +138,7 @@ public class AccountDetail {
         root.getChildren().add(createDetail("Classification",account.getClassificationId()));
         List<ItemAccount> items = account.getItemList();
         for(ItemAccount a : items){
-            root.getChildren().add(createDetail(a.getAccount(),String.valueOf(a.getAmount())));
+            root.getChildren().add(createDetail(a.getAccount(),String.valueOf(a.getAmount()).replaceAll(" ", "")));
         }
         root.getChildren().add(createDetail("Amount Due",amtdue));
         root.getChildren().add(createDetail("TOTAL DUE",totaldue));
@@ -160,15 +157,19 @@ public class AccountDetail {
         label2.setPrefWidth(Main.HEIGHT > 700 ? 30 : 10);
         
         Label label3 = new Label(value);
-
-        if(Main.HEIGHT > 700){
-            label1.setStyle("-fx-font-size: 25px;");
-            label2.setStyle("-fx-font-size: 25px;");
-            label3.setStyle("-fx-font-size: 24px; -fx-font-weight: bold;");
-        }else{
+        
+        if(Main.HEIGHT < 700){
             label1.setStyle("-fx-font-size: 14px;");
             label2.setStyle("-fx-font-size: 14px;");
             label3.setStyle("-fx-font-size: 13px; -fx-font-weight: bold;");
+        }else if(Main.HEIGHT < 1200){
+            label1.setStyle("-fx-font-size: 17px;");
+            label2.setStyle("-fx-font-size: 17px;");
+            label3.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
+        }else{
+            label1.setStyle("-fx-font-size: 25px;");
+            label2.setStyle("-fx-font-size: 25px;");
+            label3.setStyle("-fx-font-size: 24px; -fx-font-weight: bold;");
         }
         
         HBox container = new HBox(Main.HEIGHT > 700 ? 10 : 5);
@@ -187,8 +188,15 @@ public class AccountDetail {
         label2.getStyleClass().add("account-field-value");
         label2.getStyleClass().add("account-columnar-value");
         label2.setStyle("-fx-background-color: white; -fx-font-weight: bold;");
-        label2.setStyle(Main.HEIGHT > 700 ? "-fx-font-size: 28px;" : "-fx-font-size: 16px;");
         label2.setPrefWidth(Main.HEIGHT > 700 ? 180 : 90);
+        
+        if(Main.HEIGHT < 700){
+            label2.setStyle("-fx-font-size: 16px;");
+        }else if(Main.HEIGHT < 1200){
+            label2.setStyle("-fx-font-size: 21px;");
+        }else{
+            label2.setStyle("-fx-font-size: 28px;");
+        }
         
         VBox container = new VBox();
         container.setStyle("-fx-border-width: 1px; -fx-border-color: #7dbce8;");

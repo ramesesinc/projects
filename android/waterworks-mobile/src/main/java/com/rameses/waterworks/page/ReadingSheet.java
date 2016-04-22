@@ -14,12 +14,17 @@ import com.rameses.waterworks.util.SystemPlatformFactory;
 import java.text.DecimalFormat;
 import java.util.List;
 import java.util.UUID;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -49,6 +54,7 @@ public class ReadingSheet {
     private int capacity = 6;
     private Reading reading;
     boolean goBackToList = false;
+    private Node numpad;
     
     public ReadingSheet(Account a){
         Header.TITLE.setText("Reading Sheet");
@@ -132,33 +138,48 @@ public class ReadingSheet {
         
         save = new Button("Save");
         save.getStyleClass().add("terminal-button");
-        save.setStyle(Main.HEIGHT > 700 ? "-fx-font-size: 30px;" : "-fx-font-size: 17px;");
-        save.setPrefWidth(Main.HEIGHT > 700 ? 180 : 100);
-        save.setGraphicTextGap(Main.HEIGHT > 700 ? 10 : 3);
         save.setOnAction(new EventHandler<ActionEvent>(){
             @Override
             public void handle(ActionEvent event) {
                 if(account != null) saveReading();
             }
         });
+        if(Main.HEIGHT < 700){
+            save.setStyle("-fx-font-size: 17px;");
+        }else if(Main.HEIGHT < 1200){
+            save.setStyle("-fx-font-size: 23px;");
+        }else{
+            save.setStyle("-fx-font-size: 30px;");
+        }
         
         button_container1 = new FlowPane();
-        button_container1.setAlignment(Pos.CENTER_RIGHT);
+        button_container1.setAlignment(Pos.CENTER);
         button_container1.setVgap(Main.HEIGHT > 700 ? 10 : 5);
         button_container1.setHgap(Main.HEIGHT > 700 ? 10 : 5);
         button_container1.setPadding(Main.HEIGHT > 700 ? new Insets(10,0,10,0) : new Insets(5,0,5,0));
         button_container1.getChildren().addAll(save);
         
+        NumPad np = new NumPad();
+        numpad = np.getLayout();
+        StringProperty property = np.getStringProperty();
+        property.addListener(new ChangeListener<String>(){
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                initMeterReadingValue(newValue);
+            }
+        });
+        
         root = new VBox(Main.HEIGHT > 700 ? 10 : 5);
         root.setAlignment(Pos.TOP_CENTER);
-        root.setPadding(Main.HEIGHT > 700 ? new Insets(25) : new Insets(10));
         root.getChildren().add(grid);
         root.getChildren().add(createReadingLayout());
         root.getChildren().add(button_container1);
+        if(Main.HEIGHT > 700) root.getChildren().add(numpad);
         root.setOnKeyReleased(new EventHandler<KeyEvent>(){
             @Override
             public void handle(KeyEvent event) {
                 if(event.getCode() == KeyCode.ESCAPE){
+                    if(Dialog.isOpen){ Dialog.hide(); return; }
                     if(goBackToList){
                         Main.ROOT.setCenter(Main.prevScreen);
                         Header.TITLE.setText("Accounts");
@@ -168,6 +189,14 @@ public class ReadingSheet {
                 }
             }
         });
+        
+        if(Main.HEIGHT < 700){
+            root.setPadding(new Insets(10));
+        }else if(Main.HEIGHT < 1200){
+            root.setPadding(new Insets(15));
+        }else{
+            root.setPadding(new Insets(25));
+        }
         
         if(a != null){
             account = a;
@@ -179,7 +208,7 @@ public class ReadingSheet {
     private void saveReading(){
         int prev = Integer.parseInt(account.getLastReading());
         int curr = Integer.parseInt(getMeterReadingValue());
-        if(prev >= curr){
+        if(prev > curr){
             Dialog.showAlert("The latest reading must be greater than the previous reading!");
             return;
         }
@@ -224,7 +253,7 @@ public class ReadingSheet {
         //GET THE ACCOUNT'S PAYMENTS
         double subtotal = 0.00;
         for(ItemAccount a: account.getItemList()){
-            subtotal += a.getAmount();
+            subtotal += Double.parseDouble(a.getAmount());
         }
         double total = subtotal + charge;
         
@@ -242,6 +271,10 @@ public class ReadingSheet {
             Reading reading = new Reading(objid,acctid,value,account.getConsumption(),account.getAmtDue(),account.getTotalDue(),"OPEN",datetime,account.getBatchId());
             db.updateMeterReading(reading);
         }
+        
+        //STORE GPS LOCATION
+        Database mdb = DatabasePlatformFactory.getPlatform().getDatabase();
+        mdb.updateLocation(acctid, String.valueOf(Main.LATITUDE), String.valueOf(Main.LONGITUDE));
         
         if(!db.getError().isEmpty()) Dialog.showError(db.getError());
         if(db.getError().isEmpty()){
@@ -270,15 +303,20 @@ public class ReadingSheet {
         HBox buttons = new HBox(Main.HEIGHT > 700 ? 10 : 5);
         buttons.setId("sheet-buttons");
         buttons.setAlignment(Pos.CENTER);
-        buttons.setPadding(Main.HEIGHT > 700 ? new Insets(20,5,20,5) : new Insets(10,2,10,2));
+        if(Main.HEIGHT < 700){
+            buttons.setPadding(new Insets(10,2,10,2));
+        }else if(Main.HEIGHT < 1200){
+            buttons.setPadding(new Insets(15,3,15,3));
+        }else{
+            buttons.setPadding(new Insets(20,5,20,5));
+        }
         for(RButton r: rb){
             buttons.getChildren().add(r.getLayout());
         }
         
         Label label = new Label("Capture the new meter reading by turning the dices above. Swipe-Up the dice to increment its value and Swipe-Down the dice to decrement its value.");
         label.setWrapText(true);
-        label.setStyle("-fx-font-weight: bold; -fx-alignment: center;");
-        label.setStyle(Main.HEIGHT > 700 ? "-fx-font-size: 18px;" : "-fx-font-size: 12px;");
+        label.getStyleClass().add("login-label");
         label.setAlignment(Pos.CENTER);
         label.setTextAlignment(TextAlignment.JUSTIFY);
         
@@ -378,10 +416,18 @@ public class ReadingSheet {
         
         VBox root = new VBox(Main.HEIGHT > 700 ? 10 : 5);
         root.setAlignment(Pos.TOP_CENTER);
-        root.setPadding(Main.HEIGHT > 700 ? new Insets(20) : new Insets(10));
         root.setStyle("-fx-background-color: white;");
-        root.setMinWidth(Main.HEIGHT > 700 ? Main.WIDTH-150 : Main.WIDTH-50);
         root.getChildren().addAll(listView,btnContainer);
+        if(Main.HEIGHT < 700){
+            root.setPadding(new Insets(10));
+            root.setMinWidth(Main.WIDTH-50);
+        }else if(Main.HEIGHT < 1200){
+            root.setPadding(new Insets(15));
+            root.setMinWidth(Main.WIDTH-100);
+        }else{
+            root.setPadding(new Insets(20));
+            root.setMinWidth(Main.WIDTH-150);
+        }
         
         return root;
     }
@@ -412,12 +458,15 @@ public class ReadingSheet {
             root.getStyleClass().add("rbutton-container");
             root.setAlignment(Pos.CENTER);
             root.getChildren().add(text);
-            if(Main.HEIGHT > 700){
-                root.setMaxSize(100, 150);
-                root.setMinSize(100, 150);
-            }else{
+            if(Main.HEIGHT < 700){
                 root.setMaxSize(40, 65);
                 root.setMinSize(40, 65);
+            }else if(Main.HEIGHT < 1200){
+                root.setMaxSize(70, 110);
+                root.setMinSize(70, 110);
+            }else{
+                root.setMaxSize(100, 150);
+                root.setMinSize(100, 150);
             }
             root.setOnSwipeUp(new EventHandler<SwipeEvent>(){
                 @Override
@@ -451,6 +500,201 @@ public class ReadingSheet {
             return String.valueOf(value);
         }
         
+    }
+    
+    private class NumPad{
+        
+        String num = "";
+        Button zero, one, two, three, four, five, six, seven, eight, nine, clear, back;
+        Group root;
+        StringProperty stringProperty;
+        
+        NumPad(){
+            stringProperty = new SimpleStringProperty();
+            
+            zero = new Button("0");
+            zero.getStyleClass().add("numpad-button");
+            zero.setPrefWidth((Main.WIDTH/3) - 50);
+            zero.setOnAction(new EventHandler<ActionEvent>(){
+                @Override
+                public void handle(ActionEvent event) {
+                    if(num.length()<6){
+                        num += "0";
+                        stringProperty.set(num);
+                    }
+                }
+            });
+            
+            one = new Button("1");
+            one.getStyleClass().add("numpad-button");
+            one.setPrefWidth((Main.WIDTH/3) - 50);
+            one.setOnAction(new EventHandler<ActionEvent>(){
+                @Override
+                public void handle(ActionEvent event) {
+                    if(num.length()<6){
+                        num += "1";
+                        stringProperty.set(num);
+                    }
+                }
+            });
+            
+            two = new Button("2");
+            two.getStyleClass().add("numpad-button");
+            two.setPrefWidth((Main.WIDTH/3) - 50);
+            two.setOnAction(new EventHandler<ActionEvent>(){
+                @Override
+                public void handle(ActionEvent event) {
+                    if(num.length()<6){
+                        num += "2";
+                        stringProperty.set(num);
+                    }
+                }
+            });
+            
+            three = new Button("3");
+            three.getStyleClass().add("numpad-button");
+            three.setPrefWidth((Main.WIDTH/3) - 50);
+            three.setOnAction(new EventHandler<ActionEvent>(){
+                @Override
+                public void handle(ActionEvent event) {
+                    if(num.length()<6){
+                        num += "3";
+                        stringProperty.set(num);
+                    }
+                }
+            });
+            
+            four = new Button("4");
+            four.getStyleClass().add("numpad-button");
+            four.setPrefWidth((Main.WIDTH/3) - 50);
+            four.setOnAction(new EventHandler<ActionEvent>(){
+                @Override
+                public void handle(ActionEvent event) {
+                    if(num.length()<6){
+                        num += "4";
+                        stringProperty.set(num);
+                    }
+                }
+            });
+            
+            five = new Button("5");
+            five.getStyleClass().add("numpad-button");
+            five.setPrefWidth((Main.WIDTH/3) - 50);
+            five.setOnAction(new EventHandler<ActionEvent>(){
+                @Override
+                public void handle(ActionEvent event) {
+                    if(num.length()<6){
+                        num += "5";
+                        stringProperty.set(num);
+                    }
+                }
+            });
+            
+            six = new Button("6");
+            six.getStyleClass().add("numpad-button");
+            six.setPrefWidth((Main.WIDTH/3) - 50);
+            six.setOnAction(new EventHandler<ActionEvent>(){
+                @Override
+                public void handle(ActionEvent event) {
+                    if(num.length()<6){
+                        num += "6";
+                        stringProperty.set(num);
+                    }
+                }
+            });
+            
+            seven = new Button("7");
+            seven.getStyleClass().add("numpad-button");
+            seven.setPrefWidth((Main.WIDTH/3) - 50);
+            seven.setOnAction(new EventHandler<ActionEvent>(){
+                @Override
+                public void handle(ActionEvent event) {
+                    if(num.length()<6){
+                        num += "7";
+                        stringProperty.set(num);
+                    }
+                }
+            });
+            
+            eight = new Button("8");
+            eight.getStyleClass().add("numpad-button");
+            eight.setPrefWidth((Main.WIDTH/3) - 50);
+            eight.setOnAction(new EventHandler<ActionEvent>(){
+                @Override
+                public void handle(ActionEvent event) {
+                    if(num.length()<6){
+                        num += "8";
+                        stringProperty.set(num);
+                    }
+                }
+            });
+            
+            nine = new Button("9");
+            nine.getStyleClass().add("numpad-button");
+            nine.setPrefWidth((Main.WIDTH/3) - 50);
+            nine.setOnAction(new EventHandler<ActionEvent>(){
+                @Override
+                public void handle(ActionEvent event) {
+                    if(num.length()<6){
+                        num += "9";
+                        stringProperty.set(num);
+                    }
+                }
+            });
+            
+            
+            clear = new Button("C");
+            clear.getStyleClass().add("numpad-button");
+            clear.setPrefWidth((Main.WIDTH/3) - 50);
+            clear.setOnAction(new EventHandler<ActionEvent>(){
+                @Override
+                public void handle(ActionEvent event) {
+                    num = "";
+                    stringProperty.set(num);
+                }
+            });
+            
+            back = new Button("<");
+            back.getStyleClass().add("numpad-button");
+            back.setPrefWidth((Main.WIDTH/3) - 50);
+            back.setOnAction(new EventHandler<ActionEvent>(){
+                @Override
+                public void handle(ActionEvent event) {
+                    if(num.length()!=0) num = num.substring(0, num.length()-1);
+                    stringProperty.set(num);
+                }
+            });
+        }
+        
+        Node getLayout(){
+            VBox bcontainer = new VBox();
+            bcontainer.setId("numpad-container");
+            bcontainer.setPadding(new Insets(0,10,10,10));
+            bcontainer.setAlignment(Pos.CENTER);
+            bcontainer.getChildren().add(createRow(seven, eight, nine));
+            bcontainer.getChildren().add(createRow(four, five, six));
+            bcontainer.getChildren().add(createRow(one, two, three));
+            bcontainer.getChildren().add(createRow(clear, zero, back));
+            
+            root = new Group();
+            root.getChildren().add(bcontainer);
+            
+            return root;
+        }
+        
+        public StringProperty getStringProperty(){
+            return stringProperty;
+        }
+        
+        Node createRow(Node...node){
+            HBox root = new HBox(10);
+            root.setAlignment(Pos.CENTER_LEFT);
+            root.setPadding(new Insets(10,0,0,0));
+            for(Node n : node){
+                root.getChildren().add(n);
+            }
+            return root;
+        }
     }
     
 }

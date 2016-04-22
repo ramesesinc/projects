@@ -1,0 +1,7 @@
+<schema adapter="main">
+
+	<element tablename="vw_lookup_aggregatesendout_day">
+		<field name="day" primary="true" caption="Day" visible="true"/> 
+	</element> 
+
+</schema>

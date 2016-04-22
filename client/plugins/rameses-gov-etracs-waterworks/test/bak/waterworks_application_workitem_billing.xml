@@ -1,0 +1,38 @@
+<workunit>
+    <invokers>
+        <invoker type="waterworks_application:initial_billing" 
+                 caption="Billing"
+                 action="start"
+                 index="10" />    
+    </invokers>
+    <code>
+        <code class="com.rameses.gov.etracs.waterworks.models.InitialBillingModel" />
+    </code>    
+    <pageflow>
+        <start>
+            <transition to="bomsummary" action="fetchBomList"/>
+        </start>
+        <page name="bomsummary" title="Bill of Materials">
+            <transition to="end" caption="Cancel" />
+            <transition to="bompayoption" caption="Next" />
+        </page>
+        <page name="bompayoption" title="Bill of Materials Payment Option">
+            <transition to="end" caption="Cancel" />
+            <transition to="bomsummary" caption="Back" />
+            <transition to="billsummary" caption="Next" action="finalizeBilling" immediate="false"/>
+        </page>
+        <page name="billsummary" title="Billing Summary">
+            <transition to="end"  caption="Cancel" visibleWhen="#{false}"/>
+            <transition to="bompayoption" caption="Back" immediate="true"/>
+            <transition to="end" caption="Submit" action="postBilling" 
+               confirm="You are about to submit this for payment. Proceed?"/>
+        </page>
+        <end/>
+    </pageflow>    
+    <pages>
+        <page name="bomsummary" template="com.rameses.gov.etracs.waterworks.views.BillOfMaterialsSummaryPage"/>
+        <page name="bompayoption" template="com.rameses.gov.etracs.waterworks.views.BillOfMaterialsPayOptionPage"/>
+        <page name="billsummary" template="com.rameses.gov.etracs.waterworks.views.InitialBillingSummaryPage"/>
+    </pages>        
+        
+</workunit>

@@ -16,7 +16,7 @@ class OVSCashReceiptInterceptor{
 	def vt;
 
 	@After(pattern="CashReceiptService.post", eval="#{result.collectiontype?.handler == 'ovs'}")
-	public void postPayment(def evt) {
+	public void postPayment( evt ) {
 		def o = evt.args[0];
 		def pmt = [:];
 		pmt.objid = "PMT"+ new UID();
@@ -44,11 +44,13 @@ class OVSCashReceiptInterceptor{
 		uniqueIds.each { id->
 			def m = vte.select("total:{SUM(amount - amtpaid)}").find(["parent.objid": id]).groupBy("parent.objid").first();			
 			if( m.total==0 ) vt.find( [objid: id]).update( [state:'CLOSED']);
-		}		
+		} 
+
+		buildRemarks( evt.result ); 
 	}
 
 	@After(pattern="CashReceiptVoidService.post",index=0,eval="#{result.receipt.collectiontype.handler=='ovs'}")
-	public void voidPayment(def evt) {
+	public void voidPayment( evt ) {
 		def rct = evt.result.receipt;
 
 		p.find( [refid: rct.objid ] ).update( [voided:1]);
@@ -66,4 +68,22 @@ class OVSCashReceiptInterceptor{
 		}		
 	}
 
+	@After(pattern="CashReceiptService.open", eval="#{result.collectiontype?.handler == 'ovs'}", index=9999)
+	public void afterOpen( evt ) { 
+		buildRemarks( evt.result ); 
+	} 
+
+	void buildRemarks( result ) {
+		if ( result == null ) return;
+		
+		def tickets = vt.getViolationTicketsByPaymentRefid([ refid: result.objid ]); 
+		if ( tickets ) {
+			def str = tickets.collect{ 'TKT#'+ it.ticketno +' - '+ it.officername }.join(', '); 
+			if ( result.remarks ) {
+				result.remarks = result.remarks +', '+ str; 
+			} else {
+				result.remarks = str; 
+			} 
+		} 
+	}
 }

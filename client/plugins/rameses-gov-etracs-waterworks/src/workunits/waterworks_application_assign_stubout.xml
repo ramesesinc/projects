@@ -1,0 +1,67 @@
+<workunit>
+    <invokers>
+        <invoker type="waterworks_application:form:formActions" 
+                 visibleWhen="#{task.state=='for-assessment' 
+                    &amp;&amp; task.assignee?.objid==user.objid}"
+                 caption="Specify Stubout"
+                 target="popup"
+                 action="init"
+                 />
+        <invoker type="waterworks_stubout:assign" 
+                 caption="Assign Stubout"
+                 target="popup"
+                 action="init"
+                 />                 
+    </invokers>
+    <code>
+        <![CDATA[
+        
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        import com.rameses.common.*;
+        import com.rameses.util.*;
+        
+        class AssignStubout {
+        
+            @Service("PersistenceService")
+            def persistenceSvc;
+
+            @Caller
+            def caller;
+            def handler;
+
+            def info = [_schemaname: "waterworks_application"];
+
+            void init() {
+                info.objid = caller.entity.objid;
+                info.stubout = caller.entity.stubout;
+                info.stuboutindex = caller.entity.stuboutindex;
+            }
+
+            def doOk() {
+                if(handler) {
+                    handler(info);
+                }
+                else {
+                    persistenceSvc.update( info ); 
+                    caller.entity.stubout = info.stubout;
+                    caller.entity.stuboutindex = info.stuboutindex.toInteger();
+                    caller.refresh();
+                }    
+                return "_close";
+            }
+            
+            def doCancel() {
+                return "_close";
+            }
+                                    
+        }
+        
+        ]]>
+    </code>
+    <pages>
+        <page template="com.rameses.gov.etracs.waterworks.views.AssignStuboutPage" />
+    </pages>    
+</workunit>

@@ -1,0 +1,32 @@
+import com.rameses.annotations.*;
+import com.rameses.rules.common.*;
+import waterworks.facts.*;
+
+class WaterworksApplicationRuleService  {
+	
+	@Service("RuleExecutorService")
+	def ruleSvc;
+
+	/*******************************
+	* compute fee and requirements
+	*******************************/
+	@ProxyMethod 
+	public def getInitialInfo( params ) { 
+		def facts = [];
+		facts << new WaterApplication();
+		def res = ruleSvc.execute("waterworksapplication", facts, null, null);
+		def m = [:];
+		m.fees = [];
+		if( res.billItemList ) { 
+			m.fees = res.billItemList.buildReceiptItems(); 
+			m.total = m.fees.sum{( it.amount? it.amount : 0.0 )}
+		} 	
+		if(res.requirements) {
+			m.requirements = res.requirements;
+		}
+		return m; 
+	}
+
+
+
+}

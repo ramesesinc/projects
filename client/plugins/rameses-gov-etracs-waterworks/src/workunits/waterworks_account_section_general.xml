@@ -1,9 +1,12 @@
 <workunit>
     <invokers>
         <invoker type="waterworks_account:section" caption="General Information" index="0"/>
+        
+        <invoker type="formActions" caption="Change Address" action="changeAddress"/>
+        <invoker type="formActions" caption="Change Meter" action="changeMeter"/>
     </invokers>
-    <code class="com.rameses.seti2.models.MdiChildModel"/>
+    <code class="com.rameses.gov.etracs.waterworks.models.AccountSectionGeneralModel"/>
     <pages>
-        <page template="com.rameses.gov.etracs.waterworks.views.WaterworksAccountGeneralInformationPage"/>
+        <page template="com.rameses.gov.etracs.waterworks.views.WaterworksAccountGeneralPage"/>
     </pages>
 </workunit>

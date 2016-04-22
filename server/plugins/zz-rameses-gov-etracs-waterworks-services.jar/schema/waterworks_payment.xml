@@ -1,9 +1,8 @@
 <schema adapter="waterworks">
 	<element tablename="waterworks_payment">
 		<field name="objid" primary="true" prefix="WP"/>
-		<complex name="account" jointype="many-to-one" ref="waterworks_account">
-			<key field="acctid" target="objid"/>
-		</complex>
+		<field name="acctid" required="false"/>
+		<field name="applicationid" required="false"/>
 		<field name="refno" required="true"/>
 		<field name="reftype" required="true"/>
 		<field name="refid" required="true"/>
@@ -11,7 +10,7 @@
 		<field name="amount" required="true"/>
 		<field name="voided" required="true"/>
 		<complex name="items" ref="waterworks_payment_item" jointype="one-to-many">
-			<key field="objid" target="objid"/>
+			<key field="objid" target="parentid"/>
 		</complex>	
 	</element>
 </schema>

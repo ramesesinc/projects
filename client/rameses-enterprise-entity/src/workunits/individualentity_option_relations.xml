@@ -1,0 +1,21 @@
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" 
+          schemaName="vw_entityrelation"
+          cols="entityno,name,addresstext,relation"
+          allowOpen="false" allowCreate="false">
+    <invokers>
+        <invoker type="individualentity:option" caption="Relations" index="200" action="init"/>
+    </invokers>
+    <code>
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.seti2.models.*;
+        
+        class IndividualOptionRelationList extends CrudListModel {
+            @Caller
+            def caller;
+        
+            def getCustomFilter() {
+                return ["entity.objid=:entityid", [entityid:caller.entity.objid]];
+            }
+        }
+    </code>    
+</workunit>

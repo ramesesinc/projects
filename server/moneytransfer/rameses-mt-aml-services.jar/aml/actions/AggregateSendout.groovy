@@ -8,6 +8,7 @@ public class AggregateSendout implements RuleActionHandler {
 
 	def em; 
 	def result; 
+	def facts;
 
 	public void execute( params, drools ) { 
 		int days = params.days.intValue;
@@ -27,6 +28,7 @@ public class AggregateSendout implements RuleActionHandler {
 			amount : info.amount, 
 			days   : days 
 		]); 
+		facts << aggr; 
 		drools.insert( aggr ); 
 	} 
 }

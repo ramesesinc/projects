@@ -7,10 +7,26 @@ import treasury.facts.*;
 
 public class SetDueDate implements RuleActionHandler {
 
-	def res;	//resources
-
 	public void execute(def params, def drools) {
+		def ct = RuleExecutionContext.getCurrentContext();
+
 		def billdate = params.duedate.getStringValue();
-		drools.insert( new DueDate(billdate) );
+		def type = params.type;
+
+		if( !billdate )
+			throw new Exception("Due date is required in SetDueDate rule action");
+
+		if( !type )
+			throw new Exception("Type is required in SetDueDate action");
+
+		def dt = new DueDate(billdate);
+		ct.facts.add( dt );
+
+		if( !ct.result.duedates ) {
+			ct.result.duedates = [:];	
+		} 
+		ct.result.duedates.put( type, dt.date ); 
+
 	}
+	
 }

@@ -1,0 +1,78 @@
+import com.rameses.annotations.*;
+
+import com.rameses.rules.common.*;
+import waterworks.facts.*;
+import treasury.facts.*;
+import treasury.actions.*;
+
+class WaterworksBillingService  {
+	
+	@Service("RuleExecutorService")
+	def ruleSvc;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@DataContext("waterworks_account_ledger")
+	def waterworks_account_ledger;
+
+	@DataContext("waterworks_installment")
+	def waterworks_installment;
+
+	@DataContext("itemaccount")
+	def itemAcct;
+
+	void buildBasicFacts(def facts, def o) {
+		def currDate = dateSvc.getServerDate();
+		facts << new CurrentDate(currDate);
+		//facts << new BillDate((!o?.billdate)?currDate:o?.billdate);
+		facts << new WaterArea( sector:o.area.sector, zone: o.area.zone ); 
+	}
+
+	void buildInstallmentFacts(def facts, def o) {
+		def list = waterworks_account_ledger.find( [parentid: o.acctid] )
+			.where("amount-amtpaid>0 AND NOT(installmentid IS NULL)")
+			.select( "installmentid,txntype,amount:{SUM(amount)},amtpaid:{SUM(amtpaid)}" )
+			.groupBy("installmentid,txntype").list();
+		list.each {
+			def inst = waterworks_installment.find([objid:it.installmentid]).first();
+			facts << new Installment( id: it.installmentid, txntype:it.txntype,
+						startdate: it.startdate, term: it.term, amount: it.amount, amtpaid: it.amtpaid)
+		}	
+	}
+
+	void buildBillItems( def facts, def o ) {
+		def list = waterworks_account_ledger.find( [parentid: o.acctid] )
+			.where("amount-amtpaid>0 AND installmentid IS NULL")
+			.select( "txntype,duedate,remarks,amount,amtpaid" )
+			.list();
+		list.each {
+			facts << new BillItem( title:it.txntype, amount:it.amount, amtpaid:it.amtpaid, duedate:it.duedate, remarks:it.remarks, sortorder:10 )
+		}	
+	}
+
+	@ProxyMethod
+	public def processBilling( def params ) {
+		if(!params.acctid) throw new Exception("acctid is required in processBilling");
+		if(!params.area) throw new Exception("area is required in processBilling");
+
+		def facts = [];
+		buildBasicFacts( facts, params );
+		buildInstallmentFacts( facts, params );
+		buildBillItems( facts, params );
+
+		def res = ruleSvc.execute( "waterworksbilling", facts, null, null );
+		if( res.billItemList)
+			throw new Exception("No compute fee rules executed");
+
+		def result = [:];
+		result.putAll( res.duedates );
+		result.billitems = facts.findAll{ it instanceof BillItem }
+				?.sort{it.sortorder}
+				?.collect{ [title:it.title, amount: it.amount] };
+
+		return result;
+	}
+
+
+}

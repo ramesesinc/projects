@@ -1,0 +1,55 @@
+
+import com.rameses.annotations.*;
+import com.rameses.http.*;
+import com.rameses.util.*;
+
+class SMSServiceImpl {	
+
+	@ActiveDB('sms')
+	def em;
+
+	@Service('DateService')
+	def dateSvc; 
+
+	@ProxyMethod
+	public def send( Map entity ) { 
+		def inbox = em.findInbox([objid: entity.objid]); 
+		if (inbox) { 
+			em.markInboxAsSuccess(inbox); 
+			em.removeInboxPending(inbox); 
+		} 
+			
+		int limit = 160;
+		int len = entity.message.toString().length();
+		int creditcount = (len / limit);
+		if (len%limit > 0) creditcount++;
+
+		if ( !entity.objid ) entity.objid = 'MSG'+ new java.rmi.server.UID(); 
+		if ( !entity.refid ) entity.refid = entity.objid; 
+
+		entity.state = 'DRAFT';
+		entity.dtfiled = dateSvc.serverDate;
+		entity.creditcount = creditcount;
+		em.create(entity, 'outbox'); 
+
+		def pendingdata = [
+            objid 	   : entity.objid, 
+            dtretry    : entity.dtfiled, 
+            dtexpiry   : dateSvc.add(entity.dtfiled, '2m'), 
+            retrycount : 0 
+        ]; 
+        em.create( pendingdata, 'outbox_pending' ); 
+		return entity; 
+	} 
+	
+	@ProxyMethod 
+	public void messageReceived( Map params ) { 
+		def inbox = em.findInbox([objid: params.objid]); 
+		if (inbox) { 
+			em.removeInboxPending(inbox); 
+			em.markInboxAsSuccess(inbox); 
+		} else { 
+			throw new Exception("'"+params.objid+"' sms message not found. Please verify.");  
+		}
+	} 
+} 

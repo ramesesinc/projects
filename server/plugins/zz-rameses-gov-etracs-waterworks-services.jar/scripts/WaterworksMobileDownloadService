@@ -1,0 +1,133 @@
+import com.rameses.annotations.*;
+import java.rmi.server.*;
+import com.rameses.util.*;
+import java.text.*;
+
+class WaterworksMobileDownloadService {
+	
+	@DataContext("waterworks_mobile_info")
+	def wm;
+
+	@DataContext("waterworks_account")
+	def wa;
+
+	@DataContext("waterworks_account_consumption")
+	def wac;
+
+	@DataContext("waterworks_area")
+	def wr;
+
+	@DataContext("vw_waterworks_stubout")
+	def vw_waterworks_stubout;
+
+	@DataContext("waterworks_stubout")
+	def ws;
+
+	@DataContext('collectiontype_account') 
+	def cta;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@Service("WaterworksBillingService")
+	def billingSvc;
+
+	@ProxyMethod
+	public def initForDownload( def o ){
+		if(!o.areaid) throw new Exception("areaid is required!");
+
+		//we need to get this first since it will be used for billing.
+		def area = wr.find([objid:o.areaid]).first();
+
+		def batchid = 'BTC' + new UID();
+        def y = dateSvc.getServerYear();
+		def m = dateSvc.getServerMonth() - 1;
+		if(m==0) {
+			m = 12;
+			y = y-1;
+		}
+
+		def duemonth = dateSvc.getServerMonth();
+		def dueyear = dateSvc.getServerYear();
+		def duedate = new DateBean(dueyear + "-" + duemonth + "-" + 20).getDate();
+		def fromdate = new DateBean(y + "-" + m + "-" + 20).getDate();
+		def todate = new DateBean(dueyear + "-" + duemonth + "-" + 20).getDate();
+		def discodate = new DateBean(dueyear + "-" + duemonth + "-" + 28).getDate();
+		def rundate = dateSvc.getServerDate();
+		DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
+		
+		def acct = cta.findAccountByHandlerAndTag([handler:'waterworks', tag:'WFEE']); 
+		if ( !acct ) throw new Exception('Please provide an itemaccount ');
+
+		def params = [areaid:o.areaid, year:dueyear, month:duemonth];
+		def list = wm.getListForDownload(params);
+		list.each { 
+			it.state = 'PENDING';
+			it.barcode = '51030:' + it.acctno;
+			it.batchid = batchid;
+			it.month = duemonth;
+			it.year = dueyear;
+			it.period = df.format(fromdate) + " - " + df.format(todate);
+			it.rundate = rundate;
+			it.itemaccountid = acct.account.objid; 
+			it.duedate = duedate;
+			it.discodate = discodate;
+			it.info = wm.serializer.write([
+				barangay: (it.barangayid? it.barangayid: ''), 
+				classification: it.classificationid, 
+				metersize: it.metersize 
+			]);
+
+			/*			
+			def result = billingSvc.getBilling( [acctid:it.acctid, area:area] );
+			it.items = wm.serializer.write( result.billitems );			
+			it.duedate = result.duedate;
+			it.discodate = result.disconnectiondate;
+
+			it.items = wm.serializer.write([
+				[account: 'Materials', amount:100.00],
+				[account: 'Compromise', amount:50.00],
+				[account: 'Penalty', amount:0.00],
+				[account: 'Other Charge', amount:0.00]
+			]);*/
+			it.items = '[]';
+			wm.create(it);
+		}
+
+		def x = wm.find([batchid:batchid]).list();
+		return [batchid:batchid, count: x.size()];
+	}
+
+	@ProxyMethod
+	public def download( def o ) {
+		if(!o.batchid) throw new Exception("Please specify batchid!"); 
+		return wm.find([batchid:o.batchid]).list();
+	}
+
+	@ProxyMethod
+	public def confirmDownload( def o ){
+		if(!o.batchid) throw new Exception("Please specify batchid!"); 
+		wm.find([batchid:o.batchid]).update([state:"DOWNLOADED"]);
+		return "OK";
+	}
+
+	@ProxyMethod
+	public void cancelDownload( def o ){
+		if(!o.batchid) throw new Exception("Please specify batchid!"); 
+		def list = "('" + o.downloadedlist.join("','") + "')";
+		wm.cancelDownload([batchid: o.batchid, downloadedlist: list]);
+	}
+
+	@ProxyMethod
+	def getAreasByUser( o ){
+		if(!o.userid) throw new Exception("userid is required!");
+		return wr.find(['assignee.objid':o.userid]).list();
+	}
+
+	@ProxyMethod
+	def getStuboutsByArea( o ){
+		if (!o.areaid) throw new Exception("areaid is required!");
+
+		return vw_waterworks_stubout.find(['area.objid': o.areaid]).list(); 
+	}
+}

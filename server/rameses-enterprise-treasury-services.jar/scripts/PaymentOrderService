@@ -1,9 +1,11 @@
 import com.rameses.annotations.*;
 import com.rameses.util.*;
 import java.rmi.server.*;
-import com.rameses.common.*
+import com.rameses.common.*;
+import treasury.facts.*;
+import treasury.actions.*;
 
-class PaymentOrderService  {
+class PaymentOrderService {
 	
 	@DataContext("paymentorder")
 	def pmt;
@@ -11,11 +13,15 @@ class PaymentOrderService  {
 	@Service("DateService")
 	def dtSvc 
 
+	
 	@DataContext("collectiontype")
 	def collectionType;
 
 	@DataContext("revenueitem")
 	def revItem;
+
+	@Env 
+	def env; 
 
 	@ProxyMethod
 	public def create(def entity){	
@@ -59,12 +65,17 @@ class PaymentOrderService  {
 	}
 
 	@ProxyMethod
-	def open( params) {
-		def entity = pmt.find([txnid: 'PMO:'+params.txnid]).first();
-		if( !entity || entity.size()==0 ) {
-			throw new Exception("Payment Order Code does not exist. ")
-		}	
-		return entity; 
+	def open( params) { 
+		if ( env.paymentorder ) { 
+			return env.paymentorder; 
+
+		} else {
+			def entity = pmt.find([txnid: 'PMO:'+params.txnid]).first();
+			if( !entity || entity.size()==0 ) {
+				throw new Exception("Payment Order Code does not exist. ")
+			}	
+			return entity; 
+		}
 	}
 
 	@ProxyMethod
@@ -74,5 +85,6 @@ class PaymentOrderService  {
 		return data; 
 	}
 
+	
 
 }

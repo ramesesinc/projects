@@ -1,0 +1,9 @@
+<workunit>
+    <invokers>
+       <invoker type="requirements:list" caption="Requirements" action="init" />
+    </invokers>
+    <code class="com.rameses.enterprise.models.RequirementListModel"/>
+    <pages>
+        <page template="com.rameses.enterprise.views.RequirementsListPage" />
+    </pages>
+</workunit>

@@ -13,7 +13,5 @@
 		<field name="reader_objid" required="false"/>
 		<field name="reader_name" required="false"/>
 		<field name="volume" required="true"/>
-		<field name="amount" required="true"/>
-		<field name="amtpaid" required="true"/>
 	</element>
 </schema>

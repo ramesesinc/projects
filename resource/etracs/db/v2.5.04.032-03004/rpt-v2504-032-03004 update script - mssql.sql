@@ -174,14 +174,15 @@ select
 	f.lguid,
 	f.originlguid,
 	f.year as yearissued,
-	(select objid from faas_task where refid = f.objid and enddate is null) as taskid,
-	(select state from faas_task where refid = f.objid and enddate is null) as taskstate,
-	(select assignee_objid from faas_task where refid = f.objid and enddate is null) as assignee_objid,
+	(select top 1 objid from faas_task where refid = f.objid and enddate is null) as taskid,
+	(select top 1 state from faas_task where refid = f.objid and enddate is null) as taskstate,
+	(select top 1 assignee_objid from faas_task where refid = f.objid and enddate is null) as assignee_objid,
 	(select trackingno from rpttracking where objid = f.objid) as trackingno
 from faas f 
 	inner join rpu r on f.rpuid = r.objid 
 	inner join realproperty rp on f.realpropertyid = rp.objid 
 	inner join propertyclassification pc on r.classification_objid = pc.objid 
+where not exists(select * from faas_list where objid = f.objid);
 go 
 
 

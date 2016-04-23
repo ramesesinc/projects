@@ -7,10 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- *
- * @author Dino
- */
 public class MobileDownloadService {
     
     private Service service;
@@ -31,11 +27,10 @@ public class MobileDownloadService {
         }
     }
     
-    public Map initForDownload(Object params){
+    public String initForDownload(Object params){
         ERROR = "";
-        Map result = new HashMap();
         try{
-            result = service.initForDownload(params);
+            return (String) service.initForDownload(params);
         }catch(Exception e){
             ERROR = "MobileDownloadService Error: " + e.toString();
             if(Main.LOG != null){
@@ -44,7 +39,22 @@ public class MobileDownloadService {
                 e.printStackTrace();
             }
         }
-        return result;
+        return null;
+    }
+    
+    public int getBatchStatus(String batchid){
+        ERROR = "";
+        try{
+            return (int) service.getBatchStatus(batchid);
+        }catch(Exception e){
+            ERROR = "MobileDownloadService Error: " + e.toString();
+            if(Main.LOG != null){
+                Main.LOG.error("MobileDownloadService Error",e.toString());
+            }else{
+                e.printStackTrace();
+            }
+        }
+        return -1;
     }
     
     public List<Map> download(Object params){
@@ -159,7 +169,9 @@ public class MobileDownloadService {
     
     static interface Service{
         
-        public Map initForDownload(Object params);
+        public String initForDownload(Object params);
+        
+        public int getBatchStatus(String batchid);
         
         public List<Map> download(Object params);
         

@@ -69,11 +69,25 @@ class WaterworksBillingService  {
 	}
 
 	private def buildAppFees( def o, def findAcct ) {
+		if(!o.applicationid) return [];
 		def itemList = [];
 		def fees = appFee.find([parentid: o.applicationid])
 			.where("amount-amtpaid > 0 AND installmentid IS NULL").list();
 		fees.each {
-			itemList << [refid: it.objid, item: findAcct(it.item), 
+			itemList << [refid: it.objid, item: findAcct(it.item), remarks: it.remarks,
+				amount:it.amount-it.amtpaid, surcharge:0, interest:0, discount:0, total: it.amount-it.amtpaid];	
+		}
+		return itemList;
+	}
+
+	//Todo: we should call the billing ruleservice here to compute penalty
+	private def buildLedgerItems( def o, def findAcct ) {
+		if(!o.acctid) return [];
+		def itemList = [];
+		def fees = ledger.find([parentid: o.acctid])
+			.where("amount-amtpaid > 0 AND installmentid IS NULL").list();
+		fees.each {
+			itemList << [refid: it.objid, item: findAcct(it.item), remarks: it.remarks,
 				amount:it.amount-it.amtpaid, surcharge:0, interest:0, discount:0, total: it.amount-it.amtpaid];	
 		}
 		return itemList;
@@ -118,7 +132,6 @@ class WaterworksBillingService  {
 	}
 
 	
-
 	@ProxyMethod
 	public def getBilling( def o ) {
 		def acctMap = [:];
@@ -132,8 +145,9 @@ class WaterworksBillingService  {
 		def m = buildIds(o);
 		def itemList = buildAppFees( o, findAcct );
 		def instList = buildInstallmentFees(o, findAcct );
+		def ledgerList = buildLedgerItems( o, findAcct );
 
-		return itemList + instList;
+		return itemList + instList + ledgerList;
 
 		/*
 		def ledgerFacts = buildLedgerFacts(o);
@@ -142,7 +156,6 @@ class WaterworksBillingService  {
 			throw new Exception("No compute fee rules executed");
 		return res.billItemList.buildBillItems();
 		*/
-		return itemList;
 	}
 
 

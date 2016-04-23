@@ -94,7 +94,7 @@ select objid from machdetail where objid = $P{objid}
 
 [getLandRpuAssessments]
 select distinct 
-	min(ld.landrpuid,'-',lal.code) as objid, 
+	min(ld.objid) as objid, 
 	ld.landrpuid as rpuid, 
 	lal.classification_objid, 
 	ld.actualuse_objid, 
@@ -115,7 +115,7 @@ group by
 
 [getPlantTreeDetailAssessments]
 select distinct 
-	min(ld.landrpuid, 'PT-', lal.code) as objid, 
+	min(ld.objid) as objid, 
 	ld.landrpuid as rpuid, 
 	lal.classification_objid, 
 	ld.actualuse_objid, 
@@ -147,7 +147,7 @@ select objid from propertyclassification where code = $P{code}
 [insertBldgRpuAssessment]
 INSERT INTO rpu_assessment (objid, rpuid, classification_objid, actualuse_objid, areasqm, areaha, marketvalue, assesslevel, assessedvalue, rputype) 
 select
-	concat(r.objid, au.code) as objid, 
+	min(bu.objid) as objid, 
 	bu.bldgrpuid as rpuid, 
 	au.classification_objid, 
 	bu.actualuse_objid as actualuse_objid, 
@@ -306,6 +306,9 @@ select objid from bldgassesslevel where objid = $P{objid}
 [findBldgTypeById]
 select objid from bldgtype where objid = $P{objid}
 
+[findBldgTypePrevInfo]
+select * from bldgtype where objid = $P{previd}
+
 
 [findBldgKindBuccById]
 select objid from bldgkindbucc where objid = $P{objid}
@@ -313,7 +316,11 @@ select objid from bldgkindbucc where objid = $P{objid}
 [findBldgAdditionalItemById]
 select * from bldgadditionalitem where objid = $P{objid}
 
+[findBldgAdditionalItemByCode]
+select * from bldgadditionalitem where code = $P{code}
 
+[findBldgAdditionalItemByName]
+select * from bldgadditionalitem where name = $P{name}
 
 
 [findMachSettingByRy]
@@ -329,3 +336,6 @@ insert into faasannotationtype
 	(objid, type)
 values	
 	($P{objid}, $P{type})
+
+[findResidentialClass]
+select * from propertyclassification where name = 'RESIDENTIAL'

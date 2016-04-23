@@ -39,6 +39,9 @@ public class RPTISMunicipalityTestTRFAASService
     @Service('RPTLedgerService')
     def ledgerSvc 
 
+    @ActiveDB('faas_list')
+    def faasListEm
+
 
     @ProxyMethod
     public def createSimpleTransferFaas(faas) {
@@ -139,6 +142,19 @@ public class RPTISMunicipalityTestTRFAASService
         trfaas += faasSvc.openFaas(trfaas)
         test.testEqual('trfaas.state', trfaas.state, 'INTERIM')
         test.testEqual('trfaas.taskstate', trfaas.taskstate, 'provapprover')
+    }
+
+
+    @ProxyMethod
+    public def testDisapprovedTransfer( faas, task ) {
+        def t = em.findFaasTaskById(task)
+        test.testNotNull('Disapproved FAAS Task', t);
+        test.testNull('Disapproved FAAS Task End Date', t.enddate);
+
+        def fl = faasListEm.findById(faas)
+        test.testNotNull('faaslist', fl)
+        test.testEqual('faaslist.taskid', fl.taskid, task.objid)
+        return '[municipality] Disapproved Simple Transfer tested.'
     }
 
 

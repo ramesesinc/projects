@@ -1,0 +1,19 @@
+/* v2.5.04.032-03005 */
+
+- TREAURY
+	- 
+
+- BPLS 
+	- 
+		
+- ASSESSOR
+	- PIN Renumbering and FAAS Approval support for general revision 
+	- Province disapproval support for FAAS transactions
+	- Red Flag support for Subdivision and Consolidation
+	- Batch printing of Notice of Assessment 
+	- Modified faas, subdivision, consolidation listing page 
+
+- LANDTAX: 
+	- Ledger Restriction Support
+	- Improve partial payment distribution computation
+	- Batch printing of Realty Tax Billing Support

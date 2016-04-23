@@ -33,6 +33,7 @@ public class AbstractConsolidationController extends com.rameses.gov.etracs.rpt.
         super.afterOpen(o);
         formId = entity.txnno;
         formTitle = 'Consolidation: ' + formId;
+        buildQueryInfo();
     }
     
     
@@ -126,6 +127,21 @@ public class AbstractConsolidationController extends com.rameses.gov.etracs.rpt.
     }
 
 
+    def queryinfo;
+    void buildQueryInfo(){
+        queryinfo = null;
+        def redflagCount = svc.getOpenRedflagCount([objid:entity.objid]);
+        if (redflagCount > 0){
+            queryinfo = redflagCount + ' Red Flag' + (redflagCount == 1 ? ' needs' : 's need') + ' to be resolved.';
+        }
+    }
+    
+    List getMessagelist(){
+        if (queryinfo)
+            return [queryinfo];
+        return null;
+    }
+        
     
     
 }

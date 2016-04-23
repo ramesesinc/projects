@@ -5,7 +5,8 @@
                  formId="#{entity.objid}"
                  action="open" target="window"/>
     </invokers>
+    <code class="com.rameses.gov.etracs.waterworks.models.AccountModel" />    
     <pages>
-        <page template=""/>
+        <page template="com.rameses.gov.etracs.waterworks.views.AccountPage"/>
     </pages>    
 </workunit>

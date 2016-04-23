@@ -15,7 +15,7 @@ public class RPTRedFlagService
 
 	@Service('DateService')
 	def dtSvc 
-    
+
 	def STATE_OPEN = 'OPEN'
 	def STATE_RESOLVED = 'RESOLVED'
 	def STATE_CLOSED = 'CLOSED'
@@ -23,7 +23,23 @@ public class RPTRedFlagService
 
 	@ProxyMethod
 	public def getList(params) {
-		return em.getList(params)	
+		def results = []
+
+		def list = em.getList(params)	
+		if (list) results += list 
+
+		list = em.getListFromSubdivision(params)
+		if (list) results += list 
+
+		list = em.getListFromConsolidation(params)
+		if (list) results += list 
+		return results.sort{ a, b -> b.caseno <=> a.caseno } 
+	}
+
+	@ProxyMethod
+	public def getOpenRedflagCount(entity) {
+		def list = getList([parentid:entity.objid])
+		return list.findAll{it.state == 'OPEN'}.size();
 	}
 
 	@ProxyMethod
@@ -63,6 +79,18 @@ public class RPTRedFlagService
 		return open(entity)
 	}
 
+	// intercepted to return actual entity being redflagged
+	@ProxyMethod
+	public def getEntity(redflag){
+		return [:]
+	}
+
+	// intercepted to return specific current task
+	@ProxyMethod
+	public def getCurrentTask(redflag) {
+		return [:]
+	}
+
 
 	@ProxyMethod
 	public def resolveRedFlag(entity){
@@ -82,6 +110,7 @@ public class RPTRedFlagService
 		return save(entity)
 	}
 
+	
 	void writeInfo(entity){
 		if (!entity.info)
 			entity.info = [:]

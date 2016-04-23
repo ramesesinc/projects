@@ -1,0 +1,11 @@
+<schema>
+	<element tablename="faas_list">
+		<field name="objid" primary="true"/>
+		<field name="state" />
+		<field name="pin" />
+		<field name="displaypin" />
+	</element>
+</schema>
+
+
+

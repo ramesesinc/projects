@@ -337,9 +337,9 @@ public class FaasController
     
     void buildQueryInfo(){
         queryinfo = null;
-        def redflags = service.getRedFlagCount(entity.objid);
-        if (redflags.count > 0){
-            queryinfo = redflags.count + ' Red Flag' + (redflags.count == 1 ? ' needs' : 's need') + ' to be resolved.';
+        def redflagCount = service.getOpenRedflagCount(entity.objid);
+        if (redflagCount > 0){
+            queryinfo = redflagCount + ' Red Flag' + (redflagCount == 1 ? ' needs' : 's need') + ' to be resolved.';
         }
     }
     

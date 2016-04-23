@@ -39,6 +39,15 @@ class RPTLedgerService
     @Service('RPUService')
     def rpuSvc 
 
+    @DataContext('rptledger_restriction')
+    def rptledger_restrictionDb
+
+    @DataContext('rptledger') 
+    def ledgerDb
+
+    @DataContext('faas')
+    def faasDb
+
 
     def SCHEMA_LEDGER   = 'rptledger'
     def SCHEMA_ITEM   = 'ledgeritem'
@@ -145,6 +154,7 @@ class RPTLedgerService
         ledger._ledgerItems   = getLedgerItems(ledger.objid)
         ledger._credits = getLedgerCredits(ledger.objid)
         ledger._subledgers = em.getSubLedgers(ledger)
+        ledger.restrictions = rptledger_restrictionDb.find([parentid:ledger.objid]).orderBy('restrictionid').list()
         return ledger
     }
     
@@ -1036,5 +1046,45 @@ class RPTLedgerService
             println 'generateLedgerBill [ERROR]: ' + e.message 
         }
     }
+
+
+
+    /* RESTRICTION SUPPORT */
+
+    @ProxyMethod
+    public def addRestriction( restriction ) {
+        rptledger_restrictionDb.create(restriction)  
+        addFaasRestriction(restriction)      
+    }
+
+
+    @ProxyMethod
+    public void removeRestriction( restriction ) {
+        removeFaasRestriction(restriction)
+        rptledger_restrictionDb.delete(restriction);
+    }
+
+
+    void addFaasRestriction(restriction){
+        def ledger = ledgerDb.select('objid, faasid').find([objid:restriction.parentid]).first()
+        if(ledger && ledger.faasid){
+            faasDb.update([objid:ledger.faasid, restrictionid:restriction.restrictionid])
+        }
+    }
+
+
+    void removeFaasRestriction(restriction){
+        def ledger = ledgerDb.select('objid, faasid').find([objid:restriction.parentid]).first()
+        if(ledger && ledger.faasid){
+            def restrictionid = null;
+            def restrictions = rptledger_restrictionDb.find([parentid:restriction.parentid]).list();
+            if(restrictions){
+                restrictionid = restrictions.first().restrictionid 
+            }
+            faasDb.update([objid:ledger.faasid, restrictionid:restrictionid])
+        }
+    }
+
 }
+
 

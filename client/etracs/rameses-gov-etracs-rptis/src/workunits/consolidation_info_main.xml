@@ -23,6 +23,8 @@ class ConsolidationMainInfoController
     
     String title = 'General Information'
     
+    String entityName = 'consolidation:info:main'
+    
     
     def popupSupportInfo(def inv) {
         def popupMenu = new PopupMenuOpener();

@@ -1,0 +1,107 @@
+import com.rameses.annotations.*
+import com.rameses.common.*;
+import com.rameses.services.extended.*;
+
+class GeneralRevisionPinRenumberService
+{
+	@ActiveDB('generalrevision')
+	def em
+
+	@DataContext('landrysetting')
+	def landrysettingDb
+
+	@DataContext('realproperty')
+	def realpropertyDb
+
+	@DataContext('rpu')
+	def rpuDb
+
+	@DataContext('faas')
+	def faasDb
+
+	@DataContext('faas_list')
+	def faasListDb
+
+	@DataContext('rptledger')
+	def rptledgerDb
+
+	@Service('FAASService')
+	def faasSvc 
+
+
+
+	@ProxyMethod
+	public def getCurrentRevisionYear( ) {
+		return landrysettingDb.where('1=1 and ry < 2999').orderBy('ry DESC').first().ry 
+	}
+
+
+	@ProxyMethod
+	public def getLandsForRepinning( entity ) {
+		entity.barangayid = entity.barangay.objid 
+		return em.getLandsForRepinning(entity)
+	}
+
+
+	@ProxyMethod
+	public void repinLand(faas){
+		def barangaypin = faas.barangay.pin
+
+		//build new parcel from idx and update new pin 
+		def newrp = realpropertyDb.find([objid:faas.realpropertyid]).first()
+		if (!newrp) throw new Exception('Real Property does not exist or has already been deleted.')
+		def oldpin = newrp.pin 
+
+		newrp.barangaypin = barangaypin
+		newrp.parcel = faas.idx.toString().padLeft(newrp.parcel.length(), '0')
+		newrp.pin = barangaypin + '-' + newrp.section + '-' + newrp.parcel 
+
+		realpropertyDb.find([objid:newrp.objid]).update([pin:newrp.pin, parcel:newrp.parcel])
+		rpuDb.find([objid:faas.rpuid]).update([fullpin:newrp.pin])
+		faasDb.find([objid:faas.objid]).update([fullpin:newrp.pin])
+		faasListDb.find([objid:faas.objid]).update([pin:newrp.pin, displaypin:newrp.pin])
+		rptledgerDb.find([faasid:faas.objid]).update([fullpin:newrp.pin])
+
+
+		//update improvements pin 
+		updateImprovementPins(newrp, em.getImprovementsForRepinning([rpid:newrp.objid, rputype:'bldg']), 1001)
+		updateImprovementPins(newrp, em.getImprovementsForRepinning([rpid:newrp.objid, rputype:'mach']), 2001)
+		updateImprovementPins(newrp, em.getImprovementsForRepinning([rpid:newrp.objid, rputype:'planttree']), 3001)
+		updateImprovementPins(newrp, em.getImprovementsForRepinning([rpid:newrp.objid, rputype:'misc']), 5001)
+		updateImprovementPins(newrp, em.getImprovementsForRepinning([rpid:newrp.objid, rputype:'misc']), 7001)
+	}
+
+	void updateImprovementPins(newrp, improvements, basesuffix){
+		improvements.eachWithIndex{faas, idx ->
+			def suffix = (basesuffix + idx)
+			def fullpin = newrp.pin + '-' + suffix  
+			def displaypin = fullpin 
+			if (faas.fullpin.indexOf('(') >= 0){
+				fullpin = newrp.barangaypin + '-' + newrp.section + '-(' + newrp.parcel + ')-' + suffix 
+			}
+
+			rpuDb.find([objid:faas.rpuid]).update([fullpin:fullpin, suffix:suffix])
+			faasDb.find([objid:faas.objid]).update([fullpin:fullpin])
+			faasListDb.find([objid:faas.objid]).update([pin:fullpin, displaypin:displaypin])
+			rptledgerDb.find([faasid:faas.objid]).update([fullpin:fullpin])
+		}
+	}
+
+
+
+
+
+	@ProxyMethod
+	public def getFaasForApproval(entity) {
+		entity.barangayid = entity.barangay.objid 
+		return em.getFaasForApproval(entity)
+	}
+
+
+	@ProxyMethod
+	public void approveFaas(faas){
+		def f = faasSvc.openFaas(faas)		
+		faasSvc.approveFaas(f)
+	}
+}
+

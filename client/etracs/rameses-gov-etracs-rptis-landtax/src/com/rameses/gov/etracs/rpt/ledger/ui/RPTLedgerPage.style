@@ -59,3 +59,18 @@
 "viewTaxDeclaration" [selectedItem != null && selectedItem.faasid != null]{
     enabled:true;
 }
+
+
+"addRestriction|removeRestriction" [1==1] {
+    enabled:true;
+}
+
+"removeRestriction" [selectedRestriction == null ]{
+    enabled:false;
+}
+
+
+
+"addRestriction|removeRestriction" [entity.state != 'APPROVED']{
+    enabled:false;
+}

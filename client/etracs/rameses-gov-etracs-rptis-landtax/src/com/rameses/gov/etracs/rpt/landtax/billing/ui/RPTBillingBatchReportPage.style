@@ -1,0 +1,15 @@
+"params.*" [ mode == 'init' ] {
+    enabled:true;
+}
+
+"params.*" [ mode != 'init' ] {
+    enabled:false;
+}
+
+"entity.*" [mode == 'processing'] {
+    enabled: false; 
+} 
+"entity.*" [mode != 'processing'] {
+    enabled: true; 
+} 
+

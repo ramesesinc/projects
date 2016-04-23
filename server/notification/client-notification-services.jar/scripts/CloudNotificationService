@@ -127,8 +127,12 @@ Downloading message from ${params.channel}_$P{params.origin}:
 
         params.origintype='remote'; 
         params.completed=0; 
-        em.create( params ); 
-        em.create([ objid: params.objid, indexno:0 ], 'fordownload'); 
+        if ( !em.findHeader( params ) ) { 
+            em.create( params ); 
+        } 
+        if ( !em.read( params, 'fordownload' ) ) { 
+            em.create([ objid: params.objid, indexno:0 ], 'fordownload'); 
+        } 
     } 
 
     @ProxyMethod 

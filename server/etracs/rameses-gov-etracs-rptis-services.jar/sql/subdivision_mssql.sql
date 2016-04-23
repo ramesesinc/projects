@@ -1,3 +1,14 @@
+[getNodes]
+select n.name, n.title as caption
+from sys_wf_node n
+where n.processname = 'subdivision'
+and n.name not like 'assign%'
+and n.name not in ('start', 'provapprover')
+and n.name not like 'for%'
+and exists(select * from sys_wf_transition where processname='subdivision' and parentid = n.name)
+order by n.idx
+
+
 [getList]
 SELECT 
 	s.*,
@@ -254,10 +265,6 @@ WHERE f.objid in (
 ORDER BY f.tdno 
 
 
-[findOpenTask]
-SELECT * FROM rpttask WHERE objid = $P{objid} AND enddate IS NULL 
-
-
 [getMotherLands]
 SELECT cl.*,
 	cl.rpid as realpropertyid, 
@@ -482,3 +489,17 @@ update subdivision set
 	mothertdnos = $P{mothertdnos},
 	motherpins = $P{motherpins}
 where objid = $P{objid}	  
+
+
+[findOpenTask]  
+select * from subdivision_task where refid = $P{objid} and enddate is null
+
+
+[findOpenTaskFromFaas]
+select * from subdivision_task 
+where refid in (
+	select subdivisionid from subdividedland where newfaasid = $P{objid}
+	union 
+	select subdivisionid from subdivisionaffectedrpu where newfaasid = $P{objid}
+)
+and enddate is null

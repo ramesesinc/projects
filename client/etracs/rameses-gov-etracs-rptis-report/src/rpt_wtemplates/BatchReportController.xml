@@ -1,0 +1,10 @@
+<workunit>
+    <invokers>
+        <invoker type="formActions" action="_close" caption="Close" mnemonic="c" icon="images/toolbars/cancel.png" immediate="true" visibleWhen="#{mode == 'init'}"/>
+        <invoker type="formActions" action="print" caption="Print" mnemonic="p" shortcut="ctrl + P" icon="images/toolbars/print.png" visibleWhen="#{mode == 'init'}"/>
+        <invoker type="formActions" action="cancelPrinting" caption="Cancel Printing" icon="images/toolbars/cancel.png" mnemonic="a" shortcut="ctrl + a" visibleWhen="#{mode == 'processing'}" />
+    </invokers>
+    <pages>
+        <page  template="com.rameses.gov.etracs.rpt.report.FAASBatchReportPage" />
+    </pages>
+</workunit>

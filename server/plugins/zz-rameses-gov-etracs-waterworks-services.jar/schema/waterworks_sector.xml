@@ -2,8 +2,11 @@
 	<element tablename="waterworks_sector">
 		<field name="objid" primary="true" editable="false" caption="Code"/>
 		<field name="code"/>
+		<complex name="readers" ref="waterworks_sector_reader" jointype="one-to-many">
+			<key field="objid" target="sectorid"/>
+		</complex>
 		<complex name="zones" ref="waterworks_sector_zone" jointype="one-to-many" orderBy="code">
 			<key field="objid" target="sectorid"/>
-		</complex>	
+		</complex>
 	</element>
 </schema>

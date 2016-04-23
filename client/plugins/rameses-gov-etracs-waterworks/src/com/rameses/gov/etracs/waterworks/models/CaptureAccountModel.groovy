@@ -7,7 +7,7 @@ import com.rameses.osiris2.common.*;
 import com.rameses.rcp.annotations.*;
 import com.rameses.seti2.models.*;
 
-public class NewAccountModel extends CrudFormModel {
+public class CaptureAccountModel extends CrudFormModel {
 
     @Service("WaterworksBillingDateService")
     def billingDateSvc;
@@ -36,5 +36,8 @@ public class NewAccountModel extends CrudFormModel {
             throw new Exception("There is no billing date rules fired");
         entity.putAll( res );
     }
+    
+    
+    
     
 }

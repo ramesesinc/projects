@@ -12,6 +12,7 @@ WHERE barangayid = $P{barangayid}
   AND (rl.lastyearpaid < $P{cy}  
   	     OR (rl.lastyearpaid = $P{cy} AND rl.lastqtrpaid < 4)
   )
+  AND NOT EXISTS(select * from rptledger_restriction where parentid = rl.objid )
   
 
 [cleanup]

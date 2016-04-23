@@ -1,20 +1,14 @@
-<workunit >
+<workunit  extends="rpt_wtemplates/BatchReportController.xml">
     <invokers>
-        <invoker folderid="/explorer/report/rpt" action="init" caption="FAAS Batch Printing" target="window" index="600" 
+        <invoker folderid="/explorer/report/rpt" action="init" caption="FAAS Batch Printing" target="window" index="601" 
             role="ASSESSOR_REPORT,REPORT" />
-        
-        <invoker type="formActions" action="_close" caption="Close" mnemonic="c" icon="images/toolbars/cancel.png" immediate="true" visibleWhen="#{mode == 'init'}"/>
-        <invoker type="formActions" action="print" caption="Print" mnemonic="p" shortcut="ctrl + P" icon="images/toolbars/print.png" visibleWhen="#{mode == 'init'}"/>
-        <invoker type="formActions" action="cancelPrinting" caption="Cancel Printing" icon="images/toolbars/cancel.png" mnemonic="a" shortcut="ctrl + a" visibleWhen="#{mode == 'printing'}" />
     </invokers>
     <code >
     <![CDATA[
+    
 import com.rameses.rcp.common.*;
  import com.rameses.rcp.annotations.*;
- import com.rameses.osiris2.client.*;
- import com.rameses.osiris2.reports.*;
- import com.rameses.rcp.framework.TaskManager;
-
+ 
  class FAASBatchReportController extends com.rameses.gov.etracs.rpt.report.AbstractBatchReportController
  {
      @Service('FAASReportService')
@@ -22,59 +16,20 @@ import com.rameses.rcp.common.*;
 
      def title='FAAS Batch Printing'
 
-     public void print() {
-         mode = 'printing';
-         Thread t = new Thread( batchTask)
-         t.start();
-     }
 
+    public def getItems(params){
+        return svc.getFaasIds(params);
+    }
 
-    def batchTask = [
-         run : {
-             def list = null;
-             try {
-                 list = svc.getFaasIds(params) 
-             }
-             catch(e){
-                 onError(e.message);
-                 return;
-             }
+    public def getReportData(entity){
+        return [entity:entity];
+    }
 
-             if( !list){
-                 onError('No records found.');
-                 return;
-             }
-
-             def reportparams = [PRINTPAGE:params.pagetype?.toLowerCase()];
-
-             try { 
-                def entity = list.remove(0);
-                 while(!interrupt && entity) {
-                     def reportInvoker = Inv.lookupOpener('faas:report', [entity:entity, reportparams:reportparams])
-                     def faasreport = reportInvoker.handle.report.report
-                     1.upto(params.copies){copycnt -> 
-                         ReportUtil.print( faasreport, params.showprinterdialog) ;
-                         updateMessage("Printing FAAS No. ${entity.tdno} copy # " + copycnt  );
-                         Thread.sleep(params.printinterval * 1000)
-                     }
-                     entity = (list ? list.remove(0) : null);
-                 }    
-                 def msg = "Batch printing of FAAS has been successfully completed." 
-                 if(interrupt) 
-                     msg = 'Faas printing has been interrupted.    '
-                 onFinish(msg );
-            } catch(e) {
-                 onError( e );
-            }
-         }
-
-    ] as Runnable 
-    
+    public def getReportInvokerName(){
+        return 'faas:report';
+    }    
 }
 
     ]]>    
     </code>
-     <pages>
-        <page  template="com.rameses.gov.etracs.rpt.report.FAASBatchReportPage" />
-    </pages>
 </workunit>

@@ -26,8 +26,8 @@ public class ZoneCell extends ListCell<Zone>{
             imgContainer.setAlignment(Pos.CENTER);
             imgContainer.getChildren().add(image);
             
-            Label title = new Label(zone.getCode() + " - " + zone.getDesc());
-            Label description = new Label("Sector " + zone.getSector());
+            Label title = new Label(zone.getCode() + " - " + zone.getCode());
+            Label description = new Label("Sector " + zone.getDescription());
 
             if(Main.HEIGHT < 700){
                 image.setFitWidth(80);

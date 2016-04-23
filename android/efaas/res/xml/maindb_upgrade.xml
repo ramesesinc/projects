@@ -1,0 +1,3 @@
+<db>    
+	<sql> DROP TABLE IF EXISTS sys_var </sql>
+</db>

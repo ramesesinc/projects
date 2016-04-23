@@ -2,8 +2,9 @@ package com.rameses.waterworks.database;
 
 import com.rameses.waterworks.bean.Account;
 import com.rameses.waterworks.bean.Reading;
-import com.rameses.waterworks.bean.Area;
 import com.rameses.waterworks.bean.Rule;
+import com.rameses.waterworks.bean.Sector;
+import com.rameses.waterworks.bean.SectorReader;
 import com.rameses.waterworks.bean.Setting;
 import com.rameses.waterworks.bean.Stubout;
 import com.rameses.waterworks.bean.Zone;
@@ -53,9 +54,6 @@ public interface Database {
     
     public List<Reading> getReadingByUser();
     
-    //AREA
-    public boolean downloadableArea(String areaid);
-    
     //RULE
     public void createRule(Rule rule);
     
@@ -63,10 +61,17 @@ public interface Database {
     
     public void clearRule();
     
-    public void createArea(Area r);
+    //SECTOR
+    public void createSector(Sector s);
     
-    public void clearArea();
+    public void clearSector();
     
+    //SECTOR READER
+    public void createSectorReader(SectorReader sr);
+    
+    public void clearSectorReader();
+
+    //STUBOUT
     public void createStubout(Stubout s);
     
     public void clearStubout();
@@ -75,12 +80,14 @@ public interface Database {
     
     public List<Account> getAccountByStubout(Stubout s,String searchtext);
     
+    //ZONE
     public void createZone(Zone zone);
     
     public void clearZone();
     
     public List<Zone> getSearchZoneResult(String searchtext);
     
+    //GPS
     public void updateLocation(String acctid, String latitude, String longitude);
     
 }

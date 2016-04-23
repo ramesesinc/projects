@@ -16,19 +16,7 @@ public class PaymentOrderCashReceiptModel extends BasicCashReceipt {
 
     def status;    
     
-    def loadBarcode() {
-        def pmtOrder = pmtSvc.open( [txnid: barcodeid] ); 
-        def info = pmtOrder.info;
-
-        entity = [formtype: "serial", formno:"51", txnmode: 'ONLINE'];
-        entity.collectiontype = info.collectiontype;
-        entity = service.init( entity );
-
-        entity.paymentorder = [ 
-            txnid: pmtOrder.txnid, 
-            txntype: pmtOrder.txntype,
-            refid: pmtOrder.refid 
-        ]; 
+    def loadInfo(def info) {
         entity.payer = info.payer;
         entity.items = info.items;
         entity.amount = info.amount;
@@ -37,7 +25,6 @@ public class PaymentOrderCashReceiptModel extends BasicCashReceipt {
         entity.remarks = info.remarks;
         entity.info = info.info; 
         super.init(); 
-
         if ( info.billitems ) {
             entity.billitems = info.billitems; 
             entity.billitems.each {
@@ -52,6 +39,20 @@ public class PaymentOrderCashReceiptModel extends BasicCashReceipt {
         } else { 
             return 'default';
         } 
+    }
+    
+    def loadBarcode() {
+        def pmtOrder = pmtSvc.open( [txnid: barcodeid] ); 
+        def info = pmtOrder.info;
+        entity = [formtype: "serial", formno:"51", txnmode: 'ONLINE'];
+        entity.collectiontype = info.collectiontype;
+        entity = service.init( entity );
+        entity.paymentorder = [ 
+            txnid: pmtOrder.txnid, 
+            txntype: pmtOrder.txntype,
+            refid: pmtOrder.refid 
+        ]; 
+        return loadInfo(entity.info);
     }   
 
     def billItemListModel = [

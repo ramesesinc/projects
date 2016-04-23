@@ -55,6 +55,8 @@
 			<key field="objid" target="parentid"/>	
 		</complex>	
 
+		<field name="signature"/> 
+
 	</element>
 
 </schema>

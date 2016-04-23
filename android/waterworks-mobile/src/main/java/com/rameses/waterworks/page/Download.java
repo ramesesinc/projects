@@ -2,8 +2,9 @@ package com.rameses.waterworks.page;
 
 import com.rameses.Main;
 import com.rameses.waterworks.bean.Account;
-import com.rameses.waterworks.bean.Area;
 import com.rameses.waterworks.bean.Rule;
+import com.rameses.waterworks.bean.Sector;
+import com.rameses.waterworks.bean.SectorReader;
 import com.rameses.waterworks.bean.Stubout;
 import com.rameses.waterworks.bean.Zone;
 import com.rameses.waterworks.database.Database;
@@ -43,7 +44,7 @@ import javafx.util.Callback;
 public class Download {
     
     VBox root;
-    ListView<Area> listView;
+    ListView<Sector> listView;
     Label label;
     ProgressBar progressbar;
     Button download;
@@ -53,7 +54,6 @@ public class Download {
     int indexposition = 1;
     Task<Void> task;
     boolean continueDownload = true;
-    int initCount = 0;
     int counter = 0;
     String batchid;
     String status = "";
@@ -62,16 +62,16 @@ public class Download {
     public Download(){
         Header.TITLE.setText("Download");
         
-        Callback<Area,ObservableValue<Boolean>> property = new Callback<Area,ObservableValue<Boolean>>(){
+        Callback<Sector,ObservableValue<Boolean>> property = new Callback<Sector,ObservableValue<Boolean>>(){
             @Override
-            public ObservableValue<Boolean> call(Area a) {
+            public ObservableValue<Boolean> call(Sector a) {
                 return a.selected;
             }
         };
         
-        Callback<ListView<Area>, ListCell<Area>> forListView = CheckBoxListCell.forListView(property);
+        Callback<ListView<Sector>, ListCell<Sector>> forListView = CheckBoxListCell.forListView(property);
         
-        listView = new ListView<Area>();
+        listView = new ListView<Sector>();
         listView.setId("download-listview");
         listView.setPrefHeight(Main.HEIGHT*0.50);
         listView.setCellFactory(forListView);
@@ -92,111 +92,122 @@ public class Download {
         download.setOnAction(new EventHandler<ActionEvent>(){
             @Override
             public void handle(ActionEvent event) {
-                Thread t = new Thread(){
+                
+                Platform.runLater(new Runnable(){
                     @Override
-                    public void run(){
-                        Platform.runLater(new Runnable(){
-                            @Override
-                            public void run() {
-                                download.setDisable(true);
+                    public void run() {
+                        Dialog.wait("Processing, please wait...");
+                    }
+                });
+               
+                Platform.runLater(new Runnable(){
+                    @Override
+                    public void run() {
+                        //GET THE SELECTED AREAS FOR DOWNLOAD
+                        List<String> selectedSectors = new ArrayList();
+                        String sectorid = null;
+                        for(Sector r : listView.getItems()){
+                            if(r.isSelected()){
+                                selectedSectors.add(r.getObjid());
+                                sectorid = r.getObjid();
                             }
-                        });
-                    }
-                };
-                t.start();
-                //GET THE SELECTED AREAS FOR DOWNLOAD
-                List<String> selectedAreas = new ArrayList();
-                String areaid = null;
-                for(Area r : listView.getItems()){
-                    if(r.isSelected()){
-                        selectedAreas.add(r.getObjid());
-                        areaid = r.getObjid();
-                    }
-                }
-                
-                if(selectedAreas.size() > 1){
-                    Dialog.hide();
-                    Dialog.showAlert("Multiple downloads are not supported!");
-                    return;
-                }
-                
-                //INIT DOWNLOAD
-                Map params = new HashMap();
-                params.put("assigneeid", SystemPlatformFactory.getPlatform().getSystem().getUserID());
-                params.put("areaid", areaid);
-                MobileDownloadService s1  = new MobileDownloadService();
-                Map initialData = s1.initForDownload(params);
-                
-                batchid = initialData.get("batchid") != null ? initialData.get("batchid").toString() : "";
-                initCount = initialData.get("count") != null ? Integer.parseInt(initialData.get("count").toString()) : 0;
-                
-                //START DOWNLOAD
-                String error = "";
-                accountList = new ArrayList<Map>();
-                Map params2 = new HashMap();
-                params2.put("batchid", batchid);
-                MobileDownloadService mobileSvc = new MobileDownloadService();
-                List<Map> result = mobileSvc.download(params2);
-                if(!mobileSvc.ERROR.isEmpty()) error = mobileSvc.ERROR;
-                for(Map account: result){
-                    accountList.add(account);
-                }
-                
-                downloadsize = accountList.size();
-                if(!error.isEmpty()) {
-                    Dialog.hide();
-                    Dialog.showError(error.toString());
-                    return;
-                }
-                if(downloadsize < 1){
-                    Dialog.hide();
-                    Dialog.showError("No data to download");
-                    return;
-                }
-                
-                //SAVE AREA, STUBOUTS
-                clearArea();
-                for(Area r : listView.getItems()){
-                    if(r.isSelected()){
-                        saveArea(r);
-                    }
-                }
-                
-                label.setVisible(true);
-                progressbar.setVisible(true);
-                progressbar.progressProperty().bind(task.progressProperty());
-                new Thread(task).start();
-                download.setText("Cancel");
-                download.setOnAction(new EventHandler<ActionEvent>(){
-                    @Override
-                    public void handle(ActionEvent event) {
-                        continueDownload = false;
-                        label.setVisible(false);
-                        progressbar.setVisible(false);
-                        download.setText("Back");
+                        }
+
+                        if(selectedSectors.size() > 1){
+                            Dialog.hide();
+                            Dialog.showAlert("Multiple downloads are not supported!");
+                            return;
+                        }
+
+                        MobileDownloadService mobileSvc = new MobileDownloadService(); 
+                        //INIT DOWNLOAD
+                        Map params = new HashMap();
+                        params.put("assigneeid", SystemPlatformFactory.getPlatform().getSystem().getUserID());
+                        params.put("sectorid", sectorid);
+                        batchid = mobileSvc.initForDownload(params);
+                        
+                        int recordcount = -1;
+                        while (true) {
+                            int stat = mobileSvc.getBatchStatus(batchid); 
+                            if ( stat < 0 ) {
+                                try {  
+                                    Thread.sleep(2000); 
+                                }catch(Throwable t){;} 
+                            } else {
+                                recordcount = stat; 
+                                break; 
+                            }
+                        }
+                        
+                        if ( recordcount <= 0 ) {
+                            Dialog.hide();
+                            Dialog.showError("No data to download");
+                            return;
+                        }
+                        
+                        downloadsize = recordcount;
+                        accountList = new ArrayList();
+                        int start=0, limit=50;
+                        while ( start < recordcount ) {
+                            params = new HashMap();
+                            params.put("batchid", batchid);
+                            params.put("_start", start);
+                            params.put("_limit", limit); 
+                            List<Map> list = mobileSvc.download(params);
+                            //if ( list != null ) accountList.addAll( list ); 
+                            System.out.println("fetch results is " + list.size());
+                            //new Thread( new ProcessDownloadResultTask(start,list)).start(); 
+                            start += limit;                             
+                        }
+                        
+                        Dialog.hide();
+
+                        //SAVE AREA, STUBOUTS
+                        clearSector();
+                        for(Sector r : listView.getItems()){
+                            if(r.isSelected()){
+                                saveSector(r);
+                            }
+                        }
+
+                        label.setVisible(true);
+                        progressbar.setVisible(true);
+                        progressbar.progressProperty().bind(task.progressProperty());
+                        new Thread(task).start();
+                        download.setText("Cancel");
+                        download.setDisable(false);
                         download.setOnAction(new EventHandler<ActionEvent>(){
                             @Override
                             public void handle(ActionEvent event) {
-                                Main.ROOT.setCenter(new Home().getLayout());
+                                continueDownload = false;
+                                label.setVisible(false);
+                                progressbar.setVisible(false);
+                                download.setText("Back");
+                                download.setOnAction(new EventHandler<ActionEvent>(){
+                                    @Override
+                                    public void handle(ActionEvent event) {
+                                        Main.ROOT.setCenter(new Home().getLayout());
+                                    }
+                                });
+                                root.setOnKeyReleased(new EventHandler<KeyEvent>(){
+                                    @Override
+                                    public void handle(KeyEvent event) {
+                                        if(event.getCode() == KeyCode.ESCAPE){
+                                            if(Dialog.isOpen){ Dialog.hide(); return; }
+                                            Main.ROOT.setCenter(new Home().getLayout());
+                                        }
+                                    }
+                                });
+                                Map params = new HashMap();
+                                params.put("batchid", batchid);
+                                params.put("downloadedlist", downloadedList);
+                                MobileDownloadService svc = new MobileDownloadService();
+                                svc.cancelDownload(params);
                             }
                         });
-                        root.setOnKeyReleased(new EventHandler<KeyEvent>(){
-                            @Override
-                            public void handle(KeyEvent event) {
-                                if(event.getCode() == KeyCode.ESCAPE){
-                                    if(Dialog.isOpen){ Dialog.hide(); return; }
-                                    Main.ROOT.setCenter(new Home().getLayout());
-                                }
+                        download.setDisable(false);
                             }
-                        });
-                        Map params = new HashMap();
-                        params.put("batchid", batchid);
-                        params.put("downloadedlist", downloadedList);
-                        MobileDownloadService svc = new MobileDownloadService();
-                        svc.cancelDownload(params);
-                    }
                 });
-                download.setDisable(false);
             }
         });
         
@@ -252,13 +263,6 @@ public class Download {
                     updateProgress(indexposition,downloadsize);
                     indexposition++;
                 }
-
-                if(counter == initCount){
-                    Map params = new HashMap();
-                    params.put("batchid", batchid);
-                    MobileDownloadService svc = new MobileDownloadService();
-                    status = svc.confirmDownload(params);
-                }
                 
                 //download water-rates
                 MobileRuleService service = new MobileRuleService();
@@ -288,7 +292,7 @@ public class Download {
                         Platform.runLater(new Runnable(){
                             @Override
                             public void run() {
-                                label.setText("Download Complete!    " + counter + " / " +initCount);
+                                label.setText("Download Complete!    " + counter + " / " +0);
                                 download.setDisable(false);
                                 download.setText("Done");
                                 download.setOnAction(new EventHandler<ActionEvent>(){
@@ -324,25 +328,18 @@ public class Download {
                 Platform.runLater(new Runnable(){
                     @Override
                     public void run() {
+                        String userid = SystemPlatformFactory.getPlatform().getSystem().getUserID();
                         Map params = new HashMap();
-                        params.put("userid", SystemPlatformFactory.getPlatform().getSystem().getUserID());
+                        params.put("userid", userid);
 
                         MobileDownloadService mobileSvc = new MobileDownloadService();
-                        List<Map> result = mobileSvc.getAreasByUser(params);
-                        System.out.println("AREAS : " + result);
+                        List<Map> result = mobileSvc.getSectorByUser(params);
 
-                        ObservableList<Area> data = FXCollections.observableArrayList();
+                        ObservableList<Sector> data = FXCollections.observableArrayList();
                         for(Map m : result){
                             String objid = m.get("objid") != null ? m.get("objid").toString() : "";
-                            String title = m.get("title") != null ? m.get("title").toString() : "";
-                            Map assignee = (Map) m.get("assignee");
-                            String assigneeid = "", assigneename = "";
-                            if(assignee != null){
-                                assigneeid = assignee.get("objid").toString();
-                                assigneename = assignee.get("name").toString();
-                            }
-                            String sectorid = m.get("sectorid") != null ? m.get("sectorid").toString() : "";
-                            data.add(new Area(objid,title,assigneeid,sectorid,false));
+                            String code = m.get("code") != null ? m.get("code").toString() : "";
+                            data.add(new Sector(objid, code, false, userid));
                         }
                         listView.setItems(data);
                         
@@ -357,57 +354,68 @@ public class Download {
         t2.start();
     }
     
-    private void saveArea(Area r){
-        DatabasePlatformFactory.getPlatform().getDatabase().createArea(r);
+    private void saveSector(Sector s){
+        String userid = SystemPlatformFactory.getPlatform().getSystem().getUserID();
+        DatabasePlatformFactory.getPlatform().getDatabase().createSector(s);
         
         Map params = new HashMap();
-        params.put("areaid", r.getObjid());
-        List<Map> stubouts = (List<Map>) new MobileDownloadService().getStuboutsByArea(params);
-        Iterator<Map> i = stubouts.iterator();
+        params.put("sectorid", s.getObjid());
+        params.put("userid", userid);
+        
+        MobileDownloadService downloadSvc = new MobileDownloadService();
+        List<Map> readers = downloadSvc.getReaderBySector(params);
+        List<Map> zones = downloadSvc.getZoneBySector(params);
+        List<Map> stubouts = downloadSvc.getStuboutsBySector(params);
+        Iterator<Map> i = null;
+        
+        //create sector readers
+        i = readers.iterator();
         while(i.hasNext()){
             Map m = i.next();
-            String objid = m.get("objid")!=null ? m.get("objid").toString() : "";
-            String code = m.get("code")!=null ? m.get("code").toString() : "";
-            String description = m.get("description")!=null ? m.get("description").toString() : "";
-            String zoneid = "", zonecode = "", zonedesc = "";
-            String sectorid ="", sectorcode = "";
-            String areaid = "", areatitle = "";
-            String assigneeid = "", assigneename = "";
-            
-            Map zone = (Map) m.get("zone");
-            if(zone!=null){
-                zoneid = zone.get("objid") != null ? zone.get("objid").toString() : "";
-                zonecode = zone.get("code") != null ? zone.get("code").toString() : "";
-                zonedesc = zone.get("description") != null ? zone.get("description").toString() : "";
-            }
-            
-            Map sector = (Map) m.get("sector");
-            if(sector!=null){
-                sectorid = sector.get("objid") != null ? sector.get("objid").toString() : "";
-                sectorcode = sector.get("code") != null ? sector.get("code").toString() : "";
-            }
-            
-            Map area = (Map) m.get("area");
-            if(area!=null){
-                areaid = area.get("objid") != null ? area.get("objid").toString() : "";
-                areatitle = area.get("title") != null ? area.get("title").toString() : "";
-                Map assignee = (Map) area.get("assignee");
-                if(assignee != null){
-                    assigneeid = assignee.get("objid") != null ? assignee.get("objid").toString() : "";
-                    assigneename = assignee.get("name") != null ? assignee.get("name").toString() : "";
-                }
-            }
-            
-            Stubout stubout = new Stubout(objid, code, description, zoneid, zonecode, zonedesc, sectorid, sectorcode, areaid, areatitle, assigneeid, assigneename);
-            DatabasePlatformFactory.getPlatform().getDatabase().createZone(new Zone(zoneid, zonecode, zonedesc, sectorcode));
+            String objid = m.get("objid") != null ? m.get("objid").toString() : "";
+            String sectorid = m.get("sectorid") != null ? m.get("sectorid").toString() : "";
+            String title = m.get("title") != null ? m.get("title").toString() : "";
+            Map assignee = m.get("assignee") != null ? (Map) m.get("assignee") : new HashMap();
+            String assigneeid = assignee.get("objid") != null ? assignee.get("objid").toString() : "";
+            String assigneename = assignee.get("name") != null ? assignee.get("name").toString() : "";
+            SectorReader sr = new SectorReader(objid, sectorid, title, assigneeid, assigneename);
+            DatabasePlatformFactory.getPlatform().getDatabase().createSectorReader(sr);
+        }
+        
+        //create zones
+        i = zones.iterator();
+        while(i.hasNext()){
+            Map m = i.next();
+            String objid = m.get("objid") != null ? m.get("objid").toString() : "";
+            String sectorid = m.get("sectorid") != null ? m.get("sectorid").toString() : "";
+            String code = m.get("code") != null ? m.get("code").toString() : "";
+            String description = m.get("description") != null ? m.get("description").toString() : "";
+            String readerid = m.get("readerid") != null ? m.get("readerid").toString() : "";
+            Zone zone = new Zone(objid, sectorid, code, description, readerid, userid);
+            DatabasePlatformFactory.getPlatform().getDatabase().createZone(zone);
+        }
+        
+        //create stubouts
+        i = stubouts.iterator();
+        while(i.hasNext()){
+            Map m = i.next();
+            String objid = m.get("objid") != null ? m.get("objid").toString() : "";
+            String code = m.get("code") != null ? m.get("code").toString() : "";
+            String description = m.get("description") != null ? m.get("description").toString() : "";
+            String zoneid = m.get("zoneid") != null ? m.get("zoneid").toString() : "";
+            Map barangay = m.get("barangay") != null ? (Map) m.get("barangay") : new HashMap();
+            String barangayid = barangay.get("objid") != null ? barangay.get("objid").toString() : "";
+            String barangayname = barangay.get("name") != null ? barangay.get("name").toString() : "";
+            Stubout stubout = new Stubout(objid, code, description, zoneid, barangayid, barangayname, userid);
             DatabasePlatformFactory.getPlatform().getDatabase().createStubout(stubout);
         }
     }
     
-    private void clearArea(){
-        DatabasePlatformFactory.getPlatform().getDatabase().clearZone();
+    private void clearSector(){
         DatabasePlatformFactory.getPlatform().getDatabase().clearStubout();
-        DatabasePlatformFactory.getPlatform().getDatabase().clearArea();
+        DatabasePlatformFactory.getPlatform().getDatabase().clearZone();
+        DatabasePlatformFactory.getPlatform().getDatabase().clearSectorReader();
+        DatabasePlatformFactory.getPlatform().getDatabase().clearSector();
     }
     
     public Node getLayout(){

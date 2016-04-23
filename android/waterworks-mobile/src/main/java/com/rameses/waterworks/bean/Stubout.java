@@ -2,47 +2,24 @@ package com.rameses.waterworks.bean;
 
 public class Stubout {
     
-    String objid, code, description, zoneid, zonecode, zonedesc, sectorid, sectorcode, areaid, areatitle, assigneeid, assigneename;
+    private String objid, code, description, zoneid, barangayid, barangayname, assigneeid;
     
-    public Stubout(
-            String objid,
-            String code, 
-            String description, 
-            String zoneid,
-            String zonecode,
-            String zonedesc,
-            String sectorid,
-            String sectorcode,
-            String areaid,
-            String areatitle,
-            String assigneeid,
-            String assigneename
-            ){
+    public Stubout(String objid, String code, String description, String zoneid, String barangayid, String barangayname, String assigneeid){
         this.objid = objid;
         this.code = code;
         this.description = description;
         this.zoneid = zoneid;
-        this.zonecode = zonecode;
-        this.zonedesc = zonedesc;
-        this.sectorid = sectorid;
-        this.sectorcode = sectorcode;
-        this.areaid = areaid;
-        this.areatitle = areatitle;
+        this.barangayid = barangayid;
+        this.barangayname = barangayname;
         this.assigneeid = assigneeid;
-        this.assigneename = assigneename;
     }
     
     public String getObjid(){ return objid; }
     public String getCode(){ return code; }
     public String getDescription(){ return description; }
     public String getZoneId(){ return zoneid; }
-    public String getZoneCode(){ return zonecode; }
-    public String getZoneDesc(){ return zonedesc; }
-    public String getSectorId(){ return sectorid; }
-    public String getSectorCode(){ return sectorcode; }
-    public String getAreaId(){ return areaid; }
-    public String getAreaTitle(){ return areatitle; }
+    public String getBarangayId(){ return barangayid; }
+    public String getBarangayName(){ return barangayname; }
     public String getAssigneeId(){ return assigneeid; }
-    public String getAssigneeName(){ return assigneename; }
     
 }

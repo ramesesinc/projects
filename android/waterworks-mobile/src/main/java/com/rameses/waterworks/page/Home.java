@@ -1,6 +1,7 @@
 package com.rameses.waterworks.page;
 
 import com.rameses.Main;
+import com.rameses.waterworks.database.Database;
 import com.rameses.waterworks.database.DatabasePlatformFactory;
 import com.rameses.waterworks.dialog.Dialog;
 import com.rameses.waterworks.layout.Header;
@@ -174,6 +175,27 @@ public class Home {
         HBox box = new HBox(5);
         box.setAlignment(Pos.CENTER);
         box.getChildren().addAll(check,read,space,cancel,unread);
+        box.setOnMouseClicked(new EventHandler<MouseEvent>(){
+            @Override
+            public void handle(MouseEvent event) {
+                Database db = DatabasePlatformFactory.getPlatform().getDatabase();
+                System.out.println("Sector");
+                System.out.println(db.showTableData("sector"));
+                System.out.println("=================================================================");
+                
+                System.out.println("Sector Reader");
+                System.out.println(db.showTableData("sectorreader"));
+                System.out.println("=================================================================");
+                
+                System.out.println("Zone");
+                System.out.println(db.showTableData("zone"));
+                System.out.println("=================================================================");
+                
+                System.out.println("Stubout");
+                System.out.println(db.showTableData("stubout"));
+                System.out.println("=================================================================");
+            }
+        });
         
         StackPane root = new StackPane();
         root.setPadding(new Insets(8,0,8,0));

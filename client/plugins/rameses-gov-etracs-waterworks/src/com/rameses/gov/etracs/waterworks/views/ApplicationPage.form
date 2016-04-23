@@ -18,7 +18,7 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="xTabbedPane1" pref="876" max="32767" attributes="0"/>
+              <Component id="xTabbedPane1" pref="705" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
@@ -61,7 +61,7 @@
                           <Group type="102" attributes="0">
                               <Component id="xFormPanel1" min="-2" pref="394" max="-2" attributes="0"/>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                              <Component id="xFormPanel4" pref="447" max="32767" attributes="0"/>
+                              <Component id="xFormPanel4" pref="276" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
@@ -91,10 +91,8 @@
           <SubComponents>
             <Container class="com.rameses.rcp.control.XFormPanel" name="xFormPanel3">
               <Properties>
-                <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-                  <PropertyBean type="com.rameses.rcp.control.border.XTitledBorder">
-                    <Property name="title" type="java.lang.String" value="Application Info"/>
-                  </PropertyBean>
+                <Property name="padding" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
+                  <Insets value="[10, 15, 10, 15]"/>
                 </Property>
               </Properties>
               <SubComponents>

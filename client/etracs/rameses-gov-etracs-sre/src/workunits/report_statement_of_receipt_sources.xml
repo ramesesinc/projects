@@ -41,13 +41,13 @@ class StatementOfReceiptsController extends com.rameses.etracs.shared.AsyncRepor
     ];
     
     def detailtypes = [true, false];
-
+    
     def initReport(){
         entity.optwithdetail = false;  
         entity.type = 'standard'
         entity.period = periods[0]; 
         entity.withdetail = false;                
-        months = dtSvc.getMonthsByQtr(0);                
+        months = dtSvc.getMonths();                
         def options = svc.getReportOptions();
         acctgroups = options.acctgroups?.collect{ it.acctgroup };
         funds = options.funds; 

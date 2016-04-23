@@ -50,13 +50,13 @@
 	<field name="areasqm" class="java.math.BigDecimal"/>
 	<field name="areaha" class="java.math.BigDecimal"/>
 	<field name="landmv" class="java.math.BigDecimal"/>
-	<field name="bldgmv150less" class="java.math.BigDecimal"/>
-	<field name="bldgmvover150" class="java.math.BigDecimal"/>
+	<field name="bldgmv175less" class="java.math.BigDecimal"/>
+	<field name="bldgmvover175" class="java.math.BigDecimal"/>
 	<field name="machmv" class="java.math.BigDecimal"/>
 	<field name="othermv" class="java.math.BigDecimal"/>
 	<field name="landav" class="java.math.BigDecimal"/>
-	<field name="bldgav150less" class="java.math.BigDecimal"/>
-	<field name="bldgavover150" class="java.math.BigDecimal"/>
+	<field name="bldgav175less" class="java.math.BigDecimal"/>
+	<field name="bldgavover175" class="java.math.BigDecimal"/>
 	<field name="machav" class="java.math.BigDecimal"/>
 	<field name="otherav" class="java.math.BigDecimal"/>
 	<field name="carpav" class="java.math.BigDecimal"/>
@@ -64,6 +64,7 @@
 	<field name="otherrestrictionav" class="java.math.BigDecimal"/>
 	<field name="totalmv" class="java.math.BigDecimal"/>
 	<field name="totalav" class="java.math.BigDecimal"/>
+	<field name="totalrestrictionav" class="java.math.BigDecimal"/>
 
 	<variable name="RPUCOUNT" class="java.lang.Integer" resetType="Group" resetGroup="TAXABILITY" calculation="Sum">
 		<variableExpression><![CDATA[$F{rpucount}]]></variableExpression>
@@ -75,10 +76,10 @@
 		<variableExpression><![CDATA[$F{landmv}]]></variableExpression>
 	</variable>
 	<variable name="BLDGMV150LESS" class="java.math.BigDecimal" resetType="Group" resetGroup="TAXABILITY" calculation="Sum">
-		<variableExpression><![CDATA[$F{bldgmv150less}]]></variableExpression>
+		<variableExpression><![CDATA[$F{bldgmv175less}]]></variableExpression>
 	</variable>
 	<variable name="BLDGMV150OVER" class="java.math.BigDecimal" resetType="Group" resetGroup="TAXABILITY" calculation="Sum">
-		<variableExpression><![CDATA[$F{bldgmvover150}]]></variableExpression>
+		<variableExpression><![CDATA[$F{bldgmvover175}]]></variableExpression>
 	</variable>
 	<variable name="MACHMV" class="java.math.BigDecimal" resetType="Group" resetGroup="TAXABILITY" calculation="Sum">
 		<variableExpression><![CDATA[$F{machmv}]]></variableExpression>
@@ -93,10 +94,10 @@
 		<variableExpression><![CDATA[$F{landav}]]></variableExpression>
 	</variable>
 	<variable name="BLDGAV150LESS" class="java.math.BigDecimal" resetType="Group" resetGroup="TAXABILITY" calculation="Sum">
-		<variableExpression><![CDATA[$F{bldgav150less}]]></variableExpression>
+		<variableExpression><![CDATA[$F{bldgav175less}]]></variableExpression>
 	</variable>
 	<variable name="BLDGAVOVER150" class="java.math.BigDecimal" resetType="Group" resetGroup="TAXABILITY" calculation="Sum">
-		<variableExpression><![CDATA[$F{bldgavover150}]]></variableExpression>
+		<variableExpression><![CDATA[$F{bldgavover175}]]></variableExpression>
 	</variable>
 	<variable name="MACHAV" class="java.math.BigDecimal" resetType="Group" resetGroup="TAXABILITY" calculation="Sum">
 		<variableExpression><![CDATA[$F{machav}]]></variableExpression>
@@ -135,10 +136,10 @@
 		<variableExpression><![CDATA[$F{machav}]]></variableExpression>
 	</variable>
 	<variable name="TBLDGAVOVER150" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
-		<variableExpression><![CDATA[$F{bldgavover150}]]></variableExpression>
+		<variableExpression><![CDATA[$F{bldgavover175}]]></variableExpression>
 	</variable>
 	<variable name="TBLDGAV150LESS" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
-		<variableExpression><![CDATA[$F{bldgav150less}]]></variableExpression>
+		<variableExpression><![CDATA[$F{bldgav175less}]]></variableExpression>
 	</variable>
 	<variable name="TLANDAV" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
 		<variableExpression><![CDATA[$F{landav}]]></variableExpression>
@@ -153,10 +154,10 @@
 		<variableExpression><![CDATA[$F{machmv}]]></variableExpression>
 	</variable>
 	<variable name="TBLDGMV150OVER" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
-		<variableExpression><![CDATA[$F{bldgmvover150}]]></variableExpression>
+		<variableExpression><![CDATA[$F{bldgmvover175}]]></variableExpression>
 	</variable>
 	<variable name="TBLDGMV150LESS" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
-		<variableExpression><![CDATA[$F{bldgmv150less}]]></variableExpression>
+		<variableExpression><![CDATA[$F{bldgmv175less}]]></variableExpression>
 	</variable>
 	<variable name="TLANDMV" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
 		<variableExpression><![CDATA[$F{landmv}]]></variableExpression>
@@ -166,6 +167,12 @@
 	</variable>
 	<variable name="TRPUCOUNT" class="java.lang.Integer" resetType="Report" calculation="Sum">
 		<variableExpression><![CDATA[$F{rpucount}]]></variableExpression>
+	</variable>
+	<variable name="TOTALRESTRICTIONAV" class="java.math.BigDecimal" resetType="Group" resetGroup="TAXABILITY" calculation="Sum">
+		<variableExpression><![CDATA[$F{totalrestrictionav}]]></variableExpression>
+	</variable>
+	<variable name="TTOTALRESTRICTIONAV" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
+		<variableExpression><![CDATA[$F{totalrestrictionav}]]></variableExpression>
 	</variable>
 
 		<group  name="TAXABILITY" >
@@ -185,7 +192,7 @@
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement verticalAlignment="Middle">
-						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$F{taxability}]]></textFieldExpression>
 				</textField>
@@ -197,7 +204,7 @@
 					<reportElement
 						x="0"
 						y="0"
-						width="100"
+						width="81"
 						height="16"
 						key="staticText-59"/>
 					<box leftPadding="3">					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -206,15 +213,15 @@
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
 				<text><![CDATA[SUBTOTAL]]></text>
 				</staticText>
 				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="100"
+						x="81"
 						y="0"
-						width="35"
+						width="29"
 						height="16"
 						key="textField-90"/>
 					<box>					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -223,15 +230,15 @@
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
 				<textFieldExpression   class="java.lang.Integer"><![CDATA[$V{RPUCOUNT}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="135"
+						x="110"
 						y="0"
-						width="70"
+						width="62"
 						height="16"
 						key="textField-91"/>
 					<box rightPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -240,15 +247,15 @@
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{AREASQM}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="205"
+						x="172"
 						y="0"
-						width="80"
+						width="65"
 						height="16"
 						key="textField-92"/>
 					<box rightPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -257,15 +264,15 @@
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{LANDMV}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="285"
+						x="237"
 						y="0"
-						width="66"
+						width="56"
 						height="16"
 						key="textField-93"/>
 					<box rightPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -274,13 +281,13 @@
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{BLDGMV150LESS}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="351"
+						x="293"
 						y="0"
 						width="71"
 						height="16"
@@ -291,15 +298,15 @@
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{BLDGMV150OVER}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="421"
+						x="364"
 						y="0"
-						width="70"
+						width="62"
 						height="16"
 						key="textField-95"/>
 					<box rightPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -308,13 +315,13 @@
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{MACHMV}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="491"
+						x="426"
 						y="0"
 						width="60"
 						height="16"
@@ -325,16 +332,17 @@
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{OTHERMV}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="551"
+						x="486"
 						y="0"
 						width="74"
 						height="16"
+						forecolor="#CC0033"
 						key="textField-97"/>
 					<box rightPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid"/>
@@ -342,15 +350,15 @@
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+						<font fontName="Arial Narrow" pdfFontName="Helvetica" size="9" isBold="false"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TOTALMV}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="625"
+						x="560"
 						y="0"
-						width="66"
+						width="58"
 						height="16"
 						key="textField-98"/>
 					<box rightPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -359,15 +367,15 @@
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{LANDAV}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="690"
+						x="618"
 						y="0"
-						width="54"
+						width="46"
 						height="16"
 						key="textField-99"/>
 					<box rightPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -376,15 +384,15 @@
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{BLDGAV150LESS}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="744"
+						x="664"
 						y="0"
-						width="61"
+						width="52"
 						height="16"
 						key="textField-100"/>
 					<box rightPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -393,15 +401,15 @@
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{BLDGAVOVER150}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="805"
+						x="716"
 						y="0"
-						width="61"
+						width="52"
 						height="16"
 						key="textField-101"/>
 					<box rightPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -410,15 +418,15 @@
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{MACHAV}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="866"
+						x="768"
 						y="0"
-						width="55"
+						width="48"
 						height="16"
 						key="textField-102"/>
 					<box rightPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -427,16 +435,17 @@
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{OTHERAV}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="921"
+						x="816"
 						y="0"
-						width="67"
+						width="52"
 						height="16"
+						forecolor="#CC0033"
 						key="textField-103"/>
 					<box rightPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid"/>
@@ -444,15 +453,15 @@
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+						<font fontName="Arial Narrow" pdfFontName="Helvetica" size="9" isBold="false"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TOTALAV}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="988"
+						x="868"
 						y="0"
-						width="30"
+						width="42"
 						height="16"
 						key="textField-104"/>
 					<box rightPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -461,15 +470,15 @@
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{CARPAV}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="1018"
+						x="910"
 						y="0"
-						width="50"
+						width="42"
 						height="16"
 						key="textField-105"/>
 					<box rightPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -478,15 +487,15 @@
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{LITIGATIONAV}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="1068"
+						x="952"
 						y="0"
-						width="50"
+						width="42"
 						height="16"
 						key="textField-106"/>
 					<box rightPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -495,9 +504,45 @@
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{OTHERRESTRICTIONAV}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="994"
+						y="0"
+						width="46"
+						height="16"
+						forecolor="#CC0033"
+						key="textField-126"/>
+					<box rightPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial Narrow" pdfFontName="Helvetica" size="9" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TOTALRESTRICTIONAV}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="1039"
+						y="0"
+						width="79"
+						height="16"
+						forecolor="#000099"
+						key="textField-129"/>
+					<box rightPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TOTALAV} - $V{TOTALRESTRICTIONAV}]]></textFieldExpression>
 				</textField>
 			</band>
 			</groupFooter>
@@ -606,7 +651,7 @@
 					<reportElement
 						x="0"
 						y="119"
-						width="100"
+						width="81"
 						height="51"
 						key="staticText-31"/>
 					<box>					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -692,7 +737,7 @@
 					<reportElement
 						x="0"
 						y="104"
-						width="205"
+						width="172"
 						height="15"
 						key="staticText-61"/>
 					<box>					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -707,9 +752,9 @@
 				</staticText>
 				<staticText>
 					<reportElement
-						x="205"
+						x="172"
 						y="104"
-						width="420"
+						width="388"
 						height="15"
 						key="staticText-62"/>
 					<box>					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -724,9 +769,9 @@
 				</staticText>
 				<staticText>
 					<reportElement
-						x="100"
+						x="81"
 						y="119"
-						width="35"
+						width="29"
 						height="51"
 						key="staticText-65"/>
 					<box>					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -742,9 +787,9 @@ RPU]]></text>
 				</staticText>
 				<staticText>
 					<reportElement
-						x="135"
+						x="110"
 						y="119"
-						width="70"
+						width="62"
 						height="51"
 						key="staticText-66"/>
 					<box>					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -756,14 +801,13 @@ RPU]]></text>
 						<font fontName="Tahoma" size="8"/>
 					</textElement>
 				<text><![CDATA[Land Area
-(sq.m.)
-]]></text>
+(sq.m.)]]></text>
 				</staticText>
 				<staticText>
 					<reportElement
-						x="205"
+						x="172"
 						y="119"
-						width="80"
+						width="65"
 						height="51"
 						key="staticText-67"/>
 					<box>					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -778,9 +822,9 @@ RPU]]></text>
 				</staticText>
 				<staticText>
 					<reportElement
-						x="285"
+						x="237"
 						y="133"
-						width="66"
+						width="56"
 						height="37"
 						key="staticText-68"/>
 					<box>					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -797,7 +841,7 @@ or less]]></text>
 				</staticText>
 				<staticText>
 					<reportElement
-						x="351"
+						x="293"
 						y="133"
 						width="71"
 						height="37"
@@ -815,9 +859,9 @@ P175,000 ]]></text>
 				</staticText>
 				<staticText>
 					<reportElement
-						x="421"
+						x="364"
 						y="119"
-						width="70"
+						width="62"
 						height="51"
 						key="staticText-70"/>
 					<box>					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -832,7 +876,7 @@ P175,000 ]]></text>
 				</staticText>
 				<staticText>
 					<reportElement
-						x="491"
+						x="426"
 						y="119"
 						width="60"
 						height="51"
@@ -850,10 +894,11 @@ Impr.]]></text>
 				</staticText>
 				<staticText>
 					<reportElement
-						x="551"
+						x="486"
 						y="119"
 						width="74"
 						height="51"
+						forecolor="#CC0033"
 						key="staticText-72"/>
 					<box>					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid"/>
@@ -861,15 +906,15 @@ Impr.]]></text>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" size="8"/>
+						<font fontName="Tahoma" pdfFontName="Helvetica" size="9" isBold="false"/>
 					</textElement>
 				<text><![CDATA[TOTAL]]></text>
 				</staticText>
 				<staticText>
 					<reportElement
-						x="285"
+						x="237"
 						y="119"
-						width="137"
+						width="127"
 						height="15"
 						key="staticText-73"/>
 					<box>					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -884,9 +929,9 @@ Impr.]]></text>
 				</staticText>
 				<staticText>
 					<reportElement
-						x="624"
+						x="560"
 						y="104"
-						width="364"
+						width="308"
 						height="15"
 						key="staticText-74"/>
 					<box>					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -901,9 +946,9 @@ Impr.]]></text>
 				</staticText>
 				<staticText>
 					<reportElement
-						x="625"
+						x="560"
 						y="119"
-						width="66"
+						width="58"
 						height="51"
 						key="staticText-75"/>
 					<box rightPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -912,15 +957,15 @@ Impr.]]></text>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="false"/>
 					</textElement>
 				<text><![CDATA[Land]]></text>
 				</staticText>
 				<staticText>
 					<reportElement
-						x="690"
+						x="618"
 						y="133"
-						width="54"
+						width="46"
 						height="37"
 						key="staticText-76"/>
 					<box>					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -937,9 +982,9 @@ or less]]></text>
 				</staticText>
 				<staticText>
 					<reportElement
-						x="744"
+						x="664"
 						y="133"
-						width="61"
+						width="52"
 						height="37"
 						key="staticText-77"/>
 					<box>					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -955,9 +1000,9 @@ P175,000 ]]></text>
 				</staticText>
 				<staticText>
 					<reportElement
-						x="805"
+						x="716"
 						y="119"
-						width="61"
+						width="52"
 						height="51"
 						key="staticText-78"/>
 					<box>					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -972,9 +1017,9 @@ P175,000 ]]></text>
 				</staticText>
 				<staticText>
 					<reportElement
-						x="866"
+						x="768"
 						y="119"
-						width="55"
+						width="48"
 						height="51"
 						key="staticText-79"/>
 					<box>					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -990,10 +1035,11 @@ Impr.]]></text>
 				</staticText>
 				<staticText>
 					<reportElement
-						x="921"
+						x="816"
 						y="119"
-						width="67"
+						width="52"
 						height="51"
+						forecolor="#CC0033"
 						key="staticText-80"/>
 					<box>					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid"/>
@@ -1001,15 +1047,15 @@ Impr.]]></text>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" size="8"/>
+						<font fontName="Tahoma" pdfFontName="Helvetica" size="9" isBold="false"/>
 					</textElement>
 				<text><![CDATA[TOTAL]]></text>
 				</staticText>
 				<staticText>
 					<reportElement
-						x="690"
+						x="618"
 						y="119"
-						width="114"
+						width="98"
 						height="15"
 						key="staticText-81"/>
 					<box>					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -1024,9 +1070,9 @@ Impr.]]></text>
 				</staticText>
 				<staticText>
 					<reportElement
-						x="988"
+						x="868"
 						y="104"
-						width="130"
+						width="172"
 						height="15"
 						key="staticText-82"/>
 					<box>					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -1041,9 +1087,9 @@ Impr.]]></text>
 				</staticText>
 				<staticText>
 					<reportElement
-						x="988"
+						x="868"
 						y="119"
-						width="30"
+						width="42"
 						height="51"
 						key="staticText-83"/>
 					<box>					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -1054,14 +1100,14 @@ Impr.]]></text>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Tahoma" size="8"/>
 					</textElement>
-				<text><![CDATA[UNDER
+				<text><![CDATA[Under
 CARP]]></text>
 				</staticText>
 				<staticText>
 					<reportElement
-						x="1018"
+						x="910"
 						y="119"
-						width="50"
+						width="42"
 						height="51"
 						key="staticText-84"/>
 					<box>					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -1072,14 +1118,14 @@ CARP]]></text>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Tahoma" size="8"/>
 					</textElement>
-				<text><![CDATA[UNDER
-LITIGATION]]></text>
+				<text><![CDATA[Under
+Litigation]]></text>
 				</staticText>
 				<staticText>
 					<reportElement
-						x="1068"
+						x="952"
 						y="119"
-						width="50"
+						width="42"
 						height="51"
 						key="staticText-85"/>
 					<box>					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -1090,7 +1136,7 @@ LITIGATION]]></text>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Tahoma" size="8"/>
 					</textElement>
-				<text><![CDATA[OTHER]]></text>
+				<text><![CDATA[Other]]></text>
 				</staticText>
 				<staticText>
 					<reportElement
@@ -1155,6 +1201,44 @@ LITIGATION]]></text>
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$P{BARANGAY}]]></textFieldExpression>
 				</textField>
+				<staticText>
+					<reportElement
+						x="994"
+						y="119"
+						width="46"
+						height="51"
+						forecolor="#CC0033"
+						key="staticText-89"/>
+					<box rightPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="Helvetica" size="9" isBold="false"/>
+					</textElement>
+				<text><![CDATA[TOTAL]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="1040"
+						y="104"
+						width="78"
+						height="66"
+						forecolor="#000099"
+						key="staticText-90"/>
+					<box>					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+					</textElement>
+				<text><![CDATA[TOTAL
+ASSESSED
+VALUE]]></text>
+				</staticText>
 			</band>
 		</title>
 		<pageHeader>
@@ -1171,7 +1255,7 @@ LITIGATION]]></text>
 					<reportElement
 						x="0"
 						y="0"
-						width="100"
+						width="81"
 						height="16"
 						key="textField-35"/>
 					<box leftPadding="3">					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -1180,15 +1264,15 @@ LITIGATION]]></text>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement verticalAlignment="Middle">
-						<font fontName="Arial Narrow" size="9"/>
+						<font fontName="Arial Narrow" size="8"/>
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$F{classname}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="100"
+						x="81"
 						y="0"
-						width="35"
+						width="29"
 						height="16"
 						key="textField-73"/>
 					<box>					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -1197,15 +1281,15 @@ LITIGATION]]></text>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Arial Narrow" size="9"/>
+						<font fontName="Arial Narrow" size="8"/>
 					</textElement>
 				<textFieldExpression   class="java.lang.Integer"><![CDATA[$F{rpucount}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="135"
+						x="110"
 						y="0"
-						width="70"
+						width="62"
 						height="16"
 						key="textField-74"/>
 					<box rightPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -1214,15 +1298,15 @@ LITIGATION]]></text>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Arial Narrow" size="9"/>
+						<font fontName="Arial Narrow" size="8"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{areasqm}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="205"
+						x="172"
 						y="0"
-						width="80"
+						width="65"
 						height="16"
 						key="textField-75"/>
 					<box rightPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -1231,15 +1315,15 @@ LITIGATION]]></text>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Arial Narrow" size="9"/>
+						<font fontName="Arial Narrow" size="8"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{landmv}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="285"
+						x="237"
 						y="0"
-						width="66"
+						width="56"
 						height="16"
 						key="textField-76"/>
 					<box rightPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -1248,13 +1332,13 @@ LITIGATION]]></text>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Arial Narrow" size="9"/>
+						<font fontName="Arial Narrow" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{bldgmv150less}]]></textFieldExpression>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{bldgmv175less}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="351"
+						x="293"
 						y="0"
 						width="71"
 						height="16"
@@ -1265,15 +1349,15 @@ LITIGATION]]></text>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Arial Narrow" size="9"/>
+						<font fontName="Arial Narrow" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{bldgmvover150}]]></textFieldExpression>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{bldgmvover175}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="421"
+						x="364"
 						y="0"
-						width="70"
+						width="62"
 						height="16"
 						key="textField-78"/>
 					<box rightPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -1282,13 +1366,13 @@ LITIGATION]]></text>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Arial Narrow" size="9"/>
+						<font fontName="Arial Narrow" size="8"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{machmv}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="491"
+						x="426"
 						y="0"
 						width="60"
 						height="16"
@@ -1299,16 +1383,17 @@ LITIGATION]]></text>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Arial Narrow" size="9"/>
+						<font fontName="Arial Narrow" size="8"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{othermv}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="551"
+						x="486"
 						y="0"
 						width="74"
 						height="16"
+						forecolor="#CC0033"
 						key="textField-80"/>
 					<box rightPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid"/>
@@ -1316,15 +1401,15 @@ LITIGATION]]></text>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Arial Narrow" size="9"/>
+						<font fontName="Arial Narrow" pdfFontName="Helvetica" size="9" isBold="false"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{totalmv}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="625"
+						x="560"
 						y="0"
-						width="66"
+						width="58"
 						height="16"
 						key="textField-81"/>
 					<box rightPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -1333,15 +1418,15 @@ LITIGATION]]></text>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Arial Narrow" size="9"/>
+						<font fontName="Arial Narrow" size="8"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{landav}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="690"
+						x="618"
 						y="0"
-						width="54"
+						width="46"
 						height="16"
 						key="textField-82"/>
 					<box rightPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -1350,15 +1435,15 @@ LITIGATION]]></text>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Arial Narrow" size="9"/>
+						<font fontName="Arial Narrow" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{bldgav150less}]]></textFieldExpression>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{bldgav175less}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="744"
+						x="664"
 						y="0"
-						width="61"
+						width="52"
 						height="16"
 						key="textField-83"/>
 					<box rightPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -1367,15 +1452,15 @@ LITIGATION]]></text>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Arial Narrow" size="9"/>
+						<font fontName="Arial Narrow" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{bldgavover150}]]></textFieldExpression>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{bldgavover175}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="805"
+						x="716"
 						y="0"
-						width="61"
+						width="52"
 						height="16"
 						key="textField-84"/>
 					<box rightPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -1384,15 +1469,15 @@ LITIGATION]]></text>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Arial Narrow" size="9"/>
+						<font fontName="Arial Narrow" size="8"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{machav}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="866"
+						x="768"
 						y="0"
-						width="55"
+						width="48"
 						height="16"
 						key="textField-85"/>
 					<box rightPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -1401,16 +1486,17 @@ LITIGATION]]></text>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Arial Narrow" size="9"/>
+						<font fontName="Arial Narrow" size="8"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{otherav}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="921"
+						x="816"
 						y="0"
-						width="67"
+						width="52"
 						height="16"
+						forecolor="#CC0033"
 						key="textField-86"/>
 					<box rightPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid"/>
@@ -1418,15 +1504,15 @@ LITIGATION]]></text>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Arial Narrow" size="9"/>
+						<font fontName="Arial Narrow" pdfFontName="Helvetica" size="9" isBold="false"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{totalav}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="988"
+						x="868"
 						y="0"
-						width="30"
+						width="42"
 						height="16"
 						key="textField-87"/>
 					<box rightPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -1435,15 +1521,15 @@ LITIGATION]]></text>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Arial Narrow" size="9"/>
+						<font fontName="Arial Narrow" size="8"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{carpav}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="1018"
+						x="910"
 						y="0"
-						width="50"
+						width="42"
 						height="16"
 						key="textField-88"/>
 					<box rightPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -1452,15 +1538,15 @@ LITIGATION]]></text>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Arial Narrow" size="9"/>
+						<font fontName="Arial Narrow" size="8"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{litigationav}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="1068"
+						x="952"
 						y="0"
-						width="50"
+						width="42"
 						height="16"
 						key="textField-89"/>
 					<box rightPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -1469,9 +1555,45 @@ LITIGATION]]></text>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Arial Narrow" size="9"/>
+						<font fontName="Arial Narrow" size="8"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{otherrestrictionav}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="994"
+						y="0"
+						width="46"
+						height="16"
+						forecolor="#CC0033"
+						key="textField-127"/>
+					<box rightPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial Narrow" pdfFontName="Helvetica" size="9" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{totalrestrictionav}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="1039"
+						y="0"
+						width="79"
+						height="16"
+						forecolor="#000099"
+						key="textField-128"/>
+					<box rightPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{totalav} - $F{totalrestrictionav}]]></textFieldExpression>
 				</textField>
 			</band>
 		</detail>
@@ -1512,7 +1634,7 @@ LITIGATION]]></text>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 </box>
 					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
-						<font fontName="Arial Narrow" pdfFontName="Helvetica" size="9" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+						<font fontName="Arial Narrow" pdfFontName="Helvetica" size="8" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA["Generated by: ETRACS v2.0  A3L  Printed by: " + $P{PRINTEDBY} + " Print Date: " + new java.text.SimpleDateFormat("yyyy-MM-dd").format( ($P{PRINTDATE} == null) ? new java.util.Date() : $P{PRINTDATE}  )]]></textFieldExpression>
 				</textField>
@@ -1645,7 +1767,7 @@ LITIGATION]]></text>
 					<reportElement
 						x="0"
 						y="0"
-						width="100"
+						width="81"
 						height="16"
 						key="staticText-60"/>
 					<box leftPadding="3">					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -1654,15 +1776,15 @@ LITIGATION]]></text>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
 				<text><![CDATA[TOTAL]]></text>
 				</staticText>
 				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="100"
+						x="81"
 						y="0"
-						width="35"
+						width="29"
 						height="16"
 						key="textField-107"/>
 					<box>					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -1671,15 +1793,15 @@ LITIGATION]]></text>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
 				<textFieldExpression   class="java.lang.Integer"><![CDATA[$V{TRPUCOUNT}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="135"
+						x="110"
 						y="0"
-						width="70"
+						width="62"
 						height="16"
 						key="textField-108"/>
 					<box rightPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -1688,15 +1810,15 @@ LITIGATION]]></text>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TAREASQM}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="205"
+						x="172"
 						y="0"
-						width="80"
+						width="65"
 						height="16"
 						key="textField-109"/>
 					<box rightPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -1705,15 +1827,15 @@ LITIGATION]]></text>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TLANDMV}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="285"
+						x="237"
 						y="0"
-						width="66"
+						width="56"
 						height="16"
 						key="textField-110"/>
 					<box rightPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -1722,13 +1844,13 @@ LITIGATION]]></text>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TBLDGMV150LESS}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="351"
+						x="293"
 						y="0"
 						width="71"
 						height="16"
@@ -1739,15 +1861,15 @@ LITIGATION]]></text>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TBLDGMV150OVER}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="421"
+						x="364"
 						y="0"
-						width="70"
+						width="62"
 						height="16"
 						key="textField-112"/>
 					<box rightPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -1756,13 +1878,13 @@ LITIGATION]]></text>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TMACHMV}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="491"
+						x="426"
 						y="0"
 						width="60"
 						height="16"
@@ -1773,16 +1895,17 @@ LITIGATION]]></text>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TOTHERMV}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="551"
+						x="486"
 						y="0"
 						width="74"
 						height="16"
+						forecolor="#CC0033"
 						key="textField-114"/>
 					<box rightPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid"/>
@@ -1790,15 +1913,15 @@ LITIGATION]]></text>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+						<font fontName="Arial Narrow" pdfFontName="Helvetica" size="9" isBold="false"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TTOTALMV}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="625"
+						x="560"
 						y="0"
-						width="66"
+						width="58"
 						height="16"
 						key="textField-115"/>
 					<box rightPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -1807,15 +1930,15 @@ LITIGATION]]></text>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TLANDAV}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="690"
+						x="618"
 						y="0"
-						width="54"
+						width="46"
 						height="16"
 						key="textField-116"/>
 					<box rightPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -1824,15 +1947,15 @@ LITIGATION]]></text>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TBLDGAV150LESS}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="744"
+						x="664"
 						y="0"
-						width="61"
+						width="52"
 						height="16"
 						key="textField-117"/>
 					<box rightPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -1841,15 +1964,15 @@ LITIGATION]]></text>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TBLDGAVOVER150}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="805"
+						x="716"
 						y="0"
-						width="61"
+						width="52"
 						height="16"
 						key="textField-118"/>
 					<box rightPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -1858,15 +1981,15 @@ LITIGATION]]></text>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TMACHAV}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="866"
+						x="768"
 						y="0"
-						width="55"
+						width="48"
 						height="16"
 						key="textField-119"/>
 					<box rightPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -1875,16 +1998,17 @@ LITIGATION]]></text>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TOTHERAV}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="921"
+						x="816"
 						y="0"
-						width="67"
+						width="52"
 						height="16"
+						forecolor="#CC0033"
 						key="textField-120"/>
 					<box rightPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid"/>
@@ -1892,15 +2016,15 @@ LITIGATION]]></text>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+						<font fontName="Arial Narrow" pdfFontName="Helvetica" size="9" isBold="false"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TTOTALAV}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="988"
+						x="868"
 						y="0"
-						width="30"
+						width="42"
 						height="16"
 						key="textField-121"/>
 					<box rightPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -1909,15 +2033,15 @@ LITIGATION]]></text>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TCARPAV}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="1018"
+						x="910"
 						y="0"
-						width="50"
+						width="42"
 						height="16"
 						key="textField-122"/>
 					<box rightPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -1926,15 +2050,15 @@ LITIGATION]]></text>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TLITIGATIONAV}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="1068"
+						x="952"
 						y="0"
-						width="50"
+						width="42"
 						height="16"
 						key="textField-123"/>
 					<box rightPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -1943,9 +2067,45 @@ LITIGATION]]></text>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TOTHERRESTRICTIONAV}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="994"
+						y="0"
+						width="46"
+						height="16"
+						forecolor="#CC0033"
+						key="textField-125"/>
+					<box rightPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial Narrow" pdfFontName="Helvetica" size="9" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TTOTALRESTRICTIONAV}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="1039"
+						y="0"
+						width="79"
+						height="16"
+						forecolor="#000099"
+						key="textField-130"/>
+					<box rightPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TTOTALAV} - $V{TTOTALRESTRICTIONAV}]]></textFieldExpression>
 				</textField>
 			</band>
 		</summary>

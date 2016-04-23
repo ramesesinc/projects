@@ -7,7 +7,7 @@
 	- 
 		
 - ASSESSOR
-	-
+	- Modify Monthly/Quarterly Report on Real Property Assessment: add Total AV ( av - restrictionav)
 
 - LANDTAX: 
 	- 

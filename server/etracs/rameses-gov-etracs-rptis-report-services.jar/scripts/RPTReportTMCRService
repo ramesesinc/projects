@@ -152,7 +152,7 @@ class RPTReportTMCRService
 			TITLE 		: params.title,
 			ARPCAPTION 	: 'APR NO.\n' + stdno,
 			OTHERCAPTION: 'Others\nPREVIOUS\nARP NO.\n' + sprevtdno,
-			REMARKS     : 'Remarks\n' + ry + ' GR\nTRANSACTION\nCODE'
+			REMARKS     : 'Remarks\n' + ry + ' GR\nTransaction\nCode'
 		]
 		return [reportdata:list, parameters:parameters]
 	}

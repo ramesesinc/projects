@@ -92,6 +92,8 @@ select
 	r.rputype, 
 	r.suffix,
 	r.rpumasterid,
+	r.totalmv,
+	r.totalav, 
 
 	case when p.objid is not null then p.name else c.name end as parentlguname, 
 	case when p.objid is not null then p.indexno else c.indexno end as parentlguindex,   

@@ -75,18 +75,6 @@ public class Setting {
         set.setOnAction(new EventHandler<ActionEvent>(){
             @Override
             public void handle(ActionEvent event) {
-                Thread t = new Thread(){
-                    @Override
-                    public void run(){
-                        Platform.runLater(new Runnable(){
-                            @Override
-                            public void run() {
-                                set.setDisable(true);
-                            }
-                        });
-                    }
-                };
-                t.start();
                 Main.PRINTERNAME = listview.getSelectionModel().getSelectedItem();
                 if(PRINTER != null) PRINTER.closeBT();
                 PRINTER = BluetoothPlatformFactory.getPlatform().getBluetoothPrinter();
@@ -100,6 +88,11 @@ public class Setting {
                 if(oneil_btn.isSelected()){
                     handler = "ONEIL";
                     Main.PRINTERHANDLER = new OneilPrinterHandler();
+                }
+                
+                if(Main.PRINTERNAME == null){
+                    Dialog.showAlert("You must select the printer!");
+                    return;
                 }
                 
                 if(handler.isEmpty()){
@@ -122,7 +115,6 @@ public class Setting {
                     }
                 }
                 Dialog.showAlert("Printer is now set to " + Main.PRINTERNAME + ".");
-                set.setDisable(false);
             }
         });
         

@@ -12,18 +12,11 @@ public class Account {
             acctno,
             acctname,
             address,
-            mobileno,
-            phoneno,
-            email,
             serialno,
-            areaid,
+            sectorid,
+            sectorcode,
             lastreading,
-            lasttxndate,
-            areaname,
             classificationid,
-            lastreadingyear,
-            lastreadingmonth,
-            lastreadingdate,
             barcode,
             batchid,
             month,
@@ -34,8 +27,9 @@ public class Account {
             rundate,
             items,
             info,
-            latitude,
-            longitude;
+            stuboutid;
+    
+    private int sortorder;
     
     private String
             consumption,
@@ -52,18 +46,11 @@ public class Account {
             String acctno,
             String acctname,
             String address,
-            String mobileno,
-            String phoneno,
-            String email,
             String serialno,
-            String areaid,
+            String sectorid,
+            String sectorcode,
             String lastreading,
-            String lasttxndate,
-            String areaname,
             String classificationid,
-            String lastreadingyear,
-            String lastreadingmonth,
-            String lastreadingdate,
             String barcode,
             String batchid,
             String month,
@@ -74,25 +61,18 @@ public class Account {
             String rundate,
             String items,
             String info,
-            String latitude,
-            String longitude
+            String stuboutid,
+            int sortorder
     ){
         this.objid = objid;
         this.acctno = acctno;
         this.acctname = acctname;
         this.address = address;
-        this.mobileno = mobileno;
-        this.phoneno = phoneno;
-        this.email = email;
         this.serialno = serialno;
-        this.areaid = areaid;
+        this.sectorid = sectorid;
+        this.sectorcode = sectorcode;
         this.lastreading = lastreading;
-        this.lasttxndate = lasttxndate;
-        this.areaname = areaname;
         this.classificationid = classificationid;
-        this.lastreadingyear = lastreadingyear;
-        this.lastreadingmonth = lastreadingmonth;
-        this.lastreadingdate = lastreadingdate;
         this.barcode = barcode;
         this.batchid = batchid;
         this.month = month;
@@ -103,27 +83,20 @@ public class Account {
         this.rundate = rundate;
         this.items = items;
         this.info = info;
-        this.latitude = latitude;
-        this.longitude = longitude;
+        this.stuboutid = stuboutid;
+        this.sortorder = sortorder;
     }
     
     public String getObjid(){ return objid; }
     public String getAcctNo(){ return acctno; }
     public String getAcctName(){ return acctname; }
     public String getAddress(){ return address; }
-    public String getMobileNo(){ return mobileno; }
-    public String getPhoneNo(){ return phoneno; }
-    public String getEmail(){ return email; }
     public String getSerialNo(){ return serialno; }
-    public String getAreaId(){ return areaid; }
+    public String getSectorId(){ return sectorid; }
     public String getLastReading(){ return lastreading; }
     public String getPresReading(){ return presreading; }
-    public String getLastTxnDate(){ return lasttxndate; }
-    public String getAreaName(){ return areaname; }
+    public String getSectorCode(){ return sectorcode; }
     public String getClassificationId(){ return classificationid; }
-    public String getLastReadingYear(){ return lastreadingyear; }
-    public String getLastReadingMonth(){ return lastreadingmonth; }
-    public String getLastReadingDate(){ return lastreadingdate; }
     public String getBarCode(){ return barcode; }
     public String getBatchId(){ return batchid; }
     public String getMonth(){ return month; }
@@ -134,8 +107,8 @@ public class Account {
     public String getRunDate(){ return rundate; }
     public String getItems(){ return items; }
     public String getInfo(){ return info; }
-    public String getLatitude(){ return latitude; }
-    public String getLongitude(){ return longitude; }
+    public String getStuboutId(){ return stuboutid; }
+    public int getSortOrder(){ return sortorder; }
     
     public String getConsumption(){ return consumption; }
     public String getAmtDue(){ return amtdue; }

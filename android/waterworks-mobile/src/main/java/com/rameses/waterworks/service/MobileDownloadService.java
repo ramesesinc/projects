@@ -93,11 +93,11 @@ public class MobileDownloadService {
         }
     }
     
-    public List<Map> getAreasByUser(Object params){
+    public List<Map> getSectorByUser(Object params){
         ERROR = "";
         List result = new ArrayList();
         try{
-            result = service.getAreasByUser(params);
+            result = service.getSectorByUser(params);
         }catch(Exception e){
             ERROR = "MobileDownloadService Error: " + e.toString();
             if(Main.LOG != null){
@@ -109,11 +109,43 @@ public class MobileDownloadService {
         return result;
     }
     
-    public List<Map> getStuboutsByArea(Object params){
+    public List<Map> getStuboutsBySector(Object params){
         ERROR = "";
         List result = new ArrayList();
         try{
-            result = service.getStuboutsByArea(params);
+            result = service.getStuboutsBySector(params);
+        }catch(Exception e){
+            ERROR = "MobileDownloadService Error: " + e.toString();
+            if(Main.LOG != null){
+                Main.LOG.error("MobileDownloadService Error",e.toString());
+            }else{
+                e.printStackTrace();
+            }
+        }
+        return result;
+    }
+    
+    public List<Map> getReaderBySector(Object params){
+        ERROR = "";
+        List result = new ArrayList();
+        try{
+            result = service.getReaderBySector(params);
+        }catch(Exception e){
+            ERROR = "MobileDownloadService Error: " + e.toString();
+            if(Main.LOG != null){
+                Main.LOG.error("MobileDownloadService Error",e.toString());
+            }else{
+                e.printStackTrace();
+            }
+        }
+        return result;
+    }
+    
+    public List<Map> getZoneBySector(Object params){
+        ERROR = "";
+        List result = new ArrayList();
+        try{
+            result = service.getZoneBySector(params);
         }catch(Exception e){
             ERROR = "MobileDownloadService Error: " + e.toString();
             if(Main.LOG != null){
@@ -135,9 +167,13 @@ public class MobileDownloadService {
         
         public void cancelDownload(Object params);
         
-        public List<Map> getAreasByUser(Object params);
+        public List<Map> getSectorByUser(Object params);
         
-        public List<Map> getStuboutsByArea(Object params);
+        public List<Map> getStuboutsBySector(Object params);
+        
+        public List<Map> getReaderBySector(Object params);
+        
+        public List<Map> getZoneBySector(Object params);
         
     }
     

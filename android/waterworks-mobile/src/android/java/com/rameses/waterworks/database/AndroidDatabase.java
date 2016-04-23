@@ -7,8 +7,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import com.rameses.waterworks.bean.Account;
 import com.rameses.waterworks.bean.Reading;
-import com.rameses.waterworks.bean.Area;
 import com.rameses.waterworks.bean.Rule;
+import com.rameses.waterworks.bean.Sector;
+import com.rameses.waterworks.bean.SectorReader;
 import com.rameses.waterworks.bean.Setting;
 import com.rameses.waterworks.bean.Stubout;
 import com.rameses.waterworks.bean.Zone;
@@ -39,18 +40,11 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
                 + " acctno VARCHAR(50),"
                 + " acctname TEXT,"
                 + " address TEXT,"
-                + " mobileno VARCHAR(50),"
-                + " phoneno VARCHAR(50),"
-                + " email VARCHAR(50),"
                 + " serialno VARCHAR(50),"
-                + " areaid VARCHAR(50),"
+                + " sectorid VARCHAR(50),"
+                + " sectorcode VARCHAR(50),"
                 + " lastreading VARCHAR(50),"
-                + " lasttxndate VARCHAR(50),"
-                + " areaname VARCHAR(50),"
                 + " classificationid VARCHAR(50),"
-                + " lastreadingyear VARCHAR(50),"
-                + " lastreadingmonth VARCHAR(50),"
-                + " lastreadingdate VARCHAR(50),"
                 + " barcode VARCHAR(50),"
                 + " batchid VARCHAR(50),"
                 + " month VARCHAR(50),"
@@ -61,8 +55,6 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
                 + " rundate VARCHAR(50),"
                 + " items TEXT,"
                 + " info TEXT,"
-                + " latitude VARCHAR(50),"
-                + " longitude VARCHAR(50),"
                 + " stuboutid VARCHAR(50),"
                 + " sortorder INTEGER,"
                 + " assignee_objid VARCHAR(50),"
@@ -85,32 +77,34 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
                 + " var TEXT,"
                 + " action TEXT)");
        
-        sqld.execSQL("CREATE TABLE area ("
+        sqld.execSQL("CREATE TABLE sector ("
                 + " objid VARCHAR(50) PRIMARY KEY,"
-                + " title VARCHAR(50), "
-                + " zone VARCHAR(50), "
-                + " sectorid VARCHAR(50), "
+                + " code VARCHAR(50),"
                 + " assigneeid VARCHAR(50))");
+        
+        sqld.execSQL("CREATE TABLE sectorreader ("
+                + " objid VARCHAR(50) PRIMARY KEY,"
+                + " sectorid VARCHAR(50),"
+                + " title VARCHAR(50),"
+                + " assigneeid VARCHAR(50),"
+                + " assigneename VARCHAR(255))");
         
         sqld.execSQL("CREATE TABLE stubout ("
                 + " objid VARCHAR(50) PRIMARY KEY,"
                 + " code VARCHAR(50), "
                 + " description VARCHAR(255), "
                 + " zoneid VARCHAR(50), "
-                + " zonecode VARCHAR(50), "
-                + " zonedesc VARCHAR(255), "
-                + " sectorid VARCHAR(50), "
-                + " sectorcode VARCHAR(50), "
-                + " areaid VARCHAR(50), "
-                + " areatitle VARCHAR(50), "
-                + " assigneeid VARCHAR(50), "
-                + " assigneename VARCHAR(255))");
+                + " barangayid VARCHAR(50), "
+                + " barangayname VARCHAR(255), "
+                + " assigneeid VARCHAR(50))");
         
         sqld.execSQL("CREATE TABLE zone ("
                 + " objid VARCHAR(50) PRIMARY KEY,"
+                + " sectorid VARCHAR(50), "
                 + " code VARCHAR(50), "
                 + " description VARCHAR(255), "
-                + " sector VARCHAR(255))");
+                + " readerid VARCHAR(50), "
+                + " assigneeid VARCHAR(50))");
         
     }
 
@@ -215,21 +209,12 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
         String acctno = acct.get("acctno") != null ? acct.get("acctno").toString() : "";
         String acctname = acct.get("acctname") != null ? acct.get("acctname").toString() : "";
         String address = acct.get("address") != null ? acct.get("address").toString() : "";
-        String mobileno = acct.get("mobileno") != null ? acct.get("mobileno").toString() : "";
-        String phoneno = acct.get("phoneno") != null ? acct.get("phoneno").toString() : "";
-        String email = acct.get("email") != null ? acct.get("email").toString() : "";
         String serialno = acct.get("serialno") != null ? acct.get("serialno").toString() : "";
-        String areaid = acct.get("areaid") != null ? acct.get("areaid").toString() : "";
+        String sectorid = acct.get("sectorid") != null ? acct.get("sectorid").toString() : "";
+        String sectorcode = acct.get("sectorcode") != null ? acct.get("sectorcode").toString() : "";
         String lastreading = acct.get("lastreading") != null ? acct.get("lastreading").toString() : "";
-        String lasttxndate = acct.get("lasttxndate") != null ? acct.get("lasttxndate").toString() : "";
-        String areaname = acct.get("areaname") != null ? acct.get("areaname").toString() : "";
         String classificationid = acct.get("classificationid") != null ? acct.get("classificationid").toString() : "";
-        String lastreadingyear = acct.get("lastreadingyear") != null ? acct.get("lastreadingyear").toString() : "";
-        String lastreadingmonth = acct.get("lastreadingmonth") != null ? acct.get("lastreadingmonth").toString() : "";
-        String lastreadingdate = acct.get("lastreadingdate") != null ? acct.get("lastreadingdate").toString() : "";
         String barcode = acct.get("barcode") != null ? acct.get("barcode").toString() : "";
-        String assignee_objid = SystemPlatformFactory.getPlatform().getSystem().getUserID();
-        String assignee_name = SystemPlatformFactory.getPlatform().getSystem().getFullName();
         String batchid = acct.get("batchid") != null ? acct.get("batchid").toString() : "";
         String month = acct.get("month") != null ? getMonth(acct.get("month").toString()) : "";
         String year = acct.get("year") != null ? acct.get("year").toString() : "";
@@ -241,27 +226,20 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
         String info = acct.get("info") != null ? acct.get("info").toString() : "";
         String stuboutid = acct.get("stuboutid") != null ? acct.get("stuboutid").toString() : "";
         int sortorder = acct.get("sortorder") != null ? Integer.parseInt(acct.get("sortorder").toString()) : -1;
+        String assignee_objid = SystemPlatformFactory.getPlatform().getSystem().getUserID();
+        String assignee_name = SystemPlatformFactory.getPlatform().getSystem().getFullName();
         
         ContentValues values = new ContentValues();
         values.put("objid", objid);
         values.put("acctno", acctno);
         values.put("acctname", acctname);
         values.put("address", address);
-        values.put("mobileno", mobileno);
-        values.put("phoneno", phoneno);
-        values.put("email", email);
         values.put("serialno", serialno);
-        values.put("areaid", areaid);
+        values.put("sectorid", sectorid);
+        values.put("sectorcode", sectorcode);
         values.put("lastreading", lastreading);
-        values.put("lasttxndate", lasttxndate);
-        values.put("areaname", areaname);
         values.put("classificationid", classificationid);
-        values.put("lastreadingyear", lastreadingyear);
-        values.put("lastreadingmonth", lastreadingmonth);
-        values.put("lastreadingdate", lastreadingdate);
         values.put("barcode", barcode);
-        values.put("assignee_objid", assignee_objid);
-        values.put("assignee_name", assignee_name);
         values.put("batchid", batchid);
         values.put("month", month);
         values.put("year", year);
@@ -273,6 +251,8 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
         values.put("info",info);
         values.put("stuboutid",stuboutid);
         values.put("sortorder",sortorder);
+        values.put("assignee_objid", assignee_objid);
+        values.put("assignee_name", assignee_name);
         
         SQLiteDatabase db = null;
         try{
@@ -293,48 +273,36 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
         String acctno = acct.get("acctno") != null ? acct.get("acctno").toString() : "";
         String acctname = acct.get("acctname") != null ? acct.get("acctname").toString() : "";
         String address = acct.get("address") != null ? acct.get("address").toString() : "";
-        String mobileno = acct.get("mobileno") != null ? acct.get("mobileno").toString() : "";
-        String phoneno = acct.get("phoneno") != null ? acct.get("phoneno").toString() : "";
-        String email = acct.get("email") != null ? acct.get("email").toString() : "";
         String serialno = acct.get("serialno") != null ? acct.get("serialno").toString() : "";
-        String areaid = acct.get("areaid") != null ? acct.get("areaid").toString() : "";
+        String sectorid = acct.get("sectorid") != null ? acct.get("sectorid").toString() : "";
+        String sectorcode = acct.get("sectorcode") != null ? acct.get("sectorcode").toString() : "";
         String lastreading = acct.get("lastreading") != null ? acct.get("lastreading").toString() : "";
-        String lasttxndate = acct.get("lasttxndate") != null ? acct.get("lasttxndate").toString() : "";
-        String areaname = acct.get("areaname") != null ? acct.get("areaname").toString() : "";
         String classificationid = acct.get("classificationid") != null ? acct.get("classificationid").toString() : "";
-        String lastreadingyear = acct.get("lastreadingyear") != null ? acct.get("lastreadingyear").toString() : "";
-        String lastreadingmonth = acct.get("lastreadingmonth") != null ? acct.get("lastreadingmonth").toString() : "";
-        String lastreadingdate = acct.get("lastreadingdate") != null ? acct.get("lastreadingdate").toString() : "";
         String barcode = acct.get("barcode") != null ? acct.get("barcode").toString() : "";
         String batchid = acct.get("batchid") != null ? acct.get("batchid").toString() : "";
-        String month = acct.get("month") != null ? acct.get("month").toString() : "";
+        String month = acct.get("month") != null ? getMonth(acct.get("month").toString()) : "";
         String year = acct.get("year") != null ? acct.get("year").toString() : "";
-        String period = acct.get("period") != null ? acct.get("period").toString() : "";
         String duedate = acct.get("duedate") != null ? acct.get("duedate").toString() : "";
+        String period = acct.get("period") != null ? acct.get("period").toString() : "";
         String discodate = acct.get("discodate") != null ? acct.get("discodate").toString() : "";
         String rundate = acct.get("rundate") != null ? acct.get("rundate").toString() : "";
         String items = acct.get("items") != null ? acct.get("items").toString() : "";
         String info = acct.get("info") != null ? acct.get("info").toString() : "";
         String stuboutid = acct.get("stuboutid") != null ? acct.get("stuboutid").toString() : "";
         int sortorder = acct.get("sortorder") != null ? Integer.parseInt(acct.get("sortorder").toString()) : -1;
+        String assignee_objid = SystemPlatformFactory.getPlatform().getSystem().getUserID();
+        String assignee_name = SystemPlatformFactory.getPlatform().getSystem().getFullName();
         
         ContentValues values = new ContentValues();
         values.put("objid", objid);
         values.put("acctno", acctno);
         values.put("acctname", acctname);
         values.put("address", address);
-        values.put("mobileno", mobileno);
-        values.put("phoneno", phoneno);
-        values.put("email", email);
         values.put("serialno", serialno);
-        values.put("areaid", areaid);
+        values.put("sectorid", sectorid);
+        values.put("sectorcode", sectorcode);
         values.put("lastreading", lastreading);
-        values.put("lasttxndate", lasttxndate);
-        values.put("areaname", areaname);
         values.put("classificationid", classificationid);
-        values.put("lastreadingyear", lastreadingyear);
-        values.put("lastreadingmonth", lastreadingmonth);
-        values.put("lastreadingdate", lastreadingdate);
         values.put("barcode", barcode);
         values.put("batchid", batchid);
         values.put("month", month);
@@ -347,6 +315,8 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
         values.put("info",info);
         values.put("stuboutid",stuboutid);
         values.put("sortorder",sortorder);
+        values.put("assignee_objid", assignee_objid);
+        values.put("assignee_name", assignee_name);
         
         SQLiteDatabase db = null;
         
@@ -374,7 +344,7 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
             Cursor cursor = db.rawQuery("SELECT * FROM account WHERE objid = ?", args);
             if(cursor.moveToFirst()){
                 do{
-                    account = new Account(cursor.getString(0),cursor.getString(1),cursor.getString(2),cursor.getString(3),cursor.getString(4),cursor.getString(5),cursor.getString(6),cursor.getString(7),cursor.getString(8),cursor.getString(9),cursor.getString(10),cursor.getString(11),cursor.getString(12),cursor.getString(13),cursor.getString(14),cursor.getString(15),cursor.getString(16),cursor.getString(17),cursor.getString(18),cursor.getString(19),cursor.getString(20),cursor.getString(21),cursor.getString(22),cursor.getString(23),cursor.getString(24),cursor.getString(25),cursor.getString(26),cursor.getString(27));
+                    account = new Account(cursor.getString(0),cursor.getString(1),cursor.getString(2),cursor.getString(3),cursor.getString(4),cursor.getString(5),cursor.getString(6),cursor.getString(7),cursor.getString(8),cursor.getString(9),cursor.getString(10),cursor.getString(11),cursor.getString(12),cursor.getString(13),cursor.getString(14),cursor.getString(15),cursor.getString(16),cursor.getString(17),cursor.getString(18),cursor.getString(19),Integer.parseInt(cursor.getString(20)));
                 }while(cursor.moveToNext());
             }
         }catch(Exception e){
@@ -399,65 +369,7 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
             Cursor cursor = db.rawQuery("SELECT * FROM account WHERE (acctname LIKE ? OR acctno LIKE ? OR serialno LIKE ?) AND assignee_objid = ?", args);
             if(cursor.moveToFirst()){
                 do{
-                    String objid = cursor.getString(0);
-                    String acctno = cursor.getString(1);
-                    String acctname = cursor.getString(2);
-                    String address = cursor.getString(3);
-                    String mobileno = cursor.getString(4);
-                    String phoneno = cursor.getString(5);
-                    String email = cursor.getString(6);
-                    String serialno = cursor.getString(7);
-                    String areaid = cursor.getString(8);
-                    String lastreading = cursor.getString(9);
-                    String lasttxndate = cursor.getString(10);
-                    String areaname = cursor.getString(11);
-                    String classificationid = cursor.getString(12);
-                    String lastreadingyear = cursor.getString(13);
-                    String lastreadingmonth = cursor.getString(14);
-                    String lastreadingdate = cursor.getString(15);
-                    String barcode = cursor.getString(16);
-                    String batchid = cursor.getString(17);
-                    String month = cursor.getString(18);
-                    String year = cursor.getString(19);
-                    String period = cursor.getString(20);
-                    String duedate = cursor.getString(21);
-                    String discodate = cursor.getString(22);
-                    String rundate = cursor.getString(23);
-                    String items = cursor.getString(24);
-                    String info = cursor.getString(25);
-                    String latitude = cursor.getString(26);
-                    String longitude = cursor.getString(27);
-
-                    Account acct = new Account(
-                        objid,
-                        acctno,
-                        acctname,
-                        address,
-                        mobileno,
-                        phoneno,
-                        email,
-                        serialno,
-                        areaid,
-                        lastreading,
-                        lasttxndate,
-                        areaname,
-                        classificationid,
-                        lastreadingyear,
-                        lastreadingmonth,
-                        lastreadingdate,
-                        barcode,
-                        batchid,
-                        month,
-                        year,
-                        period,
-                        duedate,
-                        discodate,
-                        rundate,
-                        items,
-                        info,
-                        latitude,
-                        longitude
-                    );
+                    Account acct = new Account(cursor.getString(0),cursor.getString(1),cursor.getString(2),cursor.getString(3),cursor.getString(4),cursor.getString(5),cursor.getString(6),cursor.getString(7),cursor.getString(8),cursor.getString(9),cursor.getString(10),cursor.getString(11),cursor.getString(12),cursor.getString(13),cursor.getString(14),cursor.getString(15),cursor.getString(16),cursor.getString(17),cursor.getString(18),cursor.getString(19),Integer.parseInt(cursor.getString(20)));
                     list.add(acct);
                 }while(cursor.moveToNext());
             }
@@ -482,65 +394,7 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
             Cursor cursor = db.rawQuery("SELECT * FROM account WHERE serialno = ? AND assignee_objid = ?", args);
             if(cursor.moveToFirst()){
                 do{
-                    String objid = cursor.getString(0);
-                    String acctno = cursor.getString(1);
-                    String acctname = cursor.getString(2);
-                    String address = cursor.getString(3);
-                    String mobileno = cursor.getString(4);
-                    String phoneno = cursor.getString(5);
-                    String email = cursor.getString(6);
-                    String serialno = cursor.getString(7);
-                    String areaid = cursor.getString(8);
-                    String lastreading = cursor.getString(9);
-                    String lasttxndate = cursor.getString(10);
-                    String areaname = cursor.getString(11);
-                    String classificationid = cursor.getString(12);
-                    String lastreadingyear = cursor.getString(13);
-                    String lastreadingmonth = cursor.getString(14);
-                    String lastreadingdate = cursor.getString(15);
-                    String barcode = cursor.getString(16);
-                    String batchid = cursor.getString(17);
-                    String month = cursor.getString(18);
-                    String year = cursor.getString(19);
-                    String period = cursor.getString(20);
-                    String duedate = cursor.getString(21);
-                    String discodate = cursor.getString(22);
-                    String rundate = cursor.getString(23);
-                    String items = cursor.getString(24);
-                    String info = cursor.getString(25);
-                    String latitude = cursor.getString(26);
-                    String longitude = cursor.getString(27);
-
-                    Account acct = new Account(
-                        objid,
-                        acctno,
-                        acctname,
-                        address,
-                        mobileno,
-                        phoneno,
-                        email,
-                        serialno,
-                        areaid,
-                        lastreading,
-                        lasttxndate,
-                        areaname,
-                        classificationid,
-                        lastreadingyear,
-                        lastreadingmonth,
-                        lastreadingdate,
-                        barcode,
-                        batchid,
-                        month,
-                        year,
-                        period,
-                        duedate,
-                        discodate,
-                        rundate,
-                        items,
-                        info,
-                        latitude,
-                        longitude
-                    );
+                    Account acct = new Account(cursor.getString(0),cursor.getString(1),cursor.getString(2),cursor.getString(3),cursor.getString(4),cursor.getString(5),cursor.getString(6),cursor.getString(7),cursor.getString(8),cursor.getString(9),cursor.getString(10),cursor.getString(11),cursor.getString(12),cursor.getString(13),cursor.getString(14),cursor.getString(15),cursor.getString(16),cursor.getString(17),cursor.getString(18),cursor.getString(19),Integer.parseInt(cursor.getString(20)));
                     result.add(acct);
                 }while(cursor.moveToNext());
             }
@@ -753,24 +607,6 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
     }
     
     @Override
-    public boolean downloadableArea(String areaid){
-        boolean b = true;
-        SQLiteDatabase db = null;
-        try{
-            String[] args = new String[]{areaid};
-            db = this.getWritableDatabase();
-            Cursor cursor = db.rawQuery("SELECT * FROM account a INNER JOIN reading r ON a.objid = r.acctid WHERE a.areaid = ? ",args);
-            if(cursor.getCount() > 0) b = false;
-        }catch(Exception e){
-            e.printStackTrace();
-            ERROR = "Database Error: " + e.toString();
-        }finally{
-            try{ db.close(); }catch(Exception e){}
-        }
-        return b;
-    }
-    
-    @Override
     public void createRule(Rule rule) {
         ERROR = "";
         ContentValues values = new ContentValues();
@@ -850,18 +686,19 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
     }
 
     @Override
-    public void createArea(Area r) {
+    public void createSector(Sector s) {
         ERROR = "";
+        String userid = SystemPlatformFactory.getPlatform().getSystem().getUserID();
+        
         ContentValues values = new ContentValues();
-        values.put("objid", r.getObjid());
-        values.put("title", r.getTitle());
-        values.put("sectorid", r.getSectorId());
-        values.put("assigneeid", r.getAssigneeId());
+        values.put("objid", s.getObjid());
+        values.put("code", s.getCode());
+        values.put("assigneeid", userid);
         
         SQLiteDatabase db = null;
         try{
             db = this.getWritableDatabase();
-            db.insert("area", null, values);
+            db.insert("sector", null, values);
         }catch(Exception e){
             e.printStackTrace();
             ERROR = "Database Error: " + e.toString();
@@ -871,14 +708,53 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
     }
     
     @Override
-    public void clearArea() {
+    public void clearSector() {
         ERROR = "";
         SQLiteDatabase db = null;
         try{
             String userid = SystemPlatformFactory.getPlatform().getSystem().getUserID();
             String[] args = new String[]{userid};
             db = this.getWritableDatabase();
-            db.execSQL("DELETE FROM area where assigneeid = ?",args);
+            db.execSQL("DELETE FROM sector WHERE assigneeid = ?",args);
+        }catch(Exception e){
+            e.printStackTrace();
+            ERROR = "Database Error: " + e.toString();
+        }finally{
+            try{ db.close(); }catch(Exception e){}
+        }
+    }
+    
+    @Override
+    public void createSectorReader(SectorReader s) {
+        ERROR = "";
+        ContentValues values = new ContentValues();
+        values.put("objid", s.getObjid());
+        values.put("sectorid", s.getSectorId());
+        values.put("title", s.getTitle());
+        values.put("assigneeid", s.getAssigneeId());
+        values.put("assigneename", s.getAssigneeName());
+        
+        SQLiteDatabase db = null;
+        try{
+            db = this.getWritableDatabase();
+            db.insert("sectorreader", null, values);
+        }catch(Exception e){
+            e.printStackTrace();
+            ERROR = "Database Error: " + e.toString();
+        }finally{
+            try{ db.close(); }catch(Exception e){}
+        }
+    }
+    
+    @Override
+    public void clearSectorReader() {
+        ERROR = "";
+        SQLiteDatabase db = null;
+        try{
+            String userid = SystemPlatformFactory.getPlatform().getSystem().getUserID();
+            String[] args = new String[]{userid};
+            db = this.getWritableDatabase();
+            db.execSQL("DELETE FROM sectorreader WHERE assigneeid = ?",args);
         }catch(Exception e){
             e.printStackTrace();
             ERROR = "Database Error: " + e.toString();
@@ -890,19 +766,16 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
     @Override
     public void createStubout(Stubout s) {
         ERROR = "";
+        String userid = SystemPlatformFactory.getPlatform().getSystem().getUserID();
+        
         ContentValues values = new ContentValues();
         values.put("objid", s.getObjid());
         values.put("code", s.getCode());
         values.put("description", s.getDescription());
         values.put("zoneid", s.getZoneId());
-        values.put("zonecode", s.getZoneCode());
-        values.put("zonedesc", s.getZoneDesc());
-        values.put("sectorid", s.getSectorId());
-        values.put("sectorcode", s.getSectorCode());
-        values.put("areaid", s.getAreaId());
-        values.put("areatitle", s.getAreaTitle());
-        values.put("assigneeid", s.getAssigneeId());
-        values.put("assigneename", s.getAssigneeName());
+        values.put("barangayid", s.getBarangayId());
+        values.put("barangayname", s.getBarangayName());
+        values.put("assigneeid", userid);
         
         SQLiteDatabase db = null;
         try{
@@ -924,7 +797,7 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
             String userid = SystemPlatformFactory.getPlatform().getSystem().getUserID();
             String[] args = new String[]{userid};
             db = this.getWritableDatabase();
-            db.execSQL("DELETE FROM stubout WHERE areaid IN (SELECT objid FROM area WHERE assigneeid = ?)",args);
+            db.execSQL("DELETE FROM stubout WHERE assigneeid = ?",args);
         }catch(Exception e){
             e.printStackTrace();
             ERROR = "Database Error: " + e.toString();
@@ -946,7 +819,7 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
             Cursor cursor = db.rawQuery("SELECT * FROM stubout WHERE code LIKE ?  AND zoneid = ?", args);
             if(cursor.moveToFirst()){
                 do{   
-                    Stubout stubout = new Stubout(cursor.getString(0),cursor.getString(1),cursor.getString(2),cursor.getString(3),cursor.getString(4),cursor.getString(5),cursor.getString(6),cursor.getString(7),cursor.getString(8),cursor.getString(9),cursor.getString(10),cursor.getString(11));
+                    Stubout stubout = new Stubout(cursor.getString(0),cursor.getString(1),cursor.getString(2),cursor.getString(3),cursor.getString(4),cursor.getString(5),cursor.getString(6));
                     list.add(stubout);
                 }while(cursor.moveToNext());
             }
@@ -972,65 +845,7 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
             Cursor cursor = db.rawQuery("SELECT * FROM account WHERE (acctname LIKE ? OR acctno LIKE ? OR serialno LIKE ?) AND stuboutid = ? ORDER BY sortorder", args);
             if(cursor.moveToFirst()){
                 do{
-                    String objid = cursor.getString(0);
-                    String acctno = cursor.getString(1);
-                    String acctname = cursor.getString(2);
-                    String address = cursor.getString(3);
-                    String mobileno = cursor.getString(4);
-                    String phoneno = cursor.getString(5);
-                    String email = cursor.getString(6);
-                    String serialno = cursor.getString(7);
-                    String areaid = cursor.getString(8);
-                    String lastreading = cursor.getString(9);
-                    String lasttxndate = cursor.getString(10);
-                    String areaname = cursor.getString(11);
-                    String classificationid = cursor.getString(12);
-                    String lastreadingyear = cursor.getString(13);
-                    String lastreadingmonth = cursor.getString(14);
-                    String lastreadingdate = cursor.getString(15);
-                    String barcode = cursor.getString(16);
-                    String batchid = cursor.getString(17);
-                    String month = cursor.getString(19);
-                    String year = cursor.getString(19);
-                    String period = cursor.getString(20);
-                    String duedate = cursor.getString(21);
-                    String discodate = cursor.getString(22);
-                    String rundate = cursor.getString(23);
-                    String items = cursor.getString(24);
-                    String info = cursor.getString(25);
-                    String latitude = cursor.getString(26);
-                    String longitude = cursor.getString(27);
-
-                    Account acct = new Account(
-                        objid,
-                        acctno,
-                        acctname,
-                        address,
-                        mobileno,
-                        phoneno,
-                        email,
-                        serialno,
-                        areaid,
-                        lastreading,
-                        lasttxndate,
-                        areaname,
-                        classificationid,
-                        lastreadingyear,
-                        lastreadingmonth,
-                        lastreadingdate,
-                        barcode,
-                        batchid,
-                        month,
-                        year,
-                        period,
-                        duedate,
-                        discodate,
-                        rundate,
-                        items,
-                        info,
-                        latitude,
-                        longitude
-                    );
+                    Account acct = new Account(cursor.getString(0),cursor.getString(1),cursor.getString(2),cursor.getString(3),cursor.getString(4),cursor.getString(5),cursor.getString(6),cursor.getString(7),cursor.getString(8),cursor.getString(9),cursor.getString(10),cursor.getString(11),cursor.getString(12),cursor.getString(13),cursor.getString(14),cursor.getString(15),cursor.getString(16),cursor.getString(17),cursor.getString(18),cursor.getString(19),Integer.parseInt(cursor.getString(20)));
                     list.add(acct);
                 }while(cursor.moveToNext());
             }
@@ -1046,11 +861,15 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
     @Override
     public void createZone(Zone z) {
         ERROR = "";
+        String userid = SystemPlatformFactory.getPlatform().getSystem().getUserID();
+        
         ContentValues values = new ContentValues();
         values.put("objid", z.getObjid());
+        values.put("sectorid", z.getSectorId());
         values.put("code", z.getCode());
-        values.put("description", z.getDesc());
-        values.put("sector", z.getSector());
+        values.put("description", z.getDescription());
+        values.put("readerid", z.getReaderId());
+        values.put("assigneeid", userid);
         
         SQLiteDatabase db = null;
         try{
@@ -1072,7 +891,7 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
             String userid = SystemPlatformFactory.getPlatform().getSystem().getUserID();
             String[] args = new String[]{userid};
             db = this.getWritableDatabase();
-            db.execSQL("DELETE FROM zone WHERE objid IN (SELECT zoneid FROM stubout WHERE assigneeid = ?)",args);
+            db.execSQL("DELETE FROM zone WHERE assigneeid = ?",args);
         }catch(Exception e){
             e.printStackTrace();
             ERROR = "Database Error: " + e.toString();
@@ -1091,10 +910,10 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
         SQLiteDatabase db = null;
         try{
             db = this.getWritableDatabase();
-            Cursor cursor = db.rawQuery("SELECT * FROM zone WHERE code LIKE ?  AND objid IN (SELECT zoneid FROM stubout WHERE assigneeid = ?)", args);
+            Cursor cursor = db.rawQuery("SELECT * FROM zone WHERE code LIKE ?  AND readerid IN (SELECT objid FROM sectorreader WHERE assigneeid = ?)", args);
             if(cursor.moveToFirst()){
                 do{   
-                    Zone zone = new Zone(cursor.getString(0),cursor.getString(1),cursor.getString(2),cursor.getString(3));
+                    Zone zone = new Zone(cursor.getString(0),cursor.getString(1),cursor.getString(2),cursor.getString(3),cursor.getString(4),cursor.getString(5));
                     list.add(zone);
                 }while(cursor.moveToNext());
             }

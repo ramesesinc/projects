@@ -133,7 +133,6 @@ public class AccountDetail {
         root.getChildren().add(createDetail("Account No",account.getAcctNo()));
         root.getChildren().add(createDetail("Name",account.getAcctName()));
         root.getChildren().add(createDetail("Address",account.getAddress()));
-        root.getChildren().add(createDetail("Mobile No",account.getMobileNo()));
         root.getChildren().add(createDetail("Serial No",account.getSerialNo()));
         root.getChildren().add(createDetail("Classification",account.getClassificationId()));
         List<ItemAccount> items = account.getItemList();

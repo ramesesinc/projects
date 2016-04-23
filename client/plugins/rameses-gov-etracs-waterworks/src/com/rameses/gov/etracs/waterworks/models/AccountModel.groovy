@@ -6,8 +6,7 @@ import com.rameses.osiris2.client.*;
 import com.rameses.osiris2.common.*;
 import com.rameses.seti2.models.*;
 
-public class AccountModel extends CrudFormModel {
-    
+public class AccountModel extends MdiFormModel {
     
     def changeAddress(){ 
         def map = [ acctname: entity.acctname, address: entity.address ]; 

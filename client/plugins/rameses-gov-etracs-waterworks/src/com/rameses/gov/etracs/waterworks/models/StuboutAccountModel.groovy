@@ -10,6 +10,9 @@ public class StuboutSectionAccountModel {
     @Service('WaterworksStuboutService')
     def svc; 
     
+    @Service("QueryService")
+    def queryService;
+    
     @Caller 
     def caller;
 
@@ -22,45 +25,31 @@ public class StuboutSectionAccountModel {
         return caller?.entity; 
     } 
     
-    void init() {         
+    void init() {      
+        accounts = null;
+        listHandler.reload();
     }
 
     def listHandler = [
         fetchList: { o-> 
             if ( !accounts ) { 
-                accounts = svc.getAccounts([ stuboutid: entity.objid ]);
+                def m = [_schemaname:'waterworks_account'];
+                m.findBy = [stuboutid: entity.objid];
+                m.orderBy = "stuboutindex";
+                accounts = queryService.getList(m);
             } 
             return accounts; 
         }        
     ] as BasicListModel;
     
-    def addAccount() {
-        def h = { o-> 
-            def m = [ stuboutid: entity.objid, accountid: o.objid ];
-            svc.addAccount( m ); 
-            accounts.clear(); 
-            listHandler.reload(); 
-        }
-        return Inv.lookupOpener("waterworks_account_notin_stubout:lookup", [ onselect: h])
-    }
-    
-    void removeAccount() { 
-        if ( !selectedItem ) return;
-        
-        svc.removeAccount([ stuboutid: entity.objid, accountid: selectedItem.objid ]); 
-        accounts.clear();
-        listHandler.reload(); 
-    }
-    
-    
     void moveUp() { 
         if ( !selectedItem ) return; 
-        
         svc.moveUp([ stuboutid: entity.objid, accountid: selectedItem.objid ]);
         accounts.clear(); 
         listHandler.reload(); 
         updateSelection( listHandler.selectedItem.index-1 ); 
     }
+    
     void moveDown() { 
         if ( !selectedItem ) return; 
         
@@ -88,9 +77,11 @@ public class StuboutSectionAccountModel {
             updateSelection( sortorder-1 ); 
         }
     }
+    
     void updateSelection( int index ) {
         if ( index >= 0 && index < accounts.size()) {
             listHandler.setSelectedItem( index );  
         } 
     }
+    
 }

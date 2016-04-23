@@ -64,6 +64,8 @@ public class AccountPage extends javax.swing.JPanel {
         xLabel4 = new com.rameses.rcp.control.XLabel();
         xButton2 = new com.rameses.rcp.control.XButton();
 
+        xTabbedPane1.setHandler("sections");
+
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder1.setTitle("Account Information");
         xPanel1.setBorder(xTitledBorder1);

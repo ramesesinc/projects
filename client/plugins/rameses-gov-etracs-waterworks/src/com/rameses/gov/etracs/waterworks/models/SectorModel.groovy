@@ -9,5 +9,15 @@ import com.rameses.seti2.models.*;
 
 public class SectorModel extends CrudFormModel {
     
+    def getLookupSectorReaders() {
+        if( !itemHandlers.zones.selectedItem )
+            throw new Exception("Please select a zone first");
+        def h = { o->
+            itemHandlers.zones.selectedItem.item.reader = o;
+            itemHandlers.zones.refresh();
+        }
+        Inv.lookupOpener("waterworks_sector_reader:lookup", [sectorid: entity.objid, onselect:h]);
+    }
+    
     
 }

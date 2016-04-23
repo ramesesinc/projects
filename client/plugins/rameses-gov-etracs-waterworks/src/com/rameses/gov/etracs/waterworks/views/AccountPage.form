@@ -30,6 +30,9 @@
   </Layout>
   <SubComponents>
     <Container class="com.rameses.rcp.control.XTabbedPane" name="xTabbedPane1">
+      <Properties>
+        <Property name="handler" type="java.lang.String" value="sections"/>
+      </Properties>
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout"/>
       <SubComponents>

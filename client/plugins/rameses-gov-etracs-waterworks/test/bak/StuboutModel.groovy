@@ -7,8 +7,12 @@ import com.rameses.osiris2.common.*;
 import com.rameses.rcp.annotations.*;
 import com.rameses.seti2.models.*;
 
-public class WaterworksStubout extends CrudFormModel {
+public class StuboutModel extends CrudFormModel {
     
+    def sections = Inv.lookupOpener( "waterworks_stubout:sections" );
+    
+    
+    /*
     def itemstat;
     
     public boolean beforeColumnUpdate(String name, def item, String colName, def newValue) {
@@ -56,7 +60,7 @@ public class WaterworksStubout extends CrudFormModel {
         itemHandlers.accounts.refresh(); 
         itemHandlers.accounts.setSelectedItem(idx0+1);
     }
-    
+    */
     
     
 }

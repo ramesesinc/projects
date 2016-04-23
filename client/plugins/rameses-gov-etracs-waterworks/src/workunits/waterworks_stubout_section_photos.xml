@@ -1,6 +1,8 @@
 <workunit schemaName="waterworks_stubout">
     <invokers>
-        <invoker type="waterworks_stubout:section" caption="Photos" index="-10"/>
+        <invoker type="waterworks_stubout:section" caption="Photos" index="-10"
+            visibleWhen="#{mode=='read'}"
+            />
     </invokers>
     <code class="com.rameses.seti2.models.MdiChildModel"/>
     <pages>

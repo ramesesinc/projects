@@ -1,6 +1,19 @@
 <workunit extends="com/rameses/seti2/templates/CrudLookup.xml"
-          schemaName="waterworks_area">
+          schemaName="waterworks_sector_reader"
+           cols="objid,name,assignee.name">
     <invokers>
         <invoker type="waterworks_sector_reader:lookup" caption="Lookup Sector Reader" action="init"/>  
     </invokers>
+    
+    <code>
+        class WaterworksReaderLookup extends com.rameses.seti2.models.CrudLookupModel {
+    
+            def sectorid;
+        
+            public def beforeQuery( def m ) {
+                m.sectorid = sectorid;
+            }
+        
+        }
+    </code>
 </workunit>

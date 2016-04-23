@@ -44,6 +44,7 @@ public class StuboutPage extends javax.swing.JPanel {
         xLookupField6 = new com.rameses.rcp.control.XLookupField();
 
         xTabbedPane1.setDynamic(true);
+        xTabbedPane1.setHandler("sections");
 
         xFormPanel1.setCaptionWidth(100);
 

@@ -6,6 +6,7 @@ package com.rameses.gov.etracs.waterworks.views;
 
 import com.rameses.osiris2.themes.FormPage;
 import com.rameses.rcp.ui.annotations.Template;
+import java.awt.Color;
 
 /**
  *
@@ -19,6 +20,7 @@ public class WaterworksApplicationSuccessPage extends javax.swing.JPanel {
      */
     public WaterworksApplicationSuccessPage() {
         initComponents();
+        xTextField1.setBackground(Color.WHITE);
     }
 
     /**
@@ -30,14 +32,19 @@ public class WaterworksApplicationSuccessPage extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        xLabel1 = new com.rameses.rcp.control.XLabel();
         xTextField1 = new com.rameses.rcp.control.XTextField();
-        jLabel1 = new javax.swing.JLabel();
+        xTextField1.setAlignmentX(CENTER_ALIGNMENT);
 
-        xTextField1.setEditable(false);
-        xTextField1.setFontStyle("font-size:24;");
+        xLabel1.setVerticalAlignment(javax.swing.SwingConstants.TOP);
+        xLabel1.setExpression("<html>Application successfully submitted. Please use the ff. application no. for tracking purposes. <br><br> <b>For online applications, please print the application form</b> </html>");
+        xLabel1.setFont(new java.awt.Font("Dialog", 1, 15)); // NOI18N
+        xLabel1.setFontStyle("font-size:15;font-weight:bold;");
+        xLabel1.setForeground(new java.awt.Color(50, 50, 50));
+
+        xTextField1.setFont(new java.awt.Font("Dialog", 0, 30)); // NOI18N
         xTextField1.setName("entity.appno"); // NOI18N
-
-        jLabel1.setText("Application Tracking No.");
+        xTextField1.setReadonly(true);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -45,23 +52,23 @@ public class WaterworksApplicationSuccessPage extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 375, Short.MAX_VALUE)
-                    .addComponent(xTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(179, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(xLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 697, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(xTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 401, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(xTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(336, Short.MAX_VALUE))
+                .addGap(12, 12, 12)
+                .addComponent(xLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(xTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(230, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel1;
+    private com.rameses.rcp.control.XLabel xLabel1;
     private com.rameses.rcp.control.XTextField xTextField1;
     // End of variables declaration//GEN-END:variables
 }

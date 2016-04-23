@@ -55,9 +55,7 @@ public class ApplicationPage extends javax.swing.JPanel {
         xTabbedPane1.setDynamic(true);
         xTabbedPane1.setHandler("tabList");
 
-        com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
-        xTitledBorder1.setTitle("Application Info");
-        xFormPanel3.setBorder(xTitledBorder1);
+        xFormPanel3.setPadding(new java.awt.Insets(10, 15, 10, 15));
 
         xLabel7.setCaption("App No");
         xLabel7.setExpression("#{entity.appno}");
@@ -91,9 +89,9 @@ public class ApplicationPage extends javax.swing.JPanel {
         xLabel12.setPreferredSize(new java.awt.Dimension(0, 16));
         xFormPanel3.add(xLabel12);
 
-        com.rameses.rcp.control.border.XTitledBorder xTitledBorder2 = new com.rameses.rcp.control.border.XTitledBorder();
-        xTitledBorder2.setTitle("Stubout Info");
-        xFormPanel1.setBorder(xTitledBorder2);
+        com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
+        xTitledBorder1.setTitle("Stubout Info");
+        xFormPanel1.setBorder(xTitledBorder1);
         xFormPanel1.setCaptionWidth(100);
 
         xLabel2.setCaption("Stubout");
@@ -116,9 +114,9 @@ public class ApplicationPage extends javax.swing.JPanel {
         xLabel4.setPreferredSize(new java.awt.Dimension(0, 16));
         xFormPanel1.add(xLabel4);
 
-        com.rameses.rcp.control.border.XTitledBorder xTitledBorder3 = new com.rameses.rcp.control.border.XTitledBorder();
-        xTitledBorder3.setTitle("Meter Info");
-        xFormPanel4.setBorder(xTitledBorder3);
+        com.rameses.rcp.control.border.XTitledBorder xTitledBorder2 = new com.rameses.rcp.control.border.XTitledBorder();
+        xTitledBorder2.setTitle("Meter Info");
+        xFormPanel4.setBorder(xTitledBorder2);
         xFormPanel4.setCaptionWidth(100);
 
         xLabel16.setCaption("Serial No");
@@ -157,7 +155,7 @@ public class ApplicationPage extends javax.swing.JPanel {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 394, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(xFormPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, 447, Short.MAX_VALUE)))
+                        .addComponent(xFormPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, 276, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -183,7 +181,7 @@ public class ApplicationPage extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 876, Short.MAX_VALUE)
+                .addComponent(xTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 705, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(

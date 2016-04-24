@@ -21,12 +21,24 @@ class FAASChangeInfoInterceptor
 	@Service('RPTRequirementService')
 	def reqSvc
 
+	@DataContext('faas_list')
+	def faaslistDb
+
+
 	
 	@After(pattern="FAASChangeInfoService.updateInfo", eval="#{result.action=='change_property_info'}")
 	public void updatePropertyInfo(evt){
 		def changeinfo = evt.result
 		em.updatePropertyInfo(changeinfo.newinfo);
 		em.updateLedgerPropertyInfo(changeinfo.newinfo);
+
+		//update faas_list info 
+		def flinfo = [:]
+		flinfo.objid = changeinfo.faasid
+		flinfo.blockno = changeinfo.newinfo.blockno
+		flinfo.surveyno = changeinfo.newinfo.surveyno
+		flinfo.cadastrallotno = changeinfo.newinfo.cadastrallotno
+		faaslistDb.update(flinfo)
 	}
 	
 	
@@ -42,6 +54,18 @@ class FAASChangeInfoInterceptor
 			changeinfo.newinfo.classificationid = changeinfo.newinfo.classification.objid 
 			em.updateRpuInfo(changeinfo.newinfo);
 		}
+
+		//update faas_list info 
+		def flinfo = [:]
+		flinfo.objid = changeinfo.faasid
+		flinfo.tdno = changeinfo.newinfo.tdno
+		flinfo.utdno = changeinfo.newinfo.utdno
+		flinfo.titleno = changeinfo.newinfo.titleno
+		flinfo.effectivityyear = changeinfo.newinfo.effectivityyear
+		flinfo.effectivityqtr = changeinfo.newinfo.effectivityqtr
+		flinfo.classification = changeinfo.newinfo.classification
+		flinfo.classcode = changeinfo.newinfo.classification.code
+		faaslistDb.update(flinfo)
 	}
 
 
@@ -70,18 +94,44 @@ class FAASChangeInfoInterceptor
 		]
 		em.updateFaasOwnerInfo(info)
 		em.updateLedgerOwnerInfo(info)
+
+		//update faas_list info 
+		def flinfo = [:]
+		flinfo.objid = changeinfo.faasid
+		flinfo.taxpayer = changeinfo.newinfo.taxpayer
+		flinfo.owner = changeinfo.newinfo.owner
+		flinfo.administrator = changeinfo.newinfo.administrator
+		faaslistDb.update(flinfo)
 	}
 
 	@After(pattern="FAASChangeInfoService.updateInfo", eval="#{result.action=='change_previous_info'}")
 	public void updatePreviousInfo(evt){
 		def changeinfo = evt.result
 		em.updateFaasPreviousInfo(changeinfo.newinfo);
+
+		//update faas_list info 
+		def flinfo = [:]
+		flinfo.objid = changeinfo.faasid
+		flinfo.prevtdno = changeinfo.newinfo.prevtdno
+		faaslistDb.update(flinfo)
 	}	
 
 	@After(pattern="FAASChangeInfoService.updateInfo", eval="#{result.action=='change_faas_appraisal'}")
 	public void updateAppraisalInfo(evt){
 		def changeinfo = evt.result
 		rpuSvc.updateRpu(changeinfo.newinfo);
+
+		//update faas_list info 
+		def flinfo = [:]
+		flinfo.objid = changeinfo.faasid
+		flinfo.totalmv = changeinfo.newinfo.totalmv
+		flinfo.totalav = changeinfo.newinfo.totalav
+		flinfo.totalareaha = changeinfo.newinfo.totalareaha
+		flinfo.totalareaha = changeinfo.newinfo.totalareaha
+		flinfo.totalareasqm = changeinfo.newinfo.totalareasqm
+		flinfo.classification = changeinfo.newinfo.classification
+		flinfo.classcode = changeinfo.newinfo.classification.code
+		faaslistDb.update(flinfo)
 	}	
 
 	@After(pattern="FAASChangeInfoService.updateInfo", eval="#{result.action=='change_faas_sketch'}")

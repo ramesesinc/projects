@@ -19,3 +19,44 @@ INSERT INTO `sys_wf_transition` (`parentid`, `processname`, `action`, `to`, `idx
 INSERT INTO `sys_wf_transition` (`parentid`, `processname`, `action`, `to`, `idx`, `eval`, `properties`, `permission`) VALUES ('approver', 'cancelledfaas', 'approve', 'end', '110', NULL, '[caption:\'Manually Approve\',confirm:\'Manually approve cancellation?\', visible:false]', NULL);
 
 
+update faas_list fl, faas f, rpu r, propertyclassification pc, realproperty rp, barangay b set 
+	fl.state = f.state,
+	fl.tdno = f.tdno,
+	fl.utdno = f.utdno, 
+	fl.prevtdno = f.prevtdno, 
+	fl.displaypin = f.fullpin, 
+	fl.pin = case when r.suffix = 0 then rp.pin else concat(rp.pin, '-', r.suffix) end, 
+	fl.taxpayer_objid = f.taxpayer_objid,
+	fl.owner_name = f.owner_name,
+	fl.owner_address = f.taxpayer_objid,
+	fl.administrator_name = f.administrator_name,
+	fl.administrator_address = f.administrator_address,
+	fl.barangayid = b.objid, 
+	fl.barangay = b.name, 
+	fl.classification_objid = r.classification_objid,
+	fl.classcode = pc.code, 
+	fl.cadastrallotno = rp.cadastrallotno, 
+	fl.blockno = rp.blockno,
+	fl.surveyno = rp.surveyno,
+	fl.titleno = f.titleno,
+	fl.totalareaha = r.totalareaha,
+	fl.totalareasqm = r.totalareasqm,
+	fl.totalmv = r.totalmv,
+	fl.totalav = r.totalav,
+	fl.effectivityyear = f.effectivityyear,
+	fl.effectivityqtr = f.effectivityqtr,
+	fl.cancelreason = f.cancelreason,
+	fl.cancelledbytdnos = f.cancelledbytdnos,
+	fl.taskid = (select objid from faas_task where refid = f.objid and enddate is null limit 1) ,
+	fl.taskstate = (select state from faas_task where refid = f.objid and enddate is null limit 1) ,
+	fl.assignee_objid = (select assignee_objid from faas_task where refid = f.objid and enddate is null limit 1) ,
+	fl.trackingno = (select trackingno from rpttracking where objid = f.objid) 
+where fl.objid = f.objid 
+and f.rpuid = r.objid 
+and f.realpropertyid = rp.objid 
+and rp.barangayid = b.objid 
+and r.classification_objid = pc.objid;
+
+
+
+

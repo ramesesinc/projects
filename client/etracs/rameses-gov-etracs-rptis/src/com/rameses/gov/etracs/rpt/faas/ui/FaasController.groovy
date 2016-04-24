@@ -56,9 +56,14 @@ public class FaasController
         }
         else{
             if (entity.state == 'CANCELLED'){
-                t += '  Cancelled By TD No. ' + entity.cancelledbytdnos 
+                if (entity.cancelledbytdnos.indexOf('Cancellation') < 0){
+                    t += '  Cancelled By TD No. ' + entity.cancelledbytdnos 
+                }
+                else{
+                    t += 'Cancelled By ' + entity.cancelledbytdnos 
+                }
                 t += '  Reason: ' + entity.cancelreason 
-                t += '  Date: ' + entity.canceldate 
+                t += '  Date: ' + formatDate(entity.canceldate); 
             }
         }
         return t;
@@ -299,15 +304,15 @@ public class FaasController
     def getFaasType(){
         def t = '';
         if (entity.rpu.rputype == 'land')
-            t += 'FAAS Land ';
+            t += 'Land FAAS ';
         else if (entity.rpu.rputype == 'bldg')
-            t += 'FAAS Building ';
+            t += 'Building FAAS ';
         else if (entity.rpu.rputype == 'mach')
-            t += 'FAAS Machine ';
+            t += 'Machine FAAS ';
         else if (entity.rpu.rputype == 'planttree')
-            t += 'FAAS Plant/Tree ';
+            t += 'Plant/Tree FAAS ';
         else
-            t += 'FAAS Miscellaneous ';
+            t += 'Miscellaneous FAAS ';
         return t;
     }
      
@@ -348,5 +353,20 @@ public class FaasController
             return [queryinfo];
         return null;
     }
+    
+    
+    def formatDate(dt){
+        if (dt == null) return '';
+        if (!(dt instanceof Date)){
+            try{
+                dt = java.sql.Date.valueOf(dt.toString())
+            }
+            catch(e){
+                return '';
+            }
+        }
+        return new java.text.SimpleDateFormat('yyyy-MM-dd').format(dt);
+    }
+
          
 }

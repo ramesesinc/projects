@@ -1,9 +1,11 @@
-<schema>
+<schema adapter="main">
 	<element tablename="faas_list">
 		<field name="objid" primary="true"/>
 		<field name="state" />
 		<field name="pin" />
 		<field name="displaypin" />
+		<field name="cancelreason" />
+		<field name="cancelledbytdnos" />
 	</element>
 </schema>
 

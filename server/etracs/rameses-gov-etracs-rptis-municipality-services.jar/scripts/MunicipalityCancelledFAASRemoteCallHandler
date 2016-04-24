@@ -24,8 +24,13 @@ class MunicipalityCancelledFAASRemoteCallHandler
 
 	public void approveCancelledFaasByProvince(data){
 		def cf = supportSvc.findById(data)
-		if (!cf) throw new Exception('Cancelled FAAS does not exist.')
-		if (cf.state.matches('APPROVED')) 
+		if (!cf) {
+			println '='*50
+			println 'saving caneclledfaas data '
+			data.state = 'DRAFT'
+			supportSvc.saveCancelledFaasData(data)
+		}
+		else if (cf.state.matches('APPROVED')) 
 			return;
 
 		svc.approveFaasCancellationByProvince(data)

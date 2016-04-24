@@ -27,6 +27,9 @@ class CancelledFAASWorkflowInterceptor
 	@Service('RPTRequirementRuleService')
     def ruleSvc
 
+    @Service('RPTUtil')
+    def util
+
 
 	@After(pattern="CancelledFAASService.initCancelledFaas") 
 	public void initWorkflow( evt ) {
@@ -47,6 +50,10 @@ class CancelledFAASWorkflowInterceptor
 	@Before(pattern="CancelledFAASWorkflowService.signal", eval="#{args[0].state == 'receiver' && args[0].action != 'delete'}", index=10) 
 	public void validateReceiveInfo( evt ) {
 		def faas = evt.args[0].data
+		util.required('Reason', faas.reason)
+		util.required('Last Tax Year', faas.lasttaxyear)
+		util.required('Remarks', faas.remarks)
+
 		reqSvc.checkCompliance(faas.objid)
 	}
 

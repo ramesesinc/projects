@@ -4,6 +4,9 @@ select * from faas_task where objid = $P{objid}
 [findFaasById]
 select objid, state from faas where objid = $P{objid}
 
+[findCancelledFaasById]
+select objid, state from cancelledfaas where objid = $P{objid}
+
 [findRpuById]
 select objid from rpu where objid = $P{objid}
 

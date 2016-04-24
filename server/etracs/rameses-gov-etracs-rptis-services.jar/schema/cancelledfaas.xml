@@ -1,7 +1,8 @@
-<schema>
+<schema adapter="main">
 	<element name="cancelledfaas" tablename="cancelledfaas">
 		<field name="objid" primary="true"/>
 		<field name="state" required="true"/>
+		<field name="txnno" />
 		<field name="txndate" required="true" />
 		<field name="faasid" required="true" />
 		<field name="remarks"  />

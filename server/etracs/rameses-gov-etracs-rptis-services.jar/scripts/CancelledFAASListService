@@ -32,54 +32,19 @@ public class CancelledFAASListService extends ActiveCrudListService {
 
     @ProxyMethod
     public def getNodes(o) {
-        if (env.ORGCLASS.equalsIgnoreCase('province')){
-            return [
-               [name:'all', caption:'All Records', leaf:true, folder:true, allowSearch:true],
-               [name:'receiver', caption:'Review and Verification', leaf:true, folder:true, allowSearch:true],
-               [name:'assign-provtaxmapper', caption:'For Taxmapping', leaf:true, folder:true, allowSearch:true],
-               [name:'provtaxmapper', caption:'Taxmapping', leaf:true, folder:true, allowSearch:true],
-               [name:'assign-provtaxmapperchief', caption:'For Taxmapping Chief Approval', leaf:true, folder:true, allowSearch:true],
-                [name:'provtaxmapperchief', caption:'Taxmapping Chief Approval', leaf:true, folder:true, allowSearch:true],
-               [name:'assign-provappraiser', caption:'For Appraisal', leaf:true, folder:true, allowSearch:true],
-               [name:'provappraiser', caption:'Appraisal', leaf:true, folder:true, allowSearch:true],
-               [name:'assign-provappraiserchief', caption:'For Appraisal Chief Approval', leaf:true, folder:true, allowSearch:true],
-               [name:'provappraiserchief', caption:'Appraisal Chief Approval', leaf:true, folder:true, allowSearch:true],
-               [name:'assign-recommender', caption:'For Recommending Approval', leaf:true, folder:true, allowSearch:true],
-                [name:'recommender', caption:'Recommending Approval', leaf:true, folder:true, allowSearch:true],
-               [name:'assign-approver', caption:'For Assessor Approval', leaf:true, folder:true, allowSearch:true],
-               [name:'approver', caption:'Assessor Approval', leaf:true, folder:true, allowSearch:true],
-               [name:'current', caption:'Current', leaf:true, folder:true, allowSearch:true],
-               [name:'cancelled', caption:'Cancelled', leaf:true, folder:true, allowSearch:true],
-               [name:'mytask', caption:'My Tasks', leaf:true, folder:true, allowSearch:true],
-            ];
-        }
-        
-        def nodes = [
-           [name:'all', caption:'All Records', leaf:true, folder:true, allowSearch:true],
-           [name:'receiver', caption:'Review and Verification', leaf:true, folder:true, allowSearch:true],
-           [name:'assign-examiner', caption:'For Examination', leaf:true, folder:true, allowSearch:true],
-           [name:'examiner', caption:'Examination', leaf:true, folder:true, allowSearch:true],
-           [name:'assign-taxmapper', caption:'For Taxmapping', leaf:true, folder:true, allowSearch:true],
-           [name:'taxmapper', caption:'Taxmapping', leaf:true, folder:true, allowSearch:true],
-           [name:'assign-taxmapping-approval', caption:'For Taxmapping Chief Approval', leaf:true, folder:true, allowSearch:true],
-           [name:'taxmapper_chief', caption:'Taxmapping Chief Approval', leaf:true, folder:true, allowSearch:true],
-           [name:'assign-appraiser', caption:'For Appraisal', leaf:true, folder:true, allowSearch:true],
-           [name:'appraiser', caption:'Appraisal', leaf:true, folder:true, allowSearch:true],
-           [name:'assign-appraisal-chief', caption:'For Appraisal Chief Approval', leaf:true, folder:true, allowSearch:true],
-           [name:'appraiser_chief', caption:'Appraisal Chief Approval', leaf:true, folder:true, allowSearch:true],
-           [name:'assign-recommender', caption:'For Recommending Approval', leaf:true, folder:true, allowSearch:true],
-           [name:'recommender', caption:'Recommending Approval', leaf:true, folder:true, allowSearch:true],
-           [name:'assign-approver', caption:'For Assessor Approval', leaf:true, folder:true, allowSearch:true],
-           [name:'approver', caption:'Assessor Approval', leaf:true, folder:true, allowSearch:true],
-           [name:'current', caption:'Current', leaf:true, folder:true, allowSearch:true],
-           [name:'cancelled', caption:'Cancelled', leaf:true, folder:true, allowSearch:true],
-        ]
+        def nodes = []
+        nodes << [name:'mytask', caption:'My Tasks']
+        nodes << [name:'all', caption:'All Records']
+        nodes += em.getNodes();
+        nodes << [name:'approved', caption:'Approved']
+        nodes << [name:'unassigned', caption:'Unassigned Tasks']
 
-        if (env.ORGCLASS.equalsIgnoreCase('municipality')){
-            nodes << [name:'provapprover', caption:'For Province Approval', leaf:true, folder:true, allowSearch:true]
+        nodes.each{
+            it.leaf = true
+            it.folder = true 
+            it.allowSearch = true 
         }
-        nodes << [name:'mytask', caption:'My Tasks', leaf:true, folder:true, allowSearch:true]
-        return nodes;
+        return nodes
     }   
 
 
@@ -90,99 +55,22 @@ public class CancelledFAASListService extends ActiveCrudListService {
 
         def whereclause = ''
         
-        if (params.state ) {
-            if (whereclause) whereclause += ' AND '
-            whereclause += ' f.state = $P{state} '
-        }
-        if (params.ry != null ) {
-            if (whereclause) whereclause += ' AND '
-            whereclause += ' rpu.ry = $P{ry} '
-        }
-        if (params.ownername) {
-            params.ownername += '%' 
-            if (whereclause) whereclause += ' AND '
-            whereclause += ' f.name LIKE $P{ownername} '
-        }
-        if (params.administrator) {
-            params.administrator += '%' 
-            if (whereclause) whereclause += ' AND '
-            whereclause += ' f.administrator_name LIKE $P{administrator} '
-        }
-        if (params.fullpin) {
-            params.fullpin += '%'
-            if (whereclause) whereclause += ' AND '
-            whereclause += ' rpu.fullpin LIKE $P{fullpin} '
-        }
-        if (params.tdno ) {
-            if (whereclause) whereclause += ' AND '
-            whereclause += ' f.tdno = $P{tdno} '
-        }
-        if (params.prevtdno ) {
-            if (whereclause) whereclause += ' AND '
-            whereclause += ' f.prevtdno = $P{prevtdno} '
-        }
-        if (params.lgu){
-            params.lguid = params.lgu.objid
-            if (whereclause) whereclause += ' AND '
-            whereclause += ' b.parentid = $P{lguid} '
-        }
-        if (params.barangay){
-            params.barangayid = params.barangay.objid
-            if (whereclause) whereclause += ' AND '
-            whereclause += ' rp.barangayid = $P{barangayid} '
-        }
-        if (params.rputype){
-            if (whereclause) whereclause += ' AND '
-            whereclause += ' rpu.rputype = $P{rputype} '
-        }
-        if (params.surveyno){ 
-            if (whereclause) whereclause += ' AND '
-            whereclause += ' rp.surveyno = $P{surveyno} '
-        }
-        if (params.blockno){ 
-            if (whereclause) whereclause += ' AND '
-            whereclause += ' rp.blockno = $P{blockno} '
-        }
-        if (params.cadastrallotno){
-            if (whereclause) whereclause += ' AND '
-            whereclause += ' rp.cadastrallotno = $P{cadastrallotno} '
-        }
-        if (params.trackingno){
-            if (whereclause) whereclause += ' AND '
-            whereclause += ' t.trackingno = $P{trackingno} '
-        }
-        if (params.utdno){
-            if (whereclause) whereclause += ' AND '
-            whereclause += ' f.utdno = $P{utdno} '
-        }
-        if (params.titleno){
-            params.titleno += '%'
-            if (whereclause) whereclause += ' AND ' 
-            whereclause += ' f.titleno LIKE $P{titleno} '
-        }
-        if (params.taxpayer){
-            params.taxpayerid = params.taxpayer.objid 
-            if (whereclause) whereclause += ' AND ' 
-            whereclause += ' f.taxpayer_objid LIKE $P{taxpayerid} '
-        }
-
         switch(params.name) {
             case 'all':
                 break;
-            case 'current':
-                params.state = 'CURRENT'
+            case 'approved':
+                params.state = 'APPROVED'
                 if (whereclause) whereclause += ' AND ' 
-                whereclause += ' f.state = $P{state}  '
-                break;
-            case 'cancelled':
-                params.state = 'CANCELLED'
-                if (whereclause) whereclause += ' AND ' 
-                whereclause += ' f.state = $P{state}  '
+                whereclause += ' cf.state = $P{state}  '
                 break;
             case 'mytask':
                 params.userid = env.USERID 
                 if (whereclause) whereclause += ' AND ' 
                 whereclause += ' tsk.assignee_objid = $P{userid} AND tsk.enddate IS NULL  '
+                break;
+            case 'unassigned':
+                if (whereclause) whereclause += ' AND ' 
+                whereclause += " tsk.state like 'assign%' "
                 break;
             default:
                 params.taskstate = params.name

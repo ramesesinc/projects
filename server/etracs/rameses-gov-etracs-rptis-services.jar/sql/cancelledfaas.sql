@@ -1,3 +1,13 @@
+[getNodes]
+select n.name, n.title as caption
+from sys_wf_node n
+where n.processname = 'cancelledfaas'
+and n.name not like 'assign%'
+and n.name <> 'start'
+and exists(select * from sys_wf_transition where processname='cancelledfaas' and parentid = n.name)
+order by n.idx
+
+
 [getList]
 SELECT 
 	cf.*,
@@ -62,6 +72,7 @@ WHERE cf.objid = $P{objid}
 UPDATE faas SET 
 	state = 'CANCELLED', 
 	cancelreason = $P{cancelreason},
+	cancelledbytdnos = $P{cancelledbytdnos},
 	canceldate = $P{canceldate},
 	cancelledyear = $P{cancelledyear},
 	cancelledqtr = $P{cancelledqtr},

@@ -95,3 +95,21 @@ and rp.barangayid = b.objid
 and r.classification_objid = pc.objid
 go 
 
+
+
+/* PUBLIC LAND */
+
+alter table landrpu add publicland int
+go 
+update landrpu set publicland = 0 where publicland = null
+go 
+
+alter table faas_list add publicland int
+go 
+update faas_list set publicland = 0 where publicland = null
+go 
+
+create index ix_faaslist_publicland on faas_list(publicland)
+go 
+
+	

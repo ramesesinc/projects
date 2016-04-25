@@ -24,6 +24,7 @@
             String entityName = 'cancelledfaaslist';
             
             boolean allowOpen = false;
+            boolean allowSearch = false;
             
             
             int getRows() { return 25 }

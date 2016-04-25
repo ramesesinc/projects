@@ -55,6 +55,8 @@ class FAASChangeInfoInterceptor
 			em.updateRpuInfo(changeinfo.newinfo);
 		}
 
+		em.updateLandRpuInfo(changeinfo.newinfo);
+
 		//update faas_list info 
 		def flinfo = [:]
 		flinfo.objid = changeinfo.faasid
@@ -65,6 +67,7 @@ class FAASChangeInfoInterceptor
 		flinfo.effectivityqtr = changeinfo.newinfo.effectivityqtr
 		flinfo.classification = changeinfo.newinfo.classification
 		flinfo.classcode = changeinfo.newinfo.classification.code
+		flinfo.publicland = changeinfo.newinfo.publicland
 		faaslistDb.update(flinfo)
 	}
 

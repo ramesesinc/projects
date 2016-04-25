@@ -33,10 +33,10 @@ public class CancelledFAASListService extends ActiveCrudListService {
     @ProxyMethod
     public def getNodes(o) {
         def nodes = []
-        nodes << [name:'mytask', caption:'My Tasks']
         nodes << [name:'all', caption:'All Records']
         nodes += em.getNodes();
         nodes << [name:'approved', caption:'Approved']
+        nodes << [name:'mytask', caption:'My Tasks']
         nodes << [name:'unassigned', caption:'Unassigned Tasks']
 
         nodes.each{

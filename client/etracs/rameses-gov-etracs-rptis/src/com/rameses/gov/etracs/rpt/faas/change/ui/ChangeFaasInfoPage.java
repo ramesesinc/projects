@@ -4,8 +4,10 @@
  */
 package com.rameses.gov.etracs.rpt.faas.change.ui;
 
+import com.rameses.rcp.ui.annotations.StyleSheet;
 import com.rameses.rcp.ui.annotations.Template;
 
+@StyleSheet
 @Template(ChangeInfoPage.class)
 public class ChangeFaasInfoPage extends javax.swing.JPanel {
 
@@ -36,6 +38,7 @@ public class ChangeFaasInfoPage extends javax.swing.JPanel {
         xComboBox10 = new com.rameses.rcp.control.XComboBox();
         xSeparator1 = new com.rameses.rcp.control.XSeparator();
         xComboBox1 = new com.rameses.rcp.control.XComboBox();
+        xCheckBox1 = new com.rameses.rcp.control.XCheckBox();
         jScrollPane2 = new javax.swing.JScrollPane();
         xTextArea2 = new com.rameses.rcp.control.XTextArea();
         jPanel2 = new javax.swing.JPanel();
@@ -48,6 +51,7 @@ public class ChangeFaasInfoPage extends javax.swing.JPanel {
         xComboBox11 = new com.rameses.rcp.control.XComboBox();
         xSeparator2 = new com.rameses.rcp.control.XSeparator();
         xComboBox4 = new com.rameses.rcp.control.XComboBox();
+        xCheckBox2 = new com.rameses.rcp.control.XCheckBox();
         jScrollPane3 = new javax.swing.JScrollPane();
         xTextArea3 = new com.rameses.rcp.control.XTextArea();
 
@@ -96,7 +100,7 @@ public class ChangeFaasInfoPage extends javax.swing.JPanel {
         xComboBox10.setStretchWidth(40);
         formPanel5.add(xComboBox10);
 
-        xSeparator1.setPreferredSize(new java.awt.Dimension(0, 20));
+        xSeparator1.setPreferredSize(new java.awt.Dimension(0, 10));
 
         javax.swing.GroupLayout xSeparator1Layout = new javax.swing.GroupLayout(xSeparator1);
         xSeparator1.setLayout(xSeparator1Layout);
@@ -106,7 +110,7 @@ public class ChangeFaasInfoPage extends javax.swing.JPanel {
         );
         xSeparator1Layout.setVerticalGroup(
             xSeparator1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 20, Short.MAX_VALUE)
+            .addGap(0, 10, Short.MAX_VALUE)
         );
 
         formPanel5.add(xSeparator1);
@@ -118,6 +122,13 @@ public class ChangeFaasInfoPage extends javax.swing.JPanel {
         xComboBox1.setPreferredSize(new java.awt.Dimension(0, 20));
         xComboBox1.setRequired(true);
         formPanel5.add(xComboBox1);
+
+        xCheckBox1.setCellPadding(new java.awt.Insets(0, 120, 0, 0));
+        xCheckBox1.setName("changeinfo.newinfo.publicland"); // NOI18N
+        xCheckBox1.setShowCaption(false);
+        xCheckBox1.setText("Is Public Land?");
+        xCheckBox1.setVisibleWhen("#{changeinfo.newinfo.rputype=='land'}");
+        formPanel5.add(xCheckBox1);
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder2 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder2.setTitle("Memoranda");
@@ -150,9 +161,9 @@ public class ChangeFaasInfoPage extends javax.swing.JPanel {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(formPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 218, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(formPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 225, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 142, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 135, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -211,7 +222,7 @@ public class ChangeFaasInfoPage extends javax.swing.JPanel {
         xComboBox11.setStretchWidth(40);
         formPanel6.add(xComboBox11);
 
-        xSeparator2.setPreferredSize(new java.awt.Dimension(0, 20));
+        xSeparator2.setPreferredSize(new java.awt.Dimension(0, 10));
 
         javax.swing.GroupLayout xSeparator2Layout = new javax.swing.GroupLayout(xSeparator2);
         xSeparator2.setLayout(xSeparator2Layout);
@@ -221,7 +232,7 @@ public class ChangeFaasInfoPage extends javax.swing.JPanel {
         );
         xSeparator2Layout.setVerticalGroup(
             xSeparator2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 20, Short.MAX_VALUE)
+            .addGap(0, 10, Short.MAX_VALUE)
         );
 
         formPanel6.add(xSeparator2);
@@ -234,6 +245,13 @@ public class ChangeFaasInfoPage extends javax.swing.JPanel {
         xComboBox4.setPreferredSize(new java.awt.Dimension(0, 20));
         xComboBox4.setRequired(true);
         formPanel6.add(xComboBox4);
+
+        xCheckBox2.setCellPadding(new java.awt.Insets(0, 120, 0, 0));
+        xCheckBox2.setEnabled(false);
+        xCheckBox2.setName("changeinfo.previnfo.publicland"); // NOI18N
+        xCheckBox2.setShowCaption(false);
+        xCheckBox2.setText("Is Public Land?");
+        formPanel6.add(xCheckBox2);
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder4 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder4.setTitle("Memoranda");
@@ -267,9 +285,9 @@ public class ChangeFaasInfoPage extends javax.swing.JPanel {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(formPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, 219, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(formPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 141, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 135, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -300,6 +318,8 @@ public class ChangeFaasInfoPage extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTabbedPane jTabbedPane1;
+    private com.rameses.rcp.control.XCheckBox xCheckBox1;
+    private com.rameses.rcp.control.XCheckBox xCheckBox2;
     private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XComboBox xComboBox10;
     private com.rameses.rcp.control.XComboBox xComboBox11;

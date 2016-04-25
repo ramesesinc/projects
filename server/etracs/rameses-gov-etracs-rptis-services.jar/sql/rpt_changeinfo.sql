@@ -62,6 +62,11 @@ update rpu set
 	classification_objid  = $P{classificationid}
 where objid = $P{rpuid}
 
+[updateLandRpuInfo]
+update landrpu set 
+	publicland = $P{publicland}
+where objid = $P{rpuid}
+
 
 [updateFaasOwnerInfo]
 update faas set 

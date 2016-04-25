@@ -69,3 +69,14 @@ and r.classification_objid = pc.objid;
 
 
 
+/* PUBLICLAND LAND */
+
+alter table landrpu add publicland int; 
+update landrpu set publicland = 0 where publicland = null;
+
+alter table faas_list add publicland int;
+update faas_list set publicland =0 where publicland = null;
+
+create index ix_faaslist_publicland on faas_list(publicland);
+
+	

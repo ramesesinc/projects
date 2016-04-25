@@ -26,6 +26,7 @@
 		<field name="totalareasqm" type="decimal" />
 		<field name="totalmv" type="decimal" />
 		<field name="totalav" type="decimal" />
+		<field name="publicland" type="boolean" />
 	</element>
 </schema>
 

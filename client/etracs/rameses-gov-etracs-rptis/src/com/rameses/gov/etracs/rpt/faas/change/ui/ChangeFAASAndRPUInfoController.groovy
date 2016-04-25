@@ -26,6 +26,8 @@ public class ChangeFAASAndRPUInfoController extends ChangeFaasInfoController
             effectivityqtr 	: entity.effectivityqtr,
             memoranda           : entity.memoranda,
             classification  : classifications.find{it.objid == entity.rpu.classification?.objid},
+            rputype         : entity.rpu.rputype,
+            publicland      : entity.rpu.publicland,
         ]
     }
     

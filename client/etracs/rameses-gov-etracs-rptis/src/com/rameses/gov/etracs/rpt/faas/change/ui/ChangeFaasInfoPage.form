@@ -64,9 +64,9 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="formPanel5" min="-2" pref="218" max="-2" attributes="1"/>
+                      <Component id="formPanel5" min="-2" pref="225" max="-2" attributes="1"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jScrollPane2" pref="142" max="32767" attributes="0"/>
+                      <Component id="jScrollPane2" pref="135" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
@@ -154,7 +154,7 @@
                 <Container class="com.rameses.rcp.control.XSeparator" name="xSeparator1">
                   <Properties>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[0, 20]"/>
+                      <Dimension value="[0, 10]"/>
                     </Property>
                   </Properties>
 
@@ -166,7 +166,7 @@
                     </DimensionLayout>
                     <DimensionLayout dim="1">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <EmptySpace min="0" pref="20" max="32767" attributes="0"/>
+                          <EmptySpace min="0" pref="10" max="32767" attributes="0"/>
                       </Group>
                     </DimensionLayout>
                   </Layout>
@@ -181,6 +181,17 @@
                       <Dimension value="[0, 20]"/>
                     </Property>
                     <Property name="required" type="boolean" value="true"/>
+                  </Properties>
+                </Component>
+                <Component class="com.rameses.rcp.control.XCheckBox" name="xCheckBox1">
+                  <Properties>
+                    <Property name="cellPadding" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
+                      <Insets value="[0, 120, 0, 0]"/>
+                    </Property>
+                    <Property name="name" type="java.lang.String" value="changeinfo.newinfo.publicland" noResource="true"/>
+                    <Property name="showCaption" type="boolean" value="false"/>
+                    <Property name="text" type="java.lang.String" value="Is Public Land?"/>
+                    <Property name="visibleWhen" type="java.lang.String" value="#{changeinfo.newinfo.rputype==&apos;land&apos;}"/>
                   </Properties>
                 </Component>
               </SubComponents>
@@ -247,9 +258,9 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="formPanel6" min="-2" pref="219" max="-2" attributes="1"/>
+                      <Component id="formPanel6" min="-2" max="-2" attributes="1"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jScrollPane3" pref="141" max="32767" attributes="0"/>
+                      <Component id="jScrollPane3" pref="135" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
@@ -349,7 +360,7 @@
                 <Container class="com.rameses.rcp.control.XSeparator" name="xSeparator2">
                   <Properties>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[0, 20]"/>
+                      <Dimension value="[0, 10]"/>
                     </Property>
                   </Properties>
 
@@ -361,7 +372,7 @@
                     </DimensionLayout>
                     <DimensionLayout dim="1">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <EmptySpace min="0" pref="20" max="32767" attributes="0"/>
+                          <EmptySpace min="0" pref="10" max="32767" attributes="0"/>
                       </Group>
                     </DimensionLayout>
                   </Layout>
@@ -377,6 +388,17 @@
                       <Dimension value="[0, 20]"/>
                     </Property>
                     <Property name="required" type="boolean" value="true"/>
+                  </Properties>
+                </Component>
+                <Component class="com.rameses.rcp.control.XCheckBox" name="xCheckBox2">
+                  <Properties>
+                    <Property name="cellPadding" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
+                      <Insets value="[0, 120, 0, 0]"/>
+                    </Property>
+                    <Property name="enabled" type="boolean" value="false"/>
+                    <Property name="name" type="java.lang.String" value="changeinfo.previnfo.publicland" noResource="true"/>
+                    <Property name="showCaption" type="boolean" value="false"/>
+                    <Property name="text" type="java.lang.String" value="Is Public Land?"/>
                   </Properties>
                 </Component>
               </SubComponents>

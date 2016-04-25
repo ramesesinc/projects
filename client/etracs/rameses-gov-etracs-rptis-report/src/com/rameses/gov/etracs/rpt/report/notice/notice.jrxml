@@ -30,7 +30,7 @@
 	<parameter name="ASSESSOROFFICENAME" isForPrompting="false" class="java.lang.String">
 		<defaultValueExpression ><![CDATA["OFFICE OF THE MUNICIPAL ASSESSOR"]]></defaultValueExpression>
 	</parameter>
-	<parameter name="LOGOLGU" isForPrompting="false" class="java.lang.String"/>
+	<parameter name="LOGOLGU" isForPrompting="false" class="java.io.InputStream"/>
 	<parameter name="NoticeItem" isForPrompting="false" class="java.lang.Object"/>
 	<parameter name="LGUTYPE" isForPrompting="false" class="java.lang.String"/>
 	<parameter name="ASSESSORNAME" isForPrompting="false" class="java.lang.String"/>
@@ -284,7 +284,7 @@
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$P{LGUFORMALNAME}]]></textFieldExpression>
 				</textField>
-				<image  scaleImage="FillFrame" vAlign="Top" hAlign="Left" isUsingCache="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<image  scaleImage="FillFrame" vAlign="Top" hAlign="Left" onErrorType="Blank" isUsingCache="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Opaque"
 						x="98"
@@ -302,7 +302,7 @@
 					<graphicElement stretchType="NoStretch" fill="Solid" >
 					<pen lineWidth="0.0" lineStyle="Solid"/>
 </graphicElement>
-					<imageExpression class="java.lang.String"><![CDATA[$P{LOGOLGU}]]></imageExpression>
+					<imageExpression class="java.io.InputStream"><![CDATA[$P{LOGOLGU}]]></imageExpression>
 				</image>
 				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement

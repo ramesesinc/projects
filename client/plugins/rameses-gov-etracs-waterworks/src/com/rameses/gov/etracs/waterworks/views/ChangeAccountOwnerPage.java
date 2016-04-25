@@ -51,9 +51,9 @@ public class ChangeAccountOwnerPage extends javax.swing.JPanel {
         xLabel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(190, 190, 190)));
         xLabel2.setCaption("Current Owner Name");
         xLabel2.setCaptionWidth(120);
+        xLabel2.setExpression("#{entity.owner.name}");
         xLabel2.setOpaque(true);
         xLabel2.setPreferredSize(new java.awt.Dimension(0, 20));
-        xLabel2.setText("#{caller.entity.owner.name}");
         xFormPanel1.add(xLabel2);
 
         javax.swing.GroupLayout xPanel1Layout = new javax.swing.GroupLayout(xPanel1);
@@ -81,15 +81,15 @@ public class ChangeAccountOwnerPage extends javax.swing.JPanel {
 
         xLookupField1.setCaption("Owner Name");
         xLookupField1.setExpression("#{item.name}");
-        xLookupField1.setHandler("vw_entityindividual:lookup");
-        xLookupField1.setName("entity.owner"); // NOI18N
+        xLookupField1.setHandler("individualentity:lookup");
+        xLookupField1.setName("info.owner"); // NOI18N
         xLookupField1.setRequired(true);
         xLookupField1.setStretchWidth(100);
         xFormPanel2.add(xLookupField1);
 
         xTextField1.setCaption("Account Name");
         xTextField1.setCellPadding(new java.awt.Insets(5, 0, 0, 0));
-        xTextField1.setName("entity.acctname"); // NOI18N
+        xTextField1.setName("info.acctname"); // NOI18N
         xTextField1.setStretchWidth(100);
         xFormPanel2.add(xTextField1);
 
@@ -115,7 +115,7 @@ public class ChangeAccountOwnerPage extends javax.swing.JPanel {
         xPanel3.setBorder(xTitledBorder3);
 
         xTextArea1.setExitOnTabKey(true);
-        xTextArea1.setName("entity.reason"); // NOI18N
+        xTextArea1.setName("info.reason"); // NOI18N
         jScrollPane1.setViewportView(xTextArea1);
 
         javax.swing.GroupLayout xPanel3Layout = new javax.swing.GroupLayout(xPanel3);

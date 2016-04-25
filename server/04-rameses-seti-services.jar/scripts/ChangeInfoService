@@ -14,17 +14,10 @@ class ChangeInfoService  {
 
 	@ProxyMethod
 	public def update( def o ) {
-		if(!o._schemaname) throw new Exception("ChangeInfoService error. Please include as schemaname");
+		if(!o.info._schemaname) throw new Exception("ChangeInfoService error. Please include as schemaname");
 		//if(!o.newdata) throw new Exception("ChangeInfoService error. Please include newdata");
 		//if(!o.olddata) throw new Exception("ChangeInfoService error. Please include as olddata");
-
-		o.each { k,v->
-			println k+"="+v;
-		}
-
-		//persistenceService.update( o );
-
-
+		persistenceService.update( o.info );
 	}
 
 

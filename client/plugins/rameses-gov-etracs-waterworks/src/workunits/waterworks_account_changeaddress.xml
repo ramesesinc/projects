@@ -4,7 +4,7 @@
                  caption="Change Address" 
                  target="popup" 
                  action="init"
-                 editfields="address.*"
+                 fields="address.*"
                  visibleWhen="#{mode=='read'}"
                 />        
     </invokers>

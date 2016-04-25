@@ -1,9 +1,10 @@
-<workunit>
+<workunit schemaName="waterworks_account">
     <invokers>
         <invoker type="waterworks_account:form:formActions" 
                  caption="Change Owner" 
                  target="popup"
                  action="init"
+                 fields="owner.*,acctname"
                  visibleWhen="#{mode=='read'}"
                 />   
     </invokers>         

@@ -3,7 +3,8 @@
           cols="dtreading,year,month,prevreading,reading,readingmethod,reader_objid,reader_name,volume">
     <invokers>
         <invoker type="waterworks_account:section" caption="Consumption" 
-                 index="2" action="init" target="popup"/>
+                 index="2" action="init" target="popup" 
+                  visibleWhen="#{mode=='read'}"  />
         
         <invoker type="formActions" 
                  caption="Capture Consumption" action="captureConsumption"/>

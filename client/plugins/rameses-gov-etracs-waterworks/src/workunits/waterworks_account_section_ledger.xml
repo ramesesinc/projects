@@ -3,7 +3,8 @@
           cols="item.code,item.title,amount,amtpaid,remarks">
     <invokers>
         <invoker type="waterworks_account:section" caption="Ledger" index="2" 
-                 action="init" target="popup"/>
+                visibleWhen="#{mode=='read'}"
+                action="init" target="popup"/>
     </invokers>
     <code>
         import com.rameses.rcp.annotations.*;

@@ -82,7 +82,7 @@ public class SectorPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             }),
             new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "reader.assignee.name"}
+                new Object[]{"name", "reader"}
                 , new Object[]{"caption", "Reader"}
                 , new Object[]{"width", 100}
                 , new Object[]{"minWidth", 0}
@@ -90,12 +90,13 @@ public class SectorPage extends javax.swing.JPanel {
                 , new Object[]{"required", false}
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
-                , new Object[]{"editable", false}
+                , new Object[]{"editable", true}
+                , new Object[]{"editableWhen", null}
                 , new Object[]{"visible", true}
                 , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
                 , new Object[]{"expression", "#{item.reader.name} - #{item.reader.assignee.name}"}
-                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.LookupColumnHandler(null, "lookupSectorReaders")}
             })
         });
         xDataTable1.setHandler("itemHandlers.zones");

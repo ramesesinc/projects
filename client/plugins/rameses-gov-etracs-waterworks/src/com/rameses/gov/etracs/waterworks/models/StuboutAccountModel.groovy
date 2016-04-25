@@ -42,6 +42,24 @@ public class StuboutSectionAccountModel {
         }        
     ] as BasicListModel;
     
+    void changeIndexNo() { 
+        if ( !selectedItem ) return; 
+        
+        def res = MsgBox.prompt("Enter the new index number:"); 
+        if ( res == null || res.length()==0 ) return; 
+        
+        def newindexno = 0; 
+        try {
+            newindexno = res.toInteger(); 
+        } catch(Throwable t){ 
+            MsgBox.alert("Please enter an integer value"); 
+            return; 
+        } 
+        
+        svc.changeIndexNo([ stuboutid: entity.objid, stuboutindex: newindexno, accountid: selectedItem.objid ]); 
+        
+    }
+    
     void moveUp() { 
         if ( !selectedItem ) return; 
         svc.moveUp([ stuboutid: entity.objid, accountid: selectedItem.objid ]);

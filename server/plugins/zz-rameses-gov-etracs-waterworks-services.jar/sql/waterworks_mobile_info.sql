@@ -11,8 +11,10 @@ FROM waterworks_account acct
 	INNER JOIN waterworks_sector_zone wsz ON ws.zoneid = wsz.objid 
 	INNER JOIN waterworks_sector_reader wsr ON wsz.readerid = wsr.objid
 	INNER JOIN waterworks_sector s ON wsr.sectorid = s.objid
-WHERE s.objid = $P{sectorid}
-AND CURDATE() >= acct.readingdate
+WHERE s.objid = $P{sectorid} 
+	AND wsr.assignee_objid = $P{assigneeid}  
+	AND CURDATE() >= acct.readingdate 
+	AND acct.objid NOT IN (SELECT objid FROM waterworks_mobile_info WHERE objid=acct.objid) 
 
 [cancelDownload]
 DELETE FROM waterworks_mobile_info

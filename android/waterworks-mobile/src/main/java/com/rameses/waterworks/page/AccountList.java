@@ -30,6 +30,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.input.TouchEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.Callback;
@@ -148,9 +149,9 @@ public class AccountList {
                 return new AccountCell();
             }
         });
-        accountList.setOnMouseClicked(new EventHandler<MouseEvent>(){
+        accountList.setOnTouchReleased(new EventHandler<TouchEvent>(){
             @Override
-            public void handle(MouseEvent event) {
+            public void handle(TouchEvent event) {
                 Platform.runLater(new Runnable(){
                     @Override
                     public void run() {
@@ -163,6 +164,7 @@ public class AccountList {
                 });
             }
         });
+        
         loadFirstPage();
         
         ImageView firstPageImg = new ImageView(new Image("icon/firstpage.png"));

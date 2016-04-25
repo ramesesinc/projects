@@ -23,84 +23,18 @@ class WaterworksStuboutService {
     										.list();
     }
 
-    @ProxyMethod 
-    public def addAccount( params ) {
-    	if (!params.stuboutid) throw new Exception('stuboutid parameter is required'); 
-    	if (!params.accountid) throw new Exception('accountid parameter is required'); 
-    	
-    	def icount = vw_waterworks_stubout_account.find([ stuboutid: params.stuboutid ])
-    								 			  .select('icount:{COUNT(objid)}')
-    								 			  .val(); 
-
-  		def m = [stubout:[objid: params.stuboutid], stuboutindex: icount+1 ]; 
-    	waterworks_account.find([ objid: params.accountid ]).update( m ); 
-        return m;
-    }
-
-    @ProxyMethod 
-    public void removeAccount( params ) {
-    	if (!params.stuboutid) throw new Exception('stuboutid parameter is required'); 
-    	if (!params.accountid) throw new Exception('accountid parameter is required'); 
-    	
-    	def m = [ stuboutid: params.stuboutid, objid: params.accountid ]; 
-    	def o = waterworks_account.find( m ).select('stuboutindex').first(); 
- 		if ( o ) {
- 			//waterworks_account.find([ objid: params.accountid ]).update([ stubout:null, stuboutindex:null ]); 
- 			//waterworks_account.find([ objid: params.accountid ]).update([ stuboutid:null, stuboutindex:null ]); 
- 			waterworks_account.clearStubout([ objid: params.accountid ]); 
- 			waterworks_account.find([ stuboutid: params.stuboutid ])
- 							  .where('stuboutindex > :stuboutindex', [stuboutindex: o.stuboutindex]) 
- 							  .update([ stuboutindex: '{stuboutindex-1}' ]);
- 		} 
-    }
-
-
-    @ProxyMethod 
-    public void moveUp( params ) {
-    	if (!params.stuboutid) throw new Exception('stuboutid parameter is required'); 
-    	if (!params.accountid) throw new Exception('accountid parameter is required'); 
-    	
-    	def m = [ stuboutid: params.stuboutid, objid: params.accountid ]; 
-    	def src = waterworks_account.find( m ).select('objid,stuboutindex').first(); 
-    	if ( src.stuboutindex <= 1 ) return; 
-
-    	m = [ stuboutid: params.stuboutid, stuboutindex: src.stuboutindex-1 ]; 
-    	def dest = waterworks_account.find( m ).select('objid,stuboutindex').first(); 
-
-    	waterworks_account.find([ objid: src.objid ]).update([ stuboutindex: '{stuboutindex-1}' ]); 
-    	waterworks_account.find([ objid: dest.objid ]).update([ stuboutindex: '{stuboutindex+1}' ]); 
-    }
-    
-    @ProxyMethod 
-    public void moveDown( params ) {
-    	if (!params.stuboutid) throw new Exception('stuboutid parameter is required'); 
-    	if (!params.accountid) throw new Exception('accountid parameter is required'); 
-    	
-    	def m = [ stuboutid: params.stuboutid, objid: params.accountid ]; 
-    	def src = waterworks_account.find( m ).select('objid,stuboutindex').first(); 
-    	if ( src.stuboutindex <= 1 ) return; 
-
-    	m = [ stuboutid: params.stuboutid, stuboutindex: src.stuboutindex+1 ]; 
-    	def dest = waterworks_account.find( m ).select('objid,stuboutindex').first(); 
-    	if ( !dest ) return; 
-
-    	waterworks_account.find([ objid: src.objid ]).update([ stuboutindex: '{stuboutindex+1}' ]); 
-    	waterworks_account.find([ objid: dest.objid ]).update([ stuboutindex: '{stuboutindex-1}' ]); 
-    }    
-
 	@ProxyMethod 
-    public void swap( params ) {
+    public void changeIndexNo( params ) {
     	if (!params.stuboutid) throw new Exception('stuboutid parameter is required'); 
+        if (!params.stuboutindex) throw new Exception('stuboutindex parameter is required'); 
     	if (!params.accountid) throw new Exception('accountid parameter is required'); 
-    	if (!params.stuboutindex) throw new Exception('stuboutindex parameter is required'); 
     	
     	def m = [ stuboutid: params.stuboutid, objid: params.accountid ]; 
-    	def src = waterworks_account.find( m ).select('objid,stuboutindex').first(); 
-
-    	m = [ stuboutid: params.stuboutid, stuboutindex: params.stuboutindex ]; 
-    	def dest = waterworks_account.find( m ).select('objid,stuboutindex').first(); 
-
-    	waterworks_account.find([ objid: src.objid ]).update([ stuboutindex: params.stuboutindex ]); 
-    	waterworks_account.find([ objid: dest.objid ]).update([ stuboutindex: src.stuboutindex ]); 
+    	def rec = waterworks_account.find( m ).select('objid,stuboutindex').first(); 
+        if ( rec ) { 
+            waterworks_account.find([ objid: rec.objid ]).update([ stuboutindex: params.stuboutindex ]); 
+        } else {
+            throw new Exception('Account does not exist'); 
+        } 
     }        
 }

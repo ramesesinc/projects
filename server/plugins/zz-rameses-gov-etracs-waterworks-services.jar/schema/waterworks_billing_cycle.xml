@@ -1,0 +1,16 @@
+<schema adapter="waterworks"> 
+
+	<element tablename="waterworks_billing_cycle">
+		<field name="objid" primary="true"/> 
+		<field name="sectorid" required="true"/> 
+		<field name="year" required="true"/> 
+		<field name="month" required="true"/> 
+
+		<field name="fromperiod"  indexed="true" type="date" editable="false"/>
+		<field name="toperiod"  indexed="true" type="date" editable="false"/>
+		<field name="duedate"  indexed="true" type="date" editable="false"/>
+		<field name="readingdate"  indexed="true" type="date" caption="Last Reading Date" editable="false"/>
+		<field name="disconnectiondate" indexed="true" type="date" caption="Disconnection Date" editable="false"/>
+	
+	</element> 
+</schema>

@@ -1,6 +1,7 @@
 package com.rameses.waterworks.database;
 
 import com.rameses.waterworks.bean.Account;
+import com.rameses.waterworks.bean.DownloadStat;
 import com.rameses.waterworks.bean.Reading;
 import com.rameses.waterworks.bean.Rule;
 import com.rameses.waterworks.bean.Sector;
@@ -12,6 +13,8 @@ import java.util.List;
 import java.util.Map;
 
 public interface Database {
+    
+    public DBContext createDBContext();
     
     public String getError();
     
@@ -89,5 +92,13 @@ public interface Database {
     
     //GPS
     public void updateLocation(String acctid, String latitude, String longitude);
+    
+    //DOWNLOAD STAT
+    public void createDownloadStat(DownloadStat stat);
+    
+    public void updateDownloadStat(DownloadStat stat);
+    
+    public void deleteDownloadStat(DownloadStat stat);
+    
     
 }

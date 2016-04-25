@@ -180,19 +180,7 @@ public class Home {
             public void handle(MouseEvent event) {
                 Database db = DatabasePlatformFactory.getPlatform().getDatabase();
                 System.out.println("Sector");
-                System.out.println(db.showTableData("sector"));
-                System.out.println("=================================================================");
-                
-                System.out.println("Sector Reader");
-                System.out.println(db.showTableData("sectorreader"));
-                System.out.println("=================================================================");
-                
-                System.out.println("Zone");
-                System.out.println(db.showTableData("zone"));
-                System.out.println("=================================================================");
-                
-                System.out.println("Stubout");
-                System.out.println(db.showTableData("stubout"));
+                System.out.println(db.showTableData("download_stat"));
                 System.out.println("=================================================================");
             }
         });

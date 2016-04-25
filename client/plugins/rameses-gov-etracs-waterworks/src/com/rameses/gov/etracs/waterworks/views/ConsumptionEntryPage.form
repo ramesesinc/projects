@@ -18,8 +18,10 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="xFormPanel1" pref="287" max="32767" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
+              <Component id="xFormPanel1" min="-2" pref="246" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="34" max="-2" attributes="0"/>
+              <Component id="xFormPanel2" min="-2" pref="183" max="-2" attributes="0"/>
+              <EmptySpace pref="87" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -27,8 +29,11 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="xFormPanel1" min="-2" pref="133" max="-2" attributes="0"/>
-              <EmptySpace pref="32" max="32767" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Component id="xFormPanel2" min="-2" pref="100" max="-2" attributes="0"/>
+                  <Component id="xFormPanel1" min="-2" pref="126" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -42,7 +47,6 @@
         <Component class="com.rameses.rcp.control.XIntegerField" name="xIntegerField1">
           <Properties>
             <Property name="caption" type="java.lang.String" value="Previous Reading"/>
-            <Property name="enabled" type="boolean" value="false"/>
             <Property name="name" type="java.lang.String" value="entity.prevreading" noResource="true"/>
           </Properties>
         </Component>
@@ -60,12 +64,25 @@
                 <StringItem index="0" value="entity.reading"/>
               </StringArray>
             </Property>
-            <Property name="enabled" type="boolean" value="false"/>
             <Property name="name" type="java.lang.String" value="entity.volume" noResource="true"/>
           </Properties>
         </Component>
+        <Component class="com.rameses.rcp.control.XComboBox" name="xComboBox1">
+          <Properties>
+            <Property name="caption" type="java.lang.String" value="Month"/>
+            <Property name="expression" type="java.lang.String" value="#{item.name}"/>
+            <Property name="itemKey" type="java.lang.String" value="index"/>
+            <Property name="items" type="java.lang.String" value="listTypes.months"/>
+            <Property name="name" type="java.lang.String" value="entity.month" noResource="true"/>
+          </Properties>
+        </Component>
+      </SubComponents>
+    </Container>
+    <Container class="com.rameses.rcp.control.XFormPanel" name="xFormPanel2">
+      <SubComponents>
         <Component class="com.rameses.rcp.control.XDecimalField" name="xDecimalField1">
           <Properties>
+            <Property name="editable" type="boolean" value="false"/>
             <Property name="caption" type="java.lang.String" value="Amount"/>
             <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
               <StringArray count="1">
@@ -74,13 +91,6 @@
             </Property>
             <Property name="enabled" type="boolean" value="false"/>
             <Property name="name" type="java.lang.String" value="entity.amount" noResource="true"/>
-          </Properties>
-        </Component>
-        <Component class="com.rameses.rcp.control.XTextField" name="xTextField1">
-          <Properties>
-            <Property name="caption" type="java.lang.String" value="Classification"/>
-            <Property name="enabled" type="boolean" value="false"/>
-            <Property name="name" type="java.lang.String" value="entity.classificationid" noResource="true"/>
           </Properties>
         </Component>
       </SubComponents>

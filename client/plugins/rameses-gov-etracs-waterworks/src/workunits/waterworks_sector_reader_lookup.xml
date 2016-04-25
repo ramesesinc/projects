@@ -10,7 +10,7 @@
     
             def sectorid;
         
-            public def beforeQuery( def m ) {
+            public void beforeQuery( def m ) {
                 m.sectorid = sectorid;
             }
         

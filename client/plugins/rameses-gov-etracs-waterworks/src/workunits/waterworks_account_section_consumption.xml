@@ -1,0 +1,41 @@
+<workunit extends="com/rameses/seti2/templates/FormList.xml"
+            schemaName="waterworks_account_consumption" 
+          cols="dtreading,year,month,prevreading,reading,readingmethod,reader_objid,reader_name,volume">
+    <invokers>
+        <invoker type="waterworks_account:section" caption="Consumption" 
+                 index="2" action="init" target="popup"/>
+        
+        <invoker type="formActions" 
+                 caption="Capture Consumption" action="captureConsumption"/>
+    </invokers>
+    <code>
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.common.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        
+        class AccountConsumptionModel extends com.rameses.seti2.models.CrudListModel {
+
+            @Caller 
+            def caller;
+        
+            void beforeQuery( def qry ) {
+                qry.findBy = [acctid: caller.entity.objid];
+            }
+        
+            void reload() {
+                listHandler.reload();
+            }
+        
+            def captureConsumption() {
+                def h = { info->
+                    MsgBox.alert( info );
+                }
+                Modal.show("waterworks_account_consumption_entry:edit", [handler:h]);
+            }
+        
+        }
+    </code>
+</workunit>

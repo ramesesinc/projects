@@ -1,6 +1,0 @@
-<workunit>
-    <invokers>
-        <invoker type="waterworks_account:section" caption="Application History" index="1"/>
-        <invoker type="formActions" caption="Refresh" action="refresh"/>
-    </invokers>
-</workunit>

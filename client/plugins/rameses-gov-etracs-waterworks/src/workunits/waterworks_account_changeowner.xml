@@ -2,11 +2,12 @@
     <invokers>
         <invoker type="waterworks_account:form:formActions" 
                  caption="Change Owner" 
-                 action="init" target="popup"
+                 target="popup"
+                 action="init"
                  visibleWhen="#{mode=='read'}"
                 />   
     </invokers>         
-    <code class="com.rameses.gov.etracs.waterworks.models.ChangeAccountOwnerModel"/>
+    <code class="com.rameses.seti2.models.ChangeInfoModel" />
     <pages>
         <page template="com.rameses.gov.etracs.waterworks.views.ChangeAccountOwnerPage"/>
     </pages>

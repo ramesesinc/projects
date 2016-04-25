@@ -1,7 +1,7 @@
 <schema adapter="waterworks">
 	<element tablename="waterworks_sector_reader">
 		<field name="objid" primary="true" prefix="WSR"/>
-		<field name="title" required="true" indexed="true" caption="Name"/>
+		<field name="name" required="true" indexed="true" caption="Name"/>
 		<field name="assignee_objid" caption="Assignee ID" visible="false"/>
 		<field name="assignee_name" caption="Assignee Name"/>
 		<!-- field name="sectorid" / -->

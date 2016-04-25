@@ -44,7 +44,6 @@ public class ChangeAccountAddressPage extends javax.swing.JPanel {
         xTitledBorder1.setTitle("Current Account Information");
         xPanel1.setBorder(xTitledBorder1);
 
-        xLabel2.setBackground(new java.awt.Color(250, 250, 250));
         xLabel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(190, 190, 190)));
         xLabel2.setCaption("Name");
         xLabel2.setExpression("#{entity.acctname}");
@@ -81,7 +80,7 @@ public class ChangeAccountAddressPage extends javax.swing.JPanel {
         xTitledBorder2.setTitle("New Address Information");
         xPanel2.setBorder(xTitledBorder2);
 
-        localAddressPanel1.setName("entity.newaddress"); // NOI18N
+        localAddressPanel1.setName("info.address"); // NOI18N
 
         javax.swing.GroupLayout xPanel2Layout = new javax.swing.GroupLayout(xPanel2);
         xPanel2.setLayout(xPanel2Layout);
@@ -105,7 +104,7 @@ public class ChangeAccountAddressPage extends javax.swing.JPanel {
         xPanel3.setBorder(xTitledBorder3);
 
         xTextArea1.setExitOnTabKey(true);
-        xTextArea1.setName("entity.reason"); // NOI18N
+        xTextArea1.setName("info.reason"); // NOI18N
         jScrollPane1.setViewportView(xTextArea1);
 
         javax.swing.GroupLayout xPanel3Layout = new javax.swing.GroupLayout(xPanel3);
@@ -120,7 +119,7 @@ public class ChangeAccountAddressPage extends javax.swing.JPanel {
         xPanel3Layout.setVerticalGroup(
             xPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(xPanel3Layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 119, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 141, Short.MAX_VALUE)
                 .addContainerGap())
         );
 

@@ -1,0 +1,29 @@
+<workunit extends="com/rameses/seti2/templates/FormList.xml"
+            schemaName="vw_waterworks_account_ledger" 
+          cols="item.code,item.title,amount,amtpaid,remarks">
+    <invokers>
+        <invoker type="waterworks_account:section" caption="Ledger" index="2" 
+                 action="init" target="popup"/>
+    </invokers>
+    <code>
+        import com.rameses.rcp.annotations.*;
+        
+        class AccountLedgerModel extends com.rameses.seti2.models.CrudListModel {
+
+            @Caller 
+            def caller;
+        
+            void beforeQuery( def qry ) {
+                qry.findBy = [parentid: caller.entity.objid];
+            }
+        
+            void reload() {
+                listHandler.reload();
+            }
+        
+            def capture() {
+                
+            }
+        }
+    </code>
+</workunit>

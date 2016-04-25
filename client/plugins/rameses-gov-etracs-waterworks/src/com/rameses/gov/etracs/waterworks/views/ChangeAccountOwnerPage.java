@@ -33,11 +33,9 @@ public class ChangeAccountOwnerPage extends javax.swing.JPanel {
         xPanel1 = new com.rameses.rcp.control.XPanel();
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
         xLabel2 = new com.rameses.rcp.control.XLabel();
-        xLabel3 = new com.rameses.rcp.control.XLabel();
         xPanel2 = new com.rameses.rcp.control.XPanel();
         xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
         xLookupField1 = new com.rameses.rcp.control.XLookupField();
-        xLabel5 = new com.rameses.rcp.control.XLabel();
         xTextField1 = new com.rameses.rcp.control.XTextField();
         xPanel3 = new com.rameses.rcp.control.XPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -51,19 +49,12 @@ public class ChangeAccountOwnerPage extends javax.swing.JPanel {
 
         xLabel2.setBackground(new java.awt.Color(250, 250, 250));
         xLabel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(190, 190, 190)));
-        xLabel2.setCaption("Owner Name");
-        xLabel2.setExpression("#{entity.currentowner.name}");
+        xLabel2.setCaption("Current Owner Name");
+        xLabel2.setCaptionWidth(120);
         xLabel2.setOpaque(true);
         xLabel2.setPreferredSize(new java.awt.Dimension(0, 20));
+        xLabel2.setText("#{caller.entity.owner.name}");
         xFormPanel1.add(xLabel2);
-
-        xLabel3.setBackground(new java.awt.Color(250, 250, 250));
-        xLabel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(190, 190, 190)));
-        xLabel3.setCaption("Owner Address");
-        xLabel3.setExpression("#{entity.currentowner.address.text}");
-        xLabel3.setOpaque(true);
-        xLabel3.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel1.add(xLabel3);
 
         javax.swing.GroupLayout xPanel1Layout = new javax.swing.GroupLayout(xPanel1);
         xPanel1.setLayout(xPanel1Layout);
@@ -86,24 +77,15 @@ public class ChangeAccountOwnerPage extends javax.swing.JPanel {
         xTitledBorder2.setTitle("New Account Information");
         xPanel2.setBorder(xTitledBorder2);
 
-        xFormPanel2.setCaptionWidth(100);
+        xFormPanel2.setCaptionWidth(120);
 
         xLookupField1.setCaption("Owner Name");
         xLookupField1.setExpression("#{item.name}");
         xLookupField1.setHandler("vw_entityindividual:lookup");
-        xLookupField1.setName("entity.newowner"); // NOI18N
+        xLookupField1.setName("entity.owner"); // NOI18N
         xLookupField1.setRequired(true);
         xLookupField1.setStretchWidth(100);
         xFormPanel2.add(xLookupField1);
-
-        xLabel5.setBackground(new java.awt.Color(250, 250, 250));
-        xLabel5.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(190, 190, 190)));
-        xLabel5.setCaption("Owner Address");
-        xLabel5.setDepends(new String[] {"entity.newowner"});
-        xLabel5.setExpression("#{entity.newowner.address.text}");
-        xLabel5.setOpaque(true);
-        xLabel5.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel2.add(xLabel5);
 
         xTextField1.setCaption("Account Name");
         xTextField1.setCellPadding(new java.awt.Insets(5, 0, 0, 0));
@@ -148,7 +130,7 @@ public class ChangeAccountOwnerPage extends javax.swing.JPanel {
         xPanel3Layout.setVerticalGroup(
             xPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(xPanel3Layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 134, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 156, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -181,8 +163,6 @@ public class ChangeAccountOwnerPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XFormPanel xFormPanel2;
     private com.rameses.rcp.control.XLabel xLabel2;
-    private com.rameses.rcp.control.XLabel xLabel3;
-    private com.rameses.rcp.control.XLabel xLabel5;
     private com.rameses.rcp.control.XLookupField xLookupField1;
     private com.rameses.rcp.control.XPanel xPanel1;
     private com.rameses.rcp.control.XPanel xPanel2;

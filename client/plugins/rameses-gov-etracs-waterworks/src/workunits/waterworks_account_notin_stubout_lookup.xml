@@ -3,7 +3,8 @@
           allowCreate="false" allowOpen="false" allowDelete="false"
           cols="acctno,acctname,address.text,meter.serialno">
     <invokers>
-        <invoker type="waterworks_account_notin_stubout:lookup" caption="Lookup Accounts" action="init" target="popup"/>
+        <invoker type="waterworks_account_notin_stubout:lookup" 
+                 caption="Lookup Accounts" action="init" target="popup"/>
     </invokers>
 </workunit>
 

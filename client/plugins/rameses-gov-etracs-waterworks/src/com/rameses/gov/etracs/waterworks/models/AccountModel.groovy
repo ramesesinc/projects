@@ -8,6 +8,39 @@ import com.rameses.seti2.models.*;
 
 public class AccountModel extends MdiFormModel {
     
+    @Service("WaterworksBillingDateService")
+    def billingDateSvc;
+    
+    void afterCreate() {
+        entity.address = [:];
+    }
+
+    def assignStubout() {
+        def h = {o->
+            entity.stubout = o.stubout;
+            entity.stuboutindex = o.stuboutindex;
+            binding.refresh();
+        }
+        return Inv.lookupOpener("waterworks_stubout:assign", [handler: h] );
+    }
+    
+    void computeDates() {
+        def h = { o->
+            entity.dtstarted = o;
+            if( !entity.stubout?.objid ) 
+                throw new Exception("Please assign a stubout");            
+
+            def res = billingDateSvc.getBillingDates( [stubout:entity.stubout, billdate: entity.dtstarted] );
+            if(!res)
+                throw new Exception("There is no billing date rules fired");
+            entity.putAll( res );
+            entity.fromperiod = entity.dtstarted;
+            binding.refresh();
+        }
+        Modal.show("date:prompt", [handler:h]);
+    }
+    
+    //for editing....
     def changeAddress(){ 
         def map = [ acctname: entity.acctname, address: entity.address ]; 
         map.newaddress = entity.address?.clone(); 
@@ -29,5 +62,4 @@ public class AccountModel extends MdiFormModel {
     def changeMeter(){
         return Inv.lookupOpener("waterworks_account:changemeter", [:]); 
     }
-    
 }

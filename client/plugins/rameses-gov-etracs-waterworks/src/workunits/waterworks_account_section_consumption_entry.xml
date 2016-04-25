@@ -1,0 +1,12 @@
+<workunit>
+    <invokers>
+        <invoker type="waterworks_account_consumption_entry:edit" 
+                 caption="Capture Consumption" target="popup"/>
+        <invoker type="waterworks_account_consumption:list:formActions" 
+                 caption="Capture Consumption1" action="captureConsumption"/>
+    </invokers>
+    <code class="com.rameses.seti2.models.PromptDataModel"/>
+    <pages>
+        <page template="com.rameses.gov.etracs.waterworks.views.ConsumptionEntryPage"/>
+    </pages>
+</workunit>

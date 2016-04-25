@@ -12,12 +12,12 @@ import com.rameses.rcp.ui.annotations.Template;
  * @author dell
  */
 @Template(OKCancelPage.class)
-public class WaterworksConsumptionEntryPage extends javax.swing.JPanel {
+public class ConsumptionEntryPage extends javax.swing.JPanel {
 
     /**
      * Creates new form WaterworksConsumptionEntryPage
      */
-    public WaterworksConsumptionEntryPage() {
+    public ConsumptionEntryPage() {
         initComponents();
     }
 
@@ -34,13 +34,13 @@ public class WaterworksConsumptionEntryPage extends javax.swing.JPanel {
         xIntegerField1 = new com.rameses.rcp.control.XIntegerField();
         xIntegerField2 = new com.rameses.rcp.control.XIntegerField();
         xIntegerField3 = new com.rameses.rcp.control.XIntegerField();
+        xComboBox1 = new com.rameses.rcp.control.XComboBox();
+        xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
         xDecimalField1 = new com.rameses.rcp.control.XDecimalField();
-        xTextField1 = new com.rameses.rcp.control.XTextField();
 
         xFormPanel1.setCaptionWidth(100);
 
         xIntegerField1.setCaption("Previous Reading");
-        xIntegerField1.setEnabled(false);
         xIntegerField1.setName("entity.prevreading"); // NOI18N
         xFormPanel1.add(xIntegerField1);
 
@@ -50,20 +50,22 @@ public class WaterworksConsumptionEntryPage extends javax.swing.JPanel {
 
         xIntegerField3.setCaption("Volume");
         xIntegerField3.setDepends(new String[] {"entity.reading"});
-        xIntegerField3.setEnabled(false);
         xIntegerField3.setName("entity.volume"); // NOI18N
         xFormPanel1.add(xIntegerField3);
 
+        xComboBox1.setCaption("Month");
+        xComboBox1.setExpression("#{item.name}");
+        xComboBox1.setItemKey("index");
+        xComboBox1.setItems("listTypes.months");
+        xComboBox1.setName("entity.month"); // NOI18N
+        xFormPanel1.add(xComboBox1);
+
+        xDecimalField1.setEditable(false);
         xDecimalField1.setCaption("Amount");
         xDecimalField1.setDepends(new String[] {"entity.reading"});
         xDecimalField1.setEnabled(false);
         xDecimalField1.setName("entity.amount"); // NOI18N
-        xFormPanel1.add(xDecimalField1);
-
-        xTextField1.setCaption("Classification");
-        xTextField1.setEnabled(false);
-        xTextField1.setName("entity.classificationid"); // NOI18N
-        xFormPanel1.add(xTextField1);
+        xFormPanel2.add(xDecimalField1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -71,23 +73,28 @@ public class WaterworksConsumptionEntryPage extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 287, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 246, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(34, 34, 34)
+                .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(87, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(32, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XDecimalField xDecimalField1;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
+    private com.rameses.rcp.control.XFormPanel xFormPanel2;
     private com.rameses.rcp.control.XIntegerField xIntegerField1;
     private com.rameses.rcp.control.XIntegerField xIntegerField2;
     private com.rameses.rcp.control.XIntegerField xIntegerField3;
-    private com.rameses.rcp.control.XTextField xTextField1;
     // End of variables declaration//GEN-END:variables
 }

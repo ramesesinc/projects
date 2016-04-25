@@ -32,7 +32,7 @@ public class AccountCell extends ListCell<Account>{
             Database db = DatabasePlatformFactory.getPlatform().getDatabase();
             Reading reading = db.findReadingByAccount(account.getObjid());
 
-            ImageView image = new ImageView(new Image(reading != null ? "icon/useraccount.png" : "icon/useraccount-check.png"));
+            ImageView image = new ImageView(new Image(reading == null ? "icon/useraccount.png" : "icon/useraccount-check.png"));
 
             StackPane imgContainer = new StackPane();
             imgContainer.setAlignment(Pos.CENTER);

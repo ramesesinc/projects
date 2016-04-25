@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import com.rameses.waterworks.bean.Account;
+import com.rameses.waterworks.bean.DownloadStat;
 import com.rameses.waterworks.bean.Reading;
 import com.rameses.waterworks.bean.Rule;
 import com.rameses.waterworks.bean.Sector;
@@ -27,6 +28,10 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
     
     public AndroidDatabase(Context context){
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+    }
+    
+    public DBContext createDBContext() {
+        return new DBContextImpl( this ); 
     }
     
     @Override
@@ -105,6 +110,12 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
                 + " description VARCHAR(255), "
                 + " readerid VARCHAR(50), "
                 + " assigneeid VARCHAR(50))");
+        
+        sqld.execSQL("CREATE TABLE download_stat ("
+                + " batchid VARCHAR(50) PRIMARY KEY,"
+                + " assigneeid VARCHAR(50),"
+                + " recordcount NUMERIC,"
+                + " indexno NUMERIC)");
         
     }
 
@@ -947,6 +958,21 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
         }finally{
             try{ db.close(); }catch(Exception e){}
         }
+    }
+
+    @Override
+    public void createDownloadStat(DownloadStat stat) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void updateDownloadStat(DownloadStat stat) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void deleteDownloadStat(DownloadStat stat) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
 }

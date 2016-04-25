@@ -28,18 +28,13 @@ public class MobileDownloadService {
     }
     
     public String initForDownload(Object params){
-        ERROR = "";
         try{
             return (String) service.initForDownload(params);
-        }catch(Exception e){
-            ERROR = "MobileDownloadService Error: " + e.toString();
-            if(Main.LOG != null){
-                Main.LOG.error("MobileDownloadService Error",e.toString());
-            }else{
-                e.printStackTrace();
-            }
-        }
-        return null;
+        } catch(RuntimeException re){
+           throw re; 
+        } catch(Throwable e){
+           throw new RuntimeException(e.getMessage(), e);
+        } 
     }
     
     public int getBatchStatus(String batchid){
@@ -58,19 +53,13 @@ public class MobileDownloadService {
     }
     
     public List<Map> download(Object params){
-        ERROR = "";
-        List result = new ArrayList();
         try{
-            result = service.download(params);
-        }catch(Exception e){
-            ERROR = "MobileDownloadService Error: " + e.toString();
-            if(Main.LOG != null){
-                Main.LOG.error("MobileDownloadService Error",e.toString());
-            }else{
-                e.printStackTrace();
-            }
-        }
-        return result;
+            return service.download(params);
+        } catch(RuntimeException re){
+           throw re; 
+        } catch(Throwable e){
+           throw new RuntimeException(e.getMessage(), e);
+        } 
     }
     
     public String confirmDownload(Object params){

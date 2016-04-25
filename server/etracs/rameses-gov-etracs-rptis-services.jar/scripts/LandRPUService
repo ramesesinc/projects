@@ -85,7 +85,6 @@ class LandRPUService
 		if (!landrpu) {
 			return [landdetails:[], planttrees:[], landadjustments:[]]
 		}
-		println 'landrpu.publicland	 -> ' + landrpu.publicland	
 		landrpu.idleland			= util.toBoolean(landrpu.idleland, false)
 		landrpu.publicland			= util.toBoolean(landrpu.publicland, false)
 		landrpu.landdetails 		= getLandDetails(landrpu)

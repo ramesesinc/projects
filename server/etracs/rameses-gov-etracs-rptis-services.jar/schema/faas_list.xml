@@ -4,6 +4,7 @@
 		<field name="state" />
 		<field name="tdno" />
 		<field name="utdno" />
+		<field name="datacapture" type="boolean" />
 		<field name="titleno" />
 		<field name="taxpayer_objid" />
 		<field name="owner_name" />
@@ -27,6 +28,9 @@
 		<field name="totalmv" type="decimal" />
 		<field name="totalav" type="decimal" />
 		<field name="publicland" type="boolean" />
+		<field name="taskid" />
+		<field name="taskstate" />
+		<field name="assignee_objid" />
 	</element>
 </schema>
 

@@ -40,6 +40,9 @@ class FAASSupportService
 	@Service('DBImageService')
 	def imageSvc
 
+	@DataContext('faas_list')
+	def faaslistDb 
+
 
 	@ProxyMethod
 	public def findFaasById( faas ) {
@@ -168,7 +171,9 @@ class FAASSupportService
 		if (faas.state != 'INTERIM')
 			throw new Exception('FAAS state is invalid. Only INTERIM state is allowed.')
 
-		em.updateDataCaptureFlag([objid:faas.objid, datacapture:1])
+		def f = [objid:faas.objid, datacapture:1, taskid:null, taskstate:null, assignee:null]
+		em.updateDataCaptureFlag(f)
+		faaslistDb.update(f)
 		em.deleteTasks(faas)
 	}	
 

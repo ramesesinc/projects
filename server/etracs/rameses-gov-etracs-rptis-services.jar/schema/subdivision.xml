@@ -1,4 +1,4 @@
-<schema>
+<schema adapter="main">
     <element name="subdivision" tablename="subdivision">
         <field name="objid" primary="true" />
         <field name="state" required="true" />

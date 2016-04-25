@@ -17,6 +17,9 @@ class WaterworksBillingDateService  {
 
 	@DataContext("waterworks_stubout")
 	def stub;
+
+	@DataContext("waterworks_billing_cycle")
+	def billingcycle;
  
 	@ProxyMethod
 	public def getBillingDates( def p ) {
@@ -27,10 +30,19 @@ class WaterworksBillingDateService  {
 		so = stub.find( [objid: so.objid ]).first();
 		
 		def currDate = dateSvc.getServerDate();
-		
+		def billdate = (p.billdate? p.billdate : currDate); 
+		def billdateinfo = dateSvc.parseDate( billdate, null ); 
+		def billmonth = billdateinfo.month;
+		def billyear = billdateinfo.year;  
+
+		//find billing cycle, if not exist then create
+		def m = [sectorid: so.zone.sector?.objid, month: billmonth, year: billyear];
+		def billCycleRec = billingcycle.find( m ).first(); 
+		if ( billCycleRec ) return billCycleRec; 
+
 		def facts = [];
 		facts << new CurrentDate(currDate);
-		facts << new BillDate( ((p.billdate)? p.billdate : currDate) );
+		facts << new BillDate( billdate );
 		facts << new Stubout(zone: so.zone.objid, sector: so.zone.sector?.objid, barangay:so.barangay?.objid);
 		
 		//do this so it will immediately break after initial rulegroup.
@@ -38,10 +50,12 @@ class WaterworksBillingDateService  {
 
 		def res = ruleSvc.execute( "waterworksbilling", facts, null, h );
 		def period = res.period;
-		period.rundate = currDate;
+
+		period.month = billmonth;
+		period.year = billyear;
+		period.sectorid = m.sectorid; 
+		period.objid = period.sectorid + '-'+ billyear + '-'+ billmonth; 
+		billingcycle.create( period ); 
 		return period;
-	}
-
-
-
+	} 
 }

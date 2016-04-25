@@ -10,9 +10,6 @@ class WaterworksApplicationTaskInterceptor{
 	@Service("DateService")
 	def dateSvc;
 
-	@Service("WaterworksBillingDateService")
-	def billingDateSvc;
-
 	@DataContext("waterworks_installment")
 	def inst;
 
@@ -106,11 +103,7 @@ class WaterworksApplicationTaskInterceptor{
 		def o = app.find( [ objid: t.refid] ).first();
 
 		//retrieve application and shoot into the account. return the acct no.
-		def dts = billingDateSvc.getBillingDates( [stubout:o.stubout, billdate: o.dtinstalled] );
-		dts.fromperiod = o.dtinstalled;
-
 		def m = [_schemaname:'waterworks_account'];
-		m.putAll( dts );
 		m.owner = o.owner;
 		m.address = o.address;
 		m.acctname = o.acctname;
@@ -120,7 +113,8 @@ class WaterworksApplicationTaskInterceptor{
 		m.stuboutindex = o.stuboutindex;
 		m.classification = o.classification;
 		m.currentreading = o.initialreading;
-		m.dtstarted = o.dti;
+		m.dtstarted = o.dtinstalled;
+		m.lastdateread = o.dtinstalled;
 		m.state = 'ACTIVE';
 		m = persistenceSvc.create( m );
 

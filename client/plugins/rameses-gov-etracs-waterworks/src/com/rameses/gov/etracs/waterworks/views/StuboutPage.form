@@ -182,7 +182,7 @@
                       <Dimension value="[200, 20]"/>
                     </Property>
                     <Property name="required" type="boolean" value="true"/>
-                    <Property name="stretchWidth" type="int" value="50"/>
+                    <Property name="stretchWidth" type="int" value="100"/>
                   </Properties>
                 </Component>
               </SubComponents>

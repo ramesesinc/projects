@@ -99,7 +99,7 @@ public class StuboutPage extends javax.swing.JPanel {
         xLookupField6.setName("entity.barangay"); // NOI18N
         xLookupField6.setPreferredSize(new java.awt.Dimension(200, 20));
         xLookupField6.setRequired(true);
-        xLookupField6.setStretchWidth(50);
+        xLookupField6.setStretchWidth(100);
         xFormPanel1.add(xLookupField6);
 
         javax.swing.GroupLayout xPanel1Layout = new javax.swing.GroupLayout(xPanel1);

@@ -44,12 +44,12 @@ public class AccountPage extends javax.swing.JPanel {
         xPanel4 = new com.rameses.rcp.control.XPanel();
         xFormPanel4 = new com.rameses.rcp.control.XFormPanel();
         xDateField7 = new com.rameses.rcp.control.XDateField();
+        xDateField9 = new com.rameses.rcp.control.XDateField();
         xDateField3 = new com.rameses.rcp.control.XDateField();
         xDateField4 = new com.rameses.rcp.control.XDateField();
         xDateField5 = new com.rameses.rcp.control.XDateField();
         xDateField6 = new com.rameses.rcp.control.XDateField();
         xDateField8 = new com.rameses.rcp.control.XDateField();
-        xButton3 = new com.rameses.rcp.control.XButton();
         jPanel1 = new javax.swing.JPanel();
         xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
         xLookupField3 = new com.rameses.rcp.control.XLookupField();
@@ -166,55 +166,56 @@ public class AccountPage extends javax.swing.JPanel {
 
         xFormPanel4.setCaptionWidth(150);
 
-        xDateField7.setCaption("Last Period Date");
+        xDateField7.setCaption("Start Date");
         xDateField7.setName("entity.dtstarted"); // NOI18N
         xDateField7.setPreferredSize(new java.awt.Dimension(150, 20));
         xDateField7.setRequired(true);
         xFormPanel4.add(xDateField7);
 
+        xDateField9.setCaption("Last Reading Date");
+        xDateField9.setName("entity.lastdateread"); // NOI18N
+        xDateField9.setPreferredSize(new java.awt.Dimension(150, 20));
+        xDateField9.setRequired(true);
+        xFormPanel4.add(xDateField9);
+
         xDateField3.setEditable(false);
         xDateField3.setCaption("From Period");
+        xDateField3.setDisableWhen("#{1==0}");
         xDateField3.setEnabled(false);
-        xDateField3.setName("entity.fromperiod"); // NOI18N
+        xDateField3.setName("entity.billingcycle.fromperiod"); // NOI18N
         xDateField3.setPreferredSize(new java.awt.Dimension(150, 20));
-        xDateField3.setRequired(true);
         xFormPanel4.add(xDateField3);
 
         xDateField4.setCaption("To Period");
+        xDateField4.setDisableWhen("#{1==0}");
         xDateField4.setEnabled(false);
-        xDateField4.setName("entity.toperiod"); // NOI18N
+        xDateField4.setName("entity.billingcycle.toperiod"); // NOI18N
         xDateField4.setPreferredSize(new java.awt.Dimension(150, 20));
-        xDateField4.setRequired(true);
         xFormPanel4.add(xDateField4);
 
         xDateField5.setEditable(false);
         xDateField5.setCaption("Reading Date");
+        xDateField5.setDisableWhen("#{1==0}");
         xDateField5.setEnabled(false);
-        xDateField5.setName("entity.readingdate"); // NOI18N
+        xDateField5.setName("entity.billingcycle.readingdate"); // NOI18N
         xDateField5.setPreferredSize(new java.awt.Dimension(150, 20));
-        xDateField5.setRequired(true);
         xFormPanel4.add(xDateField5);
 
         xDateField6.setEditable(false);
         xDateField6.setCaption("Disconnection Date");
+        xDateField6.setDisableWhen("#{1==0}");
         xDateField6.setEnabled(false);
-        xDateField6.setName("entity.disconnectiondate"); // NOI18N
+        xDateField6.setName("entity.billingcycle.disconnectiondate"); // NOI18N
         xDateField6.setPreferredSize(new java.awt.Dimension(150, 20));
-        xDateField6.setRequired(true);
         xFormPanel4.add(xDateField6);
 
         xDateField8.setEditable(false);
         xDateField8.setCaption("Due Date");
+        xDateField8.setDisableWhen("#{1==0}");
         xDateField8.setEnabled(false);
-        xDateField8.setName("entity.duedate"); // NOI18N
+        xDateField8.setName("entity.billingcycle.duedate"); // NOI18N
         xDateField8.setPreferredSize(new java.awt.Dimension(150, 20));
-        xDateField8.setRequired(true);
         xFormPanel4.add(xDateField8);
-
-        xButton3.setCaption("Compute Dates");
-        xButton3.setImmediate(true);
-        xButton3.setName("computeDates"); // NOI18N
-        xButton3.setText("Compute Dates");
 
         javax.swing.GroupLayout xPanel4Layout = new javax.swing.GroupLayout(xPanel4);
         xPanel4.setLayout(xPanel4Layout);
@@ -222,17 +223,13 @@ public class AccountPage extends javax.swing.JPanel {
             xPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(xPanel4Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(xPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(xFormPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(xButton3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(xFormPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         xPanel4Layout.setVerticalGroup(
             xPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(xPanel4Layout.createSequentialGroup()
                 .addComponent(xFormPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(xButton3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -370,7 +367,6 @@ public class AccountPage extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel3;
     private com.rameses.etracs.common.LocalAddressPanel localAddressPanel1;
     private com.rameses.rcp.control.XButton xButton2;
-    private com.rameses.rcp.control.XButton xButton3;
     private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XDateField xDateField3;
     private com.rameses.rcp.control.XDateField xDateField4;
@@ -378,6 +374,7 @@ public class AccountPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XDateField xDateField6;
     private com.rameses.rcp.control.XDateField xDateField7;
     private com.rameses.rcp.control.XDateField xDateField8;
+    private com.rameses.rcp.control.XDateField xDateField9;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XFormPanel xFormPanel2;
     private com.rameses.rcp.control.XFormPanel xFormPanel4;

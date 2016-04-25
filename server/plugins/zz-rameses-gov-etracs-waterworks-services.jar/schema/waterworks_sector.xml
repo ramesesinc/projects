@@ -5,7 +5,7 @@
 		<complex name="readers" ref="waterworks_sector_reader" jointype="one-to-many">
 			<key field="objid" target="sectorid"/>
 		</complex>
-		<complex name="zones" ref="waterworks_sector_zone" jointype="one-to-many" orderBy="code">
+		<complex name="zones" ref="waterworks_sector_zone" jointype="one-to-many" orderBy="code" editable="true">
 			<key field="objid" target="sectorid"/>
 		</complex>
 	</element>

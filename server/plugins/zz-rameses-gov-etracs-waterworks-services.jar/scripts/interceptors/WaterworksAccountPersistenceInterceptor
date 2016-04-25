@@ -14,6 +14,9 @@ class WaterworksAccountPersistenceInterceptor{
 	@Service("DateService")
 	def dateSvc;
 
+	@Service("WaterworksBillingDateService")
+	def billingDateSvc;	
+
 	@Before(pattern="PersistenceService.create", eval="#{args[0]._schemaname == 'waterworks_account'}")
 	public void beforeCreate(def evt) {
 		def o  = evt.args[0];
@@ -21,6 +24,9 @@ class WaterworksAccountPersistenceInterceptor{
         	def prefix = "WACC" + dateSvc.getServerYear();
         	o.acctno = prefix  + seqSvc.getNextFormattedSeriesA( prefix, 5 );
         }    
+
+		def dts = billingDateSvc.getBillingDates( [stubout:o.stubout, billdate: o.lastdateread] );
+		o.billingcycle = dts;
 	}
 
 	@After(pattern="PersistenceService.create", eval="#{args[0]._schemaname == 'waterworks_account'}")

@@ -31,8 +31,6 @@ public class StuboutAccountPage extends javax.swing.JPanel {
     private void initComponents() {
 
         xDataTable3 = new com.rameses.rcp.control.XDataTable();
-        xButton1 = new com.rameses.rcp.control.XButton();
-        xButton2 = new com.rameses.rcp.control.XButton();
         xButton5 = new com.rameses.rcp.control.XButton();
 
         xDataTable3.setColumns(new com.rameses.rcp.common.Column[]{
@@ -116,23 +114,11 @@ public class StuboutAccountPage extends javax.swing.JPanel {
         xDataTable3.setHandler("listHandler");
         xDataTable3.setName("selectedItem"); // NOI18N
 
-        xButton1.setDepends(new String[] {"selectedItem"});
-        xButton1.setDisableWhen("#{selectedItem==null}");
-        xButton1.setMargin(new java.awt.Insets(2, 5, 2, 5));
-        xButton1.setName("moveUp"); // NOI18N
-        xButton1.setText("Up");
-
-        xButton2.setDepends(new String[] {"selectedItem"});
-        xButton2.setDisableWhen("#{selectedItem==null}");
-        xButton2.setMargin(new java.awt.Insets(2, 5, 2, 5));
-        xButton2.setName("moveDown"); // NOI18N
-        xButton2.setText("Down");
-
         xButton5.setDepends(new String[] {"selectedItem"});
         xButton5.setDisableWhen("#{selectedItem==null}");
         xButton5.setMargin(new java.awt.Insets(2, 5, 2, 5));
-        xButton5.setName("swap"); // NOI18N
-        xButton5.setText("Swap");
+        xButton5.setName("changeIndexNo"); // NOI18N
+        xButton5.setText("Change Index Number");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -141,11 +127,7 @@ public class StuboutAccountPage extends javax.swing.JPanel {
             .addComponent(xDataTable3, javax.swing.GroupLayout.DEFAULT_SIZE, 607, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addGap(23, 23, 23)
-                .addComponent(xButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(xButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(xButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(xButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -153,16 +135,11 @@ public class StuboutAccountPage extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addComponent(xDataTable3, javax.swing.GroupLayout.DEFAULT_SIZE, 375, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(xButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(xButton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(xButton5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(xButton5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private com.rameses.rcp.control.XButton xButton1;
-    private com.rameses.rcp.control.XButton xButton2;
     private com.rameses.rcp.control.XButton xButton5;
     private com.rameses.rcp.control.XDataTable xDataTable3;
     // End of variables declaration//GEN-END:variables

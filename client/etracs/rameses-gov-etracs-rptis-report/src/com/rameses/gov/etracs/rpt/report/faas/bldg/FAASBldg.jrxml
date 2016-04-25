@@ -1966,6 +1966,108 @@
 			<groupHeader>
 			<band height="442"  isSplitAllowed="true" >
 				<printWhenExpression><![CDATA[new Boolean($P{PRINTPAGE} == null || $P{PRINTPAGE} == "back")]]></printWhenExpression>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="376"
+						y="366"
+						width="176"
+						height="12"
+						key="textField-69"
+						positionType="Float"/>
+					<box></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{approver.title}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="190"
+						y="366"
+						width="176"
+						height="12"
+						key="textField-81"
+						positionType="Float">
+							<printWhenExpression><![CDATA[new Boolean($F{byauthority} == null)]]></printWhenExpression>
+						</reportElement>
+					<box></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{provappraiser.title}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="0"
+						y="366"
+						width="176"
+						height="12"
+						key="textField-86"
+						positionType="Float">
+							<printWhenExpression><![CDATA[new Boolean($F{byauthority} == null)]]></printWhenExpression>
+						</reportElement>
+					<box></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{provtaxmapper.title}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="yyyy-MM-dd" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="0"
+						y="376"
+						width="176"
+						height="12"
+						key="textField-85"
+						positionType="Float">
+							<printWhenExpression><![CDATA[new Boolean($F{byauthority} == null)]]></printWhenExpression>
+						</reportElement>
+					<box></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.util.Date"><![CDATA[$F{provtaxmapper.dtsigned}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="190"
+						y="352"
+						width="176"
+						height="14"
+						key="textField-82"
+						positionType="Float">
+							<printWhenExpression><![CDATA[new Boolean($F{byauthority} == null)]]></printWhenExpression>
+						</reportElement>
+					<box>					<pen lineWidth="0.0" lineColor="#0000FF"/>
+					<topPen lineWidth="0.0" lineColor="#0000FF"/>
+					<leftPen lineWidth="0.0" lineColor="#0000FF"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000FF"/>
+					<rightPen lineWidth="0.0" lineColor="#0000FF"/>
+</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{provappraiser.name}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="376"
+						y="352"
+						width="176"
+						height="14"
+						key="textField-72"
+						positionType="Float"/>
+					<box>					<pen lineWidth="0.0" lineColor="#0000FF"/>
+					<topPen lineWidth="0.0" lineColor="#0000FF"/>
+					<leftPen lineWidth="0.0" lineColor="#0000FF"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000FF"/>
+					<rightPen lineWidth="0.0" lineColor="#0000FF"/>
+</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{approver.name}]]></textFieldExpression>
+				</textField>
 				<staticText>
 					<reportElement
 						x="295"
@@ -2453,20 +2555,6 @@
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$F{recommender.title}]]></textFieldExpression>
 				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="376"
-						y="366"
-						width="176"
-						height="12"
-						key="textField-69"
-						positionType="Float"/>
-					<box></box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="false"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{approver.title}]]></textFieldExpression>
-				</textField>
 				<staticText>
 					<reportElement
 						x="1"
@@ -2550,25 +2638,6 @@
 					</textElement>
 				<text><![CDATA[APPROVED BY:]]></text>
 				</staticText>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="376"
-						y="366"
-						width="176"
-						height="14"
-						key="textField-72"
-						positionType="Float"/>
-					<box>					<pen lineWidth="0.0" lineColor="#0000FF"/>
-					<topPen lineWidth="0.0" lineColor="#0000FF"/>
-					<leftPen lineWidth="0.0" lineColor="#0000FF"/>
-					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000FF"/>
-					<rightPen lineWidth="0.0" lineColor="#0000FF"/>
-</box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{approver.name}]]></textFieldExpression>
-				</textField>
 				<textField isStretchWithOverflow="false" pattern="yyyy-MM-dd" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="376"
@@ -2713,22 +2782,6 @@
 					<graphicElement stretchType="NoStretch"/>
 					<imageExpression class="java.io.InputStream"><![CDATA[$F{signatories}.source.provappraiser.signatureis]]></imageExpression>
 				</image>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="190"
-						y="366"
-						width="176"
-						height="12"
-						key="textField-81"
-						positionType="Float">
-							<printWhenExpression><![CDATA[new Boolean($F{byauthority} == null)]]></printWhenExpression>
-						</reportElement>
-					<box></box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="false"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{provappraiser.title}]]></textFieldExpression>
-				</textField>
 				<staticText>
 					<reportElement
 						x="190"
@@ -2746,27 +2799,6 @@
 					</textElement>
 				<text><![CDATA[APPRAISED BY (Province)]]></text>
 				</staticText>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="190"
-						y="366"
-						width="176"
-						height="14"
-						key="textField-82"
-						positionType="Float">
-							<printWhenExpression><![CDATA[new Boolean($F{byauthority} == null)]]></printWhenExpression>
-						</reportElement>
-					<box>					<pen lineWidth="0.0" lineColor="#0000FF"/>
-					<topPen lineWidth="0.0" lineColor="#0000FF"/>
-					<leftPen lineWidth="0.0" lineColor="#0000FF"/>
-					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000FF"/>
-					<rightPen lineWidth="0.0" lineColor="#0000FF"/>
-</box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{provappraiser.name}]]></textFieldExpression>
-				</textField>
 				<textField isStretchWithOverflow="false" pattern="yyyy-MM-dd" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="190"
@@ -2800,7 +2832,7 @@
 				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="0"
-						y="366"
+						y="352"
 						width="176"
 						height="14"
 						key="textField-84"
@@ -2817,38 +2849,6 @@
 						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$F{provtaxmapper.name}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" pattern="yyyy-MM-dd" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="0"
-						y="376"
-						width="176"
-						height="12"
-						key="textField-85"
-						positionType="Float">
-							<printWhenExpression><![CDATA[new Boolean($F{byauthority} == null)]]></printWhenExpression>
-						</reportElement>
-					<box></box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="false"/>
-					</textElement>
-				<textFieldExpression   class="java.util.Date"><![CDATA[$F{provtaxmapper.dtsigned}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="0"
-						y="366"
-						width="176"
-						height="12"
-						key="textField-86"
-						positionType="Float">
-							<printWhenExpression><![CDATA[new Boolean($F{byauthority} == null)]]></printWhenExpression>
-						</reportElement>
-					<box></box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="false"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{provtaxmapper.title}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement
@@ -2869,9 +2869,9 @@
 				</staticText>
 				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="1"
+						x="0"
 						y="310"
-						width="364"
+						width="365"
 						height="78"
 						key="textField-87"
 						positionType="Float">

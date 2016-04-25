@@ -41,7 +41,7 @@ class WaterworksMobileDownloadService {
 	@ProxyMethod
 	@Async
 	public def processDownload(def o) {
-		println "processing";
+		println "processing download "+ o.batchid;
         def y = dateSvc.getServerYear();
 		def m = dateSvc.getServerMonth() - 1;
 		if(m==0) {
@@ -57,10 +57,10 @@ class WaterworksMobileDownloadService {
 		def acct = cta.findAccountByHandlerAndTag([handler:'waterworks', tag:'WFEE']); 
 		if ( !acct ) throw new Exception('Please provide an itemaccount ');
 
-		def params = [sectorid:o.sectorid, year:dueyear, month:duemonth];
+		def params = [assigneeid: o.assigneeid, sectorid:o.sectorid, year:dueyear, month:duemonth];
 		def list = wm.getListForDownload(params);
+		println 'list-size: '+ list.size();
 		list.each { 
-			println "processing "+ it.objid;
 			it.state = 'PENDING';
 			it.barcode = '51030:' + it.acctno;
 			it.batchid = o.batchid;
@@ -86,16 +86,24 @@ class WaterworksMobileDownloadService {
 
 
 	@ProxyMethod
-	public String initForDownload( def o ){
-		if(!o.sectorid) throw new Exception("sectorid is required!");
-		def b = header.create( [state:0] );
-		o.batchid = b.batchid;
+	public String initForDownload( def o ){ 
+		println 'init for download... '+ o.batchid;
+		if (!o.sectorid) throw new Exception("sectorid is required!"); 
+
+		if ( o.batchid ) {
+			//do nothing, client is resuming downloads...
+		} else {
+			def b = header.create([ state: 0 ]);
+			o.batchid = b.batchid; 
+		} 
+		
 		self.processDownload( o );
-		return b.batchid;
+		return o.batchid; 
 	}
 
 	@ProxyMethod
 	public int getBatchStatus( String batchid ) {
+		println 'check batch status... '+ batchid;
 		int state = header.find([batchid: batchid]).select("state").val();	
 		if( state == 0 ) return -1;
 		return wm.find([batchid:batchid]).select("x:{COUNT(*)}").val();
@@ -103,10 +111,10 @@ class WaterworksMobileDownloadService {
 
 	@ProxyMethod
 	public def download( def o ) {
+		println "fetching download " + o;
 		if(!o.batchid) throw new Exception("Please specify batchid!"); 
-		if(!o._start) throw new Exception("Please specify _start!"); 
-		if(!o._limit) throw new Exception("Please specify _limit!"); 
-
+		if(o._start == null) throw new Exception("Please specify _start!"); 
+		if(o._limit == null) throw new Exception("Please specify _limit!"); 
 		return wm.find([batchid:o.batchid]).list(o._start, o._limit);
 	}
 

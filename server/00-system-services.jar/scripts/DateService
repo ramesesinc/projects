@@ -92,7 +92,7 @@ class DateService {
 		map.month = cal.get( Calendar.MONTH ) + 1;
 		map.day = cal.get( Calendar.DATE );
 		map.year = cal.get( Calendar.YEAR );
-		map.hour = cal.get( Calendar.HOUR );
+		map.hour = cal.get( Calendar.HOUR_OF_DAY );
 		map.minute = cal.get( Calendar.MINUTE );
 		map.second = cal.get( Calendar.SECOND );
 		map.millisecond = cal.get(Calendar.MILLISECOND);

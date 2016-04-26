@@ -296,7 +296,7 @@ public class AccountPage extends javax.swing.JPanel {
 
         xLabel13.setBackground(new java.awt.Color(245, 245, 245));
         xLabel13.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
-        xLabel13.setCaption("Next Billing Period");
+        xLabel13.setCaption("Billing Period");
         xLabel13.setExpression("#{entity.billingcycle.fromperiod} - #{entity.billingcycle.toperiod} ");
         xLabel13.setOpaque(true);
         xLabel13.setPreferredSize(new java.awt.Dimension(0, 20));

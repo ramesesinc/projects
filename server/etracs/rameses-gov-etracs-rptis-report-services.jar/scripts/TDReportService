@@ -194,12 +194,18 @@ class TDReportService
 		td.buildings = em.sqlContext.createNamedQuery('tdreport:getBldgAssessments')
 								.setParameter('faasid', td.faasid).resultList
 
+		def addlitem = adb.findTotalAdditionlItemArea([objid:td.faasid])
+		if (addlitem && addlitem.additionalarea != null && td.buildings){
+			td.buildings.first().area += addlitem.additionalarea
+		}
+
 		//adjust pin based on additional bldg lands
 		def lands = adb.getBldgLands([objid:td.rpuid])
 		if (lands){
 			def landpins = lands.landfaas.fullpin.join(', ')
 			td.fullpin += '\nPartially erected on lands: ' + landpins
 		}
+
 
 	}
 

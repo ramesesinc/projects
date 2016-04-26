@@ -8,7 +8,7 @@ class WaterworksPaymentOrderInterceptor {
 	@Env
 	def env; 
 
-	@Before( pattern="PaymentOrderService.open", eval="#{args[0].txnid.startsWith('WA')}" )
+	@Before( pattern="PaymentOrderService.open", eval="#{args[0].txnid.toString().toUpperCase().startsWith('WA')}" )
 	public void beforeOpen( evt ) {
 		def params = evt.args[0]; 
 		def txnid = params.txnid; 

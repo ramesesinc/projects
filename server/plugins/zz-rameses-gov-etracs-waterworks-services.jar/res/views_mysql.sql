@@ -66,7 +66,8 @@ select
   wm.brand AS brand, wm.capacity AS capacity,
   wms.title AS size_title, 
   wp.objid AS application_objid,
-  wp.acctname AS application_acctname
+  wp.acctname AS application_acctname, 
+	wm.currentacctid 
 from waterworks_meter wm
 	inner join waterworks_metersize wms on wms.objid = wm.sizeid 
 	left join waterworks_application wp on wp.meterid = wm.objid 

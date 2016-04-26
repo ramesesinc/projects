@@ -1,0 +1,27 @@
+import com.rameses.annotations.*;
+
+class WaterworksApplicationService {
+
+	@DataContext('waterworks_application') 
+	def wa; 
+
+	@ProxyMethod 
+	public void assignMeter( params ) {
+		if ( !params.objid ) throw new Exception('objid parameter is required'); 
+
+		if ( params.meter?.objid ) { 
+			params.meterid = params.meter.objid 
+		} 
+		if ( !params.meterid ) throw new Exception('meterid parameter is required'); 
+
+		if ( params.installer?.objid ) {
+			params.installerid = params.installer.objid; 
+		} 
+		if ( params.installer?.name ) {
+			params.installername = params.installer.name;
+		}
+
+		wa.assignMeter( params );
+	}
+	
+}

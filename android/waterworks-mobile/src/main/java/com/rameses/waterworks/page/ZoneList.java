@@ -56,21 +56,20 @@ public class ZoneList {
                 return new ZoneCell();
             }
         });
-        zoneList.setOnMouseClicked(new EventHandler<MouseEvent>(){
+        zoneList.setOnMousePressed(new EventHandler<MouseEvent>(){
             @Override
             public void handle(MouseEvent event) {
-                Platform.runLater(new Runnable(){
-                    @Override
-                    public void run() {
-                        try{
-                            Thread.sleep(1000);
-                        }catch(Exception e){ System.err.println(e); }
-                        Zone zone = zoneList.getSelectionModel().getSelectedItem();
-                        if(zone != null){
-                            Main.ROOT.setCenter(new StuboutList(zone).getLayout());
+                if(event.getClickCount() == 2){
+                    Platform.runLater(new Runnable(){
+                        @Override
+                        public void run() {
+                            Zone zone = zoneList.getSelectionModel().getSelectedItem();
+                            if(zone != null){
+                                Main.ROOT.setCenter(new StuboutList(zone).getLayout());
+                            }
                         }
-                    }
-                });
+                    });
+                }
             }
         });
         

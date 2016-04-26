@@ -149,19 +149,21 @@ public class AccountList {
                 return new AccountCell();
             }
         });
-        accountList.setOnTouchReleased(new EventHandler<TouchEvent>(){
+        accountList.setOnMousePressed(new EventHandler<MouseEvent>(){
             @Override
-            public void handle(TouchEvent event) {
-                Platform.runLater(new Runnable(){
-                    @Override
-                    public void run() {
-                        Account account = accountList.getSelectionModel().getSelectedItem();
-                        if(account != null){
-                            Node child = new AccountDetail(account).getLayout();
-                            Dialog.show("Account Information", child);
+            public void handle(MouseEvent event) {
+                if(event.getClickCount() == 2){
+                    Platform.runLater(new Runnable(){
+                        @Override
+                        public void run() {
+                            Account account = accountList.getSelectionModel().getSelectedItem();
+                            if(account != null){
+                                Node child = new AccountDetail(account).getLayout();
+                                Dialog.show("Account Information", child);
+                            }
                         }
-                    }
-                });
+                    });
+                }
             }
         });
         

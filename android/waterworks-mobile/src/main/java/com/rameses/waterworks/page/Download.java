@@ -1,7 +1,6 @@
 package com.rameses.waterworks.page;
 
 import com.rameses.Main;
-import com.rameses.waterworks.bean.Account;
 import com.rameses.waterworks.bean.DownloadStat;
 import com.rameses.waterworks.bean.Rule;
 import com.rameses.waterworks.bean.Sector;
@@ -37,6 +36,8 @@ import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.cell.CheckBoxListCell;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -56,7 +57,6 @@ public class Download {
     List<Map> accountList;
     int downloadsize;
     int indexposition = 1;
-    Task<Void> task;
     boolean continueDownload = true;
     int counter = 0;
     String batchid;
@@ -103,19 +103,38 @@ public class Download {
         download.setOnMousePressed(new EventHandler<MouseEvent>(){
             @Override
             public void handle(MouseEvent event) {
-                if(!Dialog.isOpen) Dialog.wait("Processing, please wait...");
+                if(!Dialog.isOpen){
+                    Platform.runLater(new Runnable(){
+                        @Override
+                        public void run() {
+                            Dialog.show("", showProgress());
+                        }
+                    });
+                }
             }
         });
         download.setOnMouseReleased(new EventHandler<MouseEvent>(){
             @Override
             public void handle(MouseEvent event) {
-                initDownload();
+                Platform.runLater(new Runnable(){
+                    @Override
+                    public void run() {
+                        initDownload();
+                    }
+                });
             }
         });
         download.setOnTouchPressed(new EventHandler<TouchEvent>(){
             @Override
             public void handle(TouchEvent event) {
-                if(!Dialog.isOpen) Dialog.wait("Processing, please wait...");
+                if(!Dialog.isOpen){
+                    Platform.runLater(new Runnable(){
+                        @Override
+                        public void run() {
+                            Dialog.show("", showProgress());
+                        }
+                    });
+                }
             }
         });
         
@@ -139,76 +158,6 @@ public class Download {
         });
         
         loadData();
-        
-        task = new Task<Void>(){
-            @Override
-            protected Void call() throws Exception {
-                downloadedList = new ArrayList<String>();
-                counter = 0;
-                Iterator<Map> it = accountList.iterator();
-                while(it.hasNext()){
-                    if(!continueDownload){
-                        return null;
-                    }
-                    Map account = it.next();
-                    account.put("batchid", batchid);
-                    String objid = account.get("objid") != null ? account.get("objid").toString() : "";
-                    Database db = DatabasePlatformFactory.getPlatform().getDatabase();
-                    Account result = db.findAccountByID(objid);
-                    if(result == null){
-                        db.createAccount(account);
-                        if(db.getError().isEmpty()){
-                            ++counter;
-                            downloadedList.add(objid);
-                        }
-                    }else{
-                        db.updateAccount(account);
-                        if(db.getError().isEmpty()){
-                            ++counter;
-                            downloadedList.add(objid);
-                        }
-                    }
-                    double percent = indexposition/downloadsize;
-                    updateProgress(indexposition,downloadsize);
-                    indexposition++;
-                }
-                
-                Thread t = new Thread(){
-                    @Override
-                    public void run(){
-                        Platform.runLater(new Runnable(){
-                            @Override
-                            public void run() {
-                                label.setText("Download Complete!    " + counter + " / " +downloadsize);
-                                download.setDisable(false);
-                                download.setText("Done");
-                                download.setOnMouseReleased(new EventHandler<MouseEvent>(){
-                                    @Override
-                                    public void handle(MouseEvent event) {
-                                        Main.ROOT.setCenter(new Home().getLayout());
-                                    }
-                                });
-                                download.setOnMousePressed(new EventHandler<MouseEvent>(){
-                                    @Override
-                                    public void handle(MouseEvent event) {
-                                        Main.ROOT.setCenter(new Home().getLayout());
-                                    }
-                                });
-                                download.setOnTouchPressed(new EventHandler<TouchEvent>(){
-                                    @Override
-                                    public void handle(TouchEvent event) {
-                                        Main.ROOT.setCenter(new Home().getLayout());
-                                    }
-                                });
-                            }
-                        });
-                    }
-                };
-                t.start();
-                
-                return null;
-            }
-        };
     }
     
     DBContext createDBContext() {
@@ -234,12 +183,12 @@ public class Download {
                 recordcount = stat; 
                 break; 
             }
-        }   
+        }
+        downloadsize = recordcount;
         return recordcount;
     }
     
     private void processDownload( String batchid, int indexno, int recordcount ) {
-        Dialog.hide();
         Map params = new HashMap();
         int limit=50, start=(indexno < 0 ? 0 : indexno);  
         DownloadStat stat = new DownloadStat().findByPrimary(batchid);
@@ -260,12 +209,60 @@ public class Download {
                     stat.update();
                 }
             } 
+            indexposition = start;
             start += limit; 
         } 
         
         if ( start >= recordcount ) { 
             stat.findByPrimary(batchid).delete(); 
         }
+    }
+    
+    private void updateProgress(){
+        Task<Void> task = new Task<Void>(){
+            @Override
+            protected Void call() throws Exception {
+                for(int x = 1; x <= indexposition; x++){
+                    updateProgress(x, indexposition);
+                }
+                finishDownload();
+                return null;
+            }
+        };
+        
+        label.setVisible(true);
+        progressbar.setVisible(true);
+        progressbar.progressProperty().bind(task.progressProperty());
+        
+        new Thread(task).start();
+    }
+    
+    private void finishDownload(){
+        Platform.runLater(new Runnable(){
+            @Override
+            public void run() {
+                label.setText("Download Complete! " + downloadsize + " records was downloaded!");
+                download.setText("Done");
+                download.setOnMousePressed(new EventHandler<MouseEvent>(){
+                    @Override
+                    public void handle(MouseEvent event) {
+                        Main.ROOT.setCenter(new Home().getLayout());
+                    }
+                });
+                download.setOnMouseReleased(new EventHandler<MouseEvent>(){
+                    @Override
+                    public void handle(MouseEvent event) {
+                        Main.ROOT.setCenter(new Home().getLayout());
+                    }
+                });
+                download.setOnTouchPressed(new EventHandler<TouchEvent>(){
+                    @Override
+                    public void handle(TouchEvent event) {
+                        Main.ROOT.setCenter(new Home().getLayout());
+                    }
+                });
+            }
+        });
     }
     
     private void initDownload(){
@@ -337,6 +334,7 @@ public class Download {
             return;
         }
 
+        if(Dialog.isOpen) Dialog.hide();
         stat.setRecordcount(recordcount);
         stat.update(); 
         try { 
@@ -346,7 +344,7 @@ public class Download {
             Dialog.hide();
             Dialog.showError("Process download failed caused by "+ t.getMessage()); 
             return; 
-        } 
+        }
         
         //SAVE AREA, STUBOUTS
         clearSector();
@@ -356,37 +354,10 @@ public class Download {
             }
         }
         
-        Dialog.hide();
-        label.setVisible(true);
-        progressbar.setVisible(true);
-        //progressbar.progressProperty().bind(task.progressProperty());
-        //new Thread(task).start();
-        download.setText("Cancel");
-        download.setDisable(true);
-        download.setOnAction(new EventHandler<ActionEvent>(){
-            @Override
-            public void handle(ActionEvent event) {
-                continueDownload = false;
-                label.setVisible(false);
-                progressbar.setVisible(false);
-                download.setText("Back");
-                download.setOnAction(new EventHandler<ActionEvent>(){
-                    @Override
-                    public void handle(ActionEvent event) {
-                        Main.ROOT.setCenter(new Home().getLayout());
-                    }
-                });
-                Map params = new HashMap();
-                params.put("batchid", batchid);
-                params.put("downloadedlist", downloadedList);
-                MobileDownloadService svc = new MobileDownloadService();
-                svc.cancelDownload(params);
-                if(!svc.ERROR.isEmpty()){
-                    Dialog.showAlert(svc.ERROR);
-                    return;
-                }
-            }
-        });
+        //DOWNLOAD RULES
+        downloadRules();
+ 
+        updateProgress();
     }
     
     private void loadData(){ 
@@ -507,6 +478,22 @@ public class Download {
         DatabasePlatformFactory.getPlatform().getDatabase().clearZone();
         DatabasePlatformFactory.getPlatform().getDatabase().clearSectorReader();
         DatabasePlatformFactory.getPlatform().getDatabase().clearSector();
+    }
+    
+    private Node showProgress(){
+        ImageView image = new ImageView(new Image("icon/processing.png"));
+        
+        Label text = new Label("PROCESSING, PLEASE WAIT...");
+        text.getStyleClass().add("login-label");
+        
+        VBox root = new VBox(10);
+        root.setStyle("-fx-background-color: white;");
+        root.setPadding(new Insets(15));
+        root.setPrefWidth(Main.WIDTH - 100);
+        root.setAlignment(Pos.CENTER);
+        root.getChildren().addAll(image, text);
+        
+        return root;
     }
     
     public Node getLayout(){

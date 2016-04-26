@@ -1,6 +1,6 @@
-data = "! 0 200 200 1400 1\n";
+data = "! 0 200 200 1250 1\n";
 data += "CENTER\n";
-data += "TEXT 5 0 0 " + (y += textgap) + " SAN CARLOS CITY WATER DISTRICT\n";
+data += "TEXT 5 0 0 " + (y += textgap) + " CITY WATERWORKS DEPARTMENT\n";
 data += "CENTER\n";
 data += "TEXT 5 0 0 " + (y += textgap) + " SAN CARLOS CITY, NEGROS OCCIDENTAL\n";
 data += "CENTER\n";
@@ -23,7 +23,7 @@ data += "ML 40\n";
 data += "TEXT 5 0 0 " + (y += textgap) + " " + a.getAcctName() +"\n" + a.getAddress() +"\n";
 data += "ENDML\n";
 data += "CENTER\n";
-data += "TEXT 5 0 0 " + (y += textgap) + " ---------------------------------------\n";
+data += "TEXT 5 0 0 " + (y += textgap + 30) + " ---------------------------------------\n";
 data += "LEFT\n";
 data += "TEXT 5 0 0 " + (y += textgap) + " Present Reading\n";
 data += "TEXT 5 0 230 " + y + " :\n";
@@ -35,12 +35,10 @@ data += "TEXT 5 0 0 " + (y += textgap) + " Consumption\n";
 data += "TEXT 5 0 230 " + y + " :\n";
 data += "TEXT 5 0 260 " + y + " " + a.getConsumption() +"\n";
 data += "TEXT 5 0 0 " + (y += textgap) + " ---------------------------------------\n";
-for(com.rameses.waterworks.bean.ItemAccount act : items){
-    data += "LEFT\n";
-    data += "TEXT 5 0 0 " + (y += textgap) + " " + act.getAccount() + "\n";
-    data += "RIGHT\n";
-    data += "TEXT 0 3 370 " + y + " " + act.getAmount() +"    \n";
-}
+data += "LEFT\n";
+data += "TEXT 5 0 0 " + (y += textgap) + " Prev. Balance\n";
+data += "RIGHT\n";
+data += "TEXT 0 3 370 " + y + " " + a.getPrevBalance() +"    \n";
 data += "LEFT\n";
 data += "TEXT 5 0 0 " + (y += textgap) + " Current Due\n";
 data += "RIGHT\n";

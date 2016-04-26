@@ -1,7 +1,6 @@
 package com.rameses.waterworks.dialog;
 
 import com.rameses.Main;
-import com.rameses.waterworks.page.Home;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -203,7 +202,6 @@ public class Dialog {
             container.setSpacing(20);
             container.setPadding(new Insets(20,30,20,30));
         }
-        
         show("", container);
     }
     

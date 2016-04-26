@@ -78,7 +78,7 @@ public class FAASRevertStateService
     	if (entity.rputype == 'land')
     		em.updateRealPropertyState(entity)
 
-    	def faaslist [:]
+    	def faaslist = [:]
     	faaslist.objid = entity.objid
     	faaslist.state = entity.state
     	faaslist.taskid = null

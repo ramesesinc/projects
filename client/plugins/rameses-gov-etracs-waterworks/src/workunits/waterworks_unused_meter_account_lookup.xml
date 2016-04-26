@@ -1,5 +1,5 @@
 <workunit extends="com/rameses/seti2/templates/CrudLookup.xml" 
-          schemaName="vw_waterworks_meter" 
+          schemaName="vw_waterworks_meter_account" 
           cols="serialno,brand,capacity,size.title"
           customFilter="account.objid IS NULL" >
     <invokers>

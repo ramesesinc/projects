@@ -1,6 +1,6 @@
 <workunit schemaName="waterworks_account">
     <invokers>
-        <invoker type="waterworks_account:form:formActions" 
+        <invoker type="waterworks_account:form:menuActions" 
                  caption="Change Address" 
                  target="popup" 
                  action="init"

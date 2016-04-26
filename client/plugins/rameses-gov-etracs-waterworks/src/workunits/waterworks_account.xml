@@ -1,10 +1,12 @@
 <workunit schemaName="waterworks_account" allowCreate="false" allowEdit="false">
     <invokers>
+        <invoker folderid="/home/waterworks" caption="Capture Account" action="create" index="4"/>
+        <invoker type="waterworks_account:create" caption="Waterworks Account" action="create" target="window"/>        
+        
         <invoker type="waterworks_account:open" 
                  formTitle="Waterworks Account (#{entity.acctno}) #{entity.acctname}" 
                  formId="#{entity.objid}"
                  action="open" target="window"/>
-        
         
         
     </invokers>

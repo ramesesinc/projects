@@ -33,39 +33,35 @@
 
 	<field name="statementno" class="java.lang.String"/>
 	<field name="printdate" class="java.sql.Timestamp"/>
-	<field name="lastpaymentdate" class="java.sql.Timestamp"/>
+	<field name="lastdatepaid" class="java.util.Date"/>
 	<field name="previousamount" class="java.lang.Double"/>
 	<field name="barcode" class="java.lang.String"/>
 	<field name="acctname" class="java.lang.String"/>
 	<field name="address.text" class="java.lang.String"/>
-	<field name="mobileno" class="java.lang.String"/>
+	<field name="contactno" class="java.lang.String"/>
 	<field name="consumercode" class="java.lang.String"/>
-	<field name="consumertype" class="java.lang.String"/>
+	<field name="classificationid" class="java.lang.String"/>
 	<field name="acctno" class="java.lang.String"/>
 	<field name="billsequence" class="java.lang.String"/>
 	<field name="meter.brand" class="java.lang.String"/>
 	<field name="meter.serialno" class="java.lang.String"/>
-	<field name="meter.sizeid" class="java.lang.String"/>
-	<field name="duedate" class="java.lang.String"/>
-	<field name="periodfrom" class="java.lang.String"/>
-	<field name="periodto" class="java.lang.String"/>
+	<field name="meter.size.title" class="java.lang.String"/>
+	<field name="billingcycle.duedate" class="java.lang.String"/>
+	<field name="billingcycle.fromperiod" class="java.util.Date"/>
+	<field name="billingcycle.toperiod" class="java.util.Date"/>
 	<field name="nextduedate" class="java.util.Date"/>
-	<field name="prevreadingdate" class="java.util.Date"/>
-	<field name="presreadingdate" class="java.util.Date"/>
-	<field name="prevreading" class="java.lang.Integer"/>
 	<field name="lastreading" class="java.lang.Integer"/>
-	<field name="consumption" class="java.lang.Integer"/>
+	<field name="consumption" class="java.lang.Object"/>
 	<field name="billingdetails" class="java.lang.Object"/>
 	<field name="averageconsumption" class="java.math.BigDecimal"/>
 	<field name="chartdata" class="java.lang.Object"/>
-	<field name="meter" class="java.lang.Object"/>
 
 		<background>
 			<band height="0"  isSplitAllowed="true" >
 			</band>
 		</background>
 		<title>
-			<band height="752"  isSplitAllowed="true" >
+			<band height="730"  isSplitAllowed="true" >
 				<rectangle>
 					<reportElement
 						x="0"
@@ -88,7 +84,7 @@
 						key="image-1"/>
 					<box></box>
 					<graphicElement stretchType="NoStretch" fill="Solid" />
-					<imageExpression class="java.io.InputStream"><![CDATA[$P{LOGOLGU}]]></imageExpression>
+					<imageExpression class="java.lang.String"><![CDATA["classpath://images/lgu-logo.png"]]></imageExpression>
 				</image>
 				<staticText>
 					<reportElement
@@ -262,7 +258,7 @@
 					</textElement>
 				<textFieldExpression   class="java.util.Date"><![CDATA[$F{printdate}]]></textFieldExpression>
 				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<textField isStretchWithOverflow="false" pattern="dd-MMM-yyyy" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="445"
 						y="43"
@@ -273,7 +269,7 @@
 					<textElement verticalAlignment="Middle">
 						<font size="9"/>
 					</textElement>
-				<textFieldExpression   class="java.util.Date"><![CDATA[$F{lastpaymentdate}]]></textFieldExpression>
+				<textFieldExpression   class="java.util.Date"><![CDATA[$F{lastdatepaid}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -374,7 +370,7 @@
 					<textElement verticalAlignment="Middle">
 						<font size="9"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{mobileno}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{contactno}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement
@@ -417,19 +413,6 @@
 				</staticText>
 				<staticText>
 					<reportElement
-						x="303"
-						y="178"
-						width="90"
-						height="13"
-						key="staticText-15"/>
-					<box></box>
-					<textElement verticalAlignment="Middle">
-						<font pdfFontName="Helvetica" size="9" isBold="false"/>
-					</textElement>
-				<text><![CDATA[Billing Sequence]]></text>
-				</staticText>
-				<staticText>
-					<reportElement
 						x="393"
 						y="133"
 						width="6"
@@ -467,19 +450,6 @@
 					</textElement>
 				<text><![CDATA[:]]></text>
 				</staticText>
-				<staticText>
-					<reportElement
-						x="393"
-						y="178"
-						width="6"
-						height="13"
-						key="staticText-19"/>
-					<box></box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font pdfFontName="Helvetica" size="9" isBold="false"/>
-					</textElement>
-				<text><![CDATA[:]]></text>
-				</staticText>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="410"
@@ -504,7 +474,7 @@
 					<textElement verticalAlignment="Middle">
 						<font size="9"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{consumertype}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{classificationid}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -519,25 +489,12 @@
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$F{acctno}]]></textFieldExpression>
 				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="410"
-						y="178"
-						width="155"
-						height="13"
-						key="textField-13"/>
-					<box></box>
-					<textElement verticalAlignment="Middle">
-						<font size="9"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{billsequence}]]></textFieldExpression>
-				</textField>
 				<rectangle>
 					<reportElement
 						x="0"
 						y="206"
 						width="280"
-						height="283"
+						height="385"
 						forecolor="#003399"
 						key="rectangle-2"/>
 					<graphicElement stretchType="NoStretch"/>
@@ -547,7 +504,7 @@
 						x="291"
 						y="206"
 						width="280"
-						height="283"
+						height="385"
 						forecolor="#003399"
 						key="rectangle-3"/>
 					<graphicElement stretchType="NoStretch"/>
@@ -709,7 +666,7 @@
 					<textElement verticalAlignment="Middle">
 						<font size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{meter.sizeid}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{meter.size.title}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement
@@ -748,7 +705,7 @@
 					<textElement verticalAlignment="Middle">
 						<font size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{duedate}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{billingcycle.duedate}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement
@@ -787,7 +744,7 @@
 					<textElement verticalAlignment="Middle">
 						<font size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{periodfrom}]]></textFieldExpression>
+				<textFieldExpression   class="java.util.Date"><![CDATA[$F{billingcycle.fromperiod}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement
@@ -826,7 +783,7 @@
 					<textElement verticalAlignment="Middle">
 						<font size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{periodto}]]></textFieldExpression>
+				<textFieldExpression   class="java.util.Date"><![CDATA[$F{billingcycle.toperiod}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement
@@ -867,110 +824,6 @@
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$F{nextduedate}]]></textFieldExpression>
 				</textField>
-				<staticText>
-					<reportElement
-						x="23"
-						y="309"
-						width="59"
-						height="13"
-						key="staticText-36"/>
-					<box></box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font pdfFontName="Helvetica" size="8" isBold="false"/>
-					</textElement>
-				<text><![CDATA[Date]]></text>
-				</staticText>
-				<staticText>
-					<reportElement
-						x="108"
-						y="309"
-						width="59"
-						height="13"
-						key="staticText-37"/>
-					<box></box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font pdfFontName="Helvetica" size="8" isBold="false"/>
-					</textElement>
-				<text><![CDATA[Reading]]></text>
-				</staticText>
-				<staticText>
-					<reportElement
-						x="195"
-						y="309"
-						width="59"
-						height="13"
-						key="staticText-38"/>
-					<box></box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font pdfFontName="Helvetica" size="8" isBold="false"/>
-					</textElement>
-				<text><![CDATA[Consumption]]></text>
-				</staticText>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="23"
-						y="325"
-						width="59"
-						height="13"
-						key="textField-21"/>
-					<box></box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font size="8"/>
-					</textElement>
-				<textFieldExpression   class="java.util.Date"><![CDATA[$F{prevreadingdate}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="23"
-						y="341"
-						width="59"
-						height="13"
-						key="textField-22"/>
-					<box></box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font size="8"/>
-					</textElement>
-				<textFieldExpression   class="java.util.Date"><![CDATA[$F{presreadingdate}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="108"
-						y="325"
-						width="59"
-						height="13"
-						key="textField-23"/>
-					<box></box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font size="8"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.Integer"><![CDATA[$F{prevreading}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="108"
-						y="341"
-						width="59"
-						height="13"
-						key="textField-24"/>
-					<box></box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font size="8"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.Integer"><![CDATA[$F{lastreading}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="195"
-						y="325"
-						width="59"
-						height="13"
-						key="textField-25"/>
-					<box></box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font size="8"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.Integer"><![CDATA[$F{consumption}]]></textFieldExpression>
-				</textField>
 				<subreport  isUsingCache="true">
 					<reportElement
 						x="299"
@@ -979,15 +832,16 @@
 						height="19"
 						key="subreport-1"/>
 					<dataSourceExpression><![CDATA[$F{billingdetails}]]></dataSourceExpression>
-					<subreportExpression  class="net.sf.jasperreports.engine.JasperReport"><![CDATA[$P{BillingDetails}]]></subreportExpression>
+					<subreportExpression  class="java.lang.String"><![CDATA["BillingDetails.jasper"]]></subreportExpression>
 				</subreport>
 				<staticText>
 					<reportElement
-						x="0"
-						y="370"
-						width="280"
+						x="10"
+						y="337"
+						width="261"
 						height="13"
-						key="staticText-39"/>
+						key="staticText-39"
+						positionType="Float"/>
 					<box></box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font pdfFontName="Helvetica-Oblique" size="8" isBold="false" isItalic="true"/>
@@ -996,69 +850,67 @@
 				</staticText>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="0"
-						y="470"
-						width="280"
-						height="13"
-						key="textField-26"/>
+						x="10"
+						y="438"
+						width="255"
+						height="22"
+						key="textField-26"
+						positionType="Float"/>
 					<box></box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA["Your average consumption is "+$F{averageconsumption}+" cubic meters per month."]]></textFieldExpression>
 				</textField>
+				<elementGroup><!--  Start: 1 !-->
+				<elementGroup><!--  Start: 1.2 !-->
 				<rectangle>
 					<reportElement
 						x="1"
-						y="499"
+						y="596"
 						width="571"
 						height="89"
 						forecolor="#003399"
-						key="rectangle-4"/>
+						key="rectangle-4"
+						positionType="Float"/>
 					<graphicElement stretchType="NoStretch"/>
 				</rectangle>
 				<staticText>
 					<reportElement
 						x="23"
-						y="516"
+						y="612"
 						width="526"
 						height="55"
-						key="staticText-40"/>
+						key="staticText-40"
+						positionType="Float"/>
 					<box></box>
 					<textElement textAlignment="Justified" verticalAlignment="Middle">
 						<font size="8"/>
 					</textElement>
 				<text><![CDATA[LEARN TO DETECT LEAKAGES. SEE IF YOUR INTERNAL PLUMBING OR FIXTURES ARE LEAKING OR DEFECTIVE. DO THIS BY SHUTTING OFF ALL YOUR FAUCETS. IF YOUR WATER METER CONTINUES TO RUN EVEN WITH ALL THE FAUCETS CLOSED, THERE IS DEFINITELY A LEAKAGE IN YOUR LINE AFTER YOUR WATER METER: YOUR FIXTURES NEED REPAIR OR REPLACEMENT. PLEASE ENGAGE THE SERVICES OF A PRIVATE PLUMBER TO FIX SAID LEAKAGE. WATER SERVICE LINES AFTER THE WATER METER ARE THE CONSUMER'S PROPERTY AND RESPONSIBILITY.]]></text>
 				</staticText>
-				<staticText>
-					<reportElement
-						mode="Transparent"
-						x="2"
-						y="740"
-						width="350"
-						height="11"
-						forecolor="#000000"
-						backcolor="#FFFFFF"
-						key="staticText-41"/>
-					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="0.0" lineColor="#000000"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-</box>
-					<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" lineSpacing="Single">
-						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
-					</textElement>
-				<text><![CDATA[Enhanced Tax Revenue Assessment and Collection System (ETRACS 2.5)]]></text>
-				</staticText>
+				</elementGroup><!-- End 1.2 !-->
+				</elementGroup><!-- End 1 !-->
 				<subreport  isUsingCache="true">
 					<reportElement
 						x="9"
-						y="386"
+						y="353"
 						width="262"
 						height="81"
-						key="subreport-2"/>
+						key="subreport-2"
+						positionType="Float"/>
 					<dataSourceExpression><![CDATA[$F{chartdata}]]></dataSourceExpression>
-					<subreportExpression  class="net.sf.jasperreports.engine.JasperReport"><![CDATA[$P{BarChart}]]></subreportExpression>
+					<subreportExpression  class="java.lang.String"><![CDATA["BarChart.jasper"]]></subreportExpression>
+				</subreport>
+				<subreport  isUsingCache="true">
+					<reportElement
+						x="10"
+						y="299"
+						width="263"
+						height="25"
+						key="subreport-3"/>
+					<dataSourceExpression><![CDATA[$F{consumption}]]></dataSourceExpression>
+					<subreportExpression  class="java.lang.String"><![CDATA["ConsumptionDetails.jasper"]]></subreportExpression>
 				</subreport>
 			</band>
 		</title>
@@ -1083,7 +935,27 @@
 			</band>
 		</pageFooter>
 		<summary>
-			<band height="0"  isSplitAllowed="true" >
+			<band height="33"  isSplitAllowed="true" >
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="1"
+						y="22"
+						width="350"
+						height="11"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="staticText-41"/>
+					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+</box>
+					<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" lineSpacing="Single">
+						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<text><![CDATA[Enhanced Tax Revenue Assessment and Collection System (ETRACS 2.5)]]></text>
+				</staticText>
 			</band>
 		</summary>
 </jasperReport>

@@ -27,7 +27,7 @@ class WaterworksAccountQueryInterceptor{
 				break;
 			case 'for-reading':
 				m.state = 'ACTIVE'
-				str += ' AND readingdate <= NOW() AND (lastdateread IS NULL OR lastdateread < readingdate)'; 
+				str += ' AND billingcycle.readingdate <= NOW() AND (lastdateread IS NULL OR lastdateread < billingcycle.readingdate)'; 
 				break;
 
 			case 'processing':
@@ -36,7 +36,7 @@ class WaterworksAccountQueryInterceptor{
 
 			case 'for-disconnection':
 				m.state = 'ACTIVE';
-				str += ' AND disconnectiondate < NOW() AND (lastdatepaid IS NULL OR lastdatepaid < disconnectiondate)'; 
+				str += ' AND billingcycle.disconnectiondate < NOW() AND (lastdatepaid IS NULL OR lastdatepaid < billingcycle.disconnectiondate)'; 
 				break;
 
 			case 'disconnected':

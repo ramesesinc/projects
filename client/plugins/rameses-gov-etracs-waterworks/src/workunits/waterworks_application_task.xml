@@ -6,6 +6,7 @@
                  formId="#{entity.objid}"
                  target="window"
                  action="open" />
+        
     </invokers>
     <code class="com.rameses.gov.etracs.waterworks.models.WaterworksApplication"/>
     <pages>

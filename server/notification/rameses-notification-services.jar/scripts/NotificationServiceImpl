@@ -102,6 +102,20 @@ class NotificationServiceImpl {
         return (r1? r1: 0)+(r2? r2: 0); 
     } 
 
+    @ProxyMethod(local=true) 
+    public void updateRecipient( params ) {
+        if ( !params.recipientid ) throw new Exception('recipientid parameter is required'); 
+
+        def map = [:];
+
+        if ( params.notificationid ) { 
+            map = [ notitificationid: params.notificationid ]; 
+        } else { 
+            map = [ objid : params.objid ];
+        } 
+        em.find( map ).update([ recipientid: params.recipientid ]);  
+    } 
+
     @Async 
     @ProxyMethod(local=true) 
     public void notifyGroups( params ) { 

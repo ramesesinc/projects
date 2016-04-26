@@ -53,4 +53,9 @@ class NotificationService {
     public Map getCountImpl( params ) {
         return [:]; 
     }
+
+    @ProxyMethod 
+    public void updateRecipient( params ) {
+        //do nothing 
+    }
 } 

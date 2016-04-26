@@ -10,6 +10,7 @@ import com.rameses.seti2.models.*;
 public class WaterworksApplication extends WorkflowTaskModel {
     
     def tabList;
+    def formName = 'waterworks_application:form';
     
     void afterOpen() {
         tabList = [];
@@ -32,7 +33,4 @@ public class WaterworksApplication extends WorkflowTaskModel {
             MsgBox.alert("Account created " + task.acctno);
         }
     }
-    
-    
-    
 }

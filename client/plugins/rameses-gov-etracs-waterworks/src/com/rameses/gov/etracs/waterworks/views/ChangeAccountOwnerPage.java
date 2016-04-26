@@ -116,6 +116,7 @@ public class ChangeAccountOwnerPage extends javax.swing.JPanel {
 
         xTextArea1.setExitOnTabKey(true);
         xTextArea1.setName("info.reason"); // NOI18N
+        xTextArea1.setRequired(true);
         jScrollPane1.setViewportView(xTextArea1);
 
         javax.swing.GroupLayout xPanel3Layout = new javax.swing.GroupLayout(xPanel3);

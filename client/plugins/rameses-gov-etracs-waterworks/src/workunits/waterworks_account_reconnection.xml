@@ -1,17 +1,9 @@
 <workunit>
     <invokers>
-        <invoker folderid="/home/waterworks" caption="Reconnection" index="3"  />
+        <invoker type="waterworks_account:form:formActions" 
+                 caption="Reconnect" index="5" target="popup"/>
     </invokers>
     <code class="com.rameses.gov.etracs.waterworks.models.WaterworksReconnection" />
-    <pageflow>
-        <start>
-            
-        </start>
-        <page name="" title="">
-            
-        </page>
-        <end/>
-    </pageflow>    
     <pages>
         <page name="edit" template="com.rameses.gov.etracs.waterworks.views.WaterworksReconnectionPage"/>
     </pages>

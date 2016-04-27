@@ -79,7 +79,7 @@ SELECT
 	f.owner_name,
 	f.owner_address
 FROM subdivisionaffectedrpu sar 
-	inner join faas f on sar.prevfaasid = f.objid 
+	left join faas f on sar.prevfaasid = f.objid 
 WHERE sar.subdivisionid = $P{subdivisionid}	
 ORDER BY sar.prevpin
 
@@ -200,11 +200,11 @@ WHERE objid =$P{objid}
 
 
 [getAffectedRpuWithNoPin]
-SELECT pf.tdno
+SELECT sr.newpin, sr.newsuffix, pf.tdno, pf.memoranda 
 FROM subdivisionaffectedrpu sr
-	INNER JOIN faas pf ON sr.prevfaasid = pf.objid 
+	inner JOIN faas pf ON sr.newfaasid = pf.objid 
 WHERE sr.subdivisionid = $P{objid}	
-  AND sr.newrpid IS NULL 
+
 
 [clearAffectedNewRpuRealPropertyId]
 UPDATE rpu r, subdivisionaffectedrpu sr SET 

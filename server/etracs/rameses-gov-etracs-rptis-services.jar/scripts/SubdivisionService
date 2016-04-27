@@ -50,6 +50,9 @@ class SubdivisionService
     @Service('RPTRedFlagService')
     def redFlagSvc 
 
+    @Service('BarangayLookupService')
+    def brgySvc;
+
 
     def SCHEMA_SUBDIVISION      = 'subdivision'
     def SCHEMA_SUBDIVIDED_LAND  = 'subdividedland'
@@ -657,6 +660,36 @@ class SubdivisionService
             tsk = em.findOpenTaskFromFaas(faas) 
         return tsk 
     }
+
+
+    /*===========================================================
+    * NEW IMPROVEMENT SUPPORT 
+    ============================================================*/
+
+    @ProxyMethod
+    public def addNewImprovement(affectedrpu){
+        affectedrpu.txntype = [objid:'ND']
+        affectedrpu.rp = rpSvc.open([objid:affectedrpu.subdividedland.newrpid])
+        affectedrpu.barangay = brgySvc.getById(affectedrpu.rp.barangayid);
+        affectedrpu.barangayid = affectedrpu.barangay.objid;
+        affectedrpu.isection = util.toInteger(affectedrpu.rp.section);
+        affectedrpu.iparcel = util.toInteger(affectedrpu.rp.parcel);
+        affectedrpu.lgu = lguSvc.getLgus().find{it.objid == affectedrpu.lguid}
+        util.buildPin(affectedrpu)
+        affectedrpu.rp._checklandreference = false
+        affectedrpu.state = 'PENDING'
+        def faas = faasSvc.initNewDiscovery(affectedrpu)
+        faas.lgu = affectedrpu.lgu 
+        affectedrpu.newfaasid = faas.objid
+        affectedrpu.newrpuid = faas.rpuid 
+        affectedrpu.newrpid = faas.realpropertyid
+        affectedrpu.newpin = affectedrpu.subdividedland.newpin 
+        affectedrpu.newsuffix = affectedrpu.suffix 
+        affectedrpu.prevpin = 'NEW'
+        em.save(affectedrpu, SCHEMA_AFFECTED_RPU)
+        return affectedrpu 
+    }
+
 
 }
 

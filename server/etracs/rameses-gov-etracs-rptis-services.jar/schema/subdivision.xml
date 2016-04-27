@@ -31,9 +31,9 @@
         <field name="objid" primary="true" />
         <field name="subdivisionid" required="true" />
         <field name="subdividedlandid" />
-        <field name="prevfaasid" required="true" />
-        <field name="prevtdno" required="true" />
-        <field name="prevpin" required="true" />
+        <field name="prevfaasid" />
+        <field name="prevtdno" />
+        <field name="prevpin" />
         <field name="newfaasid" />
         <field name="newsuffix" />
         <field name="newpin" />

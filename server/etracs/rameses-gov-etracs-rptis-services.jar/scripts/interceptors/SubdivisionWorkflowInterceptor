@@ -119,7 +119,7 @@ class SubdivisionWorkflowInterceptor
 
 	}
 
-	@Before(pattern="SubdivisionWorkflowService.signal", eval="#{args[0].state.equalsIgnoreCase('appraiser') &&  ! args[0].action?.matches('return.*')}", index=15)
+	@Before(pattern="SubdivisionWorkflowService.signal", eval="#{args[0].state.matches('appraiser|provappraiser') &&  ! args[0].action?.matches('return.*')}", index=15)
 	public void validateAppraisalInfo( evt ) {
 		def subdivision = evt.args[0].data
 		validateSubdividedLand(subdivision)
@@ -138,11 +138,13 @@ class SubdivisionWorkflowInterceptor
 	}
 
 	void validateAffectedRpu(subdivision){
-		//def rpus  = em.getAffectedRpuWithNoPin(subdivision)
-		//rpus.each{
-			//if (! it.memoranda)
-				//throw new Exception('Memoranda is required for Affected RPU with New PIN ' + it.newpin + '.')
-		//}
+		def rpus  = em.getAffectedRpuWithNoPin(subdivision)
+		rpus.each{
+			if (! it.memoranda){
+				def pin = it.newpin + '-' + it.newsuffix
+				throw new Exception('Memoranda is required for Affected RPU with New PIN ' + pin + '.')
+			}
+		}
 	}
 
 }

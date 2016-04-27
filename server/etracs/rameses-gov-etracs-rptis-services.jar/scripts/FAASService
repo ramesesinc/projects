@@ -51,6 +51,11 @@ class FAASService
     @Service('RPTRedFlagService')
     def redFlagSvc 
 
+    @DataContext('realproperty')
+    def realpropertyDb
+
+
+
     
     def SCHEMA_PREVIOUSFAAS		= 'previousfaas'
 	def SCHEMA_BACKTAX			= 'backtax'
@@ -109,6 +114,8 @@ class FAASService
 		faas.txntype = getTxnType(faas.txntype.objid)
 		faas.datacapture = false
 		faas.prevtdno = 'NEW'
+		faas.prevpin = ''
+		if(info.state) faas.state = info.state 
         createFaas(faas)
         return faas
 	}	
@@ -712,6 +719,8 @@ class FAASService
 				save = true;
 			else if (util.isTrue(faas.txntype.newrealproperty))
 				save = true;
+			else if (realpropertyDb.find([objid:faas.rp.objid]).first() == null)
+				save = true;
 		}
 		return save;
 	}
@@ -848,9 +857,11 @@ class FAASService
 
 	@ProxyMethod
 	public void checkLandTxnReference(rp){
-		def land = em.findLandFaasUnderTransaction(rp)
-		if (land)
-			throw new Exception('Land FAAS is currently under processing and referenced by FAAS No. ' + (land.tdno ? land.tdno : land.utdno) + '.')
+		if (rp._checklandreference == null || rp._checklandreference == true){
+			def land = em.findLandFaasUnderTransaction(rp)
+			if (land)
+				throw new Exception('Land FAAS is currently under processing and referenced by FAAS No. ' + (land.tdno ? land.tdno : land.utdno) + '.')
+		}
 	}
 
 	@ProxyMethod
@@ -860,7 +871,6 @@ class FAASService
 
 	@ProxyMethod
 	public def validateAndGetNumberBackTaxYears( effectivityyear, lastitem ) {
-		println 'validateAndGetNumberBackTaxYears ...'
 		def maxbaxtaxyears = getMaximumBackTaxYearsPolicy() + 1
         def lastbacktaxyear = effectivityyear - maxbaxtaxyears
         def backtaxyears = effectivityyear - lastitem.effectivityyear

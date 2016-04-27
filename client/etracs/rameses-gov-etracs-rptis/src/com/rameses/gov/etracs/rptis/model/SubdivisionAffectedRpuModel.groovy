@@ -116,17 +116,31 @@ class SubdivisionAffectedRpuModel
     def improvement;
     
     def addImprovement(){
-        improvement = [:]
+        improvement = [:];
         return new PopupOpener(outcome:'newrpu');
     }
     
     def doAddImprovement(){
-        
+        if (! MsgBox.confirm('Add new improvement?')) 
+            return;
+            
+       improvement.objid = 'SAF' + new java.rmi.server.UID();
+       improvement.subdivisionid = entity.objid;
+       improvement.ry = entity.ry;
+       improvement.lguid = entity.lguid;
+       improvement.subdividedlandid = improvement.subdividedland.objid;
+       improvement.putAll(svc.addNewImprovement(improvement))
+       affectedrpus << improvement;
+       listHandler.reload();
        return '_close';
     }
-     
     
+    def getPintypes(){ 
+        return ['new', 'old']
+    }
     
-    
+    def getRputypes(){
+        return ['bldg', 'mach', 'planttree', 'misc']
+    }
 }
        

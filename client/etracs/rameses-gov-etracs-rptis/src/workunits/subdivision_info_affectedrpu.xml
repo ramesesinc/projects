@@ -5,15 +5,15 @@
         
         <invoker type="formActions" action="edit" caption="Edit" mnemonic="e" visibleWhen="#{showActions == true}" role="TAXMAPPER"/>
         <invoker type="formActions" action="save" caption="Save" mnemonic="s" visibleWhen="#{mode != 'read'}" />
-        <invoker type="formActions" action="addImprovement" caption="New Improvement" mnemonic="s" visibleWhen="#{mode != 'read'}" />
+        <invoker type="formActions" action="addImprovement" caption="New Improvement" mnemonic="n" visibleWhen="#{mode != 'read'}" />
    </invokers>
    
-   <code class="com.rameses.gov.etracs.rpt.subdivision.ui.SubdivisionAffectedRpuModel" >
+   <code class="com.rameses.gov.etracs.rptis.model.SubdivisionAffectedRpuModel" >
    </code>
     
     <pages> 
         <page template="com.rameses.gov.etracs.rpt.subdivision.ui.SubdivisionAffectedRpuPage"/>
-        <page name="newrpu" template="com.rameses.gov.etracs.rpt.subdivision.ui.SubdivisionAffectedRpuNewPage"/>
+        <page name="newrpu" template="com.rameses.gov.etracs.rptis.view.SubdivisionAffectedRpuNewPage"/>
     </pages>
 </workunit>
 

@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.rameses.gov.etracs.rpt.subdivision.ui;
+package com.rameses.gov.etracs.rptis.view;
 
 /**
  *
@@ -27,6 +27,7 @@ public class SubdivisionAffectedRpuNewPage extends javax.swing.JPanel {
     private void initComponents() {
 
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
+        xComboBox3 = new com.rameses.rcp.control.XComboBox();
         xComboBox1 = new com.rameses.rcp.control.XComboBox();
         xComboBox2 = new com.rameses.rcp.control.XComboBox();
         xIntegerField1 = new com.rameses.rcp.control.XIntegerField();
@@ -38,8 +39,18 @@ public class SubdivisionAffectedRpuNewPage extends javax.swing.JPanel {
         xFormPanel1.setBorder(xTitledBorder1);
         xFormPanel1.setCaptionWidth(100);
 
+        xComboBox3.setAllowNull(false);
+        xComboBox3.setCaption("PIN Type");
+        xComboBox3.setCellPadding(new java.awt.Insets(5, 0, 0, 0));
+        xComboBox3.setImmediate(true);
+        xComboBox3.setIndex(-10);
+        xComboBox3.setItems("pintypes");
+        xComboBox3.setName("entity.pintype"); // NOI18N
+        xComboBox3.setPreferredSize(new java.awt.Dimension(100, 22));
+        xComboBox3.setRequired(true);
+        xFormPanel1.add(xComboBox3);
+
         xComboBox1.setCaption("Property Type");
-        xComboBox1.setCellPadding(new java.awt.Insets(5, 0, 0, 0));
         xComboBox1.setItems("rputypes");
         xComboBox1.setName("improvement.rputype"); // NOI18N
         xComboBox1.setPreferredSize(new java.awt.Dimension(100, 20));
@@ -47,8 +58,9 @@ public class SubdivisionAffectedRpuNewPage extends javax.swing.JPanel {
         xFormPanel1.add(xComboBox1);
 
         xComboBox2.setCaption("Land PIN");
-        xComboBox2.setExpression("#{item.fullpin}");
-        xComboBox2.setName("improvement.landfaas"); // NOI18N
+        xComboBox2.setExpression("#{item.newpin}");
+        xComboBox2.setItems("lands");
+        xComboBox2.setName("improvement.subdividedland"); // NOI18N
         xComboBox2.setPreferredSize(new java.awt.Dimension(0, 20));
         xComboBox2.setRequired(true);
         xFormPanel1.add(xComboBox2);
@@ -86,7 +98,7 @@ public class SubdivisionAffectedRpuNewPage extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(xButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -99,6 +111,7 @@ public class SubdivisionAffectedRpuNewPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XButton xButton2;
     private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XComboBox xComboBox2;
+    private com.rameses.rcp.control.XComboBox xComboBox3;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XIntegerField xIntegerField1;
     // End of variables declaration//GEN-END:variables

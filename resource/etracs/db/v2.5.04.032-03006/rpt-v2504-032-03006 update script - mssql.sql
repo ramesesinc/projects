@@ -96,3 +96,10 @@ create index ix_faaslist_publicland on faas_list(publicland)
 go 
 
 	
+
+alter table rpt_redflag alter column message varchar(1000)
+go 
+alter table rpt_redflag alter column remarks varchar(1000)
+go 
+alter table rpt_redflag alter column info varchar(1500)
+go 	

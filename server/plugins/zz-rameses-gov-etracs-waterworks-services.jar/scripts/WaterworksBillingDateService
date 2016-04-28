@@ -22,7 +22,7 @@ class WaterworksBillingDateService  {
 	def billingcycle;
  
 	@ProxyMethod
-	public def testBillingDates( def p ) {
+	public def computeBillingDates( def p ) {
 		p.test = true;
 		return getBillingDates( p );
 	}

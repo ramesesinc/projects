@@ -6,6 +6,7 @@ import com.rameses.osiris2.client.*;
 import com.rameses.osiris2.common.*;
 import com.rameses.rcp.annotations.*;
 import com.rameses.seti2.models.*;
+import java.text.*;
 
 public class CaptureConsumptionModel  {
     
@@ -15,12 +16,19 @@ public class CaptureConsumptionModel  {
     @Service("WaterworksComputationService")
     def compSvc;
     
+    @Service("WaterworksBillingDateService")
+    def billdateSvc;
+    
     @Service("WaterworksAccountService")
     def acctSvc;
 
+    @Binding
+    def binding;
+    
     def entity;
     def handler;
-    def info = [prevreading:0, reading:0, volume: 0];
+    def info = [prevreading:0, reading:0, volume: 0, amtpaid: 0, postledger:true];
+    def billCycle;
     
     @PropertyChangeListener
     def listener = [
@@ -45,7 +53,26 @@ public class CaptureConsumptionModel  {
         info.remarks = "for month of " + listTypes.months[info.month-1].name + " " + info.year;
     }
     
+    void computeBillingCycle() {
+        def h = { o->
+            def sector = entity.stubout?.zone?.sector?.objid;
+            billCycle = billdateSvc.computeBillingDates( [sector: sector, billdate:o] );
+            def df = new SimpleDateFormat("yyyy-MM-dd");
+            billCycle.fromperiod = df.format(billCycle.fromperiod);
+            billCycle.toperiod = df.format(billCycle.toperiod);
+            billCycle.readingdate = df.format(billCycle.readingdate);
+            billCycle.duedate = df.format(billCycle.duedate);
+            billCycle.disconnectiondate = df.format(billCycle.disconnectiondate);
+
+            info.dtreading = billCycle.readingdate;
+            info.duedate = billCycle.duedate;
+            binding.refresh("billCycle.*");
+        }
+        Modal.show("date:prompt",[handler:h, date: info.year + "-"+ info.month+"-01"]);
+    }
+    
     def doOk() {
+        if( !info.duedate ) throw new Exception("Please run 'Compute Billing Cycle'");
         if( info.prevreading > info.reading) 
             throw new Exception("Prev reading must be less than current reading");
         if( info.prevreading <0 || info.reading < 0 || info.volume <0) 

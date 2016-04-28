@@ -40,12 +40,11 @@
 			<key field="stuboutid" target="objid"/> 
 		</complex>
 		<field name="stuboutindex" required="true"/> 
-		<field name="currentreading" required="true" caption="Current Reading" type="integer"/>
+		<field name="currentreading" required="true" caption="Last Reading" type="integer"/>
 
 		<complex name="billingcycle" ref="waterworks_billing_cycle" jointype="many-to-one">
 			<key field="billingcycleid" target="objid"/> 
 		</complex>
-
 	</element>
 
 </schema>

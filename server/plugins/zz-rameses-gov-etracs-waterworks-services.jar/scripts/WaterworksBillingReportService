@@ -41,7 +41,7 @@ class WaterworksBillingReportService {
 		}
 
 		m.billingdetails = billingSvc.getBilling([acctid: params.objid]).collect{ 
-			[ account:item.account.title +  (it.remarks)?'('+it.remarks+')':'', amount: it.amount ] 
+			[ account:it.account.title +  (it.remarks)?'('+it.remarks+')':'', amount: it.amount ] 
 		};
 
 		def sigobj = wapp.find([ acctid: m.objid ]).select('signature').first(); 

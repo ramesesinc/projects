@@ -3451,6 +3451,7 @@
 			<groupExpression><![CDATA[]]></groupExpression>
 			<groupHeader>
 			<band height="128"  isSplitAllowed="true" >
+				<printWhenExpression><![CDATA[new Boolean($F{additionalitems2}.source.size() > 0)]]></printWhenExpression>
 				<staticText>
 					<reportElement
 						x="0"
@@ -3569,6 +3570,7 @@
 			<groupExpression><![CDATA[]]></groupExpression>
 			<groupHeader>
 			<band height="19"  isSplitAllowed="true" >
+				<printWhenExpression><![CDATA[new Boolean($F{additionalitems2}.source.size() > 0)]]></printWhenExpression>
 				<staticText>
 					<reportElement
 						x="0"
@@ -3648,6 +3650,7 @@
 			<groupExpression><![CDATA[]]></groupExpression>
 			<groupHeader>
 			<band height="63"  isSplitAllowed="true" >
+				<printWhenExpression><![CDATA[new Boolean($F{additionalitems2}.source.size() > 0)]]></printWhenExpression>
 				<staticText>
 					<reportElement
 						x="0"

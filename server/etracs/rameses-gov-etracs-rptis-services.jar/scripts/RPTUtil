@@ -659,4 +659,18 @@ class RPTUtil
         return s[0].toUpperCase() + s[1..-1].toLowerCase() 
     }
 
+
+    @ProxyMethod
+    public void buildStartEndDateFilter(params){
+        if (params.month){
+            def sdt = params.year + '-' + params.month.index.toString().padLeft(2,'0') + '-01'
+            params.startdate = dtSvc.parse('yyyy-MM-dd', sdt)
+            params.enddate = dtSvc.getMonthEndDate(params.startdate) + 1
+        }
+        else {
+            params.startdate = dtSvc.getBeginningQtrDate(params.qtr, params.year, 0)
+            params.enddate = dtSvc.getQtrEndDate(params.qtr, params.year) + 1   
+        }
+    }
+
 }

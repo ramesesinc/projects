@@ -140,6 +140,9 @@
 	<field name="txntype.displaycode" class="java.lang.String"/>
 	<field name="show_interim_watermark" class="java.lang.Boolean"/>
 	<field name="additionalitems2" class="java.lang.Object"/>
+	<field name="provrecommender.title" class="java.lang.String"/>
+	<field name="provrecommender.name" class="java.lang.String"/>
+	<field name="provrecommender.dtsigned" class="java.util.Date"/>
 
 
 		<group  name="Part1" isStartNewPage="true" >
@@ -1966,6 +1969,20 @@
 			<groupHeader>
 			<band height="442"  isSplitAllowed="true" >
 				<printWhenExpression><![CDATA[new Boolean($P{PRINTPAGE} == null || $P{PRINTPAGE} == "back")]]></printWhenExpression>
+				<image  scaleImage="RetainShape" hAlign="Center" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="376"
+						y="234"
+						width="176"
+						height="46"
+						key="image-8"
+						positionType="Float">
+							<printWhenExpression><![CDATA[new Boolean($F{recommender.name} == null)]]></printWhenExpression>
+						</reportElement>
+					<box></box>
+					<graphicElement stretchType="NoStretch"/>
+					<imageExpression class="java.io.InputStream"><![CDATA[$F{signatories}.source.provrecommender.signatureis]]></imageExpression>
+				</image>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="376"
@@ -2892,7 +2909,7 @@
 					<reportElement
 						x="32"
 						y="238"
-						width="493"
+						width="495"
 						height="66"
 						forecolor="#FF0000"
 						key="textField-77"
@@ -2902,6 +2919,59 @@
 						<font fontName="Arial Black" size="24"/>
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$F{tamperedsigmsg}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="yyyy-MM-dd" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="376"
+						y="294"
+						width="176"
+						height="12"
+						key="textField-94"
+						positionType="Float">
+							<printWhenExpression><![CDATA[new Boolean($F{recommender.name} == null)]]></printWhenExpression>
+						</reportElement>
+					<box></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.util.Date"><![CDATA[$F{provrecommender.dtsigned}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="376"
+						y="284"
+						width="176"
+						height="12"
+						key="textField-95"
+						positionType="Float">
+							<printWhenExpression><![CDATA[new Boolean($F{recommender.name} == null)]]></printWhenExpression>
+						</reportElement>
+					<box></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{provrecommender.title}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="376"
+						y="270"
+						width="176"
+						height="14"
+						key="textField-96"
+						positionType="Float">
+							<printWhenExpression><![CDATA[new Boolean($F{recommender.name} == null)]]></printWhenExpression>
+						</reportElement>
+					<box>					<pen lineWidth="0.0" lineColor="#0000FF"/>
+					<topPen lineWidth="0.0" lineColor="#0000FF"/>
+					<leftPen lineWidth="0.0" lineColor="#0000FF"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000FF"/>
+					<rightPen lineWidth="0.0" lineColor="#0000FF"/>
+</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{provrecommender.name}]]></textFieldExpression>
 				</textField>
 			</band>
 			</groupHeader>

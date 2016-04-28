@@ -7,8 +7,8 @@ import com.rameses.waterworks.cell.StuboutCell;
 import com.rameses.waterworks.database.DatabasePlatformFactory;
 import com.rameses.waterworks.dialog.Dialog;
 import com.rameses.waterworks.layout.Header;
+import com.rameses.waterworks.task.StuboutTask;
 import java.util.List;
-import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -21,7 +21,6 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.util.Callback;
 
@@ -45,7 +44,6 @@ public class StuboutList {
             public void changed(ObservableValue<? extends String> observable, String so, String value) {
                 stuboutData = DatabasePlatformFactory.getPlatform().getDatabase().getSearchStuboutResult(value,zone);
                 stuboutList.setItems(FXCollections.observableArrayList(stuboutData));
-                if(stuboutData.size()>0) stuboutList.getSelectionModel().select(0);
             }
         });
 
@@ -55,28 +53,16 @@ public class StuboutList {
         stuboutList.setPrefHeight(Main.HEIGHT);
         stuboutList.setItems(FXCollections.observableArrayList(stuboutData));
         stuboutList.setFocusTraversable(true);
-        if(stuboutData.size()>0) stuboutList.getSelectionModel().select(0);
         stuboutList.setCellFactory(new Callback<ListView<Stubout>, ListCell<Stubout>>() {
             @Override
             public ListCell<Stubout> call(ListView<Stubout> param) {
                 return new StuboutCell();
             }
         });
-        stuboutList.setOnMousePressed(new EventHandler<MouseEvent>(){
+        stuboutList.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Stubout>(){
             @Override
-            public void handle(MouseEvent event) {
-                if(event.getClickCount() == 2){
-                    Platform.runLater(new Runnable(){
-                        @Override
-                        public void run() {
-                            Stubout stubout = stuboutList.getSelectionModel().getSelectedItem();
-                            if(stubout != null){
-                                Node child = new StuboutAccountList(stubout,zone).getLayout();
-                                Main.ROOT.setCenter(child);
-                            }
-                        }
-                    });
-                }
+            public void changed(ObservableValue<? extends Stubout> observable, Stubout oldValue, Stubout stubout) {
+                new Thread(new StuboutTask(stubout,zone)).start();
             }
         });
         

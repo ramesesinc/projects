@@ -8,8 +8,8 @@ import com.rameses.waterworks.cell.AccountCell;
 import com.rameses.waterworks.database.DatabasePlatformFactory;
 import com.rameses.waterworks.dialog.Dialog;
 import com.rameses.waterworks.layout.Header;
+import com.rameses.waterworks.task.AccountTask;
 import java.util.List;
-import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -24,7 +24,6 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.util.Callback;
 
@@ -36,10 +35,10 @@ public class StuboutAccountList {
     private List<Account> data;
     private Button refresh;
     
-    StuboutAccountList(Stubout s,Zone zone){
-        Header.TITLE.setText(s.getCode());
+    public StuboutAccountList(Stubout stubout,Zone zone){
+        Header.TITLE.setText(stubout.getCode());
         
-        data = DatabasePlatformFactory.getPlatform().getDatabase().getAccountByStubout(s,"");
+        data = DatabasePlatformFactory.getPlatform().getDatabase().getAccountByStubout(stubout,"");
         
         search_account = new TextField();
         search_account.setId("search-account");
@@ -48,9 +47,8 @@ public class StuboutAccountList {
         search_account.textProperty().addListener(new ChangeListener<String>(){
             @Override
             public void changed(ObservableValue<? extends String> observable, String so, String value) {
-                data = DatabasePlatformFactory.getPlatform().getDatabase().getAccountByStubout(s,value);
+                data = DatabasePlatformFactory.getPlatform().getDatabase().getAccountByStubout(stubout,value);
                 listView.setItems(FXCollections.observableArrayList(data));
-                if(data.size()>0) listView.getSelectionModel().select(0);
             }
         });
 
@@ -58,28 +56,17 @@ public class StuboutAccountList {
         listView.setItems(FXCollections.observableArrayList(data));
         listView.setFocusTraversable(true);
         listView.setPrefHeight(Main.HEIGHT);
-        if(data.size()>0) listView.getSelectionModel().select(0);
         listView.setCellFactory(new Callback<ListView<Account>, ListCell<Account>>() {
             @Override
             public ListCell<Account> call(ListView<Account> param) {
                 return new AccountCell();
             }
         });
-        listView.setOnMousePressed(new EventHandler<MouseEvent>(){
+        listView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Account>(){
             @Override
-            public void handle(MouseEvent event) {
-                if(event.getClickCount() == 2){
-                    Platform.runLater(new Runnable(){
-                        @Override
-                        public void run() {
-                            Account account = listView.getSelectionModel().getSelectedItem();
-                            if(account != null){
-                                Node child = new AccountDetail(account).getLayout();
-                                Dialog.show("Account Information", child);
-                            }
-                        }
-                    });
-                }
+            public void changed(ObservableValue<? extends Account> observable, Account oldValue, Account account) {
+                int position = listView.getSelectionModel().getSelectedIndex();
+                new Thread(new AccountTask(account, stubout, position)).start();
             }
         });
         
@@ -88,9 +75,8 @@ public class StuboutAccountList {
         refresh.setOnAction(new EventHandler<ActionEvent>(){
             @Override
             public void handle(ActionEvent event) {
-                data = DatabasePlatformFactory.getPlatform().getDatabase().getAccountByStubout(s,search_account.getText());
+                data = DatabasePlatformFactory.getPlatform().getDatabase().getAccountByStubout(stubout,search_account.getText());
                 listView.setItems(FXCollections.observableArrayList(data));
-                if(data.size()>0) listView.getSelectionModel().select(0);
             }
         });
 

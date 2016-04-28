@@ -153,8 +153,10 @@ public class Setting {
                     public void run() {
                         listview.setItems(FXCollections.observableArrayList(devices));
                         for(String device: devices){
-                            if(Main.PRINTERNAME.equals(device)){
-                                listview.getSelectionModel().select(device);
+                            if(Main.PRINTERNAME != null){
+                                if(Main.PRINTERNAME.equals(device)){
+                                    listview.getSelectionModel().select(device);
+                                }
                             }
                         }
                         Dialog.hide();

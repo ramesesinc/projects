@@ -2,7 +2,7 @@ data = "EZ{PRINT,";
 data += "@" + (y += textgap) + ",0:MF204|                                         |";
 data += "@" + (y += textgap) + ",0:MF204|       CITY WATERWORKS DEPARTMENT        |";
 data += "@" + (y += textgap) + ",0:MF204|   SAN CARLOS CITY, NEGROS OCCIDENTAL    |";
-data += "@" + (y += textgap) + ",0:MF204|             (032) 505-9301               |";
+data += "@" + (y += textgap) + ",0:MF204|             (034) 7293131               |";
 data += "@" + (y += textgap+20) + ",0:MF204|For the month of "+a.getMonth()+" "+a.getYear()+"|";
 data += "@" + (y += textgap) + ",0:MF204|---------------------------------------|";
 data += "@" + (y += textgap) + ",0:MF204|Acct No.   :  "+a.getAcctNo()+"|";
@@ -15,10 +15,8 @@ data += "@" + (y += textgap) + ",0:MF204|Prev Reading   :  "+a.getLastReading()+
 data += "@" + (y += textgap) + ",0:MF204|Pres Reading   :  "+a.getPresReading()+"|";
 data += "@" + (y += textgap) + ",0:MF204|Consumption    :  "+a.getConsumption()+"|";
 data += "@" + (y += textgap) + ",0:MF204|---------------------------------------|";
-for(com.rameses.waterworks.bean.ItemAccount act : items){
-    data += "@" + (y += textgap+20) + ",0:MF107|" + act.getAccount() + "|";
-    data += "@" + y + ",255:MF107|"+act.getAmount()+"|";
-}
+data += "@" + (y += textgap+20) + ",0:MF107|Prev. Balance|";
+data += "@" + y + ",255:MF107|"+a.getPrevBalance()+"|";
 data += "@" + (y += textgap+20) + ",0:MF107|Current Due|";
 data += "@" + y + ",255:MF107|"+com.rameses.waterworks.bean.ItemAccount.format(Double.parseDouble(a.getAmtDue()))+"|";
 data += "@" + (y += textgap+20) + ",0:MF107|TOTAL DUE|";

@@ -28,7 +28,7 @@
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Component id="xPanel1" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="48" max="32767" attributes="0"/>
+              <EmptySpace pref="70" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -82,13 +82,6 @@
             <Property name="captionWidth" type="int" value="150"/>
           </Properties>
           <SubComponents>
-            <Component class="com.rameses.rcp.control.XDateField" name="xDateField1">
-              <Properties>
-                <Property name="caption" type="java.lang.String" value="Reading Date"/>
-                <Property name="name" type="java.lang.String" value="info.dtreading" noResource="true"/>
-                <Property name="required" type="boolean" value="true"/>
-              </Properties>
-            </Component>
             <Component class="com.rameses.rcp.control.XIntegerField" name="xIntegerField1">
               <Properties>
                 <Property name="caption" type="java.lang.String" value="Year"/>
@@ -119,14 +112,12 @@
                   </StringArray>
                 </Property>
                 <Property name="name" type="java.lang.String" value="info.prevreading" noResource="true"/>
-                <Property name="required" type="boolean" value="true"/>
               </Properties>
             </Component>
             <Component class="com.rameses.rcp.control.XIntegerField" name="xIntegerField3">
               <Properties>
                 <Property name="caption" type="java.lang.String" value="This Reading"/>
                 <Property name="name" type="java.lang.String" value="info.reading" noResource="true"/>
-                <Property name="required" type="boolean" value="true"/>
               </Properties>
             </Component>
             <Component class="com.rameses.rcp.control.XIntegerField" name="xIntegerField4">
@@ -139,6 +130,7 @@
                   </StringArray>
                 </Property>
                 <Property name="name" type="java.lang.String" value="info.volume" noResource="true"/>
+                <Property name="required" type="boolean" value="true"/>
               </Properties>
             </Component>
           </SubComponents>
@@ -177,7 +169,7 @@
                       <EmptySpace max="32767" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="xButton1" min="-2" max="-2" attributes="0"/>
-                          <Component id="xFormPanel2" min="-2" pref="62" max="-2" attributes="0"/>
+                          <Component id="xFormPanel2" min="-2" pref="84" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
@@ -193,6 +185,9 @@
               </Properties>
             </Component>
             <Container class="com.rameses.rcp.control.XFormPanel" name="xFormPanel2">
+              <Properties>
+                <Property name="captionWidth" type="int" value="100"/>
+              </Properties>
               <SubComponents>
                 <Component class="com.rameses.rcp.control.XLabel" name="xLabel1">
                   <Properties>
@@ -210,10 +205,11 @@
                     <Property name="name" type="java.lang.String" value="info.amount" noResource="true"/>
                   </Properties>
                 </Component>
-                <Component class="com.rameses.rcp.control.XDateField" name="xDateField2">
+                <Component class="com.rameses.rcp.control.XDecimalField" name="xDecimalField3">
                   <Properties>
-                    <Property name="caption" type="java.lang.String" value="Due Date"/>
-                    <Property name="name" type="java.lang.String" value="info.duedate" noResource="true"/>
+                    <Property name="editable" type="boolean" value="true"/>
+                    <Property name="caption" type="java.lang.String" value="Amount Paid"/>
+                    <Property name="name" type="java.lang.String" value="info.amtpaid" noResource="true"/>
                     <Property name="required" type="boolean" value="true"/>
                   </Properties>
                 </Component>

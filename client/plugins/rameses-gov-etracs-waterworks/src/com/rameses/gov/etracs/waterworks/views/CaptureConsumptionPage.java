@@ -34,7 +34,6 @@ public class CaptureConsumptionPage extends javax.swing.JPanel {
 
         xPanel1 = new com.rameses.rcp.control.XPanel();
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
-        xDateField1 = new com.rameses.rcp.control.XDateField();
         xIntegerField1 = new com.rameses.rcp.control.XIntegerField();
         xComboBox1 = new com.rameses.rcp.control.XComboBox();
         xIntegerField2 = new com.rameses.rcp.control.XIntegerField();
@@ -46,18 +45,13 @@ public class CaptureConsumptionPage extends javax.swing.JPanel {
         xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
         xLabel1 = new com.rameses.rcp.control.XLabel();
         xDecimalField2 = new com.rameses.rcp.control.XDecimalField();
-        xDateField2 = new com.rameses.rcp.control.XDateField();
+        xDecimalField3 = new com.rameses.rcp.control.XDecimalField();
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder1.setTitle("Consumption Information");
         xPanel1.setBorder(xTitledBorder1);
 
         xFormPanel1.setCaptionWidth(150);
-
-        xDateField1.setCaption("Reading Date");
-        xDateField1.setName("info.dtreading"); // NOI18N
-        xDateField1.setRequired(true);
-        xFormPanel1.add(xDateField1);
 
         xIntegerField1.setCaption("Year");
         xIntegerField1.setName("info.year"); // NOI18N
@@ -76,17 +70,16 @@ public class CaptureConsumptionPage extends javax.swing.JPanel {
         xIntegerField2.setCaption("Prev. Reading");
         xIntegerField2.setDepends(new String[] {"info.reading", "info.volume"});
         xIntegerField2.setName("info.prevreading"); // NOI18N
-        xIntegerField2.setRequired(true);
         xFormPanel1.add(xIntegerField2);
 
         xIntegerField3.setCaption("This Reading");
         xIntegerField3.setName("info.reading"); // NOI18N
-        xIntegerField3.setRequired(true);
         xFormPanel1.add(xIntegerField3);
 
         xIntegerField4.setCaption("Volume");
         xIntegerField4.setDepends(new String[] {"info.prevreading", "info.reading"});
         xIntegerField4.setName("info.volume"); // NOI18N
+        xIntegerField4.setRequired(true);
         xFormPanel1.add(xIntegerField4);
 
         xCheckBox1.setName("info.postledger"); // NOI18N
@@ -99,6 +92,8 @@ public class CaptureConsumptionPage extends javax.swing.JPanel {
         xButton1.setName("computeAmount"); // NOI18N
         xButton1.setText("Compute Amount");
 
+        xFormPanel2.setCaptionWidth(100);
+
         xLabel1.setCaption("Account");
         xLabel1.setExpression("#{info.item.title}");
         xLabel1.setPreferredSize(new java.awt.Dimension(0, 16));
@@ -109,10 +104,11 @@ public class CaptureConsumptionPage extends javax.swing.JPanel {
         xDecimalField2.setName("info.amount"); // NOI18N
         xFormPanel2.add(xDecimalField2);
 
-        xDateField2.setCaption("Due Date");
-        xDateField2.setName("info.duedate"); // NOI18N
-        xDateField2.setRequired(true);
-        xFormPanel2.add(xDateField2);
+        xDecimalField3.setEditable(true);
+        xDecimalField3.setCaption("Amount Paid");
+        xDecimalField3.setName("info.amtpaid"); // NOI18N
+        xDecimalField3.setRequired(true);
+        xFormPanel2.add(xDecimalField3);
 
         javax.swing.GroupLayout xPanel2Layout = new javax.swing.GroupLayout(xPanel2);
         xPanel2.setLayout(xPanel2Layout);
@@ -131,7 +127,7 @@ public class CaptureConsumptionPage extends javax.swing.JPanel {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(xPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(xButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
@@ -176,16 +172,15 @@ public class CaptureConsumptionPage extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(xPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(48, Short.MAX_VALUE))
+                .addContainerGap(70, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.rameses.rcp.control.XButton xButton1;
     private com.rameses.rcp.control.XCheckBox xCheckBox1;
     private com.rameses.rcp.control.XComboBox xComboBox1;
-    private com.rameses.rcp.control.XDateField xDateField1;
-    private com.rameses.rcp.control.XDateField xDateField2;
     private com.rameses.rcp.control.XDecimalField xDecimalField2;
+    private com.rameses.rcp.control.XDecimalField xDecimalField3;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XFormPanel xFormPanel2;
     private com.rameses.rcp.control.XIntegerField xIntegerField1;

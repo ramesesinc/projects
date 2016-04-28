@@ -29,6 +29,7 @@ public class CaptureConsumptionModel  {
         },
         "info.(volume|reading)" : { o->
             info.prevreading = info.reading - info.volume;
+            if(info.prevreading<0) info.prevreading = 0;
         }
     ];
 
@@ -41,7 +42,7 @@ public class CaptureConsumptionModel  {
         def r = compSvc.compute(m);
         info.item = r.item;
         info.amount = r.amount;
-        info.remarks = "for month of " + listTypes.months[info.month].name;
+        info.remarks = "for month of " + listTypes.months[info.month-1].name + " " + info.year;
     }
     
     def doOk() {

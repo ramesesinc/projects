@@ -22,28 +22,44 @@ class WaterworksBillingDateService  {
 	def billingcycle;
  
 	@ProxyMethod
+	public def testBillingDates( def p ) {
+		p.test = true;
+		return getBillingDates( p );
+	}
+
+	@ProxyMethod
 	public def getBillingDates( def p ) {
+		def zone = p.zone;
+		def sector = p.sector;
+		def barangay = p.barangayid;
 
-		def so = p.stubout;
-
-		if(!so.objid) throw new Exception("stubout id is required");
-		so = stub.find( [objid: so.objid ]).first();
+		if( p.stubout ) {
+			def so = p.stubout;
+			if(!so.objid) throw new Exception("stubout id is required");
+			so = stub.find( [objid: so.objid ]).first();
+			zone = so.zone.objid;
+			sector = so.zone.sector?.objid;	
+			if(!barangay) barangay = so.barangay?.objid;
+		}
 		
 		def currDate = dateSvc.getServerDate();
-		def billdate = (p.billdate? p.billdate : currDate); 
+		def billdate = ((p.billdate)? p.billdate : currDate); 
+
 		def billdateinfo = dateSvc.parseDate( billdate, null ); 
 		def billmonth = billdateinfo.month;
 		def billyear = billdateinfo.year;  
+		def m = [sectorid: sector, month: billmonth, year: billyear];
 
 		//find billing cycle, if not exist then create
-		def m = [sectorid: so.zone.sector?.objid, month: billmonth, year: billyear];
-		def billCycleRec = billingcycle.find( m ).first(); 
-		if ( billCycleRec ) return billCycleRec; 
+		if( !p.test ) {
+			def billCycleRec = billingcycle.find( m ).first(); 
+			if ( billCycleRec ) return billCycleRec; 
+		}
 
 		def facts = [];
 		facts << new CurrentDate(currDate);
 		facts << new BillDate( billdate );
-		facts << new Stubout(zone: so.zone.objid, sector: so.zone.sector?.objid, barangay:so.barangay?.objid);
+		facts << new Stubout(zone: zone, sector: sector, barangay:barangay);
 		
 		//do this so it will immediately break after initial rulegroup.
 		def h = { r-> return false };
@@ -54,8 +70,10 @@ class WaterworksBillingDateService  {
 		period.month = billmonth;
 		period.year = billyear;
 		period.sectorid = m.sectorid; 
-		period.objid = period.sectorid + '-'+ billyear + '-'+ billmonth; 
-		billingcycle.create( period ); 
+		if(!p.test) {
+			period.objid = period.sectorid + '-'+ billyear + '-'+ billmonth; 
+			billingcycle.create( period ); 
+		}	
 		return period;
 	} 
 }

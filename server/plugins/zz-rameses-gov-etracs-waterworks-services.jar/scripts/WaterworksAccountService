@@ -92,8 +92,6 @@ class WaterworksAccountService {
 
 	@ProxyMethod
 	public def postLedger( def o ) {
-		o.readingmethod = 'CAPTURE';
-		consumption.create( o );
 		o.amtpaid = 0;
 		o.txntype = 'WFEE';
 		if(o.postledger == true ) {

@@ -1,6 +1,6 @@
 <workunit>
     <invokers>
-        <invoker type="waterworks_account:form:formActions" 
+        <invoker xtype="waterworks_account:form:formActions" 
                  caption="Disconnect"  index="4" target="popup"/>
     </invokers>
     <code class="com.rameses.gov.etracs.waterworks.models.WaterworksDisConnection" />

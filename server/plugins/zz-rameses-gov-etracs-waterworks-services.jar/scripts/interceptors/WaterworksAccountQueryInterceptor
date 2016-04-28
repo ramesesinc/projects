@@ -20,30 +20,37 @@ class WaterworksAccountQueryInterceptor{
 
 		def str = "state=:state";
 		def m = [:];
+		def status;
 
 		switch( o.node.id ) {
 			case 'active':
+				status = 'active';
 				m.state = 'ACTIVE';
 				break;
 			case 'for-reading':
+				status = 'for-reading';
 				m.state = 'ACTIVE'
 				str += ' AND billingcycle.readingdate <= NOW() AND (lastdateread IS NULL OR lastdateread < billingcycle.readingdate)'; 
 				break;
 
 			case 'processing':
+				status = 'processing';
 				m.state = 'PROCESSING';
 				break;
 
 			case 'for-disconnection':
+				status = 'for-disconnection';
 				m.state = 'ACTIVE';
 				str += ' AND billingcycle.disconnectiondate < NOW() AND (lastdatepaid IS NULL OR lastdatepaid < billingcycle.disconnectiondate)'; 
 				break;
 
 			case 'disconnected':
+				status = 'disconnected';
 				m.state = 'DISCONNECTED';
 				break;
 
 			case 'for-reconnection':
+				status = 'for-reconnection';
 				m.state = 'FOR-RECONNECTION';
 				break;
 		}
@@ -56,6 +63,7 @@ class WaterworksAccountQueryInterceptor{
 		else {
 			o.where = [str, m];
 		}
+		o.select += ",status:{'" + status + "'}";
 	}
 
 }

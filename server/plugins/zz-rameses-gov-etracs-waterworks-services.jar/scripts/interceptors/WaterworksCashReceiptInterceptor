@@ -27,8 +27,9 @@ class WaterworksCashReceiptInterceptor{
 	public void postPayment(def evt) {
 		def o = evt.args[0]; 
 		def m = [:]
-		if(!o.info.applicationid || o.info.acctid) 
-			throw new Exception("WaterworksCashreceipt.post interceptor error. applicationid or acctod is required!");
+		if(!o.info.applicationid && !o.info.acctid) 
+			throw new Exception("WaterworksCashreceipt.post interceptor error. applicationid or acctid is required!");
+
 		def appid = o.info.applicationid;
 		def acctid = o.info.acctid;
 
@@ -68,10 +69,13 @@ class WaterworksCashReceiptInterceptor{
 		}
 		wp.create(pmt);
 
-		def hasItems = billingSvc.getBilling( [applicationid: appid ]);
+		def hasItems = billingSvc.getBilling([ applicationid: pmt.applicationid, acctid: pmt.acctid ]);
 		//check if were allowed to signal the process by checking the billing balance
-		if(!hasItems) {
+		if(!hasItems && appid) {
 			taskSvc.signal( [processname:'waterworks_application', refid: appid, state:'for-payment', action:'submit'] );
+		}
+		if ( acctid ) {
+
 		}
 	}
 
@@ -89,8 +93,7 @@ class WaterworksCashReceiptInterceptor{
 			else {
 				appFee.find([ objid: it.txnrefid]).update([amtpaid:'{amtpaid-:amount}'],[amount:it.amount]); 
 			}
-		}
-		wp.find( [objid: pmt.objid] ).update([voided:1]);
-	}
-
+		} 
+		wp.find( [objid: pmt.objid] ).update([voided:1]); 
+	} 
 }

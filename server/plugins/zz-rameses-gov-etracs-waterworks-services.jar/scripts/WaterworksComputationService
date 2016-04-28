@@ -40,22 +40,19 @@ class WaterworksComputationService  {
 	***********************************************************************/
 	@ProxyMethod
 	public def compute( def o ) {
-		def classification = o.classificationid;
-		if(!classification) {
-			def m = findAccount( o );
-			classification = m.classificationid;
-		}
+		def m = findAccount( o );
 		if(!o.volume) 
-			throw new Exception('Classification Volume is required.');
+			throw new Exception('Volume is required.');
 		
 		int vol = o.volume.toInteger();	
 
 		def facts = [];
 		facts << new WaterConsumption( volume: vol );
-		facts << new WaterAccount( classification: classification );
+		facts << new WaterAccount( m );
 
 		def res = ruleSvc.execute( "waterworkscomputation", facts, null, null );
-
+		if( !res.billItemList)
+			throw new Exception("No rules fired for waterworks computation");
 		def item = res.billItemList.items[0];
 		if(!item) 
 			throw new Exception('There is no computation applied. Please check rule fatcs')

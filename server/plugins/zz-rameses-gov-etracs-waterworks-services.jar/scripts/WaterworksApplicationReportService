@@ -19,6 +19,10 @@ class WaterworksApplicationReportService {
 		m.barcode = '515030:'+m.appno;
 		m.printdate = dateSvc.getServerDate();
 		m.requirements = req.find( [parentid: params.objid] ).list();
+
+		def sigobj = app.find([ acctid: params.objid ]).select('signature').first(); 
+		m.signature = sigobj?.signature; 
+
 		return m;
 	}
 

@@ -11,6 +11,12 @@ class WaterworksAccountService {
 	@DataContext('waterworks_account')
 	def waterworks_account; 
 
+	@DataContext('waterworks_account_ledger')
+	def ledger; 
+
+	@DataContext('waterworks_account_consumption')
+	def consumption; 
+
 	@ProxyMethod 
 	public def initChangeOwner( params ) {
 		return vw_entityindividual.find([ objid: params.ownerid ]).select('name,address.text').first(); 
@@ -72,8 +78,29 @@ class WaterworksAccountService {
 	} 	
 
 
+	@ProxyMethod
+	public def postConsumption( def o ) {
+		o.readingmethod = 'CAPTURE';
+		consumption.create( o );
+		o.amtpaid = 0;
+		o.txntype = 'WFEE';
+		if(o.postledger == true ) {
+			o.parentid = o.account.objid;
+			ledger.create(o);
+		}
+	}
 
-
+	@ProxyMethod
+	public def postLedger( def o ) {
+		o.readingmethod = 'CAPTURE';
+		consumption.create( o );
+		o.amtpaid = 0;
+		o.txntype = 'WFEE';
+		if(o.postledger == true ) {
+			o.parentid = o.account.objid;
+			ledger.create(o);
+		}
+	}
 
 
 }

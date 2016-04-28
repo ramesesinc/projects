@@ -1,13 +1,15 @@
 <workunit extends="com/rameses/seti2/templates/FormList.xml"
             schemaName="waterworks_account_consumption" 
-          cols="dtreading,year,month,prevreading,reading,readingmethod,reader_objid,reader_name,volume">
+          cols="dtreading,year,month,prevreading,reading,readingmethod,reader_objid,reader_name,volume"
+            orderBy="year,month">
     <invokers>
         <invoker type="waterworks_account:section" caption="Consumption" 
                  index="2" action="init" target="popup" 
                   visibleWhen="#{mode=='read'}"  />
         
-        <invoker type="formActions" 
-                 caption="Capture Consumption" action="captureConsumption"/>
+        <invoker type="formActions" caption="Capture" 
+                 action="capture" 
+                 />
     </invokers>
     <code>
         import com.rameses.rcp.annotations.*;
@@ -30,13 +32,12 @@
                 listHandler.reload();
             }
         
-            def captureConsumption() {
-                def h = { info->
-                    MsgBox.alert( info );
+            def capture() {
+                def h = {
+                    reload();
                 }
-                Modal.show("waterworks_account_consumption_entry:edit", [handler:h]);
+                Modal.show("waterworks_account_consumption:capture", [handler:h, entity:caller.entity]); 
             }
-        
         }
     </code>
 </workunit>

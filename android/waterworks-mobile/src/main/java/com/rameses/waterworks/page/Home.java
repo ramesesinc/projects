@@ -46,7 +46,7 @@ public class Home {
         sheetItem.getLayout().setOnMousePressed(new EventHandler<MouseEvent>(){
             @Override
             public void handle(MouseEvent event) {
-                Main.ROOT.setCenter(new ReadingSheet(null).getLayout());
+                Main.ROOT.setCenter(new ReadingSheet(null,null,-1).getLayout());
             }
         });
         

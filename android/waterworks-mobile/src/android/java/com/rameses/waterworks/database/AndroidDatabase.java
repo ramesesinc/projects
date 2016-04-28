@@ -827,7 +827,7 @@ public class AndroidDatabase extends SQLiteOpenHelper implements Database{
         SQLiteDatabase db = null;
         try{
             db = this.getWritableDatabase();
-            Cursor cursor = db.rawQuery("SELECT * FROM stubout WHERE code LIKE ?  AND zoneid = ?", args);
+            Cursor cursor = db.rawQuery("SELECT * FROM stubout WHERE code LIKE ?  AND zoneid = ? ORDER BY code", args);
             if(cursor.moveToFirst()){
                 do{   
                     Stubout stubout = new Stubout(cursor.getString(0),cursor.getString(1),cursor.getString(2),cursor.getString(3),cursor.getString(4),cursor.getString(5),cursor.getString(6));

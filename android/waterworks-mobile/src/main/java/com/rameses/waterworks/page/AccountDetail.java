@@ -3,8 +3,8 @@ package com.rameses.waterworks.page;
 import com.rameses.Main;
 import static com.rameses.Main.PRINTER;
 import com.rameses.waterworks.bean.Account;
-import com.rameses.waterworks.bean.ItemAccount;
 import com.rameses.waterworks.bean.Reading;
+import com.rameses.waterworks.bean.Stubout;
 import com.rameses.waterworks.bluetooth.BluetoothPlatformFactory;
 import com.rameses.waterworks.database.Database;
 import com.rameses.waterworks.database.DatabasePlatformFactory;
@@ -25,8 +25,15 @@ public class AccountDetail {
     
     private VBox root;
     String present="-",consumption="-";
+    private Account account;
+    private Stubout stubout;
+    private int position;
     
-    public AccountDetail(Account account){
+    public AccountDetail(Account account,Stubout stubout, int position){
+        this.account = account;
+        this.stubout = stubout;
+        this.position = position;
+        
         Button close = new Button("Close");
         close.getStyleClass().add("terminal-button");
         close.setFocusTraversable(true);
@@ -46,7 +53,7 @@ public class AccountDetail {
             @Override
             public void handle(ActionEvent event) {
                 Dialog.hide();
-                Main.ROOT.setCenter(new ReadingSheet(account).getLayout());
+                Main.ROOT.setCenter(new ReadingSheet(account,stubout,position).getLayout());
             }
         });
         
@@ -57,14 +64,14 @@ public class AccountDetail {
             @Override
             public void handle(ActionEvent event) {
                 if(Main.PRINTERNAME.isEmpty()){
-                    Dialog.showAlert("No printer selected!");
+                    Dialog.show("",showPrinterMessage("No printer selected!"));
                     return;
                 }
                 int i = 0;
                 try{
                     i = Integer.valueOf(present);
                 }catch(Exception e){ 
-                    Dialog.showAlert("Reading data is not yet available!");
+                    Dialog.show("",showPrinterMessage("Reading data is not yet available!"));
                     return;
                 }
                 account.setPresReading(i);
@@ -81,13 +88,11 @@ public class AccountDetail {
                 PRINTER.setError("");
                 PRINTER.print(Main.PRINTERHANDLER.getData(account));
                 if(!PRINTER.getError().isEmpty()){
-                    Dialog.showError(PRINTER.getError());
+                    Dialog.show("",showPrinterMessage(PRINTER.getError()));
                     PRINTER.closeBT();
                     PRINTER = BluetoothPlatformFactory.getPlatform().getBluetoothPrinter();
                     PRINTER.setPrinter(Main.PRINTERNAME);
                     PRINTER.openBT();
-                }else{
-                    Dialog.hide();
                 }
             }
         });
@@ -198,6 +203,51 @@ public class AccountDetail {
         container.setStyle("-fx-border-width: 1px; -fx-border-color: #7dbce8;");
         container.getChildren().addAll(label1,label2);
         return container;
+    }
+    
+    private Node showPrinterMessage(String message){
+        Label label = new Label(message);
+        label.getStyleClass().add("dialog-label");
+        label.setWrapText(true);
+
+        Button okBtn = new Button("OK");
+        okBtn.getStyleClass().add("terminal-button");
+        okBtn.setOnAction(new EventHandler<ActionEvent>(){
+            @Override
+            public void handle(ActionEvent event) {
+                Dialog.hide();
+                Dialog.show("Account Information", new AccountDetail(account, stubout, position).getLayout());
+            }
+        });
+        if(Main.HEIGHT < 700){
+            okBtn.setPrefWidth(70);
+        }else if(Main.HEIGHT < 1200){
+            okBtn.setPrefWidth(90);
+        }else{
+            okBtn.setPrefWidth(100);
+        }
+
+        HBox btnContainer = new HBox();
+        btnContainer.setAlignment(Pos.CENTER);
+        btnContainer.getChildren().add(okBtn);
+
+        VBox root = new VBox();
+        root.setStyle("-fx-background-color: white;");
+        root.getChildren().addAll(label,btnContainer);
+        if(Main.HEIGHT < 700){
+            root.setSpacing(10);
+            root.setPadding(new Insets(10));
+            root.setPrefWidth(Main.WIDTH - 30);
+        }else if(Main.HEIGHT < 1200){
+            root.setSpacing(20);
+            root.setPadding(new Insets(15));
+            root.setPrefWidth(Main.WIDTH - 100);
+        }else{
+            root.setSpacing(30);
+            root.setPadding(new Insets(20));
+            root.setPrefWidth(Main.WIDTH - 200);
+        }
+        return root;
     }
     
     public Node getLayout(){

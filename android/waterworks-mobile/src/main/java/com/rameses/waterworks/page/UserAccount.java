@@ -85,17 +85,17 @@ public class UserAccount {
         });
         if(Main.HEIGHT < 700){
             username.setStyle("-fx-font-size: 18px; -fx-underline: true;");
-            fullname.setStyle("-fx-font-size: 18px; -fx-underline: true;");
+            fullname.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
             logout.setStyle("-fx-font-size: 16px;");
             logout.setPrefWidth(120);
         }else if(Main.HEIGHT < 1200){
             username.setStyle("-fx-font-size: 25px; -fx-underline: true;");
-            fullname.setStyle("-fx-font-size: 18px; -fx-underline: true;");
+            fullname.setStyle("-fx-font-size: 25px; -fx-font-weight: bold;");
             logout.setStyle("-fx-font-size: 22px;");
             logout.setPrefWidth(150);
         }else{
             username.setStyle("-fx-font-size: 32px; -fx-underline: true;");
-            fullname.setStyle("-fx-font-size: 18px; -fx-underline: true;");
+            fullname.setStyle("-fx-font-size: 32px; -fx-font-weight: bold;");
             logout.setStyle("-fx-font-size: 28px;");
             logout.setPrefWidth(180);
         }

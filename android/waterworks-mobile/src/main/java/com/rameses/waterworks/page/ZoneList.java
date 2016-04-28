@@ -5,6 +5,7 @@ import com.rameses.waterworks.bean.Zone;
 import com.rameses.waterworks.cell.ZoneCell;
 import com.rameses.waterworks.database.DatabasePlatformFactory;
 import com.rameses.waterworks.dialog.Dialog;
+import com.rameses.waterworks.task.ZoneTask;
 import java.util.List;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
@@ -39,7 +40,6 @@ public class ZoneList {
             public void changed(ObservableValue<? extends String> observable, String so, String value) {
                 zoneData = DatabasePlatformFactory.getPlatform().getDatabase().getSearchZoneResult(value);
                 zoneList.setItems(FXCollections.observableArrayList(zoneData));
-                if(zoneData.size()>0) zoneList.getSelectionModel().select(0);
             }
         });
 
@@ -49,27 +49,16 @@ public class ZoneList {
         zoneList.setPrefHeight(Main.HEIGHT);
         zoneList.setItems(FXCollections.observableArrayList(zoneData));
         zoneList.setFocusTraversable(true);
-        if(zoneData.size()>0) zoneList.getSelectionModel().select(0);
         zoneList.setCellFactory(new Callback<ListView<Zone>, ListCell<Zone>>() {
             @Override
             public ListCell<Zone> call(ListView<Zone> param) {
                 return new ZoneCell();
             }
         });
-        zoneList.setOnMousePressed(new EventHandler<MouseEvent>(){
+        zoneList.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Zone>(){
             @Override
-            public void handle(MouseEvent event) {
-                if(event.getClickCount() == 2){
-                    Platform.runLater(new Runnable(){
-                        @Override
-                        public void run() {
-                            Zone zone = zoneList.getSelectionModel().getSelectedItem();
-                            if(zone != null){
-                                Main.ROOT.setCenter(new StuboutList(zone).getLayout());
-                            }
-                        }
-                    });
-                }
+            public void changed(ObservableValue<? extends Zone> observable, Zone oldValue, Zone zone) {
+                new Thread(new ZoneTask(zone)).start();
             }
         });
         

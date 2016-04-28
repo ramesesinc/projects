@@ -1,0 +1,59 @@
+import com.rameses.annotations.*;
+
+class WaterworksChangeInfoInterceptor {
+
+	@DataContext('waterworks_account') 
+	def wacct; 
+
+	@DataContext('waterworks_meter') 
+	def wmeter; 
+
+	@Before( pattern="ChangeInfoService.update", eval="#{args[0].info._schemaname=='waterworks_account' && args[0].info.address != null}" ) 
+	public void beforeUpdateAddress( evt ) {
+		def addr = evt.args[0].info.address;
+		if ( !addr.barangay?.objid ) throw new Exception('Please specify barangay'); 
+
+		addr.text = formatAddress( addr ); 
+		if ( !addr.text ) throw new Exception('Please specify address'); 
+	} 
+
+	@Before( pattern="ChangeInfoService.update", eval="#{args[0].info._schemaname=='waterworks_account' && args[0].info._tag=='change-stubout'}" ) 
+	public void updateStubout( evt ) {
+		def info = evt.args[0].info;
+		if ( !info.stubout?.objid ) throw new Exception('Please specify stubout'); 
+		if ( !info.stuboutindex ) throw new Exception('Please specify stuboutindex'); 
+
+		info.stuboutid = info.stubout.objid; 
+		wacct.updateStubout( info );  
+	} 
+
+	@Before( pattern="ChangeInfoService.update", eval="#{args[0].info._schemaname=='waterworks_account' && args[0].info._tag=='change-meter'}" ) 
+	public void updateMeter( evt ) {
+		def info = evt.args[0].info;
+		if ( !info.meter?.objid ) throw new Exception('Please specify meter'); 
+
+		info.meterid = info.meter.objid; 
+		wacct.updateMeter( info );  
+
+		// update currentacctid in the meter record 
+		wmeter.find([ currentacctid : info.objid ]).list().each{ 
+			wmeter.find([ objid: it.objid ]).update([ currentacctid: null ]); 
+		} 
+		wmeter.find([ objid: info.meterid ]).update([ currentacctid: info.objid ]); 
+	} 
+
+
+	def formatAddress( addr ) {
+		def buff = []; 
+		def values = [ addr.unitno, addr.bldgno, addr.bldgname ]; 
+		def text = values.findAll{ it != null }.join(' ');
+		if ( text ) buff << text; 
+
+		values = [ addr.street, addr.subdivision, addr.barangay?.name, addr.municipality, addr.city, addr.province ]; 
+		text = values.findAll{ it != null }.join(', ');
+		if ( text ) buff << text; 
+
+		return buff.join('\n'); 
+	} 	
+
+}

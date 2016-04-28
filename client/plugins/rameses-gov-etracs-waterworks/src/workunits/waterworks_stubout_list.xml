@@ -1,7 +1,8 @@
 <workunit extends="com/rameses/seti2/templates/CrudList.xml"
           schemaName="waterworks_stubout" 
           allowCreate="true" allowOpen="true" allowDelete="true"
-          cols="code,description,zone.sector.title,zone.title">
+          cols="code,description,zone.sector.title,zone.title"
+          orderBy="code">
     <invokers>
         <invoker folderid="/explorer/master/waterworks" caption="Stubout" action="init" index="-4"/>  
     </invokers>

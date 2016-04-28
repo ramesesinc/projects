@@ -21,6 +21,10 @@ public class StuboutSectionAccountModel {
     def accounts = [];
     def selectedItem;
     
+    void init() {
+        //do nothing 
+    }
+    
     def getEntity() {
         return caller?.entity; 
     } 
@@ -57,49 +61,7 @@ public class StuboutSectionAccountModel {
         } 
         
         svc.changeIndexNo([ stuboutid: entity.objid, stuboutindex: newindexno, accountid: selectedItem.objid ]); 
-        
-    }
-    
-    void moveUp() { 
-        if ( !selectedItem ) return; 
-        svc.moveUp([ stuboutid: entity.objid, accountid: selectedItem.objid ]);
-        accounts.clear(); 
+        accounts.clear();
         listHandler.reload(); 
-        updateSelection( listHandler.selectedItem.index-1 ); 
-    }
-    
-    void moveDown() { 
-        if ( !selectedItem ) return; 
-        
-        svc.moveDown([ stuboutid: entity.objid, accountid: selectedItem.objid ]);
-        accounts.clear(); 
-        listHandler.reload(); 
-        updateSelection( listHandler.selectedItem.index+1 ); 
-    }
-    
-    void swap() {
-        if ( !selectedItem ) return; 
-        
-        def val = MsgBox.prompt('Enter the sort order number:');
-        if ( !val ) return; 
-        
-        def sortorder = val.toInteger(); 
-        if ( selectedItem.stuboutindex != sortorder ) { 
-            if ( !accounts.find{ it.stuboutindex==sortorder }) {
-                throw new Exception('Invalid sort order number'); 
-            }
-            
-            svc.swap([ stuboutid: entity.objid, accountid: selectedItem.objid, stuboutindex:sortorder ]);
-            accounts.clear(); 
-            listHandler.reload(); 
-            updateSelection( sortorder-1 ); 
-        }
-    }
-    
-    void updateSelection( int index ) {
-        if ( index >= 0 && index < accounts.size()) {
-            listHandler.setSelectedItem( index );  
-        } 
-    }
-    
+    }    
 }

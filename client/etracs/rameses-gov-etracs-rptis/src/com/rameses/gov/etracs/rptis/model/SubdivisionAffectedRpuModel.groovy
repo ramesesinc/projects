@@ -1,4 +1,4 @@
-package com.rameses.gov.etracs.rpt.subdivision.ui;
+package com.rameses.gov.etracs.rptis.model;
 
 import com.rameses.rcp.annotations.* 
 import com.rameses.rcp.common.* 
@@ -141,6 +141,23 @@ class SubdivisionAffectedRpuModel
     
     def getRputypes(){
         return ['bldg', 'mach', 'planttree', 'misc']
+    }
+    
+    
+    /**************************************************
+    * CANCEL IMPROVEMENT SUPPORT 
+    **************************************************/
+    void cancelImprovement(){
+        if (selectedItem && MsgBox.confirm('Cancel selected improvement?')){
+            def improvement = [:]
+            improvement.objid = selectedItem.objid;
+            improvement.parentid = entity.objid;
+            improvement.faasid = selectedItem.prevfaasid;
+            improvement.arpu = selectedItem;
+            svc.createCancelledImprovement(improvement);
+            affectedrpus.remove(selectedItem);
+            listHandler.reload();
+        }
     }
 }
        

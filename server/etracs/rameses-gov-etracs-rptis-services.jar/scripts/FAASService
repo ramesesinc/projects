@@ -682,19 +682,35 @@ class FAASService
 		em.getPreviousFaases([faasid:faas.objid]).each{
 			def params = [
 				objid  				: it.prevfaasid,
+				rpuid 				: it.prevrpuid, 
+				txntype 			: faas.txntype,
 				cancelreason		: faas.txntype.objid,
 				canceldate			: faas.approver.dtsigned,
 				cancelledbytdnos	: faas.tdno,
-				cancelledyear 		: pdate.year, 
-				cancelledqtr 		: pdate.qtr,
-				cancelledmonth 		: pdate.month,
-				cancelledday 		: pdate.day 
 			]
-			em.cancelFaas(params)
-			faasListEm.updateFaasList(params)
-			if (faas.txntype.newrpu){
-				em.cancelRpu([objid:it.prevrpuid])
-			}
+			cancelFaas(params)
+		}
+	}
+
+	@ProxyMethod
+	public void cancelFaas(params) {
+		util.required('objid', params.objid)
+		util.required('rpuid', params.rpuid)
+		util.required('txntype', params.txntype)
+		util.required('cancelreason', params.cancelreason)
+		util.required('canceldate', params.canceldate)
+		util.required('cancelledbytdnos', params.cancelledbytdnos)
+
+		def pdate = dtSvc.parseDate(params.canceldate, null)
+		params.cancelledyear 	= pdate.year
+		params.cancelledqtr 	= pdate.qtr
+		params.cancelledmonth 	= pdate.month
+		params.cancelledday 	= pdate.day 
+
+		em.cancelFaas(params)
+		faasListEm.updateFaasList(params)
+		if (params.txntype.newrpu){
+			em.cancelRpu([objid:params.rpuid])
 		}
 	}
 

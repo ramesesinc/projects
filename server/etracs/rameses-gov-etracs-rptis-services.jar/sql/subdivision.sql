@@ -103,6 +103,7 @@ WHERE r.realpropertyid = $P{realpropertyid}
   AND r.rputype <> 'land' 
   AND f.state NOT IN ('CANCELLED', 'PENDING')
   AND NOT EXISTS(SELECT * FROM subdivisionaffectedrpu WHERE prevfaasid = f.objid )
+  AND NOT EXISTS(SELECT * FROM subdivision_cancelledimprovement WHERE faasid = f.objid )
 ORDER BY rputype 
 
 
@@ -204,6 +205,7 @@ SELECT sr.newpin, sr.newsuffix, pf.tdno, pf.memoranda
 FROM subdivisionaffectedrpu sr
 	inner JOIN faas pf ON sr.newfaasid = pf.objid 
 WHERE sr.subdivisionid = $P{objid}	
+and sr.newfaasid is null 
 
 
 [clearAffectedNewRpuRealPropertyId]
@@ -479,3 +481,39 @@ where refid in (
 	select subdivisionid from subdivisionaffectedrpu where newfaasid = $P{objid}
 )
 and enddate is null
+
+
+
+#--------------------------------------------------
+# CANCELLED IMPROVEMENT SUPPORT 
+#-------------------------------------------------
+
+[getCancelledImprovements]
+select cf.*, r.rputype, f.tdno, f.fullpin, f.owner_name
+from subdivision_cancelledimprovement cf 
+	inner join faas f on cf.faasid = f.objid 
+	inner join rpu r on f.rpuid = r.objid 
+	inner join realproperty rp on f.realpropertyid = rp.objid 
+where cf.parentid = $P{objid}
+order by rp.pin, r.suffix 
+
+
+[deleteAffectedRpu]
+delete from subdivisionaffectedrpu where objid = $P{objid}
+
+
+[findAffectedRpuById]	
+SELECT 
+	f.objid AS objid,
+	f.state, 
+	f.tdno as prevtdno,
+	f.fullpin as prevpin,
+	$P{parentid} AS subdivisionid,
+	f.objid AS prevfaasid,
+	r.objid AS prevrpuid, 
+	r.rputype,
+	rl.state AS ledgerstate
+FROM faas f
+	INNER JOIN rpu r ON f.rpuid = r.objid 
+	LEFT JOIN rptledger rl ON f.objid = rl.faasid 
+WHERE f.objid = $P{faasid}

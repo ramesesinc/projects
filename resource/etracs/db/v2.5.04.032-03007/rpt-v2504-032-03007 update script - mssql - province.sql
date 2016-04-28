@@ -72,3 +72,29 @@ GO
 
 alter table subdivisionaffectedrpu alter column prevpin varchar(50) null
 go 
+
+
+
+/*===========================================*/
+/* SUBDIVISION - CANCEL IMPROVEMENTS SUPPORT */
+/*===========================================*/
+
+create table subdivision_cancelledimprovement(
+  objid nvarchar(50) not null,
+  parentid nvarchar(50) not null,
+  faasid nvarchar(50),
+  remarks nvarchar(1000),
+  primary key (objid)
+)
+go 
+
+alter table subdivision_cancelledimprovement 
+  add constraint FK_subdivision_cancelledimprovement_subdivision
+  foreign key (parentid) references subdivision(objid)
+go 
+
+alter table subdivision_cancelledimprovement 
+  add constraint FK_subdivision_cancelledimprovement_faas
+  foreign key (faasid) references faas(objid)
+go 
+

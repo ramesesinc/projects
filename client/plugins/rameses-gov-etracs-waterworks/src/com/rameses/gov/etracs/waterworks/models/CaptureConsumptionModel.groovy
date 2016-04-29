@@ -7,6 +7,7 @@ import com.rameses.osiris2.common.*;
 import com.rameses.rcp.annotations.*;
 import com.rameses.seti2.models.*;
 import java.text.*;
+import com.rameses.functions.*;
 
 public class CaptureConsumptionModel  {
     
@@ -43,7 +44,7 @@ public class CaptureConsumptionModel  {
 
     void computeAmount() {
         if( !info.month ) 
-            throw new Exception("Month is required!");
+            throw new Exception("Period Month is required!");
         def m = [:];
         m.objid = entity.objid;
         m.volume = info.volume;
@@ -55,9 +56,18 @@ public class CaptureConsumptionModel  {
     
     void computeBillingCycle() {
         def h = { o->
-            def sector = entity.stubout?.zone?.sector?.objid;
-            billCycle = billdateSvc.computeBillingDates( [sector: sector, billdate:o] );
             def df = new SimpleDateFormat("yyyy-MM-dd");
+            def dt = df.parse(o);
+            //def dt = DateFunc.getDayAdd( df.parse(o), -1);
+            
+            def sector = entity.stubout?.zone?.sector?.objid;
+            billCycle = billdateSvc.computeBillingDates( [sector: sector, billdate:dt] );
+            
+            //run this first because we dont want it formatted yet.
+            info.year = DateFunc.getYear( billCycle.fromperiod );
+            info.month = DateFunc.getMonth( billCycle.fromperiod );
+            
+            
             billCycle.fromperiod = df.format(billCycle.fromperiod);
             billCycle.toperiod = df.format(billCycle.toperiod);
             billCycle.readingdate = df.format(billCycle.readingdate);
@@ -66,13 +76,14 @@ public class CaptureConsumptionModel  {
 
             info.dtreading = billCycle.readingdate;
             info.duedate = billCycle.duedate;
-            binding.refresh("billCycle.*");
+            
+            binding.refresh();
         }
-        Modal.show("date:prompt",[handler:h, date: info.year + "-"+ info.month+"-01"]);
+        Modal.show("date:prompt",[handler:h]);
     }
     
     def doOk() {
-        if( !info.duedate ) throw new Exception("Please run 'Compute Billing Cycle'");
+        if( !info.duedate ) throw new Exception("Please run 'Enter Ending Period'");
         if( info.prevreading > info.reading) 
             throw new Exception("Prev reading must be less than current reading");
         if( info.prevreading <0 || info.reading < 0 || info.volume <0) 

@@ -39,7 +39,7 @@ class WaterworksBillingReportService {
 			m.averageconsumption = 0;
 		}
 
-		def list = billingSvc.getBilling([acctid: params.objid]);
+		def list = billingSvc.getItemizedBilling([acctid: params.objid]);
 		m.billingdetails = [];
 		list.each {
 			m.billingdetails << [ account:it.item?.title +  ((it.remarks)?'('+it.remarks+')':''), amount: it.amount ] 

@@ -31,13 +31,6 @@ class WaterworksBillingService  {
 	@DataContext("itemaccount")
 	def itemaccount;
 
-	//for billing 
-	def buildBillingFacts(def facts, def o) {
-		def currDate = dateSvc.getServerDate();
-		facts << new EffectiveDate( currDate );
-		facts << new CurrentDate(currDate);
-		facts << new BillDate((!o?.billdate)?currDate:o?.billdate);
-	}
 
 	private def findItemAccount( def item ) {
 		return itemaccount.find([objid: item.objid]).first();
@@ -87,7 +80,7 @@ class WaterworksBillingService  {
 		def fees = ledger.find([parentid: o.acctid])
 			.where("amount-amtpaid > 0 AND installmentid IS NULL").orderBy("txntype,duedate").list();
 		fees.each {
-			itemList << [refid: it.objid, item: findAcct(it.item), remarks: it.remarks,
+			itemList << [refid: it.objid, item: findAcct(it.item), remarks: it.remarks, duedate: it.duedate,
 				amount:it.amount-it.amtpaid, surcharge:0, interest:0, discount:0, total: it.amount-it.amtpaid];	
 		}
 		return itemList;
@@ -151,17 +144,68 @@ class WaterworksBillingService  {
 		def instList = buildInstallmentFees(o, findAcct );
 		def ledgerList = buildLedgerItems( o, findAcct );
 
-		return itemList + instList + ledgerList;
+		def facts = [];
+		def currDate = dateSvc.getServerDate();
+		facts << new EffectiveDate( currDate );
+		facts << new CurrentDate(currDate);
+		facts << new BillDate((!o?.billdate)?currDate:o?.billdate);
+		facts << new DisconnectionDate((!o?.billdate)?currDate:o?.billdate);
 
-		/*
-		def ledgerFacts = buildLedgerFacts(o);
-		def res = ruleSvc.execute( "waterworksbilling", appFacts + ledgerFacts, null, null );
-		if( res.billItemList)
-			throw new Exception("No compute fee rules executed");
-		return res.billItemList.buildBillItems();
-		*/
+		ledgerList.each {
+			def acct = new Account(it.item);
+			facts << new BillItem( duedate: it.duedate, account: acct, refid: it.refid, amount:it.amount, amtdue: it.amount );
+		}
+		def res = ruleSvc.execute( "waterworksbilling", facts, null, null );
+		
+		facts.findAll{ it instanceof BillItem }.each {bi->
+			def g = ledgerList.find{ it.refid == bi.refid  };
+			if(bi.surchargeAccount ) {
+				g.surcharge = bi.surcharge;
+				g.surchargeAccount = bi.surchargeAccount.toItem();
+			}
+			if( bi.interestAccount ) {
+				g.interest = bi.interest;
+				g.interestAccount = bi.interestAccount.toItem();
+			}
+		}	
+		def billItems = [];
+		if(res.otherFees) {
+			res.otherFees.each {
+				billItems << it.toItem();
+			}
+		}
+		return itemList + instList + ledgerList + billItems;
 	}
 
 
+	@ProxyMethod
+	public def getItemizedBilling(def o) {
+		def billingItems = getBilling( o );
+		def items = [];
+		billingItems.each { 
+			items << [ item: it.item, amount: it.amount, remarks: it.remarks ];
+			if( it.surcharge > 0 ) {
+				items << [ item: it.surchargeAccount, amount: it.surcharge, remarks: it.remarks ];
+			}
+			if( it.interest > 0 ) {
+				items << [ item: it.interestAccount, amount: it.interest, remarks: it.remarks ];
+			}
+		}
+		return items;
+
+		/*
+		def items = billingItems.collect{ [ item: it.item, amount: it.amount, remarks: it.remarks ] } 
+		def surchargeMap = billingItems.findAll{it.surcharge>0}.groupBy { it.surchargeAccount };
+		surchargeMap.each {k,v->
+			items << [ item: k, amount: v.sum{it.surcharge} ];
+		}
+		def interestMap = billingItems.findAll{it.interest>0}.groupBy { it.interestAccount };
+		interestMap.each { k,v->
+			items << [ item: k, amount: v.sum{it.interest} ];	
+		}
+		return items;
+		*/
+		
+	}
 
 }

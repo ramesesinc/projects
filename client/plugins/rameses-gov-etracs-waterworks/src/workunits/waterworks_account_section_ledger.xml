@@ -1,6 +1,6 @@
 <workunit extends="com/rameses/seti2/templates/FormList.xml"
             schemaName="vw_waterworks_account_ledger" 
-          cols="item.code,item.title,amount,amtpaid,balance,duedate,remarks" orderBy="duedate">
+          cols="item.code,item.title,amount,amtpaid,balance,duedate,remarks">
     <invokers>
         <invoker type="waterworks_account:section" caption="Ledger" index="2" 
                 visibleWhen="#{mode=='read'}"

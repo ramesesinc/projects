@@ -64,7 +64,7 @@ class WaterworksBillingDateService  {
 		//do this so it will immediately break after initial rulegroup.
 		def h = { r-> return false };
 
-		def res = ruleSvc.execute( "waterworksbilling", facts, null, h );
+		def res = ruleSvc.execute( "waterworksbillingcycle", facts, null, h );
 		def period = res.period;
 
 		period.month = billmonth;

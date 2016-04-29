@@ -1,6 +1,7 @@
 import com.rameses.annotations.*;
 import java.rmi.server.*;
 import com.rameses.util.*;
+import com.rameses.functions.*;
 import java.text.*;
 
 class WaterworksMobileDownloadService {
@@ -49,23 +50,21 @@ class WaterworksMobileDownloadService {
 			y = y-1;
 		}
 
-		def duemonth = dateSvc.getServerMonth();
-		def dueyear = dateSvc.getServerYear();
 		def rundate = dateSvc.getServerDate();
 		DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
 		
 		def acct = cta.findAccountByHandlerAndTag([handler:'waterworks', tag:'WFEE']); 
 		if ( !acct ) throw new Exception('Please provide an itemaccount ');
 
-		def params = [assigneeid: o.assigneeid, sectorid:o.sectorid, year:dueyear, month:duemonth];
+		def params = [assigneeid: o.assigneeid, sectorid:o.sectorid];
 		def list = wm.getListForDownload(params);
 		println 'list-size: '+ list.size();
 		list.each { 
 			it.state = 'PENDING';
 			it.barcode = '51030:' + it.acctno;
 			it.batchid = o.batchid;
-			it.month = duemonth;
-			it.year = dueyear;
+			it.month = DateFunc.getMonth(it.fromperiod);
+			it.year = DateFunc.getYear(it.fromperiod);;
 			it.period = df.format(it.fromperiod) + " - " + df.format(it.toperiod);
 			it.rundate = rundate;
 			it.itemaccountid = acct.account.objid; 

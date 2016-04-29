@@ -11,9 +11,9 @@
     import com.rameses.rcp.annotations.*
     import com.rameses.osiris2.client.*
     import com.rameses.osiris2.common.*
-    import com.rameses.gov.etracs.rpt.util.RPTUtil;
+    import com.rameses.gov.etracs.rptis.model.*;
             
-    class CancelledFAASExplorerViewController extends ExplorerViewController
+    class CancelledFAASExplorerViewController extends LguQueryListModel
     {
           @Service('CancelledFAASListService')
             def svc 
@@ -45,14 +45,6 @@
                 return doOpen();
             }
             
-           void clear(){
-               query.clear()
-               search();
-               binding.refresh('.*');
-
-           }
-        
-        
             def getEntity(){
                 return selectedEntity;
             }  
@@ -61,5 +53,6 @@
     </code>   
     <pages>
         <page template="com.rameses.osiris2.themes.ExplorerViewPage" />
+        <page name="queryform" template="com.rameses.gov.etracs.rpt.common.LguListQueryPage" />
     </pages>
 </workunit>

@@ -50,6 +50,7 @@ class SubdivisionListService extends ActiveListService
     void beforeList( params ) {
         params.state = (params.state ? params.state : '%')
         params.lguid = (params.lgu ? params.lgu.objid : '%')
+        params.barangayid = (params.barangay ? params.barangay.objid : '%')
  		params.searchtext = (params.searchtext ? params.searchtext : '%')
  		params._pagingKeys = ' s.objid '
  		params.filters = '';

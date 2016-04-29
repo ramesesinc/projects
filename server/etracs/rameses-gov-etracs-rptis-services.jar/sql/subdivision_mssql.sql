@@ -12,22 +12,28 @@ order by n.idx
 [getList]
 SELECT 
 	s.*,
-	t.trackingno,
+	(select trackingno from rpttracking where objid = s.objid) as trackingno,
 	tsk.objid AS taskid,
 	tsk.state AS taskstate,
 	tsk.assignee_objid 
 FROM subdivision s
-	LEFT JOIN rpttracking t ON s.objid = t.objid 
 	LEFT JOIN subdivision_task tsk ON s.objid = tsk.refid AND tsk.enddate IS NULL
 WHERE s.lguid LIKE $P{lguid} 
    and s.state LIKE $P{state}
-   and (s.txnno LIKE $P{searchtext}
-   		 OR t.trackingno LIKE $P{searchtext}
-   		 OR mothertdnos LIKE $P{searchtext}
-   		 OR motherpins LIKE $P{searchtext}
+   and s.objid in (
+   		select objid from subdivision where txnno LIKE $P{searchtext}
+   		union
+   		select objid from subdivision where mothertdnos LIKE $P{searchtext}
+   		union 
+   		select objid from subdivision where motherpins LIKE $P{searchtext}
+   		union 
+   		select s.objid from subdivision s, rpttracking t where s.objid = t.objid and t.trackingno like $P{searchtext}
    	)
-	${filters}
-
+   and s.objid in(
+   		select max(m.subdivisionid) as objid from subdivision_motherland m, faas f, realproperty rp where m.landfaasid = f.objid and f.realpropertyid = rp.objid and rp.barangayid LIKE $P{barangayid}
+   	)
+   ${filters}
+order by s.txnno desc 	
 
 
 [findSubdivisionById]

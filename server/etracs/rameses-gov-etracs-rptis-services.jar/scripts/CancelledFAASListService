@@ -54,6 +54,22 @@ public class CancelledFAASListService extends ActiveCrudListService {
         params._pagingKeys = 'f.objid'
 
         def whereclause = ''
+
+        if (params.lgu){
+            params.lguid = params.lgu.objid 
+            whereclause += ' cf.lguid = $P{lguid} '
+        }
+
+        if (params.barangay){
+            params.barangayid = params.barangay.objid 
+            if (whereclause) whereclause += ' AND ' 
+            whereclause += ' rp.barangayid = $P{barangayid} '
+        }        
+
+        if (params.state){
+            if (whereclause) whereclause += ' AND ' 
+            whereclause += ' cf.state = $P{state} '
+        }
         
         switch(params.name) {
             case 'all':

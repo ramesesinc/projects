@@ -81,9 +81,7 @@ class RPTAssessmentNoticeService
 		notice.taxpayerid = notice.taxpayer.objid
 		notice.taxpayername = notice.taxpayer.name
 		notice.taxpayeraddress = notice.taxpayer.address
-		if (notice.items.size() == 1){
-			notice.administrator = notice.items[0].administrator
-		}
+		updateAdministratorInfo(notice)
 		notice.assessmentyear = dateSvc.serverYear 
 		
 		notice.createdbyid =  (env.USERID ? env.USERID : 'SYSTEM')
@@ -103,11 +101,18 @@ class RPTAssessmentNoticeService
 		return notice 
 	}
 
+	void updateAdministratorInfo(notice){
+		if (notice.items.size() == 1){
+			notice.administrator = notice.items[0].administrator
+		}
+	}
+
 
 	@ProxyMethod
 	public def openNotice( objid ) {
 		def notice = em.read([objid:objid])
 		notice.items = getItems(notice)
+		updateAdministratorInfo(notice)
 		notice.dtassessed = dateSvc.getServerYear()+""
 		if( notice.items && notice.items[0].dtsigned )	
 			notice.dtassessed = new java.text.SimpleDateFormat("yyyy").format(notice.items[0].dtsigned)

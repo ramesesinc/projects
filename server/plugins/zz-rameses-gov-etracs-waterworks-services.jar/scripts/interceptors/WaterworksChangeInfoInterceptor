@@ -42,6 +42,13 @@ class WaterworksChangeInfoInterceptor {
 		wmeter.find([ objid: info.meterid ]).update([ currentacctid: info.objid ]); 
 	} 
 
+	@Before( pattern="ChangeInfoService.update", eval="#{args[0].info._schemaname=='waterworks_account' && args[0].info._tag=='change-reading'}" ) 
+	public void updateReading( evt ) {
+		def info = evt.args[0].info;
+		if ( !info.currentreading ) throw new Exception('Please specify currentreading'); 
+
+		wacct.find([ objid: info.objid ]).update([ currentreading: info.currentreading ]);
+	} 
 
 	def formatAddress( addr ) {
 		def buff = []; 

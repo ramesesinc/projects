@@ -6,11 +6,11 @@
 		<field name="year" required="true"/> 
 		<field name="month" required="true"/> 
 
-		<field name="fromperiod"  indexed="true" type="date" editable="false"/>
-		<field name="toperiod"  indexed="true" type="date" editable="false"/>
-		<field name="duedate"  indexed="true" type="date" editable="false"/>
-		<field name="readingdate"  indexed="true" type="date" caption="Last Reading Date" editable="false"/>
-		<field name="disconnectiondate" indexed="true" type="date" caption="Disconnection Date" editable="false"/>
+		<field name="fromperiod"  indexed="true" type="date" editable="false" caption="From Period"/>
+		<field name="toperiod"  indexed="true" type="date" editable="false" caption="To Period"/>
+		<field name="duedate"  indexed="true" type="date" editable="false"  caption="Due Date" visible="false"/>
+		<field name="readingdate"  indexed="true" type="date" caption="Reading Date" editable="false"/>
+		<field name="disconnectiondate" indexed="true" type="date" caption="Disconnection Date" editable="false" visible="false"/>
 	
 	</element> 
 </schema>

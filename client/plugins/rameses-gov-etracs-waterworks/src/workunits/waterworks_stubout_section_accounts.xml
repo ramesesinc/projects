@@ -1,8 +1,11 @@
 <workunit> 
     <invokers>
-        <invoker type="waterworks_stubout:section" caption="Accounts" 
+        <invoker type="waterworks_stubout:section" 
+                 caption="Accounts" 
                  action="init" index="-20"
-                 visibleWhen="#{mode=='read'}"
+                 visibleWhen="#{mode=='read'}" 
+                 allowCreate="false" allowOpen="false" 
+                 allowEdit="false" allowDelete="false"  
                 />
     </invokers>
     <code class="com.rameses.gov.etracs.waterworks.models.StuboutAccountModel"/>

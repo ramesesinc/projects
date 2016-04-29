@@ -3,15 +3,15 @@
 	<element tablename="waterworks_account_ledger">
 		<field name="objid" primary="true"  prefix="WAL"/>
 		<field name="parentid" required="true"/> 
-		<field name="duedate" required="true"/> 
-		<field name="txntype" required="true"/> 
+		<field name="duedate" required="true" caption="Due Date"/> 
+		<field name="txntype" required="true" caption="TxnType"/> 
 		<field name="item_objid" required="true"/>
-		<field name="item_code" required="true"/>
-		<field name="item_title" required="true"/>
-		<field name="remarks" />
-		<field name="amount" required="true"/>
-		<field name="amtpaid" required="true"/>
-		<field name="balance" expr="amount-amtpaid"/>
+		<field name="item_code" required="true" caption="Item Code"/>
+		<field name="item_title" required="true" caption="Item Title"/>
+		<field name="remarks" caption="Remarks"/>
+		<field name="amount" required="true" caption="Amount"/>
+		<field name="amtpaid" required="true" caption="AmtPaid"/>
+		<field name="balance" expr="amount-amtpaid" caption="Balance"/>
 		<field name="installmentid" />
 	</element>
 

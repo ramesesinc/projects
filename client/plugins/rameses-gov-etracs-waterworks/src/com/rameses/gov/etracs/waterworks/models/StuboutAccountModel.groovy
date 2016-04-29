@@ -43,7 +43,7 @@ public class StuboutSectionAccountModel {
                 accounts = queryService.getList(m);
             } 
             return accounts; 
-        }        
+        }
     ] as BasicListModel;
     
     void changeIndexNo() { 

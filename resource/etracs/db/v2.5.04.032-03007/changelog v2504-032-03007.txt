@@ -7,6 +7,7 @@
 	- 
 		
 - ASSESSOR
+	- Add support to attach documents in Annotation
 	- LGU and Barangay filter on CS, SD and FAAS Cancellation listing
 	- Notice of Assessment Batch Printing with Administrator
 	- Add Property Examination and Audit Report

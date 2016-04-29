@@ -21,6 +21,7 @@ class ProvinceFAASAnnotationRemoteService
 		boolean createrecord = (em.findById(annotation) == null)
 		if (createrecord){
 			em.create(annotation)
+			annotationSvc.saveImages(annotation)
 			println 'FAAS Annotation has been successfully created.'
 		}
 	}

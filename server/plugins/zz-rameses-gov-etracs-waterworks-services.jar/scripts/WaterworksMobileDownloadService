@@ -42,7 +42,6 @@ class WaterworksMobileDownloadService {
 	@ProxyMethod
 	@Async
 	public def processDownload(def o) {
-		println "processing download "+ o.batchid;
         def y = dateSvc.getServerYear();
 		def m = dateSvc.getServerMonth() - 1;
 		if(m==0) {
@@ -58,7 +57,7 @@ class WaterworksMobileDownloadService {
 
 		def params = [assigneeid: o.assigneeid, sectorid:o.sectorid];
 		def list = wm.getListForDownload(params);
-		println 'list-size: '+ list.size();
+		println 'process download list-size: '+ list.size();
 		list.each { 
 			it.state = 'PENDING';
 			it.barcode = '51030:' + it.acctno;
@@ -102,7 +101,6 @@ class WaterworksMobileDownloadService {
 
 	@ProxyMethod
 	public int getBatchStatus( String batchid ) {
-		println 'check batch status... '+ batchid;
 		int state = header.find([batchid: batchid]).select("state").val();	
 		if( state == 0 ) return -1;
 		return wm.find([batchid:batchid]).select("x:{COUNT(*)}").val();
@@ -110,7 +108,7 @@ class WaterworksMobileDownloadService {
 
 	@ProxyMethod
 	public def download( def o ) {
-		println "fetching download " + o;
+		println "fetch download " + o;
 		if(!o.batchid) throw new Exception("Please specify batchid!"); 
 		if(o._start == null) throw new Exception("Please specify _start!"); 
 		if(o._limit == null) throw new Exception("Please specify _limit!"); 

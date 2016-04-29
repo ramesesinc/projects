@@ -9,16 +9,16 @@ class ChangeInfoService  {
 	@Service("PersistenceService")
 	def persistenceService;
 
-	@DataContext(dynamic=true)
-	def db;
-
 	@ProxyMethod
-	public def update( def o ) {
-		if(!o.info._schemaname) throw new Exception("ChangeInfoService error. Please include as schemaname");
-		//if(!o.newdata) throw new Exception("ChangeInfoService error. Please include newdata");
-		//if(!o.olddata) throw new Exception("ChangeInfoService error. Please include as olddata");
-		persistenceService.update( o.info );
+	public def update( o ) { 
+		if ( !o.info._schemaname ) throw new Exception("ChangeInfoService error. Please include as schemaname");
+		
+		if ( o.info._tag ) { 
+			// this is the flag or marker where the client 
+			// defines a customize code in updating the record.  
+			// we let the interceptors handle this... 
+		} else { 
+			persistenceService.update( o.info );
+		}
 	}
-
-
 }

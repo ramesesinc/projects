@@ -9,15 +9,15 @@ import com.rameses.rcp.ui.annotations.Template;
 
 /**
  *
- * @author rameses
+ * @author wflores 
  */
 @Template(OKCancelPage.class)
-public class ChangeAccountAddressPage extends javax.swing.JPanel {
+public class ChangeAccountStuboutPage extends javax.swing.JPanel {
 
     /**
-     * Creates new form ChangeAccountAddressPage
+     * Creates new form ChangeAccountStuboutPage
      */
-    public ChangeAccountAddressPage() {
+    public ChangeAccountStuboutPage() {
         initComponents();
     }
 
@@ -33,31 +33,57 @@ public class ChangeAccountAddressPage extends javax.swing.JPanel {
         xPanel1 = new com.rameses.rcp.control.XPanel();
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
         xLabel2 = new com.rameses.rcp.control.XLabel();
+        xLabel4 = new com.rameses.rcp.control.XLabel();
         xLabel3 = new com.rameses.rcp.control.XLabel();
+        xLabel5 = new com.rameses.rcp.control.XLabel();
         xPanel2 = new com.rameses.rcp.control.XPanel();
-        localAddressPanel1 = new com.rameses.etracs.common.LocalAddressPanel();
+        xFormPanel3 = new com.rameses.rcp.control.XFormPanel();
+        xLookupField2 = new com.rameses.rcp.control.XLookupField();
+        xIntegerField1 = new com.rameses.rcp.control.XIntegerField();
+        xLabel8 = new com.rameses.rcp.control.XLabel();
+        xLabel9 = new com.rameses.rcp.control.XLabel();
         xPanel3 = new com.rameses.rcp.control.XPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         xTextArea1 = new com.rameses.rcp.control.XTextArea();
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
-        xTitledBorder1.setTitle("Current Account Information");
+        xTitledBorder1.setTitle("Current Stubout Information");
         xPanel1.setBorder(xTitledBorder1);
 
-        xLabel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(190, 190, 190)));
-        xLabel2.setCaption("Name");
-        xLabel2.setExpression("#{entity.acctname}");
+        xFormPanel1.setBorder(null);
+        xFormPanel1.setCaptionWidth(100);
+
+        xLabel2.setBackground(new java.awt.Color(245, 245, 245));
+        xLabel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
+        xLabel2.setCaption("Stubout");
+        xLabel2.setExpression("#{entity.stubout.code}");
         xLabel2.setOpaque(true);
         xLabel2.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(xLabel2);
 
-        xLabel3.setBackground(new java.awt.Color(250, 250, 250));
-        xLabel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(190, 190, 190)));
-        xLabel3.setCaption("Address");
-        xLabel3.setExpression("#{entity.address.text}");
+        xLabel4.setBackground(new java.awt.Color(245, 245, 245));
+        xLabel4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
+        xLabel4.setCaption("Stubout Position");
+        xLabel4.setExpression("#{entity.stuboutindex}");
+        xLabel4.setOpaque(true);
+        xLabel4.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel1.add(xLabel4);
+
+        xLabel3.setBackground(new java.awt.Color(245, 245, 245));
+        xLabel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
+        xLabel3.setCaption("Sector");
+        xLabel3.setExpression("#{entity.stubout.zone.sector.code}");
         xLabel3.setOpaque(true);
         xLabel3.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(xLabel3);
+
+        xLabel5.setBackground(new java.awt.Color(245, 245, 245));
+        xLabel5.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
+        xLabel5.setCaption("Zone");
+        xLabel5.setExpression("#{entity.stubout.zone.code}");
+        xLabel5.setOpaque(true);
+        xLabel5.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel1.add(xLabel5);
 
         javax.swing.GroupLayout xPanel1Layout = new javax.swing.GroupLayout(xPanel1);
         xPanel1.setLayout(xPanel1Layout);
@@ -65,22 +91,55 @@ public class ChangeAccountAddressPage extends javax.swing.JPanel {
             xPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(xPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 555, Short.MAX_VALUE)
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 316, Short.MAX_VALUE)
                 .addContainerGap())
         );
         xPanel1Layout.setVerticalGroup(
             xPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, xPanel1Layout.createSequentialGroup()
+            .addGroup(xPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder2 = new com.rameses.rcp.control.border.XTitledBorder();
-        xTitledBorder2.setTitle("New Address Information");
+        xTitledBorder2.setTitle("New Stubout Information");
         xPanel2.setBorder(xTitledBorder2);
 
-        localAddressPanel1.setName("info.address"); // NOI18N
+        xFormPanel3.setBorder(null);
+        xFormPanel3.setCaptionWidth(100);
+
+        xLookupField2.setCaption("Stubout");
+        xLookupField2.setExpression("#{item.code}");
+        xLookupField2.setHandler("waterworks_stubout:lookup");
+        xLookupField2.setName("info.stubout"); // NOI18N
+        xLookupField2.setPreferredSize(new java.awt.Dimension(0, 20));
+        xLookupField2.setRequired(true);
+        xFormPanel3.add(xLookupField2);
+
+        xIntegerField1.setCaption("Stubout Position");
+        xIntegerField1.setName("info.stuboutindex"); // NOI18N
+        xIntegerField1.setPreferredSize(new java.awt.Dimension(0, 20));
+        xIntegerField1.setRequired(true);
+        xFormPanel3.add(xIntegerField1);
+
+        xLabel8.setBackground(new java.awt.Color(245, 245, 245));
+        xLabel8.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
+        xLabel8.setCaption("Sector");
+        xLabel8.setDepends(new String[] {"info.stubout"});
+        xLabel8.setExpression("#{info.stubout.zone.sector.code}");
+        xLabel8.setOpaque(true);
+        xLabel8.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel3.add(xLabel8);
+
+        xLabel9.setBackground(new java.awt.Color(245, 245, 245));
+        xLabel9.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
+        xLabel9.setCaption("Zone");
+        xLabel9.setDepends(new String[] {"info.stubout"});
+        xLabel9.setExpression("#{info.stubout.zone.code}");
+        xLabel9.setOpaque(true);
+        xLabel9.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel3.add(xLabel9);
 
         javax.swing.GroupLayout xPanel2Layout = new javax.swing.GroupLayout(xPanel2);
         xPanel2.setLayout(xPanel2Layout);
@@ -88,15 +147,15 @@ public class ChangeAccountAddressPage extends javax.swing.JPanel {
             xPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(xPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(localAddressPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 555, Short.MAX_VALUE)
+                .addComponent(xFormPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, 316, Short.MAX_VALUE)
                 .addContainerGap())
         );
         xPanel2Layout.setVerticalGroup(
             xPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(xPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(localAddressPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(xFormPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder3 = new com.rameses.rcp.control.border.XTitledBorder();
@@ -115,14 +174,14 @@ public class ChangeAccountAddressPage extends javax.swing.JPanel {
             xPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(xPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 555, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 316, Short.MAX_VALUE)
                 .addContainerGap())
         );
         xPanel3Layout.setVerticalGroup(
             xPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, xPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 130, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 129, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -152,10 +211,16 @@ public class ChangeAccountAddressPage extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane jScrollPane1;
-    private com.rameses.etracs.common.LocalAddressPanel localAddressPanel1;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
+    private com.rameses.rcp.control.XFormPanel xFormPanel3;
+    private com.rameses.rcp.control.XIntegerField xIntegerField1;
     private com.rameses.rcp.control.XLabel xLabel2;
     private com.rameses.rcp.control.XLabel xLabel3;
+    private com.rameses.rcp.control.XLabel xLabel4;
+    private com.rameses.rcp.control.XLabel xLabel5;
+    private com.rameses.rcp.control.XLabel xLabel8;
+    private com.rameses.rcp.control.XLabel xLabel9;
+    private com.rameses.rcp.control.XLookupField xLookupField2;
     private com.rameses.rcp.control.XPanel xPanel1;
     private com.rameses.rcp.control.XPanel xPanel2;
     private com.rameses.rcp.control.XPanel xPanel3;

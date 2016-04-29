@@ -39,11 +39,14 @@ class WaterworksBillingReportService {
 			m.averageconsumption = 0;
 		}
 
+		m.billingdetails = []; 
 		def list = billingSvc.getBilling([acctid: params.objid]);
-		m.billingdetails = [];
 		list.each {
 			m.billingdetails << [ account:it.item?.title +  ((it.remarks)?'('+it.remarks+')':''), amount: it.amount ] 
 		}
+
+		def sigobj = wapp.find([ acctid: m.objid ]).select('signature').first(); 
+		m.signature = sigobj?.signature; 		
 		return m;
 	}
 }

@@ -80,9 +80,9 @@ class WaterworksAccountService {
 
 	@ProxyMethod
 	public def postConsumption( def o ) {
+		if(!o.duedate) throw new Exception("Duedate is required");
 		o.readingmethod = 'CAPTURE';
 		consumption.create( o );
-		o.amtpaid = 0;
 		o.txntype = 'WFEE';
 		if(o.postledger == true ) {
 			o.parentid = o.account.objid;
@@ -92,9 +92,6 @@ class WaterworksAccountService {
 
 	@ProxyMethod
 	public def postLedger( def o ) {
-		o.readingmethod = 'CAPTURE';
-		consumption.create( o );
-		o.amtpaid = 0;
 		o.txntype = 'WFEE';
 		if(o.postledger == true ) {
 			o.parentid = o.account.objid;

@@ -72,7 +72,7 @@ class WaterworksBillingService  {
 		if(!o.applicationid) return [];
 		def itemList = [];
 		def fees = appFee.find([parentid: o.applicationid])
-			.where("amount-amtpaid > 0 AND installmentid IS NULL").list();
+			.where("amount-amtpaid > 0 AND installmentid IS NULL").orderBy("txntype,duedate").list();
 		fees.each {
 			itemList << [refid: it.objid, item: findAcct(it.item), remarks: it.remarks,
 				amount:it.amount-it.amtpaid, surcharge:0, interest:0, discount:0, total: it.amount-it.amtpaid];	
@@ -85,7 +85,7 @@ class WaterworksBillingService  {
 		if(!o.acctid) return [];
 		def itemList = [];
 		def fees = ledger.find([parentid: o.acctid])
-			.where("amount-amtpaid > 0 AND installmentid IS NULL").list();
+			.where("amount-amtpaid > 0 AND installmentid IS NULL").orderBy("txntype,duedate").list();
 		fees.each {
 			itemList << [refid: it.objid, item: findAcct(it.item), remarks: it.remarks,
 				amount:it.amount-it.amtpaid, surcharge:0, interest:0, discount:0, total: it.amount-it.amtpaid];	
@@ -137,7 +137,11 @@ class WaterworksBillingService  {
 		def acctMap = [:];
 		def findAcct = { i->
 			if(!acctMap.containsKey(i.objid)) {
-				acctMap.put(i.objid, itemaccount.find([objid: i.objid]).first());
+				def z = itemaccount.find([objid: i.objid]).first();
+				if(z == null) {
+					throw new Exception("Item account " + i.title + " not found!");
+				}
+				acctMap.put(i.objid, z);
 			}
 			return acctMap.get( i.objid );
 		};

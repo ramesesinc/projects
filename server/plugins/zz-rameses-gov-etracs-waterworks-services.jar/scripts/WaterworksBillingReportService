@@ -25,9 +25,9 @@ class WaterworksBillingReportService {
 		m.barcode = '515030:'+m.acctno;
 		m.printdate = dateSvc.getServerDate();
 
-		m.consumption = consumption.find([acctid: m.objid]).select("month,date:{dtreading},reading,consumption:{volume}").list();
+		m.consumption = consumption.find([acctid: m.objid]).select("month,date:{dtreading},reading,consumption:{volume}").orderBy("year,month").list();
 		m.consumption.each {
-			it.month = months[it.month];
+			it.month = months[it.month-1];
 		}
 
 		if( m.consumption ) {
@@ -39,9 +39,11 @@ class WaterworksBillingReportService {
 			m.averageconsumption = 0;
 		}
 
-		m.billingdetails = billingSvc.getBilling([acctid: params.objid]).collect{ 
-			[ account:item.account.title +  (it.remarks)?'('+it.remarks+')':'', amount: it.amount ] 
-		};
+		def list = billingSvc.getBilling([acctid: params.objid]);
+		m.billingdetails = [];
+		list.each {
+			m.billingdetails << [ account:it.item?.title +  ((it.remarks)?'('+it.remarks+')':''), amount: it.amount ] 
+		}
 		return m;
 	}
 }

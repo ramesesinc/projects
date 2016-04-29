@@ -1,6 +1,7 @@
 import com.rameses.annotations.*;
 import java.rmi.server.*;
 import com.rameses.util.*;
+import com.rameses.functions.*;
 import java.text.*;
 
 class WaterworksMobileDownloadService {
@@ -41,7 +42,6 @@ class WaterworksMobileDownloadService {
 	@ProxyMethod
 	@Async
 	public def processDownload(def o) {
-		println "processing download "+ o.batchid;
         def y = dateSvc.getServerYear();
 		def m = dateSvc.getServerMonth() - 1;
 		if(m==0) {
@@ -49,23 +49,21 @@ class WaterworksMobileDownloadService {
 			y = y-1;
 		}
 
-		def duemonth = dateSvc.getServerMonth();
-		def dueyear = dateSvc.getServerYear();
 		def rundate = dateSvc.getServerDate();
 		DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
 		
 		def acct = cta.findAccountByHandlerAndTag([handler:'waterworks', tag:'WFEE']); 
 		if ( !acct ) throw new Exception('Please provide an itemaccount ');
 
-		def params = [assigneeid: o.assigneeid, sectorid:o.sectorid, year:dueyear, month:duemonth];
+		def params = [assigneeid: o.assigneeid, sectorid:o.sectorid];
 		def list = wm.getListForDownload(params);
-		println 'list-size: '+ list.size();
+		println 'process download list-size: '+ list.size();
 		list.each { 
 			it.state = 'PENDING';
 			it.barcode = '51030:' + it.acctno;
 			it.batchid = o.batchid;
-			it.month = duemonth;
-			it.year = dueyear;
+			it.month = DateFunc.getMonth(it.fromperiod);
+			it.year = DateFunc.getYear(it.fromperiod);;
 			it.period = df.format(it.fromperiod) + " - " + df.format(it.toperiod);
 			it.rundate = rundate;
 			it.itemaccountid = acct.account.objid; 
@@ -103,7 +101,6 @@ class WaterworksMobileDownloadService {
 
 	@ProxyMethod
 	public int getBatchStatus( String batchid ) {
-		println 'check batch status... '+ batchid;
 		int state = header.find([batchid: batchid]).select("state").val();	
 		if( state == 0 ) return -1;
 		return wm.find([batchid:batchid]).select("x:{COUNT(*)}").val();
@@ -111,7 +108,7 @@ class WaterworksMobileDownloadService {
 
 	@ProxyMethod
 	public def download( def o ) {
-		println "fetching download " + o;
+		println "fetch download " + o;
 		if(!o.batchid) throw new Exception("Please specify batchid!"); 
 		if(o._start == null) throw new Exception("Please specify _start!"); 
 		if(o._limit == null) throw new Exception("Please specify _limit!"); 

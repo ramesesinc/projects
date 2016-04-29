@@ -1,0 +1,25 @@
+<workunit schemaName="waterworks_account">
+    <invokers>
+        <invoker type="waterworks_account:form:menuActions" 
+                 caption="Change Stubout" 
+                 target="popup"
+                 action="init"
+                 fields="stubout.*,stuboutindex"
+                 visibleWhen="#{mode=='read'}"
+                />   
+    </invokers> 
+    
+    <code>
+    class ChangeAccountStuboutModel extends com.rameses.seti2.models.ChangeInfoModel {
+
+        public void afterInit() { 
+            super.afterInit(); 
+            info._tag = 'change-stubout'; 
+        } 
+    }         
+    </code> 
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.waterworks.views.ChangeAccountStuboutPage"/>
+    </pages>
+</workunit>

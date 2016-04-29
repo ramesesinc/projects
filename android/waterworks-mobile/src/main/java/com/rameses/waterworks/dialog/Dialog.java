@@ -17,12 +17,9 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
-/**
- *
- * @author Dino
- */
 public class Dialog {
 
+    public static Label TITLE;
     public static boolean isOpen = false;
     private static StackPane black;
     
@@ -206,13 +203,13 @@ public class Dialog {
     }
     
     private static HBox createTitle(String s){
-        Label title = new Label(s);
-        title.getStyleClass().add("dialog-label");
-        title.setStyle("-fx-text-fill: white; -fx-font-weight: bold;");
+        TITLE = new Label(s);
+        TITLE.getStyleClass().add("dialog-label");
+        TITLE.setStyle("-fx-text-fill: white; -fx-font-weight: bold;");
         
         HBox container = new HBox();
         container.setStyle("-fx-background-color: #3897ee;");
-        container.getChildren().add(title);
+        container.getChildren().add(TITLE);
         container.setOnMouseClicked(new EventHandler<MouseEvent>(){
             @Override
             public void handle(MouseEvent event) {

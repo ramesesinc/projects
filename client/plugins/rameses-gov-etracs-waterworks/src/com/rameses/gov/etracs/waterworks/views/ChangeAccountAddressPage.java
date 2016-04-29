@@ -100,9 +100,10 @@ public class ChangeAccountAddressPage extends javax.swing.JPanel {
         );
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder3 = new com.rameses.rcp.control.border.XTitledBorder();
-        xTitledBorder3.setTitle("Reason");
+        xTitledBorder3.setTitle("Reason/Remarks for Modification");
         xPanel3.setBorder(xTitledBorder3);
 
+        xTextArea1.setCaption("Reason");
         xTextArea1.setExitOnTabKey(true);
         xTextArea1.setName("info.reason"); // NOI18N
         xTextArea1.setRequired(true);
@@ -119,8 +120,9 @@ public class ChangeAccountAddressPage extends javax.swing.JPanel {
         );
         xPanel3Layout.setVerticalGroup(
             xPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(xPanel3Layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 141, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, xPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 130, Short.MAX_VALUE)
                 .addContainerGap())
         );
 

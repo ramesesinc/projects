@@ -1,0 +1,26 @@
+<workunit schemaName="waterworks_account">
+    <invokers>
+        <invoker type="waterworks_account:form:menuActions" 
+                 caption="Change Reading" 
+                 target="popup"
+                 action="init"
+                 fields="currentreading,lastdateread"
+                 visibleWhen="#{mode=='read'}"
+                 index="100"
+                />   
+    </invokers> 
+    
+    <code>
+    class ChangeAccountReadingModel extends com.rameses.seti2.models.ChangeInfoModel {
+
+        public void afterInit() { 
+            super.afterInit(); 
+            info._tag = 'change-reading'; 
+        } 
+    }         
+    </code> 
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.waterworks.views.ChangeAccountReadingPage"/>
+    </pages>
+</workunit>

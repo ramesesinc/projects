@@ -7,7 +7,9 @@ class WaterworksAccountQueryInterceptor{
 		def result = evt.result;
 		result << [ title: 'Active', id:'active'];
 		result << [ title: 'For Reading', id:'for-reading'];
+		result << [ title: 'Unread', id:'unread'];
 		result << [ title: 'Processing', id:'processing'];
+		result << [ title: 'Past Due', id:'pastdue'];
 		result << [ title: 'For Disconnection', id:'for-disconnection'];
 		result << [ title: 'Disconnected', id:'disconnected'];
 		result << [ title: 'For Reconnection', id:'for-reconnection'];
@@ -30,12 +32,24 @@ class WaterworksAccountQueryInterceptor{
 			case 'for-reading':
 				status = 'for-reading';
 				m.state = 'ACTIVE'
-				str += ' AND billingcycle.readingdate <= NOW() AND (lastdateread IS NULL OR lastdateread < billingcycle.readingdate)'; 
+				str += ' AND billingcycle.readingdate = NOW() AND (lastdateread IS NULL OR lastdateread < billingcycle.readingdate)'; 
+				break;
+
+			case 'unread':
+				status = 'unread';
+				m.state = 'ACTIVE'
+				str += ' AND billingcycle.readingdate < NOW() AND (lastdateread IS NULL OR lastdateread < billingcycle.readingdate)'; 
 				break;
 
 			case 'processing':
 				status = 'processing';
 				m.state = 'PROCESSING';
+				break;
+
+			case 'pastdue':
+				status = 'pastdue';
+				m.state = 'ACTIVE';
+				str += ' AND billingcycle.duedate < NOW() AND (lastdatepaid IS NULL OR lastdatepaid < billingcycle.duedate)'; 
 				break;
 
 			case 'for-disconnection':

@@ -4,14 +4,14 @@
 		<complex name="account" jointype="many-to-one" ref="waterworks_account">
 			<key field="acctid" target="objid"/>
 		</complex>
-		<field name="dtreading" required="true"/>
-		<field name="year" required="true"/>
-		<field name="month" required="true"/>
-		<field name="prevreading" required="true"/>
-		<field name="reading" required="true"/>
-		<field name="readingmethod" required="true"/>
+		<field name="dtreading" required="true" caption="ReadingDate"/>
+		<field name="year" required="true" caption="ReadingYear"/>
+		<field name="month" required="true" caption="ReadingMonth"/>
+		<field name="prevreading" required="true" caption="PreviousReading"/>
+		<field name="reading" required="true" caption="CurrentReading"/>
+		<field name="readingmethod" required="true" caption="ReadingMethod"/>
 		<field name="reader_objid" required="false"/>
-		<field name="reader_name" required="false"/>
-		<field name="volume" required="true"/>
+		<field name="reader_name" required="false" caption="ReaderName"/>
+		<field name="volume" required="true" caption="Volume"/>
 	</element>
 </schema>

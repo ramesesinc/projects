@@ -1,7 +1,8 @@
 <workunit extends="com/rameses/seti2/templates/FormList.xml"
-            schemaName="waterworks_account_consumption" 
+          schemaName="waterworks_account_consumption" 
           cols="dtreading,year,month,prevreading,reading,readingmethod,reader_objid,reader_name,volume"
-            orderBy="year desc,month desc">
+          orderBy="year,month desc" 
+          allowOpen="false" allowCreate="false" allowEdit="false">
     <invokers>
         <invoker type="waterworks_account:section" caption="Consumption" 
                  index="2" action="init" target="popup" 

@@ -25,10 +25,10 @@
             public def getReportData() {
                 def data = reportSvc.getReport([objid: entity.objid]); 
                 if ( data.signature ) { 
-                    data.signature = 'base64://'+ data.signature; 
+                    data.signature = 'base64://' + data.signature; 
                 } 
                 return data; 
-            }
+            } 
       }
       ]]>        
     </code>    

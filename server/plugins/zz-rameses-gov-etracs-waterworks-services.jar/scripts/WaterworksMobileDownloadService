@@ -73,7 +73,7 @@ class WaterworksMobileDownloadService {
 				classification: it.classificationid, 
 				metersize: it.metersize 
 			]);
-			def items = billingSvc.getBilling( [acctid: it.objid]).collect {
+			def items = billingSvc.getItemizedBilling( [acctid: it.objid]).collect {
 				[title: it.item.title + ' ' + ((!it.remarks)?it.remarks:''), amount: it.amount ];
 			}
 			it.items = wm.serializer.write(items);

@@ -30,6 +30,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.Callback;
@@ -151,6 +152,18 @@ public class AccountList {
             @Override
             public void changed(ObservableValue<? extends Account> observable, Account oldValue, Account account) {
                 new Thread(new AccountTask(account,null,-1)).start();
+            }
+        });
+        accountList.setOnMouseClicked(new EventHandler<MouseEvent>(){
+            @Override
+            public void handle(MouseEvent event) {
+                if(event.getClickCount() == 2){
+                    Account account = accountList.getSelectionModel().getSelectedItem();
+                    if(account != null){
+                        int position = accountList.getSelectionModel().getSelectedIndex();
+                        new Thread(new AccountTask(account, null, -1)).start();
+                    }
+                }
             }
         });
         

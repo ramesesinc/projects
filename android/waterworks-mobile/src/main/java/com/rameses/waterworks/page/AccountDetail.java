@@ -17,6 +17,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.TextAlignment;
@@ -28,11 +29,18 @@ public class AccountDetail {
     private Account account;
     private Stubout stubout;
     private int position;
+    private Button prev, next;
+    private List<Account> accountList;
+    private BorderPane container_button;
     
-    public AccountDetail(Account account,Stubout stubout, int position){
-        this.account = account;
+    public AccountDetail(Account acct,Stubout stubout, int pos){
+        this.account = acct;
         this.stubout = stubout;
-        this.position = position;
+        this.position = pos;
+        if(stubout != null){
+            accountList = DatabasePlatformFactory.getPlatform().getDatabase().getAccountByStubout(stubout,"");
+            Dialog.TITLE.setText(stubout.getCode() + " ( " + acct.getSortOrder() + " )");
+        }
         
         Button close = new Button("Close");
         close.getStyleClass().add("terminal-button");
@@ -97,11 +105,59 @@ public class AccountDetail {
             }
         });
         
-        HBox btnContainer = new HBox(Main.HEIGHT > 700 ? 10 : 5);
-        btnContainer.setAlignment(Pos.CENTER_RIGHT);
-        btnContainer.setPadding(Main.HEIGHT > 700 ? new Insets(15, 0, 0, 0) : new Insets(5, 0, 0, 0));
-        btnContainer.getChildren().addAll(print,capture,close);
+        prev = new Button("Prev");
+        prev.getStyleClass().add("terminal-button");
+        prev.setOnAction(new EventHandler<ActionEvent>(){
+            @Override
+            public void handle(ActionEvent event) {
+                if(position != -1){
+                    if(position != 0) --position;
+                    account = accountList.get(position);
+                    loadAccountData();
+                    Dialog.TITLE.setText(stubout.getCode() + " ( " + account.getSortOrder() + " )");
+                }
+            }
+        });
         
+        next = new Button("Next");
+        next.getStyleClass().add("terminal-button");
+        next.setOnAction(new EventHandler<ActionEvent>(){
+            @Override
+            public void handle(ActionEvent event) {
+                if(position != -1){
+                    if(position < accountList.size()-1) ++position;
+                    account = accountList.get(position);
+                    loadAccountData();
+                    Dialog.TITLE.setText(stubout.getCode() + " ( " + account.getSortOrder() + " )");
+                }
+            }
+        });
+        
+        HBox container1 = new HBox(Main.HEIGHT > 700 ? 10 : 5);
+        container1.setAlignment(Pos.CENTER_RIGHT);
+        container1.setPadding(Main.HEIGHT > 700 ? new Insets(15, 0, 0, 0) : new Insets(5, 0, 0, 0));
+        container1.getChildren().addAll(print,capture,close);
+        
+        HBox container2 = new HBox(Main.HEIGHT > 700 ? 10 : 5);
+        container2.setAlignment(Pos.CENTER_RIGHT);
+        container2.setPadding(Main.HEIGHT > 700 ? new Insets(15, 0, 0, 0) : new Insets(5, 0, 0, 0));
+        container2.getChildren().addAll(prev, next);
+        
+        container_button = new BorderPane();
+        container_button.setLeft(container2);
+        container_button.setRight(container1);
+        
+        root = new VBox(Main.HEIGHT > 700 ? 15 : 2);
+        root.setStyle("-fx-background-color: white;");
+        root.setMinWidth(Main.HEIGHT > 700 ? Main.WIDTH-60 : Main.WIDTH-40);
+        root.setMaxWidth(Main.HEIGHT > 700 ? Main.WIDTH-60 : Main.WIDTH-8);
+        root.setAlignment(Pos.CENTER);
+        root.setPadding(Main.HEIGHT > 700 ? new Insets(20) : new Insets(10));
+        
+        loadAccountData();
+    }
+    
+    private void loadAccountData(){
         Database db = DatabasePlatformFactory.getPlatform().getDatabase();
         Reading reading = db.findReadingByAccount(account.getObjid());
         if(reading != null){
@@ -110,6 +166,9 @@ public class AccountDetail {
             account.setConsumption(reading.getConsumption());
             account.setAmtDue(reading.getAmtDue());
             account.setTotalDue(reading.getTotalDue());
+        }else{
+            present = "?";
+            consumption = "?";
         }
         
         HBox readingContainer = new HBox(Main.HEIGHT > 700 ? 10 : 5);
@@ -129,12 +188,7 @@ public class AccountDetail {
         account.setAmtDue(amtdue);
         account.setTotalDue(totaldue);
         
-        root = new VBox(Main.HEIGHT > 700 ? 15 : 2);
-        root.setStyle("-fx-background-color: white;");
-        root.setMinWidth(Main.HEIGHT > 700 ? Main.WIDTH-100 : Main.WIDTH-40);
-        root.setMaxWidth(Main.HEIGHT > 700 ? Main.WIDTH-100 : Main.WIDTH-8);
-        root.setAlignment(Pos.CENTER);
-        root.setPadding(Main.HEIGHT > 700 ? new Insets(20) : new Insets(10));
+        root.getChildren().clear();
         root.getChildren().add(createDetail("Account No",account.getAcctNo()));
         root.getChildren().add(createDetail("Name",account.getAcctName()));
         root.getChildren().add(createDetail("Address",account.getAddress()));
@@ -144,8 +198,7 @@ public class AccountDetail {
         root.getChildren().add(createDetail("Amount Due",amtdue));
         root.getChildren().add(createDetail("TOTAL DUE",totaldue));
         root.getChildren().add(readingContainer);
-        root.getChildren().add(btnContainer);
-        
+        root.getChildren().add(container_button);  
     }
     
     private HBox createDetail(String key,String value){

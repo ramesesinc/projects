@@ -24,6 +24,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.util.Callback;
 
@@ -67,6 +68,18 @@ public class StuboutAccountList {
             public void changed(ObservableValue<? extends Account> observable, Account oldValue, Account account) {
                 int position = listView.getSelectionModel().getSelectedIndex();
                 new Thread(new AccountTask(account, stubout, position)).start();
+            }
+        });
+        listView.setOnMouseClicked(new EventHandler<MouseEvent>(){
+            @Override
+            public void handle(MouseEvent event) {
+                if(event.getClickCount() == 2){
+                    Account account = listView.getSelectionModel().getSelectedItem();
+                    if(account != null){
+                        int position = listView.getSelectionModel().getSelectedIndex();
+                        new Thread(new AccountTask(account, stubout, position)).start();
+                    }
+                }
             }
         });
         

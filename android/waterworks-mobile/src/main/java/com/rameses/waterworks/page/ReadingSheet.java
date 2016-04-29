@@ -65,7 +65,7 @@ public class ReadingSheet {
         this.stubout = stubout;
         this.position = pos;
         if(stubout != null){
-            Header.TITLE.setText(stubout.getCode() + "  ( " + (position+1) +" )");
+            Header.TITLE.setText(stubout.getCode());
             accountList = DatabasePlatformFactory.getPlatform().getDatabase().getAccountByStubout(stubout,"");
         }
         
@@ -191,8 +191,8 @@ public class ReadingSheet {
         prevNextContainer.getChildren().addAll(prev, next);
         
         BorderPane button_container = new BorderPane();
-        button_container.setRight(save);
-        if(stubout != null) button_container.setLeft(prevNextContainer);
+        button_container.setCenter(save);
+        //if(stubout != null) button_container.setLeft(prevNextContainer);
         
         NumPad np = new NumPad();
         numpad = np.getLayout();

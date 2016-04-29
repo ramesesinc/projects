@@ -7,6 +7,7 @@ import com.rameses.waterworks.page.AccountDetail;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.scene.Node;
+import javafx.scene.control.Label;
 
 public class AccountTask extends Task<Void> {
     
@@ -27,8 +28,10 @@ public class AccountTask extends Task<Void> {
             Platform.runLater(new Runnable(){
                 @Override
                 public void run() {
+                    if(Dialog.TITLE == null) Dialog.TITLE = new Label();
                     Node child = new AccountDetail(account,stubout,position).getLayout();
                     Dialog.show("Account Information", child);
+                    if(stubout != null) Dialog.TITLE.setText(stubout.getCode() + " ( " + account.getSortOrder() + " )");
                 }
             });
         }

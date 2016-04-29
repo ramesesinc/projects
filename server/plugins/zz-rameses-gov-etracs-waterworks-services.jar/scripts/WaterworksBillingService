@@ -159,19 +159,24 @@ class WaterworksBillingService  {
 		
 		facts.findAll{ it instanceof BillItem }.each {bi->
 			def g = ledgerList.find{ it.refid == bi.refid  };
+			g.total = g.amount;
 			if(bi.surchargeAccount ) {
 				g.surcharge = bi.surcharge;
 				g.surchargeAccount = bi.surchargeAccount.toItem();
+				g.total += g.surcharge;
 			}
 			if( bi.interestAccount ) {
 				g.interest = bi.interest;
 				g.interestAccount = bi.interestAccount.toItem();
+				g.total += g.interest;
 			}
-		}	
+		};	
 		def billItems = [];
 		if(res.otherFees) {
 			res.otherFees.each {
-				billItems << it.toItem();
+				def item = it.toItem();
+				item.total = item.amount;
+				billItems << item;
 			}
 		}
 		return itemList + instList + ledgerList + billItems;
@@ -207,5 +212,7 @@ class WaterworksBillingService  {
 		*/
 		
 	}
+
+
 
 }

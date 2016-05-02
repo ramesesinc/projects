@@ -99,3 +99,9 @@ alter table subdivision_cancelledimprovement
 go 
 
 
+
+/*===========================================*/
+/* MACHRPU - ADD BLDG REFERENCE 
+/*===========================================*/
+alter table machrpu add bldgmaster_objid varchar(50)
+go 

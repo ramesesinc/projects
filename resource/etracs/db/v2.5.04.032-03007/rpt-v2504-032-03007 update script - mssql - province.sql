@@ -98,3 +98,10 @@ alter table subdivision_cancelledimprovement
   foreign key (faasid) references faas(objid)
 go 
 
+
+
+/*===========================================*/
+/* MACHRPU - ADD BLDG REFERENCE 
+/*===========================================*/
+alter table machrpu add bldgmaster_objid varchar(50)
+go 

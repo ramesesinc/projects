@@ -110,3 +110,26 @@ WHERE bl.bldgrpuid = $P{objid}
 select * 
 from structure 
 where name in ('FLO', 'ROF', 'WAP')
+
+
+[getBldgMasterList]
+select 
+  r.rpumasterid as objid,
+  f.state, f.tdno, f.owner_name, f.fullpin,
+  pc.code as classification_code,
+  r.rputype, r.totalmv, r.totalav
+from faas f 
+  inner join rpu r on f.rpuid = r.objid 
+  inner join realproperty rp on f.realpropertyid = rp.objid 
+  inner join propertyclassification pc on r.classification_objid = pc.objid 
+where f.state like $P{state}
+and r.ry LIKE $P{ry}  
+and r.rputype like $P{rputype}
+and rp.pin like $P{pin}
+and f.objid in (
+  select objid from faas where tdno LIKE $P{searchtext}
+  union 
+  select objid from faas where name like $P{searchtext}
+  union 
+  select f.objid from faas f, realproperty rp where f.realpropertyid = rp.objid and rp.cadastrallotno like $P{searchtext}
+)

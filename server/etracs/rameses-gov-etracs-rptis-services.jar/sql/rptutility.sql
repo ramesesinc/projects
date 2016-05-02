@@ -57,3 +57,7 @@ update faas set
   realpropertyid = $P{realpropertyid}
 where rpuid=$P{rpuid}
 
+
+[findFaasInfo]
+select objid, fullpin from faas where objid = $P{faasid}
+

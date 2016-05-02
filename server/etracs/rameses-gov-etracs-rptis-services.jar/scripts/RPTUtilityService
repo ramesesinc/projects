@@ -3,6 +3,9 @@ import com.rameses.services.extended.*
 
 class RPTUtilityService
 {
+	@Env 
+	def env 
+
 	@ActiveDB('rptutility')
 	def em
 
@@ -21,6 +24,9 @@ class RPTUtilityService
 	@ActiveDB('faas_list')
 	def faasListEm
 
+	@Service('LogService')
+	def logSvc 
+
 
 	
 	 //info: faasid, oldpin, tdno, pintype, municipality, barangay, 
@@ -32,11 +38,13 @@ class RPTUtilityService
 		def tokens = info.newpin.tokenize('-')
 		info.ssection = tokens[3]
 		info.sparcel = tokens[4]
+		def oldpin = null
 		if( info.rputype == 'land') {
 			def rp = null
 			def rpu = rpuSvc.openRpu( [objid:info.rpuid] )
 			if( rpu ) {
 				rp = rpSvc.open([objid:rpu.realpropertyid])
+				oldpin = rp.pin 
 				rp.pintype = info.pintype 
 				rp.pin = info.newpin 
 				rp.section = info.ssection
@@ -49,22 +57,29 @@ class RPTUtilityService
 				info.realpropertyid = rp.objid 
 				modifyInfo(info)
 
+				log(info.faasid, oldpin, info.newpin)
+
 				//update improvements pin 
 				rpudb.getLandImprovementsRpuByRealPropertyId([realpropertyid: rp.objid]).each { 
 					def param = [
-						newpin: buildNewPin(info.newpin, it.fullpin, it.suffix),
-						suffix:it.suffix, 
-						rpuid: it.objid ,
+						oldpin  : it.fullpin, 
+						newpin  : buildNewPin(info.newpin, it.fullpin, it.suffix),
+						suffix  :it.suffix, 
+						rpuid   : it.objid ,
 						realpropertyid : rp.objid,
 					]
 					modifyInfo(param)
 					faasListEm.updateFaasList([objid:it.faasid])
+					log(it.faasid, param.oldpin, param.newpin)
 				}
 			}
 			faasListEm.updateFaasList([objid:info.faasid])
+			
 			return rp
 			
 		} else {
+			def oldfaas = em.findFaasInfo(info)
+
 			def landpin = info.barangay.pin + '-' + info.ssection + '-' + info.sparcel
 			if (info.pintype == 'old'){
 				landpin = info.barangay.oldpin + '-' + info.ssection + '-' + info.sparcel
@@ -76,8 +91,13 @@ class RPTUtilityService
 			info.realpropertyid = landrp.objid 
 			modifyInfo(info)
 			faasListEm.updateFaasList([objid:info.faasid])
+			log(info.faasid, oldfaas.fullpin, info.newpin)
 			return null
 		}
+	}
+
+	void log(refid, oldpin, newpin){
+		logSvc.logA('modifypin', 'FAAS', refid, 'Modify PIN ' + oldpin + ' to ' + newpin + '.')
 	}
 
 

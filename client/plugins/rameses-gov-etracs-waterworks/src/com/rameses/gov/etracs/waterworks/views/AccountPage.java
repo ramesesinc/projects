@@ -44,7 +44,6 @@ public class AccountPage extends javax.swing.JPanel {
         jPanel4 = new javax.swing.JPanel();
         xFormPanel3 = new com.rameses.rcp.control.XFormPanel();
         xLabel6 = new com.rameses.rcp.control.XLabel();
-        xLabel9 = new com.rameses.rcp.control.XLabel();
         xButton3 = new com.rameses.rcp.control.XButton();
         xFormPanel6 = new com.rameses.rcp.control.XFormPanel();
         xLabel11 = new com.rameses.rcp.control.XLabel();
@@ -160,14 +159,6 @@ public class AccountPage extends javax.swing.JPanel {
         xLabel6.setOpaque(true);
         xLabel6.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel3.add(xLabel6);
-
-        xLabel9.setBackground(new java.awt.Color(245, 245, 245));
-        xLabel9.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
-        xLabel9.setCaption("Stubout Position");
-        xLabel9.setExpression("#{entity.stuboutindex}");
-        xLabel9.setOpaque(true);
-        xLabel9.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel3.add(xLabel9);
 
         xButton3.setImmediate(true);
         xButton3.setName("assignStubout"); // NOI18N
@@ -419,7 +410,6 @@ public class AccountPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XLabel xLabel18;
     private com.rameses.rcp.control.XLabel xLabel19;
     private com.rameses.rcp.control.XLabel xLabel6;
-    private com.rameses.rcp.control.XLabel xLabel9;
     private com.rameses.rcp.control.XLookupField xLookupField1;
     private com.rameses.rcp.control.XLookupField xLookupField4;
     private com.rameses.rcp.control.XPanel xPanel1;

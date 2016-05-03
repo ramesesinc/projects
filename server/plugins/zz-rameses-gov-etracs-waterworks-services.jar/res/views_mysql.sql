@@ -101,7 +101,7 @@ from waterworks_stubout wst
 drop view if exists vw_waterworks_stubout_account; 
 create view vw_waterworks_stubout_account as 
 select 
-	wa.objid, wa.stuboutid, wa.stuboutindex, 
+	wa.objid, wa.stuboutid, 
 	wa.acctno AS account_acctno, wa.acctname AS account_acctname, 
 	wa.address_text AS account_address_text,
 	wm.serialno AS account_meter_serialno 

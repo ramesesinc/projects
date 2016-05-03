@@ -21,7 +21,6 @@ class WaterworksChangeInfoInterceptor {
 	public void updateStubout( evt ) {
 		def info = evt.args[0].info;
 		if ( !info.stubout?.objid ) throw new Exception('Please specify stubout'); 
-		if ( !info.stuboutindex ) throw new Exception('Please specify stuboutindex'); 
 
 		info.stuboutid = info.stubout.objid; 
 		wacct.updateStubout( info );  

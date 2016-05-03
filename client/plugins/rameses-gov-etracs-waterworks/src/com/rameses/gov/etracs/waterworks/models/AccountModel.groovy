@@ -18,10 +18,9 @@ public class AccountModel extends MdiFormModel {
     def assignStubout() {
         def h = {o->
             entity.stubout = o.stubout;
-            entity.stuboutindex = o.stuboutindex;
             binding.refresh();
         }
-        return Inv.lookupOpener("waterworks_stubout:assign", [handler: h] );
+        return Inv.lookupOpener("waterworks_stubout:lookup", [handler: h] );
     }
     
     void computeDates() {
@@ -40,26 +39,5 @@ public class AccountModel extends MdiFormModel {
         Modal.show("date:prompt", [handler:h]);
     }
     
-    //for editing....
-    def changeAddress(){ 
-        def map = [ acctname: entity.acctname, address: entity.address ]; 
-        map.newaddress = entity.address?.clone(); 
-        if ( map.newaddress==null ) map.newaddress=[:];
-        
-        def params = [ entity: map ]; 
-        params.handler = { o-> 
-            def resp = acctSvc.postChangeAddress([ 
-                            accountid: entity.objid, 
-                            address: o.newaddress 
-                        ]); 
-            if ( resp?.address ) entity.address = resp.address; 
-            
-            binding.refresh();
-        }
-        return Inv.lookupOpener("waterworks_account:changeaddress", params );
-    }
     
-    def changeMeter(){
-        return Inv.lookupOpener("waterworks_account:changemeter", [:]); 
-    }
 }

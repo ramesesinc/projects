@@ -1,0 +1,18 @@
+<workunit> 
+    <invokers>
+        <invoker type="waterworks_stubout:section" 
+            caption="Nodes" 
+            action="init" index="-20"
+            visibleWhen="#{mode=='read'}" 
+            allowCreate="false" allowOpen="false" 
+            allowEdit="false" allowDelete="false"/>
+        
+        <invoker type="formActions" caption="Add Nodes" action="addNodes"/>
+        <invoker type="formActions" caption="Assign Account" action="assignAccount" />
+        <invoker type="formActions" caption="UnAssign Account" action="unassignAccount" />
+    </invokers>
+    <code class="com.rameses.gov.etracs.waterworks.models.StuboutNodeModel"/>
+    <pages>
+        <page template="com.rameses.gov.etracs.waterworks.views.StuboutNodePage"/>
+    </pages>
+</workunit>

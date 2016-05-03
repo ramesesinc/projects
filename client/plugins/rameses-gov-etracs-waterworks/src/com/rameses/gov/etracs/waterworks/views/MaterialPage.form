@@ -25,7 +25,7 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="xFormPanel1" pref="317" max="32767" attributes="0"/>
+              <Component id="xFormPanel1" pref="412" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
@@ -34,8 +34,8 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="xFormPanel1" min="-2" pref="127" max="-2" attributes="0"/>
-              <EmptySpace pref="23" max="32767" attributes="0"/>
+              <Component id="xFormPanel1" min="-2" pref="155" max="-2" attributes="0"/>
+              <EmptySpace pref="35" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -43,7 +43,7 @@
   <SubComponents>
     <Container class="com.rameses.rcp.control.XFormPanel" name="xFormPanel1">
       <Properties>
-        <Property name="captionWidth" type="int" value="100"/>
+        <Property name="captionWidth" type="int" value="160"/>
       </Properties>
       <SubComponents>
         <Component class="com.rameses.rcp.control.XTextField" name="xTextField2">
@@ -70,8 +70,20 @@
         </Component>
         <Component class="com.rameses.rcp.control.XDecimalField" name="xDecimalField1">
           <Properties>
-            <Property name="caption" type="java.lang.String" value="Unit Price"/>
+            <Property name="caption" type="java.lang.String" value="Unit Cost"/>
+            <Property name="name" type="java.lang.String" value="entity.unitcost" noResource="true"/>
+          </Properties>
+        </Component>
+        <Component class="com.rameses.rcp.control.XDecimalField" name="xDecimalField2">
+          <Properties>
+            <Property name="caption" type="java.lang.String" value="Cash Price"/>
             <Property name="name" type="java.lang.String" value="entity.unitprice" noResource="true"/>
+          </Properties>
+        </Component>
+        <Component class="com.rameses.rcp.control.XDecimalField" name="xDecimalField3">
+          <Properties>
+            <Property name="caption" type="java.lang.String" value="Installment Price"/>
+            <Property name="name" type="java.lang.String" value="entity.installmentprice" noResource="true"/>
           </Properties>
         </Component>
       </SubComponents>

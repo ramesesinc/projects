@@ -110,7 +110,7 @@ class WaterworksApplicationTaskInterceptor{
 		m.meter = o.meter;
 		m.applicationid = o.objid;
 		m.stubout = o.stubout;
-		m.stuboutindex = o.stuboutindex;
+		m.stuboutnode = o.stuboutnode;
 		m.classification = o.classification;
 		m.currentreading = o.initialreading;
 		m.dtstarted = o.dtinstalled;

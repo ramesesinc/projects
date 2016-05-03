@@ -1,0 +1,9 @@
+
+<schema adapter="waterworks">
+	<element tablename="waterworks_stubout_node">
+		<field name="objid" primary="true" prefix="WNODE"/>
+		<field name="stuboutid" required="true"/>
+		<field name="indexno" required="true"/>
+		<field name="acctid" target="objid"/>
+	</element>
+</schema>

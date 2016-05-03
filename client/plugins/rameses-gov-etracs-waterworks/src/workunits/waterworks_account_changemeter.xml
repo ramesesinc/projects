@@ -4,7 +4,7 @@
                  caption="Change Meter" 
                  target="popup"
                  action="init"
-                 fields="stubout.*,stuboutindex"
+                 fields="stubout.*"
                  visibleWhen="#{mode=='read'}"
                  index="100"
                 />   

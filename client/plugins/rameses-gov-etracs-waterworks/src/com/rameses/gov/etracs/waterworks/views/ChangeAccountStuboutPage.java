@@ -33,13 +33,11 @@ public class ChangeAccountStuboutPage extends javax.swing.JPanel {
         xPanel1 = new com.rameses.rcp.control.XPanel();
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
         xLabel2 = new com.rameses.rcp.control.XLabel();
-        xLabel4 = new com.rameses.rcp.control.XLabel();
         xLabel3 = new com.rameses.rcp.control.XLabel();
         xLabel5 = new com.rameses.rcp.control.XLabel();
         xPanel2 = new com.rameses.rcp.control.XPanel();
         xFormPanel3 = new com.rameses.rcp.control.XFormPanel();
         xLookupField2 = new com.rameses.rcp.control.XLookupField();
-        xIntegerField1 = new com.rameses.rcp.control.XIntegerField();
         xLabel8 = new com.rameses.rcp.control.XLabel();
         xLabel9 = new com.rameses.rcp.control.XLabel();
         xPanel3 = new com.rameses.rcp.control.XPanel();
@@ -60,14 +58,6 @@ public class ChangeAccountStuboutPage extends javax.swing.JPanel {
         xLabel2.setOpaque(true);
         xLabel2.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(xLabel2);
-
-        xLabel4.setBackground(new java.awt.Color(245, 245, 245));
-        xLabel4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
-        xLabel4.setCaption("Stubout Position");
-        xLabel4.setExpression("#{entity.stuboutindex}");
-        xLabel4.setOpaque(true);
-        xLabel4.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel1.add(xLabel4);
 
         xLabel3.setBackground(new java.awt.Color(245, 245, 245));
         xLabel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
@@ -116,12 +106,6 @@ public class ChangeAccountStuboutPage extends javax.swing.JPanel {
         xLookupField2.setPreferredSize(new java.awt.Dimension(0, 20));
         xLookupField2.setRequired(true);
         xFormPanel3.add(xLookupField2);
-
-        xIntegerField1.setCaption("Stubout Position");
-        xIntegerField1.setName("info.stuboutindex"); // NOI18N
-        xIntegerField1.setPreferredSize(new java.awt.Dimension(0, 20));
-        xIntegerField1.setRequired(true);
-        xFormPanel3.add(xIntegerField1);
 
         xLabel8.setBackground(new java.awt.Color(245, 245, 245));
         xLabel8.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
@@ -181,7 +165,7 @@ public class ChangeAccountStuboutPage extends javax.swing.JPanel {
             xPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, xPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 129, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 173, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -213,10 +197,8 @@ public class ChangeAccountStuboutPage extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane1;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XFormPanel xFormPanel3;
-    private com.rameses.rcp.control.XIntegerField xIntegerField1;
     private com.rameses.rcp.control.XLabel xLabel2;
     private com.rameses.rcp.control.XLabel xLabel3;
-    private com.rameses.rcp.control.XLabel xLabel4;
     private com.rameses.rcp.control.XLabel xLabel5;
     private com.rameses.rcp.control.XLabel xLabel8;
     private com.rameses.rcp.control.XLabel xLabel9;

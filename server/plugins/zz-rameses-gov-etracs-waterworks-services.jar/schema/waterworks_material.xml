@@ -6,6 +6,8 @@
 		<field name="title" required="true" indexed="true" searchable="true"/>
 		<field name="unitprice" required="true" type="decimal"/>
 		<field name="unit" required="true" lov="WATERWORKS_MATERIAL_UNIT"/>
+		<field name="installmentprice" required="true" type="decimal"/>
+		<field name="unitcost" required="true" type="decimal"/>
 	</element>
 
 </schema>

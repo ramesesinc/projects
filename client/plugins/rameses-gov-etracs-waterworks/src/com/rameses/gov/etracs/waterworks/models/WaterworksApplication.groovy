@@ -28,6 +28,18 @@ public class WaterworksApplication extends WorkflowTaskModel {
         binding.refresh();
     }
     
+    void assignStubout() {
+        def h = { o->
+            def info = [_schemaname : "waterworks_application"];
+            info.objid = entity.objid;
+            info.stubout = o;
+            persistenceSvc.update( info ); 
+            entity.stubout = o;
+            binding.refresh();
+        };
+        Modal.show("waterworks_stubout:lookup", [onselect: h] );        
+    }
+    
     public void afterSignal() {
         if(task.acctno) {
             MsgBox.alert("Account created " + task.acctno);

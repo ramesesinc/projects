@@ -45,7 +45,6 @@ public class ApplicationPage extends javax.swing.JPanel {
         xLabel2 = new com.rameses.rcp.control.XLabel();
         xLabel3 = new com.rameses.rcp.control.XLabel();
         xLabel5 = new com.rameses.rcp.control.XLabel();
-        xLabel4 = new com.rameses.rcp.control.XLabel();
         jPanel3 = new javax.swing.JPanel();
         xFormPanel4 = new com.rameses.rcp.control.XFormPanel();
         xLabel16 = new com.rameses.rcp.control.XLabel();
@@ -140,14 +139,6 @@ public class ApplicationPage extends javax.swing.JPanel {
         xLabel5.setOpaque(true);
         xLabel5.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(xLabel5);
-
-        xLabel4.setBackground(new java.awt.Color(245, 245, 245));
-        xLabel4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
-        xLabel4.setCaption("Stubout Position");
-        xLabel4.setExpression("#{entity.stuboutindex}");
-        xLabel4.setOpaque(true);
-        xLabel4.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel1.add(xLabel4);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -295,7 +286,6 @@ public class ApplicationPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XLabel xLabel2;
     private com.rameses.rcp.control.XLabel xLabel20;
     private com.rameses.rcp.control.XLabel xLabel3;
-    private com.rameses.rcp.control.XLabel xLabel4;
     private com.rameses.rcp.control.XLabel xLabel5;
     private com.rameses.rcp.control.XLabel xLabel7;
     private com.rameses.rcp.control.XLabel xLabel8;

@@ -2,39 +2,67 @@ import com.rameses.annotations.*;
 
 class WaterworksStuboutService {
 	
-    @Service('QueryService')
-    def querySvc; 
-
-    @Service('PersistenceService')
-    def persistenceSvc; 
-
-    @DataContext('vw_waterworks_stubout_account') 
-    def vw_waterworks_stubout_account; 
 
     @DataContext('waterworks_account') 
     def waterworks_account; 
 
-    @ProxyMethod 
-    public List getAccounts( params ) { 
-    	if (!params.stuboutid) throw new Exception('stuboutid parameter is required'); 
+    @DataContext('waterworks_stubout_node') 
+    def stubout_node; 
 
-    	return vw_waterworks_stubout_account.find([ stuboutid: params.stuboutid ])
-    										.orderBy('stuboutindex')
-    										.list();
+    @DataContext('vw_waterworks_stubout_node') 
+    def vw_waterworks_stubout_node; 
+
+    @ProxyMethod
+    public def getNodes( def o ) {
+        return vw_waterworks_stubout_node.find([stuboutid: o.stuboutid]).orderBy("indexno").list();
     }
 
-	@ProxyMethod 
-    public void changeIndexNo( params ) {
-    	if (!params.stuboutid) throw new Exception('stuboutid parameter is required'); 
-        if (!params.stuboutindex) throw new Exception('stuboutindex parameter is required'); 
-    	if (!params.accountid) throw new Exception('accountid parameter is required'); 
-    	
-    	def m = [ stuboutid: params.stuboutid, objid: params.accountid ]; 
-    	def rec = waterworks_account.find( m ).select('objid,stuboutindex').first(); 
-        if ( rec ) { 
-            waterworks_account.find([ objid: rec.objid ]).update([ stuboutindex: params.stuboutindex ]); 
-        } else {
-            throw new Exception('Account does not exist'); 
-        } 
-    }        
+    @ProxyMethod
+    public def addNodes(def o) {
+        if(!o.stuboutid) 
+            throw new Exception("WaterworksStuboutService.generateNodes error. Please pass parameter stuboutid");
+        if(!o.nodecount) 
+            throw new Exception("WaterworksStuboutService.generateNodes error. Please pass parameter nodecount");
+
+        int c =  stubout_node.select("c:{COUNT(*)}").find([stuboutid: o.stuboutid]).val();   
+        int start = c+1;    
+        int j = c + o.nodecount;  
+        for( int i=start; i <= j; i++ ) {
+            def m = [stuboutid: o.stuboutid, indexno: i];
+            stubout_node.create(m);      
+        }    
+    }
+
+    @ProxyMethod
+    public def assignAccount(def o) {
+        if(!o.objid) 
+            throw new Exception("WaterworksStuboutService.assignAccount error. Please pass parameter objid");
+        if(!o.acctid) 
+            throw new Exception("WaterworksStuboutService.assignAccount error. Please pass parameter acctid");
+        stubout_node.find( [objid: o.objid] ).update( [acctid:o.acctid] );      
+    }
+
+
+    @ProxyMethod
+    public def unassignAccount(def o) {
+        if(!o.objid) 
+            throw new Exception("WaterworksStuboutService.assignAccount error. Please pass parameter objid");
+        stubout_node.find( [objid: o.objid] ).update( [acctid: "{NULL}" ] );      
+    }
+
+    @ProxyMethod
+    public def swap(def o) {
+        if(!o.item1) 
+            throw new Exception("WaterworksStuboutService.swap error. Please pass parameter item1[objid,acctid]");
+        if(!o.item2) 
+            throw new Exception("WaterworksStuboutService.swap error. Please pass parameter item2[objid,acctid]");
+
+        
+        //nullify it first    
+        stubout_node.find( [objid: o.item2.objid] ).update( [acctid: "{NULL}" ] );     
+        
+        stubout_node.find( [objid: o.item1.objid] ).update( [acctid: o.item2.acctid ] );      
+        stubout_node.find( [objid: o.item2.objid] ).update( [acctid: o.item1.acctid ] );          
+    }
+
 }

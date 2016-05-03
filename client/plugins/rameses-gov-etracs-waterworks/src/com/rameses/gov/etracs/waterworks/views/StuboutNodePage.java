@@ -12,12 +12,12 @@ import com.rameses.rcp.ui.annotations.Template;
  * @author rameses
  */
 @Template(FormPage.class)
-public class StuboutAccountPage extends javax.swing.JPanel {
+public class StuboutNodePage extends javax.swing.JPanel {
 
     /**
      * Creates new form StuboutAccountPage
      */
-    public StuboutAccountPage() {
+    public StuboutNodePage() {
         initComponents();
     }
 
@@ -31,11 +31,12 @@ public class StuboutAccountPage extends javax.swing.JPanel {
     private void initComponents() {
 
         xDataTable3 = new com.rameses.rcp.control.XDataTable();
-        xButton5 = new com.rameses.rcp.control.XButton();
+        xButton1 = new com.rameses.rcp.control.XButton();
+        xButton2 = new com.rameses.rcp.control.XButton();
 
         xDataTable3.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "stuboutindex"}
+                new Object[]{"name", "indexno"}
                 , new Object[]{"caption", "-"}
                 , new Object[]{"width", 30}
                 , new Object[]{"minWidth", 30}
@@ -50,7 +51,7 @@ public class StuboutAccountPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.IntegerColumnHandler(null, -1, -1)}
             }),
             new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "acctno"}
+                new Object[]{"name", "account.acctno"}
                 , new Object[]{"caption", "Account No."}
                 , new Object[]{"width", 100}
                 , new Object[]{"minWidth", 0}
@@ -66,7 +67,7 @@ public class StuboutAccountPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             }),
             new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "acctname"}
+                new Object[]{"name", "account.acctname"}
                 , new Object[]{"caption", "Account Name"}
                 , new Object[]{"width", 100}
                 , new Object[]{"minWidth", 0}
@@ -81,7 +82,7 @@ public class StuboutAccountPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             }),
             new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "address.text"}
+                new Object[]{"name", "account.address.text"}
                 , new Object[]{"caption", "Address"}
                 , new Object[]{"width", 100}
                 , new Object[]{"minWidth", 0}
@@ -96,7 +97,7 @@ public class StuboutAccountPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             }),
             new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "meter.serialno"}
+                new Object[]{"name", "account.meter.serialno"}
                 , new Object[]{"caption", "Serial No."}
                 , new Object[]{"width", 100}
                 , new Object[]{"minWidth", 0}
@@ -111,7 +112,7 @@ public class StuboutAccountPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             }),
             new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "currentreading"}
+                new Object[]{"name", "account.currentreading"}
                 , new Object[]{"caption", "Last Reading"}
                 , new Object[]{"width", 100}
                 , new Object[]{"minWidth", 0}
@@ -129,11 +130,11 @@ public class StuboutAccountPage extends javax.swing.JPanel {
         xDataTable3.setHandler("listHandler");
         xDataTable3.setName("selectedItem"); // NOI18N
 
-        xButton5.setDepends(new String[] {"selectedItem"});
-        xButton5.setDisableWhen("#{selectedItem==null}");
-        xButton5.setMargin(new java.awt.Insets(2, 5, 2, 5));
-        xButton5.setName("changeIndexNo"); // NOI18N
-        xButton5.setText("Change Index Number");
+        xButton1.setName("swapUp"); // NOI18N
+        xButton1.setText("Up");
+
+        xButton2.setName("swapDown"); // NOI18N
+        xButton2.setText("Dn");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -144,7 +145,9 @@ public class StuboutAccountPage extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(xDataTable3, javax.swing.GroupLayout.DEFAULT_SIZE, 597, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(xButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(xButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(xButton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -152,14 +155,17 @@ public class StuboutAccountPage extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xDataTable3, javax.swing.GroupLayout.DEFAULT_SIZE, 244, Short.MAX_VALUE)
+                .addComponent(xDataTable3, javax.swing.GroupLayout.DEFAULT_SIZE, 241, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(xButton5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(xButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(xButton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private com.rameses.rcp.control.XButton xButton5;
+    private com.rameses.rcp.control.XButton xButton1;
+    private com.rameses.rcp.control.XButton xButton2;
     private com.rameses.rcp.control.XDataTable xDataTable3;
     // End of variables declaration//GEN-END:variables
 }

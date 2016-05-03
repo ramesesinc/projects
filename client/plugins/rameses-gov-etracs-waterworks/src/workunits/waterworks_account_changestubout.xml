@@ -4,7 +4,7 @@
                  caption="Change Stubout" 
                  target="popup"
                  action="init"
-                 fields="stubout.*,stuboutindex"
+                 fields="stubout.*"
                  visibleWhen="#{mode=='read'}"
                 />   
     </invokers> 

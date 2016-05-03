@@ -31,7 +31,10 @@
 		<complex name="stubout" ref="waterworks_stubout" jointype="many-to-one" required="false">
 			<key field="stuboutid" target="objid"/>	
 		</complex>	
-		<field name="stuboutindex" type="integer"/> 
+
+		<complex name="stuboutnode" ref="waterworks_stubout_node" jointype="many-to-one" required="false">
+			<key field="stuboutnodeid" target="objid"/> 
+		</complex>
 
 		<complex name="meter" ref="waterworks_meter" jointype="many-to-one"  required="false">
 			<key field="meterid" target="objid"/>

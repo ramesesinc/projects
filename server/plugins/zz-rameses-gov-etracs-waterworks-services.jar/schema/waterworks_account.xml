@@ -39,7 +39,12 @@
 		<complex name="stubout" ref="waterworks_stubout" jointype="many-to-one" required="true">
 			<key field="stuboutid" target="objid"/> 
 		</complex>
-		<field name="stuboutindex" required="true"/> 
+		
+		<complex name="stuboutnode" ref="waterworks_stubout_node" jointype="many-to-one" required="true">
+			<key field="stuboutnodeid" target="objid"/> 
+		</complex>
+
+
 		<field name="currentreading" required="true" caption="Last Reading" type="integer"/>
 
 		<complex name="billingcycle" ref="waterworks_billing_cycle" jointype="many-to-one">

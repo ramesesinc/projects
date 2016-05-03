@@ -9,6 +9,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -44,6 +45,14 @@ public class HomeActivity extends SettingsMenuActivity   {
 		
 		loadListData();
 		activity = this;
+		
+		int SDK_INT = android.os.Build.VERSION.SDK_INT;
+	    if (SDK_INT > 8) 
+	    {
+	        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
+	                .permitAll().build();
+	        StrictMode.setThreadPolicy(policy);
+	    }
 	} 
 	
 	protected void onStartProcess() {

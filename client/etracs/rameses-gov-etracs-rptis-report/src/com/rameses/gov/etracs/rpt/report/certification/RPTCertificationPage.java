@@ -35,6 +35,7 @@ public class RPTCertificationPage extends javax.swing.JPanel {
         xLabel4 = new com.rameses.rcp.control.XLabel();
         xLookupField1 = new com.rameses.rcp.control.XLookupField();
         xLabel3 = new com.rameses.rcp.control.XLabel();
+        xDataTable1 = new com.rameses.rcp.control.XDataTable();
         xTextField2 = new com.rameses.rcp.control.XTextField();
         xTextField8 = new com.rameses.rcp.control.XTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -116,8 +117,50 @@ public class RPTCertificationPage extends javax.swing.JPanel {
         xLabel3.setCaptionWidth(135);
         xLabel3.setDepends(new String[] {"entity.taxpayer", "entity.tdno", "entity.certtype"});
         xLabel3.setExpression("#{entity.taxpayer.address}");
+        xLabel3.setName("entity.taxpayeraddress"); // NOI18N
         xLabel3.setPreferredSize(new java.awt.Dimension(0, 21));
         formPanel1.add(xLabel3);
+
+        xDataTable1.setCaption("Taxpayers");
+        xDataTable1.setCaptionWidth(135);
+        xDataTable1.setColumns(new com.rameses.rcp.common.Column[]{
+            new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", "taxpayer"}
+                , new Object[]{"caption", "Taxpayer Name"}
+                , new Object[]{"width", 250}
+                , new Object[]{"minWidth", 0}
+                , new Object[]{"maxWidth", 0}
+                , new Object[]{"required", true}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", true}
+                , new Object[]{"editableWhen", null}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.LookupColumnHandler("#{item.taxpayer.name}", "entity:lookup")}
+            }),
+            new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", "taxpayer.address.text"}
+                , new Object[]{"caption", "Address"}
+                , new Object[]{"width", 250}
+                , new Object[]{"minWidth", 0}
+                , new Object[]{"maxWidth", 0}
+                , new Object[]{"required", false}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
+            })
+        });
+        xDataTable1.setDepends(new String[] {"entity.certtype"});
+        xDataTable1.setHandler("listHandler");
+        xDataTable1.setName("taxpayers"); // NOI18N
+        xDataTable1.setPreferredSize(new java.awt.Dimension(0, 100));
+        formPanel1.add(xDataTable1);
 
         xTextField2.setCaption("Requested By");
         xTextField2.setCaptionWidth(135);
@@ -135,27 +178,27 @@ public class RPTCertificationPage extends javax.swing.JPanel {
         xTextField8.setRequired(true);
         formPanel1.add(xTextField8);
 
-        jScrollPane1.setPreferredSize(new java.awt.Dimension(0, 60));
+        jScrollPane1.setPreferredSize(new java.awt.Dimension(0, 50));
 
         xTextArea1.setLineWrap(true);
         xTextArea1.setWrapStyleWord(true);
         xTextArea1.setCaption("Purpose");
         xTextArea1.setCaptionWidth(135);
         xTextArea1.setName("entity.purpose"); // NOI18N
-        xTextArea1.setPreferredSize(new java.awt.Dimension(120, 60));
+        xTextArea1.setPreferredSize(new java.awt.Dimension(120, 50));
         xTextArea1.setRequired(true);
         jScrollPane1.setViewportView(xTextArea1);
 
         formPanel1.add(jScrollPane1);
 
-        jScrollPane2.setPreferredSize(new java.awt.Dimension(0, 60));
+        jScrollPane2.setPreferredSize(new java.awt.Dimension(0, 50));
 
         xTextArea2.setLineWrap(true);
         xTextArea2.setWrapStyleWord(true);
         xTextArea2.setCaption("Additional Info");
         xTextArea2.setCaptionWidth(135);
         xTextArea2.setName("entity.addlinfo"); // NOI18N
-        xTextArea2.setPreferredSize(new java.awt.Dimension(120, 60));
+        xTextArea2.setPreferredSize(new java.awt.Dimension(120, 40));
         jScrollPane2.setViewportView(xTextArea2);
 
         formPanel1.add(jScrollPane2);
@@ -219,7 +262,6 @@ public class RPTCertificationPage extends javax.swing.JPanel {
 
         formPanel1.add(xFormPanel3);
 
-        xSeparator1.setCellPadding(new java.awt.Insets(5, 0, 0, 0));
         xSeparator1.setPreferredSize(new java.awt.Dimension(0, 20));
 
         org.jdesktop.layout.GroupLayout xSeparator1Layout = new org.jdesktop.layout.GroupLayout(xSeparator1);
@@ -295,8 +337,8 @@ public class RPTCertificationPage extends javax.swing.JPanel {
             jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .add(formPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 574, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(262, Short.MAX_VALUE))
+                .add(formPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 596, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
@@ -319,6 +361,7 @@ public class RPTCertificationPage extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane2;
     private com.rameses.rcp.control.XCheckBox xCheckBox1;
     private com.rameses.rcp.control.XComboBox xComboBox1;
+    private com.rameses.rcp.control.XDataTable xDataTable1;
     private com.rameses.rcp.control.XDateField xDateField1;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XFormPanel xFormPanel2;

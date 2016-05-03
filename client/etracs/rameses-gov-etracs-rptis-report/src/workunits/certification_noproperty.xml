@@ -24,6 +24,7 @@ package com.rameses.gov.etracs.rpt.report.certification;
 import com.rameses.rcp.annotations.*
 import com.rameses.rcp.common.*
 import com.rameses.osiris2.client.*
+import com.rameses.osiris2.common.*
 import com.rameses.osiris2.reports.*;
 
 public class NoPropertyController extends com.rameses.gov.etracs.rpt.report.certification.AbstractCertificationController
@@ -35,21 +36,39 @@ public class NoPropertyController extends com.rameses.gov.etracs.rpt.report.cert
         return svc;
     }
     
-    String reportName = 'com/rameses/gov/etracs/rpt/report/certification/NoPropertyCertification.jasper'
+    String reportPath = 'com/rameses/gov/etracs/rpt/report/certification/';
+    String reportName = reportPath + 'NoPropertyCertification.jasper'
 
     Map getParameters(){
         return [REPORTTITLE:'No Property']
     }
     
+    SubReport[] getSubReports() {
+        return [
+            new SubReport('NoPropertyCertificationItem', reportPath + 'NoPropertyCertificationItem.jasper'),
+        ] as SubReport[]
+    }
     
+    
+    void afterInit(){
+        entity.items = [];
+    }
+    
+    void beforeSave(){
+        if (entity.certtype.type == 'bytaxpayer')
+            entity.items = []
+        else if (entity.certtype.type == 'bytaxpayers' && entity.items.size() <= 1)
+            throw new Exception('At least two (2) taxpayers must be specified.');
+        
+    }
         
     def getLookupTaxpayer(){
         return InvokerUtil.lookupOpener('entity:lookup',[
-            onselect : { 
-                svc.checkExistingProperties(it.objid)
-                entity.taxpayer = [objid:it.objid, name:it.name, address:it.address.text];
-                entity.requestedby = it.name;
-                entity.requestedbyaddress = it.address.text;
+            onselect : { f -> 
+                svc.checkExistingProperty(f.objid)
+                entity.taxpayer = [objid:f.objid, name:f.name, address:f.address.text];
+                entity.requestedby = f.name;
+                entity.requestedbyaddress = f.address.text;
             },
             onempty  : { 
                 entity.taxpayer = null;
@@ -61,9 +80,45 @@ public class NoPropertyController extends com.rameses.gov.etracs.rpt.report.cert
     
     def getCertificationTypes(){
         return [
-            [type:'bytaxpayer', caption:'By Taxpayer'],
+            [type:'bytaxpayer', caption:'Single Taxpayer'],
+            [type:'bytaxpayers', caption:'Multiple Taxpayers'],
         ]
     }  
+    
+    def selectedItem;
+    
+    def listHandler = [
+        fetchList   : {return entity.items },
+
+        createItem  : { return [rptcertificationid:entity.objid]},
+
+        onAddItem   : {item-> 
+            item.refid = item.taxpayer.objid;
+            entity.items << item;
+            if (!entity.requestedby){
+                entity.requestedby = item.taxpayer.name 
+                entity.requestedbyaddress = item.taxpayer.address.text;
+                binding.refresh('entity.requestedby.*');
+            }
+            binding.focus('entity.taxpayer');
+        },
+        
+        validate : {li -> 
+            def item = li.item;
+            if (entity.items.find{it.refid == item.taxpayer.objid})
+                throw new Exception('Duplicate taxpayer is not allowed.');
+                
+            svc.checkExistingProperty(item.taxpayer.objid)
+        },
+        
+        onRemoveItem : {item ->
+            if (MsgBox.confirm('Remove selected item?')){
+                entity.items.remove(item);
+                return true;
+            }
+            return false;
+        }
+    ] as EditorListModel
 }
 
 

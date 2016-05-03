@@ -1,10 +1,10 @@
 import com.rameses.annotations.*
-import com.rameses.eserver.*;
 import com.rameses.common.*;
+import com.rameses.services.extended.*;
 
 class RPTCertificationNoPropertyService 
 {
-    @PersistenceContext('main')
+    @ActiveDB('rptcertification')
     def em;
 
     @Service('RPTCertificationService')
@@ -13,14 +13,32 @@ class RPTCertificationNoPropertyService
     
 	@ProxyMethod
 	public def createCertification( cert ) {
-		checkExistingProperties(cert.taxpayer.objid)
-		return certSvc.createCertification(cert)
+		checkExistingProperties(cert)
+		if (cert.certtype.type == 'bytaxpayers'){
+			cert.taxpayer = [name:cert.requestedby, address:cert.requestedbyaddress]
+		}
+		cert += certSvc.createCertification(cert)
+		cert.items.each{
+			certSvc.createItem(it)
+		}
+		return openCertification(cert.objid)
 	}
 
 	@ProxyMethod
-	public void checkExistingProperties( taxpayerid ) {
-		def prop = em.sqlContext.createNamedQuery('rptcertification:getProperties')
-						.setParameter('taxpayerid', taxpayerid).singleResult
+	public void checkExistingProperties( cert) {
+		if (cert.certtype.type == 'bytaxpayer'){
+			checkExistingProperty(cert.taxpayer.objid)
+		}
+		else {
+			cert.items.each{
+				checkExistingProperty(it.refid)
+			}
+		}
+	}
+
+	@ProxyMethod
+	public void checkExistingProperty( taxpayerid ) {
+		def prop = em.getProperties([taxpayerid:taxpayerid])
 		if (prop)
 			throw new Exception('Selected taxpayer has existing properties.')
 	}
@@ -30,6 +48,10 @@ class RPTCertificationNoPropertyService
 		def cert = certSvc.openCertification(objid)
 		if (! cert ) 
 			throw new Exception('Certification does not exist or has already been deleted.')
+		cert.items = em.getNoPropertyTaxpayers([objid:objid])
+		cert.items.eachWithIndex{v, idx ->
+			v.name = (idx+1) + '. ' + v.name 
+		}
 		return cert 
 	}
 }

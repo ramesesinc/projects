@@ -7,6 +7,7 @@
 	- 
 		
 - ASSESSOR
+	- Support to modify appraisal of CURRENT FAAS record
 	- Support multiple taxpayers No Property Certification
 	- Log Modify PIN transaction
 	- Support lookup of Bldg PIN reference for Machineries

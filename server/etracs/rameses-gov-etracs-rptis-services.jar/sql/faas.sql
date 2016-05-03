@@ -456,7 +456,8 @@ where objid = $P{objid}
 select
 	action,
 	username,
-	txndate 
+	txndate , 
+	remarks
 from txnlog l	
 where refid = $P{objid}
 order by txndate 

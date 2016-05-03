@@ -12,6 +12,9 @@ public class ChangeAppraisalInfoController extends com.rameses.gov.etracs.rpt.fa
 {
     String title = 'Modify FAAS Appraisal';
     
+    @Caller
+    def caller 
+    
     @Service('FAASChangeInfoService')
     def changeSvc;
     

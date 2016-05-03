@@ -2,6 +2,7 @@
 <workunit>
     <invokers>
         <invoker type="faas:formActions" caption="Logs" index="100" visibleWhen="#{mode=='read'}" target="popup"/>
+        <invoker type="faas:txnlogs" caption="Logs" index="10000" target="popup" />
         <invoker type="formActions" caption="Close" action="_close" />
     </invokers>
     

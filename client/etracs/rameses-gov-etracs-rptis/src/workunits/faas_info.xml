@@ -11,7 +11,6 @@
         <invoker type="formActions" caption="Recalculate"   action="recalc"  name="recalc" visibleWhen="#{mode=='edit' &amp;&amp; entity.state.matches('INTERIM|FORAPPROVAL')}" role="APPRAISER,ENCODER" index="2000"/>
         <invoker type="formActions" caption="Modify" name="popupChangeInfo" visibleWhen="#{entity.state=='CURRENT'}" category="faas:changeinfo" index="1000" role="ADMIN" />
         <invoker type="formActions" caption="Remote Tools" name="popupChangeInfo"  visibleWhen="#{entity.state == 'CURRENT' || entity.taskstate.matches('provapprover')}" category="faas:info:remotetool" role="ADMIN"/>
-        <invoker type="formActions" action="showLogs" caption="Logs" visibleWhen="#{mode=='read'}" />
    </invokers>
    
    <code class="com.rameses.gov.etracs.rpt.faas.ui.FaasController">

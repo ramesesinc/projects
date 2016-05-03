@@ -368,8 +368,4 @@ public class FaasController
         return new java.text.SimpleDateFormat('yyyy-MM-dd').format(dt);
     }
 
-    def showLogs(){
-        return Inv.lookupOpener('faas:txnlogs', [entity:entity])
-    }
-         
 }

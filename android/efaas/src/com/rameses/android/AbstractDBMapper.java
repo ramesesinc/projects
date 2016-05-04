@@ -153,4 +153,15 @@ public abstract class AbstractDBMapper
 			if (isAutoCloseConnection()) ctx.close();
 		} 
 	} 
+	
+	public void clearAll() throws Exception{
+		DBContext ctx = getDBContext();
+		try {
+			ctx.execute("DELETE FROM " + getTableName());
+		} catch(Exception e) { 
+			throw e;
+		} finally {
+			if (isAutoCloseConnection()) ctx.close();
+		} 
+	}
 } 

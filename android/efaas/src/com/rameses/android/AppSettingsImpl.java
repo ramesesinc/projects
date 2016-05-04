@@ -20,11 +20,11 @@ public class AppSettingsImpl extends AppSettings
 	}
 	
 	public String getOnlineHost() {  
-		return getString("host_online", "121.97.60.200"); 
+		return getString("host_online", "192.168.1.229"); 
 	}
 	
 	public String getOfflineHost() {  
-		return getString("host_offline", "121.97.60.200"); 
+		return getString("host_offline", "192.168.1.229"); 
 	}
 	
 	public int getPort() {  
@@ -44,7 +44,7 @@ public class AppSettingsImpl extends AppSettings
 	} 
 	
 	public String getDebugEnabled() {
-		return getString("debug_enabled", "false");
+		return getString("debug_enabled", "true");
 	}
 	
 	public String getTrackerid() {

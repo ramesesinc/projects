@@ -1,6 +1,6 @@
 <schema>
 
-	<element name="file" tablename="sys_file_header"> 
+	<element tablename="sys_file"> 
 		<field name="objid" primary="true"/> 
 		<field name="state" required="true"/> 
 		<field name="dtfiled" required="true"/> 
@@ -9,13 +9,6 @@
 		<field name="filesize" required="true"/> 
 		<field name="chunkcount" required="true"/> 
 		<field name="info" /> 
-	</element>
-
-	<element name="detail" tablename="sys_file_detail">
-		<field name="objid" required="true"/> 
-		<field name="parentid" required="true"/> 
-		<field name="indexno" required="true"/> 
-		<field name="content" required="true"/> 
-	</element>
+	</element> 
 
 </schema>

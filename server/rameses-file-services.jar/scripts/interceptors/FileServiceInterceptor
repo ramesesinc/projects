@@ -1,0 +1,27 @@
+import com.rameses.annotations.*; 
+
+class FileServiceInterceptor {
+	
+	@Service('DefaultFileServiceImpl') 
+	def svc; 
+
+	@After( pattern="FileService.read" ) 
+	public void afterRead( evt ) {
+		def result = evt.result; 
+		def o = svc.read( result ); 
+		if ( o ) result.putAll( o ); 
+	} 
+
+	@After( pattern="FileService.getContent" ) 
+	public void afterGetContent( evt ) { 
+		def params = evt.args[0]; 
+		def list = svc.getContent( params ); 
+		if ( list ) evt.result.addAll( list );
+	} 
+
+	@After( pattern="FileService.removeFile" ) 
+	public void afterRemoveFile( evt ) { 
+		def params = evt.args[0]; 
+		svc.removeFile( params ); 
+	} 	
+}

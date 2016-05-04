@@ -1,0 +1,9 @@
+<schema adapter="filedb">
+
+	<element tablename="sys_file_registry">
+		<field name="objid" primary="true"/> 
+		<field name="dbcontext" required="true"/> 
+		<field name="filecontext" required="true"/> 
+	</element> 
+
+</schema>

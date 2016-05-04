@@ -36,14 +36,13 @@
 		<field name="lastdatepaid" required="false" indexed="true" caption="Last Date Paid"/>
 
 		<!-- These are flag fields to check if the date is subject for disconnection -->
-		<complex name="stubout" ref="waterworks_stubout" jointype="many-to-one" required="true">
+		<complex name="stubout" ref="waterworks_stubout" jointype="many-to-one" required="true" includefields="code,zone.code,zone.sector.code">
 			<key field="stuboutid" target="objid"/> 
 		</complex>
 		
-		<complex name="stuboutnode" ref="waterworks_stubout_node" jointype="many-to-one" required="true">
+		<complex name="stuboutnode" ref="waterworks_stubout_node" jointype="many-to-one" required="false" includefields="indexno">
 			<key field="stuboutnodeid" target="objid"/> 
 		</complex>
-
 
 		<field name="currentreading" required="true" caption="Last Reading" type="integer"/>
 

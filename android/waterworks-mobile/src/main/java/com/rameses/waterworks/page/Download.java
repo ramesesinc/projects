@@ -15,17 +15,18 @@ import com.rameses.waterworks.layout.Header;
 import com.rameses.waterworks.service.MobileRuleService;
 import com.rameses.waterworks.service.MobileDownloadService;
 import com.rameses.waterworks.util.SystemPlatformFactory;
+import com.rameses.waterworks.task.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.concurrent.Task;
-import javafx.event.ActionEvent;
+import javafx.concurrent.Worker.State;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -35,6 +36,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.cell.CheckBoxListCell;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -53,24 +55,23 @@ public class Download {
     Label label;
     ProgressBar progressbar;
     Button download;
-    List<Map> indexlist;
     List<Map> accountList;
     int downloadsize;
-    int indexposition = 1;
-    boolean continueDownload = true;
-    int counter = 0;
+    int recordcount;
     String batchid;
     String status = "";
-    List<String> downloadedList;
     
     Database db;
-    MobileDownloadService mobileSvc;
-    boolean cancelled;
+    boolean has_stat_record;
+    boolean download_started = false;
+    
+    InitDownloadTask initDownload;
+    CheckStatusTask checkStatus;
+    ProcessDownloadTask processDownload;
     
     public Download() { 
         Header.TITLE.setText("Download");
-        
-        mobileSvc = new MobileDownloadService(); 
+ 
         db = DatabasePlatformFactory.getPlatform().getDatabase();
         
         Callback<Sector,ObservableValue<Boolean>> property = new Callback<Sector,ObservableValue<Boolean>>(){
@@ -119,7 +120,7 @@ public class Download {
                 Platform.runLater(new Runnable(){
                     @Override
                     public void run() {
-                        initDownload();
+                        doDownload();
                     }
                 });
             }
@@ -150,7 +151,11 @@ public class Download {
             @Override
             public void handle(KeyEvent event) {
                 if(event.getCode() == KeyCode.ESCAPE){
-                    continueDownload = false;
+                    if(download_started){
+                        if(initDownload.isRunning()) initDownload.cancel();
+                        if(checkStatus.isRunning()) checkStatus.cancel();
+                        if(processDownload.isRunning()) processDownload.cancel();
+                    }
                     if(Dialog.isOpen){ Dialog.hide(); return; }
                     Main.ROOT.setCenter(new Home().getLayout());
                 }
@@ -164,83 +169,11 @@ public class Download {
         return DatabasePlatformFactory.getPlatform().getDatabase().createDBContext(); 
     }
     
-    private int checkStatus( String batchid ) {
-        int recordcount = -1;
-        while (true) {
-            if (cancelled) break;
-            
-            int stat = mobileSvc.getBatchStatus(batchid); 
-            if (!mobileSvc.ERROR.isEmpty() && !cancelled) { 
-                Dialog.showAlert(mobileSvc.ERROR);
-                break;
-            }   
-            
-            if ( stat < 0 ) {
-                try {  
-                    Thread.sleep(2000); 
-                }catch(Throwable t){;} 
-            } else {
-                recordcount = stat; 
-                break; 
-            }
-        }
-        downloadsize = recordcount;
-        return recordcount;
-    }
-    
-    private void processDownload( String batchid, int indexno, int recordcount ) {
-        Map params = new HashMap();
-        int limit=50, start=(indexno < 0 ? 0 : indexno);  
-        DownloadStat stat = new DownloadStat().findByPrimary(batchid);
-        while ( start < recordcount ) {
-            params.put("batchid", batchid);
-            params.put("_start", start);
-            params.put("_limit", limit); 
-            System.out.println("Start: " + start + " Limit: " + limit);
-            List<Map> list = mobileSvc.download(params);
-            if( list != null) { 
-                for (int i=0; i<list.size(); i++) {
-                    Map data = list.get(i);
-                    db.createAccount(data);
-                    
-                    stat = stat.findByPrimary(batchid);
-                    stat.setIndexno( start + i ); 
-                    System.out.println("update indexno to " + stat.getIndexno()); 
-                    stat.update();
-                }
-            } 
-            indexposition = start;
-            start += limit; 
-        } 
-        
-        if ( start >= recordcount ) { 
-            stat.findByPrimary(batchid).delete(); 
-        }
-    }
-    
-    private void updateProgress(){
-        Task<Void> task = new Task<Void>(){
-            @Override
-            protected Void call() throws Exception {
-                for(int x = 1; x <= indexposition; x++){
-                    updateProgress(x, indexposition);
-                }
-                finishDownload();
-                return null;
-            }
-        };
-        
-        label.setVisible(true);
-        progressbar.setVisible(true);
-        progressbar.progressProperty().bind(task.progressProperty());
-        
-        new Thread(task).start();
-    }
-    
     private void finishDownload(){
         Platform.runLater(new Runnable(){
             @Override
             public void run() {
+                if(Dialog.isOpen) Dialog.hide();
                 label.setText("Download Complete! " + downloadsize + " records was downloaded!");
                 download.setText("Done");
                 download.setOnMousePressed(new EventHandler<MouseEvent>(){
@@ -265,8 +198,7 @@ public class Download {
         });
     }
     
-    private void initDownload(){
-        //GET THE SELECTED SECTORS FOR DOWNLOAD
+    private void doDownload(){
         List<String> selectedSectors = new ArrayList();
         String sectorid = null;
         for(Sector r : listView.getItems()){
@@ -289,7 +221,7 @@ public class Download {
         Map params = new HashMap();
         params.put("assigneeid", userid);
         params.put("sectorid", sectorid); 
-        boolean has_stat_record = false; 
+        has_stat_record = false; 
         if ( batchid != null ) {
             has_stat_record = true; 
             if ( stat.getIndexno() >= stat.getRecordcount() ) {
@@ -300,64 +232,82 @@ public class Download {
             }
         }
         
-        try {
-            batchid = mobileSvc.initForDownload( params ); 
-        } catch(Throwable t) {
-            t.printStackTrace();
-            Dialog.hide();
-            Dialog.showError("init download failed caused by "+ t.getMessage()); 
-            return; 
-        } 
-        
-        if ( !has_stat_record ) {
-            stat.setBatchid( batchid );
-            stat.setAssigneeid(userid );
-            stat.setRecordcount(0);
-            stat.setIndexno(0);
-            stat.create(); 
-        } 
-        
-        int recordcount = 0; 
-        try { 
-            recordcount = checkStatus( batchid );
-        } catch(Throwable t) {
-            t.printStackTrace();
-            Dialog.hide();
-            Dialog.showError("Checking status failed caused by "+ t.getMessage()); 
-            return; 
-        } 
-        
-        System.out.println("RECORD COUNT > " + recordcount);
-        if ( recordcount <= 0 ) {
-            Dialog.hide();
-            Dialog.showError("No data to download");
-            return;
-        }
-
-        if(Dialog.isOpen) Dialog.hide();
-        stat.setRecordcount(recordcount);
-        stat.update(); 
-        try { 
-            processDownload( batchid, stat.getIndexno(), recordcount );  
-        } catch(Throwable t) {
-            t.printStackTrace();
-            Dialog.hide();
-            Dialog.showError("Process download failed caused by "+ t.getMessage()); 
-            return; 
-        }
-        
-        //SAVE AREA, STUBOUTS
-        clearSector();
-        for(Sector r : listView.getItems()){
-            if(r.isSelected()){
-                saveSector(r);
+        download_started = true;
+        initDownload = new InitDownloadTask(params);
+        initDownload.stateProperty().addListener(new ChangeListener<State>(){
+            @Override
+            public void changed(ObservableValue<? extends State> observable, State oldValue, State state) {
+                System.out.println("InitDownloadTask is now on " + state + " state.");
+                if(state.equals(State.SUCCEEDED)){
+                    String error = initDownload.getMessage();
+                    System.out.println("ERROR : " + error);
+                    if(error.isEmpty()){
+                        batchid = initDownload.getValue();
+                        if ( !has_stat_record ) {
+                            stat.setBatchid( batchid );
+                            stat.setAssigneeid(userid );
+                            stat.setRecordcount(0);
+                            stat.setIndexno(0);
+                            stat.create(); 
+                        }
+                        new Thread(checkStatus).start();
+                    }else{
+                        Dialog.showAlert(error);
+                    }
+                }
             }
-        }
+        });
+        new Thread(initDownload).start(); 
         
-        //DOWNLOAD RULES
-        downloadRules();
- 
-        updateProgress();
+        checkStatus = new CheckStatusTask(batchid);
+        checkStatus.stateProperty().addListener(new ChangeListener<State>(){
+            @Override
+            public void changed(ObservableValue<? extends State> observable, State oldValue, State state) {
+                System.out.println("CheckStatusTask is now on " + state + " state.");
+                if(state.equals(State.SUCCEEDED)){
+                    String error = checkStatus.getMessage();
+                    System.out.println("ERROR : " + error);
+                    if(error.isEmpty()){
+                        recordcount = checkStatus.getValue();
+                        if ( recordcount <= 0 ) {
+                            Dialog.hide();
+                            Dialog.showError("No data to download");
+                            return;
+                        }
+                        stat.setRecordcount(recordcount);
+                        stat.update();
+                        new Thread(processDownload).start();
+                    }else{
+                        Dialog.showAlert(error);
+                    }
+                }
+            }
+        });
+        
+        processDownload = new ProcessDownloadTask(batchid, stat.getIndexno(), recordcount);
+        processDownload.stateProperty().addListener(new ChangeListener<State>(){
+            @Override
+            public void changed(ObservableValue<? extends State> observable, State oldValue, State state) {
+                System.out.println("ProcessDownloadTask is now on " + state + " state.");
+                if(state.equals(State.SUCCEEDED)){
+                    String error = processDownload.getMessage();
+                    System.out.println("ERROR : " + error);
+                    if(error.isEmpty()){
+                        clearSector();
+                        for(Sector r : listView.getItems()){
+                            if(r.isSelected()){
+                                saveSector(r);
+                            }
+                        }
+                        downloadRules();
+                        finishDownload();
+                    }else{
+                        Dialog.showAlert(error);
+                    }
+                }
+            }
+        });
+        
     }
     
     private void loadData(){ 
@@ -483,6 +433,8 @@ public class Download {
     private Node showProgress(){
         ImageView image = new ImageView(new Image("icon/processing.png"));
         
+        ProgressIndicator indicator = new ProgressIndicator();
+        
         Label text = new Label("PROCESSING, PLEASE WAIT...");
         text.getStyleClass().add("login-label");
         
@@ -491,7 +443,7 @@ public class Download {
         root.setPadding(new Insets(15));
         root.setPrefWidth(Main.WIDTH - 100);
         root.setAlignment(Pos.CENTER);
-        root.getChildren().addAll(image, text);
+        root.getChildren().addAll(indicator, text);
         
         return root;
     }

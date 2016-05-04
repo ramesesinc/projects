@@ -37,4 +37,6 @@ class WaterworksAccountPersistenceInterceptor{
 		wm.find([objid:o.meter.objid]).update([currentacctid:o.objid]);
 	}
 
+	
+
 }

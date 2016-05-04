@@ -1,9 +1,7 @@
 <workunit schemaName="waterworks_application">
     <invokers>
         <invoker type="waterworks_application:open" 
-                 formTitle="App No #{entity.appno} - #{task.title}"
-                 windowTitle="#{entity.appno}" 
-                 formId="#{entity.objid}"
+                 
                  target="window"
                  action="open" />
         
@@ -11,6 +9,10 @@
                  caption="Specify Stubout"
                  target="popup"
                  action="assignStubout"/>        
+        
+        <invoker type="global:barcode:51030" caption="Waterworks Application" 
+            action="openBarcode" 
+            target="window" expr="#{barcodeid.startsWith('WA')}" />
         
     </invokers>
     <code class="com.rameses.gov.etracs.waterworks.models.WaterworksApplication"/>

@@ -31,9 +31,11 @@ public class MobileDownloadService {
         try{
             return (String) service.initForDownload(params);
         } catch(RuntimeException re){
-           throw re; 
+            ERROR = "MobileDownloadService Error: " + re.toString();
+            throw re; 
         } catch(Throwable e){
-           throw new RuntimeException(e.getMessage(), e);
+            ERROR = "MobileDownloadService Error: " + e.toString();
+            throw new RuntimeException(e.getMessage(), e);
         } 
     }
     
@@ -58,7 +60,8 @@ public class MobileDownloadService {
         } catch(RuntimeException re){
            throw re; 
         } catch(Throwable e){
-           throw new RuntimeException(e.getMessage(), e);
+            ERROR = "MobileDownloadService Error: " + e.toString();
+            throw new RuntimeException(e.getMessage(), e);
         } 
     }
     

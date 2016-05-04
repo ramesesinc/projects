@@ -47,4 +47,19 @@ class WaterworksApplicationPersistenceInterceptor{
 
 		return buff.join('\n'); 
 	} 
+
+	/*****************************************************************************************************
+	* attach the task
+	*****************************************************************************************************/
+	@After(pattern="PersistenceService.read", eval="#{args[0]._schemaname == 'waterworks_application'}")
+	public void findFirst(def evt) {
+		def o  = evt.result;
+		def parm = evt.args[0];
+		def m =[processname: 'waterworks_application'];
+		if(parm.taskid) {
+			m.taskid = parm.taskid; 
+		}
+		o.task = workflowTaskSvc.findTask( m );
+	}
+
 }

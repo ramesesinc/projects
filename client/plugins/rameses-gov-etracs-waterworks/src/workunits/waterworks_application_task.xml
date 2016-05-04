@@ -12,6 +12,10 @@
                  target="popup"
                  action="assignStubout"/>        
         
+        <invoker type="global:barcode:51030" caption="Waterworks Application" 
+            action="openBarcode" 
+            target="window" expr="#{barcodeid.startsWith('WA')}" />
+        
     </invokers>
     <code class="com.rameses.gov.etracs.waterworks.models.WaterworksApplication"/>
     <pages>

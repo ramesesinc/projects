@@ -5,10 +5,10 @@
 		<field name="code"/>
 		<field name="description"/>
 
-		<complex name="sector" ref="waterworks_sector" jointype="many-to-one" required="false">
+		<complex name="sector" ref="waterworks_sector" jointype="many-to-one">
 			<key field="sectorid" target="objid" />
 		</complex>	
-		<complex name="reader" ref="waterworks_sector_reader" jointype="many-to-one" required="false">
+		<complex name="reader" ref="waterworks_sector_reader" jointype="many-to-one">
 			<key field="readerid" target="objid" />
 		</complex>	
 	</element>

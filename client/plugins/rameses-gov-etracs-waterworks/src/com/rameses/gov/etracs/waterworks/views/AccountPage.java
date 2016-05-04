@@ -61,9 +61,11 @@ public class AccountPage extends javax.swing.JPanel {
         xDateField7 = new com.rameses.rcp.control.XDateField();
         xDateField9 = new com.rameses.rcp.control.XDateField();
         xLabel13 = new com.rameses.rcp.control.XLabel();
+        xLabel21 = new com.rameses.rcp.control.XLabel();
         xLabel14 = new com.rameses.rcp.control.XLabel();
         xLabel15 = new com.rameses.rcp.control.XLabel();
         xLabel16 = new com.rameses.rcp.control.XLabel();
+        xButton4 = new com.rameses.rcp.control.XButton();
 
         xTabbedPane1.setHandler("sections");
 
@@ -307,11 +309,19 @@ public class AccountPage extends javax.swing.JPanel {
 
         xLabel13.setBackground(new java.awt.Color(245, 245, 245));
         xLabel13.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
-        xLabel13.setCaption("Billing Period");
-        xLabel13.setExpression("#{entity.billingcycle.fromperiod} - #{entity.billingcycle.toperiod} ");
+        xLabel13.setCaption("Period From");
+        xLabel13.setExpression("#{entity.billingcycle.fromperiod}");
         xLabel13.setOpaque(true);
         xLabel13.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel4.add(xLabel13);
+
+        xLabel21.setBackground(new java.awt.Color(245, 245, 245));
+        xLabel21.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
+        xLabel21.setCaption("Period To");
+        xLabel21.setExpression("#{entity.billingcycle.toperiod} ");
+        xLabel21.setOpaque(true);
+        xLabel21.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel4.add(xLabel21);
 
         xLabel14.setBackground(new java.awt.Color(245, 245, 245));
         xLabel14.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
@@ -337,21 +347,32 @@ public class AccountPage extends javax.swing.JPanel {
         xLabel16.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel4.add(xLabel16);
 
+        xButton4.setImmediate(true);
+        xButton4.setName("computeBillingCycle"); // NOI18N
+        xButton4.setText("Billing Cycle");
+        xButton4.setVisibleWhen("#{mode == 'create'}");
+
         javax.swing.GroupLayout xPanel4Layout = new javax.swing.GroupLayout(xPanel4);
         xPanel4.setLayout(xPanel4Layout);
         xPanel4Layout.setHorizontalGroup(
             xPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(xPanel4Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, 343, Short.MAX_VALUE)
+                .addGroup(xPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(xFormPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, 343, Short.MAX_VALUE)
+                    .addGroup(xPanel4Layout.createSequentialGroup()
+                        .addComponent(xButton4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         xPanel4Layout.setVerticalGroup(
             xPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, xPanel4Layout.createSequentialGroup()
+            .addGroup(xPanel4Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(xFormPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(xButton4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(27, 27, 27))
         );
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -400,6 +421,7 @@ public class AccountPage extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel5;
     private com.rameses.etracs.common.LocalAddressPanel localAddressPanel1;
     private com.rameses.rcp.control.XButton xButton3;
+    private com.rameses.rcp.control.XButton xButton4;
     private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XDateField xDateField7;
     private com.rameses.rcp.control.XDateField xDateField9;
@@ -419,6 +441,7 @@ public class AccountPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XLabel xLabel18;
     private com.rameses.rcp.control.XLabel xLabel19;
     private com.rameses.rcp.control.XLabel xLabel20;
+    private com.rameses.rcp.control.XLabel xLabel21;
     private com.rameses.rcp.control.XLabel xLabel6;
     private com.rameses.rcp.control.XLookupField xLookupField1;
     private com.rameses.rcp.control.XLookupField xLookupField4;

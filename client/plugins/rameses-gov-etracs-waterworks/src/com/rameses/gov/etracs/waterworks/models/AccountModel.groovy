@@ -8,8 +8,9 @@ import com.rameses.seti2.models.*;
 
 public class AccountModel extends MdiFormModel {
     
-    @Service("WaterworksBillingDateService")
-    def billingDateSvc;
+    
+    @Script("BillingCycle")
+    def billCycle;
     
     void afterCreate() {
         entity.address = [:];
@@ -17,12 +18,18 @@ public class AccountModel extends MdiFormModel {
 
     def assignStubout() {
         def h = {o->
-            entity.stubout = o.stubout;
+            entity.stubout = o;
             binding.refresh();
         }
-        return Inv.lookupOpener("waterworks_stubout:lookup", [handler: h] );
+        return Inv.lookupOpener("waterworks_stubout:lookup", [onselect: h] );
     }
     
+    void computeBillingCycle() {
+        def e = billCycle.fetch(entity.stubout);
+        entity.billingcycle = e;
+    }
+    
+    /*
     void computeDates() {
         def h = { o->
             entity.dtstarted = o;
@@ -36,8 +43,8 @@ public class AccountModel extends MdiFormModel {
             entity.fromperiod = entity.dtstarted;
             binding.refresh();
         }
-        Modal.show("date:prompt", [handler:h]);
+        Modal.show("date:prompt", [handler:h, title: 'Enter begin or ending date']);
     }
-    
+    */
     
 }

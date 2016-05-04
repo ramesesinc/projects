@@ -1,0 +1,68 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import com.rameses.osiris3.xconnection.XConnection;
+import java.rmi.server.UID;
+
+public class DefaultFileServiceImpl { 
+
+	@DataContext('sys_file_registry') 
+	def fileregistry; 
+
+	@DataContext( dynamic=true ) 
+	def db; 
+
+	@Context 
+	def currentCtx;
+
+	@ProxyMethod(local=true) 
+	public def read( params ) { 
+		if ( !params.objid ) throw new Exception('objid parameter is required'); 
+
+		def reg = fileregistry.find([ objid: params.objid ]).first(); 
+		if ( !reg ) throw new Exception("RESOURCE_FILE_NOT_FOUND"); 
+
+		def dbo = db.lookup('sys_file', reg.dbcontext); 
+		def fileRec = dbo.find([ objid: params.objid ]).first(); 
+		if ( fileRec ) return fileRec; 
+
+		throw new Exception('RESOURCE_FILE_NOT_FOUND');
+	} 
+
+	@ProxyMethod(local=true) 
+	public def getContent( params ) { 
+		if ( !params.fileid ) throw new Exception('fileid parameter is required');  
+		if ( !params.startindexno ) throw new Exception('startindexno parameter is required');  
+		if ( !params.endindexno ) throw new Exception('endindexno parameter is required');  
+		
+		def reg = fileregistry.find([ objid: params.fileid ]).first(); 
+		if ( !reg ) throw new Exception("RESOURCE_FILE_NOT_FOUND"); 
+
+		def filecontext = reg.filecontext; 
+		def xconn = currentCtx.getResource( XConnection.class, filecontext ); 
+		if ( !xconn ) throw new Exception(''+ filecontext +' connection file does not exist');  
+
+		xconn.getBaseDirectory(); 
+		def folder = xconn.getFolder( params.fileid ); 
+		def list = []; 
+		for ( def idx=params.startindexno; idx <= params.endindexno; idx++) {
+			def file = folder.getFile( idx ); 
+			if ( !file.exist() ) continue; 
+
+			list << [ indexno: idx, content: file.read() ];  
+		} 
+		return list; 
+	} 
+	
+	@ProxyMethod(local=true) 
+	public void removeFile( params ) {
+		if ( !params.fileid ) throw new Exception('fileid parameter is required'); 
+
+		def reg = fileregistry.find([ objid: params.fileid ]).first(); 
+		if ( !reg ) return;  
+
+		fileregistry.find([ objid: params.fileid ]).delete(); 
+
+		def dbo = db.lookup( 'sys_file', reg.dbcontext ); 
+		dbo.find([ objid: params.fileid ]).delete(); 
+	} 
+} 

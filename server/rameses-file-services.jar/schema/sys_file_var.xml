@@ -1,0 +1,8 @@
+<schema adapter="filedb">
+
+	<element tablename="sys_file_var">
+		<field name="name" primary="true"/> 
+		<field name="value" required="true"/> 
+	</element>
+
+</schema>

@@ -18,19 +18,31 @@ class WaterworksStuboutService {
     }
 
     @ProxyMethod
-    public def addNodes(def o) {
-        if(!o.stuboutid) 
-            throw new Exception("WaterworksStuboutService.generateNodes error. Please pass parameter stuboutid");
-        if(!o.nodecount) 
-            throw new Exception("WaterworksStuboutService.generateNodes error. Please pass parameter nodecount");
+    public void addNodes( o ) {
+        if ( !o.stuboutid ) 
+            throw new Exception("WaterworksStuboutService.addNodes error. Please pass parameter stuboutid");
+        if ( !o.nodecount ) 
+            throw new Exception("WaterworksStuboutService.addNodes error. Please pass parameter nodecount");
 
-        int c =  stubout_node.select("c:{COUNT(*)}").find([stuboutid: o.stuboutid]).val();   
-        int start = c+1;    
-        int j = c + o.nodecount;  
+        def aggr = stubout_node.select("maxcount:{COUNT(*)}, maxindexno:{MAX(indexno)}").find([stuboutid: o.stuboutid]).first();
+        if ( !aggr.maxindexno ) aggr.maxindexno = 0; 
+        if ( aggr.maxcount != aggr.maxindexno ) { 
+            // resolve the node gaps 
+            for ( int idx=1; idx <= aggr.maxindexno; idx++ ) { 
+                def map = [ stuboutid: o.stuboutid, indexno: idx ]; 
+                def item = stubout_node.find( map ).first(); 
+                if ( !item ) stubout_node.create( map ); 
+            } 
+            // exit immediately after resolving the node gaps
+            return;  
+        } 
+
+        int start = aggr.maxcount+1; 
+        int j = aggr.maxcount + o.nodecount;  
         for( int i=start; i <= j; i++ ) {
             def m = [stuboutid: o.stuboutid, indexno: i];
             stubout_node.create(m);      
-        }    
+        } 
     }
 
     @ProxyMethod

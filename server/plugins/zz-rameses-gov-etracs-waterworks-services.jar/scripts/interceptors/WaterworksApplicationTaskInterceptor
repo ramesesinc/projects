@@ -6,6 +6,9 @@ class WaterworksApplicationTaskInterceptor{
 	@Service("PersistenceService")
 	def persistenceSvc;
 	
+	@Service("WorkflowService")
+	def wfSvc;
+	
 
 	@Service("DateService")
 	def dateSvc;
@@ -129,5 +132,7 @@ class WaterworksApplicationTaskInterceptor{
 		def result = evt.result;
 		result.acctno = env.acctno;
 	}
+
+
 
 }

@@ -137,6 +137,13 @@ class WorkflowTaskService  {
     }
 
     @ProxyMethod
+    public def findTasksByRef( def r ) {
+        if( !r.processname ) throw new Exception("WorkflowTaskService.findTasksByRef error. processname is required");
+        if( !r.refid ) throw new Exception("WorkflowTaskService.findTasksByRef error. refid is required");
+        
+    }
+
+    @ProxyMethod
     public def findTask( def r ) {
     	def em = db.lookup( r.processname +"_task" );
     	def ti = em.select("taskid,startdate,dtcreated,state,prevtaskid,assignee.*,refid,message").find( [taskid: r.taskid ]).first(); 

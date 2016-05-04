@@ -1,9 +1,7 @@
 <workunit schemaName="waterworks_application">
     <invokers>
         <invoker type="waterworks_application:open" 
-                 formTitle="App No #{entity.appno} - #{task.title}"
-                 windowTitle="#{entity.appno}" 
-                 formId="#{entity.objid}"
+                 
                  target="window"
                  action="open" />
         

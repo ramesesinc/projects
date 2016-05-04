@@ -11,16 +11,22 @@ public class WaterworksApplication extends WorkflowTaskModel {
     
     def tabList;
     def formName = 'waterworks_application:form';
-    def barcodeid;
     
-    /*
-    void openBarcode() {
-        def appno = barcodeid.split("_")[1];
-        def m = ["_schemaname": "waterworks_application" ];
-        m.findBy = [  ]
-        queryService.findFirst(m);
+    def getBarcodeFieldname() {
+        return "appno";
     }
-    */
+    
+    public String getTitle() {
+        return entity.appno + " - " + task?.title;
+    }
+    
+    public String getWindowTitle() {
+        return entity.appno;
+    }
+    
+    public String getFormId() {
+        return entity.objid;
+    }
     
     void afterOpen() {
         tabList = [];

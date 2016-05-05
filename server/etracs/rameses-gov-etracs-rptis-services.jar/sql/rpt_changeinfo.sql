@@ -27,7 +27,8 @@ update faas set
 	restrictionid 	= $P{restrictionid},
 	effectivityyear = $P{effectivityyear},
 	effectivityqtr 	= $P{effectivityqtr},
-	memoranda 		= $P{memoranda}
+	memoranda 		= $P{memoranda},
+	txntype_objid 	= $P{txntypeid}
 where objid = $P{faasid}	
 
 [updateFaasPreviousInfo]

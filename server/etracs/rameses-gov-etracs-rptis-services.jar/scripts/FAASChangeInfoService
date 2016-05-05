@@ -18,6 +18,10 @@ class FAASChangeInfoService
 	@Service('LogService')
 	def logSvc 
 
+	@Service('FAASService')
+	def faasSvc 
+	
+
 	@ProxyMethod
 	public def updateInfo(changeinfo){
 		changeinfo.dtposted = dtSvc.serverDate
@@ -42,6 +46,12 @@ class FAASChangeInfoService
 		changeinfo.newinfo = newinfo;
 		logSvc.logA(changeinfo.action, 'faas', changeinfo.refid, changeinfo.reason)
 		return changeinfo
+	}
+
+
+	@ProxyMethod
+	public def getTxnTypes(  ) {
+		return faasSvc.getTxnTypes();
 	}
 	
 }

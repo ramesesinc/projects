@@ -34,9 +34,11 @@ public class ChangeFaasInfoPage extends javax.swing.JPanel {
         xTextField18 = new com.rameses.rcp.control.XTextField();
         xDateField2 = new com.rameses.rcp.control.XDateField();
         xComboBox2 = new com.rameses.rcp.control.XComboBox();
-        xIntegerField3 = new com.rameses.rcp.control.XIntegerField();
-        xComboBox10 = new com.rameses.rcp.control.XComboBox();
+        xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
+        xIntegerField5 = new com.rameses.rcp.control.XIntegerField();
+        xComboBox12 = new com.rameses.rcp.control.XComboBox();
         xSeparator1 = new com.rameses.rcp.control.XSeparator();
+        xComboBox5 = new com.rameses.rcp.control.XComboBox();
         xComboBox1 = new com.rameses.rcp.control.XComboBox();
         xCheckBox1 = new com.rameses.rcp.control.XCheckBox();
         jScrollPane2 = new javax.swing.JScrollPane();
@@ -50,8 +52,10 @@ public class ChangeFaasInfoPage extends javax.swing.JPanel {
         xIntegerField4 = new com.rameses.rcp.control.XIntegerField();
         xComboBox11 = new com.rameses.rcp.control.XComboBox();
         xSeparator2 = new com.rameses.rcp.control.XSeparator();
+        xComboBox6 = new com.rameses.rcp.control.XComboBox();
         xComboBox4 = new com.rameses.rcp.control.XComboBox();
         xCheckBox2 = new com.rameses.rcp.control.XCheckBox();
+        xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         xTextArea3 = new com.rameses.rcp.control.XTextArea();
 
@@ -84,21 +88,31 @@ public class ChangeFaasInfoPage extends javax.swing.JPanel {
         xComboBox2.setStretchWidth(100);
         formPanel5.add(xComboBox2);
 
-        xIntegerField3.setCaption("Effectivity Year");
-        xIntegerField3.setName("changeinfo.newinfo.effectivityyear"); // NOI18N
-        xIntegerField3.setRequired(true);
-        xIntegerField3.setStretchWidth(60);
-        formPanel5.add(xIntegerField3);
+        xFormPanel2.setCaptionWidth(120);
+        xFormPanel2.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
+        xFormPanel2.setPadding(new java.awt.Insets(0, 0, 0, 0));
+        xFormPanel2.setPreferredSize(new java.awt.Dimension(0, 21));
+        xFormPanel2.setShowCaption(false);
 
-        xComboBox10.setCaption("Qtr");
-        xComboBox10.setDepends(new String[] {"rpu.taxable"});
-        xComboBox10.setItems("quarters");
-        xComboBox10.setName("changeinfo.newinfo.effectivityqtr"); // NOI18N
-        xComboBox10.setOpaque(false);
-        xComboBox10.setPreferredSize(new java.awt.Dimension(100, 20));
-        xComboBox10.setRequired(true);
-        xComboBox10.setStretchWidth(40);
-        formPanel5.add(xComboBox10);
+        xIntegerField5.setCaption("Effectivity Year");
+        xIntegerField5.setName("changeinfo.newinfo.effectivityyear"); // NOI18N
+        xIntegerField5.setRequired(true);
+        xIntegerField5.setStretchWidth(60);
+        xFormPanel2.add(xIntegerField5);
+
+        xComboBox12.setCaption("Qtr");
+        xComboBox12.setCaptionWidth(50);
+        xComboBox12.setCellPadding(new java.awt.Insets(0, 5, 0, 0));
+        xComboBox12.setDepends(new String[] {"rpu.taxable"});
+        xComboBox12.setItems("quarters");
+        xComboBox12.setName("changeinfo.newinfo.effectivityqtr"); // NOI18N
+        xComboBox12.setOpaque(false);
+        xComboBox12.setPreferredSize(new java.awt.Dimension(100, 20));
+        xComboBox12.setRequired(true);
+        xComboBox12.setStretchWidth(40);
+        xFormPanel2.add(xComboBox12);
+
+        formPanel5.add(xFormPanel2);
 
         xSeparator1.setPreferredSize(new java.awt.Dimension(0, 10));
 
@@ -114,6 +128,14 @@ public class ChangeFaasInfoPage extends javax.swing.JPanel {
         );
 
         formPanel5.add(xSeparator1);
+
+        xComboBox5.setCaption("Transaction Type");
+        xComboBox5.setExpression("#{item.name}");
+        xComboBox5.setItems("txntypes");
+        xComboBox5.setName("changeinfo.newinfo.txntype"); // NOI18N
+        xComboBox5.setPreferredSize(new java.awt.Dimension(0, 20));
+        xComboBox5.setRequired(true);
+        formPanel5.add(xComboBox5);
 
         xComboBox1.setCaption("Classification");
         xComboBox1.setExpression("#{item.name}");
@@ -161,9 +183,9 @@ public class ChangeFaasInfoPage extends javax.swing.JPanel {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(formPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 225, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(formPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 135, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 134, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -207,7 +229,6 @@ public class ChangeFaasInfoPage extends javax.swing.JPanel {
         xIntegerField4.setDisabledTextColor(new java.awt.Color(0, 0, 0));
         xIntegerField4.setEnabled(false);
         xIntegerField4.setName("changeinfo.previnfo.effectivityyear"); // NOI18N
-        xIntegerField4.setRequired(true);
         xIntegerField4.setStretchWidth(60);
         formPanel6.add(xIntegerField4);
 
@@ -218,7 +239,6 @@ public class ChangeFaasInfoPage extends javax.swing.JPanel {
         xComboBox11.setName("changeinfo.previnfo.effectivityqtr"); // NOI18N
         xComboBox11.setOpaque(false);
         xComboBox11.setPreferredSize(new java.awt.Dimension(100, 20));
-        xComboBox11.setRequired(true);
         xComboBox11.setStretchWidth(40);
         formPanel6.add(xComboBox11);
 
@@ -237,13 +257,20 @@ public class ChangeFaasInfoPage extends javax.swing.JPanel {
 
         formPanel6.add(xSeparator2);
 
+        xComboBox6.setCaption("Transaction Type");
+        xComboBox6.setEnabled(false);
+        xComboBox6.setExpression("#{item.name}");
+        xComboBox6.setItems("txntypes");
+        xComboBox6.setName("changeinfo.previnfo.txntype"); // NOI18N
+        xComboBox6.setPreferredSize(new java.awt.Dimension(0, 20));
+        formPanel6.add(xComboBox6);
+
         xComboBox4.setCaption("Classification");
         xComboBox4.setEnabled(false);
         xComboBox4.setExpression("#{item.name}");
         xComboBox4.setItems("classifications");
         xComboBox4.setName("changeinfo.previnfo.classification"); // NOI18N
         xComboBox4.setPreferredSize(new java.awt.Dimension(0, 20));
-        xComboBox4.setRequired(true);
         formPanel6.add(xComboBox4);
 
         xCheckBox2.setCellPadding(new java.awt.Insets(0, 120, 0, 0));
@@ -252,6 +279,7 @@ public class ChangeFaasInfoPage extends javax.swing.JPanel {
         xCheckBox2.setShowCaption(false);
         xCheckBox2.setText("Is Public Land?");
         formPanel6.add(xCheckBox2);
+        formPanel6.add(xFormPanel1);
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder4 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder4.setTitle("Memoranda");
@@ -285,9 +313,9 @@ public class ChangeFaasInfoPage extends javax.swing.JPanel {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(formPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(formPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, 273, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 135, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 87, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -321,15 +349,19 @@ public class ChangeFaasInfoPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XCheckBox xCheckBox1;
     private com.rameses.rcp.control.XCheckBox xCheckBox2;
     private com.rameses.rcp.control.XComboBox xComboBox1;
-    private com.rameses.rcp.control.XComboBox xComboBox10;
     private com.rameses.rcp.control.XComboBox xComboBox11;
+    private com.rameses.rcp.control.XComboBox xComboBox12;
     private com.rameses.rcp.control.XComboBox xComboBox2;
     private com.rameses.rcp.control.XComboBox xComboBox3;
     private com.rameses.rcp.control.XComboBox xComboBox4;
+    private com.rameses.rcp.control.XComboBox xComboBox5;
+    private com.rameses.rcp.control.XComboBox xComboBox6;
     private com.rameses.rcp.control.XDateField xDateField2;
     private com.rameses.rcp.control.XDateField xDateField3;
-    private com.rameses.rcp.control.XIntegerField xIntegerField3;
+    private com.rameses.rcp.control.XFormPanel xFormPanel1;
+    private com.rameses.rcp.control.XFormPanel xFormPanel2;
     private com.rameses.rcp.control.XIntegerField xIntegerField4;
+    private com.rameses.rcp.control.XIntegerField xIntegerField5;
     private com.rameses.rcp.control.XSeparator xSeparator1;
     private com.rameses.rcp.control.XSeparator xSeparator2;
     private com.rameses.rcp.control.XTextArea xTextArea2;

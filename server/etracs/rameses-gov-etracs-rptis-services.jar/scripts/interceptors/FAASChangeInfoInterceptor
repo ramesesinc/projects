@@ -46,6 +46,7 @@ class FAASChangeInfoInterceptor
 	public void updateFaasInfo(evt){
 		def changeinfo = evt.result
 		changeinfo.newinfo.utdno = changeinfo.newinfo.tdno 
+		changeinfo.newinfo.txntypeid = changeinfo.newinfo.txntype.objid 
 		em.updateFaasInfo(changeinfo.newinfo);
 		em.updateLedgerInfo(changeinfo.newinfo);
 		em.updateLedgerFaasInfo(changeinfo.newinfo);
@@ -62,6 +63,7 @@ class FAASChangeInfoInterceptor
 		flinfo.objid = changeinfo.faasid
 		flinfo.tdno = changeinfo.newinfo.tdno
 		flinfo.utdno = changeinfo.newinfo.utdno
+		flinfo.txntype = changeinfo.newinfo.txntype
 		flinfo.titleno = changeinfo.newinfo.titleno
 		flinfo.effectivityyear = changeinfo.newinfo.effectivityyear
 		flinfo.effectivityqtr = changeinfo.newinfo.effectivityqtr

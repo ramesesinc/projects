@@ -2,6 +2,7 @@
           schemaName="waterworks_stubout" orderBy="code"  
           cols="objid,code,zone.code,zone.sector.code,barangay.name">
     <invokers>
-        <invoker type="waterworks_stubout:lookup" caption="Lookup Stubout" action="init"/>
+        <invoker type="waterworks_stubout:lookup" target="popup"
+                 caption="Lookup Stubout" action="init"/>
     </invokers>
 </workunit>

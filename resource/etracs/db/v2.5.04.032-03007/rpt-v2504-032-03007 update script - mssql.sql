@@ -105,3 +105,13 @@ go
 /*===========================================*/
 alter table machrpu add bldgmaster_objid varchar(50)
 go 
+
+
+
+/*===========================================*/
+/* STRUCTURE UPDATE
+/*===========================================*/
+alter table structure add showinfaas int not null
+go 
+update structure set showinfaas = 1 where showinfaas is null
+go 

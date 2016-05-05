@@ -23,7 +23,7 @@
             def selectedItem
             
             Map createEntity(){
-                return [materials : [] ]
+                return [showinfaas:false, materials : [] ]
             }
             
             def lookupMaterial = InvokerUtil.lookupOpener("material:lookup",[:]);
@@ -77,7 +77,8 @@
             }
         
             void update(){
-                service.update(entity);
+                if (mode != 'create')
+                    service.update(entity);
             }
             
         }

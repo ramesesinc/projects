@@ -28,3 +28,10 @@ alter table subdivision_cancelledimprovement
 /* MACHRPU - ADD BLDG REFERENCE 
 /*===========================================*/
 alter table machrpu add bldgmaster_objid varchar(50);
+
+
+/*===========================================*/
+/* STRUCTURE UPDATE
+/*===========================================*/
+alter table structure add showinfaas int not null;
+update structure set showinfaas = 1 where showinfaas is null;

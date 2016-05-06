@@ -7,12 +7,21 @@
 		<complex name="size" ref="waterworks_metersize" jointype="many-to-one" required="false">
 			<key field="sizeid" target="objid"/>
 		</complex>
+		
 		<field name="capacity" required="true" caption="Capacity" />
-		<field name="currentacctid" visible="false"/>
-		<!--
-		<complex name="account" ref="zz_waterworks_account" jointype="many-to-one" required="false">
+		
+		<!-- for link with application -->
+		<complex name="application" ref="waterworks_application" jointype="many-to-one" required="false"
+			includefields="objid,appno,acctname,addresstext">
+			<key field="objid" target="meterid"/>
+		</complex>
+
+		<!-- for linking to account -->
+		<field name="currentacctid" required="false" />
+		<complex name="account" ref="waterworks_account" jointype="many-to-one" required="false"
+			includefields="objid,acctname,acctno,addresstext">
 			<key field="currentacctid" target="objid"/>
 		</complex>
-		-->
+		
 	</element>
 </schema>

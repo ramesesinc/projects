@@ -12,12 +12,12 @@ import com.rameses.seti2.views.CrudFormPage;
  * @author Dino
  */
 @Template(CrudFormPage.class)
-public class WaterworksMeterSizePage extends javax.swing.JPanel {
+public class MeterSizePage extends javax.swing.JPanel {
 
     /**
      * Creates new form MeterPage
      */
-    public WaterworksMeterSizePage() {
+    public MeterSizePage() {
         initComponents();
     }
 

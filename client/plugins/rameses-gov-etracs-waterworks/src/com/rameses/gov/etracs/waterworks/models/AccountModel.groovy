@@ -8,7 +8,6 @@ import com.rameses.seti2.models.*;
 
 public class AccountModel extends MdiFormModel {
     
-    
     @Script("BillingCycle")
     def billCycle;
     
@@ -21,7 +20,18 @@ public class AccountModel extends MdiFormModel {
             entity.stubout = o;
             binding.refresh();
         }
-        return Inv.lookupOpener("waterworks_stubout:lookup", [onselect: h] );
+        Modal.show("waterworks_stubout:lookup", [onselect: h] );
+    }
+
+    def assignStuboutNode() {
+        if(!entity.stubout?.objid) 
+            throw new Exception("Please select a stubout first");
+        def h = { o->
+            if( o.acctid ) throw new Exception("There is already an account assigned. Choose another");
+            entity.stuboutnode = o;
+            binding.refresh();
+        }
+        Modal.show("waterworks_stubout_node_unassigned:lookup", [onselect: h, stuboutid: entity.stubout.objid] );
     }
     
     void computeBillingCycle() {
@@ -29,22 +39,5 @@ public class AccountModel extends MdiFormModel {
         entity.billingcycle = e;
     }
     
-    /*
-    void computeDates() {
-        def h = { o->
-            entity.dtstarted = o;
-            if( !entity.stubout?.objid ) 
-                throw new Exception("Please assign a stubout");            
-
-            def res = billingDateSvc.getBillingDates( [stubout:entity.stubout, billdate: entity.dtstarted] );
-            if(!res)
-                throw new Exception("There is no billing date rules fired");
-            entity.putAll( res );
-            entity.fromperiod = entity.dtstarted;
-            binding.refresh();
-        }
-        Modal.show("date:prompt", [handler:h, title: 'Enter begin or ending date']);
-    }
-    */
     
 }

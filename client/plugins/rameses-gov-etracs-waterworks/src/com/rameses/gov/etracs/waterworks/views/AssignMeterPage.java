@@ -64,6 +64,7 @@ public class AssignMeterPage extends javax.swing.JPanel {
         xDateField1.setCaption("Date Installed");
         xDateField1.setName("info.dtinstalled"); // NOI18N
         xDateField1.setPreferredSize(new java.awt.Dimension(0, 20));
+        xDateField1.setRequired(true);
         xFormPanel1.add(xDateField1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);

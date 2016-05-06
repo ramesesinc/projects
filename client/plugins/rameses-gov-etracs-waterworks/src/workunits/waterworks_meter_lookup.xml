@@ -1,9 +1,22 @@
 <workunit extends="com/rameses/seti2/templates/CrudLookup.xml" 
-          schemaName="vw_waterworks_meter" 
-          cols="serialno,brand,capacity,account.acctname">
+          schemaName="waterworks_meter">
     <invokers>
         <invoker type="waterworks_meter:lookup" 
                  caption="Lookup Water Meter" 
-                 action="init" target="popup"/>
+                 action="init" target="popup"
+                 cols="serialno,brand,capacity,account.acctname"/>
+        
+        <invoker type="waterworks_meter_wo_application:lookup" 
+                 caption="Lookup Water Meter (Without Application)" 
+                 action="init" target="popup"
+            cols="serialno,brand,capacity,size.title"     
+            customFilter="application.objid IS NULL"/>        
+
+        <invoker type="waterworks_meter_wo_account:lookup" 
+                 caption="Lookup Water Meter (Without Account)" 
+                 action="init" target="popup"
+            cols="serialno,brand,capacity,size.title"     
+            customFilter="currentacctid IS NULL "/>        
+        
     </invokers>
 </workunit>

@@ -1,18 +1,18 @@
 <workunit schemaName="waterworks_application">
     <invokers>
         <invoker type="waterworks_application:open" 
-                 
                  target="window"
                  action="open" />
+
+        <invoker type="global:barcode:51030" caption="Waterworks Application" 
+            action="openBarcode" 
+            target="window" expr="#{barcodeid.startsWith('WA')}" />
         
         <invoker type="formActions" 
                  caption="Specify Stubout"
                  target="popup"
                  action="assignStubout"/>        
         
-        <invoker type="global:barcode:51030" caption="Waterworks Application" 
-            action="openBarcode" 
-            target="window" expr="#{barcodeid.startsWith('WA')}" />
         
     </invokers>
     <code class="com.rameses.gov.etracs.waterworks.models.WaterworksApplication"/>

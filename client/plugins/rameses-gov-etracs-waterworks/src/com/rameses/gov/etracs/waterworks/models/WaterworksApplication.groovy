@@ -44,6 +44,14 @@ public class WaterworksApplication extends WorkflowTaskModel {
         binding.refresh();
     }
     
+    public boolean isAllowAssignStubout() {
+        return true;
+    }
+    
+    public boolean isAllowAssignMeter() {
+        return true;
+    }
+    
     void assignStubout() {
         def h = { o->
             def info = [_schemaname : "waterworks_application"];
@@ -54,6 +62,17 @@ public class WaterworksApplication extends WorkflowTaskModel {
             binding.refresh();
         };
         Modal.show("waterworks_stubout:lookup", [onselect: h] );        
+    }
+    
+    void assignMeter() {
+        def h = {
+            info.objid = e.objid;
+            info.meter = e.meter;
+            info.installer = e.installer;
+            info.dtinstalled = e.dtinstalled;
+            info.initialreading = e.initialreading;    
+        }
+        Modal.show("waterworks_meter:lookup", [onselect: h] );        
     }
     
     public void afterSignal() {

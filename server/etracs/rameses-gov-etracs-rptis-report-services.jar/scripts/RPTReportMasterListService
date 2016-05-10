@@ -5,6 +5,9 @@ import java.rmi.server.UID
 
 class RPTReportMasterListService
 {
+	@Env 
+	def env 
+
     @ActiveDB('rptreport_masterlist')
     def em
 
@@ -19,7 +22,9 @@ class RPTReportMasterListService
     @Async
     @ProxyMethod
     public def getMasterListing( params ) {
-    	params.lguid = params.lgu.objid 
+    	params.lguid = (params.lgu ? params.lgu.objid :'%')
+		params.barangayid = (params.barangay ? params.barangay.objid : '%')
+
 		params.classidfilter = ''
 		if( params.classification ) {
 			params.classidfilter = ' AND r.classification_objid = $P{classid} '
@@ -62,9 +67,14 @@ class RPTReportMasterListService
 			}
 		}
 
+		def forlguname = env.ORGCLASS + ' OF ' + env.ORGNAME 
+		if (params.lgu) {
+			forlguname = params.lgu.lgutype.toUpperCase() + ' OF ' + params.lgu.name 
+		}
+
 		def p = [
 			CLASSIFICATION : params.classification.name,
-            FORLGUNAME : params.lgu.lgutype.toUpperCase() + ' OF ' + params.lgu.name ,
+            FORLGUNAME : forlguname,
             TITLE    : title,
         ]
 

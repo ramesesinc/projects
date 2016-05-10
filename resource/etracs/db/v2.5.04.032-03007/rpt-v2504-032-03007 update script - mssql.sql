@@ -101,7 +101,7 @@ go
 
 
 /*===========================================*/
-/* MACHRPU - ADD BLDG REFERENCE 
+/* MACHRPU - ADD BLDG REFERENCE  */
 /*===========================================*/
 alter table machrpu add bldgmaster_objid varchar(50)
 go 
@@ -109,9 +109,48 @@ go
 
 
 /*===========================================*/
-/* STRUCTURE UPDATE
+/* STRUCTURE UPDATE */
 /*===========================================*/
 alter table structure add showinfaas int not null
 go 
 update structure set showinfaas = 1 where showinfaas is null
 go 
+
+
+
+/*===========================================*/
+/* STEWARDSHIP SUPPORT */
+/*===========================================*/
+alter table realproperty add stewardshipno varchar(3) 
+go 
+alter table faas add parentfaasid varchar(50) 
+go 
+
+INSERT INTO faas_txntype (objid, name, newledger, newrpu, newrealproperty, displaycode, allowEditOwner, checkbalance, allowEditPin, allowEditPinInfo, allowEditAppraisal, opener) 
+VALUES ('ST', 'Stewardship', '1', '1', '1', 'DP', '1', '0', '0', '1', '1', '')
+go 
+
+INSERT INTO faas_txntype (objid, name, newledger, newrpu, newrealproperty, displaycode, allowEditOwner, checkbalance, allowEditPin, allowEditPinInfo, allowEditAppraisal, opener) 
+VALUES ('STP', 'Stewardship', '0', '1', '1', 'DP', '0', '0', '0', '0', '1', '')
+go 
+
+
+create table faas_stewardship
+(
+  objid varchar(50),
+  rpumasterid varchar(50) not null, 
+  stewardrpumasterid varchar(50) not null,
+  ry int not null, 
+  stewardshipno int not null,
+  primary key(objid)
+) 
+go 
+
+create unique index ux_faas_stewardship on faas_stewardship(rpumasterid, stewardrpumasterid, ry, stewardshipno)
+go 
+create index ix_faas_stewardship_rpumasterid on faas_stewardship(rpumasterid)
+go 
+create index ix_faas_stewardship_stewardrpumasterid on faas_stewardship(stewardrpumasterid)
+go 
+
+

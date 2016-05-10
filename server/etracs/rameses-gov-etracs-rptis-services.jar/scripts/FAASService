@@ -124,6 +124,7 @@ class FAASService
 	@ProxyMethod
 	public def initTransaction( info ) {
 		def faas = openFaas(info.faas)
+		faas._checkTxnRef = info._checkTxnRef
 		validateFaasForTransaction(faas)
 		initNewFaasInfo(info, faas)
 		initNewRealPropertyInfo(info, faas)
@@ -214,6 +215,16 @@ class FAASService
 		em.delete(faas, SCHEMA_SIGNATORY)
 		em.deleteTasks(faas)
 		em.deleteFaasUpdate(faas)
+		em.deleteFaasStewardship(faas.rpu)
+
+		def affectedrpus = em.getAffectedRpus(faas)
+		em.deleteAffectedRpus(faas)
+		affectedrpus.each{
+			if (it.newfaasid){
+				faasSvc.deleteFaasById(it.newfaasid)
+			}
+		}
+
 		em.getPreviousFaases([faasid:faas.objid]).each{
 			em.delete(it, SCHEMA_PREVIOUSFAAS)
 		}
@@ -224,13 +235,24 @@ class FAASService
 
 		em.delete(faas)
 
-		if (faas.txntype.newrpu)
+		if (faas.txntype.newrpu){
 			rpuSvc.deleteRpu(rpuSvc.openRpu(faas.rpu))
+		}
 		
-		if (faas.rpu.rputype == 'land' && faas.txntype.newrealproperty)
+		if (faas.rpu.rputype == 'land' && faas.txntype.newrealproperty){
 			rpSvc.delete(rpSvc.open(faas.rp) )
+		}
+
+		if (faas.parentfaasid){
+			faasSvc.deleteFaas(openFaas([objid:faas.parentfaasid]))
+		}			
 		
 		return faas 
+	}
+
+	@ProxyMethod
+	public def getAffectedRpus(faas) {
+		return em.getAffectedRpus(faas)
 	}
 
 	@ProxyMethod
@@ -271,6 +293,7 @@ class FAASService
 
 	@ProxyMethod
 	public def approveFaas( faas ) {
+		approveParentFaas(faas)
 		def currentstate = getState(faas.objid)
 		if (currentstate == STATE_CURRENT)  
 			throw new Exception('FAAS is already current.')
@@ -299,6 +322,12 @@ class FAASService
 		updateImprovementLandRpuIds(faas)
 		return faas 
 	}
+
+	void approveParentFaas(faas){
+        if (faas.parentfaasid){
+            faasSvc.approveFaas(openFaas([objid:faas.parentfaasid]))
+        }
+    }
 
 	void updateImprovementLandRpuIds(faas){
         if ('land'.equalsIgnoreCase(faas.rpu.rputype)){
@@ -790,7 +819,10 @@ class FAASService
 			throw new Exception('FAAS has already been cancelled.')
 		if (currentstate != STATE_CURRENT)  
 			throw new Exception('FAAS is not current.')
-		txnRef.checkReference(faas.objid)
+
+		if (faas._checkTxnRef == null || faas._checkTxnRef == true){
+			txnRef.checkReference(faas.objid)
+		}
 	}	
 
 	void initNewFaasInfo(info, newfaas){
@@ -801,6 +833,7 @@ class FAASService
 		newfaas.objid 			= newid 
 		newfaas.previousfaases  = [[faasid:newid, prevfaasid:oldid]]
 		newfaas.state 			= STATE_INTERIM
+		newfaas.parentfaasid    = null 
 		
 		newfaas.prevtdno		= newfaas.tdno
 		newfaas.prevpin		 	= newfaas.rpu.fullpin
@@ -916,6 +949,10 @@ class FAASService
     	return em.findOpenTask(faas)	
     }
     
+    @ProxyMethod
+    public def saveAffectedRpu(arpu) {
+    	em.save(arpu, 'affectedrpu')
+    }
 
 }
 

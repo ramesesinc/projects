@@ -353,6 +353,8 @@ class RPTUtil
 
         if (params.lguid)
             params.filter += ' f.lguid = $P{lguid} AND '
+        if (params.barangayid)
+            params.filter += ' rp.barangayid = $P{barangayid} AND '
 
         params.filter += '(f.year < $P{year} '
         if (params.month)

@@ -7,6 +7,7 @@
 	- 
 		
 - ASSESSOR
+	- FAAS Annotation Listing barangay filter
 	- Additional Assessment Roll info 
 	- Set Notice of Assessment year to effectivity year
 	- Stewardship Support

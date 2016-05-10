@@ -13,5 +13,6 @@ FROM faasannotation fa
 	INNER JOIN barangay b ON rp.barangayid = b.objid 
 WHERE fa.state = 'APPROVED'  
   AND f.lguid LIKE $P{lguid} 
+  AND rp.barangayid LIKE $P{barangayid}
   AND f.state = 'CURRENT'  
 ${orderbyclause} 

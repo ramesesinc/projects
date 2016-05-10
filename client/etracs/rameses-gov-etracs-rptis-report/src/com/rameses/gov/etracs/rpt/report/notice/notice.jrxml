@@ -36,6 +36,8 @@
 	<parameter name="LGUTYPE" isForPrompting="false" class="java.lang.String"/>
 	<parameter name="ASSESSORNAME" isForPrompting="false" class="java.lang.String"/>
 	<parameter name="ASSESSORTITLE" isForPrompting="false" class="java.lang.String"/>
+	<parameter name="USERJOBTITLE" isForPrompting="false" class="java.lang.String"/>
+	<parameter name="USERFULLNAME" isForPrompting="false" class="java.lang.String"/>
 
 	<field name="taxpayername" class="java.lang.String"/>
 	<field name="txndate" class="java.util.Date"/>
@@ -248,7 +250,7 @@
 			</band>
 			</groupHeader>
 			<groupFooter>
-			<band height="50"  isSplitAllowed="true" >
+			<band height="0"  isSplitAllowed="true" >
 			</band>
 			</groupFooter>
 		</group>
@@ -576,7 +578,7 @@
 					<reportElement
 						mode="Transparent"
 						x="473"
-						y="20"
+						y="27"
 						width="223"
 						height="11"
 						forecolor="#000000"
@@ -596,7 +598,7 @@
 					<reportElement
 						mode="Transparent"
 						x="473"
-						y="31"
+						y="38"
 						width="223"
 						height="10"
 						forecolor="#000000"
@@ -616,7 +618,7 @@
 					<reportElement
 						mode="Transparent"
 						x="70"
-						y="53"
+						y="60"
 						width="36"
 						height="11"
 						forecolor="#000000"
@@ -636,7 +638,7 @@
 					<reportElement
 						mode="Transparent"
 						x="112"
-						y="53"
+						y="60"
 						width="525"
 						height="55"
 						forecolor="#000000"
@@ -658,7 +660,7 @@
 					<reportElement
 						mode="Transparent"
 						x="8"
-						y="74"
+						y="81"
 						width="49"
 						height="11"
 						forecolor="#000000"
@@ -679,7 +681,7 @@
 					<reportElement
 						mode="Transparent"
 						x="8"
-						y="96"
+						y="103"
 						width="85"
 						height="11"
 						forecolor="#000000"
@@ -700,7 +702,7 @@
 					<reportElement
 						mode="Transparent"
 						x="57"
-						y="115"
+						y="122"
 						width="235"
 						height="11"
 						forecolor="#000000"
@@ -721,7 +723,7 @@
 					<reportElement
 						mode="Transparent"
 						x="292"
-						y="115"
+						y="122"
 						width="109"
 						height="11"
 						forecolor="#000000"
@@ -742,7 +744,7 @@
 					<reportElement
 						mode="Transparent"
 						x="401"
-						y="115"
+						y="122"
 						width="19"
 						height="11"
 						forecolor="#000000"
@@ -762,7 +764,7 @@
 				<rectangle>
 					<reportElement
 						x="44"
-						y="138"
+						y="145"
 						width="26"
 						height="12"
 						key="rectangle-1"/>
@@ -772,7 +774,7 @@
 					<reportElement
 						mode="Transparent"
 						x="75"
-						y="139"
+						y="146"
 						width="158"
 						height="11"
 						forecolor="#000000"
@@ -792,7 +794,7 @@
 				<rectangle>
 					<reportElement
 						x="44"
-						y="155"
+						y="162"
 						width="26"
 						height="12"
 						key="rectangle-2"/>
@@ -802,7 +804,7 @@
 					<reportElement
 						mode="Transparent"
 						x="74"
-						y="156"
+						y="163"
 						width="158"
 						height="11"
 						forecolor="#000000"
@@ -822,7 +824,7 @@
 				<rectangle>
 					<reportElement
 						x="250"
-						y="138"
+						y="145"
 						width="26"
 						height="12"
 						key="rectangle-3"/>
@@ -832,7 +834,7 @@
 					<reportElement
 						mode="Transparent"
 						x="281"
-						y="139"
+						y="146"
 						width="71"
 						height="11"
 						forecolor="#000000"
@@ -852,7 +854,7 @@
 				<rectangle>
 					<reportElement
 						x="250"
-						y="155"
+						y="162"
 						width="26"
 						height="12"
 						key="rectangle-4"/>
@@ -862,7 +864,7 @@
 					<reportElement
 						mode="Transparent"
 						x="280"
-						y="156"
+						y="163"
 						width="71"
 						height="11"
 						forecolor="#000000"
@@ -883,7 +885,7 @@
 					<reportElement
 						mode="Transparent"
 						x="292"
-						y="125"
+						y="132"
 						width="108"
 						height="11"
 						forecolor="#000000"
@@ -903,7 +905,7 @@
 				<line direction="TopDown">
 					<reportElement
 						x="492"
-						y="168"
+						y="175"
 						width="203"
 						height="0"
 						key="line-1"/>
@@ -913,7 +915,7 @@
 					<reportElement
 						mode="Transparent"
 						x="492"
-						y="169"
+						y="176"
 						width="203"
 						height="11"
 						forecolor="#000000"
@@ -934,7 +936,7 @@
 					<reportElement
 						mode="Transparent"
 						x="419"
-						y="115"
+						y="122"
 						width="217"
 						height="11"
 						forecolor="#000000"
@@ -951,6 +953,67 @@
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$F{receivedby}]]></textFieldExpression>
 				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="226"
+						y="26"
+						width="211"
+						height="11"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-40"/>
+					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{USERFULLNAME}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="226"
+						y="37"
+						width="211"
+						height="10"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-41"/>
+					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Tahoma" pdfFontName="Helvetica" size="7" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{USERJOBTITLE}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="226"
+						y="7"
+						width="49"
+						height="11"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="staticText-77"
+						positionType="Float"/>
+					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<text><![CDATA[By:]]></text>
+				</staticText>
 			</band>
 		</summary>
 </jasperReport>

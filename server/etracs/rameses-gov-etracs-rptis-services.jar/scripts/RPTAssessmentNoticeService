@@ -82,7 +82,7 @@ class RPTAssessmentNoticeService
 		notice.taxpayername = notice.taxpayer.name
 		notice.taxpayeraddress = notice.taxpayer.address
 		updateAdministratorInfo(notice)
-		notice.assessmentyear = dateSvc.serverYear 
+		notice.assessmentyear = notice.items[0].effectivityyear
 		
 		notice.createdbyid =  (env.USERID ? env.USERID : 'SYSTEM')
 		notice.createdbyname =  (env.FULLNAME ? env.FULLNAME : 'SYSTEM')

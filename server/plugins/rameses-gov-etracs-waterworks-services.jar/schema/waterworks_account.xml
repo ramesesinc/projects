@@ -1,5 +1,5 @@
 <schema adapter="waterworks">
-	<element tablename="waterworks_account">
+	<element name="wacct" tablename="waterworks_account">
 		<field name="objid" primary="true"  prefix="WACC"/>
 		<field name="state"  visible="false" defaultValue="ACTIVE"/>
 		<field name="dtstarted" required="false" indexed="true" type="date" caption="Date Started"/>
@@ -29,7 +29,7 @@
 			<key field="sectorid" target="objid"/> 
 		</complex> 
 		<complex name="zone" ref="waterworks_sector_zone" jointype="many-to-one"  required="true" 
-			includefields="objid,code">
+			includefields="objid,code,reader.assigneeid,reader.assigneename">
 			<key field="zoneid" target="objid"/> 
 		</complex> 
 

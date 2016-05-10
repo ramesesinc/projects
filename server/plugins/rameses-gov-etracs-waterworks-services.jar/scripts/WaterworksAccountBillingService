@@ -84,6 +84,7 @@ class WaterworksAccountBillingService  {
 		facts << new BillDate( bc.billdate );
 		facts << new DueDate( bc.duedate );
 		facts << currDate;
+		facts << new WaterAccount(a);
 		buildConsumptionFacts( o, facts, currYear, currMonth );
 		//buildInstallmentFacts( o, facts );
 

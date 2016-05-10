@@ -66,6 +66,8 @@
 	<field name="owner.name" class="java.lang.String"/>
 	<field name="totalmv" class="java.math.BigDecimal"/>
 	<field name="totalav" class="java.math.BigDecimal"/>
+	<field name="txntype.code" class="java.lang.String"/>
+	<field name="cancelinfo" class="java.lang.String"/>
 
 		<background>
 			<band height="0"  isSplitAllowed="true" >
@@ -501,7 +503,7 @@ No.]]></text>
 				<staticText>
 					<reportElement
 						mode="Opaque"
-						x="606"
+						x="603"
 						y="0"
 						width="35"
 						height="37"
@@ -660,7 +662,7 @@ Code]]></text>
 						mode="Transparent"
 						x="568"
 						y="0"
-						width="38"
+						width="35"
 						height="37"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
@@ -672,16 +674,16 @@ Code]]></text>
 					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
 </box>
 					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
-						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="7" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="6" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$P{ARPCAPTION}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement
 						mode="Opaque"
-						x="641"
+						x="638"
 						y="0"
-						width="36"
+						width="31"
 						height="37"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
@@ -694,14 +696,15 @@ Code]]></text>
 					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="6" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<text><![CDATA[Machinery]]></text>
+				<text><![CDATA[Machi
+nery]]></text>
 				</staticText>
 				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Transparent"
-						x="677"
+						x="669"
 						y="0"
-						width="60"
+						width="75"
 						height="37"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
@@ -720,9 +723,9 @@ Code]]></text>
 				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Transparent"
-						x="737"
+						x="744"
 						y="0"
-						width="45"
+						width="38"
 						height="37"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
@@ -734,7 +737,7 @@ Code]]></text>
 					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
 </box>
 					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
-						<font fontName="Dialog" pdfFontName="Helvetica-Bold" size="7" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+						<font fontName="Dialog" pdfFontName="Helvetica-Bold" size="6" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$P{REMARKS}]]></textFieldExpression>
 				</textField>
@@ -801,9 +804,9 @@ Value]]></text>
 				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Transparent"
-						x="641"
+						x="638"
 						y="0"
-						width="36"
+						width="31"
 						height="17"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
@@ -824,7 +827,7 @@ Value]]></text>
 				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Transparent"
-						x="606"
+						x="603"
 						y="0"
 						width="35"
 						height="17"
@@ -847,15 +850,15 @@ Value]]></text>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Opaque"
-						x="606"
+						x="603"
 						y="0"
-						width="71"
+						width="66"
 						height="17"
 						backcolor="#FFFF00"
 						key="textField-44">
 							<printWhenExpression><![CDATA[new Boolean($F{state}.equalsIgnoreCase("CANCELLED"))]]></printWhenExpression>
 						</reportElement>
-					<box>					<pen lineWidth="0.0" lineStyle="Solid"/>
+					<box leftPadding="1" rightPadding="1">					<pen lineWidth="0.0" lineStyle="Solid"/>
 					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
 					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
@@ -864,7 +867,7 @@ Value]]></text>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="7" isBold="true"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA["CANCELLED \"" + $F{cancelreason} + "\""]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{cancelinfo}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -940,7 +943,7 @@ Value]]></text>
 						mode="Transparent"
 						x="568"
 						y="0"
-						width="38"
+						width="35"
 						height="17"
 						forecolor="#FF3333"
 						backcolor="#FFFFFF"
@@ -959,9 +962,9 @@ Value]]></text>
 				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Transparent"
-						x="737"
+						x="744"
 						y="0"
-						width="45"
+						width="38"
 						height="17"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
@@ -975,7 +978,7 @@ Value]]></text>
 					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 						<font fontName="Dialog" pdfFontName="Helvetica" size="7" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{txntype.objid}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{txntype.code}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -1085,9 +1088,9 @@ Value]]></text>
 				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Transparent"
-						x="677"
+						x="669"
 						y="0"
-						width="60"
+						width="75"
 						height="17"
 						forecolor="#000000"
 						backcolor="#FFFFFF"

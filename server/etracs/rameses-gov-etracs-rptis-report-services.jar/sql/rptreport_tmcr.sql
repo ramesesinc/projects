@@ -73,6 +73,7 @@ select
 	f.objid, 
 	f.state,
 	f.cancelreason, 
+	f.canceldate, 
 	f.tdno, 
 	f.fullpin,
 	f.titleno,

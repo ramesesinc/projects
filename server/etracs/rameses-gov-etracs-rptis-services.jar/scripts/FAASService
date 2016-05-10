@@ -713,7 +713,7 @@ class FAASService
 				objid  				: it.prevfaasid,
 				rpuid 				: it.prevrpuid, 
 				txntype 			: faas.txntype,
-				cancelreason		: faas.txntype.objid,
+				cancelreason		: faas.txntype.displaycode,
 				canceldate			: faas.approver.dtsigned,
 				cancelledbytdnos	: faas.tdno,
 			]

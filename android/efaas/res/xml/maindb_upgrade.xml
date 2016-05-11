@@ -1,0 +1,11 @@
+<db>
+	<sql> DROP TABLE IF EXISTS sys_var </sql>
+	<sql> DROP TABLE IF EXISTS propertyclassification </sql>
+	<sql> DROP TABLE IF EXISTS bldgkind </sql>
+	<sql> DROP TABLE IF EXISTS machine </sql>
+	<sql> DROP TABLE IF EXISTS material </sql>
+	<sql> DROP TABLE IF EXISTS miscitem </sql>
+	<sql> DROP TABLE IF EXISTS parameter </sql>
+	<sql> DROP TABLE IF EXISTS planttree </sql>
+	<sql> DROP TABLE IF EXISTS structure </sql>
+</db>

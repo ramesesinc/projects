@@ -45,7 +45,9 @@
                 if(mode=='create') {
                     if( MsgBox.confirm("You are about to save this record. Proceed?")) {
                         service.create( entity );
-                        return Inv.lookupOpener( "user:open", [entity:entity, initiator: 'create']);
+                        def op = Inv.lookupOpener( "sys_user:open", [entity:entity, initiator: 'create']);
+                        op.target = "_self";
+                        return op;
                     }
                 }
                 else {

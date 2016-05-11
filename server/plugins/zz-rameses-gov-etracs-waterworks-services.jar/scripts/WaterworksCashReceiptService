@@ -38,13 +38,12 @@ class WaterworksCashReceiptService  {
 		p.paidby = acct.acctname; 
 		p.paidbyaddress = acct.address?.text; 
 		p.payer = acct.owner; 
-		p.items = [];
+		
 		p.billitems = [];
 
 		def list = billingService.getBilling( parm );
 		if ( !list ) throw new Exception('No unpaid balance for this account'); 
-		p.items.addAll(list);
-		p.amount = p.items.sum{ it.amount }
+		
 		p.billitems.addAll( list ); 
 		p.info = parm; 
 

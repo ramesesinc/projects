@@ -1,0 +1,30 @@
+import com.rameses.annotations.*;
+import com.rameses.functions.*;
+
+class WaterworksApplicationReportService {
+	
+	@DataContext('waterworks_application')
+	def app; 
+
+	@DataContext('waterworks_application_requirement')
+	def req; 
+
+	@Service("DateService")
+	def dateSvc;
+
+	@ProxyMethod 
+	public def getReport( params ) {
+		def months = dateSvc.getMonths()*.name;
+		def m = app.find([objid: params.objid]).first();
+		m.barcode = '515030:'+m.appno;
+		m.printdate = dateSvc.getServerDate();
+		m.requirements = req.find( [parentid: params.objid] ).list();
+
+		def sigobj = app.find([ acctid: params.objid ]).select('signature').first(); 
+		m.signature = sigobj?.signature; 
+
+		return m;
+	}
+
+
+}

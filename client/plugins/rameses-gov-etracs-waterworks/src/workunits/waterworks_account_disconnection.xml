@@ -1,0 +1,10 @@
+<workunit>
+    <invokers>
+        <invoker xtype="waterworks_account:form:formActions" 
+                 caption="Disconnect"  index="4" target="popup"/>
+    </invokers>
+    <code class="com.rameses.gov.etracs.waterworks.models.WaterworksDisConnection" />
+    <pages>
+        <page template="com.rameses.gov.etracs.waterworks.views.WaterworksDisConnectionPage"/>
+    </pages>
+</workunit>

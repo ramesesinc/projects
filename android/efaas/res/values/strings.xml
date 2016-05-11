@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">eTRACS</string>
+    <string name="action_settings">Settings</string>
+    
+	<string name="txt_registration_header">Terminal Registration</string>
+	<string name="txt_registration_text">This device is not yet registered. Terminal registration is required for performing secured transactions. Please choose a type of action below:</string>    
+	<string name="rbtn_register_terminal">Register new terminal</string>
+	<string name="rbtn_recover_terminal">Recover existing terminal</string>
+	<string name="tag_register">register</string>
+	<string name="tag_recover">recover</string>
+	<string name="txt_registration_new_header">New Terminal Registration</string>
+	<string name="txt_registration_new_text">Please fill in the information below. You may contact your system administrator for assistance.</string>
+	<string name="txt_registration_terminalkey">Terminal Key</string>
+	<string name="txt_registration_registeredby">Registered By</string>
+	<string name="rbtn_next">Next</string>	
+    <string name="btn_next">Next</string>
+    <string name="btn_register">Register</string>
+    
+    <string name="txt_login">Login</string>
+    <string name="txt_changepassword_header">Change Password</string>
+    <string name="txt_changepassword_old">Old Password</string>
+    <string name="txt_changepassword_new">New Password</string>
+    <string name="txt_changepassword_confirm">Confirm Password</string>
+    
+    <string name="btn_ok"> OK </string>
+    
+    <string name="semicolon">:</string>
+    
+    <string name="txt_empty"></string>
+    <string name="txt_btn_cancel">Cancel</string>
+    <string name="txt_btn_login">Login</string>
+    <string name="txt_hint_username">USERNAME</string>
+    <string name="txt_hint_password">PASSWORD</string>
+    <string name="txt_hint_search">Search</string>
+    <string name="txt_btn_ok">OK</string>
+	<string name="txt_url">URL</string>
+	<string name="header_host">Host</string>
+	<string name="txt_online">Mobile</string>
+	<string name="txt_offline">WIFI</string>
+	<string name="txt_port">Port</string>
+	<string name="header_timeout">Time out</string>
+	<string name="header_debug">Debug</string>
+	<string name="txt_debug_enabled">Enabled</string>
+	<string name="txt_timeout_session">Session (min.)</string>
+	<string name="txt_timeout_upload">Upload (sec.)</string>
+	<string name="txt_timeout_tracker">Tracker (sec.)</string>
+	<string name="btn_save">Save</string>
+	<string name="txt_mode"></string>
+</resources>

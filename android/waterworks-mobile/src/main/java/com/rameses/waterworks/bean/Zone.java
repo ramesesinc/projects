@@ -1,28 +1,23 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.rameses.waterworks.bean;
 
-/**
- *
- * @author Rameses
- */
 public class Zone {
     
-    private String id, code, desc, sector;
+    private String objid, sectorid, code, description, readerid, assigneeid;
     
-    public Zone(String id, String code, String desc, String sector){
-        this.id = id;
+    public Zone(String objid, String sectorid, String code, String description, String readerid, String assigneeid){
+        this.objid = objid;
+        this.sectorid = sectorid;
         this.code = code;
-        this.desc = desc;
-        this.sector = sector;
+        this.description = description;
+        this.readerid = readerid;
+        this.assigneeid = assigneeid;
     }
     
-    public String getObjid(){ return id; }
+    public String getObjid(){ return objid; }
+    public String getSectorId(){ return sectorid; }
     public String getCode(){ return code; }
-    public String getDesc(){ return desc; }
-    public String getSector(){ return sector; }
+    public String getDescription(){ return description; }
+    public String getReaderId(){ return readerid; }
+    public String getAssigneeId(){ return assigneeid; }
     
 }

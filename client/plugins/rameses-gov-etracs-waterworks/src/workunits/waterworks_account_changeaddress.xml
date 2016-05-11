@@ -1,8 +1,14 @@
-<workunit>
+<workunit schemaName="waterworks_account">
     <invokers>
-        <invoker type="waterworks_account:changeaddress" caption="Change Address" action="init" target="popup"/>
+        <invoker type="waterworks_account:form:menuActions" 
+                 caption="Change Address" 
+                 target="popup" 
+                 action="init"
+                 fields="address.*"
+                 visibleWhen="#{mode=='read'}"
+                />        
     </invokers>
-    <code class="com.rameses.gov.etracs.waterworks.models.ChangeAccountAddressModel"/>
+    <code class="com.rameses.seti2.models.ChangeInfoModel" />
     <pages>
         <page template="com.rameses.gov.etracs.waterworks.views.ChangeAccountAddressPage"/>
     </pages>

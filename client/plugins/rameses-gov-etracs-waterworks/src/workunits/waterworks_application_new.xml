@@ -5,43 +5,9 @@
                  formId="waterworks_new"
                  action="start" />
     </invokers>
-    <code>
-        <![CDATA[
-        import com.rameses.rcp.annotations.*;
-        import com.rameses.rcp.common.*;
-        import com.rameses.osiris2.client.*;
-        import com.rameses.osiris2.common.*;
-        import com.rameses.rcp.annotations.*;
-        import com.rameses.seti2.models.*;
-        
-        class WaterworksNewApplication extends CrudPageFlowModel { 
-        
-            @Service('WaterworksApplicationRuleService')
-            def appSvc; 
-        
-            void afterCreate() { 
-                entity.address = [:]; 
-            }
-        
-            void computeFee() { 
-                def result = appSvc.getInitialInfo( [:] );
-                entity.fees = result.fees; 
-                entity.total = result.total;
-                entity.requirements = result.requirements; 
-                feeList.reload();
-                requirementList.reload();
-            } 
-        
-            def feeList = [
-                fetchList: {o-> return entity.fees; }
-            ] as BasicListModel;
-            
-            def requirementList = [
-                fetchList: {o-> return entity.requirements; }
-            ] as BasicListModel;
-        }
-        ]]>
-    </code>
+    
+    <code class="com.rameses.gov.etracs.waterworks.models.NewWaterworksApplication" />
+    
     <pageflow>
         <start>
             <transition to="initial"/>

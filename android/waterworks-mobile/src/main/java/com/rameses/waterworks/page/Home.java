@@ -1,6 +1,7 @@
 package com.rameses.waterworks.page;
 
 import com.rameses.Main;
+import com.rameses.waterworks.database.Database;
 import com.rameses.waterworks.database.DatabasePlatformFactory;
 import com.rameses.waterworks.dialog.Dialog;
 import com.rameses.waterworks.layout.Header;
@@ -45,7 +46,7 @@ public class Home {
         sheetItem.getLayout().setOnMousePressed(new EventHandler<MouseEvent>(){
             @Override
             public void handle(MouseEvent event) {
-                Main.ROOT.setCenter(new ReadingSheet(null).getLayout());
+                Main.ROOT.setCenter(new ReadingSheet(null,null,-1).getLayout());
             }
         });
         
@@ -174,6 +175,15 @@ public class Home {
         HBox box = new HBox(5);
         box.setAlignment(Pos.CENTER);
         box.getChildren().addAll(check,read,space,cancel,unread);
+        box.setOnMouseClicked(new EventHandler<MouseEvent>(){
+            @Override
+            public void handle(MouseEvent event) {
+                Database db = DatabasePlatformFactory.getPlatform().getDatabase();
+                System.out.println("Sector");
+                System.out.println(db.showTableData("download_stat"));
+                System.out.println("=================================================================");
+            }
+        });
         
         StackPane root = new StackPane();
         root.setPadding(new Insets(8,0,8,0));

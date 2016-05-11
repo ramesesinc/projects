@@ -1,0 +1,19 @@
+<workunit extends="com/rameses/seti2/templates/CrudLookup.xml" 
+          schemaName="waterworks_stubout_node" 
+          allowCreate="false" allowEdit="false" allowDelete="false"
+          cols="objid,indexno,acctid,account.acctname" orderBy="indexno">
+    <invokers>
+        <invoker type="waterworks_stubout_node_unassigned:lookup" 
+                 caption="Lookup Unassigned Stubout Node" action="init"/>
+    </invokers>
+    
+    <code>
+        class UnassignedNodeLookup extends com.rameses.seti2.models.CrudLookupModel {
+            def stuboutid;
+                    
+            public def getCustomFilter() {
+                return ["stuboutid=:stuboutid", [stuboutid:stuboutid]];
+            }
+        }
+    </code>
+</workunit>

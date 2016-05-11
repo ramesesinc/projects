@@ -3,8 +3,8 @@ package com.rameses.waterworks.page;
 import com.rameses.Main;
 import static com.rameses.Main.PRINTER;
 import com.rameses.waterworks.bean.Account;
-import com.rameses.waterworks.bean.ItemAccount;
 import com.rameses.waterworks.bean.Reading;
+import com.rameses.waterworks.bean.Stubout;
 import com.rameses.waterworks.bluetooth.BluetoothPlatformFactory;
 import com.rameses.waterworks.database.Database;
 import com.rameses.waterworks.database.DatabasePlatformFactory;
@@ -17,6 +17,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.TextAlignment;
@@ -25,8 +26,22 @@ public class AccountDetail {
     
     private VBox root;
     String present="-",consumption="-";
+    private Account account;
+    private Stubout stubout;
+    private int position;
+    private Button prev, next;
+    private List<Account> accountList;
+    private BorderPane container_button;
     
-    public AccountDetail(Account account){
+    public AccountDetail(Account acct,Stubout stubout, int pos){
+        this.account = acct;
+        this.stubout = stubout;
+        this.position = pos;
+        if(stubout != null){
+            accountList = DatabasePlatformFactory.getPlatform().getDatabase().getAccountByStubout(stubout,"");
+            Dialog.TITLE.setText(stubout.getCode() + " ( " + acct.getSortOrder() + " )");
+        }
+        
         Button close = new Button("Close");
         close.getStyleClass().add("terminal-button");
         close.setFocusTraversable(true);
@@ -46,7 +61,7 @@ public class AccountDetail {
             @Override
             public void handle(ActionEvent event) {
                 Dialog.hide();
-                Main.ROOT.setCenter(new ReadingSheet(account).getLayout());
+                Main.ROOT.setCenter(new ReadingSheet(account,stubout,position).getLayout());
             }
         });
         
@@ -57,14 +72,14 @@ public class AccountDetail {
             @Override
             public void handle(ActionEvent event) {
                 if(Main.PRINTERNAME.isEmpty()){
-                    Dialog.showAlert("No printer selected!");
+                    Dialog.show("",showPrinterMessage("No printer selected!"));
                     return;
                 }
                 int i = 0;
                 try{
                     i = Integer.valueOf(present);
                 }catch(Exception e){ 
-                    Dialog.showAlert("Reading data is not yet available!");
+                    Dialog.show("",showPrinterMessage("Reading data is not yet available!"));
                     return;
                 }
                 account.setPresReading(i);
@@ -81,22 +96,68 @@ public class AccountDetail {
                 PRINTER.setError("");
                 PRINTER.print(Main.PRINTERHANDLER.getData(account));
                 if(!PRINTER.getError().isEmpty()){
-                    Dialog.showError(PRINTER.getError());
+                    Dialog.show("",showPrinterMessage(PRINTER.getError()));
                     PRINTER.closeBT();
                     PRINTER = BluetoothPlatformFactory.getPlatform().getBluetoothPrinter();
                     PRINTER.setPrinter(Main.PRINTERNAME);
                     PRINTER.openBT();
-                }else{
-                    Dialog.hide();
                 }
             }
         });
         
-        HBox btnContainer = new HBox(Main.HEIGHT > 700 ? 10 : 5);
-        btnContainer.setAlignment(Pos.CENTER_RIGHT);
-        btnContainer.setPadding(Main.HEIGHT > 700 ? new Insets(15, 0, 0, 0) : new Insets(5, 0, 0, 0));
-        btnContainer.getChildren().addAll(print,capture,close);
+        prev = new Button("Prev");
+        prev.getStyleClass().add("terminal-button");
+        prev.setOnAction(new EventHandler<ActionEvent>(){
+            @Override
+            public void handle(ActionEvent event) {
+                if(position != -1){
+                    if(position != 0) --position;
+                    account = accountList.get(position);
+                    loadAccountData();
+                    Dialog.TITLE.setText(stubout.getCode() + " ( " + account.getSortOrder() + " )");
+                }
+            }
+        });
         
+        next = new Button("Next");
+        next.getStyleClass().add("terminal-button");
+        next.setOnAction(new EventHandler<ActionEvent>(){
+            @Override
+            public void handle(ActionEvent event) {
+                if(position != -1){
+                    if(position < accountList.size()-1) ++position;
+                    account = accountList.get(position);
+                    loadAccountData();
+                    Dialog.TITLE.setText(stubout.getCode() + " ( " + account.getSortOrder() + " )");
+                }
+            }
+        });
+        
+        HBox container1 = new HBox(Main.HEIGHT > 700 ? 10 : 5);
+        container1.setAlignment(Pos.CENTER_RIGHT);
+        container1.setPadding(Main.HEIGHT > 700 ? new Insets(15, 0, 0, 0) : new Insets(5, 0, 0, 0));
+        container1.getChildren().addAll(print,capture,close);
+        
+        HBox container2 = new HBox(Main.HEIGHT > 700 ? 10 : 5);
+        container2.setAlignment(Pos.CENTER_RIGHT);
+        container2.setPadding(Main.HEIGHT > 700 ? new Insets(15, 0, 0, 0) : new Insets(5, 0, 0, 0));
+        container2.getChildren().addAll(prev, next);
+        
+        container_button = new BorderPane();
+        container_button.setLeft(container2);
+        container_button.setRight(container1);
+        
+        root = new VBox(Main.HEIGHT > 700 ? 15 : 2);
+        root.setStyle("-fx-background-color: white;");
+        root.setMinWidth(Main.HEIGHT > 700 ? Main.WIDTH-60 : Main.WIDTH-40);
+        root.setMaxWidth(Main.HEIGHT > 700 ? Main.WIDTH-60 : Main.WIDTH-8);
+        root.setAlignment(Pos.CENTER);
+        root.setPadding(Main.HEIGHT > 700 ? new Insets(20) : new Insets(10));
+        
+        loadAccountData();
+    }
+    
+    private void loadAccountData(){
         Database db = DatabasePlatformFactory.getPlatform().getDatabase();
         Reading reading = db.findReadingByAccount(account.getObjid());
         if(reading != null){
@@ -105,6 +166,9 @@ public class AccountDetail {
             account.setConsumption(reading.getConsumption());
             account.setAmtDue(reading.getAmtDue());
             account.setTotalDue(reading.getTotalDue());
+        }else{
+            present = "?";
+            consumption = "?";
         }
         
         HBox readingContainer = new HBox(Main.HEIGHT > 700 ? 10 : 5);
@@ -124,27 +188,17 @@ public class AccountDetail {
         account.setAmtDue(amtdue);
         account.setTotalDue(totaldue);
         
-        root = new VBox(Main.HEIGHT > 700 ? 15 : 2);
-        root.setStyle("-fx-background-color: white;");
-        root.setMinWidth(Main.HEIGHT > 700 ? Main.WIDTH-100 : Main.WIDTH-40);
-        root.setMaxWidth(Main.HEIGHT > 700 ? Main.WIDTH-100 : Main.WIDTH-8);
-        root.setAlignment(Pos.CENTER);
-        root.setPadding(Main.HEIGHT > 700 ? new Insets(20) : new Insets(10));
+        root.getChildren().clear();
         root.getChildren().add(createDetail("Account No",account.getAcctNo()));
         root.getChildren().add(createDetail("Name",account.getAcctName()));
         root.getChildren().add(createDetail("Address",account.getAddress()));
-        root.getChildren().add(createDetail("Mobile No",account.getMobileNo()));
         root.getChildren().add(createDetail("Serial No",account.getSerialNo()));
         root.getChildren().add(createDetail("Classification",account.getClassificationId()));
-        List<ItemAccount> items = account.getItemList();
-        for(ItemAccount a : items){
-            root.getChildren().add(createDetail(a.getAccount(),String.valueOf(a.getAmount()).replaceAll(" ", "")));
-        }
+        root.getChildren().add(createDetail("Prev. Balance",account.getPrevBalance()));
         root.getChildren().add(createDetail("Amount Due",amtdue));
         root.getChildren().add(createDetail("TOTAL DUE",totaldue));
         root.getChildren().add(readingContainer);
-        root.getChildren().add(btnContainer);
-        
+        root.getChildren().add(container_button);  
     }
     
     private HBox createDetail(String key,String value){
@@ -202,6 +256,51 @@ public class AccountDetail {
         container.setStyle("-fx-border-width: 1px; -fx-border-color: #7dbce8;");
         container.getChildren().addAll(label1,label2);
         return container;
+    }
+    
+    private Node showPrinterMessage(String message){
+        Label label = new Label(message);
+        label.getStyleClass().add("dialog-label");
+        label.setWrapText(true);
+
+        Button okBtn = new Button("OK");
+        okBtn.getStyleClass().add("terminal-button");
+        okBtn.setOnAction(new EventHandler<ActionEvent>(){
+            @Override
+            public void handle(ActionEvent event) {
+                Dialog.hide();
+                Dialog.show("Account Information", new AccountDetail(account, stubout, position).getLayout());
+            }
+        });
+        if(Main.HEIGHT < 700){
+            okBtn.setPrefWidth(70);
+        }else if(Main.HEIGHT < 1200){
+            okBtn.setPrefWidth(90);
+        }else{
+            okBtn.setPrefWidth(100);
+        }
+
+        HBox btnContainer = new HBox();
+        btnContainer.setAlignment(Pos.CENTER);
+        btnContainer.getChildren().add(okBtn);
+
+        VBox root = new VBox();
+        root.setStyle("-fx-background-color: white;");
+        root.getChildren().addAll(label,btnContainer);
+        if(Main.HEIGHT < 700){
+            root.setSpacing(10);
+            root.setPadding(new Insets(10));
+            root.setPrefWidth(Main.WIDTH - 30);
+        }else if(Main.HEIGHT < 1200){
+            root.setSpacing(20);
+            root.setPadding(new Insets(15));
+            root.setPrefWidth(Main.WIDTH - 100);
+        }else{
+            root.setSpacing(30);
+            root.setPadding(new Insets(20));
+            root.setPrefWidth(Main.WIDTH - 200);
+        }
+        return root;
     }
     
     public Node getLayout(){

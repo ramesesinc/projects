@@ -18,6 +18,12 @@ public class ComputeFee implements RuleActionHandler {
 		def acct = params.account;
 		def amt = NumberUtil.round(params.amount.doubleValue).doubleValue();	
 
+		def rem = params.remarks;
+		String remarks = "";
+		if( rem !=null ) {
+			remarks = params.remarks.getStringValue();	
+		}
+
 		//lookup account
 		def svc = EntityManagerUtil.lookup( "itemaccount" );
 		def m = svc.find( [objid: acct.key] ).first();
@@ -28,6 +34,7 @@ public class ComputeFee implements RuleActionHandler {
 		bi.account = new Account(m);
 		bi.amtdue = amt;
 		bi.amount = amt;
+		bi.remarks = remarks;
 		ct.result.billItemList.addItem( bi );
 	}
 }

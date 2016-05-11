@@ -15,29 +15,30 @@ public class PaymentOrderCashReceiptModel extends BasicCashReceipt {
     def barcodeid;
 
     def status;    
+
+    void buildReceiptItems( billitems ) {
+        def items = [];
+        billitems.each { 
+            items << [ item: it.item, amount: it.amount, remarks: it.remarks ];
+            if( it.surcharge > 0 ) {
+                items << [ item: it.surchargeAccount, amount: it.surcharge, remarks: it.remarks ];
+            }
+            if( it.interest > 0 ) {
+                items << [ item: it.interestAccount, amount: it.interest, remarks: it.remarks ];
+            }
+        }
+        entity.items = items;
+        entity.amount = entity.items.sum{ it.amount };
+    }
     
-    def loadBarcode() {
-        def pmtOrder = pmtSvc.open( [txnid: barcodeid] ); 
-        def info = pmtOrder.info;
-
-        entity = [formtype: "serial", formno:"51", txnmode: 'ONLINE'];
-        entity.collectiontype = info.collectiontype;
-        entity = service.init( entity );
-
-        entity.paymentorder = [ 
-            txnid: pmtOrder.txnid, 
-            txntype: pmtOrder.txntype,
-            refid: pmtOrder.refid 
-        ]; 
+    def loadInfo(def info) {
         entity.payer = info.payer;
-        entity.items = info.items;
         entity.amount = info.amount;
         entity.paidby = info.paidby;
         entity.paidbyaddress = info.paidbyaddress;
         entity.remarks = info.remarks;
         entity.info = info.info; 
         super.init(); 
-
         if ( info.billitems ) {
             entity.billitems = info.billitems; 
             entity.billitems.each {
@@ -48,10 +49,26 @@ public class PaymentOrderCashReceiptModel extends BasicCashReceipt {
                 it._interest = it.interest;
                 it._total = it.total;
             }
+            buildReceiptItems( entity.billitems );
             return 'billing';
         } else { 
+            entity.items = info.items;
             return 'default';
         } 
+    }
+    
+    def loadBarcode() {
+        def pmtOrder = pmtSvc.open( [txnid: barcodeid] ); 
+        def info = pmtOrder.info;
+        entity = [formtype: "serial", formno:"51", txnmode: 'ONLINE'];
+        entity.collectiontype = info.collectiontype;
+        entity = service.init( entity );
+        entity.paymentorder = [ 
+            txnid: pmtOrder.txnid, 
+            txntype: pmtOrder.txntype,
+            refid: pmtOrder.refid 
+        ]; 
+        return loadInfo(entity.info);
     }   
 
     def billItemListModel = [
@@ -65,6 +82,7 @@ public class PaymentOrderCashReceiptModel extends BasicCashReceipt {
 
     void updateItems(int index, boolean selected){
         entity.items.clear();
+        def bItems = [];
         entity.billitems.eachWithIndex { o, idx->
             if( idx < index  || (idx == index && selected==true) ) {
                 o.selected = true;
@@ -73,7 +91,7 @@ public class PaymentOrderCashReceiptModel extends BasicCashReceipt {
                 o.surcharge = o._surcharge;
                 o.interest = o._interest;
                 o.total = o._total;
-                entity.items << [item:o.item, amount: o.amount, remarks: o.remarks];
+                bItems.add( o );
             }
             else {
                 o.selected = false;
@@ -84,8 +102,7 @@ public class PaymentOrderCashReceiptModel extends BasicCashReceipt {
                 o.total = 0;
             }
         }
-        if( !entity.items) entity.amount = 0;
-        else entity.amount = entity.items.sum{it.amount};
+        buildReceiptItems( bItems );
         billItemListModel.reload();
         updateBalances();
     }

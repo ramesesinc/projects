@@ -5,6 +5,9 @@ class WaterworksApplicationPersistenceInterceptor{
 	@DataContext("waterworks_account")
 	def waterworks_account;	
 
+	@DataContext("waterworks_application_task")
+	def appTask;	
+
 	@DataContext("waterworks_application_fee")
 	def waterworks_application_fee;
 
@@ -47,4 +50,27 @@ class WaterworksApplicationPersistenceInterceptor{
 
 		return buff.join('\n'); 
 	} 
+
+	/*****************************************************************************************************
+	* attach the task
+	*****************************************************************************************************/
+	@After(pattern="PersistenceService.read", eval="#{args[0]._schemaname == 'waterworks_application'}")
+	public void findFirst(def evt) {
+		def o  = evt.result;
+		def parm = evt.args[0];
+		def m =[processname: 'waterworks_application'];
+		if(parm.taskid) {
+			m.taskid = parm.taskid; 
+		}
+		else {
+			//find task id based on ref
+			m.taskid = appTask.find([refid: o.objid]).select("taskid").where("enddate IS NULL").val();
+			if(!m.taskid) 
+				throw new Exception("There is no open task for this record");
+		}
+		o.task = workflowTaskSvc.findTask( m );
+	}
+
+
+
 }

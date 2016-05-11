@@ -1,0 +1,38 @@
+import com.rameses.rcp.annotations.*;
+import com.rameses.rcp.common.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.common.*;
+import com.rameses.seti2.models.*;
+import java.text.*;
+
+class BillingCycle {
+
+    @Service("WaterworksBillingDateService")
+    def billingDateSvc;
+
+    def billdate;
+    def dformat = new SimpleDateFormat("yyyy-MM-dd");
+    
+    def fetch(def stubout) {
+        if( !stubout?.objid ) 
+            throw new Exception("Please assign a stubout");            
+        
+        def e = null;
+        def h = { o->
+            billdate = o;
+            def res = billingDateSvc.getBillingDates( [stubout:stubout, billdate: billdate] );
+            if(!res)
+                throw new Exception("There is no billing date rules fired");
+            e = [:];    
+            e.fromperiod = dformat.format(res.fromperiod);
+            e.toperiod = dformat.format(res.toperiod);
+            e.readingdate = dformat.format(res.readingdate);
+            e.duedate = dformat.format(res.duedate);
+            e.disconnectiondate = dformat.format(res.disconnectiondate);
+        }
+        Modal.show("date:prompt", [handler:h, title: 'Enter begin or ending date']);
+        return e;
+    }
+
+
+}

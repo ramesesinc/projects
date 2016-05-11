@@ -7,9 +7,14 @@
 package com.rameses.etracs.common;
 
 import com.rameses.osiris2.themes.FormPage;
+import com.rameses.rcp.common.CallbackHandler;
 import com.rameses.rcp.framework.Binding;
+import com.rameses.rcp.framework.UIEvent;
+import com.rameses.rcp.framework.UIHandler;
+import com.rameses.rcp.ui.UIControlAdapter;
 import com.rameses.rcp.ui.annotations.StyleSheet;
 import com.rameses.rcp.ui.annotations.Template;
+import java.util.HashMap;
 
 /**
  *
@@ -18,9 +23,9 @@ import com.rameses.rcp.ui.annotations.Template;
 @StyleSheet
 public class NonLocalAddressPage extends javax.swing.JPanel {
     
-    /** Creates new form NewPatientPage */
     public NonLocalAddressPage() {
         initComponents();
+        register( "entity" );
     }
     
     /** This method is called from within the constructor to
@@ -32,92 +37,97 @@ public class NonLocalAddressPage extends javax.swing.JPanel {
     private void initComponents() {
 
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
-        xComboBox1 = new com.rameses.rcp.control.XComboBox();
-        xTextField6 = new com.rameses.rcp.control.XTextField();
-        xTextField1 = new com.rameses.rcp.control.XTextField();
-        xTextField3 = new com.rameses.rcp.control.XTextField();
-        xTextField2 = new com.rameses.rcp.control.XTextField();
-        xTextField7 = new com.rameses.rcp.control.XTextField();
-        xTextField8 = new com.rameses.rcp.control.XTextField();
-        xTextField4 = new com.rameses.rcp.control.XTextField();
-        xTextField9 = new com.rameses.rcp.control.XTextField();
-        xTextField5 = new com.rameses.rcp.control.XTextField();
-        xTextField10 = new com.rameses.rcp.control.XTextField();
+        cboType = new com.rameses.rcp.control.XComboBox();
+        txtunitno = new com.rameses.rcp.control.XTextField();
+        txtbldgno = new com.rameses.rcp.control.XTextField();
+        txtbldgname = new com.rameses.rcp.control.XTextField();
+        txtstreet = new com.rameses.rcp.control.XTextField();
+        txtsubdivision = new com.rameses.rcp.control.XTextField();
+        txtbrgyname = new com.rameses.rcp.control.XTextField();
+        txtmuni = new com.rameses.rcp.control.XTextField();
+        txtcity = new com.rameses.rcp.control.XTextField();
+        txtprov = new com.rameses.rcp.control.XTextField();
+        txtpin = new com.rameses.rcp.control.XTextField();
 
         xFormPanel1.setCaptionWidth(100);
 
-        xComboBox1.setAllowNull(false);
-        xComboBox1.setCaption("Address Type");
-        xComboBox1.setCaptionWidth(120);
-        xComboBox1.setItems("addressTypes");
-        xComboBox1.setName("entity.addresstype"); // NOI18N
-        xComboBox1.setPreferredSize(new java.awt.Dimension(150, 22));
-        xFormPanel1.add(xComboBox1);
+        cboType.setAllowNull(false);
+        cboType.setCaption("Address Type");
+        cboType.setCaptionWidth(120);
+        cboType.setItems("addressTypes");
+        cboType.setName("entity.addresstype"); // NOI18N
+        cboType.setPreferredSize(new java.awt.Dimension(150, 22));
+        xFormPanel1.add(cboType);
 
-        xTextField6.setCaption("Unit No");
-        xTextField6.setCaptionWidth(120);
-        xTextField6.setName("entity.unitno"); // NOI18N
-        xTextField6.setPreferredSize(new java.awt.Dimension(100, 22));
-        xFormPanel1.add(xTextField6);
+        txtunitno.setCaption("Unit No");
+        txtunitno.setCaptionWidth(120);
+        txtunitno.setName("entity.unitno"); // NOI18N
+        txtunitno.setPreferredSize(new java.awt.Dimension(100, 22));
+        txtunitno.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtunitnoActionPerformed(evt);
+            }
+        });
+        xFormPanel1.add(txtunitno);
 
-        xTextField1.setCaption("House / Bldg No");
-        xTextField1.setCaptionWidth(120);
-        xTextField1.setName("entity.bldgno"); // NOI18N
-        xTextField1.setPreferredSize(new java.awt.Dimension(100, 22));
-        xFormPanel1.add(xTextField1);
+        txtbldgno.setCaption("House / Bldg No");
+        txtbldgno.setCaptionWidth(120);
+        txtbldgno.setName("entity.bldgno"); // NOI18N
+        txtbldgno.setPreferredSize(new java.awt.Dimension(100, 22));
+        xFormPanel1.add(txtbldgno);
 
-        xTextField3.setCaption("Bldg Name");
-        xTextField3.setCaptionWidth(120);
-        xTextField3.setName("entity.bldgname"); // NOI18N
-        xTextField3.setPreferredSize(new java.awt.Dimension(0, 22));
-        xFormPanel1.add(xTextField3);
+        txtbldgname.setCaption("Bldg Name");
+        txtbldgname.setCaptionWidth(120);
+        txtbldgname.setName("entity.bldgname"); // NOI18N
+        txtbldgname.setPreferredSize(new java.awt.Dimension(0, 22));
+        xFormPanel1.add(txtbldgname);
 
-        xTextField2.setCaption("Street");
-        xTextField2.setCaptionWidth(120);
-        xTextField2.setName("entity.street"); // NOI18N
-        xTextField2.setPreferredSize(new java.awt.Dimension(0, 22));
-        xFormPanel1.add(xTextField2);
+        txtstreet.setCaption("Street");
+        txtstreet.setCaptionWidth(120);
+        txtstreet.setName("entity.street"); // NOI18N
+        txtstreet.setPreferredSize(new java.awt.Dimension(0, 22));
+        xFormPanel1.add(txtstreet);
 
-        xTextField7.setCaption("Subdivision");
-        xTextField7.setCaptionWidth(120);
-        xTextField7.setName("entity.subdivision"); // NOI18N
-        xTextField7.setPreferredSize(new java.awt.Dimension(0, 22));
-        xFormPanel1.add(xTextField7);
+        txtsubdivision.setCaption("Subdivision");
+        txtsubdivision.setCaptionWidth(120);
+        txtsubdivision.setName("entity.subdivision"); // NOI18N
+        txtsubdivision.setPreferredSize(new java.awt.Dimension(0, 22));
+        xFormPanel1.add(txtsubdivision);
 
-        xTextField8.setCaption("Barangay");
-        xTextField8.setCaptionWidth(120);
-        xTextField8.setName("entity.barangay.name"); // NOI18N
-        xTextField8.setPreferredSize(new java.awt.Dimension(0, 22));
-        xFormPanel1.add(xTextField8);
+        txtbrgyname.setCaption("Barangay");
+        txtbrgyname.setCaptionWidth(120);
+        txtbrgyname.setName("entity.barangay.name"); // NOI18N
+        txtbrgyname.setPreferredSize(new java.awt.Dimension(0, 22));
+        xFormPanel1.add(txtbrgyname);
 
-        xTextField4.setCaption("Municipality");
-        xTextField4.setCaptionWidth(120);
-        xTextField4.setDepends(new String[] {"entity.addresstype"});
-        xTextField4.setName("entity.municipality"); // NOI18N
-        xTextField4.setPreferredSize(new java.awt.Dimension(0, 22));
-        xTextField4.setRequired(true);
-        xFormPanel1.add(xTextField4);
+        txtmuni.setCaption("Municipality");
+        txtmuni.setCaptionWidth(120);
+        txtmuni.setDepends(new String[] {"entity.addresstype"});
+        txtmuni.setName("entity.municipality"); // NOI18N
+        txtmuni.setPreferredSize(new java.awt.Dimension(0, 22));
+        txtmuni.setRequired(true);
+        xFormPanel1.add(txtmuni);
 
-        xTextField9.setCaption("City");
-        xTextField9.setCaptionWidth(120);
-        xTextField9.setDepends(new String[] {"entity.addresstype"});
-        xTextField9.setName("entity.city"); // NOI18N
-        xTextField9.setPreferredSize(new java.awt.Dimension(0, 22));
-        xTextField9.setRequired(true);
-        xFormPanel1.add(xTextField9);
+        txtcity.setCaption("City");
+        txtcity.setCaptionWidth(120);
+        txtcity.setDepends(new String[] {"entity.addresstype"});
+        txtcity.setName("entity.city"); // NOI18N
+        txtcity.setPreferredSize(new java.awt.Dimension(0, 22));
+        txtcity.setRequired(true);
+        xFormPanel1.add(txtcity);
 
-        xTextField5.setCaption("Province");
-        xTextField5.setCaptionWidth(120);
-        xTextField5.setName("entity.province"); // NOI18N
-        xTextField5.setPreferredSize(new java.awt.Dimension(0, 22));
-        xTextField5.setRequired(true);
-        xFormPanel1.add(xTextField5);
+        txtprov.setCaption("Province");
+        txtprov.setCaptionWidth(120);
+        txtprov.setName("entity.province"); // NOI18N
+        txtprov.setPreferredSize(new java.awt.Dimension(0, 22));
+        txtprov.setRequired(true);
+        xFormPanel1.add(txtprov);
 
-        xTextField10.setCaption("PIN");
-        xTextField10.setCaptionWidth(120);
-        xTextField10.setName("entity.pin"); // NOI18N
-        xTextField10.setPreferredSize(new java.awt.Dimension(0, 22));
-        xFormPanel1.add(xTextField10);
+        txtpin.setCaption("PIN");
+        txtpin.setCaptionWidth(120);
+        txtpin.setName("entity.pin"); // NOI18N
+        txtpin.setPreferredSize(new java.awt.Dimension(0, 22));
+        xFormPanel1.add(txtpin);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -136,21 +146,133 @@ public class NonLocalAddressPage extends javax.swing.JPanel {
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void txtunitnoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtunitnoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtunitnoActionPerformed
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private com.rameses.rcp.control.XComboBox xComboBox1;
+    private com.rameses.rcp.control.XComboBox cboType;
+    private com.rameses.rcp.control.XTextField txtbldgname;
+    private com.rameses.rcp.control.XTextField txtbldgno;
+    private com.rameses.rcp.control.XTextField txtbrgyname;
+    private com.rameses.rcp.control.XTextField txtcity;
+    private com.rameses.rcp.control.XTextField txtmuni;
+    private com.rameses.rcp.control.XTextField txtpin;
+    private com.rameses.rcp.control.XTextField txtprov;
+    private com.rameses.rcp.control.XTextField txtstreet;
+    private com.rameses.rcp.control.XTextField txtsubdivision;
+    private com.rameses.rcp.control.XTextField txtunitno;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
-    private com.rameses.rcp.control.XTextField xTextField1;
-    private com.rameses.rcp.control.XTextField xTextField10;
-    private com.rameses.rcp.control.XTextField xTextField2;
-    private com.rameses.rcp.control.XTextField xTextField3;
-    private com.rameses.rcp.control.XTextField xTextField4;
-    private com.rameses.rcp.control.XTextField xTextField5;
-    private com.rameses.rcp.control.XTextField xTextField6;
-    private com.rameses.rcp.control.XTextField xTextField7;
-    private com.rameses.rcp.control.XTextField xTextField8;
-    private com.rameses.rcp.control.XTextField xTextField9;
     // End of variables declaration//GEN-END:variables
+    
+    
+    public void setName(String name) {
+        super.setName( name );
+        
+        txtunitno.setName(name+".unitno");
+        txtbldgno.setName(name+".bldgno");
+        txtbldgname.setName(name+".bldgname");
+        txtstreet.setName(name+".street");
+        txtsubdivision.setName(name+".subdivision");
+        txtbrgyname.setName(name+".barangay.name");
+        txtmuni.setName(name+".municipality");
+        txtcity.setName(name+".city");
+        txtprov.setName(name+".province");
+        txtpin.setName( name + ".pin"); 
+        register( name );
+    }
+    
+    private void register( String name ) {
+        ControlHandlerImpl uihandler = new ControlHandlerImpl( name ); 
+        txtunitno.putClientProperty(UIHandler.class, uihandler);
+    }
+    
+    private class ControlHandlerImpl extends UIControlAdapter implements CallbackHandler {
+
+        String name; 
+        UIEvent uie; 
+        
+        ControlHandlerImpl( String name ) { 
+            this.name = (name == null? "entity" : name); 
+        }
+
+        public void bind( UIEvent uie ) { 
+            this.uie = uie; 
+            if ( uie != null ) { 
+                Object o = uie.getValue( name ); 
+                if ( o == null ) { 
+                    uie.setValue( name, new HashMap()); 
+                } 
+                
+                Binding binding = uie.getBinding(); 
+                if ( binding != null ) { 
+                    binding.getValueChangeSupport().add( name+".*", this ); 
+                } 
+            } 
+        } 
+
+        public void unbind(UIEvent e) {
+            this.uie = null; 
+        }
+
+        public void refresh( UIEvent e ) { 
+            if ( uie != null ) {
+                call( "" );
+            }
+        }
+
+        
+        // 
+        // CallbackHandler implementations 
+        // 
+        public Object call(Object arg) { 
+            if ( uie != null ) {
+                StringBuilder buffer = new StringBuilder(); 
+                append( buffer, " ", "unitno" );
+                append( buffer, " ", "bldgno" );
+                append( buffer, " ", "bldgname" );
+                append( buffer, ", ", "street" );
+                append( buffer, ", ", "subdivision" ); 
+                append( buffer, ", ", "barangay.name" ); 
+                
+                String addrType = uie.getValue( name + ".addresstype" )+"";
+                if ( "MUNICIPALITY".equals( addrType )) {
+                    append( buffer, ", ", "municipality" ); 
+                    append( buffer, ", ", "province" ); 
+                } else if ( "CITY".equals( addrType )) { 
+                    append( buffer, ", ", "city" ); 
+                } else if ( "PROVINCE".equals( addrType )) { 
+                    append( buffer, ", ", "province" ); 
+                }
+                
+                if ( buffer.length() > 0 ) { 
+                    System.out.println( buffer );
+                    uie.setValue( name+".text", buffer.toString() ); 
+                } else { 
+                    uie.setValue( name+".text", null ); 
+                } 
+            } 
+            return null; 
+        }
+        
+        public Object call() { 
+            return null; 
+        }
+        public Object call(Object[] args) {
+            return null; 
+        } 
+        
+        private void append( StringBuilder buffer, String delimiter, String property ) { 
+            Object o = uie.getValue( name +"."+ property ); 
+            if ( o == null ) { return; }  
+            
+            if ( buffer.length() > 0 ) {
+                buffer.append((delimiter==null ? "" : delimiter)); 
+            }             
+            buffer.append( o.toString() ); 
+        }
+    }
     
 }

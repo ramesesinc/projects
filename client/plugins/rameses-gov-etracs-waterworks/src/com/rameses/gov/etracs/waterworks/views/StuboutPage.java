@@ -41,9 +41,11 @@ public class StuboutPage extends javax.swing.JPanel {
         xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
         xLookupField5 = new com.rameses.rcp.control.XLookupField();
         xLabel1 = new com.rameses.rcp.control.XLabel();
+        xLabel2 = new com.rameses.rcp.control.XLabel();
         xLookupField6 = new com.rameses.rcp.control.XLookupField();
 
         xTabbedPane1.setDynamic(true);
+        xTabbedPane1.setHandler("sections");
 
         xFormPanel1.setCaptionWidth(100);
 
@@ -92,13 +94,22 @@ public class StuboutPage extends javax.swing.JPanel {
 
         xFormPanel1.add(xFormPanel2);
 
+        xLabel2.setBackground(new java.awt.Color(245, 245, 245));
+        xLabel2.setCaption("Reader");
+        xLabel2.setDepends(new String[] {"entity.zone"});
+        xLabel2.setExpression("#{entity.zone.reader.name}");
+        xLabel2.setOpaque(true);
+        xLabel2.setPadding(new java.awt.Insets(1, 1, 1, 1));
+        xLabel2.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel1.add(xLabel2);
+
         xLookupField6.setCaption("Barangay ");
         xLookupField6.setExpression("#{entity.barangay.name}");
         xLookupField6.setHandler("barangay:lookup");
         xLookupField6.setName("entity.barangay"); // NOI18N
         xLookupField6.setPreferredSize(new java.awt.Dimension(200, 20));
         xLookupField6.setRequired(true);
-        xLookupField6.setStretchWidth(50);
+        xLookupField6.setStretchWidth(100);
         xFormPanel1.add(xLookupField6);
 
         javax.swing.GroupLayout xPanel1Layout = new javax.swing.GroupLayout(xPanel1);
@@ -142,6 +153,7 @@ public class StuboutPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XFormPanel xFormPanel2;
     private com.rameses.rcp.control.XLabel xLabel1;
+    private com.rameses.rcp.control.XLabel xLabel2;
     private com.rameses.rcp.control.XLookupField xLookupField5;
     private com.rameses.rcp.control.XLookupField xLookupField6;
     private com.rameses.rcp.control.XPanel xPanel1;

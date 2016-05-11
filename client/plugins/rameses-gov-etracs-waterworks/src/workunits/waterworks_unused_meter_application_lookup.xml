@@ -1,10 +1,11 @@
 <workunit extends="com/rameses/seti2/templates/CrudLookup.xml" 
-          schemaName="vw_waterworks_meter" 
-          cols="serialno,brand,capacity,size.title"
-          customFilter="applicationid IS NULL" >
+          schemaName="waterworks_meter_application">
     <invokers>
         <invoker type="waterworks_unused_meter_application:lookup" 
                  caption="Lookup Unused Water Meter" 
-                 action="init" target="popup"/>
+                 action="init" target="popup"
+            cols="serialno,brand,capacity,size.title"     
+            customFilter="application.objid IS NULL and currentacctid IS NULL "/>
+
     </invokers>
 </workunit>

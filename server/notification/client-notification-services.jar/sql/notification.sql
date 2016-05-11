@@ -33,11 +33,12 @@ FROM notification_pending p
 ORDER BY n.dtfiled 
 
 [getData]
-SELECT * 
-FROM notification_data 
-WHERE parentid=$P{parentid} 
-	AND indexno BETWEEN $P{startindexno} AND $P{endindexno}  
-ORDER BY indexno 
+SELECT b.*, a.origin  
+FROM notification_data b 
+	INNER JOIN notification a on a.objid=b.parentid 
+WHERE b.parentid=$P{parentid} 
+	AND b.indexno BETWEEN $P{startindexno} AND $P{endindexno}  
+ORDER BY b.indexno 
 
 [getContents]
 SELECT * 

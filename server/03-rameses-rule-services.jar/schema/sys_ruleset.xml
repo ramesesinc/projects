@@ -6,7 +6,7 @@
 		<field name="packagename" required="true"/>
 		<field name="domain" required="true" indexed="true"/>
 		<field name="role" required="true" indexed="true"/>
-		<field name="permission" required="true"/>
+		<field name="permission" />
 
 		<complex name="groups" ref="sys_rulegroup" jointype="one-to-many" orderBy="sortorder">
 			<key field="name" target="ruleset"/>

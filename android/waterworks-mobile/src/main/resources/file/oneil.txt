@@ -1,14 +1,14 @@
 data = "EZ{PRINT,";
 data += "@" + (y += textgap) + ",0:MF204|                                         |";
-data += "@" + (y += textgap) + ",0:MF204| SAN CARLOS CITY WATERWORKS DEPARTMENT   |";
+data += "@" + (y += textgap) + ",0:MF204|       CITY WATERWORKS DEPARTMENT        |";
 data += "@" + (y += textgap) + ",0:MF204|   SAN CARLOS CITY, NEGROS OCCIDENTAL    |";
-data += "@" + (y += textgap) + ",0:MF204|             (032) 505-9301               |";
+data += "@" + (y += textgap) + ",0:MF204|             (034) 7293131               |";
 data += "@" + (y += textgap+20) + ",0:MF204|For the month of "+a.getMonth()+" "+a.getYear()+"|";
 data += "@" + (y += textgap) + ",0:MF204|---------------------------------------|";
 data += "@" + (y += textgap) + ",0:MF204|Acct No.   :  "+a.getAcctNo()+"|";
 data += "@" + (y += textgap) + ",0:MF204|Meter No.  :  "+a.getSerialNo()+"|";
 data += "@" + (y += textgap) + ",0:MF204|Class Type :  "+a.getClassificationId()+"|";
-data += "@" + (y += textgap) + ",0:MF204|"+a.getAcctName()+"|";
+data += "@" + (y += textgap+20) + ",0:MF204|"+a.getAcctName()+"|";
 data += "@" + (y += textgap) + ",0:MF204|"+a.getAddress()+"|";
 data += "@" + (y += textgap) + ",0:MF204|---------------------------------------|";
 data += "@" + (y += textgap) + ",0:MF204|Prev Reading   :  "+a.getLastReading()+"|";
@@ -16,13 +16,14 @@ data += "@" + (y += textgap) + ",0:MF204|Pres Reading   :  "+a.getPresReading()+
 data += "@" + (y += textgap) + ",0:MF204|Consumption    :  "+a.getConsumption()+"|";
 data += "@" + (y += textgap) + ",0:MF204|---------------------------------------|";
 for(com.rameses.waterworks.bean.ItemAccount act : items){
-    data += "@" + (y += textgap+20) + ",0:MF107|" + act.getAccount() + "|";
-    data += "@" + y + ",255:MF107|"+act.getAmount()+"|";
+    data += "@" + (y += textgap) + ",0:MF204|" + act.getAccount() + "|";
+    data += "@" + y + ",295:MF204|"+act.getAmount()+"|";
 }
-data += "@" + (y += textgap+20) + ",0:MF107|Current Due|";
-data += "@" + y + ",255:MF107|"+com.rameses.waterworks.bean.ItemAccount.format(Double.parseDouble(a.getAmtDue()))+"|";
-data += "@" + (y += textgap+20) + ",0:MF107|TOTAL DUE|";
-data += "@" + y + ",255:MF107|"+com.rameses.waterworks.bean.ItemAccount.format(Double.parseDouble(a.getTotalDue()))+"|";
+data += "@" + (y += textgap) + ",0:MF204|CURRENT DUE|";
+data += "@" + y + ",295:MF204|"+com.rameses.waterworks.bean.ItemAccount.format(Double.parseDouble(a.getAmtDue()))+"|";
+data += "@" + (y += textgap) + ",0:MF204|---------------------------------------|";
+data += "@" + (y += textgap) + ",0:MF107|TOTAL DUE|";
+data += "@" + y + ",225:MF107|"+com.rameses.waterworks.bean.ItemAccount.format(Double.parseDouble(a.getTotalDue()))+"|";
 data += "@" + (y += textgap) + ",0:MF204|---------------------------------------|";
 data += "@" + (y += textgap) + ",0:MF204|Period       :  "+a.getPeriod()+"|";
 data += "@" + (y += textgap) + ",0:MF204|Due Date     :  "+a.getDueDate()+"|";

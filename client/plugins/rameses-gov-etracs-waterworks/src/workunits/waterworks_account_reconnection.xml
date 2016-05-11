@@ -1,0 +1,10 @@
+<workunit>
+    <invokers>
+        <invoker xtype="waterworks_account:form:formActions" 
+                 caption="Reconnect" index="5" target="popup"/>
+    </invokers>
+    <code class="com.rameses.gov.etracs.waterworks.models.WaterworksReconnection" />
+    <pages>
+        <page name="edit" template="com.rameses.gov.etracs.waterworks.views.WaterworksReconnectionPage"/>
+    </pages>
+</workunit>

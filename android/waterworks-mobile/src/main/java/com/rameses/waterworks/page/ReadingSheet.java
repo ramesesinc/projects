@@ -5,6 +5,7 @@ import com.rameses.waterworks.bean.Account;
 import com.rameses.waterworks.bean.ItemAccount;
 import com.rameses.waterworks.bean.Reading;
 import com.rameses.waterworks.bean.Rule;
+import com.rameses.waterworks.bean.Stubout;
 import com.rameses.waterworks.calc.BillCalculator;
 import com.rameses.waterworks.database.Database;
 import com.rameses.waterworks.database.DatabasePlatformFactory;
@@ -30,11 +31,12 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.Separator;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.SwipeEvent;
-import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
@@ -47,17 +49,25 @@ public class ReadingSheet {
     
     private VBox root;
     private TextField field_serialno, field_name, field_class, field_prev;
-    private Button save;
-    private FlowPane button_container1;
+    private Button save, prev, next;
     private Account account;
     private RButton[] rb;
     private int capacity = 6;
     private Reading reading;
     boolean goBackToList = false;
     private Node numpad;
+    private List<Account> accountList;
+    private Stubout stubout;
+    private int position;
     
-    public ReadingSheet(Account a){
+    public ReadingSheet(Account a, Stubout stubout, int pos){
         Header.TITLE.setText("Reading Sheet");
+        this.stubout = stubout;
+        this.position = pos;
+        if(stubout != null){
+            Header.TITLE.setText(stubout.getCode());
+            accountList = DatabasePlatformFactory.getPlatform().getDatabase().getAccountByStubout(stubout,"");
+        }
         
         Button search = new Button();
         search.setId("sheet-search");
@@ -66,19 +76,7 @@ public class ReadingSheet {
         search.setOnAction(new EventHandler<ActionEvent>(){
             @Override
             public void handle(ActionEvent event) {
-                reading = null;
-                Database db = DatabasePlatformFactory.getPlatform().getDatabase();
-                List<Account> result = db.getResultBySerialno(field_serialno.getText());
-                if(!db.getError().isEmpty()) Dialog.showError(db.getError());
-                account = null;
-                if(result.size() > 0){
-                    account = result.get(0);
-                    if(account != null){
-                        loadAccountData();
-                    }
-                }else{
-                    Dialog.showAlert("No record found!");
-                }
+                doSearch();
             }
         });
         
@@ -144,20 +142,57 @@ public class ReadingSheet {
                 if(account != null) saveReading();
             }
         });
+        
+        prev = new Button("Prev");
+        prev.getStyleClass().add("terminal-button");
+        prev.setOnAction(new EventHandler<ActionEvent>(){
+            @Override
+            public void handle(ActionEvent event) {
+                if(position != -1){
+                    if(position != 0) --position;
+                    account = accountList.get(position);
+                    loadAccountData();
+                    Header.TITLE.setText(stubout.getCode() + "  ( " + (position+1) +" )");
+                }
+            }
+        });
+        
+        next = new Button("Next");
+        next.getStyleClass().add("terminal-button");
+        next.setOnAction(new EventHandler<ActionEvent>(){
+            @Override
+            public void handle(ActionEvent event) {
+                if(position != -1){
+                    if(position < accountList.size()-1) ++position;
+                    account = accountList.get(position);
+                    loadAccountData();
+                    Header.TITLE.setText(stubout.getCode() + "  ( " + (position+1) +" )");
+                }
+            }
+        });
+        
         if(Main.HEIGHT < 700){
             save.setStyle("-fx-font-size: 17px;");
+            prev.setStyle("-fx-font-size: 17px;");
+            next.setStyle("-fx-font-size: 17px;");
         }else if(Main.HEIGHT < 1200){
             save.setStyle("-fx-font-size: 23px;");
+            save.setPrefWidth(150);
+            prev.setStyle("-fx-font-size: 23px;");
+            next.setStyle("-fx-font-size: 23px;");
         }else{
             save.setStyle("-fx-font-size: 30px;");
+            save.setPrefWidth(200);
+            prev.setStyle("-fx-font-size: 30px;");
+            next.setStyle("-fx-font-size: 30px;");
         }
         
-        button_container1 = new FlowPane();
-        button_container1.setAlignment(Pos.CENTER);
-        button_container1.setVgap(Main.HEIGHT > 700 ? 10 : 5);
-        button_container1.setHgap(Main.HEIGHT > 700 ? 10 : 5);
-        button_container1.setPadding(Main.HEIGHT > 700 ? new Insets(10,0,10,0) : new Insets(5,0,5,0));
-        button_container1.getChildren().addAll(save);
+        HBox prevNextContainer = new HBox(10);
+        prevNextContainer.getChildren().addAll(prev, next);
+        
+        BorderPane button_container = new BorderPane();
+        button_container.setCenter(save);
+        //if(stubout != null) button_container.setLeft(prevNextContainer);
         
         NumPad np = new NumPad();
         numpad = np.getLayout();
@@ -173,7 +208,8 @@ public class ReadingSheet {
         root.setAlignment(Pos.TOP_CENTER);
         root.getChildren().add(grid);
         root.getChildren().add(createReadingLayout());
-        root.getChildren().add(button_container1);
+        root.getChildren().add(button_container);
+        root.getChildren().add(new Separator());
         if(Main.HEIGHT > 700) root.getChildren().add(numpad);
         root.setOnKeyReleased(new EventHandler<KeyEvent>(){
             @Override
@@ -278,8 +314,24 @@ public class ReadingSheet {
         
         if(!db.getError().isEmpty()) Dialog.showError(db.getError());
         if(db.getError().isEmpty()){
-            Dialog.show("Account Information", new AccountDetail(account).getLayout());
-            createReading();
+            Dialog.show("Account Information", new AccountDetail(account, stubout, position).getLayout());
+            if(stubout == null) createReading();
+        }
+    }
+    
+    private void doSearch(){
+        reading = null;
+        Database db = DatabasePlatformFactory.getPlatform().getDatabase();
+        List<Account> result = db.getResultBySerialno(field_serialno.getText());
+        if(!db.getError().isEmpty()) Dialog.showError(db.getError());
+        account = null;
+        if(result.size() > 0){
+            account = result.get(0);
+            if(account != null){
+                loadAccountData();
+            }
+        }else{
+            Dialog.showAlert("No record found!");
         }
     }
     

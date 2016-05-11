@@ -1,0 +1,28 @@
+<!--
+CREATE VIEW vw_waterworks_stubout_node 
+AS
+SELECT 
+sn.objid,
+sn.stuboutid,
+sn.indexno, 
+wa.objid AS account_objid,
+wa.acctno AS account_acctno,
+wa.acctname AS account_acctname,
+wa.currentreading AS account_currentreading,
+wm.serialno AS account_meter_serialno
+FROM waterworks_stubout_node sn
+LEFT JOIN waterworks_account wa ON sn.acctid=wa.objid
+LEFT JOIN waterworks_meter wm ON wa.meterid=wm.objid
+-->
+<schema adapter="waterworks"> 
+	<element tablename="vw_waterworks_stubout_node">
+		<field name="objid" primary="true"/> 
+		<field name="stuboutid" /> 
+		<field name="indexno" /> 
+		<field name="account_objid" />
+		<field name="account_acctno" />
+		 <field name="account_acctname" />
+		 <field name="account_currentreading" />
+		 <field name="account_meter_serialno" />
+	</element> 
+</schema>

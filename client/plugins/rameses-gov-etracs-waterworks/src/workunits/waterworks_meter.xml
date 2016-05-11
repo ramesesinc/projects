@@ -5,6 +5,6 @@
     </invokers>
     <code class="com.rameses.seti2.models.CrudFormModel"/>
     <pages>
-        <page template="com.rameses.gov.etracs.waterworks.views.WaterworksMeterPage"/>
+        <page template="com.rameses.gov.etracs.waterworks.views.MeterPage"/>
     </pages>
 </workunit>

@@ -7,7 +7,9 @@ class WaterworksAccountQueryInterceptor{
 		def result = evt.result;
 		result << [ title: 'Active', id:'active'];
 		result << [ title: 'For Reading', id:'for-reading'];
+		result << [ title: 'Unread', id:'unread'];
 		result << [ title: 'Processing', id:'processing'];
+		result << [ title: 'Past Due', id:'pastdue'];
 		result << [ title: 'For Disconnection', id:'for-disconnection'];
 		result << [ title: 'Disconnected', id:'disconnected'];
 		result << [ title: 'For Reconnection', id:'for-reconnection'];
@@ -20,30 +22,49 @@ class WaterworksAccountQueryInterceptor{
 
 		def str = "state=:state";
 		def m = [:];
+		def status;
 
 		switch( o.node.id ) {
 			case 'active':
+				status = 'active';
 				m.state = 'ACTIVE';
 				break;
 			case 'for-reading':
+				status = 'for-reading';
 				m.state = 'ACTIVE'
-				str += ' AND readingdate <= NOW() AND (lastdateread IS NULL OR lastdateread < readingdate)'; 
+				str += ' AND billingcycle.readingdate = NOW() AND (lastdateread IS NULL OR lastdateread < billingcycle.readingdate)'; 
+				break;
+
+			case 'unread':
+				status = 'unread';
+				m.state = 'ACTIVE'
+				str += ' AND billingcycle.readingdate < NOW() AND (lastdateread IS NULL OR lastdateread < billingcycle.readingdate)'; 
 				break;
 
 			case 'processing':
+				status = 'processing';
 				m.state = 'PROCESSING';
 				break;
 
-			case 'for-disconnection':
+			case 'pastdue':
+				status = 'pastdue';
 				m.state = 'ACTIVE';
-				str += ' AND disconnectiondate < NOW() AND (lastdatepaid IS NULL OR lastdatepaid < disconnectiondate)'; 
+				str += ' AND billingcycle.duedate < NOW() AND (lastdatepaid IS NULL OR lastdatepaid < billingcycle.duedate)'; 
+				break;
+
+			case 'for-disconnection':
+				status = 'for-disconnection';
+				m.state = 'ACTIVE';
+				str += ' AND billingcycle.disconnectiondate < NOW() AND (lastdatepaid IS NULL OR lastdatepaid < billingcycle.disconnectiondate)'; 
 				break;
 
 			case 'disconnected':
+				status = 'disconnected';
 				m.state = 'DISCONNECTED';
 				break;
 
 			case 'for-reconnection':
+				status = 'for-reconnection';
 				m.state = 'FOR-RECONNECTION';
 				break;
 		}
@@ -56,6 +77,7 @@ class WaterworksAccountQueryInterceptor{
 		else {
 			o.where = [str, m];
 		}
+		o.select += ",status:{'" + status + "'}";
 	}
 
 }

@@ -7,12 +7,13 @@ import com.rameses.waterworks.database.Database;
 import com.rameses.waterworks.database.DatabasePlatformFactory;
 import com.rameses.waterworks.dialog.Dialog;
 import com.rameses.waterworks.layout.Header;
+import com.rameses.waterworks.task.AccountTask;
 import java.util.List;
-import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -89,7 +90,6 @@ public class AccountList {
             accountList.setItems(FXCollections.observableArrayList(list));
             recordsize.setText(list.size() + " records");
             pagesize.setText("Page " + (pos+1) + " of " + psize);
-            if(list.size() > 0) accountList.getSelectionModel().select(0);
         }
     }
     
@@ -148,21 +148,25 @@ public class AccountList {
                 return new AccountCell();
             }
         });
+        accountList.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Account>(){
+            @Override
+            public void changed(ObservableValue<? extends Account> observable, Account oldValue, Account account) {
+                new Thread(new AccountTask(account,null,-1)).start();
+            }
+        });
         accountList.setOnMouseClicked(new EventHandler<MouseEvent>(){
             @Override
             public void handle(MouseEvent event) {
-                Platform.runLater(new Runnable(){
-                    @Override
-                    public void run() {
-                        Account account = accountList.getSelectionModel().getSelectedItem();
-                        if(account != null){
-                            Node child = new AccountDetail(account).getLayout();
-                            Dialog.show("Account Information", child);
-                        }
+                if(event.getClickCount() == 2){
+                    Account account = accountList.getSelectionModel().getSelectedItem();
+                    if(account != null){
+                        int position = accountList.getSelectionModel().getSelectedIndex();
+                        new Thread(new AccountTask(account, null, -1)).start();
                     }
-                });
+                }
             }
         });
+        
         loadFirstPage();
         
         ImageView firstPageImg = new ImageView(new Image("icon/firstpage.png"));

@@ -1,0 +1,95 @@
+<db>    
+    <sql>
+		CREATE TABLE sys_var ( 
+			name text PRIMARY KEY,   
+			value text 
+		)
+	</sql>
+	
+    <sql>	
+		CREATE TABLE propertyclassification
+        (
+        	objid TEXT NOT NULL PRIMARY KEY,
+        	state TEXT,
+        	code TEXT,
+        	name TEXT,
+        	special NUMERIC,
+        	orderno NUMERIC
+        )
+    </sql>
+        
+    <sql>
+        CREATE TABLE bldgkind
+        (
+        	objid TEXT NOT NULL PRIMARY KEY,
+        	state TEXT,
+        	code TEXT,
+        	name TEXT
+        )
+    </sql>
+        
+    <sql>
+        CREATE TABLE machine
+        (
+        	objid TEXT NOT NULL PRIMARY KEY,
+        	state TEXT,
+        	code TEXT,
+        	name TEXT
+        )
+   </sql>
+        
+    <sql>
+        CREATE TABLE material
+        (
+        	objid TEXT NOT NULL PRIMARY KEY,
+        	state TEXT,
+        	code TEXT,
+        	name TEXT
+        )
+    </sql>
+        
+    <sql>
+        CREATE TABLE miscitem
+        (
+        	objid TEXT NOT NULL PRIMARY KEY,
+        	state TEXT,
+        	code TEXT,
+        	name TEXT
+        )
+    </sql>
+        
+    <sql>
+        CREATE TABLE parameter
+        (
+        	objid TEXT NOT NULL PRIMARY KEY,
+        	state TEXT,
+        	name TEXT,
+        	caption TEXT,
+        	description TEXT,
+        	paramtype TEXT,
+        	minvalue REAL,
+        	maxvalue REAL
+        )
+   </sql>
+        
+    <sql>
+        CREATE TABLE planttree
+        (
+        	objid TEXT NOT NULL PRIMARY KEY,
+        	state TEXT,
+        	code TEXT,
+        	name TEXT
+        )
+    </sql>
+    
+    <sql>
+        CREATE TABLE structure
+        (
+        	objid TEXT NOT NULL PRIMARY KEY,
+        	state TEXT,
+        	code TEXT,
+        	name TEXT,
+        	indexno NUMERIC
+        )
+    </sql>
+</db>

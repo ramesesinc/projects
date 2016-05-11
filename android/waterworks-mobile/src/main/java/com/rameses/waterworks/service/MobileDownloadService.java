@@ -7,10 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- *
- * @author Dino
- */
 public class MobileDownloadService {
     
     private Service service;
@@ -31,11 +27,22 @@ public class MobileDownloadService {
         }
     }
     
-    public Map initForDownload(Object params){
-        ERROR = "";
-        Map result = new HashMap();
+    public String initForDownload(Object params){
         try{
-            result = service.initForDownload(params);
+            return (String) service.initForDownload(params);
+        } catch(RuntimeException re){
+            ERROR = "MobileDownloadService Error: " + re.toString();
+            throw re; 
+        } catch(Throwable e){
+            ERROR = "MobileDownloadService Error: " + e.toString();
+            throw new RuntimeException(e.getMessage(), e);
+        } 
+    }
+    
+    public int getBatchStatus(String batchid){
+        ERROR = "";
+        try{
+            return (int) service.getBatchStatus(batchid);
         }catch(Exception e){
             ERROR = "MobileDownloadService Error: " + e.toString();
             if(Main.LOG != null){
@@ -44,23 +51,18 @@ public class MobileDownloadService {
                 e.printStackTrace();
             }
         }
-        return result;
+        return -1;
     }
     
     public List<Map> download(Object params){
-        ERROR = "";
-        List result = new ArrayList();
         try{
-            result = service.download(params);
-        }catch(Exception e){
+            return service.download(params);
+        } catch(RuntimeException re){
+           throw re; 
+        } catch(Throwable e){
             ERROR = "MobileDownloadService Error: " + e.toString();
-            if(Main.LOG != null){
-                Main.LOG.error("MobileDownloadService Error",e.toString());
-            }else{
-                e.printStackTrace();
-            }
-        }
-        return result;
+            throw new RuntimeException(e.getMessage(), e);
+        } 
     }
     
     public String confirmDownload(Object params){
@@ -93,11 +95,11 @@ public class MobileDownloadService {
         }
     }
     
-    public List<Map> getAreasByUser(Object params){
+    public List<Map> getSectorByUser(Object params){
         ERROR = "";
         List result = new ArrayList();
         try{
-            result = service.getAreasByUser(params);
+            result = service.getSectorByUser(params);
         }catch(Exception e){
             ERROR = "MobileDownloadService Error: " + e.toString();
             if(Main.LOG != null){
@@ -109,11 +111,43 @@ public class MobileDownloadService {
         return result;
     }
     
-    public List<Map> getStuboutsByArea(Object params){
+    public List<Map> getStuboutsBySector(Object params){
         ERROR = "";
         List result = new ArrayList();
         try{
-            result = service.getStuboutsByArea(params);
+            result = service.getStuboutsBySector(params);
+        }catch(Exception e){
+            ERROR = "MobileDownloadService Error: " + e.toString();
+            if(Main.LOG != null){
+                Main.LOG.error("MobileDownloadService Error",e.toString());
+            }else{
+                e.printStackTrace();
+            }
+        }
+        return result;
+    }
+    
+    public List<Map> getReaderBySector(Object params){
+        ERROR = "";
+        List result = new ArrayList();
+        try{
+            result = service.getReaderBySector(params);
+        }catch(Exception e){
+            ERROR = "MobileDownloadService Error: " + e.toString();
+            if(Main.LOG != null){
+                Main.LOG.error("MobileDownloadService Error",e.toString());
+            }else{
+                e.printStackTrace();
+            }
+        }
+        return result;
+    }
+    
+    public List<Map> getZoneBySector(Object params){
+        ERROR = "";
+        List result = new ArrayList();
+        try{
+            result = service.getZoneBySector(params);
         }catch(Exception e){
             ERROR = "MobileDownloadService Error: " + e.toString();
             if(Main.LOG != null){
@@ -127,7 +161,9 @@ public class MobileDownloadService {
     
     static interface Service{
         
-        public Map initForDownload(Object params);
+        public String initForDownload(Object params);
+        
+        public int getBatchStatus(String batchid);
         
         public List<Map> download(Object params);
         
@@ -135,9 +171,13 @@ public class MobileDownloadService {
         
         public void cancelDownload(Object params);
         
-        public List<Map> getAreasByUser(Object params);
+        public List<Map> getSectorByUser(Object params);
         
-        public List<Map> getStuboutsByArea(Object params);
+        public List<Map> getStuboutsBySector(Object params);
+        
+        public List<Map> getReaderBySector(Object params);
+        
+        public List<Map> getZoneBySector(Object params);
         
     }
     

@@ -1,0 +1,35 @@
+<workunit extends="wtemplates/SimpleReportController.xml">
+    <invokers>
+        <invoker type="waterworks_application:form:formActions" 
+                 caption="Printout" 
+                 action="preview" target="popup"/>
+    </invokers>
+    <code>
+        <![CDATA[
+        import com.rameses.osiris2.common.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.reports.*;
+        
+        class WaterworksApplication extends ReportController {
+        
+            @Service("WaterworksApplicationReportService")
+            def reportSvc;
+
+            def entity;
+            def title = 'Water Application'; 
+
+            String reportName = "com/rameses/gov/etracs/waterworks/reports/application/WaterApplication.jasper";
+
+            public def getReportData() {
+                def data = reportSvc.getReport([objid: entity.objid]); 
+                if ( data.signature ) { 
+                    data.signature = 'base64://' + data.signature; 
+                } 
+                return data; 
+            } 
+      }
+      ]]>        
+    </code>    
+</workunit>

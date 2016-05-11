@@ -1,0 +1,11 @@
+<schema adapter="waterworks">
+	<element tablename="vw_waterworks_meter_account">
+		<field name="objid" primary="true"/> 
+		<field name="serialno" caption="SerialNo" indexed="true" searchable="true"/> 
+		<field name="brand" caption="Brand" indexed="true"/> 
+		<field name="capacity" caption="Capacity" indexed="true"/> 
+		<field name="size_title" caption="Size" indexed="true" visible="false"/> 
+		<field name="account_objid" hidden="true" visible="false"/> 
+		<field name="account_acctname" caption="AcctName" indexed="true"/> 
+	</element>
+</schema>

@@ -1,0 +1,102 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import com.rameses.osiris3.xconnection.XConnection;
+import java.rmi.server.UID;
+
+public class DefaultFileUploadServiceImpl { 
+
+	@DataContext('sys_file_var') 
+	def filevar; 
+
+	@DataContext('sys_file_registry') 
+	def fileregistry; 
+
+	@DataContext( dynamic=true ) 
+	def db; 
+
+	@Context 
+	def currentCtx;
+
+	@Service('DateService') 
+	def dateSvc; 
+
+	@ProxyMethod(local=true) 
+	public def create( data ) { 
+		boolean dynamic_objid = false; 
+		if ( !data.objid ) { 
+			data.objid = 'F'+new java.rmi.server.UID(); 
+			dynamic_objid = true; 
+		} 
+		if ( !dynamic_objid ) {
+			def oldrec = fileregistry.find([ objid: data.objid ]).first(); 
+			if ( oldrec?.objid ) return data; 
+		}
+
+		def fvar = filevar.find([ name: 'dbcontext' ]).first(); 
+		if ( !fvar?.value ) throw new Exception('Please provide a dbcontext variable'); 
+
+		def dbcontext = fvar.value; 
+		fvar = filevar.find([ name: 'filecontext' ]).first(); 
+		if ( !fvar?.value ) throw new Exception('Please provide a filecontext variable'); 
+
+		def filecontext = fvar.value; 
+		def xconn = currentCtx.getResource( XConnection.class, filecontext ); 
+		if ( !xconn ) throw new Exception(''+ filecontext +' connection file does not exist');  
+
+		xconn.getBaseDirectory(); 
+		def folder = xconn.createFolder( data.objid );  
+		folder.writeMeta( data.filename, data.filetype, data.filesize, data.chunkcount ); 
+
+		fileregistry.create([ objid: data.objid, dbcontext: dbcontext, filecontext: filecontext ]); 
+
+		if ( !data.dtfiled ) { 
+			data.dtfiled = dateSvc.getServerDate(); 
+		} 
+		data.state = 'PENDING'; 
+		db.lookup('sys_file', dbcontext).create( data ); 
+		return data; 
+	} 
+
+	@ProxyMethod(local=true) 
+	public void addItem( data ) { 
+		addItems([ fileid: data.parentid, items:[ data ]]); 
+	} 
+
+	@ProxyMethod(local=true) 
+	public void addItems( params ) { 
+		if ( !params.fileid ) throw new Exception('fileid parameter is required'); 
+		if ( !params.items ) throw new Exception('items parameter is required'); 
+
+		def reg = fileregistry.find([ objid: params.fileid ]).first(); 
+		if ( !reg ) throw new Exception("'"+ params.fileid +"' file registry not found"); 
+
+		def filecontext = reg.filecontext; 
+		def xconn = currentCtx.getResource( XConnection.class, filecontext ); 
+		if ( !xconn ) throw new Exception(''+ filecontext +' connection file does not exist');  
+
+		xconn.getBaseDirectory(); 
+
+		def folder = xconn.getFolder( params.fileid ); 
+		params.items.each{  
+			folder.addFile( it.indexno, it.content ); 
+		} 	
+
+		if ( folder.isCompleted() ) {
+			def dbo = db.lookup( 'sys_file', reg.dbcontext ); 
+			dbo.find([ objid: params.fileid ]).update([ state: 'COMPLETED' ]); 
+		} 
+	} 
+
+	@ProxyMethod(local=true) 
+	public void removeFile( params ) {
+		if ( !params.fileid ) throw new Exception('fileid parameter is required'); 
+
+		def reg = fileregistry.find([ objid: params.fileid ]).first(); 
+		if ( !reg ) return;  
+
+		fileregistry.find([ objid: params.fileid ]).delete(); 
+
+		def dbo = db.lookup( 'sys_file', reg.dbcontext ); 
+		dbo.find([ objid: params.fileid ]).delete(); 
+	} 
+} 

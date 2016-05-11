@@ -154,3 +154,11 @@ create index ix_faas_stewardship_stewardrpumasterid on faas_stewardship(stewardr
 go 
 
 
+
+/*=========================================================
+* RESTRICTED PROPERTY
+*=========================================================*/
+INSERT INTO sys_usergroup_permission (objid, usergroup_objid, object, permission, title) 
+VALUES ('LANDTAX.REPORT.restricted-property.generate', 'LANDTAX.REPORT', 'restricted-property', 'generate', 'Generate List of Restricted Properties')
+go 
+

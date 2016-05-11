@@ -1060,8 +1060,8 @@ class RPTLedgerService
 
     @ProxyMethod
     public void removeRestriction( restriction ) {
-        removeFaasRestriction(restriction)
         rptledger_restrictionDb.delete(restriction);
+        removeFaasRestriction(restriction)
     }
 
 

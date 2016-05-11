@@ -27,7 +27,7 @@ SELECT
 	
 	SUM( CASE WHEN f.restrictionid = 'CARP' THEN r.totalav ELSE 0.0 END ) AS carpav,
 	SUM( CASE WHEN f.restrictionid = 'UNDER_LITIGATION' THEN r.totalav ELSE 0.0 END ) AS litigationav,
-	SUM( CASE WHEN f.restrictionid = 'OTHER' THEN r.totalav ELSE 0.0 END ) AS otherrestrictionav,
+	SUM( CASE WHEN f.restrictionid NOT IN ('CARP', 'UNDER_LITIGATION') THEN r.totalav ELSE 0.0 END ) AS otherrestrictionav,
 	SUM( CASE WHEN f.restrictionid IS NOT NULL THEN r.totalav ELSE 0.0 END ) AS totalrestrictionav
 
 FROM faas f
@@ -65,7 +65,7 @@ SELECT
 	
 	SUM( CASE WHEN f.restrictionid = 'CARP' THEN r.totalav ELSE 0.0 END ) AS carpav,
 	SUM( CASE WHEN f.restrictionid = 'UNDER_LITIGATION' THEN r.totalav ELSE 0.0 END ) AS litigationav,
-	SUM( CASE WHEN f.restrictionid = 'OTHER' THEN r.totalav ELSE 0.0 END ) AS otherrestrictionav,
+	SUM( CASE WHEN f.restrictionid NOT IN ('CARP', 'UNDER_LITIGATION') THEN r.totalav ELSE 0.0 END ) AS otherrestrictionav,
 	SUM( CASE WHEN f.restrictionid IS NOT NULL THEN r.totalav ELSE 0.0 END ) AS totalrestrictionav 
 
 FROM faas f

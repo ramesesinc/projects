@@ -86,6 +86,7 @@
                 <Property name="wrapStyleWord" type="boolean" value="true"/>
                 <Property name="caption" type="java.lang.String" value="Remarks"/>
                 <Property name="name" type="java.lang.String" value="restriction.remarks" noResource="true"/>
+                <Property name="required" type="boolean" value="true"/>
               </Properties>
             </Component>
           </SubComponents>

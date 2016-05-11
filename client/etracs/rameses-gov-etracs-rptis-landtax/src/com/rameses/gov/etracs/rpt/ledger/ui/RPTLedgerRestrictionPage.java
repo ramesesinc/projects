@@ -46,6 +46,7 @@ public class RPTLedgerRestrictionPage extends javax.swing.JPanel {
         xTextArea1.setWrapStyleWord(true);
         xTextArea1.setCaption("Remarks");
         xTextArea1.setName("restriction.remarks"); // NOI18N
+        xTextArea1.setRequired(true);
         jScrollPane1.setViewportView(xTextArea1);
 
         xFormPanel1.add(jScrollPane1);

@@ -33,7 +33,8 @@ class ComparativeNoOfRPUReportController extends com.rameses.gov.etracs.rpt.repo
    def formControl = [
         getFormControls: {
             return [
-                new FormControl( "combo", [caption:'LGU', name:'entity.lgu', required:true, items:'lgus', expression:'#{item.name}']),
+                new FormControl( "combo", [caption:'LGU', name:'entity.lgu', required:true, items:'lgus', expression:'#{item.name}', allowNull:false]),
+                new FormControl( "combo", [caption:'Barangay', name:'entity.barangay', items:'barangays', expression:'#{item.name}', depends:'entity.lgu', dynamic:true, preferredSize:'0,21', emptyText:'ALL']),
                 new FormControl( "integer", [caption:'Year', name:'entity.year', required:true, preferredSize:'100,19']),
                 new FormControl( "combo", [caption:'Quarter', name:'entity.qtr', items:'quarters', required:true, immediate:true, preferredSize:'100,19']),
                 new FormControl( "combo", [caption:'Month', name:'entity.month', items:'months', depends:'entity.qtr', expression:'#{item.name}', dynamic:true, preferredSize:'100,19']),

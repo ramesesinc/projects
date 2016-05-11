@@ -25,6 +25,10 @@ class RPTReportComparativeRPUCountService
 	@ProxyMethod
 	public Map generateComparativeRpuCount(params) {
 		params.lguid = params.lgu?.objid 
+		if (params.barangay){
+			params.barangayid = params.barangay.objid
+		}
+
 		util.buildReportFormalTitlePeriod('COMPARATIVE DATA ON NUMBER OF RPUs', params)
 
 		util.buildPreceedingPeriodFilter(params)

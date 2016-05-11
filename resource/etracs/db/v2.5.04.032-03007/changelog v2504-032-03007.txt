@@ -38,4 +38,4 @@
 	- Subdivision: support to ADD new improvement such as bldg, mach etc.
 
 - LANDTAX: 
-	- 
+	- Display administrator and lot no. in delinquency listing report

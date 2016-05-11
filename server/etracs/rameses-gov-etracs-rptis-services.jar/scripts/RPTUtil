@@ -352,7 +352,7 @@ class RPTUtil
         params.filter = ''
 
         if (params.lguid)
-            params.filter += ' f.lguid = $P{lguid} AND '
+            params.filter += ' f.lguid like $P{lguid} AND '
         if (params.barangayid)
             params.filter += ' rp.barangayid = $P{barangayid} AND '
 
@@ -373,7 +373,7 @@ class RPTUtil
         params.filter = ''
 
         if (params.lguid)
-            params.filter += ' f.lguid = $P{lguid} AND '      
+            params.filter += ' f.lguid like $P{lguid} AND '      
 
         if (params.barangayid)
             params.filter += ' rp.barangayid = $P{barangayid} AND '
@@ -396,7 +396,7 @@ class RPTUtil
         params.filter = ''
         
         if (params.lguid)
-            params.filter += ' f.lguid = $P{lguid} AND '
+            params.filter += ' f.lguid like $P{lguid} AND '
 
         if (params.barangayid)
             params.filter += ' rp.barangayid = $P{barangayid} AND '

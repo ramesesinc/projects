@@ -7,6 +7,7 @@
 	- 
 		
 - ASSESSOR
+	- Support all lgu and barangay for comparative mv report
 	- Support all lgu and barangay for comparative av report
 	- Support all lgu and barangay for approved faas listing report
 	- Support all lgu and barangay for specific class listing report

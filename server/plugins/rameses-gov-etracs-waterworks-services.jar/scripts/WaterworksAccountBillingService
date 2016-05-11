@@ -19,7 +19,7 @@ class WaterworksAccountBillingService  {
 	@DataContext("waterworks_account")
 	def acct;
 
-	@DataContext("waterworks_account_consumption")
+	@DataContext("waterworks_consumption")
 	def consumption;
 
 	@DataContext("waterworks_installment")

@@ -69,7 +69,7 @@ class WaterworksCashReceiptService  {
 			m.monthname = it.monthname;
 			m.year = it.year;
 			m.refid = it.refid;
-			m.ledgertype = "waterworks_account_consumption";
+			m.ledgertype = "waterworks_consumption";
 			m.remarks = it.monthname + " " + it.year;
 			m.particulars = (it.item.code?"("+it.item.code+") ": "" ) + it.item.title + " for " + m.remarks;
 			p.items << m;

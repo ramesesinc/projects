@@ -31,21 +31,23 @@ alter table waterworks_payment_item
 	drop column txntype;
 
 
+rename table waterworks_account_consumption to waterworks_consumption 
+;
+
 update 
 	waterworks_account wa, 
 	( 
 		select acctid, max(billingcycleid) as maxbcid 
-		from waterworks_account_consumption wac 
+		from waterworks_consumption wac 
 		group by acctid 
 	)xx 
 set 
 	wa.billingcycleid=xx.maxbcid 
 where wa.objid=xx.acctid 
 ;
-
 update 
 	waterworks_account wa, 
-	waterworks_account_consumption wac, 
+	waterworks_consumption wac, 
 	waterworks_billing_cycle wbc 
 set 
 	wa.currentreading = wac.reading,
@@ -54,4 +56,3 @@ where wa.objid=wac.acctid
 	and wa.billingcycleid=wac.billingcycleid 
 	and wac.billingcycleid=wbc.objid 
 ;
-

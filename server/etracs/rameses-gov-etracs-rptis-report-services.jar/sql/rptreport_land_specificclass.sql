@@ -24,7 +24,7 @@ from faas f
 	inner join realproperty rp on f.realpropertyid = rp.objid 
 	inner join barangay b on rp.barangayid = b.objid 
 	inner join sys_org o on f.lguid = o.objid 
-where f.lguid = $P{lguid}
+where f.lguid like $P{lguid}
   and rp.barangayid like $P{barangayid}
   and f.state = 'CURRENT'
   and spc.name = $P{specificclassname}

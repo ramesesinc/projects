@@ -7,7 +7,7 @@ import treasury.facts.*;
 /****************************
 * calculate the date services
 *****************************/
-class WaterworksBillingDateService  {
+class WaterworksBillingCycleService  {
 	
 	@Service("RuleExecutorService")
 	def ruleSvc;

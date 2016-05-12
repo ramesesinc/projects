@@ -1,25 +1,28 @@
 <schema>
 
 	<element tablename="itemaccount">
-		<field name="objid" primary="true"/>	
-		<field name="state" />
-		<field name="code" required="true"/>
-		<field name="title" required="true"/>
-		<field name="description" />
-		<field name="type" />
-		<field name="fund_objid" required="true"/>
-		<field name="fund_code" required="true"/>
-		<field name="fund_title" required="true"/>
-		<field name="defaultvalue" />
-		<field name="valuetype"  />
-		<field name="org_objid"  />
-		<field name="org_name"  />
-		<field name="parentid"  />
-	</element>
+		<field name="objid" primary="true" prefix="ITMACCT"/>	
+		
+		<field name="code" required="true" indexed="true" caption="Acct Code" searchable="true"/>
+		<field name="title" required="true" indexed="true" caption="Acct Title" searchable="true"/>
+		<field name="description" caption="Description" visible="false"/>
+		<field name="type" required="true" indexed="true" lov="ITEM_ACCOUNT_TYPES"/>
+		<field name="fund_objid" required="true" visible="false"/>
+		<field name="fund_code" required="true" indexed="true" caption="Fund Code"/>
+		<field name="fund_title" required="true" caption="Fund Title"/>
 
-	<element name="tag" tablename="itemaccount_tag">
-		<field name="acctid" primary="true"/>	
-		<field name="tag" primary="true"/>	
-	</element>
+		<field name="state" required="true" indexed="true" defaultValue="ACTIVE"/>
 
+		<field name="valuetype"  visible="false" lov="ITEM_ACCOUNT_VALUE_TYPES" defaultValue="FIXED"/>
+		<field name="defaultvalue" visible="false" defaultValue="0" datatype="integer"/>
+
+		<complex name="org" ref="sys_org" jointype="many-to-one" includefields="objid,code" required="false">
+			<key field="org_objid" target="objid"/>
+		</complex>
+		<field name="org_name"  visible="false"/>
+		<field name="parentid"  visible="false"/>
+		<complex name="tags" ref="itemaccount_tag" jointype="one-to-many">
+			<key field="objid" target="acctid"/>
+		</complex> 
+	</element>
 </schema>

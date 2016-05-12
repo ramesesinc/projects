@@ -1,0 +1,28 @@
+<workunit  schemaName="waterworks_classification">
+    <invokers>
+        <invoker type="waterworks_classification:create"
+                 formTitle="Waterworks Classification" 
+                 formId="waterworks_new"
+                 target="popup"
+                 action="create" />
+
+        <invoker type="waterworks_classification:open"
+                 formTitle="#{entity.objid}" 
+                 formId="#{entity.objid}"
+                 target="popup"
+                 action="open" />
+        
+    </invokers>
+    
+    <code>
+        class ClassificationModel extends com.rameses.seti2.models.CrudFormModel {
+            void afterCreate() {
+                entity.objid = "";
+            }
+        }
+    </code>    
+    <pages>
+        <page template="com.rameses.gov.etracs.waterworks.views.WaterworksClassificationPage"/>
+    </pages>
+      
+</workunit>

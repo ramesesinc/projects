@@ -30,7 +30,8 @@ WHERE s.lguid LIKE $P{lguid}
    		select s.objid from subdivision s, rpttracking t where s.objid = t.objid and t.trackingno like $P{searchtext}
    	)
    and s.objid in(
-   		select max(m.subdivisionid) as objid from subdivision_motherland m, faas f, realproperty rp where m.landfaasid = f.objid and f.realpropertyid = rp.objid and rp.barangayid LIKE $P{barangayid}
+   		select max(m.subdivisionid) as objid from subdivision_motherland m, faas f, realproperty rp 
+   		where m.subdivisionid = s.objid and m.landfaasid = f.objid and f.realpropertyid = rp.objid and rp.barangayid LIKE $P{barangayid}
    	)
    ${filters}
 order by s.txnno desc 	

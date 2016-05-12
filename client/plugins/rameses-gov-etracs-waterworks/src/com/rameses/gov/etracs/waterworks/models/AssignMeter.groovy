@@ -9,8 +9,8 @@ import com.rameses.util.*;
 
 class AssignMeter {
 
-    @Service("WaterworksApplicationService")
-    def appSvc;
+    @Service("PersistenceService")
+    def svc;
 
     @Caller
     def caller;
@@ -36,7 +36,7 @@ class AssignMeter {
             handler(info); 
         } 
         else { 
-            appSvc.assignMeter( info ); 
+            svc.update( info ); 
             caller.entity.putAll( info ); 
             caller.refresh(); 
         }

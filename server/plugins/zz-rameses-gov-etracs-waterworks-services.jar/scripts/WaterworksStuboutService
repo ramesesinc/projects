@@ -9,12 +9,12 @@ class WaterworksStuboutService {
     @DataContext('waterworks_stubout_node') 
     def stubout_node; 
 
-    @DataContext('vw_waterworks_stubout_node') 
-    def vw_waterworks_stubout_node; 
+    @DataContext('waterworks_stubout_node') 
+    def waterworks_stubout_node; 
 
     @ProxyMethod
     public def getNodes( def o ) {
-        return vw_waterworks_stubout_node.find([stuboutid: o.stuboutid]).orderBy("indexno").list();
+        return waterworks_stubout_node.find([stuboutid: o.stuboutid]).orderBy("indexno").list();
     }
 
     @ProxyMethod

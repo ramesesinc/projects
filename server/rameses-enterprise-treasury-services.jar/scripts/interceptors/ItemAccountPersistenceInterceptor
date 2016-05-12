@@ -1,0 +1,30 @@
+import com.rameses.annotations.*;
+
+class ItemAccountPersistenceInterceptor {
+
+	@DataContext('itemaccount') 
+	def itemaccount;
+
+	@After(pattern="PersistenceService.update",  eval="#{args[0]._schemaname == 'itemaccount'}" )
+	public void afterUpdate( evt ) { 
+		def o = evt.args[0];	 
+		def m = [:];
+		def u = [:];
+		if( o.code ) {
+			m.code = "{CONCAT(:xcode, '-', org.code)}";
+			u.xcode = o.code;
+		}
+		if( o.title ) {
+			m.title = "{CONCAT(:xtitle, ' ', org.name)}";
+			u.xtitle = o.title;
+		}
+		if( o.fund?.objid ) {
+			m.fund = o.fund;
+		}
+		if( o.state ) {
+			m.state = o.state;
+		}
+		itemaccount.find( [parentid: o.objid ] ).update( m, u );
+	}
+
+}

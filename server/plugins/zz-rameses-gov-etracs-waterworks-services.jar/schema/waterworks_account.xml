@@ -24,29 +24,33 @@
 		<field name="address_bldgname"  caption="Building Name"/>
 		<field name="address_pin" caption="PIN"/>
 		
-		<complex name="meter" ref="waterworks_meter" jointype="many-to-one"  required="true">
+		<complex name="meter" ref="waterworks_meter" jointype="many-to-one"  required="true" 
+			includefields="serialno,brand,capacity,size.title">
 			<key field="meterid" target="objid"/>
 		</complex>
-		<complex name="classification" ref="waterworks_classification" jointype="many-to-one">
+
+		<complex name="classification" ref="waterworks_classification" jointype="many-to-one" required="true">
 			<key field="classificationid" target="objid"/>
 		</complex>	
-		
+
 		<!-- Dates -->
 		<field name="lastdateread" required="false" indexed="true" caption="Last Date Read"/>
 		<field name="lastdatepaid" required="false" indexed="true" caption="Last Date Paid"/>
 
 		<!-- These are flag fields to check if the date is subject for disconnection -->
-		<complex name="stubout" ref="waterworks_stubout" jointype="many-to-one" required="true" includefields="code,zone.code,zone.sector.code">
+		<complex name="stubout" ref="waterworks_stubout" jointype="many-to-one" required="true" 
+			includefields="code,zone.code,zone.sector.code">
 			<key field="stuboutid" target="objid"/> 
 		</complex>
 		
-		<complex name="stuboutnode" ref="waterworks_stubout_node" jointype="many-to-one" required="false" includefields="indexno">
+		<complex name="stuboutnode" ref="waterworks_stubout_node" jointype="many-to-one" required="false" 
+			includefields="indexno">
 			<key field="stuboutnodeid" target="objid"/> 
 		</complex>
 
 		<field name="currentreading" required="true" caption="Last Reading" type="integer"/>
 
-		<complex name="billingcycle" ref="waterworks_billing_cycle" jointype="many-to-one">
+		<complex name="billingcycle" ref="waterworks_billing_cycle" jointype="many-to-one" required="true">
 			<key field="billingcycleid" target="objid"/> 
 		</complex>
 	</element>

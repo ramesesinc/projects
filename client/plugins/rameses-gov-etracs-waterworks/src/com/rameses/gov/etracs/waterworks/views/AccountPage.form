@@ -214,7 +214,11 @@
                                       <EmptySpace max="-2" attributes="0"/>
                                       <Component id="xFormPanel6" min="-2" pref="217" max="-2" attributes="0"/>
                                   </Group>
-                                  <Component id="xButton3" min="-2" max="-2" attributes="0"/>
+                                  <Group type="102" attributes="0">
+                                      <Component id="xButton3" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Component id="xButton5" min="-2" max="-2" attributes="0"/>
+                                  </Group>
                               </Group>
                               <EmptySpace pref="20" max="32767" attributes="0"/>
                           </Group>
@@ -229,7 +233,10 @@
                                   <Component id="xFormPanel3" max="32767" attributes="0"/>
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="xButton3" min="-2" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="3" attributes="0">
+                                  <Component id="xButton3" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="xButton5" alignment="3" min="-2" max="-2" attributes="0"/>
+                              </Group>
                               <EmptySpace max="32767" attributes="0"/>
                           </Group>
                       </Group>
@@ -340,6 +347,14 @@
                         </Component>
                       </SubComponents>
                     </Container>
+                    <Component class="com.rameses.rcp.control.XButton" name="xButton5">
+                      <Properties>
+                        <Property name="immediate" type="boolean" value="true"/>
+                        <Property name="name" type="java.lang.String" value="assignStuboutNode" noResource="true"/>
+                        <Property name="text" type="java.lang.String" value="Select Node"/>
+                        <Property name="visibleWhen" type="java.lang.String" value="#{mode == &apos;create&apos;}"/>
+                      </Properties>
+                    </Component>
                   </SubComponents>
                 </Container>
               </SubComponents>
@@ -476,7 +491,7 @@
                         <Property name="caption" type="java.lang.String" value="Serial No."/>
                         <Property name="captionWidth" type="int" value="120"/>
                         <Property name="expression" type="java.lang.String" value="#{entity.meter.serialno}"/>
-                        <Property name="handler" type="java.lang.String" value="waterworks_unused_meter_account:lookup"/>
+                        <Property name="handler" type="java.lang.String" value="waterworks_meter_wo_account:lookup"/>
                         <Property name="name" type="java.lang.String" value="entity.meter" noResource="true"/>
                         <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                           <Dimension value="[0, 20]"/>
@@ -527,7 +542,7 @@
                             <StringItem index="0" value="entity.meter"/>
                           </StringArray>
                         </Property>
-                        <Property name="expression" type="java.lang.String" value="#{entity.meter.sizeid}"/>
+                        <Property name="expression" type="java.lang.String" value="#{entity.meter.size.title}"/>
                         <Property name="opaque" type="boolean" value="true"/>
                         <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                           <Dimension value="[0, 20]"/>

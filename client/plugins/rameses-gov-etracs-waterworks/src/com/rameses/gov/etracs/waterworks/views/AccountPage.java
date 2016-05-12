@@ -49,6 +49,7 @@ public class AccountPage extends javax.swing.JPanel {
         xFormPanel6 = new com.rameses.rcp.control.XFormPanel();
         xLabel11 = new com.rameses.rcp.control.XLabel();
         xLabel12 = new com.rameses.rcp.control.XLabel();
+        xButton5 = new com.rameses.rcp.control.XButton();
         jPanel5 = new javax.swing.JPanel();
         xFormPanel5 = new com.rameses.rcp.control.XFormPanel();
         xLookupField4 = new com.rameses.rcp.control.XLookupField();
@@ -195,6 +196,11 @@ public class AccountPage extends javax.swing.JPanel {
         xLabel12.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel6.add(xLabel12);
 
+        xButton5.setImmediate(true);
+        xButton5.setName("assignStuboutNode"); // NOI18N
+        xButton5.setText("Select Node");
+        xButton5.setVisibleWhen("#{mode == 'create'}");
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
@@ -206,7 +212,10 @@ public class AccountPage extends javax.swing.JPanel {
                         .addComponent(xFormPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 308, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(xFormPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, 217, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(xButton3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(xButton3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(xButton5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(20, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
@@ -217,7 +226,9 @@ public class AccountPage extends javax.swing.JPanel {
                     .addComponent(xFormPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, 57, Short.MAX_VALUE)
                     .addComponent(xFormPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(xButton3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(xButton3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(xButton5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -232,7 +243,7 @@ public class AccountPage extends javax.swing.JPanel {
         xLookupField4.setCaption("Serial No.");
         xLookupField4.setCaptionWidth(120);
         xLookupField4.setExpression("#{entity.meter.serialno}");
-        xLookupField4.setHandler("waterworks_unused_meter_account:lookup");
+        xLookupField4.setHandler("waterworks_meter_wo_account:lookup");
         xLookupField4.setName("entity.meter"); // NOI18N
         xLookupField4.setPreferredSize(new java.awt.Dimension(0, 20));
         xLookupField4.setRequired(true);
@@ -251,7 +262,7 @@ public class AccountPage extends javax.swing.JPanel {
         xLabel18.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel18.setCaption("Size");
         xLabel18.setDepends(new String[] {"entity.meter"});
-        xLabel18.setExpression("#{entity.meter.sizeid}");
+        xLabel18.setExpression("#{entity.meter.size.title}");
         xLabel18.setOpaque(true);
         xLabel18.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel5.add(xLabel18);
@@ -422,6 +433,7 @@ public class AccountPage extends javax.swing.JPanel {
     private com.rameses.etracs.common.LocalAddressPanel localAddressPanel1;
     private com.rameses.rcp.control.XButton xButton3;
     private com.rameses.rcp.control.XButton xButton4;
+    private com.rameses.rcp.control.XButton xButton5;
     private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XDateField xDateField7;
     private com.rameses.rcp.control.XDateField xDateField9;

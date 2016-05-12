@@ -5,10 +5,10 @@ CREATE TABLE `waterworks_stubout_node`
 	`indexno` int(11) DEFAULT NULL,
 	`acctid` varchar(50) DEFAULT NULL,   
 	PRIMARY KEY (`objid`),
-	UNIQUE KEY `fk_stuboutnode_account` (`acctid`),
-	KEY `fk_stubout_stuboutnode` (`stuboutid`),
+	UNIQUE KEY `uix_acctid` (`acctid`),
+	KEY `ix_stuboutid` (`stuboutid`),
 	CONSTRAINT `fk_stuboutnode_account` FOREIGN KEY (`acctid`) REFERENCES `waterworks_account` (`objid`),
-	CONSTRAINT `fk_stubout_stuboutnode` FOREIGN KEY (`stuboutid`) REFERENCES `waterworks_stubout` (`objid`)
+	CONSTRAINT `fk_stuboutnode_stubout` FOREIGN KEY (`stuboutid`) REFERENCES `waterworks_stubout` (`objid`)
 ) 
 ENGINE=InnoDB DEFAULT CHARSET=utf8
 ;
@@ -59,4 +59,5 @@ where wa.stuboutid=wsn.stuboutid
 
 alter table waterworks_account drop column stuboutindex
 ;
-
+alter table waterworks_account drop column stuboutnodeid 
+;

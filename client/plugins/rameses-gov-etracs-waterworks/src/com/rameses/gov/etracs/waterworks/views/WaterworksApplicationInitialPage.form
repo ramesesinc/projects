@@ -102,7 +102,6 @@
             </Component>
             <Component class="com.rameses.rcp.control.XComboBox" name="xComboBox1">
               <Properties>
-                <Property name="allowNull" type="boolean" value="false"/>
                 <Property name="caption" type="java.lang.String" value="Classification"/>
                 <Property name="expression" type="java.lang.String" value="#{item.objid}"/>
                 <Property name="items" type="java.lang.String" value="listTypes.waterworks_classification"/>

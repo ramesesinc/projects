@@ -5,17 +5,14 @@ class WaterworksAccountPersistenceInterceptor{
 	@DataContext("waterworks_meter")
 	def wm;
 
-	@DataContext("waterworks_account_consumption")
-	def wac;
+	@DataContext("waterworks_stubout_node")
+	def stubnode;
 
 	@Service("SequenceService")
 	def seqSvc;
 
 	@Service("DateService")
 	def dateSvc;
-
-	@Service("WaterworksBillingDateService")
-	def billingDateSvc;	
 
 	@Before(pattern="PersistenceService.create", eval="#{args[0]._schemaname == 'waterworks_account'}")
 	public void beforeCreate(def evt) {
@@ -24,9 +21,6 @@ class WaterworksAccountPersistenceInterceptor{
         	def prefix = "WACC" + dateSvc.getServerYear();
         	o.acctno = prefix  + seqSvc.getNextFormattedSeriesA( prefix, 5 );
         }    
-
-		def dts = billingDateSvc.getBillingDates( [stubout:o.stubout, billdate: o.lastdateread] );
-		o.billingcycle = dts;
 	}
 
 	@After(pattern="PersistenceService.create", eval="#{args[0]._schemaname == 'waterworks_account'}")
@@ -35,6 +29,7 @@ class WaterworksAccountPersistenceInterceptor{
 
 		//update the meter information
 		wm.find([objid:o.meter.objid]).update([currentacctid:o.objid]);
+		stubnode.find( [objid: o.stuboutnode.objid ]).update( [acctid: o.objid] );
 	}
 
 	

@@ -9,6 +9,8 @@
 			includefields="objid,code">
 			<key field="sectorid" target="objid" />
 		</complex>	
+
+		<field name="readerid"/>		
 		<complex name="reader" ref="waterworks_sector_reader" jointype="many-to-one" required="false"
 			includefields="objid,name,assignee.name,assignee.objid">
 			<key field="readerid" target="objid" />

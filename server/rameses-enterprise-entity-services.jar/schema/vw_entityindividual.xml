@@ -1,3 +1,14 @@
+<!--
+ 
+create view vw_entityindividual 
+as
+select ei.*, 
+	e.entityno, e.type, e.name, e.entityname, e.mobileno, e.phoneno, 
+	e.address_objid, e.address_text
+from entityindividual ei 
+	inner join entity e on e.objid=ei.objid 
+
+--> 
 <schema>
 	
 	<element tablename="vw_entityindividual">

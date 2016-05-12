@@ -1,3 +1,15 @@
+<!-- 
+
+create view vw_entityindividual_lookup 
+as 
+select 
+	e.objid, e.entityno, e.name, e.address_text as addresstext, 
+	e.type, ei.lastname, ei.firstname, ei.middlename, ei.gender, ei.birthdate, 
+	e.mobileno, e.phoneno 
+from entity e 
+	inner join entityindividual ei on ei.objid=e.objid 
+
+--> 
 <schema>
 	
 	<element tablename="vw_entityrelation_lookup">

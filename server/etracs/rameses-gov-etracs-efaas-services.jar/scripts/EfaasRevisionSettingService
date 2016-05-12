@@ -1,0 +1,25 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import com.rameses.common.*;
+import com.rameses.services.extended.*;
+
+public class EfaasRevisionSettingService 
+{
+
+	@ActiveDB("landrevisionsetting")
+	def em;
+
+	@ProxyMethod
+	def getLandRevisionSettingData(){
+		def data = [:];
+		data.landrysetting = em.getLandRySetting();
+		data.landassesslevel = em.getLandAssessLevel();
+		data.landassesslevelrange = em.getLandAssessLevelRange();
+		data.lcuvspecificclass = em.getLcuvSpecificClass();
+		data.lcuvsubclass = em.getLcuvSubClass();
+		data.lcuvstripping = em.getLcuvStripping();
+		data.landadjustmenttype = em.getLandAdjustmentType();
+		return data;
+	}
+
+}

@@ -1,0 +1,7 @@
+"entity.deposittype" [mode != 'read' && entity.depository == 1]{
+    enabled:false;
+}
+
+"entity.deposittype" [mode != 'read' && entity.depository == 0]{
+    enabled:true;
+}

@@ -52,19 +52,6 @@ public class LoginActivity extends SettingsMenuActivity
 	
 	protected void onStartProcess() {
 		super.onStartProcess();
-
-//		AppSettingsImpl sets = (AppSettingsImpl) Platform.getApplication().getAppSettings();
-//		boolean flag = false;
-//		if ("true".equals(sets.getDebugEnabled())) {
-//			 flag = true;
-//		}
-//		Platform.setDebug(flag);
-		//Platform.setDebug((Boolean) sets.get("debug_enabled")); 
-//	     File dir = Environment.getExternalStorageDirectory();
-//	     File file = new File(dir, "clfclog.txt");
-//	     new UIDialog().showMessage("clfclog.txt file is exist -> "+file.exists());
-//		setValue(R.id.login_username, "quesa");
-//		setValue(R.id.login_password, "quesaamor");
 		requestFocus(R.id.login_username);		
 		new UIAction(this, R.id.btn_login) {
 			protected void onClick() {

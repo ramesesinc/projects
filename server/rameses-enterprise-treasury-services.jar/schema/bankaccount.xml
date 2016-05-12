@@ -1,33 +1,39 @@
 <schema>
 	<element name="bankaccount" tablename="bankaccount">
 		<field name="objid" primary="true"/>
-		<field name="state" required="true"/>
-		<field name="code" required="true"/>
-		<field name="title" required="true"/>
-		<field name="accttype" />
-		<field name="description" />
-		<field name="bank_objid" required="true"/>
-		<field name="bank_code" required="true"/>
+		<field name="state" required="true" visible="false" defaultValue="DRAFT"/>
+		<field name="code" required="true" caption="Code"/>
+		<field name="title" required="true" caption="Title"/>
+		<field name="accttype" visible="false" lov="BANK_ACCOUNT_TYPES"/>
+		<field name="description" visible="false"/>
+
+		<complex name="bank" ref="bank" jointype="many-to-one">
+			<key field="bank_objid" target="objid"/>
+		</complex>
+
+		<field name="bank_code" required="true" caption="Bank Code"/>
 		<field name="bank_name" required="true"/>
 		
-		<field name="fund_objid" required="true"/>
-		<field name="fund_code" required="true"/>
-		<field name="fund_title" required="true"/>
+		<field name="fund_objid" required="true" visible="false"/>
+		<field name="fund_code" required="true" caption="Fund code"/>
+		<field name="fund_title" required="true" caption="Fund Title"/>
 		
-		<field name="currency" required="true"/>
-		<field name="cashreport"/>
-		<field name="cashbreakdownreport"/>
-		<field name="checkreport"/>
-		<field name="checkbreakdownreport"/>
+		<field name="currency" required="true" visible="false" lov="CURRENCY_TYPES"/>
+		<field name="cashreport" visible="false"/>
+		<field name="cashbreakdownreport" visible="false"/>
+		<field name="checkreport" visible="false"/>
+		<field name="checkbreakdownreport" visible="false"/>
 
-		<field name="beginbalance" required="true"/>
-		<field name="forwardbalance" required="true"/>
-		<field name="totaldr" required="true"/>
-		<field name="totalcr" required="true"/>
-		<field name="endbalance" required="true"/>
-		<field name="currentlineno" required="true"/>
+		<field name="beginbalance" required="true" defaultValue="0"/>
+		<field name="forwardbalance" required="true" defaultValue="0"/>
+		<field name="totaldr" required="true" caption="Total DR" datatype="decimal" defaultValue="0"/>
+		<field name="totalcr" required="true" caption="Total CR" datatype="decimal" defaultValue="0"/>
+		<field name="endbalance" required="true" caption="End Balance" datatype="decimal" defaultValue="0"/>
+		<field name="currentlineno" required="true" defaultValue="1"/>
 	</element>
 	
+
+	<!--
 	<element name="detail" tablename="bankaccount_entry">
 		<field name="objid" primary="true"/>
 		<field name="parentid" required="true"/>
@@ -43,7 +49,8 @@
 		<field name="lineno"  required="true"/>
 		<field name="postingrefid" />
 	</element>
-
+	-->
+	
 	<element name="account-segment" tablename="bankaccount_account">
 		<field name="objid" primary="true"/>	
 		<field name="acctid" />

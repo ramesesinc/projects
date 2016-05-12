@@ -10,35 +10,35 @@ public class MasterFileService extends AbstractService{
 		return "EfaasMasterFileService";
 	}
 	
-	public List<Map> getPropertyClassifications(Map params){
+	public List<Map> getPropertyClassifications(Map params) throws Exception{
 		return (List<Map>) invoke("getPropertyClassifications", params);
 	}
 	
-	public List<Map> getBldgKinds(Map params){
+	public List<Map> getBldgKinds(Map params) throws Exception{
 		return (List<Map>) invoke("getBldgKinds", params);
 	}
 	
-	public List<Map> getMaterials(Map params){
+	public List<Map> getMaterials(Map params) throws Exception{
 		return (List<Map>) invoke("getMaterials", params);
 	}
 	
-	public List<Map> getStructures(Map params){
+	public List<Map> getStructures(Map params) throws Exception{
 		return (List<Map>) invoke("getStructures", params);
 	}
 	
-	public List<Map> getMachines(Map params){
+	public List<Map> getMachines(Map params) throws Exception{
 		return (List<Map>) invoke("getMachines", params);
 	}
 	
-	public List<Map> getPlantTrees(Map params){
+	public List<Map> getPlantTrees(Map params) throws Exception{
 		return (List<Map>) invoke("getPlantTrees", params);
 	}
 	
-	public List<Map> getMiscItems(Map params){
+	public List<Map> getMiscItems(Map params) throws Exception{
 		return (List<Map>) invoke("getMiscItems", params);
 	}
 	
-	public List<Map> getRPTParameters(Map params){
+	public List<Map> getRPTParameters(Map params) throws Exception{
 		return (List<Map>) invoke("getRPTParameters", params);
 	}
 

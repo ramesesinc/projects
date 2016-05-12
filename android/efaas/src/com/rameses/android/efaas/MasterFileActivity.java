@@ -63,7 +63,7 @@ public class MasterFileActivity extends SettingsMenuActivity {
 			public void onItemClick(AdapterView<?> adapter, View view, int pos, long arg3) {
 				HomeMenuAdapter a = (HomeMenuAdapter) adapter.getAdapter();
 				String title = a.getListItem(pos).getTitle();
-				Intent intent = new Intent(activity, SubMasterFileActivity.class);
+				Intent intent = new Intent(activity, MasterFileDetailActivity.class);
 				intent.putExtra("masterfile", title);
 				startActivity(intent); 
 			}	

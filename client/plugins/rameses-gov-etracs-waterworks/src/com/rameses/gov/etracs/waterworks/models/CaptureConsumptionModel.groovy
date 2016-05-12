@@ -17,7 +17,7 @@ public class CaptureConsumptionModel  {
     @Service("WaterworksComputationService")
     def compSvc;
     
-    @Service("WaterworksBillingDateService")
+    @Service("WaterworksBillingCycleService")
     def billdateSvc;
     
     @Service("WaterworksAccountService")

@@ -59,7 +59,6 @@ public class WaterworksApplicationInitialPage extends javax.swing.JPanel {
         xTextField1.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(xTextField1);
 
-        xComboBox1.setAllowNull(false);
         xComboBox1.setCaption("Classification");
         xComboBox1.setExpression("#{item.objid}");
         xComboBox1.setItems("listTypes.waterworks_classification");

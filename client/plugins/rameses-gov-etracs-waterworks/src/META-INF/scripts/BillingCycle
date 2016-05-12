@@ -7,7 +7,7 @@ import java.text.*;
 
 class BillingCycle {
 
-    @Service("WaterworksBillingDateService")
+    @Service("WaterworksBillingCycleService")
     def billingDateSvc;
 
     def billdate;
@@ -24,6 +24,7 @@ class BillingCycle {
             if(!res)
                 throw new Exception("There is no billing date rules fired");
             e = [:];    
+            e.objid = res.objid;
             e.fromperiod = dformat.format(res.fromperiod);
             e.toperiod = dformat.format(res.toperiod);
             e.readingdate = dformat.format(res.readingdate);

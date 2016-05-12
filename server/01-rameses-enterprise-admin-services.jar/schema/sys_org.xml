@@ -1,0 +1,13 @@
+<schema>
+
+	<element tablename="sys_org">
+		<field name="objid" primary="true"/>
+		<field name="code" />
+		<field name="name" />
+		<field name="orgclass" />
+		<field name="parent_objid" />
+		<field name="parent_orgclass" />
+		<field name="root" />
+	</element>
+
+</schema>

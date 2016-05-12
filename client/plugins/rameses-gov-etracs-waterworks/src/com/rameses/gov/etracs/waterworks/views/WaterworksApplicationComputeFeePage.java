@@ -46,6 +46,7 @@ public class WaterworksApplicationComputeFeePage extends javax.swing.JPanel {
         xLabel3 = new com.rameses.rcp.control.XLabel();
         xLabel4 = new com.rameses.rcp.control.XLabel();
         xLabel5 = new com.rameses.rcp.control.XLabel();
+        xLabel6 = new com.rameses.rcp.control.XLabel();
 
         xDataTable1.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
@@ -229,6 +230,7 @@ public class WaterworksApplicationComputeFeePage extends javax.swing.JPanel {
         xImage1.setShrinkToFit(true);
 
         xButton1.setMnemonic('g');
+        xButton1.setDisableWhen("#{1==1}");
         xButton1.setName("addSignature"); // NOI18N
         xButton1.setText("Sign");
 
@@ -264,7 +266,6 @@ public class WaterworksApplicationComputeFeePage extends javax.swing.JPanel {
         xTitledBorder2.setTitle("Applicant Information");
         xPanel1.setBorder(xTitledBorder2);
 
-        xFormPanel2.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
         xFormPanel2.setCaptionWidth(100);
 
         xLabel3.setBackground(new java.awt.Color(255, 255, 255));
@@ -285,11 +286,19 @@ public class WaterworksApplicationComputeFeePage extends javax.swing.JPanel {
 
         xLabel5.setBackground(new java.awt.Color(255, 255, 255));
         xLabel5.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)), javax.swing.BorderFactory.createEmptyBorder(1, 2, 1, 2)));
-        xLabel5.setCaption("Classification");
-        xLabel5.setExpression("#{entity.classification.objid}");
+        xLabel5.setCaption("Address");
+        xLabel5.setExpression("#{entity.address.text}");
         xLabel5.setOpaque(true);
         xLabel5.setStretchWidth(100);
         xFormPanel2.add(xLabel5);
+
+        xLabel6.setBackground(new java.awt.Color(255, 255, 255));
+        xLabel6.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)), javax.swing.BorderFactory.createEmptyBorder(1, 2, 1, 2)));
+        xLabel6.setCaption("Classification");
+        xLabel6.setExpression("#{entity.classification.objid}");
+        xLabel6.setOpaque(true);
+        xLabel6.setStretchWidth(100);
+        xFormPanel2.add(xLabel6);
 
         javax.swing.GroupLayout xPanel1Layout = new javax.swing.GroupLayout(xPanel1);
         xPanel1.setLayout(xPanel1Layout);
@@ -350,6 +359,7 @@ public class WaterworksApplicationComputeFeePage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XLabel xLabel3;
     private com.rameses.rcp.control.XLabel xLabel4;
     private com.rameses.rcp.control.XLabel xLabel5;
+    private com.rameses.rcp.control.XLabel xLabel6;
     private com.rameses.rcp.control.XPanel xPanel1;
     // End of variables declaration//GEN-END:variables
 }

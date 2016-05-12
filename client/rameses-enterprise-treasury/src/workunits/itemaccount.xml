@@ -1,0 +1,12 @@
+<workunit schemaName="itemaccount">
+    <invokers>
+        <invoker type="itemaccount:create" caption="Item Account" role="MASTER" action="create" target="popup"/>
+        <invoker type="itemaccount:open" caption="Item Account" role="MASTER" action="open"  target="popup"/>
+   </invokers>
+   
+    <code class="com.rameses.seti2.models.CrudFormModel" />
+    
+    <pages>
+        <page template="com.rameses.enterprise.treasury.views.ItemAccountPage"/>
+    </pages>
+</workunit>

@@ -262,7 +262,7 @@ public class AccountPage extends javax.swing.JPanel {
         xLabel18.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel18.setCaption("Size");
         xLabel18.setDepends(new String[] {"entity.meter"});
-        xLabel18.setExpression("#{entity.meter.sizeid}");
+        xLabel18.setExpression("#{entity.meter.size.title}");
         xLabel18.setOpaque(true);
         xLabel18.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel5.add(xLabel18);

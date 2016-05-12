@@ -9,6 +9,9 @@ class BankAccountPostService  {
 	@ActiveDB("bankaccount")
 	def em;
 
+	@ActiveDB("bankaccount_entry")
+	def entry;
+
 	@Service("DateService")
 	def dateSvc;
 
@@ -43,7 +46,7 @@ class BankAccountPostService  {
 		detail.dr = o.amount;	
 		detail.cr = 0;
 		detail.runbalance = cb.endbalance;
-		em.create(detail, "detail");
+		entry.create(detail);
 		
 		cb.currentlineno += 1;
 		em.update( cb );
@@ -81,7 +84,7 @@ class BankAccountPostService  {
 		detail.dr = 0;
 		detail.cr = o.amount;	
 		detail.runbalance = cb.endbalance;
-		em.create(detail, "detail");
+		entry.create(detail);
 		
 		cb.currentlineno += 1;
 		em.update( cb );

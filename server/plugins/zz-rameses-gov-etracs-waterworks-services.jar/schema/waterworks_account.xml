@@ -50,7 +50,7 @@
 
 		<field name="currentreading" required="true" caption="Last Reading" type="integer"/>
 
-		<complex name="billingcycle" ref="waterworks_billing_cycle" jointype="many-to-one">
+		<complex name="billingcycle" ref="waterworks_billing_cycle" jointype="many-to-one" required="true">
 			<key field="billingcycleid" target="objid"/> 
 		</complex>
 	</element>

@@ -7,7 +7,8 @@
 		<field name="acctid" visible="false"/>
 
 		<!-- this is for fetching -->
-		<complex name="account" ref="waterworks_account" required="false" jointype="many-to-one" includefields="acctname">
+		<complex name="account" ref="waterworks_account" required="false" jointype="many-to-one" 
+			includefields="objid,acctno,acctname,address.text,meter.serialno,currentreading">
 			<key field="acctid" target="objid"/>
 		</complex>
 	</element>

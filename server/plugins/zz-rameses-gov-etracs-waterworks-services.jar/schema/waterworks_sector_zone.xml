@@ -5,10 +5,12 @@
 		<field name="code"/>
 		<field name="description"/>
 
-		<complex name="sector" ref="waterworks_sector" jointype="many-to-one">
+		<complex name="sector" ref="waterworks_sector" jointype="many-to-one" 
+			includefields="objid,code">
 			<key field="sectorid" target="objid" />
 		</complex>	
-		<complex name="reader" ref="waterworks_sector_reader" jointype="many-to-one" required="false">
+		<complex name="reader" ref="waterworks_sector_reader" jointype="many-to-one" required="false"
+			includefields="objid,name,assignee.name,assignee.objid">
 			<key field="readerid" target="objid" />
 		</complex>	
 	</element>

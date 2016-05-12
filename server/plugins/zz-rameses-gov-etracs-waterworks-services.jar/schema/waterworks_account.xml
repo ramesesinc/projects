@@ -45,7 +45,7 @@
 		
 		<complex name="stuboutnode" ref="waterworks_stubout_node" jointype="many-to-one" required="false" 
 			includefields="indexno">
-			<key field="stuboutnodeid" target="objid"/> 
+			<key field="objid" target="acctid"/> 
 		</complex>
 
 		<field name="currentreading" required="true" caption="Last Reading" type="integer"/>

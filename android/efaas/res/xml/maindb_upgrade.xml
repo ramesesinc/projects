@@ -8,4 +8,11 @@
 	<sql> DROP TABLE IF EXISTS parameter </sql>
 	<sql> DROP TABLE IF EXISTS planttree </sql>
 	<sql> DROP TABLE IF EXISTS structure </sql>
+	<sql> DROP TABLE IF EXISTS landrysetting </sql>
+	<sql> DROP TABLE IF EXISTS landassesslevel </sql>
+	<sql> DROP TABLE IF EXISTS landassesslevelrange </sql>
+	<sql> DROP TABLE IF EXISTS lcuvspecificclass </sql>
+	<sql> DROP TABLE IF EXISTS lcuvsubclass </sql>
+	<sql> DROP TABLE IF EXISTS lcuvstripping </sql>
+	<sql> DROP TABLE IF EXISTS landadjustmenttype </sql>
 </db>

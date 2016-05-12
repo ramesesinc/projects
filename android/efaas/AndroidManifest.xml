@@ -53,6 +53,8 @@
         
         <activity android:name="com.rameses.android.efaas.HomeActivity"  android:screenOrientation="portrait"/>
         <activity android:name="com.rameses.android.efaas.MasterFileActivity"  android:screenOrientation="portrait"/>
-        <activity android:name="com.rameses.android.efaas.SubMasterFileActivity"  android:screenOrientation="portrait"/>
+        <activity android:name="com.rameses.android.efaas.MasterFileDetailActivity"  android:screenOrientation="portrait"/>
+        <activity android:name="com.rameses.android.efaas.RevisionSettingActivity"  android:screenOrientation="portrait"/>
+        <activity android:name="com.rameses.android.efaas.RevisionSettingDetailActivity"  android:screenOrientation="portrait"/>
     </application>
 </manifest>

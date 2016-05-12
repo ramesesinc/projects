@@ -4,17 +4,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.ListView;
-
 import com.rameses.android.ApplicationUtil;
 import com.rameses.android.R;
 import com.rameses.android.SettingsMenuActivity;
@@ -22,8 +22,9 @@ import com.rameses.android.db.*;
 import com.rameses.android.efaas.adapter.MasterFileMenuAdapter;
 import com.rameses.android.efaas.bean.MasterFileItem;
 import com.rameses.android.service.MasterFileService;
+import com.rameses.client.android.Platform;
 
-public class SubMasterFileActivity extends SettingsMenuActivity{
+public class MasterFileDetailActivity extends SettingsMenuActivity{
 	
 	private ProgressDialog progressDialog;
 	List<MasterFileItem> data;
@@ -38,7 +39,7 @@ public class SubMasterFileActivity extends SettingsMenuActivity{
 	@Override
 	protected void onCreateProcess(Bundle savedInstanceState) {
 		ctx = this;
-		setContentView(R.layout.activity_masterfile_snyc);
+		setContentView(R.layout.activity_listview_snyc);
 		
 		progressDialog = new ProgressDialog(this);
 		progressDialog.setCancelable(false); 
@@ -53,32 +54,10 @@ public class SubMasterFileActivity extends SettingsMenuActivity{
 		Button button = (Button) findViewById(R.id.button_sync);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if(masterfile.equals("Property Classifications")){
-                	masterFileData = service.getPropertyClassifications(new HashMap());
-                }
-                if(masterfile.equals("Kind of Buildings")){
-                	masterFileData = service.getBldgKinds(new HashMap());
-                }
-                if(masterfile.equals("Materials")){
-                	masterFileData = service.getMaterials(new HashMap());
-                }
-                if(masterfile.equals("Structures")){
-                	masterFileData = service.getStructures(new HashMap());
-                }
-                if(masterfile.equals("Machines")){
-                	masterFileData = service.getMachines(new HashMap());
-                }
-                if(masterfile.equals("Plants and Trees")){
-                	masterFileData = service.getPlantTrees(new HashMap());
-                }
-                if(masterfile.equals("Miscellaneous Items")){
-                	masterFileData = service.getMiscItems(new HashMap());
-                }
-                if(masterfile.equals("Parameters")){
-                	masterFileData = service.getRPTParameters(new HashMap());
-                }
-                Log.v("Master File Data", masterFileData.toString());
-                saveData();
+            	progressDialog.setMessage("Please wait...");
+    			if (!progressDialog.isShowing()) progressDialog.show();
+    						
+    			Platform.runAsync(new ActionProcess());
             }
         });
 	}
@@ -227,12 +206,17 @@ public class SubMasterFileActivity extends SettingsMenuActivity{
 	
 	void saveData(){
 		boolean error = false;
+		String errorMsg = "";
+		
+		if(masterFileData == null) return;
+		
 		if(masterfile.equals("Property Classifications")){
 			try{
 				PropertyClassificationDB db1 = new PropertyClassificationDB();
 				db1.clearAll();
 			}catch(Throwable t){
-				ApplicationUtil.showShortMsg("ERROR: " + t.getMessage());
+				t.printStackTrace();
+				errorMsg = t.getMessage();
 				error = true;
 			}
 			for(Map data : masterFileData){
@@ -240,7 +224,8 @@ public class SubMasterFileActivity extends SettingsMenuActivity{
 					PropertyClassificationDB db2 = new PropertyClassificationDB();
 					db2.create(data);
 				} catch(Throwable t) {
-					ApplicationUtil.showShortMsg("ERROR: " + t.getMessage());
+					t.printStackTrace();
+					errorMsg = t.getMessage();
 					error = true;
 				}
 			}
@@ -251,7 +236,8 @@ public class SubMasterFileActivity extends SettingsMenuActivity{
 				BldgKindDB db1 = new BldgKindDB();
 				db1.clearAll();
 			}catch(Throwable t){
-				ApplicationUtil.showShortMsg("ERROR: " + t.getMessage());
+				t.printStackTrace();
+				errorMsg = t.getMessage();
 				error = true;
 			}
 			for(Map data : masterFileData){
@@ -259,7 +245,8 @@ public class SubMasterFileActivity extends SettingsMenuActivity{
 					BldgKindDB db2 = new BldgKindDB();
 					db2.create(data);
 				} catch(Throwable t) {
-					ApplicationUtil.showShortMsg("ERROR: " + t.getMessage());
+					t.printStackTrace();
+					errorMsg = t.getMessage();
 					error = true;
 				}
 			}
@@ -270,7 +257,8 @@ public class SubMasterFileActivity extends SettingsMenuActivity{
 				MaterialDB db1 = new MaterialDB();
 				db1.clearAll();
 			}catch(Throwable t){
-				ApplicationUtil.showShortMsg("ERROR: " + t.getMessage());
+				t.printStackTrace();
+				errorMsg = t.getMessage();
 				error = true;
 			}
 			for(Map data : masterFileData){
@@ -278,7 +266,8 @@ public class SubMasterFileActivity extends SettingsMenuActivity{
 					MaterialDB db2 = new MaterialDB();
 					db2.create(data);
 				} catch(Throwable t) {
-					ApplicationUtil.showShortMsg("ERROR: " + t.getMessage());
+					t.printStackTrace();
+					errorMsg = t.getMessage();
 					error = true;
 				}
 			}
@@ -289,7 +278,8 @@ public class SubMasterFileActivity extends SettingsMenuActivity{
 				StructureDB db1 = new StructureDB();
 				db1.clearAll();
 			}catch(Throwable t){
-				ApplicationUtil.showShortMsg("ERROR: " + t.getMessage());
+				t.printStackTrace();
+				errorMsg = t.getMessage();
 				error = true;
 			}
 			for(Map data : masterFileData){
@@ -297,7 +287,8 @@ public class SubMasterFileActivity extends SettingsMenuActivity{
 					StructureDB db2 = new StructureDB();
 					db2.create(data);
 				} catch(Throwable t) {
-					ApplicationUtil.showShortMsg("ERROR: " + t.getMessage());
+					t.printStackTrace();
+					errorMsg = t.getMessage();
 					error = true;
 				}
 			}
@@ -308,7 +299,8 @@ public class SubMasterFileActivity extends SettingsMenuActivity{
 				MachineDB db1 = new MachineDB();
 				db1.clearAll();
 			}catch(Throwable t){
-				ApplicationUtil.showShortMsg("ERROR: " + t.getMessage());
+				t.printStackTrace();
+				errorMsg = t.getMessage();
 				error = true;
 			}
 			for(Map data : masterFileData){
@@ -316,7 +308,8 @@ public class SubMasterFileActivity extends SettingsMenuActivity{
 					MachineDB db2 = new MachineDB();
 					db2.create(data);
 				} catch(Throwable t) {
-					ApplicationUtil.showShortMsg("ERROR: " + t.getMessage());
+					t.printStackTrace();
+					errorMsg = t.getMessage();
 					error = true;
 				}
 			}
@@ -327,7 +320,8 @@ public class SubMasterFileActivity extends SettingsMenuActivity{
 				PlantTreeDB db1 = new PlantTreeDB();
 				db1.clearAll();
 			}catch(Throwable t){
-				ApplicationUtil.showShortMsg("ERROR: " + t.getMessage());
+				t.printStackTrace();
+				errorMsg = t.getMessage();
 				error = true;
 			}
 			for(Map data : masterFileData){
@@ -335,7 +329,8 @@ public class SubMasterFileActivity extends SettingsMenuActivity{
 					PlantTreeDB db2 = new PlantTreeDB();
 					db2.create(data);
 				} catch(Throwable t) {
-					ApplicationUtil.showShortMsg("ERROR: " + t.getMessage());
+					t.printStackTrace();
+					errorMsg = t.getMessage();
 					error = true;
 				}
 			}
@@ -346,7 +341,8 @@ public class SubMasterFileActivity extends SettingsMenuActivity{
 				MiscItemDB db1 = new MiscItemDB();
 				db1.clearAll();
 			}catch(Throwable t){
-				ApplicationUtil.showShortMsg("ERROR: " + t.getMessage());
+				t.printStackTrace();
+				errorMsg = t.getMessage();
 				error = true;
 			}
 			for(Map data : masterFileData){
@@ -354,7 +350,8 @@ public class SubMasterFileActivity extends SettingsMenuActivity{
 					MiscItemDB db2 = new MiscItemDB();
 					db2.create(data);
 				} catch(Throwable t) {
-					ApplicationUtil.showShortMsg("ERROR: " + t.getMessage());
+					t.printStackTrace();
+					errorMsg = t.getMessage();
 					error = true;
 				}
 			}
@@ -365,7 +362,8 @@ public class SubMasterFileActivity extends SettingsMenuActivity{
 				ParameterDB db1 = new ParameterDB();
 				db1.clearAll();
 			}catch(Throwable t){
-				ApplicationUtil.showShortMsg("ERROR: " + t.getMessage());
+				t.printStackTrace();
+				errorMsg = t.getMessage();
 				error = true;
 			}
 			for(Map data : masterFileData){
@@ -373,14 +371,98 @@ public class SubMasterFileActivity extends SettingsMenuActivity{
 					ParameterDB db2 = new ParameterDB();
 					db2.create(data);
 				} catch(Throwable t) {
-					ApplicationUtil.showShortMsg("ERROR: " + t.getMessage());
+					t.printStackTrace();
+					errorMsg = t.getMessage();
 					error = true;
 				}
 			}
 		}
 		
-		if(!error) ApplicationUtil.showShortMsg("Sync Finish!");
-		loadListData();
+		if(!error){
+			Bundle data = new Bundle();
+			data.putString("response", "success");
+			
+			Message msg = successhandler.obtainMessage();
+			msg.setData(data);
+			
+			successhandler.sendMessage(msg);
+		}else{
+			Bundle data = new Bundle();
+			data.putString("response", errorMsg);
+			
+			Message msg = errorhandler.obtainMessage();
+			msg.setData(data);
+			
+			errorhandler.sendMessage(msg);
+		}
+	}
+	
+	private Handler errorhandler = new Handler() {
+		@Override
+		public void handleMessage(Message msg) {	
+			try { 
+				Bundle data = msg.getData();			
+				String error = data.getString("response");
+				ApplicationUtil.showShortMsg(error);
+			} finally { 
+				if (progressDialog.isShowing()) progressDialog.dismiss(); 
+			}
+		}
+	}; 
+	
+	private Handler successhandler = new Handler() {
+		@Override
+		public void handleMessage(Message msg) {
+			if (progressDialog.isShowing()) progressDialog.dismiss(); 
+			ApplicationUtil.showShortMsg("Sync Finish!");
+			loadListData();
+		}
+	};
+	
+	private class ActionProcess implements Runnable {
+
+		@Override
+		public void run() {
+			try{
+	            if(masterfile.equals("Property Classifications")){
+	            	masterFileData = service.getPropertyClassifications(new HashMap());
+	            }
+	            if(masterfile.equals("Kind of Buildings")){
+	            	masterFileData = service.getBldgKinds(new HashMap());
+	            }
+	            if(masterfile.equals("Materials")){
+	            	masterFileData = service.getMaterials(new HashMap());
+	            }
+	            if(masterfile.equals("Structures")){
+	            	masterFileData = service.getStructures(new HashMap());
+	            }
+	            if(masterfile.equals("Machines")){
+	            	masterFileData = service.getMachines(new HashMap());
+	            }
+	            if(masterfile.equals("Plants and Trees")){
+	            	masterFileData = service.getPlantTrees(new HashMap());
+	            }
+	            if(masterfile.equals("Miscellaneous Items")){
+	            	masterFileData = service.getMiscItems(new HashMap());
+	            }
+	            if(masterfile.equals("Parameters")){
+	            	masterFileData = service.getRPTParameters(new HashMap());
+	            }
+			}catch(Throwable t){
+				t.printStackTrace();
+				
+				Bundle data = new Bundle();
+				data.putString("response", t.getMessage());
+				
+				Message msg = errorhandler.obtainMessage();
+				msg.setData(data);
+				
+				errorhandler.sendMessage(msg);
+			}
+            Log.v("Master File Data", masterFileData.toString());
+            saveData();
+		}
+		
 	}
 
 }

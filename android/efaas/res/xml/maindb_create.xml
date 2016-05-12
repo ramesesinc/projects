@@ -92,4 +92,93 @@
         	indexno NUMERIC
         )
     </sql>
+    
+    <sql>
+        CREATE TABLE landrysetting
+        (
+        	objid TEXT NOT NULL PRIMARY KEY,
+        	state TEXT,
+        	ry NUMERIC,
+        	appliedto TEXT,
+        	previd TEXT
+        )
+    </sql>
+    
+    <sql>
+        CREATE TABLE landassesslevel
+        (
+        	objid TEXT NOT NULL PRIMARY KEY,
+        	landrysettingid TEXT,
+        	classification_objid TEXT,
+        	code TEXT,
+        	name TEXT,
+        	fixrate NUMERIC,
+        	rate REAL,
+        	previd TEXT
+        )
+    </sql>
+    
+    <sql>
+        CREATE TABLE landassesslevelrange
+        (
+        	objid TEXT NOT NULL PRIMARY KEY,
+        	landassesslevelid TEXT,
+        	landrysettingid TEXT,
+        	mvfrom REAL,
+        	mvto REAL,
+        	rate REAL
+        )
+    </sql>
+    
+    <sql>
+        CREATE TABLE lcuvspecificclass
+        (
+        	objid TEXT NOT NULL PRIMARY KEY,
+        	landrysettingid TEXT,
+        	classification_objid TEXT,
+        	code TEXT,
+        	name TEXT,
+        	areatype TEXT,
+        	previd TEXT
+        )
+    </sql>
+    
+    <sql>
+        CREATE TABLE lcuvsubclass
+        (
+        	objid TEXT NOT NULL PRIMARY KEY,
+        	specificclass_objid TEXT,
+        	landrysettingid TEXT,
+        	code TEXT,
+        	name TEXT,
+        	unitvalue REAL,
+        	previd TEXT
+        )
+    </sql>
+    
+    <sql>
+        CREATE TABLE lcuvstripping
+        (
+        	objid TEXT NOT NULL PRIMARY KEY,
+        	landrysettingid TEXT,
+        	classification_objid TEXT,
+        	striplevel NUMERIC,
+        	rate REAL,
+        	previd TEXT
+        )
+    </sql>
+    
+    <sql>
+        CREATE TABLE landadjustmenttype
+        (
+        	objid TEXT NOT NULL PRIMARY KEY,
+        	landrysettingid TEXT,
+        	code TEXT,
+        	name TEXT,
+        	expr TEXT,
+        	appliedto TEXT,
+        	previd TEXT,
+        	idx NUMERIC
+        )
+    </sql>
 </db>

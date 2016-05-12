@@ -81,7 +81,7 @@ public class HomeActivity extends SettingsMenuActivity   {
 	void loadListData(){
 		data = new ArrayList<HomeItem>();
 		data.add(new HomeItem(R.drawable.masterfile,"Master Files"));
-		data.add(new HomeItem(R.drawable.revision,"Revision Settings"));
+		data.add(new HomeItem(R.drawable.masterfile,"Revision Settings"));
 		data.add(new HomeItem(R.drawable.change_password,"Change Password"));
 		data.add(new HomeItem(R.drawable.logout,"Logout"));
 		
@@ -97,9 +97,16 @@ public class HomeActivity extends SettingsMenuActivity   {
 					Intent intent = new Intent(activity, MasterFileActivity.class);  
 					startActivity(intent); 
 				}
+				
+				if(title.equals("Revision Settings")){
+					Intent intent = new Intent(activity, RevisionSettingActivity.class);  
+					startActivity(intent); 
+				}
+				
 				if(title.equals("Change Password")){
 					doChangePassword();
 				}
+				
 				if(title.equals("Logout")){
 					try { doLogout(); } catch(Exception e){ e.printStackTrace(); }
 				}

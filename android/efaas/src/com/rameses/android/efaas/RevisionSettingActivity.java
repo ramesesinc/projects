@@ -2,6 +2,7 @@ package com.rameses.android.efaas;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -10,13 +11,14 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
+
 import com.rameses.android.ApplicationUtil;
 import com.rameses.android.R;
 import com.rameses.android.SettingsMenuActivity;
 import com.rameses.android.efaas.adapter.HomeMenuAdapter;
 import com.rameses.android.efaas.bean.HomeItem;
 
-public class MasterFileActivity extends SettingsMenuActivity {
+public class RevisionSettingActivity extends SettingsMenuActivity {
 	
 	private ProgressDialog progressDialog;
 	List<HomeItem> data;
@@ -33,7 +35,7 @@ public class MasterFileActivity extends SettingsMenuActivity {
 		progressDialog.setCancelable(false); 
 		
 		loadListData();
-		ApplicationUtil.changeTitle(this, "Master Files");
+		ApplicationUtil.changeTitle(this, "Revision Settings");
 		activity = this;
 	}
 	
@@ -47,14 +49,11 @@ public class MasterFileActivity extends SettingsMenuActivity {
 	
 	void loadListData(){
 		data = new ArrayList<HomeItem>();
-		data.add(new HomeItem(R.drawable.masterfile,"Property Classifications"));
-		data.add(new HomeItem(R.drawable.masterfile,"Kind of Buildings"));
-		data.add(new HomeItem(R.drawable.masterfile,"Materials"));
-		data.add(new HomeItem(R.drawable.masterfile,"Structures"));
-		data.add(new HomeItem(R.drawable.masterfile,"Machines"));
-		data.add(new HomeItem(R.drawable.masterfile,"Plants and Trees"));
-		data.add(new HomeItem(R.drawable.masterfile,"Miscellaneous Items"));
-		data.add(new HomeItem(R.drawable.masterfile,"Parameters"));
+		data.add(new HomeItem(R.drawable.masterfile,"Land Revision Setting"));
+		data.add(new HomeItem(R.drawable.masterfile,"Building Revision Setting"));
+		data.add(new HomeItem(R.drawable.masterfile,"Machine Revision Setting"));
+		data.add(new HomeItem(R.drawable.masterfile,"Plant/Tree Revision Setting"));
+		data.add(new HomeItem(R.drawable.masterfile,"Miscellaneous Item Revision Setting"));
 		
 		list = (ListView) findViewById(R.id.list_home);
 		list.setAdapter(new HomeMenuAdapter(this,data));
@@ -63,8 +62,8 @@ public class MasterFileActivity extends SettingsMenuActivity {
 			public void onItemClick(AdapterView<?> adapter, View view, int pos, long arg3) {
 				HomeMenuAdapter a = (HomeMenuAdapter) adapter.getAdapter();
 				String title = a.getListItem(pos).getTitle();
-				Intent intent = new Intent(activity, MasterFileDetailActivity.class);
-				intent.putExtra("masterfile", title);
+				Intent intent = new Intent(activity, RevisionSettingDetailActivity.class);
+				intent.putExtra("revisionsetting", title);
 				startActivity(intent); 
 			}	
 		});

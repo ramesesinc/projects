@@ -38,8 +38,6 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.cell.CheckBoxListCell;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -152,9 +150,8 @@ public class Download {
             public void handle(KeyEvent event) {
                 if(event.getCode() == KeyCode.ESCAPE){
                     if(download_started){
-                        if(initDownload.isRunning()) initDownload.cancel();
-                        if(checkStatus.isRunning()) checkStatus.cancel();
-                        if(processDownload.isRunning()) processDownload.cancel();
+                        if(checkStatus.isRunning()) checkStatus.stop();
+                        if(processDownload.isRunning()) processDownload.stop();
                     }
                     if(Dialog.isOpen){ Dialog.hide(); return; }
                     Main.ROOT.setCenter(new Home().getLayout());
@@ -431,14 +428,12 @@ public class Download {
     }
     
     private Node showProgress(){
-        ImageView image = new ImageView(new Image("icon/processing.png"));
-        
         ProgressIndicator indicator = new ProgressIndicator();
         
-        Label text = new Label("PROCESSING, PLEASE WAIT...");
+        Label text = new Label("Processing...  Please wait...");
         text.getStyleClass().add("login-label");
         
-        VBox root = new VBox(10);
+        VBox root = new VBox(15);
         root.setStyle("-fx-background-color: white;");
         root.setPadding(new Insets(15));
         root.setPrefWidth(Main.WIDTH - 100);

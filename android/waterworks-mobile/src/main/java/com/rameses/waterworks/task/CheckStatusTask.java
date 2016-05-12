@@ -7,6 +7,7 @@ public class CheckStatusTask extends Task<Integer> {
     
     private String batchid;
     private MobileDownloadService mobileSvc;
+    private boolean cancelled = false;
     
     public CheckStatusTask(String batchid){
         this.batchid = batchid;
@@ -17,7 +18,7 @@ public class CheckStatusTask extends Task<Integer> {
     protected Integer call() throws Exception {
         int recordcount = -1;
         while (true) {
-            if(isCancelled()) break;
+            if(cancelled) break;
             
             int stat = mobileSvc.getBatchStatus(batchid); 
             if (!mobileSvc.ERROR.isEmpty() && !isCancelled()) { 
@@ -35,6 +36,10 @@ public class CheckStatusTask extends Task<Integer> {
             }
         }
         return recordcount;
+    }
+    
+    public void stop(){
+        cancelled = true;
     }
     
 }

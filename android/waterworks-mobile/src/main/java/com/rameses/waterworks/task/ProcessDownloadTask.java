@@ -15,6 +15,7 @@ public class ProcessDownloadTask extends Task<Void> {
     private int indexno, recordcount;
     private MobileDownloadService mobileSvc;
     private Database db;
+    private boolean cancelled = false;
     
     public ProcessDownloadTask(String batchid, int indexno, int recordcount){
         this.batchid = batchid;
@@ -30,7 +31,7 @@ public class ProcessDownloadTask extends Task<Void> {
         int limit=50, start=(indexno < 0 ? 0 : indexno);  
         DownloadStat stat = new DownloadStat().findByPrimary(batchid);
         while ( start < recordcount ) {
-            if(isCancelled()) break;
+            if(cancelled) break;
             params.put("batchid", batchid);
             params.put("_start", start);
             params.put("_limit", limit); 
@@ -55,6 +56,10 @@ public class ProcessDownloadTask extends Task<Void> {
             stat.findByPrimary(batchid).delete(); 
         }
         return null;
+    }
+    
+    public void stop(){
+        cancelled = true;
     }
     
 }

@@ -7,12 +7,12 @@ where mr.objid = $P{objid}
 [findBldgInfoByPin]
 select 
 	f.owner_name as bldgownername,
-	r.fullpin as bldgpin
-from realproperty rp 
-	inner join faas f on rp.objid = f.realpropertyid 
-	inner join rpu r on f.rpuid = r.objid 
-where rp.pin = $P{pin}
-  and r.rputype = 'bldg'
+	f.fullpin as bldgpin
+from faas f 
+  inner join rpu r on f.rpuid = r.objid 
+  inner join propertyclassification pc on r.classification_objid = pc.objid 
+where r.rpumasterid = $P{objid}
+and f.state <> 'CANCELLED'
 
 
 [getMachDetails]

@@ -1,0 +1,64 @@
+<workunit>
+    <invokers>
+        <invoker type="faas:info" action="init" caption="Stewardships" visibleWhen="#{entity.stewardships?.size() != 0}" index="2"/>
+    </invokers>
+    <code >
+    <![CDATA[
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*
+        
+        public class StewardshipListingController
+        {
+            @Binding
+            def binding;
+            
+            @Service('FAASStewardshipService')
+            def stewardshipSvc;
+            
+            def svc;
+            
+            def entity;
+            def selectedItem;
+            
+            String title = 'List of Stewardship FAAS'
+            
+            void init(){
+            }
+            
+            def listHandler = [
+                fetchList : { 
+                    if (entity.stewardships){
+                        def summary = [:]
+                        summary.cadastrallotno = 'TOTALS'
+                        summary.totalareaha = entity.stewardships.totalareaha.sum()
+                        summary.totalmv = entity.stewardships.totalmv.sum()
+                        summary.totalav = entity.stewardships.totalav.sum()
+                        entity.stewardships << [:]
+                        entity.stewardships << summary 
+                    }
+                    return entity.stewardships;
+                },
+                
+                getColumns : { return [
+                    new Column(name:'state', caption:'State', width:100),
+                    new Column(name:'tdno', caption:'TD No.', width:130),
+                    new Column(name:'fullpin', caption:'PIN', width:140),
+                    new Column(name:'owner.name', caption:'Owner', width:180),
+                    new Column(name:'owner.address', caption:'Address', width:180),
+                    new Column(name:'cadastrallotno', caption:'Lot No.', width:100),
+                    new Column(name:'totalareaha', caption:'Area (ha)', width:70, type:'decimal'),
+                    new Column(name:'totalmv', caption:'Market Value', width:120, type:'decimal'),
+                    new Column(name:'totalav', caption:'Assessed Value', width:120, type:'decimal'),
+                ]}
+            ] as BasicListModel;
+        }
+        
+    ]]>    
+    </code>
+    
+<page>
+    <page template="com.rameses.gov.etracs.rpt.common.ListPage" />
+</page>    
+</workunit>

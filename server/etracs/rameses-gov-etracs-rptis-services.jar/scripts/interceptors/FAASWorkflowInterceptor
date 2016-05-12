@@ -48,6 +48,11 @@ class FAASWorkflowInterceptor
 		startWorkflow(evt)
 	}
 
+	@After(pattern='FAASStewardshipService.initStewardship')
+	public void handleStewardCreate(evt){
+		startWorkflow(evt)
+	}
+
 	@After(pattern='FAASRevisionService.createFaasRevision')
 	public void handleCreateRevision(evt){
 		startWorkflow(evt)

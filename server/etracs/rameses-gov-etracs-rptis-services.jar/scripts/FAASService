@@ -51,6 +51,11 @@ class FAASService
     @Service('RPTRedFlagService')
     def redFlagSvc 
 
+    @DataContext('realproperty')
+    def realpropertyDb
+
+
+
     
     def SCHEMA_PREVIOUSFAAS		= 'previousfaas'
 	def SCHEMA_BACKTAX			= 'backtax'
@@ -109,6 +114,8 @@ class FAASService
 		faas.txntype = getTxnType(faas.txntype.objid)
 		faas.datacapture = false
 		faas.prevtdno = 'NEW'
+		faas.prevpin = ''
+		if(info.state) faas.state = info.state 
         createFaas(faas)
         return faas
 	}	
@@ -117,6 +124,7 @@ class FAASService
 	@ProxyMethod
 	public def initTransaction( info ) {
 		def faas = openFaas(info.faas)
+		faas._checkTxnRef = info._checkTxnRef
 		validateFaasForTransaction(faas)
 		initNewFaasInfo(info, faas)
 		initNewRealPropertyInfo(info, faas)
@@ -207,6 +215,16 @@ class FAASService
 		em.delete(faas, SCHEMA_SIGNATORY)
 		em.deleteTasks(faas)
 		em.deleteFaasUpdate(faas)
+		em.deleteFaasStewardship(faas.rpu)
+
+		def affectedrpus = em.getAffectedRpus(faas)
+		em.deleteAffectedRpus(faas)
+		affectedrpus.each{
+			if (it.newfaasid){
+				faasSvc.deleteFaasById(it.newfaasid)
+			}
+		}
+
 		em.getPreviousFaases([faasid:faas.objid]).each{
 			em.delete(it, SCHEMA_PREVIOUSFAAS)
 		}
@@ -217,13 +235,24 @@ class FAASService
 
 		em.delete(faas)
 
-		if (faas.txntype.newrpu)
+		if (faas.txntype.newrpu){
 			rpuSvc.deleteRpu(rpuSvc.openRpu(faas.rpu))
+		}
 		
-		if (faas.rpu.rputype == 'land' && faas.txntype.newrealproperty)
+		if (faas.rpu.rputype == 'land' && faas.txntype.newrealproperty){
 			rpSvc.delete(rpSvc.open(faas.rp) )
+		}
+
+		if (faas.parentfaasid){
+			faasSvc.deleteFaas(openFaas([objid:faas.parentfaasid]))
+		}			
 		
 		return faas 
+	}
+
+	@ProxyMethod
+	public def getAffectedRpus(faas) {
+		return em.getAffectedRpus(faas)
 	}
 
 	@ProxyMethod
@@ -264,6 +293,7 @@ class FAASService
 
 	@ProxyMethod
 	public def approveFaas( faas ) {
+		approveParentFaas(faas)
 		def currentstate = getState(faas.objid)
 		if (currentstate == STATE_CURRENT)  
 			throw new Exception('FAAS is already current.')
@@ -292,6 +322,12 @@ class FAASService
 		updateImprovementLandRpuIds(faas)
 		return faas 
 	}
+
+	void approveParentFaas(faas){
+        if (faas.parentfaasid){
+            faasSvc.approveFaas(openFaas([objid:faas.parentfaasid]))
+        }
+    }
 
 	void updateImprovementLandRpuIds(faas){
         if ('land'.equalsIgnoreCase(faas.rpu.rputype)){
@@ -675,19 +711,35 @@ class FAASService
 		em.getPreviousFaases([faasid:faas.objid]).each{
 			def params = [
 				objid  				: it.prevfaasid,
-				cancelreason		: faas.txntype.objid,
+				rpuid 				: it.prevrpuid, 
+				txntype 			: faas.txntype,
+				cancelreason		: faas.txntype.displaycode,
 				canceldate			: faas.approver.dtsigned,
 				cancelledbytdnos	: faas.tdno,
-				cancelledyear 		: pdate.year, 
-				cancelledqtr 		: pdate.qtr,
-				cancelledmonth 		: pdate.month,
-				cancelledday 		: pdate.day 
 			]
-			em.cancelFaas(params)
-			faasListEm.updateFaasList(params)
-			if (faas.txntype.newrpu){
-				em.cancelRpu([objid:it.prevrpuid])
-			}
+			cancelFaas(params)
+		}
+	}
+
+	@ProxyMethod
+	public void cancelFaas(params) {
+		util.required('objid', params.objid)
+		util.required('rpuid', params.rpuid)
+		util.required('txntype', params.txntype)
+		util.required('cancelreason', params.cancelreason)
+		util.required('canceldate', params.canceldate)
+		util.required('cancelledbytdnos', params.cancelledbytdnos)
+
+		def pdate = dtSvc.parseDate(params.canceldate, null)
+		params.cancelledyear 	= pdate.year
+		params.cancelledqtr 	= pdate.qtr
+		params.cancelledmonth 	= pdate.month
+		params.cancelledday 	= pdate.day 
+
+		em.cancelFaas(params)
+		faasListEm.updateFaasList(params)
+		if (params.txntype.newrpu){
+			em.cancelRpu([objid:params.rpuid])
 		}
 	}
 
@@ -711,6 +763,8 @@ class FAASService
 			if (util.isTrue(faas.datacapture))
 				save = true;
 			else if (util.isTrue(faas.txntype.newrealproperty))
+				save = true;
+			else if (realpropertyDb.find([objid:faas.rp.objid]).first() == null)
 				save = true;
 		}
 		return save;
@@ -765,7 +819,10 @@ class FAASService
 			throw new Exception('FAAS has already been cancelled.')
 		if (currentstate != STATE_CURRENT)  
 			throw new Exception('FAAS is not current.')
-		txnRef.checkReference(faas.objid)
+
+		if (faas._checkTxnRef == null || faas._checkTxnRef == true){
+			txnRef.checkReference(faas.objid)
+		}
 	}	
 
 	void initNewFaasInfo(info, newfaas){
@@ -776,6 +833,7 @@ class FAASService
 		newfaas.objid 			= newid 
 		newfaas.previousfaases  = [[faasid:newid, prevfaasid:oldid]]
 		newfaas.state 			= STATE_INTERIM
+		newfaas.parentfaasid    = null 
 		
 		newfaas.prevtdno		= newfaas.tdno
 		newfaas.prevpin		 	= newfaas.rpu.fullpin
@@ -848,9 +906,11 @@ class FAASService
 
 	@ProxyMethod
 	public void checkLandTxnReference(rp){
-		def land = em.findLandFaasUnderTransaction(rp)
-		if (land)
-			throw new Exception('Land FAAS is currently under processing and referenced by FAAS No. ' + (land.tdno ? land.tdno : land.utdno) + '.')
+		if (rp._checklandreference == null || rp._checklandreference == true){
+			def land = em.findLandFaasUnderTransaction(rp)
+			if (land)
+				throw new Exception('Land FAAS is currently under processing and referenced by FAAS No. ' + (land.tdno ? land.tdno : land.utdno) + '.')
+		}
 	}
 
 	@ProxyMethod
@@ -860,7 +920,6 @@ class FAASService
 
 	@ProxyMethod
 	public def validateAndGetNumberBackTaxYears( effectivityyear, lastitem ) {
-		println 'validateAndGetNumberBackTaxYears ...'
 		def maxbaxtaxyears = getMaximumBackTaxYearsPolicy() + 1
         def lastbacktaxyear = effectivityyear - maxbaxtaxyears
         def backtaxyears = effectivityyear - lastitem.effectivityyear
@@ -890,6 +949,10 @@ class FAASService
     	return em.findOpenTask(faas)	
     }
     
+    @ProxyMethod
+    public def saveAffectedRpu(arpu) {
+    	em.save(arpu, 'affectedrpu')
+    }
 
 }
 

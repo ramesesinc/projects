@@ -42,8 +42,15 @@ class ProvinceFAASRemoteService
 		if (!oldfaas){
 			supportSvc.saveFaasData(faas)
 			faasSvc.approveFaasByMunicipality(faas)
-			println 'Municipality approved FAAS successfully posted.'
 		}
+
+		faas.affectedfaases.each{
+			println 'it.objid -> ' + it.objid 
+			postMunicipalityApprovedFaas(it)
+			faasSvc.cancelPreviousFaases(it)
+		}
+
+		println 'Municipality approved FAAS successfully posted.'
 	}
 
 

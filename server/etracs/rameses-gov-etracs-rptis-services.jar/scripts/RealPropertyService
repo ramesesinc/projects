@@ -16,6 +16,9 @@ class RealPropertyService
 	@Service('Var')
 	def var 
 
+	@DataContext('realproperty')
+	def realpropertyDb 	
+
 	def STATE_INTERIM       = 'INTERIM'
     def STATE_FORAPPROVAL   = 'FORAPPROVAL'
     def STATE_CURRENT       = 'CURRENT'
@@ -213,4 +216,13 @@ class RealPropertyService
 	public void updateBoundaries( entity ) {
 		em.updateBoundaries(entity)
 	}
+
+	@ProxyMethod 
+	public void checkDuplicateStewardPin(info){
+		def params = [pin:info.fullpin, ry:info.ry]
+		def rp = realpropertyDb.select('objid, state').find(params).first();
+		if(rp && !'CANCELLED'.equalsIgnoreCase(rp.state))
+			throw new Exception('PIN ' + info.fullpin + ' already exist.')
+	}
+
 }

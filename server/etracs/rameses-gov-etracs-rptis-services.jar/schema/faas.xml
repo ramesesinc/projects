@@ -59,6 +59,7 @@
 		<field name="cancelledmonth" type="integer" />
 		<field name="cancelledday" type="integer" />
 		<field name="originlguid" />
+		<field name="parentfaasid" />
 	</element>
 
 	<element name="previousfaas" tablename="previousfaas">

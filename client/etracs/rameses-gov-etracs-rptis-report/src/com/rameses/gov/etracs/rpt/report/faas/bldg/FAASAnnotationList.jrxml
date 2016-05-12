@@ -73,7 +73,7 @@
 						y="0"
 						width="535"
 						height="16"
-						forecolor="#000000"
+						forecolor="#FF0000"
 						backcolor="#FFFFFF"
 						key="textField-2"/>
 					<box leftPadding="3" rightPadding="3" topPadding="3" bottomPadding="3">					<pen lineWidth="0.0" lineColor="#0000CC"/>
@@ -83,7 +83,7 @@
 					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#0000CC"/>
 </box>
 					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
-						<font fontName="Tahoma" pdfFontName="Helvetica" size="9" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="9" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$F{annotationtext}]]></textFieldExpression>
 				</textField>

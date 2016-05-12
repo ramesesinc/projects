@@ -156,9 +156,9 @@ SELECT
 	pc.name AS classification_name, 
 	pc.name AS classname, 
 	r.ry, r.realpropertyid, r.rputype, r.fullpin, r.totalmv, r.totalav,
-	r.totalareasqm, r.totalareaha, r.suffix, 
+	r.totalareasqm, r.totalareaha, r.suffix, r.rpumasterid, 
 	rp.barangayid, rp.cadastrallotno, rp.blockno, rp.surveyno, rp.lgutype, rp.pintype, 
-	rp.section, rp.parcel, 
+	rp.section, rp.parcel, rp.stewardshipno,
 	b.name AS barangay_name,
 	t.trackingno
 FROM faas f
@@ -167,7 +167,11 @@ FROM faas f
 	INNER JOIN propertyclassification pc ON r.classification_objid = pc.objid 
 	INNER JOIN barangay b ON rp.barangayid = b.objid 
 	LEFT JOIN rpttracking t ON f.objid = t.objid 
-where 1=1  AND f.state <> 'PENDING' ${filters}	
+where 1=1  
+	AND f.state <> 'PENDING' 
+	AND r.rputype like $P{rputype}
+	AND f.state LIKE $P{state}
+	${filters}	
 ORDER BY f.tdno 
 
 
@@ -456,7 +460,8 @@ where objid = $P{objid}
 select
 	action,
 	username,
-	txndate 
+	txndate , 
+	remarks
 from txnlog l	
 where refid = $P{objid}
 order by txndate 
@@ -586,3 +591,9 @@ where r.objid = f.rpuid
   
 [findOpenTask]  
 select * from faas_task where refid = $P{objid} and enddate is null 
+
+[deleteAffectedRpus]
+delete from faas_affectedrpu where faasid = $P{objid}
+
+[deleteFaasStewardship]	
+delete from faas_stewardship where stewardrpumasterid = $P{rpumasterid}

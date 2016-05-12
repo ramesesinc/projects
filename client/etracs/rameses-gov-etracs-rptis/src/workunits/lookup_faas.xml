@@ -17,6 +17,7 @@ class FaasLookupController extends LookupController
     
     def state;
     def taxpayerid;
+    def rputype;
     
     int getRows(){
         return  50;
@@ -37,6 +38,7 @@ class FaasLookupController extends LookupController
     List fetchList( Map params ) { 
         params.state = state;
         params.taxpayerid = taxpayerid;
+        params.rputype = rputype;
         return svc.lookupFaas(params)
     }
 }  

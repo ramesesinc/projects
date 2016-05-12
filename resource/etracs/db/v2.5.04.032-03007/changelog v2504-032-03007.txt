@@ -1,0 +1,41 @@
+/* v2.5.04.032-03007 */
+
+- TREAURY
+	- 
+
+- BPLS 
+	- 
+		
+- ASSESSOR
+	- Support all lgu and barangay for comparative mv report
+	- Support all lgu and barangay for comparative av report
+	- Support all lgu and barangay for approved faas listing report
+	- Support all lgu and barangay for specific class listing report
+	- Add barangay filter on Comparative by RPU Count report
+	- FAAS Valuation and Restriction Summary (New)
+	- List of Restricted Properties report (New)
+	- Update Master Listing report
+	- Update Accomplisment on Real Property Assessment report
+	- FAAS Txntype master file update
+	- FAAS Annotation Listing barangay filter
+	- Additional Assessment Roll info 
+	- Set Notice of Assessment year to effectivity year
+	- Stewardship Support (New)
+	- Add support to define more structures not shown in FAAS report (New)
+	- Fix direct report printing error
+	- Suport change of transaction type 
+	- Continuous Assessment Roll barangay and taxability option 
+	- Support to modify appraisal of CURRENT FAAS record (New)
+	- Support multiple taxpayers No Property Certification (New)
+	- Log Modify PIN transaction 
+	- Support lookup of Bldg PIN reference for Machineries
+	- FAAS Verification certification (New)
+	- Add support to attach documents in Annotation (New)
+	- LGU and Barangay filter on CS, SD and FAAS Cancellation listing
+	- Notice of Assessment Batch Printing with Administrator
+	- Add Property Examination and Audit Report
+	- Subdivision: support cancellation of improvement
+	- Subdivision: support to ADD new improvement such as bldg, mach etc.
+
+- LANDTAX: 
+	- Display administrator and lot no. in delinquency listing report

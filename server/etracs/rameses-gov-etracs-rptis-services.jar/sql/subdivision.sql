@@ -12,21 +12,27 @@ order by n.idx
 [getList]
 SELECT 
 	s.*,
-	t.trackingno,
+	(select trackingno from rpttracking where objid = s.objid) as trackingno,
 	tsk.objid AS taskid,
 	tsk.state AS taskstate,
 	tsk.assignee_objid 
 FROM subdivision s
-	LEFT JOIN rpttracking t ON s.objid = t.objid 
 	LEFT JOIN subdivision_task tsk ON s.objid = tsk.refid AND tsk.enddate IS NULL
 WHERE s.lguid LIKE $P{lguid} 
    and s.state LIKE $P{state}
-   and (s.txnno LIKE $P{searchtext}
-   		 OR t.trackingno LIKE $P{searchtext}
-   		 OR mothertdnos LIKE $P{searchtext}
-   		 OR motherpins LIKE $P{searchtext}
+   and s.objid in (
+   		select objid from subdivision where txnno LIKE $P{searchtext}
+   		union
+   		select objid from subdivision where mothertdnos LIKE $P{searchtext}
+   		union 
+   		select objid from subdivision where motherpins LIKE $P{searchtext}
+   		union 
+   		select s.objid from subdivision s, rpttracking t where s.objid = t.objid and t.trackingno like $P{searchtext}
    	)
-	${filters}
+   and s.objid in(
+   		select max(m.subdivisionid) as objid from subdivision_motherland m, faas f, realproperty rp where m.landfaasid = f.objid and f.realpropertyid = rp.objid and rp.barangayid LIKE $P{barangayid}
+   	)
+   ${filters}
 order by s.txnno desc 	
 
 
@@ -79,7 +85,7 @@ SELECT
 	f.owner_name,
 	f.owner_address
 FROM subdivisionaffectedrpu sar 
-	inner join faas f on sar.prevfaasid = f.objid 
+	left join faas f on sar.prevfaasid = f.objid 
 WHERE sar.subdivisionid = $P{subdivisionid}	
 ORDER BY sar.prevpin
 
@@ -103,6 +109,7 @@ WHERE r.realpropertyid = $P{realpropertyid}
   AND r.rputype <> 'land' 
   AND f.state NOT IN ('CANCELLED', 'PENDING')
   AND NOT EXISTS(SELECT * FROM subdivisionaffectedrpu WHERE prevfaasid = f.objid )
+  AND NOT EXISTS(SELECT * FROM subdivision_cancelledimprovement WHERE faasid = f.objid )
 ORDER BY rputype 
 
 
@@ -200,11 +207,12 @@ WHERE objid =$P{objid}
 
 
 [getAffectedRpuWithNoPin]
-SELECT pf.tdno
+SELECT sr.newpin, sr.newsuffix, pf.tdno, pf.memoranda 
 FROM subdivisionaffectedrpu sr
-	INNER JOIN faas pf ON sr.prevfaasid = pf.objid 
+	inner JOIN faas pf ON sr.newfaasid = pf.objid 
 WHERE sr.subdivisionid = $P{objid}	
-  AND sr.newrpid IS NULL 
+and sr.newfaasid is null 
+
 
 [clearAffectedNewRpuRealPropertyId]
 UPDATE rpu r, subdivisionaffectedrpu sr SET 
@@ -479,3 +487,39 @@ where refid in (
 	select subdivisionid from subdivisionaffectedrpu where newfaasid = $P{objid}
 )
 and enddate is null
+
+
+
+#--------------------------------------------------
+# CANCELLED IMPROVEMENT SUPPORT 
+#-------------------------------------------------
+
+[getCancelledImprovements]
+select cf.*, r.rputype, f.tdno, f.fullpin, f.owner_name
+from subdivision_cancelledimprovement cf 
+	inner join faas f on cf.faasid = f.objid 
+	inner join rpu r on f.rpuid = r.objid 
+	inner join realproperty rp on f.realpropertyid = rp.objid 
+where cf.parentid = $P{objid}
+order by rp.pin, r.suffix 
+
+
+[deleteAffectedRpu]
+delete from subdivisionaffectedrpu where objid = $P{objid}
+
+
+[findAffectedRpuById]	
+SELECT 
+	f.objid AS objid,
+	f.state, 
+	f.tdno as prevtdno,
+	f.fullpin as prevpin,
+	$P{parentid} AS subdivisionid,
+	f.objid AS prevfaasid,
+	r.objid AS prevrpuid, 
+	r.rputype,
+	rl.state AS ledgerstate
+FROM faas f
+	INNER JOIN rpu r ON f.rpuid = r.objid 
+	LEFT JOIN rptledger rl ON f.objid = rl.faasid 
+WHERE f.objid = $P{faasid}

@@ -57,6 +57,10 @@ class MunicipalitySubdivisionRemoteCallHandler
 			svc.approveAffectedRpuFaasRecord(subdivision, it)
 		}
 
+		svc.getCancelledImprovements(subdivision.objid).each{
+			svc.approveCancelledImprovement(subdivision, it)
+		}
+
 		subdivision.tasks.each{
 			taskEm.save(it)
 			svc.updateSignatories(it)

@@ -24,8 +24,11 @@ public class ChangeFAASAndRPUInfoController extends ChangeFaasInfoController
             restrictionid 	: entity.restrictionid,
             effectivityyear	: entity.effectivityyear,
             effectivityqtr 	: entity.effectivityqtr,
-            memoranda           : entity.memoranda,
+            memoranda       : entity.memoranda,
+            txntype         : entity.txntype,
             classification  : classifications.find{it.objid == entity.rpu.classification?.objid},
+            rputype         : entity.rpu.rputype,
+            publicland      : entity.rpu.publicland,
         ]
     }
     
@@ -37,6 +40,7 @@ public class ChangeFAASAndRPUInfoController extends ChangeFaasInfoController
         entity.effectivityyear	=  newinfo.effectivityyear;
         entity.effectivityqtr 	=  newinfo.effectivityqtr;
         entity.memoranda        =  newinfo.memoranda;
+        entity.txntype          = newinfo.txntype;
     }
     
      List getRestrictions(){

@@ -9,9 +9,13 @@ class MunicipalityFAASAnnotationInterceptor
     @Service('RPTNotificationService')
     def svc 
 
+    @Service('FAASAnnotationService')
+    def annotationSvc 
+
 	@After(pattern="FAASAnnotationService.approveAnnotation", eval="#{result.isremote==null}") 
 	public void submitAnnotationToProvince( evt ) {
 		def annotation = evt.result
+        annotation.image = annotationSvc.getImage(annotation)
         annotation.isremote = true
         
 		def asyncreq = svc.createAsyncRequest('ProvinceFAASAnnotationRemoteService', 'postAnnotation', annotation, svc.buildEnvMap(env))

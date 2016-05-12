@@ -1,0 +1,50 @@
+import com.rameses.annotations.*
+import com.rameses.common.*;
+import com.rameses.services.extended.*;
+
+class LandTaxReportRestrictedPropertyService
+{
+    @ActiveDB('landtaxreport_restrictedproperty')
+    def em
+
+    @ActiveDB('rptcompromise')
+    def compromiseEm
+
+    
+    @ProxyMethod
+    public def getRestrictedPropertyListing(params) {
+        params.lguid = (params.lgu ? params.lgu.objid :'%')
+        params.barangayid = (params.barangay ? params.barangay.objid : '%')
+        params.section = (params.section ? params.section :'%')
+
+        def list = em.getRestrictedPropertyListing(params)
+        if (!list) throw new Exception('There are no records found.')
+
+        list.each{
+            if (it.administrator && it.administrator.name){
+                it.owner.name += ' \nAdministrator: ' + it.administrator.name 
+            }
+            if (!it.restrictionreason){
+                it.restrictionreason = it.restrictionid 
+            }
+        }
+
+        def subtitle = ''
+        if (params.barangay){
+            subtitle = 'Barangay ' + params.barangay.name 
+            if (params.section && params.section != '%')
+            subtitle += ' Section ' + params.section 
+        }
+
+        def p = [
+            TITLE    : 'List of Restricted Properties',
+            SUBTITLE : subtitle, 
+        ]
+
+        return [
+            parameters  : p,
+            reportdata  : list
+        ]
+    }
+
+}

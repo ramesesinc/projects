@@ -14,6 +14,9 @@ class RPTReportTMCRService
     @Service('NumberService')
     def numSvc 
 
+    @Service('DateService')
+    def dtSvc 
+
 
 	@Async
     @ProxyMethod
@@ -119,7 +122,6 @@ class RPTReportTMCRService
 				it.area = numSvc.format('#,##0.000000', it.area)
 
 			it.tdno =  it.tdno.substring(tdno.lastIndexOf('-')+1)
-			it.prevtdno =  getPrevTDNos(it)
 
 			if (it.rputype == 'land'){
 				def bldg = em.findImprovementCount([objid:it.objid, rputype:'bldg'])
@@ -134,6 +136,10 @@ class RPTReportTMCRService
 
 			if (it.state.equalsIgnoreCase('CANCELLED')){
 				it.parcel = '(' + it.parcel + ')'
+				it.cancelinfo = 'CANCELLED "' + it.cancelreason + '" ' 
+				if (it.canceldate){
+					it.cancelinfo += dtSvc.format('MM-dd-yyyy', it.canceldate)
+				}
 			}
 
 		}
@@ -144,15 +150,11 @@ class RPTReportTMCRService
 		if (tdno.lastIndexOf('-') >= 0)
 			stdno = tdno.substring(0, tdno.lastIndexOf('-'))
 
-		def sprevtdno = ''
-		if (prevtdno)
-			sprevtdno = prevtdno.substring(0, prevtdno.lastIndexOf('-'))
-
 		def parameters = [
 			TITLE 		: params.title,
 			ARPCAPTION 	: 'APR NO.\n' + stdno,
-			OTHERCAPTION: 'Others\nPREVIOUS\nARP NO.\n' + sprevtdno,
-			REMARKS     : 'Remarks\n' + ry + ' GR\nTRANSACTION\nCODE'
+			OTHERCAPTION: 'Others\nPREVIOUS\nARP NO.\n',
+			REMARKS     : 'Remarks\n' + ry + ' GR\nTransaction\nCode'
 		]
 		return [reportdata:list, parameters:parameters]
 	}

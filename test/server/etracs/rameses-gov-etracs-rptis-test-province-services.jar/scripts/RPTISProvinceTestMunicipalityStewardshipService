@@ -1,0 +1,73 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.services.extended.*;
+
+/*
+* Test a Data Capture FAAS created and approved from the Province
+*/
+public class RPTISProvinceTestMunicipalityStewardshipService
+{
+    @Env 
+    def env 
+
+    @ActiveDB('rptis_test')
+    def em 
+
+    @Service('FAASService')
+    def faasSvc 
+
+    @Service('RPTLedgerService')
+    def ledgerSvc 
+
+    @Service('RPTISUnitTestService')
+    def test
+
+    @Service('RPTISTestFAASService')
+    def faasTestSvc
+
+
+    @Service('RPTISTestLedgerService')
+    def ledgerTest
+
+    @DataContext('faas_stewardship')
+    def faas_stewardshipDb
+
+
+    @ProxyMethod
+    public def testMunicipalityApprovedFaasStewardship( faas ) {
+        faas += faasSvc.openFaas(faas)
+        faas._testPreviousFaases = false
+        faasTestSvc.testApprovedFaas(faas)
+
+        def parentfaas = faasSvc.openFaas([objid:faas.parentfaasid])
+        faasTestSvc.testApprovedFaas(parentfaas)        
+
+        def param = [
+            rpumasterid     : parentfaas.rpu.rpumasterid,
+            stewardrpumasterid : faas.rpu.rpumasterid,
+            ry              : faas.rpu.ry,
+            stewardshipno   : faas.rp.stewardshipno
+        ]
+        def st = faas_stewardshipDb.find(param).first()
+        test.testNotNull('rpumaster_stewardship', st)
+
+        return '[province] Municipality approved Simple Transferred FAAS tested'
+    }
+
+    @ProxyMethod
+    public def testMunicipalityApprovedFaasStewardshipLedgerByFaas( faas ) {
+        faas += faasSvc.openFaas(faas)
+        def ledger = em.findLedgerByFaasId(faas)
+        if (ledger){
+            ledger += ledgerSvc.openLedger(ledger)
+            test.testNotEmpty('ledgerfaases', ledger.faases)
+            def currfaas = ledger.faases.find{it.faasid == faas.objid}
+            test.testNotNull('current-ledgerfaas', currfaas)
+            test.testEqual('current-ledgerfaas', currfaas.state, 'APPROVED')
+        }
+        return '[province] Municipality approved Simple Transferred Ledger tested'
+    }
+
+
+}

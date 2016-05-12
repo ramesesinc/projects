@@ -40,6 +40,12 @@ class FAASSupportService
 	@Service('DBImageService')
 	def imageSvc
 
+	@DataContext('faas_list')
+	def faaslistDb 
+
+	@Service('FAASStewardshipService')
+	def stewardshipSvc
+
 
 	@ProxyMethod
 	public def findFaasById( faas ) {
@@ -49,15 +55,27 @@ class FAASSupportService
 	@ProxyMethod
 	public def getFaasData(faas){
 		def faasdata = faasSvc.openFaas(faas)
-		faasdata.rpu.rpumaster = rpuSvc.openRpuMaster(faas.rpu)
-		faasdata.taxpayer = entitySvc.open(faas.taxpayer)
-		faasdata.examinationfindings = examinationSvc.getFindings( faas.objid ).each{
+		faasdata.rpu.rpumaster = rpuSvc.openRpuMaster(faasdata.rpu)
+		faasdata.taxpayer = entitySvc.open(faasdata.taxpayer)
+		faasdata.examinationfindings = examinationSvc.getFindings( faasdata.objid ).each{
 			it = examinationSvc.open(it)
 		}
-		faasdata.requirements = reqSvc.getRequirements(faas.objid)
+		faasdata.requirements = reqSvc.getRequirements(faasdata.objid)
 		faasdata.image = getImageData(faasdata)
-		faasdata.tasks = faasSvc.getTasks(faas)
-		faasdata.signatory = faasSvc.findSignatory(faas)
+		faasdata.tasks = faasSvc.getTasks(faasdata)
+		faasdata.signatory = faasSvc.findSignatory(faasdata)
+
+		faasdata.affectedrpus = stewardshipSvc.getAffectedRpus(faasdata.objid)
+		faasdata.affectedfaases = []
+		faasdata.affectedrpus.each{
+			faasdata.affectedfaases << getFaasData([objid:it.newfaasid])
+		}
+
+		if (faasdata.parentfaasid){
+			faasdata.parentfaas = getFaasData([objid: faasdata.parentfaasid])
+			faasdata.stewardfaas = stewardshipSvc.findStewardFaas(buildStewardFaasParam(faasdata))
+		}
+
 		return faasdata 
 	} 
 
@@ -83,6 +101,21 @@ class FAASSupportService
 		faasSvc.saveSignatory(faasdata.signatory)
 
 		saveImageData(faasdata)
+
+		faasdata.affectedfaases.each{
+			saveFaasData(it)
+		} 
+		
+		faasdata.affectedrpus.each{
+			faasSvc.saveAffectedRpu(it)
+		}
+
+
+		if (faasdata.parentfaas){
+			saveFaasData(faasdata.parentfaas)
+			faasSvc.cancelPreviousFaases(faasdata.parentfaas)
+			stewardshipSvc.insertStewardFaas(faasdata.stewardfaas)
+		}
 	}
 
 
@@ -168,7 +201,9 @@ class FAASSupportService
 		if (faas.state != 'INTERIM')
 			throw new Exception('FAAS state is invalid. Only INTERIM state is allowed.')
 
-		em.updateDataCaptureFlag([objid:faas.objid, datacapture:1])
+		def f = [objid:faas.objid, datacapture:1, taskid:null, taskstate:null, assignee:null]
+		em.updateDataCaptureFlag(f)
+		faaslistDb.update(f)
 		em.deleteTasks(faas)
 	}	
 
@@ -262,6 +297,16 @@ class FAASSupportService
 			e.printStackTrace();
 		}
 		faas.taxpayer.address = faas.taxpayer?.address?.text 
+	}
+
+
+	def buildStewardFaasParam(faasdata){
+		def param = [:]
+		param.rpumasterid  = faasdata.parentfaas.rpu.rpumasterid
+		param.stewardrpumasterid = faasdata.rpu.rpumasterid 
+		param.ry = faasdata.rpu.ry 
+		param.stewardshipno = faasdata.rp.stewardshipno
+		return param
 	}
 }
  

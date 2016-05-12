@@ -32,7 +32,18 @@ class RPTReportAssessmentRollService
     @ProxyMethod
     public def generateContinuousAssessmentRoll( params ) {
         params.lguid = params.lgu.objid 
+        params.barangayid = (params.barangay ? params.barangay.objid : '%')
         def list = em.getContinuousAssessmentRoll(params)
+        if( ! list ) throw new Exception('Records not found.')
+        return [reportdata:list]
+    }
+
+    @Async
+    @ProxyMethod
+    public def generateContinuousAssessmentRollExempt( params ) {
+        params.lguid = params.lgu.objid 
+        params.barangayid = (params.barangay ? params.barangay.objid : '%')
+        def list = em.getContinuousAssessmentRollExempt(params)
         if( ! list ) throw new Exception('Records not found.')
         return [reportdata:list]
     }

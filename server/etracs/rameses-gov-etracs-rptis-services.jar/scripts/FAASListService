@@ -44,16 +44,18 @@ public class FAASListService extends ActiveCrudListService {
             [name:"effectivityqtr", caption:"Effective Qtr", type:'integer', minWidth:100, width:100],
             [name:"yearissued", caption:"Year Issued", type:'integer', minWidth:100, width:100],
             [name:"taskstate", caption:"Task", minWidth:100, width:100],
+            [name:"publicland", caption:"Public Land", type:'boolean', width:50],
         ]
     }
 
     @ProxyMethod
     public def getNodes(o) {
         def nodes = []
-        nodes << [name:'all', caption:'All']
+        nodes << [name:'all', caption:'All Records']
         nodes += faasListEm.getNodes();
         nodes << [name:'mytask', caption:'My Tasks']
         nodes << [name:'unassigned', caption:'Unassigned Tasks']
+        nodes << [name:'publiclands', caption:'Public Lands']
 
         nodes.each{
             it.leaf = true
@@ -168,6 +170,10 @@ public class FAASListService extends ActiveCrudListService {
             case 'unassigned':
                 if (whereclause) whereclause += ' AND ' 
                 whereclause += " f.taskstate like 'assign%'"
+                break;
+            case 'publiclands':
+                if (whereclause) whereclause += ' AND ' 
+                whereclause += " f.publicland = 1 "
                 break;
             default:
                 params.taskstate = params.name

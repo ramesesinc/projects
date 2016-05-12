@@ -14,11 +14,16 @@ class ProvinceFAASAnnotationInterceptor
     def svc
 
     @Service('FAASService')
-    def faasSvc 
+    def faasSvc
+
+    @Service('FAASAnnotationService')
+    def annotationSvc 
+
 
 	@After(pattern="FAASAnnotationService.approveAnnotation", eval="#{result.isremote==null}") 
 	public void submitAnnotationToMunicipality( evt ) {
 		def annotation = evt.result
+        annotation.image = annotationSvc.getImage(annotation)
         annotation.isremote = true
         def asyncreq = svc.createAsyncRequest('MunicipalityFAASAnnotationRemoteService', 'postAnnotation', annotation)
         svc.sendAsyncMessage(asyncreq[0], getLguId(annotation.faasid))

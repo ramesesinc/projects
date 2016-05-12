@@ -18,6 +18,24 @@ class TestHelper
         }
     }
 
+    public static void waitForCancelledFaas(cancelledfaas, helper){
+        println 'Waiting for remote cancelledfaas data -> ' + cancelledfaas.objid 
+        def available = helper.findCancelledFaas(cancelledfaas)
+        while(!available){
+            sleep(3000)
+            available = helper.findCancelledFaas(cancelledfaas)
+        }
+    }
+
+    public static void waitForApprovedCancelledFaas(cancelledfaas, helper){
+        println 'Waiting for remote approved cancelledfaas -> ' + cancelledfaas.objid 
+        def available = helper.findCancelledFaas(cancelledfaas)
+        while(!available || !available.state.equalsIgnoreCase('APPROVED')){
+            sleep(3000)
+            available = helper.findCancelledFaas(cancelledfaas)
+        }
+    }    
+
     public static void waitForCurrentFaas(faas, helper){
         println 'Waiting for remote current faas data -> ' + faas.objid 
         def available = helper.findFaas(faas)

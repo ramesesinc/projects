@@ -323,3 +323,12 @@ from bldgrpu_structuraltype st
 	inner join bldgtype bt on st.bldgtype_objid = bt.objid 
 where st.bldgrpuid = $P{rpuid}
 
+
+[getNoPropertyTaxpayers]
+select e.name
+from rptcertificationitem rci 
+	inner join entity e on rci.refid = e.objid 
+where rci.rptcertificationid = $P{objid}
+order by e.name 
+
+

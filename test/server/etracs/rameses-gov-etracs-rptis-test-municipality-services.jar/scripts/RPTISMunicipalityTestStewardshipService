@@ -1,0 +1,198 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.services.extended.*;
+
+public class RPTISMunicipalityTestStewardshipService
+{
+    @Env 
+    def env 
+
+    @ActiveDB('rptis_test')
+    def em 
+
+    @Service('RPTISUnitTestService')
+    def test
+
+    @Service('RPTISTestFAASDataService')
+    def dataSvc
+
+    @Service('RPTISTestHelperService')
+    def helper 
+
+    @Service('RPTISTestFAASService')
+    def faasTestSvc
+
+
+    @Service('FAASService')
+    def faasSvc 
+
+    @Service('FAASStewardshipService')
+    def stewardshipSvc 
+
+    @Service('RPUService')
+    def rpuSvc
+
+    @Service('FAASWorkflowService')
+    def workflowSvc    
+
+    @Service('ExaminationService')
+    def examSvc 
+
+    @Service('EntityLookupService')
+    def entityLookup
+
+    @Service('RPTLedgerService')
+    def ledgerSvc 
+
+    @ActiveDB('faas_list')
+    def faasListEm
+
+    @DataContext('faas_stewardship')
+    def faas_stewardshipDb
+
+
+    @ProxyMethod
+    public def testInitStewardship( faas ) {
+        faas += faasSvc.openFaas(faas)        
+        test.testNotNull('faas.parentfaasid', faas.parentfaasid)
+
+        try{
+            def parentfaas = faasSvc.openFaas([objid:faas.parentfaasid])
+            test.testNotNull('parentfaas', parentfaas)
+        }
+        catch(e){
+            throw new Exception('Exception is not expected.')
+        }
+
+        def param = [
+            rpumasterid     : parentfaas.rpu.rpumasterid,
+            stewardrpumasterid : faas.rpu.rpumasterid,
+            ry              : faas.rpu.ry,
+            stewardshipno   : faas.rp.stewardshipno
+        ]
+        def st = faas_stewardshipDb.find(param).first()
+        test.testNotNull('rpumaster_stewardship', st)
+    }
+
+
+    @ProxyMethod
+    public def testApprovedStewardship(faas){
+        faas += faasSvc.openFaas(faas)
+        faas._testPreviousFaases = false
+        faasTestSvc.testApprovedFaas(faas)
+
+        def parentfaas = faasSvc.openFaas([objid:faas.parentfaasid])
+        faasTestSvc.testApprovedFaas(parentfaas)        
+        return '[municipality] Approved Stewardship tested.'
+    }
+
+    @ProxyMethod
+    public def testApprovedLedgerFromFaas(faas){
+        faas += faasSvc.openFaas(faas)
+        faasTestSvc.testApprovedLedgerFromFaas(faas)
+
+        def parentfaas = faasSvc.openFaas([objid:faas.parentfaasid])
+        faasTestSvc.testApprovedLedgerFromFaas(parentfaas)        
+        return '[municipality] Approved Stewardship Ledger tested.'
+    }
+
+
+    @ProxyMethod
+    public def initStewardship(info) {
+        info.faas = faasSvc.openFaas(info.faas)
+        info.fullpin = info.faas.fullpin + '-' + info.stewardshipno.toString().padLeft(3,'0')
+        info.txntype = faasSvc.getTxnType('ST')
+        return stewardshipSvc.initStewardship(info)
+    }
+
+
+    @ProxyMethod
+    public def assignToMe( task ) {
+        return helper.signal(workflowSvc, task, null, true)    
+    }
+
+    @ProxyMethod
+    public def doReceive(task){
+        //task += assignToMe(task)
+        helper.openTask(workflowSvc, task)
+        def faas = task.data 
+        def taxpayer = entityLookup.getList([searchtext:'c']).first()
+        taxpayer.address = taxpayer.address.text 
+        faas.taxpayer = taxpayer
+        faas.owner = [name:faas.taxpayer.name, address: faas.taxpayer.address]
+        faas.memoranda = 'STEWARDSHIP TEST'
+        faasSvc.updateFaas(faas)
+        em.setRequirementsAsComplied(faas)
+
+        def parentfaas = faasSvc.openFaas([objid:faas.parentfaasid])
+        parentfaas.memoranda = faas.memoranda
+        faasSvc.updateFaas(parentfaas)
+
+        return helper.signal(workflowSvc, task, 'submit', false)
+    }
+
+
+    @ProxyMethod
+    public def doExamination(task){
+        task += assignToMe(task)
+        helper.openTask(workflowSvc, task)
+        def finding = dataSvc.createExaminationFinding(task.data)
+        examSvc.create(finding)
+        return helper.signal(workflowSvc, task, 'submit', false)
+    }    
+
+    @ProxyMethod
+    public def doTaxmapping(task){
+        return helper.doTaxmapping(workflowSvc, task)
+    }    
+
+    @ProxyMethod
+    public def doTaxmappingApproval(task){
+        return helper.doTaxmappingApproval(workflowSvc, task)
+    }    
+
+    @ProxyMethod
+    public def doAppraisal(task){
+        helper.openTask(workflowSvc, task)
+        def faas = task.data 
+        faas.rpu.landdetails.each{
+            it.area = 10.0
+            it.areasqm = 10.0
+            it.areaha = 10.0 / 10000
+        }
+        rpuSvc.calculateAssessment(faas.rpu)
+
+        def parentfaas = faasSvc.openFaas([objid:faas.parentfaasid])
+        parentfaas.rpu.landdetails.each{
+            it.area = 10.0
+            it.areasqm = 10.0
+            it.areaha = 10.0 / 10000
+        }
+        rpuSvc.calculateAssessment(parentfaas.rpu)        
+
+        return helper.doAppraisal(workflowSvc, task)
+    }    
+
+    @ProxyMethod
+    public def doAppraisalApproval(task){
+        return helper.doAppraisalApproval(workflowSvc, task)
+    }    
+
+    @ProxyMethod
+    public def doRecommender(task){
+        return helper.doRecommender(workflowSvc, task)
+    }    
+
+    @ProxyMethod
+    public def doRecommenderSubmitToProvince(task){
+        return helper.doRecommenderSubmitToProvince(workflowSvc, task)
+    }    
+
+    @ProxyMethod
+    public def doApprover(task){
+        return helper.doApprover(workflowSvc, task)
+    }    
+
+
+}

@@ -17,16 +17,20 @@ SELECT
 	r.totalareasqm AS rpu_totalareasqm,
 	f.owner_name, 
 	f.owner_address,
-	CASE WHEN t.trackingno IS NULL THEN c.txnno ELSE t.trackingno END AS trackingno,
+	(select trackingno from rpttracking where objid = c.objid ) AS trackingno,
 	tsk.objid AS taskid,
 	tsk.state AS taskstate,
 	tsk.assignee_objid 
 FROM consolidation c
 	INNER JOIN faas f ON c.newfaasid = f.objid 
 	INNER JOIN rpu r ON c.newrpuid = r.objid 
-	LEFT JOIN rpttracking t ON c.objid = t.objid 
+	INNER JOIN realproperty rp ON c.newrpid = rp.objid 
 	LEFT JOIN consolidation_task tsk ON c.objid = tsk.refid AND tsk.enddate IS NULL
-where 1=1 ${filters}	
+where c.lguid LIKE $P{lguid} 
+   and rp.barangayid like $P{barangayid}
+   and c.state LIKE $P{state}
+   and (c.txnno like $P{searchtext} or f.tdno like $P{searchtext} or rp.pin like $P{searchtext} or f.name like $P{searchtext})
+	${filters}	
 ORDER BY c.txnno DESC 
 
 

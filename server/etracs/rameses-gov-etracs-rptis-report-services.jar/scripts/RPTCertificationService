@@ -56,10 +56,12 @@ class RPTCertificationService
 			cert.amount = 0.0
 			cert.stampamount = 0.0
 		}
-		if (cert.taxpayer.address)
-			cert.taxpayer.address = cert.taxpayer.address.replaceAll('[^\\S]',' ')
-		else 
-			cert.taxpayer.address = ''
+		if (cert.taxpayer){
+			if (cert.taxpayer.address)
+				cert.taxpayer.address = cert.taxpayer.address.replaceAll('[^\\S]',' ')
+			else 
+				cert.taxpayer.address = ''
+		}
 		cert.givenday = util.formalizeDate(cert.txndate, 'd' )
 		cert.givenmonth = util.formalizeDate(cert.txndate, 'MMMMM' )
 		cert.givenyear = util.formalizeDate(cert.txndate, 'yyyy' )

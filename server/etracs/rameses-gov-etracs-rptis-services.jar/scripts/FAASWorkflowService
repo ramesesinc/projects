@@ -66,6 +66,25 @@ class FAASWorkflowService extends ActiveWorkflowService
 
 	public void afterCloseTask(task){
 		faasSvc.updateSignatoryInfo(task)
+
+		if (env.data.parentfaasid){
+			saveNewTask(task, env.data.parentfaasid )
+		}		
+
+		faasSvc.getAffectedRpus(env.data).each{
+			if( it.newfaasid){
+				saveNewTask(task, it.newfaasid)
+			}
+		}
+	}
+
+	void saveNewTask(task, refid){
+		def t = [:]
+		t.putAll(task)
+		t.objid = 'T' + new java.rmi.server.UID()
+		t.refid = refid
+		taskDB.save(t)
+		faasSvc.updateSignatoryInfo(t)
 	}
 
 	void removeUserNotification(task){

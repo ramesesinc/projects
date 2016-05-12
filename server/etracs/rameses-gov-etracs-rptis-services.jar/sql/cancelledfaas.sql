@@ -1,3 +1,13 @@
+[getNodes]
+select n.name, n.title as caption
+from sys_wf_node n
+where n.processname = 'cancelledfaas'
+and n.name not like 'assign%'
+and n.name <> 'start'
+and exists(select * from sys_wf_transition where processname='cancelledfaas' and parentid = n.name)
+order by n.idx
+
+
 [getList]
 SELECT 
 	cf.*,
@@ -24,6 +34,13 @@ FROM cancelledfaas cf
 	LEFT JOIN canceltdreason ctr ON cf.reason_objid = ctr.objid 
 	LEFT JOIN cancelledfaas_task tsk ON cf.objid = tsk.refid AND tsk.enddate IS NULL
 where 1=1 ${filters}	
+	and f.objid in (
+		select objid from faas where tdno like $P{searchtext}
+		union 
+		select objid from faas where name like $P{searchtext}
+		union 
+		select f.objid from faas f, realproperty rp where f.realpropertyid = rp.objid and rp.pin like $P{searchtext}
+	)
 ORDER BY txndate DESC 
 
 [findById]
@@ -62,6 +79,7 @@ WHERE cf.objid = $P{objid}
 UPDATE faas SET 
 	state = 'CANCELLED', 
 	cancelreason = $P{cancelreason},
+	cancelledbytdnos = $P{cancelledbytdnos},
 	canceldate = $P{canceldate},
 	cancelledyear = $P{cancelledyear},
 	cancelledqtr = $P{cancelledqtr},

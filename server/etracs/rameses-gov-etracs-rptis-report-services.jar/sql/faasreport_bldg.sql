@@ -28,7 +28,7 @@ where br.objid = $P{objid}
 
 
 [getStructures]
-SELECT objid, name, indexno FROM structure ORDER BY indexno;
+SELECT objid, name, indexno FROM structure where showinfaas=1 ORDER BY indexno;
 
 [getStructureMaterials]
 SELECT m.objid, m.name
@@ -164,7 +164,9 @@ SELECT
 FROM bldgstructure bs 
 	INNER JOIN structurematerial sm ON bs.structure_objid = sm.structure_objid AND bs.material_objid = sm.material_objid
 	INNER JOIN material m ON bs.material_objid = m.objid 
+	inner join structure s on sm.structure_objid = s.objid 
 WHERE bldgrpuid = $P{objid}
+and s.showinfaas = 1 
 
 
 [findTotalAdditionalArea]

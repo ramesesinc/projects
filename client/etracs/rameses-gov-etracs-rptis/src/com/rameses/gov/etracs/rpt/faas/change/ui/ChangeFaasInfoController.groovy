@@ -64,4 +64,8 @@ public abstract class ChangeFaasInfoController
     void cancel(){
         
     }
+    
+    def getTxntypes(){
+        return svc.getTxnTypes();
+    }
 }

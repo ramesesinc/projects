@@ -5,6 +5,9 @@ import java.rmi.server.UID
 
 class RPTReportComparativeRPUCountService
 {
+	@Env 
+	def env 
+	
     @ActiveDB('rptreport_comparativecount')
     def em
 
@@ -25,6 +28,10 @@ class RPTReportComparativeRPUCountService
 	@ProxyMethod
 	public Map generateComparativeRpuCount(params) {
 		params.lguid = params.lgu?.objid 
+		if (params.barangay){
+			params.barangayid = params.barangay.objid
+		}
+
 		util.buildReportFormalTitlePeriod('COMPARATIVE DATA ON NUMBER OF RPUs', params)
 
 		util.buildPreceedingPeriodFilter(params)
@@ -78,11 +85,16 @@ class RPTReportComparativeRPUCountService
 			lineno += 1
 		}
 
+		def forlguname = env.ORGCLASS +  ' OF ' + env.ORGNAME 
+		if (params.lgu){
+			forlguname = params.lgu.lgutype.toUpperCase() + ' OF ' + params.lgu.name
+		}
+
 		def p = [
 			PERIOD 		: params.period,
 			PERIODTYPE 	: params.periodtype,
 			TITLE 		: params.title,
-			FORLGUNAME  : params.lgu.lgutype.toUpperCase() + ' OF ' + params.lgu.name,
+			FORLGUNAME  : forlguname,
 		]
 		
 		return [

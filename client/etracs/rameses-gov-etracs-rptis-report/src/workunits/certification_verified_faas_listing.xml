@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker folderid="/explorer/txn/rpt/cert" action="init" caption="Verification of FAAS" 
+            opener="faasverification" index="5" role="CERTIFICATION_ISSUER,RECORD" permission="certification.faas-verification"/>
+            
+        <invoker folderid="/menu/txn/rpt/cert" action="init" caption="Verification of FAAS" 
+            opener="faasverification" index="5" role="CERTIFICATION_ISSUER,RECORD" permission="certification.faas-verification"/>
+            
+        <invoker type="quick_launcher" action="init" code="RC05" caption="Verification of FAAS" 
+            opener="faasverification" index="5" role="CERTIFICATION_ISSUER,RECORD" permission="certification.faas-verification"/>
+            
+        <invoker type="faasverification:open" action="open" caption="Verification of FAAS" /> 
+        
+        
+        <invoker type="formActions" action="_close"   caption="Close"    shourtcut="c" mnemonic="c"  index="0"  visibleWhen="#{mode == 'read'}" immediate="true"  />
+        <invoker type="formActions" action="_close"   caption="Cancel"    shourtcut="c" mnemonic="c"  index="0"  visibleWhen="#{mode.matches('create|select')}" immediate="true"  />
+        <invoker type="formActions" action="next"     caption="Next"      mnemonic="n"  index="2"  visibleWhen="#{mode == 'create'}"/>   
+        <invoker type="formActions" action="doSave"     caption="Save"      shourtcut="s" mnemonic="s"  index="2"  visibleWhen="#{mode == 'select'}" icon="images/toolbars/save.png" />        
+        <invoker type="formActions" action="init"     caption="New"      shourtcut="n" mnemonic="n"  index="3"  visibleWhen="#{mode == 'read'}" icon="images/toolbars/create.png" />        
+        
+        <invoker type="listActions" action="selectAll"   caption="Select All"     mnemonic="a"  />        
+        <invoker type="listActions" action="deselectAll"   caption="Deselect All"     mnemonic="d"  />        
+    </invokers>
+    
+    <code class="com.rameses.gov.etracs.rptis.report.model.FAASVerificationModel">
+    </code>
+    <pages>
+        <page template="com.rameses.gov.etracs.rpt.report.certification.RPTCertificationPage" />
+        <page name="selectpage" template="com.rameses.gov.etracs.rptis.report.view.FAASVerificationSelectPage" />
+        <page name="preview" template="com.rameses.gov.etracs.rpt.report.PreviewPage" />
+    </pages>
+    
+</workunit>

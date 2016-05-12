@@ -52,11 +52,11 @@
             def doOpen(){
                 if (!selectedEntity) return;
                 
-                if ( RPTUtil.toBoolean(selectedEntity?.datacapture, false) == true )
-                    return InvokerUtil.lookupOpener('faas:capture:open', [entity:selectedEntity])
-                
                 if (selectedEntity.state.matches('CURRENT|CANCELLED'))
                     return InvokerUtil.lookupOpener('faas:open:closedwf', [entity:selectedEntity])
+                
+                if ( RPTUtil.toBoolean(selectedEntity?.datacapture, false) == true )
+                    return InvokerUtil.lookupOpener('faas:capture:open', [entity:selectedEntity])
                 
                 return InvokerUtil.lookupOpener('faas:open', [entity:selectedEntity])
             }

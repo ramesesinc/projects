@@ -29,21 +29,27 @@ class AssessmentRollController extends com.rameses.gov.etracs.rpt.report.AsyncRe
             return reportPath + 'assessmentrollexempt.jasper';
         }
         else if (entity.reporttype.type == 'continuous'){
-            return reportPath + 'assessmentrollcontinuous.jasper';
+            if (entity.taxability == 'TAXABLE')
+                return reportPath + 'assessmentrollcontinuous.jasper';
+            return reportPath + 'assessmentrollcontinuousexempt.jasper';
         }
     }
     
     void buildReportData(entity, asyncHandler){
         if (!entity.reporttype)
             throw new Exception('Report Type is required.');
+            
         if (entity.reporttype.type == 'standard'){
             if (entity.taxability == 'TAXABLE')
                 svc.generateAssessmentRollTaxable( entity, asyncHandler )
             else
                 svc.generateAssessmentRollExempt( entity, asyncHandler )
         }
-        else if (entity.reporttype.type == 'continuous'){
-            svc.generateContinuousAssessmentRoll(entity, asyncHandler);
+        else {
+            if (entity.taxability == 'TAXABLE')
+                svc.generateContinuousAssessmentRoll(entity, asyncHandler);
+            else
+                svc.generateContinuousAssessmentRollExempt(entity, asyncHandler);
         }
     }
     
@@ -52,8 +58,8 @@ class AssessmentRollController extends com.rameses.gov.etracs.rpt.report.AsyncRe
             return [
                 new FormControl( "combo", [caption:'Report Type', name:'entity.reporttype', required:true, items:'reportTypes', expression:'#{item.caption}', allowNull:false, captionWidth:100]),
                 new FormControl( "combo", [caption:'LGU', name:'entity.lgu', required:true, items:'lgus', expression:'#{item.name}', captionWidth:100]),
-                new FormControl( "combo", [caption:'Barangay', name:'entity.barangay', required:true, items:'barangays', expression:'#{item.name}', depends:'entity.(reporttype|lgu)', dynamic:true, visibleWhen:'#{entity.reporttype.type=="standard"}', captionWidth:100]),
-                new FormControl( "combo", [caption:'Taxability', name:'entity.taxability', items:'taxabilities', required:true, immediate:true, depends:'entity.reporttype', visibleWhen:'#{entity.reporttype.type=="standard"}', captionWidth:100]),
+                new FormControl( "combo", [caption:'Barangay', name:'entity.barangay', required:true, items:'barangays', expression:'#{item.name}', depends:'entity.(reporttype|lgu)', dynamic:true, captionWidth:100]),
+                new FormControl( "combo", [caption:'Taxability', name:'entity.taxability', items:'taxabilities', required:true, immediate:true, depends:'entity.reporttype', captionWidth:100]),
                 new FormControl( "text", [caption:'Section', name:'entity.section', preferredSize:'50,19', depends:'entity.reporttype', visibleWhen:'#{entity.reporttype.type=="standard"}', captionWidth:100]),
             ]    
         },

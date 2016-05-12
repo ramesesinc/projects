@@ -46,3 +46,15 @@ SELECT * FROM machrysetting WHERE ry = $P{ry}
 
 [findActualUseInfo]
 select * from machassesslevel where objid = $P{objid}
+
+[findBldgMaster]
+select 
+  r.rpumasterid as objid,
+  f.state, f.tdno, f.owner_name, f.fullpin,
+  pc.code as classification_code,
+  r.rputype, r.totalmv, r.totalav
+from faas f 
+  inner join rpu r on f.rpuid = r.objid 
+  inner join propertyclassification pc on r.classification_objid = pc.objid 
+where r.rpumasterid = $P{objid}
+and f.state <> 'CANCELLED'

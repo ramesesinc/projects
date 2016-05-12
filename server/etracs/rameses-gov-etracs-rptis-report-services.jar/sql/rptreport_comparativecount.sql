@@ -15,6 +15,7 @@ SELECT
 	SUM( 1.0 ) AS preceedingtotal 
 FROM faas f
 	INNER JOIN rpu r ON f.rpuid = r.objid 
+	INNER JOIN realproperty rp ON f.realpropertyid = rp.objid 
 	INNER JOIN propertyclassification pc ON r.classification_objid = pc.objid 
 WHERE ${filter}
   AND f.state = 'CURRENT'  
@@ -34,6 +35,7 @@ SELECT
 	SUM( 1.0 ) AS newdiscoverytotal 
 FROM faas f
 	INNER JOIN rpu r ON f.rpuid = r.objid 
+	INNER JOIN realproperty rp ON f.realpropertyid = rp.objid 
 	INNER JOIN propertyclassification pc ON r.classification_objid = pc.objid 
 WHERE ${filter}
   AND f.state = 'CURRENT'  
@@ -54,6 +56,7 @@ SELECT
 	SUM( 1.0 ) AS cancelledtotal 
 FROM faas f
 	INNER JOIN rpu r ON f.rpuid = r.objid 
+	INNER JOIN realproperty rp ON f.realpropertyid = rp.objid 
 	INNER JOIN propertyclassification pc ON r.classification_objid = pc.objid 
 WHERE ${filter}
   AND f.state = 'CANCELLED'  
@@ -73,6 +76,7 @@ SELECT
 	SUM( 1.0 ) AS endingtotal 
 FROM faas f
 	INNER JOIN rpu r ON f.rpuid = r.objid 
+	INNER JOIN realproperty rp ON f.realpropertyid = rp.objid 
 	INNER JOIN propertyclassification pc ON r.classification_objid = pc.objid 
 WHERE ${filter}
   AND f.state = 'CURRENT'  
@@ -93,6 +97,7 @@ SELECT
 	SUM( 1.0 ) AS preceedingtotal     
 FROM faas f
 	INNER JOIN rpu r ON f.rpuid = r.objid 
+	INNER JOIN realproperty rp ON f.realpropertyid = rp.objid 
 	INNER JOIN exemptiontype e ON r.exemptiontype_objid = e.objid   
 WHERE ${filter}
   AND f.state = 'CURRENT'  
@@ -112,6 +117,7 @@ SELECT
 	SUM( 1.0 ) AS newdiscoverytotal     
 FROM faas f
 	INNER JOIN rpu r ON f.rpuid = r.objid 
+	INNER JOIN realproperty rp ON f.realpropertyid = rp.objid 
 	INNER JOIN exemptiontype e ON r.exemptiontype_objid = e.objid   
 WHERE ${filter}
   AND f.state = 'CURRENT'  
@@ -132,6 +138,7 @@ SELECT
 	SUM( 1.0 ) AS cancelledtotal     
 FROM faas f
 	INNER JOIN rpu r ON f.rpuid = r.objid 
+	INNER JOIN realproperty rp ON f.realpropertyid = rp.objid 
 	INNER JOIN exemptiontype e ON r.exemptiontype_objid = e.objid   
 WHERE ${filter}
   AND f.state = 'CANCELLED'  
@@ -151,6 +158,7 @@ SELECT
 	SUM( 1.0 ) AS preceedingtotal     
 FROM faas f
 	INNER JOIN rpu r ON f.rpuid = r.objid 
+	INNER JOIN realproperty rp ON f.realpropertyid = rp.objid 
 	INNER JOIN exemptiontype e ON r.exemptiontype_objid = e.objid   
 WHERE ${filter}
   AND f.state = 'CURRENT'  

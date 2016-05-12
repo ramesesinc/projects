@@ -101,6 +101,9 @@
 	<field name="rpu.fullpin" class="java.lang.String"/>
 	<field name="tdno" class="java.lang.String"/>
 	<field name="prevadministrator" class="java.lang.String"/>
+	<field name="provrecommender.title" class="java.lang.String"/>
+	<field name="provrecommender.name" class="java.lang.String"/>
+	<field name="provrecommender.dtsigned" class="java.util.Date"/>
 
 
 		<group  name="Part1" isStartNewPage="true" >
@@ -1300,7 +1303,7 @@
 					<reportElement
 						x="14"
 						y="82"
-						width="523"
+						width="520"
 						height="66"
 						forecolor="#FF0000"
 						key="textField-39"
@@ -1573,6 +1576,73 @@
 						<font pdfFontName="Helvetica-Bold" isBold="true"/>
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$F{byauthority}]]></textFieldExpression>
+				</textField>
+				<image  scaleImage="RetainShape" hAlign="Center" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="376"
+						y="78"
+						width="176"
+						height="46"
+						key="image-7"
+						positionType="Float">
+							<printWhenExpression><![CDATA[new Boolean($F{recommender.name} == null)]]></printWhenExpression>
+						</reportElement>
+					<box></box>
+					<graphicElement stretchType="NoStretch"/>
+					<imageExpression class="java.io.InputStream"><![CDATA[$F{signatories}.source.provrecommender.signatureis]]></imageExpression>
+				</image>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="376"
+						y="114"
+						width="176"
+						height="14"
+						key="textField-51"
+						positionType="Float">
+							<printWhenExpression><![CDATA[new Boolean($F{recommender.name} == null)]]></printWhenExpression>
+						</reportElement>
+					<box>					<pen lineWidth="0.0" lineColor="#FF0066"/>
+					<topPen lineWidth="0.0" lineColor="#FF0066"/>
+					<leftPen lineWidth="0.0" lineColor="#FF0066"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#FF0066"/>
+					<rightPen lineWidth="0.0" lineColor="#FF0066"/>
+</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{provrecommender.name}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="376"
+						y="128"
+						width="176"
+						height="12"
+						key="textField-52"
+						positionType="Float">
+							<printWhenExpression><![CDATA[new Boolean($F{recommender.name} == null)]]></printWhenExpression>
+						</reportElement>
+					<box></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{provrecommender.title}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="yyyy-MM-dd" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="376"
+						y="138"
+						width="176"
+						height="12"
+						key="textField-53"
+						positionType="Float">
+							<printWhenExpression><![CDATA[new Boolean($F{recommender.name} == null)]]></printWhenExpression>
+						</reportElement>
+					<box></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.util.Date"><![CDATA[$F{provrecommender.dtsigned}]]></textFieldExpression>
 				</textField>
 			</band>
 			</groupHeader>

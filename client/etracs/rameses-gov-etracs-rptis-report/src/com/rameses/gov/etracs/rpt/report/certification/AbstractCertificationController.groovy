@@ -23,6 +23,7 @@ public abstract class AbstractCertificationController
     def inv;
 
     def MODE_CREATE = 'create';
+    def MODE_SELECT = 'select';
     def MODE_READ   = 'read';
     
     def entity;

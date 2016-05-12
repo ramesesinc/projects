@@ -154,13 +154,10 @@ abstract class AsyncReportController
         mode = 'processing'; 
     } 
     
-    /*
-    
     void printReport( data ){
         buildReport( data ); 
         ReportUtil.print( report.report, true )
     }
-    */
         
     
     def buildReport( data ) {

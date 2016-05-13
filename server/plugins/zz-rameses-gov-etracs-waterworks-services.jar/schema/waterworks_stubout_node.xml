@@ -11,5 +11,6 @@
 			includefields="objid,acctno,acctname,address.text,meter.serialno,currentreading">
 			<key field="acctid" target="objid"/>
 		</complex>
+		<field name="applicationid" visible="false"/>		
 	</element>
 </schema>

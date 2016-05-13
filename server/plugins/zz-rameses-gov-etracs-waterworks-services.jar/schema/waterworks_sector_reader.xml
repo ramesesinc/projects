@@ -1,20 +1,13 @@
 <schema adapter="waterworks">
 	<element tablename="waterworks_sector_reader">
 		<field name="objid" primary="true" prefix="WSR"/>
-		<field name="name" required="true" indexed="true" caption="Name"/>
 		<field name="assignee_objid" caption="Assignee ID" visible="false"/>
 		<field name="assignee_name" caption="Assignee Name"/>
+
 		<!-- field name="sectorid" / -->
-		
 		<complex name="sector" ref="waterworks_sector" jointype="many-to-one" required="false"
 			includefields="objid,code">
 			<key field="sectorid" target="objid"/>
 		</complex>
-		
-		<complex name="zone" ref="waterworks_sector_zone" jointype="many-to-one" required="false"
-			includefields="objid,code,sector.objid,sector.code">
-			<key field="objid" target="readerid"/>
-		</complex>
-
 	</element>
 </schema>

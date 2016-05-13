@@ -54,7 +54,7 @@ public class StuboutNodeModel {
             svc.assignAccount( [objid:selectedItem.objid, acctid: o.objid] );
             reload();
         }
-        Modal.show( "waterworks_account:lookup", [onselect: h] );
+        Modal.show( "waterworks_account:lookup", [onselect: h, stuboutid: entity.objid] );
     }
     
     void unassignAccount() {

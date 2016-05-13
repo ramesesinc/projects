@@ -4,15 +4,17 @@
 		<field name="objid" primary="true"  prefix="WSZ"/>
 		<field name="code"/>
 		<field name="description"/>
+		<field name="sectorid"/>
+		<field name="readerid"/>
 
 		<complex name="sector" ref="waterworks_sector" jointype="many-to-one" 
 			includefields="objid,code">
 			<key field="sectorid" target="objid" />
 		</complex>	
 
-		<field name="readerid"/>		
+				
 		<complex name="reader" ref="waterworks_sector_reader" jointype="many-to-one" required="false"
-			includefields="objid,name,assignee.name,assignee.objid">
+			includefields="objid,assignee.name,assignee.objid">
 			<key field="readerid" target="objid" />
 		</complex>	
 	</element>

@@ -179,8 +179,8 @@ public class Home {
             @Override
             public void handle(MouseEvent event) {
                 Database db = DatabasePlatformFactory.getPlatform().getDatabase();
-                System.out.println("Sector");
-                System.out.println(db.showTableData("download_stat"));
+                System.out.println("Stubout");
+                System.out.println(db.showTableData("stubout"));
                 System.out.println("=================================================================");
             }
         });

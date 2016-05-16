@@ -82,6 +82,7 @@ select
 	rp.surveyno,
 	rp.cadastrallotno,
 	rp.section,
+	rp.blockno, 
 	rp.parcel,
 	pc.code as classcode,
 	f.owner_name, 

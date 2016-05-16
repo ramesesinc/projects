@@ -37,19 +37,6 @@ public class AccountModel extends CrudFormModel {
         binding.refresh();
     }
 
-    /*
-    def assignStuboutNode() {
-        if(!entity.stubout?.objid) 
-            throw new Exception("Please select a stubout first");
-        def h = { o->
-            if( o.acctid ) throw new Exception("There is already an account assigned. Choose another");
-            entity.stuboutnode = o;
-            binding.refresh();
-        }
-        Modal.show("waterworks_stubout_node_unassigned:lookup", [onselect: h, stuboutid: entity.stubout.objid] );
-    }
-    */
-    
     void computeBillingCycle() {
         def e = billCycle.fetch(entity.stubout);
         entity.billingcycle = e;

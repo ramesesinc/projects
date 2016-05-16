@@ -1,10 +1,9 @@
 <workunit schemaName="waterworks_sector">
-    
     <!-- used by rules -->
     <invokers>
         <invoker type="waterworks_sector:open" caption="Sector" action="open" target="popup"/>
     </invokers>
-    <code class="com.rameses.gov.etracs.waterworks.models.SectorModel"/>
+    <code class="com.rameses.seti2.models.CrudFormModel"/>
     <pages>
         <page template="com.rameses.gov.etracs.waterworks.views.SectorPage"/>
     </pages>

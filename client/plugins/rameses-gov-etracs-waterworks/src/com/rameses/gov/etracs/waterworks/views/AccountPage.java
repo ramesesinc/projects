@@ -67,7 +67,7 @@ public class AccountPage extends javax.swing.JPanel {
         xLabel16 = new com.rameses.rcp.control.XLabel();
         xButton4 = new com.rameses.rcp.control.XButton();
 
-        xTabbedPane1.setHandler("sections");
+        xTabbedPane1.setItems("sections");
 
         com.rameses.rcp.control.layout.YLayout yLayout1 = new com.rameses.rcp.control.layout.YLayout();
         yLayout1.setSpacing(6);

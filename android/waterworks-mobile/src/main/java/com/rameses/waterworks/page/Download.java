@@ -21,10 +21,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
+import javafx.concurrent.Worker.State;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -35,6 +37,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.cell.CheckBoxListCell;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -95,8 +98,6 @@ public class Download {
         progressbar.setStyle("-fx-accent: #5cb1e1;");
         progressbar.setPrefWidth(Main.WIDTH);
         progressbar.setPrefHeight(20);
-        progressbar.setVisible(false);
-        progressbar.progressProperty().bind(downloadTask.progressProperty());
         
         download = new Button("Download");
         download.getStyleClass().add("terminal-button");
@@ -108,7 +109,7 @@ public class Download {
                     Platform.runLater(new Runnable(){
                         @Override
                         public void run() {
-                            Dialog.show("", showProgress());
+                            Dialog.show("", displayInitDialog());
                         }
                     });
                 }
@@ -120,6 +121,12 @@ public class Download {
                 Platform.runLater(new Runnable(){
                     @Override
                     public void run() {
+                        downloadTask.stateProperty().addListener(new ChangeListener<State>(){
+                            @Override
+                            public void changed(ObservableValue<? extends State> observable, State oldValue, State state) {
+                                System.out.println("State : " + state);
+                            }
+                        });
                         Thread t = new Thread(downloadTask);
                         t.setDaemon(true);
                         t.start();
@@ -134,7 +141,7 @@ public class Download {
                     Platform.runLater(new Runnable(){
                         @Override
                         public void run() {
-                            Dialog.show("", showProgress());
+                            Dialog.show("", displayInitDialog());
                         }
                     });
                 }
@@ -168,6 +175,7 @@ public class Download {
     }
     
     private int checkStatus( String batchid ) {
+        System.out.println("Check Status started....");
         int recordcount = -1;
         while (true) {
             if (cancelled) break;
@@ -200,7 +208,6 @@ public class Download {
         Platform.runLater(new Runnable(){
             @Override
             public void run() {
-                label.setText("Download Complete! " + downloadsize + " records was downloaded!");
                 download.setText("Done");
                 download.setOnMousePressed(new EventHandler<MouseEvent>(){
                     @Override
@@ -220,6 +227,8 @@ public class Download {
                         Main.ROOT.setCenter(new Home().getLayout());
                     }
                 });
+                Dialog.hide();
+                Dialog.showAlert("Download Complete! " + downloadsize + " records was downloaded!");
             }
         });
     }
@@ -349,10 +358,26 @@ public class Download {
         DatabasePlatformFactory.getPlatform().getDatabase().clearSector();
     }
     
-    private Node showProgress(){
+    private Node displayInitDialog(){
         ImageView image = new ImageView(new Image("icon/processing.png"));
         
-        Label text = new Label("PROCESSING, PLEASE WAIT...");
+        ProgressIndicator pi = new ProgressIndicator();
+        
+        Label text = new Label("Processing...");
+        text.getStyleClass().add("login-label");
+        
+        VBox root = new VBox(10);
+        root.setStyle("-fx-background-color: white;");
+        root.setPadding(new Insets(15));
+        root.setPrefWidth(Main.WIDTH - 100);
+        root.setAlignment(Pos.CENTER);
+        root.getChildren().addAll(pi, text);
+        
+        return root;
+    }
+    
+    private Node displayProgressDialog(){
+        Label text = new Label("Downloading...   Please wait...");
         text.getStyleClass().add("login-label");
         
         VBox root = new VBox(10);
@@ -411,6 +436,7 @@ public class Download {
                 }
             }
 
+            System.out.println("Init For Download started....");
             try {
                 batchid = mobileSvc.initForDownload( params ); 
             } catch(Throwable t) {
@@ -459,51 +485,57 @@ public class Download {
                 }); 
                 return null;
             }
-
-            if(Dialog.isOpen) Dialog.hide();
+            
             stat.setRecordcount(recordcount);
             stat.update(); 
-            try {
-                //PROCESS DOWNLOAD
-                int indexno = stat.getIndexno();
-                params = new HashMap();
-                int limit=50, start=(indexno < 0 ? 0 : indexno);  
-                stat = new DownloadStat().findByPrimary(batchid);
-                while ( start < recordcount ) {
-                    params.put("batchid", batchid);
-                    params.put("_start", start);
-                    params.put("_limit", limit); 
-                    System.out.println("Start: " + start + " Limit: " + limit);
-                    List<Map> list = mobileSvc.download(params);
-                    if( list != null) { 
-                        for (int i=0; i<list.size(); i++) {
-                            Map data = list.get(i);
-                            db.createAccount(data);
-
-                            stat = stat.findByPrimary(batchid);
-                            stat.setIndexno( start + i ); 
-                            System.out.println("update indexno to " + stat.getIndexno()); 
-                            stat.update();
-                        }
-                    } 
-                    indexposition = start;
-                    updateProgress(indexposition,recordcount);
-                    start += limit; 
-                } 
-
-                if ( start >= recordcount ) { 
-                    stat.findByPrimary(batchid).delete(); 
+            
+            System.out.println("Process download started....");
+            Platform.runLater(new Runnable(){
+                @Override
+                public void run() {
+                    progressbar.progressProperty().bind(progressProperty());
+                    Dialog.hide();
+                    Dialog.show("", displayProgressDialog());
                 }
-            } catch(Throwable t) {
-                t.printStackTrace();
-                Platform.runLater(new Runnable(){
-                    @Override
-                    public void run() {
-                        Dialog.hide();
-                        Dialog.showError("Process download failed caused by "+ t.getMessage());
+            });
+            //PROCESS DOWNLOAD
+            int indexno = stat.getIndexno();
+            params = new HashMap();
+            int limit=50, start=(indexno < 0 ? 0 : indexno);  
+            stat = new DownloadStat().findByPrimary(batchid);
+            while ( start < recordcount ) {
+                params.put("batchid", batchid);
+                params.put("_start", start);
+                params.put("_limit", limit); 
+                System.out.println("Start: " + start + " Limit: " + limit);
+                List<Map> list = mobileSvc.download(params);
+                if(!mobileSvc.ERROR.isEmpty()){
+                    Platform.runLater(new Runnable(){
+                        @Override
+                        public void run() {
+                            Dialog.showAlert(mobileSvc.ERROR);
+                        }
+                    });
+                    return null;
+                }
+                if( list != null) { 
+                    for (int i=0; i<list.size(); i++) {
+                        Map data = list.get(i);
+                        db.createAccount(data);
+
+                        stat = stat.findByPrimary(batchid);
+                        stat.setIndexno( start + i ); 
+                        System.out.println("update indexno to " + stat.getIndexno()); 
+                        stat.update();
                     }
-                });  
-                return null; 
+                } 
+                indexposition = start;
+                updateProgress(indexposition,recordcount);
+                start += limit; 
+            } 
+
+            if ( start >= recordcount ) { 
+                stat.findByPrimary(batchid).delete(); 
             }
 
             //SAVE AREA, STUBOUTS

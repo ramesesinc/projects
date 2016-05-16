@@ -34,11 +34,11 @@ public class FaasWorkflowController extends RPTWorkflowController
     void afterOpen(o){
         super.afterOpen(o);
         formId = 'FAAS:' + (entity.tdno ? entity.tdno : entity.utdno);
-        formTitle = 'FAAS: ' + formId
+        formTitle = formId
     }
 
     String getTitle(){
-        return 'FAAS ' + entity.txntype.name + ': (' +  task.title + ')   PIN: ' + entity.fullpin
+        return entity.txntype.name + ': (' +  task.title + ')   PIN: ' + entity.fullpin
     }
     
     def getSections(){

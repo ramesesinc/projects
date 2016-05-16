@@ -38,6 +38,13 @@ public class ApproveSubdivisionTask implements Runnable{
                 showinfo(' .... Done\n');
             }
             
+            showinfo('Processing Cancelled Improvements\n');
+            svc.getCancelledImprovements(entity.objid).each{ ci ->
+                showinfo('Cancelling Improvement ' + ci.fullpin);
+                svc.approveCancelledImprovement(entity, ci);
+                showinfo(' .... Done\n');
+            }
+            
             showinfo('Subdivision Approval')
             entity.putAll(svc.approveSubdivision(entity));
             showinfo(' .... Done\n');

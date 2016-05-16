@@ -3,6 +3,22 @@
     <invokers>
         <invoker type="waterworks_account:lookup" caption="Lookup Accounts" action="init" target="popup"/>
     </invokers>
+    <code>
+        class AccountLookup extends com.rameses.seti2.models.CrudLookupModel {
+        
+            def stuboutid;
+        
+            def getCustomFilter() {
+                if(stuboutid) {
+                    return [ "stuboutid=:sid", [sid: stuboutid]  ];
+                }
+                else {
+                    return null;
+                }
+            }
+        
+        }
+    </code>
 </workunit>
 
 

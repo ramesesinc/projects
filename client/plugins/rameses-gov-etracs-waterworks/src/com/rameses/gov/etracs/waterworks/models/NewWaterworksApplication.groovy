@@ -14,6 +14,7 @@ public class NewWaterworksApplication extends CrudPageFlowModel {
     @Service("WaterworksApplicationService")
     def appSvc; 
 
+     def selectedRequirement;
     def imagedata; 
 
     def getLookupApplicant() { 
@@ -75,5 +76,9 @@ public class NewWaterworksApplication extends CrudPageFlowModel {
         imagedata = null; 
         entity.signature = null; 
     } 
+    
+    public void viewRequirement() {
+        MsgBox.alert('selected ' + this.selectedRequirement);
+    }
     
 }

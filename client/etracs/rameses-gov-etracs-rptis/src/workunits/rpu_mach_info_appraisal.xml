@@ -94,6 +94,24 @@ class MachAppraisalInfoController extends com.rameses.gov.etracs.rpt.workflow.Ba
     }
     
     
+    def getLookupFaas(){
+        return Inv.lookupOpener('bldgmaster:lookup', [
+            ry       : entity.rpu.ry, 
+            pin      : entity.rp.pin, 
+            rputype  : 'bldg',
+            
+            onselect : {
+                entity.rpu.bldgmaster = it;
+            },
+            
+            onempty  : {
+                entity.rpu.bldgmaster = null;
+            }
+
+        ])
+    }
+    
+    
 }    
     
 ]]>        

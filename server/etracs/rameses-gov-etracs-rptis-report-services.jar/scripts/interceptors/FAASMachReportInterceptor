@@ -69,7 +69,7 @@ class FaasMachReportInterceptor
 	}
 
 	void buildBldgReference(faas){
-		def bldginfo = em.findBldgInfoByPin(faas.rp)
+		def bldginfo = em.findBldgInfoByPin(faas.rpu.bldgmaster)
 		if (bldginfo) faas.putAll(bldginfo)
 	}
 

@@ -58,7 +58,7 @@ public class ApplicationPage extends javax.swing.JPanel {
         xLabel15 = new com.rameses.rcp.control.XLabel();
 
         xTabbedPane1.setDynamic(true);
-        xTabbedPane1.setHandler("tabList");
+        xTabbedPane1.setItems("sectors");
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder1.setTitle("Stubout Information");

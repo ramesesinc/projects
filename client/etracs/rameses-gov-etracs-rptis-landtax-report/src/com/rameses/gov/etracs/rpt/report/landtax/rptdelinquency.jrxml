@@ -61,6 +61,7 @@
 	<field name="basicint" class="java.math.BigDecimal"/>
 	<field name="sef" class="java.math.BigDecimal"/>
 	<field name="sefint" class="java.math.BigDecimal"/>
+	<field name="cadastrallotno" class="java.lang.String"/>
 
 	<variable name="TBASIC" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
 		<variableExpression><![CDATA[$F{basic}]]></variableExpression>
@@ -158,10 +159,10 @@
 					<reportElement
 						x="276"
 						y="0"
-						width="142"
+						width="170"
 						height="22"
 						key="staticText-44"/>
-					<box leftPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<box leftPadding="2" bottomPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid"/>
 					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
@@ -173,9 +174,9 @@
 				</staticText>
 				<staticText>
 					<reportElement
-						x="418"
+						x="521"
 						y="0"
-						width="82"
+						width="60"
 						height="22"
 						key="staticText-45"/>
 					<box>					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -190,9 +191,9 @@
 				</staticText>
 				<staticText>
 					<reportElement
-						x="500"
+						x="581"
 						y="0"
-						width="75"
+						width="60"
 						height="22"
 						key="staticText-46"/>
 					<box>					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -203,13 +204,13 @@
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Tahoma" size="8"/>
 					</textElement>
-				<text><![CDATA[BASIC PENALTY]]></text>
+				<text><![CDATA[BASIC Penalty]]></text>
 				</staticText>
 				<staticText>
 					<reportElement
-						x="732"
+						x="761"
 						y="0"
-						width="82"
+						width="65"
 						height="22"
 						key="staticText-47"/>
 					<box>					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -241,9 +242,9 @@
 				</staticText>
 				<staticText>
 					<reportElement
-						x="814"
+						x="826"
 						y="0"
-						width="46"
+						width="40"
 						height="22"
 						key="staticText-50"/>
 					<box>					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -258,9 +259,9 @@
 				</staticText>
 				<staticText>
 					<reportElement
-						x="575"
+						x="641"
 						y="0"
-						width="82"
+						width="60"
 						height="22"
 						key="staticText-67"/>
 					<box>					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -275,9 +276,9 @@
 				</staticText>
 				<staticText>
 					<reportElement
-						x="657"
+						x="701"
 						y="0"
-						width="75"
+						width="60"
 						height="22"
 						key="staticText-70"/>
 					<box>					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -288,7 +289,24 @@
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Tahoma" size="8"/>
 					</textElement>
-				<text><![CDATA[SEF PENALTY]]></text>
+				<text><![CDATA[SEF Penalty]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="446"
+						y="0"
+						width="75"
+						height="22"
+						key="staticText-73"/>
+					<box>					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="8"/>
+					</textElement>
+				<text><![CDATA[LOT NO.]]></text>
 				</staticText>
 			</band>
 			</groupHeader>
@@ -374,10 +392,10 @@
 					<reportElement
 						x="276"
 						y="0"
-						width="142"
+						width="170"
 						height="22"
 						key="staticText-55"/>
-					<box leftPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<box leftPadding="2" bottomPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid"/>
 					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
@@ -389,9 +407,9 @@
 				</staticText>
 				<staticText>
 					<reportElement
-						x="418"
+						x="521"
 						y="0"
-						width="82"
+						width="60"
 						height="22"
 						key="staticText-56"/>
 					<box>					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -406,9 +424,9 @@
 				</staticText>
 				<staticText>
 					<reportElement
-						x="500"
+						x="581"
 						y="0"
-						width="75"
+						width="60"
 						height="22"
 						key="staticText-57"/>
 					<box>					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -419,13 +437,13 @@
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Tahoma" size="8"/>
 					</textElement>
-				<text><![CDATA[BASIC PENALTY]]></text>
+				<text><![CDATA[BASIC Penalty]]></text>
 				</staticText>
 				<staticText>
 					<reportElement
-						x="732"
+						x="761"
 						y="0"
-						width="82"
+						width="65"
 						height="22"
 						key="staticText-58"/>
 					<box>					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -440,9 +458,9 @@
 				</staticText>
 				<staticText>
 					<reportElement
-						x="860"
+						x="866"
 						y="0"
-						width="46"
+						width="40"
 						height="22"
 						key="staticText-59"/>
 					<box>					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -453,7 +471,8 @@
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Tahoma" size="8"/>
 					</textElement>
-				<text><![CDATA[  End Yr /  Qtr]]></text>
+				<text><![CDATA[End Yr/
+Qtr]]></text>
 				</staticText>
 				<staticText>
 					<reportElement
@@ -474,9 +493,9 @@
 				</staticText>
 				<staticText>
 					<reportElement
-						x="814"
+						x="826"
 						y="0"
-						width="46"
+						width="40"
 						height="22"
 						key="staticText-61"/>
 					<box>					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -487,13 +506,14 @@
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Tahoma" size="8"/>
 					</textElement>
-				<text><![CDATA[Start Yr. / Qtr]]></text>
+				<text><![CDATA[Start Yr/
+Qtr]]></text>
 				</staticText>
 				<staticText>
 					<reportElement
-						x="575"
+						x="641"
 						y="0"
-						width="82"
+						width="60"
 						height="22"
 						key="staticText-68"/>
 					<box>					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -508,9 +528,9 @@
 				</staticText>
 				<staticText>
 					<reportElement
-						x="657"
+						x="701"
 						y="0"
-						width="75"
+						width="60"
 						height="22"
 						key="staticText-71"/>
 					<box>					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -521,7 +541,24 @@
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Tahoma" size="8"/>
 					</textElement>
-				<text><![CDATA[SEF PENALTY]]></text>
+				<text><![CDATA[SEF Penalty]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="446"
+						y="0"
+						width="75"
+						height="22"
+						key="staticText-74"/>
+					<box>					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="8"/>
+					</textElement>
+				<text><![CDATA[LOT NO.]]></text>
 				</staticText>
 			</band>
 			</groupHeader>
@@ -659,10 +696,10 @@
 				<image  scaleImage="FillFrame" vAlign="Top" hAlign="Left" isUsingCache="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Opaque"
-						x="269"
-						y="0"
-						width="69"
-						height="69"
+						x="69"
+						y="5"
+						width="60"
+						height="60"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
 						key="image-1"/>
@@ -841,10 +878,10 @@
 					<reportElement
 						x="276"
 						y="0"
-						width="142"
+						width="170"
 						height="22"
 						key="staticText-30"/>
-					<box leftPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<box leftPadding="2" bottomPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid"/>
 					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
@@ -856,9 +893,9 @@
 				</staticText>
 				<staticText>
 					<reportElement
-						x="418"
+						x="521"
 						y="0"
-						width="82"
+						width="60"
 						height="22"
 						key="staticText-32"/>
 					<box>					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -873,9 +910,9 @@
 				</staticText>
 				<staticText>
 					<reportElement
-						x="500"
+						x="581"
 						y="0"
-						width="75"
+						width="60"
 						height="22"
 						key="staticText-33"/>
 					<box>					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -886,13 +923,13 @@
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Tahoma" size="8"/>
 					</textElement>
-				<text><![CDATA[BASIC PENALTY]]></text>
+				<text><![CDATA[BASIC Penalty]]></text>
 				</staticText>
 				<staticText>
 					<reportElement
-						x="732"
+						x="761"
 						y="0"
-						width="82"
+						width="65"
 						height="22"
 						key="staticText-34"/>
 					<box>					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -907,9 +944,9 @@
 				</staticText>
 				<staticText>
 					<reportElement
-						x="860"
+						x="866"
 						y="0"
-						width="46"
+						width="40"
 						height="22"
 						key="staticText-37"/>
 					<box>					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -920,7 +957,8 @@
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Tahoma" size="8"/>
 					</textElement>
-				<text><![CDATA[  End Yr /  Qtr]]></text>
+				<text><![CDATA[End Yr/
+Qtr]]></text>
 				</staticText>
 				<staticText>
 					<reportElement
@@ -941,9 +979,9 @@
 				</staticText>
 				<staticText>
 					<reportElement
-						x="814"
+						x="826"
 						y="0"
-						width="46"
+						width="40"
 						height="22"
 						key="staticText-39"/>
 					<box>					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -954,14 +992,14 @@
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Tahoma" size="8"/>
 					</textElement>
-				<text><![CDATA[Start Yr. / Qtr
-]]></text>
+				<text><![CDATA[Start Yr/
+Qtr]]></text>
 				</staticText>
 				<staticText>
 					<reportElement
-						x="575"
+						x="641"
 						y="0"
-						width="82"
+						width="60"
 						height="22"
 						key="staticText-66"/>
 					<box>					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -976,9 +1014,9 @@
 				</staticText>
 				<staticText>
 					<reportElement
-						x="657"
+						x="701"
 						y="0"
-						width="75"
+						width="60"
 						height="22"
 						key="staticText-69"/>
 					<box>					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -989,7 +1027,24 @@
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Tahoma" size="8"/>
 					</textElement>
-				<text><![CDATA[SEF PENALTY]]></text>
+				<text><![CDATA[SEF Penalty]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="446"
+						y="0"
+						width="75"
+						height="22"
+						key="staticText-72"/>
+					<box>					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="8"/>
+					</textElement>
+				<text><![CDATA[LOT NO.]]></text>
 				</staticText>
 			</band>
 		</pageHeader>
@@ -1007,12 +1062,12 @@
 						height="14"
 						key="textField-27"
 						stretchType="RelativeToBandHeight"/>
-					<box topPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<box leftPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid"/>
 					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
-					<textElement textAlignment="Center" verticalAlignment="Top">
+					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Tahoma" size="8"/>
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$F{tdno}]]></textFieldExpression>
@@ -1025,12 +1080,12 @@
 						height="14"
 						key="textField-28"
 						stretchType="RelativeToBandHeight"/>
-					<box topPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<box leftPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid"/>
 					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
-					<textElement textAlignment="Center" verticalAlignment="Top">
+					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Tahoma" size="8"/>
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$F{pin}]]></textFieldExpression>
@@ -1043,12 +1098,12 @@
 						height="14"
 						key="textField-29"
 						stretchType="RelativeToBandHeight"/>
-					<box topPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<box leftPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid"/>
 					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
-					<textElement textAlignment="Center" verticalAlignment="Top">
+					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Tahoma" size="8"/>
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$F{classcode}]]></textFieldExpression>
@@ -1061,12 +1116,12 @@
 						height="14"
 						key="textField-30"
 						stretchType="RelativeToBandHeight"/>
-					<box topPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<box leftPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid"/>
 					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
-					<textElement textAlignment="Center" verticalAlignment="Top">
+					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Tahoma" size="8"/>
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$F{rputype}]]></textFieldExpression>
@@ -1075,90 +1130,90 @@
 					<reportElement
 						x="276"
 						y="0"
-						width="142"
+						width="170"
 						height="14"
 						key="textField-31"
 						stretchType="RelativeToBandHeight"/>
-					<box leftPadding="2" topPadding="2" bottomPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<box leftPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid"/>
 					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
-					<textElement verticalAlignment="Top">
+					<textElement verticalAlignment="Middle">
 						<font fontName="Tahoma" size="8"/>
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$F{taxpayername}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="418"
+						x="521"
 						y="0"
-						width="82"
+						width="60"
 						height="14"
 						key="textField-33"
 						stretchType="RelativeToBandHeight"/>
-					<box rightPadding="2" topPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<box leftPadding="2" rightPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid"/>
 					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
-					<textElement textAlignment="Right" verticalAlignment="Top">
+					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Tahoma" size="8"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{basic}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="500"
+						x="581"
 						y="0"
-						width="75"
+						width="60"
 						height="14"
 						key="textField-34"
 						stretchType="RelativeToBandHeight"/>
-					<box rightPadding="2" topPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<box leftPadding="2" rightPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid"/>
 					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
-					<textElement textAlignment="Right" verticalAlignment="Top">
+					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Tahoma" size="8"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{basicint}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="732"
+						x="761"
 						y="0"
-						width="82"
+						width="65"
 						height="14"
 						key="textField-35"
 						stretchType="RelativeToBandHeight"/>
-					<box rightPadding="2" topPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<box leftPadding="2" rightPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid"/>
 					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
-					<textElement textAlignment="Right" verticalAlignment="Top">
+					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Tahoma" size="8"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{total}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="860"
+						x="866"
 						y="0"
-						width="46"
+						width="40"
 						height="14"
 						key="textField-40"
 						stretchType="RelativeToBandHeight">
 							<printWhenExpression><![CDATA[$P{PERIODCODE} != "FOR_THE_YEAR"]]></printWhenExpression>
 						</reportElement>
-					<box topPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<box leftPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid"/>
 					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
-					<textElement textAlignment="Center" verticalAlignment="Top">
+					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Tahoma" size="8"/>
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$F{lastyearpaid} + ($F{lastqtrpaid}? '-'+$F{lastqtrpaid}+'Q': '')]]></textFieldExpression>
@@ -1171,91 +1226,109 @@
 						height="14"
 						key="textField-41"
 						stretchType="RelativeToBandHeight"/>
-					<box topPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<box leftPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid"/>
 					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
-					<textElement textAlignment="Center" verticalAlignment="Top">
+					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Tahoma" size="7"/>
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$F{area}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="814"
+						x="826"
 						y="0"
-						width="46"
+						width="40"
 						height="14"
 						key="textField-42"
 						stretchType="RelativeToBandHeight">
 							<printWhenExpression><![CDATA[$P{PERIODCODE} != "FOR_THE_YEAR"]]></printWhenExpression>
 						</reportElement>
-					<box topPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<box leftPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid"/>
 					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
-					<textElement textAlignment="Center" verticalAlignment="Top">
-						<font fontName="Tahoma" size="8"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{startyearpaid} + ($F{startqtrpaid}? '-'+$F{startqtrpaid}+'Q': '')]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="814"
-						y="0"
-						width="46"
-						height="14"
-						key="textField-43"
-						stretchType="RelativeToBandHeight">
-							<printWhenExpression><![CDATA[$P{PERIODCODE}=="FOR_THE_YEAR"]]></printWhenExpression>
-						</reportElement>
-					<box topPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
-					<leftPen lineWidth="0.5" lineStyle="Solid"/>
-					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
-					<rightPen lineWidth="0.5" lineStyle="Solid"/>
-</box>
-					<textElement textAlignment="Center" verticalAlignment="Top">
+					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Tahoma" size="8"/>
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$F{startyearpaid} + ($F{startqtrpaid}? '-'+$F{startqtrpaid}+'Q': '')]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="575"
+						x="826"
 						y="0"
-						width="82"
+						width="40"
 						height="14"
-						key="textField-46"
-						stretchType="RelativeToBandHeight"/>
-					<box rightPadding="2" topPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
+						key="textField-43"
+						stretchType="RelativeToBandHeight">
+							<printWhenExpression><![CDATA[$P{PERIODCODE}=="FOR_THE_YEAR"]]></printWhenExpression>
+						</reportElement>
+					<box leftPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid"/>
 					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
-					<textElement textAlignment="Right" verticalAlignment="Top">
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{startyearpaid} + ($F{startqtrpaid}? '-'+$F{startqtrpaid}+'Q': '')]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="641"
+						y="0"
+						width="60"
+						height="14"
+						key="textField-46"
+						stretchType="RelativeToBandHeight"/>
+					<box leftPadding="2" rightPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Tahoma" size="8"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{sef}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="657"
+						x="701"
 						y="0"
-						width="75"
+						width="60"
 						height="14"
 						key="textField-48"
 						stretchType="RelativeToBandHeight"/>
-					<box rightPadding="2" topPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<box leftPadding="2" rightPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid"/>
 					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
-					<textElement textAlignment="Right" verticalAlignment="Top">
+					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Tahoma" size="8"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{sefint}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="446"
+						y="0"
+						width="75"
+						height="14"
+						key="textField-50"
+						stretchType="RelativeToBandHeight"/>
+					<box leftPadding="2" rightPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{cadastrallotno}]]></textFieldExpression>
 				</textField>
 			</band>
 		</detail>
@@ -1264,18 +1337,14 @@
 			</band>
 		</columnFooter>
 		<pageFooter>
-			<band height="0"  isSplitAllowed="true" >
-			</band>
-		</pageFooter>
-		<summary>
-			<band height="172"  isSplitAllowed="true" >
+			<band height="50"  isSplitAllowed="true" >
 				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Transparent"
 						x="0"
-						y="17"
-						width="902"
-						height="11"
+						y="7"
+						width="818"
+						height="12"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
 						key="textField-12"/>
@@ -1289,6 +1358,23 @@
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA["GENERATED BY : ETRACS System 2.0   PRINTED BY : " + $P{USERNAME} + "  PRINT DATE : "  + (new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format($P{PRINTDATE}) )]]></textFieldExpression>
 				</textField>
+				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="821"
+						y="7"
+						width="85"
+						height="12"
+						key="textField"/>
+					<box></box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["Page " + (new java.text.DecimalFormat("#,##0").format($V{PAGE_NUMBER})) + " / " + (new java.text.DecimalFormat("#,##0").format($V{PAGE_COUNT})) ]]></textFieldExpression>
+				</textField>
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="172"  isSplitAllowed="true" >
 				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Transparent"
@@ -1439,22 +1525,22 @@
 				</textField>
 				<staticText>
 					<reportElement
-						x="290"
+						x="387"
 						y="3"
 						width="109"
 						height="14"
 						key="staticText-36"/>
 					<box rightPadding="4"></box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Tahoma" size="8"/>
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
 				<text><![CDATA[TOTAL :]]></text>
 				</staticText>
 				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="418"
+						x="501"
 						y="3"
-						width="82"
+						width="65"
 						height="14"
 						key="textField-37"/>
 					<box rightPadding="2"></box>
@@ -1465,9 +1551,9 @@
 				</textField>
 				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="500"
+						x="566"
 						y="3"
-						width="75"
+						width="65"
 						height="14"
 						key="textField-38"/>
 					<box rightPadding="2"></box>
@@ -1478,9 +1564,9 @@
 				</textField>
 				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="732"
+						x="761"
 						y="3"
-						width="82"
+						width="65"
 						height="14"
 						key="textField-39"/>
 					<box rightPadding="2"></box>
@@ -1491,9 +1577,9 @@
 				</textField>
 				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="575"
+						x="631"
 						y="3"
-						width="82"
+						width="65"
 						height="14"
 						key="textField-47"/>
 					<box rightPadding="2"></box>
@@ -1504,9 +1590,9 @@
 				</textField>
 				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="657"
+						x="696"
 						y="3"
-						width="75"
+						width="65"
 						height="14"
 						key="textField-49"/>
 					<box rightPadding="2"></box>

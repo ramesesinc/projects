@@ -11,6 +11,7 @@ public class WaterworksApplication extends WorkflowTaskModel {
     
     def tabList;
     def formName = 'waterworks_application:form';
+    def selectedRequirement;
     
     def getBarcodeFieldname() {
         return "appno";
@@ -80,4 +81,5 @@ public class WaterworksApplication extends WorkflowTaskModel {
             MsgBox.alert("Account created " + task.acctno);
         }
     }
+    
 }

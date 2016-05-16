@@ -27,7 +27,8 @@ update faas set
 	restrictionid 	= $P{restrictionid},
 	effectivityyear = $P{effectivityyear},
 	effectivityqtr 	= $P{effectivityqtr},
-	memoranda 		= $P{memoranda}
+	memoranda 		= $P{memoranda},
+	txntype_objid 	= $P{txntypeid}
 where objid = $P{faasid}	
 
 [updateFaasPreviousInfo]
@@ -60,6 +61,11 @@ where faasid = $P{faasid}
 [updateRpuInfo]
 update rpu set 
 	classification_objid  = $P{classificationid}
+where objid = $P{rpuid}
+
+[updateLandRpuInfo]
+update landrpu set 
+	publicland = $P{publicland}
 where objid = $P{rpuid}
 
 

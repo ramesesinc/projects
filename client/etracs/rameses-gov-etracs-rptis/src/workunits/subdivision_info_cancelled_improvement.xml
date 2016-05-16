@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="subdivision:info" action="init" caption="Cancelled Improvements" index="21"/>
+        
+        <invoker type="formActions" action="init" caption="Refresh" mnemonic="r" visibleWhen="#{mode == 'read'}" />
+        <invoker type="formActions" action="edit" caption="Edit" mnemonic="e" visibleWhen="#{showActions == true}" role="TAXMAPPER"/>
+        <invoker type="formActions" action="save" caption="Save" mnemonic="s" visibleWhen="#{mode != 'read'}" />
+        
+        <invoker type="formActions" action="undoCancel" 
+                 caption="Undo Cancel Improvement" 
+                 mnemonic="u" 
+                 visibleWhen="#{mode != 'read' &amp;&amp; selectedItem != null}" 
+                 role="TAXMAPPER"/>
+   </invokers>
+   
+   <code class="com.rameses.gov.etracs.rptis.model.SubdivisionCancelledImprovementModel" >
+   </code>
+    
+    <pages> 
+        <page template="com.rameses.gov.etracs.rptis.view.SubdivisionCancelledImprovementPage"/>
+    </pages>
+</workunit>
+
+

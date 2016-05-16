@@ -40,25 +40,34 @@ public class FaasController
         
     String entityName = 'faas';
     
+    def getEntity(){
+        return entity;
+    }
+    
     void recalc(){
         if (rpuopener.handle)
             rpuopener.handle.recalculate();
     }
     
     public String getRpuOpenerName(){
-        return 'rpu' + entity.rpu.rputype
+        return 'rpu' + getEntity().rpu.rputype
     }
     
     public String getTitle(){
         def t = getFaasType();    
         if (mode == MODE_CREATE){
-            t += '(New)';
+            t += ' (New)';
         }
         else{
-            if (entity.state == 'CANCELLED'){
-                t += '  Cancelled By TD No. ' + entity.cancelledbytdnos 
-                t += '  Reason: ' + entity.cancelreason 
-                t += '  Date: ' + entity.canceldate 
+            if (getEntity().state == 'CANCELLED'){
+                if (getEntity().cancelledbytdnos.indexOf('Cancellation') < 0){
+                    t += '  Cancelled By TD No. ' + getEntity().cancelledbytdnos 
+                }
+                else{
+                    t += '  Cancelled By ' + getEntity().cancelledbytdnos 
+                }
+                t += '  Reason: ' + getEntity().cancelreason 
+                t += '  Date: ' + formatDate(getEntity().canceldate); 
             }
         }
         return t;
@@ -67,7 +76,7 @@ public class FaasController
     @FormTitle
     @FormId
     public String getFormId(){
-        return 'FAAS : ' + (entity.tdno ? entity.tdno : entity.utdno);
+        return 'FAAS : ' + (getEntity().tdno ? getEntity().tdno : getEntity().utdno);
     }
     
     
@@ -78,15 +87,15 @@ public class FaasController
     
     void init(){ 
         open();
-        entity._resolve = true;
+        getEntity()._resolve = true;
         mode = MODE_EDIT;
     }
     
     void open(){
-        entity.putAll(service.openFaas(entity));
+        getEntity().putAll(service.openFaas(getEntity()));
         afterOpen();
-        if (taskstate) entity.taskstate = taskstate;
-        if (assignee) entity.assignee = assignee;
+        if (taskstate) getEntity().taskstate = taskstate;
+        if (assignee) getEntity().assignee = assignee;
         loadRpuOpener();
         clearCacheImageFlag()
         buildQueryInfo();
@@ -94,9 +103,9 @@ public class FaasController
     }
     
     void cancel(){
-        entity.putAll(service.openFaas(entity));
-        if (taskstate) entity.taskstate = taskstate;
-        if (assignee) entity.assignee = assignee;
+        getEntity().putAll(service.openFaas(getEntity()));
+        if (taskstate) getEntity().taskstate = taskstate;
+        if (assignee) getEntity().assignee = assignee;
         
         mode = MODE_READ;
     }
@@ -115,7 +124,7 @@ public class FaasController
             ]
         }
         rpuopener = InvokerUtil.lookupOpener(rpuOpenerName + ':open', [
-                entity    : entity,
+                entity    : getEntity(),
                 callbacks : callbacks,
         ]);
     }
@@ -131,25 +140,25 @@ public class FaasController
     
     
     void cancelEdit(){
-        entity.putAll(service.openFaas(entity));
-        if (taskstate) entity.taskstate = taskstate;
-        if (assignee) entity.assignee = assignee;
+        getEntity().putAll(service.openFaas(getEntity()));
+        if (taskstate) getEntity().taskstate = taskstate;
+        if (assignee) getEntity().assignee = assignee;
         mode = MODE_READ;
     }
     
     
     void save(){
         if (mode == MODE_CREATE)
-            entity.putAll(service.createFaas(entity));
+            getEntity().putAll(service.createFaas(getEntity()));
         else 
-            entity.putAll(service.updateFaas(entity));
+            getEntity().putAll(service.updateFaas(getEntity()));
         mode = MODE_READ;
     }
     
     
     def delete(){
         if (MsgBox.confirm('Delete FAAS?')){
-            service.deleteFaas(entity);
+            service.deleteFaas(getEntity());
             return '_close';
         }
         return null;
@@ -161,24 +170,24 @@ public class FaasController
                 updateOwnershipInfo(it);
             },
             onempty  : { 
-                entity.taxpayer = null;
-                entity.owner    = null;
+                getEntity().taxpayer = null;
+                getEntity().owner    = null;
             } 
         ])
     }
     
     void updateOwnershipInfo(taxpayer){
         def address = taxpayer.address.text 
-        entity.taxpayer = taxpayer;
-        entity.taxpayer.address = address
-        if (entity.owner == null || entity.owner.name == null || RPTUtil.toBoolean(entity.datacapture, true) == false){
-            entity.owner = [name:taxpayer.name, address:address];
+        getEntity().taxpayer = taxpayer;
+        getEntity().taxpayer.address = address
+        if (getEntity().owner == null || getEntity().owner.name == null || RPTUtil.toBoolean(getEntity().datacapture, true) == false){
+            getEntity().owner = [name:taxpayer.name, address:address];
             if (isFormalizeOwnerName(taxpayer)){
-                entity.owner.name = service.formalizeOwnerInfo(taxpayer.objid);
+                getEntity().owner.name = service.formalizeOwnerInfo(taxpayer.objid);
             }
         }
-        if ( RPTUtil.toBoolean(entity.datacapture, true)){
-            entity.prevowner = entity.owner.name;
+        if ( RPTUtil.toBoolean(getEntity().datacapture, true)){
+            getEntity().prevowner = getEntity().owner.name;
         }
         binding.refresh('entity.taxpayer.*|entity.owner.*|entity.prevowner.*');
     }
@@ -191,9 +200,9 @@ public class FaasController
     
     def popupChangeInfo(def inv) {
         def popupMenu = new PopupMenuOpener();
-        def list = InvokerUtil.lookupOpeners( inv.properties.category, [entity:entity] ).findAll{
+        def list = InvokerUtil.lookupOpeners( inv.properties.category, [entity:getEntity()] ).findAll{
             def vw = it.properties.visibleWhen;
-            return  ((!vw)  ||  ExpressionResolver.getInstance().evalBoolean( vw, [entity:entity, orgid:OsirisContext.env.ORGID] ));
+            return  ((!vw)  ||  ExpressionResolver.getInstance().evalBoolean( vw, [entity:getEntity(), orgid:OsirisContext.env.ORGID] ));
         }
         list.each{
             popupMenu.add( it );
@@ -213,13 +222,13 @@ public class FaasController
     }
     
     def allowEditOwnerCallback = {
-        return RPTUtil.toBoolean(entity.txntype.allowEditOwner, false);
+        return RPTUtil.toBoolean(getEntity().txntype.allowEditOwner, false);
     }
     
     def allowEditCallback = {
         if ( mode == MODE_READ) return false;
-        if ( entity.state == 'CURRENT' ) return false;
-        if ( entity.state == 'CANCELLED' ) return false;
+        if ( getEntity().state == 'CURRENT' ) return false;
+        if ( getEntity().state == 'CANCELLED' ) return false;
         return true;
     }
     
@@ -239,9 +248,9 @@ public class FaasController
     
     def allowEditPrevInfoCallback = {
         if ( mode == MODE_READ) return false;
-        if( entity.state == 'CURRENT' ) return false
-        if( entity.state == 'CANCELLED' ) return false
-        if( util.toBoolean(entity.datacapture, false) == true) return false 
+        if( getEntity().state == 'CURRENT' ) return false
+        if( getEntity().state == 'CANCELLED' ) return false
+        if( util.toBoolean(getEntity().datacapture, false) == true) return false 
         return true 
     }
     
@@ -254,10 +263,10 @@ public class FaasController
     }
     
     def showActionsCallback = {
-        if (entity.taskstate && entity.taskstate.matches('assign.*')) return false;
-        if (entity.taskstate && !entity.taskstate.matches('examiner|receiver|appraiser|provappraiser|taxmapper|provtaxmapper|recommender')) return false;
-        if (entity.state.matches('CURRENT|CANCELLED')) return false;
-        if (OsirisContext.env.USERID != entity.assignee.objid) return false;
+        if (getEntity().taskstate && getEntity().taskstate.matches('assign.*')) return false;
+        if (getEntity().taskstate && !getEntity().taskstate.matches('examiner|receiver|appraiser|provappraiser|taxmapper|provtaxmapper|recommender')) return false;
+        if (getEntity().state.matches('CURRENT|CANCELLED')) return false;
+        if (OsirisContext.env.USERID != getEntity().assignee.objid) return false;
         if (mode != MODE_READ) return false;
         return true;
     }
@@ -289,7 +298,7 @@ public class FaasController
      }
      
     def getShowAnnotation(){
-        return entity.annotated
+        return getEntity().annotated
     }
     
     def getExemptions(){
@@ -298,16 +307,17 @@ public class FaasController
     
     def getFaasType(){
         def t = '';
-        if (entity.rpu.rputype == 'land')
-            t += 'FAAS Land ';
-        else if (entity.rpu.rputype == 'bldg')
-            t += 'FAAS Building ';
-        else if (entity.rpu.rputype == 'mach')
-            t += 'FAAS Machine ';
-        else if (entity.rpu.rputype == 'planttree')
-            t += 'FAAS Plant/Tree ';
+        if (getEntity().rpu.rputype == 'land')
+            t += 'Land FAAS: ';
+        else if (getEntity().rpu.rputype == 'bldg')
+            t += 'Building FAAS: ';
+        else if (getEntity().rpu.rputype == 'mach')
+            t += 'Machine FAAS: ';
+        else if (getEntity().rpu.rputype == 'planttree')
+            t += 'Plant/Tree FAAS: ';
         else
-            t += 'FAAS Miscellaneous ';
+            t += 'Miscellaneous FAAS: ';
+        t += ' ' + getEntity().fullpin;
         return t;
     }
      
@@ -316,8 +326,8 @@ public class FaasController
     @PropertyChangeListener
     def listener = [
         'entity.administrator.*' : {
-            if ( RPTUtil.toBoolean(entity.datacapture, true)){
-                entity.prevadministrator = entity.administrator?.name
+            if ( RPTUtil.toBoolean(getEntity().datacapture, true)){
+                getEntity().prevadministrator = getEntity().administrator?.name
             }
         },
     ]
@@ -337,7 +347,7 @@ public class FaasController
     
     void buildQueryInfo(){
         queryinfo = null;
-        def redflagCount = service.getOpenRedflagCount(entity.objid);
+        def redflagCount = service.getOpenRedflagCount(getEntity().objid);
         if (redflagCount > 0){
             queryinfo = redflagCount + ' Red Flag' + (redflagCount == 1 ? ' needs' : 's need') + ' to be resolved.';
         }
@@ -348,5 +358,19 @@ public class FaasController
             return [queryinfo];
         return null;
     }
-         
+    
+    
+    def formatDate(dt){
+        if (dt == null) return '';
+        if (!(dt instanceof Date)){
+            try{
+                dt = java.sql.Date.valueOf(dt.toString())
+            }
+            catch(e){
+                return '';
+            }
+        }
+        return new java.text.SimpleDateFormat('yyyy-MM-dd').format(dt);
+    }
+
 }

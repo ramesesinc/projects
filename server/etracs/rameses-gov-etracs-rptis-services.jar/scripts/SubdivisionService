@@ -50,6 +50,12 @@ class SubdivisionService
     @Service('RPTRedFlagService')
     def redFlagSvc 
 
+    @Service('BarangayLookupService')
+    def brgySvc;
+
+    @DataContext('subdivision_cancelledimprovement')
+    def cancelledimprovementDb
+
 
     def SCHEMA_SUBDIVISION      = 'subdivision'
     def SCHEMA_SUBDIVIDED_LAND  = 'subdividedland'
@@ -122,6 +128,8 @@ class SubdivisionService
         getSubdividedLands(subdivision.objid).each{ sl ->
             deleteSubdividedLand(sl)
         }
+
+        cancelledimprovementDb.find([parentid:subdivision.objid]).delete()
         
         txnRef.delete(subdivision.objid)
         em.deleteTasks(subdivision)
@@ -167,6 +175,21 @@ class SubdivisionService
         return em.getSubdividedLands([subdivisionid:subdivisionid])
     }
 
+    @ProxyMethod
+    public void createCancelledImprovement(cancelledimprovement) {
+        deleteAffectedRpuFaas(cancelledimprovement.arpu)
+        em.delete(cancelledimprovement.arpu, 'affectedrpu')
+        cancelledimprovementDb.create(cancelledimprovement)
+    }
+
+    @ProxyMethod
+    public void undoCancelledImprovement(cancelledimprovement) {
+        def arpu = em.findAffectedRpuById(cancelledimprovement)
+        def subdivision = openSubdivision(cancelledimprovement.parentid)
+        createAffectedRpu(subdivision, arpu)
+        cancelledimprovementDb.delete([objid:cancelledimprovement.objid])
+    }
+
 
     @ProxyMethod
     public def createSubdividedLand( land, subdivision ) {
@@ -198,14 +221,18 @@ class SubdivisionService
         def affectedrpus = em.getAffectedRpusForCreate(motherland)
         checkAffectedRpus(affectedrpus)
         affectedrpus.each{ arpu -> 
-            txnRef.insertRef(arpu.prevfaasid, subdivision.objid, 'FAAS is currently referenced by Subdivision No. ' + subdivision.txnno + '.')
-            def rpu = rpuSvc.openRpu([objid:arpu.prevrpuid])
-            rpuSvc.generateNewIds(rpu)
-            rpu.ry  = subdivision.ry 
-            rpuSvc.createRpu(rpu)
-            arpu.newrpuid   = rpu.objid
-            saveAffectedRpu(arpu)
+            createAffectedRpu(subdivision, arpu)
         }
+    }
+
+    void createAffectedRpu(subdivision, arpu){
+        txnRef.insertRef(arpu.prevfaasid, subdivision.objid, 'FAAS is currently referenced by Subdivision No. ' + subdivision.txnno + '.')
+        def rpu = rpuSvc.openRpu([objid:arpu.prevrpuid])
+        rpuSvc.generateNewIds(rpu)
+        rpu.ry  = subdivision.ry 
+        rpuSvc.createRpu(rpu)
+        arpu.newrpuid   = rpu.objid
+        saveAffectedRpu(arpu)
     }
 
     @ProxyMethod
@@ -609,7 +636,6 @@ class SubdivisionService
     }
 
     void cancelMotherLands(subdivision){
-        em.updateMotherLandsTxnType(subdivision)
         getMotherLands(subdivision).each{motherland ->
             em.cancelRealProperty([objid:motherland.rpid])
             em.cancelMotherLandLedger([faasid:motherland.landfaasid])
@@ -658,6 +684,56 @@ class SubdivisionService
         return tsk 
     }
 
+
+    /*===========================================================
+    * NEW IMPROVEMENT SUPPORT 
+    ============================================================*/
+    @ProxyMethod
+    public def addNewImprovement(affectedrpu){
+        affectedrpu.txntype = [objid:'ND']
+        affectedrpu.rp = rpSvc.open([objid:affectedrpu.subdividedland.newrpid])
+        affectedrpu.barangay = brgySvc.getById(affectedrpu.rp.barangayid);
+        affectedrpu.barangayid = affectedrpu.barangay.objid;
+        affectedrpu.isection = util.toInteger(affectedrpu.rp.section);
+        affectedrpu.iparcel = util.toInteger(affectedrpu.rp.parcel);
+        affectedrpu.lgu = lguSvc.getLgus().find{it.objid == affectedrpu.lguid}
+        util.buildPin(affectedrpu)
+        affectedrpu.rp._checklandreference = false
+        affectedrpu.state = 'PENDING'
+        def faas = faasSvc.initNewDiscovery(affectedrpu)
+        faas.lgu = affectedrpu.lgu 
+        affectedrpu.newfaasid = faas.objid
+        affectedrpu.newrpuid = faas.rpuid 
+        affectedrpu.newrpid = faas.realpropertyid
+        affectedrpu.newpin = affectedrpu.subdividedland.newpin 
+        affectedrpu.newsuffix = affectedrpu.suffix 
+        affectedrpu.prevpin = 'NEW'
+        em.save(affectedrpu, SCHEMA_AFFECTED_RPU)
+        return affectedrpu 
+    }
+
+
+    /*===========================================================
+    * CANCELLED IMPROVEMENT
+    ============================================================*/
+    @ProxyMethod
+    public def getCancelledImprovements(subdivisionid) {
+        return em.getCancelledImprovements([objid:subdivisionid])    
+    }
+
+    @ProxyMethod
+    public void approveCancelledImprovement(subdivision, cancelledimprovement) {
+        def faas = faasSvc.openFaas([objid:cancelledimprovement.faasid])
+        def params = [
+            objid               : faas.objid,
+            rpuid               : faas.rpuid, 
+            txntype             : faas.txntype,
+            cancelreason        : subdivision.txntype.objid,
+            canceldate          : dtSvc.serverDate,
+            cancelledbytdnos    : 'Subdivision # ' + subdivision.txnno ,
+        ]
+        faasSvc.cancelFaas(params)
+    }
 }
 
 

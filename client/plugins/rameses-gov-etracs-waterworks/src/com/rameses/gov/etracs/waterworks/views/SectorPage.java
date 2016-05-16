@@ -96,7 +96,7 @@ public class SectorPage extends javax.swing.JPanel {
                 , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
                 , new Object[]{"expression", "#{item.reader.name} - #{item.reader.assignee.name}"}
-                , new Object[]{"typeHandler", new com.rameses.rcp.common.LookupColumnHandler(null, "lookupSectorReaders")}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.LookupColumnHandler(null, "waterworks_sector_reader:lookup")}
             })
         });
         xDataTable1.setHandler("itemHandlers.zones");
@@ -128,22 +128,6 @@ public class SectorPage extends javax.swing.JPanel {
         jTabbedPane1.addTab("General Info", jPanel1);
 
         xDataTable2.setColumns(new com.rameses.rcp.common.Column[]{
-            new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "name"}
-                , new Object[]{"caption", "Name"}
-                , new Object[]{"width", 0}
-                , new Object[]{"minWidth", 0}
-                , new Object[]{"maxWidth", 0}
-                , new Object[]{"required", false}
-                , new Object[]{"resizable", true}
-                , new Object[]{"nullWhenEmpty", true}
-                , new Object[]{"editable", true}
-                , new Object[]{"editableWhen", null}
-                , new Object[]{"visible", true}
-                , new Object[]{"visibleWhen", null}
-                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
-                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
-            }),
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "assignee"}
                 , new Object[]{"caption", "Assignee"}

@@ -24,9 +24,11 @@ WHERE barangayid LIKE $P{barangayid}
 SELECT 
 	e.name AS taxpayername,
 	e.address_text AS taxpayeraddress,
+	rl.administrator_name, 
 	rl.fullpin AS pin,
 	rl.tdno,
 	rl.classcode,
+	rl.cadastrallotno,
 	rl.rputype,
 	rl.totalav, 
 	rl.totalareaha,

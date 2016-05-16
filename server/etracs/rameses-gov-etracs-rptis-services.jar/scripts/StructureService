@@ -38,6 +38,7 @@ class StructureService extends ActiveCrudListService
             [name:"name", caption:"Structure", width:250],
             [name:"indexno", caption:"Index No.", width:80],
             [name:"state", caption:"State", width:100],
+            [name:"showinfaas", caption:"Show in FAAS", width:100, type:"boolean"],
 		]	
 	}
 

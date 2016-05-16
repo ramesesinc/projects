@@ -27,6 +27,8 @@ public class StructurePage extends javax.swing.JPanel {
         xTextField1 = new com.rameses.rcp.control.XTextField();
         xTextField2 = new com.rameses.rcp.control.XTextField();
         xNumberField1 = new com.rameses.rcp.control.XNumberField();
+        xSeparator1 = new com.rameses.rcp.control.XSeparator();
+        xCheckBox1 = new com.rameses.rcp.control.XCheckBox();
 
         setPreferredSize(new java.awt.Dimension(748, 396));
 
@@ -48,10 +50,11 @@ public class StructurePage extends javax.swing.JPanel {
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(xDataTable2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 245, Short.MAX_VALUE)
+            .add(xDataTable2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 208, Short.MAX_VALUE)
         );
 
-        formPanel1.setCaptionWidth(100);
+        formPanel1.setCaptionWidth(120);
+        formPanel1.setShowCaption(false);
 
         xTextField1.setCaption("Code");
         xTextField1.setDepends(new String[] {"selectedItem"});
@@ -73,6 +76,28 @@ public class StructurePage extends javax.swing.JPanel {
         xNumberField1.setPreferredSize(new java.awt.Dimension(50, 19));
         xNumberField1.setRequired(true);
         formPanel1.add(xNumberField1);
+
+        xSeparator1.setPreferredSize(new java.awt.Dimension(0, 10));
+
+        org.jdesktop.layout.GroupLayout xSeparator1Layout = new org.jdesktop.layout.GroupLayout(xSeparator1);
+        xSeparator1.setLayout(xSeparator1Layout);
+        xSeparator1Layout.setHorizontalGroup(
+            xSeparator1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(0, 409, Short.MAX_VALUE)
+        );
+        xSeparator1Layout.setVerticalGroup(
+            xSeparator1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(0, 10, Short.MAX_VALUE)
+        );
+
+        formPanel1.add(xSeparator1);
+
+        xCheckBox1.setCaption("");
+        xCheckBox1.setCaptionWidth(100);
+        xCheckBox1.setName("entity.showinfaas"); // NOI18N
+        xCheckBox1.setShowCaption(false);
+        xCheckBox1.setText("Show in FAAS Report?");
+        formPanel1.add(xCheckBox1);
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
@@ -100,8 +125,10 @@ public class StructurePage extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.rameses.rcp.util.FormPanel formPanel1;
     private javax.swing.JPanel jPanel6;
+    private com.rameses.rcp.control.XCheckBox xCheckBox1;
     private com.rameses.rcp.control.XDataTable xDataTable2;
     private com.rameses.rcp.control.XNumberField xNumberField1;
+    private com.rameses.rcp.control.XSeparator xSeparator1;
     private com.rameses.rcp.control.XTextField xTextField1;
     private com.rameses.rcp.control.XTextField xTextField2;
     // End of variables declaration//GEN-END:variables

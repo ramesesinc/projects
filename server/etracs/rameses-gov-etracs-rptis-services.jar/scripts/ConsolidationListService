@@ -20,8 +20,8 @@ class ConsolidationListService extends ActiveListService
     @ProxyMethod
     public def getColumns(params) {
         return [
-          [name:"txnno", caption:"Txn No.", width:70],
-          [name:"txndate", caption:"Txn Date", width:80],
+          [name:"txnno", caption:"Txn No.", width:100],
+          [name:"txndate", caption:"Txn Date", width:100],
           [name:"ry", caption:"RY", width:50, type:'integer', format:'0000'],
           [name:"newtdno", caption:"New TD No.", width:100],
           [name:"rp.pin", caption:"New PIN", width:180],
@@ -51,7 +51,9 @@ class ConsolidationListService extends ActiveListService
 
     void beforeList( params ) {
         params.state = (params.state ? params.state : '%')
- 		params.searchtext = (params.searchtext ? params.searchtext : '%')
+        params.lguid = (params.lgu ? params.lgu.objid : '%')
+        params.barangayid = (params.barangay ? params.barangay.objid : '%')
+        params.searchtext = (params.searchtext ? params.searchtext : '%')
  		params._pagingKeys = ' c.objid '
  		params.filters = '';
 		

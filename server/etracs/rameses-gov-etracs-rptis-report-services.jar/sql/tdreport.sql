@@ -394,3 +394,15 @@ select sum(la.adjustment) / sum(la.basemarketvalue) as adjfactor
 from faas f
 	inner join landadjustment la on f.rpuid = la.landrpuid 
 where f.objid = $P{faasid}
+
+
+[findTotalAdditionlItemArea]
+select 
+	SUM( case when decimalvalue is not null then decimalvalue else intvalue end ) as additionalarea 
+from faas f 
+	inner join bldgflooradditional bfa on f.rpuid = bfa.bldgrpuid
+	inner join bldgadditionalitem bi on bfa.additionalitem_objid = bi.objid 
+	inner join bldgflooradditionalparam p on bfa.objid = p.bldgflooradditionalid
+where f.objid = $P{objid}
+and bi.addareatobldgtotalarea = 1
+and param_objid = 'AREA_SQM'

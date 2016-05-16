@@ -10,8 +10,9 @@
     import com.rameses.rcp.annotations.*
     import com.rameses.osiris2.client.*
     import com.rameses.osiris2.common.*
+    import com.rameses.gov.etracs.rptis.model.*;
             
-    class ConsolidationExplorerViewController extends ExplorerViewController
+    class ConsolidationExplorerViewController extends LguQueryListModel
     {
         String serviceName = 'ConsolidationListService'
             
@@ -26,10 +27,15 @@
             return InvokerUtil.lookupOpener('consolidation:open', [entity:selectedEntity]);
         }
 
-        int getRows() { return 50 }
+        int getRows() { return 25 }
+            
+        def getStates(){
+            return ['DRAFT', 'FORAPPROVAL', 'APPROVED'];
+        }            
 
     }  
     </code>   
     <pages>
+        <page name="queryform" template="com.rameses.gov.etracs.rpt.common.LguListQueryPage" />
     </pages>
 </workunit>

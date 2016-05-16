@@ -5,6 +5,9 @@ import java.rmi.server.UID
 
 class RPTReportApproveFaasListingService
 {
+    @Env
+    def env 
+
     @ActiveDB('rptreport_approvefaaslisting')
     def em
 
@@ -15,8 +18,9 @@ class RPTReportApproveFaasListingService
     @Async
     @ProxyMethod
     public def getApproveFaasListing(params){
-    	params.lguid = params.lgu.objid 
-    	params.barangayid = (params.barangay ? params.barangay.objid : '%')
+    	params.lguid = params.lgu?.objid 
+        params.barangayid = params.barangay?.objid
+
         util.buildEndingPeriodFilter(params)
 
         def title = 'Approved FAAS Listing ' 
@@ -44,9 +48,14 @@ class RPTReportApproveFaasListingService
             }
         }
 
+        def forlguname = env.ORGCLASS + ' OF ' + env.ORGNAME 
+        if (params.lgu){
+            forlguname = params.lgu.lgutype.toUpperCase() + ' OF ' + params.lgu.name
+        }
+
         def p = [
             PERIOD     : buildPeriod(params),
-            FORLGUNAME : params.lgu.lgutype.toUpperCase() + ' OF ' + params.lgu.name,
+            FORLGUNAME : forlguname,
             TITLE      : title
         ]
 

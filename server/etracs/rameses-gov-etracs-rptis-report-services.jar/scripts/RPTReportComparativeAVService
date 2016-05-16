@@ -5,6 +5,9 @@ import java.rmi.server.UID
 
 class RPTReportComparativeAVService
 {
+	@Env 
+	def env 
+
     @ActiveDB('rptreport_comparativeav')
     def em
 
@@ -24,6 +27,8 @@ class RPTReportComparativeAVService
 	@ProxyMethod
 	public Map generateComparativeAV(params) {
 		params.lguid = params.lgu?.objid
+		params.barangayid = params.barangay?.objid
+
 		util.buildReportFormalTitlePeriod('COMPARATIVE DATA ON ASSESSED VALUE OF REAL PROPERTY', params)
 
 		util.buildPreceedingPeriodFilter(params)
@@ -77,11 +82,16 @@ class RPTReportComparativeAVService
 			lineno += 1
 		}
 		
+		def forlguname = env.ORGCLASS +  ' OF ' + env.ORGNAME 
+		if (params.lgu){
+			forlguname = params.lgu.lgutype.toUpperCase() + ' OF ' + params.lgu.name
+		}
+
 		def p = [
 			PERIOD 		: params.period,
 			PERIODTYPE 	: params.periodtype,
 			TITLE 		: params.title,
-			FORLGUNAME  : params.lgu.lgutype.toUpperCase() + ' OF ' + params.lgu.name,
+			FORLGUNAME  : forlguname,
 		]
 		return [
 			parameters  : p,

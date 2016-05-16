@@ -12,7 +12,6 @@ import com.rameses.seti2.views.CrudFormPage;
  *
  * @author Rameses
  */
-@StyleSheet
 @Template(CrudFormPage.class)
 public class StuboutPage extends javax.swing.JPanel {
 
@@ -45,7 +44,7 @@ public class StuboutPage extends javax.swing.JPanel {
         xLookupField6 = new com.rameses.rcp.control.XLookupField();
 
         xTabbedPane1.setDynamic(true);
-        xTabbedPane1.setHandler("sections");
+        xTabbedPane1.setItems("sections");
 
         xFormPanel1.setCaptionWidth(100);
 

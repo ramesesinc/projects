@@ -218,6 +218,21 @@
                         <Property name="text" type="java.lang.String" value=" Idle Land"/>
                       </Properties>
                     </Component>
+                    <Component class="com.rameses.rcp.control.XCheckBox" name="xCheckBox3">
+                      <Properties>
+                        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                          <Border info="org.netbeans.modules.form.compat2.border.EmptyBorderInfo">
+                            <EmptyBorder bottom="0" left="5" right="0" top="0"/>
+                          </Border>
+                        </Property>
+                        <Property name="cellPadding" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
+                          <Insets value="[3, 0, 0, 0]"/>
+                        </Property>
+                        <Property name="name" type="java.lang.String" value="entity.rpu.publicland" noResource="true"/>
+                        <Property name="showCaption" type="boolean" value="false"/>
+                        <Property name="text" type="java.lang.String" value="Public Land"/>
+                      </Properties>
+                    </Component>
                     <Component class="com.rameses.rcp.control.XDecimalField" name="xDecimalField16">
                       <Properties>
                         <Property name="caption" type="java.lang.String" value="Area (sqm)"/>

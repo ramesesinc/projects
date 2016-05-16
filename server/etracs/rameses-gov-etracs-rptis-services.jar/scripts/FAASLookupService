@@ -15,6 +15,7 @@ class FAASLookupService
 	public def lookupFaas( params ) {
 		params.state 		= (params.state ? params.state : '') + '%'
 		params.taxpayerid 	= (params.taxpayerid ? params.taxpayerid : '') + '%'
+		params.rputype 		= (params.rputype ? params.rputype : '') + '%'
 		params.tdno 		= params.searchtext
 		params.blockno 		= params.searchtext 
 		params.searchtext 	= (params.searchtext ? params.searchtext : '') + '%';

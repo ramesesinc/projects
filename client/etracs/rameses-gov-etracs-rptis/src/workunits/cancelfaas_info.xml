@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit>
     <invokers>
-        <invoker type="cancelledfaas:info" action="open" caption="FAAS"  index="0" />
+        <invoker type="cancelledfaas:info" action="open" caption="Cancellation Info"  index="0" />
         <invoker type="formActions" action="edit" caption="Edit" mnemonic="e" visibleWhen="#{showActions==true &amp;&amp; mode=='read'}" role="EXAMINER,RECEIVER,APPRAISER,TAXMAPPER"/>
         <invoker type="formActions" action="cancelEdit" caption="Cancel" mnemonic="c" visibleWhen="#{mode != 'read'}" immediate="true" />
         <invoker type="formActions" action="save" caption="Save" mnemonic="s" shortcut="ctrl S" visibleWhen="#{mode != 'read'}" />

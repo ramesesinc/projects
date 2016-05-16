@@ -1,0 +1,9 @@
+<schema adapter="main">
+    <element tablename="subdivision_cancelledimprovement">
+        <field name="objid" primary="true" />
+        <field name="parentid" required="true"/>
+        <field name="faasid" required="true"/>
+        <field name="remarks" />
+    </element>
+</schema>
+

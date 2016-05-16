@@ -1,0 +1,49 @@
+<workunit extends="wtemplates/LookupController.xml">
+    <invokers>
+        <invoker type="bldgmaster:lookup" action="init" caption="Building FAAS Lookup" target="popup" width="700"/>
+    </invokers>
+    
+    <code>
+
+import com.rameses.rcp.common.*
+import com.rameses.rcp.annotations.*
+import com.rameses.osiris2.client.*
+import com.rameses.osiris2.common.*
+
+class BldgMasterLookupController extends LookupController
+{
+    @Service("BldgMasterLookupService")
+    def svc
+    
+    def ry;
+    def state;
+    def rputype;
+    def pin;
+    
+    int getRows(){
+        return  25;
+    }
+    
+    Column[] getColumns() {
+        return [
+            new Column(name:"tdno", caption:"TD No.", width:180),
+            new Column(name:"owner.name", caption:"Declared Owner", width:200),
+            new Column(name:"classification.code", caption:"Class", width:50),
+            new Column(name:"rputype", caption:"Type", width:60),
+            new Column(name:"fullpin", caption:"PIN", width:180),
+            new Column(name:"totalav", caption:"A.V.", width:100, type:'decimal', format:'#,##0.00'),
+            new Column(name:"state", caption:"State", width:80),
+        ]
+    }
+    
+    List fetchList( Map params ) { 
+        params.state = state;
+        params.ry = ry;
+        params.rputype = rputype;
+        params.pin = pin;
+        return svc.lookupBldgMaster(params)
+    }
+}  
+
+    </code>
+</workunit>

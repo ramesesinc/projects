@@ -23,6 +23,9 @@ class FAASAnnotationService
 	@Service('RPTUtil')
     def util 
 
+    @Service('DBImageService')
+    def imageSvc
+
 
 	@Env
 	def env
@@ -110,6 +113,28 @@ class FAASAnnotationService
 		def annotation = em.findById([objid:objid])
 		if( !annotation ) throw new Exception('Record does not exist or has already been deleted.')
 		return annotation 
+	}
+
+	@ProxyMethod
+	public void saveImages(annotation) {
+		if (!annotation.image) return
+		annotation.image.headers.each{
+			imageSvc.saveHeader(it)
+		}
+		annotation.image.chunks.each{
+			imageSvc.saveItem(it)
+		}
+	}
+
+	@ProxyMethod
+	public def getImage( annotation ) {
+			def headers = imageSvc.getImages([refid:annotation.objid])
+			
+			def chunks = []
+			headers.each{
+				chunks += imageSvc.getImageItems(it)
+			}
+			return [headers:headers, chunks:chunks]
 	}
 
 

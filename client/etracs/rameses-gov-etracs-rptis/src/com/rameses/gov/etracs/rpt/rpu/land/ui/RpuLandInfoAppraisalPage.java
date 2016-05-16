@@ -39,6 +39,7 @@ public class RpuLandInfoAppraisalPage extends javax.swing.JPanel {
         xDecimalField2 = new com.rameses.rcp.control.XDecimalField();
         formPanel19 = new com.rameses.rcp.util.FormPanel();
         xCheckBox2 = new com.rameses.rcp.control.XCheckBox();
+        xCheckBox3 = new com.rameses.rcp.control.XCheckBox();
         xDecimalField16 = new com.rameses.rcp.control.XDecimalField();
         xDecimalField17 = new com.rameses.rcp.control.XDecimalField();
         xDecimalField14 = new com.rameses.rcp.control.XDecimalField();
@@ -115,6 +116,13 @@ public class RpuLandInfoAppraisalPage extends javax.swing.JPanel {
         xCheckBox2.setText(" Idle Land");
         formPanel19.add(xCheckBox2);
 
+        xCheckBox3.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 5, 0, 0));
+        xCheckBox3.setCellPadding(new java.awt.Insets(3, 0, 0, 0));
+        xCheckBox3.setName("entity.rpu.publicland"); // NOI18N
+        xCheckBox3.setShowCaption(false);
+        xCheckBox3.setText("Public Land");
+        formPanel19.add(xCheckBox3);
+
         xDecimalField16.setCaption("Area (sqm)");
         xDecimalField16.setCaptionWidth(70);
         xDecimalField16.setCellPadding(new java.awt.Insets(2, 30, 0, 0));
@@ -181,6 +189,7 @@ public class RpuLandInfoAppraisalPage extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel12;
     private com.rameses.rcp.control.XButton xButton6;
     private com.rameses.rcp.control.XCheckBox xCheckBox2;
+    private com.rameses.rcp.control.XCheckBox xCheckBox3;
     private com.rameses.rcp.control.XComboBox xComboBox6;
     private com.rameses.rcp.control.XDataTable xDataTable3;
     private com.rameses.rcp.control.XDecimalField xDecimalField14;

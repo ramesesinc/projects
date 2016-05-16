@@ -1,10 +1,11 @@
-<schema>
+<schema adapter="main">
 	<element name="structure" tablename="structure">
 		<field name="objid" primary="true"/>
 		<field name="state" required="true"/>
 		<field name="code" required="true"/>
 		<field name="name" required="true"/>
 		<field name="indexno" type="integer" />
+		<field name="showinfaas" type="boolean" />
 	</element>
 	
 	<element name="structurematerial" tablename="structurematerial">

@@ -22,5 +22,6 @@
 		<field name="lgutype" required="true" />
 		<field name="lguid" />
 		<field name="previd" />
+		<field name="stewardshipno" />
 	</element>
 </schema>

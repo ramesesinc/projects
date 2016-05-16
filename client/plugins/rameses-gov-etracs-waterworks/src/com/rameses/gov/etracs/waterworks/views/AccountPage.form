@@ -28,7 +28,7 @@
   <SubComponents>
     <Container class="com.rameses.rcp.control.XTabbedPane" name="xTabbedPane1">
       <Properties>
-        <Property name="handler" type="java.lang.String" value="sections"/>
+        <Property name="items" type="java.lang.String" value="sections"/>
       </Properties>
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout"/>
@@ -214,11 +214,7 @@
                                       <EmptySpace max="-2" attributes="0"/>
                                       <Component id="xFormPanel6" min="-2" pref="217" max="-2" attributes="0"/>
                                   </Group>
-                                  <Group type="102" attributes="0">
-                                      <Component id="xButton3" min="-2" max="-2" attributes="0"/>
-                                      <EmptySpace max="-2" attributes="0"/>
-                                      <Component id="xButton5" min="-2" max="-2" attributes="0"/>
-                                  </Group>
+                                  <Component id="xButton3" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace pref="20" max="32767" attributes="0"/>
                           </Group>
@@ -233,10 +229,7 @@
                                   <Component id="xFormPanel3" max="32767" attributes="0"/>
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="3" attributes="0">
-                                  <Component id="xButton3" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="xButton5" alignment="3" min="-2" max="-2" attributes="0"/>
-                              </Group>
+                              <Component id="xButton3" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="32767" attributes="0"/>
                           </Group>
                       </Group>
@@ -347,14 +340,6 @@
                         </Component>
                       </SubComponents>
                     </Container>
-                    <Component class="com.rameses.rcp.control.XButton" name="xButton5">
-                      <Properties>
-                        <Property name="immediate" type="boolean" value="true"/>
-                        <Property name="name" type="java.lang.String" value="assignStuboutNode" noResource="true"/>
-                        <Property name="text" type="java.lang.String" value="Select Node"/>
-                        <Property name="visibleWhen" type="java.lang.String" value="#{mode == &apos;create&apos;}"/>
-                      </Properties>
-                    </Component>
                   </SubComponents>
                 </Container>
               </SubComponents>

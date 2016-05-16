@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit>
     <invokers>
-        <!--
         <invoker type="faas:changeinfo" action="init" 
             caption="FAAS Appraisal Information" target="popup"  
             role="ADMIN" permission="faas.change_faas_info" index="2"
@@ -11,7 +10,6 @@
             caption="FAAS Appraisal Information" target="popup"  
             role="APPRAISER" index="2" 
             actiontype="change_faas_appraisal"/>
-        -->
         
         <invoker type="faas:redflag:action" action="init" 
             caption="Change Appraisal Information" index="6" 

@@ -352,7 +352,9 @@ class RPTUtil
         params.filter = ''
 
         if (params.lguid)
-            params.filter += ' f.lguid = $P{lguid} AND '
+            params.filter += ' f.lguid like $P{lguid} AND '
+        if (params.barangayid)
+            params.filter += ' rp.barangayid = $P{barangayid} AND '
 
         params.filter += '(f.year < $P{year} '
         if (params.month)
@@ -371,7 +373,10 @@ class RPTUtil
         params.filter = ''
 
         if (params.lguid)
-            params.filter += ' f.lguid = $P{lguid} AND '            
+            params.filter += ' f.lguid like $P{lguid} AND '      
+
+        if (params.barangayid)
+            params.filter += ' rp.barangayid = $P{barangayid} AND '
 
         if (params.month)
             params.filter += ' (f.year = $P{year} and f.month = $P{monthno} )' 
@@ -391,7 +396,10 @@ class RPTUtil
         params.filter = ''
         
         if (params.lguid)
-            params.filter += ' f.lguid = $P{lguid} AND '
+            params.filter += ' f.lguid like $P{lguid} AND '
+
+        if (params.barangayid)
+            params.filter += ' rp.barangayid = $P{barangayid} AND '
 
         params.filter += '(f.year < $P{year} '
         if (params.month != null)
@@ -611,6 +619,20 @@ class RPTUtil
 
     }
 
+    void validSuffix(entity) {
+        def valid = false
+        if (entity.rputype == 'bldg' && entity.suffix >= 1001 && entity.suffix <= 1999) 
+            valid = true
+        else if (entity.rputype == 'mach' && entity.suffix >= 2001 && entity.suffix <= 2999) 
+            valid = true
+        else if (entity.rputype == 'planttree' && entity.suffix >= 3001 && entity.suffix <= 3999) 
+            valid = true
+        else if (entity.rputype == 'misc' &&  (entity.suffix >= 5001 && entity.suffix <= 5999) || (entity.suffix >= 7001 && entity.suffix <= 7999)  )
+            valid = true
+        if (!valid)
+            throw new Exception('Invalid Suffix.')
+    }
+
     int getParcelLength(parcellen, pintype){
         int len = 3; //default old 
         try{
@@ -643,6 +665,20 @@ class RPTUtil
         if (!s) return ''
         if (s.length() == 1) return s.toUpperCase();
         return s[0].toUpperCase() + s[1..-1].toLowerCase() 
+    }
+
+
+    @ProxyMethod
+    public void buildStartEndDateFilter(params){
+        if (params.month){
+            def sdt = params.year + '-' + params.month.index.toString().padLeft(2,'0') + '-01'
+            params.startdate = dtSvc.parse('yyyy-MM-dd', sdt)
+            params.enddate = dtSvc.getMonthEndDate(params.startdate) + 1
+        }
+        else {
+            params.startdate = dtSvc.getBeginningQtrDate(params.qtr, params.year, 0)
+            params.enddate = dtSvc.getQtrEndDate(params.qtr, params.year) + 1   
+        }
     }
 
 }

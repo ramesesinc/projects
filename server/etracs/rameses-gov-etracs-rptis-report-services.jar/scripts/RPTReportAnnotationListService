@@ -12,6 +12,7 @@ class RPTReportAnnotationListService
 	@ProxyMethod 
 	public def generateAnnotationListing(params) {
 		params.lguid = params.lgu.objid 
+		params.barangayid = (params.barangay ? params.barangay.objid : '%')
 
 		params.orderbyclause = ''
 		if( params.orderby ) {

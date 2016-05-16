@@ -5,6 +5,9 @@ import java.rmi.server.UID
 
 class RPTReportAccomplishmentRPAService
 {
+	@Env 
+	def env 
+
     @ActiveDB('rptreport_accomplishmentrpa')
     def em
 
@@ -22,7 +25,8 @@ class RPTReportAccomplishmentRPAService
 	@Async
 	@ProxyMethod
 	public Map generateAccomplishmentRPA(params) {
-		params.lguid = params.lgu?.objid 
+		params.lguid = params.lgu?.objid
+		params.barangayid = params.barangay?.objid
 
 		util.buildReportFormalTitlePeriod('ACCOMPLISHMENT REPORT ON REAL PROPERTY ASSESSMENTS', params)
 
@@ -91,11 +95,17 @@ class RPTReportAccomplishmentRPAService
 			endingexemptcount		: util.sum(lguinfos, 'endingexemptcount'),
 			endingexemptav			: util.sum(lguinfos, 'endingexemptav'),
 		])
+
+		def forlguname = env.ORGCLASS + ' OF ' + env.ORGNAME 
+		if (params.lgu){
+			forlguname = params.lgu.lgutype.toUpperCase() + ' OF ' + params.lgu.name
+		}
+		
 		def p = [
 			PERIOD 		: params.period,
 			PERIODTYPE 	: params.periodtype,
 			TITLE 		: params.title,
-			FORLGUNAME  : params.lgu.lgutype.toUpperCase() + ' OF ' + params.lgu.name,
+			FORLGUNAME  : forlguname,
 		]
 		return [
 			parameters  : p, 
@@ -106,7 +116,10 @@ class RPTReportAccomplishmentRPAService
 
     @ProxyMethod
     public def getBarangays(params){
-    	return lguSvc.lookupBarangaysByRootId(params.lguid)	
+    	def brgys = lguSvc.lookupBarangaysByRootId(params.lguid)	
+    	if (params.barangayid)
+    		return [brgys.find{it.objid == params.barangayid}]
+    	return brgys
     }
 
 }

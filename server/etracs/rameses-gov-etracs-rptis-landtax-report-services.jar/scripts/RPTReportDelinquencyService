@@ -118,6 +118,9 @@ class RPTReportDelinquencyService
 				} else {  
 					it.area = numSvc.format('#,##0.00', it.totalareasqm) + ' sqm' 
 				} 
+				if (it.administrator && it.administrator.name){
+					it.taxpayername += '\nAdmin: ' + it.administrator.name 
+				}
 			} 
 		} 
 		return [reportdata:list]; 

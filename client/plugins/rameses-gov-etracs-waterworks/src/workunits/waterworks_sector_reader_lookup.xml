@@ -6,14 +6,11 @@
     </invokers>
     
     <code>
-        class WaterworksReaderLookup extends com.rameses.seti2.models.CrudLookupModel {
-    
-            def sectorid;
-        
-            public void beforeQuery( def m ) {
-                m.sectorid = sectorid;
+        class ReaderLookup extends com.rameses.seti2.models.CrudLookupModel {
+            def getCustomFilter() {
+                return [ "sectorid=:sid", [sid: caller?.entity?.objid] ];
             }
-        
         }
     </code>
+        
 </workunit>

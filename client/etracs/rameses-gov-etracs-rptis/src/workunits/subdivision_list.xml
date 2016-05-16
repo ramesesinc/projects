@@ -10,20 +10,11 @@
     import com.rameses.rcp.annotations.*
     import com.rameses.osiris2.client.*
     import com.rameses.osiris2.common.*
+    import com.rameses.gov.etracs.rptis.model.*;
             
-    class SubdivisionExplorerViewController extends ExplorerViewController
+    class SubdivisionExplorerViewController extends LguQueryListModel
     {
         String serviceName = 'SubdivisionListService'
-            
-        @Service('LGUService')
-        def lguSvc
-            
-        @PropertyChangeListener
-        def listener = [
-            'query.(lgu|state)' : {
-                search();
-            }
-        ]
             
         String formTarget = 'window'
         boolean allowCreate = false;
@@ -36,31 +27,15 @@
             return InvokerUtil.lookupOpener('subdivision:open', [entity:selectedEntity]);
         }
 
-        int getRows() { return 50 }
+        int getRows() { return 25 }
             
         def getStates(){
             return ['DRAFT', 'FORAPPROVAL', 'APPROVED'];
-        }
-            
-        def getLgus(){
-            def orgclass = OsirisContext.env.ORGCLASS
-            def orgid = OsirisContext.env.ORGID
-
-            if ('PROVINCE'.equalsIgnoreCase(orgclass)) {
-                return lguSvc.lookupMunicipalities([:])
-            }
-            else if ('MUNICIPALITY'.equalsIgnoreCase(orgclass)) {
-                return [lguSvc.lookupMunicipalityById(orgid)]
-            }
-            else if ('CITY'.equalsIgnoreCase(orgclass)) {
-                return [lguSvc.lookupCityById(orgid)]
-            }
-            return []
         }
 
     }  
     </code>   
     <pages>
-        <page name="queryform" template="com.rameses.gov.etracs.rpt.subdivision.ui.SubdivisionListQueryPage" />
+        <page name="queryform" template="com.rameses.gov.etracs.rpt.common.LguListQueryPage" />
     </pages>
 </workunit>

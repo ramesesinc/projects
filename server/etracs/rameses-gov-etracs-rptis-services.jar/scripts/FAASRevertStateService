@@ -23,6 +23,9 @@ public class FAASRevertStateService
     @XConnection('async_remote') 
     def asyncConn;	
 
+    @DataContext('faas_list')
+    def faaslistDb
+
 
 	@ProxyMethod
 	public def revertStateToInterim(faas){
@@ -74,6 +77,14 @@ public class FAASRevertStateService
     	em.updateRpuState(entity)
     	if (entity.rputype == 'land')
     		em.updateRealPropertyState(entity)
+
+    	def faaslist = [:]
+    	faaslist.objid = entity.objid
+    	faaslist.state = entity.state
+    	faaslist.taskid = null
+    	faaslist.taskstate = null
+    	faaslist.assignee = null
+    	faaslistDb.update(faaslist)
     }
 }
 

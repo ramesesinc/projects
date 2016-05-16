@@ -19,6 +19,11 @@ public class RPTISTestHelperService
     }
 
     @ProxyMethod
+    public def findCancelledFaas( cancelledfaas ) {
+        em.findCancelledFaasById(cancelledfaas)    
+    }
+
+    @ProxyMethod
     public def findSubdivision( subdivision ) {
         em.findSubdivisionById(subdivision)    
     }

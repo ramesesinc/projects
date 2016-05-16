@@ -2,14 +2,11 @@ import com.rameses.annotations.*;
 
 class WaterworksApplicationPersistenceInterceptor{
 	
-	@DataContext("waterworks_account")
-	def waterworks_account;	
-
 	@DataContext("waterworks_application_task")
 	def appTask;	
 
-	@DataContext("waterworks_application_fee")
-	def waterworks_application_fee;
+	@DataContext("waterworks_stubout_node")
+	def stubout_node;	
 
 	@Service("SequenceService")
 	def seqSvc;
@@ -24,13 +21,12 @@ class WaterworksApplicationPersistenceInterceptor{
 	public void beforeCreate(def evt) {
 		def o  = evt.args[0];
 		o.appno = 'WA'+seqSvc.getNextFormattedSeriesA('water_application', 6);
-		o.address.text = formatAddress( o.address ); 
 		o.dtfiled  = dateSvc.getServerDate();
 		o.fees.each{
 			it.amtpaid = 0;
 			it.txntype = 'REG'; 
 		}
-	}
+	} 
 
 	@After(pattern="PersistenceService.create", eval="#{args[0]._schemaname == 'waterworks_application'}")
 	public void afterCreate(def evt) {
@@ -38,18 +34,14 @@ class WaterworksApplicationPersistenceInterceptor{
 		workflowTaskSvc.start( [refid:o.objid, processname: 'waterworks_application' ] );
 	}
 
-	def formatAddress( addr ) {
-		def buff = []; 
-		def values = [ addr.unitno, addr.bldgno, addr.bldgname ]; 
-		def text = values.findAll{ it != null }.join(' ');
-		if ( text ) buff << text; 
-
-		values = [ addr.street, addr.subdivision, addr.barangay?.name, addr.municipality, addr.city, addr.province ]; 
-		text = values.findAll{ it != null }.join(', ');
-		if ( text ) buff << text; 
-
-		return buff.join('\n'); 
-	} 
+	@After(pattern="PersistenceService.update", eval="#{args[0]._schemaname == 'waterworks_application'}")
+	public void beforeUpdate(def evt) {
+		def o  = evt.args[0];
+		//update the stubout node.
+		if(o.stuboutnode?.objid) {
+			stubout_node.find( [objid: o.stuboutnode.objid] ).update( [applicationid: o.objid] );	
+		}
+	}
 
 	/*****************************************************************************************************
 	* attach the task
@@ -58,7 +50,7 @@ class WaterworksApplicationPersistenceInterceptor{
 	public void findFirst(def evt) {
 		def o  = evt.result;
 		def parm = evt.args[0];
-		def m =[processname: 'waterworks_application'];
+		def m =[processname: parm._schemaname];
 		if(parm.taskid) {
 			m.taskid = parm.taskid; 
 		}

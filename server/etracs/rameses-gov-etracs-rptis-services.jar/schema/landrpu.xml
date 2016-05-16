@@ -1,7 +1,8 @@
-<schema>
+<schema adapter="main">
 	<element name="landrpu"	tablename="landrpu" >
 		<field name="objid" primary="true" />
 		<field name="idleland" required="true" type="boolean" />
+		<field name="publicland" required="true" type="boolean" />
 		<field name="totallandbmv" required="true" type="decimal" />
 		<field name="totallandmv" required="true" type="decimal" />
 		<field name="totallandav" required="true" type="decimal" />

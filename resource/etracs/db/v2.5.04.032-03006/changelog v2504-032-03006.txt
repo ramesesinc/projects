@@ -1,0 +1,16 @@
+/* v2.5.04.032-03006 */
+
+- TREAURY
+	- 
+
+- BPLS 
+	- 
+		
+- ASSESSOR
+	- Add "public" land flag 
+	- Sync Change Info data with FAAS Listing
+	- Fix cancelled FAAS reported issues
+	- Modify Monthly/Quarterly Report on Real Property Assessment: add Total AV ( av - restrictionav)
+
+- LANDTAX: 
+	- 

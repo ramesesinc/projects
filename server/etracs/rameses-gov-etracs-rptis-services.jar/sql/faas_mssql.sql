@@ -1,36 +1,8 @@
 [getList]
-SELECT 
-	f.*,
-	rpu.rputype,
-	rpu.ry,
-	rpu.taxable,
-	rpu.totalareaha,
-	rpu.totalareasqm,
-	rpu.totalbmv,
-	rpu.totalmv,
-	rpu.totalav,
-	rp.section,
-	rp.parcel,
-	rp.surveyno,
-	rp.cadastrallotno,
-	rp.blockno,
-	rp.claimno,
-	b.name AS barangay_name,
-	pc.code AS classification_code,
-	t.trackingno,
-	tsk.objid AS taskid,
-	tsk.state AS taskstate,
-	tsk.assignee_objid 
-FROM faas f
-	INNER JOIN rpu rpu ON f.rpuid = rpu.objid
-	INNER  JOIN realproperty rp ON f.realpropertyid = rp.objid
-	INNER JOIN barangay b ON rp.barangayid = b.objid 
-	LEFT JOIN propertyclassification pc ON rpu.classification_objid = pc.objid 
-	LEFT JOIN faas_task tsk ON f.objid = tsk.refid AND tsk.enddate IS NULL
-	LEFT JOIN rpttracking t ON f.objid = t.objid 
-WHERE 1=1 
+SELECT * 
+from faas_list f 
+where 1=1 
 ${filters}
-
 
 
 [findById]
@@ -184,9 +156,9 @@ SELECT
 	pc.name AS classification_name, 
 	pc.name AS classname, 
 	r.ry, r.realpropertyid, r.rputype, r.fullpin, r.totalmv, r.totalav,
-	r.totalareasqm, r.totalareaha, r.suffix, 
+	r.totalareasqm, r.totalareaha, r.suffix, r.rpumasterid, 
 	rp.barangayid, rp.cadastrallotno, rp.blockno, rp.surveyno, rp.lgutype, rp.pintype, 
-	rp.section, rp.parcel, 
+	rp.section, rp.parcel, rp.stewardshipno,
 	b.name AS barangay_name,
 	t.trackingno
 FROM faas f
@@ -195,8 +167,13 @@ FROM faas f
 	INNER JOIN propertyclassification pc ON r.classification_objid = pc.objid 
 	INNER JOIN barangay b ON rp.barangayid = b.objid 
 	LEFT JOIN rpttracking t ON f.objid = t.objid 
-where 1=1  AND f.state <> 'PENDING' ${filters}	
+where 1=1  
+	AND f.state <> 'PENDING' 
+	AND r.rputype like $P{rputype}
+	AND f.state LIKE $P{state} 
+	${filters}	
 ORDER BY f.tdno 
+
 
 
 [getLandImprovementIds]
@@ -484,7 +461,8 @@ where objid = $P{objid}
 select
 	action,
 	username,
-	txndate 
+	txndate, 
+	remarks
 from txnlog l	
 where refid = $P{objid}
 order by txndate 
@@ -624,3 +602,9 @@ where r.objid = f.rpuid
 
 [findOpenTask]  
 select * from faas_task where refid = $P{objid} and enddate is null   
+
+[deleteAffectedRpus]
+delete from faas_affectedrpu where faasid = $P{objid}
+
+[deleteFaasStewardship]	
+delete from faas_stewardship where stewardrpumasterid = $P{rpumasterid}	

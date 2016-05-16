@@ -21,7 +21,9 @@ public class AffectedRpuPage extends javax.swing.JPanel {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
+        jPanel4 = new javax.swing.JPanel();
         xDataTable2 = new com.rameses.rcp.control.XDataTable();
+        xLabel4 = new com.rameses.rcp.control.XLabel();
         jPanel2 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
         xFormPanel3 = new com.rameses.rcp.control.XFormPanel();
@@ -38,6 +40,8 @@ public class AffectedRpuPage extends javax.swing.JPanel {
         jPanel1.setPreferredSize(new java.awt.Dimension(300, 100));
         jPanel1.setLayout(new java.awt.BorderLayout());
 
+        jPanel4.setLayout(new java.awt.BorderLayout());
+
         xDataTable2.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "prevpin"}
@@ -49,6 +53,8 @@ public class AffectedRpuPage extends javax.swing.JPanel {
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
                 , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.UPPER}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             }),
@@ -63,6 +69,8 @@ public class AffectedRpuPage extends javax.swing.JPanel {
                 , new Object[]{"nullWhenEmpty", true}
                 , new Object[]{"editable", true}
                 , new Object[]{"editableWhen", null}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.UPPER}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.IntegerColumnHandler("0000", -1, -1)}
             })
@@ -71,7 +79,17 @@ public class AffectedRpuPage extends javax.swing.JPanel {
         xDataTable2.setImmediate(true);
         xDataTable2.setName("selectedItem"); // NOI18N
         xDataTable2.setPreferredSize(new java.awt.Dimension(150, 80));
-        jPanel1.add(xDataTable2, java.awt.BorderLayout.CENTER);
+        jPanel4.add(xDataTable2, java.awt.BorderLayout.CENTER);
+
+        xLabel4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
+        xLabel4.setExpression("#{info}");
+        xLabel4.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        xLabel4.setForeground(new java.awt.Color(0, 0, 204));
+        xLabel4.setPadding(new java.awt.Insets(5, 5, 5, 5));
+        xLabel4.setVisibleWhen("#{info != null}");
+        jPanel4.add(xLabel4, java.awt.BorderLayout.PAGE_START);
+
+        jPanel1.add(jPanel4, java.awt.BorderLayout.CENTER);
 
         jPanel2.setLayout(new java.awt.BorderLayout());
 
@@ -146,6 +164,7 @@ public class AffectedRpuPage extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
     private com.rameses.rcp.control.XActionBar xActionBar1;
     private com.rameses.rcp.control.XDataTable xDataTable2;
     private com.rameses.rcp.control.XFormPanel xFormPanel2;
@@ -154,6 +173,7 @@ public class AffectedRpuPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XLabel xLabel1;
     private com.rameses.rcp.control.XLabel xLabel2;
     private com.rameses.rcp.control.XLabel xLabel3;
+    private com.rameses.rcp.control.XLabel xLabel4;
     private com.rameses.rcp.control.XSubFormPanel xSubFormPanel1;
     // End of variables declaration//GEN-END:variables
     

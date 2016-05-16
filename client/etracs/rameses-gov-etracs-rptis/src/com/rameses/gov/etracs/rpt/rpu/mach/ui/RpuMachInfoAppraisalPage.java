@@ -4,10 +4,9 @@
  */
 package com.rameses.gov.etracs.rpt.rpu.mach.ui;
 
-/**
- *
- * @author Toshiba
- */
+import com.rameses.rcp.ui.annotations.StyleSheet;
+
+@StyleSheet
 public class RpuMachInfoAppraisalPage extends javax.swing.JPanel {
 
     /**
@@ -26,11 +25,9 @@ public class RpuMachInfoAppraisalPage extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel5 = new javax.swing.JPanel();
-        xCheckBox1 = new com.rameses.rcp.control.XCheckBox();
-        formPanel6 = new com.rameses.rcp.util.FormPanel();
-        xNumberField16 = new com.rameses.rcp.control.XNumberField();
         jPanel1 = new javax.swing.JPanel();
+        xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
+        xLookupField1 = new com.rameses.rcp.control.XLookupField();
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
         xComboBox1 = new com.rameses.rcp.control.XComboBox();
         xButton4 = new com.rameses.rcp.control.XButton();
@@ -56,60 +53,25 @@ public class RpuMachInfoAppraisalPage extends javax.swing.JPanel {
         xNumberField14 = new com.rameses.rcp.control.XNumberField();
         xNumberField15 = new com.rameses.rcp.control.XNumberField();
 
-        com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
-        xTitledBorder1.setTitle("Sworn Statement");
-        jPanel5.setBorder(xTitledBorder1);
-
-        xCheckBox1.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
-        xCheckBox1.setCheckValue(1);
-        xCheckBox1.setDepends(new String[] {"selectedMachine"});
-        xCheckBox1.setEnabled(false);
-        xCheckBox1.setMargin(new java.awt.Insets(0, 0, 0, 0));
-        xCheckBox1.setName("selectedMachine.useswornamount"); // NOI18N
-        xCheckBox1.setOpaque(false);
-        xCheckBox1.setReadonly(true);
-        xCheckBox1.setText("Use Sworn Amount?");
-        xCheckBox1.setUncheckValue(0);
-
-        formPanel6.setCaptionWidth(95);
-
-        xNumberField16.setEditable(false);
-        xNumberField16.setCaption("Sworn Amount");
-        xNumberField16.setDepends(new String[] {"selectedMachine"});
-        xNumberField16.setEnabled(false);
-        xNumberField16.setFieldType(java.math.BigDecimal.class);
-        xNumberField16.setName("selectedMachine.swornamount"); // NOI18N
-        xNumberField16.setPattern("#,##0.00");
-        xNumberField16.setPreferredSize(new java.awt.Dimension(150, 18));
-        xNumberField16.setReadonly(true);
-        formPanel6.add(xNumberField16);
-
-        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
-        jPanel5.setLayout(jPanel5Layout);
-        jPanel5Layout.setHorizontalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(xCheckBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(14, Short.MAX_VALUE))
-            .addComponent(formPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, 137, Short.MAX_VALUE)
-        );
-        jPanel5Layout.setVerticalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
-                .addComponent(xCheckBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(formPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-        );
-
         setLayout(new java.awt.BorderLayout());
 
         jPanel1.setLayout(new java.awt.BorderLayout());
 
+        xLookupField1.setCaption("Building PIN");
+        xLookupField1.setCaptionWidth(80);
+        xLookupField1.setCellPadding(new java.awt.Insets(5, 0, 0, 0));
+        xLookupField1.setEnabled(false);
+        xLookupField1.setExpression("#{entity.rpu.bldgmaster.fullpin}");
+        xLookupField1.setHandler("lookupFaas");
+        xLookupField1.setName("entity.rpu.bldgmaster"); // NOI18N
+        xLookupField1.setPreferredSize(new java.awt.Dimension(305, 20));
+        xFormPanel2.add(xLookupField1);
+
         xFormPanel1.setCaptionBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
         xFormPanel1.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
-        xFormPanel1.setPadding(new java.awt.Insets(5, 5, 5, 5));
-        xFormPanel1.setPreferredSize(new java.awt.Dimension(396, 30));
+        xFormPanel1.setPadding(new java.awt.Insets(0, 0, 0, 5));
+        xFormPanel1.setPreferredSize(new java.awt.Dimension(396, 25));
+        xFormPanel1.setShowCaption(false);
 
         xComboBox1.setAllowNull(false);
         xComboBox1.setCaption("Actual Use");
@@ -137,7 +99,9 @@ public class RpuMachInfoAppraisalPage extends javax.swing.JPanel {
         xButton5.setText("Edit");
         xFormPanel1.add(xButton5);
 
-        jPanel1.add(xFormPanel1, java.awt.BorderLayout.PAGE_START);
+        xFormPanel2.add(xFormPanel1);
+
+        jPanel1.add(xFormPanel2, java.awt.BorderLayout.PAGE_START);
 
         xDataTable2.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createEmptyBorder(2, 0, 2, 0), javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153))));
         xDataTable2.setColumns(new com.rameses.rcp.common.Column[]{
@@ -414,29 +378,27 @@ public class RpuMachInfoAppraisalPage extends javax.swing.JPanel {
     private com.rameses.rcp.util.FormPanel formPanel3;
     private com.rameses.rcp.util.FormPanel formPanel4;
     private com.rameses.rcp.util.FormPanel formPanel5;
-    private com.rameses.rcp.util.FormPanel formPanel6;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel4;
-    private javax.swing.JPanel jPanel5;
     private com.rameses.rcp.control.XButton xButton4;
     private com.rameses.rcp.control.XButton xButton5;
-    private com.rameses.rcp.control.XCheckBox xCheckBox1;
     private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XDataTable xDataTable2;
     private com.rameses.rcp.control.XDecimalField xDecimalField1;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
+    private com.rameses.rcp.control.XFormPanel xFormPanel2;
     private com.rameses.rcp.control.XLabel xLabel2;
     private com.rameses.rcp.control.XLabel xLabel3;
     private com.rameses.rcp.control.XLabel xLabel7;
     private com.rameses.rcp.control.XLabel xLabel8;
     private com.rameses.rcp.control.XLabel xLabel9;
+    private com.rameses.rcp.control.XLookupField xLookupField1;
     private com.rameses.rcp.control.XNumberField xNumberField1;
     private com.rameses.rcp.control.XNumberField xNumberField10;
     private com.rameses.rcp.control.XNumberField xNumberField12;
     private com.rameses.rcp.control.XNumberField xNumberField13;
     private com.rameses.rcp.control.XNumberField xNumberField14;
     private com.rameses.rcp.control.XNumberField xNumberField15;
-    private com.rameses.rcp.control.XNumberField xNumberField16;
     private com.rameses.rcp.control.XNumberField xNumberField17;
     private com.rameses.rcp.control.XNumberField xNumberField8;
     private com.rameses.rcp.control.XNumberField xNumberField9;

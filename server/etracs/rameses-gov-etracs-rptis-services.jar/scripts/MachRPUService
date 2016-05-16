@@ -74,6 +74,7 @@ class MachRPUService
         }
         rpu.machuses  = getMachUses(rpu)
         rpu.assessments = em.getAssessments(rpu)
+        rpu.bldgmaster  = em.findBldgMaster(rpu.bldgmaster)
         return rpu 
     }
 

@@ -3,10 +3,6 @@ package com.rameses.gov.etracs.rpt.subdivision.ui;
 import com.rameses.osiris2.themes.FormPage;
 import com.rameses.rcp.ui.annotations.Template;
 
-/**
- *
- * @author  jzamora
- */
 @Template(FormPage.class)
 public class SubdividedLandPage extends javax.swing.JPanel {
     

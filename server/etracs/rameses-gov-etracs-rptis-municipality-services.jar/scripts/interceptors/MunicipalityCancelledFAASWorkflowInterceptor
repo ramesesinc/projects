@@ -32,7 +32,7 @@ class MunicipalityCancelledFAASWorkflowInterceptor
 
         def asyncreq = svc.createAsyncRequest('ProvinceCancelledFAASRemoteService', 'postCancelledFaasForProvinceApproval', supportSvc.getCancelledFaasData(cancelledfaas), svc.buildEnvMap(env))
         def msg         = svc.createAsyncMessage(asyncreq[0])
-        msg.filetype    = 'cancelledfaas:online'
+        msg.filetype    = 'cancelledfaas'
         msg.groupid     = 'assign-receiver'
         msg.messagetype = 'cancelledfaas-forprovapproval'
         msg.message     = 'Cancel FAAS No. ' + cancelledfaas.faas.tdno + ' (assign-receiver).' 

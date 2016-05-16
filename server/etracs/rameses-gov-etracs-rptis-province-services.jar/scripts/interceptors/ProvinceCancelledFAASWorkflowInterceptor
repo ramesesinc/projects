@@ -33,7 +33,10 @@ class ProvinceCancelledFAASWorkflowInterceptor
 	void notifyMunicipality(cancelledfaas){
 		println 'notify municipality....'
 		def asyncreq = cloudSvc.createAsyncRequest('MunicipalityCancelledFAASRemoteCallHandler', 'approveCancelledFaasByProvince',  supportSvc.getCancelledFaasData(cancelledfaas))
-		cloudSvc.sendAsyncMessage(asyncreq[0], cancelledfaas.lguid)
+		def msg = cloudSvc.createAsyncMessage(asyncreq[0], cancelledfaas.lguid)
+		msg.filetype = 'cancelledfaas'
+		msg.messagetype = 'cancelledfaas-province'
+		cloudSvc.sendMessage(msg)
 	}
 
 }

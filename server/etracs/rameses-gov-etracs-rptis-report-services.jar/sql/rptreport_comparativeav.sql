@@ -15,6 +15,7 @@ SELECT
 	SUM( r.totalav ) AS preceedingtotal 
 FROM faas f
 	INNER JOIN rpu r ON f.rpuid = r.objid 
+	INNER JOIN realproperty rp on f.realpropertyid = rp.objid 
 	INNER JOIN propertyclassification pc ON r.classification_objid = pc.objid 
 WHERE ${filter}
   AND f.state = 'CURRENT'  
@@ -34,6 +35,7 @@ SELECT
 	SUM( r.totalav ) AS currenttotal 
 FROM faas f
 	INNER JOIN rpu r ON f.rpuid = r.objid 
+	INNER JOIN realproperty rp on f.realpropertyid = rp.objid 
 	INNER JOIN propertyclassification pc ON r.classification_objid = pc.objid 
 WHERE ${filter}
   AND f.state = 'CURRENT'  
@@ -53,6 +55,7 @@ SELECT
 	SUM( r.totalav ) AS cancelledtotal 
 FROM faas f
 	INNER JOIN rpu r ON f.rpuid = r.objid 
+	INNER JOIN realproperty rp on f.realpropertyid = rp.objid 
 	INNER JOIN propertyclassification pc ON r.classification_objid = pc.objid 
 WHERE f.cancelledtimestamp LIKE $P{currenttimestamp}    
   AND f.state = 'CANCELLED'  
@@ -72,6 +75,7 @@ SELECT
 	SUM( r.totalav ) AS endingtotal 
 FROM faas f
 	INNER JOIN rpu r ON f.rpuid = r.objid 
+	INNER JOIN realproperty rp on f.realpropertyid = rp.objid 
 	INNER JOIN propertyclassification pc ON r.classification_objid = pc.objid 
 WHERE ${filter}
   AND f.state = 'CURRENT'  
@@ -92,6 +96,7 @@ SELECT
 	SUM( r.totalav ) AS preceedingtotal  
 FROM faas f
 	INNER JOIN rpu r ON f.rpuid = r.objid 
+	INNER JOIN realproperty rp on f.realpropertyid = rp.objid 
 	INNER JOIN exemptiontype e ON r.exemptiontype_objid = e.objid 
 WHERE ${filter}
   AND f.state = 'CURRENT'   
@@ -111,6 +116,7 @@ SELECT
 	SUM( r.totalav ) AS currenttotal  
 FROM faas f
 	INNER JOIN rpu r ON f.rpuid = r.objid 
+	INNER JOIN realproperty rp on f.realpropertyid = rp.objid 
 	INNER JOIN exemptiontype e ON r.exemptiontype_objid = e.objid 
 WHERE ${filter}
   AND f.state = 'CURRENT'   
@@ -130,6 +136,7 @@ SELECT
 	SUM( r.totalav ) AS cancelledtotal  
 FROM faas f
 	INNER JOIN rpu r ON f.rpuid = r.objid 
+	INNER JOIN realproperty rp on f.realpropertyid = rp.objid 
 	INNER JOIN exemptiontype e ON r.exemptiontype_objid = e.objid 
 WHERE f.cancelledtimestamp LIKE $P{currenttimestamp}  
   AND f.state = 'CANCELLED'   
@@ -149,6 +156,7 @@ SELECT
 	SUM( r.totalav ) AS endingtotal  
 FROM faas f
 	INNER JOIN rpu r ON f.rpuid = r.objid 
+	INNER JOIN realproperty rp on f.realpropertyid = rp.objid 
 	INNER JOIN exemptiontype e ON r.exemptiontype_objid = e.objid 
 WHERE ${filter}
   AND f.state = 'CURRENT'   

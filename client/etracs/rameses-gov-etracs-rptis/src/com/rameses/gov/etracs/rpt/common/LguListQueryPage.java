@@ -2,18 +2,20 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.rameses.gov.etracs.rpt.subdivision.ui;
+package com.rameses.gov.etracs.rpt.common;
+
+import com.rameses.gov.etracs.rpt.subdivision.ui.*;
 
 /**
  *
  * @author Toshiba
  */
-public class SubdivisionListQueryPage extends javax.swing.JPanel {
+public class LguListQueryPage extends javax.swing.JPanel {
 
     /**
-     * Creates new form SubdivisionListQueryPage
+     * Creates new form LguListQueryPage
      */
-    public SubdivisionListQueryPage() {
+    public LguListQueryPage() {
         initComponents();
     }
 
@@ -28,6 +30,7 @@ public class SubdivisionListQueryPage extends javax.swing.JPanel {
 
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
         xComboBox1 = new com.rameses.rcp.control.XComboBox();
+        xComboBox3 = new com.rameses.rcp.control.XComboBox();
         xComboBox2 = new com.rameses.rcp.control.XComboBox();
         xActionTextField1 = new com.rameses.rcp.control.XActionTextField();
 
@@ -39,15 +42,29 @@ public class SubdivisionListQueryPage extends javax.swing.JPanel {
 
         xComboBox1.setCaption("LGU");
         xComboBox1.setCaptionWidth(38);
+        xComboBox1.setEmptyText("ALL");
         xComboBox1.setExpression("#{item.name}");
         xComboBox1.setItems("lgus");
         xComboBox1.setName("query.lgu"); // NOI18N
         xComboBox1.setPreferredSize(new java.awt.Dimension(160, 20));
         xFormPanel1.add(xComboBox1);
 
+        xComboBox3.setCaption("Barangay");
+        xComboBox3.setCaptionWidth(65);
+        xComboBox3.setCellPadding(new java.awt.Insets(0, 5, 0, 0));
+        xComboBox3.setDepends(new String[] {"query.lgu"});
+        xComboBox3.setDynamic(true);
+        xComboBox3.setEmptyText("ALL");
+        xComboBox3.setExpression("#{item.name}");
+        xComboBox3.setItems("barangays");
+        xComboBox3.setName("query.barangay"); // NOI18N
+        xComboBox3.setPreferredSize(new java.awt.Dimension(160, 20));
+        xFormPanel1.add(xComboBox3);
+
         xComboBox2.setCaption("State");
         xComboBox2.setCaptionWidth(45);
         xComboBox2.setCellPadding(new java.awt.Insets(0, 10, 0, 0));
+        xComboBox2.setEmptyText("ALL");
         xComboBox2.setItems("states");
         xComboBox2.setName("query.state"); // NOI18N
         xComboBox2.setPreferredSize(new java.awt.Dimension(150, 20));
@@ -69,6 +86,7 @@ public class SubdivisionListQueryPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XActionTextField xActionTextField1;
     private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XComboBox xComboBox2;
+    private com.rameses.rcp.control.XComboBox xComboBox3;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     // End of variables declaration//GEN-END:variables
 }

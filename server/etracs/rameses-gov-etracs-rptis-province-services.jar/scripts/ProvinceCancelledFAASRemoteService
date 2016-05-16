@@ -46,13 +46,14 @@ class ProvinceCancelledFAASRemoteService
 	}
 
 	void notifyGroup(cancelledfaas){
+		def senderName = (env.REQUESTER.FULLNAME ? env.REQUESTER.FULLNAME : env.REQUESTER.NAME)
         def msg = [
             objid     		: cancelledfaas.objid,
             senderid  		: env.REQUESTER.USERID,
-            sender    		: env.REQUESTER.NAME,
+            sender    		: senderName,
             recipientid   	: 'assign-receiver',
             recipienttype 	: 'group',
-            message   		: 'Cancel FAAS No. ' + cancelledfaas.faas.tdno + '    (assign-receiver) submitted by ' + env.REQUESTER.NAME + '.',
+            message   		: 'Cancel FAAS No. ' + cancelledfaas.faas.tdno + '    (assign-receiver) submitted by ' + senderName + '.',
             filetype  		: 'cancelledfaas',
             data 	  		: [objid: cancelledfaas.objid, taskid:cancelledfaas.taskid],
         ]

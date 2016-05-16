@@ -29,12 +29,17 @@ public class CancellationFaasWorkflowController extends RPTWorkflowController
     
     void afterOpen(o){
         super.afterOpen(o);
-        formId = 'Cancelled FAAS: ' + (entity.faas.tdno ? entity.faas.tdno : entity.faas.utdno);
-        formTitle = formId
+        formId = (entity.txnno ? entity.txnno : entity.faas.tdno );
     }
 
+    String getFormTitle(){
+        if (entity.txnno)
+            return 'FAAS Cancellation: ' + entity.txnno;
+        return 'Cancelled FAAS: ' + entity.faas.tdno;
+    }
+    
     String getTitle(){
-        return 'Cancelled FAAS ' + entity.faas.tdno;
+        return 'FAAS Cancellation (' + entity.state + ')';
     }
     
     def getSections(){

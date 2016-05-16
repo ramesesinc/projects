@@ -42,6 +42,9 @@ class SubdivisionSupportService
     @Service('SubdivisionService')
     def subdivisionSvc
 
+    @DataContext('subdivision_cancelledimprovement')
+    def cancelledimprovementDb 
+
 
     @ProxyMethod
     public def buildSubdivisionData(subdivision){
@@ -53,6 +56,7 @@ class SubdivisionSupportService
         data.subdividedlands = subdivisionSvc.getSubdividedLands(subdivision.objid)
         data.motherlands = subdivisionSvc.getMotherLands(subdivision)
         data.affectedrpus = subdivisionSvc.getAffectedRpus(subdivision.objid)
+        data.cancelledimprovements = subdivisionSvc.getCancelledImprovements(subdivision.objid)
         
         data.faases = []
         data.tasks = []
@@ -146,6 +150,18 @@ class SubdivisionSupportService
         println 'processing subdivision.affectedrpus'
         subdivision.affectedrpus.each{
             em.save(it, 'affectedrpu')
+        }
+
+        println 'processing subdivision.cancelledimprovements'
+        subdivision.cancelledimprovements.each{
+            def ci = cancelledimprovementDb
+                            .select('objid')
+                            .find([objid:it.objid])
+                            .first()
+            if (ci)
+                cancelledimprovementDb.update(it)
+            else
+                cancelledimprovementDb.create(it)
         }
 
         subdivision.tasks.each{item ->

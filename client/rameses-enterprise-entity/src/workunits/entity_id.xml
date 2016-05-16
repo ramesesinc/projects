@@ -1,7 +1,7 @@
 <workunit schemaName="entityid">
     <invokers>
-        <invoker type="entityid:create" caption="Identification" action="create"/>
-        <invoker type="entityid:open" caption="Identification" action="open"/> 
+        <invoker type="entityid:create" caption="Identification" action="create" target="popup"/>
+        <invoker type="entityid:open" caption="Identification" action="open"  target="popup"/> 
         
         <invoker type="formActions" caption="Take A Photo" action="takePhoto" />
         <invoker type="formActions" caption="Remove Photo" action="removePhoto" depends="image" visibleWhen="#{image != null}"/>

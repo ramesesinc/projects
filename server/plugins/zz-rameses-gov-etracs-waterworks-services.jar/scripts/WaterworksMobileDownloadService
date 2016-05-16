@@ -132,14 +132,20 @@ class WaterworksMobileDownloadService {
 	@ProxyMethod
 	def getSectorByUser( o ){
 		if(!o.userid) throw new Exception("userid is required!");
-		return wm.getSectorByUser(o);
+		return wsr.find(['assignee.objid':o.userid]).select("sector.objid, sector.code").list().collect{[ objid: it.sector.objid, code: it.sector.code]};
 	}
 
 	@ProxyMethod
 	def getStuboutsBySector( o ){
 		if (!o.sectorid) throw new Exception("sectorid is required!");
 		if(!o.userid) throw new Exception("userid is required!");
-		return wm.getStuboutsBySector(o);
+		def list = [];
+		def readerids = wsr.find(['assignee.objid':o.userid]).select("objid").list();
+		readerids.each{
+			def stubouts = ws.find(['zone.sectorid':o.sectorid,'zone.readerid':it.objid]).list();
+			list.addAll(stubouts);
+		}
+		return list;
 	}
 
 	@ProxyMethod
@@ -153,7 +159,7 @@ class WaterworksMobileDownloadService {
 	def getZoneBySector( o ){
 		if (!o.sectorid) throw new Exception("sectorid is required!");
 		if(!o.userid) throw new Exception("userid is required!");
-		return wm.getZoneBySector(o);
+		return wsz.find(['reader.assignee.objid':o.userid, 'sectorid':o.sectorid]).select("objid,sectorid,code,description,readerid").list();
 	}
 
 }

@@ -28,25 +28,4 @@ SELECT ia.*
 FROM collectiontype ct, collectiontype_account cta, itemaccount ia 
 WHERE ct.handler='waterworks' and cta.tag='WFEE' 
 	AND ct.objid=cta.collectiontypeid 
-	AND cta.account_objid=ia.objid 
-
-[getSectorByUser]
-SELECT s.*
-FROM waterworks_sector s
-	INNER JOIN waterworks_sector_reader sr ON s.objid = sr.sectorid 
-WHERE sr.assignee_objid = $P{userid}
-
-[getStuboutsBySector]
-SELECT s.*
-FROM waterworks_stubout s 
-	INNER JOIN waterworks_sector_zone sz ON s.zoneid = sz.objid
-	INNER JOIN waterworks_sector_reader sr ON sz.readerid = sr.objid 
-WHERE sz.sectorid = $P{sectorid}
-	AND sr.assignee_objid = $P{userid} 
-
-[getZoneBySector]
-SELECT z.*
-FROM waterworks_sector_zone z 
-	INNER JOIN waterworks_sector_reader r ON z.readerid = r.objid 
-WHERE z.sectorid = $P{sectorid}
-	AND r.assignee_objid = $P{userid} 
+	AND cta.account_objid=ia.objid

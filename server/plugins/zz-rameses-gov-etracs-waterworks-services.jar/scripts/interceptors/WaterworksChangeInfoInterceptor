@@ -11,19 +11,16 @@ class WaterworksChangeInfoInterceptor {
 	@DataContext('waterworks_stubout_node') 
 	def wstuboutnode;
 
-	@Before( pattern="ChangeInfoService.update", eval="#{args[0].info._schemaname=='waterworks_account' && args[0].info.stubout != null}" ) 
+	@Before( pattern="ChangeInfoService.update", eval="#{args[0].info._schemaname=='waterworks_account' && args[0].info.stuboutnode != null}" ) 
 	public void beforeUpdateStubout( evt ) {
 		def info = evt.args[0].info;
-		info.stuboutid = info.stubout.objid; 
-		if ( !info.stuboutid ) throw new Exception('Please specify stubout'); 
-
 		info.stuboutnodeid = info.stuboutnode?.objid; 
 		if ( !info.stuboutnodeid ) throw new Exception('Please specify stubout node'); 
 
 		wstuboutnode.find([ acctid: info.objid ]).update([ acctid:'{null}' ]); 
 	} 
 
-	@After( pattern="ChangeInfoService.update", eval="#{args[0].info._schemaname=='waterworks_account' && args[0].info.stuboutid != null}" ) 
+	@After( pattern="ChangeInfoService.update", eval="#{args[0].info._schemaname=='waterworks_account' && args[0].info.stuboutnodeid != null}" ) 
 	public void afterUpdateStubout( evt ) {
 		def info = evt.args[0].info; 
 		def node = wstuboutnode.find([ objid: info.stuboutnodeid ]).first();

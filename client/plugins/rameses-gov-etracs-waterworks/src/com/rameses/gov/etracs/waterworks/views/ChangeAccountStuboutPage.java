@@ -66,7 +66,7 @@ public class ChangeAccountStuboutPage extends javax.swing.JPanel {
         xLabel2.setBackground(new java.awt.Color(245, 245, 245));
         xLabel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel2.setCaption("Stubout");
-        xLabel2.setExpression("#{entity.stubout.code}");
+        xLabel2.setExpression("#{entity.stuboutnode.stubout.code}");
         xLabel2.setOpaque(true);
         xLabel2.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel2.add(xLabel2);
@@ -92,7 +92,7 @@ public class ChangeAccountStuboutPage extends javax.swing.JPanel {
         xLabel3.setBackground(new java.awt.Color(245, 245, 245));
         xLabel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel3.setCaption("Sector");
-        xLabel3.setExpression("#{entity.stubout.zone.sector.code}");
+        xLabel3.setExpression("#{entity.stuboutnode.stubout.zone.sector.code}");
         xLabel3.setOpaque(true);
         xLabel3.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel4.add(xLabel3);
@@ -102,7 +102,7 @@ public class ChangeAccountStuboutPage extends javax.swing.JPanel {
         xLabel5.setCaption("Zone");
         xLabel5.setCaptionWidth(120);
         xLabel5.setCellPadding(new java.awt.Insets(0, 15, 0, 0));
-        xLabel5.setExpression("#{entity.stubout.zone.code}");
+        xLabel5.setExpression("#{entity.stuboutnode.stubout.zone.code}");
         xLabel5.setOpaque(true);
         xLabel5.setPreferredSize(new java.awt.Dimension(120, 20));
         xFormPanel4.add(xLabel5);

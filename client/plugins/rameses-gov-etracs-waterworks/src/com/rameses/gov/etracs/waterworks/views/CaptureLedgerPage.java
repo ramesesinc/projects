@@ -45,7 +45,8 @@ public class CaptureLedgerPage extends javax.swing.JPanel {
         xTitledBorder1.setTitle("Ledger Information");
         xPanel1.setBorder(xTitledBorder1);
 
-        xFormPanel2.setCaptionWidth(120);
+        xFormPanel2.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
+        xFormPanel2.setCaptionWidth(100);
 
         xLookupField1.setCaption("Account");
         xLookupField1.setExpression("#{item.title}");
@@ -58,20 +59,24 @@ public class CaptureLedgerPage extends javax.swing.JPanel {
         xComboBox1.setCaption("Txn Type");
         xComboBox1.setItems("txnTypes");
         xComboBox1.setName("info.txntype"); // NOI18N
+        xComboBox1.setPreferredSize(new java.awt.Dimension(120, 20));
         xFormPanel2.add(xComboBox1);
 
         xDecimalField2.setCaption("Amount");
         xDecimalField2.setName("info.amount"); // NOI18N
+        xDecimalField2.setPreferredSize(new java.awt.Dimension(120, 20));
         xDecimalField2.setRequired(true);
         xFormPanel2.add(xDecimalField2);
 
         xDecimalField3.setCaption("Amount Paid");
         xDecimalField3.setName("info.amtpaid"); // NOI18N
+        xDecimalField3.setPreferredSize(new java.awt.Dimension(120, 20));
         xDecimalField3.setRequired(true);
         xFormPanel2.add(xDecimalField3);
 
         xDateField1.setCaption("Due Date");
         xDateField1.setName("info.duedate"); // NOI18N
+        xDateField1.setPreferredSize(new java.awt.Dimension(120, 20));
         xDateField1.setRequired(true);
         xFormPanel2.add(xDateField1);
 
@@ -87,15 +92,15 @@ public class CaptureLedgerPage extends javax.swing.JPanel {
             xPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(xPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 521, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(20, Short.MAX_VALUE))
+                .addComponent(xFormPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 502, Short.MAX_VALUE)
+                .addContainerGap())
         );
         xPanel1Layout.setVerticalGroup(
             xPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(xPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(26, Short.MAX_VALUE))
+                .addComponent(xFormPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 152, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -104,15 +109,15 @@ public class CaptureLedgerPage extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(xPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(xPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables

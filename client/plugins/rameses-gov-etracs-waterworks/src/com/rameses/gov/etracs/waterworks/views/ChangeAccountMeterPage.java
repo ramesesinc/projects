@@ -110,7 +110,7 @@ public class ChangeAccountMeterPage extends javax.swing.JPanel {
         xLookupField4.setCaption("Serial Number");
         xLookupField4.setCaptionWidth(120);
         xLookupField4.setExpression("#{info.meter.serialno}");
-        xLookupField4.setHandler("waterworks_unused_meter_account:lookup");
+        xLookupField4.setHandler("waterworks_meter_wo_account:lookup");
         xLookupField4.setName("info.meter"); // NOI18N
         xLookupField4.setPreferredSize(new java.awt.Dimension(0, 20));
         xLookupField4.setRequired(true);
@@ -129,7 +129,7 @@ public class ChangeAccountMeterPage extends javax.swing.JPanel {
         xLabel22.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel22.setCaption("Size");
         xLabel22.setDepends(new String[] {"info.meter"});
-        xLabel22.setExpression("#{info.meter.sizeid}");
+        xLabel22.setExpression("#{info.meter.size.title}");
         xLabel22.setOpaque(true);
         xLabel22.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel6.add(xLabel22);

@@ -4,19 +4,59 @@
                  caption="Change Stubout" 
                  target="popup"
                  action="init"
-                 fields="stubout.*"
                  visibleWhen="#{mode=='read'}"
                 />   
     </invokers> 
     
     <code>
-    class ChangeAccountStuboutModel extends com.rameses.seti2.models.ChangeInfoModel {
+    <![CDATA[ 
+import com.rameses.rcp.annotations.*;
+import com.rameses.rcp.common.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.common.*;
 
-        public void afterInit() { 
-            super.afterInit(); 
-            info._tag = 'change-stubout'; 
+class ChangeAccountStuboutModel extends com.rameses.seti2.models.ChangeInfoModel {
+
+    def data = [:];
+    
+    public void afterInit() {
+        super.afterInit(); 
+        data = [:];
+    } 
+
+    def getLookupStubout() {
+        def params = [:]; 
+        params.onselect = { o-> 
+            data.clear(); 
+            data.stubout = o; 
+            info.stubout = [ objid: o.objid ]; 
+            binding.refresh(); 
         } 
-    }         
+        params.onempty = { 
+            data.clear();
+            binding.refresh();
+        } 
+        return Inv.lookupOpener("waterworks_stubout:lookup", params); 
+    } 
+    
+    def getLookupStuboutnode() { 
+        def params = [stuboutid: info.stubout?.objid]; 
+        params.onselect = { o-> 
+            if ( o.account?.objid || o.acctid ) 
+                throw new Exception("There is already an account assigned. Choose another"); 
+            
+            data.stuboutnode = o; 
+            info.stuboutnode = [ objid: o.objid ]; 
+            binding.refresh(); 
+        } 
+        params.onempty = { 
+            data.stuboutnode = null; 
+            binding.refresh(); 
+        } 
+        return Inv.lookupOpener("waterworks_stubout_node_unassigned:lookup", params); 
+    } 
+} 
+    ]]> 
     </code> 
     
     <pages>

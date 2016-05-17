@@ -65,6 +65,7 @@ class WaterworksBillingCycleService  {
 		def h = { r-> return false };
 
 		def res = ruleSvc.execute( "waterworksbillingcycle", facts, null, h );
+		println res; 
 		def period = res.period;
 
 		period.month = billmonth;

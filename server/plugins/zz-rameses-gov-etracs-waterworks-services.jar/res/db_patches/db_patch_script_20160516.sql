@@ -1,5 +1,22 @@
-<!-- 
 
+ALTER TABLE `waterworks_material`
+	ADD COLUMN `installmentprice` decimal(16,2) NULL,
+	ADD COLUMN `unitcost`  decimal(16,2) NULL
+; 
+
+ALTER TABLE `waterworks_stubout_node`
+	ADD COLUMN `applicationid`  varchar(50) NULL
+;
+ALTER TABLE `waterworks_stubout_node`
+	ADD INDEX `ix_applicationid` (`applicationid`)
+; 
+
+ALTER TABLE `waterworks_account` 
+	DROP COLUMN stuboutnodeid
+;
+
+
+drop view if exists vw_waterworks_stubout_account;  
 create view vw_waterworks_stubout_account 
 select 
 	wa.objid, wsn.stuboutid, wsn.indexno as stuboutindex, 
@@ -9,15 +26,5 @@ select
 from waterworks_account wa 
 	inner join waterworks_stubout_node wsn on (wa.objid=wsn.acctid and wa.stuboutid=wsn.stuboutid) 
 	inner join waterworks_meter wm on wm.objid = wa.meterid 
+;
 
---> 
-<schema adapter="waterworks">
-	<element tablename="vw_waterworks_stubout_account">
-		<field name="objid" primary="true"/> 
-		<field name="stuboutid" hidden="true" visible="false"/> 
-		<field name="account_acctno"/> 
-		<field name="account_acctname"/> 
-		<field name="account_address_text"/> 
-		<field name="account_meter_serialno"/> 
-	</element>
-</schema>

@@ -76,7 +76,6 @@ class RPTReportDelinquencyService
 		}
 	}
 
-
 	@Async
 	@ProxyMethod
 	public def generateDelinquencyReport( params ) {
@@ -108,7 +107,11 @@ class RPTReportDelinquencyService
 			list = em.getDelinquentLedgersSummary( params ); 
 			if ( !list ) throw new Exception('No records found. Try rebuilding the delinquency')
 
-		} else {
+		} 
+		else if ( params.reporttype == 'byclassification' ) {
+			list = buildDelinquentLedgersByClassification(params)
+		} 
+		else {
 			list = em.getDelinquentLedgers( params ); 
 			if ( !list ) throw new Exception('No records found. Try rebuilding the delinquency for this barangay.')
 
@@ -124,6 +127,12 @@ class RPTReportDelinquencyService
 			} 
 		} 
 		return [reportdata:list]; 
+	}
+
+	def buildDelinquentLedgersByClassification(params){
+		def list = em.getDelinquentLedgersByClassification( params ); 
+		if ( !list ) throw new Exception('No records found. Try rebuilding the delinquency')
+		return list;
 	}
 
 

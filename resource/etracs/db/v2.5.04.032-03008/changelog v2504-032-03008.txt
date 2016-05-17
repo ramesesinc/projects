@@ -1,0 +1,10 @@
+/* v2.5.04.032-03008 */
+
+- TREAURY
+
+- BPLS 
+		
+- ASSESSOR
+
+- LANDTAX
+	- Add Realty Tax Delinquency Summary and Realty Tax Delinquency Summary by Classification Report

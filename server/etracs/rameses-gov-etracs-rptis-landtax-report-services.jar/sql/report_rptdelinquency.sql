@@ -58,6 +58,7 @@ ORDER BY ${orderby}
 [getDelinquentLedgersSummary]
 SELECT 
 	dtgenerated, barangayid, barangay_name, barangay_pin, 
+	SUM(basic) as basic, SUM(sef) as sef, 
 	SUM(basicint) AS basicint, SUM(sefint) AS sefint, 
 	SUM(basicnet) AS basicnet, SUM(sefnet) AS sefnet, 
 	SUM(total) AS total 

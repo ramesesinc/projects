@@ -15,9 +15,9 @@ import java.util.HashMap;
  *
  * @author dell
  */
-public class LocalAddressPanel extends javax.swing.JPanel {
+public class NonLocalAddressPanel extends javax.swing.JPanel {
 
-    public LocalAddressPanel() {
+    public NonLocalAddressPanel() {
         initComponents(); 
         register( "entity" );
     }
@@ -33,7 +33,14 @@ public class LocalAddressPanel extends javax.swing.JPanel {
         lupBarangay.setName(name+".barangay");
         lupBarangay.setExpression("#{"+name+".barangay.name}");
         txtPin.setName( name + ".pin");
-        register( name );
+        cboType.setName(name + ".addresstype"); 
+        txtmuni.setName(name + ".municipality");
+        txtcity.setName(name + ".city");
+        txtprov.setName(name + ".province"); 
+        
+        String[] depends = new String[]{ name+".addresstype"}; 
+        pnlwhich.setDepends( depends );
+        register( name ); 
     }
 
     private void register( String name ) {
@@ -88,6 +95,14 @@ public class LocalAddressPanel extends javax.swing.JPanel {
                 append( buffer, ", ", "street" );
                 append( buffer, ", ", "subdivision" ); 
                 append( buffer, ", ", "barangay.name" ); 
+                String addrtype = uie.getValue( name+".addresstype" )+""; 
+                if ( "CITY".equalsIgnoreCase( addrtype )) {
+                    append( buffer, ", ", "city" ); 
+                } else if ( "MUNICIPALITY".equalsIgnoreCase( addrtype )) {
+                    append( buffer, ", ", "municipality" ); 
+                }
+                append( buffer, ", ", "province" ); 
+                
                 if ( buffer.length() > 0 ) {
                     uie.setValue( name+".text", buffer.toString() ); 
                 } else { 
@@ -134,12 +149,19 @@ public class LocalAddressPanel extends javax.swing.JPanel {
         xFormPanel3 = new com.rameses.rcp.control.XFormPanel();
         txtSubdivision = new com.rameses.rcp.control.XTextField();
         lupBarangay = new com.rameses.rcp.control.XLookupField();
+        xFormPanel4 = new com.rameses.rcp.control.XFormPanel();
+        cboType = new com.rameses.rcp.control.XComboBox();
+        pnlwhich = new com.rameses.rcp.control.XPanel();
+        txtmuni = new com.rameses.rcp.control.XTextField();
+        txtcity = new com.rameses.rcp.control.XTextField();
+        txtprov = new com.rameses.rcp.control.XTextField();
         txtPin = new com.rameses.rcp.control.XTextField();
 
         setOpaque(false);
         setLayout(new java.awt.BorderLayout());
 
         xFormPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
+        xFormPanel1.setCaptionWidth(100);
         xFormPanel1.setName("entity"); // NOI18N
 
         xFormPanel2.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
@@ -149,6 +171,7 @@ public class LocalAddressPanel extends javax.swing.JPanel {
         xFormPanel2.setStretchWidth(100);
 
         txtUnitno.setCaption("Unit No ");
+        txtUnitno.setCaptionWidth(100);
         txtUnitno.setName("entity.unitno"); // NOI18N
         txtUnitno.setStretchWidth(100);
         xFormPanel2.add(txtUnitno);
@@ -178,6 +201,7 @@ public class LocalAddressPanel extends javax.swing.JPanel {
         xFormPanel3.setStretchWidth(100);
 
         txtSubdivision.setCaption("Subdivision");
+        txtSubdivision.setCaptionWidth(100);
         txtSubdivision.setName("entity.subdivision"); // NOI18N
         txtSubdivision.setStretchWidth(100);
         xFormPanel3.add(txtSubdivision);
@@ -193,23 +217,76 @@ public class LocalAddressPanel extends javax.swing.JPanel {
 
         xFormPanel1.add(xFormPanel3);
 
+        xFormPanel4.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
+        xFormPanel4.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
+        xFormPanel4.setPadding(new java.awt.Insets(0, 0, 0, 0));
+        xFormPanel4.setShowCaption(false);
+        xFormPanel4.setStretchWidth(100);
+
+        cboType.setAllowNull(false);
+        cboType.setCaption("Address Type");
+        cboType.setCaptionWidth(120);
+        cboType.setItemsObject(new String[]{"MUNICIPALITY", "CITY"});
+        cboType.setName("entity.addresstype"); // NOI18N
+        cboType.setPreferredSize(new java.awt.Dimension(100, 20));
+        cboType.setShowCaption(false);
+        xFormPanel4.add(cboType);
+
+        pnlwhich.setDepends(new String[] {"entity.addresstype"});
+        pnlwhich.setName("entity.addresstype"); // NOI18N
+        pnlwhich.setShowCaption(false);
+        pnlwhich.setStretchWidth(100);
+        pnlwhich.setLayout(new java.awt.CardLayout());
+
+        txtmuni.setCaption("Municipality");
+        txtmuni.setCaptionWidth(120);
+        txtmuni.setName("entity.municipality"); // NOI18N
+        txtmuni.setRequired(true);
+        txtmuni.setStretchWidth(100);
+        pnlwhich.add(txtmuni, "MUNICIPALITY");
+
+        txtcity.setCaption("City");
+        txtcity.setCaptionWidth(120);
+        txtcity.setName("entity.city"); // NOI18N
+        txtcity.setPreferredSize(new java.awt.Dimension(0, 22));
+        txtcity.setRequired(true);
+        pnlwhich.add(txtcity, "CITY");
+
+        xFormPanel4.add(pnlwhich);
+
+        txtprov.setCaption("Province");
+        txtprov.setCaptionWidth(90);
+        txtprov.setCellPadding(new java.awt.Insets(0, 5, 0, 0));
+        txtprov.setName("entity.province"); // NOI18N
+        txtprov.setRequired(true);
+        txtprov.setStretchWidth(100);
+        xFormPanel4.add(txtprov);
+
+        xFormPanel1.add(xFormPanel4);
+
         txtPin.setCaption("PIN");
         txtPin.setName("entity.pin"); // NOI18N
-        txtPin.setStretchWidth(48);
+        txtPin.setStretchWidth(50);
         xFormPanel1.add(txtPin);
 
         add(xFormPanel1, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private com.rameses.rcp.control.XComboBox cboType;
     private com.rameses.rcp.control.XLookupField lupBarangay;
+    private com.rameses.rcp.control.XPanel pnlwhich;
     private com.rameses.rcp.control.XTextField txtBldgname;
     private com.rameses.rcp.control.XTextField txtBldgno;
     private com.rameses.rcp.control.XTextField txtPin;
     private com.rameses.rcp.control.XTextField txtStreet;
     private com.rameses.rcp.control.XTextField txtSubdivision;
     private com.rameses.rcp.control.XTextField txtUnitno;
+    private com.rameses.rcp.control.XTextField txtcity;
+    private com.rameses.rcp.control.XTextField txtmuni;
+    private com.rameses.rcp.control.XTextField txtprov;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XFormPanel xFormPanel2;
     private com.rameses.rcp.control.XFormPanel xFormPanel3;
+    private com.rameses.rcp.control.XFormPanel xFormPanel4;
     // End of variables declaration//GEN-END:variables
 }

@@ -9,9 +9,9 @@
 		<field name="item_code" required="true" caption="Item Code"/>
 		<field name="item_title" required="true" caption="Item Title"/>
 		<field name="remarks" caption="Remarks"/>
-		<field name="amount" required="true" caption="Amount"/>
-		<field name="amtpaid" required="true" caption="AmtPaid"/>
-		<field name="balance" expr="amount-amtpaid" caption="Balance"/>
+		<field name="amount" required="true" caption="Amount" datatype="decimal"/>
+		<field name="amtpaid" required="true" caption="AmtPaid" datatype="decimal"/>
+		<field name="balance" expr="amount-amtpaid" caption="Balance" datatype="decimal"/>
 		<field name="installmentid" />
 	</element>
 

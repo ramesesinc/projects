@@ -2,7 +2,6 @@
 <schema adapter="waterworks">
 	<element tablename="waterworks_stubout_node">
 		<field name="objid" primary="true" prefix="WNODE"/>
-		<field name="stuboutid" required="true" visible="false"/>
 		<field name="indexno" required="true"/>
 		<field name="acctid" visible="false"/>
 
@@ -11,6 +10,11 @@
 			includefields="objid,acctno,acctname,address.text,meter.serialno,currentreading">
 			<key field="acctid" target="objid"/>
 		</complex>
+		<complex name="stubout" ref="waterworks_stubout" jointype="many-to-one" 
+			includefields="objid,code,zone.code,zone.sector.code">
+			<key field="stuboutid" target="objid"/>
+		</complex>
+
 		<field name="applicationid" visible="false"/>		
 	</element>
 </schema>

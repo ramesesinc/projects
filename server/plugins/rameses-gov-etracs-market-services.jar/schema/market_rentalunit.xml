@@ -6,12 +6,9 @@
 			<key field="marketid" target="objid" />
 		</complex>
 		<field name="unittype" required="true" />
-		<field name="code" required="true"/>
+		<field name="code" required="true" searchable="true"/>
 		<field name="name" required="true"/>
 		<field name="location" required="true"/>
-		<complex name="bldg" ref="market_building" jointype="many-to-one" required="false">
-			<key field="bldg_objid" target="objid"/>
-		</complex>
 		<complex name="section" ref="market_section" jointype="many-to-one">
 			<key field="section_objid" target="objid" />
 		</complex>

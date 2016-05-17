@@ -17,8 +17,9 @@ public class AccountModel extends CrudFormModel {
 
     def assignStubout() {
         boolean pass = false;
+        def stuboutid;
         def h = {o->
-            entity.stubout = o;
+            stuboutid = o.objid;
             pass = true;
         }
         Modal.show("waterworks_stubout:lookup", [onselect: h] );
@@ -30,15 +31,15 @@ public class AccountModel extends CrudFormModel {
             entity.stuboutnode = o;
             pass = true;
         }
-        Modal.show("waterworks_stubout_node_unassigned:lookup", [onselect: h, stuboutid: entity.stubout.objid] );
-        if(!pass) {
-            entity.stubout = null;
-        }
-        binding.refresh();
+        Modal.show("waterworks_stubout_node_unassigned:lookup", [onselect: h, stuboutid: stuboutid] );
+        //binding.refresh();
     }
 
     void computeBillingCycle() {
-        def e = billCycle.fetch(entity.stubout);
+        if( entity.stuboutnode?.stubout?.objid == null ) {
+            throw new Exception("Stubout id is required");
+        }
+        def e = billCycle.fetch(entity.stuboutnode.stubout);
         entity.billingcycle = e;
     }
     

@@ -3,4 +3,33 @@
         <invoker folderid="/explorer/master/market" caption="Market Rental Units" index="1" role="MASTER" action="init"/>
         <invoker type="home.action" caption="Market Rental Units" index="1" role="MASTER" action="init"/>
     </invokers>
+    <code>
+        import com.rameses.rcp.annotations.*;
+        class MarketUnitList extends com.rameses.seti2.models.CrudListModel {
+        
+            def selectedLocation;
+        
+            def getMarketLocations() {
+                def m = [_schemaname:'market'];
+                m.select = 'objid,code,name';
+                m._start = 0;
+                m._limit = 100;
+                return queryService.getList( m ); 
+            };
+            
+            @PropertyChangeListener
+            def listener  = [ 
+                'selectedLocation' : { o->
+                    listHandler.reload();
+                }
+            ];
+        
+            def getCustomFilter() {
+                return [ "marketid = :mid", [mid : selectedLocation.objid] ];
+            }
+        }
+    </code>
+    <pages>
+        <page name="queryForm" template="com.rameses.gov.etracs.market.views.MarketLocationQueryForm" /> 
+    </pages>    
 </workunit>

@@ -23,5 +23,6 @@
 			<key field="currentacctid" target="objid"/>
 		</complex>
 		
+		<field name="stocktype" defaultValue="STOCK" required="true" caption="Stock Type" />
 	</element>
 </schema>

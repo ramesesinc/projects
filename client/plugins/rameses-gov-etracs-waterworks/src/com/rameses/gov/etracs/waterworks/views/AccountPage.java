@@ -158,7 +158,7 @@ public class AccountPage extends javax.swing.JPanel {
         xLabel6.setBackground(new java.awt.Color(245, 245, 245));
         xLabel6.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel6.setCaption("Stubout");
-        xLabel6.setExpression("#{entity.stubout.code}");
+        xLabel6.setExpression("#{entity.stuboutnode.stubout.code}");
         xLabel6.setOpaque(true);
         xLabel6.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel3.add(xLabel6);
@@ -182,7 +182,7 @@ public class AccountPage extends javax.swing.JPanel {
         xLabel11.setBackground(new java.awt.Color(245, 245, 245));
         xLabel11.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel11.setCaption("Sector");
-        xLabel11.setExpression("#{entity.stubout.zone.sector.code}");
+        xLabel11.setExpression("#{entity.stuboutnode.stubout.zone.sector.code}");
         xLabel11.setOpaque(true);
         xLabel11.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel6.add(xLabel11);
@@ -190,7 +190,7 @@ public class AccountPage extends javax.swing.JPanel {
         xLabel12.setBackground(new java.awt.Color(245, 245, 245));
         xLabel12.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel12.setCaption("Zone");
-        xLabel12.setExpression("#{entity.stubout.zone.code}");
+        xLabel12.setExpression("#{entity.stuboutnode.stubout.zone.code}");
         xLabel12.setOpaque(true);
         xLabel12.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel6.add(xLabel12);

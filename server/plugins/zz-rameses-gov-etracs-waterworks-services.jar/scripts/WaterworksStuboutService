@@ -9,12 +9,9 @@ class WaterworksStuboutService {
     @DataContext('waterworks_stubout_node') 
     def stubout_node; 
 
-    @DataContext('waterworks_stubout_node') 
-    def waterworks_stubout_node; 
-
     @ProxyMethod
     public def getNodes( def o ) {
-        return waterworks_stubout_node.find([stuboutid: o.stuboutid]).orderBy("indexno").list();
+        return stubout_node.find([stuboutid: o.stuboutid]).orderBy("indexno").list();
     }
 
     @ProxyMethod
@@ -53,7 +50,8 @@ class WaterworksStuboutService {
             throw new Exception("WaterworksStuboutService.assignAccount error. Please pass parameter objid");
         if(!o.acctid) 
             throw new Exception("WaterworksStuboutService.assignAccount error. Please pass parameter acctid");
-        stubout_node.find( [objid: o.objid] ).update( [acctid:o.acctid] );      
+        stubout_node.find( [objid: o.objid] ).update( [acctid:o.acctid] );    
+        waterworks_account.find( [objid: o.acctid] ).update([stuboutnodeid: o.objid]);  
     }
 
 
@@ -61,7 +59,11 @@ class WaterworksStuboutService {
     public def unassignAccount(def o) {
         if(!o.objid) 
             throw new Exception("WaterworksStuboutService.assignAccount error. Please pass parameter objid");
-        stubout_node.find( [objid: o.objid] ).update( [acctid: "{NULL}" ] );      
+        def oldAcctid = stubout_node.find( [objid: o.objid] ).select("acctid").val();    
+        stubout_node.find( [objid: o.objid] ).update( [acctid: "{NULL}" ] );
+        if(oldAcctid) {
+            waterworks_account.find( [objid: oldAcctid] ).update([stuboutnodeid: "{NULL}"]);
+        }
     }
 
     @ProxyMethod
@@ -74,9 +76,11 @@ class WaterworksStuboutService {
         //nullify it first    
         stubout_node.find( [objid: o.item2.objid] ).update( [acctid: "{NULL}" ] );     
         
-        stubout_node.find( [objid: o.item1.objid] ).update( [acctid: o.item2.acctid ] );      
+        stubout_node.find( [objid: o.item1.objid] ).update( [acctid: o.item2.acctid ] );  
+        waterworks_account.find( [objid: o.item2.acctid] ).update([stuboutnodeid: o.item1.objid ]);    
 
-        stubout_node.find( [objid: o.item2.objid] ).update( [acctid: o.item1.acctid ] );          
+        stubout_node.find( [objid: o.item2.objid] ).update( [acctid: o.item1.acctid ] );   
+        waterworks_account.find( [objid: o.item1.acctid] ).update([stuboutnodeid:  o.item2.objid ]);           
     }
 
 }

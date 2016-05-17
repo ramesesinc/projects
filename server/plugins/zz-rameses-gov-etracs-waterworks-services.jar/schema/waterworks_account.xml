@@ -38,7 +38,7 @@
 		<field name="lastdatepaid" required="false" indexed="true" caption="Last Date Paid"/>
 
 		<complex name="stuboutnode" ref="waterworks_stubout_node" jointype="many-to-one" required="false" 
-			includefields="objid,indexno,stubout.code,stubout.zone.code,stubout.zone.sector.code">
+			includefields="objid,indexno,stubout.code,stubout.zone.code,stubout.zone.sector.objid,stubout.zone.sector.code">
 			<key field="stuboutnodeid" target="objid"/> 
 		</complex>
 

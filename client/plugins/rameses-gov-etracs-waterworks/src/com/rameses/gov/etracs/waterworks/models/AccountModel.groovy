@@ -27,7 +27,7 @@ public class AccountModel extends CrudFormModel {
 
         pass = false;
         h = { o->
-            if( o.acctid ) throw new Exception("There is already an account assigned. Choose another");
+            if( o.account?.objid ) throw new Exception("There is already an account assigned. Choose another");
             entity.stuboutnode = o;
             pass = true;
         }

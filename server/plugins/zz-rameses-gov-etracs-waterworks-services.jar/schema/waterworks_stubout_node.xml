@@ -11,7 +11,7 @@
 			<key field="acctid" target="objid"/>
 		</complex>
 		<complex name="stubout" ref="waterworks_stubout" jointype="many-to-one" 
-			includefields="objid,code,zone.code,zone.sector.code">
+			includefields="objid,code,zone.objid,zone.code,zone.sector.objid,zone.sector.code">
 			<key field="stuboutid" target="objid"/>
 		</complex>
 

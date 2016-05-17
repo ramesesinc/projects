@@ -5,6 +5,7 @@
 - BPLS 
 		
 - ASSESSOR
+	- Support Machinery sworn statement appraisal
 
 - LANDTAX
 	- Add Realty Tax Delinquency Summary and Realty Tax Delinquency Summary by Classification Report

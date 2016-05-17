@@ -78,6 +78,7 @@ class MachAppraisalInfoController extends com.rameses.gov.etracs.rpt.workflow.Ba
     
         
     def onupdateMachine = {
+        machineListHandler.load();
         calculateAssessment();
     }
     

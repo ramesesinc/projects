@@ -2,7 +2,7 @@
 	<element name="machrpu" tablename="machrpu">
 		<field name="objid" primary="true"/>
         <field name="landrpuid" required="true"/>
-		<field name="bldgmaster_objid" required="true"/>
+		<field name="bldgmaster_objid" />
 	</element>
 
     <element name="machuse" tablename="machuse">

@@ -28,14 +28,9 @@
 			<key field="classificationid" target="objid"/>
 		</complex>
 
-		<complex name="stubout" ref="waterworks_stubout" jointype="many-to-one" 
-			required="false"  includefields="code,zone.code,zone.sector.code,barangay.name">
-			<key field="stuboutid" target="objid"/>	
-		</complex>	
-
-		<complex name="stuboutnode" ref="waterworks_stubout_node" jointype="many-to-one" 
-			required="false"  includefields="indexno">
-			<key field="objid" target="applicationid"/> 
+		<complex name="stuboutnode" ref="waterworks_stubout_node" jointype="many-to-one" required="false" 
+			includefields="objid,indexno,stubout.code,stubout.zone.code,stubout.zone.sector.code">
+			<key field="stuboutnodeid" target="objid"/> 
 		</complex>
 
 		<field name="meterid" required="false"/>

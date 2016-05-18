@@ -6,15 +6,7 @@
 
 package com.rameses.etracs.common;
 
-import com.rameses.osiris2.themes.FormPage;
-import com.rameses.rcp.common.CallbackHandler;
-import com.rameses.rcp.framework.Binding;
-import com.rameses.rcp.framework.UIEvent;
-import com.rameses.rcp.framework.UIHandler;
-import com.rameses.rcp.ui.UIControlAdapter;
 import com.rameses.rcp.ui.annotations.StyleSheet;
-import com.rameses.rcp.ui.annotations.Template;
-import java.util.HashMap;
 
 /**
  *
@@ -25,7 +17,6 @@ public class NonLocalAddressPage extends javax.swing.JPanel {
     
     public NonLocalAddressPage() {
         initComponents();
-        register( "entity" );
     }
     
     /** This method is called from within the constructor to
@@ -166,113 +157,4 @@ public class NonLocalAddressPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XTextField txtunitno;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     // End of variables declaration//GEN-END:variables
-    
-    
-    public void setName(String name) {
-        super.setName( name );
-        
-        txtunitno.setName(name+".unitno");
-        txtbldgno.setName(name+".bldgno");
-        txtbldgname.setName(name+".bldgname");
-        txtstreet.setName(name+".street");
-        txtsubdivision.setName(name+".subdivision");
-        txtbrgyname.setName(name+".barangay.name");
-        txtmuni.setName(name+".municipality");
-        txtcity.setName(name+".city");
-        txtprov.setName(name+".province");
-        txtpin.setName( name + ".pin"); 
-        register( name );
-    }
-    
-    private void register( String name ) {
-        ControlHandlerImpl uihandler = new ControlHandlerImpl( name ); 
-        txtunitno.putClientProperty(UIHandler.class, uihandler);
-    }
-    
-    private class ControlHandlerImpl extends UIControlAdapter implements CallbackHandler {
-
-        String name; 
-        UIEvent uie; 
-        
-        ControlHandlerImpl( String name ) { 
-            this.name = (name == null? "entity" : name); 
-        }
-
-        public void bind( UIEvent uie ) { 
-            this.uie = uie; 
-            if ( uie != null ) { 
-                Object o = uie.getValue( name ); 
-                if ( o == null ) { 
-                    uie.setValue( name, new HashMap()); 
-                } 
-                
-                Binding binding = uie.getBinding(); 
-                if ( binding != null ) { 
-                    binding.getValueChangeSupport().add( name+".*", this ); 
-                } 
-            } 
-        } 
-
-        public void unbind(UIEvent e) {
-            this.uie = null; 
-        }
-
-        public void refresh( UIEvent e ) { 
-            if ( uie != null ) {
-                call( "" );
-            }
-        }
-
-        
-        // 
-        // CallbackHandler implementations 
-        // 
-        public Object call(Object arg) { 
-            if ( uie != null ) {
-                StringBuilder buffer = new StringBuilder(); 
-                append( buffer, " ", "unitno" );
-                append( buffer, " ", "bldgno" );
-                append( buffer, " ", "bldgname" );
-                append( buffer, ", ", "street" );
-                append( buffer, ", ", "subdivision" ); 
-                append( buffer, ", ", "barangay.name" ); 
-                
-                String addrType = uie.getValue( name + ".addresstype" )+"";
-                if ( "MUNICIPALITY".equals( addrType )) {
-                    append( buffer, ", ", "municipality" ); 
-                    append( buffer, ", ", "province" ); 
-                } else if ( "CITY".equals( addrType )) { 
-                    append( buffer, ", ", "city" ); 
-                } else if ( "PROVINCE".equals( addrType )) { 
-                    append( buffer, ", ", "province" ); 
-                }
-                
-                if ( buffer.length() > 0 ) { 
-                    System.out.println( buffer );
-                    uie.setValue( name+".text", buffer.toString() ); 
-                } else { 
-                    uie.setValue( name+".text", null ); 
-                } 
-            } 
-            return null; 
-        }
-        
-        public Object call() { 
-            return null; 
-        }
-        public Object call(Object[] args) {
-            return null; 
-        } 
-        
-        private void append( StringBuilder buffer, String delimiter, String property ) { 
-            Object o = uie.getValue( name +"."+ property ); 
-            if ( o == null ) { return; }  
-            
-            if ( buffer.length() > 0 ) {
-                buffer.append((delimiter==null ? "" : delimiter)); 
-            }             
-            buffer.append( o.toString() ); 
-        }
-    }
-    
 }

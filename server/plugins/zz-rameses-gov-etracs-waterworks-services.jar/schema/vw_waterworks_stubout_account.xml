@@ -1,3 +1,16 @@
+<!-- 
+
+create view vw_waterworks_stubout_account 
+select 
+	wa.objid, wsn.stuboutid, wsn.indexno as stuboutindex, 
+	wa.acctno AS account_acctno, wa.acctname AS account_acctname, 
+	wa.address_text AS account_address_text,
+	wm.serialno AS account_meter_serialno 
+from waterworks_account wa 
+	inner join waterworks_stubout_node wsn on (wa.objid=wsn.acctid and wa.stuboutid=wsn.stuboutid) 
+	inner join waterworks_meter wm on wm.objid = wa.meterid 
+
+--> 
 <schema adapter="waterworks">
 	<element tablename="vw_waterworks_stubout_account">
 		<field name="objid" primary="true"/> 

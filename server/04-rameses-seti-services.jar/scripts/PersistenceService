@@ -57,7 +57,8 @@ class PersistenceService  {
 		if(!finders)
 			throw new Exception('update error. Please indicate at least a findBy map or primary keys')
 		def em = db.lookup(o._schemaname);
-		//em.debug = true;
+		if ( o.debug ) em.debug = o.debug; 
+
 		em.find(finders);
 		return em.update(o);
 	}

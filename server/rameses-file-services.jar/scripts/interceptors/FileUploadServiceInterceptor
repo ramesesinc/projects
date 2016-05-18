@@ -5,11 +5,11 @@ class FileUploadServiceInterceptor {
 	@Service('DefaultFileUploadServiceImpl') 
 	def svc; 
 
-	@After( pattern="FileUploadService.create" ) 
-	public void afterCreate( evt ) {
-		def result = evt.result; 
-		def o = svc.create( result ); 
-		if ( o ) result.putAll( o ); 
+	@Before( pattern="FileUploadService.register" ) 
+	public void register( evt ) { 
+		def params = evt.args[0]; 
+		def o = svc.register( params ); 
+		if ( o ) params.putAll( o );  
 	} 
 
 	@After( pattern="FileUploadService.addItem" ) 

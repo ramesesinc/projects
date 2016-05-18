@@ -2,17 +2,9 @@ import com.rameses.annotations.*;
 
 class FileUploadService {
 
-	@Service('DateService')
-	def dateSvc;
-
 	@ProxyMethod 
-	public def create( data ) { 
-		if ( !data.objid ) { 
-			data.objid = 'F'+new java.rmi.server.UID(); 
-		} 
-		data.dtfiled = dateSvc.getServerDate(); 
-		data.state = 'PENDING'; 
-		return data; 
+	public def register( params ) { 
+		return params; 
 	} 
 
 	@ProxyMethod 

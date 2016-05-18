@@ -4,7 +4,7 @@
                  caption="Change Meter" 
                  target="popup"
                  action="init"
-                 fields="stubout.*"
+                 fields="meter.*"
                  visibleWhen="#{mode=='read'}"
                  index="100"
                 />   
@@ -15,7 +15,7 @@
 
         public void afterInit() { 
             super.afterInit(); 
-            info._tag = 'change-meter'; 
+            info.remove('meter'); 
         } 
     }         
     </code> 

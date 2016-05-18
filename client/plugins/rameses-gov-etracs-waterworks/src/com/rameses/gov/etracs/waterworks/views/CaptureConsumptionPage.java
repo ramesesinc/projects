@@ -34,6 +34,7 @@ public class CaptureConsumptionPage extends javax.swing.JPanel {
 
         xPanel1 = new com.rameses.rcp.control.XPanel();
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
+        xButton2 = new com.rameses.rcp.control.XButton();
         xLabel2 = new com.rameses.rcp.control.XLabel();
         xLabel20 = new com.rameses.rcp.control.XLabel();
         xLabel13 = new com.rameses.rcp.control.XLabel();
@@ -49,21 +50,31 @@ public class CaptureConsumptionPage extends javax.swing.JPanel {
         xCheckBox1 = new com.rameses.rcp.control.XCheckBox();
         xPanel2 = new com.rameses.rcp.control.XPanel();
         xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
+        xButton1 = new com.rameses.rcp.control.XButton();
         xLabel1 = new com.rameses.rcp.control.XLabel();
         xDecimalField2 = new com.rameses.rcp.control.XDecimalField();
         xDecimalField3 = new com.rameses.rcp.control.XDecimalField();
-        xButton1 = new com.rameses.rcp.control.XButton();
-        xButton2 = new com.rameses.rcp.control.XButton();
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
-        xTitledBorder1.setTitle("Billing Cycle");
+        xTitledBorder1.setTitle("Billing Cycle Information");
         xPanel1.setBorder(xTitledBorder1);
 
-        xFormPanel1.setCaptionWidth(150);
+        xFormPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
+        xFormPanel1.setCaptionWidth(120);
 
+        xButton2.setCellPadding(new java.awt.Insets(0, 0, 5, 0));
+        xButton2.setImmediate(true);
+        xButton2.setName("computeBillingCycle"); // NOI18N
+        xButton2.setShowCaption(false);
+        xButton2.setText("Get Billing Cycle");
+        xFormPanel1.add(xButton2);
+
+        xLabel2.setBackground(new java.awt.Color(245, 245, 245));
+        xLabel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel2.setCaption("Sector");
-        xLabel2.setExpression("#{entity.stubout.zone.sector.objid}");
-        xLabel2.setPreferredSize(new java.awt.Dimension(0, 16));
+        xLabel2.setExpression("#{entity.stuboutnode.stubout.zone.sector.objid}");
+        xLabel2.setOpaque(true);
+        xLabel2.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(xLabel2);
 
         xLabel20.setBackground(new java.awt.Color(245, 245, 245));
@@ -114,11 +125,29 @@ public class CaptureConsumptionPage extends javax.swing.JPanel {
         xLabel16.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(xLabel16);
 
+        javax.swing.GroupLayout xPanel1Layout = new javax.swing.GroupLayout(xPanel1);
+        xPanel1.setLayout(xPanel1Layout);
+        xPanel1Layout.setHorizontalGroup(
+            xPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(xPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 304, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(28, Short.MAX_VALUE))
+        );
+        xPanel1Layout.setVerticalGroup(
+            xPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(xPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 198, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder2 = new com.rameses.rcp.control.border.XTitledBorder();
-        xTitledBorder2.setTitle("Consumption");
+        xTitledBorder2.setTitle("Consumption Information");
         xPanel4.setBorder(xTitledBorder2);
 
-        xFormPanel4.setCaptionWidth(120);
+        xFormPanel4.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
+        xFormPanel4.setCaptionWidth(110);
 
         xIntegerField2.setCaption("Prev. Reading");
         xIntegerField2.setDepends(new String[] {"info.reading", "info.volume"});
@@ -136,16 +165,30 @@ public class CaptureConsumptionPage extends javax.swing.JPanel {
         xFormPanel4.add(xIntegerField4);
 
         xCheckBox1.setName("info.postledger"); // NOI18N
+        xCheckBox1.setOpaque(false);
         xCheckBox1.setText("Post To Ledger");
 
         xPanel2.setDepends(new String[] {"info.postledger"});
+        xPanel2.setOpaque(false);
         xPanel2.setVisibleWhen("#{info.postledger == true}");
 
-        xFormPanel2.setCaptionWidth(100);
+        xFormPanel2.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
+        xFormPanel2.setCaptionWidth(110);
 
+        xButton1.setCaption(" ");
+        xButton1.setCellPadding(new java.awt.Insets(0, 0, 2, 0));
+        xButton1.setImmediate(true);
+        xButton1.setName("computeAmount"); // NOI18N
+        xButton1.setShowCaption(false);
+        xButton1.setText("Compute Amount");
+        xFormPanel2.add(xButton1);
+
+        xLabel1.setBackground(new java.awt.Color(245, 245, 245));
+        xLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel1.setCaption("Account");
         xLabel1.setExpression("#{info.item.title}");
-        xLabel1.setPreferredSize(new java.awt.Dimension(0, 16));
+        xLabel1.setOpaque(true);
+        xLabel1.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel2.add(xLabel1);
 
         xDecimalField2.setCaption("Amount");
@@ -158,28 +201,17 @@ public class CaptureConsumptionPage extends javax.swing.JPanel {
         xDecimalField3.setRequired(true);
         xFormPanel2.add(xDecimalField3);
 
-        xButton1.setImmediate(true);
-        xButton1.setName("computeAmount"); // NOI18N
-        xButton1.setText("Compute Amount");
-
         javax.swing.GroupLayout xPanel2Layout = new javax.swing.GroupLayout(xPanel2);
         xPanel2.setLayout(xPanel2Layout);
         xPanel2Layout.setHorizontalGroup(
             xPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(xPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(xPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(xButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 326, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(14, Short.MAX_VALUE))
+                .addComponent(xFormPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 331, Short.MAX_VALUE)
+                .addContainerGap())
         );
         xPanel2Layout.setVerticalGroup(
             xPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, xPanel2Layout.createSequentialGroup()
-                .addComponent(xButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 7, Short.MAX_VALUE)
-                .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+            .addComponent(xFormPanel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout xPanel4Layout = new javax.swing.GroupLayout(xPanel4);
@@ -188,54 +220,24 @@ public class CaptureConsumptionPage extends javax.swing.JPanel {
             xPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(xPanel4Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(xPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(xFormPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 344, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(xPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(xFormPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, 341, Short.MAX_VALUE)
                     .addComponent(xPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(xCheckBox1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(33, Short.MAX_VALUE))
+                    .addGroup(xPanel4Layout.createSequentialGroup()
+                        .addComponent(xCheckBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         xPanel4Layout.setVerticalGroup(
             xPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(xPanel4Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(xFormPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(xCheckBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 13, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(xCheckBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(xPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(40, Short.MAX_VALUE))
-        );
-
-        xButton2.setImmediate(true);
-        xButton2.setName("computeBillingCycle"); // NOI18N
-        xButton2.setText("Get Billing Cycle");
-
-        javax.swing.GroupLayout xPanel1Layout = new javax.swing.GroupLayout(xPanel1);
-        xPanel1.setLayout(xPanel1Layout);
-        xPanel1Layout.setHorizontalGroup(
-            xPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(xPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(xPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 304, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(xButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(xPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        xPanel1Layout.setVerticalGroup(
-            xPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(xPanel1Layout.createSequentialGroup()
-                .addGroup(xPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(xPanel1Layout.createSequentialGroup()
-                        .addGap(6, 6, 6)
-                        .addComponent(xButton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(xPanel1Layout.createSequentialGroup()
-                        .addGap(24, 24, 24)
-                        .addComponent(xPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(25, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -245,14 +247,18 @@ public class CaptureConsumptionPage extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(xPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(xPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(xPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(xPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables

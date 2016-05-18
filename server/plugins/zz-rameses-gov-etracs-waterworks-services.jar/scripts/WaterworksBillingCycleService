@@ -37,7 +37,6 @@ class WaterworksBillingCycleService  {
 			def so = p.stubout;
 			if(!so.objid) throw new Exception("stubout id is required");
 			so = stub.find( [objid: so.objid ]).first();
-			println "enter stubout " + so;
 			zone = so.zone.objid;
 			sector = so.zone.sector?.objid;	
 			if(!barangay) barangay = so.barangay?.objid;
@@ -69,6 +68,7 @@ class WaterworksBillingCycleService  {
 		def h = { r-> return false };
 
 		def res = ruleSvc.execute( "waterworksbillingcycle", facts, null, h );
+		println res; 
 		def period = res.period;
 		if(!period) throw new Exception("No billing cycle rules executed")
 

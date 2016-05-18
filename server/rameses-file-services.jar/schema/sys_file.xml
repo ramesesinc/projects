@@ -2,13 +2,13 @@
 
 	<element tablename="sys_file"> 
 		<field name="objid" primary="true"/> 
-		<field name="state" required="true"/> 
 		<field name="dtfiled" required="true"/> 
 		<field name="filename" required="true"/> 
 		<field name="filetype" required="true"/> 
 		<field name="filesize" required="true"/> 
 		<field name="chunkcount" required="true"/> 
 		<field name="info" /> 
+		<field name="state" /> 
 	</element> 
 
 </schema>

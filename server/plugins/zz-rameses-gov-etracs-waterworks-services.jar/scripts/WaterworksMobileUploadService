@@ -20,12 +20,12 @@ class WaterworksMobileUploadService {
 	@Service('DateService')
 	def dateSvc;
 
-	@Service('WaterworksBillingDateService') 
+	@Service('WaterworksBillingCycleService') 
 	def billingSvc; 
 
 
 	@ProxyMethod 
-	public def upload( def o ) {
+	public def upload( o ) { 
 		if(!o.objid) throw new Exception("Please specify objid!");
 		if(!o.reading) throw new Exception("Please specify reading!");
 		if(!o.dtreading) throw new Exception("Please specify dtreading!");
@@ -70,17 +70,14 @@ class WaterworksMobileUploadService {
 			stubout:[objid:mobileinfo.stuboutid], 
 			billdate : o.dtreading 
 		]); 
-		println 'billinfo objid is ' + billinfo.objid;
 
-		wa.updateReading([ 
-			objid: o.account.objid, 
-			lastdateread : c.dtreading,
+		wa.find([ objid: o.account.objid ]).update([ 
+			lastdateread : c.dtreading, 
 			currentreading : o.reading, 
-			billingcycleid : billinfo.objid  
+			billingcycleid : billinfo.objid 
 		]); 
 
 		wm.find([ batchid:o.batchid, objid:o.account.objid ]).delete(); 
 		return o;  
 	} 
-
-}
+} 

@@ -158,6 +158,9 @@ abstract class AsyncReportController
         buildReport( data ); 
         ReportUtil.print( report.report, true )
     }
+    
+    
+    void beforeBuildReport(data){}
         
     
     def buildReport( data ) {

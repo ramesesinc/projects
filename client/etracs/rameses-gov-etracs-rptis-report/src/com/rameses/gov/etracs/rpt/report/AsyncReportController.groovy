@@ -45,6 +45,8 @@ abstract class AsyncReportController
     }
     
     Map getParameters(){
+        if (data && data.parameters)
+            return data.parameters
         return [:]
     }
     

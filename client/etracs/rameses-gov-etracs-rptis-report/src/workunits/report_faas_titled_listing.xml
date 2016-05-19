@@ -1,0 +1,40 @@
+<workunit extends="rpt_wtemplates/ReportController.xml" >
+    <invokers>
+        <invoker folderid="/explorer/report/rpt" action="init" caption="List of Titled Properties" target="window" index="102" 
+            role="REPORT" permission="faas-titled-report.viewreport"/>
+    </invokers>
+    <code>
+
+<![CDATA[
+
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.reports.*;
+
+class TitledFaasListingController extends com.rameses.gov.etracs.rpt.report.AsyncReportController
+{
+    @Service('RPTReportFaasTitledListingService') 
+    def svc 
+    
+    String title = 'List of Titled Properties'
+    
+    String reportName = 'com/rameses/gov/etracs/rptis/report/faas_titled_listing.jasper';
+    
+    void buildReportData(entity, asyncHandler){
+        svc.generateReport(entity, asyncHandler)
+    }
+    
+   def formControl = [
+        getFormControls: {
+            return [
+                new FormControl( "combo", [caption:'LGU', name:'entity.lgu', items:'lgus', expression:'#{item.name}', emptyText:'ALL']),
+                new FormControl( "combo", [caption:'Barangay', name:'entity.barangay', items:'barangays', expression:'#{item.name}', depends:'entity.lgu', dynamic:true, emptyText:'ALL']),
+            ]    
+        },
+   ] as FormPanelModel;
+}
+]]>        
+        
+    </code>
+</workunit>

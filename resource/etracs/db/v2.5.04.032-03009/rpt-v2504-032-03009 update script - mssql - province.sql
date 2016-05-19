@@ -30,3 +30,13 @@ INSERT INTO faas_restriction_type (objid, name, idx, isother) VALUES ('UNLOCATED
 go 
 INSERT INTO faas_restriction_type (objid, name, idx, isother) VALUES ('RESTRICTED', 'Restricted', '9', '1')
 go 
+
+
+
+INSERT INTO sys_usergroup (objid, title, domain, userclass, orgclass, role) 
+VALUES ('RPT.REPORT', 'REPORT', 'RPT', 'usergroup', NULL, 'REPORT')
+go 
+
+INSERT INTO sys_usergroup_permission (objid, usergroup_objid, object, permission, title) 
+VALUES ('RPT.REPORT-faas-titled-report-viewreport', 'RPT.REPORT', 'faas-titled-report', 'viewreport', 'View Report')
+go 

@@ -5,8 +5,9 @@
 - BPLS 
 		
 - ASSESSOR
-	- Additional FAAS Restrictions
-	- Report on AV of Restricted Properties
+	- (new) List of Titled Properties 
+	- (new) Additional FAAS Restrictions
+	- (new) Report on AV of Restricted Properties
 
 - LANDTAX
 	- 

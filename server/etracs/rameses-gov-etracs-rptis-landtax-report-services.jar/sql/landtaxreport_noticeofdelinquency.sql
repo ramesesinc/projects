@@ -8,6 +8,7 @@ SELECT
 	rl.totalareaha,
 	rl.totalareaha * 10000.0 AS totalareasqm,
 	rl.totalav,
+	rl.administrator_name,
 	pc.code AS classcode, 
 	b.name AS barangay,
 	SUM(t.amtdue) AS amtdue
@@ -49,6 +50,7 @@ GROUP BY
 	rl.cadastrallotno, 
 	rl.totalareaha,
 	rl.totalav,
+	rl.administrator_name,
 	pc.code, 
 	b.name
 ORDER BY rl.tdno 

@@ -10,4 +10,5 @@
 	- (new) Report on AV of Restricted Properties
 
 - LANDTAX
-	- 
+	- Display administrator info in Notice of Delinquency Report 
+	

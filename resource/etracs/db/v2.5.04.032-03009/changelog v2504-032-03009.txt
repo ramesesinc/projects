@@ -5,6 +5,7 @@
 - BPLS 
 		
 - ASSESSOR
+	- Modified ROA include planttree info
 	- (new) List of Titled Properties 
 	- (new) Additional FAAS Restrictions
 	- (new) Report on AV of Restricted Properties

@@ -55,6 +55,15 @@ class SubdivisionListService extends ActiveListService
  		params._pagingKeys = ' s.objid '
  		params.filters = '';
 
+        if (params.barangay){
+            params.filters = '''
+                and s.objid in(
+                        select max(m.subdivisionid) as objid from subdivision_motherland m, faas f, realproperty rp 
+                        where m.subdivisionid = s.objid and m.landfaasid = f.objid and f.realpropertyid = rp.objid and rp.barangayid LIKE $P{barangayid}
+                    )
+            '''
+        }
+
 		def whereclause = ''
 
         switch(params.name) {

@@ -87,6 +87,8 @@ class RPTReportDelinquencyService
 			params.filter = ''' AND year = $P{year} ''';
 		} else if ( params.period?.code == 'AS_OF_YEAR' ) {
 			params.filter = ''' AND year <= $P{year} ''';
+		} else if ( params.period?.code == 'YEAR_RANGE' ) {
+			params.filter = ''' AND year >= $P{fromyear} AND year <= $P{toyear} ''';
 		} else { 
 			params.filter = ''' AND year < $P{year} ''';
 			params.year = currentyear; 

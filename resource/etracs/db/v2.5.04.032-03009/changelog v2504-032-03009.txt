@@ -12,6 +12,7 @@
 	- (new) Report on AV of Restricted Properties
 
 - LANDTAX
+	- (new) Support YEAR RANGE option in Delinquency Listing report
 	- (new) List of Compromise Agreements
 	- Display administrator info in Notice of Delinquency Report 
 	

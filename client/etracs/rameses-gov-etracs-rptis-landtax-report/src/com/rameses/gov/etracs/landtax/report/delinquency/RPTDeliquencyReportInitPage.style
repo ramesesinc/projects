@@ -10,3 +10,12 @@
 "entity.year" [ entity.period?.code=='AS_OF_YEAR' || entity.period?.code=='FOR_THE_YEAR' ] {
     visible: true; 
 } 
+
+"entity.(fromyear|toyear)"[true==true]{
+    visible:false;
+}
+
+"entity.(fromyear|toyear)"[entity.period?.code=='YEAR_RANGE']{
+    visible:true;
+    required:true;
+}

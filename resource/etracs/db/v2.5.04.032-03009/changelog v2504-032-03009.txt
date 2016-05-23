@@ -5,6 +5,7 @@
 - BPLS 
 		
 - ASSESSOR
+    - Add LGU Name to NOA query
 	- Modified ROA include planttree info
 	- (new) List of Titled Properties 
 	- (new) Additional FAAS Restrictions

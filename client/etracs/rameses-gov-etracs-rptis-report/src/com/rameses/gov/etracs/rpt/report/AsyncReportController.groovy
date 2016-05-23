@@ -95,7 +95,8 @@ abstract class AsyncReportController
                 } else {
                     data = o;     
                     has_result_preview = true; 
-                    binding.fireNavigation( buildReport( data.reportdata ) ); 
+                    if (data)
+                        binding.fireNavigation( buildReport( data.reportdata ) ); 
                 }
             } 
         ] as com.rameses.common.AbstractAsyncHandler 
@@ -105,14 +106,6 @@ abstract class AsyncReportController
         mode = 'processing'; 
         return null; 
     } 
-    
-    /*
-    def previewReport() {
-        buildReport()
-        mode = 'view';
-        return 'preview'; 
-    }
-    */
     
     void print() {
         asyncHandler = [

@@ -1,0 +1,16 @@
+<workunit schemaName="market_application">
+    <invokers>
+        <invoker type="market_application:open" caption="Market Application" 
+                 target="window" action="open" role="MASTER"/>
+        
+        <invoker type="global:barcode:51040" caption="Market Application" 
+            action="openBarcode" 
+            target="window" expr="#{barcodeid.startsWith('MK')}" />
+        
+    </invokers>
+    <code class="com.rameses.gov.etracs.market.models.MarketApplication" />
+    <pages>
+        <page template="com.rameses.gov.etracs.market.views.MarketApplicationPage"/>
+    </pages>
+    
+</workunit>

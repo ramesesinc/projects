@@ -2,9 +2,6 @@ import com.rameses.annotations.*;
 
 class WaterworksApplicationPersistenceInterceptor{
 	
-	@DataContext("waterworks_application_task")
-	def appTask;	
-
 	@DataContext("waterworks_stubout_node")
 	def stubout_node;	
 
@@ -13,9 +10,6 @@ class WaterworksApplicationPersistenceInterceptor{
 
 	@Service("DateService")
 	def dateSvc;
-
-	@Service("WorkflowTaskService")
-	def workflowTaskSvc;
 
 	@Before(pattern="PersistenceService.create", eval="#{args[0]._schemaname == 'waterworks_application'}")
 	public void beforeCreate(def evt) {
@@ -28,12 +22,6 @@ class WaterworksApplicationPersistenceInterceptor{
 		}
 	} 
 
-	@After(pattern="PersistenceService.create", eval="#{args[0]._schemaname == 'waterworks_application'}")
-	public void afterCreate(def evt) {
-		def o = evt.result;
-		workflowTaskSvc.start( [refid:o.objid, processname: 'waterworks_application' ] );
-	}
-
 	@After(pattern="PersistenceService.update", eval="#{args[0]._schemaname == 'waterworks_application' && args[0].stuboutnodeid!=null}")
 	public void beforeUpdate(def evt) {
 		def o  = evt.args[0];
@@ -42,27 +30,5 @@ class WaterworksApplicationPersistenceInterceptor{
 		stubout_node.find( [applicationid: o.objid] ).update( [applicationid: "{NULL}"] );	
 		stubout_node.find( [objid: o.stuboutnodeid] ).update( [applicationid: o.objid] );	
 	}
-
-	/*****************************************************************************************************
-	* attach the task
-	*****************************************************************************************************/
-	@After(pattern="PersistenceService.read", eval="#{args[0]._schemaname == 'waterworks_application'}")
-	public void findFirst(def evt) {
-		def o  = evt.result;
-		def parm = evt.args[0];
-		def m =[processname: parm._schemaname];
-		if(parm.taskid) {
-			m.taskid = parm.taskid; 
-		}
-		else {
-			//find task id based on ref
-			m.taskid = appTask.find([refid: o.objid]).select("taskid").where("enddate IS NULL").val();
-			if(!m.taskid) 
-				throw new Exception("There is no open task for this record");
-		}
-		o.task = workflowTaskSvc.findTask( m );
-	}
-
-
 
 }

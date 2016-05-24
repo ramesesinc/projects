@@ -11,13 +11,22 @@ public class MarketAccountInterceptor {
 	@Service("DateService")
 	def dateSvc;
 
+	@DataContext("market_rentalunit")
+	def rentalunit;
 
-	@Before( pattern="PersistenceService.create", eval="#{args[0]._schemaname == 'marketaccount'}")
-	void beforeSave( evt ) {
+	@Before( pattern="PersistenceService.create", eval="#{args[0]._schemaname == 'market_account'}")
+	public void beforeCreate( evt ) {
 		def o = evt.args[0];
-		o.acctno = "ACCT" + seqSvc.getNextFormattedSeries( "MARKET_ACCOUNT" );
-		o.state = 'DRAFT'	
-		o.dtcreated = dateSvc.serverDate;
+		if(!o.acctno) {
+			o.acctno = "ACCT" + seqSvc.getNextFormattedSeries( "MARKET_ACCOUNT" );
+		}
 	}
+
+	@After( pattern="PersistenceService.(create|update)", eval="#{args[0]._schemaname == 'market_account'}")
+	public void afterSave( evt ) {
+		def o = evt.args[0];
+		rentalunit.find([objid: o.unit.objid]).update([currentacctid: o.objid] );
+	}
+
 
 }

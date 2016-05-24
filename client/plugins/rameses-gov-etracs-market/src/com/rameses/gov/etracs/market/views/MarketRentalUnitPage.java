@@ -36,7 +36,6 @@ public class MarketRentalUnitPage extends javax.swing.JPanel {
         xLabel1 = new com.rameses.rcp.control.XLabel();
         xComboBox1 = new com.rameses.rcp.control.XComboBox();
         xComboBox3 = new com.rameses.rcp.control.XComboBox();
-        xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
         xDecimalField1 = new com.rameses.rcp.control.XDecimalField();
         xComboBox2 = new com.rameses.rcp.control.XComboBox();
 
@@ -58,7 +57,7 @@ public class MarketRentalUnitPage extends javax.swing.JPanel {
         xFormPanel1.add(xTextField2);
 
         xComboBox4.setCaption("Market");
-        xComboBox4.setExpression("#{item.code}");
+        xComboBox4.setExpression("#{item.name}");
         xComboBox4.setItems("listTypes.market");
         xComboBox4.setName("entity.market"); // NOI18N
         xComboBox4.setPreferredSize(new java.awt.Dimension(220, 22));
@@ -87,22 +86,18 @@ public class MarketRentalUnitPage extends javax.swing.JPanel {
         xComboBox3.setRequired(true);
         xFormPanel1.add(xComboBox3);
 
-        com.rameses.rcp.control.border.XTitledBorder xTitledBorder2 = new com.rameses.rcp.control.border.XTitledBorder();
-        xTitledBorder2.setTitle("Rental Rate");
-        xFormPanel2.setBorder(xTitledBorder2);
-
         xDecimalField1.setCaption("Rate");
         xDecimalField1.setName("entity.rate"); // NOI18N
         xDecimalField1.setRequired(true);
-        xFormPanel2.add(xDecimalField1);
+        xFormPanel1.add(xDecimalField1);
 
-        xComboBox2.setCaption("Rate Type");
+        xComboBox2.setCaption("Term");
         xComboBox2.setExpression("#{item.name}");
-        xComboBox2.setItems("listTypes.ratetype");
-        xComboBox2.setName("entity.ratetype"); // NOI18N
+        xComboBox2.setItems("listTypes.paymentterm");
+        xComboBox2.setName("entity.paymentterm"); // NOI18N
         xComboBox2.setPreferredSize(new java.awt.Dimension(100, 22));
         xComboBox2.setRequired(true);
-        xFormPanel2.add(xComboBox2);
+        xFormPanel1.add(xComboBox2);
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
@@ -110,19 +105,15 @@ public class MarketRentalUnitPage extends javax.swing.JPanel {
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(xFormPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 610, Short.MAX_VALUE)
-                    .add(xFormPanel2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .add(xFormPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 610, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(xFormPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 199, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                .add(xFormPanel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 100, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(103, Short.MAX_VALUE))
+                .add(xFormPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 249, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     
@@ -134,7 +125,6 @@ public class MarketRentalUnitPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XComboBox xComboBox4;
     private com.rameses.rcp.control.XDecimalField xDecimalField1;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
-    private com.rameses.rcp.control.XFormPanel xFormPanel2;
     private com.rameses.rcp.control.XLabel xLabel1;
     private com.rameses.rcp.control.XTextField xTextField1;
     private com.rameses.rcp.control.XTextField xTextField2;

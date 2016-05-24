@@ -6,10 +6,14 @@
 
 package com.rameses.gov.etracs.market.views;
 
+import com.rameses.rcp.ui.annotations.Template;
+import com.rameses.seti2.views.WorkflowTaskFormPage;
+
 /**
  *
  * @author  Elmo
  */
+@Template(WorkflowTaskFormPage.class)
 public class MarketApplicationPage extends javax.swing.JPanel {
     
     /** Creates new form MarketApplication */
@@ -25,69 +29,158 @@ public class MarketApplicationPage extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        xTabbedPane1 = new com.rameses.rcp.control.XTabbedPane();
+        jPanel2 = new javax.swing.JPanel();
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
-        xComboBox1 = new com.rameses.rcp.control.XComboBox();
-        xSubFormPanel1 = new com.rameses.rcp.control.XSubFormPanel();
+        xTextField1 = new com.rameses.rcp.control.XTextField();
         xLookupField1 = new com.rameses.rcp.control.XLookupField();
-        xLabel1 = new com.rameses.rcp.control.XLabel();
-        xLabel2 = new com.rameses.rcp.control.XLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        xTextArea1 = new com.rameses.rcp.control.XTextArea();
         xLabel3 = new com.rameses.rcp.control.XLabel();
-        xButton1 = new com.rameses.rcp.control.XButton();
+        xLabel6 = new com.rameses.rcp.control.XLabel();
+        xLabel2 = new com.rameses.rcp.control.XLabel();
+        xLabel5 = new com.rameses.rcp.control.XLabel();
+        xDecimalField2 = new com.rameses.rcp.control.XDecimalField();
+        jPanel1 = new javax.swing.JPanel();
+        xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
+        xLabel1 = new com.rameses.rcp.control.XLabel();
+        xDateField1 = new com.rameses.rcp.control.XDateField();
+        xLabel4 = new com.rameses.rcp.control.XLabel();
+        xPanel1 = new com.rameses.rcp.control.XPanel();
 
+        com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
+        xTitledBorder1.setTitle("General Information");
+        xFormPanel1.setBorder(xTitledBorder1);
         xFormPanel1.setCaptionWidth(101);
 
-        xComboBox1.setCaption("Business Type");
-        xComboBox1.setExpression("#{item.value}");
-        xComboBox1.setItemKey("key");
-        xComboBox1.setItems("orgTypes");
-        xComboBox1.setName("entity.orgtype"); // NOI18N
-        xComboBox1.setPreferredSize(new java.awt.Dimension(0, 22));
-        xFormPanel1.add(xComboBox1);
+        xTextField1.setCaption("Acct Name");
+        xTextField1.setName("entity.acctname"); // NOI18N
+        xTextField1.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel1.add(xTextField1);
 
-        xSubFormPanel1.setHandler("lookupOwner");
-        xSubFormPanel1.setPreferredSize(new java.awt.Dimension(0, 50));
-        xSubFormPanel1.setShowCaption(false);
-
-        org.jdesktop.layout.GroupLayout xSubFormPanel1Layout = new org.jdesktop.layout.GroupLayout(xSubFormPanel1);
-        xSubFormPanel1.setLayout(xSubFormPanel1Layout);
-        xSubFormPanel1Layout.setHorizontalGroup(
-            xSubFormPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 391, Short.MAX_VALUE)
-        );
-        xSubFormPanel1Layout.setVerticalGroup(
-            xSubFormPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 50, Short.MAX_VALUE)
-        );
-
-        xFormPanel1.add(xSubFormPanel1);
-
-        xLookupField1.setCaption("Unit");
-        xLookupField1.setExpression("#{entity.unit.code}");
-        xLookupField1.setHandler("lookupUnits");
-        xLookupField1.setName("entity.unit"); // NOI18N
+        xLookupField1.setCaption("Owner Name");
+        xLookupField1.setExpression("#{entity.owner.name}");
+        xLookupField1.setHandler("individualentity:lookup");
+        xLookupField1.setName("entity.owner"); // NOI18N
+        xLookupField1.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(xLookupField1);
 
-        xLabel1.setCaption("Unit Type");
-        xLabel1.setDepends(new String[] {"entity.unit"});
-        xLabel1.setExpression("#{entity.unit.type}");
-        xLabel1.setPreferredSize(new java.awt.Dimension(80, 16));
-        xFormPanel1.add(xLabel1);
+        jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        jScrollPane1.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+        jScrollPane1.setName("entity.name"); // NOI18N
+        jScrollPane1.setPreferredSize(new java.awt.Dimension(0, 60));
 
-        xLabel2.setCaption("Unit Name");
-        xLabel2.setDepends(new String[] {"entity.unit"});
-        xLabel2.setExpression("#{entity.unit.name}");
-        xLabel2.setPreferredSize(new java.awt.Dimension(0, 16));
-        xFormPanel1.add(xLabel2);
+        xTextArea1.setCaption("Owner Address");
+        xTextArea1.setDepends(new String[] {"entity.owner"});
+        xTextArea1.setName("entity.owner.address.text"); // NOI18N
+        jScrollPane1.setViewportView(xTextArea1);
 
-        xLabel3.setCaption("Location");
+        xFormPanel1.add(jScrollPane1);
+
+        xLabel3.setCaption("Market Name");
         xLabel3.setDepends(new String[] {"entity.unit"});
-        xLabel3.setExpression("#{entity.unit.location}");
-        xLabel3.setPreferredSize(new java.awt.Dimension(0, 16));
+        xLabel3.setExpression("#{entity.unit.market.name}");
+        xLabel3.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(xLabel3);
 
-        xButton1.setCaption("Fire");
-        xButton1.setName("fire"); // NOI18N
-        xButton1.setText("Fire");
+        xLabel6.setCaption("Unit");
+        xLabel6.setDepends(new String[] {"entity.unit"});
+        xLabel6.setExpression("#{entity.unit?.code} ");
+        xLabel6.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel1.add(xLabel6);
+
+        xLabel2.setCaption("Section");
+        xLabel2.setDepends(new String[] {"entity.unit"});
+        xLabel2.setExpression("#{entity.unit?.section?.name} ");
+        xLabel2.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel1.add(xLabel2);
+
+        xLabel5.setCaption("Rate Type");
+        xLabel5.setDepends(new String[] {"entity.unit"});
+        xLabel5.setExpression("#{entity.paymentterm}");
+        xLabel5.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel1.add(xLabel5);
+
+        xDecimalField2.setCaption("Rate");
+        xDecimalField2.setEnabled(false);
+        xDecimalField2.setName("entity.rate"); // NOI18N
+        xDecimalField2.setRequired(true);
+        xFormPanel1.add(xDecimalField2);
+
+        com.rameses.rcp.control.border.XTitledBorder xTitledBorder2 = new com.rameses.rcp.control.border.XTitledBorder();
+        xTitledBorder2.setTitle("App Info");
+        jPanel1.setBorder(xTitledBorder2);
+
+        xFormPanel2.setCaptionWidth(120);
+
+        xLabel1.setCaption("App No");
+        xLabel1.setExpression("#{entity.appno}");
+        xLabel1.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        xLabel1.setPreferredSize(new java.awt.Dimension(107, 20));
+        xFormPanel2.add(xLabel1);
+
+        xDateField1.setEditable(false);
+        xDateField1.setCaption("Date Filed");
+        xDateField1.setEnabled(false);
+        xDateField1.setName("entity.dtcreated"); // NOI18N
+        xFormPanel2.add(xDateField1);
+
+        xLabel4.setCaption("Created By");
+        xLabel4.setExpression("#{entity.createdby.name}");
+        xFormPanel2.add(xLabel4);
+
+        org.jdesktop.layout.GroupLayout jPanel1Layout = new org.jdesktop.layout.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .add(xFormPanel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(49, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .add(xFormPanel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 131, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(145, Short.MAX_VALUE))
+        );
+
+        org.jdesktop.layout.GroupLayout jPanel2Layout = new org.jdesktop.layout.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .add(xFormPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 532, Short.MAX_VALUE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
+                    .add(xFormPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 311, Short.MAX_VALUE)
+                    .add(jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(100, Short.MAX_VALUE))
+        );
+
+        xTabbedPane1.addTab("General Info", jPanel2);
+
+        org.jdesktop.layout.GroupLayout xPanel1Layout = new org.jdesktop.layout.GroupLayout(xPanel1);
+        xPanel1.setLayout(xPanel1Layout);
+        xPanel1Layout.setHorizontalGroup(
+            xPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(0, 884, Short.MAX_VALUE)
+        );
+        xPanel1Layout.setVerticalGroup(
+            xPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(0, 422, Short.MAX_VALUE)
+        );
+
+        xTabbedPane1.addTab("Requirements", xPanel1);
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
@@ -95,34 +188,38 @@ public class MarketApplicationPage extends javax.swing.JPanel {
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(layout.createSequentialGroup()
-                        .add(10, 10, 10)
-                        .add(xButton1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                    .add(xFormPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 401, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(73, Short.MAX_VALUE))
+                .add(xTabbedPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 889, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(xFormPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 184, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .add(15, 15, 15)
-                .add(xButton1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(67, Short.MAX_VALUE))
+                .add(xTabbedPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 450, Short.MAX_VALUE)
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private com.rameses.rcp.control.XButton xButton1;
-    private com.rameses.rcp.control.XComboBox xComboBox1;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JScrollPane jScrollPane1;
+    private com.rameses.rcp.control.XDateField xDateField1;
+    private com.rameses.rcp.control.XDecimalField xDecimalField2;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
+    private com.rameses.rcp.control.XFormPanel xFormPanel2;
     private com.rameses.rcp.control.XLabel xLabel1;
     private com.rameses.rcp.control.XLabel xLabel2;
     private com.rameses.rcp.control.XLabel xLabel3;
+    private com.rameses.rcp.control.XLabel xLabel4;
+    private com.rameses.rcp.control.XLabel xLabel5;
+    private com.rameses.rcp.control.XLabel xLabel6;
     private com.rameses.rcp.control.XLookupField xLookupField1;
-    private com.rameses.rcp.control.XSubFormPanel xSubFormPanel1;
+    private com.rameses.rcp.control.XPanel xPanel1;
+    private com.rameses.rcp.control.XTabbedPane xTabbedPane1;
+    private com.rameses.rcp.control.XTextArea xTextArea1;
+    private com.rameses.rcp.control.XTextField xTextField1;
     // End of variables declaration//GEN-END:variables
     
 }

@@ -1,7 +1,8 @@
 <workunit extends="com/rameses/seti2/templates/CrudList.xml" schemaName="market_rentalunit">
     <invokers>
-        <invoker folderid="/explorer/master/market" caption="Market Rental Units" index="1" role="MASTER" action="init"/>
-        <invoker type="home.action" caption="Market Rental Units" index="1" role="MASTER" action="init"/>
+        <invoker folderid="/explorer/master/market" caption="Market Rental Units" index="1" 
+                 cols="objid,code,description,section.name,market.code,paymentterm,rate,account.acctname"   
+                 role="MASTER" action="init"/>
     </invokers>
     <code>
         import com.rameses.rcp.annotations.*;

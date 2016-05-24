@@ -3,27 +3,7 @@
         <invoker type="market_account:create" caption="New Market Account" action="create" role="MASTER"/>
         <invoker type="market_account:open" caption="Market Account" action="open"  role="MASTER"/>
     </invokers>
-    
-    <code>
-        <![CDATA[
-        import com.rameses.rcp.annotations.*;
-        
-        class MarketAccountModel extends com.rameses.seti2.models.CrudFormModel {
-        
-            @PropertyChangeListener
-            def listener = [
-            
-                'entity.unit' : { o->
-                    entity.rate = o.rate;
-                    entity.ratetype = o.ratetype;
-                    binding.refresh("entity.rate.*");
-                }
-            ];        
-            
-        }
-        
-        ]]>
-    </code>
+    <code class="com.rameses.gov.etracs.market.models.MarketAccount" />
     <pages>
         <page template="com.rameses.gov.etracs.market.views.MarketAccountPage"/>
     </pages>

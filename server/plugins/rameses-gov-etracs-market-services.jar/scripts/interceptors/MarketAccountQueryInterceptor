@@ -29,7 +29,7 @@ class MarketAccountQueryInterceptor{
 			case 'pastdue':
 				status = 'pastdue'
 				m.state = 'ACTIVE'
-				str += ' AND pastdue < NOW()'; 
+				str += ' AND duedate < NOW()'; 
 				break;
 
 			case 'for-padlock':

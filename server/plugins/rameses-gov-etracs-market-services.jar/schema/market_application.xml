@@ -1,0 +1,21 @@
+<schema  adapter="market">
+	<element tablename="market_application">
+		<field name="objid" primary="true" prefix="MKTAPP"/>
+		<field name="state" required="true" defaultValue="ACTIVE"/>
+		<field name="appno" required="true" />
+		<field name="acctname" required="true" />
+		<field name="dtcreated" required="true" />
+		<field name="createdby_objid" required="true" />
+		<field name="createdby_name" required="true" />
+
+		<field name="owner_objid" />
+		<field name="owner_name"  />
+		<field name="owner_address_text" />
+		<complex name="unit" ref="market_rentalunit" jointype="many-to-one"
+			includefields="code,unittype,paymentterm,rate,section,market.name,market.address.*">
+		    <key field="unit_objid" target="objid"/>
+		</complex>
+		
+		<field name="remarks" caption="Remarks"  visible="false"/>
+	</element>
+</schema>

@@ -31,7 +31,7 @@ public class AccountModel extends CrudFormModel {
             entity.stuboutnode = o;
             pass = true;
         }
-        Modal.show("waterworks_stubout_node_unassigned:lookup", [onselect: h, stuboutid: stuboutid] );
+        Modal.show("waterworks_stubout_node_unassigned_account:lookup", [onselect: h, stuboutid: stuboutid] );
         //binding.refresh();
     }
 

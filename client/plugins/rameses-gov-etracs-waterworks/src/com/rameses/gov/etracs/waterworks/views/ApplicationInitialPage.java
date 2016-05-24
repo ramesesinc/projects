@@ -13,12 +13,12 @@ import com.rameses.rcp.ui.annotations.Template;
  * @author dell
  */
 @Template(FormPage.class)
-public class WaterworksApplicationInitialPage extends javax.swing.JPanel {
+public class ApplicationInitialPage extends javax.swing.JPanel {
 
     /**
      * Creates new form WaterworksApplicationInitialPage
      */
-    public WaterworksApplicationInitialPage() {
+    public ApplicationInitialPage() {
         initComponents();
     }
 
@@ -47,7 +47,7 @@ public class WaterworksApplicationInitialPage extends javax.swing.JPanel {
 
         xLookupField1.setCaption("Applicant");
         xLookupField1.setExpression("#{entity.owner.name}");
-        xLookupField1.setHandler("lookupApplicant");
+        xLookupField1.setHandler("entity:lookup");
         xLookupField1.setIndex(-1);
         xLookupField1.setName("entity.owner"); // NOI18N
         xLookupField1.setPreferredSize(new java.awt.Dimension(0, 20));
@@ -115,7 +115,7 @@ public class WaterworksApplicationInitialPage extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(xPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(xPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(31, Short.MAX_VALUE))
+                .addContainerGap(245, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -124,7 +124,7 @@ public class WaterworksApplicationInitialPage extends javax.swing.JPanel {
                 .addComponent(xPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(xPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(31, Short.MAX_VALUE))
+                .addContainerGap(119, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables

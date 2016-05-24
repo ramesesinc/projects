@@ -12,7 +12,6 @@ class ChangeInfoService  {
 	@ProxyMethod
 	public def update( o ) { 
 		if ( !o.info._schemaname ) throw new Exception("ChangeInfoService error. Please include as schemaname");
-		
 		persistenceService.update( o.info ); 
 	}
 }

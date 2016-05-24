@@ -81,6 +81,11 @@ public class LocalAddressPanel extends javax.swing.JPanel {
         // 
         public Object call(Object arg) { 
             if ( uie != null ) {
+                Object o = uie.getValue( name ); 
+                if ( o == null ) {
+                    uie.setValue( name, new HashMap());
+                }
+                
                 StringBuilder buffer = new StringBuilder(); 
                 append( buffer, " ", "unitno" );
                 append( buffer, " ", "bldgno" );

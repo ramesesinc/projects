@@ -13,7 +13,7 @@
             <transition to="initial"/>
         </start>
         <page name="initial" title="Waterworks Application Initial Page">
-            <transition to="compute-fees" caption="Next" action="computeFee" mnemonic="N"/>
+            <transition to="compute-fees" caption="Next" action="fetchRequirements" mnemonic="N"/>
         </page>
         <page name="compute-fees" title="Fees and Requirements">
             <transition to="initial" caption="Back" mnemonic="B"/>
@@ -27,9 +27,9 @@
     </pageflow>        
     
     <pages>
-        <page name="initial" template="com.rameses.gov.etracs.waterworks.views.WaterworksApplicationInitialPage"/>
-        <page name="compute-fees" template="com.rameses.gov.etracs.waterworks.views.WaterworksApplicationComputeFeePage"/>
-        <page name="success" template="com.rameses.gov.etracs.waterworks.views.WaterworksApplicationSuccessPage"/>
+        <page name="initial" template="com.rameses.gov.etracs.waterworks.views.ApplicationInitialPage"/>
+        <page name="compute-fees" template="com.rameses.gov.etracs.waterworks.views.ApplicationPage"/>
+        <page name="success" template="com.rameses.gov.etracs.waterworks.views.ApplicationSuccessPage"/>
     </pages>
       
 </workunit>

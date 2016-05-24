@@ -1,0 +1,75 @@
+import com.rameses.annotations.*;
+
+class WaterworksCapturePaymentInterceptor{
+	
+	@DataContext("waterworks_account")
+	def acct;
+
+	@DataContext("waterworks_account_ledger")
+	def acctledger;
+
+	@DataContext("waterworks_application")
+	def app;
+
+	@DataContext("waterworks_application_fee")
+	def appfee;
+
+	@Before(pattern="CapturePaymentService.init", eval="#{args[0]._schemaname == 'waterworks_payment'}")
+	public void beforeInit(def evt) {
+		def o  = evt.args[0];
+		if(!o.acctid && !o.applicationid)
+			throw new Exception("waterworks capture payment must have an acctid or applicationid");	
+
+		if(o.acctid) {
+			def m = acct.find( [objid: o.acctid ]).select('acctno,acctname,applicationid').first();
+			if(!m) 
+				throw new Exception("Account not found");
+			if(m.applicationid) {
+				o.applicationid = m.applicationid;
+			}	
+			o.particulars = m.acctno + "(" + m.acctname + ")";
+		}		
+		else {
+			def m = app.find( [objid: o.applicationid ]).select('appno,acctname').first();
+			if(!m) 
+				throw new Exception("Application not found");
+			o.particulars = m.appno + "(" + m.acctname + ")";
+		}
+	}
+
+	@After(pattern="CapturePaymentService.getItems", eval="#{args[0]._schemaname == 'waterworks_payment'}")
+	public void beforeGetItems(def evt) {
+		def o = evt.args[0];
+		def items = evt.result; 
+		if( o.applicationid) {
+			def xitems = appfee.find([parentid: o.applicationid]).where("amount-amtpaid>0").list();
+			xitems.each {
+				def m = [priority:0, item: it.item, amtdue: it.amount-it.amtpaid, txnrefid: it.objid];
+				m.applicationid = o.applicationid;
+				items << m;
+			};
+		};
+		if( o.acctid) {
+			def xitems = acctledger.find([parentid: o.acctid]).where("amount-amtpaid>0").list();
+			xitems.each {
+				def m = [priority:0, item: it.item, amtdue: it.amount-it.amtpaid, txnrefid: it.objid];
+				m.acctid = o.acctid;
+				items << m;
+			}
+		};
+	}
+
+	@After(pattern="CapturePaymentService.post", eval="#{args[0]._schemaname == 'waterworks_payment'}")
+	public void beforeCapturePayment(def evt) {
+		def o = evt.args[0];
+		o.items.each {
+			if( it.acctid ) {
+				acctledger.find( [objid: it.txnrefid ]).update( [amtpaid: "{amtpaid+:amt}"], [amt: it.amount] );
+			}
+			else if(it.applicationid) {
+				appfee.find( [objid: it.txnrefid ]).update( [amtpaid: "{amtpaid+:amt}"], [amt: it.amount] );	
+			}
+		}
+	}
+
+}

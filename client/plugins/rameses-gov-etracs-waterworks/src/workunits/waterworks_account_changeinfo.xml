@@ -1,0 +1,68 @@
+<workunit schemaName="waterworks_account">
+    <invokers>
+        <invoker type="waterworks_account:form:menuActions" 
+                 caption="Change Address" 
+                 target="popup" 
+                 action="init"
+                 fields="address.*"
+                 view="address"
+                 visibleWhen="#{mode=='read'}"/>        
+        
+        <invoker type="waterworks_account:form:menuActions" 
+                 caption="Change Meter" 
+                 target="popup"
+                 action="init"
+                 fields="meter.*"
+                 view="meter"
+                 visibleWhen="#{mode=='read'}"/>  
+        
+        <invoker type="waterworks_account:form:menuActions" 
+                 caption="Change Owner" 
+                 target="popup"
+                 action="init"
+                 fields="owner.*,acctname"
+                 view="owner"
+                 visibleWhen="#{mode=='read'}"/>  
+        
+        <invoker type="waterworks_account:form:menuActions" 
+                 caption="Change Reading" 
+                 target="popup" 
+                 action="init" 
+                 fields="currentreading" 
+                 view="reading"
+                 visibleWhen="#{mode=='read'}" 
+                 index="100" />                           
+    </invokers>
+    
+    
+    <code>
+        <![CDATA[
+        import com.rameses.common.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        import com.rameses.rcp.framework.ClientContext;
+        import com.rameses.rcp.constant.*;
+        import com.rameses.seti2.models.ChangeInfoModel;
+
+        class WaterApplicationChangeInfoModel extends ChangeInfoModel {
+            public def init() { 
+                entity = caller.entity;
+                schema = caller.schema;
+                handler = { o->
+                    caller.loadData();
+                }
+                return super.init();
+            } 
+        }   
+        ]]>
+    </code>
+    
+    <pages>
+        <page name="address" template="com.rameses.gov.etracs.waterworks.views.ChangeAccountAddressPage"/>
+        <page name="meter" template="com.rameses.gov.etracs.waterworks.views.ChangeAccountMeterPage"/> 
+        <page name="owner" template="com.rameses.gov.etracs.waterworks.views.ChangeAccountOwnerPage"/>  
+        <page name="reading" template="com.rameses.gov.etracs.waterworks.views.ChangeAccountReadingPage"/>     
+    </pages>
+</workunit>

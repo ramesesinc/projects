@@ -1,31 +1,29 @@
-<workunit schemaName="marketaccount">
+<workunit schemaName="market_account">
     <invokers>
-        <invoker type="marketaccount:create" caption="New Market Account" action="create" role="MASTER"/>
-        <invoker type="marketaccount:open" caption="Market Account" action="open"  role="MASTER"/>
-        
-        <invoker type="home/market" caption="Market Accounts" action="create"  srole="MASTER"/>
-        
-        <invoker type="formActions" caption="Compute Rate" action="computeRate" visibleWhen="#{mode=='create' || mode=='edit'}"/>
+        <invoker type="market_account:create" caption="New Market Account" action="create" role="MASTER"/>
+        <invoker type="market_account:open" caption="Market Account" action="open"  role="MASTER"/>
     </invokers>
     
     <code>
-        <![CDATA[    
-        import com.rameses.rcp.annotations.*
-        import com.rameses.rcp.common.*
-        import com.rameses.osiris2.client.*
-        import com.rameses.osiris2.common.*
-        import com.rameses.seti2.models.*;
+        <![CDATA[
+        import com.rameses.rcp.annotations.*;
         
-        class  MarketAccountController extends CrudModel {
+        class MarketAccountModel extends com.rameses.seti2.models.CrudFormModel {
         
-            void computeRate() {
-                def r = service.computeRate( entity );
-                entity.rate = r.rate;
-            }
+            @PropertyChangeListener
+            def listener = [
+            
+                'entity.unit' : { o->
+                    entity.rate = o.rate;
+                    entity.ratetype = o.ratetype;
+                    binding.refresh("entity.rate.*");
+                }
+            ];        
+            
         }
+        
         ]]>
     </code>
-    
     <pages>
         <page template="com.rameses.gov.etracs.market.views.MarketAccountPage"/>
     </pages>

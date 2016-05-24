@@ -2,8 +2,8 @@
 <schema adapter="waterworks">
 	<element tablename="waterworks_stubout_node">
 		<field name="objid" primary="true" prefix="WNODE"/>
-		<field name="indexno" required="true"/>
-		<field name="acctid" visible="false"/>
+		<field name="indexno" required="true" searchable="true" indexed="true"/>
+		<field name="acctid" visible="false"/> 
 
 		<!-- this is for fetching -->
 		<complex name="account" ref="waterworks_account" required="false" jointype="many-to-one" 

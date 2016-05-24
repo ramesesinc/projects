@@ -10,6 +10,9 @@ ALTER TABLE `waterworks_stubout_node`
 ALTER TABLE `waterworks_stubout_node`
 	ADD INDEX `ix_applicationid` (`applicationid`)
 ; 
+ALTER TABLE `waterworks_stubout_node`
+	ADD INDEX `ix_indexno` (`indexno`) 
+; 
 
 ALTER TABLE `waterworks_account` DROP COLUMN `stuboutid`;
 ALTER TABLE `waterworks_account` ADD COLUMN `stuboutnodeid` varchar(50) NULL;

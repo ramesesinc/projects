@@ -4,6 +4,7 @@
 		<field name="objid" primary="true" prefix="WNODE"/>
 		<field name="indexno" required="true"/>
 		<field name="acctid" visible="false"/>
+		<field name="applicationid" visible="false"/>		
 
 		<!-- this is for fetching -->
 		<complex name="account" ref="waterworks_account" required="false" jointype="many-to-one" 
@@ -15,6 +16,10 @@
 			<key field="stuboutid" target="objid"/>
 		</complex>
 
-		<field name="applicationid" visible="false"/>		
+		<complex name="application" ref="waterworks_application" required="false" jointype="many-to-one" 
+			includefields="objid,appno,acctname,address.text">
+			<key field="applicationid" target="objid"/>
+		</complex>
+
 	</element>
 </schema>

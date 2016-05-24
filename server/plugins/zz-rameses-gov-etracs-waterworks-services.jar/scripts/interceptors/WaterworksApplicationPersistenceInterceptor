@@ -34,13 +34,13 @@ class WaterworksApplicationPersistenceInterceptor{
 		workflowTaskSvc.start( [refid:o.objid, processname: 'waterworks_application' ] );
 	}
 
-	@After(pattern="PersistenceService.update", eval="#{args[0]._schemaname == 'waterworks_application'}")
+	@After(pattern="PersistenceService.update", eval="#{args[0]._schemaname == 'waterworks_application' && args[0].stuboutnodeid!=null}")
 	public void beforeUpdate(def evt) {
 		def o  = evt.args[0];
-		//update the stubout node.
-		if(o.stuboutnode?.objid) {
-			stubout_node.find( [objid: o.stuboutnode.objid] ).update( [applicationid: o.objid] );	
-		}
+		//find first any node with same applicationid and nullify it.
+		stubout_node.debug = true;
+		stubout_node.find( [applicationid: o.objid] ).update( [applicationid: "{NULL}"] );	
+		stubout_node.find( [objid: o.stuboutnodeid] ).update( [applicationid: o.objid] );	
 	}
 
 	/*****************************************************************************************************

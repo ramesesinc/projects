@@ -1,0 +1,17 @@
+import com.rameses.rcp.annotations.*;
+
+class AddressUtil {
+
+    def format( def o ) {
+        def line1 = [o.unitno, o.bldgno, o.bldgname ];
+        def line2 = [o.street, o.subdivision, o.barangay?.name ];
+        def line3 = [o.city, o.municipality, o.province ];
+        def line4 = [ 
+            line1.findAll{!!it}.join(" "), 
+            line2.findAll{!!it}.join(" "), 
+            line3.findAll{!!it}.join(" ")
+        ];
+        return line4.findAll{!!it}.join(", ");
+    }
+
+}

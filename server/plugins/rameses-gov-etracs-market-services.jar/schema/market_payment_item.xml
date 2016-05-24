@@ -1,7 +1,7 @@
 <schema  adapter="market">
 
 	<element tablename="market_payment_item">
-		<field name="objid" primary="true"/>
+		<field name="objid" primary="true" prefix="MKTPMTITM"/>
 		<complex name="parent" ref="market_payment" jointype="many-to-one">
 			<key field="parentid" target="objid"/>
 		</complex>	

@@ -4,7 +4,7 @@
 		<field name="serialno" required="true" indexed="true" caption="Serial No." searchable="true"/>
 		<field name="brand" required="true" indexed="true" caption="Brand"/>
 
-		<complex name="size" ref="waterworks_metersize" jointype="many-to-one" required="false" includefields="title">
+		<complex name="size" ref="waterworks_metersize" jointype="many-to-one" required="false" includefields="objid,title">
 			<key field="sizeid" target="objid"/>
 		</complex>
 		
@@ -23,6 +23,7 @@
 			<key field="currentacctid" target="objid"/>
 		</complex>
 		
-		<field name="stocktype" defaultValue="STOCK" required="true" caption="Stock Type" />
+		<field name="stocktype" defaultValue="STOCK" required="true" caption="Stock Type" 
+			lov="WATERWORKS_METER_STOCKTYPE"/>
 	</element>
 </schema>

@@ -13,12 +13,12 @@ import java.awt.Color;
  * @author rameses
  */
 @Template(FormPage.class)
-public class WaterworksApplicationSuccessPage extends javax.swing.JPanel {
+public class ApplicationSuccessPage extends javax.swing.JPanel {
 
     /**
      * Creates new form WaterworksApplicationSuccessPage
      */
-    public WaterworksApplicationSuccessPage() {
+    public ApplicationSuccessPage() {
         initComponents();
         xTextField1.setBackground(Color.WHITE);
     }

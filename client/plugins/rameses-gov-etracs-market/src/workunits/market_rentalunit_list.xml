@@ -7,7 +7,7 @@
         import com.rameses.rcp.annotations.*;
         class MarketUnitList extends com.rameses.seti2.models.CrudListModel {
         
-            def selectedLocation;
+            def selectedMarket;
         
             def getMarketLocations() {
                 def m = [_schemaname:'market'];
@@ -19,14 +19,15 @@
             
             @PropertyChangeListener
             def listener  = [ 
-                'selectedLocation' : { o->
+                'selectedMarket' : { o->
                     listHandler.reload();
                 }
             ];
         
             def getCustomFilter() {
-                return [ "marketid = :mid", [mid : selectedLocation.objid] ];
+                return [ "marketid = :mid", [mid : selectedMarket.objid] ];
             }
+        
         }
     </code>
     <pages>

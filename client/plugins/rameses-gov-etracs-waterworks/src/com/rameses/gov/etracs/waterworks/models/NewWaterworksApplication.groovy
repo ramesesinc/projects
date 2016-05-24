@@ -14,9 +14,10 @@ public class NewWaterworksApplication extends CrudPageFlowModel {
     @Service("WaterworksApplicationService")
     def appSvc; 
 
-     def selectedRequirement;
+    def selectedRequirement;
     def imagedata; 
 
+    /*
     def getLookupApplicant() { 
         def params = [:]; 
         params['query.type'] = 'INDIVIDUAL'; 
@@ -29,25 +30,34 @@ public class NewWaterworksApplication extends CrudPageFlowModel {
             }
         }
         return Inv.lookupOpener('entity:lookup', params); 
-    }   
+    } 
+    */
 
+    @PropertyChangeListener
+    def listener = [
+        'entity.owner' : { o->
+            if ( !entity.acctname ) {
+                entity.acctname = o?.name; 
+                binding.refresh( "entity.acctname" );
+            }
+        }
+    ];
+    
     void afterCreate() { 
         entity.address = [:]; 
     }
 
-    void computeFee() { 
+    void fetchRequirements() { 
         if ( !entity.owner ) throw new BusinessException("Please specify an owner"); 
-        
         def result = appSvc.getInitialInfo( [:] );
         entity.fees = result.fees; 
         entity.total = result.total;
         entity.requirements = result.requirements; 
-        feeList.reload();
         requirementList.reload();
     } 
 
     def feeList = [
-        fetchList: {o-> return entity.fees; }
+        fetchList: {return [];}
     ] as BasicListModel;
 
     def requirementList = [

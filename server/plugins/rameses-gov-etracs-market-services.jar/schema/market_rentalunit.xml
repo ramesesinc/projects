@@ -2,17 +2,23 @@
 	<element tablename="market_rentalunit">
 		<field name="objid" primary="true" prefix="MKTUNT"/>
 		<field name="state" required="true" defaultValue="ACTIVE"/>
-		<complex name="market" ref="market" jointype="many-to-one" includefields="name,address.*">
+		<complex name="market" ref="market" jointype="many-to-one" required="false" 
+			includefields="objid,code,name,address.text">
 			<key field="marketid" target="objid" />
 		</complex>
 		<field name="unittype" required="true" lov="MARKET_UNIT_TYPES"/>
 		<field name="code" required="true" searchable="true"/>
 		<field name="description" />
-		<complex name="section" ref="market_section" jointype="many-to-one" includefields="name">
-			<key field="section_objid" target="objid" />
+		<complex name="section" ref="market_section" jointype="many-to-one" required="false" includefields="objid,name">
+			<key field="sectionid" target="objid" />
+		</complex>
+		<field name="paymentterm" required="true" lov="MARKET_PAYMENT_TERMS" defaultValue="DAILY"/>
+		<field name="rate" required="true" type="decimal"/>
+
+		<complex name="account" ref="market_account" jointype="many-to-one" required="false" 
+			includefields="objid,acctname">
+			<key field="currentacctid" target="objid" />
 		</complex>
 
-		<field name="ratetype" required="true" lov="MARKET_RATE_TYPES" defaultValue="DAILY"/>
-		<field name="rate" required="true" type="decimal"/>
 	</element>
 </schema>

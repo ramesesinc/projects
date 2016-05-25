@@ -3,24 +3,24 @@
 		<field name="objid" primary="true" prefix="MKTACCT"/>
 		<field name="state" required="true" defaultValue="ACTIVE"/>
 		<field name="acctno" required="true" />
-		<field name="acctname" required="true" />
+		<field name="acctname" required="true" caption="Account Name"/>
 		<field name="dtcreated" required="true" />
 		<field name="owner_objid" />
 		<field name="owner_name"  />
 		<field name="owner_address_text" />
 		<complex name="unit" ref="market_rentalunit" jointype="many-to-one"
-			includefields="code,unittype, ratetype,rate,section,market.name,market.address.*">
+			includefields="code,unittype,paymentterm,rate,section.name,market.name,market.address.*">
 		    <key field="unit_objid" target="objid"/>
 		</complex>
 		<field name="startdate" required="true"/>
 		<field name="lastpmtdate" />
-		<field name="totalprincipalpaid" required="true"/>
+		<field name="totalprincipalpaid" required="true" defaultValue="0" type="decimal"/>
 
 		<!-- dates -->
 		<field name="duedate" required="true" type="date"/>
 		<field name="padlockdate" required="true" type="date"/>
 
 		<field name="rate" required="true" />
-		<field name="ratetype" required="true" />
+		<field name="paymentterm" required="true" />
 	</element>
 </schema>

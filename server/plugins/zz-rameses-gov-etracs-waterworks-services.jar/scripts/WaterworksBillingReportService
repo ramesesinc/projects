@@ -9,6 +9,9 @@ class WaterworksBillingReportService {
 	@DataContext('waterworks_account_consumption')
 	def consumption; 
 
+	@DataContext('waterworks_application')
+	def wapp; 	
+
 	@Service("DateService")
 	def dateSvc;
 
@@ -41,10 +44,8 @@ class WaterworksBillingReportService {
 			[ account:item.account.title +  (it.remarks)?'('+it.remarks+')':'', amount: it.amount ] 
 		};
 
+		def sigobj = wapp.find([ acctid: m.objid ]).select('signature').first(); 
+		m.signature = sigobj?.signature; 
 		return m;
 	}
-
-
-
-
 }

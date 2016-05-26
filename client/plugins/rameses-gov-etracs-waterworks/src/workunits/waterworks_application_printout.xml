@@ -2,8 +2,7 @@
     <invokers>
         <invoker type="waterworks_application:form:formActions" 
                  caption="Printout" 
-                 action="preview" target="popup"
-                 visibleWhen="#{task.state=='end'}" />
+                 action="preview" target="popup"/>
     </invokers>
     <code>
         <![CDATA[
@@ -24,7 +23,11 @@
             String reportName = "com/rameses/gov/etracs/waterworks/reports/application/WaterApplication.jasper";
 
             public def getReportData() {
-                return reportSvc.getReport([objid: entity.objid]);
+                def data = reportSvc.getReport([objid: entity.objid]); 
+                if ( data.signature ) { 
+                    data.signature = 'base64://'+ data.signature; 
+                } 
+                return data; 
             }
       }
       ]]>        

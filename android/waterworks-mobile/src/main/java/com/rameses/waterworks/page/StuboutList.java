@@ -12,12 +12,10 @@ import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
@@ -33,9 +31,10 @@ public class StuboutList {
     private ListView<Stubout> stuboutList;
     private List<Stubout> stuboutData;
     private VBox root;
+    private boolean onScroll = false;
     
     public StuboutList(Zone zone){
-        Header.TITLE.setText("Stubouts");
+        Header.TITLE.setText(zone.getDescription());
         
         search_stubout = new TextField();
         search_stubout.setId("search-account");
@@ -63,27 +62,21 @@ public class StuboutList {
                 return new StuboutCell();
             }
         });
-        stuboutList.setOnMouseClicked(new EventHandler<MouseEvent>(){
+        stuboutList.setOnMousePressed(new EventHandler<MouseEvent>(){
             @Override
             public void handle(MouseEvent event) {
-                Platform.runLater(new Runnable(){
-                    @Override
-                    public void run() {
-                        Platform.runLater(new Runnable(){
-                            @Override
-                            public void run() {
-                                try{
-                                    Thread.sleep(1000);
-                                }catch(Exception e){ System.err.println(e); }
-                                Stubout stubout = stuboutList.getSelectionModel().getSelectedItem();
-                                if(stubout != null){
-                                    Node child = new StuboutAccountList(stubout,zone).getLayout();
-                                    Main.ROOT.setCenter(child);
-                                }
+                if(event.getClickCount() == 2){
+                    Platform.runLater(new Runnable(){
+                        @Override
+                        public void run() {
+                            Stubout stubout = stuboutList.getSelectionModel().getSelectedItem();
+                            if(stubout != null){
+                                Node child = new StuboutAccountList(stubout,zone).getLayout();
+                                Main.ROOT.setCenter(child);
                             }
-                        });
-                    }
-                });
+                        }
+                    });
+                }
             }
         });
         

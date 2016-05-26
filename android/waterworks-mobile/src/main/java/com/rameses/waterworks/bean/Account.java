@@ -1,6 +1,7 @@
 package com.rameses.waterworks.bean;
 
 import com.rameses.util.ObjectDeserializer;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -109,6 +110,14 @@ public class Account {
     public String getInfo(){ return info; }
     public String getStuboutId(){ return stuboutid; }
     public int getSortOrder(){ return sortorder; }
+    public String getPrevBalance(){
+        double val = 0.00;
+        List<ItemAccount> items = getItemList();
+        for(ItemAccount i : items){
+            val += Double.parseDouble(i.getAmount());
+        }
+        return String.format("%.2f", val);
+    }
     
     public String getConsumption(){ return consumption; }
     public String getAmtDue(){ return amtdue; }
@@ -128,7 +137,7 @@ public class Account {
         System.out.println("String Items : " + items);
         System.out.println("Account List : " + list.toString());
         for(Map m : list){
-            String account = m.get("account") != null ? m.get("account").toString() : "";
+            String account = m.get("title") != null ? m.get("title").toString() : "";
             double amount = m.get("amount") != null ? Double.parseDouble(m.get("amount").toString()) : 0.00;
             itemList.add(new ItemAccount(account,amount));
         }

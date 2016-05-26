@@ -135,10 +135,7 @@ public class AccountDetail {
         root.getChildren().add(createDetail("Address",account.getAddress()));
         root.getChildren().add(createDetail("Serial No",account.getSerialNo()));
         root.getChildren().add(createDetail("Classification",account.getClassificationId()));
-        List<ItemAccount> items = account.getItemList();
-        for(ItemAccount a : items){
-            root.getChildren().add(createDetail(a.getAccount(),String.valueOf(a.getAmount()).replaceAll(" ", "")));
-        }
+        root.getChildren().add(createDetail("Prev. Balance",account.getPrevBalance()));
         root.getChildren().add(createDetail("Amount Due",amtdue));
         root.getChildren().add(createDetail("TOTAL DUE",totaldue));
         root.getChildren().add(readingContainer);

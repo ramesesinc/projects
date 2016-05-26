@@ -13,9 +13,12 @@ import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
@@ -31,9 +34,10 @@ public class StuboutAccountList {
     private ListView<Account> listView;
     private TextField search_account;
     private List<Account> data;
+    private Button refresh;
     
     StuboutAccountList(Stubout s,Zone zone){
-        Header.TITLE.setText("Accounts");
+        Header.TITLE.setText(s.getCode());
         
         data = DatabasePlatformFactory.getPlatform().getDatabase().getAccountByStubout(s,"");
         
@@ -61,29 +65,40 @@ public class StuboutAccountList {
                 return new AccountCell();
             }
         });
-        listView.setOnMouseClicked(new EventHandler<MouseEvent>(){
+        listView.setOnMousePressed(new EventHandler<MouseEvent>(){
             @Override
             public void handle(MouseEvent event) {
-                Platform.runLater(new Runnable(){
-                    @Override
-                    public void run() {
-                        try{
-                            Thread.sleep(1000);
-                        }catch(Exception e){ System.err.println(e); }
-                        Account account = listView.getSelectionModel().getSelectedItem();
-                        if(account != null){
-                            Node child = new AccountDetail(account).getLayout();
-                            Dialog.show("Account Information", child);
+                if(event.getClickCount() == 2){
+                    Platform.runLater(new Runnable(){
+                        @Override
+                        public void run() {
+                            Account account = listView.getSelectionModel().getSelectedItem();
+                            if(account != null){
+                                Node child = new AccountDetail(account).getLayout();
+                                Dialog.show("Account Information", child);
+                            }
                         }
-                    }
-                });
+                    });
+                }
+            }
+        });
+        
+        refresh = new Button("Refresh");
+        refresh.getStyleClass().add("terminal-button");
+        refresh.setOnAction(new EventHandler<ActionEvent>(){
+            @Override
+            public void handle(ActionEvent event) {
+                data = DatabasePlatformFactory.getPlatform().getDatabase().getAccountByStubout(s,search_account.getText());
+                listView.setItems(FXCollections.observableArrayList(data));
+                if(data.size()>0) listView.getSelectionModel().select(0);
             }
         });
 
         root = new VBox(Main.HEIGHT > 700 ? 10 : 5);
+        root.setAlignment(Pos.CENTER);
         root.setPadding(new Insets(Main.HEIGHT > 700 ? 20 : 10));
         root.setStyle("-fx-background-color: white;");
-        root.getChildren().addAll(search_account, listView);
+        root.getChildren().addAll(search_account, listView, refresh);
         root.setOnKeyReleased(new EventHandler<KeyEvent>(){
             @Override
             public void handle(KeyEvent event) {

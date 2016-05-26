@@ -99,7 +99,7 @@ public class Upload {
                     map.put("dtreading", r.getReadingDate());
                     map.put("userid", SystemPlatformFactory.getPlatform().getSystem().getUserID());
                     map.put("name", SystemPlatformFactory.getPlatform().getSystem().getFullName());
-                    map.put("amount", Double.parseDouble(r.getTotalDue()));
+                    map.put("amount", Double.parseDouble(r.getAmtDue()));
                     map.put("batchid", r.getBatchId());
                     
                     MobileUploadService service = new MobileUploadService();

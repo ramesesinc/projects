@@ -5,6 +5,7 @@
 - BPLS 
 		
 - ASSESSOR
+	- Fix cancelled faas report (old data)
 	- Update TD Report add prevarea ha
 	- Update FAAS Listing Report
     - Add LGU Name to NOA query

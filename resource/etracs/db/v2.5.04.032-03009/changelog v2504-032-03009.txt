@@ -5,6 +5,7 @@
 - BPLS 
 		
 - ASSESSOR
+	- Fix building modify appraisal page (not editable)
 	- Fix cancelled faas report (old data)
 	- Update TD Report add prevarea ha
 	- Update FAAS Listing Report

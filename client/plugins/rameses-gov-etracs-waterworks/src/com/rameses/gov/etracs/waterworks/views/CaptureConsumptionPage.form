@@ -99,7 +99,7 @@
                   </Border>
                 </Property>
                 <Property name="caption" type="java.lang.String" value="Sector"/>
-                <Property name="expression" type="java.lang.String" value="#{entity.stuboutnode.stubout.zone.sector.objid}"/>
+                <Property name="expression" type="java.lang.String" value="#{entity.sector.objid}"/>
                 <Property name="opaque" type="boolean" value="true"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[0, 20]"/>

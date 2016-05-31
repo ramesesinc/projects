@@ -72,7 +72,7 @@ public class CaptureConsumptionPage extends javax.swing.JPanel {
         xLabel2.setBackground(new java.awt.Color(245, 245, 245));
         xLabel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel2.setCaption("Sector");
-        xLabel2.setExpression("#{entity.stuboutnode.stubout.zone.sector.objid}");
+        xLabel2.setExpression("#{entity.sector.objid}");
         xLabel2.setOpaque(true);
         xLabel2.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(xLabel2);

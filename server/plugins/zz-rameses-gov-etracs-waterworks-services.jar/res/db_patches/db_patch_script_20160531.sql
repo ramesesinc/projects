@@ -1,9 +1,28 @@
+alter table waterworks_account add sectorid varchar(50) null;
+alter table waterworks_account add zoneid varchar(50) null;
+alter table waterworks_account add metersizeid varchar(50) null;
+alter table waterworks_account add stuboutid varchar(50) null;
+
 create index ix_meterid on waterworks_account (meterid);
 create index ix_metersizeid on waterworks_account (metersizeid);
 create index ix_sectorid on waterworks_account (sectorid);
 create index ix_zoneid on waterworks_account (zoneid);
 create index ix_stuboutid on waterworks_account (stuboutid);
 create index ix_stuboutnodeid on waterworks_account (stuboutnodeid);
+
+ALTER TABLE `waterworks_account` 
+	ADD CONSTRAINT `fk_waterworks_account_metersize` 
+	FOREIGN KEY (`metersizeid`) REFERENCES `waterworks_metersize` (`objid`);
+alter table waterworks_account 
+	add CONSTRAINT `fk_waterworks_account_sector` 
+	FOREIGN KEY (`sectorid`) REFERENCES `waterworks_sector` (`objid`); 
+alter table waterworks_account 
+	add CONSTRAINT `fk_waterworks_account_sectorzone` 
+	FOREIGN KEY (`zoneid`) REFERENCES `waterworks_sector_zone` (`objid`); 
+alter table waterworks_account 
+	add CONSTRAINT `fk_waterworks_account_stubout` 
+	FOREIGN KEY (`stuboutid`) REFERENCES `waterworks_stubout` (`objid`); 
+
 
 create table tmp_account_stubout 
 select 

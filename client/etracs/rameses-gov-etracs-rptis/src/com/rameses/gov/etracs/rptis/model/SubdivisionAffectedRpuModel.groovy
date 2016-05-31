@@ -17,6 +17,9 @@ class SubdivisionAffectedRpuModel
     @Service('FAASService')
     def faasSvc;
     
+    @Service('CancelledFAASService')
+    def cancelSvc 
+    
     def svc;
     
     def entity;
@@ -147,16 +150,30 @@ class SubdivisionAffectedRpuModel
     /**************************************************
     * CANCEL IMPROVEMENT SUPPORT 
     **************************************************/
-    void cancelImprovement(){
-        if (selectedItem && MsgBox.confirm('Cancel selected improvement?')){
-            def improvement = [:]
+   
+    def getCancelReasons(){
+        return cancelSvc.getCancelReasons()
+    }
+   
+    def cancelImprovement(){
+        if (selectedItem ){
+            improvement = [:]
             improvement.objid = selectedItem.objid;
             improvement.parentid = entity.objid;
             improvement.faasid = selectedItem.prevfaasid;
+            improvement.lguid = selectedItem.lguid;
             improvement.arpu = selectedItem;
+            return new PopupOpener(outcome:'cancelinfo');
+        }
+        return null; 
+    }
+    
+    def doSaveCancelledImprovement(){
+        if (MsgBox.confirm('Cancel improvement?')){
             svc.createCancelledImprovement(improvement);
             affectedrpus.remove(selectedItem);
             listHandler.reload();
+            return '_close'
         }
     }
 }

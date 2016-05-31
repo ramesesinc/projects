@@ -16,6 +16,7 @@
     <pages> 
         <page template="com.rameses.gov.etracs.rpt.subdivision.ui.SubdivisionAffectedRpuPage"/>
         <page name="newrpu" template="com.rameses.gov.etracs.rptis.view.SubdivisionAffectedRpuNewPage"/>
+        <page name="cancelinfo" template="com.rameses.gov.etracs.rptis.view.CancelledImprovementInfoPage"/>
     </pages>
 </workunit>
 

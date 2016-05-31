@@ -40,3 +40,12 @@ go
 INSERT INTO sys_usergroup_permission (objid, usergroup_objid, object, permission, title) 
 VALUES ('RPT.REPORT-faas-titled-report-viewreport', 'RPT.REPORT', 'faas-titled-report', 'viewreport', 'View Report')
 go 
+
+
+
+alter table subdivision_cancelledimprovement add lasttaxyear int
+go 
+alter table subdivision_cancelledimprovement add lguid varchar(50)
+go 
+alter table subdivision_cancelledimprovement add reason_objid varchar(50)
+go 

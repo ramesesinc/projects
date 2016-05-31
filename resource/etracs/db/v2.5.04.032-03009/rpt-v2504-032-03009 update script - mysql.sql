@@ -27,3 +27,10 @@ VALUES ('RPT.REPORT', 'REPORT', 'RPT', 'usergroup', NULL, 'REPORT');
 
 INSERT INTO `sys_usergroup_permission` (`objid`, `usergroup_objid`, `object`, `permission`, `title`) 
 VALUES ('RPT.REPORT-faas-titled-report-viewreport', 'RPT.REPORT', 'faas-titled-report', 'viewreport', 'View Report');
+
+
+
+alter table subdivision_cancelledimprovement add lasttaxyear int;
+alter table subdivision_cancelledimprovement add lguid varchar(50);
+alter table subdivision_cancelledimprovement add reason_objid varchar(50);
+

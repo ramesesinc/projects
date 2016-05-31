@@ -101,7 +101,8 @@ SELECT
 	f.owner_address,
 	f.state AS prevstate,
 	f.owner_name,
-	f.owner_address
+	f.owner_address,
+	f.lguid 
 FROM subdivisionaffectedrpu sar 
 	left join faas f on sar.prevfaasid = f.objid 
 WHERE sar.subdivisionid = $P{subdivisionid}	
@@ -515,13 +516,15 @@ and enddate is null
 #-------------------------------------------------
 
 [getCancelledImprovements]
-select cf.*, r.rputype, f.tdno, f.fullpin, f.owner_name
+select cf.*, r.rputype, f.tdno, f.fullpin, f.owner_name, cr.name as reason_name
 from subdivision_cancelledimprovement cf 
 	inner join faas f on cf.faasid = f.objid 
 	inner join rpu r on f.rpuid = r.objid 
 	inner join realproperty rp on f.realpropertyid = rp.objid 
+	inner join canceltdreason cr on cf.reason_objid = cr.objid 
 where cf.parentid = $P{objid}
 order by rp.pin, r.suffix 
+
 
 
 [deleteAffectedRpu]

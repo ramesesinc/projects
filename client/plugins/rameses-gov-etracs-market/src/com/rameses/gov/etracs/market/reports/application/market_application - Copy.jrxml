@@ -18,7 +18,7 @@
 		 whenNoDataType="NoPages"
 		 isTitleNewPage="false"
 		 isSummaryNewPage="false">
-	<property name="ireport.scriptlethandling" value="2" />
+	<property name="ireport.scriptlethandling" value="0" />
 	<property name="ireport.encoding" value="UTF-8" />
 	<import value="java.util.*" />
 	<import value="net.sf.jasperreports.engine.*" />
@@ -37,7 +37,7 @@
 		<defaultValueExpression ><![CDATA["CGADH I, OIC"]]></defaultValueExpression>
 	</parameter>
 
-	<field name="name" class="java.lang.String"/>
+	<field name="acctname" class="java.lang.String"/>
 	<field name="address.text" class="java.lang.String"/>
 	<field name="birthdate" class="java.util.Date"/>
 	<field name="civilstatus" class="java.lang.String"/>
@@ -107,8 +107,7 @@
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA["Republic of the Philippines\n"+
 ($P{PARENTLGUFORMALNAME}? $P{PARENTLGUFORMALNAME}: $P{LGUFORMALNAME})+"\n"+
-($P{PARENTLGUFORMALNAME}? $P{LGUFORMALNAME}: "")
-]]></textFieldExpression>
+($P{PARENTLGUFORMALNAME}? $P{LGUFORMALNAME}: "")]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement
@@ -421,7 +420,7 @@
 					<textElement textAlignment="Left">
 						<font/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{name}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{acctname}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -699,7 +698,7 @@
 					<textElement textAlignment="Center">
 						<font/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{name}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{acctname}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement

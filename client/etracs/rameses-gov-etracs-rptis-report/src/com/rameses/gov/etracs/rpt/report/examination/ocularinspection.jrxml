@@ -350,7 +350,7 @@
 					</textElement>
 				<text><![CDATA[PHOTOGRAPH]]></text>
 				</staticText>
-				<image  scaleImage="RetainShape" vAlign="Top" hAlign="Left" isUsingCache="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<image  scaleImage="RetainShape" vAlign="Top" hAlign="Left" onErrorType="Blank" isUsingCache="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Opaque"
 						x="92"
@@ -394,7 +394,7 @@
 					</textElement>
 				<text><![CDATA[PHOTOGRAPHS]]></text>
 				</staticText>
-				<image  scaleImage="RetainShape" vAlign="Top" hAlign="Left" isUsingCache="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<image  scaleImage="RetainShape" vAlign="Top" hAlign="Left" onErrorType="Blank" isUsingCache="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Opaque"
 						x="33"
@@ -413,7 +413,7 @@
 					<graphicElement stretchType="NoStretch" fill="Solid" />
 					<imageExpression class="java.io.InputStream"><![CDATA[$P{PHOTO1_IS}]]></imageExpression>
 				</image>
-				<image  scaleImage="RetainShape" vAlign="Top" hAlign="Left" isUsingCache="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<image  scaleImage="RetainShape" vAlign="Top" hAlign="Left" onErrorType="Blank" isUsingCache="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Opaque"
 						x="261"
@@ -457,7 +457,7 @@
 					</textElement>
 				<text><![CDATA[PHOTOGRAPHS]]></text>
 				</staticText>
-				<image  scaleImage="RetainShape" vAlign="Top" hAlign="Left" isUsingCache="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<image  scaleImage="RetainShape" vAlign="Top" hAlign="Left" onErrorType="Blank" isUsingCache="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Opaque"
 						x="0"
@@ -471,7 +471,7 @@
 					<graphicElement stretchType="NoStretch" fill="Solid" />
 					<imageExpression class="java.io.InputStream"><![CDATA[$P{PHOTO1_IS}]]></imageExpression>
 				</image>
-				<image  scaleImage="RetainShape" vAlign="Top" hAlign="Left" isUsingCache="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<image  scaleImage="RetainShape" vAlign="Top" hAlign="Left" onErrorType="Blank" isUsingCache="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Opaque"
 						x="173"
@@ -485,7 +485,7 @@
 					<graphicElement stretchType="NoStretch" fill="Solid" />
 					<imageExpression class="java.io.InputStream"><![CDATA[$P{PHOTO2_IS}]]></imageExpression>
 				</image>
-				<image  scaleImage="RetainShape" vAlign="Top" hAlign="Left" isUsingCache="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<image  scaleImage="RetainShape" vAlign="Top" hAlign="Left" onErrorType="Blank" isUsingCache="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Opaque"
 						x="345"
@@ -524,7 +524,7 @@
 					</textElement>
 				<text><![CDATA[PHOTOGRAPHS]]></text>
 				</staticText>
-				<image  scaleImage="RetainShape" vAlign="Top" hAlign="Left" isUsingCache="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<image  scaleImage="RetainShape" vAlign="Top" hAlign="Left" onErrorType="Blank" isUsingCache="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Opaque"
 						x="57"
@@ -538,7 +538,7 @@
 					<graphicElement stretchType="NoStretch" fill="Solid" />
 					<imageExpression class="java.io.InputStream"><![CDATA[$P{PHOTO1_IS}]]></imageExpression>
 				</image>
-				<image  scaleImage="RetainShape" vAlign="Top" hAlign="Left" isUsingCache="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<image  scaleImage="RetainShape" vAlign="Top" hAlign="Left" onErrorType="Blank" isUsingCache="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Opaque"
 						x="235"
@@ -552,7 +552,7 @@
 					<graphicElement stretchType="NoStretch" fill="Solid" />
 					<imageExpression class="java.io.InputStream"><![CDATA[$P{PHOTO2_IS}]]></imageExpression>
 				</image>
-				<image  scaleImage="RetainShape" vAlign="Top" hAlign="Left" isUsingCache="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<image  scaleImage="RetainShape" vAlign="Top" hAlign="Left" onErrorType="Blank" isUsingCache="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Opaque"
 						x="56"
@@ -566,7 +566,7 @@
 					<graphicElement stretchType="NoStretch" fill="Solid" />
 					<imageExpression class="java.io.InputStream"><![CDATA[$P{PHOTO3_IS}]]></imageExpression>
 				</image>
-				<image  scaleImage="RetainShape" vAlign="Top" hAlign="Left" isUsingCache="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<image  scaleImage="RetainShape" vAlign="Top" hAlign="Left" onErrorType="Blank" isUsingCache="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Opaque"
 						x="234"
@@ -605,7 +605,7 @@
 					</textElement>
 				<text><![CDATA[PHOTOGRAPHS]]></text>
 				</staticText>
-				<image  scaleImage="RetainShape" vAlign="Top" hAlign="Left" isUsingCache="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<image  scaleImage="RetainShape" vAlign="Top" hAlign="Left" onErrorType="Blank" isUsingCache="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Opaque"
 						x="82"
@@ -619,7 +619,7 @@
 					<graphicElement stretchType="NoStretch" fill="Solid" />
 					<imageExpression class="java.io.InputStream"><![CDATA[$P{PHOTO4_IS}]]></imageExpression>
 				</image>
-				<image  scaleImage="RetainShape" vAlign="Top" hAlign="Left" isUsingCache="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<image  scaleImage="RetainShape" vAlign="Top" hAlign="Left" onErrorType="Blank" isUsingCache="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Opaque"
 						x="260"
@@ -633,7 +633,7 @@
 					<graphicElement stretchType="NoStretch" fill="Solid" />
 					<imageExpression class="java.io.InputStream"><![CDATA[$P{PHOTO5_IS}]]></imageExpression>
 				</image>
-				<image  scaleImage="RetainShape" vAlign="Top" hAlign="Left" isUsingCache="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<image  scaleImage="RetainShape" vAlign="Top" hAlign="Left" onErrorType="Blank" isUsingCache="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Opaque"
 						x="0"
@@ -647,7 +647,7 @@
 					<graphicElement stretchType="NoStretch" fill="Solid" />
 					<imageExpression class="java.io.InputStream"><![CDATA[$P{PHOTO1_IS}]]></imageExpression>
 				</image>
-				<image  scaleImage="RetainShape" vAlign="Top" hAlign="Left" isUsingCache="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<image  scaleImage="RetainShape" vAlign="Top" hAlign="Left" onErrorType="Blank" isUsingCache="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Opaque"
 						x="173"
@@ -661,7 +661,7 @@
 					<graphicElement stretchType="NoStretch" fill="Solid" />
 					<imageExpression class="java.io.InputStream"><![CDATA[$P{PHOTO2_IS}]]></imageExpression>
 				</image>
-				<image  scaleImage="RetainShape" vAlign="Top" hAlign="Left" isUsingCache="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<image  scaleImage="RetainShape" vAlign="Top" hAlign="Left" onErrorType="Blank" isUsingCache="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Opaque"
 						x="345"
@@ -700,7 +700,7 @@
 					</textElement>
 				<text><![CDATA[PHOTOGRAPHS]]></text>
 				</staticText>
-				<image  scaleImage="RetainShape" vAlign="Top" hAlign="Left" isUsingCache="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<image  scaleImage="RetainShape" vAlign="Top" hAlign="Left" onErrorType="Blank" isUsingCache="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Opaque"
 						x="0"
@@ -714,7 +714,7 @@
 					<graphicElement stretchType="NoStretch" fill="Solid" />
 					<imageExpression class="java.io.InputStream"><![CDATA[$P{PHOTO1_IS}]]></imageExpression>
 				</image>
-				<image  scaleImage="RetainShape" vAlign="Top" hAlign="Left" isUsingCache="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<image  scaleImage="RetainShape" vAlign="Top" hAlign="Left" onErrorType="Blank" isUsingCache="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Opaque"
 						x="173"
@@ -728,7 +728,7 @@
 					<graphicElement stretchType="NoStretch" fill="Solid" />
 					<imageExpression class="java.io.InputStream"><![CDATA[$P{PHOTO2_IS}]]></imageExpression>
 				</image>
-				<image  scaleImage="RetainShape" vAlign="Top" hAlign="Left" isUsingCache="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<image  scaleImage="RetainShape" vAlign="Top" hAlign="Left" onErrorType="Blank" isUsingCache="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Opaque"
 						x="345"
@@ -742,7 +742,7 @@
 					<graphicElement stretchType="NoStretch" fill="Solid" />
 					<imageExpression class="java.io.InputStream"><![CDATA[$P{PHOTO3_IS}]]></imageExpression>
 				</image>
-				<image  scaleImage="RetainShape" vAlign="Top" hAlign="Left" isUsingCache="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<image  scaleImage="RetainShape" vAlign="Top" hAlign="Left" onErrorType="Blank" isUsingCache="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Opaque"
 						x="0"
@@ -756,7 +756,7 @@
 					<graphicElement stretchType="NoStretch" fill="Solid" />
 					<imageExpression class="java.io.InputStream"><![CDATA[$P{PHOTO4_IS}]]></imageExpression>
 				</image>
-				<image  scaleImage="RetainShape" vAlign="Top" hAlign="Left" isUsingCache="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<image  scaleImage="RetainShape" vAlign="Top" hAlign="Left" onErrorType="Blank" isUsingCache="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Opaque"
 						x="173"
@@ -770,7 +770,7 @@
 					<graphicElement stretchType="NoStretch" fill="Solid" />
 					<imageExpression class="java.io.InputStream"><![CDATA[$P{PHOTO5_IS}]]></imageExpression>
 				</image>
-				<image  scaleImage="RetainShape" vAlign="Top" hAlign="Left" isUsingCache="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<image  scaleImage="RetainShape" vAlign="Top" hAlign="Left" onErrorType="Blank" isUsingCache="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Opaque"
 						x="345"
@@ -896,7 +896,7 @@
 					<graphicElement stretchType="NoStretch" fill="Solid" >
 					<pen lineWidth="0.0" lineStyle="Solid"/>
 </graphicElement>
-					<imageExpression class="java.io.InputStream"><![CDATA[$P{LOGOLGU}]]></imageExpression>
+					<imageExpression class="java.lang.String"><![CDATA["classpath://images/lgu-logo.png"]]></imageExpression>
 				</image>
 				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement

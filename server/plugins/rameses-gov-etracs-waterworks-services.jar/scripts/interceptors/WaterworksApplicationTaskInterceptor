@@ -1,0 +1,138 @@
+import com.rameses.annotations.*;
+import java.rmi.server.*;
+
+class WaterworksApplicationTaskInterceptor{
+
+	@Service("PersistenceService")
+	def persistenceSvc;
+	
+	@Service("WorkflowService")
+	def wfSvc;
+	
+
+	@Service("DateService")
+	def dateSvc;
+
+	@DataContext("waterworks_installment")
+	def inst;
+
+	@DataContext("waterworks_application_fee")
+	def appFee;
+
+	@DataContext("waterworks_application_requirement")
+	def req;
+
+	@DataContext("waterworks_application")
+	def app;
+
+	@DataContext("waterworks_application_bom")
+	def bom;
+
+	@Env
+	def env;
+
+	@Before(pattern="WorkflowTaskService.signal", eval="#{args[0].processname == 'waterworks_application' && args[0].taskstate== 'for-review-requirement' }")
+	public void checkRequirement(def evt) {
+		def t = evt.args[0];
+		def r = req.select("title").find( [ parentid: t.refid] ).where("required=1 AND (complied IS NULL OR complied=0)").list();
+		if( r.size() > 0 ) {
+			def sb = new StringBuilder();
+			r.each {
+				sb.append( "\n"+it.title);	
+			}
+			throw new Exception("The ff. requirements are not yet complied. Please verify and check"+sb.toString());
+		}	
+	}
+
+	@Before(pattern="WorkflowTaskService.signal", eval="#{args[0].processname == 'waterworks_application' && args[0].taskstate=='for-assessment' }")
+	public void checkBeforeMaterialAvailability(def evt) {
+		def t = evt.args[0];
+		//1. check if there is a stubout specified.
+		int j = app.find( [objid: t.refid]).select("x:{COUNT(*)}").where("NOT(stuboutid IS NULL)").val();
+		if( j == 0 ) throw new Exception("Please assign a stubout first");
+
+		//2. check if there are materials specified
+		j = bom.find([parentid:t.refid]).select("x:{COUNT(*)}").val();
+		if( j == 0 ) throw new Exception("Please specify at least one material item");		
+	}
+
+	@Before(pattern="WorkflowTaskService.signal", eval="#{args[0].processname == 'waterworks_application' && args[0].taskstate=='for-material-availability' && args[0].action=='submit'}")
+	public void checkBeforeBilling(def evt) {
+		def t = evt.args[0];
+		//1. check if there is a stubout specified.
+		int j = bom.find( [parentid: t.refid]).select("x:{COUNT(*)}").where("NOT(state='VERIFIED')").val();
+		if( j > 0 ) throw new Exception("All materials must be verified first");
+	}
+
+
+	@Before(pattern="WorkflowTaskService.signal", eval="#{args[0].processname == 'waterworks_application' && args[0].to=='for-payment'}")
+	public void checkBeforePayment(def evt) {
+		def t = evt.args[0];
+		//1. check if there is a stubout specified.
+		int j = bom.find( [parentid: t.refid]).select("x:{COUNT(*)}").where("NOT(state='POSTED')").val();
+		if( j > 0 ) throw new Exception("All materials must be posted to billing first");
+	}
+
+	@Before(pattern="WorkflowTaskService.signal", 
+		eval="#{args[0].processname == 'waterworks_application' && args[0].action == 'return_for-billing'}")
+	public void beforeReturnForReBilling(def evt) {
+		def t = evt.args[0];
+		def m = appFee.find( [parentid: t.refid, txntype:'BOM'] ).first();
+		if( m?.objid!=null ) {
+			if( m.installmentid ) inst.find( [objid: m.installmentid] ).delete();
+			appFee.find( [objid: m.objid]).delete();
+		}
+		else {
+			throw new Exception("Material Billing not found");
+		}
+	}
+
+
+	@Before(pattern="WorkflowTaskService.signal", eval="#{args[0].processname == 'waterworks_application' && args[0].to=='for-activation'}")
+	public void checkBeforeActivation(def evt) {
+		def t = evt.args[0];
+		//1. check if there is a meter specified
+		def m = app.find([objid:t.refid]).select("meter.*").first();
+		if( !m.meter?.objid ) 
+			throw new Exception("Meter must be assigned before activation");
+			  
+	}
+
+	@Before(pattern="WorkflowTaskService.signal", eval="#{args[0].processname == 'waterworks_application' && args[0].action=='activate'}")
+	public void doActivate(def evt) {
+		def t = evt.args[0];
+		
+		def currDate = dateSvc.getServerDate(); 
+		def o = app.find( [ objid: t.refid] ).first();
+
+		//retrieve application and shoot into the account. return the acct no.
+		def m = [_schemaname:'waterworks_account'];
+		m.owner = o.owner;
+		m.address = o.address;
+		m.acctname = o.acctname;
+		m.meter = o.meter;
+		m.applicationid = o.objid;
+		m.stubout = o.stubout;
+		m.stuboutnode = o.stuboutnode;
+		m.classification = o.classification;
+		m.currentreading = o.initialreading;
+		m.dtstarted = o.dtinstalled;
+		m.lastdateread = o.dtinstalled;
+		m.state = 'ACTIVE';
+		m = persistenceSvc.create( m );
+
+		env.acctno = m.acctno;
+		//update application status
+		app.find( [objid:t.refid] ).update( [acctid:m.objid,state:'COMPLETED'] );
+	}
+
+	//send the account number of the account after creation
+	@After(pattern="WorkflowTaskService.signal", eval="#{args[0].processname == 'waterworks_application' && args[0].action=='activate'}")
+	public void afterActivate(def evt) {
+		def result = evt.result;
+		result.acctno = env.acctno;
+	}
+
+
+
+}

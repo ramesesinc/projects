@@ -1,0 +1,84 @@
+import com.rameses.annotations.*;
+
+class WaterworksMobileRuleService  {
+	
+
+	@Service("RuleMgmtService")
+	def ruleMgmt;
+
+	private def buildRuleText(def r) {
+
+		def mm = [:];
+		mm.salience = r.salience;
+
+		def fct = r.conditions.find{it.fact.factclass == 'waterworks.facts.WaterAccount'};
+		if ( !fct ) throw new Exception('Please provide a WaterAccount factclass'); 
+
+		def sb1 = new StringBuilder();
+		int j = 0; 
+		fct.constraints.each {
+			if( j++ > 0 ) sb1.append( " && " );
+			sb1.append( it.fieldname);
+			if( it.operator.symbol == 'matches') {
+				sb1.append( ".matches(");
+			}
+			else {
+				sb1.append( " " +  it.operator.symbol  + " ");
+			}
+			if( it.listvalue && it.listvalue.size() > 0 ) {
+				sb1.append( "\"" + it.listvalue*.key.join("|") + "\"" ) ;			
+			}
+			else if( it.stringvalue ) {
+				sb1.append( "\"" + it.stringvalue + "\"" );
+			}
+			else if( it.decimalvalue ) {
+				sb1.append( it.decimalvalue );
+			}
+			else if( it.intvalue ) {
+				sb1.append( it.intvalue );
+			}
+
+			//close the matches
+			if( it.operator.symbol == 'matches') {
+				sb1.append( ")");
+			}
+		}
+		mm.condition = sb1.toString();
+
+		def a = r.actions[0].params.find{it.actiondefparam.name=='amount'};
+		def varList = ruleMgmt.findAllVarsByType([ruleid:r.objid, datatype:'integer']);
+		mm.var = varList*.name[0];
+
+		if(a.listvalue?.size()>0) {
+			StringBuilder sb = new StringBuilder();
+			int i = 0;
+			int sz = a.listvalue.size();
+			a.listvalue.each {
+			    if( i++ > 0 ) sb.append("else");
+			    if( i < sz ) sb.append( " if(" + mm.var + " < " + it.to + ")" );
+			    sb.append( " return " + it.value + "; \n");   
+			}
+			mm.action = sb.toString();
+		}
+		else if(a.expr) {
+			mm.action = a.expr;
+		}
+		else
+			throw new Exception("No calculation expression found for " + r.name);
+		return mm;
+	}
+
+	@ProxyMethod
+	public def getRules() {
+		def p = [ruleset:'waterworkscomputation', rulegroup:'initial', state:'DEPLOYED'];
+		def list = ruleMgmt.getList( p);
+		def result = [];
+		for( o in list ) {
+			def r = ruleMgmt.open( [objid: o.objid] );
+			def m = buildRuleText(r);
+			result << m;
+		}
+		return result;
+	}
+
+}

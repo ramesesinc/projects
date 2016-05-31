@@ -1,0 +1,9 @@
+<schema adapter="waterworks">
+	<element tablename="waterworks_stubout_account">
+		<complex name="parent" ref="waterworks_stubout" jointype="many-to-one">
+			<key field="parentid" target="objid" />	
+		</complex>	
+		<field name="acctid"/>
+		<field name="sortorder" required="true" visible="false" sortindex="0"/>
+	</element>
+</schema>

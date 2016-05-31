@@ -1,0 +1,19 @@
+<schema adapter="waterworks">
+
+	<element tablename="waterworks_application_bom">
+		<field name="objid" primary="true"  prefix="WAF"/>
+		<field name="parentid" required="true"/> 
+		<field name="state" required="true"/> 
+		<field name="item_objid" required="true"/>
+		<field name="item_code" required="true"/>
+		<field name="item_title" required="true"/>
+		<field name="item_unit" />
+		<field name="item_unitprice" required="true" />
+		<field name="qty" required="true"/>
+		<field name="qtyissued" required="true" />
+		<field name="linetotal" expr="qtyissued*item.unitprice"/>
+		<field name="cwdsupplied" />
+		<field name="remarks" />
+	</element>
+
+</schema>

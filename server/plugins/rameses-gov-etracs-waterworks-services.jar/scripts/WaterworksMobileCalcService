@@ -1,0 +1,52 @@
+import com.rameses.annotations.*;
+
+class WaterworksMobileCalcService  {
+	
+
+	@Service("RuleMgmtService")
+	def ruleMgmt;
+
+	private def buildRuleText(def r) {
+
+		def mm = [:];
+		def c = r.conditions.find{it.fact.factclass == 'waterworks.facts.WaterAccount'}.constraints.find{it.fieldname == 'classification'};
+
+		mm.classificationid = c.listvalue*.key.join("|");
+
+		def a = r.actions[0].params.find{it.actiondefparam.name=='amount'};
+		def varList = ruleMgmt.findAllVarsByType([ruleid:r.objid, datatype:'integer']);
+		mm.var = varList*.name[0];
+
+		if(a.listvalue?.size()>0) {
+			StringBuilder sb = new StringBuilder();
+			int i = 0;
+			int sz = a.listvalue.size();
+			a.listvalue.each {
+			    if( i++ > 0 ) sb.append("else");
+			    if( i < sz ) sb.append( " if(" + mm.var + " < " + it.to + ")" );
+			    sb.append( " return " + it.value + "; \n");   
+			}
+			mm.expr = sb.toString();
+		}
+		else if(a.expr) {
+			mm.expr = a.expr;
+		}
+		else
+			throw new Exception("No calculation expression found for " + r.name);
+		return mm;
+	}
+
+	@ProxyMethod
+	public def getFormula() {
+		def p = [ruleset:'waterworkscomputation', rulegroup:'initial', state:'DEPLOYED'];
+		def list = ruleMgmt.getList( p);
+		def result = [];
+		for( o in list ) {
+			def r = ruleMgmt.open( [objid: o.objid] );
+			def m = buildRuleText(r);
+			result << m;
+		}
+		return result;
+	}
+
+}

@@ -1,0 +1,27 @@
+<schema adapter="waterworks">
+	<element tablename="waterworks_mobile_info">
+		<field name="objid" primary="true"  prefix="WM"/>
+		<field name="state" required="true"/>
+		<field name="acctno" required="true"/>
+		<field name="acctname" required="true"/>
+		<field name="address" required="false"/>
+		<field name="serialno" required="true"/>
+		<field name="sectorid" required="true"/>
+		<field name="sectorcode" required="true"/>
+		<field name="lastreading" required="true"/>
+		<field name="classificationid" required="true"/>
+		<field name="barcode" required="true"/>
+		<field name="batchid" required="true"/>
+		<field name="month" required="true"/>
+		<field name="year" required="true"/>
+		<field name="period" required="true"/>
+		<field name="duedate" required="true"/>
+		<field name="discodate" required="true"/>
+		<field name="rundate" required="true"/>
+		<field name="items" required="true"/>
+		<field name="info" required="true"/>
+		<field name="itemaccountid" required="true"/>
+		<field name="stuboutid" required="true"/>
+		<field name="sortorder" required="true"/>
+	</element>
+</schema>

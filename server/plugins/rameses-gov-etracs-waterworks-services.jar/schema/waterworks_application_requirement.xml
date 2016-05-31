@@ -1,0 +1,23 @@
+<schema adapter="waterworks">
+
+	<element tablename="waterworks_application_requirement">
+		<field name="objid" primary="true" prefix="WAPREQ"/>
+		<field name="parentid" required="true"/>
+		<field name="code" required="true" caption="Code"/>
+		<field name="title" required="true" caption="Title"/>
+		<field name="sortorder" required="true"/>
+		<field name="required" required="true"/>
+
+		<field name="refno"  caption="Refno"/>
+		<field name="refid" />
+		<field name="complied" />
+		<field name="dtcomplied" />
+		<field name="dtissued" />
+		<field name="expirydate" />
+		<field name="verifier_objid" />
+		<field name="verifier_name" caption="Verifier"/>
+		<field name="remarks" />
+		<complex name="info" required="false" serializer="default"/>
+	</element>
+
+</schema>

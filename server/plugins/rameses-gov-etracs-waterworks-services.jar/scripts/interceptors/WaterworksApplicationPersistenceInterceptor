@@ -1,0 +1,34 @@
+import com.rameses.annotations.*;
+
+class WaterworksApplicationPersistenceInterceptor{
+	
+	@DataContext("waterworks_stubout_node")
+	def stubout_node;	
+
+	@Service("SequenceService")
+	def seqSvc;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@Before(pattern="PersistenceService.create", eval="#{args[0]._schemaname == 'waterworks_application'}")
+	public void beforeCreate(def evt) {
+		def o  = evt.args[0];
+		o.appno = 'WA'+seqSvc.getNextFormattedSeriesA('water_application', 6);
+		o.dtfiled  = dateSvc.getServerDate();
+		o.fees.each{
+			it.amtpaid = 0;
+			it.txntype = 'REG'; 
+		}
+	} 
+
+	@After(pattern="PersistenceService.update", eval="#{args[0]._schemaname == 'waterworks_application' && args[0].stuboutnodeid!=null}")
+	public void beforeUpdate(def evt) {
+		def o  = evt.args[0];
+		//find first any node with same applicationid and nullify it.
+		stubout_node.debug = true;
+		stubout_node.find( [applicationid: o.objid] ).update( [applicationid: "{NULL}"] );	
+		stubout_node.find( [objid: o.stuboutnodeid] ).update( [applicationid: o.objid] );	
+	}
+
+}

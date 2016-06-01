@@ -1,0 +1,11 @@
+<workunit schemaName="market_application" allowEdit="false" allowDelete="false">
+    <invokers>
+        <invoker type="market_application:create" caption="New Market Application" 
+                 action="create" role="MASTER" />
+    </invokers>
+    <code class="com.rameses.gov.etracs.market.models.NewMarketApplication" />
+    <pages>
+        <page template="com.rameses.gov.etracs.market.views.MarketApplicationInitialPage"/>
+    </pages>
+    
+</workunit>

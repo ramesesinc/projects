@@ -1,7 +1,7 @@
 <schema  adapter="market">
 	
 	<element tablename="market_payment">
-		<field name="objid" primary="true"/>
+		<field name="objid" primary="true" prefix="MKTPMT"/>
 		<field name="txnno" required="true"/>
 		<field name="txndate" required="true"/>
 		<field name="acctid" required="true"/>

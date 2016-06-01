@@ -1,0 +1,27 @@
+import com.rameses.annotations.*;
+import com.rameses.rules.common.*;
+import waterworks.facts.*;
+
+class WaterworksApplicationService  {
+	
+	@Service("RuleExecutorService")
+	def ruleSvc;
+
+	/*******************************
+	* compute fee and requirements
+	*******************************/
+	@ProxyMethod 
+	public def getInitialInfo( params ) { 
+		def facts = [];
+		facts << new WaterApplication();
+		def res = ruleSvc.execute("waterworksapplication", facts, null, null);
+		def m = [:];
+		if(res.requirements) {
+			m.requirements = res.requirements;
+		}
+		return m; 
+	}
+
+
+
+}

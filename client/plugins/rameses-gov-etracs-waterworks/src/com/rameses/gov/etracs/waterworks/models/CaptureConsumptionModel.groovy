@@ -60,8 +60,9 @@ public class CaptureConsumptionModel  {
             def dt = df.parse(o);
             //def dt = DateFunc.getDayAdd( df.parse(o), -1);
             
-            def sector = entity.stubout?.zone?.sector?.objid;
-            billCycle = billdateSvc.computeBillingDates( [sector: sector, billdate:dt] );
+            def sector = entity.sectorid;
+            def zone = entity.zoneid; 
+            billCycle = billdateSvc.computeBillingDates([ sector: sector, zone: zone, billdate:dt ]);
             
             //run this first because we dont want it formatted yet.
             info.year = DateFunc.getYear( billCycle.fromperiod );

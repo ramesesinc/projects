@@ -6,10 +6,8 @@
         <invoker type="waterworks_stubout:open" formTitle="Open Stubout" 
                  action="open" target="popup"/>
         
-        <invoker type="waterworks_stubout:form:formActions" 
-                 caption="Edit" action="edit" formTitle="Stubout" />        
     </invokers> 
-    <code class="com.rameses.seti2.models.MdiFormModel"/>
+    <code class="com.rameses.seti2.models.CrudFormModel"/>
     <pages>
        <page template="com.rameses.gov.etracs.waterworks.views.StuboutPage"/>
     </pages>

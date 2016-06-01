@@ -1,7 +1,0 @@
-<schema  adapter="market">
-	<element tablename="market_rentalunit_attribute">
-		<field name="objid" primary="true"/>
-		<field name="parentid" required="true" />
-		<field name="attribute_objid" required="true"/>
-	</element>
-</schema>

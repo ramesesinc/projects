@@ -40,10 +40,9 @@ public class MarketSection extends javax.swing.JPanel {
         xTextField2.setSpaceChar('_');
         xFormPanel1.add(xTextField2);
 
-        xTextField3.setCaption("Title");
-        xTextField3.setName("entity.title"); // NOI18N
+        xTextField3.setCaption("Description");
+        xTextField3.setName("entity.description"); // NOI18N
         xTextField3.setPreferredSize(new java.awt.Dimension(0, 20));
-        xTextField3.setRequired(true);
         xFormPanel1.add(xTextField3);
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);

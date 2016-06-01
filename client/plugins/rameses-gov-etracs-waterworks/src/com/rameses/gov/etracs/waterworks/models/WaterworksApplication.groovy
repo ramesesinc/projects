@@ -9,8 +9,11 @@ import com.rameses.seti2.models.*;
 
 public class WaterworksApplication extends WorkflowTaskModel {
     
-    def tabList;
+    @Script("AddressUtil")
+    def addressUtil;
+    
     def formName = 'waterworks_application:form';
+    def selectedRequirement;
     
     def getBarcodeFieldname() {
         return "appno";
@@ -28,20 +31,9 @@ public class WaterworksApplication extends WorkflowTaskModel {
         return entity.objid;
     }
     
-    void afterOpen() {
-        tabList = [];
-        def m = [schemaname:getSchemaName(), refid:entity.objid];
-        tabList.add( Inv.lookupOpener( "waterworks_application_fee:list", [entity:entity] ));
-        tabList.add( Inv.lookupOpener( "requirements:list", m ));
-    }
-    
     void refresh() {
-        tabList.each { op->
-            try {
-                op.code.refresh();    
-            }catch(e){println e.message;}
-        }
-        binding.refresh();
+        feeList.reload();
+        requirementList.reload();
     }
     
     public boolean isAllowAssignStubout() {
@@ -53,15 +45,23 @@ public class WaterworksApplication extends WorkflowTaskModel {
     }
     
     void assignStubout() {
-        def h = { o->
-            def info = [_schemaname : "waterworks_application"];
-            info.objid = entity.objid;
-            info.stubout = o;
-            persistenceSvc.update( info ); 
-            entity.stubout = o;
+        boolean pass = false;
+        def stuboutid;
+        def h = {o->
+            stuboutid = o.objid;
+            pass = true;
+        }
+        Modal.show("waterworks_stubout:lookup", [onselect: h] );
+        if( !pass) return;
+        pass = false;
+        h = { o->
+            if( o.application?.appno ) throw new Exception("There is already an account assigned. Choose another");
+            def m = [_schemaname: schemaName, objid: entity.objid, stuboutnodeid: o.objid];
+            persistenceService.update( m );
+            entity.stuboutnode = o;
             binding.refresh();
-        };
-        Modal.show("waterworks_stubout:lookup", [onselect: h] );        
+        }
+        Modal.show("waterworks_stubout_node_unassigned_application:lookup", [onselect: h, stuboutid: stuboutid] );
     }
     
     void assignMeter() {
@@ -80,4 +80,38 @@ public class WaterworksApplication extends WorkflowTaskModel {
             MsgBox.alert("Account created " + task.acctno);
         }
     }
+
+    def editMeterInfo() {
+        def m = [:];
+        m.handler = { o->
+            o.address.text = addressUtil.format(o.address);
+            entity.address = o.address;
+            //binding.refresh();
+        }
+        //m.fields = "acctname,meter.serialno,address.street,address.barangay.name";
+        m.fields = "address.*";
+        m.entity = entity;
+        m.schema = schema;
+        Modal.show("selected_field:entry",m);
+    }
+    
+    def feeList = [
+        fetchList: {o-> 
+            def  m = [_schemaname:'waterworks_application_fee'];
+            m.findBy = [parentid: entity.objid];
+            def feeList = queryService.getList(m);
+            entity.total = feeList.sum{ it.amount };
+            return feeList; 
+        }
+    ] as BasicListModel;    
+
+    def requirementList = [
+        fetchList: {o-> 
+            def  m = [_schemaname:'waterworks_application_requirement'];
+            m.findBy = [parentid: entity.objid];
+            return queryService.getList(m);
+        }
+    ] as BasicListModel;   
+    
+    
 }

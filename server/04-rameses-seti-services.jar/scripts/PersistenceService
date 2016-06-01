@@ -12,6 +12,12 @@ class PersistenceService  {
 	@Service("SchemaService")
 	def schemaService;
 
+	@Service("DateService")
+	def dateSvc;
+
+	@Env
+	def env;
+
 	@ProxyMethod
 	public def newObject(  def o ) {
 		throw new Exception("null"); 
@@ -20,6 +26,10 @@ class PersistenceService  {
 	@ProxyMethod
 	public def create(  def o ) {
 		if(!o._schemaname) throw new Exception('Please provide a _schemaname');
+
+		o.dtcreated = dateSvc.getServerDate();
+		o.createdby = [objid:env.USERID, name:env.FULLNAME];
+
 		return db.lookup(o._schemaname).create( o );
 	}
 
@@ -53,11 +63,17 @@ class PersistenceService  {
 	@ProxyMethod
 	public def update( def o ) {
 		if(!o._schemaname) throw new Exception('Please provide a _schemaname');
+
+		//standard update info
+		o.dtmodified = dateSvc.getServerDate();
+		o.modifiedby = [objid:env.USERID, name:env.FULLNAME];
+
 		def finders = buildFinders(o);
 		if(!finders)
 			throw new Exception('update error. Please indicate at least a findBy map or primary keys')
 		def em = db.lookup(o._schemaname);
-		//em.debug = true;
+		if ( o.debug ) em.debug = o.debug; 
+
 		em.find(finders);
 		return em.update(o);
 	}

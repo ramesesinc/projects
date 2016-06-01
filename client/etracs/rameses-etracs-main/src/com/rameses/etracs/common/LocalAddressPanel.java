@@ -81,6 +81,11 @@ public class LocalAddressPanel extends javax.swing.JPanel {
         // 
         public Object call(Object arg) { 
             if ( uie != null ) {
+                Object o = uie.getValue( name ); 
+                if ( o == null ) {
+                    uie.setValue( name, new HashMap());
+                }
+                
                 StringBuilder buffer = new StringBuilder(); 
                 append( buffer, " ", "unitno" );
                 append( buffer, " ", "bldgno" );
@@ -146,55 +151,56 @@ public class LocalAddressPanel extends javax.swing.JPanel {
         xFormPanel2.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
         xFormPanel2.setPadding(new java.awt.Insets(0, 0, 0, 0));
         xFormPanel2.setShowCaption(false);
+        xFormPanel2.setStretchWidth(100);
 
         txtUnitno.setCaption("Unit No ");
         txtUnitno.setName("entity.unitno"); // NOI18N
-        txtUnitno.setPreferredSize(new java.awt.Dimension(80, 22));
+        txtUnitno.setStretchWidth(100);
         xFormPanel2.add(txtUnitno);
 
         txtBldgno.setCaption("House / Bldg No");
         txtBldgno.setCaptionWidth(90);
         txtBldgno.setCellPadding(new java.awt.Insets(0, 5, 0, 0));
         txtBldgno.setName("entity.bldgno"); // NOI18N
-        txtBldgno.setPreferredSize(new java.awt.Dimension(100, 22));
+        txtBldgno.setStretchWidth(100);
         xFormPanel2.add(txtBldgno);
 
         xFormPanel1.add(xFormPanel2);
 
         txtBldgname.setCaption("Bldg Name");
         txtBldgname.setName("entity.bldgname"); // NOI18N
-        txtBldgname.setPreferredSize(new java.awt.Dimension(0, 22));
+        txtBldgname.setStretchWidth(100);
         xFormPanel1.add(txtBldgname);
 
         txtStreet.setCaption("Street");
         txtStreet.setName("entity.street"); // NOI18N
-        txtStreet.setPreferredSize(new java.awt.Dimension(0, 22));
+        txtStreet.setStretchWidth(100);
         xFormPanel1.add(txtStreet);
 
         xFormPanel3.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
         xFormPanel3.setPadding(new java.awt.Insets(0, 0, 0, 0));
-        xFormPanel3.setPreferredSize(new java.awt.Dimension(0, 22));
         xFormPanel3.setShowCaption(false);
+        xFormPanel3.setStretchWidth(100);
 
         txtSubdivision.setCaption("Subdivision");
         txtSubdivision.setName("entity.subdivision"); // NOI18N
-        txtSubdivision.setPreferredSize(new java.awt.Dimension(80, 22));
+        txtSubdivision.setStretchWidth(100);
         xFormPanel3.add(txtSubdivision);
 
         lupBarangay.setCaption("Barangay");
-        lupBarangay.setCaptionWidth(60);
+        lupBarangay.setCaptionWidth(90);
         lupBarangay.setCellPadding(new java.awt.Insets(0, 5, 0, 0));
         lupBarangay.setExpression("#{entity.barangay.name}");
         lupBarangay.setHandler("barangay:lookup");
         lupBarangay.setName("entity.barangay"); // NOI18N
-        lupBarangay.setPreferredSize(new java.awt.Dimension(0, 22));
+        lupBarangay.setStretchWidth(100);
         xFormPanel3.add(lupBarangay);
 
         xFormPanel1.add(xFormPanel3);
 
         txtPin.setCaption("PIN");
         txtPin.setName("entity.pin"); // NOI18N
-        txtPin.setPreferredSize(new java.awt.Dimension(150, 22));
+        txtPin.setStretchWidth(48);
         xFormPanel1.add(txtPin);
 
         add(xFormPanel1, java.awt.BorderLayout.CENTER);

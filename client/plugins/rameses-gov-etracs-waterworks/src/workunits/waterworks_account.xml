@@ -1,4 +1,5 @@
 <workunit schemaName="waterworks_account" allowCreate="false" allowEdit="false">
+
     <invokers>
         <invoker folderid="/home/waterworks" caption="Capture Account" action="create" index="4"/>
         <invoker type="waterworks_account:create" caption="Waterworks Account" action="create" target="window"/>        
@@ -7,11 +8,12 @@
                  formTitle="Waterworks Account (#{entity.acctno}) #{entity.acctname}" 
                  formId="#{entity.objid}"
                  action="open" target="window"/>
-        
-        
     </invokers>
+    
     <code class="com.rameses.gov.etracs.waterworks.models.AccountModel" />    
+
     <pages>
         <page template="com.rameses.gov.etracs.waterworks.views.AccountPage"/>
     </pages>    
+    
 </workunit>

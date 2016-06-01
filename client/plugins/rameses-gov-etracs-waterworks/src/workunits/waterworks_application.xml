@@ -10,9 +10,11 @@
         
         <invoker type="formActions" 
                  caption="Specify Stubout"
-                 target="popup"
-                 action="assignStubout"/>        
-        
+                 action="assignStubout"/>    
+            
+        <invoker type="formActions" 
+                 caption="Edit Meter"
+                 action="editMeterInfo"/>    
         
     </invokers>
     <code class="com.rameses.gov.etracs.waterworks.models.WaterworksApplication"/>

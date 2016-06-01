@@ -25,7 +25,7 @@
                     entity.putAll( o );
                     caller.refresh();
                 }
-                caller.binding.fireNavigation( Inv.lookupOpener( "user:edit", [entity: entity, handler: h] ) );
+                caller.binding.fireNavigation( Inv.lookupOpener( "sys_user:edit", [entity: entity, handler: h] ) );
             }
             
         }

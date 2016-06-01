@@ -16,9 +16,10 @@ UPDATE itemaccount SET code=$P{code}, title=$P{title} WHERE objid=$P{objid}
 
 [getLookup]
 SELECT r.* FROM itemaccount r 
-WHERE  (r.title LIKE $P{title}  OR r.code LIKE $P{code} ) AND r.state  = 'APPROVED' 
-${filter}
-ORDER BY r.title
+WHERE  (r.title LIKE $P{title}  OR r.code LIKE $P{code} ) 
+	AND r.state  = 'APPROVED' 
+	${filter} 
+ORDER BY r.title 
 
 [getLookupByCollectionType]
 SELECT 

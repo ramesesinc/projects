@@ -25,7 +25,7 @@ class RevenueItemLookupService  {
 	}
 	
 	@ProxyMethod
-	public def getList( Map m ) {
+	public def getList( Map m ) { 
 		if(m.searchtext == null ) m.searchtext = "";
 		m.code = m.searchtext.trim() + "%";
 		m.title = m.searchtext.trim() + "%";
@@ -41,7 +41,7 @@ class RevenueItemLookupService  {
 		}
 
 		//check if there are accounst being tagged
-		//else check first if there are collection type items
+		//else check first if there are collection type items 
 		if( m.tag ) {
 			m._pagingKeys = "a.objid";
 			return em.getAccountsByTag(m);

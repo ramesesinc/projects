@@ -625,7 +625,7 @@ class RPTUtil
             valid = true
         else if (entity.rputype == 'mach' && entity.suffix >= 2001 && entity.suffix <= 2999) 
             valid = true
-        else if (entity.rputype == 'planttree' && entity.suffix >= 3001 && entity.suffix <= 3999) 
+        else if (entity.rputype == 'planttree' && entity.suffix >= 3001 && entity.suffix <= 4999) 
             valid = true
         else if (entity.rputype == 'misc' &&  (entity.suffix >= 5001 && entity.suffix <= 5999) || (entity.suffix >= 7001 && entity.suffix <= 7999)  )
             valid = true

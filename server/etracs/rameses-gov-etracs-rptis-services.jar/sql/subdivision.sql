@@ -29,9 +29,6 @@ WHERE s.lguid LIKE $P{lguid}
    		union 
    		select s.objid from subdivision s, rpttracking t where s.objid = t.objid and t.trackingno like $P{searchtext}
    	)
-   and s.objid in(
-   		select max(m.subdivisionid) as objid from subdivision_motherland m, faas f, realproperty rp where m.landfaasid = f.objid and f.realpropertyid = rp.objid and rp.barangayid LIKE $P{barangayid}
-   	)
    ${filters}
 order by s.txnno desc 	
 
@@ -83,7 +80,8 @@ SELECT
 	f.owner_address,
 	f.state AS prevstate,
 	f.owner_name,
-	f.owner_address
+	f.owner_address,
+	f.lguid 
 FROM subdivisionaffectedrpu sar 
 	left join faas f on sar.prevfaasid = f.objid 
 WHERE sar.subdivisionid = $P{subdivisionid}	
@@ -495,13 +493,15 @@ and enddate is null
 #-------------------------------------------------
 
 [getCancelledImprovements]
-select cf.*, r.rputype, f.tdno, f.fullpin, f.owner_name
+select cf.*, r.rputype, f.tdno, f.fullpin, f.owner_name, cr.name as reason_name
 from subdivision_cancelledimprovement cf 
 	inner join faas f on cf.faasid = f.objid 
 	inner join rpu r on f.rpuid = r.objid 
 	inner join realproperty rp on f.realpropertyid = rp.objid 
+	inner join canceltdreason cr on cf.reason_objid = cr.objid 
 where cf.parentid = $P{objid}
 order by rp.pin, r.suffix 
+
 
 
 [deleteAffectedRpu]

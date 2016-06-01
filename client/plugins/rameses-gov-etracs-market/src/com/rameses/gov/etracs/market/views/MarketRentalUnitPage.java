@@ -34,6 +34,7 @@ public class MarketRentalUnitPage extends javax.swing.JPanel {
         xTextField2 = new com.rameses.rcp.control.XTextField();
         xComboBox4 = new com.rameses.rcp.control.XComboBox();
         xLabel1 = new com.rameses.rcp.control.XLabel();
+        xComboBox5 = new com.rameses.rcp.control.XComboBox();
         xComboBox1 = new com.rameses.rcp.control.XComboBox();
         xComboBox3 = new com.rameses.rcp.control.XComboBox();
         xDecimalField1 = new com.rameses.rcp.control.XDecimalField();
@@ -69,6 +70,14 @@ public class MarketRentalUnitPage extends javax.swing.JPanel {
         xLabel1.setExpression("#{entity.market.address.text}");
         xLabel1.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(xLabel1);
+
+        xComboBox5.setCaption("Cluster");
+        xComboBox5.setExpression("#{item.name}");
+        xComboBox5.setItems("listTypes.cluster");
+        xComboBox5.setName("entity.cluster"); // NOI18N
+        xComboBox5.setPreferredSize(new java.awt.Dimension(220, 22));
+        xComboBox5.setRequired(true);
+        xFormPanel1.add(xComboBox5);
 
         xComboBox1.setCaption("Unit Type");
         xComboBox1.setExpression("#{item.name}");
@@ -123,6 +132,7 @@ public class MarketRentalUnitPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XComboBox xComboBox2;
     private com.rameses.rcp.control.XComboBox xComboBox3;
     private com.rameses.rcp.control.XComboBox xComboBox4;
+    private com.rameses.rcp.control.XComboBox xComboBox5;
     private com.rameses.rcp.control.XDecimalField xDecimalField1;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XLabel xLabel1;

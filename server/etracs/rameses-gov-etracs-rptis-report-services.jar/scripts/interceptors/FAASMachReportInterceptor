@@ -59,6 +59,9 @@ class FaasMachReportInterceptor
 			it.depreciation		= depreciation
 		}
 		util.buildEmptyRows( faas.propertyappraisals, MACH_DETAIL_ROWS)
+		faas.propertyappraisals.each{
+			it.useswornamount = util.toBoolean(it.useswornamount, false)
+		}
 	}
 
 	void buildMachDetails(faas) {

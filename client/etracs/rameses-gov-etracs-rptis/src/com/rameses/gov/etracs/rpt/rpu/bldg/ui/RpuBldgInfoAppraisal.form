@@ -88,7 +88,7 @@
                 <Property name="handler" type="java.lang.String" value="bldgUseListHandler"/>
                 <Property name="name" type="java.lang.String" value="selectedBldgUse" noResource="true"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[200, 100]"/>
+                  <Dimension value="[200, 75]"/>
                 </Property>
               </Properties>
               <Constraints>
@@ -124,9 +124,6 @@
                 <Property name="dynamic" type="boolean" value="true"/>
                 <Property name="handler" type="java.lang.String" value="floorHandler"/>
                 <Property name="name" type="java.lang.String" value="selectedFloor" noResource="true"/>
-                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[200, 75]"/>
-                </Property>
               </Properties>
               <Constraints>
                 <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">

@@ -76,7 +76,6 @@ class RPTReportDelinquencyService
 		}
 	}
 
-
 	@Async
 	@ProxyMethod
 	public def generateDelinquencyReport( params ) {
@@ -88,6 +87,8 @@ class RPTReportDelinquencyService
 			params.filter = ''' AND year = $P{year} ''';
 		} else if ( params.period?.code == 'AS_OF_YEAR' ) {
 			params.filter = ''' AND year <= $P{year} ''';
+		} else if ( params.period?.code == 'YEAR_RANGE' ) {
+			params.filter = ''' AND year >= $P{fromyear} AND year <= $P{toyear} ''';
 		} else { 
 			params.filter = ''' AND year < $P{year} ''';
 			params.year = currentyear; 
@@ -108,7 +109,11 @@ class RPTReportDelinquencyService
 			list = em.getDelinquentLedgersSummary( params ); 
 			if ( !list ) throw new Exception('No records found. Try rebuilding the delinquency')
 
-		} else {
+		} 
+		else if ( params.reporttype == 'byclassification' ) {
+			list = buildDelinquentLedgersByClassification(params)
+		} 
+		else {
 			list = em.getDelinquentLedgers( params ); 
 			if ( !list ) throw new Exception('No records found. Try rebuilding the delinquency for this barangay.')
 
@@ -124,6 +129,12 @@ class RPTReportDelinquencyService
 			} 
 		} 
 		return [reportdata:list]; 
+	}
+
+	def buildDelinquentLedgersByClassification(params){
+		def list = em.getDelinquentLedgersByClassification( params ); 
+		if ( !list ) throw new Exception('No records found. Try rebuilding the delinquency')
+		return list;
 	}
 
 

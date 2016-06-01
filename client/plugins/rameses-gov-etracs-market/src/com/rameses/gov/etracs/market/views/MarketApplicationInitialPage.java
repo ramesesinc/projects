@@ -30,7 +30,6 @@ public class MarketApplicationInitialPage extends javax.swing.JPanel {
     private void initComponents() {
 
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
-        xLabel1 = new com.rameses.rcp.control.XLabel();
         xLookupField1 = new com.rameses.rcp.control.XLookupField();
         xTextField1 = new com.rameses.rcp.control.XTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -44,12 +43,6 @@ public class MarketApplicationInitialPage extends javax.swing.JPanel {
         xTextArea2 = new com.rameses.rcp.control.XTextArea();
 
         xFormPanel1.setCaptionWidth(101);
-
-        xLabel1.setCaption("App No");
-        xLabel1.setExpression("#{entity.appno}");
-        xLabel1.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        xLabel1.setPreferredSize(new java.awt.Dimension(107, 20));
-        xFormPanel1.add(xLabel1);
 
         xLookupField1.setCaption("Owner Name");
         xLookupField1.setExpression("#{entity.owner.name}");
@@ -141,7 +134,6 @@ public class MarketApplicationInitialPage extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
-    private com.rameses.rcp.control.XLabel xLabel1;
     private com.rameses.rcp.control.XLabel xLabel2;
     private com.rameses.rcp.control.XLabel xLabel3;
     private com.rameses.rcp.control.XLabel xLabel4;

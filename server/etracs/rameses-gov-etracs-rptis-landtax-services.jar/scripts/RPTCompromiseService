@@ -239,6 +239,7 @@ class RPTCompromiseService {
 		if (!lastpaiditem){
 			lastpaiditem = [
 				year 			: compromise.startyear - 1,
+				qtr             : 1,
 				basicpaid 		: 0.0,
 				basicintpaid	: 0.0,
 				sefpaid 		: 0.0,
@@ -248,20 +249,72 @@ class RPTCompromiseService {
 		}
 
 		compromise.lastyearpaid = lastpaiditem.year 
-		compromise.partialbasic = lastpaiditem.basicpaid
-		compromise.partialbasicint = lastpaiditem.basicintpaid
-		compromise.partialbasicdisc = 0
-		compromise.partialsef = lastpaiditem.sefpaid
-		compromise.partialsefint = lastpaiditem.sefintpaid
-		compromise.partialsefdisc = 0
-		compromise.fromyear = (lastpaiditem.fullypaid == 1 ? lastpaiditem.year + 1 : lastpaiditem.year)
+		compromise.lastqtrpaid = lastpaiditem.qtr 
+		compromise.fromyear = lastpaiditem.year + 1
 		compromise.toyear = compromise.endyear 
+		updatePartialledItems(compromise)
 		em.resetLedgerItemPaidInfo(compromise)
+		em.resetLedgerItemQtrlyPaidInfo(compromise)
 		em.setDefaultedLedger(compromise)
 		em.setDefaultedCompromise(compromise)
 		compromise.state = STATE_DEFAULTED
 		return compromise 
 	}	
+
+	void updatePartialledItems(compromise){
+		def firstunpaiditem = em.findFirstUnpaidCompromiseItem(compromise)
+		compromise.partialledyear = firstunpaiditem.year 
+
+		def partialleditems = em.getPartialledQtrlyItems(compromise)
+		partialleditems.each{
+			if (it.qtr == firstunpaiditem.qtr){
+				it.basicpaid = firstunpaiditem.basicpaid
+				it.basicintpaid = firstunpaiditem.basicintpaid
+				it.basicdisctaken = 0.0
+				it.basicidlepaid = firstunpaiditem.basicidlepaid
+				it.basicidledisctaken = 0.0
+				it.basicidleintpaid = firstunpaiditem.basicidleintpaid
+				it.sefpaid = firstunpaiditem.sefpaid
+				it.sefintpaid = firstunpaiditem.sefintpaid
+				it.sefdisctaken = 0.0
+				it.firecodepaid = firstunpaiditem.firecodepaid
+				it.partialled = 1
+				it.fullypaid = 0
+				ledgerEm.update(it, 'ledgeritemqtrly')
+			}
+			else if (it.qtr > firstunpaiditem.qtr){
+				it.basicpaid = 0.0
+				it.basicintpaid = 0.0
+				it.basicdisctaken = 0.0
+				it.basicidlepaid = 0.0
+				it.basicidledisctaken = 0.0
+				it.basicidleintpaid = 0.0
+				it.sefpaid = 0.0
+				it.sefintpaid = 0.0
+				it.sefdisctaken = 0.0
+				it.firecodepaid = 0.0
+				it.partialled = 0
+				it.fullypaid = 0
+				ledgerEm.update(it, 'ledgeritemqtrly')
+			}
+		}
+
+		def ledgeritem = em.findLedgerItem(compromise)
+		if (ledgeritem){
+			ledgeritem.basicpaid = partialleditems.basicpaid.sum()
+			ledgeritem.basicintpaid = partialleditems.basicintpaid.sum()
+			ledgeritem.basicdisctaken = 0.0
+			ledgeritem.basicidlepaid = partialleditems.basicidlepaid.sum()
+			ledgeritem.basicidledisctaken = 0.0
+			ledgeritem.basicidleintpaid = partialleditems.basicidleintpaid.sum()
+			ledgeritem.sefpaid = partialleditems.sefpaid.sum()
+			ledgeritem.sefintpaid = partialleditems.sefintpaid.sum()
+			ledgeritem.sefdisctaken = 0.0
+			ledgeritem.firecodepaid = partialleditems.firecodepaid.sum()
+			ledgeritem.fullypaid = 0
+			ledgerEm.update(ledgeritem, 'ledgeritem')
+		}
+	}
 
 
 	void setForApprovalIfPaymentComplied( compromise ){

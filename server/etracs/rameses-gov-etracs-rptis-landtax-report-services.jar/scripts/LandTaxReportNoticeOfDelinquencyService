@@ -55,6 +55,11 @@ class LandTaxReportNoticeOfDelinquencyService
 				it.area = numSvc.format('#,##0.00', it.totalareasqm) + ' sqm'
 		}
 
+		//set administrator if there is only one item
+		if (data.ledgers.size() == 1){
+			data.administrator = data.ledgers.first().administrator
+		}
+
 		if (data.billdate)
 			data.billdate = dtSvc.parse('yyyy-MM-dd', data.billdate)
 		else 

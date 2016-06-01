@@ -36,11 +36,12 @@ public class MarketApplicationPage extends javax.swing.JPanel {
         xLookupField1 = new com.rameses.rcp.control.XLookupField();
         jScrollPane1 = new javax.swing.JScrollPane();
         xTextArea1 = new com.rameses.rcp.control.XTextArea();
-        xLabel3 = new com.rameses.rcp.control.XLabel();
-        xLabel6 = new com.rameses.rcp.control.XLabel();
-        xLabel2 = new com.rameses.rcp.control.XLabel();
-        xLabel5 = new com.rameses.rcp.control.XLabel();
-        xDecimalField2 = new com.rameses.rcp.control.XDecimalField();
+        xLabel7 = new com.rameses.rcp.control.XLabel();
+        xLabel8 = new com.rameses.rcp.control.XLabel();
+        xLabel9 = new com.rameses.rcp.control.XLabel();
+        xLabel10 = new com.rameses.rcp.control.XLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        xTextArea2 = new com.rameses.rcp.control.XTextArea();
         jPanel1 = new javax.swing.JPanel();
         xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
         xLabel1 = new com.rameses.rcp.control.XLabel();
@@ -77,35 +78,39 @@ public class MarketApplicationPage extends javax.swing.JPanel {
 
         xFormPanel1.add(jScrollPane1);
 
-        xLabel3.setCaption("Market Name");
-        xLabel3.setDepends(new String[] {"entity.unit"});
-        xLabel3.setExpression("#{entity.unit.market.name}");
-        xLabel3.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel1.add(xLabel3);
+        xLabel7.setCaption("Section");
+        xLabel7.setDepends(new String[] {"entity.unit"});
+        xLabel7.setExpression("#{entity.unit?.section?.name} ");
+        xLabel7.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel1.add(xLabel7);
 
-        xLabel6.setCaption("Unit");
-        xLabel6.setDepends(new String[] {"entity.unit"});
-        xLabel6.setExpression("#{entity.unit?.code} ");
-        xLabel6.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel1.add(xLabel6);
+        xLabel8.setCaption("Unit Type");
+        xLabel8.setDepends(new String[] {"entity.unit"});
+        xLabel8.setExpression("#{entity.unit?.unittype} ");
+        xLabel8.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel1.add(xLabel8);
 
-        xLabel2.setCaption("Section");
-        xLabel2.setDepends(new String[] {"entity.unit"});
-        xLabel2.setExpression("#{entity.unit?.section?.name} ");
-        xLabel2.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel1.add(xLabel2);
+        xLabel9.setCaption("Market Name");
+        xLabel9.setDepends(new String[] {"entity.unit"});
+        xLabel9.setExpression("#{entity.unit.market.name}");
+        xLabel9.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel1.add(xLabel9);
 
-        xLabel5.setCaption("Rate Type");
-        xLabel5.setDepends(new String[] {"entity.unit"});
-        xLabel5.setExpression("#{entity.paymentterm}");
-        xLabel5.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel1.add(xLabel5);
+        xLabel10.setCaption("Rate Type");
+        xLabel10.setDepends(new String[] {"entity.unit"});
+        xLabel10.setExpression("#{entity.unit.rate} - #{entity.unit.paymentterm}");
+        xLabel10.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel1.add(xLabel10);
 
-        xDecimalField2.setCaption("Rate");
-        xDecimalField2.setEnabled(false);
-        xDecimalField2.setName("entity.rate"); // NOI18N
-        xDecimalField2.setRequired(true);
-        xFormPanel1.add(xDecimalField2);
+        jScrollPane2.setPreferredSize(new java.awt.Dimension(0, 63));
+
+        xTextArea2.setEditable(false);
+        xTextArea2.setCaption("Remarks");
+        xTextArea2.setEnabled(false);
+        xTextArea2.setName("entity.remarks"); // NOI18N
+        jScrollPane2.setViewportView(xTextArea2);
+
+        xFormPanel1.add(jScrollPane2);
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder2 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder2.setTitle("App Info");
@@ -205,20 +210,21 @@ public class MarketApplicationPage extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private com.rameses.rcp.control.XDateField xDateField1;
-    private com.rameses.rcp.control.XDecimalField xDecimalField2;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XFormPanel xFormPanel2;
     private com.rameses.rcp.control.XLabel xLabel1;
-    private com.rameses.rcp.control.XLabel xLabel2;
-    private com.rameses.rcp.control.XLabel xLabel3;
+    private com.rameses.rcp.control.XLabel xLabel10;
     private com.rameses.rcp.control.XLabel xLabel4;
-    private com.rameses.rcp.control.XLabel xLabel5;
-    private com.rameses.rcp.control.XLabel xLabel6;
+    private com.rameses.rcp.control.XLabel xLabel7;
+    private com.rameses.rcp.control.XLabel xLabel8;
+    private com.rameses.rcp.control.XLabel xLabel9;
     private com.rameses.rcp.control.XLookupField xLookupField1;
     private com.rameses.rcp.control.XPanel xPanel1;
     private com.rameses.rcp.control.XTabbedPane xTabbedPane1;
     private com.rameses.rcp.control.XTextArea xTextArea1;
+    private com.rameses.rcp.control.XTextArea xTextArea2;
     private com.rameses.rcp.control.XTextField xTextField1;
     // End of variables declaration//GEN-END:variables
     

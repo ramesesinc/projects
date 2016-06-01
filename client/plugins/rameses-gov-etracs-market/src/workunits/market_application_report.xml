@@ -1,0 +1,8 @@
+<workunit extends="com/rameses/seti2/templates/CrudReport.xml">
+    <invokers>
+        <invoker type="market_application:form:reports" 
+                 caption="Market Application" 
+                 target="self" action="view"
+                 reportName="com/rameses/gov/etracs/market/reports/application/market_application.jasper" />
+    </invokers>             
+</workunit>

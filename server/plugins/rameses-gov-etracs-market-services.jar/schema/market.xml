@@ -1,9 +1,9 @@
 <schema adapter="market">
 	<element tablename="market">
 		<field name="objid" primary="true" prefix="MKT"/>
-		<field name="name" required="true" />
+		<field name="name" required="true" caption="Market Name" />
 		<field name="state" required="true" defaultValue="ACTIVE" visible="false"/>
-		<field name="code" required="true" />
+		<field name="code" required="true" caption="Market Code"/>
 
 		<!-- address -->
 		<field name="address_type" caption="Address Type" visible="false"/>

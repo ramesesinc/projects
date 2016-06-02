@@ -1,10 +1,15 @@
 <workunit schemaName="itemaccount">
     <invokers>
-        <invoker type="itemaccount:create" caption="Item Account" role="MASTER" action="create" target="popup"/>
-        <invoker type="itemaccount:open" caption="Item Account" role="MASTER" action="open"  target="popup"/>
+        <invoker type="itemaccount:create" caption="Item Account" action="create" 
+                 role="MASTER" target="popup"/>
+        <invoker type="itemaccount:open" caption="Item Account" action="open" 
+                 role="MASTER" target="popup"/>
+        
+        <invoker type="formActions" caption="Approve" action="approve" 
+                 role="MASTER" visibleWhen="#{allowApprove==true}"/> 
    </invokers>
    
-    <code class="com.rameses.seti2.models.CrudFormModel" />
+    <code class="com.rameses.enterprise.treasury.models.ItemAccountModel" />
     
     <pages>
         <page template="com.rameses.enterprise.treasury.views.ItemAccountPage"/>

@@ -16,7 +16,7 @@ import com.rameses.osiris2.reports.*;
 class BatchCaptureItemController  {
     
     //to be feed by the caller
-    def entity, callerListModel, calculateHandler;
+    def entity, fund, callerListModel, calculateHandler;
     
     def selectedItem;
     def payment = [:];
@@ -167,6 +167,9 @@ class BatchCaptureItemController  {
         return InvokerUtil.lookupOpener("collectiongroup:lookup", [ 
             selectHandler: { items-> 
                 items.each{ it.fund = it.item.fund } 
+                if ( fund?.objid ) { 
+                    items = items.findAll{ it.fund?.objid==fund.objid }
+                } 
                 entity.items.addAll( items );
                 rebuildTotals(); 
                 listModel.reload(); 

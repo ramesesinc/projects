@@ -47,21 +47,23 @@
                 return InvokerUtil.lookupOpeners( "collectiontype:batchhandler" )*.properties.name;
             }
             
-            def addAccount() {
-                def h = { o->
+            def addAccount() { 
+                def params = [ fund: entity.fund ]; 
+                params.handler = { o-> 
                     o.collectiontypeid = entity.objid; 
                     entity.accounts << o; 
                     accountModel.reload();
                 }
-                return Inv.lookupOpener( "collectiontypeaccount:create", [handler:h] );
+                return Inv.lookupOpener( "collectiontypeaccount:create", params );
             }
             def editAccount() {
                 if(!selectedAccount) throw new Exception("Please select an account"); 
                 
-                def h = { o->
+                def params = [ fund: entity.fund, entity: selectedAccount ]; 
+                params.handler = { o-> 
                     accountModel.reload(); 
                 } 
-                return Inv.lookupOpener( "collectiontypeaccount:edit", [handler:h, entity: selectedAccount] ); 
+                return Inv.lookupOpener( "collectiontypeaccount:edit", params ); 
             }
             def removeAccount() {
                 if(!selectedAccount) throw new Exception("Please select an account");

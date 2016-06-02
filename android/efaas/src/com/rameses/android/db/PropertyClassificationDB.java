@@ -10,5 +10,6 @@ public class PropertyClassificationDB extends AbstractDBMapper {
 	@Override
 	public String getTableName() {
 		return "propertyclassification";
-	}	
+	}
+	
 }

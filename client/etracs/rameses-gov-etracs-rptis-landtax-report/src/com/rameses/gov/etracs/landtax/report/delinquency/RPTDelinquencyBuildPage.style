@@ -1,21 +1,20 @@
-"entity.*|doBuild|doCancel" [mode=='init' || mode=='done']{
-    enabled:false;
-}
-"entity.*|doBuild" [mode=='init' || mode=='done']{
+"entity.*|doBuild"[mode=='init']{
     enabled:true;
 }
-"entity.*|doBuild" [mode == 'building']{
+"doCancel"[mode=='init']{
     enabled:false;
 }
-"doCancel" [mode == 'building']{
+"loadingicon"[mode=='init']{
+    visible:false;
+}
+
+
+"entity.*|doBuild"[mode=='processing']{
+    enabled:false;
+}
+"doCancel"[mode=='processing']{
     enabled:true;
 }
-"loadingicon" [mode == 'building']{
-    visible: true;
-}
-"loadingicon" [mode != 'building']{
-    visible: false;
-}
-"doBuild|doCancel" [mode == 'done']{
-    enabled:false;
+"loadingicon"[mode=='processing']{
+    visible:true;
 }

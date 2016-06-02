@@ -1,8 +1,8 @@
 <schema  adapter="market">
 	<element tablename="market_section">
-		<field name="objid" primary="true"/>
-		<field name="state" required="true"/>
-		<field name="name" required="true" />
-		<field name="title" required="true"/>
+		<field name="objid" primary="true" prefix="MKTSECT"/>
+		<field name="state" required="true" defaultValue="ACTIVE" visible="false"/>
+		<field name="name" required="true" caption="Section Name" />
+		<field name="description" />
 	</element>
 </schema>

@@ -3,6 +3,7 @@ package com.rameses.gov.etracs.rpt.rpu.mach.ui;
 import com.rameses.rcp.annotations.* 
 import com.rameses.rcp.common.* 
 import com.rameses.osiris2.client.* 
+import com.rameses.osiris2.common.* 
 import com.rameses.gov.etracs.rpt.util.RPTUtil;
 
 public class RpuMachDetailController extends com.rameses.gov.etracs.rpt.workflow.BasicInfoController
@@ -37,6 +38,12 @@ public class RpuMachDetailController extends com.rameses.gov.etracs.rpt.workflow
     def othercost       = 0.0
     def depreciation    = 0.0
     def autodepreciate  = 1
+    
+    
+    @PropertyChangeListener
+    def listener = [
+        'machdetail.(useswornamount|swornamount)' : { recalc();}
+    ]
             
     void create() { 
         mode = 'create' 

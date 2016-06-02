@@ -1,21 +1,27 @@
 <schema  adapter="market">
 	<element tablename="market_rentalunit">
-		<field name="objid" primary="true"/>
-		<field name="state" required="true"/>
-		<complex name="market" ref="market" jointype="many-to-one">
+		<field name="objid" primary="true" prefix="MKTUNT"/>
+		<field name="state" required="true" defaultValue="ACTIVE"/>
+		<complex name="market" ref="market" jointype="many-to-one" required="false" 
+			includefields="objid,code,name,address.text">
 			<key field="marketid" target="objid" />
 		</complex>
-		<field name="unittype" required="true" />
-		<field name="code" required="true"/>
-		<field name="name" required="true"/>
-		<field name="location" required="true"/>
-		<complex name="bldg" ref="market_building" jointype="many-to-one" required="false">
-			<key field="bldg_objid" target="objid"/>
+		<field name="unittype" required="true" lov="MARKET_UNIT_TYPES"/>
+		<field name="code" required="true" searchable="true"/>
+		<field name="description" />
+		<complex name="section" ref="market_section" jointype="many-to-one" required="false" includefields="objid,name">
+			<key field="sectionid" target="objid" />
 		</complex>
-		<complex name="section" ref="market_section" jointype="many-to-one">
-			<key field="section_objid" target="objid" />
+		<complex name="cluster" ref="market_cluster" jointype="many-to-one" required="false" includefields="objid,name">
+			<key field="clusterid" target="objid" />
 		</complex>
-		<field name="lng"/>
-		<field name="lat"/>
+		<field name="paymentterm" required="true" lov="MARKET_PAYMENT_TERMS" defaultValue="DAILY"/>
+		<field name="rate" required="true" type="decimal"/>
+
+		<complex name="account" ref="market_account" jointype="many-to-one" required="false" 
+			includefields="objid,acctname">
+			<key field="currentacctid" target="objid" />
+		</complex>
+
 	</element>
 </schema>

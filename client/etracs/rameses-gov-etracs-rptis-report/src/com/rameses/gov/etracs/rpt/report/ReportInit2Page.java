@@ -37,9 +37,6 @@ public class ReportInit2Page extends javax.swing.JPanel {
         xComboBox4 = new com.rameses.rcp.control.XComboBox();
         xComboBox5 = new com.rameses.rcp.control.XComboBox();
         xComboBox6 = new com.rameses.rcp.control.XComboBox();
-        xPanel1 = new com.rameses.rcp.control.XPanel();
-        xLabel1 = new com.rameses.rcp.control.XLabel();
-        xLabel2 = new com.rameses.rcp.control.XLabel();
         xPanel2 = new com.rameses.rcp.control.XPanel();
         xLabel3 = new com.rameses.rcp.control.XLabel();
         xLabel4 = new com.rameses.rcp.control.XLabel();
@@ -116,22 +113,6 @@ public class ReportInit2Page extends javax.swing.JPanel {
         xComboBox6.setPreferredSize(new java.awt.Dimension(200, 20));
         xFormPanel1.add(xComboBox6);
 
-        xPanel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 10, 0));
-        xPanel1.setVisibleWhen("#{mode == 'processing'}");
-        xPanel1.setLayout(new java.awt.BorderLayout());
-
-        xLabel1.setFontStyle("font-weight:bold;font-size:12;");
-        xLabel1.setForeground(new java.awt.Color(51, 51, 51));
-        xLabel1.setPadding(new java.awt.Insets(1, 5, 1, 1));
-        xLabel1.setPreferredSize(new java.awt.Dimension(150, 20));
-        xLabel1.setText("Processing request please wait...");
-        xPanel1.add(xLabel1, java.awt.BorderLayout.CENTER);
-
-        xLabel2.setIconResource("com/rameses/rcp/icons/loading16.gif");
-        xPanel1.add(xLabel2, java.awt.BorderLayout.WEST);
-
-        xFormPanel1.add(xPanel1);
-
         xPanel2.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 10, 0));
         xPanel2.setVisibleWhen("#{mode == 'processing'}");
         xPanel2.setLayout(new java.awt.BorderLayout());
@@ -177,11 +158,8 @@ public class ReportInit2Page extends javax.swing.JPanel {
     private com.rameses.rcp.control.XDateField xDateField1;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XIntegerField xIntegerField1;
-    private com.rameses.rcp.control.XLabel xLabel1;
-    private com.rameses.rcp.control.XLabel xLabel2;
     private com.rameses.rcp.control.XLabel xLabel3;
     private com.rameses.rcp.control.XLabel xLabel4;
-    private com.rameses.rcp.control.XPanel xPanel1;
     private com.rameses.rcp.control.XPanel xPanel2;
     // End of variables declaration//GEN-END:variables
 }

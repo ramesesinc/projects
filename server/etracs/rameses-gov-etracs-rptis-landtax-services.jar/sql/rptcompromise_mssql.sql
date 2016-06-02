@@ -425,23 +425,71 @@ update rptledger set
 	nextbilldate = null,
 	undercompromise = 0,
 	lastyearpaid = $P{lastyearpaid},
-	lastqtrpaid = 1
+	lastqtrpaid = $P{lastqtrpaid}
 where objid = $P{rptledgerid}
 
 [findLastPaidCompromiseItem]
 select * 
 from rptledger_compromise_item
 where rptcompromiseid = $P{objid}
+  and fullypaid = 1
+order by year desc, qtr desc 
+
+[findFirstUnpaidCompromiseItem]
+select * 
+from rptledger_compromise_item
+where rptcompromiseid = $P{objid}
   and fullypaid = 0
-order by year 
+order by year, qtr
+
+
 
 
 [resetLedgerItemPaidInfo]
 update rptledgeritem set 
-	fullypaid = 0 
+	fullypaid = 0,
+	basicpaid = 0.0,
+	basicintpaid = 0.0,
+	basicdisctaken = 0.0,
+	basicidlepaid = 0.0,
+	basicidledisctaken = 0.0,
+	basicidleintpaid = 0.0,
+	sefpaid = 0.0,
+	sefintpaid = 0.0,
+	sefdisctaken = 0.0,
+	firecodepaid = 0.0
 where rptledgerid = $P{rptledgerid}
   and year >= $P{fromyear} 
   and year <= $P{toyear}
+
+[resetLedgerItemQtrlyPaidInfo]  
+update rptledgeritem_qtrly set 
+	fullypaid = 0,
+	basicpaid = 0.0,
+	basicintpaid = 0.0,
+	basicdisctaken = 0.0,
+	basicidlepaid = 0.0,
+	basicidledisctaken = 0.0,
+	basicidleintpaid = 0.0,
+	sefpaid = 0.0,
+	sefintpaid = 0.0,
+	sefdisctaken = 0.0,
+	firecodepaid = 0.0
+where rptledgerid = $P{rptledgerid}
+  and year >= $P{fromyear} 
+  and year <= $P{toyear}
+
+  
+[getPartialledQtrlyItems]
+select * 
+from rptledgeritem_qtrly 
+where rptledgerid = $P{rptledgerid} 
+and year = $P{partialledyear} 
+order by year, qtr 
+
+[findLedgerItem]
+select * from rptledgeritem where rptledgerid = $P{rptledgerid} and year = $P{partialledyear}
+
 
 
 [findDefaultedInstallment]

@@ -12,13 +12,6 @@ class ChangeInfoService  {
 	@ProxyMethod
 	public def update( o ) { 
 		if ( !o.info._schemaname ) throw new Exception("ChangeInfoService error. Please include as schemaname");
-		
-		if ( o.info._tag ) { 
-			// this is the flag or marker where the client 
-			// defines a customize code in updating the record.  
-			// we let the interceptors handle this... 
-		} else { 
-			persistenceService.update( o.info );
-		}
+		persistenceService.update( o.info ); 
 	}
 }

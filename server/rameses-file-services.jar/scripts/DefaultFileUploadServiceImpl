@@ -21,16 +21,17 @@ public class DefaultFileUploadServiceImpl {
 	def dateSvc; 
 
 	@ProxyMethod(local=true) 
-	public def create( data ) { 
-		boolean dynamic_objid = false; 
-		if ( !data.objid ) { 
-			data.objid = 'F'+new java.rmi.server.UID(); 
-			dynamic_objid = true; 
+	public def register( data ) { 
+		boolean autogen_fileid = false; 
+		if ( !data.fileid ) { 
+			data.fileid = 'F'+ new java.rmi.server.UID(); 
+			autogen_fileid = true; 
 		} 
-		if ( !dynamic_objid ) {
-			def oldrec = fileregistry.find([ objid: data.objid ]).first(); 
-			if ( oldrec?.objid ) return data; 
-		}
+
+		if ( !autogen_fileid ) {
+			def oldrec = fileregistry.find([ objid: data.fileid ]).first(); 
+			if ( oldrec?.objid ) return data;  
+		} 
 
 		def fvar = filevar.find([ name: 'dbcontext' ]).first(); 
 		if ( !fvar?.value ) throw new Exception('Please provide a dbcontext variable'); 
@@ -44,16 +45,15 @@ public class DefaultFileUploadServiceImpl {
 		if ( !xconn ) throw new Exception(''+ filecontext +' connection file does not exist');  
 
 		xconn.getBaseDirectory(); 
-		def folder = xconn.createFolder( data.objid );  
+		def folder = xconn.createFolder( data.fileid );  
 		folder.writeMeta( data.filename, data.filetype, data.filesize, data.chunkcount ); 
 
-		fileregistry.create([ objid: data.objid, dbcontext: dbcontext, filecontext: filecontext ]); 
-
-		if ( !data.dtfiled ) { 
-			data.dtfiled = dateSvc.getServerDate(); 
-		} 
-		data.state = 'PENDING'; 
-		db.lookup('sys_file', dbcontext).create( data ); 
+		fileregistry.create([ 
+			objid      : data.fileid, 
+			dtfiled    : dateSvc.getServerDate(),  
+			dbcontext  : dbcontext, 
+			filecontext: filecontext 
+		]); 
 		return data; 
 	} 
 
@@ -81,9 +81,20 @@ public class DefaultFileUploadServiceImpl {
 			folder.addFile( it.indexno, it.content ); 
 		} 	
 
-		if ( folder.isCompleted() ) {
+		if ( folder.isCompleted() ) { 
+			def rundate = dateSvc.getServerDate();
+			def meta = folder.meta.load();
 			def dbo = db.lookup( 'sys_file', reg.dbcontext ); 
-			dbo.find([ objid: params.fileid ]).update([ state: 'COMPLETED' ]); 
+			dbo.create([ 
+				objid    : params.fileid, 
+				dtfiled  : rundate, 
+				filename : meta.fileName, 
+				filetype : meta.fileType, 
+				filesize : meta.fileSize,
+				chunkcount : meta.chunkCount  
+			]); 
+			
+			fileregistry.find([ objid: params.fileid ]).update([ dtcompleted: rundate ]); 
 		} 
 	} 
 
@@ -98,5 +109,12 @@ public class DefaultFileUploadServiceImpl {
 
 		def dbo = db.lookup( 'sys_file', reg.dbcontext ); 
 		dbo.find([ objid: params.fileid ]).delete(); 
+
+		def filecontext = reg.filecontext; 
+		def xconn = currentCtx.getResource( XConnection.class, filecontext ); 
+		if ( !xconn ) throw new Exception(''+ filecontext +' connection file does not exist');  
+
+		xconn.getBaseDirectory(); 
+		xconn.getFolder( params.fileid ).remove();  	
 	} 
 } 

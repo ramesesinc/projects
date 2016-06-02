@@ -1,0 +1,20 @@
+<workunit  schemaName="market_cluster">
+    <invokers>
+        <invoker type="market_cluster:create"
+                 formTitle="Market Cluster" 
+                 target="popup"
+                 action="create" />
+
+        <invoker type="market_cluster:open"
+                 formTitle="#{entity.objid}" 
+                 formId="#{entity.objid}"
+                 target="popup"
+                 action="open" />
+        
+    </invokers>
+    <code class="com.rameses.seti2.models.CrudFormModel" />
+    <pages>
+        <page template="com.rameses.gov.etracs.market.views.MarketClusterPage"/>
+    </pages>
+      
+</workunit>

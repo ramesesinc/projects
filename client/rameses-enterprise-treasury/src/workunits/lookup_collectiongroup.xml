@@ -26,9 +26,13 @@
              }
              
              public Object doSelect() {
-                if(!selectedEntity)
-                    throw new Exception("Please select an item");
+                if ( !selectedEntity ) throw new Exception("Please select an item"); 
+                
                 def list = colGroupSvc.getRevenueItems(selectedEntity.objid);
+                if ( query.fund?.objid != null ) {
+                    list = list.findAll{ it.item?.fund?.objid==query.fund.objid } 
+                } 
+                
                 if(selectHandler) {
                     if(!selectedEntity.sharing || selectedEntity.sharing == 0 ) {
                         selectHandler( list );

@@ -181,7 +181,10 @@ class CancelledFAASService
     @ProxyMethod
     public def buildReportData(entity){
         entity = openCancelledFaas(entity)
-        entity.putAll( em.read(entity, SCHEMA_SIGNATORY))
+        def signatory = em.read(entity, SCHEMA_SIGNATORY)
+        if (signatory){
+            entity.putAll(signatory)
+        }
 
         if ('province'.equalsIgnoreCase(env.ORGCLASS))
             entity.salutation = 'To the Municipal Treasurer'

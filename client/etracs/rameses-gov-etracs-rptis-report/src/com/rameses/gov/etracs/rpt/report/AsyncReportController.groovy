@@ -45,6 +45,8 @@ abstract class AsyncReportController
     }
     
     Map getParameters(){
+        if (data && data.parameters)
+            return data.parameters
         return [:]
     }
     
@@ -93,7 +95,8 @@ abstract class AsyncReportController
                 } else {
                     data = o;     
                     has_result_preview = true; 
-                    binding.fireNavigation( buildReport( data.reportdata ) ); 
+                    if (data)
+                        binding.fireNavigation( buildReport( data.reportdata ) ); 
                 }
             } 
         ] as com.rameses.common.AbstractAsyncHandler 
@@ -103,14 +106,6 @@ abstract class AsyncReportController
         mode = 'processing'; 
         return null; 
     } 
-    
-    /*
-    def previewReport() {
-        buildReport()
-        mode = 'view';
-        return 'preview'; 
-    }
-    */
     
     void print() {
         asyncHandler = [
@@ -158,6 +153,9 @@ abstract class AsyncReportController
         buildReport( data ); 
         ReportUtil.print( report.report, true )
     }
+    
+    
+    void beforeBuildReport(data){}
         
     
     def buildReport( data ) {

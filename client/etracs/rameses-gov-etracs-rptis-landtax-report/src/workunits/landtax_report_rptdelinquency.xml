@@ -34,7 +34,8 @@ class RPTDelinquencyListingController extends com.rameses.gov.etracs.rpt.report.
     def periods = [
         [code:'AS_OF_BUILD',  name:' AS OF BUILD '], 
         [code:'AS_OF_YEAR', name:' AS OF YEAR '],  
-        [code:'FOR_THE_YEAR', name:' FOR THE YEAR '] 
+        [code:'FOR_THE_YEAR', name:' FOR THE YEAR '],
+        [code:'YEAR_RANGE', name:' YEAR RANGE '],
     ];    
     
     def initReport() { 
@@ -44,6 +45,9 @@ class RPTDelinquencyListingController extends com.rameses.gov.etracs.rpt.report.
     }
         
     void buildReportData(entity, asyncHandler){
+        if (entity.period?.code == 'YEAR_RANGE' && entity.fromyear > entity.toyear)
+            throw new Exception('From Year must be less than or equal to To Year.');
+            
         entity.reporttype = 'listing';
         svc.generateDelinquencyReport(entity, asyncHandler);
     }
@@ -55,7 +59,10 @@ class RPTDelinquencyListingController extends com.rameses.gov.etracs.rpt.report.
         
         if ( entity.period?.code.toString().matches('FOR_THE_YEAR|AS_OF_YEAR') ) { 
             map.PERIODNAME = entity.period.name.trim() + ' ' + entity.year; 
-        } else { 
+        } 
+        else if (entity.period?.code == 'YEAR_RANGE'){
+            map.PERIODNAME = 'YEAR ' + entity.fromyear + ' TO ' + entity.toyear 
+        }else { 
             map.PERIODNAME = entity.period.name.trim(); 
         } 
         return map; 

@@ -38,15 +38,14 @@
               <Insets value="[0, 0, 0, 0]"/>
             </Property>
             <Property name="showCaption" type="boolean" value="false"/>
+            <Property name="stretchWidth" type="int" value="100"/>
           </Properties>
           <SubComponents>
             <Component class="com.rameses.rcp.control.XTextField" name="txtUnitno">
               <Properties>
                 <Property name="caption" type="java.lang.String" value="Unit No "/>
                 <Property name="name" type="java.lang.String" value="entity.unitno" noResource="true"/>
-                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[80, 22]"/>
-                </Property>
+                <Property name="stretchWidth" type="int" value="100"/>
               </Properties>
             </Component>
             <Component class="com.rameses.rcp.control.XTextField" name="txtBldgno">
@@ -57,9 +56,7 @@
                   <Insets value="[0, 5, 0, 0]"/>
                 </Property>
                 <Property name="name" type="java.lang.String" value="entity.bldgno" noResource="true"/>
-                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[100, 22]"/>
-                </Property>
+                <Property name="stretchWidth" type="int" value="100"/>
               </Properties>
             </Component>
           </SubComponents>
@@ -68,18 +65,14 @@
           <Properties>
             <Property name="caption" type="java.lang.String" value="Bldg Name"/>
             <Property name="name" type="java.lang.String" value="entity.bldgname" noResource="true"/>
-            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="[0, 22]"/>
-            </Property>
+            <Property name="stretchWidth" type="int" value="100"/>
           </Properties>
         </Component>
         <Component class="com.rameses.rcp.control.XTextField" name="txtStreet">
           <Properties>
             <Property name="caption" type="java.lang.String" value="Street"/>
             <Property name="name" type="java.lang.String" value="entity.street" noResource="true"/>
-            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="[0, 22]"/>
-            </Property>
+            <Property name="stretchWidth" type="int" value="100"/>
           </Properties>
         </Component>
         <Container class="com.rameses.rcp.control.XFormPanel" name="xFormPanel3">
@@ -88,34 +81,28 @@
             <Property name="padding" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
               <Insets value="[0, 0, 0, 0]"/>
             </Property>
-            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="[0, 22]"/>
-            </Property>
             <Property name="showCaption" type="boolean" value="false"/>
+            <Property name="stretchWidth" type="int" value="100"/>
           </Properties>
           <SubComponents>
             <Component class="com.rameses.rcp.control.XTextField" name="txtSubdivision">
               <Properties>
                 <Property name="caption" type="java.lang.String" value="Subdivision"/>
                 <Property name="name" type="java.lang.String" value="entity.subdivision" noResource="true"/>
-                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[80, 22]"/>
-                </Property>
+                <Property name="stretchWidth" type="int" value="100"/>
               </Properties>
             </Component>
             <Component class="com.rameses.rcp.control.XLookupField" name="lupBarangay">
               <Properties>
                 <Property name="caption" type="java.lang.String" value="Barangay"/>
-                <Property name="captionWidth" type="int" value="60"/>
+                <Property name="captionWidth" type="int" value="90"/>
                 <Property name="cellPadding" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
                   <Insets value="[0, 5, 0, 0]"/>
                 </Property>
                 <Property name="expression" type="java.lang.String" value="#{entity.barangay.name}"/>
                 <Property name="handler" type="java.lang.String" value="barangay:lookup"/>
                 <Property name="name" type="java.lang.String" value="entity.barangay" noResource="true"/>
-                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[0, 22]"/>
-                </Property>
+                <Property name="stretchWidth" type="int" value="100"/>
               </Properties>
             </Component>
           </SubComponents>
@@ -124,9 +111,7 @@
           <Properties>
             <Property name="caption" type="java.lang.String" value="PIN"/>
             <Property name="name" type="java.lang.String" value="entity.pin" noResource="true"/>
-            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="[150, 22]"/>
-            </Property>
+            <Property name="stretchWidth" type="int" value="48"/>
           </Properties>
         </Component>
       </SubComponents>

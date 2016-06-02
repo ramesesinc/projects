@@ -9,8 +9,10 @@
                 action="init" target="popup"/>
         
         <invoker type="formActions" caption="Capture"  action="capture" />
+        <invoker type="formActions" caption="Capture Payment"  action="capturePayment" />
     </invokers>
     <code>
+        <![CDATA[
         import com.rameses.rcp.annotations.*;
         import com.rameses.rcp.common.*;
         import com.rameses.osiris2.client.*;
@@ -37,8 +39,14 @@
                 }
                 Modal.show("waterworks_account_ledger:capture",[handler:h, entity:caller.entity]);
             }
-                
         
+            def capturePayment() {
+                def h = {
+                    reload();
+                }
+                Modal.show("waterworks_account:capture_payment",[handler:h, 'query.acctid':caller.entity.objid]);
+            }
         }
+        ]]>
     </code>
 </workunit>

@@ -1,4 +1,6 @@
-<workunit extends="com/rameses/seti2/templates/CrudList.xml" schemaName="itemaccount">
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" 
+          schemaName="itemaccount"
+          cols="code,title,type,fund.code,fund.title,state,org.code,org.name">
     <invokers>
         <invoker folderid="/explorer/master/treasury" caption="Item Accounts" 
                  index="1" role="MASTER" action="init" customFilter="parentid IS NULL"/>

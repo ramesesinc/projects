@@ -18,7 +18,7 @@ class RPTDelinquencySummaryController extends com.rameses.gov.etracs.rpt.report.
     def svc
     
     String title = 'Realty Tax Delinquency Summary';
-    String reportName = 'com/rameses/gov/etracs/rpt/report/landtax/rptdelinquencysummary.jasper';
+    String reportName = 'com/rameses/gov/etracs/rpt/report/landtax/rptdelinquency_summary.jasper';
     
     def data;
     def task;
@@ -29,9 +29,11 @@ class RPTDelinquencySummaryController extends com.rameses.gov.etracs.rpt.report.
         svc.generateDelinquencyReport(entity, asyncHandler);
     }
     
-    Map getParameters() {
-        return [ TITLE : title ]; 
-    }
+    Map getParameters(){
+        def map = [TITLE : 'SUMMARY OF REALTY TAX DELINQUENCY'];
+        map.PERIODNAME = 'AS OF ' + (new java.text.SimpleDateFormat('MMMMM dd, yyyy').format(reportdata[0].dtgenerated));
+        return map;
+    } 
     
     def formControl = [
         getFormControls: {

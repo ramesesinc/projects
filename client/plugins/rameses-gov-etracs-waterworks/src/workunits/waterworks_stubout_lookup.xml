@@ -5,4 +5,17 @@
         <invoker type="waterworks_stubout:lookup" target="popup"
                  caption="Lookup Stubout" action="init"/>
     </invokers>
+    <code>
+        class WaterworksStuboutLookup extends com.rameses.seti2.models.CrudLookupModel {
+        
+            def sector;
+            
+            public def getCustomFilter() { 
+                if ( sector ) {
+                    return ["zone.sector.objid=:sectorid", [sectorid: sector.objid]];
+                } 
+                return null; 
+            }
+        }
+    </code>
 </workunit>

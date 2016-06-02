@@ -46,7 +46,7 @@ public class RequirementsListPage extends javax.swing.JPanel {
             }),
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "complied"}
-                , new Object[]{"caption", "Complied"}
+                , new Object[]{"caption", "Completed"}
                 , new Object[]{"width", 80}
                 , new Object[]{"minWidth", 80}
                 , new Object[]{"maxWidth", 80}

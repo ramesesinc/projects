@@ -1,0 +1,70 @@
+<schema adapter="waterworks">
+	<element tablename="waterworks_application">
+		<field name="objid" primary="true"  prefix="WAPP"/>
+		<field name="state" required="true" visible="false" defaultValue="OPEN"/>
+		<field name="dtfiled" required="false" indexed="true" type="date" caption="Date Filed"/>
+		<field name="appno" required="true" indexed="true" caption="App No" searchable="true"/>
+		<field name="acctname" required="true" indexed="true" caption="Acct Name" searchable="true"/>
+		<field name="owner_objid" required="true" visible="false" caption="Owner ID"/>
+		<field name="owner_name" required="true" indexed="true" caption="Owner Name"/>
+		<field name="address_type" caption="Address Type" visible="false" lov="ADDRESS_TYPE"/>
+		<field name="address_text" caption="Address"/>
+		<field name="address_barangay_objid" required="true" visible="false"/>
+		<field name="address_barangay_name" required="true" caption="Barangay Name" ref="barangay"/>
+		<field name="address_city" caption="City"/>
+		<field name="address_province"  caption="Province"/>
+		<field name="address_municipality"  caption="Municipality"/>
+		<field name="address_unitno"  caption="Unit No"/>
+		<field name="address_street"  caption="Street"/>
+		<field name="address_subdivision"  caption="Subdivision"/>
+		<field name="address_bldgno" caption="Building No"/>
+		<field name="address_bldgname"  caption="Building Name"/>
+		<field name="address_pin" caption="PIN"/>
+
+		<!-- link to account -->
+		<field name="acctid" required="false"/>
+
+		<complex name="classification" ref="waterworks_classification" jointype="many-to-one">
+			<key field="classificationid" target="objid"/>
+		</complex>
+
+		<complex name="stuboutnode" ref="waterworks_stubout_node" jointype="many-to-one" required="false" 
+			includefields="objid,indexno,stubout.objid,stubout.code,stubout.zone.code,stubout.zone.sector.code">
+			<key field="stuboutnodeid" target="objid"/> 
+		</complex>
+
+		<field name="meterid" required="false"/>
+		<complex name="meter" ref="waterworks_meter" jointype="many-to-one"  required="false"
+				includefields="serialno,brand,capcity,size.title">
+			<key field="meterid" target="objid"/>
+		</complex>
+
+		<field name="initialreading" /> 
+		<field name="installer_name" /> 
+		<field name="installer_objid" /> 
+		<field name="dtinstalled" /> 
+
+		<complex name="fees" ref="waterworks_application_fee" jointype="one-to-many" lazy="true">
+			<key field="objid" target="parentid"/>	
+		</complex>	
+
+		<complex name="requirements" ref="waterworks_application_requirement" jointype="one-to-many" lazy="true">
+			<key field="objid" target="parentid"/>	
+		</complex>	
+
+		<!-- do not remove it -->
+		<complex name="materials" ref="waterworks_application_bom" jointype="one-to-many" lazy="true" required="false">
+			<key field="objid" target="parentid"/>	
+		</complex>	
+
+		<field name="signature"/> 
+
+		<complex name="metersize" ref="waterworks_metersize" jointype="many-to-one" required="false" includefields="title">
+			<key field="metersizeid" target="objid"/>
+		</complex>
+
+		<field name="meterprovider" lov="WATERWORKS_METER_PROVIDER"/> 
+
+	</element>
+
+</schema>

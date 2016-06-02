@@ -132,11 +132,28 @@ class BusinessPermitService  {
 	public def getReport( o ) {
 		if ( !o.applicationid ) throw new Exception("applicationid is required");
 
-		def app = em.findPermitByApplication( o );
-		def perm = em.findPermitForReport( o ); 
-		perm.lobs = []; 
+		def varvalue = sysvar.getProperty( 'businesspermit_split_printing', null );  
+		boolean splitPrinting = ( "true" == varvalue.toString() ); 
+		//
+		// when businesspermit_split_printing is set to true 
+		// the application lobs are not merge instead they are  
+		// displayed separately according to the LOBs specified 
+		// in the application record.  
+		// 
+		def perm = null; 
+		if ( splitPrinting ) { 
+			perm = em.findPermitByApplication( o ); 
+		} else { 
+			perm = em.findPermitForReport( o ); 
+		}
+		
+		def applobs = em.getApplicationLOBs( o ); 
+		if ( splitPrinting ) { 
+			applobs = applobs.findAll{ it.applicationid==o.applicationid } 
+		} 
 
-		em.getApplicationLOBs( o ).each{ x-> 
+		perm.lobs = []; 
+		applobs.each{ x-> 
 			if ( x.assessmenttype.toString().equalsIgnoreCase('RETIRE') ) {
 				def retirelobs = perm.lobs.findAll{ it.lobid==x.lobid } 
 				if (retirelobs) perm.lobs.removeAll( retirelobs );
@@ -168,6 +185,9 @@ class BusinessPermitService  {
 		perm.apptype = (perm.parentapptype? perm.parentapptype: perm.apptype); 
 		perm.lobnames = perm.lobs*.name.join(","); 
 		perm.payments = em.getApplicationPayments(o);
+		if ( splitPrinting ) { 
+			perm.payments = perm.payments.findAll{ it.applicationid==o.applicationid } 
+		} 
 		perm.barcode = '51005:'+perm.bin;
 		return perm;
 	}

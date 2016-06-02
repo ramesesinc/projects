@@ -330,9 +330,9 @@ class RPTLedgerService
         def firstfaas = ledger.faases[0]
         def lastfaas = ledger.faases.last()
         ledger.state            =  STATE_APPROVED
-        ledger.lastyearpaid     = (firstfaas.fromqtr == 1 ? firstfaas.fromyear - 1 : firstfaas.fromyear)
-        ledger.lastqtrpaid      = (firstfaas.fromqtr == 1 ?  4 : firstfaas.fromqtr - 1)
-        ledger.lastitemyear     = (lastfaas.toyear == 0 ? dtSvc.serverYear  : lastfaas.toyear )
+        ledger.lastyearpaid     = (lastfaas.fromqtr == 1 ? lastfaas.fromyear - 1 : lastfaas.fromyear)
+        ledger.lastqtrpaid      = (lastfaas.fromqtr == 1 ?  4 : lastfaas.fromqtr - 1)
+        ledger.lastitemyear     = (firstfaas.toyear == 0 ? dtSvc.serverYear  : firstfaas.toyear )
         ledger.nextbilldate     = null
         ledger.advancebill      = false;
         em.update(ledger)

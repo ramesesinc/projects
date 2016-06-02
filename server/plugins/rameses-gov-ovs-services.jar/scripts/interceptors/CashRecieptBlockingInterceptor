@@ -13,9 +13,7 @@ class CashReceiptBlockingInterceptor{
 		vte.debug = true;
 		def m = vte.select('xcount:{COUNT(*)}').find( ["parent.violator.objid": pid] ).where("amount-amtpaid>0").groupBy("parent.violator.objid").first();
 
-		if(m.xcount>0) 
+		if ( m && m.xcount > 0 ) 
 			throw new Exception("Please pay first pending violations");
 	}
-
-
 }

@@ -9,6 +9,9 @@ public class BatchCaptureCollectionService  {
 	@ActiveDB("batchcapture_collection")
 	def em
 
+	@ActiveDB("collectiontype")
+	def colltype;
+
 	@PersistenceContext('main')
 	def pem 
 
@@ -26,7 +29,7 @@ public class BatchCaptureCollectionService  {
 
 	
 	@ProxyMethod
-	public def initBatchCapture(def entity){
+	public def initBatchCapture( entity ){
 		if( em.findBatchControlByState(entity) ) 	
 			throw new Exception("There are still unposted collection for this series. ");
 
@@ -41,8 +44,9 @@ public class BatchCaptureCollectionService  {
 		entity.totalamount = 0.0
 		em.create(entity, "batchcapture_collection" )
 
-		entity.batchitems = []
-		return entity;
+		entity.batchitems = []; 
+		entity.fund = entity.collectiontype?.fund; 
+		return entity; 
 	}
 
 	@ProxyMethod 
@@ -252,6 +256,9 @@ public class BatchCaptureCollectionService  {
 	public def open( params ) {
 		def entity = em.read(params, "batchcapture_collection" )
 		if ( !entity ) throw new Exception("Could not open selected item.  ")
+
+		def colltypedata = colltype.read( entity.collectiontype ); 
+		entity.fund = colltypedata?.fund; 
 
 		entity.batchitems = em.getBatchEntries( entity );
 		if ( entity.batchitems ) {

@@ -182,7 +182,8 @@ class CashReceiptBatchEntryController  {
             return (entity.state == 'DRAFT'); 
         }, 
         getOpenerParams: {o-> 
-            return [
+            return [ 
+                fund: entity.fund, 
                 callerListModel: listModel, 
                 calculateHandler: {  en, mode ->    
                     if ( mode == 'edit' ) {

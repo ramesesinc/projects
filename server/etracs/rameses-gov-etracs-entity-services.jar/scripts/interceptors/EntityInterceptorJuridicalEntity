@@ -45,7 +45,10 @@ class EntityInterceptorJuridicalEntity  {
 		def parms = evt.args[0];
 		def entity = evt.result;
 		if( !parms?.loaded ) {
-			entity.putAll ( em.read( [objid: entity.objid ] )  );
+			def e = em.read( [objid: entity.objid ] )  
+			if (e){
+				entity.putAll (e);
+			}
 			loadData( entity );
 		}
 	}

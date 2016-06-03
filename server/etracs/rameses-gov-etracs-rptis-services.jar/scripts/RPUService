@@ -196,7 +196,7 @@ class RPUService
             type = RPUTYPE_BLDG
         else if (suffix >= 2001 && suffix <= 2999) 
             type = RPUTYPE_MACH
-        else if (suffix >= 3001 && suffix <= 3999) 
+        else if (suffix >= 3001 && suffix <= 4999) 
             type = RPUTYPE_PLANTTREE
         else if ((suffix >= 5001 && suffix <= 5999) || (suffix >= 7001 && suffix <= 7999)  )
             type = RPUTYPE_MISC

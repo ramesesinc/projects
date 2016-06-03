@@ -112,38 +112,6 @@ class BankDepositService  {
 				em.create("bankdeposit:entry_check", c);
 			}
 		}
-
-		//debit cashbook of cashier (Treasury)
-		for( x in o.deposits ) {
-			def m = [:];
-			m.subacctid = o.cashier.objid;
-			def fund = adb.findFundByBankEntryId(x)
-			m.fundid = fund?.objid 
-			m.fundtitle = fund?.title 
-			m.type = 'CASHIER'
-			m.refid = x.objid;
-			m.refno = o.txnno + '-' + fund?.title;
-			m.refdate = o.dtposted;
-			m.reftype = "LIQUIDATIONS";
-			m.amount = x.amount;
-			m.particulars = "LIQUIDATIONS"
-			cashBook.postDR( m );
-		}
-		//credit cashbook of liquidating officer (Treasury)
-		for( x in liquidationfunds ) {
-			def m = [:];
-			m.subacctid = x.liquidatingofficer.objid;
-			m.fundid = x.fund.objid;
-			m.fundtitle = x.fund.title;
-			m.type = 'LIQUIDATING_OFFICER'
-			m.refid = o.objid;
-			m.refno = o.txnno;
-			m.refdate = o.dtposted;
-			m.reftype = "DEPOSIT";
-			m.amount = x.amount;
-			m.particulars = "DEPOSITED BY " + env.FULLNAME;
-			cashBook.postCR( m );
-		}
 		
 		o.deposits = loadDepositEntry( o )
 		return o;

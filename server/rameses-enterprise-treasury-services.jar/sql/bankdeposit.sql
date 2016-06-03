@@ -201,3 +201,28 @@ select objid from bankdeposit_entry where parentid=$P{objid} and state='OPEN'
 
 [closeDeposit]
 update bankdeposit set state='CLOSED' WHERE objid=$P{objid} 
+
+[getDepositsForCashBook]
+select 
+	bd.txnno, bd.dtposted as refdate, bde.objid as refid, bd.txnno as refno,  
+	ba.fund_objid, ba.fund_title, fund.code as fund_code, bde.amount, 
+	bd.cashier_objid as subacct_objid, bd.cashier_name as subacct_name 
+from bankdeposit bd 
+	inner join bankdeposit_entry bde on bd.objid=bde.parentid 
+	inner join bankaccount ba on bde.bankaccount_objid=ba.objid 
+	left join fund on ba.fund_objid=fund.objid 
+where bd.objid=$P{bankdepositid} 
+
+[getFundsForCashBook]
+select 
+	bd.dtposted as refdate, bd.objid as refid, bd.txnno as refno, 
+	lcf.fund_objid, lcf.fund_title, fund.code as fund_code, lcf.amount, 
+	l.liquidatingofficer_objid as subacct_objid, 
+	l.liquidatingofficer_name as subacct_name, 
+	bd.cashier_objid, bd.cashier_name 
+from bankdeposit bd 
+	inner join bankdeposit_liquidation bdl on bd.objid=bdl.bankdepositid 
+	inner join liquidation_cashier_fund lcf on bdl.objid=lcf.objid 
+	inner join liquidation l on lcf.liquidationid=l.objid 
+	left join fund on lcf.fund_objid=fund.objid 
+where bd.objid=$P{bankdepositid}  

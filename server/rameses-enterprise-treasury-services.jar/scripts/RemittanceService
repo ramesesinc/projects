@@ -97,32 +97,18 @@ class RemittanceService  {
 			em.collectReceipts(p);
 		}
 
-		em.collectNoncash(p);
-		
-		//update cashbook to add new entry
-		def flist = em.getRemittedFundTotals(p);
-		flist.each {
-				def detail = [:];
-				detail.fundid = it.fund.objid;
-				detail.subacctid = o.collector.objid; 
-				detail.type = 'COLLECTOR'
-				detail.refid = o.objid;
-				detail.refno = o.txnno;
-				detail.refdate = o.dtposted;
-				detail.reftype = "remittance";
-				detail.amount = it.amount;
-				detail.particulars = "REMITTANCE";
-				cashBook.postCR( detail );
-
-				def n = [:]
-				n.objid = "REMFUND"+new UID();
-				n.remittanceid = o.objid;
-				n.fund = it.fund;
-				n.amount = it.amount;
-				em.create( n, "remittance_fund" );
-		}
-		return o;
-	}
+		em.collectNoncash(p); 
+				
+		em.getRemittedFundTotals(p).each { 
+			def n = [:]
+			n.objid = "REMFUND"+new UID();
+			n.remittanceid = o.objid;
+			n.fund = it.fund;
+			n.amount = it.amount;
+			em.create( n, "remittance_fund" );
+		} 
+		return o; 
+	} 
 
 	@ProxyMethod
 	public def open( o ) {

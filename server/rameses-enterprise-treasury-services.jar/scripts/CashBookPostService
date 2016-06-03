@@ -1,8 +1,8 @@
 import com.rameses.annotations.*;
 import com.rameses.util.*;
-import java.rmi.server.*;
 import com.rameses.common.*
 import com.rameses.services.extended.*
+import java.rmi.server.UID;
 
 class CashBookPostService {
 
@@ -11,16 +11,23 @@ class CashBookPostService {
 
 	@Service("DateService")
 	def dateSvc;
+
+	@Service('UserService') 
+	def userSvc; 
 	
 	@ProxyMethod
-	public def postDR( def o ) {
-		if(!o.subacctid)  throw new Exception("subacctid is required in cashbook posting");
-		if(!o.fundid) throw new Exception("fundid is required in cashbook posting");
-		if(!o.type) throw new Exception("type is required in cashbook posting");
+	public def postDR( def o ) { 
+		if ( !o.subacctid ) o.subacctid = o.subacct?.objid; 
+		if ( !o.fundid ) o.fundid = o.fund?.objid; 
+
+		if ( !o.subacctid ) throw new Exception("subacctid is required in cashbook posting");
+		if ( !o.fundid ) throw new Exception("fundid is required in cashbook posting");
+		if ( !o.type ) throw new Exception("type is required in cashbook posting");
 
 		def cb = em.findBySubAcctFund( o );
-		if(!cb)
-			throw new Exception("Posting failed. There is no associated cashbook for fund: " + o.fundtitle + ". Please contact the treasurer"); 
+		if ( !cb ) { 
+			throw new Exception("Posting failed. There is no associated cashbook for fund: " + o.fundtitle + ". Please contact the treasurer"); 				
+		}
 		
 		def balance = cb.endbalance;
 		cb.totaldr += o.amount;
@@ -47,20 +54,22 @@ class CashBookPostService {
 	}
 
 	@ProxyMethod
-	public def postCR( def o ) {
-		if(!o.subacctid)  throw new Exception("subacctid is required in cashbook posting");
-		if(!o.fundid) throw new Exception("fundid is required in cashbook posting");
-		if(!o.type) throw new Exception("type is required in cashbook posting");
+	public def postCR( o ) { 
+		if ( !o.subacctid ) o.subacctid = o.subacct?.objid; 
+		if ( !o.fundid ) o.fundid = o.fund?.objid; 
+
+		if ( !o.subacctid ) throw new Exception("subacctid is required in cashbook posting");
+		if ( !o.fundid ) throw new Exception("fundid is required in cashbook posting");
+		if ( !o.type ) throw new Exception("type is required in cashbook posting");
 
 		def cb = em.findBySubAcctFund( o );
-		if(!cb)
+		if ( !cb ) 
 			throw new Exception("Posting failed. There is no associated cashbook for fund: " + o.fundtitle + ". Please contact the treasurer"); 
-		
-		if(!o.amount) 
+		if (!o.amount) 
 			throw new Exception("Amount is required");
-		if(!o.refid) 
+		if (!o.refid) 
 			throw new Exception("Refid is required");
-		if(!o.reftype) 
+		if (!o.reftype) 
 			throw new Exception("Reftype is required");
 
 		def balance = cb.endbalance;
@@ -77,7 +86,7 @@ class CashBookPostService {
 		detail.refdate = o.refdate;
 		detail.reftype = o.reftype;
 		detail.particulars = o.particulars;
-		detail.dr = 0;
+		detail.dr = 0.0;
 		detail.cr = o.amount;	
 		detail.runbalance = cb.endbalance;
 		em.create(detail, "detail");

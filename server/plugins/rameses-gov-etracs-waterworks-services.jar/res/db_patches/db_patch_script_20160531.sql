@@ -56,3 +56,6 @@ where a.objid=tmp.acctid
 
 drop table tmp_account_stubout;
 drop table tmp_account_meter; 
+
+alter table waterworks_meter add stocktype varchar(50) null
+; 

@@ -68,25 +68,11 @@ class LiquidationService  {
 		em.postLiquidateRemittance(m);
 		em.postLiquidateNoncash(m);
 		
-
-		//update cashbook to add new entry
 		o.fundsummary.each {
-				it.objid = "LIQFUND"+new UID();
-				it.liquidationid = o.objid;
-				em.create( it, "cashier_fund");
-				def detail = [:];
-				detail.fundid = it.fund.objid;
-				detail.fundtitle = it.fund.title 
-				detail.subacctid = o.liquidatingofficer.objid; 
-				detail.type = 'LIQUIDATING_OFFICER' 
-				detail.refid = o.objid;
-				detail.refno = o.txnno;
-				detail.refdate = o.dtposted;
-				detail.reftype = "liquidation";
-				detail.amount = it.amount;
-				detail.particulars = "LIQUIDATION";
-				cashBook.postDR( detail );
-		}
+			it.objid = "LIQFUND"+new UID();
+			it.liquidationid = o.objid;
+			em.create( it, "cashier_fund");
+		} 
 		return o;		
 	}	
 

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:id="@+id/tableLayout1"
+  android:layout_width="fill_parent"
+  android:layout_height="wrap_content"
+  android:stretchColumns="0,1,2,3,4,5">
+
+    <TableRow
+      android:id="@+id/tableRow1"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content">
+
+        <TextView
+          android:id="@+id/appraisal_subclass"
+          android:text="Sub Class"
+          android:layout_column="0"
+          android:layout_margin="1dp"
+          android:layout_width="0dp"
+          android:layout_height="match_parent"
+          android:textAppearance="?android:attr/textAppearanceMedium">
+        </TextView>
+
+        <TextView
+          android:id="@+id/appraisal_specificclass"
+          android:text="Specific Class"
+          android:layout_column="1"
+          android:layout_margin="1dp"
+          android:layout_width="0dp"
+          android:layout_height="match_parent"
+          android:textAppearance="?android:attr/textAppearanceMedium">
+        </TextView>
+        
+        <TextView
+          android:id="@+id/appraisal_actualuse"
+          android:text="Actual Use"
+          android:layout_column="2"
+          android:layout_margin="1dp"
+          android:layout_width="0dp"
+          android:layout_height="match_parent"
+          android:textAppearance="?android:attr/textAppearanceMedium">
+        </TextView>
+        
+        <TextView
+          android:id="@+id/appraisal_strip"
+          android:text="Strip"
+          android:layout_column="3"
+          android:layout_margin="1dp"
+          android:layout_width="0dp"
+          android:layout_height="match_parent"
+          android:textAppearance="?android:attr/textAppearanceMedium">
+        </TextView>
+        
+        <TextView
+          android:id="@+id/appraisal_areasqm"
+          android:text="Area (sqm)"
+          android:layout_column="4"
+          android:layout_margin="1dp"
+          android:layout_width="0dp"
+          android:layout_height="match_parent"
+          android:textAppearance="?android:attr/textAppearanceMedium">
+        </TextView>
+        
+        <TextView
+          android:id="@+id/appraisal_areaha"
+          android:text="Area (ha)"
+          android:layout_column="5"
+          android:layout_margin="1dp"
+          android:layout_width="0dp"
+          android:layout_height="match_parent"
+          android:textAppearance="?android:attr/textAppearanceMedium">
+        </TextView>
+
+    </TableRow>
+
+</TableLayout> 

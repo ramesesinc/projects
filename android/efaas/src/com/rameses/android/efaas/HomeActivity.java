@@ -82,6 +82,9 @@ public class HomeActivity extends SettingsMenuActivity   {
 		data = new ArrayList<HomeItem>();
 		data.add(new HomeItem(R.drawable.masterfile,"Master Files"));
 		data.add(new HomeItem(R.drawable.masterfile,"Revision Settings"));
+		data.add(new HomeItem(R.drawable.masterfile,"FAAS"));
+		data.add(new HomeItem(R.drawable.masterfile,"Download"));
+		data.add(new HomeItem(R.drawable.masterfile,"Upload"));
 		data.add(new HomeItem(R.drawable.change_password,"Change Password"));
 		data.add(new HomeItem(R.drawable.logout,"Logout"));
 		
@@ -100,6 +103,16 @@ public class HomeActivity extends SettingsMenuActivity   {
 				
 				if(title.equals("Revision Settings")){
 					Intent intent = new Intent(activity, RevisionSettingActivity.class);  
+					startActivity(intent); 
+				}
+				
+				if(title.equals("FAAS")){
+					Intent intent = new Intent(activity, FaasListActivity.class);  
+					startActivity(intent); 
+				}
+				
+				if(title.equals("Download")){
+					Intent intent = new Intent(activity, DownloadActivity.class);  
 					startActivity(intent); 
 				}
 				

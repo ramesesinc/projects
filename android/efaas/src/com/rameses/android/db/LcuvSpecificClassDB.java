@@ -6,7 +6,7 @@ public class LcuvSpecificClassDB extends AbstractDBMapper{
 
 	@Override
 	public String getTableName() {
-		return "lcuvsubclass";
+		return "lcuvspecificclass";
 	}
 
 }

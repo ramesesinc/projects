@@ -56,5 +56,8 @@
         <activity android:name="com.rameses.android.efaas.MasterFileDetailActivity"  android:screenOrientation="portrait"/>
         <activity android:name="com.rameses.android.efaas.RevisionSettingActivity"  android:screenOrientation="portrait"/>
         <activity android:name="com.rameses.android.efaas.RevisionSettingDetailActivity"  android:screenOrientation="portrait"/>
+        <activity android:name="com.rameses.android.efaas.FaasListActivity"  android:screenOrientation="portrait"/>
+        <activity android:name="com.rameses.android.efaas.DownloadActivity"  android:screenOrientation="portrait"/>
+        <activity android:name="com.rameses.android.efaas.FaasActivity"  android:screenOrientation="portrait"/>
     </application>
 </manifest>

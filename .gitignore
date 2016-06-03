@@ -46,3 +46,5 @@ android/*/Thumbs.db
 /client/plugins/rameses-gov-etracs-ctc/nbproject/private/
 /client/plugins/rameses-gov-etracs-ctc/build/
 /client/plugins/rameses-gov-etracs-ctc/dist/
+/client/plugins/rameses-gov-etracs-waterworks/dist/
+/client/plugins/rameses-gov-etracs-waterworks/build/

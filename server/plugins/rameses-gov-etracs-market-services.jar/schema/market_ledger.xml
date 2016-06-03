@@ -1,0 +1,22 @@
+<schema  adapter="market">
+
+	<element tablename="market_ledger">
+		<field name="objid" primary="true" prefix="MKTLDGR"/>
+		<complex name="account" ref="market_account" jointype="many-to-one"
+			includefields="objid,acctno,acctname">
+		    <key field="acctid" target="objid"/>
+		</complex>
+
+		<field name="month" required="true" type="integer"/>
+		<field name="year" required="true" type="integer"/>
+		<field name="duedate" required="true" type="date"/>
+		<field name="amount" required="true" type="decimal" defaultValue="0"/>
+		<field name="amtpaid" required="true" type="decimal" defaultValue="0"/>
+		<field name="surcharge" required="true" type="decimal" defaultValue="0" />
+		<field name="interest" required="true" type="decimal" defaultValue="0" />
+
+		<field name="balance" expr="amount-amtpaid" type="decimal"/>
+		<field name="total" expr="(amount-amtpaid)+surcharge+interest" type="decimal"/>
+
+	</element>
+</schema>

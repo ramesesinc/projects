@@ -2,7 +2,7 @@
 <!-- Created with iReport - A designer for JasperReports -->
 <!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
 <jasperReport
-		 name="marketbilling"
+		 name="waterworksbilling"
 		 columnCount="1"
 		 printOrder="Vertical"
 		 orientation="Portrait"
@@ -36,18 +36,12 @@
 	<parameter name="TREASURERTITLE" isForPrompting="false" class="java.lang.String"/>
 
 	<field name="billdate" class="java.util.Date"/>
-	<field name="location" class="java.lang.String"/>
 	<field name="acctname" class="java.lang.String"/>
 	<field name="items" class="java.lang.Object"/>
 	<field name="grandtotal" class="java.math.BigDecimal"/>
-	<field name="unit.code" class="java.lang.String"/>
-	<field name="unit.unittype" class="java.lang.String"/>
-	<field name="term" class="java.lang.String"/>
-	<field name="rate" class="java.math.BigDecimal"/>
-	<field name="unit.section.name" class="java.lang.String"/>
-	<field name="unit.market.name" class="java.lang.String"/>
-	<field name="unit.market.address.text" class="java.lang.String"/>
-	<field name="unit.cluster.name" class="java.lang.String"/>
+	<field name="meter.serialno" class="java.lang.String"/>
+	<field name="address.text" class="java.lang.String"/>
+	<field name="sector.name" class="java.lang.String"/>
 	<field name="acctno" class="java.lang.String"/>
 	<field name="lastpmtdate" class="java.util.Date"/>
 
@@ -115,7 +109,7 @@
 					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<text><![CDATA[Market Unit:]]></text>
+				<text><![CDATA[Particulars:]]></text>
 				</staticText>
 				<staticText>
 					<reportElement
@@ -135,7 +129,7 @@
 					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<text><![CDATA[Name of stall owner :]]></text>
+				<text><![CDATA[Acct Name :]]></text>
 				</staticText>
 				<staticText>
 					<reportElement
@@ -175,7 +169,7 @@
 					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{unit.code}+ "-" + $F{unit.cluster.name} + " " + $F{unit.section.name}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{meter.serialno}+ "-" + $F{sector.name} ]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -215,7 +209,7 @@
 					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 						<font fontName="Tahoma" pdfFontName="Helvetica" size="10" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<text><![CDATA[MARKET RENTAL BILLING NOTICE]]></text>
+				<text><![CDATA[WATER BILLING NOTICE]]></text>
 				</staticText>
 				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -335,7 +329,7 @@
 					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{unit.market.name} + " " + $F{unit.market.address.text} ]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{address.text}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement
@@ -441,7 +435,7 @@
 						key="subreport-1"
 						positionType="Float"/>
 					<dataSourceExpression><![CDATA[$F{items}]]></dataSourceExpression>
-					<subreportExpression  class="java.lang.String"><![CDATA["marketbillingitem.jasper"]]></subreportExpression>
+					<subreportExpression  class="java.lang.String"><![CDATA["waterworksbillingitem.jasper"]]></subreportExpression>
 				</subreport>
 			</band>
 		</detail>

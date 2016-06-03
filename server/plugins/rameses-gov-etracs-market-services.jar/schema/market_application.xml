@@ -12,7 +12,7 @@
 		<field name="owner_name"  />
 		<field name="owner_address_text" />
 		<complex name="unit" ref="market_rentalunit" jointype="many-to-one"
-			includefields="code,unittype,paymentterm,rate,section,market.name,market.address.*">
+			includefields="code,unittype,term,rate,section,market.name,market.address.*">
 		    <key field="unit_objid" target="objid"/>
 		</complex>
 		

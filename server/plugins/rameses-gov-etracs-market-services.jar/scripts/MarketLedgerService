@@ -1,0 +1,66 @@
+import com.rameses.annotations.*;
+import java.text.*;
+
+class MarketLedgerService {
+	
+	@Service("DateService")
+	def dateSvc;
+
+	@DataContext("market_account")
+	def acct;
+
+	@DataContext("market_ledger")
+	def ledger;
+
+	def dformat = new SimpleDateFormat("yyyy-MM-dd");
+
+	@ProxyMethod
+	public def buildLedger( def o ) {
+
+		if( !o.acctid ) throw new Exception("acctid is required");
+		if( !o.billdate ) throw new Exception("billdate is required");
+		def m = acct.select("objid,lastledgerdate,rate,term").find([objid:o.acctid]).first();
+		def endDate = dformat.parse( o.billdate );
+
+		def startdate = null;
+		if( m.lastledgerdate) {
+			startdate = dformat.parse( dformat.format( m.lastledgerdate ));
+		}
+		else if( o.startdate ) {
+			startdate = dformat.parse(o.startdate);
+		}
+		
+		if(!startdate ) throw new Exception("startdate or lastledgerdate is required!");
+
+		def c = Calendar.instance;
+		c.setTime( startdate );
+		m.lastledgerdate = c.getTime();
+
+		if(m.term == 'DAILY') {
+			while( m.lastledgerdate < endDate ) {
+				int imonth = c.get( Calendar.MONTH )+1;
+				int iyear = c.get(Calendar.YEAR);
+				m.lastledgerdate = c.getTime();
+				if( ledger.find([acctid:m.objid, year: iyear, month:imonth ]).exists() ) {
+					continue;
+				};
+				def z = [:];
+				z.account = m;
+				z.month = imonth
+				z.year = iyear;
+				z.duedate = m.lastledgerdate;
+				z.amount = m.rate * (c.getActualMaximum(Calendar.DAY_OF_MONTH)-c.get(Calendar.DAY_OF_MONTH)+1);
+				z.amtpaid = 0;
+				z.surcharge = 0;
+				z.interest = 0;
+				ledger.create(z);
+				c.add( Calendar.MONTH, 1 );
+			} 
+		}
+		acct.find([objid:o.acctid]).update( [lastledgerdate: m.lastledgerdate] );
+	}
+
+
+
+
+}

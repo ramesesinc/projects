@@ -15,9 +15,6 @@ class WaterworksMobileDownloadService {
 	@DataContext("waterworks_account")
 	def wa;
 
-	@DataContext("vw_waterworks_stubout")
-	def vw_waterworks_stubout;
-
 	@DataContext("waterworks_stubout")
 	def ws;
 

@@ -1,11 +1,11 @@
-<workunit extends="com/rameses/seti2/templates/FormList.xml"
+<workunit extends="com/rameses/seti2/templates/CrudList.xml"
           schemaName="waterworks_account_consumption" 
           cols="dtreading,year,month,prevreading,reading,readingmethod,reader_objid,reader_name,volume"
           orderBy="year,month desc" 
           allowOpen="false" allowCreate="false" allowEdit="false">
     <invokers>
         <invoker type="waterworks_account:section" caption="Consumption" 
-                 index="2" action="init" target="popup" 
+                 index="2" action="init" 
                   visibleWhen="#{mode=='read'}"  />
         
         <invoker type="formActions" caption="Capture" 
@@ -13,6 +13,7 @@
                  />
     </invokers>
     <code>
+        <![CDATA[
         import com.rameses.rcp.annotations.*;
         import com.rameses.common.*;
         import com.rameses.rcp.common.*;
@@ -22,15 +23,8 @@
         
         class AccountConsumptionModel extends com.rameses.seti2.models.CrudListModel {
 
-            @Caller 
-            def caller;
-        
             void beforeQuery( def qry ) {
                 qry.findBy = [acctid: caller.entity.objid];
-            }
-        
-            void reload() {
-                listHandler.reload();
             }
         
             def capture() {
@@ -40,5 +34,6 @@
                 Modal.show("waterworks_account_consumption:capture", [handler:h, entity:caller.entity]); 
             }
         }
+        ]]>
     </code>
 </workunit>

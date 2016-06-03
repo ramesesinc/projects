@@ -102,8 +102,8 @@ public class MarketRentalUnitPage extends javax.swing.JPanel {
 
         xComboBox2.setCaption("Term");
         xComboBox2.setExpression("#{item.name}");
-        xComboBox2.setItems("listTypes.paymentterm");
-        xComboBox2.setName("entity.paymentterm"); // NOI18N
+        xComboBox2.setItems("listTypes.term");
+        xComboBox2.setName("entity.term"); // NOI18N
         xComboBox2.setPreferredSize(new java.awt.Dimension(100, 22));
         xComboBox2.setRequired(true);
         xFormPanel1.add(xComboBox2);

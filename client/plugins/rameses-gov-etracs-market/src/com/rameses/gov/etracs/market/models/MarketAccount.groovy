@@ -15,14 +15,17 @@ public class MarketAccount extends CrudFormModel {
     def listener = [
         'entity.unit' : { o->
             entity.rate = o.rate;
-            entity.paymentterm = o.paymentterm;
-            binding.refresh("entity.(rate|paymentterm)");
+            entity.term = o.term;
+            binding.refresh("entity.(rate|term)");
         }
     ];        
 
     def ledgerList = [
         fetchList: { o->
-            return [];
+            def m = [_schemaname: 'market_ledger' ];
+            m.findBy = [acctid: entity.objid];
+            m.orderBy = "year,month";
+            return queryService.getList(m);
         }
     ] as BasicListModel;
    

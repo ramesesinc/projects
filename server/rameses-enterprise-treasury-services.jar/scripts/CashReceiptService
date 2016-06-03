@@ -9,24 +9,24 @@ class CashReceiptService  {
 	@PersistenceContext("main")
 	def em;
 
-	@Env
-	def env;
-	
-	@Service("DateService")
-	def dateService;
-	
-	@Service("Var")
-	def var;
-	
-	@Service("NumberService")
-	def numSvc;
-	
 	@ActiveDB("collector")
 	def collector;
 
 	@ActiveDB("cashreceipt")
 	def cashreceipt; 
 
+	@Service("DateService")
+	def dateService;
+		
+	@Service("NumberService")
+	def numSvc;
+	
+	@Service("Var")
+	def var;
+
+	@Env
+	def env;
+	
    
 	/**
 	* note: setting of collector is in the CashReceiptInterceptor of gov. module.
@@ -73,9 +73,8 @@ class CashReceiptService  {
     }
 	
 	@ProxyMethod
-	public def post( def p ) {
-		if(!p.formtype)
-			throw new Exception("Form type is required");
+	public def post( p ) {
+		if ( !p.formtype ) throw new Exception("Form type is required");
 
 		def amount = numSvc.round( p.amount );
 		def amtitemsum = numSvc.round( p.items.amount.sum() ); 

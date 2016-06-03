@@ -1,0 +1,25 @@
+/* v2.5.04.032-03009 */
+
+- TREAURY
+
+- BPLS 
+		
+- ASSESSOR
+	- Improve subdivision cancel improvement add remarks and reason 
+	- Add access of cancelled faas listing 
+	- Fix building modify appraisal page (not editable)
+	- Fix cancelled faas report (old data)
+	- Update TD Report add prevarea ha
+	- Update FAAS Listing Report
+    - Add LGU Name to NOA query
+	- Modified ROA include planttree info
+	- (new) List of Titled Properties 
+	- (new) Additional FAAS Restrictions
+	- (new) Report on AV of Restricted Properties
+
+- LANDTAX
+	- Update on idle land statement of shares
+	- (new) Support YEAR RANGE option in Delinquency Listing report
+	- (new) List of Compromise Agreements
+	- Display administrator info in Notice of Delinquency Report 
+	

@@ -40,7 +40,6 @@ public class ItemAccountPage extends javax.swing.JPanel {
         xTextArea1 = new com.rameses.rcp.control.XTextArea();
         xLookupField2 = new com.rameses.rcp.control.XLookupField();
         xComboBox1 = new com.rameses.rcp.control.XComboBox();
-        xCheckBox1 = new com.rameses.rcp.control.XCheckBox();
         jPanel2 = new javax.swing.JPanel();
         xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
         xComboBox2 = new com.rameses.rcp.control.XComboBox();
@@ -49,21 +48,22 @@ public class ItemAccountPage extends javax.swing.JPanel {
 
         xTabbedPane1.setItems("sections");
 
-        xFormPanel1.setCaptionWidth(120);
+        xFormPanel1.setCaptionWidth(100);
+        xFormPanel1.setPadding(new java.awt.Insets(10, 5, 5, 5));
 
         xTextField1.setCaption("Acct Code");
         xTextField1.setEnabled(false);
         xTextField1.setName("entity.code"); // NOI18N
-        xTextField1.setPreferredSize(new java.awt.Dimension(0, 19));
         xTextField1.setRequired(true);
         xTextField1.setSpaceChar('_');
+        xTextField1.setStretchWidth(100);
         xFormPanel1.add(xTextField1);
 
         xTextField2.setCaption("Acct Title");
         xTextField2.setEnabled(false);
         xTextField2.setName("entity.title"); // NOI18N
-        xTextField2.setPreferredSize(new java.awt.Dimension(0, 19));
         xTextField2.setRequired(true);
+        xTextField2.setStretchWidth(100);
         xFormPanel1.add(xTextField2);
 
         jScrollPane1.setPreferredSize(new java.awt.Dimension(0, 42));
@@ -71,7 +71,7 @@ public class ItemAccountPage extends javax.swing.JPanel {
         xTextArea1.setCaption("Description");
         xTextArea1.setEnabled(false);
         xTextArea1.setName("entity.description"); // NOI18N
-        xTextArea1.setPreferredSize(new java.awt.Dimension(0, 40));
+        xTextArea1.setStretchWidth(100);
         jScrollPane1.setViewportView(xTextArea1);
 
         xFormPanel1.add(jScrollPane1);
@@ -81,22 +81,15 @@ public class ItemAccountPage extends javax.swing.JPanel {
         xLookupField2.setExpression("#{item.code} #{item.title}");
         xLookupField2.setHandler("fund:lookup");
         xLookupField2.setName("entity.fund"); // NOI18N
-        xLookupField2.setPreferredSize(new java.awt.Dimension(0, 19));
         xLookupField2.setRequired(true);
+        xLookupField2.setStretchWidth(100);
         xFormPanel1.add(xLookupField2);
 
         xComboBox1.setCaption("Item Type");
         xComboBox1.setItems("listTypes.type");
         xComboBox1.setName("entity.type"); // NOI18N
-        xComboBox1.setPreferredSize(new java.awt.Dimension(120, 20));
+        xComboBox1.setStretchWidth(100);
         xFormPanel1.add(xComboBox1);
-
-        xCheckBox1.setCaption("");
-        xCheckBox1.setCheckValue("ACTIVE");
-        xCheckBox1.setName("entity.state"); // NOI18N
-        xCheckBox1.setText("Active");
-        xCheckBox1.setUncheckValue("DRAFT");
-        xFormPanel1.add(xCheckBox1);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -104,20 +97,22 @@ public class ItemAccountPage extends javax.swing.JPanel {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 366, Short.MAX_VALUE)
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 405, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 212, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(104, Short.MAX_VALUE))
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 305, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         xTabbedPane1.addTab("General", jPanel1);
 
+        xFormPanel2.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
         xFormPanel2.setCaptionWidth(100);
+        xFormPanel2.setPadding(new java.awt.Insets(10, 5, 5, 5));
 
         xComboBox2.setAllowNull(false);
         xComboBox2.setCaption("Value Type");
@@ -165,16 +160,16 @@ public class ItemAccountPage extends javax.swing.JPanel {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(xFormPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(xDataTable2, javax.swing.GroupLayout.DEFAULT_SIZE, 324, Short.MAX_VALUE))
-                .addContainerGap(52, Short.MAX_VALUE))
+                .addContainerGap(91, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(26, 26, 26)
-                .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(xDataTable2, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(82, Short.MAX_VALUE))
+                .addContainerGap()
+                .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(xDataTable2, javax.swing.GroupLayout.DEFAULT_SIZE, 214, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         xTabbedPane1.addTab("Options", jPanel2);
@@ -185,7 +180,7 @@ public class ItemAccountPage extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 391, Short.MAX_VALUE)
+                .addComponent(xTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 430, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -196,11 +191,11 @@ public class ItemAccountPage extends javax.swing.JPanel {
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
-    private com.rameses.rcp.control.XCheckBox xCheckBox1;
     private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XComboBox xComboBox2;
     private com.rameses.rcp.control.XDataTable xDataTable1;

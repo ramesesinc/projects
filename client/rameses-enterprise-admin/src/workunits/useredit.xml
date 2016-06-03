@@ -1,9 +1,6 @@
 <workunit>
     <invokers>
-        <!--
-        <invoker type="user:create" action="create" caption="Create New User" target="popup"/>
-        
-        -->
+        <invoker type="sys_user:edit" action="edit" caption="Edit User"/>
         <invoker type="sys_user:create" action="create" caption="Create New User" target="popup"/>
         <invoker type="user:edit" action="edit" caption="Edit User"/>
         <!--

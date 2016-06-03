@@ -5,13 +5,16 @@ import java.rmi.server.UID
 
 class RPTReportAnnotationListService
 {
+	@Env 
+	def env 
+
     @ActiveDB('rptreport_annotation')
     def em
 
     @Async
 	@ProxyMethod 
 	public def generateAnnotationListing(params) {
-		params.lguid = params.lgu.objid 
+		params.lguid = (params.lgu ? params.lgu.objid : '%')
 		params.barangayid = (params.barangay ? params.barangay.objid : '%')
 
 		params.orderbyclause = ''
@@ -21,8 +24,14 @@ class RPTReportAnnotationListService
 		
 		def list = em.getAnnotationListing(params)
 		if( ! list ) throw new Exception('Records not found.')
+
+		def forlguname = env.ORGCLASS + ' OF ' + env.ORGNAME 
+		if (params.lgu){
+			forlguname = params.lgu.lgutype.toUpperCase() + ' OF ' + params.lgu.name 
+		}
+		
 		def p = [
-			FORLGUNAME : params.lgu.lgutype.toUpperCase() + ' OF ' + params.lgu.name 
+			FORLGUNAME : forlguname
 		]
 		return [
 			parameters:p,

@@ -17,13 +17,14 @@
             def mode = 'create';
             def entity;
             def handler;
+            def fund; 
             
             def valueTypes = [ "ANY", "FIXED", "FIXEDUNIT" ];
             
-            void create() {
-                entity = [:];
-                mode = 'create'
-            }    
+            void create() { 
+                entity = [:]; 
+                mode = 'create'; 
+            } 
             
             void edit() {
                 mode = 'edit'
@@ -38,11 +39,12 @@
                 return "_close";
             }
             
-            def getLookupAccount() {
-                def h = { o->
+            def getLookupAccount() { 
+                def params = ['query.fund' : fund ];  
+                params.onselect = { o->
                     entity.account = o;
                 }
-                return Inv.lookupOpener( "revenueitem:lookup", [onselect:h]);
+                return Inv.lookupOpener( "revenueitem:lookup", params );
             }
             
         }      

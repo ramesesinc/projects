@@ -110,12 +110,13 @@
             
             void submit() {
                 if( breakdown != entity.totalcash )
-                    throw new Exception("Cash breakdown must equal total cash");
+                    throw new Exception("Cash breakdown must equal total cash"); 
+                    
                 if( MsgBox.confirm("You are about to submit this liquidation. Please ensure the entries are correct")) {
-                    entity = service.post( entity );
-                    mode = "read";
-                    if(handler) handler();
-                    MsgBox.alert("Posting successful");
+                    entity = service.post( entity ); 
+                    MsgBox.alert("Posting successful"); 
+                    mode = "read"; 
+                    if ( handler ) handler(); 
                 }
             }
             

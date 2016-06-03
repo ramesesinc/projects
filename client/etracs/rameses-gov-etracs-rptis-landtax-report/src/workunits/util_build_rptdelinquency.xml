@@ -43,10 +43,10 @@ class BuildRPTDelinquencyController
     }
    
     def oncomplete = {
-        mode = 'done';
+        mode = 'init';
         task = null;
         msg = 'Delinquency listing has been successfully generated.';
-        binding.refresh('loadingicon|msg|doBuild|doCancel');
+        binding.refresh('.*');
     }
     
     def updateStatus = {o ->
@@ -72,7 +72,7 @@ class BuildRPTDelinquencyController
             params       : entity 
         ]);
         task.start();
-        mode = 'building';
+        mode = 'processing';
     }
 
     void doCancel(){

@@ -16,6 +16,7 @@ FROM assessmentnoticeitem ni
 	INNER JOIN propertyclassification pc ON rpu.classification_objid = pc.objid
 	INNER JOIN realproperty rp ON f.realpropertyid = rp.objid
 	INNER JOIN barangay b ON rp.barangayid = b.objid 
+	INNER JOIN sys_org o ON f.lguid = o.objid 
 WHERE ni.assessmentnoticeid = $P{objid}
 
 [getApprovedFaasList]
@@ -25,6 +26,7 @@ FROM faas f
 	INNER JOIN propertyclassification pc ON rpu.classification_objid = pc.objid
 	INNER JOIN realproperty rp ON f.realpropertyid = rp.objid
 	INNER JOIN barangay b ON rp.barangayid = b.objid 
+	INNER JOIN sys_org o ON f.lguid = o.objid 
 WHERE f.taxpayer_objid = $P{taxpayerid}
   AND f.state = 'CURRENT'
 
@@ -36,6 +38,7 @@ FROM faas f
 	INNER JOIN propertyclassification pc ON rpu.classification_objid = pc.objid
 	INNER JOIN realproperty rp ON f.realpropertyid = rp.objid
 	INNER JOIN barangay b ON rp.barangayid = b.objid 
+	INNER JOIN sys_org o ON f.lguid = o.objid 
 WHERE f.objid = $P{faasid}
   AND f.state = 'CURRENT'
 

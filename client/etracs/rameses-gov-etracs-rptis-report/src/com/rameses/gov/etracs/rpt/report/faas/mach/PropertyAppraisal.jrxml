@@ -3,7 +3,8 @@
 <!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
 <jasperReport
 		 name="PropertyAppraisal"
-		 columnCount="1"
+
+		 language="groovy"		 columnCount="1"
 		 printOrder="Vertical"
 		 orientation="Portrait"
 		 pageWidth="612"
@@ -34,6 +35,8 @@
 	<field name="additionalcost" class="java.math.BigDecimal"/>
 	<field name="replacementcost" class="java.math.BigDecimal"/>
 	<field name="yearsused" class="java.lang.Integer"/>
+	<field name="swornamount" class="java.math.BigDecimal"/>
+	<field name="useswornamount" class="java.lang.Boolean"/>
 
 	<variable name="TOTALMV" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
 		<variableExpression><![CDATA[$F{marketvalue}]]></variableExpression>
@@ -298,7 +301,9 @@ Used]]></text>
 						width="123"
 						height="14"
 						key="textField"
-						stretchType="RelativeToBandHeight"/>
+						stretchType="RelativeToBandHeight">
+							<printWhenExpression><![CDATA[$F{useswornamount} == false]]></printWhenExpression>
+						</reportElement>
 					<box rightPadding="2">					<pen lineWidth="0.0" lineColor="#FF0066"/>
 					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#FF0066"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#FF0066"/>
@@ -317,7 +322,9 @@ Used]]></text>
 						width="113"
 						height="14"
 						key="textField"
-						stretchType="RelativeToBandHeight"/>
+						stretchType="RelativeToBandHeight">
+							<printWhenExpression><![CDATA[$F{useswornamount} == false]]></printWhenExpression>
+						</reportElement>
 					<box rightPadding="2">					<pen lineWidth="0.0" lineColor="#FF0066"/>
 					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#FF0066"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#FF0066"/>
@@ -336,7 +343,9 @@ Used]]></text>
 						width="88"
 						height="14"
 						key="textField"
-						stretchType="RelativeToBandHeight"/>
+						stretchType="RelativeToBandHeight">
+							<printWhenExpression><![CDATA[$F{useswornamount} == false]]></printWhenExpression>
+						</reportElement>
 					<box rightPadding="2">					<pen lineWidth="0.0" lineColor="#FF0066"/>
 					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#FF0066"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#FF0066"/>
@@ -402,6 +411,27 @@ Used]]></text>
 						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="7" isBold="true"/>
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="0"
+						y="0"
+						width="324"
+						height="14"
+						key="textField-1"
+						stretchType="RelativeToBandHeight">
+							<printWhenExpression><![CDATA[$F{useswornamount} == true]]></printWhenExpression>
+						</reportElement>
+					<box rightPadding="2">					<pen lineWidth="0.0" lineColor="#FF0066"/>
+					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#FF0066"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#FF0066"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#FF0066"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#FF0066"/>
+</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="7" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["SWORN AMOUNT:    " + ($F{swornamount}!=null ? (new java.text.DecimalFormat("#,##0.00").format($F{swornamount})) : "0.00")]]></textFieldExpression>
 				</textField>
 			</band>
 		</detail>

@@ -10,3 +10,7 @@
 "selectedStructure" [allowEdit!=true]{
     readonly:true;
 }
+
+"selectedStructure"  [entity._resolve == true] {
+    readonly:false;
+}

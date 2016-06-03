@@ -35,6 +35,8 @@ public class RPTDeliquencyReportInitPage extends javax.swing.JPanel {
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
         xComboBox3 = new com.rameses.rcp.control.XComboBox();
         xIntegerField1 = new com.rameses.rcp.control.XIntegerField();
+        xIntegerField2 = new com.rameses.rcp.control.XIntegerField();
+        xIntegerField3 = new com.rameses.rcp.control.XIntegerField();
         xComboBox1 = new com.rameses.rcp.control.XComboBox();
         xComboBox2 = new com.rameses.rcp.control.XComboBox();
         xComboBox4 = new com.rameses.rcp.control.XComboBox();
@@ -57,6 +59,20 @@ public class RPTDeliquencyReportInitPage extends javax.swing.JPanel {
         xIntegerField1.setPreferredSize(new java.awt.Dimension(80, 20));
         xIntegerField1.setRequired(true);
         xFormPanel1.add(xIntegerField1);
+
+        xIntegerField2.setCaption("From Year");
+        xIntegerField2.setDepends(new String[] {"entity.period"});
+        xIntegerField2.setName("entity.fromyear"); // NOI18N
+        xIntegerField2.setPreferredSize(new java.awt.Dimension(80, 20));
+        xIntegerField2.setRequired(true);
+        xFormPanel1.add(xIntegerField2);
+
+        xIntegerField3.setCaption("To Year");
+        xIntegerField3.setDepends(new String[] {"entity.period"});
+        xIntegerField3.setName("entity.toyear"); // NOI18N
+        xIntegerField3.setPreferredSize(new java.awt.Dimension(80, 20));
+        xIntegerField3.setRequired(true);
+        xFormPanel1.add(xIntegerField3);
 
         xComboBox1.setCaption("LGU");
         xComboBox1.setExpression("#{item.name}");
@@ -92,5 +108,7 @@ public class RPTDeliquencyReportInitPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XComboBox xComboBox4;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XIntegerField xIntegerField1;
+    private com.rameses.rcp.control.XIntegerField xIntegerField2;
+    private com.rameses.rcp.control.XIntegerField xIntegerField3;
     // End of variables declaration//GEN-END:variables
 }

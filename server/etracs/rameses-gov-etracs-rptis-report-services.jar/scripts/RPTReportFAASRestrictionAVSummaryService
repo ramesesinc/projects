@@ -1,0 +1,88 @@
+import com.rameses.annotations.*
+import com.rameses.common.*;
+import com.rameses.services.extended.*;
+
+class RPTReportFAASRestrictionAVSummaryService
+{
+	@Env 
+	def env 
+
+    @DataContext('faas_restriction_type')
+    def faas_restriction_typeDb
+
+    @ActiveDB('rptreport_faas_restriction_av_summary')
+    def em
+
+    @Service('RPTUtil')
+    def util
+
+
+    @Async
+    @ProxyMethod
+    public def generateReport( params ) {
+    	buildPeriodFilter(params)
+    	params.lguid = (params.lgu ? params.lgu.objid :'%')
+		params.barangayid = (params.barangay ? params.barangay.objid : '%')
+		params.imonth = getMonthIndex(params)
+
+		def list = em.getRestrictionAvSummary(params)
+		if( ! list ) throw new Exception('Record not found.')
+
+        if (!params.hidezeroav){
+            buildMissingRestrictions(list)
+        }
+
+        def reportparams = [:]
+        reportparams.PERIOD = params.period 
+
+		return [
+			parameters  : reportparams, 
+			reportdata 	: list,
+		]
+    }
+
+    void buildMissingRestrictions(list){
+        def firstitem = list[0]
+        faas_restriction_typeDb.list().each{rt->
+            if (firstitem.restriction.objid != rt.objid){
+                def item = [:]
+                item.lguname = firstitem.lguname 
+                item.restriction = rt 
+                item.isother = [idx:rt.isother, name:(rt.isother == 0 ? '' : 'OTHERS')]
+                item.totalav = null
+                list << item
+            }
+        }
+    }
+
+    def getMonthIndex(params){
+    	if (params.month){
+			return params.month.index 
+		}
+		else {
+			def qtrs = [1:3, 2:6, 3:9, 4:12]
+			return qtrs[params.qtr]
+		}
+    }
+
+    void buildPeriodFilter(params){
+    	params.periodfilter = ''
+    	if (params.period.code == 'AS_OF'){
+    		if (params.month){
+    			params.period = 'As of ' + params.month.name + ', ' + params.year 
+    		}
+    		else{
+    			def qtrs = [1:'MARCH', 2:'JUNE', 3:'SEPTEMBER', 4:'DECEMBER']
+    			params.period = 'As of ' + qtrs[params.qtr] + ', ' + params.year 	
+    		}
+    		params.periodfilter = ' and (f.year < $P{year} or (f.year = $P{year} and f.qtr <= $P{qtr} and f.month <= $P{imonth})) '
+    	}
+    	else {
+    		params.period = util.buildPeriod(params)
+    		if (params.month)
+    			params.periodfilter = ' and f.year = $P{year} and f.qtr = $P{qtr} and f.month = $P{imonth} '
+    		else 
+    			params.periodfilter = ' and f.year = $P{year} and f.qtr = $P{qtr} and f.month <= $P{imonth} '
+    	}
+    }
+}

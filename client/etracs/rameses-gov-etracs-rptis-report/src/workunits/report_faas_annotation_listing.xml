@@ -33,8 +33,8 @@ class FAASAnnotationListingController extends com.rameses.gov.etracs.rpt.report.
     def formControl = [
         getFormControls: {
             return [
-                new FormControl( "combo", [captionWidth:100, caption:'LGU', name:'entity.lgu', required:true, items:'lgus', expression:'#{item.name}']),
-                new FormControl( "combo", [captionWidth:100, caption:'Barangay', name:'entity.barangay', required:true, items:'barangays', expression:'#{item.name}', depends:'entity.lgu', dynamic:true, preferredSize:'0,21']),
+                new FormControl( "combo", [captionWidth:100, caption:'LGU', name:'entity.lgu', emptyText:'ALL', items:'lgus', expression:'#{item.name}']),
+                new FormControl( "combo", [captionWidth:100, caption:'Barangay', name:'entity.barangay', emptyText:'ALL', items:'barangays', expression:'#{item.name}', depends:'entity.lgu', dynamic:true, preferredSize:'0,21']),
                 new FormControl( "combo", [captionWidth:100, caption:'Order By', name:'entity.orderby', items:'orderbyColumns', expression:'#{item.caption}']),
             ]    
         },

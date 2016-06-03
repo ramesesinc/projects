@@ -58,6 +58,7 @@ ORDER BY ${orderby}
 [getDelinquentLedgersSummary]
 SELECT 
 	dtgenerated, barangayid, barangay_name, barangay_pin, 
+	SUM(basic) as basic, SUM(sef) as sef, 
 	SUM(basicint) AS basicint, SUM(sefint) AS sefint, 
 	SUM(basicnet) AS basicnet, SUM(sefnet) AS sefnet, 
 	SUM(total) AS total 
@@ -77,3 +78,28 @@ FROM (
 WHERE year < $P{year} 
 GROUP BY dtgenerated, barangayid, barangay_name, barangay_pin 
 ORDER BY barangay_pin  
+
+
+[getDelinquentLedgersByClassification]
+SELECT 
+	max(x.dtgenerated) as dtgenerated, 
+	x.barangayid, 
+	x.barangay_name,
+	x.classification,
+	x.idx,
+	sum(amount) as amount 
+FROM ( 
+	SELECT 
+		rr.barangayid, 
+		(select name from barangay where objid=rr.barangayid) as barangay_name, 
+		case when pc.special = 0 then pc.name else 'SPECIAL' end as classification,
+		case when pc.special = 0 then pc.orderno else 1000 end as idx,
+		year, dtgenerated,
+		(basic - basicdisc + basicint  + sef - sefdisc + sefint) AS amount
+	FROM report_rptdelinquency rr 
+		inner join rptledger rl on rr.rptledgerid = rl.objid 
+		inner join propertyclassification pc on rl.classification_objid = pc.objid 
+)x 
+WHERE year < $P{year} 
+GROUP BY dtgenerated, barangayid, barangay_name, classification, idx 
+ORDER BY barangay_name, idx 

@@ -76,11 +76,11 @@ public class FAASVerificationModel extends com.rameses.gov.etracs.rpt.report.cer
         return 'selectpage';
     }
     
-    def items;
+    def items = [];
     
     def listHandler = [
         fetchList : { return items; },
-        getRows   : { return items.size() },
+        getRows   : { return items.size()},
     ] as EditorListModel;
     
     void selectAll(){

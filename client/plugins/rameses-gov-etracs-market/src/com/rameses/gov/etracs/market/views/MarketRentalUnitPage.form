@@ -135,8 +135,8 @@
           <Properties>
             <Property name="caption" type="java.lang.String" value="Term"/>
             <Property name="expression" type="java.lang.String" value="#{item.name}"/>
-            <Property name="items" type="java.lang.String" value="listTypes.paymentterm"/>
-            <Property name="name" type="java.lang.String" value="entity.paymentterm" noResource="true"/>
+            <Property name="items" type="java.lang.String" value="listTypes.term"/>
+            <Property name="name" type="java.lang.String" value="entity.term" noResource="true"/>
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[100, 22]"/>
             </Property>

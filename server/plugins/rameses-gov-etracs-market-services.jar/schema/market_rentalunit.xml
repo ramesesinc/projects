@@ -15,7 +15,7 @@
 		<complex name="cluster" ref="market_cluster" jointype="many-to-one" required="false" includefields="objid,name">
 			<key field="clusterid" target="objid" />
 		</complex>
-		<field name="paymentterm" required="true" lov="MARKET_PAYMENT_TERMS" defaultValue="DAILY"/>
+		<field name="term" required="true" lov="MARKET_PAYMENT_TERMS" defaultValue="DAILY"/>
 		<field name="rate" required="true" type="decimal"/>
 
 		<complex name="account" ref="market_account" jointype="many-to-one" required="false" 

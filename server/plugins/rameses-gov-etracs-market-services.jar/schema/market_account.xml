@@ -9,11 +9,12 @@
 		<field name="owner_name"  />
 		<field name="owner_address_text" />
 		<complex name="unit" ref="market_rentalunit" jointype="many-to-one"
-			includefields="code,unittype,paymentterm,rate,section.name,market.name,market.address.*">
+			includefields="code,unittype,cluster.name,term,rate,section.name,market.name,market.address.*">
 		    <key field="unit_objid" target="objid"/>
 		</complex>
 		<field name="startdate" required="true"/>
 		<field name="lastpmtdate" />
+		<field name="lastledgerdate" required="true"/>
 		<field name="totalprincipalpaid" required="true" defaultValue="0" type="decimal"/>
 
 		<!-- dates -->
@@ -21,6 +22,6 @@
 		<field name="padlockdate" required="true" type="date"/>
 
 		<field name="rate" required="true" />
-		<field name="paymentterm" required="true" />
+		<field name="term" required="true" />
 	</element>
 </schema>

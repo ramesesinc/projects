@@ -1,0 +1,47 @@
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" 
+          schemaName="market_ledger"
+          cols="year,month,balance,surcharge,interest,total"
+          orderBy="year,month">
+    <invokers>
+        <invoker type="market_account:section" 
+                 caption="Market Ledger" action="init"/>
+        
+        <invoker type="listActions" 
+                 caption="Build Ledger" action="buildLedger"/>
+        
+    </invokers>
+    <code>
+        <![CDATA[
+        import com.rameses.rcp.common.*
+        import com.rameses.rcp.annotations.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import com.rameses.seti2.models.*;
+            
+        class MarketLedger extends CrudListModel {
+        
+            @Service("MarketledgerService")
+            def ledgerService;
+        
+            def getFindBy() {
+                return [acctid: caller.entityContext.objid ]; 
+            }
+        
+            void buildLedger() {
+                def ent = [acctid: caller.entityContext.objid];
+                def m = [];
+                boolean pass = false;
+                def h = { o->
+                    ledgerService.buildLedger( ent );
+                    pass = true;
+                }
+                m << [ name:'startdate', caption:'Start Date', required:true, datatype:'date' ];
+                m << [ name:'billdate', caption:'Bill Date', required:true, datatype:'date' ];
+                Modal.show( "dynamic_field:entry", [entity:ent,formControls:m, handler: h ] );
+                if(pass) reload();
+            }
+        
+        }
+        ]]>
+    </code>    
+</workunit>

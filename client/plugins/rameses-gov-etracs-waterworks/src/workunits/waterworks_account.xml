@@ -8,6 +8,7 @@
                  formTitle="Waterworks Account (#{entity.acctno}) #{entity.acctname}" 
                  formId="#{entity.objid}"
                  action="open" target="window"/>
+        
     </invokers>
     
     <code class="com.rameses.gov.etracs.waterworks.models.AccountModel" />    

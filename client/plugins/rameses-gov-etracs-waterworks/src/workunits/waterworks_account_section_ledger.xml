@@ -1,15 +1,17 @@
-<workunit extends="com/rameses/seti2/templates/FormList.xml"
-          schemaName="vw_waterworks_account_ledger" 
-          cols="item.code,item.title,amount,amtpaid,balance,duedate,remarks" 
-          orderBy="duedate"
+<workunit extends="com/rameses/seti2/templates/CrudList.xml"
+          schemaName="waterworks_account_ledger" 
+          cols="year,month,item.code,item.title,amount,amtpaid,balance,duedate,remarks" 
+          orderBy="year,month"
           allowOpen="false">
     <invokers>
         <invoker type="waterworks_account:section" caption="Ledger" index="2" 
                 visibleWhen="#{mode=='read'}"
-                action="init" target="popup"/>
+                action="init"/>
         
+        <!--
         <invoker type="formActions" caption="Capture"  action="capture" />
         <invoker type="formActions" caption="Capture Payment"  action="capturePayment" />
+        -->
     </invokers>
     <code>
         <![CDATA[
@@ -22,17 +24,11 @@
 
         class AccountLedgerModel extends com.rameses.seti2.models.CrudListModel {
 
-            @Caller 
-            def caller;
-        
             void beforeQuery( def qry ) {
                 qry.findBy = [parentid: caller.entity.objid];
             }
         
-            void reload() {
-                listHandler.reload();
-            }
-            
+            /*
             def capture() {
                 def h = {
                     reload();
@@ -46,6 +42,7 @@
                 }
                 Modal.show("waterworks_account:capture_payment",[handler:h, 'query.acctid':caller.entity.objid]);
             }
+            */
         }
         ]]>
     </code>

@@ -73,10 +73,11 @@ public class LandAssessmentRuleService
 		rpu.totalmv = 0.0
 		rpu.totalav = 0.0
 
-		if (rpu.landdetails){
-			rpu.totallandbmv = rpu.landdetails.basemarketvalue.sum()
-			rpu.totallandmv = rpu.landdetails.marketvalue.sum()
-			rpu.totallandav = rpu.landdetails.assessedvalue.sum()
+		def taxables = rpu.landdetails.findAll{it.taxable == true}
+		if (taxables){
+			rpu.totallandbmv = taxables.basemarketvalue.sum()
+			rpu.totallandmv = taxables.marketvalue.sum()
+			rpu.totallandav = taxables.assessedvalue.sum()
 		}
 		if (rpu.planttrees){
 			rpu.totalplanttreebmv = rpu.planttrees.basemarketvalue.sum()

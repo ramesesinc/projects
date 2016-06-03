@@ -44,6 +44,7 @@
 	<field name="sector.name" class="java.lang.String"/>
 	<field name="acctno" class="java.lang.String"/>
 	<field name="lastpmtdate" class="java.util.Date"/>
+	<field name="barcode" class="java.lang.String"/>
 
 		<background>
 			<band height="0"  isSplitAllowed="true" >
@@ -169,7 +170,7 @@
 					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{meter.serialno}+ "-" + $F{sector.name} ]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{meter.serialno}+ "-" + $F{sector.name}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -444,12 +445,12 @@
 			</band>
 		</columnFooter>
 		<pageFooter>
-			<band height="17"  isSplitAllowed="true" >
+			<band height="70"  isSplitAllowed="true" >
 				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Transparent"
-						x="2"
-						y="8"
+						x="0"
+						y="54"
 						width="467"
 						height="9"
 						forecolor="#000000"
@@ -465,10 +466,37 @@
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA["eTRACS 2.5              printed by : " + $P{PRINTEDBY} + "  print date : "  + (new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format($P{PRINTDATE}) )]]></textFieldExpression>
 				</textField>
+				<image  scaleImage="FillFrame" vAlign="Top" hAlign="Center" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="355"
+						y="0"
+						width="181"
+						height="33"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="barcode-1"/>
+					<box></box>
+					<graphicElement stretchType="NoStretch" fill="Solid" />
+					<imageExpression class="java.awt.Image"><![CDATA[it.businesslogic.ireport.barcode.BcImage.getBarcodeImage(5,$F{barcode},false,false,null,0,10)]]></imageExpression>
+				</image>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="355"
+						y="34"
+						width="181"
+						height="11"
+						key="textField-15"/>
+					<box></box>
+					<textElement textAlignment="Center" verticalAlignment="Top">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="7" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{barcode}]]></textFieldExpression>
+				</textField>
 			</band>
 		</pageFooter>
 		<summary>
-			<band height="189"  isSplitAllowed="true" >
+			<band height="165"  isSplitAllowed="true" >
 				<staticText>
 					<reportElement
 						mode="Transparent"

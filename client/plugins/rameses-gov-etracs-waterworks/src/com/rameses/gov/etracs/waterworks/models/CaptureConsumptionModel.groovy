@@ -23,10 +23,16 @@ public class CaptureConsumptionModel  {
     @Service("WaterworksAccountService")
     def acctSvc;
 
+    @Caller
+    def caller;
+    
     @Binding
     def binding;
     
-    def entity;
+    def getEntity() {
+        caller.getMasterEntity();
+    }
+    
     def handler;
     def info = [prevreading:0, reading:0, volume: 0, amtpaid: 0, postledger:true];
     def billCycle;
@@ -60,9 +66,12 @@ public class CaptureConsumptionModel  {
             def dt = df.parse(o);
             //def dt = DateFunc.getDayAdd( df.parse(o), -1);
             
-            def sector = entity.sectorid;
-            def zone = entity.zoneid; 
-            billCycle = billdateSvc.computeBillingDates([ sector: sector, zone: zone, billdate:dt ]);
+            def p = [:];
+            p.sector = entity.sector?.objid;
+            p.zone = entity.zone?.objid; 
+            p.metersize = entity.metersize?.objid;
+            p.billdate = dt;
+            billCycle = billdateSvc.computeBillingDates(p);
             
             //run this first because we dont want it formatted yet.
             info.year = DateFunc.getYear( billCycle.fromperiod );
@@ -90,8 +99,11 @@ public class CaptureConsumptionModel  {
         if( info.prevreading <0 || info.reading < 0 || info.volume <0) 
             throw new Exception("Reading,prevreading,volume must be greater than 0");
         info.account = [objid:entity.objid];
-        acctSvc.postConsumption( info );
-        if(handler) handler();
+        acctSvc.postReading( info );
+        if(handler) 
+            handler();
+        else 
+            caller.reload();
         return "_close";
     }
     

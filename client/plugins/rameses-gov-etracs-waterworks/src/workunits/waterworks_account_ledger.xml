@@ -24,18 +24,15 @@
 
         class AccountLedgerModel extends com.rameses.seti2.models.CrudListModel {
 
+            def getMasterEntity() {
+                return caller.entity;
+            }
+
             void beforeQuery( def qry ) {
                 qry.findBy = [parentid: caller.entity.objid];
             }
         
             /*
-            def capture() {
-                def h = {
-                    reload();
-                }
-                Modal.show("waterworks_account_ledger:capture",[handler:h, entity:caller.entity]);
-            }
-        
             def capturePayment() {
                 def h = {
                     reload();

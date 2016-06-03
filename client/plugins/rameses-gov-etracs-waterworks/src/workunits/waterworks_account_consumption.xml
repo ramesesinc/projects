@@ -7,10 +7,6 @@
         <invoker type="waterworks_account:section" caption="Consumption" 
                  index="2" action="init" 
                   visibleWhen="#{mode=='read'}"  />
-        
-        <invoker type="formActions" caption="Capture" 
-                 action="capture" 
-                 />
     </invokers>
     <code>
         <![CDATA[
@@ -26,12 +22,9 @@
             void beforeQuery( def qry ) {
                 qry.findBy = [acctid: caller.entity.objid];
             }
-        
-            def capture() {
-                def h = {
-                    reload();
-                }
-                Modal.show("waterworks_account_consumption:capture", [handler:h, entity:caller.entity]); 
+            
+            def getMasterEntity() {
+                return caller.entity;
             }
         }
         ]]>

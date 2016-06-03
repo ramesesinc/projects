@@ -24,7 +24,6 @@ import com.rameses.android.SettingsMenuActivity;
 import com.rameses.android.db.*;
 import com.rameses.android.efaas.adapter.MasterFileMenuAdapter;
 import com.rameses.android.efaas.bean.MasterFileItem;
-import com.rameses.android.service.MasterFileService;
 import com.rameses.android.service.RevisionSettingService;
 import com.rameses.client.android.Platform;
 
@@ -103,6 +102,7 @@ public class RevisionSettingDetailActivity extends SettingsMenuActivity {
 	}
 	
 	void saveData(){
+		System.out.println("saveData entered....");
 		if(revisionsetting.equals("Land Revision Setting")){
 			createLandRySettingData();
 		}
@@ -113,106 +113,210 @@ public class RevisionSettingDetailActivity extends SettingsMenuActivity {
 		String errorMsg = "";
 		
 		if(revisionSettingData != null){
+			clearLandRySettingData();
+			
 			List<Map> landrysettinglist = (List<Map>) revisionSettingData.get("landrysetting");
 			List<Map> landassesslevellist = (List<Map>) revisionSettingData.get("landassesslevel");
 			List<Map> landassesslevelrangelist = (List<Map>) revisionSettingData.get("landassesslevelrange");
-			List<Map> lcuvspecificclasslist = (List<Map>) revisionSettingData.get("lcuvspecificlass");
+			List<Map> lcuvspecificclasslist = (List<Map>) revisionSettingData.get("lcuvspecificclass");
 			List<Map> lcuvsubclasslist = (List<Map>) revisionSettingData.get("lcuvsubclass");
 			List<Map> lcuvstrippinglist = (List<Map>) revisionSettingData.get("lcuvstripping");
 			List<Map> landadjustmenttypelist = (List<Map>) revisionSettingData.get("landadjustmenttype");
 			
+			Log.v("RAMESES","landrysettinglist : " + landrysettinglist);
+			Log.v("RAMESES","landassesslevellist : " + landassesslevellist);
+			Log.v("RAMESES","landassesslevelrangelist : " + landassesslevelrangelist);
+			Log.v("RAMESES","lcuvspecificclasslist : " + lcuvspecificclasslist);
+			Log.v("RAMESES","lcuvsubclasslist : " + lcuvsubclasslist);
+			Log.v("RAMESES","lcuvstrippinglist : " + lcuvstrippinglist);
+			Log.v("RAMESES","landadjustmenttypelist : " + landadjustmenttypelist);
+			
 			Iterator<Map> it = null;
 			
+			Log.v("RAMESES","=================================================");
+			Log.v("RAMESES","LANDRYSETTING : \n");
 			it = landrysettinglist.iterator();
-			LandRySettingDB landrysettingdb = new LandRySettingDB();
 			while(it.hasNext()){
 				Map data = it.next();
 				try{
-					landrysettingdb.create(data);
+					Map params = new HashMap();
+					params.put("objid", data.get("objid") != null ? data.get("objid").toString() : "");
+					params.put("state", data.get("state") != null ? data.get("state").toString() : "");
+					params.put("ry", data.get("ry") != null ? data.get("ry").toString() : "");
+					params.put("appliedto", data.get("appliedto") != null ? data.get("appliedto").toString() : "");
+					params.put("previd", data.get("previd") != null ? data.get("previd").toString() : "");
+					
+					LandRySettingDB landrysettingdb = new LandRySettingDB();
+					landrysettingdb.create(params);
 				}catch(Throwable t){
-					t.printStackTrace();
 					errorMsg = t.getMessage();
 					error = true;
+					t.printStackTrace();
 				}
 			}
+			Log.v("RAMESES","=================================================\n");
 			
+			Log.v("RAMESES","=================================================");
+			Log.v("RAMESES","LANDASSESSLEVEL : \n");
 			it = landassesslevellist.iterator();
-			LandAssessLevelDB landassessleveldb = new LandAssessLevelDB();
 			while(it.hasNext()){
 				Map data = it.next();
+				System.out.println(data + "\n");
 				try{
-					landassessleveldb.create(data);
+					Map classification = (Map) data.get("classification");
+					
+					Map params = new HashMap();
+					params.put("objid", data.get("objid") != null ? data.get("objid").toString() : "");
+					params.put("landrysettingid", data.get("landrysettingid") != null ? data.get("landrysettingid").toString() : "");
+					params.put("classification_objid", classification.get("objid") != null ? classification.get("objid").toString() : "");
+					params.put("code", data.get("code") != null ? data.get("code").toString() : "");
+					params.put("name", data.get("name") != null ? data.get("name").toString() : "");
+					params.put("fixrate", data.get("fixrate") != null ? data.get("fixrate").toString() : "");
+					params.put("rate", data.get("rate") != null ? data.get("rate").toString() : "");
+					params.put("previd", data.get("previd") != null ? data.get("previd").toString() : "");
+					
+					LandAssessLevelDB landassessleveldb = new LandAssessLevelDB();
+					landassessleveldb.create(params);
 				}catch(Throwable t){
-					t.printStackTrace();
 					errorMsg = t.getMessage();
 					error = true;
+					t.printStackTrace();
 				}
 			}
+			Log.v("RAMESES","=================================================\n");
 			
+			Log.v("RAMESES","=================================================");
+			Log.v("RAMESES","LANDASSESSLEVELRANGE : \n");
 			it = landassesslevelrangelist.iterator();
-			LandAssessLevelRangeDB landassesslevelrangedb = new LandAssessLevelRangeDB();
 			while(it.hasNext()){
 				Map data = it.next();
+				System.out.println(data + "\n");
 				try{
-					landassesslevelrangedb.create(data);
+					Map params = new HashMap();
+					params.put("objid", data.get("objid") != null ? data.get("objid").toString() : "");
+					params.put("landassesslevelid", data.get("landassesslevelid") != null ? data.get("landassesslevelid").toString() : "");
+					params.put("landrysettingid", data.get("landrysettingid") != null ? data.get("landrysettingid").toString() : "");
+					params.put("mvfrom", data.get("mvfrom") != null ? data.get("mvfrom").toString() : "");
+					params.put("mvto", data.get("mvto") != null ? data.get("mvto").toString() : "");
+					params.put("rate", data.get("rate") != null ? data.get("rate").toString() : "");
+					
+					LandAssessLevelRangeDB landassesslevelrangedb = new LandAssessLevelRangeDB();
+					landassesslevelrangedb.create(params);
 				}catch(Throwable t){
-					t.printStackTrace();
 					errorMsg = t.getMessage();
 					error = true;
+					t.printStackTrace();
 				}
 			}
+			Log.v("RAMESES","=================================================\n");
 			
+			Log.v("RAMESES","=================================================");
+			Log.v("RAMESES","LCUVSPECIFICCLASS : \n");
 			it = lcuvspecificclasslist.iterator();
-			LcuvSpecificClassDB lcuvspecificclassdb = new LcuvSpecificClassDB();
 			while(it.hasNext()){
 				Map data = it.next();
+				System.out.println(data + "\n");
 				try{
-					lcuvspecificclassdb.create(data);
+					Map classification = (Map) data.get("classification");
+					
+					Map params = new HashMap();
+					params.put("objid", data.get("objid") != null ? data.get("objid").toString() : "");
+					params.put("landrysettingid", data.get("landrysettingid") != null ? data.get("landrysettingid").toString() : "");
+					params.put("classification_objid", classification.get("objid") != null ? classification.get("objid").toString() : "");
+					params.put("code", data.get("code") != null ? data.get("code").toString() : "");
+					params.put("name", data.get("name") != null ? data.get("name").toString() : "");
+					params.put("areatype", data.get("areatype") != null ? data.get("areatype").toString() : "");
+					params.put("previd", data.get("previd") != null ? data.get("previd").toString() : "");
+					
+					LcuvSpecificClassDB lcuvspecificclassdb = new LcuvSpecificClassDB();
+					lcuvspecificclassdb.create(params);
 				}catch(Throwable t){
-					t.printStackTrace();
 					errorMsg = t.getMessage();
 					error = true;
+					t.printStackTrace();
 				}
 			}
+			Log.v("RAMESES","=================================================\n");
 			
+			Log.v("RAMESES","=================================================");
+			Log.v("RAMESES","LCUVSUBCLASS : \n");
 			it = lcuvsubclasslist.iterator();
-			LcuvSubClassDB lcuvsubclassdb = new LcuvSubClassDB();
 			while(it.hasNext()){
 				Map data = it.next();
+				System.out.println(data + "\n");
 				try{
-					lcuvsubclassdb.create(data);
+					Map specificclass = (Map) data.get("specificclass");
+					
+					Map params = new HashMap();
+					params.put("objid", data.get("objid") != null ? data.get("objid").toString() : "");
+					params.put("specificclass_objid", specificclass.get("objid") != null ? specificclass.get("objid").toString() : "");
+					params.put("landrysettingid", data.get("landrysettingid") != null ? data.get("landrysettingid").toString() : "");
+					params.put("code", data.get("code") != null ? data.get("code").toString() : "");
+					params.put("name", data.get("name") != null ? data.get("name").toString() : "");
+					params.put("unitvalue", data.get("unitvalue") != null ? data.get("unitvalue").toString() : "");
+					params.put("previd", data.get("previd") != null ? data.get("previd").toString() : "");
+					
+					LcuvSubClassDB lcuvsubclassdb = new LcuvSubClassDB();
+					lcuvsubclassdb.create(params);
 				}catch(Throwable t){
-					t.printStackTrace();
 					errorMsg = t.getMessage();
 					error = true;
+					t.printStackTrace();
 				}
 			}
+			Log.v("RAMESES","=================================================\n");
 			
+			Log.v("RAMESES","=================================================");
+			Log.v("RAMESES","LCUVSTRIPPING : \n");
 			it = lcuvstrippinglist.iterator();
-			LcuvStrippingDB lcuvstrippingdb = new LcuvStrippingDB();
 			while(it.hasNext()){
 				Map data = it.next();
 				try{
-					lcuvstrippingdb.create(data);
+					Map classification = (Map) data.get("classification");
+					
+					Map params = new HashMap();
+					params.put("objid", data.get("objid") != null ? data.get("objid").toString() : "");
+					params.put("landrysettingid", data.get("landrysettingid") != null ? data.get("landrysettingid").toString() : "");
+					params.put("classification_objid", classification.get("objid") != null ? classification.get("objid").toString() : "");
+					params.put("striplevel", data.get("striplevel") != null ? data.get("striplevel").toString() : "");
+					params.put("rate", data.get("rate") != null ? data.get("rate").toString() : "");
+					params.put("previd", data.get("previd") != null ? data.get("previd").toString() : "");
+					
+					LcuvStrippingDB lcuvstrippingdb = new LcuvStrippingDB();
+					lcuvstrippingdb.create(params);
 				}catch(Throwable t){
-					t.printStackTrace();
 					errorMsg = t.getMessage();
 					error = true;
+					t.printStackTrace();
 				}
 			}
+			Log.v("RAMESES","=================================================\n");
 			
+			Log.v("RAMESES","=================================================");
+			Log.v("RAMESES","LANDADJUSTMENTTYPE : \n");
 			it = landadjustmenttypelist.iterator();
-			LandAdjustmentTypeDB landadjustmenttypedb = new LandAdjustmentTypeDB();
 			while(it.hasNext()){
 				Map data = it.next();
 				try{
-					landadjustmenttypedb.create(data);
+					Map params = new HashMap();
+					params.put("objid", data.get("objid") != null ? data.get("objid").toString() : "");
+					params.put("landrysettingid", data.get("landrysettingid") != null ? data.get("landrysettingid").toString() : "");
+					params.put("code", data.get("code") != null ? data.get("code").toString() : "");
+					params.put("name", data.get("name") != null ? data.get("name").toString() : "");
+					params.put("expr", data.get("expr") != null ? data.get("expr").toString() : "");
+					params.put("appliedto", data.get("appliedto") != null ? data.get("appliedto").toString() : "");
+					params.put("previd", data.get("previd") != null ? data.get("previd").toString() : "");
+					params.put("idx", data.get("idx") != null ? data.get("idx").toString() : "");
+					
+					LandAdjustmentTypeDB landadjustmenttypedb = new LandAdjustmentTypeDB();
+					landadjustmenttypedb.create(params);
 				}catch(Throwable t){
-					t.printStackTrace();
 					errorMsg = t.getMessage();
 					error = true;
+					t.printStackTrace();
 				}
 			}
+			Log.v("RAMESES","=================================================\n");
 			
 			if(!error){
 				Bundle data = new Bundle();
@@ -231,6 +335,20 @@ public class RevisionSettingDetailActivity extends SettingsMenuActivity {
 				
 				errorhandler.sendMessage(msg);
 			}
+		}
+	}
+	
+	private void clearLandRySettingData(){
+		try{
+			new LandRySettingDB().clearAll();
+			new LandAssessLevelDB().clearAll();
+			new LandAssessLevelRangeDB().clearAll();
+			new LcuvSpecificClassDB().clearAll();
+			new LcuvSubClassDB().clearAll();
+			new LcuvStrippingDB().clearAll();
+			new LandAdjustmentTypeDB().clearAll();
+		}catch(Exception e){
+			ApplicationUtil.showShortMsg(e.getMessage());
 		}
 	}
 	

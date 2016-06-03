@@ -32,28 +32,22 @@ public class CollectorAFControlQuery extends javax.swing.JPanel {
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
         xComboBox1 = new com.rameses.rcp.control.XComboBox();
 
-        setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 2, 2, 5));
+        setLayout(new java.awt.BorderLayout());
+
+        xFormPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
+        xFormPanel1.setCaptionWidth(50);
+        xFormPanel1.setPadding(new java.awt.Insets(0, 0, 0, 0));
 
         xComboBox1.setCaption("AF ");
         xComboBox1.setExpression("#{item.objid}");
         xComboBox1.setItemKey("objid");
         xComboBox1.setItems("afTypes");
         xComboBox1.setName("entity.formno"); // NOI18N
-        xComboBox1.setPreferredSize(new java.awt.Dimension(0, 22));
+        xComboBox1.setPreferredSize(new java.awt.Dimension(95, 20));
         xFormPanel1.add(xComboBox1);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 199, javax.swing.GroupLayout.PREFERRED_SIZE))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-        );
+        add(xFormPanel1, java.awt.BorderLayout.NORTH);
     }// </editor-fold>//GEN-END:initComponents
     
     

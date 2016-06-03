@@ -154,7 +154,7 @@
             }
             
             public List fetchList( Map m ) {
-               m.formno = entity.formno;
+                m.formno = entity.formno;
                 return service.getOpenList(m); 
             }
             

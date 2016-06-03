@@ -6,6 +6,10 @@
 		)
 	</sql>
 	
+    <!-- =========================================================== -->
+    <!-- MASTER FILES -->
+    <!-- =========================================================== -->
+    
     <sql>	
 		CREATE TABLE propertyclassification
         (
@@ -93,6 +97,10 @@
         )
     </sql>
     
+    <!-- =========================================================== -->
+    <!-- LAND REVISION SETTINGS -->
+    <!-- =========================================================== -->
+    
     <sql>
         CREATE TABLE landrysetting
         (
@@ -179,6 +187,78 @@
         	appliedto TEXT,
         	previd TEXT,
         	idx NUMERIC
+        )
+    </sql>
+    
+    <!-- =========================================================== -->
+    <!-- FAAS -->
+    <!-- =========================================================== -->
+    
+    <sql>
+        CREATE TABLE faas
+        (
+        	objid TEXT NOT NULL PRIMARY KEY,
+        	state TEXT,
+        	rpuid TEXT,
+			realpropertyid TEXT,
+			owner_name TEXT,
+			owner_address TEXT,
+			tdno TEXT,
+			fullpin TEXT,
+			rpu_ry TEXT,
+			rpu_suffix TEXT,
+			rpu_subsuffix TEXT,
+			rpu_classification_objid TEXT,
+			rpu_taxable TEXT,
+			rpu_totalareaha TEXT,
+			rpu_totalareasqm TEXT,
+			rpu_totalbmv TEXT,
+			rpu_totalmv TEXT,
+			rpu_totalav TEXT,
+			rp_cadastrallotno TEXT,
+			rp_blockno TEXT,
+			rp_surveyno TEXT,
+			rp_street TEXT,
+			rp_purok TEXT,
+			rp_north TEXT,
+			rp_south TEXT,
+			rp_east TEXT,
+			rp_west TEXT
+        )
+    </sql>
+    
+    <sql>
+        CREATE TABLE landdetail
+        (
+        	objid TEXT NOT NULL PRIMARY KEY,
+			landrpuid TEXT,
+			subclass_objid TEXT,
+			specificclass_objid TEXT,
+			actualuse_objid TEXT,
+			stripping_objid TEXT,
+			striprate TEXT,
+			areatype TEXT,
+			area TEXT,
+			areasqm TEXT,
+			areaha TEXT
+        )
+    </sql>
+    
+    <sql>
+        CREATE TABLE landadjustment
+        (
+        	objid TEXT NOT NULL PRIMARY KEY,
+			landrpuid TEXT,
+			adjustment_objid TEXT
+        )
+    </sql>
+    
+    <sql>
+        CREATE TABLE images
+        (
+        	faasid TEXT,
+        	title  TEXT,
+			image TEXT
         )
     </sql>
 </db>

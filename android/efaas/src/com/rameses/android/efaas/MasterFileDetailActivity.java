@@ -221,8 +221,16 @@ public class MasterFileDetailActivity extends SettingsMenuActivity{
 			}
 			for(Map data : masterFileData){
 				try { 
+					Map params = new HashMap();
+					params.put("objid", data.get("objid") != null ? data.get("objid").toString() : "");
+					params.put("state", data.get("state") != null ? data.get("state").toString() : "");
+					params.put("code", data.get("code") != null ? data.get("code").toString() : "");
+					params.put("name", data.get("name") != null ? data.get("name").toString() : "");
+					params.put("special", data.get("special") != null ? data.get("special").toString() : "");
+					params.put("orderno", data.get("orderno") != null ? data.get("orderno").toString() : "");
+					
 					PropertyClassificationDB db2 = new PropertyClassificationDB();
-					db2.create(data);
+					db2.create(params);
 				} catch(Throwable t) {
 					t.printStackTrace();
 					errorMsg = t.getMessage();
@@ -242,8 +250,14 @@ public class MasterFileDetailActivity extends SettingsMenuActivity{
 			}
 			for(Map data : masterFileData){
 				try { 
+					Map params = new HashMap();
+					params.put("objid", data.get("objid") != null ? data.get("objid").toString() : "");
+					params.put("state", data.get("state") != null ? data.get("state").toString() : "");
+					params.put("code", data.get("code") != null ? data.get("code").toString() : "");
+					params.put("name", data.get("name") != null ? data.get("name").toString() : "");
+					
 					BldgKindDB db2 = new BldgKindDB();
-					db2.create(data);
+					db2.create(params);
 				} catch(Throwable t) {
 					t.printStackTrace();
 					errorMsg = t.getMessage();
@@ -263,8 +277,14 @@ public class MasterFileDetailActivity extends SettingsMenuActivity{
 			}
 			for(Map data : masterFileData){
 				try { 
+					Map params = new HashMap();
+					params.put("objid", data.get("objid") != null ? data.get("objid").toString() : "");
+					params.put("state", data.get("state") != null ? data.get("state").toString() : "");
+					params.put("code", data.get("code") != null ? data.get("code").toString() : "");
+					params.put("name", data.get("name") != null ? data.get("name").toString() : "");
+					
 					MaterialDB db2 = new MaterialDB();
-					db2.create(data);
+					db2.create(params);
 				} catch(Throwable t) {
 					t.printStackTrace();
 					errorMsg = t.getMessage();
@@ -284,8 +304,15 @@ public class MasterFileDetailActivity extends SettingsMenuActivity{
 			}
 			for(Map data : masterFileData){
 				try { 
+					Map params = new HashMap();
+					params.put("objid", data.get("objid") != null ? data.get("objid").toString() : "");
+					params.put("state", data.get("state") != null ? data.get("state").toString() : "");
+					params.put("code", data.get("code") != null ? data.get("code").toString() : "");
+					params.put("name", data.get("name") != null ? data.get("name").toString() : "");
+					params.put("indexno", data.get("indexno") != null ? data.get("indexno").toString() : "");
+					
 					StructureDB db2 = new StructureDB();
-					db2.create(data);
+					db2.create(params);
 				} catch(Throwable t) {
 					t.printStackTrace();
 					errorMsg = t.getMessage();
@@ -305,8 +332,14 @@ public class MasterFileDetailActivity extends SettingsMenuActivity{
 			}
 			for(Map data : masterFileData){
 				try { 
+					Map params = new HashMap();
+					params.put("objid", data.get("objid") != null ? data.get("objid").toString() : "");
+					params.put("state", data.get("state") != null ? data.get("state").toString() : "");
+					params.put("code", data.get("code") != null ? data.get("code").toString() : "");
+					params.put("name", data.get("name") != null ? data.get("name").toString() : "");
+					
 					MachineDB db2 = new MachineDB();
-					db2.create(data);
+					db2.create(params);
 				} catch(Throwable t) {
 					t.printStackTrace();
 					errorMsg = t.getMessage();
@@ -326,8 +359,14 @@ public class MasterFileDetailActivity extends SettingsMenuActivity{
 			}
 			for(Map data : masterFileData){
 				try { 
+					Map params = new HashMap();
+					params.put("objid", data.get("objid") != null ? data.get("objid").toString() : "");
+					params.put("state", data.get("state") != null ? data.get("state").toString() : "");
+					params.put("code", data.get("code") != null ? data.get("code").toString() : "");
+					params.put("name", data.get("name") != null ? data.get("name").toString() : "");
+					
 					PlantTreeDB db2 = new PlantTreeDB();
-					db2.create(data);
+					db2.create(params);
 				} catch(Throwable t) {
 					t.printStackTrace();
 					errorMsg = t.getMessage();
@@ -347,8 +386,14 @@ public class MasterFileDetailActivity extends SettingsMenuActivity{
 			}
 			for(Map data : masterFileData){
 				try { 
+					Map params = new HashMap();
+					params.put("objid", data.get("objid") != null ? data.get("objid").toString() : "");
+					params.put("state", data.get("state") != null ? data.get("state").toString() : "");
+					params.put("code", data.get("code") != null ? data.get("code").toString() : "");
+					params.put("name", data.get("name") != null ? data.get("name").toString() : "");
+					
 					MiscItemDB db2 = new MiscItemDB();
-					db2.create(data);
+					db2.create(params);
 				} catch(Throwable t) {
 					t.printStackTrace();
 					errorMsg = t.getMessage();
@@ -368,8 +413,18 @@ public class MasterFileDetailActivity extends SettingsMenuActivity{
 			}
 			for(Map data : masterFileData){
 				try { 
+					Map params = new HashMap();
+					params.put("objid", data.get("objid") != null ? data.get("objid").toString() : "");
+					params.put("state", data.get("state") != null ? data.get("state").toString() : "");
+					params.put("name", data.get("name") != null ? data.get("name").toString() : "");
+					params.put("caption", data.get("caption") != null ? data.get("caption").toString() : "");
+					params.put("description", data.get("description") != null ? data.get("description").toString() : "");
+					params.put("paramtype", data.get("paramtype") != null ? data.get("paramtype").toString() : "");
+					params.put("minvalue", data.get("minvalue") != null ? data.get("minvalue").toString() : "");
+					params.put("maxvalue", data.get("maxvalue") != null ? data.get("maxvalue").toString() : "");
+					
 					ParameterDB db2 = new ParameterDB();
-					db2.create(data);
+					db2.create(params);
 				} catch(Throwable t) {
 					t.printStackTrace();
 					errorMsg = t.getMessage();

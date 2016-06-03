@@ -13,9 +13,6 @@ class WaterworksBillingService2  {
 	@DataContext("waterworks_account_ledger")
 	def ledger;
 
-	@DataContext("waterworks_account_consumption")
-	def consumption;
-
 	@ProxyMethod
 	public def getBilling( def o ) {
 		def m = null;
@@ -24,16 +21,8 @@ class WaterworksBillingService2  {
 		}
 
 		if(!m) throw new Exception("WaterworksBillingService.getBilling error. Account not found");
-
-		def cons = consumption.select("year,month,volume").find([acctid: m.objid]).list();
-
-		def items = ledger.find([parentid: m.objid]).orderBy("year,month").list();
-
-		items.each { x->
-			x.consumption = cons.find{ it.year == x.year && it.month == x.month };
-		}	
-
-		m.items = items;
+		m.items = ledger.find([parentid: m.objid]).orderBy("year,month").where("amount-amtpaid>0").list();
+		m.grandtotal = m.items.sum{ it.total };
 		return m;
 	}
 

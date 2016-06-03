@@ -64,6 +64,8 @@
 		<complex name="billingcycle" ref="waterworks_billing_cycle" jointype="many-to-one" required="true">
 			<key field="billingcycleid" target="objid"/> 
 		</complex>
+
+		<field name="barcode" expr="CONCAT('51030:',acctno)"/>
 	</element>
 
 </schema>

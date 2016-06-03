@@ -17,6 +17,16 @@
 		<field name="amtpaid" required="true" caption="AmtPaid" datatype="decimal"/>
 		<field name="balance" expr="amount-amtpaid" caption="Balance" datatype="decimal"/>
 		<field name="installmentid" />
+
+		<field name="surcharge" required="true" caption="Surcharge" datatype="decimal"/>
+		<field name="interest" required="true" caption="Interest" datatype="decimal"/>
+
+		<field name="total" expr="(amount-amtpaid)+surcharge+interest"/>
+
+		<complex name="consumption" ref="waterworks_account_consumption" jointype="many-to-one" required="false"
+			includefields="volume,rate,reading,prevreading">
+			<key field="objid" target="ledgerid" />
+		</complex>	
 	</element>
 
 </schema>

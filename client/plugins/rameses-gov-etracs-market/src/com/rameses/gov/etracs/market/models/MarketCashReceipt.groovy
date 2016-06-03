@@ -1,4 +1,4 @@
-package com.rameses.gov.etracs.waterworks.models;
+package com.rameses.gov.etracs.market.models;
 
 import com.rameses.rcp.annotations.*;
 import com.rameses.rcp.common.*;
@@ -7,15 +7,14 @@ import com.rameses.osiris2.common.*
 import com.rameses.enterprise.treasury.models.*;
 import com.rameses.util.*;
 
-
-public class WaterworksCashReceipt extends PaymentOrderCashReceiptModel {
+public class MarketCashReceipt extends PaymentOrderCashReceiptModel {
     
-     @Service("WaterworksCashReceiptService")
+     @Service("MarketCashReceiptService")
      def cashReceiptSvc;
     
      def payOption = [type:'FULL']; 
     
-     String title = "Waterworks";
+     String title = "Market";
      
      void init() {
         super.init();
@@ -25,7 +24,7 @@ public class WaterworksCashReceipt extends PaymentOrderCashReceiptModel {
             loadInfo( o );
             pass = true;
         }
-        Modal.show( Inv.lookupOpener( "cashreceipt:waterworks:lookup", params ) );
+        Modal.show( Inv.lookupOpener( "cashreceipt:market:lookup", params ) );
         if(!pass) throw new BreakException();
     }
     

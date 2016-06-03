@@ -33,14 +33,6 @@ class WaterworksBillingCycleService  {
 		def sector = p.sector;
 		def barangay = p.barangayid;
 
-		if( p.stubout ) {
-			def so = p.stubout;
-			if(!so.objid) throw new Exception("stubout id is required");
-			so = stub.find( [objid: so.objid ]).first();
-			zone = so.zone.objid;
-			sector = so.zone.sector?.objid;	
-			if(!barangay) barangay = so.barangay?.objid;
-		}
 		if( !zone  ) throw new Exception("zone.objid is required");
  		if( !sector  )throw new Exception("sector.objid is required");
 		

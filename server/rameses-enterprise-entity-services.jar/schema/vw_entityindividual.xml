@@ -1,7 +1,7 @@
 <!--
  
 create view vw_entityindividual 
-as
+as 
 select ei.*, 
 	e.entityno, e.type, e.name, e.entityname, e.mobileno, e.phoneno, 
 	e.address_objid, e.address_text

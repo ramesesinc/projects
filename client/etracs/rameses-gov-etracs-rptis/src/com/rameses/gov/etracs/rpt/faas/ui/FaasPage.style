@@ -69,6 +69,6 @@ entity.rp.(surveyno|cadastrallotno|blockno)[entity.datacapture == 0 && (entity.t
     enabled:true;
 }
 
-"entity.rpu.ry|entity.restrictionid" [true == true]{
+"entity.rpu.ry" [true == true]{
     enabled:false;
 }

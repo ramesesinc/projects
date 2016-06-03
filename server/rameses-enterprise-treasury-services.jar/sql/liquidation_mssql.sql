@@ -121,3 +121,15 @@ UPDATE liquidation SET posted=1 WHERE objid=$P{objid}
 
 [updateRemittanceState]
 UPDATE remittance SET state=$P{state} WHERE objid=$P{objid}
+
+
+[getFundsForCashBook]
+select 
+  	l.dtposted as refdate, l.objid as refid, l.txnno as refno, 
+  	lcf.fund_objid, lcf.fund_title, fund.code as fund_code, lcf.amount, 
+  	l.liquidatingofficer_objid as subacct_objid, 
+	l.liquidatingofficer_name as subacct_name 
+from liquidation_cashier_fund lcf 
+	inner join liquidation l on lcf.liquidationid=l.objid 
+	left join fund on lcf.fund_objid=fund.objid 
+where lcf.liquidationid=$P{liquidationid} 

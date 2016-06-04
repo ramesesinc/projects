@@ -5,6 +5,7 @@
 - BPLS 
 		
 - ASSESSOR
+	- Allow preview of forapproval Cancelled FAAS
 	- Support Machinery sworn statement appraisal
 	- Improve subdivision cancel improvement add remarks and reason 
 	- Add access of cancelled faas listing 

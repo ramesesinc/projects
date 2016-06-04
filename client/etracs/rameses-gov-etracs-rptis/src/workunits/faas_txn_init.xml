@@ -77,15 +77,20 @@
         <invoker folderid="/home/rpt/txn" action="init" caption="Change Administrator" 
                  txntype="CA" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createReassessment" index="9"  />
         
+        <invoker folderid="/explorer/txn/rpt/online" action="init" caption="Destruction of Property" 
+                 txntype="DT" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createPropertyDestruction" index="9"  />
+        <invoker folderid="/home/rpt/txn" action="init" caption="Destruction of Property" 
+                 txntype="DT" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createPropertyDestruction" index="9"  />
+        
         <invoker folderid="/explorer/txn/rpt/online" action="init" caption="Physical Obsolescence" 
                  txntype="PC" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createPhysicalObsolescence" index="9"  />
         <invoker folderid="/home/rpt/txn" action="init" caption="Physical Obsolescence" 
                  txntype="PC" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createPhysicalObsolescence" index="9"  />
       
-        <invoker folderid="/explorer/txn/rpt/online" action="init" caption="Destruction of Property" 
-                 txntype="DT" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createPropertyDestruction" index="9"  />
-        <invoker folderid="/home/rpt/txn" action="init" caption="Destruction of Property" 
-                 txntype="DT" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createPropertyDestruction" index="9"  />
+        <invoker folderid="/explorer/txn/rpt/online" action="init" caption="Unknown to Known" 
+                 txntype="UK" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createUnknownToKnown" index="9"  />
+        <invoker folderid="/home/rpt/txn" action="init" caption="Unknown to Known" 
+                 txntype="UK" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createUnknownToKnown" index="9"  />
     </invokers>
 </workunit>
 

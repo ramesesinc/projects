@@ -1087,6 +1087,12 @@ class RPTLedgerService
         }
     }
 
+
+    @ProxyMethod
+    public void cancelLedger( ledger ) {
+        em.updateState([objid:ledger.objid, state:'CANCELLED'])    
+    }
+
 }
 
 

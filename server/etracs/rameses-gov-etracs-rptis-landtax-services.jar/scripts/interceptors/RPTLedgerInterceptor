@@ -62,12 +62,18 @@ class RPTLedgerInterceptor
         if (!manualledger)
             manualledger = svc.findLedgerbyPrevTdNo(faas)
 
-        if (!manualledger){
-            svc.postNewLedger(faas);
-        }
-        else {
+
+        if (faas.txntype.reconcileledger && manualledger){
+            println 'reconcile ledger '
             svc.reconcileManualLedger(faas, manualledger)
         }
+        else {
+            svc.postNewLedger(faas)
+            if (manualledger){
+                svc.cancelLedger(manualledger)
+            }
+        }
+        
     }
 }
 

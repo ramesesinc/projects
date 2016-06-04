@@ -76,3 +76,19 @@ go
 INSERT INTO faas_txntype (objid, name, newledger, newrpu, newrealproperty, displaycode, allowEditOwner, checkbalance, allowEditPin, allowEditPinInfo, allowEditAppraisal, opener) VALUES ('DT', 'Destruction of Property', '0', '1', '0', 'DT', '0', '0', '0', '0', '1', NULL)
 go 
 
+
+
+
+alter table faas_txntype add reconcileledger int 
+GO 
+update faas_txntype set reconcileledger = 1 where reconcileledger is null
+go 
+
+INSERT INTO faas_txntype (objid, name, newledger, newrpu, newrealproperty, displaycode, allowEditOwner, checkbalance, allowEditPin, allowEditPinInfo, allowEditAppraisal, opener, reconcileledger) VALUES ('UK', 'Unknown to Known', '1', '1', '1', 'DP', '1', '0', '0', '0', '1', NULL, '0')
+go 
+update faas_txntype set reconcileledger = 0 where objid = 'UK'
+go 
+
+
+drop index rptledger.ux_rptledger_fullpin
+go 

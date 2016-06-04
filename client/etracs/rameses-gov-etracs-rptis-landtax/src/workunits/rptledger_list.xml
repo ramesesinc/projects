@@ -36,6 +36,7 @@
                     new Column(name:"administrator.name", caption:"Administrator", width:250),
                     new Column(name:"fullpin", caption:"PIN", width:150),
                     new Column(name:"cadastrallotno", caption:"Lot No.", width:100),
+                    new Column(name:"blockno", caption:"Block No.", width:100),
                     new Column(name:"totalareaha", caption:"Area (ha)", width:100, type:'decimal', format:'#,##0.0000'),
                     new Column(name:"totalmv", caption:"Market Value", width:100, type:'decimal', format:'#,##0.00'),
                     new Column(name:"totalav", caption:"Assessed Value", width:100, type:'decimal', format:'#,##0.00'),

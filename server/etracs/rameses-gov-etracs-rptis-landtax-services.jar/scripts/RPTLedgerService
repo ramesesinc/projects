@@ -826,6 +826,7 @@ class RPTLedgerService
         ledger.fullpin         = faas.fullpin
         ledger.tdno            = faas.tdno
         ledger.cadastrallotno  = faas.rp.cadastrallotno
+        ledger.blockno         = faas.rp.blockno
         ledger.rputype         = faas.rpu.rputype
         ledger.txntype         = faas.txntype
         ledger.classcode       = faas.rpu.classification.code
@@ -905,6 +906,7 @@ class RPTLedgerService
             fullpin                 : faas.fullpin,
             tdno                    : faas.tdno,
             cadastrallotno          : faas.rp.cadastrallotno,
+            blockno                 : faas.rp.blockno,
             rputype                 : faas.rpu.rputype,
             txntype                 : faas.txntype, 
             classcode               : faas.rpu.classification.code,

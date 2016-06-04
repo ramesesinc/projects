@@ -28,6 +28,10 @@ public class RPTLedgerManualController extends RPTLedgerController
         'entity.rputype' : {
             if (entity.rputype != 'land')
                 entity.idleland = 0;
+        },
+        'entity.barangay' : {
+            entity.fullpin = entity.barangay.pin;
+            binding.refresh('entity.fullpin');
         }
     ]
     

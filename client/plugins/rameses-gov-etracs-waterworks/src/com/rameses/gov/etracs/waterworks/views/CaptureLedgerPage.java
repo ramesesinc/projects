@@ -36,10 +36,12 @@ public class CaptureLedgerPage extends javax.swing.JPanel {
         xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
         xLookupField1 = new com.rameses.rcp.control.XLookupField();
         xComboBox1 = new com.rameses.rcp.control.XComboBox();
-        xDecimalField2 = new com.rameses.rcp.control.XDecimalField();
-        xDecimalField3 = new com.rameses.rcp.control.XDecimalField();
+        xIntegerField1 = new com.rameses.rcp.control.XIntegerField();
+        xComboBox2 = new com.rameses.rcp.control.XComboBox();
         xDateField1 = new com.rameses.rcp.control.XDateField();
         xTextField1 = new com.rameses.rcp.control.XTextField();
+        xDecimalField2 = new com.rameses.rcp.control.XDecimalField();
+        xDecimalField3 = new com.rameses.rcp.control.XDecimalField();
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder1.setTitle("Ledger Information");
@@ -62,17 +64,23 @@ public class CaptureLedgerPage extends javax.swing.JPanel {
         xComboBox1.setPreferredSize(new java.awt.Dimension(120, 20));
         xFormPanel2.add(xComboBox1);
 
-        xDecimalField2.setCaption("Amount");
-        xDecimalField2.setName("info.amount"); // NOI18N
-        xDecimalField2.setPreferredSize(new java.awt.Dimension(120, 20));
-        xDecimalField2.setRequired(true);
-        xFormPanel2.add(xDecimalField2);
+        xIntegerField1.setCaption("Year");
+        xIntegerField1.setName("info.year"); // NOI18N
+        xIntegerField1.setRequired(true);
+        xFormPanel2.add(xIntegerField1);
 
-        xDecimalField3.setCaption("Amount Paid");
-        xDecimalField3.setName("info.amtpaid"); // NOI18N
-        xDecimalField3.setPreferredSize(new java.awt.Dimension(120, 20));
-        xDecimalField3.setRequired(true);
-        xFormPanel2.add(xDecimalField3);
+        xComboBox2.setCaption("Month");
+        xComboBox2.setExpression("#{item.name}");
+        xComboBox2.setItemKey("index");
+        xComboBox2.setItems("listTypes.months");
+        xComboBox2.setName("info.month"); // NOI18N
+        xComboBox2.setPreferredSize(new java.awt.Dimension(120, 20));
+        xComboBox2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                xComboBox2ActionPerformed(evt);
+            }
+        });
+        xFormPanel2.add(xComboBox2);
 
         xDateField1.setCaption("Due Date");
         xDateField1.setName("info.duedate"); // NOI18N
@@ -85,6 +93,18 @@ public class CaptureLedgerPage extends javax.swing.JPanel {
         xTextField1.setPreferredSize(new java.awt.Dimension(0, 20));
         xTextField1.setRequired(true);
         xFormPanel2.add(xTextField1);
+
+        xDecimalField2.setCaption("Amount");
+        xDecimalField2.setName("info.amount"); // NOI18N
+        xDecimalField2.setPreferredSize(new java.awt.Dimension(120, 20));
+        xDecimalField2.setRequired(true);
+        xFormPanel2.add(xDecimalField2);
+
+        xDecimalField3.setCaption("Amount Paid");
+        xDecimalField3.setName("info.amtpaid"); // NOI18N
+        xDecimalField3.setPreferredSize(new java.awt.Dimension(120, 20));
+        xDecimalField3.setRequired(true);
+        xFormPanel2.add(xDecimalField3);
 
         javax.swing.GroupLayout xPanel1Layout = new javax.swing.GroupLayout(xPanel1);
         xPanel1.setLayout(xPanel1Layout);
@@ -99,8 +119,8 @@ public class CaptureLedgerPage extends javax.swing.JPanel {
             xPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(xPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 152, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 198, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(124, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -120,12 +140,19 @@ public class CaptureLedgerPage extends javax.swing.JPanel {
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void xComboBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_xComboBox2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_xComboBox2ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.rameses.rcp.control.XComboBox xComboBox1;
+    private com.rameses.rcp.control.XComboBox xComboBox2;
     private com.rameses.rcp.control.XDateField xDateField1;
     private com.rameses.rcp.control.XDecimalField xDecimalField2;
     private com.rameses.rcp.control.XDecimalField xDecimalField3;
     private com.rameses.rcp.control.XFormPanel xFormPanel2;
+    private com.rameses.rcp.control.XIntegerField xIntegerField1;
     private com.rameses.rcp.control.XLookupField xLookupField1;
     private com.rameses.rcp.control.XPanel xPanel1;
     private com.rameses.rcp.control.XTextField xTextField1;

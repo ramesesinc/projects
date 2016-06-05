@@ -12,19 +12,28 @@ public class CaptureLedgerModel  {
     @Service("WaterworksLedgerService")
     def svc;
     
+    @Script("ListTypes")
+    def listTypes;
+    
+    @Caller 
+    def caller; 
+    
     def info = [:];
     def entity;
     def handler;
-    def payOption = [:];
     
     def txnTypes = ["WFEE", "BOM", "OTHER"];
     
-    def doOk() {
-        info.payOption = payOption;
-        info.parentid = entity.objid;
-        svc.post( info );
-        handler();
-        return "_close";
+    def doOk() { 
+        info.parentid = caller?.getMasterEntity()?.objid;
+        info.surcharge = 0.0;
+        info.interest = 0.0;
+        svc.post( info ); 
+        
+        if ( handler ) { 
+            handler(); 
+        }
+        return "_close"; 
     }
     
     def doCancel() {

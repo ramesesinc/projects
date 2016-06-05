@@ -29,6 +29,10 @@ public class CapturePaymentModel  {
     def selectedItem;
     def query = [:];
     
+    public void beforeInit() {
+        //do somthing here
+    }
+    
     public String getSchemaName() {
         if( _schemaName_ )
             return _schemaName_;
@@ -43,6 +47,7 @@ public class CapturePaymentModel  {
     public void init() {
         if(!schemaName) throw new Exception("schemaName is required in CapturePaymentModel");
         query._schemaname = schemaName;
+        beforeInit();
         entity = svc.init( query );
     }
     

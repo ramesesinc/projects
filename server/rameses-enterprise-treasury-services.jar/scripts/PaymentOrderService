@@ -65,7 +65,7 @@ class PaymentOrderService {
 	}
 
 	@ProxyMethod
-	def open( params) { 
+	public def open( params) { 
 		if ( env.paymentorder ) { 
 			return env.paymentorder; 
 

@@ -14,6 +14,9 @@ class WaterworksCapturePaymentInterceptor{
 	@DataContext("waterworks_application_fee")
 	def appfee;
 
+	@Service('DateService') 
+	def dateSvc; 
+
 	@Before(pattern="CapturePaymentService.init", eval="#{args[0]._schemaname == 'waterworks_payment'}")
 	public void beforeInit(def evt) {
 		def o  = evt.args[0];
@@ -41,6 +44,7 @@ class WaterworksCapturePaymentInterceptor{
 	public void beforeGetItems(def evt) {
 		def o = evt.args[0];
 		def items = evt.result; 
+		def months = dateSvc.getMonths();  
 		if( o.applicationid) {
 			def xitems = appfee.find([parentid: o.applicationid]).where("amount-amtpaid>0").list();
 			xitems.each {
@@ -51,9 +55,10 @@ class WaterworksCapturePaymentInterceptor{
 		};
 		if( o.acctid) {
 			def xitems = acctledger.find([parentid: o.acctid]).where("amount-amtpaid>0").list();
-			xitems.each {
-				def m = [priority:0, item: it.item, amtdue: it.amount-it.amtpaid, txnrefid: it.objid];
-				m.acctid = o.acctid;
+			xitems.each { x-> 
+				def m = [priority:0, item: x.item, amtdue: x.amount-x.amtpaid, txnrefid: x.objid];
+				m.acctid = o.acctid; 
+				m.remarks = ''+ months.find{ it.index==x.month }?.name +'-'+ x.year;  
 				items << m;
 			}
 		};
@@ -71,5 +76,4 @@ class WaterworksCapturePaymentInterceptor{
 			}
 		}
 	}
-
 }

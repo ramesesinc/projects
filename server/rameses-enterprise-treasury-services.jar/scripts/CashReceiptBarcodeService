@@ -18,14 +18,15 @@ public class CashReceiptBarcodeService {
 
 	@ProxyMethod
 	public def init( def o ) {
-		if(!o.prefix ) throw new Exception("Please specify a barcode prefix");
+		//you must handle the prefix in this area for handlers of barcodes.
+		if(!o.prefix ) o.prefix = "PMO";
 		def prefix = o.prefix;
 		def collectiontype = collectionType.findCollectionTypeByBarcode([barcode: prefix]);
 		if(!collectiontype)	
 			throw new Exception("Collection type not found with barcode prefix " + prefix + ". Please check collection type and register barcode prefix");
-		
 		def z = [formtype: "serial", formno: collectiontype.formno, txnmode: 'ONLINE', collectiontype: collectiontype ];
         def entity = service.init( z );	
+        entity._barcodeprefix = prefix;
         entity.collectiontype = collectiontype;
         return entity;
 	}

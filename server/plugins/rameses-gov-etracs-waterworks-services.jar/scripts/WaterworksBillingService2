@@ -22,6 +22,9 @@ class WaterworksBillingService2  {
 
 		if(!m) throw new Exception("WaterworksBillingService.getBilling error. Account not found");
 		m.items = ledger.find([parentid: m.objid]).orderBy("year,month").where("amount-amtpaid>0").list();
+		
+		if(!m.items) throw new Exception("There are no unpaid items for this account")
+
 		m.grandtotal = m.items.sum{ it.total };
 		return m;
 	}

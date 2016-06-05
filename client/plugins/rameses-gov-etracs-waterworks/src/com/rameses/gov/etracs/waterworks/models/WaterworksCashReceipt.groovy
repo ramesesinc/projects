@@ -17,7 +17,7 @@ public class WaterworksCashReceipt extends PaymentOrderCashReceiptModel {
     
      String title = "Waterworks";
      
-     void init() {
+     public void init() {
         super.init();
         boolean pass = false;
         def params = [:];
@@ -31,10 +31,14 @@ public class WaterworksCashReceipt extends PaymentOrderCashReceiptModel {
     
     def loadBarcode() { 
         def info = cashReceiptSvc.getBilling([ refno: barcodeid ]);
+        loadInfo( info );
+        println "owner name " + entity.payer;
+        /*
         entity = [formtype: "serial", formno:"51", txnmode: 'ONLINE'];
         entity.collectiontype = info.collectiontype;
         entity = service.init( entity );
         super.loadInfo( info );
+        */
         return "default";
     }      
 

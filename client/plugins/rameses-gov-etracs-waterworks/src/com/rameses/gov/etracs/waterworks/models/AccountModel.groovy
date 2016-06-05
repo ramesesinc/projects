@@ -5,11 +5,14 @@ import com.rameses.rcp.common.*;
 import com.rameses.osiris2.client.*;
 import com.rameses.osiris2.common.*;
 import com.rameses.seti2.models.*;
+import java.text.*;
 
 public class AccountModel extends CrudFormModel {
     
-    @Script("BillingCycle")
-    def billCycle;
+    @Service("WaterworksBillingCycleService")
+    def billdateSvc;
+    
+    def dateFormatter = new java.text.SimpleDateFormat('yyyy-MM-dd'); 
     
     @PropertyChangeListener 
     def changelistener = [
@@ -55,11 +58,19 @@ public class AccountModel extends CrudFormModel {
     }
 
     void computeBillingCycle() {
-        if( entity.stuboutnode?.stubout?.objid == null ) {
-            throw new Exception("Stubout id is required");
+        def h = { o->
+            def df = new SimpleDateFormat("yyyy-MM-dd");
+            def dt = df.parse(o);
+            
+            def p = [:];
+            p.sector = entity.sector?.objid;
+            p.zone = entity.zone?.objid; 
+            p.metersize = entity.metersize?.objid;
+            p.billdate = dt;
+            entity.billingcycle = billdateSvc.getBillingDates(p);
+            binding.refresh();
         }
-        def e = billCycle.fetch(entity.stuboutnode.stubout);
-        entity.billingcycle = e;
+        Modal.show("date:prompt",[handler:h]);
     }
     
     def getLookupMeter() { 

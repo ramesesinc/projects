@@ -7,40 +7,6 @@
         <invoker type="waterworks_account:section" caption="Ledger" index="2" 
                 visibleWhen="#{mode=='read'}"
                 action="init"/>
-        
-        <!--
-        <invoker type="formActions" caption="Capture"  action="capture" />
-        <invoker type="formActions" caption="Capture Payment"  action="capturePayment" />
-        -->
     </invokers>
-    <code>
-        <![CDATA[
-        import com.rameses.rcp.annotations.*;
-        import com.rameses.rcp.common.*;
-        import com.rameses.osiris2.client.*;
-        import com.rameses.osiris2.common.*;
-        import com.rameses.rcp.annotations.*;
-        import com.rameses.seti2.models.*;
-
-        class AccountLedgerModel extends com.rameses.seti2.models.CrudListModel {
-
-            def getMasterEntity() {
-                return caller.entity;
-            }
-
-            void beforeQuery( def qry ) {
-                qry.findBy = [parentid: caller.entity.objid];
-            }
-        
-            /*
-            def capturePayment() {
-                def h = {
-                    reload();
-                }
-                Modal.show("waterworks_account:capture_payment",[handler:h, 'query.acctid':caller.entity.objid]);
-            }
-            */
-        }
-        ]]>
-    </code>
+    <code class="com.rameses.gov.etracs.waterworks.models.WaterworksAccountLedgerModel" />
 </workunit>

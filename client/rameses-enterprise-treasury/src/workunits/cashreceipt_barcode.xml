@@ -20,9 +20,6 @@
             @Service("CashReceiptBarcodeService")
             def barcodeSvc;
             
-            @Service('PaymentOrderService')
-            def paySvc; 
-        
             def init() {
                 def p = MsgBox.prompt("Enter barcode");
                 if(!p) return null;
@@ -39,10 +36,9 @@
                 
                 try {
                     def e = barcodeSvc.init( [barcodeid: barcodeid, prefix: prefix] );
-                    if(!prefix && e._barcodeprefix) {
-                        prefix = e.remove("_barcodeprefix");
+                    if(!prefix && e.barcodeprefix) {
+                        prefix = e.remove("barcodeprefix");
                     }    
-                    if( !prefix ) prefix = "PMO";
                     def m = [barcodeid: barcodeid];
                     m.entity = e;
                     return InvokerUtil.lookupOpener( "cashreceipt:barcode:"+prefix, m);

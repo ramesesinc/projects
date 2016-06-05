@@ -1,0 +1,24 @@
+import com.rameses.annotations.*;
+
+class WaterworksAccountConsumptionPersistenceInterceptor{
+	
+	@DataContext("waterworks_account_consumption")
+	def consumption;
+
+	@DataContext("waterworks_account_ledger")
+	def ledger;
+
+	@Before(pattern="PersistenceService.removeEntity", eval="#{args[0]._schemaname == 'waterworks_account_consumption'}")
+	public void beforeRemoveConsumption(def evt) {
+		def o = evt.args[0];
+
+		def ledgerid = consumption.select("ledgerid").find([objid: o.objid]).val();
+		if( ledgerid ) {
+			consumption.find([objid: o.objid]).update([ledgerid:"{NULL}"]);
+			ledger.find( [objid:ledgerid] ).delete();
+		} 
+
+	}
+
+
+}

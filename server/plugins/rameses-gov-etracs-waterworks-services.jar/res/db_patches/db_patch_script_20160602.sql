@@ -9,4 +9,6 @@ ALTER TABLE `waterworks4`.`waterworks_account_ledger` ADD UNIQUE INDEX `uix_pare
 ALTER TABLE waterworks_account_consumption ADD COLUMN `rate` decimal(16,2);
 ALTER TABLE waterworks_account_consumption ADD COLUMN `ledgerid` varchar(50);
 
+ALTER TABLE waterworks_payment ADD COLUMN `txnmode` varchar(50);
+
 

@@ -5,20 +5,40 @@ class WaterworksPaymentOrderInterceptor {
 	@Service('WaterworksCashReceiptService') 
 	def cashReceiptSvc; 
 
+	@DataContext("waterworks_account")
+	def acct;
+
 	@Env
 	def env; 
 
-	@Before( pattern="PaymentOrderService.open", eval="#{args[0].txnid.toString().toUpperCase().startsWith('WA')}" )
+	@Before( pattern="PaymentOrderService.open", index=10000 )
 	public void beforeOpen( evt ) {
+		//do not proceed if payment order already found.
+		if( env.paymentorder ) return;
+
 		def params = evt.args[0]; 
 		def txnid = params.txnid; 
-		def p = cashReceiptSvc.getBilling([ refno: txnid ]); 
 
+		//check first if txnid exists in account
+		if(!acct.find([acctno: txnid]).exists()) return;
+
+		def p = cashReceiptSvc.getBilling([ refno: txnid ]); 
 		//this is needed for posting back to the server during CashReceiptService.post
 		p.info = [applicationid: p.applicationid, txntype:'waterworks_application']
 		env.paymentorder = [info:p, txntype:'waterworks_application',txnid:p.applicationid,refid:p.applicationid];  
 	}
 
+
+	@After( pattern="PaymentOrderService.open" )
+	public void afterOpen( evt ) {
+		//do not proceed if payment order already found.
+		if( env.paymentorder ) return;
+
+		def result = evt.result;
+		result.each  { k,v->
+			println k+"="+v;
+		}
+	}
 	
 
 }	

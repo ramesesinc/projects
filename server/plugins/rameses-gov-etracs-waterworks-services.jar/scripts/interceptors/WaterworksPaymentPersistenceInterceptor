@@ -1,0 +1,26 @@
+import com.rameses.annotations.*;
+
+class WaterworksPaymentPersistenceInterceptor {
+	
+	@DataContext('waterworks_payment_item') 
+	def wpayitem; 	
+
+	@DataContext('waterworks_account_ledger') 
+	def acctledger; 
+
+	@DataContext('waterworks_payment') 
+	def wpay; 	
+
+	@Before(pattern="PersistenceService.removeEntity", eval="#{args[0]._schemaname == 'waterworks_payment'}")
+	public void beforeRemoveEntity( evt ) { 
+		def params = evt.args[0];
+		def txnmode = wpay.find([objid: params.objid]).select("txnmode").val();
+		if( txnmode !=  'CAPTURE') 
+			throw new Exception("Remove payment is only applicable for CAPTURE");
+
+		wpayitem.find([ parentid: params.objid ]).list().each{ 
+			acctledger.find([ objid: it.txnrefid ]).update([amtpaid: "{amtpaid-:amt}"], [amt: it.amount] );  
+		} 
+	} 
+	
+}

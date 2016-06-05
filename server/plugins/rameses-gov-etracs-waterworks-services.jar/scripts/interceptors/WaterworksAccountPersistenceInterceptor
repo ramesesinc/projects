@@ -30,10 +30,12 @@ class WaterworksAccountPersistenceInterceptor{
 		//update the meter information
 		wm.find([objid:o.meter.objid]).update([currentacctid:o.objid]);
 		
-		stubnode.debug = true;
-		stubnode.find( [objid: o.stuboutnode.objid ]).update( [acctid: o.objid] );
+		if ( o.stuboutnode?.objid ) { 
+			stubnode.debug = true;
+			stubnode.find( [objid: o.stuboutnode.objid ]).update( [acctid: o.objid] );
+		} 
 	}
 
-	
+
 
 }

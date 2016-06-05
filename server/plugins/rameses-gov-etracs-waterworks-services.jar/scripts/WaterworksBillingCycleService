@@ -29,6 +29,7 @@ class WaterworksBillingCycleService  {
 
 	@ProxyMethod
 	public def getBillingDates( def p ) {
+
 		def zone = p.zone;
 		def sector = p.sector;
 		def barangay = p.barangayid;
@@ -60,7 +61,6 @@ class WaterworksBillingCycleService  {
 		def h = { r-> return false };
 
 		def res = ruleSvc.execute( "waterworksbillingcycle", facts, null, h );
-		println res; 
 		def period = res.period;
 		if(!period) throw new Exception("No billing cycle rules executed")
 

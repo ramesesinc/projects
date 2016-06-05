@@ -46,6 +46,7 @@ class WaterworksCashReceiptInterceptor{
 		pmt.refno = o.receiptno;		
 		pmt.refdate = o.receiptdate;
 		pmt.amount = o.amount;
+		pmt.txnmode = 'ONLINE';
 		pmt.voided = 0;
 		pmt.items = [];
 		o.billitems.findAll{it.amount>0}.each {

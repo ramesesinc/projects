@@ -7,13 +7,12 @@ import com.rameses.osiris2.common.*
 import com.rameses.enterprise.treasury.models.*;
 import com.rameses.util.*;
 
-
-public class WaterworksCashReceipt extends PaymentOrderCashReceiptModel {
+public class WaterworksCashReceipt extends BillingCashReceiptModel {
     
      @Service("WaterworksCashReceiptService")
      def cashReceiptSvc;
     
-     def payOption = [type:'FULL']; 
+     
     
      String title = "Waterworks";
      
@@ -32,13 +31,6 @@ public class WaterworksCashReceipt extends PaymentOrderCashReceiptModel {
     def loadBarcode() { 
         def info = cashReceiptSvc.getBilling([ refno: barcodeid ]);
         loadInfo( info );
-        println "owner name " + entity.payer;
-        /*
-        entity = [formtype: "serial", formno:"51", txnmode: 'ONLINE'];
-        entity.collectiontype = info.collectiontype;
-        entity = service.init( entity );
-        super.loadInfo( info );
-        */
         return "default";
     }      
 

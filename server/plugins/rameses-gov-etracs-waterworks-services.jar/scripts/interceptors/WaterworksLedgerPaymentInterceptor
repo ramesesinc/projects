@@ -1,6 +1,6 @@
 import com.rameses.annotations.*;
 
-class WaterworksCapturePaymentInterceptor{
+class WaterworksLedgerPaymentInterceptor {
 	
 	@DataContext("waterworks_account")
 	def acct;
@@ -14,10 +14,13 @@ class WaterworksCapturePaymentInterceptor{
 	@DataContext("waterworks_application_fee")
 	def appfee;
 
+	@DataContext("waterworks_installment")
+	def installment;	
+
 	@Service('DateService') 
 	def dateSvc; 
 
-	@Before(pattern="CapturePaymentService.init", eval="#{args[0]._schemaname == 'waterworks_payment'}")
+	@Before(pattern="LedgerPaymentService.init", eval="#{args[0]._schemaname == 'waterworks_payment'}")
 	public void beforeInit(def evt) {
 		def o  = evt.args[0];
 		if(!o.acctid && !o.applicationid)
@@ -40,7 +43,7 @@ class WaterworksCapturePaymentInterceptor{
 		}
 	}
 
-	@After(pattern="CapturePaymentService.getItems", eval="#{args[0]._schemaname == 'waterworks_payment'}")
+	@After(pattern="LedgerPaymentService.getItems", eval="#{args[0]._schemaname == 'waterworks_payment'}")
 	public void beforeGetItems(def evt) {
 		def o = evt.args[0];
 		def items = evt.result; 
@@ -64,10 +67,16 @@ class WaterworksCapturePaymentInterceptor{
 		};
 	}
 
-	@After(pattern="CapturePaymentService.post", eval="#{args[0]._schemaname == 'waterworks_payment'}")
-	public void beforeCapturePayment(def evt) {
+	@After(pattern="LedgerPaymentService.post", eval="#{args[0]._schemaname == 'waterworks_payment'}")
+	public void afterPostPayment( evt ) { 
 		def o = evt.args[0];
-		o.items.each {
+		o.items.each { 
+			if ( it.installmentid ) {
+				installment.find([objid:it.installmentid]).update( [amtpaid: "{amtpaid+:amt}"], [amt: it.amount] );
+			}
+			if ( (it.acctid || it.applicationid) && !it.txnrefid ) 
+				throw new Exception('Please provide txnrefid');
+
 			if( it.acctid ) {
 				acctledger.find( [objid: it.txnrefid ]).update( [amtpaid: "{amtpaid+:amt}"], [amt: it.amount] );
 			}
@@ -76,4 +85,20 @@ class WaterworksCapturePaymentInterceptor{
 			}
 		}
 	}
+
+	@After(pattern="LedgerPaymentService.postVoid", eval="#{args[0]._schemaname == 'waterworks_payment'}")
+	public void afterPostVoid( evt ) { 
+		def o = evt.result;
+
+		if ( !o.items ) 
+			throw new Exception("Persistence remove entity error: (waterworks_payment) Payment must have at least one item"); 
+
+		o.items.each{ 
+			if ( o.acctid ) { 
+				acctledger.find([ objid: it.txnrefid ]).update([amtpaid: "{amtpaid-:amt}"], [amt: it.amount] );  
+			} else {
+				appfee.find([ objid: it.txnrefid ]).update([amtpaid: "{amtpaid-:amt}"], [amt: it.amount] );  
+			}			
+		}  	
+	}	
 }

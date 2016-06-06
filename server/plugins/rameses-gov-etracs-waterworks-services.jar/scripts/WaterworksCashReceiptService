@@ -34,11 +34,9 @@ class WaterworksCashReceiptService  {
 		} 
 
 		def p = [:];
-		p.collectiontype = collectionType.find([barcodekey:'51030']).first();
 		p.paidby = acct.acctname; 
 		p.paidbyaddress = acct.address?.text; 
 		p.payer = acct.owner; 
-		
 		p.billitems = [];
 
 		def list = billingService.getBilling( parm );
@@ -49,7 +47,6 @@ class WaterworksCashReceiptService  {
 
 		if(parm.applicationid) p.applicationid = parm.applicationid;
 		if(parm.acctid) p.acctid = parm.acctid;
-
 		return p;
 	}
 

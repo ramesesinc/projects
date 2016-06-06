@@ -5,6 +5,7 @@
 - BPLS 
 		
 - ASSESSOR
+	- Display barangay on Assessment Roll (continuous)
 	- Add PC and DT transaction types
 	- Allow preview of forapproval Cancelled FAAS
 	- Support Machinery sworn statement appraisal

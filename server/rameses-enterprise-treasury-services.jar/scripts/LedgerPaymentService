@@ -1,6 +1,6 @@
 import com.rameses.annotations.*;
 
-class CapturePaymentService {
+class LedgerPaymentService {
 	
 	@Service
 	def self;
@@ -18,13 +18,13 @@ class CapturePaymentService {
 
 	@ProxyMethod
 	public def init(def o) {
-		if(!o._schemaname) throw new Exception("_schemaname is required in CapturePaymentService.init");
+		if(!o._schemaname) throw new Exception("_schemaname is required in LedgerPaymentService.init");
 		def m = [:];
 		m.putAll(o);
 		m.refdate = dateSvc.getServerDate();
 		m.reftype = "cashreceipt";
 		m.amount = 0;
-		m.type = 'CAPTURE';
+		m.txnmode = 'CAPTURE';
 		m.voided = 0;
 
 		def items = self.getItems(o);
@@ -47,21 +47,24 @@ class CapturePaymentService {
 	}
 
 	@ProxyMethod
-	public void post(def o) {
-		if(!o._schemaname) throw new Exception("_schemaname is required in CapturePaymentService.init");
+	public void post( o) {
+		if(!o._schemaname) throw new Exception("_schemaname is required in LedgerPaymentService.post");
 		def em = db.lookup( o._schemaname );
 		em.create( o );
 	}
 
 
 	@ProxyMethod
-	public void postVoid(def o) {
-		o.items.each {
-			
+	public def postVoid(def o) {
+		if ( !o._schemaname ) throw new Exception("_schemaname is required in LedgerPaymentService.postVoid");
+		if ( !o.objid && !o.refid ) throw new Exception('objid or refid is required in LedgerPaymentService.postVoid'); 
+		
+		def em = db.lookup( o._schemaname ); 
+		if ( o.refid ) { 
+			o.objid = em.find([ refid: o.refid ]).select('objid').val();
 		}
-		if(!o._schemaname) throw new Exception("_schemaname is required in CapturePaymentService.init");
-		def em = db.lookup( o._schemaname );
-		em.find( [objid: o.objid] ).update([voided: 1]);
-	}
 
+		em.find([ objid: o.objid ]).update([voided: 1]);
+		return em.read([ objid: o.objid ]);
+	} 
 }

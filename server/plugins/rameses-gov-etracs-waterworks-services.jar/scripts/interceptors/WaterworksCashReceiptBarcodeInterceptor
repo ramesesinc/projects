@@ -5,10 +5,12 @@ class WaterworksCashReceiptBarcodeServiceInterceptor{
 	@DataContext("waterworks_account_ledger")
 	def ledger;
 
-	@Before(pattern="CashReceiptBarcodeService.init", eval="#{args[0].prefix == null}")
-	public void supplyWaterworksPrefix(def evt) {
+	@Before(pattern="CashReceiptBarcodeService.findPrefix", eval="#{args[0].prefix == null}", index=1000)
+	public void findWaterworksPrefix(def evt) {
 		def o = evt.args[0];
-		o.prefix = "51030";
+		//try to check first if the barcode exists in account or in application...
+		o.barcodeprefix = "51030";
+		o.acctid = o.barcodeid;
 	}
 
 

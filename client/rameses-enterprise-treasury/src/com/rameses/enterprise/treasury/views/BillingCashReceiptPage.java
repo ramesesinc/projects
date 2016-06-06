@@ -17,10 +17,10 @@ import com.rameses.rcp.ui.annotations.Template;
 
 @Template(value=SerialCashReceiptPage.class, target="content")
 @StyleSheet
-public class PaymentOrderCashReceiptBillPage extends javax.swing.JPanel {
+public class BillingCashReceiptPage extends javax.swing.JPanel {
     
     /** Creates new form BPCashReceipt */
-    public PaymentOrderCashReceiptBillPage() {
+    public BillingCashReceiptPage() {
         initComponents();
     }
     

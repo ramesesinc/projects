@@ -7,7 +7,7 @@ import com.rameses.osiris2.common.*
         
 public class CapturePaymentModel  {
     
-    @Service("CapturePaymentService")
+    @Service("LedgerPaymentService")
     def svc;        
 
     @Controller

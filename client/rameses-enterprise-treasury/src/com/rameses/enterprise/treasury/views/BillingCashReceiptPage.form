@@ -64,6 +64,10 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="1" attributes="0">
                   <Component id="xButton2" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="xButton3" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="31" max="-2" attributes="0"/>
+                  <Component id="xLabel1" min="-2" pref="175" max="-2" attributes="0"/>
                   <EmptySpace max="32767" attributes="0"/>
                   <Component id="xFormPanel3" min="-2" pref="204" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
@@ -75,7 +79,11 @@
               <Group type="102" alignment="0" attributes="0">
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Component id="xFormPanel3" alignment="0" min="-2" max="-2" attributes="0"/>
-                      <Component id="xButton2" alignment="0" min="-2" max="-2" attributes="0"/>
+                      <Group type="103" alignment="0" groupAlignment="3" attributes="0">
+                          <Component id="xButton2" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="xButton3" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="xLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
                   </Group>
                   <EmptySpace min="0" pref="22" max="32767" attributes="0"/>
               </Group>
@@ -98,6 +106,18 @@
           <Properties>
             <Property name="name" type="java.lang.String" value="previewReceipt" noResource="true"/>
             <Property name="text" type="java.lang.String" value="Preview Receipt"/>
+          </Properties>
+        </Component>
+        <Component class="com.rameses.rcp.control.XButton" name="xButton3">
+          <Properties>
+            <Property name="name" type="java.lang.String" value="viewLineData" noResource="true"/>
+            <Property name="text" type="java.lang.String" value="View Line Data"/>
+            <Property name="visibleWhen" type="java.lang.String" value="#{showDebug == true}"/>
+          </Properties>
+        </Component>
+        <Component class="com.rameses.rcp.control.XLabel" name="xLabel1">
+          <Properties>
+            <Property name="expression" type="java.lang.String" value="show debug #{showDebug}"/>
           </Properties>
         </Component>
       </SubComponents>

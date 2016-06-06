@@ -66,8 +66,10 @@ public class BillingCashReceiptModel extends AbstractCashReceipt {
     
     def billItemListModel = [
         afterColumnUpdate : {o,colname ->
-            if( status.index == 0 ) throw new Exception("Please choose at least one item");
             updateItems(status.index, o.selected );
+        },
+        isColumnEditable : { o,colname->
+            return (status.index!=0);
         },
         fetchList: { o-> 
             return entity.billitems; 
@@ -99,6 +101,17 @@ public class BillingCashReceiptModel extends AbstractCashReceipt {
         buildReceiptItems( bItems );
         billItemListModel.reload();
         updateBalances();
+    }
+    
+    def viewLineData() {
+        if( !selectedItem ) return;
+        def op = Inv.lookupOpener("debug_subinfo:view", [data:selectedItem]);
+        op.target = 'popup';
+        return op;
+    }
+    
+    boolean getShowDebug() {
+        return ClientContext.currentContext.debugMode;
     }
     
 }       

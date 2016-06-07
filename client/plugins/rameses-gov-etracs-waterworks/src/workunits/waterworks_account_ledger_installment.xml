@@ -1,0 +1,10 @@
+<workunit>
+    <invokers>
+        <invoker type="waterworks_account_ledger:list:listActions" 
+                 caption="Apply Installment" action="init" target="popup" index="1"/>
+    </invokers>
+    <code class="com.rameses.gov.etracs.waterworks.models.PaymentInstallmentModel"/>
+    <pages>
+        <page template="com.rameses.gov.etracs.waterworks.views.InstallmentPage"/>
+    </pages>
+</workunit>

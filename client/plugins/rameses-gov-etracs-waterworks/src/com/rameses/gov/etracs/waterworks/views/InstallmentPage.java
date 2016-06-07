@@ -4,10 +4,15 @@
  */
 package com.rameses.gov.etracs.waterworks.views;
 
+import com.rameses.osiris2.themes.OKCancelPage;
+import com.rameses.rcp.ui.annotations.Template;
+import com.rameses.seti2.views.CrudListPage;
+
 /**
  *
  * @author dell
  */
+@Template(OKCancelPage.class)
 public class InstallmentPage extends javax.swing.JPanel {
 
     /**
@@ -27,75 +32,68 @@ public class InstallmentPage extends javax.swing.JPanel {
     private void initComponents() {
 
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
-        xIntegerField1 = new com.rameses.rcp.control.XIntegerField();
         xDecimalField1 = new com.rameses.rcp.control.XDecimalField();
-        xTextField1 = new com.rameses.rcp.control.XTextField();
-        xDecimalField2 = new com.rameses.rcp.control.XDecimalField();
-        xIntegerField2 = new com.rameses.rcp.control.XIntegerField();
+        xDecimalField3 = new com.rameses.rcp.control.XDecimalField();
+        xIntegerField1 = new com.rameses.rcp.control.XIntegerField();
         xDateField1 = new com.rameses.rcp.control.XDateField();
         xDateField2 = new com.rameses.rcp.control.XDateField();
-        xIntegerField3 = new com.rameses.rcp.control.XIntegerField();
+        xDecimalField2 = new com.rameses.rcp.control.XDecimalField();
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
-        xTitledBorder1.setTitle("Details");
+        xTitledBorder1.setPadding(new java.awt.Insets(30, 15, 10, 10));
+        xTitledBorder1.setTitle("Installment Information");
         xFormPanel1.setBorder(xTitledBorder1);
         xFormPanel1.setCaptionWidth(150);
         xFormPanel1.setDepends(new String[] {"payOption.type"});
-        xFormPanel1.setVisibleWhen("#{payOption.type == 'installment'}");
-
-        xIntegerField1.setCaption("Term");
-        xIntegerField1.setName("payOption.term"); // NOI18N
-        xIntegerField1.setRequired(true);
-        xFormPanel1.add(xIntegerField1);
 
         xDecimalField1.setCaption("Total Amount");
         xDecimalField1.setEnabled(false);
-        xDecimalField1.setName("payOption.amount"); // NOI18N
+        xDecimalField1.setName("entity.amount"); // NOI18N
+        xDecimalField1.setOpaque(false);
         xFormPanel1.add(xDecimalField1);
 
-        xTextField1.setCaption("Particulars");
-        xTextField1.setName("payOption.particulars"); // NOI18N
-        xTextField1.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel1.add(xTextField1);
+        xDecimalField3.setCaption("Down Payment");
+        xDecimalField3.setName("entity.downpayment"); // NOI18N
+        xFormPanel1.add(xDecimalField3);
 
-        xDecimalField2.setCaption("Monthly Amortization");
-        xDecimalField2.setEnabled(false);
-        xDecimalField2.setName("payOption.amortization"); // NOI18N
-        xFormPanel1.add(xDecimalField2);
-
-        xIntegerField2.setCaption("Downpayment");
-        xIntegerField2.setName("payOption.downpayment"); // NOI18N
-        xFormPanel1.add(xIntegerField2);
+        xIntegerField1.setCaption("Term (No. of Months)");
+        xIntegerField1.setName("entity.term"); // NOI18N
+        xIntegerField1.setRequired(true);
+        xFormPanel1.add(xIntegerField1);
 
         xDateField1.setCaption("Start Date");
         xDateField1.setName("entity.startdate"); // NOI18N
+        xDateField1.setRequired(true);
         xFormPanel1.add(xDateField1);
 
         xDateField2.setEditable(false);
         xDateField2.setCaption("End Date");
+        xDateField2.setDepends(new String[] {"entity.startdate", "entity.term"});
         xDateField2.setEnabled(false);
         xDateField2.setName("entity.enddate"); // NOI18N
         xFormPanel1.add(xDateField2);
 
-        xIntegerField3.setCaption("No. of Payments");
-        xIntegerField3.setName("entity.numpayments"); // NOI18N
-        xFormPanel1.add(xIntegerField3);
+        xDecimalField2.setCaption("Installment Amount");
+        xDecimalField2.setDepends(new String[] {"entity.term", "entity.downpayment"});
+        xDecimalField2.setEnabled(false);
+        xDecimalField2.setName("entity.installmentamount"); // NOI18N
+        xFormPanel1.add(xDecimalField2);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 417, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap()
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 329, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 222, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 249, Short.MAX_VALUE)
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -103,10 +101,8 @@ public class InstallmentPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XDateField xDateField2;
     private com.rameses.rcp.control.XDecimalField xDecimalField1;
     private com.rameses.rcp.control.XDecimalField xDecimalField2;
+    private com.rameses.rcp.control.XDecimalField xDecimalField3;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XIntegerField xIntegerField1;
-    private com.rameses.rcp.control.XIntegerField xIntegerField2;
-    private com.rameses.rcp.control.XIntegerField xIntegerField3;
-    private com.rameses.rcp.control.XTextField xTextField1;
     // End of variables declaration//GEN-END:variables
 }

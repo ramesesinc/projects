@@ -16,6 +16,4 @@
 		<field name="downpayment" required="true" type="decimal" caption="Downpayment"/>
 		<field name="balance" expr="amount-amtpaid"/>		
 	</element>
-
-
 </schema>

@@ -28,6 +28,7 @@ class BillingCycle {
             e.fromperiod = dformat.format(res.fromperiod);
             e.toperiod = dformat.format(res.toperiod);
             e.readingdate = dformat.format(res.readingdate);
+            e.billdate = dformat.format(res.billdate);
             e.duedate = dformat.format(res.duedate);
             e.disconnectiondate = dformat.format(res.disconnectiondate);
         }

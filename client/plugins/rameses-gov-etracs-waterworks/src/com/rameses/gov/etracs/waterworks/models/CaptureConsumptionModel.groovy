@@ -22,12 +22,17 @@ public class CaptureConsumptionModel  {
     
     @Service("WaterworksAccountService")
     def acctSvc;
+    
+    @Service("QueryService")
+    def queryService;    
 
     @Caller
     def caller;
     
     @Binding
     def binding;
+    
+    def dateFormatter = new java.text.SimpleDateFormat('yyyy-MM-dd'); 
     
     def getEntity() {
         caller.getMasterEntity();
@@ -49,7 +54,7 @@ public class CaptureConsumptionModel  {
     ];
 
     void computeAmount() {
-        if( !info.month ) 
+        if( !info.billingcycle?.month ) 
             throw new Exception("Period Month is required!");
         def m = [:];
         m.objid = entity.objid;
@@ -57,43 +62,18 @@ public class CaptureConsumptionModel  {
         def r = compSvc.compute(m);
         info.item = r.item;
         info.amount = r.amount;
-        info.remarks = "for month of " + listTypes.months[info.month-1].name + " " + info.year;
+        info.remarks = "for month of " + listTypes.months[info.billingcycle.month-1].name + " " + info.billingcycle.year;
     }
     
-    void computeBillingCycle() {
-        def h = { o->
-            def df = new SimpleDateFormat("yyyy-MM-dd");
-            def dt = df.parse(o);
-            //def dt = DateFunc.getDayAdd( df.parse(o), -1);
-            
-            def p = [:];
-            p.sector = entity.sector?.objid;
-            p.zone = entity.zone?.objid; 
-            p.metersize = entity.metersize?.objid;
-            p.billdate = dt;
-            billCycle = billdateSvc.computeBillingDates(p);
-            
-            //run this first because we dont want it formatted yet.
-            info.year = DateFunc.getYear( billCycle.fromperiod );
-            info.month = DateFunc.getMonth( billCycle.fromperiod );
-            
-            
-            billCycle.fromperiod = df.format(billCycle.fromperiod);
-            billCycle.toperiod = df.format(billCycle.toperiod);
-            billCycle.readingdate = df.format(billCycle.readingdate);
-            billCycle.duedate = df.format(billCycle.duedate);
-            billCycle.disconnectiondate = df.format(billCycle.disconnectiondate);
-
-            info.dtreading = billCycle.readingdate;
-            info.duedate = billCycle.duedate;
-            
-            binding.refresh();
-        }
-        Modal.show("date:prompt",[handler:h]);
+    def getBillingCycles() {
+        def m = [_schemaname: 'waterworks_billing_cycle'];
+        m.findBy = [sectorid: entity.sector.objid];
+        m._start = 0;
+        m._limit = 1000;
+        return queryService.getList(m);
     }
     
     def doOk() {
-        if( !info.duedate ) throw new Exception("Please run 'Enter Ending Period'");
         if( info.prevreading > info.reading) 
             throw new Exception("Prev reading must be less than current reading");
         if( info.prevreading <0 || info.reading < 0 || info.volume <0) 

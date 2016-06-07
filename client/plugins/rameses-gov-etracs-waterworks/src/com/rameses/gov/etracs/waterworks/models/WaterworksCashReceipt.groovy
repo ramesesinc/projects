@@ -12,8 +12,6 @@ public class WaterworksCashReceipt extends BillingCashReceiptModel {
      @Service("WaterworksCashReceiptService")
      def cashReceiptSvc;
     
-     
-    
      String title = "Waterworks";
      
      public void init() {

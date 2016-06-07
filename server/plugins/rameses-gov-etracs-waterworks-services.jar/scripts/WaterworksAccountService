@@ -10,23 +10,18 @@ class WaterworksAccountService {
 
 	@ProxyMethod
 	public def postReading( def o ) {
-		if(!o.duedate) throw new Exception("Duedate is required");
 		o.readingmethod = 'CAPTURE';
 		o.txntype = 'WFEE';
 		o.rate = o.amount;
 		if(o.postledger == true ) {
 			def i = [:];
 			i.parentid = o.account.objid;
-			i.year = o.year;
-			i.month = o.month;
-			i.duedate = o.duedate;
+			i.billingcycle = o.billingcycle;
 			i.txntype = 'WFEE';
 			i.item = o.item;
 			i.remarks = o.remarks;
 			i.amount = o.amount;
 			i.amtpaid = 0.0;
-			i.surcharge = 0.0;
-			i.interest = 0.0;
 			i = ledger.create(i);
 			o.ledgerid = i.objid;
 		}

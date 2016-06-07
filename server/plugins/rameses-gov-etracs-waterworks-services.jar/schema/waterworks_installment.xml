@@ -2,19 +2,29 @@
 	<element tablename="waterworks_installment">
 		<field name="objid" primary="true"  prefix="WIN"/>
 		<field name="state"  visible="false" defaultValue="ACTIVE"/>
+
+		<field name="acctid"/>
+		<field name="applicationid" />
+
 		<field name="controlno" required="false" indexed="true"  caption="Control No"/>
 		<field name="doctype" required="false" indexed="true" caption="Doc Type"/>
 		<field name="dtfiled" required="false" indexed="true" type="date" caption="Date Filed"/>
 
 		<field name="particulars" required="true" caption="Particulars"/>
 		<field name="startdate" type="date" caption="Start Date"/>
+		<field name="enddate" type="date" caption="Start Date"/>
+		
 		<field name="term" required="true" type="integer" caption="Term"/>
 
-		<field name="amortization" required="true" type="decimal" caption="Amortization"/>
+		<field name="installmentamount" required="true" type="decimal" caption="Installment Amount"/>
 		<field name="amount" required="true" type="decimal" caption="Amount"/>
 		<field name="amtpaid" required="true" type="decimal" caption="Amt Paid"/>		
 		<field name="downpayment" required="true" type="decimal" caption="Downpayment"/>
-		<field name="balance" expr="amount-amtpaid"/>		
+		<field name="balance" expr="amount-amtpaid"/>
+
+		<field name="lastbilldate" type="date"/>
+		<field name="amtbilled" type="decimal"/>
+
 	</element>
 
 

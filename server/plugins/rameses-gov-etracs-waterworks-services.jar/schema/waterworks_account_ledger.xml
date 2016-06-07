@@ -4,10 +4,10 @@
 		<field name="objid" primary="true"  prefix="WAL"/>
 		<field name="parentid" required="true"/> 
 
-		<field name="year" required="true"/> 
-		<field name="month" required="true"/> 
+		<complex name="billingcycle" jointype="many-to-one" ref="waterworks_billing_cycle"  includefields="objid,year,month,duedate" required="false">
+			<key field="billingcycleid" target="objid"/>
+		</complex>
 
-		<field name="duedate" required="true" caption="Due Date"/> 
 		<field name="txntype" required="true" caption="TxnType"/> 
 		<field name="item_objid" required="true"/>
 		<field name="item_code" required="true" caption="Item Code"/>
@@ -17,11 +17,6 @@
 		<field name="amtpaid" required="true" caption="AmtPaid" datatype="decimal"/>
 		<field name="balance" expr="amount-amtpaid" caption="Balance" datatype="decimal"/>
 		<field name="installmentid" />
-
-		<field name="surcharge" required="true" caption="Surcharge" datatype="decimal"/>
-		<field name="interest" required="true" caption="Interest" datatype="decimal"/>
-
-		<field name="total" expr="(amount-amtpaid)+surcharge+interest"/>
 
 		<complex name="consumption" ref="waterworks_account_consumption" jointype="many-to-one" required="false"
 			includefields="volume,rate,reading,prevreading">

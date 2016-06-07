@@ -3,6 +3,8 @@ import com.rameses.annotations.*;
 import com.rameses.rules.common.*;
 import waterworks.facts.*;
 import treasury.facts.*;
+import java.util.*;
+import com.rameses.util.*;
 
 /****************************
 * calculate the date services
@@ -23,20 +25,14 @@ class WaterworksBillingCycleService  {
  
 	@ProxyMethod
 	public def computeBillingDates( def p ) {
-		p.test = true;
+		p.test = false;
 		return getBillingDates( p );
 	}
 
 	@ProxyMethod
-	public def getBillingDates( def p ) {
-
-		def zone = p.zone;
+	public def getBillingDates( p ) {
 		def sector = p.sector;
-		def barangay = p.barangayid;
-
-		if( !zone  ) throw new Exception("zone.objid is required");
- 		if( !sector  )throw new Exception("sector.objid is required");
-		
+	
 		def currDate = dateSvc.getServerDate();
 		def billdate = ((p.billdate)? p.billdate : currDate); 
 
@@ -48,6 +44,7 @@ class WaterworksBillingCycleService  {
 		//find billing cycle, if not exist then create
 		if( !p.test ) {
 			def billCycleRec = billingcycle.find( m ).first(); 
+			billCycleRec._existing = true;
 			if ( billCycleRec ) return billCycleRec; 
 		}
 
@@ -55,7 +52,7 @@ class WaterworksBillingCycleService  {
 		def facts = [];
 		facts << new CurrentDate(currDate);
 		facts << new BillDate( billdate );
-		facts << new Stubout(zone: zone, sector: sector, barangay:barangay);
+		facts << new Stubout( sector: sector );
 		
 		//do this so it will immediately break after initial rulegroup.
 		def h = { r-> return false };
@@ -64,13 +61,40 @@ class WaterworksBillingCycleService  {
 		def period = res.period;
 		if(!period) throw new Exception("No billing cycle rules executed")
 
-		period.month = billmonth;
-		period.year = billyear;
+		def db = new DateBean( period.fromperiod );
+		period.month = db.month;
+		period.year = db.year;
+
 		period.sectorid = m.sectorid; 
-		if(!p.test) {
-			period.objid = period.sectorid + '-'+ billyear + '-'+ billmonth; 
+		period.objid = period.sectorid + '-'+ period.year + '-'+ period.month.toString().padLeft(2,'0'); 
+		if (!p.test) {
 			billingcycle.create( period ); 
 		}	
 		return period;
 	} 
+
+	@ProxyMethod
+	public void generateByYear( params ) {
+		if ( !params.year ) throw new Exception('year parameter is required'); 
+		if ( !params.sectorid ) throw new Exception('sectorid parameter is required'); 
+
+		if ( params.year instanceof String ) {
+			params.year = params.year.toInteger(); 
+		}
+
+		for (int month=1; month<=13; month++ ) { 
+			try { 
+				def p = [ sector: params.sectorid, test: true ]; 
+				p.billdate = ''+ params.year +'-'+ month.toString().padLeft(2,'0') +'-01';  
+				def period = getBillingDates( p ); 
+				if( period._existing ) break;
+				if ( period.year > params.year ) break;
+				if ( period.year == params.year ) { 
+					billingcycle.create( period ); 
+				} 
+			} catch(Throwable t) { 
+				t.printStackTrace();
+			} 
+		}
+	}
 }

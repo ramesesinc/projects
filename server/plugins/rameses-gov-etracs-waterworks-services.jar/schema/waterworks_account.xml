@@ -66,6 +66,7 @@
 		</complex>
 
 		<field name="barcode" expr="CONCAT('51030:',acctno)"/>
+		<field name="lastbilldate" type="date"/>
 	</element>
 
 </schema>

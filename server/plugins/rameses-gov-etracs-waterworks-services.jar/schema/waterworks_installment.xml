@@ -26,6 +26,4 @@
 		<field name="amtbilled" type="decimal"/>
 
 	</element>
-
-
 </schema>

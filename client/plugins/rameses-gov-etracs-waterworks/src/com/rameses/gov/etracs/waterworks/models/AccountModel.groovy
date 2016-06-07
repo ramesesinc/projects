@@ -57,22 +57,6 @@ public class AccountModel extends CrudFormModel {
         //binding.refresh();
     }
 
-    void computeBillingCycle() {
-        def h = { o->
-            def df = new SimpleDateFormat("yyyy-MM-dd");
-            def dt = df.parse(o);
-            
-            def p = [:];
-            p.sector = entity.sector?.objid;
-            p.zone = entity.zone?.objid; 
-            p.metersize = entity.metersize?.objid;
-            p.billdate = dt;
-            entity.billingcycle = billdateSvc.getBillingDates(p);
-            binding.refresh();
-        }
-        Modal.show("date:prompt",[handler:h]);
-    }
-    
     def getLookupMeter() { 
         def params = [metersize: entity.metersize];
         if ( !params.metersize ) params.metersize = [objid:null]; 
@@ -86,5 +70,13 @@ public class AccountModel extends CrudFormModel {
             binding.refresh('entity.meter.*');
         }
         return Inv.lookupOpener('waterworks_meter_wo_account:lookup', params);
+    }
+    
+    def getBillingCycles() {
+        def m = [_schemaname: 'waterworks_billing_cycle'];
+        m.findBy = [sectorid: entity.sector.objid];
+        m._start = 0;
+        m._limit = 1000;
+        return queryService.getList(m);
     }
 }

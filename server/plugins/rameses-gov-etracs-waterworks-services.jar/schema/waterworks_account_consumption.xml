@@ -5,7 +5,7 @@
 			<key field="acctid" target="objid"/>
 		</complex>
 		<complex name="billingcycle" jointype="many-to-one" ref="waterworks_billing_cycle" 
-			includefields="objid,year,month,readingdate" required="false">
+			includefields="objid,year,month,monthname,readingdate" required="false">
 			<key field="billingcycleid" target="objid"/>
 		</complex>	
 		<field name="prevreading" required="true" caption="PreviousReading"/>

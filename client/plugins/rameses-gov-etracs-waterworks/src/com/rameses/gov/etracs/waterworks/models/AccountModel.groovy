@@ -9,9 +9,6 @@ import java.text.*;
 
 public class AccountModel extends CrudFormModel {
     
-    @Service("WaterworksBillingCycleService")
-    def billdateSvc;
-    
     def dateFormatter = new java.text.SimpleDateFormat('yyyy-MM-dd'); 
     
     @PropertyChangeListener 
@@ -26,7 +23,7 @@ public class AccountModel extends CrudFormModel {
             zone : {
                 return [sectorid: entity?.sector?.objid]; 
             }
-        ]);    
+        ]);   
     }
     
     void afterCreate() {
@@ -72,11 +69,5 @@ public class AccountModel extends CrudFormModel {
         return Inv.lookupOpener('waterworks_meter_wo_account:lookup', params);
     }
     
-    def getBillingCycles() {
-        def m = [_schemaname: 'waterworks_billing_cycle'];
-        m.findBy = [sectorid: entity.sector.objid];
-        m._start = 0;
-        m._limit = 1000;
-        return queryService.getList(m);
-    }
+    
 }

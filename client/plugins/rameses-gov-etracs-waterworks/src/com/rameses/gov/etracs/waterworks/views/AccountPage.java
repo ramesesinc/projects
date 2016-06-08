@@ -54,17 +54,18 @@ public class AccountPage extends javax.swing.JPanel {
         xLookupField4 = new com.rameses.rcp.control.XLookupField();
         xLabel17 = new com.rameses.rcp.control.XLabel();
         xLabel19 = new com.rameses.rcp.control.XLabel();
-        xIntegerField2 = new com.rameses.rcp.control.XIntegerField();
         xPanel4 = new com.rameses.rcp.control.XPanel();
         xFormPanel4 = new com.rameses.rcp.control.XFormPanel();
         xDateField7 = new com.rameses.rcp.control.XDateField();
-        xComboBox5 = new com.rameses.rcp.control.XComboBox();
+        xLabel22 = new com.rameses.rcp.control.XLabel();
+        xLabel23 = new com.rameses.rcp.control.XLabel();
         xLabel13 = new com.rameses.rcp.control.XLabel();
         xLabel21 = new com.rameses.rcp.control.XLabel();
         xLabel14 = new com.rameses.rcp.control.XLabel();
         xLabel18 = new com.rameses.rcp.control.XLabel();
         xLabel15 = new com.rameses.rcp.control.XLabel();
         xLabel16 = new com.rameses.rcp.control.XLabel();
+        xLabel24 = new com.rameses.rcp.control.XLabel();
 
         xTabbedPane1.setItems("sections");
 
@@ -255,13 +256,6 @@ public class AccountPage extends javax.swing.JPanel {
         xLabel19.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel5.add(xLabel19);
 
-        xIntegerField2.setCaption("Current Reading");
-        xIntegerField2.setCaptionWidth(120);
-        xIntegerField2.setName("entity.currentreading"); // NOI18N
-        xIntegerField2.setPreferredSize(new java.awt.Dimension(0, 20));
-        xIntegerField2.setRequired(true);
-        xFormPanel5.add(xIntegerField2);
-
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
@@ -291,20 +285,25 @@ public class AccountPage extends javax.swing.JPanel {
         xDateField7.setRequired(true);
         xFormPanel4.add(xDateField7);
 
-        xComboBox5.setCaption("Billing Cycle");
-        xComboBox5.setDepends(new String[] {"entity.sector"});
-        xComboBox5.setDisableWhen("#{entity?.sector?.objid == null}");
-        xComboBox5.setDynamic(true);
-        xComboBox5.setExpression("#{item.year} - #{item.month}");
-        xComboBox5.setItems("billingCycles");
-        xComboBox5.setName("entity.billingcycle"); // NOI18N
-        xComboBox5.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel4.add(xComboBox5);
+        xLabel22.setBackground(new java.awt.Color(245, 245, 245));
+        xLabel22.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
+        xLabel22.setCaption("Year");
+        xLabel22.setExpression("#{entity.billingcycle.year}");
+        xLabel22.setOpaque(true);
+        xLabel22.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel4.add(xLabel22);
+
+        xLabel23.setBackground(new java.awt.Color(245, 245, 245));
+        xLabel23.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
+        xLabel23.setCaption("Month");
+        xLabel23.setExpression("#{entity.billingcycle.monthname}");
+        xLabel23.setOpaque(true);
+        xLabel23.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel4.add(xLabel23);
 
         xLabel13.setBackground(new java.awt.Color(245, 245, 245));
         xLabel13.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel13.setCaption("Period From");
-        xLabel13.setDepends(new String[] {"entity.billingcycle"});
         xLabel13.setExpression("#{dateFormatter.format( entity.billingcycle.fromperiod)}");
         xLabel13.setOpaque(true);
         xLabel13.setPreferredSize(new java.awt.Dimension(0, 20));
@@ -313,7 +312,6 @@ public class AccountPage extends javax.swing.JPanel {
         xLabel21.setBackground(new java.awt.Color(245, 245, 245));
         xLabel21.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel21.setCaption("Period To");
-        xLabel21.setDepends(new String[] {"entity.billingcycle"});
         xLabel21.setExpression("#{dateFormatter.format( entity.billingcycle.toperiod)} ");
         xLabel21.setOpaque(true);
         xLabel21.setPreferredSize(new java.awt.Dimension(0, 20));
@@ -322,7 +320,6 @@ public class AccountPage extends javax.swing.JPanel {
         xLabel14.setBackground(new java.awt.Color(245, 245, 245));
         xLabel14.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel14.setCaption("Reading Date");
-        xLabel14.setDepends(new String[] {"entity.billingcycle"});
         xLabel14.setExpression("#{dateFormatter.format( entity.billingcycle.readingdate)} ");
         xLabel14.setOpaque(true);
         xLabel14.setPreferredSize(new java.awt.Dimension(0, 20));
@@ -331,7 +328,6 @@ public class AccountPage extends javax.swing.JPanel {
         xLabel18.setBackground(new java.awt.Color(245, 245, 245));
         xLabel18.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel18.setCaption("Bill Date");
-        xLabel18.setDepends(new String[] {"entity.billingcycle"});
         xLabel18.setExpression("#{dateFormatter.format( entity.billingcycle.billdate)} ");
         xLabel18.setOpaque(true);
         xLabel18.setPreferredSize(new java.awt.Dimension(0, 20));
@@ -340,7 +336,6 @@ public class AccountPage extends javax.swing.JPanel {
         xLabel15.setBackground(new java.awt.Color(245, 245, 245));
         xLabel15.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel15.setCaption("Due Date");
-        xLabel15.setDepends(new String[] {"entity.billingcycle"});
         xLabel15.setExpression("#{dateFormatter.format( entity.billingcycle.duedate)} ");
         xLabel15.setOpaque(true);
         xLabel15.setPreferredSize(new java.awt.Dimension(0, 20));
@@ -349,11 +344,18 @@ public class AccountPage extends javax.swing.JPanel {
         xLabel16.setBackground(new java.awt.Color(245, 245, 245));
         xLabel16.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel16.setCaption("Disconnection Date");
-        xLabel16.setDepends(new String[] {"entity.billingcycle"});
         xLabel16.setExpression("#{dateFormatter.format( entity.billingcycle.disconnectiondate)} ");
         xLabel16.setOpaque(true);
         xLabel16.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel4.add(xLabel16);
+
+        xLabel24.setBackground(new java.awt.Color(245, 245, 245));
+        xLabel24.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
+        xLabel24.setCaption("Current Reading");
+        xLabel24.setExpression("#{entity.currentreading}");
+        xLabel24.setOpaque(true);
+        xLabel24.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel4.add(xLabel24);
 
         javax.swing.GroupLayout xPanel4Layout = new javax.swing.GroupLayout(xPanel4);
         xPanel4.setLayout(xPanel4Layout);
@@ -410,6 +412,7 @@ public class AccountPage extends javax.swing.JPanel {
             .addComponent(xTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 540, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
@@ -421,13 +424,11 @@ public class AccountPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XComboBox xComboBox2;
     private com.rameses.rcp.control.XComboBox xComboBox3;
     private com.rameses.rcp.control.XComboBox xComboBox4;
-    private com.rameses.rcp.control.XComboBox xComboBox5;
     private com.rameses.rcp.control.XDateField xDateField7;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XFormPanel xFormPanel2;
     private com.rameses.rcp.control.XFormPanel xFormPanel4;
     private com.rameses.rcp.control.XFormPanel xFormPanel5;
-    private com.rameses.rcp.control.XIntegerField xIntegerField2;
     private com.rameses.rcp.control.XLabel xLabel13;
     private com.rameses.rcp.control.XLabel xLabel14;
     private com.rameses.rcp.control.XLabel xLabel15;
@@ -437,6 +438,9 @@ public class AccountPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XLabel xLabel19;
     private com.rameses.rcp.control.XLabel xLabel20;
     private com.rameses.rcp.control.XLabel xLabel21;
+    private com.rameses.rcp.control.XLabel xLabel22;
+    private com.rameses.rcp.control.XLabel xLabel23;
+    private com.rameses.rcp.control.XLabel xLabel24;
     private com.rameses.rcp.control.XLabel xLabel6;
     private com.rameses.rcp.control.XLookupField xLookupField1;
     private com.rameses.rcp.control.XLookupField xLookupField4;

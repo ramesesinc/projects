@@ -4,7 +4,7 @@
 		<field name="objid" primary="true"  prefix="WAL"/>
 		<field name="parentid" required="true"/> 
 
-		<complex name="billingcycle" jointype="many-to-one" ref="waterworks_billing_cycle"  includefields="objid,year,month,duedate" required="false">
+		<complex name="billingcycle" jointype="many-to-one" ref="waterworks_billing_cycle"  includefields="objid,year,month,monthname,duedate" required="false">
 			<key field="billingcycleid" target="objid"/>
 		</complex>
 

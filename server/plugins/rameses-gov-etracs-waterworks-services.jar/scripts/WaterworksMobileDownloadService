@@ -65,7 +65,7 @@ class WaterworksMobileDownloadService {
 		def rundate = dateSvc.getServerDate();
 		DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
 		
-		def acct = cta.findAccountByHandlerAndTag([handler:'waterworks', tag:'WFEE']); 
+		def acct = cta.findAccountByHandlerAndTag([handler:'waterworks', tag:'WATERSALES']); 
 		if ( !acct ) throw new Exception('Please provide an itemaccount ');
 
 		def params = [assigneeid: o.assigneeid, sectorid:o.sectorid];

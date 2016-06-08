@@ -18,19 +18,19 @@ public class CaptureConsumptionModel  {
     def compSvc;
     
     @Service("WaterworksBillingCycleService")
-    def billdateSvc;
+    def billCycleSvc;
     
     @Service("WaterworksAccountService")
     def acctSvc;
     
-    @Service("QueryService")
-    def queryService;    
-
     @Caller
     def caller;
     
     @Binding
     def binding;
+    
+    @Service("DateService")
+    def dateSvc;
     
     def dateFormatter = new java.text.SimpleDateFormat('yyyy-MM-dd'); 
     
@@ -39,7 +39,7 @@ public class CaptureConsumptionModel  {
     }
     
     def handler;
-    def info = [prevreading:0, reading:0, volume: 0, amtpaid: 0, postledger:true];
+    def info;
     def billCycle;
     
     @PropertyChangeListener
@@ -53,6 +53,16 @@ public class CaptureConsumptionModel  {
         }
     ];
 
+    void init() {
+        info = [prevreading:0, reading:0, volume: 0, amtpaid: 0, postledger:true];
+        info.year = dateSvc.getServerYear();
+    }
+    
+    def getMonthList() {
+        if( !info.year ) return [];
+        return billCycleSvc.findByYear( [sectorid:entity.sector.objid, year:info.year]);
+    }
+    
     void computeAmount() {
         if( !info.billingcycle?.month ) 
             throw new Exception("Period Month is required!");
@@ -63,14 +73,6 @@ public class CaptureConsumptionModel  {
         info.item = r.item;
         info.amount = r.amount;
         info.remarks = "for month of " + listTypes.months[info.billingcycle.month-1].name + " " + info.billingcycle.year;
-    }
-    
-    def getBillingCycles() {
-        def m = [_schemaname: 'waterworks_billing_cycle'];
-        m.findBy = [sectorid: entity.sector.objid];
-        m._start = 0;
-        m._limit = 1000;
-        return queryService.getList(m);
     }
     
     def doOk() {

@@ -102,26 +102,36 @@
             <Component class="com.rameses.rcp.control.XComboBox" name="xComboBox2">
               <Properties>
                 <Property name="caption" type="java.lang.String" value="Month"/>
-                <Property name="expression" type="java.lang.String" value="#{item.name}"/>
-                <Property name="itemKey" type="java.lang.String" value="index"/>
-                <Property name="items" type="java.lang.String" value="listTypes.months"/>
-                <Property name="name" type="java.lang.String" value="info.month" noResource="true"/>
+                <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
+                  <StringArray count="1">
+                    <StringItem index="0" value="info.year"/>
+                  </StringArray>
+                </Property>
+                <Property name="dynamic" type="boolean" value="true"/>
+                <Property name="expression" type="java.lang.String" value="#{item.monthname} "/>
+                <Property name="items" type="java.lang.String" value="monthList"/>
+                <Property name="name" type="java.lang.String" value="info.billingcycle" noResource="true"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[120, 20]"/>
                 </Property>
+                <Property name="required" type="boolean" value="true"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="xComboBox2ActionPerformed"/>
               </Events>
             </Component>
-            <Component class="com.rameses.rcp.control.XDateField" name="xDateField1">
+            <Component class="com.rameses.rcp.control.XLabel" name="xLabel1">
               <Properties>
                 <Property name="caption" type="java.lang.String" value="Due Date"/>
-                <Property name="name" type="java.lang.String" value="info.duedate" noResource="true"/>
-                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[120, 20]"/>
+                <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
+                  <StringArray count="1">
+                    <StringItem index="0" value="info.billingcycle"/>
+                  </StringArray>
                 </Property>
-                <Property name="required" type="boolean" value="true"/>
+                <Property name="expression" type="java.lang.String" value="#{info.billingcycle.duedate}"/>
+                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                  <Dimension value="[0, 20]"/>
+                </Property>
               </Properties>
             </Component>
             <Component class="com.rameses.rcp.control.XTextField" name="xTextField1">

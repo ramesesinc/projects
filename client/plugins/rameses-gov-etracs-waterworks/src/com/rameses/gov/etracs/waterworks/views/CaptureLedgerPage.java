@@ -38,7 +38,7 @@ public class CaptureLedgerPage extends javax.swing.JPanel {
         xComboBox1 = new com.rameses.rcp.control.XComboBox();
         xIntegerField1 = new com.rameses.rcp.control.XIntegerField();
         xComboBox2 = new com.rameses.rcp.control.XComboBox();
-        xDateField1 = new com.rameses.rcp.control.XDateField();
+        xLabel1 = new com.rameses.rcp.control.XLabel();
         xTextField1 = new com.rameses.rcp.control.XTextField();
         xDecimalField2 = new com.rameses.rcp.control.XDecimalField();
         xDecimalField3 = new com.rameses.rcp.control.XDecimalField();
@@ -70,11 +70,13 @@ public class CaptureLedgerPage extends javax.swing.JPanel {
         xFormPanel2.add(xIntegerField1);
 
         xComboBox2.setCaption("Month");
-        xComboBox2.setExpression("#{item.name}");
-        xComboBox2.setItemKey("index");
-        xComboBox2.setItems("listTypes.months");
-        xComboBox2.setName("info.month"); // NOI18N
+        xComboBox2.setDepends(new String[] {"info.year"});
+        xComboBox2.setDynamic(true);
+        xComboBox2.setExpression("#{item.monthname} ");
+        xComboBox2.setItems("monthList");
+        xComboBox2.setName("info.billingcycle"); // NOI18N
         xComboBox2.setPreferredSize(new java.awt.Dimension(120, 20));
+        xComboBox2.setRequired(true);
         xComboBox2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 xComboBox2ActionPerformed(evt);
@@ -82,11 +84,11 @@ public class CaptureLedgerPage extends javax.swing.JPanel {
         });
         xFormPanel2.add(xComboBox2);
 
-        xDateField1.setCaption("Due Date");
-        xDateField1.setName("info.duedate"); // NOI18N
-        xDateField1.setPreferredSize(new java.awt.Dimension(120, 20));
-        xDateField1.setRequired(true);
-        xFormPanel2.add(xDateField1);
+        xLabel1.setCaption("Due Date");
+        xLabel1.setDepends(new String[] {"info.billingcycle"});
+        xLabel1.setExpression("#{info.billingcycle.duedate}");
+        xLabel1.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel2.add(xLabel1);
 
         xTextField1.setCaption("Particulars");
         xTextField1.setName("info.remarks"); // NOI18N
@@ -148,11 +150,11 @@ public class CaptureLedgerPage extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XComboBox xComboBox2;
-    private com.rameses.rcp.control.XDateField xDateField1;
     private com.rameses.rcp.control.XDecimalField xDecimalField2;
     private com.rameses.rcp.control.XDecimalField xDecimalField3;
     private com.rameses.rcp.control.XFormPanel xFormPanel2;
     private com.rameses.rcp.control.XIntegerField xIntegerField1;
+    private com.rameses.rcp.control.XLabel xLabel1;
     private com.rameses.rcp.control.XLookupField xLookupField1;
     private com.rameses.rcp.control.XPanel xPanel1;
     private com.rameses.rcp.control.XTextField xTextField1;

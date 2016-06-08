@@ -34,7 +34,8 @@ public class CaptureConsumptionPage extends javax.swing.JPanel {
 
         xPanel1 = new com.rameses.rcp.control.XPanel();
         xFormPanel5 = new com.rameses.rcp.control.XFormPanel();
-        xComboBox5 = new com.rameses.rcp.control.XComboBox();
+        xIntegerField1 = new com.rameses.rcp.control.XIntegerField();
+        xComboBox2 = new com.rameses.rcp.control.XComboBox();
         xLabel13 = new com.rameses.rcp.control.XLabel();
         xLabel21 = new com.rameses.rcp.control.XLabel();
         xLabel14 = new com.rameses.rcp.control.XLabel();
@@ -60,13 +61,25 @@ public class CaptureConsumptionPage extends javax.swing.JPanel {
 
         xFormPanel5.setCaptionWidth(120);
 
-        xComboBox5.setCaption("Billing Cycle");
-        xComboBox5.setExpression("#{item.year} - #{item.month}");
-        xComboBox5.setItems("billingCycles");
-        xComboBox5.setName("info.billingcycle"); // NOI18N
-        xComboBox5.setPreferredSize(new java.awt.Dimension(0, 20));
-        xComboBox5.setRequired(true);
-        xFormPanel5.add(xComboBox5);
+        xIntegerField1.setCaption("Year");
+        xIntegerField1.setName("info.year"); // NOI18N
+        xIntegerField1.setRequired(true);
+        xFormPanel5.add(xIntegerField1);
+
+        xComboBox2.setCaption("Month");
+        xComboBox2.setDepends(new String[] {"info.year"});
+        xComboBox2.setDynamic(true);
+        xComboBox2.setExpression("#{item.monthname} ");
+        xComboBox2.setItems("monthList");
+        xComboBox2.setName("info.billingcycle"); // NOI18N
+        xComboBox2.setPreferredSize(new java.awt.Dimension(120, 20));
+        xComboBox2.setRequired(true);
+        xComboBox2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                xComboBox2ActionPerformed(evt);
+            }
+        });
+        xFormPanel5.add(xComboBox2);
 
         xLabel13.setBackground(new java.awt.Color(245, 245, 245));
         xLabel13.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
@@ -160,6 +173,7 @@ public class CaptureConsumptionPage extends javax.swing.JPanel {
         xIntegerField4.setRequired(true);
         xFormPanel4.add(xIntegerField4);
 
+        xCheckBox1.setEnabled(false);
         xCheckBox1.setName("info.postledger"); // NOI18N
         xCheckBox1.setOpaque(false);
         xCheckBox1.setText("Post To Ledger");
@@ -187,7 +201,6 @@ public class CaptureConsumptionPage extends javax.swing.JPanel {
         xLabel1.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel2.add(xLabel1);
 
-        xDecimalField2.setEditable(true);
         xDecimalField2.setCaption("Amount");
         xDecimalField2.setEnabled(false);
         xDecimalField2.setName("info.amount"); // NOI18N
@@ -258,15 +271,21 @@ public class CaptureConsumptionPage extends javax.swing.JPanel {
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void xComboBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_xComboBox2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_xComboBox2ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.rameses.rcp.control.XButton xButton1;
     private com.rameses.rcp.control.XCheckBox xCheckBox1;
-    private com.rameses.rcp.control.XComboBox xComboBox5;
+    private com.rameses.rcp.control.XComboBox xComboBox2;
     private com.rameses.rcp.control.XDecimalField xDecimalField2;
     private com.rameses.rcp.control.XDecimalField xDecimalField3;
     private com.rameses.rcp.control.XFormPanel xFormPanel2;
     private com.rameses.rcp.control.XFormPanel xFormPanel4;
     private com.rameses.rcp.control.XFormPanel xFormPanel5;
+    private com.rameses.rcp.control.XIntegerField xIntegerField1;
     private com.rameses.rcp.control.XIntegerField xIntegerField2;
     private com.rameses.rcp.control.XIntegerField xIntegerField3;
     private com.rameses.rcp.control.XIntegerField xIntegerField4;

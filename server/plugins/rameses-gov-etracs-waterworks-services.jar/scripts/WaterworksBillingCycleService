@@ -17,9 +17,6 @@ class WaterworksBillingCycleService  {
 	@Service("DateService")
 	def dateSvc;
 
-	@DataContext("waterworks_stubout")
-	def stub;
-
 	@DataContext("waterworks_billing_cycle")
 	def billingcycle;
  
@@ -97,4 +94,23 @@ class WaterworksBillingCycleService  {
 			} 
 		}
 	}
+
+	@ProxyMethod
+	public def find( def o ) {
+		if(!o.sectorid) throw new Exception("sectorid is required");
+		if(!o.year) throw new Exception("year is required");
+		if(!o.month) throw new Exception("month is required");
+		def z = billingcycle.find(o).first();
+		if(!z) throw new Exception("Entry not found");
+		return z;
+	}
+
+	@ProxyMethod
+	public def findByYear( def o ) {
+		if(!o.sectorid) throw new Exception("sectorid is required");
+		if(!o.year) throw new Exception("year is required");
+		return billingcycle.find(o).list();
+	}
+
+
 }

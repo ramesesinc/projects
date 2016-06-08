@@ -12,6 +12,6 @@
 		<field name="billdate"  indexed="true" type="date" editable="false" caption="Bill Date"/>
 		<field name="readingdate"  indexed="true" type="date" caption="Reading Date" editable="false"/>
 		<field name="disconnectiondate" indexed="true" type="date" caption="Disconnection Date" editable="false" visible="false"/>
-	
+		<field name="monthname" expr="MONTH_ARRAY( month )" />
 	</element> 
 </schema>

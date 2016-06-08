@@ -11,25 +11,38 @@ public class CaptureLedgerModel  {
 
     @Service("WaterworksLedgerService")
     def svc;
-    
+
+    @Service("WaterworksBillingCycleService")
+    def billCycleSvc;
+
+    @Service("DateService")
+    def dateSvc;
+     
     @Script("ListTypes")
     def listTypes;
     
     @Caller 
     def caller; 
     
-    def info = [:];
+    def info;
     def entity;
     def handler;
     
-    def txnTypes = ["WFEE", "BOM", "OTHER"];
+    def txnTypes = LOV.WATERWORKS_LEDGER_TYPE*.key
+
+    public void init() {
+        info =  [:];
+        info.year = dateSvc.getServerYear();
+    }
+    
+    def getMonthList() {
+        if( !info.year ) return [];
+        return billCycleSvc.findByYear( [sectorid:caller?.getMasterEntity().sector.objid, year:info.year]);
+    }
     
     def doOk() { 
         info.parentid = caller?.getMasterEntity()?.objid;
-        info.surcharge = 0.0;
-        info.interest = 0.0;
         svc.post( info ); 
-        
         if ( handler ) { 
             handler(); 
         }

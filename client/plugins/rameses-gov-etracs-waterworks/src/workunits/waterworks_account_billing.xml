@@ -16,7 +16,7 @@
         
         class WaterworksAccountBill extends ReportController {
         
-            @Service("WaterworksBillingReportService")
+            @Service("WaterworksAccountBillingService")
             def billSvc;
 
             def entity;
@@ -25,7 +25,7 @@
             String reportName = "com/rameses/gov/etracs/waterworks/reports/billing/WaterBill.jasper";
 
             public def getReportData() {
-                return billSvc.getReport([objid: entity.objid]);
+                return billSvc.getBilling([acctid: entity.objid]);
             }
       }
       ]]>        

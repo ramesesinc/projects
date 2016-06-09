@@ -17,8 +17,10 @@
 		<field name="term" required="true" type="integer" caption="Term"/>
 
 		<field name="installmentamount" required="true" type="decimal" caption="Installment Amount"/>
+		<!--
 		<field name="amount" required="true" type="decimal" caption="Amount"/>
 		<field name="amtpaid" required="true" type="decimal" caption="Amt Paid"/>		
+		-->
 		<field name="downpayment" required="true" type="decimal" caption="Downpayment"/>
 		<field name="balance" expr="amount-amtpaid"/>
 

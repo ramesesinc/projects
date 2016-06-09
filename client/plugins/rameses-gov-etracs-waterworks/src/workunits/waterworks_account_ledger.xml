@@ -1,6 +1,6 @@
 <workunit extends="com/rameses/seti2/templates/CrudList.xml"
           schemaName="waterworks_account_ledger" 
-          cols="billingcycle.year,billingcycle.monthname,item.code,item.title,amount,amtpaid,balance,billingcycle.duedate,remarks,installment.objid" 
+          cols="billingcycle.year,billingcycle.monthname,item.code,item.title,amount,amtpaid,billingcycle.duedate,remarks,installment.objid" 
           zorderBy="year,month"
           allowOpen="false">
     <invokers>

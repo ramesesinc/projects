@@ -55,7 +55,7 @@ class WaterworksComputationService  {
 			throw new Exception("No rules fired for waterworks computation");
 		def item = res.billItemList.items[0];
 		if(!item) 
-			throw new Exception('There is no computation applied. Please check rule fatcs')
+			throw new Exception('There is no computation applied. Please check rule facts')
 
 		return item.toItem();
 	}

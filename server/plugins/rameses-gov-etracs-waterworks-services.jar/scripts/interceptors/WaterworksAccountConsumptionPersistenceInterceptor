@@ -8,17 +8,34 @@ class WaterworksAccountConsumptionPersistenceInterceptor{
 	@DataContext("waterworks_account_ledger")
 	def ledger;
 
+	@DataContext("waterworks_account")
+	def acct;
+
+
 	@Before(pattern="PersistenceService.removeEntity", eval="#{args[0]._schemaname == 'waterworks_account_consumption'}")
 	public void beforeRemoveConsumption(def evt) {
 		def o = evt.args[0];
 
-		def ledgerid = consumption.select("ledgerid").find([objid: o.objid]).val();
-		if( ledgerid ) {
+		def zz = consumption.select("ledgerid,acctid").find([objid: o.objid]).first();
+		if( zz.ledgerid ) {
 			consumption.find([objid: o.objid]).update([ledgerid:"{NULL}"]);
-			ledger.find( [objid:ledgerid] ).delete();
+			ledger.find( [objid:zz.ledgerid] ).delete();
 		} 
+		o.acctid = zz.acctid;
+	}
+
+	@After(pattern="PersistenceService.removeEntity", eval="#{args[0]._schemaname == 'waterworks_account_consumption'}")
+	public void afterRemoveConsumption(def evt) {
+		def zz = evt.args[0];
+
+		//update the maximum in the acct code.
+		def z = consumption.select("c:{MAX(billingcycleid)}").find( [acctid:zz.acctid] ).val();
+		def bc = consumption.find([billingcycleid: z]).first();
+
+		acct.find( [objid: zz.acctid] ).update( [billingcycleid: z, currentreading: bc.reading, lastdateread: bc.billingcycle.readingdate,billdate:bc.billingcycle.billdate] );
 
 	}
+
 
 
 }

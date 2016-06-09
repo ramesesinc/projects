@@ -15,7 +15,7 @@ class WaterworksCashReceiptInterceptor{
 	@Service('WorkflowTaskService')
 	def taskSvc;
 
-	@Service('WaterworksBillingService')
+	@Service('WaterworksAccountBillingService')
 	def billingSvc;
 
 	@Service('LedgerPaymentService') 
@@ -25,11 +25,11 @@ class WaterworksCashReceiptInterceptor{
 	public void postPayment( evt) {
 		def o = evt.args[0]; 
 		def m = [:]
-		if(!o.info.applicationid && !o.info.acctid) 
+		if(!o.applicationid && !o.acctid) 
 			throw new Exception("WaterworksCashreceipt.post interceptor error. applicationid or acctid is required!");
 
-		def appid = o.info.applicationid;
-		def acctid = o.info.acctid;
+		def appid = o.applicationid;
+		def acctid = o.acctid;
 
 		//post waterworks_payment. This is different from cashreceipt bec. this allows us to reverse transactions
 		def pmt = [ _schemaname:'waterworks_payment' ];
@@ -46,19 +46,20 @@ class WaterworksCashReceiptInterceptor{
 		pmt.txnmode = 'ONLINE';
 		pmt.voided = 0;
 		pmt.items = [];
-		o.billitems.findAll{ it.amount>0 }.each { 			
+		o.items.each {
 			def p = [:];
 			p.acctid = pmt.acctid;
 			p.applicationid = pmt.applicationid; 
 			p.installmentid = it.installmentid;
 			p.txnrefid = it.refid;
 			p.amount = it.amount;
-			p.discount = it.discount;
-			p.surcharge = it.surcharge;
-			p.interest = it.interest;
+			p.discount = 0;
+			p.surcharge = 0;
+			p.interest = 0;
 			p.item = it.item;
 			pmt.items << p;
-		} 
+		}
+
 		ledgerPaymentSvc.post( pmt ); 
 
 		def hasItems = billingSvc.getBilling([ applicationid: pmt.applicationid, acctid: pmt.acctid ]);

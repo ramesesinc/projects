@@ -71,9 +71,7 @@ class WaterworksLedgerPaymentInterceptor {
 	public void afterPostPayment( evt ) { 
 		def o = evt.args[0];
 		o.items.each { 
-			if ( it.installmentid ) {
-				installment.find([objid:it.installmentid]).update( [amtpaid: "{amtpaid+:amt}"], [amt: it.amount] );
-			}
+			if( !it.txnrefid ) return;
 			if ( (it.acctid || it.applicationid) && !it.txnrefid ) 
 				throw new Exception('Please provide txnrefid');
 

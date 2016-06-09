@@ -35,8 +35,6 @@ public class InstallmentPage extends javax.swing.JPanel {
         xDecimalField1 = new com.rameses.rcp.control.XDecimalField();
         xDecimalField3 = new com.rameses.rcp.control.XDecimalField();
         xIntegerField1 = new com.rameses.rcp.control.XIntegerField();
-        xDateField1 = new com.rameses.rcp.control.XDateField();
-        xDateField2 = new com.rameses.rcp.control.XDateField();
         xDecimalField2 = new com.rameses.rcp.control.XDecimalField();
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
@@ -60,18 +58,6 @@ public class InstallmentPage extends javax.swing.JPanel {
         xIntegerField1.setName("entity.term"); // NOI18N
         xIntegerField1.setRequired(true);
         xFormPanel1.add(xIntegerField1);
-
-        xDateField1.setCaption("Start Date");
-        xDateField1.setName("entity.startdate"); // NOI18N
-        xDateField1.setRequired(true);
-        xFormPanel1.add(xDateField1);
-
-        xDateField2.setEditable(false);
-        xDateField2.setCaption("End Date");
-        xDateField2.setDepends(new String[] {"entity.startdate", "entity.term"});
-        xDateField2.setEnabled(false);
-        xDateField2.setName("entity.enddate"); // NOI18N
-        xFormPanel1.add(xDateField2);
 
         xDecimalField2.setCaption("Installment Amount");
         xDecimalField2.setDepends(new String[] {"entity.term", "entity.downpayment"});
@@ -97,8 +83,6 @@ public class InstallmentPage extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private com.rameses.rcp.control.XDateField xDateField1;
-    private com.rameses.rcp.control.XDateField xDateField2;
     private com.rameses.rcp.control.XDecimalField xDecimalField1;
     private com.rameses.rcp.control.XDecimalField xDecimalField2;
     private com.rameses.rcp.control.XDecimalField xDecimalField3;

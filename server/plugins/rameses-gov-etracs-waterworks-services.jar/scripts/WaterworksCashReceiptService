@@ -3,7 +3,7 @@ import com.rameses.rules.common.*;
 
 class WaterworksCashReceiptService  {
 	
-	@Service('WaterworksBillingService')
+	@Service('WaterworksAccountBillingService')
 	def billingService;
 
 	@DataContext('waterworks_application')
@@ -33,17 +33,58 @@ class WaterworksCashReceiptService  {
 			parm.applicationid = acct.objid;
 		} 
 
+		def acc = billingService.getBilling( parm );
+		
 		def p = [:];
-		p.paidby = acct.acctname; 
+		p.acctno = acct.acctno;
+		p.paidby = acct.acctname + " (" + acct.acctno + ")"; 
 		p.paidbyaddress = acct.address?.text; 
 		p.payer = acct.owner; 
-		p.billitems = [];
+		p.items = [];
 
-		def list = billingService.getBilling( parm );
-		if ( !list ) throw new Exception('No unpaid balance for this account'); 
-		
-		p.billitems.addAll( list ); 
-		p.info = parm; 
+		def tmpitems = acc.items;
+
+		//filter based on specified pay option
+		if( params.month ) {
+			int maxMonth = (params.month.year*12)+params.month.month;
+			tmpitems = tmpitems.findAll{ ((it.year*12)+it.month)<=maxMonth }; 
+		}
+
+		/*
+		println "counte " + tmpitems.size();
+		tmpitems.each {
+			println it.item.title + " " + it.year + " " + it.month + " " + it.amount;
+		}
+		*/
+
+		int idx = 0;
+		//separate first all watersales items
+		tmpitems.findAll{ it.txntype == 'WATERSALES' }.each {
+			def m = [:];
+			m.item = it.item;
+			m.amount = it.amount;
+			m.sortorder = idx++;
+			m.month = it.month;
+			m.monthname = it.monthname;
+			m.year = it.year;
+			m.refid = it.refid;
+			m.remarks = it.monthname + " " + it.year;
+			m.particulars = (it.item.code?"("+it.item.code+") ": "" ) + it.item.title + " for " + m.remarks;
+			p.items << m;
+		}
+
+		//we will group surcharge and interest into their respective accounts...
+		def acctGrps = tmpitems.findAll{ it.txntype !='WATERSALES' }.groupBy{ it.item };
+		acctGrps.each { k,v->
+			def m = [:];
+			m.item = k;
+			m.amount = v.sum{it.amount};
+			m.sortorder = idx++;
+			m.particulars = (k.code?"("+k.code+") ":"") + k.title;
+			p.items << m;
+		}
+
+		p.amount = p.items.sum{ it.amount };	
 
 		if(parm.applicationid) p.applicationid = parm.applicationid;
 		if(parm.acctid) p.acctid = parm.acctid;

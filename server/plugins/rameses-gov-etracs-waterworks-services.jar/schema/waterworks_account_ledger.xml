@@ -4,7 +4,8 @@
 		<field name="objid" primary="true"  prefix="WAL"/>
 		<field name="parentid" required="true"/> 
 
-		<complex name="billingcycle" jointype="many-to-one" ref="waterworks_billing_cycle"  includefields="objid,year,month,monthname,duedate" required="false">
+		<complex name="billingcycle" jointype="many-to-one" ref="waterworks_billing_cycle"  
+			includefields="objid,year,month,monthname,duedate" required="false">
 			<key field="billingcycleid" target="objid"/>
 		</complex>
 
@@ -15,13 +16,17 @@
 		<field name="remarks" caption="Remarks"/>
 		<field name="amount" required="true" caption="Amount" datatype="decimal"/>
 		<field name="amtpaid" required="true" caption="AmtPaid" datatype="decimal"/>
-		<field name="balance" expr="amount-amtpaid" caption="Balance" datatype="decimal"/>
-		<field name="installmentid" />
-
+		
+		<complex name="installment" ref="waterworks_installment" required="false" jointype="many-to-one"
+			includefields="objid,term,stardate,enddate,downpayment,installmentamount">
+			<key field="installmentid" target="objid"/>
+		</complex>	
+		
 		<complex name="consumption" ref="waterworks_account_consumption" jointype="many-to-one" required="false"
-			includefields="volume,rate,reading,prevreading">
+			includefields="objid,volume,rate,reading,prevreading">
 			<key field="objid" target="ledgerid" />
 		</complex>	
+
 	</element>
 
 </schema>

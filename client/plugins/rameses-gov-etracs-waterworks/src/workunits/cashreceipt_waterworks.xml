@@ -4,4 +4,7 @@
         <invoker type="cashreceipt:barcode:51030" action="loadBarcode" caption="Cash Receipt Waterworks"/>
     </invokers>
     <code class="com.rameses.gov.etracs.waterworks.models.WaterworksCashReceipt" />
+    <pages>
+        <page name="default" template="com.rameses.gov.etracs.waterworks.views.CashReceiptPage"/>
+    </pages>    
 </workunit>

@@ -17,7 +17,7 @@
         
         class WaterworksBilling extends CrudReportModel {
             
-            @Service("WaterworksBillingService2")
+            @Service("WaterworksAccountBillingService")
             def billSvc;    
         
             def view() {

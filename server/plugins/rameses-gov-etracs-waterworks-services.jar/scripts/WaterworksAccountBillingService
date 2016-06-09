@@ -1,0 +1,111 @@
+import com.rameses.annotations.*;
+
+import com.rameses.rules.common.*;
+import waterworks.facts.*;
+import treasury.facts.*;
+import com.rameses.functions.*;
+
+class WaterworksAccountBillingService  {
+	
+	@Service("RuleExecutorService")
+	def ruleSvc;
+
+	@Service("WaterworksBillingCycleService")
+	def billingCycleSvc;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@DataContext("waterworks_account")
+	def acct;
+
+	@DataContext("waterworks_account_ledger")
+	def ledger;
+
+	
+
+	@DataContext("waterworks_installment")
+	def installment;
+
+	@DataContext("itemaccount")
+	def itemaccount;
+
+	void buildConsumptionFacts( def o, def facts, def currYear, def currMonth ) {
+		//account based on consmption
+		def list = ledger.find([parentid: o.acctid])
+			.select("year:{billingcycle.year},month:{billingcycle.month},volume:{consumption.volume},amount,amtdue:{amount-amtpaid},duedate:{billingcycle.duedate},refid:{objid}")
+			.where("NOT(consumption.objid IS NULL) AND amount - amtpaid > 0").list();
+
+		//account based on installment	
+		for( d in list) {
+			if(d.year > currYear) continue;
+			if( d.year < currYear ) {
+				d.status = 'PRIOR-ARREARS';
+			}
+			else if(d.month < currMonth) {
+				d.status = 'CURRENT-ARREARS';
+			}
+			else {
+				d.status = 'CURRENT';
+			}
+			facts << new WaterConsumption( d );
+		}
+	}
+
+	void buildInstallmentFacts( def o, def facts ) {
+		 //facts <<
+	     def list2 = ledger.find([parentid: o.acctid])
+			.select("year:{billingcycle.year},month:{billingcycle.month},volume:{consumption.volume},amount,amtpaid,balance:{amount-amtpaid},installment.term,installment.installmentamount,installment.downpayment,startdate")
+			.where("NOT(installment.objid IS NULL) AND amount - amtpaid > 0").list();
+
+		println "installments";	
+		list2.each {
+			println it;
+			//facts << new Installment( year:it.year, month:it.month, amount: it.amount );
+		}	
+	}
+
+	def monthNames = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+
+	@ProxyMethod
+	public def getBilling( def o ) {
+		if(!o.acctid ) throw new Exception("acctid is required");
+		def a = acct.find([objid:o.acctid]).first();
+		if(!a) throw new Exception("Account not found");
+
+		def bc = billingCycleSvc.findCurrentCycle([sectorid:a.sector.objid]);
+
+		if( a.billingcycle.objid != bc.objid )
+			throw new Exception("Account ledger for " + a.acctno + " is not updated. Current reading should be up to  "+ bc.year + " " + bc.monthname);
+
+		def currYear = bc.year;
+		def currMonth = bc.month;
+		def currDate = new CurrentDate( dateSvc.getServerDate() );
+
+		def facts = [];
+		facts << new BillDate( bc.billdate );
+		facts << new DueDate( bc.duedate );
+		facts << currDate;
+		buildConsumptionFacts( o, facts, currYear, currMonth );
+		buildInstallmentFacts( o, facts );
+
+		def res = ruleSvc.execute( "waterworksbilling", facts, null, null );
+
+		def feeList = [];
+		facts.findAll{ it instanceof WaterBillItem }.each {
+			def item = it.toItem();
+			item.monthname = monthNames[item.month-1];
+			item.particulars = (item.item.code? "("+item.item.code+") ":"") + item.item.title;
+			feeList << item;
+		};
+		if(!feeList) 
+			throw new Exception("There are currently no unpaid items");
+		a.items = feeList.findAll{it.amount>0}.sort{it.sortorder};	
+		a.grandtotal = new BigDecimal(a.items.sum{it.amount});
+		a.billdate = bc.billdate;
+		a.duedate = bc.duedate;
+		a.currdate = currDate.date;
+		return a;
+	}	
+
+}

@@ -15,7 +15,7 @@
 		<field name="reader_name" required="false" caption="ReaderName"/>
 		<field name="volume" required="true" caption="Volume"/>
 
-		<field name="ledgerid" visible="false"/>
+		<field name="ledgerid" />
 		<field name="rate" />
 	</element>
 </schema>

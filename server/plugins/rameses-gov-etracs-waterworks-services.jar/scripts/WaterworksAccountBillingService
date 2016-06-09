@@ -33,7 +33,7 @@ class WaterworksAccountBillingService  {
 	void buildConsumptionFacts( def o, def facts, def currYear, def currMonth ) {
 		//account based on consmption
 		def list = ledger.find([parentid: o.acctid])
-			.select("year:{billingcycle.year},month:{billingcycle.month},volume:{consumption.volume},amount,amtdue:{amount-amtpaid},duedate:{billingcycle.duedate},refid:{objid}")
+			.select("year:{billingcycle.year},month:{billingcycle.month},volume:{consumption.volume},amount,amtdue:{amount-amtpaid},duedate:{billingcycle.duedate},disconnectiondate:{billingcycle.disconnectiondate},refid:{objid}")
 			.where("NOT(consumption.objid IS NULL) AND amount - amtpaid > 0").list();
 
 		//account based on installment	

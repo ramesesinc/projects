@@ -1,7 +1,8 @@
 <schema adapter="waterworks">
 	<element tablename="waterworks_sector">
 		<field name="objid" primary="true" editable="false" caption="Code"/>
-		<field name="code"/>
+		<field name="code" caption="SectorCode"/>
+		
 		<complex name="readers" ref="waterworks_sector_reader" jointype="one-to-many">
 			<key field="objid" target="sectorid"/>
 		</complex>

@@ -3,9 +3,9 @@
 	<element tablename="waterworks_stubout">
 		<field name="objid" primary="true" prefix="SO"/>
 		<field name="code" required="true" indexed="true" caption="Stubout Code" searchable="true"/>
-		<field name="description" required="true" indexed="true" caption="Description"/>
+		<field name="description" required="true" indexed="true" caption="Stubout Description"/>
 		<complex name="zone" ref="waterworks_sector_zone" jointype="many-to-one" 
-			includefields="objid,code,sector.objid,sector.code,reader.objid">
+			includefields="objid,code,description,sector.objid,sector.code,reader.objid">
 			<key field="zoneid" target="objid"/>	
 		</complex>	
 		<field name="barangay_objid" />

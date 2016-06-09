@@ -93,7 +93,7 @@
                 <Property name="items" type="java.lang.String" value="monthList"/>
                 <Property name="name" type="java.lang.String" value="info.billingcycle" noResource="true"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[120, 20]"/>
+                  <Dimension value="[100, 20]"/>
                 </Property>
                 <Property name="required" type="boolean" value="true"/>
               </Properties>
@@ -119,7 +119,7 @@
                     <StringItem index="0" value="info.billingcycle"/>
                   </StringArray>
                 </Property>
-                <Property name="expression" type="java.lang.String" value="#{dateFormatter.format( info.billingcycle.fromperiod)}"/>
+                <Property name="expression" type="java.lang.String" value="#{info.billingcycle.fromperiod? dateFormatter.format( info.billingcycle.fromperiod) : &apos;&apos;}"/>
                 <Property name="opaque" type="boolean" value="true"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[0, 20]"/>
@@ -144,7 +144,7 @@
                     <StringItem index="0" value="info.billingcycle"/>
                   </StringArray>
                 </Property>
-                <Property name="expression" type="java.lang.String" value="#{dateFormatter.format( info.billingcycle.toperiod)} "/>
+                <Property name="expression" type="java.lang.String" value="#{info.billingcycle.toperiod? dateFormatter.format( info.billingcycle.toperiod) : &apos;&apos;} "/>
                 <Property name="opaque" type="boolean" value="true"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[0, 20]"/>
@@ -169,7 +169,7 @@
                     <StringItem index="0" value="info.billingcycle"/>
                   </StringArray>
                 </Property>
-                <Property name="expression" type="java.lang.String" value="#{dateFormatter.format( info.billingcycle.readingdate)} "/>
+                <Property name="expression" type="java.lang.String" value="#{info.billingcycle.readingdate? dateFormatter.format( info.billingcycle.readingdate) : &apos;&apos;} "/>
                 <Property name="opaque" type="boolean" value="true"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[0, 20]"/>
@@ -194,7 +194,7 @@
                     <StringItem index="0" value="info.billingcycle"/>
                   </StringArray>
                 </Property>
-                <Property name="expression" type="java.lang.String" value="#{dateFormatter.format( info.billingcycle.billdate)} "/>
+                <Property name="expression" type="java.lang.String" value="#{info.billingcycle.billdate? dateFormatter.format( info.billingcycle.billdate) : &apos;&apos;} "/>
                 <Property name="opaque" type="boolean" value="true"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[0, 20]"/>
@@ -219,7 +219,7 @@
                     <StringItem index="0" value="info.billingcycle"/>
                   </StringArray>
                 </Property>
-                <Property name="expression" type="java.lang.String" value="#{dateFormatter.format( info.billingcycle.duedate)} "/>
+                <Property name="expression" type="java.lang.String" value="#{info.billingcycle.duedate? dateFormatter.format( info.billingcycle.duedate) : &apos;&apos;} "/>
                 <Property name="opaque" type="boolean" value="true"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[0, 20]"/>
@@ -244,7 +244,7 @@
                     <StringItem index="0" value="info.billingcycle"/>
                   </StringArray>
                 </Property>
-                <Property name="expression" type="java.lang.String" value="#{dateFormatter.format( info.billingcycle.disconnectiondate)} "/>
+                <Property name="expression" type="java.lang.String" value="#{info.billingcycle.disconnectiondate? dateFormatter.format( info.billingcycle.disconnectiondate) : &apos;&apos;} "/>
                 <Property name="opaque" type="boolean" value="true"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[0, 20]"/>
@@ -410,10 +410,13 @@
                 </Component>
                 <Component class="com.rameses.rcp.control.XDecimalField" name="xDecimalField2">
                   <Properties>
+                    <Property name="editable" type="boolean" value="true"/>
                     <Property name="caption" type="java.lang.String" value="Amount"/>
-                    <Property name="enabled" type="boolean" value="false"/>
                     <Property name="name" type="java.lang.String" value="info.amount" noResource="true"/>
                   </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="xDecimalField2ActionPerformed"/>
+                  </Events>
                 </Component>
                 <Component class="com.rameses.rcp.control.XDecimalField" name="xDecimalField3">
                   <Properties>

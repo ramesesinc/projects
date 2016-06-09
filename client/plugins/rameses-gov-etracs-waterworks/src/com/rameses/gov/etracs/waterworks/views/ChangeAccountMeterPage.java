@@ -30,84 +30,32 @@ public class ChangeAccountMeterPage extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        xPanel1 = new com.rameses.rcp.control.XPanel();
-        xFormPanel5 = new com.rameses.rcp.control.XFormPanel();
-        xLabel20 = new com.rameses.rcp.control.XLabel();
-        xLabel17 = new com.rameses.rcp.control.XLabel();
-        xLabel18 = new com.rameses.rcp.control.XLabel();
-        xLabel19 = new com.rameses.rcp.control.XLabel();
         xPanel2 = new com.rameses.rcp.control.XPanel();
         xFormPanel6 = new com.rameses.rcp.control.XFormPanel();
+        xComboBox4 = new com.rameses.rcp.control.XComboBox();
         xLookupField4 = new com.rameses.rcp.control.XLookupField();
         xLabel21 = new com.rameses.rcp.control.XLabel();
-        xLabel22 = new com.rameses.rcp.control.XLabel();
         xLabel23 = new com.rameses.rcp.control.XLabel();
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
-        xTitledBorder1.setTitle("Current Meter Information");
-        xPanel1.setBorder(xTitledBorder1);
-
-        xFormPanel5.setCaptionWidth(120);
-
-        xLabel20.setBackground(new java.awt.Color(245, 245, 245));
-        xLabel20.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
-        xLabel20.setCaption("Serial Number");
-        xLabel20.setExpression("#{entity.meter.serialno}");
-        xLabel20.setOpaque(true);
-        xLabel20.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel5.add(xLabel20);
-
-        xLabel17.setBackground(new java.awt.Color(245, 245, 245));
-        xLabel17.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
-        xLabel17.setCaption("Brand");
-        xLabel17.setExpression("#{entity.meter.brand}");
-        xLabel17.setOpaque(true);
-        xLabel17.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel5.add(xLabel17);
-
-        xLabel18.setBackground(new java.awt.Color(245, 245, 245));
-        xLabel18.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
-        xLabel18.setCaption("Size");
-        xLabel18.setExpression("#{entity.meter.sizeid}");
-        xLabel18.setOpaque(true);
-        xLabel18.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel5.add(xLabel18);
-
-        xLabel19.setBackground(new java.awt.Color(245, 245, 245));
-        xLabel19.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
-        xLabel19.setCaption("Capacity");
-        xLabel19.setExpression("#{entity.meter.capacity}");
-        xLabel19.setOpaque(true);
-        xLabel19.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel5.add(xLabel19);
-
-        javax.swing.GroupLayout xPanel1Layout = new javax.swing.GroupLayout(xPanel1);
-        xPanel1.setLayout(xPanel1Layout);
-        xPanel1Layout.setHorizontalGroup(
-            xPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(xPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(xFormPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, 316, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-        xPanel1Layout.setVerticalGroup(
-            xPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, xPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(xFormPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, 107, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-
-        com.rameses.rcp.control.border.XTitledBorder xTitledBorder2 = new com.rameses.rcp.control.border.XTitledBorder();
-        xTitledBorder2.setTitle("New Meter Information");
-        xPanel2.setBorder(xTitledBorder2);
+        xTitledBorder1.setTitle("Meter Information");
+        xPanel2.setBorder(xTitledBorder1);
 
         xFormPanel6.setCaptionWidth(120);
 
+        xComboBox4.setCaption("Meter Size");
+        xComboBox4.setExpression("#{item.title}");
+        xComboBox4.setItems("listTypes.metersize");
+        xComboBox4.setName("info.metersize"); // NOI18N
+        xComboBox4.setRequired(true);
+        xComboBox4.setStretchWidth(100);
+        xFormPanel6.add(xComboBox4);
+
         xLookupField4.setCaption("Serial Number");
         xLookupField4.setCaptionWidth(120);
+        xLookupField4.setDepends(new String[] {"info.metersize"});
         xLookupField4.setExpression("#{info.meter.serialno}");
-        xLookupField4.setHandler("waterworks_meter_wo_account:lookup");
+        xLookupField4.setHandler("lookupMeter");
         xLookupField4.setName("info.meter"); // NOI18N
         xLookupField4.setPreferredSize(new java.awt.Dimension(0, 20));
         xLookupField4.setRequired(true);
@@ -116,25 +64,16 @@ public class ChangeAccountMeterPage extends javax.swing.JPanel {
         xLabel21.setBackground(new java.awt.Color(245, 245, 245));
         xLabel21.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel21.setCaption("Brand");
-        xLabel21.setDepends(new String[] {"info.meter"});
+        xLabel21.setDepends(new String[] {"info.meter", "info.metersize"});
         xLabel21.setExpression("#{info.meter.brand}");
         xLabel21.setOpaque(true);
         xLabel21.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel6.add(xLabel21);
 
-        xLabel22.setBackground(new java.awt.Color(245, 245, 245));
-        xLabel22.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
-        xLabel22.setCaption("Size");
-        xLabel22.setDepends(new String[] {"info.meter"});
-        xLabel22.setExpression("#{info.meter.size.title}");
-        xLabel22.setOpaque(true);
-        xLabel22.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel6.add(xLabel22);
-
         xLabel23.setBackground(new java.awt.Color(245, 245, 245));
         xLabel23.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel23.setCaption("Capacity");
-        xLabel23.setDepends(new String[] {"info.meter"});
+        xLabel23.setDepends(new String[] {"info.meter", "info.metersize"});
         xLabel23.setExpression("#{info.meter.capacity}");
         xLabel23.setOpaque(true);
         xLabel23.setPreferredSize(new java.awt.Dimension(0, 20));
@@ -153,7 +92,7 @@ public class ChangeAccountMeterPage extends javax.swing.JPanel {
             xPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, xPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, 102, Short.MAX_VALUE)
+                .addComponent(xFormPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, 103, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -163,33 +102,23 @@ public class ChangeAccountMeterPage extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(xPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(xPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(xPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(xPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(xPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private com.rameses.rcp.control.XFormPanel xFormPanel5;
+    private com.rameses.rcp.control.XComboBox xComboBox4;
     private com.rameses.rcp.control.XFormPanel xFormPanel6;
-    private com.rameses.rcp.control.XLabel xLabel17;
-    private com.rameses.rcp.control.XLabel xLabel18;
-    private com.rameses.rcp.control.XLabel xLabel19;
-    private com.rameses.rcp.control.XLabel xLabel20;
     private com.rameses.rcp.control.XLabel xLabel21;
-    private com.rameses.rcp.control.XLabel xLabel22;
     private com.rameses.rcp.control.XLabel xLabel23;
     private com.rameses.rcp.control.XLookupField xLookupField4;
-    private com.rameses.rcp.control.XPanel xPanel1;
     private com.rameses.rcp.control.XPanel xPanel2;
     // End of variables declaration//GEN-END:variables
 }

@@ -67,6 +67,7 @@ public class AccountPage extends javax.swing.JPanel {
         xLabel16 = new com.rameses.rcp.control.XLabel();
         xLabel24 = new com.rameses.rcp.control.XLabel();
 
+        xTabbedPane1.setDynamic(true);
         xTabbedPane1.setItems("sections");
 
         com.rameses.rcp.control.layout.YLayout yLayout1 = new com.rameses.rcp.control.layout.YLayout();
@@ -304,7 +305,7 @@ public class AccountPage extends javax.swing.JPanel {
         xLabel13.setBackground(new java.awt.Color(245, 245, 245));
         xLabel13.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel13.setCaption("Period From");
-        xLabel13.setExpression("#{dateFormatter.format( entity.billingcycle.fromperiod)}");
+        xLabel13.setExpression("#{entity.billingcycle.fromperiod? dateFormatter.format( entity.billingcycle.fromperiod): ''}");
         xLabel13.setOpaque(true);
         xLabel13.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel4.add(xLabel13);
@@ -312,7 +313,7 @@ public class AccountPage extends javax.swing.JPanel {
         xLabel21.setBackground(new java.awt.Color(245, 245, 245));
         xLabel21.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel21.setCaption("Period To");
-        xLabel21.setExpression("#{dateFormatter.format( entity.billingcycle.toperiod)} ");
+        xLabel21.setExpression("#{entity.billingcycle.toperiod? dateFormatter.format( entity.billingcycle.toperiod) : ''} ");
         xLabel21.setOpaque(true);
         xLabel21.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel4.add(xLabel21);
@@ -320,7 +321,7 @@ public class AccountPage extends javax.swing.JPanel {
         xLabel14.setBackground(new java.awt.Color(245, 245, 245));
         xLabel14.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel14.setCaption("Reading Date");
-        xLabel14.setExpression("#{dateFormatter.format( entity.billingcycle.readingdate)} ");
+        xLabel14.setExpression("#{entity.billingcycle.readingdate? dateFormatter.format( entity.billingcycle.readingdate) : ''} ");
         xLabel14.setOpaque(true);
         xLabel14.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel4.add(xLabel14);
@@ -328,7 +329,7 @@ public class AccountPage extends javax.swing.JPanel {
         xLabel18.setBackground(new java.awt.Color(245, 245, 245));
         xLabel18.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel18.setCaption("Bill Date");
-        xLabel18.setExpression("#{dateFormatter.format( entity.billingcycle.billdate)} ");
+        xLabel18.setExpression("#{entity.billingcycle.billdate? dateFormatter.format( entity.billingcycle.billdate) : ''} ");
         xLabel18.setOpaque(true);
         xLabel18.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel4.add(xLabel18);
@@ -336,7 +337,7 @@ public class AccountPage extends javax.swing.JPanel {
         xLabel15.setBackground(new java.awt.Color(245, 245, 245));
         xLabel15.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel15.setCaption("Due Date");
-        xLabel15.setExpression("#{dateFormatter.format( entity.billingcycle.duedate)} ");
+        xLabel15.setExpression("#{entity.billingcycle.duedate? dateFormatter.format( entity.billingcycle.duedate) : ''} ");
         xLabel15.setOpaque(true);
         xLabel15.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel4.add(xLabel15);
@@ -344,7 +345,7 @@ public class AccountPage extends javax.swing.JPanel {
         xLabel16.setBackground(new java.awt.Color(245, 245, 245));
         xLabel16.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel16.setCaption("Disconnection Date");
-        xLabel16.setExpression("#{dateFormatter.format( entity.billingcycle.disconnectiondate)} ");
+        xLabel16.setExpression("#{entity.billingcycle.disconnectiondate? dateFormatter.format( entity.billingcycle.disconnectiondate) : ''} ");
         xLabel16.setOpaque(true);
         xLabel16.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel4.add(xLabel16);
@@ -352,7 +353,7 @@ public class AccountPage extends javax.swing.JPanel {
         xLabel24.setBackground(new java.awt.Color(245, 245, 245));
         xLabel24.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel24.setCaption("Current Reading");
-        xLabel24.setExpression("#{entity.currentreading}");
+        xLabel24.setExpression("#{entity.currentreading==null ? '' : entity.currentreading}");
         xLabel24.setOpaque(true);
         xLabel24.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel4.add(xLabel24);

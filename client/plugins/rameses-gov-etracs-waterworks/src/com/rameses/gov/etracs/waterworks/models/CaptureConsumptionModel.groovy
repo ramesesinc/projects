@@ -44,13 +44,16 @@ public class CaptureConsumptionModel  {
     
     @PropertyChangeListener
     def listener = [
-        "info.(reading|prevreading)" : { o->
-            info.volume = info.reading - info.prevreading;
+        "info.(reading|prevreading)" : { o-> 
+            def curr = (info.reading==null? 0 : info.reading);
+            def prev = (info.prevreading==null? 0 : info.prevreading);
+            info.volume = curr - prev; 
         },
         "info.(volume|reading)" : { o->
-            info.prevreading = info.reading - info.volume;
-            if(info.prevreading<0) info.prevreading = 0;
-        }
+            def curr = (info.reading==null? 0 : info.reading);
+            def vol = (info.volume==null? 0 : info.volume); 
+            info.prevreading = curr - vol; 
+        } 
     ];
 
     void init() {

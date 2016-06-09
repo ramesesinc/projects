@@ -128,8 +128,8 @@ class RuleMgmtService extends ActiveCrudListService {
 				ruleid: o.parentid,
 				varname: o.varname,
 				datatype: o.fact.factclass,
-				pos: o.pos
-			];		
+				pos: o.pos 
+			]; 
 			em.save( m, "var");
 		}
 		else {

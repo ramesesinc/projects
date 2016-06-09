@@ -50,6 +50,7 @@ public class BillItem {
             compromise: compromise,
             sortorder: sortorder,
             title: title,
+            txntype: txntype,
             remarks: remarks
         ];
     }

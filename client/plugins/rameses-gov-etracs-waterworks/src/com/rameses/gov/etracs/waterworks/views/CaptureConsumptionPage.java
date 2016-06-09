@@ -72,7 +72,7 @@ public class CaptureConsumptionPage extends javax.swing.JPanel {
         xComboBox2.setExpression("#{item.monthname} ");
         xComboBox2.setItems("monthList");
         xComboBox2.setName("info.billingcycle"); // NOI18N
-        xComboBox2.setPreferredSize(new java.awt.Dimension(120, 20));
+        xComboBox2.setPreferredSize(new java.awt.Dimension(100, 20));
         xComboBox2.setRequired(true);
         xComboBox2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -85,7 +85,7 @@ public class CaptureConsumptionPage extends javax.swing.JPanel {
         xLabel13.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel13.setCaption("Period From");
         xLabel13.setDepends(new String[] {"info.billingcycle"});
-        xLabel13.setExpression("#{dateFormatter.format( info.billingcycle.fromperiod)}");
+        xLabel13.setExpression("#{info.billingcycle.fromperiod? dateFormatter.format( info.billingcycle.fromperiod) : ''}");
         xLabel13.setOpaque(true);
         xLabel13.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel5.add(xLabel13);
@@ -94,7 +94,7 @@ public class CaptureConsumptionPage extends javax.swing.JPanel {
         xLabel21.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel21.setCaption("Period To");
         xLabel21.setDepends(new String[] {"info.billingcycle"});
-        xLabel21.setExpression("#{dateFormatter.format( info.billingcycle.toperiod)} ");
+        xLabel21.setExpression("#{info.billingcycle.toperiod? dateFormatter.format( info.billingcycle.toperiod) : ''} ");
         xLabel21.setOpaque(true);
         xLabel21.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel5.add(xLabel21);
@@ -103,7 +103,7 @@ public class CaptureConsumptionPage extends javax.swing.JPanel {
         xLabel14.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel14.setCaption("Reading Date");
         xLabel14.setDepends(new String[] {"info.billingcycle"});
-        xLabel14.setExpression("#{dateFormatter.format( info.billingcycle.readingdate)} ");
+        xLabel14.setExpression("#{info.billingcycle.readingdate? dateFormatter.format( info.billingcycle.readingdate) : ''} ");
         xLabel14.setOpaque(true);
         xLabel14.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel5.add(xLabel14);
@@ -112,7 +112,7 @@ public class CaptureConsumptionPage extends javax.swing.JPanel {
         xLabel18.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel18.setCaption("Bill Date");
         xLabel18.setDepends(new String[] {"info.billingcycle"});
-        xLabel18.setExpression("#{dateFormatter.format( info.billingcycle.billdate)} ");
+        xLabel18.setExpression("#{info.billingcycle.billdate? dateFormatter.format( info.billingcycle.billdate) : ''} ");
         xLabel18.setOpaque(true);
         xLabel18.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel5.add(xLabel18);
@@ -121,7 +121,7 @@ public class CaptureConsumptionPage extends javax.swing.JPanel {
         xLabel15.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel15.setCaption("Due Date");
         xLabel15.setDepends(new String[] {"info.billingcycle"});
-        xLabel15.setExpression("#{dateFormatter.format( info.billingcycle.duedate)} ");
+        xLabel15.setExpression("#{info.billingcycle.duedate? dateFormatter.format( info.billingcycle.duedate) : ''} ");
         xLabel15.setOpaque(true);
         xLabel15.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel5.add(xLabel15);
@@ -130,7 +130,7 @@ public class CaptureConsumptionPage extends javax.swing.JPanel {
         xLabel16.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel16.setCaption("Disconnection Date");
         xLabel16.setDepends(new String[] {"info.billingcycle"});
-        xLabel16.setExpression("#{dateFormatter.format( info.billingcycle.disconnectiondate)} ");
+        xLabel16.setExpression("#{info.billingcycle.disconnectiondate? dateFormatter.format( info.billingcycle.disconnectiondate) : ''} ");
         xLabel16.setOpaque(true);
         xLabel16.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel5.add(xLabel16);
@@ -201,9 +201,14 @@ public class CaptureConsumptionPage extends javax.swing.JPanel {
         xLabel1.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel2.add(xLabel1);
 
+        xDecimalField2.setEditable(true);
         xDecimalField2.setCaption("Amount");
-        xDecimalField2.setEnabled(false);
         xDecimalField2.setName("info.amount"); // NOI18N
+        xDecimalField2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                xDecimalField2ActionPerformed(evt);
+            }
+        });
         xFormPanel2.add(xDecimalField2);
 
         xDecimalField3.setCaption("Amount Paid");
@@ -275,6 +280,10 @@ public class CaptureConsumptionPage extends javax.swing.JPanel {
     private void xComboBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_xComboBox2ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_xComboBox2ActionPerformed
+
+    private void xDecimalField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_xDecimalField2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_xDecimalField2ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.rameses.rcp.control.XButton xButton1;

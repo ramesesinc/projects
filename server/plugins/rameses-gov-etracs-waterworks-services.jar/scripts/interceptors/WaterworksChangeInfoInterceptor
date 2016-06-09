@@ -37,14 +37,20 @@ class WaterworksChangeInfoInterceptor {
 		info.meterid = info.meter.objid; 
 		info.remove('meter'); 
 
-		def o = wacct.select('meterid').find([ objid: info.objid ]).first(); 
+		def acctid = info.objid; 
+		if ( info.findBy ) acctid = info.findBy?.objid; 
+
+		def o = wacct.select('meterid').find([ objid: acctid ]).first(); 
 		wmeter.find([ objid: o.meterid ]).update([ currentacctid:'{null}']); 
+		info.acctid = acctid; 
 	} 
 
 	@After( pattern="ChangeInfoService.update", eval="#{args[0].info._schemaname=='waterworks_account' && args[0].info.meterid != null}" ) 
 	public void afterUpdateMeter( evt ) {
 		def info = evt.args[0].info;
-		wmeter.find([ objid: info.meterid ]).update([ currentacctid: info.objid ]); 
+		if ( info.acctid ) {
+			wmeter.find([ objid: info.meterid ]).update([ currentacctid: info.acctid ]); 	
+		} 
 	} 
 
 }

@@ -59,7 +59,7 @@
 			<key field="stuboutnodeid" target="objid"/> 
 		</complex>
 
-		<field name="currentreading" required="true" caption="Last Reading" type="integer"/>
+		<field name="currentreading" required="false" caption="Last Reading" type="integer"/>
 
 		<complex name="billingcycle" ref="waterworks_billing_cycle" jointype="many-to-one" required="false" 
 			includefields="objid,year,month,fromperiod,toperiod,duedate,billdate,readingdate,disconnectiondate,monthname">

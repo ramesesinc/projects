@@ -1,6 +1,9 @@
 [findRule]
 select * from sys_rule where objid=$P{ruleid} 
 
+[getRules]
+select * from sys_rule where ruleset=$P{ruleset}  
+
 [getRuleConditions]
 select rc.* from sys_rule r 
 	inner join sys_rule_condition rc on r.objid=rc.parentid 

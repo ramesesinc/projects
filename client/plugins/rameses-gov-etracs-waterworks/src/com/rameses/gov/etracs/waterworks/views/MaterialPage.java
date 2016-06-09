@@ -55,6 +55,7 @@ public class MaterialPage extends javax.swing.JPanel {
         xComboBox1.setCaption("Unit of Measure");
         xComboBox1.setItems("listTypes.unit");
         xComboBox1.setName("entity.unit"); // NOI18N
+        xComboBox1.setPreferredSize(new java.awt.Dimension(100, 20));
         xFormPanel1.add(xComboBox1);
 
         xDecimalField1.setCaption("Unit Cost");

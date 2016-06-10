@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
@@ -23,25 +24,26 @@ import com.rameses.android.R;
 import com.rameses.android.SettingsMenuActivity;
 import com.rameses.android.db.*;
 import com.rameses.android.efaas.adapter.MasterFileMenuAdapter;
-import com.rameses.android.efaas.bean.MasterFileItem;
+import com.rameses.android.efaas.bean.MasterFileListItem;
+import com.rameses.android.efaas.dialog.InfoDialog;
 import com.rameses.android.service.RevisionSettingService;
 import com.rameses.client.android.Platform;
 
 public class RevisionSettingDetailActivity extends SettingsMenuActivity {
 	
 	private ProgressDialog progressDialog;
-	List<MasterFileItem> data;
+	List<MasterFileListItem> data;
 	ListView list;
 	String revisionsetting;
 	Map revisionSettingData;
-	Context ctx;
+	Activity activity;
 	RevisionSettingService service;
 	
 	public boolean isCloseable() { return false; }	
 	
 	@Override
 	protected void onCreateProcess(Bundle savedInstanceState) {
-		ctx = this;
+		activity = this;
 		setContentView(R.layout.activity_listview_snyc);
 		
 		progressDialog = new ProgressDialog(this);
@@ -73,7 +75,7 @@ public class RevisionSettingDetailActivity extends SettingsMenuActivity {
 	}
 	
 	void loadListData(){
-		data = new ArrayList<MasterFileItem>();
+		data = new ArrayList<MasterFileListItem>();
 		
 		if(revisionsetting.equals("Land Revision Setting")){
 			LandRySettingDB db = new LandRySettingDB(); 
@@ -86,7 +88,7 @@ public class RevisionSettingDetailActivity extends SettingsMenuActivity {
 			for ( Map m : list ) { 
 				String code = m.get("ry") != null ? m.get("ry").toString() : "";
 				String name = m.get("appliedto") != null ? m.get("appliedto").toString() : "";
-				data.add(new MasterFileItem(code,name));
+				data.add(new MasterFileListItem(code,name));
 			}
 		}
 		
@@ -369,7 +371,7 @@ public class RevisionSettingDetailActivity extends SettingsMenuActivity {
 		@Override
 		public void handleMessage(Message msg) {
 			if (progressDialog.isShowing()) progressDialog.dismiss(); 
-			ApplicationUtil.showShortMsg("Sync Finish!");
+			new InfoDialog(activity,"Sync Finish!").show();
 			loadListData();
 		}
 	};

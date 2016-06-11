@@ -3,6 +3,7 @@ package com.rameses.android.efaas.adapter;
 import java.util.List;
 
 import com.rameses.android.R;
+import com.rameses.android.efaas.bean.FaasListItem;
 import com.rameses.android.efaas.bean.HomeListItem;
 
 import android.app.Activity;
@@ -14,13 +15,13 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class HomeMenuAdapter extends BaseAdapter {
+public class FaasMenuAdapter extends BaseAdapter {
 	
 	LayoutInflater inflater = null;
 	Context ctx;
-	List<HomeListItem> data;
+	List<FaasListItem> data;
 	
-	public HomeMenuAdapter(Activity activity, List<HomeListItem> data){
+	public FaasMenuAdapter(Activity activity, List<FaasListItem> data){
 		ctx = activity;
 		this.data = data;
 		inflater = ( LayoutInflater )ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -43,18 +44,23 @@ public class HomeMenuAdapter extends BaseAdapter {
 
 	@Override
 	public View getView(int pos, View view, ViewGroup vgroup) {
-		View rowView = inflater.inflate(R.layout.list_menu_image, null);
-		ImageView img = (ImageView) rowView.findViewById(R.id.list_menu_image);
-		TextView title = (TextView) rowView.findViewById(R.id.list_menu_title);
+		View rowView = inflater.inflate(R.layout.list_menu_faas, null);
 		
-		HomeListItem item = data.get(pos);
-		if(item != null) img.setImageResource(item.getId());
-		if(item != null) title.setText(item.getTitle());
+		TextView pin = (TextView) rowView.findViewById(R.id.list_menu_faas_pin);
+		TextView tdno = (TextView) rowView.findViewById(R.id.list_menu_faas_tdno);
+		TextView name = (TextView) rowView.findViewById(R.id.list_menu_faas_name);
+		
+		FaasListItem item = data.get(pos);
+		if(item != null){
+			pin.setText(item.getPin());
+			name.setText(item.getName());
+			tdno.setText(item.getTdNo());
+		}
 		
 		return rowView;
 	}
 	
-	public HomeListItem getListItem(int pos){
+	public FaasListItem getListItem(int pos){
 		return data.get(pos);
 	}
 

@@ -1,10 +1,10 @@
 package com.rameses.android.efaas.bean;
 
-public class MasterFileItem {
+public class MasterFileListItem {
 	
 	private String title, desc;
 	
-	public MasterFileItem(String title, String desc){
+	public MasterFileListItem(String title, String desc){
 		this.title = title;
 		this.desc = desc;
 	}

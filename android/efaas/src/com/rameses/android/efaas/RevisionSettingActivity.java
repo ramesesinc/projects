@@ -16,12 +16,12 @@ import com.rameses.android.ApplicationUtil;
 import com.rameses.android.R;
 import com.rameses.android.SettingsMenuActivity;
 import com.rameses.android.efaas.adapter.HomeMenuAdapter;
-import com.rameses.android.efaas.bean.HomeItem;
+import com.rameses.android.efaas.bean.HomeListItem;
 
 public class RevisionSettingActivity extends SettingsMenuActivity {
 	
 	private ProgressDialog progressDialog;
-	List<HomeItem> data;
+	List<HomeListItem> data;
 	ListView list;
 	Activity activity;
 	
@@ -48,12 +48,12 @@ public class RevisionSettingActivity extends SettingsMenuActivity {
 	}
 	
 	void loadListData(){
-		data = new ArrayList<HomeItem>();
-		data.add(new HomeItem(R.drawable.masterfile,"Land Revision Setting"));
-		data.add(new HomeItem(R.drawable.masterfile,"Building Revision Setting"));
-		data.add(new HomeItem(R.drawable.masterfile,"Machine Revision Setting"));
-		data.add(new HomeItem(R.drawable.masterfile,"Plant/Tree Revision Setting"));
-		data.add(new HomeItem(R.drawable.masterfile,"Miscellaneous Item Revision Setting"));
+		data = new ArrayList<HomeListItem>();
+		data.add(new HomeListItem(R.drawable.masterfile,"Land Revision Setting"));
+		data.add(new HomeListItem(R.drawable.masterfile,"Building Revision Setting"));
+		data.add(new HomeListItem(R.drawable.masterfile,"Machine Revision Setting"));
+		data.add(new HomeListItem(R.drawable.masterfile,"Plant/Tree Revision Setting"));
+		data.add(new HomeListItem(R.drawable.masterfile,"Miscellaneous Item Revision Setting"));
 		
 		list = (ListView) findViewById(R.id.list_home);
 		list.setAdapter(new HomeMenuAdapter(this,data));

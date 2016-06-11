@@ -192,18 +192,5 @@
 			    android:inputType="number|numberDecimal" />
 
         </LinearLayout>
-        
-        <Button
-	        android:id="@+id/appraisal_save"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:layout_margin="10dp"
-	        android:layout_gravity="center"
-	        android:minEms="5"
-	        android:padding="10dp"
-	        android:text="Save">
-            <requestFocus/>
-       </Button>
-    
 
 </LinearLayout>

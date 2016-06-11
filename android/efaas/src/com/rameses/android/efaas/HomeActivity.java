@@ -20,7 +20,7 @@ import com.rameses.android.ControlActivity;
 import com.rameses.android.R;
 import com.rameses.android.SettingsMenuActivity;
 import com.rameses.android.efaas.adapter.HomeMenuAdapter;
-import com.rameses.android.efaas.bean.HomeItem;
+import com.rameses.android.efaas.bean.HomeListItem;
 import com.rameses.android.system.ChangePasswordActivity;
 import com.rameses.android.system.LogoutController;
 import com.rameses.client.android.Platform;
@@ -30,7 +30,7 @@ public class HomeActivity extends SettingsMenuActivity   {
 	
 	ProgressDialog progressDialog;	
 	ListView list_home;
-	List<HomeItem> data;
+	List<HomeListItem> data;
 	Activity activity;
 	
 	public boolean isCloseable() { return false; }	
@@ -79,14 +79,14 @@ public class HomeActivity extends SettingsMenuActivity   {
 	}
 	
 	void loadListData(){
-		data = new ArrayList<HomeItem>();
-		data.add(new HomeItem(R.drawable.masterfile,"Master Files"));
-		data.add(new HomeItem(R.drawable.masterfile,"Revision Settings"));
-		data.add(new HomeItem(R.drawable.masterfile,"FAAS"));
-		data.add(new HomeItem(R.drawable.masterfile,"Download"));
-		data.add(new HomeItem(R.drawable.masterfile,"Upload"));
-		data.add(new HomeItem(R.drawable.change_password,"Change Password"));
-		data.add(new HomeItem(R.drawable.logout,"Logout"));
+		data = new ArrayList<HomeListItem>();
+		data.add(new HomeListItem(R.drawable.masterfile,"Master Files"));
+		data.add(new HomeListItem(R.drawable.masterfile,"Revision Settings"));
+		data.add(new HomeListItem(R.drawable.masterfile,"FAAS"));
+		data.add(new HomeListItem(R.drawable.masterfile,"Download"));
+		data.add(new HomeListItem(R.drawable.masterfile,"Upload"));
+		data.add(new HomeListItem(R.drawable.change_password,"Change Password"));
+		data.add(new HomeListItem(R.drawable.logout,"Logout"));
 		
 		list_home = (ListView) findViewById(R.id.list_home);
 		list_home.setAdapter(new HomeMenuAdapter(this,data));

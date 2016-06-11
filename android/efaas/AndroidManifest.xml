@@ -8,6 +8,8 @@
         android:minSdkVersion="11"
         android:targetSdkVersion="19" />
 
+    <uses-feature android:name="android.hardware.camera" />
+    
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
@@ -15,6 +17,7 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
     
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES"/>
 	<!-- My Location -->
@@ -59,5 +62,6 @@
         <activity android:name="com.rameses.android.efaas.FaasListActivity"  android:screenOrientation="portrait"/>
         <activity android:name="com.rameses.android.efaas.DownloadActivity"  android:screenOrientation="portrait"/>
         <activity android:name="com.rameses.android.efaas.FaasActivity"  android:screenOrientation="portrait"/>
+        <activity android:name="com.rameses.android.efaas.ImageCaptureActivity"  android:screenOrientation="portrait"/>
     </application>
 </manifest>

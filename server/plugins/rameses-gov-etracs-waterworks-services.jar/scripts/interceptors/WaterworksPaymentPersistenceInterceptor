@@ -5,7 +5,7 @@ class WaterworksPaymentPersistenceInterceptor {
 	@DataContext('waterworks_payment_item') 
 	def wpayitem; 	
 
-	@DataContext('waterworks_account_ledger') 
+	@DataContext('waterworks_account_consumption') 
 	def acctledger; 
 
 	@DataContext('waterworks_payment') 

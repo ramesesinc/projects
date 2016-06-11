@@ -1,0 +1,23 @@
+import com.rameses.annotations.*;
+import java.rmi.server.UID;
+
+class MarketCashReceiptBarcodeInterceptor{
+
+	@DataContext("market_account")
+	def acct;
+
+	@After(pattern="CashReceiptBarcodeService.findPrefix", eval="#{result.prefix == null}", index=1000)
+	public void findMarketPrefix(def evt) {
+		def a = evt.args[0];
+		//try to check first if the barcode exists in account or in application...
+		
+		def aa = acct.find( [acctno: a.barcodeid]).first();
+		if(aa?.objid) {
+			def o = evt.result;
+			o.prefix = "51031";
+			o.acctid = aa.objid;
+			o.barcodeid = a.barcodeid;
+		}
+	}	
+
+}

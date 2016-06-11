@@ -19,8 +19,8 @@ class WaterworksAccountBillingService  {
 	@DataContext("waterworks_account")
 	def acct;
 
-	@DataContext("waterworks_account_ledger")
-	def ledger;
+	@DataContext("waterworks_account_consumption")
+	def consumption;
 
 	
 
@@ -32,9 +32,9 @@ class WaterworksAccountBillingService  {
 
 	void buildConsumptionFacts( def o, def facts, def currYear, def currMonth ) {
 		//account based on consmption
-		def list = ledger.find([parentid: o.acctid])
-			.select("year:{billingcycle.year},month:{billingcycle.month},volume:{consumption.volume},amount,amtdue:{amount-amtpaid},duedate:{billingcycle.duedate},disconnectiondate:{billingcycle.disconnectiondate},refid:{objid}")
-			.where("NOT(consumption.objid IS NULL) AND amount - amtpaid > 0").list();
+		def list = consumption.find([acctid: o.acctid])
+			.select("year:{billingcycle.year},month:{billingcycle.month},volume,amount,amtdue:{amount-amtpaid},duedate:{billingcycle.duedate},disconnectiondate:{billingcycle.disconnectiondate},refid:{objid}")
+			.where(" amount - amtpaid > 0").list();
 
 		//account based on installment	
 		for( d in list) {
@@ -52,6 +52,7 @@ class WaterworksAccountBillingService  {
 		}
 	}
 
+	/*
 	void buildInstallmentFacts( def o, def facts ) {
 		 //facts <<
 	     def list2 = ledger.find([parentid: o.acctid])
@@ -64,6 +65,7 @@ class WaterworksAccountBillingService  {
 			//facts << new Installment( year:it.year, month:it.month, amount: it.amount );
 		}	
 	}
+	*/
 
 	def monthNames = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
 
@@ -75,8 +77,10 @@ class WaterworksAccountBillingService  {
 
 		def bc = billingCycleSvc.findCurrentCycle([sectorid:a.sector.objid]);
 
+		/*
 		if( a.billingcycle.objid != bc.objid )
-			throw new Exception("Account ledger for " + a.acctno + " is not updated. Current reading should be up to  "+ bc.year + " " + bc.monthname);
+			throw new Exception("Account  for " + a.acctno + " is not updated. Current reading should be up to  "+ bc.year + " " + bc.monthname);
+		*/	
 
 		def currYear = bc.year;
 		def currMonth = bc.month;
@@ -87,7 +91,7 @@ class WaterworksAccountBillingService  {
 		facts << new DueDate( bc.duedate );
 		facts << currDate;
 		buildConsumptionFacts( o, facts, currYear, currMonth );
-		buildInstallmentFacts( o, facts );
+		//buildInstallmentFacts( o, facts );
 
 		def res = ruleSvc.execute( "waterworksbilling", facts, null, null );
 

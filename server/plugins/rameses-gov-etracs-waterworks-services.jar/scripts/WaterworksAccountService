@@ -2,9 +2,6 @@ import com.rameses.annotations.*;
 
 class WaterworksAccountService {
 	
-	@DataContext('waterworks_account_ledger')
-	def ledger; 
-
 	@DataContext('waterworks_account_consumption')
 	def consumption; 
 
@@ -14,21 +11,6 @@ class WaterworksAccountService {
 
 	@ProxyMethod
 	public def postReading( def o ) {
-		o.readingmethod = 'CAPTURE';
-		o.txntype = 'WATERSALES';
-		o.rate = o.amount;
-		if(o.postledger == true ) {
-			def i = [:];
-			i.parentid = o.account.objid;
-			i.billingcycle = o.billingcycle;
-			i.txntype = o.txntype;
-			i.item = o.item;
-			i.remarks = o.remarks;
-			i.amount = o.amount;
-			i.amtpaid = 0.0;
-			i = ledger.create(i);
-			o.ledgerid = i.objid;
-		}
 		consumption.create( o );
 
 		//update the maximum in the acct code.
@@ -38,13 +20,6 @@ class WaterworksAccountService {
 		acct.find( [objid: o.account.objid] ).update( [billingcycleid: z, currentreading: bc.reading, lastdateread: bc.billingcycle.readingdate,billdate:bc.billingcycle.billdate] );
 	}
 
-	@ProxyMethod
-	public def postLedger( def o ) {
-		if(o.postledger == true ) {
-			o.parentid = o.account.objid;
-			ledger.create(o);
-		}
-	}
 
 
 }

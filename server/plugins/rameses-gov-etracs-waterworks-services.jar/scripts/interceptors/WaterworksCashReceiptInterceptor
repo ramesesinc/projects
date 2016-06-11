@@ -6,9 +6,6 @@ class WaterworksCashReceiptInterceptor{
 	@DataContext('waterworks_application_fee')
 	def appFee;
 
-	@DataContext("waterworks_account_ledger")
-	def ledger;	
-
 	@DataContext("waterworks_payment")
 	def wp;	
 

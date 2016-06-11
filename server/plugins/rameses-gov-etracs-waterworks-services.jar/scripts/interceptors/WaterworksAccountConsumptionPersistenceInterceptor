@@ -5,24 +5,9 @@ class WaterworksAccountConsumptionPersistenceInterceptor{
 	@DataContext("waterworks_account_consumption")
 	def consumption;
 
-	@DataContext("waterworks_account_ledger")
-	def ledger;
-
 	@DataContext("waterworks_account")
 	def acct;
 
-
-	@Before(pattern="PersistenceService.removeEntity", eval="#{args[0]._schemaname == 'waterworks_account_consumption'}")
-	public void beforeRemoveConsumption(def evt) {
-		def o = evt.args[0];
-
-		def zz = consumption.select("ledgerid,acctid").find([objid: o.objid]).first();
-		if( zz.ledgerid ) {
-			consumption.find([objid: o.objid]).update([ledgerid:"{NULL}"]);
-			ledger.find( [objid:zz.ledgerid] ).delete();
-		} 
-		o.acctid = zz.acctid;
-	}
 
 	@After(pattern="PersistenceService.removeEntity", eval="#{args[0]._schemaname == 'waterworks_account_consumption'}")
 	public void afterRemoveConsumption(def evt) {

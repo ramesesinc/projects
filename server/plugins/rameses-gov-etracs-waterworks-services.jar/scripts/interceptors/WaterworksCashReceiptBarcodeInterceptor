@@ -3,14 +3,14 @@ import com.rameses.annotations.*;
 class WaterworksCashReceiptBarcodeServiceInterceptor{
 	
 	@DataContext("waterworks_account")
-	def ledger;
+	def waterworks_account;
 
 	@After(pattern="CashReceiptBarcodeService.findPrefix", eval="#{result.prefix == null}", index=1000)
 	public void findWaterworksPrefix(def evt) {
 		def a = evt.args[0];
 		//try to check first if the barcode exists in account or in application...
 		
-		def acct = ledger.find( [acctno: a.barcodeid]).first();
+		def acct = waterworks_account.find( [acctno: a.barcodeid]).first();
 		if(acct?.objid) {
 			def o = evt.result;
 			o.prefix = "51030";

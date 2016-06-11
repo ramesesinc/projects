@@ -73,9 +73,7 @@ public class CaptureConsumptionModel  {
         m.objid = entity.objid;
         m.volume = info.volume;
         def r = compSvc.compute(m);
-        info.item = r.item;
-        info.amount = r.amount;
-        info.remarks = "for month of " + listTypes.months[info.billingcycle.month-1].name + " " + info.billingcycle.year;
+        info.amount = r;
     }
     
     def doOk() {
@@ -84,6 +82,7 @@ public class CaptureConsumptionModel  {
         if( info.prevreading <0 || info.reading < 0 || info.volume <0) 
             throw new Exception("Reading,prevreading,volume must be greater than 0");
         info.account = [objid:entity.objid];
+        info.readingmethod = 'CAPTURE';
         acctSvc.postReading( info );
         if(handler) 
             handler();

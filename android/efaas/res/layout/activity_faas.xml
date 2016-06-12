@@ -673,14 +673,91 @@
                 android:background="#808080"
                 android:textColor="#FFFFFF"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
+        
+        <TableLayout
+			  android:id="@+id/tableLayout1"
+			  android:layout_width="fill_parent"
+			  android:layout_height="wrap_content"
+			  android:stretchColumns="0,1,2,3,4,5">
+			
+			    <TableRow
+			      android:id="@+id/tableRow1"
+			      android:layout_width="0dp"
+			      android:layout_height="wrap_content">
+			
+			        <TextView
+			          android:id="@+id/appraisal_subclass"
+			          android:text="Sub Class"
+			          android:layout_column="0"
+			          android:layout_margin="1dp"
+			          android:layout_width="0dp"
+			          android:layout_height="match_parent"
+			          android:gravity="center"
+			          android:minHeight="40dp"
+			          android:textStyle="bold"
+			          android:textAppearance="?android:attr/textAppearanceSmall">
+			        </TextView>
+			
+			        <TextView
+			          android:id="@+id/appraisal_specificclass"
+			          android:text="Specific Class"
+			          android:layout_column="1"
+			          android:layout_margin="1dp"
+			          android:layout_width="0dp"
+			          android:layout_height="match_parent"
+			          android:gravity="center"
+			          android:textStyle="bold"
+			          android:textAppearance="?android:attr/textAppearanceSmall">
+			        </TextView>
+			        
+			        <TextView
+			          android:id="@+id/appraisal_actualuse"
+			          android:text="Actual Use"
+			          android:layout_column="2"
+			          android:layout_margin="1dp"
+			          android:layout_width="0dp"
+			          android:layout_height="match_parent"
+			          android:gravity="center"
+			          android:textStyle="bold"
+			          android:textAppearance="?android:attr/textAppearanceSmall">
+			        </TextView>
+			        
+			        <TextView
+			          android:id="@+id/appraisal_strip"
+			          android:text="Strip"
+			          android:layout_column="3"
+			          android:layout_margin="1dp"
+			          android:layout_width="0dp"
+			          android:layout_height="match_parent"
+			          android:gravity="center"
+			          android:textStyle="bold"
+			          android:textAppearance="?android:attr/textAppearanceSmall">
+			        </TextView>
+			        
+			        <TextView
+			          android:id="@+id/appraisal_areasqm"
+			          android:text="Area (sqm)"
+			          android:layout_column="4"
+			          android:layout_margin="1dp"
+			          android:layout_width="0dp"
+			          android:layout_height="match_parent"
+			          android:gravity="center"
+			          android:textStyle="bold"
+			          android:textAppearance="?android:attr/textAppearanceSmall">
+			        </TextView>
+			
+			    </TableRow>
+			
+		</TableLayout> 
+        
 		<ListView
 		      android:id="@+id/appraisal_list"
 		      android:layout_width="match_parent"
-		      android:layout_height="150dp" 
+		      android:layout_height="wrap_content" 
 		      android:layout_margin="5dp"/>
 		
 		<Button
-	        android:id="@+id/appraisal_add"
+	        android:id="@+id/appraisal_button"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:layout_margin="10dp"
@@ -716,11 +793,11 @@
                 android:textAppearance="?android:attr/textAppearanceMedium" />
             
             <EditText
-			    android:id="@+id/faas_finding"
+			    android:id="@+id/examination_findings"
 			    android:layout_width="fill_parent"
 			    android:layout_height="120dp"
 			    android:gravity="left|top"
-			    android:inputType="text|textMultiLine" />
+			    android:inputType="text|textMultiLine"/>
             
             <TextView
                 android:id="@+id/textView0.5"
@@ -732,7 +809,7 @@
                 android:textAppearance="?android:attr/textAppearanceMedium" />
             
             <EditText
-			    android:id="@+id/faas_recommendation"
+			    android:id="@+id/examination_recommendations"
 			    android:layout_width="fill_parent"
 			    android:layout_height="120dp"
 			    android:gravity="left|top"
@@ -761,6 +838,22 @@
                 android:background="#808080"
                 android:textColor="#FFFFFF"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
+       
+       <ListView
+		      android:id="@+id/images_list"
+		      android:layout_width="match_parent"
+		      android:layout_height="wrap_content" 
+		      android:layout_margin="5dp"/>
+       
+       <Button
+		        android:id="@+id/images_button"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_margin="10dp"
+		        android:layout_gravity="center"
+		        android:minEms="5"
+		        android:padding="10dp"
+		        android:text="Add" />
         
     </LinearLayout>
 

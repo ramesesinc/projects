@@ -10,9 +10,6 @@ class WaterworksComputationService  {
 	@Service("RuleExecutorService")
 	def ruleSvc;
 
-	@Service("DateService")
-	def dateSvc;
-
 	@DataContext("waterworks_account")
 	def acct;
 
@@ -39,26 +36,21 @@ class WaterworksComputationService  {
 	* then specify the volume, month and year
 	***********************************************************************/
 	@ProxyMethod
-	public def compute( o ) { 
-		println o; 
+	public double compute( def o ) {
 		def m = findAccount( o );
 		if ( o.volume == null || o.volume < 0 ) 
 			throw new Exception('Volume must be greater than or equal to zero');
 		
 		int vol = o.volume.toInteger();	
 
+		def wc = new WaterConsumption( volume: vol );
+
 		def facts = [];
-		facts << new WaterConsumption( volume: vol );
+		facts << wc
 		facts << new WaterAccount( m );
 
 		def res = ruleSvc.execute( "waterworkscomputation", facts, null, null );
-		if( !res.billItemList)
-			throw new Exception("No rules fired for waterworks computation");
-		def item = res.billItemList.items[0];
-		if(!item) 
-			throw new Exception('There is no computation applied. Please check rule facts')
-
-		return item.toItem();
+		return wc.amount;
 	}
 
 

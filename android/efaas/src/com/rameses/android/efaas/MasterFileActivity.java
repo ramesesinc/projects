@@ -14,12 +14,12 @@ import com.rameses.android.ApplicationUtil;
 import com.rameses.android.R;
 import com.rameses.android.SettingsMenuActivity;
 import com.rameses.android.efaas.adapter.HomeMenuAdapter;
-import com.rameses.android.efaas.bean.HomeItem;
+import com.rameses.android.efaas.bean.HomeListItem;
 
 public class MasterFileActivity extends SettingsMenuActivity {
 	
 	private ProgressDialog progressDialog;
-	List<HomeItem> data;
+	List<HomeListItem> data;
 	ListView list;
 	Activity activity;
 	
@@ -46,15 +46,15 @@ public class MasterFileActivity extends SettingsMenuActivity {
 	}
 	
 	void loadListData(){
-		data = new ArrayList<HomeItem>();
-		data.add(new HomeItem(R.drawable.masterfile,"Property Classifications"));
-		data.add(new HomeItem(R.drawable.masterfile,"Kind of Buildings"));
-		data.add(new HomeItem(R.drawable.masterfile,"Materials"));
-		data.add(new HomeItem(R.drawable.masterfile,"Structures"));
-		data.add(new HomeItem(R.drawable.masterfile,"Machines"));
-		data.add(new HomeItem(R.drawable.masterfile,"Plants and Trees"));
-		data.add(new HomeItem(R.drawable.masterfile,"Miscellaneous Items"));
-		data.add(new HomeItem(R.drawable.masterfile,"Parameters"));
+		data = new ArrayList<HomeListItem>();
+		data.add(new HomeListItem(R.drawable.masterfile,"Property Classifications"));
+		data.add(new HomeListItem(R.drawable.masterfile,"Kind of Buildings"));
+		data.add(new HomeListItem(R.drawable.masterfile,"Materials"));
+		data.add(new HomeListItem(R.drawable.masterfile,"Structures"));
+		data.add(new HomeListItem(R.drawable.masterfile,"Machines"));
+		data.add(new HomeListItem(R.drawable.masterfile,"Plants and Trees"));
+		data.add(new HomeListItem(R.drawable.masterfile,"Miscellaneous Items"));
+		data.add(new HomeListItem(R.drawable.masterfile,"Parameters"));
 		
 		list = (ListView) findViewById(R.id.list_home);
 		list.setAdapter(new HomeMenuAdapter(this,data));

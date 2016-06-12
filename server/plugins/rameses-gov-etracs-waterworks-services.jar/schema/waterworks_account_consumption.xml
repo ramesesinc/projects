@@ -5,7 +5,7 @@
 			<key field="acctid" target="objid"/>
 		</complex>
 		<complex name="billingcycle" jointype="many-to-one" ref="waterworks_billing_cycle" 
-			includefields="objid,year,month,monthname,readingdate" required="false">
+			includefields="objid,year,month,monthname,readingdate,duedate,disconnectiondate" required="false">
 			<key field="billingcycleid" target="objid"/>
 		</complex>	
 		<field name="prevreading" required="true" caption="PreviousReading"/>
@@ -15,7 +15,9 @@
 		<field name="reader_name" required="false" caption="ReaderName"/>
 		<field name="volume" required="true" caption="Volume"/>
 
-		<field name="ledgerid" />
-		<field name="rate" />
+		<field name="amount" type="decimal" caption="Amount"/>
+		<field name="amtpaid" type="decimal" caption="Amount Paid"/>
+		<field name="balance" expr="amount-amtpaid" type="decimal" caption="Balance"/>
+
 	</element>
 </schema>

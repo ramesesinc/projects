@@ -1,10 +1,10 @@
-<workunit extends="wtemplates/gov/treasury/BasicCashReceiptController.xml">
+<workunit extends="com/rameses/enterprise/treasury/templates/BillingCashReceipt.xml">
     <invokers>
         <invoker type="cashreceipt:marketrental" action="init" />
-        <invoker type="cashreceipt:barcode:51006" action="loadBarcode" caption="Cash Receipt Market"/>
+        <invoker type="cashreceipt:barcode:51031" action="loadBarcode" caption="Cash Receipt Market"/>
     </invokers>
     <code class="com.rameses.gov.etracs.market.models.MarketCashReceiptModel"/>
     <pages>
-        <page template="com.rameses.gov.etracs.market.views.MarketCashReceipt"/>
+        <page template="com.rameses.gov.etracs.market.views.MarketCashReceiptPage"/>
     </pages>    
 </workunit>

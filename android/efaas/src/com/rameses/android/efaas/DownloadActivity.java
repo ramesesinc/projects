@@ -1,21 +1,18 @@
 package com.rameses.android.efaas;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 import com.rameses.android.ApplicationUtil;
 import com.rameses.android.R;
 import com.rameses.android.SettingsMenuActivity;
 import com.rameses.android.db.FaasDB;
+import com.rameses.android.efaas.dialog.ErrorDialog;
+import com.rameses.android.efaas.dialog.InfoDialog;
 import com.rameses.android.service.DownloadService;
 
 public class DownloadActivity  extends SettingsMenuActivity{
@@ -61,15 +58,14 @@ public class DownloadActivity  extends SettingsMenuActivity{
 		DownloadService svc = new DownloadService();
 		try{
 			Map data = svc.getFaas(tdno_text);
-			Log.v("DOWNLOAD DATA", data.toString());
 			createFaasData(data);
 		}catch(Throwable t){
 			error = true;
-			ApplicationUtil.showShortMsg(t.getMessage());
+			new ErrorDialog(this, t).show();
 		}
 		
 		if(!error){
-			ApplicationUtil.showShortMsg("Download Finish");
+			new InfoDialog(this,"Download Finish!").show();
 			download.setText("New");
 			download.setOnClickListener(new View.OnClickListener() {
 	            public void onClick(View v) {

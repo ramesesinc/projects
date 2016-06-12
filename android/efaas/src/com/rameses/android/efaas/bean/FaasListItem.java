@@ -1,10 +1,10 @@
 package com.rameses.android.efaas.bean;
 
-public class FaasItem {
+public class FaasListItem {
 	
 	private String objid, pin, name, tdno;
 	
-	public FaasItem(String objid, String pin, String tdno, String name){
+	public FaasListItem(String objid, String pin, String tdno, String name){
 		this.objid = objid;
 		this.pin = pin;
 		this.tdno = tdno;

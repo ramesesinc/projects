@@ -254,11 +254,22 @@
     </sql>
     
     <sql>
+        CREATE TABLE examination
+        (
+        	objid TEXT NOT NULL PRIMARY KEY,
+        	faasid TEXT,
+			findings TEXT,
+			recommendations TEXT,
+			date TEXT
+        )
+    </sql>
+    
+    <sql>
         CREATE TABLE images
         (
         	faasid TEXT,
         	title  TEXT,
-			image TEXT
+			image BLOB
         )
     </sql>
 </db>

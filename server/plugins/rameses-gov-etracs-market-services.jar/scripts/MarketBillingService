@@ -1,0 +1,102 @@
+import com.rameses.annotations.*;
+import java.text.*;
+import com.rameses.functions.*;
+
+class MarketBillingService {
+	
+	@DataContext("market_account")
+	def acct;
+
+	@DataContext("itemaccount")
+	def itemacct;
+
+	@Service("DateService")
+	def dateSvc;
+
+	def dformat = new SimpleDateFormat("yyyy-MM-dd");
+
+	def monthNames = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+
+
+	@ProxyMethod
+	public def getBilling( def o ) {
+		def p = [:];
+		if(o.acctid) p.acctid = o.acctid;
+		else if(o.acctno) p.acctno = o.acctno;
+
+		def a = acct.find( p ).first();
+		def rate = a.rate;
+		def _startdate = a.startdate;
+		if( a.lastpmtdate ) {
+			def xcal = Calendar.instance;
+			xcal.setTime(a.lastpmtdate);
+			xcal.add( Calendar.DATE, 1 ); 
+			_startdate = xcal.getTime();
+		}
+
+		def _enddate = (o.enddate)? o.enddate: dateSvc.getServerDate();
+		
+		def startdate = DateFunc.formatDate( _startdate , 'yyyy_MM-dd');
+		def enddate = DateFunc.formatDate( _enddate , 'yyyy_MM-dd');
+
+		//payoption
+		if(  o.date ) {
+			enddate = DateFunc.formatDate(o.date, 'yyyy-MM-dd');
+			if( enddate.before(startdate) ) throw new Exception("Inavlid date specified");
+		}
+		else if(o.numdays) {
+			def zc = Calendar.instance;
+			zc.setTime( startdate );
+			zc.add( Calendar.DATE, o.numdays-1 );
+			enddate = zc.getTime(); 
+		}
+
+		def cal1 = Calendar.instance;
+		cal1.setTime( startdate ); 
+
+		int monthsDiff = DateFunc.monthsDiff( startdate, enddate ); 
+		def list = [];
+
+		if( monthsDiff == 0 ) {
+		   int daysDiff = DateFunc.daysDiff( startdate, enddate ); 
+		   list << [ month: cal1.get(Calendar.MONTH)+1, year: cal1.get(Calendar.YEAR), days: daysDiff+1 ];
+		}
+		else {
+		    list << [month: cal1.get(Calendar.MONTH)+1, year: cal1.get(Calendar.YEAR), 
+		    			days: cal1.getActualMaximum( Calendar.DAY_OF_MONTH)-cal1.get(Calendar.DAY_OF_MONTH)+1 ];
+		    def v = monthsDiff - 2;
+
+		    if( v > 0 ) {
+		        def xcal = Calendar.instance;
+		        xcal.set( Calendar.YEAR, cal1.get(Calendar.YEAR));
+		        xcal.set( Calendar.MONTH, cal1.get(Calendar.MONTH));
+		        xcal.set( Calendar.DAY_OF_MONTH, 1 );
+		        for(int i=0; i<=v; i++) {
+		            xcal.add(Calendar.MONTH, 1);
+		            list << [ month: xcal.get(Calendar.MONTH)+1, year:xcal.get(Calendar.YEAR), 
+		            	days: xcal.getActualMaximum(Calendar.DAY_OF_MONTH) ];    
+		        }
+		    }
+			def cal2 = Calendar.instance;
+		    cal2.setTime( enddate ); 
+		    list << [month: cal2.get(Calendar.MONTH)+1, year: cal2.get(Calendar.YEAR), 
+		    	days: cal2.get(Calendar.DAY_OF_MONTH) ];
+		}
+		list.each {
+			it.amount = rate * it.days;
+			it.monthname = monthNames[it.month-1];
+			it.item = itemacct.find([objid:'ITMACCT-66ea9f6a:15543d56b21:-7f8c']).first(); 
+		}
+
+		//add the items.
+		a.fromdate = startdate;
+		a.todate = enddate;
+		a.amount = list.sum{ it.amount };
+		a.items = list;
+		return a;
+	}
+
+
+
+
+}

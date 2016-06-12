@@ -10,5 +10,6 @@
 		<field name="remarks"  />
 		<field name="item_objid" required="true" />
 		<field name="item_title" required="true" />
+		<field name="txntype"  />
 	</element>
 </schema>

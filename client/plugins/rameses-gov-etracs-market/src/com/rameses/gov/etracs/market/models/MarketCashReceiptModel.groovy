@@ -43,19 +43,25 @@ public class MarketCashReceiptModel extends com.rameses.enterprise.treasury.cash
     ] as BasicListModel;
     
     def loadData(acctno) {
-        def info = cashReceiptSvc.getBilling([ refno: acctno ]);
+        def info = cashReceiptSvc.getBilling([ acctno: acctno ]);
         entity.putAll( info );
     }
     
     def loadBarcode() { 
-        //loadData( barcodeid );
+        loadData( barcodeid );
         super.init(); 
         return "default";
     }   
 
+    def itemListModel = [
+        fetchList: { o->
+            return entity.items;
+        }
+    ] as BasicListModel;
+    
     def showPayOption() {
         def h = { o->
-            def op = [refno: entity.acctno, option:o.payOption];  
+            def op = [acctno: entity.acctno, option:o.payOption];  
             payOption = 'Full';
             if(o.date) {
                 op.date = o.date;
@@ -70,9 +76,7 @@ public class MarketCashReceiptModel extends com.rameses.enterprise.treasury.cash
                 payOption = "";
             }
             def info = cashReceiptSvc.getBilling(op);
-            entity.billitems = info.billitems;
-            entity.items = info.items;
-            entity.amount = info.amount;
+            entity.putAll( info );
             super.updateBalances();
             itemListModel.reload();
         };    

@@ -2,28 +2,13 @@ import com.rameses.annotations.*;
 
 class WaterworksPaymentPersistenceInterceptor {
 	
-	@DataContext('waterworks_payment_item') 
-	def wpayitem; 	
-
-	@DataContext('waterworks_account_consumption') 
-	def acctledger; 
-
-	@DataContext('waterworks_payment') 
-	def wpay; 	
+	@Service('WaterworksPaymentService') 
+	def pmtSvc; 	
 
 	@Before(pattern="PersistenceService.removeEntity", eval="#{args[0]._schemaname == 'waterworks_payment'}")
 	public void beforeRemoveEntity( evt ) { 
 		def params = evt.args[0];
-		def o = wpay.read([objid: params.objid]);
-		if( o.txnmode !=  'CAPTURE') 
-			throw new Exception("Remove payment is only applicable for CAPTURE");
-
-		if ( !o.items ) 
-			throw new Exception("Persistence remove entity error: (waterworks_payment) Payment must have at least one item"); 
-
-		o.items.each{ 
-			acctledger.find([ objid: it.txnrefid ]).update([amtpaid: "{amtpaid-:amt}"], [amt: it.amount] );  
-		} 
+		pmtSvc.postRemove([objid: params.objid]);
 	} 
 	
 }

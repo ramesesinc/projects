@@ -10,9 +10,6 @@ class WaterworksComputationService  {
 	@Service("RuleExecutorService")
 	def ruleSvc;
 
-	@Service("DateService")
-	def dateSvc;
-
 	@DataContext("waterworks_account")
 	def acct;
 

@@ -30,7 +30,7 @@ class WaterworksMobileDownloadService {
 	@Service("DateService")
 	def dateSvc;
 
-	@Service("WaterworksBillingService")
+	@Service("WaterworksAccountBillingService")
 	def billingSvc;
 
 	@Service
@@ -52,15 +52,15 @@ class WaterworksMobileDownloadService {
 		return o.batchid; 
 	} 
 
-	@ProxyMethod
 	@Async
+	@ProxyMethod
 	public def processDownload( o ) {
         def y = dateSvc.getServerYear();
 		def m = dateSvc.getServerMonth() - 1;
-		if(m==0) {
+		if ( m== 0 ) {
 			m = 12;
 			y = y-1;
-		}
+		} 
 
 		def rundate = dateSvc.getServerDate();
 		DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
@@ -86,19 +86,26 @@ class WaterworksMobileDownloadService {
 				classification: it.classificationid, 
 				metersize: it.metersize 
 			]);
-			def items = billingSvc.getItemizedBilling( [acctid: it.objid]).collect {
-				[title: it.item.title + ' ' + ((!it.remarks)?it.remarks:''), amount: it.amount ];
-			}
-			it.items = wm.serializer.write(items);
-			wm.create(it);
-		}
-		header.find([batchid: o.batchid]).update([state:1]);
+
+			def items = billingSvc.getItemizedBilling([ acctid: it.objid ]); 
+			if ( items==null ) items = []; 
+
+			items.collect { bi-> 
+				println 'bi-> ' + bi;   
+				[title: bi.item.title + ' ' + ((!bi.remarks)?bi.remarks:''), amount: bi.amount ];
+			} 
+			it.items = wm.serializer.write( items ); 
+			wm.create( it );
+		} 
+		header.find([batchid: o.batchid]).update([ state:1 ]); 
 	}
 
 	@ProxyMethod
 	public int getBatchStatus( batchid ) {
 		int state = header.find([batchid: batchid]).select("state").val();	
 		if( state == 0 ) return -1;
+
+		println 'batchid-> ' + batchid;
 		return wm.find([batchid:batchid]).select("x:{COUNT(*)}").val();
 	}	
 

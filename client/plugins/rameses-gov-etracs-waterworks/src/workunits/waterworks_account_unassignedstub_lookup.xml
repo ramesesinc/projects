@@ -2,7 +2,7 @@
           schemaName="waterworks_account" cols="acctno,acctname,address.text,meter.serialno"
             tag="unassigned_stub">
     <invokers>
-        <invoker type="waterworks_account:lookup" caption="Lookup Accounts" action="init" target="popup"/>
+        <invoker xtype="waterworks_account:lookup" caption="Lookup Accounts" action="init" target="popup"/>
     </invokers>
 </workunit>
 

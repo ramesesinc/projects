@@ -34,6 +34,7 @@ class WaterworksCashReceiptService  {
 		} 
 
 		def acc = billingService.getBilling( parm );
+		if ( acc == null ) throw new Exception('There are no unpaid items'); 
 		
 		def p = [:];
 		p.acctno = acct.acctno;
@@ -59,7 +60,7 @@ class WaterworksCashReceiptService  {
 
 		int idx = 0;
 		//separate first all watersales items
-		tmpitems.findAll{ it.txntype == 'WATERSALES' }.each {
+		tmpitems.findAll{ it.txntype.toString().matches('WATERSALES|ARREARS_CURRENT|ARREARS_PRIOR') }.each {
 			def m = [:];
 			m.item = it.item;
 			m.amount = it.amount;
@@ -74,7 +75,7 @@ class WaterworksCashReceiptService  {
 		}
 
 		//we will group surcharge and interest into their respective accounts...
-		def acctGrps = tmpitems.findAll{ it.txntype !='WATERSALES' }.groupBy{ it.item };
+		def acctGrps = tmpitems.findAll{ !it.txntype.toString().matches('WATERSALES|ARREARS_CURRENT|ARREARS_PRIOR') }.groupBy{ it.item };
 		acctGrps.each { k,v->
 			def m = [:];
 			m.item = k;

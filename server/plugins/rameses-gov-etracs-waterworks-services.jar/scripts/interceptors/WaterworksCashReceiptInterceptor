@@ -62,9 +62,9 @@ class WaterworksCashReceiptInterceptor{
 
 		ledgerPaymentSvc.post( pmt ); 
 
-		def hasItems = billingSvc.getBilling([ applicationid: pmt.applicationid, acctid: pmt.acctid ]);
+		def billres = billingSvc.getBilling([ applicationid: pmt.applicationid, acctid: pmt.acctid ]); 
 		//check if were allowed to signal the process by checking the billing balance
-		if(!hasItems && appid) {
+		if( billres != null && appid ) {
 			taskSvc.signal( [processname:'waterworks_application', refid: appid, state:'for-payment', action:'submit'] );
 		} 
 	}

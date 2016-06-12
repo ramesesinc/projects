@@ -244,3 +244,12 @@ alter table waterworks_stubout_node
 
 alter table waterworks_stubout_node 
 	add index ix_acctid (acctid);
+
+alter table waterworks_installment 
+	drop column amount, 
+	drop column amtpaid;
+
+update waterworks_account_consumption wac, waterworks_account_ledger wal set 
+	wal.billingcycleid = wac.billingcycleid 
+where wac.ledgerid is not null 
+	and wac.ledgerid=wal.objid;

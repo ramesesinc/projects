@@ -39,10 +39,11 @@ class WaterworksComputationService  {
 	* then specify the volume, month and year
 	***********************************************************************/
 	@ProxyMethod
-	public def compute( def o ) {
+	public def compute( o ) { 
+		println o; 
 		def m = findAccount( o );
-		if(!o.volume) 
-			throw new Exception('Volume is required.');
+		if ( o.volume == null || o.volume < 0 ) 
+			throw new Exception('Volume must be greater than or equal to zero');
 		
 		int vol = o.volume.toInteger();	
 

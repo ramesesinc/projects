@@ -58,11 +58,11 @@ class WaterworksAccountBillingService  {
 			.select("year:{billingcycle.year},month:{billingcycle.month},volume:{consumption.volume},amount,amtpaid,balance:{amount-amtpaid},installment.term,installment.installmentamount,installment.downpayment,startdate")
 			.where("NOT(installment.objid IS NULL) AND amount - amtpaid > 0").list();
 
-		println "installments";	
+		/*println "installments";	
 		list2.each {
 			println it;
 			//facts << new Installment( year:it.year, month:it.month, amount: it.amount );
-		}	
+		}*/	
 	}
 
 	def monthNames = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
@@ -74,10 +74,10 @@ class WaterworksAccountBillingService  {
 		if(!a) throw new Exception("Account not found");
 
 		def bc = billingCycleSvc.findCurrentCycle([sectorid:a.sector.objid]);
-
+		/*
 		if( a.billingcycle.objid != bc.objid )
 			throw new Exception("Account ledger for " + a.acctno + " is not updated. Current reading should be up to  "+ bc.year + " " + bc.monthname);
-
+		*/
 		def currYear = bc.year;
 		def currMonth = bc.month;
 		def currDate = new CurrentDate( dateSvc.getServerDate() );
@@ -98,8 +98,8 @@ class WaterworksAccountBillingService  {
 			item.particulars = (item.item.code? "("+item.item.code+") ":"") + item.item.title;
 			feeList << item;
 		};
-		if(!feeList) 
-			throw new Exception("There are currently no unpaid items");
+		if (!feeList) return null; 
+
 		a.items = feeList.findAll{it.amount>0}.sort{it.sortorder};	
 		a.grandtotal = new BigDecimal(a.items.sum{it.amount});
 		a.billdate = bc.billdate;
@@ -107,5 +107,32 @@ class WaterworksAccountBillingService  {
 		a.currdate = currDate.date;
 		return a;
 	}	
+
+	@ProxyMethod
+	public def getItemizedBilling( o ) {
+		def a = getBilling( o ); 
+		if ( a == null ) return null; 
+
+		def items = [];
+		int idx = 0; 
+
+		a.items.each{ 
+			println '>> '+ it.txntype + ' ' + it.amount + ' ' + it.item?.title;  
+		}
+
+		def acctGrps = a.items.groupBy{ it.txntype };
+		acctGrps.each { kk,v->
+			def k = [code:'', title:kk]; 
+			println k; 
+
+			def m = [:];
+			m.item = k;
+			m.amount = v.sum{it.amount};
+			m.sortorder = idx++;
+			m.particulars = (k.code?"("+k.code+") ":"") + k.title;
+			items << m;
+		} 
+		return items;	
+	} 
 
 }

@@ -69,6 +69,7 @@ public class CaptureConsumptionModel  {
     void computeAmount() {
         if( !info.billingcycle?.month ) 
             throw new Exception("Period Month is required!");
+
         def m = [:];
         m.objid = entity.objid;
         m.volume = info.volume;

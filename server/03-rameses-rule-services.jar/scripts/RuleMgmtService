@@ -93,8 +93,9 @@ class RuleMgmtService extends ActiveCrudListService {
 			a.params.each {
 				if(it.listvalue && it.listvalue != 'null') it.listvalue = em.serializer.read(it.listvalue);
 			}
-		}
-	}
+		} 
+		buildVars( o ); 
+	} 
 
 	
 
@@ -321,5 +322,48 @@ class RuleMgmtService extends ActiveCrudListService {
 			}
 		}
 		ruleSvc.buildRuleContext(ruleset, readers);
-	}
+	} 
+
+
+	private void buildVars( o ) { 
+		def vars = []; 
+		o.conditions.each{ c-> 
+			if ( c.varname ) {
+				vars << [ 
+					objid   : c.objid, 
+					parentid: c.objid, 
+					ruleid  : c.parentid, 
+					varname : c.varname, 
+					pos     : c.pos, 
+					datatype: c.fact?.factclass 					
+				]; 
+			} 
+			c.constraints.each{ cc-> 
+				if ( cc.varname ) {
+					vars << [
+						objid   : cc.objid, 
+						parentid: c.objid, 
+						ruleid  : c.parentid, 
+						varname : cc.varname, 
+						pos     : cc.pos, 
+						datatype: cc.field?.vardatatype 
+					]; 
+				} 
+			} 
+		} 
+
+		o.conditions.each{ a-> 
+			a.constraints.findAll{( it.var?.name )}.each{ b-> 
+				def vv = vars.find{ it.varname==b.var.name } 
+				b.var.objid = vv?.objid; 
+			} 
+		}
+		o.actions.each{ a-> 
+			a.params.findAll{( it.var.name )}.each{ b-> 
+				def vv = vars.find{ it.varname==b.var.name }
+				b.var.objid = vv?.objid;  
+			} 
+		} 
+		vars.clear();
+	} 
 } 

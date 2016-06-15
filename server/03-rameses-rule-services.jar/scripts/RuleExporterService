@@ -25,7 +25,7 @@ class RuleExporterService {
 	} 
 
 	@ProxyMethod 
-	public def open( params ) {
+	public def open( params ) { 
 		if ( !params.objid ) throw new Exception('objid parameter is required');
 
 		def o = ruletool.findRule([ ruleid: params.objid ]); 
@@ -45,12 +45,13 @@ class RuleExporterService {
 	} 
 
 	@ProxyMethod
-	public def upload( o ) {
+	public def upload( o ) { 
 		try { 
 			if ( o.buildver && o.buildver >= 2.0 ) {
 				uploadV2( o ); 
 
 			} else { 
+				buildVars( o ); 
 				service.create( o ); 
 				o.conditions.each { 
 					service.saveCondition( it ); 
@@ -66,28 +67,71 @@ class RuleExporterService {
 
 	private void uploadV2( o ) { 
 		rule.save( o ); 
-		o.conditions.each{ c->  
-			rule.save( c, "condition" ); 
-
-			c.vars.each{ cv-> 
-				rule.save( cv, "var"); 
+		o.conditions.each{   
+			rule.save( it, "condition" ); 
+		} 
+		o.conditions.each{ c-> 
+			c.vars.each{ 
+				rule.save( it, "var" ); 
 			}
-
-			c.contraints.each{ cc-> 
-				if ( cc.listvalue instanceof String ) {
-					cc.listvalue = rule.serializer.read( cc.listvalue );  
+		} 
+		o.conditions.each{ c-> 
+			c.contraints.each{ 
+				if ( it.listvalue ) {
+					it.listvalue = rule.serializer.read( it.listvalue );  
 				}
-				rule.save( cc, "constraint" ); 
+				rule.save( it, "constraint" ); 
 			} 
 		} 
 		o.actions.each{ a-> 
 			rule.save( a, "action" ); 
 
-			a.params.each{ ap-> 
-				if ( ap.listvalue instanceof String ) {
-					ap.listvalue = rule.serializer.read( ap.listvalue );  
-				}
-				rule.save( ap, "actionparam" ); 
+			a.params.each{ 
+				if ( it.listvalue ) { 
+					it.listvalue = rule.serializer.read( it.listvalue );  
+				} 
+				rule.save( it, "actionparam" ); 
+			} 
+		} 
+	} 
+
+	private void buildVars( o ) { 
+		o.vars = []; 
+		o.conditions.each{ c-> 
+			if ( c.varname ) {
+				o.vars << [ 
+					objid   : c.objid, 
+					parentid: c.objid, 
+					ruleid  : c.parentid, 
+					varname : c.varname, 
+					pos     : c.pos, 
+					datatype: c.fact?.factclass 					
+				]; 
+			} 
+			c.constraints.each{ cc-> 
+				if ( cc.varname ) {
+					o.vars << [
+						objid   : cc.objid, 
+						parentid: c.objid, 
+						ruleid  : c.parentid, 
+						varname : cc.varname, 
+						pos     : cc.pos, 
+						datatype: cc.field?.vardatatype 
+					]; 
+				} 
+			} 
+		}
+
+		o.conditions.each{ a-> 
+			a.constraints.findAll{( it.var?.name )}.each{ b-> 
+				def vv = o.vars.find{ it.varname==b.var.name } 
+				b.var.objid = vv?.objid; 
+			} 
+		}
+		o.actions.each{ a-> 
+			a.params.findAll{( it.var.name )}.each{ b-> 
+				def vv = o.vars.find{ it.varname==b.var.name }
+				b.var.objid = vv?.objid;  
 			} 
 		} 
 	} 

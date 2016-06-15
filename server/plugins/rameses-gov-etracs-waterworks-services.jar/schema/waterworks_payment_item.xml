@@ -2,7 +2,6 @@
 	<element tablename="waterworks_payment_item">
 		<field name="objid" primary="true" prefix="WPI" />
 		<field name="parentid" required="true"/>
-		<field name="txnrefid" required="false" />
 		<field name="amount" required="true" />
 		<field name="discount" required="true" />
 		<field name="surcharge" required="true" />
@@ -10,6 +9,11 @@
 		<field name="remarks"  />
 		<field name="item_objid" required="true" />
 		<field name="item_title" required="true" />
-		<field name="txntype"  />
+
+		<field name="txnrefid"  />
+		<field name="ledgertype"  />
+
+		<field name="year"  />
+		<field name="month"  />
 	</element>
 </schema>

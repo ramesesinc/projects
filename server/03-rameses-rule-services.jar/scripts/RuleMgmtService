@@ -27,13 +27,13 @@ class RuleMgmtService extends ActiveCrudListService {
 	@ProxyMethod
 	public def getColumns( def o ) {
 		return[
-			[name:'name', caption:'Rule Name', width:150, resizable:false ],
+			[name:'name', caption:'Rule Name', width:150 ],
 			[name:'title', caption:'Title', width:200 ],
-			[name:'salience', caption:'Salience', width:60, resizable:false, type:'integer' ],
-			[name:'state', caption:'Status', width:60, resizable:false, alignment:'CENTER' ],
-			[name:'rulegroup', caption:'Rule Group', width:100, resizable:false ],
-			[name:'user.name', caption:'Author', width:100,  resizable:false],
-			[name:'dtfiled', caption:'Date Created', width:100,  resizable:false, type:'date' ],
+			[name:'salience', caption:'Salience', width:60, type:'integer' ],
+			[name:'state', caption:'Status', width:60, alignment:'CENTER' ],
+			[name:'rulegroup', caption:'Rule Group', width:100 ],
+			[name:'user.name', caption:'Author', width:80],
+			[name:'dtfiled', caption:'Date Created', width:80, type:'date' ],
 		];
 	}
 	

@@ -45,11 +45,13 @@ class WaterworksCashReceiptInterceptor{
 			p.installmentid = it.installmentid;
 			p.txnrefid = it.refid;
 			p.amount = it.amount;
-			p.txntype = it.txntype;
+			p.ledgertype = it.ledgertype;
 			p.discount = 0;
 			p.surcharge = 0;
 			p.interest = 0;
 			p.item = it.item;
+			p.year = it.year;
+			p.month = it.month;
 			pmt.items << p;
 		}
 

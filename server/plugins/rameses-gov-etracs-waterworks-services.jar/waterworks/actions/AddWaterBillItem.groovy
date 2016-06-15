@@ -11,10 +11,18 @@ public class AddWaterBillItem implements RuleActionHandler {
 
 	public void execute(def params, def drools) {
 		def acct = params.account;
-		def amt = NumberUtil.round(params.amount.doubleValue).doubleValue();	
+
+		double amt = 0;
+		def _amt = params.amount.eval();
+		if(_amt instanceof Number) {
+			amt = _amt.doubleValue();
+		}
+
+		amt = NumberUtil.round(amt).doubleValue();	
+		if(amt<=0) return;
+
 		def ref = params.ref;
-		def priority = params.priority.toInteger();
-		def txntype = params.txntype;
+		def ttype = params.txntype;
 
 		def ct = RuleExecutionContext.getCurrentContext();
 		
@@ -22,18 +30,25 @@ public class AddWaterBillItem implements RuleActionHandler {
 		def svc = EntityManagerUtil.lookup( "itemaccount" );
 		def m = svc.find( [objid: acct.key] ).first();
 		if( !m ) 
-			throw new Exception("Error ComputeFee action. Account not found ");
+			throw new Exception("Error AddWaterBillItem action. Account not found ");
+
+		//lookup txntype
+		svc = EntityManagerUtil.lookup( "waterworks_txntype" );
+		def txntype = svc.find( [objid: ttype.key] ).first();
+		if( !txntype ) 
+			throw new Exception("Error AddWaterBillItem action. Txntype not found ");
 
 		def bi = new WaterBillItem();
 		bi.account = new Account(m);
+		bi.txntype = txntype.objid;
 		bi.amount = amt;
 		bi.year = ref.year;
 		bi.month = ref.month;
-		bi.priority = priority;
-		bi.sortorder = (((ref.year * 12)+ref.month)*10) + priority;
+		bi.priority = txntype.priority;
+		bi.sortorder = (((ref.year * 12)+ref.month)*10) + bi.priority;
 		bi.refid = ref.refid;
-		bi.txntype = txntype;
 		bi.duedate = ref.duedate;
 		ct.facts << bi;
+
 	}
 }

@@ -1,8 +1,7 @@
 <workunit extends="com/rameses/seti2/templates/CrudList.xml"
           schemaName="waterworks_account_consumption" 
-          cols="billingcycle.readingdate,billingcycle.year,billingcycle.monthname,prevreading,reading,readingmethod,reader_objid,reader_name,volume,amount,amtpaid,balance"
-          orderBy="billingcycle.objid desc" 
-          allowOpen="false" allowCreate="false" allowEdit="false">
+          cols="billingcycle.year,billingcycle.monthname,prevreading,reading,readingmethod,reader_name,volume,amount,amtpaid,balance"
+          orderBy="billingcycle.objid desc">
     <invokers>
         <invoker type="waterworks_account:section" caption="Consumption" 
                  index="2" action="init" 
@@ -25,6 +24,11 @@
             
             def getMasterEntity() {
                 return caller.entity;
+            }
+            
+            boolean isDeleteAllowed() {
+                if(entityContext.readingmethod == 'ONLINE') return false;
+                return super.isEditAllowed();
             }
         }
         ]]>

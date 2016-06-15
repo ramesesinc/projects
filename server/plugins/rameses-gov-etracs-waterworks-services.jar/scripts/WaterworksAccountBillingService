@@ -54,11 +54,11 @@ class WaterworksAccountBillingService  {
 			.select("year:{billingcycle.year},month:{billingcycle.month},volume:{consumption.volume},amount,amtpaid,balance:{amount-amtpaid},installment.term,installment.installmentamount,installment.downpayment,startdate")
 			.where("NOT(installment.objid IS NULL) AND amount - amtpaid > 0").list();
 
-		/*println "installments";	
+		//println "installments";	
 		list2.each {
 			println it;
 			//facts << new Installment( year:it.year, month:it.month, amount: it.amount );
-		}*/	
+		}
 	}
 	*/
 

@@ -1,0 +1,9 @@
+<workunit extends="com/rameses/seti2/templates/CrudLookup.xml" 
+          schemaName="waterworks_txntype">
+    <invokers>
+        <invoker type="waterworks_txntype:lookup" 
+                 caption="Lookup Water Txn Type" 
+                 action="init" target="popup"
+                 cols="objid,title,priority"/>
+    </invokers>    
+</workunit>

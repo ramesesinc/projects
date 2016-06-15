@@ -1,0 +1,7 @@
+<schema adapter="waterworks">
+	<element tablename="waterworks_txntype">
+		<field name="objid" primary="true"  />
+		<field name="title"  />
+		<field name="priority" type="integer"/>
+	</element>
+</schema>

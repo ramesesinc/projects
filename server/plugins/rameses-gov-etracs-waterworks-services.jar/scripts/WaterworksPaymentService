@@ -5,26 +5,22 @@ class WaterworksPaymentService {
 	@DataContext('waterworks_payment')
 	def wp; 
 
-	@DataContext('waterworks_account_consumption')
-	def wc; 
+	@DataContext(dynamic=true)
+	def db; 
 	
-	@DataContext('waterworks_application_fee')
-	def wa; 
-
 	private void postToLedger(def items, boolean isCredit) {
-		String expr = (isCredit==true)?"{amtpaid+:amt}":"{amtpaid-:amt}";
+		String expr = (isCredit==true)?"{amtpaid + :amt}":"{amtpaid - :amt}";
+		def ledgerMap = [:];
+		def ledgerLookup = { n->
+			if( !ledgerMap.containsKey(n) ) {
+				ledgerMap.put(n, db.lookup(n));
+			}
+			return ledgerMap.get( n );
+		}
 		items.each {
-			if( !it.txnrefid ) return;
-			if( !it.txntype ) return;
-			if( it.txntype.matches('WATERSALES.*') ) {
-				wc.find( [objid: it.txnrefid ]).update( [amtpaid: expr], [amt: it.amount] );		
-			}
-			else if( it.txntype.matches('AR_MATERIALS') ) {
-
-			}	
-			else {
-				wa.find( [objid: it.txnrefid ]).update( [amtpaid: expr], [amt: it.amount] );
-			}
+			if(!it.ledgertype) return;
+			def emb = ledgerLookup(it.ledgertype );
+			emb.find( [objid: it.txnrefid ]).update( [amtpaid: expr], [amt: it.amount] );
 		}
 	} 
 
@@ -39,15 +35,17 @@ class WaterworksPaymentService {
 		wp.find( [refid: o.refid] ).update( [voided: 1] );
 		def objid = wp.find( [refid: o.refid] ).select("objid").val();
 		def r = wp.read( [objid: objid] );
-		postToLedger( items, false );
+		if(!r.items) throw new Exception("No items found!");
+		postToLedger( r.items, false );
 	}
 
 	@ProxyMethod
-	public def postRemove( def o ) {
-		def o = wp.read(o);
+	public def postRemove( def p ) {
+		def o = wp.read(p);
 		if( o.txnmode !=  'CAPTURE') 
 			throw new Exception("Remove payment is only applicable for CAPTURE");
-		postToLedger( items, false );
+		if(!o.items) throw new Exception("No items found!");			
+		postToLedger( o.items, false );
 	}
 
 

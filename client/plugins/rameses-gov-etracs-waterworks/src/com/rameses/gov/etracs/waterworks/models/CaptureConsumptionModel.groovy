@@ -8,92 +8,87 @@ import com.rameses.rcp.annotations.*;
 import com.rameses.seti2.models.*;
 import java.text.*;
 import com.rameses.functions.*;
+import com.rameses.seti2.models.*;
 
-public class CaptureConsumptionModel  {
-    
-    @Script("ListTypes")
-    def listTypes;
+public class CaptureConsumptionModel extends CrudFormModel {
     
     @Service("WaterworksComputationService")
     def compSvc;
-    
-    @Service("WaterworksBillingCycleService")
-    def billCycleSvc;
-    
-    @Service("WaterworksAccountService")
-    def acctSvc;
-    
-    @Caller
-    def caller;
-    
-    @Binding
-    def binding;
     
     @Service("DateService")
     def dateSvc;
     
     def dateFormatter = new java.text.SimpleDateFormat('yyyy-MM-dd'); 
     
-    def getEntity() {
-        caller.getMasterEntity();
+    def getParent() {
+        return caller.getMasterEntity();
     }
     
     def handler;
-    def info;
-    def billCycle;
+    int year;
     
     @PropertyChangeListener
     def listener = [
-        "info.(reading|prevreading)" : { o-> 
-            def curr = (info.reading==null? 0 : info.reading);
-            def prev = (info.prevreading==null? 0 : info.prevreading);
-            info.volume = curr - prev; 
-        },
-        "info.(volume|reading)" : { o->
-            def curr = (info.reading==null? 0 : info.reading);
-            def vol = (info.volume==null? 0 : info.volume); 
-            info.prevreading = curr - vol; 
-        } 
+        "entity.(reading|prevreading)" : { o-> 
+            def curr = (entity.reading==null? 0 : entity.reading);
+            def prev = (entity.prevreading==null? 0 : entity.prevreading);
+            entity.volume = curr - prev; 
+        }
     ];
 
-    void init() {
-        info = [prevreading:0, reading:0, volume: 0, amtpaid: 0, postledger:true];
-        info.year = dateSvc.getServerYear();
+    void afterCreate() {
+        entity.year = dateSvc.getServerYear();
+        entity.readingmethod = 'CAPTURE';
+        entity.acctid = parent.objid;
+        year = entity.year;
+    }
+    
+    void afterOpen() {
+        entity.acctid = entity.account?.objid;
+        year = entity.billingcycle.year;
     }
     
     def getMonthList() {
-        if( !info.year ) return [];
-        return billCycleSvc.findByYear( [sectorid:entity.sector.objid, year:info.year]);
+        if( !year ) return [];
+        def m = [_schemaname:'waterworks_billing_cycle'];
+        m.findBy = [sectorid:parent.sector.objid, year:year];
+        m.select = schema.links.find{ it.name=='billingcycle' }.includefields;
+        return qryService.getList(m);
     }
     
     void computeAmount() {
-        if( !info.billingcycle?.month ) 
+        if( !entity.billingcycle?.month ) 
             throw new Exception("Period Month is required!");
 
         def m = [:];
-        m.objid = entity.objid;
-        m.volume = info.volume;
+        m.objid = parent.objid;
+        m.volume = entity.volume;
         def r = compSvc.compute(m);
-        info.amount = r;
+        entity.amount = r;
     }
     
-    def doOk() {
-        if( info.prevreading > info.reading) 
+    void beforeSave( def mode ) {
+        if( entity.prevreading > entity.reading) 
             throw new Exception("Prev reading must be less than current reading");
-        if( info.prevreading <0 || info.reading < 0 || info.volume <0) 
+        if( entity.prevreading <0 || entity.reading < 0 || entity.volume <0) 
             throw new Exception("Reading,prevreading,volume must be greater than 0");
-        info.account = [objid:entity.objid];
-        info.readingmethod = 'CAPTURE';
-        acctSvc.postReading( info );
+    }
+    
+    void afterSave() {
         if(handler) 
             handler();
         else 
             caller.reload();
-        return "_close";
     }
     
-    def doCancel() {
-        return "_close";
+    boolean isEditAllowed() {
+        if(entity.readingmethod == 'ONLINE') return false;
+        return super.isEditAllowed();
+    }
+    
+    boolean isDeleteAllowed() {
+        if(entity.readingmethod == 'ONLINE') return false;
+        return super.isEditAllowed();
     }
     
 }

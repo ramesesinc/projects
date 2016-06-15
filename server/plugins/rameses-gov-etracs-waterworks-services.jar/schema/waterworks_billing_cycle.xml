@@ -3,8 +3,8 @@
 	<element tablename="waterworks_billing_cycle">
 		<field name="objid" primary="true"/> 
 		<field name="sectorid" required="true" caption="Sector"/> 
-		<field name="year" required="true" caption="Year"/> 
-		<field name="month" required="true" caption="Month"/> 
+		<field name="year" required="true" caption="Year" type="integer"/> 
+		<field name="month" required="true" caption="Month" type="integer"/> 
 
 		<field name="fromperiod"  indexed="true" type="date" editable="false" caption="From Period"/>
 		<field name="toperiod"  indexed="true" type="date" editable="false" caption="To Period"/>

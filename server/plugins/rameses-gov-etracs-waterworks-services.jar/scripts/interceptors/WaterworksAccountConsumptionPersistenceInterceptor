@@ -9,7 +9,7 @@ class WaterworksAccountConsumptionPersistenceInterceptor{
 	def acct;
 
 
-	@After(pattern="PersistenceService.removeEntity", eval="#{args[0]._schemaname == 'waterworks_account_consumption'}")
+	@After(pattern="PersistenceService.(create|update|removeEntity)", eval="#{args[0]._schemaname == 'waterworks_account_consumption'}")
 	public void afterRemoveConsumption(def evt) {
 		def zz = evt.args[0];
 

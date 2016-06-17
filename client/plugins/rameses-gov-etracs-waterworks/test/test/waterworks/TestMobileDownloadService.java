@@ -56,7 +56,7 @@ public class TestMobileDownloadService extends AbstractTestCase {
         } 
     }
 
-    public void xtestDownload() throws Exception { 
+    public void testDownload() throws Exception { 
         System.out.println("** initForDownload ");
         Map params = new HashMap(); 
         params.put("assigneeid", userid); 

@@ -76,13 +76,7 @@ class WaterworksMobileDownloadService {
 			return; 
 		}
 
-		// 3: get previous billing cycle by sectorid if available 
-		def bcp = wbc.find([ sectorid: o.sectorid ])
-					 .where(' objid < :bcid ', [ bcid: bcc.objid ])
-					 .orderBy(' objid desc ')
-					 .first(); 
-
-		def params = [ assigneeid: o.assigneeid, sectorid:o.sectorid, billingcycleid: bcp.objid ]; 
+		def params = [ assigneeid: o.assigneeid, sectorid:o.sectorid, billingcycleid: bcc.objid ]; 
 		def list = wm.getListForDownload( params ); 
 		println 'process download list-size: '+ list.size();
 		def df = new SimpleDateFormat("MM/dd/yyyy"); 
@@ -91,10 +85,11 @@ class WaterworksMobileDownloadService {
 			it.rundate = rundate;
 			it.barcode = '51030:' + it.acctno;
 			it.batchid = o.batchid;
+			it.billingcycle = bcc;
 			it.month = bcc.month;
 			it.year = bcc.year;
-			it.period = df.format(bcc.fromperiod) + " - " + df.format(bcc.toperiod);
 			it.discodate = bcc.disconnectiondate;
+			it.period = df.format(bcc.fromperiod) + " - " + df.format(bcc.toperiod);
 			it.info = wm.serializer.write([ 
 				barangay: (it.barangayid? it.barangayid: ''), 
 				classification: it.classificationid, 
@@ -159,7 +154,7 @@ class WaterworksMobileDownloadService {
 	@ProxyMethod
 	def getReaderBySector( o ){
 		if (!o.sectorid) throw new Exception("sectorid is required!");
-		if(!o.userid) throw new Exception("userid is required!");
+		if (!o.userid) throw new Exception("userid is required!");
 		return wsr.find([sectorid:o.sectorid,"assignee_objid":o.userid]).list();
 	}
 }

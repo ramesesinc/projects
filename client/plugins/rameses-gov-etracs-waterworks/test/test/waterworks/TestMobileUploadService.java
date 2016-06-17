@@ -33,18 +33,18 @@ public class TestMobileUploadService extends AbstractTestCase {
         userfullname = "FERNANDO ESTRADA"; 
     }
 
-    public void xtestMain() throws Exception { 
+    public void testMain() throws Exception { 
         System.out.println("** upload ");
         Map params = new HashMap(); 
         Map acct = new HashMap();
-        acct.put("objid", "bc5432b9-f728-11e5-b778-40364febaa91-A-136"); 
+        acct.put("objid", "bc5431af-f728-11e5-b778-40364febaa91-A-135"); 
         params.put("account", acct);
-        params.put("batchid", "WBTC731898a9:1555b699006:-7ff4");
+        params.put("batchid", "WBTC-5081aa41:1549d91b563:-7ff3");
         params.put("objid", "WAC-" + new UID());
         params.put("userid", userid);
         params.put("name", userfullname);
         params.put("dtreading", "2016-05-11");
-        params.put("reading", 4453);
+        params.put("reading", 7028);
         params.put("amount", 120.0);
 
         System.out.println( svc.upload( params ));

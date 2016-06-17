@@ -13,9 +13,9 @@ FROM waterworks_account acct
 	INNER JOIN waterworks_sector_reader wsr ON wsz.readerid = wsr.objid
 	INNER JOIN waterworks_stubout ws ON acct.stuboutid = ws.objid 
 	INNER JOIN waterworks_stubout_node wsn on acct.stuboutnodeid = wsn.objid 
-WHERE acct.sectorid=$P{sectorid} 
-	AND ( acct.billingcycleid IS NULL OR acct.billingcycleid=$P{billingcycleid}) 
-	AND wsr.assignee_objid=$P{assigneeid} 
+WHERE acct.sectorid = $P{sectorid} 
+	AND ( acct.billingcycleid IS NULL OR acct.billingcycleid < $P{billingcycleid}) 
+	AND wsr.assignee_objid = $P{assigneeid} 
 	AND acct.objid NOT IN (  
 		SELECT objid FROM waterworks_mobile_info 
 		WHERE objid=acct.objid 

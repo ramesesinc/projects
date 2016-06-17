@@ -9,8 +9,5 @@
 			includefields="objid,code">
 			<key field="sectorid" target="objid"/>
 		</complex>
-
-		<field name="assigneeid" expr="assignee_objid"/> 
-		<field name="assigneename" expr="assignee_name"/> 
 	</element>
 </schema>

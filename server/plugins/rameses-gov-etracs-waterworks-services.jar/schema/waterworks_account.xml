@@ -29,7 +29,7 @@
 			<key field="sectorid" target="objid"/> 
 		</complex> 
 		<complex name="zone" ref="waterworks_sector_zone" jointype="many-to-one"  required="true" 
-			includefields="objid,code,reader.assigneeid,reader.assigneename">
+			includefields="objid,code,reader.assignee.objid,reader.assignee.name">
 			<key field="zoneid" target="objid"/> 
 		</complex> 
 

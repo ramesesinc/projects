@@ -33,7 +33,7 @@ public class TestMobileUploadService extends AbstractTestCase {
         userfullname = "FERNANDO ESTRADA"; 
     }
 
-    public void testMain() throws Exception { 
+    public void xtestMain() throws Exception { 
         System.out.println("** upload ");
         Map params = new HashMap(); 
         Map acct = new HashMap();

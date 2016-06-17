@@ -12,7 +12,7 @@
 		</complex>	
 				
 		<complex name="reader" ref="waterworks_sector_reader" jointype="many-to-one" required="false"
-			includefields="objid,assigneeid,assigneename">
+			includefields="objid,assignee.objid,assignee.name">
 			<key field="readerid" target="objid" />
 		</complex>	
 	</element>

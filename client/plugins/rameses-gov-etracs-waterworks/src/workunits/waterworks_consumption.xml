@@ -1,5 +1,5 @@
 <workunit extends="com/rameses/seti2/templates/CrudList.xml"
-          schemaName="waterworks_account_consumption" 
+          schemaName="waterworks_consumption" 
           cols="billingcycle.year,billingcycle.monthname,prevreading,reading,readingmethod,reader_name,volume,amount,amtpaid,balance,acctid"
           orderBy="billingcycle.objid desc">
     <invokers>

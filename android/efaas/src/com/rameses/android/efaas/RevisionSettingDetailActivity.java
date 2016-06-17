@@ -6,9 +6,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -64,6 +67,9 @@ public class RevisionSettingDetailActivity extends SettingsMenuActivity {
     			Platform.runAsync(new ActionProcess());
             }
         });
+        
+        ActionBar bar = getActionBar();
+	    //bar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#a6e20d")));
 	}
 	
 	protected void afterBackPressed() {

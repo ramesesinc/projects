@@ -5,14 +5,20 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
+import java.util.UUID;
 
+import android.app.ActionBar;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -39,8 +45,9 @@ public class ImageCaptureActivity extends ControlActivity {
 	private ImageView image;
 	private EditText title;
 	private Button  save;
-	private String faasid;
+	private String objid, faasid;
 	private Bitmap bitmap = null;
+	private String data_title;
 	
 	public boolean isCloseable() { return false; }
 	
@@ -49,6 +56,7 @@ public class ImageCaptureActivity extends ControlActivity {
 		ApplicationUtil.changeTitle(this, "Capture Image");
 		setContentView(R.layout.activity_image);
 		
+		objid = getIntent().getExtras().getString("objid");
 		faasid = getIntent().getExtras().getString("faasid");
 		
 		image = (ImageView) findViewById(R.id.image_view);
@@ -64,11 +72,36 @@ public class ImageCaptureActivity extends ControlActivity {
 		    }
 		});
 		
+		if(objid != null){
+			save.setText("Update");
+			ImageDB db = new ImageDB();
+			try{
+				Properties prop = db.find(objid);
+				String tle = prop.getProperty("title");
+				String img = prop.getProperty("image");
+				
+				title.setText(tle);
+				
+				byte[] decodedBytes = Base64.decode(img, Base64.DEFAULT);
+				bitmap = DbBitmapUtility.getImage(decodedBytes);
+				image.setImageBitmap(bitmap);
+			}catch(Throwable t){
+				new ErrorDialog(this, t).show();
+			}
+		}
+		
 		save.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-            	doSave();
+            	if(objid == null){
+            		doCreate();
+            	}else{
+            		doUpdate();
+            	}
             }
         });
+		
+		ActionBar bar = getActionBar();
+	    //bar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#a6e20d")));
 	}
 	
 	protected void afterBackPressed() {
@@ -149,9 +182,9 @@ public class ImageCaptureActivity extends ControlActivity {
         	new ErrorDialog(this,e).show();
         }
     }
-	
-	private void doSave(){
-		String data_title = title.getText().toString();
+
+	private void doCreate(){
+		data_title = title.getText().toString();
 		
 		if(data_title.isEmpty()){
 			new InfoDialog(this, "Title is required!").show();
@@ -165,12 +198,43 @@ public class ImageCaptureActivity extends ControlActivity {
 		
 		try{
 			Map params = new HashMap();
+			params.put("objid", UUID.randomUUID().toString());
 			params.put("faasid", faasid);
 			params.put("title", data_title);
-			params.put("image", DbBitmapUtility.getBytes(bitmap));
+			params.put("image", Base64.encodeToString(DbBitmapUtility.getBytes(bitmap),Base64.DEFAULT));
 			
 			ImageDB db = new ImageDB();
 			db.create(params);
+		}catch(Throwable e){
+			new ErrorDialog(this,e).show();
+			return;
+		}
+		disposeMe(); 
+		FaasActivity.initData();
+	}
+	
+	private void doUpdate(){
+		data_title = title.getText().toString();
+		
+		if(data_title.isEmpty()){
+			new InfoDialog(this, "Title is required!").show();
+			return;
+		}
+		
+		if(bitmap == null){
+			new InfoDialog(this, "Image is required!").show();
+			return;
+		}
+		
+		try{
+			Map params = new HashMap();
+			params.put("objid", objid);
+			params.put("faasid", faasid);
+			params.put("title", data_title);
+			params.put("image", Base64.encodeToString(DbBitmapUtility.getBytes(bitmap),Base64.DEFAULT));
+			
+			ImageDB db = new ImageDB();
+			db.update(params);
 		}catch(Throwable e){
 			new ErrorDialog(this,e).show();
 			return;

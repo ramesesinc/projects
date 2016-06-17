@@ -5,14 +5,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
@@ -63,6 +68,9 @@ public class MasterFileDetailActivity extends SettingsMenuActivity{
     			Platform.runAsync(new ActionProcess());
             }
         });
+        
+        ActionBar bar = getActionBar();
+	    //bar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#a6e20d")));
 	}
 	
 	protected void afterBackPressed() {
@@ -205,6 +213,7 @@ public class MasterFileDetailActivity extends SettingsMenuActivity{
 				String title = a.getListItem(pos).getTitle();
 			}	
 		});
+		
 	}
 	
 	void saveData(){

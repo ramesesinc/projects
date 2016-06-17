@@ -1,57 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:gravity="center|top"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:background="@color/white" >
+    
+	<LinearLayout 
+	    android:layout_width="match_parent"
+	    android:layout_height="500dp"
+	    android:orientation="vertical"
+	    android:layout_marginRight="70dp"
+	    android:layout_marginLeft="70dp"
+	    android:layout_marginTop="20dp"
+	    android:padding="50dp"
+	    android:gravity="center"
+	    android:background="@color/white" >
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp" >
+		<ImageView
+		    android:id="@+id/imageView1"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:src="@drawable/etrcas"
+		    android:layout_gravity="center"
+		    android:layout_marginBottom="40dp" />
+	        
+	        <EditText
+		        android:id="@+id/login_username"
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:ems="10"
+		        android:layout_marginTop="10dp"
+		        android:padding="10dp"
+		        android:hint="@string/txt_hint_username"
+		        android:background="@color/light_gray" >
 
-        <TextView
-            android:id="@+id/textView19"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
-            android:background="@android:color/darker_gray"
-            android:padding="2dp"
-            android:text="@string/txt_login"
-            android:textColor="@android:color/white"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+		    </EditText>
+		
+		    <EditText
+		        android:id="@+id/login_password"
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:ems="10"
+		        android:layout_marginTop="10dp"
+		        android:padding="10dp"
+		        android:hint="@string/txt_hint_password"
+		        android:inputType="textPassword"
+		        android:background="@color/light_gray" />
 
-        <RelativeLayout
-            android:id="@+id/login_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/textView19"
-            android:paddingBottom="5dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:paddingTop="5dp" >
+	        <Button
+	            android:id="@+id/btn_login"
+	            android:layout_width="match_parent"
+	            android:layout_height="wrap_content"
+	            android:layout_gravity="center"
+	            android:layout_marginTop="20dp"
+	            android:textStyle="bold"
+	            android:background="@color/default_button_color"
+	            android:textColor="@color/white"
+	            android:textSize="20sp"
+	            android:text="LOGIN" />
+	
+	</LinearLayout>
 
-        </RelativeLayout>
-
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="5dp"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:paddingTop="5dp" >
-
-        <Button
-            android:id="@+id/btn_login"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="5dp"
-            android:text="@string/txt_login" />
-
-    </RelativeLayout>
-
-</LinearLayout>
+</RelativeLayout>

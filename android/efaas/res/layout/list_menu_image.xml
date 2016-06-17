@@ -7,14 +7,14 @@
 
     <ImageView
         android:id="@+id/list_menu_image"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="85dp"
+        android:layout_height="85dp"
         android:src="@drawable/border_light_gray" />
 
     <LinearLayout
         android:id="@+id/item_list_menu_container"
         android:layout_width="fill_parent"
-        android:layout_height="50dp" >
+        android:layout_height="85dp" >
 
         <TextView
             android:id="@+id/list_menu_title"

@@ -56,3 +56,6 @@ where wa.objid=wac.acctid
 	and wa.billingcycleid=wac.billingcycleid 
 	and wac.billingcycleid=wbc.objid 
 ;
+
+update waterworks_consumption set amount=0.0 where amount is null;
+update waterworks_consumption set amtpaid=0.0 where amtpaid is null;

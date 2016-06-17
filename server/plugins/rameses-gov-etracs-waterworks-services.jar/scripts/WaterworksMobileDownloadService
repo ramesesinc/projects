@@ -83,15 +83,7 @@ class WaterworksMobileDownloadService {
 					 .first(); 
 
 		def params = [ assigneeid: o.assigneeid, sectorid:o.sectorid, billingcycleid: bcp.objid ]; 
-		def list = wm.getListForDownload(params);
-		//wa.debug = true; 
-		//def acctdb = wa.select('objid,acctno,currentreading,classificationid,address.text,address.barangay.objid,meter.serialno,metersize.objid,sector.objid,sector.code,billingcycle.fromperiod,billingcycle.toperiod,billingcycle.duedate,billingcycle.disconnectiondate,stubout.objid,stuboutnode.indexno,zone.objid,zone.reader.assigneeid');
-		//def list = acctdb.find([ sectorid: o.sectorid ])
-		//				 .where(' zone.reader.assignee.objid = :oid ', [ oid: o.assigneeid ])
-		//				 .list();
-		//println list.first(); 
-		//throw new Exception('stop');
-
+		def list = wm.getListForDownload( params ); 
 		println 'process download list-size: '+ list.size();
 		def df = new SimpleDateFormat("MM/dd/yyyy"); 
 		list.each { 

@@ -17,6 +17,7 @@ class WaterworksMobileUploadService {
 
 	@ProxyMethod 
 	public def upload( o ) { 
+		println 'upload >> ' + o; 
 		if(!o.objid) throw new Exception("Please specify objid!");
 		if(!o.reading) throw new Exception("Please specify reading!");
 		if(!o.dtreading) throw new Exception("Please specify dtreading!");
@@ -30,18 +31,21 @@ class WaterworksMobileUploadService {
 		def bc = wbc.find([ sectorid: mobileinfo.sectorid, year: mobileinfo.year, month: mobileinfo.month ]).first(); 
 
 		def c = [ account: o.account ]; 
+		c._schemaname = 'waterworks_consumption';
+		c.readingmethod = 'ONLINE';
 		c.acctid = o.account.objid;
 		c.dtreading = o.dtreading;
-		c.prevreading = mobileinfo.lastreading;
 		c.reading = o.reading;
-		c.readingmethod = 'ONLINE';
+		c.prevreading = mobileinfo.lastreading;
 		c.reader = [objid:o.userid, name: o.name]; 
 		c.volume = c.reading - c.prevreading;
 		c.billingcycle = bc; 
-		c._schemaname = 'waterworks_consumption';
+		c.amount = o.amount; 
+		c.amtpaid = 0.0; 
 		perSvc.create( c ); 
 
-		wm.find([ batchid:o.batchid, objid:o.account.objid ]).delete(); 
+		wm.find([ objid: c.acctid ]).delete(); 
+		wm.find([ objid: o.objid ]).delete(); 
 		return o;  
 	} 
 } 

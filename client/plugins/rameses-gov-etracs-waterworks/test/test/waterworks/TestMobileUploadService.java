@@ -4,16 +4,17 @@
  */
 package test.waterworks;
 
+import java.rmi.server.UID;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.TimeUnit;
 
 /**
  *
  * @author rameses
  */
+
+
 public class TestMobileUploadService extends AbstractTestCase {
     
     final LinkedBlockingQueue LOCK = new LinkedBlockingQueue(); 
@@ -35,17 +36,16 @@ public class TestMobileUploadService extends AbstractTestCase {
     public void testMain() throws Exception { 
         System.out.println("** upload ");
         Map params = new HashMap(); 
-        params.put("batchid", "WBTC-2d17ca2e:154c26b8ea5:-7ff2");
-        params.put("objid", "f988887b-8279-4758-8c2f-974f8e8e73c6");
+        Map acct = new HashMap();
+        acct.put("objid", "bc5431af-f728-11e5-b778-40364febaa91-A-135"); 
+        params.put("account", acct);
+        params.put("batchid", "WBTC-5081aa41:1549d91b563:-7ff3");
+        params.put("objid", "WAC-" + new UID());
         params.put("userid", userid);
         params.put("name", userfullname);
-        params.put("dtreading", "2016-05-18");
-        params.put("reading", 2658);
-        params.put("amount", 253.0);
-
-        Map acct = new HashMap();
-        acct.put("objid", "bc567d08-f728-11e5-b778-40364febaa91-B-189"); 
-        params.put("account", acct);
+        params.put("dtreading", "2016-05-11");
+        params.put("reading", 7028);
+        params.put("amount", 120.0);
 
         System.out.println( svc.upload( params ));
     }

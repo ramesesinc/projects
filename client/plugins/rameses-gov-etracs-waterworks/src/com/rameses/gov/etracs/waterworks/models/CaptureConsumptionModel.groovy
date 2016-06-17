@@ -31,7 +31,7 @@ public class CaptureConsumptionModel extends CrudFormModel {
     def listener = [
         "entity.(reading|prevreading)" : { o-> 
             def curr = (entity.reading==null? 0 : entity.reading);
-            def prev = (entity.prevreading==null? 0 : entity.prevreading);
+            def prev = (entity.prevreading==null? 0 : entity.prevreading);            
             entity.volume = curr - prev; 
         }
     ];
@@ -41,6 +41,9 @@ public class CaptureConsumptionModel extends CrudFormModel {
         entity.readingmethod = 'CAPTURE';
         entity.acctid = parent.objid;
         year = entity.year;
+        entity.each{ k,v-> 
+            println '>> '+ k + '='+ v + ', '+ (v ? v.getClass(): null);
+        }
     }
     
     void afterOpen() {
@@ -81,10 +84,10 @@ public class CaptureConsumptionModel extends CrudFormModel {
             caller.reload();
     }
     
-    boolean isEditAllowed() {
+    /*boolean isEditAllowed() {
         if(entity.readingmethod == 'ONLINE') return false;
         return super.isEditAllowed();
-    }
+    }*/
     
     boolean isDeleteAllowed() {
         if(entity.readingmethod == 'ONLINE') return false;

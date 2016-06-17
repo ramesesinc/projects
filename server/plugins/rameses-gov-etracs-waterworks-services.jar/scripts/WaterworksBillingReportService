@@ -6,7 +6,7 @@ class WaterworksBillingReportService {
 	@DataContext('waterworks_account')
 	def waterworks_account; 
 
-	@DataContext('waterworks_account_consumption')
+	@DataContext('waterworks_consumption')
 	def consumption; 
 
 	@DataContext('waterworks_application')

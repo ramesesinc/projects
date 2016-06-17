@@ -19,7 +19,7 @@ class WaterworksAccountBillingService  {
 	@DataContext("waterworks_account")
 	def acct;
 
-	@DataContext("waterworks_account_consumption")
+	@DataContext("waterworks_consumption")
 	def consumption;
 
 	@DataContext("waterworks_installment")
@@ -115,15 +115,9 @@ class WaterworksAccountBillingService  {
 		def items = [];
 		int idx = 0; 
 
-		a.items.each{ 
-			println '>> '+ it.txntype + ' ' + it.amount + ' ' + it.item?.title;  
-		}
-
 		def acctGrps = a.items.groupBy{ it.txntype };
 		acctGrps.each { kk,v->
 			def k = [code:'', title:kk]; 
-			println k; 
-
 			def m = [:];
 			m.item = k;
 			m.amount = v.sum{it.amount};

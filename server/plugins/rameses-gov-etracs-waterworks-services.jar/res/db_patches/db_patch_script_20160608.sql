@@ -253,3 +253,4 @@ update waterworks_account_consumption wac, waterworks_account_ledger wal set
 	wal.billingcycleid = wac.billingcycleid 
 where wac.ledgerid is not null 
 	and wac.ledgerid=wal.objid;
+

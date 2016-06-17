@@ -9,6 +9,7 @@
 		<field name="reason_objid" />
 		<field name="online" />
 		<field name="lguid" />
+		<field name="originlguid" />
 		<field name="lasttaxyear" type="integer" />
 	</element>
 

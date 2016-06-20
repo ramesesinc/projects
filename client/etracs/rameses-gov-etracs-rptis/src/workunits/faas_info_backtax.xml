@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit>
     <invokers>
-        <invoker type="faas:info" action="init" caption="Back Taxes" index="555" visibleWhen="#{entity.txntype.objid.matches('ND|UK')}"/>
+        <invoker type="faas:info" action="init" caption="Back Taxes" index="555" visibleWhen="#{entity.txntype.objid.matches('ND|UK|ST')}"/>
         <invoker type="formActions" action="refresh" caption="Refresh" mnemonic="r" viibleWhen="#{mode == MODE_READ}"/>
         <invoker type="formActions" action="edit" caption="Edit" mnemonic="e" visibleWhen="#{showActions == true}" />
         <invoker type="formActions" action="save" caption="Save" mnemonic="s" visibleWhen="#{mode == MODE_EDIT}" />

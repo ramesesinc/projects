@@ -5,6 +5,7 @@
 - BPLS 
 		
 - ASSESSOR
+	- Add backtax support to stewardship txn
 	- Add logging support for faas cancellation
 	- Update cancelled faas list states
 	- Delete province created faas cancellation support

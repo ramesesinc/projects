@@ -1,4 +1,4 @@
-<schema>
+<schema adapter="main">
 	<element name="log" tablename="txnlog">
 		<field name="objid" primary="true"/>
 		<field name="ref" required="true"/>

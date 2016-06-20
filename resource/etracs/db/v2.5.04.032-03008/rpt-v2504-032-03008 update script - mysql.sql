@@ -127,3 +127,13 @@ ALTER TABLE `sys_wf_transition`
 MODIFY COLUMN `action`  varchar(50) not null,
 DROP PRIMARY KEY,
 ADD PRIMARY KEY (`parentid`, `processname`, `to`, `action`);
+
+
+/* insert rptledger restrictions */
+insert into rptledger_restriction(objid, parentid, restrictionid, remarks)
+select distinct f.objid, rlf.rptledgerid, f.restrictionid, null 
+from faas f 
+    inner join rptledgerfaas rlf on f.objid = rlf.faasid 
+where f.restrictionid is not null 
+and not exists(select * from rptledger_restriction where parentid = rlf.rptledgerid and restrictionid = f.restrictionid);
+

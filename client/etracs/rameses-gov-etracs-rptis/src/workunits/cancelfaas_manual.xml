@@ -27,7 +27,7 @@ public class CancelledFAASController extends PageFlowController
     
     @Service('CancelledFAASService')
     def svc 
-            
+    
     @Invoker
     def invoker 
     
@@ -150,7 +150,7 @@ public class CancelledFAASController extends PageFlowController
     void approveFaasCancellation() {
         entity = svc.approveFaasCancellation(entity);
     }
-
+    
     
 }
 

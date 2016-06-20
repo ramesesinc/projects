@@ -5,6 +5,7 @@
 - BPLS 
 		
 - ASSESSOR
+	- Update cancelled faas list states
 	- Delete province created faas cancellation support
 	- Display barangay on Assessment Roll (continuous)
 	- Add PC and DT transaction types

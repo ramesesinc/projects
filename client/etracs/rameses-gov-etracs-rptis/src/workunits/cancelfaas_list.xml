@@ -51,6 +51,10 @@
                 return selectedEntity;
             }  
             
+        def getStates(){
+            return ['DRAFT', 'FORAPPROVAL', 'APPROVED'];
+        }            
+            
     }  
     </code>   
     <pages>

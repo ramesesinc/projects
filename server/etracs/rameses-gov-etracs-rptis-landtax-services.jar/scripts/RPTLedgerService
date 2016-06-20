@@ -86,6 +86,7 @@ class RPTLedgerService
         ledger.faases.each{ ledgerfaas ->
             saveLedgerFaas(ledgerfaas)
         }
+        postRestriction(ledger)
         return ledger 
     }
 
@@ -917,6 +918,7 @@ class RPTLedgerService
             taxable                 : util.toBoolean(faas.rpu.taxable, true), 
             prevtdno                : faas.prevtdno,
             titleno                 : faas.titleno,
+            restrictionid           : faas.restrictionid,
         ]
 
         ledger.faases << createLedgerFaas( ledger, faas )
@@ -1091,6 +1093,16 @@ class RPTLedgerService
     @ProxyMethod
     public void cancelLedger( ledger ) {
         em.updateState([objid:ledger.objid, state:'CANCELLED'])    
+    }
+
+    void postRestriction(ledger){
+        if (ledger.restrictionid){
+            def restriction = [:]
+            restriction.objid = 'RLR' + new java.rmi.server.UID()
+            restriction.parentid = ledger.objid 
+            restriction.restrictionid = ledger.restrictionid 
+            rptledger_restrictionDb.create(restriction)
+        }
     }
 
 }

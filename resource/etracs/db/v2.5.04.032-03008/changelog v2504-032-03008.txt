@@ -24,6 +24,7 @@
 	- (new) Report on AV of Restricted Properties
 
 - LANDTAX
+	- Automatic posting of restriction to ledger
 	- Add blockno info in realty tax ledger 
 	- Add Realty Tax Delinquency Summary and Realty Tax Delinquency Summary by Classification Report
 	- Update on idle land statement of shares

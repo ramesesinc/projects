@@ -6,12 +6,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
-
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Base64;
 import android.view.ContextMenu;
@@ -24,6 +21,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.view.ViewGroup.LayoutParams;
 import com.rameses.android.ApplicationUtil;
 import com.rameses.android.ControlActivity;
@@ -32,7 +30,9 @@ import com.rameses.android.db.*;
 import com.rameses.android.efaas.dialog.AppraisalInfo;
 import com.rameses.android.efaas.dialog.ErrorDialog;
 import com.rameses.android.efaas.dialog.InfoDialog;
+import com.rameses.android.efaas.adapter.AppraisalItemAdapter;
 import com.rameses.android.efaas.adapter.AppraisalMenuAdapter;
+import com.rameses.android.efaas.adapter.HomeMenuAdapter;
 import com.rameses.android.efaas.adapter.ImageItemAdapter;
 import com.rameses.android.efaas.bean.*;
 import com.rameses.client.android.Platform;
@@ -324,6 +324,16 @@ public class FaasActivity extends ControlActivity{
 			LayoutParams layout = (LayoutParams) appraisal_list.getLayoutParams();
 			layout.height = (68 * data_appraisal.size());
 			appraisal_list.setLayoutParams(layout);
+			
+			appraisal_list.setOnItemClickListener(new OnItemClickListener(){
+				@Override
+				public void onItemClick(AdapterView<?> adapter, View view, int pos, long arg3) {
+					AppraisalMenuAdapter a = (AppraisalMenuAdapter) adapter.getAdapter();
+					AppraisalListItem item = a.getListItem(pos);
+					AppraisalInfo appraisal = new AppraisalInfo(activity,item.getObjid(),rpuid);
+		            appraisal.show();
+				}	
+			});
 		}catch(Throwable t){
 			t.printStackTrace();
 			new ErrorDialog(activity, t).show();
@@ -371,6 +381,18 @@ public class FaasActivity extends ControlActivity{
 			LayoutParams layout = (LayoutParams) image_list.getLayoutParams();
 			layout.height = (600 * data_image.size());
 			image_list.setLayoutParams(layout);
+			
+			image_list.setOnItemClickListener(new OnItemClickListener(){
+				@Override
+				public void onItemClick(AdapterView<?> adapter, View view, int pos, long arg3) {
+					ImageItemAdapter a = (ImageItemAdapter) adapter.getAdapter();
+					ImageItem item = a.getListItem(pos);
+					Intent myIntent = new Intent(activity, ImageCaptureActivity.class);
+					myIntent.putExtra("objid", item.getObjid());
+					myIntent.putExtra("faasid", item.getFaasId());
+					activity.startActivity(myIntent);
+				}	
+			});
 		}catch(Throwable t){
 			new ErrorDialog(activity, t).show();
 		}

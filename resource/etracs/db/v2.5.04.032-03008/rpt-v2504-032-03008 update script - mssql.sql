@@ -122,6 +122,8 @@ INSERT INTO sys_wf_transition (parentid, processname, action, [to], idx, eval, p
 go 
 INSERT INTO sys_wf_transition (parentid, processname, action, [to], idx, eval, properties, permission) VALUES ('assign-recommender', 'cancelledfaas', '', 'recommender', '70', NULL, '[caption:''Assign To Me'', confirm:''Assign task to you?'']', NULL)
 go 
+INSERT INTO sys_wf_transition (parentid, processname, action, [to], idx, eval, properties, permission) VALUES ('recommender', 'cancelledfaas', 'return_receiver', 'receiver', '71', NULL, '[caption:''Return to Receiver'',confirm:''Return to receiver?'', messagehandler:''default'']', '')
+go 
 INSERT INTO sys_wf_transition (parentid, processname, action, [to], idx, eval, properties, permission) VALUES ('recommender', 'cancelledfaas', 'return_appraiser', 'appraiser', '72', NULL, '[caption:''Return to Appraiser'',confirm:''Return to appraiser?'', messagehandler:''default'']', NULL)
 go 
 INSERT INTO sys_wf_transition (parentid, processname, action, [to], idx, eval, properties, permission) VALUES ('recommender', 'cancelledfaas', 'return_taxmapper', 'taxmapper', '73', NULL, '[caption:''Return to Taxmapper'',confirm:''Return to taxmapper?'', messagehandler:''default'']', NULL)
@@ -134,6 +136,7 @@ INSERT INTO sys_wf_transition (parentid, processname, action, [to], idx, eval, p
 go 
 INSERT INTO sys_wf_transition (parentid, processname, action, [to], idx, eval, properties, permission) VALUES ('approver', 'cancelledfaas', 'approve', 'end', '110', NULL, '[caption:''Manually Approve'',confirm:''Manually approve cancellation?'']', NULL)
 go 
+
 
 
 

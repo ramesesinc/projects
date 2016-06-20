@@ -5,13 +5,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Context;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -21,7 +17,6 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.ListView;
-
 import com.rameses.android.ApplicationUtil;
 import com.rameses.android.R;
 import com.rameses.android.SettingsMenuActivity;
@@ -62,6 +57,10 @@ public class RevisionSettingDetailActivity extends SettingsMenuActivity {
 		Button button = (Button) findViewById(R.id.button_sync);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+            	if(!revisionsetting.equals("Land Revision Setting")){
+            		new InfoDialog(activity,"This operation is not yet supported!").show();
+            		return;
+            	}
             	progressDialog.setMessage("Please wait...");
     			if (!progressDialog.isShowing()) progressDialog.show();		
     			Platform.runAsync(new ActionProcess());
@@ -100,6 +99,7 @@ public class RevisionSettingDetailActivity extends SettingsMenuActivity {
 		
 		list = (ListView) findViewById(R.id.listview_snyc);
 		list.setAdapter(new MasterFileMenuAdapter(this,data));
+		if(data.isEmpty()) list.setBackgroundResource(R.drawable.empty);
 		list.setOnItemClickListener(new OnItemClickListener(){
 			@Override
 			public void onItemClick(AdapterView<?> adapter, View view, int pos, long arg3) {

@@ -2,7 +2,6 @@ package com.rameses.android.system;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -11,7 +10,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.view.LayoutInflater;
 import android.widget.RelativeLayout;
-
 import com.rameses.android.ApplicationUtil;
 import com.rameses.android.R;
 import com.rameses.android.SettingsMenuActivity;
@@ -33,13 +31,8 @@ public class LoginActivity extends SettingsMenuActivity
 	protected void onCreateProcess(Bundle savedInstanceState) {
 		super.onCreateProcess(savedInstanceState);
 		
-		setContentView(R.layout.template_footer);
-		RelativeLayout rl_container = (RelativeLayout) findViewById(R.id.rl_container);
-		LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		inflater.inflate(R.layout.activity_login, rl_container, true);
+		setContentView(R.layout.activity_login);
 		
-		RelativeLayout login_container = (RelativeLayout) findViewById(R.id.login_container);
-		inflater.inflate(R.layout.dialog_login, login_container, true);
 		progressDialog = new ProgressDialog(this);
 		progressDialog.setCancelable(false);
 	}

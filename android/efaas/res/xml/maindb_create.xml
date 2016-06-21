@@ -267,9 +267,10 @@
     <sql>
         CREATE TABLE images
         (
+        	objid TEXT,
         	faasid TEXT,
         	title  TEXT,
-			image BLOB
+			image TEXT
         )
     </sql>
 </db>

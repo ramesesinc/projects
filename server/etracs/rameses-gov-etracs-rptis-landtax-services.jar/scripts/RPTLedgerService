@@ -748,14 +748,17 @@ class RPTLedgerService
 
     @ProxyMethod
     public void postLedgerFaasData(faas){
-        def ledger = getLedgerByFaasId(faas.previousfaases[0].prevfaasid)
-        if (!ledger) throw new Exception('Ledger not found for TD No. ' + faas.tdno + '.')
-        ledger.faasid = faas.objid 
-        updateLedger(ledger)
-        def ledgerfaas = createLedgerFaas(ledger, faas)
-        postLedgerFaas(ledgerfaas) 
-        postTaxDifference(ledger, ledgerfaas, faas)
-        updateLedgerFaasInfo(faas, ledger)
+        def ledger = getLedgerByFaasId(faas.objid)
+        if (!ledger){
+            ledger = getLedgerByFaasId(faas.previousfaases[0].prevfaasid)
+            if (!ledger) throw new Exception('Ledger not found for TD No. ' + faas.tdno + '.')
+            ledger.faasid = faas.objid 
+            updateLedger(ledger)
+            def ledgerfaas = createLedgerFaas(ledger, faas)
+            postLedgerFaas(ledgerfaas) 
+            postTaxDifference(ledger, ledgerfaas, faas)
+            updateLedgerFaasInfo(faas, ledger)
+        }
     }
 
     void postTaxDifference(ledger, ledgerfaas, faas){

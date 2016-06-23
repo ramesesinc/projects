@@ -1,6 +1,6 @@
 <workunit extends="com/rameses/seti2/templates/CrudList.xml"
-          schemaName="waterworks_account_consumption" 
-          cols="billingcycle.year,billingcycle.monthname,prevreading,reading,readingmethod,reader_name,volume,amount,amtpaid,balance"
+          schemaName="waterworks_consumption" 
+          cols="objid,billingcycle.year,billingcycle.monthname,prevreading,reading,readingmethod,reader_name,volume,amount,amtpaid,balance,acctid"
           orderBy="billingcycle.objid desc">
     <invokers>
         <invoker type="waterworks_account:section" caption="Consumption" 

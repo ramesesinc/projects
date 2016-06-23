@@ -2,11 +2,16 @@ package waterworks.facts;
 
 import java.util.Date;
 import com.rameses.rules.common.*;
+import treasury.facts.*;
 
-public class Installment  {
+public class WaterInstallment  {
     
-	int year;
 	int month;
+	int year;
+
+    int term;
 	double amount;
+	
+
 
 }

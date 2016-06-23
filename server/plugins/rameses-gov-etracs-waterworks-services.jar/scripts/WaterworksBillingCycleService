@@ -116,7 +116,7 @@ class WaterworksBillingCycleService  {
 	public def findCurrentCycle( def o ) {
 		if(!o.sectorid) throw new Exception("sectorid is required");
 		def currDate = dateSvc.getServerDate();
-		def z = billingcycle.find( [ sectorid: o.sectorid ] ).where( "billdate <= :d", [d: currDate] ).orderBy("billdate DESC").first();
+		def z = billingcycle.find( [ sectorid: o.sectorid ] ).where( "toperiod < :d", [d: currDate] ).orderBy("toperiod DESC").first();
 		return z;
 	}
 

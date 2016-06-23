@@ -24,15 +24,19 @@ public class CaptureConsumptionModel extends CrudFormModel {
         return caller.getMasterEntity();
     }
     
+    boolean requires_recompute;
     def handler;
     int year;
     
     @PropertyChangeListener
     def listener = [
         "entity.(reading|prevreading)" : { o-> 
+            requires_recompute = true; 
+            
             def curr = (entity.reading==null? 0 : entity.reading);
             def prev = (entity.prevreading==null? 0 : entity.prevreading);            
             entity.volume = curr - prev; 
+            entity.amount = 0.0;
         }
     ];
 
@@ -62,19 +66,23 @@ public class CaptureConsumptionModel extends CrudFormModel {
     void computeAmount() {
         if( !entity.billingcycle?.month ) 
             throw new Exception("Period Month is required!");
-
+        
         def m = [:];
-        m.objid = parent.objid;
-        m.volume = entity.volume;
-        def r = compSvc.compute(m);
-        entity.amount = r;
-    }
+        m.objid = parent.objid; 
+        m.volume = entity.volume; 
+        def r = compSvc.compute(m); 
+        entity.amount = r; 
+        requires_recompute = false; 
+    } 
     
-    void beforeSave( def mode ) {
+    void beforeSave( mode ) {
         if( entity.prevreading > entity.reading) 
             throw new Exception("Prev reading must be less than current reading");
         if( entity.prevreading <0 || entity.reading < 0 || entity.volume <0) 
             throw new Exception("Reading,prevreading,volume must be greater than 0");
+        if ( requires_recompute ) {
+            throw new Exception('Reading consumption has changed. Please click the Compute Amount button first.');
+        }
     }
     
     void afterSave() {

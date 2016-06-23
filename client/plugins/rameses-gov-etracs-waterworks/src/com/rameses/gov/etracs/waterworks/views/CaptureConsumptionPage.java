@@ -84,7 +84,7 @@ public class CaptureConsumptionPage extends javax.swing.JPanel {
         xLabel13.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel13.setCaption("Period From");
         xLabel13.setDepends(new String[] {"entity.billingcycle"});
-        xLabel13.setExpression("#{entity.billingcycle.fromperiod? dateFormatter.format( entity.billingcycle.fromperiod) : ''}");
+        xLabel13.setExpression("#{entity.billingcycle.fromperiod? dateFormatter.format( entity.billingcycle.fromperiod) : ''} ");
         xLabel13.setOpaque(true);
         xLabel13.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel5.add(xLabel13);
@@ -191,6 +191,7 @@ public class CaptureConsumptionPage extends javax.swing.JPanel {
         xFormPanel2.add(xButton1);
 
         xDecimalField2.setCaption("Amount");
+        xDecimalField2.setDepends(new String[] {"entity.prevreading", "entity.reading"});
         xDecimalField2.setName("entity.amount"); // NOI18N
         xDecimalField2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {

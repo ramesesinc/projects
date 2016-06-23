@@ -45,6 +45,18 @@
                 entity.taxfees?.each {
                     it.taxfeetypename = it.taxfeetype;
                 }
+                
+                def lobnames = entity.infos.findAll{( it.lob?.objid )}.collect{ it.lob.objid }.unique(); 
+                entity.infos.findAll{( it.lob?.objid )}.each{ 
+                    it.lob.sortorder = lobnames.indexOf( it.lob.objid ); 
+                }
+                entity.infos.findAll{(! it.lob?.objid )}.each{
+                    if ( !it.lob ) it.lob = [:]; 
+                    
+                    it.lob.sortorder = 999;  
+                    it.lob.name = 'BUSINESS INFOS';
+                } 
+                entity.infos.sort{ it.lob.sortorder } 
                 report.viewReport();
             } 
             

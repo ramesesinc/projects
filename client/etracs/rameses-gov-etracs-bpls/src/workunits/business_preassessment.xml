@@ -77,7 +77,7 @@
                 } 
             } 
             
-            def print() {
+            def print() { 
                 return Inv.lookupOpener("business:preassessment:printout", [entity: entity] );            
             }
         }

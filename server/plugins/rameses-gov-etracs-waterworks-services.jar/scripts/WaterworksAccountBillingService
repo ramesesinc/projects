@@ -32,7 +32,7 @@ class WaterworksAccountBillingService  {
 			.where(" amount - amtpaid > 0").list();
 
 		//account based on installment	
-		for( d in list) {
+		for( d in list) { 
 			facts << new WaterConsumption( d );
 		}
 	}
@@ -65,9 +65,10 @@ class WaterworksAccountBillingService  {
 		def bc = billingCycleSvc.findCurrentCycle([sectorid:a.sector.objid]);
 
 		def currDate = dateSvc.getBasicServerDate();
-		
+		def billDate = (o.billdate!=null)?o.billdate:currDate;
+
 		def facts = [];
-		facts << new BillDate( bc.billdate );
+		facts << new BillDate( billDate );
 		facts << new DueDate( bc.duedate );
 		facts << new CurrentDate( currDate );
 		facts << new WaterBillDate( bc );
@@ -77,7 +78,6 @@ class WaterworksAccountBillingService  {
 		buildInstallmentFacts( a, facts );
 
 		def res = ruleSvc.execute( "waterworksbilling", facts, null, null );
-
 		def feeList = [];
 		facts.findAll{ it instanceof WaterBillItem }.each {
 			def item = it.toItem();
@@ -87,9 +87,9 @@ class WaterworksAccountBillingService  {
 		};
 		if (!feeList) return null; 
 
-		a.items = feeList.findAll{it.amount>0}.sort{it.sortorder};	
+		a.items = feeList.findAll{it.amount!=0}.sort{it.sortorder};	
 		a.grandtotal = new BigDecimal(a.items.sum{it.amount});
-		a.billdate = bc.billdate;
+		a.billdate = billDate;
 		a.duedate = bc.duedate;
 		a.currdate = currDate;
 		return a;

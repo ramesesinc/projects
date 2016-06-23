@@ -22,7 +22,6 @@ public class AddWaterBillItem implements RuleActionHandler {
 		}
 
 		amt = NumberUtil.round(amt).doubleValue();	
-		if(amt<=0) return;
 
 		def ct = RuleExecutionContext.getCurrentContext();
 		

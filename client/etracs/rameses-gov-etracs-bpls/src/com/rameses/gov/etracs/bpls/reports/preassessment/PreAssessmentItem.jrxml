@@ -378,18 +378,18 @@
 		</detail>
 		<columnFooter>
 			<band height="16"  isSplitAllowed="true" >
-				<textField isStretchWithOverflow="false" pattern="##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="392"
+						x="365"
 						y="0"
-						width="78"
+						width="106"
 						height="15"
 						key="textField-1"/>
 					<box></box>
 					<textElement textAlignment="Right">
-						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+						<font pdfFontName="Helvetica-Bold" size="10" isBold="true"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{grandtotal}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$V{grandtotal}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement
@@ -399,8 +399,8 @@
 						height="15"
 						key="staticText-12"/>
 					<box></box>
-					<textElement>
-						<font/>
+					<textElement textAlignment="Center">
+						<font pdfFontName="Helvetica-Bold" isBold="true"/>
 					</textElement>
 				<text><![CDATA[TOTAL]]></text>
 				</staticText>

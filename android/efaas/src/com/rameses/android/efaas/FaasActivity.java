@@ -1,23 +1,27 @@
 package com.rameses.android.efaas;
 
-import java.io.ByteArrayOutputStream;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
-
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Base64;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.View.MeasureSpec;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.view.ViewGroup.LayoutParams;
 import com.rameses.android.ApplicationUtil;
 import com.rameses.android.ControlActivity;
@@ -26,7 +30,9 @@ import com.rameses.android.db.*;
 import com.rameses.android.efaas.dialog.AppraisalInfo;
 import com.rameses.android.efaas.dialog.ErrorDialog;
 import com.rameses.android.efaas.dialog.InfoDialog;
+import com.rameses.android.efaas.adapter.AppraisalItemAdapter;
 import com.rameses.android.efaas.adapter.AppraisalMenuAdapter;
+import com.rameses.android.efaas.adapter.HomeMenuAdapter;
 import com.rameses.android.efaas.adapter.ImageItemAdapter;
 import com.rameses.android.efaas.bean.*;
 import com.rameses.client.android.Platform;
@@ -47,6 +53,9 @@ public class FaasActivity extends ControlActivity{
 	private static String faasid;
 	private static String rpuid;
 	private static Properties examination;
+	private static List<ImageItem> data_image;
+	private static List<AppraisalListItem> data_appraisal;
+	private static int ctxMenuId;
 	
 	@Override
 	protected void onCreateProcess(Bundle savedInstanceState) {
@@ -78,6 +87,9 @@ public class FaasActivity extends ControlActivity{
 		appraisal_list = (ListView) findViewById(R.id.appraisal_list);
 		image_list = (ListView) findViewById(R.id.images_list);
 		
+		registerForContextMenu(appraisal_list);
+		registerForContextMenu(image_list);
+		
 		findings = (EditText) findViewById(R.id.examination_findings);
 		findings.setEnabled(false);
 		
@@ -91,7 +103,7 @@ public class FaasActivity extends ControlActivity{
             		new InfoDialog(activity,rpuid);
             		return;
             	}
-                AppraisalInfo appraisal = new AppraisalInfo(activity,rpuid);
+                AppraisalInfo appraisal = new AppraisalInfo(activity,null,rpuid);
                 appraisal.show();
             }
         });
@@ -156,6 +168,9 @@ public class FaasActivity extends ControlActivity{
         });
 		
 		initData();
+		
+		ActionBar bar = getActionBar();
+	    //bar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#a6e20d")));
 	}
 	
 	protected void afterBackPressed() {
@@ -164,6 +179,71 @@ public class FaasActivity extends ControlActivity{
 	
 	protected void onStartProcess() {
 		super.onStartProcess();
+	}
+	
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
+		String[] menuItems = new String[]{"Edit","Delete"};
+		for (int i = 0; i<menuItems.length; i++) {
+			menu.add(Menu.NONE, i, i, menuItems[i]);
+		}
+		if(v.getId()==R.id.images_list) {
+			ctxMenuId = R.id.images_list;
+			menu.setHeaderTitle(data_image.get(info.position).getTitle());
+		}
+		if(v.getId()==R.id.appraisal_list){
+			ctxMenuId = R.id.appraisal_list;
+			menu.setHeaderTitle("");
+		}
+	}
+	
+	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+	  AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
+	  int menuItemIndex = item.getItemId();
+	  
+	  if(ctxMenuId == R.id.images_list){
+		  ImageItem imageItem = data_image.get(info.position);
+		  if(menuItemIndex == 0){
+			  Intent myIntent = new Intent(this, ImageCaptureActivity.class);
+			  myIntent.putExtra("objid", imageItem.getObjid());
+			  myIntent.putExtra("faasid", imageItem.getFaasId());
+			  startActivity(myIntent);
+		  }
+		  if(menuItemIndex == 1){
+			  Map params = new HashMap();
+			  params.put("objid", imageItem.getObjid());
+			  try{
+				  ImageDB db = new ImageDB();
+				  db.delete(params);
+				  initData();
+			  }catch(Throwable t){
+				  new ErrorDialog(this, t).show();
+			  }
+		  }
+	  }
+	  
+	  if(ctxMenuId == R.id.appraisal_list){
+		  AppraisalListItem appraisalItem = data_appraisal.get(info.position);
+		  if(menuItemIndex == 0){
+			  AppraisalInfo appraisal = new AppraisalInfo(activity,appraisalItem.getObjid(),rpuid);
+              appraisal.show();
+		  }
+		  if(menuItemIndex == 1){
+			  Map params = new HashMap();
+			  params.put("objid", appraisalItem.getObjid());
+			  
+			  LandDetailDB db = new LandDetailDB();
+			  try{
+				  db.delete(params);
+				  initData();
+			  }catch(Throwable t){
+				  new ErrorDialog(this, t).show();
+			  }
+		  }
+	  }
+	  return true;
 	}
 	
 	public static void initData(){
@@ -207,7 +287,7 @@ public class FaasActivity extends ControlActivity{
 	}
 	
 	private static void loadAppraisalData(){
-		List<AppraisalListItem> data = new ArrayList<AppraisalListItem>();
+		data_appraisal = new ArrayList<AppraisalListItem>();
 		try{
 			Map params = new HashMap();
 			params.put("landrpuid", rpuid);
@@ -231,7 +311,7 @@ public class FaasActivity extends ControlActivity{
 				Properties actualuse = new LandAssessLevelDB().find(actualuse_objid);
 				Properties strip = new LcuvStrippingDB().find(stripping_objid);
 				
-				data.add(new AppraisalListItem(
+				data_appraisal.add(new AppraisalListItem(
 						objid,
 						subclass.getProperty("code") + " - " + subclass.getProperty("name"),
 						specificclass.getProperty("name"),
@@ -240,10 +320,20 @@ public class FaasActivity extends ControlActivity{
 						areasqm
 				));
 			}
-			appraisal_list.setAdapter(new AppraisalMenuAdapter(activity, data));
+			appraisal_list.setAdapter(new AppraisalMenuAdapter(activity, data_appraisal));
 			LayoutParams layout = (LayoutParams) appraisal_list.getLayoutParams();
-			layout.height = (68 * data.size());
+			layout.height = (68 * data_appraisal.size());
 			appraisal_list.setLayoutParams(layout);
+			
+			appraisal_list.setOnItemClickListener(new OnItemClickListener(){
+				@Override
+				public void onItemClick(AdapterView<?> adapter, View view, int pos, long arg3) {
+					AppraisalMenuAdapter a = (AppraisalMenuAdapter) adapter.getAdapter();
+					AppraisalListItem item = a.getListItem(pos);
+					AppraisalInfo appraisal = new AppraisalInfo(activity,item.getObjid(),rpuid);
+		            appraisal.show();
+				}	
+			});
 		}catch(Throwable t){
 			t.printStackTrace();
 			new ErrorDialog(activity, t).show();
@@ -268,7 +358,7 @@ public class FaasActivity extends ControlActivity{
 	
 	private static void loadImageData(){
 		try{
-			List<ImageItem> data = new ArrayList<ImageItem>();
+			data_image = new ArrayList<ImageItem>();
 			
 			Map params = new HashMap();
 			params.put("faasid", faasid);
@@ -277,20 +367,32 @@ public class FaasActivity extends ControlActivity{
 			List<Map> list = db.getList(params);
 			
 			for(Map m : list){
+				String objid = m.get("objid") != null ? m.get("objid").toString() : "";
 				String title = m.get("title") != null ? m.get("title").toString() : "";
-				Object image = m.get("image");
+				String image = m.get("image") != null ? m.get("image").toString() : "";
 				
-				ByteArrayOutputStream out = new ByteArrayOutputStream();
-			    ObjectOutputStream os = new ObjectOutputStream(out);
-			    os.writeObject(image);
-			    
-				data.add(new ImageItem(faasid, title, out.toByteArray()));
+				byte[] decodedBytes = Base64.decode(image, Base64.DEFAULT);
+				
+				data_image.add(new ImageItem(objid, faasid, title, decodedBytes));
 			}
 			
-			image_list.setAdapter(new ImageItemAdapter(activity,data));
+			image_list.setAdapter(new ImageItemAdapter(activity,data_image));
+			
 			LayoutParams layout = (LayoutParams) image_list.getLayoutParams();
-			layout.height = (320 * data.size());
+			layout.height = (600 * data_image.size());
 			image_list.setLayoutParams(layout);
+			
+			image_list.setOnItemClickListener(new OnItemClickListener(){
+				@Override
+				public void onItemClick(AdapterView<?> adapter, View view, int pos, long arg3) {
+					ImageItemAdapter a = (ImageItemAdapter) adapter.getAdapter();
+					ImageItem item = a.getListItem(pos);
+					Intent myIntent = new Intent(activity, ImageCaptureActivity.class);
+					myIntent.putExtra("objid", item.getObjid());
+					myIntent.putExtra("faasid", item.getFaasId());
+					activity.startActivity(myIntent);
+				}	
+			});
 		}catch(Throwable t){
 			new ErrorDialog(activity, t).show();
 		}

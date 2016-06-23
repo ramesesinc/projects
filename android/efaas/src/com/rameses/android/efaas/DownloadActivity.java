@@ -3,6 +3,10 @@ package com.rameses.android.efaas;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import android.app.ActionBar;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -37,6 +41,9 @@ public class DownloadActivity  extends SettingsMenuActivity{
             	doDownload();
             }
         });
+		
+		ActionBar bar = getActionBar();
+	    //bar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#a6e20d")));
 		
 	}
 	

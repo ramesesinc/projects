@@ -9,7 +9,7 @@
 		<field name="title" required="true" indexed="true" caption="Acct Title" searchable="true"/>
 		<field name="description" caption="Description" visible="false"/>
 		<field name="type" required="true" indexed="true" lov="ITEM_ACCOUNT_TYPES" caption="Type"/>
-		<field name="fund_objid" required="true" visible="false"/>
+		<field name="fund_objid" required="true" hidden="true" visible="false"/>
 		<field name="fund_code" required="true" indexed="true" caption="Fund Code"/>
 		<field name="fund_title" required="true" caption="Fund Title"/>
 

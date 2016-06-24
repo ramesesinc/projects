@@ -25,42 +25,34 @@ class WaterworksAccountBillingService  {
 	@DataContext("waterworks_installment")
 	def installment;
 
-	void buildConsumptionFacts( def o, def facts, def currYear, def currMonth ) {
+	void buildConsumptionFacts( def o, def facts ) {
 		//account based on consmption
-		def list = consumption.find([acctid: o.acctid])
+		def list = consumption.find([acctid: o.objid])
 			.select("year:{billingcycle.year},month:{billingcycle.month},volume,amount,amtdue:{amount-amtpaid},duedate:{billingcycle.duedate},disconnectiondate:{billingcycle.disconnectiondate},refid:{objid}")
 			.where(" amount - amtpaid > 0").list();
 
 		//account based on installment	
-		for( d in list) {
-			if(d.year > currYear) continue;
-			if( d.year < currYear ) {
-				d.status = 'PRIOR-ARREARS';
-			}
-			else if(d.month < currMonth) {
-				d.status = 'CURRENT-ARREARS';
-			}
-			else {
-				d.status = 'CURRENT';
-			}
+		for( d in list) { 
 			facts << new WaterConsumption( d );
 		}
 	}
 
-	/*
 	void buildInstallmentFacts( def o, def facts ) {
-		 //facts <<
-	     def list2 = ledger.find([parentid: o.acctid])
-			.select("year:{billingcycle.year},month:{billingcycle.month},volume:{consumption.volume},amount,amtpaid,balance:{amount-amtpaid},installment.term,installment.installmentamount,installment.downpayment,startdate")
-			.where("NOT(installment.objid IS NULL) AND amount - amtpaid > 0").list();
+		//find first the minimal year and maximum year in the facts
+		def consList = facts.findAll{ it instanceof WaterConsumption }.sort{ (it.year*12) +it.month };
 
-		//println "installments";	
-		list2.each {
-			println it;
-			//facts << new Installment( year:it.year, month:it.month, amount: it.amount );
+		def list2 = installment.find([acctid: o.objid]).where("amount - amtpaid > 0").list();
+		for(x in list2) {
+			def balance = x.amount - x.amtpaid;
+			def instamt = x.installmentamount;
+			for(c in consList) {
+				if( instamt <= balance) instamt = balance;
+				facts << new WaterInstallment( year:c.year, month:c.month, amount: instamt );
+				balance = balance - instamt;
+				if(balance == 0 ) break;
+			}
 		}
 	}
-	*/
 
 	def monthNames = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
 
@@ -68,28 +60,24 @@ class WaterworksAccountBillingService  {
 	public def getBilling( def o ) {
 		if(!o.acctid ) throw new Exception("acctid is required");
 		def a = acct.find([objid:o.acctid]).first();
-		if(!a) throw new Exception("Account not found");
+		if(!a) throw new Exception("Waterworks Account not found");
 
 		def bc = billingCycleSvc.findCurrentCycle([sectorid:a.sector.objid]);
-		/*
-		if( a.billingcycle.objid != bc.objid )
-			throw new Exception("Account ledger for " + a.acctno + " is not updated. Current reading should be up to  "+ bc.year + " " + bc.monthname);
-		*/
 
-		def currYear = bc.year;
-		def currMonth = bc.month;
-		def currDate = new CurrentDate( dateSvc.getServerDate() );
+		def currDate = dateSvc.getBasicServerDate();
+		def billDate = (o.billdate!=null)?o.billdate:currDate;
 
 		def facts = [];
-		facts << new BillDate( bc.billdate );
+		facts << new BillDate( billDate );
 		facts << new DueDate( bc.duedate );
-		facts << currDate;
+		facts << new CurrentDate( currDate );
+		facts << new WaterBillDate( bc );
 		facts << new WaterAccount(a);
-		buildConsumptionFacts( o, facts, currYear, currMonth );
-		//buildInstallmentFacts( o, facts );
+
+		buildConsumptionFacts( a, facts );
+		buildInstallmentFacts( a, facts );
 
 		def res = ruleSvc.execute( "waterworksbilling", facts, null, null );
-
 		def feeList = [];
 		facts.findAll{ it instanceof WaterBillItem }.each {
 			def item = it.toItem();
@@ -99,11 +87,11 @@ class WaterworksAccountBillingService  {
 		};
 		if (!feeList) return null; 
 
-		a.items = feeList.findAll{it.amount>0}.sort{it.sortorder};	
+		a.items = feeList.findAll{it.amount!=0}.sort{it.sortorder};	
 		a.grandtotal = new BigDecimal(a.items.sum{it.amount});
-		a.billdate = bc.billdate;
+		a.billdate = billDate;
 		a.duedate = bc.duedate;
-		a.currdate = currDate.date;
+		a.currdate = currDate;
 		return a;
 	}	
 

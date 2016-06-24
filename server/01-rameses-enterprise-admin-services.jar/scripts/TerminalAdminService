@@ -27,6 +27,10 @@ class TerminalAdminService extends AbstractListService {
 	public void generateKeys( params ) {
 		if (!params.size) throw new Exception('Please specify size');
 
+		if ( params.size instanceof String ) { 
+			params.size = Integer.parseInt( params.size ); 
+		} 
+
 		def data = [:];
 		for (int i=0; i<params.size; i++) {
 			data.terminalid = KeyGen.generateAlphanumKey( null, 10 );

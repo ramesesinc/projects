@@ -1,0 +1,30 @@
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" 
+          schemaName="waterworks_txntype"
+          allowCreate="false" allowOpen="false" allowDelete="false"
+          cols="objid,title,priority,item.code,item.title,item.fund.code,item.fund.title"
+          orderBy="objid">
+    <invokers>
+        <invoker folderid="/explorer/master/waterworks" caption="Txn Types" action="init" />
+        <invoker type="listActions" caption="Set Account" action="setAccount"/>
+    </invokers>    
+    <code>
+        <![CDATA[
+        import com.rameses.seti2.models.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        import com.rameses.seti2.models.*;
+
+        class TxnTypeList extends CrudListModel {
+            void setAccount() {
+                 def h = { o->
+                    persistenceService.update( [objid: entityContext.objid, item: o, _schemaname: 'waterworks_txntype'] );  
+                    reload();
+                }
+                Modal.show( "waterworks_itemaccount:lookup", [onselect:h] );
+            }
+        }
+        ]]>
+    </code>    
+</workunit>

@@ -29,6 +29,7 @@ SELECT
 	f.owner_address,
 	f.tdno,
 	f.fullpin,
+	r.objid as rpu_objid,
 	r.ry AS rpu_ry,
 	r.suffix AS rpu_suffix,
 	r.subsuffix AS rpu_subsuffix,
@@ -39,6 +40,7 @@ SELECT
 	r.totalbmv AS rpu_totalbmv,
 	r.totalmv AS rpu_totalmv,
 	r.totalav AS rpu_totalav,
+	rp.objid as rp_objid,
 	rp.cadastrallotno AS rp_cadastrallotno,
 	rp.blockno AS rp_blockno,
 	rp.surveyno AS rp_surveyno,
@@ -73,6 +75,7 @@ SELECT
 	f.owner_address,
 	f.tdno,
 	f.fullpin,
+	r.objid as rpu_objid,
 	r.ry AS rpu_ry,
 	r.suffix AS rpu_suffix,
 	r.subsuffix AS rpu_subsuffix,
@@ -83,6 +86,7 @@ SELECT
 	r.totalbmv AS rpu_totalbmv,
 	r.totalmv AS rpu_totalmv,
 	r.totalav AS rpu_totalav,
+	rp.objid as rp_objid,
 	rp.cadastrallotno AS rp_cadastrallotno,
 	rp.blockno AS rp_blockno,
 	rp.surveyno AS rp_surveyno,
@@ -97,3 +101,16 @@ FROM faas f
 	INNER JOIN realproperty rp ON f.realpropertyid = rp.objid
 WHERE f.state IN ('INTERIM','CURRENT')
 AND f.tdno = $P{tdno}
+
+[getLandDetails]
+SELECT
+	ld.*,
+	ll.code as actualuse_code,
+	ll.name as actualuse_name,
+	ll.classification_objid as actualuse_classification_objid,
+	spc.classification_objid as specificclass_classification_objid
+FROM faas f
+	INNER JOIN landdetail ld ON f.rpuid = ld.landrpuid
+	INNER JOIN landassesslevel ll on ld.actualuse_objid = ll.objid
+	INNER JOIN lcuvspecificclass spc on ld.specificclass_objid = spc.objid
+WHERE f.objid = $P{faasid} 

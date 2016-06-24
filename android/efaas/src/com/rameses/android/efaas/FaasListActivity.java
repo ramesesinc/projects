@@ -91,6 +91,7 @@ public class FaasListActivity extends SettingsMenuActivity {
 			e.printStackTrace();
 			ApplicationUtil.showShortMsg(e.toString());
 		}
+		if(data.isEmpty()) list.setBackgroundResource(R.drawable.empty);
 		list.setAdapter(new FaasMenuAdapter(this,data));
 	}
 

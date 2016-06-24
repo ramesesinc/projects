@@ -287,7 +287,7 @@ public class RevisionSettingDetailActivity extends SettingsMenuActivity {
 					params.put("landrysettingid", data.get("landrysettingid") != null ? data.get("landrysettingid").toString() : "");
 					params.put("classification_objid", classification.get("objid") != null ? classification.get("objid").toString() : "");
 					params.put("striplevel", data.get("striplevel") != null ? data.get("striplevel").toString() : "");
-					params.put("rate", data.get("rate") != null ? data.get("rate").toString() : "");
+					params.put("rate", data.get("rate") != null ? data.get("rate").toString() : null);
 					params.put("previd", data.get("previd") != null ? data.get("previd").toString() : "");
 					
 					LcuvStrippingDB lcuvstrippingdb = new LcuvStrippingDB();

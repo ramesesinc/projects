@@ -79,14 +79,14 @@ public class BusinessCashReceiptInterceptor {
 			def tsk = workflowSvc.getTaskFromAppid([ applicationid: m.applicationid ]); 
 			if ( tsk?.state == 'payment' ) { 
 				tsk.action = 'release'; 
-				tsk.data = [objid: m.applicationid, business: app.business]; 
+				tsk.data = [objid: m.applicationid, appno: app.appno, business: app.business]; 
 				workflowSvc.signal( tsk ); 
 			} 
 		} 
 	} 
 
 	@After(pattern="CashReceiptVoidService.post",index=0,eval="#{result.receipt.collectiontype.handler=='bpls'}")
-	public void voidTxn(def evt) {
+	public void voidTxn( evt ) {
 		//check if permit is already issued.
 		def r = evt.args[0].receipt;
 		def pmt = pmtSvc.open([ objid: r.objid ]);
@@ -107,8 +107,8 @@ public class BusinessCashReceiptInterceptor {
 			def tsk = workflowSvc.getTaskFromAppid([applicationid: pmt.applicationid]);
 			if ( tsk?.state == 'release' ) {
 				tsk.action = 'revert';
-				tsk.data = [objid: pmt.applicationid, business: app.business];
-				workflowSvc.signal( tsk );
+				tsk.data = [objid: pmt.applicationid, appno: app.appno, business: app.business];
+				workflowSvc.signal( tsk ); 
 			}
 		}
 	}

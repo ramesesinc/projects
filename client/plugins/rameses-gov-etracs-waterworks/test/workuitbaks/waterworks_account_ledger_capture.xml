@@ -1,0 +1,10 @@
+<workunit>
+    <invokers>
+        <invoker type="waterworks_account_ledger:list:listActions" 
+                 caption="Capture Entry" target="popup" action="init"/>
+    </invokers>
+    <code class="com.rameses.gov.etracs.waterworks.models.CaptureLedgerModel"/>
+    <pages>
+        <page template="com.rameses.gov.etracs.waterworks.views.CaptureLedgerPage"/>
+    </pages>
+</workunit>

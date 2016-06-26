@@ -50,7 +50,7 @@ public abstract class AbstractHomeActivity extends ControlActivity
 				
 		list.clear();
 		loadMenuItems(list);
-		list.add(createMenuItem("changepassword", "Change Password", null, R.drawable.change_password));
+		list.add(createMenuItem("changepassword", "Change Password", null, R.drawable.changepassword));
 		list.add(createMenuItem("logout", "Logout", null, R.drawable.logout));
 		
 		gv_menu.setAdapter(new MenuAdapter(this, list));

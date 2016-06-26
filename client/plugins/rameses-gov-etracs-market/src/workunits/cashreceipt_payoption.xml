@@ -18,34 +18,40 @@
                 String title = "Payment Option";
                 def handler;
                 
-                def query = [:];
-                def months;
-                def payOptions= ['FULL','MONTH','PARTIAL'];
+                def payOption = "FULL";
+                def date;
+                def numdays;
+                def amount;
                 
                 def doOk() {
-                    def m = [:];
-                    m.option = query.option;
-                    if(query.option == 'MONTH' ) {
-                        m.month = query.month;
+                    if(!handler) 
+                        throw new Exception("Pls. include handler in payoption");
+                    
+                    def qry = [payoption: payOption];
+                    switch( payOption ) {
+                        case 'DATE':
+                            qry.date = date;
+                            break;
+                        case 'NUMDAYS':
+                            qry.numdays = numdays;
+                            break;
+                        case 'SPECIFYAMOUNT':
+                            qry.amount = amount;
+                            break;
                     }
-                    else if(query.option == 'PARTIAL') {
-                        m.amount = query.amount;
-                    }
-                    handler(m);
+                    handler(qry);
                     return "_close";
                 }
                 
                 def doCancel() {
                     return "_close";
                 }
-                
-                
             }
         ]]>    
     </code>
     
     <pages>
-        <page template="com.rameses.gov.etracs.market.views.PaymentOption"/>
+        <page template="com.rameses.gov.etracs.market.views.PayOption"/>
     </pages>
     
 </workunit>

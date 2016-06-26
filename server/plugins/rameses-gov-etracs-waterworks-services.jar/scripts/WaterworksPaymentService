@@ -1,0 +1,52 @@
+import com.rameses.annotations.*;
+
+class WaterworksPaymentService {
+	
+	@DataContext('waterworks_payment')
+	def wp; 
+
+	@DataContext(dynamic=true)
+	def db; 
+	
+	private void postToLedger(def items, boolean isCredit) {
+		String expr = (isCredit==true)?"{amtpaid + :amt}":"{amtpaid - :amt}";
+		def ledgerMap = [:];
+		def ledgerLookup = { n->
+			if( !ledgerMap.containsKey(n) ) {
+				ledgerMap.put(n, db.lookup(n));
+			}
+			return ledgerMap.get( n );
+		}
+		items.each {
+			if(!it.ledgertype) return;
+			def emb = ledgerLookup(it.ledgertype );
+			emb.find( [objid: it.txnrefid ]).update( [amtpaid: expr], [amt: it.amount] );
+		}
+	} 
+
+	@ProxyMethod
+	public def postCreate( def o ) {
+		wp.create( o );
+		postToLedger(o.items, true);
+	}
+
+	@ProxyMethod
+	public def postVoid( def o ) {
+		wp.find( [refid: o.refid] ).update( [voided: 1] );
+		def objid = wp.find( [refid: o.refid] ).select("objid").val();
+		def r = wp.read( [objid: objid] );
+		if(!r.items) throw new Exception("No items found!");
+		postToLedger( r.items, false );
+	}
+
+	@ProxyMethod
+	public def postRemove( def p ) {
+		def o = wp.read(p);
+		if( o.txnmode !=  'CAPTURE') 
+			throw new Exception("Remove payment is only applicable for CAPTURE");
+		if(!o.items) throw new Exception("No items found!");			
+		postToLedger( o.items, false );
+	}
+
+
+}

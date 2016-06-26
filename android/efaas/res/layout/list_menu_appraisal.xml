@@ -17,7 +17,9 @@
           android:layout_margin="1dp"
           android:layout_width="0dp"
           android:layout_height="match_parent"
-          android:textAppearance="?android:attr/textAppearanceMedium">
+          android:gravity="center"
+          android:minHeight="40dp"
+          android:textAppearance="?android:attr/textAppearanceSmall">
         </TextView>
 
         <TextView
@@ -27,7 +29,8 @@
           android:layout_margin="1dp"
           android:layout_width="0dp"
           android:layout_height="match_parent"
-          android:textAppearance="?android:attr/textAppearanceMedium">
+          android:gravity="center"
+          android:textAppearance="?android:attr/textAppearanceSmall">
         </TextView>
         
         <TextView
@@ -37,7 +40,8 @@
           android:layout_margin="1dp"
           android:layout_width="0dp"
           android:layout_height="match_parent"
-          android:textAppearance="?android:attr/textAppearanceMedium">
+          android:gravity="center"
+          android:textAppearance="?android:attr/textAppearanceSmall">
         </TextView>
         
         <TextView
@@ -47,7 +51,8 @@
           android:layout_margin="1dp"
           android:layout_width="0dp"
           android:layout_height="match_parent"
-          android:textAppearance="?android:attr/textAppearanceMedium">
+          android:gravity="center"
+          android:textAppearance="?android:attr/textAppearanceSmall">
         </TextView>
         
         <TextView
@@ -57,17 +62,8 @@
           android:layout_margin="1dp"
           android:layout_width="0dp"
           android:layout_height="match_parent"
-          android:textAppearance="?android:attr/textAppearanceMedium">
-        </TextView>
-        
-        <TextView
-          android:id="@+id/appraisal_areaha"
-          android:text="Area (ha)"
-          android:layout_column="5"
-          android:layout_margin="1dp"
-          android:layout_width="0dp"
-          android:layout_height="match_parent"
-          android:textAppearance="?android:attr/textAppearanceMedium">
+          android:gravity="center"
+          android:textAppearance="?android:attr/textAppearanceSmall">
         </TextView>
 
     </TableRow>

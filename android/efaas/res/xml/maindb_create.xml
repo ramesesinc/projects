@@ -205,6 +205,7 @@
 			owner_address TEXT,
 			tdno TEXT,
 			fullpin TEXT,
+			rpu_objid TEXT,
 			rpu_ry TEXT,
 			rpu_suffix TEXT,
 			rpu_subsuffix TEXT,
@@ -215,6 +216,7 @@
 			rpu_totalbmv TEXT,
 			rpu_totalmv TEXT,
 			rpu_totalav TEXT,
+			rp_objid TEXT,
 			rp_cadastrallotno TEXT,
 			rp_blockno TEXT,
 			rp_surveyno TEXT,
@@ -234,13 +236,29 @@
 			landrpuid TEXT,
 			subclass_objid TEXT,
 			specificclass_objid TEXT,
+			specificclass_classification_objid TEXT,
+			specificclass_areatype TEXT,
 			actualuse_objid TEXT,
+			actualuse_code TEXT,
+			actualuse_name TEXT,
+			actualuse_classification_objid TEXT,
 			stripping_objid TEXT,
+			stripping_rate TEXT,
 			striprate TEXT,
 			areatype TEXT,
 			area TEXT,
 			areasqm TEXT,
-			areaha TEXT
+			areaha TEXT,
+			basevalue REAL,
+			unitvalue REAL,
+			taxable INTEGER,
+			basemarketvalue REAL,
+			adjustment REAL,
+			landvalueadjustment REAL,
+			actualuseadjustment REAL,
+			marketvalue REAL,
+			assesslevel REAL,
+			assessedvalue REAL
         )
     </sql>
     
@@ -254,9 +272,21 @@
     </sql>
     
     <sql>
+        CREATE TABLE examination
+        (
+        	objid TEXT NOT NULL PRIMARY KEY,
+        	faasid TEXT,
+			findings TEXT,
+			recommendations TEXT,
+			date TEXT
+        )
+    </sql>
+    
+    <sql>
         CREATE TABLE images
         (
-        	faasid TEXT,
+        	objid TEXT,
+        	examinationid TEXT,
         	title  TEXT,
 			image TEXT
         )

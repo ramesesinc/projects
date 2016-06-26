@@ -11,8 +11,8 @@ public class WaterAccount {
 
 	public WaterAccount( def acct ) {
 		this.classification = acct.classificationid;
-		this.metersize = acct.meter?.sizeid;
-		this.barangay = acct.barangay?.objid;
+		this.metersize = acct.metersize?.objid;
+		this.barangay = acct.address?.barangay?.objid;
 	}
 
 }

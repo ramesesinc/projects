@@ -1,5 +1,0 @@
-<workunit extends="wtemplates/RuleMgmtController.xml" serviceName="RuleMgmtService" tag="waterworkscomputation">
-    <invokers>
-        <invoker folderid="/explorer/rulemgmt/waterworks" caption="Waterworks Computation Rules" action="init" index="1" srole="RULE_AUTHOR"/>
-    </invokers>
-</workunit>

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical">
+    
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:layout_weight="1" >
+    
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+    
+    <TextView
+         android:layout_width="fill_parent"
+         android:layout_height="wrap_content"
+         android:text="EXAMINATION"
+         android:minEms="6"
+         android:padding="5dp"
+         android:textStyle="bold"
+         android:background="#2f84c9"
+         android:textColor="#FFFFFF"
+         android:textAppearance="?android:attr/textAppearanceMedium" />
+        
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="10dp" >
+            
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Type your findings here : "
+                android:padding="1dp"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+            
+            <EditText
+			    android:id="@+id/examination_findings"
+			    android:layout_width="fill_parent"
+			    android:layout_height="120dp"
+			    android:gravity="left|top"
+			    android:inputType="text|textMultiLine"/>
+            
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Type your recommendations here : "
+                android:padding="1dp"
+                android:layout_marginTop="10dp"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+            
+            <EditText
+			    android:id="@+id/examination_recommendations"
+			    android:layout_width="fill_parent"
+			    android:layout_height="120dp"
+			    android:gravity="left|top"
+			    android:inputType="text|textMultiLine" />
+            
+       </LinearLayout>
+       
+       <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="IMAGES"
+                android:minEms="6"
+                android:padding="5dp"
+                android:textStyle="bold"
+                android:background="#2f84c9"
+                android:textColor="#FFFFFF"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+       
+       <ListView
+		      android:id="@+id/images_list"
+		      android:layout_width="match_parent"
+		      android:layout_height="wrap_content" 
+		      android:layout_margin="5dp"/>
+       
+       <Button
+		        android:id="@+id/images_button"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_margin="10dp"
+		        android:layout_gravity="center"
+		        android:minEms="5"
+		        android:padding="10dp"
+		        android:text="Add" />
+
+</LinearLayout>
+
+</ScrollView>
+
+		<Button
+		        android:id="@+id/examination_save"
+		       	android:layout_width="180dp"
+	            android:layout_height="wrap_content"
+	            android:layout_gravity="center"
+	            android:layout_marginTop="10dp"
+	            android:layout_marginBottom="10dp"
+	            android:textStyle="bold"
+	            android:background="@color/default_button_color"
+	            android:textColor="@color/white"
+	            android:textSize="20sp"
+		        android:text="Save" />
+
+</LinearLayout>

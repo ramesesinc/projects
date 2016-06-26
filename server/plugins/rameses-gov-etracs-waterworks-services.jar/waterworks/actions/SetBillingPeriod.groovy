@@ -17,6 +17,8 @@ public class SetBillingPeriod implements RuleActionHandler {
 			throw new Exception("toperiod is required in SetBillingPeriod rule result");
 		if(!period.readingdate) 
 			throw new Exception("readingdate is required in SetBillingPeriod rule result");
+		if(!period.billdate) 
+			throw new Exception("billdate is required in SetBillingPeriod rule result");
 		if(!period.duedate) 
 			throw new Exception("duedate is required in SetBillingPeriod rule result");
 		if(!period.disconnectiondate)

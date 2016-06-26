@@ -1,0 +1,25 @@
+<schema adapter="waterworks">
+	<element tablename="waterworks_consumption">
+		<field name="objid" primary="true"  prefix="WAC"/>
+		<complex name="account" jointype="many-to-one" ref="waterworks_account">
+			<key field="acctid" target="objid"/>
+		</complex>
+		<complex name="billingcycle" jointype="many-to-one" ref="waterworks_billing_cycle" 
+			includefields="objid,year,month,monthname,readingdate,duedate,disconnectiondate,fromperiod,toperiod,billdate" required="false">
+			<key field="billingcycleid" target="objid"/>
+		</complex>	
+		<field name="prevreading" required="true" caption="PreviousReading" type="integer" defaultValue="0"/>
+		<field name="reading" required="true" caption="CurrentReading" type="integer" defaultValue="0"/>
+		<field name="readingmethod" required="true" caption="ReadingMethod" defaultValue="CAPTURE"/>
+
+		<!-- USED FOR ONLINE -->
+		<field name="reader_objid" required="false"/>
+		<field name="reader_name" required="false" caption="ReaderName"/>
+		<field name="volume" required="true" caption="Volume"/>
+
+		<field name="amount" type="decimal" caption="Amount" defaultValue="0"/>
+		<field name="amtpaid" type="decimal" caption="Amount Paid" defaultValue="0"/>
+		<field name="balance" expr="amount-amtpaid" type="decimal" caption="Balance"/>
+
+	</element>
+</schema>

@@ -1,0 +1,30 @@
+<!-- 
+
+create view vw_entityindividual_lookup 
+as 
+select 
+	e.objid, e.entityno, e.name, e.address_text as addresstext, 
+	e.type, ei.lastname, ei.firstname, ei.middlename, ei.gender, ei.birthdate, 
+	e.mobileno, e.phoneno 
+from entity e 
+	inner join entityindividual ei on ei.objid=e.objid 
+
+--> 	
+<schema>
+	
+	<element tablename="vw_entityindividual_lookup">
+		<field name="objid" primary="true"/>
+		<field name="entityno" caption="EntityNo"/>
+		<field name="name" caption="Name" hidden="true"/>
+		<field name="addresstext" caption="Address"  />
+		<field name="type" caption="Type" />
+		<field name="lastname" caption="LastName" hidden="true" visible="false" selectable="false" indexed="true" searchable="true"/>
+		<field name="firstname" caption="FirstName" hidden="true" visible="false" selectable="false" indexed="true" searchable="true"/>
+		<field name="middlename" caption="MiddleName" hidden="true" visible="false" selectable="false" />
+		<field name="birthdate" caption="BirthDate" hidden="true" visible="false" selectable="false" />
+		<field name="gender" caption="Gender" hidden="true" visible="false" selectable="false" />
+		<field name="mobileno" caption="MobileNo" hidden="true" visible="false" selectable="false" />
+		<field name="phoneno" caption="PhoneNo" hidden="true" visible="false" selectable="false" />
+	</element>	
+	
+</schema>

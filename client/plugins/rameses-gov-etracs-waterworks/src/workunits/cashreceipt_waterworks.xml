@@ -1,10 +1,10 @@
-<workunit extends="wtemplates/enterprise/treasury/BasicCashReceiptController.xml">
+<workunit extends="com/rameses/enterprise/treasury/templates/BillingCashReceipt.xml">
     <invokers>
         <invoker type="cashreceipt:waterworks" action="init" />
         <invoker type="cashreceipt:barcode:51030" action="loadBarcode" caption="Cash Receipt Waterworks"/>
     </invokers>
     <code class="com.rameses.gov.etracs.waterworks.models.WaterworksCashReceipt" />
     <pages>
-        <page template="com.rameses.enterprise.treasury.views.PaymentOrderCashReceiptBillPage"/>
-    </pages>
+        <page name="default" template="com.rameses.gov.etracs.waterworks.views.CashReceiptPage"/>
+    </pages>    
 </workunit>

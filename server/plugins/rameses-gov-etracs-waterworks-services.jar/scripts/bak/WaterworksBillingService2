@@ -1,0 +1,36 @@
+import com.rameses.annotations.*;
+
+import com.rameses.rules.common.*;
+import waterworks.facts.*;
+import treasury.facts.*;
+import com.rameses.functions.*;
+
+class WaterworksBillingService2  {
+	
+	@DataContext("waterworks_account")
+	def acct;
+
+	@DataContext("waterworks_account_ledger")
+	def ledger;
+
+	@ProxyMethod
+	public def getBilling( def o ) {
+		def m = null;
+		if(o.acctid) {
+			m = acct.find( [objid: o.acctid] ).first();
+		}
+
+		if(!m) throw new Exception("WaterworksBillingService.getBilling error. Account not found");
+		m.items = ledger.find([parentid: m.objid]).where("amount-amtpaid>0").list();
+		
+		if(!m.items) throw new Exception("There are no unpaid items for this account")
+		m.items.each {
+			it.surcharge = 0;
+			it.interest = 0;
+			it.total = (it.amount - it.amtpaid);
+		}
+		m.grandtotal = m.items.sum{ it.total };
+		return m;
+	}
+
+}

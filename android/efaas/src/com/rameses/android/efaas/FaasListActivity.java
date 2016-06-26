@@ -6,9 +6,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -19,15 +22,15 @@ import com.rameses.android.ApplicationUtil;
 import com.rameses.android.R;
 import com.rameses.android.SettingsMenuActivity;
 import com.rameses.android.db.FaasDB;
-import com.rameses.android.efaas.adapter.FaasAdapter;
+import com.rameses.android.efaas.adapter.FaasMenuAdapter;
 import com.rameses.android.efaas.adapter.HomeMenuAdapter;
-import com.rameses.android.efaas.bean.FaasItem;
+import com.rameses.android.efaas.bean.FaasListItem;
 
 public class FaasListActivity extends SettingsMenuActivity {
 	
 	private ProgressDialog progressDialog;
 	ListView list;
-	List<FaasItem> data;
+	List<FaasListItem> data;
 	Activity activity;
 	
 	public boolean isCloseable() { return false; }
@@ -45,7 +48,7 @@ public class FaasListActivity extends SettingsMenuActivity {
 		list.setOnItemClickListener(new OnItemClickListener(){
 			@Override
 			public void onItemClick(AdapterView<?> adapter, View view, int pos, long arg3) {
-				FaasAdapter a = (FaasAdapter) adapter.getAdapter();
+				FaasMenuAdapter a = (FaasMenuAdapter) adapter.getAdapter();
 				String faasid = a.getListItem(pos).getObjid();
 				Intent intent = new Intent(activity, FaasActivity.class);
 				intent.putExtra("faasid", faasid);
@@ -56,6 +59,9 @@ public class FaasListActivity extends SettingsMenuActivity {
 		loadData("");
 		
 		ApplicationUtil.changeTitle(this, "FAAS");
+		
+		ActionBar bar = getActionBar();
+	    //bar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#a6e20d")));
 	}
 	
 	protected void afterBackPressed() {
@@ -67,7 +73,7 @@ public class FaasListActivity extends SettingsMenuActivity {
 	}
 	
 	private void loadData(String searchtext){
-		data = new ArrayList<FaasItem>();
+		data = new ArrayList<FaasListItem>();
 		try{
 			List<Map> listData = new FaasDB().getList(new HashMap());
 			System.err.println("LIST DATA: " + listData);
@@ -79,13 +85,14 @@ public class FaasListActivity extends SettingsMenuActivity {
 				String pin = m.get("fullpin").toString();
 				String name = m.get("owner_name").toString();
 				String tdno = m.get("tdno").toString();
-				data.add(new FaasItem(faasid, pin, tdno, name));
+				data.add(new FaasListItem(faasid, pin, tdno, name));
 			}
 		}catch(Exception e){
 			e.printStackTrace();
 			ApplicationUtil.showShortMsg(e.toString());
 		}
-		list.setAdapter(new FaasAdapter(this,data));
+		if(data.isEmpty()) list.setBackgroundResource(R.drawable.empty);
+		list.setAdapter(new FaasMenuAdapter(this,data));
 	}
 
 }

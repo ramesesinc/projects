@@ -1,0 +1,95 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import com.rameses.functions.*;
+import java.rmi.server.*;
+import com.rameses.services.extended.*;
+import com.rameses.rules.common.*;
+import market.facts.*;
+import market.actions.*;
+
+import java.text.*;
+
+public class MarketBillingService  {
+
+	//@Service("MarketBillRuleService")
+	//def ruleSvc;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@Service("NumberService")
+	def numSvc;
+
+	@DataContext("market_account")
+	def acct;
+
+	@DataContext("market_ledger")
+	def ledger;
+
+	def dformat = new SimpleDateFormat("yyyy-MM-dd");
+
+	@ProxyMethod
+	public def getBilling( def o ) {
+		def m = null;
+		if( o.acctid ) {
+			m = acct.find( [objid: o.acctid] ).first();
+		}
+		if(!m) throw new Exception("MarketBillingService.getBilling error.  Account not found");
+
+		//determine first the begin date
+		def beginDate = m.lastpmtdate;
+		if(!beginDate) beginDate = m.startdate;
+		if(!beginDate) {
+			throw new Exception("MarketBillingService.getBilling error.  There must be startdate or lastpmtdate");
+		}	
+
+		def toDate = o.billdate;
+		if(!toDate) toDate = dateSvc.getBasicServerDate();
+		if( toDate instanceof String ) toDate = dformat.parse( toDate );
+
+		m.billdate = toDate;
+
+		def cal = Calendar.instance;
+		cal.setTime(toDate);
+		int endYear = cal.get(Calendar.YEAR);
+		int endMonth = cal.get(Calendar.MONTH)+1;
+		int endDay = cal.get(Calendar.DAY_OF_MONTH);
+
+		cal.setTime( beginDate );
+		int startYear = cal.get(Calendar.YEAR);
+		int startMonth = cal.get(Calendar.MONTH)+1;
+		int startDay = cal.get(Calendar.DAY_OF_MONTH);
+
+		def items = [];
+		while( beginDate < toDate ) {
+			int year = cal.get(Calendar.YEAR);
+			int month = cal.get(Calendar.MONTH)+1;
+			int numDays = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+			if( year == startYear && month==startMonth ) {
+				numDays = numDays - startDay + 1;
+			}
+			else if( year==endYear && month==endMonth) {
+				numDays = endDay;
+			}
+			def entry = [:];
+			entry.rate = m.rate;
+			entry.year = year;
+			entry.month = month;
+			entry.balance = m.rate * numDays;
+			entry.surcharge = 0.0;
+			entry.interest = 0.0;
+			entry.total = entry.balance + entry.surcharge + entry.interest;
+			items << entry;
+			cal.add( Calendar.MONTH, 1 );
+			cal.set( Calendar.DAY_OF_MONTH, 1 );
+			beginDate = cal.getTime();
+		}
+
+		m.items = items;
+        m.grandtotal = m.items.sum{ it.total };                
+        return m;
+	}
+
+
+}
+

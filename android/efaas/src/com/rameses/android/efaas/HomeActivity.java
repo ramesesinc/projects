@@ -4,10 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.view.LayoutInflater;
@@ -20,7 +23,7 @@ import com.rameses.android.ControlActivity;
 import com.rameses.android.R;
 import com.rameses.android.SettingsMenuActivity;
 import com.rameses.android.efaas.adapter.HomeMenuAdapter;
-import com.rameses.android.efaas.bean.HomeItem;
+import com.rameses.android.efaas.bean.HomeListItem;
 import com.rameses.android.system.ChangePasswordActivity;
 import com.rameses.android.system.LogoutController;
 import com.rameses.client.android.Platform;
@@ -30,7 +33,7 @@ public class HomeActivity extends SettingsMenuActivity   {
 	
 	ProgressDialog progressDialog;	
 	ListView list_home;
-	List<HomeItem> data;
+	List<HomeListItem> data;
 	Activity activity;
 	
 	public boolean isCloseable() { return false; }	
@@ -53,6 +56,9 @@ public class HomeActivity extends SettingsMenuActivity   {
 	                .permitAll().build();
 	        StrictMode.setThreadPolicy(policy);
 	    }
+	    
+	    ActionBar bar = getActionBar();
+	    //bar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#a6e20d")));
 	} 
 	
 	protected void onStartProcess() {
@@ -79,16 +85,18 @@ public class HomeActivity extends SettingsMenuActivity   {
 	}
 	
 	void loadListData(){
-		data = new ArrayList<HomeItem>();
-		data.add(new HomeItem(R.drawable.masterfile,"Master Files"));
-		data.add(new HomeItem(R.drawable.masterfile,"Revision Settings"));
-		data.add(new HomeItem(R.drawable.masterfile,"FAAS"));
-		data.add(new HomeItem(R.drawable.masterfile,"Download"));
-		data.add(new HomeItem(R.drawable.masterfile,"Upload"));
-		data.add(new HomeItem(R.drawable.change_password,"Change Password"));
-		data.add(new HomeItem(R.drawable.logout,"Logout"));
+		data = new ArrayList<HomeListItem>();
+		data.add(new HomeListItem(R.drawable.masterfile,"Master Files"));
+		data.add(new HomeListItem(R.drawable.settings,"Revision Settings"));
+		data.add(new HomeListItem(R.drawable.faas,"FAAS"));
+		data.add(new HomeListItem(R.drawable.download,"Download"));
+		data.add(new HomeListItem(R.drawable.upload,"Upload"));
+		data.add(new HomeListItem(R.drawable.changepassword,"Change Password"));
+		data.add(new HomeListItem(R.drawable.logout,"Logout"));
 		
 		list_home = (ListView) findViewById(R.id.list_home);
+		//list_home.setDivider(null);
+		//list_home.setDividerHeight(0);
 		list_home.setAdapter(new HomeMenuAdapter(this,data));
 		list_home.setOnItemClickListener(new OnItemClickListener(){
 			@Override
@@ -113,6 +121,11 @@ public class HomeActivity extends SettingsMenuActivity   {
 				
 				if(title.equals("Download")){
 					Intent intent = new Intent(activity, DownloadActivity.class);  
+					startActivity(intent); 
+				}
+				
+				if(title.equals("Upload")){
+					Intent intent = new Intent(activity, UploadActivity.class);  
 					startActivity(intent); 
 				}
 				

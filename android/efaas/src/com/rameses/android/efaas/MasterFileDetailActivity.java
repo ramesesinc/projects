@@ -4,8 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import android.app.ActionBar;
+import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -20,25 +21,26 @@ import com.rameses.android.R;
 import com.rameses.android.SettingsMenuActivity;
 import com.rameses.android.db.*;
 import com.rameses.android.efaas.adapter.MasterFileMenuAdapter;
-import com.rameses.android.efaas.bean.MasterFileItem;
+import com.rameses.android.efaas.bean.MasterFileListItem;
+import com.rameses.android.efaas.dialog.InfoDialog;
 import com.rameses.android.service.MasterFileService;
 import com.rameses.client.android.Platform;
 
 public class MasterFileDetailActivity extends SettingsMenuActivity{
 	
 	private ProgressDialog progressDialog;
-	List<MasterFileItem> data;
+	List<MasterFileListItem> data;
 	ListView list;
 	String masterfile;
 	List<Map> masterFileData;
 	MasterFileService service;
-	Context ctx;
+	Activity activity;
 	
 	public boolean isCloseable() { return false; }	
 	
 	@Override
 	protected void onCreateProcess(Bundle savedInstanceState) {
-		ctx = this;
+		activity = this;
 		setContentView(R.layout.activity_listview_snyc);
 		
 		progressDialog = new ProgressDialog(this);
@@ -71,7 +73,7 @@ public class MasterFileDetailActivity extends SettingsMenuActivity{
 	}
 	
 	void loadListData(){
-		data = new ArrayList<MasterFileItem>();
+		data = new ArrayList<MasterFileListItem>();
 		
 		if(masterfile.equals("Property Classifications")){
 			PropertyClassificationDB db = new PropertyClassificationDB(); 
@@ -84,7 +86,7 @@ public class MasterFileDetailActivity extends SettingsMenuActivity{
 			for ( Map m : list ) { 
 				String code = m.get("code") != null ? m.get("code").toString() : "";
 				String name = m.get("name") != null ? m.get("name").toString() : "";
-				data.add(new MasterFileItem(code,name));
+				data.add(new MasterFileListItem(code,name));
 			}
 		}
 		
@@ -99,7 +101,7 @@ public class MasterFileDetailActivity extends SettingsMenuActivity{
 			for ( Map m : list ) { 
 				String code = m.get("code") != null ? m.get("code").toString() : "";
 				String name = m.get("name") != null ? m.get("name").toString() : "";
-				data.add(new MasterFileItem(code,name));
+				data.add(new MasterFileListItem(code,name));
 			}
 		}
 		
@@ -114,7 +116,7 @@ public class MasterFileDetailActivity extends SettingsMenuActivity{
 			for ( Map m : list ) { 
 				String code = m.get("code") != null ? m.get("code").toString() : "";
 				String name = m.get("name") != null ? m.get("name").toString() : "";
-				data.add(new MasterFileItem(code,name));
+				data.add(new MasterFileListItem(code,name));
 			}
 		}
 		
@@ -129,7 +131,7 @@ public class MasterFileDetailActivity extends SettingsMenuActivity{
 			for ( Map m : list ) { 
 				String code = m.get("code") != null ? m.get("code").toString() : "";
 				String name = m.get("name") != null ? m.get("name").toString() : "";
-				data.add(new MasterFileItem(code,name));
+				data.add(new MasterFileListItem(code,name));
 			}
 		}
 		
@@ -144,7 +146,7 @@ public class MasterFileDetailActivity extends SettingsMenuActivity{
 			for ( Map m : list ) { 
 				String code = m.get("code") != null ? m.get("code").toString() : "";
 				String name = m.get("name") != null ? m.get("name").toString() : "";
-				data.add(new MasterFileItem(code,name));
+				data.add(new MasterFileListItem(code,name));
 			}
 		}
 		
@@ -159,7 +161,7 @@ public class MasterFileDetailActivity extends SettingsMenuActivity{
 			for ( Map m : list ) { 
 				String code = m.get("code") != null ? m.get("code").toString() : "";
 				String name = m.get("name") != null ? m.get("name").toString() : "";
-				data.add(new MasterFileItem(code,name));
+				data.add(new MasterFileListItem(code,name));
 			}
 		}
 		
@@ -174,7 +176,7 @@ public class MasterFileDetailActivity extends SettingsMenuActivity{
 			for ( Map m : list ) { 
 				String code = m.get("code") != null ? m.get("code").toString() : "";
 				String name = m.get("name") != null ? m.get("name").toString() : "";
-				data.add(new MasterFileItem(code,name));
+				data.add(new MasterFileListItem(code,name));
 			}
 		}
 		
@@ -189,12 +191,14 @@ public class MasterFileDetailActivity extends SettingsMenuActivity{
 			for ( Map m : list ) { 
 				String name = m.get("name") != null ? m.get("name").toString() : "";
 				String desc = m.get("description") != null ? m.get("description").toString() : "";
-				data.add(new MasterFileItem(name,desc));
+				data.add(new MasterFileListItem(name,desc));
 			}
 		}
 		
 		list = (ListView) findViewById(R.id.listview_snyc);
 		list.setAdapter(new MasterFileMenuAdapter(this,data));
+		list.setBackgroundResource(0);
+		if(data.isEmpty()) list.setBackgroundResource(R.drawable.empty);
 		list.setOnItemClickListener(new OnItemClickListener(){
 			@Override
 			public void onItemClick(AdapterView<?> adapter, View view, int pos, long arg3) {
@@ -202,6 +206,7 @@ public class MasterFileDetailActivity extends SettingsMenuActivity{
 				String title = a.getListItem(pos).getTitle();
 			}	
 		});
+		
 	}
 	
 	void saveData(){
@@ -469,7 +474,7 @@ public class MasterFileDetailActivity extends SettingsMenuActivity{
 		@Override
 		public void handleMessage(Message msg) {
 			if (progressDialog.isShowing()) progressDialog.dismiss(); 
-			ApplicationUtil.showShortMsg("Sync Finish!");
+			new InfoDialog(activity, "Sync Finish!").show();
 			loadListData();
 		}
 	};
@@ -514,7 +519,6 @@ public class MasterFileDetailActivity extends SettingsMenuActivity{
 				
 				errorhandler.sendMessage(msg);
 			}
-            Log.v("Master File Data", masterFileData.toString());
             saveData();
 		}
 		

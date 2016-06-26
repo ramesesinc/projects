@@ -3,8 +3,8 @@ package com.rameses.android.efaas.adapter;
 import java.util.List;
 
 import com.rameses.android.R;
-import com.rameses.android.efaas.bean.HomeItem;
-import com.rameses.android.efaas.bean.MasterFileItem;
+import com.rameses.android.efaas.bean.HomeListItem;
+import com.rameses.android.efaas.bean.MasterFileListItem;
 
 import android.app.Activity;
 import android.content.Context;
@@ -19,9 +19,9 @@ public class MasterFileMenuAdapter extends BaseAdapter {
 	
 	LayoutInflater inflater = null;
 	Context ctx;
-	List<MasterFileItem> data;
+	List<MasterFileListItem> data;
 	
-	public MasterFileMenuAdapter(Activity activity, List<MasterFileItem> data){
+	public MasterFileMenuAdapter(Activity activity, List<MasterFileListItem> data){
 		ctx = activity;
 		this.data = data;
 		inflater = ( LayoutInflater )ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -48,14 +48,14 @@ public class MasterFileMenuAdapter extends BaseAdapter {
 		TextView title = (TextView) rowView.findViewById(R.id.list_menu_text_title);
 		TextView desc = (TextView) rowView.findViewById(R.id.list_menu_text_desc);
 		
-		MasterFileItem item = data.get(pos);
+		MasterFileListItem item = data.get(pos);
 		if(item != null) title.setText(item.getTitle());
 		if(item != null) desc.setText(item.getDescription());
 		
 		return rowView;
 	}
 	
-	public MasterFileItem getListItem(int pos){
+	public MasterFileListItem getListItem(int pos){
 		return data.get(pos);
 	}
 

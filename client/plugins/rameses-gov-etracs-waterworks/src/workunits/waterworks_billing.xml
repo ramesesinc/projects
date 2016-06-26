@@ -2,6 +2,7 @@
     <invokers>
         <invoker type="waterworks_account:form:formActions" caption="Billing" index="-10" 
             reportName="com/rameses/gov/etracs/waterworks/reports/billing/waterworksbilling.jasper" 
+            visibleWhen="#{mode=='read'}"
             action="view"/>
     </invokers>
     <code>
@@ -16,7 +17,7 @@
         
         class WaterworksBilling extends CrudReportModel {
             
-            @Service("WaterworksBillingService2")
+            @Service("WaterworksAccountBillingService")
             def billSvc;    
         
             def view() {

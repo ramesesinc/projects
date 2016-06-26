@@ -15,9 +15,6 @@ class WaterworksMobileDownloadService {
 	@DataContext("waterworks_account")
 	def wa;
 
-	@DataContext("vw_waterworks_stubout")
-	def vw_waterworks_stubout;
-
 	@DataContext("waterworks_stubout")
 	def ws;
 
@@ -30,10 +27,13 @@ class WaterworksMobileDownloadService {
 	@DataContext('waterworks_sector_zone') 
 	def wsz;
 
+	@DataContext('waterworks_billing_cycle') 
+	def wbc;
+
 	@Service("DateService")
 	def dateSvc;
 
-	@Service("WaterworksBillingService")
+	@Service("WaterworksAccountBillingService")
 	def billingSvc;
 
 	@Service
@@ -55,53 +55,64 @@ class WaterworksMobileDownloadService {
 		return o.batchid; 
 	} 
 
-	@ProxyMethod
+
+
 	@Async
+	@ProxyMethod
 	public def processDownload( o ) {
-        def y = dateSvc.getServerYear();
-		def m = dateSvc.getServerMonth() - 1;
-		if(m==0) {
-			m = 12;
-			y = y-1;
+		// 1: get current date 
+		def rundate = dateSvc.getServerDate();
+		def rundatestr = new SimpleDateFormat('yyyy-MM-dd').format( rundate );
+
+		// 2: get current billing cycle by sectorid and readingdate
+		def bcc = wbc.find([ sectorid: o.sectorid ])
+					 .where(' readingdate <= :rd ', [ rd: rundatestr ])
+					 .orderBy(' objid desc ')
+					 .first(); 
+
+		if ( bcc == null ) {
+			header.find([batchid: o.batchid]).update([ state:1 ]); 
+			println '[WARN] No available billing cycle found for this reading period'; 
+			return; 
 		}
 
-		def rundate = dateSvc.getServerDate();
-		DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
-		
-		def acct = cta.findAccountByHandlerAndTag([handler:'waterworks', tag:'WFEE']); 
-		if ( !acct ) throw new Exception('Please provide an itemaccount ');
-
-		def params = [assigneeid: o.assigneeid, sectorid:o.sectorid];
-		def list = wm.getListForDownload(params);
+		def params = [ assigneeid: o.assigneeid, sectorid:o.sectorid, billingcycleid: bcc.objid ]; 
+		def list = wm.getListForDownload( params ); 
 		println 'process download list-size: '+ list.size();
+		def df = new SimpleDateFormat("MM/dd/yyyy"); 
 		list.each { 
 			it.state = 'PENDING';
+			it.rundate = rundate;
 			it.barcode = '51030:' + it.acctno;
 			it.batchid = o.batchid;
-			it.month = DateFunc.getMonth(it.fromperiod);
-			it.year = DateFunc.getYear(it.fromperiod);;
-			it.period = df.format(it.fromperiod) + " - " + df.format(it.toperiod);
-			it.rundate = rundate;
-			it.itemaccountid = acct.account.objid; 
-			it.discodate = it.disconnectiondate;
-			it.info = wm.serializer.write([
+			it.billingcycle = bcc;
+			it.month = bcc.month;
+			it.year = bcc.year;
+			it.discodate = bcc.disconnectiondate;
+			it.period = df.format(bcc.fromperiod) + " - " + df.format(bcc.toperiod);
+			it.info = wm.serializer.write([ 
 				barangay: (it.barangayid? it.barangayid: ''), 
 				classification: it.classificationid, 
 				metersize: it.metersize 
 			]);
-			def items = billingSvc.getItemizedBilling( [acctid: it.objid]).collect {
-				[title: it.item.title + ' ' + ((!it.remarks)?it.remarks:''), amount: it.amount ];
-			}
-			it.items = wm.serializer.write(items);
-			wm.create(it);
-		}
-		header.find([batchid: o.batchid]).update([state:1]);
+
+			def items = billingSvc.getItemizedBilling([ acctid: it.objid ]); 
+			if ( items==null ) items = []; 
+
+			items.collect { bi-> 
+				[title: bi.item.title + ' ' + ((!bi.remarks)?bi.remarks:''), amount: bi.amount ];
+			} 
+			it.items = wm.serializer.write( items ); 
+			wm.create( it );
+		} 
+		header.find([batchid: o.batchid]).update([ state:1 ]); 
 	}
 
 	@ProxyMethod
 	public int getBatchStatus( batchid ) {
 		int state = header.find([batchid: batchid]).select("state").val();	
 		if( state == 0 ) return -1;
+
 		return wm.find([batchid:batchid]).select("x:{COUNT(*)}").val();
 	}	
 
@@ -143,7 +154,7 @@ class WaterworksMobileDownloadService {
 	@ProxyMethod
 	def getReaderBySector( o ){
 		if (!o.sectorid) throw new Exception("sectorid is required!");
-		if(!o.userid) throw new Exception("userid is required!");
+		if (!o.userid) throw new Exception("userid is required!");
 		return wsr.find([sectorid:o.sectorid,"assignee_objid":o.userid]).list();
 	}
 }

@@ -7,6 +7,8 @@
         
         <invoker type="formActions" caption="Approve" action="approve" 
                  role="MASTER" visibleWhen="#{allowApprove==true}"/> 
+        <invoker type="formActions" caption="Disapprove" action="disapprove" 
+                 role="MASTER" visibleWhen="#{allowDisapprove==true}"/>  
    </invokers>
    
     <code class="com.rameses.enterprise.treasury.models.ItemAccountModel" />

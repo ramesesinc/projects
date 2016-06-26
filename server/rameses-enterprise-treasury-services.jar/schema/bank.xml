@@ -6,7 +6,7 @@
 		<field name="branchname" required="true"  caption="Branch" indexed="true"/>
 		<!-- LOCAL, REGIONAL, OUT-OF-TOWN, OTHER-BRANCH -->
 		<field name="deposittype"  lov="BANK_DEPOSIT_TYPES"  visible="false" indexed="true"/>
-		<field name="depository" required="true" type="integer"  visible="false" indexed="true"/>
+		<field name="depository" type="integer" required="true" defaultValue="0" visible="false" indexed="true"/>
 		<field name="address"  visible="false"/>
 		<field name="manager" visible="false"/>
 	</element>

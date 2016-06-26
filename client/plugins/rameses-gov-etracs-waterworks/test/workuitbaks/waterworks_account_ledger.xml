@@ -1,0 +1,12 @@
+<workunit extends="com/rameses/seti2/templates/CrudList.xml"
+          schemaName="waterworks_account_ledger" 
+          cols="billingcycle.year,billingcycle.monthname,item.code,item.title,amount,amtpaid,billingcycle.duedate,remarks,installment.objid" 
+          zorderBy="year,month"
+          allowOpen="false">
+    <invokers>
+        <invoker type="waterworks_account:section" caption="Ledger" index="2" 
+                visibleWhen="#{mode=='read'}"
+                action="init"/>
+    </invokers>
+    <code class="com.rameses.gov.etracs.waterworks.models.WaterworksAccountLedgerModel" />
+</workunit>

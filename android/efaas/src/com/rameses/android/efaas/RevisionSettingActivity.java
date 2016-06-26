@@ -3,9 +3,12 @@ package com.rameses.android.efaas;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -16,12 +19,12 @@ import com.rameses.android.ApplicationUtil;
 import com.rameses.android.R;
 import com.rameses.android.SettingsMenuActivity;
 import com.rameses.android.efaas.adapter.HomeMenuAdapter;
-import com.rameses.android.efaas.bean.HomeItem;
+import com.rameses.android.efaas.bean.HomeListItem;
 
 public class RevisionSettingActivity extends SettingsMenuActivity {
 	
 	private ProgressDialog progressDialog;
-	List<HomeItem> data;
+	List<HomeListItem> data;
 	ListView list;
 	Activity activity;
 	
@@ -37,6 +40,9 @@ public class RevisionSettingActivity extends SettingsMenuActivity {
 		loadListData();
 		ApplicationUtil.changeTitle(this, "Revision Settings");
 		activity = this;
+		
+		ActionBar bar = getActionBar();
+	    //bar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#2f84c9")));
 	}
 	
 	protected void afterBackPressed() {
@@ -48,15 +54,17 @@ public class RevisionSettingActivity extends SettingsMenuActivity {
 	}
 	
 	void loadListData(){
-		data = new ArrayList<HomeItem>();
-		data.add(new HomeItem(R.drawable.masterfile,"Land Revision Setting"));
-		data.add(new HomeItem(R.drawable.masterfile,"Building Revision Setting"));
-		data.add(new HomeItem(R.drawable.masterfile,"Machine Revision Setting"));
-		data.add(new HomeItem(R.drawable.masterfile,"Plant/Tree Revision Setting"));
-		data.add(new HomeItem(R.drawable.masterfile,"Miscellaneous Item Revision Setting"));
+		data = new ArrayList<HomeListItem>();
+		data.add(new HomeListItem(R.drawable.settings,"Land Revision Setting"));
+		data.add(new HomeListItem(R.drawable.settings,"Building Revision Setting"));
+		data.add(new HomeListItem(R.drawable.settings,"Machine Revision Setting"));
+		data.add(new HomeListItem(R.drawable.settings,"Plant/Tree Revision Setting"));
+		data.add(new HomeListItem(R.drawable.settings,"Miscellaneous Item Revision Setting"));
 		
 		list = (ListView) findViewById(R.id.list_home);
 		list.setAdapter(new HomeMenuAdapter(this,data));
+		//list.setDivider(null);
+		//list.setDividerHeight(0);
 		list.setOnItemClickListener(new OnItemClickListener(){
 			@Override
 			public void onItemClick(AdapterView<?> adapter, View view, int pos, long arg3) {

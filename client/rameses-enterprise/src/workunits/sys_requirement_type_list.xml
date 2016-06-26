@@ -3,6 +3,6 @@
           cols="code,title,handler">
     <invokers>
         <invoker folderid="/explorer/master/enterprise" caption="Requirement Type" 
-                 index="10" zrole="MASTER" action="init"/>
+                 index="10" role="MASTER" action="init"/>
     </invokers>
 </workunit>

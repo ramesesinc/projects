@@ -1,13 +1,14 @@
 <!-- 
 
-create view vw_entityindividual_lookup 
-as 
-select 
-	e.objid, e.entityno, e.name, e.address_text as addresstext, 
-	e.type, ei.lastname, ei.firstname, ei.middlename, ei.gender, ei.birthdate, 
+create view vw_entityrelation_lookup 
+as
+select er.*, 
+	e.entityno, e.name, e.address_text as addresstext, e.type, 
+	ei.lastname, ei.firstname, ei.middlename, ei.gender, ei.birthdate, 
 	e.mobileno, e.phoneno 
-from entity e 
-	inner join entityindividual ei on ei.objid=e.objid 
+from entity_relation er  
+  inner join entityindividual ei on ei.objid=er.relateto_objid 
+	inner join entity e on e.objid=ei.objid 
 
 --> 
 <schema>

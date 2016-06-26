@@ -1,0 +1,14 @@
+<schema adapter="waterworks">
+	<element tablename="waterworks_txntype">
+		<field name="objid" primary="true" visible="true" />
+		<field name="title"  />
+		<field name="priority" type="integer"/>
+		<field name="item_objid"  />
+		<field name="item_code"  />
+		<field name="item_title"  />
+
+		<field name="item_fund_objid" />
+		<field name="item_fund_code" />
+		<field name="item_fund_title"/>
+	</element>
+</schema>

@@ -5,11 +5,11 @@ import com.rameses.rcp.common.*;
 import com.rameses.osiris2.client.*;
 import com.rameses.osiris2.common.*;
 import com.rameses.seti2.models.*;
+import java.text.*;
 
 public class AccountModel extends CrudFormModel {
     
-    @Script("BillingCycle")
-    def billCycle;
+    def dateFormatter = new java.text.SimpleDateFormat('yyyy-MM-dd'); 
     
     @PropertyChangeListener 
     def changelistener = [
@@ -23,7 +23,7 @@ public class AccountModel extends CrudFormModel {
             zone : {
                 return [sectorid: entity?.sector?.objid]; 
             }
-        ]);    
+        ]);   
     }
     
     void afterCreate() {
@@ -54,14 +54,6 @@ public class AccountModel extends CrudFormModel {
         //binding.refresh();
     }
 
-    void computeBillingCycle() {
-        if( entity.stuboutnode?.stubout?.objid == null ) {
-            throw new Exception("Stubout id is required");
-        }
-        def e = billCycle.fetch(entity.stuboutnode.stubout);
-        entity.billingcycle = e;
-    }
-    
     def getLookupMeter() { 
         def params = [metersize: entity.metersize];
         if ( !params.metersize ) params.metersize = [objid:null]; 
@@ -76,4 +68,6 @@ public class AccountModel extends CrudFormModel {
         }
         return Inv.lookupOpener('waterworks_meter_wo_account:lookup', params);
     }
+    
+    
 }

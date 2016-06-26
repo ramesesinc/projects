@@ -18,4 +18,6 @@
  <color name="black">#000000</color>
  <color name="light_gray">#FFCCCCCC</color>
  <color name="divider_color">#E8D8D8</color>
+ <color name="default_bg_color">#3196d9</color>
+ <color name="default_button_color">#3485c7</color>
 </resources>

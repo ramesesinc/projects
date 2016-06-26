@@ -1,9 +1,9 @@
 <schema adapter="waterworks">
 
 	<element tablename="waterworks_sector_zone">
-		<field name="objid" primary="true"  prefix="WSZ"/>
-		<field name="code"/>
-		<field name="description"/>
+		<field name="objid" primary="true" prefix="WSZ"/>
+		<field name="code" caption="Zone Code"/>
+		<field name="description" caption="Zone Description"/>
 		<field name="sectorid"/>
 
 		<complex name="sector" ref="waterworks_sector" jointype="many-to-one" required="false"
@@ -12,7 +12,7 @@
 		</complex>	
 				
 		<complex name="reader" ref="waterworks_sector_reader" jointype="many-to-one" required="false"
-			includefields="objid,assignee.name,assignee.objid">
+			includefields="objid,assignee.objid,assignee.name">
 			<key field="readerid" target="objid" />
 		</complex>	
 	</element>

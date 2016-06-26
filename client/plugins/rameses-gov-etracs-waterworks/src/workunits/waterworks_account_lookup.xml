@@ -7,12 +7,14 @@
         class AccountLookup extends com.rameses.seti2.models.CrudLookupModel {
         
             def stuboutid;
+            def sectorid; 
         
-            def getCustomFilter() {
-                if(stuboutid) {
+            def getCustomFilter() { 
+                if ( sectorid ) {
+                    return [ "sectorid=:sectorid", [sectorid: sectorid ] ];
+                } else if ( stuboutid ) { 
                     return [ "stuboutid=:sid", [sid: stuboutid]  ];
-                }
-                else {
+                } else {
                     return null;
                 }
             }

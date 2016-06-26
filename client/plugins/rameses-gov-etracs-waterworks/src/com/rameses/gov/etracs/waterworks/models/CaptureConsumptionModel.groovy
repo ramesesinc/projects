@@ -8,95 +8,98 @@ import com.rameses.rcp.annotations.*;
 import com.rameses.seti2.models.*;
 import java.text.*;
 import com.rameses.functions.*;
+import com.rameses.seti2.models.*;
 
-public class CaptureConsumptionModel  {
-    
-    @Script("ListTypes")
-    def listTypes;
+public class CaptureConsumptionModel extends CrudFormModel {
     
     @Service("WaterworksComputationService")
     def compSvc;
     
-    @Service("WaterworksBillingCycleService")
-    def billdateSvc;
+    @Service("DateService")
+    def dateSvc;
     
-    @Service("WaterworksAccountService")
-    def acctSvc;
-
-    @Binding
-    def binding;
+    def dateFormatter = new java.text.SimpleDateFormat('yyyy-MM-dd'); 
     
-    def entity;
+    def getParent() {
+        return caller.getMasterEntity();
+    }
+    
+    boolean requires_recompute;
     def handler;
-    def info = [prevreading:0, reading:0, volume: 0, amtpaid: 0, postledger:true];
-    def billCycle;
+    int year;
     
     @PropertyChangeListener
     def listener = [
-        "info.(reading|prevreading)" : { o->
-            info.volume = info.reading - info.prevreading;
-        },
-        "info.(volume|reading)" : { o->
-            info.prevreading = info.reading - info.volume;
-            if(info.prevreading<0) info.prevreading = 0;
+        "entity.(reading|prevreading)" : { o-> 
+            requires_recompute = true; 
+            
+            def curr = (entity.reading==null? 0 : entity.reading);
+            def prev = (entity.prevreading==null? 0 : entity.prevreading);            
+            entity.volume = curr - prev; 
+            entity.amount = 0.0;
         }
     ];
 
-    void computeAmount() {
-        if( !info.month ) 
-            throw new Exception("Period Month is required!");
-        def m = [:];
-        m.objid = entity.objid;
-        m.volume = info.volume;
-        def r = compSvc.compute(m);
-        info.item = r.item;
-        info.amount = r.amount;
-        info.remarks = "for month of " + listTypes.months[info.month-1].name + " " + info.year;
-    }
-    
-    void computeBillingCycle() {
-        def h = { o->
-            def df = new SimpleDateFormat("yyyy-MM-dd");
-            def dt = df.parse(o);
-            //def dt = DateFunc.getDayAdd( df.parse(o), -1);
-            
-            def sector = entity.sectorid;
-            def zone = entity.zoneid; 
-            billCycle = billdateSvc.computeBillingDates([ sector: sector, zone: zone, billdate:dt ]);
-            
-            //run this first because we dont want it formatted yet.
-            info.year = DateFunc.getYear( billCycle.fromperiod );
-            info.month = DateFunc.getMonth( billCycle.fromperiod );
-            
-            
-            billCycle.fromperiod = df.format(billCycle.fromperiod);
-            billCycle.toperiod = df.format(billCycle.toperiod);
-            billCycle.readingdate = df.format(billCycle.readingdate);
-            billCycle.duedate = df.format(billCycle.duedate);
-            billCycle.disconnectiondate = df.format(billCycle.disconnectiondate);
-
-            info.dtreading = billCycle.readingdate;
-            info.duedate = billCycle.duedate;
-            
-            binding.refresh();
+    void afterCreate() {
+        entity.year = dateSvc.getServerYear();
+        entity.readingmethod = 'CAPTURE';
+        entity.acctid = parent.objid;
+        year = entity.year;
+        entity.each{ k,v-> 
+            println '>> '+ k + '='+ v + ', '+ (v ? v.getClass(): null);
         }
-        Modal.show("date:prompt",[handler:h]);
     }
     
-    def doOk() {
-        if( !info.duedate ) throw new Exception("Please run 'Enter Ending Period'");
-        if( info.prevreading > info.reading) 
+    void afterOpen() {
+        entity.acctid = entity.account?.objid;
+        year = entity.billingcycle.year;
+    }
+    
+    def getMonthList() {
+        if( !year ) return [];
+        def m = [_schemaname:'waterworks_billing_cycle'];
+        m.findBy = [sectorid:parent.sector.objid, year:year];
+        m.select = schema.links.find{ it.name=='billingcycle' }.includefields;
+        return qryService.getList(m);
+    }
+    
+    void computeAmount() {
+        if( !entity.billingcycle?.month ) 
+            throw new Exception("Period Month is required!");
+        
+        def m = [:];
+        m.objid = parent.objid; 
+        m.volume = entity.volume; 
+        def r = compSvc.compute(m); 
+        entity.amount = r; 
+        requires_recompute = false; 
+    } 
+    
+    void beforeSave( mode ) {
+        if( entity.prevreading > entity.reading) 
             throw new Exception("Prev reading must be less than current reading");
-        if( info.prevreading <0 || info.reading < 0 || info.volume <0) 
+        if( entity.prevreading <0 || entity.reading < 0 || entity.volume <0) 
             throw new Exception("Reading,prevreading,volume must be greater than 0");
-        info.account = [objid:entity.objid];
-        acctSvc.postConsumption( info );
-        if(handler) handler();
-        return "_close";
+        if ( requires_recompute ) {
+            throw new Exception('Reading consumption has changed. Please click the Compute Amount button first.');
+        }
     }
     
-    def doCancel() {
-        return "_close";
+    void afterSave() {
+        if(handler) 
+            handler();
+        else 
+            caller.reload();
+    }
+    
+    /*boolean isEditAllowed() {
+        if(entity.readingmethod == 'ONLINE') return false;
+        return super.isEditAllowed();
+    }*/
+    
+    boolean isDeleteAllowed() {
+        if(entity.readingmethod == 'ONLINE') return false;
+        return super.isEditAllowed();
     }
     
 }

@@ -7,34 +7,132 @@ import com.rameses.services.extended.*;
 
 class RuleExporterService {
 
+	@ActiveDB('rule') 
+	def rule;
+
+	@ActiveDB('ruletool') 
+	def ruletool;
 	
 	@Service("RuleMgmtService")
 	def service;
 
+
+	@ProxyMethod 
+	public def getRules( params ) {
+		if ( !params.ruleset ) throw new Exception('ruleset parameter is required');
+
+		return ruletool.getRules( params ); 
+	} 
+
+	@ProxyMethod 
+	public def open( params ) { 
+		if ( !params.objid ) throw new Exception('objid parameter is required');
+
+		def o = ruletool.findRule([ ruleid: params.objid ]); 
+		if ( !o ) throw new Exception('Rule record not found'); 
+
+		o.conditions = ruletool.getRuleConditions([ ruleid: params.objid ]); 
+		o.conditions.each{ rc-> 
+			rc.vars = ruletool.getRuleConditionVars([ conditionid: rc.objid ]); 
+			rc.contraints = ruletool.getRuleConditionConstraints([ conditionid: rc.objid ]);  
+		}
+		o.actions = ruletool.getRuleActions([ ruleid: params.objid ]); 
+		o.actions.each{ ra-> 
+			ra.params = ruletool.getRuleActionParams([ actionid: ra.objid ]);  
+		} 
+		o.buildver = 2.0; 
+		return o; 
+	} 
+
 	@ProxyMethod
-	public def upload( def o ) {
-		try {
-			def old = null;
-			try {
-				old = service.open( o );
-				if(old) {
-					throw new Exception("Rule exists");
-				}
-			}
-			catch(e){;}
+	public def upload( o ) { 
+		try { 
+			if ( o.buildver && o.buildver >= 2.0 ) {
+				uploadV2( o ); 
 
-			service.create( o );
-			o.conditions.each {
-				service.saveCondition(it);
-			}
-			o.actions.each {
-				service.saveAction(it);
-			}
-		}
-		catch(e) {	
-			throw e;
-		}
+			} else { 
+				buildVars( o ); 
+				service.create( o ); 
+				o.conditions.each { 
+					service.saveCondition( it ); 
+				} 
+				o.actions.each { 
+					service.saveAction( it ); 
+				} 
+			} 
+		} catch(e) { 
+			throw e; 
+		} 
 	}
-	
 
-}
+	private void uploadV2( o ) { 
+		rule.save( o ); 
+		o.conditions.each{   
+			rule.save( it, "condition" ); 
+		} 
+		o.conditions.each{ c-> 
+			c.vars.each{ 
+				rule.save( it, "var" ); 
+			}
+		} 
+		o.conditions.each{ c-> 
+			c.contraints.each{ 
+				if ( it.listvalue ) {
+					it.listvalue = rule.serializer.read( it.listvalue );  
+				}
+				rule.save( it, "constraint" ); 
+			} 
+		} 
+		o.actions.each{ a-> 
+			rule.save( a, "action" ); 
+
+			a.params.each{ 
+				if ( it.listvalue ) { 
+					it.listvalue = rule.serializer.read( it.listvalue );  
+				} 
+				rule.save( it, "actionparam" ); 
+			} 
+		} 
+	} 
+
+	private void buildVars( o ) { 
+		o.vars = []; 
+		o.conditions.each{ c-> 
+			if ( c.varname ) {
+				o.vars << [ 
+					objid   : c.objid, 
+					parentid: c.objid, 
+					ruleid  : c.parentid, 
+					varname : c.varname, 
+					pos     : c.pos, 
+					datatype: c.fact?.factclass 					
+				]; 
+			} 
+			c.constraints.each{ cc-> 
+				if ( cc.varname ) {
+					o.vars << [
+						objid   : cc.objid, 
+						parentid: c.objid, 
+						ruleid  : c.parentid, 
+						varname : cc.varname, 
+						pos     : cc.pos, 
+						datatype: cc.field?.vardatatype 
+					]; 
+				} 
+			} 
+		}
+
+		o.conditions.each{ a-> 
+			a.constraints.findAll{( it.var?.name )}.each{ b-> 
+				def vv = o.vars.find{ it.varname==b.var.name } 
+				b.var.objid = vv?.objid; 
+			} 
+		}
+		o.actions.each{ a-> 
+			a.params.findAll{( it.var.name )}.each{ b-> 
+				def vv = o.vars.find{ it.varname==b.var.name }
+				b.var.objid = vv?.objid;  
+			} 
+		} 
+	} 
+} 

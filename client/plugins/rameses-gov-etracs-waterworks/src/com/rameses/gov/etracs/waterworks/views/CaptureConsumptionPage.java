@@ -4,15 +4,15 @@
  */
 package com.rameses.gov.etracs.waterworks.views;
 
-import com.rameses.osiris2.themes.OKCancelPage;
 import com.rameses.rcp.ui.annotations.StyleSheet;
 import com.rameses.rcp.ui.annotations.Template;
+import com.rameses.seti2.views.CrudFormPage;
 
 /**
  *
  * @author Rameses
  */
-@Template(OKCancelPage.class)
+@Template(CrudFormPage.class)
 @StyleSheet
 public class CaptureConsumptionPage extends javax.swing.JPanel {
 
@@ -33,25 +33,23 @@ public class CaptureConsumptionPage extends javax.swing.JPanel {
     private void initComponents() {
 
         xPanel1 = new com.rameses.rcp.control.XPanel();
-        xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
-        xButton2 = new com.rameses.rcp.control.XButton();
-        xLabel2 = new com.rameses.rcp.control.XLabel();
-        xLabel20 = new com.rameses.rcp.control.XLabel();
+        xFormPanel5 = new com.rameses.rcp.control.XFormPanel();
+        xIntegerField1 = new com.rameses.rcp.control.XIntegerField();
+        xComboBox2 = new com.rameses.rcp.control.XComboBox();
         xLabel13 = new com.rameses.rcp.control.XLabel();
-        xLabel17 = new com.rameses.rcp.control.XLabel();
+        xLabel21 = new com.rameses.rcp.control.XLabel();
         xLabel14 = new com.rameses.rcp.control.XLabel();
+        xLabel18 = new com.rameses.rcp.control.XLabel();
         xLabel15 = new com.rameses.rcp.control.XLabel();
         xLabel16 = new com.rameses.rcp.control.XLabel();
         xPanel4 = new com.rameses.rcp.control.XPanel();
         xFormPanel4 = new com.rameses.rcp.control.XFormPanel();
         xIntegerField2 = new com.rameses.rcp.control.XIntegerField();
         xIntegerField3 = new com.rameses.rcp.control.XIntegerField();
-        xIntegerField4 = new com.rameses.rcp.control.XIntegerField();
-        xCheckBox1 = new com.rameses.rcp.control.XCheckBox();
+        xLabel17 = new com.rameses.rcp.control.XLabel();
         xPanel2 = new com.rameses.rcp.control.XPanel();
         xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
         xButton1 = new com.rameses.rcp.control.XButton();
-        xLabel1 = new com.rameses.rcp.control.XLabel();
         xDecimalField2 = new com.rameses.rcp.control.XDecimalField();
         xDecimalField3 = new com.rameses.rcp.control.XDecimalField();
 
@@ -59,71 +57,82 @@ public class CaptureConsumptionPage extends javax.swing.JPanel {
         xTitledBorder1.setTitle("Billing Cycle Information");
         xPanel1.setBorder(xTitledBorder1);
 
-        xFormPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
-        xFormPanel1.setCaptionWidth(120);
+        xFormPanel5.setCaptionWidth(120);
 
-        xButton2.setCellPadding(new java.awt.Insets(0, 0, 5, 0));
-        xButton2.setImmediate(true);
-        xButton2.setName("computeBillingCycle"); // NOI18N
-        xButton2.setShowCaption(false);
-        xButton2.setText("Get Billing Cycle");
-        xFormPanel1.add(xButton2);
+        xIntegerField1.setCaption("Year");
+        xIntegerField1.setDisableWhen("#{mode=='read'}");
+        xIntegerField1.setName("year"); // NOI18N
+        xIntegerField1.setRequired(true);
+        xFormPanel5.add(xIntegerField1);
 
-        xLabel2.setBackground(new java.awt.Color(245, 245, 245));
-        xLabel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
-        xLabel2.setCaption("Sector");
-        xLabel2.setExpression("#{entity.sector.objid}");
-        xLabel2.setOpaque(true);
-        xLabel2.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel1.add(xLabel2);
-
-        xLabel20.setBackground(new java.awt.Color(245, 245, 245));
-        xLabel20.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
-        xLabel20.setCaption("Period");
-        xLabel20.setExpression("#{info.year} - #{listTypes.months[ info.month -1 ].name}");
-        xLabel20.setOpaque(true);
-        xLabel20.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel1.add(xLabel20);
+        xComboBox2.setCaption("Month");
+        xComboBox2.setDepends(new String[] {"year"});
+        xComboBox2.setDynamic(true);
+        xComboBox2.setExpression("#{item.monthname} ");
+        xComboBox2.setItems("monthList");
+        xComboBox2.setName("entity.billingcycle"); // NOI18N
+        xComboBox2.setPreferredSize(new java.awt.Dimension(100, 20));
+        xComboBox2.setRequired(true);
+        xComboBox2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                xComboBox2ActionPerformed(evt);
+            }
+        });
+        xFormPanel5.add(xComboBox2);
 
         xLabel13.setBackground(new java.awt.Color(245, 245, 245));
         xLabel13.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
-        xLabel13.setCaption("Begin Period");
-        xLabel13.setExpression("#{billCycle.fromperiod}");
+        xLabel13.setCaption("Period From");
+        xLabel13.setDepends(new String[] {"entity.billingcycle"});
+        xLabel13.setExpression("#{entity.billingcycle.fromperiod? dateFormatter.format( entity.billingcycle.fromperiod) : ''} ");
         xLabel13.setOpaque(true);
         xLabel13.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel1.add(xLabel13);
+        xFormPanel5.add(xLabel13);
 
-        xLabel17.setBackground(new java.awt.Color(245, 245, 245));
-        xLabel17.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
-        xLabel17.setCaption("Ending Period");
-        xLabel17.setExpression(" #{billCycle.toperiod} ");
-        xLabel17.setOpaque(true);
-        xLabel17.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel1.add(xLabel17);
+        xLabel21.setBackground(new java.awt.Color(245, 245, 245));
+        xLabel21.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
+        xLabel21.setCaption("Period To");
+        xLabel21.setDepends(new String[] {"entity.billingcycle"});
+        xLabel21.setExpression("#{entity.billingcycle.toperiod? dateFormatter.format( entity.billingcycle.toperiod) : ''} ");
+        xLabel21.setOpaque(true);
+        xLabel21.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel5.add(xLabel21);
 
         xLabel14.setBackground(new java.awt.Color(245, 245, 245));
         xLabel14.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel14.setCaption("Reading Date");
-        xLabel14.setExpression("#{billCycle.readingdate} ");
+        xLabel14.setDepends(new String[] {"entity.billingcycle"});
+        xLabel14.setExpression("#{entity.billingcycle.readingdate? dateFormatter.format( entity.billingcycle.readingdate) : ''} ");
         xLabel14.setOpaque(true);
         xLabel14.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel1.add(xLabel14);
+        xFormPanel5.add(xLabel14);
+
+        xLabel18.setBackground(new java.awt.Color(245, 245, 245));
+        xLabel18.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
+        xLabel18.setCaption("Bill Date");
+        xLabel18.setDepends(new String[] {"entity.billingcycle"});
+        xLabel18.setExpression("#{entity.billingcycle.billdate? dateFormatter.format(entity.billingcycle.billdate) : ''} ");
+        xLabel18.setOpaque(true);
+        xLabel18.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel5.add(xLabel18);
 
         xLabel15.setBackground(new java.awt.Color(245, 245, 245));
         xLabel15.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel15.setCaption("Due Date");
-        xLabel15.setExpression("#{billCycle.duedate} ");
+        xLabel15.setDepends(new String[] {"entity.billingcycle"});
+        xLabel15.setExpression("#{entity.billingcycle.duedate? dateFormatter.format( entity.billingcycle.duedate) : ''} ");
         xLabel15.setOpaque(true);
         xLabel15.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel1.add(xLabel15);
+        xFormPanel5.add(xLabel15);
 
         xLabel16.setBackground(new java.awt.Color(245, 245, 245));
         xLabel16.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel16.setCaption("Disconnection Date");
-        xLabel16.setExpression("#{billCycle.disconnectiondate} ");
+        xLabel16.setDepends(new String[] {"entity.billingcycle"});
+        xLabel16.setExpression("#{entity.billingcycle.disconnectiondate? dateFormatter.format( entity.billingcycle.disconnectiondate) : ''} ");
         xLabel16.setOpaque(true);
         xLabel16.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel1.add(xLabel16);
+        xFormPanel5.add(xLabel16);
 
         javax.swing.GroupLayout xPanel1Layout = new javax.swing.GroupLayout(xPanel1);
         xPanel1.setLayout(xPanel1Layout);
@@ -131,15 +140,14 @@ public class CaptureConsumptionPage extends javax.swing.JPanel {
             xPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(xPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 304, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(28, Short.MAX_VALUE))
+                .addComponent(xFormPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 297, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         xPanel1Layout.setVerticalGroup(
             xPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(xPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 198, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(xFormPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder2 = new com.rameses.rcp.control.border.XTitledBorder();
@@ -150,54 +158,50 @@ public class CaptureConsumptionPage extends javax.swing.JPanel {
         xFormPanel4.setCaptionWidth(110);
 
         xIntegerField2.setCaption("Prev. Reading");
-        xIntegerField2.setDepends(new String[] {"info.reading", "info.volume"});
-        xIntegerField2.setName("info.prevreading"); // NOI18N
+        xIntegerField2.setDepends(new String[] {"entity.reading", "entity.volume"});
+        xIntegerField2.setName("entity.prevreading"); // NOI18N
         xFormPanel4.add(xIntegerField2);
 
         xIntegerField3.setCaption("This Reading");
-        xIntegerField3.setName("info.reading"); // NOI18N
+        xIntegerField3.setName("entity.reading"); // NOI18N
         xFormPanel4.add(xIntegerField3);
 
-        xIntegerField4.setCaption("Volume");
-        xIntegerField4.setDepends(new String[] {"info.prevreading", "info.reading"});
-        xIntegerField4.setName("info.volume"); // NOI18N
-        xIntegerField4.setRequired(true);
-        xFormPanel4.add(xIntegerField4);
+        xLabel17.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        xLabel17.setBackground(new java.awt.Color(245, 245, 245));
+        xLabel17.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
+        xLabel17.setCaption("Volume");
+        xLabel17.setDepends(new String[] {"entity.prevreading", "entity.reading"});
+        xLabel17.setExpression("#{entity.volume}");
+        xLabel17.setOpaque(true);
+        xLabel17.setPreferredSize(new java.awt.Dimension(100, 20));
+        xFormPanel4.add(xLabel17);
 
-        xCheckBox1.setName("info.postledger"); // NOI18N
-        xCheckBox1.setOpaque(false);
-        xCheckBox1.setText("Post To Ledger");
-
-        xPanel2.setDepends(new String[] {"info.postledger"});
         xPanel2.setOpaque(false);
-        xPanel2.setVisibleWhen("#{info.postledger == true}");
 
         xFormPanel2.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
         xFormPanel2.setCaptionWidth(110);
 
         xButton1.setCaption(" ");
         xButton1.setCellPadding(new java.awt.Insets(0, 0, 2, 0));
+        xButton1.setDisableWhen("#{mode=='read'}");
         xButton1.setImmediate(true);
         xButton1.setName("computeAmount"); // NOI18N
         xButton1.setShowCaption(false);
         xButton1.setText("Compute Amount");
         xFormPanel2.add(xButton1);
 
-        xLabel1.setBackground(new java.awt.Color(245, 245, 245));
-        xLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
-        xLabel1.setCaption("Account");
-        xLabel1.setExpression("#{info.item.title}");
-        xLabel1.setOpaque(true);
-        xLabel1.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel2.add(xLabel1);
-
         xDecimalField2.setCaption("Amount");
-        xDecimalField2.setEnabled(false);
-        xDecimalField2.setName("info.amount"); // NOI18N
+        xDecimalField2.setDepends(new String[] {"entity.prevreading", "entity.reading"});
+        xDecimalField2.setName("entity.amount"); // NOI18N
+        xDecimalField2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                xDecimalField2ActionPerformed(evt);
+            }
+        });
         xFormPanel2.add(xDecimalField2);
 
         xDecimalField3.setCaption("Amount Paid");
-        xDecimalField3.setName("info.amtpaid"); // NOI18N
+        xDecimalField3.setName("entity.amtpaid"); // NOI18N
         xDecimalField3.setRequired(true);
         xFormPanel2.add(xDecimalField3);
 
@@ -206,12 +210,15 @@ public class CaptureConsumptionPage extends javax.swing.JPanel {
         xPanel2Layout.setHorizontalGroup(
             xPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(xPanel2Layout.createSequentialGroup()
-                .addComponent(xFormPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 331, Short.MAX_VALUE)
+                .addComponent(xFormPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 356, Short.MAX_VALUE)
                 .addContainerGap())
         );
         xPanel2Layout.setVerticalGroup(
             xPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(xFormPanel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE)
+            .addGroup(xPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(xFormPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE)
+                .addGap(26, 26, 26))
         );
 
         javax.swing.GroupLayout xPanel4Layout = new javax.swing.GroupLayout(xPanel4);
@@ -221,23 +228,18 @@ public class CaptureConsumptionPage extends javax.swing.JPanel {
             .addGroup(xPanel4Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(xPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(xFormPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, 341, Short.MAX_VALUE)
-                    .addComponent(xPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(xPanel4Layout.createSequentialGroup()
-                        .addComponent(xCheckBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                    .addComponent(xFormPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, 366, Short.MAX_VALUE)
+                    .addComponent(xPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         xPanel4Layout.setVerticalGroup(
             xPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(xPanel4Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(xCheckBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(xFormPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(xPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(25, Short.MAX_VALUE))
+                .addContainerGap(39, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -245,9 +247,9 @@ public class CaptureConsumptionPage extends javax.swing.JPanel {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(6, 6, 6)
                 .addComponent(xPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(xPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
@@ -261,26 +263,33 @@ public class CaptureConsumptionPage extends javax.swing.JPanel {
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void xComboBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_xComboBox2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_xComboBox2ActionPerformed
+
+    private void xDecimalField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_xDecimalField2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_xDecimalField2ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.rameses.rcp.control.XButton xButton1;
-    private com.rameses.rcp.control.XButton xButton2;
-    private com.rameses.rcp.control.XCheckBox xCheckBox1;
+    private com.rameses.rcp.control.XComboBox xComboBox2;
     private com.rameses.rcp.control.XDecimalField xDecimalField2;
     private com.rameses.rcp.control.XDecimalField xDecimalField3;
-    private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XFormPanel xFormPanel2;
     private com.rameses.rcp.control.XFormPanel xFormPanel4;
+    private com.rameses.rcp.control.XFormPanel xFormPanel5;
+    private com.rameses.rcp.control.XIntegerField xIntegerField1;
     private com.rameses.rcp.control.XIntegerField xIntegerField2;
     private com.rameses.rcp.control.XIntegerField xIntegerField3;
-    private com.rameses.rcp.control.XIntegerField xIntegerField4;
-    private com.rameses.rcp.control.XLabel xLabel1;
     private com.rameses.rcp.control.XLabel xLabel13;
     private com.rameses.rcp.control.XLabel xLabel14;
     private com.rameses.rcp.control.XLabel xLabel15;
     private com.rameses.rcp.control.XLabel xLabel16;
     private com.rameses.rcp.control.XLabel xLabel17;
-    private com.rameses.rcp.control.XLabel xLabel2;
-    private com.rameses.rcp.control.XLabel xLabel20;
+    private com.rameses.rcp.control.XLabel xLabel18;
+    private com.rameses.rcp.control.XLabel xLabel21;
     private com.rameses.rcp.control.XPanel xPanel1;
     private com.rameses.rcp.control.XPanel xPanel2;
     private com.rameses.rcp.control.XPanel xPanel4;

@@ -1,0 +1,102 @@
+import com.rameses.annotations.*;
+
+class WaterworksLedgerPaymentInterceptor {
+	
+	@DataContext("waterworks_account")
+	def acct;
+
+	@DataContext("waterworks_account_ledger")
+	def acctledger;
+
+	@DataContext("waterworks_application")
+	def app;
+
+	@DataContext("waterworks_application_fee")
+	def appfee;
+
+	@DataContext("waterworks_installment")
+	def installment;	
+
+	@Service('DateService') 
+	def dateSvc; 
+
+	@Before(pattern="LedgerPaymentService.init", eval="#{args[0]._schemaname == 'waterworks_payment'}")
+	public void beforeInit(def evt) {
+		def o  = evt.args[0];
+		if(!o.acctid && !o.applicationid)
+			throw new Exception("waterworks capture payment must have an acctid or applicationid");	
+
+		if(o.acctid) {
+			def m = acct.find( [objid: o.acctid ]).select('acctno,acctname,applicationid').first();
+			if(!m) 
+				throw new Exception("Account not found");
+			if(m.applicationid) {
+				o.applicationid = m.applicationid;
+			}	
+			o.particulars = m.acctno + "(" + m.acctname + ")";
+		}		
+		else {
+			def m = app.find( [objid: o.applicationid ]).select('appno,acctname').first();
+			if(!m) 
+				throw new Exception("Application not found");
+			o.particulars = m.appno + "(" + m.acctname + ")";
+		}
+	}
+
+	@After(pattern="LedgerPaymentService.getItems", eval="#{args[0]._schemaname == 'waterworks_payment'}")
+	public void beforeGetItems(def evt) {
+		def o = evt.args[0];
+		def items = evt.result; 
+		def months = dateSvc.getMonths();  
+		if( o.applicationid) {
+			def xitems = appfee.find([parentid: o.applicationid]).where("amount-amtpaid>0").list();
+			xitems.each {
+				def m = [priority:0, item: it.item, amtdue: it.amount-it.amtpaid, txnrefid: it.objid];
+				m.applicationid = o.applicationid;
+				items << m;
+			};
+		};
+		if( o.acctid) {
+			def xitems = acctledger.find([parentid: o.acctid]).where("amount-amtpaid>0").list();
+			xitems.each { x-> 
+				def m = [priority:0, item: x.item, amtdue: x.amount-x.amtpaid, txnrefid: x.objid];
+				m.acctid = o.acctid; 
+				m.remarks = ''+ months.find{ it.index==x.month }?.name +'-'+ x.year;  
+				items << m;
+			}
+		};
+	}
+
+	@After(pattern="LedgerPaymentService.post", eval="#{args[0]._schemaname == 'waterworks_payment'}")
+	public void afterPostPayment( evt ) { 
+		def o = evt.args[0];
+		o.items.each { 
+			if( !it.txnrefid ) return;
+			if ( (it.acctid || it.applicationid) && !it.txnrefid ) 
+				throw new Exception('Please provide txnrefid');
+
+			if( it.acctid ) {
+				acctledger.find( [objid: it.txnrefid ]).update( [amtpaid: "{amtpaid+:amt}"], [amt: it.amount] );
+			}
+			else if(it.applicationid) {
+				appfee.find( [objid: it.txnrefid ]).update( [amtpaid: "{amtpaid+:amt}"], [amt: it.amount] );	
+			}
+		}
+	}
+
+	@After(pattern="LedgerPaymentService.postVoid", eval="#{args[0]._schemaname == 'waterworks_payment'}")
+	public void afterPostVoid( evt ) { 
+		def o = evt.result;
+
+		if ( !o.items ) 
+			throw new Exception("Persistence remove entity error: (waterworks_payment) Payment must have at least one item"); 
+
+		o.items.each{ 
+			if ( o.acctid ) { 
+				acctledger.find([ objid: it.txnrefid ]).update([amtpaid: "{amtpaid-:amt}"], [amt: it.amount] );  
+			} else {
+				appfee.find([ objid: it.txnrefid ]).update([amtpaid: "{amtpaid-:amt}"], [amt: it.amount] );  
+			}			
+		}  	
+	}	
+}

@@ -16,7 +16,7 @@
                  caption="Lookup Water Meter (Without Account)" 
                  action="init" target="popup"
                  cols="serialno,brand,capacity,size.title" 
-                 customFilter="currentacctid IS NULL "/>      
+                 customFilter="currentacctid IS NULL "/>  
     </invokers>
     
     <code>

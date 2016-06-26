@@ -372,7 +372,7 @@
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$P{LGUFORMALNAME}]]></textFieldExpression>
 				</textField>
-				<image  scaleImage="FillFrame" vAlign="Top" hAlign="Left" onErrorType="Blank" isUsingCache="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<image  scaleImage="RetainShape" vAlign="Top" hAlign="Left" onErrorType="Blank" isUsingCache="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Opaque"
 						x="98"

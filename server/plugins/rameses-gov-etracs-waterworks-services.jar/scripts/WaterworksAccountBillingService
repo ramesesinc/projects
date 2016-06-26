@@ -1,0 +1,119 @@
+import com.rameses.annotations.*;
+
+import com.rameses.rules.common.*;
+import waterworks.facts.*;
+import treasury.facts.*;
+import com.rameses.functions.*;
+
+class WaterworksAccountBillingService  {
+	
+	@Service("RuleExecutorService")
+	def ruleSvc;
+
+	@Service("WaterworksBillingCycleService")
+	def billingCycleSvc;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@DataContext("waterworks_account")
+	def acct;
+
+	@DataContext("waterworks_consumption")
+	def consumption;
+
+	@DataContext("waterworks_installment")
+	def installment;
+
+	void buildConsumptionFacts( def o, def facts ) {
+		//account based on consmption
+		def list = consumption.find([acctid: o.objid])
+			.select("year:{billingcycle.year},month:{billingcycle.month},volume,amount,amtdue:{amount-amtpaid},duedate:{billingcycle.duedate},disconnectiondate:{billingcycle.disconnectiondate},refid:{objid}")
+			.where(" amount - amtpaid > 0").list();
+
+		//account based on installment	
+		for( d in list) { 
+			facts << new WaterConsumption( d );
+		}
+	}
+
+	void buildInstallmentFacts( def o, def facts ) {
+		//find first the minimal year and maximum year in the facts
+		def consList = facts.findAll{ it instanceof WaterConsumption }.sort{ (it.year*12) +it.month };
+
+		def list2 = installment.find([acctid: o.objid]).where("amount - amtpaid > 0").list();
+		for(x in list2) {
+			def balance = x.amount - x.amtpaid;
+			def instamt = x.installmentamount;
+			for(c in consList) {
+				if( instamt <= balance) instamt = balance;
+				facts << new WaterInstallment( year:c.year, month:c.month, amount: instamt );
+				balance = balance - instamt;
+				if(balance == 0 ) break;
+			}
+		}
+	}
+
+	def monthNames = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+
+	@ProxyMethod
+	public def getBilling( def o ) {
+		if(!o.acctid ) throw new Exception("acctid is required");
+		def a = acct.find([objid:o.acctid]).first();
+		if(!a) throw new Exception("Waterworks Account not found");
+
+		def bc = billingCycleSvc.findCurrentCycle([sectorid:a.sector.objid]);
+
+		def currDate = dateSvc.getBasicServerDate();
+		def billDate = (o.billdate!=null)?o.billdate:currDate;
+
+		def facts = [];
+		facts << new BillDate( billDate );
+		facts << new DueDate( bc.duedate );
+		facts << new CurrentDate( currDate );
+		facts << new WaterBillDate( bc );
+		facts << new WaterAccount(a);
+
+		buildConsumptionFacts( a, facts );
+		buildInstallmentFacts( a, facts );
+
+		def res = ruleSvc.execute( "waterworksbilling", facts, null, null );
+		def feeList = [];
+		facts.findAll{ it instanceof WaterBillItem }.each {
+			def item = it.toItem();
+			item.monthname = monthNames[item.month-1];
+			item.particulars = (item.item.code? "("+item.item.code+") ":"") + item.item.title;
+			feeList << item;
+		};
+		if (!feeList) return null; 
+
+		a.items = feeList.findAll{it.amount!=0}.sort{it.sortorder};	
+		a.grandtotal = new BigDecimal(a.items.sum{it.amount});
+		a.billdate = billDate;
+		a.duedate = bc.duedate;
+		a.currdate = currDate;
+		return a;
+	}	
+
+	@ProxyMethod
+	public def getItemizedBilling( o ) {
+		def a = getBilling( o ); 
+		if ( a == null ) return null; 
+
+		def items = [];
+		int idx = 0; 
+
+		def acctGrps = a.items.groupBy{ it.txntype };
+		acctGrps.each { kk,v->
+			def k = [code:'', title:kk]; 
+			def m = [:];
+			m.item = k;
+			m.amount = v.sum{it.amount};
+			m.sortorder = idx++;
+			m.particulars = (k.code?"("+k.code+") ":"") + k.title;
+			items << m;
+		} 
+		return items;	
+	} 
+
+}

@@ -10,6 +10,9 @@ class ItemAccountModel extends com.rameses.seti2.models.CrudFormModel {
     boolean isAllowApprove() {
          return ( mode=='read' && entity.state.toString().matches('DRAFT|ACTIVE') ); 
     }
+    boolean isAllowDisapprove() {
+         return ( mode=='read' && entity.state.toString().matches('APPROVED') ); 
+    }
     
     boolean isEditAllowed() {
         if ( !super.isEditAllowed() ) return false; 
@@ -22,6 +25,17 @@ class ItemAccountModel extends com.rameses.seti2.models.CrudFormModel {
                _schemaname: getSchemaName(), 
                objid : entity.objid, 
                state : 'APPROVED' 
+            ]); 
+            loadData(); 
+        }
+    }
+    
+    void disapprove() {
+        if ( MsgBox.confirm('You are about to approve this account. Proceed?')) { 
+            getPersistenceService().update([ 
+               _schemaname: getSchemaName(), 
+               objid : entity.objid, 
+               state : 'DRAFT' 
             ]); 
             loadData(); 
         }

@@ -17,6 +17,7 @@ public class EfaasDownloadService
 		def params = ["tdno" : tdno];
 		def data = em.findFaas(params);
 		if(!data) throw new Exception(tdno + " could not be found!");
+		data.landdetails = em.getLandDetails([faasid:data.objid]);
 		return data;
 	}
 

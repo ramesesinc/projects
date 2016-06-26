@@ -45,7 +45,7 @@ public class ImageCaptureActivity extends ControlActivity {
 	private ImageView image;
 	private EditText title;
 	private Button  save;
-	private String objid, faasid;
+	private String objid, examinationid;
 	private Bitmap bitmap = null;
 	private String data_title;
 	
@@ -57,7 +57,7 @@ public class ImageCaptureActivity extends ControlActivity {
 		setContentView(R.layout.activity_image);
 		
 		objid = getIntent().getExtras().getString("objid");
-		faasid = getIntent().getExtras().getString("faasid");
+		examinationid = getIntent().getExtras().getString("examinationid");
 		
 		image = (ImageView) findViewById(R.id.image_view);
 		title = (EditText) findViewById(R.id.image_title);
@@ -199,7 +199,7 @@ public class ImageCaptureActivity extends ControlActivity {
 		try{
 			Map params = new HashMap();
 			params.put("objid", UUID.randomUUID().toString());
-			params.put("faasid", faasid);
+			params.put("examinationid", examinationid);
 			params.put("title", data_title);
 			params.put("image", Base64.encodeToString(DbBitmapUtility.getBytes(bitmap),Base64.DEFAULT));
 			
@@ -210,7 +210,7 @@ public class ImageCaptureActivity extends ControlActivity {
 			return;
 		}
 		disposeMe(); 
-		FaasActivity.initData();
+		ExaminationActivity.loadImageData();
 	}
 	
 	private void doUpdate(){
@@ -229,7 +229,7 @@ public class ImageCaptureActivity extends ControlActivity {
 		try{
 			Map params = new HashMap();
 			params.put("objid", objid);
-			params.put("faasid", faasid);
+			params.put("examinationid", examinationid);
 			params.put("title", data_title);
 			params.put("image", Base64.encodeToString(DbBitmapUtility.getBytes(bitmap),Base64.DEFAULT));
 			
@@ -240,7 +240,7 @@ public class ImageCaptureActivity extends ControlActivity {
 			return;
 		}
 		disposeMe(); 
-		FaasActivity.initData();
+		ExaminationActivity.loadImageData();
 	}
 
 }

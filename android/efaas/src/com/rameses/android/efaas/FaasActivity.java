@@ -5,12 +5,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.UUID;
-import android.app.ActionBar;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Base64;
+import android.os.Handler;
+import android.os.Message;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
@@ -18,7 +18,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -30,12 +29,12 @@ import com.rameses.android.db.*;
 import com.rameses.android.efaas.dialog.AppraisalInfo;
 import com.rameses.android.efaas.dialog.ErrorDialog;
 import com.rameses.android.efaas.dialog.InfoDialog;
-import com.rameses.android.efaas.adapter.AppraisalItemAdapter;
 import com.rameses.android.efaas.adapter.AppraisalMenuAdapter;
-import com.rameses.android.efaas.adapter.HomeMenuAdapter;
-import com.rameses.android.efaas.adapter.ImageItemAdapter;
+import com.rameses.android.efaas.adapter.ExaminationMenuAdapter;
 import com.rameses.android.efaas.bean.*;
+import com.rameses.android.service.UploadService;
 import com.rameses.client.android.Platform;
+import com.rameses.client.android.UIDialog;
 
 public class FaasActivity extends ControlActivity{
 	
@@ -44,18 +43,20 @@ public class FaasActivity extends ControlActivity{
 	private static TextView tdno, pin, owner, address, year, classification, area;
 	private static TextView totalmv, totalav, cadastrallotno, blockno, surveyno;
 	private static TextView street, purok, north, south, west, east;
-	private static Button appraisal_btn, examination_btn, images_btn;
-	private static EditText findings, recommendations;
-	private static ListView appraisal_list, image_list;
+	private static Button appraisal_btn, examination_add;
+	private static ListView appraisal_list, examination_list;
 	
-	private static Activity activity;
+	public static Activity activity;
 	private static Properties faas = null;
 	private static String faasid;
 	private static String rpuid;
 	private static Properties examination;
 	private static List<ImageItem> data_image;
 	private static List<AppraisalListItem> data_appraisal;
+	private static List<ExaminationListItem> data_examination;
 	private static int ctxMenuId;
+	
+	private ProgressDialog progressDialog;
 	
 	@Override
 	protected void onCreateProcess(Bundle savedInstanceState) {
@@ -64,6 +65,9 @@ public class FaasActivity extends ControlActivity{
 		setContentView(R.layout.activity_faas);
 		
 		faasid = getIntent().getExtras().getString("faasid");
+		
+		progressDialog = new ProgressDialog(this);
+		progressDialog.setCancelable(false);
 		
 		tdno = (TextView) findViewById(R.id.faas_tdno);
 		pin = (TextView) findViewById(R.id.faas_pin);
@@ -85,16 +89,10 @@ public class FaasActivity extends ControlActivity{
 		east = (TextView) findViewById(R.id.faas_east);
 		
 		appraisal_list = (ListView) findViewById(R.id.appraisal_list);
-		image_list = (ListView) findViewById(R.id.images_list);
-		
 		registerForContextMenu(appraisal_list);
-		registerForContextMenu(image_list);
 		
-		findings = (EditText) findViewById(R.id.examination_findings);
-		findings.setEnabled(false);
-		
-		recommendations = (EditText) findViewById(R.id.examination_recommendations);
-		recommendations.setEnabled(false);
+		examination_list = (ListView) findViewById(R.id.examination_list);
+		registerForContextMenu(examination_list);
 		
 		appraisal_btn = (Button) findViewById(R.id.appraisal_button);
 		appraisal_btn.setOnClickListener(new View.OnClickListener() {
@@ -108,69 +106,16 @@ public class FaasActivity extends ControlActivity{
             }
         });
 		
-		examination_btn = (Button) findViewById(R.id.examination_button);
-		examination_btn.setOnClickListener(new View.OnClickListener() {
+		examination_add = (Button) findViewById(R.id.examination_add);
+		examination_add.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-            	String text = examination_btn.getText().toString();
-            	if(text.equals("Edit")){
-            		findings.setEnabled(true);
-            		recommendations.setEnabled(true);
-            		examination_btn.setText("Save");
-            	}
-            	if(text.equals("Save")){
-            		try{
-            			String data_findings = findings.getText().toString();
-            			String data_recommendations = recommendations.getText().toString();
-            			String data_date = Platform.getApplication().getServerDate().toString();
-            			
-            			if(data_findings.isEmpty()){
-            				new InfoDialog(activity,"Findings are required!").show();
-            				return;
-            			}
-            			if(data_recommendations.isEmpty()){
-            				new InfoDialog(activity,"Recommendations are required!").show();
-            				return;
-            			}
-            			
-            			Map params = new HashMap();
-            			params.put("faasid", faasid);
-            			params.put("findings", data_findings);
-            			params.put("recommendations", data_recommendations);
-            			params.put("date", data_date);
-            			
-            			ExaminationDB db = new ExaminationDB();
-            			if(examination != null){
-            				params.put("objid", examination.getProperty("objid"));
-            				db.update(params);
-            			}else{
-            				params.put("objid", UUID.randomUUID().toString());
-            				db.create(params);
-            			}
-            		}catch(Throwable t){
-            			new ErrorDialog(activity, t).show();
-            			return;
-            		}
-            		findings.setEnabled(false);
-            		recommendations.setEnabled(false);
-            		examination_btn.setText("Edit");
-            		loadExaminationData();
-            	}
-            }
-        });
-		
-		images_btn = (Button) findViewById(R.id.images_button);
-		images_btn.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-            	Intent intent = new Intent(activity, ImageCaptureActivity.class);
-				intent.putExtra("faasid", faasid);
-				startActivity(intent); 
+            	Intent myIntent = new Intent(activity, ExaminationActivity.class);
+  			  	myIntent.putExtra("faasid", faasid);
+  			  	startActivity(myIntent);
             }
         });
 		
 		initData();
-		
-		ActionBar bar = getActionBar();
-	    //bar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#a6e20d")));
 	}
 	
 	protected void afterBackPressed() {
@@ -188,13 +133,13 @@ public class FaasActivity extends ControlActivity{
 		for (int i = 0; i<menuItems.length; i++) {
 			menu.add(Menu.NONE, i, i, menuItems[i]);
 		}
-		if(v.getId()==R.id.images_list) {
-			ctxMenuId = R.id.images_list;
-			menu.setHeaderTitle(data_image.get(info.position).getTitle());
-		}
 		if(v.getId()==R.id.appraisal_list){
 			ctxMenuId = R.id.appraisal_list;
-			menu.setHeaderTitle("");
+			menu.setHeaderTitle("Land Detail");
+		}
+		if(v.getId()==R.id.examination_list){
+			ctxMenuId = R.id.examination_list;
+			menu.setHeaderTitle("Examination");
 		}
 	}
 	
@@ -202,27 +147,6 @@ public class FaasActivity extends ControlActivity{
 	public boolean onContextItemSelected(MenuItem item) {
 	  AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
 	  int menuItemIndex = item.getItemId();
-	  
-	  if(ctxMenuId == R.id.images_list){
-		  ImageItem imageItem = data_image.get(info.position);
-		  if(menuItemIndex == 0){
-			  Intent myIntent = new Intent(this, ImageCaptureActivity.class);
-			  myIntent.putExtra("objid", imageItem.getObjid());
-			  myIntent.putExtra("faasid", imageItem.getFaasId());
-			  startActivity(myIntent);
-		  }
-		  if(menuItemIndex == 1){
-			  Map params = new HashMap();
-			  params.put("objid", imageItem.getObjid());
-			  try{
-				  ImageDB db = new ImageDB();
-				  db.delete(params);
-				  initData();
-			  }catch(Throwable t){
-				  new ErrorDialog(this, t).show();
-			  }
-		  }
-	  }
 	  
 	  if(ctxMenuId == R.id.appraisal_list){
 		  AppraisalListItem appraisalItem = data_appraisal.get(info.position);
@@ -237,6 +161,33 @@ public class FaasActivity extends ControlActivity{
 			  LandDetailDB db = new LandDetailDB();
 			  try{
 				  db.delete(params);
+				  initData();
+			  }catch(Throwable t){
+				  new ErrorDialog(this, t).show();
+			  }
+		  }
+	  }
+	  
+	  if(ctxMenuId == R.id.examination_list){
+		  ExaminationListItem examinationItem = data_examination.get(info.position);
+		  if(menuItemIndex == 0){
+			   Intent myIntent = new Intent(activity, ExaminationActivity.class);
+			   myIntent.putExtra("objid", examinationItem.getObjid());
+			   myIntent.putExtra("faasid", faasid);
+			   activity.startActivity(myIntent);
+		  }
+		  if(menuItemIndex == 1){
+			  Map params1 = new HashMap();
+			  params1.put("examinationid", examinationItem.getObjid());
+			  
+			  Map params2 = new HashMap();
+			  params2.put("objid", examinationItem.getObjid());
+			  
+			  ExaminationDB db = new ExaminationDB();
+			  ImageDB imdb = new ImageDB();
+			  try{
+				  imdb.delete(params1);
+				  db.delete(params2);
 				  initData();
 			  }catch(Throwable t){
 				  new ErrorDialog(this, t).show();
@@ -283,7 +234,6 @@ public class FaasActivity extends ControlActivity{
 		
 		loadAppraisalData();
 		loadExaminationData();
-		loadImageData();
 	}
 	
 	private static void loadAppraisalData(){
@@ -306,17 +256,23 @@ public class FaasActivity extends ControlActivity{
 				String areasqm = m.get("areasqm") != null ? m.get("areasqm").toString() : "";
 				String areaha = m.get("areaha") != null ? m.get("areaha").toString() : "";
 				
-				Properties subclass = new LcuvSubClassDB().find(subclass_objid);
-				Properties specificclass = new LcuvSpecificClassDB().find(specificclass_objid);
-				Properties actualuse = new LandAssessLevelDB().find(actualuse_objid);
-				Properties strip = new LcuvStrippingDB().find(stripping_objid);
+				Properties data_subclass = new LcuvSubClassDB().find(subclass_objid);
+				Properties data_specificclass = new LcuvSpecificClassDB().find(specificclass_objid);
+				Properties data_actualuse = new LandAssessLevelDB().find(actualuse_objid);
+				Properties data_strip = new LcuvStrippingDB().find(stripping_objid);
+				
+				String stripping = " - ", subclass = " - ", specificclass = " - ", actualuse = " - ";
+				if(data_subclass != null) subclass = data_subclass.getProperty("code") + " - " + data_subclass.getProperty("name");
+				if(data_specificclass != null) specificclass = data_specificclass.getProperty("name");
+				if(data_actualuse != null) actualuse = data_actualuse.getProperty("name");
+				if(data_strip != null) stripping = data_strip.getProperty("classification_objid") + " - " + data_strip.getProperty("rate");
 				
 				data_appraisal.add(new AppraisalListItem(
 						objid,
-						subclass.getProperty("code") + " - " + subclass.getProperty("name"),
-						specificclass.getProperty("name"),
-						actualuse.getProperty("name"),
-						strip.getProperty("classification_objid") + " - " + strip.getProperty("rate"),
+						subclass,
+						specificclass,
+						actualuse,
+						stripping,
 						areasqm
 				));
 			}
@@ -342,58 +298,36 @@ public class FaasActivity extends ControlActivity{
 	
 	private static void loadExaminationData(){
 		try{
+			data_examination = new ArrayList<ExaminationListItem>();
 			Map params = new HashMap();
 			params.put("faasid", faasid);
 			
 			ExaminationDB db = new ExaminationDB();
-			examination = db.find(params);
-			if(examination != null){
-				findings.setText(examination.getProperty("findings"));
-				recommendations.setText(examination.getProperty("recommendations"));
-			}
-		}catch(Throwable t){
-			new ErrorDialog(activity, t).show();
-		}
-	}
-	
-	private static void loadImageData(){
-		try{
-			data_image = new ArrayList<ImageItem>();
-			
-			Map params = new HashMap();
-			params.put("faasid", faasid);
-			
-			ImageDB db = new ImageDB();
 			List<Map> list = db.getList(params);
-			
 			for(Map m : list){
-				String objid = m.get("objid") != null ? m.get("objid").toString() : "";
-				String title = m.get("title") != null ? m.get("title").toString() : "";
-				String image = m.get("image") != null ? m.get("image").toString() : "";
-				
-				byte[] decodedBytes = Base64.decode(image, Base64.DEFAULT);
-				
-				data_image.add(new ImageItem(objid, faasid, title, decodedBytes));
+				String id = m.get("objid") != null ? m.get("objid").toString() : "";
+				String date = m.get("date") != null ? m.get("date").toString() : "";
+				String findings = m.get("findings") != null ? m.get("findings").toString() : "";
+				data_examination.add(new ExaminationListItem(id,findings,date));
 			}
 			
-			image_list.setAdapter(new ImageItemAdapter(activity,data_image));
-			
-			LayoutParams layout = (LayoutParams) image_list.getLayoutParams();
-			layout.height = (600 * data_image.size());
-			image_list.setLayoutParams(layout);
-			
-			image_list.setOnItemClickListener(new OnItemClickListener(){
+			examination_list.setAdapter(new ExaminationMenuAdapter(activity,data_examination));
+			examination_list.setOnItemClickListener(new OnItemClickListener(){
 				@Override
 				public void onItemClick(AdapterView<?> adapter, View view, int pos, long arg3) {
-					ImageItemAdapter a = (ImageItemAdapter) adapter.getAdapter();
-					ImageItem item = a.getListItem(pos);
-					Intent myIntent = new Intent(activity, ImageCaptureActivity.class);
+					ExaminationMenuAdapter a = (ExaminationMenuAdapter) adapter.getAdapter();
+					ExaminationListItem item = a.getListItem(pos);
+					Intent myIntent = new Intent(activity, ExaminationActivity.class);
 					myIntent.putExtra("objid", item.getObjid());
-					myIntent.putExtra("faasid", item.getFaasId());
-					activity.startActivity(myIntent);
+	  			  	myIntent.putExtra("faasid", faasid);
+	  			  	activity.startActivity(myIntent);
 				}	
 			});
+			LayoutParams layout = (LayoutParams) examination_list.getLayoutParams();
+			layout.height = (100 * data_examination.size());
+			examination_list.setLayoutParams(layout);
 		}catch(Throwable t){
+			t.printStackTrace();
 			new ErrorDialog(activity, t).show();
 		}
 	}

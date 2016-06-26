@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.rameses.android"
     android:versionCode="1"
-    android:versionName="1.0" >
+    android:versionName="1.0">
 
     <uses-sdk
         android:minSdkVersion="11"
@@ -63,5 +63,7 @@
         <activity android:name="com.rameses.android.efaas.DownloadActivity"  android:screenOrientation="portrait"/>
         <activity android:name="com.rameses.android.efaas.FaasActivity"  android:screenOrientation="portrait"/>
         <activity android:name="com.rameses.android.efaas.ImageCaptureActivity"  android:screenOrientation="portrait"/>
+        <activity android:name="com.rameses.android.efaas.ExaminationActivity"  android:screenOrientation="portrait"/>
+        <activity android:name="com.rameses.android.efaas.UploadActivity"  android:screenOrientation="portrait"/>
     </application>
 </manifest>

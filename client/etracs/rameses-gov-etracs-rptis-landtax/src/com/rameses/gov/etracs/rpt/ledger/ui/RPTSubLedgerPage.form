@@ -34,7 +34,7 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="xFormPanel1" pref="355" max="32767" attributes="0"/>
+              <Component id="xFormPanel1" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
@@ -112,7 +112,22 @@
         </Component>
         <Component class="com.rameses.rcp.control.XDecimalField" name="xDecimalField3">
           <Properties>
+            <Property name="caption" type="java.lang.String" value="Market Value"/>
+            <Property name="disabledTextColor" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="0" green="0" red="0" type="rgb"/>
+            </Property>
+            <Property name="enabled" type="boolean" value="false"/>
+            <Property name="name" type="java.lang.String" value="entity.totalmv" noResource="true"/>
+            <Property name="required" type="boolean" value="true"/>
+          </Properties>
+        </Component>
+        <Component class="com.rameses.rcp.control.XDecimalField" name="xDecimalField8">
+          <Properties>
             <Property name="caption" type="java.lang.String" value="Assessed Value"/>
+            <Property name="disabledTextColor" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="0" green="0" red="0" type="rgb"/>
+            </Property>
+            <Property name="enabled" type="boolean" value="false"/>
             <Property name="name" type="java.lang.String" value="entity.totalav" noResource="true"/>
             <Property name="required" type="boolean" value="true"/>
           </Properties>
@@ -127,7 +142,7 @@
           <Layout>
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <EmptySpace min="0" pref="393" max="32767" attributes="0"/>
+                  <EmptySpace min="0" pref="403" max="32767" attributes="0"/>
               </Group>
             </DimensionLayout>
             <DimensionLayout dim="1">
@@ -161,7 +176,7 @@
           <Layout>
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <EmptySpace min="0" pref="393" max="32767" attributes="0"/>
+                  <EmptySpace min="0" pref="403" max="32767" attributes="0"/>
               </Group>
             </DimensionLayout>
             <DimensionLayout dim="1">

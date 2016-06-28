@@ -5,3 +5,7 @@
 "entity.*" [mode != 'read']{
     enabled:true;
 }
+
+"entity.(totalmv|totalav)" [true == true]{
+    enabled:false;
+}

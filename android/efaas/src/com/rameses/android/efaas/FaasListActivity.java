@@ -59,9 +59,6 @@ public class FaasListActivity extends SettingsMenuActivity {
 		loadData("");
 		
 		ApplicationUtil.changeTitle(this, "FAAS");
-		
-		ActionBar bar = getActionBar();
-	    //bar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#a6e20d")));
 	}
 	
 	protected void afterBackPressed() {
@@ -91,6 +88,7 @@ public class FaasListActivity extends SettingsMenuActivity {
 			e.printStackTrace();
 			ApplicationUtil.showShortMsg(e.toString());
 		}
+		list.setBackgroundResource(0);
 		if(data.isEmpty()) list.setBackgroundResource(R.drawable.empty);
 		list.setAdapter(new FaasMenuAdapter(this,data));
 	}

@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.Bundle;
@@ -14,7 +13,6 @@ import android.os.Message;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
-
 import com.rameses.android.ApplicationUtil;
 import com.rameses.android.R;
 import com.rameses.android.SettingsMenuActivity;
@@ -98,8 +96,9 @@ public class UploadActivity extends SettingsMenuActivity {
 			e.printStackTrace();
 			ApplicationUtil.showShortMsg(e.toString());
 		}
-		if(data.isEmpty()) list.setBackgroundResource(R.drawable.empty);
 		list.setAdapter(new UploadMenuAdapter(this,data));
+		list.setBackgroundResource(0);
+		if(data.isEmpty()) list.setBackgroundResource(R.drawable.empty);
 	}
 	
 	private void uploadData(final List<UploadItem> list){
@@ -132,7 +131,12 @@ public class UploadActivity extends SettingsMenuActivity {
 		@Override
 		public void handleMessage(Message msg) {
 			if (progressDialog.isShowing()) progressDialog.dismiss(); 
-			new InfoDialog(activity, "The data has been uploaded!").show();
+			UIDialog dialog = new UIDialog(activity) {
+				public void onApprove() {
+					loadData("");
+				}
+			};
+			dialog.alert("The data has been uploaded!");
 		}
 	};
 	
@@ -158,6 +162,9 @@ public class UploadActivity extends SettingsMenuActivity {
 		    			Message msg = successhandler.obtainMessage();
 		    			msg.setData(data);
 		    			successhandler.sendMessage(msg);
+		    			
+		    			FaasDB faasDB = new FaasDB();
+		    			faasDB.deleteFaas(item.getObjid());
 		            }
 				}catch(Throwable t){
 					t.printStackTrace();

@@ -20,8 +20,6 @@ public class LandDetailDB extends AbstractDBMapper{
 		param1.put("landrpuid", landrpuid);
 		List<Map> landdetails = getList(param1);
 		for(Map m : landdetails){
-			System.err.println("Land Detail : " + m);
-			System.err.println("******************************************************");
 			Map params = new HashMap();
 			params.put("objid", m.get("objid"));
 			params.put("landrpuid", m.get("landrpuid"));
@@ -32,6 +30,7 @@ public class LandDetailDB extends AbstractDBMapper{
 			params.put("actualuse_objid", m.get("actualuse_objid"));
 			params.put("actualuse_code", m.get("actualuse_code"));
 			params.put("actualuse_name", m.get("actualuse_name"));
+			params.put("actualuse_fixrate", m.get("actualuse_fixrate"));
 			params.put("actualuse_classification_objid", m.get("actualuse_classification_objid"));
 			params.put("stripping_objid", m.get("stripping_objid"));
 			params.put("stripping_rate", Integer.parseInt(m.get("stripping_rate") != null ? m.get("stripping_rate").toString() : "0"));
@@ -54,6 +53,18 @@ public class LandDetailDB extends AbstractDBMapper{
 			data.add(params);
 		}
 		return data;
+	}
+	
+	public double getTotalAreaSqm(String landrpuid) throws Exception{
+		double val = 0.00;
+		Map param = new HashMap();
+		param.put("landrpuid", landrpuid);
+		
+		List<Map> landdetails = getList(param);
+		for(Map landdetail : landdetails){
+			val += Double.parseDouble(landdetail.get("areasqm").toString());
+		}
+		return val;
 	}
 
 }

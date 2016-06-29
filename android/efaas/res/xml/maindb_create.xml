@@ -241,6 +241,7 @@
 			actualuse_objid TEXT,
 			actualuse_code TEXT,
 			actualuse_name TEXT,
+			actualuse_fixrate REAL,
 			actualuse_classification_objid TEXT,
 			stripping_objid TEXT,
 			stripping_rate TEXT,
@@ -275,10 +276,12 @@
         CREATE TABLE examination
         (
         	objid TEXT NOT NULL PRIMARY KEY,
-        	faasid TEXT,
+        	parent_objid TEXT,
 			findings TEXT,
 			recommendations TEXT,
-			date TEXT
+			dtinspected TEXT,
+			notedby TEXT,
+			notedbytitle TEXT
         )
     </sql>
     

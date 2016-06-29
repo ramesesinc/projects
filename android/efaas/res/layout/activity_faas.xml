@@ -524,110 +524,11 @@
                 android:textAppearance="?android:attr/textAppearanceMedium" />
 
         </LinearLayout>
-        
-         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="10dp" >
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Total Area (sqm)"
-                android:minEms="7"
-                android:padding="1dp"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
-            
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text=":"
-                android:minEms="1"
-                android:padding="1dp"
-                android:gravity="center"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
-            
-            <TextView
-                android:id="@+id/faas_area"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:text=""
-                android:padding="1dp"
-                android:textStyle="bold"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
-
-        </LinearLayout>
-        
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="10dp" >
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Total MV"
-                android:minEms="7"
-                android:padding="1dp"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
-            
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text=":"
-                android:minEms="1"
-                android:padding="1dp"
-                android:gravity="center"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
-            
-            <TextView
-                android:id="@+id/faas_totalmv"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:text=""
-                android:padding="1dp"
-                android:textStyle="bold"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
-
-        </LinearLayout>
-        
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="10dp" >
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Total AV"
-                android:minEms="7"
-                android:padding="1dp"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
-            
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text=":"
-                android:minEms="1"
-                android:padding="1dp"
-                android:gravity="center"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
-            
-            <TextView
-                android:id="@+id/faas_totalav"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:text=""
-                android:padding="1dp"
-                android:textStyle="bold"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
-
-        </LinearLayout>
-        
+         
         <TextView
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:text="APPRAISAL"
+                android:text="LAND APPRAISAL"
                 android:minEms="6"
                 android:padding="5dp"
                 android:textStyle="bold"
@@ -716,6 +617,18 @@
 		      android:layout_width="match_parent"
 		      android:layout_height="wrap_content" 
 		      android:layout_margin="5dp"/>
+		
+		<TextView
+		    android:id="@+id/appraisal_totalarea"
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:layout_marginRight="20dp"
+		    android:gravity="right"
+		    android:text="TOTAL AREA (SQM) : "
+		    android:textAppearance="?android:attr/textAppearanceSmall"
+		    android:textStyle="bold" >
+
+	     </TextView>
 		
 		<Button
 	        android:id="@+id/appraisal_button"

@@ -99,6 +99,7 @@ public class RevisionSettingDetailActivity extends SettingsMenuActivity {
 		
 		list = (ListView) findViewById(R.id.listview_snyc);
 		list.setAdapter(new MasterFileMenuAdapter(this,data));
+		list.setBackgroundResource(0);
 		if(data.isEmpty()) list.setBackgroundResource(R.drawable.empty);
 		list.setOnItemClickListener(new OnItemClickListener(){
 			@Override

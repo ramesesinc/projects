@@ -35,7 +35,7 @@ public class UploadService extends AbstractService {
 			List<Map> landdetails = landdetaildb.getLandDetails(faas.get("rpu_objid").toString());
 			
 			Map param2 = new HashMap();
-			param2.put("faasid", faasid);
+			param2.put("parent_objid", faasid);
 			List<Map> examinations = new ArrayList<Map>(); 
 			List<Map> list = examdb.getList(param2);
 			for(Map m : list){

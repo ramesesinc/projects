@@ -31,6 +31,7 @@ import com.rameses.android.efaas.dialog.ErrorDialog;
 import com.rameses.android.efaas.dialog.InfoDialog;
 import com.rameses.android.efaas.util.InputMethodSwitcher;
 import com.rameses.client.android.Platform;
+import com.rameses.client.android.SessionContext;
 
 public class ExaminationActivity  extends ControlActivity{
 	
@@ -90,10 +91,12 @@ public class ExaminationActivity  extends ControlActivity{
     				
     				Map params = new HashMap();
     				params.put("objid", objid);
-    				params.put("faasid", faasid);
+    				params.put("parent_objid", faasid);
     				params.put("findings", data_findings);
     				params.put("recommendations", data_recommendations);
-    				params.put("date", data_date);
+    				params.put("dtinspected", data_date);
+    				params.put("notedby", SessionContext.getProfile().getFullName());
+    				params.put("notedbytitle", SessionContext.getProfile().getJobTitle());
     				
     				ExaminationDB db = new ExaminationDB();
     				if(STATE.equals("UPDATE")){

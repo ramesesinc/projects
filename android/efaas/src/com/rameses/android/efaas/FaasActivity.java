@@ -40,8 +40,8 @@ public class FaasActivity extends ControlActivity{
 	
 	public boolean isCloseable() { return false; }
 	
-	private static TextView tdno, pin, owner, address, year, classification, area;
-	private static TextView totalmv, totalav, cadastrallotno, blockno, surveyno;
+	private static TextView tdno, pin, owner, address, year, classification;
+	private static TextView cadastrallotno, blockno, surveyno, totalarea;
 	private static TextView street, purok, north, south, west, east;
 	private static Button appraisal_btn, examination_add;
 	private static ListView appraisal_list, examination_list;
@@ -75,9 +75,6 @@ public class FaasActivity extends ControlActivity{
 		address = (TextView) findViewById(R.id.faas_address);
 		year = (TextView) findViewById(R.id.faas_ry);
 		classification = (TextView) findViewById(R.id.faas_classification);
-		area = (TextView) findViewById(R.id.faas_area);
-		totalmv = (TextView) findViewById(R.id.faas_totalmv);
-		totalav = (TextView) findViewById(R.id.faas_totalav);
 		cadastrallotno = (TextView) findViewById(R.id.faas_cadastrallotno);
 		blockno = (TextView) findViewById(R.id.faas_blockno);
 		surveyno = (TextView) findViewById(R.id.faas_surveyno);
@@ -87,6 +84,7 @@ public class FaasActivity extends ControlActivity{
 		south = (TextView) findViewById(R.id.faas_south);
 		west = (TextView) findViewById(R.id.faas_west);
 		east = (TextView) findViewById(R.id.faas_east);
+		totalarea = (TextView) findViewById(R.id.appraisal_totalarea);
 		
 		appraisal_list = (ListView) findViewById(R.id.appraisal_list);
 		registerForContextMenu(appraisal_list);
@@ -216,9 +214,6 @@ public class FaasActivity extends ControlActivity{
 			address.setText(faas.getProperty("owner_address"));
 			year.setText(faas.getProperty("rpu_ry"));
 			classification.setText(faas.getProperty("rpu_classification_objid"));
-			area.setText(faas.getProperty("rpu_totalareasqm"));
-			totalmv.setText(faas.getProperty("rpu_totalmv"));
-			totalav.setText(faas.getProperty("rpu_totalav"));
 			cadastrallotno.setText(faas.getProperty("rp_cadastrallotno"));
 			blockno.setText(faas.getProperty("rp_blockno"));
 			surveyno.setText(faas.getProperty("rp_surveyno"));
@@ -290,6 +285,9 @@ public class FaasActivity extends ControlActivity{
 		            appraisal.show();
 				}	
 			});
+			
+			db = new LandDetailDB();
+			totalarea.setText("TOTAL AREA (SQM) : " + String.valueOf(db.getTotalAreaSqm(rpuid)));
 		}catch(Throwable t){
 			t.printStackTrace();
 			new ErrorDialog(activity, t).show();
@@ -300,13 +298,13 @@ public class FaasActivity extends ControlActivity{
 		try{
 			data_examination = new ArrayList<ExaminationListItem>();
 			Map params = new HashMap();
-			params.put("faasid", faasid);
+			params.put("parent_objid", faasid);
 			
 			ExaminationDB db = new ExaminationDB();
 			List<Map> list = db.getList(params);
 			for(Map m : list){
 				String id = m.get("objid") != null ? m.get("objid").toString() : "";
-				String date = m.get("date") != null ? m.get("date").toString() : "";
+				String date = m.get("dtinspected") != null ? m.get("dtinspected").toString() : "";
 				String findings = m.get("findings") != null ? m.get("findings").toString() : "";
 				data_examination.add(new ExaminationListItem(id,findings,date));
 			}

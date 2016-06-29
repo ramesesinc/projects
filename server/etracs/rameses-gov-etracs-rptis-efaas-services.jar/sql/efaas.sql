@@ -108,7 +108,8 @@ SELECT
 	ll.code as actualuse_code,
 	ll.name as actualuse_name,
 	ll.classification_objid as actualuse_classification_objid,
-	spc.classification_objid as specificclass_classification_objid
+	spc.classification_objid as specificclass_classification_objid,
+	spc.areatype as specificclass_areatype
 FROM faas f
 	INNER JOIN landdetail ld ON f.rpuid = ld.landrpuid
 	INNER JOIN landassesslevel ll on ld.actualuse_objid = ll.objid

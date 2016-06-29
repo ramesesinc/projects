@@ -1,5 +1,5 @@
-<schema>
-	<element name="code" tablename="queue_code">
+<schema adapter="queue"> 
+	<element tablename="queue_code">
 		<field name="objid" primary="true"/>
 		<field name="dtcreated" required="false"/>
 		<field name="dtgenerated" required="false"/>

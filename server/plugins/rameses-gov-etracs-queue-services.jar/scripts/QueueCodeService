@@ -4,8 +4,9 @@ import java.rmi.server.*;
 import com.rameses.common.*;
 import com.rameses.services.extended.*;
 
-class QueueCodeService extends ActiveListService{
-	@ActiveDB('code')
+class QueueCodeService extends ActiveListService { 
+
+	@DataContext('queue_code')
 	def em;
 
 	@Service('SequenceService')

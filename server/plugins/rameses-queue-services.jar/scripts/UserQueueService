@@ -88,16 +88,15 @@ class UserQueueService {
 	public void consumeNumber( o ) {
 		if ( !o.counterid ) throw new Exception('counterid parameter is required'); 
 
-		def qncdata = qnc.find( o ).first(); 
+		def qncdata = qnc.find([ counterid: o.counterid ]).first(); 
 		if ( !qncdata ) return; 
 
-		qnc.find( qncdata ).delete(); 
+		qnc.find([ objid: qncdata.objid ]).delete(); 
 
-		def qndata = qn.find( qncdata ).first(); 
-		qn.find( qncdata ).delete(); 
+		def qndata = qn.find([ objid: qncdata.objid ]).first(); 
+		qn.find([ objid: qndata.objid ]).delete(); 
 
 		def qsdata = qs.find([ objid: qndata.sectionid ]).first(); 
-		println qsdata;
 		notify([ 
 			counterid: o.counterid, sectionid: qsdata.objid, prefix: qsdata.prefix, 
 			seriesno: qndata.seriesno, type:'CONSUME_NUMBER' 
@@ -105,13 +104,13 @@ class UserQueueService {
 	} 
 
 	@ProxyMethod 
-	public void buzzNumber( o ) {
+	public void buzzNumber( o ) { 
 		if ( !o.counterid ) throw new Exception('counterid parameter is required'); 
 
-		def qncdata = qnc.find( o ).first(); 
+		def qncdata = qnc.find([ counterid: o.counterid ]).first(); 
 		if ( !qncdata ) throw new Exception('No available queue number for this counter');
 
-		def qndata = qn.find( qncdata ).first(); 
+		def qndata = qn.find([ objid: qncdata.objid ]).first(); 
 		def qsdata = qs.find([ objid: qndata.sectionid ]).first(); 
 
 		notify([ 
@@ -124,9 +123,9 @@ class UserQueueService {
 	public void skipNumber( o ) {
 		if ( !o.counterid ) throw new Exception('counterid parameter is required'); 
 
-		def m = qnc.find( o ).first(); 
-		qn.find( m ).update([ state: 'HOLD' ]); 
-		qnc.find( m ).delete(); 
+		def m = qnc.find([ counterid: o.counterid ]).first(); 
+		qn.find([ objid: m.objid ]).update([ state: 'SKIP' ]); 
+		qnc.find([ objid: m.objid ]).delete(); 
 	} 
 
 	void notify( data ) { 

@@ -1,5 +1,5 @@
-<schema>
-	<element name="category" tablename="queue_category">
+<schema adapter="queue"> 
+	<element tablename="queue_section">
 		<field name="objid" primary="true"/>
 		<field name="name" required="true"/>
 		<field name="prefix" required="true"/>

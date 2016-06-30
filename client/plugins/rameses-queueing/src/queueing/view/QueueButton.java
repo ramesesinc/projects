@@ -33,7 +33,7 @@ public class QueueButton extends javax.swing.JPanel {
         xLineBorder1.setHideLeft(true);
         xLineBorder1.setHideRight(true);
         xLineBorder1.setHideTop(true);
-        xLineBorder1.setThickness(2);
+        xLineBorder1.setLineColor(new java.awt.Color(180, 180, 180));
         setBorder(xLineBorder1);
 
         xLabel1.setExpression("#{item.title}");
@@ -58,7 +58,7 @@ public class QueueButton extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(xLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(xButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(12, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables

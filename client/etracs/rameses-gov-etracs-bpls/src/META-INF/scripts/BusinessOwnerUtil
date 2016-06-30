@@ -28,10 +28,9 @@ public class BusinessOwnerUtil {
     }
 
     def find = [
-        fetchList: { o->
-            String stype = (business.orgtype == 'SING') ?'INDIVIDUAL':'JURIDICAL';
-            def m = [searchtext:o.searchtext, type: stype];
-            return entityLookupSvc.getList(m);
+        fetchList: { o-> 
+            o.type = (business.orgtype == 'SING') ?'INDIVIDUAL':'JURIDICAL'; 
+            return entityLookupSvc.getList( o ); 
         },
         onselect: { o->
             business.owner = [ objid:o.objid, name:o.name, address:o.address ];

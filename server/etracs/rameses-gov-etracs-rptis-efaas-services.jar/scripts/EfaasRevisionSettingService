@@ -22,4 +22,16 @@ public class EfaasRevisionSettingService
 		return data;
 	}
 
+	@ProxyMethod
+	def getBuildingRevisionSettingData(){
+		def data = [:];
+		data.bldgrysetting = em.getBldgRySetting();
+		data.bldgassesslevel = em.getBldgAssessLevel();
+		data.bldgassesslevelrange = em.getBldgAssessLevelRange();
+		data.bldgtype = em.getBldgType();
+		data.bldgtype_depreciation = em.getBldgTypeDepreciation();
+		data.bldgtype_storeyadjustment = em.getBldgTypeStoreyAdjustment();
+		return data;
+	}
+
 }

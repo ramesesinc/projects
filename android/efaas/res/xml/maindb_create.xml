@@ -191,6 +191,89 @@
     </sql>
     
     <!-- =========================================================== -->
+    <!-- BUILDING REVISION SETTING -->
+    <!-- =========================================================== -->
+    
+    <sql>
+        CREATE TABLE bldgrysetting
+        (
+        	objid TEXT NOT NULL PRIMARY KEY,
+        	state TEXT,
+        	ry NUMERIC,
+        	predominant NUMERIC,
+        	depreciatecoreanditemseparately NUMERIC,
+        	computedepreciationbasedonschedule NUMERIC,
+        	straightdepreciation TEXT,
+        	calcbldgagebasedondtoccupied NUMERIC,
+        	appliedto TEXT,
+        	previd TEXT
+        )
+    </sql>
+    
+    <sql>
+        CREATE TABLE bldgassesslevel
+        (
+        	objid TEXT NOT NULL PRIMARY KEY,
+        	bldgrysettingid TEXT,
+        	classification_objid TEXT,
+        	code TEXT,
+        	name TEXT,
+        	fixrate NUMERIC,
+        	rate REAL,
+        	previd TEXT
+        )
+    </sql>
+    
+    <sql>
+        CREATE TABLE bldgassesslevelrange
+        (
+        	objid TEXT NOT NULL PRIMARY KEY,
+        	bldgassesslevelid TEXT,
+        	bldgrysettingid TEXT,
+        	mvfrom REAL,
+        	mvto REAL,
+        	rate REAL
+        )
+    </sql>
+    
+    <sql>
+        CREATE TABLE bldgtype
+        (
+        	objid TEXT NOT NULL PRIMARY KEY,
+        	bldgrysettingid TEXT,
+        	code TEXT,
+        	name TEXT,
+        	basevaluetype TEXT,
+        	residualrate REAL,
+        	previd TEXT
+        )
+    </sql>
+    
+    <sql>
+        CREATE TABLE bldgtype_depreciation
+        (
+        	objid TEXT NOT NULL PRIMARY KEY,
+        	bldgtypeid TEXT,
+        	bldgrysettingid TEXT,
+        	agefrom NUMERIC,
+        	ageto NUMERIC,
+        	rate REAL
+        )
+    </sql>
+    
+    <sql>
+        CREATE TABLE bldgtype_storeyadjustment
+        (
+        	objid TEXT NOT NULL PRIMARY KEY,
+        	bldgtypeid TEXT,
+        	bldgrysettingid TEXT,
+        	floorno TEXT,
+        	rate REAL,
+        	previd TEXT
+        )
+    </sql>
+    
+    <!-- =========================================================== -->
     <!-- FAAS -->
     <!-- =========================================================== -->
     
@@ -207,6 +290,7 @@
 			fullpin TEXT,
 			rpu_objid TEXT,
 			rpu_ry TEXT,
+			rpu_type TEXT,
 			rpu_suffix TEXT,
 			rpu_subsuffix TEXT,
 			rpu_classification_objid TEXT,

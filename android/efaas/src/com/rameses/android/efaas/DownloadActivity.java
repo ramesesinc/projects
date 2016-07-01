@@ -1,20 +1,21 @@
 package com.rameses.android.efaas;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
-import android.app.ActionBar;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+
 import com.rameses.android.ApplicationUtil;
 import com.rameses.android.R;
 import com.rameses.android.SettingsMenuActivity;
 import com.rameses.android.db.FaasDB;
+import com.rameses.android.db.LandDetailDB;
 import com.rameses.android.efaas.dialog.ErrorDialog;
 import com.rameses.android.efaas.dialog.InfoDialog;
 import com.rameses.android.service.DownloadService;
@@ -24,6 +25,7 @@ public class DownloadActivity  extends SettingsMenuActivity{
 	private EditText tdno;
 	private Button download;
 	private List<String> errorList;
+	private boolean error = false;
 	
 	public boolean isCloseable() { return false; }
 	
@@ -42,9 +44,7 @@ public class DownloadActivity  extends SettingsMenuActivity{
             }
         });
 		
-		ActionBar bar = getActionBar();
-	    //bar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#a6e20d")));
-		
+		errorList = new ArrayList<String>();
 	}
 	
 	protected void afterBackPressed() {
@@ -61,7 +61,7 @@ public class DownloadActivity  extends SettingsMenuActivity{
 			ApplicationUtil.showShortMsg("TD No. is required!");
 			return;
 		}
-		boolean error = false;
+		error = false;
 		DownloadService svc = new DownloadService();
 		try{
 			Map data = svc.getFaas(tdno_text);
@@ -89,10 +89,29 @@ public class DownloadActivity  extends SettingsMenuActivity{
 	}
 	
 	private int createFaasData(Map data){
-		boolean error = false;
+		error = false;
 		if(data == null) return 0;
+		//check if the record already exists
+		Properties faas = null;
+		try{
+			Map param = new HashMap();
+			param.put("objid",  data.get("objid"));
+			
+			FaasDB faasdb = new FaasDB();
+			faas = faasdb.find(param);
+		}catch(Exception e){
+			new ErrorDialog(this, e).show();
+		}
+		if(faas != null){
+			new InfoDialog(this,"FAAS is already downloaded!").show();
+			error = true;
+			errorList.add("FAAS is already downloaded!");
+			return 0;
+		}
+		
 		Map owner = (Map) data.get("owner");
 		Map rpu = (Map) data.get("rpu");
+		List<Map> landdetails = (List<Map>) data.get("landdetails");
 		Map classification = (Map) rpu.get("classification");
 		Map rp = (Map) data.get("rp");
 		
@@ -105,6 +124,8 @@ public class DownloadActivity  extends SettingsMenuActivity{
 		params.put("owner_address", owner.get("address") != null ? owner.get("address").toString() : "");
 		params.put("tdno", data.get("tdno") != null ? data.get("tdno").toString() : "");
 		params.put("fullpin", data.get("fullpin") != null ? data.get("fullpin").toString() : "");
+		params.put("rpu_objid", rpu.get("objid") != null ? rpu.get("objid").toString() : "");
+		params.put("rpu_type", rpu.get("type") != null ? rpu.get("type").toString() : "");
 		params.put("rpu_ry", rpu.get("ry") != null ? rpu.get("ry").toString() : "");
 		params.put("rpu_suffix", rpu.get("suffix") != null ? rpu.get("suffix").toString() : "");
 		params.put("rpu_subsuffix", rpu.get("subsuffix") != null ? rpu.get("subsuffix").toString() : "");
@@ -115,6 +136,7 @@ public class DownloadActivity  extends SettingsMenuActivity{
 		params.put("rpu_totalbmv", rpu.get("totalbmv") != null ? rpu.get("totalbmv").toString() : "");
 		params.put("rpu_totalmv", rpu.get("totalmv") != null ? rpu.get("totalmv").toString() : "");
 		params.put("rpu_totalav", rpu.get("totalav") != null ? rpu.get("totalav").toString() : "");
+		params.put("rp_objid", rp.get("objid") != null ? rp.get("objid").toString() : "");
 		params.put("rp_cadastrallotno", rp.get("cadastrallotno") != null ? rp.get("cadastrallotno").toString() : "");
 		params.put("rp_blockno", rp.get("blockno") != null ? rp.get("blockno").toString() : "");
 		params.put("rp_surveyno", rp.get("surveyno") != null ? rp.get("surveyno").toString() : "");
@@ -125,9 +147,53 @@ public class DownloadActivity  extends SettingsMenuActivity{
 		params.put("rp_east", rp.get("east") != null ? rp.get("east").toString() : "");
 		params.put("rp_west", rp.get("west") != null ? rp.get("west").toString() : "");
 		
-		FaasDB db = new FaasDB();
 		try{
+			FaasDB db = new FaasDB();
 			db.create(params);
+			
+			if(landdetails != null){
+				for(Map m : landdetails){
+					Map subclass = (Map) m.get("subclass");
+					Map specificclass = (Map) m.get("specificclass");
+					Map actualuse = (Map) m.get("actualuse");
+					Map stripping = (Map) m.get("stripping");
+					Map actualuse_classification = (Map) actualuse.get("classification");
+					Map specificclass_classification = (Map) specificclass.get("classification");
+					
+					Map param1 = new HashMap();
+					param1.put("objid", m.get("objid") != null ? m.get("objid").toString() : "");
+					param1.put("landrpuid", m.get("landrpuid") != null ? m.get("landrpuid").toString() : null);
+					param1.put("subclass_objid", subclass != null ? subclass.get("objid") : "");
+					param1.put("specificclass_objid", specificclass != null ? specificclass.get("objid") : null);
+					param1.put("specificclass_areatype", specificclass != null ? specificclass.get("areatype") : null);
+					param1.put("specificclass_classification_objid", specificclass_classification != null ? specificclass_classification.get("objid") : null);
+					param1.put("actualuse_objid", actualuse != null ? actualuse.get("objid") : null);
+					param1.put("actualuse_code", actualuse != null ? actualuse.get("code") : "");
+					param1.put("actualuse_name", actualuse != null ? actualuse.get("name") : "");
+					param1.put("actualuse_fixrate", actualuse != null ? actualuse.get("fixrate") : 0);
+					param1.put("actualuse_classification_objid", actualuse_classification != null ? actualuse_classification.get("objid") : null);
+					param1.put("stripping_objid", stripping != null ? stripping.get("objid") : null);
+					param1.put("stripping_rate", stripping != null ? stripping.get("rate") : 0);
+					param1.put("striprate", m.get("striprate") != null ? m.get("striprate").toString() : "0");
+					param1.put("areatype", m.get("areatype") != null ? m.get("areatype").toString() : "");
+					param1.put("area", m.get("area") != null ? m.get("area").toString() : "0.00");
+					param1.put("areasqm", m.get("areasqm") != null ? m.get("areasqm").toString() : "0.00");
+					param1.put("areaha", m.get("areaha") != null ? m.get("areaha").toString() : "0.00");
+					param1.put("basevalue", m.get("basevalue") != null ? m.get("basevalue").toString() : "0.00");
+					param1.put("unitvalue", m.get("unitvalue") != null ? m.get("unitvalue").toString() : "0.00");
+					param1.put("taxable", m.get("taxable") != null ? m.get("taxable").toString() : "");
+					param1.put("basemarketvalue", m.get("basemarketvalue") != null ? m.get("basemarketvalue").toString() : "0.00");
+					param1.put("adjustment", m.get("adjustment") != null ? m.get("adjustment").toString() : "0.00");
+					param1.put("landvalueadjustment", m.get("landvalueadjustment") != null ? m.get("landvalueadjustment").toString() : "0.00");
+					param1.put("actualuseadjustment", m.get("actualuseadjustment") != null ? m.get("actualuseadjustment").toString() : "0.00");
+					param1.put("marketvalue", m.get("marketvalue") != null ? m.get("marketvalue").toString() : "0.00");
+					param1.put("assesslevel", m.get("assesslevel") != null ? m.get("assesslevel").toString() : "0.00");
+					param1.put("assessedvalue", m.get("assessedvalue") != null ? m.get("assessedvalue").toString() : "0.00");
+					
+					LandDetailDB ldb = new LandDetailDB();
+					ldb.create(param1);
+				}
+			}
 		}catch(Throwable t){
 			error = true;
 			errorList.add(t.getMessage());

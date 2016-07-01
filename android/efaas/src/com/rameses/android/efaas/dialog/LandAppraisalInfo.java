@@ -12,13 +12,11 @@ import com.rameses.android.db.LandDetailDB;
 import com.rameses.android.db.LcuvSpecificClassDB;
 import com.rameses.android.db.LcuvStrippingDB;
 import com.rameses.android.db.LcuvSubClassDB;
-import com.rameses.android.efaas.FaasActivity;
+import com.rameses.android.efaas.LandFaasActivity;
 import com.rameses.android.efaas.adapter.AppraisalItemAdapter;
 import com.rameses.android.efaas.bean.DefaultItem;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -26,36 +24,37 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.EditText;
 import android.widget.Spinner;
 
-public class AppraisalInfo extends AlertDialog.Builder{
+public class LandAppraisalInfo extends AlertDialog.Builder{
 
 	public boolean CANCELLED = false;
 	private AlertDialog.Builder builder;
 	private AlertDialog dialog;
-	private Spinner subclass, specificclass, actualuse, strip;
-	private EditText areasqm, areaha;
-	private TextWatcher watcher_sqm, watcher_ha;
+	private Spinner subclass, specificclass, actualuse, strip, areatype;
+	private EditText area, unitvalue;
 	private Throwable error = null;
 	private List<Map> data_subclass, data_specificclass, data_actualuse, data_strip;
+	private List<DefaultItem> data_areatype;
 	private String objid, rpuid;
 	private boolean done = false;
 	private Context ctx;
 	
-	public AppraisalInfo(Context ctx, String objid, String rpuid) {
+	public LandAppraisalInfo(Context ctx, String objid, String rpuid) {
 		super(ctx);
 		this.ctx = ctx;
 		this.objid = objid;
 		this.rpuid = rpuid;
 		
 		LayoutInflater inflater = LayoutInflater.from(ctx);
-		View view = inflater.inflate(R.layout.activity_appraisal, null);
+		View view = inflater.inflate(R.layout.activity_appraisal_land, null);
 		
 		subclass = (Spinner) view.findViewById(R.id.appraisal_subclass);
 		specificclass = (Spinner) view.findViewById(R.id.appraisal_specificclass);
 		actualuse = (Spinner) view.findViewById(R.id.appraisal_actualuse);
 		strip = (Spinner) view.findViewById(R.id.appraisal_strip);
+		areatype = (Spinner) view.findViewById(R.id.appraisal_areatype);
 		
-		areasqm = (EditText) view.findViewById(R.id.appraisal_areasqm);
-		areaha = (EditText) view.findViewById(R.id.appraisal_areaha);
+		area = (EditText) view.findViewById(R.id.appraisal_area);
+		unitvalue = (EditText) view.findViewById(R.id.appraisal_unitvalue);
 		
 		builder = new AlertDialog.Builder(ctx);
 		builder.setTitle("Appraisal Info");
@@ -70,51 +69,6 @@ public class AppraisalInfo extends AlertDialog.Builder{
 		dialog = builder.create();
 		
 		loadData();
-		
-		watcher_sqm = new TextWatcher() {
-			@Override
-			public void afterTextChanged(Editable arg0) {
-			}
-
-			@Override
-			public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
-			}
-
-			@Override
-			public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
-				String s = areasqm.getText().toString();
-				if(!s.isEmpty()){
-					double val = Double.parseDouble(s);
-					areaha.removeTextChangedListener(watcher_ha);
-					areaha.setText(String.format("%.4f", val/10000));
-					areaha.addTextChangedListener(watcher_ha);
-				}
-			}	   
-		};
-		
-		watcher_ha = new TextWatcher() {
-			@Override
-			public void afterTextChanged(Editable arg0) {
-			}
-
-			@Override
-			public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
-			}
-
-			@Override
-			public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
-				String s = areaha.getText().toString();
-				if(!s.isEmpty()){
-					double val = Double.parseDouble(s);
-					areasqm.removeTextChangedListener(watcher_sqm);
-					areasqm.setText(String.valueOf(val*10000));
-					areasqm.addTextChangedListener(watcher_sqm);
-				}
-			}	   
-		};
-		
-		areasqm.addTextChangedListener(watcher_sqm);
-		areaha.addTextChangedListener(watcher_ha);
 	}
 	
 	private void loadData(){
@@ -124,15 +78,34 @@ public class AppraisalInfo extends AlertDialog.Builder{
 			data_actualuse = new LandAssessLevelDB().getList(new HashMap());
 			data_strip = new LcuvStrippingDB().getList(new HashMap());
 			
+			data_areatype = new ArrayList<DefaultItem>();
+			data_areatype.add(new DefaultItem("0","NO ITEM SELECTED"));
+			data_areatype.add(new DefaultItem("1","SQM"));
+			data_areatype.add(new DefaultItem("2","HA"));
+			
 			subclass.setAdapter(new AppraisalItemAdapter(ctx,android.R.layout.simple_spinner_item,filter(data_subclass,"code","name")));
 			specificclass.setAdapter(new AppraisalItemAdapter(ctx,android.R.layout.simple_spinner_item,filter(data_specificclass,"name")));
 			actualuse.setAdapter(new AppraisalItemAdapter(ctx,android.R.layout.simple_spinner_item,filter(data_actualuse,"name")));
 			strip.setAdapter(new AppraisalItemAdapter(ctx,android.R.layout.simple_spinner_item,filter(data_strip,"classification_objid","rate")));
+			areatype.setAdapter(new AppraisalItemAdapter(ctx, android.R.layout.simple_spinner_item,data_areatype));
 			
 			subclass.setOnItemSelectedListener(new OnItemSelectedListener() {
 	            @Override
 	            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
 	            	DefaultItem item = (DefaultItem) adapterView.getAdapter().getItem(position);
+	            	String subclassid = item.getObjid();
+	            	Map params = new HashMap();
+	            	params.put("objid", subclassid);
+	            	try{
+	            		Properties prop = new LcuvSubClassDB().find(params);
+	            		if(prop != null){
+	            			String val = prop.getProperty("unitvalue");
+		            		unitvalue.setText(val != null ? val : "0.00");
+	            		}
+	            	}catch(Throwable t){
+	            		new ErrorDialog(ctx, t).show();
+	            	}
+	            	loadComponentData();
 	            }
 	            @Override
 	            public void onNothingSelected(AdapterView<?> adapter) {  }
@@ -141,6 +114,33 @@ public class AppraisalInfo extends AlertDialog.Builder{
 	            @Override
 	            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
 	            	DefaultItem item = (DefaultItem) adapterView.getAdapter().getItem(position);
+	            	String specificclassid = item.getObjid();
+	            	try{
+	            		Map params1 = new HashMap();
+		            	params1.put("specificclass_objid", specificclassid);
+	            		data_subclass = new LcuvSubClassDB().getList(params1);
+	            		subclass.setAdapter(new AppraisalItemAdapter(ctx,android.R.layout.simple_spinner_item,filter(data_subclass,"code","name")));
+	            		
+	            		Map params2 = new HashMap();
+	            		params2.put("objid", specificclassid);
+	            		Properties prop = new LcuvSpecificClassDB().find(params2);
+	            		if(prop != null){
+	            			String type = prop.getProperty("areatype");
+		            		if(type.equalsIgnoreCase("sqm")){
+		            			areatype.setSelection(1);
+		            		}
+		            		if(type.equalsIgnoreCase("ha")){
+		            			areatype.setSelection(2);
+		            		}
+		            		Map params3 = new HashMap();
+		            		params3.put("classification_objid", prop.getProperty("classification_objid"));
+		            		data_strip = new LcuvStrippingDB().getList(params3);
+		            		strip.setAdapter(new AppraisalItemAdapter(ctx,android.R.layout.simple_spinner_item,filter(data_strip,"classification_objid","rate")));
+	            		}
+	            	}catch(Throwable t){
+	            		new ErrorDialog(ctx, t).show();
+	            	}
+	            	loadComponentData();
 	            }
 	            @Override
 	            public void onNothingSelected(AdapterView<?> adapter) {  }
@@ -162,7 +162,16 @@ public class AppraisalInfo extends AlertDialog.Builder{
 	            public void onNothingSelected(AdapterView<?> adapter) {  }
 	        });
 			
-			if(objid != null){
+			loadComponentData();
+		}catch(Throwable e){
+			new ErrorDialog(ctx, e).show();
+			error = e;
+		}
+	}
+	
+	private void loadComponentData(){
+		if(objid != null){
+			try{
 				Map params = new HashMap();
 				params.put("objid", objid);
 				
@@ -201,12 +210,12 @@ public class AppraisalInfo extends AlertDialog.Builder{
 					pos++;
 				}
 				
-				areasqm.setText(prop.getProperty("areasqm"));
-				areaha.setText(prop.getProperty("areaha"));
+				unitvalue.setText(prop.getProperty("unitvalue"));
+				area.setText(prop.getProperty("area"));
+			}catch(Throwable e){
+				new ErrorDialog(ctx, e).show();
+				error = e;
 			}
-		}catch(Throwable e){
-			new ErrorDialog(ctx, e).show();
-			error = e;
 		}
 	}
 	
@@ -239,7 +248,7 @@ public class AppraisalInfo extends AlertDialog.Builder{
 		return m;
 	}
 	
-	private void doCreate(){
+	private void doSave(){
 		Map subclass_data = find((DefaultItem)subclass.getSelectedItem(),data_subclass);
 		Map specificclass_data = find((DefaultItem)specificclass.getSelectedItem(),data_specificclass);
     	Map actualuse_data = find((DefaultItem)actualuse.getSelectedItem(),data_actualuse);
@@ -260,96 +269,72 @@ public class AppraisalInfo extends AlertDialog.Builder{
     		return;
     	}
     	
-    	if(stripping_data == null || strip.getSelectedItemPosition() == 0){
-    		new InfoDialog(ctx, "Strip is required!").show();
+    	if(areatype.getSelectedItemPosition() == 0){
+    		new InfoDialog(ctx, "Area Type is required!").show();
     		return;
     	}
     	
-    	if(areasqm.getText().toString().isEmpty()){
-    		new InfoDialog(ctx, "Area (sqm) is required!").show();
+    	if(area.getText().toString().isEmpty()){
+    		new InfoDialog(ctx, "Area is required!").show();
     		return;
     	}
     	
-    	if(areaha.getText().toString().isEmpty()){
-    		new InfoDialog(ctx, "Area (ha) is required!").show();
-    		return;
+    	String areaType = "";
+    	double areasqm = 0.00, areaha = 0.00;
+    	double areaval = Double.parseDouble(area.getText().toString());
+    	
+    	if(areatype.getSelectedItemPosition() == 1){
+    		areaType = "sqm";
+    		areasqm = areaval;
+    		areaha = areaval / 10000;
+    	}
+    	if(areatype.getSelectedItemPosition() == 2){
+    		areaType = "ha";
+    		areasqm = areaval * 10000;
+    		areaha = areaval;
     	}
     	
         Map data = new HashMap();
-        data.put("objid", UUID.randomUUID().toString());
         data.put("landrpuid", rpuid);
         data.put("subclass_objid", subclass_data.get("objid").toString());
         data.put("specificclass_objid", specificclass_data.get("objid").toString());
+        data.put("specificclass_areatype", specificclass_data.get("areatype").toString());
+        data.put("specificclass_classification_objid", specificclass_data.get("classification_objid").toString());
         data.put("actualuse_objid", actualuse_data.get("objid").toString());
-        data.put("stripping_objid", stripping_data.get("objid").toString());
-        data.put("striprate", stripping_data.get("rate").toString());
-        data.put("areatype", "");
-        data.put("area", "");
-        data.put("areasqm", areasqm.getText().toString());
-        data.put("areaha", areaha.getText().toString());
+        data.put("actualuse_code", actualuse_data.get("code").toString());
+        data.put("actualuse_name", actualuse_data.get("name").toString());
+        data.put("actualuse_fixrate", actualuse_data.get("fixrate"));
+        data.put("actualuse_classification_objid", actualuse_data.get("classification_objid").toString());
+        data.put("stripping_objid", stripping_data != null ? stripping_data.get("objid") : null);
+        data.put("stripping_rate", stripping_data != null ? stripping_data.get("rate") : "0");
+        data.put("striprate", stripping_data != null ? stripping_data.get("rate") : "0");
+        data.put("areatype", areaType);
+        data.put("area", area.getText().toString());
+        data.put("areasqm", String.valueOf(areasqm));
+        data.put("areaha", String.valueOf(areaha));
+        data.put("basevalue", unitvalue.getText().toString());
+        data.put("unitvalue", unitvalue.getText().toString());
         
-        try{
-        	LandDetailDB db = new LandDetailDB();
-        	db.create(data);
-        }catch(Throwable t){
-        	new ErrorDialog(ctx, t).show();
-        	return;
+        if(objid != null) data.put("objid", objid);
+        if(objid == null){
+        	data.put("objid", UUID.randomUUID().toString());
+        	data.put("taxable", "1");
+            data.put("basemarketvalue", "0.00");
+            data.put("adjustment", "0.00");
+            data.put("landvalueadjustment", "0.00");
+            data.put("actualuseadjustment", "0.00");
+            data.put("marketvalue", "0.00");
+            data.put("assesslevel", "0.00");
+            data.put("assessedvalue", "0.00");
         }
-        done = true;
-	}
-	
-	private void doUpdate(){
-		Map subclass_data = find((DefaultItem)subclass.getSelectedItem(),data_subclass);
-		Map specificclass_data = find((DefaultItem)specificclass.getSelectedItem(),data_specificclass);
-    	Map actualuse_data = find((DefaultItem)actualuse.getSelectedItem(),data_actualuse);
-    	Map stripping_data = find((DefaultItem)strip.getSelectedItem(),data_strip);
-    	
-    	if(subclass_data == null || subclass.getSelectedItemPosition() == 0){
-    		new InfoDialog(ctx, "Subclass is required!").show();
-    		return;
-    	}
-    	
-    	if(specificclass_data == null || specificclass.getSelectedItemPosition() == 0){
-    		new InfoDialog(ctx, "Specific Class is required!").show();
-    		return;
-    	}
-    	
-    	if(actualuse_data == null || actualuse.getSelectedItemPosition() == 0){
-    		new InfoDialog(ctx, "Actual Use is required!").show();
-    		return;
-    	}
-    	
-    	if(stripping_data == null || strip.getSelectedItemPosition() == 0){
-    		new InfoDialog(ctx, "Strip is required!").show();
-    		return;
-    	}
-    	
-    	if(areasqm.getText().toString().isEmpty()){
-    		new InfoDialog(ctx, "Area (sqm) is required!").show();
-    		return;
-    	}
-    	
-    	if(areaha.getText().toString().isEmpty()){
-    		new InfoDialog(ctx, "Area (ha) is required!").show();
-    		return;
-    	}
-    	
-        Map data = new HashMap();
-        data.put("objid", objid);
-        data.put("landrpuid", rpuid);
-        data.put("subclass_objid", subclass_data.get("objid").toString());
-        data.put("specificclass_objid", specificclass_data.get("objid").toString());
-        data.put("actualuse_objid", actualuse_data.get("objid").toString());
-        data.put("stripping_objid", stripping_data.get("objid").toString());
-        data.put("striprate", stripping_data.get("rate").toString());
-        data.put("areatype", "");
-        data.put("area", "");
-        data.put("areasqm", areasqm.getText().toString());
-        data.put("areaha", areaha.getText().toString());
         
         try{
         	LandDetailDB db = new LandDetailDB();
-        	db.update(data);
+        	if(objid != null){
+        		db.update(data);
+        	}else{
+        		db.create(data);
+        	}
         }catch(Throwable t){
         	new ErrorDialog(ctx, t).show();
         	return;
@@ -364,14 +349,10 @@ public class AppraisalInfo extends AlertDialog.Builder{
 		dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener(){
 			@Override
 			public void onClick(View arg0) {
-				if(objid == null){
-					doCreate();
-				}else{
-					doUpdate();
-				}
+				doSave();
 				if(done){
 					dialog.dismiss();
-					FaasActivity.initData();
+					LandFaasActivity.initData();
 				}
 			}
 		});

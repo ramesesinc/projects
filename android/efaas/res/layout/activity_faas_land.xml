@@ -9,7 +9,6 @@
         android:orientation="vertical" >
         
         <TextView
-                android:id="@+id/textView0.1"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="FAAS"
@@ -26,7 +25,6 @@
             android:padding="10dp" >
 
             <TextView
-                android:id="@+id/textView1.1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="TD No."
@@ -35,7 +33,6 @@
                 android:textAppearance="?android:attr/textAppearanceMedium" />
             
             <TextView
-                android:id="@+id/textView1.2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text=":"
@@ -61,7 +58,6 @@
             android:padding="10dp" >
 
             <TextView
-                android:id="@+id/textView2.1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="PIN"
@@ -70,7 +66,6 @@
                 android:textAppearance="?android:attr/textAppearanceMedium" />
             
             <TextView
-                android:id="@+id/textView2.2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text=":"
@@ -96,7 +91,6 @@
             android:padding="10dp" >
 
             <TextView
-                android:id="@+id/textView3.1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Owner"
@@ -105,7 +99,6 @@
                 android:textAppearance="?android:attr/textAppearanceMedium" />
             
             <TextView
-                android:id="@+id/textView3.2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text=":"
@@ -131,7 +124,6 @@
             android:padding="10dp" >
 
             <TextView
-                android:id="@+id/textView4.1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Address"
@@ -140,7 +132,6 @@
                 android:textAppearance="?android:attr/textAppearanceMedium" />
             
             <TextView
-                android:id="@+id/textView4.2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text=":"
@@ -166,7 +157,6 @@
             android:padding="10dp" >
 
             <TextView
-                android:id="@+id/textView11.1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Cadastral Lot No."
@@ -175,7 +165,6 @@
                 android:textAppearance="?android:attr/textAppearanceMedium" />
             
             <TextView
-                android:id="@+id/textView11.2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text=":"
@@ -201,7 +190,6 @@
             android:padding="10dp" >
 
             <TextView
-                android:id="@+id/textView12.1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Block No."
@@ -210,7 +198,6 @@
                 android:textAppearance="?android:attr/textAppearanceMedium" />
             
             <TextView
-                android:id="@+id/textView12.2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text=":"
@@ -236,7 +223,6 @@
             android:padding="10dp" >
 
             <TextView
-                android:id="@+id/textView13.1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Survey No."
@@ -245,7 +231,6 @@
                 android:textAppearance="?android:attr/textAppearanceMedium" />
             
             <TextView
-                android:id="@+id/textView13.2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text=":"
@@ -271,7 +256,6 @@
             android:padding="10dp" >
 
             <TextView
-                android:id="@+id/textView14.1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Street"
@@ -280,7 +264,6 @@
                 android:textAppearance="?android:attr/textAppearanceMedium" />
             
             <TextView
-                android:id="@+id/textView14.2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text=":"
@@ -306,7 +289,6 @@
             android:padding="10dp" >
 
             <TextView
-                android:id="@+id/textView15.1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Purok"
@@ -315,7 +297,6 @@
                 android:textAppearance="?android:attr/textAppearanceMedium" />
             
             <TextView
-                android:id="@+id/textView15.2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text=":"
@@ -341,7 +322,6 @@
             android:padding="10dp" >
 
             <TextView
-                android:id="@+id/textView16.1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="North"
@@ -350,7 +330,6 @@
                 android:textAppearance="?android:attr/textAppearanceMedium" />
             
             <TextView
-                android:id="@+id/textView16.2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text=":"
@@ -376,7 +355,6 @@
             android:padding="10dp" >
 
             <TextView
-                android:id="@+id/textView17.1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="South"
@@ -385,7 +363,6 @@
                 android:textAppearance="?android:attr/textAppearanceMedium" />
             
             <TextView
-                android:id="@+id/textView17.2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text=":"
@@ -411,7 +388,6 @@
             android:padding="10dp" >
 
             <TextView
-                android:id="@+id/textView18.1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="East"
@@ -420,7 +396,6 @@
                 android:textAppearance="?android:attr/textAppearanceMedium" />
             
             <TextView
-                android:id="@+id/textView18.2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text=":"
@@ -446,7 +421,6 @@
             android:padding="10dp" >
 
             <TextView
-                android:id="@+id/textView19.1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="West"
@@ -455,7 +429,6 @@
                 android:textAppearance="?android:attr/textAppearanceMedium" />
             
             <TextView
-                android:id="@+id/textView19.2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text=":"
@@ -476,7 +449,6 @@
         </LinearLayout>
         
          <TextView
-             android:id="@+id/textView0.2"
              android:layout_width="fill_parent"
              android:layout_height="wrap_content"
              android:background="#2f84c9"
@@ -493,7 +465,6 @@
             android:padding="10dp" >
 
             <TextView
-                android:id="@+id/textView5.1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Revision Year"
@@ -502,7 +473,6 @@
                 android:textAppearance="?android:attr/textAppearanceMedium" />
             
             <TextView
-                android:id="@+id/textView5.2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text=":"
@@ -528,7 +498,6 @@
             android:padding="10dp" >
 
             <TextView
-                android:id="@+id/textView6.1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Classification"
@@ -537,7 +506,6 @@
                 android:textAppearance="?android:attr/textAppearanceMedium" />
             
             <TextView
-                android:id="@+id/textView6.2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text=":"
@@ -556,117 +524,11 @@
                 android:textAppearance="?android:attr/textAppearanceMedium" />
 
         </LinearLayout>
-        
-         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="10dp" >
-
-            <TextView
-                android:id="@+id/textView7.1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Total Area (sqm)"
-                android:minEms="7"
-                android:padding="1dp"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
-            
-            <TextView
-                android:id="@+id/textView7.2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text=":"
-                android:minEms="1"
-                android:padding="1dp"
-                android:gravity="center"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
-            
-            <TextView
-                android:id="@+id/faas_area"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:text=""
-                android:padding="1dp"
-                android:textStyle="bold"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
-
-        </LinearLayout>
-        
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="10dp" >
-
-            <TextView
-                android:id="@+id/textView9.1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Total MV"
-                android:minEms="7"
-                android:padding="1dp"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
-            
-            <TextView
-                android:id="@+id/textView9.2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text=":"
-                android:minEms="1"
-                android:padding="1dp"
-                android:gravity="center"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
-            
-            <TextView
-                android:id="@+id/faas_totalmv"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:text=""
-                android:padding="1dp"
-                android:textStyle="bold"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
-
-        </LinearLayout>
-        
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="10dp" >
-
-            <TextView
-                android:id="@+id/textView10.1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Total AV"
-                android:minEms="7"
-                android:padding="1dp"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
-            
-            <TextView
-                android:id="@+id/textView10.2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text=":"
-                android:minEms="1"
-                android:padding="1dp"
-                android:gravity="center"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
-            
-            <TextView
-                android:id="@+id/faas_totalav"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:text=""
-                android:padding="1dp"
-                android:textStyle="bold"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
-
-        </LinearLayout>
-        
+         
         <TextView
-                android:id="@+id/textView0.3"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:text="APPRAISAL"
+                android:text="LAND APPRAISAL"
                 android:minEms="6"
                 android:padding="5dp"
                 android:textStyle="bold"
@@ -756,6 +618,18 @@
 		      android:layout_height="wrap_content" 
 		      android:layout_margin="5dp"/>
 		
+		<TextView
+		    android:id="@+id/appraisal_totalarea"
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:layout_marginRight="20dp"
+		    android:gravity="right"
+		    android:text="TOTAL AREA (SQM) : "
+		    android:textAppearance="?android:attr/textAppearanceSmall"
+		    android:textStyle="bold" >
+
+	     </TextView>
+		
 		<Button
 	        android:id="@+id/appraisal_button"
 	        android:layout_width="wrap_content"
@@ -777,76 +651,15 @@
                 android:background="#2f84c9"
                 android:textColor="#FFFFFF"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
-        
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="10dp" >
-            
-            <TextView
-                android:id="@+id/textView0.5"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Type your findings here : "
-                android:padding="1dp"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
-            
-            <EditText
-			    android:id="@+id/examination_findings"
-			    android:layout_width="fill_parent"
-			    android:layout_height="120dp"
-			    android:gravity="left|top"
-			    android:inputType="text|textMultiLine"/>
-            
-            <TextView
-                android:id="@+id/textView0.5"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Type your recommendations here : "
-                android:padding="1dp"
-                android:layout_marginTop="10dp"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
-            
-            <EditText
-			    android:id="@+id/examination_recommendations"
-			    android:layout_width="fill_parent"
-			    android:layout_height="120dp"
-			    android:gravity="left|top"
-			    android:inputType="text|textMultiLine" />
-            
-            <Button
-		        android:id="@+id/examination_button"
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:layout_margin="10dp"
-		        android:layout_gravity="center"
-		        android:minEms="5"
-		        android:padding="10dp"
-		        android:text="Edit" />
-            
-       </LinearLayout>
-       
-       <TextView
-                android:id="@+id/textView0.4"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:text="IMAGES"
-                android:minEms="6"
-                android:padding="5dp"
-                android:textStyle="bold"
-                android:background="#2f84c9"
-                android:textColor="#FFFFFF"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
        
        <ListView
-		      android:id="@+id/images_list"
+		      android:id="@+id/examination_list"
 		      android:layout_width="match_parent"
 		      android:layout_height="wrap_content" 
 		      android:layout_margin="5dp"/>
        
        <Button
-		        android:id="@+id/images_button"
+		        android:id="@+id/examination_add"
 		        android:layout_width="wrap_content"
 		        android:layout_height="wrap_content"
 		        android:layout_margin="10dp"

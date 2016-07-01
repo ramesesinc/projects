@@ -50,18 +50,23 @@ public class FaasListActivity extends SettingsMenuActivity {
 			public void onItemClick(AdapterView<?> adapter, View view, int pos, long arg3) {
 				FaasMenuAdapter a = (FaasMenuAdapter) adapter.getAdapter();
 				String faasid = a.getListItem(pos).getObjid();
-				Intent intent = new Intent(activity, FaasActivity.class);
-				intent.putExtra("faasid", faasid);
-				startActivity(intent); 
+				String type = a.getListItem(pos).getRpuType();
+				if(type.equalsIgnoreCase("land")){
+					Intent intent = new Intent(activity, LandFaasActivity.class);
+					intent.putExtra("faasid", faasid);
+					startActivity(intent); 
+				}
+				if(type.equalsIgnoreCase("bldg")){
+					Intent intent = new Intent(activity, BuildingFaasActivity.class);
+					intent.putExtra("faasid", faasid);
+					startActivity(intent); 
+				}
 			}	
 		});
 		
 		loadData("");
 		
 		ApplicationUtil.changeTitle(this, "FAAS");
-		
-		ActionBar bar = getActionBar();
-	    //bar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#a6e20d")));
 	}
 	
 	protected void afterBackPressed() {
@@ -76,7 +81,6 @@ public class FaasListActivity extends SettingsMenuActivity {
 		data = new ArrayList<FaasListItem>();
 		try{
 			List<Map> listData = new FaasDB().getList(new HashMap());
-			System.err.println("LIST DATA: " + listData);
 			Iterator<Map> i = listData.iterator();
 			while(i.hasNext()){
 				Map m = i.next();
@@ -85,12 +89,15 @@ public class FaasListActivity extends SettingsMenuActivity {
 				String pin = m.get("fullpin").toString();
 				String name = m.get("owner_name").toString();
 				String tdno = m.get("tdno").toString();
-				data.add(new FaasListItem(faasid, pin, tdno, name));
+				String rputype = m.get("rpu_type").toString();
+				data.add(new FaasListItem(faasid, pin, tdno, name, rputype));
 			}
 		}catch(Exception e){
 			e.printStackTrace();
 			ApplicationUtil.showShortMsg(e.toString());
 		}
+		list.setBackgroundResource(0);
+		if(data.isEmpty()) list.setBackgroundResource(R.drawable.empty);
 		list.setAdapter(new FaasMenuAdapter(this,data));
 	}
 

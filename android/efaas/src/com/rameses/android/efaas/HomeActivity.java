@@ -124,6 +124,11 @@ public class HomeActivity extends SettingsMenuActivity   {
 					startActivity(intent); 
 				}
 				
+				if(title.equals("Upload")){
+					Intent intent = new Intent(activity, UploadActivity.class);  
+					startActivity(intent); 
+				}
+				
 				if(title.equals("Change Password")){
 					doChangePassword();
 				}

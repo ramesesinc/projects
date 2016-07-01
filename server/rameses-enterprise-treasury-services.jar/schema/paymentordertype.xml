@@ -1,0 +1,8 @@
+<schema>
+	<element tablename="paymentordertype">
+		<field name="objid" primary="true" style="code" searchable="true" indexed="true" visible="true"/>
+		<field name="title" searchable="true" indexed="true"/>
+		<field name="handler" required="true"/>
+		<field name="sortorder" required="true" defaultValue="0" type="integer"/>
+	</element>
+</schema>

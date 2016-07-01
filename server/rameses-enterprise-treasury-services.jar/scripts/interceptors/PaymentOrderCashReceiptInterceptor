@@ -7,11 +7,62 @@ class PaymentOrderCashReceiptInterceptor {
 	@Service("PaymentOrderService")
 	def svc;
 
-	@After(pattern="CashReceiptService.post", eval="#{args[0].paymentorder!=null}", index=1000)
-	public def deletePaymentOrder(def evt) { 
-		def result = evt.result;
-		def pmtOrder = evt.args[0].paymentorder;
-		svc.close( pmtOrder );
+	@DataContext("paymentorder")
+	def pmt;
+
+	@DataContext("paymentorderitem")
+	def pmi;
+
+	@DataContext("itemaccount")
+	def itemacct;
+
+	@After(pattern="CashReceiptBarcodeService.findPrefix", eval="#{result.prefix == null}", index=1000)
+	public def findPrefix(def evt) { 
+		def a = evt.args[0];
+		def state = pmt.select("state").find( [controlno: a.barcodeid] ).val();
+		if(state) {
+			if(state.equalsIgnoreCase('CLOSED')) {
+				throw new Exception("This payment order is already paid");
+			}
+			else if(!state.equalsIgnoreCase('OPEN')) {
+				throw new Exception("This payment order is not available");
+			}
+			def result = evt.result;
+			result.prefix = 'PMO';
+		} 
+	} 
+
+	@After(pattern="CashReceiptService.init", eval="#{args[0].collectiontype.handler == 'paymentorder' && result.refid==null && args[0].paymentorder == null }", index=1000)
+	public def openPaymentOrder(def evt) { 
+		def refno = evt.args[0].refno;
+		//search the payment order first
+		def m = pmt.find( [controlno: refno] ).first();
+		if(m?.objid) {
+			def entity = evt.result;
+			entity.reftype = "paymentorder";
+			entity.refid = m.objid;
+			entity.payer = m.payer;
+			entity.paidby = m.paidby;
+			entity.paidbyaddress = m.paidbyaddress;
+			entity.items = pmi.find( [parentid: m.objid] ).select("item.objid,amount,refid:{objid},remarks").list();
+			entity.items.each {
+				it.item = itemacct.find([objid: it.item.objid]).first();
+			}
+			entity.amount = entity.items.sum{ it.amount };
+		}
+	} 
+
+	@After(pattern="CashReceiptService.post", eval="#{args[0].reftype == 'paymentorder' }", index=1000)
+	public def postPaymentOrder(def evt) { 
+		def entity = evt.args[0];
+		def refid = entity.refid;
+		pmt.find( [objid: refid] ).update([state:'CLOSED', receiptid: entity.objid]);
+	} 
+
+	@After(pattern="CashReceiptVoidService.post",index=0,eval="#{result.receipt.collectiontype.handler=='paymentorder'}")
+	public void voidPayment( evt) {
+		def rct = evt.result.receipt;
+		pmt.find( [receiptid: rct.objid] ).update([state:'OPEN', receiptid: "{NULL}"]);
 	} 
 
 }

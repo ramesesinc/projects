@@ -147,4 +147,28 @@ class RPTCertificationService
 			cert.ordate = dtSvc.parse('yyyy-MM-dd', cert.ordate)
 		}
 	}	
+
+
+	@ProxyMethod
+	public void buildFootNotes( cert ) {
+		if (!cert.items) return;
+		def i = 0
+		cert.footnote = cert.items.findAll{ it.owner != cert.taxpayer.name }.groupBy{ it.owner.name}
+		cert.footnote = cert.footnote.collect{ [footnote: ++i, owner:[name: it.key]] }
+		
+		cert.items = cert.items.each(){ o ->
+			cert.footnote.each(){
+				if( o.owner.name == it.owner.name && o.owner.name != cert.taxpayer.name )
+					o.footnote = it.footnote + ''
+			}  
+		}
+		i = 0
+		
+		cert.footnotes = cert.items.findAll{ !it.owner.name.equals(cert.taxpayer.name) }
+		cert.footnotes = cert.footnotes.groupBy{ it.owner.name }.collect{ [footnote: it.key] }
+		cert.footnotes.each(){
+			it.footno = ++i + '';
+		}
+			
+	}
 }

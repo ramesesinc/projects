@@ -9,8 +9,6 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
@@ -26,17 +24,14 @@ import com.rameses.android.ApplicationUtil;
 import com.rameses.android.ControlActivity;
 import com.rameses.android.R;
 import com.rameses.android.db.*;
-import com.rameses.android.efaas.dialog.AppraisalInfo;
+import com.rameses.android.efaas.dialog.LandAppraisalInfo;
 import com.rameses.android.efaas.dialog.ErrorDialog;
 import com.rameses.android.efaas.dialog.InfoDialog;
 import com.rameses.android.efaas.adapter.AppraisalMenuAdapter;
 import com.rameses.android.efaas.adapter.ExaminationMenuAdapter;
 import com.rameses.android.efaas.bean.*;
-import com.rameses.android.service.UploadService;
-import com.rameses.client.android.Platform;
-import com.rameses.client.android.UIDialog;
 
-public class FaasActivity extends ControlActivity{
+public class LandFaasActivity extends ControlActivity{
 	
 	public boolean isCloseable() { return false; }
 	
@@ -62,7 +57,7 @@ public class FaasActivity extends ControlActivity{
 	protected void onCreateProcess(Bundle savedInstanceState) {
 		activity = this; 
 		
-		setContentView(R.layout.activity_faas);
+		setContentView(R.layout.activity_faas_land);
 		
 		faasid = getIntent().getExtras().getString("faasid");
 		
@@ -99,7 +94,7 @@ public class FaasActivity extends ControlActivity{
             		new InfoDialog(activity,rpuid);
             		return;
             	}
-                AppraisalInfo appraisal = new AppraisalInfo(activity,null,rpuid);
+                LandAppraisalInfo appraisal = new LandAppraisalInfo(activity,null,rpuid);
                 appraisal.show();
             }
         });
@@ -149,7 +144,7 @@ public class FaasActivity extends ControlActivity{
 	  if(ctxMenuId == R.id.appraisal_list){
 		  AppraisalListItem appraisalItem = data_appraisal.get(info.position);
 		  if(menuItemIndex == 0){
-			  AppraisalInfo appraisal = new AppraisalInfo(activity,appraisalItem.getObjid(),rpuid);
+			  LandAppraisalInfo appraisal = new LandAppraisalInfo(activity,appraisalItem.getObjid(),rpuid);
               appraisal.show();
 		  }
 		  if(menuItemIndex == 1){
@@ -281,7 +276,7 @@ public class FaasActivity extends ControlActivity{
 				public void onItemClick(AdapterView<?> adapter, View view, int pos, long arg3) {
 					AppraisalMenuAdapter a = (AppraisalMenuAdapter) adapter.getAdapter();
 					AppraisalListItem item = a.getListItem(pos);
-					AppraisalInfo appraisal = new AppraisalInfo(activity,item.getObjid(),rpuid);
+					LandAppraisalInfo appraisal = new LandAppraisalInfo(activity,item.getObjid(),rpuid);
 		            appraisal.show();
 				}	
 			});

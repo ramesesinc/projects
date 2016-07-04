@@ -7,7 +7,9 @@
         <Property name="hideLeft" type="boolean" value="true"/>
         <Property name="hideRight" type="boolean" value="true"/>
         <Property name="hideTop" type="boolean" value="true"/>
-        <Property name="thickness" type="int" value="2"/>
+        <Property name="lineColor" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+          <Color blue="b4" green="b4" red="b4" type="rgb"/>
+        </Property>
       </PropertyBean>
     </Property>
   </Properties>
@@ -42,7 +44,7 @@
                   <Component id="xLabel1" alignment="3" min="-2" pref="23" max="-2" attributes="0"/>
                   <Component id="xButton1" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace max="32767" attributes="0"/>
+              <EmptySpace pref="12" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>

@@ -34,7 +34,7 @@ public class LandDetailDB extends AbstractDBMapper{
 			params.put("actualuse_classification_objid", m.get("actualuse_classification_objid"));
 			params.put("stripping_objid", m.get("stripping_objid"));
 			params.put("stripping_rate", Integer.parseInt(m.get("stripping_rate") != null ? m.get("stripping_rate").toString() : "0"));
-			params.put("striprate", m.get("striprate") != null ? Integer.parseInt(m.get("striprate").toString().replaceAll("\\.", "")) : 0);
+			params.put("striprate", m.get("striprate") != null ? (int) Double.parseDouble(m.get("striprate").toString()) : 0);
 			params.put("areatype", m.get("areatype"));
 			params.put("area", Double.parseDouble(m.get("area").toString()));
 			params.put("areasqm", Double.parseDouble(m.get("areasqm").toString()));

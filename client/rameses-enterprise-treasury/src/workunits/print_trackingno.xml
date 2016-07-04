@@ -1,0 +1,7 @@
+<!-- REQUISITION ISSUE SLIP -->
+<workunit extends="com/rameses/seti2/templates/CrudReport.xml"
+    reportName="com/rameses/enterprise/treasury/views/trackingno_printout.jasper">
+    <invokers>
+       <invoker type="trackingno:printout" caption="Print Tracking no" action="view"/>
+    </invokers>
+</workunit>

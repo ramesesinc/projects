@@ -12,7 +12,7 @@ import com.rameses.android.db.LandDetailDB;
 import com.rameses.android.db.LcuvSpecificClassDB;
 import com.rameses.android.db.LcuvStrippingDB;
 import com.rameses.android.db.LcuvSubClassDB;
-import com.rameses.android.efaas.FaasActivity;
+import com.rameses.android.efaas.LandFaasActivity;
 import com.rameses.android.efaas.adapter.AppraisalItemAdapter;
 import com.rameses.android.efaas.bean.DefaultItem;
 import android.app.AlertDialog;
@@ -24,7 +24,7 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.EditText;
 import android.widget.Spinner;
 
-public class AppraisalInfo extends AlertDialog.Builder{
+public class LandAppraisalInfo extends AlertDialog.Builder{
 
 	public boolean CANCELLED = false;
 	private AlertDialog.Builder builder;
@@ -38,14 +38,14 @@ public class AppraisalInfo extends AlertDialog.Builder{
 	private boolean done = false;
 	private Context ctx;
 	
-	public AppraisalInfo(Context ctx, String objid, String rpuid) {
+	public LandAppraisalInfo(Context ctx, String objid, String rpuid) {
 		super(ctx);
 		this.ctx = ctx;
 		this.objid = objid;
 		this.rpuid = rpuid;
 		
 		LayoutInflater inflater = LayoutInflater.from(ctx);
-		View view = inflater.inflate(R.layout.activity_appraisal, null);
+		View view = inflater.inflate(R.layout.activity_appraisal_land, null);
 		
 		subclass = (Spinner) view.findViewById(R.id.appraisal_subclass);
 		specificclass = (Spinner) view.findViewById(R.id.appraisal_specificclass);
@@ -352,7 +352,7 @@ public class AppraisalInfo extends AlertDialog.Builder{
 				doSave();
 				if(done){
 					dialog.dismiss();
-					FaasActivity.initData();
+					LandFaasActivity.initData();
 				}
 			}
 		});

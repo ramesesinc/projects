@@ -19,6 +19,24 @@ SELECT * FROM lcuvstripping
 [getLandAdjustmentType]
 SELECT * FROM landadjustmenttype
 
+[getBldgRySetting]
+SELECT * FROM bldgrysetting
+
+[getBldgAssessLevel]
+SELECT * FROM bldgassesslevel
+
+[getBldgAssessLevelRange]
+SELECT * FROM bldgassesslevelrange
+
+[getBldgTypeDepreciation]
+SELECT * FROM bldgtype_depreciation
+
+[getBldgTypeStoreyAdjustment]
+SELECT * FROM bldgtype_storeyadjustment
+
+[getBldgType]
+SELECT * FROM bldgtype
+
 [getFaasForAppraisal]
 SELECT
 	f.objid,
@@ -30,6 +48,7 @@ SELECT
 	f.tdno,
 	f.fullpin,
 	r.objid as rpu_objid,
+	r.rputype as rpu_type,
 	r.ry AS rpu_ry,
 	r.suffix AS rpu_suffix,
 	r.subsuffix AS rpu_subsuffix,
@@ -76,6 +95,7 @@ SELECT
 	f.tdno,
 	f.fullpin,
 	r.objid as rpu_objid,
+	r.rputype as rpu_type,
 	r.ry AS rpu_ry,
 	r.suffix AS rpu_suffix,
 	r.subsuffix AS rpu_subsuffix,

@@ -3,12 +3,21 @@
         <invoker type="queue_group:create" caption="Queue Group" action="create" target="popup"/> 
         <invoker type="queue_group:open" caption="Queue Group" action="open" target="popup"/> 
 
-        <invoker type="formActions" caption="Close" action="_close"/> 
+        <!--invoker type="formActions" caption="Close" action="_close"/> 
         <invoker type="formActions" caption="Edit" action="edit" visibleWhen="#{mode.matches('read')}"/> 
-        <invoker type="formActions" caption="Save" action="save" visibleWhen="#{mode.matches('create|edit')}"/> 
+        <invoker type="formActions" caption="Save" action="save" visibleWhen="#{mode.matches('create|edit')}"/--> 
     </invokers>
-    <code class="queueing.model.QueueGroup"/>
+    <code>
+    class QueueGroupModel extends com.rameses.seti2.models.CrudFormModel {
+        
+        public void beforeSave(def mode){
+            entity.sections.eachWithIndex{ o,idx-> 
+                o.sortorder = idx; 
+            } 
+        } 
+    } 
+    </code>
     <pages>
-        <page  template="queueing.view.QueueGroupPage"/>
+        <page template="queueing.view.QueueGroupPage"/>
     </pages>
 </workunit>    

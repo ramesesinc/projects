@@ -40,9 +40,6 @@ public class RevisionSettingActivity extends SettingsMenuActivity {
 		loadListData();
 		ApplicationUtil.changeTitle(this, "Revision Settings");
 		activity = this;
-		
-		ActionBar bar = getActionBar();
-	    //bar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#2f84c9")));
 	}
 	
 	protected void afterBackPressed() {
@@ -63,8 +60,6 @@ public class RevisionSettingActivity extends SettingsMenuActivity {
 		
 		list = (ListView) findViewById(R.id.list_home);
 		list.setAdapter(new HomeMenuAdapter(this,data));
-		//list.setDivider(null);
-		//list.setDividerHeight(0);
 		list.setOnItemClickListener(new OnItemClickListener(){
 			@Override
 			public void onItemClick(AdapterView<?> adapter, View view, int pos, long arg3) {

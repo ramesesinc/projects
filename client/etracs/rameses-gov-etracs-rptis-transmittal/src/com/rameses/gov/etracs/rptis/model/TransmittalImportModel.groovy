@@ -12,7 +12,7 @@ public abstract class TransmittalImportModel
     def binding;
     
     @Service('RPTTransmittalImportService')
-    def svc 
+    def importSvc
     
     def file;
     def info;
@@ -29,17 +29,20 @@ public abstract class TransmittalImportModel
         processing = false;
     }
     
+    public abstract def getFileType();
     public abstract void importData(data);
+    
     
     void doImport(){
         info = '';
         processing = true;
+        task = new TransmittalImportTask();
+        task.importModel = this;
         task.importSvc   = importSvc; 
         task.file        = file;
         task.oncomplete  = oncomplete;
         task.showinfo    = showinfo;
         task.onerror     = onerror;
-        task.importSvc   = svc;
         Thread t = new Thread(task);
         t.start();
     }

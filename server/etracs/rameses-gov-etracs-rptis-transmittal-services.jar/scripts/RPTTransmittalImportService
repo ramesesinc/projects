@@ -27,12 +27,12 @@ class RPTTransmittalImportService
 	}
 
 	@ProxyMethod
-	public def importTransmittal( entity ) {
+	public def importTransmittal(transmittal) {
 		try{
-			transmittalSvc.open(data.transmittal)
+			transmittalSvc.open(transmittal)
 		}
 		catch(e){
-			transmittalSvc.importTransmittal(data.transmittal)
+			transmittalSvc.importTransmittal(transmittal)
 		}
 	}
 }

@@ -14,6 +14,7 @@ public class TransmittalExportFAASModel extends TransmittalExportModel
         def faasdata = supportSvc.getFaasData([objid:transmittalitem.refid]);
         return [
             filetype : 'faasdata',
+            transmittalitem : transmittalitem,
             faasdata : faasdata,
         ]
     }

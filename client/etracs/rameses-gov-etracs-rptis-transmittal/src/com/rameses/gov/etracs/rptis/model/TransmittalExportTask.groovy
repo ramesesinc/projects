@@ -24,7 +24,7 @@ public class TransmittalExportTask implements Runnable{
         try{
             exportTransmittal();
             entity.items.each{
-                showinfo('Exporting Item ' + it.refno );
+                showinfo('Exporting Item ' + it.refno + '\n');
                 def ei = exportModel.exportItem(it);
                 if (!ei) throw new Exception('Item data must be exported.')
                 writer.writeObject(ei);
@@ -39,7 +39,7 @@ public class TransmittalExportTask implements Runnable{
     }
     
     void exportTransmittal(){
-        showinfo('Exporting Transmittal ' + entity.txnno + '... ');
+        showinfo('Exporting Transmittal ' + entity.txnno + '\n');
         def m = [:]
         m.putAll(entity);
         

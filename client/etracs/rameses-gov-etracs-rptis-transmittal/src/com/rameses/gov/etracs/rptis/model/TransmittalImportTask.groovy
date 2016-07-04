@@ -23,11 +23,13 @@ public class TransmittalImportTask implements Runnable{
             reader = new ObjectReader(file);
             def data = reader.readObject();
             validateImport(data);
+            showinfo('Importing Transmittal ' + data.transmittal.txnno + '\n')
             while(data){
                 if (data.filetype == 'transmittal'){
                     importSvc.importTransmittal(data.transmittal);
                 }
                 else{
+                    showinfo('Importing Item ' + data.transmittalitem.refno + '\n')
                     importModel.importData(data);
                 }
                 data = reader.readObject();
@@ -48,6 +50,11 @@ public class TransmittalImportTask implements Runnable{
     }
     
     void validateImport(data){
+        def filetype = importModel.getFileType()
+        println 'filetype -> ' + filetype;
+        if (data.transmittal.filetype != filetype)
+            throw new Exception('Transmittal is invalid. Only file of Type "' + filetype + '" is allowed.');
+            
         importSvc.validateImport(data);
     }
        

@@ -100,7 +100,6 @@ class RPTTransmittalService
 	public void saveItem( item ) {
 		checkActiveTransmittal(item)
 		def exist = db_rpttransmittal_item.select('objid').read(item)
-		println 'exist -> ' + exist
 		if (exist){
 			db_rpttransmittal_item.update(item)
 		}

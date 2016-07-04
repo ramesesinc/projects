@@ -2,13 +2,13 @@
 <workunit>
     <invokers>
         <invoker folderid="/home/rpt/transmittal" action="init"  
-            caption="Import Transmittal" 
-            index="32" 
+            caption="Import FAAS Transmittal" 
+            index="35" 
             role="RECORD" />
         
         <invoker type="formActions" action="_close" caption="Close" mnemonic="c" immediate="true" /> 
    </invokers>
-   <code>       
+   <code class="com.rameses.gov.etracs.rptis.model.TransmittalImportFAASModel">       
    </code>
     
     <pages> 

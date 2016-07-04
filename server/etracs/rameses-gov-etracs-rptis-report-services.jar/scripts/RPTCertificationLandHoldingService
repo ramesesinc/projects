@@ -17,6 +17,7 @@ class RPTCertificationLandHoldingService
 		certSvc.buildFilter(cert)
 		em.insertLandHoldingItems(cert)
 		cert.items = getLandHoldingItems(cert)
+		certSvc.buildFootNotes(cert)
 		return cert 
 	}
 
@@ -26,6 +27,7 @@ class RPTCertificationLandHoldingService
 		certSvc.buildFilter(cert)
 		em.insertLandHoldingWithImprovementItems(cert)
 		cert.items = getLandHoldingItems(cert)
+		certSvc.buildFootNotes(cert)
 		return cert 
 	}
 
@@ -35,6 +37,7 @@ class RPTCertificationLandHoldingService
 		certSvc.buildFilter(cert)
 		em.insertLandHoldingWithNoImprovementItems(cert)
 		cert.items = getLandHoldingItems(cert)
+		certSvc.buildFootNotes(cert)
 		return cert 
 	}
 
@@ -45,11 +48,13 @@ class RPTCertificationLandHoldingService
 		if (! cert ) 
 			throw new Exception('Certification does not exist or has already been deleted.')
 		cert.items = getLandHoldingItems(cert)
+		certSvc.buildFootNotes(cert)
 		return cert 
 	}
 
 
-	def getLandHoldingItems(cert){
+	def getLandHoldingItems(cert)
+	{
 		def items = em.getLandHoldingItems(cert).each{
 			it.street = (it.street ? it.street : it.barangay)
 			it.description = it.cadastrallotno
@@ -57,6 +62,7 @@ class RPTCertificationLandHoldingService
 
 		if (!items) 
 			throw new Exception('There are no land properties registered for this taxpayer.')
+
 		return items
 	}
 

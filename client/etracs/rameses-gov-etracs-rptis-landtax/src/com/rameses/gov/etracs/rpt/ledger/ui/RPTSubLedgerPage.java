@@ -40,6 +40,7 @@ public class RPTSubLedgerPage extends javax.swing.JPanel {
         xDecimalField1 = new com.rameses.rcp.control.XDecimalField();
         xDecimalField2 = new com.rameses.rcp.control.XDecimalField();
         xDecimalField3 = new com.rameses.rcp.control.XDecimalField();
+        xDecimalField8 = new com.rameses.rcp.control.XDecimalField();
         xSeparator1 = new com.rameses.rcp.control.XSeparator();
         xIntegerField1 = new com.rameses.rcp.control.XIntegerField();
         xIntegerField2 = new com.rameses.rcp.control.XIntegerField();
@@ -91,10 +92,19 @@ public class RPTSubLedgerPage extends javax.swing.JPanel {
         xDecimalField2.setScale(6);
         xFormPanel1.add(xDecimalField2);
 
-        xDecimalField3.setCaption("Assessed Value");
-        xDecimalField3.setName("entity.totalav"); // NOI18N
+        xDecimalField3.setCaption("Market Value");
+        xDecimalField3.setDisabledTextColor(new java.awt.Color(0, 0, 0));
+        xDecimalField3.setEnabled(false);
+        xDecimalField3.setName("entity.totalmv"); // NOI18N
         xDecimalField3.setRequired(true);
         xFormPanel1.add(xDecimalField3);
+
+        xDecimalField8.setCaption("Assessed Value");
+        xDecimalField8.setDisabledTextColor(new java.awt.Color(0, 0, 0));
+        xDecimalField8.setEnabled(false);
+        xDecimalField8.setName("entity.totalav"); // NOI18N
+        xDecimalField8.setRequired(true);
+        xFormPanel1.add(xDecimalField8);
 
         xSeparator1.setPreferredSize(new java.awt.Dimension(0, 20));
 
@@ -102,7 +112,7 @@ public class RPTSubLedgerPage extends javax.swing.JPanel {
         xSeparator1.setLayout(xSeparator1Layout);
         xSeparator1Layout.setHorizontalGroup(
             xSeparator1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 393, Short.MAX_VALUE)
+            .addGap(0, 403, Short.MAX_VALUE)
         );
         xSeparator1Layout.setVerticalGroup(
             xSeparator1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -127,7 +137,7 @@ public class RPTSubLedgerPage extends javax.swing.JPanel {
         xSeparator2.setLayout(xSeparator2Layout);
         xSeparator2Layout.setHorizontalGroup(
             xSeparator2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 393, Short.MAX_VALUE)
+            .addGap(0, 403, Short.MAX_VALUE)
         );
         xSeparator2Layout.setVerticalGroup(
             xSeparator2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -177,7 +187,7 @@ public class RPTSubLedgerPage extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 355, Short.MAX_VALUE)
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -189,6 +199,7 @@ public class RPTSubLedgerPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XDecimalField xDecimalField5;
     private com.rameses.rcp.control.XDecimalField xDecimalField6;
     private com.rameses.rcp.control.XDecimalField xDecimalField7;
+    private com.rameses.rcp.control.XDecimalField xDecimalField8;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XIntegerField xIntegerField1;
     private com.rameses.rcp.control.XIntegerField xIntegerField2;

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit>
     <invokers>
-        <invoker type="cancelledfaas:formActions"  action="preview" caption="Preview" visibleWhen="#{entity.state=='APPROVED'}"/>        
+        <invoker type="cancelledfaas:formActions"  action="preview" caption="Preview" />        
         <invoker type="formActions" action="_close" caption="Back" mnemonic="b" immediate="true"/>
    </invokers>
    <code>       

@@ -51,6 +51,23 @@ class MunicipalityCancelledFAASRemoteCallHandler
 		println 'Cancelled FAAS has been successfully approved by province.'
 	}
 
+	void disapproveCancelledFaasByProvince(data){
+		taskEm.deleteOpenTask(data)
+		def recommendertask = taskEm.findRecommederTask([refid:data.objid])
+		if (recommendertask){
+			recommendertask.enddate = null
+			recommendertask.signature = null
+			recommendertask.message = data.disapprovemessage 
+			taskEm.update(recommendertask)
+
+			def info = [
+				message: 'Cancel FAAS No. ' + data.faas.tdno + ' has been disaproved.',
+				sender : data.signatory.approver,
+			]
+			notifyRecommender(recommendertask, info)
+		}
+	}
+
 	void saveTasks( data ) {
 		taskEm.deleteOpenTask(data)
 		data.tasks.each{

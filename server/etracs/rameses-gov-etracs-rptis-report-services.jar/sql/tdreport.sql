@@ -70,6 +70,7 @@ SELECT
 	pc.name AS classification,
 	lal.name AS actualuse,
 	ld.areatype,
+	ld.taxable,
 	ld.assesslevel,
 	spc.name AS specificclass,
 	sub.name AS subclass,

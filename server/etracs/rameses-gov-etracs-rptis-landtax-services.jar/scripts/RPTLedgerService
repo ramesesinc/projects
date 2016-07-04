@@ -86,6 +86,7 @@ class RPTLedgerService
         ledger.faases.each{ ledgerfaas ->
             saveLedgerFaas(ledgerfaas)
         }
+        postRestriction(ledger)
         return ledger 
     }
 
@@ -747,8 +748,7 @@ class RPTLedgerService
 
     @ProxyMethod
     public void postLedgerFaasData(faas){
-        def ledger = getLedgerByFaasId(faas.previousfaases[0].prevfaasid)
-        if (!ledger) throw new Exception('Ledger not found for TD No. ' + faas.tdno + '.')
+    	def ledger = getLedgerByFaasId(faas.previousfaases[0].prevfaasid)
         ledger.faasid = faas.objid 
         updateLedger(ledger)
         def ledgerfaas = createLedgerFaas(ledger, faas)
@@ -826,6 +826,7 @@ class RPTLedgerService
         ledger.fullpin         = faas.fullpin
         ledger.tdno            = faas.tdno
         ledger.cadastrallotno  = faas.rp.cadastrallotno
+        ledger.blockno         = faas.rp.blockno
         ledger.rputype         = faas.rpu.rputype
         ledger.txntype         = faas.txntype
         ledger.classcode       = faas.rpu.classification.code
@@ -905,6 +906,7 @@ class RPTLedgerService
             fullpin                 : faas.fullpin,
             tdno                    : faas.tdno,
             cadastrallotno          : faas.rp.cadastrallotno,
+            blockno                 : faas.rp.blockno,
             rputype                 : faas.rpu.rputype,
             txntype                 : faas.txntype, 
             classcode               : faas.rpu.classification.code,
@@ -915,6 +917,7 @@ class RPTLedgerService
             taxable                 : util.toBoolean(faas.rpu.taxable, true), 
             prevtdno                : faas.prevtdno,
             titleno                 : faas.titleno,
+            restrictionid           : faas.restrictionid,
         ]
 
         ledger.faases << createLedgerFaas( ledger, faas )
@@ -1082,6 +1085,22 @@ class RPTLedgerService
                 restrictionid = restrictions.first().restrictionid 
             }
             faasDb.update([objid:ledger.faasid, restrictionid:restrictionid])
+        }
+    }
+
+
+    @ProxyMethod
+    public void cancelLedger( ledger ) {
+        em.updateState([objid:ledger.objid, state:'CANCELLED'])    
+    }
+
+    void postRestriction(ledger){
+        if (ledger.restrictionid){
+            def restriction = [:]
+            restriction.objid = 'RLR' + new java.rmi.server.UID()
+            restriction.parentid = ledger.objid 
+            restriction.restrictionid = ledger.restrictionid 
+            rptledger_restrictionDb.create(restriction)
         }
     }
 

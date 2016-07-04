@@ -64,6 +64,8 @@ class CancelledFAASService
         entity.faasid = entity.faas.objid 
         if (!entity.lguid)
             entity.lguid = entity.faas.lguid 
+        if (!entity.originlguid)
+            entity.originlguid = env.ORGID 
         if (!entity.txnno)
             entity.txnno = getNextSeries(entity)
         if (!entity.txndate)

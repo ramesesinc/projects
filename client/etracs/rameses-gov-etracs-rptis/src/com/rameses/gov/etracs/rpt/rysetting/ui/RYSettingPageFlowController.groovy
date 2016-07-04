@@ -189,7 +189,7 @@ public abstract class RYSettingPageFlowController extends PageFlowController
         getColumns : { return [
             new Column(name:'code', caption:'Code*', maxWidth:60, editable:true ),
             new Column(name:'name', caption:'Name*', editable:true ),
-            new Column(name:'fixrate', caption:'Fix?*', type:'boolean', maxWidth:40, editable:true ),
+            new Column(name:'fixrate', caption:'Fix?*', type:'boolean', width:40, editable:true ),
             new Column(name:'rate', caption:'Rate (%)*', type:'decimal', editable:true ),
             new Column(caption:'Classification', type:'lookup', editable:true, handler: classLookupOpener, expression: '#{item.classification.code}' ),
         ]},

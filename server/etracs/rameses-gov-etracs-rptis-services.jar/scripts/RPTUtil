@@ -567,6 +567,7 @@ class RPTUtil
             newpin += entity.barangay?.oldindexno + '-';
         }
         else {
+            entity.pintype = 'new'
             newpin += ( entity.pintype == 'new' ? '0000' : '000') + '-';
         }        
         

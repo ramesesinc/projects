@@ -267,6 +267,9 @@ public class RPTLedgerController
     
     
     def addSubLedger(){
+        if (totalSubledgerArea >= entity.totalareaha)
+            throw new Exception('Subledger is no longer allowed.\nMain Ledger area has totally been allocated.')
+            
         return InvokerUtil.lookupOpener('rptsubledger:create', [
                 ledger            : entity,
                 totalSubledgerArea : totalSubledgerArea, 

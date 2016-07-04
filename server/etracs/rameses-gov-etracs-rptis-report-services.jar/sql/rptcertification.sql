@@ -15,7 +15,9 @@ FROM faas f
 	INNER JOIN realproperty rp ON f.realpropertyid = rp.objid 
 	INNER JOIN propertyclassification pc ON r.classification_objid = pc.objid 
 	INNER JOIN barangay b ON rp.barangayid = b.objid 
-WHERE f.taxpayer_objid	= $P{taxpayerid}
+WHERE (f.taxpayer_objid	= $P{taxpayerid}
+	or exists(select * from entitymember where member_objid = $P{taxpayerid})
+  )
   AND r.rputype = 'land'
   ${asoffilter}
 
@@ -30,7 +32,9 @@ FROM faas f
 	INNER JOIN realproperty rp ON f.realpropertyid = rp.objid 
 	INNER JOIN propertyclassification pc ON r.classification_objid = pc.objid 
 	INNER JOIN barangay b ON rp.barangayid = b.objid 
-WHERE f.taxpayer_objid	= $P{taxpayerid}
+WHERE (f.taxpayer_objid	= $P{taxpayerid}
+	or exists(select * from entitymember where member_objid = $P{taxpayerid})
+  )
   AND r.rputype = 'land'
   ${asoffilter}
   AND EXISTS( SELECT * 
@@ -51,7 +55,9 @@ FROM faas f
 	INNER JOIN realproperty rp ON f.realpropertyid = rp.objid 
 	INNER JOIN propertyclassification pc ON r.classification_objid = pc.objid 
 	INNER JOIN barangay b ON rp.barangayid = b.objid 
-WHERE f.taxpayer_objid	= $P{taxpayerid}
+WHERE (f.taxpayer_objid	= $P{taxpayerid}
+	or exists(select * from entitymember where member_objid = $P{taxpayerid})
+  )
   AND r.rputype = 'land'
   ${asoffilter}
   AND NOT EXISTS( SELECT * FROM rpu 
@@ -103,7 +109,9 @@ FROM faas f
 	INNER JOIN realproperty rp ON f.realpropertyid = rp.objid 
 	INNER JOIN propertyclassification pc ON r.classification_objid = pc.objid 
 	INNER JOIN barangay b ON rp.barangayid = b.objid 
-WHERE f.taxpayer_objid	= $P{taxpayerid}
+WHERE (f.taxpayer_objid	= $P{taxpayerid}
+	or exists(select * from entitymember where member_objid = $P{taxpayerid})
+  )
   ${asoffilter}
 
 
@@ -287,7 +295,9 @@ FROM faas f
 	INNER JOIN rpu r ON f.rpuid = r.objid 
 	INNER JOIN realproperty rp ON f.realpropertyid = rp.objid 
 	INNER JOIN barangay b ON rp.barangayid = b.objid 
-WHERE f.taxpayer_objid = $P{taxpayerid}
+WHERE (f.taxpayer_objid	= $P{taxpayerid}
+	or exists(select * from entitymember where member_objid = $P{taxpayerid})
+  )
    ${asoffilter}
 
 

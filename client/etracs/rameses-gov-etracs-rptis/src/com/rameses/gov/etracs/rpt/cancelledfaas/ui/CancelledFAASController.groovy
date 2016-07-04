@@ -65,7 +65,7 @@ public class CancelledFAASController
     
     
     def delete(){
-        if (MsgBox.confirm('Delete FAAS?')){
+        if (MsgBox.confirm('Delete?')){
             svc.deleteCancelledFaas(entity);
             return '_close';
         }

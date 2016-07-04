@@ -57,6 +57,7 @@ class QueueCounter {
             if( mode != "create" ) {
                 svc.addSection( [sectionid: o.objid] );
             }
+            println o; 
             entity.sections.add( o );
             itemListModel.reload();
         };

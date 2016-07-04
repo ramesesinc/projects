@@ -125,6 +125,7 @@ public class DownloadActivity  extends SettingsMenuActivity{
 		params.put("tdno", data.get("tdno") != null ? data.get("tdno").toString() : "");
 		params.put("fullpin", data.get("fullpin") != null ? data.get("fullpin").toString() : "");
 		params.put("rpu_objid", rpu.get("objid") != null ? rpu.get("objid").toString() : "");
+		params.put("rpu_type", rpu.get("type") != null ? rpu.get("type").toString() : "");
 		params.put("rpu_ry", rpu.get("ry") != null ? rpu.get("ry").toString() : "");
 		params.put("rpu_suffix", rpu.get("suffix") != null ? rpu.get("suffix").toString() : "");
 		params.put("rpu_subsuffix", rpu.get("subsuffix") != null ? rpu.get("subsuffix").toString() : "");
@@ -188,9 +189,6 @@ public class DownloadActivity  extends SettingsMenuActivity{
 					param1.put("marketvalue", m.get("marketvalue") != null ? m.get("marketvalue").toString() : "0.00");
 					param1.put("assesslevel", m.get("assesslevel") != null ? m.get("assesslevel").toString() : "0.00");
 					param1.put("assessedvalue", m.get("assessedvalue") != null ? m.get("assessedvalue").toString() : "0.00");
-					
-					System.err.println("Land Detail : " + param1);
-					System.err.println("**************************************************************************\n");
 					
 					LandDetailDB ldb = new LandDetailDB();
 					ldb.create(param1);

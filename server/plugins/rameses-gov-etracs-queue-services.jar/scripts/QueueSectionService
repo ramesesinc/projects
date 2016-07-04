@@ -1,11 +1,9 @@
 import com.rameses.annotations.*;
-import com.rameses.util.*;
-import java.rmi.server.*;
-import com.rameses.common.*;
 import com.rameses.services.extended.*;
 
-class QueueSectionService extends ActiveCrudListService{
-	@ActiveDB('section')
+class QueueSectionService extends ActiveCrudListService {
+
+	@DataContext('queue_section')
 	def em;
 
 	@ProxyMethod

@@ -14,5 +14,9 @@ public class RevisionSettingService extends AbstractService {
 	public Map getLandRevisionSettingData() throws Exception{
 		return (Map) invoke("getLandRevisionSettingData");
 	}
+	
+	public Map getBuildingRevisionSettingData() throws Exception{
+		return (Map) invoke("getBuildingRevisionSettingData");
+	}
 
 }

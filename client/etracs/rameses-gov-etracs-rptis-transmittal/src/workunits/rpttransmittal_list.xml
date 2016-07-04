@@ -1,0 +1,18 @@
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" 
+          schemaName="rpttransmittal" 
+          cols="state,txnno,txndate,remarks,filetype"
+          allowCreate="false" 
+          allowDelete="false">
+    <invokers>
+        <invoker folderid="/home/rpt/transmittal" caption="Transmittals" index="3" action="init"/>
+    </invokers>
+    <code>
+        class TransmittalCrudList extends com.rameses.seti2.models.CrudListModel
+        {
+            
+            public String getEntitySchemaName() {
+                return 'rpttransmittal:' + selectedItem.filetype
+            } 
+        }
+    </code>
+</workunit>

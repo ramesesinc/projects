@@ -5,3 +5,11 @@
 "entity.remarks" [mode != 'read']{
     enabled:true;
 }
+
+"selectedItem" [mode == 'read']{
+    readonly:true;
+}
+
+"selectedItem" [mode != 'read']{
+    readonly:false;
+}

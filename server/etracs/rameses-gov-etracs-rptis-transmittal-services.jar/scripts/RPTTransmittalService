@@ -10,6 +10,13 @@ class RPTTransmittalService
 	@ActiveDB('rpttransmittal')
 	def em 
 
+	@DataContext('rpttransmittal')
+	def db_rpttransmittal
+
+	@DataContext('rpttransmittal_item')
+	def db_rpttransmittal_item
+
+	
 	@Service('SequenceService')
 	def seqSvc 
 
@@ -30,30 +37,7 @@ class RPTTransmittalService
 	def TYPE_FORAPPROVAL = 'FORAPPROVAL'
 	def TYPE_SYNC = 'SYNC'
 
-	def SCHEMA_ITEM = 'item'
-	def SCHEMA_DATA	 = 'data'
-
-
-	@ProxyMethod
-	public def getList( params ) {
-		if (!params.searchtext) 
-			params.searchtext = '%'
-		return em.getList(params)
-	}
-
-	@ProxyMethod
-	public def getColumns( params ) {
-		return [
-			[name:'state', caption:'State', width:100],
-			[name:'txnno', caption:'Txn No.', width:70],
-			[name:'txndate', caption:'Txn Date', width:100, type:'date'],
-			[name:'type', caption:'Type', width:120],
-			[name:'tolgu.name', caption:'Transmitted To', width:300],
-			[name:'createdby.name', caption:'Transmitted By', width:300],
-		]
-	}
-
-
+	
 	@ProxyMethod
 	public void validateFaasForTransmittal( type, faas ) {
 		if (type == 'SYNC') {
@@ -70,9 +54,12 @@ class RPTTransmittalService
                 	throw new Exception('FAAS is invalid. Only INTERIM state is allowed.')
 
                 //check that the last faas_task state is forprovapproval
+                // TODO: 
+                /*
 	            def task = em.findLastFaasTask(faas)
 	            if (task.state != 'forprovapproval')
 	            	throw new Exception('FAAS is invalid. Only "forprovapproval" state is allowed..')
+	            */
         	}
         }
 	}
@@ -84,74 +71,75 @@ class RPTTransmittalService
 		entity.createdby = [objid:env.USERID, name:env.FULLNAME, title:env.JOBTITLE]
 		entity.txnno = getNextSequence(pdate) 
 		entity.txndate = pdate.date
-		em.create(entity)
+		db_rpttransmittal.create(entity)
 		return entity
 	}
 
 	@ProxyMethod
+	public def importTransmittal( entity ) {
+		db_rpttransmittal.create(entity)
+	}
+
+	@ProxyMethod
 	public def update( entity ) {
-		em.update(entity)
+		db_rpttransmittal.update(entity)
 		return entity
 	}
 
 	@ProxyMethod
 	public def open( entity ) {
-		entity = em.read(entity)	
+		entity = db_rpttransmittal.read(entity)	
 		if (!entity)
 			throw new Exception('Transmittal does not exist or has already been deleted.')
-		entity.hasimportedapproval = em.findDataCount(entity).icount > 0
+		//TODO: 
+		//entity.hasimportedapproval = em.findDataCount(entity).icount > 0
 		return entity
 	}
 
 	@ProxyMethod
 	public void saveItem( item ) {
 		checkActiveTransmittal(item)
-		em.save(item, SCHEMA_ITEM)
+		def exist = db_rpttransmittal_item.select('objid').read(item)
+		println 'exist -> ' + exist
+		if (exist){
+			db_rpttransmittal_item.update(item)
+		}
+		else {
+			db_rpttransmittal_item.create(item)
+		}
 	}
 
 	
 	@ProxyMethod
 	public def getItems( entity ) {
-		return em.getItems(entity)
+		return db_rpttransmittal_item.find([parentid:entity.objid])
+							.orderBy('refno')
+							.list()
 	}
 
-	@ProxyMethod
-	public def getData( item ) {
-		return em.getData(item)	
-	}
-
+	
 	@ProxyMethod
 	public void delete( entity ) {
-		em.deleteAllData(entity)	
-		em.deleteAllItems(entity)	
-		em.delete(entity)
+		db_rpttransmittal_item.find([parentid:entity.objid]).delete()
+		db_rpttransmittal.delete(entity)
 	}
 
 	@ProxyMethod
 	public void deleteItem( item ) {
-		em.deleteItemData(item)
-		em.delete(item, SCHEMA_ITEM)	
+		db_rpttransmittal_item.delete(item)
 	}
-
-	@ProxyMethod
-	public void deleteData( data ) {
-		em.delete(data, SCHEMA_DATA)	
-	}
-
 
 
 	@ProxyMethod
 	public def submit( entity) {
-		def old = open(entity)
-		if (old.state != STATE_DRAFT)
+		if (getState(entity) != STATE_DRAFT)
 			throw new Exception('Transmittal state is invalid or has been changed.\nOnly DRAFT state is allowed.')
 
-		def items = getItems(entity)
+		def items = db_rpttransmittal_item.select('objid').find([parentid:entity.objid]).list()
 		if (!items)
 			throw new Exception('There are no items for transmittal.')
 
-		entity.state = STATE_SUBMITTED
-		update(entity)
+		updateState(entity, STATE_SUBMITTED)
 		return entity
 	}
 
@@ -159,31 +147,25 @@ class RPTTransmittalService
 	public def submitForApproval(entity){
 		if (entity.type == 'SYNC')
 			throw new Exception('Transmittal type is invalid. Only FORApproval Type is allowed.')
-		def old = open(entity)
-		if (old.state != STATE_DRAFT)
+		if (getState(entity) != STATE_DRAFT)
 			throw new Exception('Transmittal state is invalid or has been changed.\nOnly DRAFT state is allowed.')
-		entity.state = STATE_FORAPPROVAL
-		update(entity)
+		updateState(entity, STATE_FORAPPROVAL)
 		return entity
 	}
 
 	@ProxyMethod
 	public def disapprove(entity){
-		def old = open(entity)
-		if (old.state != STATE_FORAPPROVAL)
+		if (getState(entity) != STATE_FORAPPROVAL)
 			throw new Exception('Transmittal state is invalid or has been changed.\nOnly FOR APPROVAL state is allowed.')
-		entity.state = STATE_DISAPPROVED
-		update(entity)
+		updateState(entity, STATE_DISAPPROVED)
 		return entity
 	}
 
 	@ProxyMethod
 	public def approve(entity){
-		def old = open(entity)
-		if (old.state != STATE_FORAPPROVAL)
+		if (getState(entity) != STATE_FORAPPROVAL)
 			throw new Exception('Transmittal state is invalid or has been changed.\nOnly FOR APPROVAL state is allowed.')
-		entity.state = STATE_APPROVED
-		update(entity)
+		updateState(entity, STATE_APPROVED)
 		return entity
 	}
 
@@ -194,6 +176,17 @@ class RPTTransmittalService
 		return [TYPE_SYNC, TYPE_FORAPPROVAL]
 	}
 
+	def getState(entity){
+		def old = db_rpttransmittal.select('state').read(entity)
+		if (old) 
+			return old.state
+		throw new Exception('Transmittal does not exist or has already been deleted.')
+	}
+
+	void updateState(entity, newstate){
+		entity.state = newstate 
+		db_rpttransmittal.find([objid:entity.objid]).update([state:entity.state])
+	}
 
 
 	def getNextSequence(pdate){

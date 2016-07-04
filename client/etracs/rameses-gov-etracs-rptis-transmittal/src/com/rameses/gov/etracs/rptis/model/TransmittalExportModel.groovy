@@ -1,40 +1,23 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<workunit>
-    <invokers>
-        <invoker type="rpttransmittal:formActions" action="init" caption="Export" target="self"  
-            visibleWhen="#{showExport}" index="10" role="RECORD" />
-            
-        <invoker type="formActions" action="_close" caption="Close" mnemonic="c" immediate="true" /> 
-   </invokers>
-   <code>       
-<![CDATA[
+package com.rameses.gov.etracs.rptis.model;
 
 import com.rameses.rcp.annotations.* 
 import com.rameses.rcp.common.* 
 import com.rameses.osiris2.client.*
 import com.rameses.osiris2.common.*
-import com.rameses.util.MapBeanUtils;
-import com.rameses.gov.etracs.rpt.transmittal.ui.*;
 import java.io.File;
+import com.rameses.gov.etracs.rpt.util.*;
 
-public class TransmittalExportController
+public abstract class TransmittalExportModel
 {
     @Binding
     def binding;
     
-    @Service('RPTTransmittalService')
-    def svc;
-    
-    @Service('RPTTransmittalExportService')
-    def exportSvc;
-    
     def entity;
     def file;
     def info;
+    def type;
     def processing = false;
     def task;
-    def items;
-    def type;
     
     String getTitle(){
         return 'Export Transmittal ' + entity.txnno;
@@ -42,7 +25,6 @@ public class TransmittalExportController
     
     void init(){
         initFile();
-        items = svc.getItems(entity);
         type = 'export';
         processing = false;
     }
@@ -54,18 +36,19 @@ public class TransmittalExportController
         def filename = dir + 'TRANSMITTAL-' + entity.txnno + (entity.state=='APPROVED' ? '-' + entity.state : '') + '.dat';
         file = new File(filename);
     }
+    
+    public abstract def exportItem(transmittalitem);
    
     void export(){
         info = '';
         processing = true;
         task = new TransmittalExportTask();
-        task.exportSvc   = exportSvc; 
+        task.exportModel = this;
         task.entity      = entity;
         task.file        = file;
-        task.items       = items;
         task.oncomplete  = oncomplete;
-        task.showinfo    = showinfo;
         task.onerror     = onerror;
+        task.showinfo    = showinfo;
         Thread t = new Thread(task);
         t.start();
     }
@@ -88,13 +71,3 @@ public class TransmittalExportController
     }    
     
 }
-       
-]]>       
-   </code>
-    
-    <pages> 
-        <page template="com.rameses.gov.etracs.rpt.transmittal.ui.TransmittalExportImportPage"/>
-    </pages>
-</workunit>
-
-

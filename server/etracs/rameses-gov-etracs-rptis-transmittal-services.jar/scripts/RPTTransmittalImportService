@@ -1,0 +1,39 @@
+import com.rameses.annotations.*
+import com.rameses.common.*;
+import com.rameses.services.extended.*;
+
+class RPTTransmittalImportService
+{
+	@Env 
+	def env 
+
+	@Service('RPTTransmittalService')
+	def transmittalSvc 
+
+
+	@ProxyMethod
+	public void validateImport(data) {
+		if (data == null || data.filetype != 'transmittal')
+			throw new Exception('Invalid file format.')
+
+		if (data.transmittal.state == 'APPROVED'){
+			if (data.transmittal.lgu.objid != env.ORGID){
+				throw new Exception('Transmittal is not valid for this organization.')
+			}	
+		}
+		else if (data.transmittal.tolgu.objid != env.ORGID){
+			throw new Exception('Transmittal is not valid for this organization.')
+		}
+	}
+
+	@ProxyMethod
+	public def importTransmittal( entity ) {
+		try{
+			transmittalSvc.open(data.transmittal)
+		}
+		catch(e){
+			transmittalSvc.importTransmittal(data.transmittal)
+		}
+	}
+}
+

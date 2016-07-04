@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="rpttransmittal:create" action="init" 
+            caption="Transmittal (New)" 
+            target="window"  
+            role="RECORD" />
+        
+        <invoker type="rpttransmittal:open" action="open" 
+            caption="Transmittal" 
+            target="window"  />
+   </invokers>
+   <code>       
+   </code>
+
+    <pageflow>
+        <start>
+            <transition name="init" to="init"/>
+            <transition name="open" to="open"/>
+        </start>
+        
+        <page name="init" title="Transmittal: Initial Information">
+            <transition caption="Cancel" to="end"  mnemonic="c" icon="images/toolbars/cancel.png"/>
+            <transition caption="Next"  to="default" action="createTransmittal" mnemonic="n"  />
+        </page>
+        
+        <process name="open">
+            <transition to="default" cond="#{entity.state == 'DRAFT'}"/>
+            <transition to="submitted" cond="#{entity.state == 'SUBMITTED'}"/>
+            <transition to="forapproval" cond="#{entity.state == 'FORAPPROVAL'}"/>
+            <transition to="approved" cond="#{entity.state == 'APPROVED'}"/>
+        </process>
+        
+        <page name="default" title="Transmittal (Draft)">
+            <transition caption="Close"  to="end"      mnemonic="c" icon="images/toolbars/cancel.png" visibleWhen="#{mode == 'read'}"/>
+            <transition caption="Edit"   to="back-to-default" action="edit"  name="edit" mnemonic="e" shortcut="ctrl E" icon="images/toolbars/edit.png"  visibleWhen="#{mode == 'read'}" role="RECORD"/>
+            <transition caption="Cancel" to="back-to-default" action="cancelEdit" name="cancel" mnemonic="c" icon="images/toolbars/cancel.png" visibleWhen="#{mode != 'read'}"/>
+            <transition caption="Save"   to="back-to-default" action="save" name="save" mnemonic="s" shortcut="ctrl S" icon="images/toolbars/save.png"  visibleWhen="#{mode != 'read'}" />
+            <transition caption="Delete" to="delete"  action="delete" confirm="Delete record?"    mnemonic="d" icon="images/toolbars/trash.png"  visibleWhen="#{mode == 'read'}" role="RECORD"/>
+            <transition caption="Submit" to="submitted" action="submit" name="submit"  mnemonic="m"  visibleWhen="#{mode == 'read' &amp;&amp; entity.type == 'SYNC'}" confirm="Submit?" role="RECORD"/>
+            <transition caption="Submit" to="forapproval" action="submitForApproval" name="submitForApproval"  mnemonic="m"  visibleWhen="#{mode == 'read' &amp;&amp; entity.type != 'SYNC'}" confirm="Submit for approval?" role="RECORD"/>
+        </page>
+        
+        <process name="back-to-default">
+            <transition to="default" />
+        </process>
+        
+        <process name="delete">
+            <transition to="end"/>
+        </process>
+        
+        <page name="submitted" title="Transmittal (Submitted)">
+            <transition caption="Close" to="end" mnemonic="c" icon="images/toolbars/cancel.png" />
+        </page>
+        
+        <process name="back-to-submitted">
+            <transition to="submitted" />
+        </process>
+        
+        
+        <page name="forapproval" title="Transmittal (For Approval)">
+            <transition caption="Close" to="end" mnemonic="c" icon="images/toolbars/cancel.png" />
+            <transition caption="Approve" to="approved" action="approve" mnemonic="v" confirm="Approve transmittal?" visibleWhen="#{showForApprovalActions}"/>
+            <transition caption="Disapprove" to="disapproved" action="disapprove" mnemonic="v" confirm="Disapprove transmittal?" visibleWhen="#{showForApprovalActions}"/>
+        </page>
+        
+        <page name="approved" title="Transmittal (Approved)">
+            <transition caption="Close" to="end" mnemonic="c" icon="images/toolbars/cancel.png"/>
+        </page>
+        
+        <page name="disapproved" title="Transmittal (Disapproved)">
+            <transition caption="Close" to="end" mnemonic="c" icon="images/toolbars/cancel.png"/>
+        </page>
+        
+        <end />
+        
+    </pageflow>
+    
+    <pages> 
+        <page name="init" template="com.rameses.gov.etracs.rptis.view.TransmittalInitPage"/>
+        <page name="default" template="com.rameses.gov.etracs.rptis.view.TransmittalPage"/>
+        <page name="submitted" template="com.rameses.gov.etracs.rptis.view.TransmittalPage"/>
+        <page name="forapproval" template="com.rameses.gov.etracs.rptis.view.TransmittalPage"/>
+        <page name="approved" template="com.rameses.gov.etracs.rptis.view.TransmittalPage"/>
+        <page name="disapproved" template="com.rameses.gov.etracs.rptis.view.TransmittalPage"/>
+    </pages>
+</workunit>
+
+

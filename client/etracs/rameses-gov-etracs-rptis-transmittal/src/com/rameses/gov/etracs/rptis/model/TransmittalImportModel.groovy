@@ -1,39 +1,18 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<workunit>
-    <invokers>
-        <invoker folderid="/explorer/txn/rpt/online" action="init"  
-            caption="Import Transmittal" 
-            index="32" 
-            role="RECORD" />
-        
-        <invoker folderid="/home/rpt/txn" action="init"  
-            caption="Import Transmittal" 
-            index="32" 
-            role="RECORD" />
-        
-        <invoker type="formActions" action="_close" caption="Close" mnemonic="c" immediate="true" /> 
-   </invokers>
-   <code>       
-<![CDATA[
+package com.rameses.gov.etracs.rptis.model;
 
 import com.rameses.rcp.annotations.* 
 import com.rameses.rcp.common.* 
 import com.rameses.osiris2.client.*
 import com.rameses.osiris2.common.*
-import com.rameses.util.MapBeanUtils;
-import com.rameses.gov.etracs.rpt.transmittal.ui.*;
 import java.io.File;
 
-public class TransmittalImportController
+public abstract class TransmittalImportModel
 {
     @Binding
     def binding;
     
-    @Service('RPTTransmittalService')
-    def svc;
-    
     @Service('RPTTransmittalImportService')
-    def importSvc;
+    def svc 
     
     def file;
     def info;
@@ -50,15 +29,17 @@ public class TransmittalImportController
         processing = false;
     }
     
+    public abstract void importData(data);
+    
     void doImport(){
         info = '';
         processing = true;
-        task = new TransmittalImportTask();
         task.importSvc   = importSvc; 
         task.file        = file;
         task.oncomplete  = oncomplete;
         task.showinfo    = showinfo;
         task.onerror     = onerror;
+        task.importSvc   = svc;
         Thread t = new Thread(task);
         t.start();
     }
@@ -81,13 +62,3 @@ public class TransmittalImportController
     }    
     
 }
-       
-]]>       
-   </code>
-    
-    <pages> 
-        <page template="com.rameses.gov.etracs.rpt.transmittal.ui.TransmittalExportImportPage"/>
-    </pages>
-</workunit>
-
-

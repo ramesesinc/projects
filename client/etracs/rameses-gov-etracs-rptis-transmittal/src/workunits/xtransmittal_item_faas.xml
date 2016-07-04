@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit>
     <invokers>
+        <!-- 
         <invoker type="rpttransmittal:item" action="open" caption="FAAS Transmittal Item"  index="0" />
+        -->
    </invokers>
    
    <code>

@@ -66,5 +66,6 @@
         <activity android:name="com.rameses.android.efaas.ExaminationActivity"  android:screenOrientation="portrait"/>
         <activity android:name="com.rameses.android.efaas.UploadActivity"  android:screenOrientation="portrait"/>
         <activity android:name="com.rameses.android.efaas.BuildingFaasActivity"  android:screenOrientation="portrait"/>
+        <activity android:name="com.rameses.android.efaas.BuildingAppraisalActivity"  android:screenOrientation="portrait"/>
     </application>
 </manifest>

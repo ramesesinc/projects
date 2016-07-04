@@ -90,10 +90,6 @@ public class LandFaasActivity extends ControlActivity{
 		appraisal_btn = (Button) findViewById(R.id.appraisal_button);
 		appraisal_btn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-            	if(rpuid == null){
-            		new InfoDialog(activity,rpuid);
-            		return;
-            	}
                 LandAppraisalInfo appraisal = new LandAppraisalInfo(activity,null,rpuid);
                 appraisal.show();
             }

@@ -109,7 +109,7 @@ public class ExaminationActivity  extends ControlActivity{
             		return;
             	}
             	disposeMe();
-            	LandFaasActivity.initData();
+            	FaasLandActivity.loadExaminationData();
             }
         });
 		if(STATE.equals("CREATE")) examination_save.setText("SAVE");

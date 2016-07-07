@@ -19,6 +19,7 @@
           android:layout_height="match_parent"
           android:gravity="center"
           android:minHeight="40dp"
+          android:background="#e4ecfb"
           android:textAppearance="?android:attr/textAppearanceSmall">
         </TextView>
 
@@ -30,6 +31,7 @@
           android:layout_width="0dp"
           android:layout_height="match_parent"
           android:gravity="center"
+          android:background="#e4ecfb"
           android:textAppearance="?android:attr/textAppearanceSmall">
         </TextView>
         
@@ -41,6 +43,7 @@
           android:layout_width="0dp"
           android:layout_height="match_parent"
           android:gravity="center"
+          android:background="#e4ecfb"
           android:textAppearance="?android:attr/textAppearanceSmall">
         </TextView>
         
@@ -52,6 +55,7 @@
           android:layout_width="0dp"
           android:layout_height="match_parent"
           android:gravity="center"
+          android:background="#e4ecfb"
           android:textAppearance="?android:attr/textAppearanceSmall">
         </TextView>
         
@@ -63,6 +67,7 @@
           android:layout_width="0dp"
           android:layout_height="match_parent"
           android:gravity="center"
+          android:background="#e4ecfb"
           android:textAppearance="?android:attr/textAppearanceSmall">
         </TextView>
 

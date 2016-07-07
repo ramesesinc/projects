@@ -62,7 +62,6 @@ public class FaasLandActivity extends ControlActivity {
 	private static List<ExaminationListItem> data_examination;
 	private static int ctxMenuId;
 	
-	private ProgressDialog progressDialog;
 	private ListView menu;
 	private ScrollView contentView;
 	

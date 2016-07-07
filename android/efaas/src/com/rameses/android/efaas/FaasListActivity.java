@@ -57,7 +57,7 @@ public class FaasListActivity extends SettingsMenuActivity {
 					startActivity(intent); 
 				}
 				if(type.equalsIgnoreCase("bldg")){
-					Intent intent = new Intent(activity, BuildingFaasActivity.class);
+					Intent intent = new Intent(activity, FaasBuildingActivity.class);
 					intent.putExtra("faasid", faasid);
 					startActivity(intent); 
 				}

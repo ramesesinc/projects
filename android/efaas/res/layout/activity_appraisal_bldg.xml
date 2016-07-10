@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
+        
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Structural Type / Building Kind Info"
+            android:minEms="6"
+            android:padding="5dp"
+            android:textStyle="bold"
+            android:background="#2f84c9"
+            android:textColor="#FFFFFF"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+        
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Classification"
+                android:minEms="7"
+                android:padding="1dp"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+            
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=":"
+                android:minEms="1"
+                android:padding="1dp"
+                android:gravity="center"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+            
+            <Spinner
+			    android:id="@+id/appraisal_classification"
+			    android:layout_width="fill_parent"
+			    android:layout_height="wrap_content">
+			</Spinner>
+
+        </LinearLayout>
+        
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Structural Type"
+                android:minEms="7"
+                android:padding="1dp"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+            
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=":"
+                android:minEms="1"
+                android:padding="1dp"
+                android:gravity="center"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+            
+            <Spinner
+			    android:id="@+id/appraisal_structuraltype"
+			    android:layout_width="fill_parent"
+			    android:layout_height="wrap_content">
+			</Spinner>
+
+        </LinearLayout>
+        
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Building Kind"
+                android:minEms="7"
+                android:padding="1dp"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+            
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=":"
+                android:minEms="1"
+                android:padding="1dp"
+                android:gravity="center"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+            
+            <Spinner
+			    android:id="@+id/appraisal_buildingkind"
+			    android:layout_width="fill_parent"
+			    android:layout_height="wrap_content">
+			</Spinner>
+
+        </LinearLayout>
+        
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Base Floor Area"
+                android:minEms="7"
+                android:padding="1dp"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+            
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=":"
+                android:minEms="1"
+                android:padding="1dp"
+                android:gravity="center"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+            
+            <EditText
+			    android:id="@+id/appraisal_basefloorarea"
+			    android:layout_width="fill_parent"
+			    android:layout_height="wrap_content"
+			    android:inputType="number|numberDecimal"/>
+
+        </LinearLayout>
+        
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Floor Area"
+                android:minEms="7"
+                android:padding="1dp"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+            
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=":"
+                android:minEms="1"
+                android:padding="1dp"
+                android:gravity="center"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+            
+            <EditText
+			    android:id="@+id/appraisal_floorarea"
+			    android:layout_width="fill_parent"
+			    android:layout_height="wrap_content"
+			    android:inputType="number|numberDecimal"/>
+
+        </LinearLayout>
+        
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Actual Uses / Floor Information"
+            android:minEms="6"
+            android:padding="5dp"
+            android:textStyle="bold"
+            android:background="#2f84c9"
+            android:textColor="#FFFFFF"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+        
+        <ListView
+		      android:id="@+id/actualuse_list"
+		      android:layout_width="match_parent"
+		      android:layout_height="wrap_content" 
+		      android:layout_margin="5dp"/>
+		
+		<Button
+	        android:id="@+id/actualuse_add"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_margin="10dp"
+	        android:layout_gravity="center"
+	        android:minEms="5"
+	        android:padding="10dp"
+	        android:text="Add" />
+		
+		<TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Additional Items / Adjustments"
+            android:minEms="6"
+            android:padding="5dp"
+            android:textStyle="bold"
+            android:background="#2f84c9"
+            android:textColor="#FFFFFF"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+        
+        <ListView
+		      android:id="@+id/adjustment_list"
+		      android:layout_width="match_parent"
+		      android:layout_height="wrap_content" 
+		      android:layout_margin="5dp"/>
+		
+		<Button
+	        android:id="@+id/adjustment_add"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_margin="10dp"
+	        android:layout_gravity="center"
+	        android:minEms="5"
+	        android:padding="10dp"
+	        android:text="Add" />
+        
+    </LinearLayout>
+    
+</ScrollView>

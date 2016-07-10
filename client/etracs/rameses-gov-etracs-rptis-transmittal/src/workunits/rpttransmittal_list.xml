@@ -1,10 +1,11 @@
 <workunit extends="com/rameses/seti2/templates/CrudList.xml" 
           schemaName="rpttransmittal" 
-          cols="state,txnno,txndate,remarks,filetype"
+          cols="filetype,state,txnno,txndate,remarks"
           allowCreate="false" 
-          allowDelete="false">
+          allowDelete="false"
+          orderBy="txnno DESC">
     <invokers>
-        <invoker folderid="/home/rpt/transmittal" caption="Transmittals" index="3" action="init"/>
+        <invoker folderid="/home/rpt/transmittal" caption="Transmittals" index="-1" action="init"/>
     </invokers>
     <code>
         class TransmittalCrudList extends com.rameses.seti2.models.CrudListModel

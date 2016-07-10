@@ -20,11 +20,14 @@ class ProvinceFAASRemoteService
 	def notificationService
 
 	
+	@ProxyMethod
 	public void postDataCapturedFaas(faas){
 		supportSvc.saveFaasData(faas)
 		println 'Data captured FAAS has been successfully created.'
 	}
 
+
+	@ProxyMethod
 	public void postManualApprovedTransaction(faas){
 		def oldfaas = supportSvc.findFaasById(faas)
 		if (!oldfaas){
@@ -37,6 +40,7 @@ class ProvinceFAASRemoteService
 	}
 
 
+	@ProxyMethod
 	public void postMunicipalityApprovedFaas(faas){
 		def oldfaas = supportSvc.findFaasById(faas)
 		if (!oldfaas){
@@ -54,6 +58,7 @@ class ProvinceFAASRemoteService
 	}
 
 
+	@ProxyMethod
 	public void postFaasForProvinceApproval(faas){
 		def oldfaas = supportSvc.findFaasById(faas)
 		if (!oldfaas){
@@ -99,14 +104,19 @@ class ProvinceFAASRemoteService
 	}
 
 	void notifyGroup(faas){
-		def sender = (env.REQUESTER.FULLNAME ? env.REQUESTER.FULLNAME : env.REQUESTER.USER)
+		def sender = [userid:env.USERID, name:env.FULLNAME]
+		if (env.REQUESTER){
+			sender.userid = env.REQUESTER.USERID 
+			sender.name = (env.REQUESTER.FULLNAME ? env.REQUESTER.FULLNAME : env.REQUESTER.USER)
+		}
+
         def msg = [
             objid     		: faas.objid,
-            senderid  		: env.REQUESTER.USERID,
-            sender    		: sender,
+            senderid  		: sender.userid,
+            sender    		: sender.name,
             recipientid   	: 'assign-receiver',
             recipienttype 	: 'group',
-            message   		: 'FAAS No. ' + (faas.tdno ? faas.tdno : faas.utdno) + '    (assign-receiver) submitted by ' + sender + '.',
+            message   		: 'FAAS No. ' + (faas.tdno ? faas.tdno : faas.utdno) + '    (assign-receiver) submitted by ' + sender.name + '.',
             filetype  		: 'faas',
             data 	  		: [objid: faas.objid, taskid:faas.taskid],
         ]

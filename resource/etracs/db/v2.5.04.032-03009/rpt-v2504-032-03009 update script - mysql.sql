@@ -44,6 +44,8 @@ CREATE TABLE `rpttransmittal_item` (
   `refno` varchar(150) NOT NULL,
   `message` varchar(350),
   `remarks` varchar(350),
+  `status` varchar(50), 
+  `disapprovedby_name` varchar(150),
   PRIMARY KEY  (`objid`),
   UNIQUE KEY `ux_parentid_refid` (`parentid`,`refid`),
   KEY `ix_refid` (`refid`),
@@ -54,3 +56,5 @@ alter table rpttransmittal_item
 add CONSTRAINT `FK_rpttransmittal_item_rpttransmittal` 
 FOREIGN KEY (`parentid`) REFERENCES `rpttransmittal` (`objid`);
 
+
+alter table rpt_changeinfo add redflagid varchar(50);

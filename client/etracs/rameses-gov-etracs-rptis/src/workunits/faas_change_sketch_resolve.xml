@@ -47,6 +47,7 @@ class ChangeSketchController extends com.rameses.gov.etracs.rpt.faas.ui.FaasSket
             action      : invoker.properties.actiontype,
             newinfo     : [:],
             previnfo    : [:],
+            redflagid   : entity._redflag?.objid,
         ];
     }
     

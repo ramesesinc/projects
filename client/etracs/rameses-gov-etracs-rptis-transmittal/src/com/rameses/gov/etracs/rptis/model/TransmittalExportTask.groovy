@@ -24,34 +24,41 @@ public class TransmittalExportTask implements Runnable{
         try{
             exportTransmittal();
             entity.items.each{
-                showinfo('Exporting Item ' + it.refno + '\n');
+                showinfo('Exporting Item ' + it.refno);
                 def ei = exportModel.exportItem(it);
                 if (!ei) throw new Exception('Item data must be exported.')
                 writer.writeObject(ei);
+                doSleep(500);
             }
-            writer.close();
-            oncomplete('Transmittal is successfully exported.');
+            oncomplete('Transmittal has been successfully exported.');
         }
         catch(e){
+            e.printStackTrace();
             writer.cancel();
-            onerror('\n\n' + e.message )
+            onerror(e.message )
+        }
+        finally{
+            writer.close();
         }
     }
     
+    void doSleep(ms){
+        try{
+            sleep(ms)
+        }
+        catch(e){
+            //ignore 
+        }
+            
+    }
+    
     void exportTransmittal(){
-        showinfo('Exporting Transmittal ' + entity.txnno + '\n');
-        def m = [:]
-        m.putAll(entity);
-        
-        def items = m.items;
-        m.remove('items');
-        
+        showinfo('Exporting Transmittal ' + entity.txnno);
         def data = [
             filetype    : 'transmittal',
-            transmittal : m,
+            transmittal : entity,
         ]
         writer.writeObject(data);
-        showinfo('done.\n');
     }
     
 }

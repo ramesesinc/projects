@@ -1,15 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<workunit>
+<workunit extends="rpt_wtemplates/RPTTransmittalExport.xml">
     <invokers>
         <invoker type="rpttransmittal:formActions" action="init" caption="Export" target="self"  
             visibleWhen="#{showExport &amp;&amp; entity.filetype=='faas'}" index="10" role="RECORD" />
-            
-        <invoker type="formActions" action="_close" caption="Close" mnemonic="c" immediate="true" /> 
    </invokers>
    <code class="com.rameses.gov.etracs.rptis.model.TransmittalExportFAASModel" />       
-    <pages> 
-        <page template="com.rameses.gov.etracs.rptis.view.TransmittalExportImportPage"/>
-    </pages>
 </workunit>
 
 

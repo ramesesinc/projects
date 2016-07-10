@@ -32,7 +32,6 @@ class RPTTransmittalService
 	def STATE_RECEIVED = 'RECEIVED'
 	def STATE_FORAPPROVAL = 'FORAPPROVAL'
 	def STATE_APPROVED = 'APPROVED'
-	def STATE_DISAPPROVED = 'DISAPPROVED'
 
 	def TYPE_FORAPPROVAL = 'FORAPPROVAL'
 	def TYPE_SYNC = 'SYNC'
@@ -76,11 +75,6 @@ class RPTTransmittalService
 	}
 
 	@ProxyMethod
-	public def importTransmittal( entity ) {
-		db_rpttransmittal.create(entity)
-	}
-
-	@ProxyMethod
 	public def update( entity ) {
 		db_rpttransmittal.update(entity)
 		return entity
@@ -95,6 +89,7 @@ class RPTTransmittalService
 		//entity.hasimportedapproval = em.findDataCount(entity).icount > 0
 		return entity
 	}
+
 
 	@ProxyMethod
 	public void saveItem( item ) {
@@ -152,18 +147,19 @@ class RPTTransmittalService
 		return entity
 	}
 
-	@ProxyMethod
-	public def disapprove(entity){
-		if (getState(entity) != STATE_FORAPPROVAL)
-			throw new Exception('Transmittal state is invalid or has been changed.\nOnly FOR APPROVAL state is allowed.')
-		updateState(entity, STATE_DISAPPROVED)
-		return entity
-	}
 
 	@ProxyMethod
 	public def approve(entity){
 		if (getState(entity) != STATE_FORAPPROVAL)
 			throw new Exception('Transmittal state is invalid or has been changed.\nOnly FOR APPROVAL state is allowed.')
+
+		def exist = db_rpttransmittal_item.select('objid')
+						.where("parentid = :parentid and status not in ('APPROVED', 'DISAPPROVED', 'RESOLVED')", [parentid:entity.objid])
+						.first()
+
+		if (exist)
+			throw new Exception('Unable to close transmittal.\nThere are still unapproved item(s).')
+
 		updateState(entity, STATE_APPROVED)
 		return entity
 	}

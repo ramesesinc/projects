@@ -86,3 +86,13 @@ update rptledger set
 	taxpayer_objid = $P{taxpayer_objid},
 	owner_name = $P{owner_name}
 where faasid = $P{faasid}
+
+
+[getImageIds]
+
+select rq.objid
+from rpt_redflag rr 
+	inner join rpt_requirement rq on rr.refid = rq.refid 
+where rr.objid = $P{objid}
+and rq.requirementtypeid = $P{requirementtypeid};
+

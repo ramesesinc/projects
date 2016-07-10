@@ -42,6 +42,7 @@ public class AddFaasRequirementDocumentController
             action      : invoker.properties.actiontype,
             newinfo     : [:],
             previnfo    : [:],
+            redflagid   : entity._redflag?.objid,
         ];
         loadRequirement();
     }

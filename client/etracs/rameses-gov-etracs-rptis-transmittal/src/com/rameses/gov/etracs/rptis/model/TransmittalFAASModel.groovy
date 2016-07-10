@@ -30,9 +30,12 @@ class TransmittalFAASModel extends TransmittalModel
     }
     
     public def buildItemData(faas){
+        if ('municipality'.equalsIgnoreCase(entity.tolgu.lgutype) && faas.lguid != entity.tolgu.objid )
+            throw new Exception('FAAS is invalid. Only FAAS from ' + entity.tolgu.name + ' is accepted.');
+            
         if (entity.type == 'SYNC'){
-            if (faas.state != 'CURRENT') 
-                throw new Exception('FAAS state is invalid. Ony Current state is allowed.');
+            if (!faas.state.matches('CURRENT|CANCELLED')) 
+                throw new Exception('FAAS state is invalid. Only current or cancelled state is allowed.');
         }
         else{
             if (RPTUtil.isTrue(faas.datacapture)){

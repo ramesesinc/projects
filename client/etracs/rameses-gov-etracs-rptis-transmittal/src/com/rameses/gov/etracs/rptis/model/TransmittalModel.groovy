@@ -68,7 +68,8 @@ public abstract class TransmittalModel extends PageFlowController
     }
     
     void cancelEdit(){
-        open();
+        entity = svc.open(entity);
+        entity.items = svc.getItems(entity);
         mode = MODE_READ;
     }
     
@@ -89,24 +90,15 @@ public abstract class TransmittalModel extends PageFlowController
         entity.putAll(svc.submitForApproval(entity));
     }
     
-    void disapprove(){
-        entity.putAll(svc.disapprove(entity));
-    }
-    
     void approve(){
         entity.putAll(svc.approve(entity));
     }
-    
-    def getHasImportedApproval(){
-        return entity.hasimportedapproval
-    }
-    
     
     List getTransmittalTypes(){
         return svc.getTransmittalTypes();
     }
     
-    List getLgus(){
+   List getLgus(){
         def lgus = [];
         if (OsirisContext.env.ORGCLASS.equalsIgnoreCase('PROVINCE')){
             lgus = lguSvc.lookupMunicipalities([:]);
@@ -129,8 +121,6 @@ public abstract class TransmittalModel extends PageFlowController
             return true;
         if (entity.state == 'APPROVED' && entity.tolgu.objid == OsirisContext.env.ORGID)
             return true;
-        if (entity.state == 'DISAPPROVED' && entity.tolgu.objid == OsirisContext.env.ORGID)
-            return true;
         return false;
     }
     
@@ -138,8 +128,8 @@ public abstract class TransmittalModel extends PageFlowController
         if (entity.state == 'FORAPPROVAL' && entity.tolgu.objid == OsirisContext.env.ORGID)
             return true;
         return false;
-    }
-    
+    }    
+        
     
     /*============================================
     ** ITEMS SUPPORT

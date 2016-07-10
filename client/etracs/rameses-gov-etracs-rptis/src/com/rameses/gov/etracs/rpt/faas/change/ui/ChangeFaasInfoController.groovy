@@ -43,6 +43,7 @@ public abstract class ChangeFaasInfoController
             rpid   	: entity.rp.objid,
             rpuid  	: entity.rpu.objid,
             action      : getAction(),
+            redflagid : entity._redflag?.objid,
         ];
         
         changeinfo.newinfo = getModifiedEntity();

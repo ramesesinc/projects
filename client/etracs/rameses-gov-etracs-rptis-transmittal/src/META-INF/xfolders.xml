@@ -8,7 +8,7 @@
     </folder>
     <folder id="home">
         <folder id="rpt" caption="Assessor">
-            <folder id="transmittal" caption="Transmittal" index="50"/>
+            <folder id="transmittal" caption="Transmittal" index="5000"/>
         </folder>
     </folder>
 </folders>

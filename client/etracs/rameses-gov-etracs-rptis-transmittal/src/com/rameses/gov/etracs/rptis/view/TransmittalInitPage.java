@@ -4,7 +4,6 @@
  */
 package com.rameses.gov.etracs.rptis.view;
 
-import com.rameses.gov.etracs.rpt.transmittal.ui.*;
 import com.rameses.osiris2.themes.FormPage;
 import com.rameses.rcp.ui.annotations.StyleSheet;
 import com.rameses.rcp.ui.annotations.Template;

@@ -1,19 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<workunit>
+<workunit extends="rpt_wtemplates/RPTTransmittalImport.xml">
     <invokers>
-        <invoker folderid="/home/rpt/transmittal" action="init"  
-            caption="Import FAAS Transmittal" 
+        <invoker folderid="/home/rpt/transmittal" 
+            action="init"  
+            caption="Import FAAS" 
             index="35" 
+            filetype="faas" 
             role="RECORD" />
-        
-        <invoker type="formActions" action="_close" caption="Close" mnemonic="c" immediate="true" /> 
    </invokers>
-   <code class="com.rameses.gov.etracs.rptis.model.TransmittalImportFAASModel">       
-   </code>
-    
-    <pages> 
-        <page template="com.rameses.gov.etracs.rpt.transmittal.ui.TransmittalExportImportPage"/>
-    </pages>
 </workunit>
 
 

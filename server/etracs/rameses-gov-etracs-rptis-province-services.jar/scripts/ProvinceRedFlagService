@@ -42,6 +42,7 @@ class ProvinceRedFlagService
 	}
 
 
+	@ProxyMethod
 	public void resolveRedFlag(redflag){
 		redflagSvc.save(redflag)
 		notifyFiledBy(redflag)

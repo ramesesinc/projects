@@ -48,7 +48,6 @@ class ProvinceFAASWorkflowInterceptor
 		println 'Disapprove Faas...'
 		def task = evt.args[0]
 		def faas = task.data
-		faasSvc.deleteFaas(faas)
 
 		def disapproveinfo = [
 			taskid  : task.objid,
@@ -58,6 +57,9 @@ class ProvinceFAASWorkflowInterceptor
 			lguid   : faas.lguid,
 			disapprovedby: [objid:env.USERID, name:env.FULLNAME]
 		]
+		faas.disapproveinfo = disapproveinfo
+		faasSvc.disapproveOnlineFaas(faas)
+		
 		def asyncreq = svc.createAsyncRequest('MunicipalityFAASRemoteCallHandler', 'disapproveFaasByProvince', disapproveinfo)
 		svc.sendMessage(createAsyncMessage('prov-faas-disapprove-txn', asyncreq[0], faas))
 	}

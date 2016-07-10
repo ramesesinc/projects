@@ -201,6 +201,11 @@ class FAASService
 	}
 
 	@ProxyMethod
+	public def disapproveOnlineFaas(faas) {
+		faasSvc.deleteFaas(faas)
+	}
+
+	@ProxyMethod
 	public def deleteFaas( faas ) {
 		if (!faas.allowdelete){
 			def currentstate = getState(faas.objid)
@@ -238,8 +243,7 @@ class FAASService
 		if (faas.txntype.newrpu){
 			rpuSvc.deleteRpu(rpuSvc.openRpu(faas.rpu))
 		}
-		
-		if (faas.rpu.rputype == 'land' && faas.txntype.newrealproperty){
+		if (faas.rpu.rputype == 'land' && util.isTrue(faas.txntype.newrealproperty)){
 			rpSvc.delete(rpSvc.open(faas.rp) )
 		}
 
@@ -295,6 +299,7 @@ class FAASService
 	public def approveFaas( faas ) {
 		approveParentFaas(faas)
 		def currentstate = getState(faas.objid)
+		println 'currentstate -> ' + currentstate
 		if (currentstate == STATE_CURRENT)  
 			throw new Exception('FAAS is already current.')
 		if (currentstate == STATE_CANCELLED)  
@@ -307,10 +312,8 @@ class FAASService
 		updateTDNo(faas)
 		updateFullPinInfo(faas)
 		updateDateApprovedInfo(faas)
-		def retval = em.approveFaas(faas)
-		if (retval == 0) 
-			throw new Exception('Unable to approve FAAS. Only FOR APPROVAL record can be approved.')
-
+		em.approveFaas(faas)
+		
 		if (faas.txntype.newrealproperty)
 			rpSvc.approve(faas.rp)
 
@@ -324,8 +327,10 @@ class FAASService
 	}
 
 	void approveParentFaas(faas){
+		println 'faas.parentfaasid -> ' + faas.parentfaasid
         if (faas.parentfaasid){
-            faasSvc.approveFaas(openFaas([objid:faas.parentfaasid]))
+        	def pf = openFaas([objid:faas.parentfaasid])
+            faasSvc.approveFaas(pf)
         }
     }
 

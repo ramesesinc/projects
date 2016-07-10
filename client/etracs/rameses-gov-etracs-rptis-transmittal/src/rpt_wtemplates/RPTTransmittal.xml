@@ -49,15 +49,10 @@
         
         <page name="forapproval" title="Transmittal (For Approval)">
             <transition caption="Close" to="end" mnemonic="c" icon="images/toolbars/cancel.png" />
-            <transition caption="Approve" to="approved" action="approve" mnemonic="v" confirm="Approve transmittal?" visibleWhen="#{showForApprovalActions}"/>
-            <transition caption="Disapprove" to="disapproved" action="disapprove" mnemonic="v" confirm="Disapprove transmittal?" visibleWhen="#{showForApprovalActions}"/>
+            <transition caption="Approve" to="approved" action="approve" mnemonic="c" confirm="Approve?" visibleWhen="#{showForApprovalActions}"/>
         </page>
         
         <page name="approved" title="Transmittal (Approved)">
-            <transition caption="Close" to="end" mnemonic="c" icon="images/toolbars/cancel.png"/>
-        </page>
-        
-        <page name="disapproved" title="Transmittal (Disapproved)">
             <transition caption="Close" to="end" mnemonic="c" icon="images/toolbars/cancel.png"/>
         </page>
         
@@ -71,7 +66,6 @@
         <page name="submitted" template="com.rameses.gov.etracs.rptis.view.TransmittalPage"/>
         <page name="forapproval" template="com.rameses.gov.etracs.rptis.view.TransmittalPage"/>
         <page name="approved" template="com.rameses.gov.etracs.rptis.view.TransmittalPage"/>
-        <page name="disapproved" template="com.rameses.gov.etracs.rptis.view.TransmittalPage"/>
     </pages>
 </workunit>
 

@@ -11,12 +11,17 @@ public class TransmittalExportFAASModel extends TransmittalExportModel
     def supportSvc;
     
     public def exportItem(transmittalitem){
-        def faasdata = supportSvc.getFaasData([objid:transmittalitem.refid]);
-        return [
-            filetype : 'faasdata',
-            transmittalitem : transmittalitem,
-            faasdata : faasdata,
-        ]
+        def data = [:]
+        data.filetype = 'faasdata';
+        data.transmittalitem = transmittalitem;
+        
+        if ('DISAPPROVED'.equalsIgnoreCase(transmittalitem.status)){
+            data.faasdata = [objid:transmittalitem.refid, tdno:transmittalitem.refno]; 
+        }
+        else{
+            data.faasdata = supportSvc.getFaasData([objid:transmittalitem.refid]);
+        }
+        return data;
     }
       
 }

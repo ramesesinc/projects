@@ -16,6 +16,7 @@ class ProvinceConsolidationRemoteService
 	def workflowSvc
 
 
+	@ProxyMethod 
 	public void postConsolidationForApproval(consolidation){
 		supportSvc.postConsolidationData(consolidation)
 		if (!consolidation._resubmitted){
@@ -25,19 +26,26 @@ class ProvinceConsolidationRemoteService
 		println 'Submitted consolidation has been successfully created.'
 	}
 
+
+	@ProxyMethod 
 	public void repostConsolidationRequirements(reqdata){
 		supportSvc.repostConsolidationRequirements(reqdata)
 	}	
 
 	void notifyGroup(consolidation){
-		def sender = (env.REQUESTER.FULLNAME ? env.REQUESTER.FULLNAME : env.REQUESTER.USER)
+		def sender = [userid:env.USERID, name:env.FULLNAME]
+		if (env.REQUESTER){
+			sender.userid = env.REQUESTER.USERID 
+			sender.name = (env.REQUESTER.FULLNAME ? env.REQUESTER.FULLNAME : env.REQUESTER.USER)
+		}
+
         def msg = [
             objid     		: consolidation.objid,
-            senderid  		: env.REQUESTER.USERID,
-            sender    		: sender,
+            senderid  		: sender.userid,
+            sender    		: sender.name,
             recipientid   	: 'assign-receiver',
             recipienttype 	: 'group',
-            message   		: 'Consolidation No. ' + consolidation.txnno + ' submitted for approval by ' + sender + ' (assign-receiver)',
+            message   		: 'Consolidation No. ' + consolidation.txnno + ' submitted for approval by ' + sender.name + ' (assign-receiver)',
             filetype  		: 'consolidation',
             data 	  		: [objid: consolidation.objid],
         ]

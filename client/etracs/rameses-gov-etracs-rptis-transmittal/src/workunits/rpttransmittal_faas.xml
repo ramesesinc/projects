@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit extends="rpt_wtemplates/RPTTransmittal.xml">
     <invokers>
-        <invoker folderid="/home/rpt/transmittal" caption="FAAS Transmittal" 
+        <invoker folderid="/home/rpt/transmittal" caption="Transmit FAAS" 
             action="init" 
             index="21"
             role="RECORD" />

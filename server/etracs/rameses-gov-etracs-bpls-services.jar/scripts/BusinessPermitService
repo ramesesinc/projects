@@ -174,7 +174,13 @@ class BusinessPermitService  {
 			if ( addr.pin ) perm.pin = addr.pin; 
 		} 
 
-		addr = entity_address.read([ objid: perm.owner?.address?.objid ]);
+		addr = perm.owner?.address; 
+		if ( addr?.objid ) {
+			addr = entity_address.read([ objid: addr.objid ]);
+		} else {
+			addr = null; 
+		} 
+		
 		if ( addr ) {
 			addr.showextended = false; 
 			perm.owneraddress = formatAddress( addr ); 

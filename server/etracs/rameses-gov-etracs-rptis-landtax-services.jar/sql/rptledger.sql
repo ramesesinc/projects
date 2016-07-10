@@ -713,21 +713,23 @@ where rptledgerid = $P{rptledgerid}
 
 
 [resetQtrlyItemFullyPaidFlagByYear]
-update rptledgeritem_qtrly set 
-	fullypaid = 0,
-	partialled = 0,
-	basicpaid = 0.0,
-	basicintpaid = 0.0,
-	basicdisctaken = 0.0,
-	basicidlepaid = 0.0,
-	basicidledisctaken = 0.0,
-	basicidleintpaid = 0.0,
-	sefpaid = 0.0,
-	sefintpaid = 0.0,
-	sefdisctaken = 0.0,
-	firecodepaid = 0.0
-where rptledgerid = $P{rptledgerid}
-  and year = $P{lastyearpaid}
+update rptledgeritem_qtrly rliq, rptledgeritem rli set 
+	rliq.fullypaid = 0,
+	rliq.partialled = 0,
+	rliq.basicpaid = 0.0,
+	rliq.basicintpaid = 0.0,
+	rliq.basicdisctaken = 0.0,
+	rliq.basicidlepaid = 0.0,
+	rliq.basicidledisctaken = 0.0,
+	rliq.basicidleintpaid = 0.0,
+	rliq.sefpaid = 0.0,
+	rliq.sefintpaid = 0.0,
+	rliq.sefdisctaken = 0.0,
+	rliq.firecodepaid = 0.0
+where rliq.parentid = rli.objid 
+  and rliq.rptledgerid = $P{rptledgerid}
+  and rliq.year > $P{lastyearpaid}
+  and rli.taxdifference  like $P{taxdifference}
 
 
 [resetItemFullyPaidFlagByYear]
@@ -744,7 +746,8 @@ update rptledgeritem  set
 	sefdisctaken = 0.0,
 	firecodepaid = 0.0
 where rptledgerid = $P{rptledgerid}
-  and year = $P{lastyearpaid}  
+  and year > $P{lastyearpaid}  
+  and taxdifference like $P{taxdifference}
   	
 
 [findQtrlyItemCount]  	
@@ -776,21 +779,23 @@ and taxdifference = 0
 
 
 [fixLedgerSetQtrlyItemFullyPaid]
-update rptledgeritem_qtrly set 
-	fullypaid = 1,
-	basicpaid = basic,
-	basicintpaid = basicint,
-	basicdisctaken = basicdisc,
-	basicidlepaid = basicidle,
-	basicidledisctaken = basicidledisc,
-	basicidleintpaid = basicidleint,
-	sefpaid = sef,
-	sefintpaid = sefint,
-	sefdisctaken = sefdisc,
-	firecodepaid = firecode,
-	partialled = 0 
-where rptledgerid = $P{rptledgerid}
-  and ( year < $P{lastyearpaid} or ( year = $P{lastyearpaid} and qtr <= $P{lastqtrpaid}))
+update rptledgeritem_qtrly rliq, rptledgeritem rli set 
+	rliq.fullypaid = 1,
+	rliq.basicpaid = rliq.basic,
+	rliq.basicintpaid = rliq.basicint,
+	rliq.basicdisctaken = rliq.basicdisc,
+	rliq.basicidlepaid = rliq.basicidle,
+	rliq.basicidledisctaken = rliq.basicidledisc,
+	rliq.basicidleintpaid = rliq.basicidleint,
+	rliq.sefpaid = rliq.sef,
+	rliq.sefintpaid = rliq.sefint,
+	rliq.sefdisctaken = rliq.sefdisc,
+	rliq.firecodepaid = rliq.firecode,
+	rliq.partialled = 0 
+where rliq.parentid = rli.objid 
+  and rliq.rptledgerid = $P{rptledgerid}
+  and ( rliq.year < $P{lastyearpaid} or ( rliq.year = $P{lastyearpaid} and rliq.qtr <= $P{lastqtrpaid}))
+  and rli.taxdifference like $P{taxdifference}
 
 
 [fixLedgerSetItemFullyPaid]
@@ -828,6 +833,7 @@ set
 	rli.sefdisctaken = rliq.sefdisctaken,
 	rli.firecodepaid = rliq.firecodepaid
 where rli.objid = rliq.parentid 
+and rli.taxdifference like $P{taxdifference}
 
 
 [updateLedgerItemAvByQtrly]

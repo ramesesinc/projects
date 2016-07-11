@@ -1,14 +1,13 @@
 <workunit extends="com/rameses/seti2/templates/CrudLookup.xml" schemaName="bank">
     
    <invokers>
-         <invoker type="bank_depository:lookup" caption="Bank" 
-                  action="init" 
-                  customFilter="depository=1" cols="code,name,branchname"/>
+         <invoker type="bank_depository:lookup" caption="Bank" action="init" 
+                  cols="code,name,branchname,depository,deposittype" 
+                  customFilter="depository=1"/>
          
-         <invoker type="bank:lookup" caption="Bank" 
-                  action="init" 
-                  cols="code,name,branchname,depository"/>
-   </invokers>
+         <invoker type="bank:lookup" caption="Bank" action="init" 
+                  cols="code,name,branchname,depository,deposittype"/> 
+   </invokers> 
    
    <!--
    <code>

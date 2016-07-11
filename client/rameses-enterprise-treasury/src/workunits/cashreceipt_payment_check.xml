@@ -11,6 +11,9 @@
 
         class CashReceiptCheckPaymentController {        
         
+            @Binding 
+            def binding; 
+        
             @Service("CashReceiptService")
             def cashReceiptSvc;
             
@@ -38,16 +41,16 @@
                         check.bankid = it.objid;
                         check.bank   = it.code;
                         check.deposittype = it.deposittype;
-                    },
-                    
+                        binding?.refresh(); 
+                    }, 
                     onempty  : {
                         check.bankid = null;
                         check.bank   = null;
                         check.deposittype = null;
-                    }
+                        binding?.refresh(); 
+                    } 
                 ])
             }
-            
         }
         ]]>
     </code>

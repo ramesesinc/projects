@@ -23,6 +23,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import com.rameses.android.ApplicationUtil;
 import com.rameses.android.ControlActivity;
 import com.rameses.android.R;
+import com.rameses.android.db.BldgRpuDB;
 import com.rameses.android.db.ExaminationDB;
 import com.rameses.android.db.FaasDB;
 import com.rameses.android.efaas.adapter.ExaminationMenuAdapter;
@@ -38,11 +39,15 @@ public class FaasBuildingActivity extends ControlActivity {
 	public boolean isCloseable() { return false; }
 	
 	private static TextView tdno, pin, owner, address;
+	private static TextView bldgage, effectiveage, depreciationpercentage, depreciationvalue;
+	private static TextView floorcount, percentcompleted, datecompleted, dateoccupied;
+	private static TextView permitno, issuancedate;
 	private static Button material_add, appraisal_add, examination_add;
 	private static ListView material_list, examination_list;
 	
 	public static Activity activity;
 	private static Properties faas = null;
+	private static Properties bldgrpu = null;
 	private static String faasid;
 	private static String rpuid;
 	private static Properties examination;
@@ -109,6 +114,16 @@ public class FaasBuildingActivity extends ControlActivity {
 		pin = (TextView) view.findViewById(R.id.faas_pin);
 		owner = (TextView) view.findViewById(R.id.faas_owner);
 		address = (TextView) view.findViewById(R.id.faas_address);
+		bldgage = (TextView) view.findViewById(R.id.faas_buildingage);
+		effectiveage = (TextView) view.findViewById(R.id.faas_effectivegage);
+		depreciationpercentage = (TextView) view.findViewById(R.id.faas_depreciationpercentage);
+		depreciationvalue = (TextView) view.findViewById(R.id.faas_depreciationvalue);
+		floorcount = (TextView) view.findViewById(R.id.faas_floorcount);
+		percentcompleted = (TextView) view.findViewById(R.id.faas_percentcompleted);
+		datecompleted = (TextView) view.findViewById(R.id.faas_datecompleted);
+		dateoccupied = (TextView) view.findViewById(R.id.faas_dateoccupied);
+		permitno = (TextView) view.findViewById(R.id.faas_permitno);
+		issuancedate = (TextView) view.findViewById(R.id.faas_permitissuedate);
 		
 		try{
 			FaasDB db = new FaasDB();
@@ -128,6 +143,29 @@ public class FaasBuildingActivity extends ControlActivity {
 			address.setText(faas.getProperty("owner_address"));
 		}else{
 			new InfoDialog(activity, "Record not found!").show();
+		}
+		
+		try{
+			Map params = new HashMap();
+			params.put("objid", rpuid);
+			
+			BldgRpuDB db = new BldgRpuDB();
+			bldgrpu = db.find(params);
+		}catch(Exception e){
+			ApplicationUtil.showShortMsg(e.toString());
+		}
+		
+		if(bldgrpu != null){
+			bldgage.setText(bldgrpu.getProperty("bldgage"));
+			effectiveage.setText(bldgrpu.getProperty("effectiveage"));
+			depreciationpercentage.setText(bldgrpu.getProperty("depreciation"));
+			depreciationvalue.setText(bldgrpu.getProperty("depreciationvalue"));
+			floorcount.setText(bldgrpu.getProperty("floorcount"));
+			percentcompleted.setText(bldgrpu.getProperty("percentcompleted"));
+			datecompleted.setText(bldgrpu.getProperty("dtcompleted"));
+			dateoccupied.setText(bldgrpu.getProperty("dtoccupied"));
+			permitno.setText(bldgrpu.getProperty("permitno"));
+			issuancedate.setText(bldgrpu.getProperty("permitdate"));
 		}
 	}
 	

@@ -7,5 +7,6 @@
 - ASSESSOR
 	- Update transmittal support
 	- Add support for non-taxable machine
+	- Fix missing machine FAAS info (brand/model)
 	
 - LANDTAX

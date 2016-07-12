@@ -20,6 +20,12 @@ public class FAASListService extends ActiveCrudListService {
     @Service('NumberService')
     def numSvc
 
+    @Service('PropertyClassificationService')
+    def propSvc 
+
+    @Service('FAASService')
+    def faasSvc
+
     @ProxyMethod
     public def getColumns(params) {
         return [
@@ -148,6 +154,16 @@ public class FAASListService extends ActiveCrudListService {
             if (whereclause) whereclause += ' AND ' 
             whereclause += ' f.taxpayer_objid LIKE $P{taxpayerid} '
         }
+        if (params.classification){
+            params.classificationid = params.classification.objid 
+            if (whereclause) whereclause += ' AND ' 
+            whereclause += ' f.classification_objid = $P{classificationid} '
+        }
+        if (params.txntype){
+            params.txntypeid = params.txntype.objid 
+            if (whereclause) whereclause += ' AND ' 
+            whereclause += ' f.txntype_objid = $P{txntypeid} '
+        }
 
         switch(params.name) {
             case 'all':
@@ -206,5 +222,16 @@ public class FAASListService extends ActiveCrudListService {
             'CANCELLED',
         ]
     }    
+
+    @ProxyMethod
+    public def getClassifications(  ) {
+        return propSvc.getList([:]) 
+    }
+
+    @ProxyMethod
+    public def getTxnTypes(){
+        return faasSvc.getTxnTypes();
+            
+    }
 
 }

@@ -49,6 +49,8 @@ public class FaasExplorerViewListPage extends javax.swing.JPanel {
         xFormPanel5 = new com.rameses.rcp.control.XFormPanel();
         jPanel2 = new javax.swing.JPanel();
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
+        xLabel6 = new com.rameses.rcp.control.XLabel();
+        xLabel7 = new com.rameses.rcp.control.XLabel();
         xLabel5 = new com.rameses.rcp.control.XLabel();
         xLabel9 = new com.rameses.rcp.control.XLabel();
         xLabel12 = new com.rameses.rcp.control.XLabel();
@@ -230,36 +232,52 @@ public class FaasExplorerViewListPage extends javax.swing.JPanel {
 
         xFormPanel1.setCaptionWidth(90);
 
+        xLabel6.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
+        xLabel6.setCaption("TD No.");
+        xLabel6.setDepends(new String[] {"listHandler.selectedEntity"});
+        xLabel6.setExpression("#{selectedEntity.tdno}");
+        xLabel6.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        xLabel6.setPreferredSize(new java.awt.Dimension(0, 19));
+        xFormPanel1.add(xLabel6);
+
+        xLabel7.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
+        xLabel7.setCaption("PIN");
+        xLabel7.setDepends(new String[] {"listHandler.selectedEntity"});
+        xLabel7.setExpression("#{selectedEntity.displaypin}");
+        xLabel7.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        xLabel7.setPreferredSize(new java.awt.Dimension(0, 19));
+        xFormPanel1.add(xLabel7);
+
         xLabel5.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
         xLabel5.setCaption("Owner Name");
         xLabel5.setDepends(new String[] {"listHandler.selectedEntity"});
         xLabel5.setExpression("#{selectedEntity.owner.name}");
-        xLabel5.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        xLabel5.setPreferredSize(new java.awt.Dimension(0, 21));
+        xLabel5.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        xLabel5.setPreferredSize(new java.awt.Dimension(0, 19));
         xFormPanel1.add(xLabel5);
 
         xLabel9.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
         xLabel9.setCaption("Owner Address");
         xLabel9.setDepends(new String[] {"listHandler.selectedEntity"});
         xLabel9.setExpression("#{selectedEntity.owner.address}");
-        xLabel9.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        xLabel9.setPreferredSize(new java.awt.Dimension(0, 21));
+        xLabel9.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        xLabel9.setPreferredSize(new java.awt.Dimension(0, 19));
         xFormPanel1.add(xLabel9);
 
         xLabel12.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
         xLabel12.setCaption("Administrator");
         xLabel12.setDepends(new String[] {"listHandler.selectedEntity"});
         xLabel12.setExpression("#{selectedEntity.administrator.name}");
-        xLabel12.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        xLabel12.setPreferredSize(new java.awt.Dimension(0, 21));
+        xLabel12.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        xLabel12.setPreferredSize(new java.awt.Dimension(0, 19));
         xFormPanel1.add(xLabel12);
 
         xLabel14.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
         xLabel14.setCaption("Address");
         xLabel14.setDepends(new String[] {"listHandler.selectedEntity"});
         xLabel14.setExpression("#{selectedEntity.administrator.address}");
-        xLabel14.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        xLabel14.setPreferredSize(new java.awt.Dimension(0, 21));
+        xLabel14.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        xLabel14.setPreferredSize(new java.awt.Dimension(0, 19));
         xFormPanel1.add(xLabel14);
 
         jPanel2.add(xFormPanel1, java.awt.BorderLayout.CENTER);
@@ -344,6 +362,8 @@ public class FaasExplorerViewListPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XLabel xLabel14;
     private com.rameses.rcp.control.XLabel xLabel2;
     private com.rameses.rcp.control.XLabel xLabel5;
+    private com.rameses.rcp.control.XLabel xLabel6;
+    private com.rameses.rcp.control.XLabel xLabel7;
     private com.rameses.rcp.control.XLabel xLabel9;
     private com.rameses.rcp.control.XTextField xTextField1;
     private com.rameses.rcp.control.XTextField xTextField11;

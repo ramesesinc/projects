@@ -394,6 +394,54 @@
                     </Constraint>
                   </Constraints>
                   <SubComponents>
+                    <Component class="com.rameses.rcp.control.XLabel" name="xLabel6">
+                      <Properties>
+                        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                          <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
+                            <LineBorder>
+                              <Color PropertyName="color" blue="99" green="99" red="99" type="rgb"/>
+                            </LineBorder>
+                          </Border>
+                        </Property>
+                        <Property name="caption" type="java.lang.String" value="TD No."/>
+                        <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
+                          <StringArray count="1">
+                            <StringItem index="0" value="listHandler.selectedEntity"/>
+                          </StringArray>
+                        </Property>
+                        <Property name="expression" type="java.lang.String" value="#{selectedEntity.tdno}"/>
+                        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                          <Font name="Tahoma" size="11" style="1"/>
+                        </Property>
+                        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                          <Dimension value="[0, 19]"/>
+                        </Property>
+                      </Properties>
+                    </Component>
+                    <Component class="com.rameses.rcp.control.XLabel" name="xLabel7">
+                      <Properties>
+                        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                          <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
+                            <LineBorder>
+                              <Color PropertyName="color" blue="99" green="99" red="99" type="rgb"/>
+                            </LineBorder>
+                          </Border>
+                        </Property>
+                        <Property name="caption" type="java.lang.String" value="PIN"/>
+                        <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
+                          <StringArray count="1">
+                            <StringItem index="0" value="listHandler.selectedEntity"/>
+                          </StringArray>
+                        </Property>
+                        <Property name="expression" type="java.lang.String" value="#{selectedEntity.displaypin}"/>
+                        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                          <Font name="Tahoma" size="11" style="1"/>
+                        </Property>
+                        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                          <Dimension value="[0, 19]"/>
+                        </Property>
+                      </Properties>
+                    </Component>
                     <Component class="com.rameses.rcp.control.XLabel" name="xLabel5">
                       <Properties>
                         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
@@ -411,10 +459,10 @@
                         </Property>
                         <Property name="expression" type="java.lang.String" value="#{selectedEntity.owner.name}"/>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                          <Font name="Tahoma" size="12" style="1"/>
+                          <Font name="Tahoma" size="11" style="1"/>
                         </Property>
                         <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                          <Dimension value="[0, 21]"/>
+                          <Dimension value="[0, 19]"/>
                         </Property>
                       </Properties>
                     </Component>
@@ -435,10 +483,10 @@
                         </Property>
                         <Property name="expression" type="java.lang.String" value="#{selectedEntity.owner.address}"/>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                          <Font name="Tahoma" size="12" style="1"/>
+                          <Font name="Tahoma" size="11" style="1"/>
                         </Property>
                         <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                          <Dimension value="[0, 21]"/>
+                          <Dimension value="[0, 19]"/>
                         </Property>
                       </Properties>
                     </Component>
@@ -459,10 +507,10 @@
                         </Property>
                         <Property name="expression" type="java.lang.String" value="#{selectedEntity.administrator.name}"/>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                          <Font name="Tahoma" size="12" style="1"/>
+                          <Font name="Tahoma" size="11" style="1"/>
                         </Property>
                         <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                          <Dimension value="[0, 21]"/>
+                          <Dimension value="[0, 19]"/>
                         </Property>
                       </Properties>
                     </Component>
@@ -483,10 +531,10 @@
                         </Property>
                         <Property name="expression" type="java.lang.String" value="#{selectedEntity.administrator.address}"/>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                          <Font name="Tahoma" size="12" style="1"/>
+                          <Font name="Tahoma" size="11" style="1"/>
                         </Property>
                         <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                          <Dimension value="[0, 21]"/>
+                          <Dimension value="[0, 19]"/>
                         </Property>
                       </Properties>
                     </Component>

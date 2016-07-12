@@ -21,10 +21,15 @@ class TransmittalFAASModel extends TransmittalModel
     
     def getLookupHandler(){
         return Inv.lookupOpener('rptredflag:lookup', [
-            onselect : {
-                def item = buildItemData(it);
-                validateItem(item);
-                selectedItem.putAll(item);
+            onselect : {items ->
+                doValidateItems(items);
+                items.each{
+                    def item = buildItemData(it);
+                    validateItem(item);
+                    svc.saveItem(item);
+                    entity.items << item;
+                }
+                listHandler.reload();
             },
             
             onempty : {
@@ -32,18 +37,13 @@ class TransmittalFAASModel extends TransmittalModel
                 selectedItem.refid = null;
                 selectedItem.state = null;
                 selectedItem.message = null;
-            }
+            },
+            
+            multiSelect : true,
         ])
     }
     
     public def buildItemData(redflag){
-        if (redflag.state != 'OPEN')
-            throw new Exception('Red Flag is invalid. Only open state is allowed.');
-            
-        if ('municipality'.equalsIgnoreCase(entity.tolgu.lgutype) && redflag.lguid != entity.tolgu.objid )
-            throw new Exception('Red Flag is invalid. Only record from ' + entity.tolgu.name + ' is allowed.');
-        
-
         def item = [:]
         item.refid = redflag.objid;
         item.refno = redflag.caseno;
@@ -54,5 +54,18 @@ class TransmittalFAASModel extends TransmittalModel
     List getTransmittalTypes(){
         return ['FORAPPROVAL']
     }
+    
+    void doValidateItems(items){
+        items.each{redflag ->
+            if (redflag.state != 'OPEN')
+            throw new Exception('Red Flag ' + redflag.caseno + ' is invalid. Only open state is allowed.');
+            
+            if ('municipality'.equalsIgnoreCase(entity.tolgu.lgutype) && redflag.lguid != entity.tolgu.objid )
+                throw new Exception('Red Flag ' + redflag.caseno + ' is invalid. Only record from ' + entity.tolgu.name + ' is allowed.');
+
+            def exist = entity.items.find{it.refid == redflag.objid}
+            if (exist) throw new Exception('Red Flag ' + redflag.caseno + ' has already been added.');
+        }
+    }  
     
 }

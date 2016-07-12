@@ -14,9 +14,15 @@ class TransmittalSubdivisionModel extends TransmittalModel
     
     def getLookupHandler(){
         return Inv.lookupOpener('subdivision:lookup', [
-            onselect : {
-                def item = buildItemData(it);
-                selectedItem.putAll(item);
+            onselect : {items ->
+                doValidateItems(items);
+                items.each{
+                    def item = buildItemData(it);
+                    validateItem(item);
+                    svc.saveItem(item);
+                    entity.items << item;
+                }
+                listHandler.reload();
             },
             
             onempty : {
@@ -24,16 +30,13 @@ class TransmittalSubdivisionModel extends TransmittalModel
                 selectedItem.refid = null;
                 selectedItem.state = null;
                 selectedItem.message = null;
-            }
+            },
+            
+            multiSelect : true,
         ])
     }
     
     public def buildItemData(subdivision){
-        if ('municipality'.equalsIgnoreCase(entity.tolgu.lgutype) && subdivision.lguid != entity.tolgu.objid )
-            throw new Exception('Subdivision is invalid. Only subdivision from ' + entity.tolgu.name + ' is accepted.');
-            
-        if (! subdivision.state.matches('FORAPPROVAL'))
-            throw new Exception('Subdivision state is invalid. Only FORAPPROVAL state is allowed.')
         def item = [:]
         item.refid = subdivision.objid;
         item.refno = subdivision.txnno;
@@ -44,6 +47,19 @@ class TransmittalSubdivisionModel extends TransmittalModel
         
     List getTransmittalTypes(){
         return ['FORAPPROVAL']
+    }
+    
+    void doValidateItems(items){
+        items.each{subdivision ->
+            if ('municipality'.equalsIgnoreCase(entity.tolgu.lgutype) && subdivision.lguid != entity.tolgu.objid )
+            throw new Exception('Subdivision ' + subdivision.txnno + 'is invalid. Only subdivision from ' + entity.tolgu.name + ' is accepted.');
+            
+            if (! subdivision.state.matches('FORAPPROVAL'))
+                throw new Exception('Subdivision ' + subdivision.txnno + ' state is invalid. Only FORAPPROVAL state is allowed.')
+
+            def exist = entity.items.find{it.refid == subdivision.objid}
+            if (exist) throw new Exception('Subdivision ' + subdivision.txnno + ' has already been added.');
+        }
     }
     
 }

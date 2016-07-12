@@ -14,10 +14,15 @@ class TransmittalCancelledFAASModel extends TransmittalModel
     
     def getLookupHandler(){
         return Inv.lookupOpener('cancelledfaas:lookup', [
-            onselect : {
-                def item = buildItemData(it);
-                validateItem(item);
-                selectedItem.putAll(item);
+            onselect : {items ->
+                doValidateItems(items);
+                items.each{
+                    def item = buildItemData(it);
+                    validateItem(item);
+                    svc.saveItem(item);
+                    entity.items << item;
+                }
+                listHandler.reload();
             },
             
             onempty : {
@@ -25,20 +30,16 @@ class TransmittalCancelledFAASModel extends TransmittalModel
                 selectedItem.refid = null;
                 selectedItem.state = null;
                 selectedItem.message = null;
-            }
+            },
+            
+            multiSelect : true,
         ])
     }
     
     public def buildItemData(cancelledfaas){
-        if ('municipality'.equalsIgnoreCase(entity.tolgu.lgutype) && cancelledfaas.lguid != entity.tolgu.objid )
-            throw new Exception('Cancelled FAAS is invalid. Only record from ' + entity.tolgu.name + ' is accepted.');
-            
-        if (!cancelledfaas.state.matches('DRAFT'))
-            throw new Exception('Cancelled FAAS state is invalid. Only draft state is allowed.')
-        def refno = cancelledfaas.txnno;
         def item = [:]
         item.refid = cancelledfaas.objid;
-        item.refno = refno;
+        item.refno = cancelledfaas.txnno;
         item.state = cancelledfaas.state;
         return item;
     }
@@ -47,5 +48,16 @@ class TransmittalCancelledFAASModel extends TransmittalModel
         return ['FORAPPROVAL']
     }
 
-    
+    void doValidateItems(items){
+        items.each{cancelledfaas ->
+            if ('municipality'.equalsIgnoreCase(entity.tolgu.lgutype) && cancelledfaas.lguid != entity.tolgu.objid )
+            throw new Exception('Cancelled FAAS ' + cancelledfaas.txnno + ' is invalid. Only record from ' + entity.tolgu.name + ' is accepted.');
+            
+        if (!cancelledfaas.state.matches('DRAFT'))
+            throw new Exception('Cancelled FAAS ' + cancelledfaas.txnno + ' state is invalid. Only draft state is allowed.')
+            
+            def exist = entity.items.find{it.refid == cancelledfaas.objid}
+            if (exist) throw new Exception('Cancelled FAAS ' + cancelledfaas.txnno + ' has already been added.');
+        }
+    }    
 }

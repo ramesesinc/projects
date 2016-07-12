@@ -140,6 +140,8 @@ public abstract class TransmittalModel extends PageFlowController
     def abstract getLookupHandler();
     
     void validateItem(item){
+        if (!item.objid)
+            item.objid = 'TI' + new java.rmi.server.UID();
         if (!item.parentid)
             item.parentid = entity.objid; 
         if (!item.filetype)

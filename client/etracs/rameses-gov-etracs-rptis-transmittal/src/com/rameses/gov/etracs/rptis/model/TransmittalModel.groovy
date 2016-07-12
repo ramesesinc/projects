@@ -39,6 +39,11 @@ public abstract class TransmittalModel extends PageFlowController
     
     public final def getService(){ return svc; }
     
+    public String getTitle(){
+        def t = getFileType().toUpperCase() + ' Transmittal (' + entity.state.toLowerCase() + ')';
+        return t;
+    }
+    
     def init(){
         entity = [
             objid  : 'T' + new java.rmi.server.UID(),
@@ -47,6 +52,7 @@ public abstract class TransmittalModel extends PageFlowController
         ];
         entity.items = [];
         mode = MODE_CREATE;
+        listHandler?.reload();
         return super.signal('init');
     }
     
@@ -83,11 +89,18 @@ public abstract class TransmittalModel extends PageFlowController
     }
     
     void submit(){
+        checkItems();
         entity.putAll(svc.submit(entity));
     }
     
     void submitForApproval(){
+        checkItems();
         entity.putAll(svc.submitForApproval(entity));
+    }
+    
+    void checkItems(){
+        if (!entity.items)
+            throw new Exception('Unable to submit transmittal.\nAt least one item is required.');
     }
     
     void approve(){

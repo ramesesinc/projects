@@ -40,6 +40,7 @@
         
         <page name="submitted" title="Transmittal (Submitted)">
             <transition caption="Close" to="end" mnemonic="c" icon="images/toolbars/cancel.png" />
+            <transition caption="New" to="init" action="init" mnemonic="n" icon="images/toolbars/create.png"/>
         </page>
         
         <process name="back-to-submitted">
@@ -49,11 +50,13 @@
         
         <page name="forapproval" title="Transmittal (For Approval)">
             <transition caption="Close" to="end" mnemonic="c" icon="images/toolbars/cancel.png" />
+            <transition caption="New" to="init" action="init" mnemonic="n" icon="images/toolbars/create.png"/>
             <transition caption="Approve" to="approved" action="approve" mnemonic="c" confirm="Approve?" visibleWhen="#{showForApprovalActions}"/>
         </page>
         
         <page name="approved" title="Transmittal (Approved)">
             <transition caption="Close" to="end" mnemonic="c" icon="images/toolbars/cancel.png"/>
+            <transition caption="New" to="init" action="init" mnemonic="n" icon="images/toolbars/create.png"/>
         </page>
         
         <end />

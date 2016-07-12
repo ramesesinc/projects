@@ -1,6 +1,6 @@
 <workunit extends="com/rameses/seti2/templates/CrudList.xml" 
           schemaName="rpttransmittal" 
-          cols="filetype,state,txnno,txndate,remarks"
+          cols="filetype,type,state,txnno,txndate,tolgu.name,createdby.name,remarks"
           allowCreate="false" 
           allowDelete="false"
           orderBy="txnno DESC">

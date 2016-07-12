@@ -82,7 +82,7 @@ public class FaasController
     
     void create(){
         loadRpuOpener();
-        mode = MODE_CREATE;
+        mode = MODE_EDIT;
     }
     
     void init(){ 

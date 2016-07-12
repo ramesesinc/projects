@@ -69,6 +69,12 @@ class FAASService
 	def UTDNO_KEY 				= 'UNIQUE_TDNO'
 
 
+	@ProxyMethod
+	public def initCaptureAndCreate( info ) {
+		def faas = initCapture(info)
+		createFaas(faas)
+		return faas
+	}
 
 	@ProxyMethod
 	public def initCapture( info ) {

@@ -5,6 +5,7 @@
 - BPLS 
 		
 - ASSESSOR
+	- Commit on data capture automatically to avoid duplication
 	- Update transmittal support
 	- Add support for non-taxable machine
 	- Fix missing machine FAAS info (brand/model)

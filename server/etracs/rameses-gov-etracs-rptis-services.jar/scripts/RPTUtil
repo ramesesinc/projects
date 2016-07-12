@@ -491,7 +491,7 @@ class RPTUtil
     @ProxyMethod
     public void buildEmptyRows( data, listlimitsize) {
         for(int i=data.size + 1; i<listlimitsize; i++) {
-            data.add( [:] )
+            data.add( [taxable:true] )
         }
     }   
 

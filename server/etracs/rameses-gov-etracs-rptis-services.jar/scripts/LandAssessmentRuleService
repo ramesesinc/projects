@@ -75,8 +75,6 @@ public class LandAssessmentRuleService
 
 		def taxables = rpu.landdetails.findAll{it.taxable == true}
 		if (taxables){
-			rpu.totallandbmv = taxables.basemarketvalue.sum()
-			rpu.totallandmv = taxables.marketvalue.sum()
 			rpu.totallandav = taxables.assessedvalue.sum()
 		}
 		if (rpu.planttrees){
@@ -87,6 +85,8 @@ public class LandAssessmentRuleService
 		}
 
 		if (rpu.landdetails){
+			rpu.totallandbmv = rpu.landdetails.basemarketvalue.sum()
+			rpu.totallandmv = rpu.landdetails.marketvalue.sum()
 			rpu.totalareaha = numSvc.roundA(rpu.landdetails.areaha.sum(), 6)
 			rpu.totalareasqm = numSvc.round(rpu.landdetails.areasqm.sum())
 		}

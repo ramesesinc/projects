@@ -10,6 +10,7 @@ SELECT
 	al.name AS actualusename,
 	ld.areasqm, 
 	ld.areaha,
+	ld.taxable, 
 	CASE WHEN ld.areatype = 'HA' THEN ld.areaha ELSE ld.areasqm END AS area,
 	ld.unitvalue,
 	ld.basemarketvalue,

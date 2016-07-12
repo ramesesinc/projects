@@ -79,3 +79,17 @@ go
 
 alter table rpt_changeinfo add redflagid varchar(50)
 go 
+
+
+
+
+/*=================================================================
+*
+* MACHINE TAXABILITY
+* 
+=================================================================*/
+
+alter table machdetail add taxable int
+go 
+update machdetail set taxable = 1 where taxable is null
+go 

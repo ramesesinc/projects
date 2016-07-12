@@ -58,3 +58,15 @@ FOREIGN KEY (`parentid`) REFERENCES `rpttransmittal` (`objid`);
 
 
 alter table rpt_changeinfo add redflagid varchar(50);
+
+
+
+/*=================================================================
+*
+* MACHINE TAXABILITY
+* 
+=================================================================*/
+
+alter table machdetail add taxable int;
+update machdetail set taxable = 1 where taxable is null;
+  

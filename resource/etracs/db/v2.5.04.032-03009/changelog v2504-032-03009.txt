@@ -5,6 +5,8 @@
 - BPLS 
 		
 - ASSESSOR
+	- Fix TD Report sqm area
+	- Allow edit of superseded information
 	- Commit on data capture automatically to avoid duplication
 	- Update transmittal support
 	- Add support for non-taxable machine

@@ -1,7 +1,8 @@
 <workunit extends="wtemplates/ListController.xml">
         
    <invokers>
-        <invoker folderid="home/af" caption="AF Controls" index="1" action="init" role="COLLECTOR"/>
+        <invoker folderid="home/treasury" caption="AF Controls" index="1" action="init" role="COLLECTOR"/>
+        
         <invoker folderid="/explorer/txn/treasury" caption="AF Controls" index="1" action="init" role="COLLECTOR"/>
         <invoker folderid="/explorer/txn/treasury" caption="AF Controls (Subcollector )" index="1" action="init" role="SUBCOLLECTOR"/>
         

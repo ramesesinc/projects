@@ -19,6 +19,6 @@
         </folder>
     </folder>
     <folder id="home">
-        <folder id="market" caption="Market"/>
+        <folder id="market" caption="Market" icon="home/icons/market.png"/>
     </folder>
 </folders>

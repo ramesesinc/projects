@@ -1,0 +1,102 @@
+<workunit>
+    <invokers>
+        <invoker folderid="/home/business/business_application" caption="Additional"  
+                 action="start" target="window"  role="BUSINESSINFO" index="52"
+                 icon="images/application-add-line.png" />
+        
+        <invoker type="lobActions" caption="Add" action="lob.add"  immediate="true"/>
+        <invoker type="lobActions" caption="Remove" action="lob.remove"  immediate="true" visibleWhen="#{lob.selectedItem!=null &amp;&amp; lob.selectedItem.assessmenttype=='NEW'}"/>
+
+         <invoker type="extActions" caption="Print"  icon="images/toolbars/printer.png" 
+            action="application.print" visibleWhen="#{state=='save-success'}"/>
+    </invokers>
+    
+    <code> 
+    <![CDATA[ 
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        import java.rmi.server.*;
+        import com.rameses.util.*;
+        import com.rameses.gov.etracs.bpls.controller.*;
+        
+        public class RenewBusinessApplication extends PageFlowController { 
+        
+            @Script("BusinessSearchUtil")
+            def searchList;
+        
+            @Script("BusinessApplicationUtil")
+            def application;
+            
+            @Script("BusinessLobUtil")
+            def lob;
+
+            @Script("BusinessInfoUtil")
+            def appinfo;
+
+            @FormTitle
+            def title = "Additional Business";
+
+            def entity;
+            def text = 'Add line of business'
+            
+            void open() {
+                application.init([ businessid:searchList.selectedItem.objid, apptype: 'ADDITIONAL']); 
+                lob.reset(); 
+                appinfo.reset(); 
+            } 
+            
+            void updateInfo() { 
+                def l = entity.lobs.findAll{ it.assessmenttype.matches('NEW') };
+                if( !l ) {
+                    throw new Exception("There must be at least one additional line of business");
+                }    
+                lob.verify(); 
+                boolean pass = false;
+                appinfo.handler = { 
+                    pass = true;
+                }
+                Modal.show(appinfo.update());
+                if(!pass) throw new BreakException();
+                appinfo.verify();
+                lob.removeActiveLobs();
+            }
+        }
+    ]]>
+    </code>    
+    
+    <pageflow>
+        <start>
+            <transition to="search" name="create" />
+        </start>
+        
+        <page name="search" title="Search Business Name">
+            <transition to="edit-lob" caption="Next" name="next" mnemonic="N" immediate="false" action="open"/>
+        </page>
+        
+        <page name="edit-lob" title="Specify Line of Business">
+            <transition to="search" caption="Back" mnemonic="B" name="back"/>
+            <transition to="confirm" caption="Next" name="next" mnemonic="N"  action="updateInfo" immediate="false"/>
+        </page>
+
+        <page name="confirm" title="Confirm">
+            <transition to="edit-lob" caption="Back" mnemonic="B" name="back" action="lob.restoreAllLobs"/>
+            <transition to="save-success" caption="Submit" mnemonic="S" name="save" action="application.save"
+            confirm="You are about to save this transaction. Continue?"/>
+        </page>
+        
+        <page name="save-success" title="Save Success (New Application)">
+            <transition to="initial" caption="Add Another" mnemonic="A" action="init"/>
+        </page>
+        
+        <end/>
+    </pageflow>
+    
+    <pages>
+        <page name="search" template="com.rameses.gov.etracs.bpls.view.SearchBusinessPage"/>
+        <page name="edit-lob" template="com.rameses.gov.etracs.bpls.view.AdditionalBusinessPage"/>
+        <page name="confirm" template="com.rameses.gov.etracs.bpls.view.ConfirmPage"/>
+        <page name="save-success" template="com.rameses.gov.etracs.bpls.view.SuccessPage"/>
+    </pages>
+</workunit>

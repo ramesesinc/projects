@@ -1,0 +1,48 @@
+<workunit>
+    <invokers>
+        <invoker type="entityindividual:create" caption="Individual Entity (Create)" action="create" target="popup" role="MASTER" permission="individualentity.create"/>
+        <invoker type="quick_launcher" code="TP01" caption="Individual Entity (Create)" action="create" target="popup" role="MASTER" permission="individualentity.create"/>
+        <!--
+        <invoker type="individualentity:create" caption="Individual Entity (Create)" action="create" target="popup" role="MASTER" permission="individualentity.create"/>
+        <invoker type="quick_launcher" code="TP01" caption="Individual Entity (Create)" action="create" target="popup" role="MASTER" permission="individualentity.create"/>
+        -->
+        <!--
+        <invoker type="formActions" caption="Close" action="_exit" visibleWhen="#{initiator == 'create'}"/>
+        <invoker type="formActions" caption="Close" action="_close" visibleWhen="#{initiator != 'create'}"/>
+        <invoker type="formActions" caption="Remove" action="remove" role="MASTER" permission="individualentity.delete" />
+        -->
+        
+        <!-- used to check if we can allow dupplicate -->
+        <invoker type="individualentity:approveduplicate" role="APPROVER" permission="individualentity.approveduplicate" />
+    </invokers>
+    
+    <code class="com.rameses.entity.models.NewIndividualEntityModel" />
+
+    <pageflow>
+       <start>
+           <transition to="#{step}"/>
+       </start>
+       <page name="initial" title="New Individual Entity (Initial)">
+           <transition to="check-has-match" caption="Next" immediate="false" mnemonic="n"/>
+       </page>
+       <process name="check-has-match" action="checkHasMatch">
+           <transition to="match" cond="#{hasMatch == true}"/> 
+           <transition to="add" cond="#{hasMatch == false}"/> 
+       </process>
+       <page name="match" title="New Individual Entity (Possible Duplicate Match)">
+           <transition to="initial" caption="Back" name="back" mnemonic="b" />
+           <transition to="add" name="add" caption="Add as new Entity" action="validateAdd" mnemonic="a"/>
+       </page>
+       <page name="add" title="New Individual Entity">
+           <transition to="initial" caption="Edit Name" name="back" mnemonic="b"/>
+           <transition to="end" caption="Save" name="save" action="saveNew" immediate="false" 
+               mnemonic="s" shortcut="ctrl S"/>
+       </page>
+       <end/>
+   </pageflow>
+   <pages>
+       <page name="initial" template="com.rameses.entity.views.IndividualEntityNamePage"/>
+       <page name="match" template="com.rameses.entity.views.MatchNameListPage"/>
+       <page name="add"  template="com.rameses.entity.views.IndividualEntityPage"/>
+   </pages>   
+</workunit>

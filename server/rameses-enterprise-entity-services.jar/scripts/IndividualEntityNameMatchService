@@ -5,7 +5,7 @@ import com.rameses.services.extended.*;
 
 public class IndividualEntityNameMatchService {
 
-	@ActiveDB("entityindividual")
+	@DataContext("entityindividual")
 	def em;
 
 	@Service("DateService")
@@ -24,7 +24,9 @@ public class IndividualEntityNameMatchService {
 
 		test.lastname = info.lastname[0..1]+"%";
 
-		def list = em.getMatchList( test );
+		def list = em.select("objid,entityno,lastname,firstname,middlename,birthdate,gender,name,address.objid,address.text")
+			.where("lastname LIKE :lname", [lname: test.lastname]).list();
+
 		if(!list) return  [];
 
 		def matches = [];

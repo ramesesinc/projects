@@ -13,4 +13,12 @@ class ListService {
 		return [];
 	}
 
+	@ProxyMethod
+	public void add(def o) {
+		if(!o.name)
+			throw new Exception("ListService.add error. parameter must have a name")
+		if(!o.value)
+			throw new Exception("ListService.add error. parameter must have a value")
+	}
+
 }

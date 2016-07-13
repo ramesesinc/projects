@@ -1,0 +1,41 @@
+<workunit>
+    <invokers>
+        <!--
+        <invoker type="home.action" caption="Reconcile Individual" target="popup" role="ADMIN" 
+                 permission="individualentity.reconcile" action="start"/>
+        -->         
+    </invokers>
+    
+    <code class="com.rameses.entity.ui.reconcile.ReconcileIndividualEntityController"/>
+   
+    <pageflow>
+       <start>
+           <transition to="init"/>
+       </start>
+       <page name="init" title="Reconcile Individual Entity">
+           <transition to="select-record" caption="Next" action="buildMatch"/>
+       </page>    
+       <page name="select-record" title="Reconcile Individual Entity - Select Master">
+           <transition to="init" caption="Back" action="buildMatch"/>
+           <transition to="process" caption="Next" action="buildForProcess"/>
+       </page>    
+       <page name="process" title="Reconcile Individual Entity - Start Process">
+           <transition to="select-record" caption="Back" />
+           <transition to="processing" caption="Process" action="startProcess"/>
+       </page>
+       <page name="processing" title="Reconcile Individual Entity - Processing">
+           <transition  to="init" caption="End" action="doFinish" visibleWhen="#{false}"/>
+       </page>
+       <end/> 
+    </pageflow>
+   
+   <pages>
+       <page name="init" template="com.rameses.entity.ui.reconcile.SelectMatchPage"/>
+       <page name="select-record" template="com.rameses.entity.ui.reconcile.SelectMasterRecordPage"/>
+       <page name="process" template="com.rameses.entity.ui.reconcile.ReconcileProcessPage"/>
+       <page name="processing" template="com.rameses.entity.ui.reconcile.ReconcileProcessPage"/>
+   </pages>  
+    
+    
+    
+</workunit>

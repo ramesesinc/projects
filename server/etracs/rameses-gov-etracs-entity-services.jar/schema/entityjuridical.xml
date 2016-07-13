@@ -1,6 +1,6 @@
 <schema>
 	
-	<element  tablename="entityjuridical">
+	<element  tablename="entityjuridical" extends="entity">
 		<field name="objid" required="true" primary="true"/>
 		<field name="tin" />
 		<field name="dtregistered" />

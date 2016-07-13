@@ -5,7 +5,7 @@
             <action name="doInit" role="CASHIER" tag="bycashier"/>             
         </invoker>
             
-        <invoker folderid="home/deposit" caption="Bank Deposits" role="CASHIER" index="50" target="window">
+        <invoker folderid="home/treasury/deposit" caption="Bank Deposits" role="CASHIER" index="50" target="window">
             <action name="doInit" role="SHARED" tag="all" permission="bankdeposit.view"/> 
             <action name="doInit" role="CASHIER" tag="bycashier"/>             
         </invoker>

@@ -2,7 +2,9 @@
     <invokers>
        <invoker type="rulemgmt:formActions" caption="Market Rules Analyzer" 
             visibleWhen="#{ruleset == 'marketbilling' || ruleset == 'marketrental'}" target="window" role="RULE_AUTHOR"/>       
-       <invoker type="home.action" caption="Market Billing Analyzer" target="window" role="RULE_AUTHOR"/>       
+       
+       <invoker folderid="home/market" 
+                caption="Market Billing Analyzer" target="window" role="RULE_AUTHOR"/>       
             
        <invoker type="formActions" caption="Back" action="_close" immediate="true"/>
        <invoker type="formActions" caption="Compute Rate" action="computeRate"/>

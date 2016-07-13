@@ -49,16 +49,6 @@ UPDATE entityindividual SET photo=$P{photo}, thumbnail=$P{thumbnail} WHERE objid
 SELECT thumbnail FROM entityindividual WHERE objid=$P{objid}
 
 
-[getReligionList]
-SELECT DISTINCT religion FROM entityindividual WHERE religion LIKE $P{searchtext}
-
-[getCitizenshipList]
-SELECT DISTINCT citizenship FROM entityindividual WHERE citizenship LIKE $P{searchtext} 
-
-[getProfessionList]
-SELECT DISTINCT profession FROM entityindividual WHERE profession LIKE $P{searchtext} 
-
-
 [updateName]
 UPDATE entityindividual 
 SET firstname=$P{firstname}, 

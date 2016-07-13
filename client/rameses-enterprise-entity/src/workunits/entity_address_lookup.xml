@@ -1,0 +1,19 @@
+<!--
+<workunit extends="com/rameses/seti2/templates/CrudLookup.xml" schemaName="entity_address">
+    <invokers>
+        <invoker type="entity_address:lookup" caption="Lookup Entity Address" 
+                 target="popup" height="350" action="init" cols="text"/>
+    </invokers>
+ </workunit>
+ -->
+ 
+ <workunit>
+    <invokers>
+        <invoker type="entity_address:lookup" caption="Lookup Entity Address" 
+                 target="popup" height="350" />
+    </invokers>
+    <code class="com.rameses.entity.models.EntityAddressListModel"/>
+    <pages>
+        <page template="com.rameses.entity.views.EntityAddressListPage" />
+    </pages>
+ </workunit>

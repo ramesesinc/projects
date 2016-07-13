@@ -1,0 +1,12 @@
+<workunit schemaName="entitymultiple">
+    <invokers>
+        <invoker type="entitymultiple:open" 
+                 caption="Multiple Entity" action="open"  
+                 role="MASTER" index="-1"
+                 windowTitle="#{entity.entityno}" formTitle="#{entity.entityno}" formId="#{entity.objid}"/>
+    </invokers>
+    <code class="com.rameses.entity.models.MultipleEntityModel" />
+    <pages>
+       <page template="com.rameses.entity.views.MultipleEntityPage"/>
+    </pages>   
+</workunit>

@@ -1,8 +1,9 @@
 <workunit>
     
    <invokers>
+         <invoker folderid="home/treasury/deposit" caption="Bank Deposit" action="init" target="window" role="CASHIER" index="51"/>
+
          <invoker type="bankdeposit:create" caption="Bank Deposit" action="init" target="window"/>
-         <invoker folderid="home/deposit" caption="Bank Deposit" action="init" target="window" role="CASHIER" index="51"/>
          <invoker folderid="/menu/txn/treasury" caption="Bank Deposit" action="init" target="window" role="CASHIER" />
          <invoker type="quick_launcher" code="BNKD" caption="Bank Deposits" action="init" target="window" role="CASHIER"/>
          <invoker type="bankdeposit:open" caption="Bank Deposit (Open)" action="open" target="window"/>

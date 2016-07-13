@@ -7,11 +7,11 @@
         <invoker type="afris:type" caption="Purchase Stock" reqtype="PURCHASE" role="AFO"/>
         <invoker type="afris:type" caption="Sale" reqtype="SALE" role="COLLECTOR,AFO"/>
 
-        <invoker folderid="home/af" caption="AF Request"  index="1" role="COLLECTOR" target="window" action="initCollector"/>
+        <invoker folderid="home/treasury" caption="AF Request"  index="1" role="COLLECTOR" target="window" action="initCollector"/>
         <invoker folderid="/menu/txn/treasury" caption="AF Request" index="10" role="COLLECTOR" action="initCollector"/>
         <invoker type="quick_launcher" code="AFRIS" caption="Accountable Form RIS" index="1" role="COLLECTOR" target="window" action="initCollector"/>
         
-        <invoker folderid="home/af" caption="AF Request" index="1" role="AFO" target="window" action="initAFO"/>
+        <invoker folderid="home/treasury" caption="AF Request" index="1" role="AFO" target="window" action="initAFO"/>
         <invoker folderid="/menu/txn/treasury" caption="AF Request" index="10" role="AFO" action="initAFO"/>
         <invoker type="quick_launcher" code="AFRIS" caption="Accountable Form RIS" aindex="1" role="AFO" target="window" action="initAFO"/>
         --> 
@@ -26,9 +26,9 @@
         <invoker type="afreq:type:purchase" caption="Purchase Stock" reqtype="PURCHASE" role="AFO"/>
         <invoker type="afreq:type:sale" caption="Sale" reqtype="SALE" role="AFO"/>
         
-        <invoker folderid="home/af" caption="Collection Request" role="AFO,COLLECTOR" action="initReqCollection" target="window" index="10"/>
-        <invoker folderid="home/af" caption="Purchase Stock Request" role="AFO" action="initReqPurchase" target="window" index="10"/>
-        <invoker folderid="home/af" caption="Sale Request" role="AFO" action="initReqSale" target="window" index="10"/>
+        <invoker folderid="home/treasury/af" caption="Collection Request" role="AFO,COLLECTOR" action="initReqCollection" target="window" index="10"/>
+        <invoker folderid="home/treasury/af" caption="Purchase Stock Request" role="AFO" action="initReqPurchase" target="window" index="10"/>
+        <invoker folderid="home/treasury/af" caption="Sale Request" role="AFO" action="initReqSale" target="window" index="10"/>
 
         <invoker folderid="/menu/txn/treasury" caption="Collection Request" role="AFO,COLLECTOR" action="initReqCollection" target="window" index="10"/>
         <invoker folderid="/menu/txn/treasury" caption="Purchase Stock Request" role="AFO" action="initReqPurchase" target="window" index="10"/>

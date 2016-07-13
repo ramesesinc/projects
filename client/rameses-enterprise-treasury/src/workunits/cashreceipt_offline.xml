@@ -1,7 +1,8 @@
 <workunit>
     
    <invokers>
-         <invoker folderid="home/collection" caption="Offline Cash Receipt" action="init" index="-4" role="COLLECTOR,SUBCOLLECTOR" target="window"/>
+         <invoker folderid="home/treasury/manualcollection" caption="Offline Collection" 
+                  action="init" index="-4" role="COLLECTOR,SUBCOLLECTOR" target="window"/>
    </invokers>
    
    <code>
@@ -134,7 +135,7 @@
    </code>
    
    <pages>
-       <page template="com.rameses.enterprise.treasury.cashreceipt.CashReceiptSelectionPage" />
+       <page template="com.rameses.enterprise.treasury.views.CashReceiptSelectionPage" />
    </pages>
    
 </workunit>

@@ -1,7 +1,7 @@
 <!-- REQUISITION ISSUE SLIP -->
 <workunit schemaName="paymentorder">
     <invokers>
-       <invoker type="home.action" caption="Payment Orders" />
+       <invoker folderid="home/treasury" caption="Payment Orders" />
     </invokers>
     <code>
         <![CDATA[

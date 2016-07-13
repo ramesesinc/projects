@@ -23,6 +23,9 @@ import com.rameses.osiris2.common.*
 
 class ChangeSketchController extends com.rameses.gov.etracs.rpt.faas.ui.FaasSketchInfoController
 {
+    @Caller
+    def caller 
+    
     @Invoker 
     def invoker
     
@@ -38,6 +41,12 @@ class ChangeSketchController extends com.rameses.gov.etracs.rpt.faas.ui.FaasSket
     
     void init(){
         super.init();
+        def previnfo = [:];
+        previnfo.north = entity.rp.north;
+        previnfo.east = entity.rp.east;
+        previnfo.west = entity.rp.west;
+        previnfo.south = entity.rp.south;
+        
         changeinfo = [
             objid       : 'CI' + new java.rmi.server.UID(),
             refid       : entity.objid,
@@ -46,7 +55,7 @@ class ChangeSketchController extends com.rameses.gov.etracs.rpt.faas.ui.FaasSket
             rpuid       : entity.rpu.objid,
             action      : invoker.properties.actiontype,
             newinfo     : [:],
-            previnfo    : [:],
+            previnfo    : previnfo,
             redflagid   : entity._redflag?.objid,
         ];
     }
@@ -67,7 +76,13 @@ class ChangeSketchController extends com.rameses.gov.etracs.rpt.faas.ui.FaasSket
     
     def save(){
         if (MsgBox.confirm('Save and apply changes?')){
+            changeinfo.newinfo.north = entity.rp.north;
+            changeinfo.newinfo.east = entity.rp.east;
+            changeinfo.newinfo.west = entity.rp.west;
+            changeinfo.newinfo.south = entity.rp.south;
+            
             svc.updateInfo(changeinfo);
+            caller.refreshForm();
             return '_close';
         }
         return null;

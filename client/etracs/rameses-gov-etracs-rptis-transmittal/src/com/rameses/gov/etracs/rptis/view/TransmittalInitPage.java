@@ -8,8 +8,6 @@ import com.rameses.osiris2.themes.FormPage;
 import com.rameses.rcp.ui.annotations.StyleSheet;
 import com.rameses.rcp.ui.annotations.Template;
 
-@Template(FormPage.class)
-@StyleSheet
 public class TransmittalInitPage extends javax.swing.JPanel {
 
     /**
@@ -31,10 +29,13 @@ public class TransmittalInitPage extends javax.swing.JPanel {
         xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
         xComboBox3 = new com.rameses.rcp.control.XComboBox();
         xComboBox4 = new com.rameses.rcp.control.XComboBox();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        xTextArea1 = new com.rameses.rcp.control.XTextArea();
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder1.setTitle("Initial Information");
         xFormPanel2.setBorder(xTitledBorder1);
+        xFormPanel2.setCaption("Initial Information");
         xFormPanel2.setCaptionWidth(120);
 
         xComboBox3.setCaption("Transmittal Type");
@@ -53,6 +54,14 @@ public class TransmittalInitPage extends javax.swing.JPanel {
         xComboBox4.setRequired(true);
         xFormPanel2.add(xComboBox4);
 
+        jScrollPane1.setPreferredSize(new java.awt.Dimension(0, 63));
+
+        xTextArea1.setCaption("Remarks");
+        xTextArea1.setName("entity.remarks"); // NOI18N
+        jScrollPane1.setViewportView(xTextArea1);
+
+        xFormPanel2.add(jScrollPane1);
+
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -66,13 +75,15 @@ public class TransmittalInitPage extends javax.swing.JPanel {
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(xFormPanel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 118, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(61, Short.MAX_VALUE))
+                .add(xFormPanel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 155, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(24, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JScrollPane jScrollPane1;
     private com.rameses.rcp.control.XComboBox xComboBox3;
     private com.rameses.rcp.control.XComboBox xComboBox4;
     private com.rameses.rcp.control.XFormPanel xFormPanel2;
+    private com.rameses.rcp.control.XTextArea xTextArea1;
     // End of variables declaration//GEN-END:variables
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit extends="rpt_wtemplates/RPTTransmittal.xml">
     <invokers>
-        <invoker folderid="/home/rpt/transmittal" caption="Transmit Cancelled FAAS" 
+        <invoker type="rpttransmittal" caption="Cancelled FAAS" 
             action="init" 
             index="24"
             role="RECORD" />

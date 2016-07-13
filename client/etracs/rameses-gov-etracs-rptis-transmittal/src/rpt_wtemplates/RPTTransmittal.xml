@@ -8,9 +8,11 @@
             <transition name="open" to="open"/>
         </start>
         
-        <page name="init" title="Transmittal: Initial Information">
+        <page name="init">
+            <!-- 
             <transition caption="Cancel" to="end"  mnemonic="c" icon="images/toolbars/cancel.png"/>
             <transition caption="Next"  to="default" action="createTransmittal" mnemonic="n"  />
+            -->
         </page>
         
         <process name="open">

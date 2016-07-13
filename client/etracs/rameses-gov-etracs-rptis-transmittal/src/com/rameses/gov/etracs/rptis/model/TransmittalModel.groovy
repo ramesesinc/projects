@@ -32,6 +32,7 @@ public abstract class TransmittalModel extends PageFlowController
     
     def mode;
     def entity;
+    def oncomplete;
     
     String entityName = 'rpttransmittal';
     
@@ -198,4 +199,8 @@ public abstract class TransmittalModel extends PageFlowController
         fetchList : { return entity.items },
     ] as EditorListModel;
     
+    @Close()
+    void onClose(){
+        if (oncomplete) oncomplete();
+    }
 }

@@ -16,6 +16,9 @@ class  IndividualCtcCashReceipt extends AbstractCashReceipt
     
     @Service('ProfessionService')
     def profSvc;
+    
+    @Service('PersistenceService') 
+    def persistenceSvc; 
 
     def payerdata  = [:];
     
@@ -114,7 +117,7 @@ class  IndividualCtcCashReceipt extends AbstractCashReceipt
         if ( ! o.type.equalsIgnoreCase('INDIVIDUAL'))
             throw new Exception('Only individual entities are allowed.');
         
-        def ent = entitySvc.open(o)
+        def ent = persistenceSvc.read([_schemaname:'entityindividual', objid: o.objid]); 
         o.putAll(ent);
         
         hasmiddlename = (o.middlename != null)

@@ -77,9 +77,9 @@ public class FaasLandActivity extends ControlActivity {
 		menu = (ListView) findViewById(R.id.faas_menu);
 		
 		final List<String> data_menu = new ArrayList<String>();
-		data_menu.add("General Information");
-		data_menu.add("Appraisal Information");
-		data_menu.add("Examination Information");
+		data_menu.add("General");
+		data_menu.add("Appraisal");
+		data_menu.add("Examination");
 		
 		ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,data_menu);
         menu.setAdapter(arrayAdapter); 

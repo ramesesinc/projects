@@ -4,39 +4,51 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
+
 import com.rameses.android.R;
+import com.rameses.android.db.BldgStructureDB;
 import com.rameses.android.db.MaterialDB;
 import com.rameses.android.db.StructureDB;
+import com.rameses.android.efaas.FaasBuildingActivity;
 import com.rameses.android.efaas.adapter.AppraisalItemAdapter;
+import com.rameses.android.efaas.bean.BldgStructure;
 import com.rameses.android.efaas.bean.DefaultItem;
 
 import android.app.AlertDialog;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.Spinner;
 
-public class StructuralMaterialInfo extends AlertDialog.Builder{
+public class StructuralMaterialInfo extends AlertDialog.Builder {
 	
 	public boolean CANCELLED = false;
 	private String objid, rpuid;
 	private boolean done = false;
+	private BldgStructure bs;
 	private Context ctx;
 	private AlertDialog.Builder builder;
 	private AlertDialog dialog;
 	private Throwable error = null;
 	private List<Map> data_structure, data_material;
 	private Spinner structure, material;
+	private EditText floorno;
 	
-	public StructuralMaterialInfo(Context ctx, String objid, String rpuid){
+	public StructuralMaterialInfo(Context ctx, BldgStructure bs){
 		super(ctx);
 		this.ctx = ctx;
-		this.objid = objid;
-		this.rpuid = rpuid;
+		this.bs = bs;
+		if(bs != null){
+			this.objid = bs.getObjid();
+			this.rpuid = bs.getBldgRpuId();
+		}
 		
 		LayoutInflater inflater = LayoutInflater.from(ctx);
 		View view = inflater.inflate(R.layout.activity_materials, null);
 		
+		floorno = (EditText) view.findViewById(R.id.material_floorno);
 		structure = (Spinner) view.findViewById(R.id.material_structure);
 		material = (Spinner) view.findViewById(R.id.material_material);
 		
@@ -62,6 +74,64 @@ public class StructuralMaterialInfo extends AlertDialog.Builder{
 			
 			structure.setAdapter(new AppraisalItemAdapter(ctx,android.R.layout.simple_spinner_item,filter(data_structure,"code","name")));
 			material.setAdapter(new AppraisalItemAdapter(ctx,android.R.layout.simple_spinner_item,filter(data_material,"code","name")));
+			
+			if(bs != null){
+				floorno.setText(bs.getFloorNo());
+				
+				int pos = 1;
+				for(Map m : data_structure){
+					String structureid = bs.getStructureId();
+					if(structureid != null) if(structureid.equals(m.get("objid").toString())) structure.setSelection(pos);
+					pos++;
+				}
+				
+				pos = 1;
+				for(Map m : data_material){
+					String materialid = bs.getMaterialId();
+					if(materialid != null) if(materialid.equals(m.get("objid").toString())) material.setSelection(pos);
+					pos++;
+				}
+			}
+		}catch(Throwable e){
+			new ErrorDialog(ctx, e).show();
+			error = e;
+		}
+	}
+	
+	private void doSave(){
+		try{
+			Map structure_data = find((DefaultItem)structure.getSelectedItem(),data_structure);
+			Map material_data = find((DefaultItem)material.getSelectedItem(),data_material);
+			
+			if(floorno.getText().toString().isEmpty()){
+				new InfoDialog(ctx, "Floor No. is required!").show();
+	    		return;
+			}
+			
+			if(structure_data == null || structure.getSelectedItemPosition() == 0){
+	    		new InfoDialog(ctx, "Structure is required!").show();
+	    		return;
+	    	}
+			
+			if(material_data == null || material.getSelectedItemPosition() == 0){
+	    		new InfoDialog(ctx, "Material is required!").show();
+	    		return;
+	    	}
+			
+			Map params = new HashMap();
+			params.put("bldgrpuid", rpuid);
+			params.put("structure_objid", structure_data.get("objid"));
+			params.put("material_objid", material_data.get("objid"));
+			params.put("floor", floorno.getText());
+			
+			BldgStructureDB db = new BldgStructureDB();
+			if(objid == null){
+				params.put("objid", UUID.randomUUID().toString());
+				db.create(params);
+			}else{
+				params.put("objid", objid);
+				db.update(params);
+			}
 		}catch(Throwable e){
 			new ErrorDialog(ctx, e).show();
 			error = e;
@@ -86,6 +156,17 @@ public class StructuralMaterialInfo extends AlertDialog.Builder{
 		return list;
 	}
 	
+	private Map find(DefaultItem item, List<Map> data){
+		Map m = null;
+		for(Map map : data){
+			String id = map.get("objid") != null ? map.get("objid").toString() : "";
+			if(item.getObjid().equals(id)){
+				return map;
+			}
+		}
+		return m;
+	}
+	
 	@Override
 	public AlertDialog show(){
 		dialog.show();
@@ -93,7 +174,11 @@ public class StructuralMaterialInfo extends AlertDialog.Builder{
 		dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener(){
 			@Override
 			public void onClick(View arg0) {
-
+				doSave();
+				if(error == null){
+					FaasBuildingActivity.loadMaterialInfo();
+					dialog.dismiss();
+				}
 			}
 		});
 		dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener(new View.OnClickListener(){

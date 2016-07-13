@@ -47,6 +47,16 @@ public class FaasExplorerViewListPage extends javax.swing.JPanel {
         xDataTable1 = new com.rameses.rcp.control.XDataTable();
         jPanel6 = new javax.swing.JPanel();
         xFormPanel5 = new com.rameses.rcp.control.XFormPanel();
+        xComboBox9 = new com.rameses.rcp.control.XComboBox();
+        xFormPanel3 = new com.rameses.rcp.control.XFormPanel();
+        xIntegerField2 = new com.rameses.rcp.control.XIntegerField();
+        xComboBox8 = new com.rameses.rcp.control.XComboBox();
+        xFormPanel4 = new com.rameses.rcp.control.XFormPanel();
+        xComboBox4 = new com.rameses.rcp.control.XComboBox();
+        xComboBox5 = new com.rameses.rcp.control.XComboBox();
+        xComboBox10 = new com.rameses.rcp.control.XComboBox();
+        xComboBox11 = new com.rameses.rcp.control.XComboBox();
+        xLookupField1 = new com.rameses.rcp.control.XLookupField();
         jPanel2 = new javax.swing.JPanel();
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
         xLabel6 = new com.rameses.rcp.control.XLabel();
@@ -214,14 +224,92 @@ public class FaasExplorerViewListPage extends javax.swing.JPanel {
         xDataTable1.setName("listHandler.selectedEntity"); // NOI18N
         pnlBody.add(xDataTable1, java.awt.BorderLayout.CENTER);
 
-        jPanel6.setPreferredSize(new java.awt.Dimension(14, 150));
+        jPanel6.setPreferredSize(new java.awt.Dimension(14, 160));
         jPanel6.setLayout(new java.awt.BorderLayout());
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder2 = new com.rameses.rcp.control.border.XTitledBorder();
-        xTitledBorder2.setTitle("Additional Search Criteria");
+        xTitledBorder2.setPadding(new java.awt.Insets(25, 5, 5, 5));
+        xTitledBorder2.setTitle("Additional Filter");
         xFormPanel5.setBorder(xTitledBorder2);
-        xFormPanel5.setName("formControl"); // NOI18N
+        xFormPanel5.setCaptionWidth(70);
         xFormPanel5.setPreferredSize(new java.awt.Dimension(320, 29));
+
+        xComboBox9.setCaption("State");
+        xComboBox9.setExpression("#{item.objid}");
+        xComboBox9.setItems("states");
+        xComboBox9.setName("query.state"); // NOI18N
+        xComboBox9.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel5.add(xComboBox9);
+
+        xFormPanel3.setCaptionWidth(90);
+        xFormPanel3.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
+        xFormPanel3.setPadding(new java.awt.Insets(0, 0, 0, 0));
+        xFormPanel3.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel3.setShowCaption(false);
+
+        xIntegerField2.setCaption("Revision");
+        xIntegerField2.setCaptionWidth(70);
+        xIntegerField2.setName("query.ry"); // NOI18N
+        xFormPanel3.add(xIntegerField2);
+
+        xComboBox8.setCaption("Txn");
+        xComboBox8.setCaptionWidth(50);
+        xComboBox8.setCellPadding(new java.awt.Insets(0, 5, 0, 0));
+        xComboBox8.setExpression("#{item.objid}");
+        xComboBox8.setItems("txntypes");
+        xComboBox8.setName("query.txntype"); // NOI18N
+        xComboBox8.setPreferredSize(new java.awt.Dimension(83, 20));
+        xFormPanel3.add(xComboBox8);
+
+        xFormPanel5.add(xFormPanel3);
+
+        xFormPanel4.setCaptionWidth(90);
+        xFormPanel4.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
+        xFormPanel4.setPadding(new java.awt.Insets(0, 0, 0, 0));
+        xFormPanel4.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel4.setShowCaption(false);
+
+        xComboBox4.setCaption("Property");
+        xComboBox4.setCaptionWidth(70);
+        xComboBox4.setItems("rputypes");
+        xComboBox4.setName("query.rputype"); // NOI18N
+        xComboBox4.setPreferredSize(new java.awt.Dimension(100, 20));
+        xFormPanel4.add(xComboBox4);
+
+        xComboBox5.setCaption("Class");
+        xComboBox5.setCaptionWidth(50);
+        xComboBox5.setCellPadding(new java.awt.Insets(0, 5, 0, 0));
+        xComboBox5.setExpression("#{item.code}");
+        xComboBox5.setItems("classifications");
+        xComboBox5.setName("query.classification"); // NOI18N
+        xComboBox5.setPreferredSize(new java.awt.Dimension(83, 20));
+        xFormPanel4.add(xComboBox5);
+
+        xFormPanel5.add(xFormPanel4);
+
+        xComboBox10.setCaption("LGU");
+        xComboBox10.setExpression("#{item.name}");
+        xComboBox10.setItems("lgus");
+        xComboBox10.setName("query.lgu"); // NOI18N
+        xComboBox10.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel5.add(xComboBox10);
+
+        xComboBox11.setCaption("Barangay");
+        xComboBox11.setDepends(new String[] {"query.lgu"});
+        xComboBox11.setDynamic(true);
+        xComboBox11.setExpression("#{item.name}");
+        xComboBox11.setItems("barangays");
+        xComboBox11.setName("query.barangay"); // NOI18N
+        xComboBox11.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel5.add(xComboBox11);
+
+        xLookupField1.setCaption("Taxpayer");
+        xLookupField1.setExpression("#{item.name}");
+        xLookupField1.setHandler("entity:lookup");
+        xLookupField1.setName("query.taxpayer"); // NOI18N
+        xLookupField1.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel5.add(xLookupField1);
+
         jPanel6.add(xFormPanel5, java.awt.BorderLayout.EAST);
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder3 = new com.rameses.rcp.control.border.XTitledBorder();
@@ -351,12 +439,21 @@ public class FaasExplorerViewListPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XActionBar xActionBar2;
     private com.rameses.rcp.control.XButton xButton4;
     private com.rameses.rcp.control.XButton xButton5;
+    private com.rameses.rcp.control.XComboBox xComboBox10;
+    private com.rameses.rcp.control.XComboBox xComboBox11;
+    private com.rameses.rcp.control.XComboBox xComboBox4;
+    private com.rameses.rcp.control.XComboBox xComboBox5;
+    private com.rameses.rcp.control.XComboBox xComboBox8;
+    private com.rameses.rcp.control.XComboBox xComboBox9;
     private com.rameses.rcp.control.XDataTable xDataTable1;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XFormPanel xFormPanel2;
+    private com.rameses.rcp.control.XFormPanel xFormPanel3;
+    private com.rameses.rcp.control.XFormPanel xFormPanel4;
     private com.rameses.rcp.control.XFormPanel xFormPanel5;
     private com.rameses.rcp.control.XFormPanel xFormPanel6;
     private com.rameses.rcp.control.XHorizontalPanel xHorizontalPanel2;
+    private com.rameses.rcp.control.XIntegerField xIntegerField2;
     private com.rameses.rcp.control.XLabel xLabel1;
     private com.rameses.rcp.control.XLabel xLabel12;
     private com.rameses.rcp.control.XLabel xLabel14;
@@ -365,6 +462,7 @@ public class FaasExplorerViewListPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XLabel xLabel6;
     private com.rameses.rcp.control.XLabel xLabel7;
     private com.rameses.rcp.control.XLabel xLabel9;
+    private com.rameses.rcp.control.XLookupField xLookupField1;
     private com.rameses.rcp.control.XTextField xTextField1;
     private com.rameses.rcp.control.XTextField xTextField11;
     private com.rameses.rcp.control.XTextField xTextField12;

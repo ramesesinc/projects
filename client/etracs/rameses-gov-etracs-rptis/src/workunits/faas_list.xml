@@ -77,25 +77,6 @@
                 return doOpen();
             }
             
-                        
-                        
-            def formControl = [
-                getFormControls: {
-                    return [
-                        new FormControl( "combo", [captionWidth:100, caption:'State', name:'query.state', items:'states', emptyText:'ALL']),
-                        new FormControl( "integer", [captionWidth:100, caption:'Revision', name:'query.ry']),
-                        new FormControl( "combo", [captionWidth:100, caption:'Txn', name:'query.txntype', items:'txntypes', expression:'#{item.objid}', emptyText:'ALL']),
-                        new FormControl( "combo", [captionWidth:100, caption:'Classification', name:'query.classification', items:'classifications', expression:'#{item.code}', emptyText:'ALL']),
-                        new FormControl( "combo", [captionWidth:100, caption:'Property Type', name:'query.rputype', items:'rputypes', emptyText:'ALL']),
-                        new FormControl( "combo", [captionWidth:100, caption:'LGU', name:'query.lgu', items:'lgus', expression:'#{item.name}', emptyText:'ALL']),
-                        new FormControl( "combo", [captionWidth:100, caption:'Barangay', name:'query.barangay', items:'barangays', expression:'#{item.name}', dynamic:true, depends:'query.lgu', emptyText:'ALL']),
-                        new FormControl( "lookup", [captionWidth:100, caption:'Taxpayer', name:'query.taxpayer', handler:'entity:lookup', expression:'#{item.name}']),
-                    ]    
-                },
-           ] as FormPanelModel;
-           
-           
-            
             def getBarangays(){
                 if (! query.lgu)
                     return lguSvc.getBarangaysByParentId(null);

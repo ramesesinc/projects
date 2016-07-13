@@ -39,6 +39,8 @@ public class CancellationFaasWorkflowController extends RPTWorkflowController
     }
     
     String getTitle(){
+        if (entity.online == true || entity.online == 1)
+            return 'FAAS Cancellation (' + entity.taskstate + ')';
         return 'FAAS Cancellation (' + entity.state + ')';
     }
     
@@ -47,7 +49,7 @@ public class CancellationFaasWorkflowController extends RPTWorkflowController
             def vw = it.properties.visibleWhen;
             return  ((!vw)  ||  ExpressionResolver.getInstance().evalBoolean( vw, [entity:entity] ));
         }
-    }
+    }   
 }
 
 ]]>

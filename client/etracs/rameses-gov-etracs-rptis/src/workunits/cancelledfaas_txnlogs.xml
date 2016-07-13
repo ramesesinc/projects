@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit extends="rpt_wtemplates/TxnLogs.xml">
+    <invokers>
+        <invoker type="cancelledfaas:txnlog" caption="Logs" />
+        <invoker type="cancelledfaas:formActions" caption="Logs" index="100" target="popup"/>
+    </invokers>
+</workunit>

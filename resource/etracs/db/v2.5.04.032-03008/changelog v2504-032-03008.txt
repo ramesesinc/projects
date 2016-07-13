@@ -5,7 +5,31 @@
 - BPLS 
 		
 - ASSESSOR
+	- Add backtax support to stewardship txn
+	- Add logging support for faas cancellation
+	- Update cancelled faas list states
+	- Delete province created faas cancellation support
+	- Display barangay on Assessment Roll (continuous)
+	- Add PC and DT transaction types
+	- Allow preview of forapproval Cancelled FAAS
 	- Support Machinery sworn statement appraisal
+	- Improve subdivision cancel improvement add remarks and reason 
+	- Add access of cancelled faas listing 
+	- Fix building modify appraisal page (not editable)
+	- Fix cancelled faas report (old data)
+	- Update TD Report add prevarea ha
+	- Update FAAS Listing Report
+    - Add LGU Name to NOA query
+	- Modified ROA include planttree info
+	- (new) List of Titled Properties 
+	- (new) Additional FAAS Restrictions
+	- (new) Report on AV of Restricted Properties
 
 - LANDTAX
+	- Automatic posting of restriction to ledger
+	- Add blockno info in realty tax ledger 
 	- Add Realty Tax Delinquency Summary and Realty Tax Delinquency Summary by Classification Report
+	- Update on idle land statement of shares
+	- (new) Support YEAR RANGE option in Delinquency Listing report
+	- (new) List of Compromise Agreements
+	- Display administrator info in Notice of Delinquency Report 

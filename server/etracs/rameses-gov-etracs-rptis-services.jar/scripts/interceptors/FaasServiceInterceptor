@@ -78,6 +78,14 @@ class FaasServiceInterceptor
 		}
 	}
 
+	@After(pattern="FAASService.initTransaction", eval="#{result.txntype.objid == 'UK'}", index=10) 
+	public void initUknownToKnown( evt ) {
+		def faas = evt.result 
+		if (!faas.owner || !faas.owner.name || !faas.owner.name.toLowerCase().matches('.*unknown.*')){
+			throw new Exception('Unable to process this property. Property owner must by UNKNOWN.')
+		}
+	}
+
 	
 	@After(pattern="FAASService.initTransaction", eval="#{result.txntype.objid == 'MC'}", index=10) 
 	public void initMultipleClaim( evt ) {

@@ -95,7 +95,7 @@ class FAASMonitoringReportController
         params.LOGOLGU = getInputStream( 'lgu-logo.png' ) 
         params.selecteduser = entity.user ? entity.user.username : 'All Users';
         if(entity.day == null) entity.day = 0;
-        params.selectedmonth = dateString(entity.year, entity.month.index - 1, Integer.parseInt(entity.day +''));
+        params.selectedmonth = dateString(entity.year, entity.month.index, Integer.parseInt(entity.day +''));
         report.viewReport();
         mode = 'view'; 
         return 'preview'; 

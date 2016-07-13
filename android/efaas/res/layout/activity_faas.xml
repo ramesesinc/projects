@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:background="#c9e2f8">
+
+    <ListView
+        android:id="@+id/faas_menu"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content">
+    </ListView>
+
+    <ScrollView
+        android:id="@+id/faas_contentview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#ffffff">
+    </ScrollView>
+
+</LinearLayout>

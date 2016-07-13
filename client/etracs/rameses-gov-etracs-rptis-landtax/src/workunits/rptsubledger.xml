@@ -4,7 +4,8 @@
         <invoker type="rptsubledger:create" action="create" caption="Realty Tax Sub-Ledger" target="popup" />
         <invoker type="rptsubledger:open" action="open" caption="Realty Tax Sub-Ledger"  target="popup" />
         
-        <invoker type="formActions" action="cancel" caption="Cancel" mnemonic="c" immediate="true" visibleWhen="#{mode!='read'}" />
+        <invoker type="formActions" action="_close" caption="Cancel" mnemonic="c" immediate="true" visibleWhen="#{mode=='create'}" />
+        <invoker type="formActions" action="cancel" caption="Cancel" mnemonic="c" immediate="true" visibleWhen="#{mode=='edit'}" />
         <invoker type="formActions" action="_close" caption="Close" mnemonic="c" immediate="true" visibleWhen="#{mode=='read'}" />
         
         <invoker type="formActions" action="edit" caption="Edit" mnemonic="e" shortcut="ctrl E" 
@@ -37,6 +38,9 @@ class SubledgerController
     @Service('RPTLedgerService')
     def svc;
     
+    @Service('NumberService')
+    def numSvc;
+    
     def onadd;
     def onupdate;
     
@@ -56,18 +60,25 @@ class SubledgerController
     def listener = [
         'entity.totalareaha' : {
             entity.totalareasqm = entity.totalareaha * 10000.0;
-            binding.refresh('entity.totalareasqm');
+            calcMvAv()
+            binding?.refresh('entity.(totalareasqm|totalmv|totalav)');
         },
         'entity.totalareasqm' : {
             entity.totalareaha = entity.totalareasqm / 10000.0;
-            binding.refresh('entity.totalareaha');
+            calcMvAv()
+            binding?.refresh('entity.(totalareaha|totalmv|totalav)');
         },
         'entity.taxpayer' : {
             def address = entity.taxpayer.address.text 
             entity.taxpayer.address = address;
-            binding.refresh('entity.taxpayer.address');
+            binding?.refresh('entity.taxpayer.address');
         }
     ]
+    
+    void calcMvAv(){
+        entity.totalmv = numSvc.round(entity.totalareasqm / ledger.totalareasqm * ledger.totalmv);
+        entity.totalav = numSvc.roundToTen(entity.totalareasqm / ledger.totalareasqm * ledger.totalav);
+    }
     
     String getTitle(){
         def t = 'Realty Tax SubLedger';
@@ -84,13 +95,13 @@ class SubledgerController
         entity.state = 'PENDING';
         entity.taxpayer = null;
         entity.totalav = 0.0;
-        entity.totalareaha = 0.0;
+        entity.totalareaha = ledger.totalareaha - totalSubledgerArea;
         entity.totalareasqm = 0.0;
         entity.partialbasic = 0.0;
         entity.partialbasicint = 0.0;
         entity.partialsef = 0.0;
         entity.partialsefint = 0.0;
-        
+        listener['entity.totalareaha']();
         mode = MODE_CREATE;
     }
     
@@ -169,6 +180,9 @@ class SubledgerController
             
         if (entity.lastyearpaid == ledger.lastyearpaid && entity.lastqtrpaid < ledger.lastqtrpaid  )
             throw new Exception('Last quarter paid must be greater than or equal to ' + ledger.lastqtrpaid + '.');
+            
+        if (entity.totalareaha == ledger.totalareaha)
+            throw new Exception('Sub-Ledger area must be less than Main Ledger area.');
             
         if (entity.totalareaha + totalSubledgerArea > ledger.totalareaha)
             throw new Exception('Total Sub-Ledger area must not exceed Main Ledger area.');

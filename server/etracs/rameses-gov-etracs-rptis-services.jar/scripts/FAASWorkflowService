@@ -83,6 +83,12 @@ class FAASWorkflowService extends ActiveWorkflowService
 		t.putAll(task)
 		t.objid = 'T' + new java.rmi.server.UID()
 		t.refid = refid
+		if (t.signature && t.signature.trim().length() > 0){
+			Base64Cipher cipher = new Base64Cipher()
+			def map = cipher.decode(t.signature)
+			map.taskid = t.objid 
+			t.signature = cipher.encode(map)
+		}
 		taskDB.save(t)
 		faasSvc.updateSignatoryInfo(t)
 	}

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit extends="wtemplates/TaskListController.xml" processname="faas">
     <invokers>
-        <invoker type="faas:info" caption="Logs" index="2000" />
+        <invoker type="faas:info" caption="Task Logs" index="2000" />
    </invokers>
 </workunit>
 

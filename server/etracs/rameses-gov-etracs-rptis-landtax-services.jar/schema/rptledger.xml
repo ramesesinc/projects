@@ -13,6 +13,7 @@
         <field name="fullpin" required="true" />
         <field name="tdno" required="true" />
         <field name="cadastrallotno" />
+        <field name="blockno" />
         <field name="rputype" required="true" />
         <field name="txntype_objid" required="true" />
         <field name="classification_objid" required="true" />

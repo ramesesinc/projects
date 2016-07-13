@@ -37,7 +37,7 @@ class ProvinceRedFlagService
 
 	void notifyMunicipality(entity){
 		def asyncreq = cloudSvc.createAsyncRequest('MunicipalityRedFlagRemoteCallHandler', 'postRedFlag', entity)
-		cloudSvc.sendAsyncMessage(asyncreq[0], entity.lguid)
+		cloudSvc.sendMessage(createAsyncMessage('prov-rpt-redflag', asyncreq[0], entity))
         println 'Submit change FAAS red flag information to municipality.'
 	}
 
@@ -63,6 +63,15 @@ class ProvinceRedFlagService
         ]
         notifySvc.addMessage(msg)
         println msg.message 
+	}
+
+	def createAsyncMessage(messagetype, asyncreq, redflag){
+		def msg = cloudSvc.createAsyncMessage(asyncreq, redflag.lguid)
+		msg.messagetype =  messagetype 
+		msg.txnid = redflag.objid
+		msg.txnno = redflag.caseno
+		msg.filetype = 'rptredflag'
+		return msg 
 	}
 
 }

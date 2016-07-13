@@ -2,7 +2,8 @@
     
    <invokers>
          <invoker folderid="home/treasury" caption="Online Collection" 
-                  action="init" index="-5" role="COLLECTOR,SUBCOLLECTOR" target="window"/>
+                  action="init" index="-5" role="COLLECTOR,SUBCOLLECTOR" target="window"
+                  icon="home/icons/collection.png"  />
    </invokers>
    
    <code>

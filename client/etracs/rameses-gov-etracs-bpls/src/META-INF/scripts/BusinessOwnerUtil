@@ -70,6 +70,8 @@ public class BusinessOwnerUtil {
 
     void reset() {;}
 
+    void reload() {
+    }
        
     def lookupAddress() {
         if( !business.owner?.objid )

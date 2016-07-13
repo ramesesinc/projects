@@ -25,11 +25,11 @@
     </folder>
     <folder id="home">
         <folder id="treasury" caption="Treasury" index="10" icon="home/icons/treasury.png">
-            <folder id="manualcollection" caption="Manual Collection" index="2"/>
-            <folder id="af" caption="Accountable Forms" index="10"/> 
-            <folder id="remittance" caption="Remittance" index="12"/>  
-            <folder id="liquidation" caption="Liquidation" index="13"/> 
-            <folder id="deposit" caption="Deposit" index="14"/>
+            <folder id="manualcollection" caption="Manual Collection" index="1" icon="home/icons/manualcollection.png"/>
+            <folder id="af" caption="Accountable Forms" index="10" /> 
+            <folder id="remittance" caption="Remittance" index="12" icon="home/icons/remittance.png"/>  
+            <folder id="liquidation" caption="Liquidation" index="13" icon="home/icons/liquidation.png"/> 
+            <folder id="deposit" caption="Deposit" index="14" icon="home/icons/deposit.png"/>
             <folder id="creditmemo" caption="Credit Memo" index="14"/>
             <folder id="cashmgmt" caption="Cash Management" index="15"/>
         </folder>

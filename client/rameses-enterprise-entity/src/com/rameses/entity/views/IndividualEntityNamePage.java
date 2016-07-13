@@ -37,6 +37,8 @@ public class IndividualEntityNamePage extends javax.swing.JPanel {
         xTextField5 = new com.rameses.rcp.control.XTextField();
         jLabel1 = new javax.swing.JLabel();
 
+        xFormPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
+
         xTextField3.setCaption("Last Name");
         xTextField3.setCaptionWidth(100);
         xTextField3.setName("entity.lastname"); // NOI18N

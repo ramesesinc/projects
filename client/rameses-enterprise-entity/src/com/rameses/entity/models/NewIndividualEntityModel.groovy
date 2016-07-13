@@ -90,9 +90,9 @@ class NewIndividualEntityModel extends PageFlowController {
             catch(e) {;}
             if( !allowed )  {
                 throw new Exception("There is an exact match for the record. You do not have enough rights to override.");                    
-            }    
-        }    
-    }
+            } 
+        } 
+    } 
 
     def saveNew() {
         entity._schemaname = 'entityindividual';

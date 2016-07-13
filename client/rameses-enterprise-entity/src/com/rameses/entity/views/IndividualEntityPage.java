@@ -55,46 +55,58 @@ public class IndividualEntityPage extends javax.swing.JPanel {
         xTabbedPane1.setItems("sections");
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
-        xTitledBorder1.setPadding(new java.awt.Insets(25, 10, 0, 10));
+        xTitledBorder1.setPadding(new java.awt.Insets(25, 15, 0, 15));
         xTitledBorder1.setTitle("Personal");
         xFormPanel1.setBorder(xTitledBorder1);
 
-        xLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
+        xLabel1.setBackground(new java.awt.Color(245, 245, 245));
+        xLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel1.setCaption("Entity No");
         xLabel1.setCaptionWidth(100);
         xLabel1.setExpression("#{entity.entityno}");
         xLabel1.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        xLabel1.setPreferredSize(new java.awt.Dimension(200, 20));
+        xLabel1.setOpaque(true);
+        xLabel1.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(xLabel1);
 
+        xLabel2.setBackground(new java.awt.Color(245, 245, 245));
+        xLabel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel2.setCaption("Last Name");
         xLabel2.setCaptionWidth(100);
         xLabel2.setExpression("#{entity.lastname}");
+        xLabel2.setOpaque(true);
         xLabel2.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(xLabel2);
 
+        xLabel3.setBackground(new java.awt.Color(245, 245, 245));
+        xLabel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel3.setCaption("First Name");
         xLabel3.setCaptionWidth(100);
         xLabel3.setExpression("#{entity.firstname}");
+        xLabel3.setOpaque(true);
         xLabel3.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(xLabel3);
 
+        xLabel4.setBackground(new java.awt.Color(245, 245, 245));
+        xLabel4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel4.setCaption("Middle Name");
         xLabel4.setCaptionWidth(100);
         xLabel4.setExpression("#{entity.middlename}");
+        xLabel4.setOpaque(true);
         xLabel4.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(xLabel4);
 
         genderList1.setCaption("Gender");
         genderList1.setCaptionWidth(100);
         genderList1.setName("entity.gender"); // NOI18N
+        genderList1.setPreferredSize(new java.awt.Dimension(120, 22));
         genderList1.setRequired(true);
         xFormPanel1.add(genderList1);
 
         xDateField1.setCaption("Birth Date");
         xDateField1.setCaptionWidth(100);
         xDateField1.setName("entity.birthdate"); // NOI18N
-        xDateField1.setPreferredSize(new java.awt.Dimension(100, 19));
+        xDateField1.setPreferredSize(new java.awt.Dimension(120, 19));
         xFormPanel1.add(xDateField1);
 
         entityAddressLookup1.setCaption("Address");
@@ -137,8 +149,11 @@ public class IndividualEntityPage extends javax.swing.JPanel {
         photoComponent1.setName("entity.photo"); // NOI18N
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder2 = new com.rameses.rcp.control.border.XTitledBorder();
+        xTitledBorder2.setPadding(new java.awt.Insets(25, 10, 10, 10));
         xTitledBorder2.setTitle("Contact Info");
         xFormPanel2.setBorder(xTitledBorder2);
+        xFormPanel2.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
+        xFormPanel2.setCaptionWidth(70);
 
         xTextField1.setCaption("Mobile No");
         xTextField1.setName("entity.mobileno"); // NOI18N

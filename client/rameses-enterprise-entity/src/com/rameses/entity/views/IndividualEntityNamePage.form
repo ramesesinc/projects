@@ -40,6 +40,9 @@
   </Layout>
   <SubComponents>
     <Container class="com.rameses.rcp.control.XFormPanel" name="xFormPanel1">
+      <Properties>
+        <Property name="captionVAlignment" type="java.lang.String" value="CENTER"/>
+      </Properties>
       <SubComponents>
         <Component class="com.rameses.rcp.control.XTextField" name="xTextField3">
           <Properties>

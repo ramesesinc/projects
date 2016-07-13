@@ -82,7 +82,7 @@ and rp.ry = $P{ry}
 and rp.section = $P{section}
 and r.rputype = 'land'
 and f.state not in ('CANCELLED')
-order by rp.pin
+order by length(rp.parcel), convert(rp.parcel, signed)
 
 
 [getImprovementsForRepinning]

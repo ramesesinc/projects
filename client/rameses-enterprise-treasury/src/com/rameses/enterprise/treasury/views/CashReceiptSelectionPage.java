@@ -50,6 +50,7 @@ public class CashReceiptSelectionPage extends javax.swing.JPanel {
 
         jPanel1.setPreferredSize(new java.awt.Dimension(100, 30));
 
+        xFormPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
         xFormPanel1.setOpaque(true);
         xFormPanel1.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
 

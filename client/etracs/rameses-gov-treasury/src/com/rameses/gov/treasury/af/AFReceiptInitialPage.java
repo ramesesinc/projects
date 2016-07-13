@@ -42,6 +42,7 @@ public class AFReceiptInitialPage extends javax.swing.JPanel {
         xTitledBorder1.setTitle("AF Receipt Initial ");
         jPanel1.setBorder(xTitledBorder1);
 
+        xFormPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
         xFormPanel1.setCaptionWidth(120);
 
         xComboBox1.setAllowNull(false);
@@ -60,9 +61,12 @@ public class AFReceiptInitialPage extends javax.swing.JPanel {
         xLookupField1.setRequired(true);
         xFormPanel1.add(xLookupField1);
 
+        xLabel1.setBackground(new java.awt.Color(245, 245, 245));
+        xLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel1.setCaption("Requester");
         xLabel1.setExpression("#{request.requester.name}");
-        xLabel1.setPreferredSize(new java.awt.Dimension(0, 16));
+        xLabel1.setOpaque(true);
+        xLabel1.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(xLabel1);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);

@@ -72,7 +72,7 @@ class FAASService
 	@ProxyMethod
 	public def initCaptureAndCreate( info ) {
 		def faas = initCapture(info)
-		createFaas(faas)
+		faasSvc.createFaas(faas)
 		return faas
 	}
 
@@ -903,13 +903,13 @@ class FAASService
 		def headers = imageSvc.getImages([refid:info.faas.objid])
 		headers.each{ h ->
 			def imageid = h.objid
-			h.objid = 'H' + new java.rmi.server.UID()
+			h.objid = faas.objid 
 			h.refid = faas.objid 
 			imageSvc.saveHeader(h)
 
 			imageSvc.getImageItems([objid:imageid]).each{ c ->
 				c.objid = 'C' + new java.rmi.server.UID()
-				c.parentid = faas.objid
+				c.parentid = h.objid 
 				imageSvc.saveItem(c)
 			}
 		}

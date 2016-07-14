@@ -191,7 +191,7 @@ public class FaasPage extends javax.swing.JPanel {
 
         xLookupField2.setCaption("Property Owner");
         xLookupField2.setCellPadding(new java.awt.Insets(0, 0, 0, 3));
-        xLookupField2.setExpression("#{entity.taxpayer.entityno} - #{entity.taxpayer.name}");
+        xLookupField2.setExpression("#{ownerName}");
         xLookupField2.setHandler("lookupTaxpayer");
         xLookupField2.setName("entity.taxpayer"); // NOI18N
         xLookupField2.setStretchWidth(50);

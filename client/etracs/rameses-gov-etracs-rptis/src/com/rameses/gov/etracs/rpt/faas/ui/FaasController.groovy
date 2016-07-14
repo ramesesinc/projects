@@ -79,6 +79,11 @@ public class FaasController
         return 'FAAS : ' + (getEntity().tdno ? getEntity().tdno : getEntity().utdno);
     }
     
+    def getOwnerName(){
+        if (entity.taxpayer && entity.taxpayer.objid != null)
+            return entity.taxpayer.entityno + ' - ' + entity.taxpayer.name 
+        return '';
+    }
     
     void create(){
         loadRpuOpener();

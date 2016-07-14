@@ -49,7 +49,6 @@ class ProvinceFAASRemoteService
 		}
 
 		faas.affectedfaases.each{
-			println 'it.objid -> ' + it.objid 
 			postMunicipalityApprovedFaas(it)
 			faasSvc.cancelPreviousFaases(it)
 		}

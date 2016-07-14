@@ -19,7 +19,7 @@ class FaasCaptureInterceptor
 	}
 
 	
-	@Before(pattern="FAASService.(createFaas|updateFaas)", eval="#{args[0].datacapture==1 || args[0].datacapture==true}") 
+	@Before(pattern="FAASService.updateFaas", eval="#{args[0].datacapture==1 || args[0].datacapture==true}") 
 	public void validateDataCapture( evt ) {
 		def faas = evt.args[0]
 		util.required('Property Owner', faas.taxpayer)

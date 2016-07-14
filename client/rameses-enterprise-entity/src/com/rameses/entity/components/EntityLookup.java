@@ -4,6 +4,7 @@
  */
 package com.rameses.entity.components;
 
+import com.rameses.common.PropertyResolver;
 import com.rameses.rcp.control.XComponentPanel;
 import com.rameses.rcp.ui.annotations.ComponentBean;
 
@@ -14,6 +15,10 @@ import com.rameses.rcp.ui.annotations.ComponentBean;
 @ComponentBean("com.rameses.entity.components.EntityLookupModel")
 public class EntityLookup extends XComponentPanel {
 
+    private String onselect; 
+    private String onempty;
+    private String entitytype;
+            
     public EntityLookup() {
         initComponents();
     }
@@ -24,6 +29,63 @@ public class EntityLookup extends XComponentPanel {
     public void setExpression( String expression ) {
         xLookupField1.setExpression( expression ); 
     } 
+    
+    public String getOnselect() { return onselect; } 
+    public void setOnselect( String onselect ) {
+        this.onselect = onselect; 
+    }
+    
+    public String getOnempty() { return onempty; } 
+    public void setOnempty( String onempty ) {
+        this.onempty = onempty; 
+    } 
+    
+    public String getEntityType() {
+        return entitytype;
+    }
+    public void setEntityType(String entitytype) {
+        this.entitytype = entitytype;
+    }    
+
+    @Override
+    public void afterLoad() {
+        super.afterLoad();
+        
+        Object caller = getBean();
+        Object bean = getComponentBean(); 
+        PropertyResolver pr = PropertyResolver.getInstance();
+        if ( getOnselect() != null ) {
+            Object handler = pr.getProperty(caller, getOnselect()); 
+            pr.setProperty(bean, "onselect", handler);
+        }
+        if ( getOnempty() != null ) {
+            Object handler = pr.getProperty(caller, getOnempty()); 
+            pr.setProperty(bean, "onempty", handler);
+        }
+
+        pr.setProperty(bean, "entityTypeCaller", new EntityTypeCaller(getEntityType(), caller));
+    }
+    
+    
+    public class EntityTypeCaller { 
+        private String type;
+        private Object caller;
+        
+        EntityTypeCaller( String type, Object caller ) {
+            this.type = type;
+            this.caller = caller;
+        }
+        
+        public Object getEntityType() {
+            if ( type == null || type.trim().length()==0 ) {
+                return null; 
+            } 
+
+            PropertyResolver pr = PropertyResolver.getInstance();
+            return pr.getProperty(caller, type); 
+        }
+    }
+    
     
     
     /**
@@ -37,9 +99,10 @@ public class EntityLookup extends XComponentPanel {
 
         xLookupField1 = new com.rameses.rcp.control.XLookupField();
         jPanel4 = new javax.swing.JPanel();
-        xButton1 = new com.rameses.rcp.control.XButton();
         xButton2 = new com.rameses.rcp.control.XButton();
+        xButton1 = new com.rameses.rcp.control.XButton();
 
+        setOpaque(false);
         setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.LINE_AXIS));
 
         xLookupField1.setExpression("#{entity.name} - #{entity.entityno} ");
@@ -49,26 +112,29 @@ public class EntityLookup extends XComponentPanel {
         add(xLookupField1);
 
         jPanel4.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 5, 0, 0));
-        jPanel4.setLayout(new com.rameses.rcp.control.layout.XLayout());
-
-        xButton1.setBorderPainted(false);
-        xButton1.setCaption("");
-        xButton1.setContentAreaFilled(false);
-        xButton1.setIconResource("images/toolbars/create.png");
-        xButton1.setMargin(new java.awt.Insets(0, 0, 0, 0));
-        xButton1.setName("addEntity"); // NOI18N
-        xButton1.setToolTipText("Add New Record");
-        xButton1.setVisibleWhen("#{allowCreate}");
-        jPanel4.add(xButton1);
+        jPanel4.setOpaque(false);
+        com.rameses.rcp.control.layout.XLayout xLayout1 = new com.rameses.rcp.control.layout.XLayout();
+        xLayout1.setSpacing(0);
+        jPanel4.setLayout(xLayout1);
 
         xButton2.setBorderPainted(false);
         xButton2.setContentAreaFilled(false);
+        xButton2.setDisableWhen("#{allowOpen != true}");
         xButton2.setIconResource("images/toolbars/open.png");
         xButton2.setMargin(new java.awt.Insets(0, 0, 0, 0));
         xButton2.setName("viewEntity"); // NOI18N
         xButton2.setToolTipText("View Record");
-        xButton2.setVisibleWhen("#{allowOpen}");
         jPanel4.add(xButton2);
+
+        xButton1.setBorderPainted(false);
+        xButton1.setCaption("");
+        xButton1.setContentAreaFilled(false);
+        xButton1.setDisableWhen("#{allowCreate != true}");
+        xButton1.setIconResource("images/toolbars/create.png");
+        xButton1.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        xButton1.setName("addEntity"); // NOI18N
+        xButton1.setToolTipText("Add New Record");
+        jPanel4.add(xButton1);
 
         add(jPanel4);
     }// </editor-fold>//GEN-END:initComponents
@@ -78,4 +144,6 @@ public class EntityLookup extends XComponentPanel {
     private com.rameses.rcp.control.XButton xButton2;
     private com.rameses.rcp.control.XLookupField xLookupField1;
     // End of variables declaration//GEN-END:variables
+
+
 }

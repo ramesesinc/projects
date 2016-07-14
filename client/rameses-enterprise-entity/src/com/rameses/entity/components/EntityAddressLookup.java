@@ -32,10 +32,13 @@ public class EntityAddressLookup extends XComponentPanel {
         super.afterLoad();
         txtArea.setEditable(false);
         txtArea.setEnabled(false);
-        IAddressLookup comp = (IAddressLookup)getComponentBean();
         try {
-            String parentId = (String)getProperty(parentIdName);
-            comp.setEntityid(parentId);
+            IAddressLookup comp = (IAddressLookup)getComponentBean();
+            comp.setLookupCaller( new IAddressLookupCaller() {
+                public String getEntityid() {
+                    return (String)getProperty(parentIdName);
+                }
+            });
         }
         catch(Exception e) {
             System.out.println("message error on setting property after load. " + e.getMessage());

@@ -8,6 +8,6 @@ package com.rameses.entity.components;
  *
  * @author dell
  */
-public interface IAddressLookup {
-    void setLookupCaller(IAddressLookupCaller caller);
+public interface IAddressLookupCaller {
+    String getEntityid();
 }

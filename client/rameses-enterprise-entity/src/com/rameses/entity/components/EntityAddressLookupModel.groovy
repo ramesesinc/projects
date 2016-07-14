@@ -11,7 +11,7 @@ class EntityAddressLookupModel extends ComponentBean implements IAddressLookup {
     @Binding
     def binding;
     
-    String entityid;
+    IAddressLookupCaller lookupCaller;
     
     @Service("PersistenceService")
     def persistenceSvc;
@@ -25,11 +25,11 @@ class EntityAddressLookupModel extends ComponentBean implements IAddressLookup {
     }
     
     public boolean isShowAddressList() {
-        return (entityid!=null);
+        return (lookupCaller.entityid!=null);
     }
     
     public def viewAddress() {
-        if( !entityid ) throw new Exception("Please select an entity");
+        if( !lookupCaller.entityid ) throw new Exception("Please select an entity");
         def h = { o->
             address = o;
             binding.refresh();
@@ -37,7 +37,7 @@ class EntityAddressLookupModel extends ComponentBean implements IAddressLookup {
         def c = { o->
             address = o;
         }
-        def op = Inv.lookupOpener( "entity_address:lookup", [entityid: entityid, onselect: h, onchange: c] );
+        def op = Inv.lookupOpener( "entity_address:lookup", [entityid: lookupCaller.entityid, onselect: h, onchange: c] );
         op.target = 'popup';
         return op;
     }

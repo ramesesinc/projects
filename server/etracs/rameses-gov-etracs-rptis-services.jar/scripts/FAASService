@@ -653,7 +653,8 @@ class FAASService
 	}
 
 
-	void updateFullPinInfo(faas){
+	@ProxyMethod 
+	public void updateFullPinInfo(faas){
 		faas.fullpin = faas.rpu.fullpin 
 		if (faas.rpu.rputype != 'land'){
 			def landowner = em.findLandOwner([rpuid:faas.rpu.objid]);

@@ -5,6 +5,7 @@
 - BPLS 
 		
 - ASSESSOR
+	- Update on NOA report 
 	- Update on modify pin facility
 	- Fix sketch attachment and submission
 	- Fix TD Report sqm area

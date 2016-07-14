@@ -146,44 +146,27 @@ public abstract class AbstractCashReceipt {
         //do nothing for now
     }
     
-    protected String getLookupEntityName() {
-        return "entity:lookup"; 
-    }
+    public def getPayerType() { 
+        return null; 
+    } 
+    
+    def onselectPayer = { o-> 
+        def newdata = entity.clone();
+        newdata.payer = o;
+        newdata.items = null; 
+        service.validatePayer( newdata );  
 
-    protected void beforeLookupEntity( Object params ) {
-        //to be implemented 
+        entity.payer = o;
+        entity.paidby = o.name;
+        entity.paidbyaddress = o.address.text;
+        binding.refresh("entity.(payer.*|paidby.*)");
+        payerChanged( o );
+    }
+    def onemptyPayer = {
+        entity.payer = null; 
+        binding.refresh("entity.(payer.*|paidby.*)");
     }
     
-    def getLookupEntity() {
-        def params = [:]; 
-        beforeLookupEntity( params ); 
-
-        params.onselect = { o-> 
-            def newdata = entity.clone();
-            newdata.payer = o;
-            newdata.items = null; 
-            service.validatePayer( newdata );  
-             
-            entity.payer = o;
-            entity.paidby = o.name;
-            entity.paidbyaddress = o.address.text;
-            binding.refresh("entity.(payer.*|paidby.*)");
-            binding.refresh('createEntity|openEntity');
-                        
-            def opener = payerChanged( o );
-            if( opener != null ) { 
-                return opener;
-            } else {  
-                return "_close"; 
-            } 
-        }
-        params.onempty = { 
-            entity.payer = null; 
-            binding.refresh('createEntity|openEntity'); 
-        } 
-        return InvokerUtil.lookupOpener( getLookupEntityName(), params );
-    } 
-
     /*
     def cancelSeries(){
         def oldentity = entity.clone()

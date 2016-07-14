@@ -73,6 +73,10 @@ public class SerialCashReceiptPage extends javax.swing.JPanel {
         xTextArea1 = new com.rameses.rcp.control.XTextArea();
         jPanel2 = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
+        xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
+        entityLookup1 = new com.rameses.entity.components.EntityLookup();
+        xTextField2 = new com.rameses.rcp.control.XTextField();
+        xTextField3 = new com.rameses.rcp.control.XTextField();
         jPanel4 = new javax.swing.JPanel();
         xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
         xTextField1 = new com.rameses.rcp.control.XTextField();
@@ -82,10 +86,6 @@ public class SerialCashReceiptPage extends javax.swing.JPanel {
         xLabel2 = new com.rameses.rcp.control.XLabel();
         xLabel5 = new com.rameses.rcp.control.XLabel();
         xLabel1 = new com.rameses.rcp.control.XLabel();
-        xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
-        entityLookup1 = new com.rameses.entity.components.EntityLookup();
-        xTextField2 = new com.rameses.rcp.control.XTextField();
-        xTextField3 = new com.rameses.rcp.control.XTextField();
         contentPanel = new javax.swing.JPanel();
 
         jPanel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
@@ -555,11 +555,43 @@ public class SerialCashReceiptPage extends javax.swing.JPanel {
         jPanel2.setBorder(xTitledBorder3);
         jPanel2.setPreferredSize(new java.awt.Dimension(0, 100));
 
+        jPanel1.setOpaque(false);
         jPanel1.setPreferredSize(new java.awt.Dimension(650, 70));
         jPanel1.setLayout(new java.awt.BorderLayout());
 
+        xFormPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
+        xFormPanel1.setCaptionWidth(70);
+
+        entityLookup1.setCaption("Payer");
+        entityLookup1.setEntityType("payerType");
+        entityLookup1.setExpression("#{entity.name}");
+        entityLookup1.setName("entity.payer"); // NOI18N
+        entityLookup1.setOnempty("onemptyPayer");
+        entityLookup1.setOnselect("onselectPayer");
+        entityLookup1.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel1.add(entityLookup1);
+
+        xTextField2.setCaption("Paid By");
+        xTextField2.setIndex(1);
+        xTextField2.setName("entity.paidby"); // NOI18N
+        xTextField2.setPreferredSize(new java.awt.Dimension(0, 19));
+        xTextField2.setRequired(true);
+        xFormPanel1.add(xTextField2);
+
+        xTextField3.setCaption("Address");
+        xTextField3.setIndex(2);
+        xTextField3.setName("entity.paidbyaddress"); // NOI18N
+        xTextField3.setPreferredSize(new java.awt.Dimension(0, 19));
+        xTextField3.setRequired(true);
+        xFormPanel1.add(xTextField3);
+
+        jPanel1.add(xFormPanel1, java.awt.BorderLayout.CENTER);
+
+        jPanel4.setOpaque(false);
         jPanel4.setPreferredSize(new java.awt.Dimension(550, 100));
         jPanel4.setLayout(new java.awt.BorderLayout());
+
+        xFormPanel2.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
 
         xTextField1.setCaption("Form No");
         xTextField1.setEnabled(false);
@@ -608,29 +640,6 @@ public class SerialCashReceiptPage extends javax.swing.JPanel {
         jPanel4.add(xFormPanel3, java.awt.BorderLayout.EAST);
 
         jPanel1.add(jPanel4, java.awt.BorderLayout.EAST);
-
-        xFormPanel1.setCaptionWidth(70);
-
-        entityLookup1.setCaption("Payer");
-        entityLookup1.setName("entity.payer"); // NOI18N
-        entityLookup1.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel1.add(entityLookup1);
-
-        xTextField2.setCaption("Paid By");
-        xTextField2.setIndex(1);
-        xTextField2.setName("entity.paidby"); // NOI18N
-        xTextField2.setPreferredSize(new java.awt.Dimension(0, 19));
-        xTextField2.setRequired(true);
-        xFormPanel1.add(xTextField2);
-
-        xTextField3.setCaption("Address");
-        xTextField3.setIndex(2);
-        xTextField3.setName("entity.paidbyaddress"); // NOI18N
-        xTextField3.setPreferredSize(new java.awt.Dimension(0, 19));
-        xTextField3.setRequired(true);
-        xFormPanel1.add(xTextField3);
-
-        jPanel1.add(xFormPanel1, java.awt.BorderLayout.CENTER);
 
         org.jdesktop.layout.GroupLayout jPanel2Layout = new org.jdesktop.layout.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);

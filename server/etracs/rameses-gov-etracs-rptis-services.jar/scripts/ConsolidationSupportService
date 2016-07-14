@@ -72,7 +72,7 @@ class ConsolidationSupportService
         }
 
         data.tasks << [type:'consolidation', tasks:taskEm.getTasks(consolidation)]
-        data.image = getImageData(consolidation)
+        data.image = getImageData(data)
         return data 
     }
 

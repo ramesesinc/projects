@@ -5,6 +5,7 @@
 - BPLS 
 		
 - ASSESSOR
+	- Fix sketch attachment and submission
 	- Fix TD Report sqm area
 	- Allow edit of superseded information
 	- Commit on data capture automatically to avoid duplication

@@ -1,7 +1,7 @@
 import com.rameses.annotations.*;
 import com.rameses.common.*;
 
-public class EntityServiceInterceptor
+public class EntityPersistenceInterceptor
 {
 	@ActiveDB(dynamic=true)
 	def adb;
@@ -10,12 +10,9 @@ public class EntityServiceInterceptor
 	def env
 
 
-	@Before(pattern="EntityService.create")
-	public void beforeCreateEntity( evt ) 
-	{
-		def params = evt.args[0];
+	@Before(pattern="PersistenceService.create", eval="#{args[0]._schemaname.toString().matches('entityindividual|entityjuridical|entitymultiple')}")
+	public void beforeCreate( evt ) { 
 		def em = null; 
-
 		def orgclass = env?.ORGCLASS.toString().toLowerCase(); 
 		if ( orgclass == 'province' ) {
 			em = adb.lookup( 'main', 'province' );
@@ -28,8 +25,9 @@ public class EntityServiceInterceptor
 		} else {
 			//do nothing
 			return; 
-		}
+		} 
 
+		def params = evt.args[0];
 		def orginfo = em.read([ objid: env.ORGID ]);  
 		if ( orginfo?.pin ) {
 			def pin = orginfo.pin.toString(); 

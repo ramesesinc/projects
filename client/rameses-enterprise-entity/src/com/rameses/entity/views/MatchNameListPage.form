@@ -30,17 +30,22 @@
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                      <Group type="102" alignment="0" attributes="0">
-                          <EmptySpace min="-2" pref="31" max="-2" attributes="0"/>
-                          <Component id="xButton1" min="-2" pref="138" max="-2" attributes="0"/>
-                          <EmptySpace pref="34" max="32767" attributes="1"/>
-                      </Group>
-                      <Component id="xFormPanel1" alignment="0" pref="203" max="32767" attributes="1"/>
+                  <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace min="-2" pref="31" max="-2" attributes="0"/>
+                      <Component id="xButton1" min="-2" pref="138" max="-2" attributes="0"/>
+                      <EmptySpace pref="59" max="32767" attributes="1"/>
                   </Group>
-                  <Component id="xPhoto1" alignment="0" min="-2" pref="205" max="-2" attributes="1"/>
+                  <Group type="102" attributes="0">
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="102" attributes="0">
+                              <Component id="xPhoto1" min="-2" pref="205" max="-2" attributes="1"/>
+                              <EmptySpace min="0" pref="13" max="32767" attributes="0"/>
+                          </Group>
+                          <Component id="xFormPanel1" alignment="0" max="32767" attributes="1"/>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                  </Group>
               </Group>
-              <EmptySpace pref="31" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -87,6 +92,9 @@
       </Properties>
     </Component>
     <Container class="com.rameses.rcp.control.XFormPanel" name="xFormPanel1">
+      <Properties>
+        <Property name="captionVAlignment" type="java.lang.String" value="CENTER"/>
+      </Properties>
       <SubComponents>
         <Component class="com.rameses.rcp.control.XLabel" name="xLabel1">
           <Properties>

@@ -77,8 +77,8 @@ public class BuildingFaasActivity extends ControlActivity{
 		material_add = (Button) findViewById(R.id.material_add);
 		material_add.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-            	StructuralMaterialInfo material = new StructuralMaterialInfo(activity,null,rpuid);
-            	material.show();
+            	//StructuralMaterialInfo material = new StructuralMaterialInfo(activity,null,rpuid);
+            	//material.show();
             }
         });
 		

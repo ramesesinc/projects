@@ -5,12 +5,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -19,19 +22,24 @@ import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
-
 import com.rameses.android.ApplicationUtil;
 import com.rameses.android.ControlActivity;
 import com.rameses.android.R;
 import com.rameses.android.db.BldgRpuDB;
+import com.rameses.android.db.BldgStructureDB;
 import com.rameses.android.db.ExaminationDB;
 import com.rameses.android.db.FaasDB;
+import com.rameses.android.db.ImageDB;
+import com.rameses.android.db.LandDetailDB;
+import com.rameses.android.efaas.adapter.BldgStructureMenuAdapter;
 import com.rameses.android.efaas.adapter.ExaminationMenuAdapter;
 import com.rameses.android.efaas.bean.AppraisalListItem;
+import com.rameses.android.efaas.bean.BldgStructure;
 import com.rameses.android.efaas.bean.ExaminationListItem;
 import com.rameses.android.efaas.bean.ImageItem;
 import com.rameses.android.efaas.dialog.ErrorDialog;
 import com.rameses.android.efaas.dialog.InfoDialog;
+import com.rameses.android.efaas.dialog.LandAppraisalInfo;
 import com.rameses.android.efaas.dialog.StructuralMaterialInfo;
 
 public class FaasBuildingActivity extends ControlActivity {
@@ -54,6 +62,7 @@ public class FaasBuildingActivity extends ControlActivity {
 	private static List<ImageItem> data_image;
 	private static List<AppraisalListItem> data_appraisal;
 	private static List<ExaminationListItem> data_examination;
+	private static List<BldgStructure> data_material;
 	private static int ctxMenuId;
 	
 	private static ListView menu;
@@ -69,17 +78,16 @@ public class FaasBuildingActivity extends ControlActivity {
 		menu = (ListView) findViewById(R.id.faas_menu);
 		
 		final List<String> data_menu = new ArrayList<String>();
-		data_menu.add("General Information");
-		data_menu.add("Structural Materials");
-		data_menu.add("Building Appraisal");
-		data_menu.add("Examination Information");
+		data_menu.add("General");
+		data_menu.add("Materials");
+		data_menu.add("Appraisal");
+		data_menu.add("Examination");
 		
 		ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,data_menu);
         menu.setAdapter(arrayAdapter); 
         menu.setOnItemClickListener(new OnItemClickListener(){
 			@Override
 			public void onItemClick(AdapterView<?> adapter, View v, int pos, long arg3) {
-				contentView.removeAllViews();
 				if(pos == 0){
 					loadGeneralInfo();
 				}
@@ -106,7 +114,79 @@ public class FaasBuildingActivity extends ControlActivity {
 		super.onStartProcess();
 	}
 	
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
+		String[] menuItems = new String[]{"Edit","Delete"};
+		for (int i = 0; i<menuItems.length; i++) {
+			menu.add(Menu.NONE, i, i, menuItems[i]);
+		}
+		if(v.getId()==R.id.appraisal_list){
+			ctxMenuId = R.id.appraisal_list;
+			menu.setHeaderTitle("Land Detail");
+		}
+		if(v.getId()==R.id.examination_list){
+			ctxMenuId = R.id.examination_list;
+			menu.setHeaderTitle("Examination");
+		}
+	}
+	
+	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+	  AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
+	  int menuItemIndex = item.getItemId();
+	  
+	  if(ctxMenuId == R.id.appraisal_list){
+		  AppraisalListItem appraisalItem = data_appraisal.get(info.position);
+		  if(menuItemIndex == 0){
+			  LandAppraisalInfo appraisal = new LandAppraisalInfo(activity,appraisalItem.getObjid(),rpuid);
+              appraisal.show();
+		  }
+		  if(menuItemIndex == 1){
+			  Map params = new HashMap();
+			  params.put("objid", appraisalItem.getObjid());
+			  
+			  LandDetailDB db = new LandDetailDB();
+			  try{
+				  db.delete(params);
+				  loadAppraisalData();
+			  }catch(Throwable t){
+				  new ErrorDialog(this, t).show();
+			  }
+		  }
+	  }
+	  
+	  if(ctxMenuId == R.id.examination_list){
+		  ExaminationListItem examinationItem = data_examination.get(info.position);
+		  if(menuItemIndex == 0){
+			   Intent myIntent = new Intent(activity, ExaminationActivity.class);
+			   myIntent.putExtra("objid", examinationItem.getObjid());
+			   myIntent.putExtra("faasid", faasid);
+			   activity.startActivity(myIntent);
+		  }
+		  if(menuItemIndex == 1){
+			  Map params1 = new HashMap();
+			  params1.put("examinationid", examinationItem.getObjid());
+			  
+			  Map params2 = new HashMap();
+			  params2.put("objid", examinationItem.getObjid());
+			  
+			  ExaminationDB db = new ExaminationDB();
+			  ImageDB imdb = new ImageDB();
+			  try{
+				  imdb.delete(params1);
+				  db.delete(params2);
+			  }catch(Throwable t){
+				  new ErrorDialog(this, t).show();
+			  }
+		  }
+	  }
+	  return true;
+	}
+	
 	public static void loadGeneralInfo(){
+		contentView.removeAllViews();
+		
 		View view = LayoutInflater.from(activity.getBaseContext()).inflate(R.layout.activity_faas_bldg_general, contentView, false);
 	    contentView.addView(view);
 	    
@@ -170,6 +250,8 @@ public class FaasBuildingActivity extends ControlActivity {
 	}
 	
 	public static void loadMaterialInfo(){
+		contentView.removeAllViews();
+		
 		View view = LayoutInflater.from(activity.getBaseContext()).inflate(R.layout.activity_faas_bldg_materials, contentView, false);
 	    contentView.addView(view);
 	    
@@ -179,13 +261,17 @@ public class FaasBuildingActivity extends ControlActivity {
 		material_add = (Button) view.findViewById(R.id.material_add);
 		material_add.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-            	StructuralMaterialInfo material = new StructuralMaterialInfo(activity,null,rpuid);
+            	StructuralMaterialInfo material = new StructuralMaterialInfo(activity,null);
             	material.show();
             }
         });
+		
+		loadMaterialData();
 	}
 	
 	public static void loadAppraisalInfo(){
+		contentView.removeAllViews();
+		
 		View view = LayoutInflater.from(activity.getBaseContext()).inflate(R.layout.activity_faas_bldg_appraisal, contentView, false);
 	    contentView.addView(view);
 	    
@@ -217,6 +303,41 @@ public class FaasBuildingActivity extends ControlActivity {
 		loadExaminationData();
 	}
 	
+	public static void loadMaterialData(){
+		try{
+			data_material = new ArrayList<BldgStructure>();
+			Map params = new HashMap();
+			params.put("bldgrpuid", rpuid);
+			
+			BldgStructureDB db = new BldgStructureDB();
+			List<Map> list = db.getList(params);
+			for(Map m : list){
+				String objid = m.get("objid") != null ? m.get("objid").toString() : null;
+				String bldgrpuid = m.get("bldgrpuid") != null ? m.get("bldgrpuid").toString() : null;
+				String structureid = m.get("structure_objid") != null ? m.get("structure_objid").toString() : null;
+				String materialid = m.get("material_objid") != null ? m.get("material_objid").toString() : null;
+				String floor = m.get("floor") != null ? m.get("floor").toString() : null;
+				data_material.add(new BldgStructure(objid, bldgrpuid, structureid, materialid, floor));
+			}
+			
+			material_list.setAdapter(new BldgStructureMenuAdapter(activity,data_material));
+			material_list.setOnItemClickListener(new OnItemClickListener(){
+				@Override
+				public void onItemClick(AdapterView<?> adapter, View view, int pos, long arg3) {
+					BldgStructureMenuAdapter a = (BldgStructureMenuAdapter) adapter.getAdapter();
+					BldgStructure item = a.getListItem(pos);
+					StructuralMaterialInfo info = new StructuralMaterialInfo(activity, item);
+					info.show();
+				}	
+			});
+			LayoutParams layout = (LayoutParams) material_list.getLayoutParams();
+			layout.height = (68 * data_material.size());
+		}catch(Throwable t){
+			t.printStackTrace();
+			new ErrorDialog(activity, t).show();
+		}
+	}
+	
 	public static void loadExaminationData(){
 		try{
 			data_examination = new ArrayList<ExaminationListItem>();
@@ -226,7 +347,7 @@ public class FaasBuildingActivity extends ControlActivity {
 			ExaminationDB db = new ExaminationDB();
 			List<Map> list = db.getList(params);
 			for(Map m : list){
-				String id = m.get("objid") != null ? m.get("objid").toString() : "";
+				String id = m.get("objid") != null ? m.get("objid").toString() : null;
 				String date = m.get("dtinspected") != null ? m.get("dtinspected").toString() : "";
 				String findings = m.get("findings") != null ? m.get("findings").toString() : "";
 				data_examination.add(new ExaminationListItem(id,findings,date));

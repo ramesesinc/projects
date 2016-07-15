@@ -48,6 +48,12 @@ public class EntityLookup extends XComponentPanel {
     }    
 
     @Override
+    public void setEnabled(boolean enabled) {
+        super.setEnabled(enabled);
+        xLookupField1.setEnabled(enabled);
+    }
+
+    @Override
     public void afterLoad() {
         super.afterLoad();
         

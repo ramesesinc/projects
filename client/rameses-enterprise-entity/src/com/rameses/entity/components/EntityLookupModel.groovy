@@ -75,7 +75,7 @@ class EntityLookupModel extends ComponentBean {
         params.onselect = { o-> 
             fireOnselect( o ); 
         } 
-        return Inv.lookupOpener( 'entityindividual:create', [onselect: s] ); 
+        return Inv.lookupOpener( 'entityindividual:create', params ); 
     } 
     
     public boolean isAllowCreate() {

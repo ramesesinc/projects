@@ -5,7 +5,9 @@
     <invokers>
         <invoker folderid="/home/business" caption="Business Ledgers" 
                  role="SHARED,BUSINESSINFO,ASSESSOR,APPROVER,LICENSING" 
-                 permission="business_ledger.view" index="60"/> 
+                 permission="business_ledger.view" index="60"
+                 icon="home/icons/business-ledger.png" /> 
+        
         <invoker folderid="/explorer/txn/bpls" caption="Business Ledgers" 
                  role="SHARED,BUSINESSINFO,ASSESSOR,APPROVER,LICENSING" 
                  permission="business_ledger.view" index="60"/> 

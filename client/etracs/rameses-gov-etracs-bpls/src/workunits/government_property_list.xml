@@ -1,6 +1,9 @@
-<workunit extends="wtemplates/ListController.xml" serviceName="BusinessLessorService" 
-            entityName="business_lessor" autoSelect="true">
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" schemaName="government_property">
     <invokers>
-        <invoker folderid="/explorer/master/bpls" caption="Business Lessor List"  index="4" role="MASTER" />
+        <invoker folderid="/explorer/master/bpls" 
+                 caption="Government Property List"  index="4" role="MASTER" 
+                 cols="bldgno,bldgname,street,barangay.name"
+                 customFilter="government=1"
+                 action="init"/>
     </invokers>
 </workunit>

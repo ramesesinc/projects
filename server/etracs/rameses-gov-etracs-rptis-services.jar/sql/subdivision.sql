@@ -205,9 +205,9 @@ WHERE objid =$P{objid}
 
 
 [getAffectedRpuWithNoPin]
-SELECT sr.newpin, sr.newsuffix, pf.tdno, pf.memoranda 
+SELECT sr.newpin, sr.newsuffix, pf.tdno
 FROM subdivisionaffectedrpu sr
-	inner JOIN faas pf ON sr.newfaasid = pf.objid 
+	inner JOIN faas pf ON sr.prevfaasid = pf.objid 
 WHERE sr.subdivisionid = $P{objid}	
 and sr.newfaasid is null 
 

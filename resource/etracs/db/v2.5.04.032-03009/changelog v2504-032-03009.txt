@@ -5,6 +5,7 @@
 - BPLS 
 		
 - ASSESSOR
+	- Valid subdivision affected improvement new faas
 	- Update on NOA report 
 	- Update on modify pin facility
 	- Fix sketch attachment and submission

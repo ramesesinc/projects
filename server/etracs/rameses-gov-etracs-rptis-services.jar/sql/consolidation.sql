@@ -510,3 +510,11 @@ where refid in (
 	select consolidationid from consolidationaffectedrpu where newfaasid = $P{objid}
 )
 and enddate is null
+
+
+[getAffectedRpuWithNoPin]
+SELECT pf.fullpin
+FROM consolidationaffectedrpu cr
+	inner JOIN faas pf ON cr.prevfaasid = pf.objid 
+WHERE cr.consolidationid = $P{objid}	
+and cr.newfaasid is null 

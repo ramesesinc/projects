@@ -121,9 +121,9 @@ public class FaasBuildingActivity extends ControlActivity {
 		for (int i = 0; i<menuItems.length; i++) {
 			menu.add(Menu.NONE, i, i, menuItems[i]);
 		}
-		if(v.getId()==R.id.appraisal_list){
-			ctxMenuId = R.id.appraisal_list;
-			menu.setHeaderTitle("Land Detail");
+		if(v.getId()==R.id.material_list){
+			ctxMenuId = R.id.material_list;
+			menu.setHeaderTitle("Structural Material");
 		}
 		if(v.getId()==R.id.examination_list){
 			ctxMenuId = R.id.examination_list;
@@ -136,23 +136,22 @@ public class FaasBuildingActivity extends ControlActivity {
 	  AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
 	  int menuItemIndex = item.getItemId();
 	  
-	  if(ctxMenuId == R.id.appraisal_list){
-		  AppraisalListItem appraisalItem = data_appraisal.get(info.position);
+	  if(ctxMenuId == R.id.material_list){
+		  BldgStructure structure = data_material.get(info.position);
 		  if(menuItemIndex == 0){
-			  LandAppraisalInfo appraisal = new LandAppraisalInfo(activity,appraisalItem.getObjid(),rpuid);
-              appraisal.show();
+			   StructuralMaterialInfo material = new StructuralMaterialInfo(activity,structure,rpuid);
+          	   material.show();
 		  }
 		  if(menuItemIndex == 1){
 			  Map params = new HashMap();
-			  params.put("objid", appraisalItem.getObjid());
-			  
-			  LandDetailDB db = new LandDetailDB();
+			  params.put("objid", structure.getObjid());
 			  try{
+				  BldgStructureDB db = new BldgStructureDB();
 				  db.delete(params);
-				  loadAppraisalData();
 			  }catch(Throwable t){
 				  new ErrorDialog(this, t).show();
 			  }
+			  loadMaterialInfo();
 		  }
 	  }
 	  
@@ -261,7 +260,7 @@ public class FaasBuildingActivity extends ControlActivity {
 		material_add = (Button) view.findViewById(R.id.material_add);
 		material_add.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-            	StructuralMaterialInfo material = new StructuralMaterialInfo(activity,null);
+            	StructuralMaterialInfo material = new StructuralMaterialInfo(activity,null,rpuid);
             	material.show();
             }
         });
@@ -326,7 +325,7 @@ public class FaasBuildingActivity extends ControlActivity {
 				public void onItemClick(AdapterView<?> adapter, View view, int pos, long arg3) {
 					BldgStructureMenuAdapter a = (BldgStructureMenuAdapter) adapter.getAdapter();
 					BldgStructure item = a.getListItem(pos);
-					StructuralMaterialInfo info = new StructuralMaterialInfo(activity, item);
+					StructuralMaterialInfo info = new StructuralMaterialInfo(activity, item, rpuid);
 					info.show();
 				}	
 			});

@@ -5,6 +5,7 @@
 - BPLS 
 		
 - ASSESSOR
+	- NEW! Agricultural Land Area by Actual Use Summary report
 	- Valid subdivision affected improvement new faas
 	- Update on NOA report 
 	- Update on modify pin facility

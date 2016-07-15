@@ -1,0 +1,13 @@
+<workunit schemaName="government_property">
+    <invokers>
+        <invoker type="government_property:create" caption="Government" action="create"/>
+        <invoker type="government_property:open" caption="Government" action="open"/>
+    </invokers>
+    
+    <code class="com.rameses.seti2.models.CrudFormModel" />
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.bpls.view.GovernmentPropertyPage"/>
+    </pages>
+    
+</workunit>

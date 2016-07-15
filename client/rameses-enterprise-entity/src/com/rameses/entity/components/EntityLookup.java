@@ -4,6 +4,7 @@
  */
 package com.rameses.entity.components;
 
+import com.rameses.common.PropertyResolver;
 import com.rameses.rcp.control.XComponentPanel;
 import com.rameses.rcp.ui.annotations.ComponentBean;
 
@@ -14,18 +15,83 @@ import com.rameses.rcp.ui.annotations.ComponentBean;
 @ComponentBean("com.rameses.entity.components.EntityLookupModel")
 public class EntityLookup extends XComponentPanel {
 
-    /**
-     * Creates new form EntityLookup
-     */
+    private String onselect; 
+    private String onempty;
+    private String entitytype;
+            
     public EntityLookup() {
         initComponents();
     }
+    
+    public String getExpression() {
+        return xLookupField1.getExpression(); 
+    }
+    public void setExpression( String expression ) {
+        xLookupField1.setExpression( expression ); 
+    } 
+    
+    public String getOnselect() { return onselect; } 
+    public void setOnselect( String onselect ) {
+        this.onselect = onselect; 
+    }
+    
+    public String getOnempty() { return onempty; } 
+    public void setOnempty( String onempty ) {
+        this.onempty = onempty; 
+    } 
+    
+    public String getEntityType() {
+        return entitytype;
+    }
+    public void setEntityType(String entitytype) {
+        this.entitytype = entitytype;
+    }    
 
     @Override
-    public void setRequired(boolean required) {
-        super.setRequired(required);
-        xLookupField1.setRequired(required);
+    public void setEnabled(boolean enabled) {
+        super.setEnabled(enabled);
+        xLookupField1.setEnabled(enabled);
     }
+
+    @Override
+    public void afterLoad() {
+        super.afterLoad();
+        
+        Object caller = getBean();
+        Object bean = getComponentBean(); 
+        PropertyResolver pr = PropertyResolver.getInstance();
+        if ( getOnselect() != null ) {
+            Object handler = pr.getProperty(caller, getOnselect()); 
+            pr.setProperty(bean, "onselect", handler);
+        }
+        if ( getOnempty() != null ) {
+            Object handler = pr.getProperty(caller, getOnempty()); 
+            pr.setProperty(bean, "onempty", handler);
+        }
+
+        pr.setProperty(bean, "entityTypeCaller", new EntityTypeCaller(getEntityType(), caller));
+    }
+    
+    
+    public class EntityTypeCaller { 
+        private String type;
+        private Object caller;
+        
+        EntityTypeCaller( String type, Object caller ) {
+            this.type = type;
+            this.caller = caller;
+        }
+        
+        public Object getEntityType() {
+            if ( type == null || type.trim().length()==0 ) {
+                return null; 
+            } 
+
+            PropertyResolver pr = PropertyResolver.getInstance();
+            return pr.getProperty(caller, type); 
+        }
+    }
+    
     
     
     /**
@@ -37,66 +103,53 @@ public class EntityLookup extends XComponentPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel2 = new javax.swing.JPanel();
         xLookupField1 = new com.rameses.rcp.control.XLookupField();
-        jPanel1 = new javax.swing.JPanel();
+        jPanel4 = new javax.swing.JPanel();
         xButton2 = new com.rameses.rcp.control.XButton();
         xButton1 = new com.rameses.rcp.control.XButton();
 
-        setLayout(new java.awt.BorderLayout());
+        setOpaque(false);
+        setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.LINE_AXIS));
 
         xLookupField1.setExpression("#{entity.name} - #{entity.entityno} ");
         xLookupField1.setHandler("lookupEntity");
         xLookupField1.setName("entity"); // NOI18N
         xLookupField1.setPreferredSize(new java.awt.Dimension(100, 19));
+        add(xLookupField1);
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 2, 5, 0));
-        jPanel1.setLayout(new java.awt.BorderLayout());
+        jPanel4.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 5, 0, 0));
+        jPanel4.setOpaque(false);
+        com.rameses.rcp.control.layout.XLayout xLayout1 = new com.rameses.rcp.control.layout.XLayout();
+        xLayout1.setSpacing(0);
+        jPanel4.setLayout(xLayout1);
 
         xButton2.setBorderPainted(false);
         xButton2.setContentAreaFilled(false);
+        xButton2.setDisableWhen("#{allowOpen != true}");
         xButton2.setIconResource("images/toolbars/open.png");
         xButton2.setMargin(new java.awt.Insets(0, 0, 0, 0));
         xButton2.setName("viewEntity"); // NOI18N
         xButton2.setToolTipText("View Record");
-        xButton2.setVisibleWhen("#{allowOpen}");
-        jPanel1.add(xButton2, java.awt.BorderLayout.WEST);
+        jPanel4.add(xButton2);
 
         xButton1.setBorderPainted(false);
         xButton1.setCaption("");
         xButton1.setContentAreaFilled(false);
+        xButton1.setDisableWhen("#{allowCreate != true}");
         xButton1.setIconResource("images/toolbars/create.png");
         xButton1.setMargin(new java.awt.Insets(0, 0, 0, 0));
         xButton1.setName("addEntity"); // NOI18N
         xButton1.setToolTipText("Add New Record");
-        xButton1.setVisibleWhen("#{allowCreate}");
-        jPanel1.add(xButton1, java.awt.BorderLayout.EAST);
+        jPanel4.add(xButton1);
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addComponent(xLookupField1, javax.swing.GroupLayout.DEFAULT_SIZE, 245, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(xLookupField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        add(jPanel2, java.awt.BorderLayout.CENTER);
+        add(jPanel4);
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel4;
     private com.rameses.rcp.control.XButton xButton1;
     private com.rameses.rcp.control.XButton xButton2;
     private com.rameses.rcp.control.XLookupField xLookupField1;
     // End of variables declaration//GEN-END:variables
+
+
 }

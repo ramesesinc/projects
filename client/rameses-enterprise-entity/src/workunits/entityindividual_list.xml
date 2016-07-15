@@ -14,5 +14,9 @@
         <invoker folderid="/explorer/master/entity" caption="Individual" role="MASTER" action="init" 
                  cols="entityno,lastname,firstname,middlename,address.text,birthdate,entityname"
                     orderBy="lastname,firstname"/>
+        <invoker folderid="/home/entity" caption="Individual" role="MASTER" action="init" 
+                 cols="entityno,lastname,firstname,middlename,address.text,birthdate,entityname"
+                    icon="home/icons/entity.png"
+                    orderBy="lastname,firstname"/>        
    </invokers>
 </workunit>

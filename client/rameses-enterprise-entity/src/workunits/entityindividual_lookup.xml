@@ -1,7 +1,12 @@
 <workunit extends="com/rameses/seti2/templates/CrudLookup.xml" 
-          schemaName="individualentity">
+          schemaName="entityindividual">
    <invokers>
-         <invoker type="individualentity:lookup" caption="Lookup Individual Entity" 
-                  target="popup" height="350" cols="entityno,lastname,firstname,gender,entityname"/>
+       <invoker type="entityindividual:lookup" caption="Lookup Individual Entity" 
+                  action="init" target="popup" height="350"  
+                  cols="entityno,name,entityname,address.text,gender,type"/>
+       
+       <invoker type="individualentity:lookup" caption="Lookup Individual Entity" 
+                  action="init" target="popup" height="350"  
+                  cols="entityno,name,entityname,address.text,gender,type"/>
    </invokers>
 </workunit>

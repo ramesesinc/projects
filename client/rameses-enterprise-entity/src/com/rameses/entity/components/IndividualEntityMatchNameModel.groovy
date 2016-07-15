@@ -6,22 +6,58 @@ import com.rameses.osiris2.client.*;
 import com.rameses.osiris2.common.*;
 import com.rameses.seti2.models.*;
 
-class IndividualEntityMatchListModel extends ComponentBean {
+class IndividualEntityMatchNameModel extends ComponentBean {
 
     @Service("IndividualEntityNameMatchService")
     def matchService;
+
+    @Service("QueryService")
+    def qryService;
+    
+    def caller;
     
     boolean hasMatch;
     def matchList;
     def selectedItem;
     
-    void checkHasMatch() {
-        hasMatch = false;
+    def mode = "ask-name";
+    
+    def onselect;
+    def oncreate;
+    
+    boolean allowSelect = true;
+    
+    def getEntity() {
+        return caller.entity;
+    }
+    
+    void verifyName() {
+        boolean b = checkHasMatch();
+        if( b ) {
+            mode = "show-list";
+        }
+        else {
+            if(oncreate) oncreate(entity);
+        }
+    }
+    
+    void back() {
+        mode = "ask-name";
+    }
+    
+    boolean checkHasMatch() {
         matchList =  matchService.getMatches(entity);
+        if( entity.objid ) {
+            def r = matchList.find{ it.objid == entity.objid };
+            if(r) matchList.remove(r);
+        }
         if(matchList.size()>0){
-            hasMatch = true;
             selectedItem = matchList[0];
+            return true;
         }    
+        else {
+            return false;
+        }
     }
 
     def listModel = [
@@ -36,19 +72,20 @@ class IndividualEntityMatchListModel extends ComponentBean {
         return "_close";
     }
 
-    def getInfo() {
-        return entity;
-    }
 
     def getSelectedPhoto() {
         if(!selectedItem) return null;
         if(!selectedItem.photo) {
-            selectedItem.photo = service.getPhoto( [objid: selectedItem.objid] );
+            def m = [_schemaname:'entityindividual'];
+            m.select = 'photo';
+            m.findBy = [objid: selectedItem.objid];
+            def pho = qryService.findFirst( m )?.photo;
+            selectedItem.photo = pho;
         }
         return selectedItem.photo;
     }
 
-    void validateAdd() {
+    void add() {
         if( matchList.find{ it.match == 100.0 } ) {
             boolean allowed = false;
             try {
@@ -59,7 +96,13 @@ class IndividualEntityMatchListModel extends ComponentBean {
             if( !allowed )  {
                 throw new Exception("There is an exact match for the record. You do not have enough rights to override.");                    
             }    
-        }    
+        } 
+        oncreate( entity );
+    }
+    
+    void select() {
+        if(!selectedItem?.objid) throw new Exception("Please select an item");
+        onselect( selectedItem );
     }
     
 }

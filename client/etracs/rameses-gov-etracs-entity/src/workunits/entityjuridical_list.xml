@@ -4,5 +4,11 @@
         <invoker folderid="/explorer/master/entity" caption="Juridical"  
                  role="MASTER" permission="entityjuridical.view"  
                 cols="entityno,name,entityname,address.text,orgtype" action="init"/>  
+        
+        <invoker folderid="/home/entity" caption="Juridical"  
+                 role="MASTER" permission="entityjuridical.view"  
+                cols="entityno,name,entityname,address.text,orgtype" action="init"
+                icon="home/icons/entityjuridical.png"/>  
+        
    </invokers>
 </workunit>

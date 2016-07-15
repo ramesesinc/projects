@@ -8,7 +8,7 @@
 		<field name="birthdate" caption="Birthdate" datatype="date" outputFormat="yyyy-MM-dd"/>
 		<field name="birthplace" />
 		<field name="citizenship" />
-		<field name="gender" />
+		<field name="gender" caption="Gender"/>
 		<field name="civilstatus" />
 		<field name="religion" />		
 		<field name="profession" />

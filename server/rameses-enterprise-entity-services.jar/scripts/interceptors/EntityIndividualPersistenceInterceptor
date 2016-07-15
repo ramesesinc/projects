@@ -71,11 +71,12 @@ class EntityIndividualPersistenceInterceptor  {
 
 		if ( !o.objid ) o.objid = "IND"+new UID();
         if ( !o.entityno ) { 
+        	def stype = 'I';
             def seqno = seqSvc.getNextFormattedSeriesA( "INDIVIDUAL_ENTITY", 6 );
-            if(o.prefix) {
-                o.entityno = ''+ o.prefix + 'I' + seqno; 
+            if ( o.prefix ) {
+                o.entityno = ''+ o.prefix +'-'+ seqno + stype; 
             } else { 
-                o.entityno = 'I' + seqno; 
+                o.entityno = ''+ stype + seqno; 
             } 
         }
 		o.type = 'INDIVIDUAL';

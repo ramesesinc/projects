@@ -1,6 +1,6 @@
 <folders>
     <folder id="home">
-        <folder id="waterworks" caption="Waterworks" icon="home/icons/waterworks.png"/>
+        <folder id="waterworks" caption="Waterworks" icon="home/icons/waterworks.png"  index="50"/>
     </folder>
     <folder id="explorer">
         <folder id="master" caption="Master">
@@ -12,7 +12,7 @@
     </folder>
     <folder id="menu">
         <folder id="master" caption="Master">
-            <folder id="waterworks" caption="Waterworks"  />
+            <folder id="waterworks" caption="Waterworks" />
         </folder>            
     </folder>
 </folders>    

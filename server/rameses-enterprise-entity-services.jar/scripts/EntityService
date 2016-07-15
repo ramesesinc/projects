@@ -11,7 +11,7 @@ class EntityService {
 
 	@ProxyMethod
 	public def open(o) {
-		return em.select("objid,entityno,entityname,address.text,address.objid,address.barangay.objid,address.barangay.name").find([objid: o.objid]).first(); 	
+		return em.select("objid,entityno,name,entityname,address.text,address.objid,address.barangay.objid,address.barangay.name").find([objid: o.objid]).first(); 	
 	}
 
 

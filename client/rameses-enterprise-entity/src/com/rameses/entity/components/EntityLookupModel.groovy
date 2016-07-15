@@ -12,22 +12,45 @@ class EntityLookupModel extends ComponentBean {
     @Binding
     def binding;
     
-    boolean allowOpen = true;
-    boolean allowCreate = true;
-    
+    @Service('PersistenceService')
+    def persistenceSvc; 
+        
     def _entity;
-
-    def getLookupEntity() {
-        def hs = { o->
-            //entity.putAll(o);
-            setValue( o ); 
-            binding.refresh();
-        }
-        def he = {
-            setValue( null ); 
+    
+    def onselect; 
+    def onempty;
+    def entityTypeCaller; 
+    
+    String getEntityType() {
+        def type = (entityTypeCaller?.entityType == null? 'entity': entityTypeCaller.entityType); 
+        return type; 
+    }
+        
+    def getLookupEntity() { 
+        def params = [:]; 
+        params.onselect = { o-> 
+            fireOnselect( o ); 
+        } 
+        params.onempty = {
+            if ( onempty ) { 
+                onempty(); 
+            } else {
+                setValue( null ); 
+            }
             binding.refresh(); 
         }
-        return Inv.lookupOpener( "entity:lookup", [onselect: hs, onempty: he] );
+        return Inv.lookupOpener( getEntityType()+':lookup', params );
+    } 
+    
+    void fireOnselect( o ) {
+        def schemaname = 'entity' + (o.type ? o.type :'').toLowerCase(); 
+        o = persistenceSvc.read([ _schemaname: schemaname, objid: o.objid ]); 
+        if ( onselect ) { 
+            onselect( o ); 
+        } else { 
+            setValue( o ); 
+        } 
+        binding.refresh(); 
     }
     
     public def getEntity() {
@@ -36,22 +59,42 @@ class EntityLookupModel extends ComponentBean {
     
     public def viewEntity() {
         if( !entity?.objid ) throw new Exception("Please select an entity");
-        String type = entity.type;
-        def op = Inv.lookupOpener( "entityindividual:open", [entity: entity] );
+
+        def type = (entity.type ? entity.type :'').toLowerCase(); 
+        def op = Inv.lookupOpener( 'entity'+ type +':open', [entity: entity] );
         op.target = 'popup';
         return op;
     }
     
     public def addEntity() {
         //check if there is role
-        boolean b = ClientContext.currentContext.securityProvider.checkPermission("ENTITY", "MASTER","entityindividual.create");
-        if(!b) throw new Exception("No sufficient permission to add type");
+        boolean b = ClientContext.currentContext.securityProvider.checkPermission("ENTITY", "MASTER", "entityindividual.create");
+        if (!b) throw new Exception("No sufficient permission to add type");
         
-        def s = { o->
-            setValue( o ); 
-            binding.refresh(); 
-        }
-        return Inv.lookupOpener( "entityindividual:create", [onselect: s] );
-    }
+        def params = [:]; 
+        params.onselect = { o-> 
+            fireOnselect( o ); 
+        } 
+        return Inv.lookupOpener( 'entityindividual:create', params ); 
+    } 
     
-}
+    public boolean isAllowCreate() {
+        try {
+            def o = Inv.lookup( getEntityType() +':create' );
+            return ( o ? true : false );
+        } catch(Throwable t) { 
+            return false; 
+        } 
+    }
+    public boolean isAllowOpen() {
+        try {
+            def o = Inv.lookup( getEntityType() +':open' );
+            if ( !o ) return false; 
+            
+            o = getValue(); 
+            return ( o ? true : false ); 
+        } catch(Throwable t) { 
+            return false; 
+        } 
+    } 
+} 

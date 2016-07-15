@@ -16,7 +16,7 @@ class  IndividualCtcCashReceipt extends AbstractCashReceipt
     
     @Service('ProfessionService')
     def profSvc;
-
+    
     def payerdata  = [:];
     
     def needsrecalc = false;
@@ -35,13 +35,12 @@ class  IndividualCtcCashReceipt extends AbstractCashReceipt
     def hasheight = false;
     def hasweight = false;
     def hassenior = false;
-
     
     def orig_businessgross = 0.0;
     
     def barangay;
     
-    def ctctype = 'individual'
+    def ENTITY_TYPE = 'INDIVIDUAL';
         
     @PropertyChangeListener
     def listener = [
@@ -94,7 +93,7 @@ class  IndividualCtcCashReceipt extends AbstractCashReceipt
     
     def createEntity() { 
         def h = { o->
-            o.type = 'INDIVIDUAL';
+            o.type = ENTITY_TYPE;
             entity.payer = o;
             entity.paidby = o.name;
             entity.paidbyaddress = o.address.text;
@@ -105,17 +104,13 @@ class  IndividualCtcCashReceipt extends AbstractCashReceipt
         return Inv.lookupOpener("individualentity:create", [entity:[:], onselect:h]); 
     }
     
-    protected void beforeLookupEntity( params ) {
-        params['query.type'] = 'INDIVIDUAL'; 
-        params.allowSelectEntityType = false; 
-    }
+    public def getPayerType() { 
+        return 'entityindividual'; 
+    } 
     
     public def payerChanged( o ) {
-        if ( ! o.type.equalsIgnoreCase('INDIVIDUAL'))
+        if ( ! o.type.equalsIgnoreCase(ENTITY_TYPE))
             throw new Exception('Only individual entities are allowed.');
-        
-        def ent = entitySvc.open(o)
-        o.putAll(ent);
         
         hasmiddlename = (o.middlename != null)
         hasprofession = (o.profession != null)
@@ -154,23 +149,6 @@ class  IndividualCtcCashReceipt extends AbstractCashReceipt
         needsrecalc = false;
     }
        
-    List getCitizenships(){
-        return LOV.CITIZENSHIP*.key
-    }
-    
-    List getGenders(){
-        return LOV.GENDER*.key
-    }
-
-    List getCivilstatus(){
-        return LOV.CIVIL_STATUS*.key
-    }
-    
-    def professionLookup = [
-        fetchList: { o-> 
-            return profSvc.getList( o )*.objid; 
-        }
-    ] as SuggestModel; 
     
     def editAddress() {
         if ( !entity.payer?.objid ) return null; 

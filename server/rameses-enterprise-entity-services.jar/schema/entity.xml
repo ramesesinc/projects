@@ -4,14 +4,14 @@
 		<field name="objid" primary="true"/>
 		<field name="entityno" required="true" caption="EntityNo" indexed="true" searchable="true"/>
 		<field name="name" required="true" caption="Name"  />
-		<field name="entityname" indexed="true" searchable="true" visible="false"/>
+		<field name="entityname" indexed="true" searchable="true" visible="false" caption="EntityName"/>
 		<field name="address_objid" required="true" visible="true"/>
 		<field name="address_text" required="true" caption="Address"/>
 		<complex name="address" ref="entity_address" required="false" jointype="many-to-one"
 			includefields="barangay_name,city,municipality,province,bldgno,bldgname,unitno,street,subdivision,pin">
 			<key field="address_objid" target="objid"/>
 		</complex>	
-		<field name="type" required="true"/>
+		<field name="type" required="true" caption="Type"/>
 		<field name="remarks" />
 		<field name="mobileno" />
 		<field name="phoneno" />

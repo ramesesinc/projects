@@ -9,5 +9,5 @@ package com.rameses.entity.components;
  * @author dell
  */
 public interface IAddressLookup {
-    void setEntityid(String id);
+    void setLookupCaller(IAddressLookupCaller caller);
 }

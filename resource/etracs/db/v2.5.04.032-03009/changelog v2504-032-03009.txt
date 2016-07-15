@@ -17,3 +17,4 @@
 	- Fix missing machine FAAS info (brand/model)
 	
 - LANDTAX
+	- Update on delinquency listing 

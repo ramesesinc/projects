@@ -39,7 +39,7 @@ FROM (
 	SELECT 
 		rptledgerid, MAX(dtgenerated) AS dtgenerated, 
 		MIN(year) AS startyearpaid, MIN(qtr) as startqtrpaid, 
-		MAX(year) AS lastyearpaid, MAX(qtr) AS lastqtrpaid,  
+		MAX(year) AS lastyearpaid, MAX(4) AS lastqtrpaid,  
 		SUM(basic - basicdisc) AS basic, SUM(sef - sefdisc) AS sef, 
 		SUM(basicint) AS basicint, SUM(sefint) AS sefint, 
 		SUM(basic - basicdisc + basicint) AS basicnet,

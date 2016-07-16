@@ -4,6 +4,11 @@
                  caption="Multiple Entity" action="open"  
                  role="MASTER" index="-1"
                  windowTitle="#{entity.entityno}" formTitle="#{entity.entityno}" formId="#{entity.objid}"/>
+        
+        <invoker type="entitymultiple:create" 
+                 caption="Multiple Entity" action="create"  
+                 role="MASTER" index="-1"
+                 windowTitle="New Multiple" formTitle="New Multiple Entity" formId="#{entity.objid}"/>        
     </invokers>
     <code class="com.rameses.entity.models.MultipleEntityModel" />
     <pages>

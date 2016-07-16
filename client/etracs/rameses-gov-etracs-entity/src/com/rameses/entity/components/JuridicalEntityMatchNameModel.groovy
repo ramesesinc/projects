@@ -6,9 +6,9 @@ import com.rameses.osiris2.client.*;
 import com.rameses.osiris2.common.*;
 import com.rameses.seti2.models.*;
 
-class IndividualEntityMatchNameModel extends ComponentBean {
-
-    @Service("IndividualEntityNameMatchService")
+public class JuridicalEntityMatchNameModel extends ComponentBean  {
+    
+    @Service("JuridicalEntityNameMatchService")
     def matchService;
 
     @Service("QueryService")
@@ -37,7 +37,7 @@ class IndividualEntityMatchNameModel extends ComponentBean {
             mode = "show-list";
         }
         else {
-            mode = "ask-name";
+            mode = "ask-name"
             if(oncreate) oncreate(entity);
         }
     }
@@ -73,24 +73,11 @@ class IndividualEntityMatchNameModel extends ComponentBean {
         return "_close";
     }
 
-
-    def getSelectedPhoto() {
-        if(!selectedItem) return null;
-        if(!selectedItem.photo) {
-            def m = [_schemaname:'entityindividual'];
-            m.select = 'photo';
-            m.findBy = [objid: selectedItem.objid];
-            def pho = qryService.findFirst( m )?.photo;
-            selectedItem.photo = pho;
-        }
-        return selectedItem.photo;
-    }
-
     void add() {
         if( matchList.find{ it.match == 100.0 } ) {
             boolean allowed = false;
             try {
-                def test = Inv.lookupOpener( "entityindividual:approveduplicate", [:] );
+                def test = Inv.lookupOpener( "entityjuridical:approveduplicate", [:] );
                 if(test) allowed = true;
             }
             catch(e) {;}
@@ -98,13 +85,13 @@ class IndividualEntityMatchNameModel extends ComponentBean {
                 throw new Exception("There is an exact match for the record. You do not have enough rights to override.");                    
             }    
         } 
-        mode = "ask-name";
+        mode = "ask-name"
         oncreate( entity );
     }
     
     void select() {
         if(!selectedItem?.objid) throw new Exception("Please select an item");
-        mode = "ask-name";
+        mode = "ask-name"
         onselect( selectedItem );
     }
     

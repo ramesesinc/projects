@@ -1,0 +1,19 @@
+<workunit>
+    <invokers>
+        <invoker type="entityjuridical:create" caption="Juridical Entity (Create)" action="create" target="popup" role="MASTER" permission="entityjuridical.create"/>
+        <invoker type="quick_launcher" code="TP02" caption="Juridical Entity (Create)" action="create" target="popup" role="MASTER" permission="entityjuridical.create"/>
+       
+        <!-- used to check if we can allow dupplicate -->
+        <invoker type="entityjuridical:approveduplicate" role="APPROVER" permission="entityjuridical.approveduplicate" />
+        <invoker type="formActions" caption="Change Name" action="back" />
+
+    </invokers>
+    
+   <code class="com.rameses.entity.models.NewJuridicalEntityModel" />
+
+   <pages>
+       <page template="com.rameses.entity.views.JuridicalEntityEnterNamePage"/>
+       <page name="entry"  template="com.rameses.entity.views.JuridicalEntityPage"/>
+   </pages>   
+   
+</workunit>

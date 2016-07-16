@@ -7,6 +7,12 @@ import com.rameses.services.extended.*;
 
 class EntityJuridicalPersistenceInterceptor  {
 
+	@Service('DateService')
+	def dtSvc;
+
+	@Service('SequenceService')
+    def seqSvc;
+
 	@Service("LOVService")
 	def LOV;
 
@@ -16,6 +22,12 @@ class EntityJuridicalPersistenceInterceptor  {
 
 	@DataContext("entityjuridical")
 	def entityEm;
+
+	@Before(pattern="PersistenceService.(create|update)", eval="#{args[0]._schemaname == 'entityjuridical'}", index=100)
+	public void beforeSave(def evt ) {
+		def o = evt.args[0];
+		o.entityname = o.name;
+	}
 
 	@Before(pattern="PersistenceService.create", eval="#{args[0]._schemaname == 'entityjuridical'}", index=101)
 	public void beforeCreate(def evt ) {

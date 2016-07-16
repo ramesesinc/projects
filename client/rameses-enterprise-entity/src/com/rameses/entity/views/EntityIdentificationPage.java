@@ -33,7 +33,7 @@ public class EntityIdentificationPage extends javax.swing.JPanel {
         xTabbedPane1 = new com.rameses.rcp.control.XTabbedPane();
         jPanel1 = new javax.swing.JPanel();
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
-        xComboBox1 = new com.rameses.rcp.control.XComboBox();
+        idTypeList1 = new com.rameses.enterprise.components.IdTypeList();
         xTextField1 = new com.rameses.rcp.control.XTextField();
         xDateField1 = new com.rameses.rcp.control.XDateField();
         xDateField2 = new com.rameses.rcp.control.XDateField();
@@ -43,14 +43,11 @@ public class EntityIdentificationPage extends javax.swing.JPanel {
         xFormPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
         xFormPanel1.setCaptionWidth(100);
 
-        xComboBox1.setCaption("ID Type");
-        xComboBox1.setExpression("#{item.value}");
-        xComboBox1.setItemKey("key");
-        xComboBox1.setItems("idtypes");
-        xComboBox1.setName("entity.idtype"); // NOI18N
-        xComboBox1.setRequired(true);
-        xComboBox1.setStretchWidth(100);
-        xFormPanel1.add(xComboBox1);
+        idTypeList1.setCaption("ID Type");
+        idTypeList1.setName("entity.idtype"); // NOI18N
+        idTypeList1.setPreferredSize(new java.awt.Dimension(0, 22));
+        idTypeList1.setRequired(true);
+        xFormPanel1.add(idTypeList1);
 
         xTextField1.setCaption("ID Number");
         xTextField1.setName("entity.idno"); // NOI18N
@@ -121,10 +118,10 @@ public class EntityIdentificationPage extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private com.rameses.enterprise.components.IdTypeList idTypeList1;
     private com.rameses.enterprise.components.ImageComponent imageComponent1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel3;
-    private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XDateField xDateField1;
     private com.rameses.rcp.control.XDateField xDateField2;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;

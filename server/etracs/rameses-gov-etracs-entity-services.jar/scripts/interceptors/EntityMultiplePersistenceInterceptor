@@ -7,7 +7,12 @@ import com.rameses.services.extended.*;
 
 class EntityMultiplePersistenceInterceptor  {
 
-	
+	@Service('DateService')
+	def dtSvc;
+
+	@Service('SequenceService')
+    def seqSvc;
+
 	@DataContext("entity_address")
 	def addressEm;
 
@@ -16,6 +21,13 @@ class EntityMultiplePersistenceInterceptor  {
 
 	@DataContext("entitymember")
 	def memberEm;
+
+	@Before(pattern="PersistenceService.(create|update)", eval="#{args[0]._schemaname == 'entitymultiple'}", index=100)
+	public void beforeSave(def evt ) {
+		def o = evt.args[0];
+		o.entityname = o.name;
+		o.fullname = o.name;
+	}
 
 	@Before(pattern="PersistenceService.create", eval="#{args[0]._schemaname == 'entitymultiple'}", index=101)
 	public void beforeCreate(def evt ) {

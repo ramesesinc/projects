@@ -36,14 +36,12 @@ public class StructuralMaterialInfo extends AlertDialog.Builder {
 	private Spinner structure, material;
 	private EditText floorno;
 	
-	public StructuralMaterialInfo(Context ctx, BldgStructure bs){
+	public StructuralMaterialInfo(Context ctx, BldgStructure bs, String rpuid){
 		super(ctx);
 		this.ctx = ctx;
 		this.bs = bs;
-		if(bs != null){
-			this.objid = bs.getObjid();
-			this.rpuid = bs.getBldgRpuId();
-		}
+		this.rpuid = rpuid;
+		if(bs != null) this.objid = bs.getObjid();
 		
 		LayoutInflater inflater = LayoutInflater.from(ctx);
 		View view = inflater.inflate(R.layout.activity_materials, null);
@@ -99,40 +97,41 @@ public class StructuralMaterialInfo extends AlertDialog.Builder {
 	}
 	
 	private void doSave(){
-		try{
-			Map structure_data = find((DefaultItem)structure.getSelectedItem(),data_structure);
-			Map material_data = find((DefaultItem)material.getSelectedItem(),data_material);
+		Map structure_data = find((DefaultItem)structure.getSelectedItem(),data_structure);
+		Map material_data = find((DefaultItem)material.getSelectedItem(),data_material);
+		
+		if(floorno.getText().toString().isEmpty()){
+			new InfoDialog(ctx, "Floor No. is required!").show();
+    		return;
+		}
+		
+		if(structure_data == null || structure.getSelectedItemPosition() == 0){
+    		new InfoDialog(ctx, "Structure is required!").show();
+    		return;
+    	}
+		
+		if(material_data == null || material.getSelectedItemPosition() == 0){
+    		new InfoDialog(ctx, "Material is required!").show();
+    		return;
+    	}
 			
-			if(floorno.getText().toString().isEmpty()){
-				new InfoDialog(ctx, "Floor No. is required!").show();
-	    		return;
-			}
-			
-			if(structure_data == null || structure.getSelectedItemPosition() == 0){
-	    		new InfoDialog(ctx, "Structure is required!").show();
-	    		return;
-	    	}
-			
-			if(material_data == null || material.getSelectedItemPosition() == 0){
-	    		new InfoDialog(ctx, "Material is required!").show();
-	    		return;
-	    	}
-			
-			Map params = new HashMap();
-			params.put("bldgrpuid", rpuid);
-			params.put("structure_objid", structure_data.get("objid"));
-			params.put("material_objid", material_data.get("objid"));
-			params.put("floor", floorno.getText());
-			
+		Map params = new HashMap();
+		params.put("bldgrpuid", rpuid);
+		params.put("structure_objid", structure_data.get("objid"));
+		params.put("material_objid", material_data.get("objid"));
+		params.put("floor", floorno.getText());
+		if(objid == null) params.put("objid", UUID.randomUUID().toString());
+		if(objid != null) params.put("objid", objid);
+		
+		try{	
 			BldgStructureDB db = new BldgStructureDB();
 			if(objid == null){
-				params.put("objid", UUID.randomUUID().toString());
 				db.create(params);
 			}else{
-				params.put("objid", objid);
 				db.update(params);
 			}
 		}catch(Throwable e){
+			e.printStackTrace();
 			new ErrorDialog(ctx, e).show();
 			error = e;
 		}
@@ -175,10 +174,8 @@ public class StructuralMaterialInfo extends AlertDialog.Builder {
 			@Override
 			public void onClick(View arg0) {
 				doSave();
-				if(error == null){
-					FaasBuildingActivity.loadMaterialInfo();
-					dialog.dismiss();
-				}
+				FaasBuildingActivity.loadMaterialInfo();
+				dialog.dismiss();
 			}
 		});
 		dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener(new View.OnClickListener(){

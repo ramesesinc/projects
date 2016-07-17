@@ -103,45 +103,43 @@
                 },
                 fetchList: {
                     return verifyItems;
-                }, 
-                isColumnEditable: { data,colname-> 
-                    return (mode=='read'? false: true); 
-                } 
-            ] as EditorListModel;
+                }
+            ] as BasicListModel;
 
             void save() {
                 if ( verifyItems.findAll{ !it.verified }.size() > 0 )
                     throw new Exception("Please verify all items."); 
 
-                super.save();    
+                super.save();  
+                readonly = true; 
             }
 
             def selectedStub;
             def stubListHandler = [
             	fetchList: {
-            		return selectedAF?.items; 
+                    return selectedAF?.items; 
             	}, 
             	isColumnEditable: { data,colname-> 
-            		if ( mode=='read' || !selectedAF ) return false; 
-            		if ( selectedAF.verified == true ) return false; 
+                    if ( mode=='read' || !selectedAF ) return false; 
+                    if ( selectedAF.verified == true ) return false; 
                     
                     return ( colname == 'qtyissued' ); 
                 }, 
                 afterColumnUpdate: { data,colname-> 
-                	def currentseries = selectedAF.startseries; 
-                	selectedAF.items.each{ a-> 
-                		a.startseries = currentseries; 
-                		a.endseries = currentseries + a.qtyissued - 1; 
-                		currentseries = a.endseries + 1; 
-                	} 
+                    def currentseries = selectedAF.startseries; 
+                    selectedAF.items.each{ a-> 
+                        a.startseries = currentseries; 
+                        a.endseries = currentseries + a.qtyissued - 1; 
+                        currentseries = a.endseries + 1; 
+                    } 
 
-                	def totalqty = selectedAF.items.sum{ it.qtyissued } 
-                	selectedAF.qty = totalqty; 
-                	selectedAF.endseries = selectedAF.items.max{ it.endseries }.endseries; 
-                	if ( selectedAF.sendseries != null ) { 
-                		selectedAF.sendseries = selectedAF.endseries; 
-                	} 
-                	verifyListModel.refreshSelectedItem();
+                    def totalqty = selectedAF.items.sum{ it.qtyissued } 
+                    selectedAF.qty = totalqty; 
+                    selectedAF.endseries = selectedAF.items.max{ it.endseries }.endseries; 
+                    if ( selectedAF.sendseries != null ) { 
+                        selectedAF.sendseries = selectedAF.endseries; 
+                    } 
+                    verifyListModel.refreshSelectedItem();
                 }
             ] as EditorListModel; 
         }

@@ -16,6 +16,9 @@ class NotificationAsyncTask {
     @Service('CloudSettings') 
     def settings;  		
 
+	@Context
+    def appCtx;     
+
 	@Schedule(interval=2)
 	public void execute( task ) { 
         if ( !settings.isEnabled() ) { 
@@ -26,13 +29,20 @@ class NotificationAsyncTask {
 		def info = em.findAsyncPendingMessage();  
 		if ( !info ) return; 
 
-		def encstr = Encoder.MD5.encode( info.objid ); 
+		def msgid = info.objid; 
+		def encstr = Encoder.MD5.encode( msgid ); 
 		def file = new File( getDataDir(), encstr ); 
-		info.asyncdata = readObject( file ); 
-		asyncReqExecutor.process( info );  
-		
-		info.asyncdata = null; 
-		em.removeAsyncPending( info );  
+		if ( file.exists() ) { 
+			info.asyncdata = readObject( file ); 
+			asyncReqExecutor.process( info );  
+			
+			info.asyncdata = null; 
+			em.delete([objid: msgid], 'async_pending'); 
+		} else { 
+			em.delete([objid: msgid], 'async_pending'); 
+			em.delete([objid: msgid], 'async'); 
+			em.create([objid: msgid], 'forprocess'); 
+		} 
 	} 
 
 	def readObject( file ) {
@@ -49,7 +59,10 @@ class NotificationAsyncTask {
 	}
 
     def getDataDir() { 
-        def tmpdir = new File( System.getProperty("java.io.tmpdir") );
+    	def datadir = appCtx.conf['notification.datadir']; 
+    	if ( !datadir ) datadir = System.getProperty("java.io.tmpdir");
+
+        def tmpdir = new File( datadir );
         def basedir = new File( tmpdir, "rameses/notification-data" );
         if ( !basedir.exists() ) { 
             basedir.mkdirs(); 

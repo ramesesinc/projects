@@ -37,8 +37,9 @@ class RAAFReportService
 	@ProxyMethod
 	public def getRAAFByRemittance( params ) { 
 		if ( !params.remittanceid ) throw new Exception('remittanceid parameter is required');
+		if ( !params.formno ) params.formno = '%';
 
-		def items = adb.getReportDataByRef([ refid: params.remittanceid ]);  
+		def items = adb.getReportDataByRef([ refid: params.remittanceid, formno: params.formno ]);  
 		buildRAAF( items, true ); 
 		return items; 
 	} 
@@ -46,8 +47,9 @@ class RAAFReportService
 	@ProxyMethod
 	public def getRAAFByLiquidation( params ) { 
 		if ( !params.liquidationid ) throw new Exception('liquidationid parameter is required');
+		if ( !params.formno ) params.formno = '%';
 
-		def items = adb.getReportDataByRef([ refid: params.liquidationid ]);  
+		def items = adb.getReportDataByRef([ refid: params.liquidationid, formno: params.formno ]);  
 		buildRAAF( items, true ); 
 		return items; 
 	} 	

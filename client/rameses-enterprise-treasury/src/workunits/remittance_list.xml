@@ -3,12 +3,12 @@
     <invokers>
         <invoker folderid="/explorer/txn/treasury" caption="Remittances" role="SHARED,COLLECTOR" index="42">
             <action name="doInit" role="SHARED" tag="all" permission="remittance.view"/> 
-            <action name="doInit" role="COLLECTOR" tag="bycollector"/>             
+            <action name="doInit" role="COLLECTOR" tag="bycollector"/> 
         </invoker>
         
         <invoker folderid="home/remittance" caption="Remittances" role="SHARED,COLLECTOR" target="window">
             <action name="doInit" role="SHARED" tag="all" permission="remittance.view"/> 
-            <action name="doInit" role="COLLECTOR" tag="bycollector"/>             
+            <action name="doInit" role="COLLECTOR" tag="bycollector"/> 
         </invoker>
     </invokers>
     

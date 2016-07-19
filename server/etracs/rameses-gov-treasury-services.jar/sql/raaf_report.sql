@@ -125,4 +125,5 @@ select * from (
   )xx inner join af_inventory afi on xx.controlid=afi.objid 
       inner join af on afi.afid = af.objid 
 )xx 
+where xx.formno like $P{formno} 
 order by xx.formno, xx.sortseries  

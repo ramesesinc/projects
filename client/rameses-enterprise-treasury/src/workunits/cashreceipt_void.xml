@@ -2,12 +2,22 @@
     
    <invokers>
          <!-- hooks to cash receipt -->
-         <invoker type="cashreceiptinfo:formActions" caption="Void" action="open" target="popup" 
-            role="ADMIN,COLLECTOR,SUBCOLLECTOR" permission="receipt.void"
-            visibleWhen="#{!entity.remitted &amp;&amp; !entity.voided}"/>
+         <invoker 
+            type="cashreceiptinfo:formActions" caption="Void" action="open" 
+            role="ADMIN,COLLECTOR,SUBCOLLECTOR" permission="receipt.void" 
+            visibleWhen="#{!entity.remitted &amp;&amp; !entity.voided}"
+            target="popup"> 
+            <action role="ADMIN" tag="admin"/> 
+            <action role="COLLECTOR,SUBCOLLECTOR"/> 
+         </invoker>
             
-         <invoker type="cashreceipt:void" caption="Void" action="create" target="popup" 
-            role="ADMIN,COLLECTOR,SUBCOLLECTOR" permission="receipt.void"/>
+         <invoker 
+            type="cashreceipt:void" caption="Void" action="create" 
+            role="ADMIN,COLLECTOR,SUBCOLLECTOR" permission="receipt.void" 
+            target="popup"> 
+            <action role="ADMIN" tag="admin"/> 
+            <action role="COLLECTOR,SUBCOLLECTOR"/> 
+         </invoker>
          
          <invoker type="formActions" caption="Post" action="save"  mnemonic="p" shortcut="ctrl P"/>
    </invokers>
@@ -30,7 +40,7 @@
         
             @Service("CashReceiptVoidService")
             def service;
-
+            
             boolean allowCreate = false;
             boolean allowEdit = false;
             
@@ -38,19 +48,27 @@
             def receipt;
             def handler;
             
-            void create() {
-                if(receipt.voided) {
+            void create( invo ) { 
+                if (receipt.voided) {
                     throw new Exception("This transaction is already voided") 
-                }                
+                }     
+                if ( invo?.properties?.tag != 'admin' ) { 
+                    validatePermission(); 
+                } 
+                
                 entity = [objid: "CRVOID"+ new java.rmi.server.UID() ];
                 entity.receipt = receipt;
             }
             
-            void open() {
+            void open( invo ) { 
                 receipt = caller.entity;
-                if(receipt.voided) {
+                if ( receipt.voided ) {
                     throw new Exception("This transaction is already voided") 
-                }                
+                } 
+                if ( invo?.properties?.tag != 'admin' ) { 
+                    validatePermission(); 
+                } 
+                
                 entity = [objid: "CRVOID"+ new java.rmi.server.UID() ];
                 entity.receipt = receipt;
             }
@@ -59,16 +77,23 @@
                 if( MsgBox.confirm( "You are about to void this receipt. Please ensure you have the original receipt on hand. Continue?")) {
                     service.post( entity );
                     receipt.voided = true;
-                    if ( handler ) handler(receipt);
-
+                    if ( handler ) { 
+                        handler(receipt);
+                    } 
                     return "_close";
-                }
-            }
+                } 
+            } 
             
             def doCancel() {
                 return "_close";
             }
             
+            private void validatePermission() {
+                def options = service.getOptions();  
+                if ( options?.collector_allow_void_cashreceipt == 'false' ) { 
+                    throw new Exception('You are not allowed to void this transaction'); 
+                } 
+            }             
         }      
        ]]>
    </code>

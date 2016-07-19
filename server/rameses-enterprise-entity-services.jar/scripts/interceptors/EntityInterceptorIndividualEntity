@@ -10,8 +10,6 @@ class EntityInterceptorIndividualEntity  {
 	@ActiveDB("entityindividual")
 	def	em; 
 
-	
-
 	@Service("LOVService")
 	def LOV;
 
@@ -23,7 +21,7 @@ class EntityInterceptorIndividualEntity  {
 
 
 	@After(pattern="EntityService.create", eval="args[0].type == 'INDIVIDUAL'")
-	public void beforeCreateIndividual(def evt ) {
+	public void beforeCreateIndividual( evt ) {
 		def parms = evt.args[0];
 		if( !parms?.loaded ) {
 			em.create( parms );
@@ -32,7 +30,7 @@ class EntityInterceptorIndividualEntity  {
 	}
 
 	@After(pattern="EntityService.update", eval="args[0].type == 'INDIVIDUAL'")
-	public void beforeUpdateIndividual(def evt ) {
+	public void beforeUpdateIndividual( evt ) {
 		def parms = evt.args[0];
 		if( !parms?.loaded ) {
 			em.update( parms );

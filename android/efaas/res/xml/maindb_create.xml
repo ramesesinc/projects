@@ -445,6 +445,23 @@
     </sql>
     
     <sql>
+        CREATE TABLE bldgfloor
+        (
+        	objid TEXT NOT NULL PRIMARY KEY,
+        	bldguseid TEXT,
+        	bldgrpuid TEXT,
+        	floorno TEXT,
+        	area REAL,
+        	storeyrate REAL,
+        	basevalue REAL,
+        	unitvalue REAL,
+        	basemarketvalue REAL,
+        	adjustment REAL,
+        	marketvalue REAL
+        )
+    </sql>
+    
+    <sql>
         CREATE TABLE bldgflooradditional
         (
         	objid TEXT NOT NULL PRIMARY KEY,

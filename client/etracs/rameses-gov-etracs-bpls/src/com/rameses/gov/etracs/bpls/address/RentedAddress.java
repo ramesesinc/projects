@@ -80,13 +80,11 @@ public class RentedAddress extends javax.swing.JPanel {
         xFormPanel1.add(xTextField3);
 
         xTextField2.setCaption("Street");
-        xTextField2.setEnabled(false);
         xTextField2.setName("entity.street"); // NOI18N
         xTextField2.setPreferredSize(new java.awt.Dimension(298, 20));
         xFormPanel1.add(xTextField2);
 
         xTextField7.setCaption("Subdivision");
-        xTextField7.setEnabled(false);
         xTextField7.setName("entity.subdivision"); // NOI18N
         xTextField7.setPreferredSize(new java.awt.Dimension(298, 20));
         xFormPanel1.add(xTextField7);

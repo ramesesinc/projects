@@ -5,93 +5,39 @@ import com.rameses.rcp.common.*;
 import com.rameses.osiris2.client.*;
 import com.rameses.osiris2.common.*;
 import java.rmi.server.UID;
+import com.rameses.seti2.models.*;
 
-class NewJuridicalEntityModel extends PageFlowController {
+class NewJuridicalEntityModel  {
     
-    @Service("JuridicalEntityNameMatchService")
-    def matchService;
-
     @Service("PersistenceService")
     def persistenceService;
-
-    def onselect;
-    def entity;
-    def step;
-    boolean hasMatch;
-    def matchList;
-    def selectedItem;
-    def mode = "create";
-
-    def orgTypes = LOV.ORG_TYPES.findAll{ it.key != 'SING' };
     
-    def create() {
-        doCreate();
-        return super.start();
-    }
+    @Binding
+    def binding;
 
-    void doCreate(){
-        step = "initial";
+    String title = "Add New Juridical Entity";
+    
+    boolean saveAllowed = true;
+    def entity;
+    def onselect;
+    def mode = "create";
+    
+    void create() {
         entity = [:];
         entity.objid = 'JUR'+new UID();
         entity.address = [:];
+        entity.administrator = [:];
+    }
+
+    def back() {
+        return "default";
     }
     
-
-    void initNew(){
-        entity = null;
-        doCreate();
+    def oncreate = { o->
+        binding.fireNavigation("entry");
     }
-
-    void checkHasMatch() {
-        hasMatch = false;
-        matchList =  matchService.getMatches(entity);
-        if(matchList.size()>0){
-            hasMatch = true;
-            selectedItem = matchList[0];
-        }    
-    }
-
-    def listModel = [
-        fetchList: { o->
-            return matchList;
-        }
-    ] as BasicListModel;
-
-    def selectMatchedEntity() {
-        if(!selectedItem) return;
-        onselect( selectedItem );
-        return "_close";
-    }
-
-    def getInfo() {
-        return entity;
-    }
-
-    /*
-    def getSelectedPhoto() {
-        if(!selectedItem) return null;
-        if(!selectedItem.photo) {
-            selectedItem.photo = service.getPhoto( [objid: selectedItem.objid] );
-        }
-        return selectedItem.photo;
-    }
-    */
-
-    void validateAdd() {
-        if( matchList.find{ it.match == 100.0 } ) {
-            boolean allowed = false;
-            try {
-                def test = Inv.lookupOpener( "entityjuridical:approveduplicate", [:] );
-                if(test) allowed = true;
-            }
-            catch(e) {;}
-            if( !allowed )  {
-                throw new Exception("There is an exact match for the record. You do not have enough rights to override.");                    
-            }    
-        }    
-    }
-
-    def saveNew() {
+    
+    def save() {
         entity._schemaname = 'entityjuridical';
         entity = persistenceService.create( entity );
         if( onselect ) {
@@ -100,6 +46,5 @@ class NewJuridicalEntityModel extends PageFlowController {
         MsgBox.alert("Record successfully saved. Entity No is " + entity.entityno );
         return "_close";
     }
-
     
 }

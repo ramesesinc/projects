@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.rameses.entity.components;
+package com.rameses.enterprise.components;
 
 import com.rameses.rcp.control.XComponentPanel;
 import com.rameses.rcp.ui.annotations.ComponentBean;
@@ -12,29 +12,25 @@ import java.beans.Beans;
  *
  * @author dell
  */
-@ComponentBean("com.rameses.entity.components.OrgTypeListModel")
-public class OrgTypeList extends XComponentPanel {
+@ComponentBean("com.rameses.enterprise.components.IdTypeListModel")
+public class IdTypeList extends XComponentPanel {
 
-    /**
-     * Creates new form OrgTypeList
-     */
-    public OrgTypeList() {
+    public IdTypeList() {
         initComponents();
     }
-
     
+    public void setEditable(boolean b) {
+        component.setEditable(b);
+    }
+    
+    public boolean isEditable() {
+        return component.isEditable();
+    }
+
     @Override
     public void setEnabled(boolean enabled) {
         super.setEnabled(enabled);
         component.setEnabled(enabled);
-    }
-
-    public void setEditable(boolean b) {
-        setEnabled(b);
-    }
-    
-    public boolean isEditable() {
-        return this.isEnabled();
     }
     
     @Override
@@ -56,17 +52,17 @@ public class OrgTypeList extends XComponentPanel {
 
         component = new com.rameses.rcp.control.XComboBox();
 
-        setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.LINE_AXIS));
+        setLayout(new java.awt.BorderLayout());
 
-        component.setCaption("Org Type");
-        component.setEmptyText("-select an org type-");
+        component.setCaption("Gender");
+        component.setCaptionWidth(100);
         component.setExpression("#{item.value}");
         component.setItemKey("key");
-        component.setItems("orgTypes");
-        component.setName("orgType"); // NOI18N
-        component.setPreferredSize(new java.awt.Dimension(250, 22));
+        component.setItems("idTypeList");
+        component.setName("idtype"); // NOI18N
+        component.setPreferredSize(new java.awt.Dimension(150, 22));
         component.setRequired(true);
-        add(component);
+        add(component, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.rameses.rcp.control.XComboBox component;

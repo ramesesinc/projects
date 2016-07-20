@@ -1,16 +1,7 @@
 <workunit>
     <invokers>
-        <invoker type="entityindividual:create" caption="Individual Entity (Create)" action="create" target="popup" role="MASTER" permission="individualentity.create"/>
-        <invoker type="quick_launcher" code="TP01" caption="Individual Entity (Create)" action="create" target="popup" role="MASTER" permission="individualentity.create"/>
-        <!--
-        <invoker type="individualentity:create" caption="Individual Entity (Create)" action="create" target="popup" role="MASTER" permission="individualentity.create"/>
-        <invoker type="quick_launcher" code="TP01" caption="Individual Entity (Create)" action="create" target="popup" role="MASTER" permission="individualentity.create"/>
-        -->
-        <!--
-        <invoker type="formActions" caption="Close" action="_exit" visibleWhen="#{initiator == 'create'}"/>
-        <invoker type="formActions" caption="Close" action="_close" visibleWhen="#{initiator != 'create'}"/>
-        <invoker type="formActions" caption="Remove" action="remove" role="MASTER" permission="individualentity.delete" />
-        -->
+        <invoker type="entityindividual:create" caption="Individual Entity (Create)" action="create" target="popup" role="MASTER" permission="entityindividual.create"/>
+        <invoker type="quick_launcher" code="TP01" caption="Individual Entity (Create)" action="create" target="popup" role="MASTER" permission="entityindividual.create"/>
         
         <!-- used to check if we can allow dupplicate -->
         <invoker type="individualentity:approveduplicate" role="APPROVER" permission="individualentity.approveduplicate" />

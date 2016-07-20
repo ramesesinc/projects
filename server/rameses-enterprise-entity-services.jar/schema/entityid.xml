@@ -3,7 +3,7 @@
 	<element tablename="entityid">
 		<field name="objid" primary="true" prefix="EID"/>
 		<field name="entityid" required="true"/>
-		<complex name="entity" ref="entityindividual" required="false" jointype="many-to-one"
+		<complex name="entity" ref="entityindividual" required="true" jointype="many-to-one"
 			includefields="entityno,lastname,firstname">
 			<key field="entityid" target="objid"/>
 		</complex>	

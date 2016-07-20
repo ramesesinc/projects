@@ -11,18 +11,12 @@ class  IndividualCtcCashReceipt extends AbstractCashReceipt
     @Service('IndividualCTCService')
     def ctcSvc;
     
-    @Service('IndividualEntityService')
-    def entitySvc;
-    
     @Service('ProfessionService')
     def profSvc;
     
     def payerdata  = [:];
-    
     def needsrecalc = false;
-    
     def hasbusinessinfo = false;
-    
     def hasmiddlename = false;
     def hasprofession = false;
     def hastin = false;
@@ -40,8 +34,6 @@ class  IndividualCtcCashReceipt extends AbstractCashReceipt
     
     def barangay;
     
-    def ENTITY_TYPE = 'INDIVIDUAL';
-        
     @PropertyChangeListener
     def listener = [
         'entity.hasadditional' : { 
@@ -81,35 +73,13 @@ class  IndividualCtcCashReceipt extends AbstractCashReceipt
         if (needsrecalc)
             throw new Exception('Changes has been made. Recalculate tax before proceeding.')
     }
-    
-    boolean isAllowCreateEntity() {
-        try { 
-            def op = Inv.lookupOpener("individualentity:create", [:]); 
-            return (op != null); 
-        } catch(Throwable t) {
-            return false; 
-        }
-    }
-    
-    def createEntity() { 
-        def h = { o->
-            o.type = ENTITY_TYPE;
-            entity.payer = o;
-            entity.paidby = o.name;
-            entity.paidbyaddress = o.address.text;
-            binding.refresh("entity.(payer.*|paidby.*)");
-            binding.refresh('createEntity|openEntity');
-            payerChanged( o );
-        }
-        return Inv.lookupOpener("individualentity:create", [entity:[:], onselect:h]); 
-    }
-    
+        
     public def getPayerType() { 
         return 'entityindividual'; 
     } 
     
     public def payerChanged( o ) {
-        if ( ! o.type.equalsIgnoreCase(ENTITY_TYPE))
+        if ( ! o.type.equalsIgnoreCase('INDIVIDUAL'))
             throw new Exception('Only individual entities are allowed.');
         
         hasmiddlename = (o.middlename != null)
@@ -148,19 +118,4 @@ class  IndividualCtcCashReceipt extends AbstractCashReceipt
         updateBalances();
         needsrecalc = false;
     }
-       
-    
-    def editAddress() {
-        if ( !entity.payer?.objid ) return null; 
-        def m = [:];
-        m['query.objid'] = entity.payer?.objid;
-        m['query.name'] = entity.payer.name;
-        m.onselect = { o->
-            entity.paidbyaddress = o.text;
-            entity.payer.address = o;
-            binding.refresh('entity.*');
-        };
-        return Inv.lookupOpener( "entity_address:lookup", m );
-    }
-    
 }

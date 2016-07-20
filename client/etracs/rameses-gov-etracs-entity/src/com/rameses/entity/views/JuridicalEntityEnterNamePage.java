@@ -26,19 +26,13 @@ public class JuridicalEntityEnterNamePage extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
-        xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
-        xTextField3 = new com.rameses.rcp.control.XTextField();
+        juridicalEntityMatchName1 = new com.rameses.entity.components.JuridicalEntityMatchName();
 
-        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        jLabel1.setText("Enter a name for this entity");
+        setPreferredSize(new java.awt.Dimension(649, 514));
 
-        xTextField3.setCaption("Name");
-        xTextField3.setCaptionWidth(100);
-        xTextField3.setName("entity.name"); // NOI18N
-        xTextField3.setPreferredSize(new java.awt.Dimension(0, 20));
-        xTextField3.setRequired(true);
-        xFormPanel1.add(xTextField3);
+        juridicalEntityMatchName1.setName("entity"); // NOI18N
+        juridicalEntityMatchName1.setOncreate("oncreate");
+        juridicalEntityMatchName1.setOnselect("onselect");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -46,24 +40,18 @@ public class JuridicalEntityEnterNamePage extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 566, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 350, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(86, Short.MAX_VALUE))
+                .addComponent(juridicalEntityMatchName1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(17, 17, 17)
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(339, Short.MAX_VALUE))
+                .addComponent(juridicalEntityMatchName1, javax.swing.GroupLayout.DEFAULT_SIZE, 492, Short.MAX_VALUE)
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel1;
-    private com.rameses.rcp.control.XFormPanel xFormPanel1;
-    private com.rameses.rcp.control.XTextField xTextField3;
+    private com.rameses.entity.components.JuridicalEntityMatchName juridicalEntityMatchName1;
     // End of variables declaration//GEN-END:variables
 }

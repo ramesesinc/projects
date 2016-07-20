@@ -4,18 +4,14 @@ import com.rameses.rcp.annotations.*;
 import com.rameses.rcp.common.*;
 import com.rameses.osiris2.client.*;
 import com.rameses.osiris2.common.*;
+import com.rameses.rcp.camera.*;
 import com.rameses.seti2.models.*;
 
-class IndividualEntityModel extends CrudFormModel {
-    
-    def create() {
-        return Inv.lookupOpener("entityjuridical:create");
+class EntitySectionFormModel extends CrudFormModel {
+
+     void afterCreate() {
+        entity.entity = caller?.masterEntity;
+        entity.entityid = caller?.masterEntity?.objid;
     }
-    
-    def changeName() {
-        return "change-name";
-    }
-    
-    
     
 }

@@ -34,8 +34,8 @@ public class JuridicalEntityPage extends javax.swing.JPanel {
         jPanel1 = new javax.swing.JPanel();
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
         xLabel1 = new com.rameses.rcp.control.XLabel();
-        xTextField2 = new com.rameses.rcp.control.XTextField();
-        xTextField8 = new com.rameses.rcp.control.XTextField();
+        xLabel2 = new com.rameses.rcp.control.XLabel();
+        xLabel3 = new com.rameses.rcp.control.XLabel();
         xDateField1 = new com.rameses.rcp.control.XDateField();
         xTextField7 = new com.rameses.rcp.control.XTextField();
         entityAddressLookup1 = new com.rameses.entity.components.EntityAddressLookup();
@@ -62,36 +62,28 @@ public class JuridicalEntityPage extends javax.swing.JPanel {
         xLabel1.setPreferredSize(new java.awt.Dimension(200, 20));
         xFormPanel1.add(xLabel1);
 
-        xTextField2.setCaption("Name");
-        xTextField2.setCaptionWidth(120);
-        xTextField2.setEnabled(false);
-        xTextField2.setName("entity.name"); // NOI18N
-        xTextField2.setPreferredSize(new java.awt.Dimension(400, 20));
-        xTextField2.setRequired(true);
-        xTextField2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                xTextField2ActionPerformed(evt);
-            }
-        });
-        xFormPanel1.add(xTextField2);
+        xLabel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
+        xLabel2.setCaption("Name");
+        xLabel2.setCaptionWidth(120);
+        xLabel2.setExpression("#{entity.name}");
+        xLabel2.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel1.add(xLabel2);
 
-        xTextField8.setCaption("Organization Type");
-        xTextField8.setCaptionWidth(120);
-        xTextField8.setEnabled(false);
-        xTextField8.setName("entity.orgtype"); // NOI18N
-        xTextField8.setPreferredSize(new java.awt.Dimension(400, 20));
-        xFormPanel1.add(xTextField8);
+        xLabel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
+        xLabel3.setCaption("Org Type");
+        xLabel3.setCaptionWidth(120);
+        xLabel3.setExpression("#{entity.orgtype}");
+        xLabel3.setPreferredSize(new java.awt.Dimension(150, 20));
+        xFormPanel1.add(xLabel3);
 
         xDateField1.setCaption("Date Registered");
         xDateField1.setCaptionWidth(120);
-        xDateField1.setEnabled(false);
         xDateField1.setName("entity.dtregistered"); // NOI18N
         xDateField1.setPreferredSize(new java.awt.Dimension(110, 19));
         xFormPanel1.add(xDateField1);
 
         xTextField7.setCaption("Nature of Business");
         xTextField7.setCaptionWidth(120);
-        xTextField7.setEnabled(false);
         xTextField7.setName("entity.nature"); // NOI18N
         xTextField7.setPreferredSize(new java.awt.Dimension(400, 20));
         xFormPanel1.add(xTextField7);
@@ -110,7 +102,6 @@ public class JuridicalEntityPage extends javax.swing.JPanel {
 
         xTextField3.setCaption("Name");
         xTextField3.setCaptionWidth(120);
-        xTextField3.setEnabled(false);
         xTextField3.setName("entity.administrator.name"); // NOI18N
         xTextField3.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel3.add(xTextField3);
@@ -121,7 +112,6 @@ public class JuridicalEntityPage extends javax.swing.JPanel {
         jScrollPane2.setPreferredSize(new java.awt.Dimension(0, 50));
 
         xTextArea2.setCaption("Address");
-        xTextArea2.setEnabled(false);
         xTextArea2.setName("entity.administrator.address"); // NOI18N
         jScrollPane2.setViewportView(xTextArea2);
 
@@ -129,7 +119,6 @@ public class JuridicalEntityPage extends javax.swing.JPanel {
 
         xTextField11.setCaption("Position");
         xTextField11.setCaptionWidth(120);
-        xTextField11.setEnabled(false);
         xTextField11.setName("entity.administrator.position"); // NOI18N
         xTextField11.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel3.add(xTextField11);
@@ -142,21 +131,18 @@ public class JuridicalEntityPage extends javax.swing.JPanel {
 
         xTextField1.setCaption("Mobile No");
         xTextField1.setCaptionWidth(120);
-        xTextField1.setEnabled(false);
         xTextField1.setName("entity.mobileno"); // NOI18N
         xTextField1.setPreferredSize(new java.awt.Dimension(200, 20));
         xFormPanel2.add(xTextField1);
 
         xTextField9.setCaption("Phone No");
         xTextField9.setCaptionWidth(120);
-        xTextField9.setEnabled(false);
         xTextField9.setName("entity.phoneno"); // NOI18N
         xTextField9.setPreferredSize(new java.awt.Dimension(200, 20));
         xFormPanel2.add(xTextField9);
 
         xTextField10.setCaption("Email");
         xTextField10.setCaptionWidth(120);
-        xTextField10.setEnabled(false);
         xTextField10.setName("entity.email"); // NOI18N
         xTextField10.setPreferredSize(new java.awt.Dimension(200, 20));
         xTextField10.setTextCase(com.rameses.rcp.constant.TextCase.LOWER);
@@ -205,10 +191,6 @@ public class JuridicalEntityPage extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void xTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_xTextField2ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_xTextField2ActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.rameses.entity.components.EntityAddressLookup entityAddressLookup1;
     private javax.swing.JPanel jPanel1;
@@ -218,15 +200,15 @@ public class JuridicalEntityPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XFormPanel xFormPanel2;
     private com.rameses.rcp.control.XFormPanel xFormPanel3;
     private com.rameses.rcp.control.XLabel xLabel1;
+    private com.rameses.rcp.control.XLabel xLabel2;
+    private com.rameses.rcp.control.XLabel xLabel3;
     private com.rameses.rcp.control.XTabbedPane xTabbedPane1;
     private com.rameses.rcp.control.XTextArea xTextArea2;
     private com.rameses.rcp.control.XTextField xTextField1;
     private com.rameses.rcp.control.XTextField xTextField10;
     private com.rameses.rcp.control.XTextField xTextField11;
-    private com.rameses.rcp.control.XTextField xTextField2;
     private com.rameses.rcp.control.XTextField xTextField3;
     private com.rameses.rcp.control.XTextField xTextField7;
-    private com.rameses.rcp.control.XTextField xTextField8;
     private com.rameses.rcp.control.XTextField xTextField9;
     // End of variables declaration//GEN-END:variables
 }

@@ -8,21 +8,23 @@ class CorporateCtcReceiptInterceptor
 	@ActiveDB('ctc_corporate')
 	def em
 
-	@Service('JuridicalEntityService')
-	def entitySvc
+	@Service('PersistenceService')
+	def persistSvc
 
 	@Service('DateService')
 	def dtSvc 
 
 	
 	@After(pattern="CashReceiptService.post", eval="#{result.formno=='907' && result.txnmode != 'CAPTURE'}")
-	public def interceptCashReceipPost(def evt) { 
+	public def interceptCashReceipPost( evt ) { 
 		def ctc = evt.result;	
 		if (ctc.payer.dtregistered){
 			ctc.payer.dtregistered = dtSvc.parse('yyyy-MM-dd', ctc.payer.dtregistered)
 		}
 		em.create(ctc)
-		entitySvc.update(ctc.payer)
+
+		ctc.payer._schemaname = 'entityjuridical'; 
+		persistSvc.update( ctc.payer );  
 	}
 
 	@After(pattern="CashReceiptService.open", eval="#{result.formno=='907' && result.txnmode != 'CAPTURE'}")

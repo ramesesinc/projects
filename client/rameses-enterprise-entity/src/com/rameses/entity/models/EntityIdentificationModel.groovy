@@ -1,3 +1,5 @@
+package com.rameses.entity.models;
+
 import com.rameses.rcp.annotations.*;
 import com.rameses.rcp.common.*;
 import com.rameses.osiris2.client.*;
@@ -5,7 +7,7 @@ import com.rameses.osiris2.common.*;
 import com.rameses.rcp.camera.*;
 import com.rameses.seti2.models.*;
 
-class EntityIdentificationModel extends CrudFormModel {
+class EntityIdentificationModel extends EntitySectionFormModel {
 
     def base64 = new com.rameses.util.Base64Cipher();
     def idtypes = LOV.INDIVIDUAL_ID_TYPES;
@@ -17,8 +19,8 @@ class EntityIdentificationModel extends CrudFormModel {
     }
     
     void afterCreate() {
+        super.afterCreate();
         image = null; 
-        entity.entityid = caller?.masterEntity?.objid;
     }
     
     void afterOpen() { 

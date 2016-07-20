@@ -1,7 +1,9 @@
 <workunit>
     <invokers>
-        <invoker type="entityindividual:form:formActions" caption="Edit Name" 
-            action="init" role="MASTER" permission1="entityindividual.editname" target="popup"/>
+        <invoker type="entityindividual:form:formActions" 
+                 caption="Edit Name" action="init" target="popup" 
+                 role="MASTER" permission1="entityindividual.editname" 
+                 visibleWhen="#{mode=='read'}"/>
     </invokers>
     <code class="com.rameses.entity.models.IndividualEntityEditNameModel" />
     <pages>

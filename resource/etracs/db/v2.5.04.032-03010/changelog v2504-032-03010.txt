@@ -1,0 +1,12 @@
+/* v2.5.04.032-03010 */
+
+- TREAURY
+
+- BPLS 
+		
+- ASSESSOR
+    - NEW! Agricultural Land Area by Actual Use Summary report
+	- Update on certification created by info
+	
+- LANDTAX
+	- Fix notice of delinquency summary 

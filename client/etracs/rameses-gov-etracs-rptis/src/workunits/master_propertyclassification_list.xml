@@ -1,7 +1,9 @@
-<workunit extends="wtemplates/ListController.xml" serviceName="PropertyClassificationService" entityName="propertyclassification" formName="propertyclassification:list">
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" 
+          schemaName="propertyclassification" 
+          cols="state,code,name,special,orderno" orderBy="orderno"
+          allowDelete="#{entity.state!='APPROVED'}"
+          caption="Classification">
     <invokers>
-        <invoker folderid="/explorer/master/rpt" caption="Property Classifications" target="window" index="1"  role="ASSESSOR_DATAMGMT,MASTER" />
-        <invoker folderid="/home/rpt/master" caption="Property Classifications" target="window" index="1"  role="ASSESSOR_DATAMGMT,MASTER" />
-        <invoker type="quick_launcher" code="PC00" caption="Property Classifications"  role="ASSESSOR_DATAMGMT,MASTER" />
+        <invoker folderid="/explorer/master/rpt" action="init" caption="Classifications" index="1" role="ASSESSOR_DATAMGMT,MASTER"/>
     </invokers>
 </workunit>

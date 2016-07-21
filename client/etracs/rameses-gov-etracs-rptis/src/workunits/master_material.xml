@@ -1,29 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<workunit>
-    
-    <invokers>
-        <invoker type="quick_launcher" code="MAT01" action="init" caption="Material" role="ASSESSOR_DATAMGMT,MASTER" />
-        <invoker type="material:create" action="init" caption="Material" role="ASSESSOR_DATAMGMT,MASTER" />
-        <invoker type="material:open" action="open" caption="Material" role="ASSESSOR_DATAMGMT,MASTER" />
-    </invokers>
-        
-    <code lang="groovy">
-
-        import com.rameses.rcp.common.*;
-        import com.rameses.rcp.annotations.*;
-        import com.rameses.osiris2.client.*;
-        import com.rameses.osiris2.common.*;
-        
-        public class MaterialController  extends CRUDController
-        {
-            String serviceName = "MaterialService"
-            String entityName  = 'material'
-            String prefixId    = 'MAT'
-        }
-        
-    </code>
-    
-    <pages>
-        <page template="com.rameses.gov.etracs.rpt.master.ui.MaterialPage" />
-    </pages>
+<workunit extends="com/rameses/seti2/templates/DynamicCrudForm.xml"
+    schemaName="material"
+    caption="Material">
 </workunit>

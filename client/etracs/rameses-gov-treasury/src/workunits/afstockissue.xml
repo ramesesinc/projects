@@ -2,7 +2,7 @@
 <workunit extends="wtemplates/StockIssueController.xml">
     <invokers>
         <invoker folderid="/menu/txn/treasury" caption="Accountable Form Issuance" action="create" role="AFO"/> 
-        <invoker folderid="home/af" caption="AF Issue" action="create" role="AFO" target="window"/>
+        <invoker folderid="home/treasury/af" caption="AF Issue" action="create" role="AFO" target="window"/>
         <invoker type="quick_launcher" code="AFISS" caption="Accountable Form Issuance" action="create" role="AFO" target="window"/>
         
         <invoker type="issueafrequest:create" caption="Accountable Form Issuance" action="create" role="AFO" target="window"/>
@@ -24,6 +24,8 @@
             String title = "Accountable Form Issuance";
             def entityName = "afstockissue";    
             def verifyItems = [];
+            
+            boolean readonly = false; 
 
             def getLookupRequest() {
                 return InvokerUtil.lookupOpener( "afrequest:lookup", [
@@ -59,7 +61,7 @@
                 verifyItems.clear(); 
                 entity.items.each { o-> 
                     o.items.each { k-> 
-                        verifyItems << [ 
+                        def m = [ 
                             aftype: o.item.code, unit: o.unit, 
                             prefix: k.prefix, suffix: k.suffix,
                             sstartseries: k.sstartseries, sendseries: k.sendseries, 
@@ -67,6 +69,8 @@
                             startstub: k.startstub, endstub: k.endstub, 
                             qty: k.qtyissued, items: k.items 
                         ];
+                        m.skey = (''+ m.unit +'-'+ m.aftype +'-'+ m.startseries +'-'+ m.endseries); 
+                        verifyItems << m; 
                     }
                 }
             }
@@ -77,7 +81,8 @@
                 return "default";
             } 
 
-            def open() {
+            def open() { 
+                readonly = true; 
                 def outcome = super.open(); 
                 buildItemsForVerification(); 
                 verifyItems.each{ it.verified=true }
@@ -85,48 +90,56 @@
             }
 
             def selectedAF; 
+            def verifiedItems = []; 
             def verifyListModel = [
+                isMultiSelect: { 
+                    return !readonly; 
+                }, 
+                buildSelectionKey: { o-> 
+                    return o.skey; 
+                }, 
+                afterSelectionChange: { o-> 
+                    o.data.verified = o.selected; 
+                },
                 fetchList: {
                     return verifyItems;
-                }, 
-                isColumnEditable: { data,colname-> 
-                    return (mode=='read'? false: true); 
-                } 
-            ] as EditorListModel;
+                }
+            ] as BasicListModel;
 
             void save() {
                 if ( verifyItems.findAll{ !it.verified }.size() > 0 )
                     throw new Exception("Please verify all items."); 
 
-                super.save();    
+                super.save();  
+                readonly = true; 
             }
 
             def selectedStub;
             def stubListHandler = [
             	fetchList: {
-            		return selectedAF?.items; 
+                    return selectedAF?.items; 
             	}, 
             	isColumnEditable: { data,colname-> 
-            		if ( mode=='read' || !selectedAF ) return false; 
-            		if ( selectedAF.verified == true ) return false; 
+                    if ( mode=='read' || !selectedAF ) return false; 
+                    if ( selectedAF.verified == true ) return false; 
                     
                     return ( colname == 'qtyissued' ); 
                 }, 
                 afterColumnUpdate: { data,colname-> 
-                	def currentseries = selectedAF.startseries; 
-                	selectedAF.items.each{ a-> 
-                		a.startseries = currentseries; 
-                		a.endseries = currentseries + a.qtyissued - 1; 
-                		currentseries = a.endseries + 1; 
-                	} 
+                    def currentseries = selectedAF.startseries; 
+                    selectedAF.items.each{ a-> 
+                        a.startseries = currentseries; 
+                        a.endseries = currentseries + a.qtyissued - 1; 
+                        currentseries = a.endseries + 1; 
+                    } 
 
-                	def totalqty = selectedAF.items.sum{ it.qtyissued } 
-                	selectedAF.qty = totalqty; 
-                	selectedAF.endseries = selectedAF.items.max{ it.endseries }.endseries; 
-                	if ( selectedAF.sendseries != null ) { 
-                		selectedAF.sendseries = selectedAF.endseries; 
-                	} 
-                	verifyListModel.refreshSelectedItem();
+                    def totalqty = selectedAF.items.sum{ it.qtyissued } 
+                    selectedAF.qty = totalqty; 
+                    selectedAF.endseries = selectedAF.items.max{ it.endseries }.endseries; 
+                    if ( selectedAF.sendseries != null ) { 
+                        selectedAF.sendseries = selectedAF.endseries; 
+                    } 
+                    verifyListModel.refreshSelectedItem();
                 }
             ] as EditorListModel; 
         }

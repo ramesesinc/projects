@@ -28,18 +28,17 @@ public class IndividualPage extends javax.swing.JPanel {
         xTextField4 = new com.rameses.rcp.control.XTextField();
         xTextField5 = new com.rameses.rcp.control.XTextField();
         xTextField6 = new com.rameses.rcp.control.XTextField();
-        xFormPanel4 = new com.rameses.rcp.control.XFormPanel();
-        xTextField12 = new com.rameses.rcp.control.XTextField();
-        xButton2 = new com.rameses.rcp.control.XButton();
+        entityAddressLookup1 = new com.rameses.entity.components.EntityAddressLookup();
         xFormPanel3 = new com.rameses.rcp.control.XFormPanel();
         xDateField3 = new com.rameses.rcp.control.XDateField();
         xTextField10 = new com.rameses.rcp.control.XTextField();
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
-        xComboBox3 = new com.rameses.rcp.control.XComboBox();
-        xComboBox4 = new com.rameses.rcp.control.XComboBox();
-        xComboBox2 = new com.rameses.rcp.control.XComboBox();
-        xTextField3 = new com.rameses.rcp.control.XTextField();
-        xSuggest3 = new com.rameses.rcp.control.XSuggest();
+        genderList1 = new com.rameses.enterprise.components.GenderList();
+        civilStatusList1 = new com.rameses.enterprise.components.CivilStatusList();
+        xFormPanel4 = new com.rameses.rcp.control.XFormPanel();
+        citizenshipSuggest2 = new com.rameses.enterprise.components.CitizenshipSuggest();
+        xTextField7 = new com.rameses.rcp.control.XTextField();
+        professionSuggest1 = new com.rameses.enterprise.components.ProfessionSuggest();
         xTextField1 = new com.rameses.rcp.control.XTextField();
         xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
         xTextField8 = new com.rameses.rcp.control.XTextField();
@@ -75,117 +74,105 @@ public class IndividualPage extends javax.swing.JPanel {
         xTextField4.setEnabled(false);
         xTextField4.setIndex(-10);
         xTextField4.setName("entity.payer.lastname"); // NOI18N
-        xTextField4.setPreferredSize(new java.awt.Dimension(0, 19));
+        xTextField4.setPreferredSize(new java.awt.Dimension(0, 20));
         xTextField4.setRequired(true);
         formPanel1.add(xTextField4);
 
         xTextField5.setCaption("First Name");
         xTextField5.setEnabled(false);
         xTextField5.setName("entity.payer.firstname"); // NOI18N
-        xTextField5.setPreferredSize(new java.awt.Dimension(0, 19));
+        xTextField5.setPreferredSize(new java.awt.Dimension(0, 20));
         xTextField5.setRequired(true);
         formPanel1.add(xTextField5);
 
         xTextField6.setCaption("Middle Name");
         xTextField6.setName("entity.payer.middlename"); // NOI18N
-        xTextField6.setPreferredSize(new java.awt.Dimension(0, 19));
+        xTextField6.setPreferredSize(new java.awt.Dimension(0, 20));
         formPanel1.add(xTextField6);
 
-        xFormPanel4.setCaption("Address");
-        xFormPanel4.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
-        xFormPanel4.setPadding(new java.awt.Insets(0, 0, 0, 0));
-        xFormPanel4.setPreferredSize(new java.awt.Dimension(0, 20));
+        entityAddressLookup1.setCaption("Address");
+        entityAddressLookup1.setName("entity.payer.address"); // NOI18N
+        entityAddressLookup1.setParentIdName("entity.payer.objid");
+        entityAddressLookup1.setPreferredSize(new java.awt.Dimension(0, 30));
+        entityAddressLookup1.setStretchWidth(100);
+        formPanel1.add(entityAddressLookup1);
 
-        xTextField12.setCaption("Address");
-        xTextField12.setEnabled(false);
-        xTextField12.setName("entity.payer.address.text"); // NOI18N
-        xTextField12.setPreferredSize(new java.awt.Dimension(0, 19));
-        xTextField12.setRequired(true);
-        xTextField12.setShowCaption(false);
-        xTextField12.setStretchWidth(100);
-        xFormPanel4.add(xTextField12);
-
-        xButton2.setIconResource("images/toolbars/edit.png");
-        xButton2.setImmediate(true);
-        xButton2.setMargin(new java.awt.Insets(0, 3, 0, 2));
-        xButton2.setName("editAddress"); // NOI18N
-        xButton2.setShowCaption(false);
-        xFormPanel4.add(xButton2);
-
-        formPanel1.add(xFormPanel4);
-
+        xFormPanel3.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
         xFormPanel3.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
         xFormPanel3.setPadding(new java.awt.Insets(0, 0, 0, 0));
-        xFormPanel3.setPreferredSize(new java.awt.Dimension(0, 21));
+        xFormPanel3.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel3.setShowCaption(false);
 
         xDateField3.setText("entity.payer.birthdate");
         xDateField3.setCaption("Birth Date");
         xDateField3.setCaptionWidth(90);
-        xDateField3.setCellPadding(new java.awt.Insets(0, 0, 0, 5));
         xDateField3.setName("entity.payer.birthdate"); // NOI18N
-        xDateField3.setPreferredSize(new java.awt.Dimension(80, 19));
         xDateField3.setRequired(true);
         xFormPanel3.add(xDateField3);
 
         xTextField10.setCaption("Birth Place");
+        xTextField10.setCellPadding(new java.awt.Insets(0, 5, 0, 0));
         xTextField10.setName("entity.payer.birthplace"); // NOI18N
-        xTextField10.setPreferredSize(new java.awt.Dimension(180, 19));
+        xTextField10.setPreferredSize(new java.awt.Dimension(0, 20));
         xTextField10.setRequired(true);
         xFormPanel3.add(xTextField10);
 
         formPanel1.add(xFormPanel3);
 
+        xFormPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
         xFormPanel1.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
         xFormPanel1.setPadding(new java.awt.Insets(0, 0, 0, 0));
-        xFormPanel1.setPreferredSize(new java.awt.Dimension(0, 21));
+        xFormPanel1.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.setShowCaption(false);
 
-        xComboBox3.setCaption("Gender");
-        xComboBox3.setCaptionWidth(90);
-        xComboBox3.setCellPadding(new java.awt.Insets(0, 0, 0, 5));
-        xComboBox3.setItems("genders");
-        xComboBox3.setName("entity.payer.gender"); // NOI18N
-        xComboBox3.setPreferredSize(new java.awt.Dimension(80, 19));
-        xComboBox3.setRequired(true);
-        xFormPanel1.add(xComboBox3);
+        genderList1.setCaption("Gender");
+        genderList1.setCaptionWidth(90);
+        genderList1.setName("entity.payer.gender"); // NOI18N
+        genderList1.setPreferredSize(new java.awt.Dimension(100, 20));
+        genderList1.setRequired(true);
+        xFormPanel1.add(genderList1);
 
-        xComboBox4.setCaption("Civil Status");
-        xComboBox4.setCellPadding(new java.awt.Insets(0, 0, 0, 10));
-        xComboBox4.setItems("civilstatus");
-        xComboBox4.setName("entity.payer.civilstatus"); // NOI18N
-        xComboBox4.setPreferredSize(new java.awt.Dimension(180, 19));
-        xComboBox4.setRequired(true);
-        xFormPanel1.add(xComboBox4);
+        civilStatusList1.setCaption("Civil Status");
+        civilStatusList1.setCellPadding(new java.awt.Insets(0, 5, 0, 0));
+        civilStatusList1.setName("entity.payer.civilstatus"); // NOI18N
+        civilStatusList1.setPreferredSize(new java.awt.Dimension(0, 20));
+        civilStatusList1.setRequired(true);
+        xFormPanel1.add(civilStatusList1);
 
         formPanel1.add(xFormPanel1);
 
-        xComboBox2.setCaption("Citizenship");
-        xComboBox2.setItems("citizenships");
-        xComboBox2.setName("entity.payer.citizenship"); // NOI18N
-        xComboBox2.setPreferredSize(new java.awt.Dimension(165, 19));
-        xComboBox2.setRequired(true);
-        formPanel1.add(xComboBox2);
+        xFormPanel4.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
+        xFormPanel4.setPadding(new java.awt.Insets(0, 0, 0, 0));
+        xFormPanel4.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel4.setShowCaption(false);
 
-        xTextField3.setCaption("ICR (If Alien)");
-        xTextField3.setDepends(new String[] {"entity.payer.citizenship"});
-        xTextField3.setName("entity.payer.acr"); // NOI18N
-        xTextField3.setPreferredSize(new java.awt.Dimension(165, 19));
-        formPanel1.add(xTextField3);
+        citizenshipSuggest2.setCaption("Citizenship");
+        citizenshipSuggest2.setCaptionWidth(90);
+        citizenshipSuggest2.setName("entity.payer.citizenship"); // NOI18N
+        citizenshipSuggest2.setPreferredSize(new java.awt.Dimension(165, 20));
+        citizenshipSuggest2.setRequired(true);
+        xFormPanel4.add(citizenshipSuggest2);
 
-        xSuggest3.setCaption("Profession");
-        xSuggest3.setHandler("professionLookup");
-        xSuggest3.setItemExpression("");
-        xSuggest3.setName("entity.payer.profession"); // NOI18N
-        xSuggest3.setPreferredSize(new java.awt.Dimension(0, 20));
-        xSuggest3.setTextCase(com.rameses.rcp.constant.TextCase.UPPER);
-        formPanel1.add(xSuggest3);
+        xTextField7.setCaption("ICR (If Alien)");
+        xTextField7.setCellPadding(new java.awt.Insets(0, 5, 0, 0));
+        xTextField7.setDepends(new String[] {"entity.payer.citizenship"});
+        xTextField7.setName("entity.payer.acr"); // NOI18N
+        xTextField7.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel4.add(xTextField7);
+
+        formPanel1.add(xFormPanel4);
+
+        professionSuggest1.setCaption("Profession");
+        professionSuggest1.setName("entity.payer.profession"); // NOI18N
+        professionSuggest1.setPreferredSize(new java.awt.Dimension(0, 20));
+        formPanel1.add(professionSuggest1);
 
         xTextField1.setCaption("TIN");
         xTextField1.setName("entity.payer.tin"); // NOI18N
         xTextField1.setPreferredSize(new java.awt.Dimension(0, 19));
         formPanel1.add(xTextField1);
 
+        xFormPanel2.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
         xFormPanel2.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
         xFormPanel2.setPadding(new java.awt.Insets(0, 0, 0, 0));
         xFormPanel2.setPreferredSize(new java.awt.Dimension(0, 21));
@@ -193,15 +180,12 @@ public class IndividualPage extends javax.swing.JPanel {
 
         xTextField8.setCaption("Height");
         xTextField8.setCaptionWidth(90);
-        xTextField8.setCellPadding(new java.awt.Insets(0, 0, 0, 10));
         xTextField8.setName("entity.payer.height"); // NOI18N
-        xTextField8.setPreferredSize(new java.awt.Dimension(80, 19));
         xFormPanel2.add(xTextField8);
 
-        xTextField9.setCaption("Weight");
-        xTextField9.setCaptionWidth(80);
+        xTextField9.setCaption("      Weight");
+        xTextField9.setCellPadding(new java.awt.Insets(0, 5, 0, 0));
         xTextField9.setName("entity.payer.weight"); // NOI18N
-        xTextField9.setPreferredSize(new java.awt.Dimension(100, 19));
         xFormPanel2.add(xTextField9);
 
         formPanel1.add(xFormPanel2);
@@ -211,6 +195,7 @@ public class IndividualPage extends javax.swing.JPanel {
         xCheckBox1.setDepends(new String[] {"entity.payer.birthdate"});
         xCheckBox1.setMargin(new java.awt.Insets(0, 0, 0, 0));
         xCheckBox1.setName("entity.payer.seniorcitizen"); // NOI18N
+        xCheckBox1.setPreferredSize(new java.awt.Dimension(20, 20));
         formPanel1.add(xCheckBox1);
 
         xSeparator1.setPreferredSize(new java.awt.Dimension(0, 20));
@@ -219,7 +204,7 @@ public class IndividualPage extends javax.swing.JPanel {
         xSeparator1.setLayout(xSeparator1Layout);
         xSeparator1Layout.setHorizontalGroup(
             xSeparator1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 439, Short.MAX_VALUE)
+            .add(0, 503, Short.MAX_VALUE)
         );
         xSeparator1Layout.setVerticalGroup(
             xSeparator1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -232,13 +217,15 @@ public class IndividualPage extends javax.swing.JPanel {
         xCheckBox2.setCaption("Is Additional?");
         xCheckBox2.setMargin(new java.awt.Insets(0, 0, 0, 0));
         xCheckBox2.setName("entity.hasadditional"); // NOI18N
+        xCheckBox2.setOpaque(false);
+        xCheckBox2.setPreferredSize(new java.awt.Dimension(20, 20));
         formPanel1.add(xCheckBox2);
 
         xTextField11.setCaption("Remarks");
         xTextField11.setDepends(new String[] {"entity.hasadditional"});
         xTextField11.setDisableWhen("#{entity.hasadditional != true}");
         xTextField11.setName("entity.additional.remarks"); // NOI18N
-        xTextField11.setPreferredSize(new java.awt.Dimension(0, 19));
+        xTextField11.setPreferredSize(new java.awt.Dimension(0, 20));
         formPanel1.add(xTextField11);
 
         org.jdesktop.layout.GroupLayout jPanel8Layout = new org.jdesktop.layout.GroupLayout(jPanel8);
@@ -247,20 +234,21 @@ public class IndividualPage extends javax.swing.JPanel {
             jPanel8Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel8Layout.createSequentialGroup()
                 .addContainerGap()
-                .add(formPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 449, Short.MAX_VALUE)
+                .add(formPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 513, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel8Layout.setVerticalGroup(
             jPanel8Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel8Layout.createSequentialGroup()
-                .add(formPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 362, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(14, Short.MAX_VALUE))
+                .add(formPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 414, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder2 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder2.setTitle("Transaction Information");
         jPanel9.setBorder(xTitledBorder2);
 
+        formPanel3.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
         formPanel3.setCaptionWidth(120);
         formPanel3.setPadding(new java.awt.Insets(5, 5, 10, 0));
 
@@ -268,7 +256,7 @@ public class IndividualPage extends javax.swing.JPanel {
         xDateField1.setEnabled(false);
         xDateField1.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
         xDateField1.setName("entity.txndate"); // NOI18N
-        xDateField1.setPreferredSize(new java.awt.Dimension(100, 19));
+        xDateField1.setPreferredSize(new java.awt.Dimension(0, 20));
         formPanel3.add(xDateField1);
 
         xLookupField1.setCaption("Barangay");
@@ -280,9 +268,10 @@ public class IndividualPage extends javax.swing.JPanel {
 
         xCheckBox3.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         xCheckBox3.setCaption("Is New Business?");
-        xCheckBox3.setCellPadding(new java.awt.Insets(5, 0, 0, 0));
         xCheckBox3.setMargin(new java.awt.Insets(0, 0, 0, 0));
         xCheckBox3.setName("entity.newbusiness"); // NOI18N
+        xCheckBox3.setOpaque(false);
+        xCheckBox3.setPreferredSize(new java.awt.Dimension(20, 20));
         formPanel3.add(xCheckBox3);
 
         xDecimalField1.setCaption("Business Gross");
@@ -332,8 +321,9 @@ public class IndividualPage extends javax.swing.JPanel {
         xTitledBorder3.setTitle("Community Tax Breakdown");
         jPanel10.setBorder(xTitledBorder3);
 
+        formPanel4.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
         formPanel4.setCaptionWidth(120);
-        formPanel4.setPadding(new java.awt.Insets(5, 5, 10, 5));
+        formPanel4.setPadding(new java.awt.Insets(5, 5, 10, 0));
 
         xDecimalField4.setCaption("Basic Tax");
         xDecimalField4.setDisabledTextColor(new java.awt.Color(0, 0, 0));
@@ -387,8 +377,8 @@ public class IndividualPage extends javax.swing.JPanel {
         jPanel10Layout.setVerticalGroup(
             jPanel10Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel10Layout.createSequentialGroup()
-                .add(formPanel4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .add(formPanel4, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
@@ -401,7 +391,7 @@ public class IndividualPage extends javax.swing.JPanel {
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(jPanel9, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                     .add(jPanel10, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .add(59, 59, 59))
+                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -415,20 +405,21 @@ public class IndividualPage extends javax.swing.JPanel {
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private com.rameses.enterprise.components.CitizenshipSuggest citizenshipSuggest2;
+    private com.rameses.enterprise.components.CivilStatusList civilStatusList1;
+    private com.rameses.entity.components.EntityAddressLookup entityAddressLookup1;
     private com.rameses.rcp.util.FormPanel formPanel1;
     private com.rameses.rcp.util.FormPanel formPanel3;
     private com.rameses.rcp.util.FormPanel formPanel4;
+    private com.rameses.enterprise.components.GenderList genderList1;
     private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
+    private com.rameses.enterprise.components.ProfessionSuggest professionSuggest1;
     private com.rameses.rcp.control.XButton xButton1;
-    private com.rameses.rcp.control.XButton xButton2;
     private com.rameses.rcp.control.XCheckBox xCheckBox1;
     private com.rameses.rcp.control.XCheckBox xCheckBox2;
     private com.rameses.rcp.control.XCheckBox xCheckBox3;
-    private com.rameses.rcp.control.XComboBox xComboBox2;
-    private com.rameses.rcp.control.XComboBox xComboBox3;
-    private com.rameses.rcp.control.XComboBox xComboBox4;
     private com.rameses.rcp.control.XDateField xDateField1;
     private com.rameses.rcp.control.XDateField xDateField3;
     private com.rameses.rcp.control.XDecimalField xDecimalField1;
@@ -445,15 +436,13 @@ public class IndividualPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XFormPanel xFormPanel4;
     private com.rameses.rcp.control.XLookupField xLookupField1;
     private com.rameses.rcp.control.XSeparator xSeparator1;
-    private com.rameses.rcp.control.XSuggest xSuggest3;
     private com.rameses.rcp.control.XTextField xTextField1;
     private com.rameses.rcp.control.XTextField xTextField10;
     private com.rameses.rcp.control.XTextField xTextField11;
-    private com.rameses.rcp.control.XTextField xTextField12;
-    private com.rameses.rcp.control.XTextField xTextField3;
     private com.rameses.rcp.control.XTextField xTextField4;
     private com.rameses.rcp.control.XTextField xTextField5;
     private com.rameses.rcp.control.XTextField xTextField6;
+    private com.rameses.rcp.control.XTextField xTextField7;
     private com.rameses.rcp.control.XTextField xTextField8;
     private com.rameses.rcp.control.XTextField xTextField9;
     // End of variables declaration//GEN-END:variables

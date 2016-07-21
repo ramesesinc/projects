@@ -35,12 +35,8 @@ public class EditBusinessOwnerPage extends javax.swing.JPanel {
         jPanel3 = new javax.swing.JPanel();
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
         xComboBox1 = new com.rameses.rcp.control.XComboBox();
-        xSuggest1 = new com.rameses.rcp.control.XSuggest();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        xTextArea1 = new com.rameses.rcp.control.XTextArea();
-        xButton5 = new com.rameses.rcp.control.XButton();
-        xButton4 = new com.rameses.rcp.control.XButton();
-        xButton6 = new com.rameses.rcp.control.XButton();
+        entityLookup2 = new com.rameses.entity.components.EntityLookup();
+        entityAddressLookup1 = new com.rameses.entity.components.EntityAddressLookup();
         xLabel1 = new com.rameses.rcp.control.XLabel();
 
         xFormPanel1.setCaptionWidth(150);
@@ -56,72 +52,34 @@ public class EditBusinessOwnerPage extends javax.swing.JPanel {
         xComboBox1.setRequired(true);
         xFormPanel1.add(xComboBox1);
 
-        xSuggest1.setCaption("Owner");
-        xSuggest1.setExpression("#{entity.business.owner.name}");
-        xSuggest1.setHandler("owner.find");
-        xSuggest1.setItemExpression("#{item.name}");
-        xSuggest1.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel1.add(xSuggest1);
+        entityLookup2.setCaption("Owner");
+        entityLookup2.setName("entity.business.owner"); // NOI18N
+        entityLookup2.setPreferredSize(new java.awt.Dimension(0, 19));
+        xFormPanel1.add(entityLookup2);
 
-        jScrollPane1.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
-        jScrollPane1.setEnabled(false);
-        jScrollPane1.setName("entity.owner.address.text"); // NOI18N
-        jScrollPane1.setPreferredSize(new java.awt.Dimension(0, 50));
-
-        xTextArea1.setEditable(false);
-        xTextArea1.setCaption("Owner Address");
-        xTextArea1.setName("entity.business.owner.address.text"); // NOI18N
-        jScrollPane1.setViewportView(xTextArea1);
-
-        xFormPanel1.add(jScrollPane1);
-
-        xButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/buttons/search.png"))); // NOI18N
-        xButton5.setImmediate(true);
-        xButton5.setMargin(new java.awt.Insets(2, 4, 2, 4));
-        xButton5.setName("owner.show"); // NOI18N
-        xButton5.setPreferredSize(new java.awt.Dimension(25, 22));
-
-        xButton4.setImmediate(true);
-        xButton4.setName("owner.reload"); // NOI18N
-        xButton4.setText("Reload Address");
-
-        xButton6.setImmediate(true);
-        xButton6.setName("owner.lookupAddress"); // NOI18N
-        xButton6.setText("Lookup Address");
+        entityAddressLookup1.setCaption("Owner Address");
+        entityAddressLookup1.setDepends(new String[] {"entity.business.owner"});
+        entityAddressLookup1.setEnabled(false);
+        entityAddressLookup1.setName("entity.business.owner.address"); // NOI18N
+        entityAddressLookup1.setParentIdName("entity.business.owner.objid");
+        entityAddressLookup1.setPreferredSize(new java.awt.Dimension(0, 48));
+        xFormPanel1.add(entityAddressLookup1);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 549, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(xButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(xButton6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGap(165, 165, 165)
-                        .addComponent(xButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(174, Short.MAX_VALUE))
+                .addContainerGap()
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 549, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(358, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGap(33, 33, 33)
-                        .addComponent(xButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(xButton6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(xButton4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(81, Short.MAX_VALUE))
+                .addContainerGap()
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(38, Short.MAX_VALUE))
         );
 
         com.rameses.rcp.control.border.XEtchedBorder xEtchedBorder1 = new com.rameses.rcp.control.border.XEtchedBorder();
@@ -149,22 +107,18 @@ public class EditBusinessOwnerPage extends javax.swing.JPanel {
                 .addComponent(xLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(197, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private com.rameses.entity.components.EntityAddressLookup entityAddressLookup1;
+    private com.rameses.entity.components.EntityLookup entityLookup2;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JScrollPane jScrollPane1;
-    private com.rameses.rcp.control.XButton xButton4;
-    private com.rameses.rcp.control.XButton xButton5;
-    private com.rameses.rcp.control.XButton xButton6;
     private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XLabel xLabel1;
-    private com.rameses.rcp.control.XSuggest xSuggest1;
-    private com.rameses.rcp.control.XTextArea xTextArea1;
     // End of variables declaration//GEN-END:variables
     
 }

@@ -69,39 +69,14 @@ class  CorporateCtcCashReceipt extends AbstractCashReceipt
         if (needsrecalc)
             throw new Exception('Changes has been made. Recalculate tax before proceeding.')
     }
-    
-    boolean isAllowCreateEntity() {
-        try { 
-            def op = Inv.lookupOpener("juridicalentity:create", [:]); 
-            return (op != null); 
-        } catch(Throwable t) {
-            return false; 
-        }
-    }
-    
-    def createEntity() { 
-        def h = { o->
-            o.type = 'JURIDICAL';
-            entity.payer = o;
-            entity.paidby = o.name;
-            entity.paidbyaddress = o.address.text;
-            binding.refresh("entity.(payer.*|paidby.*)");
-            binding.refresh('createEntity|openEntity');
-            payerChanged( o );
-        }
-        return Inv.lookupOpener("juridicalentity:create", [entity:[:], onselect:h]); 
-    }
-    
-    protected void beforeLookupEntity( params ) {
-        params['query.type'] = 'JURIDICAL'; 
-        params.allowSelectEntityType = false; 
-    }    
+        
+    public def getPayerType() { 
+        return 'entityjuridical'; 
+    }     
     
     public def payerChanged( o ) {
         if ( ! o.type.equalsIgnoreCase('JURIDICAL') )
             throw new Exception('Only Juridical entities are allowed.');
-        
-        o.putAll(entitySvc.open(o));
         
         hastin          = (o.tin != null);
         hasorgtype      = (o.orgtype != null);

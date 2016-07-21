@@ -1,0 +1,12 @@
+<schema adapter="nsrp">
+	<element name="entity_jobpreference_worklocation" tablename="entity_jobpreference_worklocation">
+		<field name="objid" primary="true" prefix="INDJPL"/>
+		<complex name="entity" ref="entityindividual" jointype="many-to-one" required="false" 
+			includefields="location">
+			<key field="entityid" target="objid"/>
+		</complex>
+		<field name="local" type="boolean"/>
+		<field name="location" required="true" caption="Location"/>
+		<field name="index" type="int"/>
+	</element>
+</schema>

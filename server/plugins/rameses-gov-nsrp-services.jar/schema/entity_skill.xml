@@ -1,0 +1,10 @@
+<schema adapter="nsrp">
+	<element name="entity_skill" tablename="entity_skill">
+		<field name="objid" primary="true" prefix="INDSK"/>
+		<complex name="entity" ref="entityindividual" jointype="many-to-one" required="false" 
+			includefields="name">
+			<key field="entityid" target="objid"/>
+		</complex>
+		<field name="name" required="true" caption="Skill"/>
+	</element>
+</schema>

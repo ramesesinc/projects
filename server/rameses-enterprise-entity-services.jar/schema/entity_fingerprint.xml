@@ -1,0 +1,13 @@
+<schema adapter="main">
+	
+	<element tablename="entity_fingerprint">
+		<field name="objid" primary="true"/>
+		<field name="entityid"  />
+		<field name="dtfiled" />
+		<field name="leftthumb_image" />
+		<field name="leftthumb_fmd" />
+		<field name="rightthumb_image" />
+		<field name="rightthumb_fmd" />
+	</element>
+
+</schema>

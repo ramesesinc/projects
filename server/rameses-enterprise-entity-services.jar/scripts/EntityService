@@ -3,81 +3,16 @@ import com.rameses.common.*
 import java.rmi.server.UID;
 import com.rameses.util.*;
 import com.rameses.io.*;
-import com.rameses.services.extended.*;
 
-class EntityService extends ActiveCrudService {
-    
-    @ActiveDB('entity')
-    def em
+class EntityService {
 
-    @Service("EntityAddressService")
-    def addrSvc;
+	@DataContext("entity")
+	def	em; 
 
-    @Service('SequenceService')
-    def seqSvc;
+	@ProxyMethod
+	public def open(o) {
+		return em.select("objid,entityno,name,entityname,address.text,address.objid,address.barangay.objid,address.barangay.name").find([objid: o.objid]).first(); 	
+	}
 
-    @Env 
-    def env; 
-
-    public void beforeCreate( o ) {
-        o.entityname = (o.name.length() > 50 ? o.name[0..50] : o.name )
-
-        if ( !o.type ) throw new Exception("Entity type is required");
-        if ( !o.entityno ) { 
-            String stype = o.type.toUpperCase();
-            def seqno = seqSvc.getNextFormattedSeriesA( stype+ "_ENTITY", 6 );
-            def etype = stype[0];
-            if ( o.prefix ) { 
-                o.entityno = ''+ o.prefix + '-' + seqno + etype; 
-            } else { 
-                o.entityno = ''+ etype + seqno; 
-            } 
-        }
-
-        if ( !o.address ) throw new Exception("Address is required in entity");
-        if ( !o.address.objid ) o.address.objid = 'A' + new UID();
-    }
-
-    public void afterCreate(o){
-        o.address.parentid = o.objid;
-        o.address = addrSvc.create( o.address ); 
-    }
-
-    public void beforeUpdate(o) {
-        if(!o.address) 
-            throw new Exception("Address is required in entity");
-        o.address.parentid = o.objid;
-        o.address = addrSvc.save( o.address ); 
-    }
-
-    public void beforeRemoveEntity(o) {
-        addrSvc.removeEntityAddress([parentid:o.objid]);
-    }   
-
-
-    public void afterOpen(o) {
-        if (o) { 
-            if (o.address && o.address?.objid) {
-                try{
-                    def x = addrSvc.open( [objid:o.address.objid] );
-                    o.address.putAll(x);
-                } catch(Throwable t) { 
-                    println 'EntityService.afterOpen failed caused by ' + t.message; 
-                }
-            } else {
-                o.address = [:];    
-            }
-        }
-    }
-
-    @ProxyMethod
-    public def getTypes() {
-        return [];
-    }
-
-    @ProxyMethod 
-    public def getPhoto( params ) { 
-        return [:];  
-    } 
 
 }

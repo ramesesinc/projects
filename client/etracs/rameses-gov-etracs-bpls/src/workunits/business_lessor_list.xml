@@ -1,0 +1,9 @@
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" schemaName="business_lessor">
+    <invokers>
+        <invoker folderid="/explorer/master/bpls" 
+                 caption="Business Lessor List"  index="4" role="MASTER" 
+                 cols="lessor.name,lessor.orgtype,bldgname,street,barangay.name"
+                 customFilter="government=0"
+                 action="init"/>
+    </invokers>
+</workunit>

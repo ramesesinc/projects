@@ -1,0 +1,122 @@
+<workunit>
+    <invokers>
+        <invoker type="business_lessor_owner:create" caption="Lessor" action="initOwner" target="popup"/>
+
+        <invoker type="business_lessor:create" caption="Lessor" action="init" target="popup"/>
+        <invoker type="business_lessor:open" caption="Lessor" action="open" target="popup"/>
+
+        <invoker type="government_lessor:create" caption="Government Property" action="initGov" target="popup"/>
+        <invoker type="government_lessor:open" caption="Government Property" action="open" target="popup"/>
+    </invokers>
+    
+    <code>
+    <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import com.rameses.common.*;
+        import java.rmi.server.*
+        import com.rameses.util.*;
+        import com.rameses.gov.etracs.bpls.business.*;
+        
+        class BusinessLessorController {
+        
+            @Binding 
+            def binding;
+            
+            @Service("EntityLookupService")
+            def entityLookupSvc;
+            
+            @Service("BusinessLessorService")
+            def service;
+            
+            @Service("EntityService")
+            def entitySvc;
+    
+            def entity;
+            int government;
+            def businessowner;
+            def lessorModel;
+            def handler;
+            def mode;
+            
+            def orgTypes = LOV.ORG_TYPES;
+            
+            void init() {
+                entity = [objid:'BUSBLDG'+new UID(), barangay: [:], lessor:[:], government: government];
+                initModel();
+            }
+            
+            void open() {
+                entity = service.open( entity );
+                initModel();
+            }
+            
+            void initModel() {
+                lessorModel = [
+                    fetchList: {o->
+                        String stype = (entity.lessor.orgtype == 'SING') ?'INDIVIDUAL':'JURIDICAL';
+                        def m = [searchtext:o.searchtext, type: stype];
+                        return entityLookupSvc.getList(m);
+                    },
+                    onselect: { o->
+                        def orgtype = entity.lessor.orgtype; 
+                        entity.lessor = [objid:o.objid, name:o.name, address:o.address, orgtype:orgtype];
+                        binding.refresh( "entity.lessor.*" );
+                    }
+                ] as SuggestModel;
+            } 
+
+            void initGov() {
+                entity = [objid:'BUSBLDG'+new UID(), barangay: [:], lessor:[:], government: 1];
+            }
+            
+            void initOwner() {
+                if(!businessowner) throw new Exception("Owner must be passed");
+                entity = [objid:'BUSBLDG'+new UID(), barangay: [:]];
+                entity.government = 0;    
+                entity.lessor = [objid:businessowner.objid, name: businessowner.name, address: businessowner.address ];
+            }
+            
+            def addLessor() {
+                def h = { o->
+                    entity.lessor = [objid:o.objid, name: o.name, address: o.address ];
+                    binding.refresh( "entity.lessor.*" );
+                }
+                String stype = (entity.lessor.orgtype == 'SING') ?'individualentity':'juridicalentity';
+                return Inv.lookupOpener( stype + ":create", [ onselect:h ] );
+            }
+            
+            def showLessor() {
+                if(!entity.lessor) throw new Exception("Please select a lessor first");
+                String stype = (entity.lessor.orgtype == 'SING') ?'individualentity':'juridicalentity';
+                return InvokerUtil.lookupOpener( stype + ":open", [entity: entity.lessor] ); 
+            }
+            
+            
+            def doOk() {
+                entity = service.save( entity );
+                if(handler) handler( entity );
+                return "_close";
+            }
+            
+            def doCancel() {
+                return "_close";
+            }
+            
+            void reloadAddress() {
+                if(!entity.lessor.objid) throw new Exception("Please select first a lessor");
+                def owner = entitySvc.open([objid:entity.lessor.objid]);
+                entity.lessor = owner;
+            }
+            
+        }
+        ]]>
+    </code>
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.bpls.address.BusinessLessorPage"/>
+    </pages>
+    
+</workunit>

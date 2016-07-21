@@ -1,9 +1,10 @@
 <workunit>
     
    <invokers>
+        <invoker folderid="/home/treasury/creditmemo" caption="Credit Memo" action="init" index="100" role="COLLECTOR"/>
+
         <invoker type="quick_launcher" code="CR" caption="Credit Memo" action="init" role="COLLECTOR" target="window"/>
         <invoker folderid="/menu/txn/treasury" caption="Credit Memo" action="init" index="50" role="COLLECTOR"/>
-        <invoker folderid="/home/creditmemo" caption="Credit Memo" action="init" index="100" role="COLLECTOR"/>
    </invokers>
    
    <code>

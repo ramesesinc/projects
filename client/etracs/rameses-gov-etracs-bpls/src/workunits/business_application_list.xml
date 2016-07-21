@@ -1,0 +1,37 @@
+<workunit extends="wtemplates/ExplorerViewController.xml" serviceName="BusinessApplicationListService" 
+    defaultFileType="business_application" autoSelect="true">
+    <invokers>
+        <invoker folderid="/explorer/txn/bpls" caption="List of Business Applications" 
+            action="init" index="4" role="SHARED,BUSINESSINFO,ASSESSOR,APPROVER,LICENSING"/>
+        
+        <invoker folderid="/home/business/business_application" caption="Application List" 
+            action="init" index="-1" role="SHARED,BUSINESSINFO,ASSESSOR,APPROVER,LICENSING"
+            icon="images/application-list.png"    />
+    </invokers>
+
+    <code>
+    <![CDATA[
+    import com.rameses.rcp.common.*;
+    import com.rameses.rcp.annotations.*;
+    import com.rameses.osiris2.client.*;
+    import com.rameses.osiris2.common.*;
+
+    class BusinessApplicationListController extends ExplorerViewController {
+        
+        def params = [:]; 
+        
+        public void init() {
+            params.appyear = new java.sql.Date(System.currentTimeMillis()).toString().split("-")[0]; 
+        } 
+        
+        public void beforeFetchList( Map qry ) { 
+            if ( params ) qry.putAll( params ); 
+        }
+    }  
+    ]]> 
+    </code>
+
+    <pages>
+        <page name="queryform" template="com.rameses.gov.etracs.bpls.view.BusinessApplicationListQueryForm"/>
+    </pages>
+</workunit>

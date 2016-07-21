@@ -1,0 +1,41 @@
+<workunit>
+    
+    <invokers>
+        <invoker type="address:component" action="init" />
+    </invokers>
+    
+    <code>
+    <![CDATA[
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        
+        public class AddressComponent  {
+        
+            @Binding
+            def binding;
+            
+            def entity;
+            def handler;
+            def tag;
+            
+            void init() {
+                
+            }
+            
+            def editAddress() {
+                def h = { o->
+                    if (handler) handler(o);
+                    binding.refresh();
+                }
+                return Inv.lookupOpener( "address:editor", [handler:h, entity:entity, tag: tag] );
+            }
+        }
+    ]]>
+    </code>
+
+    <pages>
+        <page template="com.rameses.enterprise.views.AddressComponent"/>
+    </pages>
+    
+</workunit>

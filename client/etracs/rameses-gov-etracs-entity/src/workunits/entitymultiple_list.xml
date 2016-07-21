@@ -1,0 +1,12 @@
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" schemaName="entitymultiple">
+    <invokers>
+        <invoker folderid="/explorer/master/entity" caption="Multiple Ownership" 
+                 role="MASTER" permission="entitymultiple.view" action="init"
+                    cols="entityno,name,entityname,address.text" />
+        
+         <invoker folderid="/home/entity" caption="Multiple Ownership" 
+                 role="MASTER" permission="entitymultiple.view" action="init"
+                    icon="home/icons/entitymultiple.png"
+                    cols="entityno,name,entityname,address.text" />
+   </invokers>
+</workunit>

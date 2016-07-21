@@ -4,11 +4,11 @@
 		<field name="objid" primary="true"/> 
 		<field name="relation" /> 
 
-		<complex name="entity" ref="entity" jointype="many-to-one"> 
+		<complex name="entity" ref="entityindividual" jointype="many-to-one"> 
 			<key field="entity_objid" target="objid"/> 
 		</complex> 
 
-		<complex name="relateto" ref="entity" jointype="many-to-one"> 
+		<complex name="relateto" ref="entityindividual" jointype="many-to-one"> 
 			<key field="relateto_objid" target="objid"/> 
 		</complex> 
 	</element> 

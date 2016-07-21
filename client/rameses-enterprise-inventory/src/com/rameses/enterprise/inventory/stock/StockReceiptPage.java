@@ -61,6 +61,8 @@ public class StockReceiptPage extends javax.swing.JPanel {
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
                 , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.UPPER}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             }),
@@ -74,6 +76,8 @@ public class StockReceiptPage extends javax.swing.JPanel {
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
                 , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.UPPER}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             }),
@@ -87,6 +91,8 @@ public class StockReceiptPage extends javax.swing.JPanel {
                 , new Object[]{"resizable", false}
                 , new Object[]{"nullWhenEmpty", true}
                 , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.UPPER}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             }),
@@ -100,6 +106,8 @@ public class StockReceiptPage extends javax.swing.JPanel {
                 , new Object[]{"resizable", false}
                 , new Object[]{"nullWhenEmpty", true}
                 , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.UPPER}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.IntegerColumnHandler(null, -1, -1)}
             }),
@@ -113,6 +121,8 @@ public class StockReceiptPage extends javax.swing.JPanel {
                 , new Object[]{"resizable", false}
                 , new Object[]{"nullWhenEmpty", true}
                 , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.UPPER}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.IntegerColumnHandler(null, -1, -1)}
             }),
@@ -126,6 +136,8 @@ public class StockReceiptPage extends javax.swing.JPanel {
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
                 , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.UPPER}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             }),
@@ -139,6 +151,8 @@ public class StockReceiptPage extends javax.swing.JPanel {
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
                 , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             })
@@ -198,17 +212,24 @@ public class StockReceiptPage extends javax.swing.JPanel {
         xTitledBorder2.setTitle("   Request Information   ");
         jPanel4.setBorder(xTitledBorder2);
 
+        xFormPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
         xFormPanel1.setCaptionWidth(100);
 
+        xLabel4.setBackground(new java.awt.Color(245, 245, 245));
+        xLabel4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel4.setCaption("Date Filed");
         xLabel4.setExpression("#{entity.request.dtfiled}");
         xLabel4.setName("entity.txntype"); // NOI18N
-        xLabel4.setPreferredSize(new java.awt.Dimension(150, 20));
+        xLabel4.setOpaque(true);
+        xLabel4.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(xLabel4);
 
+        xLabel2.setBackground(new java.awt.Color(245, 245, 245));
+        xLabel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel2.setCaption("Requester");
         xLabel2.setExpression("#{entity.requester.name}");
-        xLabel2.setPreferredSize(new java.awt.Dimension(200, 20));
+        xLabel2.setOpaque(true);
+        xLabel2.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(xLabel2);
 
         xLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -216,15 +237,23 @@ public class StockReceiptPage extends javax.swing.JPanel {
         xLabel3.setExpression("#{entity.receiptno}");
         xLabel3.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
 
+        xFormPanel2.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
+
+        xLabel6.setBackground(new java.awt.Color(245, 245, 245));
+        xLabel6.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel6.setCaption("Req No");
         xLabel6.setExpression("#{entity.request.reqno}");
-        xLabel6.setPreferredSize(new java.awt.Dimension(125, 20));
+        xLabel6.setOpaque(true);
+        xLabel6.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel2.add(xLabel6);
 
+        xLabel7.setBackground(new java.awt.Color(245, 245, 245));
+        xLabel7.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel7.setCaption("Txn Type");
         xLabel7.setExpression("#{entity.reqtype}");
         xLabel7.setName("entity.txntype"); // NOI18N
-        xLabel7.setPreferredSize(new java.awt.Dimension(125, 20));
+        xLabel7.setOpaque(true);
+        xLabel7.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel2.add(xLabel7);
 
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);

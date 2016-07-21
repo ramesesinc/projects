@@ -48,9 +48,13 @@
       <Properties>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
           <PropertyBean type="com.rameses.rcp.control.border.XTitledBorder">
+            <Property name="padding" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
+              <Insets value="[20, 10, 15, 10]"/>
+            </Property>
             <Property name="title" type="java.lang.String" value="AF Serial Information"/>
           </PropertyBean>
         </Property>
+        <Property name="captionVAlignment" type="java.lang.String" value="CENTER"/>
         <Property name="captionWidth" type="int" value="90"/>
       </Properties>
       <SubComponents>
@@ -100,9 +104,13 @@
       <Properties>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
           <PropertyBean type="com.rameses.rcp.control.border.XTitledBorder">
+            <Property name="padding" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
+              <Insets value="[20, 10, 15, 10]"/>
+            </Property>
             <Property name="title" type="java.lang.String" value="Fund Information"/>
           </PropertyBean>
         </Property>
+        <Property name="captionVAlignment" type="java.lang.String" value="CENTER"/>
       </Properties>
       <SubComponents>
         <Component class="com.rameses.rcp.control.XLookupField" name="xLookupField1">

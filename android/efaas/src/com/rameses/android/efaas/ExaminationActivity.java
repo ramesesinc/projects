@@ -43,12 +43,14 @@ public class ExaminationActivity  extends ControlActivity{
 	private static Activity activity;
 	private int ctxMenuId;
 	private String STATE = "CREATE";
+	private String type;
 	
 	@Override
 	protected void onCreateProcess(Bundle savedInstanceState) {
 		activity = this; 
 		objid = getIntent().getExtras().getString("objid");
 		faasid = getIntent().getExtras().getString("faasid");
+		type = getIntent().getExtras().getString("type");
 		if(objid == null){
 			objid = UUID.randomUUID().toString();
 		}else{
@@ -109,7 +111,12 @@ public class ExaminationActivity  extends ControlActivity{
             		return;
             	}
             	disposeMe();
-            	LandFaasActivity.initData();
+            	if(type.equals("land")){
+            		FaasLandActivity.loadExaminationData();
+            	}
+            	if(type.equals("bldg")){
+            		FaasBuildingActivity.loadExaminationData();
+            	}
             }
         });
 		if(STATE.equals("CREATE")) examination_save.setText("SAVE");

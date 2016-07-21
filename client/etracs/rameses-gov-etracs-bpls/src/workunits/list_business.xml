@@ -1,9 +1,0 @@
-<workunit extends="wtemplates/ExplorerViewController.xml" serviceName="BusinessMasterListService" defaultFileType="business" autoSelect="true">
-    <invokers>
-        <invoker folderid="/explorer/txn/bpls" caption="Business Master List"  index="4" role="SHARED,BUSINESSINFO,ASSESSOR,APPROVER,LICENSING" />
-        <invoker folderid="/home/business" caption="Business Master List"  role="SHARED,BUSINESSINFO,ASSESSOR,APPROVER,LICENSING" index="50"/>
-    </invokers>
-    <pages>
-        <page name="1queryform" template="com.rameses.gov.etracs.bpls.business.BusinessListQueryForm"/>
-    </pages>
-</workunit>

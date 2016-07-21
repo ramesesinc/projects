@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:id="@+id/tableLayout1"
+  android:layout_width="fill_parent"
+  android:layout_height="wrap_content"
+  android:stretchColumns="0,1">
+
+    <TableRow
+      android:id="@+id/tableRow1"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content">
+
+        <TextView
+          android:id="@+id/floor_floorno"
+          android:text="Floor No."
+          android:layout_column="0"
+          android:layout_margin="1dp"
+          android:layout_width="0dp"
+          android:layout_height="match_parent"
+          android:gravity="center"
+          android:minHeight="40dp"
+          android:background="#e4ecfb"
+          android:textAppearance="?android:attr/textAppearanceSmall">
+        </TextView>
+
+        <TextView
+          android:id="@+id/floor_floorarea"
+          android:text="Floor Area"
+          android:layout_column="1"
+          android:layout_margin="1dp"
+          android:layout_width="0dp"
+          android:layout_height="match_parent"
+          android:gravity="center"
+          android:background="#e4ecfb"
+          android:textAppearance="?android:attr/textAppearanceSmall">
+        </TextView>  
+
+    </TableRow>
+
+</TableLayout> 

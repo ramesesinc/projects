@@ -1,0 +1,12 @@
+<workunit schemaName="entity_eligibility">
+    <invokers>
+        <invoker type="entity_eligibility:create" caption="Eligibility (New)" action="create" target="popup"/>
+        <invoker type="entity_eligibility:open" caption="Eligibility (View)" action="open"  target="popup"/> 
+    </invokers>
+    
+    <code class="com.rameses.gov.etracs.nsrp.models.EntityEligibilityModel"/>
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.nsrp.views.EntityEligibilityPage"/>        
+    </pages>
+</workunit>

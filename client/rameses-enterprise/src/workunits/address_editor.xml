@@ -1,0 +1,96 @@
+<workunit>
+    
+    <invokers>
+        <invoker type="address:editor" action="init" target="popup" caption="Address"/>
+    </invokers>
+    
+    <code>
+    <![CDATA[
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import java.rmi.server.*;
+        import com.rameses.util.*;
+        
+        public class AddressComponent  {
+        
+            @Binding
+            def binding;
+        
+            @FormId
+            def formId;            
+            
+            def source;
+            def entity;
+            def addressOpener;
+            def addressOpeners;
+            def handler;
+            def tag;
+            
+            void init() {
+                formId = "ADDRESS"+new UID();
+                source = entity;
+                entity = [:];
+                source.each{k,v-> 
+                    entity[k]=v;
+                } 
+                
+                def filter = { o->
+                    if(!tag) {
+                        if(!o.properties.tags) return true;
+                        return false;
+                    }
+                    else {
+                        if(!o.properties.tags) return true;
+                        return tag.matches( o.properties.tags );
+                    }
+                };
+                try {
+                    def list = Inv.lookupOpeners( "address:component:type", [entity:entity] );  
+                    addressOpeners = [];
+                    list?.each{
+                        if (filter(it)) addressOpeners << it; 
+                    }
+                    if( entity.type ) {
+                        addressOpener = addressOpeners.find{ it.properties.key == entity.type };
+                    }                    
+                }
+                catch(e) {
+                    println "No address:component:type defined";
+                }
+            }
+                 
+            def doOk() {
+                entity.each{k,v-> 
+                    source[k]=v;
+                } 
+                if(!source.type) source.type = addressOpener.properties.key;
+                source.text = TemplateProvider.instance.getResult("templates/address/" + source.type + ".htm", [entity: source] );
+                if(source.text) {
+                    source.text = source.text.trim();
+                    source.text = source.text.replace(",\n", "\n");
+                }    
+                handler(source); 
+                return "_close";
+            }
+            
+            def doCancel() {
+                return "_close";
+            }
+            
+            @PropertyChangeListener
+            def listener = [
+                "addressOpener" : {o->
+                    entity.clear(); 
+                    o?.handle?.refresh();
+                } 
+            ] 
+        }
+    ]]>
+    </code>
+
+    <pages>
+        <page template="com.rameses.enterprise.views.AddressEditor"/>
+    </pages>
+    
+</workunit>

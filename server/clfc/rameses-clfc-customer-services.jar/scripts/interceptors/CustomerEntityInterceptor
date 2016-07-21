@@ -2,19 +2,19 @@ import com.rameses.annotations.*;
 
 class CustomerEntityInterceptor
 {
-	@ActiveDB('customer')
+	@DataContext('customer')
 	def customer;
 
-	@After(pattern="IndividualEntityService.open")
+	@After(pattern="PersistenceService.open", eval="#{args[0]._schemaname == 'entityindividual'}")
 	public void afterOpen( evt ) {
 		def result = evt.result;
 		if (!'individual'.equalsIgnoreCase(result.type+'')) return;
 
-		def data = customer.findCustomer([objid: result.objid]);
+		def data = customer.find([objid: result.objid]).first();
 		result.putAll(data);
 	}
 
-	@After(pattern="IndividualEntityService.create")
+	@After(pattern="PersistenceService.create", eval="#{args[0]._schemaname == 'entityindividual'}")
 	public void afterCreate( evt ) {
 		def result = evt.result;
 		if (!'individual'.equalsIgnoreCase(result.type+'')) return;
@@ -24,19 +24,17 @@ class CustomerEntityInterceptor
 		if (!item) customer.create(result); 
 	}	
 
-	@After(pattern="IndividualEntityService.update")
+	@After(pattern="PersistenceService.update", eval="#{args[0]._schemaname == 'entityindividual'}")
 	public void afterUpdate( evt ) {
 		def result = evt.result;
 		if (!'individual'.equalsIgnoreCase(result.type+'')) return;
 
-		customer.update(result); 
+		customer.find([objid: result.objid]).update(result); 
 	} 
 
-	@After(pattern="IndividualEntityService.removeEntity")
+	@After(pattern="PersistenceService.removeEntity", eval="#{args[0]._schemaname == 'entityindividual'}")
 	public void afterRemove( evt ) {
-		def result = evt.result;
-		if (!'individual'.equalsIgnoreCase(result.type+'')) return;
-
-		customer.delete(result); 
+		def o = evt.args[0];
+		customer.find([objid: o.objid]).delete(); 
 	} 
 }

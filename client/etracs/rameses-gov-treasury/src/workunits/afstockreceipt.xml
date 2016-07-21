@@ -2,7 +2,7 @@
 <workunit extends="wtemplates/StockReceiptController.xml">
     <invokers>
         <invoker folderid="/menu/txn/treasury" caption="Accountable Form RIS" action="create" role="AFO"/>
-        <invoker folderid="home/af" caption="AF Receipt" action="create" role="AFO" target="window"/> 
+        <invoker folderid="home/treasury/af" caption="AF Receipt" action="create" role="AFO" target="window"/> 
         <invoker type="quick_launcher" code="AFRCT" caption="Accountable Form Receipt" action="create" role="AFO" target="window"/>
         
         <invoker type="afstockreceipt:create" caption="AF Receipt" action="create" role="AFO" target="window"/> 

@@ -7,13 +7,6 @@ import com.rameses.util.*;
 
 public class BusinessOwnerUtil {
 
-    @Service("EntityLookupService")
-    def entityLookupSvc;
-
-    @Service("EntityService")
-    def entitySvc;
-
-
     @Caller
     def caller;
 
@@ -60,8 +53,10 @@ public class BusinessOwnerUtil {
     def show() {
         if( !business.owner?.objid )
             throw new Exception("Please select an owner");
-        String stype = (business.orgtype == 'SING') ?'individualentity':'juridicalentity';
-        return InvokerUtil.lookupOpener( stype + ":open", [entity: business.owner] ); 
+        String stype = (business.orgtype == 'SING') ?'entityindividual':'entityjuridical';
+        def op = InvokerUtil.lookupOpener( stype + ":open", [ entity: [objid: business.owner.objid] ] ); 
+        op.target = 'popup';
+        return op;
     }
     
     void verify() {
@@ -70,17 +65,12 @@ public class BusinessOwnerUtil {
 
         if( !business.owner.address?.objid)
             throw new Exception("Error in owner address. Please check the address of owner by editing the entity.");
-
          business.orgtypename = orgTypes.find{ it.key == business.orgtype}?.value;    
     }
 
     void reset() {;}
 
-    def reload() {
-        if(!business.owner.objid) throw new Exception("Please select first an owner");
-        def owner = entitySvc.open([objid:business.owner.objid]);
-        business.owner = owner;
-        caller.binding.refresh("entity.business.owner.*");
+    void reload() {
     }
        
     def lookupAddress() {

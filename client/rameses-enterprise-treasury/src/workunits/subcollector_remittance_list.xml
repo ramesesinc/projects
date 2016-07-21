@@ -1,6 +1,6 @@
 <workunit extends="wtemplates/ListController.xml" serviceName="SubCollectorRemittanceListService" entityName="subcollector_remittance">
     <invokers>
         <invoker folderid="/explorer/txn/treasury" caption="Subcollector Remittances" index="30" role="SUBCOLLECTOR" />
-        <invoker folderid="home/remittance" caption="Subcollector Remittance" index="30" role="SUBCOLLECTOR" target="window"/>
+        <invoker folderid="home/treasury/remittance" caption="Remittance (Subcollector)" index="30" role="SUBCOLLECTOR" target="window"/>
     </invokers>
 </workunit>

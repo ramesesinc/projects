@@ -4,8 +4,8 @@ import com.rameses.enterprise.treasury.cashreceipt.SerialCashReceiptPage;
 import com.rameses.rcp.ui.annotations.StyleSheet;
 import com.rameses.rcp.ui.annotations.Template;
 
-@Template(value=SerialCashReceiptPage.class, target="content")
 @StyleSheet
+@Template(value=SerialCashReceiptPage.class, target="content")
 public class CorporatePage extends javax.swing.JPanel {
     
     /** Creates new form IndividualPage */
@@ -28,7 +28,7 @@ public class CorporatePage extends javax.swing.JPanel {
         xTextField5 = new com.rameses.rcp.control.XTextField();
         xCheckBox3 = new com.rameses.rcp.control.XCheckBox();
         xTextField1 = new com.rameses.rcp.control.XTextField();
-        xComboBox2 = new com.rameses.rcp.control.XComboBox();
+        orgTypeList1 = new com.rameses.entity.components.OrgTypeList();
         xTextField3 = new com.rameses.rcp.control.XTextField();
         xDateField1 = new com.rameses.rcp.control.XDateField();
         xTextField4 = new com.rameses.rcp.control.XTextField();
@@ -51,6 +51,7 @@ public class CorporatePage extends javax.swing.JPanel {
         xTitledBorder1.setTitle("   Taxpayer Information   ");
         jPanel1.setBorder(xTitledBorder1);
 
+        formPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
         formPanel1.setCaptionWidth(120);
 
         xDateField2.setCaption("Txn. Date");
@@ -87,6 +88,7 @@ public class CorporatePage extends javax.swing.JPanel {
         xCheckBox3.setCellPadding(new java.awt.Insets(0, 0, 20, 0));
         xCheckBox3.setMargin(new java.awt.Insets(0, 0, 0, 0));
         xCheckBox3.setName("entity.newbusiness"); // NOI18N
+        xCheckBox3.setPreferredSize(new java.awt.Dimension(20, 20));
         formPanel1.add(xCheckBox3);
 
         xTextField1.setCaption("TIN");
@@ -94,11 +96,10 @@ public class CorporatePage extends javax.swing.JPanel {
         xTextField1.setPreferredSize(new java.awt.Dimension(0, 20));
         formPanel1.add(xTextField1);
 
-        xComboBox2.setCaption("Kind of Organization");
-        xComboBox2.setItems("orgtypes");
-        xComboBox2.setName("entity.payer.orgtype"); // NOI18N
-        xComboBox2.setPreferredSize(new java.awt.Dimension(0, 22));
-        formPanel1.add(xComboBox2);
+        orgTypeList1.setCaption("Kind of Organization");
+        orgTypeList1.setName("entity.payer.orgtype"); // NOI18N
+        orgTypeList1.setPreferredSize(new java.awt.Dimension(0, 20));
+        formPanel1.add(orgTypeList1);
 
         xTextField3.setCaption("Nature of Business");
         xTextField3.setCellPadding(new java.awt.Insets(0, 0, 10, 0));
@@ -125,6 +126,7 @@ public class CorporatePage extends javax.swing.JPanel {
         xCheckBox2.setCaption("Is Additional?");
         xCheckBox2.setMargin(new java.awt.Insets(0, 0, 0, 0));
         xCheckBox2.setName("entity.hasadditional"); // NOI18N
+        xCheckBox2.setPreferredSize(new java.awt.Dimension(20, 20));
         formPanel1.add(xCheckBox2);
 
         xTextField11.setCaption("Remarks");
@@ -145,7 +147,9 @@ public class CorporatePage extends javax.swing.JPanel {
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(formPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .add(jPanel1Layout.createSequentialGroup()
+                .add(formPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 366, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder2 = new com.rameses.rcp.control.border.XTitledBorder();
@@ -191,7 +195,7 @@ public class CorporatePage extends javax.swing.JPanel {
                 .add(formPanel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(xButton1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 32, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(47, Short.MAX_VALUE))
+                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder3 = new com.rameses.rcp.control.border.XTitledBorder();
@@ -249,7 +253,7 @@ public class CorporatePage extends javax.swing.JPanel {
             jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel3Layout.createSequentialGroup()
                 .add(formPanel3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(82, Short.MAX_VALUE))
+                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
@@ -285,10 +289,10 @@ public class CorporatePage extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
+    private com.rameses.entity.components.OrgTypeList orgTypeList1;
     private com.rameses.rcp.control.XButton xButton1;
     private com.rameses.rcp.control.XCheckBox xCheckBox2;
     private com.rameses.rcp.control.XCheckBox xCheckBox3;
-    private com.rameses.rcp.control.XComboBox xComboBox2;
     private com.rameses.rcp.control.XDateField xDateField1;
     private com.rameses.rcp.control.XDateField xDateField2;
     private com.rameses.rcp.control.XDecimalField xDecimalField1;

@@ -50,7 +50,7 @@ class RPTCertificationService
 		}
 		cert.txndate = dtSvc.serverDate
 		cert.createdbyid = env.USERID
-		cert.createdby = (env.USERFORMALNAME ? env.USERFORMALNAME : 'system')
+		cert.createdby = (env.USERFULLNAME ? env.USERFULLNAME : 'system')
 		cert.createdbytitle = (env.JOBTITLE ? env.JOBTITLE : 'system')
 		if (cert.official) {
 			cert.amount = 0.0

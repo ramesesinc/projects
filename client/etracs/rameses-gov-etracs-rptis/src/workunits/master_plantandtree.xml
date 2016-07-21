@@ -1,26 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<workunit>
-    <invokers>
-        <invoker type="quick_launcher" code="PT01" action="init" caption="Plant and Tree" role="ASSESSOR_DATAMGMT,MASTER" />
-        <invoker type="planttree:create" action="init" caption="Plant and Tree" role="ASSESSOR_DATAMGMT,MASTER" />
-        <invoker type="planttree:open" action="open" caption="Plant and Tree" role="ASSESSOR_DATAMGMT,MASTER" />
-    </invokers>
-        
-    <code lang="groovy">
-        import com.rameses.rcp.common.*;
-        import com.rameses.rcp.annotations.*;
-        import com.rameses.osiris2.client.*;
-        import com.rameses.osiris2.common.*;
-        
-        public class PlantandTreeController  extends CRUDController
-        {
-            String serviceName = "PlantTreeService"
-            String entityName  = 'planttree'
-            String prefixId    = 'PT'
-        }
-    </code>
-    
-    <pages>
-        <page template="com.rameses.gov.etracs.rpt.master.ui.PlantTreePage" />
-    </pages>
+<workunit extends="com/rameses/seti2/templates/DynamicCrudForm.xml"
+    schemaName="planttree"
+    caption="Plant/Tree">
 </workunit>

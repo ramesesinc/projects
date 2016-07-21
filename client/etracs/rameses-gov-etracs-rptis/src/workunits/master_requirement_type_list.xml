@@ -1,7 +1,6 @@
 <workunit extends="wtemplates/ListController.xml" serviceName="RPTRequirementTypeService" entityName="rptrequirementtype" formName="rptrequirementtype:list">
     <invokers>
         <invoker folderid="/explorer/master/rpt" caption="Requirement Types"  target="window" index="50"  role="ASSESSOR_DATAMGMT,MASTER" />
-        <invoker folderid="/home/rpt/master" caption="Requirement Types"  target="window" index="50"  role="ASSESSOR_DATAMGMT,MASTER" />
         <invoker type="quick_launcher" code="REQ00" caption="Requirement Types"  role="ASSESSOR_DATAMGMT,MASTER" />
     </invokers>
 </workunit>

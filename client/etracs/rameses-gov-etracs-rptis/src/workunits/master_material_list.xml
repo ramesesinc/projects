@@ -1,7 +1,9 @@
-<workunit extends="wtemplates/ListController.xml" serviceName="MaterialService" entityName="material"  formName="material:list">
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" 
+          schemaName="material" 
+          cols="state,code,name" orderBy="code"
+          allowDelete="#{entity.state!='APPROVED'}"
+          caption="Materials">
     <invokers>
-        <invoker folderid="/explorer/master/rpt" caption="Materials"  target="window" index="5"  role="ASSESSOR_DATAMGMT,MASTER" />
-        <invoker folderid="/home/rpt/master" caption="Materials"  target="window" index="5"  role="ASSESSOR_DATAMGMT,MASTER" />
-        <invoker type="quick_launcher" code="MAT00" caption="Materials"  role="ASSESSOR_DATAMGMT,MASTER" />
+        <invoker folderid="/explorer/master/rpt" action="init" caption="Materials" index="5" role="ASSESSOR_DATAMGMT,MASTER"/>
     </invokers>
 </workunit>

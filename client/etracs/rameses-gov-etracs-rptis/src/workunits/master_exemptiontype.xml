@@ -1,27 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<workunit>
-    
-    <invokers>
-        <invoker type="quick_launcher" code="ET01" action="init" caption="Exemption Type" role="ASSESSOR_DATAMGMT,MASTER" />
-        <invoker type="exemptiontype:create" action="init" caption="Exemption Type" role="ASSESSOR_DATAMGMT,MASTER" />
-        <invoker type="exemptiontype:open" action="open" caption="Exemption Type" role="ASSESSOR_DATAMGMT,MASTER" />
-    </invokers>
-    
-    <code lang="groovy">
-        import com.rameses.rcp.common.*;
-        import com.rameses.rcp.annotations.*;
-        import com.rameses.osiris2.client.*;
-        import com.rameses.osiris2.common.*;
-        
-        public class ExemptionTypeController  extends CRUDController
-        {
-            String serviceName  = 'ExemptionTypeService'
-            String entityName   = 'exemptiontype'
-            String prefixId     = 'ET'
-        }
-    </code>
-    
-    <pages>
-        <page template="com.rameses.gov.etracs.rpt.master.ui.ExemptionTypePage" />
-    </pages>
+<workunit extends="com/rameses/seti2/templates/DynamicCrudForm.xml"
+    schemaName="exemptiontype"
+    caption="Exemption Type">
 </workunit>

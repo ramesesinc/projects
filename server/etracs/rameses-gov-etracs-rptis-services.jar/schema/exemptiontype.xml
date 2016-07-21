@@ -1,9 +1,9 @@
-<schema>
+<schema adapter="main">
 	<element name="exemptiontype" tablename="exemptiontype">
 		<field name="objid" primary="true"/>
-		<field name="state" required="true"/>
-		<field name="code" required="true"/>
-		<field name="name" required="true"/>
-		<field name="orderno" required="true" type="integer" />
+		<field name="state" required="true" caption="State" indexed="true" searchable="true" />
+		<field name="code" required="true" caption="Code" indexed="true" searchable="true" />
+		<field name="name" required="true" caption="Exemption Type" indexed="true" searchable="true" />
+		<field name="orderno" required="true" type="integer" caption="Order No." />
 	</element>
 </schema>

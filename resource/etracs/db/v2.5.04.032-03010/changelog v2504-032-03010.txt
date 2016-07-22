@@ -9,6 +9,7 @@
 	- Update on certification created by info
 	
 - LANDTAX
+	- Update on billing SMS broadcast
 	- Fix notice of delinquency summary 
 	- Allow billing of restricted properties
 	- Fix broadcast billing support 

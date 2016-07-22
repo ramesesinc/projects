@@ -3,7 +3,7 @@ import com.rameses.http.*;
 
 class RPTSmsHandler {
 	
-	@Service(value="SMSService", connection="sms_sender")
+	@Service("SMSService")
 	def smsSvc;
 
 	@ActiveDB("rpt_sms")

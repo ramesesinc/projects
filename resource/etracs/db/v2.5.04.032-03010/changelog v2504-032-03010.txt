@@ -10,3 +10,5 @@
 	
 - LANDTAX
 	- Fix notice of delinquency summary 
+	- Allow billing of restricted properties
+	- Fix broadcast billing support 

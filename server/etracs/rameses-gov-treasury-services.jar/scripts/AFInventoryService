@@ -108,7 +108,11 @@ public class AFInventoryService  {
 
 	@ProxyMethod
 	public def postIssue( o ) {  
-		def head = em.read([ objid: o.controlid ]);
+		def head = em.read([ objid: o.controlid ]); 
+		if ( !head ) {
+			throw new Exception('AF control '+ o.controlid + ' does not have any record in the inventory. Please verify.'); 
+		}
+
 		if ( head.currentseries != o.startseries ) {  
 			println 'controlid='+ o.controlid + ', headseries='+ head.currentseries + ', startseries='+ o.startseries;
 			throw new Exception("Data may have changed. Please run process again");

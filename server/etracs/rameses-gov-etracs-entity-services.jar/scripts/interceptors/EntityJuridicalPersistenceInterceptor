@@ -16,6 +16,9 @@ class EntityJuridicalPersistenceInterceptor  {
 	@Service("LOVService")
 	def LOV;
 
+	@Service("PersistenceService")
+	def persistenceSvc; 
+
 	
 	@DataContext("entity_address")
 	def addressEm;
@@ -32,17 +35,19 @@ class EntityJuridicalPersistenceInterceptor  {
 	@Before(pattern="PersistenceService.create", eval="#{args[0]._schemaname == 'entityjuridical'}", index=101)
 	public void beforeCreate(def evt ) {
 		def o = evt.args[0];
-		if(!o.address?.text) throw new Exception("Address is required");
+		if ( !o.address?.text ) throw new Exception("Address is required");
+		if ( o.orgtype=='SING' ) throw new Exception("Please select another org type"); 
 
 		if ( !o.objid ) o.objid = "JUR"+new UID();
         if ( !o.entityno ) { 
+        	def stype = 'J';
             def seqno = seqSvc.getNextFormattedSeriesA( "JURIDICAL_ENTITY", 6 );
-            if(o.prefix) {
-                o.entityno = ''+ o.prefix + 'J' + seqno; 
+            if ( o.prefix ) { 
+                o.entityno = ''+ o.prefix +'-'+ seqno + stype; 
             } else { 
-                o.entityno = 'J' + seqno; 
+                o.entityno = ''+ stype + seqno; 
             } 
-        }
+        } 
 		o.type = 'JURIDICAL';
 		//create the address first
 		def addr = addressEm.create( o.address );
@@ -69,6 +74,4 @@ class EntityJuridicalPersistenceInterceptor  {
 		def list = evt.result;
 		list << 'JURIDICAL'
 	}
-
-
 }

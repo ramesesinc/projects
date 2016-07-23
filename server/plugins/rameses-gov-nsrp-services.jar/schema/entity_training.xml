@@ -1,0 +1,15 @@
+<schema adapter="nsrp">
+	<element name="entity_training" tablename="entity_training">
+		<field name="objid" primary="true" prefix="INDTRN"/>
+		<complex name="entity" ref="entityindividual" jointype="many-to-one" required="false" 
+			includefields="training,fromdate,todate,institution,certificates,completed">
+			<key field="entityid" target="objid"/>
+		</complex>
+		<field name="training" required="true" caption="Training"/>
+		<field name="fromdate" required="true" caption="From"/>
+		<field name="todate" required="true" caption="To"/>
+		<field name="institution" required="true" caption="Institution"/>
+		<field name="certificates" caption="Certificates"/>
+		<field name="completed" caption="Completed" type="boolean"/>
+	</element>
+</schema>

@@ -1,0 +1,16 @@
+import com.rameses.annotations.*;
+
+class EntityEducationPersistenceInterceptor {
+
+	@Before(pattern="PersistenceService.create", eval="#{args[0]._schemaname == 'entity_education'}")
+	public void beforeSave(def evt){
+		def o = evt.args[0];
+		println o;
+	}
+
+	@After(pattern="PersistenceService.create", eval="#{args[0]._schemaname == 'entity_education'}")
+	public void afterSave(def evt){
+		def r = evt.result;
+		println r;
+	}
+}

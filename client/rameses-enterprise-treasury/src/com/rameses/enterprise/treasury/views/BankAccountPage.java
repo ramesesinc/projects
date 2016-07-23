@@ -38,8 +38,8 @@ public class BankAccountPage extends javax.swing.JPanel {
         jScrollPane1 = new javax.swing.JScrollPane();
         xTextArea1 = new com.rameses.rcp.control.XTextArea();
         xComboBox1 = new com.rameses.rcp.control.XComboBox();
-        xLookupField1 = new com.rameses.rcp.control.XLookupField();
         xComboBox2 = new com.rameses.rcp.control.XComboBox();
+        xLookupField1 = new com.rameses.rcp.control.XLookupField();
         xLookupField2 = new com.rameses.rcp.control.XLookupField();
         jPanel2 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
@@ -83,14 +83,6 @@ public class BankAccountPage extends javax.swing.JPanel {
         xComboBox1.setRequired(true);
         xFormPanel1.add(xComboBox1);
 
-        xLookupField1.setCaption("Bank");
-        xLookupField1.setExpression("#{item.code} #{item.name}");
-        xLookupField1.setHandler("bank_depository:lookup");
-        xLookupField1.setName("entity.bank"); // NOI18N
-        xLookupField1.setPreferredSize(new java.awt.Dimension(0, 19));
-        xLookupField1.setRequired(true);
-        xFormPanel1.add(xLookupField1);
-
         xComboBox2.setAllowNull(false);
         xComboBox2.setCaption("Currency");
         xComboBox2.setItems("listTypes.currency");
@@ -98,6 +90,14 @@ public class BankAccountPage extends javax.swing.JPanel {
         xComboBox2.setPreferredSize(new java.awt.Dimension(120, 22));
         xComboBox2.setRequired(true);
         xFormPanel1.add(xComboBox2);
+
+        xLookupField1.setCaption("Bank");
+        xLookupField1.setExpression("#{item.code} #{item.name}");
+        xLookupField1.setHandler("bank_depository:lookup");
+        xLookupField1.setName("entity.bank"); // NOI18N
+        xLookupField1.setPreferredSize(new java.awt.Dimension(0, 19));
+        xLookupField1.setRequired(true);
+        xFormPanel1.add(xLookupField1);
 
         xLookupField2.setCaption("Fund");
         xLookupField2.setExpression("#{item.code} #{item.title}");

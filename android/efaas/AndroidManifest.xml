@@ -68,5 +68,6 @@
         <activity android:name="com.rameses.android.efaas.UploadActivity"  android:screenOrientation="landscape"/>
         <activity android:name="com.rameses.android.efaas.FaasBuildingActivity"  android:screenOrientation="landscape"/>
         <activity android:name="com.rameses.android.efaas.BuildingAppraisalActivity"  android:screenOrientation="landscape"/>
+        <activity android:name="com.rameses.android.efaas.BuildingAppraisalActualuseActivity"  android:screenOrientation="landscape"/>
     </application>
 </manifest>

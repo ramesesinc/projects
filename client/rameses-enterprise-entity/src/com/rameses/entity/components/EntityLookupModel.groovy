@@ -44,7 +44,7 @@ class EntityLookupModel extends ComponentBean {
         return Inv.lookupOpener( etype+':lookup', params );
     } 
     
-    void fireOnselect( o ) {
+    void fireOnselect( o ) { 
         def schemaname = 'entity' + (o.type ? o.type :'').toLowerCase(); 
         o = persistenceSvc.read([ _schemaname: schemaname, objid: o.objid ]); 
         if ( onselect ) { 
@@ -69,18 +69,21 @@ class EntityLookupModel extends ComponentBean {
     }
     
     public def addEntity() {
-        //check if there is role
-        boolean b = ClientContext.currentContext.securityProvider.checkPermission("ENTITY", "MASTER", "entityindividual.create");
-        if (!b) throw new Exception("No sufficient permission to add type");
-        
+        def stype = getEntityType(); 
+        if ( !stype || stype=='entity' ) stype = 'entityindividual';
+
         def params = [:]; 
         params.onselect = { o-> 
             fireOnselect( o ); 
         };
         params.allowSelect = true;
-        def etype = getEntityType();
-        if(etype==null) etype = "entityindividual";
-        return Inv.lookupOpener( etype+':create', params ); 
+        def opener = null; 
+        try {
+            opener = Inv.lookupOpener( stype +':create', params );
+        } catch(Throwable t) {;}
+        if ( !opener )
+            throw new Exception("No sufficient permission to add entity");
+        return opener; 
     } 
     
     public boolean isAllowCreate() {
@@ -93,6 +96,7 @@ class EntityLookupModel extends ComponentBean {
             return false; 
         } 
     }
+    
     public boolean isAllowOpen() {
         try {
             def o = getValue();
@@ -104,4 +108,5 @@ class EntityLookupModel extends ComponentBean {
             return false; 
         } 
     } 
+    
 } 

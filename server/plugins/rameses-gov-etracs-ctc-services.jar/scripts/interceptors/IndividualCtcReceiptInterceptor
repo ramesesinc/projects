@@ -9,7 +9,7 @@ class IndividualCtcReceiptInterceptor
 	def em
 
 	@Service("PersistenceService")
-	def persistenceService;
+	def persistSvc;
 
 	@Service('DateService')
 	def dtSvc 
@@ -24,7 +24,7 @@ class IndividualCtcReceiptInterceptor
 		em.create(ctc)
 
 		ctc.payer._schemaname = 'entityindividual';
-		persistenceService.update( ctc.payer );
+		persistSvc.update( ctc.payer );
 	}
 
 	@After(pattern="CashReceiptService.open", eval="#{result.formno=='0016' && result.txnmode != 'CAPTURE'}")
@@ -34,10 +34,12 @@ class IndividualCtcReceiptInterceptor
 		ctc.payer.putAll(ctcext.payer)
 		ctcext.remove('payer')
 		ctc.putAll(ctcext)
-		def individual = entityEm.open(ctc.payer)
-		individual.putAll(ctc.payer)
-		ctc.payer.putAll( individual )
-		evt.result.putAll( ctc );
-	}
 
+		def individual = persistSvc.read([ _schemaname: 'entityindividual', objid: ctc.payer?.objid ]);
+		if ( individual ) {
+			individual.putAll(ctc.payer)
+			ctc.payer.putAll( individual )
+		}
+		evt.result.putAll( ctc );
+	} 
 }

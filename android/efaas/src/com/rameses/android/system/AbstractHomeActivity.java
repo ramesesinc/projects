@@ -50,6 +50,11 @@ public abstract class AbstractHomeActivity extends ControlActivity
 				
 		list.clear();
 		loadMenuItems(list);
+		list.add(createMenuItem("masterfile", "Master Files", null, R.drawable.masterfile));
+		list.add(createMenuItem("settings", "Revision Settings", null, R.drawable.settings));
+		list.add(createMenuItem("faas", "FAAS", null, R.drawable.faas));
+		list.add(createMenuItem("download", "Download", null, R.drawable.download));
+		list.add(createMenuItem("upload", "Upload", null, R.drawable.upload));
 		list.add(createMenuItem("changepassword", "Change Password", null, R.drawable.changepassword));
 		list.add(createMenuItem("logout", "Logout", null, R.drawable.logout));
 		

@@ -257,6 +257,7 @@ public class FaasLandActivity extends ControlActivity {
             public void onClick(View v) {
             	Intent myIntent = new Intent(activity, ExaminationActivity.class);
   			  	myIntent.putExtra("faasid", faasid);
+  			  	myIntent.putExtra("type", "land");
   			  	startActivity(myIntent);
             }
         });
@@ -288,6 +289,7 @@ public class FaasLandActivity extends ControlActivity {
 					Intent myIntent = new Intent(activity, ExaminationActivity.class);
 					myIntent.putExtra("objid", item.getObjid());
 	  			  	myIntent.putExtra("faasid", faasid);
+	  			  	myIntent.putExtra("type", "land");
 	  			  	activity.startActivity(myIntent);
 				}	
 			});
@@ -348,6 +350,7 @@ public class FaasLandActivity extends ControlActivity {
 			   Intent myIntent = new Intent(activity, ExaminationActivity.class);
 			   myIntent.putExtra("objid", examinationItem.getObjid());
 			   myIntent.putExtra("faasid", faasid);
+			   myIntent.putExtra("type", "land");
 			   activity.startActivity(myIntent);
 		  }
 		  if(menuItemIndex == 1){
@@ -365,6 +368,7 @@ public class FaasLandActivity extends ControlActivity {
 			  }catch(Throwable t){
 				  new ErrorDialog(this, t).show();
 			  }
+			  loadExaminationData();
 		  }
 	  }
 	  return true;

@@ -56,9 +56,6 @@ public class HomeActivity extends SettingsMenuActivity   {
 	                .permitAll().build();
 	        StrictMode.setThreadPolicy(policy);
 	    }
-	    
-	    ActionBar bar = getActionBar();
-	    //bar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#a6e20d")));
 	} 
 	
 	protected void onStartProcess() {

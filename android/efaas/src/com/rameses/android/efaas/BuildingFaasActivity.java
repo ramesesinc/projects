@@ -287,6 +287,7 @@ public class BuildingFaasActivity extends ControlActivity{
 					Intent myIntent = new Intent(activity, ExaminationActivity.class);
 					myIntent.putExtra("objid", item.getObjid());
 	  			  	myIntent.putExtra("faasid", faasid);
+	  			  	myIntent.putExtra("type", "bldg");
 	  			  	activity.startActivity(myIntent);
 				}	
 			});

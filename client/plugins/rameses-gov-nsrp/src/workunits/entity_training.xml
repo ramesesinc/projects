@@ -1,0 +1,12 @@
+<workunit schemaName="entity_training">
+    <invokers>
+        <invoker type="entity_training:create" caption="Training (New)" action="create" target="popup"/>
+        <invoker type="entity_training:open" caption="Training (View)" action="open"  target="popup"/> 
+    </invokers>
+    
+    <code class="com.rameses.gov.etracs.nsrp.models.EntityTrainingModel"/>
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.nsrp.views.EntityTrainingPage"/>        
+    </pages>
+</workunit>

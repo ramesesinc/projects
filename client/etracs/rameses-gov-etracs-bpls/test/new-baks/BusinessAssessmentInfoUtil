@@ -52,7 +52,6 @@ public class BusinessAssessmentInfoUtil {
                 if(handler) handler();
 
                 refresh();
-                caller.binding?.refresh();
             }
         ]);
     }
@@ -117,7 +116,6 @@ public class BusinessAssessmentInfoUtil {
     void refresh() {
         infoModel.reload();
         taxfeeModel.reload();
-        caller.binding?.refresh();
     }
 
     /***********************************************

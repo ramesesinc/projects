@@ -34,7 +34,7 @@ public class EditBusinessOwnerPage extends javax.swing.JPanel {
 
         jPanel3 = new javax.swing.JPanel();
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
-        xComboBox1 = new com.rameses.rcp.control.XComboBox();
+        businessOrgTypeList1 = new com.rameses.gov.etracs.bpls.components.BusinessOrgTypeList();
         entityLookup2 = new com.rameses.entity.components.EntityLookup();
         entityAddressLookup1 = new com.rameses.entity.components.EntityAddressLookup();
         xLabel1 = new com.rameses.rcp.control.XLabel();
@@ -42,23 +42,20 @@ public class EditBusinessOwnerPage extends javax.swing.JPanel {
         xFormPanel1.setCaptionWidth(150);
         xFormPanel1.setPadding(new java.awt.Insets(0, 5, 5, 0));
 
-        xComboBox1.setAllowNull(false);
-        xComboBox1.setCaption("Org Type");
-        xComboBox1.setExpression("#{item.value}");
-        xComboBox1.setItemKey("key");
-        xComboBox1.setItems("owner.orgTypes");
-        xComboBox1.setName("entity.business.orgtype"); // NOI18N
-        xComboBox1.setPreferredSize(new java.awt.Dimension(250, 22));
-        xComboBox1.setRequired(true);
-        xFormPanel1.add(xComboBox1);
+        businessOrgTypeList1.setCaption("Org Type");
+        businessOrgTypeList1.setName("entity.business.orgtype"); // NOI18N
+        businessOrgTypeList1.setRequired(true);
+        xFormPanel1.add(businessOrgTypeList1);
 
         entityLookup2.setCaption("Owner");
+        entityLookup2.setDepends(new String[] {"entity.business.orgtype"});
+        entityLookup2.setEntityType("orgType");
         entityLookup2.setName("entity.business.owner"); // NOI18N
         entityLookup2.setPreferredSize(new java.awt.Dimension(0, 19));
         xFormPanel1.add(entityLookup2);
 
         entityAddressLookup1.setCaption("Owner Address");
-        entityAddressLookup1.setDepends(new String[] {"entity.business.owner"});
+        entityAddressLookup1.setDepends(new String[] {"entity.business.owner", "entity.business.orgtype"});
         entityAddressLookup1.setEnabled(false);
         entityAddressLookup1.setName("entity.business.owner.address"); // NOI18N
         entityAddressLookup1.setParentIdName("entity.business.owner.objid");
@@ -113,10 +110,10 @@ public class EditBusinessOwnerPage extends javax.swing.JPanel {
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private com.rameses.gov.etracs.bpls.components.BusinessOrgTypeList businessOrgTypeList1;
     private com.rameses.entity.components.EntityAddressLookup entityAddressLookup1;
     private com.rameses.entity.components.EntityLookup entityLookup2;
     private javax.swing.JPanel jPanel3;
-    private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XLabel xLabel1;
     // End of variables declaration//GEN-END:variables

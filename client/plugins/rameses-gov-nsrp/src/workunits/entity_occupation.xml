@@ -1,0 +1,12 @@
+<workunit schemaName="entity_jobpreference_occupation">
+    <invokers>
+        <invoker type="entity_jobpreference_occupation:create" caption="Job Preference Occupation (New)" action="create" target="popup"/>
+        <invoker type="entity_jobpreference_occupation:open" caption="Job Preference Occupation (View)" action="open"  target="popup"/> 
+    </invokers>
+    
+    <code class="com.rameses.gov.etracs.nsrp.models.EntityOccupationModel"/>
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.nsrp.views.EntityOccupationPage"/>        
+    </pages>
+</workunit>

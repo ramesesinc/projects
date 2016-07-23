@@ -20,12 +20,12 @@ class IndividualEntityMatchNameModel extends ComponentBean {
     def matchList;
     def selectedItem;
     
+    
     def mode = "ask-name";
     
+    boolean allowSelect = true;
     def onselect;
     def oncreate;
-    
-    boolean allowSelect = true;
     
     def getEntity() {
         return caller.entity;
@@ -102,10 +102,11 @@ class IndividualEntityMatchNameModel extends ComponentBean {
         oncreate( entity );
     }
     
-    void select() {
+    def select() {
         if(!selectedItem?.objid) throw new Exception("Please select an item");
         mode = "ask-name";
         onselect( selectedItem );
+        return "_close";
     }
     
 }

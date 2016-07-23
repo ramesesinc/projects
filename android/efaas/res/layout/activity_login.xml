@@ -56,7 +56,9 @@
 	            android:background="@color/default_button_color"
 	            android:textColor="@color/white"
 	            android:textSize="20sp"
-	            android:text="LOGIN" />
+	            android:text="LOGIN">
+	            <requestFocus/>
+	       </Button>
 	
 	</LinearLayout>
 

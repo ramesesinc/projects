@@ -1,0 +1,14 @@
+<schema adapter="nsrp">
+	<element name="entity_languageproficiency" tablename="entity_languageproficiency">
+		<field name="objid" primary="true" prefix="INDLP"/>
+		<complex name="entity" ref="entityindividual" jointype="many-to-one" required="false" 
+			includefields="language,read,write,speak,understand">
+			<key field="entityid" target="objid"/>
+		</complex>
+		<field name="language" required="true" caption="Language"/>
+		<field name="read" type="boolean" caption="Read"/>
+		<field name="write" type="boolean" caption="Write"/>
+		<field name="speak" type="boolean" caption="Speak"/>
+		<field name="understand" type="boolean" caption="Understand"/>
+	</element>
+</schema>

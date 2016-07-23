@@ -2,11 +2,13 @@
     <invokers>
         <invoker folderid="/home/business/business_application" caption="Additional"  
                  action="start" target="window"  role="BUSINESSINFO" index="52"
-                 icon="images/application-add-line.png" />
-        
-        <invoker type="lobActions" caption="Add" action="lob.add"  immediate="true"/>
-        <invoker type="lobActions" caption="Remove" action="lob.remove"  immediate="true" visibleWhen="#{lob.selectedItem!=null &amp;&amp; lob.selectedItem.assessmenttype=='NEW'}"/>
+                 icon="home/icons/business-application-add-line.png" />
 
+        <!--        
+        <invoker type="lobActions" caption="Add" action="lob.add" immediate="true"/>
+        <invoker type="lobActions" caption="Remove" action="lob.remove"  immediate="true" visibleWhen="#{lob.selectedItem!=null &amp;&amp; lob.selectedItem.assessmenttype=='NEW'}"/>
+        -->
+        
          <invoker type="extActions" caption="Print"  icon="images/toolbars/printer.png" 
             action="application.print" visibleWhen="#{state=='save-success'}"/>
     </invokers>
@@ -19,7 +21,6 @@
         import com.rameses.osiris2.common.*;
         import java.rmi.server.*;
         import com.rameses.util.*;
-        import com.rameses.gov.etracs.bpls.controller.*;
         
         public class RenewBusinessApplication extends PageFlowController { 
         
@@ -29,9 +30,6 @@
             @Script("BusinessApplicationUtil")
             def application;
             
-            @Script("BusinessLobUtil")
-            def lob;
-
             @Script("BusinessInfoUtil")
             def appinfo;
 
@@ -43,7 +41,6 @@
             
             void open() {
                 application.init([ businessid:searchList.selectedItem.objid, apptype: 'ADDITIONAL']); 
-                lob.reset(); 
                 appinfo.reset(); 
             } 
             
@@ -52,7 +49,6 @@
                 if( !l ) {
                     throw new Exception("There must be at least one additional line of business");
                 }    
-                lob.verify(); 
                 boolean pass = false;
                 appinfo.handler = { 
                     pass = true;
@@ -60,7 +56,13 @@
                 Modal.show(appinfo.update());
                 if(!pass) throw new BreakException();
                 appinfo.verify();
-                lob.removeActiveLobs();
+                
+                def activeLobs  = entity.lobs.findAll{ it.assessmenttype == 'ACTIVE' }; 
+                entity.lobs.removeAll( activeLobs );
+                if(!entity.lobs) {
+                    caller.entity.lobs = activeLobs;
+                    throw new Exception("Please select at least one line of business");
+                }
             }
         }
     ]]>

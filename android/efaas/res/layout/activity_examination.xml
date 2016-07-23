@@ -44,7 +44,7 @@
             <EditText
 			    android:id="@+id/examination_findings"
 			    android:layout_width="fill_parent"
-			    android:layout_height="120dp"
+			    android:layout_height="80dp"
 			    android:gravity="left|top"
 			    android:inputType="text|textMultiLine"/>
             
@@ -59,7 +59,7 @@
             <EditText
 			    android:id="@+id/examination_recommendations"
 			    android:layout_width="fill_parent"
-			    android:layout_height="120dp"
+			    android:layout_height="80dp"
 			    android:gravity="left|top"
 			    android:inputType="text|textMultiLine" />
             

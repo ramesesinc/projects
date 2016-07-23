@@ -31,7 +31,7 @@ public class ChangeOwnerPage extends javax.swing.JPanel {
     private void initComponents() {
 
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
-        xComboBox1 = new com.rameses.rcp.control.XComboBox();
+        businessOrgTypeList1 = new com.rameses.gov.etracs.bpls.components.BusinessOrgTypeList();
         xSuggest1 = new com.rameses.rcp.control.XSuggest();
         jScrollPane2 = new javax.swing.JScrollPane();
         xTextArea2 = new com.rameses.rcp.control.XTextArea();
@@ -42,15 +42,9 @@ public class ChangeOwnerPage extends javax.swing.JPanel {
         xFormPanel1.setCaptionWidth(150);
         xFormPanel1.setPadding(new java.awt.Insets(0, 5, 5, 0));
 
-        xComboBox1.setAllowNull(false);
-        xComboBox1.setCaption("Org Type");
-        xComboBox1.setExpression("#{item.value}");
-        xComboBox1.setItemKey("key");
-        xComboBox1.setItems("owner.orgTypes");
-        xComboBox1.setName("entity.business.orgtype"); // NOI18N
-        xComboBox1.setPreferredSize(new java.awt.Dimension(250, 22));
-        xComboBox1.setRequired(true);
-        xFormPanel1.add(xComboBox1);
+        businessOrgTypeList1.setCaption("Org Type");
+        businessOrgTypeList1.setName("entity.business.orgtype"); // NOI18N
+        xFormPanel1.add(businessOrgTypeList1);
 
         xSuggest1.setCaption("Owner");
         xSuggest1.setExpression("#{entity.business.owner.name}");
@@ -118,11 +112,11 @@ public class ChangeOwnerPage extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private com.rameses.gov.etracs.bpls.components.BusinessOrgTypeList businessOrgTypeList1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane2;
     private com.rameses.rcp.control.XButton xButton4;
     private com.rameses.rcp.control.XButton xButton5;
-    private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XSuggest xSuggest1;
     private com.rameses.rcp.control.XTextArea xTextArea2;

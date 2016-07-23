@@ -1,6 +1,43 @@
-<workunit extends="wtemplates/ListController.xml" serviceName="SubCollectorRemittanceListService" entityName="subcollector_remittance">
+<workunit extends="wtemplates/ListController.xml" 
+          serviceName="SubCollectorRemittanceListService" 
+          entityName="subcollector_remittance">
     <invokers>
-        <invoker folderid="/explorer/txn/treasury" caption="Subcollector Remittances" index="30" role="SUBCOLLECTOR" />
-        <invoker folderid="home/remittance" caption="Subcollector Remittance" index="30" role="SUBCOLLECTOR" target="window"/>
+        <invoker folderid="/explorer/txn/treasury" caption="Subcollector Remittances" 
+                 role="SUBCOLLECTOR,SHARED" permission="remittance.view" index="30">
+            <action name="doInit" role="SHARED" tag="all"/> 
+            <action name="doInit" role="SUBCOLLECTOR" /> 
+        </invoker>
+        
+        <invoker folderid="home/remittance" caption="Subcollector Remittance" 
+                 name="doInit" role="SUBCOLLECTOR" target="window" index="30" />
     </invokers>
+    
+    <code> 
+    <![CDATA[ 
+    
+import com.rameses.rcp.annotations.*;
+import com.rameses.rcp.common.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.common.*;
+import com.rameses.rcp.framework.ClientContext;
+
+class SubCollectorRemittanceListController extends DefaultListController {
+
+    def tag;
+    
+    void doInit( invo ) {
+        tag = invo?.properties?.tag; 
+    } 
+
+    boolean isAllowCreate() { 
+        return (tag=='all' ? false: true); 
+    }
+
+    void beforeFetchList( Map params ) { 
+        params._tag = tag; 
+    }
+} 
+
+    ]]> 
+    </code>    
 </workunit>

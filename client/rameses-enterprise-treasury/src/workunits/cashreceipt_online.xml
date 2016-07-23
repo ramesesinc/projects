@@ -31,15 +31,25 @@
             def items = [];
             def formTypes;
             def formType;
+            def formTitle;
             def homeicon;
             
+            void back() {
+                formType = null;
+                formTitle = "Select accountable form (Online)";
+                binding.refresh();
+            }
+            
             void init() {
-                formTypes = collectionTypeSvc.getFormTypes()*.objid;
+                formType = null;
+                formTitle = "Select accountable form (Online)";
+                items.clear();
                 def appEnv = clientContext.appEnv; 
                 def customfolder = appEnv['app.custom']; 
                 homeicon = 'images/' + customfolder + '/home-icon.png';  
                 def custom_homeicon = clientContext.getResource(homeicon); 
                 if (!custom_homeicon) homeicon = 'home/icons/folder.png';                  
+                def list = [];
                 Inv.lookupOpeners('cashreceipt:online', [:]).each{
                     def m = [
                         caption : it.caption, 
@@ -49,40 +59,54 @@
                     def iicon = clientContext.getResource(m.icon);
                     if (!iicon) m.icon = homeicon; 
                     items << m;
-                }                 
+                }  
             } 
             
             def model = [
                 fetchList: {o-> 
-                    def p = [formtype: formType];        
                     def xlist = [];
                     xlist.addAll( items );
-                    def list = collectionTypeSvc.getOnlineCollectionTypes(p).each{
-                        it.caption = it.title;
-                        it.icon = homeicon;
-                        xlist << it;
+                    if( formType == null ) { 
+                        def list = collectionTypeSvc.getFormTypes();
+                        list.collect{ 
+                            xlist << [caption: it.objid , icon: homeicon, formType: it.objid, title: it.title ]
+                        }
+                    }
+                    else {
+                        def p = [formtype: formType];        
+                        def list = collectionTypeSvc.getOnlineCollectionTypes(p).each{
+                            it.caption = it.title;
+                            it.icon = homeicon;
+                            xlist << it;
+                        }
                     }
                     return xlist;
                 }, 
                 onOpenItem: {o-> 
-                    if (o.opener) {
+                    if(o.formType) {
+                        formType = o.formType;
+                        formTitle = o.caption + " " + o.title;
+                        binding.refresh();
+                        return null;
+                    }
+                    else if (o.opener) {
                         try { 
                             def result = o.opener.handle.init(); 
                             if (result == null) throw new BreakException();
-
                             return result; 
                         } catch(BreakException be) {
                             return null; 
                         } 
                     }
-                
-                    def entity = [
-                        txnmode         : 'ONLINE', 
-                        formno          : o.formno, 
-                        formtype        : o.formtype, 
-                        collectiontype  : o 
-                    ]; 
-                    return findOpener( entity ); 
+                    else {
+                        def entity = [
+                            txnmode         : 'ONLINE', 
+                            formno          : o.formno, 
+                            formtype        : o.formtype, 
+                            collectiontype  : o 
+                        ]; 
+                        return findOpener( entity ); 
+                    }
                 }
             ] as TileViewModel
             

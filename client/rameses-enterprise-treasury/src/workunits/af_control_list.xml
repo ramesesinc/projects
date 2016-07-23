@@ -1,10 +1,15 @@
 <workunit extends="wtemplates/ListController.xml">
         
    <invokers>
-        <invoker folderid="home/af" caption="AF Controls" index="1" action="init" role="COLLECTOR"/>
-        <invoker folderid="/explorer/txn/treasury" caption="AF Controls" index="1" action="init" role="COLLECTOR"/>
-        <invoker folderid="/explorer/txn/treasury" caption="AF Controls (Subcollector )" index="1" action="init" role="SUBCOLLECTOR"/>
-        
+        <invoker folderid="/explorer/txn/treasury" caption="AF Controls" role="COLLECTOR,SUBCOLLECTOR" index="1"> 
+            <action name="init" role="COLLECTOR" /> 
+            <action name="init" role="SUBCOLLECTOR" /> 
+        </invoker>
+        <invoker folderid="home/af" caption="AF Controls" role="COLLECTOR" index="1">
+            <action name="init" role="COLLECTOR" /> 
+            <action name="init" role="SUBCOLLECTOR" /> 
+        </invoker> 
+
         <!-- OWN TOOLBARS -->
         <invoker type="formActions" caption="Activate" action="activate" 
             visibleWhen="#{selectedEntity!=null &amp;&amp; selectedEntity.active ==0}" />
@@ -30,140 +35,141 @@
         <invoker type="formActions" caption="Import" action="doImport" role="COLLECTOR"/>
    </invokers>
    
-   <code>
-       <![CDATA[
-        import com.rameses.osiris2.common.*;
-        import com.rameses.rcp.common.*;
-        import com.rameses.rcp.annotations.*;
-        import com.rameses.osiris2.client.*;
-        
-        class CollectorAFController extends ListController {
-        
-            @Service("AFService")
-            def afSvc;
+    <code>
+    <![CDATA[
+import com.rameses.osiris2.common.*;
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+import com.rameses.osiris2.client.*;
 
-            @Service("AFControlService")
-            def service;
-            
-            @Script("User")
-            def user;
-            
-            String serviceName = "AFControlService";
-            
-            def entity = [:];
-            def selectedEntity;
-            def list;
-            
-            String title = "Manage Accountable Forms";
-            def queryForm = new Opener(outcome:'queryform');
-            boolean allowCreate = false;
-            boolean allowOpen = false;
-            
-            def afTypes;
-            
-            void init() {
-                afTypes = afSvc.getList([:]);
-            }
-            
-            @PropertyChangeListener
-            def listener = [
-                "entity.formno": { o->
-                    reload();
-                }
-            ]
-            
-            void activate() {
-                if(selectedEntity.active==1)
-                    throw new Exception("Entry is already active");
-                if( user.userid != selectedEntity.assignee.objid )
-                    throw new Exception("Cannot activate since you are not the current assignee");                    
-                def z = [:];
-                z.objid = selectedEntity.objid;
-                z.txnmode = selectedEntity.txnmode;
-                z.formno = selectedEntity.afid;
-                z.fund = selectedEntity.fund 
-                service.activateControl(z);
-                listHandler.reload();    
-            }
-            
-            void deactivate() {
-                if(selectedEntity.active==0)
-                    throw new Exception("Entry is not active");
-                if( user.userid != selectedEntity.assignee.objid )
-                    throw new Exception("Cannot activate since you are not the current assignee");                    
-                service.deactivateControl(selectedEntity);
-                listHandler.reload();
-            }
+class CollectorAFController extends ListController {
 
-            def assign() {
-                if(selectedEntity.active==1) {
-                    throw new Exception("Entry is currently active. Deactivate first");
-                }    
-                return InvokerUtil.lookupOpener("subcollector:lookup", [
-                    onselect:{x->
-                        if(MsgBox.confirm("You are about to assign this stub to " + x.name + ". Continue?")) {
-                            service.assignToSubcollector( [objid:selectedEntity.objid, assignee:x] );
-                            listHandler.reload();
-                        }
-                    }
-                ] );    
-            }
+    @Service("AFService")
+    def afSvc;
 
-            def unassign() {
-                if(!selectedEntity) throw new Exception("Select an item");
-                service.unassign( selectedEntity );
-                listHandler.load();
-            }
-            
-            def changeMode() {
-                if(!selectedEntity) throw new Exception("Select an item");
-                return InvokerUtil.lookupOpener("af:changemode", 
-                    [entity:selectedEntity, saveHandler: { listHandler.reload(); }] 
-                );
-            }
-            
-            def assignFund() {
-                if(!selectedEntity) throw new Exception("Select an item");
-                def h = { o->
-                    selectedEntity.fund = o;
-                    service.assignFund( selectedEntity );
+    @Service("AFControlService")
+    def service;
+
+    @Script("User")
+    def user;
+
+    String serviceName = "AFControlService";
+
+    def entity = [:];
+    def selectedEntity;
+    def list;
+
+    String title = "Manage Accountable Forms";
+    def queryForm = new Opener(outcome:'queryform');
+    boolean allowCreate = false;
+    boolean allowOpen = false;
+
+    def afTypes;
+    def respCenterType;
+
+    void init( invo ) { 
+        afTypes = afSvc.getList([:]); 
+        respCenterType = invo?.properties.role; 
+    }
+
+    @PropertyChangeListener
+    def listener = [
+        "entity.formno": { o->
+            reload();
+        }
+    ]
+
+    void activate() {
+        if(selectedEntity.active==1)
+            throw new Exception("Entry is already active");
+        if( user.userid != selectedEntity.assignee.objid )
+            throw new Exception("Cannot activate since you are not the current assignee");                    
+        def z = [:];
+        z.objid = selectedEntity.objid;
+        z.txnmode = selectedEntity.txnmode;
+        z.formno = selectedEntity.afid;
+        z.fund = selectedEntity.fund 
+        service.activateControl(z);
+        listHandler.reload();    
+    }
+
+    void deactivate() {
+        if(selectedEntity.active==0)
+            throw new Exception("Entry is not active");
+        if( user.userid != selectedEntity.assignee.objid )
+            throw new Exception("Cannot activate since you are not the current assignee");                    
+        service.deactivateControl(selectedEntity);
+        listHandler.reload();
+    }
+
+    def assign() {
+        if(selectedEntity.active==1) {
+            throw new Exception("Entry is currently active. Deactivate first");
+        }    
+        return InvokerUtil.lookupOpener("subcollector:lookup", [
+            onselect:{x->
+                if(MsgBox.confirm("You are about to assign this stub to " + x.name + ". Continue?")) {
+                    service.assignToSubcollector( [objid:selectedEntity.objid, assignee:x] );
                     listHandler.reload();
                 }
-                return InvokerUtil.lookupOpener('fund:lookup', [onselect: h]);
             }
-            
-            def unassignFund() {
-                if(!selectedEntity) throw new Exception("Select an item");
-                service.unassignFund( selectedEntity );
-                selectedEntity.find = [:];
-                listHandler.reload();
-            }
+        ] );    
+    }
 
-            def cancelseries() {
-                if(!selectedEntity) throw new Exception("Select an item");
-                
-                return InvokerUtil.lookupOpener('af:cancelseries', [entity: selectedEntity, handler:{ o-> listHandler.load() }])
-            }
-            
-            def doExport(){
-                return InvokerUtil.lookupOpener('afcontrol:export', [:])
-            }
-            
-            def doImport(){
-                return InvokerUtil.lookupOpener('afcontrol:import', [:])
-            }
-            
-            public List fetchList( Map m ) {
-                m.formno = entity.formno;
-                return service.getOpenList(m); 
-            }
-            
-        }      
-       ]]>
-   </code>
+    def unassign() {
+        if(!selectedEntity) throw new Exception("Select an item");
+        service.unassign( selectedEntity );
+        listHandler.load();
+    }
+
+    def changeMode() {
+        if(!selectedEntity) throw new Exception("Select an item");
+        return InvokerUtil.lookupOpener("af:changemode", 
+            [entity:selectedEntity, saveHandler: { listHandler.reload(); }] 
+        );
+    }
+
+    def assignFund() {
+        if(!selectedEntity) throw new Exception("Select an item");
+        def h = { o->
+            selectedEntity.fund = o;
+            service.assignFund( selectedEntity );
+            listHandler.reload();
+        }
+        return InvokerUtil.lookupOpener('fund:lookup', [onselect: h]);
+    }
+
+    def unassignFund() {
+        if(!selectedEntity) throw new Exception("Select an item");
+        service.unassignFund( selectedEntity );
+        selectedEntity.find = [:];
+        listHandler.reload();
+    }
+
+    def cancelseries() {
+        if(!selectedEntity) throw new Exception("Select an item");
+
+        return InvokerUtil.lookupOpener('af:cancelseries', [entity: selectedEntity, handler:{ o-> listHandler.load() }])
+    }
+
+    def doExport(){
+        return InvokerUtil.lookupOpener('afcontrol:export', [:])
+    }
+
+    def doImport(){
+        return InvokerUtil.lookupOpener('afcontrol:import', [:])
+    }
+
+    public List fetchList( Map m ) {
+        m.formno = entity.formno; 
+        m.respcentertype = respCenterType; 
+        return service.getOpenList(m); 
+    }
+}      
+    ]]>
+    </code>
    
-   <pages>
-       <page name="queryform" template="com.rameses.enterprise.treasury.af.CollectorAFControlQuery"/>
-   </pages>
-   
+    <pages>
+        <page name="queryform" template="com.rameses.enterprise.treasury.af.CollectorAFControlQuery"/>
+    </pages>   
 </workunit>

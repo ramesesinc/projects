@@ -5,6 +5,7 @@
 - BPLS 
 		
 - ASSESSOR
+	- Update on certification
     - NEW! Agricultural Land Area by Actual Use Summary report
 	- Update on certification created by info
 	
@@ -13,3 +14,5 @@
 	- Fix notice of delinquency summary 
 	- Allow billing of restricted properties
 	- Fix broadcast billing support 
+
+

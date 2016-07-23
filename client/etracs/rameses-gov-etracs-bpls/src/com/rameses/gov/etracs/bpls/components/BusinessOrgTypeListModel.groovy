@@ -1,4 +1,4 @@
-package com.rameses.gov.etracs.bpls.models;
+package com.rameses.gov.etracs.bpls.components;
 
 import com.rameses.rcp.annotations.*;
 import com.rameses.rcp.common.*;
@@ -8,16 +8,13 @@ import com.rameses.seti2.models.*;
 
 class BusinessOrgTypeListModel extends ComponentBean {
         
-    @Service("LOVService")
-    def lovService;
+    def orgTypes = LOV.BUSINESS_ORG_TYPES;
     
-    def orgTypes = LOV.ORG_TYPES;
-    
-    public String getOrgtype() {
+    public def getOrgtype() {
         return getValue();
     }
     
-    public void setOrgtype(String a) {
+    public void setOrgtype(def a) {
         setValue(a);
     }
     

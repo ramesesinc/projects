@@ -22,7 +22,7 @@ class EntityLookupModel extends ComponentBean {
     def entityTypeCaller; 
     
     String getEntityType() {
-        def type = (entityTypeCaller?.entityType == null? 'entity': entityTypeCaller.entityType); 
+        def type = (entityTypeCaller?.entityType == null? null: entityTypeCaller.entityType); 
         return type; 
     }
         
@@ -39,7 +39,9 @@ class EntityLookupModel extends ComponentBean {
             }
             binding.refresh(); 
         }
-        return Inv.lookupOpener( getEntityType()+':lookup', params );
+        def etype = getEntityType();
+        if(etype==null) etype = "entity";
+        return Inv.lookupOpener( etype+':lookup', params );
     } 
     
     void fireOnselect( o ) {
@@ -74,13 +76,18 @@ class EntityLookupModel extends ComponentBean {
         def params = [:]; 
         params.onselect = { o-> 
             fireOnselect( o ); 
-        } 
-        return Inv.lookupOpener( 'entityindividual:create', params ); 
+        };
+        params.allowSelect = true;
+        def etype = getEntityType();
+        if(etype==null) etype = "entityindividual";
+        return Inv.lookupOpener( etype+':create', params ); 
     } 
     
     public boolean isAllowCreate() {
         try {
-            def o = Inv.lookup( getEntityType() +':create' );
+            def etype = getEntityType();
+            if(etype==null) etype = "entityindividual";
+            def o = Inv.lookup( etype +':create' );
             return ( o ? true : false );
         } catch(Throwable t) { 
             return false; 
@@ -88,11 +95,11 @@ class EntityLookupModel extends ComponentBean {
     }
     public boolean isAllowOpen() {
         try {
-            def o = Inv.lookup( getEntityType() +':open' );
-            if ( !o ) return false; 
-            
-            o = getValue(); 
-            return ( o ? true : false ); 
+            def o = getValue();
+            if(o?.type==null) return false;
+            String etype = "entity"+o.type.toLowerCase();
+            def op = Inv.lookup( etype +':open' );
+            return ( op ? true : false ); 
         } catch(Throwable t) { 
             return false; 
         } 

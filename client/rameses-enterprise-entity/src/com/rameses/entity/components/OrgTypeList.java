@@ -56,7 +56,7 @@ public class OrgTypeList extends XComponentPanel {
 
         component = new com.rameses.rcp.control.XComboBox();
 
-        setLayout(new java.awt.BorderLayout());
+        setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.LINE_AXIS));
 
         component.setCaption("Org Type");
         component.setEmptyText("-select an org type-");
@@ -66,7 +66,7 @@ public class OrgTypeList extends XComponentPanel {
         component.setName("orgType"); // NOI18N
         component.setPreferredSize(new java.awt.Dimension(250, 22));
         component.setRequired(true);
-        add(component, java.awt.BorderLayout.CENTER);
+        add(component);
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.rameses.rcp.control.XComboBox component;

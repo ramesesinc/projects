@@ -2,7 +2,7 @@
     <invokers>
         <invoker folderid="/home/business/business_application" caption="Retire LOB"  
                  action="start" target="window"  role="BUSINESSINFO" index="52"
-                icon="images/application-remove-line.png" />
+                icon="home/icons/business-application-remove-line.png" />
         
         <invoker type="lobActions" caption="Retire" action="lob.retire" immediate="true" visibleWhen="#{lob.selectedItem!=null  &amp;&amp; lob.selectedItem.assessmenttype=='ACTIVE' }"/>
         <invoker type="lobActions" caption="Unretire" action="lob.unretire" immediate="true" visibleWhen="#{lob.selectedItem!=null &amp;&amp; lob.selectedItem.assessmenttype=='RETIRE'}"/>
@@ -18,7 +18,6 @@
         import com.rameses.osiris2.common.*;
         import java.rmi.server.*;
         import com.rameses.util.*;
-        import com.rameses.gov.etracs.bpls.controller.*;
         
         public class RetireLOBApplication extends PageFlowController { 
         

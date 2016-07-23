@@ -2,7 +2,7 @@
     <invokers>
         <invoker folderid="/home/business/business_application" caption="Retire Business" 
             action="start" target="window"  role="BUSINESSINFO" index="53"
-            icon="images/application-retire.png" />
+            icon="home/icons/business-application-retire.png" />
 
     </invokers>
     

@@ -28,7 +28,8 @@ class RPTReportLandSpecificClassService
 	public Map generateReport(params) {
 		params.lguid = (params.lgu ? params.lgu.objid : '%')
 		params.barangayid = (params.barangay ? params.barangay.objid : '%')
-		params.specificclassname = params.specificclass.name 
+		params.classificationid = (params.classification ? params.classification.objid : '%')
+		params.landspecificclassid = params.specificclass.objid 
 
 		def list = em.getLandSpecificClasses(params)
 		if (!list)

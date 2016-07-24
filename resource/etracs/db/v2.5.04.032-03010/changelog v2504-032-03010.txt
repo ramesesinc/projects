@@ -5,6 +5,7 @@
 - BPLS 
 		
 - ASSESSOR
+	- Suppor land actual uses info like road, canal etc
 	- Update on certification
     - NEW! Agricultural Land Area by Actual Use Summary report
 	- Update on certification created by info

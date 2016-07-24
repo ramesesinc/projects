@@ -61,7 +61,7 @@ ORDER BY t.fullpin
 [getLandSpecificClasses]
 SELECT spc.name 
 FROM landdetail ld 
-	INNER JOIN lcuvspecificclass spc ON ld.specificclass_objid = spc.objid 
+	INNER JOIN landspecificclass spc ON ld.landspecificclass_objid = spc.objid 
 WHERE ld.landrpuid = $P{objid}
 
 

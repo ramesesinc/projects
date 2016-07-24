@@ -23,8 +23,9 @@
             //this is passed from the outside.
             def handler;
             
-            def ruleHandler = { o->
+            def ruleHandler = { o-> 
                 binding.fireNavigation("_close");
+                if ( handler ) handler( o ); 
             };
         
             void init() {

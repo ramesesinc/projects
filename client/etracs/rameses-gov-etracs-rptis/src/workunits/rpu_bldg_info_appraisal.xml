@@ -311,6 +311,7 @@ class BldgAppraisalInfoController extends com.rameses.gov.etracs.rpt.workflow.Ba
                 lguid       : entity.lguid, 
                 barangayid  : entity.rp.barangayid,
                 ry          : entity.rpu.ry,
+                selectedAdditionalItem : selectedAdditionalItem, 
                 
                 onselect : {
                     setParamsRefId(selectedAdditionalItem, it.params);
@@ -366,6 +367,7 @@ class BldgAppraisalInfoController extends com.rameses.gov.etracs.rpt.workflow.Ba
             bldgfloorid : floor.objid,
             bldgrpuid   : floor.bldgrpuid,
             amount      : 0.0,
+            depreciate  : true,
         ]},
         
         validate     : { li -> 

@@ -71,3 +71,21 @@ go
 alter table lcuvspecificclass drop column name
 go 
 
+
+
+/*====================================================
+* SUPPORT BLDG ADDITIONAL ITEM SELECTIVE DEPRECIATION 
+=====================================================*/
+
+alter table bldgflooradditional add depreciate int
+go 
+
+update bldgflooradditional set depreciate = 1 where depreciate = 0
+go 
+
+
+alter table bldguse add adjfordepreciation decimal(16,2)
+go 
+
+update bldguse set adjfordepreciation = adjustment where adjfordepreciation is null
+go 

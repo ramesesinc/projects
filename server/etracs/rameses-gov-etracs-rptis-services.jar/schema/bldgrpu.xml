@@ -69,6 +69,7 @@
 		<field name="assesslevel" type="decimal" />
 		<field name="assessedvalue" type="decimal" />
 		<field name="adjustment" required="true" type="decimal" />
+		<field name="adjfordepreciation" required="true" type="decimal" />
 		<field name="marketvalue" required="true" type="decimal" />
 		<field name="addlinfo" />
 	</element>
@@ -94,6 +95,7 @@
 		<field name="additionalitem_objid" required="true" />
 		<field name="amount" required="true" type="decimal" />
 		<field name="expr" required="true" />
+		<field name="depreciate" required="true" type="boolean" />
 	</element>
 
 	<element name="param" tablename="bldgflooradditionalparam">

@@ -138,6 +138,7 @@ public class BldgAssessmentRuleService
 		actions.addCommand( "summarize-bldguse-bmv", new SummarizeBldgUseBMV( request:request));
 		actions.addCommand( "calc-adj", new CalcAdjustment( request:request, NS:numSvc ));
 		actions.addCommand( "summarize-adjustment", new SummarizeBldgAdjustment( request:request));
+		actions.addCommand( "summarize-adjustment-for-depreciation", new SummarizeAdjustmentForDepreciation( request:request));
 		actions.addCommand( "calc-depreciation-sked", new CalcDepreciationFromSked( request:request, bldgSettingSvc:bldgSettingSvc));
 		actions.addCommand( "calc-depreciation-range", new CalcDepreciationByRange( request:request, bldgSettingSvc:bldgSettingSvc));
 		actions.addCommand( "calc-bldguse-depreciation", new CalcBldgUseDepreciation( request:request, NS:numSvc ));
@@ -160,6 +161,9 @@ public class BldgAssessmentRuleService
 
 	void resetValues(rpu){
 		rpu.assessments = []
+		rpu.bldguses.each{bu ->
+			bu.adjfordepreciation = 0.0
+		}
 	}
 }
 

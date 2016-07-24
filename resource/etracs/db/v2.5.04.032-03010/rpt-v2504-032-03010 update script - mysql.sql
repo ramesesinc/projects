@@ -59,3 +59,18 @@ alter table lcuvspecificclass
   drop column code, 
   drop column name; 
 
+
+
+
+/*====================================================
+* SUPPORT BLDG ADDITIONAL ITEM SELECTIVE DEPRECIATION 
+=====================================================*/
+
+alter table bldgflooradditional add depreciate int;
+
+update bldgflooradditional set depreciate = 1 where depreciate = 0;
+
+
+alter table bldguse add adjfordepreciation decimal(16,2);
+
+update bldguse set adjfordepreciation = adjustment where adjfordepreciation is null;  

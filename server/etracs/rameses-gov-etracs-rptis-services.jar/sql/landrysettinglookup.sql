@@ -35,7 +35,7 @@ FROM landrysetting rs
 	INNER JOIN propertyclassification pc ON spc.classification_objid = pc.objid 
 WHERE rs.ry = $P{ry}
   AND l.lguid = $P{lguid}
-  AND (sub.code LIKE $P{searchtext} OR sub.name LIKE $P{searchtext} OR spc.name LIKE $P{searchtext})	
+  AND (sub.code LIKE $P{searchtext} OR sub.name LIKE $P{searchtext} OR lspc.name LIKE $P{searchtext})	
 ORDER BY lspc.code, sub.code   
 
 

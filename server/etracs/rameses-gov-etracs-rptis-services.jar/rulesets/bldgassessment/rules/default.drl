@@ -101,6 +101,20 @@ rule "summarize-adjustment"
 		action.execute( "summarize-adjustment", map, drools );
 end
 
+rule "summarize-adjustment-for-depreciation"
+	agenda-group "AFTER-ADJUSTMENT"
+	salience -10000
+	no-loop
+	when
+		BF  : BldgFloor()
+		ADJ : BldgAdjustment(bldgfloor == BF, depreciate == true )
+	then	
+		Map map = new HashMap();
+		map.put("bldgfloor", BF);
+		map.put("adjustment", ADJ);
+		action.execute( "summarize-adjustment-for-depreciation", map, drools );
+end
+
 
 rule "summarize-depreciation"
 	agenda-group "AFTER-DEPRECIATION"

@@ -72,7 +72,7 @@ SELECT
 	ld.areatype,
 	ld.taxable,
 	ld.assesslevel,
-	spc.name AS specificclass,
+	lspc.name AS specificclass,
 	sub.name AS subclass,
 	SUM(ld.area) AS area,	
 	SUM(ld.marketvalue) AS marketvalue,
@@ -83,6 +83,7 @@ FROM faas f
 	INNER JOIN rpu r ON f.rpuid = r.objid 
 	INNER JOIN landrpu lr ON r.objid = lr.objid
 	INNER JOIN landdetail ld ON lr.objid = ld.landrpuid 
+	INNER JOIN landspecificclass lspc ON ld.landspecificclass_objid = lspc.objid 
 	INNER JOIN landassesslevel lal ON ld.actualuse_objid = lal.objid 
 	INNER JOIN lcuvsubclass sub ON ld.subclass_objid = sub.objid 
 	INNER JOIN lcuvspecificclass spc ON ld.specificclass_objid = spc.objid 
@@ -90,7 +91,7 @@ FROM faas f
 	INNER JOIN propertyclassification dc ON r.classification_objid = dc.objid 
 WHERE f.objid = $P{faasid}
 GROUP BY dc.code, dc.name, pc.code, pc.name, lal.code, lal.name, ld.areatype, ld.assesslevel,
-	spc.code, spc.name, sub.code, sub.name 
+	lspc.code, lspc.name, sub.code, sub.name 
 
 
 [getLandPlantTreeAssessment]

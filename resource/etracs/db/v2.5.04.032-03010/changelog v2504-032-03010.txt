@@ -1,0 +1,20 @@
+/* v2.5.04.032-03010 */
+
+- TREAURY
+
+- BPLS 
+		
+- ASSESSOR
+	- Support selective additional item depreciation
+	- Support land actual uses info like road, canal etc
+	- Update on certification
+    - NEW! Agricultural Land Area by Actual Use Summary report
+	- Update on certification created by info
+	
+- LANDTAX
+	- Update on billing SMS broadcast
+	- Fix notice of delinquency summary 
+	- Allow billing of restricted properties
+	- Fix broadcast billing support 
+
+

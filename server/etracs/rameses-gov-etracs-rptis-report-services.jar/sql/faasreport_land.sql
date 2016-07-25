@@ -2,8 +2,8 @@
 SELECT
 	pc.code AS classcode,
 	pc.name  AS classname,
-	spc.code AS specificcode,
-	spc.name AS specificname,
+	lspc.code AS specificcode,
+	lspc.name AS specificname,
 	sub.code AS subcode, 
 	sub.name AS subname, 
 	al.code AS actualusecode,
@@ -17,6 +17,7 @@ SELECT
 	ld.areatype
 FROM landdetail ld 
 	INNER JOIN lcuvspecificclass spc ON ld.specificclass_objid = spc.objid 
+	INNER JOIN landspecificclass lspc ON ld.landspecificclass_objid = lspc.objid 
 	INNER JOIN lcuvsubclass sub ON ld.subclass_objid = sub.objid 
 	INNER JOIN landassesslevel al ON ld.actualuse_objid = al.objid 
 	INNER JOIN propertyclassification pc ON spc.classification_objid = pc.objid 
@@ -47,8 +48,8 @@ select
 	ld.objid, 
 	sub.code as subclass_code, 
 	sub.name as subclass_name,
-	spc.code as specificclass_code, 
-	spc.name as specificclass_name,
+	lspc.code as specificclass_code, 
+	lspc.name as specificclass_name,
 	au.code as actualuse_code, 
 	au.name as actualuse_name,
 	st.striplevel, 
@@ -69,6 +70,7 @@ select
 	ld.assessedvalue
 from landdetail ld 
 	inner join landassesslevel au on ld.actualuse_objid = au.objid 
+	inner join landspecificclass lspc on ld.landspecificclass_objid = lspc.objid 
 	inner join lcuvspecificclass spc on ld.specificclass_objid = spc.objid 
 	inner join lcuvsubclass sub on ld.subclass_objid = sub.objid 
 	left join lcuvstripping st on ld.stripping_objid = st.objid 

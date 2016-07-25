@@ -17,6 +17,9 @@ class LandBySpecificClassReportController extends com.rameses.gov.etracs.rpt.rep
     @Service('RPTReportLandSpecificClassService') 
     def svc 
     
+    @Service('PropertyClassificationService')
+    def classSvc;
+    
     String title = 'List of Lands by Specific Class'
     
     String reportName = 'com/rameses/gov/etracs/rpt/report/land_specificclass_listing.jasper';
@@ -38,6 +41,10 @@ class LandBySpecificClassReportController extends com.rameses.gov.etracs.rpt.rep
    def getRevisionyears(){
         return svc.getRevisionYears();
    }
+   
+    List getClassifications(){
+        return classSvc.getClassifications([:])
+    }
     
    def formControl = [
         getFormControls: {
@@ -45,6 +52,7 @@ class LandBySpecificClassReportController extends com.rameses.gov.etracs.rpt.rep
                 new FormControl( "combo", [caption:'LGU', name:'entity.lgu', items:'lgus', expression:'#{item.name}', emptyText:'ALL', captionWidth:110]),
                 new FormControl( "combo", [caption:'Barangay', name:'entity.barangay', items:'barangays', expression:'#{item.name}', depends:'entity.lgu', dynamic:true,captionWidth:110, emptyText:'ALL']),
                 new FormControl( "combo", [caption:'Revision Year', name:'entity.ry', required:true, items:'revisionyears', allowNull:false,captionWidth:110]),
+                new FormControl( "combo", [caption:'Classification', name:'entity.classification', items:'classifications', expression:'#{item.name}', captionWidth:110, emptyText:'ALL']),
                 new FormControl( "combo", [caption:'Specific Class', name:'entity.specificclass', required:true, items:'specificclasses', expression:'#{item.name}', depends:'entity.ry', dynamic:true, allowNull:false,captionWidth:110]),
             ]
         },

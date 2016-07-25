@@ -17,34 +17,39 @@ WHERE lal.previd = $P{previd}
 
 [lookupSubclasses]  
 SELECT sub.*, l.barangayid,
-	spc.code AS specificclass_code,
-	spc.name AS specificclass_name,
+	lspc.code AS specificclass_code,
+	lspc.name AS specificclass_name,
 	spc.areatype AS specificclass_areatype,
 	spc.classification_objid as specificclass_classification_objid,
 	spc.classification_objid,
+	spc.objid as landspecificclass_objid,
+	lspc.code as landspecificclass_code,
+	lspc.name as landspecificclass_name,
 	pc.code AS classification_code,
 	pc.name AS classification_name
 FROM landrysetting rs
 	INNER JOIN rysetting_lgu l ON rs.objid = l.rysettingid 
 	INNER JOIN lcuvspecificclass spc ON rs.objid = spc.landrysettingid 
+	INNER JOIN landspecificclass lspc ON spc.landspecificclass_objid = lspc.objid 
 	INNER JOIN lcuvsubclass sub ON spc.objid = sub.specificclass_objid 
 	INNER JOIN propertyclassification pc ON spc.classification_objid = pc.objid 
 WHERE rs.ry = $P{ry}
   AND l.lguid = $P{lguid}
-  AND (sub.code LIKE $P{searchtext} OR sub.name LIKE $P{searchtext} OR spc.name LIKE $P{searchtext})	
-ORDER BY spc.code, sub.code   
+  AND (sub.code LIKE $P{searchtext} OR sub.name LIKE $P{searchtext} OR lspc.name LIKE $P{searchtext})	
+ORDER BY lspc.code, sub.code   
 
 
 [lookupSubclassByPrevId]  
 SELECT sub.*,
-	spc.code AS specificclass_code,
-	spc.name AS specificclass_name,
+	lspc.code AS specificclass_code,
+	lspc.name AS specificclass_name,
 	spc.areatype AS specificclass_areatype,
 	spc.classification_objid,
 	pc.code AS classification_code,
 	pc.name AS classification_name
 FROM lcuvsubclass sub 
 	INNER JOIN lcuvspecificclass spc ON sub.specificclass_objid = spc.objid  
+	INNER JOIN landspecificclass lspc ON sub.landspecificclass_objid = lspc.objid  
 	INNER JOIN propertyclassification pc ON spc.classification_objid = pc.objid 
 WHERE sub.previd = $P{previd}
 

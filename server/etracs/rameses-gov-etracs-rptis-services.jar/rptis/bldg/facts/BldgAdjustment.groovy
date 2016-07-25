@@ -11,6 +11,7 @@ public class BldgAdjustment
     String      adjtype         //values: addlitem, adjustment
     Double      amount
     String      expr
+    Boolean     depreciate;
 
 
     //data reference
@@ -25,7 +26,7 @@ public class BldgAdjustment
         this.additionalitemid = adj.additionalitem?.objid
         this.additionalitemcode = adj.additionalitem?.code
         this.adjtype          = adj.additionalitem?.type
-
+        this.depreciate = adj.depreciate
         setAmount(0.0)
         setExpr(adj.additionalitem?.expr)
     }

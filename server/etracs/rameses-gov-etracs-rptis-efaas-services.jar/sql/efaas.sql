@@ -8,8 +8,10 @@ SELECT * FROM landassesslevel
 SELECT * FROM landassesslevelrange
 
 [getLcuvSpecificClass]
-SELECT * FROM lcuvspecificclass
-
+SELECT spc.* , lspc.code, lspc.name 
+FROM lcuvspecificclass spc 
+inner join landspecificclass lspc on spc.landspecificclass_objid = lspc.objid 
+ 
 [getLcuvSubClass]
 SELECT * FROM lcuvsubclass
 

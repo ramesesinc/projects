@@ -18,6 +18,7 @@
 		<field name="objid" primary="true" />
 		<field name="landrpuid" required="true" />
 		<field name="subclass_objid" required="true" />
+		<field name="landspecificclass_objid" required="true" />
 		<field name="specificclass_objid" required="true" />
 		<field name="actualuse_objid" required="true" />
 		<field name="stripping_objid" />

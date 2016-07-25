@@ -13,6 +13,7 @@ public class BldgUse
     Double          basemarketvalue
     Double          depreciationvalue
     Double          adjustment
+    Double          adjfordepreciation
     Double          marketvalue
     Double          assesslevel
     Double          assessedvalue
@@ -47,6 +48,7 @@ public class BldgUse
         setBasemarketvalue(0.0)
         setDepreciationvalue(0.0)
         setAdjustment(0.0)
+        setAdjfordepreciation(0.0)
         setMarketvalue(0.0)
         setAssessedvalue(0.0)
         
@@ -75,6 +77,11 @@ public class BldgUse
     void setAdjustment(adjustment){
         this.adjustment = adjustment
         entity.adjustment = new BigDecimal(adjustment+'')
+    }
+
+    void setAdjfordepreciation(adjfordepreciation){
+        this.adjfordepreciation = adjfordepreciation
+        entity.adjfordepreciation = new BigDecimal(adjfordepreciation+'')
     }
 
     void setMarketvalue(marketvalue){

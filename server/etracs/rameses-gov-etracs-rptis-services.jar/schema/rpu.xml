@@ -35,5 +35,6 @@
         <field name="marketvalue" required="true" type="decimal" />
         <field name="assesslevel" required="true" type="decimal" />
         <field name="assessedvalue" required="true" type="decimal" />
+        <field name="taxable" type="boolean" />
     </element>
 </schema>

@@ -72,6 +72,7 @@
 		<field name="adjfordepreciation" required="true" type="decimal" />
 		<field name="marketvalue" required="true" type="decimal" />
 		<field name="addlinfo" />
+		<field name="taxable" required="true" type="boolean" />
 	</element>
 
 	<element name="floor" tablename="bldgfloor">

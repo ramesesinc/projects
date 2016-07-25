@@ -5,6 +5,7 @@
 - BPLS 
 		
 - ASSESSOR
+	- Building Use taxable support 
 	- Support selective additional item depreciation
 	- Support land actual uses info like road, canal etc
 	- Update on certification

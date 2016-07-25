@@ -156,6 +156,7 @@ class BldgAppraisalInfoController extends com.rameses.gov.etracs.rpt.workflow.Ba
             marketvalue     : 0.00,
             assesslevel     : 0.00,
             assessedvalue   : 0.00,
+            taxable         : true,
             floors              : [],
         ]},
             

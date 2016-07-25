@@ -23,7 +23,7 @@ public class AddAssessmentInfo implements RuleActionHandler {
 
 		def mv = ( bu.useswornamount ? bu.swornamount - bu.adjustment - bu.depreciationvalue : bu.marketvalue)
 
-		def a = request.assessments.find{it.rputype == rputype && it.actualuseid == actualuseid}
+		def a = request.assessments.find{it.rputype == rputype && it.actualuseid == actualuseid && it.taxable == bu.taxable}
 		if ( ! a){
 			def entity = [
 				objid  :  'BA' + new java.rmi.server.UID(),
@@ -35,10 +35,13 @@ public class AddAssessmentInfo implements RuleActionHandler {
 				actualuse    : [objid:actualuseid, name:bu.entity.actualuse.name],
 				areasqm      : NS.round(bu.area), 
 				areaha       : NS.roundA( bu.area / 10000.0, 6),
-				marketvalue  : mv,
+				marketvalue         : mv, 
+				exemptedmarketvalue : (bu.taxable == false ? mv : 0.0),
 				assesslevel  : bu.assesslevel,
-				assessedvalue  : bu.assessedvalue,
+				assessedvalue: bu.assessedvalue,
+				taxable 	 : bu.taxable, 
 			]
+
 			if (rpuentity.assessments == null) 
 				rpuentity.assessments = []
 			rpuentity.assessments << entity
@@ -50,6 +53,10 @@ public class AddAssessmentInfo implements RuleActionHandler {
 		}
 		else{
 			a.marketvalue = NS.round(a.marketvalue + mv)
+			if (bu.taxable == false){
+				a.exemptedmarketvalue = NS.round(a.exemptedmarketvalue + mv)
+			}
+
 			a.areasqm = NS.round( a.areasqm + bu.area )
 			a.areaha  = NS.roundA( a.areaha + (bu.area / 10000.0), 6)
 			drools.update(a)

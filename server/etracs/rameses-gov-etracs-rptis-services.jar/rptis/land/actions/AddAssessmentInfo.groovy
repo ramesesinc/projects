@@ -40,8 +40,10 @@ public class AddAssessmentInfo implements RuleActionHandler {
 				areasqm      : NS.round(ldentity.areasqm), 
 				areaha       : NS.roundA( ldentity.areaha, 6),
 				marketvalue  : ldentity.marketvalue,
+				exemptedmarketvalue : (ldentity.taxable == false ? ldentity.marketvalue : 0.0),
 				assesslevel  : ldentity.assesslevel,
 				assessedvalue  : ldentity.assessedvalue,
+				taxable 		: ld.taxable, 
 			]
 			
 			a = new RPUAssessment(entity)
@@ -54,6 +56,9 @@ public class AddAssessmentInfo implements RuleActionHandler {
 		}
 		else{
 			a.marketvalue = NS.round(a.marketvalue + ldentity.marketvalue)
+			if (ldentity.taxable == false){
+				a.exemptedmarketvalue = NS.round(a.exemptedmarketvalue + ldentity.marketvalue)
+			}
 			a.assessedvalue = NS.round(a.assessedvalue + ldentity.assessedvalue)
 			a.areasqm = NS.round( a.areasqm + ldentity.areasqm )
 			a.areaha  = NS.roundA( a.areaha + ldentity.areaha , 6)

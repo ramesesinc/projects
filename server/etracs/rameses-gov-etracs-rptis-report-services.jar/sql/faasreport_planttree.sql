@@ -27,7 +27,8 @@ SELECT
 	ra.marketvalue,
 	ra.assesslevel / 100 AS assesslevel,
 	ra.assesslevel AS assesslevelrate,
-	ra.assessedvalue AS assessedvalue 
+	ra.assessedvalue AS assessedvalue,
+	ra.taxable 
 FROM rpu_assessment ra 
 	INNER JOIN planttreeassesslevel lal ON ra.actualuse_objid = lal.objid 
 WHERE ra.rpuid = $P{objid}	

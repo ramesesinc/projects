@@ -163,6 +163,7 @@ SELECT
 	x.actualusename,
 	x.assesslevel, 
 	x.assesslevelrate,
+	x.taxable, 
 	sum(x.marketvalue) as marketvalue,
 	sum(x.assessedvalue) as assessedvalue
 FROM (
@@ -174,7 +175,8 @@ FROM (
 		ra.marketvalue,
 		ra.assesslevel / 100 AS assesslevel,
 		ra.assesslevel AS assesslevelrate,
-		ra.assessedvalue AS assessedvalue 
+		ra.assessedvalue AS assessedvalue,
+		ra.taxable 
 	FROM rpu_assessment ra 
 		INNER JOIN landassesslevel lal ON ra.actualuse_objid = lal.objid 
 		inner join propertyclassification pc on lal.classification_objid = pc.objid 
@@ -190,7 +192,8 @@ FROM (
 		ra.marketvalue,
 		ra.assesslevel / 100 AS assesslevel,
 		ra.assesslevel AS assesslevelrate,
-		ra.assessedvalue AS assessedvalue 
+		ra.assessedvalue AS assessedvalue,
+		ra.taxable
 	FROM rpu_assessment ra 
 		INNER JOIN planttreeassesslevel lal ON ra.actualuse_objid = lal.objid 
 		INNER JOIN propertyclassification pc on lal.classification_objid = pc.objid 
@@ -202,7 +205,8 @@ group by
 	x.actualuse,
 	x.actualusename,
 	x.assesslevel, 
-	x.assesslevelrate
+	x.assesslevelrate,
+	x.taxable 
 
 
 

@@ -33,6 +33,7 @@ public class RPUAssessment
         setAreasqm(entity.areasqm)
         setAreaha(entity.areaha)
         setMarketvalue(entity.marketvalue)
+        if (entity.exemptedmarketvalue == null ) entity.exemptedmarketvalue = 0.0
         setExemptedmarketvalue(entity.exemptedmarketvalue)
         setAssesslevel(entity.assesslevel)
         setAssessedvalue(entity.assessedvalue)

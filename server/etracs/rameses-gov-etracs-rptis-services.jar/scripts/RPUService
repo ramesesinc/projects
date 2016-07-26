@@ -132,6 +132,7 @@ class RPUService
     void saveAssessments(rpu){
         em.deleteAllAssessments(rpu)
         rpu.assessments.each{
+            it.taxable = util.toBoolean(it.taxable, true)
             em.create(it, SCHEMA_ASSESSMENT)
         }
     }

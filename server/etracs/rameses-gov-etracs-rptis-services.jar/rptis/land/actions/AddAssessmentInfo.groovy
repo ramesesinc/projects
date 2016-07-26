@@ -24,7 +24,7 @@ public class AddAssessmentInfo implements RuleActionHandler {
 		def actualuseid = ldentity.actualuse?.objid
 		def rputype = 'land';
 
-		def a = request.assessments.find{it.rputype == rputype && it.classificationid == classificationid && it.actualuseid == actualuseid}
+		def a = request.assessments.find{it.rputype == rputype && it.classificationid == classificationid && it.actualuseid == actualuseid && it.taxable == ldentity.taxable}
 		if ( ! a){
 			if (rpuentity.assessments == null) 
 				rpuentity.assessments = []
@@ -39,27 +39,27 @@ public class AddAssessmentInfo implements RuleActionHandler {
 				actualuse    : [objid:actualuseid],
 				areasqm      : NS.round(ldentity.areasqm), 
 				areaha       : NS.roundA( ldentity.areaha, 6),
-				marketvalue  : ldentity.marketvalue,
-				exemptedmarketvalue : (ldentity.taxable == false ? ldentity.marketvalue : 0.0),
-				assesslevel  : ldentity.assesslevel,
-				assessedvalue  : ldentity.assessedvalue,
+				marketvalue  : ld.marketvalue,
+				exemptedmarketvalue : (ld.taxable == false ? ld.marketvalue : 0.0),
 				taxable 		: ld.taxable, 
+				assesslevel  : ld.assesslevel,
+				assessedvalue  : ld.assessedvalue,
 			]
 			
 			a = new RPUAssessment(entity)
-			a.assesslevel = ldentity.assesslevel
-			a.assessedvalue = ldentity.assessedvalue
+			a.assesslevel = ld.assesslevel
+			a.assessedvalue = ld.assessedvalue
 			rpuentity.assessments << entity
 			request.assessments << a
 			request.facts << a 
 			drools.insert(a)
 		}
 		else{
-			a.marketvalue = NS.round(a.marketvalue + ldentity.marketvalue)
-			if (ldentity.taxable == false){
-				a.exemptedmarketvalue = NS.round(a.exemptedmarketvalue + ldentity.marketvalue)
+			a.marketvalue = NS.round(a.marketvalue + ld.marketvalue)
+			if (ld.taxable == false){
+				a.exemptedmarketvalue = NS.round(a.exemptedmarketvalue + ld.marketvalue)
 			}
-			a.assessedvalue = NS.round(a.assessedvalue + ldentity.assessedvalue)
+			a.assessedvalue = NS.round(a.assessedvalue + ld.assessedvalue)
 			a.areasqm = NS.round( a.areasqm + ldentity.areasqm )
 			a.areaha  = NS.roundA( a.areaha + ldentity.areaha , 6)
 			drools.update(a)

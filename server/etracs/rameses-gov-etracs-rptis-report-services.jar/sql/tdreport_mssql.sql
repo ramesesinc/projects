@@ -47,7 +47,8 @@ SELECT
 	r.assesslevel,
 	SUM(r.assessedvalue) AS assessedvalue,
 	SUM(r.areasqm) AS areasqm,
-	SUM(r.areaha) AS areaha 
+	SUM(r.areaha) AS areaha ,
+	r.taxable 
 FROM faas f
 	INNER JOIN rpu_assessment r ON f.rpuid = r.rpuid
 	INNER JOIN propertyclassification pc ON r.classification_objid = pc.objid 
@@ -58,7 +59,7 @@ GROUP BY
 	pc.code, pc.name, 
 	case when lal.objid is not null then lal.code else ptl.code end,
 	case when lal.objid is not null then lal.name else ptl.name end,
-	r.assesslevel 
+	r.assesslevel, r.taxable 
 
 
 [getDetailedLandAssessment]
@@ -151,7 +152,8 @@ SELECT
 	r.assesslevel,
 	r.assessedvalue AS assessedvalue,
 	r.areasqm AS areasqm,
-	r.areaha AS areaha 
+	r.areaha AS areaha,
+	r.taxable
 FROM faas f
 	INNER JOIN rpu_assessment r ON f.rpuid = r.rpuid
 	INNER JOIN propertyclassification pc ON r.classification_objid = pc.objid 

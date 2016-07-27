@@ -7,31 +7,10 @@ import com.rameses.util.*;
 
 public class BusinessApplicationUtil {
 
-    @Service("BusinessApplicationService")
-    def service;
-
-    @Service("BusinessPermitTypeService")
-    def permitTypeSvc;
-
-    @Caller 
+     @Caller 
     def caller;
 
-    def _permitType;
-    def permitTypes;
-    def apptypes = ['NEW','RENEW'];
-    def officeTypes = ['MAIN', 'BRANCH'];
-
-    def _apptype;
-    public void setApptype(o) {
-        _apptype = o;
-       if(caller.entity) caller.entity.apptype = o;
-    }
-    public def getApptype() {
-        return _apptype;
-    }
-
     public void load() {
-        permitTypes = permitTypeSvc.getList();
     }
 
     public void init(def o) {
@@ -39,20 +18,10 @@ public class BusinessApplicationUtil {
         load();
         entity.yearstarted = entity.appyear;
         caller.entity = entity;
-        if( entity.permittype ) {
-            _permitType = permitTypes.find{ it.objid == entity.permittype };
-        }    
-        if( entity.business?.permittype ) {
-            _permitType = permitTypes.find{ it.objid == entity.business.permittype };
-        }    
     }
     
     void save() {
         def o = caller.entity;
-        if( _permitType == null ) {
-            _permitType = [objid: 'BUSINESS' ];
-        }
-        o.business.permittype = _permitType.objid;
         if ( !o.appyear ) o.appyear = o.activeyear; 
         if ( !o.objid ) o.objid = 'BAPP'+ new UID(); 
 
@@ -91,24 +60,6 @@ public class BusinessApplicationUtil {
 
     void open() {
         caller.entity = service.open( caller.entity );
-    }
-
-    public void setPermitType(def o) {
-        _permitType = o;
-        caller.entity.business.permittype = o.objid;
-    }
-
-    public def getPermitType() {
-        return _permitType;
-    }
-
-    public def getPermitTypeOptions() {
-        if( !_permitType ) return [:]; 
-        return _permitType.options;
-    }
-
-    public def getAddressType() {
-        return permitTypeOptions.address_type;
     }
 
     public def getCopyOwnerAddress() {

@@ -1,6 +1,8 @@
 <workunit>
     <invokers>
+        <!--
         <invoker type="business_application:section" caption="General" index="0" action="init"/>
+        -->
         
         <!-- toolbars -->
         <invoker type="formActions" caption="Refresh" index="0" action="lob.reset" />

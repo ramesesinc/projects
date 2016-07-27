@@ -2,16 +2,10 @@
     <invokers>
         <invoker folderid="/home/business/business_application" caption="New Application"  
                  action="start" target="window" role="BUSINESSINFO" index="50" 
-                icon="images/application-new.png"/>
+                icon="home/icons/business-application-new.png"/>
         
-        <invoker type="lobActions" caption="Add" action="lob.add"  immediate="true"/>
-        <invoker type="lobActions" caption="Remove" action="lob.remove" immediate="true" 
-            visibleWhen="#{lob.selectedItem!=null}"/>
-        
-        <invoker type="extActions" caption="Print"  icon="images/toolbars/printer.png" 
+        <invoker type="extActions" caption="Print" icon="images/toolbars/printer.png" 
             action="application.print" visibleWhen="#{state=='save-success'}"/>
-
-        <invoker type="business_application:test" caption="New Application Test"  action="start"  />
 
     </invokers>
     
@@ -21,24 +15,16 @@
         import com.rameses.rcp.common.*
         import com.rameses.osiris2.client.*
         import com.rameses.osiris2.common.*
-        import java.rmi.server.*;
-        import com.rameses.gov.etracs.bpls.controller.*;
         import com.rameses.util.*;
         
         public class NewBusinessApplication extends PageFlowController {
         
+            @Service("BusinessApplicationService")
+            def service;            
+
             @Script("BusinessVerificationUtil")
             def verifyList;
-            
-            @Script("BusinessLobUtil")
-            def lob;
 
-            @Script("BusinessApplicationUtil")
-            def application;
-
-            @Script("BusinessOwnerUtil")
-            def owner;
-            
             @Script("BusinessAddressUtil")
             def address;
             
@@ -48,22 +34,19 @@
             @Script("BusinessInfoUtil")
             def appinfo;
 
-            @Script("BusinessContactUtil")
-            def contact;
-
             def entity;
-            def lobAssessmentTypes = ['NEW'];
     
             void init() {
-                application.init([apptype:'NEW']);
-                lob.reset();
+                entity = service.initNew( [apptype:'NEW'] );
+                entity.yearstarted = entity.appyear;
+
                 address.reset();
                 requirement.reset();
                 appinfo.reset();
             }
             
             void updateInfo() {
-                lob.verify();
+                if( !entity.lobs ) throw new Exception("Please specify at least one line of business");
                 boolean test = false;
                 appinfo.handler = {
                     test = true;
@@ -87,7 +70,15 @@
                     address.addressType = application.addressType;
                 }
             }
-        }
+            
+            void verifyContacts() {
+                boolean test = false;
+                if( entity.business.mobileno ) test = true;
+                if( entity.business.phoneno ) test = true;
+                if( entity.business.email ) test = true;            
+                if(!test) throw new Exception("Please provide at least one contact info");
+            }
+            
         ]]>
     </code>    
     
@@ -122,7 +113,7 @@
 
         <page name="edit-contact" title="Contact Info">
             <transition to="edit-address" caption="Back" mnemonic="B" name="back" />
-            <transition to="edit-lob" caption="Next" name="next" mnemonic="N" action="contact.verify"/>
+            <transition to="edit-lob" caption="Next" name="next" mnemonic="N" action="verifyContacts"/>
         </page>
         
         <page name="edit-lob" title="Add New Line of Business">

@@ -1,14 +1,12 @@
 <workunit>
     <invokers>
          <invoker folderid="/home/business" caption="Pre Assessment" 
-            action="init" target="window" role="ASSESSOR"/>
+            target="window" role="ASSESSOR"
+            icon="home/icons/business-pre-assessment.png" />
 
-         <invoker type="lobActions" caption="Add" action="lob.add" immediate="true"/>
-         <invoker type="lobActions" caption="Remove" action="lob.remove" immediate="true" 
-            visibleWhen="#{lob.selectedItem!=null}" depends="lob.selectedItem"/>
-         
          <invoker type="formActions" caption="Assess" action="calculate" />
          <invoker type="formActions" caption="Print Assessment" action="print" icon="print"/>
+         <invoker type="formActions" caption="Assess2" action="calculate2" />
     </invokers>
     
     <code>
@@ -20,18 +18,11 @@
         import com.rameses.common.*;
         import java.rmi.server.*
         import com.rameses.util.*;
-        import com.rameses.gov.etracs.bpls.controller.*;
         
         class PreAssessmentController {
         
             @Binding 
             def binding;
-            
-            @Script("BusinessLobUtil")
-            def lob;
-            
-            @Script("BusinessApplicationUtil")
-            def application;
             
             @Script("BusinessAssessmentInfoUtil")
             def assessmentInfo;
@@ -39,8 +30,6 @@
             @Script("BusinessInfoUtil")
             def appinfo;
             
-            def orgTypes = LOV.ORG_TYPES;
-            def appTypes = ['NEW', 'RENEW', 'RETIRE'];
             def addressTypes = ["local", "nonlocal", "rented", "government"];
              
             String title = "Preassessment";
@@ -49,19 +38,15 @@
             def ftitle = "Business Pre-assessment";
             
             def entity = [lobs:[], business:[address:[:]], taxfees:[]];
-            
-            void init() {
-                application.load();
-            }
+            def  mode = "init";
             
             void calculate() {
-                lob.verify();
+                if(!entity.lobs) throw new Exception("please specify at least one line");
                 Modal.show(appinfo.update());
                 appinfo.verify();
                 Modal.show(assessmentInfo.calculate());
                 if ( entity.taxfees ) {
                     assessmentInfo.runBill(entity.billdate); 
-                    
                     entity.taxfees.each{ 
                         if (it.taxfeetype=='TAX') { 
                             it.sortindex=0; 
@@ -75,11 +60,27 @@
                     }
                     entity.taxfees.sort{ it.sortindex } 
                 } 
+                mode = "assess";
+                binding.refresh(); 
             } 
             
             def print() { 
                 return Inv.lookupOpener("business:preassessment:printout", [entity: entity] );            
             }
+            
+            def calculate2() {
+                def p = [:];
+                p.putAll( entity );
+                p.orgtype = entity.business.orgtype;
+                def h = { o->
+                    println "FINISHED CALCULATING";
+                    o.infos.each {
+                        println it.attribute.name + " " + it.value + " " + it.lob;
+                    }
+                }   
+                return Inv.lookupOpener("rule:askinfo", [params:p, handler: h]);
+            }
+            
         }
     ]]>
     </code>

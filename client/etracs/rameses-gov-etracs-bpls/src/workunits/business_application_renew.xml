@@ -2,7 +2,7 @@
     <invokers>
         <invoker folderid="/home/business/business_application" caption="Renewal"  
                  action="start" target="window" role="BUSINESSINFO" index="51"
-                 icon="images/application-renew.png" />
+                 icon="home/icons/business-application-renew.png" />
         
         <invoker type="lobActions" caption="Add" action="lob.add"  immediate="true"/>
         <invoker type="lobActions" caption="Remove" action="lob.remove"  immediate="true" visibleWhen="#{lob.selectedItem!=null &amp;&amp; lob.selectedItem.assessmenttype=='NEW'}"/>
@@ -24,7 +24,6 @@
         import com.rameses.osiris2.common.*
         import java.rmi.server.*;
         import com.rameses.util.*;
-        import com.rameses.gov.etracs.bpls.controller.*;
         
         public class RenewBusinessApplication extends PageFlowController {
         

@@ -393,11 +393,15 @@ public class IndividualEntityMatchName extends XComponentPanel {
                 return getProperty(getName());
             };
         });
-        try {bean.setProperty("onselect", getProperty(getOnselect()));}catch(Exception ign){;}
-        try {bean.setProperty("oncreate", getProperty(getOncreate()));}catch(Exception ign){;}
-        try {
+        bean.setProperty("onselect", getProperty(getOnselect()));
+        bean.setProperty("oncreate", getProperty(getOncreate()));
+        Object s = getProperty("allowSelect");
+        if(s!=null) {
+            bean.setProperty("allowSelect", Boolean.valueOf(s+""));
+        }
+        else {
             bean.setProperty("allowSelect", isAllowSelect());
-        }catch(Exception ign){;}
+        }
     }
 
     public String getOncreate() {

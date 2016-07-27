@@ -21,7 +21,8 @@ public class AddAssessmentInfo implements RuleActionHandler {
 		def actualuseid = params.actualuseid
 		def rputype = 'bldg';
 
-		def mv = ( bu.useswornamount ? bu.swornamount - bu.adjustment - bu.depreciationvalue : bu.marketvalue)
+		// def mv = ( bu.useswornamount ? bu.swornamount - bu.adjustment - bu.depreciationvalue : bu.marketvalue)
+		def mv = ( bu.useswornamount ? bu.swornamount - bu.depreciationvalue : bu.marketvalue)
 
 		def a = request.assessments.find{it.rputype == rputype && it.actualuseid == actualuseid && it.taxable == bu.taxable}
 		if ( ! a){

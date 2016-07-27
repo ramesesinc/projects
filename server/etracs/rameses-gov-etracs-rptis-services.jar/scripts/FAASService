@@ -305,7 +305,6 @@ class FAASService
 	public def approveFaas( faas ) {
 		approveParentFaas(faas)
 		def currentstate = getState(faas.objid)
-		println 'currentstate -> ' + currentstate
 		if (currentstate == STATE_CURRENT)  
 			throw new Exception('FAAS is already current.')
 		if (currentstate == STATE_CANCELLED)  
@@ -333,7 +332,6 @@ class FAASService
 	}
 
 	void approveParentFaas(faas){
-		println 'faas.parentfaasid -> ' + faas.parentfaasid
         if (faas.parentfaasid){
         	def pf = openFaas([objid:faas.parentfaasid])
             faasSvc.approveFaas(pf)

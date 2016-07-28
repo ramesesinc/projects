@@ -259,6 +259,14 @@ public class FaasController
         return true 
     }
     
+    def getAllowAssignNewTdNo(){
+        if (entity.state != 'CURRENT') return false;
+        if (entity.taskstate != 'record') return false;
+        if (entity.assignee && entity.assignee.objid != OsirisContext.env.USERID) return false;
+        return true;
+    }
+    
+    
     boolean getAllowEditPrevInfo(){
         return getAllowEditPrevInfoCallback();
     }

@@ -241,6 +241,7 @@ UPDATE rptledger SET state = 'CANCELLED' WHERE faasid = $P{faasid}
 SELECT 
 	f.objid AS newfaasid, 
 	f.tdno, 
+	f.utdno, 
 	r.ry AS rpu_ry, 
 	rp.barangayid AS rp_barangay_objid
 FROM faas f 

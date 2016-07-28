@@ -608,3 +608,26 @@ delete from faas_affectedrpu where faasid = $P{objid}
 
 [deleteFaasStewardship]	
 delete from faas_stewardship where stewardrpumasterid = $P{rpumasterid}	
+
+
+
+
+[updateFaasTdNo]
+update faas set tdno = $P{tdno} where objid = $P{objid} 
+
+[updateFaasListTdNo]
+update faas_list set tdno = $P{tdno} where objid = $P{objid} 
+
+[updateLedgerTdNo]
+update rptledger set tdno = $P{tdno} where faasid = $P{objid} 
+
+[updateLedgerFaasTdNo]
+update rptledgerfaas rlf, rptledger rl set 
+	rlf.tdno = $P{tdno} 
+where rlf.rptledgerid = rl.objid 
+and rlf.faasid = $P{objid} 
+
+
+[findFaasByTdNo]
+select objid, fullpin from faas where tdno = $P{tdno}
+

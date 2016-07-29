@@ -1061,8 +1061,10 @@ public class RPTBillingService
 
 	@ProxyMethod
 	public void checkRestrictions( ledgerid ) {
+		/*
 		def restriction = rptledger_restrictionDb.find([parentid:ledgerid]).first();
 		if (restriction)
 			throw new Exception('Unable to generate billing statement.\nThe Ledger is currently under restrictions.')
+		*/
 	}
 }

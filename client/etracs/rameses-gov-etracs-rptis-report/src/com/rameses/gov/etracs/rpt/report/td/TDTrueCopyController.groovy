@@ -21,7 +21,9 @@ public class TDTrueCopyController extends com.rameses.gov.etracs.rpt.report.cert
     }
     
     def getReportData(){
-        return tdSvc.buildTaxDec(entity.faasid);
+        def e = tdSvc.buildTaxDec(entity.faasid);
+        e.putAll(entity)
+        return e;
     }
     
     def reportPath = 'com/rameses/gov/etracs/rpt/report/td/';

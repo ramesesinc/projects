@@ -316,8 +316,9 @@ class RPUService
     void updatePin(rpu){
         if (! rpu.realpropertyid) return
         if (rpu.state.matches(STATE_CURRENT + '|' + STATE_CANCELLED)) return 
-        def rp = rpSvc.open([objid:rpu.realpropertyid]);
-        if (rp){
+        def rp = null
+        try{
+            rp = rpSvc.open([objid:rpu.realpropertyid]);
             def fullpin = rp.pin 
             if (rpu.rputype != RPUTYPE_LAND){
                 fullpin += '-' + rpu.suffix 
@@ -326,6 +327,9 @@ class RPUService
                 fullpin += '-' + rpu.subsuffix
             }
             rpu.fullpin = fullpin 
+        }
+        catch(e){
+            //ignore
         }
     }
 

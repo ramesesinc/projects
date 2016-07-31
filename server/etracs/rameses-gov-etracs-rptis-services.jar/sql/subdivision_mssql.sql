@@ -202,6 +202,7 @@ SELECT
 	f.objid AS newfaasid, 
 	f.state, 
 	f.tdno, 
+	f.utdno, 
 	r.ry AS rpu_ry, 
 	rp.barangayid AS rp_barangay_objid
 FROM faas f 

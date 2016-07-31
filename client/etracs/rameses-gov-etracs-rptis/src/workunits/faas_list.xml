@@ -64,7 +64,7 @@
             def doOpen(){
                 if (!selectedEntity) return;
                 
-                if (selectedEntity.state.matches('CURRENT|CANCELLED'))
+                if (selectedEntity.taskstate == null && selectedEntity.state.matches('CURRENT|CANCELLED'))
                     return InvokerUtil.lookupOpener('faas:open:closedwf', [entity:selectedEntity])
                 
                 if ( RPTUtil.toBoolean(selectedEntity?.datacapture, false) == true )

@@ -71,6 +71,17 @@ WHERE rpu.realpropertyid = $P{realpropertyid}
  AND rpu.ry = $P{ry}
 
 
+[findNonCurrentCount]
+select count(*) as count 
+from realproperty rp 
+	inner join faas f on rp.objid = f.realpropertyid 
+	inner join rpu r on f.rpuid = r.objid 
+where rp.barangayid = $P{barangayid}
+and rp.ry = $P{ry}
+and rp.section = $P{section}
+and r.rputype = 'land'
+and f.state not in ('CURRENT', 'CANCELLED')
+
 
 [getLandsForRepinning]
 select f.objid, f.rpuid, f.realpropertyid, f.tdno, rp.pin, rp.barangayid  
@@ -81,8 +92,8 @@ where rp.barangayid = $P{barangayid}
 and rp.ry = $P{ry}
 and rp.section = $P{section}
 and r.rputype = 'land'
-and f.state not in ('CANCELLED')
-order by length(rp.parcel), convert(rp.parcel, signed)
+and f.state = $P{state}
+${orderby}
 
 
 [getImprovementsForRepinning]

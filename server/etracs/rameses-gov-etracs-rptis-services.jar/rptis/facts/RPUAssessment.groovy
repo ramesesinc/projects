@@ -11,8 +11,10 @@ public class RPUAssessment
     Double areasqm
     Double areaha
     Double marketvalue
+    Double exemptedmarketvalue
     Double assesslevel
     Double assessedvalue
+    Boolean taxable
 
     // data ref 
     def entity 
@@ -26,10 +28,13 @@ public class RPUAssessment
         this.rputype = entity.rputype
         this.classificationid = entity.classificationid
         this.actualuseid = entity.actualuseid
+        this.taxable = (entity.taxable == null ? true : entity.taxable)
         
         setAreasqm(entity.areasqm)
         setAreaha(entity.areaha)
         setMarketvalue(entity.marketvalue)
+        if (entity.exemptedmarketvalue == null ) entity.exemptedmarketvalue = 0.0
+        setExemptedmarketvalue(entity.exemptedmarketvalue)
         setAssesslevel(entity.assesslevel)
         setAssessedvalue(entity.assessedvalue)
     }
@@ -48,6 +53,11 @@ public class RPUAssessment
     void setMarketvalue( marketvalue ){
         this.marketvalue = marketvalue
         entity.marketvalue = new BigDecimal(marketvalue+'')
+    }
+
+    void setExemptedmarketvalue( exemptedmarketvalue ){
+        this.exemptedmarketvalue = exemptedmarketvalue
+        entity.exemptedmarketvalue = new BigDecimal(exemptedmarketvalue+'')
     }
 
     void setAssesslevel( assesslevel ){

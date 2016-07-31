@@ -19,6 +19,7 @@ public class BldgUse
     Double          assessedvalue
     Double          swornamount
     Boolean         useswornamount 
+    Boolean         taxable  
     
 
     //data ref
@@ -33,6 +34,7 @@ public class BldgUse
         this.actualuseid        = bu.actualuse?.objid 
         this.swornamount        = bu.swornamount
         this.useswornamount     = bu.useswornamount
+        this.taxable            = bu.taxable
 
         this.fixrate = false;
         if ( bu.actualuse && (bu.actualuse?.fixrate == 1 || bu.actualuse?.fixrate == true))

@@ -131,7 +131,7 @@ class LandAppraisalController extends com.rameses.gov.etracs.rpt.workflow.BasicI
             if ( colName == 'assessedvalue' ) {
                 updateav = true 
             }
-            else if (colName == 'taxable' && item.taxable != taxableLand){
+            else if (colName == 'taxable' && item.objid  && item.taxable != taxableLand){
                 calculateAssessment();
                 binding.focus('selectedLand');
             }    

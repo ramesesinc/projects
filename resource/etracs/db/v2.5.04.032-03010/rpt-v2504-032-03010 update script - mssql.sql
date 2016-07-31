@@ -89,3 +89,21 @@ go
 
 update bldguse set adjfordepreciation = adjustment where adjfordepreciation is null
 go 
+
+
+
+/*====================================================
+* SUPPORT BLDG USE TAXABILITY
+=====================================================*/
+alter table bldguse add taxable int
+go 
+
+update bldguse set taxable = 1 where taxable is null
+go 
+
+
+alter table rpu_assessment add taxable int
+go 
+
+update rpu_assessment set taxable = 1 where taxable is null
+go 

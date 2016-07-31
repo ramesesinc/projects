@@ -305,7 +305,6 @@ class FAASService
 	public def approveFaas( faas ) {
 		approveParentFaas(faas)
 		def currentstate = getState(faas.objid)
-		println 'currentstate -> ' + currentstate
 		if (currentstate == STATE_CURRENT)  
 			throw new Exception('FAAS is already current.')
 		if (currentstate == STATE_CANCELLED)  
@@ -333,7 +332,6 @@ class FAASService
 	}
 
 	void approveParentFaas(faas){
-		println 'faas.parentfaasid -> ' + faas.parentfaasid
         if (faas.parentfaasid){
         	def pf = openFaas([objid:faas.parentfaasid])
             faasSvc.approveFaas(pf)
@@ -755,11 +753,30 @@ class FAASService
 		}
 	}
 
-	void updateTDNo(faas){
-    	if ( (faas.tdno == null || faas.tdno.toString().trim().length() == 0) ){
-			faas.tdno = generateNextTdNo(faas)
+	@ProxyMethod
+	public void updateTdNoByRecord( faas ) {
+		def exist = em.findFaasByTdNo(faas)
+		if(exist) 
+			throw new Exception('Duplicate TD No. is not allowed.\nTD No. is already assigned to PIN ' + exist.fullpin + '.')
+
+		em.updateFaasTdNo(faas)
+		em.updateFaasListTdNo(faas)
+		em.updateLedgerTdNo(faas)
+		em.updateLedgerFaasTdNo(faas)
+	}
+
+	@ProxyMethod
+	public void updateTDNo(faas){
+		def notdno = (faas.tdno == null || faas.tdno.toString().trim().length() == 0) 
+		if (notdno && util.isTrue(var.faas_tdno_assigned_by_record)){
+			faas.tdno = faas.utdno
 		}
-		faas.utdno = faas.tdno 
+    	else {
+    		if (notdno){
+				faas.tdno = generateNextTdNo(faas)
+    		}
+			faas.utdno = faas.tdno 
+		}
     }	
 	
 

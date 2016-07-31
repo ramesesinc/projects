@@ -74,3 +74,17 @@ update bldgflooradditional set depreciate = 1 where depreciate = 0;
 alter table bldguse add adjfordepreciation decimal(16,2);
 
 update bldguse set adjfordepreciation = adjustment where adjfordepreciation is null;  
+
+
+
+
+/*====================================================
+* SUPPORT BLDG USE TAXABILITY
+=====================================================*/
+alter table bldguse add taxable int; 
+
+update bldguse set taxable = 1 where taxable is null;  
+
+alter table rpu_assessment add taxable int;
+
+update rpu_assessment set taxable = 1 where taxable is null;  

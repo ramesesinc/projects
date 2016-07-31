@@ -6,8 +6,9 @@ select
 from faas f 
 	inner join rpu r on f.rpuid = r.objid 
 	inner join landdetail ld on r.objid = ld.landrpuid 
+	inner join lcuvspecificclass spc on ld.specificclass_objid = spc.objid 
+	inner join propertyclassification pc on spc.classification_objid = pc.objid 
 	inner join landspecificclass lspc on ld.landspecificclass_objid = lspc.objid 
-	inner join propertyclassification pc on lspc.classification_objid = pc.objid 
 	inner join realproperty rp on f.realpropertyid = rp.objid 
 	inner join barangay b on rp.barangayid = b.objid 
 where f.lguid = $P{lguid}

@@ -17,6 +17,7 @@ class NewIndividualEntityModel  {
 
     String title = "Add New Individual Entity";
     
+    boolean allowSelect = false;
     boolean saveAllowed = true;
     def entity;
     

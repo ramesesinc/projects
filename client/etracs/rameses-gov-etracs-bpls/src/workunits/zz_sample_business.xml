@@ -1,0 +1,44 @@
+<workunit>
+    <invokers>
+        <invoker type="home.action" caption="Sample" target="popup" />
+        <invoker type="formActions" caption="Back" action="back" />
+        <invoker type="formActions" caption="Back 1" action="_default" />
+   </invokers>
+    
+    <code>
+        <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import com.rameses.common.*;
+        import java.rmi.server.*
+        import com.rameses.util.*;
+        
+        class ViewBusinessReceiptController {
+        
+            @Binding
+            def binding;
+        
+            def entity = [lastname:'nazareno', firstname:'elmo'];
+            
+            def handler = { o->
+                MsgBox.alert("handled name is " + o);
+                //entity.business = o;
+                //binding.fireNavigation("page1");
+            }
+            
+            def back() {
+                return "default";
+            }
+        }
+        
+        ]]>
+    </code>
+    
+    <pages>
+        <page template="com.rameses.bpls.test.ZZSamplePage2"/>
+        <page name="page1" template="com.rameses.bpls.test.ZZSamplePage"/>
+    </pages>
+    
+</workunit>

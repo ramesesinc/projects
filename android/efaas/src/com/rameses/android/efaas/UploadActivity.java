@@ -105,7 +105,7 @@ public class UploadActivity extends SettingsMenuActivity {
 		UIDialog dialog = new UIDialog(activity) {
 			
 			public void onApprove() {
-				progressDialog.setMessage("Uploading... Please wait...");
+				progressDialog.setMessage("Uploading FAAS... Please wait...");
 				if (!progressDialog.isShowing()) progressDialog.show();
 				
 				Platform.runAsync(new ActionProcess(list));
@@ -151,8 +151,28 @@ public class UploadActivity extends SettingsMenuActivity {
 		@Override
 		public void run() {
 			for(UploadItem item : list){
+				String faasid = item.getObjid();
 				try
 				{
+					List<String> ids = new FaasDB().getFaasImageIds(faasid);
+					System.err.println("IMAGE IDS : " + ids.toString());
+					for(String imageid : ids){
+						UploadActivity.this.runOnUiThread(new Runnable(){
+							@Override
+							public void run() {
+								progressDialog.setMessage("Uploading Image... Please wait...");
+							}
+						});
+						new UploadService().uploadImage(imageid, faasid);
+					}
+					
+					UploadActivity.this.runOnUiThread(new Runnable(){
+						@Override
+						public void run() {
+							progressDialog.setMessage("Uploading FAAS... Please wait...");
+						}
+					});
+					
 		            UploadService svc = new UploadService();
 		            Map result = svc.upload(item.getObjid());
 		            if(result != null){

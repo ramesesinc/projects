@@ -37,10 +37,10 @@ public class AssessmentAnalyzerPage extends javax.swing.JPanel {
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
         xComboBox3 = new com.rameses.rcp.control.XComboBox();
         xComboBox2 = new com.rameses.rcp.control.XComboBox();
-        xComboBox5 = new com.rameses.rcp.control.XComboBox();
         xComboBox1 = new com.rameses.rcp.control.XComboBox();
         xComboBox4 = new com.rameses.rcp.control.XComboBox();
         xLookupField1 = new com.rameses.rcp.control.XLookupField();
+        businessOrgTypeList1 = new com.rameses.gov.etracs.bpls.components.BusinessOrgTypeList();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanel6 = new javax.swing.JPanel();
         xButton3 = new com.rameses.rcp.control.XButton();
@@ -97,16 +97,6 @@ public class AssessmentAnalyzerPage extends javax.swing.JPanel {
         xComboBox2.setRequired(true);
         xFormPanel1.add(xComboBox2);
 
-        xComboBox5.setAllowNull(false);
-        xComboBox5.setCaption("Org Type");
-        xComboBox5.setExpression("#{item.value}");
-        xComboBox5.setItemKey("key");
-        xComboBox5.setItems("orgTypes");
-        xComboBox5.setName("entity.business.orgtype"); // NOI18N
-        xComboBox5.setPreferredSize(new java.awt.Dimension(0, 20));
-        xComboBox5.setRequired(true);
-        xFormPanel1.add(xComboBox5);
-
         xComboBox1.setAllowNull(false);
         xComboBox1.setCaption("Office Type");
         xComboBox1.setDepends(new String[] {"application.permitType"});
@@ -130,6 +120,11 @@ public class AssessmentAnalyzerPage extends javax.swing.JPanel {
         xLookupField1.setName("entity.business.address.barangay"); // NOI18N
         xLookupField1.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(xLookupField1);
+
+        businessOrgTypeList1.setCaption("Org Type");
+        businessOrgTypeList1.setName("entity.business.orgtype"); // NOI18N
+        businessOrgTypeList1.setRequired(true);
+        xFormPanel1.add(businessOrgTypeList1);
 
         xButton3.setName("assessmentInfo.showDetails"); // NOI18N
         xButton3.setText("View Bill Details");
@@ -751,6 +746,7 @@ public class AssessmentAnalyzerPage extends javax.swing.JPanel {
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private com.rameses.gov.etracs.bpls.components.BusinessOrgTypeList businessOrgTypeList1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
@@ -766,7 +762,6 @@ public class AssessmentAnalyzerPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XComboBox xComboBox2;
     private com.rameses.rcp.control.XComboBox xComboBox3;
     private com.rameses.rcp.control.XComboBox xComboBox4;
-    private com.rameses.rcp.control.XComboBox xComboBox5;
     private com.rameses.rcp.control.XDataTable xDataTable1;
     private com.rameses.rcp.control.XDataTable xDataTable2;
     private com.rameses.rcp.control.XDataTable xDataTable3;

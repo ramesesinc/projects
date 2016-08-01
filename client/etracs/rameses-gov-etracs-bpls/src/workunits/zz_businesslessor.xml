@@ -1,0 +1,5 @@
+<workunit extends="com/rameses/seti2/templates/DynamicCrudForm.xml" schemaName="business_lessor" captionWidth="200">
+    <invokers>
+        <invoker type="home.action" caption="Business Lessor Test" target="popup" action="create"/>
+   </invokers>
+</workunit>

@@ -39,17 +39,15 @@ public class PreAssessmentPage extends javax.swing.JPanel {
         xComboBox5 = new com.rameses.rcp.control.XComboBox();
         xLookupField1 = new com.rameses.rcp.control.XLookupField();
         xTextField2 = new com.rameses.rcp.control.XTextField();
-        xComboBox2 = new com.rameses.rcp.control.XComboBox();
-        xComboBox4 = new com.rameses.rcp.control.XComboBox();
+        appTypeList1 = new com.rameses.gov.etracs.bpls.components.AppTypeList();
+        businessOrgTypeList1 = new com.rameses.gov.etracs.bpls.components.BusinessOrgTypeList();
         xIntegerField2 = new com.rameses.rcp.control.XIntegerField();
         xFormPanel4 = new com.rameses.rcp.control.XFormPanel();
         xDateField2 = new com.rameses.rcp.control.XDateField();
-        xComboBox3 = new com.rameses.rcp.control.XComboBox();
-        xComboBox1 = new com.rameses.rcp.control.XComboBox();
+        businessPermitTypeList1 = new com.rameses.gov.etracs.bpls.components.BusinessPermitTypeList();
         xDateField3 = new com.rameses.rcp.control.XDateField();
-        xDataTable1 = new com.rameses.rcp.control.XDataTable();
         jLabel1 = new javax.swing.JLabel();
-        xActionBar1 = new com.rameses.rcp.control.XActionBar();
+        lobList1 = new com.rameses.gov.etracs.bpls.components.LobList();
         jPanel2 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
@@ -74,12 +72,14 @@ public class PreAssessmentPage extends javax.swing.JPanel {
         xFormPanel1.setCaptionWidth(120);
 
         xTextField1.setCaption("Business Name");
+        xTextField1.setDisableWhen("#{mode=='assess'}");
         xTextField1.setName("entity.businessname"); // NOI18N
         xTextField1.setPreferredSize(new java.awt.Dimension(0, 20));
         xTextField1.setRequired(true);
         xFormPanel1.add(xTextField1);
 
         xTextField3.setCaption("Business Address");
+        xTextField3.setDisableWhen("#{mode=='assess'}");
         xTextField3.setName("entity.businessaddress"); // NOI18N
         xTextField3.setPreferredSize(new java.awt.Dimension(0, 20));
         xTextField3.setRequired(true);
@@ -87,6 +87,7 @@ public class PreAssessmentPage extends javax.swing.JPanel {
 
         xComboBox5.setAllowNull(false);
         xComboBox5.setCaption("Address Type");
+        xComboBox5.setDisableWhen("#{mode=='assess'}");
         xComboBox5.setExpression("#{item.caption}");
         xComboBox5.setItems("addressTypes");
         xComboBox5.setName("entity.business.address.type"); // NOI18N
@@ -94,6 +95,7 @@ public class PreAssessmentPage extends javax.swing.JPanel {
         xFormPanel1.add(xComboBox5);
 
         xLookupField1.setCaption("Barangay");
+        xLookupField1.setDisableWhen("#{mode=='assess'}");
         xLookupField1.setExpression("#{entity.business.address.barangay.name}");
         xLookupField1.setHandler("barangay:lookup");
         xLookupField1.setName("entity.business.address.barangay"); // NOI18N
@@ -102,28 +104,26 @@ public class PreAssessmentPage extends javax.swing.JPanel {
         xFormPanel1.add(xLookupField1);
 
         xTextField2.setCaption("Owner Name");
+        xTextField2.setDisableWhen("#{mode=='assess'}");
         xTextField2.setName("entity.ownername"); // NOI18N
         xTextField2.setPreferredSize(new java.awt.Dimension(0, 20));
         xTextField2.setRequired(true);
         xFormPanel1.add(xTextField2);
 
-        xComboBox2.setCaption("Org");
-        xComboBox2.setExpression("#{item.value}");
-        xComboBox2.setItemKey("key");
-        xComboBox2.setItems("orgTypes");
-        xComboBox2.setName("entity.business.orgtype"); // NOI18N
-        xComboBox2.setPreferredSize(new java.awt.Dimension(0, 22));
-        xComboBox2.setRequired(true);
-        xFormPanel1.add(xComboBox2);
+        appTypeList1.setCaption("App Type");
+        appTypeList1.setDisableWhen("#{mode=='assess'}");
+        appTypeList1.setName("entity.apptype"); // NOI18N
+        appTypeList1.setRequired(true);
+        xFormPanel1.add(appTypeList1);
 
-        xComboBox4.setCaption("App Type");
-        xComboBox4.setItems("appTypes");
-        xComboBox4.setName("entity.apptype"); // NOI18N
-        xComboBox4.setPreferredSize(new java.awt.Dimension(0, 22));
-        xComboBox4.setRequired(true);
-        xFormPanel1.add(xComboBox4);
+        businessOrgTypeList1.setCaption("Org Type");
+        businessOrgTypeList1.setDisableWhen("#{mode=='assess'}");
+        businessOrgTypeList1.setName("entity.business.orgtype"); // NOI18N
+        businessOrgTypeList1.setRequired(true);
+        xFormPanel1.add(businessOrgTypeList1);
 
         xIntegerField2.setCaption("App Year");
+        xIntegerField2.setDisableWhen("#{mode=='assess'}");
         xIntegerField2.setName("entity.appyear"); // NOI18N
         xIntegerField2.setPreferredSize(new java.awt.Dimension(50, 20));
         xIntegerField2.setRequired(true);
@@ -137,78 +137,29 @@ public class PreAssessmentPage extends javax.swing.JPanel {
         xFormPanel1.add(xFormPanel4);
 
         xDateField2.setCaption("Date Applied");
+        xDateField2.setDisableWhen("#{mode=='assess'}");
         xDateField2.setName("entity.dtfiled"); // NOI18N
         xDateField2.setRequired(true);
         xFormPanel1.add(xDateField2);
 
-        xComboBox3.setCaption("Permit Type");
-        xComboBox3.setEmptyText("- Select a Permit Type -");
-        xComboBox3.setExpression("#{item.title}");
-        xComboBox3.setItems("application.permitTypes");
-        xComboBox3.setName("application.permitType"); // NOI18N
-        xComboBox3.setPreferredSize(new java.awt.Dimension(0, 22));
-        xComboBox3.setRequired(true);
-        xFormPanel1.add(xComboBox3);
-
-        xComboBox1.setAllowNull(false);
-        xComboBox1.setCaption("Office Type");
-        xComboBox1.setDepends(new String[] {"application.permitType"});
-        xComboBox1.setItems("application.officeTypes");
-        xComboBox1.setName("entity.business.officetype"); // NOI18N
-        xComboBox1.setPreferredSize(new java.awt.Dimension(150, 20));
-        xComboBox1.setRequired(true);
-        xFormPanel1.add(xComboBox1);
+        businessPermitTypeList1.setCaption("Permit Type");
+        businessPermitTypeList1.setDisableWhen("#{mode=='assess'}");
+        businessPermitTypeList1.setName("entity.permittype"); // NOI18N
+        businessPermitTypeList1.setRequired(true);
+        xFormPanel1.add(businessPermitTypeList1);
 
         xDateField3.setCaption("Bill Date");
+        xDateField3.setDisableWhen("#{mode=='assess'}");
         xDateField3.setName("entity.billdate"); // NOI18N
         xDateField3.setRequired(true);
         xFormPanel1.add(xDateField3);
 
-        xDataTable1.setColumns(new com.rameses.rcp.common.Column[]{
-            new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "name"}
-                , new Object[]{"caption", "Line of Business"}
-                , new Object[]{"width", 100}
-                , new Object[]{"minWidth", 0}
-                , new Object[]{"maxWidth", 0}
-                , new Object[]{"required", false}
-                , new Object[]{"resizable", true}
-                , new Object[]{"nullWhenEmpty", true}
-                , new Object[]{"editable", false}
-                , new Object[]{"visible", true}
-                , new Object[]{"visibleWhen", null}
-                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.UPPER}
-                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
-            }),
-            new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "assessmenttype"}
-                , new Object[]{"caption", "Assessment Type"}
-                , new Object[]{"width", 100}
-                , new Object[]{"minWidth", 0}
-                , new Object[]{"maxWidth", 0}
-                , new Object[]{"required", true}
-                , new Object[]{"resizable", true}
-                , new Object[]{"nullWhenEmpty", true}
-                , new Object[]{"editable", true}
-                , new Object[]{"editableWhen", null}
-                , new Object[]{"visible", true}
-                , new Object[]{"visibleWhen", null}
-                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.UPPER}
-                , new Object[]{"typeHandler", new com.rameses.rcp.common.ComboBoxColumnHandler("appTypes", null, null)}
-            })
-        });
-        xDataTable1.setHandler("lob.listModel");
-        xDataTable1.setName("lob.selectedItem"); // NOI18N
-        xDataTable1.setPreferredSize(new java.awt.Dimension(0, 80));
-
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jLabel1.setText("Line of Business");
 
-        xActionBar1.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
-        xActionBar1.setDepends(new String[] {"lob.selectedItem"});
-        xActionBar1.setDynamic(true);
-        xActionBar1.setName("lobActions"); // NOI18N
-        xActionBar1.setUseToolBar(false);
+        lobList1.setDisableWhen("#{mode=='assess'}");
+        lobList1.setName("entity"); // NOI18N
+        lobList1.setShowReclassify(true);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -219,22 +170,19 @@ public class PreAssessmentPage extends javax.swing.JPanel {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 816, Short.MAX_VALUE)
                     .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 290, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(xDataTable1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(xActionBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 801, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(142, Short.MAX_VALUE))
+                    .addComponent(lobList1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(36, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 289, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(1, 1, 1)
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(xDataTable1, javax.swing.GroupLayout.DEFAULT_SIZE, 105, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(xActionBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addComponent(lobList1, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(14, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Business Information", jPanel1);
@@ -353,7 +301,7 @@ public class PreAssessmentPage extends javax.swing.JPanel {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(xDataTable4, javax.swing.GroupLayout.DEFAULT_SIZE, 948, Short.MAX_VALUE)
+                    .addComponent(xDataTable4, javax.swing.GroupLayout.DEFAULT_SIZE, 842, Short.MAX_VALUE)
                     .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(xDataTable2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -369,7 +317,7 @@ public class PreAssessmentPage extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel5)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(xDataTable2, javax.swing.GroupLayout.DEFAULT_SIZE, 235, Short.MAX_VALUE)
+                .addComponent(xDataTable2, javax.swing.GroupLayout.DEFAULT_SIZE, 236, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -638,7 +586,7 @@ public class PreAssessmentPage extends javax.swing.JPanel {
                             .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 942, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jPanel4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(xDataTable3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(0, 14, Short.MAX_VALUE))))
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -646,7 +594,7 @@ public class PreAssessmentPage extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(jLabel6)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(xDataTable3, javax.swing.GroupLayout.DEFAULT_SIZE, 296, Short.MAX_VALUE)
+                .addComponent(xDataTable3, javax.swing.GroupLayout.DEFAULT_SIZE, 297, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(xButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -662,8 +610,8 @@ public class PreAssessmentPage extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(30, Short.MAX_VALUE))
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 867, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -676,6 +624,9 @@ public class PreAssessmentPage extends javax.swing.JPanel {
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private com.rameses.gov.etracs.bpls.components.AppTypeList appTypeList1;
+    private com.rameses.gov.etracs.bpls.components.BusinessOrgTypeList businessOrgTypeList1;
+    private com.rameses.gov.etracs.bpls.components.BusinessPermitTypeList businessPermitTypeList1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -685,15 +636,10 @@ public class PreAssessmentPage extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JTabbedPane jTabbedPane1;
-    private com.rameses.rcp.control.XActionBar xActionBar1;
+    private com.rameses.gov.etracs.bpls.components.LobList lobList1;
     private com.rameses.rcp.control.XActionBar xActionBar2;
     private com.rameses.rcp.control.XButton xButton1;
-    private com.rameses.rcp.control.XComboBox xComboBox1;
-    private com.rameses.rcp.control.XComboBox xComboBox2;
-    private com.rameses.rcp.control.XComboBox xComboBox3;
-    private com.rameses.rcp.control.XComboBox xComboBox4;
     private com.rameses.rcp.control.XComboBox xComboBox5;
-    private com.rameses.rcp.control.XDataTable xDataTable1;
     private com.rameses.rcp.control.XDataTable xDataTable2;
     private com.rameses.rcp.control.XDataTable xDataTable3;
     private com.rameses.rcp.control.XDataTable xDataTable4;

@@ -1,0 +1,14 @@
+/* v2.5.04.032-03011 */
+
+- TREAURY
+
+- BPLS 
+		
+- ASSESSOR
+	- Update on tax declaration specificlands info 
+	
+	
+- LANDTAX
+	- RPT Billing update (original av)
+
+

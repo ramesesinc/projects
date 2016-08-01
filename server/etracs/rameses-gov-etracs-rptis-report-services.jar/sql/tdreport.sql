@@ -94,12 +94,44 @@ WHERE f.objid = $P{faasid}
 GROUP BY dc.code, dc.name, pc.code, pc.name, lal.code, lal.name, ld.areatype, ld.assesslevel,
 	lspc.code, lspc.name, sub.code, sub.name 
 
+UNION ALL 
+
+
+SELECT
+	'plant/tree' AS propertytype,
+	pc.code AS dominantclasscode,
+	pc.name AS dominantclassification,
+	pc.code AS classcode,
+	pc.name AS classification,
+	ptal.name AS actualuse,
+	'HA' as areatype, 
+	1 as taxable,
+	ptd.assesslevel,
+	'PLANTS & TREES' AS specificclass,
+	ptal.name AS subclass,
+	SUM(0) AS area,	
+	SUM(ptd.marketvalue) AS marketvalue,
+	SUM(ptd.assessedvalue) AS assessedvalue,
+	SUM(0) AS areasqm,
+	SUM(0) AS areaha 
+FROM faas f
+	INNER JOIN rpu r ON f.rpuid = r.objid 
+	INNER JOIN propertyclassification pc ON r.classification_objid = pc.objid 
+	INNER JOIN planttreedetail ptd ON r.objid = ptd.landrpuid 
+	INNER JOIN planttreeassesslevel ptal ON ptd.actualuse_objid = ptal.objid 
+	INNER JOIN planttree pt ON ptd.planttree_objid = pt.objid 
+WHERE f.objid = $P{faasid}
+GROUP BY pc.name, ptal.name, ptd.assesslevel		
+
 
 [getLandPlantTreeAssessment]
 SELECT
-	'PLANT/TREE' AS propertytype,
+	'plant/tree' AS propertytype,
+	pc.code as classcode,
 	pc.name AS classification,
+	ptal.code AS actualcode,
 	ptal.name AS actualuse,
+	'PLANT/TREE' AS specificclass,
 	SUM(ptd.marketvalue) AS marketvalue,
 	ptd.assesslevel,
 	SUM(ptd.assessedvalue) AS assessedvalue

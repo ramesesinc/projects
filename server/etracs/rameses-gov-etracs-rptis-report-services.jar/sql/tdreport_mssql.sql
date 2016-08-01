@@ -62,6 +62,7 @@ GROUP BY
 	r.assesslevel, r.taxable 
 
 
+
 [getDetailedLandAssessment]
 SELECT 
 	'land' AS propertytype,
@@ -94,25 +95,55 @@ WHERE f.objid = $P{faasid}
 GROUP BY dc.code, dc.name, pc.code, pc.name, lal.code, lal.name, ld.areatype, ld.assesslevel,
 	lspc.code, lspc.name, sub.code, sub.name 
 
+UNION ALL 
 
-[getLandPlantTreeAssessment]
-SELECT 
-	'PLANT/TREE' AS propertytype,
+
+SELECT
+	'plant/tree' AS propertytype,
+	pc.code AS dominantclasscode,
+	pc.name AS dominantclassification,
 	pc.code AS classcode,
 	pc.name AS classification,
-	ptal.code AS actualusecode,
 	ptal.name AS actualuse,
-	bra.assesslevel, 
-	bra.marketvalue,
-	bra.assessedvalue,
-	r.totalareasqm AS area,
-	'SQM' AS areatype
+	'HA' as areatype, 
+	1 as taxable,
+	ptd.assesslevel,
+	'PLANTS & TREES' AS specificclass,
+	ptal.name AS subclass,
+	SUM(0) AS area,	
+	SUM(ptd.marketvalue) AS marketvalue,
+	SUM(ptd.assessedvalue) AS assessedvalue,
+	SUM(0) AS areasqm,
+	SUM(0) AS areaha 
 FROM faas f
 	INNER JOIN rpu r ON f.rpuid = r.objid 
 	INNER JOIN propertyclassification pc ON r.classification_objid = pc.objid 
-	INNER JOIN rpu_assessment bra ON r.objid = bra.rpuid 
-	INNER JOIN planttreeassesslevel ptal ON bra.actualuse_objid = ptal.objid 
-WHERE f.objid = $P{faasid}	
+	INNER JOIN planttreedetail ptd ON r.objid = ptd.landrpuid 
+	INNER JOIN planttreeassesslevel ptal ON ptd.actualuse_objid = ptal.objid 
+	INNER JOIN planttree pt ON ptd.planttree_objid = pt.objid 
+WHERE f.objid = $P{faasid}
+GROUP BY pc.name, ptal.name, ptd.assesslevel		
+
+
+[getLandPlantTreeAssessment]
+SELECT
+	'plant/tree' AS propertytype,
+	pc.code as classcode,
+	pc.name AS classification,
+	ptal.code AS actualcode,
+	ptal.name AS actualuse,
+	'PLANT/TREE' AS specificclass,
+	SUM(ptd.marketvalue) AS marketvalue,
+	ptd.assesslevel,
+	SUM(ptd.assessedvalue) AS assessedvalue
+FROM faas f
+	INNER JOIN rpu r ON f.rpuid = r.objid 
+	INNER JOIN propertyclassification pc ON r.classification_objid = pc.objid 
+	INNER JOIN planttreedetail ptd ON r.objid = ptd.landrpuid 
+	INNER JOIN planttreeassesslevel ptal ON ptd.actualuse_objid = ptal.objid 
+	INNER JOIN planttree pt ON ptd.planttree_objid = pt.objid 
+WHERE f.objid = $P{faasid}
+GROUP BY pc.name, ptal.name, ptd.assesslevel
 
 
 

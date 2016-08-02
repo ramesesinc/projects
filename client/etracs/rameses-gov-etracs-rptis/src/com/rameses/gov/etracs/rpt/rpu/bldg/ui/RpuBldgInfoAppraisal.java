@@ -26,23 +26,24 @@ public class RpuBldgInfoAppraisal extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        xDataTable6 = new com.rameses.rcp.control.XDataTable();
-        tabAppraisal = new javax.swing.JTabbedPane();
-        jPanel11 = new javax.swing.JPanel();
-        xDataTable9 = new com.rameses.rcp.control.XDataTable();
-        xDataTable1 = new com.rameses.rcp.control.XDataTable();
-        jPanel12 = new javax.swing.JPanel();
-        xDataTable2 = new com.rameses.rcp.control.XDataTable();
-        xDataTable4 = new com.rameses.rcp.control.XDataTable();
-        xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
-        xComboBox1 = new com.rameses.rcp.control.XComboBox();
+        jSplitPane2 = new javax.swing.JSplitPane();
+        xDataTable7 = new com.rameses.rcp.control.XDataTable();
+        tabAppraisal1 = new javax.swing.JTabbedPane();
+        jSplitPane3 = new javax.swing.JSplitPane();
+        xDataTable11 = new com.rameses.rcp.control.XDataTable();
+        xDataTable5 = new com.rameses.rcp.control.XDataTable();
+        jPanel13 = new javax.swing.JPanel();
+        xDataTable8 = new com.rameses.rcp.control.XDataTable();
+        xDataTable12 = new com.rameses.rcp.control.XDataTable();
+        xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
+        xComboBox2 = new com.rameses.rcp.control.XComboBox();
 
         setLayout(new java.awt.BorderLayout());
 
-        com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
-        xTitledBorder1.setTitle("Structural Type and Building Kind Information");
-        xDataTable6.setBorder(xTitledBorder1);
-        xDataTable6.setColumns(new com.rameses.rcp.common.Column[]{
+        jSplitPane2.setDividerLocation(80);
+        jSplitPane2.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
+
+        xDataTable7.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "classification"}
                 , new Object[]{"caption", "Classification*"}
@@ -139,17 +140,17 @@ public class RpuBldgInfoAppraisal extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.DecimalColumnHandler("#,##0.00", -1.0, -1.0, false, 2)}
             })
         });
-        xDataTable6.setDynamic(true);
-        xDataTable6.setHandler("structuralTypeListHandler");
-        xDataTable6.setImmediate(true);
-        xDataTable6.setName("selectedStructuralType"); // NOI18N
-        xDataTable6.setPreferredSize(new java.awt.Dimension(200, 90));
-        add(xDataTable6, java.awt.BorderLayout.NORTH);
+        xDataTable7.setDynamic(true);
+        xDataTable7.setHandler("structuralTypeListHandler");
+        xDataTable7.setImmediate(true);
+        xDataTable7.setName("selectedStructuralType"); // NOI18N
+        xDataTable7.setPreferredSize(new java.awt.Dimension(200, 90));
+        jSplitPane2.setLeftComponent(xDataTable7);
 
-        jPanel11.setLayout(new java.awt.BorderLayout());
+        jSplitPane3.setDividerLocation(80);
+        jSplitPane3.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
 
-        xDataTable9.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createEmptyBorder(0, 2, 2, 2), javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153))));
-        xDataTable9.setColumns(new com.rameses.rcp.common.Column[]{
+        xDataTable11.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "actualuse"}
                 , new Object[]{"caption", "Actual Use*"}
@@ -274,15 +275,14 @@ public class RpuBldgInfoAppraisal extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             })
         });
-        xDataTable9.setDepends(new String[] {"selectedStructuralType"});
-        xDataTable9.setDynamic(true);
-        xDataTable9.setHandler("bldgUseListHandler");
-        xDataTable9.setName("selectedBldgUse"); // NOI18N
-        xDataTable9.setPreferredSize(new java.awt.Dimension(200, 75));
-        jPanel11.add(xDataTable9, java.awt.BorderLayout.NORTH);
+        xDataTable11.setDepends(new String[] {"selectedStructuralType"});
+        xDataTable11.setDynamic(true);
+        xDataTable11.setHandler("bldgUseListHandler");
+        xDataTable11.setName("selectedBldgUse"); // NOI18N
+        xDataTable11.setPreferredSize(new java.awt.Dimension(200, 75));
+        jSplitPane3.setLeftComponent(xDataTable11);
 
-        xDataTable1.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createEmptyBorder(2, 2, 2, 2), javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153))));
-        xDataTable1.setColumns(new com.rameses.rcp.common.Column[]{
+        xDataTable5.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "floorno"}
                 , new Object[]{"caption", "Floor No."}
@@ -331,15 +331,15 @@ public class RpuBldgInfoAppraisal extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.DecimalColumnHandler("#,##0.00", -1.0, -1.0, false, 2)}
             })
         });
-        xDataTable1.setDepends(new String[] {"selectedBldgUse"});
-        xDataTable1.setDynamic(true);
-        xDataTable1.setHandler("floorHandler");
-        xDataTable1.setName("selectedFloor"); // NOI18N
-        jPanel11.add(xDataTable1, java.awt.BorderLayout.CENTER);
+        xDataTable5.setDepends(new String[] {"selectedBldgUse"});
+        xDataTable5.setDynamic(true);
+        xDataTable5.setHandler("floorHandler");
+        xDataTable5.setName("selectedFloor"); // NOI18N
+        jSplitPane3.setRightComponent(xDataTable5);
 
-        tabAppraisal.addTab("Actual Uses and Floor Information", jPanel11);
+        tabAppraisal1.addTab("Actual Uses and Floor Information", jSplitPane3);
 
-        xDataTable2.setColumns(new com.rameses.rcp.common.Column[]{
+        xDataTable8.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", null}
                 , new Object[]{"caption", "Code*"}
@@ -402,13 +402,13 @@ public class RpuBldgInfoAppraisal extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.DecimalColumnHandler("#,##0.00", -1.0, -1.0, false, 0)}
             })
         });
-        xDataTable2.setDepends(new String[] {"selectedStructuralType", "floor"});
-        xDataTable2.setDynamic(true);
-        xDataTable2.setHandler("additionalItemHandler");
-        xDataTable2.setImmediate(true);
-        xDataTable2.setName("selectedAdditionalItem"); // NOI18N
+        xDataTable8.setDepends(new String[] {"selectedStructuralType", "floor"});
+        xDataTable8.setDynamic(true);
+        xDataTable8.setHandler("additionalItemHandler");
+        xDataTable8.setImmediate(true);
+        xDataTable8.setName("selectedAdditionalItem"); // NOI18N
 
-        xDataTable4.setColumns(new com.rameses.rcp.common.Column[]{
+        xDataTable12.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "param.caption"}
                 , new Object[]{"caption", "Parameter"}
@@ -441,65 +441,68 @@ public class RpuBldgInfoAppraisal extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.DecimalColumnHandler("#,##0.00", -1.0, -1.0, false, 2)}
             })
         });
-        xDataTable4.setDepends(new String[] {"selectedAdditionalItem"});
-        xDataTable4.setDynamic(true);
-        xDataTable4.setHandler("paramListHandler");
-        xDataTable4.setName("selectedParam"); // NOI18N
-        xDataTable4.setPreferredSize(new java.awt.Dimension(0, 50));
+        xDataTable12.setDepends(new String[] {"selectedAdditionalItem"});
+        xDataTable12.setDynamic(true);
+        xDataTable12.setHandler("paramListHandler");
+        xDataTable12.setName("selectedParam"); // NOI18N
+        xDataTable12.setPreferredSize(new java.awt.Dimension(0, 50));
 
-        xFormPanel1.setPadding(new java.awt.Insets(0, 0, 0, 0));
+        xFormPanel2.setPadding(new java.awt.Insets(0, 0, 0, 0));
 
-        xComboBox1.setAllowNull(false);
-        xComboBox1.setCaption("Floor");
-        xComboBox1.setDepends(new String[] {"selectedStructuralType", "selectedFloor"});
-        xComboBox1.setDynamic(true);
-        xComboBox1.setExpression("#{item.floorno} - (#{item.bldgtypecode}) - #{item.actualusename}");
-        xComboBox1.setImmediate(true);
-        xComboBox1.setItems("floors");
-        xComboBox1.setName("floor"); // NOI18N
-        xComboBox1.setPreferredSize(new java.awt.Dimension(250, 22));
-        xFormPanel1.add(xComboBox1);
+        xComboBox2.setAllowNull(false);
+        xComboBox2.setCaption("Floor");
+        xComboBox2.setDepends(new String[] {"selectedStructuralType", "selectedFloor"});
+        xComboBox2.setDynamic(true);
+        xComboBox2.setExpression("#{item.floorno} - (#{item.bldgtypecode}) - #{item.actualusename}");
+        xComboBox2.setImmediate(true);
+        xComboBox2.setItems("floors");
+        xComboBox2.setName("floor"); // NOI18N
+        xComboBox2.setPreferredSize(new java.awt.Dimension(250, 22));
+        xFormPanel2.add(xComboBox2);
 
-        javax.swing.GroupLayout jPanel12Layout = new javax.swing.GroupLayout(jPanel12);
-        jPanel12.setLayout(jPanel12Layout);
-        jPanel12Layout.setHorizontalGroup(
-            jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel12Layout.createSequentialGroup()
+        javax.swing.GroupLayout jPanel13Layout = new javax.swing.GroupLayout(jPanel13);
+        jPanel13.setLayout(jPanel13Layout);
+        jPanel13Layout.setHorizontalGroup(
+            jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel13Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 657, Short.MAX_VALUE)
-                    .addGroup(jPanel12Layout.createSequentialGroup()
-                        .addComponent(xDataTable2, javax.swing.GroupLayout.DEFAULT_SIZE, 327, Short.MAX_VALUE)
+                .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(xFormPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 655, Short.MAX_VALUE)
+                    .addGroup(jPanel13Layout.createSequentialGroup()
+                        .addComponent(xDataTable8, javax.swing.GroupLayout.DEFAULT_SIZE, 325, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(xDataTable4, javax.swing.GroupLayout.PREFERRED_SIZE, 324, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(xDataTable12, javax.swing.GroupLayout.PREFERRED_SIZE, 324, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
-        jPanel12Layout.setVerticalGroup(
-            jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel12Layout.createSequentialGroup()
+        jPanel13Layout.setVerticalGroup(
+            jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel13Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(xDataTable2, javax.swing.GroupLayout.DEFAULT_SIZE, 132, Short.MAX_VALUE)
-                    .addComponent(xDataTable4, javax.swing.GroupLayout.DEFAULT_SIZE, 132, Short.MAX_VALUE))
+                .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(xDataTable8, javax.swing.GroupLayout.DEFAULT_SIZE, 121, Short.MAX_VALUE)
+                    .addComponent(xDataTable12, javax.swing.GroupLayout.DEFAULT_SIZE, 121, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
-        tabAppraisal.addTab("Additional Items and Adjustments", jPanel12);
+        tabAppraisal1.addTab("Additional Items and Adjustments", jPanel13);
 
-        add(tabAppraisal, java.awt.BorderLayout.CENTER);
+        jSplitPane2.setRightComponent(tabAppraisal1);
+
+        add(jSplitPane2, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel jPanel11;
-    private javax.swing.JPanel jPanel12;
-    private javax.swing.JTabbedPane tabAppraisal;
-    private com.rameses.rcp.control.XComboBox xComboBox1;
-    private com.rameses.rcp.control.XDataTable xDataTable1;
-    private com.rameses.rcp.control.XDataTable xDataTable2;
-    private com.rameses.rcp.control.XDataTable xDataTable4;
-    private com.rameses.rcp.control.XDataTable xDataTable6;
-    private com.rameses.rcp.control.XDataTable xDataTable9;
-    private com.rameses.rcp.control.XFormPanel xFormPanel1;
+    private javax.swing.JPanel jPanel13;
+    private javax.swing.JSplitPane jSplitPane2;
+    private javax.swing.JSplitPane jSplitPane3;
+    private javax.swing.JTabbedPane tabAppraisal1;
+    private com.rameses.rcp.control.XComboBox xComboBox2;
+    private com.rameses.rcp.control.XDataTable xDataTable11;
+    private com.rameses.rcp.control.XDataTable xDataTable12;
+    private com.rameses.rcp.control.XDataTable xDataTable5;
+    private com.rameses.rcp.control.XDataTable xDataTable7;
+    private com.rameses.rcp.control.XDataTable xDataTable8;
+    private com.rameses.rcp.control.XFormPanel xFormPanel2;
     // End of variables declaration//GEN-END:variables
 }

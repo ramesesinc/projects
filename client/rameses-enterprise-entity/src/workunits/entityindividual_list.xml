@@ -18,5 +18,20 @@
                  cols="entityno,lastname,firstname,middlename,address.text,birthdate,entityname"
                     icon="home/icons/entity.png"
                     orderBy="lastname,firstname"/>        
-   </invokers>
+    </invokers>
+   
+    <code>
+    <![CDATA[ 
+import com.rameses.seti2.models.*; 
+
+class EntityIndividualListModel extends CrudListModel {
+    
+    public void initColumn( def c ) {
+        if ( c.name == 'entityname' ) {
+            c.visible = false; 
+        }
+    }
+}    
+    ]]> 
+    </code>
 </workunit>

@@ -13,4 +13,19 @@
                  icon="home/icons/entityjuridical.png"/>  
         
    </invokers>
+   
+    <code>
+    <![CDATA[ 
+import com.rameses.seti2.models.*; 
+
+class EntityJuridicalListModel extends CrudListModel {
+    
+    public void initColumn( def c ) {
+        if ( c.name == 'entityname' ) {
+            c.visible = false; 
+        }
+    }
+}    
+    ]]> 
+    </code> 
 </workunit>

@@ -3,7 +3,7 @@
         <invoker type="entityjuridical:open" 
                  caption="Juridical" action="open"  
                  role="MASTER" index="-1"
-                 windowTitle="#{entity.entityno}" formTitle="#{entity.entityno}" formId="#{entity.objid}"/>
+                 windowTitle="Entity: #{entity.entityno}" formTitle="#{entity.entityno}" formId="#{entity.objid}"/>
     </invokers>
     <code class="com.rameses.entity.models.JuridicalEntityModel" />
     <pages>

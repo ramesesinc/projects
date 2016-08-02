@@ -4,14 +4,14 @@
  */
 package com.rameses.gov.etracs.bpls.view;
 
-import com.rameses.osiris2.themes.FormPage;
 import com.rameses.rcp.ui.annotations.Template;
+import com.rameses.seti2.views.WorkflowTaskFormPage;
 
 /**
  *
  * @author dell
  */
-@Template(FormPage.class)
+@Template(WorkflowTaskFormPage.class)
 public class BusinessApplicationPage extends javax.swing.JPanel {
 
     /**
@@ -248,6 +248,7 @@ public class BusinessApplicationPage extends javax.swing.JPanel {
         xLabel23.setPreferredSize(new java.awt.Dimension(0, 18));
         xFormPanel5.add(xLabel23);
 
+        lobList2.setName("entity"); // NOI18N
         lobList2.setShowAdd(false);
         lobList2.setShowCaption(false);
         lobList2.setShowRenew(false);

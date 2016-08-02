@@ -37,8 +37,20 @@
             @FormTitle
             def ftitle = "Business Pre-assessment";
             
-            def entity = [lobs:[], business:[address:[:]], taxfees:[]];
+            def entity = [lobs:[], business:[address:[:]], taxfees:[], option:'APPLICANT_INFO'];
             def  mode = "init";
+            
+            def infoModel = [
+                fetchList: { o->
+                    return entity.infos;
+                }
+            ] as BasicListModel;
+            
+            def taxfeeModel = [
+                fetchList: { o->
+                    return entity.taxfees;
+                }
+            ] as BasicListModel;
             
             void calculate() {
                 if(!entity.lobs) throw new Exception("please specify at least one line");
@@ -59,6 +71,8 @@
                         } 
                     }
                     entity.taxfees.sort{ it.sortindex } 
+                    infoModel.reload();
+                    taxfeeModel.reload();                    
                 } 
                 mode = "assess";
                 binding.refresh(); 
@@ -68,15 +82,29 @@
                 return Inv.lookupOpener("business:preassessment:printout", [entity: entity] );            
             }
             
+            
+            
             def calculate2() {
                 def p = [:];
                 p.putAll( entity );
                 p.orgtype = entity.business.orgtype;
                 def h = { o->
-                    println "FINISHED CALCULATING";
-                    o.infos.each {
-                        println it.attribute.name + " " + it.value + " " + it.lob;
+                    o.taxfees.each{ 
+                        if (it.taxfeetype=='TAX') { 
+                            it.sortindex=0; 
+                        } else if (it.taxfeetype=='REGFEE') { 
+                            it.sortindex = (it.lob?.objid? 1: 2); 
+                        } else if (it.taxfeetype=='OTHERCHARGE') { 
+                            it.sortindex = (it.lob?.objid? 3: 4); 
+                        } else { 
+                            it.sortindex = 5; 
+                        } 
                     }
+                    entity.infos = o.infos;
+                    entity.taxfees = o.taxfees.sort{ it.sortindex };
+                    infoModel.reload();
+                    taxfeeModel.reload();
+                    binding.refresh();
                 }   
                 return Inv.lookupOpener("rule:askinfo", [params:p, handler: h]);
             }

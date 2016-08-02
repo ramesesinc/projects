@@ -40,6 +40,7 @@ public class NonLocalAddressPage extends javax.swing.JPanel {
         txtprov = new com.rameses.rcp.control.XTextField();
         txtpin = new com.rameses.rcp.control.XTextField();
 
+        xFormPanel1.setCaption("Address");
         xFormPanel1.setCaptionWidth(100);
 
         cboType.setAllowNull(false);

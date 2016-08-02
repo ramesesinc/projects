@@ -1,5 +1,0 @@
-<workunit extends="wtemplates/ListController.xml" serviceName="BusinessRequirementTypeService" entityName="businessrequirementtype">
-    <invokers>
-        <invoker folderid="/explorer/master/bpls" caption="Business Requirement Types" index="4" role="MASTER"/>
-    </invokers>
-</workunit>

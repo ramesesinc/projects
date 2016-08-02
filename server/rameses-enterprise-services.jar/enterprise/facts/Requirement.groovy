@@ -6,11 +6,13 @@ public class Requirement {
 	String title;
 	String message;
 	boolean completed;
-	int sortorder;
+	int sortorder = 0;
 	boolean required;
+	
 
 	def Map toMap() {
 		return [
+			reftype: this.code,
 			code: this.code,
 			title: this.title,
 			message: this.message,

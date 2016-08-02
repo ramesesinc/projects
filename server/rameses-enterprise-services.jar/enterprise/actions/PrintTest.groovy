@@ -1,7 +1,6 @@
-package bpls.actions;
+package enterprise.actions;
 
 import com.rameses.rules.common.*;
-import bpls.facts.*;
 
 public class PrintTest implements RuleActionHandler {
 	public void execute(def params, def drools) {

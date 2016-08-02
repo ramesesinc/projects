@@ -42,7 +42,7 @@ class PersistenceService  {
 			return em.read(o);
 		}
 		else {
-			return em.find( o.findBy ).first();
+			return em.find( o.findBy ).first(1);
 		}
 	}
 

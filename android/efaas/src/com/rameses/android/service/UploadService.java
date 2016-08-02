@@ -95,7 +95,7 @@ public class UploadService extends AbstractService {
 		}
 		
         FileChunker fc = new FileChunker( bytes, title + ".png", "image/png" );
-        fc.setChunkSize(50);
+        fc.setChunkSize(1024);
         fc.parse(new ChunkHandler() {
 
             @Override

@@ -39,9 +39,6 @@ public class MasterFileActivity extends SettingsMenuActivity {
 		loadListData();
 		ApplicationUtil.changeTitle(this, "Master Files");
 		activity = this;
-		
-		ActionBar bar = getActionBar();
-	    //bar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#2f84c9")));
 	}
 	
 	protected void afterBackPressed() {

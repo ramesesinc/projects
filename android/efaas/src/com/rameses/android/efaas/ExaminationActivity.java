@@ -29,7 +29,6 @@ import com.rameses.android.efaas.adapter.ImageItemAdapter;
 import com.rameses.android.efaas.bean.ImageItem;
 import com.rameses.android.efaas.dialog.ErrorDialog;
 import com.rameses.android.efaas.dialog.InfoDialog;
-import com.rameses.android.efaas.util.InputMethodSwitcher;
 import com.rameses.client.android.Platform;
 import com.rameses.client.android.SessionContext;
 
@@ -52,11 +51,13 @@ public class ExaminationActivity  extends ControlActivity{
 		faasid = getIntent().getExtras().getString("faasid");
 		type = getIntent().getExtras().getString("type");
 		if(objid == null){
-			objid = UUID.randomUUID().toString();
+			objid = "EXM" + UUID.randomUUID().toString();
 		}else{
 			STATE = "UPDATE";
 		}
 
+		System.err.println("EXAMINATIONID : " + objid);
+		
 		setContentView(R.layout.activity_examination);
 		
 		findings = (EditText) findViewById(R.id.examination_findings);

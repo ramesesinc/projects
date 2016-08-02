@@ -103,17 +103,20 @@ public class RevisionSettingDetailActivity extends SettingsMenuActivity {
 			}
 		}
 		
-		list = (ListView) findViewById(R.id.listview_snyc);
-		list.setAdapter(new MasterFileMenuAdapter(this,data));
-		list.setBackgroundResource(0);
-		if(data.isEmpty()) list.setBackgroundResource(R.drawable.empty);
-		list.setOnItemClickListener(new OnItemClickListener(){
-			@Override
-			public void onItemClick(AdapterView<?> adapter, View view, int pos, long arg3) {
-				MasterFileMenuAdapter a = (MasterFileMenuAdapter) adapter.getAdapter();
-				String title = a.getListItem(pos).getTitle();
-			}	
-		});
+		if(data.isEmpty()){
+			setContentView(R.layout.activity_listview_snyc_empty);
+		}else{
+			setContentView(R.layout.activity_listview_snyc);
+			list = (ListView) findViewById(R.id.listview_snyc);
+			list.setAdapter(new MasterFileMenuAdapter(this,data));
+			list.setOnItemClickListener(new OnItemClickListener(){
+				@Override
+				public void onItemClick(AdapterView<?> adapter, View view, int pos, long arg3) {
+					MasterFileMenuAdapter a = (MasterFileMenuAdapter) adapter.getAdapter();
+					String title = a.getListItem(pos).getTitle();
+				}	
+			});
+		}
 	}
 	
 	void saveData(){

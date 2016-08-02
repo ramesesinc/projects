@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
+import java.util.UUID;
+
+import android.util.Base64;
 import com.rameses.android.db.ExaminationDB;
 import com.rameses.android.db.FaasDB;
 import com.rameses.android.db.ImageDB;
@@ -11,10 +15,14 @@ import com.rameses.android.db.LandDetailDB;
 import com.rameses.android.efaas.UploadActivity;
 import com.rameses.android.efaas.dialog.ErrorDialog;
 import com.rameses.android.efaas.dialog.InfoDialog;
+import com.rameses.android.efaas.util.ChunkHandler;
 import com.rameses.android.efaas.util.DataBuilder;
+import com.rameses.android.efaas.util.FileChunker;
 import com.rameses.client.services.AbstractService;
 
 public class UploadService extends AbstractService {
+	
+	Properties prop = null;
 
 	@Override
 	public String getServiceName() {
@@ -22,7 +30,6 @@ public class UploadService extends AbstractService {
 	}
 	
 	public Map upload(String faasid){
-		System.err.println("THE FAASID IS " + faasid);
 		Map faas = null;
 		try{
 			FaasDB faasdb = new FaasDB();
@@ -65,6 +72,62 @@ public class UploadService extends AbstractService {
 			return null;
 		}
 		return (Map) invoke("upload",faas);
+	}
+	
+	public void uploadImage(String imageid, final String faasid){
+		byte[] bytes = null; 
+		ImageDB db = new ImageDB();
+		String title = "unknown";
+		
+		try{
+			prop = db.find(imageid);
+		}catch(final Throwable t){
+			UploadActivity.activity.runOnUiThread(new Runnable() {
+			  public void run() {
+				  new ErrorDialog(UploadActivity.activity,t).show();
+			  }
+			});
+		}
+		
+		if(prop != null){
+			String img = prop.getProperty("image");
+			bytes = Base64.decode(img, Base64.DEFAULT);
+		}
+		
+        FileChunker fc = new FileChunker( bytes, title + ".png", "image/png" );
+        fc.setChunkSize(1024);
+        fc.parse(new ChunkHandler() {
+
+            @Override
+            public void start() {
+                Map header = new HashMap();
+                header.put("objid", UUID.randomUUID().toString());
+                header.put("refid", faasid);
+                header.put("title", prop.getProperty("title"));
+                header.put("filesize", null);
+                header.put("extension", "jpg");
+                
+                DBImageService svc = new DBImageService();
+                svc.saveHeader(header);
+            }
+
+            @Override
+            public void end() {
+                
+            }
+
+            @Override
+            public void handle(int i, byte[] bytes) {
+                Map item = new HashMap();
+                item.put("objid", UUID.randomUUID().toString());
+                item.put("parentid", prop.getProperty("objid"));
+                item.put("fileno", i);
+                item.put("byte", bytes);
+                
+                DBImageService svc = new DBImageService();
+                svc.saveItem(item);
+            }
+        });
 	}
 
 }

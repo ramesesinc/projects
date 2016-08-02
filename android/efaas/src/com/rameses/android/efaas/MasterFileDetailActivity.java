@@ -40,18 +40,30 @@ public class MasterFileDetailActivity extends SettingsMenuActivity{
 	
 	@Override
 	protected void onCreateProcess(Bundle savedInstanceState) {
-		activity = this;
 		setContentView(R.layout.activity_listview_snyc);
-		
-		progressDialog = new ProgressDialog(this);
-		progressDialog.setCancelable(false); 
 		
 		masterfile = getIntent().getExtras().getString("masterfile");
 		ApplicationUtil.changeTitle(this, masterfile);
 		
-		service = new MasterFileService();
-		
+		initComponents();
 		loadListData();
+	}
+	
+	protected void afterBackPressed() {
+		disposeMe(); 
+	} 
+	
+	protected void onStartProcess() {
+		super.onStartProcess();
+	}
+	
+	private void initComponents(){
+		activity = this;
+		
+		progressDialog = new ProgressDialog(this);
+		progressDialog.setCancelable(false); 
+		
+		service = new MasterFileService();
 		
 		Button button = (Button) findViewById(R.id.button_sync);
         button.setOnClickListener(new View.OnClickListener() {
@@ -62,14 +74,6 @@ public class MasterFileDetailActivity extends SettingsMenuActivity{
     			Platform.runAsync(new ActionProcess());
             }
         });
-	}
-	
-	protected void afterBackPressed() {
-		disposeMe(); 
-	} 
-	
-	protected void onStartProcess() {
-		super.onStartProcess();
 	}
 	
 	void loadListData(){
@@ -195,18 +199,22 @@ public class MasterFileDetailActivity extends SettingsMenuActivity{
 			}
 		}
 		
-		list = (ListView) findViewById(R.id.listview_snyc);
-		list.setAdapter(new MasterFileMenuAdapter(this,data));
-		list.setBackgroundResource(0);
-		if(data.isEmpty()) list.setBackgroundResource(R.drawable.empty);
-		list.setOnItemClickListener(new OnItemClickListener(){
-			@Override
-			public void onItemClick(AdapterView<?> adapter, View view, int pos, long arg3) {
-				MasterFileMenuAdapter a = (MasterFileMenuAdapter) adapter.getAdapter();
-				String title = a.getListItem(pos).getTitle();
-			}	
-		});
-		
+		if(data.isEmpty()){
+			setContentView(R.layout.activity_listview_snyc_empty);
+			initComponents();
+		}else{
+			setContentView(R.layout.activity_listview_snyc);
+			list = (ListView) findViewById(R.id.listview_snyc);
+			list.setAdapter(new MasterFileMenuAdapter(this,data));
+			list.setOnItemClickListener(new OnItemClickListener(){
+				@Override
+				public void onItemClick(AdapterView<?> adapter, View view, int pos, long arg3) {
+					MasterFileMenuAdapter a = (MasterFileMenuAdapter) adapter.getAdapter();
+					String title = a.getListItem(pos).getTitle();
+				}	
+			});
+			initComponents();
+		}
 	}
 	
 	void saveData(){

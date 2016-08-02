@@ -8,12 +8,10 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
 
-import android.app.ActionBar;
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -36,10 +34,8 @@ import com.rameses.android.efaas.util.DbBitmapUtility;
 public class ImageCaptureActivity extends ControlActivity {
 	
 	private static final int CAMERA_CAPTURE_IMAGE_REQUEST_CODE = 100;
-    private static final int CAMERA_CAPTURE_VIDEO_REQUEST_CODE = 200;
     public static final int MEDIA_TYPE_IMAGE = 1;
     public static final int MEDIA_TYPE_VIDEO = 2;
-    private static final String IMAGE_DIRECTORY_NAME = "ETRACS";
     private Uri fileUri;
     		
 	private ImageView image;
@@ -48,6 +44,7 @@ public class ImageCaptureActivity extends ControlActivity {
 	private String objid, examinationid;
 	private Bitmap bitmap = null;
 	private String data_title;
+	private Activity activity;
 	
 	public boolean isCloseable() { return false; }
 	
@@ -55,9 +52,12 @@ public class ImageCaptureActivity extends ControlActivity {
 	protected void onCreateProcess(Bundle savedInstanceState) {
 		ApplicationUtil.changeTitle(this, "Capture Image");
 		setContentView(R.layout.activity_image);
+		activity = this;
 		
 		objid = getIntent().getExtras().getString("objid");
 		examinationid = getIntent().getExtras().getString("examinationid");
+		
+		System.err.println("EXAMINATIONID : " + examinationid);
 		
 		image = (ImageView) findViewById(R.id.image_view);
 		title = (EditText) findViewById(R.id.image_title);
@@ -97,11 +97,10 @@ public class ImageCaptureActivity extends ControlActivity {
             	}else{
             		doUpdate();
             	}
+            	System.err.println("EXAMINATIONID : " + examinationid);
             }
         });
 		
-		ActionBar bar = getActionBar();
-	    //bar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#a6e20d")));
 	}
 	
 	protected void afterBackPressed() {

@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
-
+    android:layout_height="match_parent"
+    android:gravity="top|center"
+    android:orientation="vertical" >
+    
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -25,4 +27,20 @@
 
     </LinearLayout>
 
-</RelativeLayout>
+    <Button
+        android:id="@+id/button_sync"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:paddingLeft="30dp"
+        android:paddingRight="30dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:background="@color/default_button_color"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:layout_margin="10dp"
+        android:text="SYNC" />
+
+</LinearLayout>

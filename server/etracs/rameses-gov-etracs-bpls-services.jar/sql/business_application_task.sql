@@ -1,8 +1,13 @@
-[findCurrentStatus]
-SELECT state 
-FROM business_application_task 
-WHERE applicationid=$P{applicationid} AND enddate IS NULL
+[getTasks]
+select * from business_application_task 
+where refid=$P{refid} 
+order by startdate 
 
+[findCurrentStatus]
+select * from business_application_task 
+where refid=$P{refid} 
+	and enddate is null 
+order by startdate 
 
 [findCurrentStatusByAppno]
 SELECT bt.state 

@@ -11,5 +11,8 @@
         <folder id="rulemgmt">
             <folder id="ctc" caption="Community Tax Certificate" index="600"/>
         </folder>
+        <folder id="report" caption="Reports">
+            <folder id="ctc" caption="CTC" />
+        </folder>
     </folder>
 </folders>

@@ -40,7 +40,7 @@ public class BusinessBillingService  {
 	@Service("NumberService")
 	def numSvc;
 
-	@Service(value="SMSService", connection="notification_proxy") 
+	@Service(value="SMSService") 
 	def smsSvc; 
 
 	@ProxyMethod

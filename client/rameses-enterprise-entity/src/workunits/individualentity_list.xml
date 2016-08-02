@@ -9,7 +9,7 @@
 </workunit>
 -->
 <workunit extends="com/rameses/seti2/templates/CrudList.xml" schemaName="vw_entityindividual" 
-          entitySchemaName="individualentity" allowDelete="false">
+          entitySchemaName="individualentity" allowDelete="false" orderBy="entityname">
     <invokers>
         <invoker folderid="/explorer/master/entity" caption="Individual" role="MASTER" action="init" />
    </invokers>

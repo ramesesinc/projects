@@ -16,6 +16,9 @@ class ForProcessNotificationTask {
 	@Service('NotificationService')
 	def notificationSvc;
 
+	@Context
+	def appCtx;	
+
 	@Schedule(interval=2)
 	public void execute( task ) { 
         if ( !settings.isEnabled() ) { 
@@ -73,7 +76,10 @@ class ForProcessNotificationTask {
 	}
 
     def getDataDir() { 
-        def tmpdir = new File( System.getProperty("java.io.tmpdir") );
+	   	def datadir = appCtx.conf['notification.datadir']; 
+	   	if ( !datadir ) datadir = System.getProperty("java.io.tmpdir");
+
+		def tmpdir = new File( datadir );
         def basedir = new File( tmpdir, "rameses/notification-data" );
         if ( !basedir.exists() ) { 
             basedir.mkdirs(); 

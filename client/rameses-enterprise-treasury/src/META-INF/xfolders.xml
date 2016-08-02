@@ -6,7 +6,10 @@
             </folder>
         </folder>
         <folder id="txn" caption="Transaction">
-            <folder id="treasury" caption="Treasury" index="5"/>
+            <folder id="treasury" caption="Treasury" index="5">
+                <folder id="reports" caption="Reports" index="500"/>
+                <folder id="tools" caption="Tools" index="700"/>                
+            </folder>
         </folder>
         <folder id="report" caption="Report">
             <folder id="treasury" caption="Treasury" index="5"/>

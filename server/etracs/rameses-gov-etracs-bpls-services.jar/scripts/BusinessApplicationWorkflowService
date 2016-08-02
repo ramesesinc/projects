@@ -110,8 +110,11 @@ public class BusinessApplicationWorkflowService extends ActiveWorkflowService {
 			ba.update( [objid:data.objid, state:'ASSESSMENT'] );
 			env.TASK_ASSIGNEE = data.approver;
 		}
-		else if(r.state=='payment') {
+		else if(r.state=='payment') { 
 			ba.update( [objid:data.objid, state:'RELEASE'] );
+		}
+		else if(r.state=='assign-issuing-officer') {
+			env.TASK_ASSIGNEE = roleSvc.getCurrentUser(); 
 		}
 		else if(r.state=='release' && r.action == 'revert') { 
 			ba.update([ objid: data.objid, state: 'PAYMENT' ]); 
@@ -121,7 +124,7 @@ public class BusinessApplicationWorkflowService extends ActiveWorkflowService {
 			]); 
 			env.TASK_ASSIGNEE = data.approver; 
 		}
-		else if( r.state == 'release') {
+		else if( r.state=='release' && r.to=='end' ) {
 			appSvc.release( data );
 			data.state = 'COMPLETED';
 		} 

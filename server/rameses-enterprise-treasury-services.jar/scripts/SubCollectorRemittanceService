@@ -29,16 +29,17 @@ class SubCollectorRemittanceService  {
 	}
 
 	@ProxyMethod
-	public def open( entity ) {
-		entity = em.read(entity)	
-		entity.items = getItems(entity)
-		return entity 
+	public def open( entity ) { 
+		entity = em.read(entity); 	
+		entity.items = getItems(entity); 
+		entity.otherpayments = em.getRemittedChecks([ remittanceid: entity.objid ]); 
+		return entity; 
 	}
 
 
 	@ProxyMethod
 	public def getUremittedCollections(def p) {
-		p.subcollector = [objid:env.USERID, name:env.USER];
+		p.subcollector = [objid:env.USERID, name:env.NAME, title:env.JOBTITLE];
 		if(!p.collector) {
 			p.items = [];
 			p.checksum = [:];
@@ -105,11 +106,13 @@ class SubCollectorRemittanceService  {
 	}
 
 	@ProxyMethod
-	public def generateDCR(objid) {
-		def entity = open([objid:objid])
-		entity.cashbreakdown.each{
-			it.qty = it.qty.toString()
+	public def generateDCR( objid ) {
+		def entity = open([ objid: objid ]);
+		entity.denomination = [:]; 
+		entity.cashbreakdown.each{ o-> 
+			entity.denomination.put( o.denomination.toInteger(), [qty: o.qty, amount: o.amount]); 
 		}
+
 		entity.collectionsummaries.each{
 			it.receivedstartseries = it.receivedstartseries.toString()
 			it.receivedendseries = it.receivedendseries.toString()

@@ -72,9 +72,9 @@ class ForwardCashTicketController {
         def qty = new java.math.BigDecimal( entity.qty.toString() ); 
         def den = new java.math.BigDecimal( formtype.denomination.toString() ); 
         def nres = (qty.toDouble() % den.toDouble()); 
-        if ( nres != 0.0 ) { 
-            throw new Exception('Quantity must be divisible by ' + formtype.denomination);
-        } 
+        //if ( nres != 0.0 ) { 
+        //    throw new Exception('Quantity must be divisible by ' + formtype.denomination);
+        //} 
         
         entity.reason = 'FORWARD BALANCE'; 
         entity.remarks = 'FORWARD BALANCE'; 

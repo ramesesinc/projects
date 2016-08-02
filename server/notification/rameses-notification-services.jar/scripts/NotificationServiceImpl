@@ -26,6 +26,21 @@ class NotificationServiceImpl {
             return em.getAllMessages( params ); 
         } 
 
+        if ( params.filetypes ) { 
+            def filters = []; 
+            def sval = params.filetypes.collect{ it.filetype }.unique().join("','"); 
+            if ( sval ) filters << " filetype IN ('"+ sval +"') "; 
+
+            sval = params.filetypes.collect{ it.recipientid }.unique().join("','"); 
+            if ( sval ) filters << " recipientid IN ('"+ sval +"') "; 
+
+            def m = [ filter: filters.join(' AND ') ]; 
+            if ( params._start ) m._start = params._start; 
+            if ( params._limit ) m._limit = params._limit; 
+            
+            return em.getMessagesByCustomFilter([ filter: filters.join(' AND ') ]);  
+        } 
+
         def fmap = [ recipientid: params.recipientid ];
         if ( params.recipienttype=='group' ) {
         	fmap.recipienttype = params.recipienttype; 

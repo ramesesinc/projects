@@ -6,6 +6,9 @@ class CashBookRemittanceInterceptor {
 	@ActiveDB('remittance') 
 	def remdb; 
 
+	@ActiveDB('cashbook_tool') 
+	def cashbook_tool; 
+
 	@Service("CashBookPostService")
 	def cashbookPostSvc;	
 
@@ -18,5 +21,33 @@ class CashBookRemittanceInterceptor {
 			o.reftype = 'remittance'; 
 			cashbookPostSvc.postCR( o ); 
 		} 
+	} 
+
+	@After( pattern="RemittanceService.revert" ) 
+	public void afterRevert( evt ) { 
+		def params = evt.args[0]; 
+		if ( !params.objid ) return; 
+
+		cashbook_tool.getEntriesByRef([ refid: params.objid ]).each{ o-> 
+			cashbook_tool.removeCashBookEntry( o );  
+			def balinfo = cashbook_tool.findRunningBalance([ cashbookid: o.parentid, startlineno:0, endlineno:o.lineno ]); 
+			rebuild( o, balinfo ); 
+		} 
+	} 
+
+	private void rebuild( o, balinfo ) { 
+		if ( !o ) return; 
+
+		def runbal = balinfo.balance; 
+		def lineno = o.lineno;  
+		cashbook_tool.getCashBookEntries([ cashbookid: o.parentid, lineno:o.lineno ]).each{ x->  
+			if ( x.dr > 0 ) runbal += x.dr; 
+			else if ( x.cr > 0 ) runbal -= x.cr; 
+
+			cashbook_tool.updateCashBookEntryBalance([ objid: x.objid, runbalance: runbal, lineno: lineno ]); 
+			lineno += 1; 			
+		} 
+
+		cashbook_tool.updateCashBookBalance([ cashbookid: o.parentid ]);  
 	} 
 } 

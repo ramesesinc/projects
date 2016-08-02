@@ -44,7 +44,7 @@ class SubCollectorRemittanceReportController {
         getSubReports : {
             return [ 
                 new SubReport("CollectionSummary", reportPath + "collectionsummary.jasper"),
-                new SubReport("Denomination", reportPath + "denomination.jasper"),
+                new SubReport("OtherPayment", reportPath + "otherpayment.jasper"),
             ] as SubReport[];    
          }
     ] as ReportModel 

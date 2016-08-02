@@ -41,7 +41,6 @@
     
     <code>
 <![CDATA[
-
 import com.rameses.rcp.annotations.*
 import com.rameses.rcp.common.*
 import com.rameses.osiris2.client.*
@@ -74,7 +73,7 @@ class AFRIS extends StockRequestController {
     ] 
 
     void initReqCollection() {
-        def params = [ types: InvokerUtil.lookupOpeners("afreq:type:collection", [:]) ]; 
+        def params = [ types: getRequestTypes('collection') ]; 
         def afreqafo = InvokerUtil.lookup("afreq:afo");  
         if ( afreqafo ) params.afo = true; 
 
@@ -83,12 +82,12 @@ class AFRIS extends StockRequestController {
     }
 
     void initReqPurchase() {
-        def params = [ types: InvokerUtil.lookupOpeners("afreq:type:purchase", [:]) ]; 
+        def params = [ types: getRequestTypes('purchase') ]; 
         initReq( params ); 
     }
 
     void initReqSale() {
-        def params = [ types: InvokerUtil.lookupOpeners("afreq:type:sale", [:]) ]; 
+        def params = [ types: getRequestTypes('sale') ]; 
         def afreqafo = InvokerUtil.lookup("afreq:afo");  
         if ( afreqafo ) params.afo = true;         
         
@@ -111,26 +110,42 @@ class AFRIS extends StockRequestController {
         if ( !requestedbylist ) {
             requestedbylist = [[objid: user.env.USERID, name:user.env.FULLNAME, title:user.env.JOBTITLE]]; 
         } 
-        entity.requester = requestedbylist[0]; 
+
+        requestedbylist = requestedbylist.collect{[ 
+            objid: it.objid, name: it.name, lastname: it.lastname, 
+            firstname: it.firstname, middlename: it.middlename, 
+            jobtitle: it.jobtitle 
+        ]}.unique().sort{ it.name }  
+        
+        entity.requester = (requestedbylist? requestedbylist.first(): null); 
         super.create(); 
     } 
 
     void open() {
         super.open();
         title = "Request Accountable Form - " + entity.reqno;
-        reqTypes = InvokerUtil.lookupOpeners( "afris:type", [:] )
-        reqType =  it.properties.reqreqTypes.find{type == entity.reqtype }
-        requestedbylist = [ entity.requester ]
+        requestedbylist = [ entity.requester ]; 
+        reqTypes = getRequestTypes( entity.reqtype ); 
+        reqType = reqTypes.find{( it.properties?.reqtype==entity.reqtype )} 
     }
     
-    void delete() {
-        if(! MsgBox.confirm("Are you sure you want to delete this request? ")) return ;
-        
-        service.deleteRequest(entity );
-        entity.state = 'DISAPPROVED'
+    def delete() {
+        if( MsgBox.confirm("Are you sure you want to delete this request? ")) { 
+            service.deleteRequest(entity );
+            entity.state = 'DISAPPROVED'; 
+            return '_close';
+        } else {
+            return null; 
+        } 
     }
+    
+    def getRequestTypes( type ) { 
+        def stype = type.toString().toLowerCase(); 
+        if ( stype == 'issuance' ) stype='collection'; 
+        
+        return InvokerUtil.lookupOpeners('afreq:type:'+ stype, [:]); 
+    }  
 }
-
-]]>
+    ]]>
     </code>
 </workunit>

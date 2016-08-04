@@ -140,12 +140,12 @@ WHERE rl.objid = $P{rptledgerid}
 
 [deletePaidOnlineItems]  
 DELETE FROM rptbill_ledger_item 
-WHERE billid = $P{billid}
+WHERE rptledgerid = $P{rptledgerid}
 
 
 [deletePaidOnlineAccounts]  
 DELETE FROM rptbill_ledger_account 
-WHERE billid = $P{billid}
+WHERE rptledgerid = $P{rptledgerid}
 
 
 [deleteRptBillLedgers]
@@ -721,4 +721,21 @@ where cro.rptreceiptid = $P{rptreceiptid}
   and cro.rptledgerid = $P{rptledgerid}
   and rliq.objid = cro.rptledgeritemqtrlyid 
   and rliq.rptledgerid = cro.rptledgerid 
+
+
+
+[deleteLedgerQtrlyItemFullyPaid]
+delete from rptledgeritem_qtrly 
+where parentid in (
+	select objid 
+	from rptledgeritem
+	where rptledgerid = $P{rptledgerid}
+  	and fullypaid = 1 
+)  
+
+
+[deleteLedgerItemFullyPaid]
+delete from rptledgeritem
+where rptledgerid = $P{rptledgerid}
+	and fullypaid = 1 
 

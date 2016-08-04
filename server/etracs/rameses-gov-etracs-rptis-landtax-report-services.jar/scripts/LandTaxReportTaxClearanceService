@@ -54,7 +54,7 @@ class LandTaxReportTaxClearanceService
             if (it.lastyearpaid < cert.year) 
                 throw new Exception('TD No. ' + it.tdno + ' is not cleared for the year ' + cert.year + '.')
             if (it.lastyearpaid == cert.year && it.lastqtrpaid < cert.qtr) 
-                throw new Exception('TD No. ' + it.tdno + ' is not cleared for the ' + formalizeNumber(cert.qtr) + ' qtr of ' + cert.year + '.' )
+                throw new Exception('TD No. ' + it.tdno + ' is not cleared for the ' + util.formalizeNumber(cert.qtr) + ' qtr of ' + cert.year + '.' )
         }
 
         def year = dtSvc.serverYear

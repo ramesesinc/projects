@@ -18,9 +18,6 @@ class LOVListModel extends ComponentBean {
     void init() {
         if(!listName ) throw new Exception("Please specify an listName in LOVListModel");
         lovList = lovService.getKeyValues( listName );
-        lovList.each {
-            println it;
-        }
     }
     
     public String getLov() {

@@ -22,6 +22,15 @@
                 def date;
                 def numdays;
                 def amount;
+                def monthyear;
+                def qtr;
+                
+                def qtrList = [1,2,3,4];
+                
+                def monthList = [
+                    [year:2016, month:1, monthname:'JAN'],
+                    [year:2016, month:2, monthname:'FEB'],
+                ];
                 
                 def doOk() {
                     if(!handler) 

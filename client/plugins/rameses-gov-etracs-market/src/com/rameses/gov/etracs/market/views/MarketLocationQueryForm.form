@@ -33,7 +33,6 @@
       <SubComponents>
         <Component class="com.rameses.rcp.control.XComboBox" name="xComboBox1">
           <Properties>
-            <Property name="allowNull" type="boolean" value="false"/>
             <Property name="caption" type="java.lang.String" value="Market Location"/>
             <Property name="captionWidth" type="int" value="120"/>
             <Property name="expression" type="java.lang.String" value="#{item.code} #{item.name}"/>

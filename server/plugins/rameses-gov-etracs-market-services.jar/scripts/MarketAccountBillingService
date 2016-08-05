@@ -2,7 +2,7 @@ import com.rameses.annotations.*;
 import java.text.*;
 import com.rameses.functions.*;
 
-class MarketBillingService {
+class MarketAccountBillingService {
 	
 	@DataContext("market_account")
 	def acct;
@@ -21,7 +21,7 @@ class MarketBillingService {
 	@ProxyMethod
 	public def getBilling( def o ) {
 		def p = [:];
-		if(o.acctid) p.acctid = o.acctid;
+		if(o.acctid) p.objid = o.acctid;
 		else if(o.acctno) p.acctno = o.acctno;
 
 		def a = acct.find( p ).first();
@@ -84,6 +84,7 @@ class MarketBillingService {
 		}
 		list.each {
 			it.amount = rate * it.days;
+			it.balance = it.amount;
 			it.monthname = monthNames[it.month-1];
 			it.item = itemacct.find([objid:'ITMACCT-66ea9f6a:15543d56b21:-7f8c']).first(); 
 		}

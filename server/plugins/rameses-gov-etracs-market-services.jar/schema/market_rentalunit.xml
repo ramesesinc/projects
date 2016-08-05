@@ -12,7 +12,8 @@
 		<complex name="section" ref="market_section" jointype="many-to-one" required="false" includefields="objid,name">
 			<key field="sectionid" target="objid" />
 		</complex>
-		<complex name="cluster" ref="market_cluster" jointype="many-to-one" required="false" includefields="objid,name">
+		<complex name="cluster" ref="market_cluster" jointype="many-to-one" required="false" 
+			includefields="objid,name,description">
 			<key field="clusterid" target="objid" />
 		</complex>
 		<field name="term" required="true" lov="MARKET_PAYMENT_TERMS" defaultValue="DAILY"/>

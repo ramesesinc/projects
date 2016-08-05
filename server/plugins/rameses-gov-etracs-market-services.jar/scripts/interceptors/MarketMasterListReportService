@@ -1,0 +1,27 @@
+import com.rameses.annotations.*;
+import java.text.*;
+import com.rameses.functions.*;
+
+class MarketMasterListReportService {
+	
+	@DataContext("market_account")
+	def acct;
+
+	@After(pattern="FormReportService.getParameters", eval="#{args[0].reportid == 'market_master_list' }")
+	public void getParameters( def evt ) {
+		def result = evt.result;
+		def params = [];
+		params << [ type:'date', caption:'Period', name:'period', required:true ];
+		result.parameters = params;
+	}
+
+	@After(pattern="FormReportService.getData", eval="#{args[0].reportid == 'market_master_list' }")
+	public void getData( def evt ) {
+		def p = evt.args[0];
+		def result = evt.result;
+		result.data = acct.list();
+	}
+
+
+
+}

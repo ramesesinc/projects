@@ -39,7 +39,7 @@
         <Property name="opaque" type="boolean" value="false"/>
       </Properties>
       <SubComponents>
-        <Component class="com.rameses.rcp.control.XButton" name="xButton2">
+        <Component class="com.rameses.rcp.control.XButton" name="btnView">
           <Properties>
             <Property name="borderPainted" type="boolean" value="false"/>
             <Property name="contentAreaFilled" type="boolean" value="false"/>
@@ -52,7 +52,7 @@
             <Property name="toolTipText" type="java.lang.String" value="View Record"/>
           </Properties>
         </Component>
-        <Component class="com.rameses.rcp.control.XButton" name="xButton1">
+        <Component class="com.rameses.rcp.control.XButton" name="btnAdd">
           <Properties>
             <Property name="borderPainted" type="boolean" value="false"/>
             <Property name="caption" type="java.lang.String" value=""/>
@@ -64,6 +64,7 @@
             </Property>
             <Property name="name" type="java.lang.String" value="addEntity" noResource="true"/>
             <Property name="toolTipText" type="java.lang.String" value="Add New Record"/>
+            <Property name="visibleWhen" type="java.lang.String" value="#{allowCreate == true}"/>
           </Properties>
         </Component>
       </SubComponents>
@@ -116,11 +117,11 @@
             <CodeMethod name="add" class="java.awt.Container" parameterTypes="java.awt.Component"/>
           </StatementProvider>
           <Parameters>
-            <CodeExpression id="4_xButton2">
-              <CodeVariable name="xButton2" type="8194" declaredType="com.rameses.rcp.control.XButton"/>
+            <CodeExpression id="4_btnView">
+              <CodeVariable name="btnView" type="8194" declaredType="com.rameses.rcp.control.XButton"/>
               <ExpressionOrigin>
                 <ExpressionProvider type="ComponentRef">
-                  <ComponentRef name="xButton2"/>
+                  <ComponentRef name="btnView"/>
                 </ExpressionProvider>
               </ExpressionOrigin>
             </CodeExpression>
@@ -132,11 +133,11 @@
             <CodeMethod name="add" class="java.awt.Container" parameterTypes="java.awt.Component"/>
           </StatementProvider>
           <Parameters>
-            <CodeExpression id="5_xButton1">
-              <CodeVariable name="xButton1" type="8194" declaredType="com.rameses.rcp.control.XButton"/>
+            <CodeExpression id="5_btnAdd">
+              <CodeVariable name="btnAdd" type="8194" declaredType="com.rameses.rcp.control.XButton"/>
               <ExpressionOrigin>
                 <ExpressionProvider type="ComponentRef">
-                  <ComponentRef name="xButton1"/>
+                  <ComponentRef name="btnAdd"/>
                 </ExpressionProvider>
               </ExpressionOrigin>
             </CodeExpression>

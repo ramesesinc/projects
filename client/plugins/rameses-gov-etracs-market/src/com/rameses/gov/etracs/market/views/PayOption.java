@@ -38,6 +38,10 @@ public class PayOption extends javax.swing.JPanel {
         xIntegerField1 = new com.rameses.rcp.control.XIntegerField();
         xRadio3 = new com.rameses.rcp.control.XRadio();
         xDecimalField1 = new com.rameses.rcp.control.XDecimalField();
+        xRadio5 = new com.rameses.rcp.control.XRadio();
+        xComboBox1 = new com.rameses.rcp.control.XComboBox();
+        xRadio6 = new com.rameses.rcp.control.XRadio();
+        xComboBox2 = new com.rameses.rcp.control.XComboBox();
 
         xRadio1.setName("payOption"); // NOI18N
         xRadio1.setOptionValue("FULL");
@@ -94,6 +98,39 @@ public class PayOption extends javax.swing.JPanel {
         xDecimalField1.setVisibleWhen("#{payOption == 'SPECIFYAMOUNT' }");
         xFormPanel1.add(xDecimalField1);
 
+        xRadio5.setCaption("Up to date");
+        xRadio5.setName("payOption"); // NOI18N
+        xRadio5.setOptionValue("MONTH");
+        xRadio5.setShowCaption(false);
+        xRadio5.setText("Up to Month");
+        xFormPanel1.add(xRadio5);
+
+        xComboBox1.setCellPadding(new java.awt.Insets(0, 20, 0, 0));
+        xComboBox1.setDepends(new String[] {"payOption"});
+        xComboBox1.setExpression("#{item.monthname} #{item.year}");
+        xComboBox1.setItems("monthList");
+        xComboBox1.setName("monthyear"); // NOI18N
+        xComboBox1.setPreferredSize(new java.awt.Dimension(150, 20));
+        xComboBox1.setShowCaption(false);
+        xComboBox1.setVisibleWhen("#{payOption == 'MONTH' }");
+        xFormPanel1.add(xComboBox1);
+
+        xRadio6.setCaption("Up to date");
+        xRadio6.setName("payOption"); // NOI18N
+        xRadio6.setOptionValue("QTR");
+        xRadio6.setShowCaption(false);
+        xRadio6.setText("Up to Qtr");
+        xFormPanel1.add(xRadio6);
+
+        xComboBox2.setCellPadding(new java.awt.Insets(0, 20, 0, 0));
+        xComboBox2.setDepends(new String[] {"payOption"});
+        xComboBox2.setItems("qtrList");
+        xComboBox2.setName("qtr"); // NOI18N
+        xComboBox2.setPreferredSize(new java.awt.Dimension(150, 20));
+        xComboBox2.setShowCaption(false);
+        xComboBox2.setVisibleWhen("#{payOption == 'QTR' }");
+        xFormPanel1.add(xComboBox2);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -107,8 +144,8 @@ public class PayOption extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(25, Short.MAX_VALUE))
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 272, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(57, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -117,6 +154,8 @@ public class PayOption extends javax.swing.JPanel {
     }//GEN-LAST:event_xRadio3ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private com.rameses.rcp.control.XComboBox xComboBox1;
+    private com.rameses.rcp.control.XComboBox xComboBox2;
     private com.rameses.rcp.control.XDateField xDateField1;
     private com.rameses.rcp.control.XDecimalField xDecimalField1;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
@@ -125,5 +164,7 @@ public class PayOption extends javax.swing.JPanel {
     private com.rameses.rcp.control.XRadio xRadio2;
     private com.rameses.rcp.control.XRadio xRadio3;
     private com.rameses.rcp.control.XRadio xRadio4;
+    private com.rameses.rcp.control.XRadio xRadio5;
+    private com.rameses.rcp.control.XRadio xRadio6;
     // End of variables declaration//GEN-END:variables
 }

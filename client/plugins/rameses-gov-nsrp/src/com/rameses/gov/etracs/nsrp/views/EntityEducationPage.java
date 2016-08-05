@@ -33,8 +33,8 @@ public class EntityEducationPage extends javax.swing.JPanel {
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
         xTextField1 = new com.rameses.rcp.control.XTextField();
         xTextField2 = new com.rameses.rcp.control.XTextField();
-        xDateField1 = new com.rameses.rcp.control.XDateField();
-        xDateField2 = new com.rameses.rcp.control.XDateField();
+        xIntegerField1 = new com.rameses.rcp.control.XIntegerField();
+        xIntegerField2 = new com.rameses.rcp.control.XIntegerField();
         jScrollPane1 = new javax.swing.JScrollPane();
         xTextArea1 = new com.rameses.rcp.control.XTextArea();
 
@@ -50,15 +50,15 @@ public class EntityEducationPage extends javax.swing.JPanel {
         xTextField2.setRequired(true);
         xFormPanel1.add(xTextField2);
 
-        xDateField1.setText("xDateField1");
-        xDateField1.setCaption("From");
-        xDateField1.setName("entity.fromdate"); // NOI18N
-        xFormPanel1.add(xDateField1);
+        xIntegerField1.setText("xIntegerField1");
+        xIntegerField1.setCaption("From");
+        xIntegerField1.setName("entity.fromyear"); // NOI18N
+        xFormPanel1.add(xIntegerField1);
 
-        xDateField2.setText("xDateField2");
-        xDateField2.setCaption("To");
-        xDateField2.setName("entity.todate"); // NOI18N
-        xFormPanel1.add(xDateField2);
+        xIntegerField2.setText("xIntegerField1");
+        xIntegerField2.setCaption("to");
+        xIntegerField2.setName("entity.toyear"); // NOI18N
+        xFormPanel1.add(xIntegerField2);
 
         jScrollPane1.setPreferredSize(new java.awt.Dimension(0, 63));
 
@@ -88,9 +88,9 @@ public class EntityEducationPage extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane jScrollPane1;
-    private com.rameses.rcp.control.XDateField xDateField1;
-    private com.rameses.rcp.control.XDateField xDateField2;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
+    private com.rameses.rcp.control.XIntegerField xIntegerField1;
+    private com.rameses.rcp.control.XIntegerField xIntegerField2;
     private com.rameses.rcp.control.XTextArea xTextArea1;
     private com.rameses.rcp.control.XTextField xTextField1;
     private com.rameses.rcp.control.XTextField xTextField2;

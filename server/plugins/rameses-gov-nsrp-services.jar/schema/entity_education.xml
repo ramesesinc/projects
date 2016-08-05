@@ -7,8 +7,8 @@
 		</complex>
 		<field name="schoolname" required="true" caption="School"/>
 		<field name="course" required="true" caption="Course"/>
-		<field name="fromdate" required="true" type="date" caption="From"/>
-		<field name="todate" required="true" type="date" caption="To"/>
+		<field name="fromyear" required="true" caption="From"/>
+		<field name="toyear" required="true" caption="To"/>
 		<field name="awards"/>
 	</element>
 </schema>

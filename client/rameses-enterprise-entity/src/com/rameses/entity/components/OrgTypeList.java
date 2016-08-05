@@ -41,7 +41,7 @@ public class OrgTypeList extends XComponentPanel {
     public void setName(String name) {
         super.setName(name);
         if(Beans.isDesignTime()) {
-            component.setName(name);
+            component.setExpression(name);
         }
     }
     

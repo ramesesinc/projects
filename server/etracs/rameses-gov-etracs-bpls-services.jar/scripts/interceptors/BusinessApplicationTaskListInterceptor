@@ -1,0 +1,20 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+
+
+public class BusinessApplicationTaskListInterceptor {
+
+	@Env
+	def env;
+
+
+
+	@Before(pattern="WorkflowTaskListService.getList", eval="#{args[0].processname == 'business_application' }")
+	public void getWorkflowList(def evt) { 
+		def o = evt.args[0];
+		
+
+	}
+
+}

@@ -8,14 +8,11 @@ import bpls.actions.*;
 
 public class BPRequirementRuleService  {
 
-	@Resource("RuleService")	
+	@Resource("RuleExecutorService")	
 	def ruleSvc;
 
 	@ActiveDB("rule")
 	def ruleDB;
-
-	@ActiveDB("lob")
-	def lob;
 
 	@Service("BusinessRequirementTypeService")
 	def br;

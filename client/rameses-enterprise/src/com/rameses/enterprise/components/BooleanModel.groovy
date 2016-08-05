@@ -11,18 +11,25 @@ class BooleanYesNoModel extends ComponentBean {
     def trueValue;
     def falseValue;
     
-    private def _value; 
+    public Object getVal() {
+        Object val = getValue();
+        if(val == null ||  val.toString().trim().length() == 0) return null;
+        else if( val == trueValue ) return true;
+        else if( val == falseValue ) return false;
+        else {
+            return val.toString().toBoolean();
+        }
+    }
     
-    public Object getVal() { 
-        if( _value == true ) { 
+    public void setVal( Object value ) { 
+        setValue( resolveValue( value) ); 
+    } 
+    
+    private Object resolveValue( boolean o ) { 
+        if( o == true ) { 
             return (trueValue? trueValue: _value); 
         } else { 
             return (falseValue? falseValue: _value); 
         } 
     }
-    
-    public void setVal( Object value ) { 
-        this._value = value; 
-        setValue( getVal() ); 
-    } 
 }

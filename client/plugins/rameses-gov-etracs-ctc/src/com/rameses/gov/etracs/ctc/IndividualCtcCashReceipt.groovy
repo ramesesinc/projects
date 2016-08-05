@@ -91,7 +91,7 @@ class  IndividualCtcCashReceipt extends AbstractCashReceipt
             return false; 
         }
     }
-    
+
     def createEntity() { 
         def h = { o->
             o.type = 'INDIVIDUAL';
@@ -109,13 +109,17 @@ class  IndividualCtcCashReceipt extends AbstractCashReceipt
         params['query.type'] = 'INDIVIDUAL'; 
         params.allowSelectEntityType = false; 
     }
+    protected String getLookupEntityName() { 
+        return 'individualentity:lookup'; 
+    } 
     
-    public def payerChanged( o ) {
+    public def payerChanged( o ) { 
+        println 'entity type is '+ o.type;
         if ( ! o.type.equalsIgnoreCase('INDIVIDUAL'))
             throw new Exception('Only individual entities are allowed.');
         
-        def ent = entitySvc.open(o)
-        o.putAll(ent);
+        def ent = entitySvc.open(o) 
+        if ( ent ) o.putAll(ent);
         
         hasmiddlename = (o.middlename != null)
         hasprofession = (o.profession != null)

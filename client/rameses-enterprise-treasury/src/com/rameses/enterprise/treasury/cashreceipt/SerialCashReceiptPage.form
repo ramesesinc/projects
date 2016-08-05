@@ -1003,6 +1003,7 @@
                               <Dimension value="[0, 19]"/>
                             </Property>
                             <Property name="showCaption" type="boolean" value="false"/>
+                            <Property name="stretchWidth" type="int" value="100"/>
                           </Properties>
                         </Component>
                         <Component class="com.rameses.rcp.control.XButton" name="xButton1">

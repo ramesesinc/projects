@@ -78,7 +78,7 @@ class  CorporateCtcCashReceipt extends AbstractCashReceipt
             return false; 
         }
     }
-    
+        
     def createEntity() { 
         def h = { o->
             o.type = 'JURIDICAL';
@@ -96,12 +96,16 @@ class  CorporateCtcCashReceipt extends AbstractCashReceipt
         params['query.type'] = 'JURIDICAL'; 
         params.allowSelectEntityType = false; 
     }    
+    protected String getLookupEntityName() { 
+        return 'juridicalentity:lookup'; 
+    }     
     
     public def payerChanged( o ) {
         if ( ! o.type.equalsIgnoreCase('JURIDICAL') )
             throw new Exception('Only Juridical entities are allowed.');
         
-        o.putAll(entitySvc.open(o));
+        def ent = entitySvc.open(o); 
+        if ( ent ) o.putAll(ent);
         
         hastin          = (o.tin != null);
         hasorgtype      = (o.orgtype != null);

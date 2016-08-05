@@ -1,9 +1,12 @@
 <workunit schemaName="entityjuridical">
-    <invokers>
-        <invoker type="entityjuridical:open" 
-                 caption="Juridical" action="open"  
-                 role="MASTER" index="-1"
-                 windowTitle="Entity: #{entity.entityno}" formTitle="#{entity.entityno}" formId="#{entity.objid}"/>
+    <invokers> 
+        <invoker type="entityjuridical:open" caption="Juridical" action="open" 
+                 role="MASTER" index="-1" windowTitle="Entity: #{entity.entityno}" 
+                 formTitle="#{entity.entityno}" formId="#{entity.objid}"/> 
+
+        <invoker type="juridicalentity:open" caption="Juridical" action="open" 
+                 role="MASTER" index="-1" windowTitle="Entity: #{entity.entityno}" 
+                 formTitle="#{entity.entityno}" formId="#{entity.objid}"/> 
     </invokers>
     <code class="com.rameses.entity.models.JuridicalEntityModel" />
     <pages>

@@ -1,14 +1,21 @@
 <workunit schemaName="entitymultiple">
     <invokers>
-        <invoker type="entitymultiple:open" 
-                 caption="Multiple Entity" action="open"  
-                 role="MASTER" index="-1"
-                 windowTitle="Entity: #{entity.entityno}" formTitle="#{entity.entityno}" formId="#{entity.objid}"/>
-        
-        <invoker type="entitymultiple:create" 
-                 caption="Multiple Entity" action="create"  
-                 role="MASTER" index="-1"
-                 windowTitle="New Multiple Entity" formTitle="New Multiple Entity" formId="#{entity.objid}"/>        
+        <invoker type="entitymultiple:open" caption="Multiple Entity" action="open"  
+                 role="MASTER" windowTitle="Entity: #{entity.entityno}" index="-1" 
+                 formTitle="#{entity.entityno}" formId="#{entity.objid}"/>
+
+        <invoker type="entitymultiple:create" caption="Multiple Entity" action="create"  
+                 role="MASTER" windowTitle="New Multiple Entity" index="-1" 
+                 formTitle="New Multiple Entity" formId="#{entity.objid}"/>        
+
+
+        <invoker type="multipleentity:open" caption="Multiple Entity" action="open"  
+                 role="MASTER" windowTitle="Entity: #{entity.entityno}" index="-1" 
+                 formTitle="#{entity.entityno}" formId="#{entity.objid}"/>
+
+        <invoker type="multipleentity:create" caption="Multiple Entity" action="create"  
+                 role="MASTER" windowTitle="New Multiple Entity" index="-1" 
+                 formTitle="New Multiple Entity" formId="#{entity.objid}"/>                     
     </invokers>
     <code class="com.rameses.entity.models.MultipleEntityModel" />
     <pages>

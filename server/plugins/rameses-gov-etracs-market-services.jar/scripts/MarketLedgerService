@@ -9,9 +9,6 @@ class MarketLedgerService {
 	@DataContext("market_account")
 	def acct;
 
-	@DataContext("market_ledger")
-	def ledger;
-
 	def dformat = new SimpleDateFormat("yyyy-MM-dd");
 
 	@ProxyMethod
@@ -41,9 +38,7 @@ class MarketLedgerService {
 				int imonth = c.get( Calendar.MONTH )+1;
 				int iyear = c.get(Calendar.YEAR);
 				m.lastledgerdate = c.getTime();
-				if( ledger.find([acctid:m.objid, year: iyear, month:imonth ]).exists() ) {
-					continue;
-				};
+
 				def z = [:];
 				z.account = m;
 				z.month = imonth
@@ -53,7 +48,6 @@ class MarketLedgerService {
 				z.amtpaid = 0;
 				z.surcharge = 0;
 				z.interest = 0;
-				ledger.create(z);
 				c.add( Calendar.MONTH, 1 );
 			} 
 		}

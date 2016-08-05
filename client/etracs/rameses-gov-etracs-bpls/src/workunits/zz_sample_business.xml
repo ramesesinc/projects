@@ -23,7 +23,7 @@
             def lessor;
             boolean editmode;
         
-            def entity = [lastname:'nazareno', firstname:'elmo'];
+            def entity = [lastname:'nazareno', firstname:'elmo', types:[:] ];
             def amount = 45000.25;
             
             def onselectLessor = { o->

@@ -6,7 +6,7 @@
                  action="create" />
 
         <invoker type="market_cluster:open"
-                 formTitle="#{entity.objid}" 
+                 formTitle="#{entity.name}" 
                  formId="#{entity.objid}"
                  target="popup"
                  action="open" />

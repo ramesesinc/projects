@@ -5,7 +5,21 @@
         <invoker type="market_rentalunit:open" caption="View Market Rental Unit" index="4" 
                  action="open" target="popup"/>
     </invokers>
-    <code class="com.rameses.seti2.models.CrudFormModel" />
+    
+    <code>
+        import com.rameses.rcp.annotations.*;
+        class RentalUnit extends com.rameses.seti2.models.CrudFormModel {
+        
+            public def getClusterList() {
+                if( !entity.market?.objid ) return []; 
+                def m = [_schemaname:'market_cluster']
+                m.select = 'objid,name,description';
+                m.findBy = ['market.objid': entity.market.objid ];
+                return qryService.getList( m );
+            }
+        
+        }
+    </code>
     <pages>
         <page template="com.rameses.gov.etracs.market.views.MarketRentalUnitPage"/>
     </pages>

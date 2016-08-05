@@ -51,6 +51,7 @@ public class EntityLookup extends XComponentPanel {
     public void setEnabled(boolean enabled) {
         super.setEnabled(enabled);
         xLookupField1.setEnabled(enabled);
+        btnAdd.setEnabled(enabled);
     }
 
     @Override
@@ -105,8 +106,8 @@ public class EntityLookup extends XComponentPanel {
 
         xLookupField1 = new com.rameses.rcp.control.XLookupField();
         jPanel4 = new javax.swing.JPanel();
-        xButton2 = new com.rameses.rcp.control.XButton();
-        xButton1 = new com.rameses.rcp.control.XButton();
+        btnView = new com.rameses.rcp.control.XButton();
+        btnAdd = new com.rameses.rcp.control.XButton();
 
         setOpaque(false);
         setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.LINE_AXIS));
@@ -123,31 +124,32 @@ public class EntityLookup extends XComponentPanel {
         xLayout1.setSpacing(0);
         jPanel4.setLayout(xLayout1);
 
-        xButton2.setBorderPainted(false);
-        xButton2.setContentAreaFilled(false);
-        xButton2.setDisableWhen("#{allowOpen != true}");
-        xButton2.setIconResource("images/toolbars/open.png");
-        xButton2.setMargin(new java.awt.Insets(0, 0, 0, 0));
-        xButton2.setName("viewEntity"); // NOI18N
-        xButton2.setToolTipText("View Record");
-        jPanel4.add(xButton2);
+        btnView.setBorderPainted(false);
+        btnView.setContentAreaFilled(false);
+        btnView.setDisableWhen("#{allowOpen != true}");
+        btnView.setIconResource("images/toolbars/open.png");
+        btnView.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        btnView.setName("viewEntity"); // NOI18N
+        btnView.setToolTipText("View Record");
+        jPanel4.add(btnView);
 
-        xButton1.setBorderPainted(false);
-        xButton1.setCaption("");
-        xButton1.setContentAreaFilled(false);
-        xButton1.setDisableWhen("#{allowCreate != true}");
-        xButton1.setIconResource("images/toolbars/create.png");
-        xButton1.setMargin(new java.awt.Insets(0, 0, 0, 0));
-        xButton1.setName("addEntity"); // NOI18N
-        xButton1.setToolTipText("Add New Record");
-        jPanel4.add(xButton1);
+        btnAdd.setBorderPainted(false);
+        btnAdd.setCaption("");
+        btnAdd.setContentAreaFilled(false);
+        btnAdd.setDisableWhen("#{allowCreate != true}");
+        btnAdd.setIconResource("images/toolbars/create.png");
+        btnAdd.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        btnAdd.setName("addEntity"); // NOI18N
+        btnAdd.setToolTipText("Add New Record");
+        btnAdd.setVisibleWhen("#{allowCreate == true}");
+        jPanel4.add(btnAdd);
 
         add(jPanel4);
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private com.rameses.rcp.control.XButton btnAdd;
+    private com.rameses.rcp.control.XButton btnView;
     private javax.swing.JPanel jPanel4;
-    private com.rameses.rcp.control.XButton xButton1;
-    private com.rameses.rcp.control.XButton xButton2;
     private com.rameses.rcp.control.XLookupField xLookupField1;
     // End of variables declaration//GEN-END:variables
 

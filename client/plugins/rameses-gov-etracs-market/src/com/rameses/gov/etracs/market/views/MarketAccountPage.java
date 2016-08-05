@@ -36,9 +36,8 @@ public class MarketAccountPage extends javax.swing.JPanel {
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
         xTextField2 = new com.rameses.rcp.control.XTextField();
         xTextField1 = new com.rameses.rcp.control.XTextField();
-        xLookupField1 = new com.rameses.rcp.control.XLookupField();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        xTextArea1 = new com.rameses.rcp.control.XTextArea();
+        entityLookup1 = new com.rameses.entity.components.EntityLookup();
+        entityAddressLookup1 = new com.rameses.entity.components.EntityAddressLookup();
         xLookupField2 = new com.rameses.rcp.control.XLookupField();
         xLabel2 = new com.rameses.rcp.control.XLabel();
         xLabel3 = new com.rameses.rcp.control.XLabel();
@@ -69,24 +68,17 @@ public class MarketAccountPage extends javax.swing.JPanel {
         xTextField1.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(xTextField1);
 
-        xLookupField1.setCaption("Owner Name");
-        xLookupField1.setExpression("#{entity.owner.name}");
-        xLookupField1.setHandler("individualentity:lookup");
-        xLookupField1.setName("entity.owner"); // NOI18N
-        xLookupField1.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel1.add(xLookupField1);
+        entityLookup1.setCaption("Owner");
+        entityLookup1.setName("entity.owner"); // NOI18N
+        entityLookup1.setPreferredSize(new java.awt.Dimension(0, 21));
+        xFormPanel1.add(entityLookup1);
 
-        jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        jScrollPane1.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
-        jScrollPane1.setName("entity.name"); // NOI18N
-        jScrollPane1.setPreferredSize(new java.awt.Dimension(0, 60));
-
-        xTextArea1.setCaption("Owner Address");
-        xTextArea1.setDepends(new String[] {"entity.owner"});
-        xTextArea1.setName("entity.owner.address.text"); // NOI18N
-        jScrollPane1.setViewportView(xTextArea1);
-
-        xFormPanel1.add(jScrollPane1);
+        entityAddressLookup1.setCaption("Owner Address");
+        entityAddressLookup1.setDepends(new String[] {"entity.owner"});
+        entityAddressLookup1.setName("entity.owner.address"); // NOI18N
+        entityAddressLookup1.setParentIdName("entity.owner.objid");
+        entityAddressLookup1.setPreferredSize(new java.awt.Dimension(0, 53));
+        xFormPanel1.add(entityAddressLookup1);
 
         xLookupField2.setCaption("Unit");
         xLookupField2.setExpression("#{entity.unit.code}");
@@ -158,7 +150,7 @@ public class MarketAccountPage extends javax.swing.JPanel {
             .add(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .add(xFormPanel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 131, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(145, Short.MAX_VALUE))
+                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         org.jdesktop.layout.GroupLayout jPanel2Layout = new org.jdesktop.layout.GroupLayout(jPanel2);
@@ -179,7 +171,7 @@ public class MarketAccountPage extends javax.swing.JPanel {
                 .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
                     .add(jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .add(xFormPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(132, Short.MAX_VALUE))
+                .addContainerGap(189, Short.MAX_VALUE))
         );
 
         xTabbedPane1.addTab("General Info", jPanel2);
@@ -204,9 +196,10 @@ public class MarketAccountPage extends javax.swing.JPanel {
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private com.rameses.entity.components.EntityAddressLookup entityAddressLookup1;
+    private com.rameses.entity.components.EntityLookup entityLookup1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JScrollPane jScrollPane1;
     private com.rameses.rcp.control.XDateField xDateField1;
     private com.rameses.rcp.control.XDateField xDateField2;
     private com.rameses.rcp.control.XDateField xDateField3;
@@ -218,10 +211,8 @@ public class MarketAccountPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XLabel xLabel2;
     private com.rameses.rcp.control.XLabel xLabel3;
     private com.rameses.rcp.control.XLabel xLabel5;
-    private com.rameses.rcp.control.XLookupField xLookupField1;
     private com.rameses.rcp.control.XLookupField xLookupField2;
     private com.rameses.rcp.control.XTabbedPane xTabbedPane1;
-    private com.rameses.rcp.control.XTextArea xTextArea1;
     private com.rameses.rcp.control.XTextField xTextField1;
     private com.rameses.rcp.control.XTextField xTextField2;
     // End of variables declaration//GEN-END:variables

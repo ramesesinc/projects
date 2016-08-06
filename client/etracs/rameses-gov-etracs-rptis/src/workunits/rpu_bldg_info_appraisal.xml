@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit>
     <invokers>
-        <invoker type="rpubldg:info" action="init" caption="Appraisal" index="5" mnemonic="A"/>
+        <invoker type="rpubldg:info" action="init" caption="Property Appraisal" index="2" mnemonic="A"/>
     </invokers>
     
     <code>

@@ -5,10 +5,15 @@
 - BPLS 
 		
 - ASSESSOR
+	- Allow partial tdno search
+	- Allow resizing of tables on Bldg Appraisal info 
+	- Improvement on Bldg Structure/Floor entry info 
 	- Update on tax declaration specificlands info 
 	
 	
 - LANDTAX
+	- Fix tax clearance method error 
+	- Remove paid ledgeritems 
 	- RPT Billing update (original av)
 
 

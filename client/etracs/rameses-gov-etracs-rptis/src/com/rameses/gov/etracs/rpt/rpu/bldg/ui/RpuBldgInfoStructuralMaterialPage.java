@@ -26,22 +26,11 @@ public class RpuBldgInfoStructuralMaterialPage extends javax.swing.JPanel {
     private void initComponents() {
 
         xDataTable3 = new com.rameses.rcp.control.XDataTable();
+        xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
+        xNumberField15 = new com.rameses.rcp.control.XNumberField();
+        xComboBox1 = new com.rameses.rcp.control.XComboBox();
 
         xDataTable3.setColumns(new com.rameses.rcp.common.Column[]{
-            new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "floor"}
-                , new Object[]{"caption", "Floor"}
-                , new Object[]{"width", 70}
-                , new Object[]{"minWidth", 0}
-                , new Object[]{"maxWidth", 50}
-                , new Object[]{"required", false}
-                , new Object[]{"resizable", true}
-                , new Object[]{"nullWhenEmpty", true}
-                , new Object[]{"editable", true}
-                , new Object[]{"editableWhen", null}
-                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
-                , new Object[]{"typeHandler", new com.rameses.rcp.common.IntegerColumnHandler(null, -1, -1)}
-            }),
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", null}
                 , new Object[]{"caption", "Structure"}
@@ -53,6 +42,8 @@ public class RpuBldgInfoStructuralMaterialPage extends javax.swing.JPanel {
                 , new Object[]{"nullWhenEmpty", true}
                 , new Object[]{"editable", true}
                 , new Object[]{"editableWhen", null}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.UPPER}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.LookupColumnHandler("#{item.structure.name}", "lookupStructure")}
             }),
@@ -67,37 +58,64 @@ public class RpuBldgInfoStructuralMaterialPage extends javax.swing.JPanel {
                 , new Object[]{"nullWhenEmpty", true}
                 , new Object[]{"editable", true}
                 , new Object[]{"editableWhen", null}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.UPPER}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.LookupColumnHandler("#{item.material.name}", "lookupStructureMaterial")}
             })
         });
+        xDataTable3.setDepends(new String[] {"floor"});
+        xDataTable3.setDynamic(true);
         xDataTable3.setHandler("structureListHandler");
         xDataTable3.setIndex(100);
         xDataTable3.setName("selectedStructure"); // NOI18N
         xDataTable3.setPreferredSize(new java.awt.Dimension(250, 80));
 
+        xFormPanel1.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
+
+        xNumberField15.setCaption("Floor Count");
+        xNumberField15.setEnabled(false);
+        xNumberField15.setFieldType(Integer.class);
+        xNumberField15.setName("entity.rpu.floorcount"); // NOI18N
+        xNumberField15.setPreferredSize(new java.awt.Dimension(50, 19));
+        xNumberField15.setRequired(true);
+        xFormPanel1.add(xNumberField15);
+
+        xComboBox1.setAllowNull(false);
+        xComboBox1.setCaption("Floor No.");
+        xComboBox1.setCellPadding(new java.awt.Insets(0, 10, 0, 0));
+        xComboBox1.setDepends(new String[] {"entity.rpu.floorcount"});
+        xComboBox1.setDynamic(true);
+        xComboBox1.setItems("floors");
+        xComboBox1.setName("floor"); // NOI18N
+        xComboBox1.setPreferredSize(new java.awt.Dimension(100, 20));
+        xFormPanel1.add(xComboBox1);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 602, Short.MAX_VALUE)
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addContainerGap()
-                    .addComponent(xDataTable3, javax.swing.GroupLayout.PREFERRED_SIZE, 547, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(45, Short.MAX_VALUE)))
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(xFormPanel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(xDataTable3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 495, Short.MAX_VALUE))
+                .addGap(117, 117, 117))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 448, Short.MAX_VALUE)
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addContainerGap()
-                    .addComponent(xDataTable3, javax.swing.GroupLayout.DEFAULT_SIZE, 426, Short.MAX_VALUE)
-                    .addContainerGap()))
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(xDataTable3, javax.swing.GroupLayout.DEFAULT_SIZE, 412, Short.MAX_VALUE)
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XDataTable xDataTable3;
+    private com.rameses.rcp.control.XFormPanel xFormPanel1;
+    private com.rameses.rcp.control.XNumberField xNumberField15;
     // End of variables declaration//GEN-END:variables
 }

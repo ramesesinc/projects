@@ -35,7 +35,6 @@ FROM rptledger rl
 WHERE rl.objid = $P{rptledgerid}
  AND rl.state = 'APPROVED'
  AND ( rl.lastyearpaid < $P{billtoyear} OR (rl.lastyearpaid = $P{billtoyear} AND rl.lastqtrpaid < $P{billtoqtr}))
- and not exists(select * from rptledger_restriction where parentid = rl.objid )
 
 
 [getIncentivesByLedgerId]

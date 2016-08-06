@@ -12,6 +12,7 @@
 	
 	
 - LANDTAX
+	- Support billing of restricted property
 	- Fix tax clearance method error 
 	- Remove paid ledgeritems 
 	- RPT Billing update (original av)

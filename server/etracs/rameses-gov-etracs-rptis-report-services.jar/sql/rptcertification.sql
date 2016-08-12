@@ -5,8 +5,7 @@ where 1=1 ${filters}
 ORDER BY txnno DESC
 
 
-[insertLandHoldingItems]
-INSERT INTO rptcertificationitem (rptcertificationid,refid)
+[getItemsTest]
 SELECT 
 	$P{objid} as rptcertificationid,
 	f.objid 
@@ -20,6 +19,32 @@ WHERE (f.taxpayer_objid	= $P{taxpayerid}
   )
   AND r.rputype = 'land'
   ${asoffilter}
+
+
+
+[insertLandHoldingItems]
+INSERT INTO rptcertificationitem (rptcertificationid,refid)
+SELECT 
+	$P{objid} as rptcertificationid,
+	f.objid 
+FROM faas f
+	INNER JOIN rpu r ON f.rpuid = r.objid 
+WHERE f.state = 'CURRENT'
+ and f.taxpayer_objid	= $P{taxpayerid}
+  AND r.rputype = 'land'
+  
+union 
+
+SELECT 
+	$P{objid} as rptcertificationid,
+	f.objid 
+FROM faas f
+	INNER JOIN rpu r ON f.rpuid = r.objid 
+    inner join entitymember m on f.taxpayer_objid = m.member_objid
+WHERE f.state = 'CURRENT'
+ and m.member_objid = $P{taxpayerid}
+  AND r.rputype = 'land'
+
 
 
 [insertLandHoldingWithImprovementItems]
@@ -29,21 +54,37 @@ SELECT
 	f.objid 
 FROM faas f
 	INNER JOIN rpu r ON f.rpuid = r.objid 
-	INNER JOIN realproperty rp ON f.realpropertyid = rp.objid 
-	INNER JOIN propertyclassification pc ON r.classification_objid = pc.objid 
-	INNER JOIN barangay b ON rp.barangayid = b.objid 
-WHERE (f.taxpayer_objid	= $P{taxpayerid}
-	or exists(select * from entitymember where member_objid = $P{taxpayerid})
-  )
+WHERE f.state = 'CURRENT'
+  and f.taxpayer_objid	= $P{taxpayerid}
   AND r.rputype = 'land'
-  ${asoffilter}
   AND EXISTS( SELECT * 
-  			  FROM faas f 
-  			  	INNER JOIN rpu rpu ON f.rpuid = rpu.objid 
-  			  WHERE f.realpropertyid = r.realpropertyid 
-  			    AND f.state = 'CURRENT' 
+  			  FROM faas fx
+  			  	INNER JOIN rpu rpu ON fx.rpuid = rpu.objid 
+  			  WHERE fx.realpropertyid = f.realpropertyid 
+  			    AND fx.state = 'CURRENT' 
   			    AND rpu.rputype <> 'land'
   			)
+
+union
+
+SELECT 
+	$P{objid} as rptcertificationid,
+	f.objid 
+FROM faas f
+	INNER JOIN rpu r ON f.rpuid = r.objid 
+	inner join entitymember m on f.taxpayer_objid = m.member_objid
+WHERE f.state = 'CURRENT' 
+  and m.member_objid = $P{taxpayerid}
+  AND r.rputype = 'land'
+  AND EXISTS( SELECT * 
+  			  FROM faas fx 
+  			  	INNER JOIN rpu rpu ON fx.rpuid = rpu.objid 
+  			  WHERE fx.realpropertyid = f.realpropertyid
+  			    AND fx.state = 'CURRENT' 
+  			    AND rpu.rputype <> 'land'
+  			)
+
+
 
 [insertLandHoldingWithNoImprovementItems]
 INSERT INTO rptcertificationitem (rptcertificationid,refid)
@@ -52,19 +93,38 @@ SELECT
 	f.objid 
 FROM faas f
 	INNER JOIN rpu r ON f.rpuid = r.objid 
-	INNER JOIN realproperty rp ON f.realpropertyid = rp.objid 
-	INNER JOIN propertyclassification pc ON r.classification_objid = pc.objid 
-	INNER JOIN barangay b ON rp.barangayid = b.objid 
-WHERE (f.taxpayer_objid	= $P{taxpayerid}
-	or exists(select * from entitymember where member_objid = $P{taxpayerid})
-  )
+WHERE f.state = 'CURRENT'
+  and f.taxpayer_objid	= $P{taxpayerid}
   AND r.rputype = 'land'
-  ${asoffilter}
-  AND NOT EXISTS( SELECT * FROM rpu 
-  			  WHERE realpropertyid = r.realpropertyid 
-  			    AND state = 'CURRENT' 
-  			    AND rputype <> 'land'
+  AND NOT EXISTS( SELECT * 
+  			  FROM faas fx 
+  			  	INNER JOIN rpu rpu ON fx.rpuid = rpu.objid 
+  			  WHERE fx.realpropertyid = f.realpropertyid
+  			    AND fx.state = 'CURRENT' 
+  			    AND rpu.rputype <> 'land'
   			)
+
+union 
+
+SELECT 
+	$P{objid} as rptcertificationid,
+	f.objid 
+FROM faas f
+	INNER JOIN rpu r ON f.rpuid = r.objid 
+	inner join entitymember m on f.taxpayer_objid = m.member_objid
+WHERE f.state = 'CURRENT' 
+  and m.member_objid = $P{taxpayerid}
+  AND r.rputype = 'land'
+  AND NOT EXISTS( SELECT * 
+  			  FROM faas fx 
+  			  	INNER JOIN rpu rpu ON fx.rpuid = rpu.objid 
+  			  WHERE fx.realpropertyid = f.realpropertyid
+  			    AND fx.state = 'CURRENT' 
+  			    AND rpu.rputype <> 'land'
+  			)
+
+
+
 
 
 [getLandHoldingItems]
@@ -105,15 +165,18 @@ SELECT
 	$P{objid} as rptcertificationid,
 	f.objid 
 FROM faas f
-	INNER JOIN rpu r ON f.rpuid = r.objid 
-	INNER JOIN realproperty rp ON f.realpropertyid = rp.objid 
-	INNER JOIN propertyclassification pc ON r.classification_objid = pc.objid 
-	INNER JOIN barangay b ON rp.barangayid = b.objid 
-WHERE (f.taxpayer_objid	= $P{taxpayerid}
-	or exists(select * from entitymember where member_objid = $P{taxpayerid})
-  )
-  ${asoffilter}
+WHERE f.state ='CURRENT' 
+  and f.taxpayer_objid	= $P{taxpayerid}
 
+union 
+
+SELECT 
+	$P{objid} as rptcertificationid,
+	f.objid 
+FROM faas f
+	inner join entitymember m on f.taxpayer_objid = m.member_objid
+WHERE f.state ='CURRENT' 
+ and m.member_objid = $P{taxpayerid}
 
 
 [getMultipleItems]
@@ -292,13 +355,18 @@ SELECT
 	$P{objid} as rptcertificationid,
 	f.objid as refid
 FROM faas f 
-	INNER JOIN rpu r ON f.rpuid = r.objid 
-	INNER JOIN realproperty rp ON f.realpropertyid = rp.objid 
-	INNER JOIN barangay b ON rp.barangayid = b.objid 
-WHERE (f.taxpayer_objid	= $P{taxpayerid}
-	or exists(select * from entitymember where member_objid = $P{taxpayerid})
-  )
-   ${asoffilter}
+WHERE f.state = 'CURRENT' 
+  and f.taxpayer_objid	= $P{taxpayerid}
+
+union 
+
+SELECT 
+	$P{objid} as rptcertificationid,
+	f.objid as refid
+FROM faas f 
+	inner join entitymember m on f.taxpayer_objid = m.member_objid
+WHERE f.state = 'CURRENT' 
+  and m.member_objid = $P{taxpayerid}
 
 
 [getLatestAndExistingItems]

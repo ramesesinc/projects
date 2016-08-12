@@ -102,21 +102,24 @@ class AFRIS extends StockRequestController {
         entity.state = "DRAFT";
         entity.itemclass = "AF";
         reqTypes = params.types;
-        role = (params.afo==true? "AFO": "COLLECTOR"); 
+
+        if ( params.requesters == null ) { 
+            params.requesters=[]; 
+        } 
+        if ( params.afo != true ) { 
+            params.requesters.clear(); 
+        } 
         
-        requestedbylist = params.requesters; 
-        if (params.afo != true) requestedbylist = null;
-        
-        if ( !requestedbylist ) {
-            requestedbylist = [[objid: user.env.USERID, name:user.env.FULLNAME, title:user.env.JOBTITLE]]; 
+        if ( !params.requesters ) {
+            params.requesters = [[objid: user.env.USERID, name:user.env.FULLNAME, jobtitle:user.env.JOBTITLE]]; 
         } 
 
-        requestedbylist = requestedbylist.collect{[ 
+        requestedbylist = params.requesters.collect{[ 
             objid: it.objid, name: it.name, lastname: it.lastname, 
             firstname: it.firstname, middlename: it.middlename, 
-            jobtitle: it.jobtitle 
+            title: it.jobtitle 
         ]}.unique().sort{ it.name }  
-        
+
         entity.requester = (requestedbylist? requestedbylist.first(): null); 
         super.create(); 
     } 

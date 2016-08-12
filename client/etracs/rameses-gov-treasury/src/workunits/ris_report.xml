@@ -26,7 +26,7 @@
                 report.viewReport();
             } 
             
-            def getReportData(){
+            def getReportData(){ 
                 return entity;
             }
             

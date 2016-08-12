@@ -426,7 +426,10 @@ where ft.refid = $P{objid}
 
 
 [findAdjustmentFactor]
-select sum(la.adjustment) / sum(la.basemarketvalue) as adjfactor
+select 
+	case when sum(la.basemarketvalue) = 0 then 0 
+		else  sum(la.adjustment) / sum(la.basemarketvalue) 
+	end as adjfactor
 from faas f
 	inner join landadjustment la on f.rpuid = la.landrpuid 
 where f.objid = $P{faasid}

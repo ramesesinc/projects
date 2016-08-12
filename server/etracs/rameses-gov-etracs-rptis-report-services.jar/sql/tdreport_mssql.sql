@@ -92,7 +92,8 @@ FROM faas f
 	INNER JOIN propertyclassification pc ON spc.classification_objid = pc.objid 
 	INNER JOIN propertyclassification dc ON r.classification_objid = dc.objid 
 WHERE f.objid = $P{faasid}
-GROUP BY dc.code, dc.name, pc.code, pc.name, lal.code, lal.name, ld.areatype, ld.assesslevel,
+GROUP BY dc.code, dc.name, pc.code, pc.name, lal.code, lal.name, 
+	ld.areatype, ld.assesslevel, ld.taxable, 
 	lspc.code, lspc.name, sub.code, sub.name 
 
 UNION ALL 
@@ -122,7 +123,7 @@ FROM faas f
 	INNER JOIN planttreeassesslevel ptal ON ptd.actualuse_objid = ptal.objid 
 	INNER JOIN planttree pt ON ptd.planttree_objid = pt.objid 
 WHERE f.objid = $P{faasid}
-GROUP BY pc.name, ptal.name, ptd.assesslevel		
+GROUP BY pc.code, pc.name, ptal.name, ptd.assesslevel		
 
 
 [getLandPlantTreeAssessment]
@@ -427,10 +428,14 @@ where ft.refid = $P{objid}
 
 
 [findAdjustmentFactor]
-select sum(la.adjustment) / sum(la.basemarketvalue) as adjfactor
+select 
+	case when sum(la.basemarketvalue) = 0 then 0 
+		else  sum(la.adjustment) / sum(la.basemarketvalue) 
+	end as adjfactor
 from faas f
 	inner join landadjustment la on f.rpuid = la.landrpuid 
 where f.objid = $P{faasid}
+
 
 
 

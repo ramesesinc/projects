@@ -153,7 +153,7 @@ class RPTCertificationService
 	public void buildFootNotes( cert ) {
 		if (!cert.items) return;
 		def i = 0
-		cert.footnote = cert.items.findAll{ it.owner != cert.taxpayer.name }.groupBy{ it.owner.name}
+		cert.footnote = cert.items.findAll{ it.owner.name != cert.taxpayer.name }.groupBy{ it.owner.name}
 		cert.footnote = cert.footnote.collect{ [footnote: ++i, owner:[name: it.key]] }
 		
 		cert.items = cert.items.each(){ o ->

@@ -7,6 +7,8 @@
                  txntype="TR" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createTransfer" index="1"  />
         <invoker folderid="/home/rpt/txn" action="init" caption="Transfer of Ownership" 
                  txntype="TR" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createTransfer" index="1"  />
+        <invoker folderid="/menu/txn/rpt" action="init" caption="Transfer of Ownership" 
+                 txntype="TR" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createTransfer" index="1"  />
         
             
             
@@ -15,6 +17,8 @@
         <invoker folderid="/explorer/txn/rpt/online" action="init" caption="Transfer with Reassessment" 
                  txntype="TRE" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createTransfer" index="2"  />
         <invoker folderid="/home/rpt/txn" action="init" caption="Transfer with Reassessment" 
+                 txntype="TRE" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createTransfer" index="2"  />
+        <invoker folderid="/menu/txn/rpt" action="init" caption="Transfer with Reassessment" 
                  txntype="TRE" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createTransfer" index="2"  />
         
             
@@ -25,6 +29,8 @@
                  txntype="TRC" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createTransfer" index="3"  />
         <invoker folderid="/home/rpt/txn" action="init" caption="Transfer with Correction" 
                  txntype="TRC" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createTransfer" index="3"  />
+        <invoker folderid="/menu/txn/rpt" action="init" caption="Transfer with Correction" 
+                 txntype="TRC" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createTransfer" index="3"  />
         
             
             
@@ -33,6 +39,8 @@
         <invoker folderid="/explorer/txn/rpt/online" action="init" caption="Correction of Entry" 
                  txntype="CE" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createCorrection" index="4"  />
         <invoker folderid="/home/rpt/txn" action="init" caption="Correction of Entry" 
+                 txntype="CE" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createCorrection" index="4"  />
+        <invoker folderid="/menu/txn/rpt" action="init" caption="Correction of Entry" 
                  txntype="CE" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createCorrection" index="4"  />
         
             
@@ -43,6 +51,8 @@
                  txntype="CC" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createChangeClassification" index="5"  />
         <invoker folderid="/home/rpt/txn" action="init" caption="Change Classification" 
                  txntype="CC" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createChangeClassification" index="5"  />
+        <invoker folderid="/menu/txn/rpt" action="init" caption="Change Classification" 
+                 txntype="CC" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createChangeClassification" index="5"  />
         
             
             
@@ -51,6 +61,8 @@
         <invoker folderid="/explorer/txn/rpt/online" action="init" caption="Change Taxability" 
                  txntype="CT" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createChangeTaxability" index="6"  />
         <invoker folderid="/home/rpt/txn" action="init" caption="Change Taxability" 
+                 txntype="CT" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createChangeTaxability" index="6"  />
+        <invoker folderid="/menu/txn/rpt" action="init" caption="Change Taxability" 
                  txntype="CT" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createChangeTaxability" index="6"  />
         
             
@@ -61,6 +73,8 @@
                  txntype="CD" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createChangeDepreciation" index="7"  />
         <invoker folderid="/home/rpt/txn" action="init" caption="Change Depreciation" 
                  txntype="CD" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createChangeDepreciation" index="7"  />
+        <invoker folderid="/menu/txn/rpt" action="init" caption="Change Depreciation" 
+                 txntype="CD" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createChangeDepreciation" index="7"  />
         
             
         <invoker type="quick_launcher" code="RE01" action="init" caption="Re-Assessment" 
@@ -69,6 +83,8 @@
                  txntype="RE" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createReassessment" index="8"  />
         <invoker folderid="/home/rpt/txn" action="init" caption="Re-Assessment" 
                  txntype="RE" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createReassessment" index="8"  />
+        <invoker folderid="/menu/txn/rpt" action="init" caption="Re-Assessment" 
+                 txntype="RE" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createReassessment" index="8"  />
         
         <invoker type="quick_launcher" code="CA01" action="init" caption="Change Administrator" 
                  txntype="CA" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createReassessment" index="9"  />
@@ -76,20 +92,28 @@
                  txntype="CA" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createReassessment" index="9"  />
         <invoker folderid="/home/rpt/txn" action="init" caption="Change Administrator" 
                  txntype="CA" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createReassessment" index="9"  />
+        <invoker folderid="/menu/txn/rpt" action="init" caption="Change Administrator" 
+                 txntype="CA" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createReassessment" index="9"  />
         
         <invoker folderid="/explorer/txn/rpt/online" action="init" caption="Destruction of Property" 
                  txntype="DT" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createPropertyDestruction" index="9"  />
         <invoker folderid="/home/rpt/txn" action="init" caption="Destruction of Property" 
+                 txntype="DT" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createPropertyDestruction" index="9"  />
+        <invoker folderid="/menu/txn/rpt" action="init" caption="Destruction of Property" 
                  txntype="DT" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createPropertyDestruction" index="9"  />
         
         <invoker folderid="/explorer/txn/rpt/online" action="init" caption="Physical Obsolescence" 
                  txntype="PC" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createPhysicalObsolescence" index="9"  />
         <invoker folderid="/home/rpt/txn" action="init" caption="Physical Obsolescence" 
                  txntype="PC" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createPhysicalObsolescence" index="9"  />
+        <invoker folderid="/menu/txn/rpt" action="init" caption="Physical Obsolescence" 
+                 txntype="PC" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createPhysicalObsolescence" index="9"  />
       
         <invoker folderid="/explorer/txn/rpt/online" action="init" caption="Unknown to Known" 
                  txntype="UK" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createUnknownToKnown" index="9"  />
         <invoker folderid="/home/rpt/txn" action="init" caption="Unknown to Known" 
+                 txntype="UK" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createUnknownToKnown" index="9"  />
+        <invoker folderid="/menu/txn/rpt" action="init" caption="Unknown to Known" 
                  txntype="UK" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createUnknownToKnown" index="9"  />
     </invokers>
 </workunit>

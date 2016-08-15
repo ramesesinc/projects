@@ -9,6 +9,8 @@
             
         <invoker folderid="/home/rpt/txn" action="init" caption="New Discovery" 
             txntype="ND" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createNewDiscovery" index="0"  />
+        <invoker folderid="/menu/txn/rpt" action="init" caption="New Discovery" 
+            txntype="ND" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createNewDiscovery" index="0"  />
     </invokers>
     <code>
         

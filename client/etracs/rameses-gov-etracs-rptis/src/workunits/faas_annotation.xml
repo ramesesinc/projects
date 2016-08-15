@@ -9,6 +9,9 @@
         <invoker folderid="/explorer/txn/rpt/online" action="init"  caption="Annotation" index="21" 
             role="RECORD" permission="annotation.create"/>
         
+        <invoker folderid="/menu/txn/rpt" action="init"  caption="Annotation" index="21" 
+            role="RECORD" permission="annotation.create"/>
+        
         <invoker folderid="/home/rpt/txn" action="init"  caption="Annotation" index="21" 
             role="RECORD" permission="annotation.create"/>
         

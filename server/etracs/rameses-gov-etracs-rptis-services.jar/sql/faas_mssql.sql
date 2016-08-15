@@ -155,9 +155,9 @@ SELECT
 	pc.code AS classcode, 
 	pc.name AS classification_name, 
 	pc.name AS classname, 
-	r.ry, r.realpropertyid, r.rputype, r.fullpin, r.totalmv, r.totalav,
+	r.ry, r.rputype, r.totalmv, r.totalav,
 	r.totalareasqm, r.totalareaha, r.suffix, r.rpumasterid, 
-	rp.barangayid, rp.cadastrallotno, rp.blockno, rp.surveyno, rp.lgutype, rp.pintype, 
+	rp.barangayid, rp.cadastrallotno, rp.blockno, rp.surveyno, rp.pintype, 
 	rp.section, rp.parcel, rp.stewardshipno,
 	b.name AS barangay_name,
 	t.trackingno
@@ -174,6 +174,20 @@ where 1=1
 	${filters}	
 ORDER BY f.tdno 
 
+
+[getLookupFaas]
+SELECT 
+	${columns}
+FROM faas f
+	INNER JOIN rpu r ON f.rpuid = r.objid 
+	INNER JOIN realproperty rp ON f.realpropertyid = rp.objid 
+	INNER JOIN propertyclassification pc ON r.classification_objid = pc.objid 
+	INNER JOIN barangay b ON rp.barangayid = b.objid 
+	LEFT JOIN rpttracking t ON f.objid = t.objid 
+where 1=1  
+${filters}
+${fixfilters}
+${orderby}
 
 
 [getLandImprovementIds]

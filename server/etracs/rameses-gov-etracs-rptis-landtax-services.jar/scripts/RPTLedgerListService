@@ -5,24 +5,56 @@ import com.rameses.services.extended.*;
 
 class RPTLedgerListService
 {
-	@ActiveDB('rptledger')
-	def em
+    @ActiveDB('rptledger')
+    def em 
 
     @Service('RPTUtil')
     def util 
 
-    String pagingKeys='rl.objid'
-
-
     @ProxyMethod
     public def getList( params ) {
         if (! params) params = [:]
-        params._pagingKeys = ' rl.objid '
-        params.tdno = params.searchtext
-        params.prevtdno = params.searchtext
-        params.state = (params.state ? params.state : '%')
-        params.searchtext = (params.searchtext ? params.searchtext : '') + '%'
-        return em.getList(params)
+        params._pagingKeys = 'rl.objid'
+        params.columns = getColumns()
+        params.fixfilters = ''
+        params.filters = ''
+        params.orderby = ''
+
+
+        if (params.state){
+            params.fixfilters += ' and rl.state = $P{state} '
+        }
+
+        if (params.searchtext){
+            params.orderby = ' order by rl.tdno '
+            params.searchtext = (params.searchtext ? params.searchtext : '') + '%'
+            def filters = [
+                ' and rl.tdno like $P{searchtext} ',
+                ' and e.entityname like $P{searchtext}',
+                ' and rl.administrator_name like $P{searchtext}',
+                ' and rl.fullpin like $P{searchtext}',
+                ' and rl.cadastrallotno like $P{searchtext}',
+                ' and rl.blockno like $P{searchtext}',
+                ' and rl.titleno like $P{searchtext}',
+                ' and rl.prevtdno like $P{searchtext} ',
+            ]
+            return util.getListFromQuery('rptledger:getList', filters, params, 'rl.objid');
+        }
+        else {
+            return em.getList(params)
+        }
+        
+    }
+
+    def getColumns(){
+        return '''
+            rl.objid, rl.state, rl.faasid, rl.tdno, rl.prevtdno, rl.titleno,
+            rl.taxpayer_objid, e.name AS taxpayer_name, rl.administrator_name,
+            rl.fullpin, rl.cadastrallotno, rl.blockno, rl.totalareaha, rl.classcode, rl.rputype,  
+            rl.totalmv, rl.totalav, rl.lastyearpaid, rl.lastqtrpaid,
+            CASE WHEN rl.faasid IS NULL THEN 'M' ELSE '' END AS type,
+            b.objid AS barangay_objid, b.name AS barangay_name
+        '''
     }
 	
 }

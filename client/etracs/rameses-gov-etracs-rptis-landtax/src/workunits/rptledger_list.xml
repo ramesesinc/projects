@@ -26,7 +26,7 @@
             void init(){
             }
         
-            int getRows() { return 25 }
+            int getRows() { return 20 }
             
             Column[] getColumns(){
                 return [

@@ -1,33 +1,13 @@
 [getList]
 SELECT 
-	rl.objid, rl.state, rl.faasid, rl.tdno, rl.prevtdno, rl.titleno,
-	rl.taxpayer_objid, e.name AS taxpayer_name, rl.administrator_name,
-	rl.fullpin, rl.cadastrallotno, rl.blockno, rl.totalareaha, rl.classcode, rl.rputype,  
-	rl.totalmv, rl.totalav, rl.lastyearpaid, rl.lastqtrpaid,
-	CASE WHEN rl.faasid IS NULL THEN 'M' ELSE '' END AS type,
-	b.objid AS barangay_objid, b.name AS barangay_name
+	${columns}
 FROM rptledger rl 
 	INNER JOIN entity e ON rl.taxpayer_objid = e.objid 
 	INNER JOIN barangay b ON rl.barangayid = b.objid 
-WHERE rl.state like $P{state} 
-and rl.objid in (
-	select objid from rptledger where tdno = $P{tdno}
-	union 
-	select objid from rptledger where prevtdno = $P{prevtdno}
-	union 
-	select objid from rptledger where fullpin like $P{searchtext}	
-	union 
-	select objid from rptledger where cadastrallotno like $P{searchtext}	
-	union 
-	select objid from rptledger where blockno like $P{searchtext}	
-	union 
-	select objid from rptledger where titleno like $P{searchtext}	
-	union 
-	select objid from rptledger where administrator_name like $P{searchtext}	
-	union 
-	select r.objid from rptledger r, entity e where r.taxpayer_objid = e.objid and e.name like $P{searchtext}	
-)
-order by rl.tdno 
+WHERE 1=1
+${fixfilters}
+${filters}
+${orderby}
 
 
 [findById]

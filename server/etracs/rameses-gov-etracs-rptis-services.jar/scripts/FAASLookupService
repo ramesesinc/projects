@@ -1,11 +1,11 @@
 import com.rameses.annotations.*
 import com.rameses.common.*;
+import com.rameses.services.extended.*;
 
 class FAASLookupService
 {
-	@PersistenceContext('rpt')
+	@ActiveDB('faas')
 	def em 
-
 	
 	@Service('RPTUtil')
 	def utilSvc
@@ -13,23 +13,54 @@ class FAASLookupService
 
 	@ProxyMethod
 	public def lookupFaas( params ) {
-		params.state 		= (params.state ? params.state : '') + '%'
-		params.taxpayerid 	= (params.taxpayerid ? params.taxpayerid : '') + '%'
-		params.rputype 		= (params.rputype ? params.rputype : '') + '%'
-		params.blockno 		= params.searchtext 
-		params.searchtext 	= (params.searchtext ? params.searchtext : '') + '%';
-		
-		def filters = [
-			' and f.tdno LIKE $P{searchtext} ',
-			' and r.fullpin LIKE $P{searchtext} ',
-			' and f.name LIKE $P{searchtext} ',
-			' and rp.cadastrallotno LIKE $P{searchtext} ',
-			' and rp.blockno = $P{blockno} ',
-			' and rp.surveyno LIKE $P{searchtext}',
-			' and t.trackingno LIKE $P{searchtext}',
-		]
+		params.fixfilters = ''
+		params.filters    = ''
+		params.orderby    = ''
+		params.columns    = getColumns()
 
-		return utilSvc.getListFromQuery('faas:lookupFaas', filters, params, 'f.objid');
+		if (params.state){
+			params.fixfilters += ' and f.state = $P{state} '
+		}
+		if (params.rputype){
+			params.fixfilters += ' and r.rputype = $P{rputype} '
+		}
+		if (params.taxpayerid){
+			params.fixfilters += ' and f.taxpayer_objid = $P{taxpayerid}'
+		}
+
+		if (params.searchtext){
+			params.orderby = ' order by f.tdno '
+			params.searchtext 	= (params.searchtext ? params.searchtext : '') + '%';
+			def filters = [
+				' and f.objid in (select objid from faas_list where tdno LIKE $P{searchtext} )',
+				' and f.objid in (select objid from faas_list where pin LIKE $P{searchtext} )',
+				' and f.objid in (select objid from faas_list where owner_name LIKE $P{searchtext} )',
+				' and f.objid in (select objid from faas_list where cadastrallotno LIKE $P{searchtext} )',
+				' and f.objid in (select objid from faas_list where blockno LIKE $P{searchtext} )',
+				' and f.objid in (select objid from faas_list where surveyno LIKE $P{searchtext} )',
+				' and f.objid in (select objid from faas_list where trackingno LIKE $P{searchtext} )',
+			]
+			return utilSvc.getListFromQuery('faas:getLookupFaas', filters, params, 'f.objid');
+		}
+		else{
+			return em.getLookupFaas(params)
+		}
+	}
+
+	def getColumns(){
+		return '''
+			f.*,
+			pc.code AS classification_code, 
+			pc.code AS classcode, 
+			pc.name AS classification_name, 
+			pc.name AS classname, 
+			r.ry, r.rputype, r.totalmv, r.totalav,
+			r.totalareasqm, r.totalareaha, r.suffix, r.rpumasterid, 
+			rp.barangayid, rp.cadastrallotno, rp.blockno, rp.surveyno, rp.pintype, 
+			rp.section, rp.parcel, rp.stewardshipno,
+			b.name AS barangay_name,
+			t.trackingno
+		'''
 	}
 
 

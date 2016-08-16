@@ -7,7 +7,6 @@ SELECT fa.*,
 	r.totalmv AS faas_totalmv,
 	r.totalav AS faas_totalav,
 	pc.code AS faas_classification,
-	fat.objid AS annotationtype_objid,
 	fat.type AS annotationtype_type
 FROM faasannotation fa
 	INNER JOIN faasannotationtype fat ON fa.annotationtype_objid = fat.objid 

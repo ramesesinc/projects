@@ -223,7 +223,8 @@ class RPTAssessmentNoticeService
 		rp.street,
 		o.name as lguname, 
 		b.name AS barangay,
-		pc.code AS classcode
+		pc.code AS classcode,
+		pc.name as classification 
 	'''
 	}
 	

@@ -256,7 +256,14 @@ public abstract class AbstractCashReceipt {
 
     void print() {
         def handle = findReportOpener(entity);
-        handle.viewReport();
+        def opt = handle.viewReport(); 
+        if ( opt instanceof Opener ) { 
+            // 
+            // possible routing of report opener has been configured 
+            // 
+            handle = opt.handle; 
+            handle.viewReport(); 
+        } 
         ReportUtil.print(handle.report,true);
     }
     

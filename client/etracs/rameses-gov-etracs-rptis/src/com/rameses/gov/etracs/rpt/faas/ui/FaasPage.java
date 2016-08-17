@@ -78,7 +78,7 @@ public class FaasPage extends javax.swing.JPanel {
         xFormPanel7.setCellspacing(1);
         xFormPanel7.setPadding(new java.awt.Insets(0, 5, 2, 5));
         xFormPanel7.setShowCaption(false);
-        xFormPanel7.setStretchWidth(50);
+        xFormPanel7.setStretchWidth(100);
 
         xTextField3.setCaption("ARP/TD No.");
         xTextField3.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
@@ -94,14 +94,13 @@ public class FaasPage extends javax.swing.JPanel {
 
         xTextField8.setCaption("Title No.");
         xTextField8.setName("entity.titleno"); // NOI18N
-        xTextField8.setStretchWidth(80);
+        xTextField8.setStretchWidth(100);
         xFormPanel8.add(xTextField8);
 
         xDateField2.setCaption("Title Date");
         xDateField2.setCaptionWidth(60);
         xDateField2.setName("entity.titledate"); // NOI18N
-        xDateField2.setPreferredSize(new java.awt.Dimension(85, 20));
-        xDateField2.setStretchWidth(20);
+        xDateField2.setPreferredSize(new java.awt.Dimension(80, 20));
         xFormPanel8.add(xDateField2);
 
         xFormPanel7.add(xFormPanel8);
@@ -116,7 +115,7 @@ public class FaasPage extends javax.swing.JPanel {
         xFormPanel11.setCaptionWidth(79);
         xFormPanel11.setCellspacing(1);
         xFormPanel11.setPadding(new java.awt.Insets(0, 0, 0, 0));
-        xFormPanel11.setStretchWidth(50);
+        xFormPanel11.setStretchWidth(100);
 
         xFormPanel12.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
         xFormPanel12.setPadding(new java.awt.Insets(0, 0, 0, 0));
@@ -126,7 +125,7 @@ public class FaasPage extends javax.swing.JPanel {
         xTextField15.setCaption("PIN");
         xTextField15.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         xTextField15.setName("entity.fullpin"); // NOI18N
-        xTextField15.setStretchWidth(85);
+        xTextField15.setStretchWidth(100);
         xFormPanel12.add(xTextField15);
 
         xLabel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
@@ -135,8 +134,7 @@ public class FaasPage extends javax.swing.JPanel {
         xLabel3.setCellPadding(new java.awt.Insets(0, 2, 0, 0));
         xLabel3.setExpression("#{entity.txntype.objid}");
         xLabel3.setFontStyle("font-weight:bold;font-size:12;");
-        xLabel3.setPreferredSize(new java.awt.Dimension(43, 20));
-        xLabel3.setStretchWidth(10);
+        xLabel3.setPreferredSize(new java.awt.Dimension(54, 19));
         xFormPanel12.add(xLabel3);
 
         xLabel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
@@ -145,9 +143,8 @@ public class FaasPage extends javax.swing.JPanel {
         xLabel2.setFontStyle("font-weight:bold;font-size:12;");
         xLabel2.setForeground(new java.awt.Color(204, 0, 0));
         xLabel2.setName("entity.annotated"); // NOI18N
-        xLabel2.setPreferredSize(new java.awt.Dimension(43, 20));
+        xLabel2.setPreferredSize(new java.awt.Dimension(100, 20));
         xLabel2.setShowCaption(false);
-        xLabel2.setStretchWidth(15);
         xFormPanel12.add(xLabel2);
 
         xFormPanel11.add(xFormPanel12);
@@ -182,7 +179,7 @@ public class FaasPage extends javax.swing.JPanel {
         xLookupField2.setExpression("#{ownerName}");
         xLookupField2.setHandler("lookupTaxpayer");
         xLookupField2.setName("entity.taxpayer"); // NOI18N
-        xLookupField2.setStretchWidth(50);
+        xLookupField2.setStretchWidth(100);
         xFormPanel5.add(xLookupField2);
 
         com.rameses.rcp.control.border.XLineBorder xLineBorder1 = new com.rameses.rcp.control.border.XLineBorder();
@@ -193,7 +190,7 @@ public class FaasPage extends javax.swing.JPanel {
         xLabel1.setExpression("#{entity.taxpayer.address}");
         xLabel1.setPreferredSize(new java.awt.Dimension(100, 20));
         xLabel1.setShowCaption(false);
-        xLabel1.setStretchWidth(50);
+        xLabel1.setStretchWidth(100);
         xFormPanel5.add(xLabel1);
 
         xFormPanel4.add(xFormPanel5);
@@ -207,7 +204,7 @@ public class FaasPage extends javax.swing.JPanel {
         xTextField10.setCaption("Declared Owner");
         xTextField10.setCellPadding(new java.awt.Insets(0, 0, 0, 3));
         xTextField10.setName("entity.owner.name"); // NOI18N
-        xTextField10.setStretchWidth(50);
+        xTextField10.setStretchWidth(100);
         xFormPanel6.add(xTextField10);
 
         xTextField25.setCaption("Address");
@@ -215,7 +212,7 @@ public class FaasPage extends javax.swing.JPanel {
         xTextField25.setName("entity.owner.address"); // NOI18N
         xTextField25.setRequired(true);
         xTextField25.setShowCaption(false);
-        xTextField25.setStretchWidth(50);
+        xTextField25.setStretchWidth(100);
         xFormPanel6.add(xTextField25);
 
         xFormPanel4.add(xFormPanel6);
@@ -229,14 +226,14 @@ public class FaasPage extends javax.swing.JPanel {
         xTextField26.setCaption("Administrator");
         xTextField26.setCellPadding(new java.awt.Insets(0, 0, 0, 3));
         xTextField26.setName("entity.administrator.name"); // NOI18N
-        xTextField26.setStretchWidth(50);
+        xTextField26.setStretchWidth(100);
         xFormPanel15.add(xTextField26);
 
         xTextField27.setCaption("Address");
         xTextField27.setCaptionWidth(70);
         xTextField27.setName("entity.administrator.address"); // NOI18N
         xTextField27.setShowCaption(false);
-        xTextField27.setStretchWidth(50);
+        xTextField27.setStretchWidth(100);
         xFormPanel15.add(xTextField27);
 
         xFormPanel4.add(xFormPanel15);
@@ -254,7 +251,7 @@ public class FaasPage extends javax.swing.JPanel {
         xSubFormPanel1.setLayout(xSubFormPanel1Layout);
         xSubFormPanel1Layout.setHorizontalGroup(
             xSubFormPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 913, Short.MAX_VALUE)
+            .addGap(0, 784, Short.MAX_VALUE)
         );
         xSubFormPanel1Layout.setVerticalGroup(
             xSubFormPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

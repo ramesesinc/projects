@@ -141,34 +141,34 @@ public class FaasExplorerViewListPage extends javax.swing.JPanel {
         xTextField1.setCaptionWidth(60);
         xTextField1.setCellPadding(new java.awt.Insets(0, 5, 0, 10));
         xTextField1.setName("query.tdno"); // NOI18N
-        xTextField1.setStretchWidth(20);
+        xTextField1.setStretchWidth(100);
         xFormPanel2.add(xTextField1);
 
         xTextField5.setCaption("Prev. TD No.");
         xTextField5.setCellPadding(new java.awt.Insets(0, 0, 0, 10));
         xTextField5.setName("query.prevtdno"); // NOI18N
-        xTextField5.setStretchWidth(20);
+        xTextField5.setStretchWidth(100);
         xFormPanel2.add(xTextField5);
 
         xTextField4.setCaption("Lot No.");
         xTextField4.setCaptionWidth(55);
         xTextField4.setCellPadding(new java.awt.Insets(0, 0, 0, 10));
         xTextField4.setName("query.cadastrallotno"); // NOI18N
-        xTextField4.setStretchWidth(20);
+        xTextField4.setStretchWidth(100);
         xFormPanel2.add(xTextField4);
 
         xTextField2.setCaption("PIN");
         xTextField2.setCaptionWidth(55);
         xTextField2.setCellPadding(new java.awt.Insets(0, 0, 0, 10));
         xTextField2.setName("query.fullpin"); // NOI18N
-        xTextField2.setStretchWidth(20);
+        xTextField2.setStretchWidth(100);
         xFormPanel2.add(xTextField2);
 
         xTextField3.setCaption("Title No.");
         xTextField3.setCaptionWidth(60);
         xTextField3.setCellPadding(new java.awt.Insets(0, 0, 0, 10));
         xTextField3.setName("query.titleno"); // NOI18N
-        xTextField3.setStretchWidth(20);
+        xTextField3.setStretchWidth(100);
         xFormPanel2.add(xTextField3);
 
         jPanel5.add(xFormPanel2, java.awt.BorderLayout.NORTH);
@@ -184,34 +184,34 @@ public class FaasExplorerViewListPage extends javax.swing.JPanel {
         xTextField11.setCaptionWidth(60);
         xTextField11.setCellPadding(new java.awt.Insets(0, 5, 0, 10));
         xTextField11.setName("query.ownername"); // NOI18N
-        xTextField11.setStretchWidth(20);
+        xTextField11.setStretchWidth(100);
         xFormPanel6.add(xTextField11);
 
         xTextField12.setCaption("Administrator");
         xTextField12.setCellPadding(new java.awt.Insets(0, 0, 0, 10));
         xTextField12.setName("query.administrator"); // NOI18N
-        xTextField12.setStretchWidth(20);
+        xTextField12.setStretchWidth(100);
         xFormPanel6.add(xTextField12);
 
         xTextField13.setCaption("Survey");
         xTextField13.setCaptionWidth(55);
         xTextField13.setCellPadding(new java.awt.Insets(0, 0, 0, 10));
         xTextField13.setName("query.surveyno"); // NOI18N
-        xTextField13.setStretchWidth(20);
+        xTextField13.setStretchWidth(100);
         xFormPanel6.add(xTextField13);
 
         xTextField15.setCaption("Doc No.");
         xTextField15.setCaptionWidth(55);
         xTextField15.setCellPadding(new java.awt.Insets(0, 0, 0, 10));
         xTextField15.setName("query.utdno"); // NOI18N
-        xTextField15.setStretchWidth(20);
+        xTextField15.setStretchWidth(100);
         xFormPanel6.add(xTextField15);
 
         xTextField6.setCaption("Block No.");
         xTextField6.setCaptionWidth(60);
         xTextField6.setCellPadding(new java.awt.Insets(0, 0, 0, 10));
         xTextField6.setName("query.blockno"); // NOI18N
-        xTextField6.setStretchWidth(20);
+        xTextField6.setStretchWidth(100);
         xFormPanel6.add(xTextField6);
 
         jPanel5.add(xFormPanel6, java.awt.BorderLayout.CENTER);

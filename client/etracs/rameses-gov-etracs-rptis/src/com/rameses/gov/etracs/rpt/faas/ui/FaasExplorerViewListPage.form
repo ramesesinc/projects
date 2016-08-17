@@ -193,7 +193,7 @@
                       <Insets value="[0, 5, 0, 10]"/>
                     </Property>
                     <Property name="name" type="java.lang.String" value="query.tdno" noResource="true"/>
-                    <Property name="stretchWidth" type="int" value="20"/>
+                    <Property name="stretchWidth" type="int" value="100"/>
                   </Properties>
                 </Component>
                 <Component class="com.rameses.rcp.control.XTextField" name="xTextField5">
@@ -203,7 +203,7 @@
                       <Insets value="[0, 0, 0, 10]"/>
                     </Property>
                     <Property name="name" type="java.lang.String" value="query.prevtdno" noResource="true"/>
-                    <Property name="stretchWidth" type="int" value="20"/>
+                    <Property name="stretchWidth" type="int" value="100"/>
                   </Properties>
                 </Component>
                 <Component class="com.rameses.rcp.control.XTextField" name="xTextField4">
@@ -214,7 +214,7 @@
                       <Insets value="[0, 0, 0, 10]"/>
                     </Property>
                     <Property name="name" type="java.lang.String" value="query.cadastrallotno" noResource="true"/>
-                    <Property name="stretchWidth" type="int" value="20"/>
+                    <Property name="stretchWidth" type="int" value="100"/>
                   </Properties>
                 </Component>
                 <Component class="com.rameses.rcp.control.XTextField" name="xTextField2">
@@ -225,7 +225,7 @@
                       <Insets value="[0, 0, 0, 10]"/>
                     </Property>
                     <Property name="name" type="java.lang.String" value="query.fullpin" noResource="true"/>
-                    <Property name="stretchWidth" type="int" value="20"/>
+                    <Property name="stretchWidth" type="int" value="100"/>
                   </Properties>
                 </Component>
                 <Component class="com.rameses.rcp.control.XTextField" name="xTextField3">
@@ -236,7 +236,7 @@
                       <Insets value="[0, 0, 0, 10]"/>
                     </Property>
                     <Property name="name" type="java.lang.String" value="query.titleno" noResource="true"/>
-                    <Property name="stretchWidth" type="int" value="20"/>
+                    <Property name="stretchWidth" type="int" value="100"/>
                   </Properties>
                 </Component>
               </SubComponents>
@@ -270,7 +270,7 @@
                       <Insets value="[0, 5, 0, 10]"/>
                     </Property>
                     <Property name="name" type="java.lang.String" value="query.ownername" noResource="true"/>
-                    <Property name="stretchWidth" type="int" value="20"/>
+                    <Property name="stretchWidth" type="int" value="100"/>
                   </Properties>
                 </Component>
                 <Component class="com.rameses.rcp.control.XTextField" name="xTextField12">
@@ -280,7 +280,7 @@
                       <Insets value="[0, 0, 0, 10]"/>
                     </Property>
                     <Property name="name" type="java.lang.String" value="query.administrator" noResource="true"/>
-                    <Property name="stretchWidth" type="int" value="20"/>
+                    <Property name="stretchWidth" type="int" value="100"/>
                   </Properties>
                 </Component>
                 <Component class="com.rameses.rcp.control.XTextField" name="xTextField13">
@@ -291,7 +291,7 @@
                       <Insets value="[0, 0, 0, 10]"/>
                     </Property>
                     <Property name="name" type="java.lang.String" value="query.surveyno" noResource="true"/>
-                    <Property name="stretchWidth" type="int" value="20"/>
+                    <Property name="stretchWidth" type="int" value="100"/>
                   </Properties>
                 </Component>
                 <Component class="com.rameses.rcp.control.XTextField" name="xTextField15">
@@ -302,7 +302,7 @@
                       <Insets value="[0, 0, 0, 10]"/>
                     </Property>
                     <Property name="name" type="java.lang.String" value="query.utdno" noResource="true"/>
-                    <Property name="stretchWidth" type="int" value="20"/>
+                    <Property name="stretchWidth" type="int" value="100"/>
                   </Properties>
                 </Component>
                 <Component class="com.rameses.rcp.control.XTextField" name="xTextField6">
@@ -313,7 +313,7 @@
                       <Insets value="[0, 0, 0, 10]"/>
                     </Property>
                     <Property name="name" type="java.lang.String" value="query.blockno" noResource="true"/>
-                    <Property name="stretchWidth" type="int" value="20"/>
+                    <Property name="stretchWidth" type="int" value="100"/>
                   </Properties>
                 </Component>
               </SubComponents>

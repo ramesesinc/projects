@@ -17,7 +17,8 @@ class RPTCertificationLandService
     public void validateLandWithImprovement(params){
     	def result = em.findImprovementCount(params)
     	def bldgland = em.findBldgLandCount(params)
-    	if (result.improvcount == 0 && bldgland.improvcount == 0)
+    	def plant = em.findPlantTreeCount(params)
+    	if (result.improvcount == 0 && bldgland.improvcount == 0 && plant.improvcount == 0)
     		throw new Exception("Selected Land has no existing improvements.")
     }
 
@@ -67,7 +68,7 @@ class RPTCertificationLandService
 			faas.street = (faas.street ? faas.street : faas.barangay.name)
 			cert.putAll( faas )
 			if (!cert.items)
-				cert.items = [faas]
+				cert.items = []
 		}
 	}
 

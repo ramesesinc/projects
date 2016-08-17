@@ -40,7 +40,7 @@ SELECT
 	f.objid 
 FROM faas f
 	INNER JOIN rpu r ON f.rpuid = r.objid 
-    inner join entitymember m on f.taxpayer_objid = m.member_objid
+    inner join entitymember m on f.taxpayer_objid = m.entityid 
 WHERE f.state = 'CURRENT'
  and m.member_objid = $P{taxpayerid}
   AND r.rputype = 'land'
@@ -72,7 +72,7 @@ SELECT
 	f.objid 
 FROM faas f
 	INNER JOIN rpu r ON f.rpuid = r.objid 
-	inner join entitymember m on f.taxpayer_objid = m.member_objid
+	inner join entitymember m on f.taxpayer_objid = m.entityid 
 WHERE f.state = 'CURRENT' 
   and m.member_objid = $P{taxpayerid}
   AND r.rputype = 'land'
@@ -111,7 +111,7 @@ SELECT
 	f.objid 
 FROM faas f
 	INNER JOIN rpu r ON f.rpuid = r.objid 
-	inner join entitymember m on f.taxpayer_objid = m.member_objid
+	inner join entitymember m on f.taxpayer_objid = m.entityid 
 WHERE f.state = 'CURRENT' 
   and m.member_objid = $P{taxpayerid}
   AND r.rputype = 'land'
@@ -174,7 +174,7 @@ SELECT
 	$P{objid} as rptcertificationid,
 	f.objid 
 FROM faas f
-	inner join entitymember m on f.taxpayer_objid = m.member_objid
+	inner join entitymember m on f.taxpayer_objid = m.entityid 
 WHERE f.state ='CURRENT' 
  and m.member_objid = $P{taxpayerid}
 
@@ -261,6 +261,12 @@ WHERE bl.landfaas_objid = $P{faasid}
   AND bf.year <= $P{asofyear}
 
 
+[findPlantTreeCount]  
+select count(*) as improvcount
+from faas f 
+inner join planttreedetail ptd on f.rpuid = ptd.landrpuid
+where f.objid = $P{faasid}
+
 
 
 [getLandItems]
@@ -331,6 +337,7 @@ SELECT
 FROM bldgrpu_land bl 
 	INNER JOIN faas f ON bl.bldgrpuid = f.rpuid 
 WHERE bl.landfaas_objid = $P{faasid}
+and f.objid <>  $P{faasid}
   ${asoffilter}
 
 
@@ -364,7 +371,7 @@ SELECT
 	$P{objid} as rptcertificationid,
 	f.objid as refid
 FROM faas f 
-	inner join entitymember m on f.taxpayer_objid = m.member_objid
+	inner join entitymember m on f.taxpayer_objid = m.entityid 
 WHERE f.state = 'CURRENT' 
   and m.member_objid = $P{taxpayerid}
 
@@ -373,6 +380,8 @@ WHERE f.state = 'CURRENT'
 SELECT 
 	f.tdno,
 	f.titleno,	
+	f.taxpayer_name, 
+	f.owner_name, 
 	pc.code AS classcode,
 	pc.name AS classname,
 	rp.cadastrallotno,

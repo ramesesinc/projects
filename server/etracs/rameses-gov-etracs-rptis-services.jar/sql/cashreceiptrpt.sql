@@ -657,6 +657,7 @@ WHERE rl.objid IN (
 	 )
 )
 AND ( rc.objid IS NULL OR rc.state <> 'APPROVED' ) 
+AND rl.totalav > 0
 ORDER BY rl.tdno  
 ${mysqlcountfilter}
 

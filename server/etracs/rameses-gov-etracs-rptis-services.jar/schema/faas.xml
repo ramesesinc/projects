@@ -71,7 +71,7 @@
 		<field name="objid" primary="true" />
 		<field name="faasid" required="true" />
 		<field name="ry" required="true" type="integer" />
-		<field name="tdno" required="true"/>
+		<field name="tdno" />
 		<field name="bmv" required="true" type="decimal" />
 		<field name="mv" required="true" type="decimal" />
 		<field name="av" required="true" type="decimal" />

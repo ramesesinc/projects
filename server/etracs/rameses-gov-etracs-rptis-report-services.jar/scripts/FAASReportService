@@ -144,9 +144,11 @@ class FaasReportService
 	}
 	
 	private void buildOwnerContactNo( faas ) {
-		def contact = em.findEntityContactInfo(faas.taxpayer)
-		if (contact)
-			faas.owner += contact
+		if (faas.taxpayer){
+			def contact = em.findEntityContactInfo(faas.taxpayer)
+			if (contact)
+				faas.owner += contact
+		}
 	}
 
 	void buildCancelNote(faas){

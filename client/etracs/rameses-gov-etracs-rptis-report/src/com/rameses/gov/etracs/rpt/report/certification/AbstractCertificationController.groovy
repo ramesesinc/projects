@@ -64,8 +64,10 @@ public abstract class AbstractCertificationController
          entity = createEntity();
         entity.objid            = RPTUtil.generateId('RC');
         entity.opener           = inv.properties.opener ;
-        entity.certifiedby      = paramSvc.getStandardParameter().ASSESSORNAME;
-        entity.certifiedbytitle = paramSvc.getStandardParameter().ASSESSORTITLE;
+        entity.certifiedby      = paramSvc.getStandardParameter().ASSESSORCERTIFIEDBY;
+        entity.certifiedbytitle = paramSvc.getStandardParameter().ASSESSORCERTIFIEDBYTITLE;
+        entity.byauthority      = paramSvc.getStandardParameter().ASSESSORNAME;
+        entity.byauthoritytitle = paramSvc.getStandardParameter().ASSESSORTITLE;
         entity.purpose          = "whatever legal purposes it may serve him/her"; 
         entity.asofyear         = dtSvc.getServerYear();
         entity.oramount         = 0.0;

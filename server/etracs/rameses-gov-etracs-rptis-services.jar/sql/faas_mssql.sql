@@ -645,3 +645,6 @@ and rlf.faasid = $P{objid}
 [findFaasByTdNo]
 select objid, fullpin from faas where tdno = $P{tdno}
 
+
+[deletePreviousFaas]
+delete from previousfaas where prevfaasid = $P{objid}

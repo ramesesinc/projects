@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit>
     <invokers>
-        <invoker type="faas:info" action="open" caption="FAAS"  index="0" visibleWhen="#{entity.txntype.objid != 'ST' || entity.rpu.rputype!='land'}"/>
-        <invoker type="faas:info" action="open" caption="Stewardship FAAS"  index="0" visibleWhen="#{entity.txntype.objid == 'ST' &amp;&amp; entity.rpu.rputype=='land'}"/>
+        <invoker type="faas:info" action="doOpen" caption="FAAS"  index="0" visibleWhen="#{entity.txntype.objid != 'ST' || entity.rpu.rputype!='land'}"/>
+        <invoker type="faas:info" action="doOpen" caption="Stewardship FAAS"  index="0" visibleWhen="#{entity.txntype.objid == 'ST' &amp;&amp; entity.rpu.rputype=='land'}"/>
         <invoker type="faasdata:open" action="open" caption="FAAS"  index="0" />
         <invoker type="prevfaas:open" action="open" caption="FAAS"  index="0" target="popup"/>
         

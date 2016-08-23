@@ -452,3 +452,14 @@ from faas f
 where f.objid = $P{objid}
 and bi.addareatobldgtotalarea = 1
 and param_objid = 'AREA_SQM'
+
+
+[findEsigned]
+select objid 
+from faas_task 
+where refid = $P{faasid} 
+and state = 'approver' 
+and signature is not null 
+order by startdate desc
+
+

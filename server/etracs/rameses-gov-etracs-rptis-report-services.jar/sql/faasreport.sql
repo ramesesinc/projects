@@ -72,7 +72,7 @@ select
 	r.swornamount, 
 	r.useswornamount
 from rpu r 
-	inner join propertyclassification pc on r.classification_objid = pc.objid 
+	left join propertyclassification pc on r.classification_objid = pc.objid 
 	left join exemptiontype et on r.exemptiontype_objid = et.objid 
 where r.objid = $P{objid}	
 

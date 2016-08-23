@@ -103,6 +103,7 @@ class TDReportService
 		buildAdjustmentFactor(td)
 
 		td.show_interim_watermark = util.toBoolean(var.show_interim_watermark, false)
+		td.esigned = adb.findEsigned(td) != null
 		return td 
 	}
 

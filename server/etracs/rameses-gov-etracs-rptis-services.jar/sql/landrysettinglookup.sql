@@ -49,7 +49,7 @@ SELECT sub.*,
 	pc.name AS classification_name
 FROM lcuvsubclass sub 
 	INNER JOIN lcuvspecificclass spc ON sub.specificclass_objid = spc.objid  
-	INNER JOIN landspecificclass lspc ON sub.landspecificclass_objid = lspc.objid  
+	INNER JOIN landspecificclass lspc ON spc.landspecificclass_objid = lspc.objid  
 	INNER JOIN propertyclassification pc ON spc.classification_objid = pc.objid 
 WHERE sub.previd = $P{previd}
 

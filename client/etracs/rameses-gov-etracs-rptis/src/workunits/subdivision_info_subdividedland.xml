@@ -49,7 +49,7 @@ class SubdividedLandController
     }
     
     def listHandler = [
-        getRows      : {lands.size() + 2},
+        getRows      : {lands.size()},
         
         fetchList    : {return lands},
         

@@ -5,6 +5,8 @@
         <invoker type="formActions" action="refresh" caption="Refresh" mnemonic="r" viibleWhen="#{mode == MODE_READ}"/>
         <invoker type="formActions" action="edit" caption="Edit" mnemonic="e" visibleWhen="#{showActions == true}" />
         <invoker type="formActions" action="save" caption="Save" mnemonic="s" visibleWhen="#{mode == MODE_EDIT}" />
+        <invoker type="formActions" action="openBacktaxItem" caption="Open Backtax Item" visibleWhen="#{mode == MODE_EDIT &amp;&amp; selectedItem != null}" depends="selectedItem" />
+        <invoker type="formActions" action="addBacktaxItem" caption="Add Backtax Item" visibleWhen="#{mode == MODE_EDIT}" />
    </invokers>
    <code>
 
@@ -25,6 +27,9 @@ public class BackTaxController
     def caller;
     
     def svc;
+    
+    @Service('FAASNewDiscoveryService')
+    def ndSvc 
     
     def entity;
     def selectedItem;
@@ -54,6 +59,7 @@ public class BackTaxController
     
     void save(){
         svc.saveBackTaxes(entity);
+        svc.savePreviousFaases(entity);
         caller.clearMessages('backtax');
         mode = MODE_READ;
     }
@@ -77,8 +83,13 @@ public class BackTaxController
         },
         onRemoveItem : { item -> 
             if( MsgBox.confirm('Remove item?') ) {
+                ndSvc.removeBackTaxItem(item);
                 entity.backtaxes.remove( item )
                 entity._backtaxes.add( item )
+                def di = entity.previousfaases.find{it.prevfaasid == item.objid}
+                if(di){
+                    entity.previousfaases.remove(di);
+                }
                 listHandler.refresh()
             }
         },
@@ -86,7 +97,6 @@ public class BackTaxController
     
     def doValidate( item ) {
         RPTUtil.required( 'RY', item.ry );
-        RPTUtil.required( 'TD No.', item.tdno );
         RPTUtil.required( 'Base Market Value', item.bmv);
         RPTUtil.required( 'Market Value', item.mv );
         RPTUtil.required( 'Assessed Value', item.ry );
@@ -144,6 +154,72 @@ public class BackTaxController
     boolean getAllowEdit(){
         return mode != MODE_READ
     }    
+    
+    void updateBackTaxItem(ndfaas, item){
+        item.objid = ndfaas.objid;
+        item.ry = ndfaas.rpu.ry;
+        item.effectivityyear = ndfaas.effectivityyear;
+        item.tdno = ndfaas.tdno;
+        item.bmv = ndfaas.rpu.totalbmv;
+        item.mv = ndfaas.rpu.totalmv;
+        item.av = ndfaas.rpu.totalav;
+    }
+    
+    def afterCreate = {
+        def item = createEntity();
+        updateBackTaxItem(it, item);
+        entity.backtaxes << item 
+        listHandler.reload();
+        updatePrevInfo()
+    }
+    
+    def afterUpdate = {
+        updateBackTaxItem(it, selectedItem);
+        listHandler.reload();
+        updatePrevInfo()
+    }
+    
+    void updatePrevInfo(){
+        if (entity.backtaxes){
+            def first = entity.backtaxes.first();
+            entity.prevtdno = first.tdno;
+            entity.prevpin = entity.fullpin;
+            entity.prevowner = entity.owner.name;
+            entity.prevadministrator = entity.administrator.name;
+            entity.prevav = first.av;
+            entity.prevmv = first.mv;
+            entity.prevareasqm = entity.rpu.totalareasqm;
+            entity.prevareaha = entity.rpu.totalareaha;
+            entity.preveffectivity = first.effectivityyear;
+            entity.previousfaases = [];
+            entity.previousfaases << [faasid: entity.objid, prevfaasid:first.objid];            
+        }
+    }
+    
+    def addBacktaxItem(){
+        def lastry = entity.rpu.ry;
+        if (entity.backtaxes){
+            lastry = entity.backtaxes.last().ry - 1;
+        }
+        
+        def faas = ndSvc.createBackTaxFaas([objid:entity.objid], lastry)
+        return Inv.lookupOpener('faas:capture:newdiscovery', [
+            closeonsave : true, 
+            afterCreate : afterCreate,
+            afterUpdate : afterUpdate, 
+            entity      : faas
+        ])
+    }
+    
+    def openBacktaxItem(){
+        if(!selectedItem) return 
+        return Inv.lookupOpener('faas:capture:newdiscovery:open', [
+            closeonsave : true, 
+            afterCreate : afterCreate,
+            afterUpdate : afterUpdate, 
+            entity      : ndSvc.openFaas(selectedItem),
+        ])
+    }
 }
 
 ]]>

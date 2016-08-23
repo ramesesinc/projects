@@ -37,6 +37,11 @@ public class FaasController
     def assignee; 
     def queryinfo;
     
+    //callbacks
+    def afterCreate;
+    def afterUpdate;
+    def closeonsave = false;
+    
         
     String entityName = 'faas';
     
@@ -87,7 +92,7 @@ public class FaasController
     
     void create(){
         loadRpuOpener();
-        mode = MODE_EDIT;
+        mode = MODE_CREATE;
     }
     
     void init(){ 
@@ -95,9 +100,7 @@ public class FaasController
         getEntity()._resolve = true;
         mode = MODE_EDIT;
     }
-    
-    void open(){
-        getEntity().putAll(service.openFaas(getEntity()));
+    void doOpen(){
         afterOpen();
         if (taskstate) getEntity().taskstate = taskstate;
         if (assignee) getEntity().assignee = assignee;
@@ -105,6 +108,10 @@ public class FaasController
         clearCacheImageFlag()
         buildQueryInfo();
         mode = MODE_READ;
+    }
+    void open(){
+        getEntity().putAll(service.openFaas(getEntity()));
+        doOpen();
     }
     
     void cancel(){
@@ -152,12 +159,19 @@ public class FaasController
     }
     
     
-    void save(){
-        if (mode == MODE_CREATE)
+    def save(){
+        if (mode == MODE_CREATE){
             getEntity().putAll(service.createFaas(getEntity()));
-        else 
+            if (afterCreate) afterCreate(entity);
+        }
+        else {
             getEntity().putAll(service.updateFaas(getEntity()));
+            if (afterUpdate) afterUpdate(entity);
+        }
         mode = MODE_READ;
+        if (closeonsave)
+            return '_close';
+        return null;
     }
     
     

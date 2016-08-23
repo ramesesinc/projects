@@ -45,6 +45,7 @@ class TDReportController
         getSubReports : { 
             return [
                 new SubReport( 'TDReportLand',  reportPath + 'tdreportland.jasper'),
+                new SubReport( 'TDReportLandESig',  reportPath + 'tdreportlandesigned.jasper'),
                 new SubReport( 'TDReportBldg',  reportPath + 'tdreportbldg.jasper'),
                 new SubReport( 'TDReportMach',  reportPath + 'tdreportimprovement.jasper'),
                 new SubReport( 'TDReportPlant', reportPath + 'tdreportimprovement.jasper'),

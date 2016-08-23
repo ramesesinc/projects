@@ -41,6 +41,9 @@ abstract class RPTWorkflowController extends WorkflowController
     }
     
     public void afterSignal(Object result){
+        if (result.data){
+            entity.putAll(result.data)
+        }
         if (prevtask.action != 'delete')
             loadSections();
     }

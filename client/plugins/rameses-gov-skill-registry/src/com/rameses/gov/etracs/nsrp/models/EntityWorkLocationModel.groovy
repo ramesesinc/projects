@@ -23,12 +23,20 @@ class EntityWorkLocationModel extends CrudFormModel
         "entity.local": {o ->
             if(o) locations = svc.getLocalAddresses();
             if(!o) locations = svc.getNonLocalAddresses();
-            binding.refresh("entity.location");
-            println 'Locations: ' + locations;
+            entity.location = null;
+            binding.refresh("entity.*");
         }
     ];
 
+    void doOpen(){
+        super.open();
+        if(entity.local) locations = svc.getLocalAddresses();
+        if(!entity.local) locations = svc.getNonLocalAddresses();
+    }
+
     void afterCreate() {
         entity.entityid = caller?.masterEntity?.objid;
+        entity.local = true;
+        locations = svc.getLocalAddresses();
     }
 }

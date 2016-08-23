@@ -9,7 +9,18 @@ import com.rameses.seti2.models.*;
 
 class EntityWorkExperienceModel extends CrudFormModel
 {
+    @Service("JobSearchService")
+    def jobSvc;
+
+    def jobtitles;
+
+    void doOpen(){
+        super.open();
+        jobtitles = jobSvc.getJobTitles();
+    }
+
     void afterCreate() {
         entity.entityid = caller?.masterEntity?.objid;
+        jobtitles = jobSvc.getJobTitles();
     }
 }

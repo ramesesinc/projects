@@ -1,7 +1,7 @@
 <workunit extends="com/rameses/seti2/templates/CrudList.xml" schemaName="entity_workexperience">
     <invokers>
         <invoker type="entityindividual:section" caption="Work Experience" index="3"
-                cols="companyname,address,position,fromdate,todate,appoinmentstatus" action="init" visibleWhen="#{mode=='read'}"/>
+                cols="companyname,address,jobtitle.name,fromdate,todate,appoinmentstatus" action="init" visibleWhen="#{mode=='read'}"/>
     </invokers>
     <code>
         <![CDATA[

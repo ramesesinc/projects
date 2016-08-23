@@ -18,7 +18,7 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="xFormPanel1" pref="435" max="32767" attributes="0"/>
+              <Component id="xFormPanel1" pref="459" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
@@ -27,8 +27,8 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="xFormPanel1" min="-2" pref="97" max="-2" attributes="0"/>
-              <EmptySpace pref="41" max="32767" attributes="0"/>
+              <Component id="xFormPanel1" min="-2" pref="85" max="-2" attributes="0"/>
+              <EmptySpace pref="53" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -36,23 +36,13 @@
   <SubComponents>
     <Container class="com.rameses.rcp.control.XFormPanel" name="xFormPanel1">
       <Properties>
-        <Property name="captionWidth" type="int" value="100"/>
+        <Property name="captionWidth" type="int" value="120"/>
       </Properties>
       <SubComponents>
-        <Component class="com.rameses.rcp.control.XCheckBox" name="xCheckBox1">
+        <Component class="com.rameses.rcp.control.XTextField" name="xTextField2">
           <Properties>
-            <Property name="caption" type="java.lang.String" value="Local"/>
-            <Property name="name" type="java.lang.String" value="entity.local" noResource="true"/>
-          </Properties>
-        </Component>
-        <Component class="com.rameses.rcp.control.XComboBox" name="xComboBox1">
-          <Properties>
-            <Property name="caption" type="java.lang.String" value="Work Location"/>
-            <Property name="dynamic" type="boolean" value="true"/>
-            <Property name="expression" type="java.lang.String" value="#{item.name}"/>
-            <Property name="itemKey" type="java.lang.String" value="name"/>
-            <Property name="items" type="java.lang.String" value="locations"/>
-            <Property name="name" type="java.lang.String" value="entity.location" noResource="true"/>
+            <Property name="caption" type="java.lang.String" value="Degree / Course"/>
+            <Property name="name" type="java.lang.String" value="entity.name" noResource="true"/>
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[0, 20]"/>
             </Property>

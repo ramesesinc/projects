@@ -7,7 +7,8 @@
 		</complex>
 		<field name="schoolname" required="true" caption="School"/>
 		<field name="educationlevel" required="true" caption="Educational Level"/>
-		<field name="course" required="false" caption="Course"/>
+		<field name="course_objid" required="false"/>
+		<field name="course_name" required="false" caption="Course"/>
 		<field name="fromyear" required="true" caption="From"/>
 		<field name="toyear" required="true" caption="To"/>
 		<field name="awards"/>

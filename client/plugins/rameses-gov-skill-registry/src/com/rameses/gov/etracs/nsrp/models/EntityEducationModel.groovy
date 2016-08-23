@@ -16,6 +16,7 @@ class EntityElibilityModel extends CrudFormModel
     def binding;
 
     def levels;
+    def courses;
 
     @PropertyChangeListener
     def listener = [
@@ -27,6 +28,7 @@ class EntityElibilityModel extends CrudFormModel
 
     void doOpen(){
         super.open();
+        courses = jobSvc.getCourses();
         levels = jobSvc.getEducationalLevels();
         levels.each{
             if(entity.educationlevel == it.level){
@@ -39,6 +41,7 @@ class EntityElibilityModel extends CrudFormModel
     void afterCreate() {
         entity.entityid = caller?.masterEntity?.objid;
         levels = jobSvc.getEducationalLevels();
+        courses = jobSvc.getCourses();
     }
 
 }

@@ -1,7 +1,7 @@
 <workunit extends="com/rameses/seti2/templates/CrudList.xml" schemaName="entity_education">
     <invokers>
         <invoker type="entityindividual:section" caption="Education" index="2"
-                cols="schoolname,educationlevel,course,fromyear,toyear" action="init" visibleWhen="#{mode=='read'}"/>
+                cols="schoolname,educationlevel,course.name,fromyear,toyear" action="init" visibleWhen="#{mode=='read'}"/>
     </invokers>
     <code>
         <![CDATA[

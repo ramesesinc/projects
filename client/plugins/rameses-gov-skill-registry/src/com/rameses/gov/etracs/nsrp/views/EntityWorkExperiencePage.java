@@ -33,7 +33,7 @@ public class EntityWorkExperiencePage extends javax.swing.JPanel {
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
         xTextField2 = new com.rameses.rcp.control.XTextField();
         xTextField3 = new com.rameses.rcp.control.XTextField();
-        xTextField4 = new com.rameses.rcp.control.XTextField();
+        xComboBox1 = new com.rameses.rcp.control.XComboBox();
         xDateField1 = new com.rameses.rcp.control.XDateField();
         xDateField2 = new com.rameses.rcp.control.XDateField();
         xTextField5 = new com.rameses.rcp.control.XTextField();
@@ -53,11 +53,14 @@ public class EntityWorkExperiencePage extends javax.swing.JPanel {
         xTextField3.setRequired(true);
         xFormPanel1.add(xTextField3);
 
-        xTextField4.setCaption("Position");
-        xTextField4.setName("entity.position"); // NOI18N
-        xTextField4.setPreferredSize(new java.awt.Dimension(0, 20));
-        xTextField4.setRequired(true);
-        xFormPanel1.add(xTextField4);
+        xComboBox1.setCaption("Position");
+        xComboBox1.setExpression("#{item.name}");
+        xComboBox1.setItemKey("");
+        xComboBox1.setItems("jobtitles");
+        xComboBox1.setName("entity.jobtitle"); // NOI18N
+        xComboBox1.setPreferredSize(new java.awt.Dimension(0, 20));
+        xComboBox1.setRequired(true);
+        xFormPanel1.add(xComboBox1);
 
         xDateField1.setText("xDateField1");
         xDateField1.setCaption("From");
@@ -94,12 +97,12 @@ public class EntityWorkExperiencePage extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XDateField xDateField1;
     private com.rameses.rcp.control.XDateField xDateField2;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XTextField xTextField2;
     private com.rameses.rcp.control.XTextField xTextField3;
-    private com.rameses.rcp.control.XTextField xTextField4;
     private com.rameses.rcp.control.XTextField xTextField5;
     // End of variables declaration//GEN-END:variables
 }

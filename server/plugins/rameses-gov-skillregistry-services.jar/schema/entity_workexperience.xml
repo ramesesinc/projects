@@ -7,9 +7,10 @@
 		</complex>
 		<field name="companyname" required="true" caption="Company"/>
 		<field name="address" required="true" caption="Address"/>
-		<field name="position" required="true" caption="Position"/>
 		<field name="fromdate" required="true" caption="From"/>
 		<field name="todate"  required="true" caption="To"/>
 		<field name="appointmentstatus" caption="Appointment Status"/>
+		<field name="jobtitle_objid" required="true"/>
+		<field name="jobtitle_name" required="true" caption="Position"/>
 	</element>
 </schema>

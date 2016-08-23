@@ -12,12 +12,12 @@ import com.rameses.seti2.views.CrudFormPage;
  * @author Rameses
  */
 @Template(CrudFormPage.class)
-public class EntityWorkLocationPage extends javax.swing.JPanel {
+public class CoursePage extends javax.swing.JPanel {
 
     /**
      * Creates new form EntityEducationPage
      */
-    public EntityWorkLocationPage() {
+    public CoursePage() {
         initComponents();
     }
 
@@ -31,24 +31,15 @@ public class EntityWorkLocationPage extends javax.swing.JPanel {
     private void initComponents() {
 
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
-        xCheckBox1 = new com.rameses.rcp.control.XCheckBox();
-        xComboBox1 = new com.rameses.rcp.control.XComboBox();
+        xTextField2 = new com.rameses.rcp.control.XTextField();
 
-        xFormPanel1.setCaptionWidth(100);
+        xFormPanel1.setCaptionWidth(120);
 
-        xCheckBox1.setCaption("Local");
-        xCheckBox1.setName("entity.local"); // NOI18N
-        xFormPanel1.add(xCheckBox1);
-
-        xComboBox1.setCaption("Work Location");
-        xComboBox1.setDynamic(true);
-        xComboBox1.setExpression("#{item.name}");
-        xComboBox1.setItemKey("name");
-        xComboBox1.setItems("locations");
-        xComboBox1.setName("entity.location"); // NOI18N
-        xComboBox1.setPreferredSize(new java.awt.Dimension(0, 20));
-        xComboBox1.setRequired(true);
-        xFormPanel1.add(xComboBox1);
+        xTextField2.setCaption("Degree / Course");
+        xTextField2.setName("entity.name"); // NOI18N
+        xTextField2.setPreferredSize(new java.awt.Dimension(0, 20));
+        xTextField2.setRequired(true);
+        xFormPanel1.add(xTextField2);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -56,20 +47,19 @@ public class EntityWorkLocationPage extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 435, Short.MAX_VALUE)
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 459, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(41, Short.MAX_VALUE))
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(53, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private com.rameses.rcp.control.XCheckBox xCheckBox1;
-    private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
+    private com.rameses.rcp.control.XTextField xTextField2;
     // End of variables declaration//GEN-END:variables
 }

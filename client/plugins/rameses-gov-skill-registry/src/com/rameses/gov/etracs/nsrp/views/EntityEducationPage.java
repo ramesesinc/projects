@@ -33,7 +33,7 @@ public class EntityEducationPage extends javax.swing.JPanel {
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
         xTextField1 = new com.rameses.rcp.control.XTextField();
         xComboBox1 = new com.rameses.rcp.control.XComboBox();
-        xTextField2 = new com.rameses.rcp.control.XTextField();
+        xComboBox2 = new com.rameses.rcp.control.XComboBox();
         xIntegerField1 = new com.rameses.rcp.control.XIntegerField();
         xIntegerField2 = new com.rameses.rcp.control.XIntegerField();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -53,11 +53,14 @@ public class EntityEducationPage extends javax.swing.JPanel {
         xComboBox1.setRequired(true);
         xFormPanel1.add(xComboBox1);
 
-        xTextField2.setCaption("Course");
-        xTextField2.setName("entity.course"); // NOI18N
-        xTextField2.setPreferredSize(new java.awt.Dimension(0, 20));
-        xTextField2.setVisibleWhen("#{entity.level.index > 4}");
-        xFormPanel1.add(xTextField2);
+        xComboBox2.setCaption("Course");
+        xComboBox2.setExpression("#{item.name}");
+        xComboBox2.setItemKey("");
+        xComboBox2.setItems("courses");
+        xComboBox2.setName("entity.course"); // NOI18N
+        xComboBox2.setPreferredSize(new java.awt.Dimension(0, 20));
+        xComboBox2.setVisibleWhen("#{entity.level.index > 4}");
+        xFormPanel1.add(xComboBox2);
 
         xIntegerField1.setText("xIntegerField1");
         xIntegerField1.setCaption("From Year");
@@ -93,18 +96,18 @@ public class EntityEducationPage extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 202, Short.MAX_VALUE)
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane jScrollPane1;
     private com.rameses.rcp.control.XComboBox xComboBox1;
+    private com.rameses.rcp.control.XComboBox xComboBox2;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XIntegerField xIntegerField1;
     private com.rameses.rcp.control.XIntegerField xIntegerField2;
     private com.rameses.rcp.control.XTextArea xTextArea1;
     private com.rameses.rcp.control.XTextField xTextField1;
-    private com.rameses.rcp.control.XTextField xTextField2;
     // End of variables declaration//GEN-END:variables
 }

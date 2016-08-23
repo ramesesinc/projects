@@ -46,6 +46,12 @@ class JobSearchService
 	@DataContext("address_abroad")
 	def abroad;
 
+	@DataContext("jobtitle")
+	def jobtitle;
+
+	@DataContext("course")
+	def course;
+
 	@ActiveDB("nsrp_entity")
 	def em1;
 
@@ -65,14 +71,9 @@ class JobSearchService
 	}
 
 	@ProxyMethod
-	public def saveProfile( data ) {
-		println 'profile ' + data;
-	}
-
-	@ProxyMethod
 	def advanceSearch(criteria){
 		criteria.searchtext = criteria.searchtext ? "%" + criteria.searchtext + "%" : "%";
-		def entityids = "('" + em2.getEntitySearchResultID(['searchtext':criteria.searchtext]).collect{it.entityid}.join("','") + "')";
+		criteria.entityids = "('" + em2.getEntitySearchResultID(['searchtext':criteria.searchtext]).collect{it.entityid}.join("','") + "')";
 		return em1.getSearchResult(criteria);
 	}
 
@@ -110,6 +111,21 @@ class JobSearchService
 	@ProxyMethod
 	def getNonLocalAddresses(){
 		return abroad.list();
+	}
+
+	@ProxyMethod
+	def getJobTitles(){
+		return jobtitle.list();
+	}
+
+	@ProxyMethod
+	def getJobTitleCount(){
+		return em2.getJobTitleCount().sort{ it.counter }.reverse();
+	}
+
+	@ProxyMethod
+	def getCourses(){
+		return course.list();
 	}
 
 	@ProxyMethod

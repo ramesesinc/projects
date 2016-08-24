@@ -328,6 +328,7 @@ class BldgRPUService
 	List getBldgUses(structuraltype){
 		def bldguses = em.getBldgUses([structuraltypeid:structuraltype.objid])
 		bldguses.each{ bu ->
+			bu.taxable = util.toBoolean(bu.taxable, true)
 			bu.floors = em.getFloors([bldguseid:bu.objid])
 			bu.floors.each{ floor ->
 				floor.additionals = em.getAdditionalItems([bldgfloorid:floor.objid])

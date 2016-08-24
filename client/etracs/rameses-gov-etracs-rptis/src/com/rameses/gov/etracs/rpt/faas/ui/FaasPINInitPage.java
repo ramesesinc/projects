@@ -37,6 +37,7 @@ public class FaasPINInitPage extends javax.swing.JPanel {
         xNumberField3 = new com.rameses.rcp.control.XNumberField();
         xNumberField4 = new com.rameses.rcp.control.XNumberField();
         xNumberField5 = new com.rameses.rcp.control.XNumberField();
+        xTextField2 = new com.rameses.rcp.control.XTextField();
         xLabel1 = new com.rameses.rcp.control.XLabel();
         xDataTable1 = new com.rameses.rcp.control.XDataTable();
 
@@ -122,6 +123,17 @@ public class FaasPINInitPage extends javax.swing.JPanel {
         xNumberField5.setRequired(true);
         formPanel1.add(xNumberField5);
 
+        xTextField2.setCaption("Claim No.");
+        xTextField2.setDepends(new String[] {"entity.rputype"});
+        xTextField2.setName("entity.claimno"); // NOI18N
+        xTextField2.setPreferredSize(new java.awt.Dimension(100, 19));
+        xTextField2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                xTextField2ActionPerformed(evt);
+            }
+        });
+        formPanel1.add(xTextField2);
+
         xLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         com.rameses.rcp.control.border.XLineBorder xLineBorder1 = new com.rameses.rcp.control.border.XLineBorder();
         xLineBorder1.setLineColor(new java.awt.Color(153, 153, 153));
@@ -144,6 +156,8 @@ public class FaasPINInitPage extends javax.swing.JPanel {
                 , new Object[]{"nullWhenEmpty", true}
                 , new Object[]{"editable", true}
                 , new Object[]{"editableWhen", null}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.CheckBoxColumnHandler(java.lang.Boolean.class, true, false)}
             }),
@@ -157,6 +171,8 @@ public class FaasPINInitPage extends javax.swing.JPanel {
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
                 , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             })
@@ -180,14 +196,18 @@ public class FaasPINInitPage extends javax.swing.JPanel {
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(formPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 243, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(formPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 255, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(xLabel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(xDataTable1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 91, Short.MAX_VALUE)
+                .add(xDataTable1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 124, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void xTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_xTextField2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_xTextField2ActionPerformed
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -203,6 +223,7 @@ public class FaasPINInitPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XNumberField xNumberField3;
     private com.rameses.rcp.control.XNumberField xNumberField4;
     private com.rameses.rcp.control.XNumberField xNumberField5;
+    private com.rameses.rcp.control.XTextField xTextField2;
     // End of variables declaration//GEN-END:variables
     
 }

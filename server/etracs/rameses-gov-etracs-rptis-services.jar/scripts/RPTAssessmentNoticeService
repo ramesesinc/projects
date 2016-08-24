@@ -7,6 +7,16 @@ class RPTAssessmentNoticeService
 {
 	@ActiveDB('assessmentnotice')
 	def em
+
+	@ActiveDB('tdreport')
+    def tdreportEm 
+
+	@Service('FAASService')
+	def faasSvc 
+
+
+	@Service('SignatureService')
+	def sigSvc 	
 	
 	@Service('SequenceService')
 	def seqSvc
@@ -98,7 +108,29 @@ class RPTAssessmentNoticeService
 			it.assessmentnoticeid = notice.objid 
 			em.create(it, SCHEMA_ITEM)
 		}
+		buildSignatories(notice)
 		return notice 
+	}
+
+	void buildSignatories(notice){
+		if (!notice.items) return
+
+		def td = [objid:notice.items[0].faasid ]
+		faasSvc.loadSignatories(td)
+
+		td.signatories = [:]
+		def retval = sigSvc.decodeSignatories(tdreportEm.getSignatories(td))
+		td.signatories = retval.signatories 
+		td.signaturetampered = retval.tampered
+		td.tamperedsigmsg = retval.tamperedsigmsg
+
+		notice.esigned = false
+		td.signatories.each{k,v->
+			if (v.state == 'approver' && v.signature?.image){
+				notice.esigned = true 
+			}
+		}
+		notice.putAll(td)
 	}
 
 	void updateAdministratorInfo(notice){
@@ -116,6 +148,7 @@ class RPTAssessmentNoticeService
 		notice.dtassessed = dateSvc.getServerYear()+""
 		if( notice.items && notice.items[0].dtsigned )	
 			notice.dtassessed = new java.text.SimpleDateFormat("yyyy").format(notice.items[0].dtsigned)
+		buildSignatories(notice)
 		return notice
 	}
 

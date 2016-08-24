@@ -296,6 +296,11 @@ class TDReportService
 					notes  = 'Cancelled due to ' + reason.reason + '. '
 					notes += 'Date ' + dtSvc.format('MMMMM dd, yyyy' ,reason.txndate) + '.  ' 
 				}
+				else{
+					notes  =  'Cancelled By TD/ARP No. ' + td.cancelledbytdnos + '. ' 
+					notes += 'Cancellation Reason: '  + td.cancelreason + '. '
+					notes += 'Date Cancelled: ' + dtSvc.format('MMMMM dd, yyyy' ,td.canceldate) + '.  ' 
+				}
 			}
 			td.cancelnote = notes + (td.cancelnote ? td.cancelnote : '')
 		}

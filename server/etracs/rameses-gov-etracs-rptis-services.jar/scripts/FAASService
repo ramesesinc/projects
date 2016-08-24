@@ -54,6 +54,12 @@ class FAASService
     @DataContext('realproperty')
     def realpropertyDb
 
+    @DataContext('faas')
+    def faasDb
+
+    @DataContext('faas_list')
+    def faaslistDb
+
 
 
     
@@ -162,7 +168,7 @@ class FAASService
 
 	@ProxyMethod
 	public void savePreviousFaases( faas ) {
-		faas.previousfaases.each{
+		faas.previousfaases?.each{
 			em.save(it, SCHEMA_PREVIOUSFAAS)
 		}			
 	}
@@ -341,14 +347,23 @@ class FAASService
 	}
 
 	void updateBacktaxesInfo(faas){
-		faas.backtaxes?.each{
+		if (!faas.backtaxes) 
+			return
+
+		faas.backtaxes.each{
 			if (!it.tdno){
 				it.tdno = faas.tdno + '-' + it.ry 
 				em.save(it, SCHEMA_BACKTAX)
 				em.updateFaasTdNo(it)
 				em.updateFaasListTdNo(it)
 			}
+			def pf = em.findPreviousFaas(it)
+			if(pf){
+				faasDb.update([objid:pf.faasid, prevtdno:it.tdno])
+				faaslistDb.update([objid:pf.faasid, prevtdno:it.tdno])
+			}
 		}
+
 	}
 
 	void approveParentFaas(faas){
@@ -693,10 +708,28 @@ class FAASService
 		faas._backtaxes?.each{
 			em.delete(it, SCHEMA_BACKTAX)
 		}
-		faas.backtaxes?.each{
-			it.faasid = faas.objid 
-			em.save(it, SCHEMA_BACKTAX)
+		faas.backtaxes?.each{bt->
+			bt.faasid = faas.objid 
+			em.save(bt, SCHEMA_BACKTAX)
+			savePreviousFaases(bt)
+			updateFaasPrevInfo(bt)
 		}
+	}
+
+	@ProxyMethod
+	public void updateFaasPrevInfo(bt){
+		def info = [:]
+		info.objid = bt.objid
+		info.prevtdno = (bt.prevtdno ? bt.prevtdno : 'NEW')
+		info.prevpin = bt.prevpin
+		info.prevowner = (bt.prevowner ? bt.prevowner : 'NEW')
+		info.prevadministrator = bt.prevadministrator
+		info.prevav = (bt.prevav != null ? bt.prevav : 0.00)
+		info.prevmv = bt.prevmv
+		info.prevareasqm = bt.prevareasqm
+		info.prevareaha = bt.prevareaha
+		info.preveffectivity = bt.preveffectivity
+		faasDb.update(info)
 	}
 
     void checkTxnReference(faas){
@@ -750,18 +783,28 @@ class FAASService
 			cancelFaas(params)
 		}
 
-		faas.backtaxes?.each{
-			def f = openFaasOnly(it)
-			if (f && f.state != 'CANCELLED'){
-				def params = [
-					objid  				: it.objid,
-					rpuid 				: f.rpuid, 
-					txntype 			: faas.txntype,
-					cancelreason		: faas.txntype.displaycode,
-					canceldate			: faas.approver.dtsigned,
-					cancelledbytdnos	: faas.tdno,
-				]
-				cancelFaas(params)
+		if (faas.backtaxes){
+			cancelBackTaxes(faas)
+		}
+	}
+
+	void cancelBackTaxes(faas){
+		for(int i=0; i<faas.backtaxes.size() - 1; i++){
+			def bt = faas.backtaxes[i]
+			def btf = openFaasOnly(bt)
+			if (btf){
+				def cf = openFaasOnly(faas.backtaxes[i+1])
+				if (cf && cf.state != 'CANCELLED'){
+					def params = [
+						objid  				: cf.objid,
+						rpuid 				: cf.rpuid, 
+						txntype 			: faas.txntype,
+						cancelreason		: faas.txntype.displaycode,
+						canceldate			: faas.approver.dtsigned,
+						cancelledbytdnos	: btf.tdno,
+					]
+					cancelFaas(params)
+				}
 			}
 		}
 	}

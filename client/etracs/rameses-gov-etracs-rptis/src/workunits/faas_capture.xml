@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit>
     <invokers>
-        <invoker type="faas:capture:create" action="edit" caption="FAAS" role="ENCODER" />
+        <invoker type="faas:capture:create" action="initEdit" caption="FAAS" role="ENCODER" />
         <invoker type="faas:capture:newdiscovery" action="create" caption="FAAS" width="1024" height="600" target="popup" />
         <invoker type="faas:capture:newdiscovery:open" action="open" caption="FAAS" width="1024" height="600" target="popup" />
         <invoker type="faas:capture:open" action="open" caption="FAAS" target="window"/>

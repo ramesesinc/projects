@@ -367,7 +367,7 @@ public class RPTLedgerController
         svc.addRestriction(restriction);
         entity.restrictions << restriction;
         restrictionListHandler.reload();
-        binding.refresh('restrictioninfo'); //TODO: not functioning
+        binding.refresh(); 
         return '_close';
     }
     
@@ -377,6 +377,7 @@ public class RPTLedgerController
             svc.removeRestriction(selectedRestriction);
             entity.restrictions.remove(selectedRestriction);
             restrictionListHandler.reload();
+            binding.refresh();
         }
     }
     
@@ -390,5 +391,18 @@ public class RPTLedgerController
            info = 'Ledger is currently under restriction.';
         return info;
     }     
+    
+    def getMessagelist(){
+        def queryinfo = [];
+        def rinfo = getRestrictioninfo();
+        if (rinfo) queryinfo << rinfo;
+        
+        def sinfo = getSubledgerinfo();
+        if (sinfo) queryinfo << sinfo;
+        
+        if (queryinfo)
+            return queryinfo;
+        return null;
+    }
 }
 

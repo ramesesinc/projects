@@ -101,7 +101,7 @@ class FaasLandReportInterceptor
     		if (it.areatype == 'SQM'){
 	    		it.areatext = numberSvc.format('#,##0.00', it.areasqm) 
 	    		//it.areatext += ' sqm'
-	    		it.areatext += ' m\u00B2'
+	    		it.areatext += ' sqm'
     		}
     		else {
     			it.areatext = numberSvc.format('#,##0.000000', it.areaha) 

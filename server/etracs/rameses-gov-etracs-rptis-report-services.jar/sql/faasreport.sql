@@ -208,3 +208,12 @@ from sys_user u
 	inner join sys_usergroup ug on ugm.usergroup_objid = ug.objid 
 where u.objid = $P{userid}
 and ug.role = $P{role}
+
+
+[findEsigned]
+select objid 
+from faas_task 
+where refid = $P{objid} 
+and state = 'approver' 
+and signature is not null 
+order by startdate desc

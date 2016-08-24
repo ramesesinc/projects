@@ -46,9 +46,21 @@ class AssessmentNoticeController
     void open(){
         entity = svc.openNotice(entity.objid)
         entity.items.each{it.included=true};
+        saveSignatures(entity);
         mode = MODE_READ;      
     }
     
+    
+    void saveSignatures(reportdata){
+        reportdata.signatories.each{ k, v ->
+            def objid = v.objid + '-' + v.state 
+            if (v.signature?.image){
+                v.signatureis = DBImageUtil.getInstance().saveImageToFile(objid, v.signature.image)
+                v.signature2is = DBImageUtil.getInstance().saveImageToFile(objid+'2', v.signature.image)
+            }
+                
+        }
+    }    
     
     def save(){
         if (MsgBox.confirm('Save notice?')){
@@ -56,6 +68,7 @@ class AssessmentNoticeController
             if (!includeditems) throw new Exception('At least one property must be included.');
             entity.items = includeditems;
             entity = svc.createNotice(entity);
+            saveSignatures(entity);
             listHandler.load();
             mode = MODE_READ;
             return 'default'

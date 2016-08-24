@@ -59,6 +59,7 @@ class FaasDataCaptureInitController
         'entity.pintype' :{
             entity.isection = null;
             entity.iparcel = null;
+            binding.refresh('entity.(isection|iparcel)');
         },
         
         'entity.*' : { buildPin(); }

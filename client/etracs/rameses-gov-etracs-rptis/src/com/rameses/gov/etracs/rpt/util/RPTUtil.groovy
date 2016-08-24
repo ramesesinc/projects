@@ -1,10 +1,15 @@
 package com.rameses.gov.etracs.rpt.util;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 
 class RPTUtil
 {
-    
+    public static def format( pattern, value ) {
+        if( ! value ) value = 0
+		def df = new DecimalFormat( pattern )
+		return df.format( value )
+	}
     
     public static def sum( list, field  ) {
         def total = list."$field".sum()

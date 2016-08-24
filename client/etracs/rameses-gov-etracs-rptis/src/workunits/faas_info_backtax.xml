@@ -5,8 +5,8 @@
         <invoker type="formActions" action="refresh" caption="Refresh" mnemonic="r" viibleWhen="#{mode == MODE_READ}"/>
         <invoker type="formActions" action="edit" caption="Edit" mnemonic="e" visibleWhen="#{showActions == true}" />
         <invoker type="formActions" action="save" caption="Save" mnemonic="s" visibleWhen="#{mode == MODE_EDIT}" />
-        <invoker type="formActions" action="openBacktaxItem" caption="Open Backtax Item" visibleWhen="#{mode == MODE_EDIT &amp;&amp; selectedItem != null}" depends="selectedItem" />
-        <invoker type="formActions" action="addBacktaxItem" caption="Add Backtax Item" visibleWhen="#{mode == MODE_EDIT}" />
+        <invoker type="formActions" action="openBacktaxItem" caption="Open Backtax FAAS" visibleWhen="#{mode == MODE_EDIT &amp;&amp; selectedItem != null}" depends="selectedItem" />
+        <invoker type="formActions" action="addBacktaxItem" caption="Add Backtax FAAS" visibleWhen="#{mode == MODE_EDIT}" />
    </invokers>
    <code>
 
@@ -86,9 +86,8 @@ public class BackTaxController
                 ndSvc.removeBackTaxItem(item);
                 entity.backtaxes.remove( item )
                 entity._backtaxes.add( item )
-                def di = entity.previousfaases.find{it.prevfaasid == item.objid}
-                if(di){
-                    entity.previousfaases.remove(di);
+                if (!entity.backtaxes){
+                    entity.previousfaases = []
                 }
                 listHandler.refresh()
             }
@@ -168,32 +167,49 @@ public class BackTaxController
     def afterCreate = {
         def item = createEntity();
         updateBackTaxItem(it, item);
+        
+        if (!entity.backtaxes){
+            updatePrevInfo(entity, it);
+            svc.updateFaasPrevInfo(entity);
+        }
+        else {
+            updatePrevInfo(entity.backtaxes.last(), it);
+        }
+            
         entity.backtaxes << item 
         listHandler.reload();
-        updatePrevInfo()
     }
     
     def afterUpdate = {
         updateBackTaxItem(it, selectedItem);
+        if (entity.backtaxes.size() > 0 && entity.backtaxes[0].objid == selectedItem.objid){
+            updatePrevInfo(entity, it)
+            svc.updateFaasPrevInfo(entity);
+        }
+        else{
+            for(int i=1; i<entity.backtaxes.size(); i++){
+                if (entity.backtaxes[i].objid == it.objid){
+                    updatePrevInfo(entity.backtaxes[i-1], it)
+                    break;
+                }
+            }
+        }
         listHandler.reload();
-        updatePrevInfo()
+        
     }
     
-    void updatePrevInfo(){
-        if (entity.backtaxes){
-            def first = entity.backtaxes.first();
-            entity.prevtdno = first.tdno;
-            entity.prevpin = entity.fullpin;
-            entity.prevowner = entity.owner.name;
-            entity.prevadministrator = entity.administrator.name;
-            entity.prevav = first.av;
-            entity.prevmv = first.mv;
-            entity.prevareasqm = entity.rpu.totalareasqm;
-            entity.prevareaha = entity.rpu.totalareaha;
-            entity.preveffectivity = first.effectivityyear;
-            entity.previousfaases = [];
-            entity.previousfaases << [faasid: entity.objid, prevfaasid:first.objid];            
-        }
+    void updatePrevInfo(faas, prevfaas){
+        faas.prevtdno = prevfaas.tdno;
+        faas.prevpin = prevfaas.fullpin;
+        faas.prevowner = prevfaas.owner.name;
+        faas.prevadministrator = prevfaas.administrator?.name;
+        faas.prevav = RPTUtil.format('#,##0.00', prevfaas.rpu.totalav);
+        faas.prevmv = RPTUtil.format('#,##0.00', prevfaas.rpu.totalmv);
+        faas.prevareasqm = RPTUtil.format('#,##0.00', prevfaas.rpu.totalareasqm);
+        faas.prevareaha = RPTUtil.format('#,##0.000000', prevfaas.rpu.totalareaha);
+        faas.preveffectivity = prevfaas.effectivityyear;
+        faas.previousfaases = [];
+        faas.previousfaases << [faasid:faas.objid, prevfaasid:prevfaas.objid];            
     }
     
     def addBacktaxItem(){

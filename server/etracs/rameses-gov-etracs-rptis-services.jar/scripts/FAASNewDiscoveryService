@@ -9,11 +9,17 @@ class FAASNewDiscoveryService
 	@Env 
 	def env
 	
+    @ActiveDB('faas')
+    def faasEm
+
     @Service('FAASService')
     def faasSvc
 
     @Service('RPUService')
     def rpuSvc 
+
+    @DataContext('faas_list')
+    def faaslistDb 
 
 
     @ProxyMethod
@@ -42,6 +48,11 @@ class FAASNewDiscoveryService
 
     @ProxyMethod
     public void removeBackTaxItem(item) {
+        def pf = faasEm.findPreviousFaas(item)
+        if (pf){
+            faasSvc.updateFaasPrevInfo([objid:pf.faasid])
+            faaslistDb.update([objid:item.objid, prevtdno:item.prevtdno])
+        }
     	faasSvc.deletePreviousFaas(item)
     	faasSvc.deleteFaasById(item.objid)
     }

@@ -150,6 +150,12 @@ public class FaasController
         mode = MODE_EDIT;
     }
     
+    void initEdit(){
+        loadRpuOpener();
+        mode = MODE_EDIT;
+    }
+    
+    
     
     void cancelEdit(){
         getEntity().putAll(service.openFaas(getEntity()));
@@ -291,7 +297,7 @@ public class FaasController
     
     def showActionsCallback = {
         if (getEntity().taskstate && getEntity().taskstate.matches('assign.*')) return false;
-        if (getEntity().taskstate && !getEntity().taskstate.matches('examiner|receiver|appraiser|provappraiser|taxmapper|provtaxmapper|recommender')) return false;
+        if (getEntity().taskstate && !getEntity().taskstate.matches('examiner|receiver|appraiser|appraiser_chief|provappraiser|taxmapper|taxmapper_chief|provtaxmapper|recommender')) return false;
         if (getEntity().state.matches('CURRENT|CANCELLED')) return false;
         if (OsirisContext.env.USERID != getEntity().assignee.objid) return false;
         if (mode != MODE_READ) return false;

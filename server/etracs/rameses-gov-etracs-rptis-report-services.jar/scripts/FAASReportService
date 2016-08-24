@@ -120,6 +120,7 @@ class FaasReportService
 		faas.signatories = retval.signatories 
 		faas.signaturetampered = retval.tampered
 		faas.tamperedsigmsg = retval.tamperedsigmsg
+		faas.esigned = em.findEsigned(faas) != null
 
 	}
 

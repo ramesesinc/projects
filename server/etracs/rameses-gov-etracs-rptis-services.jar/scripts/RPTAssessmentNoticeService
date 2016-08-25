@@ -130,7 +130,9 @@ class RPTAssessmentNoticeService
 				notice.esigned = true 
 			}
 		}
+		def objid = notice.objid 
 		notice.putAll(td)
+		notice.objid = objid 
 	}
 
 	void updateAdministratorInfo(notice){
@@ -154,7 +156,7 @@ class RPTAssessmentNoticeService
 
 	@ProxyMethod
 	public def receiveNotice(notice) {
-		def old = openNotice(notice.objid)
+		def old = em.read(notice)
 		if (old.state == STATE_RECEIVED)
 			throw new Exception('Notice has already been received.')
 

@@ -165,7 +165,12 @@ class AssessmentNoticeController
     
     void receiveNotice(){
         if (MsgBox.confirm('Save notice receive information?')){
-            entity.putAll(svc.receiveNotice(entity))
+            def e = [:]
+            e.objid = entity.objid 
+            e.dtdelivered = entity.dtdelivered
+            e.receivedby = entity.receivedby
+            e.remarks = entity.remarks
+            entity.putAll(svc.receiveNotice(e))
             mode = MODE_READ;
         }
     }

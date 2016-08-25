@@ -156,7 +156,7 @@ FROM rptcertificationitem rci
 	INNER JOIN sys_org op ON b.parent_objid = op.objid 
 	INNER JOIN sys_org ogp ON op.parent_objid = ogp.objid 
 WHERE rci.rptcertificationid = $P{objid}
-ORDER BY f.tdno, r.fullpin
+ORDER BY f.tdno
 
 
 [insertMultipleItems]
@@ -207,7 +207,7 @@ FROM rptcertificationitem rci
 	INNER JOIN sys_org op ON b.parent_objid = op.objid 
 	INNER JOIN sys_org ogp ON op.parent_objid = ogp.objid 
 WHERE rci.rptcertificationid = $P{objid}  
-ORDER BY r.fullpin
+ORDER BY f.tdno 
 
 
 [getFaasInfo]
@@ -297,7 +297,7 @@ FROM rptcertificationitem rci
 	INNER JOIN sys_org op ON b.parent_objid = op.objid 
 	INNER JOIN sys_org ogp ON op.parent_objid = ogp.objid 
 WHERE rci.rptcertificationid = $P{objid}
-ORDER BY r.fullpin
+ORDER BY f.tdno 
 
 
 

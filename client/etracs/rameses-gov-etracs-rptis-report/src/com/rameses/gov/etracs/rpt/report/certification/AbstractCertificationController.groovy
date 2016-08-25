@@ -12,6 +12,9 @@ public abstract class AbstractCertificationController
 {
     @Service('ReportParameterService')
     def paramSvc;
+    
+    @Service('Var')
+    def var
 
     @Service('DateService')
     def dtSvc;
@@ -21,6 +24,8 @@ public abstract class AbstractCertificationController
     
     @Invoker
     def inv;
+    
+    def opener;
 
     def MODE_CREATE = 'create';
     def MODE_SELECT = 'select';
@@ -63,9 +68,9 @@ public abstract class AbstractCertificationController
     def init() {
          entity = createEntity();
         entity.objid            = RPTUtil.generateId('RC');
-        entity.opener           = inv.properties.opener ;
-        entity.certifiedby      = paramSvc.getStandardParameter().ASSESSORCERTIFIEDBY;
-        entity.certifiedbytitle = paramSvc.getStandardParameter().ASSESSORCERTIFIEDBYTITLE;
+        entity.opener           = (inv.properties.opener ? inv.properties.opener : opener);
+        entity.certifiedby      = var.get("ASSESSORCERTIFIEDBY");
+        entity.certifiedbytitle = var.get("ASSESSORCERTIFIEDBYTITLE");
         entity.byauthority      = paramSvc.getStandardParameter().ASSESSORNAME;
         entity.byauthoritytitle = paramSvc.getStandardParameter().ASSESSORTITLE;
         entity.purpose          = "whatever legal purposes it may serve him/her"; 
@@ -90,6 +95,7 @@ public abstract class AbstractCertificationController
     
     def open(){
         entity = service.openCertification(entity.objid);
+        opener = entity.opener;
         mode = MODE_READ;
         return doPreview();
     }

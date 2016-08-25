@@ -79,9 +79,11 @@ class TDReportService
 
 		td.display_recommendedby = var.td_report_display_recommendedby ? var.td_report_display_recommendedby : '1'
 
+		/*
 		if(td.claimno) {
 			td.fullpin += ' M' + td.claimno
 		}
+		*/
 
 		td.address = concatHousenoStreetPurok( td ) 
 

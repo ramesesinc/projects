@@ -66,6 +66,12 @@
                  serviceName="RPTRequirementTypeService"
                  role="MASTER" target="popup" index="501"/>
         
+        <invoker type="landspecificclass:list:formActions" 
+                 action="init" caption="Export" 
+                 title ="Export Land Specific Classes"
+                 serviceName="LandSpecificClassService"
+                 role="MASTER" target="popup" index="501"/>
+        
     </invokers>
 </workunit>
 

@@ -22,6 +22,22 @@ UNION
 		ON e.course_objid = c.objid
 	WHERE c.name LIKE $P{searchtext}
 
+
+[getAdvanceEntitySearchResultID]
+SELECT
+	e.entityid AS objid
+FROM entity_education e 
+LEFT JOIN entity_workexperience w 
+	ON e.entityid = w.entityid
+LEFT JOIN entity_skill s 
+	ON w.entityid = s.entityid
+WHERE COALESCE(w.jobtitle_name,'') LIKE $P{profession}
+AND COALESCE(e.course_name,'') LIKE $P{education} 
+AND COALESCE(s.name,'') LIKE $P{skill}
+AND e.entityid in ${entityids}
+GROUP BY objid
+
+
 [getJobTitleCount]
 SELECT
 	j.name,

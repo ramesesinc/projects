@@ -47,8 +47,9 @@ public class EntityEducationPage extends javax.swing.JPanel {
 
         xComboBox1.setCaption("Level");
         xComboBox1.setExpression("#{item.level}");
+        xComboBox1.setItemKey("");
         xComboBox1.setItems("levels");
-        xComboBox1.setName("entity.level"); // NOI18N
+        xComboBox1.setName("level"); // NOI18N
         xComboBox1.setPreferredSize(new java.awt.Dimension(200, 20));
         xComboBox1.setRequired(true);
         xFormPanel1.add(xComboBox1);
@@ -59,7 +60,7 @@ public class EntityEducationPage extends javax.swing.JPanel {
         xComboBox2.setItems("courses");
         xComboBox2.setName("entity.course"); // NOI18N
         xComboBox2.setPreferredSize(new java.awt.Dimension(0, 20));
-        xComboBox2.setVisibleWhen("#{entity.level.index > 4}");
+        xComboBox2.setVisibleWhen("#{level.index > 4}");
         xFormPanel1.add(xComboBox2);
 
         xIntegerField1.setText("xIntegerField1");

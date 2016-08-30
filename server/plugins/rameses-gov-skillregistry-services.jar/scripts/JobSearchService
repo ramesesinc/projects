@@ -7,6 +7,9 @@ class JobSearchService
 	@Service("DateService")
 	def dtSvc;
 
+	@Service("OrgService")
+	orgSvc;
+
 	@DataContext("entityindividual")
 	def entity;
 
@@ -52,6 +55,9 @@ class JobSearchService
 	@DataContext("course")
 	def course;
 
+	@DataContext("dataentry")
+	def dataentry;
+
 	@ActiveDB("nsrp_entity")
 	def em1;
 
@@ -67,14 +73,19 @@ class JobSearchService
 		list.each{
 			data << getProfile(it.objid);
 		}
-		return data;
+		return data.sort{it.name};
 	}
 
 	@ProxyMethod
 	def advanceSearch(criteria){
-		criteria.searchtext = criteria.searchtext ? "%" + criteria.searchtext + "%" : "%";
-		criteria.entityids = "('" + em2.getEntitySearchResultID(['searchtext':criteria.searchtext]).collect{it.entityid}.join("','") + "')";
-		return em1.getSearchResult(criteria);
+		if(!criteria) throw new Exception("Search criteria is required!");
+		criteria.entityids = "('" + em1.getAdvanceSearchResult(criteria)?.collect{it.objid}.join("','") + "')";
+		def data = [];
+		def list = em2.getAdvanceEntitySearchResultID(criteria);
+		list.each{
+			data << getProfile(it.objid);
+		}
+		return data.sort{it.name};
 	}
 
 	@ProxyMethod
@@ -91,6 +102,15 @@ class JobSearchService
 		profile.training = training.find(['entityid':id]).list();
 		profile.skill = skill.find(['entityid':id]).list();
 		return profile;
+	}
+
+	@ProxyMethod
+	public def saveDataEntry(data){
+		if(!data) throw new Exception("Data is required");
+		def map = [:]
+		map.dtcreated = dtSvc.getServerDate();
+		map.data = data;
+		return dataentry.create(map);
 	}
 
 	@ProxyMethod
@@ -126,6 +146,11 @@ class JobSearchService
 	@ProxyMethod
 	def getCourses(){
 		return course.list();
+	}
+
+	@ProxyMethod
+	def getBarangays(){
+		return orgSvc.getList(['orgclass':'BARANGAY']);
 	}
 
 	@ProxyMethod

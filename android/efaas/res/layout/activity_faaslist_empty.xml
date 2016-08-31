@@ -4,7 +4,8 @@
     android:layout_height="match_parent"
     android:focusable="true"
     android:focusableInTouchMode="true"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:background="@android:color/white">
 
    <EditText
         android:id="@+id/faas_search"

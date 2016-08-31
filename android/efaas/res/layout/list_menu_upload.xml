@@ -3,7 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="10dp"
-    android:orientation="horizontal" >
+    android:orientation="horizontal"
+    android:background="@android:color/white" >
     
     <CheckBox android:id="@+id/list_menu_upload_checkbox"  
 	        android:layout_width="wrap_content"  
@@ -14,7 +15,7 @@
 	        android:id="@+id/imageView1"
 	        android:layout_width="80dp"
 	        android:layout_height="80dp"
-	        android:src="@drawable/masterfile"
+	        android:src="@drawable/faas"
 	        android:gravity="center"
 	        android:paddingTop="5dp" />
     

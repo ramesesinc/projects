@@ -91,9 +91,9 @@ class LandAppraisalController extends com.rameses.gov.etracs.rpt.workflow.BasicI
     def getLandRpuColumns() {
         def columns = [
             new Column(caption:'SubClass*', type:'lookup', handler:'lookupSubclass',  expression:'#{item.subclass.code}', width:100, editable:true ),
-            new Column(name:'landspecificclass', caption:'Actual Use', type:'lookup', handler:'lookupLandSpecificClass', expression:'#{item.landspecificclass.name}', width:100, editable:true, required:true ),
+            new Column(name:'landspecificclass', caption:'Specific Class', type:'lookup', handler:'lookupLandSpecificClass', expression:'#{item.landspecificclass.name}', width:100, editable:true, required:true ),
             new Column(name:'taxable', caption:'Tax?', type:'boolean', width:50, editable:true ),
-            new Column(name:'actualuse', caption:'Assessment Level', type:'lookup', handler:'lookupAssessLevel', expression:'#{item.actualuse.code}', width:100, editable:true, required:true ),
+            new Column(name:'actualuse', caption:'Actual Use', type:'lookup', handler:'lookupAssessLevel', expression:'#{item.actualuse.code}', width:100, editable:true, required:true ),
             new Column(name:'stripping', caption:'Strip', type:'lookup', handler:'lookupStripping', expression:'#{item.stripping.striplevel}', width:50, editable:true ),
             new Column(name:'area', caption:'Area*', type:'decimal', editable:true, width:100, typeHandler:new DecimalColumnHandler(scale:6, format:'#,##0.000000')),
             new Column(name:'unitvalue', caption:'Unit Value', type:'decimal', width:100),

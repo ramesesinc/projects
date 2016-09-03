@@ -98,6 +98,11 @@ public class LandAssessmentRuleService
 		rpu.totalmv = rpu.assessments.marketvalue.sum()
 		if (rpu.totalmv == null) rpu.totalmv = 0.0 
 
+		if (rpu.totalav == 0) {
+			rpu.totalav = rpu.assessments.assessedvalue.sum()
+			if (rpu.totalav == null) rpu.totalav = 0.0
+		}
+
 		rpu.assessments.each{
 			if (it.rputype == 'land')
 				it.actualuse = em.findLandActualUseInfo(it.actualuse)

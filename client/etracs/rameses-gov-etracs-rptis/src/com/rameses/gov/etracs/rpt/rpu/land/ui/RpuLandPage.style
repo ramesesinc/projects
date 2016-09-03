@@ -2,7 +2,7 @@
     enabled:true;
 }
 
-"entity.rp.*"  [entity.datacapture == 0 && (!entity.taskstate.matches('.*taxmapper.*|recommender') || entity.txntype.allowEditPinInfo == 0)] {
+"entity.rp.*"  [entity.datacapture == 0 && (!entity.taskstate?.matches('.*taxmapper.*|recommender') || entity.txntype.allowEditPinInfo == 0)] {
     enabled:false;
 }
 

@@ -37,12 +37,13 @@ public class ChangeAppraisalInfoController extends com.rameses.gov.etracs.rpt.fa
         ];
     }
     
-    void save(){
+    def save(){
         if (MsgBox.confirm('Save and apply changes?')){
             changeSvc.updateInfo(changeinfo);
+            getEntity()._resolve = false;
             caller.refreshForm();
-            binding.fireNavigation('_close');
         }
+        return '_close';
     }
 }
        

@@ -168,11 +168,11 @@ public class FaasController
     def save(){
         if (mode == MODE_CREATE){
             getEntity().putAll(service.createFaas(getEntity()));
-            if (afterCreate) afterCreate(entity);
+            if (afterCreate) afterCreate(getEntity());
         }
         else {
             getEntity().putAll(service.updateFaas(getEntity()));
-            if (afterUpdate) afterUpdate(entity);
+            if (afterUpdate) afterUpdate(getEntity());
         }
         mode = MODE_READ;
         if (closeonsave)
@@ -365,8 +365,9 @@ public class FaasController
         },
     ]
     
-    
+   
     void refreshForm(){
+        mode = MODE_READ;
         binding.refresh('entity.*|rpuopener');
     }
     

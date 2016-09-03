@@ -473,11 +473,7 @@ class ConsolidationService
         if (interims){
             msg = 'The following affected Improvement(s) are not yet current.\nApprove the FAAS before proceeding the transaction.\n\n'
             interims.each{
-                if (it.tdno)
-                    msg +=  '* FAAS No. ' + it.tdno + '.\n'
-                else
-                    msg +=  '* FAAS Doc No. ' + it.utdno + '.\n'
-
+                msg +=  '* FAAS ' + it.prevfullpin + '.\n'
             }
             throw new Exception(msg);
         }
@@ -487,7 +483,7 @@ class ConsolidationService
         if (pendings){
             msg = 'The ledgers for the following affected Improvement(s) are still pending.\nApprove the ledgers before proceeding the transaction.\n\n'
             pendings.each{
-                msg += '* FAAS No. ' + it.tdno + '.\n'
+                msg +=  '* FAAS ' + it.prevfullpin + '.\n'
             }
             throw new Exception(msg)
         }

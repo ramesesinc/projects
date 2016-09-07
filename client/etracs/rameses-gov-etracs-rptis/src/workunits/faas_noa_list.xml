@@ -27,6 +27,7 @@
                     new Column(name:"txndate", caption:"Txn Date", format:'yyyy-MM-dd', width:120),
                     new Column(name:"taxpayername", caption:"Taxpayer Name", width:250),
                     new Column(name:"taxpayeraddress", caption:"Taxpayer Address", width:250),
+                    new Column(name:"deliverydays", caption:"Delivery Days", type:'integer', width:180),
                     new Column(name:"receivedby", caption:"Received By", width:180),
                     new Column(name:"dtdelivered", caption:"Date Received", width:300),
                     new Column(name:"remarks", caption:"Remarks", width:200),

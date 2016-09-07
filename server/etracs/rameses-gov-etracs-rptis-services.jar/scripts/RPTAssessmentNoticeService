@@ -76,7 +76,13 @@ class RPTAssessmentNoticeService
             ' and taxpayername LIKE $P{searchtext}',
             ' and receivedby LIKE $P{searchtext}',
         ]
-        return util.getListFromQuery( 'assessmentnotice:getList' , filters, params, 'objid' )
+        return util.getListFromQuery( 'assessmentnotice:getList' , filters, params, 'objid' ).each{
+        	if ('open'.equalsIgnoreCase(it.state )){
+	        	it.deliverydays = 30 - dateSvc.getDaysDiff(it.txndate, dateSvc.serverDate)
+	        	if (it.deliverydays < 0 ) it.deliverydays = 0
+        	}
+        }
+
     }
 
 

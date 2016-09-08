@@ -3,7 +3,8 @@
   android:id="@+id/tableLayout1"
   android:layout_width="fill_parent"
   android:layout_height="wrap_content"
-  android:stretchColumns="0,1">
+  android:stretchColumns="0,1"
+  android:background="@android:color/white">
 
     <TableRow
       android:id="@+id/tableRow1"

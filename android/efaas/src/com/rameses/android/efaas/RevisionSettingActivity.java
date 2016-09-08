@@ -52,11 +52,11 @@ public class RevisionSettingActivity extends SettingsMenuActivity {
 	
 	void loadListData(){
 		data = new ArrayList<HomeListItem>();
-		data.add(new HomeListItem(R.drawable.settings,"Land Revision Setting"));
-		data.add(new HomeListItem(R.drawable.settings,"Building Revision Setting"));
-		data.add(new HomeListItem(R.drawable.settings,"Machine Revision Setting"));
-		data.add(new HomeListItem(R.drawable.settings,"Plant/Tree Revision Setting"));
-		data.add(new HomeListItem(R.drawable.settings,"Miscellaneous Item Revision Setting"));
+		data.add(new HomeListItem(R.drawable.file,"Land Revision Setting"));
+		data.add(new HomeListItem(R.drawable.file,"Building Revision Setting"));
+		data.add(new HomeListItem(R.drawable.file,"Machine Revision Setting"));
+		data.add(new HomeListItem(R.drawable.file,"Plant/Tree Revision Setting"));
+		data.add(new HomeListItem(R.drawable.file,"Miscellaneous Item Revision Setting"));
 		
 		list = (ListView) findViewById(R.id.list_home);
 		list.setAdapter(new HomeMenuAdapter(this,data));

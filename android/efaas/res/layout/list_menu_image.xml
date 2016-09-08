@@ -2,19 +2,20 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="horizontal"
     android:padding="10dp"
-    android:orientation="horizontal" >
+    android:background="@android:color/white" >
 
     <ImageView
         android:id="@+id/list_menu_image"
-        android:layout_width="85dp"
-        android:layout_height="85dp"
+        android:layout_width="65dp"
+        android:layout_height="65dp"
         android:src="@drawable/border_light_gray" />
 
     <LinearLayout
         android:id="@+id/item_list_menu_container"
         android:layout_width="fill_parent"
-        android:layout_height="85dp" >
+        android:layout_height="65dp" >
 
         <TextView
             android:id="@+id/list_menu_title"

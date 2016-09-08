@@ -1,0 +1,12 @@
+<workunit schemaName="entity_workexperience">
+    <invokers>
+        <invoker type="entity_workexperience:create" caption="Work Experience (New)" action="create" target="popup"/>
+        <invoker type="entity_workexperience:open" caption="Work Experience (View)" action="doOpen"  target="popup"/> 
+    </invokers>
+    
+    <code class="com.rameses.gov.etracs.nsrp.models.EntityWorkExperienceModel"/>
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.nsrp.views.EntityWorkExperiencePage"/>        
+    </pages>
+</workunit>

@@ -1,6 +1,6 @@
 <workunit>
     <invokers>
-        <invoker type="home.action" caption="Reconcile Individual" target="popup" role="MASTER" 
+        <invoker xtype="home.action" caption="Reconcile Individual" target="popup" role="MASTER" 
                  permission="individualentity.reconcile" action="start"/>
     </invokers>
     

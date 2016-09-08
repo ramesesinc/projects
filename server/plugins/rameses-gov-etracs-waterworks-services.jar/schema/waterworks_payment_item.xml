@@ -3,9 +3,6 @@
 		<field name="objid" primary="true" prefix="WPI" />
 		<field name="parentid" required="true"/>
 		<field name="amount" required="true" />
-		<field name="discount" required="true" />
-		<field name="surcharge" required="true" />
-		<field name="interest" required="true" />
 		<field name="remarks"  />
 		<field name="item_objid" required="true" />
 		<field name="item_title" required="true" />
@@ -15,5 +12,6 @@
 
 		<field name="year"  />
 		<field name="month"  />
+		<field name="txntype"  />
 	</element>
 </schema>

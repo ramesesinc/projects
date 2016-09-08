@@ -38,7 +38,7 @@
             
             protected Map createOpenerParams() { 
                 def selEntity = selectedEntity; 
-                if (selEntity) { 
+                if ( selEntity ) { 
                     selEntity.filetype = 'afquery_'+ selEntity.txntype; 
                 } 
                 return super.createOpenerParams(); 

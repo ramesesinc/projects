@@ -67,6 +67,15 @@ class CashReceiptController extends CRUDController {
     boolean verifyReprint() {
         return (MsgBox.prompt("Please enter security code") == "etracs"); 
     }
+    boolean isAllowVoid() { 
+        if ( entity.voided==true || entity.voided==1 ) return false; 
+        if ( entity.remitted==true || entity.remitted==1 ) return false; 
+        
+        return true; 
+    } 
+    void refresh() { 
+        binding.refresh(); 
+    } 
 }      
    ]]>
    </code>

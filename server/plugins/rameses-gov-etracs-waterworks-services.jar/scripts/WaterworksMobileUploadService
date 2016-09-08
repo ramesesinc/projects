@@ -17,7 +17,6 @@ class WaterworksMobileUploadService {
 
 	@ProxyMethod 
 	public def upload( o ) { 
-		println 'upload >> ' + o; 
 		if(!o.objid) throw new Exception("Please specify objid!");
 		if(!o.reading) throw new Exception("Please specify reading!");
 		if(!o.dtreading) throw new Exception("Please specify dtreading!");

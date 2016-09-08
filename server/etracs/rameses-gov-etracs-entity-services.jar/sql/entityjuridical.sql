@@ -1,10 +1,12 @@
 [getList]
-SELECT e.*, ej.* 
+SELECT 
+	e.*, 
+	ej.tin, ej.dtregistered, ej.orgtype, ej.nature, ej.placeregistered, 
+	ej.administrator_name, ej.administrator_address, ej.administrator_position 
 FROM entity e 
 	INNER JOIN entityjuridical ej ON e.objid=ej.objid 
 WHERE e.entityname LIKE $P{searchtext} 
 ORDER BY e.entityname 
-
 
 [getLookup]
 SELECT e.objid, e.entityno, e.name, e.address_text, e.type, ej.orgtype 

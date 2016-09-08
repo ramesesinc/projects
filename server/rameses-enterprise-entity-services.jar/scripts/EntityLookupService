@@ -11,24 +11,24 @@ class EntityLookupService extends ActiveListService {
 	String listMethod = 'getLookup'
 
 	@ProxyMethod
-	public def getColumns(def o) {
-		return [
-			[name:"entityno", caption:"Entity No", width:80, maxWidth:120], 		
+	public def getColumns( o ) { 
+		return [ 
+			[name:"entityno", caption:"Entity No", width:80, maxWidth:120], 
 			[name:"name", caption:"Name"], 
 			[name:"address.text", caption:"Address"], 
 			[name:"type", caption:"Type", width:80, maxWidth:100] 
-		];	
-	}
+		]; 
+	} 
 
-	void beforeList( params ) {
+	void beforeList( params ) { 
 		if (!params.searchtext || params.searchtext.trim().length() == 0) 
-			throw new Exception('Please specify a search criteria.');
+			throw new Exception('Please specify a search criteria.'); 
 
 		params.filter = '';	
 		if ( params.type ) { 
-			params.filter = " AND e.type IN ('" + params.type.split(",").join("','") + "')";
-		}
-	}
+			params.filter = " AND e.type IN ('" + params.type.split(",").join("','") + "')"; 
+		} 
+	} 
 
 	void afterList( params, list ) {
 		list.each{ formatAddress( it?.address, ", " ) } 

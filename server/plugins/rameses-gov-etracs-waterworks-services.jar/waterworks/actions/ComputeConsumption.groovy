@@ -14,3 +14,4 @@ public class ComputeConsumption implements RuleActionHandler {
 		cw.amount = amt;
 	}
 }
+

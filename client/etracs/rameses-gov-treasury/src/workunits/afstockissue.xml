@@ -1,4 +1,3 @@
-<!-- REQUISITION ISSUE SLIP -->
 <workunit extends="wtemplates/StockIssueController.xml">
     <invokers>
         <invoker folderid="/menu/txn/treasury" caption="Accountable Form Issuance" action="create" role="AFO"/> 
@@ -12,124 +11,137 @@
     
     <code>
     <![CDATA[
-        import com.rameses.rcp.annotations.*
-        import com.rameses.rcp.common.*
-        import com.rameses.osiris2.client.*
-        import com.rameses.osiris2.common.*
-        import java.rmi.server.*;
-        import com.rameses.enterprise.inventory.stock.*;
+import com.rameses.rcp.annotations.*
+import com.rameses.rcp.common.*
+import com.rameses.osiris2.client.*
+import com.rameses.osiris2.common.*
+import java.rmi.server.*;
+import com.rameses.enterprise.inventory.stock.*;
 
-        class AFIssuance extends StockIssueController {
+class AFIssuance extends StockIssueController {
 
-            String title = "Accountable Form Issuance";
-            def entityName = "afstockissue";    
-            def verifyItems = [];
+    String title = "Accountable Form Issuance";
+    def entityName = "afstockissue";    
+    def verifyItems = [];
 
-            def getLookupRequest() {
-                return InvokerUtil.lookupOpener( "afrequest:lookup", [
-                    "query.reqtype": "ISSUANCE",
-                    onselect: { o->
-                        request = o;
-                        binding.refresh('request');
-                    }
-                ]);
+    boolean readonly = false; 
+
+    def getLookupRequest() {
+        return InvokerUtil.lookupOpener( "afrequest:lookup", [
+            "query.reqtype": "ISSUANCE",
+            onselect: { o->
+                request = o;
+                binding.refresh('request');
             }
+        ]);
+    }
 
-            def print() {
-                entity.reqno = entity.request.reqno;
-                entity.dtfiled = entity.request.dtfiled;
-                entity.requester = entity.request.requester;
-                entity.items.each { itm -> 
-                    itm.qty = itm.qtyrequested
-                    itm.qtyreceived = itm.qtyissued    
-                    //println itm;  
-                    def srs = []
-                    itm.items.each{
-                        if( it.startseries )
-                            srs <<  it.startseries.toString().padLeft(it.serieslength, '0') + " - " + it.endseries.toString().padLeft(it.serieslength, '0') + " ( " + (it.startstub == it.endstub ? it.startstub+"" : ( it.startstub + " - " + it.endstub )) + " ) "
-                        else
-                            srs << " Stub No: " + (it.startstub == it.endstub ? it.startstub+ "" : ( it.startstub + " - " + it.endstub ))
-                    }
-                    itm.series = srs.join(',')
-                }   
-                return InvokerUtil.lookupOpener("stockrequest:ris", [entity: entity]);
+    def print() {
+        entity.reqno = entity.request.reqno;
+        entity.dtfiled = entity.request.dtfiled;
+        entity.requester = entity.request.requester;
+        entity.items.each { itm -> 
+            itm.qty = itm.qtyrequested
+            itm.qtyreceived = itm.qtyissued    
+            //println itm;  
+            def srs = []
+            itm.items.each{
+                if( it.startseries )
+                    srs <<  it.startseries.toString().padLeft(it.serieslength, '0') + " - " + it.endseries.toString().padLeft(it.serieslength, '0') + " ( " + (it.startstub == it.endstub ? it.startstub+"" : ( it.startstub + " - " + it.endstub )) + " ) "
+                else
+                    srs << " Stub No: " + (it.startstub == it.endstub ? it.startstub+ "" : ( it.startstub + " - " + it.endstub ))
             }
+            itm.series = srs.join(',')
+        }   
+        return InvokerUtil.lookupOpener("stockrequest:ris", [entity: entity]);
+    }
 
-            void buildItemsForVerification() {
-                verifyItems.clear(); 
-                entity.items.each { o-> 
-                    o.items.each { k-> 
-                        verifyItems << [ 
-                            aftype: o.item.code, unit: o.unit, 
-                            prefix: k.prefix, suffix: k.suffix,
-                            sstartseries: k.sstartseries, sendseries: k.sendseries, 
-                            startseries: k.startseries, endseries: k.endseries, 
-                            startstub: k.startstub, endstub: k.endstub, 
-                            qty: k.qtyissued, items: k.items 
-                        ];
-                    }
-                }
+    void buildItemsForVerification() {
+        verifyItems.clear(); 
+        entity.items.each { o-> 
+            o.items.each { k-> 
+                def m = [ 
+                    aftype: o.item.code, unit: o.unit, 
+                    prefix: k.prefix, suffix: k.suffix,
+                    sstartseries: k.sstartseries, sendseries: k.sendseries, 
+                    startseries: k.startseries, endseries: k.endseries, 
+                    startstub: k.startstub, endstub: k.endstub, 
+                    qty: k.qtyissued, items: k.items 
+                ];
+                m.skey = (''+ m.unit +'-'+ m.aftype +'-'+ m.startseries +'-'+ m.endseries); 
+                verifyItems << m; 
             }
+        }
+    }
 
-            def process() {
-                super.process();
-                buildItemsForVerification(); 
-                return "default";
+    def process() {
+        super.process();
+        buildItemsForVerification(); 
+        return "default";
+    } 
+
+    def open() {
+        readonly = true;         
+        def outcome = super.open(); 
+        buildItemsForVerification(); 
+        verifyItems.each{ it.verified=true }
+        return outcome; 
+    }
+
+    def selectedAF; 
+    def verifiedItems = [];     
+    def verifyListModel = [
+        isMultiSelect: { 
+            return !readonly; 
+        }, 
+        buildSelectionKey: { o-> 
+            return o.skey; 
+        }, 
+        afterSelectionChange: { o-> 
+            o.data.verified = o.selected; 
+        },
+        fetchList: {
+            return verifyItems;
+        }
+    ] as BasicListModel;
+
+    void save() {
+        if ( verifyItems.findAll{ !it.verified }.size() > 0 )
+            throw new Exception("Please verify all items."); 
+
+        super.save();  
+        readonly = true; 
+    }
+
+    def selectedStub;
+    def stubListHandler = [
+        fetchList: {
+            return selectedAF?.items; 
+        }, 
+        isColumnEditable: { data,colname-> 
+            if ( mode=='read' || !selectedAF ) return false; 
+            if ( selectedAF.verified == true ) return false; 
+            
+            return ( colname == 'qtyissued' ); 
+        }, 
+        afterColumnUpdate: { data,colname-> 
+            def currentseries = selectedAF.startseries; 
+            selectedAF.items.each{ a-> 
+                a.startseries = currentseries; 
+                a.endseries = currentseries + a.qtyissued - 1; 
+                currentseries = a.endseries + 1; 
             } 
 
-            def open() {
-                def outcome = super.open(); 
-                buildItemsForVerification(); 
-                verifyItems.each{ it.verified=true }
-                return outcome; 
-            }
-
-            def selectedAF; 
-            def verifyListModel = [
-                fetchList: {
-                    return verifyItems;
-                }, 
-                isColumnEditable: { data,colname-> 
-                    return (mode=='read'? false: true); 
-                } 
-            ] as EditorListModel;
-
-            void save() {
-                if ( verifyItems.findAll{ !it.verified }.size() > 0 )
-                    throw new Exception("Please verify all items."); 
-
-                super.save();    
-            }
-
-            def selectedStub;
-            def stubListHandler = [
-            	fetchList: {
-            		return selectedAF?.items; 
-            	}, 
-            	isColumnEditable: { data,colname-> 
-            		if ( mode=='read' || !selectedAF ) return false; 
-            		if ( selectedAF.verified == true ) return false; 
-                    
-                    return ( colname == 'qtyissued' ); 
-                }, 
-                afterColumnUpdate: { data,colname-> 
-                	def currentseries = selectedAF.startseries; 
-                	selectedAF.items.each{ a-> 
-                		a.startseries = currentseries; 
-                		a.endseries = currentseries + a.qtyissued - 1; 
-                		currentseries = a.endseries + 1; 
-                	} 
-
-                	def totalqty = selectedAF.items.sum{ it.qtyissued } 
-                	selectedAF.qty = totalqty; 
-                	selectedAF.endseries = selectedAF.items.max{ it.endseries }.endseries; 
-                	if ( selectedAF.sendseries != null ) { 
-                		selectedAF.sendseries = selectedAF.endseries; 
-                	} 
-                	verifyListModel.refreshSelectedItem();
-                }
-            ] as EditorListModel; 
+            def totalqty = selectedAF.items.sum{ it.qtyissued } 
+            selectedAF.qty = totalqty; 
+            selectedAF.endseries = selectedAF.items.max{ it.endseries }.endseries; 
+            if ( selectedAF.sendseries != null ) { 
+                selectedAF.sendseries = selectedAF.endseries; 
+            } 
+            verifyListModel.refreshSelectedItem();
         }
+    ] as EditorListModel; 
+}
     ]]>
     </code>
     

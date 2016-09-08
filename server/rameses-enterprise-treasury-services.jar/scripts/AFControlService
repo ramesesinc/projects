@@ -42,7 +42,11 @@ class AFControlService  {
 		if ( o.filter ) filters << o.filter; 
 		if ( filter ) filters << filter; 
 		
-		o.filter = filters.join(' AND '); 
+		if ( filters ) {
+			o.filter = (' AND '+ filters.join(' AND ')); 
+		} else { 
+			o.filter = ''; 
+		} 
 		return em.getOpenList( o ); 
 	}
 

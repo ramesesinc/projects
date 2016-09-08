@@ -71,9 +71,9 @@
                     def custom_homeicon = clientContext.getResource(homeicon); 
                     if (!custom_homeicon) homeicon = 'home/icons/folder.png';
                     
-                    def p = [:];
-                    if(org) p.objid = org?.objid;  
-                    if(orgType) p.orgclass = orgType;
+                    def p = [:]; 
+                    if ( orgType ) p.orgclass = orgType; 
+                    if ( org ) p.objid = org?.objid; 
                     
                     def list = collectionTypeSvc.getBatchCollectionTypes(p).each {
                         it.caption = it.title;

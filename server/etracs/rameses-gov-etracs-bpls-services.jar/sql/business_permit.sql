@@ -178,3 +178,7 @@ where businessid=$P{businessid} and activeyear=$P{activeyear}
 [findPermit]
 select * from business_permit 
 where businessid=$P{businessid} and applicationid=$P{applicationid} 
+
+
+[updateRemarks]
+update business_permit set remarks=$P{remarks} where objid=$P{objid} 

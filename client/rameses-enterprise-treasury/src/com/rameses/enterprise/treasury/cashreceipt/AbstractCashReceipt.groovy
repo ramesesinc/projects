@@ -283,13 +283,14 @@ public abstract class AbstractCashReceipt {
         return TemplateProvider.instance.getResult( "com/rameses/enterprise/treasury/cashreceipt/cashreceipt.gtpl", [entity:entity] );
     }
 
-    def doVoid() {
-        return InvokerUtil.lookupOpener( "cashreceipt:void", [receipt:entity,
-            handler: { o->
-                entity.voided = true;
-                binding.refresh();
-            }
-        ]); 
+    def doVoid() { 
+        def xbinding = binding; 
+        def params = [ receipt: entity ]; 
+        params.handler = { o-> 
+            entity.voided = true;
+            xbinding.refresh();
+        } 
+        return InvokerUtil.lookupOpener( "cashreceipt:void", params );  
     }
 
     boolean isAllowCreateEntity() {

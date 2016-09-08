@@ -92,7 +92,8 @@ FROM (
       LEFT JOIN business_application ba ON ba.objid=br.applicationid
       LEFT JOIN business_application_lob bl ON bl.applicationid=br.applicationid AND br.lob_objid=bl.lobid
       LEFT JOIN itemaccount ri ON ri.objid=br.account_objid
-   WHERE  ${filter} AND (br.amount-br.amtpaid > 0) 
+   WHERE  ${filter} 
+      AND (br.amount-br.amtpaid) > 0  
 ) a 
 ORDER BY a.sortorder
 
@@ -100,17 +101,24 @@ ORDER BY a.sortorder
 DELETE FROM business_receivable WHERE applicationid=$P{applicationid}
 
 [removeDetails]
-DELETE FROM business_receivable_detail 
-WHERE receivableid IN( SELECT objid FROM business_receivable WHERE applicationid=$P{applicationid})
+DELETE FROM business_receivable_detail WHERE receivableid IN ( 
+  SELECT objid FROM business_receivable 
+  WHERE applicationid=$P{applicationid} 
+)
 
 [getDetails]
 SELECT * 
 FROM business_receivable_detail 
-WHERE receivableid IN( SELECT objid FROM business_receivable WHERE applicationid=$P{applicationid})
+WHERE receivableid IN ( 
+    SELECT objid FROM business_receivable 
+    WHERE applicationid=$P{applicationid} 
+) 
 
 [findHasPaidReceivable]
 SELECT COUNT(*) AS counter 
-FROM business_receivable WHERE applicationid=$P{applicationid} AND amtpaid > 0
+FROM business_receivable 
+WHERE applicationid=$P{applicationid} 
+  AND amtpaid > 0
 
 [updateReceivable]
 UPDATE business_receivable SET amtpaid = amtpaid + $P{amount} WHERE objid = $P{receivableid}
@@ -132,36 +140,41 @@ AND (br.amount-br.amtpaid-br.discount > 0)
 GROUP BY br.applicationid, br.iyear
 
 [getOpenReceivablesByOwner]
-SELECT br.applicationid, br.iyear AS appyear, b.objid AS businessid, ba.appno,
-CASE WHEN ba.objid IS NULL THEN b.apptype ELSE ba.apptype END AS apptype,
-SUM( amount - amtpaid - discount ) AS balance, b.businessname, b.address_text 
-FROM business_receivable br
-LEFT JOIN business_application ba ON ba.objid=br.applicationid
-INNER JOIN business b ON b.objid=br.businessid
-WHERE b.owner_objid = $P{ownerid}
-AND (br.amount-br.amtpaid-br.discount > 0)
-GROUP BY br.applicationid, br.iyear
-
+SELECT 
+  applicationid, appyear, businessid, appno, apptype, 
+  sum( balance ) as balance, businessname, address_text 
+FROM ( 
+  SELECT 
+    br.applicationid, br.iyear AS appyear, b.objid AS businessid, ba.appno,
+    CASE WHEN ba.objid IS NULL THEN b.apptype ELSE ba.apptype END AS apptype,
+    ( amount - amtpaid - discount ) AS balance, b.businessname, b.address_text 
+  FROM business_receivable br 
+    INNER JOIN business b ON b.objid=br.businessid
+    LEFT JOIN business_application ba ON ba.objid=br.applicationid
+  WHERE b.owner_objid = $P{ownerid} 
+    AND (br.amount-br.amtpaid-br.discount) > 0  
+)xx 
+GROUP BY 
+  applicationid, appyear, businessid, appno, 
+  apptype, businessname, address_text   
 
 [getBusinessListForBilling]
-select xx.* from ( 
-  select 
-    a.objid, a.address_text, a.businessname, a.tradename, 
-    a.owner_objid, a.owner_name, a.owner_address_text, a.bin, 
-    xx.balance 
-  from ( 
-    select br.businessid, sum(br.amount-br.amtpaid) as balance 
-    from business b 
-      inner join business_application a on b.objid = a.business_objid 
-      inner join business_receivable br on a.objid = br.applicationid 
-    where 1=1 ${filter} 
-      and a.state in ('PAYMENT','RELEASE','COMPLETED') 
-    group by br.businessid 
-    having sum(br.amount-br.amtpaid) > 0 
-  )xx inner join business a on xx.businessid = a.objid 
-  order by owner_name 
-)xx
-
+select 
+  a.objid, a.address_text, a.businessname, a.tradename, 
+  a.owner_objid, a.owner_name, a.owner_address_text, a.bin, 
+  xx.balance 
+from ( 
+  select br.businessid, sum(br.amount-br.amtpaid) as balance 
+  from business b 
+    inner join business_application a on b.objid = a.business_objid 
+    inner join business_receivable br on a.objid = br.applicationid 
+  where 1=1 ${filter} 
+    and a.state in ('PAYMENT','RELEASE','COMPLETED') 
+  group by br.businessid 
+  having sum(br.amount-br.amtpaid) > 0 
+)xx 
+  inner join business a on xx.businessid = a.objid 
+order by owner_name 
 
 [getAppListForBilling]
 select 

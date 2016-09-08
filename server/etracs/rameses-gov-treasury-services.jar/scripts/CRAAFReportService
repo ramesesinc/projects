@@ -116,8 +116,122 @@ class CRAAFReportService
 			it.qtyreceived = (Integer) it.qtyreceived;
 			it.qtybegin = (Integer) it.qtybegin;
 			it.qtyissued = (Integer) it.qtyissued;
-			it.qtyending = (Integer) it.qtyending;			
+			it.qtyending = (Integer) it.qtyending;	
+
+			if ( it.qtyreceived > 0 ) it.sortseries = it.receivedstartseries; 
+			else if ( it.qtybegin > 0 ) it.sortseries = it.beginstartseries; 
+			else if ( it.qtyissued > 0 ) it.sortseries = it.issuedstartseries; 
+			else if ( it.qtyending > 0 ) it.sortseries = it.endingstartseries; 
 		} 
+
+		def list2 = []; 
+		def startindex = 0;
+		def forms = list.collect{[ afid: it.afid, aftype: it.aftype ]}.unique().sort{ it.afid } 
+		forms.each{ o-> 
+			if ( o.aftype == 'serial' ) {
+				buildSerialForms( list2, list, o.afid, startindex );	
+			} else {
+				buildNonSerialForms( list2, list, o.afid, startindex ); 
+			}
+			startindex += 1000; 
+		} 
+		list.clear(); 
+		list.addAll( list2 ); 
+		list2.clear(); 
 		return list; 
+	} 
+
+	private void buildSerialForms( targetlist, sourcelist, afid, startindex ) {
+		def list = sourcelist.findAll{( it.afid==afid && it.respcentertype=='AFO' )}
+		if ( list ) { 
+			targetlist.addAll( list ); 
+			list.clear(); 
+		} 
+
+		list = sourcelist.findAll{( it.afid==afid && it.respcentertype != 'AFO' )}.sort{ it.sortseries } 
+
+		def grouplist = [];
+		def groupindex = startindex; 
+		def nextstartseries = 0; 
+		def nextname = null; 
+		list.each { o-> 
+			if ( o.qtyissued > 0 ) { 
+				targetlist << o; 
+				return; 
+			} 
+			def oldindex = groupindex; 
+			if ( o.sortseries != nextstartseries) {
+				groupindex++; 
+			} else if ( o.name != nextname ) {
+				groupindex++; 
+			}
+			o.groupindex = groupindex; 
+			nextstartseries = o.sortseries+1; 
+			nextname = o.name; 
+			if ( oldindex == groupindex ) {
+				grouplist << o; 
+			} else if ( grouplist ) { 
+				suppress( targetlist, grouplist ); 
+				grouplist.clear(); 
+			}
+		} 
+		if ( grouplist ) { 
+			suppress( targetlist, grouplist ); 
+			grouplist.clear(); 
+		} 
+	} 
+
+	private void buildNonSerialForms( targetlist, sourcelist, afid, startindex ) {
+		def list = sourcelist.findAll{( it.afid==afid && it.respcentertype=='AFO' )}
+		if ( list ) { 
+			list.findAll{( it.qtyissued > 0 )}.each{ 
+				targetlist << it; 
+				list.remove( it );  
+			}
+			if ( list ) {
+				def oo = list.first(); 
+				oo.qtybegin = list.sum{( it.qtybegin? it.qtybegin : 0.0 )}
+				oo.qtyreceived = list.sum{( it.qtyreceived? it.qtyreceived : 0.0 )}
+				oo.qtyissued = list.sum{( it.qtyissued? it.qtyissued : 0.0 )}
+				oo.qtyending = list.sum{( it.qtyending? it.qtyending : 0.0 )}
+				list.clear(); 
+			} 
+		} 
+
+		list = sourcelist.findAll{( it.afid==afid && it.respcentertype != 'AFO' )} 
+		list.collect{ it.name }.unique().sort().each{ name-> 
+			def sublist = list.findAll{( it.name==name )} 
+			sublist.findAll{( it.qtyissued > 0 )}.each{
+				targetlist << it; 
+			}
+			sublist = sublist.findAll{( !it.qtyissued )} 
+			if ( sublist ) {
+				def oo = sublist.first(); 
+				oo.qtybegin = sublist.sum{( it.qtybegin? it.qtybegin : 0.0 )}
+				oo.qtyreceived = sublist.sum{( it.qtyreceived? it.qtyreceived : 0.0 )}
+				oo.qtyissued = sublist.sum{( it.qtyissued? it.qtyissued : 0.0 )}
+				oo.qtyending = sublist.sum{( it.qtyending? it.qtyending : 0.0 )}
+			} 
+		}
+	} 
+
+	private void suppress( targetlist, grouplist ) {
+		if ( !grouplist ) return; 
+
+		def oo = grouplist.first(); 
+		oo.beginstartseries = grouplist.min{ it.beginstartseries }?.beginstartseries;
+		oo.beginendseries = grouplist.max{ it.beginendseries }?.beginendseries;
+		oo.receivedstartseries = grouplist.min{ it.receivedstartseries }?.receivedstartseries;
+		oo.receivedendseries = grouplist.max{ it.receivedendseries }?.receivedendseries;
+		oo.issuedstartseries = grouplist.min{ it.issuedstartseries }?.issuedstartseries;
+		oo.issuedendseries = grouplist.max{ it.issuedendseries }?.issuedendseries;
+		oo.endingstartseries = grouplist.min{ it.endingstartseries }?.endingstartseries;
+		oo.endingendseries = grouplist.max{ it.endingendseries }?.endingendseries;
+		oo.qtybegin = grouplist.sum{( it.qtybegin? it.qtybegin : 0.0 )}
+		oo.qtyreceived = grouplist.sum{( it.qtyreceived? it.qtyreceived : 0.0 )}
+		oo.qtyissued = grouplist.sum{( it.qtyissued? it.qtyissued : 0.0 )}
+		oo.qtyending = grouplist.sum{( it.qtyending? it.qtyending : 0.0 )}
+		oo.startstub = oo.startstub + grouplist.size()-1; 
+		targetlist << oo; 
 	} 
 } 

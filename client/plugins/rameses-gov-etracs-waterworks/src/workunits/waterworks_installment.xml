@@ -1,0 +1,16 @@
+<workunit schemaName="waterworks_installment">
+    <invokers>
+        <invoker type="waterworks_installment:create" 
+                 caption="New Installment" 
+                 action="create" target="popup" />
+        
+        <invoker type="waterworks_installment:open" 
+                 caption="Installment" 
+                 action="open" target="popup" />
+        
+    </invokers>
+    <code class="com.rameses.gov.etracs.waterworks.models.InstallmentModel" />
+    <pages>
+        <page template="com.rameses.gov.etracs.waterworks.views.InstallmentPage"/>
+    </pages>    
+</workunit>

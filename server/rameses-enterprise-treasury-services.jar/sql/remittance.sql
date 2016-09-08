@@ -90,44 +90,43 @@ FROM (
   LEFT JOIN cashreceipt_void v ON c.objid=v.receiptid
 GROUP by c.collector_objid
 
+
 [getUnremittedReceipts]
 SELECT 
   c.formno, c.receiptno, c.paidby, c.receiptdate,
-  CASE WHEN v.objid IS NULL THEN c.amount ELSE 0 END AS amount,
-  CASE WHEN v.objid IS NULL THEN 0 ELSE 1 END AS voided,
-  c.subcollector_name
+  (CASE WHEN bt.voided=0 THEN c.amount ELSE 0.0 END) AS amount,
+  bt.voided, c.subcollector_name
 FROM (
-  SELECT c.objid FROM cashreceipt c 
-    LEFT JOIN remittance_cashreceipt r ON c.objid = r.objid 
-  WHERE c.txndate < $P{txndate} 
-    AND r.objid IS NULL 
+  SELECT c.objid, 
+    (SELECT COUNT(*) FROM cashreceipt_void WHERE receiptid=c.objid) as voided 
+  FROM cashreceipt c 
+  WHERE c.receiptdate < $P{txndate} 
     AND c.collector_objid = $P{collectorid} 
-    AND c.state = 'POSTED'
+    AND c.state = 'POSTED' 
+    AND c.objid NOT IN (SELECT objid FROM remittance_cashreceipt WHERE objid=c.objid) 
 )bt 
   INNER JOIN cashreceipt c ON bt.objid=c.objid 
-  LEFT JOIN cashreceipt_void v ON c.objid=v.receiptid
 ORDER BY c.receiptno
 
+
 [getUnremittedChecks]
-SELECT a.* FROM 
-(
+SELECT a.* FROM (
   SELECT 
     crp.objid, crp.refno, crp.particulars, crp.reftype, 
-    CASE WHEN cv.objid IS NULL THEN crp.amount ELSE 0 END AS amount,
-    CASE WHEN cv.objid IS NULL THEN 0 ELSE 1 END AS voided,
-    cash.subcollector_name
-  FROM (
-    SELECT c.objid FROM cashreceipt c 
-      LEFT JOIN remittance_cashreceipt r ON c.objid = r.objid 
+    (CASE WHEN bt.voided=0 THEN crp.amount ELSE 0.0 END) AS amount,
+    bt.voided, cash.subcollector_name
+  FROM ( 
+    SELECT c.objid, 
+      (SELECT COUNT(*) FROM cashreceipt_void WHERE receiptid=c.objid) as voided 
+    FROM cashreceipt c 
     WHERE c.receiptdate < $P{txndate} 
-      AND r.objid IS NULL 
       AND c.collector_objid = $P{collectorid} 
-      AND c.state = 'POSTED'
+      AND c.state = 'POSTED' 
+      AND c.objid NOT IN (SELECT objid FROM remittance_cashreceipt WHERE objid=c.objid) 
   )bt 
     INNER JOIN cashreceipt cash ON bt.objid=cash.objid 
     INNER JOIN cashreceiptpayment_noncash crp ON crp.receiptid=cash.objid 
-    LEFT JOIN cashreceipt_void cv ON crp.receiptid = cv.receiptid 
-) a 
+)a  
 
 
 [collectReceipts]
@@ -135,11 +134,10 @@ INSERT INTO remittance_cashreceipt ( objid, remittanceid )
 SELECT c.objid, $P{remittanceid} AS remittanceid 
 FROM (
   SELECT c.objid FROM cashreceipt c 
-    LEFT JOIN remittance_cashreceipt r ON c.objid = r.objid 
   WHERE c.receiptdate < $P{txndate} 
-    AND r.objid IS NULL 
     AND c.collector_objid = $P{collectorid} 
     AND c.state IN ('POSTED', 'CANCELLED') 
+    AND c.objid NOT IN (SELECT objid FROM remittance_cashreceipt WHERE objid=c.objid) 
 )bt 
   INNER JOIN cashreceipt c ON bt.objid=c.objid 
 

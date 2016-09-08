@@ -1,6 +1,9 @@
 <workunit extends="wtemplates/ServiceLookupController.xml" serviceName="OrgLookupService" allowSearch="true">
     <invokers>
         <invoker type="org:lookup" caption="Lookup Org" target="popup" action="init"/>
+        
+        <invoker type="formActions" caption="Select All" action="selectAll" visibleWhen="#{multiSelect==true}"/>
+        <invoker type="formActions" caption="Deselect All" action="deselectAll" visibleWhen="#{multiSelect==true}"/>
     </invokers>
     <code>
     <![CDATA[
@@ -20,10 +23,10 @@ class OrgLookupController extends ServiceLookupController {
 
     void init() {
         def list = orgSvc.getOrgClasses();
-        if(includes) {
+        if ( includes ) { 
             includes = includes.replace(",", "|");
             list = list.findAll{ it.name.matches( includes ) }
-        }
+        } 
         orgTypes = list; 
     }
 

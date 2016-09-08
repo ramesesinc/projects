@@ -241,19 +241,20 @@ public class BusinessBillingService  {
 
 
 	@ProxyMethod 
-	public def getBilling( def o ) {
+	public def getBilling( o ) {
 		def e =  appEm.read( [objid: o.applicationid ] );
 		def items = receivableSvc.getReceivables([ applicationid: o.applicationid ]);
-        if( !items )
-            throw new Exception("There are no unpaid balances for this application");
+        if ( !items ) throw new Exception("There are no unpaid balances for this application");
+
+        if ( !o.billdate ) o.billdate = dateSvc.getBasicServerDate();
         
         def p = [:];
-        p.billdate =  dateSvc.getBasicServerDate();
-        p.taxfees = items;
-        p.show_paid = true;
-        p.app = [apptype:e.apptype, appyear:e.appyear, dtfiled:e.dtfiled, appno:e.appno];    
-        def result = generateBilling( p );
-            
+        p.billdate = o.billdate; 
+        p.taxfees = items; 
+        p.show_paid = true; 
+        p.app = [ apptype:e.apptype, appyear:e.appyear, dtfiled:e.dtfiled, appno:e.appno ]; 
+        def result = generateBilling( p ); 
+
         def billing = [:];
         billing.taxfees = result.taxfees;
         def billitems = [];

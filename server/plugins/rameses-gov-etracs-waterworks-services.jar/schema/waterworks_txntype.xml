@@ -10,5 +10,6 @@
 		<field name="item_fund_objid" />
 		<field name="item_fund_code" />
 		<field name="item_fund_title"/>
+		<field name="ledgertype"/>
 	</element>
 </schema>

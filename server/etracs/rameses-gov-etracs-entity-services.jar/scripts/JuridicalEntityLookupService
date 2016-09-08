@@ -17,7 +17,7 @@ class JuridicalEntityLookupService extends ActiveListService {
 	public def getColumns( params ) {
 		return [
 			[name:'name', caption:'Company Name'], 
-			[name:'address.text', caption:'Company Address']
+			[name:'address.text', caption:'Company Address'],
 			[name:'orgtype', caption:'Org.Type']
 		]; 
 	}
@@ -27,6 +27,5 @@ class JuridicalEntityLookupService extends ActiveListService {
 		if(o.orgtype) {
 			o.filter = ''' AND ej.orgtype = $P{orgtype} ''';
 		}
-	}
-
+	} 
 }

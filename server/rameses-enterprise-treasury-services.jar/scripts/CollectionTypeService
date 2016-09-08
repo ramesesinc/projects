@@ -12,6 +12,9 @@ class CollectionTypeService extends ActiveCrudListService {
 	@ActiveDB("collectiontype_account")
 	def ctacct;
 	
+	@Service('OrgService') 
+	def orgSvc; 
+
 	@Env
 	def env; 
 
@@ -103,18 +106,22 @@ class CollectionTypeService extends ActiveCrudListService {
 	} 
 
 	@ProxyMethod
-	public def getBatchCollectionTypes(def org) {
+	public def getBatchCollectionTypes( org ) { 
 		def params = [orgcode: org?.objid, orgclass: org?.orgclass]; 
-		if(org.objid) {
-			return em.getBatchCollectionTypesByOrg(params);
-		}
-		else if( org.orgclass ) {
-			return em.getBatchCollectionTypesByOrgClass(params);
-		}
-		else {
+		if ( org.objid ) { 
+			return em.getBatchCollectionTypesByOrg( params ); 
+		} else if( org.orgclass ) { 
+			return em.getBatchCollectionTypesByOrgClass( params ); 
+		} 
+
+		def root = orgSvc.getRoot(); 
+		if ( root?.objid == env.ORGID ) { 
 			return em.getBatchCollectionTypes(); 
 		}
-	}	
+		
+		params.orgcode = env.ORGID; 
+		return em.getBatchCollectionTypesByOrg( params ); 
+	} 
 
 	@ProxyMethod
 	public def findByHandler(def o) {

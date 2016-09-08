@@ -197,6 +197,7 @@ class  BusinessApplicationModel extends WorkflowController {
             def h = { o->
                 def p = [applicationid:entity.objid, businessid:entity.business.objid ];
                 p.plateno = o.plateno;
+                p.remarks = o.remarks;
                 entity.permit = permitSvc.create( p );
                 printout = printPermit();
             }

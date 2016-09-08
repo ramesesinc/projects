@@ -107,6 +107,7 @@ class BusinessPermitService  {
 		permit.expirydate = expirydate;
 		permit.permitno = permitno;
 		permit.plateno = plateno; 
+		permit.remarks = o.remarks; 
 		em.create( permit ); 
 		return permit; 
 	} 
@@ -242,4 +243,10 @@ class BusinessPermitService  {
 		em.updatePlateno( o);
 	}
 
+	@ProxyMethod
+	public void updateRemarks( params ) { 
+		if ( !params.objid ) throw new Exception('objid parameter is required'); 
+
+		em.updateRemarks( params ); 
+	}
 } 

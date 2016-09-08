@@ -78,7 +78,7 @@ public abstract class BusinessInfoEdit extends PageFlowController {
             def m = filter.find{ it.attribute.objid == info.attribute.objid };
             if(m) return m.value;
         }
-        return null;
+        return null; 
      }
 
      def buildFormInfos() {
@@ -146,8 +146,11 @@ public abstract class BusinessInfoEdit extends PageFlowController {
             if( !result.infos)
                 throw new Exception("No information result found");
             //check if there is already values for this info
-            result.infos.each {
+            result.infos.each { 
                 it.value = findValue(it);
+                if ( it.value==null ) {
+                    it.value = it.defaultvalue; 
+                }
                 it.level = level;
             }
             level++;

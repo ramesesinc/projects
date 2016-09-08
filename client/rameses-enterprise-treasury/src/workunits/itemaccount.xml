@@ -1,15 +1,15 @@
 <workunit schemaName="itemaccount">
     <invokers>
         <invoker type="itemaccount:create" caption="Item Account" action="create" 
-                 role="MASTER" target="popup"/>
+                 role="MASTER" permission="itemaccount.create" target="popup"/>
         <invoker type="itemaccount:open" caption="Item Account" action="open" 
-                 role="MASTER" target="popup"/>
-        
+                 role="MASTER" permission="itemaccount.read" target="popup"/>
+
         <invoker type="formActions" caption="Approve" action="approve" 
-                 role="MASTER" visibleWhen="#{allowApprove==true}"/> 
+                 role="MASTER" permission="itemaccount.update" visibleWhen="#{allowApprove==true}"/> 
         <invoker type="formActions" caption="Disapprove" action="disapprove" 
-                 role="MASTER" visibleWhen="#{allowDisapprove==true}"/>  
-   </invokers>
+                 role="MASTER" permission="itemaccount.update" visibleWhen="#{allowDisapprove==true}"/>  
+    </invokers> 
    
     <code class="com.rameses.enterprise.treasury.models.ItemAccountModel" />
     

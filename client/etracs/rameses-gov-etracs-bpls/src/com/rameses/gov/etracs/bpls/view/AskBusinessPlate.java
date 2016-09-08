@@ -32,6 +32,8 @@ public class AskBusinessPlate extends javax.swing.JPanel {
 
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
         xTextField1 = new com.rameses.rcp.control.XTextField();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        xTextArea1 = new com.rameses.rcp.control.XTextArea();
         jLabel1 = new javax.swing.JLabel();
 
         xTextField1.setCaption("Plate No");
@@ -39,8 +41,22 @@ public class AskBusinessPlate extends javax.swing.JPanel {
         xTextField1.setCaptionWidth(120);
         xTextField1.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
         xTextField1.setName("entity.plateno"); // NOI18N
-        xTextField1.setPreferredSize(new java.awt.Dimension(0, 24));
+        xTextField1.setPreferredSize(new java.awt.Dimension(200, 24));
         xFormPanel1.add(xTextField1);
+
+        jScrollPane1.setPreferredSize(new java.awt.Dimension(47, 100));
+
+        xTextArea1.setCaption("Remarks");
+        xTextArea1.setCaptionFont(new java.awt.Font("SansSerif", 0, 18)); // NOI18N
+        xTextArea1.setCaptionWidth(120);
+        xTextArea1.setCellPadding(new java.awt.Insets(5, 0, 0, 0));
+        xTextArea1.setExitOnTabKey(true);
+        xTextArea1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        xTextArea1.setName("entity.remarks"); // NOI18N
+        xTextArea1.setStretchWidth(100);
+        jScrollPane1.setViewportView(xTextArea1);
+
+        xFormPanel1.add(jScrollPane1);
 
         jLabel1.setText("<html>You are about to issue permit. Please enter the ff. info:</html>");
 
@@ -51,10 +67,8 @@ public class AskBusinessPlate extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 295, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 269, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 547, Short.MAX_VALUE)
+                    .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -63,13 +77,15 @@ public class AskBusinessPlate extends javax.swing.JPanel {
                 .addGap(8, 8, 8)
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(32, Short.MAX_VALUE))
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 149, Short.MAX_VALUE)
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JScrollPane jScrollPane1;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
+    private com.rameses.rcp.control.XTextArea xTextArea1;
     private com.rameses.rcp.control.XTextField xTextField1;
     // End of variables declaration//GEN-END:variables
 }

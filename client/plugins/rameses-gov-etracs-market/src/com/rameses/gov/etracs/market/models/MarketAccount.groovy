@@ -19,14 +19,17 @@ public class MarketAccount extends CrudFormModel {
             binding.refresh("entity.(rate|term)");
         }
     ];        
-
-    def ledgerList = [
-        fetchList: { o->
-            def m = [_schemaname: 'market_ledger' ];
-            m.findBy = [acctid: entity.objid];
-            m.orderBy = "year,month";
-            return queryService.getList(m);
-        }
-    ] as BasicListModel;
    
+    void changeLastPaymentDate() {
+        def h = { o->
+            def m = [_schemaname: 'market_account'];
+            m.objid = entity.objid;
+            m.lastdatepaid = o;
+            getPersistenceService().update(m);
+            entity.lastdatepaid = o;
+            binding.refresh();
+        };
+        Modal.show( "date:prompt", [handler: h] );
+    }
+    
 }

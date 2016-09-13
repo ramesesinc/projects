@@ -1,0 +1,27 @@
+import com.rameses.annotations.*;
+import java.rmi.server.UID;
+
+class VehicleCashReceiptInterceptor {
+	
+	@DataContext("vehicle_application")
+	def appEm;
+
+	@DataContext("vehicle_payment")
+	def pmtEm;
+
+
+	@After(pattern="CashReceiptService.post", eval="#{result.collectiontype?.handler == 'vehicle'}")
+	public void postPayment(def evt) {
+		def o = evt.args[0];
+		throw new Exception("app id is " + o.appid);
+		
+		appEm.find( [objid: o.appid] ).update( [state:'POSTED']);
+	}
+
+	@After(pattern="CashReceiptVoidService.post",index=0,eval="#{result.receipt.collectiontype.handler=='vehicle'}")
+	public void voidPayment(def evt) {
+		def o = evt.args[0];
+
+	}
+
+}

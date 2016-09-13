@@ -1,0 +1,14 @@
+<schema adapter="vehicledb">
+	<element tablename="vehicle_permit">
+		<field name="objid" required="true" />
+		<complex name="app" ref="vehicle_application" jointype="many-to-one">
+			<key field="appid" target="objid" />
+		</complex>	
+		<field name="permitno" required="true" />
+		<field name="permittype" required="true" />
+		<field name="dtissued" required="true" />
+		<field name="issuedby_objid" required="true" />
+		<field name="issuedby_name" required="true" />
+		<field name="expirydate" required="true" />
+	</element>
+</schema>

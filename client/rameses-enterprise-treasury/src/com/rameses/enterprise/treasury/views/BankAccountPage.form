@@ -132,18 +132,6 @@
                     <Property name="required" type="boolean" value="true"/>
                   </Properties>
                 </Component>
-                <Component class="com.rameses.rcp.control.XComboBox" name="xComboBox2">
-                  <Properties>
-                    <Property name="allowNull" type="boolean" value="false"/>
-                    <Property name="caption" type="java.lang.String" value="Currency"/>
-                    <Property name="items" type="java.lang.String" value="listTypes.currency"/>
-                    <Property name="name" type="java.lang.String" value="entity.currency" noResource="true"/>
-                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[120, 22]"/>
-                    </Property>
-                    <Property name="required" type="boolean" value="true"/>
-                  </Properties>
-                </Component>
                 <Component class="com.rameses.rcp.control.XLookupField" name="xLookupField1">
                   <Properties>
                     <Property name="caption" type="java.lang.String" value="Bank"/>
@@ -152,6 +140,18 @@
                     <Property name="name" type="java.lang.String" value="entity.bank" noResource="true"/>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                       <Dimension value="[0, 19]"/>
+                    </Property>
+                    <Property name="required" type="boolean" value="true"/>
+                  </Properties>
+                </Component>
+                <Component class="com.rameses.rcp.control.XComboBox" name="xComboBox2">
+                  <Properties>
+                    <Property name="allowNull" type="boolean" value="false"/>
+                    <Property name="caption" type="java.lang.String" value="Currency"/>
+                    <Property name="items" type="java.lang.String" value="listTypes.currency"/>
+                    <Property name="name" type="java.lang.String" value="entity.currency" noResource="true"/>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[120, 22]"/>
                     </Property>
                     <Property name="required" type="boolean" value="true"/>
                   </Properties>

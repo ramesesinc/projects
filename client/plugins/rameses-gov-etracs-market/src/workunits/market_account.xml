@@ -2,6 +2,12 @@
     <invokers>
         <invoker type="market_account:create" caption="New Market Account" action="create" role="MASTER"/>
         <invoker type="market_account:open" caption="Market Account" action="open"  role="MASTER"/>
+        
+        <!-- -->
+        <invoker type="formActions" caption="Edit Last Payment Date" 
+                 action="changeLastPaymentDate"/>
+        <invoker type="formAction" caption="Edit Last Payment Date" 
+                 action="changeLastPaymentDate"/>
     </invokers>
     <code class="com.rameses.gov.etracs.market.models.MarketAccount" />
     <pages>

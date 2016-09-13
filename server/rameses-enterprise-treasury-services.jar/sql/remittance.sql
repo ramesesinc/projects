@@ -202,3 +202,4 @@ select
 from remittance_fund remf 
   inner join remittance rem on remf.remittanceid=rem.objid 
 where remf.remittanceid=$P{remittanceid} 
+

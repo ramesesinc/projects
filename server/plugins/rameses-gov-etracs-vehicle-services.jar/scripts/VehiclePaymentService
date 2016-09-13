@@ -1,0 +1,49 @@
+import com.rameses.annotations.*;
+
+import com.rameses.rules.common.*;
+import vehicle.facts.*;
+import treasury.facts.*;
+import treasury.actions.*;
+
+/**********************************************************
+* This service handles computation of what fees to charge 
+***********************************************************/
+class VehiclePaymentService {
+	
+	@DataContext("vehicle_payment")
+	def pmtEm;
+
+	@DataContext("vehicle_application")
+	def appEm;
+
+	@ProxyMethod
+	public def postPayment( def r ) {
+		def m = [:];
+		m.objid = r.objid;
+		m.appid = r.appid
+		m.refno = r.receiptno;		
+		m.refid = r.objid;		
+		m.reftype = "cashreceipt";		
+		m.refdate = r.receiptdate;
+		m.amount = r.amount;
+		m.txnmode = 'ONLINE';
+		m.voided = 0;
+
+		//use the billitems as the details for payment.
+		r.items.each {
+			it.parent = m;
+		}
+
+		pmtEm.create( m );
+
+		appEm.find( [objid:r.appid ] ).update( [state:'PAID'] );
+	}
+
+
+	@ProxyMethod
+	public def postVoidPayment( def o ) {
+		appEm.find( [objid:r.appid ] ).update( [state:'PENDING'] );
+	}
+
+
+}

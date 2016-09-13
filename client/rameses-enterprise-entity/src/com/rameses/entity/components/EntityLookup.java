@@ -18,7 +18,11 @@ public class EntityLookup extends XComponentPanel {
     private String onselect; 
     private String onempty;
     private String entitytype;
-            
+    
+    private boolean allowCreate;
+    private boolean allowOpen;
+    
+    
     public EntityLookup() {
         initComponents();
     }
@@ -52,6 +56,9 @@ public class EntityLookup extends XComponentPanel {
         super.setEnabled(enabled);
         xLookupField1.setEnabled(enabled);
         btnAdd.setEnabled(enabled);
+        com.rameses.rcp.common.ComponentBean bean = (com.rameses.rcp.common.ComponentBean)getComponentBean(); 
+        bean.setProperty("allowCreate", enabled);
+        bean.setProperty("allowOpen", true);
     }
 
     @Override
@@ -72,8 +79,7 @@ public class EntityLookup extends XComponentPanel {
 
         pr.setProperty(bean, "entityTypeCaller", new EntityTypeCaller(getEntityType(), caller));
     }
-    
-    
+
     public class EntityTypeCaller { 
         private String type;
         private Object caller;

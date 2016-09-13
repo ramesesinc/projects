@@ -4,8 +4,8 @@
         <invoker folderid="/explorer/txn/treasury" caption="Batch Captures (Subcollector)" action="initSubcollector" role="SUBCOLLECTOR"/>
         <invoker folderid="/explorer/txn/treasury" caption="Batch Captures (Collector)" action="initCollector" role="COLLECTOR"/>
         
-        <invoker folderid="home/treasury/manualcollection" caption="Batch List(Collector)" action="initCollector" role="COLLECTOR"  index="10"/>
-        <invoker folderid="home/treasury/manualcollection" caption="Batch List(Subcollector)" action="initSubcollector" role="SUBCOLLECTOR" index="11"/>
+        <invoker folderid="home/collection" caption="Collector Batch List" action="initCollector" role="COLLECTOR"  index="10"/>
+        <invoker folderid="home/collection" caption="Subcollector Batch List" action="initSubcollector" role="SUBCOLLECTOR" index="11"/>
     </invokers>
     
     <code>

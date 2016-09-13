@@ -22,7 +22,7 @@
                   <Component id="xDataTable1" alignment="0" max="32767" attributes="1"/>
                   <Component id="xFormPanel1" alignment="0" pref="614" max="32767" attributes="1"/>
               </Group>
-              <EmptySpace pref="23" max="32767" attributes="0"/>
+              <EmptySpace max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -32,7 +32,7 @@
               <EmptySpace max="-2" attributes="0"/>
               <Component id="xFormPanel1" min="-2" pref="166" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="xDataTable1" pref="185" max="32767" attributes="0"/>
+              <Component id="xDataTable1" pref="234" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>

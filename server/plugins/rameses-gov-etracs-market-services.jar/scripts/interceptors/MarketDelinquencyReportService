@@ -1,17 +1,27 @@
 import com.rameses.annotations.*;
 import java.text.*;
 import com.rameses.functions.*;
+import market.facts.*;
 
 class MarketDelinquencyReportService {
 	
-	@DataContext("market_account")
-	def acct;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@Service("MarketDelinquencyGeneratorService")
+	def genSvc;
+
+	@DataContext("market_delinquency_item")
+	def delItems;
+
+	def dformat = new java.text.SimpleDateFormat("yyyy-MM-dd");
 
 	@After(pattern="FormReportService.getParameters", eval="#{args[0].reportid == 'market_delinquency' }")
 	public void getParameters( def evt ) {
 		def result = evt.result;
 		def params = [];
-		params << [ type:'date', caption:'Period', name:'period', required:true ];
+		params << [ type:'date', caption:'Bill Date', name:'billdate', required:true ];
 		result.parameters = params;
 	}
 
@@ -20,43 +30,50 @@ class MarketDelinquencyReportService {
 		println "aborting " + evt.args[0].txnid;
 	}
 
+	/***********************************************************************************
+	* steps:
+	* 1. check current status if status !=0 return;
+	* 1. check if there is an ongoing report being processed
+	* 2. 
+	* 3. find first the due date based on a billdate
+	* 2. filter all where market account lastdatepaid before duedate
+	************************************************************************************/
 	@After(pattern="FormReportService.getData", eval="#{args[0].reportid == 'market_delinquency' }")
 	public void getData( def evt ) {
 		def p = evt.args[0];
 		def result = evt.result;
-		println "status is " + p.status + " class is " + p.status?.class; 
-		if( p.status == null || p.status < 10 ) {
-			if(!p.status) p.status = 0;
-			result.data = [
-				[ acctno:'X12345', subtotal:0, surcharge:0, interest:0, total:0 ],
-				[ acctno:'X12346', subtotal:0, surcharge:0, interest:0, total:0 ]
-			];
-			result.status = (p.status+"").toInteger() + 1;
-		} 
-		else {
-			def list =  acct.select('''
-				objid,acctno,owner.name,
-				owner.address.text,unitno:{unit.code},
-				months:{ MONTH_DIFF( IFNULL(lastpmtdate,startdate), NOW()) },
-				rate
-			''').list();
 
-			list.each {
-				it.address?.text = it.address?.text?.replace("\n", ",");
-				it.subtotal = it.rate*it.months;
-				it.surcharge = 0;
-				it.interest = 0;
-				it.total = it.subtotal + it.surcharge + it.interest;
-			};
-			
-			result.data = list;
-			result.headers = [:];
-			if(p.parameters?.period) {
-				def df = new java.text.SimpleDateFormat("yyyy-MM-dd");
-				result.headers.period =  df.parse( p.parameters?.period );
+		def period = p.parameters.billdate;
+		if(!period) throw new Exception("Period is required");
+
+		def pid = period.toString();
+
+		def m = [objid: pid, period: period];
+
+		if( p.status == null ) {
+			def state = genSvc.checkStatus( m );
+			if( state == null ) {
+				genSvc.process( m );	
+				result.status = 1;
+				return;
 			}
-			result.status = 0;
+			else if( state == 'COMPLETED' ) {
+				result.status = 0;
+				result.data = delItems.find([parentid: pid]).list();	
+				return;
+			}
+		} 
+		else if( p.status > 0 ) {
+			def state = genSvc.checkStatus( m );
+			//check if state is completed.
+			if( state == 'COMPLETED' ) {
+				result.status = 0;
+				result.data = delItems.find([parentid: pid]).list();			
+				return;
+			}
 		}
+
+		result.status = p.status;
 	}
 
 

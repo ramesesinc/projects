@@ -9,6 +9,9 @@ class RemittanceService  {
 	@ActiveDB("remittance")
 	def em; 
 
+	@ActiveDB("remittance_tool")
+	def remittance_tool; 
+
 	@Env
 	def env;
 
@@ -198,4 +201,21 @@ class RemittanceService  {
         txnno = txnno.replace( 'FS', "$series".padLeft(5, '0') )
         return txnno 
     }
+
+    @ProxyMethod 
+    public void revert( params ) {
+    	if ( !params.objid ) throw new Exception('objid parameter is required'); 
+
+    	params.remittanceid = params.objid; 
+    	def o = remittance_tool.findRemittance( params ); 
+    	if ( o?.liquidated > 0 ) 
+    		throw new Exception('This transaction has already been liquidated. Cannot revert remittance'); 
+
+    	remittance_tool.removeFunds( params ); 
+    	remittance_tool.removeAFs( params ); 
+    	remittance_tool.removeCashReceipts( params ); 
+    	remittance_tool.removeCreditMemoPayments( params ); 
+    	remittance_tool.removeNonCashPayments( params ); 
+    	remittance_tool.removeRemittance( params ); 
+    } 
 }

@@ -12,7 +12,7 @@ rule "set-deadline"
 	salience -40
 	no-loop
 	when
-		BillDate( $date: date )
+		bpls.facts.BillDate( $date: date )
 		QtrDeadline( $qtr:qtr, $deadline: deadline!=null)
 		TF: BillItem( qtr == $qtr )
 	then
@@ -27,7 +27,7 @@ rule "set-deadline-year"
 	salience -40
 	no-loop
 	when
-		BillDate( $date: date )
+		bpls.facts.BillDate( $date: date )
 		QtrDeadline( $qtr:qtr == 1, $deadline: deadline)
 		TF: BillItem( qtr == 0 )
 	then

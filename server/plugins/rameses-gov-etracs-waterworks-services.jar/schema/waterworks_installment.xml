@@ -12,7 +12,8 @@
 
 		<field name="particulars" required="true" caption="Particulars"/>
 		<field name="startdate" type="date" caption="Start Date"/>
-		
+		<field name="lastdatepaid" type="date" caption="Last Date Paid"/>
+
 		<field name="term" required="true" type="integer" caption="Term" defaultValue="1"/>
 
 		<field name="amount" type="decimal" required="true" defaultValue="0"/> 

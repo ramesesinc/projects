@@ -2,8 +2,8 @@
 select * from ( 
 	select distinct cg.* 
 	from collectiongroup cg 
-		inner join collectiongroup_revenueitem cgr on cg.objid=cgr.collectiongroupid 
-		inner join itemaccount ia on cgr.revenueitemid=ia.objid 
+		left join collectiongroup_revenueitem cgr on cg.objid=cgr.collectiongroupid 
+		left join itemaccount ia on cgr.revenueitemid=ia.objid 
 	where cg.name like $P{searchtext} ${filter} 
 )a 
 order by a.name 

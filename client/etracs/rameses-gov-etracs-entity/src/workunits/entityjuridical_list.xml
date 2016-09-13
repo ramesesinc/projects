@@ -1,0 +1,31 @@
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" 
+    schemaName="entityjuridical" allowDelete="false" debug="true">
+    <invokers>
+        <invoker folderid="/explorer/master/entity" caption="Juridical"  
+                 action="init" role="MASTER" permission="entityjuridical.view"  
+                 cols="entityno,name,entityname,address.text,orgtype" 
+                 orderBy="entityname"/>  
+        
+        <invoker folderid="/home/entity" caption="Juridical"  
+                 action="init" role="MASTER" permission="entityjuridical.view"  
+                 cols="entityno,name,entityname,address.text,orgtype" 
+                 orderBy="entityname" 
+                 icon="home/icons/entityjuridical.png"/>  
+        
+   </invokers>
+   
+    <code>
+    <![CDATA[ 
+import com.rameses.seti2.models.*; 
+
+class EntityJuridicalListModel extends CrudListModel {
+    
+    public void initColumn( def c ) {
+        if ( c.name == 'entityname' ) {
+            c.visible = false; 
+        }
+    }
+}    
+    ]]> 
+    </code> 
+</workunit>

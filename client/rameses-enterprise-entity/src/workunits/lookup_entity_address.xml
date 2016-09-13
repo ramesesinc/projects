@@ -1,9 +1,0 @@
-<workunit extends="wtemplates/ServiceLookupController.xml" serviceName="EntityAddressLookupService" allowSearch="true"
-    entityName="addresslookup">
-    <invokers>
-        <invoker type="entity_address:lookup" caption="Lookup Entity Address" target="popup" height="350"/>
-    </invokers>
-    <pages>
-        <page name="queryform" template="com.rameses.entity.ui.EntityAddressLookupPage" />
-    </pages>    
-</workunit>

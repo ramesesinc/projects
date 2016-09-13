@@ -1,7 +1,0 @@
-<workunit extends="com/rameses/seti2/templates/CrudLookup.xml" 
-          schemaName="vw_entityindividual" 
-          allowCreate="false" allowOpen="false" allowDelete="false">
-    <invokers>
-        <invoker type="vw_entityindividual:lookup" caption="Lookup Entity" action="init"/>
-    </invokers>
-</workunit>

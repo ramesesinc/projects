@@ -1,0 +1,27 @@
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" schemaName="entitymultiple">
+    <invokers>
+        <invoker folderid="/explorer/master/entity" caption="Multiple Ownership" 
+                 action="init" role="MASTER" permission="entitymultiple.view" 
+                 cols="entityno,name,entityname,address.text" orderBy="entityname"/>
+        
+         <invoker folderid="/home/entity" caption="Multiple Ownership" 
+                  action="init" role="MASTER" permission="entitymultiple.view" 
+                  icon="home/icons/entitymultiple.png"
+                  cols="entityno,name,entityname,address.text" orderBy="entityname"/>
+   </invokers>
+   
+    <code>
+    <![CDATA[ 
+import com.rameses.seti2.models.*; 
+
+class EntityMultipleListModel extends CrudListModel {
+    
+    public void initColumn( def c ) {
+        if ( c.name == 'entityname' ) {
+            c.visible = false; 
+        }
+    }
+}    
+    ]]> 
+    </code>    
+</workunit>

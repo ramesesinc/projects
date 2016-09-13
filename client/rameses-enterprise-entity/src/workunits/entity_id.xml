@@ -3,11 +3,17 @@
         <invoker type="entityid:create" caption="Identification" action="create" target="popup"/>
         <invoker type="entityid:open" caption="Identification" action="open"  target="popup"/> 
         
+        <!--
         <invoker type="formActions" caption="Take A Photo" action="takePhoto" />
         <invoker type="formActions" caption="Remove Photo" action="removePhoto" depends="image" visibleWhen="#{image != null}"/>
+        -->
     </invokers>
     
+    <!--
     <code class="com.rameses.entity.models.EntityIdentificationModel"/>
+    -->
+    
+    <code class="com.rameses.entity.models.EntitySectionFormModel"/>
     
     <pages>
         <page template="com.rameses.entity.views.EntityIdentificationPage"/>        

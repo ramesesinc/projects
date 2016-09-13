@@ -1,0 +1,11 @@
+<workunit extends="com/rameses/seti2/templates/CrudLookup.xml" schemaName="entityjuridical">
+   <invokers>
+         <invoker type="entityjuridical:lookup" caption="Lookup Juridical Entity" 
+         		  action="init" target="popup" height="350"
+                  cols="entityno,name,entityname,address.text,type" />
+
+         <invoker type="juridicalentity:lookup" caption="Lookup Juridical Entity" 
+         		  action="init" target="popup" height="350"
+                  cols="entityno,name,entityname,address.text,type" />
+   </invokers>
+</workunit>

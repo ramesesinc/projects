@@ -58,7 +58,6 @@ public class RequirementTypePage extends javax.swing.JPanel {
         xComboBox1.setItems("listTypes.handler");
         xComboBox1.setName("entity.handler"); // NOI18N
         xComboBox1.setPreferredSize(new java.awt.Dimension(0, 22));
-        xComboBox1.setRequired(true);
         formPanel1.add(xComboBox1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);

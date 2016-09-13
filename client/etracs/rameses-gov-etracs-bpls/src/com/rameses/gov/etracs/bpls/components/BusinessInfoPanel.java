@@ -75,6 +75,7 @@ public class BusinessInfoPanel extends XComponentPanel {
         xButton1.setImmediate(true);
         xButton1.setName("doBack"); // NOI18N
         xButton1.setText("Back");
+        xButton1.setVisibleWhen("#{currentIndex > 1}");
         jPanel2.add(xButton1);
 
         xButton2.setMnemonic('N');

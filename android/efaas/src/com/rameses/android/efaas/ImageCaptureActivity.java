@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
-import android.app.ActionBar;
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -33,10 +33,8 @@ import com.rameses.android.efaas.util.DbBitmapUtility;
 public class ImageCaptureActivity extends ControlActivity {
 	
 	private static final int CAMERA_CAPTURE_IMAGE_REQUEST_CODE = 100;
-    private static final int CAMERA_CAPTURE_VIDEO_REQUEST_CODE = 200;
     public static final int MEDIA_TYPE_IMAGE = 1;
     public static final int MEDIA_TYPE_VIDEO = 2;
-    private static final String IMAGE_DIRECTORY_NAME = "ETRACS";
     private Uri fileUri;
     		
 	private ImageView image;
@@ -45,17 +43,33 @@ public class ImageCaptureActivity extends ControlActivity {
 	private String objid, examinationid;
 	private Bitmap bitmap = null;
 	private String data_title;
+	private Activity activity;
 	
 	public boolean isCloseable() { return false; }
 	
 	@Override
 	protected void onCreateProcess(Bundle savedInstanceState) {
 		ApplicationUtil.changeTitle(this, "Capture Image");
-		setContentView(R.layout.activity_image);
+		activity = this;
 		
 		objid = getIntent().getExtras().getString("objid");
 		examinationid = getIntent().getExtras().getString("examinationid");
 		
+		if(objid == null) setContentView(R.layout.activity_image_empty);
+		if(objid != null) setContentView(R.layout.activity_image);
+		
+		initComponents();
+	}
+	
+	protected void afterBackPressed() {
+		disposeMe(); 
+	} 
+	
+	protected void onStartProcess() {
+		super.onStartProcess();
+	}
+	
+	private void initComponents(){
 		image = (ImageView) findViewById(R.id.image_view);
 		title = (EditText) findViewById(R.id.image_title);
 		save = (Button) findViewById(R.id.image_save);
@@ -94,17 +108,9 @@ public class ImageCaptureActivity extends ControlActivity {
             	}else{
             		doUpdate();
             	}
+            	System.err.println("EXAMINATIONID : " + examinationid);
             }
         });
-		
-	}
-	
-	protected void afterBackPressed() {
-		disposeMe(); 
-	} 
-	
-	protected void onStartProcess() {
-		super.onStartProcess();
 	}
 	
 	/**
@@ -115,10 +121,15 @@ public class ImageCaptureActivity extends ControlActivity {
 	    // if the result is capturing Image
 	    if (requestCode == CAMERA_CAPTURE_IMAGE_REQUEST_CODE) {
 	        if (resultCode == RESULT_OK) {
+	        	setContentView(R.layout.activity_image);
+	        	initComponents();
 	            previewCapturedImage();
 	        } else if (resultCode == RESULT_CANCELED) {
-	           
+	        	setContentView(R.layout.activity_image_empty);
+	        	initComponents();
 	        } else {
+	        	setContentView(R.layout.activity_image_empty);
+	        	initComponents();
 	            Toast.makeText(getApplicationContext(),"Sorry! Failed to capture image", Toast.LENGTH_SHORT).show();
 	        }
 	    }

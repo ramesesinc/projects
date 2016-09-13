@@ -93,7 +93,7 @@ class  BusinessApplicationModel extends WorkflowController {
         formId = entity.objid;
         formTitle = "BA:"+entity.appno;
         reloadSections();
-        lob.handler = { lobUpdated = true; }
+        //lob.handler = { lobUpdated = true; }
     }
 
     def popupReports() {

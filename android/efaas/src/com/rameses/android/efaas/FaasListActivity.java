@@ -5,13 +5,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
-import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -23,7 +19,6 @@ import com.rameses.android.R;
 import com.rameses.android.SettingsMenuActivity;
 import com.rameses.android.db.FaasDB;
 import com.rameses.android.efaas.adapter.FaasMenuAdapter;
-import com.rameses.android.efaas.adapter.HomeMenuAdapter;
 import com.rameses.android.efaas.bean.FaasListItem;
 
 public class FaasListActivity extends SettingsMenuActivity {
@@ -44,6 +39,20 @@ public class FaasListActivity extends SettingsMenuActivity {
 		progressDialog = new ProgressDialog(this);
 		progressDialog.setCancelable(false); 
 		
+		loadData("");
+		
+		ApplicationUtil.changeTitle(this, "FAAS");
+	}
+	
+	protected void afterBackPressed() {
+		disposeMe(); 
+	} 
+	
+	protected void onStartProcess() {
+		super.onStartProcess();
+	}
+	
+	private void initComponents(){
 		list = (ListView) findViewById(R.id.faas_list);
 		list.setOnItemClickListener(new OnItemClickListener(){
 			@Override
@@ -63,18 +72,6 @@ public class FaasListActivity extends SettingsMenuActivity {
 				}
 			}	
 		});
-		
-		loadData("");
-		
-		ApplicationUtil.changeTitle(this, "FAAS");
-	}
-	
-	protected void afterBackPressed() {
-		disposeMe(); 
-	} 
-	
-	protected void onStartProcess() {
-		super.onStartProcess();
 	}
 	
 	private void loadData(String searchtext){
@@ -96,9 +93,13 @@ public class FaasListActivity extends SettingsMenuActivity {
 			e.printStackTrace();
 			ApplicationUtil.showShortMsg(e.toString());
 		}
-		list.setBackgroundResource(0);
-		if(data.isEmpty()) list.setBackgroundResource(R.drawable.empty);
-		list.setAdapter(new FaasMenuAdapter(this,data));
+		if(data.isEmpty()){
+			setContentView(R.layout.activity_faaslist_empty);
+		}else{
+			setContentView(R.layout.activity_faaslist);
+			initComponents();
+			list.setAdapter(new FaasMenuAdapter(this,data));
+		}
 	}
 
 }

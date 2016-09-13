@@ -57,7 +57,7 @@ public class MarketCashReceiptPage extends javax.swing.JPanel {
 
         xLabel2.setCaption("Particulars");
         xLabel2.setCaptionWidth(90);
-        xLabel2.setExpression("#{entity.particulars}");
+        xLabel2.setExpression("#{entity.unit.code} - #{entity.unit.market.name}");
         xLabel2.setFontStyle("font-size:12;font-weight:bold;");
         xLabel2.setPreferredSize(new java.awt.Dimension(0, 17));
         xFormPanel1.add(xLabel2);
@@ -71,7 +71,7 @@ public class MarketCashReceiptPage extends javax.swing.JPanel {
 
         xLabel4.setCaption("Rental rate");
         xLabel4.setCaptionWidth(90);
-        xLabel4.setExpression("#{entity.rate}");
+        xLabel4.setExpression("#{entity.rate} - #{entity.unit.term}");
         xLabel4.setFontStyle("font-size:12;font-weight:bold;");
         xLabel4.setPreferredSize(new java.awt.Dimension(0, 17));
         xFormPanel1.add(xLabel4);
@@ -152,9 +152,39 @@ public class MarketCashReceiptPage extends javax.swing.JPanel {
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "amount"}
                 , new Object[]{"caption", "Amount"}
-                , new Object[]{"width", 80}
-                , new Object[]{"minWidth", 80}
-                , new Object[]{"maxWidth", 80}
+                , new Object[]{"width", 100}
+                , new Object[]{"minWidth", 100}
+                , new Object[]{"maxWidth", 100}
+                , new Object[]{"required", false}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.DecimalColumnHandler("#,##0.00", -1.0, -1.0, false, 2)}
+            }),
+            new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", "surcharge"}
+                , new Object[]{"caption", "Surcharge"}
+                , new Object[]{"width", 100}
+                , new Object[]{"minWidth", 100}
+                , new Object[]{"maxWidth", 100}
+                , new Object[]{"required", false}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.DecimalColumnHandler("#,##0.00", -1.0, -1.0, false, 2)}
+            }),
+            new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", "interest"}
+                , new Object[]{"caption", "Interest"}
+                , new Object[]{"width", 100}
+                , new Object[]{"minWidth", 100}
+                , new Object[]{"maxWidth", 100}
                 , new Object[]{"required", false}
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
@@ -173,7 +203,8 @@ public class MarketCashReceiptPage extends javax.swing.JPanel {
                 , new Object[]{"required", false}
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
-                , new Object[]{"editable", false}
+                , new Object[]{"editable", true}
+                , new Object[]{"editableWhen", null}
                 , new Object[]{"visible", true}
                 , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}

@@ -4,17 +4,19 @@
     android:layout_height="match_parent"
     android:focusable="true"
     android:focusableInTouchMode="true"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:background="@android:color/white"
+    android:gravity="center|top" >
 
    <EditText
         android:id="@+id/faas_search"
-        android:layout_width="match_parent"
+        android:layout_width="500dp"
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="Search by PIN, TD No."
         android:padding="10dp"
         android:background="@drawable/edittext_default"
-        android:layout_margin="5dp"
+        android:layout_margin="20dp"
         android:layout_marginBottom="0dp" >
     </EditText>
 

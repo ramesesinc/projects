@@ -23,6 +23,7 @@ import com.rameses.client.services.AbstractService;
 public class UploadService extends AbstractService {
 	
 	Properties prop = null;
+	byte[] bytes;
 
 	@Override
 	public String getServiceName() {
@@ -75,7 +76,7 @@ public class UploadService extends AbstractService {
 	}
 	
 	public void uploadImage(String imageid, final String faasid){
-		byte[] bytes = null; 
+		bytes = null; 
 		ImageDB db = new ImageDB();
 		String title = "unknown";
 		
@@ -95,7 +96,7 @@ public class UploadService extends AbstractService {
 		}
 		
         FileChunker fc = new FileChunker( bytes, title + ".png", "image/png" );
-        fc.setChunkSize(50);
+        fc.setChunkSize(1024);
         fc.parse(new ChunkHandler() {
 
             @Override
@@ -104,7 +105,7 @@ public class UploadService extends AbstractService {
                 header.put("objid", UUID.randomUUID().toString());
                 header.put("refid", faasid);
                 header.put("title", prop.getProperty("title"));
-                header.put("filesize", null);
+                header.put("filesize", bytes.length);
                 header.put("extension", "jpg");
                 
                 DBImageService svc = new DBImageService();

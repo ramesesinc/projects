@@ -7,7 +7,7 @@ import java.text.*;
 
 public class MarketCashReceiptService  {
 
-	@Service("MarketBillingService")
+	@Service("MarketAccountBillingService")
 	def billSvc;
 
 	@DataContext("market_account")
@@ -23,11 +23,12 @@ public class MarketCashReceiptService  {
 		z.acctno = a.acctno;
 		z.acctname = a.acctname;
 		z.rate = a.rate;
+		z.unit = a.unit;
 		z.fromdate = dformat.format(a.fromdate);
 		z.todate = dformat.format(a.todate);
 		z.amount = a.items.sum{ it.amount };
 		z.items = a.items;
-		z.paidby = a.owner;
+		z.payer = a.owner;
 		z.paidby = a.acctname + " (" + a.acctno + ")"; 
 		z.paidbyaddress = a.unit.code;
 		return z;

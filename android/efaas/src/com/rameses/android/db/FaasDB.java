@@ -84,12 +84,14 @@ public class FaasDB extends AbstractDBMapper{
 	public List<String> getFaasImageIds(String faasid) throws Exception{
 		List<String> ids = new ArrayList<String>();
 		DBContext ctx = getDBContext();
-		
 		try {
 			List<Map> list = ctx.getList("SELECT i.* FROM images i " +
-					"INNER JOIN examination e ON i.examinationid = e.parent_objid " +
+					"INNER JOIN examination e ON i.examinationid = e.objid " +
 					"INNER JOIN faas f on e.parent_objid = f.objid " +
 					"WHERE f.objid = ?", new Object[]{faasid});
+			System.err.println("FAASID : " + faasid);
+			System.err.println("**************************************************");
+			System.err.println("IMAGE LIST : " + list);
 			for(Map image : list){
 				ids.add(image.get("objid").toString());
 			}

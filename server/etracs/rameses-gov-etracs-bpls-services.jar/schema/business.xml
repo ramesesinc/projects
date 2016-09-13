@@ -1,13 +1,13 @@
 <schema>
 	
 	<element tablename="business">
-		<field name="objid" primary="true"/>
+		<field name="objid" primary="true" prefix="BUS"/>
 		<field name="state" required="true"/>
 		<field name="owner_name" required="true"/>
 		<field name="owner_objid" required="true"/>
 		<field name="owner_address_text" required="true"/>
 		<field name="owner_address_objid" required="true"/>
-		<field name="businessname" required="true"/>
+		<field name="businessname" required="true" caption="Business Name"/>
 		<field name="tradename" required="true"/>
 		<field name="address_text" required="true"/>
 		<field name="address_objid" required="true"/>

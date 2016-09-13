@@ -75,9 +75,7 @@ public class BPAssessmentRuleService  {
 		actions.addCommand( "select_taxfee", new SelectTaxFee(request:request));
 		actions.addCommand( "add_sysvar", new AddSysVar(request:request, comparator: comparator));
 		actions.addCommand( "assert_sysvars", new AssertSysVars(request:request));
-		actions.addCommand( "add_requirement", new AddRequirement(request:request, BR: br));
 		actions.addCommand( "change_business_account", new ChangeAccount(request:request, BA:ba));
-		actions.addCommand( "print_test", new PrintTest());
 		return actions;
 	}
 

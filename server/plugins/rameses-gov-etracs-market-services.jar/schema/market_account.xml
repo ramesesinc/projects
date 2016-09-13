@@ -23,5 +23,6 @@
 
 		<field name="rate" required="true" />
 		<field name="term" required="true" />
+
 	</element>
 </schema>

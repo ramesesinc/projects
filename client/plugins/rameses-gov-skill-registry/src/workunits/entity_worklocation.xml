@@ -1,0 +1,12 @@
+<workunit schemaName="entity_jobpreference_worklocation">
+    <invokers>
+        <invoker type="entity_jobpreference_worklocation:create" caption="Job Preference WorkLocation (New)" action="create" target="popup"/>
+        <invoker type="entity_jobpreference_worklocation:open" caption="Job Preference WorkLocation (View)" action="doOpen"  target="popup"/> 
+    </invokers>
+    
+    <code class="com.rameses.gov.etracs.nsrp.models.EntityWorkLocationModel"/>
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.nsrp.views.EntityWorkLocationPage"/>        
+    </pages>
+</workunit>

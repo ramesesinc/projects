@@ -9,13 +9,17 @@
         class MarketUnitList extends com.rameses.seti2.models.CrudListModel {
         
             def selectedMarket;
+            def locations;
         
             def getMarketLocations() {
-                def m = [_schemaname:'market'];
-                m.select = 'objid,code,name';
-                m._start = 0;
-                m._limit = 100;
-                return queryService.getList( m ); 
+                if(!locations) {
+                    def m = [_schemaname:'market'];
+                    m.select = 'objid,code,name';
+                    m._start = 0;
+                    m._limit = 100;
+                    locations = queryService.getList( m ); 
+                }
+                return locations;
             };
             
             @PropertyChangeListener
@@ -26,7 +30,12 @@
             ];
         
             def getCustomFilter() {
-                return [ "marketid = :mid", [mid : selectedMarket.objid] ];
+                if( !selectedMarket ) {
+                    return null;
+                }
+                else {
+                    return [ "marketid = :mid", [mid : selectedMarket.objid] ];
+                }
             }
         
         }

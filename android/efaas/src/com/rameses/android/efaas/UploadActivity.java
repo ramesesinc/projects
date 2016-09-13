@@ -16,7 +16,9 @@ import android.widget.ListView;
 import com.rameses.android.ApplicationUtil;
 import com.rameses.android.R;
 import com.rameses.android.SettingsMenuActivity;
+import com.rameses.android.db.ExaminationDB;
 import com.rameses.android.db.FaasDB;
+import com.rameses.android.db.ImageDB;
 import com.rameses.android.efaas.adapter.UploadMenuAdapter;
 import com.rameses.android.efaas.bean.UploadItem;
 import com.rameses.android.efaas.dialog.ErrorDialog;
@@ -39,7 +41,37 @@ public class UploadActivity extends SettingsMenuActivity {
 	protected void onCreateProcess(Bundle savedInstanceState) {
 		
 		setContentView(R.layout.activity_uploadlist);
+		initComponents();
+		loadData("");
 		
+		ApplicationUtil.changeTitle(this, "Upload");
+		activity = this;
+		
+		try{
+			//DEBUG DATABASE
+			for(Map map : new FaasDB().getList(new HashMap())){
+				System.err.println("FAAS OBJID : " + map.get("objid"));
+			}
+			for(Map map : new ExaminationDB().getList(new HashMap())){
+				System.err.println("EXAMINATION OBJID : " + map.get("objid"));
+				System.err.println("EXAMINATION PARENT_OBJID : " + map.get("parent_objid"));
+			}
+			for(Map map : new ImageDB().getList(new HashMap())){
+				System.err.println("IMAGE OBJID : " + map.get("objid"));
+				System.err.println("IMAGES EXAMINATIONID: " + map.get("examinationid"));
+			}
+		}catch(Exception e){;}
+	}
+	
+	protected void afterBackPressed() {
+		disposeMe(); 
+	} 
+	
+	protected void onStartProcess() {
+		super.onStartProcess();
+	}
+	
+	private void initComponents(){
 		progressDialog = new ProgressDialog(this);
 		progressDialog.setCancelable(false); 
 		
@@ -64,19 +96,6 @@ public class UploadActivity extends SettingsMenuActivity {
             	uploadData(listForUpload);
             }
         });
-		
-		loadData("");
-		
-		ApplicationUtil.changeTitle(this, "Upload");
-		activity = this;
-	}
-	
-	protected void afterBackPressed() {
-		disposeMe(); 
-	} 
-	
-	protected void onStartProcess() {
-		super.onStartProcess();
 	}
 	
 	private void loadData(String searchtext){
@@ -96,9 +115,16 @@ public class UploadActivity extends SettingsMenuActivity {
 			e.printStackTrace();
 			ApplicationUtil.showShortMsg(e.toString());
 		}
-		list.setAdapter(new UploadMenuAdapter(this,data));
-		list.setBackgroundResource(0);
-		if(data.isEmpty()) list.setBackgroundResource(R.drawable.empty);
+		
+		if(data.isEmpty()){
+			setContentView(R.layout.activity_uploadlist_empty);
+		}else{
+			setContentView(R.layout.activity_uploadlist);
+			initComponents();
+			list.setAdapter(new UploadMenuAdapter(this,data));
+			list.setBackgroundResource(0);
+			if(data.isEmpty()) list.setBackgroundResource(R.drawable.empty);
+		}
 	}
 	
 	private void uploadData(final List<UploadItem> list){

@@ -1,0 +1,64 @@
+import com.rameses.annotations.*;
+import java.text.*;
+import com.rameses.functions.*;
+
+class MarketDelinquencyReportService {
+	
+	@DataContext("market_account")
+	def acct;
+
+	@After(pattern="FormReportService.getParameters", eval="#{args[0].reportid == 'market_delinquency' }")
+	public void getParameters( def evt ) {
+		def result = evt.result;
+		def params = [];
+		params << [ type:'date', caption:'Period', name:'period', required:true ];
+		result.parameters = params;
+	}
+
+	@After(pattern="FormReportService.abort", eval="#{args[0].reportid == 'market_delinquency' }")
+	public void abort( def evt ) {
+		println "aborting " + evt.args[0].txnid;
+	}
+
+	@After(pattern="FormReportService.getData", eval="#{args[0].reportid == 'market_delinquency' }")
+	public void getData( def evt ) {
+		def p = evt.args[0];
+		def result = evt.result;
+		println "status is " + p.status + " class is " + p.status?.class; 
+		if( p.status == null || p.status < 10 ) {
+			if(!p.status) p.status = 0;
+			result.data = [
+				[ acctno:'X12345', subtotal:0, surcharge:0, interest:0, total:0 ],
+				[ acctno:'X12346', subtotal:0, surcharge:0, interest:0, total:0 ]
+			];
+			result.status = (p.status+"").toInteger() + 1;
+		} 
+		else {
+			def list =  acct.select('''
+				objid,acctno,owner.name,
+				owner.address.text,unitno:{unit.code},
+				months:{ MONTH_DIFF( IFNULL(lastpmtdate,startdate), NOW()) },
+				rate
+			''').list();
+
+			list.each {
+				it.address?.text = it.address?.text?.replace("\n", ",");
+				it.subtotal = it.rate*it.months;
+				it.surcharge = 0;
+				it.interest = 0;
+				it.total = it.subtotal + it.surcharge + it.interest;
+			};
+			
+			result.data = list;
+			result.headers = [:];
+			if(p.parameters?.period) {
+				def df = new java.text.SimpleDateFormat("yyyy-MM-dd");
+				result.headers.period =  df.parse( p.parameters?.period );
+			}
+			result.status = 0;
+		}
+	}
+
+
+
+}

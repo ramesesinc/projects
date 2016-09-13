@@ -19,8 +19,21 @@
         
             @Binding
             def binding;
+            
+            def lessor;
+            boolean editmode;
         
-            def entity = [lastname:'nazareno', firstname:'elmo'];
+            def entity = [lastname:'nazareno', firstname:'elmo', types:[:] ];
+            def amount = 45000.25;
+            
+            def onselectLessor = { o->
+                MsgBox.alert('on select lessor' + o );
+            }
+            
+            def breakdown = [
+                [caption:"500.00",denomination:500.00,qty:4,amount:200.0],
+                [caption:"20.00",denomination:20.00,qty:3,amount:60.00],
+            ];
             
             def handler = { o->
                 MsgBox.alert("handled name is " + o);
@@ -30,6 +43,19 @@
             
             def back() {
                 return "default";
+            }
+            
+            def fldHandler = { name, o->
+                println "name " + name + " value: " +o;
+            }
+            
+            def showData() {
+                //MsgBox.alert( lessor );
+                MsgBox.alert( breakdown );
+            }
+            
+            void changeMode() {
+                editmode = !editmode;
             }
         }
         

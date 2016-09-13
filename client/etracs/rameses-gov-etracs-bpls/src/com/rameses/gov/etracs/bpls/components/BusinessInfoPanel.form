@@ -84,6 +84,7 @@
             <Property name="immediate" type="boolean" value="true"/>
             <Property name="name" type="java.lang.String" value="doBack" noResource="true"/>
             <Property name="text" type="java.lang.String" value="Back"/>
+            <Property name="visibleWhen" type="java.lang.String" value="#{currentIndex &gt; 1}"/>
           </Properties>
         </Component>
         <Component class="com.rameses.rcp.control.XButton" name="xButton2">

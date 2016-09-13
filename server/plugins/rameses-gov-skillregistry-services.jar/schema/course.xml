@@ -1,0 +1,6 @@
+<schema adapter="nsrp">
+	<element tablename="course">
+		<field name="objid" primary="true" prefix="CR"/>
+		<field name="name" required="true" caption="Degree / Course"/>
+	</element>
+</schema>

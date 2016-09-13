@@ -1,0 +1,6 @@
+<schema adapter="nsrp">
+	<element tablename="educationallevel">
+		<field name="level" required="true" caption="Educational Level"/>
+		<field name="index" required="true" caption="Index"/>
+	</element>
+</schema>

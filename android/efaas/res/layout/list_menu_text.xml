@@ -3,7 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="10dp"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:background="@android:color/white" >
 
     <TextView
         android:id="@+id/list_menu_text_title"

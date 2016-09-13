@@ -1,0 +1,6 @@
+<schema adapter="nsrp">
+	<element tablename="jobtitle">
+		<field name="objid" primary="true" prefix="JT"/>
+		<field name="name" required="true" caption="Job Title"/>
+	</element>
+</schema>

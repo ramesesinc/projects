@@ -1,5 +1,8 @@
 package com.rameses.android;
 
+import android.app.ActionBar;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.widget.TextView;
 
 import com.rameses.android.R;
@@ -23,7 +26,11 @@ public class ControlActivity extends UIActivity
 		} else if (networkStatus == 1) {
 			mode = "ONLINE_MOBILE";  
 		}
-		if(isActivated())((TextView) findViewById(R.id.tv_mode)).setText(mode);		
+		if(isActivated())((TextView) findViewById(R.id.tv_mode)).setText(mode);	
+		
+		ActionBar bar = getActionBar();
+		bar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#3485c7")));
+		bar.setIcon(new ColorDrawable(getResources().getColor(android.R.color.transparent)));    
 	}
 
 	

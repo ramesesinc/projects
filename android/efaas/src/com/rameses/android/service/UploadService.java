@@ -23,6 +23,7 @@ import com.rameses.client.services.AbstractService;
 public class UploadService extends AbstractService {
 	
 	Properties prop = null;
+	byte[] bytes;
 
 	@Override
 	public String getServiceName() {
@@ -75,7 +76,7 @@ public class UploadService extends AbstractService {
 	}
 	
 	public void uploadImage(String imageid, final String faasid){
-		byte[] bytes = null; 
+		bytes = null; 
 		ImageDB db = new ImageDB();
 		String title = "unknown";
 		
@@ -104,7 +105,7 @@ public class UploadService extends AbstractService {
                 header.put("objid", UUID.randomUUID().toString());
                 header.put("refid", faasid);
                 header.put("title", prop.getProperty("title"));
-                header.put("filesize", null);
+                header.put("filesize", bytes.length);
                 header.put("extension", "jpg");
                 
                 DBImageService svc = new DBImageService();

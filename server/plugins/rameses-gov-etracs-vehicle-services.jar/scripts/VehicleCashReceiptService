@@ -1,0 +1,44 @@
+import com.rameses.annotations.*;
+
+import com.rameses.rules.common.*;
+import vrs.facts.*;
+import treasury.facts.*;
+import treasury.actions.*;
+import com.rameses.util.*;
+
+/**********************************************************
+* This service handles computation of what fees to charge 
+***********************************************************/
+class VehicleCashReceiptService {
+	
+	@Service("VehicleBillingService")
+	def billSvc;
+
+	@DataContext("vehicle_application")
+	def appEm;
+
+	@DataContext("vehicle_application_fee")
+	def feeEm;
+
+
+	@ProxyMethod
+	public def getBilling( def o ) {
+
+		def app = appEm.find( [appno: o.appno] ).first();
+
+		def e = [:];
+		e.payer = [objid: app.owner.objid, name: app.owner.name ];
+        e.paidby = app.owner.name + ' ['+app.appno+']';
+        e.appno = app.appno;
+        e.appid = app.objid;
+        e.paidbyaddress = app.owner?.address?.text;
+        e.items = feeEm.find( [appid: app.objid ]).list();
+		e.amount = NumberUtil.round( e.items.sum{ it.amount } );
+		return e;
+	}
+
+
+
+
+
+}

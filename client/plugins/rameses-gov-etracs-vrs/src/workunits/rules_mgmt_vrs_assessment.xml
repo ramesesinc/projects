@@ -1,6 +1,0 @@
-<workunit extends="wtemplates/RuleMgmtController.xml" serviceName="RuleMgmtService" tag="vrsassessment">
-    <invokers>
-        <invoker folderid="/explorer/rulemgmt/vrs" caption="Vehicle Reg. Assessment Rules" 
-                 action="init" index="0" srole="RULE_AUTHOR"/>
-    </invokers>
-</workunit>

@@ -39,9 +39,6 @@
                 }
             ] as EditorListModel;
         
-            void afterCreate( o ) {
-                listModel.reload();
-            } 
             void afterOpen( o ) {
                 listModel.reload();
             }

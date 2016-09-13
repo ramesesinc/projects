@@ -4,7 +4,6 @@ FROM subcollector_remittance r
 where subcollector_objid like $P{subcollectorid}
 order by r.dtposted desc 
 
-
 [getCollectors]
 SELECT 
    DISTINCT   
@@ -29,16 +28,21 @@ AND cr.subcollector_objid=$P{subcollectorid}
 GROUP BY cr.stub
 
 [getItemsRemittance]
-SELECT 
-   cr.stub,   
-   MIN(cr.receiptno) AS startno,
-   MAX(cr.receiptno) AS endno,
-   SUM( CASE WHEN cv.objid IS NULL THEN cr.amount ELSE 0 END ) AS amount
-FROM subcollector_remittance_cashreceipt c 
-inner join cashreceipt cr on c.objid = cr.objid 
-LEFT JOIN cashreceipt_void cv ON cr.objid=cv.receiptid 
-WHERE c.remittanceid=$P{objid}
-GROUP BY cr.stub
+select 
+  cr.controlid, cr.formno, cr.stub, 
+  min(cr.receiptno) as startno, max(cr.receiptno) as endno, 
+  sum(case when xx.voided=0 then cr.amount else 0.0 end) as amount, 
+  count(cr.objid) as qtyissued, af.formtype, af.denomination
+from ( 
+  select remc.*, 
+    (select count(*) from cashreceipt_void where receiptid=remc.objid) as voided 
+  from subcollector_remittance_cashreceipt remc 
+  where remc.remittanceid=$P{objid} 
+)xx 
+  inner join cashreceipt cr on xx.objid=cr.objid 
+  inner join af on cr.formno=af.objid 
+group by cr.controlid, cr.formno, cr.stub, af.formtype, af.denomination  
+order by cr.formno, min(cr.series) 
 
 [findSummaryTotals]
 select 
@@ -127,3 +131,11 @@ FROM (
 WHERE x.amount > 0.0
 
 
+[getRemittedChecks]
+select 
+   nc.refno, nc.particulars, nc.reftype, nc.amount 
+from subcollector_remittance rem 
+  inner join subcollector_remittance_cashreceipt remc on rem.objid=remc.remittanceid 
+  inner join cashreceiptpayment_noncash nc on remc.objid=nc.receiptid 
+where rem.objid=$P{remittanceid} 
+  and remc.objid not in ( select receiptid from cashreceipt_void where receiptid=remc.objid ) 

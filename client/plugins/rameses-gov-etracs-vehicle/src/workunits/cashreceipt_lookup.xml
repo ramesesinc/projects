@@ -1,0 +1,9 @@
+<workunit extends="com.rameses.seti2.templates.CrudLookup">
+    <invokers>
+        <invoker type="cashreceipt:vehicle:lookup" caption="Vehicle Registration Payment"/>
+    </invokers>
+    <code class="com.rameses.gov.etracs.vehicle.models.VrsApplicationLookup" />
+    <pages>
+        <page template="com.rameses.gov.etracs.vehicle.views.VehicleApplicationLookupPage"/>
+    </pages>
+</workunit>

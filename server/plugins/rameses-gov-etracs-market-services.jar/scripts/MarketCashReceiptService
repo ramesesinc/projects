@@ -4,30 +4,250 @@ import java.rmi.server.*;
 import com.rameses.services.extended.*;
 import market.facts.*;
 import java.text.*;
+import treasury.utils.*;
 
 public class MarketCashReceiptService  {
 
-	@Service("MarketAccountBillingService")
-	def billSvc;
-
 	@DataContext("market_account")
-	def acct;
+	def acctEm;
+
+	@Service("MarketRentalBillingService")
+	def billingSvc;
+
+	@Service("DateService")
+	def dateSvc;
 
 	def dformat = new SimpleDateFormat("yyyy-MM-dd");
 
+	def monthNames = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+
+
+	/*****************************************************************************
+	* massage billing format to return that is appropriate for cash receipt.
+	* Group Items as follows:
+	*    account, month-year, period(fromday-today), amount, remarks 
+	*****************************************************************************/
 	@ProxyMethod
 	public def getBilling(o) {
-		def a = billSvc.getBilling( o );
+		if(!o.acctid) throw new Exception("Please specify an acctid in MarketCashReceiptService.getBilling");
+
+		def acct = acctEm.select("lastdatepaid,startdate,rate,extrate").find([objid:o.acctid]).first();
+		def _fromdate = ((acct.lastdatepaid!=null)?acct.lastdatepaid : acct.startdate);
+		def _todate = null;
+
+		def opt = o.payOption;
+		if(opt==null) opt = [type:'FULL'];
+
+		//determing from date and todate.
+		//APPLY PAYMENT OPTION. Determine from date and to date.
+		switch(opt.type) {
+			case 'DATE':	
+				_todate = dformat.parse( opt.date );
+				break;
+			case 'MONTH':
+				def yr = dateSvc.getServerYear();
+				_todate = dformat.parse( yr +"-"+ opt.month + "-01" );	
+				_todate = DateUtil.add( DateUtil.add( _todate, "1M" ), "-1d");	//add one month and deduct 1 day.
+				break;
+			case 'NUMDAYS':
+				_todate = DateUtil.add( _fromdate, opt.numdays + "d" );	
+				break;
+			case 'SPECIFYAMOUNT':
+				//estimate the maximum # of days based on the amount. Just add one day for good measure
+				int _days = (int)(opt.amount / (acct.rate + acct.extrate) ) + 1;
+				_todate = DateUtil.add( _fromdate, _days + "d" );	
+				break;	
+
+			default:
+				_todate = dateSvc.getBasicServerDate();
+				break;
+		};
+
+		o.fromdate = _fromdate;
+		o.todate = _todate;
+
+		def billing = billingSvc.process( o );
+
+		//check first if the impt accounts are specified. i.e. rental fee and extension fee
+		if(billing.items.find{ it.account ==null }) 
+			throw new Exception("Rental Fee Account must be set in rules");
+		if(billing.items.find{ it.extaccount ==null }) 
+			throw new Exception("Rental Extension Fee Account must be set in rules");
+
+		def lookupAcct = new LookupAccount();
+
+		def amtPaid = billing.grandtotal;
+		if( opt.type == 'SPECIFYAMOUNT' ) {
+			amtPaid = opt.amount;
+		};	
+
+		def acctGrp = [:];
+		def surchargeGrp = [:];
+		def interestGrp = [:];
+
+		def fromdate = null;
+		def todate = null;
+
+		def findGrp = { xitm, xmap ->
+			if(!xmap.containsKey(xitm)) {
+				def a = xitm[0];  //the first element is the always account
+				def itemAcct = lookupAcct.findAccount( [objid:a.objid , title: a.title] );
+				xmap.put( xitm, [item: itemAcct, amount:0.0, days: 0, partial: 0.0] );
+			}
+			return xmap.get(xitm);
+		};
+
+		boolean partial = false;
+		def ratePartialBal = 0.0;
+		def extratePartialBal = 0.0;
+		def partialPaid = 0.0;
+		def partialExtPaid = 0.0;
+
+		def billitems = [];
+		def billGrp = [];
+		def billitem;
+
+		//group accounts 
+		for(  cc in billing.items.sort{ (it.year*12)+it.month } ) {
+			if(amtPaid <= 0) break;
+
+			//calculate the ratios of rate, extrate, surcharge and interest.
+			def rateAmt = cc.rate;
+			def extrateAmt = cc.extrate;
+			def surchargeAmt = cc.surcharge;
+			def interestAmt = cc.interest;
+			int daysToAdd = 1;
+
+			if( amtPaid < cc.linetotal ) {
+				rateAmt = NumberUtil.round((cc.rate / cc.linetotal) * amtPaid);
+				extrateAmt = NumberUtil.round((cc.extrate / cc.linetotal ) * amtPaid);
+				surchargeAmt = NumberUtil.round((cc.surcharge / cc.linetotal ) * amtPaid);
+				interestAmt = NumberUtil.round((cc.interest / cc.linetotal ) * amtPaid);
+				amtPaid = 0.0;
+				partial = true;
+			}
+			else {
+				amtPaid -= cc.linetotal;
+			}
+
+			if(!fromdate) fromdate =  cc.date;
+			todate = cc.date;
+
+			def rateAcct = findGrp( [cc.account, cc.year, cc.month ], acctGrp );
+			if( partial ) {
+				rateAcct.partial = rateAmt;
+				partialPaid = rateAmt;
+				ratePartialBal =  NumberUtil.round(cc.rate - rateAmt);
+			}	
+			rateAcct.amount += rateAmt; 
+			rateAcct.year = cc.year;
+			rateAcct.month = cc.month;
+			if( !rateAcct.fromdate ) rateAcct.fromdate = cc.date;
+			if( !rateAcct.fromday ) rateAcct.fromday = cc.day;
+			rateAcct.todate = cc.date;
+			rateAcct.today = cc.day;
+			rateAcct.days += daysToAdd;
+
+			if( cc.extaccount && cc.extrate > 0.0 ) {
+				def extAcct = findGrp( [cc.extaccount, cc.year, cc.month ], acctGrp );
+				if(partial) {
+					extAcct.partial += extrateAmt;
+					partialExtPaid = extrateAmt;
+					extratePartialBal =  NumberUtil.round(cc.extrate - extrateAmt);
+				}	
+				extAcct.amount += extrateAmt; 
+				extAcct.year = cc.year;
+				extAcct.month = cc.month;
+				if( !extAcct.fromdate ) extAcct.fromdate = cc.date;
+				if( !extAcct.fromday ) extAcct.fromday = cc.day;
+				extAcct.todate = cc.date;
+				extAcct.today = cc.day;
+				extAcct.days += daysToAdd;
+			}
+
+			if( cc.surchargeAccount && cc.surcharge > 0 ) {
+				def surAcct = findGrp( [cc.surchargeAccount], surchargeGrp );
+				surAcct.amount += surchargeAmt;
+			}
+
+			if( cc.interestAccount && cc.interest > 0 ) {
+				def intAcct = findGrp( [cc.interestAccount], interestGrp );
+				intAcct.amount += interestAmt;
+			}
+
+			//build the bill group for posting to the payment items;
+			def _billGrp = [cc.year, cc.month, cc.rate, cc.extrate ];
+			if( _billGrp != billGrp ) {
+				billGrp = _billGrp;
+				billitem = [:];
+				billitem.year = cc.year;
+				billitem.month = cc.month;
+				billitem.fromday = cc.day;
+				billitem.fromdate = cc.date;
+				billitem.today = cc.day;
+				billitem.todate = cc.date;
+				billitem.days = daysToAdd;
+				billitem.rate = rateAmt;
+				billitem.extrate = extrateAmt;
+				billitem.surcharge = surchargeAmt;
+				billitem.interest = interestAmt;
+				billitems << billitem;
+			}
+			else {
+				billitem.today = cc.day;
+				billitem.todate = cc.date;
+				billitem.days += daysToAdd;
+				billitem.rate += rateAmt;
+				billitem.extrate += extrateAmt;
+				billitem.surcharge += surchargeAmt;
+				billitem.interest += interestAmt;
+			}
+		}
+
+		//apply the remarks
+		def items = acctGrp.values().sort{ (it.year*12)+it.month };		
+		items.each { 
+			def sb = new StringBuilder();
+			sb.append( it.year + " " + monthNames[ it.month-1 ] + " ");
+			if( it.fromday != it.today ) 
+				sb.append( it.fromday + "-" + it.today + "(" + it.days + ")" );
+			else 
+				sb.append( it.fromday );
+			if(it.partial) sb.append( " [partial: " + it.partial + "]" );
+			it.remarks = sb.toString();
+		}
+		if(surchargeGrp) {
+			items.addAll( surchargeGrp.values() );
+		}
+		if(interestGrp) {
+			items.addAll( interestGrp.values() );
+		}
+
+		def m = [:];
+		m.items = items;
+		m.billitems = billitems;
+		m.fromdate = dformat.format(fromdate);
+		m.todate = dformat.format(todate);
+		m.amount = items.sum{it.amount};
+		m.total = m.amount;
+		m.partialbalance = ratePartialBal;
+		m.partialextbalance = extratePartialBal;
+		m.partialpaid = partialPaid;
+		m.partialextpaid = partialExtPaid;
+		return m;
+	}
+
+	@ProxyMethod
+	public def getInfo(o) {
+		def a = acctEm.find(o).first();
 		def z = [:];
 		z.acctid = a.objid;
 		z.acctno = a.acctno;
 		z.acctname = a.acctname;
 		z.rate = a.rate;
+		z.extrate = a.extrate;
 		z.unit = a.unit;
-		z.fromdate = dformat.format(a.fromdate);
-		z.todate = dformat.format(a.todate);
-		z.amount = a.items.sum{ it.amount };
-		z.items = a.items;
+		z.term = a.term;
 		z.payer = a.owner;
 		z.paidby = a.acctname + " (" + a.acctno + ")"; 
 		z.paidbyaddress = a.unit.code;

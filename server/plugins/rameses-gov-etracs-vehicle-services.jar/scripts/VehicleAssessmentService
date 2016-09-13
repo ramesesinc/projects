@@ -1,0 +1,47 @@
+import com.rameses.annotations.*;
+
+import com.rameses.rules.common.*;
+import vehicle.facts.*;
+import treasury.utils.*;
+import treasury.facts.*;
+
+/**********************************************************
+* This service handles computation of what fees to charge 
+***********************************************************/
+class VehicleAssessmentService {
+	
+	@Service("RuleExecutorService")
+	def ruleSvc;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@DataContext("revenueitem")
+	def revEm;
+
+	@ProxyMethod
+	public def assess( def o ) {
+		def svrDate = dateSvc.getServerDate();
+		if(!o.billdate) o.billdate = svrDate;
+		def facts = [];
+		facts << new VehicleApplication( apptype: o.apptype, vehicletype: o.vehicletype );
+		facts << new CurrentDate(svrDate);
+		facts << new BillDate(svrDate);
+
+		ruleSvc.execute( "vehicleassessment", facts, null, null );
+
+		def lookupAcct = new LookupAccount();
+		def items = facts.findAll{ it instanceof BillItem }.collect{ [item: it.account.toItem(), amount: it.amount ] };
+
+		def app = [:];
+		items.each {
+			it.item =  lookupAcct.findAccount( it.item );
+			it.amtpaid = 0.0;
+			it.balance = it.amount - it.amtpaid;
+		}
+		app.items = items;
+		return app;
+	}
+
+
+}

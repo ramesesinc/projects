@@ -5,6 +5,7 @@
             reportName="com/rameses/gov/etracs/market/reports/market_account_billing.jasper" 
             reportId="market_account_billing"
             target="popup"
+            visibleWhen="#{mode=='read'}"
             action="preview"/>
     </invokers>
     <code>
@@ -12,8 +13,8 @@
             def preview() {
                 query.acctid = caller.entityContext?.objid;
                 return super.preview();
-            }
-        }
+            };
+        };
     </code>
     
 </workunit>

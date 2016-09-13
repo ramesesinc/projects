@@ -20,10 +20,10 @@
             @Service("WaterworksAccountBillingService")
             def billSvc;    
         
-            def view() {
+            void view() {
                 def param = [acctid:caller.entityContext.objid];
                 entity = billSvc.getBilling(param);
-                return super.view();
+                super.view();
             }
         }
         ]]>

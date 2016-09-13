@@ -25,7 +25,10 @@ class SubCollectorRemittanceListService extends ActiveListService {
 		];	
 	}	
 
-	void beforeList(o) {
-		o.subcollectorid = env.USERID 
-	}
-}
+	void beforeList( o ) { 
+		o.subcollectorid = env.USERID; 
+		if ( o._tag == 'all') { 
+			o.subcollectorid = '%'; 
+		} 
+	} 
+} 

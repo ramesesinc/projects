@@ -1,0 +1,12 @@
+<workunit extends="com/rameses/seti2/templates/FormReport.xml">
+    <invokers>
+        <invoker folderid="/explorer/report/market" 
+                 caption="Master List" 
+                 target="window" 
+                 index="1" 
+                 action="query"
+                 reportName="com/rameses/gov/etracs/market/reports/market_master_list.jasper"
+                 reportId = "market_master_list"/>
+    </invokers>
+
+</workunit>

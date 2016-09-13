@@ -2,6 +2,6 @@
           schemaName="market_account"
           cols="acctno,acctname,address.text,unit.code,unit.section.name,unit.market.name,rate,term">
     <invokers>
-        <invoker folderid="/home/market" caption="Market Accounts List"  role="MASTER" action="init"/>
+        <invoker folderid="/home/market" caption="Market Accounts List" role="MASTER" action="init"/>
     </invokers>
 </workunit>

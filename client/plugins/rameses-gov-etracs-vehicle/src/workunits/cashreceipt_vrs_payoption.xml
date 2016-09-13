@@ -1,0 +1,9 @@
+<workunit>
+    <invokers>
+        <invoker type="cashreceipt:payoption:vehicle" target="popup"/>
+    </invokers>
+    <code class="com.rameses.gov.etracs.vehicle.models.VrsPayOption" />
+    <pages>
+        <page template="com.rameses.gov.etracs.vehicle.views.VrsPayOptionPage"/>
+    </pages>
+</workunit>

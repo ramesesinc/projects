@@ -38,17 +38,39 @@ class WaterworksAccountBillingService  {
 	}
 
 	void buildInstallmentFacts( def o, def facts ) {
-		//find first the minimal year and maximum year in the facts
-		def consList = facts.findAll{ it instanceof WaterConsumption }.sort{ (it.year*12) +it.month };
+		//find the last bill date. add installment from lastdatepaid until billdate
+		def billCycle = facts.find{ it instanceof CurrentBillingCycle };
+		int yearMonth = (billCycle.year*12)+billCycle.month;
 
 		def list2 = installment.find([acctid: o.objid]).where("amount - amtpaid > 0").list();
 		for(x in list2) {
-			def balance = x.amount - x.amtpaid;
-			def instamt = x.installmentamount;
-			for(c in consList) {
-				if( instamt <= balance) instamt = balance;
-				facts << new WaterInstallment( year:c.year, month:c.month, amount: instamt );
-				balance = balance - instamt;
+			def balance = (x.amount - x.downpayment) - x.amtpaid;
+			def partialPaid = ( x.amtpaid.doubleValue() %  x.installmentamount.doubleValue() );
+			int monthsPaid = (int)(x.amtpaid / x.installmentamount);
+
+			int xYear = x.year;
+			int xMonth = x.month;
+			
+			int xYearMonth = (xYear*12)+xMonth;
+
+			//loop for each month until it reaches the current billCycle
+			while( xYearMonth <= yearMonth ) {
+				def amt = x.installmentamount;
+				if( partialPaid > 0 ) {
+					amt = partialPaid;
+					partialPaid = 0;		
+				};
+				if( balance < amt ) amt = balance;
+				facts << new WaterInstallment( year:xYear, month:xMonth, amount: amt, refid: x.objid );
+				if( xMonth == 12 ) {
+					xMonth = 1;
+					xYear = xYear + 1;
+				}
+				else {
+					xMonth = xMonth + 1;
+				};
+				xYearMonth = (xYear*12)+xMonth;
+				balance = balance - amt;
 				if(balance == 0 ) break;
 			}
 		}
@@ -68,8 +90,8 @@ class WaterworksAccountBillingService  {
 		def billDate = (o.billdate!=null)?o.billdate:currDate;
 
 		def facts = [];
+		facts << new CurrentBillingCycle( bc );
 		facts << new BillDate( billDate );
-		facts << new DueDate( bc.duedate );
 		facts << new CurrentDate( currDate );
 		facts << new WaterBillDate( bc );
 		facts << new WaterAccount(a);

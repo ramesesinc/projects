@@ -16,35 +16,13 @@ public class MarketCashReceiptModel extends com.rameses.enterprise.treasury.cash
      String entityName = "misc_cashreceipt"
      
      String title = "Market Rental";
-     def payOption = "Full";  
+     def payOption = [type: "Full"];  
+     def selectedItem;
     
-     /*
-     public void init() {
-        boolean pass = false;
-        def params = [:];
-        params.onselect = { o->
-            super.init();
-            loadData( o.acctno );
-            pass = true;
-        }
-        Modal.show( Inv.lookupOpener( "cashreceipt:market:lookup", params ) );
-        if(!pass) throw new BreakException();
-    }  
-    */
-   
-    public def getLookupPayer() {
-        MsgBox.alert('lookup Payer!');
-    }
-    
-    def billingListModel = [
-        fetchList: { o->
-            return entity.billitems;
-        }
-    ] as BasicListModel;
-    
-    def loadData(acctno) {
-        def info = cashReceiptSvc.getBilling([ acctno: acctno ]);
+     def loadData(acctno) {
+        def info = cashReceiptSvc.getInfo([ acctno: acctno ]);
         entity.putAll( info );
+        reload();
     }
     
     def loadBarcode() { 
@@ -52,36 +30,33 @@ public class MarketCashReceiptModel extends com.rameses.enterprise.treasury.cash
         super.init(); 
         return "default";
     }   
-
-    def itemListModel = [
+    
+    def listModel = [
         fetchList: { o->
             return entity.items;
         }
     ] as BasicListModel;
     
-    def showPayOption() {
+    def applyPayment() {
         def h = { o->
-            def op = [acctno: entity.acctno, option:o.payOption];  
-            payOption = 'Full';
-            if(o.date) {
-                op.date = o.date;
-                payOption = 'Date until ' + op.date;
-            }
-            else if(o.numdays) {
-                op.numdays = o.numdays;
-                payOption = 'No. of days ' + o.numdays;
-            }
-            else if(o.amount) {
-                op.amount = o.amount;
-                payOption = "";
-            }
-            def info = cashReceiptSvc.getBilling(op);
-            entity.putAll( info );
-            super.updateBalances();
-            itemListModel.reload();
+            payOption = o;
+            reload();
         };    
-        return Inv.lookupOpener("cashreceipt:market:payoption", [handler:h]); 
+        return Inv.lookupOpener("billing:payoption", [handler:h]); 
     }
     
+    void reload() {
+        def m = [acctid: entity.acctid, payOption: payOption];
+        def bill =  cashReceiptSvc.getBilling( m );
+        entity.putAll(bill);
+        updateBalances();
+        if( binding !=null ) {
+            listModel.reload();
+            binding.refresh();
+        }
+        
+    }
+    
+
 }
 

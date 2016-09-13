@@ -9,22 +9,16 @@ import com.rameses.osiris3.common.*;
 public class ComputeDiscount implements RuleActionHandler {
 
 	public void execute(def params, def drools) {
+		def bi = params.billitem;
 		def acct = params.account;
 		def amt = NumberUtil.round(params.amount.doubleValue).doubleValue();	
+		if(amt <= 0 ) return;
 
-		def ct = RuleExecutionContext.getCurrentContext();
-		
-		//lookup discount account
-		def svc = EntityManagerUtil.lookup( "itemaccount" );
-		def m = svc.find( [objid: acct.key] ).first();
-		if( !m ) 
-			throw new Exception("Error ComputeDiscount action. Account not found ");
+		if(acct ==null) 
+			throw new Exception("Please specify an account in treasury.actions.ComputeInterest " + drools.rule.name);
 
-		def bi = new BillItem();
-		bi.account = new Account(m);
-		bi.amtdue = amt;
-		bi.amount = amt;
+		bi.discountAccount = new Account([objid:acct.key, title:acct.value]);
+		bi.discount = amt;
 
-		//
 	}
 }

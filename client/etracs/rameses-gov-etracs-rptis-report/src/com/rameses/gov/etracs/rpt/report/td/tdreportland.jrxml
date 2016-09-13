@@ -396,6 +396,44 @@ Type]]></text>
 						height="14"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
+						key="textField-15">
+							<printWhenExpression><![CDATA[new Boolean( $F{mixedarea}.intValue() == 0 && $F{areatype}.equalsIgnoreCase("sqm") )]]></printWhenExpression>
+						</reportElement>
+					<box rightPadding="3">					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="7" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TOTALAREASQM}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="#,##0.000000" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="99"
+						y="0"
+						width="69"
+						height="14"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-18">
+							<printWhenExpression><![CDATA[new Boolean( $F{mixedarea}.intValue() == 0 && $F{areatype}.equalsIgnoreCase("ha") )]]></printWhenExpression>
+						</reportElement>
+					<box rightPadding="3">					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="7" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TOTALAREAHA}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="99"
+						y="0"
+						width="69"
+						height="14"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
 						key="textField-20">
 							<printWhenExpression><![CDATA[new Boolean( $F{mixedarea}.intValue() == 1 )]]></printWhenExpression>
 						</reportElement>
@@ -456,44 +494,6 @@ Type]]></text>
 					</textElement>
 				<text><![CDATA[Subtotal :]]></text>
 				</staticText>
-				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						mode="Transparent"
-						x="99"
-						y="0"
-						width="69"
-						height="14"
-						forecolor="#000000"
-						backcolor="#FFFFFF"
-						key="textField-15">
-							<printWhenExpression><![CDATA[new Boolean( $F{mixedarea}.intValue() == 0 && $F{areatype}.equals("sqm") )]]></printWhenExpression>
-						</reportElement>
-					<box rightPadding="3">					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
-</box>
-					<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
-						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="7" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
-					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TOTALAREASQM}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" pattern="#,##0.000000" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						mode="Transparent"
-						x="99"
-						y="0"
-						width="69"
-						height="14"
-						forecolor="#000000"
-						backcolor="#FFFFFF"
-						key="textField-18">
-							<printWhenExpression><![CDATA[new Boolean( $F{mixedarea}.intValue() == 0 && $F{areatype}.equalsIgnoreCase("ha") )]]></printWhenExpression>
-						</reportElement>
-					<box rightPadding="3">					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
-</box>
-					<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
-						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="7" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
-					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TOTALAREAHA}]]></textFieldExpression>
-				</textField>
 				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Transparent"

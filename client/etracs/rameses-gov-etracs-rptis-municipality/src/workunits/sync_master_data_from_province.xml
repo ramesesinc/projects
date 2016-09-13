@@ -60,6 +60,11 @@
             entityName="rpt_requirement_type" 
             serviceName="RPTRequirementTypeService"
         />
+        <invoker type="landspecificclass:list:formActions" action="syncData" caption="Sync from Province"  
+            role="ASSESSOR_DATAMGMT,MASTER" 
+            entityName="landspecificclass" 
+            serviceName="LandSpecificClassService"
+        />
         
         <invoker type="formActions" action="doClose" caption="Close" immediate="true" />
         <invoker type="formActions" action="syncData" caption="Sync Data" visibleWhen="#{showsync==true}"/>

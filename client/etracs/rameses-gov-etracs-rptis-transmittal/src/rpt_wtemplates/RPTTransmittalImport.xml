@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="formActions" action="_close" caption="Cancel" mnemonic="c" immediate="true" visibleWhen="#{mode.matches('init|read')}" /> 
+        <invoker type="formActions" action="_close" caption="Close" mnemonic="c" immediate="true" visibleWhen="#{mode == 'completed'}"/> 
+        <invoker type="formActions" action="doNext" caption="Next" mnemonic="n" visibleWhen="#{mode=='init'}" />
+        <invoker type="formActions" action="doImport" caption="Import" mnemonic="i" visibleWhen="#{mode=='read'}" />
+   </invokers>
+   <code class="com.rameses.gov.etracs.rptis.model.TransmittalImportModel" />
+    <pages> 
+        <page name="init" template="com.rameses.gov.etracs.rptis.view.TransmittaImportInitPage"/>
+        <page template="com.rameses.gov.etracs.rptis.view.TransmittalPage"/>
+    </pages>
+</workunit>
+
+

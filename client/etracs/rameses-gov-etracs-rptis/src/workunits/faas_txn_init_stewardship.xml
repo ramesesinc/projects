@@ -9,6 +9,8 @@
             
         <invoker folderid="/home/rpt/txn" action="init" caption="Stewardship" 
             txntype="ST" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createStewardship" index="9"  />
+        <invoker folderid="/menu/txn/rpt" action="init" caption="Stewardship" 
+            txntype="ST" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createStewardship" index="9"  />
     </invokers>
     <code>
 <![CDATA[         

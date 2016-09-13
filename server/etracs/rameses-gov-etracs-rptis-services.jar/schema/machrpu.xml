@@ -1,4 +1,4 @@
-<schema>
+<schema adapter="main">
 	<element name="machrpu" tablename="machrpu">
 		<field name="objid" primary="true"/>
         <field name="landrpuid" required="true"/>
@@ -57,5 +57,6 @@
         <field name="imported" type="boolean" />
         <field name="newlyinstalled"  type="boolean" />
         <field name="autodepreciate"  type="boolean" />
+        <field name="taxable"  type="boolean" />
     </element>
 </schema>

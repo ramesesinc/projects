@@ -1,4 +1,12 @@
 <folders>
+    <folder id="menu">
+        <folder id="txn" caption="Transaction">
+            <folder id="rpt" caption="Assessor"/>
+        </folder>
+        <folder id="report" caption="Report">
+            <folder id="treasury" caption="Treasury"/>
+        </folder>
+    </folder>   
     <folder id="explorer">
         <folder id="master">
             <folder id="rpt" caption="Assessor" index="1" />

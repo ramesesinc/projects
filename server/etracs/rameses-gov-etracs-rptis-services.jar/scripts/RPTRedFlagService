@@ -37,6 +37,12 @@ public class RPTRedFlagService
 	}
 
 	@ProxyMethod
+	public def getLookup( params ) {
+		params.searchtext = (params.searchtext ? params.searchtext : '') + '%'
+		return em.getLookup(params)	
+	}
+
+	@ProxyMethod
 	public def getOpenRedflagCount(entity) {
 		def list = getList([parentid:entity.objid])
 		return list.findAll{it.state == 'OPEN'}.size();

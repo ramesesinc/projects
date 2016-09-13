@@ -18,6 +18,9 @@ class TaxClearanceController
     @Service('LandTaxReportTaxClearanceService')
     def svc;
     
+    @Service('DateService')
+    def dtSvc;
+    
     @Service('Var')
     def var 
     
@@ -30,6 +33,7 @@ class TaxClearanceController
     def addoption = 'bytd';
     def lookup;
     def taxpayer;
+    def address;
     def selectedItem;
     
     String title = 'Realty Tax Clearance'
@@ -47,8 +51,16 @@ class TaxClearanceController
         entity.certifiedby = var.get('LANDTAX_CERTIFIEDBY');
         entity.certifiedbytitle = var.get('LANDTAX_CERTIFIEDBY_TITLE');
         entity.office = 'landtax';
+        entity.ordate = dtSvc.getServerDate();
+        entity.oramount = toDecimal(var.get('LANDTAX_TAXCLEARANCE_RATE'));
         listHandler.reload();
         mode = MODE_CREATE;
+        return 'default'
+    }
+    
+    def doNew(){
+        init();
+        initTaxpayer(taxpayer);
         return 'default'
     }
     
@@ -72,13 +84,7 @@ class TaxClearanceController
     def getLookupTaxpayer(){
         return InvokerUtil.lookupOpener('entity:lookup',[
                 onselect : {
-                    def address = it.address.text 
-                    entity.taxpayer = it;
-                    entity.taxpayer.address = address;
-                    entity.requestedby = it.name;
-                    entity.requestedbyaddress = address;
-                    binding.refresh('entity.taxpayer.*|entity.requested.*')
-                    loadProperties();
+                    initTaxpayer(it)
                 },
                 onempty : {
                     entity.taxpayer = null;
@@ -89,6 +95,19 @@ class TaxClearanceController
                     binding.refresh('entity.taxpayeraddress|entity.requested.*')
                 },
         ])
+    }
+    
+    void initTaxpayer(tpay){
+        if (!taxpayer || taxpayer.objid != tpay.objid){
+            this.taxpayer = tpay;
+            this.address = tpay.address
+        }
+        entity.taxpayer = taxpayer;
+        entity.taxpayer.address = address.text;
+        entity.requestedby = taxpayer.name;
+        entity.requestedbyaddress = address.text;
+        binding.refresh('entity.taxpayer.*|entity.requested.*')
+        loadProperties();
     }
     
     def getLookupLedger(){
@@ -176,5 +195,15 @@ class TaxClearanceController
             
     List getQuarters(){
         return [1,2,3,4]
+    }
+    
+    def toDecimal(val){
+        if (val == null) return 0.0;
+        try{
+            return new BigDecimal(val.toString());
+        }
+        catch(e){
+            return 0.0;
+        }
     }
 }

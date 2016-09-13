@@ -10,6 +10,7 @@ public class MachineActualUse {
     Double marketvalue
     Double assesslevel
     Double assessedvalue
+    Boolean taxable 
 
     //data reference
     def entity    
@@ -20,6 +21,7 @@ public class MachineActualUse {
         this.rpu = rpufact
         this.actualuseid  = mu.actualuse.objid 
         this.entity       = mu 
+        this.taxable = true
 
         setBasemarketvalue(mu.basemarketvalue)
         setMarketvalue(mu.marketvalue)

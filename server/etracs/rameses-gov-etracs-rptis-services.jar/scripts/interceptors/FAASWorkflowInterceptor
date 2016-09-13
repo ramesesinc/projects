@@ -104,7 +104,7 @@ class FAASWorkflowInterceptor
 	}
 
 
-	@Before(pattern="FAASWorkflowService.signal", eval="#{args[0].state.equalsIgnoreCase('appraiser')}", index=15) 
+	@Before(pattern="FAASWorkflowService.signal", eval="#{args[0].state.equalsIgnoreCase('appraiser') && !args[0].action?.matches('return.*')}", index=15) 
 	public void validateAppraisalInfo( evt ) {
 		println 'validateAppraisalInfo....'
 		def faas = evt.args[0].data

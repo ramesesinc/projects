@@ -42,7 +42,7 @@ rule "calc-machine-av"
 	no-loop
 	when
 		MU   : MachineActualUse()
-		MACH : MachineDetail(machuse == MU, MV:marketvalue, AL:assesslevel)
+		MACH : MachineDetail(machuse == MU, taxable==true, MV:marketvalue, AL:assesslevel)
 	then	
 		Map bindings = new HashMap();
 		bindings.put("MV", MV);
@@ -63,7 +63,9 @@ rule "summarize-machine-info"
 		MACH : MachineDetail(machuse == MU)
 	then	
 		MU.setBasemarketvalue( MU.getBasemarketvalue() + MACH.getBasemarketvalue());
-		MU.setMarketvalue( MU.getMarketvalue() + MACH.getMarketvalue());
+		if (MACH.getTaxable() == true){
+			MU.setMarketvalue( MU.getMarketvalue() + MACH.getMarketvalue());
+		};
 		MU.setAssesslevel( MACH.getAssesslevel());
 		MU.setAssessedvalue( MU.getAssessedvalue() + MACH.getAssessedvalue());
 end

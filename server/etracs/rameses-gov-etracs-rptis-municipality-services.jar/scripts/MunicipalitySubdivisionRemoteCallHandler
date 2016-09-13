@@ -22,6 +22,8 @@ class MunicipalitySubdivisionRemoteCallHandler
 	@Service('NotificationService')
 	def notifySvc		
 
+
+	@ProxyMethod
 	public void postApprovedSubdivisionFromProvince(subdivision){
 		def state = svc.getState( subdivision )
 		if (state == null || state != 'APPROVED'){
@@ -38,6 +40,7 @@ class MunicipalitySubdivisionRemoteCallHandler
 		}
 	}
 
+	@ProxyMethod
 	public void approveSubdivisionByProvince(subdivision){
 		def state = svc.getState( subdivision )
 		if (state  && ! state.equalsIgnoreCase('APPROVED')){

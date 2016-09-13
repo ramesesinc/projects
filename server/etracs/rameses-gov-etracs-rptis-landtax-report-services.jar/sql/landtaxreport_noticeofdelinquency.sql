@@ -54,3 +54,15 @@ GROUP BY
 	pc.code, 
 	b.name
 ORDER BY rl.tdno 
+
+
+
+[findBillByTaxpayer]
+select objid from rptbill where taxpayer_objid = $P{taxpayerid} order by barcode desc 
+
+
+[findBillByLedgerId]
+select distinct b.objid, b.barcode from rptbill b
+	inner join rptbill_ledger bl on b.objid = bl.billid
+where bl.rptledgerid =  $P{rptledgerid} 
+order by b.barcode desc 

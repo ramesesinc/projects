@@ -9,6 +9,9 @@
         
         <invoker folderid="/home/rpt/txn" action="init" caption="Cancel FAAS" 
             txntype="CTD" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createGeneralRevision" index="10"  />
+        
+        <invoker folderid="/menu/txn/rpt" action="init" caption="Cancel FAAS" 
+            txntype="CTD" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createGeneralRevision" index="10"  />
             
     </invokers>
     <code>

@@ -86,6 +86,9 @@ class FaasBldgReportInterceptor
 	void buildBldgStructures(faas){
 		if (util.isTrue(var.faas_report_bldg_detailed_structure) ){
 			faas.bldgstructures = em.getDetailedStructureMaterials(faas.rpu)
+			if (faas.bldgstructures.size() % 2 != 0){
+				faas.bldgstructures.add([:])
+			}
 		}
 		else{
 			faas.bldgstructures = getSimplifiedBldgStructures(faas)

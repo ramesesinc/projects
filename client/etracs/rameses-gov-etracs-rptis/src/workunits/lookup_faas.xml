@@ -20,7 +20,7 @@ class FaasLookupController extends LookupController
     def rputype;
     
     int getRows(){
-        return  50;
+        return  15;
     }
     
     Column[] getColumns() {

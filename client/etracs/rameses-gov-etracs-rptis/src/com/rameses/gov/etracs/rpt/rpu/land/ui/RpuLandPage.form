@@ -52,7 +52,7 @@
               <Properties>
                 <Property name="caption" type="java.lang.String" value="Street"/>
                 <Property name="name" type="java.lang.String" value="entity.rp.street" noResource="true"/>
-                <Property name="stretchWidth" type="int" value="50"/>
+                <Property name="stretchWidth" type="int" value="100"/>
               </Properties>
             </Component>
             <Component class="com.rameses.rcp.control.XTextField" name="xTextField32">
@@ -63,7 +63,7 @@
                   <Insets value="[0, 5, 0, 0]"/>
                 </Property>
                 <Property name="name" type="java.lang.String" value="entity.rp.purok" noResource="true"/>
-                <Property name="stretchWidth" type="int" value="50"/>
+                <Property name="stretchWidth" type="int" value="100"/>
               </Properties>
             </Component>
           </SubComponents>
@@ -84,7 +84,7 @@
               <Properties>
                 <Property name="caption" type="java.lang.String" value="North"/>
                 <Property name="name" type="java.lang.String" value="entity.rp.north" noResource="true"/>
-                <Property name="stretchWidth" type="int" value="50"/>
+                <Property name="stretchWidth" type="int" value="100"/>
               </Properties>
             </Component>
             <Component class="com.rameses.rcp.control.XTextField" name="xTextField30">
@@ -95,7 +95,7 @@
                   <Insets value="[0, 5, 0, 0]"/>
                 </Property>
                 <Property name="name" type="java.lang.String" value="entity.rp.east" noResource="true"/>
-                <Property name="stretchWidth" type="int" value="50"/>
+                <Property name="stretchWidth" type="int" value="100"/>
               </Properties>
             </Component>
           </SubComponents>
@@ -116,7 +116,7 @@
               <Properties>
                 <Property name="caption" type="java.lang.String" value="South"/>
                 <Property name="name" type="java.lang.String" value="entity.rp.south" noResource="true"/>
-                <Property name="stretchWidth" type="int" value="50"/>
+                <Property name="stretchWidth" type="int" value="100"/>
               </Properties>
             </Component>
             <Component class="com.rameses.rcp.control.XTextField" name="xTextField31">
@@ -127,7 +127,7 @@
                   <Insets value="[0, 5, 0, 0]"/>
                 </Property>
                 <Property name="name" type="java.lang.String" value="entity.rp.west" noResource="true"/>
-                <Property name="stretchWidth" type="int" value="50"/>
+                <Property name="stretchWidth" type="int" value="100"/>
               </Properties>
             </Component>
           </SubComponents>

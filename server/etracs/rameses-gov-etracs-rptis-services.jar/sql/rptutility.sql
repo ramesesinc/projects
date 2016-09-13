@@ -59,5 +59,28 @@ where rpuid=$P{rpuid}
 
 
 [findFaasInfo]
-select objid, fullpin from faas where objid = $P{faasid}
+select objid, fullpin, rpuid, realpropertyid, taxpayer_objid from faas where objid = $P{faasid}
+
+
+[findLandRpuByPinRy]
+SELECT r.objid 
+FROM faas f 
+	inner join rpu r on f.rpuid = r.objid 
+where r.fullpin = $P{pin}	 and r.ry = $P{ry}
+and r.rputype = 'land'
+and f.state <> 'CANCELLED'
+order by r.state 
+
+
+[modifyBldgLandRpu]
+update bldgrpu set landrpuid = $P{landrpuid} where objid = $P{rpuid}
+
+[modifyMachLandRpu]
+update machrpu set landrpuid = $P{landrpuid} where objid = $P{rpuid}	
+
+[modifyPlantTreeLandRpu]
+update planttreerpu set landrpuid = $P{landrpuid} where objid = $P{rpuid}		
+
+[modifyMiscLandRpu]
+update miscrpu set landrpuid = $P{landrpuid} where objid = $P{rpuid}		
 

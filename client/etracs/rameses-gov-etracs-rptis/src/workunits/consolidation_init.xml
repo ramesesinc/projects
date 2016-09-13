@@ -9,6 +9,10 @@
             txntypeid="CS" txntype="Consolidation" newledger="true" newrpu="true" 
             role="APPRAISER,EXAMINER,RECEIVER" permission="consolidation.create"/>
         
+        <invoker folderid="/menu/txn/rpt" action="init"  caption="Consolidation" index="16"
+            txntypeid="CS" txntype="Consolidation" newledger="true" newrpu="true" 
+            role="APPRAISER,EXAMINER,RECEIVER" permission="consolidation.create"/>
+        
          <invoker type="quick_launcher" code="CS01" action="init"  caption="Consolidation" 
             txntypeid="CS" txntype="Consolidation" newledger="true" newrpu="true" 
             role="APPRAISER,EXAMINER,RECEIVER" permission="consolidation.create" index="16"/>

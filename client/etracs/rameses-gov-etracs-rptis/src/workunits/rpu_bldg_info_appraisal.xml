@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit>
     <invokers>
-        <invoker type="rpubldg:info" action="init" caption="Appraisal" index="5" mnemonic="A"/>
+        <invoker type="rpubldg:info" action="init" caption="Property Appraisal" index="2" mnemonic="A"/>
     </invokers>
     
     <code>
@@ -156,6 +156,7 @@ class BldgAppraisalInfoController extends com.rameses.gov.etracs.rpt.workflow.Ba
             marketvalue     : 0.00,
             assesslevel     : 0.00,
             assessedvalue   : 0.00,
+            taxable         : true,
             floors              : [],
         ]},
             
@@ -311,6 +312,7 @@ class BldgAppraisalInfoController extends com.rameses.gov.etracs.rpt.workflow.Ba
                 lguid       : entity.lguid, 
                 barangayid  : entity.rp.barangayid,
                 ry          : entity.rpu.ry,
+                selectedAdditionalItem : selectedAdditionalItem, 
                 
                 onselect : {
                     setParamsRefId(selectedAdditionalItem, it.params);
@@ -366,6 +368,7 @@ class BldgAppraisalInfoController extends com.rameses.gov.etracs.rpt.workflow.Ba
             bldgfloorid : floor.objid,
             bldgrpuid   : floor.bldgrpuid,
             amount      : 0.0,
+            depreciate  : true,
         ]},
         
         validate     : { li -> 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit>
     <invokers>
-        <invoker type="rpubldg:info" action="init" caption="Structural Materials" index="2" mnemonic="u"/>
+        <invoker type="rpubldg:info" action="init" caption="Structural Materials" index="5" mnemonic="u"/>
     </invokers>
     
     <code>
@@ -16,6 +16,7 @@ class BldgStructureInfoController extends com.rameses.gov.etracs.rpt.workflow.Ba
 {
     def rpuSvc;
     
+    def floor;
     def selectedStructure 
     
     def getLookupStructure(){
@@ -47,11 +48,11 @@ class BldgStructureInfoController extends com.rameses.gov.etracs.rpt.workflow.Ba
     
     def structureListHandler = [
         createItem : { 
-            return [bldgrpuid:entity.rpu.objid] 
+            return [bldgrpuid:entity.rpu.objid, floor:floor] 
         },
         
         fetchList : { 
-            return entity.rpu.structures 
+            return entity.rpu.structures.findAll{it.floor == floor} 
         },
         
         validate  : {li ->
@@ -85,6 +86,7 @@ class BldgStructureInfoController extends com.rameses.gov.etracs.rpt.workflow.Ba
                     entity.rpu._structures = [];
                 entity.rpu._structures.add(item);
                 entity.rpu.structures.remove(item);
+                structureListHandler.reload();
                 return true;
             }
             return false;
@@ -94,6 +96,23 @@ class BldgStructureInfoController extends com.rameses.gov.etracs.rpt.workflow.Ba
     ] as EditorListModel
     
     
+    @PropertyChangeListener()
+    def listener = [
+        'entity.rpu.floorcount' : {
+            def deletedstructures = entity.rpu.structures.findAll{it.floor > entity.rpu.floorcount} 
+            if (deletedstructures){
+                entity.rpu.structures.removeAll(deletedstructures)
+                entity.rpu._structures.addAll(deletedstructures);
+            }
+        }
+    ]
+    
+    def getFloors(){
+        if (entity.rpu.floorcount == 0)
+            entity.rpu.floorcount = 1;
+        def count = entity.rpu.floorcount 
+        return 1..count.each{};
+    }
    
 }    
     

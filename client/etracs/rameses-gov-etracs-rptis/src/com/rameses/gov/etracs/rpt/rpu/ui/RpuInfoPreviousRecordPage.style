@@ -2,14 +2,9 @@
     enabled:true;
 }
 
-"entity.*" [ entity.datacapture == 0]{
-    enabled:false;
-}
-
 "entity.*"  [allowEdit == false] {
     enabled:false;
 }
-
 
 "entity.rpu.total.*"[true == true]{
     enabled:false;

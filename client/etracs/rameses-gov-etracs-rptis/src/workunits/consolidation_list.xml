@@ -6,6 +6,8 @@
         <invoker type="formActions" action="open" caption="Open" mnemonic="o" shortcut="ctrl O" depends="listHandler.selectedEntity" index="1"/>        
     </invokers>
         <code>
+<![CDATA[
+            
      import com.rameses.rcp.common.*
     import com.rameses.rcp.annotations.*
     import com.rameses.osiris2.client.*
@@ -22,7 +24,7 @@
         boolean allowOpen = false;
 
         public Object open() throws Exception {
-            if (selectedEntity.state.equalsIgnoreCase('APPROVED') )
+            if (selectedEntity.taskstate == null && selectedEntity.state.equalsIgnoreCase('APPROVED') )
                 return InvokerUtil.lookupOpener('consolidation:closedwf:open', [entity:selectedEntity]);
             return InvokerUtil.lookupOpener('consolidation:open', [entity:selectedEntity]);
         }
@@ -34,6 +36,8 @@
         }            
 
     }  
+    
+    ]]> 
     </code>   
     <pages>
         <page name="queryform" template="com.rameses.gov.etracs.rpt.common.LguListQueryPage" />

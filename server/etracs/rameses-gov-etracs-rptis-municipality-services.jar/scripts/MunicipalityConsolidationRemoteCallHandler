@@ -17,6 +17,7 @@ class MunicipalityConsolidationRemoteCallHandler
 	def faasEm
 
 
+	@ProxyMethod
 	public void postApprovedConsolidationFromProvince(consolidation){
 		def state = svc.getState( consolidation )
 		if (state == null || state != 'APPROVED'){
@@ -35,6 +36,7 @@ class MunicipalityConsolidationRemoteCallHandler
 	}
 
 
+	@ProxyMethod
 	public void approveConsolidationByProvince(consolidation){
 		def state = svc.getState( consolidation.objid )
 		if (state  && ! state.equalsIgnoreCase('APPROVED')){

@@ -1,36 +1,72 @@
 /* v2.5.04.032-03009 */
-create table faas_restriction_type
-(
-	objid varchar(50),
-	name varchar(100) not null,
-	idx int not null,
-	isother int not null,
-	primary key(objid)
-)engine=innodb default charset=utf8;
+
+/*============================================
+**
+** RPT TRANSMITTAL UPDATES 
+**
+============================================*/
+drop table if exists rpttransmittal_item_data;
+drop table if exists rpttransmittal_item;
+drop table if exists rpttransmittal_log;
+drop table if exists rpttransmittal;
+
+CREATE TABLE `rpttransmittal` (
+  `objid` varchar(50) NOT NULL,
+  `state` varchar(50) NOT NULL,
+  `type` varchar(15) NOT NULL,
+  `filetype` varchar(50) not null,
+  `txnno` varchar(15) NOT NULL,
+  `txndate` datetime NOT NULL,
+  `lgu_objid` varchar(50) NOT NULL,
+  `lgu_name` varchar(50) NOT NULL,
+  `lgu_type` varchar(50) NOT NULL,
+  `tolgu_objid` varchar(50) NOT NULL,
+  `tolgu_name` varchar(50) NOT NULL,
+  `tolgu_type` varchar(50) NOT NULL,
+  `createdby_objid` varchar(50) NOT NULL,
+  `createdby_name` varchar(100) NOT NULL,
+  `createdby_title` varchar(50) NOT NULL,
+  `remarks` varchar(500) default NULL,
+  PRIMARY KEY  (`objid`),
+  UNIQUE KEY `ux_txnno` (`txnno`),
+  KEY `ix_state` (`state`),
+  KEY `ix_createdby_name` (`createdby_name`),
+  KEY `ix_lguname` (`lgu_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-INSERT INTO `faas_restriction_type` (`objid`, `name`, `idx`, `isother`) VALUES ('BOUNDARY_CONFLICT', 'Boundary Conflict', '4', '1');
-INSERT INTO `faas_restriction_type` (`objid`, `name`, `idx`, `isother`) VALUES ('BSP_GSP', 'BSP / GSP', '9', '1');
-INSERT INTO `faas_restriction_type` (`objid`, `name`, `idx`, `isother`) VALUES ('CARP', 'Under CARP', '1', '0');
-INSERT INTO `faas_restriction_type` (`objid`, `name`, `idx`, `isother`) VALUES ('RED_AREAS', 'Red Areas', '3', '1');
-INSERT INTO `faas_restriction_type` (`objid`, `name`, `idx`, `isother`) VALUES ('RP_NIA', 'RP / NIA', '5', '1');
-INSERT INTO `faas_restriction_type` (`objid`, `name`, `idx`, `isother`) VALUES ('TELECOM', 'Telecom', '6', '1');
-INSERT INTO `faas_restriction_type` (`objid`, `name`, `idx`, `isother`) VALUES ('UNDER_LITIGATION', 'Under Litigation', '2', '0');
-INSERT INTO `faas_restriction_type` (`objid`, `name`, `idx`, `isother`) VALUES ('UNDETERMINED', 'Undermined', '7', '1');
-INSERT INTO `faas_restriction_type` (`objid`, `name`, `idx`, `isother`) VALUES ('UNLOCATED_OWNER', 'Unlocated Owner', '8', '1');
-INSERT INTO `faas_restriction_type` (`objid`, `name`, `idx`, `isother`) VALUES ('RESTRICTED', 'Restricted', '9', '1');
+CREATE TABLE `rpttransmittal_item` (
+  `objid` varchar(50) NOT NULL,
+  `parentid` varchar(50) NOT NULL,
+  `state` varchar(50) NOT NULL,
+  `filetype` varchar(50) NOT NULL,
+  `refid` varchar(50) NOT NULL,
+  `refno` varchar(150) NOT NULL,
+  `message` varchar(350),
+  `remarks` varchar(350),
+  `status` varchar(50), 
+  `disapprovedby_name` varchar(150),
+  PRIMARY KEY  (`objid`),
+  UNIQUE KEY `ux_parentid_refid` (`parentid`,`refid`),
+  KEY `ix_refid` (`refid`),
+  KEY `FK_rpttransmittal_item_rpttransmittal` (`parentid`)  
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+alter table rpttransmittal_item 
+add CONSTRAINT `FK_rpttransmittal_item_rpttransmittal` 
+FOREIGN KEY (`parentid`) REFERENCES `rpttransmittal` (`objid`);
+
+
+alter table rpt_changeinfo add redflagid varchar(50);
 
 
 
-INSERT INTO `sys_usergroup` (`objid`, `title`, `domain`, `userclass`, `orgclass`, `role`) 
-VALUES ('RPT.REPORT', 'REPORT', 'RPT', 'usergroup', NULL, 'REPORT');
+/*=================================================================
+*
+* MACHINE TAXABILITY
+* 
+=================================================================*/
 
-INSERT INTO `sys_usergroup_permission` (`objid`, `usergroup_objid`, `object`, `permission`, `title`) 
-VALUES ('RPT.REPORT-faas-titled-report-viewreport', 'RPT.REPORT', 'faas-titled-report', 'viewreport', 'View Report');
-
-
-
-alter table subdivision_cancelledimprovement add lasttaxyear int;
-alter table subdivision_cancelledimprovement add lguid varchar(50);
-alter table subdivision_cancelledimprovement add reason_objid varchar(50);
-
+alter table machdetail add taxable int;
+update machdetail set taxable = 1 where taxable is null;
+  

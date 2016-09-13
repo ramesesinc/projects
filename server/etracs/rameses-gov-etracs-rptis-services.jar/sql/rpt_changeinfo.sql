@@ -48,19 +48,23 @@ where objid = $P{faasid}
 [updateLedgerInfo]
 update rptledger set 
 	tdno = $P{tdno},
+	taxable = case when $P{taxable} is null then taxable else $P{taxable} end,
 	titleno = $P{titleno}
 where faasid = $P{faasid}
 
 [updateLedgerFaasInfo]
 update rptledgerfaas set 
 	tdno = $P{tdno},
+	taxable = case when $P{taxable} is null then taxable else $P{taxable} end,
 	fromyear = $P{effectivityyear},
 	fromqtr = $P{effectivityqtr}
 where faasid = $P{faasid}
 
 [updateRpuInfo]
 update rpu set 
-	classification_objid  = $P{classificationid}
+	classification_objid  = $P{classificationid},
+	taxable = case when $P{taxable} is null then taxable else $P{taxable} end,
+	exemptiontype_objid = $P{exemptiontypeid}
 where objid = $P{rpuid}
 
 [updateLandRpuInfo]
@@ -86,3 +90,13 @@ update rptledger set
 	taxpayer_objid = $P{taxpayer_objid},
 	owner_name = $P{owner_name}
 where faasid = $P{faasid}
+
+
+[getImageIds]
+
+select rq.objid
+from rpt_redflag rr 
+	inner join rpt_requirement rq on rr.refid = rq.refid 
+where rr.objid = $P{objid}
+and rq.requirementtypeid = $P{requirementtypeid};
+

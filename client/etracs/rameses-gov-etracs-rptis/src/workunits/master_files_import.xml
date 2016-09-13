@@ -65,6 +65,12 @@
                  title ="Import Requirement Types"
                  serviceName="RPTRequirementTypeService"
                  role="MASTER" target="popup" index="502"/>       
+        
+        <invoker type="landspecificclass:list:formActions" 
+                 action="init" caption="Import" 
+                 title ="Import Land Specific Classes"
+                 serviceName="LandSpecificClassService"
+                 role="MASTER" target="popup" index="502"/>       
     </invokers>
 </workunit>
 

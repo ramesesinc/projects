@@ -50,14 +50,14 @@ public class RpuLandPage extends javax.swing.JPanel {
 
         xTextField15.setCaption("Street");
         xTextField15.setName("entity.rp.street"); // NOI18N
-        xTextField15.setStretchWidth(50);
+        xTextField15.setStretchWidth(100);
         xFormPanel4.add(xTextField15);
 
         xTextField32.setCaption("Purok");
         xTextField32.setCaptionWidth(70);
         xTextField32.setCellPadding(new java.awt.Insets(0, 5, 0, 0));
         xTextField32.setName("entity.rp.purok"); // NOI18N
-        xTextField32.setStretchWidth(50);
+        xTextField32.setStretchWidth(100);
         xFormPanel4.add(xTextField32);
 
         xFormPanel3.add(xFormPanel4);
@@ -69,14 +69,14 @@ public class RpuLandPage extends javax.swing.JPanel {
 
         xTextField12.setCaption("North");
         xTextField12.setName("entity.rp.north"); // NOI18N
-        xTextField12.setStretchWidth(50);
+        xTextField12.setStretchWidth(100);
         xFormPanel5.add(xTextField12);
 
         xTextField30.setCaption("East");
         xTextField30.setCaptionWidth(70);
         xTextField30.setCellPadding(new java.awt.Insets(0, 5, 0, 0));
         xTextField30.setName("entity.rp.east"); // NOI18N
-        xTextField30.setStretchWidth(50);
+        xTextField30.setStretchWidth(100);
         xFormPanel5.add(xTextField30);
 
         xFormPanel3.add(xFormPanel5);
@@ -88,14 +88,14 @@ public class RpuLandPage extends javax.swing.JPanel {
 
         xTextField14.setCaption("South");
         xTextField14.setName("entity.rp.south"); // NOI18N
-        xTextField14.setStretchWidth(50);
+        xTextField14.setStretchWidth(100);
         xFormPanel6.add(xTextField14);
 
         xTextField31.setCaption("West");
         xTextField31.setCaptionWidth(70);
         xTextField31.setCellPadding(new java.awt.Insets(0, 5, 0, 0));
         xTextField31.setName("entity.rp.west"); // NOI18N
-        xTextField31.setStretchWidth(50);
+        xTextField31.setStretchWidth(100);
         xFormPanel6.add(xTextField31);
 
         xFormPanel3.add(xFormPanel6);

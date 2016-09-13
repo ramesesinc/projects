@@ -49,7 +49,10 @@
     enabled:false;
 }
 
-
 "entity.ry|entity.rputype"[true == true]{
     enabled:false;
+}
+
+"entity.ry"[entity.txntype.objid == 'RV']{
+    enabled:true;
 }

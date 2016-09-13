@@ -9,6 +9,8 @@
             
         <invoker folderid="/home/rpt/txn" action="init" caption="Change PIN" 
             txntype="RV" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createRevision" index="9"  />
+        <invoker folderid="/menu/txn/rpt" action="init" caption="Change PIN" 
+            txntype="RV" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createRevision" index="9"  />
     </invokers>
     <code>
         

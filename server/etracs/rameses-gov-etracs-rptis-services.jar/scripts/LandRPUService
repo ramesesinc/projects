@@ -277,6 +277,7 @@ class LandRPUService
 			detail.actualuseadjustments = em.getLandDetailAdjustments([landdetailid:detail.objid, type:ADJ_TYPE_ACTUALUSE]).each{
 				it.params = em.getAdjustmentParameters(it)
 			}
+			detail.taxable = util.toBoolean(detail.taxable, true)
 		}
 		return details 
     }

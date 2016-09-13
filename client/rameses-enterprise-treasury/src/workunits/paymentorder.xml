@@ -1,0 +1,14 @@
+<!-- REQUISITION ISSUE SLIP -->
+<workunit schemaName="paymentorder">
+    <invokers>
+       <invoker type="paymentordertype:handler" name="misc"/>
+       <invoker type="paymentorder:misc" caption="New Payment Order"
+                name="misc" target="popup" action="create" />
+        
+    </invokers>
+    <code class="com.rameses.enterprise.treasury.models.PaymentOrderModel"/>
+    <pages>
+        <page name="default" template="com.rameses.enterprise.treasury.views.PaymentOrderPage"/>
+        <page name="end" template="com.rameses.enterprise.treasury.views.DisplayTrackNoPage"/>
+    </pages>
+</workunit>

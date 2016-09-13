@@ -12,7 +12,7 @@ WHERE barangayid = $P{barangayid}
   AND (rl.lastyearpaid < $P{cy}  
   	     OR (rl.lastyearpaid = $P{cy} AND rl.lastqtrpaid < 4)
   )
-  AND NOT EXISTS(select * from rptledger_restriction where parentid = rl.objid )
+  AND rl.totalav > 0 
   
 
 [cleanup]
@@ -39,14 +39,16 @@ FROM (
 	SELECT 
 		rptledgerid, MAX(dtgenerated) AS dtgenerated, 
 		MIN(year) AS startyearpaid, MIN(qtr) as startqtrpaid, 
-		MAX(year) AS lastyearpaid, MAX(qtr) AS lastqtrpaid,  
+		MAX(year) AS lastyearpaid, MAX(4) AS lastqtrpaid,  
 		SUM(basic - basicdisc) AS basic, SUM(sef - sefdisc) AS sef, 
 		SUM(basicint) AS basicint, SUM(sefint) AS sefint, 
 		SUM(basic - basicdisc + basicint) AS basicnet,
 		SUM(sef - sefdisc + sefint) AS sefnet,
 		SUM(basic - basicdisc + basicint  + sef - sefdisc + sefint ) AS total
-	FROM report_rptdelinquency 
-	WHERE barangayid LIKE $P{barangayid} ${filter} 
+	FROM report_rptdelinquency r
+	WHERE barangayid LIKE $P{barangayid} 
+	AND NOT EXISTS(select * from rptledger_restriction where parentid = r.rptledgerid )
+	${filter} 
 	GROUP BY rptledgerid 
 )x 
 	INNER JOIN rptledger rl ON x.rptledgerid = rl.objid 
@@ -73,6 +75,7 @@ FROM (
 		(select name from barangay where objid=rr.barangayid) as barangay_name, 
 		(select pin from barangay where objid=rr.barangayid) as barangay_pin 
 	FROM report_rptdelinquency rr 
+	WHERE NOT EXISTS(select * from rptledger_restriction where parentid = rr.rptledgerid )
 	GROUP BY barangayid, year  
 )x 
 WHERE year < $P{year} 
@@ -99,6 +102,7 @@ FROM (
 	FROM report_rptdelinquency rr 
 		inner join rptledger rl on rr.rptledgerid = rl.objid 
 		inner join propertyclassification pc on rl.classification_objid = pc.objid 
+	where NOT EXISTS(select * from rptledger_restriction where parentid = r.rptledgerid )
 )x 
 WHERE year < $P{year} 
 GROUP BY dtgenerated, barangayid, barangay_name, classification, idx 

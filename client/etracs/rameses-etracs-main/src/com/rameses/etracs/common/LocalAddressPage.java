@@ -34,9 +34,10 @@ public class LocalAddressPage extends javax.swing.JPanel {
         xTextField3 = new com.rameses.rcp.control.XTextField();
         xTextField2 = new com.rameses.rcp.control.XTextField();
         xTextField5 = new com.rameses.rcp.control.XTextField();
-        xLookupField1 = new com.rameses.rcp.control.XLookupField();
+        barangayLookup1 = new com.rameses.etracs.components.BarangayLookup();
         xTextField6 = new com.rameses.rcp.control.XTextField();
 
+        xFormPanel1.setCaption("Address");
         xFormPanel1.setCaptionWidth(100);
 
         xTextField4.setCaption("Unit No");
@@ -69,13 +70,11 @@ public class LocalAddressPage extends javax.swing.JPanel {
         xTextField5.setPreferredSize(new java.awt.Dimension(0, 22));
         xFormPanel1.add(xTextField5);
 
-        xLookupField1.setCaption("Barangay");
-        xLookupField1.setCaptionWidth(120);
-        xLookupField1.setExpression("#{entity.barangay.name}");
-        xLookupField1.setHandler("lookupBarangay");
-        xLookupField1.setName("entity.barangay"); // NOI18N
-        xLookupField1.setPreferredSize(new java.awt.Dimension(0, 22));
-        xFormPanel1.add(xLookupField1);
+        barangayLookup1.setCaption("Barangay");
+        barangayLookup1.setCaptionWidth(120);
+        barangayLookup1.setName("entity.barangay"); // NOI18N
+        barangayLookup1.setRequired(true);
+        xFormPanel1.add(barangayLookup1);
 
         xTextField6.setCaption("PIN");
         xTextField6.setCaptionWidth(120);
@@ -96,15 +95,15 @@ public class LocalAddressPage extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(30, Short.MAX_VALUE))
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(45, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private com.rameses.etracs.components.BarangayLookup barangayLookup1;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
-    private com.rameses.rcp.control.XLookupField xLookupField1;
     private com.rameses.rcp.control.XTextField xTextField1;
     private com.rameses.rcp.control.XTextField xTextField2;
     private com.rameses.rcp.control.XTextField xTextField3;

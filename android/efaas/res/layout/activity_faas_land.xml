@@ -1,0 +1,673 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
+        
+        <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="FAAS"
+                android:minEms="6"
+                android:padding="5dp"
+                android:textStyle="bold"
+                android:background="#2f84c9"
+                android:textColor="#FFFFFF"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="TD No."
+                android:minEms="7"
+                android:padding="1dp"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+            
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=":"
+                android:minEms="1"
+                android:padding="1dp"
+                android:gravity="center"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+            
+            <TextView
+                android:id="@+id/faas_tdno"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:padding="1dp"
+                android:textStyle="bold"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        </LinearLayout>
+        
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="PIN"
+                android:minEms="7"
+                android:padding="1dp"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+            
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=":"
+                android:minEms="1"
+                android:padding="1dp"
+                android:gravity="center"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+            
+            <TextView
+                android:id="@+id/faas_pin"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:padding="1dp"
+                android:textStyle="bold"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        </LinearLayout>
+        
+         <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Owner"
+                android:minEms="7"
+                android:padding="1dp"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+            
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=":"
+                android:minEms="1"
+                android:padding="1dp"
+                android:gravity="center"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+            
+            <TextView
+                android:id="@+id/faas_owner"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:padding="1dp"
+                android:textStyle="bold"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        </LinearLayout>
+        
+         <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Address"
+                android:minEms="7"
+                android:padding="1dp"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+            
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=":"
+                android:minEms="1"
+                android:padding="1dp"
+                android:gravity="center"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+            
+            <TextView
+                android:id="@+id/faas_address"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:padding="1dp"
+                android:textStyle="bold"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        </LinearLayout>
+        
+         <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cadastral Lot No."
+                android:minEms="7"
+                android:padding="1dp"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+            
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=":"
+                android:minEms="1"
+                android:padding="1dp"
+                android:gravity="center"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+            
+            <TextView
+                android:id="@+id/faas_cadastrallotno"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:padding="1dp"
+                android:textStyle="bold"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        </LinearLayout>
+        
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Block No."
+                android:minEms="7"
+                android:padding="1dp"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+            
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=":"
+                android:minEms="1"
+                android:padding="1dp"
+                android:gravity="center"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+            
+            <TextView
+                android:id="@+id/faas_blockno"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:padding="1dp"
+                android:textStyle="bold"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        </LinearLayout>
+        
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Survey No."
+                android:minEms="7"
+                android:padding="1dp"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+            
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=":"
+                android:minEms="1"
+                android:padding="1dp"
+                android:gravity="center"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+            
+            <TextView
+                android:id="@+id/faas_surveyno"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:padding="1dp"
+                android:textStyle="bold"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        </LinearLayout>
+        
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Street"
+                android:minEms="7"
+                android:padding="1dp"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+            
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=":"
+                android:minEms="1"
+                android:padding="1dp"
+                android:gravity="center"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+            
+            <TextView
+                android:id="@+id/faas_street"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:padding="1dp"
+                android:textStyle="bold"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        </LinearLayout>
+        
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Purok"
+                android:minEms="7"
+                android:padding="1dp"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+            
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=":"
+                android:minEms="1"
+                android:padding="1dp"
+                android:gravity="center"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+            
+            <TextView
+                android:id="@+id/faas_purok"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:padding="1dp"
+                android:textStyle="bold"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        </LinearLayout>
+        
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="North"
+                android:minEms="7"
+                android:padding="1dp"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+            
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=":"
+                android:minEms="1"
+                android:padding="1dp"
+                android:gravity="center"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+            
+            <TextView
+                android:id="@+id/faas_north"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:padding="1dp"
+                android:textStyle="bold"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        </LinearLayout>
+        
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="South"
+                android:minEms="7"
+                android:padding="1dp"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+            
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=":"
+                android:minEms="1"
+                android:padding="1dp"
+                android:gravity="center"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+            
+            <TextView
+                android:id="@+id/faas_south"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:padding="1dp"
+                android:textStyle="bold"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        </LinearLayout>
+        
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="East"
+                android:minEms="7"
+                android:padding="1dp"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+            
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=":"
+                android:minEms="1"
+                android:padding="1dp"
+                android:gravity="center"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+            
+            <TextView
+                android:id="@+id/faas_east"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:padding="1dp"
+                android:textStyle="bold"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        </LinearLayout>
+        
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="West"
+                android:minEms="7"
+                android:padding="1dp"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+            
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=":"
+                android:minEms="1"
+                android:padding="1dp"
+                android:gravity="center"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+            
+            <TextView
+                android:id="@+id/faas_west"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:padding="1dp"
+                android:textStyle="bold"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        </LinearLayout>
+        
+         <TextView
+             android:layout_width="fill_parent"
+             android:layout_height="wrap_content"
+             android:background="#2f84c9"
+             android:minEms="6"
+             android:padding="5dp"
+             android:text="PROPERTY"
+             android:textAppearance="?android:attr/textAppearanceMedium"
+             android:textColor="#FFFFFF"
+             android:textStyle="bold" />
+         
+         <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Revision Year"
+                android:minEms="7"
+                android:padding="1dp"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+            
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=":"
+                android:minEms="1"
+                android:padding="1dp"
+                android:gravity="center"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+            
+            <TextView
+                android:id="@+id/faas_ry"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:padding="1dp"
+                android:textStyle="bold"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        </LinearLayout>
+        
+         <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Classification"
+                android:minEms="7"
+                android:padding="1dp"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+            
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=":"
+                android:minEms="1"
+                android:padding="1dp"
+                android:gravity="center"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+            
+            <TextView
+                android:id="@+id/faas_classification"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:padding="1dp"
+                android:textStyle="bold"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        </LinearLayout>
+         
+        <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="LAND APPRAISAL"
+                android:minEms="6"
+                android:padding="5dp"
+                android:textStyle="bold"
+                android:background="#2f84c9"
+                android:textColor="#FFFFFF"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+        
+        <TableLayout
+			  android:id="@+id/tableLayout1"
+			  android:layout_width="fill_parent"
+			  android:layout_height="wrap_content"
+			  android:stretchColumns="0,1,2,3,4,5">
+			
+			    <TableRow
+			      android:id="@+id/tableRow1"
+			      android:layout_width="0dp"
+			      android:layout_height="wrap_content">
+			
+			        <TextView
+			          android:id="@+id/appraisal_subclass"
+			          android:text="Sub Class"
+			          android:layout_column="0"
+			          android:layout_margin="1dp"
+			          android:layout_width="0dp"
+			          android:layout_height="match_parent"
+			          android:gravity="center"
+			          android:minHeight="40dp"
+			          android:textStyle="bold"
+			          android:textAppearance="?android:attr/textAppearanceSmall">
+			        </TextView>
+			
+			        <TextView
+			          android:id="@+id/appraisal_specificclass"
+			          android:text="Specific Class"
+			          android:layout_column="1"
+			          android:layout_margin="1dp"
+			          android:layout_width="0dp"
+			          android:layout_height="match_parent"
+			          android:gravity="center"
+			          android:textStyle="bold"
+			          android:textAppearance="?android:attr/textAppearanceSmall">
+			        </TextView>
+			        
+			        <TextView
+			          android:id="@+id/appraisal_actualuse"
+			          android:text="Actual Use"
+			          android:layout_column="2"
+			          android:layout_margin="1dp"
+			          android:layout_width="0dp"
+			          android:layout_height="match_parent"
+			          android:gravity="center"
+			          android:textStyle="bold"
+			          android:textAppearance="?android:attr/textAppearanceSmall">
+			        </TextView>
+			        
+			        <TextView
+			          android:id="@+id/appraisal_strip"
+			          android:text="Strip"
+			          android:layout_column="3"
+			          android:layout_margin="1dp"
+			          android:layout_width="0dp"
+			          android:layout_height="match_parent"
+			          android:gravity="center"
+			          android:textStyle="bold"
+			          android:textAppearance="?android:attr/textAppearanceSmall">
+			        </TextView>
+			        
+			        <TextView
+			          android:id="@+id/appraisal_areasqm"
+			          android:text="Area (sqm)"
+			          android:layout_column="4"
+			          android:layout_margin="1dp"
+			          android:layout_width="0dp"
+			          android:layout_height="match_parent"
+			          android:gravity="center"
+			          android:textStyle="bold"
+			          android:textAppearance="?android:attr/textAppearanceSmall">
+			        </TextView>
+			
+			    </TableRow>
+			
+		</TableLayout> 
+        
+		<ListView
+		      android:id="@+id/appraisal_list"
+		      android:layout_width="match_parent"
+		      android:layout_height="wrap_content" 
+		      android:layout_margin="5dp"/>
+		
+		<TextView
+		    android:id="@+id/appraisal_totalarea"
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:layout_marginRight="20dp"
+		    android:gravity="right"
+		    android:text="TOTAL AREA (SQM) : "
+		    android:textAppearance="?android:attr/textAppearanceSmall"
+		    android:textStyle="bold" >
+
+	     </TextView>
+		
+		<Button
+	        android:id="@+id/appraisal_button"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_margin="10dp"
+	        android:layout_gravity="center"
+	        android:minEms="5"
+	        android:padding="10dp"
+	        android:text="Add" />
+        
+        <TextView
+                android:id="@+id/textView0.4"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="EXAMINATION"
+                android:minEms="6"
+                android:padding="5dp"
+                android:textStyle="bold"
+                android:background="#2f84c9"
+                android:textColor="#FFFFFF"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+       
+       <ListView
+		      android:id="@+id/examination_list"
+		      android:layout_width="match_parent"
+		      android:layout_height="wrap_content" 
+		      android:layout_margin="5dp"/>
+       
+       <Button
+		        android:id="@+id/examination_add"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_margin="10dp"
+		        android:layout_gravity="center"
+		        android:minEms="5"
+		        android:padding="10dp"
+		        android:text="Add" />
+        
+    </LinearLayout>
+
+</ScrollView>

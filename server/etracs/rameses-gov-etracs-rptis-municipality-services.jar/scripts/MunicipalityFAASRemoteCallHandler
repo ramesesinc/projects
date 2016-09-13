@@ -30,6 +30,8 @@ class MunicipalityFAASRemoteCallHandler
 	@Service('RPTSmsService')
 	def rptsmsSvc
 
+
+	@ProxyMethod 
 	public void postDataCapturedFaas(faasdata){
 		supportSvc.saveFaasData(faasdata)
 		faasSvc.approveFaasByRemote(faasdata)
@@ -57,7 +59,7 @@ class MunicipalityFAASRemoteCallHandler
 		}
 	}
 
-
+	@ProxyMethod 
 	public void approveFaasByProvince(faasdata){
 		println '[approveFaasByProvince] Processing FAAS approval by province.'
 		def state = null;
@@ -77,7 +79,7 @@ class MunicipalityFAASRemoteCallHandler
 		notifyRecommender(faasdata)
 	}
 	
-
+	@ProxyMethod 
 	public void disapproveFaasByProvince(disapproveinfo){
 		task.deleteOpenTask(disapproveinfo)
 

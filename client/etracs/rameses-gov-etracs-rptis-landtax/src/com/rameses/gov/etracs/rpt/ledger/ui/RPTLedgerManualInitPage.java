@@ -48,6 +48,7 @@ public class RPTLedgerManualInitPage extends javax.swing.JPanel {
         xTextField4 = new com.rameses.rcp.control.XTextField();
         xTextField5 = new com.rameses.rcp.control.XTextField();
         xTextField3 = new com.rameses.rcp.control.XTextField();
+        xTextField8 = new com.rameses.rcp.control.XTextField();
         xComboBox1 = new com.rameses.rcp.control.XComboBox();
         xComboBox2 = new com.rameses.rcp.control.XComboBox();
         xDecimalField1 = new com.rameses.rcp.control.XDecimalField();
@@ -200,6 +201,11 @@ public class RPTLedgerManualInitPage extends javax.swing.JPanel {
         xTextField3.setPreferredSize(new java.awt.Dimension(200, 19));
         xTextField3.setRequired(true);
         formPanel1.add(xTextField3);
+
+        xTextField8.setCaption("Block No.");
+        xTextField8.setName("entity.blockno"); // NOI18N
+        xTextField8.setPreferredSize(new java.awt.Dimension(200, 19));
+        formPanel1.add(xTextField8);
 
         xComboBox1.setCaption("Txn Type");
         xComboBox1.setCaptionWidth(120);
@@ -400,7 +406,7 @@ public class RPTLedgerManualInitPage extends javax.swing.JPanel {
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
                     .add(formPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .add(formPanel2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(12, Short.MAX_VALUE))
+                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -441,5 +447,6 @@ public class RPTLedgerManualInitPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XTextField xTextField5;
     private com.rameses.rcp.control.XTextField xTextField6;
     private com.rameses.rcp.control.XTextField xTextField7;
+    private com.rameses.rcp.control.XTextField xTextField8;
     // End of variables declaration//GEN-END:variables
 }

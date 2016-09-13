@@ -93,7 +93,7 @@ class SubdivisionWorkflowInterceptor
 		subdivisionSvc.deleteSubdivision(subdivision)
 	}
 
-	@Before(pattern="SubdivisionWorkflowService.signal", eval="#{args[0].state.equalsIgnoreCase('examiner')}", index=10) 
+	@Before(pattern="SubdivisionWorkflowService.signal", eval="#{args[0].state.equalsIgnoreCase('examiner') && !args[0].action?.matches('return.*')}", index=10) 
 	public void validateExaminationInfo( evt ) {
 		def subdivision = evt.args[0].data
 		def findings = examinationSvc.getFindings(subdivision.objid)

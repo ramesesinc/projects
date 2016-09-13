@@ -54,6 +54,12 @@ class FAASService
     @DataContext('realproperty')
     def realpropertyDb
 
+    @DataContext('faas')
+    def faasDb
+
+    @DataContext('faas_list')
+    def faaslistDb
+
 
 
     
@@ -69,6 +75,12 @@ class FAASService
 	def UTDNO_KEY 				= 'UNIQUE_TDNO'
 
 
+	@ProxyMethod
+	public def initCaptureAndCreate( info ) {
+		def faas = initCapture(info)
+		faasSvc.createFaas(faas)
+		return faas
+	}
 
 	@ProxyMethod
 	public def initCapture( info ) {
@@ -156,7 +168,7 @@ class FAASService
 
 	@ProxyMethod
 	public void savePreviousFaases( faas ) {
-		faas.previousfaases.each{
+		faas.previousfaases?.each{
 			em.save(it, SCHEMA_PREVIOUSFAAS)
 		}			
 	}
@@ -201,6 +213,11 @@ class FAASService
 	}
 
 	@ProxyMethod
+	public def disapproveOnlineFaas(faas) {
+		faasSvc.deleteFaas(faas)
+	}
+
+	@ProxyMethod
 	public def deleteFaas( faas ) {
 		if (!faas.allowdelete){
 			def currentstate = getState(faas.objid)
@@ -238,8 +255,7 @@ class FAASService
 		if (faas.txntype.newrpu){
 			rpuSvc.deleteRpu(rpuSvc.openRpu(faas.rpu))
 		}
-		
-		if (faas.rpu.rputype == 'land' && faas.txntype.newrealproperty){
+		if (faas.rpu.rputype == 'land' && util.isTrue(faas.txntype.newrealproperty)){
 			rpSvc.delete(rpSvc.open(faas.rp) )
 		}
 
@@ -248,6 +264,12 @@ class FAASService
 		}			
 		
 		return faas 
+	}
+
+
+	@ProxyMethod
+	public def deletePreviousFaas( prevfaas ) {
+		em.deletePreviousFaas(prevfaas)
 	}
 
 	@ProxyMethod
@@ -295,8 +317,10 @@ class FAASService
 	public def approveFaas( faas ) {
 		approveParentFaas(faas)
 		def currentstate = getState(faas.objid)
-		if (currentstate == STATE_CURRENT)  
-			throw new Exception('FAAS is already current.')
+		if (currentstate == STATE_CURRENT)  {
+			return faas
+		}
+
 		if (currentstate == STATE_CANCELLED)  
 			throw new Exception('FAAS has already been cancelled.')
 		
@@ -307,14 +331,13 @@ class FAASService
 		updateTDNo(faas)
 		updateFullPinInfo(faas)
 		updateDateApprovedInfo(faas)
-		def retval = em.approveFaas(faas)
-		if (retval == 0) 
-			throw new Exception('Unable to approve FAAS. Only FOR APPROVAL record can be approved.')
-
+		em.approveFaas(faas)
+		
 		if (faas.txntype.newrealproperty)
 			rpSvc.approve(faas.rp)
 
 		rpuSvc.approveRpu(faas.rpu)
+		updateBacktaxesInfo(faas)
 		cancelPreviousFaases(faas)
 		txnRef.delete(faas.objid)
 		updateRpuMasterInfo(faas)
@@ -323,9 +346,30 @@ class FAASService
 		return faas 
 	}
 
+	void updateBacktaxesInfo(faas){
+		if (!faas.backtaxes) 
+			return
+
+		faas.backtaxes.each{
+			if (!it.tdno){
+				it.tdno = faas.tdno + '-' + it.ry 
+				em.save(it, SCHEMA_BACKTAX)
+				em.updateFaasTdNo(it)
+				em.updateFaasListTdNo(it)
+			}
+			def pf = em.findPreviousFaas(it)
+			if(pf){
+				faasDb.update([objid:pf.faasid, prevtdno:it.tdno])
+				faaslistDb.update([objid:pf.faasid, prevtdno:it.tdno])
+			}
+		}
+
+	}
+
 	void approveParentFaas(faas){
         if (faas.parentfaasid){
-            faasSvc.approveFaas(openFaas([objid:faas.parentfaasid]))
+        	def pf = openFaas([objid:faas.parentfaasid])
+            faasSvc.approveFaas(pf)
         }
     }
 
@@ -642,7 +686,8 @@ class FAASService
 	}
 
 
-	void updateFullPinInfo(faas){
+	@ProxyMethod 
+	public void updateFullPinInfo(faas){
 		faas.fullpin = faas.rpu.fullpin 
 		if (faas.rpu.rputype != 'land'){
 			def landowner = em.findLandOwner([rpuid:faas.rpu.objid]);
@@ -663,10 +708,28 @@ class FAASService
 		faas._backtaxes?.each{
 			em.delete(it, SCHEMA_BACKTAX)
 		}
-		faas.backtaxes?.each{
-			it.faasid = faas.objid 
-			em.save(it, SCHEMA_BACKTAX)
+		faas.backtaxes?.each{bt->
+			bt.faasid = faas.objid 
+			em.save(bt, SCHEMA_BACKTAX)
+			savePreviousFaases(bt)
+			updateFaasPrevInfo(bt)
 		}
+	}
+
+	@ProxyMethod
+	public void updateFaasPrevInfo(bt){
+		def info = [:]
+		info.objid = bt.objid
+		info.prevtdno = (bt.prevtdno ? bt.prevtdno : 'NEW')
+		info.prevpin = bt.prevpin
+		info.prevowner = (bt.prevowner ? bt.prevowner : 'NEW')
+		info.prevadministrator = bt.prevadministrator
+		info.prevav = (bt.prevav != null ? bt.prevav : 0.00)
+		info.prevmv = bt.prevmv
+		info.prevareasqm = bt.prevareasqm
+		info.prevareaha = bt.prevareaha
+		info.preveffectivity = bt.preveffectivity
+		faasDb.update(info)
 	}
 
     void checkTxnReference(faas){
@@ -719,6 +782,31 @@ class FAASService
 			]
 			cancelFaas(params)
 		}
+
+		if (faas.backtaxes){
+			cancelBackTaxes(faas)
+		}
+	}
+
+	void cancelBackTaxes(faas){
+		for(int i=0; i<faas.backtaxes.size() - 1; i++){
+			def bt = faas.backtaxes[i]
+			def btf = openFaasOnly(bt)
+			if (btf){
+				def cf = openFaasOnly(faas.backtaxes[i+1])
+				if (cf && cf.state != 'CANCELLED'){
+					def params = [
+						objid  				: cf.objid,
+						rpuid 				: cf.rpuid, 
+						txntype 			: faas.txntype,
+						cancelreason		: faas.txntype.displaycode,
+						canceldate			: faas.approver.dtsigned,
+						cancelledbytdnos	: btf.tdno,
+					]
+					cancelFaas(params)
+				}
+			}
+		}
 	}
 
 	@ProxyMethod
@@ -743,11 +831,30 @@ class FAASService
 		}
 	}
 
-	void updateTDNo(faas){
-    	if ( (faas.tdno == null || faas.tdno.toString().trim().length() == 0) ){
-			faas.tdno = generateNextTdNo(faas)
+	@ProxyMethod
+	public void updateTdNoByRecord( faas ) {
+		def exist = em.findFaasByTdNo(faas)
+		if(exist) 
+			throw new Exception('Duplicate TD No. is not allowed.\nTD No. is already assigned to PIN ' + exist.fullpin + '.')
+
+		em.updateFaasTdNo(faas)
+		em.updateFaasListTdNo(faas)
+		em.updateLedgerTdNo(faas)
+		em.updateLedgerFaasTdNo(faas)
+	}
+
+	@ProxyMethod
+	public void updateTDNo(faas){
+		def notdno = (faas.tdno == null || faas.tdno.toString().trim().length() == 0) 
+		if (notdno && util.isTrue(var.faas_tdno_assigned_by_record)){
+			faas.tdno = faas.utdno
 		}
-		faas.utdno = faas.tdno 
+    	else {
+    		if (notdno){
+				faas.tdno = generateNextTdNo(faas)
+    		}
+			faas.utdno = faas.tdno 
+		}
     }	
 	
 
@@ -892,13 +999,13 @@ class FAASService
 		def headers = imageSvc.getImages([refid:info.faas.objid])
 		headers.each{ h ->
 			def imageid = h.objid
-			h.objid = 'H' + new java.rmi.server.UID()
+			h.objid = faas.objid 
 			h.refid = faas.objid 
 			imageSvc.saveHeader(h)
 
 			imageSvc.getImageItems([objid:imageid]).each{ c ->
 				c.objid = 'C' + new java.rmi.server.UID()
-				c.parentid = faas.objid
+				c.parentid = h.objid 
 				imageSvc.saveItem(c)
 			}
 		}

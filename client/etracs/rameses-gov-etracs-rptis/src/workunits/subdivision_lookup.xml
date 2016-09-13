@@ -1,0 +1,39 @@
+<workunit extends="wtemplates/LookupController.xml">
+    <invokers>
+        <invoker type="subdivision:lookup" action="init" caption="Subdivision Lookup" target="popup" width="700"/>
+    </invokers>
+    
+    <code>
+
+import com.rameses.rcp.common.*
+import com.rameses.rcp.annotations.*
+import com.rameses.osiris2.client.*
+import com.rameses.osiris2.common.*
+
+class SubdivisionLookupModel extends LookupController
+{
+    @Service("SubdivisionListService")
+    def svc
+    
+    int getRows(){
+        return  25;
+    }
+    
+    Column[] getColumns() {
+        return [
+            new Column(name:"state", caption:"State", width:80),
+            new Column(name:"txnno", caption:"Txn No.", width:70),
+            new Column(name:"txndate", caption:"Txn Date", width:100),
+            new Column(name:"mothertdnos", caption:"Mother TDs", width:200),
+            new Column(name:"ry", caption:"RY", width:50),
+        ]
+    }
+    
+    List fetchList( Map params ) { 
+        params.name = 'all';
+        return svc.getList(params)
+    }
+}  
+
+    </code>
+</workunit>

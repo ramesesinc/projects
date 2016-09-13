@@ -64,6 +64,8 @@ class CancelledFAASService
         entity.faasid = entity.faas.objid 
         if (!entity.lguid)
             entity.lguid = entity.faas.lguid 
+        if (!entity.originlguid)
+            entity.originlguid = env.ORGID 
         if (!entity.txnno)
             entity.txnno = getNextSeries(entity)
         if (!entity.txndate)
@@ -88,12 +90,13 @@ class CancelledFAASService
 
 
     @ProxyMethod
-    public void deleteCancelledFaas( entity ) {
+    public def deleteCancelledFaas( entity ) {
         txnRef.delete(entity.objid)
         em.deleteSignatories(entity)
         em.deleteRequirements(entity)
         em.deleteTasks(entity)
         em.delete(entity)
+        return entity 
     }
 
 

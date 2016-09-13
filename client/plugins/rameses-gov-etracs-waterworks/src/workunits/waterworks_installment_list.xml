@@ -1,0 +1,31 @@
+<workunit extends="com/rameses/seti2/templates/CrudList.xml"
+          schemaName="waterworks_installment" 
+          cols="objid,controlno,dtfiled,item.code,item.title,amount,downpayment,term,amtpaid" 
+          orderBy="dtfiled">
+    <invokers>
+        <invoker type="waterworks_account:section" caption="Installments" index="3" 
+                visibleWhen="#{mode=='read'}"
+                action="init"/>
+    </invokers>
+    <code>
+        <![CDATA[
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.seti2.models.*;
+
+        class InstallmentListModel extends CrudListModel {
+
+            def getMasterEntity() {
+                return caller.entity;
+            }
+
+            void beforeQuery( def qry ) {
+                qry.findBy = [acctid: caller.entity.objid];
+            }
+        }
+        ]]>
+    </code>
+</workunit>

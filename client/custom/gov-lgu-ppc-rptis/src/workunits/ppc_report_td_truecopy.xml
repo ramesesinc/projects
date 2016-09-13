@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit extends="rpt_wtemplates/CertificationController.xml">
+    <invokers>
+        <invoker folderid="/explorer/txn/rpt/cert" action="init" caption="Certified True Copy of Tax Declaration (Old)" 
+            opener="tdtruecopyold" index="1000" role="CERTIFICATION_ISSUER,RECORD" permission="certification.tdtruecopy"/>
+            
+        <invoker folderid="/menu/txn/rpt/cert" action="init" caption="Certified True Copy of Tax Declaration (Old)" 
+            opener="tdtruecopyold" index="1000" role="CERTIFICATION_ISSUER,RECORD" permission="certification.tdtruecopy"/>
+            
+        <invoker type="quick_launcher" action="init" code="TDC01" caption="Certified True Copy of Tax Declaration (Old)"  
+            opener="tdtruecopyold" index="1000" role="CERTIFICATION_ISSUER,RECORD" permission="certification.tdtruecopy"/>
+            
+        <invoker type="tdtruecopyold:open" action="open" caption="Certified True Copy of Tax Declaration (Old)" /> 
+    </invokers>
+    
+    <code class="gov.lgu.ppc.rptis.model.OldTDTrueCopyModel" >
+    </code>
+</workunit>

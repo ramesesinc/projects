@@ -37,6 +37,11 @@ public class FaasController
     def assignee; 
     def queryinfo;
     
+    //callbacks
+    def afterCreate;
+    def afterUpdate;
+    def closeonsave = false;
+    
         
     String entityName = 'faas';
     
@@ -79,6 +84,11 @@ public class FaasController
         return 'FAAS : ' + (getEntity().tdno ? getEntity().tdno : getEntity().utdno);
     }
     
+    def getOwnerName(){
+        if (entity.taxpayer && entity.taxpayer.objid != null)
+            return entity.taxpayer.entityno + ' - ' + entity.taxpayer.name 
+        return '';
+    }
     
     void create(){
         loadRpuOpener();
@@ -90,9 +100,7 @@ public class FaasController
         getEntity()._resolve = true;
         mode = MODE_EDIT;
     }
-    
-    void open(){
-        getEntity().putAll(service.openFaas(getEntity()));
+    void doOpen(){
         afterOpen();
         if (taskstate) getEntity().taskstate = taskstate;
         if (assignee) getEntity().assignee = assignee;
@@ -100,6 +108,10 @@ public class FaasController
         clearCacheImageFlag()
         buildQueryInfo();
         mode = MODE_READ;
+    }
+    void open(){
+        getEntity().putAll(service.openFaas(getEntity()));
+        doOpen();
     }
     
     void cancel(){
@@ -138,6 +150,12 @@ public class FaasController
         mode = MODE_EDIT;
     }
     
+    void initEdit(){
+        loadRpuOpener();
+        mode = MODE_EDIT;
+    }
+    
+    
     
     void cancelEdit(){
         getEntity().putAll(service.openFaas(getEntity()));
@@ -147,12 +165,19 @@ public class FaasController
     }
     
     
-    void save(){
-        if (mode == MODE_CREATE)
+    def save(){
+        if (mode == MODE_CREATE){
             getEntity().putAll(service.createFaas(getEntity()));
-        else 
+            if (afterCreate) afterCreate(getEntity());
+        }
+        else {
             getEntity().putAll(service.updateFaas(getEntity()));
+            if (afterUpdate) afterUpdate(getEntity());
+        }
         mode = MODE_READ;
+        if (closeonsave)
+            return '_close';
+        return null;
     }
     
     
@@ -254,6 +279,14 @@ public class FaasController
         return true 
     }
     
+    def getAllowAssignNewTdNo(){
+        if (entity.state != 'CURRENT') return false;
+        if (entity.taskstate != 'record') return false;
+        if (entity.assignee && entity.assignee.objid != OsirisContext.env.USERID) return false;
+        return true;
+    }
+    
+    
     boolean getAllowEditPrevInfo(){
         return getAllowEditPrevInfoCallback();
     }
@@ -264,7 +297,7 @@ public class FaasController
     
     def showActionsCallback = {
         if (getEntity().taskstate && getEntity().taskstate.matches('assign.*')) return false;
-        if (getEntity().taskstate && !getEntity().taskstate.matches('examiner|receiver|appraiser|provappraiser|taxmapper|provtaxmapper|recommender')) return false;
+        if (getEntity().taskstate && !getEntity().taskstate.matches('examiner|receiver|appraiser|appraiser_chief|provappraiser|taxmapper|taxmapper_chief|provtaxmapper|recommender')) return false;
         if (getEntity().state.matches('CURRENT|CANCELLED')) return false;
         if (OsirisContext.env.USERID != getEntity().assignee.objid) return false;
         if (mode != MODE_READ) return false;
@@ -332,8 +365,9 @@ public class FaasController
         },
     ]
     
-    
+   
     void refreshForm(){
+        mode = MODE_READ;
         binding.refresh('entity.*|rpuopener');
     }
     

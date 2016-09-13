@@ -17,6 +17,7 @@ class RPTCertificationMultipleService
 		certSvc.buildFilter(cert)
 		em.insertMultipleItems(cert)
 		cert.items = getMultipleItems(cert)
+		certSvc.buildFootNotes(cert)
 		return cert 
 	}
 
@@ -26,6 +27,7 @@ class RPTCertificationMultipleService
 		if (! cert ) 
 			throw new Exception('Certification does not exist or has already been deleted.')
 		cert.items = getMultipleItems(cert)
+		certSvc.buildFootNotes(cert)
 		return cert 
 	}
 

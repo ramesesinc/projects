@@ -263,6 +263,10 @@ class RPTCompromiseService {
 
 	void updatePartialledItems(compromise){
 		def firstunpaiditem = em.findFirstUnpaidCompromiseItem(compromise)
+		if (!firstunpaiditem){
+			return;
+		}
+		
 		compromise.partialledyear = firstunpaiditem.year 
 
 		def partialleditems = em.getPartialledQtrlyItems(compromise)

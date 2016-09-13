@@ -23,13 +23,12 @@
     enabled:false;
 }
 
+"entity.rpu.*|classification"  [entity.datacapture == 0 && entity.txntype.objid.matches('SD|CS|')] {
+    enabled:false;
+}
 
 "entity.*"  [entity._resolve == true] {
     enabled:true;
-}
-
-"entity.rpu.*|classification"  [entity.datacapture == 0 && entity.txntype.objid.matches('SD|CS|')] {
-    enabled:false;
 }
 
 "entity.rpu.depreciationvalue|entity.rpu.bldgage|entity.rpu.floorcount|entity.rpu.depreciationvalue" [true == true]{

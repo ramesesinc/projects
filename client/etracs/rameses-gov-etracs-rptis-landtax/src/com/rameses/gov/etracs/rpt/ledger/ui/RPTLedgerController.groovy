@@ -267,6 +267,9 @@ public class RPTLedgerController
     
     
     def addSubLedger(){
+        if (totalSubledgerArea >= entity.totalareaha)
+            throw new Exception('Subledger is no longer allowed.\nMain Ledger area has totally been allocated.')
+            
         return InvokerUtil.lookupOpener('rptsubledger:create', [
                 ledger            : entity,
                 totalSubledgerArea : totalSubledgerArea, 
@@ -364,7 +367,7 @@ public class RPTLedgerController
         svc.addRestriction(restriction);
         entity.restrictions << restriction;
         restrictionListHandler.reload();
-        binding.refresh('restrictioninfo'); //TODO: not functioning
+        binding.refresh(); 
         return '_close';
     }
     
@@ -374,6 +377,7 @@ public class RPTLedgerController
             svc.removeRestriction(selectedRestriction);
             entity.restrictions.remove(selectedRestriction);
             restrictionListHandler.reload();
+            binding.refresh();
         }
     }
     
@@ -387,5 +391,18 @@ public class RPTLedgerController
            info = 'Ledger is currently under restriction.';
         return info;
     }     
+    
+    def getMessagelist(){
+        def queryinfo = [];
+        def rinfo = getRestrictioninfo();
+        if (rinfo) queryinfo << rinfo;
+        
+        def sinfo = getSubledgerinfo();
+        if (sinfo) queryinfo << sinfo;
+        
+        if (queryinfo)
+            return queryinfo;
+        return null;
+    }
 }
 

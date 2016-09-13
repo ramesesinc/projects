@@ -1,0 +1,24 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import com.rameses.common.*;
+import com.rameses.services.extended.*;
+
+public class EfaasDownloadService 
+{
+
+	@ActiveDB("efaas")
+	def em;
+
+	@Env
+	def env
+
+	@ProxyMethod
+	def getFaas(String tdno){
+		def params = ["tdno" : tdno];
+		def data = em.findFaas(params);
+		if(!data) throw new Exception(tdno + " could not be found!");
+		data.landdetails = em.getLandDetails([faasid:data.objid]);
+		return data;
+	}
+
+}

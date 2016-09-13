@@ -20,6 +20,7 @@ class ProvinceCancelledFAASRemoteService
 	def notificationService
 
 
+	@ProxyMethod
 	public void postCancelledFaasForProvinceApproval(cancelledfaas){
 		def old = supportSvc.findById(cancelledfaas)
 		if (!old){
@@ -46,14 +47,19 @@ class ProvinceCancelledFAASRemoteService
 	}
 
 	void notifyGroup(cancelledfaas){
-		def senderName = (env.REQUESTER.FULLNAME ? env.REQUESTER.FULLNAME : env.REQUESTER.NAME)
-        def msg = [
+		def sender = [userid:env.USERID, name:env.FULLNAME]
+		if (env.REQUESTER){
+			sender.userid = env.REQUESTER.USERID 
+			sender.name = (env.REQUESTER.FULLNAME ? env.REQUESTER.FULLNAME : env.REQUESTER.USER)
+		}
+
+		def msg = [
             objid     		: cancelledfaas.objid,
-            senderid  		: env.REQUESTER.USERID,
-            sender    		: senderName,
+            senderid  		: sender.userid,
+            sender    		: sender.name,
             recipientid   	: 'assign-receiver',
             recipienttype 	: 'group',
-            message   		: 'Cancel FAAS No. ' + cancelledfaas.faas.tdno + '    (assign-receiver) submitted by ' + senderName + '.',
+            message   		: 'Cancel FAAS No. ' + cancelledfaas.faas.tdno + '    (assign-receiver) submitted by ' + sender.name + '.',
             filetype  		: 'cancelledfaas',
             data 	  		: [objid: cancelledfaas.objid, taskid:cancelledfaas.taskid],
         ]

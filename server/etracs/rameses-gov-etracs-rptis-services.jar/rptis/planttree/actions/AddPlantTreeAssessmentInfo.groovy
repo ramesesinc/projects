@@ -41,6 +41,7 @@ public class AddPlantTreeAssessmentInfo implements RuleActionHandler {
 				marketvalue  : ptdentity.marketvalue,
 				assesslevel  : ptd.assesslevel,
 				assessedvalue  : ptd.assessedvalue,
+				taxable  : ptd.taxable, 
 			]
 			
 			a = new RPUAssessment(entity)

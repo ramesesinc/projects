@@ -90,7 +90,6 @@ public class RpuBldgInfoGeneralPage extends javax.swing.JPanel {
         xDateField5.setIndex(-6);
         xDateField5.setName("entity.rpu.dtcompleted"); // NOI18N
         xDateField5.setPreferredSize(new java.awt.Dimension(150, 19));
-        xDateField5.setRequired(true);
         formPanel1.add(xDateField5);
 
         xDateField1.setCaption("Date Occupied");
@@ -98,7 +97,6 @@ public class RpuBldgInfoGeneralPage extends javax.swing.JPanel {
         xDateField1.setIndex(-5);
         xDateField1.setName("entity.rpu.dtoccupied"); // NOI18N
         xDateField1.setPreferredSize(new java.awt.Dimension(150, 19));
-        xDateField1.setRequired(true);
         formPanel1.add(xDateField1);
 
         formPanel12.setCaptionWidth(125);

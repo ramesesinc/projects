@@ -72,6 +72,7 @@ SELECT
 	f.tdno, f.effectivityyear, f.prevtdno, 
 	rp.cadastrallotno, rp.surveyno, rp.blockno, pc.code AS classcode, r.rputype, r.totalav, 
 	r.fullpin, f.prevtdno, f.memoranda, 
+	b.name AS barangay, b.indexno AS barangayindex,
 	et.code AS legalbasis   
 FROM faas f
 	INNER JOIN rpu r ON f.rpuid = r.objid 

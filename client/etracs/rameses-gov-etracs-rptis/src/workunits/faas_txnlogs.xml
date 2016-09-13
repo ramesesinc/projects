@@ -1,38 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<workunit>
+<workunit extends="rpt_wtemplates/TxnLogs.xml">
     <invokers>
         <invoker type="faas:formActions" caption="Logs" index="100" visibleWhen="#{mode=='read'}" target="popup"/>
-        <invoker type="formActions" caption="Close" action="_close" />
     </invokers>
-    
-    <code>
-<![CDATA[        
-        
-import com.rameses.rcp.annotations.* 
-import com.rameses.rcp.common.* 
-import com.rameses.osiris2.client.* 
-import com.rameses.osiris2.common.* 
-
-class LogController
-{
-    @Service('FAASService')
-    def svc;
-    
-    def entity;
-    
-    String title = 'Transaction Logs';
-    
-    def listHandler = [
-        fetchList : { 
-            return svc.getTxnLogs(entity.objid);
-        }        
-    ] as BasicListModel 
-    
-}    
-]]>        
-    </code>
-    
-    <pages>
-        <page template="com.rameses.gov.etracs.rpt.common.TxnLogPage"/>
-    </pages>
 </workunit>

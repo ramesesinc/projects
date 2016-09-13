@@ -5,21 +5,17 @@
 - BPLS 
 		
 - ASSESSOR
-	- Improve subdivision cancel improvement add remarks and reason 
-	- Add access of cancelled faas listing 
-	- Fix building modify appraisal page (not editable)
-	- Fix cancelled faas report (old data)
-	- Update TD Report add prevarea ha
-	- Update FAAS Listing Report
-    - Add LGU Name to NOA query
-	- Modified ROA include planttree info
-	- (new) List of Titled Properties 
-	- (new) Additional FAAS Restrictions
-	- (new) Report on AV of Restricted Properties
-
-- LANDTAX
-	- Update on idle land statement of shares
-	- (new) Support YEAR RANGE option in Delinquency Listing report
-	- (new) List of Compromise Agreements
-	- Display administrator info in Notice of Delinquency Report 
+	- NEW! Agricultural Land Area by Actual Use Summary report
+	- Valid subdivision affected improvement new faas
+	- Update on NOA report 
+	- Update on modify pin facility
+	- Fix sketch attachment and submission
+	- Fix TD Report sqm area
+	- Allow edit of superseded information
+	- Commit on data capture automatically to avoid duplication
+	- Update transmittal support
+	- Add support for non-taxable machine
+	- Fix missing machine FAAS info (brand/model)
 	
+- LANDTAX
+	- Update on delinquency listing 

@@ -59,6 +59,7 @@ class FaasDataCaptureInitController
         'entity.pintype' :{
             entity.isection = null;
             entity.iparcel = null;
+            binding.refresh('entity.(isection|iparcel)');
         },
         
         'entity.*' : { buildPin(); }
@@ -80,7 +81,7 @@ class FaasDataCaptureInitController
     
     
     def process(){
-        def faas = svc.initCapture(entity);
+        def faas = svc.initCaptureAndCreate(entity);
         faas.lgu = entity.lgu;
         faas.prevpin = entity.fullpin;
         def filetype = 'faas:capture:create'

@@ -28,7 +28,6 @@ FROM rptledger rl
   LEFT JOIN faas f ON rl.faasid = f.objid 
 WHERE rl.objid = $P{rptledgerid}
   AND rl.state = 'APPROVED'
-  and not exists(select * from rptledger_restriction where parentid = rl.objid )
 
 
 [getBilledItems]
@@ -37,8 +36,8 @@ from (
   select
     rlf.objid, 
     rlf.tdno,
+    rlf.assessedvalue as originalav,
     sum(bi.av) as assessedvalue,
-    sum(bi.av) as originalav,
     concat(bi.year, '-', 
       case when min(bi.qtr) = max(bi.qtr) then min(bi.qtr)
       else concat(min(bi.qtr), max(bi.qtr))
@@ -85,8 +84,8 @@ from (
   select
     rlf.objid, 
     rlf.tdno,
+    rlf.assessedvalue as originalav,
     bi.av as assessedvalue,
-    bi.av as originalav,
     concat(bi.year, '-', bi.qtr) as period,
     bi.basic,
     bi.basicint,

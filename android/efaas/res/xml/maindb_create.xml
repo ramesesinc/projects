@@ -191,6 +191,89 @@
     </sql>
     
     <!-- =========================================================== -->
+    <!-- BUILDING REVISION SETTING -->
+    <!-- =========================================================== -->
+    
+    <sql>
+        CREATE TABLE bldgrysetting
+        (
+        	objid TEXT NOT NULL PRIMARY KEY,
+        	state TEXT,
+        	ry NUMERIC,
+        	predominant NUMERIC,
+        	depreciatecoreanditemseparately NUMERIC,
+        	computedepreciationbasedonschedule NUMERIC,
+        	straightdepreciation TEXT,
+        	calcbldgagebasedondtoccupied NUMERIC,
+        	appliedto TEXT,
+        	previd TEXT
+        )
+    </sql>
+    
+    <sql>
+        CREATE TABLE bldgassesslevel
+        (
+        	objid TEXT NOT NULL PRIMARY KEY,
+        	bldgrysettingid TEXT,
+        	classification_objid TEXT,
+        	code TEXT,
+        	name TEXT,
+        	fixrate NUMERIC,
+        	rate REAL,
+        	previd TEXT
+        )
+    </sql>
+    
+    <sql>
+        CREATE TABLE bldgassesslevelrange
+        (
+        	objid TEXT NOT NULL PRIMARY KEY,
+        	bldgassesslevelid TEXT,
+        	bldgrysettingid TEXT,
+        	mvfrom REAL,
+        	mvto REAL,
+        	rate REAL
+        )
+    </sql>
+    
+    <sql>
+        CREATE TABLE bldgtype
+        (
+        	objid TEXT NOT NULL PRIMARY KEY,
+        	bldgrysettingid TEXT,
+        	code TEXT,
+        	name TEXT,
+        	basevaluetype TEXT,
+        	residualrate REAL,
+        	previd TEXT
+        )
+    </sql>
+    
+    <sql>
+        CREATE TABLE bldgtype_depreciation
+        (
+        	objid TEXT NOT NULL PRIMARY KEY,
+        	bldgtypeid TEXT,
+        	bldgrysettingid TEXT,
+        	agefrom NUMERIC,
+        	ageto NUMERIC,
+        	rate REAL
+        )
+    </sql>
+    
+    <sql>
+        CREATE TABLE bldgtype_storeyadjustment
+        (
+        	objid TEXT NOT NULL PRIMARY KEY,
+        	bldgtypeid TEXT,
+        	bldgrysettingid TEXT,
+        	floorno TEXT,
+        	rate REAL,
+        	previd TEXT
+        )
+    </sql>
+    
+    <!-- =========================================================== -->
     <!-- FAAS -->
     <!-- =========================================================== -->
     
@@ -205,7 +288,9 @@
 			owner_address TEXT,
 			tdno TEXT,
 			fullpin TEXT,
+			rpu_objid TEXT,
 			rpu_ry TEXT,
+			rpu_type TEXT,
 			rpu_suffix TEXT,
 			rpu_subsuffix TEXT,
 			rpu_classification_objid TEXT,
@@ -215,6 +300,7 @@
 			rpu_totalbmv TEXT,
 			rpu_totalmv TEXT,
 			rpu_totalav TEXT,
+			rp_objid TEXT,
 			rp_cadastrallotno TEXT,
 			rp_blockno TEXT,
 			rp_surveyno TEXT,
@@ -234,13 +320,30 @@
 			landrpuid TEXT,
 			subclass_objid TEXT,
 			specificclass_objid TEXT,
+			specificclass_classification_objid TEXT,
+			specificclass_areatype TEXT,
 			actualuse_objid TEXT,
+			actualuse_code TEXT,
+			actualuse_name TEXT,
+			actualuse_fixrate REAL,
+			actualuse_classification_objid TEXT,
 			stripping_objid TEXT,
+			stripping_rate TEXT,
 			striprate TEXT,
 			areatype TEXT,
 			area TEXT,
 			areasqm TEXT,
-			areaha TEXT
+			areaha TEXT,
+			basevalue REAL,
+			unitvalue REAL,
+			taxable INTEGER,
+			basemarketvalue REAL,
+			adjustment REAL,
+			landvalueadjustment REAL,
+			actualuseadjustment REAL,
+			marketvalue REAL,
+			assesslevel REAL,
+			assessedvalue REAL
         )
     </sql>
     
@@ -257,10 +360,12 @@
         CREATE TABLE examination
         (
         	objid TEXT NOT NULL PRIMARY KEY,
-        	faasid TEXT,
+        	parent_objid TEXT,
 			findings TEXT,
 			recommendations TEXT,
-			date TEXT
+			dtinspected TEXT,
+			notedby TEXT,
+			notedbytitle TEXT
         )
     </sql>
     
@@ -268,7 +373,7 @@
         CREATE TABLE images
         (
         	objid TEXT,
-        	faasid TEXT,
+        	examinationid TEXT,
         	title  TEXT,
 			image TEXT
         )

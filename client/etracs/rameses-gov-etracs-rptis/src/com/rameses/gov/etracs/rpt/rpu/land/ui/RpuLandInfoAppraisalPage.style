@@ -27,11 +27,11 @@
 
 
 
-"entity.*"  [allowEdit == false || !entity.taskstate.matches('.*appraiser.*|recommender')] {
+"entity.*"  [allowEdit == false || (entity.taskstate && !entity.taskstate.matches('.*appraiser.*|recommender'))] {
     enabled:false;
 }
 
-"selectedLand"  [allowEdit == false || !entity.taskstate.matches('.*appraiser.*|recommender')] {
+"selectedLand"  [allowEdit == false || ( entity.taskstate && !entity.taskstate?.matches('.*appraiser.*|recommender'))] {
     readonly:true;
 }
 

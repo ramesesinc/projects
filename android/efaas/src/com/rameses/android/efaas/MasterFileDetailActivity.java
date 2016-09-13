@@ -62,9 +62,6 @@ public class MasterFileDetailActivity extends SettingsMenuActivity{
     			Platform.runAsync(new ActionProcess());
             }
         });
-        
-        ActionBar bar = getActionBar();
-	    //bar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#a6e20d")));
 	}
 	
 	protected void afterBackPressed() {
@@ -200,6 +197,7 @@ public class MasterFileDetailActivity extends SettingsMenuActivity{
 		
 		list = (ListView) findViewById(R.id.listview_snyc);
 		list.setAdapter(new MasterFileMenuAdapter(this,data));
+		list.setBackgroundResource(0);
 		if(data.isEmpty()) list.setBackgroundResource(R.drawable.empty);
 		list.setOnItemClickListener(new OnItemClickListener(){
 			@Override
@@ -521,7 +519,6 @@ public class MasterFileDetailActivity extends SettingsMenuActivity{
 				
 				errorhandler.sendMessage(msg);
 			}
-            Log.v("Master File Data", masterFileData.toString());
             saveData();
 		}
 		

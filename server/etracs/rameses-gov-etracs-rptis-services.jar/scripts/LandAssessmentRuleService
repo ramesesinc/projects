@@ -40,12 +40,15 @@ public class LandAssessmentRuleService
 	@ProxyMethod
 	public def execute(rpu) throws Exception {
 		rpu.assessments = []
+		rpu.totalav = 0.0
 		def request = [rpu:rpu, variables:[], assessments:[]]; 
 		request.facts = createFacts(request);
 		request.actions = buildActions( request );
 
 		ruleSvc.execute( RULESET, request.facts, request.actions, 'PRE-ASSESSMENT');
 		def grps = ruleDB.getRulegroups( [ruleset: RULESET] );
+		def gsum = grps.find{it.name =='AFTER-SUMMARY'}
+		if (gsum) grps.remove(gsum)
 		grps.each{g ->
 			ruleSvc.execute( RULESET, request.facts, request.actions, g.name);
 		}
@@ -59,6 +62,7 @@ public class LandAssessmentRuleService
 				ruleSvc.execute(ptdruleset, request.facts, request.actions, g.name);
 			}
 		}
+		ruleSvc.execute( RULESET, request.facts, request.actions, 'AFTER-SUMMARY');
 
 		rpu.totallandbmv = 0.0
 		rpu.totallandmv = 0.0
@@ -71,12 +75,10 @@ public class LandAssessmentRuleService
 		rpu.totalareasqm = 0.0
 		rpu.totalbmv = 0.0
 		rpu.totalmv = 0.0
-		rpu.totalav = 0.0
 
-		if (rpu.landdetails){
-			rpu.totallandbmv = rpu.landdetails.basemarketvalue.sum()
-			rpu.totallandmv = rpu.landdetails.marketvalue.sum()
-			rpu.totallandav = rpu.landdetails.assessedvalue.sum()
+		def taxables = rpu.landdetails.findAll{it.taxable == true}
+		if (taxables){
+			rpu.totallandav = taxables.assessedvalue.sum()
 		}
 		if (rpu.planttrees){
 			rpu.totalplanttreebmv = rpu.planttrees.basemarketvalue.sum()
@@ -86,6 +88,8 @@ public class LandAssessmentRuleService
 		}
 
 		if (rpu.landdetails){
+			rpu.totallandbmv = rpu.landdetails.basemarketvalue.sum()
+			rpu.totallandmv = rpu.landdetails.marketvalue.sum()
 			rpu.totalareaha = numSvc.roundA(rpu.landdetails.areaha.sum(), 6)
 			rpu.totalareasqm = numSvc.round(rpu.landdetails.areasqm.sum())
 		}
@@ -94,8 +98,10 @@ public class LandAssessmentRuleService
 		rpu.totalmv = rpu.assessments.marketvalue.sum()
 		if (rpu.totalmv == null) rpu.totalmv = 0.0 
 
-		rpu.totalav = rpu.assessments.assessedvalue.sum()
-		if (rpu.totalav == null) rpu.totalav = 0.0 
+		if (rpu.totalav == 0) {
+			rpu.totalav = rpu.assessments.assessedvalue.sum()
+			if (rpu.totalav == null) rpu.totalav = 0.0
+		}
 
 		rpu.assessments.each{
 			if (it.rputype == 'land')
@@ -206,6 +212,8 @@ public class LandAssessmentRuleService
 		actions.addCommand( "calc-av", new CalcAssessValue( request:request, NS:numSvc ));
 		actions.addCommand( "add-assessment-info", new AddAssessmentInfo( request:request, NS:numSvc));
 		actions.addCommand( "recalc-rpuassessment", new CalcRPUAssessValue( request:request, NS:numSvc));
+		actions.addCommand( "recalc-rpu-totalav", new CalcTotalRPUAssessValue( request:request, NS:numSvc));
+		actions.addCommand( "add-derive-var", new AddDeriveVariable( request:request));
 
 		actions.addCommand( "calc-planttree-bmv", new CalcPlantTreeBaseMarketValue( request:request, NS:numSvc ));
 		actions.addCommand( "calc-planttree-mv", new CalcPlantTreeMarketValue( request:request));

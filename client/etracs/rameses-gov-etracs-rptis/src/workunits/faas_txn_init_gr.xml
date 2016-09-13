@@ -9,6 +9,8 @@
         
         <invoker folderid="/home/rpt/txn" action="init" caption="General Revision" 
             txntype="GR" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createGeneralRevision" index="10"  />
+        <invoker folderid="/menu/txn/rpt" action="init" caption="General Revision" 
+            txntype="GR" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createGeneralRevision" index="10"  />
             
     </invokers>
     <code>

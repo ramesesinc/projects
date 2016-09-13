@@ -39,6 +39,16 @@ class GeneralRevisionPinRenumberService
 	@ProxyMethod
 	public def getLandsForRepinning( entity ) {
 		entity.barangayid = entity.barangay.objid 
+
+		def noncurrent = em.findNonCurrentCount(entity)
+		if (noncurrent.size() > 0 ){
+			entity.state = 'CURRENT'
+			entity.orderby = ' order by f.tdno '
+		}
+		else {
+			entity.state = 'FORAPPROVAL'
+			entity.orderby = ' order by convert(rp.parcel, signed) '	
+		}
 		return em.getLandsForRepinning(entity)
 	}
 
@@ -53,7 +63,7 @@ class GeneralRevisionPinRenumberService
 		def oldpin = newrp.pin 
 
 		newrp.barangaypin = barangaypin
-		newrp.parcel = faas.idx.toString().padLeft(newrp.parcel.length(), '0')
+		newrp.parcel = faas.idx.toString().padLeft(2, '0')
 		newrp.pin = barangaypin + '-' + newrp.section + '-' + newrp.parcel 
 
 		realpropertyDb.find([objid:newrp.objid]).update([pin:newrp.pin, parcel:newrp.parcel])

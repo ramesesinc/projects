@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="formActions" caption="Close" action="_close" />
+    </invokers>
+    <code class="com.rameses.gov.etracs.rptis.model.TxnLogModel" />
+    <pages>
+        <page template="com.rameses.gov.etracs.rpt.common.TxnLogPage"/>
+    </pages>
+</workunit>

@@ -1,0 +1,39 @@
+<workunit extends="wtemplates/LookupController.xml">
+    <invokers>
+        <invoker type="rptredflag:lookup" action="init" caption="Red Flag Lookup" target="popup" width="700"/>
+    </invokers>
+    
+    <code>
+
+import com.rameses.rcp.common.*
+import com.rameses.rcp.annotations.*
+import com.rameses.osiris2.client.*
+import com.rameses.osiris2.common.*
+
+class RPTRedFlagLookupModel extends LookupController
+{
+    @Service("RPTRedFlagService")
+    def svc
+    
+    int getRows(){
+        return  25;
+    }
+    
+    Column[] getColumns() {
+        return [
+            new Column(name:"state", caption:"State", width:80),
+            new Column(name:"caseno", caption:"Case No.", width:100),
+            new Column(name:"refno", caption:"Ref No.", width:100),
+            new Column(name:"action", caption:"Action", width:100),
+            new Column(name:"filedby.name", caption:"Filed By", width:200),
+            new Column(name:"resolvedby.name", caption:"Resolved By", width:200),
+        ]
+    }
+    
+    List fetchList( Map params ) { 
+        return svc.getLookup(params)
+    }
+}  
+
+    </code>
+</workunit>

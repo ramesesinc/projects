@@ -249,6 +249,7 @@ public class RpuMachDetailController extends com.rameses.gov.etracs.rpt.workflow
             imported            : false,
             newlyinstalled      : false,
             autodepreciate      : true,
+            taxable             : true,
         ]
     }
 

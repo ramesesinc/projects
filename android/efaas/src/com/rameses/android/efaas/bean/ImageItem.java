@@ -6,18 +6,18 @@ import android.graphics.Bitmap;
 
 public class ImageItem {
 	
-	private String objid, faasid, title;
+	private String objid, examinationid, title;
 	private byte[] image;
 	
-	public ImageItem(String objid, String faasid, String title, byte[] image){
+	public ImageItem(String objid, String examinationid, String title, byte[] image){
 		this.objid = objid;
-		this.faasid = faasid;
+		this.examinationid = examinationid;
 		this.title = title;
 		this.image = image;
 	}
 	
 	public String getObjid(){ return objid; }
-	public String getFaasId(){ return faasid; }
+	public String getExaminationId(){ return examinationid; }
 	public String getTitle(){ return title; }
 	public Bitmap getImage(){ return DbBitmapUtility.getImage(image); }
 

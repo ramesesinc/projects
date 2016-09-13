@@ -79,7 +79,7 @@ class SubdivisionSupportService
             it.taxpayer = entitySvc.open(it.taxpayer)
         }
         data.tasks << [type:'subdivision', tasks:em.getTasks(subdivision)]
-        data.image = getImageData(subdivision)
+        data.image = getImageData(data)
         return data 
     }
 
@@ -91,7 +91,7 @@ class SubdivisionSupportService
     }
 
     @ProxyMethod
-    public void buildFaasesData(subdivision){
+    public def buildFaasesData(subdivision){
         if (!subdivision.faases)
             subdivision.faases = []
         
@@ -110,6 +110,8 @@ class SubdivisionSupportService
         subdivision.faases.each{
             it.taxpayer = entitySvc.open(it.taxpayer)
         }
+        subdivision.tasks = taskEm.getTasks(subdivision)
+        return subdivision
     }
 
 
@@ -185,7 +187,6 @@ class SubdivisionSupportService
 
     @ProxyMethod
     public void updateFaasesData( subdivision ) {
-        println 'Updating faas data...'
         subdivision.faases.each{
             def oldfaas = faasSvc.findFaasById(it.objid)
             if (oldfaas.state != 'CURRENT'){

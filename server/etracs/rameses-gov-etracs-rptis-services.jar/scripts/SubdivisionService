@@ -317,10 +317,10 @@ class SubdivisionService
         def faas = em.findFaasById(entity);
         if (!faas)
             throw new Exception('FAAS ' + entity.newfaasid + ' does not exist or has been deleted.')
-        if (!faas.tdno){
-            faas.newtdno = faasSvc.generateNextTdNo(faas)
-            em.updateFaasNewTdNo(faas)
-        }
+        
+        faasSvc.updateTDNo(faas)
+        faas.newtdno = faas.tdno 
+        em.updateFaasNewTdNo(faas)
     }    
 
     @ProxyMethod
@@ -694,6 +694,7 @@ class SubdivisionService
         affectedrpu.rp = rpSvc.open([objid:affectedrpu.subdividedland.newrpid])
         affectedrpu.barangay = brgySvc.getById(affectedrpu.rp.barangayid);
         affectedrpu.barangayid = affectedrpu.barangay.objid;
+        affectedrpu.pintype = affectedrpu.rp.pintype 
         affectedrpu.isection = util.toInteger(affectedrpu.rp.section);
         affectedrpu.iparcel = util.toInteger(affectedrpu.rp.parcel);
         affectedrpu.lgu = lguSvc.getLgus().find{it.objid == affectedrpu.lguid}

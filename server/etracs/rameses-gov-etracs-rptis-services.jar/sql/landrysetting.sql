@@ -62,10 +62,14 @@ DELETE FROM landassesslevelrange WHERE landassesslevelid = $P{landassesslevelid}
 # SPECIFICCLASS SUPPORT
 #===================================================================
 [getSpecificClasses]
-SELECT * 
-FROM lcuvspecificclass 
+SELECT spc.*, 
+	lspc.code, lspc.name, 
+	lspc.code as landspecificclass_code, lspc.name as landspecificclass_name  
+FROM lcuvspecificclass spc 
+	inner join landspecificclass lspc on spc.landspecificclass_objid = lspc.objid 
 WHERE landrysettingid = $P{landrysettingid}
   AND classification_objid LIKE $P{classification_objid} 
+
 ORDER BY code, name 
 
 

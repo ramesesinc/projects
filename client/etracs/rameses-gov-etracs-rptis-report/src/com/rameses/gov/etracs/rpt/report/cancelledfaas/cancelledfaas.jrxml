@@ -52,9 +52,30 @@
 	<field name="approver.name" class="java.lang.String"/>
 	<field name="approver.title" class="java.lang.String"/>
 	<field name="faas.totalav" class="java.math.BigDecimal"/>
+	<field name="state" class="java.lang.String"/>
 
 		<background>
-			<band height="0"  isSplitAllowed="true" >
+			<band height="341"  isSplitAllowed="true" >
+				<printWhenExpression><![CDATA[new Boolean($F{state}.toUpperCase().matches('DRAFT|INTERIM|FORAPPROVAL'))]]></printWhenExpression>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="30"
+						y="224"
+						width="357"
+						height="107"
+						forecolor="#CCCCCC"
+						key="textField-21"/>
+					<box>					<pen lineWidth="6.0" lineStyle="Solid" lineColor="#CCCCCC"/>
+					<topPen lineWidth="6.0" lineStyle="Solid" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="6.0" lineStyle="Solid" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="6.0" lineStyle="Solid" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="6.0" lineStyle="Solid" lineColor="#CCCCCC"/>
+</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial Black" size="36"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{state}]]></textFieldExpression>
+				</textField>
 			</band>
 		</background>
 		<title>

@@ -10,7 +10,7 @@ public class RPTSmsService extends ActiveCrudListService
 	def em;
 
 	
-	@Service(value="SMSService", connection="sms_sender")
+	@Service('SMSService')
 	def smsSvc;	
 
 	

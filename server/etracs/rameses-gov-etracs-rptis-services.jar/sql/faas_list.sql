@@ -137,7 +137,7 @@ where fl.objid = $P{objid}
  	and fl.objid = f.objid 
 	and f.rpuid = r.objid 
 	and f.realpropertyid = rp.objid 
-	and r.classification_objid = pc.objid 
+	and (r.classification_objid = pc.objid or r.classification_objid is null)
 
 
 

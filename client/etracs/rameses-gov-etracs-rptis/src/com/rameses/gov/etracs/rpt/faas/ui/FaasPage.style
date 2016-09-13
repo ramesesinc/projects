@@ -32,19 +32,15 @@
 }
 
 
-entity.rp.(surveyno|cadastrallotno|blockno)[entity.datacapture == 0 && (entity.txntype.allowEditPinInfo==0 || !entity.taskstate.matches('taxmapper|provtaxmapper|recommender'))]{
+entity.rp.(surveyno|cadastrallotno|blockno)[entity.datacapture == 0 && (entity.txntype.allowEditPinInfo==0 || !entity.taskstate?.matches('taxmapper|provtaxmapper|recommender'))]{
     enabled:false;
 }
 
-"entity.owner.*|entity.taxpayer.*"[entity.datacapture==0 && ( entity.txntype.allowEditOwner == 0 || !entity.taskstate.matches('receiver|examiner|appraiser|provappraiser|recommender'))]{
+"entity.owner.*|entity.taxpayer.*|entity.title.*"[entity.datacapture==0 && ( entity.txntype.allowEditOwner == 0 || !entity.taskstate?.matches('receiver|appraiser_chief|appraiser|taxmapper_chief|taxmapper|recommender'))]{
     enabled:false;
 }
 
-"entity.title.*"[entity.datacapture==0 && (!entity.taskstate.matches('receiver|examiner|appraiser|provappraiser|recommender'))]{
-    enabled:false;
-}
-
-"entity.administrator.*"[entity.datacapture==0 && ( entity.txntype.objid != 'CA' && !entity.taskstate.matches('receiver|examiner|appraiser|provappraiser|recommender'))]{
+"entity.administrator.*"[entity.datacapture==0 && ( entity.txntype.objid != 'CA' && !entity.taskstate?.matches('receiver|appraiser_chief|appraiser|taxmapper_chief|taxmapper|recommender'))]{
     enabled:false;
 }
 

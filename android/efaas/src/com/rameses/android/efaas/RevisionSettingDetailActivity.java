@@ -5,13 +5,11 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -57,18 +55,11 @@ public class RevisionSettingDetailActivity extends SettingsMenuActivity {
 		Button button = (Button) findViewById(R.id.button_sync);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-            	if(!revisionsetting.equals("Land Revision Setting")){
-            		new InfoDialog(activity,"This operation is not yet supported!").show();
-            		return;
-            	}
             	progressDialog.setMessage("Please wait...");
     			if (!progressDialog.isShowing()) progressDialog.show();		
     			Platform.runAsync(new ActionProcess());
             }
         });
-        
-        ActionBar bar = getActionBar();
-	    //bar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#a6e20d")));
 	}
 	
 	protected void afterBackPressed() {
@@ -97,8 +88,24 @@ public class RevisionSettingDetailActivity extends SettingsMenuActivity {
 			}
 		}
 		
+		if(revisionsetting.equals("Building Revision Setting")){
+			BldgRySettingDB db = new BldgRySettingDB(); 
+			List<Map> list = new ArrayList();
+			try { 
+				list = db.getList(new HashMap()); 
+			} catch(Throwable t) {
+				t.printStackTrace();
+			}
+			for ( Map m : list ) { 
+				String code = m.get("ry") != null ? m.get("ry").toString() : "";
+				String name = m.get("appliedto") != null ? m.get("appliedto").toString() : "";
+				data.add(new MasterFileListItem(code,name));
+			}
+		}
+		
 		list = (ListView) findViewById(R.id.listview_snyc);
 		list.setAdapter(new MasterFileMenuAdapter(this,data));
+		list.setBackgroundResource(0);
 		if(data.isEmpty()) list.setBackgroundResource(R.drawable.empty);
 		list.setOnItemClickListener(new OnItemClickListener(){
 			@Override
@@ -110,9 +117,12 @@ public class RevisionSettingDetailActivity extends SettingsMenuActivity {
 	}
 	
 	void saveData(){
-		System.out.println("saveData entered....");
 		if(revisionsetting.equals("Land Revision Setting")){
 			createLandRySettingData();
+		}
+		
+		if(revisionsetting.equals("Building Revision Setting")){
+			createBuildingRySettingData();
 		}
 	}
 	
@@ -131,18 +141,7 @@ public class RevisionSettingDetailActivity extends SettingsMenuActivity {
 			List<Map> lcuvstrippinglist = (List<Map>) revisionSettingData.get("lcuvstripping");
 			List<Map> landadjustmenttypelist = (List<Map>) revisionSettingData.get("landadjustmenttype");
 			
-			Log.v("RAMESES","landrysettinglist : " + landrysettinglist);
-			Log.v("RAMESES","landassesslevellist : " + landassesslevellist);
-			Log.v("RAMESES","landassesslevelrangelist : " + landassesslevelrangelist);
-			Log.v("RAMESES","lcuvspecificclasslist : " + lcuvspecificclasslist);
-			Log.v("RAMESES","lcuvsubclasslist : " + lcuvsubclasslist);
-			Log.v("RAMESES","lcuvstrippinglist : " + lcuvstrippinglist);
-			Log.v("RAMESES","landadjustmenttypelist : " + landadjustmenttypelist);
-			
 			Iterator<Map> it = null;
-			
-			Log.v("RAMESES","=================================================");
-			Log.v("RAMESES","LANDRYSETTING : \n");
 			it = landrysettinglist.iterator();
 			while(it.hasNext()){
 				Map data = it.next();
@@ -162,14 +161,10 @@ public class RevisionSettingDetailActivity extends SettingsMenuActivity {
 					t.printStackTrace();
 				}
 			}
-			Log.v("RAMESES","=================================================\n");
-			
-			Log.v("RAMESES","=================================================");
-			Log.v("RAMESES","LANDASSESSLEVEL : \n");
+
 			it = landassesslevellist.iterator();
 			while(it.hasNext()){
 				Map data = it.next();
-				System.out.println(data + "\n");
 				try{
 					Map classification = (Map) data.get("classification");
 					
@@ -191,14 +186,10 @@ public class RevisionSettingDetailActivity extends SettingsMenuActivity {
 					t.printStackTrace();
 				}
 			}
-			Log.v("RAMESES","=================================================\n");
-			
-			Log.v("RAMESES","=================================================");
-			Log.v("RAMESES","LANDASSESSLEVELRANGE : \n");
+
 			it = landassesslevelrangelist.iterator();
 			while(it.hasNext()){
 				Map data = it.next();
-				System.out.println(data + "\n");
 				try{
 					Map params = new HashMap();
 					params.put("objid", data.get("objid") != null ? data.get("objid").toString() : "");
@@ -216,14 +207,10 @@ public class RevisionSettingDetailActivity extends SettingsMenuActivity {
 					t.printStackTrace();
 				}
 			}
-			Log.v("RAMESES","=================================================\n");
-			
-			Log.v("RAMESES","=================================================");
-			Log.v("RAMESES","LCUVSPECIFICCLASS : \n");
+
 			it = lcuvspecificclasslist.iterator();
 			while(it.hasNext()){
 				Map data = it.next();
-				System.out.println(data + "\n");
 				try{
 					Map classification = (Map) data.get("classification");
 					
@@ -244,14 +231,10 @@ public class RevisionSettingDetailActivity extends SettingsMenuActivity {
 					t.printStackTrace();
 				}
 			}
-			Log.v("RAMESES","=================================================\n");
-			
-			Log.v("RAMESES","=================================================");
-			Log.v("RAMESES","LCUVSUBCLASS : \n");
+
 			it = lcuvsubclasslist.iterator();
 			while(it.hasNext()){
 				Map data = it.next();
-				System.out.println(data + "\n");
 				try{
 					Map specificclass = (Map) data.get("specificclass");
 					
@@ -272,10 +255,7 @@ public class RevisionSettingDetailActivity extends SettingsMenuActivity {
 					t.printStackTrace();
 				}
 			}
-			Log.v("RAMESES","=================================================\n");
-			
-			Log.v("RAMESES","=================================================");
-			Log.v("RAMESES","LCUVSTRIPPING : \n");
+
 			it = lcuvstrippinglist.iterator();
 			while(it.hasNext()){
 				Map data = it.next();
@@ -287,7 +267,7 @@ public class RevisionSettingDetailActivity extends SettingsMenuActivity {
 					params.put("landrysettingid", data.get("landrysettingid") != null ? data.get("landrysettingid").toString() : "");
 					params.put("classification_objid", classification.get("objid") != null ? classification.get("objid").toString() : "");
 					params.put("striplevel", data.get("striplevel") != null ? data.get("striplevel").toString() : "");
-					params.put("rate", data.get("rate") != null ? data.get("rate").toString() : "");
+					params.put("rate", data.get("rate") != null ? data.get("rate").toString() : null);
 					params.put("previd", data.get("previd") != null ? data.get("previd").toString() : "");
 					
 					LcuvStrippingDB lcuvstrippingdb = new LcuvStrippingDB();
@@ -298,10 +278,7 @@ public class RevisionSettingDetailActivity extends SettingsMenuActivity {
 					t.printStackTrace();
 				}
 			}
-			Log.v("RAMESES","=================================================\n");
-			
-			Log.v("RAMESES","=================================================");
-			Log.v("RAMESES","LANDADJUSTMENTTYPE : \n");
+
 			it = landadjustmenttypelist.iterator();
 			while(it.hasNext()){
 				Map data = it.next();
@@ -324,25 +301,160 @@ public class RevisionSettingDetailActivity extends SettingsMenuActivity {
 					t.printStackTrace();
 				}
 			}
-			Log.v("RAMESES","=================================================\n");
 			
-			if(!error){
-				Bundle data = new Bundle();
-				data.putString("response", "success");
-				
-				Message msg = successhandler.obtainMessage();
-				msg.setData(data);
-				
-				successhandler.sendMessage(msg);
-			}else{
-				Bundle data = new Bundle();
-				data.putString("response", errorMsg);
-				
-				Message msg = errorhandler.obtainMessage();
-				msg.setData(data);
-				
-				errorhandler.sendMessage(msg);
+			finishDownload(error,errorMsg);
+		}
+	}
+	
+	private void createBuildingRySettingData(){
+		boolean error = false;
+		String errorMsg = "";
+		
+		if(revisionSettingData != null){
+			clearBuildingRySettingData();
+			
+			List<Map> bldgrysettings = (List<Map>) revisionSettingData.get("bldgrysetting");
+			List<Map> bldgassesslevels = (List<Map>) revisionSettingData.get("bldgassesslevel");
+			List<Map> bldgassesslevelranges = (List<Map>) revisionSettingData.get("bldgassesslevelrange");
+			List<Map> bldgtypes = (List<Map>) revisionSettingData.get("bldgtype");
+			List<Map> bldgtype_depreciations = (List<Map>) revisionSettingData.get("bldgtype_depreciation");
+			List<Map> bldgtype_storeyadjustments = (List<Map>) revisionSettingData.get("bldgtype_storeyadjustment");
+			
+			System.err.println(bldgrysettings);
+			System.err.println("*********************************************************************");
+			System.err.println(bldgassesslevels);
+			System.err.println("*********************************************************************");
+			System.err.println(bldgassesslevelranges);
+			System.err.println("*********************************************************************");
+			System.err.println(bldgtypes);
+			System.err.println("*********************************************************************");
+			System.err.println(bldgtype_depreciations);
+			System.err.println("*********************************************************************");
+			System.err.println(bldgtype_storeyadjustments);
+			System.err.println("*********************************************************************");
+			
+			for(Map map : bldgrysettings){
+				try{
+					Map params = new HashMap();
+					params.put("objid", map.get("objid") != null ? map.get("objid").toString() : "");
+					params.put("state", map.get("state") != null ? map.get("state").toString() : "");
+					params.put("ry", map.get("ry") != null ? map.get("ry").toString() : 0);
+					params.put("predominant", map.get("predominant") != null ? map.get("predominant").toString() : 0);
+					params.put("depreciatecoreanditemseparately", map.get("depreciatecoreanditemseparately") != null ? map.get("depreciatecoreanditemseparately").toString() : 0);
+					params.put("computedepreciationbasedonschedule", map.get("computedepreciationbasedonschedule") != null ? map.get("computedepreciationbasedonschedule").toString() : 0);
+					params.put("straightdepreciation", map.get("straightdepreciation") != null ? map.get("straightdepreciation").toString() : "");
+					params.put("calcbldgagebasedondtoccupied", map.get("calcbldgagebasedondtoccupied") != null ? map.get("calcbldgagebasedondtoccupied").toString() : 0);
+					params.put("appliedto", map.get("appliedto") != null ? map.get("appliedto").toString() : "");
+					params.put("previd", map.get("previd") != null ? map.get("previd").toString() : "");
+					
+					BldgRySettingDB db = new BldgRySettingDB();
+					db.create(params);
+				}catch(Throwable t){
+					errorMsg = t.getMessage();
+					error = true;
+					t.printStackTrace();
+				}
 			}
+			
+			for(Map map : bldgassesslevels){
+				try{
+					Map params = new HashMap();
+					params.put("objid", map.get("objid") != null ? map.get("objid").toString() : "");
+					params.put("bldgrysettingid", map.get("bldgrysettingid") != null ? map.get("bldgrysettingid").toString() : "");
+					params.put("classification_objid", map.get("classification_objid") != null ? map.get("classification_objid").toString() : null);
+					params.put("code", map.get("code") != null ? map.get("code").toString() : "");
+					params.put("name", map.get("name") != null ? map.get("name").toString() : "");
+					params.put("fixrate", map.get("fixrate") != null ? map.get("fixrate").toString() : 0);
+					params.put("rate", map.get("rate") != null ? map.get("rate").toString() : 0);
+					params.put("previd", map.get("previd") != null ? map.get("previd").toString() : "");
+					
+					BldgAssessLevelDB db = new BldgAssessLevelDB();
+					db.create(params);
+				}catch(Throwable t){
+					errorMsg = t.getMessage();
+					error = true;
+					t.printStackTrace();
+				}
+			}
+			
+			for(Map map : bldgassesslevelranges){
+				try{
+					Map params = new HashMap();
+					params.put("objid", map.get("objid") != null ? map.get("objid").toString() : "");
+					params.put("bldgassesslevelid", map.get("bldgassesslevelid") != null ? map.get("bldgassesslevelid").toString() : "");
+					params.put("bldgrysettingid", map.get("bldgrysettingid") != null ? map.get("bldgrysettingid").toString() : "");
+					params.put("mvfrom", map.get("mvfrom") != null ? map.get("mvfrom").toString() : 0);
+					params.put("mvto", map.get("mvto") != null ? map.get("mvto").toString() : 0);
+					params.put("rate", map.get("rate") != null ? map.get("rate").toString() : 0);
+
+					BldgAssessLevelRangeDB db = new BldgAssessLevelRangeDB();
+					db.create(params);
+				}catch(Throwable t){
+					errorMsg = t.getMessage();
+					error = true;
+					t.printStackTrace();
+				}
+			}
+			
+			for(Map map : bldgtypes){
+				try{
+					Map params = new HashMap();
+					params.put("objid", map.get("objid") != null ? map.get("objid").toString() : "");
+					params.put("bldgrysettingid", map.get("bldgrysettingid") != null ? map.get("bldgrysettingid").toString() : "");
+					params.put("code", map.get("code") != null ? map.get("code").toString() : "");
+					params.put("name", map.get("name") != null ? map.get("name").toString() : "");
+					params.put("basevaluetype", map.get("basevaluetype") != null ? map.get("basevaluetype").toString() : "");
+					params.put("residualrate", map.get("residualrate") != null ? map.get("residualrate").toString() : 0);
+					params.put("previd", map.get("previd") != null ? map.get("previd").toString() : "");
+					
+					BldgTypeDB db = new BldgTypeDB();
+					db.create(params);
+				}catch(Throwable t){
+					errorMsg = t.getMessage();
+					error = true;
+					t.printStackTrace();
+				}
+			}
+			
+			for(Map map : bldgtype_depreciations){
+				try{
+					Map params = new HashMap();
+					params.put("objid", map.get("objid") != null ? map.get("objid").toString() : "");
+					params.put("bldgtypeid", map.get("bldgtypeid") != null ? map.get("bldgtypeid").toString() : "");
+					params.put("bldgrysettingid", map.get("bldgrysettingid") != null ? map.get("bldgrysettingid").toString() : "");
+					params.put("agefrom", map.get("agefrom") != null ? map.get("agefrom").toString() : 0);
+					params.put("ageto", map.get("ageto") != null ? map.get("ageto").toString() : 0);
+					params.put("rate", map.get("rate") != null ? map.get("rate").toString() : 0);
+					
+					BldgTypeDepreciationDB db = new BldgTypeDepreciationDB();
+					db.create(params);
+				}catch(Throwable t){
+					errorMsg = t.getMessage();
+					error = true;
+					t.printStackTrace();
+				}
+			}
+			
+			for(Map map : bldgtype_storeyadjustments){
+				try{
+					Map params = new HashMap();
+					params.put("objid", map.get("objid") != null ? map.get("objid").toString() : "");
+					params.put("bldgtypeid", map.get("bldgtypeid") != null ? map.get("bldgtypeid").toString() : "");
+					params.put("bldgrysettingid", map.get("bldgrysettingid") != null ? map.get("bldgrysettingid").toString() : "");
+					params.put("floorno", map.get("floorno") != null ? map.get("floorno").toString() : "");
+					params.put("rate", map.get("rate") != null ? map.get("rate").toString() : 0);
+					params.put("previd", map.get("previd") != null ? map.get("previd").toString() : "");
+					
+					BldgTypeStoreyAdjustmentDB db = new BldgTypeStoreyAdjustmentDB();
+					db.create(params);
+				}catch(Throwable t){
+					errorMsg = t.getMessage();
+					error = true;
+					t.printStackTrace();
+				}
+			}
+			
+			finishDownload(error,errorMsg);
 		}
 	}
 	
@@ -357,6 +469,39 @@ public class RevisionSettingDetailActivity extends SettingsMenuActivity {
 			new LandAdjustmentTypeDB().clearAll();
 		}catch(Exception e){
 			ApplicationUtil.showShortMsg(e.getMessage());
+		}
+	}
+	
+	private void clearBuildingRySettingData(){
+		try{
+			new BldgTypeStoreyAdjustmentDB().clearAll();
+			new BldgTypeDepreciationDB().clearAll();
+			new BldgTypeDB().clearAll();
+			new BldgAssessLevelRangeDB().clearAll();
+			new BldgAssessLevelDB().clearAll();
+			new BldgRySettingDB().clearAll();
+		}catch(Exception e){
+			ApplicationUtil.showShortMsg(e.getMessage());
+		}
+	}
+	
+	private void finishDownload(boolean error, String errorMsg){
+		if(!error){
+			Bundle data = new Bundle();
+			data.putString("response", "success");
+			
+			Message msg = successhandler.obtainMessage();
+			msg.setData(data);
+			
+			successhandler.sendMessage(msg);
+		}else{
+			Bundle data = new Bundle();
+			data.putString("response", errorMsg);
+			
+			Message msg = errorhandler.obtainMessage();
+			msg.setData(data);
+			
+			errorhandler.sendMessage(msg);
 		}
 	}
 	
@@ -389,6 +534,10 @@ public class RevisionSettingDetailActivity extends SettingsMenuActivity {
 			try{
 	            if(revisionsetting.equals("Land Revision Setting")){
 	            	revisionSettingData = service.getLandRevisionSettingData();
+	            }
+	            
+	            if(revisionsetting.equals("Building Revision Setting")){
+	            	revisionSettingData = service.getBuildingRevisionSettingData();
 	            }
 			}catch(Throwable t){
 				t.printStackTrace();

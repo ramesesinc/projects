@@ -39,11 +39,8 @@ class ConsolidationWorkflowInterceptor
 
 
 
-	@Service(value="GroupNotificationService", connection="notification_proxy")
-    def groupNotificationSvc
-
-    @Service(value="UserNotificationService", connection="notification_proxy")
-    def userNotificationSvc
+	@Service('NotificationService')
+	def notificationService
 
 
 	@After(pattern='ConsolidationService.createConsolidation')
@@ -67,7 +64,7 @@ class ConsolidationWorkflowInterceptor
 		task.data.assignee = task.assignee 
 
 		//clear user notification
-		userNotificationSvc?.removeMessage([objid:task.refid])
+		notificationService?.removeMessage([objid:task.refid])
 	}
 
 
@@ -90,7 +87,7 @@ class ConsolidationWorkflowInterceptor
         em.deleteRequirements(consolidation)
 	}
 
-	@Before(pattern="ConsolidationWorkflowService.signal", eval="#{args[0].state.equalsIgnoreCase('examiner')}", index=10) 
+	@Before(pattern="ConsolidationWorkflowService.signal", eval="#{args[0].state.equalsIgnoreCase('examiner') && !args[0].action?.matches('return.*')}", index=10) 
 	public void validateExaminationInfo( evt ) {
 		def consolidation = evt.args[0].data
 		def findings = examinationSvc.getFindings(consolidation.objid)
@@ -99,7 +96,7 @@ class ConsolidationWorkflowInterceptor
 	}
 
 
-	@Before(pattern="ConsolidationWorkflowService.signal", eval="#{args[0].state.equalsIgnoreCase('taxmapper')}", index=10) 
+	@Before(pattern="ConsolidationWorkflowService.signal", eval="#{args[0].state.equalsIgnoreCase('taxmapper') && !args[0].action?.matches('return.*')}", index=10) 
 	public void validateTaxmappingInfo( evt ) {
 		def consolidation = evt.args[0].data
 
@@ -108,11 +105,16 @@ class ConsolidationWorkflowInterceptor
 		if (lands.size() <= 1)
 			throw new Exception('Consolidation requires at least two (2) consolidated lands.')
 
+		//check all affected rpus are assigned with new PIN
+		def nopinRpus = em.getAffectedRpuWithNoPin(consolidation)
+		if (nopinRpus)
+			throw new Exception('Affected RPU ' + nopinRpus[0].fullpin + ' is not yet assigned with a new suffix.');
+
 		consolidationSvc.updateConsolidatedFaasPreviousInfo(consolidation)
 	}
 
 
-	@After(pattern="ConsolidationWorkflowService.signal", eval="#{args[0].state.equalsIgnoreCase('taxmapper')}", index=11) 
+	@After(pattern="ConsolidationWorkflowService.signal", eval="#{args[0].state.equalsIgnoreCase('taxmapper') }", index=11) 
 	public void afterTaxmapping( evt ) {
 		def consolidation = evt.args[0].data
 		consolidationSvc.updateConsolidatedFaasPreviousInfo(consolidation)
@@ -120,7 +122,7 @@ class ConsolidationWorkflowInterceptor
 
 
 
-	@Before(pattern="ConsolidationWorkflowService.signal", eval="#{args[0].state.equalsIgnoreCase('appraiser')}", index=15) 
+	@Before(pattern="ConsolidationWorkflowService.signal", eval="#{args[0].state.equalsIgnoreCase('appraiser') && !args[0].action?.matches('return.*')}", index=15) 
 	public void validateAppraisalInfo( evt ) {
 		def consolidation = evt.args[0].data
 		consolidation = consolidationSvc.openConsolidation(consolidation.objid)

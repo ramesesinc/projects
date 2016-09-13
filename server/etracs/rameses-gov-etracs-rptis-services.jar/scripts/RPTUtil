@@ -103,7 +103,8 @@ class RPTUtil
         def qry = em.sqlContext.createNamedQuery( namedQuery )
         
         for (int i = 0; i< filters.size(); i++) {
-            qry.setVars([filters:filters[i]])
+            params.filters = filters[i]
+            qry.setVars(params)
             
             if (pagingKeys) qry.setPagingKeys(pagingKeys)
             
@@ -491,7 +492,7 @@ class RPTUtil
     @ProxyMethod
     public void buildEmptyRows( data, listlimitsize) {
         for(int i=data.size + 1; i<listlimitsize; i++) {
-            data.add( [:] )
+            data.add( [taxable:true] )
         }
     }   
 
@@ -567,6 +568,7 @@ class RPTUtil
             newpin += entity.barangay?.oldindexno + '-';
         }
         else {
+            entity.pintype = 'new'
             newpin += ( entity.pintype == 'new' ? '0000' : '000') + '-';
         }        
         

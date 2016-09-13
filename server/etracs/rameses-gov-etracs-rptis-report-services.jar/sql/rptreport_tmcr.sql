@@ -16,7 +16,7 @@ WHERE rp.barangayid = $P{barangayid}
   AND f.state IN ('CURRENT', 'CANCELLED')
   AND rp.section = $P{section} 
   ${txntypefilter}
-ORDER BY f.fullpin, f.tdno 
+ORDER BY f.tdno 
 
 
 [getTmcrList2]
@@ -35,7 +35,7 @@ WHERE rp.barangayid = $P{barangayid}
   AND f.state IN ('CURRENT', 'CANCELLED')
   AND rp.section LIKE $P{section} 
   ${txntypefilter}
-ORDER BY r.fullpin, f.tdno 
+ORDER BY f.tdno 
 
 
 
@@ -50,7 +50,7 @@ FROM faas f
 WHERE rp.barangayid = $P{barangayid} 
   AND f.state = 'CURRENT'
   AND rp.section = $P{section} 
-ORDER BY r.fullpin, f.tdno 
+ORDER BY f.tdno 
 
 
 [getCancelledTmcrFaases]
@@ -64,7 +64,7 @@ FROM previousfaas pf
 	INNER JOIN barangay b ON rp.barangayid = b.objid 
 WHERE pf.faasid = $P{faasid}
   and f.state = 'CANCELLED'
-ORDER BY r.fullpin, f.tdno DESC   
+ORDER BY f.tdno DESC   
 
 
 

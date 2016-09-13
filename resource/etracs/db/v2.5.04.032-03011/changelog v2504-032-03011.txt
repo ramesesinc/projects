@@ -1,0 +1,21 @@
+/* v2.5.04.032-03011 */
+
+- TREAURY
+
+- BPLS 
+		
+- ASSESSOR
+	- Support modification of taxability (Modify FAAS and RPU Information)
+	- Allow partial tdno search
+	- Allow resizing of tables on Bldg Appraisal info 
+	- Improvement on Bldg Structure/Floor entry info 
+	- Update on tax declaration specificlands info 
+	
+	
+- LANDTAX
+	- Support billing of restricted property
+	- Fix tax clearance method error 
+	- Remove paid ledgeritems 
+	- RPT Billing update (original av)
+
+

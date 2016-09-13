@@ -21,7 +21,9 @@ public class TDTrueCopyController extends com.rameses.gov.etracs.rpt.report.cert
     }
     
     def getReportData(){
-        return tdSvc.buildTaxDec(entity.faasid);
+        def e = tdSvc.buildTaxDec(entity.faasid);
+        e.putAll(entity)
+        return e;
     }
     
     def reportPath = 'com/rameses/gov/etracs/rpt/report/td/';
@@ -30,6 +32,7 @@ public class TDTrueCopyController extends com.rameses.gov.etracs.rpt.report.cert
     SubReport[] getSubReports() {
         return [
             new SubReport( 'TDReportLand',  reportPath + 'tdreportland.jasper'),
+            new SubReport( 'TDReportLandESig',  reportPath + 'tdreportlandesigned.jasper'),
             new SubReport( 'TDReportBldg',  reportPath + 'tdreportbldg.jasper'),
             new SubReport( 'TDReportMach',  reportPath + 'tdreportimprovement.jasper'),
             new SubReport( 'TDReportPlant', reportPath + 'tdreportimprovement.jasper'),

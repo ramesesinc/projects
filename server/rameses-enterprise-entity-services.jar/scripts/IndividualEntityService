@@ -81,8 +81,9 @@ class IndividualEntityService extends ActiveCrudListService {
 
 	public void afterOpen(o) {
 		o.loaded = true;
-		def m = entitySvc.open( o );
-		o.putAll(m);
+		def m = entitySvc.open( o ); 
+		if ( m ) o.putAll( m ); 
+		
 		o.photo = getPhoto( o );
 
 		if (o.birthdate) {  

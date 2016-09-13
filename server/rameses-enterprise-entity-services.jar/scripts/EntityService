@@ -60,13 +60,13 @@ class EntityService extends ActiveCrudService {
             if (o.address && o.address?.objid) {
                 try{
                     def x = addrSvc.open( [objid:o.address.objid] );
-                    o.address.putAll(x);
+                    if ( x ) o.address.putAll(x);
                 } catch(Throwable t) { 
                     println 'EntityService.afterOpen failed caused by ' + t.message; 
-                }
-            } else {
+                } 
+            } else { 
                 o.address = [:];    
-            }
+            } 
         }
     }
 

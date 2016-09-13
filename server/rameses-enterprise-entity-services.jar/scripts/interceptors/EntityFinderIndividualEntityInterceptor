@@ -11,10 +11,10 @@ class EntityFinderIndividualEntityInterceptor  {
 	def	em; 
 
 	@After(pattern="EntityFinderService.find", eval="#{result.type == 'INDIVIDUAL'}")
-	public void loadIndividualInfoForFind(def evt ) {
+	public void loadIndividualInfoForFind( evt ) {
 		def result = evt.result;
-		def z= em.find( [objid: result.objid] ).first();
-		result.putAll( z );
-	}
+		def z = em.find([ objid: result.objid ]).first(); 
+		if ( z ) result.putAll( z ); 
+	} 
 
 }

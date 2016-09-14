@@ -5,6 +5,7 @@
 - BPLS 
 		
 - ASSESSOR
+	- Adjust Land FAAS to accommodate title no.
 	- Adjust TD report to accommodate annotations
 	- Support misc rpu depreciation for sworn amount
 	- Support modification of taxability (Modify FAAS and RPU Information)

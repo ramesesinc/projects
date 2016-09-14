@@ -75,6 +75,15 @@ class SubdivisionAffectedRpuModel
                     arpu.putAll(svc.deleteAffectedRpuFaas(arpu));
             }
         },
+        
+        onRemoveItem : {arpu -> 
+            if (arpu.isnew == true && MsgBox.confirm('Delete improvement?')){
+                svc.deleteNewAffectedRpu(arpu);
+                affectedrpus.remove(arpu);
+                return true;
+            }
+            return false;
+        },
                 
         validate : { li -> 
             def arpu = li.item;
@@ -85,6 +94,14 @@ class SubdivisionAffectedRpuModel
         }
         
     ] as EditorListModel 
+    
+    void deleteNewImprovement(){
+        if (selectedItem.isnew == true && MsgBox.confirm('Delete improvement?')){
+            svc.deleteNewAffectedRpu(selectedItem);
+            affectedrpus.remove(selectedItem);
+            listHandler.reload();
+        }
+    }
             
             
     void validateNewPin(arpu){

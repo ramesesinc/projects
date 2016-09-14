@@ -5,6 +5,7 @@
 - BPLS 
 		
 - ASSESSOR
+	- Update on taxmapping parcel monitoring
 	- Adjust Land FAAS to accommodate title no.
 	- Adjust TD report to accommodate annotations
 	- Support misc rpu depreciation for sworn amount

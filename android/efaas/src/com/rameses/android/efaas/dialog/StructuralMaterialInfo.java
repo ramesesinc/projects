@@ -11,6 +11,7 @@ import com.rameses.android.db.BldgStructureDB;
 import com.rameses.android.db.MaterialDB;
 import com.rameses.android.db.StructureDB;
 import com.rameses.android.efaas.FaasBuildingActivity;
+import com.rameses.android.efaas.FaasBuildingMaterialActivity;
 import com.rameses.android.efaas.adapter.AppraisalItemAdapter;
 import com.rameses.android.efaas.bean.BldgStructure;
 import com.rameses.android.efaas.bean.DefaultItem;
@@ -174,7 +175,7 @@ public class StructuralMaterialInfo extends AlertDialog.Builder {
 			@Override
 			public void onClick(View arg0) {
 				doSave();
-				FaasBuildingActivity.loadMaterialInfo();
+				FaasBuildingMaterialActivity.loadMaterialData();
 				dialog.dismiss();
 			}
 		});

@@ -28,9 +28,11 @@ public class ControlActivity extends UIActivity
 		}
 		if(isActivated())((TextView) findViewById(R.id.tv_mode)).setText(mode);	
 		
-		ActionBar bar = getActionBar();
-		bar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#3485c7")));
-		bar.setIcon(new ColorDrawable(getResources().getColor(android.R.color.transparent)));    
+		try{
+			ActionBar bar = getActionBar();
+			bar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#3485c7")));
+			bar.setIcon(new ColorDrawable(getResources().getColor(android.R.color.transparent)));  
+		}catch(Exception e){;}
 	}
 
 	

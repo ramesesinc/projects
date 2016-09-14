@@ -17,6 +17,7 @@
 	
 	
 - LANDTAX
+	- Display administrator info in Tax Clearance
 	- Support billing of restricted property
 	- Fix tax clearance method error 
 	- Remove paid ledgeritems 

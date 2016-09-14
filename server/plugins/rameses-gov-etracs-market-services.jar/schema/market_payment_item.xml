@@ -2,14 +2,25 @@
 
 	<element tablename="market_payment_item">
 		<field name="objid" primary="true" prefix="MKTPMTITM"/>
-		<complex name="parent" ref="market_payment" jointype="many-to-one">
+		<field name="parentid" />
+		<complex name="parent" ref="market_payment" jointype="many-to-one" includefields="reftype,refno,refid">
 			<key field="parentid" target="objid"/>
 		</complex>	
-		<field name="amount" required="true" type="decimal"/>	
-		<field name="month" required="true"/>	
-		<field name="year" required="true"/>
-		<field name="txntype"  />
-		<field name="txnrefid"  />	
+		
+		<field name="month" type="integer" required="true"/>	
+		<field name="year" type="integer"  required="true"/>
+		<field name="fromday" type="integer"  required="true"/>
+		<field name="today" type="integer"  required="true"/>
+		<field name="fromdate" type="date"  required="true"/>
+		<field name="todate" type="date"  required="true"/>
+		<field name="days" type="integer"  required="true"/>
+
+		<field name="rate" type="decimal"  required="true"/>
+		<field name="extrate" type="decimal"  required="true"/>
+		<field name="surcharge" type="decimal"  required="true"/>
+		<field name="interest" type="decimal"  required="true"/>
+
+		
 	</element>
 </schema>
 

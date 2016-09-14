@@ -1,0 +1,80 @@
+import com.rameses.annotations.*;
+import java.text.*;
+import com.rameses.functions.*;
+
+class MarketRentalBillingReportService {
+	
+	@Service("MarketRentalBillingService")
+	def billingSvc;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@DataContext("market_account")
+	def acctEm;
+	
+	/***************************************************************************************************************
+	* compress items into format:  year, month, (fromday, today), rate, extrate, surcharge, interest, linetotal
+	****************************************************************************************************************/
+	@After(pattern="FormReportService.getData", eval="#{args[0].reportid == 'market_account_billing' }")
+	public void getData( def evt ) {
+		def p = evt.args[0];
+		def result = evt.result;
+		result.status = 0;
+
+		def acctid = p.parameters.acctid;
+		def acct = acctEm.find([objid: acctid]).first();
+		def billing = billingSvc.process( [acctid: acctid ] );
+
+		def items = [];
+		def group = [];
+		def item = [:];
+
+		billing.items.sort{ (it.year*12)+it.month }.each { cc->
+			def _grp = [cc.year, cc.month, cc.rate, cc.extrate ];
+			if( _grp != group ) {
+				group = _grp;
+				item = [:];
+				item.year = group[0];
+				item.month = group[1];
+				item.rate = cc.rate;
+				item.extrate = cc.extrate;
+				item.fromday = cc.day;
+				item.today = cc.day;
+				item.duedate = cc.duedate;
+				item.surcharge = cc.surcharge;
+				item.interest = cc.interest;
+				item.days = 1;
+				item.amount = item.rate + item.extrate;
+				item.linetotal = item.amount + item.surcharge + item.interest;
+				items << item;
+			}
+			else {
+				item.days += 1;
+				item.today = cc.day;
+				item.rate += cc.rate;
+				item.extrate += cc.extrate;
+				item.surcharge += cc.surcharge;
+				item.interest += cc.interest;
+				item.amount = item.rate + item.extrate;
+				item.linetotal = item.amount + item.surcharge + item.interest;
+			}
+		}
+
+		acct.items = items;
+		acct.billdate = dateSvc.getServerDate();
+		acct.fromdate = billing.fromdate;
+		acct.todate = billing.todate;
+		acct.totalrate = billing.totalrate;
+		acct.totalextrate = billing.totalextrate;
+		acct.totalamount = billing.totalamount;
+		acct.totalsurcharge = billing.totalsurcharge;
+		acct.totalinterest = billing.totalinterest;
+		acct.grandtotal = billing.grandtotal;
+		acct.hasitems = (acct.items) ? true : false;
+
+		result.data = acct;
+	}
+
+
+}

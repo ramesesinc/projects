@@ -1,0 +1,115 @@
+import com.rameses.annotations.*;
+import java.text.*;
+import com.rameses.functions.*;
+import com.rameses.util.*;
+import market.facts.*;
+import com.rameses.rules.common.*;
+
+
+class MarketRentalBillingService {
+	
+	@Service("RuleExecutorService")
+	def execSvc;
+
+	@DataContext("market_account")
+	def acctEm;
+
+	@DataContext("itemaccount")
+	def itemacct;
+
+	@Service("DateService")
+	def dateSvc;
+
+	def dformat = new SimpleDateFormat("yyyy-MM-dd");
+
+	/***************************************************************************************************
+	* STEPS: 
+	*     1. Determine where date to start. Startdate or last date paid (last date covered). Add 1 day.
+	*     2. If there is partial balance, do not move the date. to the next date from last payment date. 
+	*     3. This returns the bill items in its raw form i.e. not summaried to period
+	****************************************************************************************************/
+	@ProxyMethod
+	public def process( def o ) {
+		def acct = acctEm.select("lastdatepaid,startdate,rate,extrate,partialbalance,partialextbalance").find([objid:o.acctid]).first();
+		if(!acct) throw new Exception("Account not found");
+
+		def fromdate = o.fromdate;
+		if(!fromdate) fromdate = ((acct.lastdatepaid!=null)?acct.lastdatepaid : acct.startdate);
+		fromdate = DateUtil.add( fromdate, "1d" );
+
+		def todate = o.todate;
+		if(!todate) todate = dateSvc.getBasicServerDate();
+		
+		def partialBalance = ((acct.partialbalance==null)?0.0 : acct.partialbalance);
+		def partialExtBalance = ((acct.partialextbalance==null) ? 0.0 : acct.partialextbalance);
+
+		def dt = dateSvc.getServerDate();
+		def facts = [];
+		facts << new CurrentDate( dt );
+		facts << new BillDate( dt );
+
+		//build facts daily
+		def xcal = Calendar.instance;
+		(fromdate..todate).each {
+			xcal.setTime(it);
+			int imon = xcal.get(Calendar.MONTH);
+			int iyear = xcal.get(Calendar.YEAR);
+			int iday = xcal.get(Calendar.DAY_OF_MONTH);
+			def irate = (partialBalance == 0 ) ? acct.rate : partialBalance; 
+			def iext = (partialExtBalance==0) ? acct.extrate : partialExtBalance;
+			def iamt = irate + iext;
+			facts << new MarketBillItem( year:iyear, month: imon+1, day:iday, extrate:iext, rate:irate, amount: iamt );
+			partialBalance = 0;
+			partialExtBalance = 0;
+		}	
+
+		//call the rule to compute the penalties
+		execSvc.execute( "marketbilling", facts, null, null );
+		def afacts = facts.findAll{ it instanceof MarketBillItem };
+
+		def m = [:];
+		m.fromdate = dformat.format(fromdate);
+		m.todate = dformat.format(todate);
+		m.totalrate = 0.0;
+		m.totalextrate = 0.0;
+		m.totalamount = 0.0;
+		m.totalsurcharge = 0.0;
+		m.totalinterest = 0.0;
+		m.grandtotal = 0.0;
+		m.items = [];
+
+		afacts.each { mbi ->
+			def itm = [:];
+			itm.year = mbi.year;
+			itm.month = mbi.month;
+			itm.day = mbi.day;
+			itm.date = dformat.parse( itm.year + "-" + itm.month + "-" + itm.day);
+			itm.duedate = mbi.duedate;
+			itm.account = mbi.account?.toItem();
+			itm.rate = mbi.rate;
+			itm.extaccount = mbi.extaccount?.toItem();
+			itm.extrate = mbi.extrate;
+			itm.surchargeAccount = mbi.surchargeAccount?.toItem();
+			itm.surcharge = mbi.surcharge;
+			itm.interestAccount = mbi.interestAccount?.toItem();
+			itm.interest = mbi.interest;
+			itm.amount = mbi.amount;
+			itm.linetotal = mbi.amount + mbi.surcharge + mbi.interest;
+			m.items << itm;
+		}
+
+		if(m.items) {
+			m.totalrate = m.items.sum{it.rate};
+			m.totalextrate = m.items.sum{it.extrate};
+			m.totalamount = m.items.sum{ it.amount };
+			m.totalsurcharge = m.items.sum{ it.surcharge};
+			m.totalinterest = m.items.sum{ it.interest };
+			m.grandtotal = m.items.sum{ it.linetotal };
+		}
+
+		return m;
+	}
+
+
+
+}

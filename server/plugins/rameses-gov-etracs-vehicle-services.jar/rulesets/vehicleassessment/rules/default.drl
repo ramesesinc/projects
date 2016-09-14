@@ -1,0 +1,8 @@
+package vehicleassessment;
+
+import com.rameses.rules.common.*;
+import java.util.*;
+import vehicle.facts.*;
+
+
+global RuleAction action;

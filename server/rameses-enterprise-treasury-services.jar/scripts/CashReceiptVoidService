@@ -9,6 +9,9 @@ class CashReceiptVoidService  {
 	@PersistenceContext("main")
 	def em;
 
+	@Service('Var') 
+	def var; 
+
 	@Env
 	def env;
 	
@@ -28,6 +31,11 @@ class CashReceiptVoidService  {
 		v.receipt = p.receipt;
 		return v;
 	}	
-		
-		
+	
+	@ProxyMethod 
+	public def getOptions() { 
+		return [ 
+			collector_allow_void_cashreceipt: var.collector_allow_void_cashreceipt 
+		];
+	}
 }

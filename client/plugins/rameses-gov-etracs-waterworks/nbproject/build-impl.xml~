@@ -930,8 +930,8 @@ is divided into following sections:
         </antcall>
         <antcall target="-maybe-call-dep">
             <param name="call.built.properties" value="${built-jar.properties}"/>
-            <param location="${project.rameses-seti}" name="call.subproject"/>
-            <param location="${project.rameses-seti}/build.xml" name="call.script"/>
+            <param location="${project.rameses-etracs-main}" name="call.subproject"/>
+            <param location="${project.rameses-etracs-main}/build.xml" name="call.script"/>
             <param name="call.target" value="jar"/>
             <param name="transfer.built-jar.properties" value="${built-jar.properties}"/>
         </antcall>
@@ -1424,8 +1424,8 @@ is divided into following sections:
         </antcall>
         <antcall target="-maybe-call-dep">
             <param name="call.built.properties" value="${built-clean.properties}"/>
-            <param location="${project.rameses-seti}" name="call.subproject"/>
-            <param location="${project.rameses-seti}/build.xml" name="call.script"/>
+            <param location="${project.rameses-etracs-main}" name="call.subproject"/>
+            <param location="${project.rameses-etracs-main}/build.xml" name="call.script"/>
             <param name="call.target" value="clean"/>
             <param name="transfer.built-clean.properties" value="${built-clean.properties}"/>
         </antcall>

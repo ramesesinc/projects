@@ -1,0 +1,39 @@
+import com.rameses.annotations.*;
+import java.rmi.server.UID;
+
+class VehicleApplicationInterceptor {
+	
+	@DataContext("vehicle_application_fee")
+	def fees;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@Service("SequenceService")
+	def seqSvc;
+
+	@Env
+	def env;
+
+	@Before(pattern="PersistenceService.create", eval="#{args[0]._schemaname == 'vehicle_application' && args[0].apptype == 'NEW' }")
+	public void beforeCreate(def evt) {
+		def svrDate =  dateSvc.getServerDate();
+		def o = evt.args[0];
+		o.appdate = svrDate;
+		o.appyear = dateSvc.getServerYear();
+		o.state = 'PENDING';
+		o.appno = o.vehicletype.toUpperCase()[0] + o.appyear + seqSvc.getNextFormattedSeries( o.vehicletype );
+		o.filedby = [objid: env.USERID, name: env.FULLNAME];
+		o.dtfiled = svrDate;
+		o.fees.each {
+			it.app = o;
+		}
+	}
+
+	@After(pattern="PersistenceService.read", eval="#{args[0]._schemaname == 'vehicle_application' }")
+	public void afterRead(def evt) {
+		def o = evt.args[0];
+		o.items = fees.find( [parentid: o.objid] ).list();
+	}
+
+}

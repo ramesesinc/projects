@@ -22,7 +22,7 @@
             def entity;
             def title = 'Water Bill'; 
 
-            String reportName = "com/rameses/gov/etracs/waterworks/reports/billing/WaterBill.jasper";
+            String reportName = "com/rameses/gov/etracs/waterworks/reports/billing2/WaterBill.jasper";
 
             public def getReportData() {
                 return billSvc.getBilling([acctid: entity.objid]);

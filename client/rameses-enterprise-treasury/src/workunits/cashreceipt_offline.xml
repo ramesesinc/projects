@@ -1,12 +1,11 @@
 <workunit>
     
    <invokers>
-         <invoker folderid="home/treasury/manualcollection" caption="Offline Collection" 
-                  action="init" index="-4" role="COLLECTOR,SUBCOLLECTOR" target="window"/>
+         <invoker folderid="home/collection" caption="Offline Cash Receipt" action="init" index="-4" role="COLLECTOR,SUBCOLLECTOR" target="window"/>
    </invokers>
    
-   <code>
-       <![CDATA[
+    <code>
+    <![CDATA[
         import com.rameses.osiris2.common.*;
         import com.rameses.rcp.common.*;
         import com.rameses.rcp.annotations.*;
@@ -56,8 +55,7 @@
                     if( formType == null ) { 
                         def list = collectionTypeSvc.getFormTypes();
                         list.collect{ 
-                            def tt = (it.formtype == 'cashticket')?'Cashticket':'AF';
-                            xlist << [caption: tt + " " + it.objid , icon: homeicon, formType: it.objid, title: it.title ]
+                            xlist << [caption: it.objid , icon: homeicon, formType: it.objid, title: it.title ]
                         }
                     }
                     else {
@@ -178,11 +176,11 @@
                 }
             } 
         }      
-       ]]>
-   </code>
+    ]]>
+    </code>
    
-   <pages>
-       <page template="com.rameses.enterprise.treasury.views.CashReceiptSelectionPage" />
-   </pages>
+    <pages>
+       <page template="com.rameses.enterprise.treasury.cashreceipt.CashReceiptSelectionPage" />
+    </pages>
    
 </workunit>

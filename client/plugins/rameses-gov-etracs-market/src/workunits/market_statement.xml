@@ -1,0 +1,32 @@
+<workunit extends="com/rameses/seti2/templates/FormReport.xml">
+    <invokers>
+        <invoker type="market_account:form:formActions" 
+            caption="View Statement" index="-10" 
+            reportName="com/rameses/gov/etracs/market/reports/market_account_statement.jasper" 
+            reportId="market_account_statement"
+            target="popup"
+            visibleWhen="#{mode=='read'}"
+            action="query"/>
+    </invokers>
+    <code>
+        import com.rameses.common.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.common.*;
+        
+        class MyReport extends com.rameses.seti2.models.FormReportModel {
+            def preview() {
+                query.acctid = caller.entityContext?.objid;
+                return super.preview();
+            };
+        
+            
+            
+        };
+    </code>
+    <!--
+    <pages>
+        <page name="query" template="com.rameses.gov.etracs.market.views.YearMonthQueryPanel" />
+    </pages>    
+    -->
+</workunit>

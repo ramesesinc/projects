@@ -35,7 +35,7 @@ public class CashReceiptBarcodeService {
 		def collectiontype = collectionType.findCollectionTypeByBarcode([barcode: prefix]);
 		if(!collectiontype)	
 			throw new Exception("Collection type not found with barcode prefix " + prefix + ". Please check collection type and register barcode prefix");
-		def z = [formtype: "serial", formno: collectiontype.formno, txnmode: 'ONLINE', collectiontype: collectiontype, refno: o.barcodeid];
+		def z = [formtype: "serial", formno: collectiontype.formno, txnmode: 'ONLINE', collectiontype: collectiontype ];
         def entity = service.init( z );	
         entity.collectiontype = collectiontype;
         return entity;

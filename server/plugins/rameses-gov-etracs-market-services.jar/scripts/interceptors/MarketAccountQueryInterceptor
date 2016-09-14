@@ -4,9 +4,10 @@ class MarketAccountQueryInterceptor{
 	
 	@After(pattern="QueryService.getNodeList", eval="#{args[0]._schemaname == 'market_account'}")
 	public void getAcctNodeList(def evt) {
+		println "loading mass file"
 		def result = evt.result;
 		result << [ title: 'Active', id:'active'];
-		result << [ title: 'Past due', id:'pastdue'];
+		result << [ title: 'Past due', id:'pastdue', duedate: '2016-07-20'];
 		result << [ title: 'For padlock', id:'for-padlock'];
 		result << [ title: 'Padlocked', id:'padlocked'];
 		result << [ title: 'Inactive', id:'inactive'];
@@ -15,6 +16,7 @@ class MarketAccountQueryInterceptor{
 	@Before(pattern="QueryService.getList", eval="#{args[0]._schemaname == 'market_account'}")
 	public void loadList(def evt) {
 		def o = evt.args[0];
+		//o.debug = true;
 		if( !o.node?.id ) return;
 
 		def str = "state=:state";
@@ -29,7 +31,8 @@ class MarketAccountQueryInterceptor{
 			case 'pastdue':
 				status = 'pastdue'
 				m.state = 'ACTIVE'
-				str += ' AND duedate < NOW()'; 
+				m.duedate = o.node.duedate;
+				str += ' AND lastdatepaid < :duedate'; 
 				break;
 
 			case 'for-padlock':

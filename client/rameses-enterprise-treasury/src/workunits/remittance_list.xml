@@ -3,14 +3,18 @@
     <invokers>
         <invoker folderid="/explorer/txn/treasury" caption="Remittances" role="SHARED,COLLECTOR" index="42">
             <action name="doInit" role="SHARED" tag="all" permission="remittance.view"/> 
-            <action name="doInit" role="COLLECTOR" tag="bycollector"/>             
+            <action name="doInit" role="COLLECTOR" tag="bycollector"/> 
         </invoker>
         
-        <invoker folderid="home/treasury/remittance" caption="Remittances" role="SHARED,COLLECTOR" target="window">
+        <invoker folderid="home/remittance" caption="Remittances" role="SHARED,COLLECTOR" target="window">
             <action name="doInit" role="SHARED" tag="all" permission="remittance.view"/> 
-            <action name="doInit" role="COLLECTOR" tag="bycollector"/>             
+            <action name="doInit" role="COLLECTOR" tag="bycollector"/> 
         </invoker>
-    </invokers>
+        
+        <invoker type="formActions" caption="Revert" action="revert" 
+                 role="ADMIN" permission="remittance.revert" 
+                 visibleWhen="#{selectedEntity != null}"/> 
+    </invokers> 
     
     <code> 
     <![CDATA[ 
@@ -21,8 +25,11 @@ import com.rameses.osiris2.client.*;
 import com.rameses.osiris2.common.*;
 import com.rameses.rcp.framework.ClientContext;
 
-class RemittanceListController extends DefaultListController 
-{
+class RemittanceListController extends DefaultListController {
+
+    @Service('RemittanceService') 
+    def remittanceSvc; 
+
     boolean is_shared_owner;
     
     def invo; 
@@ -40,8 +47,17 @@ class RemittanceListController extends DefaultListController
         params.admin = is_shared_owner; 
         params._tag = invo.properties.tag; 
     }
+    
+    void revert() {
+        if ( !selectedEntity ) throw new Exception('Please select an item'); 
+        
+        if ( MsgBox.confirm('You are about to revert this remittance. Continue?')) {
+            remittanceSvc.revert([ objid: selectedEntity.objid ]);
+            MsgBox.alert('Successfully processed'); 
+            reload();   
+        } 
+    } 
 } 
-
     ]]> 
     </code>
         

@@ -1,0 +1,5 @@
+<workunit extends="wtemplates/RuleMgmtController.xml" serviceName="RuleMgmtService" tag="vehiclebilling">
+    <invokers>
+        <invoker folderid="/explorer/rulemgmt/vehicle" caption="Vehicle Reg. Billing Rules" action="init" index="2" srole="RULE_AUTHOR"/>
+    </invokers>
+</workunit>

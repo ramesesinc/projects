@@ -33,6 +33,14 @@ public class MarketAccountPage extends javax.swing.JPanel {
 
         xTabbedPane1 = new com.rameses.rcp.control.XTabbedPane();
         jPanel2 = new javax.swing.JPanel();
+        jPanel1 = new javax.swing.JPanel();
+        xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
+        xDecimalField2 = new com.rameses.rcp.control.XDecimalField();
+        xDecimalField3 = new com.rameses.rcp.control.XDecimalField();
+        xLabel5 = new com.rameses.rcp.control.XLabel();
+        xDateField1 = new com.rameses.rcp.control.XDateField();
+        xDateField2 = new com.rameses.rcp.control.XDateField();
+        jPanel3 = new javax.swing.JPanel();
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
         xTextField2 = new com.rameses.rcp.control.XTextField();
         xTextField1 = new com.rameses.rcp.control.XTextField();
@@ -41,26 +49,70 @@ public class MarketAccountPage extends javax.swing.JPanel {
         xLookupField2 = new com.rameses.rcp.control.XLookupField();
         xLabel2 = new com.rameses.rcp.control.XLabel();
         xLabel3 = new com.rameses.rcp.control.XLabel();
-        xDecimalField2 = new com.rameses.rcp.control.XDecimalField();
-        xLabel5 = new com.rameses.rcp.control.XLabel();
-        jPanel1 = new javax.swing.JPanel();
-        xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
-        xDateField1 = new com.rameses.rcp.control.XDateField();
-        xDateField2 = new com.rameses.rcp.control.XDateField();
-        xDecimalField1 = new com.rameses.rcp.control.XDecimalField();
-        xDateField3 = new com.rameses.rcp.control.XDateField();
-        xDateField4 = new com.rameses.rcp.control.XDateField();
 
         xTabbedPane1.setDynamic(true);
         xTabbedPane1.setItems("sections");
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
-        xTitledBorder1.setTitle("General Information");
-        xFormPanel1.setBorder(xTitledBorder1);
+        xTitledBorder1.setTitle("Rental Information");
+        jPanel1.setBorder(xTitledBorder1);
+
+        xFormPanel2.setCaptionWidth(120);
+
+        xDecimalField2.setCaption("Daily Rate");
+        xDecimalField2.setName("entity.rate"); // NOI18N
+        xDecimalField2.setRequired(true);
+        xFormPanel2.add(xDecimalField2);
+
+        xDecimalField3.setCaption("Extension Rate");
+        xDecimalField3.setName("entity.extrate"); // NOI18N
+        xDecimalField3.setRequired(true);
+        xFormPanel2.add(xDecimalField3);
+
+        xLabel5.setCaption("Term");
+        xLabel5.setDepends(new String[] {"entity.unit"});
+        xLabel5.setExpression("#{entity.term}");
+        xLabel5.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel2.add(xLabel5);
+
+        xDateField1.setCaption("Start date");
+        xDateField1.setName("entity.startdate"); // NOI18N
+        xDateField1.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel2.add(xDateField1);
+
+        xDateField2.setText("entity.lastdatepaid");
+        xDateField2.setCaption("Last Date Covered");
+        xDateField2.setName("entity.lastdatepaid"); // NOI18N
+        xDateField2.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel2.add(xDateField2);
+
+        org.jdesktop.layout.GroupLayout jPanel1Layout = new org.jdesktop.layout.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .add(xFormPanel2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 271, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .add(xFormPanel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 131, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        com.rameses.rcp.control.border.XTitledBorder xTitledBorder2 = new com.rameses.rcp.control.border.XTitledBorder();
+        xTitledBorder2.setTitle("Account Information");
+        jPanel3.setBorder(xTitledBorder2);
+
+        xFormPanel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
         xFormPanel1.setCaptionWidth(101);
 
         xTextField2.setCaption("Acct No");
         xTextField2.setName("entity.acctno"); // NOI18N
+        xTextField2.setPreferredSize(new java.awt.Dimension(150, 20));
         xFormPanel1.add(xTextField2);
 
         xTextField1.setCaption("Acct Name");
@@ -99,58 +151,20 @@ public class MarketAccountPage extends javax.swing.JPanel {
         xLabel3.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(xLabel3);
 
-        xDecimalField2.setCaption("Rate");
-        xDecimalField2.setName("entity.rate"); // NOI18N
-        xDecimalField2.setRequired(true);
-        xFormPanel1.add(xDecimalField2);
-
-        xLabel5.setCaption("Term");
-        xLabel5.setDepends(new String[] {"entity.unit"});
-        xLabel5.setExpression("#{entity.term}");
-        xLabel5.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel1.add(xLabel5);
-
-        com.rameses.rcp.control.border.XTitledBorder xTitledBorder2 = new com.rameses.rcp.control.border.XTitledBorder();
-        xTitledBorder2.setTitle("Rental Information");
-        jPanel1.setBorder(xTitledBorder2);
-
-        xFormPanel2.setCaptionWidth(120);
-
-        xDateField1.setCaption("Start date");
-        xDateField1.setName("entity.startdate"); // NOI18N
-        xFormPanel2.add(xDateField1);
-
-        xDateField2.setCaption("Last Payment Date");
-        xDateField2.setName("entity.lastpmtdate"); // NOI18N
-        xFormPanel2.add(xDateField2);
-
-        xDecimalField1.setCaption("Total Principal Paid");
-        xDecimalField1.setName("entity.totalprincipalpaid"); // NOI18N
-        xFormPanel2.add(xDecimalField1);
-
-        xDateField3.setCaption("Due Date");
-        xDateField3.setName("entity.duedate"); // NOI18N
-        xFormPanel2.add(xDateField3);
-
-        xDateField4.setCaption("Padlock Date");
-        xDateField4.setName("entity.padlockdate"); // NOI18N
-        xFormPanel2.add(xDateField4);
-
-        org.jdesktop.layout.GroupLayout jPanel1Layout = new org.jdesktop.layout.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel1Layout.createSequentialGroup()
+        org.jdesktop.layout.GroupLayout jPanel3Layout = new org.jdesktop.layout.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .add(xFormPanel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(51, Short.MAX_VALUE))
+                .add(xFormPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 507, Short.MAX_VALUE)
+                .addContainerGap())
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .add(xFormPanel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 131, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(jPanel3Layout.createSequentialGroup()
+                .add(xFormPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 217, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(0, 36, Short.MAX_VALUE))
         );
 
         org.jdesktop.layout.GroupLayout jPanel2Layout = new org.jdesktop.layout.GroupLayout(jPanel2);
@@ -159,19 +173,19 @@ public class MarketAccountPage extends javax.swing.JPanel {
             jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .add(xFormPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 520, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(jPanel3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(119, Short.MAX_VALUE))
+                .addContainerGap(15, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
-                    .add(jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .add(xFormPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(189, Short.MAX_VALUE))
+                    .add(jPanel3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .add(jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(166, Short.MAX_VALUE))
         );
 
         xTabbedPane1.addTab("General Info", jPanel2);
@@ -182,7 +196,7 @@ public class MarketAccountPage extends javax.swing.JPanel {
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(xTabbedPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 955, Short.MAX_VALUE)
+                .add(xTabbedPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 862, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -200,12 +214,11 @@ public class MarketAccountPage extends javax.swing.JPanel {
     private com.rameses.entity.components.EntityLookup entityLookup1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
     private com.rameses.rcp.control.XDateField xDateField1;
     private com.rameses.rcp.control.XDateField xDateField2;
-    private com.rameses.rcp.control.XDateField xDateField3;
-    private com.rameses.rcp.control.XDateField xDateField4;
-    private com.rameses.rcp.control.XDecimalField xDecimalField1;
     private com.rameses.rcp.control.XDecimalField xDecimalField2;
+    private com.rameses.rcp.control.XDecimalField xDecimalField3;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XFormPanel xFormPanel2;
     private com.rameses.rcp.control.XLabel xLabel2;

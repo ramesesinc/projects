@@ -1,0 +1,17 @@
+import com.rameses.annotations.*;
+
+import vehicle.facts.*;
+
+class VehicleSampleService {
+	
+
+	@ProxyMethod
+	public def test() {
+		println "enter test";
+		def p = new vehicle.facts.VehicleApplication(apptype:'NEW');
+		println p;
+		return "ok";
+	}
+
+
+}

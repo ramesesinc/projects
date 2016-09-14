@@ -5,6 +5,7 @@
 - BPLS 
 		
 - ASSESSOR
+	- Adjust TD report to accommodate annotations
 	- Support misc rpu depreciation for sworn amount
 	- Support modification of taxability (Modify FAAS and RPU Information)
 	- Allow partial tdno search

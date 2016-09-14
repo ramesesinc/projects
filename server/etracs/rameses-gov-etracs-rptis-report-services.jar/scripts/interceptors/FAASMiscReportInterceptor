@@ -36,19 +36,30 @@ class FaasMiscReportInterceptor
 
 	void buildAdjustments(faas){
 		faas.adjustments = []
+		def firstitem = true
 		
-		faas.appraisals.each {
-			if (it.depreciation != null && it.depreciation != 0.0){
-				def depreciationrate = numberSvc.format("#,##0", it.depreciation) + ' %'
+		for (int i=0; i< faas.appraisals.size(); i++){
+			def appraisal = faas.appraisals[i]
+			if (appraisal.depreciation != null && appraisal.depreciation != 0.0){
+				def depreciationrate = numberSvc.format("#,##0", appraisal.depreciation) + ' %'
 				def item = [
 					actualuse		: faas.rpu.actualuse.name,
-					basemarketvalue	: it.basemarketvalue,
+					basemarketvalue	: appraisal.basemarketvalue,
 					adjtypename		: 'DEPRECIATION',
 					depreciationrate: depreciationrate,
-					depreciatedvalue: it.depreciatedvalue,
-					marketvalue		: it.marketvalue
+					depreciatedvalue: appraisal.depreciatedvalue,
+					marketvalue		: appraisal.marketvalue
 				]
-				faas.adjustments << item
+				if (util.isTrue(faas.rpu.useswornamount) && firstitem){
+					item.depreciatedvalue = numberSvc.round(faas.rpu.swornamount * appraisal.depreciation / 100.0)
+					item.marketvalue = faas.rpu.totalmv 
+					firstitem = false
+					faas.adjustments << item
+					break;
+				}
+				else{
+					faas.adjustments << item
+				}
 			}
 		}
 		
@@ -56,9 +67,9 @@ class FaasMiscReportInterceptor
 	}
 
 	void buildAppraisals(faas) {
+		def firstitem = true 
 		faas.appraisals = em.getItems(faas.rpu).each{
 			it.params = em.getItemParams(it)
-
 			def binding = buildFieldBindings(it)
 			binding += buildParamBindings( it.params )
 			def expr = replaceExpr( it.expr, binding )
@@ -67,6 +78,18 @@ class FaasMiscReportInterceptor
 			it.miscitemname		= it.miscitem.name
 			it.expr				= expr
 			it.basemarketvalue	= it.basemarketvalue
+
+			if (util.isTrue(faas.rpu.useswornamount)){
+				if (firstitem){
+					it.expr = 'SWORN AMOUNT'
+					it.basemarketvalue = faas.rpu.swornamount 
+					firstitem = false
+				}
+				else {
+					it.expr = ''
+					it.basemarketvalue = null
+				}
+			}
 		}
 		util.buildEmptyRows( faas.appraisals, MAX_ITEM_ROWS)
 	}

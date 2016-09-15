@@ -35,6 +35,7 @@ public class RPTBillingBatchReportPage extends javax.swing.JPanel {
         xSeparator2 = new com.rameses.rcp.control.XSeparator();
         xComboBox5 = new com.rameses.rcp.control.XComboBox();
         xComboBox3 = new com.rameses.rcp.control.XComboBox();
+        xTextField1 = new com.rameses.rcp.control.XTextField();
         xSeparator1 = new com.rameses.rcp.control.XSeparator();
         xIntegerField1 = new com.rameses.rcp.control.XIntegerField();
         xCheckBox1 = new com.rameses.rcp.control.XCheckBox();
@@ -89,6 +90,10 @@ public class RPTBillingBatchReportPage extends javax.swing.JPanel {
         xComboBox3.setPreferredSize(new java.awt.Dimension(0, 21));
         xComboBox3.setRequired(true);
         formPanel1.add(xComboBox3);
+
+        xTextField1.setCaption("Section");
+        xTextField1.setName("params.section"); // NOI18N
+        formPanel1.add(xTextField1);
 
         xSeparator1.setCellPadding(new java.awt.Insets(10, 0, 0, 0));
         xSeparator1.setPreferredSize(new java.awt.Dimension(0, 20));
@@ -160,7 +165,7 @@ public class RPTBillingBatchReportPage extends javax.swing.JPanel {
                 .add(formPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 183, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(xLabel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 32, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(23, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     
@@ -178,6 +183,7 @@ public class RPTBillingBatchReportPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XPanel xPanel2;
     private com.rameses.rcp.control.XSeparator xSeparator1;
     private com.rameses.rcp.control.XSeparator xSeparator2;
+    private com.rameses.rcp.control.XTextField xTextField1;
     // End of variables declaration//GEN-END:variables
     
 }

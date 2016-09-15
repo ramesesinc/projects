@@ -18,6 +18,7 @@
 	
 	
 - LANDTAX
+	- Support barangay section filter in rpt billling
 	- Support change state for CANCELLED Ledgers
 	- Display administrator info in Tax Clearance
 	- Support billing of restricted property

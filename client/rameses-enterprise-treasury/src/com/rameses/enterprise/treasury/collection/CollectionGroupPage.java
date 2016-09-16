@@ -169,13 +169,15 @@ public class CollectionGroupPage extends javax.swing.JPanel {
         xLayout1.setSpacing(1);
         jPanel3.setLayout(xLayout1);
 
-        xButton1.setDisableWhen("#{mode=='read' && allowSelections==true}");
+        xButton1.setDepends(new String[] {"selectedItem"});
+        xButton1.setDisableWhen("#{allowSelections != true}");
         xButton1.setMargin(new java.awt.Insets(2, 8, 2, 8));
         xButton1.setName("selectAll"); // NOI18N
         xButton1.setText("Select All");
         jPanel3.add(xButton1);
 
-        xButton2.setDisableWhen("#{mode=='read' && allowSelections==true}");
+        xButton2.setDepends(new String[] {"selectedItem"});
+        xButton2.setDisableWhen("#{allowSelections != true}");
         xButton2.setMargin(new java.awt.Insets(2, 8, 2, 8));
         xButton2.setName("deselectAll"); // NOI18N
         xButton2.setText("Deselect All");
@@ -187,7 +189,8 @@ public class CollectionGroupPage extends javax.swing.JPanel {
         jPanel3.add(xButton2);
         jPanel3.add(filler1);
 
-        xButton3.setDisableWhen("#{mode=='read' && allowSelections==true}");
+        xButton3.setDepends(new String[] {"selectedItem"});
+        xButton3.setDisableWhen("#{allowSelections != true}");
         xButton3.setMargin(new java.awt.Insets(2, 8, 2, 8));
         xButton3.setName("removeAccounts"); // NOI18N
         xButton3.setText("Remove");

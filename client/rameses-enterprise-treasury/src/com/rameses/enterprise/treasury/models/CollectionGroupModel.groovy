@@ -79,7 +79,9 @@ class CollectionGroupModel extends CRUDController {
     void deselectAll() {
         listModel.deselectAll();
     }
-    boolean isAllowSelections() {
-        return (entity.revenueitems ? true: false);
+    boolean isAllowSelections() { 
+        if ( mode == 'read' ) return false; 
+        
+        return ( entity.revenueitems ? true: false );
     }
 }      

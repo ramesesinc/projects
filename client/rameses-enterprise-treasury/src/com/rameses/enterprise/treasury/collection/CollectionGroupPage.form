@@ -154,7 +154,12 @@
           <SubComponents>
             <Component class="com.rameses.rcp.control.XButton" name="xButton1">
               <Properties>
-                <Property name="disableWhen" type="java.lang.String" value="#{mode==&apos;read&apos; &amp;&amp; allowSelections==true}"/>
+                <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
+                  <StringArray count="1">
+                    <StringItem index="0" value="selectedItem"/>
+                  </StringArray>
+                </Property>
+                <Property name="disableWhen" type="java.lang.String" value="#{allowSelections != true}"/>
                 <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
                   <Insets value="[2, 8, 2, 8]"/>
                 </Property>
@@ -164,7 +169,12 @@
             </Component>
             <Component class="com.rameses.rcp.control.XButton" name="xButton2">
               <Properties>
-                <Property name="disableWhen" type="java.lang.String" value="#{mode==&apos;read&apos; &amp;&amp; allowSelections==true}"/>
+                <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
+                  <StringArray count="1">
+                    <StringItem index="0" value="selectedItem"/>
+                  </StringArray>
+                </Property>
+                <Property name="disableWhen" type="java.lang.String" value="#{allowSelections != true}"/>
                 <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
                   <Insets value="[2, 8, 2, 8]"/>
                 </Property>
@@ -184,7 +194,12 @@
             </Component>
             <Component class="com.rameses.rcp.control.XButton" name="xButton3">
               <Properties>
-                <Property name="disableWhen" type="java.lang.String" value="#{mode==&apos;read&apos; &amp;&amp; allowSelections==true}"/>
+                <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
+                  <StringArray count="1">
+                    <StringItem index="0" value="selectedItem"/>
+                  </StringArray>
+                </Property>
+                <Property name="disableWhen" type="java.lang.String" value="#{allowSelections != true}"/>
                 <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
                   <Insets value="[2, 8, 2, 8]"/>
                 </Property>

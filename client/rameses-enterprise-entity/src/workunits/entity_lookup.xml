@@ -1,7 +1,8 @@
 <workunit extends="com/rameses/seti2/templates/CrudLookup.xml" schemaName="entity">
    <invokers>
-         <invoker type="entity:lookup" caption="Lookup Entity" action="init" target="popup" height="350"
-            cols="entityno,name,address.text,address.objid,type,entityname"/>
+         <invoker type="entity:lookup" caption="Lookup Entity" action="init" 
+                  target="popup" height="500" width="700" 
+                  cols="entityno,name,address.text,address.objid,type,entityname"/>
    </invokers>
    <code>
        <![CDATA[

@@ -1,5 +1,6 @@
 <workunit extends="com/rameses/seti2/templates/CrudList.xml" 
-    schemaName="entityjuridical" allowDelete="false" debug="true">
+    schemaName="entityjuridical" allowDelete="false" debug="true"> 
+    
     <invokers>
         <invoker folderid="/explorer/master/entity" caption="Juridical"  
                  action="init" role="MASTER" permission="entityjuridical.view"  

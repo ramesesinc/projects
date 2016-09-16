@@ -57,6 +57,45 @@ FROM (
 ORDER BY ${orderby} 
 
 
+[getDelinquentLedgers2]
+SELECT 
+	e.name AS taxpayername,
+	e.address_text AS taxpayeraddress,
+	rl.administrator_name, 
+	rl.fullpin AS pin,
+	rl.tdno,
+	rl.classcode,
+	rl.cadastrallotno,
+	rl.rputype,
+	rl.totalav, 
+	rl.totalareaha,
+	rl.totalareaha * 10000 as totalareasqm,
+	b.name AS barangay, b.objid, 
+	x.endyear - x.startyear + 1 as numyears,
+	x.* 
+FROM ( 
+	SELECT 
+		rptledgerid, 
+		MAX(dtgenerated) AS dtgenerated, 
+		case when year = $P{year} then 'A. CURRENT' else 'B. PREVIOUS' end as revperiod, 
+		MIN(year) AS startyear, 
+		MAX(year) AS endyear,
+		SUM(basic) AS basic, SUM(sef) AS sef, 
+		SUM(basicint) AS basicint, SUM(sefint) AS sefint, 
+		SUM(basicdisc) as basicdisc, SUM(sefdisc) as sefdisc,
+		SUM(basic - basicdisc + basicint  + sef - sefdisc + sefint ) AS total
+	FROM report_rptdelinquency r
+	WHERE barangayid LIKE $P{barangayid} 
+	AND NOT EXISTS(select * from rptledger_restriction where parentid = r.rptledgerid )
+	${filter} 
+	GROUP BY rptledgerid, case when year = $P{year} then 'A. CURRENT' else 'B. PREVIOUS' end
+)x 
+	INNER JOIN rptledger rl ON x.rptledgerid = rl.objid 
+	INNER JOIN entity e ON rl.taxpayer_objid = e.objid 
+	INNER JOIN barangay b ON rl.barangayid = b.objid
+ORDER BY b.name, x.revperiod, (x.endyear - x.startyear + 1) desc 
+
+
 [getDelinquentLedgersSummary]
 SELECT 
 	dtgenerated, barangayid, barangay_name, barangay_pin, 
@@ -102,8 +141,29 @@ FROM (
 	FROM report_rptdelinquency rr 
 		inner join rptledger rl on rr.rptledgerid = rl.objid 
 		inner join propertyclassification pc on rl.classification_objid = pc.objid 
-	where NOT EXISTS(select * from rptledger_restriction where parentid = r.rptledgerid )
+	where NOT EXISTS(select * from rptledger_restriction where parentid = rr.rptledgerid )
 )x 
 WHERE year < $P{year} 
 GROUP BY dtgenerated, barangayid, barangay_name, classification, idx 
 ORDER BY barangay_name, idx 
+
+
+[findLatestPayment]
+select x.*
+from (
+	select c.receiptno, c.receiptdate
+	from cashreceipt c 
+		inner join cashreceiptitem_rpt_online cro on c.objid = cro.rptreceiptid
+		left join cashreceipt_void cv on c.objid = cv.receiptid
+	where cro.rptledgerid = $P{rptledgerid}
+	and cv.objid is null 
+	and c.receiptdate < $P{dtgenerated}
+
+	union 
+
+	select refno as receiptno, refdate as receiptdate
+	from rptledger_credit 
+	where rptledgerid = $P{rptledgerid}
+	and refdate < $P{dtgenerated}
+)x
+order by x.receiptdate desc 

@@ -324,13 +324,6 @@ public class RPTLedgerController
         binding?.refresh('totalSubledger.*|subledgerCount');
     }
     
-    def getSubledgerinfo(){
-        if (entity.subledger)
-            return 'Sub-Ledger of PIN ' + entity.subledger.parent.fullpin + '.';
-        return ''
-    } 
-    
-    
     def viewTaxDeclaration(){
         def inv = Inv.lookupOpener('td:report', [entity:[objid:selectedItem.faasid]])
         if (inv){
@@ -385,21 +378,20 @@ public class RPTLedgerController
          return LOV.RPT_FAAS_RESTRICTIONS*.key
      }
      
-    def getRestrictioninfo(){
-        def info = '';
-        if (entity.restrictions)
-           info = 'Ledger is currently under restriction.';
-        return info;
-    }     
-    
     def getMessagelist(){
         def queryinfo = [];
-        def rinfo = getRestrictioninfo();
-        if (rinfo) queryinfo << rinfo;
+        if (entity.restrictions){
+            queryinfo << 'Ledger is currently under restriction';
+        }
         
-        def sinfo = getSubledgerinfo();
-        if (sinfo) queryinfo << sinfo;
+        if (entity.subledger){
+            queryinfo << 'Sub-Ledger of PIN ' + entity.subledger.parent.fullpin + '.';
+        }
         
+        if (RPTUtil.isTrue(entity.undercompromise)){
+            queryinfo << 'Ledger is under compromise agreement.'
+        }
+            
         if (queryinfo)
             return queryinfo;
         return null;

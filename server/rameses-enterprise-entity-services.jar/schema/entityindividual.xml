@@ -1,14 +1,14 @@
-<schema>
+<schema adapter="main">
 	
-	<element  tablename="entityindividual">
-		<field name="objid" required="true" primary="true"/>
-		<field name="lastname" required="true" indexed="true" searchable="true"/>
-		<field name="firstname" required="true" indexed="true" searchable="true"/>
-		<field name="middlename" />
-		<field name="birthdate" />
+	<element  tablename="entityindividual" extends="entity">
+		<field name="objid" required="true" primary="true" prefix="IND"/>
+		<field name="lastname" caption="Last Name" required="true" indexed="true" searchable="true"/>
+		<field name="firstname" caption="First Name" required="true" indexed="true" searchable="true"/>
+		<field name="middlename" caption="Middle Name"/>
+		<field name="birthdate" caption="Birthdate" datatype="date" outputFormat="yyyy-MM-dd"/>
 		<field name="birthplace" />
 		<field name="citizenship" />
-		<field name="gender" />
+		<field name="gender" caption="Gender"/>
 		<field name="civilstatus" />
 		<field name="religion" />		
 		<field name="profession" />
@@ -18,14 +18,5 @@
 		<field name="sss" />
 	</element>	
 	
-	<element name="fingerprint" tablename="entity_fingerprint">
-		<field name="objid" primary="true"/>
-		<field name="entityid"  />
-		<field name="dtfiled" />
-		<field name="leftthumb_image" />
-		<field name="leftthumb_fmd" />
-		<field name="rightthumb_image" />
-		<field name="rightthumb_fmd" />
-	</element>
 
 </schema>

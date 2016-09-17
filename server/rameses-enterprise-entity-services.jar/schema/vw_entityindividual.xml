@@ -2,21 +2,11 @@
  
 create view vw_entityindividual 
 as 
-select 
-	ei.objid, ei.lastname, ei.firstname, ei.middlename, ei.birthdate, ei.birthplace,
-	ei.citizenship, ei.gender, ei.civilstatus, ei.profession, ei.tin, ei.sss,
-	ei.height, ei.weight, ei.acr, ei.religion, ei.photo, ei.thumbnail, 
-	e.entityno, e.type, e.name, e.entityname, e.mobileno, e.phoneno,
-	e.address_objid, e.address_text, addr.bldgno as address_bldgno, 
-	addr.bldgname as address_bldgname, addr.unitno as address_unitno, 
-	addr.street as address_street, addr.subdivision as address_subdivision, 
-	addr.municipality as address_municipality, addr.city as address_city, 
-	addr.province as address_province, addr.type as address_type,
-	addr.barangay_objid as address_barangay_objid,
-	addr.barangay_name as address_barangay_name 
+select ei.*, 
+	e.entityno, e.type, e.name, e.entityname, e.mobileno, e.phoneno, 
+	e.address_objid, e.address_text
 from entityindividual ei 
-	inner join entity e on ei.objid = e.objid 
-	left join entity_address addr on e.objid=addr.parentid 
+	inner join entity e on e.objid=ei.objid 
 
 --> 
 <schema>
@@ -31,17 +21,6 @@ from entityindividual ei
 		<field name="middlename" caption="MiddleName" /> 
 		<field name="address_objid" hidden="true" visible="false" selectable="false"/>
 		<field name="address_text" caption="Address" selectable="false"/>
-		<field name="address_bldgno" visible="false" hidden="true" />
-		<field name="address_bldgname" visible="false" hidden="true" />
-		<field name="address_unitno" visible="false" hidden="true" />
-		<field name="address_street" visible="false" hidden="true" />
-		<field name="address_subdivision" visible="false" hidden="true" />
-		<field name="address_municipality" visible="false" hidden="true" />
-		<field name="address_city" visible="false" hidden="true" />
-		<field name="address_province" visible="false" hidden="true" />
-		<field name="address_type" visible="false" hidden="true" />
-		<field name="address_barangay_objid" visible="false" hidden="true" />
-		<field name="address_barangay_name" visible="false" hidden="true" />
 		<field name="type" caption="Type" hidden="true" visible="false" selectable="false"/>
 		<field name="birthdate" caption="BirthDate" hidden="true" visible="false" selectable="false" />
 		<field name="gender" caption="Gender" hidden="true" visible="false" selectable="false" />

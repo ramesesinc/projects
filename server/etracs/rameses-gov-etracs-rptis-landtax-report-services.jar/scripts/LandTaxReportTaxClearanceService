@@ -78,6 +78,7 @@ class LandTaxReportTaxClearanceService
         )
         buildAdditionalInfo(cert)
         cert.items = em.getItems([rptcertificationid:objid])
+        buildAdministratorInfo(cert)
         loadPaymentInfo(cert)
         return cert 
     }
@@ -110,6 +111,15 @@ class LandTaxReportTaxClearanceService
                 qtr : cert.qtr,
             ]
             item.payments = em.getPaymentInfo(p).findAll{it.rptledgerid == item.rptledgerid}
+        }
+    }
+
+    void buildAdministratorInfo(cert){
+        if (cert.items){
+            def faasinfo = certSvc.getFaasInfo(cert.items[0].refid)
+            if (faasinfo){
+                cert.administrator = faasinfo.administrator
+            }
         }
     }
 }

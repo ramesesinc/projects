@@ -26,10 +26,10 @@ class RPTLedgerInterceptor
 	def STATE_APPROVED  = 'APPROVED'
 
 
-    @After(pattern="RPTLedgerService.(createLedger|createSubLedger|updateLedger|updateSubLedger|approveLedger|fixLedger)") 
+    @After(pattern="RPTLedgerService.(createLedger|createSubLedger|updateLedger|updateSubLedger|approveLedger|fixLedger|updateState)") 
     public void logActions( evt ) {
         def ledger = evt.result 
-        logSvc.log( evt.methodName, 'RPTLEDGER', ledger.objid)
+        logSvc.logA( evt.methodName, 'RPTLEDGER', ledger.objid, ledger._remarks)
     }
 
 	@After(pattern="FAASService.(approveFaas|approveFaasByRemote)", eval="#{!env.ORGCLASS?.equalsIgnoreCase('province')}")

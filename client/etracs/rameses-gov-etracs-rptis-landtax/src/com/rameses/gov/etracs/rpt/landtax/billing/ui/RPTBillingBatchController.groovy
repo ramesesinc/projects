@@ -21,11 +21,11 @@ class RPTBillingBatchController extends AbstractBatchReportController
     def title='Realty Tax Billing Batch Printing'
             
     public def getItems(params){
-        return svc.getTaxpayerIds(params);
+        return svc.getLedgerIds(params);
     }
             
-    public def getReportData(entity){
-        return [taxpayer:entity.taxpayer];
+    public def getReportData(ledger){
+        return [rptledgerid:ledger.objid, taxpayer:ledger.taxpayer];
     }
             
     public def getReportInvokerName(){
@@ -35,7 +35,7 @@ class RPTBillingBatchController extends AbstractBatchReportController
     public def continueOnError(){return true}
     
     public def getItemMessage(data, copycount){
-        return "Processing bill of " + data.taxpayer.name + '.'
+        return "Processing bill for TD No. " + data.tdno + '.'
     }
     
 }

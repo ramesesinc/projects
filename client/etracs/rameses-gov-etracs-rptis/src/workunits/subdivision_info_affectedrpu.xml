@@ -7,7 +7,8 @@
         <invoker type="formActions" action="edit" caption="Edit" mnemonic="e" visibleWhen="#{showActions == true}" role="TAXMAPPER"/>
         <invoker type="formActions" action="save" caption="Save" mnemonic="s" visibleWhen="#{mode != 'read'}" />
         <invoker type="formActions" action="addImprovement" caption="New Improvement" mnemonic="n" visibleWhen="#{mode != 'read'}" />
-        <invoker type="formActions" action="cancelImprovement" caption="Cancel Improvement" mnemonic="c" visibleWhen="#{mode != 'read' &amp;&amp; selectedItem != null}" />
+        <invoker type="formActions" action="deleteNewImprovement" caption="Delete Improvement" mnemonic="d" visibleWhen="#{mode != 'read' &amp;&amp; selectedItem != null &amp;&amp; selectedItem.isnew == true}" depends="selectedItem"/>
+        <invoker type="formActions" action="cancelImprovement" caption="Cancel Improvement" mnemonic="c" visibleWhen="#{mode != 'read' &amp;&amp; selectedItem != null &amp;&amp; selectedItem.isnew != true}" />
    </invokers>
    
    <code class="com.rameses.gov.etracs.rptis.model.SubdivisionAffectedRpuModel" >

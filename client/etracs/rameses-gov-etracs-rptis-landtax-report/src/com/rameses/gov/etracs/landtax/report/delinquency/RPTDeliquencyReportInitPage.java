@@ -33,6 +33,7 @@ public class RPTDeliquencyReportInitPage extends javax.swing.JPanel {
     private void initComponents() {
 
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
+        xComboBox5 = new com.rameses.rcp.control.XComboBox();
         xComboBox3 = new com.rameses.rcp.control.XComboBox();
         xIntegerField1 = new com.rameses.rcp.control.XIntegerField();
         xIntegerField2 = new com.rameses.rcp.control.XIntegerField();
@@ -44,8 +45,18 @@ public class RPTDeliquencyReportInitPage extends javax.swing.JPanel {
         setOpaque(false);
         setLayout(new java.awt.BorderLayout());
 
+        xComboBox5.setAllowNull(false);
+        xComboBox5.setCaption("Format");
+        xComboBox5.setExpression("#{item.title}");
+        xComboBox5.setItems("formats");
+        xComboBox5.setName("entity.format"); // NOI18N
+        xComboBox5.setPreferredSize(new java.awt.Dimension(0, 22));
+        xComboBox5.setRequired(true);
+        xFormPanel1.add(xComboBox5);
+
         xComboBox3.setAllowNull(false);
         xComboBox3.setCaption("Period");
+        xComboBox3.setDepends(new String[] {"entity.format"});
         xComboBox3.setExpression("#{item.name}");
         xComboBox3.setItems("periods");
         xComboBox3.setName("entity.period"); // NOI18N
@@ -106,6 +117,7 @@ public class RPTDeliquencyReportInitPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XComboBox xComboBox2;
     private com.rameses.rcp.control.XComboBox xComboBox3;
     private com.rameses.rcp.control.XComboBox xComboBox4;
+    private com.rameses.rcp.control.XComboBox xComboBox5;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XIntegerField xIntegerField1;
     private com.rameses.rcp.control.XIntegerField xIntegerField2;

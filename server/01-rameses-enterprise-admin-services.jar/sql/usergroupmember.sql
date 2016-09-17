@@ -42,3 +42,9 @@ FROM (
 	INNER JOIN sys_usergroup ug ON ugm.usergroup_objid=ug.objid 
 WHERE ug.role IN (${roles}) 
 ORDER BY u.lastname, u.firstname, u.middlename 
+
+[getRolesByUser]
+select distinct ug.* 
+from sys_usergroup_member ugm 
+	inner join sys_usergroup ug on ugm.usergroup_objid=ug.objid 
+where ugm.user_objid=$P{userid} 

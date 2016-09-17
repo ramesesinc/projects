@@ -16,6 +16,7 @@ class RuleExecutorService {
 		
 	private static Map metaClasses = Collections.synchronizedMap(new HashMap());
 
+
 	private def getClassInstance( String ruleset, String actionName, String actionClassname) {
 		if( !metaClasses.containsKey(ruleset)  ) metaClasses.put(ruleset, [:] );
 		def rsMap = metaClasses.get(ruleset);

@@ -31,8 +31,8 @@ class UsergroupMemberLookupService extends ActiveListService {
 	public void afterList( o, list ) {
 		list.each {
 			it.name = it.firstname + ' '
-			if (it.middlename)
-				it.name += it.middlename + ' '
+			if (it.middlename) it.name += it.middlename + ' ' 
+
 			it.name += it.lastname 
 		}
 	}

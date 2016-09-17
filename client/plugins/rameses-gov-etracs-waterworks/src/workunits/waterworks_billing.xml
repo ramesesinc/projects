@@ -22,7 +22,9 @@
         
             void view() {
                 def param = [acctid:caller.entityContext.objid];
-                entity = billSvc.getBilling(param);
+                entity = billSvc.getBilling(param); 
+                if ( !entity ) throw new Exception('No unpaid items'); 
+                
                 super.view();
             }
         }

@@ -1,6 +1,6 @@
 <workunit extends="wtemplates/SimpleReportController.xml">
     <invokers>
-        <invoker type="waterworks_account:form:formActions" 
+        <invoker xtype="waterworks_account:form:formActions" 
                  caption="Preview Bill" 
                  action="preview" target="popup" 
                  visibleWhen="#{mode=='read'}"

@@ -1,4 +1,4 @@
-<workunit schemaName="waterworks_sector">
+<workunit schemaName="waterworks_sector" allowCreate="false" allowEdit="false" allowDelete="false">
     <!-- used by rules -->
     <invokers>
         <invoker type="waterworks_sector:open" caption="Sector" action="open" target="popup"/>

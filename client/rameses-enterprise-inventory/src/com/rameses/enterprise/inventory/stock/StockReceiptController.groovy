@@ -32,7 +32,7 @@ public abstract class StockReceiptController {
         mode = 'read';
         entity = service.open( entity? entity: [:] ); 
         selectedItem = (entity.items? entity.items[0]: null);  
-        getDetailHandler()
+        getDetailHandler();
         return 'default'; 
     }
 

@@ -13,6 +13,10 @@ public class SectorModel extends CrudFormModel {
     @Service("WaterworksBillingCycleService")
     def billingCycleService;
     
+    void afterCreate() {
+        billCycleList.reload(); 
+    }
+
     void generateBillingCycle() {
         def h = { o->
             o.sectorid = entity.objid;
@@ -27,6 +31,8 @@ public class SectorModel extends CrudFormModel {
     
     def billCycleList = [
         fetchList: {
+            if ( mode.toString() != 'read' ) return []; 
+
             def m = [_schemaname:'waterworks_billing_cycle'];
             m.findBy = [sectorid: entity.objid];
             m._limit = 1000;

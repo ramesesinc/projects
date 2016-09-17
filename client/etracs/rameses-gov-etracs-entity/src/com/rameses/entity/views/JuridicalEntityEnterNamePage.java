@@ -28,8 +28,6 @@ public class JuridicalEntityEnterNamePage extends javax.swing.JPanel {
 
         juridicalEntityMatchName1 = new com.rameses.entity.components.JuridicalEntityMatchName();
 
-        setPreferredSize(new java.awt.Dimension(649, 514));
-
         juridicalEntityMatchName1.setName("entity"); // NOI18N
         juridicalEntityMatchName1.setOncreate("oncreate");
         juridicalEntityMatchName1.setOnselect("onselect");
@@ -40,14 +38,14 @@ public class JuridicalEntityEnterNamePage extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(juridicalEntityMatchName1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(juridicalEntityMatchName1, javax.swing.GroupLayout.PREFERRED_SIZE, 687, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(juridicalEntityMatchName1, javax.swing.GroupLayout.DEFAULT_SIZE, 492, Short.MAX_VALUE)
+                .addComponent(juridicalEntityMatchName1, javax.swing.GroupLayout.DEFAULT_SIZE, 517, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents

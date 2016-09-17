@@ -61,12 +61,12 @@ public class FaasListActivity extends SettingsMenuActivity {
 				String faasid = a.getListItem(pos).getObjid();
 				String type = a.getListItem(pos).getRpuType();
 				if(type.equalsIgnoreCase("land")){
-					Intent intent = new Intent(activity, FaasLandActivity.class);
+					Intent intent = new Intent(activity, TabFaasLandActivity.class);
 					intent.putExtra("faasid", faasid);
 					startActivity(intent); 
 				}
 				if(type.equalsIgnoreCase("bldg")){
-					Intent intent = new Intent(activity, FaasBuildingActivity.class);
+					Intent intent = new Intent(activity, TabFaasBuildingActivity.class);
 					intent.putExtra("faasid", faasid);
 					startActivity(intent); 
 				}

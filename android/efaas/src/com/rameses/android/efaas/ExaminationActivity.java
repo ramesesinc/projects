@@ -21,6 +21,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
+
+import com.rameses.android.ApplicationUtil;
 import com.rameses.android.ControlActivity;
 import com.rameses.android.R;
 import com.rameses.android.db.ExaminationDB;
@@ -56,7 +58,7 @@ public class ExaminationActivity  extends ControlActivity{
 			STATE = "UPDATE";
 		}
 
-		System.err.println("EXAMINATIONID : " + objid);
+		ApplicationUtil.changeTitle(activity,"Examination");
 		
 		setContentView(R.layout.activity_examination);
 		
@@ -113,7 +115,7 @@ public class ExaminationActivity  extends ControlActivity{
             	}
             	disposeMe();
             	if(type.equals("land")){
-            		FaasLandActivity.loadExaminationData();
+            		FaasLandExaminationActivity.loadExaminationData();
             	}
             	if(type.equals("bldg")){
             		FaasBuildingActivity.loadExaminationData();

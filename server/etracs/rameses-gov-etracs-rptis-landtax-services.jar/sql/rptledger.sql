@@ -110,6 +110,7 @@ FROM (
 		0 as partialled
 	FROM rptledger_credit rc 
 	WHERE rptledgerid = $P{rptledgerid}
+	and rc.type <> 'COMPROMISE'
 
 	UNION ALL
 	

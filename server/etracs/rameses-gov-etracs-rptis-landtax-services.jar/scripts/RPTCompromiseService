@@ -37,6 +37,9 @@ class RPTCompromiseService {
 	@Service('RPTReceiptCompromiseService')
 	def receiptSvc
 
+	@Service('ReportParameterService')
+	def reportSvc
+
 	def SCHEMA_NAME 			= 'rptcompromise'
 	def ITEM_SCHEMA_NAME 		= 'rptcompromise_item'
 	def INSTALLMENT_SCHEMA_NAME	= 'rptcompromise_installment'
@@ -374,8 +377,8 @@ class RPTCompromiseService {
         compromise.cadastrallotno   = ledger.cadastrallotno
         compromise.rputype          = ledger.rputype
         compromise.assessedvalue    = ledger.totalav  
-		compromise.firstpartyname		= var.treasurer_name
-		compromise.firstpartytitle		= var.treasurer_title
+		compromise.firstpartyname		= reportSvc.standardParameter.TREASURERNAME
+		compromise.firstpartytitle		= reportSvc.standardParameter.TREASURERTITLE
 		compromise.secondpartyrepresentative = ledger.taxpayer.name 
 		compromise.secondpartyname     = ledger.taxpayer.name 
 		compromise.secondpartyaddress  = ledger.taxpayer.address

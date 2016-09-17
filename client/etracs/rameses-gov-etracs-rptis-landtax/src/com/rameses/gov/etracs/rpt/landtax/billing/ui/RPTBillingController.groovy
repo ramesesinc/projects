@@ -36,12 +36,13 @@ public class RPTBillingController
     def bill;
     def billto;
     def taxpayer;
+    def rptledgerid;
     
     String title = 'Realty Tax Billing'
     
     void init() {
         mode = 'init'
-        bill = svc.initBill(null)
+        bill = svc.initBill(rptledgerid)
     }
     
     def back() {
@@ -116,7 +117,7 @@ public class RPTBillingController
     }
     
     void printBill() {
-        def b = svc.initBill(null)
+        def b = svc.initBill(rptledgerid)
         bill.objid = b.objid 
         bill.barcode = b.barcode 
         buildBillReportInfo()
@@ -125,9 +126,8 @@ public class RPTBillingController
     
     void initBatch(){
         init();
-        bill.taxpayer = taxpayer;
-        loadProperties();
-        previewBill();
+        //bill.taxpayer = taxpayer;
+        printBill();
     }
     
     def previewBill() {

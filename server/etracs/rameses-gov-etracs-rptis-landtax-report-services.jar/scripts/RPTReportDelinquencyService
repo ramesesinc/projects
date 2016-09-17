@@ -114,7 +114,19 @@ class RPTReportDelinquencyService
 			list = buildDelinquentLedgersByClassification(params)
 		} 
 		else {
-			list = em.getDelinquentLedgers( params ); 
+			if (params.format.type.equalsIgnoreCase('format2')){
+				params.filter = ''' AND year <= $P{year} ''';
+				list = em.getDelinquentLedgers2( params ).each{
+					def orno = em.findLatestPayment(it)
+					if(orno){
+						it.putAll(orno)
+					}
+				} 
+			}
+			else {
+				list = em.getDelinquentLedgers( params ); 
+			}
+
 			if ( !list ) throw new Exception('No records found. Try rebuilding the delinquency for this barangay.')
 
 			list.each{

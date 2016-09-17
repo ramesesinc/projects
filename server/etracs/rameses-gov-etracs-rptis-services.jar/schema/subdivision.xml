@@ -39,6 +39,7 @@
         <field name="newpin" />
         <field name="newrpuid" required="true" />
         <field name="newrpid" />
+        <field name="isnew" type="boolean" />
     </element>
 
     <element name="motherland" tablename="subdivision_motherland">

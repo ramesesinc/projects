@@ -117,8 +117,10 @@ class RPTLedgerService
     }    
 
     @ProxyMethod
-    public void updateState(ledger){
+    public def updateState(ledger){
         em.updateState(ledger)
+        ledger._remarks = 'New State: ' + ledger.state 
+        return ledger 
     }
 
 
@@ -733,7 +735,7 @@ class RPTLedgerService
                 em.addPartialToLedgerItemPayment(info)
             }
         }
-
+        info._remarks = 'Last Year Paid: ' + info.lastyearpaid + ' Last Qtr Paid: ' + info.lastqtrpaid 
         return info 
     }
 

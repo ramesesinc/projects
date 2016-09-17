@@ -2631,13 +2631,13 @@
 		<group  name="TRUECOPYMEMO" >
 			<groupExpression><![CDATA[]]></groupExpression>
 			<groupHeader>
-			<band height="138"  isSplitAllowed="true" >
+			<band height="129"  isSplitAllowed="true" >
 				<printWhenExpression><![CDATA[new Boolean( $P{REQUESTEDBY} != null)]]></printWhenExpression>
 				<staticText>
 					<reportElement
 						mode="Transparent"
 						x="159"
-						y="67"
+						y="61"
 						width="119"
 						height="40"
 						forecolor="#999999"
@@ -2657,7 +2657,7 @@ TRUE COPY]]></text>
 					<reportElement
 						mode="Transparent"
 						x="159"
-						y="67"
+						y="61"
 						width="381"
 						height="40"
 						forecolor="#000000"
@@ -2679,7 +2679,7 @@ TRUE COPY]]></text>
 						x="159"
 						y="1"
 						width="381"
-						height="66"
+						height="60"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
 						key="textField-23"/>
@@ -2699,7 +2699,7 @@ TRUE COPY]]></text>
 						x="1"
 						y="2"
 						width="154"
-						height="105"
+						height="99"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
 						key="rectangle-1"/>
@@ -2709,7 +2709,7 @@ TRUE COPY]]></text>
 					<reportElement
 						mode="Transparent"
 						x="8"
-						y="92"
+						y="87"
 						width="60"
 						height="10"
 						forecolor="#000000"
@@ -2729,7 +2729,7 @@ TRUE COPY]]></text>
 					<reportElement
 						mode="Transparent"
 						x="69"
-						y="92"
+						y="87"
 						width="82"
 						height="10"
 						forecolor="#000000"
@@ -2749,7 +2749,7 @@ TRUE COPY]]></text>
 					<reportElement
 						mode="Transparent"
 						x="69"
-						y="82"
+						y="77"
 						width="82"
 						height="10"
 						forecolor="#000000"
@@ -2769,7 +2769,7 @@ TRUE COPY]]></text>
 					<reportElement
 						mode="Transparent"
 						x="8"
-						y="82"
+						y="77"
 						width="60"
 						height="10"
 						forecolor="#000000"
@@ -2789,7 +2789,7 @@ TRUE COPY]]></text>
 					<reportElement
 						mode="Transparent"
 						x="8"
-						y="72"
+						y="67"
 						width="60"
 						height="10"
 						forecolor="#000000"
@@ -2809,7 +2809,7 @@ TRUE COPY]]></text>
 					<reportElement
 						mode="Transparent"
 						x="69"
-						y="72"
+						y="67"
 						width="82"
 						height="10"
 						forecolor="#000000"
@@ -2829,7 +2829,7 @@ TRUE COPY]]></text>
 					<reportElement
 						mode="Transparent"
 						x="4"
-						y="55"
+						y="50"
 						width="148"
 						height="11"
 						forecolor="#000000"
@@ -2849,7 +2849,7 @@ TRUE COPY]]></text>
 					<reportElement
 						mode="Transparent"
 						x="4"
-						y="44"
+						y="39"
 						width="148"
 						height="11"
 						forecolor="#000000"
@@ -2869,7 +2869,7 @@ TRUE COPY]]></text>
 					<reportElement
 						mode="Transparent"
 						x="4"
-						y="26"
+						y="18"
 						width="148"
 						height="11"
 						forecolor="#000000"
@@ -2909,7 +2909,7 @@ TRUE COPY]]></text>
 					<reportElement
 						mode="Transparent"
 						x="281"
-						y="92"
+						y="86"
 						width="258"
 						height="13"
 						forecolor="#999999"
@@ -2925,7 +2925,7 @@ TRUE COPY]]></text>
 					<reportElement
 						mode="Transparent"
 						x="281"
-						y="81"
+						y="75"
 						width="258"
 						height="13"
 						forecolor="#999999"
@@ -2941,7 +2941,7 @@ TRUE COPY]]></text>
 					<reportElement
 						mode="Transparent"
 						x="281"
-						y="70"
+						y="64"
 						width="258"
 						height="13"
 						forecolor="#999999"
@@ -2957,7 +2957,7 @@ TRUE COPY]]></text>
 					<reportElement
 						mode="Transparent"
 						x="0"
-						y="111"
+						y="103"
 						width="62"
 						height="12"
 						forecolor="#000000"
@@ -2977,7 +2977,7 @@ TRUE COPY]]></text>
 					<reportElement
 						mode="Transparent"
 						x="62"
-						y="111"
+						y="103"
 						width="203"
 						height="12"
 						forecolor="#000000"
@@ -2994,7 +2994,7 @@ TRUE COPY]]></text>
 					<reportElement
 						mode="Transparent"
 						x="267"
-						y="111"
+						y="103"
 						width="36"
 						height="12"
 						forecolor="#000000"
@@ -3014,7 +3014,7 @@ TRUE COPY]]></text>
 					<reportElement
 						mode="Transparent"
 						x="303"
-						y="111"
+						y="103"
 						width="237"
 						height="12"
 						forecolor="#000000"
@@ -3031,7 +3031,7 @@ TRUE COPY]]></text>
 					<reportElement
 						mode="Transparent"
 						x="0"
-						y="125"
+						y="117"
 						width="62"
 						height="12"
 						forecolor="#000000"
@@ -3051,7 +3051,7 @@ TRUE COPY]]></text>
 					<reportElement
 						mode="Transparent"
 						x="61"
-						y="124"
+						y="116"
 						width="480"
 						height="12"
 						forecolor="#000000"
@@ -3068,7 +3068,7 @@ TRUE COPY]]></text>
 					<reportElement
 						mode="Transparent"
 						x="158"
-						y="67"
+						y="61"
 						width="119"
 						height="40"
 						forecolor="#999999"
@@ -3331,13 +3331,13 @@ TRUE COPY]]></text>
 			</band>
 		</pageFooter>
 		<summary>
-			<band height="57"  isSplitAllowed="true" >
+			<band height="47"  isSplitAllowed="true" >
 				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Transparent"
 						x="0"
-						y="41"
-						width="351"
+						y="34"
+						width="541"
 						height="13"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
@@ -3409,35 +3409,6 @@ TRUE COPY]]></text>
 					</textElement>
 				<text><![CDATA[.]]></text>
 				</staticText>
-				<image  scaleImage="FillFrame" vAlign="Top" hAlign="Center" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						mode="Opaque"
-						x="357"
-						y="34"
-						width="182"
-						height="12"
-						forecolor="#000000"
-						backcolor="#FFFFFF"
-						key="barcode-1">
-							<printWhenExpression><![CDATA[new Boolean($F{trackingno} != null)]]></printWhenExpression>
-						</reportElement>
-					<box></box>
-					<graphicElement stretchType="NoStretch" fill="Solid" />
-					<imageExpression class="java.awt.Image"><![CDATA[it.businesslogic.ireport.barcode.BcImage.getBarcodeImage(5,$F{trackingno},false,false,null,0,10)]]></imageExpression>
-				</image>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="357"
-						y="46"
-						width="182"
-						height="11"
-						key="textField-51"/>
-					<box></box>
-					<textElement textAlignment="Center" verticalAlignment="Top">
-						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="7" isBold="true"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{trackingno}]]></textFieldExpression>
-				</textField>
 			</band>
 		</summary>
 </jasperReport>

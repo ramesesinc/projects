@@ -28,6 +28,7 @@ public class ListPage extends javax.swing.JPanel {
         jPanel1 = new javax.swing.JPanel();
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
         xComboBox2 = new com.rameses.rcp.control.XComboBox();
+        xComboBox4 = new com.rameses.rcp.control.XComboBox();
         xComboBox1 = new com.rameses.rcp.control.XComboBox();
         pnlBody = new javax.swing.JPanel();
         xDataTable1 = new com.rameses.rcp.control.XDataTable();
@@ -42,7 +43,7 @@ public class ListPage extends javax.swing.JPanel {
         xEtchedBorder1.setHideLeft(true);
         xEtchedBorder1.setHideRight(true);
         jPanel1.setBorder(xEtchedBorder1);
-        jPanel1.setPreferredSize(new java.awt.Dimension(0, 70));
+        jPanel1.setPreferredSize(new java.awt.Dimension(0, 90));
 
         xFormPanel1.setCaptionWidth(100);
 
@@ -51,16 +52,29 @@ public class ListPage extends javax.swing.JPanel {
         xComboBox2.setImmediate(true);
         xComboBox2.setItems("rylist");
         xComboBox2.setName("ry"); // NOI18N
-        xComboBox2.setPreferredSize(new java.awt.Dimension(200, 20));
+        xComboBox2.setPreferredSize(new java.awt.Dimension(100, 20));
         xFormPanel1.add(xComboBox2);
+
+        xComboBox4.setAllowNull(false);
+        xComboBox4.setCaption("LGU");
+        xComboBox4.setDepends(new String[] {"entity.rputype", "entity.lgu"});
+        xComboBox4.setExpression("#{item.name}");
+        xComboBox4.setItems("lgus");
+        xComboBox4.setName("lgu"); // NOI18N
+        xComboBox4.setPreferredSize(new java.awt.Dimension(0, 22));
+        xComboBox4.setRequired(true);
+        xFormPanel1.add(xComboBox4);
 
         xComboBox1.setAllowNull(false);
         xComboBox1.setCaption("Barangay");
+        xComboBox1.setDepends(new String[] {"lgu"});
+        xComboBox1.setDynamic(true);
         xComboBox1.setExpression("#{item.name}");
         xComboBox1.setImmediate(true);
         xComboBox1.setItems("barangays");
         xComboBox1.setName("barangay"); // NOI18N
-        xComboBox1.setPreferredSize(new java.awt.Dimension(200, 21));
+        xComboBox1.setPreferredSize(new java.awt.Dimension(0, 21));
+        xComboBox1.setRequired(true);
         xFormPanel1.add(xComboBox1);
 
         org.jdesktop.layout.GroupLayout jPanel1Layout = new org.jdesktop.layout.GroupLayout(jPanel1);
@@ -76,7 +90,7 @@ public class ListPage extends javax.swing.JPanel {
             jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .add(xFormPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 57, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(xFormPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 83, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -98,6 +112,8 @@ public class ListPage extends javax.swing.JPanel {
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
                 , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.UPPER}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             }),
@@ -111,6 +127,8 @@ public class ListPage extends javax.swing.JPanel {
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
                 , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.UPPER}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             }),
@@ -124,6 +142,8 @@ public class ListPage extends javax.swing.JPanel {
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
                 , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.UPPER}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             })
@@ -149,6 +169,7 @@ public class ListPage extends javax.swing.JPanel {
     private javax.swing.JPanel pnlHeader;
     private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XComboBox xComboBox2;
+    private com.rameses.rcp.control.XComboBox xComboBox4;
     private com.rameses.rcp.control.XDataTable xDataTable1;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XHorizontalPanel xHorizontalPanel2;

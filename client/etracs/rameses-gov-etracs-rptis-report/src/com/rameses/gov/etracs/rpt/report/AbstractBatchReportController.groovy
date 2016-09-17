@@ -118,12 +118,13 @@ abstract class AbstractBatchReportController
     }
     
     public def getReportData(entity){
-        return [entity:reportdata]
+        return [entity:entity]
     }
         
     
     def batchTask = [
         run : {
+            println 'PASS...'
             def error = false;
             def list = null;
             try {
@@ -144,7 +145,6 @@ abstract class AbstractBatchReportController
 
             while(!interrupt && data) {
                 def reportdata = getReportData(data);
-
                 def p = getReportParameters();
                 if(!p) p = [:];
                 reportparams += p;
@@ -155,11 +155,13 @@ abstract class AbstractBatchReportController
                     
                     def reportInvoker = Inv.lookupOpener(getReportInvokerName(), reportdata )
                     def report = reportInvoker.handle.report.report
-
-                    1.upto(params.copies){copycnt -> 
-                        ReportUtil.print( report, params.showprinterdialog) ;
-                        updateMessage(getItemMessage(data, copycnt));
-                        Thread.sleep(params.printinterval * 1000)
+                    
+                    if (params.copies > 1){
+                        1.upto(params.copies - 1){copycnt -> 
+                            ReportUtil.print( report, params.showprinterdialog) ;
+                            updateMessage(getItemMessage(data, copycnt));
+                            Thread.sleep(params.printinterval * 1000)
+                        }
                     }
                 } catch(e) {
                     e.printStackTrace();

@@ -46,7 +46,7 @@
               <Component id="formPanel1" min="-2" pref="183" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="xLabel1" min="-2" pref="32" max="-2" attributes="0"/>
-              <EmptySpace max="32767" attributes="0"/>
+              <EmptySpace pref="23" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -126,6 +126,12 @@
               <Dimension value="[0, 21]"/>
             </Property>
             <Property name="required" type="boolean" value="true"/>
+          </Properties>
+        </Component>
+        <Component class="com.rameses.rcp.control.XTextField" name="xTextField1">
+          <Properties>
+            <Property name="caption" type="java.lang.String" value="Section"/>
+            <Property name="name" type="java.lang.String" value="params.section" noResource="true"/>
           </Properties>
         </Component>
         <Container class="com.rameses.rcp.control.XSeparator" name="xSeparator1">

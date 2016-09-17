@@ -12,12 +12,15 @@ class LandTaxBatchBillingService
 
 
     @ProxyMethod
-    public def getTaxpayerIds( params ) {
+    public def getLedgerIds( params ) {
         if (!params.barangay) throw new Exception('Barangay is required.')
         params.barangayid = params.barangay.objid 
         params.billtoyear = dtSvc.serverYear
         params.billtoqtr = 4 
-        return em.getTaxpayerIds(params)
+        if(params.section){
+            return em.getLedgerIdsBySection(params)
+        }
+        return em.getLedgerIdsByBrgy(params)
     }
 
 }

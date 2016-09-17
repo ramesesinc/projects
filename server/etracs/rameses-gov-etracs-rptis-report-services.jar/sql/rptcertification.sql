@@ -214,6 +214,7 @@ ORDER BY f.tdno
 SELECT 
 	f.tdno, f.titleno, f.titledate, f.effectivityyear,
 	f.owner_name, f.owner_address, 
+	f.administrator_name, f.administrator_address, 
 	pc.code AS classcode, 
 	pc.name AS classname, 
 	r.ry, r.realpropertyid, r.rputype, r.fullpin, r.totalmv, r.totalav,

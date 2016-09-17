@@ -19,3 +19,11 @@
     visible:true;
     required:true;
 }
+
+"entity.period"[true == true]{
+    visible:true;
+}
+
+"entity.period"[entity.format.type == 'format2']{
+    visible:false;
+}

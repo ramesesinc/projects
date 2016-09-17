@@ -5,6 +5,11 @@
 - BPLS 
 		
 - ASSESSOR
+	- Support deletion of newly added subdivision affected improvement
+	- Update on taxmapping parcel monitoring
+	- Adjust Land FAAS to accommodate title no.
+	- Adjust TD report to accommodate annotations
+	- Support misc rpu depreciation for sworn amount
 	- Support modification of taxability (Modify FAAS and RPU Information)
 	- Allow partial tdno search
 	- Allow resizing of tables on Bldg Appraisal info 
@@ -13,6 +18,10 @@
 	
 	
 - LANDTAX
+	- NEW! Deliquency listing format 1 and 2
+	- Support barangay section filter in rpt billling
+	- Support change state for CANCELLED Ledgers
+	- Display administrator info in Tax Clearance
 	- Support billing of restricted property
 	- Fix tax clearance method error 
 	- Remove paid ledgeritems 

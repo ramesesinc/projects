@@ -18,6 +18,7 @@
 	
 	
 - LANDTAX
+	- NEW! Top N Delinquent Taxpayer Report
 	- NEW! Compromise Ledger Report
 	- NEW! Deliquency listing format 1 and 2
 	- Support barangay section filter in rpt billling

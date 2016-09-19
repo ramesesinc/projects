@@ -5,6 +5,7 @@
 - BPLS 
 		
 - ASSESSOR
+	- Support to resend redflag 
 	- Add recalculate support in modify faas appraisal
 	- Support deletion of newly added subdivision affected improvement
 	- Update on taxmapping parcel monitoring

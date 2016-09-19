@@ -32,6 +32,14 @@ class MunicipalityRedFlagService
 		return redflag 
 	}
 
+	@ProxyMethod
+	public def resendToProvince( redflag ) {
+		redflag = redflagSvc.open(redflag)
+		def changeinfo = changeinfoSvc.openByRedFlag(redflag)
+		notifyFiledBy(redflag)
+		return changeinfo 
+	}
+
 	void notifyFiledBy(redflag){
 		def asyncreq    = notificationSvc.createAsyncRequest('ProvinceRedFlagService', 'resolveRedFlag', redflag, notificationSvc.buildEnvMap(env))
         def msg         = notificationSvc.createAsyncMessage(asyncreq[0])

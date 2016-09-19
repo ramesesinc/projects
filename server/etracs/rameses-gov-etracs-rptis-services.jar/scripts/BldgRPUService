@@ -180,8 +180,16 @@ class BldgRPUService
 	}
 
 	void checkFloorInfo(rpu){
-		if (rpu.floorcount == null || rpu.floorcount == 0)
-			rpu.floorcount = 1 
+		rpu.floorcount = 1
+        rpu.structuraltypes.each{st ->
+            st.bldguses.each{bu ->
+                bu.floors.each{f ->
+                    if (f.floorno > rpu.floorcount){
+                        rpu.floorcount = util.toInteger(f.floorno+'')
+                    }
+                }
+            }
+        }
 	}
 
 	

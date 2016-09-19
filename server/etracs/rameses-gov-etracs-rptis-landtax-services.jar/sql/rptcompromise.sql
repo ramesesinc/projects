@@ -4,7 +4,7 @@ SELECT
 	c.secondpartyname, c.term, c.numofinstallment, 
 	c.downpaymentrequired, c.downpayment, c.downpaymentorno,
 	c.amount, c.amtpaid, c.enddate, c.cypaymentrequired, c.cypaymentorno, 
-	rl.tdno, e.name AS taxpayer_name, e.address_text AS taxpayer_address, 
+	rl.tdno, e.objid as taxpayer_objid, e.name AS taxpayer_name, e.address_text AS taxpayer_address, 
 	rl.fullpin, rl.cadastrallotno
 FROM rptledger_compromise c 
 	INNER JOIN rptledger rl ON c.rptledgerid = rl.objid 

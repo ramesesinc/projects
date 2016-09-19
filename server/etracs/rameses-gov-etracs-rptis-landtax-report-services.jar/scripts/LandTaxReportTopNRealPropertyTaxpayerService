@@ -2,9 +2,9 @@ import com.rameses.annotations.*
 import com.rameses.common.*;
 import com.rameses.services.extended.*;
 
-class LandTaxReportTopNDelinquentTaxpayerService
+class LandTaxReportTopNRealPropertyTaxpayerService
 {
-    @ActiveDB('landtaxreport_topn_delinquent')
+    @ActiveDB('landtaxreport_topn_realty_taxpayer')
     def em
 
 
@@ -18,19 +18,24 @@ class LandTaxReportTopNDelinquentTaxpayerService
 	@Async
     @ProxyMethod
 	public def buildReport(params){
-		params.cy = dtSvc.serverYear 
 		params._limit = params.topn 
+		params.type = '%'
+
+		if (params.rputype) 
+			params.type = params.rputype
+
 		def list = []
-		em.getTopNDelinquentAmounts(params).each{
+		em.getTopNPayments(params).each{
 			params._limit = 50
 			params.amount = it.amount 
-			list += em.getTopNDelinquentTaxpayers(params)
+			list += em.getTopNTaxpayerPayments(params)
 		}
 
 		int rank = 0
 		def prevamt = 0.0
 		for(int i = 0; i < list.size(); i++){
 			def item = list[i]
+			item.period = item.fromyear + '-' + item.toyear 
 			if (prevamt != item.amount){
 				rank++;
 				prevamt = item.amount 
@@ -41,7 +46,12 @@ class LandTaxReportTopNDelinquentTaxpayerService
 
 			item.rank = rank;
 		}
-		return [reportdata:list, parameters:[TOPN:params.topn]]; 
+		def p = [:]
+		p.TOPN = params.topn 
+		p.YEAR = params.year 
+		p.TITLE = 'Top ' + params.topn + ' Realty Tax Payers '
+		if (params.rputype) p.TITLE += ' (' + params.rputype.toUpperCase() + ')'
+		return [reportdata:list, parameters:p]; 
 	}
 
 }

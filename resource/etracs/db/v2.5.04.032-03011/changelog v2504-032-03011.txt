@@ -5,6 +5,7 @@
 - BPLS 
 		
 - ASSESSOR
+	- Add recalculate support in modify faas appraisal
 	- Support deletion of newly added subdivision affected improvement
 	- Update on taxmapping parcel monitoring
 	- Adjust Land FAAS to accommodate title no.

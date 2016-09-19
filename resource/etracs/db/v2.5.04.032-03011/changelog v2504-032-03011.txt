@@ -5,6 +5,7 @@
 - BPLS 
 		
 - ASSESSOR
+	- Update on subdivision summary report 
 	- Fix consolidated summary report 
 	- Support to resend redflag 
 	- Add recalculate support in modify faas appraisal

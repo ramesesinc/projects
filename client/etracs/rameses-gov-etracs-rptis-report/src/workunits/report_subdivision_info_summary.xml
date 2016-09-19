@@ -45,7 +45,7 @@ class SummaryReportInfoController extends ReportController
     }
     
     void refresh(){
-        buildReport();
+        preview();
         binding.refresh();
     }
     

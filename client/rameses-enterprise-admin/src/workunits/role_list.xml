@@ -7,12 +7,14 @@
    </invokers>
 </workunit>
 -->
-<workunit extends="com/rameses/seti2/templates/CrudList.xml" schemaName="sys_usergroup"
-        cols="domain,role,title">
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" 
+          schemaName="sys_usergroup" cols="domain,role,title">
+    
     <invokers>
-        <invoker folderid="/explorer/admin" caption="Roles" role="SYSADMIN" 
-            permission="system" index="2" action="init"/>
-        <invoker folderid="/home/admin" caption="Manage Roles" role="SYSADMIN" 
-            permission="system" index="0" icon="home/icons/admin-role.png" action="init"/>
+        <invoker folderid="/explorer/admin" caption="Roles" action="init" 
+                 role="SYSADMIN" permission="system" index="2" />
+        <invoker folderid="/home/admin" caption="Manage Roles" action="init" 
+                 role="SYSADMIN" permission="system" index="0" 
+                 icon="home/icons/admin-role.png" />
    </invokers>
 </workunit>

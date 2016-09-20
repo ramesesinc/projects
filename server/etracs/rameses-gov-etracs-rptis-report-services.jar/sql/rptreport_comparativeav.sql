@@ -164,4 +164,3 @@ WHERE ${filter}
 GROUP BY e.objid, e.name , e.orderno
 ORDER BY e.orderno
 
-

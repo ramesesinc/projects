@@ -27,7 +27,9 @@
             </folder>
         </folder>
         <folder id="report" caption="Reports" index="3">
-            <folder id="rpt" caption="Assessor" index="1" />
+            <folder id="rpt" caption="Assessor" index="1">
+                <folder id="prov" caption="Province" index="-1" />
+            </folder>
             <folder id="landtax" caption="Land Tax" index="2" />
         </folder>
         <folder id="setting" caption="Settings" index="4">

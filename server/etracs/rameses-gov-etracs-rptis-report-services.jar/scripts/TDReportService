@@ -295,13 +295,13 @@ class TDReportService
 				//cancel faas transaction
 				def reason = adb.findCancelFaasReason(td)
 				if (reason){
-					notes  = 'Cancelled due to ' + reason.reason + '. '
-					notes += 'Date ' + dtSvc.format('MMMMM dd, yyyy' ,reason.txndate) + '.  ' 
+					notes  = 'Cancelled due to ' + reason.reason + '.\n'
+					notes += 'Date Cancelled: ' + dtSvc.format('MMMMM dd, yyyy' ,reason.txndate) + '.  ' 
 				}
 				else{
-					notes  =  'Cancelled By TD/ARP No. ' + td.cancelledbytdnos + '. ' 
-					notes += 'Cancellation Reason: '  + td.cancelreason + '. '
-					notes += 'Date Cancelled: ' + dtSvc.format('MMMMM dd, yyyy' ,td.canceldate) + '.  ' 
+					notes  =  'Cancelled By TD/ARP No. ' + td.cancelledbytdnos + '.\n' 
+					notes += 'Cancellation Reason: '  + td.cancelreason + '.\n'
+					notes += 'Date Cancelled: ' + dtSvc.format('MMMMM dd, yyyy' ,td.canceldate) + '.' 
 				}
 			}
 			td.cancelnote = notes + (td.cancelnote ? td.cancelnote : '')

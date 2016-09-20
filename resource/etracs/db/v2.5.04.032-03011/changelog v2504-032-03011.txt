@@ -5,6 +5,7 @@
 - BPLS 
 		
 - ASSESSOR
+	- Adjust TD report to accommodate long cancel reason
 	- Update on subdivision summary report 
 	- Fix consolidated summary report 
 	- Support to resend redflag 

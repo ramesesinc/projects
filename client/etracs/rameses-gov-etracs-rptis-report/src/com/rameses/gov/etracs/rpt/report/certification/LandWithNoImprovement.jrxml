@@ -3,7 +3,8 @@
 <!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
 <jasperReport
 		 name="LandWithNoImprovement"
-		 columnCount="1"
+
+		 language="groovy"		 columnCount="1"
 		 printOrder="Vertical"
 		 orientation="Portrait"
 		 pageWidth="612"
@@ -70,6 +71,7 @@
 	<field name="givenmonth" class="java.lang.String"/>
 	<field name="givenday" class="java.lang.String"/>
 	<field name="addlinfo" class="java.lang.String"/>
+	<field name="administrator.name" class="java.lang.String"/>
 
 
 		<group  name="GRP_LANDHOLDING" >
@@ -166,7 +168,7 @@
 					<textElement textAlignment="Justified" verticalAlignment="Top" rotation="None" isStyledText="true" lineSpacing="1_1_2">
 						<font fontName="Tahoma" pdfFontName="Helvetica" size="9" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA["                 Records available in this office show <style isBold=\"true\" isUnderline=\"true\"> " + $F{taxpayer.name} + " </style> has declared for taxation purposes the following property(ies) whose description are as follows:"]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA["                 Records available in this office show <style isBold=\"true\" isUnderline=\"true\"> " + $F{taxpayer.name}.replaceAll("&","&amp;") + ($F{administrator.name} !=  null ? ' (Administrator: ' + $F{administrator.name}.replaceAll("&","&amp;") + ")" : '') + " </style> has declared for taxation purposes the following property(ies) whose description are as follows:"]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement
@@ -639,7 +641,7 @@
 					<textElement textAlignment="Justified" verticalAlignment="Top" rotation="None" isStyledText="true" lineSpacing="1_1_2">
 						<font fontName="Tahoma" pdfFontName="Helvetica" size="9" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA["                 Issued upon the request of Mr./Ms.<style isBold=\"true\">  " + $F{requestedby}.replaceAll("&","&amp;") + "  </style> for " + $F{purpose} + "."]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA["                 Issued upon the request of Mr./Ms.<style isBold=\"true\">  " + (!$F{requestedby}.equals($F{taxpayer.name}) ? $F{requestedby}.replaceAll("&","&amp;") : ($F{taxpayer.name}.replaceAll("&","&amp;") + ($F{administrator.name} ==  null ? "" : " (Administrator: " + $F{administrator.name}.replaceAll("&","&amp;") + ")"))) + "  </style> for " + $F{purpose} + "."]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement

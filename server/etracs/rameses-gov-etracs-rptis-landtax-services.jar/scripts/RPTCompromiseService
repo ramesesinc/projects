@@ -455,8 +455,7 @@ class RPTCompromiseService {
 		def installments = buildInstallments(compromise)
 		update(compromise)
 
-		def param = [rptcompromiseid:compromise.objid]
-		em.deleteInstallments(param)
+		em.deleteInstallments(compromise)
 
 		installments.each { 
 			em.create(it, INSTALLMENT_SCHEMA_NAME) 

@@ -92,7 +92,6 @@ class RPTReceiptCompromiseService
 			em.updateCompromiseAmountPaid(compromiseparam)
 		}
 		else if (receipt.requiredpayment.type == 'downpayment'){
-			println 'posting downpayment...'
 			receipt.remarks = (receipt.remarks ? receipt.remarks : 'Downpayment')
 			postRequiredPayment(receipt)
 			postPaidItems(receipt)
@@ -101,7 +100,6 @@ class RPTReceiptCompromiseService
 			em.updateCompromiseAmountPaid(compromiseparam)
 		}
 		else {
-			println 'posting cypayment...'
 			receipt.remarks = (receipt.remarks ? receipt.remarks : 'Current year payment')
 			postRequiredPayment(receipt)
 			postRequiredPaymentCredit(receipt)
@@ -259,17 +257,18 @@ class RPTReceiptCompromiseService
 		return billingSvc.getBillLedgerAccounts(receipt.bill)
 	}
 
+	void updateTotals(item){
+		item.amtdue = item.basic + item.basicint + item.basicidle + item.basicidleint + item.sef + item.sefint + item.firecode 
+		item.basicnet = item.basic + item.basicint 
+		item.sefnet = item.sef + item.sefint 
+		item.total = item.amtdue 
+		item.totalbasicsef = item.basicnet + item.sefnet
+	}
+
 	@ProxyMethod
 	public def buildCreditAndTaxItems(receipt){
 		def compromise = receipt.compromise 
-		def unpaiditems = em.getUnpaidItems(compromise).each{
-								it.amtdue = it.basic + it.basicint + it.basicidle + it.basicidleint + 
-											it.sef + it.sefint + it.firecode 
-								it.basicnet = it.basic + it.basicint 
-								it.sefnet = it.sef + it.sefint 
-								it.total = it.amtdue 
-								it.totalbasicsef = it.basicnet + it.sefnet
-							}
+		def unpaiditems = em.getUnpaidItems(compromise).each{ updateTotals(it) }
 		
 		def payment = receipt.amount 
 		def paiditems = []
@@ -329,6 +328,7 @@ class RPTReceiptCompromiseService
 					partialitem.sefint = payment - (partialitem.basic + partialitem.basicint + partialitem.sef )
 				}
 				partialitem.paid = 0
+				updateTotals(partialitem)
 				paiditems << partialitem
 				payment = 0.0
 			}
@@ -382,7 +382,6 @@ class RPTReceiptCompromiseService
 		buildCreditAndTaxItems(receipt)
 
 		receipt.paiditems.each{ item ->
-			println 'year -> ' + item.year + '-' + item.qtr + ' fullypaid -> ' + item.fullypaid 
 			buildPaidItemInfo(receipt, item)
 			em.create(item, 'rptcompromise_item_credit')
 			if (item.fullypaid == 1 || item.fullypaid == true)

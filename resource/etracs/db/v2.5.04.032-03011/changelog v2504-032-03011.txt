@@ -23,6 +23,7 @@
 	
 	
 - LANDTAX
+	- Fix Compromise restructure facility
 	- NEW! Top N Realty Tax Payer Report
 	- NEW! Top N Delinquent Taxpayer Report
 	- NEW! Compromise Ledger Report

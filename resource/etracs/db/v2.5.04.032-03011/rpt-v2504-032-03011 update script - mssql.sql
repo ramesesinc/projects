@@ -12,3 +12,23 @@ alter table subdivisionaffectedrpu add isnew int
 go 
 update subdivisionaffectedrpu set isnew = 0 where isnew is null
 go 
+
+
+delete from rptbill_ledger_item where billid in (
+	select objid from rptbill where expirydate < '2016-09-01'
+)
+go 
+
+delete from rptbill_ledger_account where billid in (
+	select objid from rptbill where expirydate < '2016-09-01'
+)
+go 
+
+
+delete from rptbill_ledger where billid in (
+	select objid from rptbill where expirydate < '2016-09-01'
+)
+go 
+
+delete from rptbill where expirydate < '2016-09-01'
+go 

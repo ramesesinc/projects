@@ -197,8 +197,8 @@ public class CancelledFAASController extends PageFlowController
             <transition caption="Edit"   to="back-to-forapproval" action="edit" name="edit" mnemonic="e" shortcut="ctrl E" icon="images/toolbars/edit.png"  visibleWhen="#{mode == 'read'}" role="APPROVER"/>
             <transition caption="Cancel" to="back-to-forapproval" action="cancelEdit" name="cancel"  mnemonic="c" icon="images/toolbars/cancel.png" visibleWhen="#{mode != 'read'}"/>
             <transition caption="Save"   to="back-to-forapproval" action="save" name="save" mnemonic="s" shortcut="ctrl S" icon="images/toolbars/save.png"  visibleWhen="#{mode != 'read'}" />
-            <transition caption="Disapprove" to="default" action="disapproveFaasCancellation" mnemonic="d" visibleWhen="#{mode == 'read'}" confirm="Disapprove record?" role="APPROVER"/>
-            <transition caption="Approve" to="approved" action="approveFaasCancellation" mnemonic="v" icon="images/toolbars/approve.png" visibleWhen="#{mode == 'read'}" confirm="Approve record?" role="APPROVER"/>
+            <transition caption="Disapprove" to="default" action="disapproveFaasCancellation" mnemonic="d" visibleWhen="#{mode == 'read'}" confirm="Disapprove record?" role="APPROVER,RECORD_APPROVER"/>
+            <transition caption="Approve" to="approved" action="approveFaasCancellation" mnemonic="v" icon="images/toolbars/approve.png" visibleWhen="#{mode == 'read'}" confirm="Approve record?" role="APPROVER,RECORD_APPROVER"/>
         </page>
         
         <process name="back-to-forapproval">

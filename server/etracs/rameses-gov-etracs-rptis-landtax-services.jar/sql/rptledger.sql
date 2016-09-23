@@ -201,6 +201,7 @@ FROM (
 			cr.objid,
 			cr.receiptno,
 			cr.receiptdate,
+			cr.collector_name,
 			cr.paidby,
 			crr.txntype,
 			cri.year, 

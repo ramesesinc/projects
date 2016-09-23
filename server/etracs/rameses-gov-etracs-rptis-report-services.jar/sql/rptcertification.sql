@@ -237,7 +237,16 @@ WHERE faasid = $P{faasid}
 
 
 [getProperties]
-SELECT objid FROM faas WHERE taxpayer_objid = $P{taxpayerid} AND state = 'CURRENT'
+select x.*
+from (
+	SELECT objid, tdno FROM faas WHERE taxpayer_objid = $P{taxpayerid} AND state = 'CURRENT'
+	union
+	SELECT f.objid, f.tdno FROM faas f 
+		inner join entitymember m on f.taxpayer_objid = m.entityid 
+	WHERE f.state = 'CURRENT' AND m.member_objid = $P{taxpayerid} 
+)x
+order by x.tdno 
+
 
 
 [findImprovementCount]

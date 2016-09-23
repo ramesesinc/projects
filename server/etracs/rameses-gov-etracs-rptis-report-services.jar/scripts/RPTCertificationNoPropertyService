@@ -38,9 +38,23 @@ class RPTCertificationNoPropertyService
 
 	@ProxyMethod
 	public void checkExistingProperty( taxpayerid ) {
-		def prop = em.getProperties([taxpayerid:taxpayerid])
-		if (prop)
-			throw new Exception('Selected taxpayer has existing properties.')
+		def props = em.getProperties([taxpayerid:taxpayerid, _limit:5])
+		if (props.size() > 0){
+			def msg = 'Selected taxpayer has existing '
+			if (props.size() == 1){
+				msg += ' property with TD No. ' + props[0].tdno + '.'
+			}
+			else if (props.size() <= 5){
+				msg += props.size() + ' properties shown below.\n'
+				props.each{ msg += '      * ' + it.tdno + '\n'}
+			}
+			else {
+				msg += props.size() + ' properties. The first 5 properties are shown below:\n'
+				props.each{ msg += '      * ' + it.tdno + '\n'}
+			}
+
+			throw new Exception(msg)
+		}
 	}
 
 	@ProxyMethod

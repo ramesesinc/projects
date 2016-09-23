@@ -125,6 +125,7 @@ class ETRACS22To254MachMigrationInterceptor
 					imported 		: util.toBoolean(md.imported, false),
 					newlyinstalled 	: util.toBoolean(md.newlyinstalled, false),
 					autodepreciate	: util.toBoolean(md.autodepreciate, true),
+					taxable : true, 
 				]
 				rpuEm.create(newmd, 'machdetail')
 			}

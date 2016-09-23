@@ -65,11 +65,12 @@ class ETRACS22To254UtilService
 
 	@ProxyMethod
 	public def toInteger(paramvalue){
-		if (paramvalue == null || paramvalue.toString().trim().length() == 0) 
+		if (paramvalue == null) 
 			return 0
 
 		try{
-			return new java.math.BigDecimal(paramvalue.toString()).intValue()
+			return 
+			new java.math.BigDecimal(paramvalue.toString()).intValue()
 		}
 		catch(e){
 			return 0
@@ -78,7 +79,7 @@ class ETRACS22To254UtilService
 
 	@ProxyMethod
 	public def toDecimal(paramvalue){
-		if (paramvalue == null || paramvalue.toString().trim().length() == 0)  
+		if (paramvalue == null) 
 			return 0.0
 
 		try{

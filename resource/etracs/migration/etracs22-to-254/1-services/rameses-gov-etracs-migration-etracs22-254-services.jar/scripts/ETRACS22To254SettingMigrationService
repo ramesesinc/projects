@@ -8,9 +8,6 @@ class ETRACS22To254SettingMigrationService
 	@ActiveDB(value='etracs22_setting', em='etracs22')
 	def em22;
 
-	@ActiveDB('etracs254rpt')
-	def em254;
-
 
 	@Service('ETRACS22To254UtilService')
 	def util 
@@ -63,19 +60,17 @@ class ETRACS22To254SettingMigrationService
 	public void migrateSpecificClasses(  ) {
 		em22.getSpecificClasses().each{spc ->
 			landEm.save(spc, 'lcuvspecificclass')
-			migrateSubClasses(spc)
 		}	
 		println 'Migrated specificclasses.'
 	}
 		
 	@ProxyMethod
-	public void migrateSubClasses( spc ) {
-		em22.getSubClasses(spc).each{sub ->
+	public void migrateSubClasses(  ) {
+		em22.getSubClasses().each{sub ->
 			landEm.save(sub, 'lcuvsubclass')
 		}	
 		println 'Migrated subclasses.'
 	}
-
 		
 	@ProxyMethod
 	public void migrateStrippings(  ) {
@@ -173,18 +168,19 @@ class ETRACS22To254SettingMigrationService
                 dep.rate 			= it.rate
         		bldgEm.save(dep, 'depreciation') 
 			}
-
-			migrateBldgKindBuccs(bt)
 		}
 		println 'Migrated bldgtypes.'
 	}
 
 
 	@ProxyMethod
-	public void migrateBldgKindBuccs(bt){
-		em22.getBldgKindBuccs(bt).each{
-			resolveBldgKind(it)
-			bldgEm.save(it, 'bldgkindbucc')
+	public void migrateBldgKindBuccs(){
+		em22.getBldgKindBuccs().each{
+			def bldgtype = bldgEm.read([objid:it.bldgtypeid], 'bldgtype')
+			if (bldgtype){
+				resolveBldgKind(it)
+				bldgEm.save(it, 'bldgkindbucc')
+			}
 		}
 		println 'Migrated bldgkindbuccs.'
 	}
@@ -199,6 +195,16 @@ class ETRACS22To254SettingMigrationService
 
 	}
 
+/*
+	void resolveBldgTytpe(bldgkindbucc){
+		def bry = bldgEm.read(bldgtype, 'bldgtype')
+		if (!bry){
+
+			bldgEm.create()
+		}
+		throw new Exception('test')
+	}
+*/
 
 	@ProxyMethod
 	public void migrateBldgAdditionalItems(){

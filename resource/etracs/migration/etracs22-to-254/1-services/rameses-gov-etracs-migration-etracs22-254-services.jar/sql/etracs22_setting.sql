@@ -40,13 +40,15 @@ FROM landassesslevel
 SELECT 
 	spc.objid, 
 	spc.landrysettingid, 
-	l.classification_objid, 
+	spc.objid as landspecificclass_objid, 
+	p.objid as classification_objid, 
 	spc.classcode as code, 
 	spc.classname as name, 
 	spc.areatype as areatype, 
 	spc.previd 
 FROM lcuvspecificclass spc
 inner join lcuv l on spc.lcuvid = l.objid
+inner join propertyclassification p on l.classcode = p.propertycode
 
 
 [getSubClasses]
@@ -60,7 +62,6 @@ SELECT
 	sub.previd 
 FROM lcuvsubclass sub 
 inner join lcuvspecificclass spc on sub.specificclassid = spc.objid 
-where spc.objid = $P{objid}
 
 
 
@@ -109,22 +110,19 @@ SELECT
 	$P{appliedto} as appliedto, 
 	previd 
 FROM bldgrysetting
-order by ry 
 
 
 [getBldgAssessLevels]
 SELECT 
-	bal.objid,
-	bal.bldgrysettingid,
-	bal.code,
-	bal.name,
-	bal.fixrate,
-	bal.rate,
-	bal.previd,
-	bal.ranges
-FROM bldgassesslevel bal 
-inner join bldgrysetting bs on bal.bldgrysettingid = bs.objid 
-order by bs.ry 
+	objid,
+	bldgrysettingid,
+	code,
+	name,
+	fixrate,
+	rate,
+	previd,
+	ranges
+FROM bldgassesslevel
 
 
 [getBldgTypes]
@@ -136,12 +134,9 @@ SELECT
 	bt.basevaluetype,
 	bt.residualrate,
 	bt.previd,
-	bt.depreciations,
-	bt.multistoreyadjustments
+	depreciations,
+	multistoreyadjustments
 FROM bldgtype bt 
-	inner join bldgrysetting bs on bt.bldgrysettingid  = bs.objid 
-order by bs.ry 
-
 
 
 [getBldgKindBuccs]
@@ -163,27 +158,22 @@ SELECT
 	bucc.previd 
 FROM bldgkindbucc bucc 
 inner join bldgrysetting bs on bucc.bldgrysettingid = bs.objid 
-where bucc.bldgtypeid = $P{objid}
 
 
 [getBldgAdditionalItems]
 SELECT 
-	bi.objid,
-	bi.bldgrysettingid,
+	objid,
+	bldgrysettingid,
 	'additionalitem' as type, 
-	bi.code,
-	bi.name,
-	bi.unit,
-	bi.expr,
-	bi.previd
-FROM bldgadditionalitem bi 
-inner join bldgrysetting bs on bi.bldgrysettingid = bs.objid 
-order by bs.ry 
+	code,
+	name,
+	unit,
+	expr,
+	previd
+FROM bldgadditionalitem 
 
 
 
-[findBldgTypePrevInfo]
-select * from bldgtype where objid = $P{previd}
 
 
 #============= MACH ==============================
@@ -234,21 +224,18 @@ SELECT
 	previd, 
 	assesslevels 
 FROM planttreerysetting
-order by ry 
 
 
 [getPlantTreeUnitValues]
 SELECT 
-	u.objid,
-	u.planttreerysettingid,
-	u.planttreeid as planttree_objid,
-	u.code,
-	u.name,
-	u.unitvalue,
-	u.previd 
-FROM planttreeunitvalue u 
-inner join planttreerysetting rs on u.planttreerysettingid = rs.objid 
-order by rs.ry 
+	objid,
+	planttreerysettingid,
+	planttreeid as planttree_objid,
+	code,
+	name,
+	unitvalue,
+	previd 
+FROM planttreeunitvalue
 
 
 
@@ -302,5 +289,3 @@ union
 select objid, objid as rysettingid, 'planttree' as settingtype from planttreerysetting
 union 
 select objid, objid as rysettingid, 'misc' as settingtype from miscrysetting
-
-

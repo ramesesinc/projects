@@ -83,7 +83,7 @@ class RPTReceiptCompromiseService
 		
 		receiptdb.create(receipt)
 
-		def compromiseparam = [objid:receipt.compromise.objid, amtpaid:receipt.amount]
+		def compromiseparam = [objid:receipt.compromise.objid, amtpaid:receipt.amount, rptledgerid:receipt.compromise.rptledgerid]
 
 		if (receipt.requiredpayment == null ){
 			postInstallmentPayments(receipt)
@@ -107,6 +107,7 @@ class RPTReceiptCompromiseService
 			receipt.billid = receipt.bill.objid 
 			receiptSvc.postPaidItems(receipt)
 		}
+		em.clearNextBillDate(compromiseparam)
 	}
 
 	void postTaxes(receipt){

@@ -452,8 +452,13 @@ class RPTCompromiseService {
 
 	@ProxyMethod
 	public def restructureInstallments(compromise){
+		def oldinstallments = em.getRPTCompromiseInstallments([rptcompromiseid:compromise.objid])
+		if (oldinstallments.findAll{it.amtpaid > 0.0}){
+			throw new Exception('Cannot restructure agreement. Installment payment has already been made. ')
+		}
+
 		def installments = buildInstallments(compromise)
-		update(compromise)
+		em.update(compromise )
 
 		em.deleteInstallments(compromise)
 

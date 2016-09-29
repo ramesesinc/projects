@@ -548,3 +548,6 @@ update rptledger set
 	lastqtrpaid = $P{endqtr}
 where objid = 	$P{rptledgerid}
 
+
+[clearNextBillDate]
+update rptledger set nextbilldate = null where objid = $P{rptledgerid}

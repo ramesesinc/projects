@@ -40,8 +40,10 @@ class RPTReportComparativeRPUCountService
 
 		util.buildCurrentPeriodFilter(params)
 		def taxablecurrents 	= em.getNewDiscoveryComparativeRpuCount(params)
-		def taxablecancelleds 	= em.getCancelledComparativeRpuCount(params)
 		def exemptcurrents 	= em.getNewDiscoveryComparativeRpuCountExempt(params)
+		
+		util.buildCurrentCancelledPeriodFilter(params)
+		def taxablecancelleds 	= em.getCancelledComparativeRpuCount(params)
 		def exemptcancelleds 	= em.getCancelledComparativeRpuCountExempt(params)
 		
 		util.buildEndingPeriodFilter(params)

@@ -387,6 +387,27 @@ class RPTUtil
             params.filter += ' f.year = $P{year}' 
     }    
 
+    @ProxyMethod
+    public void buildCurrentCancelledPeriodFilter(params) {
+        required('Year', params.year)
+        params.monthno = params.month?.index
+        
+        params.filter = ''
+
+        if (params.lguid)
+            params.filter += ' f.lguid like $P{lguid} AND '      
+
+        if (params.barangayid)
+            params.filter += ' rp.barangayid = $P{barangayid} AND '
+
+        if (params.month)
+            params.filter += ' (f.cancelledyear = $P{year} and f.cancelledmonth = $P{monthno} )' 
+        else if (params.qtr != null)
+            params.filter += ' (f.cancelledyear = $P{year} and f.cancelledqtr = $P{qtr} )' 
+        else 
+            params.filter += ' f.cancelledyear = $P{year}' 
+    }   
+
 
     /* build ending filter based on year,qtr,month,day */
     @ProxyMethod

@@ -37,8 +37,10 @@ class RPTReportComparativeAVService
 		
 		util.buildCurrentPeriodFilter(params)
 		def taxablecurrents 	= em.getCurrentComparativeAV(params)
-		def taxablecancelleds 	= em.getCancelledComparativeAV(params)
 		def exemptcurrents 		= em.getCurrentComparativeAVExempt(params)
+
+		util.buildCurrentCancelledPeriodFilter(params)
+		def taxablecancelleds 	= em.getCancelledComparativeAV(params)
 		def exemptcancelleds 	= em.getCancelledComparativeAVExempt(params)
 
 		util.buildEndingPeriodFilter(params)

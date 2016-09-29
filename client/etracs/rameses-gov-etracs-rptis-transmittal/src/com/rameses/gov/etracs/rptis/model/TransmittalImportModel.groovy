@@ -71,8 +71,11 @@ public class TransmittalImportModel
     def doNext(){
         if (!file)
             throw new Exception('Transmittal File is required.');
-        if (data == null || data.filetype != 'transmittal')
+            
+        if (data == null || data.filetype != 'transmittal'){
+            println 'data.filetype -> ' + data.filetype
 			throw new Exception('Invalid file format.')
+        }
         
         def filetype = getFileType();
         if (entity.filetype != filetype)

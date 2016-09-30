@@ -67,6 +67,22 @@ public class ImageCaptureActivity extends ControlActivity {
 		super.onStartProcess();
 	}
 	
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+	    super.onSaveInstanceState(outState);
+	    if (fileUri != null) {
+	        outState.putString("cameraImageUri", fileUri.toString());
+	    }
+	}
+
+	@Override
+	protected void onRestoreInstanceState(Bundle savedInstanceState) {
+	    super.onRestoreInstanceState(savedInstanceState);
+	    if (savedInstanceState.containsKey("cameraImageUri")) {
+	        fileUri = Uri.parse(savedInstanceState.getString("cameraImageUri"));
+	    }
+	}
+	
 	private void initComponents(){
 		image = (ImageView) findViewById(R.id.image_view);
 		title = (EditText) findViewById(R.id.image_title);
@@ -106,7 +122,6 @@ public class ImageCaptureActivity extends ControlActivity {
             	}else{
             		doUpdate();
             	}
-            	System.err.println("EXAMINATIONID : " + examinationid);
             }
         });
 	}

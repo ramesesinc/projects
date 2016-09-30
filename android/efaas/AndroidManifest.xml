@@ -71,7 +71,7 @@
         <activity android:name="com.rameses.android.efaas.FaasBuildingGeneralActivity"  android:screenOrientation="portrait"/>
         <activity android:name="com.rameses.android.efaas.FaasBuildingMaterialActivity"  android:screenOrientation="portrait"/>
         <activity android:name="com.rameses.android.efaas.FaasBuildingAppraisalActivity"  android:screenOrientation="portrait"/>
-        <activity android:name="com.rameses.android.efaas.ImageCaptureActivity"  android:screenOrientation="portrait" android:configChanges="locale|touchscreen|orientation|screenLayout|screenSize|keyboardHidden|uiMode" android:windowSoftInputMode="adjustResize"/>
+        <activity android:name="com.rameses.android.efaas.ImageCaptureActivity"  android:screenOrientation="portrait"/>
         <activity android:name="com.rameses.android.efaas.ExaminationActivity"  android:screenOrientation="portrait"/>
         <activity android:name="com.rameses.android.efaas.UploadActivity"  android:screenOrientation="portrait"/>
         <activity android:name="com.rameses.android.efaas.FaasBuildingActivity"  android:screenOrientation="portrait"/>

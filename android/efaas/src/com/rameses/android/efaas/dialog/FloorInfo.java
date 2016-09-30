@@ -1,28 +1,36 @@
 package com.rameses.android.efaas.dialog;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
-
 import com.rameses.android.R;
+import com.rameses.android.efaas.adapter.AdjustmentMenuAdapter;
+import com.rameses.android.efaas.bean.AdjustmentItem;
 import com.rameses.android.efaas.bean.FloorItem;
-
 import android.app.AlertDialog;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 
 public class FloorInfo extends AlertDialog.Builder{
 	
 	public boolean CANCELLED = false;
-	private Context ctx;
+	private static Context ctx;
 	private AlertDialog.Builder builder;
 	private AlertDialog dialog;
 	private Throwable error = null;
 	private String objid, bldguseid, bldgrpuid;
 	private EditText floorno, floorarea;
+	private Button add;
+	private static ListView listview;
+	private static List<AdjustmentItem> data_adjustment;
 	
-	public FloorInfo(Context ctx, String objid, String bldguseid, String bldgrpuid){
-		super(ctx);
+	public FloorInfo(Context c, String objid, String bldguseid, String bldgrpuid){
+		super(c);
+		this.ctx = c;
 		this.objid = objid;
 		this.bldguseid = bldguseid;
 		this.bldgrpuid = bldgrpuid;
@@ -32,6 +40,13 @@ public class FloorInfo extends AlertDialog.Builder{
 		
 		floorno = (EditText) view.findViewById(R.id.floor_floorno);
 		floorarea = (EditText) view.findViewById(R.id.floor_floorarea);
+		listview = (ListView) view.findViewById(R.id.adjustment_list);
+		add = (Button) view.findViewById(R.id.adjustment_add);
+		add.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+            	new AdjustmentTypeInfo(ctx, null).show();
+            }
+        });
 		
 		builder = new AlertDialog.Builder(ctx);
 		builder.setTitle("Floor Info");
@@ -44,6 +59,20 @@ public class FloorInfo extends AlertDialog.Builder{
 		}
 		
 		dialog = builder.create();
+		data_adjustment = new ArrayList<AdjustmentItem>();
+	}
+	
+	private static void loadAdjustmentData(){
+		try{
+			listview.setAdapter(new AdjustmentMenuAdapter(ctx, data_adjustment));
+		}catch(Throwable t){
+			new ErrorDialog(ctx, t).show();
+		}
+	}
+	
+	public static void addAdjustment(AdjustmentItem item){
+		if(item != null) data_adjustment.add(item);
+		loadAdjustmentData();
 	}
 	
 	@Override

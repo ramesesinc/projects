@@ -89,9 +89,6 @@ public class FaasDB extends AbstractDBMapper{
 					"INNER JOIN examination e ON i.examinationid = e.objid " +
 					"INNER JOIN faas f on e.parent_objid = f.objid " +
 					"WHERE f.objid = ?", new Object[]{faasid});
-			System.err.println("FAASID : " + faasid);
-			System.err.println("**************************************************");
-			System.err.println("IMAGE LIST : " + list);
 			for(Map image : list){
 				ids.add(image.get("objid").toString());
 			}

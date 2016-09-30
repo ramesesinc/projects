@@ -5,12 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.ContextMenu;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,14 +17,11 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
-
 import com.rameses.android.ApplicationUtil;
 import com.rameses.android.ControlActivity;
 import com.rameses.android.R;
 import com.rameses.android.db.BldgStructureDB;
-import com.rameses.android.db.ExaminationDB;
 import com.rameses.android.db.FaasDB;
-import com.rameses.android.db.ImageDB;
 import com.rameses.android.efaas.adapter.BldgStructureMenuAdapter;
 import com.rameses.android.efaas.bean.AppraisalListItem;
 import com.rameses.android.efaas.bean.BldgStructure;
@@ -40,7 +34,6 @@ public class FaasBuildingMaterialActivity extends ControlActivity{
 	
 	private static Button material_add;
 	private static ListView material_list;
-	
 	public static Activity activity;
 	private static Properties faas = null;
 	private static Properties bldgrpu = null;

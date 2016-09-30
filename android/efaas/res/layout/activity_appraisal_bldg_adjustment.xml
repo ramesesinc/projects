@@ -1,25 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white" >
+    android:orientation="vertical"
+    android:padding="10dp"
+    android:background="@android:color/white">
     
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:background="@android:color/white" >
-        
-        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="5dp"
-            android:gravity="center">
+            android:padding="10dp"
+            android:background="@android:color/white">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Floor No"
+                android:minEms="7"
+                android:padding="1dp"
+                android:text="Adjustment Type"
+                android:layout_gravity="center"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+            
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=":"
+                android:minEms="1"
+                android:padding="1dp"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+            
+            <Spinner
+			    android:id="@+id/adjustment_adjustment"
+			    android:layout_width="fill_parent"
+			    android:layout_height="wrap_content"
+			    android:layout_gravity="center"/>
+
+        </LinearLayout>
+        
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Unit"
                 android:minEms="7"
                 android:padding="1dp"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
@@ -33,57 +61,17 @@
                 android:gravity="center"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
             
-            <EditText
-			    android:id="@+id/floor_floorno"
+            <TextView
+			    android:id="@+id/adjustment_unit"
 			    android:layout_width="fill_parent"
 			    android:layout_height="wrap_content"
-			    android:inputType="number|numberDecimal"/>
+			    android:text=""
+			    android:padding="1dp"
+			    android:textAppearance="?android:attr/textAppearanceMedium"/>
 
-        </LinearLayout>	
+        </LinearLayout>
         
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="5dp"
-            android:gravity="center">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Floor Area"
-                android:minEms="7"
-                android:padding="1dp"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
-            
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text=":"
-                android:minEms="1"
-                android:padding="1dp"
-                android:gravity="center"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
-            
-            <EditText
-			    android:id="@+id/floor_floorarea"
-			    android:layout_width="fill_parent"
-			    android:layout_height="wrap_content"
-			    android:inputType="number|numberDecimal"/>
-
-        </LinearLayout>	
-        
-        <TextView
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="Adjustment"
-            android:minEms="6"
-            android:padding="5dp"
-            android:textStyle="bold"
-            android:background="#2f84c9"
-            android:textColor="#FFFFFF"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
-		
-		<TableLayout
+    	<TableLayout
         android:id="@+id/tableLayout1"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -95,27 +83,25 @@
             android:layout_height="wrap_content" >
 
             <TextView
-                android:id="@+id/appraisal_subclass"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_column="0"
                 android:layout_margin="1dp"
                 android:gravity="center"
                 android:minHeight="40dp"
-                android:text="Code"
+                android:text="Parameter"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textStyle="bold"
                 android:background="#b6c5e2">
             </TextView>
 
             <TextView
-                android:id="@+id/appraisal_specificclass"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_column="1"
                 android:layout_margin="1dp"
                 android:gravity="center"
-                android:text="Adjustment Type"
+                android:text="Value"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textStyle="bold"
                 android:background="#b6c5e2">
@@ -126,20 +112,8 @@
     </TableLayout>
         
         <ListView
-		      android:id="@+id/adjustment_list"
-		      android:layout_width="match_parent"
-		      android:layout_height="150dp"/>
-		
-		<Button
-	        android:id="@+id/adjustment_add"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:layout_margin="10dp"
-	        android:layout_gravity="center"
-	        android:minEms="5"
-	        android:padding="10dp"
-	        android:text="Add" />
-        
-    </LinearLayout>
-    
-</ScrollView>
+            android:id="@+id/parameter_list"
+            android:layout_width="match_parent"
+            android:layout_height="150dp" />
+
+</LinearLayout>

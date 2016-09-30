@@ -9,7 +9,6 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -81,7 +80,6 @@ public class FaasListActivity extends SettingsMenuActivity {
 			Iterator<Map> i = listData.iterator();
 			while(i.hasNext()){
 				Map m = i.next();
-				Log.v("FAAS DATA", m.toString());
 				String faasid = m.get("objid").toString();
 				String pin = m.get("fullpin").toString();
 				String name = m.get("owner_name").toString();

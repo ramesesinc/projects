@@ -178,6 +178,37 @@
 
         </LinearLayout>
         
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Base Value"
+                android:minEms="7"
+                android:padding="1dp"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+            
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=":"
+                android:minEms="1"
+                android:padding="1dp"
+                android:gravity="center"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+            
+            <EditText
+			    android:id="@+id/appraisal_basevalue"
+			    android:layout_width="fill_parent"
+			    android:layout_height="wrap_content"
+			    android:inputType="number|numberDecimal"/>
+
+        </LinearLayout>
+        
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
@@ -299,38 +330,11 @@
             <requestFocus/>
         </Button>
 		
-		<TextView
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="Additional Items / Adjustments"
-            android:minEms="6"
-            android:padding="5dp"
-            android:textStyle="bold"
-            android:background="#2f84c9"
-            android:textColor="#FFFFFF"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
-        
-        <ListView
-		      android:id="@+id/adjustment_list"
-		      android:layout_width="match_parent"
-		      android:layout_height="wrap_content" 
-		      android:layout_margin="5dp"/>
-		
-		<Button
-	        android:id="@+id/adjustment_add"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:layout_margin="10dp"
-	        android:layout_gravity="center"
-	        android:minEms="5"
-	        android:padding="10dp"
-	        android:text="Add" />
-		
 		<Button
             android:id="@+id/btn_save"
             android:layout_width="150dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="right"
+            android:layout_gravity="center"
             android:layout_marginTop="20dp"
             android:textStyle="bold"
             android:background="@color/default_button_color"

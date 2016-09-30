@@ -35,6 +35,7 @@ class RPTLedgerInterceptor
 	@After(pattern="FAASService.(approveFaas|approveFaasByRemote)", eval="#{!env.ORGCLASS?.equalsIgnoreCase('province')}")
 	public void postFaasToRPTLedger(evt){
         def faas = evt.result 
+        
         if (util.isTrue(faas.datacapture)) {
             postNewLedger(faas)
         }
@@ -56,15 +57,18 @@ class RPTLedgerInterceptor
         return em.findFaasFromSubdividedLand(faas) != null 
     }
 
-    void postNewLedger(faas){
+    def findManualLedger(faas){
         def manualledger = svc.findLedgerbyTdNo(faas)
             
         if (!manualledger)
             manualledger = svc.findLedgerbyPrevTdNo(faas)
+        return manualledger
+    }
 
+    void postNewLedger(faas){
+        def manualledger = findManualLedger(faas)
 
-        if (faas.txntype.reconcileledger && manualledger){
-            println 'reconcile ledger '
+        if (util.isTrue(faas.txntype.reconcileledger) && manualledger){
             svc.reconcileManualLedger(faas, manualledger)
         }
         else {

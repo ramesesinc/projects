@@ -4,7 +4,8 @@
 
 - BPLS 
 		
-- ASSESSOR
+- ASSESSOR	
+	- Fix revise FAAS data error
 	- Adjust TD report to accommodate long cancel reason
 	- Update on subdivision summary report 
 	- Fix consolidated summary report 

@@ -6,13 +6,13 @@ import com.rameses.osiris2.client.*;
 import com.rameses.osiris2.common.*;
 import com.rameses.enterprise.treasury.cashreceipt.*;
 
-class  IndividualCtcCashReceipt extends AbstractCashReceipt 
-{
+class  IndividualCtcCashReceipt extends AbstractCashReceipt {
+    
     @Service('IndividualCTCService')
     def ctcSvc;
-    
-    @Service('IndividualEntityService')
-    def entitySvc;
+        
+    @Service('PersistenceService') 
+    def persistenceSvc; 
     
     @Service('ProfessionService')
     def profSvc;
@@ -114,11 +114,10 @@ class  IndividualCtcCashReceipt extends AbstractCashReceipt
     } 
     
     public def payerChanged( o ) { 
-        println 'entity type is '+ o.type;
         if ( ! o.type.equalsIgnoreCase('INDIVIDUAL'))
             throw new Exception('Only individual entities are allowed.');
         
-        def ent = entitySvc.open(o) 
+        def ent = persistenceSvc.read([ _schemaname: 'entityindividual', findBy:[objid: o.objid]]); 
         if ( ent ) o.putAll(ent);
         
         hasmiddlename = (o.middlename != null)

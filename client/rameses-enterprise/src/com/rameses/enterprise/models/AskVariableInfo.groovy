@@ -76,9 +76,7 @@ public class AskVariableInfo {
                 x.datatype = x.datatype.substring(0, x.datatype.indexOf("_"));
             }
             if(i.type == "boolean") {
-                i.type = "subform";
-                i.handler = "askvariableinfo:yesno";
-                i.properties = [item:x];
+                i.type = "yesno";
             }
             else if(i.type == "string_array") {
                 i.type = "combo";
@@ -86,6 +84,9 @@ public class AskVariableInfo {
                 i.itemsObject = x.arrayvalues;
             }
             else if( i.type == 'decimal' ) {
+                i.preferredSize = '150,20';
+            }
+            else if( i.type == 'integer' ) {
                 i.preferredSize = '150,20';
             }
             else if( i.type == "string" ) {

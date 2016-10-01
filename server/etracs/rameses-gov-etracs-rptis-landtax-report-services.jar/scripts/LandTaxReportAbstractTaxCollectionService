@@ -3,9 +3,13 @@ import com.rameses.common.*;
 import com.rameses.services.extended.*;
 import java.rmi.server.UID
 
-class LandTaxReportAbstractTaxCollectionService{
+class LandTaxReportAbstractTaxCollectionService { 
+
     @ActiveDB('landtaxreport_abstractofcollection')
     def em;
+
+    @ActiveDB('landtaxreport_remittance')
+    def remittance_report;
 
     @Service('DateService')
     def dtsvc;
@@ -21,9 +25,8 @@ class LandTaxReportAbstractTaxCollectionService{
     public def generateAbstractOfRPTCollectionByRemittance( entity, municityname ) {
         def remyr = dtsvc.getYear(entity.dtposted)
 
-        def params = [objid:entity.objid, year : remyr, collectorid:'%']
+        def params = [objid:entity.objid, year:remyr, collectorid:'%', filter:'']
         params.municityname = municityname ? municityname : '%'
-        params.filter = ' rem.objid = $P{objid} '
         if ( params.municityname=='%' ) {
             //do nothing 
         } else if ( env.ORGCLASS.equalsIgnoreCase('city') ) {
@@ -32,8 +35,8 @@ class LandTaxReportAbstractTaxCollectionService{
             params.filter += ' AND m.name=$P{municityname} ' 
         }       
 
-        def items = em.getAbstractOfRPTCollection(params).each{ buildPeriod(it) }
-        def advitems = em.getAbstractOfRPTCollectionAdvance(params).each{ buildPeriod(it) }
+        def items = remittance_report.getAbstractOfRPTCollection(params).each{ buildPeriod(it) }
+        def advitems = remittance_report.getAbstractOfRPTCollectionAdvance(params).each{ buildPeriod(it) }
         if( !items &&  !advitems) throw new Exception('No records found.')
 
         def header = [:]
@@ -84,7 +87,7 @@ class LandTaxReportAbstractTaxCollectionService{
 
 
     @ProxyMethod
-    def generateAbstractOfRPTCollection(params){
+    def generateAbstractOfRPTCollection( params ){ 
         String period;
 
         String title = 'Abstract of Real Property Tax Collection';
@@ -114,16 +117,13 @@ class LandTaxReportAbstractTaxCollectionService{
         }
 
         params.year = dtsvc.getYear(params.todate);
-        params.filter = ' cr.receiptdate >= $P{fromdate} AND cr.receiptdate < $P{todate} '
+        params.filter = ' liq.dtposted >= $P{fromdate} AND liq.dtposted < $P{todate} '
 
         def items = em.getAbstractOfRPTCollection(params).each{buildPeriod(it)};
         def advitems = em.getAbstractOfRPTCollectionAdvance(params).each{buildPeriod(it)};
 
-        def header = [
-            TITLE : title,
-            PERIOD : period,  
-        ]
-        return  [header:header, items:items, advitems:advitems];
+        def header = [ TITLE: title, PERIOD: period ]; 
+        return  [ header:header, items:items, advitems:advitems ]; 
     }
 
     void buildPeriod(item){

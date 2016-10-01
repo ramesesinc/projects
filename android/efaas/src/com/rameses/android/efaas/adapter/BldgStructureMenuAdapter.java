@@ -2,21 +2,16 @@ package com.rameses.android.efaas.adapter;
 
 import java.util.List;
 import java.util.Properties;
-
 import com.rameses.android.R;
 import com.rameses.android.db.MaterialDB;
 import com.rameses.android.db.StructureDB;
-import com.rameses.android.efaas.bean.ExaminationListItem;
-import com.rameses.android.efaas.bean.HomeListItem;
 import com.rameses.android.efaas.bean.BldgStructure;
-
 import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 public class BldgStructureMenuAdapter extends BaseAdapter {

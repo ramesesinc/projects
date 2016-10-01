@@ -4,18 +4,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@android:color/white">
-    
-    <TextView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="BUILDING APPRAISAL"
-        android:minEms="6"
-        android:padding="5dp"
-        android:textStyle="bold"
-        android:background="#2f84c9"
-        android:textColor="#FFFFFF"
-        android:gravity="center"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
 		
 		<TableLayout
 			  android:layout_width="fill_parent"

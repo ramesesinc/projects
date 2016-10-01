@@ -59,7 +59,7 @@ public class OrgTypeList extends XComponentPanel {
         setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.LINE_AXIS));
 
         component.setCaption("Org Type");
-        component.setEmptyText("-select an org type-");
+        component.setEmptyText("- select an org type -");
         component.setExpression("#{item.value}");
         component.setItemKey("key");
         component.setItems("orgTypes");

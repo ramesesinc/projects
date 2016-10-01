@@ -1,44 +1,43 @@
 <workunit>
     <invokers>
         <invoker type="cashreceipt:waterworks:payoption" 
-            target="popup"
-            caption="Pay Option"/>
+                 caption="Pay Option" target="popup"/>
     </invokers>
     <code>
-        <![CDATA[
-        import com.rameses.rcp.annotations.*;
-        import com.rameses.rcp.common.*;
-        import com.rameses.osiris2.client.*;
-        import com.rameses.osiris2.common.*;
-        import com.rameses.rcp.annotations.*;
-        import com.rameses.seti2.models.*;
+    <![CDATA[
+import com.rameses.rcp.annotations.*;
+import com.rameses.rcp.common.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.common.*;
+import com.rameses.rcp.annotations.*;
+import com.rameses.seti2.models.*;
 
-        class PayOption {
-        
-            @Caller
-            def caller;
-        
-            def payOption = "FULL";
-            def monthList;
-            def month;
-            def handler;
-        
-            def doOk() {
-                if(!handler) throw new Exception("handler not found");
-                def m = [:];
-                m.payOption = payOption;
-                if( payOption == 'MONTH' ) {
-                    m.month = month;
-                }
-                handler( m );
-                return "_close";
-            }
-        
-            def doCancel() {
-                return "_close";
-            }
+class WaterworksCashReceiptPayOptionModel {
+
+    @Caller
+    def caller;
+
+    def payOption = "FULL";
+    def monthList;
+    def month;
+    def handler;
+
+    def doOk() {
+        if(!handler) throw new Exception("handler not found");
+        def m = [:];
+        m.payOption = payOption;
+        if( payOption == 'MONTH' ) {
+            m.month = month;
         }
-        ]]>
+        handler( m );
+        return "_close";
+    }
+
+    def doCancel() {
+        return "_close";
+    }
+}
+    ]]>
     </code>    
     <pages>
         <page name="default" template="com.rameses.gov.etracs.waterworks.views.PayOption"/>

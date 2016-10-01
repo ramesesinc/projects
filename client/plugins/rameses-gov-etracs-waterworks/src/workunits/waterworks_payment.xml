@@ -1,9 +1,13 @@
-<workunit extends="com/rameses/enterprise/treasury/templates/CapturePayment.xml" 
-          schemaName="waterworks_payment">
+<workunit>
     <invokers>
-        <invoker type="waterworks_account_ledger:list:listActions" 
-                 caption="Capture Payment" 
-                 action="init" target="popup" />
+        <invoker type="waterworks_payment:list:listActions" 
+                 caption="Capture Payment" action="init" target="popup" /> 
+        
+        <invoker type="formActions" caption="Cancel" action="cancel"/> 
+        <invoker type="formActions" caption="Save" action="save"/> 
     </invokers>
     <code class="com.rameses.gov.etracs.waterworks.models.WaterworksCapturePayment" />
+    <pages>
+        <page name="com.rameses.gov.etracs.waterworks.views.CapturePaymentPage"/> 
+    </pages>
 </workunit>

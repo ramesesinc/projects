@@ -36,6 +36,12 @@ class WaterworksAccountPersistenceInterceptor{
 		} 
 	}
 
-
-
+	@After(pattern="PersistenceService.read", eval="#{args[0]._schemaname == 'waterworks_account'}")
+	public void afterRead( evt ) {
+		def o = evt.result;
+		if ( o.zone ) { 
+			// a workaround to match the combo listing of zones 
+			o.zone.remove('readerid'); 
+		} 
+	}
 }

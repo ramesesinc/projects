@@ -36,12 +36,13 @@ class EntityMultiplePersistenceInterceptor  {
 
 		if ( !o.objid ) o.objid = "MUL"+new UID();
         if ( !o.entityno ) { 
+        	def stype = 'M';
             def seqno = seqSvc.getNextFormattedSeriesA( "MULTIPLE_ENTITY", 6 );
-            if(o.prefix) {
-                o.entityno = ''+ o.prefix + 'M' + seqno; 
+            if ( o.prefix ) { 
+                o.entityno = ''+ o.prefix +'-'+ seqno + stype; 
             } else { 
-                o.entityno = 'M' + seqno; 
-            } 
+                o.entityno = ''+ stype + seqno; 
+            }             
         }
 		o.type = 'MULTIPLE';
 		//create the address first

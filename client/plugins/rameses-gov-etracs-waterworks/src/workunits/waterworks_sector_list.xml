@@ -1,5 +1,6 @@
 <workunit extends="com/rameses/seti2/templates/CrudList.xml" 
-          schemaName="waterworks_sector" allowCreate="false" cols="objid,code,description">
+          schemaName="waterworks_sector" allowCreate="false" allowDelete="false" 
+          cols="objid,code,description">
     
     <!-- used by rules -->
     <invokers>

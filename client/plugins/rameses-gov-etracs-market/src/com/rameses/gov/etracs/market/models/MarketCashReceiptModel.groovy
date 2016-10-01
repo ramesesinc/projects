@@ -19,10 +19,20 @@ public class MarketCashReceiptModel extends com.rameses.enterprise.treasury.cash
      def payOption = [type: "Full"];  
      def selectedItem;
     
-     def loadData(acctno) {
+     def loadData(acctno) { 
         def info = cashReceiptSvc.getInfo([ acctno: acctno ]);
         entity.putAll( info );
         reload();
+    }
+    
+    void init() {
+        if ( !barcodeid ) {
+            def o = MsgBox.prompt('Enter account number');
+            if ( !o ) throw new BreakException(); 
+            
+            barcodeid = o; 
+        }        
+        loadBarcode(); 
     }
     
     def loadBarcode() { 

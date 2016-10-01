@@ -175,7 +175,7 @@ public class AccountPage extends javax.swing.JPanel {
         xLabel6.setBackground(new java.awt.Color(245, 245, 245));
         xLabel6.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel6.setCaption("Stubout");
-        xLabel6.setExpression("#{entity.stuboutnode.stubout.code}");
+        xLabel6.setExpression("#{entity.stubout.code}");
         xLabel6.setOpaque(true);
         xLabel6.setPreferredSize(new java.awt.Dimension(200, 20));
         xFormPanel2.add(xLabel6);

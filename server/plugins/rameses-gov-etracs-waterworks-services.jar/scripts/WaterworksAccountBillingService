@@ -48,30 +48,34 @@ class WaterworksAccountBillingService  {
 			def partialPaid = ( x.amtpaid.doubleValue() %  x.installmentamount.doubleValue() );
 			int monthsPaid = (int)(x.amtpaid / x.installmentamount);
 
-			int xYear = x.year;
-			int xMonth = x.month;
-			
+			int xYear = x.startyear;
+			int xMonth = x.startmonth;
 			int xYearMonth = (xYear*12)+xMonth;
 
+			int paidCounter = 0;
 			//loop for each month until it reaches the current billCycle
-			while( xYearMonth <= yearMonth ) {
-				def amt = x.installmentamount;
-				if( partialPaid > 0 ) {
-					amt = partialPaid;
-					partialPaid = 0;		
-				};
-				if( balance < amt ) amt = balance;
-				facts << new WaterInstallment( year:xYear, month:xMonth, amount: amt, refid: x.objid );
+			while( xYearMonth <= yearMonth ) { 
+				if ( paidCounter++ >= monthsPaid ) {  
+					def amt = x.installmentamount;
+					if( partialPaid > 0 ) {
+						amt = partialPaid;
+						partialPaid = 0;		
+					};
+					if( balance < amt ) amt = balance;
+					facts << new WaterInstallment( year:xYear, month:xMonth, amount: amt, refid: x.objid, txntype: x.txntypeid );
+
+					balance = balance - amt;
+					if(balance == 0 ) break; 
+				} 
+
 				if( xMonth == 12 ) {
 					xMonth = 1;
 					xYear = xYear + 1;
-				}
-				else {
+				} else {
 					xMonth = xMonth + 1;
-				};
+				} 
+
 				xYearMonth = (xYear*12)+xMonth;
-				balance = balance - amt;
-				if(balance == 0 ) break;
 			}
 		}
 	}
@@ -85,7 +89,6 @@ class WaterworksAccountBillingService  {
 		if(!a) throw new Exception("Waterworks Account not found");
 
 		def bc = billingCycleSvc.findCurrentCycle([sectorid:a.sector.objid]);
-
 		def currDate = dateSvc.getBasicServerDate();
 		def billDate = (o.billdate!=null)?o.billdate:currDate;
 
@@ -109,8 +112,11 @@ class WaterworksAccountBillingService  {
 		};
 		if (!feeList) return null; 
 
-		a.items = feeList.findAll{it.amount!=0}.sort{it.sortorder};	
-		a.grandtotal = new BigDecimal(a.items.sum{it.amount});
+		a.items = feeList.findAll{ it.amount!=0 }.sort{ it.sortorder } 
+		def grandtotal = a.items.sum{( it.amount? it.amount : 0.0 )} 
+		if ( grandtotal==null ) grandtotal=0.0; 
+
+		a.grandtotal = new BigDecimal( grandtotal );
 		a.billdate = billDate;
 		a.duedate = bc.duedate;
 		a.currdate = currDate;

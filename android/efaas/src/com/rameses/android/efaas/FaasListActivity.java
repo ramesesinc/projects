@@ -9,7 +9,6 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -61,12 +60,12 @@ public class FaasListActivity extends SettingsMenuActivity {
 				String faasid = a.getListItem(pos).getObjid();
 				String type = a.getListItem(pos).getRpuType();
 				if(type.equalsIgnoreCase("land")){
-					Intent intent = new Intent(activity, FaasLandActivity.class);
+					Intent intent = new Intent(activity, TabFaasLandActivity.class);
 					intent.putExtra("faasid", faasid);
 					startActivity(intent); 
 				}
 				if(type.equalsIgnoreCase("bldg")){
-					Intent intent = new Intent(activity, FaasBuildingActivity.class);
+					Intent intent = new Intent(activity, TabFaasBuildingActivity.class);
 					intent.putExtra("faasid", faasid);
 					startActivity(intent); 
 				}
@@ -81,7 +80,6 @@ public class FaasListActivity extends SettingsMenuActivity {
 			Iterator<Map> i = listData.iterator();
 			while(i.hasNext()){
 				Map m = i.next();
-				Log.v("FAAS DATA", m.toString());
 				String faasid = m.get("objid").toString();
 				String pin = m.get("fullpin").toString();
 				String name = m.get("owner_name").toString();

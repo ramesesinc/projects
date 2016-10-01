@@ -12,8 +12,7 @@ import com.rameses.android.db.LandDetailDB;
 import com.rameses.android.db.LcuvSpecificClassDB;
 import com.rameses.android.db.LcuvStrippingDB;
 import com.rameses.android.db.LcuvSubClassDB;
-import com.rameses.android.efaas.FaasLandActivity;
-import com.rameses.android.efaas.LandFaasActivity;
+import com.rameses.android.efaas.FaasLandAppraisalActivity;
 import com.rameses.android.efaas.adapter.AppraisalItemAdapter;
 import com.rameses.android.efaas.bean.DefaultItem;
 import android.app.AlertDialog;
@@ -353,7 +352,7 @@ public class LandAppraisalInfo extends AlertDialog.Builder{
 				doSave();
 				if(done){
 					dialog.dismiss();
-					FaasLandActivity.loadAppraisalData();
+					FaasLandAppraisalActivity.loadAppraisalData();
 				}
 			}
 		});

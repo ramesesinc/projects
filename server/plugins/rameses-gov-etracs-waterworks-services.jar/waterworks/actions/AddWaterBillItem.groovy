@@ -27,7 +27,7 @@ public class AddWaterBillItem implements RuleActionHandler {
 		
 		//lookup txntype
 		def svc = EntityManagerUtil.lookup( "waterworks_txntype" );
-		def txntype = svc.find( [objid: ttype.key] ).first();
+		def txntype = svc.find( [objid: ttype.key] ).first(); 
 		if( !txntype ) 
 			throw new Exception("Error AddWaterBillItem action. Txntype not found ");
 
@@ -41,6 +41,7 @@ public class AddWaterBillItem implements RuleActionHandler {
 		bi.year = year;
 		bi.month = month;
 		bi.priority = txntype.priority;
+		bi.ledgertype = txntype.ledgertype;
 		bi.sortorder = (((year * 12)+month)*10) + bi.priority;
 		bi.refid = refid;
 		ct.facts << bi;

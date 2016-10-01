@@ -23,7 +23,7 @@
                   <Component id="jLabel1" alignment="0" min="-2" pref="286" max="-2" attributes="0"/>
                   <Component id="xDataTable1" alignment="0" pref="587" max="32767" attributes="1"/>
               </Group>
-              <EmptySpace pref="295" max="32767" attributes="0"/>
+              <EmptySpace pref="51" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -36,7 +36,7 @@
               <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="xDataTable1" min="-2" pref="254" max="-2" attributes="0"/>
-              <EmptySpace pref="109" max="32767" attributes="0"/>
+              <EmptySpace pref="52" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -58,7 +58,7 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="xFormPanel1" min="-2" pref="344" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
+                  <Component id="jLabel2" min="-2" pref="35" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="xLabel3" min="-2" pref="164" max="-2" attributes="0"/>
                   <EmptySpace pref="20" max="32767" attributes="1"/>
@@ -70,11 +70,11 @@
               <Group type="102" attributes="0">
                   <Group type="103" groupAlignment="0" max="-2" attributes="0">
                       <Component id="xLabel3" alignment="0" min="-2" pref="34" max="-2" attributes="0"/>
-                      <Component id="jLabel2" alignment="0" min="-2" max="-2" attributes="0"/>
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="xFormPanel1" min="-2" pref="51" max="-2" attributes="0"/>
                       </Group>
+                      <Component id="jLabel2" alignment="0" min="-2" pref="22" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
@@ -84,6 +84,7 @@
       <SubComponents>
         <Container class="com.rameses.rcp.control.XFormPanel" name="xFormPanel1">
           <Properties>
+            <Property name="captionVAlignment" type="java.lang.String" value="CENTER"/>
             <Property name="captionWidth" type="int" value="100"/>
           </Properties>
           <SubComponents>

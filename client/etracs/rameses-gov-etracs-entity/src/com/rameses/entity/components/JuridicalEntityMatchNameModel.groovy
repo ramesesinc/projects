@@ -31,12 +31,16 @@ public class JuridicalEntityMatchNameModel extends ComponentBean  {
         return caller.entity;
     }
     
-    void verifyName() {
+    void verifyName() { 
+        if ( entity?.orgtype.toString()=='SING' ) { 
+            MsgBox.alert('This Org Type is not allowed. Please specify another type'); 
+            return; 
+        } 
+        
         boolean b = checkHasMatch();
         if( b ) {
             mode = "show-list";
-        }
-        else {
+        } else {
             mode = "ask-name"
             if(oncreate) oncreate(entity);
         }

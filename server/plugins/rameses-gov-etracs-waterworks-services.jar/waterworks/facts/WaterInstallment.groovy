@@ -9,10 +9,8 @@ public class WaterInstallment  {
 	int month;
 	int year;
 	def refid;
-	
+
     int term;
 	double amount;
 	String txntype;
-
-
 }

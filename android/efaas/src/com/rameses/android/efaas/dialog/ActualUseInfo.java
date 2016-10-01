@@ -7,11 +7,9 @@ import java.util.Map;
 import com.rameses.android.R;
 import com.rameses.android.db.BldgAssessLevelDB;
 import com.rameses.android.efaas.adapter.AppraisalItemAdapter;
-import com.rameses.android.efaas.adapter.AppraisalMenuAdapter;
 import com.rameses.android.efaas.adapter.FloorMenuAdapter;
 import com.rameses.android.efaas.bean.DefaultItem;
 import com.rameses.android.efaas.bean.FloorItem;
-
 import android.app.AlertDialog;
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -107,6 +105,17 @@ public class ActualUseInfo extends AlertDialog.Builder{
 			if(!name.isEmpty()) list.add(new DefaultItem(objid,name));
 		}
 		return list;
+	}
+	
+	private Map find(DefaultItem item, List<Map> data){
+		Map m = null;
+		for(Map map : data){
+			String id = map.get("objid") != null ? map.get("objid").toString() : "";
+			if(item.getObjid().equals(id)){
+				return map;
+			}
+		}
+		return m;
 	}
 	
 	@Override

@@ -68,3 +68,8 @@ DELETE FROM sys_wf_transition WHERE processname=$P{processname}
 
 [removeNodes]
 DELETE FROM sys_wf_node WHERE processname=$P{processname}  
+
+[getNodesByDomain]
+select * from sys_wf_node 
+where domain=$P{domain} ${filter} 
+order by idx 

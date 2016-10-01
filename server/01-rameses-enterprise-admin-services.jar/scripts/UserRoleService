@@ -7,15 +7,17 @@ class UserRoleService
 	def em;
 
 	@ProxyMethod 
-	public def getUsers( def o ) {
-		if ( !o.roles ) throw new Exception("Please indicate roles. separate by comma"); 
+	public def getUsers( o ) {
+		if ( !o.roles ) throw new Exception("Please indicate roles separated by comma"); 
 		if ( !o.domain ) throw new Exception("Please indicate domain"); 
 
 		//specify list of roles and return list of users
 		//return objid of user, lastname, firstname, txncode, and jobtitle
 		def roles = o.roles.split(",");
 		o.roles = "'" + roles.join( "','" ) + "'";
-		return em.getUsers(o).each{ it.name = it.firstname+" "+it.lastname } ;
+		return em.getUsers(o).each{ 
+			it.name = it.firstname +" "+ (it.middlename? it.middlename+" ": "") + it.lastname; 
+		} 
 	}
 
 	@ProxyMethod 

@@ -15,11 +15,26 @@
     </invokers>
     
     <code>
-        class ClassificationModel extends com.rameses.seti2.models.CrudFormModel {
-            void afterCreate() {
-                entity.objid = "";
-            }
+    <![CDATA[ 
+
+class ClassificationModel extends com.rameses.seti2.models.CrudFormModel { 
+
+    String getTitle() {
+        if ( mode=='create' ) {
+            return 'New Classification'; 
+        } else {
+            return super.getTitle(); 
         }
+    }
+
+    void afterCreate() {
+        entity.objid = "";
+    }
+
+
+}
+
+    ]]> 
     </code>    
     <pages>
         <page template="com.rameses.gov.etracs.waterworks.views.WaterworksClassificationPage"/>

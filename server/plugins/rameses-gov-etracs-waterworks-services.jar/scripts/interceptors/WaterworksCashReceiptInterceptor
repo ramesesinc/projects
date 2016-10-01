@@ -61,6 +61,7 @@ class WaterworksCashReceiptInterceptor{
 			p.applicationid = pmt.applicationid; 
 			p.installmentid = it.installmentid;
 			p.txnrefid = it.refid;
+			p.txntype = it.txntype;
 			p.amount = it.amount;
 			p.ledgertype = it.ledgertype;
 			p.item = it.item;

@@ -307,11 +307,11 @@ class RPTUtil
     @ProxyMethod
     public void buildReportTitlePeriod( title, params) {
         required('Year', params.year)
-        required('Qtr', params.qtr)
-
-        params.title       = 'QUARTERLY ' + title
-        params.period      = buildQuarterlyPeriod( params.year, params.qtr )
-        params.periodtype  = 'QUARTER'
+        if (params.qtr != null){
+            params.title       = 'QUARTERLY ' + title
+            params.period      = buildQuarterlyPeriod( params.year, params.qtr )
+            params.periodtype  = 'QUARTER'
+        }
         
         if( params.month && params.month.index > 0 ) {
             params.title = 'MONTHLY ' + title 

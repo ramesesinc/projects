@@ -14,7 +14,7 @@ import com.rameses.osiris2.common.*
 import java.rmi.server.*;
  import com.rameses.osiris2.reports.*;
 
-class  RISReportController  extends com.rameses.etracs.shared.ReportController 
+class RISReportController  extends com.rameses.etracs.shared.ReportController 
 {
 
     def title = 'RIS Report'
@@ -28,7 +28,7 @@ class  RISReportController  extends com.rameses.etracs.shared.ReportController
     
     def getReportData(){ 
         entity.items.each{
-            it.cost = it.items.sum{(it.cost? it.cost: 0.0)} 
+            it.cost = it.items?.sum{(it.cost? it.cost: 0.0)} 
         } 
         entity.totalcost = entity.items.sum{( it.cost? it.cost: 0.0 )} 
         return entity; 

@@ -1,5 +1,5 @@
 [getPendingMessages]
-SELECT * 
+SELECT m.*, d.dtexpiry, d.dtretry, d.retrycount 
 FROM sms_inbox_pending d 
 	INNER JOIN sms_inbox m ON d.objid=m.objid 
 WHERE 1=1 	

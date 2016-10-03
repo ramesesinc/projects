@@ -13,6 +13,7 @@ FROM faas f
 WHERE ${filter}
   AND f.state = 'CURRENT' 
   AND r.taxable = 1 
+  AND r.rputype = 'land' 
 GROUP BY pc.objid, pc.orderno
 ORDER BY pc.orderno  
 
@@ -32,6 +33,7 @@ FROM faas f
 WHERE ${filter}
   AND f.state = 'CURRENT' 
   AND r.taxable = 1 
+  AND r.rputype = 'land' 
 GROUP BY e.objid, e.orderno
 ORDER BY e.orderno  
 

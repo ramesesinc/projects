@@ -43,8 +43,8 @@ public class ParameterMenuAdapter extends BaseAdapter {
 	public View getView(int pos, View view, ViewGroup vgroup) {
 		View rowView = inflater.inflate(R.layout.list_menu_adjustment, null);
 		
-		TextView code = (TextView) rowView.findViewById(R.id.adjustment_code);
-		TextView name = (TextView) rowView.findViewById(R.id.adjustment_name);
+		TextView code = (TextView) rowView.findViewById(R.id.adjustment_type);
+		TextView name = (TextView) rowView.findViewById(R.id.adjustment_parameter);
 		
 		ParameterItem item = data.get(pos);
 		if(item != null){

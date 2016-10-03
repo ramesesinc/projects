@@ -38,7 +38,7 @@ public class AdjustmentTypeInfo extends AlertDialog.Builder {
 	public static List<ParameterItem> data_parameter;
 	private AdjustmentListItem listitem;
 	
-	public AdjustmentTypeInfo(Context ctx, AdjustmentListItem listitem){
+	public AdjustmentTypeInfo(Context ctx, AdjustmentListItem listitem, int position){
 		super(ctx);
 		this.ctx = ctx;
 		this.listitem = listitem;
@@ -78,7 +78,7 @@ public class AdjustmentTypeInfo extends AlertDialog.Builder {
     	            	unit.setText("");
     	            	unit.setText(data_unit);
     	            	
-    	            	//add parametes to the listview
+    	            	//add parameter to the listview
     	            	data_parameter = new ArrayList<ParameterItem>();
     	            	List<Map> parameters = null; 
     	            	try{
@@ -91,6 +91,7 @@ public class AdjustmentTypeInfo extends AlertDialog.Builder {
     	            			if(!name.startsWith("SYS")) data_parameter.add(new ParameterItem(name,minvalue));
     	            		}
     	            	}
+    	            	if(listitem != null) data_parameter = listitem.getList();
     	            	listview.setAdapter(new ParameterMenuAdapter(ctx,data_parameter));
             		}
 	            }
@@ -99,7 +100,11 @@ public class AdjustmentTypeInfo extends AlertDialog.Builder {
 	        });
 			
 			if(listitem != null){
-				
+				int index = 0;
+				for(Map data : data_adjustment){
+					if(data.get("objid").toString().equals(listitem.getItem().getObjid())) adjustment.setSelection(index);
+					index++;
+				}
 			}
 			
 			listview.setOnItemClickListener(new OnItemClickListener(){
@@ -161,7 +166,8 @@ public class AdjustmentTypeInfo extends AlertDialog.Builder {
 				String name = data.get("name") != null ? data.get("name").toString() : null;
 				String unit = data.get("unit") != null ? data.get("unit").toString() : null;
 				String expr = data.get("expr") != null ? data.get("expr").toString() : null;
-				FloorInfo.addAdjustment(new AdjustmentItem(objid,code,name,unit,expr));
+				AdjustmentItem item = new AdjustmentItem(objid,code,name,unit,expr);
+				FloorInfo.addAdjustment(new AdjustmentListItem(item, data_parameter));
 				done = true;
 				if(done){
 					dialog.dismiss();

@@ -3,7 +3,9 @@ package com.rameses.android.efaas.adapter;
 import java.util.List;
 import com.rameses.android.R;
 import com.rameses.android.efaas.bean.AdjustmentItem;
-import android.app.Activity;
+import com.rameses.android.efaas.bean.AdjustmentListItem;
+import com.rameses.android.efaas.bean.ParameterItem;
+
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,9 +17,9 @@ public class AdjustmentMenuAdapter extends BaseAdapter {
 	
 	LayoutInflater inflater = null;
 	Context ctx;
-	List<AdjustmentItem> data;
+	List<AdjustmentListItem> data;
 	
-	public AdjustmentMenuAdapter(Context ctx, List<AdjustmentItem> data){
+	public AdjustmentMenuAdapter(Context ctx, List<AdjustmentListItem> data){
 		this.ctx = ctx;
 		this.data = data;
 		inflater = ( LayoutInflater )ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -42,19 +44,22 @@ public class AdjustmentMenuAdapter extends BaseAdapter {
 	public View getView(int pos, View view, ViewGroup vgroup) {
 		View rowView = inflater.inflate(R.layout.list_menu_adjustment, null);
 		
-		TextView code = (TextView) rowView.findViewById(R.id.adjustment_code);
-		TextView name = (TextView) rowView.findViewById(R.id.adjustment_name);
+		TextView type = (TextView) rowView.findViewById(R.id.adjustment_type);
+		TextView parameter = (TextView) rowView.findViewById(R.id.adjustment_parameter);
 		
-		AdjustmentItem item = data.get(pos);
+		AdjustmentListItem item = data.get(pos);
 		if(item != null){
-			code.setText(item.getCode());
-			name.setText(item.getName());
+			type.setText(item.getItem().getName());
+			for(ParameterItem param : item.getList()){
+				if(!parameter.getText().toString().isEmpty()) parameter.setText(parameter.getText().toString() + "\n\n" + param.getParameter() + "   -  " + param.getValue());
+				if(parameter.getText().toString().isEmpty()) parameter.setText(param.getParameter() + "   -  " + param.getValue());
+			}
 		}
 		
 		return rowView;
 	}
 	
-	public AdjustmentItem getListItem(int pos){
+	public AdjustmentListItem getListItem(int pos){
 		return data.get(pos);
 	}
 

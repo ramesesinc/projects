@@ -89,9 +89,9 @@ public final class R {
         public static final int actualuse_list=0x7f080010;
         public static final int adjustment_add=0x7f080020;
         public static final int adjustment_adjustment=0x7f080019;
-        public static final int adjustment_code=0x7f0800aa;
         public static final int adjustment_list=0x7f08001f;
-        public static final int adjustment_name=0x7f0800ab;
+        public static final int adjustment_parameter=0x7f0800ab;
+        public static final int adjustment_type=0x7f0800aa;
         public static final int adjustment_unit=0x7f08001a;
         public static final int appraisal_actualuse=0x7f08000a;
         public static final int appraisal_add=0x7f08004c;

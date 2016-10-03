@@ -2,13 +2,14 @@
     <invokers>
         <invoker type="cashreceipt:barcode:PMO" action="loadBarcode" 
                  caption="Cash Receipt - Order of Payment"/>
+        <invoker type="cashreceipt:paymentorder" action="init" 
+                 caption="Cash Receipt - Order of Payment"/>
     </invokers>
     
     <code class="com.rameses.enterprise.treasury.models.PaymentOrderCashReceiptModel" />
     
     <pages>
         <page template="com.rameses.enterprise.treasury.views.PaymentOrderCashReceiptPage"/>
-        <page name="billing" template="com.rameses.enterprise.treasury.views.PaymentOrderCashReceiptBillPage"/>
     </pages>
     
 </workunit>

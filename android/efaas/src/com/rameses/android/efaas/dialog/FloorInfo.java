@@ -5,12 +5,9 @@ import java.util.List;
 import java.util.UUID;
 import com.rameses.android.R;
 import com.rameses.android.efaas.adapter.AdjustmentMenuAdapter;
-import com.rameses.android.efaas.adapter.ParameterMenuAdapter;
-import com.rameses.android.efaas.bean.AdjustmentItem;
 import com.rameses.android.efaas.bean.AdjustmentListItem;
 import com.rameses.android.efaas.bean.FloorItem;
-import com.rameses.android.efaas.bean.ParameterItem;
-
+import com.rameses.android.efaas.bean.FloorListItem;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -32,7 +29,7 @@ public class FloorInfo extends AlertDialog.Builder{
 	private EditText floorno, floorarea;
 	private Button add;
 	private static ListView listview;
-	private static List<AdjustmentListItem> data_adjustment;
+	public static List<AdjustmentListItem> data_adjustment;
 	
 	public FloorInfo(Context c, String objid, String bldguseid, String bldgrpuid){
 		super(c);
@@ -68,7 +65,7 @@ public class FloorInfo extends AlertDialog.Builder{
 		data_adjustment = new ArrayList<AdjustmentListItem>();
 	}
 	
-	private static void loadAdjustmentData(){
+	public static void loadAdjustmentData(){
 		try{
 			listview.setAdapter(new AdjustmentMenuAdapter(ctx, data_adjustment));
 			listview.setOnItemClickListener(new OnItemClickListener(){
@@ -110,7 +107,7 @@ public class FloorInfo extends AlertDialog.Builder{
 				}
 				
 				FloorItem item = new FloorItem(UUID.randomUUID().toString(), data_floorno, data_floorarea);
-				ActualUseInfo.data_floor.add(item);
+				ActualUseInfo.data_floor.add(new FloorListItem(item,data_adjustment));
 				ActualUseInfo.loadListData();
 				dialog.dismiss();
 			}

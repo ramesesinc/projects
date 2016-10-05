@@ -8,15 +8,20 @@ import com.rameses.android.R;
 import com.rameses.android.db.BldgAssessLevelDB;
 import com.rameses.android.efaas.adapter.AppraisalItemAdapter;
 import com.rameses.android.efaas.adapter.FloorMenuAdapter;
+import com.rameses.android.efaas.adapter.ParameterMenuAdapter;
 import com.rameses.android.efaas.bean.DefaultItem;
 import com.rameses.android.efaas.bean.FloorItem;
+import com.rameses.android.efaas.bean.FloorListItem;
+import com.rameses.android.efaas.bean.ParameterItem;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.AdapterView.OnItemClickListener;
 
 public class ActualUseInfo extends AlertDialog.Builder{
 	
@@ -31,7 +36,7 @@ public class ActualUseInfo extends AlertDialog.Builder{
 	private Spinner classification;
 	private Button floor_add;
 	private static ListView floor_list;
-	public static List<FloorItem> data_floor;
+	public static List<FloorListItem> data_floor;
 	
 	public ActualUseInfo(Context c, String objid, String rpuid){
 		super(c);
@@ -45,7 +50,7 @@ public class ActualUseInfo extends AlertDialog.Builder{
 		classification = (Spinner) view.findViewById(R.id.appraisal_classification);
 		
 		floor_list = (ListView) view.findViewById(R.id.floor_list);
-		data_floor = new ArrayList<FloorItem>();
+		data_floor = new ArrayList<FloorListItem>();
 		
 		floor_add = (Button) view.findViewById(R.id.floor_add);
 		floor_add.setOnClickListener(new View.OnClickListener() {
@@ -83,6 +88,14 @@ public class ActualUseInfo extends AlertDialog.Builder{
 	public static void loadListData(){
 		try{
 			floor_list.setAdapter(new FloorMenuAdapter(ctx, data_floor));
+			floor_list.setOnItemClickListener(new OnItemClickListener(){
+				@Override
+				public void onItemClick(AdapterView<?> adapter, View view, int pos, long arg3) {
+					ParameterMenuAdapter a = (ParameterMenuAdapter) adapter.getAdapter();
+					ParameterItem item = a.getListItem(pos);
+					if(item != null) new ParameterInfo(ctx,item,pos).show();
+				}	
+			});
 		}catch(Throwable e){
 			new ErrorDialog(ctx, e).show();
 			error = e;

@@ -37,11 +37,13 @@ public class AdjustmentTypeInfo extends AlertDialog.Builder {
 	private Map data;
 	public static List<ParameterItem> data_parameter;
 	private AdjustmentListItem listitem;
+	private int position;
 	
 	public AdjustmentTypeInfo(Context ctx, AdjustmentListItem listitem, int position){
 		super(ctx);
 		this.ctx = ctx;
 		this.listitem = listitem;
+		this.position = position;
 		
 		LayoutInflater inflater = LayoutInflater.from(ctx);
 		View view = inflater.inflate(R.layout.activity_appraisal_bldg_adjustment, null);
@@ -91,7 +93,9 @@ public class AdjustmentTypeInfo extends AlertDialog.Builder {
     	            			if(!name.startsWith("SYS")) data_parameter.add(new ParameterItem(name,minvalue));
     	            		}
     	            	}
-    	            	if(listitem != null) data_parameter = listitem.getList();
+    	            	if(listitem != null){
+    	            		if(data.get("objid").toString().equals(listitem.getItem().getObjid())) data_parameter = listitem.getList();
+    	            	}
     	            	listview.setAdapter(new ParameterMenuAdapter(ctx,data_parameter));
             		}
 	            }
@@ -100,7 +104,7 @@ public class AdjustmentTypeInfo extends AlertDialog.Builder {
 	        });
 			
 			if(listitem != null){
-				int index = 0;
+				int index = 1;
 				for(Map data : data_adjustment){
 					if(data.get("objid").toString().equals(listitem.getItem().getObjid())) adjustment.setSelection(index);
 					index++;
@@ -161,13 +165,24 @@ public class AdjustmentTypeInfo extends AlertDialog.Builder {
 		dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener(){
 			@Override
 			public void onClick(View arg0) {
+				if(data == null){
+					new InfoDialog(ctx,"Adjustment Type is required!").show();
+					return;
+				}
 				String objid = data.get("objid") != null ? data.get("objid").toString() : null;
 				String code = data.get("code") != null ? data.get("code").toString() : null;
 				String name = data.get("name") != null ? data.get("name").toString() : null;
 				String unit = data.get("unit") != null ? data.get("unit").toString() : null;
 				String expr = data.get("expr") != null ? data.get("expr").toString() : null;
+				
 				AdjustmentItem item = new AdjustmentItem(objid,code,name,unit,expr);
-				FloorInfo.addAdjustment(new AdjustmentListItem(item, data_parameter));
+				
+				if(listitem == null){
+					FloorInfo.addAdjustment(new AdjustmentListItem(item, data_parameter));
+				}else{
+					FloorInfo.data_adjustment.set(position, new AdjustmentListItem(item, data_parameter));
+					FloorInfo.loadAdjustmentData();
+				}
 				done = true;
 				if(done){
 					dialog.dismiss();

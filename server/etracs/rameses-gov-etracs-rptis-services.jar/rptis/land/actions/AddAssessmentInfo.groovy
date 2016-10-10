@@ -20,7 +20,11 @@ public class AddAssessmentInfo implements RuleActionHandler {
 		def ldentity = ld.entity
 		def rpuentity = ld.rpu.entity
 
-		def classificationid = params.classification?.objid
+		def classificationid = params.classificationid 
+		if (params.classification){
+			classificationid = params.classification.objid			
+		}
+
 		def actualuseid = ldentity.actualuse?.objid
 		def rputype = 'land';
 

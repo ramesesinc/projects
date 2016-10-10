@@ -1,0 +1,14 @@
+/* v2.5.04.032-03012 */
+
+- TREAURY
+
+- BPLS 
+		
+- ASSESSOR	
+	- Add support for land specific classification (Aklan)
+	- Update land improvement editing
+
+- LANDTAX
+	- 
+	
+

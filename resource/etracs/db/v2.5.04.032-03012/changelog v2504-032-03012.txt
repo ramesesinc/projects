@@ -5,6 +5,7 @@
 - BPLS 
 		
 - ASSESSOR	
+	- Update on PDAP-RPTA 100 Report
 	- Add support for land specific classification (Aklan)
 	- Update land improvement editing
 

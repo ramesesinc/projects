@@ -9,6 +9,6 @@
 	- Update land improvement editing
 
 - LANDTAX
-	- 
+	- NEW! Certified List of Real Property Tax Collectibles
 	
 

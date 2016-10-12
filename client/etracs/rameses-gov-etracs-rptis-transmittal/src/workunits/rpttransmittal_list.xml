@@ -5,7 +5,7 @@
           allowDelete="false"
           orderBy="txnno DESC">
     <invokers>
-        <invoker folderid="/home/rpt/transmittal" caption="Transmittals" index="1" action="init"/>
+        <invoker folderid="/home/rpt/transmittal" caption="Transmittals" index="1" action="init" role="SHARED"/>
     </invokers>
     <code>
         class TransmittalCrudList extends com.rameses.seti2.models.CrudListModel

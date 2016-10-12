@@ -26,7 +26,7 @@
             String reportName = reportPath + "BPBilling.jasper";
             
             def getReportData() {
-                return billSvc.getBilling( [applicationid: entity.objid] );
+                return billSvc.getBilling( [applicationid: entity.objid] ); 
             }
             
             SubReport[] getSubReports(){ 

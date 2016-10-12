@@ -5,11 +5,12 @@
 - BPLS 
 		
 - ASSESSOR	
+	- NEW! Monthly Assessment Report (Puerto)
 	- Update on PDAP-RPTA 100 Report
 	- Add support for land specific classification (Aklan)
 	- Update land improvement editing
 
 - LANDTAX
-	- NEW! Certified List of Real Property Tax Collectibles
+	- NEW! Certified List of Real Property Tax Collectibles (Puerto)
 	
 

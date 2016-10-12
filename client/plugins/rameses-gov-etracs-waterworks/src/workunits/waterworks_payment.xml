@@ -1,7 +1,8 @@
 <workunit>
     <invokers>
         <invoker type="waterworks_payment:list:listActions" 
-                 caption="Capture Payment" action="init" target="popup" /> 
+                 caption="Capture Payment" action="init" target="popup" 
+                 shortcut="ctrl T"/> 
         
         <invoker type="formActions" caption="Cancel" action="cancel"/> 
         <invoker type="formActions" caption="Save" action="save"/> 

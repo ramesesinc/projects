@@ -55,6 +55,7 @@ public class BatchCapturePage extends javax.swing.JPanel {
         xTitledBorder1.setTitle("General Information");
         jPanel1.setBorder(xTitledBorder1);
 
+        xFormPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
         xFormPanel1.setCaptionWidth(120);
         xFormPanel1.setPadding(new java.awt.Insets(5, 5, 5, 5));
 
@@ -80,6 +81,7 @@ public class BatchCapturePage extends javax.swing.JPanel {
         xCheckBox1.setText("Copy Previous Info");
         xFormPanel1.add(xCheckBox1);
 
+        xFormPanel2.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
         xFormPanel2.setCaptionWidth(120);
         xFormPanel2.setPadding(new java.awt.Insets(5, 5, 5, 5));
 
@@ -158,7 +160,7 @@ public class BatchCapturePage extends javax.swing.JPanel {
                 , new Object[]{"visible", true}
                 , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.UPPER}
-                , new Object[]{"typeHandler", new com.rameses.rcp.common.DateColumnHandler(null, "yyyy-MM-dd", null)}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.DateColumnHandler("yyyy-MM-dd", "yyyy-MM-dd", "yyyy-MM-dd")}
             }),
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "paidby"}

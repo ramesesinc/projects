@@ -40,6 +40,11 @@ class StatementOfReceiptsController extends com.rameses.etracs.shared.AsyncRepor
         [type:'asofday', title:'As of Day'] 
     ];
     
+    def postingTypes = [
+        [objid: 'ALL', name: '( Default )'],
+        [objid: 'BY_LIQUIDATION_DATE', name: 'By Liquidation Date']
+    ]; 
+    
     def detailtypes = [true, false];
     
     def initReport(){

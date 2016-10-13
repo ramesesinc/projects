@@ -24,4 +24,9 @@ class EntityService
 		o._schemaname = 'entity' + o.type.toString().toLowerCase(); 
 		return persistenceSvc.save( o ); 
 	} 
+
+	@ProxyMethod 
+	public def getPhoto( o ) {
+		return [:]; 
+	}
 }

@@ -27,6 +27,7 @@ public class WaterworksCapturePayment {
     
     def billdata;
     def miscdata; 
+    def otherdata;
     def handler; 
     def entity; 
     def year; 
@@ -35,6 +36,7 @@ public class WaterworksCapturePayment {
     @PropertyChangeListener
     def listener = [
         "entity.billingcycle" : { o-> 
+            loadConsumption(); 
             loadBillItems( o );
         }
     ];
@@ -43,6 +45,7 @@ public class WaterworksCapturePayment {
         entity = [ objid: 'CPAY' + new java.rmi.server.UID() ]; 
         billdata = [:];
         miscdata = [:];
+        otherdata = [:]; 
     }
     
     def getMasterEntity() {
@@ -191,5 +194,14 @@ public class WaterworksCapturePayment {
             return '_close'; 
         } 
         return null; 
+    }
+    
+    void loadConsumption() { 
+        otherdata.consumption = null;         
+        if ( entity.billingcycle ) { 
+            def m = [_schemaname: 'waterworks_consumption', select: 'objid,volume']; 
+            m.findBy = [ acctid: masterEntity.objid, billingcycleid: entity.billingcycle.objid ]; 
+            otherdata.consumption = querySvc.findFirst( m ); 
+        }
     }
 } 

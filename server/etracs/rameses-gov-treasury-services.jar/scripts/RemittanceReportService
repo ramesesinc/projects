@@ -36,7 +36,7 @@ class RemittanceReportService  {
 
 	@ProxyMethod 
 	def getRCDReportData( rem ) {
-		def params = [ remittanceid: rem.objid, fundid:'%' ]; 
+		def params = [ remittanceid: rem.objid, fundid:'%', formno:'%' ]; 
 		def remittance = rem.clone();
 		remittance.collectiontype = buildCollectionTypes( db.getRCDCollectionTypes( params ) ); 
 		remittance.collectionsummaries = db.getRCDCollectionSummaries( params ); 
@@ -93,9 +93,9 @@ class RemittanceReportService  {
 	}
 
 	@ProxyMethod 
-	def getRCDReportDataByFund( rem, fund ) {
+	def getRCDReportDataByFund( rem, fund, af ) { 
 		def remittance = rem.clone();
-		def params = [ remittanceid: rem.objid,  fundid: (fund? fund.objid: '%') ];
+		def params = [ remittanceid: rem.objid, fundid: (fund? fund.objid: '%'), formno: (af? af.formno: '%') ];  
 		remittance.collectiontype = buildCollectionTypes( db.getRCDCollectionTypesByFund( params ) );
 		remittance.collectionsummaries = db.getRCDCollectionSummaries( params ); 
 
@@ -143,7 +143,7 @@ class RemittanceReportService  {
 		def params = [
 			remittanceid: data.objid, 
 			collectiontypeid : collectiontype ? collectiontype.objid : '%'
-		]
+		];
 
 		data.receipts = db.getReceiptsByRemittanceCollectionType( params ); 
 		if( ! data.receipts ) throw new Exception("No record(s) found ");
@@ -326,8 +326,16 @@ class RemittanceReportService  {
 	} 
 	
 	@ProxyMethod 
-	def getFundlist( remittanceid ) {
-		return db.getFundlist([ remittanceid: remittanceid ]); 
+	def getFundlist( remittanceid ) { 
+		def params = [ remittanceid: remittanceid ]; 
+		def list = db.getFundlist( params ); 
+		list.each{ 
+			it.aflist = db.getAFList( params ); 
+			it.aflist.each{ o-> 
+				o.title = o.formno +' - '+ o.formtitle; 
+			}
+		} 
+		return list; 
 	} 
 
 	@ProxyMethod 

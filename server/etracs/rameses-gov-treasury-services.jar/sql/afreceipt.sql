@@ -1,7 +1,8 @@
 [getList]
 select 
-	sr.*, sreq.itemclass, 
-	sreq.dtfiled as request_dtfiled, sreq.requester_name   
+	sr.objid, sr.receiptno, sr.state, sr.request_objid, sr.request_reqno, 
+	sr.dtfiled, sr.reqtype, sr.user_objid, sr.user_name, sr.org_objid, sr.org_name, 
+	sreq.itemclass, sreq.dtfiled as request_dtfiled, sreq.requester_name  
 from ( 
 	select objid from stockreceipt where receiptno like $P{searchtext} 
 	union 

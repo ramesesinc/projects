@@ -3,7 +3,7 @@ import com.rameses.util.*;
 import java.rmi.server.*;
 import com.rameses.services.extended.*;
 
-class AFRequestListService extends ActiveListService {
+class AFReceiptListService extends ActiveListService {
 
 	@ActiveDB("afreceipt")
 	def em;

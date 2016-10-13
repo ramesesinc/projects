@@ -52,13 +52,14 @@ class CollectorReportService
 	@ProxyMethod 
 	public def generateDailyCollectionReport( params ) {
 		buildDateFilter(params)
-		if( params.collector )
-			params.collectorid  = params.collector.objid 
-		else 
-			params.collectorid  = env.USERID
+		if ( params.collector ) { 
+			params.collectorid = params.collector.objid; 
+		} else {  
+			params.collectorid = '%'; 
+		} 
 
-		def funds = adb.getCollectorFundList(params)
-		if( ! funds) throw new Exception("No record(s) found.    ")
+		def funds = adb.getCollectorFundList( params )
+		if( !funds ) throw new Exception("No record(s) found.    ")
 		
 		def subqry = []
 		def sqlqry = []

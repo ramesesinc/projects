@@ -12,6 +12,7 @@ public class AFQueryService extends ActiveListService {
 	@ProxyMethod
 	public def getColumns( params ) {
 		return [
+			[name:"state", caption:"Status", width:100, maxWidth:100],
 			[name:"txnno", caption:"TxnNo", width:100, maxWidth:120],
 			[name:"txndate", caption:"TxnDate", width:100, maxWidth:140],
 			[name:"txntype", caption:"TxnType", width:100, maxWidth:120],

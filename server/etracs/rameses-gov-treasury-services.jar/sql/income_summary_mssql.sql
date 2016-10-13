@@ -6,7 +6,7 @@ INSERT INTO income_summary (
 ) 
 SELECT 
    r.objid AS refid, 
-   CONVERT(DATE, r.remittancedate) AS refdate,
+   CONVERT(DATE, r.dtposted) AS refdate,
    ci.item_objid AS acctid, 
    ri.fund_objid AS fundid,
    SUM( ci.amount) AS amount,
@@ -25,7 +25,7 @@ FROM liquidation lq
 WHERE lq.objid=$P{liquidationid} AND cv.objid IS NULL
 GROUP BY  
    r.objid, 
-   CONVERT(DATE, r.remittancedate), 
+   CONVERT(DATE, r.dtposted), 
    ci.item_objid, 
    ri.fund_objid,
    r.txnno,

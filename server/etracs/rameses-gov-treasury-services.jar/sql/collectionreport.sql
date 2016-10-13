@@ -67,10 +67,11 @@ from (
 select distinct 
   rf.fund_objid as fundid, f.code, f.title 
 from remittance r 
-  inner join remittance_fund rf on rf.remittanceid = r.objid
+  inner join liquidation_remittance lrem on r.objid=lrem.objid 
+  inner join remittance_fund rf on rf.remittanceid = r.objid 
   inner join fund f on f.objid = rf.fund_objid 
 where r.remittancedate between $P{fromdate} and $P{todate}
-  and r.collector_objid = $P{collectorid} 
+  and r.collector_objid like $P{collectorid} 
 
 [getCollectorDailyCollectionByFund]
 select 
@@ -79,10 +80,11 @@ from (
   select 
     day(r.remittancedate) as xdate, ${subqry} 
   from remittance r 
+    inner join liquidation_remittance lrem on r.objid=lrem.objid 
     inner join remittance_fund rf on rf.remittanceid = r.objid
     inner join fund f on f.objid = rf.fund_objid
   where r.remittancedate between $P{fromdate} and $P{todate} 
-    and r.collector_objid =  $P{collectorid} 
+    and r.collector_objid like  $P{collectorid} 
 )t 
 group by t.xdate 
 order by t.xdate 

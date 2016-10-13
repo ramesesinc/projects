@@ -27,12 +27,8 @@ class AFRequestListService extends ActiveListService {
 		o.requester = '%'+o.searchtext+'%';
 		if(o._tag == "lookup") { 
 			return em.getLookup(o);
+		} else {
+			return em.getList(o); 
 		}
-		else {
-			return em.getList(o);
-		}
-	}
-	
-	
-
+	} 
 }

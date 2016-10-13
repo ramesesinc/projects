@@ -31,13 +31,23 @@ update a set
 	a.totaldr = b.dr,
 	a.totalcr = b.cr,
 	a.endbalance = b.balance, 
-	a.currentlineno = b.maxlineno 
+	a.currentlineno = b.maxlineno+1
 from cashbook a, ( 
 	select 
+		parentid, 
 		sum(dr) as dr, sum(cr) as cr, 
 		sum(dr-cr) as balance, 
 		max([lineno]) as maxlineno 
 	from cashbook_entry 
 	where parentid=$P{cashbookid} 
+	group by parentid 
 )b  
-where a.objid=$P{cashbookid} 
+where a.objid=b.parentid 
+
+
+[getEntriesFromIndex]
+select * 
+from cashbook_entry 
+where parentid = $P{cashbookid} 
+	and [lineno] >= $P{indexno}   
+order by [lineno]  

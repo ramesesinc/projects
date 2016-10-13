@@ -111,10 +111,16 @@ group by af.serieslength, af.formtype, afi.prefix, afi.suffix
 
 
 [findOverlappingAF]
-select * from af_inventory 
-where afid=$P{afid} and unit=$P{unit} 
-   and startseries <= $P{startseries} 
-   and endseries >= $P{startseries} 
+select afi.*  
+from af_inventory afi, ( 
+   select 
+      $P{afid} as afid, 
+      $P{unit} as unit, 
+      $P{startseries} as startseries 
+)xx  
+where afi.afid=xx.afid and afi.unit=xx.unit 
+   and xx.startseries between afi.startseries and afi.endseries 
+   and afi.respcenter_type = 'COLLECTOR' 
 
 
 [getIssuanceReceipts]
@@ -127,3 +133,8 @@ where afd.refid=$P{refid}
    and afd.txntype='ISSUANCE-RECEIPT' 
    and afi.afid = $P{afid} 
 order by afi.startseries 
+
+
+[findFirstDetail]
+select * from af_inventory_detail 
+where controlid=$P{controlid} and [lineno]=1 

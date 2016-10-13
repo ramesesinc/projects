@@ -3,8 +3,10 @@ delete from cashbook_entry
 where objid=$P{objid} 
 
 [getEntriesByRef]
-select * from cashbook_entry 
-where refid=$P{refid} 
+select cbe.*, 
+from cashbook_entry cbe  
+	inner join cashbook cb on cbe.parentid=cb.objid 
+where cbe.refid=$P{refid} 
 
 [findRunningBalance]
 select sum(e.dr - e.cr) as balance 
@@ -38,5 +40,13 @@ update cashbook a, (
 	a.totaldr = b.dr,
 	a.totalcr = b.cr,
 	a.endbalance = b.balance, 
-	a.currentlineno = b.maxlineno 
+	a.currentlineno = b.maxlineno+1 
 where a.objid=$P{cashbookid} 
+
+
+[getEntriesFromIndex]
+select * 
+from cashbook_entry 
+where parentid=$P{cashbookid} 
+	and lineno>=$P{indexno}   
+order by lineno  

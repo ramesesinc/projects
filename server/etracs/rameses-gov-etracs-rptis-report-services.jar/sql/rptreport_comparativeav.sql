@@ -57,7 +57,7 @@ FROM faas f
 	INNER JOIN rpu r ON f.rpuid = r.objid 
 	INNER JOIN realproperty rp on f.realpropertyid = rp.objid 
 	INNER JOIN propertyclassification pc ON r.classification_objid = pc.objid 
-WHERE f.cancelledtimestamp LIKE $P{currenttimestamp}    
+WHERE ${filter}
   AND f.state = 'CANCELLED'  
   AND r.taxable = 1 
 GROUP BY pc.objid, pc.name, pc.special , pc.orderno 
@@ -138,7 +138,7 @@ FROM faas f
 	INNER JOIN rpu r ON f.rpuid = r.objid 
 	INNER JOIN realproperty rp on f.realpropertyid = rp.objid 
 	INNER JOIN exemptiontype e ON r.exemptiontype_objid = e.objid 
-WHERE f.cancelledtimestamp LIKE $P{currenttimestamp}  
+WHERE ${filter}
   AND f.state = 'CANCELLED'   
   AND r.taxable = 0 
 GROUP BY e.objid, e.name , e.orderno
@@ -163,5 +163,4 @@ WHERE ${filter}
   AND r.taxable = 0 
 GROUP BY e.objid, e.name , e.orderno
 ORDER BY e.orderno
-
 

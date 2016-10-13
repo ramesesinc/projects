@@ -39,7 +39,9 @@ class ConsolidationMainInfoController
     }
     
     def getShowSupport(){
-        if (entity.state != 'APPROVED') 
+        if ('province'.equalsIgnoreCase(OsirisContext.env.ORGCLASS) && !'approved'.equalsIgnoreCase(entity.state))
+            return false;
+        else if ('municipality'.equalsIgnoreCase(OsirisContext.env.ORGCLASS) && 'draft'.equalsIgnoreCase(entity.state))
             return false;
         return true;
     }

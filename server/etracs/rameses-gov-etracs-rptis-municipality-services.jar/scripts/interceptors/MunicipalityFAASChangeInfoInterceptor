@@ -34,5 +34,11 @@ class MunicipalityFAASChangeInfoInterceptor
         println 'Submit municipality change FAAS information to Province....'
 	}
 
+    @After(pattern="MunicipalityRedFlagService.resendToProvince") 
+    public void resendToProvince( evt ) {
+        println 'Resending Change Info to province...'
+        submitToProvince(evt)
+    }
+
 }
 

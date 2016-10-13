@@ -34,7 +34,6 @@ class MunicipalityFaasRedFlagResolveController
     
     void init(){
         def sopener = 'faas:' + redflag.action;
-        println 'spopener -> ' + sopener
         entity._redflag = redflag;
         opener = Inv.lookupOpener(sopener, [entity:entity]);
         if (opener){

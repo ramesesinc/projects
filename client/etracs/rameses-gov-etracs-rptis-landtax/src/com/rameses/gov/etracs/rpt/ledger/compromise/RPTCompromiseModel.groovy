@@ -423,5 +423,14 @@ public class RPTCompromiseModel
         def payment = entity._items.payment.sum();
         return total - payment;
     }
+    
+    def getShowRestructure(){
+        if (entity._installments){
+            def paiditems = entity._installments.findAll{it.amtpaid > 0.0}
+            if(paiditems)
+                return false;
+        }
+        return true;
+    }
 }
 

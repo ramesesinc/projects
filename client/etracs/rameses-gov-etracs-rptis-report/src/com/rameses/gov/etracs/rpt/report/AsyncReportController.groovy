@@ -167,7 +167,7 @@ abstract class AsyncReportController
         mode = 'view'; 
         return 'preview'; 
     }
-
+    
     String getImagePath( def imagename ) {
         def appEnv = clientContext.appEnv; 
         def customfolder = appEnv['report.custom'];

@@ -1,0 +1,57 @@
+<workunit extends="rpt_wtemplates/ReportController.xml" >
+    <invokers>
+        <invoker folderid="/explorer/report/rpt" 
+            action="init" 
+            caption="AEEMM Form No. 2" 
+            target="window" index="10" 
+            role="ASSESSOR_REPORT,REPORT" />
+    </invokers>
+    <code>
+
+<![CDATA[
+
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.reports.*;
+
+class AEEMMReportModel extends com.rameses.gov.etracs.rpt.report.AsyncReportController
+{
+    @Service('RPTReportAEEMMService') 
+    def svc 
+    
+    String title = 'AEEMM Form No. 2 Report'
+    
+    String reportName = 'com/rameses/gov/etracs/rpt/report/aeemm.jasper';
+        
+        
+    def initReport(){
+        entity.qtr = null;
+        return 'default';
+    }
+            
+    void buildReportData(entity, asyncHandler){
+        svc.buildReport(entity, asyncHandler)
+    }
+    
+    
+    
+    Map getParameters(){
+        return data.parameters;
+    }
+    
+    
+   def formControl = [
+        getFormControls: {
+            return [
+                new FormControl( "combo", [caption:'LGU', name:'entity.lgu', items:'lgus', expression:'#{item.name}', emptyText:'ALL']),
+                new FormControl( "integer", [caption:'Year', name:'entity.year', required:true, preferredSize:'100,19']),
+                new FormControl( "combo", [caption:'Month', name:'entity.month', items:'months', depends:'entity.year', expression:'#{item.name}', dynamic:true, preferredSize:'100,19']),
+            ]
+        },
+   ] as FormPanelModel;
+}
+]]>        
+        
+    </code>
+</workunit>

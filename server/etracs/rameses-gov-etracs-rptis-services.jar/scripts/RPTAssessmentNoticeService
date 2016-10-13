@@ -211,6 +211,15 @@ class RPTAssessmentNoticeService
 		items.each{faas ->
 			buildAdditionalInfo(faas)
 		}
+		if (util.isTrue(var.rpt_pad_noa_items_with_blank_rows)){
+			def itemcount = 10
+			if (items.size() < itemcount){
+				for(int i=items.size(); i<itemcount; i++){
+					items << [:]
+				}
+			}
+		}
+
 		return items
 	}
 

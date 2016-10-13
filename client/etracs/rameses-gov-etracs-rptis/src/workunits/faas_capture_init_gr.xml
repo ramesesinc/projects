@@ -32,7 +32,7 @@ class GeneralRevisionInitController extends com.rameses.gov.etracs.rpt.faas.ui.F
     def process(){
         entity.datacapture = true;
         entity = grSvc.createDataCaptureGeneralRevision( entity );
-        return InvokerUtil.lookupOpener('faas:capture:create', [entity:entity]);
+        return InvokerUtil.lookupOpener('faas:capture:gr', [entity:entity]);
     }
     
     def getRevisionyears(){

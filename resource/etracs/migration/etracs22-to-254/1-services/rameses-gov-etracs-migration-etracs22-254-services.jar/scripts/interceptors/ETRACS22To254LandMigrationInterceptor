@@ -8,6 +8,9 @@ class ETRACS22To254LandMigrationInterceptor
 	@ActiveDB('landrpu')	
 	def landrpuEm 
 
+	@ActiveDB('landspecificclass')	
+	def landspecificclassEm
+
 	@ActiveDB('planttreerpu')
 	def plantTreeEm 
 
@@ -58,6 +61,7 @@ class ETRACS22To254LandMigrationInterceptor
 				totalplanttreemv 	: rpu.info.planttotal.marketvalue,
 				totalplanttreeav 	: rpu.info.planttotal.assessedvalue,
 				landvalueadjustment : rpu.info.landvalueadjustment,
+				publicland 			: false, 
 			]
 
 			newrpu.totallandbmv = (newrpu.totallandbmv == null ? 0.0 : newrpu.totallandbmv)
@@ -68,7 +72,6 @@ class ETRACS22To254LandMigrationInterceptor
 			newrpu.totalplanttreemv = (newrpu.totalplanttreemv == null ? 0.0 : newrpu.totalplanttreemv)
 			newrpu.totalplanttreeav = (newrpu.totalplanttreeav == null ? 0.0 : newrpu.totalplanttreeav)
 			newrpu.landvalueadjustment = (newrpu.landvalueadjustment == null ? 0.0 : newrpu.landvalueadjustment)
-
 			landrpuEm.create(newrpu)
 		}
 	}
@@ -86,11 +89,14 @@ class ETRACS22To254LandMigrationInterceptor
 				resolveSubClass(rpu, ld)
 				resolveStripping(rpu, ld)
 
+				println 'specificclass ->  ' + ld.specificclassid
+
 				def newld = [
 					objid  			: ld.objid, 
 					landrpuid 		: rpu.objid, 
 					subclass 	 	: [objid:ld.subclassid],
 					specificclass   : [objid:ld.specificclassid], 
+					landspecificclass   : [objid:ld.specificclassid], 
 					actualuse 		: [objid:ld.assesslevelid], 
 					stripping 		: [objid:ld.strippingid], 
 					addlinfo 		: ld.addlinfo, 
@@ -140,7 +146,7 @@ class ETRACS22To254LandMigrationInterceptor
 	void resolveAdjustmentType(rpu, adj){
 		def la = em254.findLandAdjustmentTypeById([objid:adj.adjtypeid])
 		if (!la){
-			def rysetting = em254.findLandRySettingByRy(rpu)
+			def rysetting = findLandRySetting(rpu)
 			la = [
 				objid 			: adj.adjtypeid,
 				landrysettingid	: rysetting.objid,
@@ -192,7 +198,6 @@ class ETRACS22To254LandMigrationInterceptor
 		rpu.info.planttrees.each{pt->
 			if (!existPlantTreeDetail(pt)){
 				println 'Migrating planttreedetail ' + pt.objid
-
 				resolvePlantTree(rpu, pt)
 				resolvePlantTreeUnitValue(rpu, pt)
 				resolvePlantTreeActualuse(rpu, pt)
@@ -204,9 +209,9 @@ class ETRACS22To254LandMigrationInterceptor
 					planttreeunitvalue  : [objid:pt.unitvalueid],
 					planttree  			: [objid:pt.planttreeid],
 					actualuse  			: [objid:pt.assesslevelid],
-					productive 			: util.toDecimal(pt.bearing),
-					nonproductive 		: util.toDecimal(pt.nonbearing),
-					nonproductiveage 	: util.toDecimal(pt.nonbearingage),
+					productive 			: pt.bearing,
+					nonproductive 		: pt.nonbearing,
+					nonproductiveage 	: pt.nonbearingage,
 					unitvalue 			: pt.unitvalue,
 					basemarketvalue 	: pt.basemarketvalue,
 					adjustment 			: pt.adjustment,
@@ -262,13 +267,20 @@ class ETRACS22To254LandMigrationInterceptor
 	@ActiveDB('landrysetting')
 	def landEm 
 
+	def findLandRySetting(rpu){
+		def rysetting = em254.findLandRySettingByRy(rpu)
+		if (!rysetting){
+			rysetting = em254.findLatestLandRySetting()
+		}
+		if (!rysetting)
+			throw new Exception('Land revision setting for year ' + rpu.ry + ' does not exist.')
+		return rysetting 
+	}
 
 	void resolveActualUse(rpu, ld){
 		def au = em254.findLandAssessLevelById([objid:ld.assesslevelid])
 		if (!au){
-			def rysetting = em254.findLandRySettingByRy(rpu)
-			println '='*50 
-			println rysetting
+			def rysetting = findLandRySetting(rpu)
 			au = [
 				objid 			: ld.assesslevelid,
 				landrysettingid	: rysetting.objid,
@@ -285,15 +297,18 @@ class ETRACS22To254LandMigrationInterceptor
 	void resolveSpecificClass(rpu, ld){
 		def spc = em254.findSpecificClassById([objid:ld.specificclassid])
 		if (!spc){
-			def rysetting = em254.findLandRySettingByRy(rpu)
+			def rysetting = findLandRySetting(rpu)
 			spc = [
 				objid 			: ld.specificclassid,
+				landspecificclass : [objid:ld.specificclassid],
 				landrysettingid	: rysetting.objid,
 				classification  : [objid:rpu.classid],
 				code 			: ld.specificclasscode,
 				name 			: ld.specificclassname,
 				areatype 		: ld.subclass.areatype,
+				state 			: 'APPROVED',
 			]
+			landspecificclassEm.create(spc, 'landspecificclass')
 			landEm.create(spc, 'lcuvspecificclass')
 		}
 	}
@@ -301,7 +316,7 @@ class ETRACS22To254LandMigrationInterceptor
 	void resolveSubClass(rpu, ld){
 		def sub = em254.findSubClassById([objid:ld.subclassid])
 		if (!sub){
-			def rysetting = em254.findLandRySettingByRy(rpu)
+			def rysetting = findLandRySetting(rpu)
 			sub = [
 				objid 			: ld.subclassid,
 				landrysettingid	: rysetting.objid,
@@ -320,7 +335,7 @@ class ETRACS22To254LandMigrationInterceptor
 
 		def strip = em254.findStrippingById([objid:ld.strippingid])
 		if (!strip){
-			def rysetting = em254.findLandRySettingByRy(rpu)
+			def rysetting = findLandRySetting(rpu)
 			strip = [
 				objid 			: ld.strippingid,
 				landrysettingid	: rysetting.objid,

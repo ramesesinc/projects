@@ -146,6 +146,7 @@ FROM (
             crr.txntype,
             cri.year, 
             cri.partialled,
+            rl.objid, 
             rlf.tdno, 
             rlf.assessedvalue,
             cr.collector_name

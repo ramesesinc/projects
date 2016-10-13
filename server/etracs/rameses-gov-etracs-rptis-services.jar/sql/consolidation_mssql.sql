@@ -15,8 +15,6 @@ SELECT
 	f.fullpin AS rp_pin,
 	r.totalareaha AS rpu_totalareaha,
 	r.totalareasqm AS rpu_totalareasqm,
-	f.owner_name, 
-	f.owner_address,
 	(select trackingno from rpttracking where objid = c.objid ) AS trackingno,
 	tsk.objid AS taskid,
 	tsk.state AS taskstate,

@@ -40,7 +40,6 @@ FROM faas f
 WHERE ${filter}
   AND f.state = 'CURRENT'  
   AND r.taxable = 1 
-  AND f.txntype_objid = 'ND'
 GROUP BY pc.objid, pc.name, pc.special , pc.orderno 
 ORDER BY pc.orderno 
 
@@ -121,7 +120,6 @@ FROM faas f
 	INNER JOIN exemptiontype e ON r.exemptiontype_objid = e.objid   
 WHERE ${filter}
   AND f.state = 'CURRENT'  
-  AND f.txntype_objid = 'ND'
   AND r.taxable = 0
 GROUP BY e.objid, e.name , e.orderno  
 ORDER BY e.orderno  
@@ -153,9 +151,9 @@ SELECT
 	e.objid AS classid,  
 	e.name AS classname,  
 	0 AS special,  
-	SUM( CASE WHEN r.rputype = 'land' THEN 1.0 ELSE 0.0 END ) AS preceedinglandcount,  
-	SUM( CASE WHEN r.rputype <> 'land' THEN 1.0 ELSE 0.0 END ) AS preceedingimpcount,  
-	SUM( 1.0 ) AS preceedingtotal     
+	SUM( CASE WHEN r.rputype = 'land' THEN 1.0 ELSE 0.0 END ) AS endinglandcount,  
+	SUM( CASE WHEN r.rputype <> 'land' THEN 1.0 ELSE 0.0 END ) AS endingimpcount,  
+	SUM( 1.0 ) AS endingtotal     
 FROM faas f
 	INNER JOIN rpu r ON f.rpuid = r.objid 
 	INNER JOIN realproperty rp ON f.realpropertyid = rp.objid 

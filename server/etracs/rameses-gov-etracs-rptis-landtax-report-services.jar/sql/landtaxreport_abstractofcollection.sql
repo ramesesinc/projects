@@ -42,8 +42,8 @@ FROM (
 
     MAX(CASE WHEN cv.objid IS NULL THEN cri.partialled ELSE 0 END) AS partialled
   FROM liquidation liq 
-    INNER JOIN liquidation_remittance lrem ON liq.objid=lrem.liquidationid 
-    INNER JOIN remittance rem ON lrem.objid=rem.objid 
+    INNER JOIN liquidation_remittance lr on liq.objid = lr.liquidationid 
+    INNER JOIN remittance rem on lr.objid =rem.objid 
     INNER JOIN remittance_cashreceipt rc ON rem.objid = rc.remittanceid
     INNER JOIN cashreceipt cr ON rc.objid = cr.objid 
     LEFT JOIN cashreceipt_void cv ON cr.objid = cv.receiptid 
@@ -98,8 +98,8 @@ FROM (
     ) AS total,    
     MAX(CASE WHEN cv.objid IS NULL THEN cri.partialled ELSE 0 END) AS partialled 
   FROM liquidation liq 
-    INNER JOIN liquidation_remittance lrem ON liq.objid=lrem.liquidationid 
-    INNER JOIN remittance rem ON lrem.objid=rem.objid 
+    INNER JOIN liquidation_remittance lr on liq.objid = lr.liquidationid 
+    INNER JOIN remittance rem on lr.objid =rem.objid 
     INNER JOIN remittance_cashreceipt rc ON rem.objid = rc.remittanceid
     INNER JOIN cashreceipt cr ON rc.objid = cr.objid 
     LEFT JOIN cashreceipt_void cv ON cr.objid = cv.receiptid 
@@ -149,8 +149,8 @@ FROM (
     SUM(CASE WHEN cv.objid IS NULL THEN cri.sef - cri.sefdisc + cri.sefint ELSE 0.0 END ) AS total,
     MAX(CASE WHEN cv.objid IS NULL THEN cri.partialled ELSE 0.0 END) AS partialled
   FROM liquidation liq 
-    INNER JOIN liquidation_remittance lrem ON liq.objid=lrem.liquidationid 
-    INNER JOIN remittance rem ON lrem.objid=rem.objid 
+    INNER JOIN liquidation_remittance lr on liq.objid = lr.liquidationid 
+    INNER JOIN remittance rem on lr.objid =rem.objid 
     INNER JOIN remittance_cashreceipt rc ON rem.objid = rc.remittanceid
     INNER JOIN cashreceipt cr ON rc.objid = cr.objid 
     LEFT JOIN cashreceipt_void cv ON cr.objid = cv.receiptid 
@@ -197,8 +197,8 @@ FROM (
     SUM(CASE WHEN cv.objid IS NULL THEN cri.sef - cri.sefdisc + cri.sefint ELSE 0.0 END) AS total,
     MAX(CASE WHEN cv.objid IS NULL THEN cri.partialled ELSE 0.0 END) AS partialled
   FROM liquidation liq 
-    INNER JOIN liquidation_remittance lrem ON liq.objid=lrem.liquidationid 
-    INNER JOIN remittance rem ON lrem.objid=rem.objid 
+    INNER JOIN liquidation_remittance lr on liq.objid = lr.liquidationid 
+    INNER JOIN remittance rem on lr.objid =rem.objid 
     INNER JOIN remittance_cashreceipt rc ON rem.objid = rc.remittanceid
     INNER JOIN cashreceipt cr ON rc.objid = cr.objid 
     LEFT JOIN cashreceipt_void cv ON cr.objid = cv.receiptid 
@@ -263,8 +263,8 @@ FROM (
     ) AS total
 
   FROM liquidation liq 
-    INNER JOIN liquidation_remittance lrem ON liq.objid=lrem.liquidationid 
-    INNER JOIN remittance rem ON lrem.objid=rem.objid 
+    INNER JOIN liquidation_remittance lr on liq.objid = lr.liquidationid 
+    INNER JOIN remittance rem on lr.objid =rem.objid 
     INNER JOIN remittance_cashreceipt rc ON rem.objid = rc.remittanceid
     INNER JOIN cashreceipt cr ON rc.objid = cr.objid 
     LEFT JOIN cashreceipt_void cv ON cr.objid = cv.receiptid 
@@ -319,8 +319,8 @@ FROM (
     ) AS total
 
   FROM liquidation liq 
-    INNER JOIN liquidation_remittance lrem ON liq.objid=lrem.liquidationid 
-    INNER JOIN remittance rem ON lrem.objid=rem.objid 
+    INNER JOIN liquidation_remittance lr on liq.objid = lr.liquidationid 
+    INNER JOIN remittance rem on lr.objid =rem.objid 
     INNER JOIN remittance_cashreceipt rc ON rem.objid = rc.remittanceid
     INNER JOIN cashreceipt cr ON rc.objid = cr.objid 
     LEFT JOIN cashreceipt_void cv ON cr.objid = cv.receiptid 
@@ -369,8 +369,8 @@ FROM (
     SUM(CASE WHEN cv.objid IS NULL THEN cri.firecode ELSE 0.0 END) AS firecode,
     SUM(CASE WHEN cv.objid IS NULL THEN cri.sef - cri.sefdisc + cri.sefint ELSE 0.0 END ) AS total
   FROM liquidation liq 
-    INNER JOIN liquidation_remittance lrem ON liq.objid=lrem.liquidationid 
-    INNER JOIN remittance rem ON lrem.objid=rem.objid 
+    INNER JOIN liquidation_remittance lr on liq.objid = lr.liquidationid 
+    INNER JOIN remittance rem on lr.objid =rem.objid 
     INNER JOIN remittance_cashreceipt rc ON rem.objid = rc.remittanceid
     INNER JOIN cashreceipt cr ON rc.objid = cr.objid 
     LEFT JOIN cashreceipt_void cv ON cr.objid = cv.receiptid 
@@ -417,8 +417,8 @@ FROM (
     SUM(CASE WHEN cv.objid IS NULL THEN cri.firecode ELSE 0.0 END) AS firecode,
     SUM(CASE WHEN cv.objid IS NULL THEN cri.sef - cri.sefdisc + cri.sefint ELSE 0.0 END) AS total
   FROM liquidation liq 
-    INNER JOIN liquidation_remittance lrem ON liq.objid=lrem.liquidationid 
-    INNER JOIN remittance rem ON lrem.objid=rem.objid 
+    INNER JOIN liquidation_remittance lr on liq.objid = lr.liquidationid 
+    INNER JOIN remittance rem on lr.objid =rem.objid 
     INNER JOIN remittance_cashreceipt rc ON rem.objid = rc.remittanceid
     INNER JOIN cashreceipt cr ON rc.objid = cr.objid 
     LEFT JOIN cashreceipt_void cv ON cr.objid = cv.receiptid 

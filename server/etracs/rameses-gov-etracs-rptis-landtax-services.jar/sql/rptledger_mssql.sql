@@ -201,6 +201,7 @@ FROM (
 			cr.objid,
 			cr.receiptno,
 			cr.receiptdate,
+			cr.collector_name,
 			cr.paidby,
 			crr.txntype,
 			cri.year, 
@@ -883,3 +884,7 @@ where rli.rptledgerid = $P{rptledgerid}
 
 [findLedgerFaasById]
 select objid from rptledgerfaas where objid = $P{objid}
+
+
+[findLedgerFaasByTdno]
+select objid from rptledgerfaas where tdno = $P{tdno}

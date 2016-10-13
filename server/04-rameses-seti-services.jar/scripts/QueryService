@@ -14,13 +14,13 @@ class QueryService {
 			throw new Exception('Please specify a name in QueryService.getList or findFirst');
 
 		def em = db.lookup(o._schemaname);
-		if(o.debug) em.debug = true;
-		
-		if( !o.where && !o.findBy && !o._limit )
+		if ( o.debug ) em.debug = true;
+				
+		if ( !o.where && !o.findBy && !o._limit )
 			throw new Exception("QueryService.getList or findFirst. Please indicate a where,findBy or limit property");
 
 		//for where first argument is the condition, second is the value.	
-		if( o.where ) {
+		if ( o.where ) {
 			if(o.where.size() == 1) {
 				em.where( o.where[0] )		
 			}
@@ -29,12 +29,12 @@ class QueryService {
 			}
 		}
 
-		if(o.findBy) {
+		if ( o.findBy ) {
 			em.find( o.findBy );
-		}
+		} 
 
 		//select columns
-		if(o.select) 
+		if ( o.select ) 
 			em.select( o.select );
 		else 
 			em.select("*");

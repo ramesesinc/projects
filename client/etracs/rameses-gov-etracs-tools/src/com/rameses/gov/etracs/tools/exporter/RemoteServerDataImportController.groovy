@@ -45,14 +45,19 @@ class RemoteServerDataImportController
     void doImport(){
         def chooser = new JFileChooser();
         int i = chooser.showOpenDialog(null);
-        if(i==0) {
+        if ( i==0 ) { 
             entity = FileUtil.readObject( chooser.selectedFile );
-            collectionTypeListHandler.reload();
-            revenueListHandler.reload();
-            userListHandler.reload();
-            mode = MODE_READ;
-        }      
-    }
+            mode = MODE_READ; 
+            
+            [
+                collectionTypeListHandler, revenueListHandler, fundListHandler, 
+                afListHandler, userListHandler, usergroupListHandler, 
+                collectionGroupListHandler, orgListHandler 
+            ].each { 
+                it.reload(); 
+            } 
+        }  
+    } 
           
     
     /*=================================================================
@@ -65,19 +70,36 @@ class RemoteServerDataImportController
     def selectedRevenueItem;
     def selectedUser;
             
- 
     def collectionTypeListHandler = [
             fetchList : { return entity.data.collectiontypes; }
     ] as BasicListModel;
     
-    
     def revenueListHandler = [
-            fetchList    : { return entity.data.itemaccounts; } 
+            fetchList : { return entity.data.itemaccounts; } 
     ] as BasicListModel;
     
+    def fundListHandler = [
+            fetchList : { return entity.data.funds; } 
+    ] as BasicListModel;
+
+    def afListHandler = [
+            fetchList : { return entity.data.afs; } 
+    ] as BasicListModel;
     
     def userListHandler = [
-           fetchList    : { return entity.data.users; }
-    ] as EditorListModel;
+           fetchList : { return entity.data.users; }
+    ] as BasicListModel;
+
+    def usergroupListHandler = [
+           fetchList : { return entity.data.usergroups; }
+    ] as BasicListModel;
+    
+    def collectionGroupListHandler = [
+           fetchList : { return entity.data.collectiongroups; }
+    ] as BasicListModel;   
+    
+    def orgListHandler = [
+           fetchList : { return entity.data.orgs; }
+    ] as BasicListModel; 
 }
 

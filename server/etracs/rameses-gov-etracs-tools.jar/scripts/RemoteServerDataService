@@ -36,9 +36,10 @@ class RemoteServerDataService
 		if(! entity.data.usergroups ) throw new Exception("There are no roles assign to the user for this org.  ");
 		if(! entity.data.usergroups.find{it.role == 'COLLECTOR'} ) throw new Exception("There must be a collector for this org.  ");
 		
-
-		entity.data.userMemberships = adb.getUserMemberships(params )
-		entity.data.cashbooks = adb.getUserCashBooks(params).each{ 
+		entity.data.orgs = adb.getOrgs( params ); 
+		entity.data.orgclasses = adb.getOrgClasses( params ); 
+		entity.data.userMemberships = adb.getUserMemberships( params ); 
+		entity.data.cashbooks = adb.getUserCashBooks( params ).each{ 
 			it.details  = []; 
 			it.beginbalance = 0.0;
 			it.forwardbalance = 0.0;

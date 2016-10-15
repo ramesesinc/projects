@@ -16,21 +16,19 @@ public class VehicleApplicationForm extends CrudFormModel {
     def create() {
         def z = super.create();
         entity.apptype = 'NEW';
-        entity.vehicletype = 'MOTORCAB';
-        entity.owner = [:];
-        entity.vehicle = [:];
+        entity.txntype = 'MTOP';
+        entity.apptype = 'NEW';
+        entity.operator = [:];
         entity.fees = [];
         return z;
     }
     
     void assess() {
-        entity.vehicletype = 'MOTORCAB';
         def r = assessmentSvc.assess(entity);
         entity.fees = r.items;
-        entity.total = entity.fees.sum{ it.amount };
+        entity.amount = entity.fees.sum{ it.amount };
         feeListModel.reload();
     }
-    
     
     def feeListModel = [
         fetchList: { o->

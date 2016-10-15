@@ -1,10 +1,11 @@
-<workunit extends="com/rameses/seti2/templates/CrudForm.xml" schemaName="vehicle_application">
+<workunit schemaName="vehicle_application" txntype="mtop">
     <invokers>
         <invoker folderid="/home/vehicle/motorcab" caption="New Application" action="create" />
         <invoker type="formActions" caption="Assess" action="assess" />
+        <invoker type="formActions" caption="Submit" action="save" />
     </invokers>
     <code class="com.rameses.gov.etracs.vehicle.models.VehicleApplicationForm" />
     <pages>
-        <page template="com.rameses.gov.etracs.vehicle.views.NewApplicationPage"/>
+        <page template="com.rameses.gov.etracs.vehicle.views.MtopApplicationPage"/>
     </pages>
 </workunit>

@@ -2,7 +2,7 @@
     <invokers>
         <invoker type="waterworks_payment:list:listActions" 
                  caption="Capture Payment" action="init" target="popup" 
-                 shortcut="ctrl T"/> 
+                 shortcut="ctrl 1" mnemonic="C"/> 
         
         <invoker type="formActions" caption="Cancel" action="cancel"/> 
         <invoker type="formActions" caption="Save" action="save"/> 
@@ -11,4 +11,4 @@
     <pages>
         <page name="com.rameses.gov.etracs.waterworks.views.CapturePaymentPage"/> 
     </pages>
-</workunit>
+</workunit> 

@@ -45,9 +45,6 @@ public class CaptureConsumptionModel extends CrudFormModel {
         entity.readingmethod = 'CAPTURE';
         entity.acctid = parent.objid;
         year = entity.year;
-        entity.each{ k,v-> 
-            println '>> '+ k + '='+ v + ', '+ (v ? v.getClass(): null);
-        }
     }
     
     void afterOpen() {

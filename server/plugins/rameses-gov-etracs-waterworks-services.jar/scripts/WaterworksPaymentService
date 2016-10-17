@@ -26,7 +26,7 @@ class WaterworksPaymentService {
 	} 
 
 	@ProxyMethod
-	public def postCreate( def o ) {
+	public def postCreate( o ) { 
 		wp.create( o );
 		postToLedger(o.items, true);
 	}

@@ -1,0 +1,11 @@
+<workunit>
+    <invokers>
+        <invoker type="home.action" caption="QR Reader" action="init"/>
+    </invokers>
+    
+    <code class="com.rameses.gov.etracs.nsrp.models.QRReaderModel"/>
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.nsrp.views.QRReaderPage"/>        
+    </pages>
+</workunit>

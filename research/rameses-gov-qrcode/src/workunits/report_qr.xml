@@ -1,0 +1,47 @@
+<workunit extends="wtemplates/ReportController.xml" >
+    <invokers>
+        <invoker type="report:qr" action="preview" caption="QR Preview" target="popup" index="0" />
+    </invokers>
+    
+    <code>
+    <![CDATA[
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+import com.rameses.osiris2.common.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.reports.*;
+
+public class QRReportController
+{
+
+    String title = "QR Preview";
+    String reportpath = 'report/'
+    String reportName = reportpath + 'QR.jasper'
+    def entity;
+    
+    def preview(){
+        report.viewReport();
+        return 'preview';
+    }
+
+    def report = [
+        getReportName : { reportName },
+        getSubReports : { 
+            return [] as SubReport[]
+        },
+        getReportData : { return entity },
+        getParameters : { 
+            return [:]
+        }
+    ] as ReportModel
+
+    def getReportData(){
+        return entity; 
+    }
+}
+    ]]>
+    </code>
+    
+    <page name="preview" template="com.rameses.osiris2.common.ui.ReportPreviewPage"/>
+    
+</workunit>

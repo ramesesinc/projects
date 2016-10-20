@@ -5,104 +5,11 @@
         <invoker type="formActions" caption="Close" action="_close" mnemonic="c" shortcut="ctrl C" icon="images/toolbars/cancel.png" visibleWhen="#{mode != 'create'}" immediate="true"/> 
         <invoker type="formActions" caption="New" action="create" mnemonic="n" shortcut="ctrl N" icon="images/toolbars/create.png" visibleWhen="#{mode != 'create'}" />
         
-        <invoker type="formActions" caption="Cancel" action="cancel" mnemonic="c" shortcut="ctrl X" icon="images/toolbars/cancel.png" visibleWhen="#{mode == 'create'}" immediate="true"/> 
+        <invoker type="formActions" caption="Cancel" action="_close" mnemonic="c" shortcut="ctrl X" icon="images/toolbars/cancel.png" visibleWhen="#{mode == 'create'}" immediate="true"/> 
         <invoker type="formActions" caption="Save" action="save" mnemonic="s" shortcut="ctrl S" icon="images/toolbars/save.png" visibleWhen="#{mode == 'create'}" />
     </invokers>
     
-    <code>
-<![CDATA[    
-import com.rameses.osiris2.common.*;
-import com.rameses.osiris2.client.*;
-import com.rameses.osiris2.reports.*;
-import com.rameses.rcp.common.*;
-import com.rameses.rcp.annotations.*;
-import com.rameses.util.*;
-import java.rmi.server.*;
-
-class ForwardCashTicketController {
-
-    @Binding
-    def binding
-
-    @Service("DateService")
-    def dtsvc;
-
-    @Service("CollectionTypeService")
-    def collTypeSvc;    
-
-    @Service("UsergroupMemberLookupService")
-    def ugmSvc;
-
-    @Service("CashTicketCollectorMigrationService")
-    def svc
-
-    String title = "Forward CashTicket";
-
-    def entity;
-    def collectorlist;
-    def collector;
-    def formTypes;
-    def formtype;
-    def mode;
-    def endseries;
-
-    @PropertyChangeListener
-    def listener = [
-        "collector" : { o->
-            entity.collector = o;
-        }, 
-        "formtype" : { o -> 
-            entity.afid = o.objid;
-        }
-    ]
-
-    public void init() {
-        mode = 'create';
-        entity = [
-            refdate: dtsvc.getServerDate() 
-        ];
-    }
-    
-    public void create() {
-        init();
-        binding.refresh();
-    } 
-
-    public void save() { 
-        def qty = new java.math.BigDecimal( entity.qty.toString() ); 
-        def den = new java.math.BigDecimal( formtype.denomination.toString() ); 
-        def nres = (qty.toDouble() % den.toDouble()); 
-        //if ( nres != 0.0 ) { 
-        //    throw new Exception('Quantity must be divisible by ' + formtype.denomination);
-        //} 
-        
-        entity.reason = 'FORWARD BALANCE'; 
-        entity.remarks = 'FORWARD BALANCE'; 
-        entity.reftype = 'SYSTEM'; 
-        entity.refid = 'SYSTEM'; 
-        svc.post( entity ); 
-        mode = 'posted';
-    }
-
-    List getCollectorlist( ) {
-        if( !collectorlist ) { 
-            collectorlist =  ugmSvc.getList(['_tag':'COLLECTOR']); 
-        } 
-        return collectorlist;
-    }
-
-    List getFormTypes() {
-        if( !formTypes ) { 
-            formTypes = collTypeSvc.getFormTypes().findAll{it.formtype == 'cashticket'}; 
-            formTypes.each{
-                println it; 
-            }
-        } 
-        return formTypes
-    }
-}
-]]>
-    </code>
+    <code class="com.rameses.gov.treasury.models.CashTicketForwardModel"/>
     
     <pages>
         <page template="com.rameses.gov.treasury.cashticket.CashticketControlPage"/>

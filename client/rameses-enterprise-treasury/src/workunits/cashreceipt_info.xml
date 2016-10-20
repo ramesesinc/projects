@@ -3,7 +3,7 @@
    <invokers>
          <invoker type="cashreceiptinfo:open" caption="Cash Receipt Info" action="open" />
          
-         <invoker type="formActions" caption="Reprint" action="reprint" shortcut="ctrl P" mnemonic="p" role="COLLECTOR" />
+         <invoker type="formActions" caption="Reprint" action="reprint" shortcut="ctrl P" mnemonic="p" role="COLLECTOR"/>
          <invoker type="formActions" caption="Edit" action="edit" visibleWhen="#{entity.txnmode!='ONLINE' &amp;&amp; entity.remitted!=1}"/>
    </invokers>
    
@@ -30,7 +30,8 @@ class CashReceiptController extends CRUDController {
         return TemplateProvider.instance.getResult( "com/rameses/enterprise/treasury/cashreceipt/cashreceipt.gtpl", [entity:entity] );
     }
     
-    void reprint() {
+    def report;     
+    def reprint() {
         if ( !verifyReprint() ) { 
             MsgBox.alert('Invalid security code'); 
             return; 
@@ -57,7 +58,14 @@ class CashReceiptController extends CRUDController {
             handle = opt.handle; 
             handle.viewReport(); 
         } 
-        ReportUtil.print(handle.report,true);
+        
+        report = handle.report; 
+        if ( ReportUtil.isDeveloperMode() ) {
+            return 'preview'; 
+        } 
+        
+        ReportUtil.print(report, true);
+        return null; 
     }
 
     def edit() {
@@ -76,12 +84,13 @@ class CashReceiptController extends CRUDController {
     void refresh() { 
         binding.refresh(); 
     } 
-}      
+} 
    ]]>
    </code>
    
    <pages>
         <page template="com.rameses.enterprise.treasury.cashreceipt.CashReceiptInfoPage"/>
+        <page name="preview" template="com.rameses.osiris2.common.ui.ReportPreviewPage" />
    </pages>
    
 </workunit>

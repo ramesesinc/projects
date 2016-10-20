@@ -8,12 +8,12 @@ public class AFInventoryService  {
 	
 	@ActiveDB("af_inventory")
 	def em
-
-	@Service("DateService")
-	def dateSvc;
  
 	@ActiveDB("af_control")
 	def afserial;
+
+	@Service("DateService")
+	def dateSvc;
 
 	@ProxyMethod
 	public def getListByAf( params ) {
@@ -48,13 +48,15 @@ public class AFInventoryService  {
 
 
 	@ProxyMethod
-	public def postReceipt(def o)	{
-		def m = [:];
-		m.objid = "AFCTRL"+new UID();
-		m.txntype = o.txntype;
-		m.afid = o.afid;
+	public def postReceipt( o ) { 
+		def m = [:]; 
+		m.objid = "AFCTRL"+new UID(); 
+		m.afid = o.afid; 
+		m.txntype = o.txntype; 
+		m.currentseries = o.startseries;
 		m.startseries = o.startseries;
 		m.endseries = o.endseries;
+		m.currentstub = o.startstub;
 		m.startstub = o.startstub;
 		m.endstub = o.endstub;
 		m.unit = o.unit;
@@ -67,15 +69,14 @@ public class AFInventoryService  {
 		m.currentlineno = 1;
 		m.cost = o.cost;
 		m.respcenter = o.respcenter;
-		m.currentstub = o.startstub;
-		m.currentseries = o.startseries;
+
 		if ( o.currentseries ) {
 			def nstartseries = o.currentseries.toString().toInteger();
 			def nendseries = o.endseries.toString().toInteger();
 			m.qtybalance = (nendseries - nstartseries) + 1; 
 			m.currentseries = o.currentseries; 
 			m.qtybegin = m.qtybalance; 			
-		}
+		} 
 		em.create( m );
 
 		def detail = initDetail(o);
@@ -109,6 +110,10 @@ public class AFInventoryService  {
 	@ProxyMethod
 	public def postIssue( o ) {  
 		def head = em.read([ objid: o.controlid ]);
+		if ( !head ) {
+			throw new Exception('AF control '+ o.controlid + ' record does not exist in the inventory. Please verify.'); 
+		}		
+
 		if ( head.currentseries != o.startseries ) {  
 			println 'controlid='+ o.controlid + ', headseries='+ head.currentseries + ', startseries='+ o.startseries;
 			throw new Exception("Data may have changed. Please run process again");

@@ -1,0 +1,9 @@
+<workunit extends="com/rameses/seti2/templates/CrudForm.xml" schemaName="mtop_franchise"
+          allowDelete="false" allowEdit="false" allowCreate="false">
+    <invokers>
+        <invoker type="mtop_franchise:open" caption="MTOP Franchise" action="open"/>
+    </invokers>
+    <pages>
+        <page template="com.rameses.gov.etracs.vehicle.views.MtopFranchisePage"/>
+    </pages>    
+</workunit>

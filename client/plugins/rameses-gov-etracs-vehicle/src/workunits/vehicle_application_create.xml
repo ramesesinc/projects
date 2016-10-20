@@ -1,5 +1,7 @@
 <workunit extends="com/rameses/seti2/templates/CrudForm.xml" schemaName="vehicle_application" >
     <invokers>
+        <invoker type="vehicle.menu" caption="Application" action="assess" />
+        
         <invoker type="formActions" caption="Assess" action="assess" />
     </invokers>
     <code class="com.rameses.gov.etracs.vehicle.models.VehicleApplicationForm" />

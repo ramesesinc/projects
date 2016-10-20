@@ -1,0 +1,41 @@
+<workunit extends="com/rameses/seti2/templates/CrudForm.xml" schemaName="vehicle_application">
+    <invokers>
+        <invoker type="vehicle_application:fishboat:create" caption="New Fishboat" action="create" />
+        <invoker type="vehicle_application:fishboat:open" caption="Open Fishboat" action="open" />
+        
+        <!-- actions -->
+        <invoker type="formActions" caption="Assess" action="assess" />
+        <invoker type="formActions" caption="Submit" action="save" />
+        <invoker type="formActions" caption="Post" action="post" />        
+    </invokers>
+    <code>
+        <![CDATA[
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.seti2.models.*;
+        import com.rameses.osiris2.common.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.util.*;
+        import com.rameses.gov.etracs.vehicle.models.*;
+            
+        class FishboatApplication extends VehicleApplicationForm {
+            def engineListModel = [
+                fetchList: { o->
+                    if(entity.info.engines==null) entity.info.engines = [];
+                    return entity.info.engines;
+                },
+                addItem: { o->
+                    entity.info.engines << o;
+                },
+                onRemoveItem: { o->
+                    entity.info.engines.remove(o);
+                }
+            ] as EditorListModel;
+        } 
+        ]]>
+    </code>
+    <pages>
+        <page template="com.rameses.gov.etracs.vehicle.views.FishboatApplicationPage"/>
+    </pages>
+</workunit>

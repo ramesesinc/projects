@@ -1,10 +1,35 @@
-<workunit extends="com/rameses/seti2/templates/CrudForm.xml" schemaName="vehicle_application">
+<workunit>
     <invokers>
-        <invoker folderid="/home/vehicle/motorcab" caption="Renew" action="create" />
-        <invoker type="formActions" caption="Assess" action="assess" />
+        <invoker folderid="home/vehicle/application" caption="Renew" action="renew" target="process"/>
     </invokers>
-    <code class="com.rameses.gov.etracs.vehicle.models.VehicleApplicationForm" />
-    <pages>
-        <page template="com.rameses.gov.etracs.vehicle.views.NewApplicationPage"/>
-    </pages>
+    <code>
+         <![CDATA[
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.seti2.models.*;
+        import com.rameses.osiris2.common.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.util.*;
+        
+        class SelectForRenewal {
+        
+            @Service("VehicleApplicationService")
+            def appSvc;
+        
+            void renew() {
+                def h = { o->
+                    appSvc.loadForApplication([objid:o.objid]);
+                    /*
+                    def t = o.objid.toLowerCase();
+                    def op = Inv.lookupOpener( "vehicle_application:"+t+":create", [txntype:o] );
+                    Inv.invoke( op );
+                    */
+                }
+                Modal.show( "vehicle_account:renewal:lookup", [onselect:h] );  
+            }
+        } 
+        
+        ]]>    
+    </code>
 </workunit>

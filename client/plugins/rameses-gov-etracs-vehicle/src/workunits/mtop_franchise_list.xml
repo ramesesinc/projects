@@ -1,0 +1,30 @@
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" schemaName="mtop_franchise">
+    <invokers>
+        <invoker folderid="home/vehicle" caption="MTOP Franchise" action="init" orderBy="bodyno"/>
+    </invokers>
+    <code>
+        <![CDATA[
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.seti2.models.*;
+        import com.rameses.osiris2.common.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.util.*;
+            
+        class MtopFranchiseList extends CrudListModel {
+        
+            @Service("MtopFranchiseService")
+            def ctrlSvc;
+        
+            def create() {
+                def q = MsgBox.prompt( "Please enter qty to issue");
+                if(!q) return; 
+                query.qty = q;
+                ctrlSvc.generate(query);
+                reload();
+            }
+        } 
+        ]]>
+    </code>
+</workunit>

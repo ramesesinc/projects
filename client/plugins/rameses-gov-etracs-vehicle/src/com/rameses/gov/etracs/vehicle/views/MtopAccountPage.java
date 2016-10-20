@@ -10,13 +10,13 @@ import com.rameses.rcp.ui.annotations.Template;
  *
  * @author Elmo Nazareno
  */
-@Template(value= ApplicationTemplate.class, target="content")
-public class MtopApplicationPage extends javax.swing.JPanel {
+@Template( value=AccountTemplate.class, target="content")
+public class MtopAccountPage extends javax.swing.JPanel {
 
     /**
-     * Creates new form MtopApplicationPage
+     * Creates new form MtopVehicleAccountPage
      */
-    public MtopApplicationPage() {
+    public MtopAccountPage() {
         initComponents();
     }
 
@@ -75,7 +75,7 @@ public class MtopApplicationPage extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(45, Short.MAX_VALUE))
+                .addContainerGap(147, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -87,4 +87,5 @@ public class MtopApplicationPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XTextField xTextField5;
     private com.rameses.rcp.control.XTextField xTextField6;
     // End of variables declaration//GEN-END:variables
+
 }

@@ -5,37 +5,27 @@ import com.rameses.rcp.common.*;
 import com.rameses.seti2.models.*;
 import com.rameses.osiris2.common.*;
 
-public class VehicleApplicationForm extends CrudFormModel {
+public class VehicleTxnTypeListModel extends ComponentBean {
     
-    @Service("VehicleAssessmentService")
-    def assessmentSvc;
+    @Service("QueryService")
+    def querySvc;
     
-    String title = "Vehicle Registration";
-    def selectedItem;
+    def _typeList;
     
-    def create() {
-        def z = super.create();
-        entity.apptype = 'NEW';
-        entity.vehicletype = 'MOTORCAB';
-        entity.owner = [:];
-        entity.vehicle = [:];
-        entity.fees = [];
-        return z;
-    }
-    
-    void assess() {
-        entity.vehicletype = 'MOTORCAB';
-        def r = assessmentSvc.assess(entity);
-        entity.fees = r.items;
-        entity.total = entity.fees.sum{ it.amount };
-        feeListModel.reload();
-    }
-    
-    
-    def feeListModel = [
-        fetchList: { o->
-            return entity.fees;
+    public def getTypeList() {
+        if(!_typeList ) {
+            def m = [_schemaname: 'vehicle_txntype', _limit: 20];
+            _typeList = querySvc.getList(m);
         }
-    ] as BasicListModel;
+        return _typeList;
+    }
+    
+    public def getType() {
+        return super.getValue();
+    }
+    
+    public void setType( def o ) {
+        super.setValue( o );
+    }
     
 }

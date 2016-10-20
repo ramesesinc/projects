@@ -1,9 +1,5 @@
-<workunit extends="com/rameses/seti2/templates/CrudForm.xml" schemaName="vehicle_application">
+<workunit extends="com/rameses/seti2/templates/CrudLookup.xml" schemaName="vehicle_txntype">
     <invokers>
-        <invoker type="formActions" caption="Assess" action="assess" />
+        <invoker type="vehicle_txntype:lookup" caption="Lookup Txn Type" action="init" />
     </invokers>
-    <code class="com.rameses.gov.etracs.vehicle.models.VehicleApplicationForm" />
-    <pages>
-        <page template="com.rameses.gov.etracs.vehicle.views.NewApplicationPage"/>
-    </pages>
 </workunit>

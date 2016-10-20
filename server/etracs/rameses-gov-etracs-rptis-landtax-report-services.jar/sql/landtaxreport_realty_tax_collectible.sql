@@ -1,5 +1,4 @@
 [getList]
-
 select 
 	x.*,
 	case when x.rputype = 'land' then x.totalav else null end as landav,
@@ -8,20 +7,14 @@ select
 from (
 	select 
 		e.name as owner, 
-		case when rp.pin is null then rl.fullpin else rp.pin end as pin, 
-		rl.fullpin,
+		case when rp.pin is null then rl.fullpin else rp.pin end as fullpin, 
 		rl.tdno,
 		rl.classcode,
 		rl.cadastrallotno,
+		rp.surveyno, 
 		b.name as barangay, 
 		rl.rputype, 
-		r.suffix, 
-		(select max(assessedvalue) from rptledgerfaas 
-		 where rptledgerid = rl.objid 
-			 and $P{year} >= fromyear 
-			 and ($P{year} <= toyear or toyear = 0
-			and state = 'APPROVED' )
-		 ) as totalav
+		rl.totalav as totalav
 	from rptledger rl 
 		inner join entity e on rl.taxpayer_objid = e.objid 
 		inner join barangay b on rl.barangayid = b.objid 
@@ -29,11 +22,10 @@ from (
 		left join rpu r on f.rpuid = r.objid 
 		left join realproperty rp on f.realpropertyid = rp.objid 
 	where rl.state = 'APPROVED' 
-	and rl.taxable = 1 
-	and rl.totalav > 0
 	and f.state = 'CURRENT'
-	and not exists(select * from rptledger_restriction where parentid = rl.objid)
-
+    and rl.totalav > 0 
+    and rl.taxable = 1
+    and not exists(select * from rptledger_restriction where parentid = rl.objid)
 )x
-order by x.pin, x.suffix 
+order by x.fullpin
 

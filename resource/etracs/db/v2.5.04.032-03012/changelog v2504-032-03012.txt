@@ -12,6 +12,7 @@
 	- Update on Bldg General Revision script
 
 - LANDTAX
-	- NEW! Certified List of Real Property Tax Collectibles (Puerto)
+	- NEW! Real Property Tax Collectibles (Guimaras)
+	- NEW! Certified List of Real Property Tax Collectibles (Guimaras)
 	
 

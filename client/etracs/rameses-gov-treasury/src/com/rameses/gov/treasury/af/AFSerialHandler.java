@@ -36,7 +36,6 @@ public class AFSerialHandler extends javax.swing.JPanel {
         xTitledBorder1.setTitle("AF Serial Settings");
         setBorder(xTitledBorder1);
 
-        xFormPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
         xFormPanel1.setCaptionWidth(120);
 
         xIntegerField1.setCaption("Series length");

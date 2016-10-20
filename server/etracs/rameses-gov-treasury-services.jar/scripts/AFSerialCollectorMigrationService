@@ -73,14 +73,14 @@ class AFSerialCollectorMigrationService  {
 		if (!m.currentseries) throw new Exception('currentseries parameter is required');
 		if (!m.endseries) throw new Exception('endseries parameter is required');
 
-		def testdata = afinventory_em.findOverlappingAF([afid: m.afid, unit: m.unit, startseries: m.startseries]); 
+		def startseries = m.startseries.toString().toInteger(); 
+		def testdata = afinventory_em.findOverlappingAF([afid: m.afid, unit: m.unit, startseries: startseries]); 
 		if (testdata) throw new Exception('Series '+ m.startseries + ' already exists ');
 
 		def afdata = afstock_em.findAF([objid: m.afid, unit: m.unit]); 
 		if (!afdata) throw new Exception('AF#' + m.afid + ' ' + m.unit + ' does not exist'); 
 
 		def endseries = m.endseries.toString().toInteger();
-		def startseries = m.startseries.toString().toInteger(); 
 		def currentseries = m.currentseries.toString().toInteger(); 
 		def afqty = (endseries - startseries) + 1; 
 		if (afqty > afdata.qty) throw new Exception("Series quantity must not exceed to " + afdata.qty); 

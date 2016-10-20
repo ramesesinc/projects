@@ -3,8 +3,7 @@ select objid from batchcapture_collection
 where controlid=$P{controlid} and state NOT IN ('POSTED','CLOSED')
 
 [updateBatchCaptureState]
-update batchcapture_collection set state=$P{state} 
-where objid=$P{objid} 
+update batchcapture_collection set state=$P{state} where objid=$P{objid} 
 
 [deleteBatchEntryItem]
 delete from batchcapture_collection_entry_item where parentid=$P{objid}
@@ -30,11 +29,34 @@ where objid=$P{objid}
 
 [getList]
 select 
-	objid, state, formno, collector_name as collectorname, startseries, endseries,
-	totalamount, capturedby_name as capturedbyname
-from batchcapture_collection 
-where startseries like $P{searchtext} 
-${filter} 
+	bcc.objid, bcc.txndate, bcc.state, bcc.formno, 
+	bcc.startseries, bcc.endseries, bcc.totalamount, 
+	bcc.collector_name as collectorname, 
+	bcc.capturedby_name as capturedbyname
+from ( 
+	select objid as batchid 
+	from batchcapture_collection 
+	where collector_name like $P{searchtext} 
+	union 
+	select objid as batchid 
+	from batchcapture_collection 
+	where capturedby_name like $P{searchtext} 
+	union 
+	select objid as batchid 
+	from batchcapture_collection 
+	where txndate like $P{searchtext} 
+	union 
+	select objid as batchid 
+	from batchcapture_collection 
+	where startseries like $P{searchtext} 
+	union 
+	select objid as batchid 
+	from batchcapture_collection 
+	where endseries like $P{searchtext} 
+)xxa 
+	inner join batchcapture_collection bcc on bcc.objid=xxa.batchid 
+where 1=1 ${filter} 
+order by bcc.txndate desc 
 
 [getBatchEntry]
 select * from batchcapture_collection_entry where parentid=$P{objid} order by series  
@@ -81,3 +103,88 @@ select * from batchcapture_collection_entry where parentid=$P{objid} order by se
 
 [deleteBatchEntryItems]
 delete from batchcapture_collection_entry_item where parentid=$P{objid}
+
+[findRemitCount]
+select bcc.objid, count(bcce.objid) as remitcount   
+from batchcapture_collection bcc 
+	inner join batchcapture_collection_entry bcce on bcc.objid=bcce.parentid 
+where bcc.objid=$P{batchid} and bcc.state='POSTED' 
+	and bcce.objid in ( select objid from remittance_cashreceipt where objid=bcce.objid ) 
+group by bcc.objid 
+
+[getAFHistory]
+select 
+	objid, controlid, min(series) as minseries, max(series) as maxseries, count(*) as txncount, 
+	(case when sum(remitted)>0 then 1 else 0 end) as hasremittance 
+from ( 
+	select 
+		bcc2.objid, bcc2.controlid, bcce2.series, 
+		(select count(*) from remittance_cashreceipt where objid=bcce2.objid) as remitted 
+	from ( 
+		select 
+			bcc.objid, bcc.controlid, 
+			min(bcce.series) as minseries,
+			max(bcce.series) as maxseries 
+		from batchcapture_collection_entry bcce 
+			inner join batchcapture_collection bcc on bcce.parentid=bcc.objid 
+		where bcce.parentid=$P{batchid} 
+		group by bcc.objid, bcc.controlid 
+	)xxa 
+		inner join batchcapture_collection bcc2 on bcc2.controlid=xxa.controlid 
+		inner join batchcapture_collection_entry bcce2 on bcc2.objid=bcce2.parentid  
+	where bcce2.series >= xxa.minseries 
+		and bcc2.state in ('POSTED','CLOSED') 
+)xxb 
+group by objid, controlid 
+order by min(series) 
+
+[getForPostingSummary]
+select 
+	bcc2.objid, bcc2.controlid, 
+	min(bcce2.series) as minseries, 
+	max(bcce2.series) as maxseries, 
+	count(bcc2.objid) as txncount 
+from ( 
+	select 
+		bcc.objid, bcc.controlid, 
+		max(bcce.series) as maxseries 
+	from batchcapture_collection bcc 
+		inner join batchcapture_collection_entry bcce on bcc.objid=bcce.parentid 
+	where bcc.objid=$P{batchid}  
+	group by bcc.objid, bcc.controlid 
+)xxa 
+	inner join batchcapture_collection bcc2 on bcc2.controlid=xxa.controlid 
+	inner join batchcapture_collection_entry bcce2 on bcc2.objid=bcce2.parentid 
+where bcc2.state='FORPOSTING' 
+	and bcce2.series <= xxa.maxseries 
+group by bcc2.objid, bcc2.controlid 
+order by min(bcce2.series) 
+
+[getPostedSummary]
+select 
+	bcc2.objid, bcc2.controlid, 
+	min(bcce2.series) as minseries, 
+	max(bcce2.series) as maxseries, 
+	count(bcc2.objid) as txncount 
+from ( 
+	select 
+		bcc.objid, bcc.controlid, 
+		max(bcce.series) as maxseries 
+	from batchcapture_collection bcc 
+		inner join batchcapture_collection_entry bcce on bcc.objid=bcce.parentid 
+	where bcc.objid=$P{batchid} 
+	group by bcc.objid, bcc.controlid 
+)xxa 
+	inner join batchcapture_collection bcc2 on bcc2.controlid=xxa.controlid 
+	inner join batchcapture_collection_entry bcce2 on bcc2.objid=bcce2.parentid 
+where bcc2.state='POSTED' 
+	and bcce2.series <= xxa.maxseries 
+group by bcc2.objid, bcc2.controlid 
+order by min(bcce2.series) 
+
+[findMaxReceiptDate]
+select bcc.controlid, max(bcce.receiptdate) as maxreceiptdate 
+from batchcapture_collection bcc 
+	inner join batchcapture_collection_entry bcce on bcc.objid=bcce.parentid 
+where bcc.controlid=$P{controlid} 
+group by bcc.controlid 

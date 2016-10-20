@@ -56,13 +56,23 @@ class RemoteServerDataExportController
     
     String next(){
         def result = svc.getOrgData( entity );
-        if (!result) throw new Exception('No returned data. Please check.')
+        if ( !result ) throw new Exception('No returned data. Please check.')
         
+        def orginfo = entity.data.org;         
         entity = new com.rameses.util.Base64Cipher().decode( result ); 
-        mode   = MODE_PREVIEW;
-        collectionTypeListHandler.load();
-        revenueListHandler.load();
-        userListHandler.load();
+        mode = MODE_PREVIEW;
+        [
+            collectionTypeListHandler, revenueListHandler, fundListHandler, 
+            afListHandler, userListHandler, usergroupListHandler, 
+            collectionGroupListHandler, orgListHandler 
+        ].each { 
+            it.load(); 
+        } 
+        
+        entity.data.orgs.each{ it.root=0 }
+        orginfo = entity.data.orgs.find{ it.objid==orginfo.objid } 
+        if ( orginfo ) orginfo.root = 1; 
+        
         return 'main'; 
     } 
     
@@ -125,13 +135,14 @@ class RemoteServerDataExportController
     }*/
     
     void export(){
+        def filename = entity.objid.toString().replaceAll("[\\s]{1,}", "_");
         def chooser = new JFileChooser();
-        chooser.setSelectedFile(new File(entity.objid + '.dat'));
+        chooser.setSelectedFile(new File(filename + '.dat'));
         int i = chooser.showSaveDialog(null);
-        if(i==0) {
+        if ( i==0 ) { 
             FileUtil.writeObject( chooser.selectedFile, entity );
             MsgBox.alert("Data has been successfully exported!");
-        }        
+        } 
     }
     
     public List getOrgclassess(){
@@ -162,15 +173,32 @@ class RemoteServerDataExportController
             fetchList : { return entity.data.collectiontypes; }
     ] as BasicListModel;
     
-    
     def revenueListHandler = [
-            fetchList    : { return entity.data.itemaccounts; } 
+            fetchList : { return entity.data.itemaccounts; } 
     ] as BasicListModel;
     
+    def fundListHandler = [
+            fetchList : { return entity.data.funds; } 
+    ] as BasicListModel;
+
+    def afListHandler = [
+            fetchList : { return entity.data.afs; } 
+    ] as BasicListModel;
     
     def userListHandler = [
-           fetchList    : { return entity.data.users; }
-    ] as EditorListModel;
+           fetchList : { return entity.data.users; }
+    ] as BasicListModel;
+
+    def usergroupListHandler = [
+           fetchList : { return entity.data.usergroups; }
+    ] as BasicListModel;
     
+    def collectionGroupListHandler = [
+           fetchList : { return entity.data.collectiongroups; }
+    ] as BasicListModel;   
+    
+    def orgListHandler = [
+           fetchList : { return entity.data.orgs; }
+    ] as BasicListModel; 
 }
 

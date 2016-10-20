@@ -62,3 +62,38 @@ where inc.refdate between $P{startdate} AND $P{enddate}
 	${filter} 
 group by rm.acctid, rm.revenueitemid, ia.code, ia.title 
 order by rm.acctid, ia.code 
+
+
+[getIncomeSummaryByLiquidationDate]
+select 
+	a.objid, a.type, a.title, 
+	sum(inc.amount) as amount  
+from liquidation liq 
+	inner join liquidation_remittance lrem on liq.objid=lrem.liquidationid 
+	inner join remittance rem on lrem.objid=rem.objid 
+	inner join income_summary inc on rem.objid=inc.refid 
+	inner join sre_revenue_mapping rm on inc.acctid=rm.revenueitemid 
+	inner join itemaccount ia on rm.revenueitemid=ia.objid 
+	inner join sreaccount a on rm.acctid=a.objid 
+where liq.dtposted >= $P{startdate} 
+	and liq.dtposted < $P{enddate} 
+	${filter} 
+group by a.objid, a.type, a.title 
+
+
+[getIncomeSummaryByItemAccountsByLiquidationDate]
+select 
+	rm.acctid as parentid, rm.revenueitemid, 
+	ia.code, ia.title, sum(inc.amount) as amount 
+from liquidation liq 
+	inner join liquidation_remittance lrem on liq.objid=lrem.liquidationid 
+	inner join remittance rem on lrem.objid=rem.objid 
+	inner join income_summary inc on rem.objid=inc.refid 
+	inner join sre_revenue_mapping rm on inc.acctid=rm.revenueitemid 
+	inner join itemaccount ia on rm.revenueitemid=ia.objid 
+	inner join sreaccount a on rm.acctid=a.objid 
+where liq.dtposted >= $P{startdate} 
+	and liq.dtposted < $P{enddate} 
+	${filter} 
+group by rm.acctid, rm.revenueitemid, ia.code, ia.title 
+order by rm.acctid, ia.code 

@@ -1,0 +1,35 @@
+<!-- REQUISITION ISSUE SLIP -->
+<workunit>
+    
+    <invokers>
+       <invoker type="stockitem:types" caption="Cash Ticket" itemtype="CASHTICKET" itemclass="AF" action="init"/>
+    </invokers>
+    
+    <code>
+         <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        
+        class StockItemTypeCashTicketController {
+            @Caller 
+            def caller;
+        
+            def getEntity() {
+                return caller.entity;
+               
+            }
+            
+            void init() {
+                entity.qty = entity.qty ? entity.qty : 2000
+                entity.defaultunit = entity.defaultunit ? entity.defaultunit : 'PAD' 
+            }
+        }
+        ]]>
+    </code>
+    
+    <pages>
+        <page template="com.rameses.gov.treasury.cashticket.CashTicketHandler"/>
+    </pages>
+</workunit>

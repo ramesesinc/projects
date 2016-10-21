@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="http://maps.googleapis.com/maps/api/js"></script>
+<script>
+    var map;
+    var geocoder;
+    var center = new google.maps.LatLng(10.30349809,123.90987039);
+    var marker = new google.maps.Marker();
+    var info = new google.maps.InfoWindow();
+    var latitude = 0.00;
+    var longitude = 0.00;
+    var address = "NO ADDRESS";
+    var loaded = false;
+
+    function initialize() {
+        var mapProp = {
+           center : center,
+           zoom : 5,
+           mapTypeId : google.maps.MapTypeId.ROADMAP
+        };
+        map = new google.maps.Map(document.getElementById("googleMap"),mapProp);
+        geocoder = new google.maps.Geocoder();
+        google.maps.event.addListener(map, "mousedown", function (event) {
+            latitude = event.latLng.lat();
+            longitude = event.latLng.lng();
+            center = new google.maps.LatLng(latitude,longitude);
+            displayAddress();
+            moveToCenter();
+        });
+    }
+
+    google.maps.event.addDomListener(window, 'load', initialize);
+
+    function moveToCenter(){
+        map.panTo(center);
+        marker.setPosition(center);
+        marker.setMap(map);
+    }
+    
+    function displayAddress(){
+        geocoder.geocode( {'latLng': center},
+        function(results, status) {
+          if(status == google.maps.GeocoderStatus.OK) {
+            if(results[0]) {
+              address = results[0].formatted_address;
+            }
+            else {
+              address = "";
+            }
+            info.setContent("<b>" + address + "</b>");
+            info.open(map,marker);
+          }
+        });
+    }
+    
+    function setWidth(width){
+        document.getElementById('googleMap').style.width = width + "px";
+        google.maps.event.trigger(map, 'resize');
+    }
+
+    function setHeight(height){
+        document.getElementById('googleMap').style.height = height + "px";
+        google.maps.event.trigger(map, 'resize');
+    }
+</script>
+
+<style>
+    body
+    {
+        padding : 0; 
+        margin  : 0;
+        overlow : hidden;
+    }
+    #googleMap
+    {
+        width  : 600px;
+        height : 600px;
+        overlow : hidden;
+    }
+</style>
+</head>
+<body>
+<div id="googleMap"></div>
+</body>
+</html>

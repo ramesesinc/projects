@@ -1,0 +1,8 @@
+<workunit extends="com/rameses/seti2/templates/CrudLookup.xml" schemaName="mtop_franchise">
+    <invokers>
+        <invoker type="mtop_franchise:available:lookup" 
+                 caption="Select Available Franchise" 
+                 orderBy="bodyno"
+                 action="init"/>
+    </invokers>
+</workunit>

@@ -1,7 +1,7 @@
 <folders>
     <folder id="home">
-        <folder id="vehicle" caption="Vehicle Registration" >
-            <folder id="motorcab" caption="Motorcab" />
+        <folder id="vehicle" caption="Vehicle" >
+            <folder id="application" caption="Application" />
         </folder>    
     </folder>
     <folder id="explorer">

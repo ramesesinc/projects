@@ -18,13 +18,16 @@ class NGASStatementOfReceiptService {
 	@Service('NumberService')
 	def numSvc;	
 
+	private def P_TYPE_DEFAULT     = [objid: 'ALL', name: '( Default )']; 
+	private def P_TYPE_LIQUIDATION = [objid: 'BY_LIQUIDATION_DATE', name: 'By Liquidation Date']; 
 
 	@ProxyMethod 
 	public def getReportOptions() {
 		return [ 
-			funds      : getFunds(), 
-			acctgroups : getAcctGroups(), 
-			months     : dtSvc.getMonthsByQtr(0) 
+			funds        : getFunds(), 
+			acctgroups   : getAcctGroups(), 
+			months       : dtSvc.getMonthsByQtr(0), 
+			postingTypes : [ P_TYPE_DEFAULT, P_TYPE_LIQUIDATION ] 
 		]; 
 	} 
 
@@ -51,11 +54,21 @@ class NGASStatementOfReceiptService {
 	public def getReport( params ) {
 		buildParams( params ); 
 
-		def acctlist = []; 
-		def unmaps = em.getUnmappedAccts( params ); 
-		def sourcelist = em.getReportData( params ); 
+		def unmaps = []; 
+		def sourcelist = []; 
+		def postingtypeid = params.postingtype?.objid.toString().toUpperCase(); 
+		if ( postingtypeid == P_TYPE_LIQUIDATION.objid ) { 
+			unmaps = em.getUnmappedAcctsByLiquidationDate( params ); 
+			sourcelist = em.getReportDataByLiquidationDate( params ); 
+		} else {
+			unmaps = em.getUnmappedAccts( params ); 
+			sourcelist = em.getReportData( params ); 
+		} 
+		
 		if ( sourcelist.find{ it.actualamount > 0.0 } == null && unmaps.isEmpty() ) 
 			throw new Exception('No available record(s) found that matches your criteria.'); 
+
+		def acctlist = []; 
 
 		sourcelist.groupBy{ it.objid }.each{ k,v-> 
 			def acct = sourcelist.find{ it.objid==k } 
@@ -242,6 +255,11 @@ class NGASStatementOfReceiptService {
 		if ( params.type=='standard' ) { 
 			params.filter = ''' a.type in ('group','detail') '''; 
 		} 
+
+		if (!(params.enddate instanceof Date)) {
+			params.enddate = java.sql.Date.valueOf( params.enddate ); 
+		} 
+		params.enddate = dtSvc.add( params.enddate, '1d' );
 	} 
 
 	void scan( results, sources, acct, params ) { 

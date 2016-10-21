@@ -7,6 +7,8 @@ go
 
 
 /* subdivision */
+create index ix_rptbill_expirydate on rptbill(expirydate)
+go 
 
 alter table subdivisionaffectedrpu add isnew int
 go 
@@ -20,15 +22,15 @@ delete from rptbill_ledger_item where billid in (
 go 
 
 delete from rptbill_ledger_account where billid in (
-	select objid from rptbill where expirydate < '2016-09-01'
+	select objid from rptbill where expirydate < '2016-10-01'
 )
 go 
 
 
 delete from rptbill_ledger where billid in (
-	select objid from rptbill where expirydate < '2016-09-01'
+	select objid from rptbill where expirydate < '2016-10-01'
 )
 go 
 
-delete from rptbill where expirydate < '2016-09-01'
+delete from rptbill where expirydate < '2016-10-01'
 go 

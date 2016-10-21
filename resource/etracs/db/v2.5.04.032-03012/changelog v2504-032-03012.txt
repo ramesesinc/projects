@@ -1,0 +1,17 @@
+/* v2.5.04.032-03012 */
+
+- TREAURY
+
+- BPLS 
+		
+- ASSESSOR	
+	- NEW! Monthly Assessment Report (Puerto)
+	- Update on PDAP-RPTA 100 Report
+	- Add support for land specific classification (Aklan)
+	- Update land improvement editing
+	- Update on Bldg General Revision script
+
+- LANDTAX
+	- NEW! Certified List of Real Property Tax Collectibles (Puerto)
+	
+

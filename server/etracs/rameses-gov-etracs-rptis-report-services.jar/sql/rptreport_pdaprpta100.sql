@@ -22,7 +22,6 @@ FROM faas f
 	INNER JOIN barangay b ON rp.barangayid = b.objid
 WHERE ${filter}
   AND f.state = 'CURRENT'
-  AND r.rputype = 'land' 
 GROUP BY b.pin, b.indexno, b.name 
 ORDER BY b.pin 
 

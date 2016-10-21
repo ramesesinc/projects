@@ -1,7 +1,6 @@
 [getAcctGroups]
 SELECT DISTINCT ia.type AS acctgroup FROM itemaccount ia 
 
-
 [getSreAccounts]
 SELECT 
 	a.objid, a.type, a.code AS account_code, a.title AS account_title, 
@@ -11,7 +10,6 @@ FROM sreaccount a
 	LEFT JOIN itemaccount ia ON rm.revenueitemid=ia.objid 
 GROUP BY a.objid, a.type, a.code, a.title, a.parentid 
 ORDER BY a.parentid, a.code 
-
 
 [getSreAccountsByFund]
 select distinct 
@@ -26,7 +24,6 @@ from (
 	inner join sreaccount a on rm.acctid=a.objid 
 where ia.type LIKE $P{acctgroup} 
 order by a.parentid, a.code 
-
 
 [getIncomeSummary]
 select 

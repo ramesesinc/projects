@@ -1,7 +1,6 @@
 [getAcctGroups]
 SELECT DISTINCT ia.type AS acctgroup FROM itemaccount ia 
 
-
 [getSreAccounts]
 SELECT 
 	a.objid, a.type, a.code AS account_code, a.title AS account_title, 
@@ -11,7 +10,6 @@ FROM sreaccount a
 	LEFT JOIN itemaccount ia ON rm.revenueitemid=ia.objid 
 GROUP BY a.objid, a.type, a.code, a.title, a.parentid 
 ORDER BY a.parentid, a.code 
-
 
 [getSreAccountsByFund]
 select distinct 
@@ -27,7 +25,6 @@ from (
 where ia.type LIKE $P{acctgroup} 
 order by a.parentid, a.code 
 
-
 [getIncomeSummary]
 select 
 	a.objid, a.type, a.title,  
@@ -36,7 +33,8 @@ from income_summary inc
 	inner join sre_revenue_mapping rm on inc.acctid=rm.revenueitemid 
 	inner join itemaccount ia on rm.revenueitemid=ia.objid 
 	inner join sreaccount a on rm.acctid=a.objid 
-where inc.refdate between $P{startdate} AND $P{enddate} 
+where inc.refdate >= $P{startdate} 
+	and inc.refdate < $P{enddate} 
 	${filter} 
 group by a.objid, a.type, a.title 
 
@@ -58,7 +56,8 @@ from income_summary inc
 	inner join sre_revenue_mapping rm on inc.acctid=rm.revenueitemid 
 	inner join itemaccount ia on rm.revenueitemid=ia.objid 
 	inner join sreaccount a on rm.acctid=a.objid 
-where inc.refdate between $P{startdate} AND $P{enddate} 
+where inc.refdate >= $P{startdate} 
+	and inc.refdate < $P{enddate} 
 	${filter} 
 group by rm.acctid, rm.revenueitemid, ia.code, ia.title 
 order by rm.acctid, ia.code 

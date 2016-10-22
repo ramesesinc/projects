@@ -100,12 +100,13 @@
                 android:layout_height="match_parent"
                 android:layout_column="0"
                 android:layout_margin="1dp"
+                android:background="#b6c5e2"
                 android:gravity="center"
                 android:minHeight="40dp"
-                android:text="Code"
+                android:text="Adjustment Type"
                 android:textAppearance="?android:attr/textAppearanceSmall"
-                android:textStyle="bold"
-                android:background="#b6c5e2">
+                android:textStyle="bold" >
+
             </TextView>
 
             <TextView
@@ -114,11 +115,12 @@
                 android:layout_height="match_parent"
                 android:layout_column="1"
                 android:layout_margin="1dp"
+                android:background="#b6c5e2"
                 android:gravity="center"
-                android:text="Adjustment Type"
+                android:text="Parameter"
                 android:textAppearance="?android:attr/textAppearanceSmall"
-                android:textStyle="bold"
-                android:background="#b6c5e2">
+                android:textStyle="bold" >
+
             </TextView>
             
         </TableRow>

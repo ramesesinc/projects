@@ -6,17 +6,23 @@ import com.rameses.osiris2.client.*;
 import com.rameses.osiris2.common.*;
 import com.rameses.enterprise.treasury.cashreceipt.*;
 
-class  IndividualCtcCashReceipt extends AbstractCashReceipt 
-{
+class  IndividualCtcCashReceipt extends AbstractCashReceipt {
+    
     @Service('IndividualCTCService')
     def ctcSvc;
+        
+    @Service('PersistenceService') 
+    def persistenceSvc; 
     
     @Service('ProfessionService')
     def profSvc;
-    
+
     def payerdata  = [:];
+    
     def needsrecalc = false;
+    
     def hasbusinessinfo = false;
+    
     def hasmiddlename = false;
     def hasprofession = false;
     def hastin = false;
@@ -29,11 +35,14 @@ class  IndividualCtcCashReceipt extends AbstractCashReceipt
     def hasheight = false;
     def hasweight = false;
     def hassenior = false;
+
     
     def orig_businessgross = 0.0;
     
     def barangay;
     
+    def ctctype = 'individual'
+        
     @PropertyChangeListener
     def listener = [
         'entity.hasadditional' : { 
@@ -73,14 +82,43 @@ class  IndividualCtcCashReceipt extends AbstractCashReceipt
         if (needsrecalc)
             throw new Exception('Changes has been made. Recalculate tax before proceeding.')
     }
-        
-    public def getPayerType() { 
-        return 'entityindividual'; 
+    
+    boolean isAllowCreateEntity() {
+        try { 
+            def op = Inv.lookupOpener("individualentity:create", [:]); 
+            return (op != null); 
+        } catch(Throwable t) {
+            return false; 
+        }
+    }
+
+    def createEntity() { 
+        def h = { o->
+            o.type = 'INDIVIDUAL';
+            entity.payer = o;
+            entity.paidby = o.name;
+            entity.paidbyaddress = o.address.text;
+            binding.refresh("entity.(payer.*|paidby.*)");
+            binding.refresh('createEntity|openEntity');
+            payerChanged( o );
+        }
+        return Inv.lookupOpener("individualentity:create", [entity:[:], onselect:h]); 
+    }
+    
+    protected void beforeLookupEntity( params ) {
+        params['query.type'] = 'INDIVIDUAL'; 
+        params.allowSelectEntityType = false; 
+    }
+    protected String getLookupEntityName() { 
+        return 'individualentity:lookup'; 
     } 
     
-    public def payerChanged( o ) {
+    public def payerChanged( o ) { 
         if ( ! o.type.equalsIgnoreCase('INDIVIDUAL'))
             throw new Exception('Only individual entities are allowed.');
+        
+        def ent = persistenceSvc.read([ _schemaname: 'entityindividual', findBy:[objid: o.objid]]); 
+        if ( ent ) o.putAll(ent);
         
         hasmiddlename = (o.middlename != null)
         hasprofession = (o.profession != null)
@@ -118,4 +156,36 @@ class  IndividualCtcCashReceipt extends AbstractCashReceipt
         updateBalances();
         needsrecalc = false;
     }
+       
+    List getCitizenships(){
+        return LOV.CITIZENSHIP*.key
+    }
+    
+    List getGenders(){
+        return LOV.GENDER*.key
+    }
+
+    List getCivilstatus(){
+        return LOV.CIVIL_STATUS*.key
+    }
+    
+    def professionLookup = [
+        fetchList: { o-> 
+            return profSvc.getList( o )*.objid; 
+        }
+    ] as SuggestModel; 
+    
+    def editAddress() {
+        if ( !entity.payer?.objid ) return null; 
+        def m = [:];
+        m['query.objid'] = entity.payer?.objid;
+        m['query.name'] = entity.payer.name;
+        m.onselect = { o->
+            entity.paidbyaddress = o.text;
+            entity.payer.address = o;
+            binding.refresh('entity.*');
+        };
+        return Inv.lookupOpener( "entity_address:lookup", m );
+    }
+    
 }

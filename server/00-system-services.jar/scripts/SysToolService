@@ -20,5 +20,21 @@ class SysToolService
 		clearScripts();
 		SqlUnitCache.clear(); 
 		SchemaManager.getInstance().getCache().clear(); 
-	}	
+	} 
+
+	@ProxyMethod 
+	public void clearSqlCache() { 
+		clearSql(); 
+		clearSchema(); 
+	} 
+
+	@ProxyMethod 
+	public void clearSql() { 
+		SqlUnitCache.clear(); 
+	} 
+
+	@ProxyMethod 
+	public void clearSchema() { 
+		SchemaManager.getInstance().getCache().clear(); 
+	} 
 } 

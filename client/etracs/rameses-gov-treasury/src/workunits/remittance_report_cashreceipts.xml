@@ -44,7 +44,7 @@
             
              Map getParameters(){
                 def params = [:]
-                params.SUBTITLE = 'SUMMARY OF COLLECTION'
+                params.SUBTITLE = 'SUMMARY OF COLLECTION BY RECEIPTS'
                 return params;
              }
             

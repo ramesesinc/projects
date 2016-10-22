@@ -1,7 +1,10 @@
+"entity.*" [ mode != 'processing' ] {
+    enabled: true; 
+} 
 "entity.*" [1==1] {
     visible: false; 
 }
-"entity.(period|type|acctgroup|fund)" [1==1] {
+"entity.(period|postingtype|type|acctgroup|fund)" [1==1] {
     visible: true; 
 }
 "entity.opt.*" [1==1] {
@@ -19,4 +22,6 @@
 "entity.date" [entity.period.toString().matches('daily|asofday')==true] {
     visible: true; 
 }
-
+"entity.*" [ mode == 'processing' ] {
+    enabled: false; 
+} 

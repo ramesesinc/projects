@@ -32,6 +32,10 @@ public class SRSCriteriaPage extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPanel2 = new javax.swing.JPanel();
+        xPanel1 = new com.rameses.rcp.control.XPanel();
+        xLabel1 = new com.rameses.rcp.control.XLabel();
+        xLabel2 = new com.rameses.rcp.control.XLabel();
         jPanel1 = new javax.swing.JPanel();
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
         xComboBox1 = new com.rameses.rcp.control.XComboBox();
@@ -39,17 +43,39 @@ public class SRSCriteriaPage extends javax.swing.JPanel {
         xComboBox2 = new com.rameses.rcp.control.XComboBox();
         xComboBox3 = new com.rameses.rcp.control.XComboBox();
         xDateField1 = new com.rameses.rcp.control.XDateField();
+        xComboBox7 = new com.rameses.rcp.control.XComboBox();
         xComboBox4 = new com.rameses.rcp.control.XComboBox();
         xComboBox5 = new com.rameses.rcp.control.XComboBox();
         xComboBox6 = new com.rameses.rcp.control.XComboBox();
+
+        jPanel2.setLayout(new com.rameses.rcp.control.layout.YLayout());
+
+        xPanel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 10, 0));
+        xPanel1.setVisibleWhen("#{mode == 'processing'}");
+        xPanel1.setLayout(new java.awt.BorderLayout());
+
+        xLabel1.setFontStyle("font-weight:bold;font-size:12;");
+        xLabel1.setForeground(new java.awt.Color(51, 51, 51));
+        xLabel1.setPadding(new java.awt.Insets(1, 5, 1, 1));
+        xLabel1.setPreferredSize(new java.awt.Dimension(150, 20));
+        xLabel1.setText("Processing request please wait...");
+        xPanel1.add(xLabel1, java.awt.BorderLayout.CENTER);
+
+        xLabel2.setIconResource("com/rameses/rcp/icons/loading16.gif");
+        xPanel1.add(xLabel2, java.awt.BorderLayout.WEST);
+
+        jPanel2.add(xPanel1);
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder1.setTitle("  General Information   ");
         jPanel1.setBorder(xTitledBorder1);
 
+        xFormPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
+        xFormPanel1.setCaptionWidth(110);
+
         xComboBox1.setAllowNull(false);
         xComboBox1.setCaption("Period");
-        xComboBox1.setCaptionWidth(100);
+        xComboBox1.setCaptionWidth(120);
         xComboBox1.setExpression("#{item.title}");
         xComboBox1.setImmediate(true);
         xComboBox1.setItemKey("type");
@@ -59,7 +85,7 @@ public class SRSCriteriaPage extends javax.swing.JPanel {
         xFormPanel1.add(xComboBox1);
 
         xIntegerField1.setCaption("Year");
-        xIntegerField1.setCaptionWidth(100);
+        xIntegerField1.setCaptionWidth(120);
         xIntegerField1.setDepends(new String[] {"entity.period"});
         xIntegerField1.setName("entity.year"); // NOI18N
         xIntegerField1.setPreferredSize(new java.awt.Dimension(99, 20));
@@ -67,7 +93,7 @@ public class SRSCriteriaPage extends javax.swing.JPanel {
         xFormPanel1.add(xIntegerField1);
 
         xComboBox2.setCaption("Quarter");
-        xComboBox2.setCaptionWidth(100);
+        xComboBox2.setCaptionWidth(120);
         xComboBox2.setDepends(new String[] {"entity.period"});
         xComboBox2.setExpression("");
         xComboBox2.setImmediate(true);
@@ -78,7 +104,7 @@ public class SRSCriteriaPage extends javax.swing.JPanel {
         xFormPanel1.add(xComboBox2);
 
         xComboBox3.setCaption("Month");
-        xComboBox3.setCaptionWidth(100);
+        xComboBox3.setCaptionWidth(120);
         xComboBox3.setDepends(new String[] {"entity.period"});
         xComboBox3.setExpression("#{item.name}");
         xComboBox3.setImmediate(true);
@@ -89,16 +115,27 @@ public class SRSCriteriaPage extends javax.swing.JPanel {
         xFormPanel1.add(xComboBox3);
 
         xDateField1.setCaption("Date");
-        xDateField1.setCaptionWidth(100);
+        xDateField1.setCaptionWidth(120);
         xDateField1.setDepends(new String[] {"entity.period"});
         xDateField1.setName("entity.date"); // NOI18N
         xDateField1.setPreferredSize(new java.awt.Dimension(99, 20));
         xDateField1.setRequired(true);
         xFormPanel1.add(xDateField1);
 
+        xComboBox7.setAllowNull(false);
+        xComboBox7.setCaption("Posting Type");
+        xComboBox7.setCaptionWidth(120);
+        xComboBox7.setExpression("#{item.name}");
+        xComboBox7.setImmediate(true);
+        xComboBox7.setItems("postingTypes");
+        xComboBox7.setName("entity.postingtype"); // NOI18N
+        xComboBox7.setPreferredSize(new java.awt.Dimension(300, 20));
+        xComboBox7.setRequired(true);
+        xFormPanel1.add(xComboBox7);
+
         xComboBox4.setAllowNull(false);
         xComboBox4.setCaption("Report Type");
-        xComboBox4.setCaptionWidth(100);
+        xComboBox4.setCaptionWidth(120);
         xComboBox4.setExpression("#{item.name}");
         xComboBox4.setImmediate(true);
         xComboBox4.setItems("reportTypes");
@@ -108,7 +145,7 @@ public class SRSCriteriaPage extends javax.swing.JPanel {
         xFormPanel1.add(xComboBox4);
 
         xComboBox5.setCaption("Acct Group");
-        xComboBox5.setCaptionWidth(100);
+        xComboBox5.setCaptionWidth(120);
         xComboBox5.setExpression("#{item.name}");
         xComboBox5.setImmediate(true);
         xComboBox5.setItems("acctgroups");
@@ -117,7 +154,7 @@ public class SRSCriteriaPage extends javax.swing.JPanel {
         xFormPanel1.add(xComboBox5);
 
         xComboBox6.setCaption("Fund");
-        xComboBox6.setCaptionWidth(100);
+        xComboBox6.setCaptionWidth(120);
         xComboBox6.setExpression("#{item.title}");
         xComboBox6.setImmediate(true);
         xComboBox6.setItems("funds");
@@ -136,11 +173,13 @@ public class SRSCriteriaPage extends javax.swing.JPanel {
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 306, Short.MAX_VALUE)
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 245, Short.MAX_VALUE)
                 .addContainerGap())
         );
+
+        jPanel2.add(jPanel1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -148,27 +187,32 @@ public class SRSCriteriaPage extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(46, Short.MAX_VALUE))
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 470, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(69, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(48, Short.MAX_VALUE))
+                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 439, Short.MAX_VALUE)
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XComboBox xComboBox2;
     private com.rameses.rcp.control.XComboBox xComboBox3;
     private com.rameses.rcp.control.XComboBox xComboBox4;
     private com.rameses.rcp.control.XComboBox xComboBox5;
     private com.rameses.rcp.control.XComboBox xComboBox6;
+    private com.rameses.rcp.control.XComboBox xComboBox7;
     private com.rameses.rcp.control.XDateField xDateField1;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XIntegerField xIntegerField1;
+    private com.rameses.rcp.control.XLabel xLabel1;
+    private com.rameses.rcp.control.XLabel xLabel2;
+    private com.rameses.rcp.control.XPanel xPanel1;
     // End of variables declaration//GEN-END:variables
 }

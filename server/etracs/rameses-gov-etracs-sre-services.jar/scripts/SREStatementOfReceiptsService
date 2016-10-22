@@ -36,14 +36,24 @@ class SREStatementOfReceiptsService {
 			'''; 
 		} 
 
-		def incomesummaries = em.getIncomeSummary( params ); 
+		def incomesummaries = null; 
+		def postingtypeid = params.postingtype?.objid.toString().toUpperCase(); 
+		if ( postingtypeid == 'BY_LIQUIDATION_DATE' ) {
+			incomesummaries = em.getIncomeSummaryByLiquidationDate( params ); 
+		} else {
+			incomesummaries = em.getIncomeSummary( params ); 
+		}
+		
 		if ( !incomesummaries ) throw new Exception('No available income summary'); 
 
 		def incomesummarydetails = []; 
-		if ( params.type == 'details' ) {
-			incomesummarydetails = em.getIncomeSummaryByItemAccounts( params );	
-			println 'fetching incomesummarydetails '
-		}
+		if ( params.type == 'details' && postingtypeid == 'BY_LIQUIDATION_DATE' ) {
+			incomesummarydetails = ( 
+				postingtypeid == 'BY_LIQUIDATION_DATE' ? 
+				em.getIncomeSummaryByItemAccountsByLiquidationDate( params ) : 
+				em.getIncomeSummaryByItemAccounts( params ) 
+			); 
+		} 
 		
 		def sourcelist = em.getSreAccounts( params ); 
 		if ( !sourcelist ) throw new Exception('No available SRE accounts'); 
@@ -351,5 +361,10 @@ class SREStatementOfReceiptsService {
 		params.strperiod = period.toString(); 
 		params.fundid = params.fund?.objid; 
 		params.compress = false; 
+
+		if (!(params.enddate instanceof Date)) {
+			params.enddate = java.sql.Date.valueOf( params.enddate ); 
+		} 
+		params.enddate = dtSvc.add( params.enddate, '1d' );
 	} 
 } 

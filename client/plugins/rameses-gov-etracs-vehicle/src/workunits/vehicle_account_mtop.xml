@@ -1,0 +1,14 @@
+<workunit extends="com/rameses/seti2/templates/CrudForm.xml" schemaName="vehicle_application">
+    <invokers>
+        <invoker type="vehicle_account:mtop:create" caption="New MTOP" action="create" />
+        <invoker type="vehicle_account:mtop:open" caption="Open MTOP" action="open" />
+        
+        <!-- actions -->
+        <invoker type="formActions" caption="Submit" action="save" />
+        
+    </invokers>
+    <code class="com.rameses.gov.etracs.vehicle.models.VehicleAccountForm" />
+    <pages>
+        <page template="com.rameses.gov.etracs.vehicle.views.MtopAccountPage"/>
+    </pages>
+</workunit>

@@ -11,8 +11,8 @@ class  CorporateCtcCashReceipt extends AbstractCashReceipt
     @Service('CorporateCTCService')
     def ctcSvc;
     
-    @Service('JuridicalEntityService')
-    def entitySvc 
+    @Service('PersistenceService') 
+    def persistenceSvc;     
 
     def payerdata  = [:];
     
@@ -69,14 +69,43 @@ class  CorporateCtcCashReceipt extends AbstractCashReceipt
         if (needsrecalc)
             throw new Exception('Changes has been made. Recalculate tax before proceeding.')
     }
+    
+    boolean isAllowCreateEntity() {
+        try { 
+            def op = Inv.lookupOpener("juridicalentity:create", [:]); 
+            return (op != null); 
+        } catch(Throwable t) {
+            return false; 
+        }
+    }
         
-    public def getPayerType() { 
-        return 'entityjuridical'; 
+    def createEntity() { 
+        def h = { o->
+            o.type = 'JURIDICAL';
+            entity.payer = o;
+            entity.paidby = o.name;
+            entity.paidbyaddress = o.address.text;
+            binding.refresh("entity.(payer.*|paidby.*)");
+            binding.refresh('createEntity|openEntity');
+            payerChanged( o );
+        }
+        return Inv.lookupOpener("juridicalentity:create", [entity:[:], onselect:h]); 
+    }
+    
+    protected void beforeLookupEntity( params ) {
+        params['query.type'] = 'JURIDICAL'; 
+        params.allowSelectEntityType = false; 
+    }    
+    protected String getLookupEntityName() { 
+        return 'juridicalentity:lookup'; 
     }     
     
     public def payerChanged( o ) {
         if ( ! o.type.equalsIgnoreCase('JURIDICAL') )
             throw new Exception('Only Juridical entities are allowed.');
+        
+        def ent = persistenceSvc.read([ _schemaname: 'entityjuridical', findBy:[objid: o.objid]]); 
+        if ( ent ) o.putAll(ent);
         
         hastin          = (o.tin != null);
         hasorgtype      = (o.orgtype != null);
@@ -90,31 +119,30 @@ class  CorporateCtcCashReceipt extends AbstractCashReceipt
     
         payerdata = ctcSvc.getCtcRelatedPayerData(o);
         
-        if (payerdata.businessgross != null) {
-            entity.newbusiness = payerdata.newbusiness.equalsIgnoreCase('NEW')
-            entity.businessgross = payerdata.businessgross;
-            orig_businessgross = entity.businessgross;
-            hasbusinessinfo = true;
-        }
+        if ( payerdata.businessgross != null ) { 
+            entity.newbusiness = payerdata.newbusiness.equalsIgnoreCase('NEW') 
+            entity.businessgross = payerdata.businessgross; 
+            orig_businessgross = entity.businessgross; 
+            hasbusinessinfo = true; 
+        } 
         
-        if (payerdata.realpropertyav != null){
-            entity.realpropertyav = payerdata.realpropertyav;
-            orig_realpropertyav = entity.realpropertyav;
-            haspropertyinfo = true;
-        }
-        entity.items = [];
-        updateBalances();
-        binding.refresh('.*')
-    }
+        if (payerdata.realpropertyav != null) { 
+            entity.realpropertyav = payerdata.realpropertyav; 
+            orig_realpropertyav = entity.realpropertyav; 
+            haspropertyinfo = true; 
+        } 
+        entity.items = []; 
+        updateBalances(); 
+        binding.refresh('.*') 
+    } 
     
-        
-    void calculateTax(){
-        entity.putAll( ctcSvc.calculateTax(entity) )
-        updateBalances();
-        needsrecalc = false;
-    }
+    void calculateTax() { 
+        entity.putAll( ctcSvc.calculateTax(entity) ); 
+        updateBalances(); 
+        needsrecalc = false; 
+    } 
     
     List getOrgtypes(){
         return LOV.ORG_TYPES*.key
-    }    
-}
+    } 
+} 

@@ -16,27 +16,27 @@
             android:layout_height="wrap_content" >
 
             <TextView
-                android:id="@+id/adjustment_code"
+                android:id="@+id/adjustment_type"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_column="0"
                 android:layout_margin="1dp"
                 android:gravity="center"
                 android:minHeight="40dp"
-                android:text="Code"
+                android:text="Adjustment Type"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textStyle="bold"
                 android:background="#e4ecfb">
             </TextView>
 
             <TextView
-                android:id="@+id/adjustment_name"
+                android:id="@+id/adjustment_parameter"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_column="1"
                 android:layout_margin="1dp"
                 android:gravity="center"
-                android:text="Adjustment Type"
+                android:text=""
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textStyle="bold"
                 android:background="#e4ecfb">

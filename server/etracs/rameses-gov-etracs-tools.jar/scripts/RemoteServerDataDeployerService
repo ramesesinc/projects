@@ -3,8 +3,8 @@ import com.rameses.common.*;
 import com.rameses.services.extended.*;
 import com.rameses.util.*;
 
-class RemoteServerDataDeployerService 
-{
+class RemoteServerDataDeployerService {
+	
 	@ActiveDB('fund')	
 	def fundEm
 
@@ -36,61 +36,156 @@ class RemoteServerDataDeployerService
 	def collgroup; 
 
 	@ProxyMethod
-	public void deployUpdates( entity ) {
-		try{ orgEm.create(EntityUtil.mapToField(entity.data.orgclass), "orgclass") } catch(e){}
+	public void deployUpdates( entity ) { 
+		if ( !entity.data.orgs ) entity.data.orgs = []; 
+		if ( !entity.data.orgclasses ) entity.data.orgclasses = []; 
 
-		try{ orgEm.create(EntityUtil.mapToField(entity.data.org)) } catch(e) {}
+		println '-'*50;
 
-		entity.data.funds.each{
-			try{ fundEm.create(EntityUtil.mapToField(it) ) } catch(e){}
-		}
-
-		entity.data.afs.each{
-			try{ afEm.create(EntityUtil.mapToField(it) ) } catch(e){}
-
-		}
-
-		entity.data.itemaccounts.each{
-			try{ revItemEm.create(EntityUtil.mapToField(it) ) } catch(e){} 
-		}		
-
-		entity.data.collectiontypes.each{
-			 try{ collTypeEm.create(EntityUtil.mapToField(it) ) } catch(e){}
+		if ( entity.data.orgclass?.name ) { 
+			def x = entity.data.orgclasses.find{ it.name==entity.data.orgclass.name } 
+			if ( !x ) entity.data.orgclasses << entity.data.orgclass; 
 		} 
-		entity.data.collectionTypesAccounts.each{
-			try{ collTypeAcctEm.create(EntityUtil.mapToField(it) ) } catch(e){  }
+		if ( entity.data.org?.objid ) { 
+			def x = entity.data.orgs.find{ it.objid==entity.data.org.objid } 
+			if ( !x ) entity.data.orgs << entity.data.org; 
 		} 
 
-		entity.data.collectiongroups.each{
-			 try{ collgroup.create(EntityUtil.mapToField(it) ) } catch(e){}
+		entity.data.orgclasses.each {
+			try { 
+				orgEm.save( EntityUtil.mapToField( it ), "orgclass"); 
+			} catch( Throwable t ){;} 
 		} 
-		entity.data.collectiongroupitems.each{
+
+		def rootorg = entity.data.orgs.find{ it.root==1 } 
+		if ( rootorg ) {
+			def x = entity.data.orgs.findAll{ it.objid==rootorg.objid } 
+			if ( x ) entity.data.orgs.removeAll( x ); 
+		} 
+
+		entity.data.orgs.each{
+			deployOrg( entity, it ); 
+		} 
+		try { 
+			if ( rootorg ) orgEm.save( EntityUtil.mapToField( rootorg )); 
+		} catch( Throwable t ){ 
+			println '[WARN] '+ t.message;  
+		} 
+
+		entity.data.funds.each{ 
+			try { 
+				fundEm.save(EntityUtil.mapToField( it )); 
+			} catch( Throwable t ){;} 
+		} 
+		entity.data.afs.each{ 
+			try { 
+				afEm.save(EntityUtil.mapToField( it )); 
+			} catch( Throwable t ){;} 
+		} 
+		entity.data.itemaccounts.each{ 
+			deployItemAccount( entity, it ); 
+		} 
+		entity.data.collectiontypes.each{ 
+			 try { 
+			 	collTypeEm.save(EntityUtil.mapToField( it )); 
+			 } catch( Throwable t ){
+			 	println '[WARN] '+ t.message;  
+			 } 
+		} 
+		entity.data.collectionTypesAccounts.each{ 
+			try { 
+				collTypeAcctEm.save(EntityUtil.mapToField( it )); 
+			} catch( Throwable t ){
+				println '[WARN] '+ t.message;  
+			} 
+		} 
+		entity.data.collectiongroups.each{ 
+			try { 
+				collgroup.save(EntityUtil.mapToField( it )); 
+			} catch( Throwable t ){
+				println '[WARN] '+ t.message;  
+			} 
+		} 
+		entity.data.collectiongroupitems.each{ 
 			 try{ 
-			 	collgroup.create(EntityUtil.mapToField(it), 'collectiongroup_revenueitem') 
-			 } catch(e){} 
+			 	collgroup.save(EntityUtil.mapToField(it), 'collectiongroup_revenueitem') 
+			 } catch( Throwable t ){
+			 	println '[WARN] '+ t.message;  
+			 } 
 		} 
-
 		entity.data.usergroups.each{
-			try{ ugEm.create(EntityUtil.mapToField(it) ) } catch(e){} 
+			try { 
+				ugEm.save(EntityUtil.mapToField( it )); 
+			} catch( Throwable t ){
+				println '[WARN] '+ t.message;  
+			} 
 		}	
-
 		entity.data.users.each{
-			try{ userEm.create(EntityUtil.mapToField(it) ) } catch(e){} 
+			try { 
+				userEm.save(EntityUtil.mapToField( it )); 
+			} catch( Throwable t ){
+				println '[WARN] '+ t.message;  
+			} 
 		}
-
 		entity.data.userMemberships.each{
-			try{ ugEm.create(EntityUtil.mapToField(it) , "member") } catch(e){} 
+			try { 
+				ugEm.save(EntityUtil.mapToField( it ) , "member");
+			} catch( Throwable t ){
+				println '[WARN] '+ t.message;  
+			} 
 		}
-
 		entity.data.cashbooks.each{ c -> 
 			def cb = EntityUtil.mapToField(c);
-			try{ cashbookEm.create(cb) } catch(e){}
-			try {
-				cb.details.each {
-					cashbookEm.create( it, "detail" )
-				}
-			} catch(e) {} 
-		}
-		
+			try { 
+				cashbookEm.save( cb ); 
+			} catch( Throwable t ) { 
+				println '[WARN] '+ t.message;  
+			} 
+
+			cb.details.each { 
+				try { 
+					cashbookEm.save( it, "detail" ) 
+				} catch( Throwable t ){ 
+					println '[WARN] '+ t.message;  
+				} 
+			} 
+		} 
+	} 
+
+	void deployOrg( entity, org ) {
+		if ( org.parent?.objid ) {
+			def x = entity.data.orgs.find{ it.objid==org.parent.objid } 
+			if ( x ) {
+				try { 
+					orgEm.save( EntityUtil.mapToField( x ));  
+				} catch( Throwable t ) { 
+					println '[WARN] '+ t.message;  
+				} 
+			} 
+		} 
+
+		try { 
+			orgEm.save( EntityUtil.mapToField( org ));  
+		} catch( Throwable t ){ 
+			println '[WARN] '+ t.message;  
+		} 
+	} 
+	void deployItemAccount( entity, acct ) { 
+		if ( acct.parentid ) {
+			def x = entity.data.itemaccounts.find{ it.objid==acct.parentid } 
+			if ( x ) {
+				try { 			
+					revItemEm.save(EntityUtil.mapToField( x )); 
+				} catch( Throwable t ){ 
+					println '[WARN] '+ t.message;  
+				} 
+			} 
+		} 
+
+		try { 			
+			revItemEm.save(EntityUtil.mapToField( acct )); 
+		} catch( Throwable t ){
+			println '[WARN] '+ t.message;  
+		} 
 	}
-}
+} 

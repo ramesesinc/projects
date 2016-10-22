@@ -38,12 +38,17 @@ public class MainTest extends TestCase {
         fu.writeObject(f, data);
     }
     
-    public void testImport(){
+    public void xtestImport(){
         FileUtil fu = new FileUtil();
         File f = new File("d:/temp/test.rem");
         Map data = (Map)fu.readObject(f);
         System.out.println("name -> " + data.get("name"));
         System.out.println("title -> " + data.get("title"));
+    }
+    
+    public void test1() throws Exception {
+        String str = "SAN     PEDRO 20160929 1046";
+        System.out.println( str.replaceAll("[\\s]{1,}", "_") );
     }
 
 }

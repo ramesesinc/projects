@@ -42,10 +42,8 @@ public class AFSerialAssignPage extends javax.swing.JPanel {
         setPreferredSize(new java.awt.Dimension(415, 216));
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
-        xTitledBorder1.setPadding(new java.awt.Insets(20, 10, 15, 10));
         xTitledBorder1.setTitle("AF Serial Information");
         formPanel1.setBorder(xTitledBorder1);
-        formPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
         formPanel1.setCaptionWidth(90);
 
         xTextField2.setCaption("AF");
@@ -73,10 +71,8 @@ public class AFSerialAssignPage extends javax.swing.JPanel {
         formPanel1.add(xTextField7);
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder2 = new com.rameses.rcp.control.border.XTitledBorder();
-        xTitledBorder2.setPadding(new java.awt.Insets(20, 10, 15, 10));
         xTitledBorder2.setTitle("Fund Information");
         formPanel2.setBorder(xTitledBorder2);
-        formPanel2.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
 
         xLookupField1.setCaption("Fund");
         xLookupField1.setCaptionWidth(90);

@@ -71,9 +71,22 @@ class AFStockReceiptInterceptor {
 	@After(pattern="StockReceiptService.open")
 	public void afterOpen(evt) {
 		def o = evt.result;
+
 		def info = afreceipt.findInfo([objid: o.objid]); 
-		if (info) o.putAll( info ); 
-		
+		if ( info ) { 
+			if ( info.request && info.request.requester==null ) { 
+				info.request.requester = [:]; 
+			}
+			if ( o.request?.requester ) { 
+				info.request.requester.putAll( o.request.requester ); 
+			} 
+
+			if ( info.user==null ) info.user = [:]; 
+			if ( o.user ) info.user.putAll( o.user ); 
+
+			o.putAll( info ); 
+		} 
+
 		o.items.each{
 			def params = [afid: it.item.objid, unit: it.unit, stockissueid: it.parentid, respcentertype: 'AFO' ]
 			it.handler =  it.aftype.toLowerCase() 
@@ -82,8 +95,7 @@ class AFStockReceiptInterceptor {
 					it.startseries = null;
 					it.endseries = null
 				}
-			}; 
-			
+			} 
 		}
 	}	
 }

@@ -1,0 +1,89 @@
+<workunit extends="wtemplates/ReportController.xml" >
+    <invokers>
+        <invoker folderid="/explorer/report/ctc" action="init" role="REPORT" 
+            caption="Community Tax Roll" target="window"/>
+    </invokers>
+    
+    <code>
+    <![CDATA[
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+import com.rameses.osiris2.common.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.reports.*;
+
+public class CTCReportTaxRollModel extends com.rameses.etracs.shared.AsyncReportController {
+
+    @Service('CTCReportTaxRollService')
+    def svc; 
+
+    String title = "Community Tax Roll";
+    String reportpath = 'com/rameses/gov/etracs/ctc/reports/'; 
+    String reportName = reportpath + 'taxroll.jasper'; 
+
+    @Script('ReportPeriod') 
+    def periodUtil; 
+
+    def formControl = [
+        getControlList: { 
+            return [
+                [type:'combo', caption:'Period', name:'entity.period', required:true, items:'periodUtil.types',  expression:'#{item.title}', preferredSize:'100,20', captionWidth:100],
+                [type:'integer', caption:'Year', name:'entity.year', required:true, depends:'entity.period', visibleWhen:'#{ entity.period.type.matches("yearly|quarterly|monthly")==true }', preferredSize:'100,20', captionWidth:100 ],
+                [type:'combo', caption:'Quarter', name:'entity.qtr', required:true, items:'periodUtil.quarters', depends:'entity.period', visibleWhen:'#{ entity.period.type=="quarterly" }', preferredSize:'100,20', captionWidth:100],
+                [type:'combo', caption:'Month', name:'entity.month', required:true, items:'periodUtil.months', expression:'#{item.title}', depends:'entity.period', visibleWhen:'#{ entity.period.type=="monthly" }', preferredSize:'100,20', captionWidth:100],
+                [type:'date', caption:'Date', name:'entity.date', required:true, depends:'entity.period', visibleWhen:'#{ entity.period.type=="daily" }', preferredSize:'100,20', captionWidth:100],
+            ]; 
+        } 
+    ] as FormPanelModel; 
+
+    def initReport() {
+        def outcome = super.initReport(); 
+        periodUtil._types = [[type:'monthly', title:'Monthly']];
+        entity.period = periodUtil._types[0];
+        entity.month = periodUtil._months[0];
+        return outcome; 
+    } 
+    
+    void buildReportData(entity, asyncHandler) { 
+        def startdate = null; 
+        def enddate = null; 
+        if ( entity.period.type == 'yearly' ) {
+            startdate = periodUtil.format( periodUtil.getYearStartDate( entity.year ), 'yyyy-MM-dd HH:mm:ss' );
+            enddate   = periodUtil.format( periodUtil.getYearEndDate( entity.year ), 'yyyy-MM-dd HH:mm:ss' );
+        } else if ( entity.period.type == 'quarterly' ) {
+            startdate = periodUtil.format( periodUtil.getQtrStartDate( entity.year, entity.qtr ), 'yyyy-MM-dd HH:mm:ss' );
+            enddate   = periodUtil.format( periodUtil.getQtrEndDate( entity.year, entity.qtr ), 'yyyy-MM-dd HH:mm:ss' );
+        } else if ( entity.period.type == 'monthly' ) { 
+            startdate = periodUtil.format( periodUtil.getMonthStartDate( entity.year, entity.month.index ), 'yyyy-MM-dd HH:mm:ss' );
+            enddate   = periodUtil.format( periodUtil.getMonthEndDate( entity.year, entity.month.index ), 'yyyy-MM-dd HH:mm:ss' );
+        } else if ( entity.period.type == 'daily' ) { 
+            startdate = ''+ periodUtil.parse( entity.date ) +' 00:00:00'; 
+            enddate   = ''+ periodUtil.parse( entity.date ) +' 23:59:59'; 
+        } 
+
+        entity.startdate = startdate;
+        entity.enddate = enddate; 
+        svc.getReport( entity, asyncHandler );
+    }
+
+    Map getParameters(){
+        def periodtitle = null; 
+        if ( entity.period.type == 'yearly' ) {
+            periodtitle = periodUtil.getPeriodTitle([ year: entity.year ]);
+        } else if ( entity.period.type == 'quarterly' ) { 
+            periodtitle = periodUtil.getPeriodTitle([ year: entity.year, qtr: entity.qtr ]);
+        } else if ( entity.period.type == 'monthly' ) {
+            periodtitle = periodUtil.getPeriodTitle([ year: entity.year, month: entity.month.index ]);
+        } else if ( entity.period.type == 'daily' ) {
+            periodtitle = periodUtil.getPeriodTitle([ date: entity.date ]);
+        } 
+
+        return [
+            PERIOD  : periodtitle, 
+        ]; 
+    }
+}
+    ]]>
+    </code>
+    
+</workunit>

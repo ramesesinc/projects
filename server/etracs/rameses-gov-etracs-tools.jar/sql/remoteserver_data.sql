@@ -1,6 +1,6 @@
 [getList]
 SELECT r.*, 'POSTED' AS state FROM remoteserverdata r ORDER BY r.objid 
- 
+
 [getCollectionTypes]
 SELECT * FROM collectiontype where org_objid=$P{orgid} ORDER BY formno, name 
 
@@ -18,23 +18,55 @@ select b.* from collectiongroup a
 where a.org_objid=$P{orgid} 
 
 [getAF]
-select distinct af.* from af 
-  inner join collectiontype c on c.formno = af.objid 
-where c.org_objid=$P{orgid} 
+select distinct * 
+from ( 
+  select af.* from collectiontype ct 
+    inner join af on ct.formno=af.objid  
+  where ct.org_objid=$P{orgid} 
+  union 
+  select af.* from sys_usergroup_member ugm 
+    inner join af_control afc on ugm.user_objid=afc.owner_objid 
+    inner join af on afc.afid=af.objid 
+  where ugm.org_objid=$P{orgid}  
+  union 
+  select af.* from af_control afc 
+    inner join af on afc.afid=af.objid 
+  where afc.org_objid=$P{orgid}  
+)xx 
 
 [getFunds]
-select distinct f.* 
-from ( select objid from collectiontype where org_objid=$P{orgid} )xx 
-  inner join collectiontype_account ca on xx.objid = ca.collectiontypeid 
-  inner join itemaccount ia on ca.account_objid = ia.objid 
-  inner join fund f on ia.fund_objid = f.objid 
+select distinct * 
+from ( 
+  select f.* 
+  from ( select objid from collectiontype where org_objid=$P{orgid} )xx 
+    inner join collectiontype_account ca on xx.objid = ca.collectiontypeid 
+    inner join itemaccount ia on ca.account_objid = ia.objid 
+    inner join fund f on ia.fund_objid = f.objid 
+  union 
+  select f.* from itemaccount ia 
+    inner join fund f on ia.fund_objid=f.objid 
+  where ia.org_objid=$P{orgid} 
+)xx 
 
 [getItemAccounts]
-select distinct ia.* 
-from ( select objid from collectiontype where org_objid=$P{orgid} )xx 
-  inner join collectiontype_account ca on xx.objid = ca.collectiontypeid 
-  inner join itemaccount ia on ca.account_objid = ia.objid 
-  inner join fund f on ia.fund_objid = f.objid 
+select distinct * 
+from ( 
+  select ia.* 
+  from ( select objid from collectiontype where org_objid=$P{orgid} )xx 
+    inner join collectiontype_account ca on xx.objid = ca.collectiontypeid 
+    inner join itemaccount ia on ca.account_objid = ia.objid 
+    inner join fund f on ia.fund_objid = f.objid 
+  union 
+  select ia.* from itemaccount ia 
+    inner join fund on ia.fund_objid=fund.objid 
+  where ia.org_objid=$P{orgid} 
+  union 
+  select ia.* from collectiongroup a 
+    inner join collectiongroup_revenueitem b on a.objid = b.collectiongroupid 
+    inner join itemaccount ia on b.revenueitemid=ia.objid 
+    inner join fund on ia.fund_objid=fund.objid 
+  where a.org_objid=$P{orgid} 
+ )xx 
 
 [getUserGroups]
 select xx.* from ( 
@@ -79,6 +111,21 @@ where subacct_objid in (
       inner join fund f on f.objid = ia.fund_objid 
     where c.org_objid = $P{orgid} 
   )
+
+[getOrgs]
+select distinct * 
+from ( 
+  select * from sys_org where root=1 
+  union 
+  select * from sys_org where objid in (  
+    select parent_objid from sys_org where objid=$P{orgid} 
+  )
+  union 
+  select * from sys_org where objid=$P{orgid} 
+)xx 
+
+[getOrgClasses]
+select * from sys_orgclass 
 
 [getCashBooksDetail]
 select * from cashbook_entry where parentid=$P{objid} 

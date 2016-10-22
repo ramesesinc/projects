@@ -89,7 +89,7 @@ public class QueueCounterPage extends javax.swing.JPanel {
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder2 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder2.setFont(new java.awt.Font("Dialog", 1, 11)); // NOI18N
-        xTitledBorder2.setTitle("   Counter Details   ");
+        xTitledBorder2.setTitle("Counter Details   ");
         jPanel1.setBorder(xTitledBorder2);
 
         xFormPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);

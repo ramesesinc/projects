@@ -24,13 +24,15 @@ from (
 		end as fundsortorder, 
 		cr.collector_objid, cr.collector_name 
 	from ( 
-		select objid, 
-			(select count(*) from cashreceipt_void where receiptid=a.objid) as voided 
-		from cashreceipt a 
-		where receiptdate between $P{startdate} and $P{enddate} 
-			and collector_objid like $P{collectorid} 
-			and objid in (select objid from remittance_cashreceipt where objid=a.objid) 
-	)xx inner join cashreceipt cr on xx.objid=cr.objid 
+		select remc.objid, 
+			(select count(*) from cashreceipt_void where receiptid=remc.objid) as voided 
+		from remittance rem 
+			inner join liquidation_remittance lrem on rem.objid=lrem.objid 		
+			inner join remittance_cashreceipt remc on rem.objid=remc.remittanceid 
+		where rem.dtposted between $P{startdate} and $P{enddate} 
+			and rem.collector_objid like $P{collectorid} 
+	)xx 
+		inner join cashreceipt cr on xx.objid=cr.objid 
 		inner join cashreceiptitem cri on cr.objid=cri.receiptid 
 		left join itemaccount ia on cri.item_objid = ia.objid 
 )xx 

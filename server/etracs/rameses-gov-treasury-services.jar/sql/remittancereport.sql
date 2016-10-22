@@ -49,6 +49,7 @@ from (
     inner join af on cr.formno=af.objid 
   where ia.fund_objid = $P{fundid} 
 )xx 
+where xx.formno like $P{formno} 
 group by xx.formtypeindexno, xx.controlid, xx.formno, xx.formtype, xx.stubno
 order by xx.formtypeindexno, xx.formno, min(xx.receiptno)  
 
@@ -71,6 +72,7 @@ from (
     inner join collectiontype ct on cr.collectiontype_objid=ct.objid    
     inner join af a on cr.formno=a.objid 
   where ia.fund_objid like $P{fundid} 
+    and a.objid like $P{formno}  
 )xx 
 group by particulars 
 
@@ -296,3 +298,16 @@ group by
   receiptno, receiptdate, acctcode, accttitle, paidby
 order by 
   receiptdate, formno, controlid, series 
+
+[getAFList]
+select 
+  ia.fund_objid, cr.formno, af.title as formtitle   
+from remittance rem 
+  inner join remittance_cashreceipt remc on rem.objid=remc.remittanceid  
+  inner join cashreceipt cr on remc.objid=cr.objid 
+  inner join cashreceiptitem cri on cr.objid=cri.receiptid 
+  inner join itemaccount ia on cri.item_objid=ia.objid 
+  inner join af on cr.formno=af.objid 
+where rem.objid = $P{remittanceid} 
+group by ia.fund_objid, cr.formno, af.title 
+order by ia.fund_objid, cr.formno 

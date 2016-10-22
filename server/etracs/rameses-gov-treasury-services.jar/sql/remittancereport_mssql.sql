@@ -296,3 +296,17 @@ group by
   receiptno, receiptdate, acctcode, accttitle, paidby
 order by 
   receiptdate, formno, controlid, series 
+
+
+[getAFList]
+select 
+  ia.fund_objid, cr.formno, af.title as formtitle   
+from remittance rem 
+  inner join remittance_cashreceipt remc on rem.objid=remc.remittanceid  
+  inner join cashreceipt cr on remc.objid=cr.objid 
+  inner join cashreceiptitem cri on cr.objid=cri.receiptid 
+  inner join itemaccount ia on cri.item_objid=ia.objid 
+  inner join af on cr.formno=af.objid 
+where rem.objid = $P{remittanceid} 
+group by ia.fund_objid, cr.formno, af.title 
+order by ia.fund_objid, cr.formno 

@@ -30,6 +30,21 @@ public class IndividualCTCService
 	def FACT_PACKAGE = 'ctcindividual.'
 	
 
+	def YMD = new java.text.SimpleDateFormat('yyyy-MM-dd'); 
+	def YMDHMS = new java.text.SimpleDateFormat('yyyy-MM-dd HH:mm:ss'); 
+
+	private def convertToDate( o ) {
+		if ( o instanceof Date ) {
+			return o; 
+		} 
+
+		try {
+			return YMDHMS.parse( o ); 
+		} catch(Throwable t){
+			return YMD.parse( o ); 
+		} 
+  	} 
+
 	@ProxyMethod
 	public def getCtcRelatedPayerData(entity){
 		return [newbusiness:false];
@@ -84,7 +99,7 @@ public class IndividualCTCService
 			ctc.items << buildItem(ctc.brgyinterest_acctid, ctc.brgyinterestshare)
 	}
 
-	def buildItem(acctid, amount){
+	def buildItem(acctid, amount){ 
 		return [
 			objid : 'CI' + new java.rmi.server.UID(),
 			item  : revSvc.open([objid:acctid]),
@@ -122,12 +137,11 @@ public class IndividualCTCService
 		ctc.brgyinterestshare = 0.0;
 
 		def refdate = ( ctc.receiptdate ? ctc.receiptdate : dtSvc.serverDate ); 
-		def pdate = dtSvc.parseDate(refdate, null); 
-
+		def pdate = convertToDate( refdate );  
 		def map = [ facts:[], ctc:ctc ]; 
 		
-		map.facts << new CurrentDate(refdate); 
-		map.facts << new EffectiveDate(refdate); 
+		map.facts << new CurrentDate(pdate); 
+		map.facts << new EffectiveDate(pdate); 
 
 		def brgy = ruleSvc.createFact(RULESET, FACT_PACKAGE+'Barangay'); 
 		brgy.objid = ctc.barangayid; 

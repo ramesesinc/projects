@@ -15,19 +15,19 @@ class DynamicInfoModel extends ComponentBean {
      def formPanel = [
         updateBean: {name,value,item->
             item.value = value;
-            handler.onUpdate( name, value, item );
+            if(!handler.onUpdate) 
+                println "No handler.onUpdate found:->"+name + " "+value;
+            else 
+                handler.onUpdate( name, value, item );
         },
-        getControlList: { o->
+        getControlList: {
             return formControls;
         }
     ] as FormPanelModel;
     
     void init() {
         if( !handler ) throw new Exception("handler must be set ");
-        if( !handler.onUpdate ) throw new Exception("handler.onUpdate(name,value,item) must be set");
         if( !handler.getControls ) throw new Exception("handler.getControlList(list) must be set");
-        if( !handler.onComplete ) throw new Exception("handler.onComplete must be set");
-        if( !handler.getValue ) throw new Exception("handler.getValue(name,item) must be set");
         buildControls();
     }
     
@@ -46,23 +46,29 @@ class DynamicInfoModel extends ComponentBean {
             i.putAll(x);
             if(i.required == null ) i.required= true;
             i.bean = x;
-            i.value = x.value;
             i.properties = [:];
-            
             if(i.type == "string_array") {
                 i.type = "combo";
-                i.preferredSize = '150,20';
+                i.preferredSize = '120,20';
                 i.itemsObject = x.arrayvalues;
             }
             else if(i.type == "boolean") {
                 i.type = "yesno";
+                i.value = i.boolvalue;
             }
             else if( i.type.matches('decimal|integer|date') ) {
-                i.preferredSize = '150,20';
+                i.preferredSize = '120,20';
             }
             else if( i.type == "string" ) {
                 i.type = "text";
             }
+            if(handler.getValue) {
+                i.value = handler.getValue(i.name);
+            }
+            else {
+                i.value = x.value;
+            }
+            println "got data->"+i.value;
             xForms << i;
         }
         infoStack.push(xForms);
@@ -70,8 +76,9 @@ class DynamicInfoModel extends ComponentBean {
      }
      
      void doBack() {
-         if(!handler.pushBack) throw new Exception("Please implement a handler.pushBack method");
-         handler.pushBack();
+         if(handler.pushBack) {
+             handler.pushBack();
+         }
          infoStack.pop();
          formControls = infoStack.peek();
          formPanel.reload();

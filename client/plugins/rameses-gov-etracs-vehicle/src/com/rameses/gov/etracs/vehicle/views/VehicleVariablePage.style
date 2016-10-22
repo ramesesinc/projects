@@ -1,0 +1,3 @@
+"entity.payer.*|entity.paid.*"[ 1==1 ] {
+    enabled: false;
+}

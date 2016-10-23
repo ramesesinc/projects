@@ -5,6 +5,7 @@
 - BPLS 
 		
 - ASSESSOR	
+	- NEW! Transaction Monitoring 
 	- NEW! Monthly Assessment Report (Puerto)
 	- Update on PDAP-RPTA 100 Report
 	- Add support for land specific classification (Aklan)

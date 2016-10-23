@@ -123,6 +123,35 @@ class RPTReportDelinquencyService
 					}
 				} 
 			}
+			else if (params.format.type.equalsIgnoreCase('format3')){
+				if ( params.period?.code == 'FOR_THE_YEAR' ) {
+					params.toyear = params.year 
+					params.filter = ''' AND year = $P{year} ''';
+				} else if ( params.period?.code == 'AS_OF_YEAR' ) {
+					params.toyear = params.year 
+					params.filter = ''' AND year <= $P{year} ''';
+				} else if ( params.period?.code == 'YEAR_RANGE' ) {
+					params.toyear = params.toyear 
+					params.filter = ''' AND year >= $P{fromyear} AND year <= $P{toyear} ''';
+				} else { 
+					params.year = currentyear; 
+					params.toyear = params.year - 1 
+					params.filter = ''' AND year < $P{year} ''';
+				} 
+				list = em.getDelinquentLedgers3( params )
+				if (list.size() > 1){
+					def previd = list[0].rptledgerid 
+					for(int i=1; i<list.size(); i++){
+						def curr = list[i]
+						if (previd == curr.rptledgerid){
+							curr.taxpayer = null 
+						}
+						else{
+							previd = curr.rptledgerid 
+						}
+					}
+				}
+			}
 			else {
 				list = em.getDelinquentLedgers( params ); 
 			}

@@ -418,9 +418,9 @@ class RPTLedgerService
                 }
                 else{
                     olditem.partialled = 0
-                    olditem.av      = ledgerfaas.assessedvalue
-                    olditem.basicav = ledgerfaas.assessedvalue
-                    olditem.sefav   = ledgerfaas.assessedvalue
+                    olditem.av      = params.av
+                    olditem.basicav = params.basicav
+                    olditem.sefav   = params.sefav
                     olditem.classification  = ledgerfaas.classification
                     olditem.actualuse  = (ledgerfaas.actualuse?.objid ? ledgerfaas.actualuse : ledgerfaas.classification)
                     createLedgerItemQtrlyData(olditem, qtr)   

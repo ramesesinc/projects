@@ -44,6 +44,9 @@ class RPTReceiptService
 
 		def checks = []
 		receipt.paymentitems.each{
+		  if (it.refdate){
+		  	it.refdate = dtSvc.parse('yyyy-MM-dd', it.refdate)
+		  }
 		  checks << it.bank + ' - ' + it.refno + ' / ' + dtSvc.format('MM-dd-yyyy', it.refdate)
 		}
 		receipt.checkno = null

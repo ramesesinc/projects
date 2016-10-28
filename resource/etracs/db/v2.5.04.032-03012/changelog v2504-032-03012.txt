@@ -5,6 +5,7 @@
 - BPLS 
 		
 - ASSESSOR	
+	- Fix Building FAAS structure material report
 	- NEW! Transaction Monitoring 
 	- NEW! Monthly Assessment Report (Puerto)
 	- Update on PDAP-RPTA 100 Report

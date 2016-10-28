@@ -13,6 +13,7 @@
 	- Update on Bldg General Revision script
 
 - LANDTAX
+	- NEW! Billing by ledger with option to specify bill to year and qtr 
 	- NEW! Realty Tax Delinquencies By Faas History Listing
 	- NEW! Real Property Tax Collectibles (Guimaras)
 	- NEW! Certified List of Real Property Tax Collectibles (Guimaras)

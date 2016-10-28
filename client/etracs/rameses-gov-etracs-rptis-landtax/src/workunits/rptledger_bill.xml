@@ -1,9 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit extends="com/rameses/osiris2/reports/templates/reports.xml">
     <invokers>
-        <invoker type="rptledgermanual:formActions" action="preview" caption="Preview Bill" visibleWhen="#{entity.state=='APPROVED'}"/>
-        <invoker type="rptledger:formActions" action="preview" caption="Preview Bill" visibleWhen="#{entity.state=='APPROVED'}"/>
+        <invoker type="rptledgermanual:formActions" action="init" caption="Generate Bill" visibleWhen="#{entity.state=='APPROVED'}" target="popup"/>
+        <invoker type="rptledger:formActions" action="init" caption="Generate Bill" visibleWhen="#{entity.state=='APPROVED'}" target="popup"/>
+        <!-- 
         <invoker type="rptledger:list:formActions" action="preview" caption="Preview Bill" visibleWhen="#{selectedEntity != null &amp;&amp; selectedEntity.state == 'APPROVED'}" depends="selectedEntity" target="self" />
+        -->
+        <invoker type="rptledger:list:formActions" action="init" caption="Generate Bill" visibleWhen="#{selectedEntity != null &amp;&amp; selectedEntity.state == 'APPROVED'}" depends="selectedEntity" target="popup" />
+         <invoker type="formActions" action="_close" caption="Close" mnemonic="c" />
+        <invoker type="formActions" action="preview" caption="Preview" mnemonic="v" />
+        <invoker type="formActions" action="print" caption="Print" mnemonic="p" />
+       
    </invokers>
 
     <code>
@@ -21,20 +28,49 @@ class RPTLedgerBillController
     @Service('RPTBillingService')
     def billSvc;
         
-    def entity;
+    @Service('DateService')
+    def dtSvc;
         
-    def preview(){
+    String title = 'Real Property Tax Bill';
+        
+    def entity;
+    def billtoyear;
+    def billtoqtr;
+    def qtrs = [1,2,3,4];
+        
+    def init(){
+        billtoyear = dtSvc.getServerYear();
+        billtoqtr = 4;
+        return 'init';
+    }
+        
+    def initBill(){
         if (!entity)
             entity = caller.selectedEntity;
-        
-        billSvc.checkRestrictions(entity.objid);
-        
+    
         def bill = billSvc.initBill(entity.objid);
-        bill.taxpayer = entity.taxpayer;
-        return InvokerUtil.lookupOpener('rptbill:print', [bill:bill, caller:this])
+        bill.billtoyear = billtoyear;
+        bill.billtoqtr = billtoqtr;
+        bill.taxpayer = entity.taxpayer;    
+        return bill;
     }
+        
+    def preview(){
+        def bill = initBill()
+        def inv = InvokerUtil.lookupOpener('rptbill:preview', [bill:bill, caller:this, showBack:false])
+        inv.target = 'self';
+        return inv;
+    }
+        
+    def print(){
+        def bill = initBill()
+        return InvokerUtil.lookupOpener('rptbill:printBill', [bill:bill, caller:this, showBack:false])
+    }        
 
 }    
     </code>
+    <pages>
+        <page name="init" template="com.rameses.gov.etracs.rpt.ledger.ui.RPTLedgerBillInitPage"/>
+    </pages>
 </workunit>
 

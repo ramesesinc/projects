@@ -5,6 +5,7 @@
 - BPLS 
 		
 - ASSESSOR	
+	- NEW! List of Other Claimants
 	- Fix Building FAAS structure material report
 	- NEW! Transaction Monitoring 
 	- NEW! Monthly Assessment Report (Puerto)

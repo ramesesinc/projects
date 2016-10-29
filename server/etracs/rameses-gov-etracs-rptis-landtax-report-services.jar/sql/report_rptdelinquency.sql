@@ -13,6 +13,7 @@ WHERE barangayid = $P{barangayid}
   	     OR (rl.lastyearpaid = $P{cy} AND rl.lastqtrpaid < 4)
   )
   AND rl.totalav > 0 
+  AND rl.taxable = 1 
   
 
 [cleanup]

@@ -135,8 +135,8 @@ class RPTReportDelinquencyService
 					params.filter = ''' AND year >= $P{fromyear} AND year <= $P{toyear} ''';
 				} else { 
 					params.year = currentyear; 
-					params.toyear = params.year - 1 
-					params.filter = ''' AND year < $P{year} ''';
+					params.toyear = params.year
+					params.filter = ''' AND year <= $P{year} ''';
 				} 
 				list = em.getDelinquentLedgers3( params )
 				if (list.size() > 1){

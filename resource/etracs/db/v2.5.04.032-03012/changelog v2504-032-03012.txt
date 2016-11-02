@@ -5,6 +5,7 @@
 - BPLS 
 		
 - ASSESSOR	
+	- NEW! Statement of Valuation (Puerto)
 	- Update on Excerpt from Real Property assessment report
 	- Update on FAAS Valuation and Restriction report 
 	- Exclude multiple claims in rpu count (AEEMM2) report

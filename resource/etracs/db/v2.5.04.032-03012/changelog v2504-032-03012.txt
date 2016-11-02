@@ -5,6 +5,7 @@
 - BPLS 
 		
 - ASSESSOR	
+	- Exclude multiple claims in rpu count (AEEMM2) report
 	- NEW! List of Other Claimants
 	- Fix Building FAAS structure material report
 	- NEW! Transaction Monitoring 

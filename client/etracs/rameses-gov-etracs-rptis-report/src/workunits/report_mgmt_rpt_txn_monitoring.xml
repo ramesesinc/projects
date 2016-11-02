@@ -1,7 +1,9 @@
 <workunit extends="rpt_wtemplates/ReportController.xml" >
     <invokers>
-        <invoker folderid="/explorer/report/rpt/mgmt" action="init" caption="Transaction Monitoring" 
-                 target="window" index="1" 
+        <invoker folderid="/explorer/report/rpt/mgmt" 
+                 action="init" 
+                 caption="Transaction Monitoring" 
+                 target="window" 
                 role="MANAGEMENT" permission="report.txn-monitoring"/>
     </invokers>
     <code>

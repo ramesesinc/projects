@@ -1,7 +1,10 @@
 <workunit extends="rpt_wtemplates/ReportController.xml" >
     <invokers>
-        <invoker folderid="/explorer/report/rpt" action="init" caption="Agricultural Land Area by Actual Use Summary" target="window" index="110" 
-            role="ASSESSOR_REPORT,REPORT" />
+        <invoker folderid="/explorer/report/rpt" 
+                 action="init" 
+                 caption="Agricultural Land Area by Actual Use Summary" 
+                 target="window" 
+                role="ASSESSOR_REPORT,REPORT" />
     </invokers>
     <code>
 

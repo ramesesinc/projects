@@ -1,8 +1,9 @@
 <workunit extends="rpt_wtemplates/ReportController.xml" >
     <invokers>
-        <invoker folderid="/explorer/report/rpt" action="init" caption="FAAS Valuation and Restriction Summary" 
+        <invoker folderid="/explorer/report/rpt" 
+            action="init" 
+            caption="FAAS Valuation and Restriction Summary" 
             target="window" 
-            index="1001" 
             role="ASSESSOR_REPORT,REPORT" />
     </invokers>
     <code>

@@ -2,7 +2,7 @@
     <invokers>
         <invoker folderid="/explorer/report/rpt" action="init" 
                 caption="Property Examination and Audit Report" 
-                target="window" index="14" 
+                target="window" 
                 role="ASSESSOR_REPORT,REPORT" />
     </invokers>
     <code>

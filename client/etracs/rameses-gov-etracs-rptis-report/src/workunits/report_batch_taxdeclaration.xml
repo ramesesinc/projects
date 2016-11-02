@@ -1,7 +1,10 @@
 <workunit extends="rpt_wtemplates/BatchReportController.xml">
     <invokers>
-        <invoker folderid="/explorer/report/rpt" action="init" caption="Tax Declaration Batch Printing" target="window" index="602" 
-            role="ASSESSOR_REPORT,REPORT" />
+        <invoker folderid="/explorer/report/rpt" 
+                 action="init" 
+                 caption="Tax Declaration Batch Printing" 
+                 target="window" 
+                role="ASSESSOR_REPORT,REPORT" />
     </invokers>
     <code >
     <![CDATA[

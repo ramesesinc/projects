@@ -1,6 +1,8 @@
 <workunit extends="rpt_wtemplates/ReportController.xml" >
     <invokers>
-        <invoker type="ocularinspection:preview" action="preview" caption="Ocular Inspection Report" target="self" />
+        <invoker type="ocularinspection:preview" 
+                action="preview" 
+                caption="Ocular Inspection Report" target="self" />
     </invokers>
     <code>
 

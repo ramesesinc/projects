@@ -1,8 +1,9 @@
 <workunit extends="rpt_wtemplates/ReportController.xml" >
     <invokers>
-        <invoker folderid="/explorer/report/rpt" action="init" caption="Assessed Value of Properties with Restrictions" 
+        <invoker folderid="/explorer/report/rpt" 
+            action="init" 
+            caption="Assessed Value of Properties with Restrictions" 
             target="window" 
-            index="1002" 
             role="ASSESSOR_REPORT,REPORT" />
     </invokers>
     <code>

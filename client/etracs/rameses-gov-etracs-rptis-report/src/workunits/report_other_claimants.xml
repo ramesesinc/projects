@@ -1,6 +1,8 @@
 <workunit extends="rpt_wtemplates/ReportController.xml" >
     <invokers>
-        <invoker folderid="/explorer/report/rpt" action="init" caption="List of Other Claimants" 
+        <invoker folderid="/explorer/report/rpt" 
+                 action="init" 
+                 caption="List of Other Claimants" 
                  target="window" 
                 role="REPORT" permission="report.otherclaimantlist"/>
     </invokers>

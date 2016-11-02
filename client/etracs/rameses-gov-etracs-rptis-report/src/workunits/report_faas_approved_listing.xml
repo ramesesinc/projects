@@ -1,6 +1,9 @@
 <workunit extends="rpt_wtemplates/ReportController.xml" >
     <invokers>
-        <invoker folderid="/explorer/report/rpt" action="init" caption="Approve Faas Listing" target="window" index="0" 
+        <invoker folderid="/explorer/report/rpt" 
+            action="init" 
+            caption="Approve Faas Listing" 
+            target="window" 
             role="ASSESSOR_REPORT,REPORT" />
     </invokers>
     <code>

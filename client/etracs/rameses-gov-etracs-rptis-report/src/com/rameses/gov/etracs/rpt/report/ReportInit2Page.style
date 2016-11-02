@@ -7,7 +7,7 @@
 
 
 
-"entity.(year|qtr|month|asofdate)" [true == true]{
+"entity.(year|qtr|month|asofdate|basicrate|sefrate)" [true == true]{
     visible:false;
     required:false;
 }   
@@ -34,3 +34,7 @@
     visible:true;
 }
 
+
+"entity.(basicrate|sefrate)"[showRate == true]{
+    visible:true;
+}

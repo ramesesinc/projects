@@ -46,7 +46,7 @@ class RPTCertificationLandService
 		certSvc.buildFilter(cert)
 		em.insertLandImprovements(cert)
 		em.insertLandImprovementFromBldgLand(cert)
-		cert.items = getLandItems(cert)
+		cert.items = getItems(cert)
 		loadFaasInfo(cert)
 		return cert 
 	}
@@ -76,6 +76,12 @@ class RPTCertificationLandService
 		if (cert.faasid){
 			return em.getFaasInfo(cert)
 		}
+		return em.getLandItems(cert).each{
+			it.street = (it.street ? it.street : it.barangay)
+		}
+	}
+
+	def getItems(cert){
 		return em.getLandItems(cert).each{
 			it.street = (it.street ? it.street : it.barangay)
 		}

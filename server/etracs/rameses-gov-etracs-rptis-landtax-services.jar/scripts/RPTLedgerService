@@ -883,6 +883,11 @@ class RPTLedgerService
     }
 
     @ProxyMethod
+    public def getRestrictions(  ) {
+        return em.getRestrictions()
+    }
+
+    @ProxyMethod
     public void reconcileManualLedger(faas, manualledger){
         if (util.isTrue(faas.datacapture)){
             updateLedgerFaasInfo(faas, manualledger)

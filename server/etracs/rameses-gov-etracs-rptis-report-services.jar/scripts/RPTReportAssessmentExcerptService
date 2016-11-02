@@ -42,6 +42,7 @@ class RPTReportAssessmentExcerptService
 		
 		util.buildCurrentPeriodFilter(params)
 		data.current = em.findCurrentExcerpt(params)
+		util.buildCurrentCancelledPeriodFilter(params)
 		data.cancelled = em.findCancelledExcerpt(params)
 		
 		util.buildEndingPeriodFilter(params)

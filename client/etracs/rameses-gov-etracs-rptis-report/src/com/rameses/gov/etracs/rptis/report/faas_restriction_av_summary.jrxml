@@ -508,7 +508,7 @@
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font pdfFontName="Helvetica-Bold" size="12" isBold="true" isItalic="false"/>
 					</textElement>
-				<text><![CDATA[ASSESSED VALUE FO PROPERTIES WITH RESTRICTIONS]]></text>
+				<text><![CDATA[ASSESSED VALUE OF PROPERTIES WITH RESTRICTIONS]]></text>
 				</staticText>
 				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement

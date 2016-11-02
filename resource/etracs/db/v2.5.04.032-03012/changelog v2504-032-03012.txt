@@ -5,6 +5,7 @@
 - BPLS 
 		
 - ASSESSOR	
+	- Update on FAAS Valuation and Restriction report 
 	- Exclude multiple claims in rpu count (AEEMM2) report
 	- NEW! List of Other Claimants
 	- Fix Building FAAS structure material report

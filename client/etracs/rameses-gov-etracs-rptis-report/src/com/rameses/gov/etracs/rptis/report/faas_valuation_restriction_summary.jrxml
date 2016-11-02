@@ -200,7 +200,7 @@
 					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="10" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<text><![CDATA[ASSESSED VALUE FO PROPERTIES ON TAXABLE VALUATION AND
+				<text><![CDATA[ASSESSED VALUE OF PROPERTIES ON TAXABLE VALUATION AND
 PROPERTIES WITH RESTRICTIONS]]></text>
 				</staticText>
 				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >

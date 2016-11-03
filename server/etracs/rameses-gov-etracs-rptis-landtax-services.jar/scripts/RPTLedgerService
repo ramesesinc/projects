@@ -756,6 +756,7 @@ class RPTLedgerService
 
     @ProxyMethod
     public void postLedgerFaasData(faas){
+        if (!faas.previousfaases) return
     	def ledger = getLedgerByFaasId(faas.previousfaases[0].prevfaasid)
         ledger.faasid = faas.objid 
         updateLedger(ledger)

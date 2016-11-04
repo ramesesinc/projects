@@ -1,0 +1,50 @@
+import com.rameses.annotations.*;
+import java.rmi.server.UID;
+
+class VehicleApplicationListInterceptor {
+	
+	@After(pattern="QueryService.getNodeList", eval="#{args[0]._schemaname.startsWith('vehicle_application')}")
+	public void getNodeList(def evt) {
+		def result = evt.result;
+		result << [ title: 'Active', id:'active'];
+		result << [ title: 'For Payment', id:'forpayment' ];
+		result << [ title: 'For Release', id:'forrelease' ];
+		result << [ title: 'Closed', id:'closed'];
+	}
+
+	@Before(pattern="QueryService.getList", eval="#{args[0]._schemaname.startsWith('vehicle_application')}")
+	public void loadList(def evt) {
+		def o = evt.args[0];
+		//o.debug = true;
+		if( !o.node?.id ) return;
+
+		def str = "state=:state";
+		def m = [:];
+
+		switch( o.node.id ) {
+			case 'active':
+				m.state = 'ACTIVE';
+				break;
+			case 'forpayment':
+				m.state = 'PENDING'
+				break;
+			case 'forrelease':
+				m.state = 'PAID'
+				break;
+			case 'closed':
+				m.state = 'CLOSED'
+				break;
+		}
+
+		//add to first position of where
+		if( o.where ) {
+			o.where[0] = str + " AND " + o.where[0];	
+			o.where[1].putAll( m );
+		}
+		else {
+			o.where = [str, m];
+		}
+	}
+
+
+}

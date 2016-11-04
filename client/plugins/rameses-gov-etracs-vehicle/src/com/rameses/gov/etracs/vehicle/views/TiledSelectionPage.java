@@ -9,13 +9,13 @@ import com.rameses.rcp.ui.annotations.Template;
 
 /**
  *
- * @author Elmo Nazareno
+ * @author dell
  */
 @Template(FormPage.class)
 public class TiledSelectionPage extends javax.swing.JPanel {
 
     /**
-     * Creates new form SelectVehicleTypePage
+     * Creates new form SelectVehicleType
      */
     public TiledSelectionPage() {
         initComponents();
@@ -33,27 +33,40 @@ public class TiledSelectionPage extends javax.swing.JPanel {
     private void initComponents() {
 
         xTileView1 = new com.rameses.rcp.control.XTileView();
+        jLabel1 = new javax.swing.JLabel();
 
-        xTileView1.setName("listModel"); // NOI18N
+        xTileView1.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        xTileView1.setCellSize(new java.awt.Dimension(75, 80));
+        xTileView1.setDynamic(true);
+        xTileView1.setName("model"); // NOI18N
+        xTileView1.setOpaque(false);
+        xTileView1.setPadding(new java.awt.Insets(10, 20, 10, 0));
 
-        org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
+        jLabel1.setText("Select a Vehicle Type");
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(layout.createSequentialGroup()
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(xTileView1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 446, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 537, Short.MAX_VALUE)
+                    .addComponent(xTileView1, javax.swing.GroupLayout.DEFAULT_SIZE, 537, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
-            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(layout.createSequentialGroup()
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(xTileView1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 313, Short.MAX_VALUE)
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(xTileView1, javax.swing.GroupLayout.DEFAULT_SIZE, 366, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel jLabel1;
     private com.rameses.rcp.control.XTileView xTileView1;
     // End of variables declaration//GEN-END:variables
 }

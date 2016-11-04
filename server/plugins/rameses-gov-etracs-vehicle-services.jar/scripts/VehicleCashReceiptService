@@ -1,30 +1,41 @@
 import com.rameses.annotations.*;
 
 import com.rameses.rules.common.*;
-import vrs.facts.*;
+import vehicle.facts.*;
 import treasury.facts.*;
 import treasury.actions.*;
 import com.rameses.util.*;
+import treasury.utils.*;
 
 /**********************************************************
 * This service handles computation of what fees to charge 
 ***********************************************************/
 class VehicleCashReceiptService {
 	
-	@Service("VehicleBillingService")
-	def billSvc;
-
 	@DataContext("vehicle_application")
 	def appEm;
 
 	@DataContext("vehicle_application_fee")
 	def feeEm;
 
+	@DataContext(dynamic=true)
+	def em;
+
+	@Service("RuleExecutorService")
+	def ruleSvc;
+
+	@Service("DateService")
+	def dateSvc;
 
 	@ProxyMethod
 	public def getBilling( def o ) {
 
-		def app = appEm.find( [appno: o.appno] ).first();
+		def xx = appEm.find( [appno: o.appno] ).first();
+		if( xx.amount - xx.amtpaid <= 0 )
+			throw new Exception("This application is already paid");
+
+		def app = em.lookup( xx.txntype.toLowerCase() + '_vehicle_application' ).find([objid: xx.objid]).first();
+		if(!app) throw new Exception("App " + o.appno + " not found!");
 
 		def e = [:];
 		e.payer = [objid: app.owner.objid, name: app.owner.name ];
@@ -32,12 +43,57 @@ class VehicleCashReceiptService {
         e.appno = app.appno;
         e.appid = app.objid;
         e.paidbyaddress = app.owner?.address?.text;
-        e.items = feeEm.find( [appid: app.objid ]).list();
+		e.items = [];
+
+		def dt = dateSvc.getServerDate();
+        def items = feeEm.select("item.objid,refid:{objid},amount").find( [appid: app.objid ]).list();
+		def facts = [];
+		facts << new treasury.facts.BillDate(dt);
+		facts << new CurrentDate(dt);
+		facts << new VehicleApplication( apptype: app.apptype , appdate: app.appdate, txntype:app.txntype );
+		items.each {
+			facts << new BillItem( account: it.item, amount: it.amount, txntype: 'fee', refid: it.objid );
+		};
+		ruleSvc.execute( "vehiclebilling", facts, null, null );
+
+		//extract the bill items 
+		def billItems = facts.findAll { it instanceof BillItem };
+
+		def lookupAcct = new LookupAccount();
+		billItems.each {
+			def mm = [:];
+			mm.item = lookupAcct.findAccount([objid:it.account.objid]);
+			mm.amount = it.amount;
+			mm.refid = it.refid;
+			e.items << mm;
+		};
+
+		def surGrp = billItems.findAll{ it.surcharge > 0 }.groupBy{ it.surchargeAccount };
+		surGrp.each { k,v->
+			def mm = [:];
+			mm.item = lookupAcct.findAccount([objid:k.objid]);
+			mm.amount = v.sum{ it.surcharge };
+			e.items << mm;
+		}
+		def intGrp = billItems.findAll{ it.interest > 0 }.groupBy{ it.interestAccount };
+		intGrp.each { k,v->
+			def mm = [:];
+			mm.item = lookupAcct.findAccount([objid:k.objid]);
+			mm.amount = v.sum{ it.interest };
+			e.items << mm;
+		}
+		def discGrp = billItems.findAll{ it.discount > 0 }.groupBy{ it.discountAccount };
+		discGrp.each { k,v->
+			def mm = [:];
+			mm.item = lookupAcct.findAccount([objid:k.objid]);
+			mm.amount = v.sum{ it.discount }*-1;
+			e.items << mm;
+		}
+
+        //run the billing service after....
 		e.amount = NumberUtil.round( e.items.sum{ it.amount } );
 		return e;
 	}
-
-
 
 
 

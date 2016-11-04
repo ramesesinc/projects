@@ -1,0 +1,11 @@
+<schema adapter="vehicledb">
+	<element tablename="vehicle_control">
+		<field name="objid" primary="true" prefix="MF"/>
+		<field name="controlno"  caption="Control No" required="true" searchable="true" indexed="true"/>
+		<field name="txntypeid"  required="true" />
+		<complex name="currentaccount" ref="vehicle_account" jointype="many-to-one" 
+			includefields="acctno,owner.name,owner.address.*,particulars,activeyear,state" required="false">
+			<key field="currentacctid"  target="objid" />
+		</complex>
+	</element>
+</schema>

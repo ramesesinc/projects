@@ -10,16 +10,24 @@ import java.beans.Beans;
 
 /**
  *
- * @author Elmo Nazareno
+ * @author dell
  */
-@ComponentBean("com.rameses.gov.etracs.vehicle.components.VehicleTxnTypeListModel" )
+@ComponentBean("com.rameses.gov.etracs.vehicle.components.VehicleTxnTypeListModel")
 public class VehicleTxnTypeList extends XComponentPanel {
 
     /**
-     * Creates new form VehicleTxnTypeList
+     * Creates new form VehicleTypeList
      */
     public VehicleTxnTypeList() {
         initComponents();
+    }
+
+    @Override
+    public void setName(String name) {
+        if(Beans.isDesignTime()) {
+            xComboBox1.setName(name);
+        }
+        super.setName(name);
     }
 
     /**
@@ -35,23 +43,14 @@ public class VehicleTxnTypeList extends XComponentPanel {
 
         setLayout(new java.awt.BorderLayout());
 
-        xComboBox1.setExpression("#{item.objid}");
+        xComboBox1.setCaption("Vehicle Type");
+        xComboBox1.setExpression("#{item.title}");
         xComboBox1.setItems("typeList");
         xComboBox1.setName("type"); // NOI18N
+        xComboBox1.setPreferredSize(new java.awt.Dimension(0, 20));
         add(xComboBox1, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.rameses.rcp.control.XComboBox xComboBox1;
     // End of variables declaration//GEN-END:variables
-
-    @Override
-    public void setName(String name) {
-        super.setName(name);
-        if(Beans.isDesignTime()) {
-            xComboBox1.setName(name);
-        }
-    }
-
-    
-
 }

@@ -1,0 +1,43 @@
+<workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" schemaName="vehicle_application">
+    <invokers>
+        <invoker folderid="home/vehicle/application" caption="Application List" action="init" 
+            cols="appno,apptype,txntype.objid,appdate,appyear,operator.name,operator.address.text"/>
+    </invokers>
+    <code>
+        <![CDATA[
+        
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.seti2.models.*;
+        import com.rameses.osiris2.common.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.util.*;
+        import com.rameses.gov.etracs.vehicle.models.*;
+        
+        class ApplicationListModel extends VehicleListFilter {
+            def open() {
+                if( !selectedItem ) 
+                    throw new Exception("Please select an item");
+                def t = selectedItem.txntype.objid.toLowerCase();
+                def ename = "vehicle_application:" + t;
+                def p = [ schemaName:ename, adapter: adapter, entity: selectedItem];
+                p.title = "Open " + workunit.title;
+                def d = null;
+                try {
+                    d = Inv.lookupOpener( ename + ":open", p );
+                    if( !d.target ) d.target = 'window';
+                    return d;
+                }
+                catch(e) {
+                    if(!d) throw new Exception("No handler found for . " + ename + ".open. Please check permission");
+                }
+            }            
+        }
+        
+        ]]>
+    </code>
+    <pages>
+        <page name="queryForm" template="com.rameses.gov.etracs.vehicle.views.VehicleQueryForm"/>
+    </pages>      
+</workunit>

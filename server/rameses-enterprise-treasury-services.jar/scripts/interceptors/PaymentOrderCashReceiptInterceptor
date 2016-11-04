@@ -4,13 +4,35 @@ import java.rmi.server.*;
 
 class PaymentOrderCashReceiptInterceptor {
 
-	@Service("PaymentOrderService")
+	@DataContext("paymentorder")
 	def svc;
 
-	@After(pattern="CashReceiptService.post", eval="#{args[0].paymentorder!=null}", index=1000)
+	@After(pattern="CashReceiptBarcodeService.findPrefix", eval="#{result.prefix==null}", index=10000)
+	public void findBarcodePrefix(def evt) {
+		def result = evt.result;
+		result.prefix = 'PMO';
+	}	
+
+	@After(pattern="PaymentOrderCashReceiptService.getInfo", eval="#{args[0].collectiontype?.handler == 'paymentorder' }", index=10000)
+	public def getPaymentOrderInfo(def evt) { 
+		def result = evt.result;
+		result.paymentorderid = 'PMT001';
+		result.payer = [objid:'EMN001', name:'NAZARENO, PATRICIA'];
+		result.paidby = 'nazaerno, elmo';
+		result.paidbyaddress = 'CEBU CITY';		
+	}
+
+	@After(pattern="PaymentOrderCashReceiptService.getItems", eval="#{args[0].collectiontype?.handler == 'paymentorder'}", index=10000)
+	public def getPaymentOrderItems(def evt) { 
+		def result = evt.result;
+		result << [objid:'11121', item: [objid:'ACCT001', code:'5521', title:'POLICE CLEARANCE'], amount: 250, remarks: 'XXX'  ];
+		result << [objid:'11122', item: [objid:'ACCT001', code:'5522', title:'POLICE CLEARANCE (LOCAL)'], amount: 100, remarks: 'XXX'  ];
+	}
+
+	@After(pattern="CashReceiptService.post", eval="#{args[0].paymentorderid!=null}", index=10000)
 	public def deletePaymentOrder(def evt) { 
 		def result = evt.result;
-		def pmtOrder = evt.args[0].paymentorder;
+		def pmtOrderId = evt.args[0].paymentorderid;
 		svc.close( pmtOrder );
 	} 
 

@@ -29,6 +29,7 @@ public class DynamicInfo extends XComponentPanel {
     public DynamicInfo() {
         initComponents();
     }
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -40,19 +41,18 @@ public class DynamicInfo extends XComponentPanel {
     private void initComponents() {
 
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
-        jPanel1 = new javax.swing.JPanel();
+        pnlNavigation = new javax.swing.JPanel();
         xButton1 = new com.rameses.rcp.control.XButton();
         xButton2 = new com.rameses.rcp.control.XButton();
 
         setLayout(new java.awt.BorderLayout());
 
+        xFormPanel1.setCaptionWidth(100);
         xFormPanel1.setDynamic(true);
         xFormPanel1.setName("formPanel"); // NOI18N
         xFormPanel1.setPadding(new java.awt.Insets(0, 0, 0, 0));
         xFormPanel1.setShowCategory(true);
         add(xFormPanel1, java.awt.BorderLayout.CENTER);
-
-        jPanel1.setBackground(new java.awt.Color(153, 153, 153));
 
         xButton1.setImmediate(true);
         xButton1.setName("doBack"); // NOI18N
@@ -61,30 +61,30 @@ public class DynamicInfo extends XComponentPanel {
         xButton2.setName("doNext"); // NOI18N
         xButton2.setText("Next");
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(133, 133, 133)
+        javax.swing.GroupLayout pnlNavigationLayout = new javax.swing.GroupLayout(pnlNavigation);
+        pnlNavigation.setLayout(pnlNavigationLayout);
+        pnlNavigationLayout.setHorizontalGroup(
+            pnlNavigationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlNavigationLayout.createSequentialGroup()
+                .addGap(134, 134, 134)
                 .addComponent(xButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(xButton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(151, Short.MAX_VALUE))
+                .addContainerGap(150, Short.MAX_VALUE))
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+        pnlNavigationLayout.setVerticalGroup(
+            pnlNavigationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlNavigationLayout.createSequentialGroup()
+                .addGroup(pnlNavigationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(xButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(xButton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(0, 11, Short.MAX_VALUE))
         );
 
-        add(jPanel1, java.awt.BorderLayout.SOUTH);
+        add(pnlNavigation, java.awt.BorderLayout.SOUTH);
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel pnlNavigation;
     private com.rameses.rcp.control.XButton xButton1;
     private com.rameses.rcp.control.XButton xButton2;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
@@ -101,6 +101,24 @@ public class DynamicInfo extends XComponentPanel {
         catch(Exception ex) {
             throw new RuntimeException(ex.getMessage(), ex);
         }        
+    }
+
+    public int getCaptionWidth() {
+        int i = xFormPanel1.getCaptionWidth();
+        if(i<=0) xFormPanel1.setCaptionWidth(100);
+        return  xFormPanel1.getCaptionWidth();
+    }
+
+    public void setCaptionWidth(int captionWidth) {
+        this.xFormPanel1.setCaptionWidth( captionWidth );
+    }
+
+    public boolean isShowNavigation() {
+        return pnlNavigation.isVisible();
+    }
+
+    public void setShowNavigation(boolean showNavigation) {
+        pnlNavigation.setVisible(showNavigation);
     }
 
 

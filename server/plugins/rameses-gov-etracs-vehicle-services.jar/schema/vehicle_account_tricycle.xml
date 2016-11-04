@@ -1,0 +1,17 @@
+<schema adapter="vehicledb">
+	<element tablename="vehicle_account_tricycle" extends="vehicle_account">
+		<field name="objid" primary="true" prefix="VMTOP"/>
+
+		<field name="sidecarno" required="true"/>
+		<field name="make" required="true"/>
+		<field name="model" required="true"/>
+		<field name="chassisno" required="true"/>
+		<field name="engineno" />
+		<field name="plateno" required="true"/>
+
+		<complex name="route" type="vehicle_route" jointype="many-to-one" includefields="objid,code,description">
+			<key field="routeid"  target="objid"/>
+		</complex>
+			
+	</element>
+</schema>

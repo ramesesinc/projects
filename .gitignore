@@ -164,6 +164,7 @@ android/*/Thumbs.db
 /client/plugins/rameses-gov-etracs-vrs/dist/
 /client/plugins/rameses-gov-etracs-market/build/
 /client/plugins/rameses-gov-etracs-market/dist/
+/client/plugins/rameses-gov-etracs-fbr/nbproject/private/
 /client/plugins/rameses-gov-etracs-vehicle/nbproject/private/
 /client/plugins/rameses-gov-etracs-vehicle/build/
 /client/plugins/rameses-gov-etracs-vehicle/dist/

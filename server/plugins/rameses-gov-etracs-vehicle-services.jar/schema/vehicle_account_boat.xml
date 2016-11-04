@@ -1,0 +1,21 @@
+<schema adapter="vehicledb">
+	<element tablename="vehicle_account_boat" extends="vehicle_account">
+		<field name="objid" primary="true" prefix="VFB"/>
+
+		<field name="vesselname" required="true"/>
+		<field name="homeport_id" required="true"/>
+		<field name="length" required="true" type="decimal"/>
+		<field name="breadth" required="true" type="decimal"/>
+		<field name="depth" required="true" type="decimal"/>
+		<field name="grosstonnage" required="true" type="decimal"/>
+		<field name="nettonnage" required="true" type="decimal"/>
+		<field name="buildername" required="true"/>
+		<field name="builderplace" required="true"/>
+		<field name="buildyear" required="true" type="integer"/>
+
+
+		<complex name="engines" ref="vehicle_account_boat_engine" jointype="one-to-many">
+			<key field="objid" target="acctid"/>
+		</complex> 
+	</element>
+</schema>

@@ -5,6 +5,6 @@
     </invokers>
     <code class="com.rameses.gov.etracs.vehicle.models.VehicleCashReceipt" />
     <pages>
-        <page template="com.rameses.gov.etracs.vehicle.views.VehicleCashReceiptPage"/>
+        <page template="com.rameses.enterprise.treasury.views.PaymentOrderCashReceiptPage"/>
     </pages>
 </workunit>

@@ -1,0 +1,39 @@
+<workunit extends="com/rameses/seti2/templates/CrudForm.xml" schemaName="vehicle_application" txntype="mbop">
+    <invokers>
+        <invoker type="vehicle_account:mbop:create" caption="Capture New Motorboat" action="create" />
+        <invoker type="vehicle_account:mbop:open" caption="Open Motorboat" action="open" />
+        
+        <!-- actions -->
+        <invoker type="formActions" caption="Submit" action="save" />
+    </invokers>
+    <code>
+        <![CDATA[
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.seti2.models.*;
+        import com.rameses.osiris2.common.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.util.*;
+        import com.rameses.gov.etracs.vehicle.models.*;
+            
+        class MbopApplication extends VehicleAccountForm {
+            def engineListModel = [
+                fetchList: { o->
+                    if(entity.engines==null) entity.engines = [];
+                    return entity.engines;
+                },
+                addItem: { o->
+                    entity.engines << o;
+                },
+                onRemoveItem: { o->
+                    entity.engines.remove(o);
+                }
+            ] as EditorListModel;
+        } 
+        ]]>
+    </code>
+    <pages>
+        <page template="com.rameses.gov.etracs.vehicle.views.MbopAccountPage"/>
+    </pages>
+</workunit>

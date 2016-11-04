@@ -1,0 +1,11 @@
+<schema adapter="vehicledb">
+	<element tablename="vehicle_variable">
+		<field name="name" primary="true" editable="false" visible="true" hidden="false"/>
+		<field name="caption" required="true" />
+		<field name="type" required="true" />
+		<field name="description" />
+		<field name="category" />
+		<field name="system" required="true" type="integer" defaultValue="0"/>
+		<complex name="arrayvalues" required="false" serializer="default"/>
+	</element>
+</schema>

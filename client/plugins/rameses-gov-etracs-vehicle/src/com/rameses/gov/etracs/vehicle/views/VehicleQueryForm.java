@@ -6,12 +6,12 @@ package com.rameses.gov.etracs.vehicle.views;
 
 /**
  *
- * @author Elmo Nazareno
+ * @author dell
  */
 public class VehicleQueryForm extends javax.swing.JPanel {
 
     /**
-     * Creates new form VehicleQueryForm
+     * Creates new form ApplicationListQueryForm
      */
     public VehicleQueryForm() {
         initComponents();
@@ -29,27 +29,13 @@ public class VehicleQueryForm extends javax.swing.JPanel {
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
         vehicleTxnTypeList1 = new com.rameses.gov.etracs.vehicle.components.VehicleTxnTypeList();
 
-        xFormPanel1.setCaptionBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
-        xFormPanel1.setPadding(new java.awt.Insets(3, 5, 3, 5));
+        setLayout(new java.awt.BorderLayout());
 
-        vehicleTxnTypeList1.setCaption("Select Txn Type");
-        vehicleTxnTypeList1.setCaptionWidth(100);
-        vehicleTxnTypeList1.setName("query.txntype"); // NOI18N
-        vehicleTxnTypeList1.setPreferredSize(new java.awt.Dimension(0, 20));
+        vehicleTxnTypeList1.setCaption("Vehicle Type");
+        vehicleTxnTypeList1.setName("vehicleType"); // NOI18N
         xFormPanel1.add(vehicleTxnTypeList1);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 335, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 65, Short.MAX_VALUE))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-        );
+        add(xFormPanel1, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.rameses.gov.etracs.vehicle.components.VehicleTxnTypeList vehicleTxnTypeList1;

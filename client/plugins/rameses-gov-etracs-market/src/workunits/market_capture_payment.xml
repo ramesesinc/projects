@@ -1,5 +1,14 @@
-<workunit extends="com/rameses/seti2/templates/CrudLookup.xml" schemaName="market_section">
+<workunit schemaName="market_payment">
     <invokers>
-        <invoker type="market_section:lookup" caption="Lookup Market Section" action="init"/>
+        <invoker type="market_account:form:formActions" 
+            caption="Capture Payment" index="-10" 
+            target="popup"
+            visibleWhen="#{mode=='read'}"
+            action="create"/> 
+        
     </invokers>
+    <code class="com.rameses.gov.etracs.market.models.MarketCapturePaymentModel" />
+    <pages>
+        <page template="com.rameses.gov.etracs.market.views.MarketCapturePaymentPage" />
+    </pages>
 </workunit>

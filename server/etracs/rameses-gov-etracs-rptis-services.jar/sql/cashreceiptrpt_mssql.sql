@@ -727,12 +727,8 @@ where cro.rptreceiptid = $P{rptreceiptid}
 
 [deleteLedgerQtrlyItemFullyPaid]
 delete from rptledgeritem_qtrly 
-where parentid in (
-	select objid 
-	from rptledgeritem
-	where rptledgerid = $P{rptledgerid}
+where rptledgerid = $P{rptledgerid}
   	and fullypaid = 1 
-)  
 
 
 [deleteLedgerItemFullyPaid]

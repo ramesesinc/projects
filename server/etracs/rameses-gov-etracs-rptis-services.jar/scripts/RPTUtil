@@ -704,4 +704,62 @@ class RPTUtil
         }
     }
 
+
+    @ProxyMethod
+    public def calcDuration(secs ) {
+        def mins = 1
+        def hrs = 0
+        def days = 0 
+        def months = 0
+        def yrs = 0 
+        
+        def tmins = 0 
+        def thrs = 0
+        def tdays = 0 
+        def tmonths = 0
+        
+        tmins = secs.intdiv(60)
+        
+        if (tmins > 0){
+            if (tmins < 60){
+                mins = tmins + 1 
+            }
+            else {
+                mins = (tmins % 60) + 1 
+                thrs = tmins.intdiv(60)
+            }
+        }
+        
+        if (thrs > 0){
+            if (thrs < 24){
+                hrs = thrs
+            }
+            else{
+                hrs = thrs % 24
+                tdays = thrs.intdiv(24)
+            }
+        }
+        
+        if (tdays > 0){
+            if (tdays < 30){
+                days = tdays
+            }
+            else{
+                days = tdays % 30 
+                tmonths = tdays.intdiv(30)
+                months = tmonths % 12
+                yrs = tmonths.intdiv(12)
+            }
+        }
+
+        def s = ' '
+        if (yrs > 0) s += yrs + (yrs == 1 ? ' yr' : ' yrs') + ' '
+        if (months > 0) s += months + (months == 1 ? ' month' : ' months') + ' '
+        if (days > 0) s += days + (days == 1 ? ' day' : ' days') + ' '
+        if (hrs > 0) s += hrs + (hrs == 1 ? ' hr' : ' hrs') + ' '
+        if (mins > 0) s += mins + (mins== 1 ? ' min' : ' mins') + ' '
+        
+        return s.trim()
+    }
+
 }

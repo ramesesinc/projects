@@ -22,19 +22,34 @@ class RPTTxnMonitoringModel extends com.rameses.gov.etracs.rpt.report.AsyncRepor
     
     String title = 'Transaction Monitoring'
     
-    String reportName = 'com/rameses/gov/etracs/rptis/report/rpt_txn_monitoring.jasper';
+    String reportPath = 'com/rameses/gov/etracs/rptis/report/';
     
     void buildReportData(entity, asyncHandler){
         svc.buildReport(entity, asyncHandler)
     }
     
-    def reporttypes = []
+            
+    def initReport(){
+        entity.qtr = null;
+        return 'default';
+    }
+    
+    String getReportName(){
+        return reportPath + entity.reporttype.report 
+    }
+    
+    def reporttypes = [
+        [type:'standard', caption:'STANDARD', report:'rpt_txn_monitoring.jasper'],
+        [type:'log', caption:'LOG', report:'rpt_txn_monitoring_log.jasper'],
+    ]
     
    def formControl = [
         getFormControls: {
             return [
                 new FormControl( "combo", [caption:'LGU', name:'entity.lgu', items:'lgus', expression:'#{item.name}', allowNull:false, required:true]),
-                new FormControl( "combo", [caption:'Report Type', name:'entity.reporttype', items:'reporttypes', expression:'#{item.caption}', emptyText:'STANDARD']),
+                new FormControl( "combo", [caption:'Report Type', name:'entity.reporttype', items:'reporttypes', expression:'#{item.caption}', allowNull:false]),
+                new FormControl( "integer", [caption:'Year', name:'entity.year', required:true, preferredSize:'100,19', depends:'entity.reporttype', visibleWhen:"#{entity.reporttype.type=='log'}", required:true]),
+                new FormControl( "combo", [caption:'Month', name:'entity.month', items:'months', depends:'entity.year', expression:'#{item.name}', dynamic:true, preferredSize:'100,19', depends:'entity.reporttype', visibleWhen:"#{entity.reporttype.type=='log'}", required:true]),
             ]    
         },
    ] as FormPanelModel;

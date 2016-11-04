@@ -24,9 +24,15 @@ class RPTReportMgmtTxnMonitoringService
 		util.required('LGU', params.lgu)
 
 		params.lguid = params.lgu.objid 
+		params.monthid = params.month?.index
 
-		def reportdata = [:]
-		def items = em.getList(params)
+		def items = [];
+
+		if ('standard'.equalsIgnoreCase(params.reporttype.type))
+			items = em.getList(params)
+		else if ('log'.equalsIgnoreCase(params.reporttype.type))
+			items = getLogs(params)
+
 		if (!items) throw new Exception('Records not found.')
 
 		def p = [
@@ -41,5 +47,43 @@ class RPTReportMgmtTxnMonitoringService
 		]
 	}
 
+	def getLogs(params){
+		def items = em.getLogs(params)
+		items.each{
+			it.state = it.idx.toString().padLeft(3, '0') + '.' + it.state
+			it.secs = calcSeconds(it)
+			it.duration = util.calcDuration(it.secs)
+		}
+
+		//add totals line 
+		def grps = items.groupBy{it.objid}
+		items = [] 
+		grps.each{k, v ->
+			if (v){
+				def item = [:]
+				item.putAll(v[0])
+				item.state = '999.total'
+				item.secs = v.secs.sum()
+				item.duration = util.calcDuration(item.secs)
+				v << item 
+			}
+			items.addAll(v)
+		}
+		return items.sort{a,b -> a.tdno <=> b.tdno}
+	}
+
+	def calcSeconds(item){
+		Calendar startCal = Calendar.getInstance()
+        Calendar endCal = Calendar.getInstance()
+        
+        startCal.setTime(item.startdate)
+        endCal.setTime(item.enddate )
+        
+        int startMillis = startCal.getTimeInMillis()
+        int endMillis = endCal.getTimeInMillis()
+        int diff = endMillis - startMillis
+        return diff.intdiv(1000)
+	}
 
 }
+

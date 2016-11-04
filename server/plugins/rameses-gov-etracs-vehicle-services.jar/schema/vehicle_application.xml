@@ -10,7 +10,6 @@
 		<field name="dtfiled" required="true" />
 		<field name="filedby_objid" required="true" />
 		<field name="filedby_name" required="true" />
-		<field name="txntype" required="true" />
 		<field name="particulars" required="true" />
 
 		<field name="owner_objid" required="true" />
@@ -21,6 +20,10 @@
 		<field name="amount" type="decimal" required="true" />
 		<field name="amtpaid" type="decimal" required="true" />
 		<field name="balance" expr="amount - amtpaid" />
+
+		<complex name="txntype" ref="vehicle_txntype" jointype="many-to-one" includefields="uihandler">
+			<key field="txntypeid" target="objid" />
+		</complex>
 
 	</element>
 </schema>

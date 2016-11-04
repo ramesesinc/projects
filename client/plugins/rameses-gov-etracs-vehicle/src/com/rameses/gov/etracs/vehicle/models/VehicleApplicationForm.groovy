@@ -77,7 +77,7 @@ public class VehicleApplicationForm extends CrudFormModel {
             entity.control = o;
             pass = true;
         }
-        Modal.show( "vehicle_control:available:lookup", [onselect:h] );
+        Modal.show( "vehicle_control:available:lookup", [onselect:h, txntypeid:entity.txntype] );
         if( pass ) {
             pass = false;
             h = { o->

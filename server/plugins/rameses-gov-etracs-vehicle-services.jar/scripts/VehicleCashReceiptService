@@ -50,7 +50,7 @@ class VehicleCashReceiptService {
 		def facts = [];
 		facts << new treasury.facts.BillDate(dt);
 		facts << new CurrentDate(dt);
-		facts << new VehicleApplication( apptype: app.apptype , appdate: app.appdate, txntype:app.txntype );
+		facts << new VehicleApplication( apptype: app.apptype , appdate: app.appdate, txntype:app.txntype?.objid );
 		items.each {
 			facts << new BillItem( account: it.item, amount: it.amount, txntype: 'fee', refid: it.objid );
 		};

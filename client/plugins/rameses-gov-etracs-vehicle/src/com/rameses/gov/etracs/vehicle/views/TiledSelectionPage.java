@@ -33,7 +33,7 @@ public class TiledSelectionPage extends javax.swing.JPanel {
     private void initComponents() {
 
         xTileView1 = new com.rameses.rcp.control.XTileView();
-        jLabel1 = new javax.swing.JLabel();
+        xLabel1 = new com.rameses.rcp.control.XLabel();
 
         xTileView1.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
         xTileView1.setCellSize(new java.awt.Dimension(75, 80));
@@ -42,7 +42,7 @@ public class TiledSelectionPage extends javax.swing.JPanel {
         xTileView1.setOpaque(false);
         xTileView1.setPadding(new java.awt.Insets(10, 20, 10, 0));
 
-        jLabel1.setText("Select a Vehicle Type");
+        xLabel1.setExpression("#{label}");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -51,22 +51,22 @@ public class TiledSelectionPage extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 537, Short.MAX_VALUE)
-                    .addComponent(xTileView1, javax.swing.GroupLayout.DEFAULT_SIZE, 537, Short.MAX_VALUE))
+                    .addComponent(xTileView1, javax.swing.GroupLayout.DEFAULT_SIZE, 537, Short.MAX_VALUE)
+                    .addComponent(xLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(xLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(xTileView1, javax.swing.GroupLayout.DEFAULT_SIZE, 366, Short.MAX_VALUE)
+                .addComponent(xTileView1, javax.swing.GroupLayout.DEFAULT_SIZE, 375, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel1;
+    private com.rameses.rcp.control.XLabel xLabel1;
     private com.rameses.rcp.control.XTileView xTileView1;
     // End of variables declaration//GEN-END:variables
 }

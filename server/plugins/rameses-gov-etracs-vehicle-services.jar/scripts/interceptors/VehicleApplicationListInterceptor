@@ -44,7 +44,6 @@ class VehicleApplicationListInterceptor {
 		else {
 			o.where = [str, m];
 		}
-		println "enter query service";
 	}
 
 

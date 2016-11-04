@@ -15,7 +15,6 @@ public class VehicleListFilter extends CrudListModel {
     ];
 
     public def getCustomFilter() {
-        if(! query.txntype ) return null;
         return ["txntypeid=:type", [type: query.txntype?.objid]]; 
     }
     

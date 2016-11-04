@@ -32,7 +32,7 @@ public class VehicleQueryForm extends javax.swing.JPanel {
         setLayout(new java.awt.BorderLayout());
 
         vehicleTxnTypeList1.setCaption("Vehicle Type");
-        vehicleTxnTypeList1.setName("vehicleType"); // NOI18N
+        vehicleTxnTypeList1.setName("query.txntype"); // NOI18N
         xFormPanel1.add(vehicleTxnTypeList1);
 
         add(xFormPanel1, java.awt.BorderLayout.CENTER);

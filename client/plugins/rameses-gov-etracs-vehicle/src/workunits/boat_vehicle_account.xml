@@ -1,39 +1,15 @@
 <workunit extends="com/rameses/seti2/templates/CrudForm.xml" schemaName="vehicle_application" txntype="mtop">
     <invokers>
+        <invoker type="vehicle_menu:boat" caption="Capture Account" action="create" index="50"/>
+
         <invoker type="vehicle_account:boat:create" caption="Capture New Fishboat" action="create" />
         <invoker type="vehicle_account:boat:open" caption="Open Fishboat" action="open" />
         
         <!-- actions -->
         <invoker type="formActions" caption="Submit" action="save" />
     </invokers>
-    <code>
-        <![CDATA[
-        import com.rameses.rcp.annotations.*;
-        import com.rameses.rcp.common.*;
-        import com.rameses.seti2.models.*;
-        import com.rameses.osiris2.common.*;
-        import com.rameses.rcp.common.*;
-        import com.rameses.osiris2.client.*;
-        import com.rameses.util.*;
-        import com.rameses.gov.etracs.vehicle.models.*;
-            
-        class FishboatApplication extends VehicleAccountForm {
-            def engineListModel = [
-                fetchList: { o->
-                    if(entity.engines==null) entity.engines = [];
-                    return entity.engines;
-                },
-                addItem: { o->
-                    entity.engines << o;
-                },
-                onRemoveItem: { o->
-                    entity.engines.remove(o);
-                }
-            ] as EditorListModel;
-        } 
-        ]]>
-    </code>
+    <code class="com.rameses.gov.etracs.vehicletype.boat.BoatAccountForm" />
     <pages>
-        <page template="com.rameses.gov.etracs.vehicle.views.FishboatAccountPage"/>
+        <page template="com.rameses.gov.etracs.vehicletype.boat.BoatAccountPage"/>
     </pages>
 </workunit>

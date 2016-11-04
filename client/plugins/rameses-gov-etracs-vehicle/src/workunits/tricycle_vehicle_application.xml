@@ -2,11 +2,14 @@
            schemaName="vehicle_application_tricycle">
     <invokers>
         <invoker type="vehicle:uihandler" caption="Tricycle" name="tricycle"/>
-        <invoker type="vehicle_application_tricycle:new" caption="New" action="create" />
-        <invoker type="vehicle_application_tricycle:create" caption="New" action="create" />
-        <invoker type="vehicle_application_tricycle:renew" caption="Renew" action="renew" />
-        <invoker type="vehicle_application_tricycle:retire" caption="Retire" action="retire" />
 
+        <!-- Tricycle Menus -->
+        <invoker type="vehicle_menu:tricycle" caption="New" action="create" />
+        <invoker type="vehicle_menu:tricycle" caption="Renew" action="renew" />
+        <invoker type="vehicle_menu:tricycle" caption="Retire" action="retire" />
+        
+        <!-- from applicationn list -->
+        <invoker type="vehicle_application_tricycle:create" caption="New" action="create" />
         <invoker type="vehicle_application_tricycle:open" caption="Application" action="open" />
     </invokers>
     <code class="com.rameses.gov.etracs.vehicletype.tricycle.TricycleApplicationForm" />

@@ -22,28 +22,14 @@ class VehicleAssessmentService {
 	@Service("RuleExecutorService")
 	def ruleSvc;
 
-	@ProxyMethod
-	public def getInfos( def app ) {
-		def facts = [];
-		facts << new VehicleApplication( apptype: app.apptype, txntype: app.txntype );
-		def h = {o->
-			if(o=='compute-fee') throw new BreakException();
-		};
-		def result = ruleSvc.execute( "vehicleassessment", facts, null, null );	
-		def infos = result.infos;
-		infos.each {
-			it.variable = varEm.find([name: it.variable.name] ).first();
-		}		
-		return infos.sort{it.sortorder};
-	}
-
+	
 	@ProxyMethod
 	public def assess( def o ) {
 		if(!o.txntype) throw new Exception("txntype is required in VehicleAssessmentService.assess")
 		def svrDate = dateSvc.getServerDate();
 		if(!o.billdate) o.billdate = svrDate;
 		def facts = [];
-		facts << new VehicleApplication( apptype: o.apptype, txntype: o.txntype );
+		facts << new VehicleApplication( apptype: o.apptype, txntype: o.txntype?.objid );
 		facts << new CurrentDate(svrDate);
 		facts << new BillDate(svrDate);
 

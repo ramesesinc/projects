@@ -15,12 +15,11 @@ public class SelectVehicleTxnTypeModel  {
     
     def homeicon = 'home/icons/folder.png';
 
-    String title = "Select Vehicle";
+    String label = "Select Vehicle";
     
     def listModel = [
         fetchList: { o->
             def list = qryService.getList( [_schemaname:'vehicle_txntype', _limit:100 ]);
-            println "list size is " + list.size();
             list.each {
                 it.caption = it.title;
                 if(!it.icon) {

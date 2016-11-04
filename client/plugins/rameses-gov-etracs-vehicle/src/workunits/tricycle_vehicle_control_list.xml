@@ -1,0 +1,6 @@
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" schemaName="vehicle_control">
+    <invokers>
+        <invoker type="vehicle_menu:tricycle" caption="MTOP Number" action="init" orderBy="controlno"/>
+    </invokers>
+    <code class="com.rameses.gov.etracs.vehicle.models.VehicleControlList" />
+</workunit>

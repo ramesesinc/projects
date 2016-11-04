@@ -6,4 +6,21 @@
                  cols="controlno,currentaccount.owner.name,currentaccount.particulars,currentacctid"
                  action="init"/>
     </invokers>
+    <code>
+        <![CDATA[
+        
+        import com.rameses.seti2.models.*;
+        
+        class VehicleControlLookup extends CrudLookupModel {
+        
+            def txntype;
+            
+            public def getCustomFilter() {
+                println "xtntype is " + txntype.objid;
+                return ["txntypeid=:type", [type: txntype?.objid]]; 
+            }
+        }
+        
+        ]]>
+    </code>
 </workunit>

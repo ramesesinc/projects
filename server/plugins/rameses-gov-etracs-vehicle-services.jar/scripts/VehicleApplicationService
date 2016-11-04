@@ -37,10 +37,9 @@ class VehicleApplicationService {
 
 	@ProxyMethod
 	public def post( def o ) {
-		def txntypeid = o.txntype.toLowerCase();
-		def tt = txnTypeEm.find( [objid: txntypeid] ).first();
+		throw new Exception("o ->"+txntype.uihandler)
 
-		def z = em.lookup( 'vehicle_account_'+ tt.uihandler );
+		def z = em.lookup( 'vehicle_account_'+ o.txntype.uihandler );
 
 		def sc = schemaSvc.getSchema( [name:'vehicle_application'] );
 		String exclude = sc.fields*.name.join("|");

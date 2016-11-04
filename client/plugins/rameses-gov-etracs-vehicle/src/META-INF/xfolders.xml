@@ -1,8 +1,6 @@
 <folders>
     <folder id="home">
-        <folder id="vehicle" caption="Vehicle" >
-            <folder id="application" caption="Application" />
-        </folder>    
+        <folder id="vehicle" caption="Vehicle"/>
     </folder>
     <folder id="explorer">
         <folder id="master" caption="Master">

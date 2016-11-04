@@ -2,8 +2,9 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.rameses.gov.etracs.vehicle.views;
+package com.rameses.gov.etracs.vehicletype.boat;
 
+import com.rameses.gov.etracs.vehicle.views.AccountTemplate;
 import com.rameses.rcp.ui.annotations.Template;
 
 /**
@@ -11,12 +12,12 @@ import com.rameses.rcp.ui.annotations.Template;
  * @author Elmo Nazareno
  */
 @Template( value=AccountTemplate.class, target="content")
-public class FishboatAccountPage extends javax.swing.JPanel {
+public class BoatAccountPage extends javax.swing.JPanel {
 
     /**
      * Creates new form FishboatVehicleAccountPage
      */
-    public FishboatAccountPage() {
+    public BoatAccountPage() {
         initComponents();
     }
 

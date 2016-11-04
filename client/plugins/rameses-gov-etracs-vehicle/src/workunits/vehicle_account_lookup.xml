@@ -2,7 +2,7 @@
     <invokers>
         <invoker type="vehicle_account:renewal:lookup" caption="Vehicle Account For Renewal" 
             action="init" 
-            cols="acctno,operator.name,regdate" 
+            cols="acctno,owner.name,regdate" 
             customFilter="state='ACTIVE' AND expirydate &lt;= DATE()"/>
     </invokers>
     <code class="com.rameses.gov.etracs.vehicle.models.VehicleLookupFilter" />

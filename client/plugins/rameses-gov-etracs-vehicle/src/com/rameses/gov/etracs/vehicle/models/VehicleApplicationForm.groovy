@@ -4,6 +4,7 @@ import com.rameses.rcp.annotations.*;
 import com.rameses.rcp.common.*;
 import com.rameses.seti2.models.*;
 import com.rameses.osiris2.common.*;
+import com.rameses.util.*;
 
 public class VehicleApplicationForm extends CrudFormModel {
     
@@ -13,25 +14,37 @@ public class VehicleApplicationForm extends CrudFormModel {
     @Service("VehicleApplicationService")
     def appSvc;
     
-    String title = "Vehicle Registration";
+    @Caller
+    def caller;
+    
     def selectedItem;
     def txntype;
     
-    public String getSchemaName() {
-        return "vehicle_application";
+    public String getTitle() {
+        return txntype.title + " (" + entity.apptype + ")";
     }
     
-    public boolean beforePost() { return true;}
-    
     def create() {
-        def z = super.create();
+        super.create();
         entity.apptype = 'NEW';
-        entity.txntype = txntype;
-        entity.operator = [:];
-        entity.info = [:];
+        if( txntype==null ) {
+            txntype = caller.txntype;
+        }
+        if(!txntype)
+            throw new Exception("txntype is required");
+        entity.txntype = txntype.objid;
+        entity.owner = [:];
         entity.fees = [];
-        title += " " + txntype.objid;
-        return z;
+        return entity;
+    }
+    
+    def renew() {
+        boolean pass = false;
+        def h = { o->
+            pass = true;
+        }
+        Modal.show( "vehicle_account_" + txntype.uihandler+ ":lookup", [onselect: h] );
+        if(!pass) throw new BreakException();
     }
     
     void assess() {
@@ -56,4 +69,25 @@ public class VehicleApplicationForm extends CrudFormModel {
         }
     }
     
+    public boolean beforePost() {
+        boolean pass = false;
+        def h = { o->
+            if(o.currentacctid)
+                throw new Exception("This control is not available");
+            entity.control = o;
+            pass = true;
+        }
+        Modal.show( "vehicle_control:available:lookup", [onselect:h] );
+        if( pass ) {
+            pass = false;
+            h = { o->
+                entity.expirydate = o;
+                pass = true;
+            }
+            Modal.show( "date:prompt", [handler:h, title:'Enter Franchise Expiry date'] );
+        }
+        return pass;
+    }
+    
+
 }

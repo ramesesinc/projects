@@ -1,0 +1,16 @@
+<workunit  extends="com/rameses/gov/etracs/vehicle/templates/VehicleApplication.xml" 
+           schemaName="vehicle_application_tricycle">
+    <invokers>
+        <invoker type="vehicle:uihandler" caption="Tricycle" name="tricycle"/>
+        <invoker type="vehicle_application_tricycle:new" caption="New" action="create" />
+        <invoker type="vehicle_application_tricycle:create" caption="New" action="create" />
+        <invoker type="vehicle_application_tricycle:renew" caption="Renew" action="renew" />
+        <invoker type="vehicle_application_tricycle:retire" caption="Retire" action="retire" />
+
+        <invoker type="vehicle_application_tricycle:open" caption="Application" action="open" />
+    </invokers>
+    <code class="com.rameses.gov.etracs.vehicletype.tricycle.TricycleApplicationForm" />
+    <pages>
+        <page template="com.rameses.gov.etracs.vehicletype.tricycle.TricycleApplicationPage" />
+    </pages>
+</workunit>

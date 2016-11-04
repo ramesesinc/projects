@@ -1,0 +1,9 @@
+<workunit>
+    <invokers>
+        <invoker type="vehicle_transaction:menu" caption="Select Transaction" action="init"/>
+    </invokers>
+    <code class="com.rameses.gov.etracs.vehicle.models.SelectVehicleTransactionModel" />
+    <pages>
+        <page template="com.rameses.gov.etracs.vehicle.views.TiledSelectionPage"/>
+    </pages>
+</workunit>

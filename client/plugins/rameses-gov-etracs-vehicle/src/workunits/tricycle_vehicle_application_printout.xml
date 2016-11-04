@@ -1,0 +1,24 @@
+<workunit extends="com/rameses/seti2/templates/CrudReport.xml">
+    <invokers>
+        <invoker type="vehicle_application_tricycle:form:formActions" 
+                 caption="Application Print" 
+                 target="self" action="view"
+                 reportName="com/rameses/gov/etracs/vehicletype/tricycle/application.jasper" />
+    </invokers>             
+    <code>
+    <![CDATA[ 
+
+
+    import com.rameses.seti2.models.*;
+               
+    class VehicleApplicationReport extends CrudReportModel {
+        
+        public def getReportData() {
+            entity.color = 'BLACKIE';
+            return entity;
+        }
+    }    
+            
+    ]]>    
+    </code>
+</workunit>

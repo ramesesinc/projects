@@ -1,6 +1,6 @@
 <workunit>
     <invokers>
-        <invoker folderid="home/vehicle/application" caption="Renew" action="renew" target="process"/>
+        <invoker folderid="home/vehicle/mtop/application" caption="Renew" action="renew" target="process"/>
     </invokers>
     <code>
          <![CDATA[

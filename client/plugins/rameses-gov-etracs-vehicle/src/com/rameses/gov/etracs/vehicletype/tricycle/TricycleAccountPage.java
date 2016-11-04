@@ -2,8 +2,10 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.rameses.gov.etracs.vehicle.views;
+package com.rameses.gov.etracs.vehicletype.tricycle;
 
+
+import com.rameses.gov.etracs.vehicle.views.AccountTemplate;
 import com.rameses.rcp.ui.annotations.Template;
 
 /**
@@ -11,12 +13,12 @@ import com.rameses.rcp.ui.annotations.Template;
  * @author Elmo Nazareno
  */
 @Template( value=AccountTemplate.class, target="content")
-public class MtopAccountPage extends javax.swing.JPanel {
+public class TricycleAccountPage extends javax.swing.JPanel {
 
     /**
      * Creates new form MtopVehicleAccountPage
      */
-    public MtopAccountPage() {
+    public TricycleAccountPage() {
         initComponents();
     }
 

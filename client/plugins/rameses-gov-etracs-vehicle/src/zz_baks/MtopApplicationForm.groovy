@@ -7,10 +7,16 @@ import com.rameses.osiris2.common.*;
 
 public class MtopApplicationForm extends VehicleApplicationForm {
     
+    String title = "MTOP Vehicle Registration";
+    
+    public String getTxntype() {
+        return 'MTOP';
+    }
+    
     public boolean beforePost() {
         boolean pass = false;
         def h = { o->
-            entity.info.franchise = o;
+            entity.franchise = o;
             pass = true;
         }
         Modal.show( "mtop_franchise:available:lookup", [onselect:h] );

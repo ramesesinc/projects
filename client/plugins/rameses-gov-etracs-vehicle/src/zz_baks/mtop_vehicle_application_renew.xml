@@ -1,9 +1,9 @@
 <workunit>
     <invokers>
-        <invoker folderid="home/vehicle/application" caption="New" action="init" target="process"/>
+        <invoker folderid="home/vehicle/mtop/application" caption="Renew" action="renew" target="process"/>
     </invokers>
     <code>
-        <![CDATA[
+         <![CDATA[
         import com.rameses.rcp.annotations.*;
         import com.rameses.rcp.common.*;
         import com.rameses.seti2.models.*;
@@ -12,18 +12,24 @@
         import com.rameses.osiris2.client.*;
         import com.rameses.util.*;
         
-        class SelectVehicleType {
+        class SelectForRenewal {
         
-            void init() {
+            @Service("VehicleApplicationService")
+            def appSvc;
+        
+            void renew() {
                 def h = { o->
+                    appSvc.loadForApplication([objid:o.objid]);
+                    /*
                     def t = o.objid.toLowerCase();
                     def op = Inv.lookupOpener( "vehicle_application:"+t+":create", [txntype:o] );
                     Inv.invoke( op );
+                    */
                 }
-                Modal.show( "vehicle_txntype:lookup", [onselect:h] );  
+                Modal.show( "vehicle_account:renewal:lookup", [onselect:h] );  
             }
         } 
         
-        ]]>        
+        ]]>    
     </code>
 </workunit>

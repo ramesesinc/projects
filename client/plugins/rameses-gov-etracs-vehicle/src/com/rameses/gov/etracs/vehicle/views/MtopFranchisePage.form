@@ -18,7 +18,7 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="xTabbedPane1" pref="488" max="32767" attributes="0"/>
+              <Component id="xTabbedPane1" pref="505" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
@@ -54,7 +54,7 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="xFormPanel1" max="32767" attributes="0"/>
-                          <Component id="xFormPanel2" alignment="0" pref="463" max="32767" attributes="0"/>
+                          <Component id="xFormPanel2" alignment="0" pref="480" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
@@ -88,7 +88,7 @@
                       </Border>
                     </Property>
                     <Property name="caption" type="java.lang.String" value="Body No"/>
-                    <Property name="expression" type="java.lang.String" value="#{entity.bodyno}"/>
+                    <Property name="expression" type="java.lang.String" value="#{entity.controlno}"/>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                       <Dimension value="[120, 20]"/>
                     </Property>
@@ -104,7 +104,7 @@
                       </Border>
                     </Property>
                     <Property name="caption" type="java.lang.String" value="Acct No"/>
-                    <Property name="expression" type="java.lang.String" value="#{entity.acctno}"/>
+                    <Property name="expression" type="java.lang.String" value="#{entity.currentaccount.acctno}"/>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                       <Dimension value="[120, 20]"/>
                     </Property>
@@ -120,7 +120,7 @@
                       </Border>
                     </Property>
                     <Property name="caption" type="java.lang.String" value="Operator"/>
-                    <Property name="expression" type="java.lang.String" value="#{entity.currentaccount.operator.name}"/>
+                    <Property name="expression" type="java.lang.String" value="#{entity.currentaccount.owner.name}"/>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                       <Dimension value="[0, 20]"/>
                     </Property>
@@ -136,7 +136,7 @@
                       </Border>
                     </Property>
                     <Property name="caption" type="java.lang.String" value="Operator Address"/>
-                    <Property name="expression" type="java.lang.String" value="#{entity.currentaccount.operator.address.text}"/>
+                    <Property name="expression" type="java.lang.String" value="#{entity.currentaccount.owner.address.text}"/>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                       <Dimension value="[0, 20]"/>
                     </Property>
@@ -203,7 +203,7 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="xDataTable1" pref="463" max="32767" attributes="0"/>
+                      <Component id="xDataTable1" pref="480" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>

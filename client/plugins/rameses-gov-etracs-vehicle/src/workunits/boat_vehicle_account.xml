@@ -1,7 +1,7 @@
 <workunit extends="com/rameses/seti2/templates/CrudForm.xml" schemaName="vehicle_application" txntype="mtop">
     <invokers>
-        <invoker type="vehicle_account:fishboat:create" caption="Capture New Fishboat" action="create" />
-        <invoker type="vehicle_account:fishboat:open" caption="Open Fishboat" action="open" />
+        <invoker type="vehicle_account:boat:create" caption="Capture New Fishboat" action="create" />
+        <invoker type="vehicle_account:boat:open" caption="Open Fishboat" action="open" />
         
         <!-- actions -->
         <invoker type="formActions" caption="Submit" action="save" />

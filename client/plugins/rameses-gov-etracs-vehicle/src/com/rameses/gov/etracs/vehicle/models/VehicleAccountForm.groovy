@@ -11,18 +11,20 @@ public class VehicleAccountForm extends CrudFormModel {
     def selectedItem;
     def txntype;
     
-    public String getSchemaName() {
-        return "vehicle_account";
-    }
+    @Caller
+    def caller;
     
     def create() {
-        def z = super.create();
-        entity.apptype = 'NEW';
-        entity.txntype = txntype;
-        entity.operator = [:];
-        entity.info = [:];
-        title += " " + txntype.objid;
-        return z;
+        super.create();
+        if( txntype==null ) {
+            txntype = caller.txntype;
+        }
+        if(!txntype)
+            throw new Exception("txntype is required");
+        entity.txntype = txntype.objid;
+        entity.owner = [:];
+        entity.fees = [];
+        return entity;
     }
     
 }

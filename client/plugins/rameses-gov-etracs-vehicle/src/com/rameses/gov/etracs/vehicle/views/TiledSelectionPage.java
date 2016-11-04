@@ -4,18 +4,24 @@
  */
 package com.rameses.gov.etracs.vehicle.views;
 
+import com.rameses.osiris2.themes.FormPage;
+import com.rameses.rcp.ui.annotations.Template;
+
 /**
  *
  * @author Elmo Nazareno
  */
-public class SelectVehicleTypePage extends javax.swing.JPanel {
+@Template(FormPage.class)
+public class TiledSelectionPage extends javax.swing.JPanel {
 
     /**
      * Creates new form SelectVehicleTypePage
      */
-    public SelectVehicleTypePage() {
+    public TiledSelectionPage() {
         initComponents();
+        
     }
+    
 
     /**
      * This method is called from within the constructor to initialize the form.

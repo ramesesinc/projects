@@ -41,6 +41,7 @@ public class AccountTemplate extends javax.swing.JPanel implements UIContentPane
         panelContent = new javax.swing.JPanel();
         xPanel1 = new com.rameses.rcp.control.XPanel();
         jPanel2 = new javax.swing.JPanel();
+        jPanel3 = new javax.swing.JPanel();
 
         xFormPanel1.setCaptionWidth(100);
 
@@ -50,14 +51,14 @@ public class AccountTemplate extends javax.swing.JPanel implements UIContentPane
         xLabel1.setPreferredSize(new java.awt.Dimension(80, 18));
         xFormPanel1.add(xLabel1);
 
-        entityLookup1.setCaption("Operator");
-        entityLookup1.setName("entity.operator"); // NOI18N
+        entityLookup1.setCaption("Owner");
+        entityLookup1.setName("entity.owner"); // NOI18N
         entityLookup1.setPreferredSize(new java.awt.Dimension(0, 21));
         xFormPanel1.add(entityLookup1);
 
         entityAddressLookup1.setCaption("Home Address");
-        entityAddressLookup1.setDepends(new String[] {"entity.operator"});
-        entityAddressLookup1.setName("entity.operator.address"); // NOI18N
+        entityAddressLookup1.setDepends(new String[] {"entity.owner"});
+        entityAddressLookup1.setName("entity.owner.address"); // NOI18N
         entityAddressLookup1.setPreferredSize(new java.awt.Dimension(0, 53));
         xFormPanel1.add(entityAddressLookup1);
 
@@ -125,6 +126,19 @@ public class AccountTemplate extends javax.swing.JPanel implements UIContentPane
 
         xTabbedPane1.addTab("Application History", xPanel1);
 
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 631, Short.MAX_VALUE)
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 401, Short.MAX_VALUE)
+        );
+
+        xTabbedPane1.addTab("Violations", jPanel3);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -147,6 +161,7 @@ public class AccountTemplate extends javax.swing.JPanel implements UIContentPane
     private com.rameses.entity.components.EntityLookup entityLookup1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel panelContent;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XLabel xLabel1;

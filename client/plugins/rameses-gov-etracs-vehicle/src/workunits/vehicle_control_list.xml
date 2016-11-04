@@ -1,0 +1,42 @@
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" schemaName="vehicle_control">
+    <invokers>
+        <invoker folderid="explorer/master/vehicle" caption="Vehicle Control" action="init" orderBy="controlno"/>
+    </invokers>
+    <code>
+        <![CDATA[
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.seti2.models.*;
+        import com.rameses.osiris2.common.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.util.*;
+        import com.rameses.gov.etracs.vehicle.models.*;
+            
+        class VehicleControlList extends VehicleListFilter {
+        
+            @Service("VehicleControlService")
+            def ctrlSvc;
+        
+            def txntype;
+        
+            void init() {
+                super.init();
+            }
+        
+            def create() {
+                if(!query.txntype)
+                    throw new Exception("Please select a txntype");
+                def q = MsgBox.prompt( "Please enter qty to issue");
+                if(!q) return; 
+                query.qty = q;
+                ctrlSvc.generate(query);
+                reload();
+            }
+        } 
+        ]]>
+    </code>
+    <pages>
+        <page name="queryForm" template="com.rameses.gov.etracs.vehicle.views.VehicleQueryForm" />
+    </pages>
+</workunit>

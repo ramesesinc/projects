@@ -1,0 +1,15 @@
+<workunit extends="com/rameses/gov/etracs/vehicle/templates/VehicleApplication.xml" 
+          schemaName="vehicle_application_boat">
+    <invokers>
+        <invoker type="vehicle:uihandler" caption="Tricycle" name="boat"/>
+        <invoker type="vehicle_application_boat:new" caption="New" action="create" />
+        <invoker type="vehicle_application_boat:create" caption="New" action="create" />
+        <invoker type="vehicle_application_boat:renew" caption="Renew" action="renew" />
+        <invoker type="vehicle_application_boat:retire" caption="Retire" action="retire" />
+        <invoker type="vehicle_application_boat:open" caption="Boat Application" action="open" />
+    </invokers>
+    <code class="com.rameses.gov.etracs.vehicletype.boat.BoatApplicationForm" />
+    <pages>
+        <page template="com.rameses.gov.etracs.vehicletype.boat.BoatApplicationPage" />
+    </pages>
+</workunit>

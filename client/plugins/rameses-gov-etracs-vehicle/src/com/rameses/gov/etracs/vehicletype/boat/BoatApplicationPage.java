@@ -2,8 +2,9 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.rameses.gov.etracs.vehicle.views;
+package com.rameses.gov.etracs.vehicletype.boat;
 
+import com.rameses.gov.etracs.vehicle.views.ApplicationTemplate;
 import com.rameses.rcp.ui.annotations.Template;
 
 /**
@@ -11,12 +12,12 @@ import com.rameses.rcp.ui.annotations.Template;
  * @author Elmo Nazareno
  */
 @Template(value= ApplicationTemplate.class, target="content")
-public class FishboatApplicationPage extends javax.swing.JPanel {
+public class BoatApplicationPage extends javax.swing.JPanel {
 
     /**
      * Creates new form MtopApplicationPage
      */
-    public FishboatApplicationPage() {
+    public BoatApplicationPage() {
         initComponents();
     }
 
@@ -44,47 +45,47 @@ public class FishboatApplicationPage extends javax.swing.JPanel {
         xFormPanel1.setCaptionWidth(100);
 
         xTextField1.setCaption("Vessel Name");
-        xTextField1.setName("entity.info.vesselname"); // NOI18N
+        xTextField1.setName("entity.vesselname"); // NOI18N
         xTextField1.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(xTextField1);
 
         xDecimalField1.setCaption("Length");
-        xDecimalField1.setName("entity.info.length"); // NOI18N
+        xDecimalField1.setName("entity.length"); // NOI18N
         xFormPanel1.add(xDecimalField1);
 
         xDecimalField2.setCaption("Breadth");
-        xDecimalField2.setName("entity.info.breadth"); // NOI18N
+        xDecimalField2.setName("entity.breadth"); // NOI18N
         xFormPanel1.add(xDecimalField2);
 
         xDecimalField3.setCaption("Depth");
-        xDecimalField3.setName("entity.info.depth"); // NOI18N
+        xDecimalField3.setName("entity.depth"); // NOI18N
         xFormPanel1.add(xDecimalField3);
 
         xDecimalField4.setCaption("Gross Tonnage");
-        xDecimalField4.setName("entity.info.grosstonnage"); // NOI18N
+        xDecimalField4.setName("entity.grosstonnage"); // NOI18N
         xFormPanel1.add(xDecimalField4);
 
         xDecimalField5.setCaption("Net Tonnage");
-        xDecimalField5.setName("entity.info.nettonnage"); // NOI18N
+        xDecimalField5.setName("entity.nettonnage"); // NOI18N
         xFormPanel1.add(xDecimalField5);
 
         xTextField7.setCaption("Builder Name");
-        xTextField7.setName("entity.info.buildername"); // NOI18N
+        xTextField7.setName("entity.buildername"); // NOI18N
         xTextField7.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(xTextField7);
 
         xTextField8.setCaption("Builder Place");
-        xTextField8.setName("entity.info.builderplace"); // NOI18N
+        xTextField8.setName("entity.builderplace"); // NOI18N
         xTextField8.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(xTextField8);
 
         xIntegerField1.setCaption("Build Year");
-        xIntegerField1.setName("entity.info.buildyear"); // NOI18N
+        xIntegerField1.setName("entity.buildyear"); // NOI18N
         xFormPanel1.add(xIntegerField1);
 
         xDataTable1.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "make.id"}
+                new Object[]{"name", "make"}
                 , new Object[]{"caption", "Make"}
                 , new Object[]{"width", 100}
                 , new Object[]{"minWidth", 0}

@@ -1,0 +1,6 @@
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" schemaName="mbop_vehicle_application">
+    <invokers>
+        <invoker folderid="home/vehicle/mbop/application" caption="Listing" action="init" 
+            cols="appno,apptype,txntype.objid,appdate,appyear,owner.name,owner.address.text"/>
+    </invokers>
+</workunit>

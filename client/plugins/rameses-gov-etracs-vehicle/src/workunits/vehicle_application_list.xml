@@ -1,4 +1,4 @@
-<workunit extends="com/rameses/seti2/templates/CrudList.xml" schemaName="vehicle_application">
+<workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" schemaName="vehicle_application">
     <invokers>
         <invoker folderid="home/vehicle/application" caption="Application List" action="init" 
             cols="appno,apptype,txntype.objid,appdate,appyear,operator.name,operator.address.text"/>

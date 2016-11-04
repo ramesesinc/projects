@@ -1,0 +1,8 @@
+<schema adapter="vehicledb">
+	<element tablename="vehicle_route">
+		<field name="objid" primary="true" />
+		<field name="code" required="true" />
+		<field name="txntypeid" required="true" />
+		<field name="description" required="true" />
+	</element>
+</schema>

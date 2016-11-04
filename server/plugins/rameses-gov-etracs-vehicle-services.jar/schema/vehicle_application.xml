@@ -1,24 +1,26 @@
 <schema adapter="vehicledb">
 	<element tablename="vehicle_application">
-		<field name="objid" primary="true" prefix="VAPP" />
+		<field name="objid" primary="true" />
+
 		<field name="appno" required="true" />
 		<field name="appdate" required="true" />
 		<field name="apptype" required="true" />
-
-		<field name="owner_objid" required="true" />
-		<field name="owner_name" required="true" />
-		<field name="owner_address_text" required="true" />
-		<field name="name" required="true" />
-
+		<field name="appyear" required="true" />
 		<field name="state" required="true" />
 		<field name="dtfiled" required="true" />
 		<field name="filedby_objid" required="true" />
 		<field name="filedby_name" required="true" />
-		<field name="vehicletype" required="true" />
-		<complex name="info" required="true" serializer="default"/>
-		<complex name="fees" ref="vehicle_application_fee" jointype="one-to-many">
-			<key field="objid" target="appid" />
-		</complex>
+		<field name="txntype" required="true" />
+		<field name="particulars" required="true" />
+
+		<field name="owner_objid" required="true" />
+		<field name="owner_name" required="true" />
+		<field name="owner_address_text" required="true" />
+		<field name="owner_address_objid" required="true" />
+
+		<field name="amount" type="decimal" required="true" />
+		<field name="amtpaid" type="decimal" required="true" />
+		<field name="balance" expr="amount - amtpaid" />
 
 	</element>
 </schema>

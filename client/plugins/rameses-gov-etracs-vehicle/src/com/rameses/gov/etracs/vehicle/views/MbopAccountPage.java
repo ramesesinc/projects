@@ -11,12 +11,12 @@ import com.rameses.rcp.ui.annotations.Template;
  * @author Elmo Nazareno
  */
 @Template( value=AccountTemplate.class, target="content")
-public class FishboatAccountPage extends javax.swing.JPanel {
+public class MbopAccountPage extends javax.swing.JPanel {
 
     /**
      * Creates new form FishboatVehicleAccountPage
      */
-    public FishboatAccountPage() {
+    public MbopAccountPage() {
         initComponents();
     }
 

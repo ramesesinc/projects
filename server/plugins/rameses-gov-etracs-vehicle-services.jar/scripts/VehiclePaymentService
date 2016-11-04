@@ -16,33 +16,26 @@ class VehiclePaymentService {
 	@DataContext("vehicle_application")
 	def appEm;
 
+	@DataContext("vehicle_application_fee")
+	def appFeeEm;
+
 	@ProxyMethod
-	public def postPayment( def r ) {
-		def m = [:];
-		m.objid = r.objid;
-		m.appid = r.appid
-		m.refno = r.receiptno;		
-		m.refid = r.objid;		
-		m.reftype = "cashreceipt";		
-		m.refdate = r.receiptdate;
-		m.amount = r.amount;
-		m.txnmode = 'ONLINE';
-		m.voided = 0;
-
-		//use the billitems as the details for payment.
-		r.items.each {
-			it.parent = m;
-		}
-
+	public def postPayment( def m) {
 		pmtEm.create( m );
-
-		appEm.find( [objid:r.appid ] ).update( [state:'PAID'] );
+		appEm.find( [objid:m.appid ] ).update( [state:'PAID', amtpaid: '{amtpaid+:amtpaid}' ], [amtpaid: m.amount] );
 	}
 
-
 	@ProxyMethod
-	public def postVoidPayment( def o ) {
-		appEm.find( [objid:r.appid ] ).update( [state:'PENDING'] );
+	public def postVoid( def o ) {
+		def r = pmtEm.find( [refid: o.objid] ).first();
+
+		//check first the status of the application
+		def status = appEm.find( [objid:r.appid ] ).select("state").val();
+		if(! status.equalsIgnoreCase('PAID') )	
+			throw new Exception('Transaction cannot be voided because the application status is ' + status  );
+
+		appEm.find( [objid:r.appid ] ).update( [state:'PENDING', amtpaid: '{amtpaid-:amtpaid}' ], [amtpaid: r.amount] );
+		pmtEm.find([objid: r.objid] ).update( [voided: 1]);
 	}
 
 

@@ -1,0 +1,21 @@
+<schema>
+	<element name="collectiongroup" tablename="collectiongroup">
+		<field name="objid" primary="true"/>
+		<field name="state" required="true" />
+		<field name="name" required="true" />
+		<field name="afno" required="false" />
+		<field name="org_objid" required="false" />
+		<field name="org_name" required="false" />
+		<field name="sharing" required="false" />
+	</element>
+
+	<element name="collectiongroup_revenueitem" tablename="collectiongroup_revenueitem">
+		<field name="collectiongroupid" />
+		<field name="revenueitemid"  />
+		<field name="orderno" />
+		<field name="valuetype" />
+		<field name="defaultvalue" />
+	</element>
+	
+</schema>
+

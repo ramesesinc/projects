@@ -1,6 +1,6 @@
 <schema adapter="vehicledb">
 	<element tablename="vehicle_payment">
-		<field name="objid" primary="true" />
+		<field name="objid" primary="true" prefix="VPMT"/>
 		<field name="appid" required="true" />
 		<field name="txndate" required="true" />
 		<field name="amount" required="true" />
@@ -9,7 +9,7 @@
 		<field name="reftype" required="true" />
 		<field name="refno" required="true" />
 		<field name="refdate" required="true" />
-		<complex name="items" ref="vehicle_payment_fee" jointype="one-to-many">
+		<complex name="items" ref="vehicle_payment_item" jointype="one-to-many">
 			<key field="objid" target="parentid" />
 		</complex>	
 	</element>

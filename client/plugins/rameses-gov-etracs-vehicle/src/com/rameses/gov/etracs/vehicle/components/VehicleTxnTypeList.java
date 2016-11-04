@@ -45,8 +45,8 @@ public class VehicleTxnTypeList extends XComponentPanel {
 
         xComboBox1.setCaption("Vehicle Type");
         xComboBox1.setExpression("#{item.title}");
-        xComboBox1.setItems("vehicleTypes");
-        xComboBox1.setName("vehicleType"); // NOI18N
+        xComboBox1.setItems("typeList");
+        xComboBox1.setName("type"); // NOI18N
         xComboBox1.setPreferredSize(new java.awt.Dimension(0, 20));
         add(xComboBox1, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents

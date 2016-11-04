@@ -17,29 +17,16 @@ class VehicleApplicationBillingService {
 	def dateSvc;
 
 	@ProxyMethod
-	public def assess( def app ) {
-
-		def facts = [];
-		facts << new VehicleApplication(app);
-
-		ruleSvc.execute( "vrsassessment", facts, null, null );
-
-		def app = [:];
-		app.items = facts.findAll{ it instanceof BillItem }.collect{ [item: it.account.toItem(), amount: it.amount ] };
-		return app;
-	}
-
-
-	@ProxyMethod
-	public def billing( def o ) {
+	public def process( def o ) {
 		def dt = dateSvc.getServerDate();
 		def facts = [];
 		facts << new BillDate(dt);
 		facts << new CurrentDate(dt);
 		o.items.each {
 			facts << new BillItem( account: it.item, amount: it.amount, txntype: 'fee' );
-		}
-		ruleSvc.execute( "vrsbilling", facts, null, null );
+		};
+		
+		ruleSvc.execute( "vehiclebilling", facts, null, null );
 		def app = [:];
 		app.items = facts.findAll{ it instanceof BillItem };
 		return app;

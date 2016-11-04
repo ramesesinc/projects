@@ -1,0 +1,87 @@
+import com.rameses.annotations.*;
+import com.rameses.rules.common.*;
+import vehicle.facts.*;
+import treasury.utils.*;
+import treasury.facts.*;
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import java.util.*;
+
+class VehicleApplicationService {
+	
+	@Env
+	def env;
+
+	@DataContext("vehicle_application")
+	def appEm;
+
+	@DataContext(dynamic=true)
+	def em;
+
+	@DataContext("vehicle_account")
+	def acctEm;
+
+	@DataContext("vehicle_txntype")
+	def txnTypeEm;
+
+	@DataContext("vehicle_control")
+	def controlEm;
+
+
+	@Service("DateService")
+	def dateSvc;
+
+	@Service("SchemaService")
+	def schemaSvc;
+
+	@ProxyMethod
+	public def post( def o ) {
+		def txntypeid = o.txntype.toLowerCase();
+		def tt = txnTypeEm.find( [objid: txntypeid] ).first();
+
+		def z = em.lookup( 'vehicle_account_'+ tt.uihandler );
+
+		def sc = schemaSvc.getSchema( [name:'vehicle_application'] );
+		String exclude = sc.fields*.name.join("|");
+
+		def m = [:];
+		//flatten out the infos
+		o.each { k,v->
+			if(!k.matches(exclude)) {
+				m.put(k, v);
+			}
+		}
+		m.activeyear = o.appyear;
+		m.state = 'ACTIVE';
+		m.acctno = o.appno;
+		m.createdby = [objid: env.USERID, name: env.FULLNAME];
+		m.dtregistered = dateSvc.getServerDate();
+		m.particulars = o.particulars;
+		m.txntype = o.txntype;
+		m.expirydate = o.expirydate;
+		m = z.create(m);
+		appEm.find( [objid: o.objid]).update([state:'CLOSED', acctid: m.objid]);
+
+		controlEm.find( [objid: m.control.objid] ).update( [currentacctid: m.objid] );
+		return m;
+	}
+
+	@ProxyMethod
+	public def loadForApplication( def o ) {
+		def z = acctEm.find( [objid: o.objid]).first();
+		def sc = schemaSvc.getSchema( [ name:   z.txntype.toLowerCase() + '_vehicle_account' ] );
+		sc.fields.each {
+			println it.name + " " + z.get( it.name );
+		};
+
+		throw new Exception("stop");
+		
+		def m = [:];
+		z.each {
+
+		}
+	}
+
+
+}

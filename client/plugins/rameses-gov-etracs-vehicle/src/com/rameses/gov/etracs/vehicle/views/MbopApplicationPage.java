@@ -11,12 +11,12 @@ import com.rameses.rcp.ui.annotations.Template;
  * @author Elmo Nazareno
  */
 @Template(value= ApplicationTemplate.class, target="content")
-public class FishboatApplicationPage extends javax.swing.JPanel {
+public class MbopApplicationPage extends javax.swing.JPanel {
 
     /**
      * Creates new form MtopApplicationPage
      */
-    public FishboatApplicationPage() {
+    public MbopApplicationPage() {
         initComponents();
     }
 

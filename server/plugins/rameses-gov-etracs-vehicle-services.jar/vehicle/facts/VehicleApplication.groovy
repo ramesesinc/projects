@@ -5,8 +5,9 @@ import java.util.*;
 public class VehicleApplication {
 	
 	String apptype;
-	String vehicletype;
+	Date appdate;
+	String txntype;
 	Date dtregistered;
 
-	
+
 }

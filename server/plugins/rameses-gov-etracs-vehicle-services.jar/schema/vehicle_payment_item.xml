@@ -1,13 +1,16 @@
 <schema adapter="vehicledb">
 	<element tablename="vehicle_payment_item">
-		<field name="objid" primary="true" />
+		<field name="objid" primary="true" prefix="VPMTI"/>
 		<complex name="parent" ref="vehicle_payment" jointype="many-to-one">
 			<key field="parentid" target="objid" />
 		</complex>	
-		<field name="refid" required="true" />
+		<field name="refid" required="false"/>
 		<field name="item_objid" required="true" />
 		<field name="item_code" required="true" />
 		<field name="item_title" required="true" />
 		<field name="amount" required="true" type="decimal" />
+		<field name="surcharge" required="false" type="decimal" />
+		<field name="interest" required="false" type="decimal" />
+		<field name="discount" required="false" type="decimal" />
 	</element>
 </schema>

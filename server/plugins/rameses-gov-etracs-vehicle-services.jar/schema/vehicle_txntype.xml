@@ -1,0 +1,11 @@
+<schema adapter="vehicledb">
+	<element tablename="vehicle_txntype">
+		<field name="objid" primary="true" />
+		<field name="title" required="true" />
+		<field name="uihandler" required="true" />
+		<field name="schemaname" required="true" />
+		<field name="pattern"  />
+		<field name="issued"  />
+		<field name="icon"  />
+	</element>
+</schema>

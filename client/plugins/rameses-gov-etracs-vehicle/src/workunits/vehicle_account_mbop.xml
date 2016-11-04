@@ -1,7 +1,7 @@
-<workunit extends="com/rameses/seti2/templates/CrudForm.xml" schemaName="vehicle_application" txntype="mtop">
+<workunit extends="com/rameses/seti2/templates/CrudForm.xml" schemaName="vehicle_application" txntype="mbop">
     <invokers>
-        <invoker type="vehicle_account:fishboat:create" caption="Capture New Fishboat" action="create" />
-        <invoker type="vehicle_account:fishboat:open" caption="Open Fishboat" action="open" />
+        <invoker type="vehicle_account:mbop:create" caption="Capture New Motorboat" action="create" />
+        <invoker type="vehicle_account:mbop:open" caption="Open Motorboat" action="open" />
         
         <!-- actions -->
         <invoker type="formActions" caption="Submit" action="save" />
@@ -17,7 +17,7 @@
         import com.rameses.util.*;
         import com.rameses.gov.etracs.vehicle.models.*;
             
-        class FishboatApplication extends VehicleAccountForm {
+        class MbopApplication extends VehicleAccountForm {
             def engineListModel = [
                 fetchList: { o->
                     if(entity.engines==null) entity.engines = [];
@@ -34,6 +34,6 @@
         ]]>
     </code>
     <pages>
-        <page template="com.rameses.gov.etracs.vehicle.views.FishboatAccountPage"/>
+        <page template="com.rameses.gov.etracs.vehicle.views.MbopAccountPage"/>
     </pages>
 </workunit>

@@ -1,0 +1,14 @@
+<schema adapter="vehicledb">
+	<element tablename="vehicle_application_boat_engine">
+		<field name="objid" primary="true" prefix="BOATAPPENG" />
+
+		<complex name="app" ref="vehicle_application_boat" jointype="many-to-one" includefields="appno,name" required="false">
+			<key field="appid" target="objid"/>		
+		</complex>	
+
+		<field name="make"  />
+		<field name="serialno"  />
+		<field name="horsepower"/>
+
+	</element>
+</schema>

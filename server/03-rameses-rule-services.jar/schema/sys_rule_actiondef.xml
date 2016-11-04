@@ -2,16 +2,18 @@
 
 	<element tablename="sys_rule_actiondef">
 		<field name="objid" primary="true"/>
-		<field name="name" required="true" indexed="true"/>
-		<field name="actionname" required="true" indexed="true"/>
+		<field name="name" required="true" visible="false" />
+		<field name="actionname" required="true" indexed="true" searchable="true"/>
 		<field name="actionclass" required="false" indexed="true"/>
 		<field name="sortorder" required="true"/>
-		<field name="title" required="true" indexed="true" />
+		<field name="title" required="true" indexed="true" searchable="true"/>
 		<field name="domain" indexed="true" searchable="true"/>
 
-		<complex name="params" ref="sys_rule_actiondef_param" jointype="one-to-many">
+		<complex name="params" ref="sys_rule_actiondef_param" jointype="one-to-many" orderBy="sortorder">
 			<key field="objid" target="parentid"/>
 		</complex>	
+
+
 	</element>	
 
 

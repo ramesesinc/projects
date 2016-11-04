@@ -50,7 +50,7 @@
           <Dimension value="[75, 80]"/>
         </Property>
         <Property name="dynamic" type="boolean" value="true"/>
-        <Property name="name" type="java.lang.String" value="model" noResource="true"/>
+        <Property name="name" type="java.lang.String" value="listModel" noResource="true"/>
         <Property name="opaque" type="boolean" value="false"/>
         <Property name="padding" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
           <Insets value="[10, 20, 10, 0]"/>

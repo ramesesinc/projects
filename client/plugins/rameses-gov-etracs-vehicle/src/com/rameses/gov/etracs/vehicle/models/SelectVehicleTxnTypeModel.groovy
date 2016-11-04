@@ -20,6 +20,7 @@ public class SelectVehicleTxnTypeModel  {
     def listModel = [
         fetchList: { o->
             def list = qryService.getList( [_schemaname:'vehicle_txntype', _limit:100 ]);
+            println "list size is " + list.size();
             list.each {
                 it.caption = it.title;
                 if(!it.icon) {

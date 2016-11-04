@@ -1,6 +1,6 @@
 <workunit>
     <invokers>
-        <invoker type="home.action" caption="Vehicles"/>
+        <invoker type="home.action" caption="Vehicles" icon="home/icons/vehicle.png"/>
     </invokers>
     <code class="com.rameses.gov.etracs.vehicle.models.SelectVehicleTxnTypeModel" />
     <pages>

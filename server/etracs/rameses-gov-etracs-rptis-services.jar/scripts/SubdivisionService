@@ -425,7 +425,8 @@ class SubdivisionService
         txnRef.delete(subdivision.objid)
     }
 
-    void validateSubdividedLands(subdivision){
+    @ProxyMethod
+    public void validateSubdividedLands(subdivision){
         def lands = em.getSubdividedLandInfoForValidation(subdivision)
         if (lands.size() <= 1 ){
             throw new Exception('At least 2 Subdivided Lands are required.')

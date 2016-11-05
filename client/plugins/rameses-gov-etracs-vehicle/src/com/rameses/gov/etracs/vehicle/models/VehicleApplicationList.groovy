@@ -19,7 +19,7 @@ public class VehicleApplicationList extends CrudListModel {
     }
     
     public def getCustomFilter() {
-        return ["txntype = :txntype", [txntype:  txntype.objid ] ];
+        return ["txntypeid = :txntype", [txntype:  txntype.objid ] ];
     }
     
 }

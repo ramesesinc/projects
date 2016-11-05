@@ -6,11 +6,15 @@
         <!-- Tricycle Menus -->
         <invoker type="vehicle_menu:tricycle" caption="New" action="create" />
         <invoker type="vehicle_menu:tricycle" caption="Renew" action="renew" />
-        <invoker type="vehicle_menu:tricycle" caption="Retire" action="retire" />
+        <invoker type="vehicle_menu:tricycle" caption="Change Owner" action="changeOwner" />
+        <invoker type="vehicle_menu:tricycle" caption="Change Motor" action="changeMotor" />
         
         <!-- from applicationn list -->
         <invoker type="vehicle_application_tricycle:create" caption="New" action="create" />
         <invoker type="vehicle_application_tricycle:open" caption="Application" action="open" />
+        
+        <invoker type="formAction" caption="Change Owner" action="changeOwner" />
+        <invoker type="formAction" caption="Change Motor" action="changeMotor" />
     </invokers>
     <code class="com.rameses.gov.etracs.vehicletype.tricycle.TricycleApplicationForm" />
     <pages>

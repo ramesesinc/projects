@@ -32,7 +32,7 @@ public class VehicleApplicationForm extends CrudFormModel {
         }
         if(!txntype)
             throw new Exception("txntype is required");
-        entity.txntype = txntype.objid;
+        entity.txntype = txntype;
         entity.owner = [:];
         entity.fees = [];
         return entity;
@@ -42,8 +42,11 @@ public class VehicleApplicationForm extends CrudFormModel {
         boolean pass = false;
         def h = { o->
             pass = true;
+            entity = appSvc.loadForApplication( [objid: o.objid, txntype: txntype] );
+            entity.apptype= 'RENEW';
+            super.init();
         }
-        Modal.show( "vehicle_account_" + txntype.uihandler+ ":lookup", [onselect: h] );
+        Modal.show( "vehicle_account_" + txntype.uihandler+ "_for_renew:lookup", [onselect: h] );
         if(!pass) throw new BreakException();
     }
     
@@ -59,6 +62,14 @@ public class VehicleApplicationForm extends CrudFormModel {
             return entity.fees;
         }
     ] as BasicListModel;
+
+    void changeOwner() {
+        
+    }
+    
+    void changeMotor() {
+        
+    }
 
     void post() {
         if(MsgBox.confirm("You are about to post this entry. Continue?")) {

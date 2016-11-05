@@ -6,7 +6,6 @@
         <!-- menus -->
         <invoker type="vehicle_menu:boat" caption="New" action="create" />
         <invoker type="vehicle_menu:boat" caption="Renew" action="renew" />
-        <invoker type="vehicle_menu:boat" caption="Retire" action="retire" />
 
         <invoker type="vehicle_application_boat:create" caption="New" action="create" />
         <invoker type="vehicle_application_boat:open" caption="Boat Application" action="open" />

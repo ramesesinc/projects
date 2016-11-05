@@ -1,6 +1,0 @@
-<workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" schemaName="mtop_vehicle_account">
-    <invokers>
-        <invoker folderid="home/vehicle/mtop" caption="MTOP Account" action="init" 
-            cols="acctno,owner.name,regdate,plateno,model" />
-    </invokers>
-</workunit>

@@ -141,7 +141,11 @@ from (
   inner join cashreceipt cr on xx.objid = cr.objid 
   inner join cashreceiptitem cri on cr.objid = cri.receiptid 
   inner join itemaccount ai on cri.item_objid = ai.objid 
-where ai.fund_objid like $P{fundid}  
+where ai.fund_objid in ( 
+  select objid from fund where objid like $P{fundid} 
+  union 
+  select objid from fund where objid in (${fundfilter}) 
+) 
 order by afid, serialno, payer 
 
 
@@ -160,8 +164,11 @@ from (
   inner join cashreceiptitem cri on cr.objid = cri.receiptid 
   inner join itemaccount ai on cri.item_objid = ai.objid 
   inner join af a on cr.formno = a.objid 
-where ai.fund_objid like $P{fundid} 
-  and a.formtype = 'serial' 
+where ai.fund_objid in ( 
+  select objid from fund where objid like $P{fundid} 
+  union 
+  select objid from fund where objid in (${fundfilter})  
+) and a.formtype = 'serial' 
 order by afid, particulars, serialno 
 
 
@@ -180,15 +187,19 @@ from (
   inner join cashreceiptitem cri on cr.objid = cri.receiptid 
   inner join itemaccount ai on cri.item_objid = ai.objid 
   inner join af a on cr.formno = a.objid 
-where ai.fund_objid like $P{fundid} 
-  and a.formtype = 'cashticket' 
+where ai.fund_objid in ( 
+  select objid from fund where objid like $P{fundid} 
+  union 
+  select objid from fund where objid in (${fundfilter})  
+) and a.formtype = 'cashticket' 
 order by afid, particulars, serialno 
 
 
 [getRevenueItemSummaryByFund]
 select 
-  ai.fund_title as fundname, cri.item_objid as acctid, 
-  cri.item_title as acctname, cri.item_code as acctcode, 
+  ai.fund_objid as fundid, ai.fund_title as fundname, 
+  cri.item_objid as acctid, cri.item_title as acctname, 
+  cri.item_code as acctcode, 
   sum( cri.amount ) as amount 
 from ( 
   select rc.*, 
@@ -199,11 +210,15 @@ from (
   inner join cashreceipt cr on xx.objid = cr.objid 
   inner join cashreceiptitem cri on cr.objid = cri.receiptid 
   inner join itemaccount ai on cri.item_objid = ai.objid 
-where ai.fund_objid like $P{fundid} and xx.voided=0
+where ai.fund_objid in ( 
+  select objid from fund where objid like $P{fundid} 
+  union 
+  select objid from fund where objid in (${fundfilter}) 
+) and xx.voided=0 
 group by 
-  ai.fund_title, cri.item_objid,  
-  cri.item_title, cri.item_code 
-order by fundname, acctcode 
+  ai.fund_objid, ai.fund_title, 
+  cri.item_objid, cri.item_title, cri.item_code 
+order by fundname, acctcode  
 
 
 [getReceiptsGroupByFund]
@@ -298,6 +313,7 @@ group by
   receiptno, receiptdate, acctcode, accttitle, paidby
 order by 
   receiptdate, formno, controlid, series 
+
 
 [getAFList]
 select 

@@ -12,6 +12,9 @@ class RemittanceReportService  {
 	@ActiveDB('remittancereport')
 	def db;
 
+	@ActiveDB('fund')
+	def fund_em;
+
 	@Service("NumberService")
 	def numSvc;
 
@@ -151,9 +154,17 @@ class RemittanceReportService  {
 	}
 
 	@ProxyMethod 
-	def generateReportByFund( rem, fund ) {
+	public def generateReportByFund( rem, fund ) { 
 		def data = rem.clone();
-		def params = [ remittanceid: data.objid,  fundid : fund ? fund.objid : '%']
+		def params = [ remittanceid: data.objid, fundid: (fund ? fund.objid : '%'), fundfilter:null]; 
+		if ( data._INCLUDE_SUBFUND == true ) { 			
+			def list = fund_em.findAllSubAcct([ objid: params.fundid ]).collect{ it.objid }   
+			if ( list ) { 
+				list << params.fundid; 
+				params.fundfilter = "'"+ list.join("','") +"'"; 
+			} 
+		} 
+
 		data.receipts = db.getReceiptsByRemittanceFund( params );
 		if( ! data.receipts ) throw new Exception("No record(s) found ");
 
@@ -165,7 +176,15 @@ class RemittanceReportService  {
 	@ProxyMethod 
 	def generateDetailedReportByFund(rem, fund) {
 		def data = rem.clone() 
-		def params = [ remittanceid: data.objid,  fundid : fund ? fund.objid : '%']
+		def params = [ remittanceid: data.objid,  fundid: (fund ? fund.objid : '%')];
+ 		if ( data._INCLUDE_SUBFUND == true ) { 			
+			def list = fund_em.findAllSubAcct([ objid: params.fundid ]).collect{ it.objid }   
+			if ( list ) { 
+				list << params.fundid; 
+				params.fundfilter = "'"+ list.join("','") +"'"; 
+			} 
+		} 
+
 		data.serials = db.getSerialReceiptsByRemittanceFund( params ); 
 		data.nonserials = db.getNonSerialReceiptDetailsByFund( params );
 		return data;
@@ -183,6 +202,13 @@ class RemittanceReportService  {
 	@ProxyMethod 
 	def generateReportByRevenueItem( rem, fund ) {
 		def params = [ remittanceid: rem.objid,  fundid: (fund? fund.objid: '%') ]; 
+ 		if ( rem._INCLUDE_SUBFUND == true ) { 			
+			def list = fund_em.findAllSubAcct([ objid: params.fundid ]).collect{ it.objid }   
+			if ( list ) { 
+				list << params.fundid; 
+				params.fundfilter = "'"+ list.join("','") +"'"; 
+			} 
+		} 
 
 		rem.acctsummaries = db.getRevenueItemSummaryByFund( params );
 		if ( !rem.acctsummaries ) throw new Exception("No record(s) found ");

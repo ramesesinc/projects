@@ -16,6 +16,9 @@ class MunicipalityRPTTransmittalImportFAASInterceptor
 	@Service('RPTUtil')
 	def util
 
+	@Service('FAASSupportService')
+	def supportSvc
+
 
 	@After(pattern='RPTTransmittalImportService.importData', eval="#{'faas'.equalsIgnoreCase(args[0].filetype) && 'SYNC'.equalsIgnoreCase(args[0].type)}")
 	public void postSyncFaas(evt){
@@ -77,6 +80,23 @@ class MunicipalityRPTTransmittalImportFAASInterceptor
 			}
 		}
 	}
+
+
+	@After(pattern='RPTTransmittalImportService.importData', eval="#{'faas'.equalsIgnoreCase(args[0].filetype) && 'FORAPPROVAL'.equalsIgnoreCase(args[0].type)}")
+	public void postForApproval(evt){
+		def faasdata = evt.args[1].faasdata 
+		def transmittalitem = evt.args[1].transmittalitem
+		try{
+			supportSvc.saveFaasData(faasdata)
+			transmittalitem.status = 'FORAPPROVAL'
+			importSvc.log(transmittalitem)
+		}
+		catch(e){
+			transmittalitem.status = 'ERROR'
+			transmittalitem.remarks = e.message 
+			importSvc.log(transmittalitem)
+		}
+	}	
 
 }
 

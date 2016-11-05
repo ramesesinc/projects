@@ -29,17 +29,12 @@ class QueryService {
 			}
 		}
 
-		if ( o.findBy ) {
-			em.find( o.findBy );
-		} 
+		em.pagingKeys( o._pagingKeys ); 
+		em.select( o.select ? o.select : '*' ); 
 
-		//select columns
-		if ( o.select ) 
-			em.select( o.select );
-		else 
-			em.select("*");
+		if( o.findBy ) em.find( o.findBy );
 		if( o._start ) em.start = o._start ;	
-		if( o._limit ) em.limit = o._limit;
+		if( o._limit ) em.limit = o._limit;		
 
 		if( o.orWhereList ) {
 			o.orWhereList.each {

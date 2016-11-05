@@ -2,8 +2,7 @@
 import com.rameses.annotations.*;
 import com.rameses.common.*;
 
-class BPPermitReportService
-{
+class BPPermitReportService {
 	
 	@ActiveDB("bpreport")
 	def em

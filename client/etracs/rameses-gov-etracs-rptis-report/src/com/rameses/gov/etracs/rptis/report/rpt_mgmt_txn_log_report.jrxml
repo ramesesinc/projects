@@ -2,7 +2,7 @@
 <!-- Created with iReport - A designer for JasperReports -->
 <!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
 <jasperReport
-		 name="rpt_txn_monitoring"
+		 name="rpt_mgmt_txn_log_report"
 
 		 language="groovy"		 columnCount="1"
 		 printOrder="Vertical"
@@ -41,11 +41,14 @@
 	<parameter name="TAXABILITY" isForPrompting="false" class="java.lang.String"/>
 	<parameter name="OVERRIDE_Comparator" isForPrompting="false" class="java.lang.Object"/>
 
-	<field name="type" class="java.lang.String"/>
-	<field name="taskstate" class="java.lang.String"/>
-	<field name="count" class="java.math.BigDecimal"/>
-	<field name="assignee.name" class="java.lang.String"/>
-	<field name="task.idx" class="java.lang.Number"/>
+	<field name="tdno" class="java.lang.String"/>
+	<field name="txntype.objid" class="java.lang.String"/>
+	<field name="dtreceived" class="java.util.Date"/>
+	<field name="appraiser" class="java.lang.String"/>
+	<field name="taxmapper" class="java.lang.String"/>
+	<field name="state" class="java.lang.String"/>
+	<field name="duration" class="java.lang.String"/>
+	<field name="objid" class="java.lang.String"/>
 
 
 		<group  name="DUMMY" >
@@ -65,62 +68,107 @@
 						key="crosstab-1"/>
 					<crosstabHeaderCell>						<cellContents mode="Transparent">
 					<box></box>
-						</cellContents>
-					</crosstabHeaderCell>					<rowGroup name="type" width="60" totalPosition="End">
-						<bucket>
-							<bucketExpression class="java.lang.String"><![CDATA[$F{type}]]></bucketExpression>
-						</bucket>
-						<crosstabRowHeader>
-						<cellContents mode="Transparent">
-					<box></box>
-				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<staticText>
 					<reportElement
 						x="0"
 						y="0"
-						width="60"
-						height="15"
-						key="textField"
-						stretchType="RelativeToBandHeight"/>
-					<box leftPadding="2">					<pen lineWidth="0.5" lineStyle="Solid"/>
+						width="30"
+						height="20"
+						key="staticText-37"/>
+					<box>					<pen lineWidth="0.5" lineStyle="Solid"/>
 					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid"/>
 					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="7" isBold="true"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$V{type}]]></textFieldExpression>
-				</textField>
-						</cellContents>
-						</crosstabRowHeader>
-						<crosstabTotalRowHeader>
-						<cellContents mode="Transparent">
-					<box></box>
-				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<text><![CDATA[Txn
+Type]]></text>
+				</staticText>
+				<staticText>
 					<reportElement
-						x="0"
+						x="78"
 						y="0"
-						width="210"
-						height="15"
-						key="textField"/>
-					<box leftPadding="2" rightPadding="4">					<pen lineWidth="0.5" lineStyle="Solid"/>
+						width="80"
+						height="20"
+						key="staticText-37"/>
+					<box>					<pen lineWidth="0.5" lineStyle="Solid"/>
 					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid"/>
 					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
-					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="7" isBold="true"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA["GRAND TOTAL"]]></textFieldExpression>
-				</textField>
+				<text><![CDATA[TD No.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="268"
+						y="0"
+						width="110"
+						height="20"
+						key="staticText-37"/>
+					<box>					<pen lineWidth="0.5" lineStyle="Solid"/>
+					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="7" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Appraiser]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="158"
+						y="0"
+						width="110"
+						height="20"
+						key="staticText-37"/>
+					<box>					<pen lineWidth="0.5" lineStyle="Solid"/>
+					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="7" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Taxmapper]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="30"
+						y="0"
+						width="48"
+						height="20"
+						key="staticText-37"/>
+					<box>					<pen lineWidth="0.5" lineStyle="Solid"/>
+					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="7" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Date
+Received]]></text>
+				</staticText>
 						</cellContents>
-						</crosstabTotalRowHeader>
-					</rowGroup>
-					<rowGroup name="assignee.name" width="150" totalPosition="End">
+					</crosstabHeaderCell>					<rowGroup name="objid" width="0">
 						<bucket>
-							<bucketExpression class="java.lang.String"><![CDATA[$F{assignee.name}]]></bucketExpression>
+							<bucketExpression class="java.lang.String"><![CDATA[$F{objid}]]></bucketExpression>
+						</bucket>
+					</rowGroup>
+					<rowGroup name="txntype.objid" width="30">
+						<bucket>
+							<bucketExpression class="java.lang.String"><![CDATA[$F{txntype.objid}]]></bucketExpression>
 						</bucket>
 						<crosstabRowHeader>
 						<cellContents mode="Transparent">
@@ -129,44 +177,138 @@
 					<reportElement
 						x="0"
 						y="0"
-						width="150"
-						height="15"
+						width="30"
+						height="16"
 						key="textField"/>
-					<box leftPadding="2">					<pen lineWidth="0.5" lineStyle="Solid"/>
+					<box>					<pen lineWidth="0.5" lineStyle="Solid"/>
 					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid"/>
 					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
-					<textElement textAlignment="Left" verticalAlignment="Middle">
+					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Tahoma" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$V{assignee.name}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$V{txntype.objid}]]></textFieldExpression>
 				</textField>
 						</cellContents>
 						</crosstabRowHeader>
-						<crosstabTotalRowHeader>
+					</rowGroup>
+					<rowGroup name="dtreceived" width="48">
+						<bucket>
+							<bucketExpression class="java.util.Date"><![CDATA[$F{dtreceived}]]></bucketExpression>
+						</bucket>
+						<crosstabRowHeader>
+						<cellContents mode="Transparent">
+					<box></box>
+				<textField isStretchWithOverflow="true" pattern="yyyy-MM-dd" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="0"
+						y="0"
+						width="48"
+						height="16"
+						key="textField-40"/>
+					<box>					<pen lineWidth="0.5" lineStyle="Solid"/>
+					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.util.Date"><![CDATA[$V{dtreceived}]]></textFieldExpression>
+				</textField>
+						</cellContents>
+						</crosstabRowHeader>
+					</rowGroup>
+					<rowGroup name="tdno" width="80">
+						<bucket>
+							<bucketExpression class="java.lang.String"><![CDATA[$F{tdno}]]></bucketExpression>
+						</bucket>
+						<crosstabRowHeader>
+						<cellContents mode="Transparent">
+					<box></box>
+				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="0"
+						y="0"
+						width="80"
+						height="16"
+						key="textField-40"/>
+					<box>					<pen lineWidth="0.5" lineStyle="Solid"/>
+					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$V{tdno}]]></textFieldExpression>
+				</textField>
+						</cellContents>
+						</crosstabRowHeader>
+					</rowGroup>
+					<rowGroup name="appraiser" width="110">
+						<bucket>
+							<bucketExpression class="java.lang.String"><![CDATA[$F{appraiser}]]></bucketExpression>
+						</bucket>
+						<crosstabRowHeader>
 						<cellContents mode="Transparent">
 					<box></box>
 				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="0"
 						y="0"
-						width="150"
-						height="15"
-						key="textField"/>
-					<box leftPadding="2" rightPadding="4"></box>
-					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+						width="110"
+						height="16"
+						key="textField-40"/>
+					<box>					<pen lineWidth="0.5" lineStyle="Solid"/>
+					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA["Sub-Total for " + $V{type}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$V{appraiser}]]></textFieldExpression>
 				</textField>
 						</cellContents>
-						</crosstabTotalRowHeader>
+						</crosstabRowHeader>
 					</rowGroup>
-					<columnGroup name="taskstate" height="25" totalPosition="End" headerPosition="Center">
+					<rowGroup name="taxmapper" width="110">
 						<bucket>
-							<bucketExpression class="java.lang.String"><![CDATA[$F{taskstate}]]></bucketExpression>
+							<bucketExpression class="java.lang.String"><![CDATA[$F{taxmapper}]]></bucketExpression>
+						</bucket>
+						<crosstabRowHeader>
+						<cellContents mode="Transparent">
+					<box></box>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="0"
+						y="0"
+						width="110"
+						height="16"
+						key="textField-40"/>
+					<box>					<pen lineWidth="0.5" lineStyle="Solid"/>
+					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$V{taxmapper}]]></textFieldExpression>
+				</textField>
+						</cellContents>
+						</crosstabRowHeader>
+					</rowGroup>
+					<columnGroup name="state" height="20" headerPosition="Center">
+						<bucket>
+							<bucketExpression class="java.lang.String"><![CDATA[$F{state}]]></bucketExpression>
 						</bucket>
 						<crosstabColumnHeader>
 						<cellContents mode="Transparent">
@@ -175,8 +317,8 @@
 					<reportElement
 						x="0"
 						y="0"
-						width="70"
-						height="25"
+						width="50"
+						height="20"
 						key="textField"
 						stretchType="RelativeToBandHeight"/>
 					<box>					<pen lineWidth="0.5" lineStyle="Solid"/>
@@ -186,13 +328,18 @@
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="7" isBold="true"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$V{taskstate}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$V{state}.substring(4)]]></textFieldExpression>
 				</textField>
 						</cellContents>
 						</crosstabColumnHeader>
-						<crosstabTotalColumnHeader>
+					</columnGroup>
+
+					<measure name="duration_Nothing" class="java.lang.String">
+						<measureExpression><![CDATA[$F{duration}]]></measureExpression>
+					</measure>
+					<crosstabCell width="50" height="16">
 						<cellContents mode="Transparent">
 					<box></box>
 				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
@@ -200,36 +347,7 @@
 						x="0"
 						y="0"
 						width="50"
-						height="25"
-						key="textField"
-						stretchType="RelativeToBandHeight"/>
-					<box>					<pen lineWidth="0.5" lineStyle="Solid"/>
-					<topPen lineWidth="0.5" lineStyle="Solid"/>
-					<leftPen lineWidth="0.5" lineStyle="Solid"/>
-					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
-					<rightPen lineWidth="0.5" lineStyle="Solid"/>
-</box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA["TOTAL"]]></textFieldExpression>
-				</textField>
-						</cellContents>
-						</crosstabTotalColumnHeader>
-					</columnGroup>
-
-					<measure name="count_Sum" class="java.math.BigDecimal" calculation="Sum">
-						<measureExpression><![CDATA[$F{count}]]></measureExpression>
-					</measure>
-					<crosstabCell width="70" height="15">
-						<cellContents mode="Transparent">
-					<box></box>
-				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="0"
-						y="0"
-						width="70"
-						height="15"
+						height="16"
 						key="textField"/>
 					<box>					<pen lineWidth="0.5" lineStyle="Solid"/>
 					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -240,123 +358,73 @@
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Tahoma" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{count_Sum}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$V{duration_Nothing}]]></textFieldExpression>
 				</textField>
 						</cellContents>
 					</crosstabCell>
-					<crosstabCell width="50" height="15" columnTotalGroup="taskstate">
+					<crosstabCell width="0" height="16" columnTotalGroup="state">
 						<cellContents mode="Transparent">
 					<box></box>
-				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="0"
-						y="0"
-						width="50"
-						height="15"
-						key="textField"/>
-					<box leftPadding="2">					<pen lineWidth="0.5" lineStyle="Solid"/>
-					<topPen lineWidth="0.5" lineStyle="Solid"/>
-					<leftPen lineWidth="0.5" lineStyle="Solid"/>
-					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
-					<rightPen lineWidth="0.5" lineStyle="Solid"/>
-</box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
-					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{count_Sum}]]></textFieldExpression>
-				</textField>
 						</cellContents>
 					</crosstabCell>
-					<crosstabCell width="70" height="15" rowTotalGroup="assignee.name">
+					<crosstabCell width="50" height="0" rowTotalGroup="txntype.objid">
 						<cellContents mode="Transparent">
 					<box></box>
-				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="0"
-						y="0"
-						width="70"
-						height="15"
-						key="textField"/>
-					<box>					<pen lineWidth="0.5" lineStyle="Solid"/>
-					<topPen lineWidth="0.5" lineStyle="Solid"/>
-					<leftPen lineWidth="0.5" lineStyle="Solid"/>
-					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
-					<rightPen lineWidth="0.5" lineStyle="Solid"/>
-</box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
-					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{count_Sum}]]></textFieldExpression>
-				</textField>
 						</cellContents>
 					</crosstabCell>
-					<crosstabCell width="50" height="15" rowTotalGroup="assignee.name" columnTotalGroup="taskstate">
+					<crosstabCell width="0" height="0" rowTotalGroup="txntype.objid" columnTotalGroup="state">
 						<cellContents mode="Transparent">
 					<box></box>
-				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="0"
-						y="0"
-						width="50"
-						height="15"
-						key="textField"/>
-					<box leftPadding="2">					<pen lineWidth="0.5" lineStyle="Solid"/>
-					<topPen lineWidth="0.5" lineStyle="Solid"/>
-					<leftPen lineWidth="0.5" lineStyle="Solid"/>
-					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
-					<rightPen lineWidth="0.5" lineStyle="Solid"/>
-</box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
-					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{count_Sum}]]></textFieldExpression>
-				</textField>
 						</cellContents>
 					</crosstabCell>
-					<crosstabCell width="70" height="15" rowTotalGroup="type">
+					<crosstabCell width="50" height="0" rowTotalGroup="dtreceived">
 						<cellContents mode="Transparent">
 					<box></box>
-				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="0"
-						y="0"
-						width="70"
-						height="15"
-						key="textField"/>
-					<box>					<pen lineWidth="0.5" lineStyle="Solid"/>
-					<topPen lineWidth="0.5" lineStyle="Solid"/>
-					<leftPen lineWidth="0.5" lineStyle="Solid"/>
-					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
-					<rightPen lineWidth="0.5" lineStyle="Solid"/>
-</box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
-					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{count_Sum}]]></textFieldExpression>
-				</textField>
 						</cellContents>
 					</crosstabCell>
-					<crosstabCell width="50" height="15" rowTotalGroup="type" columnTotalGroup="taskstate">
+					<crosstabCell width="0" height="0" rowTotalGroup="dtreceived" columnTotalGroup="state">
 						<cellContents mode="Transparent">
 					<box></box>
-				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="0"
-						y="0"
-						width="50"
-						height="15"
-						key="textField"/>
-					<box leftPadding="2">					<pen lineWidth="0.5" lineStyle="Solid"/>
-					<topPen lineWidth="0.5" lineStyle="Solid"/>
-					<leftPen lineWidth="0.5" lineStyle="Solid"/>
-					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
-					<rightPen lineWidth="0.5" lineStyle="Solid"/>
-</box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
-					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{count_Sum}]]></textFieldExpression>
-				</textField>
+						</cellContents>
+					</crosstabCell>
+					<crosstabCell width="50" height="0" rowTotalGroup="appraiser">
+						<cellContents mode="Transparent">
+					<box></box>
+						</cellContents>
+					</crosstabCell>
+					<crosstabCell width="0" height="0" rowTotalGroup="appraiser" columnTotalGroup="state">
+						<cellContents mode="Transparent">
+					<box></box>
+						</cellContents>
+					</crosstabCell>
+					<crosstabCell width="50" height="0" rowTotalGroup="taxmapper">
+						<cellContents mode="Transparent">
+					<box></box>
+						</cellContents>
+					</crosstabCell>
+					<crosstabCell width="0" height="0" rowTotalGroup="taxmapper" columnTotalGroup="state">
+						<cellContents mode="Transparent">
+					<box></box>
+						</cellContents>
+					</crosstabCell>
+					<crosstabCell width="50" height="0" rowTotalGroup="objid">
+						<cellContents mode="Transparent">
+					<box></box>
+						</cellContents>
+					</crosstabCell>
+					<crosstabCell width="0" height="0" rowTotalGroup="objid" columnTotalGroup="state">
+						<cellContents mode="Transparent">
+					<box></box>
+						</cellContents>
+					</crosstabCell>
+					<crosstabCell width="50" height="0" rowTotalGroup="tdno">
+						<cellContents mode="Transparent">
+					<box></box>
+						</cellContents>
+					</crosstabCell>
+					<crosstabCell width="0" height="0" rowTotalGroup="tdno" columnTotalGroup="state">
+						<cellContents mode="Transparent">
+					<box></box>
 						</cellContents>
 					</crosstabCell>
 					<whenNoDataCell>						<cellContents mode="Transparent">
@@ -455,8 +523,8 @@
 				<image  scaleImage="FillFrame" vAlign="Top" hAlign="Left" isUsingCache="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Opaque"
-						x="22"
-						y="4"
+						x="169"
+						y="11"
 						width="55"
 						height="55"
 						forecolor="#000000"
@@ -521,9 +589,9 @@
 						key="textField-39"/>
 					<box></box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font pdfFontName="Helvetica-Bold" size="12" isBold="true"/>
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="12" isBold="true"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA["Assessor Transaction Monitoring"]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA["TRANSACTION LOG REPORT"]]></textFieldExpression>
 				</textField>
 			</band>
 		</title>

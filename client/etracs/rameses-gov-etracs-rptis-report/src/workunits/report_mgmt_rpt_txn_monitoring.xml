@@ -39,8 +39,9 @@ class RPTTxnMonitoringModel extends com.rameses.gov.etracs.rpt.report.AsyncRepor
     }
     
     def reporttypes = [
-        [type:'standard', caption:'STANDARD', report:'rpt_txn_monitoring.jasper'],
-        [type:'log', caption:'LOG', report:'rpt_txn_monitoring_log.jasper'],
+        [type:'processing_summary', caption:'PROCESSING SUMMARY', report:'rpt_mgmt_txn_processing_summary.jasper'],
+        [type:'txn_monitoring', caption:'MONITORING REPORT', report:'rpt_mgmt_txn_monitoring.jasper'],
+        [type:'log_report', caption:'LOG REPORT', report:'rpt_mgmt_txn_log_report.jasper'],
     ]
     
    def formControl = [
@@ -48,8 +49,8 @@ class RPTTxnMonitoringModel extends com.rameses.gov.etracs.rpt.report.AsyncRepor
             return [
                 new FormControl( "combo", [caption:'LGU', name:'entity.lgu', items:'lgus', expression:'#{item.name}', allowNull:false, required:true]),
                 new FormControl( "combo", [caption:'Report Type', name:'entity.reporttype', items:'reporttypes', expression:'#{item.caption}', allowNull:false]),
-                new FormControl( "integer", [caption:'Year', name:'entity.year', required:true, preferredSize:'100,19', depends:'entity.reporttype', visibleWhen:"#{entity.reporttype.type=='log'}", required:true]),
-                new FormControl( "combo", [caption:'Month', name:'entity.month', items:'months', depends:'entity.year', expression:'#{item.name}', dynamic:true, preferredSize:'100,19', depends:'entity.reporttype', visibleWhen:"#{entity.reporttype.type=='log'}", required:true]),
+                new FormControl( "integer", [caption:'Year', name:'entity.year', required:true, preferredSize:'100,19', depends:'entity.reporttype', required:true]),
+                new FormControl( "combo", [caption:'Month', name:'entity.month', items:'months', depends:'entity.year', expression:'#{item.name}', dynamic:true, preferredSize:'100,19', required:true]),
             ]    
         },
    ] as FormPanelModel;

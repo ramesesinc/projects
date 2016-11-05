@@ -28,10 +28,12 @@ class RPTReportMgmtTxnMonitoringService
 
 		def items = [];
 
-		if ('standard'.equalsIgnoreCase(params.reporttype.type))
-			items = em.getList(params)
-		else if ('log'.equalsIgnoreCase(params.reporttype.type))
-			items = getLogs(params)
+		if ('processing_summary'.equalsIgnoreCase(params.reporttype.type))
+			items = em.getProcessingSummaries(params)
+		else if ('txn_monitoring'.equalsIgnoreCase(params.reporttype.type))
+			items = getTxnDetails(params) 
+		else if ('log_report'.equalsIgnoreCase(params.reporttype.type))
+			items = getReportLogs(params)
 
 		if (!items) throw new Exception('Records not found.')
 
@@ -47,8 +49,16 @@ class RPTReportMgmtTxnMonitoringService
 		]
 	}
 
-	def getLogs(params){
-		def items = em.getLogs(params)
+
+	def getTxnDetails(params){
+		return em.getTxnDetails(params).each{
+			it.state = it.idx.toString().padLeft(3, '0') + '.' + it.state
+		}
+	}
+
+
+	def getReportLogs(params){
+		def items = em.getReportLogs(params)
 		items.each{
 			it.state = it.idx.toString().padLeft(3, '0') + '.' + it.state
 			it.secs = calcSeconds(it)

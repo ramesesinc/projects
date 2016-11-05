@@ -5,7 +5,8 @@
 - BPLS 
 		
 - ASSESSOR	
-	- NEW! FAAS Transaction Log Report 
+	- NEW! Transaction Monitoring Report (Puerto)
+	- NEW! FAAS Transaction Log Report (Puerto)
 	- NEW! Statement of Valuation (Puerto)
 	- Update on Excerpt from Real Property assessment report
 	- Update on FAAS Valuation and Restriction report 

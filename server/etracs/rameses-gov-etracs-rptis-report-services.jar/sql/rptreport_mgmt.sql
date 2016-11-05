@@ -1,4 +1,4 @@
-[getList]
+[getProcessingSummaries]
 select t.* 
 from (
 	select 
@@ -96,8 +96,120 @@ order by
 	t.task_idx
 
 
+[getTxnDetails]
+select 
+	t.type, 
+	t.txntype_objid,
+	t.assignee,
+	t.idx,
+	t.state,
+	sum(t.count) as txncount 
+from (
+	select 
+		'01.FAAS' as type,
+		f.txntype_objid,
+		ft.assignee_name as assignee, 
+		sn.idx,
+		sn.title as state,
+		count(*) as count
+	from faas f
+		inner join faas_task ft on f.objid = ft.refid
+		inner join sys_wf_node sn on ft.state = sn.name
+	where f.lguid =  $P{lguid}
+		and ft.state not like 'assign%'
+		and sn.processname = 'faas'
+		and year(ft.startdate) = $P{year}
+    	and month(ft.startdate) = $P{monthid}
+	group by 
+	  f.txntype_objid,
+		ft.assignee_name,
+		sn.idx,
+		sn.title
+		
 
-[getLogs]
+	union all 
+
+	select 
+		'02.Subdivision' as type,
+		s.txntype_objid,
+		st.assignee_name as assignee, 
+		sn.idx,
+		sn.title as state,
+		count(*) as count
+	from subdivision s
+		inner join subdivision_task st on s.objid = st.refid 
+		inner join sys_wf_node sn on st.state = sn.name 
+	where s.lguid = $P{lguid}
+	and sn.processname = 'subdivision'
+	and year(st.startdate) = $P{year}
+	and month(st.startdate) = $P{monthid}
+	group by 
+		s.txntype_objid,
+		st.assignee_name,
+		sn.idx,
+		sn.title
+
+	union all 
+
+	select 
+		'03.Consolidation' as type,
+		c.txntype_objid,
+		st.assignee_name as assignee, 
+		sn.idx,
+		sn.title as state,
+		count(*) as count
+	from consolidation c
+		inner join consolidation_task st on c.objid = st.refid 
+		inner join sys_wf_node sn on st.state = sn.name 
+	where c.lguid = $P{lguid}
+	and sn.processname = 'consolidation'
+	and year(st.startdate) = $P{year}
+	and month(st.startdate) = $P{monthid}
+	group by 
+		c.txntype_objid,
+		st.assignee_name,
+		sn.idx,
+		sn.title
+
+
+	union all 
+
+	
+	select 
+		'04.FAAS Cancellation' as type,
+		'CF' as txntype_objid,
+		st.assignee_name as assignee, 
+		sn.idx,
+		sn.title as state,
+		count(*) as count
+	from cancelledfaas c
+		inner join cancelledfaas_task st on c.objid = st.refid 
+		inner join sys_wf_node sn on st.state = sn.name 
+	where c.lguid =  $P{lguid}
+	and sn.processname = 'cancelledfaas'
+	and year(st.startdate) = $P{year}
+	and month(st.startdate) = $P{monthid}
+	group by 
+		st.assignee_name,
+		sn.idx,
+		sn.title
+
+)t 
+group by 
+	t.type, 
+	t.txntype_objid,
+	t.assignee,
+	t.idx,
+	t.state
+order by 
+	t.type, 
+	t.txntype_objid,
+	t.idx
+
+
+
+
+[getReportLogs]
 select 
 	x.objid, 
 	x.tdno,
@@ -139,3 +251,6 @@ group by
 	x.taxmapper,
 	x.state
 order by x.tdno, x.idx 
+
+
+

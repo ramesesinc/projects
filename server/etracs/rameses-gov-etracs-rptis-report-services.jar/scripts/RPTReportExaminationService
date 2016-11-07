@@ -1,7 +1,6 @@
 import com.rameses.annotations.*
 import com.rameses.common.*;
 import com.rameses.services.extended.*;
-import java.rmi.server.UID
 
 class RPTReportExaminationService
 {
@@ -14,11 +13,15 @@ class RPTReportExaminationService
     @Service('RPTUtil')
     def util 
 
+	@ProxyMethod
+	def getUsers(){
+		return em.getUsers();
+	}
 
     @Async
 	@ProxyMethod
 	public def generateReport( params )  {
-		params.lguid = params.lgu.objid 
+		params.userid = (params.user ? params.user.objid : '%')
 		params.period = util.buildPeriod(params)
 		util.buildStartEndDateFilter(params)
 		
@@ -35,6 +38,7 @@ class RPTReportExaminationService
 		parameters.TITLE = 'PROPERTY EXAMINATION AND AUDIT REPORT'
 		parameters.PERIOD = params.period
 		parameters.ORGCLASS = env.ORGCLASS 
+		parameters.EXAMINER = params.user 
 		return [reportdata:list, parameters:parameters]
 	}
 

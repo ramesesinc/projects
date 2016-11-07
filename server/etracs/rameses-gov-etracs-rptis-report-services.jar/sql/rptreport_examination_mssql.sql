@@ -32,7 +32,7 @@ from (
 	select 
 		ef.dtinspected, ef.findings, ef.recommendations, ef.notedby, ef.notedbytitle,
 		f.tdno as refno, 
-		(select assignee_objid from faas_task where refid = f.objid and state = 'examiner' order by enddate desc limit 1) as userid
+		(select top 1 assignee_objid from faas_task where refid = f.objid and state = 'examiner' order by enddate desc) as userid
 	from examiner_finding ef
 		inner join faas f on ef.parent_objid = f.objid 
 	where ef.dtinspected >= $P{startdate} and ef.dtinspected < $P{enddate}
@@ -41,8 +41,8 @@ from (
 
 	select 
 		ef.dtinspected, ef.findings, ef.recommendations, ef.notedby, ef.notedbytitle,
-		concat('SD#', s.txnno) as refno,
-		(select assignee_objid from subdivision_task where refid = s.objid and state = 'examiner' order by enddate desc limit 1) as userid
+		('SD#' + s.txnno) as refno,
+		(select top 1 assignee_objid from subdivision_task where refid = s.objid and state = 'examiner' order by enddate desc ) as userid
 	from examiner_finding ef
 		inner join subdivision s on ef.parent_objid = s.objid 
 	where ef.dtinspected >= $P{startdate} and ef.dtinspected < $P{enddate}
@@ -51,8 +51,8 @@ from (
 
 	select 
 		ef.dtinspected, ef.findings, ef.recommendations, ef.notedby, ef.notedbytitle,
-		concat('CS#',c.txnno) as refno,
-		(select assignee_objid from consolidation_task where refid = c.objid and state = 'examiner' order by enddate desc limit 1) as userid
+		('CS#' + c.txnno) as refno,
+		(select top 1 assignee_objid from consolidation_task where refid = c.objid and state = 'examiner' order by enddate desc ) as userid
 	from examiner_finding ef
 		inner join consolidation c on ef.parent_objid = c.objid 
 	where ef.dtinspected >= $P{startdate} and ef.dtinspected < $P{enddate}

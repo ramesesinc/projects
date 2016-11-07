@@ -5,6 +5,7 @@ import com.rameses.rcp.annotations.*;
 import com.rameses.osiris2.client.*;
 import com.rameses.osiris2.reports.*;
 import com.rameses.common.*;
+import java.util.GregorianCalendar;
 
 abstract class AsyncReportController
 {
@@ -243,5 +244,26 @@ abstract class AsyncReportController
         asyncHandler?.cancel(); 
         return back(); 
     } 
+    
+    def getDays(){
+        int numDays = getMonthDays()
+        def list = []
+        1.upto(numDays){
+            list << it 
+        }
+        return list
+    }
+    
+    def getMonthDays(){
+        if (entity.year == null || entity.month == null) 
+            return [];
+            
+        int yr = entity.year
+        int mon = entity.month.index - 1
+        int day = 1;
+
+        Calendar cal = new GregorianCalendar(yr, mon, day);
+        return cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+    }
         
 }

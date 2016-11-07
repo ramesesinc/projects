@@ -7,3 +7,17 @@ go
 create index ix_realproperty_claimno on realproperty(claimno)
 go 
 
+create index ix_dtinspected on examiner_finding(dtinspected)
+go
+
+
+
+create index ix_assignee_objid on faas_task(assignee_objid)
+go 
+create index ix_assignee_objid on subdivision_task(assignee_objid)
+go 
+create index ix_assignee_objid on consolidation_task(assignee_objid)
+go 
+create index ix_assignee_objid on cancelledfaas_task(assignee_objid)
+go 
+

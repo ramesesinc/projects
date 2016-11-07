@@ -975,7 +975,7 @@ class FAASService
 		newfaas.preveffectivity = newfaas.effectivityyear 
 
 		newfaas.txntype 		= getTxnType( info.txntype.objid )
-		newfaas.datacapture 	= (info.datacapture == null ? false : info.datacapture)
+		newfaas.datacapture 	= info.datacapture
 		newfaas.autonumber 	    = util.toBoolean(var.td_autonumber, false)
 		newfaas.backtaxyrs   	= 0
 		newfaas.backtaxes 		= []

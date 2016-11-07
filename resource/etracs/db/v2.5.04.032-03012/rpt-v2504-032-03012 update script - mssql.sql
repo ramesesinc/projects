@@ -26,5 +26,9 @@ go
 update faas_txntype set allowannotated = 0 where allowannotated is null
 go
 
+INSERT INTO sys_var (name, value, description, datatype, category) VALUES ('faas_transaction_process_as_capture', '0', 'Allow processing of online transaction as data capture', 'checkbox', 'ASSESSOR')
+go 
+
+
 
 

@@ -56,6 +56,9 @@ class SubdivisionService
     @DataContext('subdivision_cancelledimprovement')
     def cancelledimprovementDb
 
+    @Service('FAASAnnotationService')
+    def annotationSvc 
+
 
     def SCHEMA_SUBDIVISION      = 'subdivision'
     def SCHEMA_SUBDIVIDED_LAND  = 'subdividedland'
@@ -142,6 +145,7 @@ class SubdivisionService
         txnRef.checkReference(motherland.landfaasid)
         def subdivision = em.findSubdivisionById([objid:motherland.subdivisionid])
         checkLedgerBalance(motherland)
+        checkAnnotation(subdivision, motherland)
         em.create(motherland, SCHEMA_MOTHER_LAND)
         createAffectedRpus(motherland)
         em.updateSubdivisionByMotherLand(motherland)
@@ -154,6 +158,11 @@ class SubdivisionService
         if (util.toBoolean(var.allow_subdivision_with_balance, false) == false){
             ledgerSvc.checkLedgerBalance(motherland.landfaasid)
         }
+    }
+
+    void checkAnnotation(subdivision, motherland){
+        subdivision.txntype = faasSvc.getTxnType(subdivision.txntype.objid)
+        annotationSvc.checkActiveAnnotations( subdivision.txntype, [objid:motherland.landfaasid])
     }
 
 

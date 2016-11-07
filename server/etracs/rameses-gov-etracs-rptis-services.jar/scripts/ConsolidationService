@@ -48,6 +48,9 @@ class ConsolidationService
     @Service('RPTRedFlagService')
     def redFlagSvc     
 
+    @Service('FAASAnnotationService')
+    def annotationSvc
+
     def SCHEMA_CONSOLIDATION 		= 'consolidation'
     def SCHEMA_CONSOLIDATED_LAND 	= 'consolidatedland'
     def SCHEMA_AFFECTED_RPU 		= 'affectedrpu'
@@ -213,12 +216,18 @@ class ConsolidationService
 
     @ProxyMethod
     public def saveConsolidatedLand( consolidatedland ) {
+        checkAnnotation(consolidatedland)
         em.save(consolidatedland, SCHEMA_CONSOLIDATED_LAND) 
         txnRef.insertRef(consolidatedland.landfaasid, consolidatedland.consolidationid, 'FAAS is currently referenced by Consolidation No. ' + consolidatedland.txnno + '.')
         createAffectedRpusByConsolidatedLand(consolidatedland)
         updateConsolidatedFaasPreviousInfo(openConsolidation(consolidatedland.consolidationid))
         return consolidatedland
     }    
+
+    void checkAnnotation(consolidatedland){
+        def txntype = faasSvc.getTxnType('CS')
+        annotationSvc.checkActiveAnnotations(txntype, [objid:consolidatedland.landfaasid])
+    }
 
     @ProxyMethod
     public def deleteConsolidatedLand( consolidatedland ) {

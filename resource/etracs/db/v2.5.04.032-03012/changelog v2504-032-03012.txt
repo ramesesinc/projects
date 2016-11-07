@@ -5,6 +5,7 @@
 - BPLS 
 		
 - ASSESSOR	
+	- Add support to allow/disallow FAAS Transaction with annotation
 	- Updated Property Examination and Audit Report 
 	- NEW! Transaction Monitoring Report (Puerto)
 	- NEW! FAAS Transaction Log Report (Puerto)

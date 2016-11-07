@@ -12,4 +12,5 @@ create index ix_assignee_objid on subdivision_task(assignee_objid);
 create index ix_assignee_objid on consolidation_task(assignee_objid);
 create index ix_assignee_objid on cancelledfaas_task(assignee_objid);
 
-	
+alter table faas_txntype add allowannotated int;
+update faas_txntype set allowannotated = 0 where allowannotated is null;			

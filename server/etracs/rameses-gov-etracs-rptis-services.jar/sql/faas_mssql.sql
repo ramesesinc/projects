@@ -651,4 +651,21 @@ delete from previousfaas where prevfaasid = $P{objid}
 
 [findPreviousFaas]
 select * from previousfaas where prevfaasid = $P{objid}
-	
+
+[getAnnotations]	
+select 
+	fa.objid, 
+	fa.state,
+	fa.txnno, 
+	fa.fileno, 
+	fa.txndate, 
+	fa.orno, 
+	fa.ordate,
+	fa.oramount,
+	fa.memoranda,
+	fat.type
+from faas f 
+	inner join faasannotation fa on f.objid = fa.faasid 
+	inner join faasannotationtype fat on fa.annotationtype_objid = fat.objid 
+where f.objid = $P{faasid}
+order by fa.txnno desc 

@@ -21,3 +21,10 @@ go
 create index ix_assignee_objid on cancelledfaas_task(assignee_objid)
 go 
 
+alter table faas_txntype add allowannotated int
+go 
+update faas_txntype set allowannotated = 0 where allowannotated is null
+go
+
+
+

@@ -31,7 +31,7 @@
     enabled:false;
 }
 
-"selectedLand"  [allowEdit == false || ( entity.taskstate && !entity.taskstate?.matches('.*appraiser.*|recommender'))] {
+"selectedLand"  [allowEdit == false || ( entity.datacapture==0 && entity.taskstate && !entity.taskstate.matches('.*appraiser.*|recommender'))] {
     readonly:true;
 }
 

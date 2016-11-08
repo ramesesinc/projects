@@ -289,8 +289,10 @@ class FAASSupportService
 			addr = [parentid:faas.taxpayer.objid, type:'local', text:s]
 			faas.taxpayer.address = addr;
 		}
-
-		entitySvc.save(faas.taxpayer)
+		def exist = entitySvc.open(faas.taxpayer)
+		if (!exist){
+			entitySvc.save(faas.taxpayer)
+		}
 		faas.taxpayer.address = faas.taxpayer?.address?.text 
 	}
 

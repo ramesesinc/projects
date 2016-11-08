@@ -4,7 +4,9 @@
             <folder id="bpls" caption="BPLS" index="5"/>
         </folder>
         <folder id="txn">
-            <folder id="bpls" caption="BPLS" index="5"/>
+            <folder id="bpls" caption="BPLS" index="5">
+                <folder id="tool" caption="Tools"/> 
+            </folder>
         </folder>
         <folder id="rulemgmt" caption="Rule Management">
             <folder id="bpls" caption="BPLS" index="5"/>

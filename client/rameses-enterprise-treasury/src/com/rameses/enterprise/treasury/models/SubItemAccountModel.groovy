@@ -35,6 +35,7 @@ class SubItemAccountModel extends com.rameses.seti2.models.CrudListModel {
         
             try { 
                 arr.each {o-> 
+                    if ( !o ) return; 
                     if ( orgs.contains( o.objid )) return; 
 
                     def item = [ _schemaname: sname ];

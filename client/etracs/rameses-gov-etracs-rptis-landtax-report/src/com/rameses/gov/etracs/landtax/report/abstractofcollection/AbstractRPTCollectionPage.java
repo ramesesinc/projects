@@ -12,8 +12,8 @@ import com.rameses.rcp.ui.annotations.Template;
  *
  * @author Dino Quimson
  */
-@Template(FormPage.class)
 @StyleSheet
+@Template(FormPage.class)
 public class AbstractRPTCollectionPage extends javax.swing.JPanel {
 
     /**
@@ -46,6 +46,8 @@ public class AbstractRPTCollectionPage extends javax.swing.JPanel {
         xTitledBorder1.setTitle("Initial Information");
         xPanel1.setBorder(xTitledBorder1);
 
+        xFormPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
+
         xComboBox1.setAllowNull(false);
         xComboBox1.setCaption("Period");
         xComboBox1.setItems("periods");
@@ -56,6 +58,7 @@ public class AbstractRPTCollectionPage extends javax.swing.JPanel {
 
         xDateField1.setCaption("Date");
         xDateField1.setName("entity.date"); // NOI18N
+        xDateField1.setPreferredSize(new java.awt.Dimension(125, 20));
         xFormPanel1.add(xDateField1);
 
         xComboBox2.setCaption("Month");
@@ -68,14 +71,17 @@ public class AbstractRPTCollectionPage extends javax.swing.JPanel {
         xNumberField1.setCaption("Year");
         xNumberField1.setName("entity.year"); // NOI18N
         xNumberField1.setPattern("#0000");
+        xNumberField1.setPreferredSize(new java.awt.Dimension(125, 20));
         xFormPanel1.add(xNumberField1);
 
         xDateField2.setCaption("From");
         xDateField2.setName("entity.startdate"); // NOI18N
+        xDateField2.setPreferredSize(new java.awt.Dimension(125, 20));
         xFormPanel1.add(xDateField2);
 
         xDateField3.setCaption("To");
         xDateField3.setName("entity.enddate"); // NOI18N
+        xDateField3.setPreferredSize(new java.awt.Dimension(125, 20));
         xFormPanel1.add(xDateField3);
 
         xComboBox3.setCaption("Collector");

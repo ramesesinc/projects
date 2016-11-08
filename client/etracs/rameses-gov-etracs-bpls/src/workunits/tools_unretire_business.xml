@@ -1,0 +1,25 @@
+<workunit>
+    <invokers>
+        <invoker xfolderid="/explorer/txn/bpls/tool" caption="UnRetire Business" 
+                 target="process" action="unretire"/> 
+    </invokers>
+
+    <code>
+import com.rameses.rcp.annotations.*;
+import com.rameses.rcp.common.*;
+
+class UnRetireBusinessModel {
+        
+    void unretire() { 
+        def h = { o-> 
+            if ( MsgBox.confirm('You are about to unretire this business. Continue?')) {
+                MsgBox.alert( o ); 
+            } 
+        } 
+        Modal.show( 'retirebusiness:lookup', [onselect: h] ); 
+    } 
+        
+}         
+    </code> 
+
+</workunit>

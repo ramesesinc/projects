@@ -12,7 +12,7 @@ from faas f
 	inner join barangay b on rp.barangayid = b.objid 
 where f.state = 'CURRENT'
 and (f.year < $P{year} or (f.year = $P{year} and f.month < $P{monthid}))
-
+group by b.objid, b.name 
 
 
 [getCurrentList]
@@ -30,6 +30,7 @@ from faas f
 where f.state = 'CURRENT'
 and f.year = $P{year} 
 and f.month = $P{monthid}
+group by b.objid, b.name 
 
 
 
@@ -48,7 +49,7 @@ from faas f
 where f.state = 'CANCELLED'
 and f.year = $P{year} 
 and f.month = $P{monthid}
-
+group by b.objid, b.name 
 
 
 [getEndingList]
@@ -65,7 +66,7 @@ from faas f
 	inner join barangay b on rp.barangayid = b.objid 
 where f.state = 'CURRENT'
 and (f.year < $P{year} or (f.year = $P{year} and f.month <= $P{monthid}))
-
+group by b.objid, b.name 
 
 
 

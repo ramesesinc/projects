@@ -7,7 +7,7 @@
     readonly:true;
 }
 
-"selectedPlantTree"  [allowEdit == false || (entity.taskstate && !entity.taskstate.matches('.*appraiser.*|recommender'))] {
+"selectedPlantTree"  [allowEdit == false || (entity.datacapture==0 && entity.taskstate && !entity.taskstate.matches('.*appraiser.*|recommender'))] {
     readonly:true;
 }
 

@@ -1,6 +1,6 @@
 <folders>
     <folder id="home">
-        <folder id="vehicle" caption="Vehicle"/>
+        <folder id="vehicle" caption="Vehicle" icon="home/icons/vehicle.png"/>
     </folder>
     <folder id="explorer">
         <folder id="master" caption="Master">

@@ -1,0 +1,7 @@
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" schemaName="vehicle_route">
+    <invokers>
+        <invoker folderid="explorer/master/vehicle/tricycle" caption="MTOP Route" action="init" 
+                 orderBy="code" customFilter="txntypeid='tricycle'"/>
+    </invokers>
+</workunit>
+ 

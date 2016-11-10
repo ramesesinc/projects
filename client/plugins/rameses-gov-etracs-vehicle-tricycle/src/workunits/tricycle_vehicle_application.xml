@@ -1,13 +1,11 @@
 <workunit  extends="com/rameses/gov/etracs/vehicle/templates/VehicleApplication.xml" 
            schemaName="vehicle_application_tricycle">
     <invokers>
-        <invoker type="vehicle:uihandler" caption="Tricycle" name="tricycle"/>
-
         <!-- Tricycle Menus -->
-        <invoker type="vehicle_menu:tricycle" caption="New" action="create" />
-        <invoker type="vehicle_menu:tricycle" caption="Renew" action="renew" />
-        <invoker type="vehicle_menu:tricycle" caption="Change Owner" action="changeOwner" />
-        <invoker type="vehicle_menu:tricycle" caption="Change Motor" action="changeMotor" />
+        <invoker folderid="/home/vehicle/tricycle" caption="New" action="create" />
+        <invoker folderid="/home/vehicle/tricycle" caption="Renew" action="renew" />
+        <invoker folderid="/home/vehicle/tricycle" caption="Change Owner" action="changeOwner" />
+        <invoker folderid="/home/vehicle/tricycle" caption="Change Motor" action="changeMotor" />
         
         <!-- from applicationn list -->
         <invoker type="vehicle_application_tricycle:create" caption="New" action="create" />
@@ -16,8 +14,8 @@
         <invoker type="formAction" caption="Change Owner" action="changeOwner" />
         <invoker type="formAction" caption="Change Motor" action="changeMotor" />
     </invokers>
-    <code class="com.rameses.gov.etracs.vehicletype.tricycle.TricycleApplicationForm" />
+    <code class="com.rameses.gov.etracs.vehicle.tricycle.models.TricycleApplicationForm" />
     <pages>
-        <page template="com.rameses.gov.etracs.vehicletype.tricycle.TricycleApplicationPage" />
+        <page template="com.rameses.gov.etracs.vehicle.tricycle.views.TricycleApplicationPage" />
     </pages>
 </workunit>

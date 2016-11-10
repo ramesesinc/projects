@@ -8,8 +8,8 @@
         <!-- actions -->
         <invoker type="formActions" caption="Submit" action="save" />
     </invokers>
-    <code class="com.rameses.gov.etracs.vehicletype.boat.BoatAccountForm" />
+    <code class="com.rameses.gov.etracs.vehicle.boat.models.BoatAccountForm" />
     <pages>
-        <page template="com.rameses.gov.etracs.vehicletype.boat.BoatAccountPage"/>
+        <page template="com.rameses.gov.etracs.vehicle.boat.views.BoatAccountPage"/>
     </pages>
 </workunit>

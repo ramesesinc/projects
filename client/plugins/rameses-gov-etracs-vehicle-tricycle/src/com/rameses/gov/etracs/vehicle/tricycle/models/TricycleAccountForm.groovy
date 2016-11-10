@@ -1,4 +1,4 @@
-package com.rameses.gov.etracs.vehicletype.tricycle;
+package com.rameses.gov.etracs.vehicle.tricycle.models;
 
 import com.rameses.rcp.annotations.*;
 import com.rameses.rcp.common.*;

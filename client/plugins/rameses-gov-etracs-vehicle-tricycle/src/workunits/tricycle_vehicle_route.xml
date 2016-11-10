@@ -1,0 +1,6 @@
+<workunit extends="com/rameses/seti2/templates/CrudForm.xml" schemaName="vehicle_route">
+    <invokers>
+        <invoker type="vehicle_route:create" caption="New Route" action="create"/>
+        <invoker type="vehicle_route:open" caption="Open Route" action="open"/>
+    </invokers>
+</workunit>

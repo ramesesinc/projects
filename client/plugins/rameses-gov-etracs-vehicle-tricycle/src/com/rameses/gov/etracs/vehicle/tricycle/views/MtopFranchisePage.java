@@ -2,13 +2,12 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.rameses.gov.etracs.vehicletype.tricycle;
+package com.rameses.gov.etracs.vehicle.tricycle.views;
 
 import com.rameses.rcp.ui.annotations.Template;
 import com.rameses.seti2.views.CrudFormPage;
 
 /**
- *
  * @author Elmo Nazareno
  */
 @Template(CrudFormPage.class)

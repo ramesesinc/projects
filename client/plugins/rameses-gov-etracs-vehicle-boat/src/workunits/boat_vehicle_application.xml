@@ -1,8 +1,6 @@
 <workunit extends="com/rameses/gov/etracs/vehicle/templates/VehicleApplication.xml" 
           schemaName="vehicle_application_boat">
     <invokers>
-        <invoker type="vehicle:uihandler" caption="Tricycle" name="boat"/>
-        
         <!-- menus -->
         <invoker type="vehicle_menu:boat" caption="New" action="create" />
         <invoker type="vehicle_menu:boat" caption="Renew" action="renew" />
@@ -10,8 +8,8 @@
         <invoker type="vehicle_application_boat:create" caption="New" action="create" />
         <invoker type="vehicle_application_boat:open" caption="Boat Application" action="open" />
     </invokers>
-    <code class="com.rameses.gov.etracs.vehicletype.boat.BoatApplicationForm" />
+    <code class="com.rameses.gov.etracs.vehicle.boat.models.BoatApplicationForm" />
     <pages>
-        <page template="com.rameses.gov.etracs.vehicletype.boat.BoatApplicationPage" />
+        <page template="com.rameses.gov.etracs.vehicle.boat.views.BoatApplicationPage" />
     </pages>
 </workunit>

@@ -5,7 +5,7 @@ select * from propertyclassification order by orderno
 select
     rrd.dtgenerated,
     b.name as barangay,
-    count(*) as rpucount,
+    count(distinct rptledgerid) as rpucount,
     sum(rrd.basic) as basic, 
     sum(rrd.basicdisc) as basicdisc,
     sum(rrd.basicint) as basicint,

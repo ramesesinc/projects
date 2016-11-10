@@ -1,7 +1,10 @@
 <workunit extends="rpt_wtemplates/ReportController.xml" >
     <invokers>
-        <invoker folderid="/explorer/report/rpt" action="init" caption="Comparative Data on Assessed Value" target="window" index="10" 
-            role="ASSESSOR_REPORT,REPORT" />
+        <invoker folderid="/explorer/report/rpt" 
+                 action="init" 
+                 caption="Comparative Data on Assessed Value" 
+                 target="window" 
+                role="ASSESSOR_REPORT,REPORT" />
     </invokers>
     <code>
 

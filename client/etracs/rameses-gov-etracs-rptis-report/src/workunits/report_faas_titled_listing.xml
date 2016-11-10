@@ -1,6 +1,9 @@
 <workunit extends="rpt_wtemplates/ReportController.xml" >
     <invokers>
-        <invoker folderid="/explorer/report/rpt" action="init" caption="List of Titled Properties" target="window" index="102" 
+        <invoker folderid="/explorer/report/rpt" 
+            action="init" 
+            caption="List of Titled Properties" 
+            target="window" 
             role="REPORT" permission="faas-titled-report.viewreport"/>
     </invokers>
     <code>

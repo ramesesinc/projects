@@ -52,7 +52,7 @@ class EntityInterceptorIndividualEntity  {
 		}
 	}
 
-	@After(pattern="EntityService.open", eval="result.type == 'INDIVIDUAL'")
+	@After(pattern="EntityService.open", eval="result?.type == 'INDIVIDUAL'")
 	public void afterOpen( evt ) {
 		def parms = evt.args[0];
 		def entity = evt.result;

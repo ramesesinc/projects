@@ -13,6 +13,7 @@ WHERE barangayid = $P{barangayid}
   	     OR (rl.lastyearpaid = $P{cy} AND rl.lastqtrpaid < 4)
   )
   AND rl.totalav > 0 
+  AND rl.taxable = 1 
   
 
 [cleanup]
@@ -94,6 +95,55 @@ FROM (
 	INNER JOIN entity e ON rl.taxpayer_objid = e.objid 
 	INNER JOIN barangay b ON rl.barangayid = b.objid
 ORDER BY b.name, x.revperiod, (x.endyear - x.startyear + 1) desc 
+
+
+
+[getDelinquentLedgers3]
+select 
+	e.name as taxpayer_name, 
+	t.* 
+from (
+	select 
+		rd.dtgenerated,
+		b.name as barangay, 
+		rl.taxpayer_objid, 
+		rl.objid as rptledgerid,
+		rl.rputype, 
+		rlf.tdno, 
+		pc.code as classcode, 
+		rlf.assessedvalue as av, 
+		min(rlf.fromyear) as fromyear, 
+		max(case when rlf.toyear = 0 then $P{toyear} else rlf.toyear end) as toyear,
+		sum(basic) as basic, 
+		sum(basicint) as basicint, 
+		sum(basic + basicint) as basicnet,
+		sum(sef) as sef, 
+		sum(sefint) as sefint,
+		sum(sef + sefint) as sefnet 
+	from report_rptdelinquency rd 
+		inner join rptledger rl on rd.rptledgerid = rl.objid 
+		inner join barangay b on rl.barangayid = b.objid 
+		inner join rptledgerfaas rlf on rd.rptledgerid = rlf.rptledgerid
+		inner join propertyclassification pc on rlf.classification_objid = pc.objid 
+	where rd.barangayid LIKE $P{barangayid} 
+	 and not exists(select * from rptledger_restriction where parentid = rd.rptledgerid )
+	 and rd.year >= rlf.fromyear 
+	 and (rd.year <= rlf.toyear or rlf.toyear = 0 )
+	 and rlf.state = 'APPROVED' 
+	 ${filter} 
+	group by 
+		rd.dtgenerated,
+		b.name, 
+		rl.taxpayer_objid, 
+		rl.objid,
+		rl.rputype, 
+		rlf.tdno, 
+		pc.code,
+		rlf.assessedvalue
+) t 
+	inner join entity e on t.taxpayer_objid = e.objid 
+order by 
+	e.name, t.fromyear 
 
 
 [getDelinquentLedgersSummary]

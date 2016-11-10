@@ -73,9 +73,21 @@ class RPTCertificationLandService
 	}
 
 	def getLandItems(cert){
+		def list = em.getLandItems(cert).each{
+			it.street = (it.street ? it.street : it.barangay)
+		}
+
+		if (list) {
+			return list 
+		}
 		if (cert.faasid){
 			return em.getFaasInfo(cert)
 		}
+		return []
+		
+	}
+
+	def getItems(cert){
 		return em.getLandItems(cert).each{
 			it.street = (it.street ? it.street : it.barangay)
 		}

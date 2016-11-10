@@ -17,7 +17,7 @@ FROM faas f
 	INNER JOIN realproperty rp on f.realpropertyid = rp.objid 
 	INNER JOIN propertyclassification pc ON r.classification_objid = pc.objid 
 WHERE ${filter}
-  AND f.state in ('CURRENT', 'CANCELLED')
+  AND f.state in ('CURRENT')
 
 
 [findCurrentExcerpt]

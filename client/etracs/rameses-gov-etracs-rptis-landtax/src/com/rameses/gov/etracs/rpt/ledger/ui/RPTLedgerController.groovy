@@ -342,6 +342,7 @@ public class RPTLedgerController
     --------------------------------------------------------------*/    
     def selectedRestriction;
     def restriction; 
+    def restrictions;
     
     def restrictionListHandler = [
         fetchList : { return entity.restrictions }        
@@ -375,7 +376,10 @@ public class RPTLedgerController
     }
     
     List getRestrictions(){
-         return LOV.RPT_FAAS_RESTRICTIONS*.key
+        if (! restrictions){
+            restrictions = svc.getRestrictions();
+        }
+         return restrictions;
      }
      
     def getMessagelist(){

@@ -34,6 +34,8 @@ public class RPTLedgerRestrictionPage extends javax.swing.JPanel {
 
         xComboBox1.setCaption("Restriction");
         xComboBox1.setCellPadding(new java.awt.Insets(10, 0, 0, 0));
+        xComboBox1.setExpression("#{item.name}");
+        xComboBox1.setItemKey("objid");
         xComboBox1.setItems("restrictions");
         xComboBox1.setName("restriction.restrictionid"); // NOI18N
         xComboBox1.setRequired(true);
@@ -52,6 +54,7 @@ public class RPTLedgerRestrictionPage extends javax.swing.JPanel {
         xFormPanel1.add(jScrollPane1);
 
         xButton1.setMnemonic('c');
+        xButton1.setImmediate(true);
         xButton1.setName("_close"); // NOI18N
         xButton1.setText("Cancel");
 

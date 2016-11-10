@@ -2,7 +2,7 @@
 SELECT 
 	'TAXABLE' as taxability,
 	pc.objid AS classid,
-	COUNT( 1 ) AS rpucount,
+	SUM( case when rp.claimno is null then  1  else 0 end ) AS rpucount,
 	SUM( r.totalareasqm) as totalareasqm,
 	SUM( r.totalmv) as totalmv,
 	SUM( r.totalav) as totalav
@@ -22,7 +22,7 @@ ORDER BY pc.orderno
 SELECT 
 	'EXEMPT' as taxability,
 	e.objid AS classid,
-	COUNT( 1 ) AS rpucount,
+	COUNT(  case when rp.claimno is null then  1  else 0 end  ) AS rpucount,
 	SUM( r.totalareasqm) as totalareasqm,
 	SUM( r.totalmv) as totalmv,
 	SUM( r.totalav) as totalav
@@ -32,7 +32,7 @@ FROM faas f
 	INNER JOIN exemptiontype e ON r.exemptiontype_objid = e.objid 
 WHERE ${filter}
   AND f.state = 'CURRENT' 
-  AND r.taxable = 1 
+  AND r.taxable = 0
   AND r.rputype = 'land' 
 GROUP BY e.objid, e.orderno
 ORDER BY e.orderno  

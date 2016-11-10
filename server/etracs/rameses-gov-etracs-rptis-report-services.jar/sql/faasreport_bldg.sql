@@ -30,14 +30,6 @@ where br.objid = $P{objid}
 [getStructures]
 SELECT objid, name, indexno FROM structure where showinfaas=1 ORDER BY indexno;
 
-[getStructureMaterials]
-SELECT m.objid, m.name
-FROM structurematerial sm 
-	INNER JOIN material m ON sm.material_objid = m.objid 
-WHERE sm.structure_objid = $P{objid} 
-  AND sm.display = 1 
-ORDER BY sm.idx 
-
 
 [getDetailedStructureMaterials]
 SELECT 
@@ -154,20 +146,50 @@ FROM rpu_assessment bra
 WHERE bra.rpuid = $P{objid}	
 
 
+[getStructureMaterials]
+select 
+	x.sidx as idx, 
+	x.smidx,
+	case when x.sidx = 0 then material else null end as mat0,
+	case when x.sidx = 1 then material else null end as mat1,
+	case when x.sidx = 2 then material else null end as mat2
+from (
+	select
+		s.indexno - 1 as sidx,
+		sm.idx as smidx, 	
+		m.name as material 
+	from structure s 
+		inner join structurematerial sm on s.objid = sm.structure_objid
+		inner join material m on sm.material_objid = m.objid 
+	where s.showinfaas = 1 
+	and sm.display = 1 
+
+	union 
+
+	SELECT 
+			s.indexno - 1 as sidx,
+			sm.idx + 50 as smidx, 	
+			m.name as material 
+	FROM bldgstructure bs 
+		INNER JOIN structurematerial sm ON bs.structure_objid = sm.structure_objid AND bs.material_objid = sm.material_objid
+		INNER JOIN material m ON bs.material_objid = m.objid 
+		inner join structure s on sm.structure_objid = s.objid 
+	WHERE bldgrpuid = $P{objid}
+	and sm.display = 0 
+) x 
+order by x.sidx, x.smidx
+
 [getBldgStructureMaterials]
 SELECT 
 	bs.floor, 
-	bs.structure_objid AS structureid, 
-	bs.material_objid AS materialid, 
-	m.name AS material, 
-	'X' as checked,
-	sm.display
+	s.indexno - 1 as idx, 
+	m.name AS material
 FROM bldgstructure bs 
 	INNER JOIN structurematerial sm ON bs.structure_objid = sm.structure_objid AND bs.material_objid = sm.material_objid
 	INNER JOIN material m ON bs.material_objid = m.objid 
 	inner join structure s on sm.structure_objid = s.objid 
 WHERE bldgrpuid = $P{objid}
-and s.showinfaas = 1 
+order by s.indexno, bs.floor, sm.idx
 
 
 [findTotalAdditionalArea]

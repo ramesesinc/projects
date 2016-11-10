@@ -1,6 +1,9 @@
 <workunit extends="rpt_wtemplates/ReportController.xml" >
     <invokers>
-        <invoker folderid="/explorer/report/rpt" action="init" caption="List of Lands By Specific Class" target="window" index="9" 
+        <invoker folderid="/explorer/report/rpt" 
+            action="init" 
+            caption="List of Lands By Specific Class" 
+            target="window" 
             role="ASSESSOR_REPORT,REPORT" />
     </invokers>
     <code>

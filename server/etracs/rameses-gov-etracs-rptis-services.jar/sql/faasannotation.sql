@@ -82,4 +82,6 @@ WHERE fa.objid = $P{objid}
 [getAnnotationTypes]
 SELECT * FROM faasannotationtype ORDER BY type 
 
+[getActiveAnnotations]
+select objid, txnno, fileno from faasannotation where faasid = $P{objid} and state = 'APPROVED'
 

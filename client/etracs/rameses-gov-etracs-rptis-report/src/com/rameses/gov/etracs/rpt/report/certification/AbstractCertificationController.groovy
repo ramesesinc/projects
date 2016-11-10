@@ -73,7 +73,11 @@ public abstract class AbstractCertificationController
         entity.certifiedbytitle = var.get("ASSESSORCERTIFIEDBYTITLE");
         entity.byauthority      = paramSvc.getStandardParameter().ASSESSORNAME;
         entity.byauthoritytitle = paramSvc.getStandardParameter().ASSESSORTITLE;
-        entity.purpose          = "whatever legal purposes it may serve him/her"; 
+        entity.purpose          = var.get("TDTRUECOPYPURPOSE");
+        if (!entity.purpose){
+            entity.purpose = "whatever legal purposes it may serve him/her"; 
+        }
+            
         entity.asofyear         = dtSvc.getServerYear();
         entity.oramount         = 0.0;
         entity.stampamount      = 0.0;

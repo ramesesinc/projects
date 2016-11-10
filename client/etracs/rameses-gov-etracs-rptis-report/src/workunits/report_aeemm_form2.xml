@@ -3,7 +3,7 @@
         <invoker folderid="/explorer/report/rpt" 
             action="init" 
             caption="AEEMM Form No. 2" 
-            target="window" index="10" 
+            target="window"
             role="ASSESSOR_REPORT,REPORT" />
     </invokers>
     <code>

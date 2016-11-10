@@ -17,8 +17,12 @@ class FaasTxnInitController
     @Service('FAASService')
     def svc;
     
+    @Service('Var')
+    def var; 
+    
     def entity = [:]
     def txntitle;
+    def showCapture = false;
     
     String getTitle(){
         return invoker.caption + ': Initial';
@@ -31,6 +35,12 @@ class FaasTxnInitController
         txntitle = invoker.caption;
         entity.txntype = svc.getTxnType(invoker.properties.txntype.toUpperCase());
         entity.attributes = svc.getTxnTypeAttributes(entity.txntype)
+        entity.datacapture = false;
+        showCapture = var.get('faas_transaction_process_as_capture');
+        if (showCapture) 
+            showCapture = showCapture.toLowerCase().matches('1|y|yes|t|true');
+        else 
+            showCapture = false;
         afterInit();
     }
     
@@ -55,6 +65,8 @@ class FaasTxnInitController
     
     def process(){
         def faas = svc.initOnlineTransaction(entity);
+        if (entity.datacapture == true)
+            return InvokerUtil.lookupOpener('faas:capture:open', [entity:faas]);
         return InvokerUtil.lookupOpener('faas:open', [entity:faas]);
     }
     

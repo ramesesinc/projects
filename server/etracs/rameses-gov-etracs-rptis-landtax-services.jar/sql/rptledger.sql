@@ -885,3 +885,5 @@ select objid from rptledgerfaas where objid = $P{objid}
 [findLedgerFaasByTdno]
 select objid from rptledgerfaas where tdno = $P{tdno}
 
+[getRestrictions]
+select * from faas_restriction_type order by idx

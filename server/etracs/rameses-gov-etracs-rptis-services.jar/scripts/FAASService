@@ -632,6 +632,28 @@ class FAASService
 
 
 	@ProxyMethod
+	public def getAnnotations( faasid ) {
+		return em.getAnnotations([faasid:faasid])
+	}    
+
+
+	@ProxyMethod
+	public def getAnnotationColumns(  ) {
+        return [
+            [name:"state", caption:"State", width:140],
+            [name:"type", caption:"Type", width:140],
+            [name:"txnno", caption:"Txn No.", width:60],
+            [name:"txndate", caption:"Txn Date", type:'date', format:'yyyy-MM-dd', width:110], 
+            [name:"fileno", caption:"File No.", width:100],
+            [name:"orno", caption:"O.R. No.", width:70],
+            [name:"ordate", caption:"O.R. Date", type:'date', format:'yyyy-MM-dd', width:110], 
+            [name:"memoranda", caption:"Memoranda", width:250],
+        ]
+	}	
+
+
+
+	@ProxyMethod
 	public def formalizeOwnerInfo(entityid){
 		def t = em.findIndividualEntity([objid:entityid])
 		def name = '';
@@ -953,7 +975,7 @@ class FAASService
 		newfaas.preveffectivity = newfaas.effectivityyear 
 
 		newfaas.txntype 		= getTxnType( info.txntype.objid )
-		newfaas.datacapture 	= (info.datacapture == null ? false : info.datacapture)
+		newfaas.datacapture 	= info.datacapture
 		newfaas.autonumber 	    = util.toBoolean(var.td_autonumber, false)
 		newfaas.backtaxyrs   	= 0
 		newfaas.backtaxes 		= []

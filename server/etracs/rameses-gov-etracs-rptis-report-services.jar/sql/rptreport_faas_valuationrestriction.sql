@@ -1,8 +1,8 @@
 [getFaasValuationRestrictionSummary]
 select 
 	s.name as municipality,
-	sum(case when f.restrictionid is null then r.totalmv else 0 end ) as totalmv,
-	sum(case when f.restrictionid is null then r.totalav else 0 end ) as totalav,
+	sum(r.totalmv) as totalmv,
+	sum(r.totalav) as totalav,
 	sum(case when f.restrictionid is not null then r.totalav else 0 end ) as restrictionav,
 	sum(case when f.restrictionid is not null then r.totalmv else 0 end ) as restrictionmv
 from faas f

@@ -1,0 +1,55 @@
+<workunit extends="rpt_wtemplates/ReportController.xml" >
+    <invokers>
+        <invoker folderid="/explorer/report/landtax" 
+            action="init" 
+            caption="Real Property Tax Collectibles" 
+            target="window" index="101" 
+            role="LANDTAX_REPORT,REPORT"/>
+    </invokers>
+    <code>
+
+<![CDATA[
+
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.reports.*;
+
+class RealtyTaxCollectiblesModel extends com.rameses.gov.etracs.rpt.report.AsyncReportController
+{
+    @Service('LandTaxReportRealtyTaxCollectibleService') 
+    def svc
+    
+    String title = 'Real Property Tax Collectibles';
+    String reportName = 'com/rameses/gov/etracs/rpt/report/landtax/realty_tax_collectibles.jasper'
+    
+    void buildReportData(entity, asyncHandler){
+        svc.buildReport(entity, asyncHandler);
+    }
+    
+    def initReport(){
+        entity.basicrate = 1.0
+        entity.basicdiscrate = 10.0
+        entity.sefrate = 1.0
+        entity.sefdiscrate = 10.0
+        return 'default'
+    }
+    
+
+    def formControl = [
+         getFormControls: {
+             return [
+                 new FormControl( "label", [caption:'Year', name:'entity.year', required:true, enabled:false, captionWidth:100]),
+                 new FormControl( "decimal", [caption:'Basic (%)', name:'entity.basicrate', required:true, captionWidth:100]),
+                 new FormControl( "decimal", [caption:'Discount(%)', name:'entity.basicdiscrate', required:true, captionWidth:100]),
+                 new FormControl( "decimal", [caption:'SEF (%)', name:'entity.sefrate', required:true, captionWidth:100]),
+                 new FormControl( "decimal", [caption:'Discount (%)', name:'entity.sefdiscrate', required:true, captionWidth:100]),
+             ]    
+         },
+    ] as FormPanelModel;
+
+}
+]]>        
+        
+    </code>
+</workunit>

@@ -19,6 +19,9 @@ class FaasServiceInterceptor
 	@Service('LogService')
 	def logSvc 
 
+	@Service('FAASAnnotationService')
+	def annotationSvc 
+
 
 	@After(pattern="FAASService.(createFaas|updateFaas|submitForApproval|disapproveFaas|approveFaas)") 
 	public void logActions( evt ) {
@@ -60,6 +63,8 @@ class FaasServiceInterceptor
 					ledgerSvc.checkLedgerBalance(info.faas.objid)
 				}
 			}
+			
+			annotationSvc.checkActiveAnnotations(info.txntype, info.faas)
 		}
 	}
 

@@ -37,8 +37,9 @@ public class RPTBillingController
     def billto;
     def taxpayer;
     def rptledgerid;
+    def showBack = true; 
     
-    String title = 'Realty Tax Billing'
+    String title = 'Real Property Tax Bill'
     
     void init() {
         mode = 'init'
@@ -123,6 +124,12 @@ public class RPTBillingController
         buildBillReportInfo()
         ReportUtil.print( report.report, true )
     }
+    
+    def print() {
+        buildBillReportInfo()
+        ReportUtil.print( report.report, true );
+        return '_close';
+    }    
     
     void initBatch(){
         init();

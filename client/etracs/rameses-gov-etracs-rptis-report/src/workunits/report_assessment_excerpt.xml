@@ -1,9 +1,10 @@
 <workunit extends="rpt_wtemplates/ReportController.xml" >
     <invokers>
-        <invoker folderid="/explorer/report/rpt/prov" action="init" 
+        <invoker folderid="/explorer/report/rpt/prov" 
+                 action="init" 
                  caption="Excerpt from Real Property Assessment" 
-                 target="window" index="1" 
-            role="ASSESSOR_REPORT,REPORT" />
+                 target="window" 
+                role="ASSESSOR_REPORT,REPORT" />
     </invokers>
     <code>
 

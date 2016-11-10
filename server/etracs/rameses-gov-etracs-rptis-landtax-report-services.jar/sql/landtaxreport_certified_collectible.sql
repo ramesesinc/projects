@@ -1,4 +1,5 @@
 [getList]
+
 select 
 	x.*,
 	case when x.rputype = 'land' then x.totalav else null end as landav,
@@ -28,8 +29,11 @@ from (
 		left join rpu r on f.rpuid = r.objid 
 		left join realproperty rp on f.realpropertyid = rp.objid 
 	where rl.state = 'APPROVED' 
+	and rl.taxable = 1 
+	and rl.totalav > 0
 	and f.state = 'CURRENT'
+	and not exists(select * from rptledger_restriction where parentid = rl.objid)
+
 )x
-where x.totalav > 0 
 order by x.pin, x.suffix 
 

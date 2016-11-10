@@ -418,9 +418,9 @@ class RPTLedgerService
                 }
                 else{
                     olditem.partialled = 0
-                    olditem.av      = ledgerfaas.assessedvalue
-                    olditem.basicav = ledgerfaas.assessedvalue
-                    olditem.sefav   = ledgerfaas.assessedvalue
+                    olditem.av      = params.av
+                    olditem.basicav = params.basicav
+                    olditem.sefav   = params.sefav
                     olditem.classification  = ledgerfaas.classification
                     olditem.actualuse  = (ledgerfaas.actualuse?.objid ? ledgerfaas.actualuse : ledgerfaas.classification)
                     createLedgerItemQtrlyData(olditem, qtr)   
@@ -756,6 +756,7 @@ class RPTLedgerService
 
     @ProxyMethod
     public void postLedgerFaasData(faas){
+        if (!faas.previousfaases) return
     	def ledger = getLedgerByFaasId(faas.previousfaases[0].prevfaasid)
         ledger.faasid = faas.objid 
         updateLedger(ledger)
@@ -880,6 +881,11 @@ class RPTLedgerService
     @ProxyMethod
     public def getRpuTypes(  ) {
         return rpuSvc.getRpuTypes();
+    }
+
+    @ProxyMethod
+    public def getRestrictions(  ) {
+        return em.getRestrictions()
     }
 
     @ProxyMethod

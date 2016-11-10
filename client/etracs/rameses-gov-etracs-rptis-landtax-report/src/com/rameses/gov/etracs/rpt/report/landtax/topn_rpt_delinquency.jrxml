@@ -40,10 +40,8 @@
 
 	<field name="rank" class="java.lang.Integer"/>
 	<field name="taxpayer.name" class="java.lang.String"/>
-	<field name="tdno" class="java.lang.String"/>
-	<field name="totalav" class="java.lang.Number"/>
+	<field name="rpucount" class="java.lang.Number"/>
 	<field name="amount" class="java.math.BigDecimal"/>
-	<field name="yearsdelinquent" class="java.lang.Number"/>
 	<field name="dtgenerated" class="java.util.Date"/>
 
 		<background>
@@ -204,7 +202,7 @@
 					<reportElement
 						x="0"
 						y="0"
-						width="31"
+						width="40"
 						height="22"
 						key="staticText-27"/>
 					<box>					<pen lineWidth="0.5" lineStyle="Solid"/>
@@ -220,9 +218,9 @@
 				</staticText>
 				<staticText>
 					<reportElement
-						x="31"
+						x="40"
 						y="0"
-						width="233"
+						width="327"
 						height="22"
 						key="staticText-29"/>
 					<box>					<pen lineWidth="0.5" lineStyle="Solid"/>
@@ -238,27 +236,9 @@
 				</staticText>
 				<staticText>
 					<reportElement
-						x="264"
-						y="0"
-						width="103"
-						height="22"
-						key="staticText-30"/>
-					<box>					<pen lineWidth="0.5" lineStyle="Solid"/>
-					<topPen lineWidth="0.5" lineStyle="Solid"/>
-					<leftPen lineWidth="0.5" lineStyle="Solid"/>
-					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
-					<rightPen lineWidth="0.5" lineStyle="Solid"/>
-</box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
-					</textElement>
-				<text><![CDATA[TD No.]]></text>
-				</staticText>
-				<staticText>
-					<reportElement
 						x="367"
 						y="0"
-						width="75"
+						width="83"
 						height="22"
 						key="staticText-31"/>
 					<box>					<pen lineWidth="0.5" lineStyle="Solid"/>
@@ -270,13 +250,14 @@
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
-				<text><![CDATA[Assessed Value]]></text>
+				<text><![CDATA[No. of 
+Delinquent RPUs]]></text>
 				</staticText>
 				<staticText>
 					<reportElement
-						x="442"
+						x="450"
 						y="0"
-						width="67"
+						width="90"
 						height="22"
 						key="staticText-32"/>
 					<box>					<pen lineWidth="0.5" lineStyle="Solid"/>
@@ -290,24 +271,6 @@
 					</textElement>
 				<text><![CDATA[Amount]]></text>
 				</staticText>
-				<staticText>
-					<reportElement
-						x="509"
-						y="0"
-						width="31"
-						height="22"
-						key="staticText-33"/>
-					<box>					<pen lineWidth="0.5" lineStyle="Solid"/>
-					<topPen lineWidth="0.5" lineStyle="Solid"/>
-					<leftPen lineWidth="0.5" lineStyle="Solid"/>
-					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
-					<rightPen lineWidth="0.5" lineStyle="Solid"/>
-</box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
-					</textElement>
-				<text><![CDATA[Years]]></text>
-				</staticText>
 			</band>
 		</columnHeader>
 		<detail>
@@ -316,7 +279,7 @@
 					<reportElement
 						x="0"
 						y="0"
-						width="31"
+						width="40"
 						height="15"
 						key="textField"
 						stretchType="RelativeToBandHeight"/>
@@ -333,9 +296,9 @@
 				</textField>
 				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="31"
+						x="40"
 						y="0"
-						width="233"
+						width="327"
 						height="15"
 						key="textField"
 						stretchType="RelativeToBandHeight"/>
@@ -350,30 +313,11 @@
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$F{taxpayer.name}]]></textFieldExpression>
 				</textField>
-				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="264"
-						y="0"
-						width="103"
-						height="15"
-						key="textField"
-						stretchType="RelativeToBandHeight"/>
-					<box>					<pen lineWidth="0.5" lineStyle="Solid"/>
-					<topPen lineWidth="0.5" lineStyle="Solid"/>
-					<leftPen lineWidth="0.5" lineStyle="Solid"/>
-					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
-					<rightPen lineWidth="0.5" lineStyle="Solid"/>
-</box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" size="8"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{tdno}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="367"
 						y="0"
-						width="75"
+						width="83"
 						height="15"
 						key="textField"
 						stretchType="RelativeToBandHeight"/>
@@ -383,16 +327,16 @@
 					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
-					<textElement textAlignment="Right" verticalAlignment="Middle">
+					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Tahoma" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.Number"><![CDATA[$F{totalav}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$F{rpucount}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="442"
+						x="450"
 						y="0"
-						width="67"
+						width="90"
 						height="15"
 						key="textField"
 						stretchType="RelativeToBandHeight"/>
@@ -406,25 +350,6 @@
 						<font fontName="Tahoma" size="8"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{amount}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="509"
-						y="0"
-						width="31"
-						height="15"
-						key="textField"
-						stretchType="RelativeToBandHeight"/>
-					<box>					<pen lineWidth="0.5" lineStyle="Solid"/>
-					<topPen lineWidth="0.5" lineStyle="Solid"/>
-					<leftPen lineWidth="0.5" lineStyle="Solid"/>
-					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
-					<rightPen lineWidth="0.5" lineStyle="Solid"/>
-</box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" size="8"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.Number"><![CDATA[$F{yearsdelinquent}]]></textFieldExpression>
 				</textField>
 			</band>
 		</detail>

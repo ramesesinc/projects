@@ -30,4 +30,9 @@ class EntityService
 	public def getPhoto( o ) {
 		return [:]; 
 	}
+
+	@ProxyMethod 
+	public def getTypes() {
+		return []; 
+	}
 }

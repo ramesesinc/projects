@@ -29,7 +29,8 @@ class VehicleAssessmentService {
 		def svrDate = dateSvc.getServerDate();
 		if(!o.billdate) o.billdate = svrDate;
 		def facts = [];
-		facts << new VehicleApplication( apptype: o.apptype, txntype: o.txntype?.objid );
+		println "txntype is " + o.txntype;
+		facts << new VehicleApplication( apptype: o.apptype, txntype: o.txntype );
 		facts << new CurrentDate(svrDate);
 		facts << new BillDate(svrDate);
 

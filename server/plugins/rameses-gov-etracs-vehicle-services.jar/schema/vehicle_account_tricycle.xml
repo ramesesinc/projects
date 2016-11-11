@@ -9,7 +9,7 @@
 		<field name="engineno" />
 		<field name="plateno" required="true"/>
 
-		<complex name="route" type="vehicle_route" jointype="many-to-one" includefields="objid,code,description">
+		<complex name="route" ref="vehicle_route" jointype="many-to-one" includefields="objid,code,description" required="false">
 			<key field="routeid"  target="objid"/>
 		</complex>
 			

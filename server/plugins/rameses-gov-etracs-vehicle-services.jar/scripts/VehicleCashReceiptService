@@ -65,6 +65,9 @@ class VehicleCashReceiptService {
 			mm.item = lookupAcct.findAccount([objid:it.account.objid]);
 			mm.amount = it.amount;
 			mm.refid = it.refid;
+			mm.surcharge = it.surcharge;
+			mm.interest = it.interest;
+			mm.discount = it.discount;
 			e.items << mm;
 		};
 

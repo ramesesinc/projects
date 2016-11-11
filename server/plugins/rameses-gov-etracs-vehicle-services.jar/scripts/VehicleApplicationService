@@ -37,9 +37,7 @@ class VehicleApplicationService {
 
 	@ProxyMethod
 	public def post( def o ) {
-		throw new Exception("o ->"+txntype.uihandler)
-
-		def z = em.lookup( 'vehicle_account_'+ o.txntype.uihandler );
+		def z = em.lookup( 'vehicle_account_'+ o.txntype );
 
 		def sc = schemaSvc.getSchema( [name:'vehicle_application'] );
 		String exclude = sc.fields*.name.join("|");
@@ -68,18 +66,25 @@ class VehicleApplicationService {
 
 	@ProxyMethod
 	public def loadForApplication( def o ) {
-		def z = acctEm.find( [objid: o.objid]).first();
-		def sc = schemaSvc.getSchema( [ name:   z.txntype.toLowerCase() + '_vehicle_account' ] );
-		sc.fields.each {
-			println it.name + " " + z.get( it.name );
-		};
+		if(!o.txntype)
+			throw new Exception("Please indicate txntype");
+		if(!o.objid)
+			throw new Exception("Please indicate objid");
 
-		throw new Exception("stop");
-		
+		def acct = em.lookup( 'vehicle_account_'+ o.txntype ).find( [objid: o.objid]).first();
+		def sc = schemaSvc.getSchema( [name:'vehicle_application'] );
+		String exclude = sc.fields*.name.join("|");
+
 		def m = [:];
-		z.each {
-
+		m.acctid = acct.objid;
+		m.owner = acct.owner;
+		m.appyear = acct.activeyear + 1;
+		acct.each { k,v->
+			if(!k.matches(exclude)) {
+				m.put(k, v);
+			}
 		}
+		return m;	
 	}
 
 

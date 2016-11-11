@@ -20,10 +20,7 @@
 		<field name="amount" type="decimal" required="true" />
 		<field name="amtpaid" type="decimal" required="true" />
 		<field name="balance" expr="amount - amtpaid" />
-
-		<complex name="txntype" ref="vehicle_txntype" jointype="many-to-one" includefields="uihandler">
-			<key field="txntypeid" target="objid" />
-		</complex>
+		<field name="txntype" required="true" />
 
 	</element>
 </schema>

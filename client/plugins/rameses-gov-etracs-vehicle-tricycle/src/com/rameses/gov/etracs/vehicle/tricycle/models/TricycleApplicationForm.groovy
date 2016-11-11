@@ -8,6 +8,10 @@ import com.rameses.gov.etracs.vehicle.models.*;
 
 public class TricycleApplicationForm extends VehicleApplicationForm {
     
+    public String getTxntype() {
+        return "tricycle";
+    }
+    
     public void beforeSave(def mode ) {
         entity.particulars = 'Plate No:'+entity.plateno;
     }

@@ -6,7 +6,7 @@ import com.rameses.seti2.models.*;
 import com.rameses.osiris2.common.*;
 import com.rameses.util.*;
 
-public class VehicleApplicationForm extends CrudFormModel {
+public abstract class VehicleApplicationForm extends CrudFormModel {
     
     @Service("VehicleAssessmentService")
     def assessmentSvc;
@@ -18,7 +18,7 @@ public class VehicleApplicationForm extends CrudFormModel {
     def caller;
     
     def selectedItem;
-    def txntype;
+    public abstract String getTxntype();
     
     public String getTitle() {
         return txntype.title + " (" + entity.apptype + ")";

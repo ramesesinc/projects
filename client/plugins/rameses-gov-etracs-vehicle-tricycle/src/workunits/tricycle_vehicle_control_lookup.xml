@@ -7,6 +7,4 @@
                  cuctomFilter="txntypeid='tricycle'"
                  action="init"/>
     </invokers>
-   
-    </code>
 </workunit>

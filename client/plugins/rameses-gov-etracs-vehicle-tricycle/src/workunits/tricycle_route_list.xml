@@ -2,6 +2,8 @@
     <invokers>
         <invoker folderid="explorer/master/vehicle/tricycle" caption="MTOP Route" action="init" 
                  orderBy="code" customFilter="txntypeid='tricycle'"/>
+         <invoker folderid="home/vehicle/tricycle" caption="MTOP Route" action="init" 
+                 orderBy="code" customFilter="txntypeid='tricycle'"/>
     </invokers>
 </workunit>
  

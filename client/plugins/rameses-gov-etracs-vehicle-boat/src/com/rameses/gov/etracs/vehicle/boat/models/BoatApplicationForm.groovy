@@ -8,6 +8,8 @@ import com.rameses.gov.etracs.vehicle.models.*;
 
 public class BoatApplicationForm extends VehicleApplicationForm {
     
+    String txntype = "boat";
+    
     def create() {
         def e = super.create();
         e.engines = [];

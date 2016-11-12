@@ -5,7 +5,7 @@
 - BPLS 
 		
 - ASSESSOR	
-	- 
+	- Modify PIN update (naga)
 
 - LANDTAX
 	- Update on Quarterly Real Property Report

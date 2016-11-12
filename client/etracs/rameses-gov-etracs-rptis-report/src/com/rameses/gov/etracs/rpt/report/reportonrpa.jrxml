@@ -178,7 +178,7 @@
 	<variable name="TTOTALRESTRICTIONAV" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
 		<variableExpression><![CDATA[$F{totalrestrictionav}]]></variableExpression>
 	</variable>
-	<variable name="basictax" class="java.lang.Number" resetType="Group" resetGroup="TAXABILITY" calculation="Average">
+	<variable name="basictax" class="java.lang.Number" resetType="Group" resetGroup="TAXABILITY" calculation="Sum">
 		<variableExpression><![CDATA[$F{basictax}]]></variableExpression>
 	</variable>
 	<variable name="seftax" class="java.lang.Number" resetType="Group" resetGroup="TAXABILITY" calculation="Sum">
@@ -1308,8 +1308,7 @@ VALUE]]></text>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA["SEF Tax\nCollectible\nRate of Levy on\nSEF Tax\n" + $P{SEFRATE}+ "%"
-]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA["SEF Tax\nCollectible\nRate of Levy on\nSEF Tax\n" + $P{SEFRATE}+ "%"]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -1328,8 +1327,7 @@ VALUE]]></text>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA["Basic Tax\nCollectible\nRate of Levy on\nBasic Tax\n" + $P{BASICRATE} + "%"
-]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA["Basic Tax\nCollectible\nRate of Levy on\nBasic Tax\n" + $P{BASICRATE} + "%"]]></textFieldExpression>
 				</textField>
 			</band>
 		</title>

@@ -48,7 +48,7 @@ class UserQueueService {
 		if ( !m ) throw new Exception('No queue counter registered for this terminal. Please contact queue administrator');
 
 		m.sections = qcs.getCounterSections([ counterid: m.objid ]); 
-		if ( !m.sections ) throw new Exception('No queue sections defined for this counter. Please contact your queue administrator'); 
+		//if ( !m.sections ) throw new Exception('No queue sections defined for this counter. Please contact your queue administrator'); 
 
 		//find if there is a current number assigned
 		def c = qc.findCurrentNumber( [counterid: env.TERMINALID] );
@@ -127,6 +127,13 @@ class UserQueueService {
 		qn.find([ objid: m.objid ]).update([ state: 'SKIP' ]); 
 		qnc.find([ objid: m.objid ]).delete(); 
 	} 
+
+
+	@ProxyMethod 
+	public def getQueueSections() {
+		return qs.getList(); 
+	} 
+
 
 	void notify( data ) { 
 		def uuid = ''+ data.sectionid +'_'+ data.counterid; 

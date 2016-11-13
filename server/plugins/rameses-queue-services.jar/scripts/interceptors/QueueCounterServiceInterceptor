@@ -1,0 +1,80 @@
+import com.rameses.annotations.*;
+import com.rameses.common.*;
+import com.rameses.util.*;
+
+class QueueCounterServiceInterceptor {
+
+    @XConnection('ws_sender')
+    def wssender;
+
+	@XConnection("queue_poll")
+	def queue_poll;
+
+	@DataContext(value='queue_section', adapter='queue') 
+	def qs; 
+
+	@DataContext(value='queue_counter', adapter='queue') 
+	def qc; 
+
+	@Service 
+	def self; 
+
+	@After( pattern="QueueCounterService.addSection", index=9999 ) 
+	public void afterAddSection( evt ) {
+		def params = evt.args[0]; 
+		if ( params.sectionid && params.counterid ) { 
+			def rec = qc.find([ objid: params.counterid ]).first();  
+			params.countercode = rec.code; 
+			params.sectionid = params.sectionid.toLowerCase(); 
+			params.uuid = (params.sectionid +'_'+ params.counterid).toLowerCase(); 
+			params.type = 'ADD_COUNTER_SECTION'; 
+			notify( params ); 
+		}
+	}
+
+	@After( pattern="QueueCounterService.removeSection", index=9999 ) 
+	public void afterRemoveSection( evt ) {
+		def params = evt.args[0]; 
+		if ( params.sectionid && params.counterid ) {
+			params.type = 'REMOVE_COUNTER_SECTION'; 
+			notify( params ); 
+		}
+	}
+
+
+	void notify( data ) { 
+		def uuid = ''+ data.sectionid +'_'+ data.counterid; 
+		data.uuid = uuid.toLowerCase(); 
+		self.notifyHttp( data ); 
+		self.notifyWs( data ); 
+	} 
+
+	@Async 
+	@ProxyMethod(local=true) 
+	public void notifyHttp( data ) { 
+		if ( data ) { 
+			queue_poll.send( data );  
+		} 
+	} 
+	@Async 
+	@ProxyMethod(local=true) 
+	public void notifyWs( data ) { 
+		if ( !data ) return; 
+
+		data.channel = data.group = 'queue'; 
+
+		wssender.send([ 
+            channel : data.channel, 
+            group   : data.group, 
+            data    : resolveData( data )  
+        ]); 
+	} 	
+
+	def resolveData( data ) {
+        try {
+            return new Base64Cipher().decode( data ); 
+        } catch(Throwable t) { 
+            return data; 
+        } 
+    }  
+}

@@ -30,7 +30,6 @@ class QueueGroupService {
 
 	@ProxyMethod 
 	public def getSections( groupid ) {
-		println groupid;
 		if ( !groupid ) throw new Exception('groupid parameter is required'); 
 
 		return qs.find([ groupid: groupid ]).list(); 

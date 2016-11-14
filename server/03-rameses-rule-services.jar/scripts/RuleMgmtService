@@ -207,7 +207,7 @@ class RuleMgmtService extends ActiveCrudListService {
 			}
 		}
 		if( opt.pos ) {
-			builder.append( ''' AND cond.pos < $P{pos} ''' );
+			builder.append( ''' AND var.pos < $P{pos} ''' );
 		}
 		opt.filter = builder.toString();
 		return em.findAllVarsByType(opt);

@@ -4,6 +4,7 @@
 		<field name="name" required="true" indexed="true" searchable="true"/>
 		<field name="title" required="true" indexed="true" searchable="true"/>
 		<field name="factclass" required="true" indexed="true"/>
+		<field name="factsuperclass" required="false" />
 		<field name="sortorder" required="true"/>
 		<field name="handler" visible="false"/>
 		<field name="defaultvarname" visible="false"/>

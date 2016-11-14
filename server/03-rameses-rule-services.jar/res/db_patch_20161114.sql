@@ -1,0 +1,1 @@
+ALTER TABLE sys_rule_fact ADD COLUMN `factsuperclass` VARCHAR(50) NULL AFTER `factclass`; 

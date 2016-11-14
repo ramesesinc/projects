@@ -109,8 +109,6 @@ class RPTReceiptService
 			updateLedgerInfo(params)
 			em.deletePaidOnlineItems(params)
 			em.deletePaidOnlineAccounts(params)
-			em.deleteLedgerQtrlyItemFullyPaid(params)
-			em.deleteLedgerItemFullyPaid(params)
 		}
 		em.deleteRptBillLedgers(params)
 		em.deleteRptBill(params)

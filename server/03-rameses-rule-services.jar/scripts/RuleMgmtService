@@ -24,6 +24,12 @@ class RuleMgmtService extends ActiveCrudListService {
 	@Context
 	def appContext;
 
+	@DataContext("sys_rule")
+	def sysrule;
+
+	@DataContext("sys_ruleset")
+	def sysruleset;
+
 	@ProxyMethod
 	public def getColumns( def o ) {
 		return[
@@ -95,6 +101,10 @@ class RuleMgmtService extends ActiveCrudListService {
 			}
 		} 
 		buildVars( o ); 
+
+		//get also the domain and include it in the rule
+		def p = sysruleset.select('domain').find( [name: o.ruleset] ).first();
+		o.domain = p.domain;
 	} 
 
 	
@@ -366,4 +376,12 @@ class RuleMgmtService extends ActiveCrudListService {
 		} 
 		vars.clear();
 	} 
+
+	@ProxyMethod
+	public void transferRuleset( def o ) {
+		if(!o.objid) throw new Exception("Please include objid of rule");
+		if(!o.ruleset) throw new Exception("Please include new ruleset");
+		if(!o.rulegroup) throw new Exception("Please include rulegroup");
+		sysrule.find( [objid: o.objid] ).update( [ruleset: o.ruleset, rulegroup: o.rulegroup] );
+	}
 } 

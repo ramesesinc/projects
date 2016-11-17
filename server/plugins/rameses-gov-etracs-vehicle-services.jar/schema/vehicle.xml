@@ -1,5 +1,5 @@
 <schema adapter="vehicledb">
-	<element tablename="vehicle_account">
+	<element tablename="vehicle">
 		<field name="objid" primary="true"  prefix="VACCT"/>
 		<field name="txntype" required="true"/>
 		<field name="particulars" required="true"/>
@@ -17,11 +17,8 @@
 		<field name="owner_name" required="true" />
 		<field name="owner_address_text" required="true" />
 		<field name="owner_address_objid" required="true" />
-
-		<!--
 		<field name="barangay_objid" required="true" />
 		<field name="barangay_name" required="true" />
-		-->
 
 		<complex name="control" ref="vehicle_control" jointype="many-to-one" includefields="controlno" required="true">
 			<key field="controlid" target="objid" />

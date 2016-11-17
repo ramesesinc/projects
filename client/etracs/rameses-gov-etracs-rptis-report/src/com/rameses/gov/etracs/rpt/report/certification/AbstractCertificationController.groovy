@@ -115,6 +115,8 @@ public abstract class AbstractCertificationController
                 entity.requestedby = it.name;
                 entity.requestedbyaddress = it.address.text;
                 afterLookupTaxpayer();
+                binding.refresh('entity.taxpayer.*');
+                binding.requestFocus('entity.taxpayer');
             },
             onempty  : { 
                 entity.taxpayer = null;

@@ -33,9 +33,10 @@ public class BatchGRInitPage extends javax.swing.JPanel {
 
         formPanel1 = new com.rameses.rcp.util.FormPanel();
         xSeparator1 = new com.rameses.rcp.control.XSeparator();
-        xComboBox1 = new com.rameses.rcp.control.XComboBox();
-        xComboBox2 = new com.rameses.rcp.control.XComboBox();
+        xComboBox4 = new com.rameses.rcp.control.XComboBox();
         xComboBox3 = new com.rameses.rcp.control.XComboBox();
+        xComboBox2 = new com.rameses.rcp.control.XComboBox();
+        xComboBox1 = new com.rameses.rcp.control.XComboBox();
         jScrollPane1 = new javax.swing.JScrollPane();
         xTextArea1 = new com.rameses.rcp.control.XTextArea();
         xCheckBox1 = new com.rameses.rcp.control.XCheckBox();
@@ -73,17 +74,29 @@ public class BatchGRInitPage extends javax.swing.JPanel {
 
         formPanel1.add(xSeparator1);
 
-        xComboBox1.setAllowNull(false);
-        xComboBox1.setCaption("New General Revision");
-        xComboBox1.setCaptionWidth(140);
-        xComboBox1.setDepends(new String[] {"prevtd"});
-        xComboBox1.setDynamic(true);
-        xComboBox1.setExpression("#{item.ry}");
-        xComboBox1.setItems("rylist");
-        xComboBox1.setName("params.newrysetting"); // NOI18N
-        xComboBox1.setPreferredSize(new java.awt.Dimension(120, 22));
-        xComboBox1.setRequired(true);
-        formPanel1.add(xComboBox1);
+        xComboBox4.setAllowNull(false);
+        xComboBox4.setCaption("LGU");
+        xComboBox4.setCaptionWidth(140);
+        xComboBox4.setDepends(new String[] {"entity.rputype"});
+        xComboBox4.setExpression("#{item.name}");
+        xComboBox4.setItems("lgus");
+        xComboBox4.setName("params.lgu"); // NOI18N
+        xComboBox4.setPreferredSize(new java.awt.Dimension(0, 22));
+        xComboBox4.setRequired(true);
+        formPanel1.add(xComboBox4);
+
+        xComboBox3.setAllowNull(false);
+        xComboBox3.setCaption("Barangay");
+        xComboBox3.setCaptionWidth(140);
+        xComboBox3.setDepends(new String[] {"params.lgu"});
+        xComboBox3.setDynamic(true);
+        xComboBox3.setExpression("#{item.name}");
+        xComboBox3.setImmediate(true);
+        xComboBox3.setItems("barangays");
+        xComboBox3.setName("params.barangay"); // NOI18N
+        xComboBox3.setPreferredSize(new java.awt.Dimension(0, 20));
+        xComboBox3.setRequired(true);
+        formPanel1.add(xComboBox3);
 
         xComboBox2.setAllowNull(false);
         xComboBox2.setCaption("Property Type");
@@ -92,20 +105,20 @@ public class BatchGRInitPage extends javax.swing.JPanel {
         xComboBox2.setImmediate(true);
         xComboBox2.setItems("rputypes");
         xComboBox2.setName("params.rputype"); // NOI18N
-        xComboBox2.setPreferredSize(new java.awt.Dimension(250, 20));
+        xComboBox2.setPreferredSize(new java.awt.Dimension(120, 22));
         xComboBox2.setRequired(true);
         formPanel1.add(xComboBox2);
 
-        xComboBox3.setAllowNull(false);
-        xComboBox3.setCaption("Barangay");
-        xComboBox3.setCaptionWidth(140);
-        xComboBox3.setExpression("#{item.name}");
-        xComboBox3.setImmediate(true);
-        xComboBox3.setItems("barangays");
-        xComboBox3.setName("params.barangay"); // NOI18N
-        xComboBox3.setPreferredSize(new java.awt.Dimension(250, 20));
-        xComboBox3.setRequired(true);
-        formPanel1.add(xComboBox3);
+        xComboBox1.setAllowNull(false);
+        xComboBox1.setCaption("New General Revision");
+        xComboBox1.setCaptionWidth(140);
+        xComboBox1.setDepends(new String[] {"params.lgu", "params.barangay"});
+        xComboBox1.setDynamic(true);
+        xComboBox1.setItems("rylist");
+        xComboBox1.setName("params.ry"); // NOI18N
+        xComboBox1.setPreferredSize(new java.awt.Dimension(120, 22));
+        xComboBox1.setRequired(true);
+        formPanel1.add(xComboBox1);
 
         jScrollPane1.setPreferredSize(new java.awt.Dimension(0, 76));
 
@@ -254,12 +267,12 @@ public class BatchGRInitPage extends javax.swing.JPanel {
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(formPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 243, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(formPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(xFormPanel11, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 132, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(xLabel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 32, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(24, Short.MAX_VALUE))
+                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -279,6 +292,7 @@ public class BatchGRInitPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XComboBox xComboBox2;
     private com.rameses.rcp.control.XComboBox xComboBox3;
+    private com.rameses.rcp.control.XComboBox xComboBox4;
     private com.rameses.rcp.control.XDateField xDateField3;
     private com.rameses.rcp.control.XDateField xDateField4;
     private com.rameses.rcp.control.XDateField xDateField5;

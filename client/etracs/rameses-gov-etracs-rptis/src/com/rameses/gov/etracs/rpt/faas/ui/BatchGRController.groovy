@@ -22,7 +22,6 @@ public class BatchGRController
      def lguSvc 
     
     
-    def rylist;
     def params;
     def processing = false;
     def cancelled = false;
@@ -32,6 +31,7 @@ public class BatchGRController
     def counter = [success:0, error:0]
             
     def batchTask = null
+    def lgus = null;
             
     void init() {
         processing = false;
@@ -43,7 +43,7 @@ public class BatchGRController
             recommender : [:],
             approver    : [:],
         ]
-        rylist = grSvc.getRyList(null, null,null)   
+        lgus = lguSvc.getLgus();
     }         
             
     void revise() {
@@ -78,6 +78,10 @@ public class BatchGRController
     
     def getRputypes(){
         return ['land', 'bldg', 'mach', 'planttree', 'misc']
+    }
+    
+    def getRylist(){
+        return grSvc.getRyList(params.lgu?.objid, null,null)   
     }
     
     void cancel() {

@@ -26,7 +26,7 @@ class BatchGRService
 
 	@ProxyMethod
 	public List getFaasesForRevision(params) {
-		params.ry = params.newrysetting.ry 
+		params.ry = params.ry 
 		params.barangayid = params.barangay.objid 
 		return bgrDb.getFaasesForRevision(params)
 	} 
@@ -68,7 +68,7 @@ class BatchGRService
             faas.recommender = info.recommender 
             faas.approver = info.approver 
             faas.memoranda = info.memoranda
-            faas.effectivityyear = info.newrysetting.ry + 1 
+            faas.effectivityyear = info.ry + 1 
 
 			faas = faasSvc.createFaas( faas )
 			if (info.autoapprove)
@@ -80,7 +80,7 @@ class BatchGRService
 			println '='*50
 			e.printStackTrace()
 			retval.error += 1
-			logError( info.faas.objid, info.newrysetting.ry, e ) 
+			logError( info.faas.objid, info.ry, e ) 
 		}
 		return retval
 	}		

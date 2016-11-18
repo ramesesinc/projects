@@ -1,8 +1,8 @@
 import com.rameses.annotations.*;
 import com.rameses.rules.common.*;
-import vehicle.facts.*;
+import rules.vehicle.facts.*;
+import rules.treasury.facts.*;
 import treasury.utils.*;
-import treasury.facts.*;
 import com.rameses.annotations.*;
 import com.rameses.util.*;
 import java.rmi.server.*;
@@ -16,76 +16,66 @@ class VehicleApplicationService {
 	@DataContext("vehicle_application")
 	def appEm;
 
-	@DataContext(dynamic=true)
-	def em;
-
-	@DataContext("vehicle_account")
-	def acctEm;
-
-	@DataContext("vehicle_txntype")
-	def txnTypeEm;
-
 	@DataContext("vehicle_control")
 	def controlEm;
-
 
 	@Service("DateService")
 	def dateSvc;
 
-	@Service("SchemaService")
-	def schemaSvc;
+	@Service("RuleExecutorService")
+	def ruleSvc;
+
+	@ProxyMethod
+	public def assess( def o ) {
+		if(!o.vehicletype) throw new Exception("vehicletype is required in VehicleAssessmentService.assess")
+		def svrDate = dateSvc.getServerDate();
+		if(!o.billdate) o.billdate = svrDate;
+		def facts = [];
+		facts << new VehicleApplication( apptype: o.apptype, vehicletype: o.vehicletype );
+		facts << new CurrentDate(svrDate);
+		facts << new BillDate(svrDate);
+		facts << new DueDate( dateSvc.getServerYear() +"-01-20" );
+
+		def res = ruleSvc.execute( "vehicleassessment", facts, null, null );
+
+		//run billing immediately. 
+		def ctx = new RuleExecutionContext(facts);
+		ctx.result.billitems = res.billitems;
+		res = ruleSvc.execute( "vehiclebilling", facts, null, null );
+
+		//after executing display the items
+		def lookupAcct = new LookupAccount();
+		def app = [items:[]];
+		def subitems = [];
+		res.billitems.each {
+			def m = [:];
+			m.item =  lookupAcct.findAccount( it.account );
+			m.amount = it.amount;
+			m.amtpaid = 0.0;
+			m.balance = it.amount;
+			app.items << m;
+
+			it.items.each { r->
+				def x = [:];
+				x.item =  lookupAcct.findAccount( r.account );
+				x.amount = r.amount;
+				x.amtpaid = 0.0;
+				x.balance = r.amount;
+				subitems << x;
+			}
+		};
+		app.items += subitems;
+		return app;
+	}
+
 
 	@ProxyMethod
 	public def post( def o ) {
-		def z = em.lookup( 'vehicle_account_'+ o.txntype );
-
-		def sc = schemaSvc.getSchema( [name:'vehicle_application'] );
-		String exclude = sc.fields*.name.join("|");
-
-		def m = [:];
-		//flatten out the infos
-		o.each { k,v->
-			if(!k.matches(exclude)) {
-				m.put(k, v);
-			}
-		}
-		m.activeyear = o.appyear;
-		m.state = 'ACTIVE';
-		m.acctno = o.appno;
-		m.createdby = [objid: env.USERID, name: env.FULLNAME];
-		m.dtregistered = dateSvc.getServerDate();
-		m.particulars = o.particulars;
-		m.txntype = o.txntype;
-		m.expirydate = o.expirydate;
-		m = z.create(m);
-		appEm.find( [objid: o.objid]).update([state:'CLOSED', acctid: m.objid]);
-
-		controlEm.find( [objid: m.control.objid] ).update( [currentacctid: m.objid] );
+		controlEm.find( [objid: o.control.objid] ).update( [vehicleid: m.vehicleid ] );
 		return m;
 	}
 
-	@ProxyMethod
-	public def loadForApplication( def o ) {
-		if(!o.txntype)
-			throw new Exception("Please indicate txntype");
-		if(!o.objid)
-			throw new Exception("Please indicate objid");
-
-		def acct = em.lookup( 'vehicle_account_'+ o.txntype ).find( [objid: o.objid]).first();
-		def sc = schemaSvc.getSchema( [name:'vehicle_application'] );
-		String exclude = sc.fields*.name.join("|");
-
-		def m = [:];
-		m.acctid = acct.objid;
-		m.owner = acct.owner;
-		m.appyear = acct.activeyear + 1;
-		acct.each { k,v->
-			if(!k.matches(exclude)) {
-				m.put(k, v);
-			}
-		}
-		return m;	
-	}
+	
 
 
 }

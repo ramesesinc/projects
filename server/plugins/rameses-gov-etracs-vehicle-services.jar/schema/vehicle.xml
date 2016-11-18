@@ -1,26 +1,25 @@
 <schema adapter="vehicledb">
 	<element tablename="vehicle">
 		<field name="objid" primary="true"  prefix="VACCT"/>
-		<field name="txntype" required="true"/>
-		<field name="particulars" required="true"/>
-
-		<field name="acctno" required="true" caption="Acct No"/>
+		<field name="vehicletype" required="true"/>
 		<field name="state" required="true" />
-		<field name="activeyear" required="true" type="integer"/>
 
-		<field name="dtregistered" required="true" />
+		<field name="particulars" required="false"/>
+
 		<field name="createdby_objid" required="true" />
 		<field name="createdby_name" required="true" />
-		<field name="expirydate" required="true" />
+		<field name="dtcreated" required="true" />
+		<field name="expirydate" required="false" />
 
-		<field name="owner_objid" required="true" />
-		<field name="owner_name" required="true" />
-		<field name="owner_address_text" required="true" />
-		<field name="owner_address_objid" required="true" />
-		<field name="barangay_objid" required="true" />
-		<field name="barangay_name" required="true" />
+		<field name="activeyear" required="false" type="integer"/>
+		<field name="owner_objid" required="false" />
+		<field name="owner_name" required="false" />
+		<field name="owner_address_text" required="false" />
+		<field name="owner_address_objid" required="false" />
+		<field name="barangay_objid" required="false" />
+		<field name="barangay_name" required="false" />
 
-		<complex name="control" ref="vehicle_control" jointype="many-to-one" includefields="controlno" required="true">
+		<complex name="control" ref="vehicle_control" jointype="many-to-one" includefields="controlno" required="false">
 			<key field="controlid" target="objid" />
 		</complex> 
 

@@ -29,84 +29,93 @@ public class TricycleApplicationPage extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPanel1 = new javax.swing.JPanel();
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
-        xLookupField1 = new com.rameses.rcp.control.XLookupField();
-        xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
-        xTextField7 = new com.rameses.rcp.control.XTextField();
-        xTextField8 = new com.rameses.rcp.control.XTextField();
-        xTextField9 = new com.rameses.rcp.control.XTextField();
-        xTextField10 = new com.rameses.rcp.control.XTextField();
-        xTextField11 = new com.rameses.rcp.control.XTextField();
-        xTextField12 = new com.rameses.rcp.control.XTextField();
+        xLabel2 = new com.rameses.rcp.control.XLabel();
+        xLabel3 = new com.rameses.rcp.control.XLabel();
+        xLabel4 = new com.rameses.rcp.control.XLabel();
+        xLabel5 = new com.rameses.rcp.control.XLabel();
+        xLabel6 = new com.rameses.rcp.control.XLabel();
+        xLabel7 = new com.rameses.rcp.control.XLabel();
+        xButton1 = new com.rameses.rcp.control.XButton();
 
-        xFormPanel1.setCaptionWidth(100);
-        xFormPanel1.setRequired(true);
+        setLayout(new java.awt.BorderLayout());
 
-        xLookupField1.setCaption("Route");
-        xLookupField1.setCaptionWidth(60);
-        xLookupField1.setExpression("#{entity.route.description}");
-        xLookupField1.setHandler("vehicle_route:lookup");
-        xLookupField1.setName("entity.route"); // NOI18N
-        xLookupField1.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel1.add(xLookupField1);
+        com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
+        xTitledBorder1.setTitle("Tricycle Information");
+        jPanel1.setBorder(xTitledBorder1);
 
-        xFormPanel2.setCaptionWidth(100);
-        xFormPanel2.setRequired(true);
+        xLabel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
+        xLabel2.setCaption("Plate No");
+        xLabel2.setExpression("#{entity.plateno}");
+        xLabel2.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel1.add(xLabel2);
 
-        xTextField7.setCaption("Sidecar No");
-        xTextField7.setName("entity.sidecarno"); // NOI18N
-        xFormPanel2.add(xTextField7);
+        xLabel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
+        xLabel3.setCaption("Engine No");
+        xLabel3.setExpression("#{entity.engineno}");
+        xLabel3.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel1.add(xLabel3);
 
-        xTextField8.setCaption("Make");
-        xTextField8.setName("entity.make"); // NOI18N
-        xFormPanel2.add(xTextField8);
+        xLabel4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
+        xLabel4.setCaption("Body No");
+        xLabel4.setExpression("#{entity.bodyno}");
+        xLabel4.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel1.add(xLabel4);
 
-        xTextField9.setCaption("Model");
-        xTextField9.setName("entity.model"); // NOI18N
-        xFormPanel2.add(xTextField9);
+        xLabel5.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
+        xLabel5.setCaption("Sidecar No");
+        xLabel5.setExpression("#{entity.sidecarno}");
+        xLabel5.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel1.add(xLabel5);
 
-        xTextField10.setCaption("Engine No");
-        xTextField10.setName("entity.engineno"); // NOI18N
-        xFormPanel2.add(xTextField10);
+        xLabel6.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
+        xLabel6.setCaption("Make");
+        xLabel6.setExpression("#{entity.make}");
+        xLabel6.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel1.add(xLabel6);
 
-        xTextField11.setCaption("Chassis No");
-        xTextField11.setName("entity.chassisno"); // NOI18N
-        xFormPanel2.add(xTextField11);
+        xLabel7.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
+        xLabel7.setCaption("Model");
+        xLabel7.setExpression("#{entity.model}");
+        xLabel7.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel1.add(xLabel7);
 
-        xTextField12.setCaption("Plate No");
-        xTextField12.setName("entity.plateno"); // NOI18N
-        xFormPanel2.add(xTextField12);
+        xButton1.setName("addVehicle"); // NOI18N
+        xButton1.setText("Add Vehicle");
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 241, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 241, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(50, Short.MAX_VALUE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(xButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 482, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(365, Short.MAX_VALUE))
         );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(74, Short.MAX_VALUE))
+                .addComponent(xButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(111, Short.MAX_VALUE))
         );
+
+        add(jPanel1, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel jPanel1;
+    private com.rameses.rcp.control.XButton xButton1;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
-    private com.rameses.rcp.control.XFormPanel xFormPanel2;
-    private com.rameses.rcp.control.XLookupField xLookupField1;
-    private com.rameses.rcp.control.XTextField xTextField10;
-    private com.rameses.rcp.control.XTextField xTextField11;
-    private com.rameses.rcp.control.XTextField xTextField12;
-    private com.rameses.rcp.control.XTextField xTextField7;
-    private com.rameses.rcp.control.XTextField xTextField8;
-    private com.rameses.rcp.control.XTextField xTextField9;
+    private com.rameses.rcp.control.XLabel xLabel2;
+    private com.rameses.rcp.control.XLabel xLabel3;
+    private com.rameses.rcp.control.XLabel xLabel4;
+    private com.rameses.rcp.control.XLabel xLabel5;
+    private com.rameses.rcp.control.XLabel xLabel6;
+    private com.rameses.rcp.control.XLabel xLabel7;
     // End of variables declaration//GEN-END:variables
 }

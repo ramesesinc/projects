@@ -8,9 +8,6 @@ import com.rameses.util.*;
 
 public abstract class VehicleApplicationForm extends CrudFormModel {
     
-    @Service("VehicleAssessmentService")
-    def assessmentSvc;
-    
     @Service("VehicleApplicationService")
     def appSvc;
     
@@ -18,21 +15,16 @@ public abstract class VehicleApplicationForm extends CrudFormModel {
     def caller;
     
     def selectedItem;
-    public abstract String getTxntype();
+    public abstract String getVehicletype();
     
     public String getTitle() {
-        return txntype.title + " (" + entity.apptype + ")";
+        return vehicletype.title + " (" + entity.apptype + ")";
     }
     
     def create() {
         super.create();
         entity.apptype = 'NEW';
-        if( txntype==null ) {
-            txntype = caller.txntype;
-        }
-        if(!txntype)
-            throw new Exception("txntype is required");
-        entity.txntype = txntype;
+        entity.vehicletype = getVehicletype();
         entity.owner = [:];
         entity.fees = [];
         return entity;
@@ -46,12 +38,12 @@ public abstract class VehicleApplicationForm extends CrudFormModel {
             entity.apptype= 'RENEW';
             super.init();
         }
-        Modal.show( "vehicle_account_" + txntype.uihandler+ "_for_renew:lookup", [onselect: h] );
+        Modal.show( "vehicle_account_" + getVehicletype() + "_for_renew:lookup", [onselect: h] );
         if(!pass) throw new BreakException();
     }
     
     void assess() {
-        def r = assessmentSvc.assess(entity);
+        def r = appSvc.assess(entity);
         entity.fees = r.items;
         entity.amount = entity.fees.sum{ it.amount };
         feeListModel.reload();
@@ -71,13 +63,8 @@ public abstract class VehicleApplicationForm extends CrudFormModel {
         
     }
 
-    void post() {
-        if(MsgBox.confirm("You are about to post this entry. Continue?")) {
-            if( beforePost() ) {
-                def z = appSvc.post(entity);
-                MsgBox.alert("Acct No created " + z.acctno);
-            }
-        }
+    public def viewBilling() {
+        
     }
     
     public boolean beforePost() {

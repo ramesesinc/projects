@@ -31,8 +31,11 @@ class QueueCounterService {
 	}
 
 	@ProxyMethod
-	public void addSection( def o ) {
-		sect.create( [counterid: env.TERMINALID,  sectionid: o.sectionid]);
+	public def addSection( o ) { 
+		o.counterid = env.TERMINALID; 
+		def m = [ counterid: o.counterid, sectionid: o.sectionid ]; 
+		sect.create( m ); 
+		return sect.findCounterSection( m );  
 	}
 
 }

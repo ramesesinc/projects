@@ -54,13 +54,13 @@ class QueueCounter {
         def h = { o-> 
             if( entity.sections.find{ it.objid == o.objid } )
                 throw new Exception("Section already added");
+                
             if( mode != "create" ) {
-                svc.addSection( [sectionid: o.objid] );
-            }
-            println o; 
-            entity.sections.add( o );
+                def resp = svc.addSection([ sectionid: o.objid ]);
+                if ( resp ) entity.sections.add( resp );
+            } 
             itemListModel.reload();
-        };
+        } 
         return Inv.lookupOpener( "queue_section:lookup", [onselect:h]);
     }
     

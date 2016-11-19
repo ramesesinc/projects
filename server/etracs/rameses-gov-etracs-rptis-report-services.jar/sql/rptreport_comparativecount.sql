@@ -10,9 +10,9 @@ SELECT
 	pc.objid AS classid, 
 	pc.name AS classname, 
 	pc.special AS special, 
-	SUM( CASE WHEN r.rputype = 'land' THEN 1.0 ELSE 0.0 END ) AS preceedinglandcount, 
+	SUM( CASE WHEN r.rputype = 'land' and rp.claimno is null THEN 1.0 ELSE 0.0 END ) AS preceedinglandcount, 
 	SUM( CASE WHEN r.rputype <> 'land' THEN 1.0 ELSE 0.0 END ) AS preceedingimpcount, 
-	SUM( 1.0 ) AS preceedingtotal 
+	SUM( case when  r.rputype = 'land' and rp.claimno is not null then 0 else 1.0 end) AS preceedingtotal 
 FROM faas f
 	INNER JOIN rpu r ON f.rpuid = r.objid 
 	INNER JOIN realproperty rp ON f.realpropertyid = rp.objid 
@@ -30,9 +30,9 @@ SELECT
 	pc.objid AS classid, 
 	pc.name AS classname, 
 	pc.special AS special, 
-	SUM( CASE WHEN r.rputype = 'land' THEN 1.0 ELSE 0.0 END ) AS newdiscoverylandcount, 
+	SUM( CASE WHEN r.rputype = 'land'  and rp.claimno is null THEN 1.0 ELSE 0.0 END ) AS newdiscoverylandcount, 
 	SUM( CASE WHEN r.rputype <> 'land' THEN 1.0 ELSE 0.0 END ) AS newdiscoveryimpcount, 
-	SUM( 1.0 ) AS newdiscoverytotal 
+	SUM(  case when  r.rputype = 'land' and rp.claimno is not null then 0 else 1.0 end ) AS newdiscoverytotal 
 FROM faas f
 	INNER JOIN rpu r ON f.rpuid = r.objid 
 	INNER JOIN realproperty rp ON f.realpropertyid = rp.objid 
@@ -50,9 +50,9 @@ SELECT
 	pc.objid AS classid, 
 	pc.name AS classname, 
 	pc.special AS special, 
-	SUM( CASE WHEN r.rputype = 'land' THEN 1.0 ELSE 0.0 END ) AS cancelledlandcount, 
+	SUM( CASE WHEN r.rputype = 'land' and rp.claimno is null THEN 1.0 ELSE 0.0 END ) AS cancelledlandcount, 
 	SUM( CASE WHEN r.rputype <> 'land' THEN 1.0 ELSE 0.0 END ) AS cancelledimpcount, 
-	SUM( 1.0 ) AS cancelledtotal 
+	SUM(  case when  r.rputype = 'land' and rp.claimno is not null then 0 else 1.0 end ) AS cancelledtotal 
 FROM faas f
 	INNER JOIN rpu r ON f.rpuid = r.objid 
 	INNER JOIN realproperty rp ON f.realpropertyid = rp.objid 
@@ -70,9 +70,9 @@ SELECT
 	pc.objid AS classid, 
 	pc.name AS classname, 
 	pc.special AS special, 
-	SUM( CASE WHEN r.rputype = 'land' THEN 1.0 ELSE 0.0 END ) AS endinglandcount, 
+	SUM( CASE WHEN r.rputype = 'land' and rp.claimno is null THEN 1.0 ELSE 0.0 END ) AS endinglandcount, 
 	SUM( CASE WHEN r.rputype <> 'land' THEN 1.0 ELSE 0.0 END ) AS endingimpcount, 
-	SUM( 1.0 ) AS endingtotal 
+	SUM(  case when  r.rputype = 'land' and rp.claimno is not null then 0 else 1.0 end ) AS endingtotal 
 FROM faas f
 	INNER JOIN rpu r ON f.rpuid = r.objid 
 	INNER JOIN realproperty rp ON f.realpropertyid = rp.objid 
@@ -91,9 +91,9 @@ SELECT
 	e.objid AS classid,  
 	e.name AS classname,  
 	0 AS special,  
-	SUM( CASE WHEN r.rputype = 'land' THEN 1.0 ELSE 0.0 END ) AS preceedinglandcount,  
+	SUM( CASE WHEN r.rputype = 'land' and rp.claimno is null THEN 1.0 ELSE 0.0 END ) AS preceedinglandcount,  
 	SUM( CASE WHEN r.rputype <> 'land' THEN 1.0 ELSE 0.0 END ) AS preceedingimpcount,  
-	SUM( 1.0 ) AS preceedingtotal     
+	SUM(  case when  r.rputype = 'land' and rp.claimno is not null then 0 else 1.0 end ) AS preceedingtotal     
 FROM faas f
 	INNER JOIN rpu r ON f.rpuid = r.objid 
 	INNER JOIN realproperty rp ON f.realpropertyid = rp.objid 
@@ -111,9 +111,9 @@ SELECT
 	e.objid AS classid,  
 	e.name AS classname,  
 	0 AS special,  
-	SUM( CASE WHEN r.rputype = 'land' THEN 1.0 ELSE 0.0 END ) AS newdiscoverylandcount,  
+	SUM( CASE WHEN r.rputype = 'land' and rp.claimno is null THEN 1.0 ELSE 0.0 END ) AS newdiscoverylandcount,  
 	SUM( CASE WHEN r.rputype <> 'land' THEN 1.0 ELSE 0.0 END ) AS newdiscoveryimpcount,  
-	SUM( 1.0 ) AS newdiscoverytotal     
+	SUM(  case when  r.rputype = 'land' and rp.claimno is not null then 0 else 1.0 end) AS newdiscoverytotal     
 FROM faas f
 	INNER JOIN rpu r ON f.rpuid = r.objid 
 	INNER JOIN realproperty rp ON f.realpropertyid = rp.objid 
@@ -131,9 +131,9 @@ SELECT
 	e.objid AS classid,  
 	e.name AS classname,  
 	0 AS special,  
-	SUM( CASE WHEN r.rputype = 'land' THEN 1.0 ELSE 0.0 END ) AS cancelledlandcount,  
+	SUM( CASE WHEN r.rputype = 'land' and rp.claimno is null THEN 1.0 ELSE 0.0 END ) AS cancelledlandcount,  
 	SUM( CASE WHEN r.rputype <> 'land' THEN 1.0 ELSE 0.0 END ) AS cancelledimpcount,  
-	SUM( 1.0 ) AS cancelledtotal     
+	SUM(  case when  r.rputype = 'land' and rp.claimno is not null then 0 else 1.0 end) AS cancelledtotal     
 FROM faas f
 	INNER JOIN rpu r ON f.rpuid = r.objid 
 	INNER JOIN realproperty rp ON f.realpropertyid = rp.objid 
@@ -151,9 +151,9 @@ SELECT
 	e.objid AS classid,  
 	e.name AS classname,  
 	0 AS special,  
-	SUM( CASE WHEN r.rputype = 'land' THEN 1.0 ELSE 0.0 END ) AS endinglandcount,  
+	SUM( CASE WHEN r.rputype = 'land' and rp.claimno is null THEN 1.0 ELSE 0.0 END ) AS endinglandcount,  
 	SUM( CASE WHEN r.rputype <> 'land' THEN 1.0 ELSE 0.0 END ) AS endingimpcount,  
-	SUM( 1.0 ) AS endingtotal     
+	SUM(  case when  r.rputype = 'land' and rp.claimno is not null then 0 else 1.0 end) AS endingtotal     
 FROM faas f
 	INNER JOIN rpu r ON f.rpuid = r.objid 
 	INNER JOIN realproperty rp ON f.realpropertyid = rp.objid 

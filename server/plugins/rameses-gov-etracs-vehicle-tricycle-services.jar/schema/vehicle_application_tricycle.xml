@@ -2,14 +2,11 @@
 	<element tablename="vehicle_application_tricycle" extends="vehicle_application">
 		<field name="objid" primary="true" prefix="MTOPAPP" />
 
-		<field name="sidecarno" required="true"/>
-		<field name="make" required="true"/>
-		<field name="model" required="true"/>
-		<field name="chassisno" required="true"/>
-		<field name="engineno" />
-		<field name="plateno" required="true"/>
-		<field name="routeid"  />
-
+		<complex name="vehicle" ref="vehicle_application_fee" jointype="many-to-one" required="true" 
+			includefields="plateno,engineno,bodyno,sidecarno,make,model,color">
+			<key field="vehicleid" target="objid" />
+		</complex>
+		
 		<complex name="fees" ref="vehicle_application_fee" jointype="one-to-many">
 			<key field="objid" target="appid" />
 		</complex>

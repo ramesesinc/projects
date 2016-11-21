@@ -2,16 +2,18 @@ package rules.treasury.facts;
 
 import java.util.*;
 
-class BillItem {
+class BillItem extends AbstractBillItem {
 
-	String objid;	
-	Account account;
-	double amount;
-	double amtpaid;
-	String remarks;
-	double surcharge;
-	double interest;
+	int sortorder;
 
+	LinkedHashSet<SubBillItem> items = new LinkedHashSet<SubBillItem>();
 
+	public def getTotals( def txntype ) {
+		return items.findAll{ it.txntype == txntype }.sum{it.amount};
+	}
+
+	public double getTotal() {
+		return amount + items.sum{ it.amount };	
+	}
 
 }

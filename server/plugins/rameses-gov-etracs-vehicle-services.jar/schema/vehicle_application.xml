@@ -16,8 +16,8 @@
 		<field name="owner_name" required="true" />
 		<field name="owner_address_text" required="true" />
 		<field name="owner_address_objid" required="true" />
-		<field name="barangay_objid" required="true" />
-		<field name="barangay_name" required="true" />
+		<field name="barangay_objid"  />
+		<field name="barangay_name"  />
 
 		<field name="amount" type="decimal" required="true" />
 		<field name="amtpaid" type="decimal" required="true" />

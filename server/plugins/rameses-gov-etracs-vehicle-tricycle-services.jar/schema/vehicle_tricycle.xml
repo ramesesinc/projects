@@ -2,10 +2,11 @@
 	<element tablename="vehicle_tricycle" extends="vehicle">
 		<field name="objid" primary="true" prefix="VMTOP"/>
 		<field name="plateno" required="true"/>
-		<field name="bodyno" required="true"/>
 		<field name="engineno" required="true"/>
+		<field name="bodyno" required="true"/>
 		<field name="sidecarno" required="false"/>
 		<field name="make" required="false"/>
 		<field name="model" required="false"/>
+		<field name="color" required="false"/>
 	</element>
 </schema>

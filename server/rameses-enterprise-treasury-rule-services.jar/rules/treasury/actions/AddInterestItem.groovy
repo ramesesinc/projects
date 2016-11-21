@@ -9,17 +9,25 @@ import com.rameses.osiris3.common.*;
 /***
 * Parameters:
 *    billitem
+*    amount 
 ****/
-class RemoveBillItem implements RuleActionHandler {
+class AddInterestItem implements RuleActionHandler {
 
 	public void execute(def params, def drools) {
 		def billitem = params.billitem;
+		def acct = params.account;
+		def amt = params.amount.doubleValue;
 
 		def ct = RuleExecutionContext.getCurrentContext();
-		if(ct.result.billitems) {
-			ct.result.billitems.remove(billitem);
+
+		def intItem = new InterestItem(parent: billitem, amount:amt);
+		intItem.account = new Account( objid: acct.key , title: acct.value );
+
+		boolean b = billitem.items.add( intItem );
+		if(b) {
+			ct.facts << intItem;	
 		}
-		ct.facts.remove( billitem );
+
 	}
 
 }

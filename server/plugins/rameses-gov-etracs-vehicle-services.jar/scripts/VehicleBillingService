@@ -2,13 +2,13 @@ import com.rameses.annotations.*;
 
 import com.rameses.rules.common.*;
 import vrs.facts.*;
-import treasury.facts.*;
+import rules.treasury.facts.*;
 
 
 /**********************************************************
 * This service handles computation of what fees to charge 
 ***********************************************************/
-class VehicleApplicationBillingService {
+class VehicleBillingService {
 	
 	@Service("RuleExecutorService")
 	def ruleSvc;
@@ -18,18 +18,23 @@ class VehicleApplicationBillingService {
 
 	@ProxyMethod
 	public def process( def o ) {
+		if(!o.billitems) {
+			throw new Exception("VehicleBillingService requires billitems");
+		}
+			
 		def dt = dateSvc.getServerDate();
 		def facts = [];
 		facts << new BillDate(dt);
 		facts << new CurrentDate(dt);
-		o.items.each {
-			facts << new BillItem( account: it.item, amount: it.amount, txntype: 'fee' );
+		o.billitems.each {
+			def acct = new Account( objid: it.item.objid , title: it.item.title );
+			facts << new BillItem( account: acct, amount: it.amount);
 		};
 		
-		ruleSvc.execute( "vehiclebilling", facts, null, null );
-		def app = [:];
-		app.items = facts.findAll{ it instanceof BillItem };
-		return app;
+		def ctx = new RuleExecutionContext(facts);
+		ctx.result.billitems = o.billitems;
+		def res = ruleSvc.execute( "vehiclebilling", facts, null, null );
+		return res.billitems;
 	}
 
 }

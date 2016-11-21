@@ -14,12 +14,19 @@ import com.rameses.osiris3.common.*;
 class SummarizeBillItem implements RuleActionHandler {
 
 	public void execute(def params, def drools) {
-		def item = params.billitem;
-		if(!item)
+		def billitem = params.billitem;
+		if(!billitem)
 			throw new Exception("rules.treasury.actions.SummarizeBillItem");
-		def remarks =  params.remarks?.eval();	
-
 		def ct = RuleExecutionContext.getCurrentContext();
+
+		def test = new BillItem(account: billitem.account);
+		def newBillItem = ctx.result.billitems.find{ it == billitem };
+		if(newBillItem) {
+			newBillItem.amount += billitem.amount;
+		}
+		else {
+			newBillItem.amount = billitem.amount;
+		}
 	}
 
 }

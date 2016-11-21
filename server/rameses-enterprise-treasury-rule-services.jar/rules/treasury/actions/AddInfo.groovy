@@ -16,7 +16,7 @@ class AddInfo implements RuleActionHandler {
 		def ct = RuleExecutionContext.getCurrentContext();
 
 		def acct = params.account;
-		def amt = params.amount.doubleValue();
+		def amt = params.amount.doubleValue;
 		def remarks = null;
 		try {
 			remarks = params.remarks.eval();

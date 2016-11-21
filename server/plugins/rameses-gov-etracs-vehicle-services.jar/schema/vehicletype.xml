@@ -1,5 +1,5 @@
 <schema adapter="vehicledb">
-	<element tablename="vehicle_txntype">
+	<element tablename="vehicletype">
 		<field name="objid" primary="true" />
 		<field name="title" required="true" />
 		<field name="uihandler" required="true" />

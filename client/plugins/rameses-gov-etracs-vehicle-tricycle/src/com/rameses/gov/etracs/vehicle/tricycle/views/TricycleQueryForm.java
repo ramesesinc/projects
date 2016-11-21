@@ -27,41 +27,50 @@ public class TricycleQueryForm extends javax.swing.JPanel {
     private void initComponents() {
 
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
+        xTextField8 = new com.rameses.rcp.control.XTextField();
+        xTextField7 = new com.rameses.rcp.control.XTextField();
         xTextField6 = new com.rameses.rcp.control.XTextField();
         xTextField4 = new com.rameses.rcp.control.XTextField();
         xTextField5 = new com.rameses.rcp.control.XTextField();
 
+        setLayout(new java.awt.BorderLayout());
+
         xFormPanel1.setCaptionBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
         xFormPanel1.setCaptionOrientation(com.rameses.rcp.constant.UIConstants.TOP);
+        xFormPanel1.setCaptionWidth(100);
         xFormPanel1.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
+        xFormPanel1.setPreferredSize(new java.awt.Dimension(550, 41));
+
+        xTextField8.setCaption("Owner (Last, First)");
+        xTextField8.setCaptionWidth(150);
+        xTextField8.setName("custom.ownername"); // NOI18N
+        xTextField8.setPreferredSize(new java.awt.Dimension(150, 20));
+        xFormPanel1.add(xTextField8);
+
+        xTextField7.setCaption("Franchise No");
+        xTextField7.setName("custom.controlno"); // NOI18N
+        xFormPanel1.add(xTextField7);
 
         xTextField6.setCaption("Plate No");
-        xTextField6.setName("query.plateno"); // NOI18N
+        xTextField6.setName("custom.plateno"); // NOI18N
         xFormPanel1.add(xTextField6);
 
         xTextField4.setCaption("Engine No");
-        xTextField4.setName("query.engineno"); // NOI18N
+        xTextField4.setName("custom.engineno"); // NOI18N
         xFormPanel1.add(xTextField4);
 
         xTextField5.setCaption("Body No");
-        xTextField5.setName("query.bodyno"); // NOI18N
+        xTextField5.setName("custom.bodyno"); // NOI18N
         xFormPanel1.add(xTextField5);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 357, javax.swing.GroupLayout.PREFERRED_SIZE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
-        );
+        add(xFormPanel1, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XTextField xTextField4;
     private com.rameses.rcp.control.XTextField xTextField5;
     private com.rameses.rcp.control.XTextField xTextField6;
+    private com.rameses.rcp.control.XTextField xTextField7;
+    private com.rameses.rcp.control.XTextField xTextField8;
     // End of variables declaration//GEN-END:variables
 }

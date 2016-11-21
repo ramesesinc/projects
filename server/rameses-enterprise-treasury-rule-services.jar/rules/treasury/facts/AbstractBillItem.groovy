@@ -10,7 +10,6 @@ public abstract class AbstractBillItem {
 	String txntype;
 
 	boolean dynamic;	//if true - then this should not be saved in database. Applicable for surcharge and interest
-	boolean summary;	//if true - this is a summarized item
 
 	public int hashCode() {
 		return (account?.objid+"_"+txntype).hashCode();			

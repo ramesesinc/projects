@@ -23,12 +23,12 @@ class SummarizeBillItem implements RuleActionHandler {
 		def billitems = ct.result.billitems;
 		def facts = ct.facts;
 
-		def z = billitems.find{ it.account == billitem.account && it.summary == true };
+		def z = billitems.find{ (it instanceof SummaryBillItem) && it.account.objid == billitem.account.objid  };
 		if( !z ) {
-			def obj = billitem.getClass().newInstance();
+			def obj = new SummaryBillItem();
+			obj.items << billitem;
 			obj.account = billitem.account;
-			obj.amount = billitem.amount;
-			obj.summary = true;
+			obj.aggtype = aggtype;
 
 			//remove items
 			billitems.remove( billitem );
@@ -39,21 +39,8 @@ class SummarizeBillItem implements RuleActionHandler {
 			facts << obj;
 		}
 		else {
-			if( aggtype == "SUM") {
-				z.amount =	z.amount + billitem.amount;
-			}
+			z.items << billitem;
 		}
-
-		/*
-		def test = new BillItem(account: billitem.account);
-		def newBillItem = ctx.result.billitems.find{ it == billitem };
-		if(newBillItem) {
-			newBillItem.amount += billitem.amount;
-		}
-		else {
-			newBillItem.amount = billitem.amount;
-		}
-		*/
 	}
 
 }

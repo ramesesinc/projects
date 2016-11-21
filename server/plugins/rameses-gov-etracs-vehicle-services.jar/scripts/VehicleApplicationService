@@ -50,22 +50,10 @@ class VehicleApplicationService {
 			m.amtpaid = 0.0;
 			m.balance = it.amount;
 			app.items << m;
-			
-			if(it instanceof BillItem ) {
-				it.items.each { r->
-					def x = [:];
-					x.item =  lookupAcct.findAccount( r.account );
-					x.amount = r.amount;
-					x.amtpaid = 0.0;
-					x.balance = r.amount;
-					subitems << x;
-				}
-			}
 		};
 
 		def dd = facts.find{ it instanceof DueDate } ;
 		app.duedate = dd?.date;
-		app.items += subitems;
 		return app;
 	}
 

@@ -47,6 +47,7 @@ public class TricycleFormPage extends javax.swing.JPanel {
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder1.setTitle("Ownership");
         jPanel4.setBorder(xTitledBorder1);
+        jPanel4.setOpaque(false);
 
         xFormPanel2.setPadding(new java.awt.Insets(2, 2, 2, 2));
 
@@ -93,6 +94,7 @@ public class TricycleFormPage extends javax.swing.JPanel {
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder2 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder2.setTitle("Vehicle Information");
         jPanel5.setBorder(xTitledBorder2);
+        jPanel5.setOpaque(false);
 
         xLabel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         xLabel3.setCaption("Plate No");

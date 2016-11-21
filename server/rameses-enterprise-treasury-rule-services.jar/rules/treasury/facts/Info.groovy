@@ -2,8 +2,15 @@ package rules.treasury.facts;
 
 class Info {
 	
-	String objid;
-	String title;
 	InfoType type;
-	
+	Object value;
+
+	public int hashCode() {
+		return type.objid.hashCode();
+	}
+
+	public boolean equals( def o ) {
+		return (hashCode() == o.hashCode());
+	}
+
 }

@@ -4,6 +4,7 @@ import java.util.*;
 
 class BillItem extends AbstractBillItem {
 
+	String refid;
 	int sortorder;
 
 	LinkedHashSet<SubBillItem> items = new LinkedHashSet<SubBillItem>();

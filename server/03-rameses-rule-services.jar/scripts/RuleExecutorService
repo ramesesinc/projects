@@ -56,8 +56,11 @@ class RuleExecutorService {
 
 			def grps = ruleDB.getRulegroups( [ruleset: ruleset] );
 			for( g in grps ) {
+				if(handler) {
+					boolean b = handler( g.name );
+					if(!b) continue;
+				}	
 				ruleSvc.execute( ruleset, facts, ruleAction, g.name );
-				if(handler) handler( g.name );
 			}
 			return ctx.result;
 		}

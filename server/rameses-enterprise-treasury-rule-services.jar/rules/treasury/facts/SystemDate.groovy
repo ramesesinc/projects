@@ -5,19 +5,17 @@ import java.util.Calendar;
 import java.util.Date;
 import com.rameses.rules.common.*;
 
-public class DueDate extends DateFact {
+public class SystemDate extends DateFact {
     
-	String tag;
-
-    public DueDate() {
+    public SystemDate() {
         super();
     }
 
-    public DueDate(String s) {
+    public SystemDate(String s) {
         super(s);
     }
 
-    public DueDate(Date d) {
+    public SystemDate(Date d) {
         super(d);
     }
     

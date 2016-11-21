@@ -2,12 +2,15 @@ package rules.treasury.facts;
 
 import java.util.*;
 
-public abstract class BillItem {
+public abstract class AbstractBillItem {
 
 	Account account;
 	double amount;
 	double amtpaid;
 	String txntype;
+
+	boolean dynamic;	//if true - then this should not be saved in database. Applicable for surcharge and interest
+	boolean summary;	//if true - this is a summarized item
 
 	public int hashCode() {
 		return (account?.objid+"_"+txntype).hashCode();			

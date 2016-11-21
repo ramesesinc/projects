@@ -2,10 +2,15 @@ package rules.treasury.facts;
 
 class Requirement {
 	
-	String objid;
-	String type;
-	String title;
-
+	RequirementType type;
 	boolean completed;
+
+	public int hashCode() {
+		return type.objid.hashCode();
+	}
+
+	public boolean equals(def o ) {
+		return (hashCode()==o.hashCode());
+	}
 
 }

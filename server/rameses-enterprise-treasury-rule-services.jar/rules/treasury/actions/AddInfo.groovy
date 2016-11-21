@@ -8,35 +8,28 @@ import com.rameses.osiris3.common.*;
 
 /***
 * Parameters:
+*  infotype
+*  datatype
+*  value  
 ****/
 class AddInfo implements RuleActionHandler {
 
 	public void execute(def params, def drools) {
-
-		def ct = RuleExecutionContext.getCurrentContext();
-
-		def acct = params.account;
-		def amt = params.amount.doubleValue;
-		def remarks = null;
-		try {
-			remarks = params.remarks.eval();
-		}
-		catch(e) {;}
-
-		def ct = RuleExecutionContext.getCurrentContext();
-		if(!ct.result.items) ct.result.items = [];
-		def items = ct.result.items;
-
-		def exists = items.findAll{ it instanceof BillItem }.find{ it.account.objid == acct.key && it.remarks == remarks };
-		if( !exists ) {
-			//check first if there is already existing
-			def billitem = new BillItem();
-			billitem.account = new Account( objid: acct.key , title: acct.value );
-			billitem.amount = amt;
-			billitem.remarks = remarks;
-			items << billitem;
+		def infotype = params.infotype;
+		def value = null;
+		if(params.value) {
+			value = params.value.eval();
 		}
 
+		def ct = RuleExecutionContext.getCurrentContext();
+		if( !ct.result.infos ) ct.result.infos = new LinkedHashSet<Info>();
+		def infos = ct.result.infos;
+
+		Info info = new Info(value: value, new InfoType( objid: infotype.key, title: infotype.value ));
+		boolean b = infos.add( info );
+		if( b && info.value !=null  ) {
+			facts << info;
+		}
 	}
 
 }

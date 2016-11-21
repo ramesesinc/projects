@@ -14,19 +14,21 @@ class ApplyPayment implements RuleActionHandler {
 
 	public void execute(def params, def drools) {
 		def payment = params.payment;
-
-		def facts = ct.facts;
+		if(!payment) throw new Exception("Payment fact is required in ApplyPayment action");
 
 		def ct = RuleExecutionContext.getCurrentContext();
 		def billitems = ct.result.billitems.sort{it.sortorder};
 
 		if(billitems) {
+			
+			def facts = ct.facts;
+
 			def newBillItems = [];
 
 			double amt = payment.amount;
 
 			for( BillItem b: billitems ) {
-				double linetotal = b.amount + b.items.sum{ it.amount };
+				double linetotal = b.amount +  (b.items ? b.items.sum{ it.amount } :0 );
 				if(amt > linetotal) {
 					newBillItems << b;
 					amt -= linetotal;
@@ -37,18 +39,23 @@ class ApplyPayment implements RuleActionHandler {
 						bi.amount = (bi.amount / linetotal ) * amt;
 					}
 					newBillItems << b;
+					amt = 0;
 					break;
 				}
+				if(amt<=0) break;
 			}
 
 			//remove all billitems
 			billitems.clear();
 			billitems.addAll( newBillItems );
+			ct.result.billitems = billitems;
 
 			//remove all billitems in facts
 			def removeList = facts.findAll{ it instanceof AbstractBillItem };
 			facts.removeAll( removeList );
 			facts.remove( payment );
+
+			drools.retract(payment);
 
 			//add new facts
 			for(b in billitems) {
@@ -60,7 +67,9 @@ class ApplyPayment implements RuleActionHandler {
 			
 			//add excess payment if any...
 			if(  amt > 0 ) {
-				facts << new ExcessPayment( amount: amt );
+				def ep = new ExcessPayment( amount: amt );
+				facts << ep;
+				drools.insert( ep );
 			}	
 		}
 

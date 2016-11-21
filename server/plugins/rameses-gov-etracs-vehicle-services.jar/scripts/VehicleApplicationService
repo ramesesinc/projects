@@ -1,5 +1,4 @@
 import com.rameses.annotations.*;
-import com.rameses.rules.common.*;
 import rules.vehicle.facts.*;
 import rules.treasury.facts.*;
 import treasury.utils.*;
@@ -7,6 +6,7 @@ import com.rameses.annotations.*;
 import com.rameses.util.*;
 import java.rmi.server.*;
 import java.util.*;
+import com.rameses.rules.common.RuleExecutionContext;
 
 class VehicleApplicationService {
 	
@@ -31,22 +31,18 @@ class VehicleApplicationService {
 		def svrDate = dateSvc.getServerDate();
 		if(!o.billdate) o.billdate = svrDate;
 		def facts = [];
+		//facts << new Payment( amount: 300 );
 		facts << new VehicleApplication( apptype: o.apptype, vehicletype: o.vehicletype );
-		facts << new CurrentDate(svrDate);
+		facts << new SystemDate(svrDate);
 		facts << new BillDate(svrDate);
-		facts << new DueDate( dateSvc.getServerYear() +"-01-20" );
 
-		def res = ruleSvc.execute( "vehicleassessment", facts, null, null );
-
-		//run billing immediately. 
-		def ctx = new RuleExecutionContext(facts);
-		ctx.result.billitems = res.billitems;
-		res = ruleSvc.execute( "vehiclebilling", facts, null, null );
+		def res = ruleSvc.execute( "vehiclebilling", facts, null, null );
 
 		//after executing display the items
 		def lookupAcct = new LookupAccount();
 		def app = [items:[]];
 		def subitems = [];
+
 		res.billitems.each {
 			def m = [:];
 			m.item =  lookupAcct.findAccount( it.account );
@@ -54,20 +50,24 @@ class VehicleApplicationService {
 			m.amtpaid = 0.0;
 			m.balance = it.amount;
 			app.items << m;
-
-			it.items.each { r->
-				def x = [:];
-				x.item =  lookupAcct.findAccount( r.account );
-				x.amount = r.amount;
-				x.amtpaid = 0.0;
-				x.balance = r.amount;
-				subitems << x;
+			
+			if(it instanceof BillItem ) {
+				it.items.each { r->
+					def x = [:];
+					x.item =  lookupAcct.findAccount( r.account );
+					x.amount = r.amount;
+					x.amtpaid = 0.0;
+					x.balance = r.amount;
+					subitems << x;
+				}
 			}
 		};
+
+		def dd = facts.find{ it instanceof DueDate } ;
+		app.duedate = dd?.date;
 		app.items += subitems;
 		return app;
 	}
-
 
 	@ProxyMethod
 	public def post( def o ) {

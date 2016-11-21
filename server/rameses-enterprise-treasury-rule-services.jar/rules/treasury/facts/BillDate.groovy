@@ -5,19 +5,17 @@ import java.util.Calendar;
 import java.util.Date;
 import com.rameses.rules.common.*;
 
-public class DueDate extends DateFact {
+public class BillDate extends DateFact {
     
-	String tag;
-
-    public DueDate() {
+    public BillDate() {
         super();
     }
 
-    public DueDate(String s) {
+    public BillDate(String s) {
         super(s);
     }
 
-    public DueDate(Date d) {
+    public BillDate(Date d) {
         super(d);
     }
     

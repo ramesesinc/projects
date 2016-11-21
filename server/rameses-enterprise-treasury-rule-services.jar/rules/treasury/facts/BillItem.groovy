@@ -2,22 +2,11 @@ package rules.treasury.facts;
 
 import java.util.*;
 
-class BillItem {
+class BillItem extends AbstractBillItem {
 
-	Account account;
-	double amount;
-	double amtpaid;
-	String txntype;
+	int sortorder;
 
-	LinkedHashSet<BillItem> items = new LinkedHashSet<BillItem>();
-
-	public int hashCode() {
-		return (account?.objid+"_"+txntype).hashCode();			
-	}
-
-	public boolean equals( def o ) {
-		return (o.hashCode() == hashCode());	
-	}
+	LinkedHashSet<SubBillItem> items = new LinkedHashSet<SubBillItem>();
 
 	public def getTotals( def txntype ) {
 		return items.findAll{ it.txntype == txntype }.sum{it.amount};

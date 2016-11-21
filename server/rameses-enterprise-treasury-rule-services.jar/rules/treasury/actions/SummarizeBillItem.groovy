@@ -20,7 +20,7 @@ class SummarizeBillItem implements RuleActionHandler {
 		def ct = RuleExecutionContext.getCurrentContext();
 
 		def test = new BillItem(account: billitem.account);
-		def newBillItem = ctx.result.billitems.find{ it == test };
+		def newBillItem = ctx.result.billitems.find{ it == billitem };
 		if(newBillItem) {
 			newBillItem.amount += billitem.amount;
 		}

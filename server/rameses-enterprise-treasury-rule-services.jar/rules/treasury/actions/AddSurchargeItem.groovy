@@ -23,6 +23,8 @@ class AddSurchargeItem implements RuleActionHandler {
 
 		def ct = RuleExecutionContext.getCurrentContext();
 		boolean b = billitem.items.add(surItem);
+
+		//add to facts so it can be evaluated...
 		if(b) {
 			ct.facts << surItem;	
 		}

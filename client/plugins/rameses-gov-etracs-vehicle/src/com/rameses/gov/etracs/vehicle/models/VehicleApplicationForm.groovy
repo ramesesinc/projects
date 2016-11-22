@@ -5,6 +5,7 @@ import com.rameses.rcp.common.*;
 import com.rameses.seti2.models.*;
 import com.rameses.osiris2.common.*;
 import com.rameses.util.*;
+import com.rameses.enterprise.models.*;
 
 public abstract class VehicleApplicationForm extends CrudFormModel {
     
@@ -14,11 +15,16 @@ public abstract class VehicleApplicationForm extends CrudFormModel {
     @Caller
     def caller;
     
+    def ruleExecutor;
     def selectedItem;
     public abstract String getVehicletype();
     
     public String getTitle() {
         return vehicletype.title + " (" + entity.apptype + ")";
+    }
+    
+    void afterInit() {
+        ruleExecutor = new RuleExecutor(  { p-> return appSvc.assess(p) } );
     }
     
     def create() {
@@ -43,7 +49,8 @@ public abstract class VehicleApplicationForm extends CrudFormModel {
     }
     
     void assess() {
-        def r = appSvc.assess(entity);
+        def r = ruleExecutor.execute(entity);
+        if( !r) return;
         entity.fees = r.items;
         entity.amount = entity.fees.sum{ it.amount };
         feeListModel.reload();

@@ -39,6 +39,7 @@ public class ApplicationTemplate extends javax.swing.JPanel implements UIContent
         xLabel1 = new com.rameses.rcp.control.XLabel();
         entityLookup1 = new com.rameses.entity.components.EntityLookup();
         entityAddressLookup1 = new com.rameses.entity.components.EntityAddressLookup();
+        xDateField1 = new com.rameses.rcp.control.XDateField();
         xPanel1 = new com.rameses.rcp.control.XPanel();
         xDataTable1 = new com.rameses.rcp.control.XDataTable();
         jPanel2 = new javax.swing.JPanel();
@@ -47,6 +48,7 @@ public class ApplicationTemplate extends javax.swing.JPanel implements UIContent
         xPanel2 = new com.rameses.rcp.control.XPanel();
 
         panelContent.setName("content"); // NOI18N
+        panelContent.setOpaque(false);
         panelContent.setLayout(new java.awt.BorderLayout());
 
         xFormPanel3.setCaptionWidth(100);
@@ -68,6 +70,10 @@ public class ApplicationTemplate extends javax.swing.JPanel implements UIContent
         entityAddressLookup1.setPreferredSize(new java.awt.Dimension(0, 53));
         xFormPanel3.add(entityAddressLookup1);
 
+        xDateField1.setCaption("Date Filed");
+        xDateField1.setName("entity.dtfiled"); // NOI18N
+        xFormPanel3.add(xDateField1);
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -83,9 +89,9 @@ public class ApplicationTemplate extends javax.swing.JPanel implements UIContent
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(xFormPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(panelContent, javax.swing.GroupLayout.DEFAULT_SIZE, 237, Short.MAX_VALUE)
+                .addComponent(panelContent, javax.swing.GroupLayout.DEFAULT_SIZE, 218, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -253,6 +259,7 @@ public class ApplicationTemplate extends javax.swing.JPanel implements UIContent
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel panelContent;
     private com.rameses.rcp.control.XDataTable xDataTable1;
+    private com.rameses.rcp.control.XDateField xDateField1;
     private com.rameses.rcp.control.XFormPanel xFormPanel2;
     private com.rameses.rcp.control.XFormPanel xFormPanel3;
     private com.rameses.rcp.control.XLabel xLabel1;

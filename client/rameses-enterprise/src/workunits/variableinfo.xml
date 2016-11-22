@@ -1,0 +1,10 @@
+<workunit schemaName="variableinfo">
+    <invokers>
+        <invoker type="variableinfo:create" caption="Variable Info" action="create" target="popup" role="MASTER"/>
+        <invoker type="variableinfo:open" caption="Variable Info" action="open" target="popup" role="MASTER"/>
+    </invokers>
+    <code class="com.rameses.enterprise.models.VariableInfoModel" />
+    <pages>
+        <page template="com.rameses.enterprise.views.VariableInfoPage"/>
+    </pages>
+</workunit>

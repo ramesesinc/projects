@@ -25,6 +25,9 @@ public class AskVariableInfoModel {
     void init() {
         if(!ruleExecutor) throw new Exception("ruleExecutor is required in AskInfoModel");
         if(!resultHandler) throw new Exception("resultHandler is required in AskInfoModel");
+        if(!infos)throw new Exception("infos is required in AskInfoModel");
+        infoStack.clear();
+        infoStack.push(infos)
         buildFormInfos();
     }
 
@@ -38,12 +41,17 @@ public class AskVariableInfoModel {
         for( st in infoStack ) {
             pInfos.addAll( st );
         }
-        pInfos.addAll( infos );
         def p = [:];
         p.putAll(params);
         p.infos = pInfos;
         
+        println "sending info to server "
+        pInfos.each {
+            println it;
+        }
+        
         def result = ruleExecutor( p );
+        println "ask infos " +result.askinfos;
         if(!result.askinfos) {
             resultHandler( result );
             return "_close";

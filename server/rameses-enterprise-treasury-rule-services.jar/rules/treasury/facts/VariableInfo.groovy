@@ -3,7 +3,6 @@ package rules.treasury.facts;
 public abstract class VariableInfo {
 	
 	VariableInfoType type;
-	Object value;
 
 	public String getDatatype() {
 		return  "object";

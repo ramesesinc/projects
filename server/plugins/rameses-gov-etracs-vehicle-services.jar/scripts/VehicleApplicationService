@@ -31,8 +31,7 @@ class VehicleApplicationService {
 			return new DecimalInfo( type:type, value:o.value );
 		}
 		else if(o.datatype=="integer") {
-			def ii = new IntegerInfo( type:type, value:o.value );
-			throw new Exception(" integer is " + ii.value); 
+			return new IntegerInfo( type:type, value:o.value );
 		}
 		else if(o.datatype=="string") {
 			return new StringInfo( type:type, value:o.value );
@@ -59,12 +58,18 @@ class VehicleApplicationService {
 		facts << new SystemDate(svrDate);
 
 		if(o.infos) {
+			println "adding info facts"
 			o.infos.each {
+				println it;
 				facts << createInfoFact(it);
 			}
 		}
 
-		def res = ruleSvc.execute( "vehiclebilling", facts, null, null );
+		def hdlr = { grpname ->
+			if( RuleExecutionContext.currentContext.result.askinfos ) return false;
+			return true;
+		}
+		def res = ruleSvc.execute( "vehiclebilling", facts, null, hdlr );
 
 		//if there are askinfos, return immediately to client.
 		if(res.askinfos) {

@@ -14,6 +14,10 @@ import com.rameses.osiris3.common.*;
 class AskDecimalInfo extends AbstractAskInfo {
 
 	public def createInfo( def infotype, def value ) {
+		if( value == null )
+			value = 0;
+		else
+			value = (value+"").toDouble();	
 		return new DecimalInfo( type:infotype, value: value)
 	}
 

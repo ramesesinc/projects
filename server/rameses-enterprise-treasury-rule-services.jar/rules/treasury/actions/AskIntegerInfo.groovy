@@ -14,6 +14,10 @@ import com.rameses.osiris3.common.*;
 class AskIntegerInfo extends AbstractAskInfo {
 
 	public def createInfo( def infotype, def value ) {
+		if( value == null )
+			value = 0;
+		else
+			value = (value+"").toInteger();	
 		return new IntegerInfo( type:infotype, value: value)
 	}
 

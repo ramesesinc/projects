@@ -21,7 +21,10 @@ public abstract class AbstractAskInfo implements RuleActionHandler {
 
 		def value = null;
 		if(params.value) {
-			value = params.value.eval();
+			if(params.value instanceof ActionExpression) 
+				value = params.value.eval();
+			else
+				value = params.value;
 		}
 
 		def info = createInfo(new VariableInfoType( objid: infotype.key, name: infotype.value ), value );
@@ -39,7 +42,6 @@ public abstract class AbstractAskInfo implements RuleActionHandler {
 			if( ct.result.askinfos.find{ it == info } ) include = false;
 		}	
 
-		println "can we add " + infotype.key + " : " + include;	
 		if(include) {
 			if( !ct.result.askinfos ) ct.result.askinfos = new LinkedHashSet<VariableInfo>();
 			ct.result.askinfos.add( info );

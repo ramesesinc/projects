@@ -1,6 +1,6 @@
 <workunit extends="com/rameses/seti2/templates/CrudList.xml" 
-          schemaName="sys_variableinfo" allowCreate="true" allowOpen="true" allowDelete="false"
-          cols="name,datatype,caption">
+          schemaName="variableinfo" allowCreate="true" allowOpen="true" allowDelete="false"
+          cols="name,datatype,caption,category">
     <invokers>
         <invoker folderid="/explorer/master/enterprise" caption="Variable Info" 
                  index="10" role="MASTER" action="init"/>

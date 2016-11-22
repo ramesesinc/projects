@@ -10,6 +10,8 @@ import com.rameses.osiris2.common.*
 * The ruleExecutor is passed
 * ex: def r = new RuleExecutor(executor)
 *     def result = r.execute( params );
+* Info must be with the ff. fields:
+*    name, datatype, caption, category   
 ****/
 public class RuleExecutor {
     
@@ -20,12 +22,17 @@ public class RuleExecutor {
     }
     
     public def execute(def params) {
+        if(params == null) throw new Exception("params is required in RuleExecutor"); 
         def result = ruleExecutor(params);
         if( result.askinfos ) {
-            def rh = { r->
+            def p = [:];
+            p.params = params;
+            p.infos = result.askinfos;
+            p.ruleExecutor = ruleExecutor;
+            p.resultHandler = { r->
                 result = r;
             }
-            Modal.show( "ask-infos", [infos: result.askinfos, resultHandler: rh ]);
+            Modal.show( "ask-infos", p );
         }
         return result;
     }

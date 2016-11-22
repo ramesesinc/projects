@@ -12,11 +12,12 @@ import com.rameses.rulemgmt.*;
 * This displays the info
 * 
 ****/
-public class AskInfoModel {
+public class AskVariableInfoModel {
     
     def ruleExecutor;
     def infoStack = new Stack();
     def infos;
+    def params = [:];
     def resultHandler;
     
     def formInfos = [];
@@ -38,20 +39,25 @@ public class AskInfoModel {
             pInfos.addAll( st );
         }
         pInfos.addAll( infos );
+        def p = [:];
+        p.putAll(params);
+        p.infos = pInfos;
         
-        def result = ruleExecutor( pInfos );
+        def result = ruleExecutor( p );
         if(!result.askinfos) {
             resultHandler( result );
+            return "_close";
         } 
         else {
             infoStack.push( result.askinfos );
-            infos = r.askinfos;
+            infos = result.askinfos;
             buildFormInfos();
             return null;
         }
     }
     
     def doBack() {
+        if(infoStack.empty()) return "_close";
         infos = infoStack.pop();
         buildFormInfos();
         return null;

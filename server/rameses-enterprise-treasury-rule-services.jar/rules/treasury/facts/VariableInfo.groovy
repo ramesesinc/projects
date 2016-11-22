@@ -1,9 +1,13 @@
 package rules.treasury.facts;
 
-class Info {
+public abstract class VariableInfo {
 	
-	InfoType type;
+	VariableInfoType type;
 	Object value;
+
+	public String getDatatype() {
+		return  "object";
+	}
 
 	public int hashCode() {
 		return type.objid.hashCode();

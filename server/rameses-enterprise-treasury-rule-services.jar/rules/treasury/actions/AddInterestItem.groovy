@@ -18,16 +18,15 @@ class AddInterestItem implements RuleActionHandler {
 		def acct = params.account;
 		def amt = params.amount.doubleValue;
 
-		def ct = RuleExecutionContext.getCurrentContext();
-
 		def intItem = new InterestItem(parent: billitem, amount:amt);
 		intItem.account = new Account( objid: acct.key , title: acct.value );
 
 		boolean b = billitem.items.add( intItem );
 		if(b) {
+			def ct = RuleExecutionContext.getCurrentContext();
+			ct.result.billitems << intItem;
 			ct.facts << intItem;	
 		}
-
 	}
 
 }

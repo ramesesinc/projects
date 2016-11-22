@@ -16,7 +16,9 @@ class AddBillItem implements RuleActionHandler {
 
 	public void execute(def params, def drools) {
 		def acct = params.account;
-		def amt = params.amount.doubleValue;
+		def zamt = params.amount.eval() ;
+
+		def amt = (new BigDecimal(zamt+"")).toDouble();
 
 		def ct = RuleExecutionContext.getCurrentContext();
 		if(!ct.result.billitems) {

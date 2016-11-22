@@ -20,12 +20,12 @@ class AddSurchargeItem implements RuleActionHandler {
 
 		def surItem = new SurchargeItem(parent: billitem, amount:amt);
 		surItem.account = new Account( objid: acct.key , title: acct.value );
-
-		def ct = RuleExecutionContext.getCurrentContext();
 		boolean b = billitem.items.add(surItem);
 
 		//add to facts so it can be evaluated...
 		if(b) {
+			def ct = RuleExecutionContext.getCurrentContext();
+			ct.result.billitems << surItem;
 			ct.facts << surItem;	
 		}
 	}

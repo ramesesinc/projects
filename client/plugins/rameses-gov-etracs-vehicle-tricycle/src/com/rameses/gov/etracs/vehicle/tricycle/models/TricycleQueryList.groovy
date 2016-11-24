@@ -12,7 +12,7 @@ import com.rameses.gov.etracs.vehicle.models.*;
 public class TricycleQueryList extends CrudListModel {
     
     String getSchemaName() {
-        return "vehicle_tricycle";
+        return "vehicle_account_tricycle";
     }
     
     def custom = [:];

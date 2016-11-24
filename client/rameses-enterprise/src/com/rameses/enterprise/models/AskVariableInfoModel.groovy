@@ -17,39 +17,54 @@ public class AskVariableInfoModel {
     def ruleExecutor;
     def infoStack = new Stack();
     def infos;
+    def defaultInfos;
     def params = [:];
     def resultHandler;
-    
     def formInfos = [];
     
     void init() {
         if(!ruleExecutor) throw new Exception("ruleExecutor is required in AskInfoModel");
         if(!resultHandler) throw new Exception("resultHandler is required in AskInfoModel");
+        defaultInfos = params.defaultinfos;
         buildFormInfos();
     }
 
+    public def getDefaultValue( def item ) {
+        if( !defaultInfos) return item.value;
+        def rv = defaultInfos.find{ it.name == item.name };
+        if( rv.value ) return rv.value;
+        return item.value;
+    }
+    
     boolean getHasBack() {
         return !infoStack.empty();
     }
     
-    def doNext() {
-        //build all infos and send for processing...
+    def createStackedInfos() {
         def pInfos = [];
         for( st in infoStack ) {
             pInfos.addAll( st );
         }
         pInfos.addAll( infos );
+        return pInfos;
+    }
+    
+    def doNext() {
+        //build all infos and send for processing...
         def p = [:];
         p.putAll(params);
-        p.infos = pInfos;
+        p.infos = createStackedInfos();
         
         def result = ruleExecutor( p );
         if(!result.askinfos) {
+            def infos = createStackedInfos();
+            if( result.infos ) infos += result.infos;
+            result.infos = infos;
             resultHandler( result );
             return "_close";
         } 
         else {
-            infoStack.push( result.askinfos );
+            infoStack.push( infos );
             infos = result.askinfos;
             buildFormInfos();
             return null;
@@ -71,6 +86,7 @@ public class AskVariableInfoModel {
         formInfos.clear();
         infos = infos.sort{ [it.category, it.sortorder] }
         infos.each {x->
+            x.value = getDefaultValue( x );
             def i = [
                 type:x.datatype, 
                 caption:x.caption, 

@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <Form version="1.3" maxVersion="1.8" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
+  <Properties>
+    <Property name="opaque" type="boolean" value="false"/>
+  </Properties>
   <AuxValues>
     <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0"/>
     <AuxValue name="FormSettings_autoSetComponentName" type="java.lang.Boolean" value="false"/>
@@ -11,7 +14,7 @@
     <AuxValue name="FormSettings_listenerGenerationStyle" type="java.lang.Integer" value="0"/>
     <AuxValue name="FormSettings_variablesLocal" type="java.lang.Boolean" value="false"/>
     <AuxValue name="FormSettings_variablesModifier" type="java.lang.Integer" value="2"/>
-    <AuxValue name="designerSize" type="java.awt.Dimension" value="-84,-19,0,5,115,114,0,18,106,97,118,97,46,97,119,116,46,68,105,109,101,110,115,105,111,110,65,-114,-39,-41,-84,95,68,20,2,0,2,73,0,6,104,101,105,103,104,116,73,0,5,119,105,100,116,104,120,112,0,0,1,44,0,0,1,-6"/>
+    <AuxValue name="designerSize" type="java.awt.Dimension" value="-84,-19,0,5,115,114,0,18,106,97,118,97,46,97,119,116,46,68,105,109,101,110,115,105,111,110,65,-114,-39,-41,-84,95,68,20,2,0,2,73,0,6,104,101,105,103,104,116,73,0,5,119,105,100,116,104,120,112,0,0,0,-70,0,0,3,67"/>
   </AuxValues>
 
   <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
@@ -19,9 +22,11 @@
     <Container class="javax.swing.JPanel" name="jPanel1">
       <Properties>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-          <PropertyBean type="com.rameses.rcp.control.border.XTitledBorder">
-            <Property name="title" type="java.lang.String" value="Tricycle Information"/>
-          </PropertyBean>
+          <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
+            <TitledBorder title="Tricycle Information">
+              <Font PropertyName="font" name="Tahoma" size="11" style="1"/>
+            </TitledBorder>
+          </Border>
         </Property>
         <Property name="opaque" type="boolean" value="false"/>
       </Properties>
@@ -35,12 +40,11 @@
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" attributes="0">
+                  <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
+                  <Component id="xFormPanel1" min="-2" pref="338" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="xButton1" min="-2" max="-2" attributes="0"/>
-                      <Component id="xFormPanel1" alignment="0" min="-2" pref="482" max="-2" attributes="0"/>
-                  </Group>
-                  <EmptySpace max="32767" attributes="0"/>
+                  <Component id="xFormPanel2" min="-2" pref="338" max="-2" attributes="0"/>
+                  <EmptySpace pref="123" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -48,10 +52,11 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="xButton1" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Component id="xFormPanel1" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace pref="101" max="32767" attributes="0"/>
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Component id="xFormPanel2" min="-2" max="-2" attributes="0"/>
+                      <Component id="xFormPanel1" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace pref="79" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -59,7 +64,7 @@
       <SubComponents>
         <Container class="com.rameses.rcp.control.XFormPanel" name="xFormPanel1">
           <SubComponents>
-            <Component class="com.rameses.rcp.control.XLabel" name="xLabel2">
+            <Component class="com.rameses.rcp.control.XLabel" name="xLabel5">
               <Properties>
                 <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                   <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
@@ -69,7 +74,7 @@
                   </Border>
                 </Property>
                 <Property name="caption" type="java.lang.String" value="Plate No"/>
-                <Property name="expression" type="java.lang.String" value="#{entity.plateno}"/>
+                <Property name="expression" type="java.lang.String" value="#{entity.vehicle.plateno}"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[0, 20]"/>
                 </Property>
@@ -85,7 +90,7 @@
                   </Border>
                 </Property>
                 <Property name="caption" type="java.lang.String" value="Engine No"/>
-                <Property name="expression" type="java.lang.String" value="#{entity.engineno}"/>
+                <Property name="expression" type="java.lang.String" value="#{entity.vehicle.engineno}"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[0, 20]"/>
                 </Property>
@@ -101,13 +106,17 @@
                   </Border>
                 </Property>
                 <Property name="caption" type="java.lang.String" value="Body No"/>
-                <Property name="expression" type="java.lang.String" value="#{entity.bodyno}"/>
+                <Property name="expression" type="java.lang.String" value="#{entity.vehicle.bodyno}"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[0, 20]"/>
                 </Property>
               </Properties>
             </Component>
-            <Component class="com.rameses.rcp.control.XLabel" name="xLabel5">
+          </SubComponents>
+        </Container>
+        <Container class="com.rameses.rcp.control.XFormPanel" name="xFormPanel2">
+          <SubComponents>
+            <Component class="com.rameses.rcp.control.XLabel" name="xLabel11">
               <Properties>
                 <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                   <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
@@ -117,13 +126,13 @@
                   </Border>
                 </Property>
                 <Property name="caption" type="java.lang.String" value="Sidecar No"/>
-                <Property name="expression" type="java.lang.String" value="#{entity.sidecarno}"/>
+                <Property name="expression" type="java.lang.String" value="#{entity.vehicle.sidecarno}"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[0, 20]"/>
                 </Property>
               </Properties>
             </Component>
-            <Component class="com.rameses.rcp.control.XLabel" name="xLabel6">
+            <Component class="com.rameses.rcp.control.XLabel" name="xLabel12">
               <Properties>
                 <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                   <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
@@ -133,13 +142,13 @@
                   </Border>
                 </Property>
                 <Property name="caption" type="java.lang.String" value="Make"/>
-                <Property name="expression" type="java.lang.String" value="#{entity.make}"/>
+                <Property name="expression" type="java.lang.String" value="#{entity.vehicle.make}"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[0, 20]"/>
                 </Property>
               </Properties>
             </Component>
-            <Component class="com.rameses.rcp.control.XLabel" name="xLabel7">
+            <Component class="com.rameses.rcp.control.XLabel" name="xLabel13">
               <Properties>
                 <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                   <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
@@ -149,7 +158,7 @@
                   </Border>
                 </Property>
                 <Property name="caption" type="java.lang.String" value="Model"/>
-                <Property name="expression" type="java.lang.String" value="#{entity.model}"/>
+                <Property name="expression" type="java.lang.String" value="#{entity.vehicle.model}"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[0, 20]"/>
                 </Property>
@@ -157,12 +166,6 @@
             </Component>
           </SubComponents>
         </Container>
-        <Component class="com.rameses.rcp.control.XButton" name="xButton1">
-          <Properties>
-            <Property name="name" type="java.lang.String" value="addVehicle" noResource="true"/>
-            <Property name="text" type="java.lang.String" value="Add Vehicle"/>
-          </Properties>
-        </Component>
       </SubComponents>
     </Container>
   </SubComponents>

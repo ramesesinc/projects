@@ -10,8 +10,14 @@ public class TricycleLookupNewForm extends CrudFormModel {
     
     def handler;
     
+    public String getVehicletype() {
+        return "tricycle";
+    }
+    
     def save() {
         try {
+            entity.state = 'ACTIVE';
+            entity.vehicletype = getVehicletype();
             def r = super.save();
             if(handler) handler(entity);
             return "_close";

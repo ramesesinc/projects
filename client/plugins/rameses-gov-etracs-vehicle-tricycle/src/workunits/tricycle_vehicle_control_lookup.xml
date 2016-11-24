@@ -3,8 +3,9 @@
         <invoker type="vehicle_control_tricycle:available:lookup" 
                  caption="Select Available Franchise" 
                  orderBy="controlno"
+                 target="popup"
                  cols="controlno,currentaccount.owner.name,currentaccount.particulars,currentacctid"
-                 cuctomFilter="txntypeid='tricycle'"
+                 cuctomFilter="vehicletypeid='tricycle' AND vehicleid IS NULL"
                  action="init"/>
     </invokers>
 </workunit>

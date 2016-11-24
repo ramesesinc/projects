@@ -9,7 +9,7 @@ import com.rameses.osiris2.client.*;
 import com.rameses.util.*;
 import com.rameses.gov.etracs.vehicle.models.*;
 
-public class TricycleApplicationForm extends VehicleApplicationForm {
+public class TricycleAccountForm extends VehicleAccountForm {
     
     public String getVehicletype() {
         return "tricycle";

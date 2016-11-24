@@ -13,11 +13,11 @@ import com.rameses.osiris2.common.*
 * Info must be with the ff. fields:
 *    name, datatype, caption, category   
 ****/
-public class RuleExecutor {
+public class RuleProcessor {
     
     def ruleExecutor;
     
-    public RuleExecutor(def r ) {
+    public RuleProcessor(def r ) {
         ruleExecutor = r;
     }
     

@@ -5,6 +5,10 @@ import com.rameses.rcp.common.*;
 import com.rameses.seti2.models.*;
 import com.rameses.osiris2.common.*;
 import com.rameses.util.*;
+import com.rameses.osiris2.common.*;
+import com.rameses.rcp.common.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.gov.etracs.vehicle.models.*;
 import com.rameses.enterprise.models.*;
 
 public abstract class VehicleApplicationForm extends CrudFormModel {
@@ -24,7 +28,7 @@ public abstract class VehicleApplicationForm extends CrudFormModel {
     }
     
     void afterInit() {
-        ruleExecutor = new RuleExecutor(  { p-> return appSvc.assess(p) } );
+        ruleExecutor = new RuleProcessor(  { p-> return appSvc.assess(p) } );
     }
     
     def create() {
@@ -49,16 +53,40 @@ public abstract class VehicleApplicationForm extends CrudFormModel {
     }
     
     void assess() {
-        def r = ruleExecutor.execute(entity);
+        def p = [:];
+        p.putAll( entity );
+        p.defaultinfos = p.remove("infos");
+
+        def r = ruleExecutor.execute(p);
         if( !r) return;
-        entity.fees = r.items;
-        entity.amount = entity.fees.sum{ it.amount };
-        feeListModel.reload();
+        if( r.items ) {
+            entity.fees = r.items;
+            entity.amount = entity.fees.sum{ it.amount };
+            feeListModel.reload();
+        }
+        if( r.infos ) {
+            entity.infos = r.infos;
+            infoListModel.reload();
+        }
+    }
+    
+    def addVehicle() {
+        def h = { o->
+            entity.vehicle = o;
+            binding.refresh();
+        }
+        return Inv.lookupOpener("vehicle_account_" +getVehicletype()+ ":lookupnew", [handler: h ] )
     }
     
     def feeListModel = [
         fetchList: { o->
             return entity.fees;
+        }
+    ] as BasicListModel;
+    
+     def infoListModel = [
+        fetchList: { o->
+            return entity.infos;
         }
     ] as BasicListModel;
 

@@ -1,7 +1,7 @@
 import com.rameses.annotations.*;
 import com.rameses.util.*;
 
-class TricycleInterceptor {
+class VehicleAccountTricycleInterceptor {
 
 	@Env
 	def env;
@@ -9,10 +9,13 @@ class TricycleInterceptor {
 	@Service("DateService")
 	def dateSvc;
 
-	@DataContext("vehicle_tricycle")
+	@DataContext("vehicle_account_tricycle")
 	def triEm;
 
-	@Before(pattern="PersistenceService.create", eval="#{args[0]._schemaname == 'vehicle_tricycle' }", index=100)
+	@DataContext("vehicle_control")
+	def controlEm;
+
+	@Before(pattern="PersistenceService.create", eval="#{args[0]._schemaname == 'vehicle_account_tricycle' }", index=100)
 	public void beforeCreate(def evt) {
 		def o = evt.args[0];
 		def g = triEm.find( [plateno: o.plateno] ).first(); 
@@ -51,5 +54,12 @@ class TricycleInterceptor {
 		o.vehicletype = 'tricycle';
 	}
 
+	@After(pattern="PersistenceService.create", eval="#{args[0]._schemaname == 'vehicle_account_tricycle' }", index=100)
+	public void afterCreate(def evt) {
+		def r = evt.args[0];
+		if( r.control?.objid ) {
+			controlEm.find( [objid: r.control.objid] ).update( [vehicleid: r.objid] );
+		}
+	}
 
 }

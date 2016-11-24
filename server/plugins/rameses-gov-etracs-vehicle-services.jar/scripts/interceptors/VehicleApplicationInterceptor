@@ -21,8 +21,7 @@ class VehicleApplicationInterceptor {
 		o.appdate = svrDate;
 		o.appyear = dateSvc.getServerYear();
 		o.state = 'PENDING';
-
-		def txntype = o.txntype?.toUpperCase();
+		def txntype = o.vehicletype?.toUpperCase();
 
 		o.appno =  txntype[0] + o.appyear + seqSvc.getNextFormattedSeries( txntype );
 		o.filedby = [objid: env.USERID, name: env.FULLNAME];

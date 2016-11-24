@@ -1,5 +1,5 @@
 <schema adapter="vehicledb">
-	<element tablename="vehicle">
+	<element tablename="vehicle_account">
 		<field name="objid" primary="true"  prefix="VACCT"/>
 		<field name="vehicletype" required="true"/>
 		<field name="state" required="true" />

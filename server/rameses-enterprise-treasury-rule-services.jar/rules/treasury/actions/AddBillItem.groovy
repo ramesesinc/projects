@@ -12,11 +12,10 @@ import com.rameses.osiris3.common.*;
 *    account 
 *    amount
 ****/
-class AddBillItem implements RuleActionHandler {
+class AddBillItem extends AbstractAddBillItem {
 
 	public void execute(def params, def drools) {
 		def acct = params.account;
-
 		def amt = params.amount.decimalValue;
 
 		def ct = RuleExecutionContext.getCurrentContext();
@@ -25,7 +24,7 @@ class AddBillItem implements RuleActionHandler {
 		}
 			
 		def billitem = new BillItem(amount: amt);
-		billitem.account = new Account( objid: acct.key , title: acct.value );
+		setAccountFact( acct.key, billitem );
 
 		//check first if there is already existing. If successfully added, then add to facts
 		boolean b = ct.result.billitems.add(billitem);

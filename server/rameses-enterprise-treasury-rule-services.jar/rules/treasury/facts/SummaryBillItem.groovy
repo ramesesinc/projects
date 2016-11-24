@@ -6,5 +6,5 @@ public class SummaryBillItem extends AbstractBillItem {
 
 	String aggtype;
 	List<AbstractBillItem> items = [];
-
+	
 }

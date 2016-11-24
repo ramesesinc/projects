@@ -1,4 +1,4 @@
-package rules.treasury.facts;
+package rules.enterprise.facts;
 
 class RequirementType {
 	

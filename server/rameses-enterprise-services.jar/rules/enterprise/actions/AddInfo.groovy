@@ -1,9 +1,9 @@
-package rules.treasury.actions;
+package rules.enterprise.actions;
 
 import com.rameses.rules.common.*;
 import com.rameses.util.*;
 import java.util.*;
-import rules.treasury.facts.*;
+import rules.enterprise.facts.*;
 import com.rameses.osiris3.common.*;
 
 /***

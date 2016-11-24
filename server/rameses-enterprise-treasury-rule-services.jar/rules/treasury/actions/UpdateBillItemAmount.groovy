@@ -14,7 +14,7 @@ import com.rameses.osiris3.common.*;
 class UpdateBillItemAmount implements RuleActionHandler {
 
 	public void execute(def params, def drools) {
-		def amt = params.amount.doubleValue;
+		def amt = params.amount.decimalValue;
 		def bi = params.billitem;
 		bi.amount = amt;
 	}

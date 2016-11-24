@@ -4,9 +4,7 @@
 		<complex name="app" ref="vehicle_application" jointype="many-to-one" includefields="appno">
 			<key field="appid" target="objid"/>
 		</complex>	
-		<complex name="variable" ref="vehicle_variable" jointype="many-to-one" includefields="name,caption,type,arrayvalues,category">
-			<key field="varname" target="name"/>
-		</complex>	
+		<field name="name" />
 		<field name="stringvalue" />
 		<field name="decimalvalue" type="decimal"/>
 		<field name="intvalue" type="integer"/>

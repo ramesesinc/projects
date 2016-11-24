@@ -1,11 +1,11 @@
 <workunit extends="com/rameses/seti2/templates/CrudLookup.xml" schemaName="vehicle_control">
     <invokers>
         <invoker type="vehicle_control_tricycle:available:lookup" 
-                 caption="Select Available Franchise" 
+                 caption="Select Available FranchiseX" 
                  orderBy="controlno"
                  target="popup"
-                 cols="controlno,currentaccount.owner.name,currentaccount.particulars,currentacctid"
-                 cuctomFilter="vehicletypeid='tricycle' AND vehicleid IS NULL"
+                 cols="controlno,vehicle.owner.name,vehicle.particulars,vehicleid"
+                 cuctomFilter="vehicletype='tricycle' AND vehicleid IS NULL"
                  action="init"/>
     </invokers>
 </workunit>

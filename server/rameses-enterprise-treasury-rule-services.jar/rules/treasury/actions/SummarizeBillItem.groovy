@@ -29,6 +29,8 @@ class SummarizeBillItem implements RuleActionHandler {
 			obj.account = billitem.account;
 			obj.aggtype = aggtype;
 			obj.dynamic = billitem.dynamic;
+			obj.txntype = billitem.txntype;
+			obj.sortorder = billitem.sortorder;
 			billitems << obj;			
 			facts << obj;
 		}

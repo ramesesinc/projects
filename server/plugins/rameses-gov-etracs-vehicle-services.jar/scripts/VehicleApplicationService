@@ -1,6 +1,7 @@
 import com.rameses.annotations.*;
 import rules.vehicle.facts.*;
 import rules.treasury.facts.*;
+import rules.enterprise.facts.*;
 import treasury.utils.*;
 import com.rameses.annotations.*;
 import com.rameses.util.*;
@@ -25,22 +26,6 @@ class VehicleApplicationService {
 	@Service("RuleExecutorService")
 	def ruleSvc;
 
-	private def createInfoFact(  def o ) {
-		def type = new VariableInfoType(objid:o.name, name: o.caption);
-		if(o.datatype == 'decimal') {
-			return new DecimalInfo( type:type, value:o.value );
-		}
-		else if(o.datatype=="integer") {
-			return new IntegerInfo( type:type, value:o.value );
-		}
-		else if(o.datatype=="string") {
-			return new StringInfo( type:type, value:o.value );
-		}
-		else if(o.datatype=="boolean") {
-			return new BooleanInfo( type:type, value:o.value );
-		}
-	}
-
 	@ProxyMethod
 	public def assess( def o ) {
 		if(!o.vehicletype) throw new Exception("vehicletype is required in VehicleAssessmentService.assess")
@@ -58,10 +43,10 @@ class VehicleApplicationService {
 		facts << new SystemDate(svrDate);
 
 		if(o.infos) {
-			println "adding info facts"
+			def infoUtil = new VariableInfoUtil();
 			o.infos.each {
-				println it;
-				facts << createInfoFact(it);
+				def f = infoUtil.createFact(it);
+				facts << f;
 			}
 		}
 
@@ -73,38 +58,16 @@ class VehicleApplicationService {
 
 		//if there are askinfos, return immediately to client.
 		if(res.askinfos) {
-			println "yes has ask infos....";
-			def askinfos = [];
-			res.askinfos.each {
-				def m =[:]; 
-				m.datatype = it.datatype;
-				m.caption = it.type.name;
-				m.name = it.type.objid;
-				m.value = it.value;
-				askinfos << m;		
-			}
-			return [askinfos: askinfos];
+			return [askinfos : res.askinfos.collect{ it.toMap() } ];
 		}
+		else {
+			def app = [:];
+			app.infos = res.infos;
+			app.items = res.billitems.collect{ it.toMap() }
+			app.duedate = facts.find{ it instanceof DueDate }?.date;
 
-		//after executing display the items
-		def lookupAcct = new LookupAccount();
-		def app = [items:[]];
-		def subitems = [];
-
-		res.billitems.each {
-			def m = [:];
-			m.item =  lookupAcct.findAccount( it.account );
-			m.amount = it.amount;
-			m.amtpaid = 0.0;
-			m.balance = it.amount;
-			m.dynamic = it.dynamic;
-			m.txntype = it.txntype;
-			app.items << m;
-		};
-
-		def dd = facts.find{ it instanceof DueDate } ;
-		app.duedate = dd?.date;
-		return app;
+			return app;
+		}
 	}
 
 	@ProxyMethod

@@ -1,5 +1,5 @@
 <schema adapter="vehicledb">
-	<element tablename="vehicle_tricycle" extends="vehicle">
+	<element tablename="vehicle_account_tricycle" extends="vehicle_account">
 		<field name="objid" primary="true" prefix="VMTOP"/>
 		<field name="plateno" required="true"/>
 		<field name="engineno" required="true"/>

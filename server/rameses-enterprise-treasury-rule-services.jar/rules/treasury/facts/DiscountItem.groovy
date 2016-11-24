@@ -2,9 +2,9 @@ package rules.treasury.facts;
 
 import java.util.*;
 
-class DiscountItem extends SubBillItem {
+class DiscountItem extends BillSubItem {
 
 	String txntype = "discount";
-
+	int sortorder = 300;
 
 }

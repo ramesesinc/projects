@@ -2,7 +2,7 @@
 	<element tablename="vehicle_application_tricycle" extends="vehicle_application">
 		<field name="objid" primary="true" prefix="MTOPAPP" />
 
-		<complex name="vehicle" ref="vehicle_application_fee" jointype="many-to-one" required="true" 
+		<complex name="vehicle" ref="vehicle_account_tricycle" jointype="many-to-one" required="true" 
 			includefields="plateno,engineno,bodyno,sidecarno,make,model,color">
 			<key field="vehicleid" target="objid" />
 		</complex>

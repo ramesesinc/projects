@@ -23,24 +23,39 @@ class SummarizeBillItem implements RuleActionHandler {
 		def billitems = ct.result.billitems;
 		def facts = ct.facts;
 
-		def z = billitems.find{ (it instanceof SummaryBillItem) && it.account.objid == billitem.account.objid  };
-		if( !z ) {
-			def obj = new SummaryBillItem();
-			obj.items << billitem;
+		def obj = billitems.find{ (it instanceof SummaryBillItem) && it.account.objid == billitem.account.objid  };
+		if( !obj ) {
+			obj = new SummaryBillItem();
 			obj.account = billitem.account;
 			obj.aggtype = aggtype;
-
-			//remove items
-			billitems.remove( billitem );
-			facts.remove( billitem );
-			drools.retract( billitem );
-
+			obj.dynamic = billitem.dynamic;
 			billitems << obj;			
 			facts << obj;
 		}
-		else {
-			z.items << billitem;
+		
+		obj.items << billitem;
+
+		//Calculate the amount 
+		if(aggtype =="SUM" ) {
+			obj.amount = obj.items.sum{ it.amount };
 		}
+		else if( aggtype == "COUNT") {
+			obj.amount = obj.items.size();
+		}
+		else if( aggtype == "AVG" ) {
+			obj.amount = obj.items.sum{ it.amount } / obj.items.size();
+		}
+		else if( aggtype == "MIN" ) {
+			obj.amount = obj.items.min{ it.amount };
+		}
+		else if( aggtype == "MAX" ) {
+			obj.amount = obj.items.max{ it.amount };
+		}
+
+		//remove the billitem in the main facts and billitems
+		billitems.remove( billitem );
+		facts.remove( billitem );
+		drools.retract( billitem );		
 	}
 
 }

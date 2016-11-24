@@ -26,6 +26,9 @@ public class AskVariableInfoModel {
         if(!ruleExecutor) throw new Exception("ruleExecutor is required in AskInfoModel");
         if(!resultHandler) throw new Exception("resultHandler is required in AskInfoModel");
         defaultInfos = params.defaultinfos;
+        if(!infos)throw new Exception("infos is required in AskInfoModel");
+        infoStack.clear();
+        infoStack.push(infos)
         buildFormInfos();
     }
 

@@ -25,18 +25,66 @@ class VehicleApplicationService {
 	@Service("RuleExecutorService")
 	def ruleSvc;
 
+	private def createInfoFact(  def o ) {
+		def type = new VariableInfoType(objid:o.name, name: o.caption);
+		if(o.datatype == 'decimal') {
+			return new DecimalInfo( type:type, value:o.value );
+		}
+		else if(o.datatype=="integer") {
+			return new IntegerInfo( type:type, value:o.value );
+		}
+		else if(o.datatype=="string") {
+			return new StringInfo( type:type, value:o.value );
+		}
+		else if(o.datatype=="boolean") {
+			return new BooleanInfo( type:type, value:o.value );
+		}
+	}
+
 	@ProxyMethod
 	public def assess( def o ) {
 		if(!o.vehicletype) throw new Exception("vehicletype is required in VehicleAssessmentService.assess")
 		def svrDate = dateSvc.getServerDate();
 		if(!o.billdate) o.billdate = svrDate;
-		def facts = [];
-		//facts << new Payment( amount: 300 );
-		facts << new VehicleApplication( apptype: o.apptype, vehicletype: o.vehicletype );
-		facts << new SystemDate(svrDate);
-		facts << new BillDate(svrDate);
+		if(!o.dtfiled) o.dtfiled = svrDate;
 
-		def res = ruleSvc.execute( "vehiclebilling", facts, null, null );
+		//build facts
+		def facts = [];
+		if(o.payment) facts << new Payment( amount: o.payment );
+
+		facts << new VehicleApplication( apptype: o.apptype, vehicletype: o.vehicletype );
+		facts << new AppDate( o.dtfiled );
+		facts << new BillDate(o.billdate);
+		facts << new SystemDate(svrDate);
+
+		if(o.infos) {
+			println "adding info facts"
+			o.infos.each {
+				println it;
+				facts << createInfoFact(it);
+			}
+		}
+
+		def hdlr = { grpname ->
+			if( RuleExecutionContext.currentContext.result.askinfos ) return false;
+			return true;
+		}
+		def res = ruleSvc.execute( "vehiclebilling", facts, null, hdlr );
+
+		//if there are askinfos, return immediately to client.
+		if(res.askinfos) {
+			println "yes has ask infos....";
+			def askinfos = [];
+			res.askinfos.each {
+				def m =[:]; 
+				m.datatype = it.datatype;
+				m.caption = it.type.name;
+				m.name = it.type.objid;
+				m.value = it.value;
+				askinfos << m;		
+			}
+			return [askinfos: askinfos];
+		}
 
 		//after executing display the items
 		def lookupAcct = new LookupAccount();
@@ -49,6 +97,8 @@ class VehicleApplicationService {
 			m.amount = it.amount;
 			m.amtpaid = 0.0;
 			m.balance = it.amount;
+			m.dynamic = it.dynamic;
+			m.txntype = it.txntype;
 			app.items << m;
 		};
 

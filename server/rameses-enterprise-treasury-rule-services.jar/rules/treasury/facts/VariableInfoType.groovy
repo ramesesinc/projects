@@ -1,8 +1,8 @@
 package rules.treasury.facts;
 
-class InfoType {
+class VariableInfoType {
 	
 	String objid;
-	String title;
+	String name;
 
 }

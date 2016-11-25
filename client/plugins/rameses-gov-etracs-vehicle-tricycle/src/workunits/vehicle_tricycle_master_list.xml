@@ -1,0 +1,7 @@
+<workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" schemaName="vehicle_account_tricycle">
+    <invokers>
+        <invoker folderid="/home/vehicle/tricycle"
+            caption="Vehicle Master List" action="init" index="-1"
+            cols="acctno,owner.name,plateno,engineno,bodyno"/>
+    </invokers>
+</workunit>

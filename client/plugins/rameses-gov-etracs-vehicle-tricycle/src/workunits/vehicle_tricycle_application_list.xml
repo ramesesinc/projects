@@ -1,9 +1,7 @@
 <workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" schemaName="vehicle_application_tricycle">
     <invokers>
         <invoker folderid="/home/vehicle/tricycle" 
-            caption="Applications" action="init" index="-1"
-            cols="appno,apptype,owner.name,particulars,plateno"/>
-        
+            caption="MTOP Application List" action="init" index="-1"
+            cols="appno,apptype,owner.name,vehicle.plateno,vehicle.engineno,vehicle.bodyno"/>
     </invokers>
-    <code class="com.rameses.gov.etracs.vehicle.models.VehicleApplicationList" />
 </workunit>

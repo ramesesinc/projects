@@ -2,10 +2,10 @@
            schemaName="vehicle_application_tricycle">
     <invokers>
         <!-- Tricycle Menus -->
-        <invoker folderid="/home/vehicle/tricycle" caption="New" action="create" />
-        <invoker folderid="/home/vehicle/tricycle" caption="Renew" action="renew" />
-        <invoker folderid="/home/vehicle/tricycle" caption="Change Owner" action="changeOwner" />
-        <invoker folderid="/home/vehicle/tricycle" caption="Change Motor" action="changeMotor" />
+        <invoker folderid="/home/vehicle/tricycle" caption="New MTOP Application" action="create" />
+        <invoker folderid="/home/vehicle/tricycle" caption="MTOP Renewal" action="renew" />
+        <invoker folderid="/home/vehicle/tricycle" caption="MTOP Change Owner" action="changeOwner" />
+        <invoker folderid="/home/vehicle/tricycle" caption="MTOP Change Motor" action="changeMotor" />
         
         <!-- from applicationn list -->
         <invoker type="vehicle_application_tricycle:create" caption="New" action="create" />

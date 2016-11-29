@@ -7,6 +7,7 @@ class VehicleApplicationListInterceptor {
 	public void getNodeList(def evt) {
 		def result = evt.result;
 		result << [ title: 'Active', id:'active'];
+		result << [ title: 'For Verification', id:'forverification' ];
 		result << [ title: 'For Payment', id:'forpayment' ];
 		result << [ title: 'For Release', id:'forrelease' ];
 		result << [ title: 'Closed', id:'closed'];
@@ -25,11 +26,14 @@ class VehicleApplicationListInterceptor {
 			case 'active':
 				m.state = 'ACTIVE';
 				break;
+			case 'forverification':
+				m.state = 'FOR_VERIFICATION'
+				break;
 			case 'forpayment':
-				m.state = 'PENDING'
+				m.state = 'FOR_PAYMENT'
 				break;
 			case 'forrelease':
-				m.state = 'PAID'
+				m.state = 'FOR_RELEASE'
 				break;
 			case 'closed':
 				m.state = 'CLOSED'

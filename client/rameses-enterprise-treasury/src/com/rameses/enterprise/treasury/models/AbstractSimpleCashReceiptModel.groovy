@@ -16,29 +16,51 @@ public abstract class AbstractSimpleCashReceiptModel extends AbstractCashReceipt
     def status;   
     def payOption;
     def selectedItem;
-
-    public abstract def loadPaymentInfo(def app);
+    def txnid;
     
-    public String getPayOptionOpener() {
-        return null;
-    }
+    def _payOptions;
+    
+    public abstract def getPaymentInfo(def app);
+    public abstract String getContextName();
     
     public String getDetails() {
         return "Details";
     }
 
+    public List getPayOptions() {
+        if(_payOptions==null){
+            def list;
+            try {
+                list = Inv.lookupOpeners("simple_cashreceipt_payoption_type", [context: this])
+            }catch(e){;}
+            try {
+                def mlist = Inv.lookupOpeners("simple_cashreceipt_payoption_type_"+getContextName(), [context: this]);
+                if(mlist) list += mlist;
+            }catch(e){;}
+            _payOptions = list;
+        } 
+        return _payOptions;
+    }
+    
+    void afterLoadInfo() {;}
+    
+    void loadInfo(def p) {
+        def info = getPaymentInfo( p );
+        entity.putAll(info);
+        reloadItems(); 
+        afterLoadInfo();
+    }
+    
     void init() {
         def o = MsgBox.prompt("Enter Transaction No");
         if(!o) throw new BreakException();
-        def info = loadPaymentInfo( [id: o] );
-        entity.putAll(info);
-        reloadItems(); 
+        txnid = o;
+        loadInfo([id:txnid, action:'open']);
     }
     
     void loadBarcode() {
-        def info = loadPaymentInfo( [id: barcodeid] );
-        entity.putAll( info );
-        reloadItems(); 
+        txnid = barcodeid;
+        loadInfo( [id: txnid, action:'barcode'] );
     }   
     
     def getTotalAmount() {
@@ -46,12 +68,22 @@ public abstract class AbstractSimpleCashReceiptModel extends AbstractCashReceipt
     }   
     
     def showPayOption() {
-        if(getPayOptionOpener()==null) return null;
-        def h = { o->
-            payOption = o;
-            reloadItems();
+        if( getPayOptions()==null) return null;
+        def m = [:];
+        m.payOptions = getPayOptions();
+        m.onselect = { o->
+            loadInfo( [id: txnid, payment: o, action:'payoption'] );
         }
-        return Inv.lookupOpener( getPayOptionOpener(), [handler: h]);
+        return Inv.lookupOpener( "simple_cashreceipt_payoption", m);
+    }
+    
+    def resetPayOption() {
+        loadInfo( [id: txnid] );
+    }
+    
+    public void validateBeforePost() {
+        if( entity.balancedue !=  0 )
+            throw new Exception("Amount must be equal to amount paid");
     }
     
     void reloadItems() {

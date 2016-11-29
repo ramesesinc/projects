@@ -1,0 +1,13 @@
+<workunit>
+    <invokers>
+        <invoker type="vehicle_type_handler:tricycle" />
+    </invokers>
+    <code>
+        class TricycleHandler {
+            def entity;
+        }
+    </code>
+    <pages>
+        <page template="com.rameses.gov.etracs.vehicle.tricycle.views.TricycleInfoPanel" />
+    </pages>
+</workunit>

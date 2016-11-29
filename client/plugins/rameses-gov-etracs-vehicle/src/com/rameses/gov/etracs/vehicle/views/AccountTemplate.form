@@ -246,7 +246,9 @@
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="1" attributes="0">
-                      <EmptySpace pref="386" max="32767" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="xButton2" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace pref="325" max="32767" attributes="0"/>
                       <Component id="xFormPanel2" min="-2" pref="235" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
@@ -263,7 +265,10 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="1" attributes="0">
                       <EmptySpace pref="321" max="32767" attributes="0"/>
-                      <Component id="xFormPanel2" min="-2" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="xButton2" min="-2" max="-2" attributes="0"/>
+                          <Component id="xFormPanel2" min="-2" max="-2" attributes="0"/>
+                      </Group>
                       <EmptySpace min="-2" pref="59" max="-2" attributes="0"/>
                   </Group>
                   <Group type="103" rootIndex="1" groupAlignment="0" attributes="0">
@@ -305,6 +310,13 @@
                 </Component>
               </SubComponents>
             </Container>
+            <Component class="com.rameses.rcp.control.XButton" name="xButton2">
+              <Properties>
+                <Property name="immediate" type="boolean" value="true"/>
+                <Property name="name" type="java.lang.String" value="addItem" noResource="true"/>
+                <Property name="text" type="java.lang.String" value="Add"/>
+              </Properties>
+            </Component>
           </SubComponents>
         </Container>
         <Container class="com.rameses.rcp.control.XPanel" name="xPanel4">

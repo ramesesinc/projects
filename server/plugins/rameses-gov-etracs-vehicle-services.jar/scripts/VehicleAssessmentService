@@ -2,23 +2,16 @@ import com.rameses.annotations.*;
 import rules.vehicle.facts.*;
 import rules.treasury.facts.*;
 import rules.enterprise.facts.*;
-import treasury.utils.*;
 import com.rameses.annotations.*;
 import com.rameses.util.*;
 import java.rmi.server.*;
 import java.util.*;
 import com.rameses.rules.common.RuleExecutionContext;
 
-class VehicleApplicationService {
+class VehicleAssessmentService {
 	
 	@Env
 	def env;
-
-	@DataContext("vehicle_application")
-	def appEm;
-
-	@DataContext("vehicle_control")
-	def controlEm;
 
 	@Service("DateService")
 	def dateSvc;
@@ -35,11 +28,8 @@ class VehicleApplicationService {
 
 		//build facts
 		def facts = [];
-		if(o.payment) facts << new Payment( amount: o.payment );
-
 		facts << new VehicleApplication( apptype: o.apptype, vehicletype: o.vehicletype );
 		facts << new AppDate( o.dtfiled );
-		facts << new BillDate(o.billdate);
 		facts << new SystemDate(svrDate);
 
 		if(o.infos) {
@@ -54,7 +44,7 @@ class VehicleApplicationService {
 			if( RuleExecutionContext.currentContext.result.askinfos ) return false;
 			return true;
 		}
-		def res = ruleSvc.execute( "vehiclebilling", facts, null, hdlr );
+		def res = ruleSvc.execute( "vehicleassessment", facts, null, hdlr );
 
 		//if there are askinfos, return immediately to client.
 		if(res.askinfos) {
@@ -69,14 +59,6 @@ class VehicleApplicationService {
 			return app;
 		}
 	}
-
-	@ProxyMethod
-	public def post( def o ) {
-		controlEm.find( [objid: o.control.objid] ).update( [vehicleid: m.vehicleid ] );
-		return m;
-	}
-
-	
 
 
 }

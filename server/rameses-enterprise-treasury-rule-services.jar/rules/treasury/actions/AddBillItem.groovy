@@ -18,18 +18,13 @@ class AddBillItem extends AbstractAddBillItem {
 		def acct = params.account;
 		def amt = params.amount.decimalValue;
 
-		def ct = RuleExecutionContext.getCurrentContext();
-		if(!ct.result.billitems) {
-			ct.result.billitems = new LinkedHashSet<BillItem>();
-		}
-			
 		def billitem = new BillItem(amount: amt);
 		setAccountFact( acct.key, billitem );
 
 		//check first if there is already existing. If successfully added, then add to facts
-		boolean b = ct.result.billitems.add(billitem);
+		boolean b = getBillItems().add(billitem);
 		if(b) {
-			ct.facts << billitem;	
+			getFacts() << billitem;	
 		}
 	}
 

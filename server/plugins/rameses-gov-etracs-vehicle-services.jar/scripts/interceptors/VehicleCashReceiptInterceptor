@@ -41,9 +41,19 @@ class VehicleCashReceiptInterceptor {
 		m.amount = r.amount;
 		m.txnmode = 'ONLINE';
 		m.voided = 0;
-		m.items = r.items;
-		m.items.each {
-			it.parent = m;
+		m.items = [];
+		r.items.findAll{it.refid!=null}.each {
+			it.parent = [objid: m.objid];
+			if(!it.discount) it.discount = 0;
+			if(!it.surcharge) it.surcharge = 0;
+			if(!it.interest) it.interest = 0;
+			if( it.ledgertype == 'application') {
+				it.apprefid = it.refid;
+			}
+			else {
+				it.vehiclerefid = it.refid;
+			}
+			m.items << it;
 		}
 		pmtSvc.postPayment( m );
 	}

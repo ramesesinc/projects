@@ -50,6 +50,7 @@ public class AccountTemplate extends javax.swing.JPanel implements UIContentPane
         xDataTable1 = new com.rameses.rcp.control.XDataTable();
         xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
         xLabel2 = new com.rameses.rcp.control.XLabel();
+        xButton2 = new com.rameses.rcp.control.XButton();
         xPanel4 = new com.rameses.rcp.control.XPanel();
 
         xFormPanel1.setCaptionWidth(100);
@@ -306,12 +307,18 @@ public class AccountTemplate extends javax.swing.JPanel implements UIContentPane
         xLabel2.setPreferredSize(new java.awt.Dimension(0, 22));
         xFormPanel2.add(xLabel2);
 
+        xButton2.setImmediate(true);
+        xButton2.setName("addItem"); // NOI18N
+        xButton2.setText("Add");
+
         javax.swing.GroupLayout xPanel3Layout = new javax.swing.GroupLayout(xPanel3);
         xPanel3.setLayout(xPanel3Layout);
         xPanel3Layout.setHorizontalGroup(
             xPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, xPanel3Layout.createSequentialGroup()
-                .addContainerGap(386, Short.MAX_VALUE)
+                .addContainerGap()
+                .addComponent(xButton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 325, Short.MAX_VALUE)
                 .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 235, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
             .addGroup(xPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -324,7 +331,9 @@ public class AccountTemplate extends javax.swing.JPanel implements UIContentPane
             xPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, xPanel3Layout.createSequentialGroup()
                 .addContainerGap(321, Short.MAX_VALUE)
-                .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(xPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(xButton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(59, 59, 59))
             .addGroup(xPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(xPanel3Layout.createSequentialGroup()
@@ -372,6 +381,7 @@ public class AccountTemplate extends javax.swing.JPanel implements UIContentPane
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel panelContent;
     private com.rameses.rcp.control.XButton xButton1;
+    private com.rameses.rcp.control.XButton xButton2;
     private com.rameses.rcp.control.XDataTable xDataTable1;
     private com.rameses.rcp.control.XDataTable xDataTable2;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;

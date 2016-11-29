@@ -26,9 +26,27 @@ public abstract class VehicleAccountForm extends CrudFormModel {
         return entity;
     }
     
+    def addItem() {
+        def h = { o->
+            def m = [_schemaname: 'vehicle_account_fee'];
+            m.item = o.revenueitem;
+            m.amount = o.amount;
+            m.amtpaid = 0;
+            m.vehicle = [objid: entity.objid];
+            m.txntype = "fee";
+            m.sortorder = 100;
+            persistenceService.create( m );
+            feeListModel.reload();
+        }
+        Modal.show("revenueitem_entry:create", [handler: h ] );
+    }
+    
     def feeListModel = [
         fetchList: { o->
-            return entity.fees;
+            def m = [_schemaname: 'vehicle_account_fee'];
+            m.findBy = [ vehicleid: entity.objid ]; 
+            //m.where = ["amount-amtpaid > 0"];
+            return queryService.getList(m); 
         }
     ] as BasicListModel;
     

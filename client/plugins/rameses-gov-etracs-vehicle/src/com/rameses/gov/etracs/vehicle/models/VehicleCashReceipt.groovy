@@ -16,8 +16,13 @@ public class VehicleCashReceipt extends AbstractSimpleCashReceiptModel {
      String entityName = "misc_cashreceipt";
      String title = "Vehicle Registration";
     
-     public def loadPaymentInfo( def app ) {
+     public String getContextName() {
+         return "vehicle";
+     }
+    
+     public def getPaymentInfo( def app ) {
          return cashReceiptSvc.getInfo( app );
      }
           
+    
 }

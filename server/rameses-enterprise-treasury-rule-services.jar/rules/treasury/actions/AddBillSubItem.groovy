@@ -31,9 +31,8 @@ class AddBillSubItem extends AbstractAddBillItem {
 
 		//add to facts so it can be evaluated...
 		if(b) {
-			def ct = RuleExecutionContext.getCurrentContext();
-			ct.result.billitems << subItem;
-			ct.facts << subItem;	
+			getBillItems() << subItem;
+			getFacts() << subItem;	
 		}
 	}
 

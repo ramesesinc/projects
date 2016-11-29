@@ -82,6 +82,7 @@ public class AskVariableInfoModel {
     }
     
     def doCancel() {
+        resultHandler(null);
         return "_close";
     }
     

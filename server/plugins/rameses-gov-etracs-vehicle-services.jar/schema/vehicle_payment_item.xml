@@ -4,7 +4,8 @@
 		<complex name="parent" ref="vehicle_payment" jointype="many-to-one">
 			<key field="parentid" target="objid" />
 		</complex>	
-		<field name="refid" required="false"/>
+		<field name="apprefid" required="false"/>
+		<field name="vehiclerefid" required="false"/>
 		<field name="item_objid" required="true" />
 		<field name="item_code" required="true" />
 		<field name="item_title" required="true" />

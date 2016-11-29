@@ -24,7 +24,7 @@ public class RuleProcessor {
     public def execute(def params) {
         if(params == null) throw new Exception("params is required in RuleExecutor"); 
         def result = ruleExecutor(params);
-        if( result.askinfos ) {
+        if( result?.askinfos ) {
             def p = [:];
             p.params = params;
             p.infos = result.askinfos;

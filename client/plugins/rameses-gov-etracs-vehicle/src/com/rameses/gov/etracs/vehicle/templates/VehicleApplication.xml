@@ -1,7 +1,7 @@
 <workunit>
     <invokers>
         <invoker type="formActions" caption="Assess" action="assess" />
-        <invoker type="formActions" caption="Submit" action="save" />
+        <invoker type="formActions" caption="Submit" action="saveCreate" />
         <invoker type="formActions" caption="Post" action="post" />
     </invokers>
 </workunit>

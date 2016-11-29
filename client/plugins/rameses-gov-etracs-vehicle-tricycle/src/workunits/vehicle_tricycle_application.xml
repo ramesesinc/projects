@@ -1,21 +1,14 @@
-<workunit  extends="com/rameses/gov/etracs/vehicle/templates/VehicleApplication.xml" 
-           schemaName="vehicle_application_tricycle">
+<workunit schemaName="vehicle_application_tricycle" vehicletype="tricycle">
     <invokers>
-        <!-- Tricycle Menus -->
-        <invoker folderid="/home/vehicle/tricycle" caption="New MTOP Application" action="create" />
-        <invoker folderid="/home/vehicle/tricycle" caption="MTOP Renewal" action="renew" />
-        <invoker folderid="/home/vehicle/tricycle" caption="MTOP Change Owner" action="changeOwner" />
-        <invoker folderid="/home/vehicle/tricycle" caption="MTOP Change Motor" action="changeMotor" />
-        
-        <!-- from applicationn list -->
-        <invoker type="vehicle_application_tricycle:create" caption="New" action="create" />
-        <invoker type="vehicle_application_tricycle:open" caption="Application" action="open" />
-        
-        <invoker type="formAction" caption="Change Owner" action="changeOwner" />
-        <invoker type="formAction" caption="Change Motor" action="changeMotor" />
+        <invoker type="vehicle_application_tricycle:open" caption="Vehicle Application" action="open" />
+        <!--
+        <invoker type="global:barcode:51010" caption="Vehicle Application" 
+            action="openBarcode" 
+            target="window" expr="#{barcodeid.startsWith('WA')}" />
+        -->
     </invokers>
-    <code class="com.rameses.gov.etracs.vehicle.tricycle.models.TricycleApplicationForm" />
+    <code class="com.rameses.gov.etracs.vehicle.models.VehicleApplicationForm"/>
     <pages>
-        <page template="com.rameses.gov.etracs.vehicle.tricycle.views.TricycleApplicationPage" />
+        <page template="com.rameses.gov.etracs.waterworks.views.ApplicationFormPage"/>
     </pages>
 </workunit>

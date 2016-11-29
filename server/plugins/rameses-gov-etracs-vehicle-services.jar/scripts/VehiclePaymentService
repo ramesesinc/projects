@@ -13,21 +13,33 @@ class VehiclePaymentService {
 	@DataContext("vehicle_payment")
 	def pmtEm;
 
+	@DataContext("vehicle_payment_item")
+	def pmtItemEm;
+
 	@DataContext("vehicle_application")
 	def appEm;
 
 	@DataContext("vehicle_application_fee")
 	def appFeeEm;
 
+	@DataContext("vehicle_account_fee")
+	def vehicleFeeEm;
+
 	@ProxyMethod
 	public def postPayment( def m) {
 		pmtEm.create( m );
-		m.items.each {
-			appFeeEm.find( [objid: it.refid ] ).update( [amtpaid: '{amtpaid+:amtpaid}' ], [amtpaid: it.amount + it.discount ] );
+		m.items.findAll{ it.apprefid }.each {
+			appFeeEm.find( [objid: it.apprefid ] ).update( [amtpaid: '{amtpaid+:amtpaid}' ], [amtpaid: it.amount + it.discount ] );
 		}
-		def total = appFeeEm.select( "total:{SUM( amount-amtpaid )}" ).find( [appid: m.appid ] ).val();
-		if(total == 0) {
-			appEm.find( [objid:m.appid ] ).update( [state:'PAID', amtpaid: '{amtpaid+:amtpaid}' ], [amtpaid: m.amount] );
+		m.items.findAll{ it.vehiclerefid }.each {
+			vehicleFeeEm.find( [objid: it.vehiclerefid ] ).update( [amtpaid: '{amtpaid+:amtpaid}' ], [amtpaid: it.amount + it.discount ] );
+		}
+
+		if(m.appid) {
+			def total = appFeeEm.select( "total:{SUM( amount-amtpaid )}" ).find( [appid: m.appid ] ).val();
+			if(total == 0) {
+				appEm.find( [objid:m.appid ] ).update( [state:'FOR_RELEASE' ] );
+			}
 		}
 	}
 
@@ -36,12 +48,20 @@ class VehiclePaymentService {
 		def r = pmtEm.find( [refid: o.objid] ).first();
 		//check first the status of the application
 		def status = appEm.find( [objid:r.appid ] ).select("state").val();
-		if(! status.equalsIgnoreCase('PAID') )	
-			throw new Exception('Transaction cannot be voided because the application status is ' + status  );
-		r.items.each {
-			appFeeEm.find( [objid: it.refid ] ).update( [amtpaid: '{amtpaid-:amtpaid}' ], [amtpaid: it.amount + it.discount ] );
+		if(status.matches('CLOSED') )	
+			throw new Exception('Transaction cannot be voided because the application is already closed'  );
+			
+		def pmtitems = pmtItemEm.find( [parentid: r.objid] ).list();
+
+		pmtitems.each {
+			if(it.apprefid) {
+				appFeeEm.find( [objid: it.apprefid ] ).update( [amtpaid: '{amtpaid-:amtpaid}' ], [amtpaid: it.amount + it.discount ] );
+			}
+			else if( it.vehiclerefid) {
+				vehicleFeeEm.find( [objid: it.vehiclerefid ] ).update( [amtpaid: '{amtpaid-:amtpaid}' ], [amtpaid: it.amount + it.discount ] );
+			}
 		}
-		appEm.find( [objid:r.appid ] ).update( [state:'PENDING', amtpaid: '{amtpaid-:amtpaid}' ], [amtpaid: r.amount] );
+		appEm.find( [objid:r.appid ] ).update( [state:'FOR_PAYMENT'] );
 		pmtEm.find([objid: r.objid] ).update( [voided: 1]);
 	}
 

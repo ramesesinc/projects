@@ -5,7 +5,6 @@ import vehicle.facts.*;
 import treasury.facts.*;
 import treasury.actions.*;
 import com.rameses.util.*;
-import treasury.utils.*;
 
 /**********************************************************
 * This service handles computation of what fees to charge 
@@ -18,86 +17,66 @@ class VehicleCashReceiptService {
 	@DataContext("vehicle_application_fee")
 	def feeEm;
 
+	@DataContext("vehicle_account_fee")
+	def acctFeeEm;
+
+	@DataContext("revenueitem")
+	def revEm;
+
 	@DataContext(dynamic=true)
 	def em;
 
-	@Service("RuleExecutorService")
-	def ruleSvc;
+	@Service("VehicleBillingService")
+	def billingSvc;
 
 	@Service("DateService")
 	def dateSvc;
 
 	@ProxyMethod
-	public def getBilling( def o ) {
+	public def getInfo( def o ) {
+		if(!o.id) throw new Exception("id is required in VehicleCashReceiptService.getInfo");
 
-		def xx = appEm.find( [appno: o.appno] ).first();
-		if( xx.amount - xx.amtpaid <= 0 )
-			throw new Exception("This application is already paid");
 
-		def app = em.lookup( xx.txntype.toLowerCase() + '_vehicle_application' ).find([objid: xx.objid]).first();
-		if(!app) throw new Exception("App " + o.appno + " not found!");
+		//find application...
+		def app = appEm.find( [appno: o.id] ).first();
+		if(!app) throw new Exception("Vehicle application not found!");
+		if(app.state!='FOR_PAYMENT') throw new Exception("Application state must be for payment");
 
-		def e = [:];
-		e.payer = [objid: app.owner.objid, name: app.owner.name ];
-        e.paidby = app.owner.name + ' ['+app.appno+']';
-        e.appno = app.appno;
-        e.appid = app.objid;
-        e.paidbyaddress = app.owner?.address?.text;
-		e.items = [];
+		def fees = feeEm.find( [appid: app.objid] ).where("amount - amtpaid > 0").list();
+		if( !fees )
+			throw new Exception("There are no unpaid items");
+		fees.each { 
+			it.ledgertype = 'application'; 
+			it.principal = it.amount;
+			it.amount = (it.amount - it.amtpaid);
+		}	
 
-		def dt = dateSvc.getServerDate();
-        def items = feeEm.select("item.objid,refid:{objid},amount").find( [appid: app.objid ]).list();
-		def facts = [];
-		facts << new treasury.facts.BillDate(dt);
-		facts << new CurrentDate(dt);
-		facts << new VehicleApplication( apptype: app.apptype , appdate: app.appdate, txntype:app.txntype?.objid );
-		items.each {
-			facts << new BillItem( account: it.item, amount: it.amount, txntype: 'fee', refid: it.objid );
-		};
-		ruleSvc.execute( "vehiclebilling", facts, null, null );
-
-		//extract the bill items 
-		def billItems = facts.findAll { it instanceof BillItem };
-
-		def lookupAcct = new LookupAccount();
-		billItems.each {
-			def mm = [:];
-			mm.item = lookupAcct.findAccount([objid:it.account.objid]);
-			mm.amount = it.amount;
-			mm.refid = it.refid;
-			mm.surcharge = it.surcharge;
-			mm.interest = it.interest;
-			mm.discount = it.discount;
-			e.items << mm;
-		};
-
-		def surGrp = billItems.findAll{ it.surcharge > 0 }.groupBy{ it.surchargeAccount };
-		surGrp.each { k,v->
-			def mm = [:];
-			mm.item = lookupAcct.findAccount([objid:k.objid]);
-			mm.amount = v.sum{ it.surcharge };
-			e.items << mm;
-		}
-		def intGrp = billItems.findAll{ it.interest > 0 }.groupBy{ it.interestAccount };
-		intGrp.each { k,v->
-			def mm = [:];
-			mm.item = lookupAcct.findAccount([objid:k.objid]);
-			mm.amount = v.sum{ it.interest };
-			e.items << mm;
-		}
-		def discGrp = billItems.findAll{ it.discount > 0 }.groupBy{ it.discountAccount };
-		discGrp.each { k,v->
-			def mm = [:];
-			mm.item = lookupAcct.findAccount([objid:k.objid]);
-			mm.amount = v.sum{ it.discount }*-1;
-			e.items << mm;
+		def vEm = em.lookup( "vehicle_application_" + app.vehicletype )
+		def vehicle = vEm.select("vehicleid").find([objid: app.objid]).first();
+		def vfees = acctFeeEm.find( [vehicleid: vehicle.vehicleid] ).where( "amount - amtpaid > 0 ").list();
+		vfees.each {
+			it.ledgertype = 'vehicle'; 
+			it.principal = it.amount;
+			it.amount = (it.amount - it.amtpaid);
+			fees << it;
 		}
 
-        //run the billing service after....
-		e.amount = NumberUtil.round( e.items.sum{ it.amount } );
-		return e;
+		//run the billing here...
+		def p = [:];
+		p.putAll(o);	
+		p.application = [apptype: app.apptype, vehicletype: app.vehicletype];
+		p.billitems = fees;
+		def res = billingSvc.process(p);
+
+		def entity = [:];
+		entity.payer = app.owner;
+		entity.appid = app.objid;
+		entity.vehicletype = app.vehicletype;
+		entity.paidby = app.owner.name;
+		entity.paidbyaddress = app.owner.address?.text; 	
+		entity.particulars = app.particulars;
+		entity.items = res.billitems.collect{ it.toMap() };
+		return entity;
 	}
-
-
 
 }

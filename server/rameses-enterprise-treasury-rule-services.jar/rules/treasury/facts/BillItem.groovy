@@ -5,6 +5,7 @@ import java.util.*;
 class BillItem extends AbstractBillItem {
 
 	String refid;
+	String ledgertype;
 	
 	LinkedHashSet<BillSubItem> items = new LinkedHashSet<BillSubItem>();
 
@@ -19,6 +20,10 @@ class BillItem extends AbstractBillItem {
 	public def toMap() {
 		def m = super.toMap();
 		m.refid = refid;
+		m.ledgertype = ledgertype;
+		items.each {
+			m.put(it.txntype, it.amount);
+		}
 		return m;
 	}
 

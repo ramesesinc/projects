@@ -3,13 +3,14 @@
 		<field name="objid" primary="true" prefix="MTOPAPP" />
 
 		<complex name="vehicle" ref="vehicle_account_tricycle" jointype="many-to-one" required="true" 
-			includefields="plateno,engineno,bodyno,sidecarno,make,model,color">
+			includefields="acctno,plateno,engineno,bodyno,sidecarno,make,model,color">
 			<key field="vehicleid" target="objid" />
 		</complex>
 		
 		<complex name="fees" ref="vehicle_application_fee" jointype="one-to-many">
 			<key field="objid" target="appid" />
 		</complex>
+
 
 	</element>
 </schema>

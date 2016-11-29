@@ -78,13 +78,43 @@ class RPTCertificationLandService
 		}
 
 		if (list) {
+			buildImprovementInfo(list)
 			return list 
 		}
 		if (cert.faasid){
 			return em.getFaasInfo(cert)
 		}
-		return []
-		
+	}
+
+
+	void buildImprovementInfo(list){
+		def infos = []
+		list.each{
+			if ('bldg'.equalsIgnoreCase(it.rputype)){
+				infos = em.getBldgInfos(it).each{bi-> bi.info = bi.bldgtype + ' - ' + bi.bldgkind.name}
+				if (infos){
+					it.description = infos.info.join(',')
+				}
+			}
+			else if ('mach'.equalsIgnoreCase(it.rputype)){
+				infos = em.getMachInfos(it)
+				if (infos){
+					it.description = infos.machine.name.join(',')
+				}
+			}
+			else if ('planttree'.equalsIgnoreCase(it.rputype)){
+				infos = em.getPlantTreeInfos(it)
+				if (infos){
+					it.description = infos.planttree.name.join(',')
+				}
+			}
+			else if ('misc'.equalsIgnoreCase(it.rputype)){
+				infos = em.getMiscInfos(it)
+				if (infos){
+					it.description = infos.miscitem.name.join(',')
+				}
+			}
+		}
 	}
 
 	def getItems(cert){

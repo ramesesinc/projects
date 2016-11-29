@@ -9,3 +9,7 @@ create table memoranda_template
 
 
 
+alter table rpu_assessment alter column classification_objid varchar(50)  null;
+alter table rpu_assessment alter column actualuse_objid varchar(50)  null;
+
+

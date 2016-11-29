@@ -50,7 +50,7 @@ class ImprovementController extends com.rameses.gov.etracs.rpt.workflow.BasicInf
         ]},
                 
         validate : { li ->
-            RPTUtil.required('Code', li.item.planttreeunitvalue );
+            RPTUtil.required('Plant/Tree', li.item.planttreeunitvalue );
             RPTUtil.required('Actual Use', li.item.actualuse );
             RPTUtil.required('Productive', li.item.productive);
             RPTUtil.required('Non-Productive', li.item.nonproductive);

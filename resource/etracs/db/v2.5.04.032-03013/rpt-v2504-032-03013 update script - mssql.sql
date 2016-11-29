@@ -8,3 +8,8 @@ create table memoranda_template
 )
 go 
 
+
+alter table rpu_assessment alter column classification_objid varchar(50)  null
+go 
+alter table rpu_assessment alter column actualuse_objid varchar(50)  null
+go 

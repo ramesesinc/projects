@@ -186,7 +186,7 @@ public class LandAssessmentRuleService
 		def adjustmentrate = 0.0
 	    
 		// get total basemarketvalue for agrilands only 
-		def agrilands 		  = rpu.landdetails.findAll{ it.actualuse.code.matches('A|AA|AGR') || it.actualuse.name.matches('AGRICULTURAL')}
+		def agrilands 		  = rpu.landdetails.findAll{ it.actualuse && (it.actualuse.code.matches('A|AA|AGR') || it.actualuse.name.matches('AGRICULTURAL'))}
 		def totallandbmv 	  = agrilands.basemarketvalue.sum()
 		def totalvalueadj     = 0.0 
 		def totalactualuseadj = 0.0 

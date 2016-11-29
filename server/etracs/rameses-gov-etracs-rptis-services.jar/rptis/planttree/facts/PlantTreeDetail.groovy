@@ -29,8 +29,8 @@ public class PlantTreeDetail
         this.rpu = rpufact 
         this.entity = ptd;
         ptd.assesslevel = ptd.actualuse?.rate 
-        this.actualuseid = ptd.actualuse.objid
-        this.classificationid = ptd.actualuse.classification.objid
+        this.actualuseid = ptd.actualuse?.objid
+        this.classificationid = ptd.actualuse?.classification?.objid
         this.productive = ptd.productive
         this.nonproductive = ptd.nonproductive
         this.areacovered = ptd.areacovered

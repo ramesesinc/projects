@@ -17,6 +17,7 @@ from (
 		INNER JOIN rpu r ON f.rpuid = r.objid 
 		INNER JOIN realproperty rp ON f.realpropertyid = rp.objid
 		INNER JOIN propertyclassification pc ON r.classification_objid = pc.objid 
+		INNER JOIN barangay b ON rp.barangayid = b.objid 
 	WHERE ${filter}
     and f.state = $P{state}
 		AND r.taxable = 1 
@@ -33,7 +34,8 @@ from (
 	FROM faas f
 		INNER JOIN rpu r ON f.rpuid = r.objid 
 		INNER JOIN realproperty rp ON f.realpropertyid = rp.objid
-		INNER JOIN exemptiontype e ON r.exemptiontype_objid = e.objid 
+		LEFT JOIN exemptiontype e ON r.exemptiontype_objid = e.objid 
+		INNER JOIN barangay b ON rp.barangayid = b.objid 
 	WHERE ${filter}
     and f.state = $P{state}
 		AND r.taxable = 0

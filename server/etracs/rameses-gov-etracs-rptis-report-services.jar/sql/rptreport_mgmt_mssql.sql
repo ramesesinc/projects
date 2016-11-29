@@ -155,7 +155,7 @@ from (
 
 	select 
 		'03.Consolidation' as type,
-		c.txntype_objid,
+		'CS' as txntype_objid,
 		st.assignee_name as assignee, 
 		sn.idx,
 		sn.title as state,
@@ -168,7 +168,6 @@ from (
 	and year(st.startdate) = $P{year}
 	and month(st.startdate) = $P{monthid}
 	group by 
-		c.txntype_objid,
 		st.assignee_name,
 		sn.idx,
 		sn.title

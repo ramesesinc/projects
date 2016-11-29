@@ -87,7 +87,7 @@ class FaasServiceInterceptor
 	public void initUknownToKnown( evt ) {
 		def faas = evt.result 
 		if (!faas.owner || !faas.owner.name || !faas.owner.name.toLowerCase().matches('.*unknown.*')){
-			throw new Exception('Unable to process this property. Property owner must by UNKNOWN.')
+			throw new Exception('Unable to process this property. Property owner must be UNKNOWN.')
 		}
 	}
 

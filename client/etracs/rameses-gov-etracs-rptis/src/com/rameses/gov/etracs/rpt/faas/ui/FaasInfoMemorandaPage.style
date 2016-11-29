@@ -1,13 +1,13 @@
-"entity.*"  [allowEdit == true] {
+"entity.*|memorandatemplate"  [allowEdit == true] {
     enabled:true;
 }
 
-"entity.*"  [allowEdit == false] {
+"entity.*|memorandatemplate"  [allowEdit == false] {
     enabled:false;
 }
 
 
 
-"entity.*"  [entity._resolve == true] {
+"entity.*|memorandatemplate"  [entity._resolve == true] {
     enabled:false;
 }

@@ -5,6 +5,7 @@
 - BPLS 
 		
 - ASSESSOR	
+	- NEW! Memoranda Template support
 	- Modify PIN update (naga)
 
 - LANDTAX

@@ -18,7 +18,18 @@ import com.rameses.osiris2.common.*
 
 class MemorandaController extends com.rameses.gov.etracs.rpt.workflow.BasicInfoController
 {
+    @Binding
+    def binding;
     
+    def getLookupTemplate(){
+        return Inv.lookupOpener('memorandatemplate:lookup', [
+            
+            onselect : { 
+                entity.memoranda = it.template;
+                binding.refresh('entity.memoranda');
+            },
+        ])
+    }
 }    
     
 ]]>        

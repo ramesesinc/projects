@@ -268,9 +268,9 @@
 				</textField>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="603"
+						x="604"
 						y="116"
-						width="179"
+						width="178"
 						height="25"
 						key="textField-33"/>
 					<box leftPadding="5" rightPadding="5">					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -773,7 +773,7 @@ RPU]]></text>
 						width="26"
 						height="14"
 						key="textField-35"/>
-					<box leftPadding="1" rightPadding="1">					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<box rightPadding="1">					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid"/>
 					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
@@ -781,7 +781,7 @@ RPU]]></text>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Tahoma" size="7"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{preceedingtaxablecount} ]]></textFieldExpression>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{preceedingtaxablecount}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -798,7 +798,7 @@ RPU]]></text>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Tahoma" size="7"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{preceedingtaxableav}]]></textFieldExpression>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{preceedingtaxableav} ]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -807,7 +807,7 @@ RPU]]></text>
 						width="26"
 						height="14"
 						key="textField-37"/>
-					<box rightPadding="3">					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<box rightPadding="1">					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid"/>
 					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
@@ -841,7 +841,7 @@ RPU]]></text>
 						width="26"
 						height="14"
 						key="textField-39"/>
-					<box rightPadding="3">					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<box rightPadding="1">					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid"/>
 					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
@@ -875,7 +875,7 @@ RPU]]></text>
 						width="26"
 						height="14"
 						key="textField-41"/>
-					<box rightPadding="3">					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<box rightPadding="1">					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid"/>
 					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
@@ -909,7 +909,7 @@ RPU]]></text>
 						width="26"
 						height="14"
 						key="textField-43"/>
-					<box rightPadding="3">					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<box rightPadding="1">					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid"/>
 					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
@@ -943,7 +943,7 @@ RPU]]></text>
 						width="26"
 						height="14"
 						key="textField-45"/>
-					<box rightPadding="3">					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<box rightPadding="1">					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid"/>
 					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
@@ -977,7 +977,7 @@ RPU]]></text>
 						width="26"
 						height="14"
 						key="textField-47"/>
-					<box rightPadding="3">					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<box rightPadding="1">					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid"/>
 					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
@@ -1011,7 +1011,7 @@ RPU]]></text>
 						width="26"
 						height="14"
 						key="textField-49"/>
-					<box rightPadding="3">					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<box rightPadding="1">					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid"/>
 					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>

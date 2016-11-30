@@ -6,10 +6,11 @@ select
 	sum(case when r.taxable = 1 then ${valuefield} else 0 end) as pretaxvalue,
 	sum(case when r.taxable = 0 then 1 else 0 end) as preexemptcnt,
 	sum(case when r.taxable = 0 then ${valuefield} else 0 end) as preexemptvalue
-from faas f 
-	inner join rpu r on f.rpuid = r.objid 
-	inner join realproperty rp on f.realpropertyid = rp.objid 
-	inner join barangay b on rp.barangayid = b.objid 
+FROM faas f
+	INNER JOIN rpu r ON f.rpuid = r.objid 
+	INNER JOIN realproperty rp ON f.realpropertyid = rp.objid
+	INNER JOIN propertyclassification pc ON r.classification_objid = pc.objid 
+	INNER JOIN barangay b ON rp.barangayid = b.objid 
 where f.state = 'CURRENT'
 and (f.year < $P{year} or (f.year = $P{year} and f.month < $P{monthid}))
 group by b.objid, b.name 
@@ -27,6 +28,7 @@ from faas f
 	inner join rpu r on f.rpuid = r.objid 
 	inner join realproperty rp on f.realpropertyid = rp.objid 
 	inner join barangay b on rp.barangayid = b.objid 
+	INNER JOIN propertyclassification pc ON r.classification_objid = pc.objid 
 where f.state = 'CURRENT'
 and f.year = $P{year} 
 and f.month = $P{monthid}
@@ -46,9 +48,10 @@ from faas f
 	inner join rpu r on f.rpuid = r.objid 
 	inner join realproperty rp on f.realpropertyid = rp.objid 
 	inner join barangay b on rp.barangayid = b.objid 
+	INNER JOIN propertyclassification pc ON r.classification_objid = pc.objid 
 where f.state = 'CANCELLED'
-and f.year = $P{year} 
-and f.month = $P{monthid}
+and f.cancelledyear = $P{year} 
+and f.cancelledmonth = $P{monthid}
 group by b.objid, b.name 
 
 
@@ -64,6 +67,7 @@ from faas f
 	inner join rpu r on f.rpuid = r.objid 
 	inner join realproperty rp on f.realpropertyid = rp.objid 
 	inner join barangay b on rp.barangayid = b.objid 
+	INNER JOIN propertyclassification pc ON r.classification_objid = pc.objid 
 where f.state = 'CURRENT'
 and (f.year < $P{year} or (f.year = $P{year} and f.month <= $P{monthid}))
 group by b.objid, b.name 

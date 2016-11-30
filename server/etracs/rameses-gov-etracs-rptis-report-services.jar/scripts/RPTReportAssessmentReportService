@@ -51,7 +51,6 @@ class RPTReportAssessmentReportService
 			def brgy = brgys.find{it.objid == v.objid }
 			if (brgy){
 				brgy.putAll(v)
-				addToPreceeding(brgy, v)
 			}
 		}
 
@@ -72,18 +71,6 @@ class RPTReportAssessmentReportService
 		}
 
 		return [reportdata:brgys, parameters:params]
-	}
-
-	void addToPreceeding(brgy, v){
-		if (brgy.pretaxcnt == null ) brgy.pretaxcnt = 0.0
-		if (brgy.pretaxvalue == null ) brgy.pretaxvalue = 0.0
-		if (brgy.preexemptcnt == null ) brgy.preexemptcnt = 0.0
-		if (brgy.preexemptvalue == null ) brgy.preexemptvalue = 0.0
-
-		brgy.pretaxcnt += v.cancelledtaxcnt
-		brgy.pretaxvalue += v.cancelledtaxvalue
-		brgy.preexemptcnt += v.cancelledexemptcnt
-		brgy.preexemptvalue += v.cancelledexemptvalue
 	}
 
 	void setZeroValuesToNull(brgys){

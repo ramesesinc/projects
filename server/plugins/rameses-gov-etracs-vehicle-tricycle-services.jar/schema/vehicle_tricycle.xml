@@ -1,0 +1,19 @@
+<schema adapter="vehicledb">
+	<element tablename="vehicle_tricycle">
+		<field name="objid" primary="true" prefix="VMTOP"/>
+		<field name="state" required="true" caption="State" />
+		<field name="plateno" required="true" caption="Plate No"/>
+		<field name="engineno" required="true" caption="Engine No"/>
+		<field name="bodyno" required="true" caption="Body No"/>
+		<field name="sidecarno" required="false" caption="Sidecar No"/>
+		<field name="make" required="false" caption="Make"/>
+		<field name="model" required="false" caption="Model"/>
+		<field name="color" required="false" caption="Color"/>
+
+		<field name="createdby_objid" required="true" />
+		<field name="createdby_name" required="true" caption="Created By"/>
+		<field name="dtcreated" required="true" caption="Date Created"/>
+		<field name="controlid" required="false" caption="Franchise"/>
+		<field name="appid" required="false" caption="Application id"/>
+	</element>
+</schema>

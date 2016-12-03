@@ -1,9 +1,0 @@
-<workunit extends="com/rameses/seti2/templates/CrudForm.xml" schemaName="vehicle_account_tricycle">
-    <invokers>
-        <invoker type="vehicle_account_tricycle:lookupnew" caption="New Tricycle" action="create" target="popup"/>
-    </invokers>
-    <code class="com.rameses.gov.etracs.vehicle.tricycle.models.TricycleLookupNewForm" />
-    <pages>
-        <page template="com.rameses.gov.etracs.vehicle.tricycle.views.TricycleLookupNewPage" />
-    </pages>
-</workunit>

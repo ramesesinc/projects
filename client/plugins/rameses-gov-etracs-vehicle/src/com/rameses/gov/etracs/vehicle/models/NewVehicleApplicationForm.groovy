@@ -43,9 +43,10 @@ public class NewVehicleApplicationForm extends PageFlowController {
     def addVehicle() {
         def h = { o->
             entity.vehicle = o;
+            entity.vehicleid = o.objid;
             binding.refresh();
         }
-        return Inv.lookupOpener("vehicle_account_" + vehicletype + ":lookupnew", [handler: h ] )
+        return Inv.lookupOpener("vehicle_" + vehicletype + ":create", [handler: h ] )
     }
 
     void save() {
@@ -97,7 +98,7 @@ public class NewVehicleApplicationForm extends PageFlowController {
             entity.apptype= 'RENEW';
             super.init();
         }
-        Modal.show( "vehicle_account_" + getVehicletype() + "_for_renew:lookup", [onselect: h] );
+        Modal.show( "vehicle_" + getVehicletype() + "_for_renew:lookup", [onselect: h] );
         if(!pass) throw new BreakException();
     }
     
@@ -109,7 +110,7 @@ public class NewVehicleApplicationForm extends PageFlowController {
             entity.control = o;
             pass = true;
         }
-        Modal.show( "vehicle_control:available:lookup", [onselect:h, txntypeid:entity.txntype] );
+        Modal.show( "vehicle_franchise:available:lookup", [onselect:h, txntypeid:entity.txntype] );
         if( pass ) {
             pass = false;
             h = { o->

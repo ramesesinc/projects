@@ -1,0 +1,11 @@
+<workunit extends="com/rameses/seti2/templates/WorkflowTaskList.xml" 
+          processName="vehicle_application_tricycle" 
+          allowDelete="false" allowNotify="true">
+    
+    <invokers>
+        <invoker folderid="/home/vehicle/tricycle" action="init" index="-1"
+            cols="app.appno,app.apptype,app.owner.name,app.vehicle.acctno,app.vehicle.plateno,app.vehicle.engineno,app.vehicle.bodyno,startdate,dtcreated,taskid" 
+            caption="MTOP Application List"/>
+    </invokers>
+    
+</workunit>

@@ -1,0 +1,10 @@
+<schema adapter="vehicledb">
+	<element tablename="vehicle_franchise">
+		<field name="objid" primary="true" prefix="MF"/>
+		<field name="controlno" caption="Control No" required="true" searchable="true" indexed="true"/>
+		<field name="vehicletype"  required="true" />
+		<field name="vehicleid"  />
+		<field name="activeyear"  caption="Active Year"/>
+		<field name="appid"  />
+	</element>
+</schema>

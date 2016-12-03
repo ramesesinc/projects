@@ -51,7 +51,7 @@ class VehicleCashReceiptInterceptor {
 				it.apprefid = it.refid;
 			}
 			else {
-				it.vehiclerefid = it.refid;
+				it.franchiserefid = it.refid;
 			}
 			m.items << it;
 		}

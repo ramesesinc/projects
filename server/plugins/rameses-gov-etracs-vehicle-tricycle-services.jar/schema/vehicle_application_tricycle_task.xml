@@ -1,8 +1,9 @@
 <schema adapter="vehicledb">
 
 	<element tablename="vehicle_application_tricycle_task">
-		<field name="taskid" primary="true"  prefix="WATSK"/>
-		<complex name="app" ref="vehicle_application_tricycle" jointype="many-to-one" required="false"> 
+		<field name="taskid" primary="true"  prefix="VTATSK" visible="true"/>
+		<complex name="app" ref="vehicle_application_tricycle" jointype="many-to-one" required="false"
+			includefields="appno,apptype,owner.name,vehicle.plateno,vehicle.engineno,vehicle.bodyno"> 
 			<key field="refid" target="objid"/>
 		</complex>
 		<field name="parentprocessid" />

@@ -13,15 +13,27 @@ import com.rameses.enterprise.models.*;
 
 public class VehicleApplicationForm extends WorkflowTaskModel {
     
-    String getVehicleType() {
-        return workunit.info.workunit_properties.vehicletype;
+    def vehicletype;
+    def vehicleTypeHandler;
+    
+    void afterOpen() {
+        vehicletype = workunit.info.workunit_properties.vehicletype;
+        vehicleTypeHandler = Inv.lookupOpener("vehicle_type_handler:"+vehicletype, [entity:entity]); 
+        
+        //load the fees
+        def m = [_schemaname: 'vehicle_application_fee'];
+        m.findBy = [appid: entity.objid];
+        entity.fees = queryService.getList(m);
+        if(entity.fees) {
+            entity.amount = entity.fees.sum{ it.amount - it.amtpaid };
+        }
     }
     
-    def getFormName() {
+    String getFormName() {
         return getSchemaName() + ":form";
     }
     
-    def getBarcodeFieldname() {
+    String getBarcodeFieldname() {
         return "appno";
     }
     
@@ -36,5 +48,17 @@ public class VehicleApplicationForm extends WorkflowTaskModel {
     public String getFormId() {
         return entity.objid;
     }
+    
+    def feeListModel = [
+        fetchList: { o->
+            return entity.fees;
+        }
+    ] as BasicListModel;
+    
+    def infoListModel = [
+        fetchList: { o->
+            return entity.infos;
+        }
+    ] as BasicListModel;
     
 }

@@ -1,6 +1,6 @@
-<workunit extends="com/rameses/seti2/templates/CrudLookup.xml" schemaName="vehicle_account_tricycle">
+<workunit extends="com/rameses/seti2/templates/CrudLookup.xml" schemaName="vehicle_tricycle">
     <invokers>
-        <invoker type="vehicle_account_tricycle_for_renew:lookup" caption="Vehicle Account For Renewal" 
+        <invoker type="vehicle_tricycle_for_renew:lookup" caption="Vehicle Account For Renewal" 
             action="init" 
             cols="acctno,owner.name,regdate,plateno,engineno" 
             customFilter1="state='ACTIVE' AND expirydate &lt;= DATE()"/>

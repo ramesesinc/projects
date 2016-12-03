@@ -1,0 +1,10 @@
+<workunit extends="com/rameses/gov/etracs/vehicle/templates/Vehicle.xml" 
+          schemaName="vehicle_tricycle">
+    <invokers>
+        <invoker type="vehicle_tricycle:create" caption="Tricycle" action="create" target="popup"/>
+        <invoker type="vehicle_tricycle:open" caption="Tricycle" action="open" />
+    </invokers>
+    <pages>
+        <page template="com.rameses.gov.etracs.vehicle.tricycle.views.VehicleTricyclePage" />
+    </pages>
+</workunit>

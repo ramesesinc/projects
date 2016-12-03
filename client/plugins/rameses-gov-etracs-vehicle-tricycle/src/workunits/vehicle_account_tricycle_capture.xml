@@ -1,9 +1,0 @@
-<workunit extends="com/rameses/seti2/templates/CrudForm.xml" schemaName="vehicle_account_tricycle">
-    <invokers>
-        <invoker folderid="/home/vehicle/tricycle" caption="Capture Tricycle" action="create" />
-    </invokers>
-    <code class="com.rameses.gov.etracs.vehicle.tricycle.models.TricycleAccountForm" />
-    <pages>
-        <page template="com.rameses.gov.etracs.vehicle.tricycle.views.TricycleAccountForm" />
-    </pages>
-</workunit>

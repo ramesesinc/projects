@@ -5,7 +5,7 @@
 			<key field="parentid" target="objid" />
 		</complex>	
 		<field name="apprefid" required="false"/>
-		<field name="vehiclerefid" required="false"/>
+		<field name="franchiserefid" required="false"/>
 		<field name="item_objid" required="true" />
 		<field name="item_code" required="true" />
 		<field name="item_title" required="true" />

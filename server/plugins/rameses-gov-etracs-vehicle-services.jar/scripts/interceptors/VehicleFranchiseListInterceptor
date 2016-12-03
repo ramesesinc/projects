@@ -1,0 +1,60 @@
+import com.rameses.annotations.*;
+import java.rmi.server.UID;
+
+class VehicleFranchiseListInterceptor {
+	
+	@Service("DateService")
+	def dateSvc;
+
+	@After(pattern="QueryService.getNodeList", eval="#{args[0]._schemaname.startsWith('vehicle_franchise_')}")
+	public void getNodeList(def evt) {
+		def result = evt.result;
+		result << [ title: 'All', id:'all'];
+		result << [ title: 'Unassigned', id:'unassigned' ];
+		result << [ title: 'Active', id:'active'];
+		result << [ title: 'For Renewal', id:'forrenewal'];
+		result << [ title: 'Delinquent', id:'delinquent'];
+	}
+
+	@Before(pattern="QueryService.getList", eval="#{args[0]._schemaname.startsWith('vehicle_franchise_') }")
+	public void loadList(def evt) {
+		def o = evt.args[0];
+		//o.debug = true;
+		if( !o.node?.id ) return;
+		if( o.node.id == 'all' ) return;
+
+		def str = "";
+		def m = [:];
+
+		switch( o.node.id ) {
+			case 'unassigned':
+				str = " vehicleid IS NULL ";
+				break;
+
+			case 'active':
+				str = " NOT(vehicleid IS NULL) AND expirydate >= DATE()";
+				break;
+
+			case 'forrenewal':
+				m.year = dateSvc.getServerYear() - 1;
+				str = " expirydate < DATE() AND activeyear = :year";
+				break;
+
+			case 'delinquent':
+				m.year = dateSvc.getServerYear() - 1;
+				m.state = " NOT(vehicleid IS NULL) AND activeyear < :year";
+				break;
+		}
+
+		//add to first position of where
+		if( o.where ) {
+			o.where[0] = str + " AND " + o.where[0];	
+			o.where[1].putAll( m );
+		}
+		else {
+			o.where = [str, m];
+		}
+	}
+
+
+}

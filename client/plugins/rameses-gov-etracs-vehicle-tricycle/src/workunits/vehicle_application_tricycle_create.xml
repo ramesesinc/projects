@@ -1,0 +1,40 @@
+<workunit schemaName="vehicle_application" vehicletype="tricycle" apptype="NEW">
+    <invokers>
+        <invoker folderid="/home/vehicle/tricycle" caption="New MTOP Application" action="start" />
+        <invoker type="vehicle_application_tricycle:create" caption="New" action="start" />
+        <!--
+        <invoker folderid="/home/vehicle/tricycle" caption="MTOP Renewal" action="renew" />
+        <invoker folderid="/home/vehicle/tricycle" caption="MTOP Change Owner" action="changeOwner" />
+        <invoker folderid="/home/vehicle/tricycle" caption="MTOP Change Motor" action="changeMotor" />
+        -->
+        <!-- from applicationn list -->
+        <!--
+        <invoker type="formActions" caption="Change Owner" action="changeOwner" />
+        <invoker type="formActions" caption="Change Motor" action="changeMotor" />
+        -->
+    </invokers>
+    <code class="com.rameses.gov.etracs.vehicle.models.NewVehicleApplicationForm" />
+    <pageflow>
+        <start>
+            <transition to="initial" action="create"/>
+        </start>
+        <page name="initial" title="New MTOP Application">
+            <transition to="assessment" caption="Next" action="assess" immediate="false"/>
+        </page>
+        <page name="assessment" title="New MTOP Assessment">
+            <transition to="initial" caption="Back" />
+            <transition to="confirm" caption="Next" />
+        </page>
+        <page name="confirm" title="Verify Information">
+            <transition to="assessment" caption="Back" />
+            <transition to="end" caption="Submit" action="save" 
+                confirm="You are about to save this application. Proceed?"  immediate="false"/>
+        </page>
+        <end/>
+    </pageflow>
+    <pages>
+        <page name="initial" template="com.rameses.gov.etracs.vehicle.views.ApplicationInitialPage" />
+        <page name="assessment" template="com.rameses.gov.etracs.vehicle.views.ApplicationAssessmentPage" />
+        <page name="confirm" template="com.rameses.gov.etracs.vehicle.views.ApplicationFormPage" />
+    </pages>
+</workunit>

@@ -1,0 +1,20 @@
+<schema adapter="vehicledb">
+	<element tablename="vehicle_franchise_tricycle">
+		<field name="objid" primary="true"/>
+		<field name="vehicleid" visible="false" />
+		<field name="vehicletype" />
+		<field name="controlno" caption="Control No"/>
+		<field name="expirydate" caption="Expiry Date"/>
+		<field name="activeyear" caption="Active Year"/>
+		<field name="vehicle_plateno" caption="Plate No"/>
+		<field name="vehicle_engineno" caption="Engine No"/>
+		<field name="vehicle_bodyno" caption="Body No"/>
+		<field name="vehicle_sidecarno" />
+		<field name="vehicle_make" />
+		<field name="vehicle_model" />
+		<field name="vehicle_color" />
+		<field name="owner_name" caption="Owner Name"/>
+		<field name="owner_address_text" caption="Owner Address"/>
+		<field name="barangay_name" caption="Barangay"/>
+	</element>
+</schema>

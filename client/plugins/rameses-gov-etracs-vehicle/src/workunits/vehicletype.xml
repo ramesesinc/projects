@@ -1,0 +1,9 @@
+<workunit extends="com/rameses/seti2/templates/CrudForm.xml"  
+          schemaName="vehicletype" allowCreate="false">
+    <invokers>
+        <invoker type="vehicletype:open" caption="Vehicle Type"  action="open" target="popup" />
+    </invokers>
+    <pages>
+        <page template="com.rameses.gov.etracs.vehicle.views.VehicleTypePage" />
+    </pages>    
+</workunit>

@@ -1,11 +1,8 @@
 <schema adapter="vehicledb">
 	<element tablename="vehicletype">
-		<field name="objid" primary="true" />
-		<field name="title" required="true" />
-		<field name="uihandler" required="true" />
-		<field name="schemaname" required="true" />
-		<field name="pattern"  />
-		<field name="issued"  />
-		<field name="icon"  />
+		<field name="objid" primary="true" visible="true" editable="false" caption="Name"/>
+		<field name="title" required="true" caption="Title"/>
+		<field name="controlpattern" required="true" />
+		<field name="issued"  type="integer" caption="Issuances"/>
 	</element>
 </schema>

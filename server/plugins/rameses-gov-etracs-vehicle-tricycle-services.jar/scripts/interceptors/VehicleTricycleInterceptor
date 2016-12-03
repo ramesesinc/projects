@@ -1,0 +1,44 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+
+class VehicleTricycleInterceptor {
+
+	@Env
+	def env;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@DataContext("vehicle_tricycle")
+	def triEm;
+
+	@Before(pattern="PersistenceService.create", eval="#{args[0]._schemaname == 'vehicle_tricycle' }", index=100)
+	public void beforeCreate(def evt) {
+		def o = evt.args[0];
+		def g = triEm.find( [plateno: o.plateno] ).first(); 
+		if(!g) {
+			g = triEm.find( [engineno: o.engineno] ).first(); 
+			if(!g) {
+				g = triEm.find( [bodyno: o.bodyno] ).first(); 
+			}
+		}
+		if(g) {
+			//check if there are conflicts or vehicle is not released yet..
+			if(g.controlid)
+				throw new Exception("This vehicle already exists with pending payments");
+			def	msg = "This vehicle already exists";
+			throw new Warning(msg, g );
+		}
+		o.dtcreated = dateSvc.getServerDate();
+		o.createdby = [ objid: env.USERID, name: env.FULLNAME ];
+		o.state = 'PROCESSING';
+	}
+
+
+	@After(pattern="PersistenceService.create", eval="#{args[0]._schemaname == 'vehicle_tricycle' }", index=100)
+	public void afterCreate( def evt ) {
+		def o = evt.args[0];
+		//update the vehicle's current appid
+		//triEm.find([objid: o.vehicleid]).update( [appid: o.objid] );
+	}
+}

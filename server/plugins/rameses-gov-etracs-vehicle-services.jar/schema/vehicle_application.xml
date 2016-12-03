@@ -19,12 +19,19 @@
 		<field name="barangay_objid"  />
 		<field name="barangay_name"  />
 
+		<!-- this will be loaded automatically -->
 		<field name="vehicletype" required="true" />
+		<field name="vehicleid" required="true" />
+
 		<field name="billexpirydate" required="false" type="date"/>
 
-		<complex name="control" ref="vehicle_control" jointype="many-to-one" includefields="controlno" required="false">
+		<complex name="franchise" ref="vehicle_franchise" jointype="many-to-one" includefields="controlno" required="false">
 			<key field="controlid" target="objid" />
 		</complex> 
 
+		<complex name="fees" ref="vehicle_application_fee" jointype="one-to-many">
+			<key field="objid" target="appid" />
+		</complex>
+		
 	</element>
 </schema>

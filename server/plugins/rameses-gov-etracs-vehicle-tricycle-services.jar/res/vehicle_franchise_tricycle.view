@@ -1,0 +1,17 @@
+CREATE VIEW vehicle_franchise_tricycle AS 
+SELECT
+    vf.*,
+    t.plateno AS vehicle_plateno, 
+    t.engineno  AS vehicle_engineno,
+    t.bodyno  AS vehicle_bodyno,
+    t.sidecarno  AS vehicle_sidecarno,
+    t.make  AS vehicle_make,
+    t.model AS vehicle_model,
+    t.color AS vehicle_color,
+    va.owner_name,
+    va.owner_address_text,
+    va.barangay_name 
+FROM vehicle_franchise vf
+LEFT JOIN vehicle_tricycle t ON vf.vehicleid=t.objid  
+LEFT JOIN vehicle_application va ON vf.appid=va.objid  
+WHERE vf.`vehicletype` = 'tricycle'    

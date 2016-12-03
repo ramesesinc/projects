@@ -17,8 +17,8 @@ class VehicleCashReceiptService {
 	@DataContext("vehicle_application_fee")
 	def feeEm;
 
-	@DataContext("vehicle_account_fee")
-	def acctFeeEm;
+	@DataContext("vehicle_franchise_fee")
+	def franchiseFeeEm;
 
 	@DataContext("revenueitem")
 	def revEm;
@@ -51,14 +51,14 @@ class VehicleCashReceiptService {
 			it.amount = (it.amount - it.amtpaid);
 		}	
 
-		def vEm = em.lookup( "vehicle_application_" + app.vehicletype )
-		def vehicle = vEm.select("vehicleid").find([objid: app.objid]).first();
-		def vfees = acctFeeEm.find( [vehicleid: vehicle.vehicleid] ).where( "amount - amtpaid > 0 ").list();
-		vfees.each {
-			it.ledgertype = 'vehicle'; 
-			it.principal = it.amount;
-			it.amount = (it.amount - it.amtpaid);
-			fees << it;
+		if( app.controlid ) {
+			def vfees = franchiseFeeEm.find( [parentid: app.controlid] ).where( "amount - amtpaid > 0 ").list();
+			vfees.each {
+				it.ledgertype = 'franchise'; 
+				it.principal = it.amount;
+				it.amount = (it.amount - it.amtpaid);
+				fees << it;
+			}
 		}
 
 		//run the billing here...

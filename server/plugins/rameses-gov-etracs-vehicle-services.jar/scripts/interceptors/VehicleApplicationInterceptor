@@ -1,0 +1,53 @@
+import com.rameses.annotations.*;
+import java.rmi.server.UID;
+
+class VehicleApplicationInterceptor {
+	
+	@Env
+	def env;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@Service("SequenceService")
+	def seqSvc;
+
+	@Service("WorkflowTaskService")
+	def wfSvc;
+
+	@DataContext(dynamic=true)
+	def vehicleEm;
+
+	@Before(pattern="PersistenceService.create", eval="#{args[0]._schemaname == 'vehicle_application' && args[0].apptype == 'NEW' }")
+	public void beforeCreateApplication(def evt) {
+		def o = evt.args[0];
+		if(!o.vehicletype )
+			throw new Exception("vehicletype is required in vehicle application create");
+		def svrDate =  dateSvc.getServerDate();
+
+		if(!o.fees) throw new Exception("There must be at least 1 fee");
+		o.appdate = svrDate;
+		o.txndate = svrDate;
+		o.appyear = dateSvc.getServerYear();
+		o.state = 'FOR_PAYMENT';
+		def txntype = o.vehicletype?.toUpperCase();
+
+		o.appno =  txntype[0] + o.appyear + seqSvc.getNextFormattedSeries( txntype );
+		o.filedby = [objid: env.USERID, name: env.FULLNAME];
+		o.dtfiled = svrDate;
+		o.amtpaid = 0.0;
+		o.fees.each {
+			it.app = o;
+		};
+	}
+
+	@After(pattern="PersistenceService.create", eval="#{args[0]._schemaname == 'vehicle_application' && args[0].apptype == 'NEW' }")
+	public void afterCreateApplication(def evt) {
+		def o = evt.args[0];
+		o.processname = 'vehicle_application_'+o.vehicletype.toLowerCase(); 
+		o.refid = o.objid;
+		wfSvc.start(o);
+	}
+
+
+}

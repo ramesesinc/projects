@@ -27,9 +27,8 @@ class WorkflowTaskListService  {
 
     @ProxyMethod
     public def getList( def o ) {
-        def cols = "taskid,refid,startdate,assignee.name,message";
+        def cols = "taskid,refid,startdate,dtcreated,assignee.name,message";
         if(o.select) cols += "," + o.select;
-
         o.select = cols;
 
         if(o.node?.name) {

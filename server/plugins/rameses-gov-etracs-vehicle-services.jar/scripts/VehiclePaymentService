@@ -22,8 +22,8 @@ class VehiclePaymentService {
 	@DataContext("vehicle_application_fee")
 	def appFeeEm;
 
-	@DataContext("vehicle_account_fee")
-	def vehicleFeeEm;
+	@DataContext("vehicle_franchise_fee")
+	def franchiseFeeEm;
 
 	@ProxyMethod
 	public def postPayment( def m) {
@@ -32,7 +32,7 @@ class VehiclePaymentService {
 			appFeeEm.find( [objid: it.apprefid ] ).update( [amtpaid: '{amtpaid+:amtpaid}' ], [amtpaid: it.amount + it.discount ] );
 		}
 		m.items.findAll{ it.vehiclerefid }.each {
-			vehicleFeeEm.find( [objid: it.vehiclerefid ] ).update( [amtpaid: '{amtpaid+:amtpaid}' ], [amtpaid: it.amount + it.discount ] );
+			franchiseFeeEm.find( [objid: it.franchiserefid ] ).update( [amtpaid: '{amtpaid+:amtpaid}' ], [amtpaid: it.amount + it.discount ] );
 		}
 
 		if(m.appid) {
@@ -58,7 +58,7 @@ class VehiclePaymentService {
 				appFeeEm.find( [objid: it.apprefid ] ).update( [amtpaid: '{amtpaid-:amtpaid}' ], [amtpaid: it.amount + it.discount ] );
 			}
 			else if( it.vehiclerefid) {
-				vehicleFeeEm.find( [objid: it.vehiclerefid ] ).update( [amtpaid: '{amtpaid-:amtpaid}' ], [amtpaid: it.amount + it.discount ] );
+				franchiseFeeEm.find( [objid: it.franchiserefid ] ).update( [amtpaid: '{amtpaid-:amtpaid}' ], [amtpaid: it.amount + it.discount ] );
 			}
 		}
 		appEm.find( [objid:r.appid ] ).update( [state:'FOR_PAYMENT'] );

@@ -1,0 +1,6 @@
+<workunit>
+    <code class="com.rameses.gov.etracs.vehicle.models.VehicleFranchiseForm"/>
+    <pages>
+        <page template="com.rameses.gov.etracs.vehicle.views.VehicleFranchisePage" />
+    </pages>
+</workunit>

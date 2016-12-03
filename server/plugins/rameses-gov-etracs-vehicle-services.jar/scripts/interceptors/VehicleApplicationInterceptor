@@ -29,7 +29,6 @@ class VehicleApplicationInterceptor {
 		o.appdate = svrDate;
 		o.txndate = svrDate;
 		o.appyear = dateSvc.getServerYear();
-		o.state = 'FOR_PAYMENT';
 		def txntype = o.vehicletype?.toUpperCase();
 
 		o.appno =  txntype[0] + o.appyear + seqSvc.getNextFormattedSeries( txntype );

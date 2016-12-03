@@ -40,8 +40,12 @@ class VehicleCashReceiptService {
 		//find application...
 		def app = appEm.find( [appno: o.id] ).first();
 		if(!app) throw new Exception("Vehicle application not found!");
-		if(app.state!='FOR_PAYMENT') throw new Exception("Application state must be for payment");
 
+		def vt = em.lookup( "vehicle_application_"+app.vehicletype+"_task" );
+		def state = vt.find( [refid: app.objid] ).select("state").val();	
+		if(state!='for_payment')	
+			throw new Exception("application state must be for payment");
+		
 		def fees = feeEm.find( [appid: app.objid] ).where("amount - amtpaid > 0").list();
 		if( !fees )
 			throw new Exception("There are no unpaid items");

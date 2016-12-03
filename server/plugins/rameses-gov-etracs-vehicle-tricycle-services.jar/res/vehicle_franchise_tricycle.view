@@ -7,11 +7,7 @@ SELECT
     t.sidecarno  AS vehicle_sidecarno,
     t.make  AS vehicle_make,
     t.model AS vehicle_model,
-    t.color AS vehicle_color,
-    va.owner_name,
-    va.owner_address_text,
-    va.barangay_name 
+    t.color AS vehicle_color
 FROM vehicle_franchise vf
 LEFT JOIN vehicle_tricycle t ON vf.vehicleid=t.objid  
-LEFT JOIN vehicle_application va ON vf.appid=va.objid  
 WHERE vf.`vehicletype` = 'tricycle'    

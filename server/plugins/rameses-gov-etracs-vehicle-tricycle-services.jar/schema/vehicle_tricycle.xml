@@ -1,7 +1,6 @@
 <schema adapter="vehicledb">
 	<element tablename="vehicle_tricycle">
 		<field name="objid" primary="true" prefix="VMTOP"/>
-		<field name="state" required="true" caption="State" />
 		<field name="plateno" required="true" caption="Plate No"/>
 		<field name="engineno" required="true" caption="Engine No"/>
 		<field name="bodyno" required="true" caption="Body No"/>

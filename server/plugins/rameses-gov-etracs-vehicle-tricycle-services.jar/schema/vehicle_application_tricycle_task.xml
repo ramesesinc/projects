@@ -12,7 +12,7 @@
 		<field name="startdate" />
 		<field name="enddate" />
 		<field name="assignee_objid" />
-		<field name="assignee_name" />
+		<field name="assignee_name" caption="Assigned To" />
 		<field name="actor_objid" />
 		<field name="actor_name" />
 		<field name="message" />	

@@ -12,6 +12,9 @@ class VehicleTricycleInterceptor {
 	@DataContext("vehicle_tricycle")
 	def triEm;
 
+	@DataContext("vehicle_franchise")
+	def franchiseEm;
+
 	@Before(pattern="PersistenceService.create", eval="#{args[0]._schemaname == 'vehicle_tricycle' }", index=100)
 	public void beforeCreate(def evt) {
 		def o = evt.args[0];
@@ -23,17 +26,15 @@ class VehicleTricycleInterceptor {
 			}
 		}
 		if(g) {
-			//check if there are conflicts or vehicle is not released yet..
-			if(g.controlid)
-				throw new Exception("This vehicle already exists with pending payments");
-			def	msg = "This vehicle already exists";
-			throw new Warning(msg, g );
+			def f = franchiseEm.find([vehicleid: g.objid]).first()
+			if(f) {
+				def	msg = "This vehicle already exists with existing franchise " + f.controlno;
+				throw new Warning(msg, g );
+			}
 		}
 		o.dtcreated = dateSvc.getServerDate();
 		o.createdby = [ objid: env.USERID, name: env.FULLNAME ];
-		o.state = 'PROCESSING';
 	}
-
 
 	@After(pattern="PersistenceService.create", eval="#{args[0]._schemaname == 'vehicle_tricycle' }", index=100)
 	public void afterCreate( def evt ) {

@@ -4,7 +4,7 @@
     
     <invokers>
         <invoker folderid="/home/vehicle/tricycle" action="init" index="-1"
-            cols="app.appno,app.apptype,app.owner.name,app.vehicle.acctno,app.vehicle.plateno,app.vehicle.engineno,app.vehicle.bodyno,startdate,dtcreated,taskid" 
+            cols="app.appno,app.apptype,app.owner.name,app.vehicle.acctno,app.vehicle.plateno,app.vehicle.engineno,app.vehicle.bodyno,startdate,dtcreated,assignee.name" 
             caption="MTOP Application List"/>
     </invokers>
     

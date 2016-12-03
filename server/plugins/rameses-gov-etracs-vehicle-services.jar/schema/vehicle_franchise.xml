@@ -2,9 +2,18 @@
 	<element tablename="vehicle_franchise">
 		<field name="objid" primary="true" prefix="MF"/>
 		<field name="controlno" caption="Control No" required="true" searchable="true" indexed="true"/>
+		<field name="state"  required="true" />
 		<field name="vehicletype"  required="true" />
 		<field name="vehicleid"  />
 		<field name="activeyear"  caption="Active Year"/>
 		<field name="appid"  />
+
+		<field name="owner_objid"  />
+		<field name="owner_name" />
+		<field name="owner_address_text" />
+		<field name="owner_address_objid" />
+		<field name="barangay_objid"  />
+		<field name="barangay_name"  />
+
 	</element>
 </schema>

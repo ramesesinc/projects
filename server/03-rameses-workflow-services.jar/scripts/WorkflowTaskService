@@ -75,6 +75,7 @@ class WorkflowTaskService  {
         def st = [:];
         st.dtcreated = currDate;
         st.startdate = currDate;
+        st.enddate = currDate;
         st.actor = [objid:env.USERID, name:env.FULLNAME];
         st.state = 'start';
         st.refid = r.refid;

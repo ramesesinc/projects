@@ -1,9 +1,7 @@
 import com.rameses.annotations.*;
 
 import com.rameses.rules.common.*;
-import vehicle.facts.*;
-import treasury.facts.*;
-import treasury.actions.*;
+import com.rameses.util.*;
 
 /**********************************************************
 * This service handles computation of what fees to charge 
@@ -25,6 +23,7 @@ class VehiclePaymentService {
 	@DataContext("vehicle_franchise_fee")
 	def franchiseFeeEm;
 
+
 	@ProxyMethod
 	public def postPayment( def m) {
 		pmtEm.create( m );
@@ -33,13 +32,6 @@ class VehiclePaymentService {
 		}
 		m.items.findAll{ it.vehiclerefid }.each {
 			franchiseFeeEm.find( [objid: it.franchiserefid ] ).update( [amtpaid: '{amtpaid+:amtpaid}' ], [amtpaid: it.amount + it.discount ] );
-		}
-
-		if(m.appid) {
-			def total = appFeeEm.select( "total:{SUM( amount-amtpaid )}" ).find( [appid: m.appid ] ).val();
-			if(total == 0) {
-				appEm.find( [objid:m.appid ] ).update( [state:'FOR_RELEASE' ] );
-			}
 		}
 	}
 

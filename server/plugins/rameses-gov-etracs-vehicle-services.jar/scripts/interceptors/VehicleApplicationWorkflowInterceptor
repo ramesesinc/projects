@@ -1,0 +1,15 @@
+import com.rameses.annotations.*;
+import java.rmi.server.UID;
+
+class VehicleApplicationWorkflowInterceptor {
+	
+	@After(pattern="WorkflowTaskService.signal", 
+		eval="#{args[0].processname.startsWith('vehicle_application_') && args[0].action == 'release' }" )
+	public void beforeRelease(def evt) {
+		def o = evt.args[0];
+		throw new Exception("Cannot Release. Please Assign first the franchise No");
+	}	
+
+
+
+}

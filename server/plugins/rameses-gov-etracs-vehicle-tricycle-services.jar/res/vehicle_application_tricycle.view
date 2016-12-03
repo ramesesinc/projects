@@ -1,0 +1,16 @@
+CREATE VIEW vehicle_application_tricycle AS 
+SELECT
+    va.*,
+    t.plateno AS vehicle_plateno, 
+    t.engineno  AS vehicle_engineno,
+    t.bodyno  AS vehicle_bodyno,
+    t.sidecarno  AS vehicle_sidecarno,
+    t.make  AS vehicle_make,
+    t.model AS vehicle_model,
+    t.color AS vehicle_color,
+    vt.taskid,
+    vt.state
+FROM vehicle_application va
+LEFT JOIN vehicle_tricycle t ON va.vehicleid=t.objid  
+INNER JOIN vehicle_application_tricycle_task vt ON vt.refid=va.objid 
+WHERE vt.enddate IS NULL AND NOT(state = 'start')

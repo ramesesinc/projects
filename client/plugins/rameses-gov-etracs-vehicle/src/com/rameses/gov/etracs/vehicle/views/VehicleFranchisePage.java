@@ -38,7 +38,6 @@ public class VehicleFranchisePage extends javax.swing.JPanel {
         xLabel4 = new com.rameses.rcp.control.XLabel();
         xLabel5 = new com.rameses.rcp.control.XLabel();
         xLabel6 = new com.rameses.rcp.control.XLabel();
-        xDateField3 = new com.rameses.rcp.control.XDateField();
         xLabel8 = new com.rameses.rcp.control.XLabel();
         xSubFormPanel1 = new com.rameses.rcp.control.XSubFormPanel();
         xPanel1 = new com.rameses.rcp.control.XPanel();
@@ -82,12 +81,6 @@ public class VehicleFranchisePage extends javax.swing.JPanel {
         xLabel6.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel5.add(xLabel6);
 
-        xDateField3.setCaption("Date Filed");
-        xDateField3.setEnabled(false);
-        xDateField3.setName("entity.dtfiled"); // NOI18N
-        xDateField3.setRequired(true);
-        xFormPanel5.add(xDateField3);
-
         xLabel8.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
         xLabel8.setCaption("Barangay");
         xLabel8.setExpression("#{entity.barangay.name}");
@@ -100,11 +93,11 @@ public class VehicleFranchisePage extends javax.swing.JPanel {
         xSubFormPanel1.setLayout(xSubFormPanel1Layout);
         xSubFormPanel1Layout.setHorizontalGroup(
             xSubFormPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 549, Short.MAX_VALUE)
         );
         xSubFormPanel1Layout.setVerticalGroup(
             xSubFormPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 363, Short.MAX_VALUE)
+            .addGap(0, 392, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -122,9 +115,9 @@ public class VehicleFranchisePage extends javax.swing.JPanel {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(xFormPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(xSubFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 363, Short.MAX_VALUE)
+                .addComponent(xSubFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 392, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -379,7 +372,6 @@ public class VehicleFranchisePage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XButton xButton2;
     private com.rameses.rcp.control.XDataTable xDataTable1;
     private com.rameses.rcp.control.XDataTable xDataTable2;
-    private com.rameses.rcp.control.XDateField xDateField3;
     private com.rameses.rcp.control.XFormPanel xFormPanel2;
     private com.rameses.rcp.control.XFormPanel xFormPanel5;
     private com.rameses.rcp.control.XLabel xLabel2;

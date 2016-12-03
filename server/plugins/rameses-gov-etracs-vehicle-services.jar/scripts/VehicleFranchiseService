@@ -73,12 +73,12 @@ class VehicleFranchiseService {
 		for(int i=(issued+1); i < (qty+issued+1); i++ ) {
 			def m = [vehicletype: g.objid];
 		    m.controlno = formatNumber( g.controlpattern, handler, i );
+		    m.state = 'OPEN';
 			em.create( m );
 		}
 
 		//update the issued
 		vt.find( [objid: vehicletype] ).update( [issued: issued + qty] );
-
 	}
 
 

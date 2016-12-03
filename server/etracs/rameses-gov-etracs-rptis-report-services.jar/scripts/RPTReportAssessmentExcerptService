@@ -47,6 +47,7 @@ class RPTReportAssessmentExcerptService
 		util.buildCurrentCancelledPeriodFilter(params)
 		params.state = 'CANCELLED'
 		data.cancelled = em.findExcerpt(params)
+		addToPreceeding(data.preceeding, data.cancelled)
 		
 		util.buildEndingPeriodFilter(params)
 		params.state = 'CURRENT'
@@ -67,6 +68,13 @@ class RPTReportAssessmentExcerptService
 			parameters  : p,
 			reportdata  : data,
 		]
+	}
+
+	void addToPreceeding(preceeding, cancelled){
+		preceeding.taxable += cancelled.taxable
+		preceeding.taxablecnt += cancelled.taxablecnt
+		preceeding.exempt += cancelled.exempt
+		preceeding.exemptcnt += cancelled.exemptcnt
 	}
 
 

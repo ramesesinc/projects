@@ -41,6 +41,7 @@ public class ApplicationFormPage extends javax.swing.JPanel {
         xDateField3 = new com.rameses.rcp.control.XDateField();
         xLabel7 = new com.rameses.rcp.control.XLabel();
         xLabel8 = new com.rameses.rcp.control.XLabel();
+        xLabel10 = new com.rameses.rcp.control.XLabel();
         xSubFormPanel1 = new com.rameses.rcp.control.XSubFormPanel();
         xPanel1 = new com.rameses.rcp.control.XPanel();
         xDataTable1 = new com.rameses.rcp.control.XDataTable();
@@ -53,24 +54,24 @@ public class ApplicationFormPage extends javax.swing.JPanel {
         xPanel3 = new com.rameses.rcp.control.XPanel();
         xDataTable2 = new com.rameses.rcp.control.XDataTable();
 
-        xFormPanel5.setCaptionWidth(100);
+        xFormPanel5.setCaptionWidth(120);
 
         xLabel9.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
         xLabel9.setCaption("App No");
         xLabel9.setExpression("#{entity.appno}");
-        xLabel9.setPreferredSize(new java.awt.Dimension(80, 18));
+        xLabel9.setPreferredSize(new java.awt.Dimension(150, 20));
         xFormPanel5.add(xLabel9);
 
         xLabel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
         xLabel3.setCaption("App Type");
         xLabel3.setExpression("#{entity.apptype}");
-        xLabel3.setPreferredSize(new java.awt.Dimension(80, 18));
+        xLabel3.setPreferredSize(new java.awt.Dimension(150, 20));
         xFormPanel5.add(xLabel3);
 
         xLabel4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
         xLabel4.setCaption("App Year");
         xLabel4.setExpression("#{entity.appyear}");
-        xLabel4.setPreferredSize(new java.awt.Dimension(80, 18));
+        xLabel4.setPreferredSize(new java.awt.Dimension(150, 20));
         xFormPanel5.add(xLabel4);
 
         xLabel5.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
@@ -103,6 +104,12 @@ public class ApplicationFormPage extends javax.swing.JPanel {
         xLabel8.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel5.add(xLabel8);
 
+        xLabel10.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
+        xLabel10.setCaption("Franchise Control No");
+        xLabel10.setExpression("#{entity.franchise.controlno}");
+        xLabel10.setPreferredSize(new java.awt.Dimension(150, 20));
+        xFormPanel5.add(xLabel10);
+
         xSubFormPanel1.setHandler("vehicleTypeHandler");
 
         javax.swing.GroupLayout xSubFormPanel1Layout = new javax.swing.GroupLayout(xSubFormPanel1);
@@ -113,7 +120,7 @@ public class ApplicationFormPage extends javax.swing.JPanel {
         );
         xSubFormPanel1Layout.setVerticalGroup(
             xSubFormPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 274, Short.MAX_VALUE)
+            .addGap(0, 246, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -133,7 +140,7 @@ public class ApplicationFormPage extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(xFormPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(xSubFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 274, Short.MAX_VALUE)
+                .addComponent(xSubFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 246, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -393,6 +400,7 @@ public class ApplicationFormPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XFormPanel xFormPanel2;
     private com.rameses.rcp.control.XFormPanel xFormPanel4;
     private com.rameses.rcp.control.XFormPanel xFormPanel5;
+    private com.rameses.rcp.control.XLabel xLabel10;
     private com.rameses.rcp.control.XLabel xLabel2;
     private com.rameses.rcp.control.XLabel xLabel3;
     private com.rameses.rcp.control.XLabel xLabel4;

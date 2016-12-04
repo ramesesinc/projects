@@ -4,7 +4,7 @@
                  caption="Select Available Franchise" 
                  orderBy="controlno"
                  target="popup"
-                 cols="controlno,vehicle.owner.name,vehicle.particulars,vehicleid"
+                 cols="controlno"
                  customFilter="vehicletype='tricycle' AND vehicleid IS NULL"
                  action="init"/>
     </invokers>

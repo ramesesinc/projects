@@ -10,10 +10,16 @@ import java.util.regex.*;
 class VehicleFranchiseService {
 	
 	@DataContext("vehicle_franchise")
-	def em;
+	def franchiseEm;
 
 	@DataContext("vehicletype")
 	def vt;
+
+	@DataContext("vehicle_application")
+	def appEm;
+
+	@DataContext(dynamic=true)
+	def em;
 
 	@Service("DateService")
 	def dateSvc;
@@ -74,7 +80,7 @@ class VehicleFranchiseService {
 			def m = [vehicletype: g.objid];
 		    m.controlno = formatNumber( g.controlpattern, handler, i );
 		    m.state = 'OPEN';
-			em.create( m );
+			franchiseEm.create( m );
 		}
 
 		//update the issued
@@ -82,5 +88,31 @@ class VehicleFranchiseService {
 	}
 
 
+	@ProxyMethod
+	public def assign( def o  ) {
+		if( !o.appid ) throw new Exception("appid is required in VehicleFranchiseService.assign")
+		if( !o.controlid ) throw new Exception("controlid is required in VehicleFranchiseService.assign")
+
+
+		def app = appEm.find([objid: o.appid]).first();
+		def vehicleEm = em.lookup("vehicle_"+app.vehicletype);
+
+		//update the franchise
+		def m = [:];
+		m.activeyear = app.appyear;
+		m.owner = app.owner;
+		m.barangay = app.barangay;
+		m.appid = app.objid;
+		m.vehicleid = app.vehicleid;
+		m.state = 'ACTIVE';
+		franchiseEm.find([objid: o.controlid]).update(m);
+
+		//update the vehicle
+		vehicleEm.find([objid: o.vehicleid]).update( [appid: app.objid, controlid: o.controlid ] );
+
+		//update the application
+		appEm.find([objid: app.objid]).update([controlid: o.controlid]);
+		return franchiseEm.find([objid:o.vehicleid]).first();
+	}
 
 }

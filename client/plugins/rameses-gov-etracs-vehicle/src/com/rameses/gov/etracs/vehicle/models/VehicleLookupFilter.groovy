@@ -9,14 +9,13 @@ public class VehicleLookupFilter extends CrudLookupModel {
     
     @PropertyChangeListener
     def listener = [
-        'query.txntype' : { o->
+        'query.vehicletype' : { o->
             reload();
         }
     ];
 
     public def getCustomFilter() {
-        if(! query.txntype ) return null;
-        return ["txntypeid=:type", [type: query.txntype?.objid]]; 
+        return ["vehicletype=:type", [type: query.vehicletype]]; 
     }
     
 }

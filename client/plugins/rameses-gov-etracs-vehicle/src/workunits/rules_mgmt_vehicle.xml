@@ -8,5 +8,9 @@
 
         <invoker folderid="/explorer/rulemgmt/vehicle" caption="Vehicle Requirement Rules"
                  action="init" index="3" srole="RULE_AUTHOR" tag="vehiclerequirement" />
+
+        <invoker folderid="/explorer/rulemgmt/vehicle" caption="Vehicle Releasing Rules"
+                 action="init" index="4" srole="RULE_AUTHOR" tag="vehiclereleasing" />
+        
     </invokers>
 </workunit>

@@ -102,25 +102,7 @@ public class NewVehicleApplicationForm extends PageFlowController {
         if(!pass) throw new BreakException();
     }
     
-    public boolean beforePost() {
-        boolean pass = false;
-        def h = { o->
-            if(o.currentacctid)
-                throw new Exception("This control is not available");
-            entity.control = o;
-            pass = true;
-        }
-        Modal.show( "vehicle_franchise:available:lookup", [onselect:h, txntypeid:entity.txntype] );
-        if( pass ) {
-            pass = false;
-            h = { o->
-                entity.expirydate = o;
-                pass = true;
-            }
-            Modal.show( "date:prompt", [handler:h, title:'Enter Franchise Expiry date'] );
-        }
-        return pass;
-    }
+    
     
 
 }

@@ -22,5 +22,7 @@
 		<field name="vehicle_model" caption="Model"/>
 		<field name="vehicle_color" caption="Color"/>
 
+		<field name="franchise_controlno" caption="Franchise No"/>
+
 	</element>	
 </schema>

@@ -13,6 +13,9 @@ import com.rameses.enterprise.models.*;
 
 public class VehicleApplicationForm extends WorkflowTaskModel {
     
+    @Service("VehicleFranchiseService")
+    def franSvc;
+    
     def vehicletype;
     def vehicleTypeHandler;
     
@@ -60,5 +63,19 @@ public class VehicleApplicationForm extends WorkflowTaskModel {
             return entity.infos;
         }
     ] as BasicListModel;
+ 
+    
+    def assignFranchise() {
+        boolean pass = false;
+        def h = { o->
+            def z = [:];
+            z.appid = entity.objid;
+            z.controlid = o.objid;
+            entity.franchise = franSvc.assign(z);
+            binding.refresh();
+        }
+        def n = "vehicle_franchise_" + vehicletype + ":available:lookup";
+        return Inv.lookupOpener( n, [onselect:h] );
+    }
     
 }

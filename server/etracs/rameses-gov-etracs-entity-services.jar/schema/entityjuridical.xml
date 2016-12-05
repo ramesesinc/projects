@@ -5,7 +5,7 @@
 		<field name="tin" />
 		<field name="dtregistered" />
 		<!--<field name="placeregistered" />-->
-		<field name="orgtype" /> <!-- SINGLEPROPERTORSHIP, CORPORATION, etc -->
+		<field name="orgtype" caption="OrgType"/> <!-- SINGLEPROPERTORSHIP, CORPORATION, etc -->
 		<field name="nature" /> <!-- RETAILER, WHOLESALER -->
 		<field name="administrator_name" /> 
 		<field name="administrator_address" /> 

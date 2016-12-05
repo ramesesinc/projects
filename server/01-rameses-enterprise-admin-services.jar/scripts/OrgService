@@ -22,7 +22,8 @@ class OrgService extends ActiveCrudListService {
 	public def getColumns(o) {
 		return[
 			[name:'code', caption:'Code', maxWidth:150 ], 
-			[name:'name', caption:'Name' ], 
+			[name:'name', caption:'Name' ],
+			[name:'txncode', caption:'Txn Code' ] 
 		];
 	}
 

@@ -8,6 +8,7 @@
 		<field name="parent_objid" />
 		<field name="parent_orgclass" />
 		<field name="root" />
+		<field name="txncode" />
 	</element>
 	
 	<element name="orgclass" tablename="sys_orgclass">

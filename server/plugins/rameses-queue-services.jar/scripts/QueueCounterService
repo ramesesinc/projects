@@ -12,17 +12,20 @@ class QueueCounterService {
 	def env;
 
 	@ProxyMethod
-	public def create( def o ) {
-		em.create( o );
+	public def create( def o ) { 
+		def data = em.create( o );
 		o.sections.each {
-			sect.create( [counterid: env.TERMINALID,  sectionid: it.objid]);
-		}
-	}
+			def sec = sect.create([ counterid: env.TERMINALID,  sectionid: it.objid ]); 
+			if ( sec ) it.putAll( sec );  
+		} 
+		data.sections = o.sections; 
+		return data; 
+	} 
 
 	@ProxyMethod
 	public def update( def o ) {
-		em.update( o );
-	}
+		return em.update( o ); 
+	} 
 
 
 	@ProxyMethod

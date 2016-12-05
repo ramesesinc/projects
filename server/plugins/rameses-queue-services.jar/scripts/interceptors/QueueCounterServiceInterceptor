@@ -16,19 +16,46 @@ class QueueCounterServiceInterceptor {
 	@DataContext(value='queue_counter', adapter='queue') 
 	def qc; 
 
+	@DataContext(value='queue_counter_section', adapter='queue') 
+	def qcs; 
+
 	@Service 
 	def self; 
+
+	@After( pattern="QueueCounterService.create", index=9999 ) 
+	public void afterCreate( evt ) { 
+		def result = evt.result; 
+		if ( !result ) return; 
+
+		def msgs = []; 
+		result.sections.each{ 
+			msgs << createAddCounterSectionMessage([ counterid: result.objid, sectionid: it.objid ]);
+		} 
+		notify( msgs ); 
+	} 
+
+	@After( pattern="QueueCounterService.update", index=9999 ) 
+	public void afterUpdate( evt ) { 
+		def result = evt.result; 
+		if ( !result ) return; 
+
+		def msgs = []; 
+		def qcslist = qcs.find([ counterid: result.objid ]).list(); 
+		qcslist.each{
+			msgs << [ counterid: it.counterid, sectionid: it.sectionid, type: 'REMOVE_COUNTER_SECTION' ]; 
+		} 
+		qcslist.each{
+			msgs << createAddCounterSectionMessage([ counterid: it.counterid, sectionid: it.sectionid ]);
+		} 
+		notify( msgs ); 
+	} 	
 
 	@After( pattern="QueueCounterService.addSection", index=9999 ) 
 	public void afterAddSection( evt ) {
 		def params = evt.args[0]; 
 		if ( params.sectionid && params.counterid ) { 
-			def rec = qc.find([ objid: params.counterid ]).first();  
-			params.countercode = rec.code; 
-			params.sectionid = params.sectionid.toLowerCase(); 
-			params.uuid = (params.sectionid +'_'+ params.counterid).toLowerCase(); 
-			params.type = 'ADD_COUNTER_SECTION'; 
-			notify( params ); 
+			def msg = createAddCounterSectionMessage([ counterid: params.counterid, sectionid: params.sectionid ]); 
+			notify( msg );
 		}
 	}
 
@@ -41,33 +68,47 @@ class QueueCounterServiceInterceptor {
 		}
 	}
 
+	def createAddCounterSectionMessage( params ) {
+		def rec = qc.find([ objid: params.counterid ]).first();  
+		params.countercode = rec.code; 
+		params.sectionid = params.sectionid.toLowerCase(); 
+		params.uuid = (params.sectionid +'_'+ params.counterid).toLowerCase(); 
+		params.type = 'ADD_COUNTER_SECTION'; 
+		return params; 
+	} 
 
 	void notify( data ) { 
-		def uuid = ''+ data.sectionid +'_'+ data.counterid; 
-		data.uuid = uuid.toLowerCase(); 
-		self.notifyHttp( data ); 
-		self.notifyWs( data ); 
+		def msgs = (data instanceof List ? data : [data]); 
+		msgs.each{
+			def uuid = ''+ it.sectionid +'_'+ it.counterid; 
+			it.uuid = uuid.toLowerCase(); 	
+		}
+		self.notifyHttp( msgs ); 
+		self.notifyWs( msgs ); 
 	} 
 
 	@Async 
 	@ProxyMethod(local=true) 
 	public void notifyHttp( data ) { 
-		if ( data ) { 
-			queue_poll.send( data );  
-		} 
+		if ( !data ) return; 
+
+		def msgs = (data instanceof List? data : [data]); 
+		msgs.each{ queue_poll.send( it ) } 
 	} 
 	@Async 
 	@ProxyMethod(local=true) 
 	public void notifyWs( data ) { 
 		if ( !data ) return; 
 
-		data.channel = data.group = 'queue'; 
-
-		wssender.send([ 
-            channel : data.channel, 
-            group   : data.group, 
-            data    : resolveData( data )  
-        ]); 
+		def msgs = (data instanceof List? data : [data]); 
+		msgs.each{
+			it.channel = it.group = 'queue'; 	
+			wssender.send([ 
+	            channel : it.channel, 
+	            group   : it.group, 
+	            data    : resolveData( it )  
+	        ]); 
+		} 
 	} 	
 
 	def resolveData( data ) {

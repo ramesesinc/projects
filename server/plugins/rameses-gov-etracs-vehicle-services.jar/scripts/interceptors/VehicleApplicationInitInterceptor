@@ -12,12 +12,14 @@ class VehicleApplicationInitInterceptor {
 	@DataContext(dynamic=true)
 	def em;
 
+	@DataContext("vehicle_fee")
+	def vFee;
+
 	@Service("DateService")
 	def dateSvc;
 
 	private void checkUnpaidFees( def o ) {
-		def feeEm = em.lookup("vehicle_fee_"+o.vehicletype);
-		def tot = feeEm.find([controlid: o.franchise.objid]).where("amount - amtpaid > 0").select("t:{SUM(amount - amtpaid)}").val();
+		def tot = vFee.find([controlid: o.franchise.objid]).where("amount - amtpaid > 0").select("t:{SUM(amount - amtpaid)}").val();
 		if( tot!=null && tot > 0 ) {
 			throw new Exception("There is still unpaid balance of "+tot+" that needs to be settled");
 		}
@@ -34,6 +36,7 @@ class VehicleApplicationInitInterceptor {
 
         entity.owner = f.owner;
         entity.vehicle = f.vehicle;
+        entity.vehicleid = f.vehicle.objid;
         entity.barangay = f.barangay;
         entity.appyear = f.activeyear;
         entity.franchise = [objid:f.objid, controlno: f.controlno, expirydate: f.expirydate];

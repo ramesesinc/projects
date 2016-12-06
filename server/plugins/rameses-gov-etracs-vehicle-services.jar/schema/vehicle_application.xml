@@ -9,7 +9,7 @@
 		<field name="dtfiled" required="true" />
 		<field name="filedby_objid" required="true" />
 		<field name="filedby_name" required="true" />
-		<field name="particulars" required="true" />
+		<field name="particulars"  />
 
 		<field name="owner_objid" required="true" />
 		<field name="owner_name" required="true" caption="Owner Name"/>

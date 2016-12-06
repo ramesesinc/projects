@@ -9,10 +9,10 @@ SELECT
     t.model AS vehicle_model,
     t.color AS vehicle_color,
     vt.taskid,
-    vt.state,
+    vt.state AS taskstate,
     vf.controlno AS franchise_controlno
 FROM vehicle_application va
 INNER JOIN vehicle_tricycle t ON va.vehicleid=t.objid  
-INNER JOIN vehicle_application_tricycle_task vt ON vt.refid=va.objid 
-LEFT JOIN vehicle_franchise vf ON va.controlid=vf.objid
-WHERE vt.enddate IS NULL AND NOT(vt.state = 'start')
+INNER JOIN vehicle_franchise vf ON va.controlid=vf.objid
+LEFT JOIN vehicle_application_tricycle_task vt ON vt.refid=va.objid 
+WHERE vt.enddate IS NULL 

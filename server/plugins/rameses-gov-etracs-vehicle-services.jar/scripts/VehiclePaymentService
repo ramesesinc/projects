@@ -30,7 +30,7 @@ class VehiclePaymentService {
 		m.items.findAll{ it.apprefid }.each {
 			appFeeEm.find( [objid: it.apprefid ] ).update( [amtpaid: '{amtpaid+:amtpaid}' ], [amtpaid: it.amount + it.discount ] );
 		}
-		m.items.findAll{ it.vehiclerefid }.each {
+		m.items.findAll{ it.franchiserefid }.each {
 			franchiseFeeEm.find( [objid: it.franchiserefid ] ).update( [amtpaid: '{amtpaid+:amtpaid}' ], [amtpaid: it.amount + it.discount ] );
 		}
 	}

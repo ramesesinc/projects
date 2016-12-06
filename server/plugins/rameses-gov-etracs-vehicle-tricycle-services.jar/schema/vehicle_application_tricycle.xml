@@ -1,7 +1,6 @@
 <schema adapter="vehicledb">
 	<element tablename="vehicle_application_tricycle">
 		<field name="objid" primary="true"/>
-		<field name="state" required="true"/>
 		<field name="appno" caption="App No"/>
 		<field name="appdate" caption="App Date"/>
 		<field name="apptype" caption="App Type"/>
@@ -23,6 +22,7 @@
 		<field name="vehicle_color" caption="Color"/>
 
 		<field name="franchise_controlno" caption="Franchise No"/>
-
+		<field name="taskid" />
+		<field name="taskstate" />
 	</element>	
 </schema>

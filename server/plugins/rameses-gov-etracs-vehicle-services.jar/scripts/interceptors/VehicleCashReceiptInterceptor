@@ -9,8 +9,8 @@ class VehicleCashReceiptInterceptor {
 	@DataContext("vehicle_application")
 	def appEm;
 
-	@DataContext("vehicle_application_fee")
-	def appFee;
+	@DataContext("vehicle_fee")
+	def vFee;
 
 	@DataContext("revenueitem")
 	def revItem;
@@ -37,8 +37,11 @@ class VehicleCashReceiptInterceptor {
 	public void postPayment(def evt) {
 		def r = evt.args[0];
 		def t = evt.result;
+
 		def m = [:];
-		m.appid = r.appid;
+		m.appid = r.info.appid;
+		m.franchiseid = r.info.franchiseid;
+
 		m.refno = r.receiptno;		
 		m.refid = r.objid;		
 		m.reftype = "cashreceipt";		
@@ -61,14 +64,18 @@ class VehicleCashReceiptInterceptor {
 			}
 			m.items << it;
 		}
+
 		pmtSvc.postPayment( m );
 
-		//call the signal after
+		/*******************************************************************
+		* signal after
+		*******************************************************************/
 		if(m.appid) {
-			def app = appEm.find( [objid:m.appid ] ).select("vehicletype").first();
-
+			def app = appEm.find( [objid:m.appid ] ).first();
+			if( app.taskid ==null ) return;
+			
 			//check balance first before signalling
-			def total = appFee.select( "total:{SUM( amount-amtpaid )}" ).find( [appid: m.appid ] ).val();
+			def total = vFee.select( "total:{SUM( amount-amtpaid )}" ).find( [controlid: app.controlid ] ).val();
 			if(total == 0) {
 				def wfParam = [
 					processname: 'vehicle_application_' + app.vehicletype, 
@@ -79,6 +86,7 @@ class VehicleCashReceiptInterceptor {
 				wfService.signal( wfParam );
 			}	
 		}
+		
 	}
 
 	@After(pattern="CashReceiptVoidService.post",index=0,eval="#{result.receipt.collectiontype.handler=='vehicle'}")

@@ -2,6 +2,7 @@
 	<element tablename="vehicle_payment">
 		<field name="objid" primary="true" prefix="VPMT"/>
 		<field name="appid" required="true" />
+		<field name="franchiseid" required="true" />
 		<field name="txndate" required="true" />
 		<field name="amount" required="true" />
 		<field name="voided" required="true" />

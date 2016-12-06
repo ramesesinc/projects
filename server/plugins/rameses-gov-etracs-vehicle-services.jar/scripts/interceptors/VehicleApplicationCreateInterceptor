@@ -85,7 +85,7 @@ class VehicleApplicationCreateInterceptor {
 		def n = "vehicle_franchise_" + entity.vehicletype;
 		def f = vehicleFranchiseEm.lookup(n).find([objid: entity.franchise.objid]).first();
 		if( entity.appyear > f.activeyear  ) {
-			franchiseEm.find([objid: entity.franchise.objid]).update( [appid: entity.objid, state: 'ACTIVE'] );		
+			franchiseEm.find([objid: entity.franchise.objid]).update( [appid: entity.objid, state: 'ACTIVE', expirydate:entity.franchise.expirydate ] );		
 			updateVehicle( entity );
 		}
 	}

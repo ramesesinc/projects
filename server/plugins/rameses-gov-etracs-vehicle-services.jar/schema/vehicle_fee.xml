@@ -1,8 +1,10 @@
 <schema adapter="vehicledb">
-	<element tablename="vehicle_fee_tricycle">
+	<element tablename="vehicle_fee">
 		<field name="objid" primary="true"/>
 		<field name="appid" />
+		<field name="appno" />
 		<field name="controlid" />
+		<field name="controlno" />
 		<field name="item_objid" />
 		<field name="item_code" caption="Item Code"/>
 		<field name="item_title" caption="Item Title"/>

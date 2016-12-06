@@ -14,17 +14,11 @@ class VehicleCashReceiptService {
 	@DataContext("vehicle_application")
 	def appEm;
 
-	@DataContext("vehicle_application_fee")
+	@DataContext("vehicle_fee")
 	def feeEm;
 
-	@DataContext("vehicle_franchise_fee")
-	def franchiseFeeEm;
-
-	@DataContext("revenueitem")
-	def revEm;
-
-	@DataContext(dynamic=true)
-	def em;
+	@DataContext("vehicle_franchise")
+	def franchiseEm;
 
 	@Service("VehicleBillingService")
 	def billingSvc;
@@ -35,50 +29,51 @@ class VehicleCashReceiptService {
 	@ProxyMethod
 	public def getInfo( def o ) {
 		if(!o.id) throw new Exception("id is required in VehicleCashReceiptService.getInfo");
+		o.id = o.id.trim();
+		/*************************************************************
+		* Determine first if code requested is appno or franchise no
+		**************************************************************/
+		def controlid = null;
+		def app = null;
+		def fran = franchiseEm.find( [controlno: o.id] ).first();
+		if( !fran ) {
+			app = appEm.find( [appno: o.id] ).first();
+			if( app ) fran = franchiseEm.find( [objid: app.controlid] ).first();
+		}
+		else {
+			app = appEm.find( [objid: fran.appid ] ).first();
+		}
 
-
-		//find application...
-		def app = appEm.find( [appno: o.id] ).first();
-		if(!app) throw new Exception("Vehicle application not found!");
-
-		def vt = em.lookup( "vehicle_application_"+app.vehicletype+"_task" );
-		def state = vt.find( [refid: app.objid] ).select("state").val();	
-		if(state!='for_payment')	
-			throw new Exception("application state must be for payment");
-		
-		def fees = feeEm.find( [appid: app.objid] ).where("amount - amtpaid > 0").list();
+		if( fran==null && app==null ) {
+			throw new Exception("No vehicle record found for " + o.id);
+		}
+		def fees = feeEm.find( [controlid: app.controlid]  ).where("amount - amtpaid > 0").list();
 		if( !fees )
 			throw new Exception("There are no unpaid items");
+
 		fees.each { 
-			it.ledgertype = 'application'; 
 			it.principal = it.amount;
 			it.amount = (it.amount - it.amtpaid);
 		}	
 
-		if( app.controlid ) {
-			def vfees = franchiseFeeEm.find( [parentid: app.controlid] ).where( "amount - amtpaid > 0 ").list();
-			vfees.each {
-				it.ledgertype = 'franchise'; 
-				it.principal = it.amount;
-				it.amount = (it.amount - it.amtpaid);
-				fees << it;
-			}
-		}
-
-		//run the billing here...
+		/*************************************************************************
+		* RUN BILLING ROUTINE
+		**************************************************************************/
 		def p = [:];
 		p.putAll(o);	
 		p.application = [apptype: app.apptype, vehicletype: app.vehicletype];
 		p.billitems = fees;
 		def res = billingSvc.process(p);
 
+		/*************************************************************************
+		* PACKAGE THE RESULT
+		**************************************************************************/
 		def entity = [:];
+		entity.info = [appid: app.objid, franchiseid: app.controlid, vehicletype: app.vehicletype ] ;
 		entity.payer = app.owner;
-		entity.appid = app.objid;
-		entity.vehicletype = app.vehicletype;
 		entity.paidby = app.owner.name;
 		entity.paidbyaddress = app.owner.address?.text; 	
-		entity.particulars = app.particulars;
+		entity.particulars = fran.controlno;
 		entity.items = res.billitems.collect{ it.toMap() };
 		return entity;
 	}

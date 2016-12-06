@@ -16,8 +16,11 @@
         </page>
         <page name="confirm" title="#{formTitle} - Verify Information">
             <transition to="assessment" caption="Back" />
-            <transition to="end" caption="Submit" action="save" 
+            <transition to="success" caption="Submit" action="save" 
                 confirm="You are about to save this application. Proceed?"  immediate="false"/>
+        </page>
+         <page name="success" title="#{formTitle} - Success">
+            <transition to="end" caption="Close" />
         </page>
         <end/>
     </pageflow>
@@ -26,5 +29,6 @@
         <page name="initial" template="com.rameses.gov.etracs.vehicle.views.ApplicationInitialPage" />
         <page name="assessment" template="com.rameses.gov.etracs.vehicle.views.ApplicationAssessmentPage" />
         <page name="confirm" template="com.rameses.gov.etracs.vehicle.views.ApplicationFormPage" />
+        <page name="success" template="com.rameses.gov.etracs.vehicle.views.ApplicationSuccessPage" />
     </pages>
 </workunit>

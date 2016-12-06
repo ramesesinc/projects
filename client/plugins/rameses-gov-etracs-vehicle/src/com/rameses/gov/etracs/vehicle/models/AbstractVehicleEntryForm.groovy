@@ -61,7 +61,6 @@ public abstract class AbstractVehicleEntryForm extends PageFlowController {
 
     void save() {
         entity = applicationService.create( entity );
-        MsgBox.alert( "Application No. " + entity.appno + " was created successfully." );
     }
     
     void assess() {

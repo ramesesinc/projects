@@ -3,13 +3,20 @@ import java.rmi.server.UID;
 
 class VehicleApplicationWorkflowInterceptor {
 	
+	@DataContext("vehicle_application")
+	def appEm;
+
+	@DataContext("vehicle_franchise")
+	def franchiseEm;
+
 	@After(pattern="WorkflowTaskService.signal", 
 		eval="#{args[0].processname.startsWith('vehicle_application_') && args[0].action == 'release' }" )
 	public void beforeRelease(def evt) {
 		def o = evt.args[0];
-		throw new Exception("Cannot Release. Please Assign first the franchise No");
+		throw new Exception("Cannot Release. Please Assign first the application No " + o.refid);
+		def app = appEm.find([objid: o.refid]).first();
+		franchiseEm.find( [objid: app.controlid] ).update( [state:'ACTIVE'] );
 	}	
-
 
 
 }

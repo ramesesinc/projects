@@ -3,6 +3,8 @@ import com.rameses.annotations.*;
 import com.rameses.util.*;
 import java.text.*;
 import java.util.regex.*;
+import rules.treasury.facts.*;
+import rules.vehicle.facts.*;
 
 /**********************************************************
 * This service maintains generation of control nos.
@@ -23,6 +25,9 @@ class VehicleFranchiseService {
 
 	@Service("DateService")
 	def dateSvc;
+
+	@Service("RuleExecutorService")
+	def ruleSvc;
 
 	@Env
 	def env;
@@ -45,7 +50,6 @@ class VehicleFranchiseService {
 	    if( start < d.length() ) sb.append(d.substring(start));
 	    return sb.toString();
 	}
-
 
 	@ProxyMethod
 	public void generate( def o ) {
@@ -88,31 +92,5 @@ class VehicleFranchiseService {
 	}
 
 
-	@ProxyMethod
-	public def assign( def o  ) {
-		if( !o.appid ) throw new Exception("appid is required in VehicleFranchiseService.assign")
-		if( !o.controlid ) throw new Exception("controlid is required in VehicleFranchiseService.assign")
-
-
-		def app = appEm.find([objid: o.appid]).first();
-		def vehicleEm = em.lookup("vehicle_"+app.vehicletype);
-
-		//update the franchise
-		def m = [:];
-		m.activeyear = app.appyear;
-		m.owner = app.owner;
-		m.barangay = app.barangay;
-		m.appid = app.objid;
-		m.vehicleid = app.vehicleid;
-		m.state = 'ACTIVE';
-		franchiseEm.find([objid: o.controlid]).update(m);
-
-		//update the vehicle
-		vehicleEm.find([objid: o.vehicleid]).update( [appid: app.objid, controlid: o.controlid ] );
-
-		//update the application
-		appEm.find([objid: app.objid]).update([controlid: o.controlid]);
-		return franchiseEm.find([objid:o.vehicleid]).first();
-	}
-
+	
 }

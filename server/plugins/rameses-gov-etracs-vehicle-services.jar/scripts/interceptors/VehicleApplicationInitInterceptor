@@ -1,0 +1,76 @@
+import com.rameses.annotations.*;
+import java.rmi.server.UID;
+
+/****************************************************************************
+* This interceptor is exclusively for VehicleApplicationService.init method
+*****************************************************************************/
+class VehicleApplicationInitInterceptor {
+	
+	@Env
+	def env;
+
+	@DataContext(dynamic=true)
+	def em;
+
+	@Service("DateService")
+	def dateSvc;
+
+	private void checkUnpaidFees( def o ) {
+		def feeEm = em.lookup("vehicle_fee_"+o.vehicletype);
+		def tot = feeEm.find([controlid: o.franchise.objid]).where("amount - amtpaid > 0").select("t:{SUM(amount - amtpaid)}").val();
+		if( tot!=null && tot > 0 ) {
+			throw new Exception("There is still unpaid balance of "+tot+" that needs to be settled");
+		}
+	}
+
+	private void loadFranchiseInfo( def franchiseno, def entity ) {
+		if( !franchiseno ) throw new Exception("franchiseno is required in VehicleApplicationService.init");
+
+		def f = em.lookup("vehicle_franchise_"+ entity.vehicletype).find( [controlno: franchiseno ] ).first();
+		if(!f) 
+			throw new Exception(franchiseno + " does not exist");
+		if(f.state!='ACTIVE') 
+			throw new Exception("Cannot process. Franchise " + franchiseno + " is not in ACTIVE state. Please check and release pending application");
+
+        entity.owner = f.owner;
+        entity.vehicle = f.vehicle;
+        entity.barangay = f.barangay;
+        entity.appyear = f.activeyear;
+        entity.franchise = [objid:f.objid, controlno: f.controlno, expirydate: f.expirydate];
+	}
+
+	@After(pattern="VehicleApplicationService.init", eval="#{args[0].apptype == 'RENEW'}", index=10)
+	public void afterInitApplicationForRenew(def evt) {
+		def params = evt.args[0];
+		def entity = evt.result;
+		loadFranchiseInfo( params.franchiseno, entity );
+		int yr = dateSvc.getServerYear();
+		entity.appyear = entity.appyear + 1;
+		if( entity.appyear != yr ) throw new Exception("Invalid year for renewal. Year must be for the current year" );
+		checkUnpaidFees(  entity );
+	}
+
+	@After(pattern="VehicleApplicationService.init", eval="#{args[0].apptype == 'RETIRE'}", index=10)
+	public void afterInitApplicationForRetire(def evt) {
+		def params = evt.args[0];
+		def entity = evt.result;
+		loadFranchiseInfo( params.franchiseno, entity );
+		int yr = dateSvc.getServerYear();
+		if( entity.appyear != yr ) throw new Exception("Invalid year for retire. Year must be the same as last year active" );	
+		checkUnpaidFees(  entity );
+	}
+
+	@After(pattern="VehicleApplicationService.init", eval="#{args[0].apptype == 'CHANGE_OWNER'}", index=10)
+	public void afterInitApplicationForChangeOwner(def evt) {
+		def params = evt.args[0];
+		def entity = evt.result;
+		loadFranchiseInfo( params.franchiseno, entity );
+		int yr = dateSvc.getServerYear();
+		if( entity.appyear != yr ) throw new Exception("Invalid year for change owner. Year must be the same last year active" );	
+		checkUnpaidFees(  entity );
+		entity.prevowner = entity.owner;
+		entity.owner = [:];
+	}
+
+
+}

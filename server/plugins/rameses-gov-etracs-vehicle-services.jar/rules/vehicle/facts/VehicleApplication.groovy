@@ -6,5 +6,5 @@ public class VehicleApplication {
 	
 	String apptype;
 	String vehicletype;
-
+	Date dtfiled;
 }

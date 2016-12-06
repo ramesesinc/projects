@@ -1,0 +1,20 @@
+CREATE VIEW vehicle_fee_tricycle AS 
+SELECT 
+   vf.objid, 
+   vf.appid, va.controlid, 
+   vf.item_objid, vf.item_code, vf.item_title, 
+   vf.amount, vf.amtpaid, 
+   vf.txntype, vf.sortorder, 'application' AS ledgertype 
+FROM vehicle_application_fee vf
+INNER JOIN vehicle_application va ON va.objid=vf.appid AND va.vehicletype='tricycle'
+
+UNION 
+
+SELECT 
+   vf.objid, 
+   NULL AS appid, va.objid AS controlid, 
+   vf.item_objid, vf.item_code, vf.item_title, 
+   vf.amount, vf.amtpaid, 
+   vf.txntype, vf.sortorder, 'franchise' AS ledgertype 
+FROM vehicle_franchise_fee vf
+INNER JOIN vehicle_franchise va ON va.objid=vf.parentid AND va.vehicletype='tricycle'

@@ -1,0 +1,56 @@
+import com.rameses.annotations.*;
+import rules.vehicle.facts.*;
+import rules.treasury.facts.*;
+import rules.enterprise.facts.*;
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import java.util.*;
+import com.rameses.rules.common.RuleExecutionContext;
+
+class VehicleApplicationService {
+	
+	@Env
+	def env;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@DataContext("vehicle_application")
+	def appEm;
+
+	@Service("SequenceService")
+	def seqSvc;
+
+	@ProxyMethod
+	public def init( def o ) {
+		if( !o.vehicletype ) throw new Exception("vehicletype is required in VehicleApplicationService.initApplication");
+		def entity = [:];
+		entity.vehicletype = o.vehicletype;
+		entity.apptype = o.apptype;
+		entity.appyear = dateSvc.getServerYear();
+        entity.dtfiled = dateSvc.getBasicServerDate();
+        entity.owner = [:];
+        entity.fees = [];
+        entity.requirements = [];
+        entity.infos = [];
+		return entity;	
+	}
+
+	@ProxyMethod
+	public def create( def o ) {
+		if(!o.vehicletype )
+			throw new Exception("vehicletype is required in vehicle application create");
+		def svrDate =  dateSvc.getServerDate();
+		o.txndate = svrDate;
+		def txntype = o.vehicletype?.toUpperCase();
+		String prefix = "V" + txntype[0] + o.appyear;
+		o.appno =  prefix + seqSvc.getNextFormattedSeries( prefix );
+		o.appdate = svrDate;
+		o.filedby = [objid: env.USERID, name: env.FULLNAME];
+		return appEm.create(o);
+	}
+
+
+
+}

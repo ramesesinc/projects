@@ -11,6 +11,5 @@
 
         <invoker folderid="/explorer/rulemgmt/vehicle" caption="Vehicle Releasing Rules"
                  action="init" index="4" srole="RULE_AUTHOR" tag="vehiclereleasing" />
-        
     </invokers>
 </workunit>

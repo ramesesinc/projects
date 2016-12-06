@@ -24,7 +24,9 @@ public class VehicleForm extends CrudFormModel {
             return "_close";
         }
         catch(com.rameses.util.Warning w) {
-            MsgBox.err(w.message);
+            if( w.message != "ok" ) {
+                MsgBox.err(w.message);
+            }
             if(handler) handler(w.info);
             return "_close";
         }

@@ -2,10 +2,12 @@
 	<element tablename="vehicle_franchise_tricycle">
 		<field name="objid" primary="true"/>
 		<field name="vehicleid" visible="false" />
+		<field name="state"  caption="Status"/>
 		<field name="vehicletype" />
 		<field name="controlno" caption="Control No"/>
 		<field name="expirydate" caption="Expiry Date"/>
 		<field name="activeyear" caption="Active Year"/>
+		<field name="vehicle_objid" />
 		<field name="vehicle_plateno" caption="Plate No"/>
 		<field name="vehicle_engineno" caption="Engine No"/>
 		<field name="vehicle_bodyno" caption="Body No"/>
@@ -14,7 +16,10 @@
 		<field name="vehicle_model" />
 		<field name="vehicle_color" />
 		<field name="owner_name" caption="Owner Name"/>
+		<field name="owner_objid" visible="false"/>
 		<field name="owner_address_text" caption="Owner Address"/>
+		<field name="owner_address_objid" visible="false"/>
 		<field name="barangay_name" caption="Barangay"/>
+		<field name="barangay_objid" visible="false"/>
 	</element>
 </schema>

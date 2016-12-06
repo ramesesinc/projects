@@ -1,6 +1,16 @@
 CREATE VIEW vehicle_franchise_tricycle AS 
 SELECT
     vf.*,
+
+    a.appyear AS activeyear,
+    a.owner_objid,
+    a.owner_name,
+    a.owner_address_objid,
+    a.owner_address_text,
+    a.barangay_objid,
+	a.barangay_name,
+	t.objid AS vehicleid,
+    t.objid AS vehicle_objid, 
     t.plateno AS vehicle_plateno, 
     t.engineno  AS vehicle_engineno,
     t.bodyno  AS vehicle_bodyno,
@@ -8,6 +18,8 @@ SELECT
     t.make  AS vehicle_make,
     t.model AS vehicle_model,
     t.color AS vehicle_color
+
 FROM vehicle_franchise vf
-LEFT JOIN vehicle_tricycle t ON vf.vehicleid=t.objid  
+LEFT JOIN vehicle_application a ON vf.appid=a.objid 
+LEFT JOIN vehicle_tricycle t ON a.vehicleid=t.objid  
 WHERE vf.`vehicletype` = 'tricycle'    

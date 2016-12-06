@@ -1,9 +1,9 @@
 <schema adapter="vehicledb">
 	<element tablename="vehicle_tricycle">
 		<field name="objid" primary="true" prefix="VMTOP"/>
-		<field name="plateno" required="true" caption="Plate No"/>
-		<field name="engineno" required="true" caption="Engine No"/>
-		<field name="bodyno" required="true" caption="Body No"/>
+		<field name="plateno" required="true" caption="Plate No" indexed="true" searchable="true"/>
+		<field name="engineno" required="true" caption="Engine No" indexed="true"  searchable="true"/>
+		<field name="bodyno" required="true" caption="Body No" indexed="true"  searchable="true"/>
 		<field name="sidecarno" required="false" caption="Sidecar No"/>
 		<field name="make" required="false" caption="Make"/>
 		<field name="model" required="false" caption="Model"/>

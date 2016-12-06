@@ -31,6 +31,10 @@ class VehicleTricycleInterceptor {
 				def	msg = "This vehicle already exists with existing franchise " + f.controlno;
 				throw new Warning(msg, g );
 			}
+			else {
+				//just return without creating a new record.
+				throw new Warning("ok", g );
+			}
 		}
 		o.dtcreated = dateSvc.getServerDate();
 		o.createdby = [ objid: env.USERID, name: env.FULLNAME ];

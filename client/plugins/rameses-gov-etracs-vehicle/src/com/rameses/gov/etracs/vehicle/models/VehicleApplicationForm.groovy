@@ -64,18 +64,16 @@ public class VehicleApplicationForm extends WorkflowTaskModel {
         }
     ] as BasicListModel;
  
-    
-    def assignFranchise() {
-        boolean pass = false;
-        def h = { o->
-            def z = [:];
-            z.appid = entity.objid;
-            z.controlid = o.objid;
-            entity.franchise = franSvc.assign(z);
-            binding.refresh();
+    def paymentListModel = [
+        fetchList : {
+            def m = [_schemaname: 'vehicle_payment'];
+            m.findBy = [appid: entity.objid];
+            return queryService.getList(m);
+        },
+        onOpenItem: { o->
+            return Inv.lookupOpener( "cashreceiptinfo:open", [entity: [objid:o.refid] ] );
         }
-        def n = "vehicle_franchise_" + vehicletype + ":available:lookup";
-        return Inv.lookupOpener( n, [onselect:h] );
-    }
+    ] as BasicListModel;
+    
     
 }

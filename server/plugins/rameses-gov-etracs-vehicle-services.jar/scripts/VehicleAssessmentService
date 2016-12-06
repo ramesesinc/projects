@@ -19,9 +19,14 @@ class VehicleAssessmentService {
 	@Service("RuleExecutorService")
 	def ruleSvc;
 
+	@DataContext(dynamic=true)
+	def franchiseEm;
+
 	@ProxyMethod
 	public def assess( def o ) {
 		if(!o.vehicletype) throw new Exception("vehicletype is required in VehicleAssessmentService.assess")
+		if(!o.franchise?.objid) throw new Exception("franchise.objid is required in VehicleAssessmentService.assess")
+
 		def svrDate = dateSvc.getServerDate();
 		if(!o.billdate) o.billdate = svrDate;
 		if(!o.dtfiled) o.dtfiled = svrDate;
@@ -31,6 +36,10 @@ class VehicleAssessmentService {
 		facts << new VehicleApplication( apptype: o.apptype, vehicletype: o.vehicletype );
 		facts << new AppDate( o.dtfiled );
 		facts << new SystemDate(svrDate);
+
+		def fran = franchiseEm.lookup( "vehicle_franchise_"+o.vehicletype ).find([objid: o.franchise.objid]).first();
+		if(!fran) throw new Exception("Franchise control no. not found")
+		facts <<  new VehicleFranchise( fran );
 
 		if(o.infos) {
 			def infoUtil = new VariableInfoUtil();
@@ -44,6 +53,7 @@ class VehicleAssessmentService {
 			if( RuleExecutionContext.currentContext.result.askinfos ) return false;
 			return true;
 		}
+
 		def res = ruleSvc.execute( "vehicleassessment", facts, null, hdlr );
 
 		//if there are askinfos, return immediately to client.

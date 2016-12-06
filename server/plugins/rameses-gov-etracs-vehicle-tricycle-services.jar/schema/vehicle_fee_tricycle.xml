@@ -1,0 +1,15 @@
+<schema adapter="vehicledb">
+	<element tablename="vehicle_fee_tricycle">
+		<field name="objid" primary="true"/>
+		<field name="appid" />
+		<field name="controlid" />
+		<field name="item_objid" />
+		<field name="item_code" caption="Item Code"/>
+		<field name="item_title" caption="Item Title"/>
+		<field name="amount" caption="Item Amount"/>
+		<field name="amtpaid" caption="Amt Paid"/>
+		<field name="txntype" caption="Txn Type"/>
+		<field name="sortorder" caption="Sort Order"/>
+		<field name="ledgertype" caption="Ledger Type"/>
+	</element>
+</schema>

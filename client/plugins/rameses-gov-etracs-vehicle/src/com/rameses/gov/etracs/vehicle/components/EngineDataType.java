@@ -4,6 +4,7 @@
  */
 package com.rameses.gov.etracs.vehicle.components;
 
+import com.rameses.rcp.common.EditorListModel;
 import com.rameses.rcp.control.XComponentPanel;
 import com.rameses.rcp.ui.annotations.ComponentBean;
 
@@ -64,4 +65,6 @@ public class EngineDataType extends XComponentPanel {
     private com.rameses.rcp.control.XIntegerField xIntegerField1;
     private com.rameses.rcp.control.XTextField xTextField2;
     // End of variables declaration//GEN-END:variables
+
+    
 }

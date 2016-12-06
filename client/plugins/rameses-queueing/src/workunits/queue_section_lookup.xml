@@ -1,4 +1,5 @@
-<workunit extends="com/rameses/seti2/templates/CrudLookup.xml" schemaName="queue_section">
+<workunit extends="com/rameses/seti2/templates/CrudLookup.xml" schemaName="queue_section"
+    orderBy="group.title, title">
     <invokers>
         <invoker type="queue_section:lookup" caption="Lookup Section" action="init" target="popup" /> 
     </invokers>

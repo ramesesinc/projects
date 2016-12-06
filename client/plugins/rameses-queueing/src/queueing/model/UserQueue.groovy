@@ -69,11 +69,12 @@ class UserQueue {
                 showCaption:false, categoryid: item.groupid 
             ]; 
         }
-        
+
         entityCounter = z;  
         serveditem.clear(); 
         if ( z.current ) { 
             serveditem.title = z.current.title; 
+            serveditem.groupid = z.current.groupid;
             serveditem.groupname = z.current.groupname; 
             serveditem.currentnumber = z.current.currentno;            
             return "view";
@@ -95,6 +96,7 @@ class UserQueue {
         }
 
         serveditem.title = item.title;
+        serveditem.groupid = item.groupid;
         serveditem.groupname = item.group?.title;
         serveditem.currentnumber = currentnumber; 
         binding.fireNavigation("view");
@@ -116,6 +118,10 @@ class UserQueue {
     def finish() {
         userQueueSvc.consumeNumber([ counterid: counterid ]);
         return "default";
+    }
+    
+    def forward() {
+        
     }
     
     def edit() { 

@@ -11,9 +11,9 @@ import com.rameses.rcp.ui.annotations.Template;
  * @author wflores
  */
 @Template(QueuePanelTemplate.class)
-public class UserQueueServingPage extends javax.swing.JPanel {
+public class UserQueueForwardPage extends javax.swing.JPanel {
 
-    public UserQueueServingPage() {
+    public UserQueueForwardPage() {
         initComponents();
     }
 
@@ -38,6 +38,10 @@ public class UserQueueServingPage extends javax.swing.JPanel {
         filler5 = new javax.swing.Box.Filler(new java.awt.Dimension(15, 0), new java.awt.Dimension(15, 0), new java.awt.Dimension(5, 32767));
         xButton4 = new com.rameses.rcp.control.XButton();
         filler2 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
+        jPanel2 = new javax.swing.JPanel();
+        xLabel1 = new com.rameses.rcp.control.XLabel();
+        xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
+        xComboBox1 = new com.rameses.rcp.control.XComboBox();
 
         setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
         setLayout(new java.awt.BorderLayout());
@@ -75,6 +79,28 @@ public class UserQueueServingPage extends javax.swing.JPanel {
 
         jPanel1.add(jPanel3);
 
+        jPanel2.setLayout(new com.rameses.rcp.control.layout.YLayout());
+
+        xLabel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 0, 10, 0));
+        xLabel1.setFontStyle("font-weight:bold;font-size:12;");
+        xLabel1.setText("Forward To");
+        jPanel2.add(xLabel1);
+
+        xFormPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
+        xFormPanel1.setPadding(new java.awt.Insets(0, 15, 0, 15));
+
+        xComboBox1.setAllowNull(false);
+        xComboBox1.setCaption("Group");
+        xComboBox1.setDynamic(true);
+        xComboBox1.setExpression("#{}");
+        xComboBox1.setRequired(true);
+        xComboBox1.setStretchWidth(100);
+        xFormPanel1.add(xComboBox1);
+
+        jPanel2.add(xFormPanel1);
+
+        jPanel1.add(jPanel2);
+
         add(jPanel1, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -84,11 +110,15 @@ public class UserQueueServingPage extends javax.swing.JPanel {
     private javax.swing.Box.Filler filler4;
     private javax.swing.Box.Filler filler5;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private queueing.view.UserQueueServingHeader userQueueServingHeader1;
     private com.rameses.rcp.control.XButton xButton1;
     private com.rameses.rcp.control.XButton xButton2;
     private com.rameses.rcp.control.XButton xButton3;
     private com.rameses.rcp.control.XButton xButton4;
+    private com.rameses.rcp.control.XComboBox xComboBox1;
+    private com.rameses.rcp.control.XFormPanel xFormPanel1;
+    private com.rameses.rcp.control.XLabel xLabel1;
     // End of variables declaration//GEN-END:variables
 }

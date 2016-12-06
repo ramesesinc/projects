@@ -149,10 +149,101 @@
             </Component>
           </SubComponents>
         </Container>
+        <Container class="javax.swing.JPanel" name="jPanel2">
+          <SubComponents>
+            <Component class="com.rameses.rcp.control.XLabel" name="xLabel1">
+              <Properties>
+                <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                  <Border info="org.netbeans.modules.form.compat2.border.EmptyBorderInfo">
+                    <EmptyBorder bottom="10" left="0" right="0" top="10"/>
+                  </Border>
+                </Property>
+                <Property name="fontStyle" type="java.lang.String" value="font-weight:bold;font-size:12;"/>
+                <Property name="text" type="java.lang.String" value="Forward To"/>
+              </Properties>
+            </Component>
+            <Container class="com.rameses.rcp.control.XFormPanel" name="xFormPanel1">
+              <Properties>
+                <Property name="captionVAlignment" type="java.lang.String" value="CENTER"/>
+                <Property name="padding" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
+                  <Insets value="[0, 15, 0, 15]"/>
+                </Property>
+              </Properties>
+              <SubComponents>
+                <Component class="com.rameses.rcp.control.XComboBox" name="xComboBox1">
+                  <Properties>
+                    <Property name="allowNull" type="boolean" value="false"/>
+                    <Property name="caption" type="java.lang.String" value="Group"/>
+                    <Property name="dynamic" type="boolean" value="true"/>
+                    <Property name="expression" type="java.lang.String" value="#{}"/>
+                    <Property name="required" type="boolean" value="true"/>
+                    <Property name="stretchWidth" type="int" value="100"/>
+                  </Properties>
+                </Component>
+              </SubComponents>
+            </Container>
+          </SubComponents>
+          <LayoutCode>
+            <CodeStatement>
+              <CodeExpression id="1_jPanel2">
+                <CodeVariable name="jPanel2" type="8194" declaredType="javax.swing.JPanel"/>
+                <ExpressionOrigin>
+                  <ExpressionProvider type="ComponentRef">
+                    <ComponentRef name="jPanel2"/>
+                  </ExpressionProvider>
+                </ExpressionOrigin>
+              </CodeExpression>
+              <StatementProvider type="CodeMethod">
+                <CodeMethod name="setLayout" class="java.awt.Container" parameterTypes="java.awt.LayoutManager"/>
+              </StatementProvider>
+              <Parameters>
+                <CodeExpression id="2">
+                  <ExpressionOrigin>
+                    <ExpressionProvider type="CodeConstructor">
+                      <CodeConstructor class="com.rameses.rcp.control.layout.YLayout" parameterTypes=""/>
+                    </ExpressionProvider>
+                  </ExpressionOrigin>
+                </CodeExpression>
+              </Parameters>
+            </CodeStatement>
+            <CodeStatement>
+              <CodeExpression id="1_jPanel2"/>
+              <StatementProvider type="CodeMethod">
+                <CodeMethod name="add" class="java.awt.Container" parameterTypes="java.awt.Component"/>
+              </StatementProvider>
+              <Parameters>
+                <CodeExpression id="3_xLabel1">
+                  <CodeVariable name="xLabel1" type="8194" declaredType="com.rameses.rcp.control.XLabel"/>
+                  <ExpressionOrigin>
+                    <ExpressionProvider type="ComponentRef">
+                      <ComponentRef name="xLabel1"/>
+                    </ExpressionProvider>
+                  </ExpressionOrigin>
+                </CodeExpression>
+              </Parameters>
+            </CodeStatement>
+            <CodeStatement>
+              <CodeExpression id="1_jPanel2"/>
+              <StatementProvider type="CodeMethod">
+                <CodeMethod name="add" class="java.awt.Container" parameterTypes="java.awt.Component"/>
+              </StatementProvider>
+              <Parameters>
+                <CodeExpression id="4_xFormPanel1">
+                  <CodeVariable name="xFormPanel1" type="8194" declaredType="com.rameses.rcp.control.XFormPanel"/>
+                  <ExpressionOrigin>
+                    <ExpressionProvider type="ComponentRef">
+                      <ComponentRef name="xFormPanel1"/>
+                    </ExpressionProvider>
+                  </ExpressionOrigin>
+                </CodeExpression>
+              </Parameters>
+            </CodeStatement>
+          </LayoutCode>
+        </Container>
       </SubComponents>
       <LayoutCode>
         <CodeStatement>
-          <CodeExpression id="1_jPanel1">
+          <CodeExpression id="5_jPanel1">
             <CodeVariable name="jPanel1" type="8194" declaredType="javax.swing.JPanel"/>
             <ExpressionOrigin>
               <ExpressionProvider type="ComponentRef">
@@ -164,7 +255,7 @@
             <CodeMethod name="setLayout" class="java.awt.Container" parameterTypes="java.awt.LayoutManager"/>
           </StatementProvider>
           <Parameters>
-            <CodeExpression id="2">
+            <CodeExpression id="6">
               <ExpressionOrigin>
                 <ExpressionProvider type="CodeConstructor">
                   <CodeConstructor class="com.rameses.rcp.control.layout.YLayout" parameterTypes=""/>
@@ -174,12 +265,12 @@
           </Parameters>
         </CodeStatement>
         <CodeStatement>
-          <CodeExpression id="1_jPanel1"/>
+          <CodeExpression id="5_jPanel1"/>
           <StatementProvider type="CodeMethod">
             <CodeMethod name="add" class="java.awt.Container" parameterTypes="java.awt.Component"/>
           </StatementProvider>
           <Parameters>
-            <CodeExpression id="3_userQueueServingHeader1">
+            <CodeExpression id="7_userQueueServingHeader1">
               <CodeVariable name="userQueueServingHeader1" type="8194" declaredType="queueing.view.UserQueueServingHeader"/>
               <ExpressionOrigin>
                 <ExpressionProvider type="ComponentRef">
@@ -190,12 +281,12 @@
           </Parameters>
         </CodeStatement>
         <CodeStatement>
-          <CodeExpression id="1_jPanel1"/>
+          <CodeExpression id="5_jPanel1"/>
           <StatementProvider type="CodeMethod">
             <CodeMethod name="add" class="java.awt.Container" parameterTypes="java.awt.Component"/>
           </StatementProvider>
           <Parameters>
-            <CodeExpression id="4_jPanel3">
+            <CodeExpression id="8_jPanel3">
               <CodeVariable name="jPanel3" type="8194" declaredType="javax.swing.JPanel"/>
               <ExpressionOrigin>
                 <ExpressionProvider type="ComponentRef">
@@ -203,6 +294,15 @@
                 </ExpressionProvider>
               </ExpressionOrigin>
             </CodeExpression>
+          </Parameters>
+        </CodeStatement>
+        <CodeStatement>
+          <CodeExpression id="5_jPanel1"/>
+          <StatementProvider type="CodeMethod">
+            <CodeMethod name="add" class="java.awt.Container" parameterTypes="java.awt.Component"/>
+          </StatementProvider>
+          <Parameters>
+            <CodeExpression id="1_jPanel2"/>
           </Parameters>
         </CodeStatement>
       </LayoutCode>

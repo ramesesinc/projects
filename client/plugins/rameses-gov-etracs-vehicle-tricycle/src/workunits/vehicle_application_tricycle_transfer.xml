@@ -1,0 +1,8 @@
+<workunit extends="com/rameses/gov/etracs/vehicle/templates/VehicleApplicationTransfer.xml" 
+         vehicletype="tricycle" 
+          apptype="TRANSFER" 
+         title="MTOP Transfer">
+    <invokers>
+        <invoker folderid="/home/vehicle/tricycle" caption="Transfer" action="start" index="114" />
+    </invokers>
+</workunit>

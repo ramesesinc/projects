@@ -99,7 +99,7 @@ public class ApplicationInitialPage extends javax.swing.JPanel {
         xFormPanel3.add(entityAddressLookup1);
 
         xDateField1.setCaption("Date Filed");
-        xDateField1.setName("entity.dtfiled"); // NOI18N
+        xDateField1.setName("entity.appdate"); // NOI18N
         xDateField1.setRequired(true);
         xFormPanel3.add(xDateField1);
 

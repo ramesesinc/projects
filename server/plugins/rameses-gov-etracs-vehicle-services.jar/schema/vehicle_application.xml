@@ -2,7 +2,7 @@
 	<element tablename="vehicle_application">
 		<field name="objid" primary="true" prefix="VAPP"/>
 
-		<field name="appno" required="true" />
+		<field name="appno" required="true" caption="App No"/>
 		<field name="appdate" required="true" />
 		<field name="apptype" required="true" />
 		<field name="appyear" required="true" />

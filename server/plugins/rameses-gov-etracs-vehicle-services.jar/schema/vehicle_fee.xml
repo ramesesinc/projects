@@ -10,6 +10,7 @@
 		<field name="item_title" caption="Item Title"/>
 		<field name="amount" caption="Item Amount"/>
 		<field name="amtpaid" caption="Amt Paid"/>
+		<field name="balance" expr="amount - amtpaid" caption="Balance"/>
 		<field name="txntype" caption="Txn Type"/>
 		<field name="sortorder" caption="Sort Order"/>
 		<field name="ledgertype" caption="Ledger Type"/>

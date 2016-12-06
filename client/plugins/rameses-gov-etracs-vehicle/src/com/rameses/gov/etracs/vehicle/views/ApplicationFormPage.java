@@ -86,7 +86,7 @@ public class ApplicationFormPage extends javax.swing.JPanel {
 
         xDateField3.setCaption("Date Filed");
         xDateField3.setEnabled(false);
-        xDateField3.setName("entity.dtfiled"); // NOI18N
+        xDateField3.setName("entity.appdate"); // NOI18N
         xDateField3.setRequired(true);
         xFormPanel5.add(xDateField3);
 

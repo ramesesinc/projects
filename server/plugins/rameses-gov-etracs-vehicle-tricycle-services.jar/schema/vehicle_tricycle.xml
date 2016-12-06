@@ -12,7 +12,15 @@
 		<field name="createdby_objid" required="true" />
 		<field name="createdby_name" required="true" caption="Created By"/>
 		<field name="dtcreated" required="true" caption="Date Created"/>
-		<field name="controlid" required="false" caption="Franchise"/>
-		<field name="appid" required="false" caption="Application id"/>
+
+		<complex name="franchise" ref="vehicle_franchise" jointype="many-to-one" required="false"
+			includefields="controlno,state">
+			<key field="controlid" target="objid" />	
+		</complex>  
+		
+		<complex name="app" ref="vehicle_application" jointype="many-to-one" required="false"
+			includefields="appno">
+			<key field="appid" target="objid"/>
+		</complex>	
 	</element>
 </schema>

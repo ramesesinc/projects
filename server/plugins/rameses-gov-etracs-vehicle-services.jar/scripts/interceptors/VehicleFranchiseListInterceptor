@@ -12,6 +12,7 @@ class VehicleFranchiseListInterceptor {
 		result << [ title: 'All', id:'all'];
 		result << [ title: 'Unassigned', id:'unassigned' ];
 		result << [ title: 'Active', id:'active'];
+		result << [ title: 'Pending', id:'pending'];
 		result << [ title: 'For Renewal', id:'forrenewal'];
 		result << [ title: 'Delinquent', id:'delinquent'];
 	}
@@ -32,7 +33,11 @@ class VehicleFranchiseListInterceptor {
 				break;
 
 			case 'active':
-				str = " NOT(vehicleid IS NULL) AND expirydate >= DATE()";
+				str = " state='ACTIVE' AND expirydate >= DATE()";
+				break;
+
+			case 'pending':
+				str = " state='PENDING' ";
 				break;
 
 			case 'forrenewal':

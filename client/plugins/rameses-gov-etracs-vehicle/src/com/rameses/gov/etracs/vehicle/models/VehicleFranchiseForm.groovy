@@ -35,14 +35,7 @@ public class VehicleFranchiseForm extends CrudFormModel {
         return entity.objid;
     }
     
-    def histListModel = [
-        fetchList: { o->
-            return [];
-            //return entity.fees;
-        }
-    ] as BasicListModel;
-    
-    
+    /*
     def addItem() {
         def h = { o->
             def m = [_schemaname: 'vehicle_franchise_fee'];
@@ -57,13 +50,14 @@ public class VehicleFranchiseForm extends CrudFormModel {
         }
         Modal.show("revenueitem_entry:create", [handler: h ] );
     }
+    */
     
     def feeListModel = [
         fetchList: { o->
-            def m = [_schemaname: 'vehicle_franchise_fee'];
-            m.findBy = [ parentid: entity.objid ]; 
-            //m.where = ["amount-amtpaid > 0"];
-            return queryService.getList(m); 
+            def m = [_schemaname: 'vehicle_fee'];
+            m.findBy = [ controlid: entity.objid ]; 
+            m.where = [" amount - amtpaid > 0"];
+            return queryService.getList(m);
         }
     ] as BasicListModel;
     
@@ -71,6 +65,7 @@ public class VehicleFranchiseForm extends CrudFormModel {
         fetchList: { o->
             def m = [_schemaname:'vehicle_application'];
             m.findBy = [ controlid: entity.objid ];
+            m.orderBy = "dtfiled DESC";
             return queryService.getList(m);
         }
     ] as BasicListModel;

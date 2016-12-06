@@ -3,6 +3,6 @@
           apptype="CHANGE_OWNER" 
          title="MTOP Change Owner">
     <invokers>
-        <invoker folderid="/home/vehicle/tricycle" caption="Change Owner" action="start" />
+        <invoker folderid="/home/vehicle/tricycle" caption="Change Owner" action="start" index="112"/>
     </invokers>
 </workunit>

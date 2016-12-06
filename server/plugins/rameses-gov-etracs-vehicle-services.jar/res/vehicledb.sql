@@ -179,7 +179,7 @@ DROP TABLE IF EXISTS `vehicle_payment`;
 CREATE TABLE `vehicle_payment` (
   `objid` varchar(50) NOT NULL,
   `appid` varchar(50) DEFAULT NULL,
-  `vehicleid` varchar(50) DEFAULT NULL,
+  `franchiseid` varchar(50) DEFAULT NULL,
   `txndate` datetime DEFAULT NULL,
   `refid` varchar(50) DEFAULT NULL,
   `reftype` varchar(50) DEFAULT NULL,
@@ -192,7 +192,7 @@ CREATE TABLE `vehicle_payment` (
   KEY `ix_refid` (`refid`),
   KEY `ix_refno` (`refno`),
   KEY `ix_refdate` (`refdate`),
-  KEY `fk_vehicle_payment` (`vehicleid`),
+  KEY `fk_vehicle_payment` (`franchiseid`),
   CONSTRAINT `vehcile_application_payment_ibfk_1` FOREIGN KEY (`appid`) REFERENCES `vehicle_application` (`objid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -243,9 +243,9 @@ DROP TABLE IF EXISTS `vehicle_tricycle`;
 
 CREATE TABLE `vehicle_tricycle` (
   `objid` varchar(50) NOT NULL,
-  `plateno` varchar(50) DEFAULT NULL,
-  `engineno` varchar(50) DEFAULT NULL,
-  `bodyno` varchar(50) DEFAULT NULL,
+  `plateno` varchar(50) NOT NULL,
+  `engineno` varchar(50) NOT NULL,
+  `bodyno` varchar(50) NOT NULL,
   `sidecarno` varchar(50) DEFAULT NULL,
   `make` varchar(50) DEFAULT NULL,
   `model` varchar(50) DEFAULT NULL,
@@ -255,7 +255,10 @@ CREATE TABLE `vehicle_tricycle` (
   `dtcreated` datetime DEFAULT NULL,
   `controlid` varchar(50) DEFAULT NULL,
   `appid` varchar(50) DEFAULT NULL,
-  PRIMARY KEY (`objid`)
+  PRIMARY KEY (`objid`),
+  UNIQUE KEY `uix_plateno` (`plateno`),
+  UNIQUE KEY `uix_engineno` (`engineno`),
+  UNIQUE KEY `uix_bodyno` (`bodyno`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 /*Table structure for table `vehicle_variable` */
@@ -323,19 +326,22 @@ DROP TABLE IF EXISTS `vehicle_application_tricycle`;
  `vehicle_model` varchar(50) ,
  `vehicle_color` varchar(50) ,
  `taskid` varchar(50) ,
- `state` varchar(50) ,
+ `taskstate` varchar(50) ,
  `franchise_controlno` varchar(50) 
 )*/;
 
-/*Table structure for table `vehicle_fee_tricycle` */
+/*Table structure for table `vehicle_fee` */
 
-DROP TABLE IF EXISTS `vehicle_fee_tricycle`;
+DROP TABLE IF EXISTS `vehicle_fee`;
 
-/*!50001 DROP VIEW IF EXISTS `vehicle_fee_tricycle` */;
-/*!50001 DROP TABLE IF EXISTS `vehicle_fee_tricycle` */;
+/*!50001 DROP VIEW IF EXISTS `vehicle_fee` */;
+/*!50001 DROP TABLE IF EXISTS `vehicle_fee` */;
 
-/*!50001 CREATE TABLE  `vehicle_fee_tricycle`(
+/*!50001 CREATE TABLE  `vehicle_fee`(
  `objid` varchar(50) ,
+ `vehicletype` varchar(50) ,
+ `appno` varchar(50) ,
+ `controlno` varchar(50) ,
  `appid` varchar(50) ,
  `controlid` varchar(50) ,
  `item_objid` varchar(50) ,
@@ -386,14 +392,14 @@ DROP TABLE IF EXISTS `vehicle_franchise_tricycle`;
 /*!50001 DROP TABLE IF EXISTS `vehicle_application_tricycle` */;
 /*!50001 DROP VIEW IF EXISTS `vehicle_application_tricycle` */;
 
-/*!50001 CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `vehicle_application_tricycle` AS select `va`.`objid` AS `objid`,`va`.`appno` AS `appno`,`va`.`appdate` AS `appdate`,`va`.`apptype` AS `apptype`,`va`.`appyear` AS `appyear`,`va`.`vehicletype` AS `vehicletype`,`va`.`vehicleid` AS `vehicleid`,`va`.`controlid` AS `controlid`,`va`.`dtfiled` AS `dtfiled`,`va`.`filedby_objid` AS `filedby_objid`,`va`.`filedby_name` AS `filedby_name`,`va`.`owner_objid` AS `owner_objid`,`va`.`owner_name` AS `owner_name`,`va`.`owner_address_objid` AS `owner_address_objid`,`va`.`owner_address_text` AS `owner_address_text`,`va`.`particulars` AS `particulars`,`va`.`barangay_objid` AS `barangay_objid`,`va`.`barangay_name` AS `barangay_name`,`va`.`billexpirydate` AS `billexpirydate`,`t`.`plateno` AS `vehicle_plateno`,`t`.`engineno` AS `vehicle_engineno`,`t`.`bodyno` AS `vehicle_bodyno`,`t`.`sidecarno` AS `vehicle_sidecarno`,`t`.`make` AS `vehicle_make`,`t`.`model` AS `vehicle_model`,`t`.`color` AS `vehicle_color`,`vt`.`taskid` AS `taskid`,`vt`.`state` AS `state`,`vf`.`controlno` AS `franchise_controlno` from (((`vehicle_application` `va` join `vehicle_tricycle` `t` on((`va`.`vehicleid` = `t`.`objid`))) join `vehicle_application_tricycle_task` `vt` on((`vt`.`refid` = `va`.`objid`))) left join `vehicle_franchise` `vf` on((`va`.`controlid` = `vf`.`objid`))) where (isnull(`vt`.`enddate`) and (`vt`.`state` <> 'start')) */;
+/*!50001 CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `vehicle_application_tricycle` AS select `va`.`objid` AS `objid`,`va`.`appno` AS `appno`,`va`.`appdate` AS `appdate`,`va`.`apptype` AS `apptype`,`va`.`appyear` AS `appyear`,`va`.`vehicletype` AS `vehicletype`,`va`.`vehicleid` AS `vehicleid`,`va`.`controlid` AS `controlid`,`va`.`dtfiled` AS `dtfiled`,`va`.`filedby_objid` AS `filedby_objid`,`va`.`filedby_name` AS `filedby_name`,`va`.`owner_objid` AS `owner_objid`,`va`.`owner_name` AS `owner_name`,`va`.`owner_address_objid` AS `owner_address_objid`,`va`.`owner_address_text` AS `owner_address_text`,`va`.`particulars` AS `particulars`,`va`.`barangay_objid` AS `barangay_objid`,`va`.`barangay_name` AS `barangay_name`,`va`.`billexpirydate` AS `billexpirydate`,`t`.`plateno` AS `vehicle_plateno`,`t`.`engineno` AS `vehicle_engineno`,`t`.`bodyno` AS `vehicle_bodyno`,`t`.`sidecarno` AS `vehicle_sidecarno`,`t`.`make` AS `vehicle_make`,`t`.`model` AS `vehicle_model`,`t`.`color` AS `vehicle_color`,`vt`.`taskid` AS `taskid`,`vt`.`state` AS `taskstate`,`vf`.`controlno` AS `franchise_controlno` from (((`vehicle_application` `va` join `vehicle_tricycle` `t` on((`va`.`vehicleid` = `t`.`objid`))) join `vehicle_franchise` `vf` on((`va`.`controlid` = `vf`.`objid`))) left join `vehicle_application_tricycle_task` `vt` on((`vt`.`refid` = `va`.`objid`))) where isnull(`vt`.`enddate`) */;
 
-/*View structure for view vehicle_fee_tricycle */
+/*View structure for view vehicle_fee */
 
-/*!50001 DROP TABLE IF EXISTS `vehicle_fee_tricycle` */;
-/*!50001 DROP VIEW IF EXISTS `vehicle_fee_tricycle` */;
+/*!50001 DROP TABLE IF EXISTS `vehicle_fee` */;
+/*!50001 DROP VIEW IF EXISTS `vehicle_fee` */;
 
-/*!50001 CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `vehicle_fee_tricycle` AS select `vf`.`objid` AS `objid`,`vf`.`appid` AS `appid`,`va`.`controlid` AS `controlid`,`vf`.`item_objid` AS `item_objid`,`vf`.`item_code` AS `item_code`,`vf`.`item_title` AS `item_title`,`vf`.`amount` AS `amount`,`vf`.`amtpaid` AS `amtpaid`,`vf`.`txntype` AS `txntype`,`vf`.`sortorder` AS `sortorder`,'application' AS `ledgertype` from (`vehicle_application_fee` `vf` join `vehicle_application` `va` on(((`va`.`objid` = `vf`.`appid`) and (`va`.`vehicletype` = 'tricycle')))) union select `vf`.`objid` AS `objid`,NULL AS `appid`,`va`.`objid` AS `controlid`,`vf`.`item_objid` AS `item_objid`,`vf`.`item_code` AS `item_code`,`vf`.`item_title` AS `item_title`,`vf`.`amount` AS `amount`,`vf`.`amtpaid` AS `amtpaid`,`vf`.`txntype` AS `txntype`,`vf`.`sortorder` AS `sortorder`,'franchise' AS `ledgertype` from (`vehicle_franchise_fee` `vf` join `vehicle_franchise` `va` on(((`va`.`objid` = `vf`.`parentid`) and (`va`.`vehicletype` = 'tricycle')))) */;
+/*!50001 CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `vehicle_fee` AS select `vf`.`objid` AS `objid`,`va`.`vehicletype` AS `vehicletype`,`va`.`appno` AS `appno`,`f`.`controlno` AS `controlno`,`vf`.`appid` AS `appid`,`va`.`controlid` AS `controlid`,`vf`.`item_objid` AS `item_objid`,`vf`.`item_code` AS `item_code`,`vf`.`item_title` AS `item_title`,`vf`.`amount` AS `amount`,`vf`.`amtpaid` AS `amtpaid`,`vf`.`txntype` AS `txntype`,`vf`.`sortorder` AS `sortorder`,'application' AS `ledgertype` from ((`vehicle_application_fee` `vf` join `vehicle_application` `va` on((`va`.`objid` = `vf`.`appid`))) join `vehicle_franchise` `f` on((`f`.`objid` = `va`.`controlid`))) union select `vf`.`objid` AS `objid`,`va`.`vehicletype` AS `vehicletype`,NULL AS `appno`,`va`.`controlno` AS `controlno`,NULL AS `appid`,`va`.`objid` AS `controlid`,`vf`.`item_objid` AS `item_objid`,`vf`.`item_code` AS `item_code`,`vf`.`item_title` AS `item_title`,`vf`.`amount` AS `amount`,`vf`.`amtpaid` AS `amtpaid`,`vf`.`txntype` AS `txntype`,`vf`.`sortorder` AS `sortorder`,'franchise' AS `ledgertype` from (`vehicle_franchise_fee` `vf` join `vehicle_franchise` `va` on((`va`.`objid` = `vf`.`parentid`))) */;
 
 /*View structure for view vehicle_franchise_tricycle */
 

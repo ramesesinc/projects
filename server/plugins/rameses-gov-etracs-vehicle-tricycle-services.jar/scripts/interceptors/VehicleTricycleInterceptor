@@ -12,9 +12,6 @@ class VehicleTricycleInterceptor {
 	@DataContext("vehicle_tricycle")
 	def triEm;
 
-	@DataContext("vehicle_franchise")
-	def franchiseEm;
-
 	@Before(pattern="PersistenceService.create", eval="#{args[0]._schemaname == 'vehicle_tricycle' }", index=100)
 	public void beforeCreate(def evt) {
 		def o = evt.args[0];
@@ -26,10 +23,9 @@ class VehicleTricycleInterceptor {
 			}
 		}
 		if(g) {
-			def f = franchiseEm.find([vehicleid: g.objid]).first()
-			if(f) {
-				def	msg = "This vehicle already exists with existing franchise " + f.controlno;
-				throw new Warning(msg, g );
+			if(g.controlid) {
+				def	msg = "This vehicle already exists with existing franchise " + g.franchise.controlno;
+				throw new Exception(msg);
 			}
 			else {
 				//just return without creating a new record.

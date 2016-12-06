@@ -46,17 +46,19 @@ public class CaptureAssessmentPage extends javax.swing.JPanel {
         xLabel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
         xLabel3.setCaption("App Type");
         xLabel3.setExpression("#{entity.apptype}");
-        xLabel3.setPreferredSize(new java.awt.Dimension(80, 18));
+        xLabel3.setPreferredSize(new java.awt.Dimension(180, 20));
         xFormPanel5.add(xLabel3);
 
         xLabel4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
         xLabel4.setCaption("App Year");
         xLabel4.setExpression("#{entity.appyear}");
-        xLabel4.setPreferredSize(new java.awt.Dimension(80, 18));
+        xLabel4.setPreferredSize(new java.awt.Dimension(180, 20));
         xFormPanel5.add(xLabel4);
 
         xDateField1.setCaption("Expiry Date");
         xDateField1.setName("entity.franchise.expirydate"); // NOI18N
+        xDateField1.setPreferredSize(new java.awt.Dimension(180, 20));
+        xDateField1.setRequired(true);
         xFormPanel5.add(xDateField1);
 
         xDataTable1.setColumns(new com.rameses.rcp.common.Column[]{

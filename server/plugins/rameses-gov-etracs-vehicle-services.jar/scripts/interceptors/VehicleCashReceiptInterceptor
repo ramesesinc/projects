@@ -9,6 +9,9 @@ class VehicleCashReceiptInterceptor {
 	@DataContext("vehicle_application")
 	def appEm;
 
+	@DataContext(dynamic=true)
+	def em;
+
 	@DataContext("vehicle_fee")
 	def vFee;
 
@@ -72,21 +75,21 @@ class VehicleCashReceiptInterceptor {
 		*******************************************************************/
 		if(m.appid) {
 			def app = appEm.find( [objid:m.appid ] ).first();
-			if( app.taskid ==null ) return;
+			def vapp = em.lookup( "vehicle_application_" + app.vehicletype ).find( [objid: m.appid] ).first();
+			if( vapp.taskid ==null ) return;
 			
 			//check balance first before signalling
 			def total = vFee.select( "total:{SUM( amount-amtpaid )}" ).find( [controlid: app.controlid ] ).val();
 			if(total == 0) {
 				def wfParam = [
 					processname: 'vehicle_application_' + app.vehicletype, 
-					refid:m.appid,
+					refid: m.appid,
 					action: 'submit',
 					actor: [objid:env.USERID, name:env.FULLNAME]
 				];	
 				wfService.signal( wfParam );
 			}	
 		}
-		
 	}
 
 	@After(pattern="CashReceiptVoidService.post",index=0,eval="#{result.receipt.collectiontype.handler=='vehicle'}")

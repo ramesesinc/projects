@@ -36,6 +36,9 @@ class VehicleApplicationCreateInterceptor {
 	private void updateVehicle( def o ) {
 		def vdb = vehicleEm.lookup("vehicle_"+o.vehicletype);
 		vdb.find([objid: o.vehicle.objid] ).update([appid: o.objid, controlid: o.franchise.objid ] );
+		if( o.prevvehicle?.objid && (o.vehicle.objid != o.prevvehicle.objid)) {
+			vdb.find( [objid: o.prevvehicle.objid] ).update( [appid: null, controlid: null] );
+		}
 	}
 
 	/**************************************************
@@ -95,11 +98,15 @@ class VehicleApplicationCreateInterceptor {
 		throw new Exception("RETIRE NOT YET SUPPORTED");
 	}
 
-	@After(pattern="VehicleApplicationService.create", eval="#{result.apptype == 'CHANGE_OWNER'}", index=10)
+	@After(pattern="VehicleApplicationService.create", 
+		eval="#{result.apptype.matches('CHANGE_OWNER|CHANGE_UNIT|TRANSFER')}", index=10)
 	public void afterCreateApplicationForChangeOwner(def evt) {
 		def entity = evt.result;
+		def p = evt.args[0];
 		franchiseEm.find([objid: entity.franchise.objid]).update( [appid: entity.objid, state: 'PENDING'] );
+		entity.prevvehicle = p.prevvehicle;
 		updateVehicle( entity );
+		startWorkflow( entity );
 	}
 
 

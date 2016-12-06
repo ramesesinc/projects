@@ -2,7 +2,7 @@
 	<element tablename="vehicle_franchise">
 		<field name="objid" primary="true" prefix="MF"/>
 		<field name="controlno" caption="Control No" required="true" searchable="true" indexed="true"/>
-		<field name="state"  required="true" />
+		<field name="state"  required="true" caption="State"/>
 		<field name="vehicletype"  required="true" />
 		<field name="appid"  />
 		<field name="expirydate"  />

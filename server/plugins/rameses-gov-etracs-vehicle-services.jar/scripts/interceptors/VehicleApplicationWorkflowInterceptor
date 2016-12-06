@@ -13,8 +13,10 @@ class VehicleApplicationWorkflowInterceptor {
 		eval="#{args[0].processname.startsWith('vehicle_application_') && args[0].action == 'release' }" )
 	public void beforeRelease(def evt) {
 		def o = evt.args[0];
-		throw new Exception("Cannot Release. Please Assign first the application No " + o.refid);
 		def app = appEm.find([objid: o.refid]).first();
+		if(!app) {
+			throw new Exception("Cannot Release. Application not found with refid " + o.refid);
+		}
 		franchiseEm.find( [objid: app.controlid] ).update( [state:'ACTIVE'] );
 	}	
 

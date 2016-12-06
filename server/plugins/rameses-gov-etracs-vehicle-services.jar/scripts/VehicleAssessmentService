@@ -29,12 +29,12 @@ class VehicleAssessmentService {
 
 		def svrDate = dateSvc.getServerDate();
 		if(!o.billdate) o.billdate = svrDate;
-		if(!o.dtfiled) o.dtfiled = svrDate;
+		if(!o.appdate) o.appdate = svrDate;
 
 		//build facts
 		def facts = [];
 		facts << new VehicleApplication( apptype: o.apptype, vehicletype: o.vehicletype );
-		facts << new AppDate( o.dtfiled );
+		facts << new AppDate( o.appdate );
 		facts << new SystemDate(svrDate);
 
 		def fran = franchiseEm.lookup( "vehicle_franchise_"+o.vehicletype ).find([objid: o.franchise.objid]).first();

@@ -1,0 +1,8 @@
+<workunit extends="com/rameses/gov/etracs/vehicle/templates/VehicleApplicationChangeUnit.xml" 
+         vehicletype="tricycle" 
+          apptype="CHANGE_UNIT" 
+         title="MTOP Change Unit">
+    <invokers>
+        <invoker folderid="/home/vehicle/tricycle" caption="Change Unit" action="start" index="113"/>
+    </invokers>
+</workunit>

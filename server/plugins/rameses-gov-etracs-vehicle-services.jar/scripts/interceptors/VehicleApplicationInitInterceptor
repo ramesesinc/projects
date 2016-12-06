@@ -68,12 +68,29 @@ class VehicleApplicationInitInterceptor {
 		def params = evt.args[0];
 		def entity = evt.result;
 		loadFranchiseInfo( params.franchiseno, entity );
-		int yr = dateSvc.getServerYear();
-		if( entity.appyear != yr ) throw new Exception("Invalid year for change owner. Year must be the same last year active" );	
 		checkUnpaidFees(  entity );
 		entity.prevowner = entity.owner;
 		entity.owner = [:];
 	}
 
+	@After(pattern="VehicleApplicationService.init", eval="#{args[0].apptype == 'CHANGE_UNIT'}", index=10)
+	public void afterInitApplicationForChangeUnit(def evt) {
+		def params = evt.args[0];
+		def entity = evt.result;
+		loadFranchiseInfo( params.franchiseno, entity );
+		checkUnpaidFees(  entity );
+		entity.prevvehicle = entity.vehicle;
+	}
+
+	@After(pattern="VehicleApplicationService.init", eval="#{args[0].apptype == 'TRANSFER'}", index=10)
+	public void afterInitApplicationForTransfer(def evt) {
+		def params = evt.args[0];
+		def entity = evt.result;
+		loadFranchiseInfo( params.franchiseno, entity );
+		checkUnpaidFees(  entity );
+		entity.prevowner = entity.owner;
+		entity.owner = [:];
+		entity.prevvehicle = entity.vehicle;
+	}
 
 }

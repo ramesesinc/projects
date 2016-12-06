@@ -11,17 +11,9 @@ import com.rameses.osiris2.client.*;
 import com.rameses.gov.etracs.vehicle.models.*;
 import com.rameses.enterprise.models.*;
 
-public class NewVehicleApplicationForm extends AbstractVehicleEntryForm {
+public class ChangeApplicationForm extends AbstractVehicleEntryForm {
     
-
     def franchiseno;
-    
-    void create() {
-        setUp();
-        entity = applicationService.init(entity);
-        afterLoad();
-        editmode = 'create';
-    }
     
     void open() {
         if(!entity) throw new Exception("Call the setUp method in ApplicationForm first. Check start action");
@@ -31,11 +23,21 @@ public class NewVehicleApplicationForm extends AbstractVehicleEntryForm {
         editmode = 'read';
     }
 
+    def changeUnit() {
+        def h = { o->
+            entity.vehicle = o;
+            entity.vehicleid = o.objid;
+            binding.refresh();
+        }
+        return Inv.lookupOpener("vehicle_" + vehicletype + ":create", [handler: h ] )
+    }
+    
     def feeListModel = [
         fetchList: { o->
             return entity.fees;
         }
     ] as BasicListModel;
+    
     
     
 }

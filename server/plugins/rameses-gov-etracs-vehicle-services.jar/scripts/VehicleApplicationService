@@ -29,7 +29,7 @@ class VehicleApplicationService {
 		entity.vehicletype = o.vehicletype;
 		entity.apptype = o.apptype;
 		entity.appyear = dateSvc.getServerYear();
-        entity.dtfiled = dateSvc.getBasicServerDate();
+        entity.appdate = dateSvc.getBasicServerDate();
         entity.owner = [:];
         entity.fees = [];
         entity.requirements = [];
@@ -46,7 +46,7 @@ class VehicleApplicationService {
 		def txntype = o.vehicletype?.toUpperCase();
 		String prefix = "V" + txntype[0] + o.appyear;
 		o.appno =  prefix + seqSvc.getNextFormattedSeries( prefix );
-		o.appdate = svrDate;
+		o.dtfiled = svrDate;
 		o.filedby = [objid: env.USERID, name: env.FULLNAME];
 		return appEm.create(o);
 	}

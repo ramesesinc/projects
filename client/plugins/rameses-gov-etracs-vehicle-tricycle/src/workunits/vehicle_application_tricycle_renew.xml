@@ -4,6 +4,6 @@
         apptype="RENEW"
         title="MTOP Renewal">
     <invokers>
-        <invoker folderid="/home/vehicle/tricycle" caption="Renew" action="start" />
+        <invoker folderid="/home/vehicle/tricycle" caption="Renew" action="start" index="111"/>
     </invokers>
 </workunit>

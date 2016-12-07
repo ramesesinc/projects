@@ -61,6 +61,14 @@ class VehicleAssessmentService {
 			return [askinfos : res.askinfos.collect{ it.toMap() } ];
 		}
 		else {
+			/******************************************************
+			* run billing here
+			*******************************************************/
+
+			def ctx = new RuleExecutionContext(facts);
+			ctx.result.billitems = res.billitems;
+			res = ruleSvc.execute( "vehiclebilling", facts, null, null );
+
 			def app = [:];
 			app.infos = res.infos;
 			app.items = res.billitems.collect{ it.toMap() }

@@ -1,0 +1,29 @@
+<schema adapter="vehicledb">
+	<element tablename="vehicle_franchise_fishboat">
+		<field name="objid" primary="true"/>
+		<field name="vehicleid" visible="false" />
+		<field name="state"  caption="Status"/>
+		<field name="vehicletype" />
+		<field name="controlno" caption="Control No"/>
+		<field name="expirydate" caption="Expiry Date"/>
+		<field name="activeyear" caption="Active Year"/>
+		<field name="vehicle_objid" />
+
+		<field name="vehicle_vesselname"/>
+		<field name="vehicle_length" type="decimal"/>
+		<field name="vehicle_breadth" type="decimal"/>
+		<field name="vehicle_depth"  type="decimal"/>
+		<field name="vehicle_grosstonnage"  type="decimal"/>
+		<field name="vehicle_nettonnage" type="decimal"/>
+		<field name="vehicle_buildername" />
+		<field name="vehicle_builderplace"/>
+		<field name="vehicle_buildyear" type="integer"/>
+
+		<field name="owner_name" caption="Owner Name"/>
+		<field name="owner_objid" visible="false"/>
+		<field name="owner_address_text" caption="Owner Address"/>
+		<field name="owner_address_objid" visible="false"/>
+		<field name="barangay_name" caption="Barangay"/>
+		<field name="barangay_objid" visible="false"/>
+	</element>
+</schema>

@@ -1,0 +1,28 @@
+<schema adapter="vehicledb">
+	<element tablename="vehicle_application_fishboat">
+		<field name="objid" primary="true"/>
+		<field name="appno" caption="App No"/>
+		<field name="appdate" caption="App Date"/>
+		<field name="apptype" caption="App Type"/>
+		<field name="appyear" caption="App Year"/>
+		<field name="dtfiled" caption="Date Filed"/>
+		<field name="filedby_name" caption="Filed By"/>
+		<field name="owner_name" caption="Owner Name"/>
+		<field name="owner_address_text" caption="Owner Address"/>
+		<field name="particulars" required="true"/>
+		<field name="barangay_name" caption="Barangay"/>
+		<field name="billexpirydate" required="true"/>
+		<field name="vehicle_plateno" caption="Plate No"/>
+		<field name="vehicle_engineno" caption="Engine No"/>
+		<field name="vehicle_bodyno" caption="Body No"/>
+
+		<field name="vehicle_sidecarno" caption="Sidecar No"/>
+		<field name="vehicle_make" caption="Make"/>
+		<field name="vehicle_model" caption="Model"/>
+		<field name="vehicle_color" caption="Color"/>
+
+		<field name="franchise_controlno" caption="Franchise No"/>
+		<field name="taskid" />
+		<field name="taskstate" />
+	</element>	
+</schema>

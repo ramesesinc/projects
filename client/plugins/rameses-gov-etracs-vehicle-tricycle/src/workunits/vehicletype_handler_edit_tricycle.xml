@@ -1,8 +1,0 @@
-<workunit extends="com/rameses/gov/etracs/vehicle/templates/VehicleHandler.xml">
-    <invokers>
-        <invoker type="vehicle_type_handler_edit:tricycle" />
-    </invokers>
-    <pages>
-        <page template="com.rameses.gov.etracs.vehicle.tricycle.views.TricycleInfoEditPanel" />
-    </pages>
-</workunit>

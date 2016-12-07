@@ -174,3 +174,6 @@ android/*/Thumbs.db
 /client/plugins/rameses-gov-etracs-vehicle-boat/nbproject/private/
 /client/plugins/rameses-gov-etracs-vehicle-boat/build/
 /client/plugins/rameses-gov-etracs-vehicle-boat/dist/
+/client/plugins/rameses-gov-etracs-vehicle-fishboat/nbproject/private/
+/client/plugins/rameses-gov-etracs-vehicle-fishboat/build/
+/client/plugins/rameses-gov-etracs-vehicle-fishboat/dist/

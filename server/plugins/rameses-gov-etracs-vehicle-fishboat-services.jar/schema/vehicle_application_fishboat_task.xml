@@ -1,0 +1,23 @@
+<schema adapter="vehicledb">
+
+	<element tablename="vehicle_application_fishboat_task">
+		<field name="taskid" primary="true"  prefix="VTATSK" visible="true"/>
+		<complex name="app" ref="vehicle_application_fishboat" jointype="many-to-one" required="false"
+			includefields="appno,apptype,owner.name,vehicle.vesselname"> 
+			<key field="refid" target="objid"/>
+		</complex>
+		<field name="parentprocessid" />
+		<field name="state" required="true"/>
+		<field name="dtcreated" required="true"/>
+		<field name="startdate" />
+		<field name="enddate" />
+		<field name="assignee_objid" />
+		<field name="assignee_name" caption="Assigned To" />
+		<field name="actor_objid" />
+		<field name="actor_name" />
+		<field name="message" />	
+		<field name="prevtaskid" />	
+	</element>
+
+</schema>
+		

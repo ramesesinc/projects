@@ -1,0 +1,10 @@
+<workunit extends="com/rameses/gov/etracs/vehicle/templates/VehicleApplication.xml" 
+        schemaName="vehicle_application_fishboat" 
+        vehicletype="fishboat">
+    <invokers>
+        <invoker type="vehicle_application_fishboat:open" caption="Fishboat Application" action="open" />
+        <invoker type="global:barcode:51010" caption="Fishboat Application" 
+            action="openBarcode" 
+            target="window" expr1="#{barcodeid.startsWith('WA')}" />
+    </invokers>
+</workunit>

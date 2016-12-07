@@ -48,6 +48,12 @@ class VehicleApplicationService {
 		o.appno =  prefix + seqSvc.getNextFormattedSeries( prefix );
 		o.dtfiled = svrDate;
 		o.filedby = [objid: env.USERID, name: env.FULLNAME];
+
+		//check fees. do not persist surcharge, interest or discount.
+		if(o.fees) {
+			o.fees = o.fees.findAll{ !it.txntype.matches('surcharge|interest|discount') }
+		}
+
 		return appEm.create(o);
 	}
 

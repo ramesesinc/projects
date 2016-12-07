@@ -1,8 +1,0 @@
-<workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" schemaName="vehicle_application_boat">
-    <invokers>
-        <invoker type="vehicle_menu:boat" 
-            caption="Applications" action="init" index="-1"
-            cols="appno,apptype,owner.name,particulars,vesselname"/>
-    </invokers>
-    <code class="com.rameses.gov.etracs.vehicle.models.VehicleApplicationList" />
-</workunit>

@@ -20,9 +20,13 @@ class AddDueDate implements RuleActionHandler {
 		def ct = RuleExecutionContext.getCurrentContext();
 		def facts = ct.facts;
 
+		//do not add due date if there is already a due date having the same fact and tag
 		def dt = new DueDate(sdate );
 		dt.tag = tag;
-		facts << dt;
+		def d = facts.findAll{ (it instanceof DueDate) && it.tag == dt.tag };
+		if(!d) {
+			facts << dt;
+		}
 	}
 
 }

@@ -15,6 +15,7 @@ import com.rameses.osiris3.common.*;
 class AddBillItem extends AbstractAddBillItem {
 
 	public void execute(def params, def drools) {
+
 		def acct = params.account;
 		def amt = params.amount.decimalValue;
 

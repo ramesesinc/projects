@@ -34,17 +34,20 @@ public class ApplicationInitialPage extends javax.swing.JPanel {
         xButton1 = new com.rameses.rcp.control.XButton();
         jPanel1 = new javax.swing.JPanel();
         xFormPanel3 = new com.rameses.rcp.control.XFormPanel();
+        xLookupField1 = new com.rameses.rcp.control.XLookupField();
+        xDateField3 = new com.rameses.rcp.control.XDateField();
         xLabel2 = new com.rameses.rcp.control.XLabel();
+        xComboBox1 = new com.rameses.rcp.control.XComboBox();
         xIntegerField1 = new com.rameses.rcp.control.XIntegerField();
+        xDateField1 = new com.rameses.rcp.control.XDateField();
         entityLookup1 = new com.rameses.entity.components.EntityLookup();
         entityAddressLookup1 = new com.rameses.entity.components.EntityAddressLookup();
-        xDateField1 = new com.rameses.rcp.control.XDateField();
         barangayLookup1 = new com.rameses.etracs.components.BarangayLookup();
         xTextField1 = new com.rameses.rcp.control.XTextField();
-        xLookupField1 = new com.rameses.rcp.control.XLookupField();
         xFormPanel4 = new com.rameses.rcp.control.XFormPanel();
         xLabel3 = new com.rameses.rcp.control.XLabel();
         xLabel9 = new com.rameses.rcp.control.XLabel();
+        xDateField2 = new com.rameses.rcp.control.XDateField();
         xLabel8 = new com.rameses.rcp.control.XLabel();
         xLabel7 = new com.rameses.rcp.control.XLabel();
         xLabel4 = new com.rameses.rcp.control.XLabel();
@@ -61,7 +64,7 @@ public class ApplicationInitialPage extends javax.swing.JPanel {
         );
         xSubFormPanel1Layout.setVerticalGroup(
             xSubFormPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 257, Short.MAX_VALUE)
+            .add(0, 213, Short.MAX_VALUE)
         );
 
         xButton1.setImmediate(true);
@@ -73,16 +76,50 @@ public class ApplicationInitialPage extends javax.swing.JPanel {
         xFormPanel3.setCaptionWidth(150);
         xFormPanel3.setVisibleWhen("#{editmode != 'read' }");
 
+        xLookupField1.setCaption("Franchise Control No");
+        xLookupField1.setExpression("#{entity.franchise.controlno}");
+        xLookupField1.setHandler("lookupAvailableFranchise");
+        xLookupField1.setName("entity.franchise"); // NOI18N
+        xLookupField1.setPreferredSize(new java.awt.Dimension(180, 20));
+        xLookupField1.setRequired(true);
+        xLookupField1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                xLookupField1ActionPerformed(evt);
+            }
+        });
+        xFormPanel3.add(xLookupField1);
+
+        xDateField3.setCaption("Franchise Date");
+        xDateField3.setName("entity.franchisedate"); // NOI18N
+        xDateField3.setPreferredSize(new java.awt.Dimension(150, 20));
+        xDateField3.setRequired(true);
+        xDateField3.setVisibleWhen("#{ entity.txnmode == 'CAPTURE' }");
+        xFormPanel3.add(xDateField3);
+
         xLabel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
         xLabel2.setCaption("App Type");
         xLabel2.setExpression("#{entity.apptype}");
-        xLabel2.setPreferredSize(new java.awt.Dimension(80, 20));
+        xLabel2.setPreferredSize(new java.awt.Dimension(150, 20));
+        xLabel2.setVisibleWhen("#{ entity.txnmode != 'CAPTURE'  }");
         xFormPanel3.add(xLabel2);
+
+        xComboBox1.setCaption("App Type");
+        xComboBox1.setItems("apptypes");
+        xComboBox1.setName("entity.apptype"); // NOI18N
+        xComboBox1.setPreferredSize(new java.awt.Dimension(150, 20));
+        xComboBox1.setVisibleWhen("#{ entity.txnmode == 'CAPTURE'  }");
+        xFormPanel3.add(xComboBox1);
 
         xIntegerField1.setCaption("App Year");
         xIntegerField1.setName("entity.appyear"); // NOI18N
-        xIntegerField1.setPreferredSize(new java.awt.Dimension(80, 20));
+        xIntegerField1.setPreferredSize(new java.awt.Dimension(150, 20));
         xFormPanel3.add(xIntegerField1);
+
+        xDateField1.setCaption("App date");
+        xDateField1.setName("entity.appdate"); // NOI18N
+        xDateField1.setPreferredSize(new java.awt.Dimension(150, 20));
+        xDateField1.setRequired(true);
+        xFormPanel3.add(xDateField1);
 
         entityLookup1.setCaption("Owner");
         entityLookup1.setEntityType("entityindividual");
@@ -98,11 +135,6 @@ public class ApplicationInitialPage extends javax.swing.JPanel {
         entityAddressLookup1.setRequired(true);
         xFormPanel3.add(entityAddressLookup1);
 
-        xDateField1.setCaption("Date Filed");
-        xDateField1.setName("entity.appdate"); // NOI18N
-        xDateField1.setRequired(true);
-        xFormPanel3.add(xDateField1);
-
         barangayLookup1.setCaption("Barangay");
         barangayLookup1.setName("entity.barangay"); // NOI18N
         barangayLookup1.setRequired(true);
@@ -112,19 +144,6 @@ public class ApplicationInitialPage extends javax.swing.JPanel {
         xTextField1.setName("entity.particulars"); // NOI18N
         xTextField1.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel3.add(xTextField1);
-
-        xLookupField1.setCaption("Franchise Control No");
-        xLookupField1.setExpression("#{entity.franchise.controlno}");
-        xLookupField1.setHandler("lookupAvailableFranchise");
-        xLookupField1.setName("entity.franchise"); // NOI18N
-        xLookupField1.setPreferredSize(new java.awt.Dimension(180, 20));
-        xLookupField1.setRequired(true);
-        xLookupField1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                xLookupField1ActionPerformed(evt);
-            }
-        });
-        xFormPanel3.add(xLookupField1);
 
         jPanel1.add(xFormPanel3, "card3");
 
@@ -142,6 +161,11 @@ public class ApplicationInitialPage extends javax.swing.JPanel {
         xLabel9.setExpression("#{entity.appyear}");
         xLabel9.setPreferredSize(new java.awt.Dimension(80, 20));
         xFormPanel4.add(xLabel9);
+
+        xDateField2.setCaption("App Date");
+        xDateField2.setName("entity.appdate"); // NOI18N
+        xDateField2.setRequired(true);
+        xFormPanel4.add(xDateField2);
 
         xLabel8.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         xLabel8.setCaption("Owner Name");
@@ -195,7 +219,7 @@ public class ApplicationInitialPage extends javax.swing.JPanel {
                 .add(jPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .add(7, 7, 7)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(xSubFormPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 257, Short.MAX_VALUE)
+                    .add(xSubFormPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 213, Short.MAX_VALUE)
                     .add(xButton1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
@@ -211,7 +235,10 @@ public class ApplicationInitialPage extends javax.swing.JPanel {
     private com.rameses.entity.components.EntityLookup entityLookup1;
     private javax.swing.JPanel jPanel1;
     private com.rameses.rcp.control.XButton xButton1;
+    private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XDateField xDateField1;
+    private com.rameses.rcp.control.XDateField xDateField2;
+    private com.rameses.rcp.control.XDateField xDateField3;
     private com.rameses.rcp.control.XFormPanel xFormPanel3;
     private com.rameses.rcp.control.XFormPanel xFormPanel4;
     private com.rameses.rcp.control.XIntegerField xIntegerField1;

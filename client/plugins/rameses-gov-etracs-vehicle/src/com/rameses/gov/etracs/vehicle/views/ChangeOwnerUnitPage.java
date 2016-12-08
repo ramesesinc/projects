@@ -12,12 +12,12 @@ import com.rameses.rcp.ui.annotations.Template;
  * @author dell
  */
 @Template(FormPage.class)
-public class TransferOwnerUnitPage extends javax.swing.JPanel {
+public class ChangeOwnerUnitPage extends javax.swing.JPanel {
 
     /**
      * Creates new form TransferOwnerUnitPage
      */
-    public TransferOwnerUnitPage() {
+    public ChangeOwnerUnitPage() {
         initComponents();
     }
 

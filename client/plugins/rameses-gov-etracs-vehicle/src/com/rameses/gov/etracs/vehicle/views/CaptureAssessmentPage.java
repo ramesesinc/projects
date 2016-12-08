@@ -55,8 +55,8 @@ public class CaptureAssessmentPage extends javax.swing.JPanel {
         xLabel4.setPreferredSize(new java.awt.Dimension(180, 20));
         xFormPanel5.add(xLabel4);
 
-        xDateField1.setCaption("Expiry Date");
-        xDateField1.setName("entity.franchise.expirydate"); // NOI18N
+        xDateField1.setCaption("Bill Expiry Date");
+        xDateField1.setName("entity.billexpirydate"); // NOI18N
         xDateField1.setPreferredSize(new java.awt.Dimension(180, 20));
         xDateField1.setRequired(true);
         xFormPanel5.add(xDateField1);

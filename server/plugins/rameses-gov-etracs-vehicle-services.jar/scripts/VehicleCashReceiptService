@@ -59,11 +59,10 @@ class VehicleCashReceiptService {
 		/*************************************************************************
 		* RUN BILLING ROUTINE
 		**************************************************************************/
-		def p = [:];
-		p.putAll(o);	
-		p.application = [apptype: app.apptype, vehicletype: app.vehicletype];
-		p.billitems = fees;
-		def res = billingSvc.process(p);
+		app.billitems = fees;
+		app.payment = o.payment;
+		//app.billdate = o.receiptdate;
+		def res = billingSvc.process(app);
 
 		/*************************************************************************
 		* PACKAGE THE RESULT
@@ -75,6 +74,9 @@ class VehicleCashReceiptService {
 		entity.paidbyaddress = app.owner.address?.text; 	
 		entity.particulars = fran.controlno;
 		entity.items = res.billitems.collect{ it.toMap() };
+		entity.items.each {
+			it.amount = NumberUtil.round(it.amount);
+		}
 		return entity;
 	}
 

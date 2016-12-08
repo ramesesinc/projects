@@ -1,0 +1,8 @@
+<workunit extends="com/rameses/gov/etracs/vehicle/templates/VehicleApplicationChangeOwnerUnit.xml" 
+         vehicletype="tricycle" 
+          apptype="CHANGE_OWNER_UNIT" 
+         title="MTOP Change Owner/Unit">
+    <invokers>
+        <invoker folderid="/home/vehicle/tricycle" caption="Change Owner Unit" action="start" index="114" />
+    </invokers>
+</workunit>

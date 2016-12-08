@@ -28,6 +28,7 @@ class VehicleApplicationService {
 		def entity = [:];
 		entity.vehicletype = o.vehicletype;
 		entity.apptype = o.apptype;
+		entity.txnmode = 'ONLINE';
 		entity.appyear = dateSvc.getServerYear();
         entity.appdate = dateSvc.getBasicServerDate();
         entity.owner = [:];

@@ -29,6 +29,8 @@ public abstract class AbstractVehicleEntryForm extends PageFlowController {
     def vehicleTypeHandler;
     def editmode = "read";
     
+    def apptypes = ["NEW","RENEW"];
+    
     void setUp() {
         formTitle = workunit.info.workunit_properties.title;
         if(!formTitle) formTitle = getTitle();
@@ -36,6 +38,7 @@ public abstract class AbstractVehicleEntryForm extends PageFlowController {
         ruleExecutor = new RuleProcessor(  { p-> return assessmentService.assess(p) } );
         entity = [:];
         entity.apptype = workunit?.info?.workunit_properties?.apptype;
+        entity.txnmode = "ONLINE";
         entity.vehicletype = vehicletype;
     }
 
@@ -75,7 +78,7 @@ public abstract class AbstractVehicleEntryForm extends PageFlowController {
         if( !r) {
             throw new BreakException();
         }
-        entity.franchise.expirydate = r.duedate;
+        entity.billexpirydate = r.duedate;
         if( r.items ) {
             entity.fees = r.items;
             entity.amount = entity.fees.sum{ it.amount };

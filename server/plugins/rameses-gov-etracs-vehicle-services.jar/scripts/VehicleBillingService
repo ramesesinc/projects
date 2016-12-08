@@ -36,34 +36,30 @@ class VehicleBillingService {
 	}
 
 	@ProxyMethod
-	public def process( def o ) {
-		if(!o.billitems) {
+	public def process( def app ) {
+		if(!app.billitems) {
 			throw new Exception("VehicleBillingService requires billitems");
 		}
-		if(!o.application)
-			throw new Exception("VehicleBillingService requires application passed");
+		if(!app.apptype) throw new Exception("app type is required");
+		if(!app.vehicletype) throw new Exception("vehicle type is required");	
+		if(!app.franchise?.controlno) throw new Exception("franchise controlno  is required");	
 
 		def svrDate = dateSvc.getServerDate();
-		if(!o.billdate) o.billdate = svrDate;
-		if(!o.dtfiled) o.dtfiled = svrDate;
-
-		def dt = dateSvc.getServerDate();
-		def facts = [];
-		def app = o.application;
-		facts << new VehicleApplication( apptype: app.apptype, vehicletype: app.vehicletype );
-
-		if(o.payment?.amount) {
-			facts << new Payment( amount: o.payment.amount );
-		}	
+		if(!app.billdate) app.billdate = svrDate;
 		
-		facts << new CurrentDate(dt);
-		facts << new AppDate( o.dtfiled );
-		facts << new rules.treasury.facts.BillDate(o.billdate);
+		def facts = [];
+		if(app.payment?.amount) {
+			facts << new Payment( amount: app.payment.amount );
+		}	
+		facts << new VehicleApplication( app );
+		facts << new VehicleFranchise( app.franchise );
+		facts << new AppDate( app.appdate );
 		facts << new rules.treasury.facts.SystemDate(svrDate);
+		facts << new rules.treasury.facts.BillDate(app.billdate);
 
 		def  acctUtil = new ItemAccountUtil();
 		def billItems = [];
-		o.billitems.each {
+		app.billitems.each {
 			def bi = new BillItem( account: acctUtil.createAccountFact(it.item), 
 				amount: it.amount, 
 				refid: it.objid, 

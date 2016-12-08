@@ -9,6 +9,9 @@ class VehicleApplicationWorkflowInterceptor {
 	@DataContext("vehicle_franchise")
 	def franchiseEm;
 
+	@Service("DateService")
+	def dateSvc;
+
 	@After(pattern="WorkflowTaskService.signal", 
 		eval="#{args[0].processname.startsWith('vehicle_application_') && args[0].action == 'release' }" )
 	public void beforeRelease(def evt) {
@@ -17,7 +20,11 @@ class VehicleApplicationWorkflowInterceptor {
 		if(!app) {
 			throw new Exception("Cannot Release. Application not found with refid " + o.refid);
 		}
-		franchiseEm.find( [objid: app.controlid] ).update( [state:'ACTIVE'] );
+		def d = [state:'ACTIVE'];
+		if( app.apptype == 'NEW' ) {
+			d.dtregistered = dateSvc.getServerDate();
+		}	
+		franchiseEm.find( [objid: app.controlid] ).update( d );
 	}	
 
 

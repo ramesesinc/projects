@@ -3,11 +3,14 @@
 		<field name="objid" primary="true" prefix="VMTOP"/>
 		<field name="plateno" required="true" caption="Plate No" indexed="true" searchable="true"/>
 		<field name="engineno" required="true" caption="Engine No" indexed="true"  searchable="true"/>
-		<field name="bodyno" required="true" caption="Body No" indexed="true"  searchable="true"/>
-		<field name="sidecarno" required="false" caption="Sidecar No"/>
+		<field name="chassisno" required="true" caption="Chassis No" indexed="true"  searchable="true"/>
 		<field name="make" required="false" caption="Make"/>
 		<field name="model" required="false" caption="Model"/>
 		<field name="color" required="false" caption="Color"/>
+
+		<field name="sidecarno" required="false" caption="Sidecar No"/>
+		<field name="bodyno" required="false" caption="Body No" />
+		<field name="sidecarcolor" required="false" caption="Sidecar Color"/>
 
 		<field name="createdby_objid" required="true" />
 		<field name="createdby_name" required="true" caption="Created By"/>

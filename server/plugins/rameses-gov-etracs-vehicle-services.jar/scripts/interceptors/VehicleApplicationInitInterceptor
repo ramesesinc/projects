@@ -21,7 +21,7 @@ class VehicleApplicationInitInterceptor {
 	private void checkUnpaidFees( def o ) {
 		def tot = vFee.find([controlid: o.franchise.objid]).where("amount - amtpaid > 0").select("t:{SUM(amount - amtpaid)}").val();
 		if( tot!=null && tot > 0 ) {
-			throw new Exception("There is still unpaid balance of "+tot+" that needs to be settled");
+			throw new Exception("There is still unpaid balance that needs to be settled");
 		}
 	}
 
@@ -53,28 +53,8 @@ class VehicleApplicationInitInterceptor {
 		checkUnpaidFees(  entity );
 	}
 
-	@After(pattern="VehicleApplicationService.init", eval="#{args[0].apptype == 'RETIRE'}", index=10)
+	@After(pattern="VehicleApplicationService.init", eval="#{args[0].apptype == 'DROP'}", index=10)
 	public void afterInitApplicationForRetire(def evt) {
-		def params = evt.args[0];
-		def entity = evt.result;
-		loadFranchiseInfo( params.franchiseno, entity );
-		int yr = dateSvc.getServerYear();
-		if( entity.appyear != yr ) throw new Exception("Invalid year for retire. Year must be the same as last year active" );	
-		checkUnpaidFees(  entity );
-	}
-
-	@After(pattern="VehicleApplicationService.init", eval="#{args[0].apptype == 'CHANGE_OWNER'}", index=10)
-	public void afterInitApplicationForChangeOwner(def evt) {
-		def params = evt.args[0];
-		def entity = evt.result;
-		loadFranchiseInfo( params.franchiseno, entity );
-		checkUnpaidFees(  entity );
-		entity.prevowner = entity.owner;
-		entity.owner = [:];
-	}
-
-	@After(pattern="VehicleApplicationService.init", eval="#{args[0].apptype == 'CHANGE_UNIT'}", index=10)
-	public void afterInitApplicationForChangeUnit(def evt) {
 		def params = evt.args[0];
 		def entity = evt.result;
 		loadFranchiseInfo( params.franchiseno, entity );
@@ -82,7 +62,8 @@ class VehicleApplicationInitInterceptor {
 		entity.prevvehicle = entity.vehicle;
 	}
 
-	@After(pattern="VehicleApplicationService.init", eval="#{args[0].apptype == 'TRANSFER'}", index=10)
+
+	@After(pattern="VehicleApplicationService.init", eval="#{args[0].apptype == 'CHANGE_OWNER_UNIT'}", index=10)
 	public void afterInitApplicationForTransfer(def evt) {
 		def params = evt.args[0];
 		def entity = evt.result;

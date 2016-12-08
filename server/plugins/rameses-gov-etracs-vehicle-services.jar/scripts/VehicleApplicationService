@@ -31,6 +31,7 @@ class VehicleApplicationService {
 		def entity = [:];
 		entity.vehicletype = o.vehicletype;
 		entity.apptype = o.apptype;
+		entity.txnmode = 'ONLINE';
 		entity.appyear = dateSvc.getServerYear();
         entity.appdate = dateSvc.getBasicServerDate();
         entity.owner = [:];
@@ -51,6 +52,12 @@ class VehicleApplicationService {
 		o.appno =  prefix + seqSvc.getNextFormattedSeries( prefix );
 		o.dtfiled = svrDate;
 		o.filedby = [objid: env.USERID, name: env.FULLNAME];
+
+		//check fees. do not persist surcharge, interest or discount.
+		if(o.fees) {
+			o.fees = o.fees.findAll{ !it.txntype.matches('surcharge|interest|discount') }
+		}
+
 		return appEm.create(o);
 	}
 

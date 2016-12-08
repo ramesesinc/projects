@@ -1,0 +1,9 @@
+<workunit extends="com/rameses/gov/etracs/vehicle/templates/VehicleApplicationRenew.xml"
+        schemaName="vehicle_application" 
+        vehicletype="fishboat" 
+        apptype="RENEW"
+        title="Fishboat Renewal">
+    <invokers>
+        <invoker folderid="/home/vehicle/fishboat" caption="Renew" action="start" index="111"/>
+    </invokers>
+</workunit>

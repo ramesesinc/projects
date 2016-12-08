@@ -15,12 +15,6 @@ class VehicleApplicationCreateInterceptor {
 	@DataContext(dynamic=true)
 	def vehicleFranchiseEm;
 
-	@DataContext("vehicle_franchise_fee")
-	def franchiseFeeEm;
-
-	@DataContext("vehicle_application_fee")
-	def appFeeEm;
-
 	@Service("DateService")
 	def dateSvc;
 
@@ -72,8 +66,7 @@ class VehicleApplicationCreateInterceptor {
 		if(!o.fees) throw new Exception("There must be at least 1 fee");
 	} 
 		
-		
-	@After(pattern="VehicleApplicationService.create", eval="#{result.apptype.matches('NEW|RENEW')}", index=10)
+	@After(pattern="VehicleApplicationService.create", eval="#{result.apptype.matches('NEW|RENEW') && result.txnmode!='CAPTURE'}", index=10)
 	public void afterCreateApplicationNewOrRenew(def evt) {
 		def entity = evt.result;
 		franchiseEm.find([objid: entity.franchise.objid]).update( [appid: entity.objid, state: 'PENDING'] );		
@@ -82,24 +75,24 @@ class VehicleApplicationCreateInterceptor {
 	}
 
 	//Update franchise only if the appyear is more recent than the last active year
-	@After(pattern="VehicleApplicationService.create", eval="#{result.apptype == 'CAPTURE'}", index=10)
+	@After(pattern="VehicleApplicationService.create", eval="#{result.txnmode == 'CAPTURE'}", index=10)
 	public void afterCreateApplicationCapture(def evt) {
+		def a = evt.args[0];
 		def entity = evt.result;
+		if(!a.franchisedate) throw new Exception("Error in capture. Franchise date is required");
+
 		def n = "vehicle_franchise_" + entity.vehicletype;
 		def f = vehicleFranchiseEm.lookup(n).find([objid: entity.franchise.objid]).first();
 		if( entity.appyear > f.activeyear  ) {
-			franchiseEm.find([objid: entity.franchise.objid]).update( [appid: entity.objid, state: 'ACTIVE', expirydate:entity.franchise.expirydate ] );		
+			franchiseEm.find([objid: entity.franchise.objid]).update( 
+				[appid: entity.objid, state: 'ACTIVE', dtregistered:a.franchisedate ] 
+			);		
 			updateVehicle( entity );
 		}
 	}
 
-	@After(pattern="VehicleApplicationService.create", eval="#{result.apptype == 'RETIRE'}", index=10)
-	public void afterCreateApplicationForRetire(def evt) {
-		throw new Exception("RETIRE NOT YET SUPPORTED");
-	}
 
-	@After(pattern="VehicleApplicationService.create", 
-		eval="#{result.apptype.matches('CHANGE_OWNER|CHANGE_UNIT|TRANSFER')}", index=10)
+	@After(pattern="VehicleApplicationService.create", eval="#{result.apptype.matches('CHANGE_OWNER_UNIT')}", index=10)
 	public void afterCreateApplicationForChangeOwner(def evt) {
 		def entity = evt.result;
 		def p = evt.args[0];
@@ -107,6 +100,16 @@ class VehicleApplicationCreateInterceptor {
 		entity.prevvehicle = p.prevvehicle;
 		updateVehicle( entity );
 		startWorkflow( entity );
+	}
+
+	@After(pattern="VehicleApplicationService.create", eval="#{result.apptype.matches('DROP')}", index=10)
+	public void afterCreateApplicationForDrop(def evt) {
+		def entity = evt.result;
+		def p = evt.args[0];
+		franchiseEm.find([objid: entity.franchise.objid]).update( [appid: null, state: 'PENDING'] );
+		if( o.prevvehicle?.objid && (o.vehicle.objid != o.prevvehicle.objid)) {
+			vdb.find( [objid: o.prevvehicle.objid] ).update( [appid: null, controlid: null] );
+		}
 	}
 
 

@@ -1,0 +1,8 @@
+<workunit extends="com/rameses/gov/etracs/vehicle/templates/VehicleApplicationTransfer.xml" 
+         vehicletype="fishboat" 
+          apptype="TRANSFER" 
+         title="Fishboat Transfer">
+    <invokers>
+        <invoker folderid="/home/vehicle/fishboat" caption="Transfer" action="start" index="114" />
+    </invokers>
+</workunit>

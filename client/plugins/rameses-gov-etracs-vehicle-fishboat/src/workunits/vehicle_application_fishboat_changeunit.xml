@@ -1,0 +1,8 @@
+<workunit extends="com/rameses/gov/etracs/vehicle/templates/VehicleApplicationChangeUnit.xml" 
+         vehicletype="fishboat" 
+          apptype="CHANGE_UNIT" 
+         title="Fishboat Change Unit">
+    <invokers>
+        <invoker folderid="/home/vehicle/fishboat" caption="Change Unit" action="start" index="113"/>
+    </invokers>
+</workunit>

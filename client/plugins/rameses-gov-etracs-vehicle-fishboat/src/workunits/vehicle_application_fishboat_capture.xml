@@ -1,0 +1,8 @@
+<workunit extends="com/rameses/gov/etracs/vehicle/templates/VehicleCapture.xml"
+        vehicletype="fishboat" 
+        apptype="CAPTURE"
+        title="Fishboat Capture">
+    <invokers>
+        <invoker folderid="/home/vehicle/fishboat" caption="Capture" action="start" />
+    </invokers>
+</workunit>

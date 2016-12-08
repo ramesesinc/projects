@@ -52,7 +52,8 @@ public class ApplicationAssessmentPage extends javax.swing.JPanel {
         xLabel4.setPreferredSize(new java.awt.Dimension(180, 20));
         xFormPanel5.add(xLabel4);
 
-        xDateField2.setCaption("Franchise Expiry Date");
+        xDateField2.setText("entity.billexpirydate");
+        xDateField2.setCaption("Bill Expiry Date");
         xDateField2.setCaptionWidth(150);
         xDateField2.setDisableWhen("#{1==1}");
         xDateField2.setEnabled(false);

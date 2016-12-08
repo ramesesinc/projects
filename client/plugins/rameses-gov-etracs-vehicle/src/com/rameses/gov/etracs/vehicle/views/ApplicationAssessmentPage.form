@@ -88,7 +88,8 @@
         </Component>
         <Component class="com.rameses.rcp.control.XDateField" name="xDateField2">
           <Properties>
-            <Property name="caption" type="java.lang.String" value="Franchise Expiry Date"/>
+            <Property name="text" type="java.lang.String" value="entity.billexpirydate"/>
+            <Property name="caption" type="java.lang.String" value="Bill Expiry Date"/>
             <Property name="captionWidth" type="int" value="150"/>
             <Property name="disableWhen" type="java.lang.String" value="#{1==1}"/>
             <Property name="enabled" type="boolean" value="false"/>

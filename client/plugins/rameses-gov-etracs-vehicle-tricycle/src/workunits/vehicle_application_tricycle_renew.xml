@@ -1,9 +1,11 @@
 <workunit extends="com/rameses/gov/etracs/vehicle/templates/VehicleApplicationRenew.xml"
-        schemaName="vehicle_application" 
-        vehicletype="tricycle" 
-        apptype="RENEW"
-        title="MTOP Renewal">
+          schemaName="vehicle_application" 
+          vehicletype="tricycle" 
+          apptype="RENEW"
+          title="MTOP Renewal">
     <invokers>
-        <invoker folderid="/home/vehicle/tricycle" caption="Renew" action="start" index="111"/>
+        <invoker folderid="/home/vehicle/tricycle" caption="Renew" action="start" />
     </invokers>
+    
+    <code class="com.rameses.gov.etracs.vehicle.tricycle.models.NewTricycleVehicleApplicationModel" />
 </workunit>

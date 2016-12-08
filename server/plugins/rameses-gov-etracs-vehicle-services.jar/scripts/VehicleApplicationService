@@ -19,6 +19,9 @@ class VehicleApplicationService {
 	@DataContext("vehicle_application")
 	def appEm;
 
+	@DataContext("vehicle_application_fee")
+	def appfeeEm;
+
 	@Service("SequenceService")
 	def seqSvc;
 
@@ -51,6 +54,15 @@ class VehicleApplicationService {
 		return appEm.create(o);
 	}
 
+	@ProxyMethod 
+	public def open( params ) {
+		if ( !params.objid ) throw new Exception('objid parameter is required'); 
 
+		def app = appEm.find([ objid: params.objid ]).first(); 
+		if ( !app ) throw new Exception('application record does not exist'); 
+		
+		app.fees = appfeeEm.find([ appid: app.objid ]).list(); 
+		return app;  
+	} 
 
 }

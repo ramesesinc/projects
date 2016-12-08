@@ -61,6 +61,8 @@
 	<field name="vehicle.make" class="java.lang.String"/>
 	<field name="vehicle.model" class="java.lang.String"/>
 	<field name="vehicle.color" class="java.lang.String"/>
+	<field name="filedby.name" class="java.lang.String"/>
+	<field name="filedby.jobtitle" class="java.lang.String"/>
 
 		<background>
 			<band height="0"  isSplitAllowed="true" >
@@ -1112,7 +1114,7 @@
 					<textElement textAlignment="Center" verticalAlignment="Top" rotation="None" lineSpacing="Single">
 						<font fontName="Tahoma" pdfFontName="Helvetica" size="7" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA["PRINTED BY : " + $P{PRINTEDBY} + "  PRINT DATE : "  + (new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format($P{PRINTDATE}))]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA["PRINTED BY : " + $P{PRINTEDBY} + "          PRINT DATE : "  + (new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format($P{PRINTDATE}))]]></textFieldExpression>
 				</textField>
 			</band>
 		</lastPageFooter>
@@ -1121,8 +1123,8 @@
 				<staticText>
 					<reportElement
 						mode="Transparent"
-						x="25"
-						y="113"
+						x="303"
+						y="61"
 						width="68"
 						height="11"
 						forecolor="#000000"
@@ -1136,13 +1138,13 @@
 					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<text><![CDATA[Approved:]]></text>
+				<text><![CDATA[Assessed By:]]></text>
 				</staticText>
 				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Transparent"
-						x="25"
-						y="139"
+						x="303"
+						y="87"
 						width="223"
 						height="11"
 						forecolor="#000000"
@@ -1156,13 +1158,13 @@
 					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$P{TREASURERNAME}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{filedby.name}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Transparent"
-						x="25"
-						y="150"
+						x="303"
+						y="98"
 						width="223"
 						height="11"
 						forecolor="#000000"
@@ -1175,7 +1177,7 @@
 					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$P{TREASURERTITLE}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{filedby.jobtitle}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement
@@ -1200,8 +1202,8 @@
 				<staticText>
 					<reportElement
 						mode="Transparent"
-						x="291"
-						y="66"
+						x="12"
+						y="98"
 						width="223"
 						height="11"
 						forecolor="#000000"
@@ -1216,7 +1218,7 @@
 					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 						<font fontName="Tahoma" pdfFontName="Helvetica-Oblique" size="8" isBold="false" isItalic="true" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<text><![CDATA[(Owner/Proprietor/Administrator)]]></text>
+				<text><![CDATA[(Owner / Proprietor)]]></text>
 				</staticText>
 				<line direction="TopDown">
 					<reportElement

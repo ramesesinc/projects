@@ -17,6 +17,7 @@ SELECT
     t.bodyno  AS vehicle_bodyno,
     t.sidecarno  AS vehicle_sidecarno,
     t.sidecarcolor  AS vehicle_sidecarcolor,
+    t.crname  AS vehicle_crname,
     t.make  AS vehicle_make,
     t.model AS vehicle_model,
     t.color AS vehicle_color

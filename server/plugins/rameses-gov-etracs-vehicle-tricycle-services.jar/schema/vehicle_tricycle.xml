@@ -11,6 +11,7 @@
 		<field name="sidecarno" required="false" caption="Sidecar No"/>
 		<field name="bodyno" required="false" caption="Body No" />
 		<field name="sidecarcolor" required="false" caption="Sidecar Color"/>
+		<field name="crname" required="false" caption="CR Name"/>
 
 		<field name="createdby_objid" required="true" />
 		<field name="createdby_name" required="true" caption="Created By"/>

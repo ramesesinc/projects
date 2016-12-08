@@ -10,6 +10,7 @@ SELECT
     t.bodyno  AS vehicle_bodyno,
     t.sidecarno  AS vehicle_sidecarno,
     t.sidecarcolor  AS vehicle_sidecarcolor,
+    t.crname  AS vehicle_crname,
     vt.taskid,
     vt.state AS taskstate,
     vf.controlno AS franchise_controlno

@@ -51,6 +51,8 @@ public class ApplicationFormPage extends javax.swing.JPanel {
         xFormPanel4 = new com.rameses.rcp.control.XFormPanel();
         xDateField2 = new com.rameses.rcp.control.XDateField();
         xDataTable2 = new com.rameses.rcp.control.XDataTable();
+        jPanel3 = new javax.swing.JPanel();
+        xDataTable3 = new com.rameses.rcp.control.XDataTable();
 
         xFormPanel5.setCaptionWidth(120);
 
@@ -84,10 +86,9 @@ public class ApplicationFormPage extends javax.swing.JPanel {
         xLabel6.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel5.add(xLabel6);
 
-        xDateField3.setCaption("Date Filed");
+        xDateField3.setCaption("App Date");
         xDateField3.setEnabled(false);
         xDateField3.setName("entity.appdate"); // NOI18N
-        xDateField3.setRequired(true);
         xFormPanel5.add(xDateField3);
 
         xLabel7.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
@@ -357,6 +358,76 @@ public class ApplicationFormPage extends javax.swing.JPanel {
 
         xTabbedPane1.addTab("Fees", xPanel1);
 
+        xDataTable3.setColumns(new com.rameses.rcp.common.Column[]{
+            new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", "name"}
+                , new Object[]{"caption", "Information Name"}
+                , new Object[]{"width", 100}
+                , new Object[]{"minWidth", 80}
+                , new Object[]{"maxWidth", 250}
+                , new Object[]{"required", false}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
+            }),
+            new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", "datatype"}
+                , new Object[]{"caption", "Data Type"}
+                , new Object[]{"width", 100}
+                , new Object[]{"minWidth", 100}
+                , new Object[]{"maxWidth", 100}
+                , new Object[]{"required", false}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
+            }),
+            new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", "value"}
+                , new Object[]{"caption", "Value"}
+                , new Object[]{"width", 100}
+                , new Object[]{"minWidth", 80}
+                , new Object[]{"maxWidth", 120}
+                , new Object[]{"required", false}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.DecimalColumnHandler("#,##0.00", -1.0, -1.0, false, 2)}
+            })
+        });
+        xDataTable3.setHandler("infoListModel");
+        xDataTable3.setId("infoListModel");
+        xDataTable3.setName("infoListModel"); // NOI18N
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(xDataTable3, javax.swing.GroupLayout.DEFAULT_SIZE, 601, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(xDataTable3, javax.swing.GroupLayout.PREFERRED_SIZE, 229, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(262, Short.MAX_VALUE))
+        );
+
+        xTabbedPane1.addTab("Infos", jPanel3);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -377,8 +448,10 @@ public class ApplicationFormPage extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
     private com.rameses.rcp.control.XDataTable xDataTable1;
     private com.rameses.rcp.control.XDataTable xDataTable2;
+    private com.rameses.rcp.control.XDataTable xDataTable3;
     private com.rameses.rcp.control.XDateField xDateField2;
     private com.rameses.rcp.control.XDateField xDateField3;
     private com.rameses.rcp.control.XFormPanel xFormPanel2;

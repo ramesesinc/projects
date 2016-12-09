@@ -21,7 +21,12 @@
 		<field name="vehicle_model" caption="Model"/>
 		<field name="vehicle_color" caption="Color"/>
 
+		<field name="vehicle_chassisno" caption="Chassis No"/>
+		<field name="vehicle_sidecarcolor" caption="Color"/>
+		<field name="vehicle_crname" caption="CR Name"/>
+
 		<field name="franchise_controlno" caption="Franchise No"/>
+		<field name="franchise_dtregistered" caption="Franchise Date"/>
 		<field name="taskid" />
 		<field name="taskstate" />
 	</element>	

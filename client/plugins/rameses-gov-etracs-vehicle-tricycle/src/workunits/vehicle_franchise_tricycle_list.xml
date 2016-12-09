@@ -6,4 +6,7 @@
                  cols="controlno,activeyear,owner.name,owner.address.text,vehicle.plateno,vehicle.engineno,vehicle.bodyno,barangay.name,state"
                  action="init" orderBy="controlno"/>
     </invokers>
+    <pages>
+        <page name="queryForm" template="com.rameses.gov.etracs.vehicle.components.FranchiseClusterLookup" />
+    </pages>
 </workunit>

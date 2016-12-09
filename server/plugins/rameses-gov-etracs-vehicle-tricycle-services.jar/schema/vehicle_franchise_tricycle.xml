@@ -15,6 +15,7 @@
 		<field name="vehicle_make"  indexed="true"/>
 		<field name="vehicle_model"  indexed="true"/>
 		<field name="vehicle_color" />
+		<field name="vehicle_crname" />
 		<field name="owner_name" caption="Owner Name" indexed="true" searchable="true"/>
 		<field name="owner_objid" visible="false"/>
 		<field name="owner_address_text" caption="Owner Address"/>

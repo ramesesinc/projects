@@ -44,15 +44,6 @@ public class ApplicationInitialPage extends javax.swing.JPanel {
         entityAddressLookup1 = new com.rameses.entity.components.EntityAddressLookup();
         barangayLookup1 = new com.rameses.etracs.components.BarangayLookup();
         xTextField1 = new com.rameses.rcp.control.XTextField();
-        xFormPanel4 = new com.rameses.rcp.control.XFormPanel();
-        xLabel3 = new com.rameses.rcp.control.XLabel();
-        xLabel9 = new com.rameses.rcp.control.XLabel();
-        xDateField2 = new com.rameses.rcp.control.XDateField();
-        xLabel8 = new com.rameses.rcp.control.XLabel();
-        xLabel7 = new com.rameses.rcp.control.XLabel();
-        xLabel4 = new com.rameses.rcp.control.XLabel();
-        xLabel6 = new com.rameses.rcp.control.XLabel();
-        xLabel5 = new com.rameses.rcp.control.XLabel();
 
         xSubFormPanel1.setHandler("vehicleTypeHandler");
 
@@ -74,7 +65,6 @@ public class ApplicationInitialPage extends javax.swing.JPanel {
         jPanel1.setLayout(new java.awt.CardLayout());
 
         xFormPanel3.setCaptionWidth(150);
-        xFormPanel3.setVisibleWhen("#{editmode != 'read' }");
 
         xLookupField1.setCaption("Franchise Control No");
         xLookupField1.setExpression("#{entity.franchise.controlno}");
@@ -147,58 +137,6 @@ public class ApplicationInitialPage extends javax.swing.JPanel {
 
         jPanel1.add(xFormPanel3, "card3");
 
-        xFormPanel4.setCaptionWidth(150);
-        xFormPanel4.setVisibleWhen("#{editmode == 'read' }");
-
-        xLabel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
-        xLabel3.setCaption("App Type");
-        xLabel3.setExpression("#{entity.apptype}");
-        xLabel3.setPreferredSize(new java.awt.Dimension(80, 20));
-        xFormPanel4.add(xLabel3);
-
-        xLabel9.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-        xLabel9.setCaption("App Year");
-        xLabel9.setExpression("#{entity.appyear}");
-        xLabel9.setPreferredSize(new java.awt.Dimension(80, 20));
-        xFormPanel4.add(xLabel9);
-
-        xDateField2.setCaption("App Date");
-        xDateField2.setName("entity.appdate"); // NOI18N
-        xDateField2.setRequired(true);
-        xFormPanel4.add(xDateField2);
-
-        xLabel8.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-        xLabel8.setCaption("Owner Name");
-        xLabel8.setExpression("#{entity.owner.name}");
-        xLabel8.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel4.add(xLabel8);
-
-        xLabel7.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-        xLabel7.setCaption("Home Address");
-        xLabel7.setExpression("#{entity.owner.address.text}");
-        xLabel7.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel4.add(xLabel7);
-
-        xLabel4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-        xLabel4.setCaption("Particulars");
-        xLabel4.setExpression("#{entity.particulars}");
-        xLabel4.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel4.add(xLabel4);
-
-        xLabel6.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-        xLabel6.setCaption("Barangay");
-        xLabel6.setExpression("#{entity.barangay.name}");
-        xLabel6.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel4.add(xLabel6);
-
-        xLabel5.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-        xLabel5.setCaption("Franchise Control No");
-        xLabel5.setExpression("#{entity.franchise.controlno}");
-        xLabel5.setPreferredSize(new java.awt.Dimension(180, 20));
-        xFormPanel4.add(xLabel5);
-
-        jPanel1.add(xFormPanel4, "card3");
-
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -237,19 +175,10 @@ public class ApplicationInitialPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XButton xButton1;
     private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XDateField xDateField1;
-    private com.rameses.rcp.control.XDateField xDateField2;
     private com.rameses.rcp.control.XDateField xDateField3;
     private com.rameses.rcp.control.XFormPanel xFormPanel3;
-    private com.rameses.rcp.control.XFormPanel xFormPanel4;
     private com.rameses.rcp.control.XIntegerField xIntegerField1;
     private com.rameses.rcp.control.XLabel xLabel2;
-    private com.rameses.rcp.control.XLabel xLabel3;
-    private com.rameses.rcp.control.XLabel xLabel4;
-    private com.rameses.rcp.control.XLabel xLabel5;
-    private com.rameses.rcp.control.XLabel xLabel6;
-    private com.rameses.rcp.control.XLabel xLabel7;
-    private com.rameses.rcp.control.XLabel xLabel8;
-    private com.rameses.rcp.control.XLabel xLabel9;
     private com.rameses.rcp.control.XLookupField xLookupField1;
     private com.rameses.rcp.control.XSubFormPanel xSubFormPanel1;
     private com.rameses.rcp.control.XTextField xTextField1;

@@ -23,4 +23,4 @@ SELECT
 FROM vehicle_franchise vf
 LEFT JOIN vehicle_application a ON vf.appid=a.objid 
 LEFT JOIN vehicle_tricycle t ON a.vehicleid=t.objid  
-WHERE vf.`vehicletype` = 'tricycle'    
+WHERE vf.vehicletype = 'tricycle'    

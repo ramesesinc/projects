@@ -23,7 +23,10 @@ class VehicleApplicationWorkflowInterceptor {
 		def d = [state:'ACTIVE'];
 		if( app.apptype == 'NEW' ) {
 			d.dtregistered = dateSvc.getServerDate();
-		}	
+		} else if ( app.apptype=='DROP' ) {
+			d.state = 'OPEN'; 
+			d.appid = null; 
+		}
 		franchiseEm.find( [objid: app.controlid] ).update( d );
 	}	
 

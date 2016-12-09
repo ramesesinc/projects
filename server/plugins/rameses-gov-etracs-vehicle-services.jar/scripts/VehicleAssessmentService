@@ -64,8 +64,9 @@ class VehicleAssessmentService {
 			/******************************************************
 			* run billing here
 			*******************************************************/
-			def ctx = new RuleExecutionContext(facts);
+			def ctx = new RuleExecutionContext(facts);			
 			def res2 = ruleSvc.execute( "vehiclebilling", facts, null, null );
+			if(!res.billitems) res.billitems = [];
 			if(!res2.billitems) res2.billitems = [];
 
 			def app = [:];

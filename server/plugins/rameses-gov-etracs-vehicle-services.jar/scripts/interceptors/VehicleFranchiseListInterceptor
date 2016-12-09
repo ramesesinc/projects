@@ -33,7 +33,8 @@ class VehicleFranchiseListInterceptor {
 				break;
 
 			case 'active':
-				str = " state='ACTIVE' AND expirydate >= DATE()";
+				m.year = dateSvc.getServerYear();
+				str = " state='ACTIVE' AND activeyear = :year ";
 				break;
 
 			case 'pending':
@@ -42,7 +43,7 @@ class VehicleFranchiseListInterceptor {
 
 			case 'forrenewal':
 				m.year = dateSvc.getServerYear() - 1;
-				str = " expirydate < DATE() AND activeyear = :year";
+				str = " activeyear = :year";
 				break;
 
 			case 'delinquent':

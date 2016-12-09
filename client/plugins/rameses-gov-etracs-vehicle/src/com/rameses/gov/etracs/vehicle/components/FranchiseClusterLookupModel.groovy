@@ -6,11 +6,12 @@ import com.rameses.seti2.models.*;
 import com.rameses.osiris2.common.*;
 import com.rameses.util.*;
 
-class EngineDataTypeModel extends ComponentBean {
+class FranchiseClusterLookupModel extends ComponentBean {
 
-    def makeList = [ 'HANSHIN', 'MITSUBISHI', 'TOYOTA' ]
+    def vehicletype;    
+    def clusterList = [ 'MAIN', 'CLUSTER1', 'CLUSTER 2' ]
     
-    public def getEngine() {
+    public def getCluster() {
         if( getValue()==null ) {
             setValue([:]);
         }
@@ -18,7 +19,7 @@ class EngineDataTypeModel extends ComponentBean {
         return o; 
     }
     
-    public void setEngine( def o ) { 
+    public void setCluster( def o ) { 
         if(o==null) o = [:];
         setValue( o );
     }

@@ -104,12 +104,13 @@ class VehicleApplicationCreateInterceptor {
 
 	@After(pattern="VehicleApplicationService.create", eval="#{result.apptype.matches('DROP')}", index=10)
 	public void afterCreateApplicationForDrop(def evt) {
-		def entity = evt.result;
+		def o = evt.result;
 		def p = evt.args[0];
-		franchiseEm.find([objid: entity.franchise.objid]).update( [appid: null, state: 'PENDING'] );
+		franchiseEm.find([objid: o.franchise.objid]).update( [appid: null, state: 'PENDING'] );
 		if( o.prevvehicle?.objid && (o.vehicle.objid != o.prevvehicle.objid)) {
 			vdb.find( [objid: o.prevvehicle.objid] ).update( [appid: null, controlid: null] );
 		}
+		startWorkflow( o );
 	}
 
 

@@ -28,7 +28,7 @@ public class BatchCaptureManagementService
 	public def getOpenIssuanceList(params){
 		params.txnmode = '%'
 		params.batchcapture = true 
-		params.filter = '  and owner_objid = assignee_objid   '
+		params.filter = ' owner_objid = assignee_objid '
 		return serialControlSvc.getOpenList(params) 
 	}
 

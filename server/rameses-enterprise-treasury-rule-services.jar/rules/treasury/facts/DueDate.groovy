@@ -1,4 +1,4 @@
-package treasury.facts;
+package rules.treasury.facts;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -7,14 +7,14 @@ import com.rameses.rules.common.*;
 
 public class DueDate extends DateFact {
     
-	String name;
-
-	public DueDate(String s) {
-        super(s);
-    }
+	String tag;
 
     public DueDate() {
         super();
+    }
+
+    public DueDate(String s) {
+        super(s);
     }
 
     public DueDate(Date d) {

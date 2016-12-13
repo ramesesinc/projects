@@ -71,8 +71,8 @@ class RemittanceService  {
 		return o; 
 	} 
 
-	@ProxyMethod
-	public def post( o ) {
+	@ProxyMethod 
+	public def post( o ) { 
 		if( o.amount == 0 ) 
 			throw new Exception("There is no amount to remit");
 
@@ -179,39 +179,37 @@ class RemittanceService  {
         // DD - DATE POSTED 
         // UT - USER TXNCODE
         // SQ - SEQUENCE 
-        // FS- FORMATTED SEQUENCE 
+        // FS - FORMATTED SEQUENCE 
         
-        def dt = dateSvc.parseDate( remittance.dtposted, null)
-        def txncode = "REM";	
-		if(env.TXNCODE) txncode = "REM-" + env.TXNCODE; 		
-
-        def values = [
+        def txncode = ["REM", env.TXNCODE, env.ORGTXNCODE].findAll{( it )}.join("-");
+        def dt = dateSvc.parseDate( remittance.dtposted, null); 
+        def values = [ 
         	YY:dt.year+"", 
         	MM:dt.month.toString().padLeft(2, '0',),
         	DD:dt.day.toString().padLeft(2, '0'),
         	UT:txncode 
-        ]
+        ];
 
-        def txnno  = format 
+        def txnno = format;  
         values.keySet().each {
             txnno = txnno.replace( it, values[it] )
         }
 
-        def series 
-        if(seqid) {
+        def series; 
+        if ( seqid ) { 
         	def seq = seqid;
         	values.keySet().each {
             	seq = seq.replace( it, values[it] )
             }
             series = seqSvc.getNextSeries( seq); 
             
-        } else {
+        } else { 
         	series = seqSvc.getNextSeries(  txnno.replace("FS", '') ); 
         }
 
-        txnno = txnno.replace( 'SQ', series+"" )
-        txnno = txnno.replace( 'FS', "$series".padLeft(5, '0') )
-        return txnno 
+        txnno = txnno.replace( 'SQ', series+"" );
+        txnno = txnno.replace( 'FS', "$series".padLeft(5, '0')); 
+        return txnno; 
     }
 
     @ProxyMethod 

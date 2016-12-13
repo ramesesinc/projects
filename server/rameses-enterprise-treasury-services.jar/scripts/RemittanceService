@@ -25,47 +25,54 @@ class RemittanceService  {
 	def cashBook;
 	
 	@Service("Var")
-	def var 
+	def var;
 
 	@ProxyMethod
 	public def init() { 
+		boolean split_txn = (var.remittance_split_transaction.toString().matches('false|0') ? false : true); 
+
 		//check first if there are still remaining collection on the end of the month 
-		def info = [collectorid: env.USERID, txndate: getMonthFirstDate( dateSvc.serverDate ) ];
-		def items = em.getUnremittedForCollector( info );
-		def o = [objid: "REM"+new UID()];		
-		o.message = ""
-		if( items) { 
-			o.items = items 
-			o.endofmonth = true 
-			o.message = "End of the month remittance only. Please remit again for the remaining collection."
-		} else {
-			info.txndate = dateSvc.serverDate
-			o.message = ""
-		}
-		o.items = em.getUnremittedForCollector( info );
-		if(! o.items)
-			throw new Exception("No collections to be remitted.   ");
+		def o = [ objid: "REM"+new UID() ]; 
+		def info = [ collectorid: env.USERID ];
+		if ( split_txn ) {
+			info.txndate = getMonthFirstDate( dateSvc.serverDate ); 
+			o.items = em.getUnremittedForCollector( info ); 
+			if ( o.items ) { 
+				o.endofmonth = true; 
+				o.message = "End of the month remittance only. Please remit again for the remaining collection."; 
+				o._txndate = info.txndate; 
+			} 
+		} 
+
+		if ( !o.items ) {
+			info.txndate = dateSvc.serverDate; 
+			o.items = em.getUnremittedForCollector( info ); 
+			o._txndate = dateSvc.format('yyyy-MM-dd HH:mm:ss', info.txndate);
+		} 
+
+		if ( !o.items ) throw new Exception("No collections to be remitted.   ");
 
 		o.items.each {
-			it.cancelSeriesList = em.getUnremittedCancelSeries( [collectorid:it.collector.objid, controlid: it.controlid ])
+			it.cancelSeriesList = em.getUnremittedCancelSeries([ collectorid:it.collector.objid, controlid: it.controlid ])
 		}
 		o.amount = 0;
 		o.totalcash = 0;
 		o.totalnoncash = 0;
-		if(o.items) {
+		if ( o.items ) { 
 			o.amount = o.items.sum{ it.amount };	
 			o.totalcash = o.items.sum{ it.totalcash };	
 			o.totalnoncash = o.items.sum{ it.totalnoncash };	
-		}
+		} 
 		o.checks = em.getUnremittedChecks( info );
-		o.collector = [objid:env.USERID, name:env.FULLNAME, title:env.JOBTITLE ];
+		o.collector = [ objid:env.USERID, name:env.FULLNAME, title:env.JOBTITLE ]; 
+
 		//used for checking
 		o.checksum = em.getUnremittedTotals( info  );
-		return o;
-	}
+		return o; 
+	} 
 
-	@ProxyMethod
-	public def post( o ) {
+	@ProxyMethod 
+	public def post( o ) { 
 		if( o.amount == 0 ) 
 			throw new Exception("There is no amount to remit");
 
@@ -130,14 +137,19 @@ class RemittanceService  {
 	}
 
 	@ProxyMethod
-	public def getUnremittedReceipts(o) {
-		def m = [collectorid: o.collector.objid, txndate: getMonthFirstDate( dateSvc.serverDate )];
-		def list =  em.getUnremittedReceipts(m);
-		if( !list ) {
-			m.txndate = dateSvc.serverDate;
-			list = em.getUnremittedReceipts(m);
-		}
-		return list;
+	public def getUnremittedReceipts( o ) { 
+		def m = [ collectorid: o.collector.objid, txndate: o.txndate ];
+		if ( !m.txndate ) {
+			boolean split_txn = (var.remittance_split_transaction.toString().matches('false|0') ? false : true); 
+			if ( split_txn ) { 
+				m.txndate = getMonthFirstDate( dateSvc.serverDate ); 
+				def list =  em.getUnremittedReceipts( m ); 
+				if ( list ) return list; 
+			} 
+
+			m.txndate = dateSvc.serverDate; 
+		} 
+		return em.getUnremittedReceipts( m ); 
 	}
 
 	@ProxyMethod
@@ -167,39 +179,37 @@ class RemittanceService  {
         // DD - DATE POSTED 
         // UT - USER TXNCODE
         // SQ - SEQUENCE 
-        // FS- FORMATTED SEQUENCE 
+        // FS - FORMATTED SEQUENCE 
         
-        def dt = dateSvc.parseDate( remittance.dtposted, null)
-        def txncode = "REM";	
-		if(env.TXNCODE) txncode = "REM-" + env.TXNCODE; 		
-
-        def values = [
+        def txncode = ["REM", env.TXNCODE, env.ORGTXNCODE].findAll{( it )}.join("-");
+        def dt = dateSvc.parseDate( remittance.dtposted, null); 
+        def values = [ 
         	YY:dt.year+"", 
         	MM:dt.month.toString().padLeft(2, '0',),
         	DD:dt.day.toString().padLeft(2, '0'),
         	UT:txncode 
-        ]
+        ];
 
-        def txnno  = format 
+        def txnno = format;  
         values.keySet().each {
             txnno = txnno.replace( it, values[it] )
         }
 
-        def series 
-        if(seqid) {
+        def series; 
+        if ( seqid ) { 
         	def seq = seqid;
         	values.keySet().each {
             	seq = seq.replace( it, values[it] )
             }
             series = seqSvc.getNextSeries( seq); 
             
-        } else {
+        } else { 
         	series = seqSvc.getNextSeries(  txnno.replace("FS", '') ); 
         }
 
-        txnno = txnno.replace( 'SQ', series+"" )
-        txnno = txnno.replace( 'FS', "$series".padLeft(5, '0') )
-        return txnno 
+        txnno = txnno.replace( 'SQ', series+"" );
+        txnno = txnno.replace( 'FS', "$series".padLeft(5, '0')); 
+        return txnno; 
     }
 
     @ProxyMethod 

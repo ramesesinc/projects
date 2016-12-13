@@ -15,7 +15,8 @@ class EntityService
 	@ProxyMethod
 	public def open( o ) { 
 		def type = em.select('type').find([ objid: o.objid ]).val(); 
-		o._schemaname = 'entity' + type.toString().toLowerCase();
+		if (!type || type == 'null') type = o.type 
+		o._schemaname = 'entity' + type?.toString().toLowerCase();
 		return persistenceSvc.read( o ); 
 	} 
 
@@ -28,5 +29,10 @@ class EntityService
 	@ProxyMethod 
 	public def getPhoto( o ) {
 		return [:]; 
+	}
+
+	@ProxyMethod 
+	public def getTypes() {
+		return []; 
 	}
 }

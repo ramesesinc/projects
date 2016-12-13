@@ -203,3 +203,13 @@ from remittance_fund remf
   inner join remittance rem on remf.remittanceid=rem.objid 
 where remf.remittanceid=$P{remittanceid} 
 
+[findRemittedReceiptSummary]
+select 
+  af.formtype, c.formno, c.controlid, 
+  min(c.series) as minseries, max(c.series) as maxseries, 
+  sum(c.amount) as amount, af.denomination 
+from cashreceipt c 
+  inner join remittance_cashreceipt remc on c.objid=remc.objid 
+  inner join af on c.formno=af.objid 
+where c.controlid = $P{controlid} 
+group by af.formtype, c.formno, c.controlid, af.denomination 

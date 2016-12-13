@@ -93,6 +93,7 @@ class EntityIndividualPersistenceInterceptor  {
 	@After(pattern="PersistenceService.read", eval="#{args[0]._schemaname == 'entityindividual'}")
 	public void afterOpen(def evt) {
 		def o = evt.result;
+		if (!o) return 
 		//o.photo = getPhoto( o );
 		if (o.birthdate) {  
 			def birthyear = dtSvc.getYear( o.birthdate );

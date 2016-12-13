@@ -71,6 +71,8 @@ class RemittanceExportService
 		}
 		data.entity.cashreceipts = data.cashreceipts*.objid 
 		data.entity.cashbreakdown = em.serializer.read( data.entity.cashbreakdown ) 
+		if ( data.entity.txnno ) data.entity.txnno = data.entity.txnno + '-R'; 
+		
 		remSvc.post( data.entity )
 		return "OK"
 	}

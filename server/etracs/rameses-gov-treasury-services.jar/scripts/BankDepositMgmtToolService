@@ -1,0 +1,24 @@
+import com.rameses.annotations.*;
+
+class BankDepositMgmtToolService {
+
+	@ActiveDB('bankdeposit_mgmt_tool') 
+	def em; 
+
+	@ProxyMethod 
+	public def removeFunds( params ) {
+		if ( !params.funds ) return; 
+
+		def m = [:]; 
+		def list = []; 
+		params.funds.each{ 
+			m.objid = it.objid; 
+			def o = em.findLiquidatedFund( m ); 
+			if ( o ) list << o; 
+
+			em.removeLiquidatedFund( m ); 
+		} 
+		return [ bankdeposits : list.collect{ it.bankdepositid }?.unique() ]; 
+	} 
+
+}

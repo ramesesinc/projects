@@ -1,0 +1,13 @@
+<workunit extends="wtemplates/ListController.xml" 
+          serviceName="RemittanceMonitorService"
+          allowCreate="false"
+          allowOpen="false" 
+          allowSearch="false"> 
+    
+    <invokers>
+        <invoker folderid="/explorer/txn/treasury/monitoring" caption="Unremitted Collection Summary Monitoring" 
+                 role="ADMIN" index="-98"/>
+    </invokers>
+   
+    <code class="com.rameses.enterprise.treasury.models.UnremittedCollectionSummaryMonitorModel"/>
+</workunit>

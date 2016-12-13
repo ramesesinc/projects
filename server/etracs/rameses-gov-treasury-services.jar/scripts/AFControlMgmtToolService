@@ -1,0 +1,39 @@
+import com.rameses.annotations.*; 
+
+class AFControlMgmtToolService {
+	
+	@ActiveDB('afcontrol_mgmt_tool') 
+	def mgmt_em; 
+
+	@ActiveDB('txnlog') 
+	def txnlog_em; 
+
+	@Service('DateService')
+	def dateSvc; 
+
+	@Service('CashReceiptMgmtToolService') 
+	def cashReceiptSvc; 	
+
+	private void log( data ) {
+		if ( !data.objid ) data.objid = 'LOG'+ new java.rmi.server.UID(); 
+
+		if ( !data.userid ) data.userid = env.USERID; 
+		if ( !data.username ) data.username = env.NAME; 
+
+		data.txndate = dateSvc.getServerDate(); 
+		txnlog_em.create( data );  
+	} 
+
+	@ProxyMethod 
+	public def removeAFControl( params ) {
+		if ( !params.objid ) throw new Exception('objid parameter is required'); 
+		if ( !params.controlid ) params.controlid = params.objid; 
+
+		def afc = mgmt_em.findAFControl( params ); 
+		if ( !afc ) throw new Exception('AF Control record does not exist'); 
+
+		println 'afc -> ' + afc; 
+		cashReceiptSvc.removeCashReceipts( params );  
+		return [:]; 
+	} 	
+}

@@ -3,6 +3,7 @@
           cols="code,title,type,fund.code,fund.title,state,org.code,org.name">
     <invokers>
         <invoker folderid="/explorer/master/treasury" caption="Item Accounts" 
-                 index="1" role="MASTER" action="init" customFilter="parentid IS NULL"/>
+                 action="init" role="MASTER" permission="itemaccount.view" 
+                 index="1" customFilter="parentid IS NULL"/> 
    </invokers>
 </workunit>

@@ -1,6 +1,6 @@
 <workunit>
     <invokers>
-        <invoker type="remittance:formActions" caption="View Receipts" 
+        <invoker type="remittance:formActions" caption="View Receipts" action="initCreate"
             visibleWhen="#{mode == 'create' }" index="5" immediate="true"/>
 
         <invoker type="remittance:formActions" caption="View Receipts" action="initView"
@@ -29,18 +29,20 @@
             def entity;
             boolean remitted = false;
             
+            void initCreate() {
+            } 
+            
             def initView() {
                 remitted = true;
             }
             
-            
             def receiptsListModel = [
                 fetchList: {
-                    if( !remitted)
-                        return service.getUnremittedReceipts( [collector:entity.collector] );
-                    else
-                        return service.getRemittedReceipts( [objid:entity.objid] );
-                }
+                    if( !remitted ) 
+                        return service.getUnremittedReceipts([ collector:entity.collector, txndate: entity._txndate ]);
+                    else 
+                        return service.getRemittedReceipts([ objid:entity.objid ]);
+                } 
             ] as BasicListModel;
         }      
        ]]>

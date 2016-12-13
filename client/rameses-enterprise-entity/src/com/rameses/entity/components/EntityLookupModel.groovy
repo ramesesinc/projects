@@ -78,7 +78,7 @@ class EntityLookupModel extends ComponentBean {
         def params = [:]; 
         params.onselect = { o-> 
             fireOnselect( o ); 
-        };
+        } 
         params.allowSelect = true;
         def opener = null; 
         try {
@@ -95,10 +95,11 @@ class EntityLookupModel extends ComponentBean {
     
     public boolean isAllowCreate() {
         try {
-            if(_allowCreate == false) return false;
+            if( _allowCreate == false ) return false; 
+
             def etype = getEntityType();
-            if(etype==null) etype = "entityindividual";
-            println (etype +':create');
+            if ( etype==null ) etype = "entityindividual";
+
             def o = Inv.lookup( etype +':create' );
             return ( o ? true : false );
         } catch(Throwable t) { 
@@ -112,11 +113,11 @@ class EntityLookupModel extends ComponentBean {
     
     public boolean isAllowOpen() {
         try {
-            if(_allowOpen==false) return false;
+            if ( _allowOpen==false ) return false; 
+
             def o = getValue();
-            if(o?.type==null) {
-                o.type = "individual";
-            };
+            if ( o?.type==null ) o.type = "individual";
+
             String etype = "entity"+o.type.toLowerCase();
             def op = Inv.lookup( etype +':open' );
             return ( op ? true : false ); 

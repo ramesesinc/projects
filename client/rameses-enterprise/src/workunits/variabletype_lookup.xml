@@ -1,0 +1,12 @@
+<workunit>
+    <invokers>
+        <invoker type="variabletype:lookup" caption="Lookup Type" />
+    </invokers>
+
+    <code class="com.rameses.enterprise.models.DataTypeLookup" />
+    
+    <pages>
+        <page template="com.rameses.osiris2.themes.LookupPage" />
+    </pages>
+    
+</workunit>

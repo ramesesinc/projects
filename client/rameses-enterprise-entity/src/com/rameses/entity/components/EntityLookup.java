@@ -76,7 +76,6 @@ public class EntityLookup extends XComponentPanel {
             Object handler = pr.getProperty(caller, getOnempty()); 
             pr.setProperty(bean, "onempty", handler);
         }
-
         pr.setProperty(bean, "entityTypeCaller", new EntityTypeCaller(getEntityType(), caller));
     }
 
@@ -93,9 +92,10 @@ public class EntityLookup extends XComponentPanel {
             if ( type == null || type.trim().length()==0 ) {
                 return null; 
             } 
-
             PropertyResolver pr = PropertyResolver.getInstance();
-            return pr.getProperty(caller, type); 
+            Object r =  pr.getProperty(caller, type); 
+            if( r == null ) return type;
+            return r;
         }
     }
     

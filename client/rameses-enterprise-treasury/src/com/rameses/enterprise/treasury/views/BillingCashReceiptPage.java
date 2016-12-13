@@ -168,7 +168,8 @@ public class BillingCashReceiptPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.DecimalColumnHandler("#,##0.00", -1.0, -1.0, false, 2)}
             })
         });
-        xDataTable1.setHandler("billItemListModel");
+        xDataTable1.setHandler("billHandler");
+        xDataTable1.setId("billHandler");
         xDataTable1.setIndex(10);
         xDataTable1.setName("selectedItem"); // NOI18N
         xDataTable1.setVarStatus("status");

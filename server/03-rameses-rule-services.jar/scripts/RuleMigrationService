@@ -14,6 +14,35 @@ class RuleMigrationService {
 	def target;
 
 	@ProxyMethod
+	public def downloadDefByRuleset( def p ) {
+		if(!p.ruleset) throw new Exception("Please add ruleset in parameter");
+
+		def pkg = [rulesets: [] ];
+		def rs = em.findRuleset( p );
+		rs.rulegroups = em.getRulegroups(p);
+		rs.facts = em.getFactRulesets(p);
+		rs.actiondefs = em.getActionDefRulesets(p);
+		pkg.rulesets << rs;
+
+		//load facts
+		pkg.facts = [];
+		rs.facts.each {
+			def f = em.findRuleFactById( [objid: it.rulefact] );
+			f.fields = em.getRuleFactFields(f);
+			pkg.facts << f;
+		};
+
+		pkg.actiondefs = [];
+		rs.actiondefs.each {
+			def ad = em.findRuleActionDefById( [objid: it.actiondef] );
+			ad.params = em.getRuleActionDefParams(ad);
+			pkg.actiondefs << ad;
+		};
+		return pkg;
+	}
+
+
+	@ProxyMethod
 	public def downloadDef( def o ) {
 		if(!o.domain)
 			throw new Exception("Please specify a domain");
@@ -30,7 +59,6 @@ class RuleMigrationService {
 		pkg.actiondefs.each {
 			it.params = em.getRuleActionDefParams(it);
 		}		
-
 		pkg.rulesets = em.getDomainRulesets(o);
 		for( rs in pkg.rulesets ) {
 			def p = [ruleset: rs.name]

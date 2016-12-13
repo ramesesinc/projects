@@ -31,8 +31,8 @@ class RuleDeveloperService  {
 
 	@ProxyMethod
 	public def saveFact( def o ) {
-		if(!o.rulesets || o.rulesets.size() < 1 )
-			throw new Exception("There must be at least one ruleset");
+		//if(!o.rulesets || o.rulesets.size() < 1 )
+		//	throw new Exception("There must be at least one ruleset");
 
 		if(!o.fields || o.fields.size() < 1)
 			throw new Exception("There must be at least one field");
@@ -74,6 +74,7 @@ class RuleDeveloperService  {
 	public def saveActionDef( def o ) {
 		if(!o.rulesets || o.rulesets.size() < 1)
 			throw new Exception("There must be at least one ruleset");
+		
 		if(!o.params || o.params.size() < 1)
 			throw new Exception("There must be at least one parameter");
 

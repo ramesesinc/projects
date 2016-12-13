@@ -26,8 +26,8 @@ FROM remittance rem
     inner join remittance_cashreceipt remc on rem.objid = remc.remittanceid 
     inner join cashreceipt cr on remc.objid = cr.objid 
     INNER JOIN cashreceiptitem_rpt_account cra ON cr.objid = cra.rptreceiptid 
-    INNER JOIN rptledger rl ON cra.rptledgerid = rl.objid
-    INNER JOIN barangay b on rl.barangayid = b.objid 
+    left JOIN rptledger rl ON cra.rptledgerid = rl.objid
+    left JOIN barangay b on rl.barangayid = b.objid 
 where rem.remittancedate >= $P{fromdate} AND rem.remittancedate < $P{todate}   
     and cr.objid not in (select receiptid from cashreceipt_void where receiptid=cr.objid) 
     AND cra.revtype in  ('basicidle', 'basicidleint') 
@@ -86,8 +86,8 @@ FROM (
         inner join remittance_cashreceipt remc on rem.objid = remc.remittanceid 
         inner join cashreceipt cr on remc.objid = cr.objid 
         INNER JOIN cashreceiptitem_rpt_account cra ON cr.objid = cra.rptreceiptid 
-        INNER JOIN rptledger rl ON cra.rptledgerid = rl.objid
-        INNER JOIN barangay b on rl.barangayid = b.objid 
+        left JOIN rptledger rl ON cra.rptledgerid = rl.objid
+        left JOIN barangay b on rl.barangayid = b.objid 
     WHERE rem.remittancedate >= $P{fromdate} AND rem.remittancedate < $P{todate} 
         and cr.objid not in (select receiptid from cashreceipt_void where receiptid=cr.objid) 
         AND cra.revperiod <> 'advance' 
@@ -123,7 +123,7 @@ FROM (
         AND cra.revperiod <> 'advance' 
         AND cra.revtype IN ('basic', 'basicint')
 )t 
-INNER JOIN barangay b ON t.barangayid = b.objid 
+left JOIN barangay b ON t.barangayid = b.objid 
 GROUP BY b.name 
 
 
@@ -157,8 +157,8 @@ FROM (
         inner join remittance_cashreceipt remc on rem.objid = remc.remittanceid 
         inner join cashreceipt cr on remc.objid = cr.objid 
         INNER JOIN cashreceiptitem_rpt_account cra ON cr.objid = cra.rptreceiptid 
-        INNER JOIN rptledger rl ON cra.rptledgerid = rl.objid
-        INNER JOIN barangay b on rl.barangayid = b.objid 
+        left JOIN rptledger rl ON cra.rptledgerid = rl.objid
+        left JOIN barangay b on rl.barangayid = b.objid 
     WHERE rem.remittancedate >= $P{fromdate} AND rem.remittancedate < $P{todate} 
         and cr.objid not in (select receiptid from cashreceipt_void where receiptid=cr.objid) 
         AND cra.revperiod <> 'advance' 
@@ -194,7 +194,7 @@ FROM (
         AND cra.revperiod <> 'advance' 
         AND cra.revtype IN ('basic', 'basicint')
 ) t
-INNER JOIN barangay b ON t.barangayid = b.objid 
+left JOIN barangay b ON t.barangayid = b.objid 
 GROUP BY b.name 
 
 
@@ -264,8 +264,8 @@ FROM remittance rem
     inner join remittance_cashreceipt remc on rem.objid = remc.remittanceid 
     inner join cashreceipt cr on remc.objid = cr.objid 
     INNER JOIN cashreceiptitem_rpt_account cra ON cr.objid = cra.rptreceiptid 
-    INNER JOIN rptledger rl ON cra.rptledgerid = rl.objid
-    INNER JOIN barangay b ON rl.barangayid = b.objid 
+    left JOIN rptledger rl ON cra.rptledgerid = rl.objid
+    left JOIN barangay b ON rl.barangayid = b.objid 
 WHERE rem.remittancedate >= $P{fromdate} AND rem.remittancedate < $P{todate} 
     and cr.objid not in (select receiptid from cashreceipt_void where receiptid=cr.objid) 
     AND cra.sharetype ='barangay'
@@ -280,8 +280,8 @@ SELECT
 FROM cashreceipt cr 
     INNER JOIN cashreceiptitem_rpt_account cra ON cr.objid = cra.rptreceiptid 
     LEFT JOIN cashreceipt_void cv ON cr.objid = cv.receiptid 
-    INNER JOIN rptledger rl ON cra.rptledgerid = rl.objid
-    INNER JOIN barangay b ON rl.barangayid = b.objid 
+    left JOIN rptledger rl ON cra.rptledgerid = rl.objid
+    left JOIN barangay b ON rl.barangayid = b.objid 
     INNER JOIN remittance_cashreceipt rc ON cr.objid = rc.objid
 WHERE cr.receiptdate >= $P{fromdate} AND cr.receiptdate < $P{todate}
     AND cra.sharetype ='barangay'

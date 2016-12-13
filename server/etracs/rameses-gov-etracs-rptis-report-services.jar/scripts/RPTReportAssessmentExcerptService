@@ -38,15 +38,19 @@ class RPTReportAssessmentExcerptService
 		util.buildReportFormalTitlePeriod(title, params)
 
 		util.buildPreceedingPeriodFilter(params)
-		data.preceeding = em.findPreceedingExcerpt(params)
+		params.state = 'CURRENT'
+		data.preceeding = em.findExcerpt(params)
 		
 		util.buildCurrentPeriodFilter(params)
-		data.current = em.findCurrentExcerpt(params)
+		params.state = 'CURRENT'
+		data.current = em.findExcerpt(params)
 		util.buildCurrentCancelledPeriodFilter(params)
-		data.cancelled = em.findCancelledExcerpt(params)
+		params.state = 'CANCELLED'
+		data.cancelled = em.findExcerpt(params)
 		
 		util.buildEndingPeriodFilter(params)
-		data.ending = em.findEndingExcerpt(params)
+		params.state = 'CURRENT'
+		data.ending = em.findExcerpt(params)
 		
 		def forlguname = env.ORGCLASS +  ' OF ' + env.ORGNAME 
 		if (params.lgu){

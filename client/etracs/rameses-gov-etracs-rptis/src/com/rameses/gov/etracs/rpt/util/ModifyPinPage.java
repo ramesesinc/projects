@@ -29,6 +29,7 @@ public class ModifyPinPage extends javax.swing.JPanel {
         xLabel2 = new com.rameses.rcp.control.XLabel();
         xLabel3 = new com.rameses.rcp.control.XLabel();
         formPanel2 = new com.rameses.rcp.util.FormPanel();
+        xLookupField2 = new com.rameses.rcp.control.XLookupField();
         xComboBox3 = new com.rameses.rcp.control.XComboBox();
         xComboBox1 = new com.rameses.rcp.control.XComboBox();
         xComboBox4 = new com.rameses.rcp.control.XComboBox();
@@ -52,6 +53,7 @@ public class ModifyPinPage extends javax.swing.JPanel {
         xLookupField1.setExpression("#{faas.tdno}");
         xLookupField1.setHandler("lookupFaas");
         xLookupField1.setIndex(-100);
+        xLookupField1.setName("faas"); // NOI18N
         xLookupField1.setPreferredSize(new java.awt.Dimension(0, 19));
         formPanel1.add(xLookupField1);
 
@@ -89,6 +91,16 @@ public class ModifyPinPage extends javax.swing.JPanel {
         xTitledBorder2.setTitle("Modified PIN Information");
         formPanel2.setBorder(xTitledBorder2);
         formPanel2.setCaptionWidth(105);
+
+        xLookupField2.setCaption("Land TD No.");
+        xLookupField2.setCaptionWidth(120);
+        xLookupField2.setDepends(new String[] {"faas"});
+        xLookupField2.setExpression("#{landfaas.tdno}");
+        xLookupField2.setHandler("lookupLandFaas");
+        xLookupField2.setIndex(-1);
+        xLookupField2.setName("landfaas"); // NOI18N
+        xLookupField2.setPreferredSize(new java.awt.Dimension(0, 19));
+        formPanel2.add(xLookupField2);
 
         xComboBox3.setAllowNull(false);
         xComboBox3.setCaption("PIN Type");
@@ -155,6 +167,7 @@ public class ModifyPinPage extends javax.swing.JPanel {
         xNumberField3.setCaptionWidth(120);
         xNumberField3.setDepends(new String[] {"faas"});
         xNumberField3.setFieldType(Integer.class);
+        xNumberField3.setIndex(100);
         xNumberField3.setName("entity.suffix"); // NOI18N
         xNumberField3.setPreferredSize(new java.awt.Dimension(80, 19));
         xNumberField3.setRequired(true);
@@ -221,7 +234,7 @@ public class ModifyPinPage extends javax.swing.JPanel {
                 .addContainerGap()
                 .add(formPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 124, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(formPanel2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 284, Short.MAX_VALUE)
+                .add(formPanel2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(xButton2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
@@ -250,6 +263,7 @@ public class ModifyPinPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XLabel xLabel3;
     private com.rameses.rcp.control.XLabel xLabel4;
     private com.rameses.rcp.control.XLookupField xLookupField1;
+    private com.rameses.rcp.control.XLookupField xLookupField2;
     private com.rameses.rcp.control.XNumberField xNumberField1;
     private com.rameses.rcp.control.XNumberField xNumberField2;
     private com.rameses.rcp.control.XNumberField xNumberField3;

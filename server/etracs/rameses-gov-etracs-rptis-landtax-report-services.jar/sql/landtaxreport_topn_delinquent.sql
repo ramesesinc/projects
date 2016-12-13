@@ -24,24 +24,20 @@ order by amount desc
 [getTopNDelinquentTaxpayers]
 SELECT 
 	taxpayer_name,
-	tdno, 
-	totalav,
-	maxyear - minyear + 1 as yearsdelinquent,
+	rpucount,
 	amount 
 FROM ( 
 	SELECT 
 		rl.taxpayer_objid,
 		e.name as taxpayer_name, 
-		rl.tdno, 
-		rl.totalav,
-		min(year) as minyear,
-		max(year) as maxyear, 
+		count(distinct rptledgerid) as rpucount, 
 		SUM(basic - basicdisc + basicint  + sef - sefdisc + sefint ) AS amount 
 	FROM report_rptdelinquency rr 
 		inner join rptledger rl on rr.rptledgerid = rl.objid 
 		inner join entity e on rl.taxpayer_objid = e.objid 
-	WHERE NOT EXISTS(select * from rptledger_restriction where parentid = rr.rptledgerid )
-	GROUP BY rl.taxpayer_objid, e.name, rl.tdno, rl.totalav 
+	WHERE rr.year <= $P{year}
+  and NOT EXISTS(select * from rptledger_restriction where parentid = rr.rptledgerid )
+	GROUP BY rl.taxpayer_objid, e.name
 )x 
 where amount = $P{amount}
 order by taxpayer_name

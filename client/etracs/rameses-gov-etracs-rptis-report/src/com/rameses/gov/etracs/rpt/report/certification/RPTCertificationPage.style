@@ -13,15 +13,15 @@
     visible:false;
 }
 
-"entity.tdno|entity.taxpayer.*" [entity.certtype.type == 'byfaas']{
+"entity.tdno|entity.taxpayer.*" [entity.certtype && entity.certtype.type == 'byfaas']{
     visible:true;
 }
 
-"entity.taxpayer|entity.taxpayeraddress" [entity.certtype.type == 'bytaxpayer']{
+"entity.taxpayer|entity.taxpayeraddress" [entity.certtype && entity.certtype.type == 'bytaxpayer']{
     visible:true;
 }
 
-"taxpayers" [entity.certtype.type == 'bytaxpayers']{
+"taxpayers" [entity.certtype && entity.certtype.type == 'bytaxpayers']{
     visible:true;
     required:false;
 }

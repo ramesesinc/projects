@@ -61,6 +61,7 @@ public class RPTCertificationPage extends javax.swing.JPanel {
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder1.setTitle("Certification Detail");
         formPanel1.setBorder(xTitledBorder1);
+        formPanel1.setIndex(100);
 
         xComboBox1.setAllowNull(false);
         xComboBox1.setCaption("Report Type");
@@ -75,6 +76,7 @@ public class RPTCertificationPage extends javax.swing.JPanel {
 
         xIntegerField1.setCaption("As of Year");
         xIntegerField1.setCaptionWidth(135);
+        xIntegerField1.setIndex(1);
         xIntegerField1.setName("entity.asofyear"); // NOI18N
         xIntegerField1.setRequired(true);
         formPanel1.add(xIntegerField1);
@@ -84,6 +86,7 @@ public class RPTCertificationPage extends javax.swing.JPanel {
         xLookupField2.setDepends(new String[] {"entity.certtype"});
         xLookupField2.setExpression("#{entity.tdno}");
         xLookupField2.setHandler("lookupFaas");
+        xLookupField2.setIndex(2);
         xLookupField2.setName("entity.tdno"); // NOI18N
         xLookupField2.setPreferredSize(new java.awt.Dimension(0, 21));
         xLookupField2.setRequired(true);
@@ -96,6 +99,7 @@ public class RPTCertificationPage extends javax.swing.JPanel {
         xLabel4.setCaptionWidth(135);
         xLabel4.setDepends(new String[] {"entity.taxpayer", "entity.tdno", "entity.certtype"});
         xLabel4.setExpression("#{entity.taxpayer.name}");
+        xLabel4.setIndex(3);
         xLabel4.setName("entity.taxpayername"); // NOI18N
         xLabel4.setPreferredSize(new java.awt.Dimension(0, 21));
         formPanel1.add(xLabel4);
@@ -105,6 +109,7 @@ public class RPTCertificationPage extends javax.swing.JPanel {
         xLookupField1.setDepends(new String[] {"entity.taxpayer", "entity.tdno", "entity.certtype"});
         xLookupField1.setExpression("#{entity.taxpayer.name}");
         xLookupField1.setHandler("lookupTaxpayer");
+        xLookupField1.setIndex(4);
         xLookupField1.setName("entity.taxpayer"); // NOI18N
         xLookupField1.setPreferredSize(new java.awt.Dimension(0, 21));
         xLookupField1.setRequired(true);
@@ -117,6 +122,7 @@ public class RPTCertificationPage extends javax.swing.JPanel {
         xLabel3.setCaptionWidth(135);
         xLabel3.setDepends(new String[] {"entity.taxpayer", "entity.tdno", "entity.certtype"});
         xLabel3.setExpression("#{entity.taxpayer.address}");
+        xLabel3.setIndex(5);
         xLabel3.setName("entity.taxpayeraddress"); // NOI18N
         xLabel3.setPreferredSize(new java.awt.Dimension(0, 21));
         formPanel1.add(xLabel3);
@@ -158,6 +164,7 @@ public class RPTCertificationPage extends javax.swing.JPanel {
         });
         xDataTable1.setDepends(new String[] {"entity.certtype"});
         xDataTable1.setHandler("listHandler");
+        xDataTable1.setIndex(6);
         xDataTable1.setName("taxpayers"); // NOI18N
         xDataTable1.setPreferredSize(new java.awt.Dimension(0, 100));
         formPanel1.add(xDataTable1);
@@ -165,6 +172,7 @@ public class RPTCertificationPage extends javax.swing.JPanel {
         xTextField2.setCaption("Requested By");
         xTextField2.setCaptionWidth(135);
         xTextField2.setDepends(new String[] {"entity.taxpayer", "entity.tdno"});
+        xTextField2.setIndex(7);
         xTextField2.setName("entity.requestedby"); // NOI18N
         xTextField2.setPreferredSize(new java.awt.Dimension(0, 21));
         xTextField2.setRequired(true);
@@ -173,6 +181,7 @@ public class RPTCertificationPage extends javax.swing.JPanel {
         xTextField8.setCaption("Address");
         xTextField8.setCaptionWidth(135);
         xTextField8.setDepends(new String[] {"entity.taxpayer", "entity.tdno"});
+        xTextField8.setIndex(8);
         xTextField8.setName("entity.requestedbyaddress"); // NOI18N
         xTextField8.setPreferredSize(new java.awt.Dimension(0, 21));
         xTextField8.setRequired(true);
@@ -184,6 +193,7 @@ public class RPTCertificationPage extends javax.swing.JPanel {
         xTextArea1.setWrapStyleWord(true);
         xTextArea1.setCaption("Purpose");
         xTextArea1.setCaptionWidth(135);
+        xTextArea1.setIndex(9);
         xTextArea1.setName("entity.purpose"); // NOI18N
         xTextArea1.setPreferredSize(new java.awt.Dimension(120, 50));
         xTextArea1.setRequired(true);
@@ -197,6 +207,7 @@ public class RPTCertificationPage extends javax.swing.JPanel {
         xTextArea2.setWrapStyleWord(true);
         xTextArea2.setCaption("Additional Info");
         xTextArea2.setCaptionWidth(135);
+        xTextArea2.setIndex(10);
         xTextArea2.setName("entity.addlinfo"); // NOI18N
         xTextArea2.setPreferredSize(new java.awt.Dimension(120, 40));
         jScrollPane2.setViewportView(xTextArea2);
@@ -209,6 +220,7 @@ public class RPTCertificationPage extends javax.swing.JPanel {
 
         xTextField3.setCaption("<html><u>C</u>ertified By:<font color=\"red\">*</font></html>");
         xTextField3.setCaptionWidth(135);
+        xTextField3.setIndex(12);
         xTextField3.setName("entity.certifiedby"); // NOI18N
         xTextField3.setPreferredSize(new java.awt.Dimension(200, 21));
         xTextField3.setRequired(true);
@@ -217,6 +229,7 @@ public class RPTCertificationPage extends javax.swing.JPanel {
         xTextField4.setCaption("Job Title:");
         xTextField4.setCaptionWidth(70);
         xTextField4.setCellPadding(new java.awt.Insets(0, 10, 0, 0));
+        xTextField4.setIndex(12);
         xTextField4.setName("entity.certifiedbytitle"); // NOI18N
         xTextField4.setPreferredSize(new java.awt.Dimension(200, 21));
         xTextField4.setRequired(true);
@@ -230,6 +243,7 @@ public class RPTCertificationPage extends javax.swing.JPanel {
 
         xTextField9.setCaption("Authority of");
         xTextField9.setCaptionWidth(135);
+        xTextField9.setIndex(12);
         xTextField9.setName("entity.byauthority"); // NOI18N
         xTextField9.setPreferredSize(new java.awt.Dimension(200, 21));
         xFormPanel2.add(xTextField9);
@@ -237,6 +251,7 @@ public class RPTCertificationPage extends javax.swing.JPanel {
         xTextField10.setCaption("Job Title:");
         xTextField10.setCaptionWidth(70);
         xTextField10.setCellPadding(new java.awt.Insets(0, 10, 0, 0));
+        xTextField10.setIndex(12);
         xTextField10.setName("entity.byauthoritytitle"); // NOI18N
         xTextField10.setPreferredSize(new java.awt.Dimension(200, 21));
         xFormPanel2.add(xTextField10);
@@ -249,6 +264,7 @@ public class RPTCertificationPage extends javax.swing.JPanel {
 
         xTextField11.setCaption("Attested By");
         xTextField11.setCaptionWidth(135);
+        xTextField11.setIndex(12);
         xTextField11.setName("entity.attestedby"); // NOI18N
         xTextField11.setPreferredSize(new java.awt.Dimension(200, 21));
         xFormPanel3.add(xTextField11);
@@ -256,6 +272,7 @@ public class RPTCertificationPage extends javax.swing.JPanel {
         xTextField12.setCaption("Job Title:");
         xTextField12.setCaptionWidth(70);
         xTextField12.setCellPadding(new java.awt.Insets(0, 10, 0, 0));
+        xTextField12.setIndex(12);
         xTextField12.setName("entity.attestedbytitle"); // NOI18N
         xTextField12.setPreferredSize(new java.awt.Dimension(200, 21));
         xFormPanel3.add(xTextField12);
@@ -280,6 +297,7 @@ public class RPTCertificationPage extends javax.swing.JPanel {
         xCheckBox1.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         xCheckBox1.setCellPadding(new java.awt.Insets(0, 0, 10, 0));
         xCheckBox1.setFont(new java.awt.Font("Dialog", 1, 12)); // NOI18N
+        xCheckBox1.setIndex(13);
         xCheckBox1.setMargin(new java.awt.Insets(0, 0, 0, 0));
         xCheckBox1.setName("officialuse"); // NOI18N
         xCheckBox1.setOpaque(false);
@@ -291,6 +309,7 @@ public class RPTCertificationPage extends javax.swing.JPanel {
         xTextField6.setCaptionWidth(117);
         xTextField6.setCellPadding(new java.awt.Insets(0, 20, 0, 0));
         xTextField6.setDepends(new String[] {"officialuse"});
+        xTextField6.setIndex(13);
         xTextField6.setName("entity.orno"); // NOI18N
         xTextField6.setPreferredSize(new java.awt.Dimension(150, 21));
         xTextField6.setRequired(true);
@@ -300,6 +319,7 @@ public class RPTCertificationPage extends javax.swing.JPanel {
         xDateField1.setCaptionWidth(117);
         xDateField1.setCellPadding(new java.awt.Insets(0, 20, 0, 0));
         xDateField1.setDepends(new String[] {"officialuse"});
+        xDateField1.setIndex(13);
         xDateField1.setName("entity.ordate"); // NOI18N
         xDateField1.setPreferredSize(new java.awt.Dimension(150, 21));
         xDateField1.setRequired(true);
@@ -310,6 +330,7 @@ public class RPTCertificationPage extends javax.swing.JPanel {
         xNumberField1.setCellPadding(new java.awt.Insets(0, 20, 0, 0));
         xNumberField1.setDepends(new String[] {"officialuse"});
         xNumberField1.setFieldType(BigDecimal.class);
+        xNumberField1.setIndex(13);
         xNumberField1.setName("entity.oramount"); // NOI18N
         xNumberField1.setPattern("#,##0.00");
         xNumberField1.setPreferredSize(new java.awt.Dimension(150, 21));

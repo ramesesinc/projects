@@ -1,87 +1,42 @@
-[findPreceedingExcerpt]
-SELECT 
-	SUM( case 
-		when r.taxable = 1 and 'av' = $P{type} then r.totalav 
-		when r.taxable = 1 and 'mv' = $P{type} then r.totalmv
-		else 0.0 end 
-	) AS taxable,
-	SUM( case when r.taxable = 1 then 1.0 else 0.0 end ) AS taxablecnt,
-	SUM(case 
-		when r.taxable = 0 and 'av' = $P{type} then r.totalav 
-		when r.taxable = 0 and 'mv' = $P{type} then r.totalmv 
-		else 0.0 end 
-	) AS exempt,
-	SUM( case when r.taxable = 0 then 1.0 else 0.0 end ) AS exemptcnt
-FROM faas f
-	INNER JOIN rpu r ON f.rpuid = r.objid 
-	INNER JOIN realproperty rp on f.realpropertyid = rp.objid 
-	INNER JOIN propertyclassification pc ON r.classification_objid = pc.objid 
-WHERE ${filter}
-  AND f.state in ('CURRENT')
+[findExcerpt]
+select 
+	SUM( case when 'av' = $P{type} then x.taxableav else x.taxablemv end ) AS taxable,
+	SUM( x.taxablecnt ) AS taxablecnt,
+	SUM( case when 'av' = $P{type} then x.exemptav else x.exemptmv end ) AS exempt,
+	SUM( x.exemptcnt ) AS exemptcnt
+from (
 
+	SELECT 
+		r.totalav as taxableav, 
+		r.totalmv as taxablemv, 
+		1 as taxablecnt, 
+		0 as exemptav, 
+		0 as exemptmv, 
+		0 as exemptcnt
+	FROM faas f
+		INNER JOIN rpu r ON f.rpuid = r.objid 
+		INNER JOIN realproperty rp ON f.realpropertyid = rp.objid
+		INNER JOIN propertyclassification pc ON r.classification_objid = pc.objid 
+	WHERE ${filter}
+    and f.state = $P{state}
+		AND r.taxable = 1 
 
-[findCurrentExcerpt]
-SELECT 
-	SUM( case 
-		when r.taxable = 1 and 'av' = $P{type} then r.totalav 
-		when r.taxable = 1 and 'mv' = $P{type} then r.totalmv
-		else 0.0 end 
-	) AS taxable,
-	SUM( case when r.taxable = 1 then 1.0 else 0.0 end ) AS taxablecnt,
-	SUM(case 
-		when r.taxable = 0 and 'av' = $P{type} then r.totalav 
-		when r.taxable = 0 and 'mv' = $P{type} then r.totalmv 
-		else 0.0 end 
-	) AS exempt,
-	SUM( case when r.taxable = 0 then 1.0 else 0.0 end ) AS exemptcnt
-FROM faas f
-	INNER JOIN rpu r ON f.rpuid = r.objid 
-	INNER JOIN realproperty rp on f.realpropertyid = rp.objid 
-	INNER JOIN propertyclassification pc ON r.classification_objid = pc.objid 
-WHERE ${filter}
-  AND f.state = 'CURRENT'  
+	union all 
 
+	SELECT 
+		0 as taxableav, 
+		0 as taxablemv, 
+		0 as taxablecnt, 
+		r.totalav as exemptav, 
+		r.totalmv as exemptmv, 
+		1 as exemptcnt
+	FROM faas f
+		INNER JOIN rpu r ON f.rpuid = r.objid 
+		INNER JOIN realproperty rp ON f.realpropertyid = rp.objid
+		INNER JOIN exemptiontype e ON r.exemptiontype_objid = e.objid 
+	WHERE ${filter}
+    and f.state = $P{state}
+		AND r.taxable = 0
+) x 
 
-[findCancelledExcerpt]
-SELECT 
-	SUM( case 
-		when r.taxable = 1 and 'av' = $P{type} then r.totalav 
-		when r.taxable = 1 and 'mv' = $P{type} then r.totalmv
-		else 0.0 end 
-	) AS taxable,
-	SUM( case when r.taxable = 1 then 1.0 else 0.0 end ) AS taxablecnt,
-	SUM(case 
-		when r.taxable = 0 and 'av' = $P{type} then r.totalav 
-		when r.taxable = 0 and 'mv' = $P{type} then r.totalmv 
-		else 0.0 end 
-	) AS exempt,
-	SUM( case when r.taxable = 0 then 1.0 else 0.0 end ) AS exemptcnt
-FROM faas f
-	INNER JOIN rpu r ON f.rpuid = r.objid 
-	INNER JOIN realproperty rp on f.realpropertyid = rp.objid 
-	INNER JOIN propertyclassification pc ON r.classification_objid = pc.objid 
-WHERE ${filter}
-  AND f.state = 'CANCELLED'  
-
-
-[findEndingExcerpt]
-SELECT 
-	SUM( case 
-		when r.taxable = 1 and 'av' = $P{type} then r.totalav 
-		when r.taxable = 1 and 'mv' = $P{type} then r.totalmv
-		else 0.0 end 
-	) AS taxable,
-	SUM( case when r.taxable = 1 then 1.0 else 0.0 end ) AS taxablecnt,
-	SUM(case 
-		when r.taxable = 0 and 'av' = $P{type} then r.totalav 
-		when r.taxable = 0 and 'mv' = $P{type} then r.totalmv 
-		else 0.0 end 
-	) AS exempt,
-	SUM( case when r.taxable = 0 then 1.0 else 0.0 end ) AS exemptcnt
-FROM faas f
-	INNER JOIN rpu r ON f.rpuid = r.objid 
-	INNER JOIN realproperty rp on f.realpropertyid = rp.objid 
-	INNER JOIN propertyclassification pc ON r.classification_objid = pc.objid 
-WHERE ${filter}
-  AND f.state = 'CURRENT'  
 

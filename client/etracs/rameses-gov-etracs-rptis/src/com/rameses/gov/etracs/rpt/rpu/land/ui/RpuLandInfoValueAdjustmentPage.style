@@ -7,7 +7,7 @@
 }
 
 
-"selectedItem|selectedParam"  [allowEdit == false || (entity.taskstate && !entity.taskstate.matches('.*appraiser.*|recommender'))] {
+"selectedItem|selectedParam"  [allowEdit == false || (entity.datacapture==0 && entity.taskstate && !entity.taskstate.matches('.*appraiser.*|recommender'))] {
     readonly:true;
 }
 

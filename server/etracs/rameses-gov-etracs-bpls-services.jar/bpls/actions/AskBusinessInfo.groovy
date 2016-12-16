@@ -10,11 +10,20 @@ public class AskBusinessInfo extends AbstractBusinessInfoAction implements RuleA
 	public void execute(def params, def drools) {
 		def lob = params.lob;
 		def attrid = params.attribute.key;
-		def defvalue = params.defaultvalue;
+		
 		def entity = request.entity;
 		def newinfos = request.newinfos;
-		def info = getInfo( entity, newinfos, lob, attrid, null, request.phase );
-		if(info) info.defaultvalue = defvalue;
+
+		def val = params.defaultvalue;
+
+		if(!val || val == "null") {
+			val = null;
+		}
+		else if( val instanceof String ) {
+			val = new ActionExpression( val, [:] );	
+		}
+
+		def info = getInfo( entity, newinfos, lob, attrid, val, request.phase );
 	}
 
 }

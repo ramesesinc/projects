@@ -39,7 +39,6 @@ public abstract class AbstractBusinessInfoAction {
 		}
 
 		info.datatype = info.attribute.datatype;
-		
 		if(val) {
 			String datatype = info.attribute.datatype;
 			switch(datatype) {
@@ -55,6 +54,11 @@ public abstract class AbstractBusinessInfoAction {
 				case "boolean":	
 					info.value = val.booleanValue;
 					break;
+
+				case "date":	
+					info.value = val.dateValue;
+					break;
+
 			}
 		}			
 		newinfos << info;

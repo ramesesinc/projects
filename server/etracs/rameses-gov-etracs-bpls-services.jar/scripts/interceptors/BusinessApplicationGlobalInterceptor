@@ -8,8 +8,14 @@ public class BusinessApplicationGlobalInterceptor {
 	@Service("BusinessPaymentService")
 	def paySvc;
 
+	@ActiveDB('business_application_task') 
+	def taskdb; 
+
+	@Service('Var') 
+	def sysvar; 
+
 	@After(pattern="BusinessApplicationService.revert") 
-	void afterRevert( evt ) { 
+	public void afterRevert( evt ) { 
 		def params = evt.args[0]; 
 		params.applicationid = params.objid; 
 
@@ -19,5 +25,19 @@ public class BusinessApplicationGlobalInterceptor {
 				throw new Exception('Cannot revert since payments have already been made');  
 			} 
 		} 
+	} 
+
+	@After(pattern="BusinessApplicationService.open", index=100) 
+	public void afterOpen( evt ) {
+		def app = evt.result; 
+		if ( !app ) return; 
+		
+		def tasks = taskdb.getTasks([ refid: app.objid ]); 
+		if ( tasks ) app.currenttask = tasks.last(); 
+
+		def opt = sysvar.businesspermit_issuance_on_release; 
+		app._option = [ 
+			businesspermit_issuance_on_release: (opt=='true') 
+		];  
 	} 
 } 

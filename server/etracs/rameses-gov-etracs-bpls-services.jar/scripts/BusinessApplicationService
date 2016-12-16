@@ -32,6 +32,9 @@ public class BusinessApplicationService  {
 	@Service("BusinessUserRoleService")
 	def userRoleSvc;
 
+	@Service 
+	def self; 
+
 	@Env
 	def env;
 
@@ -151,7 +154,7 @@ public class BusinessApplicationService  {
 	public def openByAppno(o) {
 		def id = em.findIdByAppno(o)?.objid;
 		if(!id) throw new Exception("App No " + o.appno + " does not exist!");
-		return open( [objid: id]);
+		return self.open([ objid: id ]); 
 	}
 
 	@ProxyMethod

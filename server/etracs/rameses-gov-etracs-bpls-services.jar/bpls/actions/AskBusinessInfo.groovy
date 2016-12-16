@@ -24,6 +24,7 @@ public class AskBusinessInfo extends AbstractBusinessInfoAction implements RuleA
 		}
 
 		def info = getInfo( entity, newinfos, lob, attrid, val, request.phase );
+		if ( info ) info.defaultvalue = info.value; 
 	}
 
 }

@@ -23,7 +23,8 @@ public class BPRuleInterceptor {
 	@Service("DateService")
 	def dateSvc;
 
-	private void buildBPAssessmentFacts(def evt) { 
+	@Before(pattern="(BPInfoRuleService|BPRequirementRuleService).execute")
+	public void buildBPAssessmentFacts(def evt) { 
 		def o = evt.args[0];
 		if(!o.lobs)
 			throw new Exception("Please provide at least one line of business");
@@ -38,20 +39,11 @@ public class BPRuleInterceptor {
 
 		//this is so we will not process derived infos.	
 		o.infos?.removeAll( o.infos.findAll{it.phase==null || it.phase > 1} );	
+		
 		factBuilder.build(o, facts );
+		
 		env.facts = facts;	
-	}
 
-	@Before(pattern="(BPInfoRuleService|BPRequirementRuleService).execute")
-	public void beforeAssessment(def evt) { 
-		buildBPAssessmentFacts(evt);
-	}
-
-	@Before(pattern="RequirementRuleService.execute", eval="#{args[0].ruleset == 'bprequirement' }")
-	public void beforeRequirement(def evt) { 
-		def r = evt.args[0];
-		r.orgtype = r.business?.orgtype;
-		buildBPAssessmentFacts(evt);
 	}
 
 

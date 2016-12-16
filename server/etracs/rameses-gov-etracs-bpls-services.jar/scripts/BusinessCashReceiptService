@@ -104,7 +104,14 @@ public class BusinessCashReceiptService  {
 		r.filter = ''' ba.objid =$P{applicationid} ''';
 		r.show_paid = false;
 		r.taxfees = receivable.getBilling(r);
-		if(!r.taxfees) throw new Exception("No unpaid items found");
+		if ( !r.taxfees ) {  
+			String errmsg = "No unpaid items found"; 
+			if ( param._silent == true ) {
+				return [ errcode:'NO_UNPAID', errmsg: errmsg ]; 
+			} 
+
+			throw new Exception( errmsg );
+		} 
 
 		r.app = param.app; 
 		r.billdate = param.billdate; 		
@@ -113,12 +120,22 @@ public class BusinessCashReceiptService  {
 
 		def z = billingSvc.getBillingForPayment( r );
 		def m = [:];		
-		m.taxfees = z.taxfees.sort{ it.sortorder };
 		m.expirydate = z.expirydate;
-		m.nextbilldate = z.expirydate;
+		m.nextbilldate = z.expirydate; 
+
+		if ( param._with_taxfees == false ) {
+			//do nothing 
+		} else {
+			m.taxfees = z.taxfees.sort{ it.sortorder } 
+		}
+		if ( param._with_items == false ) {
+			//do nothing 
+		} else {
+			m.items = z.items.sort{ it.sortorder };
+		}
+		
 		m.totals = z.totals;
-		m.items = z.items.sort{ it.sortorder };
-		m.excess = z.excess; 
+		m.excess = z.excess;
 		return m;
 	} 
 }

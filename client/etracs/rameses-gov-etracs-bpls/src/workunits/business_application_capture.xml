@@ -1,7 +1,7 @@
 <workunit>
     
     <invokers>
-        <invoker folderid="/home/business" 
+        <invoker folderid="/home/business/business_application" 
             caption="Manual Capture"  action="start" target="window" 
             role="BUSINESSINFO,ADMIN" index="56" permission="business.capture"/>
           

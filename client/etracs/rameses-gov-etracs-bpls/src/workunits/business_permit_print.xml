@@ -5,6 +5,7 @@
        
        <invoker type="formActions" caption="Back" action="_close" mnemonic="b" shortcut="ctrl B" /> 
        <invoker type="formActions" caption="Update Plate No" action="updatePlateno"  /> 
+       <invoker type="formActions" caption="Update Remarks" action="updateRemarks"  /> 
     </invokers>
     
     <code>
@@ -68,7 +69,7 @@
                 ] as SubReport[]
             }
             
-            def updatePlateno() {
+            void updatePlateno() {
                 def p = MsgBox.prompt( 'Enter updated Plate No:' );
                 if(!p) return;
                 
@@ -78,6 +79,17 @@
                 permitSvc.updatePlateno([objid: permitid, plateno: p]);
                 preview();
             }
+            
+            void updateRemarks() { 
+                def permitid = entity.permit?.objid; 
+                if ( !permitid ) permitid = entity.objid;            
+                
+                def h = { o->
+                    permitSvc.updateRemarks([ objid: permitid, remarks: o ]);
+                    preview();
+                }
+                Modal.show( "remarks:update", [handler: h, remarks: entity.remarks] );
+            } 
          }   
         ]]>
     </code>

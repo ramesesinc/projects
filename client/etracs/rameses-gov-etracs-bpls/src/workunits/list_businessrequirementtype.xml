@@ -1,0 +1,30 @@
+<workunit extends="wtemplates/ListController.xml" 
+          serviceName="BusinessRequirementTypeService" 
+          entityName="businessrequirementtype">
+    <invokers>
+        <invoker folderid="/explorer/master/bpls" caption="Business Requirement Types" 
+                 index="4" role="MASTER" permission="businessrequirementtype.view"/>
+    </invokers>
+    
+    <code>
+    <![CDATA[
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.common.*;
+import com.rameses.osiris2.common.* 
+
+class BusinessRequirementTypeListModel extends DefaultListController {
+            
+    private String PERM_KEY = 'businessrequirementtype';
+              
+    public Map getCreatePermission() { 
+        return [role:'MASTER', permission: PERM_KEY+'.create']; 
+    } 
+    public Map getReadPermission() { 
+        return [role:'MASTER', permission: PERM_KEY+'.read']; 
+    }  
+}
+    ]]>
+    </code>      
+</workunit>

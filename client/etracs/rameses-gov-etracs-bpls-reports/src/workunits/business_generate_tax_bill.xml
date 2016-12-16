@@ -1,0 +1,17 @@
+<workunit>
+    <invokers>
+        <invoker folderid="/home/business" caption="Generate Billing" action="init" 
+                role="ADMIN,REPORT" permission="businessbilling.create" index="1000" />        
+        
+        <invoker type="formActions" caption="Close" action="doClose" mnemonic="C"/>
+        <invoker type="formActions" caption="Back" action="back" mnemonic="B" visibleWhen="#{mode=='view'}"/>
+        <invoker type="formActions" caption="Preview" action="doPreview" mnemonic="P" visibleWhen="#{mode=='init'}"/>
+    </invokers>
+    
+    <code class="com.rameses.gov.etracs.bpls.models.GenerateBusinessBillingReportModel"/>
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.bpls.views.GenerateBillInitPage"/> 
+        <page name="report" template="com.rameses.osiris2.common.ui.ReportPreviewPage" />
+    </pages>    
+</workunit>

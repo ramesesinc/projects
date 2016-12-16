@@ -1,36 +1,47 @@
 <workunit>
     <invokers>
-        <invoker type="lobattribute_lookup:formActions" action="create" caption="Add Attribute" target="popup"/>
-        <invoker type="lobattribute:create" action="init" caption="LOB Attribute" />
         <invoker type="lobattribute:open" action="open" caption="LOB Attribute" />        
+        <invoker type="lobattribute:create" action="init" caption="LOB Attribute" 
+                 role="MASTER" permission="lobattribute.create"/>
+        <invoker type="lobattribute_lookup:formActions" action="create" caption="Add Attribute" 
+                 role="MASTER" permission="lobattribute.create" target="popup"/>
     </invokers>
     <code>
-        <![CDATA[
-            import com.rameses.rcp.annotations.*;
-            import com.rameses.osiris2.common.*;
-            import com.rameses.rcp.common.*;
-            
-            class LobAttributeController extends CRUDController {
-            
-                String serviceName = 'LobAttributeService'
-                String entityName = 'lobattribute'
-                String prefixId = 'LOBA'
-                
-                @Caller
-                def caller;
-                
-                def doOk() {
-                    super.save();
-                    caller.reload();
-                    return "_close";
-                }
-                
-                def doCancel() {
-                    return "_close";
-                }
-                
-            }
-        ]]>
+    <![CDATA[
+import com.rameses.rcp.annotations.*;
+import com.rameses.osiris2.common.*;
+import com.rameses.rcp.common.*;
+
+class LobAttributeController extends CRUDController {
+
+    String serviceName = 'LobAttributeService'
+    String entityName = 'lobattribute'
+    String prefixId = 'LOBA'
+
+    @Caller
+    def caller; 
+    
+    public Map getCreatePermission() { 
+        return [role:'MASTER', permission: entityName + '.create']; 
+    }
+    public Map getEditPermission() { 
+        return [role:'MASTER', permission: entityName + '.edit']; 
+    } 
+    public Map getDeletePermission() { 
+        return [role:'MASTER', permission: entityName + '.delete']; 
+    }     
+
+    def doOk() {
+        super.save();
+        caller.reload();
+        return "_close";
+    }
+
+    def doCancel() {
+        return "_close";
+    }
+}
+    ]]>
     </code>
     <pages>
         <page template="com.rameses.gov.etracs.bpls.lob.LobAttributePage"/>

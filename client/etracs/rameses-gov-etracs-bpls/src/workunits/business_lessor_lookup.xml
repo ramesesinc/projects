@@ -1,7 +1,6 @@
-<workunit extends="com/rameses/seti2/templates/CrudLookup.xml" schemaName="business_lessor" >
+<workunit>
     <invokers>
-        <invoker type="business_lessor:lookup" caption="Building" target="popup" action="init" 
-            customFilter="government=0" cols="bldgno,bldgname,street,government,lessor.name"/>
+        <invoker type="business_lessor:lookup" caption="Building" target="popup"/>
     </invokers>
     
     <code>
@@ -11,17 +10,82 @@
     import com.rameses.osiris2.client.*
     import com.rameses.osiris2.common.*
     import com.rameses.common.*;
+    import java.rmi.server.*
     import com.rameses.util.*;
-    import com.rameses.seti2.models.*;
 
-    class  BusinessLessorLookup extends CrudLookupModel {
-        def onselect = { o->
-            MsgBox.alert('hello ' + o);
+    class  BusinessLessorLookup {
+
+        @Binding 
+        def binding;
+
+        @Service("BusinessLessorService")
+        def service;
+
+        String entityName = "business:lessor"
+
+        def onselect;
+        def selectedEntity;
+        def businessowner;
+        def query = [:]; 
+
+        def listHandler = [
+            fetchList: {o-> 
+                def params = [:];
+                params.putAll(o);
+                params.putAll(query); 
+                params.ownerid = businessowner?.objid;
+                return service.getList( params ); 
+            } 
+        ] as PageListModel;
+
+
+        def doSelect() {
+            if(!onselect) throw new Exception("Please specify an onselect handler");
+            onselect(selectedEntity);
+            return  "_close";
+        }
+
+        def doCancel() {
+            return "_close";
+        }
+
+        def addBuilding() {
+            def h = { o-> listHandler.reload(); };
+            return Inv.lookupOpener( "business_lessor_owner:create", [businessowner: businessowner,handler: h] );
+        }
+
+
+        def navActions = [
+            createAction("moveFirstPage", "images/navbar/first.png"), 
+            createAction("moveBackPage",  "images/navbar/previous.png"), 
+            createAction("moveNextPage",  "images/navbar/next.png")
+        ];
+
+        def createAction( name, icon ) { 
+            def a = new Action(name, "", icon);
+            a.immediate = true;
+            a.showCaption = true;
+            return a;
+        } 
+        
+        void moveFirstPage() {
+            listHandler.moveFirstPage();  
+        }
+        void moveBackPage() {
+            listHandler.moveBackPage();  
+        }
+        void moveNextPage() {
+            listHandler.moveNextPage(); 
+        }
+        void search() {
+            listHandler.load(); 
         }
     }
-    
     ]]>
     </code>
     
+    <pages>
+        <page template="com.rameses.gov.etracs.bpls.address.LookupBuildingPage"/>
+    </pages>
     
 </workunit>

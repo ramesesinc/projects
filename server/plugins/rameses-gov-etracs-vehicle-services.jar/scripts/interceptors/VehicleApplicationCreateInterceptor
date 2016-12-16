@@ -60,7 +60,7 @@ class VehicleApplicationCreateInterceptor {
 		wfSvc.start(o);
 	}
 
-	@Before(pattern="VehicleApplicationService.create", eval="#{args[0].txntype != 'CAPTURE'}")
+	@Before(pattern="VehicleApplicationService.create", eval="#{args[0].txnmode != 'CAPTURE'}")
 	public void checkFeesBeforeCreateForNonCapture( def evt ) {
 		def o = evt.args[0];
 		if(!o.fees) throw new Exception("There must be at least 1 fee");

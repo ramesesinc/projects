@@ -75,6 +75,7 @@ public abstract class AbstractVehicleEntryForm extends PageFlowController {
         p.defaultinfos = p.remove("infos");
 
         def r = ruleExecutor.execute(p);
+        MsgBox.alert('finished');
         if( !r) {
             throw new BreakException();
         }
@@ -82,12 +83,16 @@ public abstract class AbstractVehicleEntryForm extends PageFlowController {
         if( r.items ) {
             entity.fees = r.items;
             entity.amount = entity.fees.sum{ it.amount };
-            feeListModel.reload();
         }
         if( r.infos ) {
             entity.infos = r.infos;
-            infoListModel.reload();
         }
+        else {
+            entity.infos = [];
+        }
+        MsgBox.alert('reloading');
+        feeListModel.reload();
+        infoListModel.reload();
     }
     
     

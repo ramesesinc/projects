@@ -33,5 +33,9 @@
 			<key field="objid" target="appid" />
 		</complex>
 		
+		<complex name="infos" ref="vehicle_application_info" jointype="one-to-many">
+			<key field="objid" target="appid" />
+		</complex>
+
 	</element>
 </schema>

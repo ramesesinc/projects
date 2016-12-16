@@ -24,28 +24,37 @@ public class VariableInfoUtil {
 	public def createFact(def v) {
 		def o = lookup(v.name);
 		def value = v.value;
-		def vinfo = null;
-		if(o.datatype == 'decimal') {
-			vinfo = new DecimalInfo();
-			if(value!=null) value = (""+value).toDouble();
-		}
-		else if(o.datatype=="integer") {
-			vinfo = new IntegerInfo();
-			if(value!=null) value = (""+value).toInteger();
-		}
-		else if(o.datatype=="boolean") {
-			vinfo = new BooleanInfo();
-			if(value!=null) value = (""+value).toBoolean();
-		}
-		else {
-			vinfo = new StringInfo();
-		}
+		VariableInfo vinfo = new VariableInfo();
 		vinfo.name = o.name;
 		vinfo.caption = o.caption;
 		vinfo.arrayvalues = o.arrayvalues;
 		vinfo.category = o.category;
 		vinfo.sortorder = o.sortorder;
-		vinfo.value = value;
+		vinfo.datatype = o.datatype;		
+
+		if( value!=null ) {
+			if(o.datatype == 'decimal') {
+				vinfo.decimalvalue = (""+value).toDouble();
+			}
+			else if(o.datatype=="integer") {
+				vinfo.intvalue = (""+value).toInteger();
+			}
+			else if(o.datatype=="boolean") {
+				vinfo.booleanvalue = (""+value).toBoolean();
+			}
+			else if( o.datatype == "date" ) {
+				if(!(value instanceof Date)) {
+					def df = new java.text.SimpleDateFormat("yyyy-MM-dd");
+					vinfo.datevalue = df.parse( value );
+				}	
+				else {
+					vinfo.datevalue = value;
+				}
+			}
+			else if(o.datatype == "string"){
+				vinfo.stringvalue = value.toString();
+			}
+		}
 		return vinfo;
 	}
 

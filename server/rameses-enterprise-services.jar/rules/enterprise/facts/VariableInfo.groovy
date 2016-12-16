@@ -1,6 +1,7 @@
 package rules.enterprise.facts;
+import java.util.*;
 
-public abstract class VariableInfo {
+public class VariableInfo {
 	
 	String name;
 	String caption;
@@ -8,9 +9,12 @@ public abstract class VariableInfo {
 	String category;
 	int sortorder;
 
-	public String getDatatype() {
-		return  "object";
-	}
+	double decimalvalue;
+	int intvalue;
+	boolean booleanvalue;
+	String stringvalue;
+	Date datevalue;
+	String datatype;
 
 	public int hashCode() {
 		return name.hashCode();
@@ -20,12 +24,21 @@ public abstract class VariableInfo {
 		return (hashCode() == o.hashCode());
 	}
 
+	/********************************************
+	* This is from the fact to map data
+	********************************************/
 	public def toMap() {
 		def m = [:];
 		m.datatype = datatype;
 		m.caption = caption;
+		m.category = category;
 		m.name = name;
-		m.value = value;
+		m.value = null;
+		if(m.datatype == 'decimal') m.value  = decimalvalue
+		else if(m.datatype=="integer") m.value = intvalue;
+		else if(m.datatype=="boolean") m.value = booleanvalue;
+		else if(m.datatype == "date" ) m.value = datevalue;
+		else if(o.datatype == "string") m.value = stringvalue;
 		m.arrayvalues = arrayvalues;
 		m.sortorder = sortorder;
 		return m;

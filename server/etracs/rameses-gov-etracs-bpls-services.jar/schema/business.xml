@@ -1,13 +1,13 @@
 <schema>
 	
 	<element tablename="business">
-		<field name="objid" primary="true" prefix="BUS"/>
+		<field name="objid" primary="true"/>
 		<field name="state" required="true"/>
-		<field name="owner_name" required="true"/>
+		<field name="owner_name" required="true" searchable="true" indexed="true"/>
 		<field name="owner_objid" required="true"/>
 		<field name="owner_address_text" required="true"/>
 		<field name="owner_address_objid" required="true"/>
-		<field name="businessname" required="true" caption="Business Name"/>
+		<field name="businessname" required="true" searchable="true" indexed="true"/>
 		<field name="tradename" required="true"/>
 		<field name="address_text" required="true"/>
 		<field name="address_objid" required="true"/>
@@ -16,7 +16,7 @@
 		<field name="activeyear" required="true"/>
 		<field name="pin" />
 		<field name="currentapplicationid" />
-		<field name="bin" required="true"/>
+		<field name="bin" required="true" searchable="true" indexed="true"/>
 		<field name="taxcredit" required="true"/>
 		<field name="currentpermitid" />
 		<field name="phoneno" />

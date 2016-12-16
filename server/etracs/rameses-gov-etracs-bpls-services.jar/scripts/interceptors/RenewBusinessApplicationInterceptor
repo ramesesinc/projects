@@ -38,6 +38,9 @@ public class RenewBusinessApplicationInterceptor {
 	@Service("BusinessRedflagService")
 	def redflagSvc;
 
+	@Service("BusinessCashReceiptService")
+	def cashReceiptSvc;
+
 	@ActiveDB('business_application') 
 	def business_application;
 
@@ -158,16 +161,28 @@ public class RenewBusinessApplicationInterceptor {
 		def o = evt.args[0];
 		def result = evt.result;
 
+		boolean canRelease = false;	
 		def currentDate = dateSvc.getBasicServerDate();
 		def currentYear = dateSvc.getYear( currentDate ); 		
 		def currentQtr = dateSvc.getQtr( currentDate ); 
-		boolean canRelease = false;		
-		def lastpaidinfo = paySvc.findLastQtrPaid([ applicationid: o.objid ]); 
+		def billing = cashReceiptSvc.getBillingForPayment([ applicationid: o.objid, _silent:true, _with_taxfees:false, _with_items:false ]);  
+		if ( billing?.errcode=='NO_UNPAID') {
+			canRelease = true; 
+		} else {
+			def balance = 0.0; 
+			for (int i=1; i<=currentQtr; i++) {
+				def amt = billing?.totals?.get('q'+i); 
+				balance += (amt ? amt : 0.0);  	
+			}
+			canRelease = (balance > 0.0 ? false : true);  
+		} 
+
+		/*def lastpaidinfo = paySvc.findLastQtrPaid([ applicationid: o.objid ]); 
 		if (lastpaidinfo) { 
 			if (o.appyear-1 == currentYear) currentQtr = 1;
 
 			canRelease = ( lastpaidinfo.qtr==0 || lastpaidinfo.qtr >= currentQtr ); 
-		} 
+		}*/
 
 		result.canRelease = canRelease; 
 

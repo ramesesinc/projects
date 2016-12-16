@@ -1,0 +1,76 @@
+import com.rameses.annotations.*; 
+
+class RemittanceMgmtToolService {
+
+	@ActiveDB('remittance_mgmt_tool') 
+	def em; 
+
+	@Service('LiquidationMgmtToolService') 
+	def liquidationSvc; 
+
+	@ProxyMethod 
+	public def removeCashReceipt( params ) { 
+		if ( !params.receiptid ) throw new Exception('receiptid parameter is required'); 
+
+		def result = [:]; 
+		def m = [ objid: params.receiptid ]; 
+		def remc = em.findRemittanceReceipt( m ); 
+		if ( remc ) {
+			def resp = liquidationSvc.removeRemittance([ remittanceid: remc.remittanceid ]); 
+
+			em.removeRemittanceReceipt( m ); 
+
+			if ( params._autorebuild.toString() == 'true' ) {
+				rebuildRemittance( remc.remittanceid );  
+
+				if ( resp?.liquidations ) { 
+					liquidationSvc.rebuild( resp.liquidations );  
+				} 
+				return [:];
+
+			} else {
+				return [
+					remittances  : [ remc.remittanceid ], 
+					liquidations : resp?.liquidations 
+				]; 
+			} 
+		} 
+	} 
+
+	@ProxyMethod 
+	public void removeCashReceipts( params ) { 
+		if ( !params.controlid ) throw new Exception('controlid parameter is required'); 
+
+		def receipts = em.getRemittanceReceipts([ controlid: params.controlid ]); 
+		if ( !receipts ) return; 
+
+		def remittances = receipts.collect{ it.remittanceid }?.unique(); 
+		def resp = liquidationSvc.removeRemittances([ remittances: remittances ]); 
+
+		def m = [:]; 
+		receipts.each{ 
+			m.objid = it.objid; 
+			em.removeRemittanceReceipt( m ); 
+		} 
+		
+		remittances.each{ 
+			rebuildRemittance( it ); 
+		} 
+
+		if ( resp?.liquidations ) { 
+			liquidationSvc.rebuild( resp ); 
+		} 
+	} 
+
+	void rebuildRemittance( objid ) { 
+		def m = [ remittanceid: objid ]; 
+		em.removeNonCashPayments( m );  
+		em.insertNonCashPayments( m );
+		em.removeFunds( m ); 
+		em.getRebuildFunds( m ).eachWithIndex{ o,idx-> 
+			o.objid = m.remittanceid +'-'+ idx;  
+			em.insertFund( o );  
+		} 
+		em.updateTotals( m );  
+	} 
+} 

@@ -1,0 +1,49 @@
+import com.rameses.annotations.*; 
+
+class OVSReportSummaryService {
+
+	@ActiveDB(value='ovs_report', em='ovs') 
+	def ovs_report; 
+
+	@Service('DateService') 
+	def dateSvc; 
+
+	@ProxyMethod 
+	public def getReport( params ) { 
+		buildParams( params ); 
+
+		def reportdatestr = 'For The Month of ';
+		reportdatestr += params.month.caption.toString().toUpperCase(); 
+		reportdatestr += ' '+ params.year.toString(); 
+
+		return [
+			reportdata: ovs_report.getReportSummary( params ), 
+			header: [ 
+				REPORT_TITLE : 'OVS Report Summary', 
+				REPORT_DATE  : reportdatestr 
+			] 
+		]; 
+	} 
+
+	void buildParams( params ) {
+		params.filter = '';
+
+		if ( params.period == 'monthly' ) {
+			if ( !params.year ) throw new Exception('year is required');
+			if ( !params.month?.index ) throw new Exception('month is required');
+
+			def monthindex = params.month.index; 
+			def strmonth = (monthindex > 9? monthindex: '0'+monthindex); 
+			def dtstart = java.sql.Date.valueOf(''+ params.year +'-'+ strmonth +'-01'); 
+			def dtend = dateSvc.getMonthEndDate( dtstart ); 
+			params.startdate = dtstart;
+			params.enddate = dtend;
+		
+		} 
+
+		if (!(params.enddate instanceof Date)) {
+			params.enddate = java.sql.Date.valueOf( params.enddate ); 
+		} 
+		params.enddate = dateSvc.add( params.enddate, '1d' );
+	} 
+}

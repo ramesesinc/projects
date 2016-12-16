@@ -1,36 +1,46 @@
 <workunit>
     <invokers>
-        <invoker type="lobclassification:create" action="init" caption="Line of Business Classification"/>
-        <invoker type="lobclassification:open" action="open" caption="Line of Business Classification"/>
+        <invoker type="lobclassification:open" action="open" caption="Line of Business Classification" />
+        <invoker type="lobclassification:create" action="init" caption="Line of Business Classification" 
+                role="MASTER" permission="lobclassification.create"/> 
         <!-- 
         <invoker type="lobclassification:list:formActions" action="cloudSync" caption="Sync Cloud" target="process"/>
         -->
     </invokers>
     <code>
-        <![CDATA[
-            import com.rameses.rcp.common.*
-            import com.rameses.rcp.annotations.*
-            import com.rameses.osiris2.client.*
-            import com.rameses.osiris2.common.*
-            
-            class LobClassificationController extends CRUDController {
-            
-                String serviceName = 'LobClassificationService'
-                String entityName = 'lobclassification'
-                String prefixId = 'LOBC'
-                
-                @Caller
-                def caller;
-                
-                boolean allowCreate = false;
-                
-                void cloudSync() {
-                    MsgBox.alert( "cloud sync" );
-                    caller.refresh();
-                }
-                
-            }
-        ]]>
+    <![CDATA[
+import com.rameses.rcp.common.*
+import com.rameses.rcp.annotations.*
+import com.rameses.osiris2.client.*
+import com.rameses.osiris2.common.*
+
+class LobClassificationController extends CRUDController {
+
+    String serviceName = 'LobClassificationService'
+    String entityName = 'lobclassification'
+    String prefixId = 'LOBC'
+
+    @Caller
+    def caller;
+
+    boolean allowCreate = false;
+
+    void cloudSync() {
+        MsgBox.alert( "cloud sync" );
+        caller.refresh();
+    }
+
+    public Map getCreatePermission() { 
+        return [role:'MASTER', permission: entityName + '.create']; 
+    }
+    public Map getEditPermission() { 
+        return [role:'MASTER', permission: entityName + '.edit']; 
+    } 
+    public Map getDeletePermission() { 
+        return [role:'MASTER', permission: entityName + '.delete']; 
+    } 
+}
+    ]]>
     </code>
     
     <pages>

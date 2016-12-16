@@ -1,12 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
-<Form version="1.3" maxVersion="1.3" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
+<Form version="1.3" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
   <AuxValues>
-    <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0"/>
-    <AuxValue name="FormSettings_autoSetComponentName" type="java.lang.Boolean" value="false"/>
-    <AuxValue name="FormSettings_generateFQN" type="java.lang.Boolean" value="true"/>
     <AuxValue name="FormSettings_generateMnemonicsCode" type="java.lang.Boolean" value="false"/>
-    <AuxValue name="FormSettings_i18nAutoMode" type="java.lang.Boolean" value="false"/>
     <AuxValue name="FormSettings_layoutCodeTarget" type="java.lang.Integer" value="1"/>
     <AuxValue name="FormSettings_listenerGenerationStyle" type="java.lang.Integer" value="0"/>
     <AuxValue name="FormSettings_variablesLocal" type="java.lang.Boolean" value="false"/>
@@ -19,7 +15,7 @@
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="1" attributes="0">
-                  <Component id="formPanel1" alignment="0" max="32767" attributes="1"/>
+                  <Component id="formPanel1" alignment="0" pref="395" max="32767" attributes="1"/>
                   <Component id="formPanel2" alignment="0" min="-2" pref="395" max="-2" attributes="1"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
@@ -53,7 +49,7 @@
           <Properties>
             <Property name="caption" type="java.lang.String" value="AF"/>
             <Property name="enabled" type="boolean" value="false"/>
-            <Property name="name" type="java.lang.String" value="entity.afid" noResource="true"/>
+            <Property name="name" type="java.lang.String" value="entity.afid"/>
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[0, 20]"/>
             </Property>
@@ -63,7 +59,7 @@
           <Properties>
             <Property name="caption" type="java.lang.String" value="Stub No"/>
             <Property name="enabled" type="boolean" value="false"/>
-            <Property name="name" type="java.lang.String" value="entity.stubno" noResource="true"/>
+            <Property name="name" type="java.lang.String" value="entity.stubno"/>
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[0, 20]"/>
             </Property>
@@ -73,7 +69,7 @@
           <Properties>
             <Property name="caption" type="java.lang.String" value="Collector"/>
             <Property name="enabled" type="boolean" value="false"/>
-            <Property name="name" type="java.lang.String" value="entity.respcentername" noResource="true"/>
+            <Property name="name" type="java.lang.String" value="entity.respcentername"/>
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[0, 20]"/>
             </Property>
@@ -83,7 +79,7 @@
           <Properties>
             <Property name="caption" type="java.lang.String" value="Balance Qty"/>
             <Property name="enabled" type="boolean" value="false"/>
-            <Property name="name" type="java.lang.String" value="entity.balance" noResource="true"/>
+            <Property name="name" type="java.lang.String" value="entity.balance"/>
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[0, 20]"/>
             </Property>
@@ -93,7 +89,7 @@
           <Properties>
             <Property name="caption" type="java.lang.String" value="Start Series"/>
             <Property name="enabled" type="boolean" value="false"/>
-            <Property name="name" type="java.lang.String" value="entity.startseries" noResource="true"/>
+            <Property name="name" type="java.lang.String" value="entity.startseries"/>
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[0, 20]"/>
             </Property>
@@ -103,7 +99,7 @@
           <Properties>
             <Property name="caption" type="java.lang.String" value="End Series"/>
             <Property name="enabled" type="boolean" value="false"/>
-            <Property name="name" type="java.lang.String" value="entity.endseries" noResource="true"/>
+            <Property name="name" type="java.lang.String" value="entity.endseries"/>
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[0, 20]"/>
             </Property>
@@ -113,7 +109,7 @@
           <Properties>
             <Property name="caption" type="java.lang.String" value="Current Series"/>
             <Property name="enabled" type="boolean" value="false"/>
-            <Property name="name" type="java.lang.String" value="entity.currentseries" noResource="true"/>
+            <Property name="name" type="java.lang.String" value="entity.currentseries"/>
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[0, 20]"/>
             </Property>
@@ -134,10 +130,10 @@
           <Properties>
             <Property name="caption" type="java.lang.String" value="Transfer To"/>
             <Property name="captionWidth" type="int" value="90"/>
-            <Property name="expression" type="java.lang.String" value="#{item.name} #{item.orgname}"/>
+            <Property name="expression" type="java.lang.String" value="#{item.name}"/>
             <Property name="index" type="int" value="-10"/>
             <Property name="items" type="java.lang.String" value="collectorlist"/>
-            <Property name="name" type="java.lang.String" value="entity.collector" noResource="true"/>
+            <Property name="name" type="java.lang.String" value="entity.collector"/>
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[0, 22]"/>
             </Property>

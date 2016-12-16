@@ -256,7 +256,14 @@ public abstract class AbstractCashReceipt {
 
     void print() {
         def handle = findReportOpener(entity);
-        handle.viewReport();
+        def opt = handle.viewReport(); 
+        if ( opt instanceof Opener ) { 
+            // 
+            // possible routing of report opener has been configured 
+            // 
+            handle = opt.handle; 
+            handle.viewReport(); 
+        } 
         ReportUtil.print(handle.report,true);
     }
     
@@ -276,13 +283,14 @@ public abstract class AbstractCashReceipt {
         return TemplateProvider.instance.getResult( "com/rameses/enterprise/treasury/cashreceipt/cashreceipt.gtpl", [entity:entity] );
     }
 
-    def doVoid() {
-        return InvokerUtil.lookupOpener( "cashreceipt:void", [receipt:entity,
-            handler: { o->
-                entity.voided = true;
-                binding.refresh();
-            }
-        ]); 
+    def doVoid() { 
+        def xbinding = binding; 
+        def params = [ receipt: entity ]; 
+        params.handler = { o-> 
+            entity.voided = true;
+            xbinding.refresh();
+        } 
+        return InvokerUtil.lookupOpener( "cashreceipt:void", params );  
     }
 
     boolean isAllowCreateEntity() {

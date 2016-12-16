@@ -1,0 +1,91 @@
+import com.rameses.annotations.*; 
+
+class OVSReportListingService {
+
+	@ActiveDB(value='ovs_report', em='ovs') 
+	def ovs_report; 
+
+	@DataContext('entity') 
+	def entityDB;
+
+	@Service('DateService') 
+	def dateSvc; 
+
+	def YMD1 = new java.text.SimpleDateFormat('yyyy-MM-dd');
+	def YMD2 = new java.text.SimpleDateFormat('MMMMM dd, yyyy'); 
+
+	@ProxyMethod 
+	public def getReport( params ) { 
+		buildParams( params ); 
+
+		def reportdatestr = new StringBuilder(); 
+		if ( params.period == 'monthly') {
+			reportdatestr.append('For The Month of ');
+			reportdatestr.append( params.month.caption.toString().toUpperCase());
+			reportdatestr.append(' '+ params.year ); 
+		} else if ( params.period == 'daily') { 
+			reportdatestr.append( YMD2.format( YMD1.parse( params.date ))); 
+		} 
+
+		return [
+			reportdata: ovs_report.getReportListing( params ), 
+			header: [ 
+				REPORT_TITLE: 'OVS Report Listing', 
+				REPORT_DATE : reportdatestr.toString() 
+			] 
+		]; 
+	} 
+
+	@ProxyMethod 
+	public def getReportListForEndorsement( params ) { 
+		buildParams( params ); 
+
+		def reportdatestr = new StringBuilder(); 
+		if ( params.period == 'monthly') {
+			reportdatestr.append('For The Month of ');
+			reportdatestr.append( params.month.caption.toString().toUpperCase());
+			reportdatestr.append(' '+ params.year ); 
+		} 
+
+		params.enddate = dateSvc.add( params.enddate, '-5d' ); 
+		def reportdata = ovs_report.getReportListingForEndorsement( params ); 
+		reportdata.each{ 
+			if ( !it.violator?.objid ) return; 
+
+			def o = entityDB.find([ objid: it.violator.objid ]).first(); 
+			if ( o ) it.violator.address = [text: o.address?.text ]; 
+		}
+
+		return [
+			reportdata: reportdata, 
+			header: [ 
+				REPORT_TITLE: 'Violation List For Endorsement', 
+				REPORT_DATE : reportdatestr.toString() 
+			] 
+		]; 
+	} 
+
+	void buildParams( params ) {
+		params.filter = '';
+
+		if ( params.period == 'monthly' ) {
+			if ( !params.year ) throw new Exception('year is required');
+			if ( !params.month?.index ) throw new Exception('month is required');
+
+			def monthindex = params.month.index; 
+			def strmonth = (monthindex > 9? monthindex: '0'+monthindex); 
+			def dtstart = java.sql.Date.valueOf(''+ params.year +'-'+ strmonth +'-01'); 
+			def dtend = dateSvc.getMonthEndDate( dtstart ); 
+			params.startdate = dtstart;
+			params.enddate = dtend;
+		
+		} else if ( params.period == 'daily') { 
+			params.startdate = params.enddate = params.date; 
+		} 
+
+		if (!(params.enddate instanceof Date)) {
+			params.enddate = java.sql.Date.valueOf( params.enddate ); 
+		} 
+		params.enddate = dateSvc.add( params.enddate, '1d' );
+	} 
+}

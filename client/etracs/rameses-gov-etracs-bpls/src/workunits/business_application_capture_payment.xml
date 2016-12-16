@@ -1,7 +1,7 @@
 <workunit>
     <invokers>
         <invoker type="business_assessment:payment" caption="Manual Capture Payment"  action="initManual" target="popup" 
-                 role="ADMIN" index="0"/>
+                 role="ADMIN,APPROVER" index="0"/>
         
     </invokers>
     

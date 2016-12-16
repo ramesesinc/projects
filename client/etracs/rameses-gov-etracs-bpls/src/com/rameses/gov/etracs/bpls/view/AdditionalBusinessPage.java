@@ -33,15 +33,55 @@ public class AdditionalBusinessPage extends javax.swing.JPanel {
 
         jScrollPane1 = new javax.swing.JScrollPane();
         xTextArea1 = new com.rameses.rcp.control.XTextArea();
+        xDataTable1 = new com.rameses.rcp.control.XDataTable();
+        xActionBar1 = new com.rameses.rcp.control.XActionBar();
         xLabel1 = new com.rameses.rcp.control.XLabel();
         xLabel2 = new com.rameses.rcp.control.XLabel();
-        lobList1 = new com.rameses.gov.etracs.bpls.components.LobList();
 
         xTextArea1.setCaption("Reason");
         xTextArea1.setFontStyle("font-size:12");
         xTextArea1.setName("entity.remarks"); // NOI18N
         xTextArea1.setRequired(true);
         jScrollPane1.setViewportView(xTextArea1);
+
+        xDataTable1.setColumns(new com.rameses.rcp.common.Column[]{
+            new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", "name"}
+                , new Object[]{"caption", "Line of Business"}
+                , new Object[]{"width", 100}
+                , new Object[]{"minWidth", 0}
+                , new Object[]{"maxWidth", 0}
+                , new Object[]{"required", false}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", false}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.UPPER}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
+            }),
+            new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", "assessmenttype"}
+                , new Object[]{"caption", "Assessment Type"}
+                , new Object[]{"width", 120}
+                , new Object[]{"minWidth", 120}
+                , new Object[]{"maxWidth", 120}
+                , new Object[]{"required", false}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", false}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.UPPER}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
+            })
+        });
+        xDataTable1.setHandler("lob.listModel");
+        xDataTable1.setName("lob.selectedItem"); // NOI18N
+        xDataTable1.setPreferredSize(new java.awt.Dimension(700, 80));
+
+        xActionBar1.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        xActionBar1.setDepends(new String[] {"lob.selectedItem"});
+        xActionBar1.setDynamic(true);
+        xActionBar1.setName("lobActions"); // NOI18N
+        xActionBar1.setOpaque(false);
+        xActionBar1.setUseToolBar(false);
 
         xLabel1.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         xLabel1.setVerticalAlignment(javax.swing.SwingConstants.TOP);
@@ -52,24 +92,18 @@ public class AdditionalBusinessPage extends javax.swing.JPanel {
         xLabel2.setExpression("Remarks");
         xLabel2.setFontStyle("font-size:12");
 
-        lobList1.setName("entity"); // NOI18N
-        lobList1.setShowRenew(false);
-        lobList1.setShowRetire(false);
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 710, Short.MAX_VALUE)
+                    .addComponent(xDataTable1, javax.swing.GroupLayout.DEFAULT_SIZE, 710, Short.MAX_VALUE)
+                    .addComponent(xActionBar1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1)
                     .addComponent(xLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(xLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(0, 27, Short.MAX_VALUE))
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addComponent(lobList1, javax.swing.GroupLayout.PREFERRED_SIZE, 705, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 32, Short.MAX_VALUE)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -79,19 +113,19 @@ public class AdditionalBusinessPage extends javax.swing.JPanel {
                 .addComponent(xLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(184, Short.MAX_VALUE))
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                    .addContainerGap(171, Short.MAX_VALUE)
-                    .addComponent(lobList1, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap()))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(xDataTable1, javax.swing.GroupLayout.DEFAULT_SIZE, 134, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(xActionBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane jScrollPane1;
-    private com.rameses.gov.etracs.bpls.components.LobList lobList1;
+    private com.rameses.rcp.control.XActionBar xActionBar1;
+    private com.rameses.rcp.control.XDataTable xDataTable1;
     private com.rameses.rcp.control.XLabel xLabel1;
     private com.rameses.rcp.control.XLabel xLabel2;
     private com.rameses.rcp.control.XTextArea xTextArea1;

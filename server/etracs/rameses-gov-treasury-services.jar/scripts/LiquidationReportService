@@ -13,6 +13,9 @@ class LiquidationReportService  {
 	@ActiveDB("liquidationreport")
 	def liqreport; 
 
+	@ActiveDB('fund')
+	def fund_em;	
+
 	@Service("NumberService")
 	def numSvc;
 
@@ -21,6 +24,9 @@ class LiquidationReportService  {
 
 	@Service('RAAFReportService') 
 	def raafSvc; 	
+
+	@Service('Var') 
+	def var; 	
 
 	@Env 
 	def env; 
@@ -45,9 +51,24 @@ class LiquidationReportService  {
 		def liquidation = liqreport.findLiquidationInfo( params ); 
 		if( !liquidation ) throw new Exception("Could not open liquidation with objid " + params.liquidationid ); 
 
+		if ( params._INCLUDE_SUBFUND == true ) { 
+			def list = fund_em.findAllSubAcct([ objid: params.fundid ]).collect{ it.objid }   
+			if ( list ) { 
+				list << params.fundid; 
+				params.fundfilter = "'"+ list.join("','") +"'"; 
+			} 
+		} 
+
 		liquidation.remittances = liqreport.getRCDRemittances( params );
 		liquidation.collectionsummaries = liqreport.getRCDCollectionSummary( params );
-		liquidation.remittedforms = raafSvc.getRAAFByLiquidation( params ); 
+
+		def allow_af = var.liquidation_report_show_accountable_forms.toString().toLowerCase(); 
+		if ( !allow_af.matches('false|0')) { 
+			def afinventories = raafSvc.getRAAFByLiquidation( params ); 		
+			liquidation.remittedforms = afinventories.findAll{ it.formtype=='serial' } 
+			liquidation.nonserialremittances = afinventories.findAll{ it.formtype=='cashticket' } 
+		}
+
 		liquidation.otherpayments = liqreport.getRCDOtherPayments( params );
 		liquidation.amountinwords = numSvc.doubleToWords( liquidation.amount ); 
 		return liquidation;
@@ -56,14 +77,21 @@ class LiquidationReportService  {
 	@ProxyMethod 
 	def getRCDSummaryData( params ) {
 		def liquidation = liqSvc.open([ objid: params.liquidationid ])
-		if(! liquidation ) throw new Exception("Could not open liquidation with objid " + params.liquidationid )
+		if( !liquidation ) throw new Exception("Could not open liquidation with objid " + params.liquidationid )
 
 		params.fundid = '%'; 
 		
 		liquidation.remittances = liqreport.getRCDRemittancesSummary( params ); 
 		liquidation.collectionsummaries = liqreport.getRCDCollectionSummary( params ); 
-		liquidation.remittedforms = raafSvc.getRAAFByLiquidation( params ); 
-		liquidation.otherpayments = liquidation.checks
+
+		def allow_af = var.liquidation_report_show_accountable_forms.toString().toLowerCase(); 
+		if ( !allow_af.matches('false|0')) { 
+			def afinventories = raafSvc.getRAAFByLiquidation( params );
+			liquidation.remittedforms = afinventories.findAll{ it.formtype=='serial' }  
+			liquidation.nonserialremittances = afinventories.findAll{ it.formtype=='cashticket' } 
+		} 
+
+		liquidation.otherpayments = liquidation.checks;
 		liquidation.amountinwords = numSvc.doubleToWords( liquidation.amount )
 		liquidation.cashbreakdown.each { it.qty = it.qty.toString() }
 		def cashiers = liqreport.getLiquidationCashierList( params );
@@ -80,6 +108,16 @@ class LiquidationReportService  {
 		if ( !params.fundid ) params.fundid = '%'; 
 
 		def data = liqEm.read([ objid: params.liquidationid ]); 
+		if( !data ) throw new Exception("Could not open liquidation with objid " + params.liquidationid ); 
+
+		if ( params._INCLUDE_SUBFUND == true ) { 
+			def list = fund_em.findAllSubAcct([ objid: params.fundid ]).collect{ it.objid }   
+			if ( list ) { 
+				list << params.fundid; 
+				params.fundfilter = "'"+ list.join("','") +"'"; 
+			} 
+		} 
+
 		data.receipts = liqreport.getReceipts( params ); 
 		if ( !data.receipts ) throw new Exception('No record(s) found                  ');
 
@@ -92,9 +130,16 @@ class LiquidationReportService  {
 	def generateReportByRevenueItem( liq, fund ) {
 		def data = liq.clone();
 
-		def params = [ liquidationid: data.objid,  fundid : fund ? fund.fundid : '%'] 
-		data.acctsummaries = liqreport.getRevenueItemSummaryByFund( params ); 
+		def params = [liquidationid: data.objid,  fundid: (fund? fund.fundid : '%')]; 
+		if ( params._INCLUDE_SUBFUND == true ) { 
+			def list = fund_em.findAllSubAcct([ objid: params.fundid ]).collect{ it.objid }   
+			if ( list ) { 
+				list << params.fundid; 
+				params.fundfilter = "'"+ list.join("','") +"'"; 
+			} 
+		} 
 
+		data.acctsummaries = liqreport.getRevenueItemSummaryByFund( params ); 
 		if( ! data.acctsummaries ) throw new Exception("No record(s) found ");
 
 		data.amount = data.acctsummaries.amount.sum(); 

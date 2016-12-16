@@ -59,6 +59,7 @@ public class BPInfoRuleService  {
 		def actions = new RuleAction();
 		actions.addCommand( "ask_business_info", new AskBusinessInfo( infotype:'info', BV:bv, request:request ));
 		actions.addCommand( "assert_business_info", new AssertBusinessInfo(request:request, BV:bv, comparator: comparator));
+		actions.addCommand( "print_test", new PrintTest());
 		return actions;
 	}
 

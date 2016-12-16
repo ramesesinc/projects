@@ -135,15 +135,23 @@ select
 	bal.objid, bal.applicationid, bal.businessid, ba.txndate,  
 	bal.lobid, bal.name, bal.assessmenttype 
 from ( 
-	select business_objid, appyear 
-	from business_application 
-	where objid=$P{applicationid} 
+	select 
+		bal.businessid, bal.activeyear, bal.lobid, max(ba.txndate) as txndate 
+	from business_application o 
+		inner join business_application_lob bal on o.business_objid=bal.businessid 
+		inner join business_application ba on bal.applicationid=ba.objid 
+	where o.objid=$P{applicationid} 
+		and bal.activeyear=o.appyear  
+		and ba.state in ('RELEASE','COMPLETED') 
+	group by bal.businessid, bal.activeyear, bal.lobid 
 )xx 
-	inner join business_application ba on (xx.business_objid=ba.business_objid and ba.appyear=xx.appyear) 
-	inner join business_application_lob bal on ba.objid=bal.applicationid 
-where ba.state in ('RELEASE','COMPLETED') 
-	and ba.objid in (select applicationid from business_permit where applicationid=ba.objid and state='ACTIVE') 
-order by ba.txndate 
+	inner join business_application_lob bal on xx.businessid=bal.businessid 
+	inner join business_application ba on bal.applicationid=ba.objid 
+where bal.activeyear=xx.activeyear 
+	and bal.lobid=xx.lobid 
+	and ba.txndate=xx.txndate 
+	and bal.assessmenttype in ('NEW','RENEW') 
+order by ba.txndate, bal.name 
 
 
 [getApplicationPayments]
@@ -170,3 +178,7 @@ where businessid=$P{businessid} and activeyear=$P{activeyear}
 [findPermit]
 select * from business_permit 
 where businessid=$P{businessid} and applicationid=$P{applicationid} 
+
+
+[updateRemarks]
+update business_permit set remarks=$P{remarks} where objid=$P{objid} 

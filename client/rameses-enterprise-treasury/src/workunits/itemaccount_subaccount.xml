@@ -1,61 +1,21 @@
 <workunit extends="com/rameses/seti2/templates/FormList.xml" schemaName="itemaccount">
     <invokers>
-        <invoker type="itemaccount:section" 
-                cols="code,title,org.name"
-                allowCreate="false"
-                allowOpen="false"
+        <invoker type="itemaccount:section"  
+                cols="code,title,org.name" 
+                allowCreate="false" 
+                allowOpen="false" 
                 caption="Sub Accounts" 
-                visibleWhen="#{ mode == 'read' }"
-                action="init"/>
-        
-        <invoker type="formActions" caption="Add" action="addSub"/>
-        <invoker type="formActions" caption="Remove" action="removeSub"/>
-   </invokers>
+                visibleWhen="#{ mode == 'read' }" 
+                action="init"/> 
+
+        <invoker type="formActions" caption="Add" action="addSub" 
+                 role="MASTER" permission="itemaccount.update"/> 
+        <invoker type="formActions" caption="Remove" action="removeSub" 
+                 role="MASTER" permission="itemaccount.update" 
+                 depends="selectedItem" visibleWhen="#{selectedItem != null}"/> 
+        <invoker type="formActions" caption="Select All" action="doSelectAll"/> 
+        <invoker type="formActions" caption="Deselect All" action="doDeselectAll"/> 
+    </invokers>
    
-    <code>
-        import com.rameses.osiris2.common.*;
-        import com.rameses.rcp.common.*;
-        import com.rameses.rcp.annotations.*;
-        import java.rmi.server.*;
-        import com.rameses.osiris2.client.*;
-        import com.rameses.util.*;
-        
-        class ItemAccountSubAccount extends com.rameses.seti2.models.CrudListModel {
-        
-            @Caller
-            def caller;
-        
-            def getCustomFilter() {
-                return ["parentid=:parentid", [parentid: caller.entity.objid] ];
-            }
-
-            void reload() {
-                listHandler.reload();
-            }
-        
-            void addSub() {
-                def h = { arr ->
-                    arr.each {o->
-                        def item = [_schemaname:'itemaccount'];
-                        item.org = o;
-                        item.parentid = caller.entity.objid;
-                        item.code = caller.entity.code + "-" + o.code;
-                        item.title = caller.entity.title + " " + o.name; 
-                        item.fund = caller.entity.fund;
-                        item.type = caller.entity.type;
-                        item.tags = [];
-                        item.state = caller.entity.state;
-                        persistenceService.create( item );
-                    };    
-                    listHandler.reload();
-                }
-                Modal.show( "org:lookup", [onselect: h, multiSelect: true] );
-            }
-
-            void removeSub() {
-                
-            }
-        
-        }
-    </code>
+    <code class="com.rameses.enterprise.treasury.models.SubItemAccountModel"/>
 </workunit>

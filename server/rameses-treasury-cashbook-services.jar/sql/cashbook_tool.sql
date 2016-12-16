@@ -3,10 +3,8 @@ delete from cashbook_entry
 where objid=$P{objid} 
 
 [getEntriesByRef]
-select cbe.*, 
-from cashbook_entry cbe  
-	inner join cashbook cb on cbe.parentid=cb.objid 
-where cbe.refid=$P{refid} 
+select * from cashbook_entry 
+where refid=$P{refid} 
 
 [findRunningBalance]
 select sum(e.dr - e.cr) as balance 

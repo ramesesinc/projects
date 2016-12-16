@@ -1,0 +1,161 @@
+<workunit>
+    <invokers>
+        <invoker folderid="/home/business/business_application" caption="New Application"  action="start" target="window" role="BUSINESSINFO" index="50" />
+        
+        <invoker type="lobActions" caption="Add" action="lob.add"  immediate="true"/>
+        <invoker type="lobActions" caption="Remove" action="lob.remove" immediate="true" 
+            visibleWhen="#{lob.selectedItem!=null}"/>
+        
+        <invoker type="extActions" caption="Print"  icon="images/toolbars/printer.png" 
+            action="application.print" visibleWhen="#{state=='save-success'}"/>
+
+        <invoker type="business_application:test" caption="New Application Test"  action="start"  />
+
+    </invokers>
+    
+    <code>
+    <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import java.rmi.server.*;
+        import com.rameses.gov.etracs.bpls.controller.*;
+        import com.rameses.util.*;
+        
+        public class NewBusinessApplication extends PageFlowController {
+        
+            @Script("BusinessVerificationUtil")
+            def verifyList;
+            
+            @Script("BusinessLobUtil")
+            def lob;
+
+            @Script("BusinessApplicationUtil")
+            def application;
+
+            @Script("BusinessOwnerUtil")
+            def owner;
+            
+            @Script("BusinessAddressUtil")
+            def address;
+            
+            @Script("BusinessRequirementUtil")
+            def requirement;
+
+            @Script("BusinessInfoUtil")
+            def appinfo;
+
+            @Script("BusinessContactUtil")
+            def contact;
+
+            def entity;
+            def lobAssessmentTypes = ['NEW'];
+    
+            void init() {
+                application.init([apptype:'NEW']);
+                lob.reset();
+                address.reset();
+                requirement.reset();
+                appinfo.reset();
+            }
+            
+            void updateInfo() {
+                lob.verify();
+                boolean test = false;
+                appinfo.handler = {
+                    test = true;
+                }
+                Modal.show(appinfo.update());
+                if(!test) throw new BreakException();
+                appinfo.verify();
+            }
+            
+            void initAddressType() {
+                owner.reload(); //so we can reload address
+                if( application.copyOwnerAddress ) {
+                    def map = [:];
+                    map.putAll( entity.business.owner.address ); 
+                    map.objid = null; 
+                    
+                    entity.business.address = map; 
+                    address.addressType = entity.business.address.type;
+                }
+                else {
+                    address.addressType = application.addressType;
+                }
+            }
+        }
+        ]]>
+    </code>    
+    
+    <pageflow>
+        <start>
+            <transition to="edit-name"  action="init"/>
+        </start>
+
+        <page name="edit-name" title="Business Name">
+            <transition to="check-name" caption="Next" name="next" mnemonic="N" immediate="false" />
+        </page>
+        
+        <process name="check-name" action="verifyList.check">
+            <transition to="verify-name" cond="#{verifyList.pass==false}"/>
+            <transition to="edit-owner" cond="#{verifyList.pass==true}"/>
+        </process>
+        
+        <page name="verify-name" title="Verify Business Name">
+            <transition to="edit-name" caption="Back" mnemonic="B"/>
+            <transition to="edit-owner" caption="Next" name="next" mnemonic="N" action="verifyList.verify"/>
+        </page>
+
+        <page name="edit-owner" title="Business Owner">
+            <transition to="edit-name" caption="Back" mnemonic="B" name="back" />
+            <transition to="edit-address" caption="Next" name="next" mnemonic="N" action="owner.verify"/>
+        </page>
+
+        <page name="edit-address" title="Business Address" action="initAddressType">
+            <transition to="edit-owner" caption="Back" mnemonic="B" name="back" />
+            <transition to="edit-contact" caption="Next" name="next" mnemonic="N" action="address.verify" immediate="false"/>
+        </page>
+
+        <page name="edit-contact" title="Contact Info">
+            <transition to="edit-address" caption="Back" mnemonic="B" name="back" />
+            <transition to="edit-lob" caption="Next" name="next" mnemonic="N" action="contact.verify"/>
+        </page>
+        
+        <page name="edit-lob" title="Add New Line of Business">
+            <transition to="edit-address" caption="Back" mnemonic="B" name="back" />
+            <transition to="edit-requirement" caption="Next" name="next" mnemonic="N" action="updateInfo"/>
+        </page>
+        
+        <page name="edit-requirement" title="Specify Requirements" action="requirement.fetch">
+            <transition to="edit-lob" caption="Back" mnemonic="B" name="back"/>
+            <transition to="confirm" caption="Next" name="next" mnemonic="N" action="requirement.verify"/>
+        </page>
+        
+        <page name="confirm" title="Confirm New Application">
+            <transition to="edit-requirement" caption="Back" mnemonic="B" name="back"/>
+            <transition to="save-success" caption="Submit" mnemonic="S" name="save" action="application.save"
+            confirm="You are about to save this transaction. Continue?"/>
+        </page>
+        
+        <page name="save-success" title="Save Success (New Application)">
+            <transition to="edit-name" caption="Add Another" mnemonic="A" action="init"/>
+        </page>
+
+        <end/>
+    </pageflow>
+    
+    <pages>
+        <page name="edit-name" template="com.rameses.gov.etracs.bpls.view.EditBusinessNamePage"/>
+        <page name="verify-name" template="com.rameses.gov.etracs.bpls.view.BusinessNameVerificationPage"/>
+        <page name="edit-owner" template="com.rameses.gov.etracs.bpls.view.EditBusinessOwnerPage"/>
+        <page name="edit-contact" template="com.rameses.gov.etracs.bpls.view.EditBusinessContactPage"/>
+        <page name="edit-address" template="com.rameses.gov.etracs.bpls.view.EditBusinessAddressPage"/>
+        <page name="edit-lob" template="com.rameses.gov.etracs.bpls.view.EditLobPage"/>
+        <page name="edit-requirement" template="com.rameses.gov.etracs.bpls.view.EditRequirementPage"/>        
+        <page name="confirm" template="com.rameses.gov.etracs.bpls.view.ConfirmPage"/>
+        <page name="save-success" template="com.rameses.gov.etracs.bpls.view.SuccessPage"/>
+    </pages>
+    
+</workunit>

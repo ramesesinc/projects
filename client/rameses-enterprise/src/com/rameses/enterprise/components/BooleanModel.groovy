@@ -27,9 +27,9 @@ class BooleanYesNoModel extends ComponentBean {
     
     private Object resolveValue( boolean o ) { 
         if( o == true ) { 
-            return (trueValue? trueValue: _value); 
+            return (trueValue? trueValue: o); 
         } else { 
-            return (falseValue? falseValue: _value); 
-        } 
+            return (falseValue? falseValue: o); 
+} 
     }
 }

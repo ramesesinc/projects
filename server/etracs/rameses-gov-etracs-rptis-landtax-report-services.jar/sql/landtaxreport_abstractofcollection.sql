@@ -7,6 +7,7 @@ FROM (
   SELECT
     cr.objid AS receiptid, 
     rl.objid AS rptledgerid,
+    rl.fullpin,
     1 AS idx,
     MIN(cri.year) AS minyear,
     MAX(cri.year) AS maxyear, 
@@ -56,7 +57,7 @@ FROM (
   WHERE ${filter} 
     and cri.year <= $P{year} 
     and cr.collector_objid LIKE $P{collectorid} 
-  GROUP BY cr.objid, cr.receiptdate, cr.payer_name, cr.receiptno, rl.objid, rl.tdno, b.name, 
+  GROUP BY cr.objid, cr.receiptdate, cr.payer_name, cr.receiptno, rl.objid, rl.fullpin, rl.tdno, b.name, 
             rl.classcode, cv.objid, m.name, c.name , rl.totalav 
    
   UNION ALL  
@@ -64,6 +65,7 @@ FROM (
   SELECT
     cr.objid AS receiptid,
     null AS rptledgerid,
+    null as fullpin,
     1 AS idx,
     MIN(cri.year) AS minyear,
     MAX(cri.year) AS maxyear, 
@@ -121,6 +123,7 @@ FROM (
   SELECT
     cr.objid AS receiptid,
     rl.objid AS rptledgerid,
+    rl.fullpin,
     2 AS idx,
     MIN(cri.year) AS minyear,
     MAX(cri.year) AS maxyear, 
@@ -163,7 +166,7 @@ FROM (
   WHERE ${filter} 
     and cri.year <= $P{year} 
     and cr.collector_objid LIKE $P{collectorid}
-  GROUP BY cr.objid, cr.receiptdate, cr.payer_name, cr.receiptno, rl.objid, rl.tdno, b.name, 
+  GROUP BY cr.objid, cr.receiptdate, cr.payer_name, cr.receiptno, rl.objid, rl.fullpin, rl.tdno, b.name, 
             rl.classcode, cv.objid, m.name, c.name , rl.totalav 
    
   UNION ALL  
@@ -171,6 +174,7 @@ FROM (
   SELECT
     cr.objid AS receiptid,
     null AS rptledgerid,
+    null as fullpin,
     2 AS idx,
     MIN(cri.year) AS minyear,
     MAX(cri.year) AS maxyear, 
@@ -228,6 +232,7 @@ FROM (
   SELECT
     cr.objid AS receiptid,
     rl.objid AS rptledgerid,
+    rl.fullpin,
     1 AS idx,
     MIN(cri.year) AS minyear,
     MAX(cri.year) AS maxyear, 
@@ -285,6 +290,7 @@ FROM (
   SELECT
     cr.objid AS receiptid,
     null AS rptledgerid,
+    null as fullpin,
     1 AS idx,
     MIN(cri.year) AS minyear,
     MAX(cri.year) AS maxyear, 
@@ -342,6 +348,7 @@ FROM (
   SELECT
     cr.objid AS receiptid,
     rl.objid AS rptledgerid,
+    rl.fullpin,
     2 AS idx,
     MIN(cri.year) AS minyear,
     MAX(cri.year) AS maxyear, 
@@ -383,7 +390,7 @@ FROM (
   WHERE ${filter} 
     and cri.year > $P{year} 
     and cr.collector_objid LIKE $P{collectorid}
-  GROUP BY cr.objid, cr.receiptdate, cr.payer_name, cr.receiptno, rl.objid, rl.tdno, b.name, 
+  GROUP BY cr.objid, cr.receiptdate, cr.payer_name, cr.receiptno, rl.objid, rl.fullpin, rl.tdno, b.name, 
             rl.classcode, cv.objid, m.name, c.name, rl.totalav 
    
   UNION ALL  
@@ -391,6 +398,7 @@ FROM (
   SELECT
     cr.objid AS receiptid,
     null AS rptledgerid,
+    null as fullpin,
     2 AS idx,
     MIN(cri.year) AS minyear,
     MAX(cri.year) AS maxyear, 

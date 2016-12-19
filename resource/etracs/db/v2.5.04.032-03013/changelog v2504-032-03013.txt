@@ -10,6 +10,7 @@
 	- Add the following certification info: blockno, survyeno, titleno, lguname, fullpin and administrator_name
 
 - LANDTAX
+	- Add new fields for tax clearance: blockno, totalreasqm, administrator, etc.
 	- Update on Quarterly Real Property Report
 	- NEW! Consolidated Report on Real Property Tax
 	- Update on Top N Delinquent Taxpayer Report

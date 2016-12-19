@@ -13,23 +13,22 @@ import com.rameses.enterprise.models.*;
 
 public class VehicleApplicationForm extends WorkflowTaskModel {
     
+    @Service("VehicleAssessmentService")
+    def assessmentService;
+    
     @Service("VehicleFranchiseService")
     def franSvc;
     
     def vehicletype;
     def vehicleTypeHandler;
+    def ruleExecutor;
     
-    void afterOpen() {
+    public def open() {
+        def retval = super.open();
         vehicletype = workunit.info.workunit_properties.vehicletype;
         vehicleTypeHandler = Inv.lookupOpener("vehicle_type_handler:"+vehicletype, [entity:entity]); 
-        
-        //load the fees
-        def m = [_schemaname: 'vehicle_application_fee'];
-        m.findBy = [appid: entity.objid];
-        entity.fees = queryService.getList(m);
-        if(entity.fees) {
-            entity.amount = entity.fees.sum{ it.amount - it.amtpaid };
-        }
+        ruleExecutor = new RuleProcessor(  { p-> return assessmentService.assess(p) } );
+        return retval;
     }
     
     String getFormName() {
@@ -63,17 +62,40 @@ public class VehicleApplicationForm extends WorkflowTaskModel {
             return entity.infos;
         }
     ] as BasicListModel;
- 
+
     def paymentListModel = [
         fetchList : {
-            def m = [_schemaname: 'vehicle_payment'];
-            m.findBy = [appid: entity.objid];
-            return queryService.getList(m);
+            return entity.payments;
         },
         onOpenItem: { o->
+            MsgBox.alert("refid " + o.refid);
             return Inv.lookupOpener( "cashreceiptinfo:open", [entity: [objid:o.refid] ] );
         }
     ] as BasicListModel;
     
+    void assess() {
+        def p = [:];
+        p.putAll( entity );
+        p.vehicletype = vehicletype;
+        p.defaultinfos = p.remove("infos");
+        
+        def r = ruleExecutor.execute(p);
+        if( !r) {
+            throw new BreakException();
+        }
+        entity.billexpirydate = r.duedate;
+        if( r.items ) {
+            entity.fees = r.items;
+            entity.amount = entity.fees.sum{ it.amount };
+        }
+        if( r.infos ) {
+            entity.infos = r.infos;
+        }
+        else {
+            entity.infos = [];
+        }
+        feeListModel.reload();
+        infoListModel.reload();
+    }
     
 }

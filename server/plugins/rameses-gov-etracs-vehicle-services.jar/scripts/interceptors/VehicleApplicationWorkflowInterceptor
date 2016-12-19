@@ -1,16 +1,43 @@
 import com.rameses.annotations.*;
 import java.rmi.server.UID;
+import rules.enterprise.facts.*;
 
 class VehicleApplicationWorkflowInterceptor {
 	
 	@DataContext("vehicle_application")
 	def appEm;
 
+	@DataContext("vehicle_application_fee")
+	def appFeeEm;
+
+	@DataContext("vehicle_application_info")
+	def appInfoEm;
+
+	@DataContext("vehicle_payment")
+	def appPaymentEm;
+
 	@DataContext("vehicle_franchise")
 	def franchiseEm;
 
 	@Service("DateService")
 	def dateSvc;
+
+	@After(pattern="PersistenceService.read", eval="#{args[0]._schemaname.startsWith('vehicle_application_') }" )
+	public void afterOpen(def evt) {
+		def entity = evt.result;
+		entity.fees = appFeeEm.find([appid: entity.objid]).list();
+		entity.amount = 0;
+        if(entity.fees) {
+            entity.amount = entity.fees.sum{ it.amount - it.amtpaid };
+        };
+        def vi = new VariableInfoUtil();
+        entity.infos = appInfoEm.find( [appid: entity.objid]).orderBy( "sortorder" ).list();
+        entity.infos.each {
+        	vi.convertData( it );
+        };
+		entity.payments = appPaymentEm.find( [appid: entity.objid] ).orderBy("refdate DESC").list();
+	}	
+
 
 	@After(pattern="WorkflowTaskService.signal", 
 		eval="#{args[0].processname.startsWith('vehicle_application_') && args[0].action == 'release' }" )

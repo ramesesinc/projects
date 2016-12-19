@@ -56,20 +56,17 @@ class VehicleApplicationService {
 		//check fees. do not persist surcharge, interest or discount.
 		if(o.fees) {
 			o.fees = o.fees.findAll{ !it.txntype.matches('surcharge|interest|discount') }
+		};
+
+		def vi = new VariableInfoUtil();
+		if(o.infos) {
+			o.infos.each {
+				vi.fixData( it, it.datatype, it.value );
+			}
 		}
 
 		return appEm.create(o);
 	}
 
-	@ProxyMethod 
-	public def open( params ) {
-		if ( !params.objid ) throw new Exception('objid parameter is required'); 
-
-		def app = appEm.find([ objid: params.objid ]).first(); 
-		if ( !app ) throw new Exception('application record does not exist'); 
-		
-		app.fees = appfeeEm.find([ appid: app.objid ]).list(); 
-		return app;  
-	} 
 
 }

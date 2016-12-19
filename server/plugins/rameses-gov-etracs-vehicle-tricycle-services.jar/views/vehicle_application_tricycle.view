@@ -1,6 +1,7 @@
 CREATE VIEW vehicle_application_tricycle AS 
 SELECT
     va.*,
+    t.objid AS vehicle_objid,
     t.plateno AS vehicle_plateno, 
     t.engineno  AS vehicle_engineno,
     t.chassisno  AS vehicle_chassisno,
@@ -13,6 +14,7 @@ SELECT
     t.crname  AS vehicle_crname,
     vt.taskid,
     vt.state AS taskstate,
+    vf.objid AS franchise_objid,
     vf.controlno AS franchise_controlno,
     vf.dtregistered AS franchise_dtregistered
 FROM vehicle_application va

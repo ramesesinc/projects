@@ -22,6 +22,9 @@ public class AskVariableInfoModel {
     def resultHandler;
     def formInfos = [];
     
+    //comprator is overridable. By default it compares two names
+    def comparator = {item,bean-> bean.name == item.name};
+    
     void init() {
         if(!ruleExecutor) throw new Exception("ruleExecutor is required in AskInfoModel");
         if(!resultHandler) throw new Exception("resultHandler is required in AskInfoModel");
@@ -33,9 +36,9 @@ public class AskVariableInfoModel {
 
     public def getDefaultValue( def item ) {
         if( !defaultInfos) return item.value;
-        def rv = defaultInfos.find{ it.name == item.name };
-        if( rv?.value ) return rv.value;
-        return item.value;
+        def rv = defaultInfos.find{ comparator(it, item) };
+        if( rv ) return rv.value;
+        return item.defaultvalue;
     }
     
     boolean getHasBack() {

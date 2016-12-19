@@ -1,4 +1,8 @@
 <workunit>
+    <invokers>
+        <invoker type="formActions" caption="Assess" action="assess" 
+                 visibleWhen="#{task?.state == 'reassessment' &amp;&amp; task?.assignee?.objid == user.objid }"/>
+    </invokers>    
     <code class="com.rameses.gov.etracs.vehicle.models.VehicleApplicationForm"/>
     <pages>
         <page template="com.rameses.gov.etracs.vehicle.views.ApplicationFormPage" />

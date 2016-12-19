@@ -46,22 +46,6 @@ public abstract class AbstractVehicleEntryForm extends PageFlowController {
         vehicleTypeHandler = Inv.lookupOpener("vehicle_type_handler:"+vehicletype, [entity:entity]);
     }
         
-    def addVehicle() {
-        def h = { o->
-            entity.vehicle = o;
-            entity.vehicleid = o.objid;
-            binding.refresh();
-        }
-        if( entity.vehicle?.objid  ) {
-            def op = Inv.lookupOpener("vehicle_" + vehicletype + ":open", [handler: h, entity:entity.vehicle ] );
-            op.target = "popup";
-            return op;
-        }
-        else {
-            return Inv.lookupOpener("vehicle_" + vehicletype + ":create", [handler: h ] )
-        }
-    }
-
     void save() {
         entity = applicationService.create( entity );
     }
@@ -75,7 +59,6 @@ public abstract class AbstractVehicleEntryForm extends PageFlowController {
         p.defaultinfos = p.remove("infos");
 
         def r = ruleExecutor.execute(p);
-        MsgBox.alert('finished');
         if( !r) {
             throw new BreakException();
         }
@@ -90,11 +73,15 @@ public abstract class AbstractVehicleEntryForm extends PageFlowController {
         else {
             entity.infos = [];
         }
-        MsgBox.alert('reloading');
         feeListModel.reload();
         infoListModel.reload();
     }
-    
+        
+    def feeListModel = [
+        fetchList: { o->
+            return entity.fees;
+        }
+    ] as BasicListModel;
     
     def infoListModel = [
         fetchList: { o->
@@ -102,6 +89,26 @@ public abstract class AbstractVehicleEntryForm extends PageFlowController {
         }
     ] as BasicListModel;
 
+    def addVehicle() {
+        def h = { o->
+            entity.vehicle = o;
+            entity.vehicleid = o.objid;
+            binding.refresh();
+        }
+        if( entity.vehicle?.objid  ) {
+            def op = Inv.lookupOpener("vehicle_" + vehicletype + ":open", [handler: h, entity:entity.vehicle ] );
+            op.target = "popup";
+            return op;
+        }
+        else {
+            String st = "vehicle_" + vehicletype + "_pending:lookup";
+            //"vehicle_" + vehicletype + ":create"
+            return Inv.lookupOpener( st, [onselect: h ] );
+        }
+    }
+
+
+    
     def getLookupAvailableFranchise() {
         return Inv.lookupOpener( "vehicle_franchise_" + vehicletype + ":available:lookup" );
     }

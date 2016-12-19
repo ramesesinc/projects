@@ -21,6 +21,61 @@ public class VariableInfoUtil {
 		return map.get(vname);		
 	}
  
+	public void convertData( def v ) {
+		def o = lookup(v.name);
+		v.caption = o.caption;
+		v.arrayvalues = o.arrayvalues;
+		v.category = o.category;
+		v.sortorder = o.sortorder;
+		v.datatype = o.datatype;		
+		if(v.datatype == 'decimal') {
+			v.value = v.decimalvalue;
+		}
+		else if(v.datatype=="integer") {
+			v.value = v.intvalue;
+		}
+		else if(v.datatype=="boolean") {
+			def t = false;
+			if( (v.booleanvalue+"").matches("true|1|yes")) {
+				t = true;
+			}
+			v.value = t;
+		}
+		else if( v.datatype == "date" ) {
+			v.value = v.datevalue;
+		}
+		else{
+			v.value = v.stringvalue;
+		}
+	}
+
+	public void fixData(  def obj, def  datatype, def value ) {
+		if(value == "null") value = null;
+		if( value!=null ) {
+			if(datatype == 'decimal') {
+				obj.decimalvalue = (""+value).toDouble();
+			}
+			else if(datatype=="integer") {
+				obj.intvalue = (""+value).toInteger();
+			}
+			else if(datatype=="boolean") {
+				obj.booleanvalue = (""+value).toBoolean();
+			}
+			else if( datatype == "date" ) {
+				if(!(value instanceof Date)) {
+					def df = new java.text.SimpleDateFormat("yyyy-MM-dd");
+					obj.datevalue = df.parse( value );
+				}	
+				else {
+					obj.datevalue = value;
+				}
+			}
+			else {
+				obj.stringvalue = value.toString();
+			}
+		}
+	}
+
 	public def createFact(def v) {
 		def o = lookup(v.name);
 		def value = v.value;
@@ -32,29 +87,7 @@ public class VariableInfoUtil {
 		vinfo.sortorder = o.sortorder;
 		vinfo.datatype = o.datatype;		
 
-		if( value!=null ) {
-			if(o.datatype == 'decimal') {
-				vinfo.decimalvalue = (""+value).toDouble();
-			}
-			else if(o.datatype=="integer") {
-				vinfo.intvalue = (""+value).toInteger();
-			}
-			else if(o.datatype=="boolean") {
-				vinfo.booleanvalue = (""+value).toBoolean();
-			}
-			else if( o.datatype == "date" ) {
-				if(!(value instanceof Date)) {
-					def df = new java.text.SimpleDateFormat("yyyy-MM-dd");
-					vinfo.datevalue = df.parse( value );
-				}	
-				else {
-					vinfo.datevalue = value;
-				}
-			}
-			else if(o.datatype == "string"){
-				vinfo.stringvalue = value.toString();
-			}
-		}
+		fixData( vinfo, o.datatype, value );
 		return vinfo;
 	}
 

@@ -38,7 +38,7 @@ public class VariableInfo {
 		else if(m.datatype=="integer") m.value = intvalue;
 		else if(m.datatype=="boolean") m.value = booleanvalue;
 		else if(m.datatype == "date" ) m.value = datevalue;
-		else if(o.datatype == "string") m.value = stringvalue;
+		else m.value = stringvalue;
 		m.arrayvalues = arrayvalues;
 		m.sortorder = sortorder;
 		return m;

@@ -46,7 +46,10 @@ class VehicleCashReceiptService {
 
 		if( fran==null && app==null ) {
 			throw new Exception("No vehicle record found for " + o.id);
-		}
+		};
+
+		//check first if this is on payment mode...
+		
 		def fees = feeEm.find( [controlid: app.controlid]  ).where("amount - amtpaid > 0").list();
 		if( !fees )
 			throw new Exception("There are no unpaid items");
@@ -73,6 +76,7 @@ class VehicleCashReceiptService {
 		entity.paidby = app.owner.name;
 		entity.paidbyaddress = app.owner.address?.text; 	
 		entity.particulars = fran.controlno;
+		entity.remarks = "Franchise No." + fran.controlno;
 		entity.items = res.billitems.collect{ it.toMap() };
 		entity.items.each {
 			it.amount = NumberUtil.round(it.amount);

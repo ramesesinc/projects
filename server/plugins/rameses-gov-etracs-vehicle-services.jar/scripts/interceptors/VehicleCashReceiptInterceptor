@@ -21,6 +21,9 @@ class VehicleCashReceiptInterceptor {
 	@Service("WorkflowTaskService")	
 	def wfService;
 
+	@DataContext("vehicle_payment")
+	def pmtEm;
+
 	@Env
 	def env;
 
@@ -84,7 +87,7 @@ class VehicleCashReceiptInterceptor {
 				def wfParam = [
 					processname: 'vehicle_application_' + app.vehicletype, 
 					refid: m.appid,
-					action: 'submit',
+					action: 'post',
 					actor: [objid:env.USERID, name:env.FULLNAME]
 				];	
 				wfService.signal( wfParam );
@@ -95,7 +98,22 @@ class VehicleCashReceiptInterceptor {
 	@After(pattern="CashReceiptVoidService.post",index=0,eval="#{result.receipt.collectiontype.handler=='vehicle'}")
 	public void voidPayment(def evt) {
 		def r = evt.args[0].receipt;
-		pmtSvc.postVoid( [objid: r.objid]); 
+
+		//find to reverse the payment.
+		def pmt = pmtEm.find( [refid: r.objid] ).first();
+		pmtSvc.postVoid( [objid: pmt.objid]); 
+
+		def app = appEm.find( [objid:pmt.appid ] ).first();
+
+		//check the state is not currently payment then error. 
+		//Test if you can move the record 
+		def wfParam = [
+			processname: 'vehicle_application_' + app.vehicletype, 
+			refid: app.objid,
+			action: 'return_payment',
+			actor: [objid:env.USERID, name:env.FULLNAME]
+		];	
+		wfService.signal( wfParam );
 	}
 
 }

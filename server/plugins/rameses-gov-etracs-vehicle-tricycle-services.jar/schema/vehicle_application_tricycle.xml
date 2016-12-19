@@ -12,6 +12,8 @@
 		<field name="particulars" required="true"/>
 		<field name="barangay_name" caption="Barangay"/>
 		<field name="billexpirydate" required="true"/>
+
+		<field name="vehicle_objid" visible="false"/>
 		<field name="vehicle_plateno" caption="Plate No"/>
 		<field name="vehicle_engineno" caption="Engine No"/>
 		<field name="vehicle_bodyno" caption="Body No"/>
@@ -25,6 +27,7 @@
 		<field name="vehicle_sidecarcolor" caption="Color"/>
 		<field name="vehicle_crname" caption="CR Name"/>
 
+		<field name="franchise_objid" visible="false"/>
 		<field name="franchise_controlno" caption="Franchise No"/>
 		<field name="franchise_dtregistered" caption="Franchise Date"/>
 		<field name="taskid" />

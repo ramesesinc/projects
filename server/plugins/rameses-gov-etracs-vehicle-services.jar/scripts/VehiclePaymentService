@@ -37,14 +37,13 @@ class VehiclePaymentService {
 
 	@ProxyMethod
 	public def postVoid( def o ) {
-		def r = pmtEm.find( [refid: o.objid] ).first();
+		def r = pmtEm.find( [objid: o.objid] ).first();
+		if( r.voided == 1 )
+			throw new Exception("This payment is already voided");
+			
 		//check first the status of the application
-		def status = appEm.find( [objid:r.appid ] ).select("state").val();
-		if(status.matches('CLOSED') )	
-			throw new Exception('Transaction cannot be voided because the application is already closed'  );
 			
 		def pmtitems = pmtItemEm.find( [parentid: r.objid] ).list();
-
 		pmtitems.each {
 			if(it.apprefid) {
 				appFeeEm.find( [objid: it.apprefid ] ).update( [amtpaid: '{amtpaid-:amtpaid}' ], [amtpaid: it.amount + it.discount ] );
@@ -53,7 +52,6 @@ class VehiclePaymentService {
 				franchiseFeeEm.find( [objid: it.franchiserefid ] ).update( [amtpaid: '{amtpaid-:amtpaid}' ], [amtpaid: it.amount + it.discount ] );
 			}
 		}
-		appEm.find( [objid:r.appid ] ).update( [state:'FOR_PAYMENT'] );
 		pmtEm.find([objid: r.objid] ).update( [voided: 1]);
 	}
 

@@ -1,14 +1,14 @@
 <schema adapter="vehicledb">
 	<element tablename="vehicle_application_info">
 		<field name="objid" primary="true" prefix="VAPPI"/>
-		<complex name="app" ref="vehicle_application" jointype="many-to-one" includefields="appno">
+		<complex name="app" ref="vehicle_application" jointype="many-to-one" includefields="appno" required="false">
 			<key field="appid" target="objid"/>
 		</complex>	
 		<field name="name" />
 		<field name="stringvalue" />
 		<field name="decimalvalue" type="decimal"/>
 		<field name="intvalue" type="integer"/>
-		<field name="boolvalue" type="boolean"/>
+		<field name="booleanvalue" type="boolean"/>
 		<field name="datevalue" type="date"/>
 		<field name="lov_objid" />
 		<field name="lookup_objid" />

@@ -49,6 +49,7 @@ public class SimpleCashReceiptPayOptionPage extends javax.swing.JPanel {
         xList1.setName("selectedPayOption"); // NOI18N
         jScrollPane1.setViewportView(xList1);
 
+        xButton1.setDefaultCommand(true);
         xButton1.setName("doNext"); // NOI18N
         xButton1.setText("Next");
 
@@ -110,6 +111,7 @@ public class SimpleCashReceiptPayOptionPage extends javax.swing.JPanel {
         xButton3.setName("doBack"); // NOI18N
         xButton3.setText("Back");
 
+        xButton4.setDefaultCommand(true);
         xButton4.setName("doOk"); // NOI18N
         xButton4.setText("OK");
 

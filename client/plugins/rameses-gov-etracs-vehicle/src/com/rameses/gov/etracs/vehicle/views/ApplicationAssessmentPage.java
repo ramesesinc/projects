@@ -52,7 +52,6 @@ public class ApplicationAssessmentPage extends javax.swing.JPanel {
         xLabel4.setPreferredSize(new java.awt.Dimension(180, 20));
         xFormPanel5.add(xLabel4);
 
-        xDateField2.setText("entity.billexpirydate");
         xDateField2.setCaption("Bill Expiry Date");
         xDateField2.setCaptionWidth(150);
         xDateField2.setDisableWhen("#{1==1}");
@@ -138,6 +137,7 @@ public class ApplicationAssessmentPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.DecimalColumnHandler("#,##0.00", -1.0, -1.0, false, 2)}
             })
         });
+        xDataTable1.setDynamic(true);
         xDataTable1.setHandler("feeListModel");
 
         xLabel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));

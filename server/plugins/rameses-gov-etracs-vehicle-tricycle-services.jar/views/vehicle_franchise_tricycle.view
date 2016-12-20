@@ -1,7 +1,8 @@
+DROP VIEW IF EXISTS vehicle_franchise_tricycle 
+;
 CREATE VIEW vehicle_franchise_tricycle AS 
 SELECT
     vf.*,
-
     a.appyear AS activeyear,
     a.owner_objid,
     a.owner_name,
@@ -25,3 +26,4 @@ FROM vehicle_franchise vf
 LEFT JOIN vehicle_application a ON vf.appid=a.objid 
 LEFT JOIN vehicle_tricycle t ON a.vehicleid=t.objid  
 WHERE vf.vehicletype = 'tricycle'    
+;

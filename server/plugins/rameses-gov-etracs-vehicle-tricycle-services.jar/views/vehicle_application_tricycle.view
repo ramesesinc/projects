@@ -1,3 +1,5 @@
+DROP VIEW IF EXISTS vehicle_application_tricycle 
+;
 CREATE VIEW vehicle_application_tricycle AS 
 SELECT
     va.*,
@@ -22,3 +24,4 @@ INNER JOIN vehicle_tricycle t ON va.vehicleid=t.objid
 INNER JOIN vehicle_franchise vf ON va.controlid=vf.objid
 LEFT JOIN vehicle_application_tricycle_task vt ON vt.refid=va.objid 
 WHERE vt.enddate IS NULL 
+;

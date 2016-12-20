@@ -1,13 +1,11 @@
 <workunit extends="com/rameses/seti2/templates/CrudReport.xml">
     <invokers>
-        <invoker type="vehicle_application_tricycle:form:formActions" 
+        <invoker type="vehicle_application_tricycle:permit:create" 
                  caption="Issue Permit" target="self" action="createPermit"
-                 visibleWhen="#{entity.taskstate=='end' &amp;&amp; entity.permit?.objid==null}" 
                  reportName="com/rameses/gov/etracs/vehicle/tricycle/reports/permit.jasper" />
 
-        <invoker type="vehicle_application_tricycle:form:formActions" 
+        <invoker type="vehicle_application_tricycle:permit:open" 
                  caption="Print Permit" target="self" action="openPermit"
-                 visibleWhen="#{entity.taskstate=='end' &amp;&amp; entity.permit?.objid != null}" 
                  reportName="com/rameses/gov/etracs/vehicle/tricycle/reports/permit.jasper" />
     </invokers>             
     <code>

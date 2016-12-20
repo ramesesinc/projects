@@ -112,6 +112,9 @@ public abstract class AbstractVehicleEntryForm extends PageFlowController {
     def getLookupAvailableFranchise() {
         return Inv.lookupOpener( "vehicle_franchise_" + vehicletype + ":available:lookup" );
     }
-    
+
+    void viewTrackingno() {
+        Modal.show( "show_trackingno", [trackingno: "51010:" + entity.appno ]);
+    }
 
 }

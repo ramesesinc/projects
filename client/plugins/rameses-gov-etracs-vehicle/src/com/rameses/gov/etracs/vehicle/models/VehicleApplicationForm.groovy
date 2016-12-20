@@ -98,4 +98,8 @@ public class VehicleApplicationForm extends WorkflowTaskModel {
         infoListModel.reload();
     }
     
+    void viewTrackingno() {
+        Modal.show( "show_trackingno", [trackingno: "51010:" + entity.appno ]);
+    }
+    
 }

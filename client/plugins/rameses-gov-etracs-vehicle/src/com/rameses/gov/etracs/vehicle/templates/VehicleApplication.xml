@@ -2,6 +2,7 @@
     <invokers>
         <invoker type="formActions" caption="Assess" action="assess" 
                  visibleWhen="#{task?.state == 'reassessment' &amp;&amp; task?.assignee?.objid == user.objid }"/>
+        <invoker type="formActions" caption="View Tracking No" action="viewTrackingno" />         
     </invokers>    
     <code class="com.rameses.gov.etracs.vehicle.models.VehicleApplicationForm"/>
     <pages>

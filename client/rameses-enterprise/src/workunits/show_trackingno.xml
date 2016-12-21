@@ -1,8 +1,7 @@
 <workunit>
     <!-- THIS DISPLAYS THE STUB AND BARCODE -->
     <invokers>
-        <invoker type="show_trackingno" caption="Address" target="popup"/>
-        <invoker type="formActions" caption="Print" action="print"/>
+        <invoker type="show_trackingno" caption="Show Tracking No" target="popup" action="viewReport"/>
     </invokers>
     
     <code>
@@ -12,14 +11,26 @@
         import com.rameses.osiris2.client.*;
         import java.rmi.server.*;
         import com.rameses.util.*;
+        import com.rameses.osiris2.reports.*;
         
-        public class ShowTrackingNo  {
+        public class ShowTrackingNo extends ReportModel {
         
-            def trackingno;
-            def message;
+            def info;
+            
+            String reportName = "com/rameses/enterprise/reports/show_trackingno.jasper";
+        
+            def getReportData() {
+                return info;
+            }
+            
+            String viewReport() {
+                super.viewReport();
+                return "default";
+            }
             
             void print() {
-                
+                MsgBox.alert('about to print');
+                super.print();
             }
             
         }
@@ -27,7 +38,7 @@
     </code>
 
     <pages>
-        <page template="com.rameses.enterprise.views.ShowTrackingnoPage"/>
+        <page name="default" template="com.rameses.enterprise.views.ShowTrackingnoPage"/>
     </pages>
     
 </workunit>

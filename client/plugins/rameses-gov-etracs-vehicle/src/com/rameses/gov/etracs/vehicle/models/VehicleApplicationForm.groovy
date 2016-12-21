@@ -99,7 +99,10 @@ public class VehicleApplicationForm extends WorkflowTaskModel {
     }
     
     void viewTrackingno() {
-        Modal.show( "show_trackingno", [trackingno: "51010:" + entity.appno ]);
+        def info = [:];
+        info.trackingno = "51010:" + entity.appno;
+        info.message = "This is a new message";
+        Modal.show( "show_trackingno", [info: info] );
     }
     
 }

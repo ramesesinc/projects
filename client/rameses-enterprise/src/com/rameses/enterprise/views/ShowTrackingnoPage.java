@@ -35,7 +35,7 @@ public class ShowTrackingnoPage extends javax.swing.JPanel {
         jLabel1.setText("Please use the following tracking code for follow up ");
 
         xLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        xLabel1.setExpression("#{trackingno}");
+        xLabel1.setExpression("#{info.trackingno}");
         xLabel1.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
 
         xButton1.setMnemonic('p');

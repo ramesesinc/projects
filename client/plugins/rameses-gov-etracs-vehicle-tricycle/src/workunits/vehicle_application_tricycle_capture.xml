@@ -1,0 +1,8 @@
+<workunit extends="com/rameses/gov/etracs/vehicle/templates/VehicleCapture.xml"
+        vehicletype="tricycle" 
+        apptype="CAPTURE"
+        title="MTOP Capture">
+    <invokers>
+        <invoker folderid="/home/vehicle/tricycle" caption="Capture" action="start" />
+    </invokers>
+</workunit>

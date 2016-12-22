@@ -3,7 +3,7 @@
           cols="name,datatype,caption">
     <invokers>
         <invoker type="variableinfo:lookup" caption="Variable Info Lookup" 
-                 role="MASTER" action="init"/>
+                 action="init"/>
         <invoker type="variableinfo_decimal:lookup" caption="Decimal Variable Info Lookup" 
                  role="MASTER" action="init"
                  customFilter=" datatype = 'decimal' "/>

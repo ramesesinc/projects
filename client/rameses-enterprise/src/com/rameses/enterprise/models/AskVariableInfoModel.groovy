@@ -22,21 +22,23 @@ public class AskVariableInfoModel {
     def resultHandler;
     def formInfos = [];
     
+    //comprator is overridable. By default it compares two names
+    def comparator = {item,bean-> bean.name == item.name};
+    
     void init() {
         if(!ruleExecutor) throw new Exception("ruleExecutor is required in AskInfoModel");
         if(!resultHandler) throw new Exception("resultHandler is required in AskInfoModel");
         defaultInfos = params.defaultinfos;
         if(!infos)throw new Exception("infos is required in AskInfoModel");
         infoStack.clear();
-        infoStack.push(infos)
         buildFormInfos();
     }
 
     public def getDefaultValue( def item ) {
         if( !defaultInfos) return item.value;
-        def rv = defaultInfos.find{ it.name == item.name };
-        if( rv.value ) return rv.value;
-        return item.value;
+        def rv = defaultInfos.find{ comparator(it, item) };
+        if( rv ) return rv.value;
+        return item.defaultvalue;
     }
     
     boolean getHasBack() {
@@ -48,7 +50,7 @@ public class AskVariableInfoModel {
         for( st in infoStack ) {
             pInfos.addAll( st );
         }
-        pInfos.addAll( infos );
+        pInfos.addAll(infos);
         return pInfos;
     }
     
@@ -57,31 +59,36 @@ public class AskVariableInfoModel {
         def p = [:];
         p.putAll(params);
         p.infos = createStackedInfos();
-        
         def result = ruleExecutor( p );
-        if(!result.askinfos) {
-            def infos = createStackedInfos();
-            if( result.infos ) infos += result.infos;
-            result.infos = infos;
-            resultHandler( result );
-            return "_close";
-        } 
-        else {
-            infoStack.push( infos );
+        if(result.askinfos) {
+            if(infos) infoStack.push( infos );
             infos = result.askinfos;
             buildFormInfos();
             return null;
+        }
+        else {
+            //This is the ending
+            def infos = createStackedInfos();
+            if( result.infos ) {
+                infos.addAll( result.infos );
+            }	            
+            result.infos = infos;
+            resultHandler( result );
+            return "_close";
         }
     }
     
     def doBack() {
         if(infoStack.empty()) return "_close";
         infos = infoStack.pop();
+        println infoStack.size();
         buildFormInfos();
         return null;
     }
     
     def doCancel() {
+        infoStack.clear();
+        if(infos) infos.clear();
         resultHandler(null);
         return "_close";
     }

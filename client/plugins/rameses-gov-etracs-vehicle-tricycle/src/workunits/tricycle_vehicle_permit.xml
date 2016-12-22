@@ -1,0 +1,37 @@
+<workunit extends="com/rameses/seti2/templates/CrudReport.xml">
+    <invokers>
+        <invoker type="vehicle_application_tricycle:permit:create" 
+                 caption="Issue Permit" target="self" action="createPermit"
+                 reportName="com/rameses/gov/etracs/vehicle/tricycle/reports/permit.jasper" />
+
+        <invoker type="vehicle_application_tricycle:permit:open" 
+                 caption="Print Permit" target="self" action="openPermit"
+                 reportName="com/rameses/gov/etracs/vehicle/tricycle/reports/permit.jasper" />
+    </invokers>             
+    <code>
+    <![CDATA[ 
+import com.rameses.rcp.annotations.*;
+import com.rameses.seti2.models.*;
+
+class VehicleTricyclePermitReport extends CrudReportModel {
+
+    @Service('VehiclePermitService') 
+    def permitSvc; 
+
+    def createPermit() {
+        entity.permit = permitSvc.create([ appid: entity.objid ]); 
+        return view();   
+    } 
+    
+    def openPermit() {
+        entity.permit = permitSvc.open([ objid: entity.permit?.objid ]); 
+        return view(); 
+    }     
+
+    public def getReportData() { 
+        return entity;
+    }
+}    
+    ]]>    
+    </code>
+</workunit>

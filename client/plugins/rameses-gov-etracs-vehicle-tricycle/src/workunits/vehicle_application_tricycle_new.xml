@@ -1,0 +1,9 @@
+<workunit extends="com/rameses/gov/etracs/vehicle/templates/VehicleApplicationNew.xml"
+        vehicletype="tricycle" 
+        apptype="NEW" 
+        title="MTOP New">
+    <invokers>
+        <invoker folderid="/home/vehicle/tricycle" caption="New Application" action="start" index="110" />
+        <invoker type="vehicle_application_tricycle:create" caption="New" action="start" />
+    </invokers>
+</workunit>

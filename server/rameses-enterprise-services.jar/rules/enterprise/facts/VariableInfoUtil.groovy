@@ -21,31 +21,73 @@ public class VariableInfoUtil {
 		return map.get(vname);		
 	}
  
+	public void convertData( def v ) {
+		def o = lookup(v.name);
+		v.caption = o.caption;
+		v.arrayvalues = o.arrayvalues;
+		v.category = o.category;
+		v.sortorder = o.sortorder;
+		v.datatype = o.datatype;		
+		if(v.datatype == 'decimal') {
+			v.value = v.decimalvalue;
+		}
+		else if(v.datatype=="integer") {
+			v.value = v.intvalue;
+		}
+		else if(v.datatype=="boolean") {
+			def t = false;
+			if( (v.booleanvalue+"").matches("true|1|yes")) {
+				t = true;
+			}
+			v.value = t;
+		}
+		else if( v.datatype == "date" ) {
+			v.value = v.datevalue;
+		}
+		else{
+			v.value = v.stringvalue;
+		}
+	}
+
+	public void fixData(  def obj, def  datatype, def value ) {
+		if(value == "null") value = null;
+		if( value!=null ) {
+			if(datatype == 'decimal') {
+				obj.decimalvalue = (""+value).toDouble();
+			}
+			else if(datatype=="integer") {
+				obj.intvalue = (""+value).toInteger();
+			}
+			else if(datatype=="boolean") {
+				obj.booleanvalue = (""+value).toBoolean();
+			}
+			else if( datatype == "date" ) {
+				if(!(value instanceof Date)) {
+					def df = new java.text.SimpleDateFormat("yyyy-MM-dd");
+					obj.datevalue = df.parse( value );
+				}	
+				else {
+					obj.datevalue = value;
+				}
+			}
+			else {
+				obj.stringvalue = value.toString();
+			}
+		}
+	}
+
 	public def createFact(def v) {
 		def o = lookup(v.name);
 		def value = v.value;
-		def vinfo = null;
-		if(o.datatype == 'decimal') {
-			vinfo = new DecimalInfo();
-			if(value!=null) value = (""+value).toDouble();
-		}
-		else if(o.datatype=="integer") {
-			vinfo = new IntegerInfo();
-			if(value!=null) value = (""+value).toInteger();
-		}
-		else if(o.datatype=="boolean") {
-			vinfo = new BooleanInfo();
-			if(value!=null) value = (""+value).toBoolean();
-		}
-		else {
-			vinfo = new StringInfo();
-		}
+		VariableInfo vinfo = new VariableInfo();
 		vinfo.name = o.name;
 		vinfo.caption = o.caption;
 		vinfo.arrayvalues = o.arrayvalues;
 		vinfo.category = o.category;
 		vinfo.sortorder = o.sortorder;
-		vinfo.value = value;
+		vinfo.datatype = o.datatype;		
+
+		fixData( vinfo, o.datatype, value );
 		return vinfo;
 	}
 

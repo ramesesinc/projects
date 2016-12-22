@@ -1,0 +1,12 @@
+<workunit extends="wtemplates/RuleMgmtController.xml" serviceName="RuleMgmtService">
+    <invokers>
+        <invoker folderid="/explorer/rulemgmt/vehicle" caption="Vehicle Assessment Rules"
+                 action="init" index="1" srole="RULE_AUTHOR"  tag="vehicleassessment"/>
+        
+        <invoker folderid="/explorer/rulemgmt/vehicle" caption="Vehicle Billing Rules"
+                 action="init" index="2" srole="RULE_AUTHOR" tag="vehiclebilling" />
+
+        <invoker folderid="/explorer/rulemgmt/vehicle" caption="Vehicle Requirement Rules"
+                 action="init" index="3" srole="RULE_AUTHOR" tag="vehiclerequirement" />
+    </invokers>
+</workunit>

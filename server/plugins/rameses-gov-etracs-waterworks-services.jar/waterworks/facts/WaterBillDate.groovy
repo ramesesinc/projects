@@ -22,4 +22,5 @@ public class WaterBillDate {
 		if(o.duedate) duedate = o.duedate;
 		if(o.disconnectiondate) disconnectiondate = o.disconnectiondate;
 	}
+
 }

@@ -33,6 +33,10 @@ class WaterworksCashReceiptService  {
 			parm.applicationid = acct.objid;
 		} 
 
+		if ( params.txnmode.toString().toUpperCase() == 'OFFLINE' ) {
+			parm.billdate = params.billdate; 
+		} 
+
 		def acc = billingService.getBilling( parm );
 		if ( acc == null ) throw new Exception('There are no unpaid items'); 
 		

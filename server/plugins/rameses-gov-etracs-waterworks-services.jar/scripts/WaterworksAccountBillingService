@@ -27,19 +27,22 @@ class WaterworksAccountBillingService  {
 
 	void buildConsumptionFacts( def o, def facts ) {
 		//account based on consmption
-		def list = consumption.find([acctid: o.objid])
+		def billCycle = facts.find{ it instanceof CurrentBillingCycle } 
+
+		//consumption.debug = true; 
+		def list = consumption.find([ acctid: o.objid ])
 			.select("year:{billingcycle.year},month:{billingcycle.month},volume,amount,amtdue:{amount-amtpaid},duedate:{billingcycle.duedate},disconnectiondate:{billingcycle.disconnectiondate},refid:{objid}")
-			.where(" amount - amtpaid > 0").list();
+			.where(" (amount - amtpaid) > 0 ").list();
 
 		//account based on installment	
-		for( d in list) { 
-			facts << new WaterConsumption( d );
-		}
-	}
+		for ( d in list) { 
+			facts << new WaterConsumption( d ); 
+		} 
+	} 
 
 	void buildInstallmentFacts( def o, def facts ) {
 		//find the last bill date. add installment from lastdatepaid until billdate
-		def billCycle = facts.find{ it instanceof CurrentBillingCycle };
+		def billCycle = facts.find{ it instanceof CurrentBillingCycle } 
 		int yearMonth = (billCycle.year*12)+billCycle.month;
 
 		def list2 = installment.find([acctid: o.objid]).where("amount - amtpaid > 0").list();
@@ -82,20 +85,39 @@ class WaterworksAccountBillingService  {
 
 	def monthNames = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
 
+	private def toDate( Object value ) {
+		if ( value == null ) return null; 
+		else if ( value instanceof java.util.Date ) return value; 
+
+		try {
+			def formatter = new java.text.SimpleDateFormat('yyyy-MM-dd HH:mm:ss');
+			return formatter.parse( value.toString() ); 
+		} catch(Throwable t) {;}
+
+		try {
+			def formatter = new java.text.SimpleDateFormat('yyyy-MM-dd');
+			return formatter.parse( value.toString() ); 
+		} catch(Throwable t) {
+			return null; 
+		}
+	}
+
 	@ProxyMethod
 	public def getBilling( def o ) {
 		if(!o.acctid ) throw new Exception("acctid is required");
 		def a = acct.find([objid:o.acctid]).first();
 		if(!a) throw new Exception("Waterworks Account not found");
 
-		def bc = billingCycleSvc.findCurrentCycle([sectorid:a.sector.objid]);
+		def bc = billingCycleSvc.findCurrentCycle([sectorid:a.sector.objid, billdate: o.billdate]);
+
 		def currDate = dateSvc.getBasicServerDate();
-		def billDate = (o.billdate!=null)?o.billdate:currDate;
+		def billDate = toDate( o.billdate !=null ? o.billdate : currDate);
+		if ( billDate == null ) billDate = currDate;  
 
 		def facts = [];
+		facts << new CurrentDate( currDate );
 		facts << new CurrentBillingCycle( bc );
 		facts << new BillDate( billDate );
-		facts << new CurrentDate( currDate );
 		facts << new WaterBillDate( bc );
 		facts << new WaterAccount(a);
 

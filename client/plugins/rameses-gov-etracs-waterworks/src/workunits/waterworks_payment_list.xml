@@ -1,7 +1,8 @@
 <workunit extends="com/rameses/seti2/templates/CrudList.xml"
           schemaName="waterworks_payment" 
           cols="reftype,refno,refdate,amount,voided" 
-          orderBy="refdate">
+          orderBy="refdate" 
+          allowCreate="false" allowOpen="false">
     <invokers>
         <invoker type="waterworks_account:section" caption="Payments" index="3" 
                 visibleWhen="#{mode=='read'}"

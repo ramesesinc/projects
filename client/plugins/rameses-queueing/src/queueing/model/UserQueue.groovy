@@ -15,17 +15,17 @@ class UserQueue {
     @Service("QueueCounterService")
     def counterSvc;
 
+    @Service("QueueService")
+    def queueSvc;
+    
     @Binding
     def binding;
     
     def entityCounter;
     def counter;
     def counterid;
-    def currentNumber;
     
-    def title;
-    def groupname;
-    
+    def serveditem = [:];     
     def controlList = [];
     
     def formControls = [
@@ -54,31 +54,51 @@ class UserQueue {
     def reload( def z ) {
         //detemine if serving
         controlList.clear();
+        
+        def takehandler = { 
+            take( it ); 
+        }        
         z.sections.each{ o-> 
-            def item = [caption: o.title, name:o.objid, counter:z.objid, title:o.title, groupname: o.groupid];
-            controlList <<  [name: o.objid, type: 'subform', handler:'queue:button', showCaption:false, properties:[item:item], categoryid: o.groupid];
+            def item = [:];
+            item.putAll( o ); 
+            item.sectionid = o.objid; 
+            item.counterid = z.objid; 
+            controlList << [
+                type: 'qsectionitem', caption: item.title, 
+                actionText: 'Take', item: item, handler: takehandler, 
+                showCaption:false, categoryid: item.groupid 
+            ]; 
         }
+
         entityCounter = z;  
-        if(z.current) {
-            currentNumber = z.current.currentno;
-            title = z.current.title;
-            groupname = z.current.groupname;
+        serveditem.clear(); 
+        if ( z.current ) { 
+            serveditem.title = z.current.title; 
+            serveditem.groupid = z.current.groupid;
+            serveditem.groupname = z.current.groupname; 
+            serveditem.currentnumber = z.current.currentno;            
             return "view";
-        }
-        else {
+            
+        } else {
             return "default";
         }
     }
     
-    void take( item ) {
-        title = item.title;
-        groupname = item.groupname;
-        def z = [
-            sectionid: item.name,
-            counterid: item.counter
-        ];
-        MsgBox.alert(z);
-        currentNumber = userQueueSvc.takeNextNumber(z);
+    void take( item ) { 
+        serveditem.clear(); 
+        if ( !item ) return; 
+
+        def m = [ sectionid: item.sectionid, counterid: item.counterid ];
+        def currentnumber = userQueueSvc.takeNextNumber( m ); 
+        if ( !currentnumber ) {
+            MsgBox.alert('Queue is empty'); 
+            return; 
+        }
+
+        serveditem.title = item.title;
+        serveditem.groupid = item.groupid;
+        serveditem.groupname = item.group?.title;
+        serveditem.currentnumber = currentnumber; 
         binding.fireNavigation("view");
     }
     
@@ -87,19 +107,21 @@ class UserQueue {
     }
     
     void buzz() {
-        userQueueSvc.buzzNumber([counterid:counterid]);
+        userQueueSvc.buzzNumber([ counterid: counterid ]);
     }
     
     def skip() {
-        userQueueSvc.skipNumber([counterid:counterid]);
-        currentNumber = null; 
+        userQueueSvc.skipNumber([ counterid: counterid ]);
         return "default";
     }
     
     def finish() {
-        userQueueSvc.consumeNumber([counterid:counterid]);
-        currentNumber = null; 
+        userQueueSvc.consumeNumber([ counterid: counterid ]);
         return "default";
+    }
+    
+    def forward() {
+        
     }
     
     def edit() { 
@@ -111,4 +133,30 @@ class UserQueue {
         op.target = "popup";
         return op;
     } 
+
+
+    def pickhandler = { o-> 
+        if ( !o ) return; 
+        
+        def reqno = queueSvc.fetchNextNumber([ sectionid: o.objid ]); 
+        MsgBox.alert("<html>Your Queue Number <br> <font size=\"14\"><b>"+ reqno +"</b></font></html>"); 
+    }    
+    def queueSectionList = []; 
+    def queueSectionHandler = [
+        getControlList: { 
+            if ( !queueSectionList ) { 
+                userQueueSvc.getQueueSections().each{ o-> 
+                    queueSectionList << [
+                        type: 'qsectionitem', caption: o.title, 
+                        actionText: 'Pick', item: o, handler: pickhandler, 
+                        showCaption: false, categoryid: o.groupid  
+                    ]; 
+                } 
+            }
+            return queueSectionList;
+        }
+    ] as FormPanelModel;
+    
+    void refreshQueueSections() {
+    }
 }

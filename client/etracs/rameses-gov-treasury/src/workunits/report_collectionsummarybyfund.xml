@@ -1,4 +1,4 @@
-<workunit extends="wtemplates/gov/treasury/ReportController.xml" >
+<workunit extends="wtemplates/ReportController.xml" >
     <invokers>
         <invoker folderid="/explorer/report/treasury/admin" action="init" caption="Report of Collection By Fund" target="window" index="6" 
             role="REPORT" permission="collectionbyfund.viewreport"/>
@@ -11,51 +11,69 @@ import com.rameses.rcp.annotations.*;
 import com.rameses.osiris2.client.*;
 import com.rameses.osiris2.reports.*;
 
-class CollectionSummary extends com.rameses.etracs.shared.ReportController
-{
+class ReportCollectionSummaryByFund extends com.rameses.osiris2.reports.ReportController { 
+
     @Service('TCReportService') 
     def svc
 
     @Service('DateService')
     def dtsvc 
 
-    String title = 'Report of Collection By Fund'
-    String reportpath = 'com/rameses/gov/treasury/report/collection/'
-    String reportName = reportpath + 'collectionsummarybyfund.jasper'
+    String title = 'Report of Collection By Fund';
+    String reportpath = 'com/rameses/gov/treasury/report/collection/';
+    String reportName = reportpath + 'collectionsummarybyfund.jasper';
     
-    def data
+    def data;
+    
+    def funds = [];
+    def months = [];
+    def postingtypes = [
+        [objid: 'BY_LIQUIDATION', title:'By Liquidation'],
+        [objid: 'BY_REMITTANCE', title:'By Remittance']
+    ]; 
+        
+    def initReport() {
+        def resp = svc.initReport(); 
+        months = resp.months; 
+        funds = resp.funds; 
+        entity.year = resp.year; 
+        entity.day = resp.day; 
+        if ( resp.month ) {
+            entity.month = months.find{ it.index==resp.month }
+        } 
+        return super.initReport(); 
+    } 
         
     def getReportData(){
         data = svc.getCollectionByFund(entity);
-        return data.items; 
+        return data.reportdata; 
     }
     
     def formControl = [
-        getFormControls: {
+        getControlList: {
            return [
-               new FormControl( "integer", [caption:'Year', name:'entity.year', required:true, preferredSize:'100,19', captionWidth:100]), 
-               new FormControl( "combo", [caption:'Month', name:'entity.month', items:'months', expression:'#{item.name}', preferredSize:'100,19', captionWidth:100, immediate:true]),
-               new FormControl( "combo", [caption:'Day', name:'entity.day', items:'daylist', preferredSize:'100,19', captionWidth:100, depends:'entity.month', dynamic:true]), 
-               new FormControl( "combo", [caption:'Fund', name:'entity.fund', items:'funds', expression:'#{item.title}', preferredSize:'200,19', captionWidth:100 ]),
+               [ type:"integer", caption:'Year', name:'entity.year', required:true, preferredSize:'100,19', captionWidth:100], 
+               [ type:"combo", caption:'Month', name:'entity.month', items:'months', expression:'#{item.name}', preferredSize:'100,19', captionWidth:100, immediate:true],
+               [ type:"combo", caption:'Day', name:'entity.day', items:'daylist', preferredSize:'100,19', captionWidth:100, depends:'entity.month', dynamic:true], 
+               [ type:"combo", caption:'Posting Type', name:'entity.postingtype', items:'postingtypes', expression:'#{item.title}', allowNull:false, captionWidth:100 ],
+               [ type:"combo", caption:'Fund', name:'entity.fund', items:'funds', expression:'#{item.title}', captionWidth:100 ],
+               [ type:"label", caption:'', preferredSize:'100,10'],
+               [ type:"checkbox", caption:'Include SubFund', name:'entity.withsubfund', captionWidth:120, depends:'entity.fund', disableWhen:'#{entity.fund?.objid==null}'],
            ]    
         }
     ] as FormPanelModel;
    
        
     Map getParameters(){
-        return data.info
-    }
-        
-    List getFunds() {
-        return svc.getFunds( )
+        return data.header;
     }
     
-    List getMonths(){
-        return dtsvc.getMonths()
-    }
-    
-    List getDaylist() {
-        return svc.getNumDays(entity.year, (entity.month?.index) - 1 )
+    List getDaylist() { 
+        if ( entity.month?.index ) { 
+            return svc.getNumDays(entity.year, (entity.month?.index) - 1 ); 
+        } else {
+            return null; 
+        } 
     }
 }
 ]]> 

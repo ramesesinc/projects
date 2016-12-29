@@ -50,6 +50,7 @@ class WaterworksBillingCycleService  {
 		facts << new CurrentDate(currDate);
 		facts << new BillDate( billdate );
 		facts << new Stubout( sector: sector );
+		facts << new rules.enterprise.facts.HolidayList();
 		
 		//do this so it will immediately break after initial rulegroup.
 		def h = { r-> return false };

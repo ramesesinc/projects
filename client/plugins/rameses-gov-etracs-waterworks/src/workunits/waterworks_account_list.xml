@@ -1,7 +1,25 @@
 <workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" 
           schemaName="waterworks_account"  
-          cols="acctno,acctname,address.text,sector.name,meter.serialno,lastdateread,stubout.code,currentreading,billingcycle.readingdate,billingcycle.duedate,billingcycle.disconnectiondate">
+          cols="acctno,acctname,address.text,sector.code,zone.code,meter.serialno,lastdateread,stubout.code,currentreading,billingcycle.readingdate,billingcycle.duedate,billingcycle.disconnectiondate"
+          orderBy="acctname">
     <invokers>
         <invoker folderid="/home/waterworks" caption="Waterworks Account List" action="init" />
     </invokers>
+    
+    <code>
+    <![CDATA[ 
+import com.rameses.seti2.models.*; 
+
+class WaterworksAccountListModel extends CrudListModel {
+    
+    public void initColumn( def c ) {
+        if ( c.name == 'sector.code' ) {
+            c.visible = false; 
+        } else if ( c.name == 'zone.code' ) {
+            c.visible = false; 
+        } 
+    } 
+}    
+    ]]> 
+    </code>    
 </workunit>

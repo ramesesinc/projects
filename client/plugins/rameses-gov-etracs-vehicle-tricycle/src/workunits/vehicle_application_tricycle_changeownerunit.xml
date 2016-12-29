@@ -3,6 +3,7 @@
           apptype="CHANGE_OWNER_UNIT" 
          title="MTOP Change Owner/Unit">
     <invokers>
-        <invoker folderid="/home/vehicle/tricycle" caption="Change Owner Unit" action="start" index="114" />
+        <invoker folderid="/home/vehicle/tricycle" caption="Change Owner Unit" action="start" index="114" 
+                 role="INFO"/>
     </invokers>
 </workunit>

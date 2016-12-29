@@ -48,7 +48,7 @@ class VehicleFranchiseListInterceptor {
 
 			case 'delinquent':
 				m.year = dateSvc.getServerYear() - 1;
-				m.state = " NOT(vehicleid IS NULL) AND activeyear < :year";
+				str = " NOT(vehicleid IS NULL) AND activeyear < :year";
 				break;
 		}
 

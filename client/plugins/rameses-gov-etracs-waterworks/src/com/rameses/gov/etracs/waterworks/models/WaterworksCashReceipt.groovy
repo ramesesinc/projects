@@ -78,8 +78,8 @@ public class WaterworksCashReceipt extends com.rameses.enterprise.treasury.cashr
     } 
 
     
-    def loadData(acctno) {
-        def info = cashReceiptSvc.getBilling([ refno: acctno ]);
+    def loadData(acctno) { 
+        def info = cashReceiptSvc.getBilling([ refno: acctno, billdate: entity.receiptdate, txnmode: entity.txnmode ]);
         entity.putAll( info );
         billdata.items = entity.remove('items'); 
         billdata.amount = entity.amount; 
@@ -94,7 +94,7 @@ public class WaterworksCashReceipt extends com.rameses.enterprise.treasury.cashr
 
     def showPayOption() {
         def h = { o->
-            def op = [refno: entity.acctno];    
+            def op = [refno: entity.acctno, billdate: entity.receiptdate, txnmode: entity.txnmode];    
             if( o.month ) {
                 op.month = o.month;
                 payOption = "By Month until " + op.month.monthname + " " + op.month.year;

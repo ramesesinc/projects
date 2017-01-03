@@ -1,0 +1,64 @@
+<workunit extends="wtemplates/ReportController.xml" >
+    <invokers>
+        <invoker folderid="/explorer/report/ovs" action="init" 
+            caption="Violation List for Endorsement" role="REPORT" 
+            target="window" index="3"/>
+    </invokers>
+    
+    <code>
+    <![CDATA[
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.reports.*;
+import com.rameses.gov.treasury.tool.statementofreceipts.*;
+
+class OVSReportViolationListForEndorsementModel extends com.rameses.etracs.shared.AsyncReportController {
+
+    @Service('OVSReportListingService') 
+    def svc;
+    
+    String title = 'Violation List for Endorsement'
+    String reportpath = 'com/rameses/gov/etracs/ovs/report/'
+    String reportName = reportpath + 'ovs_report_endorsement_list.jasper'
+    
+    def _params = [:];
+    def _months;    
+
+    def periods = [
+        [type:'monthly', title:'Monthly']
+    ];
+        
+    def initReport(){
+        entity.period = periods[0]; 
+        _months = dtSvc.getMonths(); 
+        return 'default'
+    }
+    
+    List getMonths(){
+        return _months;
+    }         
+        
+    void buildReportData(entity, asyncHandler) { 
+        svc.getReportListForEndorsement(entity, asyncHandler);         
+    } 
+    
+    void buildResult( data ) { 
+        _params.clear(); 
+
+        if ( data?.header ) { 
+            _params.putAll( data.header ); 
+        } 
+    } 
+
+    Map getParameters(){ 
+        return _params; 
+    }
+}
+    ]]> 
+    </code>
+
+    <pages>
+        <page template="com.rameses.gov.etracs.ovs.report.SummaryCriteriaPage" />
+    </pages> 
+</workunit>

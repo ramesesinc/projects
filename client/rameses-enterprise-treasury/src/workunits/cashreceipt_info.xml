@@ -59,7 +59,12 @@ class CashReceiptController extends CRUDController {
             handle.viewReport(); 
         } 
         
-        report = handle.report; 
+        if ( handle instanceof com.rameses.osiris2.reports.ReportModel ) {
+            report = handle;  
+        } else { 
+            report = handle.report; 
+        } 
+        
         if ( ReportUtil.isDeveloperMode() ) {
             return 'preview'; 
         } 

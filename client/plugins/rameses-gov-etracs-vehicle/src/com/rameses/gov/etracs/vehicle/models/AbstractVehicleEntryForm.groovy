@@ -63,16 +63,25 @@ public abstract class AbstractVehicleEntryForm extends PageFlowController {
             throw new BreakException();
         }
         entity.billexpirydate = r.duedate;
+        
+        if ( entity.fees == null ) {
+            entity.fees = []; 
+        } else { 
+            entity.fees.clear(); 
+        }
+        if ( entity.infos == null ) {
+            entity.infos = []; 
+        } else { 
+            entity.infos.clear(); 
+        }
+
+        if( r.infos ) entity.infos.addAll( r.infos );  
+        
         if( r.items ) {
-            entity.fees = r.items;
+            entity.fees.addAll( r.items );
             entity.amount = entity.fees.sum{ it.amount };
         }
-        if( r.infos ) {
-            entity.infos = r.infos;
-        }
-        else {
-            entity.infos = [];
-        }
+
         feeListModel.reload();
         infoListModel.reload();
     }
@@ -117,4 +126,11 @@ public abstract class AbstractVehicleEntryForm extends PageFlowController {
         Modal.show( "show_trackingno", [trackingno: "51010:" + entity.appno ]);
     }
 
+    public Object printApplication() {
+        return null; 
+    }
+    
+    public Object printAssessment() {
+        return null; 
+    }
 }

@@ -93,6 +93,7 @@
             </Container>
             <Component class="com.rameses.rcp.control.XButton" name="xButton1">
               <Properties>
+                <Property name="defaultCommand" type="boolean" value="true"/>
                 <Property name="name" type="java.lang.String" value="doNext" noResource="true"/>
                 <Property name="text" type="java.lang.String" value="Next"/>
               </Properties>
@@ -180,6 +181,7 @@
             </Component>
             <Component class="com.rameses.rcp.control.XButton" name="xButton4">
               <Properties>
+                <Property name="defaultCommand" type="boolean" value="true"/>
                 <Property name="name" type="java.lang.String" value="doOk" noResource="true"/>
                 <Property name="text" type="java.lang.String" value="OK"/>
               </Properties>

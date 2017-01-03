@@ -1,4 +1,4 @@
-package com.rameses.gov.etracs.bpls.controller;
+package com.rameses.gov.etracs.bpls.models;
 
 import com.rameses.osiris2.client.*;
 import com.rameses.osiris2.common.*;

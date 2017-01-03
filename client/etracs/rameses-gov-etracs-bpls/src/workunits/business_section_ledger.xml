@@ -14,7 +14,7 @@
         <invoker type="receivableActions" caption="Remove" action="doRemoveReceivable" visibleWhen="#{selectedReceivable != null}"/>
     </invokers>
     
-    <code class="com.rameses.gov.etracs.bpls.controller.BusinessLedgerController"/>
+    <code class="com.rameses.gov.etracs.bpls.models.BusinessLedgerController"/>
 
     <pages>
         <page template="com.rameses.gov.etracs.bpls.business.BusinessLedger"/>

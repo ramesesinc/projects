@@ -23,7 +23,7 @@
         </folder>
     </folder>
     <folder id="home">
-        <folder id="business" caption="Business">
+        <folder id="business" caption="Business" icon="home/icons/business.png">
             <folder id="business_application" caption="Business Applications" index="50"/> 
         </folder>
     </folder>

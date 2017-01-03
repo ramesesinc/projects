@@ -65,7 +65,7 @@ public class BusinessApplicationUtil {
             
     def print() {
         def entity = caller.entity;
-        def op = Inv.lookupOpener( "business_application:unifiedform", [entity: entity] );
+        def op = Inv.lookupOpener( "business_application:reports", [entity: entity] );
         op.target = 'self';
         return op;
     }

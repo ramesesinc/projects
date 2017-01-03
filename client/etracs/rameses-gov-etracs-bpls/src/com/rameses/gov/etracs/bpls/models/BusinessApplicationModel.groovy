@@ -1,4 +1,4 @@
-package com.rameses.gov.etracs.bpls.model;
+package com.rameses.gov.etracs.bpls.models;
 
 import com.rameses.rcp.annotations.*; 
 import com.rameses.rcp.common.*;
@@ -28,7 +28,6 @@ class  BusinessApplicationModel extends WorkflowController {
     @Service("BusinessPaymentService")
     def paymentSvc;
 
-
     def sections = [];
     def currentSection;
     def subform;
@@ -51,12 +50,12 @@ class  BusinessApplicationModel extends WorkflowController {
 
     def _option;
 
-    def showUnifiedFormMenu() {
+    def showReports() {
         def h = { t->
             if(t) open();
             binding.refresh();
         }
-        def list = Inv.lookupOpeners( "business_application:unifiedform", [entity:entity, handler:h] );
+        def list = Inv.lookupOpeners( "business_application:reports", [entity:entity, handler:h] );
         def pop = new PopupMenuOpener();
         list.each {
             pop.add( it );
@@ -179,7 +178,7 @@ class  BusinessApplicationModel extends WorkflowController {
         } 
         return false; 
     } 
-
+    
     def issuePermit() {
         if( entity.txnmode == 'CAPTURE' ) {
             boolean pass = false;
@@ -240,4 +239,36 @@ class  BusinessApplicationModel extends WorkflowController {
             return null; 
         }             
     } 
+    
+    public final boolean isAllowViewAssessment() { 
+        if ( entity.apptype == 'RETIRE' ) {
+            return false; 
+        }
+        else if (task?.state != 'assign-assessor') { 
+            return true;
+        } 
+        return false; 
+    } 
+    //view assessment...
+    def viewAssessment() {
+        if (!has_loaded_assessment) {
+            assessmentInfo.load(); 
+            has_loaded_assessment = true;
+        } 
+        assessmentInfo.analyzer = false;
+        assessmentInfo.refresh(); 
+        def op = Inv.lookupOpener("business_application:assessment:print", [entity: entity] ); 
+        op.target = 'popup';
+        return op;
+    }
+    
+    void printTrackingno() {
+        def info = [:];
+        info.trackingno = entity.barcode;
+        info.message = "Present this when doing business transactions";
+        //Modal.show( "show_trackingno", [info: info] );
+        def op = Inv.lookupOpener("show_trackingno", [info: info]);
+        op.handle.print();
+    }
+    
 }

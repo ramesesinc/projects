@@ -21,7 +21,7 @@ class VehicleApplicationInitInterceptor {
 	def dateSvc;
 
 	private void checkUnpaidFees( def o ) {
-		def tot = vFee.find([controlid: o.franchise.objid]).where("amount - amtpaid > 0").select("t:{SUM(amount - amtpaid)}").val();
+		def tot = vFee.find([controlid: o.franchise.objid]).select("t:{SUM(amount - amtpaid)}").val();
 		if( tot!=null && tot > 0 ) {
 			throw new Exception("There is still unpaid balance that needs to be settled");
 		}

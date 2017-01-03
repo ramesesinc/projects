@@ -17,7 +17,7 @@ import com.rameses.rcp.common.*;
 import com.rameses.osiris2.client.*;
 import com.rameses.osiris2.common.*;
 
-class BusinessLedgerControllerImpl extends com.rameses.gov.etracs.bpls.controller.BusinessLedgerController {    
+class BusinessLedgerControllerImpl extends com.rameses.gov.etracs.bpls.models.BusinessLedgerController {    
 
     @Service("BusinessMasterService")
     def businessMasterService;

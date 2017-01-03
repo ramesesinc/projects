@@ -1,0 +1,24 @@
+CREATE VIEW vehicle_application_tricycle AS 
+SELECT
+    va.*,
+    t.objid AS vehicle_objid,
+    t.plateno AS vehicle_plateno, 
+    t.engineno  AS vehicle_engineno,
+    t.chassisno  AS vehicle_chassisno,
+    t.make  AS vehicle_make,
+    t.model AS vehicle_model,
+    t.color AS vehicle_color,
+    t.bodyno  AS vehicle_bodyno,
+    t.sidecarno  AS vehicle_sidecarno,
+    t.sidecarcolor  AS vehicle_sidecarcolor,
+    t.crname  AS vehicle_crname,
+    vt.taskid,
+    vt.state AS taskstate,
+    vf.objid AS franchise_objid,
+    vf.controlno AS franchise_controlno,
+    vf.dtregistered AS franchise_dtregistered
+FROM vehicle_application va
+INNER JOIN vehicle_tricycle t ON va.vehicleid=t.objid  
+INNER JOIN vehicle_franchise vf ON va.controlid=vf.objid
+LEFT JOIN vehicle_application_tricycle_task vt ON vt.refid=va.objid 
+WHERE vt.enddate IS NULL 

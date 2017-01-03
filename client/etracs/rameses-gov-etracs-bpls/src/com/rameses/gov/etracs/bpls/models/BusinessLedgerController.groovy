@@ -1,4 +1,4 @@
-package com.rameses.gov.etracs.bpls.controller;
+package com.rameses.gov.etracs.bpls.models;
 
 import com.rameses.rcp.annotations.*;
 import com.rameses.rcp.common.*;

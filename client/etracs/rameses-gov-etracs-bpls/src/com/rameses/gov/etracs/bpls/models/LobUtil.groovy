@@ -1,17 +1,18 @@
-package com.rameses.gov.etracs.bpls.controller;
+package com.rameses.gov.etracs.bpls.models;
 
 import com.rameses.rcp.annotations.*
 import com.rameses.rcp.common.*
 import com.rameses.osiris2.client.*
 import com.rameses.osiris2.common.*
 import java.rmi.server.*;
-import com.rameses.gov.etracs.bpls.application.*;
 import com.rameses.util.*;
 
-/************************************************************************
-* This abstract class is extended by 
-*************************************************************************/
-public class LobController  {
+public class LobUtil {
+
+    def selectedLob;
+    boolean lobUpdated; 
+
+    String lobname = "my_line_of_business";
 
     def lobModel = [
        createItem: { 
@@ -21,7 +22,6 @@ public class LobController  {
             return entity.lobs;
         },
     ] as EditorListModel;
-
 
     def addLob() {
         return InvokerUtil.lookupOpener( "lob:lookup", [
@@ -37,7 +37,6 @@ public class LobController  {
                 entity.lobs << m; 
                 lobModel.reload();
                 lobUpdated = true;
-                binding.focus("lob");
             }
         ]);
     }
@@ -60,7 +59,7 @@ public class LobController  {
         if( !selectedLob ) return;
         entity.lobs.remove(selectedLob);
         lobModel.reload();
-        binding.focus("lob");
+        handler();
     }
 
 
@@ -75,7 +74,7 @@ public class LobController  {
                 selectedLob.classification = o.classification;
                 lobModel.reload();
                 lobUpdated = true;
-                binding.focus("lob");
+                handler();
             }
         ]);
     }

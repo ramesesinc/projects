@@ -76,6 +76,11 @@ class BusinessApplicationUnifiedForm3Service  {
         app.requirements = reqList;
         def m = assmtSvc.getAssessment( app );
         app.putAll(m);
+        
+        app.assessorname = app.assessor?.name;
+        app.assessortitle = app.assessor?.title;
+        app.approvername = app.approver?.name;
+        app.approvertitle = app.approver?.title;
 
         return app;
 	}

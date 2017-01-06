@@ -1,0 +1,15 @@
+<workunit extends="wtemplates/RuleMgmtController.xml" serviceName="RuleMgmtService">
+    <invokers>
+        <invoker folderid="/explorer/rulemgmt/bpls" caption="BP Info Rules" 
+                 action="init" index="0" role="RULE_AUTHOR" tag="bpinfo"/>
+
+        <invoker folderid="/explorer/rulemgmt/bpls" caption="BP Assessment Rules" 
+                 action="init" index="1" role="RULE_AUTHOR"  tag="bpassessment"/>
+        
+        <invoker folderid="/explorer/rulemgmt/bpls" caption="BP Billing Rules" 
+                 action="init" index="2" role="RULE_AUTHOR"  tag="bpbilling"/>
+        
+        <invoker folderid="/explorer/rulemgmt/bpls" caption="BP Requirement Rules" 
+                 action="init" index="2" role="RULE_AUTHOR" tag="bprequirement"/>
+    </invokers>
+</workunit>

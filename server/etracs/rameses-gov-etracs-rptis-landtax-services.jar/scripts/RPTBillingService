@@ -786,6 +786,10 @@ public class RPTBillingService
         if (bill.billtoyear > pdate.year){
         	bill.forcerecalcbill = 1 
         }
+
+        if (util.isTrue(var.landtax_bill_force_recalc)){
+        	bill.forcerecalcbill = 1 	
+        }
 	}
 
 

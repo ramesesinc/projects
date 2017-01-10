@@ -28,7 +28,7 @@
 }
 
 
-".*" [entity.txntype.objid.matches('TR|SD|CS')] {
+".*" [entity.txntype.objid.matches('TR)] {
     enabled:false;
 }
 

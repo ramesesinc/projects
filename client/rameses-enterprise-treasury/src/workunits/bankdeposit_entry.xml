@@ -108,15 +108,25 @@
             }
             
             def doOk() {
-                if (!entity.bankaccount) 
+                if ( !entity.bankaccount ) 
                     throw new Exception('Bank Account is required.');
-                if(entity.amount > selectedFund.balance) 
+
+                def formatter = new java.text.DecimalFormat('0.00'); 
+                def amount = new java.math.BigDecimal( formatter.format( entity.amount ));
+                def balance = new java.math.BigDecimal( formatter.format( selectedFund.balance ));
+                if ( amount > balance ) 
                     throw new Exception("Amount to deposit should not exceed balance");
-                if( breakdown != entity.totalcash )
+
+                def breakdownamt = new java.math.BigDecimal( formatter.format( breakdown ));
+                def totalcashamt = new java.math.BigDecimal( formatter.format( entity.totalcash ));
+                if ( breakdownamt != totalcashamt )
                     throw new Exception("Cash breakdown must be equal to total cash.");
-                if( entity.amount != total)
+
+                def totalamt = new java.math.BigDecimal( formatter.format( total ));
+                if ( amount != totalamt )
                     throw new Exception("Total cash and non cash must equal amount to deposit");
-                if(handler) {
+
+                if ( handler ) {
                     handler( entity );
                 }    
                 return "_close";

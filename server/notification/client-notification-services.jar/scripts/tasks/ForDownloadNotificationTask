@@ -51,6 +51,13 @@ class ForDownloadNotificationTask {
 		inc.startindexno = inc.indexno; 
 		inc.endindexno = inc.indexno+4;
 
+		def datasum = remoteSvc.findDataCount( inc ); 
+		if ( !datasum?.datacount ) { 
+			// this message has no corresponding data, remove right away...
+			em.removeForDownload( inc ); 
+			return; 
+		}
+
 		def list = remoteSvc.getItems( inc ); 
 		if ( !list ) return; 
 

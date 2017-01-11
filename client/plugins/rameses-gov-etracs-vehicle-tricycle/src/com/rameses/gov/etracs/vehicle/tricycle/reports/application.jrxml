@@ -39,6 +39,7 @@
 	<field name="vehicle.plateno" class="java.lang.String"/>
 	<field name="vehicle.make" class="java.lang.String"/>
 	<field name="franchise.controlno" class="java.lang.String"/>
+	<field name="gender" class="java.lang.String"/>
 
 		<background>
 			<band height="0"  isSplitAllowed="true" >

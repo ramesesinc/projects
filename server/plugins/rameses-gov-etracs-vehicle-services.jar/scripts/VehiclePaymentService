@@ -48,7 +48,7 @@ class VehiclePaymentService {
 			if(it.apprefid) {
 				appFeeEm.find( [objid: it.apprefid ] ).update( [amtpaid: '{amtpaid-:amtpaid}' ], [amtpaid: it.amount + it.discount ] );
 			}
-			else if( it.vehiclerefid) {
+			else if( it.franchiserefid) {
 				franchiseFeeEm.find( [objid: it.franchiserefid ] ).update( [amtpaid: '{amtpaid-:amtpaid}' ], [amtpaid: it.amount + it.discount ] );
 			}
 		}

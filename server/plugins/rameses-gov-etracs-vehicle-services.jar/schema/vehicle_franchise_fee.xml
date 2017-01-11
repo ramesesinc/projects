@@ -10,5 +10,6 @@
 		<field name="balance" expr="amount - amtpaid" />
 		<field name="txntype" required="true" />
 		<field name="sortorder" required="true" />
+		<field name="remarks"/>
 	</element>
 </schema>

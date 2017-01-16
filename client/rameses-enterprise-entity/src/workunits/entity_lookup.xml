@@ -16,9 +16,17 @@
        class EntityLookup extends CrudLookupModel {
               
             boolean allowSelectEntityType = true;
-                        
+            def entityTypeMatch;
+                                    
             def entityTypes = ['INDIVIDUAL','JURIDICAL','MULTIPLE']; 
             def selectedType;
+            
+            void afterInit() {
+                if(entityTypeMatch) {
+                    entityTypes = entityTypes.findAll{ it.toLowerCase().matches(entityTypeMatch) };
+                }
+                selectedType = entityTypes[0];
+            }
             
             @PropertyChangeListener
             def listener = [

@@ -22,6 +22,9 @@ class RPTLedgerInterceptor
     @Service('LogService')
     def logSvc
 
+    @Service('FAASService')
+    def faasSvc
+
 	def STATE_PENDING   = 'PENDING'
 	def STATE_APPROVED  = 'APPROVED'
 
@@ -66,6 +69,7 @@ class RPTLedgerInterceptor
     }
 
     void postNewLedger(faas){
+        faas.txntype = faasSvc.getTxnType( faas.txntype.objid )
         def manualledger = findManualLedger(faas)
 
         if (util.isTrue(faas.txntype.reconcileledger) && manualledger){

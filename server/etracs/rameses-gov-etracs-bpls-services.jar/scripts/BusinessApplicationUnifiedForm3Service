@@ -28,6 +28,9 @@ class BusinessApplicationUnifiedForm3Service  {
     @ActiveDB("business_requirement")
     def br;
 
+    @DataContext("entityid")
+    def entityIdEm;
+
     def format = { x->
         def dtype = x.attribute.datatype;
         if( dtype == 'decimal') {
@@ -62,6 +65,10 @@ class BusinessApplicationUnifiedForm3Service  {
             (it.reftype && it.reftype.matches( 'DTI|SEC|CDA' )) 
         }
         app.ctcno = reqList.find{ it.reftype == 'CTC' }?.refno;
+
+        //print TIN
+        app.business.owner.tin = entityIdEm.find( [entityid: app.business.owner.objid, idtype:'TIN'] ).first()?.idno;
+
         app.appinfos.findAll{it.lob?.objid==null}.each {
             app[ it.attribute.objid.toLowerCase() ] = format(it); 
         }

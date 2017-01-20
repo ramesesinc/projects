@@ -1,0 +1,8 @@
+<schema adapter="filemgmt">
+	<element  tablename="sys_fileloc">
+		<field name="objid" primary="true" prefix="FILELOC"/>
+		<field name="url" required="true" />
+		<field name="filepath" required="true" />
+		<field name="defaultloc" required="true" />
+	</element>
+</schema>

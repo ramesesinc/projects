@@ -1,6 +1,6 @@
 <workunit>
     <invokers>
-        <invoker folderid="/home/business/business_application" caption="New Application"  action="start" target="window" role="BUSINESSINFO" index="50" />
+        <invoker folderid="/home/business" caption="New Application"  action="start" target="window" role="BUSINESSINFO" index="50" />
         
         <invoker type="lobActions" caption="Add" action="lob.add"  immediate="true"/>
         <invoker type="lobActions" caption="Remove" action="lob.remove" immediate="true" 
@@ -9,85 +9,9 @@
         <invoker type="extActions" caption="Print"  icon="images/toolbars/printer.png" 
             action="application.print" visibleWhen="#{state=='save-success'}"/>
 
-        <invoker type="business_application:test" caption="New Application Test"  action="start"  />
-
     </invokers>
     
-    <code>
-    <![CDATA[    
-        import com.rameses.rcp.annotations.*
-        import com.rameses.rcp.common.*
-        import com.rameses.osiris2.client.*
-        import com.rameses.osiris2.common.*
-        import java.rmi.server.*;
-        import com.rameses.gov.etracs.bpls.controller.*;
-        import com.rameses.util.*;
-        
-        public class NewBusinessApplication extends PageFlowController {
-        
-            @Script("BusinessVerificationUtil")
-            def verifyList;
-            
-            @Script("BusinessLobUtil")
-            def lob;
-
-            @Script("BusinessApplicationUtil")
-            def application;
-
-            @Script("BusinessOwnerUtil")
-            def owner;
-            
-            @Script("BusinessAddressUtil")
-            def address;
-            
-            @Script("BusinessRequirementUtil")
-            def requirement;
-
-            @Script("BusinessInfoUtil")
-            def appinfo;
-
-            @Script("BusinessContactUtil")
-            def contact;
-
-            def entity;
-            def lobAssessmentTypes = ['NEW'];
-    
-            void init() {
-                application.init([apptype:'NEW']);
-                lob.reset();
-                address.reset();
-                requirement.reset();
-                appinfo.reset();
-            }
-            
-            void updateInfo() {
-                lob.verify();
-                boolean test = false;
-                appinfo.handler = {
-                    test = true;
-                }
-                Modal.show(appinfo.update());
-                if(!test) throw new BreakException();
-                appinfo.verify();
-            }
-            
-            void initAddressType() {
-                owner.reload(); //so we can reload address
-                if( application.copyOwnerAddress ) {
-                    def map = [:];
-                    map.putAll( entity.business.owner.address ); 
-                    map.objid = null; 
-                    
-                    entity.business.address = map; 
-                    address.addressType = entity.business.address.type;
-                }
-                else {
-                    address.addressType = application.addressType;
-                }
-            }
-        }
-        ]]>
-    </code>    
+    <code class="com.rameses.gov.etracs.bpls.models.NewBusinessApplication" />
     
     <pageflow>
         <start>

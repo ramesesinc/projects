@@ -65,7 +65,8 @@ class VehicleBillingService {
 				refid: it.objid, 
 				ledgertype:it.ledgertype,
 				principal: it.principal,
-				amtpaid: it.amtpaid
+				amtpaid: it.amtpaid,
+				remarks : it.remarks
 			);
 			facts << bi;
 			billItems << bi;

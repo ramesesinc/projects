@@ -12,7 +12,7 @@
         import com.rameses.osiris2.client.*
         import com.rameses.osiris2.common.*
         import java.rmi.server.*;
-        import com.rameses.gov.etracs.bpls.controller.*;
+        import com.rameses.gov.etracs.bpls.models.*;
         
         public class CompromiseAgreement extends PageFlowController {
         

@@ -1,24 +1,25 @@
 <schema adapter="vehicledb">
 	<element tablename="vehicle_application_tricycle">
 		<field name="objid" primary="true"/>
-		<field name="appno" caption="App No"/>
+		<field name="appno" caption="App No" searchable="true"  indexed="true"/>
 		<field name="appdate" caption="App Date"/>
 		<field name="apptype" caption="App Type"/>
 		<field name="appyear" caption="App Year"/>
 		<field name="dtfiled" caption="Date Filed"/>
 		<field name="filedby_name" caption="Filed By"/>
-		<field name="owner_name" caption="Owner Name"/>
+		<field name="owner_name" caption="Owner Name" searchable="true"  indexed="true"/>
+		<field name="owner_objid" vieible="false" />
 		<field name="owner_address_text" caption="Owner Address"/>
 		<field name="particulars" required="true"/>
-		<field name="barangay_name" caption="Barangay"/>
+		<field name="barangay_name" caption="Barangay" searchable="true" indexed="true"/>
 		<field name="billexpirydate" required="true"/>
 
 		<field name="vehicle_objid" visible="false"/>
-		<field name="vehicle_plateno" caption="Plate No"/>
-		<field name="vehicle_engineno" caption="Engine No"/>
-		<field name="vehicle_bodyno" caption="Body No"/>
+		<field name="vehicle_plateno" caption="Plate No" searchable="true"  indexed="true"/>
+		<field name="vehicle_engineno" caption="Engine No" searchable="true" indexed="true"/>
+		<field name="vehicle_bodyno" caption="Body No" searchable="true" indexed="true"/>
 
-		<field name="vehicle_sidecarno" caption="Sidecar No"/>
+		<field name="vehicle_sidecarno" caption="Sidecar No"  indexed="true"/>
 		<field name="vehicle_make" caption="Make"/>
 		<field name="vehicle_model" caption="Model"/>
 		<field name="vehicle_color" caption="Color"/>

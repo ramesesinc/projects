@@ -49,6 +49,9 @@ public class JuridicalEntityPage extends javax.swing.JPanel {
         xTextField9 = new com.rameses.rcp.control.XTextField();
         xTextField10 = new com.rameses.rcp.control.XTextField();
 
+        xTabbedPane1.setDynamic(true);
+        xTabbedPane1.setItems("sections");
+
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder1.setPadding(new java.awt.Insets(30, 15, 15, 15));
         xTitledBorder1.setTitle("General Information");

@@ -1,6 +1,10 @@
 <workunit>
     <invokers>
-      <!--  
+        <invoker type="business_application:extActions" caption="Billing" />
+        <!--
+        <invoker type="business_application:reports" caption="Print Billing 1" action="viewReport" target="popup"/>
+        -->
+        <!--  
        <invoker type="business_application:assessment:formActions" 
         caption="Billing"  action="viewReport"  visibleWhen="#{task.state=='approval' || task.state=='release'}" index="2"/>        
        <invoker type="formActions" caption="Back" action="_close" mnemonic="b" shortcut="ctrl B" /> 
@@ -16,7 +20,7 @@
         import java.rmi.server.*;
         import com.rameses.osiris2.reports.*;
         
-        class  BusinessBillingReportController  extends com.rameses.etracs.shared.ReportController  {
+        class  BusinessBillingReportController  extends ReportController {
         
             @Service("BusinessBillingService") 
             def billingSvc;
@@ -25,30 +29,30 @@
             def data;
         
             String title = "Business Billing";
-            String reportpath = "com/rameses/gov/etracs/bpls/reports/billing/";
-            String reportName = reportpath + 'Assessment.jasper';
+            String reportPath = "com/rameses/gov/etracs/bpls/reports/billing/";
+            String reportName = reportPath + "BPBilling.jasper";        
                     
-            void viewReport() {
+            def getReportData() {
+                return data;
+            }                
+            
+            SubReport[] getSubReports(){ 
+                return [
+                    new SubReport("BPBillingItem", reportPath + "BPBillingItem.jasper"),                
+                ] as SubReport[]; 
+            } 
+                            
+            def viewReport() {
                 data = billingSvc.getReport([applicationid:entity.objid]); 
-                report.viewReport();
+                return super.viewReport();
             } 
 
-            def report = [
-                getReportName : { return reportPath + "main.jasper" },
-                getReportData : { return  data },
-                getParameters : { return paramsvc.getStandardParameter() },
-                getSubReports : { return [
-                        new SubReport("billitem", reportPath + "billitem.jasper"),
-                        new SubReport("billpayment", reportPath + "billpayment.jasper"),
-                    ] as SubReport[];
-                }
-            ] as ReportModel
          }   
         ]]>
     </code>
     
     <pages>
-        <page template="com.rameses.osiris2.common.ui.ReportPreviewPage"/>
+        <page name="preview" template="com.rameses.osiris2.common.ui.ReportPreviewPage" />
     </pages>
     
 </workunit>

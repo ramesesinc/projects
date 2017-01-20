@@ -7,7 +7,8 @@ SELECT
    vf.appid, va.controlid, 
    vf.item_objid, vf.item_code, vf.item_title, 
    vf.amount, vf.amtpaid, 
-   vf.txntype, vf.sortorder, 'application' AS ledgertype 
+   vf.txntype, vf.sortorder, 'application' AS ledgertype,
+   '' AS remarks
 FROM vehicle_application_fee vf
 INNER JOIN vehicle_application va ON va.objid=vf.appid 
 INNER JOIN vehicle_franchise f ON f.objid=va.controlid
@@ -20,7 +21,8 @@ SELECT
    NULL AS appid, va.objid AS controlid, 
    vf.item_objid, vf.item_code, vf.item_title, 
    vf.amount, vf.amtpaid, 
-   vf.txntype, vf.sortorder, 'franchise' AS ledgertype 
+   vf.txntype, vf.sortorder, 'franchise' AS ledgertype,
+   vf.remarks 
 FROM vehicle_franchise_fee vf
 INNER JOIN vehicle_franchise va ON va.objid=vf.parentid 
 ;

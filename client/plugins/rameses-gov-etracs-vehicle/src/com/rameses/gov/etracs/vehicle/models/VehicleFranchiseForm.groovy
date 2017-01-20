@@ -15,6 +15,7 @@ public class VehicleFranchiseForm extends CrudFormModel {
     
     def vehicletype;
     def vehicleTypeHandler;
+    def selectedFee;
     
     void afterOpen() {
         vehicletype = workunit.info.workunit_properties.vehicletype;
@@ -35,7 +36,6 @@ public class VehicleFranchiseForm extends CrudFormModel {
         return entity.objid;
     }
     
-    /*
     def addItem() {
         def h = { o->
             def m = [_schemaname: 'vehicle_franchise_fee'];
@@ -45,12 +45,25 @@ public class VehicleFranchiseForm extends CrudFormModel {
             m.vehicle = [objid: entity.objid];
             m.txntype = "fee";
             m.sortorder = 100;
+            m.parentid = entity.objid;
+            m.remarks = o.remarks;
             persistenceService.create( m );
             feeListModel.reload();
         }
         Modal.show("revenueitem_entry:create", [handler: h ] );
     }
-    */
+    
+    def removeItem() {
+        if(!selectedFee) throw new Exception("select an item first");
+        if(selectedFee.amtpaid) 
+            throw new Exception("Cannot remove an item where there is already amount paid");
+        if(selectedFee.ledgertype == 'application') 
+            throw new Exception("Cannot remove application fee");
+        def m = [_schemaname: 'vehicle_franchise_fee'];
+        m.objid = selectedFee.objid;
+        persistenceService.removeEntity( m );
+        feeListModel.reload();
+    }
     
     def feeListModel = [
         fetchList: { o->

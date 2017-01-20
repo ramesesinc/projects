@@ -61,7 +61,7 @@ class VehicleApplicationCreateInterceptor {
 		wfSvc.start(o);
 	}
 
-	@Before(pattern="VehicleApplicationService.create", eval="#{args[0].txnmode != 'CAPTURE'}")
+	@Before(pattern="VehicleApplicationService.create", eval="#{ (args[0].txnmode != 'CAPTURE') && (args[0].apptype != 'DROP') }")
 	public void checkFeesBeforeCreateForNonCapture( def evt ) {
 		def o = evt.args[0];
 		if(!o.fees) throw new Exception("There must be at least 1 fee");
@@ -103,15 +103,22 @@ class VehicleApplicationCreateInterceptor {
 		startWorkflow( entity );
 	}
 
+	//auto drop if there are no fees. No need for workflow either.
 	@After(pattern="VehicleApplicationService.create", eval="#{result.apptype.matches('DROP')}", index=10)
 	public void afterCreateApplicationForDrop(def evt) {
 		def o = evt.result;
 		def p = evt.args[0];
-		franchiseEm.find([objid: o.franchise.objid]).update( [appid: null, state: 'PENDING'] );
-		if( o.prevvehicle?.objid && (o.vehicle.objid != o.prevvehicle.objid)) {
-			vdb.find( [objid: o.prevvehicle.objid] ).update( [appid: null, controlid: null] );
+		if(p.fees) {
+			franchiseEm.find([objid: o.franchise.objid]).update( [appid: null, state: 'PENDING'] );
+			if( o.prevvehicle?.objid && (o.vehicle.objid != o.prevvehicle.objid)) {
+				vdb.find( [objid: o.prevvehicle.objid] ).update( [appid: null, controlid: null] );
+			}
+			startWorkflow( o );
 		}
-		startWorkflow( o );
+		else {
+			def d = [state:'OPEN', appid: null];
+			franchiseEm.find([objid: o.franchise.objid]).update( d );
+		}
 	}
 
 

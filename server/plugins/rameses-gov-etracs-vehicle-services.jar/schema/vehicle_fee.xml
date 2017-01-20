@@ -14,5 +14,6 @@
 		<field name="txntype" caption="Txn Type"/>
 		<field name="sortorder" caption="Sort Order"/>
 		<field name="ledgertype" caption="Ledger Type"/>
+		<field name="remarks" caption="Remarks"/>
 	</element>
 </schema>

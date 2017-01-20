@@ -32,6 +32,7 @@ public class RevenueItemEntryPage extends javax.swing.JPanel {
 
         formPanel1 = new com.rameses.rcp.util.FormPanel();
         xLookupField1 = new com.rameses.rcp.control.XLookupField();
+        xTextField1 = new com.rameses.rcp.control.XTextField();
         xDecimalField1 = new com.rameses.rcp.control.XDecimalField();
 
         setPreferredSize(new java.awt.Dimension(418, 191));
@@ -49,6 +50,13 @@ public class RevenueItemEntryPage extends javax.swing.JPanel {
         xLookupField1.setPreferredSize(new java.awt.Dimension(0, 22));
         xLookupField1.setRequired(true);
         formPanel1.add(xLookupField1);
+
+        xTextField1.setCaption("Remarks");
+        xTextField1.setCaptionWidth(100);
+        xTextField1.setCellPadding(new java.awt.Insets(5, 10, 0, 0));
+        xTextField1.setName("entity.remarks"); // NOI18N
+        xTextField1.setPreferredSize(new java.awt.Dimension(0, 20));
+        formPanel1.add(xTextField1);
 
         xDecimalField1.setCaption("Amount");
         xDecimalField1.setCaptionWidth(100);
@@ -71,8 +79,8 @@ public class RevenueItemEntryPage extends javax.swing.JPanel {
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(formPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 169, Short.MAX_VALUE)
-                .addContainerGap())
+                .add(formPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 154, Short.MAX_VALUE)
+                .add(26, 26, 26))
         );
     }// </editor-fold>//GEN-END:initComponents
     
@@ -81,6 +89,7 @@ public class RevenueItemEntryPage extends javax.swing.JPanel {
     private com.rameses.rcp.util.FormPanel formPanel1;
     private com.rameses.rcp.control.XDecimalField xDecimalField1;
     private com.rameses.rcp.control.XLookupField xLookupField1;
+    private com.rameses.rcp.control.XTextField xTextField1;
     // End of variables declaration//GEN-END:variables
     
 }

@@ -28,10 +28,6 @@
                 return "default";
             }
             
-            void print() {
-                MsgBox.alert('about to print');
-                super.print();
-            }
             
         }
     ]]>

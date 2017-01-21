@@ -8,7 +8,7 @@
 		<field name="createdby_name" required="true" />
 		<field name="state" required="true" />
 		<field name="filesize" />
-		<field name="fileid" />
+		<field name="bytestransferred" />
 		<field name="filelocid" />
 	</element>
 </schema>

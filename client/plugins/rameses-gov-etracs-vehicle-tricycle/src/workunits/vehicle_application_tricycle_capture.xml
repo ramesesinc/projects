@@ -3,6 +3,7 @@
         apptype="CAPTURE"
         title="MTOP Capture">
     <invokers>
-        <invoker folderid="/home/vehicle/tricycle" caption="Capture" action="start" />
+        <invoker folderid="/home/vehicle/tricycle" caption="Capture" action="start" 
+                 role="INFO"/>
     </invokers>
 </workunit>

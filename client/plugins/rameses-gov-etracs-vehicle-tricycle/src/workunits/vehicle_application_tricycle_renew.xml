@@ -4,7 +4,8 @@
           apptype="RENEW"
           title="MTOP Renewal">
     <invokers>
-        <invoker folderid="/home/vehicle/tricycle" caption="Renew" action="start" />
+        <invoker folderid="/home/vehicle/tricycle" caption="Renew" action="start" 
+                 role="INFO"/>
     </invokers>
     
     <code class="com.rameses.gov.etracs.vehicle.tricycle.models.NewTricycleVehicleApplicationModel" />

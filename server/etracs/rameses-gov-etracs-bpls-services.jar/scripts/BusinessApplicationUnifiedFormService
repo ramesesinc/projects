@@ -62,7 +62,7 @@ class BusinessApplicationUnifiedFormService  {
         app.ctcno = reqList.find{ it.reftype == 'CTC' }?.refno;
 
         //load the tin
-        app.tin = entityIdEm.find( [entityid: app.business.owner.objid, idtype:'TIN'] ).first()?.idno;
+        app.business.owner.tin = entityIdEm.find( [entityid: app.business.owner.objid, idtype:'TIN'] ).first()?.idno;
 
         app.appinfos.findAll{it.lob?.objid==null}.each {
             app[ it.attribute.objid.toLowerCase() ] = format(it); 

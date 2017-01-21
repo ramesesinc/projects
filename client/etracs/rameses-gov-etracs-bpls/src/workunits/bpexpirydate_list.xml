@@ -1,0 +1,7 @@
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" schemaName="bpexpirydate">
+    <invokers>
+        <invoker folderid="/explorer/master/bpls" caption="BP Expiry Dates" target="popup" index="11"
+                 action="init" role="ADMIN"/>
+        <invoker type="bpexpiry:list" caption="BP Expiry Dates" target="popup" index="11" action="init" />
+    </invokers>
+</workunit>

@@ -1,40 +1,10 @@
-<workunit>
+<workunit schemaName="bpexpirydate">
     <invokers>
-        <invoker type="bpexpirydate:create" caption="New BP Expiry"/>
-        <invoker type="bpexpirydate:open" caption="BP Expiry"/>
-        
+        <invoker type="bpexpirydate:create" caption="New BP Expiry" action="create" target="popup"/>
+        <invoker type="bpexpirydate:open" caption="BP Expiry" action="open" target="popup"/>
     </invokers>
-    
-    <code>
-        <![CDATA[    
-        import com.rameses.rcp.annotations.*
-        import com.rameses.rcp.common.*
-        import com.rameses.osiris2.client.*
-        import com.rameses.osiris2.common.*
-        import java.rmi.server.*;
-        
-        class BPExpiryController {
-        
-             @Service("BPExpiryDateService")
-             def service;
-
-             def entity = [:];
-             def qtrs = (1..4);
-             
-             def doOk() {
-                service.save(entity);
-                return "_close"
-             }
-             def doCancel() {
-                return "_close"
-             }
-        }
-        ]]>
-        
-    </code>
-    
+    <code class="com.rameses.gov.etracs.bpls.models.BPExpiryDateModel" />
     <pages>
-        <page template="com.rameses.gov.etracs.bpls.BPExpiryPage"/>
+        <page template="com.rameses.gov.etracs.bpls.views.BPExpiryDatePage"/>
     </pages>
-    
 </workunit>

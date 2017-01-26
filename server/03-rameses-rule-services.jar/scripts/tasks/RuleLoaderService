@@ -65,6 +65,7 @@ class RuleLoaderService {
 
 			/** load rules from file and db **/
 			appContext.scanFiles( "rulesets/"+rs+"/rules", loadrules, ".*\\.drl");
+
 			ruleDB.getRulesForDeployment( [ruleset:rs] ).each{ r->
 				try {
 					String s = r.ruletext;

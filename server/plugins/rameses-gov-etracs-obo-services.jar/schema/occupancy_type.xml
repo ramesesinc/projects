@@ -1,0 +1,10 @@
+<schema adapter="obodb">
+
+	<element tablename="occupancy_type">
+		<field name="objid" primary="true" prefix="OCCTYPE"/>
+		<field name="name" required="true" style="code" caption="Name" editable="false"/>
+		<field name="classification_objid" required="true" caption="Classification"/>
+	</element>
+
+</schema>
+		

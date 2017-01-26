@@ -19,8 +19,11 @@ public class BusinessBillingService  {
 	@ActiveDB("business_application")
 	def appEm;
 
-	@ActiveDB("lob")
+	@DataContext("lob")
 	def lobEm;
+
+	@DataContext("lob_lobattribute")
+	def lobAttr;
 
 	@Service("DateService")
 	def dateSvc;
@@ -55,15 +58,17 @@ public class BusinessBillingService  {
 		def findLob = { lob, tf ->
 			if(!lobMap.containsKey(lob.objid)) {
 				//store LOBFact
-				def lobInfo = lobEm.findInfo( [objid: lob.objid ]);
+				def lobInfo = lobEm.find( [objid: lob.objid ]).first();
 				if(!lobInfo)
 					throw new Exception("lob not found for "+lob.objid);
 				def LOB = new LOB();
 				LOB.objid = lobInfo.objid;
+				LOB.lobid = lobInfo.objid;
+				LOB.assessmenttype = tf.assessmenttype;
 				LOB.name = lobInfo.name;
 				LOB.classification = lobInfo.classification?.objid;
-				LOB.attributes = "-" + lobEm.getAttributes( [lobid: lob.objid ] )*.name.join("-") + "-";
-				LOB.assessmenttype = tf.assessmenttype;
+				def attrs = lobAttr.find([lobid: lobInfo.objid] ).list();
+				LOB.attributes = "-" + attrs*.lobattributeid.join("-") + "-";
 				lobMap.put( lob.objid, LOB );
 				facts << LOB;
 			}

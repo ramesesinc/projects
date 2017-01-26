@@ -14,9 +14,6 @@ public class BPAssessmentRuleService  {
 	@ActiveDB("rule")
 	def ruleDB;
 
-	@ActiveDB("lob")
-	def lob;
-
 	@ActiveDB("revenueitem")
 	def ba;
 

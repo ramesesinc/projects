@@ -26,6 +26,7 @@
                     entityTypes = entityTypes.findAll{ it.toLowerCase().matches(entityTypeMatch) };
                 }
                 selectedType = entityTypes[0];
+                whereStatement = [ "type=:t", [t: selectedType] ];
             }
             
             @PropertyChangeListener

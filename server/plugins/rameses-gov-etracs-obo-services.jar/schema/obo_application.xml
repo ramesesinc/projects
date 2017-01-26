@@ -1,0 +1,19 @@
+<schema adapter="obodb">
+	<element tablename="obo_application">
+		<field name="objid" primary="true"/>
+		<field name="appno" caption="App No"/>
+		<field name="appdate" caption="App Date"/>
+		<field name="apptype" caption="App Type"/>
+		<field name="dtfiled" caption="Date Filed"/>
+		<field name="filedby_name" caption="Filed By"/>
+		<field name="owner_name" caption="Owner Name"/>
+		<field name="owner_objid" visible="false"/>
+		<field name="owner_address_text" caption="Owner Address"/>
+		<field name="owner_address_objid" visible="false"/>
+		<field name="description" caption="Description"/>
+		<field name="usetype_classification_objid" caption="Use Classification" />
+		<field name="usetype_objid" caption="Use Type"/>
+		<field name="barangay_name" caption="Barangay"/>
+		<field name="costestimate" caption="Est. Cost"/>
+	</element>
+</schema>

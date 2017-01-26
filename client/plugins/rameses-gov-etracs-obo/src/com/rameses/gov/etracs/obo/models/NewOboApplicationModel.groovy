@@ -10,24 +10,14 @@ import com.rameses.rcp.common.*;
 import com.rameses.osiris2.client.*;
 import com.rameses.enterprise.models.*;
 
-class NewOboApplicationModel extends PageFlowController{
+class NewOboApplicationModel extends CrudPageFlowModel {
     
-    @Service("OboAssessmentService")
-    def assessmentService;
-    
-    @Service("OboApplicationService")
-    def applicationService;
-
-    @FormTitle
-    def formTitle;
     
     def ruleExecutor;
-    def entity;
-    def editmode = "read";
     
-    def apptypes = ["NEW","RENEW"];
     
-    void setUp() {
+    /*
+    void save() {
         formTitle = workunit.info.workunit_properties.title;
         if(!formTitle) formTitle = getTitle();
         vehicletype = workunit?.info?.workunit_properties?.vehicletype;
@@ -42,10 +32,6 @@ class NewOboApplicationModel extends PageFlowController{
         
     }
         
-    void save() {
-        entity = applicationService.create( entity );
-    }
-    
     void assess() {
         def p = [:];
         p.putAll( entity );
@@ -81,15 +67,12 @@ class NewOboApplicationModel extends PageFlowController{
             return entity.infos;
         }
     ] as BasicListModel;
+    */
 
-    def getLookupAvailableFranchise() {
-        return Inv.lookupOpener( "vehicle_franchise_" + vehicletype + ":available:lookup" );
-    }
 
     void viewTrackingno() {
         Modal.show( "show_trackingno", [trackingno: "51010:" + entity.appno ]);
     }
-    
     
     
 }

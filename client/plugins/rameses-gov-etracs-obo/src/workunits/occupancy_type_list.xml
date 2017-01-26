@@ -1,0 +1,5 @@
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" schemaName="occupancy_type">
+    <invokers>
+        <invoker folderid="explorer/master/obo" caption="Occupancy Type" action="init"/>
+    </invokers>
+</workunit>

@@ -1,0 +1,10 @@
+<workunit schemaName="occupancy_type">
+    <invokers>
+        <invoker type="occupancy_type:create" caption="Occupancy Type"  action="create" target="popup"/>
+        <invoker type="occupancy_type:open" caption="Occupancy Type"  action="open" target="popup"/>
+    </invokers>
+    <code class="com.rameses.seti2.models.CrudFormModel" />
+    <pages>
+        <page template="com.rameses.gov.etracs.obo.views.OccupancyTypePage" />
+    </pages>
+</workunit>

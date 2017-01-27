@@ -1,27 +1,17 @@
 <workunit schemaName="obo_application">
     <invokers>
-        <invoker folderid="home/obo" caption="New Application"
-                action="start" index="1"/>
+        <invoker type="obo_application:open" caption="New Application"
+                action="open" index="1"/>
         
-        <invoker type="obo_application:create" caption="New Application"
-                action="start" index="1"/>
-        
-        <!-- FORM ACTIONS -->
-        <invoker type="formAction" caption="Submit" action="save" />
+        <!-- form actions -->
+        <invoker type="formActions" caption="Add Auxiliary Permit"
+                action="addAuxiliaryPermit" />
+        <invoker type="formAction" caption="Add Auxiliary Permit1"
+                action="addAuxiliaryPermit" />
         
     </invokers>
-    <code class="com.rameses.gov.etracs.obo.models.NewOboApplicationModel" />
-    <pageflow>
-        <start>
-            <transition to="initial" />
-        </start>
-        <page name="initial" title="Initial">
-            <transition to="end" caption="Submit" action="saveCreate" 
-                    confirm="You are about to submit this entry. Proceed?"/>
-        </page> 
-        <end/>
-    </pageflow>
+    <code class="com.rameses.gov.etracs.obo.models.OboApplicationModel" />
     <pages>
-        <page name="initial" template="com.rameses.gov.etracs.obo.views.NewOboApplicationPage" />
+        <page template="com.rameses.gov.etracs.obo.views.OboApplicationPage" />
     </pages>
 </workunit>

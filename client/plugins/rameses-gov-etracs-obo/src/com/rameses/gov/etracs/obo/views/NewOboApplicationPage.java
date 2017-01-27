@@ -85,7 +85,9 @@ public class NewOboApplicationPage extends javax.swing.JPanel {
         xFormPanel2.setCaptionWidth(150);
 
         xComboBox3.setCaption("App Type");
-        xComboBox3.setItems("lov.OBO_APP_TYPE");
+        xComboBox3.setExpression("#{item.key} - #{item.value}");
+        xComboBox3.setItemKey("key");
+        xComboBox3.setItems("appTypes");
         xComboBox3.setName("entity.apptype"); // NOI18N
         xComboBox3.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel2.add(xComboBox3);

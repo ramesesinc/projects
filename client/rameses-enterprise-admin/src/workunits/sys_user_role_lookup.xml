@@ -1,0 +1,8 @@
+<workunit extends="com/rameses/seti2/templates/CrudLookup.xml" schemaName="sys_user_role">
+    <invokers>
+        <invoker type="sys_user_role:lookup" caption="Lookup User" target="popup" 
+                action="init"
+                cols="lastname,firstname,name,domain,role,orgid"/>
+    </invokers>
+    <code class="com.rameses.admin.models.UserRoleLookupModel" />
+</workunit>

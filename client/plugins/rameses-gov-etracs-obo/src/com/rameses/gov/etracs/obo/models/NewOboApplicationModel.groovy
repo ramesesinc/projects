@@ -14,7 +14,7 @@ class NewOboApplicationModel extends CrudPageFlowModel {
     
     
     def ruleExecutor;
-    
+    def appTypes = LOV.OBO_APP_TYPE;
     
     /*
     void save() {

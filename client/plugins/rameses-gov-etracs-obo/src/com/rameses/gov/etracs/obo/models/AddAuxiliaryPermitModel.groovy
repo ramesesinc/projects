@@ -10,12 +10,26 @@ import com.rameses.rcp.common.*;
 import com.rameses.osiris2.client.*;
 import com.rameses.enterprise.models.*;
 
-class AddAuxiliaryPermitModel extends CrudFormModel {
+class AddAuxiliaryPermitModel  {
+    
+    @Service("PersistenceService")
+    def persistenceService;
+    
+    @Script("Lov")
+    def lov;
     
     def app;
     def handler;
+    def entity;
     
     boolean showConfirm = false;
+    
+    public void create() {
+        entity = [:];
+        entity._schemaname = 'obo_auxiliary_permit';
+        entity.app = app;
+        entity.state = 'PENDING';
+    }
     
     public def getLookupUser() {
         def r = entity.type?.toUpperCase();
@@ -24,11 +38,9 @@ class AddAuxiliaryPermitModel extends CrudFormModel {
     }
     
     public def doOk() {
-        entity.app = app;
-        if(save()!=null) {
-            handler(entity);
-            return "_close"; 
-        }
+        persistenceService.create( entity );
+        handler(entity);
+        create();
     }
     
     public def doCancel() {

@@ -57,8 +57,24 @@ class OboApplicationModel extends WorkflowTaskModel {
             entity.permits << o;
             //you must call this because sections are cached
             binding.refresh();
+            listModel.reload();
         }
         return Inv.lookupOpener("obo_auxiliary_permit:create", [handler: h, app:entity] );
+    }
+    
+    def selectedItem;
+    def listModel = [
+        fetchList: { o->
+            return entity.permits;
+        }
+    ] as BasicListModel;
+    
+    void removeItem() {
+        if(!selectedItem) return;
+        persistenceService.removeEntity( [_schemaname: 'obo_auxiliary_permit', objid: selectedItem.objid ]);
+        entity.permits.remove(selectedItem);
+        binding.refresh();
+        listModel.reload();
     }
     
 }

@@ -1,5 +1,5 @@
 <schema adapter="obodb">
-	<element tablename="building_classification">
+	<element tablename="obo_building_type">
 		<field name="objid" primary="true" caption="Code" visible="true" searchable="true"/>
 		<field name="groupid" required="true" caption="Group"/>
 		<field name="division" required="true" caption="Division"/>

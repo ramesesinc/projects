@@ -1,7 +1,0 @@
-<workunit extends="com/rameses/seti2/templates/CrudList.xml"
-    schemaName="obo_electrical_permit">
-    <invokers>
-        <invoker folderid="home/obo" caption="Line and Grade"
-                action="create" index="11"/>
-    </invokers>
-</workunit>

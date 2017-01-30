@@ -1,7 +1,7 @@
 <workunit extends="com/rameses/seti2/templates/CrudLookup.xml"
-    schemaName="occupancy_classification">
+    schemaName="obo_use_classification">
     <invokers>
-        <invoker type="occupancy_classification:lookup" caption="Occupancy Classifcation"
+        <invoker type="obo_use_classification:lookup" caption="Use Classifcation"
                 action="init" target="popup"/>
     </invokers>
 </workunit>

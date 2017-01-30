@@ -12,24 +12,20 @@ import com.rameses.enterprise.models.*;
 
 public class UserRoleLookupModel extends CrudLookupModel {
         
-    def orgid;
-    def domain;
-    def role;
-
     public def getCustomFilter() {
         def f = [];
         def p = [:];
-        if( orgid ) {
+        if( query.orgid ) {
             f << "orgid=:orgid";
-            p.orgid = orgid;
+            p.orgid = query.orgid;
         }
-        if( domain ) {
+        if( query.domain ) {
             f << "domain=:domain";
-            p.domain = domain;
+            p.domain = query.domain;
         }
-        if(role) {
+        if(query.role) {
             f << "role=:role";
-            p.role = role;
+            p.role = query.role;
         }
         if(!f) return null;
         return [ f.join(" AND "), p ]; 

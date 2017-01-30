@@ -1,8 +1,8 @@
 <schema adapter="obodb">
 	<element tablename="obo_auxiliary_permit">
 		<field name="objid" primary="true" />
-		<field name="appid"  />
 		<field name="state" required="true" defaultValue="PENDING"/>
+		<field name="type"  />
 		<field name="assignto_objid"  />
 		<field name="assignto_name"  />
 		<field name="dtcreated"   type="timestamp" required="true" />
@@ -10,7 +10,7 @@
 		<field name="dtsubmitted" type="timestamp"  />
 		<field name="dtapproved"  type="timestamp"/>
 		<field name="dtended"     type="timestamp"/>
-		<complex name="app" ref="obo_application" jointype="many-to-one" includefields="appno">
+		<complex name="app" ref="obo_application" jointype="many-to-one" includefields="appno" required="true">
 			<key field="appid" target="objid"/>
 		</complex>	
 	</element>

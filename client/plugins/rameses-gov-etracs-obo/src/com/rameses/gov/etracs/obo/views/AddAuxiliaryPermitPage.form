@@ -40,7 +40,7 @@
           <Properties>
             <Property name="caption" type="java.lang.String" value="Permit Type"/>
             <Property name="items" type="java.lang.String" value="lov.OBO_PERMIT_TYPE"/>
-            <Property name="name" type="java.lang.String" value="entity.permittype" noResource="true"/>
+            <Property name="name" type="java.lang.String" value="entity.type" noResource="true"/>
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[0, 20]"/>
             </Property>
@@ -51,7 +51,7 @@
             <Property name="caption" type="java.lang.String" value="Assign To"/>
             <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
               <StringArray count="1">
-                <StringItem index="0" value="entity.permittype"/>
+                <StringItem index="0" value="entity.type"/>
               </StringArray>
             </Property>
             <Property name="expression" type="java.lang.String" value="#{entity.assignto.name} "/>
@@ -60,7 +60,7 @@
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[0, 20]"/>
             </Property>
-            <Property name="visibleWhen" type="java.lang.String" value="#{entity.permittype !=null }"/>
+            <Property name="visibleWhen" type="java.lang.String" value="#{entity.type !=null }"/>
           </Properties>
         </Component>
         <Container class="javax.swing.JScrollPane" name="jScrollPane1">

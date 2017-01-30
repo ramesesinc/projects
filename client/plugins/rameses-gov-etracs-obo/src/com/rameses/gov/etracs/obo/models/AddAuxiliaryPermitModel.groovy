@@ -15,16 +15,20 @@ class AddAuxiliaryPermitModel extends CrudFormModel {
     def app;
     def handler;
     
+    boolean showConfirm = false;
+    
     public def getLookupUser() {
-        def r = entity.permittype?.toUpperCase();
-        return Inv.lookupOpener( "sys_user_role:lookup", [ domain:'OBO', role: r ] ); 
+        def r = entity.type?.toUpperCase();
+        def p = [query: [domain:'OBO', role: r] ];
+        return Inv.lookupOpener( "sys_user_role:lookup", p ); 
     }
     
     public def doOk() {
         entity.app = app;
-        save();
-        handler(entity);
-        return "_close"; 
+        if(save()!=null) {
+            handler(entity);
+            return "_close"; 
+        }
     }
     
     public def doCancel() {

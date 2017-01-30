@@ -17,7 +17,9 @@ class OboApplicationModel extends WorkflowTaskModel {
     def ruleExecutor;
     
     InvokerFilter sectionFilter = { inv->
-        return entity.permits.find{ it.permittype == inv.properties.section }!=null;
+        if( !inv.properties?.section ) return false;
+        if( !entity.permits ) return false;
+        return entity.permits.find{ it.type.equalsIgnoreCase(inv.properties.section) }!=null;
     } as InvokerFilter;
     
     public def open() {
@@ -51,8 +53,9 @@ class OboApplicationModel extends WorkflowTaskModel {
     
     public def addAuxiliaryPermit() {
         def h = { o->
-            if(!entity.permits) entity.permits = [];
+            if(entity.permits == null) entity.permits = [];
             entity.permits << o;
+            //you must call this because sections are cached
             binding.refresh();
         }
         return Inv.lookupOpener("obo_auxiliary_permit:create", [handler: h, app:entity] );

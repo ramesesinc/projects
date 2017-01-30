@@ -38,17 +38,17 @@ public class AddAuxiliaryPermitPage extends javax.swing.JPanel {
 
         xComboBox1.setCaption("Permit Type");
         xComboBox1.setItems("lov.OBO_PERMIT_TYPE");
-        xComboBox1.setName("entity.permittype"); // NOI18N
+        xComboBox1.setName("entity.type"); // NOI18N
         xComboBox1.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(xComboBox1);
 
         xLookupField1.setCaption("Assign To");
-        xLookupField1.setDepends(new String[] {"entity.permittype"});
+        xLookupField1.setDepends(new String[] {"entity.type"});
         xLookupField1.setExpression("#{entity.assignto.name} ");
         xLookupField1.setHandler("lookupUser");
         xLookupField1.setName("entity.assignto"); // NOI18N
         xLookupField1.setPreferredSize(new java.awt.Dimension(0, 20));
-        xLookupField1.setVisibleWhen("#{entity.permittype !=null }");
+        xLookupField1.setVisibleWhen("#{entity.type !=null }");
         xFormPanel1.add(xLookupField1);
 
         jScrollPane1.setPreferredSize(new java.awt.Dimension(0, 63));

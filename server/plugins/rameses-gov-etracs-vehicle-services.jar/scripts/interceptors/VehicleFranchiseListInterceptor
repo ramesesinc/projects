@@ -29,7 +29,7 @@ class VehicleFranchiseListInterceptor {
 
 		switch( o.node.id ) {
 			case 'unassigned':
-				str = " vehicleid IS NULL ";
+				str = " owner.objid IS NULL ";
 				break;
 
 			case 'active':
@@ -48,7 +48,7 @@ class VehicleFranchiseListInterceptor {
 
 			case 'delinquent':
 				m.year = dateSvc.getServerYear() - 1;
-				str = " NOT(vehicleid IS NULL) AND activeyear < :year";
+				str = " NOT(owner.objid IS NULL) AND activeyear < :year";
 				break;
 		}
 

@@ -11,14 +11,8 @@ import rules.vehicle.facts.*;
 ***********************************************************/
 class VehicleFranchiseService {
 	
-	@DataContext("vehicle_franchise")
-	def franchiseEm;
-
 	@DataContext("vehicletype")
 	def vt;
-
-	@DataContext("vehicle_application")
-	def appEm;
 
 	@DataContext(dynamic=true)
 	def em;
@@ -79,6 +73,8 @@ class VehicleFranchiseService {
 			}
 			return ret;
 		}
+		
+		def franchiseEm = em.lookup("vehicle_franchise_"+vehicletype);
 
 		for(int i=(issued+1); i < (qty+issued+1); i++ ) {
 			def m = [vehicletype: g.objid];

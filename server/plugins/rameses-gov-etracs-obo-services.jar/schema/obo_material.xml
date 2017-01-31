@@ -1,0 +1,10 @@
+<schema adapter="obodb">
+	<element tablename="obo_material">
+		<field name="objid" primary="true"/>
+		<field name="code" required="true"/>
+		<field name="title" required="true"/>
+		<field name="unit" required="true"/>
+		<field name="section" required="true"/>
+		<field name="system" type="integer" defaultValue="0"/>
+	</element>
+</schema>

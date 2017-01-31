@@ -4,20 +4,16 @@
  */
 package com.rameses.gov.etracs.obo.views;
 
-import com.rameses.rcp.ui.annotations.Template;
-import com.rameses.seti2.views.CrudFormPage;
-
 /**
  *
  * @author dell
  */
-@Template(CrudFormPage.class)
-public class BuildingKindPage extends javax.swing.JPanel {
+public class MaterialPage extends javax.swing.JPanel {
 
     /**
-     * Creates new form OccupancyType
+     * Creates new form MaterialPage
      */
-    public BuildingKindPage() {
+    public MaterialPage() {
         initComponents();
     }
 
@@ -32,20 +28,44 @@ public class BuildingKindPage extends javax.swing.JPanel {
 
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
         xTextField1 = new com.rameses.rcp.control.XTextField();
-        xLookupField2 = new com.rameses.rcp.control.XLookupField();
+        xTextField2 = new com.rameses.rcp.control.XTextField();
+        xComboBox1 = new com.rameses.rcp.control.XComboBox();
+        xTextField3 = new com.rameses.rcp.control.XTextField();
+        xCheckBox1 = new com.rameses.rcp.control.XCheckBox();
 
-        xTextField1.setCaption("Name");
-        xTextField1.setName("entity.name"); // NOI18N
+        xFormPanel1.setCaptionWidth(100);
+
+        xTextField1.setCaption("Code");
+        xTextField1.setName("entity.code"); // NOI18N
         xTextField1.setPreferredSize(new java.awt.Dimension(0, 20));
         xTextField1.setRequired(true);
         xFormPanel1.add(xTextField1);
 
-        xLookupField2.setCaption("Type");
-        xLookupField2.setExpression("#{entity.classification.objid}");
-        xLookupField2.setHandler("occupancy_classification:lookup");
-        xLookupField2.setName("entity.classification"); // NOI18N
-        xLookupField2.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel1.add(xLookupField2);
+        xTextField2.setCaption("Name");
+        xTextField2.setName("entity.name"); // NOI18N
+        xTextField2.setPreferredSize(new java.awt.Dimension(0, 20));
+        xTextField2.setRequired(true);
+        xFormPanel1.add(xTextField2);
+
+        xComboBox1.setCaption("Section");
+        xComboBox1.setItems("lov.OBO_PERMIT_TYPE");
+        xComboBox1.setName("entity.section"); // NOI18N
+        xComboBox1.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel1.add(xComboBox1);
+
+        xTextField3.setCaption("Unit of Measure");
+        xTextField3.setName("entity.unit"); // NOI18N
+        xTextField3.setPreferredSize(new java.awt.Dimension(0, 20));
+        xTextField3.setRequired(true);
+        xFormPanel1.add(xTextField3);
+
+        xCheckBox1.setCaption("");
+        xCheckBox1.setCheckValue(1);
+        xCheckBox1.setEnabled(false);
+        xCheckBox1.setName("entity.system"); // NOI18N
+        xCheckBox1.setText("System");
+        xCheckBox1.setUncheckValue(0);
+        xFormPanel1.add(xCheckBox1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -61,12 +81,15 @@ public class BuildingKindPage extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(63, Short.MAX_VALUE))
+                .addContainerGap(155, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private com.rameses.rcp.control.XCheckBox xCheckBox1;
+    private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
-    private com.rameses.rcp.control.XLookupField xLookupField2;
     private com.rameses.rcp.control.XTextField xTextField1;
+    private com.rameses.rcp.control.XTextField xTextField2;
+    private com.rameses.rcp.control.XTextField xTextField3;
     // End of variables declaration//GEN-END:variables
 }

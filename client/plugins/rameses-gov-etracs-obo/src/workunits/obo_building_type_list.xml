@@ -1,8 +1,8 @@
-<workunit extends="com/rameses/seti2/templates/CrudLookup.xml"
-    schemaName="building_classification">
+<workunit extends="com/rameses/seti2/templates/CrudList.xml"
+    schemaName="obo_building_type">
     <invokers>
-        <invoker type="building_classification:lookup" 
-                 caption="Lookup Building Classification"
+        <invoker folderid="explorer/master/obo"
+                 caption="Building Type"
                 action="init" cols="objid,description"/>
     </invokers>
 </workunit>

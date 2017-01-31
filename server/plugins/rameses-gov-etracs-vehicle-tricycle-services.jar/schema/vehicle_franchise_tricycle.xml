@@ -1,26 +1,14 @@
 <schema adapter="vehicledb">
-	<element tablename="vehicle_franchise_tricycle">
+	<element tablename="vehicle_franchise_tricycle" extends="vehicle_franchise">
 		<field name="objid" primary="true"/>
-		<field name="vehicleid" visible="false" />
-		<field name="state"  caption="Status"/>
-		<field name="vehicletype" />
-		<field name="controlno" caption="Control No" indexed="true" searchable="true"/>
-		<field name="dtregistered" caption="Reg. Date"/>
-		<field name="activeyear" caption="Active Year"/>
-		<field name="vehicle_objid" />
-		<field name="vehicle_plateno" caption="Plate No" indexed="true"/>
-		<field name="vehicle_engineno" caption="Engine No" indexed="true"/>
-		<field name="vehicle_bodyno" caption="Body No" indexed="true"/>
-		<field name="vehicle_sidecarno" />
-		<field name="vehicle_make"  indexed="true"/>
-		<field name="vehicle_model"  indexed="true"/>
-		<field name="vehicle_color" />
-		<field name="vehicle_crname" />
-		<field name="owner_name" caption="Owner Name" indexed="true" searchable="true"/>
-		<field name="owner_objid" visible="false"/>
-		<field name="owner_address_text" caption="Owner Address"/>
-		<field name="owner_address_objid" visible="false"/>
-		<field name="barangay_name" caption="Barangay"/>
-		<field name="barangay_objid" visible="false"/>
+		<field name="plateno" caption="Plate No" indexed="true"/>
+		<field name="engineno" caption="Engine No" indexed="true"/>
+		<field name="bodyno" caption="Body No" indexed="true"/>
+		<field name="chassisno" caption="Chassis No" indexed="true"/>
+		<field name="sidecarno" />
+		<field name="make"  indexed="true"/>
+		<field name="model"  indexed="true"/>
+		<field name="color" />
+		<field name="crname" />
 	</element>
 </schema>

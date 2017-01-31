@@ -18,13 +18,11 @@ public class VehicleApplicationForm extends WorkflowTaskModel {
     def franSvc;
     
     def vehicletype;
-    def vehicleTypeHandler;
     def ruleExecutor;
     
     public def open() {
         def retval = super.open();
         vehicletype = workunit.info.workunit_properties.vehicletype;
-        vehicleTypeHandler = Inv.lookupOpener("vehicle_type_handler:"+vehicletype, [entity:entity]); 
         ruleExecutor = new RuleProcessor(  { p-> return assessmentService.assess(p) } );
         return retval;
     }

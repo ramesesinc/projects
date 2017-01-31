@@ -3,7 +3,7 @@
     <invokers>
         <invoker folderid="/home/vehicle/tricycle" 
                  caption="MTOP Franchise List" index="-10"
-                 cols="controlno,activeyear,owner.name,owner.address.text,vehicle.plateno,vehicle.engineno,vehicle.bodyno,barangay.name,state"
+                 cols="controlno,activeyear,owner.name,owner.address.text,plateno,engineno,chassisno,bodyno,barangay.name,state"
                  action="init" orderBy="controlno" 
                  role="INFO,SHARED"/>
     </invokers>

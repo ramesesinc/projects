@@ -6,4 +6,7 @@
         <invoker folderid="/home/vehicle/tricycle" caption="Capture" action="start" 
                  role="INFO"/>
     </invokers>
+    <pages>
+        <page template="com.rameses.gov.etracs.vehicle.tricycle.views.TricycleApplicationPage" />
+    </pages>
 </workunit>

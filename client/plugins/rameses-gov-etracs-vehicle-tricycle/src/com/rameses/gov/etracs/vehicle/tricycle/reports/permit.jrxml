@@ -35,11 +35,11 @@
 
 	<field name="owner.name" class="java.lang.String"/>
 	<field name="appno" class="java.lang.String"/>
-	<field name="vehicle.engineno" class="java.lang.String"/>
-	<field name="vehicle.bodyno" class="java.lang.String"/>
-	<field name="vehicle.color" class="java.lang.String"/>
-	<field name="vehicle.plateno" class="java.lang.String"/>
-	<field name="vehicle.make" class="java.lang.String"/>
+	<field name="engineno" class="java.lang.String"/>
+	<field name="bodyno" class="java.lang.String"/>
+	<field name="color" class="java.lang.String"/>
+	<field name="plateno" class="java.lang.String"/>
+	<field name="make" class="java.lang.String"/>
 	<field name="franchise.controlno" class="java.lang.String"/>
 	<field name="permit.orgtype" class="java.lang.String"/>
 	<field name="appyear" class="java.lang.Number"/>
@@ -145,7 +145,7 @@
 					<textElement textAlignment="Center">
 						<font/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{vehicle.engineno}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{engineno}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -163,7 +163,7 @@
 					<textElement textAlignment="Center">
 						<font/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{vehicle.bodyno}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{bodyno}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement
@@ -271,7 +271,7 @@
 					<textElement textAlignment="Center">
 						<font/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{vehicle.plateno}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{plateno}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -289,7 +289,7 @@
 					<textElement textAlignment="Center">
 						<font/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{vehicle.color}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{color}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -307,7 +307,7 @@
 					<textElement textAlignment="Center">
 						<font/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{vehicle.make}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{make}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -393,7 +393,7 @@
 					<textElement verticalAlignment="Middle">
 						<font pdfFontName="Helvetica" size="14" isBold="false"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{vehicle.bodyno}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{bodyno}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement

@@ -13,16 +13,7 @@ import com.rameses.enterprise.models.*;
 
 public class VehicleFranchiseForm extends CrudFormModel {
     
-    def vehicletype;
-    def vehicleTypeHandler;
     def selectedFee;
-    
-    void afterOpen() {
-        vehicletype = workunit.info.workunit_properties.vehicletype;
-        if(!vehicletype) vehicletype = entity.vehicletype;
-        if(!vehicletype) throw new Exception("Please specify vehicle type");
-        vehicleTypeHandler = Inv.lookupOpener("vehicle_type_handler:"+vehicletype, [entity:entity]);
-    }
     
     public String getTitle() {
         return entity.controlno ;
@@ -76,7 +67,7 @@ public class VehicleFranchiseForm extends CrudFormModel {
     
     def appListModel = [
         fetchList: { o->
-            def m = [_schemaname:'vehicle_application'];
+            def m = [_schemaname:'vehicle_application_'+entity.vehicletype];
             m.findBy = [ controlid: entity.objid ];
             m.orderBy = "dtfiled DESC";
             return queryService.getList(m);

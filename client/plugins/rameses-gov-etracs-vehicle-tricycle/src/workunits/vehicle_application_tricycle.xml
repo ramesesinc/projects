@@ -5,6 +5,9 @@
         <invoker type="vehicle_application_tricycle:open" caption="Vehicle Application" action="open" />
         <invoker type="global:barcode:51010" caption="Vehicle Application" 
             action="openBarcode" 
-            target="window" expr1="#{barcodeid.startsWith('WA')}" />
+            target="window" />
     </invokers>
+    <pages>
+        <page template="com.rameses.gov.etracs.vehicle.tricycle.views.TricycleApplicationPage" />
+    </pages>
 </workunit>

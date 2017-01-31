@@ -1,8 +1,9 @@
+package com.rameses.gov.etracs.obo.views;
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.rameses.gov.etracs.obo.views;
+
 
 import com.rameses.rcp.ui.annotations.Template;
 import com.rameses.seti2.views.CrudFormPage;
@@ -12,12 +13,12 @@ import com.rameses.seti2.views.CrudFormPage;
  * @author dell
  */
 @Template(CrudFormPage.class)
-public class OccupancyTypePage extends javax.swing.JPanel {
+public class BuildingKindPage extends javax.swing.JPanel {
 
     /**
      * Creates new form OccupancyType
      */
-    public OccupancyTypePage() {
+    public BuildingKindPage() {
         initComponents();
     }
 

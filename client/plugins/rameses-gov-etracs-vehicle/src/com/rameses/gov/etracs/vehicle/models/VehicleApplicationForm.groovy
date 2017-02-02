@@ -64,7 +64,6 @@ public class VehicleApplicationForm extends WorkflowTaskModel {
             return entity.payments;
         },
         onOpenItem: { o->
-            MsgBox.alert("refid " + o.refid);
             return Inv.lookupOpener( "cashreceiptinfo:open", [entity: [objid:o.refid] ] );
         }
     ] as BasicListModel;

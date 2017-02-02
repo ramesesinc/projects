@@ -19,7 +19,6 @@ public class NewVehicleApplicationForm extends AbstractVehicleEntryForm {
     void create() {
         setUp();
         entity = applicationService.init(entity);
-        afterLoad();
         editmode = 'create';
     }
     
@@ -27,7 +26,6 @@ public class NewVehicleApplicationForm extends AbstractVehicleEntryForm {
         if(!entity) throw new Exception("Call the setUp method in ApplicationForm first. Check start action");
         entity.franchiseno = franchiseno;
         entity = applicationService.init( entity );
-        afterLoad();
         editmode = 'read';
     }
 

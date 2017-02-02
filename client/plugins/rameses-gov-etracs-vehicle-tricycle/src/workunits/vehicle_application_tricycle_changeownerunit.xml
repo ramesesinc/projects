@@ -4,6 +4,10 @@
          title="MTOP Change Owner/Unit">
     <invokers>
         <invoker folderid="/home/vehicle/tricycle" caption="Change Owner Unit" action="start" index="114" 
-                 role="INFO"/>
+                 role="INFO" />
     </invokers>
+    <pages>
+        <page name="initial" template="com.rameses.gov.etracs.vehicle.tricycle.views.TricycleApplicationEntryPage" />
+        <page name="confirm" template="com.rameses.gov.etracs.vehicle.tricycle.views.TricycleApplicationPage" />
+    </pages>
 </workunit>

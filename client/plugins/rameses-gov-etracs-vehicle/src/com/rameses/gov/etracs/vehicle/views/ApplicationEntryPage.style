@@ -1,0 +1,14 @@
+"entity.*" [ entity.apptype.matches('RENEW|DROP') ] {
+    editable:false;
+    enabled:false;
+}
+
+"entity.*" [ !entity.apptype.matches('RENEW|DROP') ] {
+    editable:true;
+    enabled:true;
+}
+
+"entity.appyear" [ entity.apptype.matches('NEW') ] {
+    editable:false;
+    enabled:false;
+}

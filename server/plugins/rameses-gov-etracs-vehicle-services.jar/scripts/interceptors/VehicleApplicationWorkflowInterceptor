@@ -4,8 +4,6 @@ import rules.enterprise.facts.*;
 
 class VehicleApplicationWorkflowInterceptor {
 	
-	@DataContext("vehicle_application")
-	def appEm;
 
 	@DataContext("vehicle_application_fee")
 	def appFeeEm;
@@ -15,12 +13,6 @@ class VehicleApplicationWorkflowInterceptor {
 
 	@DataContext("vehicle_payment")
 	def appPaymentEm;
-
-	@DataContext("vehicle_franchise")
-	def franchiseEm;
-
-	@Service("DateService")
-	def dateSvc;
 
 	@After(pattern="PersistenceService.read", eval="#{args[0]._schemaname.startsWith('vehicle_application_') }" )
 	public void afterOpen(def evt) {
@@ -39,23 +31,6 @@ class VehicleApplicationWorkflowInterceptor {
 	}	
 
 
-	@After(pattern="WorkflowTaskService.signal", 
-		eval="#{args[0].processname.startsWith('vehicle_application_') && args[0].action == 'release' }" )
-	public void beforeRelease(def evt) {
-		def o = evt.args[0];
-		def app = appEm.find([objid: o.refid]).first();
-		if(!app) {
-			throw new Exception("Cannot Release. Application not found with refid " + o.refid);
-		}
-		def d = [state:'ACTIVE'];
-		if( app.apptype == 'NEW' ) {
-			d.dtregistered = dateSvc.getServerDate();
-		} else if ( app.apptype=='DROP' ) {
-			d.state = 'OPEN'; 
-			d.appid = null; 
-		}
-		franchiseEm.find( [objid: app.controlid] ).update( d );
-	}	
-
+	
 
 }

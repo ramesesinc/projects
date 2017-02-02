@@ -22,9 +22,7 @@
         <end/>
     </pageflow>
     <pages>
-        <page name="initial" template="com.rameses.gov.etracs.vehicle.views.ApplicationInitialPage" />
         <page name="assessment" template="com.rameses.gov.etracs.vehicle.views.ApplicationAssessmentPage" />
-        <page name="confirm" template="com.rameses.gov.etracs.vehicle.views.ApplicationFormPage" />
         <page name="success" template="com.rameses.gov.etracs.vehicle.views.ApplicationSuccessPage" />
     </pages>
 </workunit>

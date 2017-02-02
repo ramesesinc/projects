@@ -4,20 +4,20 @@
  */
 package com.rameses.gov.etracs.vehicle.tricycle.views;
 
+import com.rameses.gov.etracs.vehicle.views.ApplicationEntryPage;
 import com.rameses.rcp.ui.annotations.Template;
-import com.rameses.seti2.views.CrudFormPage;
 
 /**
  *
  * @author dell
  */
-@Template(CrudFormPage.class)
-public class VehicleTricyclePage extends javax.swing.JPanel {
+@Template(ApplicationEntryPage.class)
+public class TricycleApplicationEntryPage extends javax.swing.JPanel {
 
     /**
-     * Creates new form TricycleInfoEditPanel
+     * Creates new form TricycleApplicationEntryPage
      */
-    public VehicleTricyclePage() {
+    public TricycleApplicationEntryPage() {
         initComponents();
     }
 
@@ -53,6 +53,7 @@ public class VehicleTricyclePage extends javax.swing.JPanel {
 
         xTextField8.setCaption("Plate No");
         xTextField8.setName("entity.plateno"); // NOI18N
+        xTextField8.setRequired(true);
         xFormPanel2.add(xTextField8);
 
         xTextField15.setCaption("CR Name");
@@ -96,10 +97,12 @@ public class VehicleTricyclePage extends javax.swing.JPanel {
 
         xTextField12.setCaption("Engine No");
         xTextField12.setName("entity.engineno"); // NOI18N
+        xTextField12.setRequired(true);
         xFormPanel3.add(xTextField12);
 
         xTextField14.setCaption("Chassis No");
         xTextField14.setName("entity.chassisno"); // NOI18N
+        xTextField14.setRequired(true);
         xFormPanel3.add(xTextField14);
 
         xTextField2.setCaption("Make");
@@ -142,7 +145,7 @@ public class VehicleTricyclePage extends javax.swing.JPanel {
                         .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 108, Short.MAX_VALUE)))
+                        .addGap(0, 123, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -154,7 +157,7 @@ public class VehicleTricyclePage extends javax.swing.JPanel {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(143, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         add(jPanel1, java.awt.BorderLayout.CENTER);

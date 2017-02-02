@@ -1,0 +1,73 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+
+class TricycleApplicationInterceptor {
+
+	@Env
+	def env;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@DataContext("vehicle_application_tricycle")
+	def appEm;
+
+	@DataContext("vehicle_franchise_tricycle")
+	def franchiseEm;
+
+	private void updateFranchiseInfo( def d, def app ) {
+		d.appid = app.objid;
+		d.owner = app.owner;
+		d.plateno = app.plateno;
+		d.engineno = app.engineno;
+		d.bodyno = app.bodyno;
+		d.sidecarno = app.sidecarno;
+		d.make = app.make;
+		d.model = app.model;
+		d.color = app.color;
+		d.chassisno = app.chassisno;
+		d.sidecarcolor = app.sidecarcolor;
+		d.crname = app.crname;
+	}
+
+	@After(pattern="WorkflowTaskService.signal", 
+		eval="#{args[0].processname=='vehicle_application_tricycle' && args[0].action == 'release' }" )
+	public void beforeRelease(def evt) {
+		def o = evt.args[0];
+		def app = appEm.find([objid: o.refid]).first();
+		if(!app) {
+			throw new Exception("Cannot Release. Application not found with refid " + o.refid);
+		}
+		def d = [:];
+		if( app.apptype == 'NEW' ) {
+			d.state = 'ACTIVE';
+			d.dtregistered = dateSvc.getServerDate();
+			updateFranchiseInfo(d, app);
+		} 
+		else if ( app.apptype=='DROP' ) {
+			d.state = 'OPEN'; 
+			d.appid = null; 
+			updateFranchiseInfo( d, [:] );
+		}
+		franchiseEm.find( [objid: app.controlid] ).update( d );
+	}	
+
+	//Update Franchise Info during capture...
+	@After(pattern="VehicleApplicationService.create", eval="#{result.txnmode == 'CAPTURE'}", index=10)
+	public void afterCreateApplicationCapture(def evt) {
+		def a = evt.args[0];
+		def entity = evt.result;
+		if(!a.franchisedate) throw new Exception("Error in capture. Franchise date is required");
+
+		def f = franchiseEm.find([objid: entity.franchise.objid]).first();
+		if( entity.appyear > f.activeyear  ) {
+			def d = [:];
+			d.state = 'ACTIVE';
+			d.dtregistered = a.franchisedate;
+			updateFranchiseInfo(d, a);
+			franchiseEm.find([objid: entity.franchise.objid]).update( d );
+		}
+	}
+
+
+}

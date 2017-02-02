@@ -26,7 +26,6 @@ public abstract class AbstractVehicleEntryForm extends PageFlowController {
     def ruleExecutor;
     def entity;
     def vehicletype;
-    def vehicleTypeHandler;
     def editmode = "read";
     
     def apptypes = ["NEW","RENEW"];
@@ -42,18 +41,11 @@ public abstract class AbstractVehicleEntryForm extends PageFlowController {
         entity.vehicletype = vehicletype;
     }
 
-    void afterLoad() {
-        vehicleTypeHandler = Inv.lookupOpener("vehicle_type_handler:"+vehicletype, [entity:entity]);
-    }
-        
     void save() {
         entity = applicationService.create( entity );
     }
     
     void assess() {
-        if(! entity.vehicle?.objid )
-            throw new Exception("Please specify vehicle");
-        
         def p = [:];
         p.putAll( entity );
         p.defaultinfos = p.remove("infos");
@@ -97,26 +89,11 @@ public abstract class AbstractVehicleEntryForm extends PageFlowController {
             return entity.infos;
         }
     ] as BasicListModel;
-
-    def addVehicle() {
-        def h = { o->
-            entity.vehicle = o;
-            entity.vehicleid = o.objid;
-            binding.refresh();
-        }
-        if( entity.vehicle?.objid  ) {
-            def op = Inv.lookupOpener("vehicle_" + vehicletype + ":open", [handler: h, entity:entity.vehicle ] );
-            op.target = "popup";
-            return op;
-        }
-        else {
-            String st = "vehicle_" + vehicletype + "_pending:lookup";
-            //"vehicle_" + vehicletype + ":create"
-            return Inv.lookupOpener( st, [onselect: h ] );
-        }
-    }
-
-
+    
+    //this is just dummy for the new application so the page will not error.
+    def paymentListModel = [
+        
+    ] as BasicListModel;
     
     def getLookupAvailableFranchise() {
         return Inv.lookupOpener( "vehicle_franchise_" + vehicletype + ":available:lookup" );
@@ -133,4 +110,16 @@ public abstract class AbstractVehicleEntryForm extends PageFlowController {
     public Object printAssessment() {
         return null; 
     }
+    
+    boolean getFranchiseControlEditable() {
+        if( entity.txnmode == 'CAPTURE' ) return true;
+        return entity.apptype.matches( 'NEW|CHANGE_OWNER_UNIT' );
+    }
+    
+    boolean getOwnerEditable() {
+        if( entity.txnmode == 'CAPTURE' ) return true;
+        return entity.apptype.matches( 'NEW|CHANGE_OWNER_UNIT' );
+    }
+    
+    
 }

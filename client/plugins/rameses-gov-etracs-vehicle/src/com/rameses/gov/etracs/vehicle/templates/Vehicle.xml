@@ -1,3 +1,0 @@
-<workunit extends="com/rameses/gov/etracs/templates/CrudForm.xml">
-    <code class="com.rameses.gov.etracs.vehicle.models.VehicleForm"/>
-</workunit>

@@ -5,19 +5,23 @@
 package com.rameses.gov.etracs.vehicle.views;
 
 import com.rameses.osiris2.themes.FormPage;
+import com.rameses.rcp.framework.UIContentPanel;
+import com.rameses.rcp.ui.annotations.StyleSheet;
 import com.rameses.rcp.ui.annotations.Template;
+import javax.swing.JComponent;
  
 /**
  *
  * @author dell
  */
 @Template(FormPage.class)
-public class ApplicationInitialPage extends javax.swing.JPanel {
+@StyleSheet
+public class ApplicationEntryPage extends javax.swing.JPanel implements UIContentPanel{
 
     /**
      * Creates new form NewApplicationPage
      */
-    public ApplicationInitialPage() {
+    public ApplicationEntryPage() {
         initComponents();
     }
 
@@ -30,11 +34,10 @@ public class ApplicationInitialPage extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        xSubFormPanel1 = new com.rameses.rcp.control.XSubFormPanel();
-        xButton1 = new com.rameses.rcp.control.XButton();
         jPanel1 = new javax.swing.JPanel();
         xFormPanel3 = new com.rameses.rcp.control.XFormPanel();
         xLookupField1 = new com.rameses.rcp.control.XLookupField();
+        xLabel1 = new com.rameses.rcp.control.XLabel();
         xDateField3 = new com.rameses.rcp.control.XDateField();
         xLabel2 = new com.rameses.rcp.control.XLabel();
         xComboBox1 = new com.rameses.rcp.control.XComboBox();
@@ -42,25 +45,11 @@ public class ApplicationInitialPage extends javax.swing.JPanel {
         xDateField1 = new com.rameses.rcp.control.XDateField();
         entityLookup1 = new com.rameses.entity.components.EntityLookup();
         entityAddressLookup1 = new com.rameses.entity.components.EntityAddressLookup();
+        xLabel3 = new com.rameses.rcp.control.XLabel();
+        xLabel4 = new com.rameses.rcp.control.XLabel();
         barangayLookup1 = new com.rameses.etracs.components.BarangayLookup();
         xTextField1 = new com.rameses.rcp.control.XTextField();
-
-        xSubFormPanel1.setHandler("vehicleTypeHandler");
-
-        org.jdesktop.layout.GroupLayout xSubFormPanel1Layout = new org.jdesktop.layout.GroupLayout(xSubFormPanel1);
-        xSubFormPanel1.setLayout(xSubFormPanel1Layout);
-        xSubFormPanel1Layout.setHorizontalGroup(
-            xSubFormPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 0, Short.MAX_VALUE)
-        );
-        xSubFormPanel1Layout.setVerticalGroup(
-            xSubFormPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 213, Short.MAX_VALUE)
-        );
-
-        xButton1.setImmediate(true);
-        xButton1.setName("addVehicle"); // NOI18N
-        xButton1.setText("Vehicle");
+        jPanel5 = new javax.swing.JPanel();
 
         jPanel1.setLayout(new java.awt.CardLayout());
 
@@ -72,12 +61,20 @@ public class ApplicationInitialPage extends javax.swing.JPanel {
         xLookupField1.setName("entity.franchise"); // NOI18N
         xLookupField1.setPreferredSize(new java.awt.Dimension(180, 20));
         xLookupField1.setRequired(true);
+        xLookupField1.setVisibleWhen("#{ franchiseControlEditable == true }");
         xLookupField1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 xLookupField1ActionPerformed(evt);
             }
         });
         xFormPanel3.add(xLookupField1);
+
+        xLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
+        xLabel1.setCaption("Franchise Control No");
+        xLabel1.setExpression("#{entity.franchise.controlno}");
+        xLabel1.setPreferredSize(new java.awt.Dimension(180, 20));
+        xLabel1.setVisibleWhen("#{ franchiseControlEditable == false }");
+        xFormPanel3.add(xLabel1);
 
         xDateField3.setCaption("Franchise Date");
         xDateField3.setName("entity.franchisedate"); // NOI18N
@@ -116,6 +113,7 @@ public class ApplicationInitialPage extends javax.swing.JPanel {
         entityLookup1.setName("entity.owner"); // NOI18N
         entityLookup1.setPreferredSize(new java.awt.Dimension(0, 21));
         entityLookup1.setRequired(true);
+        entityLookup1.setVisibleWhen("#{ ownerEditable == true }");
         xFormPanel3.add(entityLookup1);
 
         entityAddressLookup1.setCaption("Home Address");
@@ -123,7 +121,22 @@ public class ApplicationInitialPage extends javax.swing.JPanel {
         entityAddressLookup1.setName("entity.owner.address"); // NOI18N
         entityAddressLookup1.setPreferredSize(new java.awt.Dimension(0, 40));
         entityAddressLookup1.setRequired(true);
+        entityAddressLookup1.setVisibleWhen("#{ ownerEditable == true }");
         xFormPanel3.add(entityAddressLookup1);
+
+        xLabel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
+        xLabel3.setCaption("Owner Address");
+        xLabel3.setExpression("#{entity.owner.name}");
+        xLabel3.setPreferredSize(new java.awt.Dimension(0, 20));
+        xLabel3.setVisibleWhen("#{ ownerEditable ==false }");
+        xFormPanel3.add(xLabel3);
+
+        xLabel4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
+        xLabel4.setCaption("Owner Address");
+        xLabel4.setExpression("#{entity.owner.address.text}");
+        xLabel4.setPreferredSize(new java.awt.Dimension(0, 20));
+        xLabel4.setVisibleWhen("#{ ownerEditable ==false }");
+        xFormPanel3.add(xLabel4);
 
         barangayLookup1.setCaption("Barangay");
         barangayLookup1.setName("entity.barangay"); // NOI18N
@@ -137,6 +150,8 @@ public class ApplicationInitialPage extends javax.swing.JPanel {
 
         jPanel1.add(xFormPanel3, "card3");
 
+        jPanel5.setLayout(new java.awt.BorderLayout());
+
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -144,21 +159,16 @@ public class ApplicationInitialPage extends javax.swing.JPanel {
             .add(layout.createSequentialGroup()
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 798, Short.MAX_VALUE)
-                    .add(layout.createSequentialGroup()
-                        .add(xButton1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .add(38, 38, 38)
-                        .add(xSubFormPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 695, Short.MAX_VALUE)))
+                    .add(jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 700, Short.MAX_VALUE)
+                    .add(jPanel5, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 700, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .add(jPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .add(7, 7, 7)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(xSubFormPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 213, Short.MAX_VALUE)
-                    .add(xButton1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jPanel5, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 148, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -172,15 +182,31 @@ public class ApplicationInitialPage extends javax.swing.JPanel {
     private com.rameses.entity.components.EntityAddressLookup entityAddressLookup1;
     private com.rameses.entity.components.EntityLookup entityLookup1;
     private javax.swing.JPanel jPanel1;
-    private com.rameses.rcp.control.XButton xButton1;
+    private javax.swing.JPanel jPanel5;
     private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XDateField xDateField1;
     private com.rameses.rcp.control.XDateField xDateField3;
     private com.rameses.rcp.control.XFormPanel xFormPanel3;
     private com.rameses.rcp.control.XIntegerField xIntegerField1;
+    private com.rameses.rcp.control.XLabel xLabel1;
     private com.rameses.rcp.control.XLabel xLabel2;
+    private com.rameses.rcp.control.XLabel xLabel3;
+    private com.rameses.rcp.control.XLabel xLabel4;
     private com.rameses.rcp.control.XLookupField xLookupField1;
-    private com.rameses.rcp.control.XSubFormPanel xSubFormPanel1;
     private com.rameses.rcp.control.XTextField xTextField1;
     // End of variables declaration//GEN-END:variables
+
+
+    @Override
+    public void setContent(JComponent content, String name) {
+        if ( content == null ) return; 
+        
+        jPanel5.add(content);
+    }
+
+    @Override
+    public void clearContent() {
+        //
+    }
+
 }

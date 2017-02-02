@@ -20,7 +20,6 @@ public class VehicleCaptureForm extends AbstractVehicleEntryForm {
         setUp();
         entity.fees=[];
         entity.txnmode = "CAPTURE"
-        afterLoad();
         editmode = 'create';
     }
 

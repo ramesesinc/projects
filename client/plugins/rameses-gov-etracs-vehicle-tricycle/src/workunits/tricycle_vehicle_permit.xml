@@ -10,5 +10,5 @@
                  reportName="com/rameses/gov/etracs/vehicle/tricycle/reports/permit.jasper" 
                  role="LICENSING"/>                 
     </invokers>             
-    <code class="com.rameses.gov.etracs.vehicle.tricycle.models.VehicleTricyclePermitReport" />
+    <code class="com.rameses.gov.etracs.vehicle.models.VehiclePermitReport" />
 </workunit>

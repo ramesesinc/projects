@@ -24,17 +24,20 @@ class VehicleApplicationCreateInterceptor {
 	***************************************************/
 	private void updateFranchiseInfo( def o, def state ) {
 		def m = [:];
-		m.activeyear = o.appyear;
-		m.state = state;
-		m.owner = o.owner;
-		m.barangay = o.barangay;
-		m.appid = o.objid;
 		def str = "objid|appno|appdate|txnmode|appyear|vehicletype|controlid|dtfiled|filedby.*|owner.*|particulars|barangay.*|billexpirydate|fees|infos|requirements|franchise.*|txndate";
 		o.each { k,v->
 			if(!k.matches( str )) {
 				m.put(k, v);
 			}
 		}
+
+		//update the other infos here...
+		m.activeyear = o.appyear;
+		m.state = state;
+		m.owner = o.owner;
+		m.barangay = o.barangay;
+		m.appid = o.objid;
+
 		def franchiseEm = em.lookup("vehicle_franchise_"+ o.vehicletype);
 		franchiseEm.find([objid: o.franchise.objid]).update(m);	
 	}

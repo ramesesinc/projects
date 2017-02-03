@@ -32,7 +32,7 @@
 			<key field="objid" target="appid" />
 		</complex>
 		
-		<complex name="infos" ref="vehicle_application_info" jointype="one-to-many">
+		<complex name="infos" ref="vehicle_application_info" jointype="one-to-many" required="false">
 			<key field="objid" target="appid" />
 		</complex>
 

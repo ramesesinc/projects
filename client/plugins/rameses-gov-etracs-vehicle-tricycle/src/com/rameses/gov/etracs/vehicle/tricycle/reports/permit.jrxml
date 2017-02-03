@@ -41,14 +41,14 @@
 	<field name="plateno" class="java.lang.String"/>
 	<field name="make" class="java.lang.String"/>
 	<field name="franchise.controlno" class="java.lang.String"/>
-	<field name="permit.orgtype" class="java.lang.String"/>
+	<field name="orgtype" class="java.lang.String"/>
 	<field name="appyear" class="java.lang.Number"/>
 	<field name="apptype" class="java.lang.String"/>
-	<field name="entity.age" class="java.lang.Number"/>
-	<field name="entity.gender" class="java.lang.String"/>
-	<field name="entity.civilstatus" class="java.lang.String"/>
+	<field name="owner.age" class="java.lang.Number"/>
+	<field name="owner.gender" class="java.lang.String"/>
+	<field name="owner.civilstatus" class="java.lang.String"/>
 	<field name="fees" class="java.lang.Object"/>
-	<field name="permit.permitno" class="java.lang.String"/>
+	<field name="permitno" class="java.lang.String"/>
 
 		<background>
 			<band height="0"  isSplitAllowed="true" >
@@ -99,7 +99,7 @@
 					<textElement textAlignment="Center">
 						<font pdfFontName="Helvetica" size="11" isBold="false"/>
 					</textElement>
-				<text><![CDATA[Republic of the Philippines]]></text>
+				<text><![CDATA[Republic of the Philippines1]]></text>
 				</staticText>
 				<staticText>
 					<reportElement
@@ -349,7 +349,7 @@
 					<textElement textAlignment="Center" verticalAlignment="Bottom" lineSpacing="Single">
 						<font pdfFontName="Helvetica-Bold" size="18" isBold="true" isUnderline="false"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[($F{permit.orgtype}? $F{permit.orgtype}+" ": "")+ "PERMIT"]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[($F{orgtype}? $F{orgtype}+" ": "")+ "PERMIT"]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement
@@ -423,7 +423,7 @@
 					<textElement verticalAlignment="Middle">
 						<font pdfFontName="Helvetica-Bold" size="12" isBold="true"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{permit.permitno}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{permitno}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement
@@ -513,7 +513,7 @@
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font pdfFontName="Helvetica" size="12" isBold="false"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{entity.age}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{owner.age}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement
@@ -543,7 +543,7 @@
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font pdfFontName="Helvetica" size="12" isBold="false"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[($F{entity.gender}=="M"? "MALE": ($F{entity.gender}=="F"? "FEMALE": $F{entity.gender}))]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[($F{owner.gender}=="M"? "MALE": ($F{owner.gender}=="F"? "FEMALE": $F{owner.gender}))]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement
@@ -573,7 +573,7 @@
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font pdfFontName="Helvetica" size="12" isBold="false"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{entity.civilstatus}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{owner.civilstatus}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement

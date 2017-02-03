@@ -1,6 +1,6 @@
 <schema adapter="vehicledb">
 	<element tablename="vehicle_application_tricycle" extends="vehicle_application">
-		<field name="objid" primary="true"/>
+		<field name="objid" primary="true" prefix="TRAPP"/>
 
 		<field name="plateno" caption="Plate No" searchable="true"  indexed="true"/>
 		<field name="engineno" caption="Engine No" searchable="true" indexed="true"/>
@@ -14,9 +14,5 @@
 		<field name="chassisno" caption="Chassis No"/>
 		<field name="sidecarcolor" caption="Color"/>
 		<field name="crname" caption="CR Name"/>
-
-		<complex name="task" ref="vehicle_application_tricycle_task" includefields="state,dtcreated,startdate,enddate,assignee.name">
-			<key field="taskid" target="objid" />
-		</complex>
 	</element>	
 </schema>

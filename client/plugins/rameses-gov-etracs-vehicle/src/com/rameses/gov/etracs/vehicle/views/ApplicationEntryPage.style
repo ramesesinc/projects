@@ -1,14 +1,11 @@
-"entity.*" [ entity.apptype.matches('RENEW|DROP') ] {
-    editable:false;
+"entity.*" [ entity.apptype.matches('RENEW|DROP') == true ] {
     enabled:false;
 }
 
-"entity.*" [ !entity.apptype.matches('RENEW|DROP') ] {
-    editable:true;
+"entity.*" [ entity.apptype.matches('RENEW|DROP') != true ] {
     enabled:true;
 }
 
-"entity.appyear" [ entity.apptype.matches('NEW') ] {
-    editable:false;
-    enabled:false;
+"entity.(appyear|appdate)" [ entity.txnmode != 'CAPTURE' ] {
+    enabled: false;
 }

@@ -1,4 +1,4 @@
-package com.rameses.gov.etracs.vehicle.tricycle.models;
+package com.rameses.gov.etracs.vehicle.models;
 
 import com.rameses.rcp.annotations.*;
 import com.rameses.rcp.common.*;
@@ -6,23 +6,25 @@ import com.rameses.osiris2.common.*;
 import com.rameses.osiris2.client.*;
 import com.rameses.seti2.models.*;
 
-public class VehicleTricyclePermitReport extends CrudReportModel {
+public class VehiclePermitReport extends CrudReportModel {
 
     @Service('VehiclePermitService') 
     def permitSvc; 
 
+    def permit;
+    
     def createPermit() {
-        entity.permit = permitSvc.create([ appid: entity.objid ]); 
+        permit = permitSvc.create([ appid: entity.objid ]); 
         return view();   
     } 
     
     def openPermit() {
-        entity.permit = permitSvc.open([ objid: entity.permit?.objid ]); 
+        permit = permitSvc.open([ objid: entity.permit?.objid ]);
         return view(); 
     }     
 
     public def getReportData() { 
-        return entity;
+        return permit;
     }
     
 }    

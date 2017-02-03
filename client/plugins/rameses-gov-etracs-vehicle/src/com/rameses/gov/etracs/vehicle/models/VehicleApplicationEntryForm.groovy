@@ -11,7 +11,7 @@ import com.rameses.osiris2.client.*;
 import com.rameses.gov.etracs.vehicle.models.*;
 import com.rameses.enterprise.models.*;
 
-public abstract class AbstractVehicleEntryForm extends PageFlowController {
+public class VehicleApplicationEntryForm extends PageFlowController {
     
     @Service("VehicleAssessmentService")
     def assessmentService;
@@ -19,14 +19,17 @@ public abstract class AbstractVehicleEntryForm extends PageFlowController {
     @Service("VehicleApplicationService")
     def applicationService;
 
-
     @FormTitle
     def formTitle;
     
+    def franchiseno;
     def ruleExecutor;
     def entity;
     def vehicletype;
     def editmode = "read";
+    
+    //this is temporarily added because during CHANGE_OWNER_UNIT,DROP 
+    def tempAppType;
     
     def apptypes = ["NEW","RENEW"];
     
@@ -41,15 +44,34 @@ public abstract class AbstractVehicleEntryForm extends PageFlowController {
         entity.vehicletype = vehicletype;
     }
 
+    void create() {
+        setUp();
+        entity = applicationService.init(entity);
+        editmode = 'create';
+    }
+    
+    //called by all except new
+    void open() {
+        if(!entity) throw new Exception("Call the setUp method in ApplicationForm first. Check start action");
+        entity.franchiseno = franchiseno;
+        entity = applicationService.init( entity );
+        tempAppType = entity.apptype;
+        editmode = 'read';
+    }
+    
     void save() {
         entity = applicationService.create( entity );
     }
     
     void assess() {
+        //set the apptype in case it is null;
+        if(!entity.apptype) {
+            entity.apptype = tempAppType;
+        };
+        
         def p = [:];
         p.putAll( entity );
         p.defaultinfos = p.remove("infos");
-
         def r = ruleExecutor.execute(p);
         if( !r) {
             throw new BreakException();
@@ -73,7 +95,6 @@ public abstract class AbstractVehicleEntryForm extends PageFlowController {
             entity.fees.addAll( r.items );
             entity.amount = entity.fees.sum{ it.amount };
         }
-
         feeListModel.reload();
         infoListModel.reload();
     }
@@ -103,23 +124,25 @@ public abstract class AbstractVehicleEntryForm extends PageFlowController {
         Modal.show( "show_trackingno", [trackingno: "51010:" + entity.appno ]);
     }
 
-    public Object printApplication() {
-        return null; 
-    }
-    
-    public Object printAssessment() {
-        return null; 
-    }
-    
     boolean getFranchiseControlEditable() {
         if( entity.txnmode == 'CAPTURE' ) return true;
-        return entity.apptype.matches( 'NEW|CHANGE_OWNER_UNIT' );
+        if( entity.apptype == 'NEW') return true;    
+        return false;
     }
     
     boolean getOwnerEditable() {
         if( entity.txnmode == 'CAPTURE' ) return true;
-        return entity.apptype.matches( 'NEW|CHANGE_OWNER_UNIT' );
+        if( entity.apptype.matches( 'NEW|CHANGE_OWNER_UNIT' ) ) return true;
+        return false;
     }
     
+    //Print application and assessment
+    def printApplication() {
+        return Inv.lookupOpener('vehicle_application_' +  vehicletype +  ':print', [entity: entity]); 
+    }
+    
+    def printAssessment() {
+        return Inv.lookupOpener('vehicle_assessment_' + vehicletype + ':print', [entity: entity]); 
+    }
     
 }

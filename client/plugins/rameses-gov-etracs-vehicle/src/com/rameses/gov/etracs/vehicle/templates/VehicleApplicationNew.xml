@@ -1,5 +1,5 @@
 <workunit>
-    <code class="com.rameses.gov.etracs.vehicle.models.NewVehicleApplicationForm" />
+    <code class="com.rameses.gov.etracs.vehicle.models.VehicleApplicationEntryForm" />
     <pageflow>
         <start>
             <transition to="initial" action="create"/>

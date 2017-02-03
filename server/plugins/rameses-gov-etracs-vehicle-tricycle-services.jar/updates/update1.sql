@@ -11,11 +11,9 @@ CREATE TABLE `vehicle_application_tricycle` (
   `sidecarno` varchar(50) DEFAULT NULL,
   `bodyno` varchar(50) DEFAULT NULL,
   `sidecarcolor` varchar(50) DEFAULT NULL,
-  `crname` varchar(255) DEFAULT NULL,
-  `taskid` varchar(50) DEFAULT NULL,
+  `crname` varchar(255) DEFAULT NULL
   PRIMARY KEY (`objid`),
-  CONSTRAINT `fk_tricycle_application_vehicle` FOREIGN KEY (`objid`) REFERENCES `vehicle_application` (`objid`),
-  CONSTRAINT `fk_tricycle_application_task` FOREIGN KEY (`taskid`) REFERENCES `vehicle_application_tricycle_task` (`taskid`)
+  CONSTRAINT `fk_tricycle_application_vehicle` FOREIGN KEY (`objid`) REFERENCES `vehicle_application` (`objid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO vehicle_application_tricycle 
@@ -23,8 +21,6 @@ SELECT appid, plateno, engineno, chassisno, make, model, color, sidecarno,
 bodyno, sidecarcolor, crname, NULL FROM vehicle_tricycle
 WHERE NOT(appid IS NULL); 
 
-UPDATE vehicle_application_tricycle t
-SET t.taskid = (SELECT taskid FROM vehicle_application_tricycle_task WHERE refid=t.objid AND enddate IS NULL LIMIT 1); 
 
 INSERT INTO vehicle_application_tricycle (objid)
 SELECT objid FROM vehicle_application WHERE objid NOT IN (SELECT objid FROM vehicle_application_tricycle);

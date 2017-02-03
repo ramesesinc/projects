@@ -11,7 +11,7 @@ import com.rameses.osiris2.client.*;
 import com.rameses.gov.etracs.vehicle.models.*;
 import com.rameses.enterprise.models.*;
 
-public class VehicleCaptureForm extends AbstractVehicleEntryForm {
+public class VehicleCaptureForm extends VehicleApplicationEntryForm {
     
     def selectedItem;
     def dataService;

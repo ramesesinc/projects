@@ -20,9 +20,6 @@ class VehicleFranchiseService {
 	@Service("DateService")
 	def dateSvc;
 
-	@Service("RuleExecutorService")
-	def ruleSvc;
-
 	@Env
 	def env;
 
@@ -88,5 +85,57 @@ class VehicleFranchiseService {
 	}
 
 
-	
+	/**************************************************
+	* update the franchise info only if current year
+	***************************************************/
+	@ProxyMethod
+	public void updateFranchiseInfo( def o, def state ) {
+		def m = [:];
+		def str = "objid|appno|appdate|txnmode|appyear|vehicletype|controlid|filedby.*|dtfiled|particulars|billexpirydate|fees|infos|requirements|franchise.*|txndate";
+		o.each { k,v->
+			if(!k.matches( str )) {
+				m.put(k, v);
+			}
+		};
+
+		//update the other infos here...
+		m.activeyear = o.appyear;
+		m.state = state;
+		m.appid = o.objid;
+
+		def franchiseEm = em.lookup("vehicle_franchise_"+ o.vehicletype);
+		franchiseEm.find([objid: o.franchise.objid]).update(m);	
+	}
+
+	@ProxyMethod
+	public void nullifyFranchiseInfo( def o ) {
+		if(!o.controlid) throw new Exception("controlid is required in nullifyFranchiseInfo!");
+		if(!o.vehicletype) throw new Exception("vehicletype is required in nullifyFranchiseInfo!");
+		def m = [:];
+		m.state = 'OPEN';
+		m.owner = null;
+		m.barangay = null;
+		m.appid = null;
+		m.activeyear = null;
+		def franchiseEm = em.lookup("vehicle_franchise_"+ o.vehicletype);
+		def str = "objid|state|cluster|controlno|vehicletype|expirydate|dtregistered|activeyear|owner.*|barangay.*";
+		def g = franchiseEm.find( [objid: o.controlid] ).first();
+		g.each { k,v->
+			if( !k.matches(str)) {
+				m.put(k, null);
+			}
+		};
+		franchiseEm.find([objid: o.controlid]).update(m);	
+	}
+
+	@ProxyMethod
+	public void updateFranchiseState( def o ) {
+		if(!o.state) throw new Exception("state is required in updateFranchiseState !");
+		if(!o.controlid) throw new Exception("controlid is required in updateFranchiseState!");
+		if(!o.vehicletype) throw new Exception("vehicletype is required in updateFranchiseState!");
+		if(!o.appid) throw new Exception("appid is required in updateFranchiseState!");
+		def franchiseEm = em.lookup("vehicle_franchise_"+ o.vehicletype);
+		franchiseEm.find([objid: o.controlid]).update([state: o.state, appid: o.appid]);	
+	}
+
 }

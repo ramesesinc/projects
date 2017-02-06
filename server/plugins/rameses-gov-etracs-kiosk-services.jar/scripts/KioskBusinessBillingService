@@ -13,6 +13,7 @@ public class KioskBusinessBillingService  {
 	@ProxyMethod
 	public def getBilling( def o ) {
 		def b = svc.findInfo([appno: o.code]);
+		if( !b) throw new Exception("Cannot find business code " + o.code);
 		def i = svc.getBillingForPayment( [applicationid: b.applicationid ] );
 		b.putAll(i);
 		return b;

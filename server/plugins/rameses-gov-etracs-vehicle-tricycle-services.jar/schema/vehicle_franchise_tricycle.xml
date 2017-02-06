@@ -9,6 +9,7 @@
 		<field name="make"  indexed="true"/>
 		<field name="model"  indexed="true"/>
 		<field name="color" />
+		<field name="sidecarcolor" />
 		<field name="crname" />
 	</element>
 </schema>

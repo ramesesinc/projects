@@ -1,0 +1,19 @@
+<workunit extends="workunits/show_trackingno.xml">
+    <invokers>
+        <invoker type="show_vehicle_trackingno" caption="Show Tracking No" target="popup" action="viewReport"/>      
+    </invokers>             
+    <code>
+    <![CDATA[ 
+        import com.rameses.enterprise.models.*;
+        class VehicleApplicationReport extends ShowTrackingNo {
+
+            def appno;
+
+            public def getReportData() { 
+                info = [trackingno : "51010:" + appno ];
+                return info;
+            }
+        }    
+    ]]>    
+    </code>
+</workunit>

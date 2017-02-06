@@ -195,6 +195,7 @@ class WorkflowTaskService  {
             //find the first open taskid based on refid
             def pp = [refid: t.refid];
             if( t.state ) pp.state = t.state;
+            //em.debug = true;
             def tt = em.select("taskid").find( pp ).where( "NOT(state IN ('start','end')) AND enddate IS NULL").first();
             if(!tt) throw new Exception("Error in signalling " + t.processname + ". refid does not exist");
             t.taskid = tt.taskid;

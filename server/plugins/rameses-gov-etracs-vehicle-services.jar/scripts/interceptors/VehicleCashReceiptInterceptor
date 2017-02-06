@@ -67,9 +67,7 @@ class VehicleCashReceiptInterceptor {
 			}
 			m.items << it;
 		}
-
 		pmtSvc.postPayment( m );
-
 		/*******************************************************************
 		* signal after
 		*******************************************************************/

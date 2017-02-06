@@ -60,7 +60,7 @@ class VehiclePermitService {
 		permit.issuedby = [objid: env.USERID, name: env.FULLNAME];
 		permit.permitno = permitno;
 		vperm_db.create( permit ); 
-		return [objid: permit.objid]; 
+		return open( [objid: permit.objid ]);
 	}
 
 	@ProxyMethod 

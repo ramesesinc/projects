@@ -28,10 +28,8 @@ public class VehicleApplicationEntryForm extends PageFlowController {
     def vehicletype;
     def editmode = "read";
     
-    //this is temporarily added because during CHANGE_OWNER_UNIT,DROP 
-    def tempAppType;
-    
     def apptypes = ["NEW","RENEW"];
+    def appType;
     
     void setUp() {
         formTitle = workunit.info.workunit_properties.title;
@@ -50,12 +48,20 @@ public class VehicleApplicationEntryForm extends PageFlowController {
         editmode = 'create';
     }
     
+    @PropertyChangeListener
+    def listeners = [
+        "appType" : { o->
+            if( entity.txnmode == "CAPTURE"  ) {
+                entity.apptype = o;
+            }
+        }
+    ];
+    
     //called by all except new
     void open() {
         if(!entity) throw new Exception("Call the setUp method in ApplicationForm first. Check start action");
         entity.franchiseno = franchiseno;
         entity = applicationService.init( entity );
-        tempAppType = entity.apptype;
         editmode = 'read';
     }
     
@@ -64,11 +70,6 @@ public class VehicleApplicationEntryForm extends PageFlowController {
     }
     
     void assess() {
-        //set the apptype in case it is null;
-        if(!entity.apptype) {
-            entity.apptype = tempAppType;
-        };
-        
         def p = [:];
         p.putAll( entity );
         p.defaultinfos = p.remove("infos");
@@ -120,9 +121,6 @@ public class VehicleApplicationEntryForm extends PageFlowController {
         return Inv.lookupOpener( "vehicle_franchise_" + vehicletype + ":available:lookup" );
     }
 
-    void viewTrackingno() {
-        Modal.show( "show_trackingno", [trackingno: "51010:" + entity.appno ]);
-    }
 
     boolean getFranchiseControlEditable() {
         if( entity.txnmode == 'CAPTURE' ) return true;
@@ -139,6 +137,10 @@ public class VehicleApplicationEntryForm extends PageFlowController {
     //Print application and assessment
     def printApplication() {
         return Inv.lookupOpener('vehicle_application_' +  vehicletype +  ':print', [entity: entity]); 
+    }
+    
+    def printTrackingno() {
+        Modal.show( "show_vehicle_trackingno", [appno: entity.appno] );
     }
     
     def printAssessment() {

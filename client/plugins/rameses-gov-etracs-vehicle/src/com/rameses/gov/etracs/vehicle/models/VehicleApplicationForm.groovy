@@ -94,10 +94,7 @@ public class VehicleApplicationForm extends WorkflowTaskModel {
     }
     
     void viewTrackingno() {
-        def info = [:];
-        info.trackingno = "51010:" + entity.appno;
-        info.message = "This is a new message";
-        Modal.show( "show_trackingno", [info: info] );
+        Modal.show( "show_vehicle_trackingno", [appno: entity.appno] );
     }
  
     boolean isCanIssuePermit() {

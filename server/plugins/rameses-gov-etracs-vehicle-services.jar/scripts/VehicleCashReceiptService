@@ -72,9 +72,18 @@ class VehicleCashReceiptService {
 		**************************************************************************/
 		def entity = [:];
 		entity.info = [appid: app.objid, franchiseid: app.controlid, vehicletype: app.vehicletype ] ;
-		entity.payer = app.owner;
-		entity.paidby = app.owner.name;
-		entity.paidbyaddress = app.owner.address?.text; 	
+
+		//if there is already an owner in the franchise, use that. If there is no owner yet like NEW, then use app.owner
+		if(fran.owner?.objid ) {
+			entity.payer = fran.owner
+			entity.paidby = fran.owner.name;
+			entity.paidbyaddress = fran.owner.address?.text; 	
+		}
+		else {
+			entity.payer = app.owner
+			entity.paidby = app.owner.name;
+			entity.paidbyaddress = app.owner.address?.text; 	
+		}
 		entity.particulars = fran.controlno;
 		entity.remarks = "Franchise No." + fran.controlno;
 		entity.items = res.billitems.collect{ it.toMap() };

@@ -71,4 +71,6 @@ WHERE NOT(controlid IS NULL);
 INSERT INTO vehicle_franchise_tricycle (objid)
 SELECT objid FROM vehicle_franchise WHERE objid NOT IN (SELECT objid FROM vehicle_franchise_tricycle );
 
-ALTER TABLE `vehicledb`.`vehicle_application` DROP COLUMN `vehicleid`
+ALTER TABLE `vehicledb`.`vehicle_application` DROP COLUMN `vehicleid`;
+
+DROP TABLE vehicle_tricycle;

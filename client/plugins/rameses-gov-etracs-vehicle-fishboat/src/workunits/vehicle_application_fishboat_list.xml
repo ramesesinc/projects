@@ -4,8 +4,9 @@
     
     <invokers>
         <invoker folderid="/home/vehicle/fishboat" action="init" index="-1"
-            cols="app.appno,app.apptype,app.owner.name,app.vehicle.acctno,app.vehicle.plateno,app.vehicle.engineno,app.vehicle.bodyno,startdate,dtcreated,assignee.name" 
-            caption="Fishboat Application List"/>
+            cols="app.franchise.controlno,app.appno,app.apptype,app.appdate,app.owner.name,app.vesselname" 
+            caption="Fishboat Application List" 
+            role="INFO,SHARED"/>
     </invokers>
     
 </workunit>

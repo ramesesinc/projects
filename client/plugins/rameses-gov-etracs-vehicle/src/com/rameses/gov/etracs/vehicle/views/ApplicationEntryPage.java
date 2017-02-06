@@ -92,8 +92,9 @@ public class ApplicationEntryPage extends javax.swing.JPanel implements UIConten
 
         xComboBox1.setCaption("App Type");
         xComboBox1.setItems("apptypes");
-        xComboBox1.setName("entity.apptype"); // NOI18N
+        xComboBox1.setName("appType"); // NOI18N
         xComboBox1.setPreferredSize(new java.awt.Dimension(150, 20));
+        xComboBox1.setRequired(true);
         xComboBox1.setVisibleWhen("#{ entity.txnmode == 'CAPTURE'  }");
         xFormPanel3.add(xComboBox1);
 

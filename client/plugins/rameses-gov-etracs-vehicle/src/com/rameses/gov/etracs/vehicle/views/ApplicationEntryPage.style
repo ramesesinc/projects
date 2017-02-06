@@ -9,3 +9,7 @@
 "entity.(appyear|appdate)" [ entity.txnmode != 'CAPTURE' ] {
     enabled: false;
 }
+
+"entity.particulars" [1==1] {
+    enabled: true;
+}

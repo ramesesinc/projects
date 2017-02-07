@@ -33,7 +33,7 @@ public class CashReceiptBarcode {
                 throw new Exception("There is no handler found for requested entry");
             
             def e = barcodeSvc.init( [barcodeid: barcodeid, prefix: prefix] );
-            def m = [barcodeid: barcodeid];
+            def m = [barcodeid: barcodeid, prefix: prefix];
             m.entity = e;
              
             return InvokerUtil.lookupOpener( "cashreceipt:barcode:"+prefix, m);

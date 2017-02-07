@@ -1,8 +1,8 @@
 <schema>
 
 	<element tablename="sys_ruleset">
-		<field name="name" primary="true"/>
-		<field name="title" required="true"/>
+		<field name="name" primary="true" editable="false"/>
+		<field name="title" required="true" searchable="true" indexed="true"/>
 		<field name="packagename" required="true"/>
 		<field name="domain" required="true" indexed="true"/>
 		<field name="role" required="true" indexed="true"/>
@@ -11,6 +11,17 @@
 		<complex name="groups" ref="sys_rulegroup" jointype="one-to-many" orderBy="sortorder">
 			<key field="name" target="ruleset"/>
 		</complex>	
+
+		<!--
+		<complex name="facts" ref="sys_ruleset_fact" jointype="one-to-many" lazy="true">
+			<key field="objid" target="ruleset"/>
+		</complex>	
+
+		<complex name="actions" ref="sys_ruleset_actiondef" jointype="one-to-many" lazy="true">
+			<key field="objid" target="ruleset"/>
+		</complex>	
+		-->
+		
 	</element>	
 
 </schema>	

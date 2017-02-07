@@ -27,6 +27,7 @@ SELECT
   b.businessaddress AS business_address_text,
   CASE ba.type
     WHEN 'RENEWAL' THEN 'RENEW'
+    WHEN 'LATERENEWAL' THEN 'RENEW'
     ELSE ba.type
   END as apptype,
   ba.objid AS applicationid, 
@@ -62,6 +63,7 @@ select
    case 
       when ba.type='ADDLOB' then 'NEW'  
       when ba.type='RENEWAL' then 'RENEW'
+      when ba.type='LATERENEWAL' then 'RENEW'
       when ba.type='RETIRELOB' then 'RETIRE'
       else ba.type
    end AS assessmenttype, 
@@ -92,6 +94,7 @@ select * from (
          CASE 
             WHEN br.applicationtype='ADD LINE' THEN 'NEW' 
             WHEN br.applicationtype='RENEWAL' THEN 'RENEW'
+            WHEN br.applicationtype='LATERENEWAL' THEN 'RENEW'
             ELSE br.applicationType 
          END AS assessmenttype, 
          b.objid AS businessid, 
@@ -130,6 +133,7 @@ select * from (
     case 
       when ba.type='ADDLOB' then 'NEW'  
       when ba.type='RENEWAL' then 'RENEW'
+      when ba.type='LATERENEWAL' then 'RENEW'
       else ba.type
     end AS assessmenttype,
     case 

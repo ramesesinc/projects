@@ -2,7 +2,13 @@
 	if( constraint.varname ) {
 		out.print( constraint.varname + ':');
 	}
-	out.print( constraint.fieldname );
+	if( !constraint.field.vardatatype || constraint.field.vardatatype == "string" ) {
+		out.print( constraint.field.name );
+	}
+	else {
+		out.print( constraint.field.name  + "." + constraint.field.lookupkey );
+	}
+	
 	if( constraint.operator?.symbol ) {
 		out.print( " " + constraint.operator.symbol + " " );
 		if( constraint.usevar == 1 ) {

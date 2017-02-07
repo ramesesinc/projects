@@ -8,6 +8,7 @@
 		<field name="parent_objid" />
 		<field name="parent_orgclass" />
 		<field name="root" />
+		<field name="txncode" caption="Org TxnCode"/>
 	</element>
 
 </schema>

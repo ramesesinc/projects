@@ -1,0 +1,21 @@
+<folders>
+    <folder id="home">
+        <folder id="vehicle" caption="Vehicle" icon="home/icons/vehicle.png">
+            <folder id="tricycle" caption="MTOP" icon="home/icons/tricycle.png" index="1"/>
+        </folder>    
+    </folder>
+    <folder id="explorer">
+        <folder id="master" caption="Master">
+            <folder id="vehicle" caption="Vehicle Registration">
+                <folder id="tricycle" caption="MTOP"/>
+            </folder>        
+        </folder>   
+    </folder>
+    <folder id="menu">
+        <folder id="master" caption="Master">
+            <folder id="vehicle" caption="Vehicle Registration">
+                <folder id="tricycle" caption="MTOP"/>
+            </folder>        
+        </folder>            
+    </folder>
+</folders>    

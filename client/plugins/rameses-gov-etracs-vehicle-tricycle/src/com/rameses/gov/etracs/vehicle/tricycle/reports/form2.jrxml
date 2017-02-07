@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="form2"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Portrait"
+		 pageWidth="595"
+		 pageHeight="842"
+		 columnWidth="535"
+		 columnSpacing="0"
+		 leftMargin="30"
+		 rightMargin="30"
+		 topMargin="20"
+		 bottomMargin="20"
+		 whenNoDataType="NoPages"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false">
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+
+
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="771"  isSplitAllowed="true" >
+				<staticText>
+					<reportElement
+						x="41"
+						y="14"
+						width="457"
+						height="59"
+						key="staticText-1"/>
+					<box></box>
+					<textElement textAlignment="Center">
+						<font pdfFontName="Helvetica-Bold" size="12" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Republic of the Philippines
+PROVINCE OF COMPOSTELA VALLEY
+MUNICIPALITY OF NABUNTURAN
+OFFICE OF THE MAYOR]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="42"
+						y="86"
+						width="276"
+						height="16"
+						key="staticText-2"/>
+					<box></box>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="12" isBold="true" isUnderline="true"/>
+					</textElement>
+				<text><![CDATA[MOTORUZED TRICYCLE OPERATOR PERMIT]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="41"
+						y="111"
+						width="269"
+						height="33"
+						key="staticText-3"/>
+					<box></box>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="12" isBold="true"/>
+					</textElement>
+				<text><![CDATA[APPLICANT:
+ADDRESS: Purok 4 Cabidianan, Comval]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="41"
+						y="158"
+						width="457"
+						height="61"
+						key="staticText-4"/>
+					<box></box>
+					<textElement textAlignment="Center">
+						<font size="12"/>
+					</textElement>
+				<text><![CDATA[Route/Zone are of operation: *** WITHIN POBLACION ONLY EXCEPT ALONG 
+NATIONAL HIGHWAY** and vice versa *** with extended route in 
+accordance with Revised Code of 
+General Ordinace of 2007*** and Amendatory Ordinance No. 2009-01]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="42"
+						y="226"
+						width="456"
+						height="58"
+						key="staticText-5"/>
+					<box></box>
+					<textElement>
+						<font size="12"/>
+					</textElement>
+				<text><![CDATA[Pet your application and upon recommendation of the office concerned and by the power vested in me under Revised Revenue code of Nabunturan and pertinent ordinances, you are herby granted authority to engage/operate Motorcycle got Hire (MCH) Permit in the Municipality of Nabunturan.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="41"
+						y="383"
+						width="457"
+						height="348"
+						key="staticText-6"/>
+					<box></box>
+					<textElement>
+						<font size="12"/>
+					</textElement>
+				<text><![CDATA[1. Applicant shall comply with the policies, rules and regulations precribed by the SB for MCH operation and with such order, directions or guidelines as may be promulgated from time to time.
+2. This unit/s herein authorized shall be regitered under MCH denomination with the Nabunturan, Comval Agency of the Land Transportation Office within thirty (30) days counted from receipt of this authority.
+3. This authority shall be valid for three (3 years) counted from the date og issuance.
+4. Applicant shall not after or change any entry on this aunthority, not after or changes the colors, scheme prescribed by the SB adoption in the route/zone/are of operation.
+5. Applicat shall provisionally charge and collect P_______________ per passenger trip within Poblacion, subdivision, barangays,zone or route as here above specified.
+6. Applicant shall pay to the Municipal Government on/or before january 20th day EVERY YEAR CORRESPONDING REGULATION FEES, computed at the rate applicable to the registered for the current year for which the said fees are paid.
+7.Failure of application to comply with the foregoing requirements or with related rules and regulations shall be considered sufficient cause for the Municipal Government to cancel and revoke this authority.
+
+ENTERED, DECEMBER 3, 2012_Nabunturan, Compostela Valley, Province]]></text>
+				</staticText>
+			</band>
+		</title>
+		<pageHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</summary>
+</jasperReport>

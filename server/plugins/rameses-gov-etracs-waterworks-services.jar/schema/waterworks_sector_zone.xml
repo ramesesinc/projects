@@ -2,7 +2,7 @@
 
 	<element tablename="waterworks_sector_zone">
 		<field name="objid" primary="true" prefix="WSZ"/>
-		<field name="code" caption="Zone Code"/>
+		<field name="code" caption="Zone Code" indexed="true"/>
 		<field name="description" caption="Zone Description"/>
 		<field name="sectorid"/>
 

@@ -7,6 +7,8 @@ import com.rameses.rules.common.*;
 
 public class DueDate extends DateFact {
     
+	String name;
+
 	public DueDate(String s) {
         super(s);
     }

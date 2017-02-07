@@ -1,0 +1,12 @@
+<workunit>
+    <invokers>
+        <invoker type="ask-infos" caption="Ask Info" action="init" target="popup"/>
+        <invoker type="formActions" caption="Cancel" action="doCancel"/>
+        <invoker type="formActions" caption="Back" action="doBack" visibleWhen="#{hasBack == true}"/>
+        <invoker type="formActions" caption="Next" action="doNext" />
+    </invokers>
+    <code class="com.rameses.enterprise.models.AskVariableInfoModel"/>
+    <pages>
+        <page template="com.rameses.enterprise.views.AskVariableInfoPage"/>
+    </pages>
+</workunit>

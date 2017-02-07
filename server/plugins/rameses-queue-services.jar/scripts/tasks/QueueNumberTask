@@ -1,0 +1,45 @@
+import com.rameses.annotations.*; 
+
+class QueueNumberTask {
+
+	@Service('DateService')
+	def dateSvc; 
+
+	@DataContext('queue_section') 
+	def qs; 
+
+	@DataContext('queue_number') 
+	def qn; 
+
+	def YMD = new java.text.SimpleDateFormat('yyyy-MM-dd'); 
+
+	//@Schedule(interval=10) 
+	public void processResetCurrentSeries0( task ) {
+		if ( !task.properties.loaded ) {
+			resetCurrentSeriesImpl(); 
+			task.properties.loaded = true;  	
+		} 
+	}
+
+	//@Schedule(interval=60) 
+	public void processResetCurrentSeries1( task ) {
+		resetCurrentSeriesImpl(); 
+	}	
+
+	void resetCurrentSeriesImpl() {
+		def serverdate = dateSvc.getServerDate(); 
+		def rundate = serverdate; 
+		if ( rundate instanceof Date ) {
+			rundate = YMD.format( rundate ); 
+		}
+
+		def fdate = 
+
+		qn.removeExpiredTickets([ rundate: rundate ]); 
+
+		def sections = qs.where(' ( dtexpiry IS NULL or dtexpiry < :rundate ) ', [rundate: rundate]).list(); 
+		sections.each{ o-> 
+			qs.find([ objid: o.objid ]).update([ currentseries: 0, dtexpiry: serverdate ]); 
+		}
+	}
+}

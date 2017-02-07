@@ -2,7 +2,6 @@ import com.rameses.annotations.*;
 
 class WaterworksStuboutService {
 	
-
     @DataContext('waterworks_account') 
     def waterworks_account; 
 
@@ -54,7 +53,9 @@ class WaterworksStuboutService {
         stubout_node.find([ acctid: o.acctid ]).update( [acctid: "{NULL}" ] );     
 
         stubout_node.find([ objid: o.objid ]).update([ acctid: o.acctid ]);  
-        waterworks_account.find([ objid: o.acctid ]).update([ stuboutnodeid: o.objid ]);             
+        
+        def snode = stubout_node.find([ objid: o.objid ]).first(); 
+        waterworks_account.find([ objid: o.acctid ]).update([ stuboutnodeid: snode.objid, stuboutid: snode.stuboutid ]);             
     }
 
 

@@ -12,36 +12,16 @@ class EntityService
 	@Service('PersistenceService')
 	def persistenceSvc;	
 
-	@ActiveDB('entity')
-	def entityEm 
-
-
 	@ProxyMethod
 	public def open( o ) { 
 		def type = em.select('type').find([ objid: o.objid ]).val(); 
 		if (!type || type == 'null') type = o.type 
-		o._schemaname = 'entity' + type.toString().toLowerCase();
-		println 'o._schemaname  -> ' + o._schemaname 
+		o._schemaname = 'entity' + type?.toString().toLowerCase();
 		return persistenceSvc.read( o ); 
 	} 
 
 	@ProxyMethod
 	public def save( o ) { 
-		def entity = entityEm.findEntity(o)
-		if (entity){
-			if ('individual'.equalsIgnoreCase(o.type)){
-				def individual = entityEm.findIndividual(o)	
-				if (!individual) entityEm.insertIndividual(o)
-			}
-			else if ('juridical'.equalsIgnoreCase(o.type)){
-				def juridical = entityEm.findJuridical(o)	
-				if (!juridical) entityEm.insertJuridical(o)
-			}
-			else if ('multiple'.equalsIgnoreCase(o.type)){
-				def multiple = entityEm.findMultiple(o)	
-				if (!multiple) entityEm.insertMultiple(o)
-			}
-		}
 		o._schemaname = 'entity' + o.type.toString().toLowerCase(); 
 		return persistenceSvc.save( o ); 
 	} 

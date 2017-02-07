@@ -1,13 +1,21 @@
 [getList]
-select * from ( 
-	select distinct cg.* 
-	from collectiongroup cg 
-		left join collectiongroup_revenueitem cgr on cg.objid=cgr.collectiongroupid 
-		left join itemaccount ia on cgr.revenueitemid=ia.objid 
-	where cg.name like $P{searchtext} ${filter} 
-)a 
-order by a.name 
-
+select cg.* 
+from ( 
+	select objid as collectiongroupid 
+	from collectiongroup 
+	where name like $P{searchtext}  
+	union 
+	select objid as collectiongroupid 
+	from collectiongroup 
+	where org_objid like $P{orgid} 
+	union 
+	select cgi.collectiongroupid 
+	from itemaccount ia 
+		inner join collectiongroup_revenueitem cgi on ia.objid=cgi.revenueitemid 
+	where ia.fund_objid like $P{fundid} 
+)xx1, collectiongroup cg 
+where cg.objid=xx1.collectiongroupid 
+order by cg.name 
 
 [deleteRevenueItems]
 delete from collectiongroup_revenueitem where collectiongroupid=$P{objid} 

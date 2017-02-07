@@ -36,7 +36,7 @@ public class LiquidationCollectionSummaryMonitorQuery extends javax.swing.JPanel
         filler2 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(20, 0), new java.awt.Dimension(0, 0));
         xButton1 = new com.rameses.rcp.control.XButton();
 
-        setBorder(javax.swing.BorderFactory.createCompoundBorder(new com.rameses.rcp.control.border.XEtchedBorder(), javax.swing.BorderFactory.createEmptyBorder(10, 5, 10, 5)));
+        setBorder(javax.swing.BorderFactory.createCompoundBorder(null, javax.swing.BorderFactory.createEmptyBorder(10, 5, 10, 5)));
         setLayout(new com.rameses.rcp.control.layout.XLayout());
 
         xLabel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 10));

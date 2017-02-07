@@ -101,10 +101,21 @@ WHERE p.parentid=$P{objid}
 ORDER BY ad.sortorder
 
 [findAllVarsByType]
-SELECT var.objid, var.varname AS name, var.datatype
+SELECT objid, name, datatype, pos 
+FROM
+(
+SELECT var.objid, var.varname AS name, var.datatype, var.pos 
 FROM sys_rule_condition_var var
 INNER JOIN sys_rule_condition cond ON var.parentid=cond.objid
 WHERE cond.parentid=$P{ruleid}
+UNION 
+SELECT var.objid, var.varname AS NAME, fact.factsuperclass AS datatype, var.pos
+FROM sys_rule_condition_var var
+INNER JOIN sys_rule_condition cond ON var.parentid=cond.objid
+LEFT JOIN sys_rule_fact fact ON var.datatype=fact.factclass  
+WHERE cond.parentid=$P{ruleid} AND NOT(fact.factsuperclass IS NULL)
+) var
+WHERE NOT(var.objid IS NULL)
 ${filter}
 ORDER BY var.pos
 

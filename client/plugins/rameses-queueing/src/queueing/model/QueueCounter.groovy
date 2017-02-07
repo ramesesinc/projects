@@ -35,14 +35,13 @@ class QueueCounter {
         }
     ] as BasicListModel;
 
-    def doOk() {
+    def doOk() { 
         if( mode == "create") {
             svc.create( entity );
-        }
-        else {
+        } else {
             svc.update( entity );
         }
-        handler(entity);
+        handler(entity); 
         return "_close";
     }
     
@@ -55,7 +54,9 @@ class QueueCounter {
             if( entity.sections.find{ it.objid == o.objid } )
                 throw new Exception("Section already added");
                 
-            if( mode != "create" ) {
+            if ( mode == 'create' ) {
+                entity.sections << o; 
+            } else {
                 def resp = svc.addSection([ sectionid: o.objid ]);
                 if ( resp ) entity.sections.add( resp );
             } 
@@ -65,18 +66,22 @@ class QueueCounter {
     }
     
     def removeSection() {
-        if(!selectedItem) return null;
-        if( mode != "create" ) {
+        if(!selectedItem) return null; 
+        if ( mode != 'create' ) {
             svc.removeSection( [counterid: entity.objid, sectionid: selectedItem.objid] );
         }
-        entity.sections.remove(selectedItem);
+        
+        def o = entity.sections.find{ it.objid==selectedItem.objid } 
+        if ( o ) entity.sections.remove( o ); 
+        
         itemListModel.reload();
     }
     
     void updateName() {
         def x = MsgBox.prompt("Enter Counter Name");
-        if(!x) return;
-        svc.update( [objid:entity.objid, code:x ] );
+        if ( !x ) return; 
+        
+        svc.update([ objid:entity.objid, code:x ]); 
         entity.code = x;
     }
     

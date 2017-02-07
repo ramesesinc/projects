@@ -27,10 +27,7 @@ public class UserQueueServingPage extends javax.swing.JPanel {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        jLabel2 = new javax.swing.JLabel();
-        xLabel3 = new com.rameses.rcp.control.XLabel();
-        xLabel2 = new com.rameses.rcp.control.XLabel();
-        xLabel1 = new com.rameses.rcp.control.XLabel();
+        userQueueServingHeader1 = new queueing.view.UserQueueServingHeader();
         jPanel3 = new javax.swing.JPanel();
         filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
         xButton1 = new com.rameses.rcp.control.XButton();
@@ -38,30 +35,15 @@ public class UserQueueServingPage extends javax.swing.JPanel {
         xButton2 = new com.rameses.rcp.control.XButton();
         filler4 = new javax.swing.Box.Filler(new java.awt.Dimension(5, 0), new java.awt.Dimension(5, 0), new java.awt.Dimension(5, 32767));
         xButton3 = new com.rameses.rcp.control.XButton();
+        filler5 = new javax.swing.Box.Filler(new java.awt.Dimension(15, 0), new java.awt.Dimension(15, 0), new java.awt.Dimension(5, 32767));
+        xButton4 = new com.rameses.rcp.control.XButton();
         filler2 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
 
         setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
         setLayout(new java.awt.BorderLayout());
 
         jPanel1.setLayout(new com.rameses.rcp.control.layout.YLayout());
-
-        jLabel2.setFont(new java.awt.Font("SansSerif", 1, 18)); // NOI18N
-        jLabel2.setForeground(new java.awt.Color(153, 51, 0));
-        jLabel2.setText("Now Serving");
-        jPanel1.add(jLabel2);
-
-        xLabel3.setExpression("#{serveditem.groupname}");
-        jPanel1.add(xLabel3);
-
-        xLabel2.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 10, 0));
-        xLabel2.setExpression("#{serveditem.title}");
-        jPanel1.add(xLabel2);
-
-        xLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        xLabel1.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)), javax.swing.BorderFactory.createEmptyBorder(2, 2, 2, 2)));
-        xLabel1.setExpression("#{serveditem.currentnumber}");
-        xLabel1.setFont(new java.awt.Font("SansSerif", 1, 36)); // NOI18N
-        jPanel1.add(xLabel1);
+        jPanel1.add(userQueueServingHeader1);
 
         jPanel3.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 0, 0, 0));
         jPanel3.setLayout(new javax.swing.BoxLayout(jPanel3, javax.swing.BoxLayout.LINE_AXIS));
@@ -83,6 +65,12 @@ public class UserQueueServingPage extends javax.swing.JPanel {
         xButton3.setName("finish"); // NOI18N
         xButton3.setText("Finish");
         jPanel3.add(xButton3);
+        jPanel3.add(filler5);
+
+        xButton4.setMargin(new java.awt.Insets(5, 14, 5, 14));
+        xButton4.setName("forward"); // NOI18N
+        xButton4.setText("Forward...");
+        jPanel3.add(xButton4);
         jPanel3.add(filler2);
 
         jPanel1.add(jPanel3);
@@ -94,14 +82,13 @@ public class UserQueueServingPage extends javax.swing.JPanel {
     private javax.swing.Box.Filler filler2;
     private javax.swing.Box.Filler filler3;
     private javax.swing.Box.Filler filler4;
-    private javax.swing.JLabel jLabel2;
+    private javax.swing.Box.Filler filler5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel3;
+    private queueing.view.UserQueueServingHeader userQueueServingHeader1;
     private com.rameses.rcp.control.XButton xButton1;
     private com.rameses.rcp.control.XButton xButton2;
     private com.rameses.rcp.control.XButton xButton3;
-    private com.rameses.rcp.control.XLabel xLabel1;
-    private com.rameses.rcp.control.XLabel xLabel2;
-    private com.rameses.rcp.control.XLabel xLabel3;
+    private com.rameses.rcp.control.XButton xButton4;
     // End of variables declaration//GEN-END:variables
 }

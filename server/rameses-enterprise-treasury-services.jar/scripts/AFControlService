@@ -33,22 +33,17 @@ class AFControlService  {
 		o._pagingKeys = 'a.objid';
 		if(! o.userid ) o.userid = env.USERID; 
 
-		def filter = ''; 
-		if( o.formno ) { 
-			filter = ''' afid = $P{formno} ''';
-		} 
-
 		def filters = []; 
 		if ( o.filter ) filters << o.filter; 
-		if ( filter ) filters << filter; 
+		if ( o.formno ) filters << ''' afid = $P{formno} ''';
 		
 		if ( filters ) {
-			o.filter = (' AND '+ filters.join(' AND ')); 
+			o.filter = ' AND '+ filters.join(' AND '); 
 		} else { 
 			o.filter = ''; 
 		} 
 		return em.getOpenList( o ); 
-	}
+	} 
 
 	@ProxyMethod
 	public def getAssigneeOpenList( def o ) { 

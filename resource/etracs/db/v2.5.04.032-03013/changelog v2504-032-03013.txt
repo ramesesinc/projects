@@ -5,6 +5,7 @@
 - BPLS 
 		
 - ASSESSOR	
+	- Update on Plant/Tree Assessment Rule (Add Assessment Info)
 	- Fix missing boxes in FAAS Plant/Tree
 	- NEW! Memoranda Template support
 	- Modify PIN update (naga)

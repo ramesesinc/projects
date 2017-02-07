@@ -95,16 +95,3 @@ rule "initial-assess-value"
 		action.execute( "calc-planttree-av", map, drools );
 end
 
-
-rule "build-assessment"
-	agenda-group "SUMMARY"
-	salience 500000
-	no-loop
-	when
-		PTD  : PlantTreeDetail()
-	then	
-		Map map = new HashMap();
-		map.put("planttreedetail", PTD);
-		action.execute( "add-planttree-assessment-info", map, drools );
-end
-

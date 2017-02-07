@@ -114,7 +114,7 @@ public class PlantAssessmentRuleService
 		if( totallandbmv > 0.0 && totallandadj != 0.0 ){
 			adjustmentrate = ( totallandadj / totallandbmv ) * 100;
 		}
-		return adjustmentrate
+		return numSvc.roundA(adjustmentrate,0)
 	}
 
 

@@ -5,6 +5,7 @@
 - BPLS 
 		
 - ASSESSOR	
+	- Fix missing boxes in FAAS Plant/Tree
 	- NEW! Memoranda Template support
 	- Modify PIN update (naga)
 	- Add the following certification info: blockno, survyeno, titleno, lguname, fullpin and administrator_name

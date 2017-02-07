@@ -7,6 +7,7 @@ public class RPUAssessment
     String rpuid
     String rputype
     String classificationid
+    String actualusecode
     String actualuseid
     Double areasqm
     Double areaha
@@ -28,6 +29,7 @@ public class RPUAssessment
         this.rputype = entity.rputype
         this.classificationid = entity.classificationid
         this.actualuseid = entity.actualuseid
+        this.actualusecode = entity.actualusecode
         this.taxable = (entity.taxable == null ? true : entity.taxable)
 
         

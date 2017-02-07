@@ -197,7 +197,7 @@ public class LandAssessmentRuleService
 		if( totallandbmv > 0.0 && totallandadj != 0.0 ){
 			adjustmentrate = ( totallandadj / totallandbmv ) * 100;
 		}
-		return adjustmentrate
+		return numSvc.roundA(adjustmentrate,0)
 	}
 
 
@@ -215,6 +215,7 @@ public class LandAssessmentRuleService
 		actions.addCommand( "calc-av", new CalcAssessValue( request:request, NS:numSvc ));
 		actions.addCommand( "add-assessment-info", new AddAssessmentInfo( request:request, NS:numSvc));
 		actions.addCommand( "recalc-rpuassessment", new CalcRPUAssessValue( request:request, NS:numSvc));
+		actions.addCommand( "recalc-rpu-mv", new CalcRPUMarketValue( request:request, NS:numSvc));
 		actions.addCommand( "recalc-rpu-totalav", new CalcTotalRPUAssessValue( request:request, NS:numSvc));
 		actions.addCommand( "add-derive-var", new AddDeriveVariable( request:request));
 

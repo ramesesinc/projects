@@ -23,6 +23,7 @@ class BayawanCollectionUtilService
 		util.required('receiptno', params.receiptno)
 		util.required('tdno', params.tdno)
 		util.required('year', params.year)
+		util.required('av', params.av)
 		util.required('basicrate', params.basicrate)
 		util.required('basicdiscrate', params.basicdiscrate)
 		util.required('basicintrate', params.basicintrate)
@@ -30,6 +31,7 @@ class BayawanCollectionUtilService
 		util.required('sefdiscrate', params.sefdiscrate)
 		util.required('sefintrate', params.sefintrate)
 
+		params.av = new BigDecimal(params.av)
 		params.basicrate = new BigDecimal(params.basicrate)
 		params.basicdiscrate = new BigDecimal(params.basicdiscrate)
 		params.basicintrate = new BigDecimal(params.basicintrate)
@@ -84,7 +86,7 @@ class BayawanCollectionUtilService
 
 
 	def buildTaxes(params, ledger){
-		def av = ledger.ledgerfaas.assessedvalue 
+		def av = params.av
 		def tax = [:]
 		tax.basic = numSvc.round(av * params.basicrate)
 		tax.basicdisc = numSvc.round(tax.basic * params.basicdiscrate)

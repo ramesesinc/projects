@@ -10,5 +10,8 @@
 		<field name="buildername" required="true" />
 		<field name="builderplace" required="true" />
 		<field name="buildyear" required="true" type="integer"/>
+		<complex name="engines" ref="vehicle_fishboat_engine" jointype="one-to-many">
+			<key field="objid" target="parentid"/>	
+		</complex>  
 	</element>	
 </schema>

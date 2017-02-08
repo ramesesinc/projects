@@ -1,6 +1,6 @@
 <workunit extends="com/rameses/seti2/templates/WorkflowTaskList.xml" 
           processName="vehicle_application_fishboat" 
-          allowDelete="false" allowNotify="true">
+          allowDelete="false" allowNotify="true" debug="true">
     
     <invokers>
         <invoker folderid="/home/vehicle/fishboat" action="init" index="-1"

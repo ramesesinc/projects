@@ -26,19 +26,32 @@ public class VehicleQueryForm extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
-        vehicleTxnTypeList1 = new com.rameses.gov.etracs.vehicle.components.VehicleTxnTypeList();
+        xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
+        xComboBox1 = new com.rameses.rcp.control.XComboBox();
 
-        setLayout(new java.awt.BorderLayout());
+        xComboBox1.setAllowNull(false);
+        xComboBox1.setCaption("Cluster");
+        xComboBox1.setExpression("#{item.name}");
+        xComboBox1.setItems("clusterList");
+        xComboBox1.setName("cluster"); // NOI18N
+        xComboBox1.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel2.add(xComboBox1);
 
-        vehicleTxnTypeList1.setCaption("Vehicle Type");
-        vehicleTxnTypeList1.setName("query.txntype"); // NOI18N
-        xFormPanel1.add(vehicleTxnTypeList1);
-
-        add(xFormPanel1, java.awt.BorderLayout.CENTER);
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+        this.setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 306, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 186, Short.MAX_VALUE))
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+        );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private com.rameses.gov.etracs.vehicle.components.VehicleTxnTypeList vehicleTxnTypeList1;
-    private com.rameses.rcp.control.XFormPanel xFormPanel1;
+    private com.rameses.rcp.control.XComboBox xComboBox1;
+    private com.rameses.rcp.control.XFormPanel xFormPanel2;
     // End of variables declaration//GEN-END:variables
 }

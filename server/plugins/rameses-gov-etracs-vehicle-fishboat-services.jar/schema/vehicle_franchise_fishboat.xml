@@ -1,14 +1,18 @@
 <schema adapter="vehicledb">
 	<element tablename="vehicle_franchise_fishboat" extends="vehicle_franchise">
 		<field name="objid" primary="true" prefix="FBAPP"/>
-		<field name="vesselname" required="true" />
-		<field name="length" required="true" type="decimal"/>
-		<field name="breadth" required="true" type="decimal"/>
-		<field name="depth" required="true" type="decimal"/>
-		<field name="grosstonnage" required="true" type="decimal"/>
-		<field name="nettonnage" required="true" type="decimal"/>
-		<field name="buildername" required="true" />
-		<field name="builderplace" required="true" />
-		<field name="buildyear" required="true" type="integer"/>
+		<field name="vesselname"  />
+		<field name="length" type="decimal"/>
+		<field name="breadth" type="decimal"/>
+		<field name="depth" type="decimal"/>
+		<field name="grosstonnage" type="decimal"/>
+		<field name="nettonnage"  type="decimal"/>
+		<field name="buildername"  />
+		<field name="builderplace" />
+		<field name="buildyear" type="integer"/>
+		<complex name="engines" ref="vehicle_fishboat_engine" jointype="one-to-many" required="false" editable="false">
+			<key field="appid" target="parentid"/>	
+		</complex> 
+
 	</element>	
 </schema>

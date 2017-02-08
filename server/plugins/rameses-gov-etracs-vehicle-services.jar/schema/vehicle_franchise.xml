@@ -3,7 +3,6 @@
 		<field name="objid" primary="true" prefix="MF"/>
 		<field name="controlno" caption="Control No" required="true" searchable="true" indexed="true"/>
 		<field name="state"  required="true" caption="State"/>
-		<field name="cluster" caption="Cluster"/>
 		<field name="vehicletype"  required="true" />
 		<field name="appid"  />
 		<field name="dtregistered"  />
@@ -15,5 +14,9 @@
 		<field name="barangay_objid"  />
 		<field name="barangay_name"  caption="Barangay"/>
 		<field name="activeyear"  />
+
+		<complex name="cluster" ref="vehicletype_cluster" jointype="many-to-one"  includefields="objid,name">
+			<key field="clusterid" target="objid" />
+		</complex> 
 	</element>
 </schema>

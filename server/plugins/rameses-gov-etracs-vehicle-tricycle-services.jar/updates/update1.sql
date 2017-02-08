@@ -74,3 +74,11 @@ SELECT objid FROM vehicle_franchise WHERE objid NOT IN (SELECT objid FROM vehicl
 ALTER TABLE `vehicledb`.`vehicle_application` DROP COLUMN `vehicleid`;
 
 DROP TABLE vehicle_tricycle;
+
+## INSERT DEFAULT TO CLUSTER
+INSERT INTO vehicletype_cluster 
+SELECT CONCAT(objid,'-','DEFAULT'), 'DEFAULT', NULL, objid, issued, NULL   
+FROM vehicletype;
+
+ALTER TABLE `vehicledb`.`vehicletype` DROP COLUMN `issued`; 
+

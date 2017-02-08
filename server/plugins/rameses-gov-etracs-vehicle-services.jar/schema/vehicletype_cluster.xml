@@ -1,0 +1,9 @@
+<schema adapter="vehicledb">
+	<element tablename="vehicletype_cluster">
+		<field name="objid" primary="true" />
+		<field name="name" required="true" />
+		<field name="code"  />
+		<field name="vehicletype" required="true"/>
+		<field name="issued" required="true"/>
+	</element>
+</schema>

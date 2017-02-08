@@ -8,6 +8,6 @@
                  role="INFO,SHARED"/>
     </invokers>
     <pages>
-        <page name="queryForm" template="com.rameses.gov.etracs.vehicle.components.FranchiseClusterLookup" />
+        <page name="queryForm" template="com.rameses.gov.etracs.vehicle.views.VehicleQueryForm" />
     </pages>
 </workunit>

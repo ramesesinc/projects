@@ -1,23 +1,21 @@
-package com.rameses.gov.etracs.vehicletype.boat;
+package com.rameses.gov.etracs.vehicle.fishboat.components;
+
 
 import com.rameses.rcp.annotations.*;
 import com.rameses.rcp.common.*;
 import com.rameses.seti2.models.*;
 import com.rameses.osiris2.common.*;
-import com.rameses.gov.etracs.vehicle.models.*;
+import com.rameses.util.*;
 
-public class FishboatForm extends VehicleApplicationEntryForm  {
+public class EngineListModel extends ComponentBean  {
     
-    /*
-    def create() {
-        def e = super.create();
-        e.engines = [];
+    public def getEntity() {
+        return value; 
     }
-    */
-    
+
     def engineListModel = [
         fetchList: { o->
-            if(entity.engines==null) entity.engines = [];
+            if( !entity.engines) entity.engines = [];
             return entity.engines;
         },
         addItem: { o->

@@ -1,0 +1,128 @@
+import com.rameses.annotations.*
+import com.rameses.common.*;
+import com.rameses.services.extended.*;
+
+
+class KioskRPTBilllingService
+{
+	@Service('RPTBillingService')
+    def billSvc
+
+    @Service('RPTUtil')
+    def util
+
+    @ActiveDB('kiosk_rpt_billing')
+    def em
+
+
+    @ProxyMethod
+    public def generateBill(params){
+        params.ledger = validateLedger(params)
+        def bill = buildBill(params)
+        def pmtorder = [:]
+        pmtorder.billid = bill.billid 
+        pmtorder.barcode = bill.barcode 
+        pmtorder.rptledgerid = bill.rptledgerid 
+        pmtorder.billtoyear = bill.billtoyear 
+        pmtorder.billtoqtr = bill.billtoqtr 
+        pmtorder.taxpayer = bill.taxpayer
+        pmtorder.validuntil = bill.validuntil
+        pmtorder.tdno = bill.rptledger.tdno
+        pmtorder.barangay = bill.rptledger.barangay
+        pmtorder.fullpin = bill.rptledger.fullpin
+        pmtorder.cadastrallotno = bill.rptledger.cadastrallotno
+        pmtorder.rputype = bill.rptledger.rputype
+        pmtorder.classcode = bill.rptledger.classcode
+        pmtorder.lastyearpaid = bill.rptledger.lastyearpaid
+        pmtorder.lastqtrpaid = bill.rptledger.lastqtrpaid
+
+        pmtorder.basic = bill.items.basic.sum()
+        pmtorder.basicint = bill.items.basicint.sum()
+        pmtorder.basicdisc = bill.items.basicdisc.sum()
+        pmtorder.basicnet = pmtorder.basic + pmtorder.basicint - pmtorder.basicdisc
+        pmtorder.sef = bill.items.sef.sum()
+        pmtorder.sefint = bill.items.sefint.sum()
+        pmtorder.sefdisc = bill.items.sefdisc.sum()
+        pmtorder.sefnet = pmtorder.sef + pmtorder.sefint - pmtorder.sefdisc
+
+        pmtorder.billamount = pmtorder.basicnet + pmtorder.sefnet 
+        if (pmtorder.billamount <= 0.0) {
+            def msg = 'A problem was encountered when generating the bill.\n'
+            msg += 'Please proceed to Land Tax Office for assistance.'
+            throw new Exception(msg)
+        }
+        buildPeriod(pmtorder)
+        return pmtorder
+    }
+
+    def buildBill(params){
+        def ledger = params.ledger 
+        def bill = billSvc.initBill(ledger.objid)
+
+        if (params.billtoyear != null) {
+            params.billtoyear = util.toInteger(params.billtoyear)
+            params.billtoqtr = util.toInteger(params.billtoqtr)
+
+            if (params.billtoyear < ledger.lastyearpaid)
+                throw new Exception('Bill to year must be greater than or equal to ' + ledger.lastyearpaid + '.')
+
+            if (params.billtoyear == ledger.lastyearpaid){
+                if (params.billtoqtr < ledger.lastqtrpaid)
+                    throw new Exception('Bill to quarter must be greater than or equal to ' + (ledger.lastqtrpaid + 1) + '.')
+            }
+
+            bill.billtoyear =params.billtoyear  
+            bill.billtoqtr =params.billtoqtr  
+        }
+
+        bill = billSvc.generateBillByLedgerId3(bill)
+        bill.rptledger.remove('faases')
+        bill.remove('taxes')
+        return bill 
+    }
+
+    void buildPeriod(pmtorder){
+        pmtorder.fromyear = (pmtorder.lastqtrpaid == 4 ? pmtorder.lastyearpaid + 1 : pmtorder.lastyearpaid)
+        pmtorder.fromqtr = (pmtorder.lastqtrpaid == 4 ? 1 : pmtorder.lastqtrpaid + 1)
+        pmtorder.toyear = pmtorder.billtoyear 
+        pmtorder.toqtr = pmtorder.billtoqtr 
+
+        if (pmtorder.fromyear == pmtorder.toyear && pmtorder.fromqtr == 1 && pmtorder.toqtr == 4)
+            pmtorder.billperiod = pmtorder.toyear
+        else if (pmtorder.fromyear == pmtorder.toyear && pmtorder.fromqtr == pmtorder.toqtr)
+            pmtorder.billperiod = pmtorder.fromqtr + 'Q, ' + pmtorder.toyear
+        else if (pmtorder.fromyear == pmtorder.toyear)
+            pmtorder.billperiod = pmtorder.fromqtr + '' + pmtorder.toqtr + 'Q, ' + pmtorder.toyear 
+        else if (pmtorder.fromqtr == 1 && pmtorder.toqtr == 4)
+            pmtorder.billperiod = pmtorder.fromyear + '-' + pmtorder.toyear 
+        else if (pmtorder.fromqtr == 1 && pmtorder.toqtr != 4)
+            pmtorder.billperiod = pmtorder.fromyear + '-' + pmtorder.toqtr + 'Q,' + pmtorder.toyear 
+        else if (pmtorder.fromqtr != 1 && pmtorder.toqtr == 4)
+            pmtorder.billperiod = pmtorder.fromqtr + 'Q,' + pmtorder.fromyear + '-' + pmtorder.toyear
+        else 
+            pmtorder.billperiod = pmtorder.fromqtr + 'Q,' + pmtorder.fromyear + '-' + pmtorder.toqtr + 'Q,' + pmtorder.toyear
+    }
+
+
+    def validateLedger(params){
+        if (!params.tdno) 
+            throw new Exception('TD No. is required.')
+
+        def msg = null;
+
+        def ledger = em.findLedger(params)
+        if (!ledger) {
+            msg = 'TD No. ' + params.tdno + ' does not exist.\n'
+            msg += 'Verify that the you enter it correctly and submit again.' 
+            throw new Exception(msg)
+        }
+
+        if ('CANCELLED'.equalsIgnoreCase(ledger.state)){
+            msg = 'Ledger has already been cancelled.\n'
+            msg += 'Please proceed to the Land Tax Office for assistance.'
+            throw new Exception(msg)
+        }
+        return ledger 
+    }
+}
+

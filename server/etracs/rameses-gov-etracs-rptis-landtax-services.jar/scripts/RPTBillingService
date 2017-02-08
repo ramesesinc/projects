@@ -267,9 +267,11 @@ public class RPTBillingService
 
 	def generateBarcode(){
 		def cy = dtSvc.serverYear
-		def lguid = ''
+		def lguid = '000'
 		if (env){
-			lguid = env.ORGID.replaceAll('-', '')
+			if (env.ORGID){
+				lguid = env.ORGID.replaceAll('-', '')
+			}
 		}
 		return BARCODE_PREFIX + lguid + cy + seqSvc.getNextFormattedSeriesA('RPTBILL-' + cy,7)
 	}

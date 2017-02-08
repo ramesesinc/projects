@@ -23,32 +23,30 @@ class PhotoComponentModel extends ComponentBean implements IPhotoComponent {
     boolean allowChange = true;
     boolean generateThumbnail = true;
 
+    void crop( def data ) { 
+        def h = { o-> 
+            photo = o; 
+            def m = [image: o];
+            if( generateThumbnail ) {
+                m.thumbnail = ImageUtil.instance.createThumbnail(o);
+            }
+            if (handler) handler( m );
+            binding.refresh("photo");
+        } 
+        ImageCropper.show([ image: data, handler: h ]);  
+    } 
+    
     def doCapture() {
         def jfc = new JFileChooser();
         int retval = jfc.showOpenDialog(null); 
         if (retval == JFileChooser.APPROVE_OPTION) {
-            def file = jfc.getSelectedFile();
-            photo = StreamUtil.toByteArray(new FileInputStream(file));
-            def m = [image:photo];
-            if( generateThumbnail ) {
-                m.thumbnail = ImageUtil.instance.createThumbnail( photo );
-            }
-            if(handler) handler( m );
-            binding.refresh('photo'); 
+            crop( jfc.getSelectedFile() ); 
         } 
     }
 
     def doCamera() {
         def h = [ 
-            onselect : { o->
-                photo = o;
-                def m = [image: o];
-                if( generateThumbnail ) {
-                    m.thumbnail = ImageUtil.instance.createThumbnail(o);
-                }
-                if(handler) handler( m );
-                binding.refresh("photo");
-            }
+            onselect : { o-> crop( o ) }
         ] as CameraModel;
         WebcamViewer.open( h ); 
     }

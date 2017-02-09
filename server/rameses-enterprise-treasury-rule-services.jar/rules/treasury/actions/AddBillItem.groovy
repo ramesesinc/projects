@@ -19,7 +19,13 @@ class AddBillItem extends AbstractAddBillItem {
 		def acct = params.account;
 		def amt = params.amount.decimalValue;
 
+		def remarks = null;
+		if( params.remarks ) {
+			remarks = params.remarks.eval();		
+		}
+
 		def billitem = new BillItem(amount: amt);
+		billitem.remarks = remarks;
 		setAccountFact( acct.key, billitem );
 
 		//check first if there is already existing. If successfully added, then add to facts

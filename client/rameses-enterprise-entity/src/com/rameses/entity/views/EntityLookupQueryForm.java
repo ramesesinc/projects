@@ -33,13 +33,10 @@ public class EntityLookupQueryForm extends javax.swing.JPanel {
         setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 5));
         setLayout(new java.awt.BorderLayout());
 
-        com.rameses.rcp.control.layout.XLayout xLayout2 = new com.rameses.rcp.control.layout.XLayout();
-        xLayout2.setSpacing(5);
-        jPanel1.setLayout(xLayout2);
-
         xLabel1.setText("Type :");
         jPanel1.add(xLabel1);
 
+        xComboBox3.setAllowNull(false);
         xComboBox3.setCaption("Type");
         xComboBox3.setCaptionWidth(50);
         xComboBox3.setEmptyText("- - All Types - -");

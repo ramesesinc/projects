@@ -93,7 +93,7 @@ public class EntityLookup extends XComponentPanel {
                 return null; 
             } 
             PropertyResolver pr = PropertyResolver.getInstance();
-            Object r =  pr.getProperty(caller, type); 
+            Object r =  pr.getProperty(caller, "entityType"); 
             if( r == null ) return type;
             return r;
         }

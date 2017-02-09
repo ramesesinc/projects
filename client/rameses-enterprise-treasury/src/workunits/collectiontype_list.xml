@@ -1,53 +1,15 @@
-<workunit extends="wtemplates/ListController.xml">
-    
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" schemaName="collectiontype">
+    <!-- extends="wtemplates/ListController.xml" -->
     <invokers>
-        <invoker folderid="/explorer/master/treasury" caption="Collection Types" role="MASTER" action="init"
-                    index="1" permission="collectiontype.view" />
+        <invoker folderid="/explorer/master/treasury" caption="Collection Types" 
+                 role="MASTER" 
+                 cols="name,title,formno,handler,barcodekey,org.name,fund.title"
+                 index="1" permission="collectiontype.view" action="init"/>
     </invokers>
     
-    <code>
-         <![CDATA[
-        import com.rameses.osiris2.common.*;
-        import com.rameses.rcp.common.*;
-        import com.rameses.rcp.annotations.*;
-        import com.rameses.osiris2.client.*;
-        import com.rameses.util.*;
-        
-        class CollectionTypeList extends ListController {
-            
-            @Service("OrgService")
-            def orgSvc;
-            
-            @Service("OrgLookupService")
-            def orgLookupSvc;
-
-            String serviceName = "CollectionTypeService";
-            String entityName  = "collectiontype"; 
-            
-            def orgType;
-            def orgTypes;
-            
-            @PropertyChangeListener 
-            def changes = [
-                'query.orgType': { search()  }, 
-                'query.org'    : { search()  }
-            ]; 
-            
-            def getOrgList() {
-                if(!query.orgType) return [];
-                return orgLookupSvc.getList([orgclass:query.orgType]); 
-            }
-        
-            void init() {
-                 orgTypes = orgSvc.getOrgClasses()*.name;
-            }
-            
-        
-        }
-        ]]>
-    </code>
+    <code class="com.rameses.enterprise.treasury.models.CollectionTypeListModel" />
     
     <pages>
-        <page name="queryform" template="com.rameses.enterprise.treasury.cashreceipt.CollectionTypeQuery"/>
+        <page name="queryForm" template="com.rameses.enterprise.treasury.views.CollectionTypeQuery"/>
     </pages>    
 </workunit>

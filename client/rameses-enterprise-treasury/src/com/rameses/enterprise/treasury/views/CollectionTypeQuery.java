@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.rameses.enterprise.treasury.cashreceipt;
+package com.rameses.enterprise.treasury.views;
 
 /**
  *
@@ -29,7 +29,6 @@ public class CollectionTypeQuery extends javax.swing.JPanel {
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
         xComboBox2 = new com.rameses.rcp.control.XComboBox();
         xComboBox3 = new com.rameses.rcp.control.XComboBox();
-        xActionTextField1 = new com.rameses.rcp.control.XActionTextField();
 
         xFormPanel1.setCaptionBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         xFormPanel1.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
@@ -37,35 +36,30 @@ public class CollectionTypeQuery extends javax.swing.JPanel {
 
         xComboBox2.setCaption("Org Type");
         xComboBox2.setCaptionWidth(80);
+        xComboBox2.setExpression("#{ item.name }");
         xComboBox2.setItems("orgTypes");
-        xComboBox2.setName("query.orgType"); // NOI18N
+        xComboBox2.setName("orgType"); // NOI18N
         xComboBox2.setPreferredSize(new java.awt.Dimension(120, 20));
         xFormPanel1.add(xComboBox2);
 
         xComboBox3.setCaption("Org Name");
         xComboBox3.setCaptionWidth(80);
         xComboBox3.setCellPadding(new java.awt.Insets(0, 20, 0, 0));
-        xComboBox3.setDepends(new String[] {"query.orgType"});
+        xComboBox3.setDepends(new String[] {"orgType"});
         xComboBox3.setDynamic(true);
         xComboBox3.setExpression("#{item.name}");
         xComboBox3.setItems("orgList");
-        xComboBox3.setName("query.org"); // NOI18N
+        xComboBox3.setName("org"); // NOI18N
         xComboBox3.setPreferredSize(new java.awt.Dimension(200, 20));
         xFormPanel1.add(xComboBox3);
-
-        xActionTextField1.setActionName("search");
-        xActionTextField1.setCaption("Search");
-        xActionTextField1.setCaptionWidth(60);
-        xActionTextField1.setCellPadding(new java.awt.Insets(0, 20, 0, 0));
-        xActionTextField1.setName("query.searchtext"); // NOI18N
-        xActionTextField1.setPreferredSize(new java.awt.Dimension(150, 20));
-        xFormPanel1.add(xActionTextField1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(42, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -73,7 +67,6 @@ public class CollectionTypeQuery extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private com.rameses.rcp.control.XActionTextField xActionTextField1;
     private com.rameses.rcp.control.XComboBox xComboBox2;
     private com.rameses.rcp.control.XComboBox xComboBox3;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;

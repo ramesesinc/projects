@@ -4,7 +4,7 @@
  * Created on February 27, 2011, 12:48 PM
  */
 
-package com.rameses.enterprise.treasury.collection;
+package com.rameses.enterprise.treasury.views;
 
 
 import com.rameses.osiris2.themes.FormPage;
@@ -43,7 +43,6 @@ public class CollectionTypePage extends javax.swing.JPanel {
         xTextField3 = new com.rameses.rcp.control.XTextField();
         xIntegerField1 = new com.rameses.rcp.control.XIntegerField();
         xComboBox3 = new com.rameses.rcp.control.XComboBox();
-        xComboBox4 = new com.rameses.rcp.control.XComboBox();
         xSuggest1 = new com.rameses.rcp.control.XSuggest();
         xLabel1 = new com.rameses.rcp.control.XLabel();
         xLookupField3 = new com.rameses.rcp.control.XLookupField();
@@ -130,15 +129,6 @@ public class CollectionTypePage extends javax.swing.JPanel {
         xComboBox3.setPreferredSize(new java.awt.Dimension(0, 22));
         xComboBox3.setRequired(true);
         xFormPanel1.add(xComboBox3);
-
-        xComboBox4.setCaption("Batch Screen Handler");
-        xComboBox4.setDepends(new String[] {"selectedForm"});
-        xComboBox4.setDynamic(true);
-        xComboBox4.setItems("batchHandlers");
-        xComboBox4.setName("entity.batchhandler"); // NOI18N
-        xComboBox4.setPreferredSize(new java.awt.Dimension(0, 22));
-        xComboBox4.setRequired(true);
-        xFormPanel1.add(xComboBox4);
 
         xSuggest1.setCaption("Category");
         xSuggest1.setExpression("#{item.category}");
@@ -367,7 +357,6 @@ public class CollectionTypePage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XCheckBox xCheckBox3;
     private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XComboBox xComboBox3;
-    private com.rameses.rcp.control.XComboBox xComboBox4;
     private com.rameses.rcp.control.XDataTable xDataTable2;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XIntegerField xIntegerField1;

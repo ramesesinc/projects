@@ -8,4 +8,5 @@
 	- 
 
 - LANDTAX
+	- Add posting type option on all collection reports
 	- Update on Tax Difference Support 

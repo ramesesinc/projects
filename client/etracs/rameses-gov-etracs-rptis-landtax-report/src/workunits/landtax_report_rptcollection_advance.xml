@@ -36,7 +36,13 @@ class RPTCollectionAdvanceReportController extends com.rameses.gov.etracs.rpt.re
         [code:4, name:' 4TH']
     ];
     
+    def postingtypes = [
+        [code:'byliq', caption:'By Liquidation Date'],
+        [code:'byrem', caption:'By Remittance Date'],
+    ]
+    
     def months;
+    def showPostingType = true;
     
     def initReport() { 
         def outcome = super.initReport();         

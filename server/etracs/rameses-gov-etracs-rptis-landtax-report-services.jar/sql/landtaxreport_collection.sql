@@ -32,46 +32,13 @@ from (
 		0.0 as levynet 
 	from remittance rem 
 		inner join liquidation_remittance liqr on rem.objid = liqr.objid 
+		inner join liquidation liq on liqr.liquidationid = liq.objid
 		inner join remittance_cashreceipt remc on rem.objid = remc.remittanceid 
 		inner join cashreceipt cr on remc.objid = cr.objid 
 		inner join cashreceiptitem_rpt_online ri on cr.objid = ri.rptreceiptid 
-		inner join rptledger rl ON ri.rptledgerid = rl.objid  
-		inner join propertyclassification pc ON rl.classification_objid = pc.objid 
-	where rem.remittancedate between $P{fromdate} AND $P{todate} 
-		and cr.objid not in (select receiptid from cashreceipt_void where receiptid=cr.objid) 
-
-	union all
-
-	select 
-		pc.name as classname, pc.orderno, pc.special,  
-		case when ri.revperiod='current' then ri.basic else 0.0 end  as basiccurrent,
-		case when ri.revperiod='current' then ri.basicdisc else 0.0 end  as basicdisc,
-		case when ri.revperiod in ('previous', 'prior') then ri.basic else 0.0 end  as basicprev,
-		case when ri.revperiod='current' then ri.basicint else 0.0 end  as basiccurrentint,
-		case when ri.revperiod in ('previous', 'prior') then ri.basicint else 0.0 end  as basicprevint,
-		case when ri.revperiod in ('current', 'previous', 'prior') then (ri.basic - ri.basicdisc + ri.basicint) else 0.0 end as basicnet, 
-
-		case when ri.revperiod='current' then ri.sef else 0.0 end  as sefcurrent,
-		case when ri.revperiod='current' then ri.sefdisc else 0.0 end  as sefdisc,
-		case when ri.revperiod in ('previous', 'prior') then ri.sef else 0.0 end  as sefprev,
-		case when ri.revperiod='current' then ri.sefint else 0.0 end  as sefcurrentint,
-		case when ri.revperiod in ('previous', 'prior') then ri.sefint else 0.0 end as sefprevint,
-		case when ri.revperiod in ('current', 'previous', 'prior') then (ri.sef - ri.sefdisc + ri.sefint) else 0.0 end as sefnet,  
-
-		case when ri.revperiod='current' then ri.basicidle else 0.0 end  as idlecurrent,
-		case when ri.revperiod in ('previous', 'prior') then ri.basicidle else 0.0 end  as idleprev,
-		case when ri.revperiod='current' then ri.basicidledisc else 0.0 end  as idledisc,
-		case when ri.revperiod in ('current', 'previous', 'prior') then ri.basicidleint else 0.0 end  as idleint, 
-		case when ri.revperiod in ('current', 'previous', 'prior') then (ri.basicidle-ri.basicidledisc+ri.basicidleint) else 0.0 end as idlenet, 
-		0.0 as levynet 
-	from remittance rem 
-		inner join liquidation_remittance liqr on rem.objid = liqr.objid 
-		inner join remittance_cashreceipt remc on rem.objid = remc.remittanceid 
-		inner join cashreceipt cr on remc.objid = cr.objid 
-		inner join cashreceiptitem_rpt_online ri on cr.objid = ri.rptreceiptid 
-		inner join cashreceiptitem_rpt_noledger ril on ri.objid = ril.objid 
-		inner join propertyclassification pc ON ril.classification_objid = pc.objid 
-	where rem.remittancedate between $P{fromdate} AND $P{todate} 
+		left join rptledger rl ON ri.rptledgerid = rl.objid  
+		left join propertyclassification pc ON rl.classification_objid = pc.objid 
+	where ${filter} 
 		and cr.objid not in (select receiptid from cashreceipt_void where receiptid=cr.objid) 
 )t 	
 group by t.classname
@@ -93,30 +60,13 @@ from (
 		( ri.basic - ri.basicdisc + ri.sef - ri.sefdisc + ri.basicidle ) as netgrandtotal , ri.basicidle as idle 
 	from remittance rem 
 		inner join liquidation_remittance liqr on rem.objid = liqr.objid 
+		inner join liquidation liq on liqr.liquidationid = liq.objid
 		inner join remittance_cashreceipt remc on rem.objid = remc.remittanceid 
 		inner join cashreceipt cr on remc.objid = cr.objid 
 		inner join cashreceiptitem_rpt_online ri on cr.objid = ri.rptreceiptid 
 		inner join rptledger rl ON ri.rptledgerid = rl.objid  
 		inner join propertyclassification pc ON rl.classification_objid = pc.objid 
-	where rem.remittancedate between $P{fromdate} AND $P{todate} 
-		and cr.objid not in (select receiptid from cashreceipt_void where receiptid=cr.objid) 
-		and ri.revperiod = 'advance'
-
-	union all 
-
-	select 
-		pc.name as classname, pc.orderno, pc.special,  
-		ri.basic, ri.basicdisc, ( ri.basic - ri.basicdisc ) as basicnet,
-		ri.sef, ri.sefdisc, (ri.sef - ri.sefdisc ) as sefnet,
-		( ri.basic - ri.basicdisc + ri.sef - ri.sefdisc + ri.basicidle) as netgrandtotal , ri.basicidle as idle 
-	from remittance rem 
-		inner join liquidation_remittance liqr on rem.objid = liqr.objid 
-		inner join remittance_cashreceipt remc on rem.objid = remc.remittanceid 
-		inner join cashreceipt cr on remc.objid = cr.objid 
-		inner join cashreceiptitem_rpt_online ri on cr.objid = ri.rptreceiptid 
-		inner join cashreceiptitem_rpt_noledger ril on ri.objid = ril.objid 
-		inner join propertyclassification pc ON ril.classification_objid = pc.objid 
-	where rem.remittancedate between $P{fromdate} AND $P{todate} 
+	where ${filter}  
 		and cr.objid not in (select receiptid from cashreceipt_void where receiptid=cr.objid) 
 		and ri.revperiod = 'advance'
 )t 	
@@ -142,10 +92,11 @@ from (
 		case when ri.revtype in ('sef', 'sefint') and ri.sharetype in ('barangay') then ri.amount else 0.0 end as brgysefshare 
 	from remittance rem 
 		inner join liquidation_remittance liqr on rem.objid = liqr.objid 
+		inner join liquidation liq on liqr.liquidationid = liq.objid
 		inner join remittance_cashreceipt remc on rem.objid = remc.remittanceid 
 		inner join cashreceipt cr on remc.objid = cr.objid 
 		inner join cashreceiptitem_rpt_account ri ON cr.objid = ri.rptreceiptid 
-	where rem.remittancedate between $P{fromdate} AND $P{todate} 
+	where ${filter}  
 		and cr.objid not in (select receiptid from cashreceipt_void where receiptid=cr.objid) 
 		and ri.revperiod != 'advance' 
 )t 
@@ -169,10 +120,11 @@ from (
 		case when ri.revtype in ('sef', 'sefint') and ri.sharetype in ('barangay') then ri.amount else 0.0 end as brgysefshare 
 	from remittance rem 
 		inner join liquidation_remittance liqr on rem.objid = liqr.objid 
+		inner join liquidation liq on liqr.liquidationid = liq.objid
 		inner join remittance_cashreceipt remc on rem.objid = remc.remittanceid 
 		inner join cashreceipt cr on remc.objid = cr.objid 
 		inner join cashreceiptitem_rpt_account ri ON cr.objid = ri.rptreceiptid 
-	where rem.remittancedate between $P{fromdate} AND $P{todate} 
+	where ${filter}  
 		and cr.objid not in (select receiptid from cashreceipt_void where receiptid=cr.objid)
 		and ri.revperiod = 'advance' 
 )t 

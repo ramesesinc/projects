@@ -18,7 +18,7 @@
 		 isTitleNewPage="false"
 		 isSummaryNewPage="false"
 		 isIgnorePagination="true">
-	<property name="ireport.scriptlethandling" value="2" />
+	<property name="ireport.scriptlethandling" value="0" />
 	<property name="ireport.encoding" value="UTF-8" />
 	<import value="java.util.*" />
 	<import value="net.sf.jasperreports.engine.*" />
@@ -50,25 +50,28 @@ to follow up:]]></text>
 				</staticText>
 				<image  scaleImage="RetainShape" vAlign="Top" hAlign="Left" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
+						mode="Opaque"
 						x="20"
-						y="75"
-						width="134"
+						y="47"
+						width="140"
 						height="36"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
 						key="barcode-1"/>
 					<box></box>
-					<graphicElement stretchType="NoStretch"/>
+					<graphicElement stretchType="NoStretch" fill="Solid" />
 					<imageExpression class="java.awt.Image"><![CDATA[it.businesslogic.ireport.barcode.BcImage.getBarcodeImage(5,$F{trackingno},false,false,null,0,100)]]></imageExpression>
 				</image>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="0"
-						y="40"
+						y="85"
 						width="180"
 						height="29"
 						key="textField-1"/>
 					<box></box>
 					<textElement textAlignment="Center">
-						<font pdfFontName="Helvetica-Bold" size="12" isBold="true"/>
+						<font pdfFontName="Helvetica-Bold" size="10" isBold="true"/>
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$F{trackingno}]]></textFieldExpression>
 				</textField>
@@ -80,7 +83,7 @@ to follow up:]]></text>
 						height="37"
 						key="textField-2"/>
 					<box leftPadding="5" rightPadding="5"></box>
-					<textElement>
+					<textElement textAlignment="Center">
 						<font/>
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$F{message}]]></textFieldExpression>

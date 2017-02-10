@@ -51,8 +51,10 @@ public class CashReceiptBatchSelectionPage extends javax.swing.JPanel {
 
         jPanel1.setPreferredSize(new java.awt.Dimension(100, 30));
 
+        xFormPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
         xFormPanel1.setOpaque(true);
         xFormPanel1.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
+        xFormPanel1.setPadding(new java.awt.Insets(5, 5, 5, 5));
 
         xComboBox1.setCaption("Org Type");
         xComboBox1.setCaptionWidth(80);
@@ -83,7 +85,7 @@ public class CashReceiptBatchSelectionPage extends javax.swing.JPanel {
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(xFormPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE)
+            .addComponent(xFormPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         add(jPanel1, java.awt.BorderLayout.PAGE_START);

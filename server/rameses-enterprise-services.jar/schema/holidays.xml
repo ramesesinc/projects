@@ -1,6 +1,0 @@
-<schema>
-	<element  tablename="holidays">
-		<field name="id" primary="true"/>
-		<field name="title" required="true"/>
-	</element>
-</schema>

@@ -4,60 +4,11 @@
         <invoker type="role:create" caption="Role" action="create" target="popup"/>
         <invoker type="role:open" caption="Role" action="open" target="popup"/>
         -->
-        
         <invoker type="sys_usergroup:create" caption="Role" action="create" target="popup"/>
         <invoker type="sys_usergroup:open" caption="Role" action="open" target="popup"/>
     </invokers>
-    <code>
-        <![CDATA[
-        import com.rameses.osiris2.common.*;
-        import com.rameses.rcp.common.*;
-        import com.rameses.rcp.annotations.*;
-        import com.rameses.osiris2.client.*;
-        
-        class RoleController extends CRUDController {
-        
-            String serviceName = "RoleService";
-            String entityName = "role";
-            String title = "Role";
-            boolean allowApprove = false
-            
-            def selectedItem 
-            
-            @Service("RoleService")
-            def svc 
-            
-            def listModel = [
-                   fetchList: {
-                        if(! entity.permissions) entity.permissions = []
-                   
-                        return  entity.permissions 
-                   },
-                   createItem: {
-                        return [ 
-                            objid: "PER" + new java.rmi.server.UID(), 
-                            newitem : false, 
-                        ]
-                   }, 
-                   onAddItem: { o-> 
-                       if( entity.permissions.find{ (it.object == o.object && it.permission == o.permission) } )  
-                                throw new Exception("Permission already exist.    ")
-                   
-                        entity.permissions << o 
-                   }, 
-                  
-                   onRemoveItem: { o ->
-                        if(! MsgBox.confirm('Remove item? ')) return false;
-                     
-                        entity.permissions.remove(o);
-                        return true;
-                    }
-            ] as EditorListModel
-        }
-        
-        ]]>
-    </code>    
+    <code class="com.rameses.admin.models.RoleModel" />
     <pages>
-        <page template="com.rameses.admin.role.RolePage"/>
+        <page template="com.rameses.admin.views.RolePage"/>
     </pages>
 </workunit>

@@ -31,6 +31,20 @@ class EntityLookupModel extends ComponentBean {
         
     def getLookupEntity() { 
         def params = [:]; 
+        String obj = "entity";
+        def etype = getEntityType();
+        if(etype == null ) {
+            //do nothing...
+        }
+        else if(etype.contains(",") || etype.contains("|")) {
+            params.put("entityTypeMatch", etype.replace(",", "|"));
+        }
+        else if(!etype.contains("entity")){
+            obj = "entity"+etype.toLowerCase();
+        }
+        else {
+            obj = etype;
+        }
         params.onselect = { o-> 
             fireOnselect( o ); 
         } 
@@ -41,10 +55,8 @@ class EntityLookupModel extends ComponentBean {
                 setValue( null ); 
             }
             binding.refresh(); 
-        }
-        def etype = getEntityType();
-        if(etype==null) etype = "entity";
-        return Inv.lookupOpener( etype+':lookup', params );
+        };
+        return Inv.lookupOpener( obj+':lookup', params );
     } 
     
     void fireOnselect( o ) { 

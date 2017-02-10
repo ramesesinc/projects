@@ -24,6 +24,9 @@ public class BusinessCashReceiptInterceptor {
 	@Service("BusinessApplicationWorkflowService")
 	def workflowSvc;
 
+	@ActiveDB("business_payment")
+	def business_payment_db;
+
 	@After(pattern="CashReceiptService.post", eval="#{result.collectiontype?.handler == 'bpls'}")
 	public void postBusinessPayment(def evt) {
 		def a = evt.args[0];
@@ -88,7 +91,12 @@ public class BusinessCashReceiptInterceptor {
 	@After(pattern="CashReceiptVoidService.post",index=0,eval="#{result.receipt.collectiontype.handler=='bpls'}")
 	public void voidTxn( evt ) {
 		//check if permit is already issued.
-		def r = evt.args[0].receipt;
+		def r = evt.args[0].receipt; 
+		if ( !business_payment_db.read([ objid: r.objid ])?.objid ) { 
+			// record not found exit immediately 
+			return; 
+		} 
+
 		def pmt = pmtSvc.open([ objid: r.objid ]);
 		if ( !pmt?.objid ) throw new Exception("Business payment not found");
 

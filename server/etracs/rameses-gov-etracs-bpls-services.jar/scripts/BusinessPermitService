@@ -239,7 +239,9 @@ class BusinessPermitService  {
 			addr.province = (addr.province ? addr.province : porg.name);
 
 		} else if ( orgclasstype=='CITY' ) { 
-			if ( rorg.name ) rorg.name = rorg.name+' CITY'; 
+			if ( rorg.name && !rorg.name.toUpperCase().endsWith(' CITY')) { 
+				rorg.name = rorg.name+' CITY'; 
+			} 
 			addr.city = (addr.city ? addr.city : rorg.name); 
 
 		} else if ( orgclasstype=='PROVINCE' ) {

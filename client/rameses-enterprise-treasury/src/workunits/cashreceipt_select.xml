@@ -1,0 +1,14 @@
+<workunit>
+    
+   <invokers>
+         <invoker type="home.action" caption="Cash Receipt" icon="home/icons/cashreceipt.png"
+                  action="init" index="20" role="COLLECTOR,SUBCOLLECTOR" target="window"/>
+   </invokers>
+   
+   <code class="com.rameses.enterprise.treasury.models.CashReceiptSelectionModel" />
+   
+   <pages>
+       <page template="com.rameses.enterprise.treasury.cashreceipt.CashReceiptSelectionPage" />
+   </pages>
+   
+</workunit>

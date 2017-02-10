@@ -1,9 +1,7 @@
 import com.rameses.annotations.*;
+import com.rameses.common.*;
 import com.rameses.util.*;
 import java.rmi.server.*;
-import com.rameses.common.*;
-import com.rameses.services.extended.*;
-
 
 class SREStatementOfReceiptsService {
 
@@ -18,138 +16,6 @@ class SREStatementOfReceiptsService {
 
 	@Service('NumberService')
 	def numSvc
-
-	@ProxyMethod
-	public def getReport( params ) {
-		buildParams( params ); 
-		params.filter = '';
-		if ( params.acctgroup ) {
-			params.filter += ''' AND ia.type LIKE $P{acctgroup} ''';
-		}
-		if ( params.fundid ) {
-			params.filter += ''' 
-				AND inc.fundid in ( 
-					select objid from fund where objid LIKE $P{fundid} 
-					union 
-					select objid from fund where parentid LIKE $P{fundid} 
-				) 
-			'''; 
-		} 
-
-		def incomesummaries = null; 
-		def postingtypeid = params.postingtype?.objid.toString().toUpperCase(); 
-		if ( postingtypeid == 'BY_LIQUIDATION_DATE' ) {
-			incomesummaries = em.getIncomeSummaryByLiquidationDate( params ); 
-		} else {
-			incomesummaries = em.getIncomeSummary( params ); 
-		}
-		
-		if ( !incomesummaries ) throw new Exception('No available income summary'); 
-
-		def incomesummarydetails = []; 
-		if ( params.type == 'details' && postingtypeid == 'BY_LIQUIDATION_DATE' ) {
-			incomesummarydetails = ( 
-				postingtypeid == 'BY_LIQUIDATION_DATE' ? 
-				em.getIncomeSummaryByItemAccountsByLiquidationDate( params ) : 
-				em.getIncomeSummaryByItemAccounts( params ) 
-			); 
-		} 
-		
-		def sourcelist = em.getSreAccounts( params ); 
-		if ( !sourcelist ) throw new Exception('No available SRE accounts'); 
-
-		def incometargets = em.getIncomeTargets( params ); 
-
-		int itemindex = 0;		
-		sourcelist.each{ it.itemindex=itemindex; itemindex++ } 
-		sourcelist.findAll{ it.parentid=='ROOT' }.each{ it.itemindex = -1 }
-		sourcelist.sort{ it.itemindex } 
-
-		incomesummaries.each{x-> 
-			sourcelist.find{ it.objid==x.objid }?.actual = x.amount 
-		}
-		incometargets.each{x-> 
-			sourcelist.find{ it.objid==x.objid }?.target = x.target 
-		}
-		sourcelist.findAll{ it.parentid=='ROOT' }.each{ 
-			setupAmounts( it, sourcelist ) 
-		} 
-
-		def noamounts = sourcelist.findAll{ it.hasamount==false }
-		if ( noamounts ) sourcelist.removeAll( noamounts ); 
-
-		def sreaccts = [];
-		sreaccts.addAll( sourcelist ); 
-		incomesummarydetails.groupBy{ it.parentid }
-							.each{ k,v-> 
-								def sre = sreaccts.find{ it.objid==k }
-								if ( !sre ) return; 
-
-								v.each{ 
-									it.type='itemaccount'; 
-									it.account = [code:it.code, title:it.title];
-									it.actual = it.amount;
-									it.itemindex = 999999;
-									sreaccts << it; 
-								}
-							}
-
-		if ( params.type.toString().matches('standard|details') ) {
-			def subaccts = sreaccts.findAll{ it.type=='subaccount' } 
-			if (subaccts) sreaccts.removeAll( subaccts ); 
-		} 
-		if ( params.opthidenoactual==true ) {
-			def rmlist = sreaccts.findAll{ (it.actual>0.0)==false }
-			if (rmlist) sreaccts.removeAll( rmlist ); 
-		} 
-		
-		def list = sreaccts; 
-		def groupids = [];
-		list.groupBy{ it.parentid }
-			.each{ k,v-> 
-				def o = list.find{ it.objid==k } 
-				if ( !o ) o = [objid:k, itemindex:-1];
-				
-				groupids << [groupid:o.objid, groupindex:o.itemindex, items:v] 
-			} 
-
-		groupids.sort{ it.groupindex }
-
-		def acctGrps = new LinkedHashMap(); 
-		groupids.each{ acctGrps.put(it.groupid, it.items) }
-		groupids.clear();
-
-		def items = [];	
-		def totaltarget = 0.0;
-		def totalactual = 0.0;
-		def roots = acctGrps.remove('ROOT'); 
-		for( r in roots ) {
-			r.level = 0;
-			r.type = 'root'
-			r.title = r.account.title+'*';
-
-			items << r;	
-			loop( r, items, acctGrps );
-			totaltarget += (r.target? r.target: 0.0);
-			totalactual += (r.actual? r.actual: 0.0);			
-		}
-    	
-		if ( !items ) throw new Exception('No records found'); 
-
-		def totals = [target: totaltarget, actual: totalactual]; 
-		calculateAmounts( totals ); 
-
-		def p = [:]; 
-		p.title = 'STATEMENT OF RECEIPTS SOURCES';
-		p.reportdata = items; 
-		p.period = params.strperiod; 
-		p.totalactual = totalactual; 
-		p.totaltarget = totaltarget; 
-		p.totalexcess = totals.excess; 
-		p.totalpercentage = totals.percentage;
-		p.totalpercentagevalue = totals.percentagevalue; 
-		return p; 
-	}
 
 	@ProxyMethod 
 	public def getFunds() { 
@@ -178,31 +44,147 @@ class SREStatementOfReceiptsService {
 		]; 
 	} 
 
+	@ProxyMethod
+	public def getReport( params ) {
+		buildParams( params ); 
+		params.filter = '';
+		if ( params.acctgroup ) {
+			params.filter += ''' AND ia.type LIKE $P{acctgroup} ''';
+		}
+		if ( params.fundid ) {
+			params.filter += ''' 
+				AND inc.fundid in ( 
+					select objid from fund where objid LIKE $P{fundid} 
+					union 
+					select objid from fund where parentid LIKE $P{fundid} 
+				) 
+			'''; 
+		} 
 
-	def loop( ctx, items, acctGrps ) {
-		def children = acctGrps.remove( ctx.objid );
-		ctx.haschildren = 0;
-		if(children) {
-			ctx.haschildren = 1;
-		    for( c in children ) {
-		    	def stitle = c.account.title;
-		    	def stype = c.type.toString();
+		def incomelist = null; 
+		def postingtypeid = params.postingtype?.objid.toString().toUpperCase(); 
+		if ( postingtypeid == 'BY_LIQUIDATION_DATE' ) {
+			incomelist = em.getIncomeSummaryByLiquidationDate( params ); 
+		} else {
+			incomelist = em.getIncomeSummary( params ); 
+		}
+		
+		if ( !incomelist ) 
+			throw new Exception('No available income summary'); 
+		if ( incomelist.find{ it.amount > 0 } == null )  
+			throw new Exception('No available income summary'); 
 
-		    	if ( stype.matches('detail|subaccount|itemaccount') ) {
-		    		def buff = new StringBuilder();
-		    		if ( stype == 'itemaccount' ) buff.append('* '); 
-		    		if ( c.account?.code ) buff.append( c.account.code + ' ' );
-		    		if ( c.account?.title ) buff.append( c.account.title );
+		def incomesummarydetails = []; 
+		if ( params.type == 'details' ) { 
+			incomesummarydetails = ( 
+				postingtypeid == 'BY_LIQUIDATION_DATE' ? 
+				em.getIncomeSummaryByItemAccountsByLiquidationDate( params ) : 
+				em.getIncomeSummaryByItemAccounts( params ) 
+			); 
+		} 
+		
+		incomelist.eachWithIndex{ o, idx-> o.itemindex = idx; }
+		incomelist.findAll{ it.parentid=='ROOT' }.each{ 
+			it.itemindex = -1;
+			it.nodeindex = 1; 
+			setupNode( incomelist, it ); 
+		}
 
-		    		stitle = buff.toString(); 
-		    	}
+		def maxnodeindex = incomelist.max{ it.nodeindex }?.nodeindex; 
+		if ( maxnodeindex==null ) maxnodeindex=0; 
 
-		    	c.level = ctx.level + 1;
-		    	c.title = ("    ".multiply(c.level)) + stitle;
-				calculateAmounts( c ); 
-		    	items << c;
-		    	loop( c, items, acctGrps );
-		    } 
+		for (int idx=maxnodeindex; idx > 0; idx--) { 
+			incomelist.findAll{ it.nodeindex==idx }.each{ o-> 
+				def list = incomelist.findAll{ it.parentid==o.objid } 
+				list.each{
+					it.actual = ( it.amount? it.amount: 0.0 )+( it.itemamount? it.itemamount: 0.0 )
+					calculateAmounts( it ); 
+				}
+
+				def target = o.target; 
+				if ( target==null || target <= 0 ) { 
+					o.target = list.sum{( it.target? it.target: 0.0 )} 
+				} 
+				o.itemamount = list.sum{( it.actual? it.actual: 0.0 )} 
+				o.actual = ( o.amount? o.amount: 0.0 )+( o.itemamount? o.itemamount: 0.0 );
+				calculateAmounts( o );  
+			} 
+		} 
+
+		incomelist.removeAll( incomelist.findAll{( !it.actual && !it.target )});
+
+		if ( params.type.toString().matches('standard|details') ) { 
+			incomelist.removeAll( incomelist.findAll{ it.type=='subaccount' }); 
+		} 
+
+		def items = [];	
+		def totaltarget = 0.0;
+		def totalactual = 0.0;
+		incomelist.findAll{ it.parentid=='ROOT' }.sort{ it.itemindex }.each{ o-> 
+			o.title = o.account.title+'*';
+			items << o; 			
+			totaltarget += (o.target? o.target: 0.0); 
+			totalactual += (o.actual? o.actual: 0.0); 
+			setupNodeAcct( o, incomelist, incomesummarydetails, items ); 
+		} 
+		incomelist.clear(); 
+
+		if ( !items ) throw new Exception('No records found'); 
+
+		if ( params.opthidenoactual==true ) { 
+			items.removeAll( items.findAll{( !it.actual )}); 
+		} 
+
+		def totals = [target: totaltarget, actual: totalactual]; 
+		calculateAmounts( totals ); 
+
+		def p = [:]; 
+		p.title = 'STATEMENT OF RECEIPTS SOURCES';
+		p.reportdata = items; 
+		p.period = params.strperiod; 
+		p.totalactual = totalactual; 
+		p.totaltarget = totaltarget; 
+		p.totalexcess = totals.excess; 
+		p.totalpercentage = totals.percentage;
+		p.totalpercentagevalue = totals.percentagevalue; 
+		return p; 
+	}
+
+	private void setupNode( sourcelist, o ) {
+		sourcelist.findAll{ it.parentid==o.objid }.each{ oo-> 
+			oo.nodeindex = o.nodeindex+1; 
+			setupNode( sourcelist, oo ); 
+		} 
+	}
+	private def buildAcctTitle( type, data ) {
+		def stype = type.toString();
+		if ( stype.matches('detail|subaccount|itemaccount') ) {
+    		def buff = new StringBuilder();
+    		if ( stype == 'itemaccount' ) buff.append('* '); 
+    		if ( data.account?.code ) buff.append( data.account?.code + ' ' );
+    		if ( data.account?.title ) buff.append( data.account?.title );
+
+    		return buff.toString(); 
+    	} else { 
+    		return data.account?.title; 
+    	}
+	} 
+	private void setupNodeAcct( o, sourcelist, incomeacctlist, targetlist ) { 
+    	incomeacctlist.findAll{( it.parentid==o.objid )}.each{ ia-> 
+    		def stitle = buildAcctTitle( 'itemaccount', ia );
+    		ia.title = "    ".multiply(o.nodeindex) + stitle; 
+    		ia.actual = ia.amount; 
+    		ia.type = 'itemaccount';
+    		targetlist << ia; 
+    	} 
+
+		def children = sourcelist.findAll{ it.parentid==o.objid } 
+		children.sort{ it.itemindex } 
+		children.each{ c-> 
+	    	def stitle = buildAcctTitle( c.type, c ); 
+	    	c.title = (o.nodeindex > 0 ? "    ".multiply(o.nodeindex): "") + stitle;
+	    	targetlist << c; 
+	    	setupNodeAcct( c, sourcelist, incomeacctlist, targetlist ); 
 		} 
 	} 
 
@@ -234,48 +216,6 @@ class SREStatementOfReceiptsService {
     	target0 = (c.target? c.target: 0.0); 
     	actual0 = (c.actual? c.actual: 0.0);
     	c.hasamount = (target0 > 0.0 || actual0 > 0.0); 
-	} 
-
-	void buildRootPath( selitem, sourcelist, targetlist ) {
-		if ( !selitem || !sourcelist ) return; 
-		
-		def sre = sourcelist.find{ it.objid==selitem.objid }
-		def ainfo = targetlist.find{ it.objid==selitem.objid } 
-		if ( !ainfo ) { 
-			ainfo = [:]; 
-			ainfo.putAll( selitem ); 
-			ainfo.account = sre?.account; 
-			ainfo.parentid = sre?.parentid; 
-			ainfo.itemindex = sre?.itemindex; 
-			targetlist << ainfo; 
-		} 
-
-		def parent = sourcelist.find{ it.objid==ainfo?.parentid }
-		buildRootPath( parent, sourcelist, targetlist ); 
-	}
-
-	void setupAmounts( selitem, sourcelist ) {
-		def items = sourcelist.findAll{ it.parentid==selitem.objid }
-		if ( !items ) {
-			calculateAmounts( selitem );
-
-		} else {
-			items.each{ 
-				setupAmounts( it, sourcelist ) 
-			} 
-			
-			if ( selitem.actual == null ) {
-				def actual = items.sum{ (it.actual? it.actual: 0.0) }
-				if ( actual ) selitem.actual = actual; 
-			}
-
-			if ( selitem.target == null ) {
-				def target = items.sum{ (it.target? it.target: 0.0) } 
-				if ( target ) selitem.target = target; 
-			}
-	
-			calculateAmounts( selitem ); 
-		} 
 	} 
 
 	void buildParams( params ) {

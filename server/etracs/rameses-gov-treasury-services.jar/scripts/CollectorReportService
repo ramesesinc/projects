@@ -1,23 +1,20 @@
 import com.rameses.annotations.*;
 import com.rameses.common.*
-import com.rameses.services.extended.*
 import com.rameses.util.*
 
+class CollectorReportService { 
 
-class CollectorReportService  
-{ 
 	@ActiveDB('collectionreport')
-	def adb 
+	def adb;
 
 	@Env
-	def env 
+	def env; 
  
 	@Service('DateService')
-	def dtSvc
+	def dtSvc;
 
 	@Service('ReportParameterService')
-	def reportSvc
-
+	def reportSvc;
 
 	@ProxyMethod
 	public def generateRaafData( params ) {
@@ -50,7 +47,7 @@ class CollectorReportService
 	}
 
 	@ProxyMethod 
-	public def generateDailyCollectionReport( params ) {
+	public def generateDailyCollectionReport( params ) { 
 		buildDateFilter(params)
 		if ( params.collector ) { 
 			params.collectorid = params.collector.objid; 
@@ -78,7 +75,7 @@ class CollectorReportService
 		if( ! items) throw new Exception("No record(s) found.    ")
 		
 		header.REPORTTITLE = 'DAILY COLLECTION SUMMARY BY FUND'
-		header.PERIOD = 'FOR THE MONTH OF ' + params.month.caption + ', ' + params.year 
+		header.PERIOD = 'FOR THE MONTH OF ' + params.month.title + ', ' + params.year 
 		header.COLLECTORNAME = env.NAME 
 		header.COLLECTORTITLE = env.JOBTITLE
 		return [ header: header,  items: items ]; 

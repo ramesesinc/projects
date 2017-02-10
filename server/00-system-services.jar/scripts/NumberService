@@ -157,11 +157,12 @@ class NumberService {
     
     @ProxyMethod(local=true)
     public String convertDouble(double number) { 
-		String str 	= format('#0.00000000', number )
-		String strDec	= "";
-        String wn 	= convertLong((long)number);
+        String str = format('#0.00000000', number ); 
+        String strDec = "";
+        long longnum = (long) number; 
+        String wn = convertLong( longnum );
         if (number > 0 && str.indexOf(".") >= 0) {
-            strDec = str.replaceAll( ((long)number) + ".",""); 
+            strDec = str.substring( str.indexOf('.')+1 ); 
             if ( strDec && Long.parseLong(strDec) > 0)  {  
                 strDec = " AND " + getCents(strDec) + "/100"; 
             } else {  

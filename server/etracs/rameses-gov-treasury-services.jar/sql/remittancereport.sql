@@ -107,10 +107,13 @@ order by cc.bank, cc.refno
 select 
   cr.formno as afid, cr.receiptno as serialno, cr.receiptdate as txndate, cr.paidby,
   (case when rem.voided > 0 then 0.0 else cr.amount end) as amount, 
-  (case 
-    when rem.voided > 0 then '***VOIDED***' else 
-    case when ct.title is null then cr.collectiontype_name else ct.title end  
-  end) as collectiontype  
+  (
+    case 
+      when rem.voided > 0 then '***VOIDED***' else 
+      case when ct.title is null then cr.collectiontype_name else ct.title end  
+    end
+  ) as collectiontype, 
+  cr.remarks 
 from ( 
   select rc.*, 
     (select count(*) from cashreceipt_void where receiptid=rc.objid) as voided 
@@ -119,7 +122,7 @@ from (
 )rem 
   inner join cashreceipt cr on rem.objid=cr.objid 
   left join collectiontype ct on cr.collectiontype_objid=ct.objid 
-where cr.collectiontype_objid like '%' 
+where cr.collectiontype_objid like $P{collectiontypeid} 
 order by afid, serialno 
 
 

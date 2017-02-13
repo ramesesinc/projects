@@ -1,6 +1,0 @@
-"entity.*|lessor|amount"[ editmode == true ] {
-    enabled: true;
-}
-"entity.*|lessor|amount"[ editmode == false ] {
-    enabled: false;
-}

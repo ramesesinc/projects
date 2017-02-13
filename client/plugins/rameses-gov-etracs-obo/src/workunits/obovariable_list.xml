@@ -1,0 +1,5 @@
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" schemaName="obovariable">
+    <invokers>
+        <invoker folderid="explorer/master/obo" caption="Obo Variable List" action="init" index="15"/>
+    </invokers>
+</workunit>

@@ -38,15 +38,18 @@ public class CollectionGroupPage extends javax.swing.JPanel {
         xCheckBox1 = new com.rameses.rcp.control.XCheckBox();
         jPanel2 = new javax.swing.JPanel();
         xDataTable1 = new com.rameses.rcp.control.XDataTable();
-
-        setPreferredSize(new java.awt.Dimension(584, 340));
+        jPanel3 = new javax.swing.JPanel();
+        xButton1 = new com.rameses.rcp.control.XButton();
+        xButton2 = new com.rameses.rcp.control.XButton();
+        filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(20, 0), new java.awt.Dimension(0, 0));
+        xButton3 = new com.rameses.rcp.control.XButton();
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder1.setTitle("General Information");
         jPanel1.setBorder(xTitledBorder1);
         jPanel1.setLayout(null);
 
-        xFormPanel1.setCaptionWidth(120);
+        xFormPanel1.setCaptionWidth(130);
         xFormPanel1.setPadding(new java.awt.Insets(5, 0, 5, 0));
 
         xTextField2.setCaption("Name");
@@ -65,25 +68,25 @@ public class CollectionGroupPage extends javax.swing.JPanel {
         xCheckBox1.setCaption("");
         xCheckBox1.setCheckValue(1);
         xCheckBox1.setName("entity.sharing"); // NOI18N
-        xCheckBox1.setOpaque(false);
         xCheckBox1.setText("Sharing");
         xCheckBox1.setUncheckValue(0);
         xFormPanel1.add(xCheckBox1);
 
         jPanel1.add(xFormPanel1);
-        xFormPanel1.setBounds(20, 30, 400, 70);
+        xFormPanel1.setBounds(20, 30, 430, 70);
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder2 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder2.setTitle("Revenue Item");
         jPanel2.setBorder(xTitledBorder2);
 
+        xDataTable1.setAutoResize(false);
         xDataTable1.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "code"}
                 , new Object[]{"caption", "Code"}
-                , new Object[]{"width", 150}
-                , new Object[]{"minWidth", 30}
-                , new Object[]{"maxWidth", 100}
+                , new Object[]{"width", 100}
+                , new Object[]{"minWidth", 0}
+                , new Object[]{"maxWidth", 0}
                 , new Object[]{"required", true}
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
@@ -97,7 +100,7 @@ public class CollectionGroupPage extends javax.swing.JPanel {
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "title"}
                 , new Object[]{"caption", "Title"}
-                , new Object[]{"width", 100}
+                , new Object[]{"width", 250}
                 , new Object[]{"minWidth", 0}
                 , new Object[]{"maxWidth", 0}
                 , new Object[]{"required", false}
@@ -129,8 +132,8 @@ public class CollectionGroupPage extends javax.swing.JPanel {
                 new Object[]{"name", "valuetype"}
                 , new Object[]{"caption", "Value Type"}
                 , new Object[]{"width", 100}
-                , new Object[]{"minWidth", 30}
-                , new Object[]{"maxWidth", 140}
+                , new Object[]{"minWidth", 0}
+                , new Object[]{"maxWidth", 100}
                 , new Object[]{"required", true}
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
@@ -144,9 +147,9 @@ public class CollectionGroupPage extends javax.swing.JPanel {
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "defaultvalue"}
                 , new Object[]{"caption", "Default Value"}
-                , new Object[]{"width", 100}
-                , new Object[]{"minWidth", 30}
-                , new Object[]{"maxWidth", 140}
+                , new Object[]{"width", 80}
+                , new Object[]{"minWidth", 0}
+                , new Object[]{"maxWidth", 100}
                 , new Object[]{"required", true}
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
@@ -161,20 +164,60 @@ public class CollectionGroupPage extends javax.swing.JPanel {
         xDataTable1.setHandler("listModel");
         xDataTable1.setName("selectedItem"); // NOI18N
 
+        jPanel3.setOpaque(false);
+        com.rameses.rcp.control.layout.XLayout xLayout1 = new com.rameses.rcp.control.layout.XLayout();
+        xLayout1.setSpacing(1);
+        jPanel3.setLayout(xLayout1);
+
+        xButton1.setDepends(new String[] {"selectedItem"});
+        xButton1.setDisableWhen("#{allowSelections != true}");
+        xButton1.setMargin(new java.awt.Insets(2, 8, 2, 8));
+        xButton1.setName("selectAll"); // NOI18N
+        xButton1.setText("Select All");
+        jPanel3.add(xButton1);
+
+        xButton2.setDepends(new String[] {"selectedItem"});
+        xButton2.setDisableWhen("#{allowSelections != true}");
+        xButton2.setMargin(new java.awt.Insets(2, 8, 2, 8));
+        xButton2.setName("deselectAll"); // NOI18N
+        xButton2.setText("Deselect All");
+        xButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                xButton2ActionPerformed(evt);
+            }
+        });
+        jPanel3.add(xButton2);
+        jPanel3.add(filler1);
+
+        xButton3.setDepends(new String[] {"selectedItem"});
+        xButton3.setDisableWhen("#{allowSelections != true}");
+        xButton3.setMargin(new java.awt.Insets(2, 8, 2, 8));
+        xButton3.setName("removeAccounts"); // NOI18N
+        xButton3.setText("Remove");
+        xButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                xButton3ActionPerformed(evt);
+            }
+        });
+        jPanel3.add(xButton3);
+
         org.jdesktop.layout.GroupLayout jPanel2Layout = new org.jdesktop.layout.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel2Layout.createSequentialGroup()
+            .add(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .add(xDataTable1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 540, Short.MAX_VALUE)
+                .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(xDataTable1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 690, Short.MAX_VALUE)
+                    .add(jPanel3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .add(xDataTable1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 157, Short.MAX_VALUE)
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel2Layout.createSequentialGroup()
+                .add(xDataTable1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 255, Short.MAX_VALUE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jPanel3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -185,7 +228,7 @@ public class CollectionGroupPage extends javax.swing.JPanel {
             .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 563, Short.MAX_VALUE)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 714, Short.MAX_VALUE)
                     .add(org.jdesktop.layout.GroupLayout.LEADING, jPanel2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -199,11 +242,24 @@ public class CollectionGroupPage extends javax.swing.JPanel {
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void xButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_xButton2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_xButton2ActionPerformed
+
+    private void xButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_xButton3ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_xButton3ActionPerformed
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.Box.Filler filler1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
+    private com.rameses.rcp.control.XButton xButton1;
+    private com.rameses.rcp.control.XButton xButton2;
+    private com.rameses.rcp.control.XButton xButton3;
     private com.rameses.rcp.control.XCheckBox xCheckBox1;
     private com.rameses.rcp.control.XDataTable xDataTable1;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;

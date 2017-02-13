@@ -5,6 +5,9 @@ import java.rmi.server.*;
 
 class BusinessPermitService  {
 
+	@DataContext("sys_org")
+	def sys_org;
+
 	@ActiveDB("business_permit")
 	def em;
 
@@ -107,6 +110,7 @@ class BusinessPermitService  {
 		permit.expirydate = expirydate;
 		permit.permitno = permitno;
 		permit.plateno = plateno; 
+		permit.remarks = o.remarks; 
 		em.create( permit ); 
 		return permit; 
 	} 
@@ -165,7 +169,9 @@ class BusinessPermitService  {
 		if ( !perm.lobs ) throw new Exception('No available active LOB'); 
  
 		def addr = em.findBusinessAddress([ objid: perm.address?.objid ]);
-		if ( addr ) {
+		if ( addr ) { 
+	 		resolveAddress( addr );  
+
 			addr.showextended = false; 
 			perm.businessaddress = formatAddress( addr ); 
 			addr.showextended = true; 
@@ -220,6 +226,26 @@ class BusinessPermitService  {
 		} 
 		return list.join(", ").replaceAll(",,",","); 
 	} 
+
+	private void resolveAddress( addr ) { 
+		if ( !addr?.type.toString().toLowerCase().matches('local|government|rented')) return; 
+
+		def rorg = sys_org.find([ root: 1]).first(); 
+		def orgclasstype = rorg?.orgclass.toString().toUpperCase();
+		if ( orgclasstype=='MUNICIPALITY' ) {
+			addr.municipality = (addr.municipality ? addr.municipality : rorg.name); 
+
+			def porg = sys_org.find([ objid: rorg.parent?.objid ]).first(); 
+			addr.province = (addr.province ? addr.province : porg.name);
+
+		} else if ( orgclasstype=='CITY' ) { 
+			if ( rorg.name ) rorg.name = rorg.name+' CITY'; 
+			addr.city = (addr.city ? addr.city : rorg.name); 
+
+		} else if ( orgclasstype=='PROVINCE' ) {
+			addr.province = (addr.province ? addr.province : rorg.name); 
+		} 
+	} 
 	
 	/*
 	@ProxyMethod
@@ -242,4 +268,10 @@ class BusinessPermitService  {
 		em.updatePlateno( o);
 	}
 
+	@ProxyMethod
+	public void updateRemarks( params ) { 
+		if ( !params.objid ) throw new Exception('objid parameter is required'); 
+
+		em.updateRemarks( params ); 
+	}
 } 

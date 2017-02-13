@@ -31,6 +31,12 @@ class SysUsergroupMemberLookupService {
 		if( p._start ) em.start = p._start ;	
 		if( p._limit ) em.limit = p._limit;
 		em.select("objid:{user.objid},firstname:{user.firstname},middlename:{user.middlename},lastname:{user.lastname},jobtitle:{user.jobtitle},name:{CONCAT(firstname,' ',lastname)},role:{group.role}")
+		if ( p.searchtext ) {
+			p.searchtext += '%';
+			em.orWhere(' user.username like :uname ', [uname: p.searchtext]); 
+			em.orWhere(' user.lastname like :lname ', [lname: p.searchtext]); 
+			em.orWhere(' user.firstname like :fname ', [fname: p.searchtext]); 
+		}		
 		return em.find( m ).list();
 	}
 }

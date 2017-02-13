@@ -1,0 +1,8 @@
+<workunit extends="com/rameses/seti2/templates/CrudList.xml"
+            schemaName="business_lessor_government">
+    <invokers>
+        <invoker folderid="/explorer/master/bpls" caption="Government Property List"  
+                customFilter="government = 1"
+                index="4" role="MASTER" permission="businesslessor.view" action="init"/>
+    </invokers>
+</workunit>

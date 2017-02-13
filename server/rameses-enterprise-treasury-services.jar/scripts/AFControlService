@@ -31,13 +31,19 @@ class AFControlService  {
 	@ProxyMethod
 	public def getOpenList( def o ) {
 		o._pagingKeys = 'a.objid';
-		if(! o.filter ) o.filter = '';
-		if(! o.userid )  o.userid = env.USERID;
-		if( o.formno ) {
-			o.filter += ''' AND afid = $P{formno} ''';
-		}
-		return em.getOpenList(o);
-	}
+		if(! o.userid ) o.userid = env.USERID; 
+
+		def filters = []; 
+		if ( o.filter ) filters << o.filter; 
+		if ( o.formno ) filters << ''' afid = $P{formno} ''';
+		
+		if ( filters ) {
+			o.filter = ' AND '+ filters.join(' AND '); 
+		} else { 
+			o.filter = ''; 
+		} 
+		return em.getOpenList( o ); 
+	} 
 
 	@ProxyMethod
 	public def getAssigneeOpenList( def o ) { 

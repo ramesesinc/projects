@@ -1,21 +1,27 @@
-[getOpenList] 
-SELECT a.* 
-FROM (
-  SELECT 
+[getOpenList]
+select a.* from ( 
+  select 
     ac.objid, ac.afid, ac.txnmode, ac.assignee_objid, ac.assignee_name,
     case when af.formtype = 'serial' then ac.startseries else null end as startseries,
     case when af.formtype = 'serial' then ac.currentseries else null end as currentseries,
     case when af.formtype = 'serial' then ac.endseries else null end as endseries,
     ac.active, ac.org_objid, ac.org_name, ac.fund_objid, ac.fund_title, ac.stubno, ac.owner_objid,
-    ac.owner_name, ac.prefix, ac.suffix, (ac.currentseries-ac.startseries)  AS qtyissued, 
-    ((ac.endseries-ac.currentseries) + 1)  AS qtybalance 
-  FROM af_control ac 
-    INNER JOIN af ON af.objid  = ac.afid 
-  WHERE currentseries <= endseries  
-    AND (assignee_objid=$P{userid} OR owner_objid=$P{userid})  
-    ${filter} 
+    ac.owner_name, ac.prefix, ac.suffix, (ac.currentseries-ac.startseries) as qtyissued, 
+    ((ac.endseries-ac.currentseries) + 1) as qtybalance 
+  from ( 
+    select objid from af_control 
+    where owner_objid=$P{userid} 
+      and currentseries <= endseries  
+    union 
+    select objid from af_control 
+    where assignee_objid=$P{userid} 
+      and currentseries <= endseries 
+  )xx 
+    inner join af_control ac on xx.objid=ac.objid 
+    inner join af on ac.afid=af.objid 
+  where 1=1 ${filter} 
 )a 
-ORDER BY startseries 
+order by startseries 
 
 
 [getAssigneeOpenList]
@@ -34,10 +40,10 @@ SELECT a.* FROM (
   	LEFT JOIN sys_user owner ON owner_objid=owner.objid
   	LEFT JOIN sys_user assignee ON assignee_objid=assignee.objid
   WHERE ac.currentseries <= endseries 
-  AND ac.assignee_objid=$P{userid}
-  AND ac.afid = $P{formno}
-  AND ac.txnmode = $P{txnmode}
-   ${filter}  
+    AND ac.assignee_objid=$P{userid}
+    AND ac.afid = $P{formno}
+    AND ac.txnmode = $P{txnmode}
+    ${filter}  
 )a 
 order by startseries  
 

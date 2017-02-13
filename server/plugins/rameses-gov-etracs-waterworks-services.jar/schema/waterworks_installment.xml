@@ -11,7 +11,6 @@
 		<field name="dtfiled" required="false" indexed="true" type="date" caption="Date Filed"/>
 
 		<field name="particulars" required="true" caption="Particulars"/>
-		<field name="startdate" type="date" caption="Start Date"/>
 		
 		<field name="term" required="true" type="integer" caption="Term" defaultValue="1"/>
 
@@ -20,8 +19,8 @@
 		<field name="amtpaid" type="decimal" required="true" defaultValue="0"/> 
 		<field name="installmentamount" required="true" type="decimal" caption="Installment Amount"  defaultValue="0"/>
 
-		<field name="item_objid" required="true"/>
-		<field name="item_code" />
-		<field name="item_title" />
+		<field name="txntypeid" required="true"/>
+		<field name="startyear" required="true"/>
+		<field name="startmonth" required="true"/>
 	</element>
 </schema>

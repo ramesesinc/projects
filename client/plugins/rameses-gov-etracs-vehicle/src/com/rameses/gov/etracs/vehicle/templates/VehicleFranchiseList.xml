@@ -1,0 +1,4 @@
+<workunit extends="com/rameses/seti2/templates/CrudNodeList.xml">
+    <code class="com.rameses.gov.etracs.vehicle.models.VehicleFranchiseList" />
+</workunit>
+

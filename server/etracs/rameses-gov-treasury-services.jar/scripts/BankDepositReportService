@@ -12,6 +12,9 @@ class BankDepositReportService  {
 	@ActiveDB('bankdepositreport')
 	def adb;
 
+	@ActiveDB('fund')
+	def fund_em;	
+
 	@Service("NumberService")
 	def numSvc;
 
@@ -29,16 +32,24 @@ class BankDepositReportService  {
 		def data = deposit.clone();
 		data.fund = fund; 
 		def params = [bankdepositid: data.objid, fundname: fund.objid ]
-		data.collectionsummaries = em.sqlContext.createNamedQuery('bankdepositreport:getCollectionSummaryByAFAndFund').setParameters(params ).resultList
+		if ( data._INCLUDE_SUBFUND == true ) { 			
+			def list = fund_em.findAllSubAcct([ objid: params.fundname ]).collect{ it.objid }   
+			if ( list ) { 
+				list << params.fundname; 
+				params.fundfilter = "'"+ list.join("','") +"'"; 
+			} 
+		} 
+
+		data.collectionsummaries = adb.getCollectionSummaryByAFAndFund( params );
 		if( data.collectionsummaries ) {
-			data.amount = data.collectionsummaries.amount.sum()
-			data.amountinwords = numSvc.doubleToWords( data.amount )
+			data.amount = data.collectionsummaries.amount.sum();
+			data.amountinwords = numSvc.doubleToWords( data.amount );
 		}
-		data.liquidations = em.sqlContext.createNamedQuery('bankdepositreport:getLiquidations').setParameters(params ).resultList 
+		data.liquidations = adb.getLiquidations( params ); 
 		
 		data.remittancedeposits =  []
-		data.remittancedeposits.addAll( em.sqlContext.createNamedQuery('bankdepositreport:getCashFundSummary').setParameters(params ).resultList )
-		data.remittancedeposits.addAll(em.sqlContext.createNamedQuery('bankdepositreport:getCheckFundSummary').setParameters(params ).resultList)
+		data.remittancedeposits.addAll( adb.getCashFundSummary( params ));
+		data.remittancedeposits.addAll( adb.getCheckFundSummary( params ));
 
 		if ( ! data.remittancedeposits ){
 			data.remittancedeposits.addAll(adb.getDepositSlipSummaryByFund(params))
@@ -53,16 +64,24 @@ class BankDepositReportService  {
 	def generateDepositReportByFund( deposit, fund ) {
 		def data = deposit.clone();
 		data.fund = fund; 
-		def params = [bankdepositid: data.objid, fundname: fund.objid ]
-		data.collectionsummaries = em.sqlContext.createNamedQuery('bankdepositreport:getCollectionSummaryByAFAndFund').setParameters(params ).resultList
+		def params = [bankdepositid: data.objid, fundname: fund.objid ];
+		if ( data._INCLUDE_SUBFUND == true ) { 			
+			def list = fund_em.findAllSubAcct([ objid: params.fundname ]).collect{ it.objid }   
+			if ( list ) { 
+				list << params.fundname; 
+				params.fundfilter = "'"+ list.join("','") +"'"; 
+			} 
+		} 
+
+		data.collectionsummaries = adb.getCollectionSummaryByAFAndFund( params );
 		if( data.collectionsummaries ) {
 			data.amount = data.collectionsummaries.amount.sum()
 			data.amountinwords = numSvc.doubleToWords( data.amount )
 		}
 		
 		data.remittancedeposits =  []
-		data.remittancedeposits.addAll( em.sqlContext.createNamedQuery('bankdepositreport:getCashFundSummary').setParameters(params ).resultList )
-		data.remittancedeposits.addAll(em.sqlContext.createNamedQuery('bankdepositreport:getCheckFundSummary').setParameters(params ).resultList)
+		data.remittancedeposits.addAll( adb.getCashFundSummary( params ));
+		data.remittancedeposits.addAll( adb.getCheckFundSummary( params ));
 
 		if ( ! data.remittancedeposits ){
 			data.remittancedeposits.addAll(adb.getDepositSlipSummaryByFund(params))

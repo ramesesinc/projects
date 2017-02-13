@@ -4,24 +4,12 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@android:color/white">
-    
-    <TextView
-         android:layout_width="fill_parent"
-         android:layout_height="wrap_content"
-         android:text="APPRAISAL INFORMATION"
-         android:minEms="6"
-         android:padding="5dp"
-         android:textStyle="bold"
-         android:background="#2f84c9"
-         android:textColor="#FFFFFF"
-         android:gravity="center"
-         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TableLayout
         android:id="@+id/tableLayout1"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:stretchColumns="0,1,2,3,4,5" >
+        android:stretchColumns="0,1,2,3,4" >
 
         <TableRow
             android:id="@+id/tableRow1"
@@ -112,7 +100,8 @@
         android:layout_marginRight="22dp"
         android:gravity="right"
         android:text="TOTAL AREA (SQM) : "
-        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:paddingTop="5dp"
         android:textStyle="bold" >
     </TextView>
 
@@ -121,9 +110,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_margin="5dp"
+        android:layout_marginTop="20dp"
         android:minEms="5"
         android:padding="10dp"
+        android:textStyle="bold"
+        android:background="@color/default_button_color"
+	    android:textColor="@color/white"
         android:text="Add" />
 
 </LinearLayout>

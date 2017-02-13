@@ -9,6 +9,18 @@ import com.rameses.util.*;
 
 public class InstallmentModel extends CrudFormModel {
 
+    @Service('DateService')
+    def dateSvc; 
+    
+    def txntypelist = [];
+    def months = [];
+
+    void afterInit() { 
+        def m = [ _schemaname: 'waterworks_txntype', findBy:[ ledgertype:'waterworks_installment' ] ];
+        txntypelist = queryService.getList( m )*.objid; 
+        months = dateSvc.getMonths(); 
+    }
+
     void afterCreate() {
         entity.acctid = caller.masterEntity.objid;
     }

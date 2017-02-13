@@ -2,7 +2,8 @@
     
    <invokers>
        <invoker type="cashreceipt:batchcapture:create" caption="New Batch Entry" action="init"/>
-       <invoker folderid="home/treasury/manualcollection" caption="Batch Collection" action="init" index="-2" role="SUBCOLLECTOR" target="window"/>
+       <invoker folderid="home/collection" caption="Batch Cash Receipt" action="init" 
+                role="SUBCOLLECTOR" target="window" index="12" />
    </invokers>
    
    <code>
@@ -71,9 +72,9 @@
                     def custom_homeicon = clientContext.getResource(homeicon); 
                     if (!custom_homeicon) homeicon = 'home/icons/folder.png';
                     
-                    def p = [:];
-                    if(org) p.objid = org?.objid;  
-                    if(orgType) p.orgclass = orgType;
+                    def p = [:]; 
+                    if ( orgType ) p.orgclass = orgType; 
+                    if ( org ) p.objid = org?.objid; 
                     
                     def list = collectionTypeSvc.getBatchCollectionTypes(p).each {
                         it.caption = it.title;

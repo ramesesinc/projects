@@ -21,6 +21,9 @@ class EntityLookupModel extends ComponentBean {
     def onempty;
     def entityTypeCaller; 
     
+    private boolean _allowCreate = true;
+    private boolean _allowOpen = true;
+    
     String getEntityType() {
         def type = (entityTypeCaller?.entityType == null? null: entityTypeCaller.entityType); 
         return type; 
@@ -28,6 +31,20 @@ class EntityLookupModel extends ComponentBean {
         
     def getLookupEntity() { 
         def params = [:]; 
+        String obj = "entity";
+        def etype = getEntityType();
+        if(etype == null ) {
+            //do nothing...
+        }
+        else if(etype.contains(",") || etype.contains("|")) {
+            params.put("entityTypeMatch", etype.replace(",", "|"));
+        }
+        else if(!etype.contains("entity")){
+            obj = "entity"+etype.toLowerCase();
+        }
+        else {
+            obj = etype;
+        }
         params.onselect = { o-> 
             fireOnselect( o ); 
         } 
@@ -38,10 +55,8 @@ class EntityLookupModel extends ComponentBean {
                 setValue( null ); 
             }
             binding.refresh(); 
-        }
-        def etype = getEntityType();
-        if(etype==null) etype = "entity";
-        return Inv.lookupOpener( etype+':lookup', params );
+        };
+        return Inv.lookupOpener( obj+':lookup', params );
     } 
     
     void fireOnselect( o ) { 
@@ -61,8 +76,8 @@ class EntityLookupModel extends ComponentBean {
     
     public def viewEntity() {
         if( !entity?.objid ) throw new Exception("Please select an entity");
-
         def type = (entity.type ? entity.type :'').toLowerCase(); 
+        if(type==null) type = "individual";
         def op = Inv.lookupOpener( 'entity'+ type +':open', [entity: entity] );
         op.target = 'popup';
         return op;
@@ -75,7 +90,7 @@ class EntityLookupModel extends ComponentBean {
         def params = [:]; 
         params.onselect = { o-> 
             fireOnselect( o ); 
-        };
+        } 
         params.allowSelect = true;
         def opener = null; 
         try {
@@ -86,10 +101,17 @@ class EntityLookupModel extends ComponentBean {
         return opener; 
     } 
     
+    public void setAllowCreate(boolean b) {
+        _allowCreate = b;
+    }
+    
     public boolean isAllowCreate() {
         try {
+            if( _allowCreate == false ) return false; 
+
             def etype = getEntityType();
-            if(etype==null) etype = "entityindividual";
+            if ( etype==null ) etype = "entityindividual";
+
             def o = Inv.lookup( etype +':create' );
             return ( o ? true : false );
         } catch(Throwable t) { 
@@ -97,10 +119,17 @@ class EntityLookupModel extends ComponentBean {
         } 
     }
     
+    public void setAllowOpen(boolean b) {
+        _allowOpen = b;
+    }
+    
     public boolean isAllowOpen() {
         try {
+            if ( _allowOpen==false ) return false; 
+
             def o = getValue();
-            if(o?.type==null) return false;
+            if ( o?.type==null ) o.type = "individual";
+
             String etype = "entity"+o.type.toLowerCase();
             def op = Inv.lookup( etype +':open' );
             return ( op ? true : false ); 

@@ -192,7 +192,7 @@ public class MasterFileDetailActivity extends SettingsMenuActivity{
 			}
 			for ( Map m : list ) { 
 				String name = m.get("name") != null ? m.get("name").toString() : "";
-				String desc = m.get("description") != null ? m.get("description").toString() : "";
+				String desc = m.get("caption") != null ? m.get("caption").toString() : "";
 				data.add(new MasterFileListItem(name,desc));
 			}
 		}

@@ -1,0 +1,10 @@
+<workunit schemaName="obo_material">
+    <invokers>
+        <invoker type="obo_material:create" caption="Material"  action="create" target="popup"/>
+        <invoker type="obo_material:open" caption="Material"  action="open" target="popup"/>
+    </invokers>
+    <code class="com.rameses.seti2.models.CrudFormModel" />
+    <pages>
+        <page template="com.rameses.gov.etracs.obo.views.MaterialPage" />
+    </pages>
+</workunit>

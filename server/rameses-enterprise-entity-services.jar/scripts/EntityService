@@ -4,15 +4,35 @@ import java.rmi.server.UID;
 import com.rameses.util.*;
 import com.rameses.io.*;
 
-class EntityService {
-
+class EntityService 
+{
 	@DataContext("entity")
 	def	em; 
 
+	@Service('PersistenceService')
+	def persistenceSvc;	
+
 	@ProxyMethod
-	public def open(o) {
-		return em.select("objid,entityno,name,entityname,address.text,address.objid,address.barangay.objid,address.barangay.name").find([objid: o.objid]).first(); 	
+	public def open( o ) { 
+		def type = em.select('type').find([ objid: o.objid ]).val(); 
+		if (!type || type == 'null') type = o.type 
+		o._schemaname = 'entity' + type?.toString().toLowerCase();
+		return persistenceSvc.read( o ); 
+	} 
+
+	@ProxyMethod
+	public def save( o ) { 
+		o._schemaname = 'entity' + o.type.toString().toLowerCase(); 
+		return persistenceSvc.save( o ); 
+	} 
+
+	@ProxyMethod 
+	public def getPhoto( o ) {
+		return [:]; 
 	}
 
-
+	@ProxyMethod 
+	public def getTypes() {
+		return []; 
+	}
 }

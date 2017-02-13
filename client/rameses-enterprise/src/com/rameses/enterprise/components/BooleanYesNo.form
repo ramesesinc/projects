@@ -31,6 +31,9 @@
         </Property>
         <Property name="text" type="java.lang.String" value="No"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="rdoNoActionPerformed"/>
+      </Events>
     </Component>
   </SubComponents>
   <LayoutCode>

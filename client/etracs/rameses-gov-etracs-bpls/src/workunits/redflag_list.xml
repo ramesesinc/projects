@@ -1,0 +1,5 @@
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" schemaName="business_redflag">
+    <invokers>
+        <invoker folderid="/home/business" caption="Red Flag List" action="init" role="SHARED"/>
+    </invokers>
+</workunit>

@@ -1,7 +1,7 @@
 <workunit>
     <invokers>
         <!--
-        <invoker folderid="/home/business/business_application" caption="Update Qtr Gross for New"  
+        <invoker folderid="/home/business" caption="Update Qtr Gross for New"  
                  action="start" target="window" role="ASSESSOR" index="52"/>
         -->
         <invoker type="extActions" caption="Print"  icon="images/toolbars/printer.png" 
@@ -15,6 +15,7 @@
         import com.rameses.osiris2.client.*
         import com.rameses.osiris2.common.*
         import java.rmi.server.*;
+        import com.rameses.gov.etracs.bpls.models.*;
         
         public class UpdateQtrGrossApplication extends PageFlowController {
         

@@ -1,0 +1,9 @@
+<workunit>
+    <invokers>
+        <invoker folderid="/home/geolocation" caption="Google Map" index="0"/>
+    </invokers>
+    <code class="com.rameses.geolocation.controller.Geolocation"/>
+    <pages>
+        <page template="com.rameses.geolocation.view.Geolocation"/>
+    </pages>
+</workunit>

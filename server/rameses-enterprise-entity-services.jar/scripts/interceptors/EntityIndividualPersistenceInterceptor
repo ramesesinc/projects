@@ -62,8 +62,6 @@ class EntityIndividualPersistenceInterceptor  {
 		}
 	}
 
-	
-
 	@Before(pattern="PersistenceService.create", eval="#{args[0]._schemaname == 'entityindividual'}", index=101)
 	public void beforeCreate(def evt ) {
 		def o = evt.args[0];
@@ -82,7 +80,7 @@ class EntityIndividualPersistenceInterceptor  {
 		o.type = 'INDIVIDUAL';
 		//create the address first
 		def addr = addressEm.create( o.address );
-		o.address.objid = addr.objid;	
+		o.address.objid = addr.objid; 
 	}
 
 	//update the address default 
@@ -95,6 +93,7 @@ class EntityIndividualPersistenceInterceptor  {
 	@After(pattern="PersistenceService.read", eval="#{args[0]._schemaname == 'entityindividual'}")
 	public void afterOpen(def evt) {
 		def o = evt.result;
+		if (!o) return 
 		//o.photo = getPhoto( o );
 		if (o.birthdate) {  
 			def birthyear = dtSvc.getYear( o.birthdate );

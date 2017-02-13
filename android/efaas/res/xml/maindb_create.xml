@@ -273,6 +273,21 @@
         )
     </sql>
     
+    <sql>
+        CREATE TABLE bldgadditionalitem
+        (
+        	objid TEXT NOT NULL PRIMARY KEY,
+        	bldgrysettingid TEXT,
+        	code TEXT,
+        	name TEXT,
+        	unit REAL,
+        	expr TEXT,
+        	previd TEXT, 
+        	type TEXT,
+        	addareatobldgtotalarea INTEGER
+        )
+    </sql>
+    
     <!-- =========================================================== -->
     <!-- FAAS -->
     <!-- =========================================================== -->
@@ -482,6 +497,25 @@
         	param_objid TEXT,
         	intvalue NUMERIC,
         	decimalvalue REAL
+        )
+    </sql>
+    
+    <sql>
+        CREATE TABLE bldgkindbucc
+        (
+        	objid TEXT NOT NULL PRIMARY KEY,
+        	bldgrysettingid TEXT,
+        	bldgtypeid TEXT,
+        	bldgkind_objid TEXT,
+        	basevaluetype TEXT,
+        	basevalue REAL,
+        	minbasevalue REAL,
+        	maxbasevalue REAL,
+        	gapvalue INTEGER,
+        	minarea REAL,
+        	maxarea REAL,
+        	bldgclass TEXT,
+        	previd TEXT
         )
     </sql>
     

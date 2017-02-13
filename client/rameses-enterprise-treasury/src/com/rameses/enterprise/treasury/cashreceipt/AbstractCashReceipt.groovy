@@ -146,27 +146,44 @@ public abstract class AbstractCashReceipt {
         //do nothing for now
     }
     
-    public def getPayerType() { 
-        return null; 
-    } 
-    
-    def onselectPayer = { o-> 
-        def newdata = entity.clone();
-        newdata.payer = o;
-        newdata.items = null; 
-        service.validatePayer( newdata );  
+    protected String getLookupEntityName() {
+        return "entity:lookup"; 
+    }
 
-        entity.payer = o;
-        entity.paidby = o.name;
-        entity.paidbyaddress = o.address.text;
-        binding.refresh("entity.(payer.*|paidby.*)");
-        payerChanged( o );
-    }
-    def onemptyPayer = {
-        entity.payer = null; 
-        binding.refresh("entity.(payer.*|paidby.*)");
+    protected void beforeLookupEntity( Object params ) {
+        //to be implemented 
     }
     
+    def getLookupEntity() {
+        def params = [:]; 
+        beforeLookupEntity( params ); 
+
+        params.onselect = { o-> 
+            def newdata = entity.clone();
+            newdata.payer = o;
+            newdata.items = null; 
+            service.validatePayer( newdata );  
+             
+            entity.payer = o;
+            entity.paidby = o.name;
+            entity.paidbyaddress = o.address.text;
+            binding.refresh("entity.(payer.*|paidby.*)");
+            binding.refresh('createEntity|openEntity');
+                        
+            def opener = payerChanged( o );
+            if( opener != null ) { 
+                return opener;
+            } else {  
+                return "_close"; 
+            } 
+        }
+        params.onempty = { 
+            entity.payer = null; 
+            binding.refresh('createEntity|openEntity'); 
+        } 
+        return InvokerUtil.lookupOpener( getLookupEntityName(), params );
+    } 
+
     /*
     def cancelSeries(){
         def oldentity = entity.clone()
@@ -239,7 +256,14 @@ public abstract class AbstractCashReceipt {
 
     void print() {
         def handle = findReportOpener(entity);
-        handle.viewReport();
+        def opt = handle.viewReport(); 
+        if ( opt instanceof Opener ) { 
+            // 
+            // possible routing of report opener has been configured 
+            // 
+            handle = opt.handle; 
+            handle.viewReport(); 
+        } 
         ReportUtil.print(handle.report,true);
     }
     
@@ -259,13 +283,14 @@ public abstract class AbstractCashReceipt {
         return TemplateProvider.instance.getResult( "com/rameses/enterprise/treasury/cashreceipt/cashreceipt.gtpl", [entity:entity] );
     }
 
-    def doVoid() {
-        return InvokerUtil.lookupOpener( "cashreceipt:void", [receipt:entity,
-            handler: { o->
-                entity.voided = true;
-                binding.refresh();
-            }
-        ]); 
+    def doVoid() { 
+        def xbinding = binding; 
+        def params = [ receipt: entity ]; 
+        params.handler = { o-> 
+            entity.voided = true;
+            xbinding.refresh();
+        } 
+        return InvokerUtil.lookupOpener( "cashreceipt:void", params );  
     }
 
     boolean isAllowCreateEntity() {

@@ -3,7 +3,6 @@ package com.rameses.android.efaas.adapter;
 import java.util.List;
 import com.rameses.android.R;
 import com.rameses.android.efaas.bean.*;
-import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,12 +14,12 @@ public class FloorMenuAdapter extends BaseAdapter {
 	
 	LayoutInflater inflater = null;
 	Context ctx;
-	List<FloorItem> data;
+	List<FloorListItem> data;
 	
-	public FloorMenuAdapter(Context ctx, List<FloorItem> data){
+	public FloorMenuAdapter(Context ctx, List<FloorListItem> data){
 		ctx = ctx;
 		this.data = data;
-		inflater = ( LayoutInflater )ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		inflater = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	}
 
 	@Override
@@ -45,16 +44,16 @@ public class FloorMenuAdapter extends BaseAdapter {
 		TextView floorno = (TextView) rowView.findViewById(R.id.floor_floorno);
 		TextView floorarea = (TextView) rowView.findViewById(R.id.floor_floorarea);
 		
-		FloorItem item = data.get(pos);
+		FloorListItem item = data.get(pos);
 		if(item != null){
-			floorno.setText(item.getFloorNo());
-			floorarea.setText(item.getFloorArea());
+			floorno.setText(item.getItem().getFloorNo());
+			floorarea.setText(item.getItem().getFloorArea());
 		}
 		
 		return rowView;
 	}
 	
-	public FloorItem getListItem(int pos){
+	public FloorListItem getListItem(int pos){
 		return data.get(pos);
 	}
 

@@ -47,6 +47,7 @@ public class BPBillingRuleService  {
 		//actions.addCommand( "set_interest_account",  new SetupInterestAccount( request:req, BA:ba ));
 		actions.addCommand( "set_taxcredit_account",  new SetupTaxCreditAccount( request:req, BA:ba ));
 
+		actions.addCommand( "print_test", new PrintTest());
 		return actions;
 	}
 

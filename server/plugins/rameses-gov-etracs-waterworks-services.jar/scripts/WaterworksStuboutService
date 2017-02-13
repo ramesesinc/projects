@@ -20,6 +20,7 @@ class WaterworksStuboutService {
             throw new Exception("WaterworksStuboutService.addNodes error. Please pass parameter stuboutid");
         if ( !o.nodecount ) 
             throw new Exception("WaterworksStuboutService.addNodes error. Please pass parameter nodecount");
+
         def aggr = stubout_node.select("maxcount:{COUNT(*)}, maxindexno:{MAX(indexno)}").find([stuboutid: o.stuboutid]).first();
         if ( !aggr.maxindexno ) aggr.maxindexno = 0; 
         if ( aggr.maxcount != aggr.maxindexno ) { 
@@ -45,20 +46,22 @@ class WaterworksStuboutService {
     }
 
     @ProxyMethod
-    public def assignAccount(def o) {
-        if(!o.objid) 
-            throw new Exception("WaterworksStuboutService.assignAccount error. Please pass parameter objid");
-        if(!o.acctid) 
-            throw new Exception("WaterworksStuboutService.assignAccount error. Please pass parameter acctid");
-        stubout_node.find( [objid: o.objid] ).update( [acctid:o.acctid] );    
-        waterworks_account.find( [objid: o.acctid] ).update([stuboutnodeid: o.objid]);  
+    public def assignAccount( o ) {
+        if ( !o.objid ) throw new Exception("WaterworksStuboutService.assignAccount error. Please pass parameter objid");
+        if ( !o.acctid ) throw new Exception("WaterworksStuboutService.assignAccount error. Please pass parameter acctid"); 
+
+        //nullify it first    
+        stubout_node.find([ acctid: o.acctid ]).update( [acctid: "{NULL}" ] );     
+
+        stubout_node.find([ objid: o.objid ]).update([ acctid: o.acctid ]);  
+        waterworks_account.find([ objid: o.acctid ]).update([ stuboutnodeid: o.objid ]);             
     }
 
 
     @ProxyMethod
-    public def unassignAccount(def o) {
-        if(!o.objid) 
-            throw new Exception("WaterworksStuboutService.assignAccount error. Please pass parameter objid");
+    public def unassignAccount( o ) {
+        if ( !o.objid ) throw new Exception("WaterworksStuboutService.assignAccount error. Please pass parameter objid");
+
         def oldAcctid = stubout_node.find( [objid: o.objid] ).select("acctid").val();    
         stubout_node.find( [objid: o.objid] ).update( [acctid: "{NULL}" ] );
         if(oldAcctid) {

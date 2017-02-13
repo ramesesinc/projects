@@ -8,7 +8,7 @@ import bpls.actions.*;
 
 public class BPRequirementRuleService  {
 
-	@Resource("RuleExecutorService")	
+	@Resource("RuleService")	
 	def ruleSvc;
 
 	@ActiveDB("rule")

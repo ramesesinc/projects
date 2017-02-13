@@ -1,41 +1,44 @@
 <workunit extends="wtemplates/ServiceLookupController.xml" serviceName="OrgLookupService" allowSearch="true">
     <invokers>
         <invoker type="org:lookup" caption="Lookup Org" target="popup" action="init"/>
+        
+        <invoker type="formActions" caption="Select All" action="selectAll" visibleWhen="#{multiSelect==true}"/>
+        <invoker type="formActions" caption="Deselect All" action="deselectAll" visibleWhen="#{multiSelect==true}"/>
     </invokers>
     <code>
-        <![CDATA[
-        import com.rameses.rcp.common.*;
-        import com.rameses.rcp.annotations.*;
-        import com.rameses.osiris2.client.*;
-        import com.rameses.osiris2.common.*;
-    
-        class OrgLookupController extends ServiceLookupController {
-            
-            @Service("OrgService")
-            def orgSvc;
-        
-            def includes;
-            def orgTypes;
-            
-            void init() {
-                def list = orgSvc.getOrgClasses();
-                if(includes) {
-                    includes = includes.replace(",", "|");
-                    list = list.findAll{ it.name.matches( includes ) }
-                }
-                orgTypes = list*.title;
-            }
-            
-            @PropertyChangeListener 
-            def listener = [
-                "query.orgclass" : { o->
-                    if( o ) super.reload(); 
-                }
-            ];
-            
-        }
-        
-        ]]>    
+    <![CDATA[
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.common.*;
+
+class OrgLookupController extends ServiceLookupController {
+
+    @Service("OrgService")
+    def orgSvc;
+
+    def includes;
+    def orgTypes;
+    def orgclass;
+
+    void init() {
+        def list = orgSvc.getOrgClasses();
+        if ( includes ) { 
+            includes = includes.replace(",", "|");
+            list = list.findAll{ it.name.matches( includes ) }
+        } 
+        orgTypes = list; 
+    }
+
+    @PropertyChangeListener 
+    def listener = [
+        orgclass : { o-> 
+            query.orgclass = o?.name; 
+            super.reload(); 
+        } 
+    ];
+}
+    ]]>    
     </code>
     <pages>
         <page name="queryform" template="com.rameses.admin.org.OrgQueryForm"/>

@@ -77,11 +77,10 @@ public class StuboutPage extends javax.swing.JPanel {
         xLookupField5.setHandler("waterworks_sector_zone:lookup");
         xLookupField5.setName("entity.zone"); // NOI18N
         xLookupField5.setRequired(true);
-        xLookupField5.setStretchWidth(50);
         xFormPanel2.add(xLookupField5);
 
         xLabel1.setBackground(new java.awt.Color(245, 245, 245));
-        xLabel1.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(200, 200, 200)), javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1)));
+        xLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel1.setCaption("Sector");
         xLabel1.setCaptionWidth(60);
         xLabel1.setCellPadding(new java.awt.Insets(0, 10, 0, 0));
@@ -89,11 +88,13 @@ public class StuboutPage extends javax.swing.JPanel {
         xLabel1.setExpression("#{entity.zone.sector.code}");
         xLabel1.setOpaque(true);
         xLabel1.setPreferredSize(new java.awt.Dimension(0, 20));
+        xLabel1.setStretchWidth(100);
         xFormPanel2.add(xLabel1);
 
         xFormPanel1.add(xFormPanel2);
 
         xLabel2.setBackground(new java.awt.Color(245, 245, 245));
+        xLabel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel2.setCaption("Reader");
         xLabel2.setDepends(new String[] {"entity.zone"});
         xLabel2.setExpression("#{entity.zone.reader.name}");

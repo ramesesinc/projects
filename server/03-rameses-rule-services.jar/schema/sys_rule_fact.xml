@@ -1,9 +1,10 @@
 <schema>
 	<element tablename="sys_rule_fact">
 		<field name="objid" primary="true"/>
-		<field name="name" required="true" indexed="true"/>
-		<field name="title" required="true" indexed="true"/>
+		<field name="name" required="true" indexed="true" searchable="true"/>
+		<field name="title" required="true" indexed="true" searchable="true"/>
 		<field name="factclass" required="true" indexed="true"/>
+		<field name="factsuperclass" required="false" />
 		<field name="sortorder" required="true"/>
 		<field name="handler" visible="false"/>
 		<field name="defaultvarname" visible="false"/>
@@ -18,6 +19,7 @@
 		<complex name="fields" ref="sys_rule_fact_field" jointype="one-to-many">
 			<key field="objid" target="parentid"/>
 		</complex>	
+
 	</element>	
 </schema>	
 

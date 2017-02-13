@@ -82,3 +82,12 @@ order by series
 select max(receiptdate) as receiptdate 
 from cashreceipt 
 where controlid=$P{controlid} 
+
+[findAFReceiptSummary]
+select 
+	controlid, 
+	min(series) as minseries, 
+	max(series) as maxseries 
+from cashreceipt  
+where controlid=$P{controlid} 
+group by controlid   

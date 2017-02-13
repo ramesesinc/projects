@@ -1,38 +1,11 @@
-<workunit>
+<workunit schemaName="lobattribute">
     <invokers>
-        <invoker type="lobattribute_lookup:formActions" action="create" caption="Add Attribute" target="popup"/>
-        <invoker type="lobattribute:create" action="init" caption="LOB Attribute" />
-        <invoker type="lobattribute:open" action="open" caption="LOB Attribute" />        
+        <invoker type="lobattribute:open" action="open" caption="LOB Attribute" target="popup"/>        
+        <invoker type="lobattribute:create" action="create" caption="LOB Attribute" target="popup" 
+                 role="MASTER" />
     </invokers>
-    <code>
-        <![CDATA[
-            import com.rameses.rcp.annotations.*;
-            import com.rameses.osiris2.common.*;
-            import com.rameses.rcp.common.*;
-            
-            class LobAttributeController extends CRUDController {
-            
-                String serviceName = 'LobAttributeService'
-                String entityName = 'lobattribute'
-                String prefixId = 'LOBA'
-                
-                @Caller
-                def caller;
-                
-                def doOk() {
-                    super.save();
-                    caller.reload();
-                    return "_close";
-                }
-                
-                def doCancel() {
-                    return "_close";
-                }
-                
-            }
-        ]]>
-    </code>
+    <code class="com.rameses.gov.etracs.bpls.models.LobAttributeModel" />
     <pages>
-        <page template="com.rameses.gov.etracs.bpls.lob.LobAttributePage"/>
+        <page template="com.rameses.gov.etracs.bpls.views.LobAttributePage"/>
     </pages>
 </workunit>

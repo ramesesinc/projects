@@ -1,0 +1,13 @@
+<workunit extends="wtemplates/ListController.xml" 
+          serviceName="LiquidationMonitorService"
+          allowCreate="false"
+          allowOpen="false" 
+          allowSearch="false"> 
+    
+    <invokers>
+        <invoker folderid="/explorer/txn/treasury/monitoring" caption="Undeposited Liquidation Summary Monitoring" 
+                 role="ADMIN" index="-99"/>
+    </invokers>
+   
+    <code class="com.rameses.enterprise.treasury.models.UndepositedLiquidationMonitorModel"/>
+</workunit>

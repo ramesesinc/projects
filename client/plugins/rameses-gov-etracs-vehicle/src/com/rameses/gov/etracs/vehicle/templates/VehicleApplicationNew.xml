@@ -1,0 +1,28 @@
+<workunit>
+    <code class="com.rameses.gov.etracs.vehicle.models.VehicleApplicationEntryForm" />
+    <pageflow>
+        <start>
+            <transition to="initial" action="create"/>
+        </start>
+        <page name="initial" title="#{formTitle} - Specify Information">
+            <transition to="assessment" caption="Next" action="assess" immediate="false"/>
+        </page>
+        <page name="assessment" title="#{formTitle} - Assessment">
+            <transition to="initial" caption="Back" />
+            <transition to="confirm" caption="Next" />
+        </page>
+        <page name="confirm" title="#{formTitle} - Verify Information">
+            <transition to="assessment" caption="Back" />
+            <transition to="success" caption="Submit" action="save" 
+                confirm="You are about to save this application. Proceed?"  immediate="false"/>
+        </page>
+        <page name="success" title="#{formTitle} - Success">
+            <transition to="end" caption="Close" />
+        </page>
+        <end/>
+    </pageflow>
+    <pages>
+        <page name="assessment" template="com.rameses.gov.etracs.vehicle.views.ApplicationAssessmentPage" />
+        <page name="success" template="com.rameses.gov.etracs.vehicle.views.ApplicationSuccessPage" />
+    </pages>
+</workunit>

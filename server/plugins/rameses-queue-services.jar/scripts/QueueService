@@ -1,6 +1,7 @@
 import com.rameses.annotations.*;
 import com.rameses.common.*;
 import com.rameses.util.*;
+import java.rmi.server.UID;
 
 class QueueService { 
 
@@ -22,6 +23,9 @@ class QueueService {
 	@DataContext(value='queue_number', adapter='queue') 
 	def qn; 
 
+	@DataContext(value='queue_number_archive', adapter='queue') 
+	def qna; 	
+
 	@DataContext(value='queue_number_counter', adapter='queue') 
 	def qnc; 
 
@@ -41,19 +45,17 @@ class QueueService {
 		if ( !m ) throw new Exception('queue section does not exist'); 
 
 		def prefix = m.prefix; 
-		def m1 = [ 
-			groupid: m.groupid, sectionid: m.objid, 
-			txndate: dateSvc.getServerDate(), 
-			seriesno: m.currentseries+1, 			
-			state : 'PENDING' 
-		]; 
-		qn.create( m1 ); 
+		def nextseries = m.currentseries+1; 
+		qs.find([ objid: o.sectionid ]).update([ currentseries: nextseries ]); 
 
-		qs.find([ objid: o.sectionid ]).update([ currentseries: m1.seriesno ]); 
-		
-		//fire notification here...
-		//notify([ objid: m1.objid, seriesno: m1.seriesno, type:'FETCH_NEXT' ]);  
-		return formatSeriesNumber([ seriesno: m1.seriesno, prefix: prefix ]); 
+		def dd = [ 
+			txndate: dateSvc.getServerDate(), 
+			groupid: m.groupid, sectionid: m.objid, 
+			seriesno: nextseries, state : 'PENDING' 
+		]; 
+		dd.ticketno = formatSeriesNumber([ seriesno: dd.seriesno, prefix: prefix ]); 
+		qn.create( dd ); 
+		return dd.ticketno; 
 	} 
 
 	@ProxyMethod
@@ -68,5 +70,15 @@ class QueueService {
 		} else { 
 			return ''; 
 		} 
-	} 	
+	} 
+
+	@ProxyMethod 
+	public def getWaitingList( params ) {
+		return qn.getPendingList([ sectionid: params.sectionid, state:'PENDING', _limit: 3 ]); 
+	}
+
+	@ProxyMethod 
+	public def getPendingSections( params ) { 
+		return qn.getPendingSections( params ); 
+	} 
 } 

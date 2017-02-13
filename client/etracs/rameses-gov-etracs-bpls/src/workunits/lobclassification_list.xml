@@ -1,0 +1,8 @@
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" 
+    allowCreate="false" allowOpen="false" allowDelete="false" schemaName="lobclassification">
+    <invokers>
+        <invoker folderid="/explorer/master/bpls" caption="Line of Business Classification" 
+                cols="name"
+                 target="window" index="0" role="MASTER" permission="lobclassification.view" action="init"/>
+    </invokers>
+</workunit> 

@@ -1,8 +1,0 @@
-<schema>
-	<element name="franchise:franchise" tablename="franchise">
-		<field name="objid" primary="true" />
-		<field name="unittype_objid" required="true" />
-		<field name="franchiseno" required="true" />
-		<field name="mtopunit_objid" />
-	</element>
-</schema>

@@ -57,7 +57,7 @@
         android:id="@+id/tableLayout1"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:stretchColumns="0,1" >
+        android:stretchColumns="0,1,2" >
 
         <TableRow
             android:id="@+id/tableRow1"
@@ -90,7 +90,19 @@
                 android:textStyle="bold"
                 android:background="#b6c5e2">
             </TextView>
-
+            
+			<TextView
+                android:id="@+id/appraisal_adjustment"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_column="2"
+                android:layout_margin="1dp"
+                android:gravity="center"
+                android:text="Adjustment"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textStyle="bold"
+                android:background="#b6c5e2">
+            </TextView>
             
         </TableRow>
         
@@ -99,7 +111,7 @@
         <ListView
 		      android:id="@+id/floor_list"
 		      android:layout_width="match_parent"
-		      android:layout_height="150dp"/>
+		      android:layout_height="220dp"/>
 		
 		<Button
 	        android:id="@+id/floor_add"

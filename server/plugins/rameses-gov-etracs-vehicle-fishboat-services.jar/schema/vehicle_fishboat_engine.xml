@@ -1,0 +1,9 @@
+<schema adapter="vehicledb">
+	<element tablename="vehicle_fishboat_engine">
+		<field name="objid" primary="true" prefix="VFBENG" />
+		<field name="parentid"  />
+		<field name="make"  />
+		<field name="serialno"  />
+		<field name="horsepower"/>
+	</element>
+</schema>

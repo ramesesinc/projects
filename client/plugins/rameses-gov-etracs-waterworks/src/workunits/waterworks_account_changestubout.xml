@@ -17,11 +17,22 @@ import com.rameses.osiris2.common.*;
 
 class ChangeAccountStuboutModel extends com.rameses.seti2.models.ChangeInfoModel {
 
+    @Binding 
+    def binding; 
+
     def data = [:];
-    
-    public void afterInit() {
-        super.afterInit(); 
-        data = [:];
+
+    public def init() { 
+        schema = caller.schema;
+        entity = caller.entity;
+        fields = 'stuboutnode,stubout';
+        data   = [:];
+        handler = { o->
+            caller.loadData();
+            info.stubout = caller.entity.stubout;
+            info.stuboutnode = caller.entity.stuboutnode;
+        }
+        return super.init();
     } 
 
     def getLookupStubout() {
@@ -34,6 +45,8 @@ class ChangeAccountStuboutModel extends com.rameses.seti2.models.ChangeInfoModel
         } 
         params.onempty = { 
             data.clear();
+            info.stubout = null;
+            info.stuboutnode = null;
             binding.refresh();
         } 
         return Inv.lookupOpener("waterworks_stubout:lookup", params); 
@@ -51,9 +64,10 @@ class ChangeAccountStuboutModel extends com.rameses.seti2.models.ChangeInfoModel
         } 
         params.onempty = { 
             data.stuboutnode = null; 
+            info.stuboutnode = null; 
             binding.refresh(); 
         } 
-        return Inv.lookupOpener("waterworks_stubout_node_unassigned:lookup", params); 
+        return Inv.lookupOpener("waterworks_stubout_node_unassigned_account:lookup", params); 
     } 
 } 
     ]]> 

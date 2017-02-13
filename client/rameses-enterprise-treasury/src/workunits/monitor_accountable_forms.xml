@@ -1,0 +1,16 @@
+<workunit extends="wtemplates/ListController.xml" 
+          serviceName="AFControlMonitorService"
+          allowCreate="false"
+          allowOpen="false"> 
+    
+    <invokers>
+        <invoker folderid="/explorer/txn/treasury/monitoring" caption="Accountable Form Monitoring" 
+                 action="init" role="ADMIN,AFO" index="-100"/>
+    </invokers>
+   
+    <code class="com.rameses.enterprise.treasury.models.AFControlMonitorModel"/>
+
+    <pages>
+        <page name="queryform" template="com.rameses.enterprise.treasury.views.AFControlMonitorQuery"/>
+    </pages>   
+</workunit>

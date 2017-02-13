@@ -3,8 +3,7 @@
     <invokers>
         <invoker folderid="/home/business" 
             caption="Data Migration"  action="start" target="window" 
-            role="BUSINESSINFO,ADMIN" index="56" permission="business.datamigration"
-            icon="home/icons/business-migration.png"/>
+            role="BUSINESSINFO,ADMIN" index="56" permission="business.datamigration"/>
           
         <invoker type="lobActions" caption="Add" action="lob.add"  immediate="true"/>
         <invoker type="lobActions" caption="Remove" action="lob.remove" immediate="true" 

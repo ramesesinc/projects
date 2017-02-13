@@ -36,17 +36,19 @@ public class CashticketControlPage extends javax.swing.JPanel {
         formPanel1 = new com.rameses.rcp.util.FormPanel();
         xComboBox1 = new com.rameses.rcp.control.XComboBox();
         xComboBox2 = new com.rameses.rcp.control.XComboBox();
+        xLabel1 = new com.rameses.rcp.control.XLabel();
         xDateField1 = new com.rameses.rcp.control.XDateField();
         xNumberField1 = new com.rameses.rcp.control.XNumberField();
         xIntegerField1 = new com.rameses.rcp.control.XIntegerField();
 
-        formPanel1.setCaptionWidth(110);
+        formPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
+        formPanel1.setCaptionWidth(120);
         formPanel1.setPadding(new java.awt.Insets(5, 15, 5, 15));
 
         xComboBox1.setCaption("Collector");
         xComboBox1.setExpression("#{item.name}");
         xComboBox1.setItems("collectorlist");
-        xComboBox1.setName("collector"); // NOI18N
+        xComboBox1.setName("entity.collector"); // NOI18N
         xComboBox1.setPreferredSize(new java.awt.Dimension(0, 22));
         xComboBox1.setRequired(true);
         formPanel1.add(xComboBox1);
@@ -54,10 +56,17 @@ public class CashticketControlPage extends javax.swing.JPanel {
         xComboBox2.setCaption("AF No. ");
         xComboBox2.setExpression("#{item.objid}");
         xComboBox2.setItems("formTypes");
-        xComboBox2.setName("formtype"); // NOI18N
+        xComboBox2.setName("entity.formtype"); // NOI18N
         xComboBox2.setPreferredSize(new java.awt.Dimension(150, 22));
         xComboBox2.setRequired(true);
         formPanel1.add(xComboBox2);
+
+        xLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
+        xLabel1.setCaption("AF Unit");
+        xLabel1.setDepends(new String[] {"entity.formtype"});
+        xLabel1.setExpression("#{entity.formtype.unit}");
+        xLabel1.setPreferredSize(new java.awt.Dimension(150, 20));
+        formPanel1.add(xLabel1);
 
         xDateField1.setCaption("Date Issued");
         xDateField1.setName("entity.refdate"); // NOI18N
@@ -72,7 +81,7 @@ public class CashticketControlPage extends javax.swing.JPanel {
         xNumberField1.setRequired(true);
         formPanel1.add(xNumberField1);
 
-        xIntegerField1.setCaption("Quantity");
+        xIntegerField1.setCaption("Qty Balance");
         xIntegerField1.setName("entity.qty"); // NOI18N
         xIntegerField1.setPreferredSize(new java.awt.Dimension(150, 20));
         xIntegerField1.setRequired(true);
@@ -103,6 +112,7 @@ public class CashticketControlPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XComboBox xComboBox2;
     private com.rameses.rcp.control.XDateField xDateField1;
     private com.rameses.rcp.control.XIntegerField xIntegerField1;
+    private com.rameses.rcp.control.XLabel xLabel1;
     private com.rameses.rcp.control.XNumberField xNumberField1;
     // End of variables declaration//GEN-END:variables
     

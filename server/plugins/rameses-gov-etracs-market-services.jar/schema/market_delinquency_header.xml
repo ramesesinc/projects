@@ -1,0 +1,9 @@
+<schema  adapter="market">
+	<element tablename="market_delinquency_header">
+		<field name="objid" primary="true" prefix="MKTDH"/>
+		<field name="state" required="true" />
+		<field name="period" required="true"/>
+		<field name="totalcount" required="true" type="integer"/>
+		<field name="recordsprocessed" required="true" type="integer"/>
+	</element>
+</schema>

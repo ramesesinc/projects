@@ -1,0 +1,42 @@
+<workunit extends="com/rameses/seti2/templates/CrudReport.xml">
+    <invokers>
+        <invoker type="entityindividual:form:formActions" 
+                 caption="Transaction Card" 
+                 role="MASTER" 
+                 action="view"
+                 reportName="com/rameses/entity/reports/txncard.jasper"
+                 visibleWhen="#{mode=='read'}"/>
+    </invokers>
+    <code>
+        import com.google.zxing.BarcodeFormat;
+        import com.google.zxing.WriterException;
+        import com.google.zxing.common.BitMatrix;
+        import com.google.zxing.qrcode.QRCodeWriter;
+        import com.rameses.entity.utils.*;
+        
+        class TxnCard extends com.rameses.seti2.models.CrudReportModel {
+            
+            public Object getReportData() {
+                def data = super.getReportData();
+                data.photobyte = null;
+                if(data.photo) {
+                    data.photobyte = new ByteArrayInputStream( data.photo );
+                }
+                data.barcode = "ENT:"+data.entityno;
+        
+                QRCodeWriter writer = new QRCodeWriter();
+                BitMatrix matrix = null;
+                try {
+                    matrix = writer.encode(data.barcode, BarcodeFormat.QR_CODE, 256, 256);
+                    data.qrcode =  MatrixToImage.toBufferedImage(matrix);
+                } catch (WriterException e) {
+                    e.printStackTrace();
+                }
+        
+                return data;    
+            }
+        
+        }
+        
+    </code>    
+</workunit>

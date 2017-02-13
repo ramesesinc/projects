@@ -77,9 +77,11 @@ class CashReceiptService  {
 		if ( !p.formtype ) throw new Exception("Form type is required");
 
 		def amount = numSvc.round( p.amount );
-		def amtitemsum = numSvc.round( p.items.amount.sum() ); 
-		if( amount != amtitemsum )	
+		def amtitemsum = numSvc.round( p.items.amount.sum() ); 		
+		if( amount != amtitemsum )	{ 
+			println '** amount='+ amount + ', amtitemsum='+ amtitemsum; 
 			throw new Exception('A data problem is encountered during validation of Receipt No. ' + p.receiptno + '.\nThe Receipt Amount is not equal to item amount total.\nClose the form and recreate the transaction to correct the problem.')
+		} 
 
 		//check if there are payment items with no type. throw error
 		def test = p.paymentitems.findAll{ !it.reftype };

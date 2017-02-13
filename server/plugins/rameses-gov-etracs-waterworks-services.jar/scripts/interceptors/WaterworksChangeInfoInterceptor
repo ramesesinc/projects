@@ -17,7 +17,10 @@ class WaterworksChangeInfoInterceptor {
 		info.stuboutnodeid = info.stuboutnode?.objid; 
 		if ( !info.stuboutnodeid ) throw new Exception('Please specify stubout node'); 
 
-		wstuboutnode.find([ acctid: info.objid ]).update([ acctid:'{null}' ]); 
+		info.acctid = info.findBy?.objid; 
+		if ( !info.acctid ) info.acctid = info.objid;
+
+		wstuboutnode.find([ acctid: info.acctid ]).update([ acctid:'{null}' ]); 
 	} 
 
 	@After( pattern="ChangeInfoService.update", eval="#{args[0].info._schemaname=='waterworks_account' && args[0].info.stuboutnodeid != null}" ) 
@@ -26,7 +29,10 @@ class WaterworksChangeInfoInterceptor {
 		def node = wstuboutnode.find([ objid: info.stuboutnodeid ]).first();
 		if ( !node ) throw new Exception('Stubout node does not exist');
 
-		wstuboutnode.find([ objid: info.stuboutnodeid ]).update([ acctid: info.objid ]); 
+		def acctid = info.acctid; 
+		if ( !acctid ) acctid = info.objid; 
+
+		wstuboutnode.find([ objid: info.stuboutnodeid ]).update([ acctid: acctid ]); 
 	} 
 
 	@Before( pattern="ChangeInfoService.update", eval="#{args[0].info._schemaname=='waterworks_account' && args[0].info.meter != null}" ) 

@@ -16,7 +16,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Base64;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -34,7 +33,6 @@ public class ImageCaptureActivity extends ControlActivity {
 	
 	private static final int CAMERA_CAPTURE_IMAGE_REQUEST_CODE = 100;
     public static final int MEDIA_TYPE_IMAGE = 1;
-    public static final int MEDIA_TYPE_VIDEO = 2;
     private Uri fileUri;
     		
 	private ImageView image;
@@ -67,6 +65,22 @@ public class ImageCaptureActivity extends ControlActivity {
 	
 	protected void onStartProcess() {
 		super.onStartProcess();
+	}
+	
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+	    super.onSaveInstanceState(outState);
+	    if (fileUri != null) {
+	        outState.putString("cameraImageUri", fileUri.toString());
+	    }
+	}
+
+	@Override
+	protected void onRestoreInstanceState(Bundle savedInstanceState) {
+	    super.onRestoreInstanceState(savedInstanceState);
+	    if (savedInstanceState.containsKey("cameraImageUri")) {
+	        fileUri = Uri.parse(savedInstanceState.getString("cameraImageUri"));
+	    }
 	}
 	
 	private void initComponents(){
@@ -108,7 +122,6 @@ public class ImageCaptureActivity extends ControlActivity {
             	}else{
             		doUpdate();
             	}
-            	System.err.println("EXAMINATIONID : " + examinationid);
             }
         });
 	}
@@ -157,7 +170,6 @@ public class ImageCaptureActivity extends ControlActivity {
 	    // Create the storage directory if it does not exist
 	    if (! mediaStorageDir.exists()){
 	        if (! mediaStorageDir.mkdirs()){
-	            Log.d("ETRACS", "failed to create directory");
 	            return null;
 	        }
 	    }
@@ -168,9 +180,6 @@ public class ImageCaptureActivity extends ControlActivity {
 	    if (type == MEDIA_TYPE_IMAGE){
 	        mediaFile = new File(mediaStorageDir.getPath() + File.separator +
 	        "IMG_"+ timeStamp + ".jpg");
-	    } else if(type == MEDIA_TYPE_VIDEO) {
-	        mediaFile = new File(mediaStorageDir.getPath() + File.separator +
-	        "VID_"+ timeStamp + ".mp4");
 	    } else {
 	        return null;
 	    }
@@ -185,6 +194,7 @@ public class ImageCaptureActivity extends ControlActivity {
             bitmap = BitmapFactory.decodeFile(fileUri.getPath(),options);
             image.setImageBitmap(bitmap);
         } catch (Throwable e) {
+        	e.printStackTrace();
         	new ErrorDialog(this,e).show();
         }
     }

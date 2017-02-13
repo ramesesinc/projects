@@ -57,9 +57,9 @@
             
              Map getParameters(){
                 def params = [:]
-                params.SUBTITLE = 'SUMMARY OF COLLECTION'
+                params.SUBTITLE = 'SUMMARY OF COLLECTION BY FUND DETAILED'
                 if (fund) {
-                    params.SUBTITLE = params.SUBTITLE + ' BY ' + fund.title + ' FUND ' ;
+                    params.FUND_TITLE = '( ' + fund.title + ' )' ;
                 }
                 return params;
              }

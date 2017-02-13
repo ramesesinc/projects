@@ -3,9 +3,9 @@
 		<field name="objid" primary="true" prefix="VIT"/>
 		<field name="state" required="true" defaultValue="OPEN"/>
 		<field name="dtcreated" required="true" caption="Date Created"/>
-		<field name="ticketno" required="true" caption="Ticket No."/>
+		<field name="ticketno" required="true" caption="Ticket No." searchable="true" indexed="true"/>
 		<field name="violator_objid" required="true"/>
-		<field name="violator_name" required="true" caption="Violator"/>
+		<field name="violator_name" required="true" caption="Violator" searchable="true" indexed="true"/>
 		<field name="apprehensionofficer_objid" required="true"/>
 		<field name="apprehensionofficer_name" required="true" caption="Apprehending Officer"/>
 		<field name="apprehensionaddress" required="true" caption="Apprehension Address"/>

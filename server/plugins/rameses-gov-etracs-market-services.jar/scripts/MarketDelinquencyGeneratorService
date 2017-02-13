@@ -1,0 +1,61 @@
+import com.rameses.annotations.*;
+import java.text.*;
+import com.rameses.functions.*;
+import com.rameses.util.*;
+import market.facts.*;
+import com.rameses.rules.common.*;
+
+class MarketDelinquencyGeneratorService {
+	
+	@Service("MarketRentalBillingService")
+	def billSvc;
+
+	@DataContext("market_account")
+	def acctEm;
+
+	@DataContext("market_delinquency_header")
+	def delHeader;
+
+	@DataContext("market_delinquency_item")
+	def delItems;
+
+	@ProxyMethod
+	public def checkStatus( def o ) {
+		def cnt = delHeader.find( [objid:o.objid] ).first();
+		if(!cnt) return null;		
+		return cnt.state;
+	}
+
+	@ProxyMethod
+	@Async
+	public void process( def o ) {
+		if( !o.period ) throw new Exception("Period is required");
+		if(!o.objid) throw new Exception("objid is required");
+
+		int cnt = acctEm.select("c:{COUNT(objid)}").where( "IFNULL( lastdatepaid, startdate) < :period", [period: o.period] ).val();
+		if(cnt <=0 ) return;
+
+		delHeader.create( [objid: o.objid, state:'PROCESSING', period: o.period, totalcount: cnt, recordsprocessed: 0 ] );
+		delItems.insertRecords([ parentid:o.objid, period: o.period]);
+
+		def list = delItems.find([parentid: o.objid]).list();
+		int counter = 1;
+		list.each {
+			def bill = billSvc.process( [acctid: it.acctid ]);
+			def m = [:];
+			m.months = bill.items.groupBy{ [it.year, it.month] }.size();
+			m.days = bill.items.size();
+			m.surcharge = bill.totalsurcharge;
+			m.interest = bill.totalinterest;
+			m.amount = bill.totalamount;
+			m.rate = bill.totalrate;
+			m.extrate = bill.totalextrate;
+			delItems.find([acctid: it.acctid]).update( m );
+			delHeader.find([objid: o.objid]).update( [recordsprocessed: counter++] );
+		}
+		delHeader.find([objid: o.objid]).update([state:'COMPLETED']);
+	}
+
+
+
+}

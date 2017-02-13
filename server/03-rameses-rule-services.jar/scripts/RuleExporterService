@@ -66,6 +66,11 @@ class RuleExporterService {
 	}
 
 	private void uploadV2( o ) { 
+		if ( o.dtfiled instanceof Date ) {
+			def formatter = new java.text.SimpleDateFormat('yyyy-MM-dd HH:mm:ss');
+			o.dtfiled = formatter.format( o.dtfiled ); 
+		}
+
 		rule.save( o ); 
 		o.conditions.each{   
 			rule.save( it, "condition" ); 

@@ -1,0 +1,36 @@
+<workunit>
+    <invokers>
+        <invoker folderid="/home/business" caption="Retire Business" 
+            action="start" target="window"  role="BUSINESSINFO" index="53"/>
+
+    </invokers>
+    
+    <code class="com.rameses.gov.etracs.bpls.models.RetireBusinessApplication" />
+    
+    <pageflow>
+        
+        <start>
+            <transition to="search" name="create" />
+        </start>
+        
+        <page name="search" title="Search Business Name (Retire)">
+            <transition to="view-info" caption="Next" name="next" mnemonic="N" immediate="false" action="open"/>
+        </page>
+        
+        <page name="view-info" title="Confirm Retirement">
+            <transition to="search" caption="Back" name="back" mnemonic="B"/>            
+            <transition to="end" caption="Next" name="end" mnemonic="N"  immediate="false"
+                confirm="Please check if this is the correct application. This will be submitted for assesment. Proceed?"
+                action="saveCreate"/>
+        </page>
+        
+        <end/>
+    </pageflow>
+    
+    <pages>
+        <page name="search" template="com.rameses.gov.etracs.bpls.view.SearchBusinessPage"/>
+        <page name="view-info" template="com.rameses.gov.etracs.bpls.view.RetireBusinessPage"/>
+    </pages>
+    
+    
+</workunit>

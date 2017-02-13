@@ -1,0 +1,154 @@
+import com.rameses.annotations.*;
+
+import com.rameses.util.*;
+import java.text.*;
+import java.util.regex.*;
+import rules.treasury.facts.*;
+import rules.vehicle.facts.*;
+
+/**********************************************************
+* This service maintains generation of control nos.
+***********************************************************/
+class VehicleFranchiseService {
+	
+	@DataContext("vehicletype")
+	def vt;
+
+	@DataContext("vehicletype_cluster")
+	def vtc;
+
+	@DataContext(dynamic=true)
+	def em;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@Env
+	def env;
+
+	def pattern = Pattern.compile("\\[.*?\\]");
+
+	public def formatNumber( def d, def handler, int num ) {
+	    def m = pattern.matcher( d );
+	    def sb = new StringBuilder();
+	    int start = 0;
+	    
+	    while(m.find()) {
+	        int end = m.start();
+	        sb.append( d.substring(start, end)  );
+	        String mg = m.group();
+	        mg = mg.substring(1, mg.length()-1);
+	        sb.append( handler(mg, num) );
+	        start = m.end();
+	    }
+	    if( start < d.length() ) sb.append(d.substring(start));
+	    return sb.toString();
+	}
+
+	@ProxyMethod
+	public void generate( def o ) {
+		if(!o.qty) throw new Exception("Please indicate qty in VehicleFranchiseService");
+		if(!o.vehicletype) throw new Exception("Please indicate vehicletype in VehicleFranchiseService");
+
+		def vehicletype = o.vehicletype.toLowerCase();
+		def cluster = o.cluster;
+
+		//find the control pattern, located in vehicle
+		def g = vt.find( [objid: vehicletype] ).first();
+		if(!g) throw new Exception("vehicletype " + vehicletype + " not found");
+		if(!g.controlpattern) throw new Exception("controlpattern is required in vehicletype");
+
+		//find the qty issued found in cluster
+		def h = vtc.find( [objid: cluster.objid ] ).first();
+		if(!h) throw new Exception("cluster " + cluster.objid + " not found");
+
+		int issued = h.issued;
+		int qty = (o.qty+"").toInteger();
+		def dt = dateSvc.getServerDate();
+
+		def handler = { pttn, num ->
+			if( pttn == "org") {
+				return env.ORGCODE;
+			}
+			else if( pttn == "cluster") {
+				return cluster.code;
+			}
+			else if(pttn.startsWith("%")) {
+				return String.format( pttn, num );
+			}
+			else {
+				def df = new java.text.SimpleDateFormat( pttn );
+				return df.format( dt );
+			}
+			return ret;
+		}
+		
+		def franchiseEm = em.lookup("vehicle_franchise_"+vehicletype);
+
+		for(int i=(issued+1); i < (qty+issued+1); i++ ) {
+			def m = [vehicletype: g.objid];
+			m.cluster = cluster;
+		    m.controlno = formatNumber( g.controlpattern, handler, i );
+		    m.state = 'OPEN';
+			franchiseEm.create( m );
+		}
+
+		//update the issued in cluster
+		vtc.find( [objid: cluster.objid ] ).update( [issued: issued + qty] );
+	}
+
+
+	/**************************************************
+	* update the franchise info only if current year
+	***************************************************/
+	@ProxyMethod
+	public void updateFranchiseInfo( def o, def state ) {
+		def m = [:];
+		def str = "objid|appno|appdate|txnmode|appyear|vehicletype|controlid|filedby.*|dtfiled|particulars|billexpirydate|fees|infos|requirements|franchise.*|txndate";
+		o.each { k,v->
+			if(!k.matches( str )) {
+				m.put(k, v);
+			}
+		};
+
+		//update the other infos here...
+		m.activeyear = o.appyear;
+		m.state = state;
+		m.appid = o.objid;
+
+		def franchiseEm = em.lookup("vehicle_franchise_"+ o.vehicletype);
+		franchiseEm.find([objid: o.franchise.objid]).update(m);	
+	}
+
+	@ProxyMethod
+	public void nullifyFranchiseInfo( def o ) {
+		if(!o.controlid) throw new Exception("controlid is required in nullifyFranchiseInfo!");
+		if(!o.vehicletype) throw new Exception("vehicletype is required in nullifyFranchiseInfo!");
+		def m = [:];
+		m.state = 'OPEN';
+		m.owner = null;
+		m.barangay = null;
+		m.appid = null;
+		m.activeyear = null;
+		def franchiseEm = em.lookup("vehicle_franchise_"+ o.vehicletype);
+		def str = "objid|state|cluster|controlno|vehicletype|expirydate|dtregistered|activeyear|owner.*|barangay.*";
+		def g = franchiseEm.find( [objid: o.controlid] ).first();
+		g.each { k,v->
+			if( !k.matches(str)) {
+				m.put(k, null);
+			}
+		};
+		franchiseEm.find([objid: o.controlid]).update(m);	
+	}
+
+	@ProxyMethod
+	public void updateFranchiseState( def o ) {
+		if(!o.state) throw new Exception("state is required in updateFranchiseState !");
+		if(!o.controlid) throw new Exception("controlid is required in updateFranchiseState!");
+		if(!o.vehicletype) throw new Exception("vehicletype is required in updateFranchiseState!");
+		if(!o.appid) throw new Exception("appid is required in updateFranchiseState!");
+		def franchiseEm = em.lookup("vehicle_franchise_"+ o.vehicletype);
+		franchiseEm.find([objid: o.controlid]).update([state: o.state, appid: o.appid]);	
+	}
+
+}

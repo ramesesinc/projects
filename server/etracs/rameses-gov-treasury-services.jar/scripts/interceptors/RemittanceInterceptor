@@ -10,43 +10,71 @@ class RemittanceInterceptor {
 	@Service("AFInventoryService")
 	def afSerialSvc;
 
+	@ActiveDB("af_inventory")
+	def afinventory_db;
+
+	@ActiveDB("remittance")
+	def remittance_db;
+
 	@ActiveDB("remittance_af")
 	def remittanceAf;
 
 	@Service('AFService')
 	def afsvc 
 
+	@Service('DateService') 
+	def dateSvc; 
 
 	@After(pattern="RemittanceService.post")
-	public void postAFControl( def evt ) { 
+	public void postAFControl( evt ) { 
 		def o = evt.result;
 		o.items.each {
-			def m = [:];		
+			def m = [:]; 
 			m.controlid = it.controlid;
-			m.refid = o.objid;
-			m.reftype = "remittance";	
-			m.refno = o.txnno;
-			m.refdate = o.dtposted;
-			m.afid = it.formno;
 			m.txntype = "REMITTANCE";
 			m.remarks = "REMITTANCE"; 
-			if( it.formtype == 'serial' ) {
+			m.reftype = "remittance";	
+			m.refdate = o.dtposted;
+			m.refid = o.objid;
+			m.refno = o.txnno;
+			m.afid = it.formno;
+			if ( it.formtype == 'serial' ) { 				
 				m.startseries = it.startseries;
 				m.endseries = it.endseries;
-				m.qty= it.qty;
 				m.cqty = it.cqty;
-				m.startstub = 0;
+				m.qty= it.qty;
 				m.endstub = 0; 
-				m.cancelSeriesList = it.cancelSeriesList
+				m.startstub = 0;
+				m.cancelSeriesList = it.cancelSeriesList;
+
+				//
+				// auto resolve af_inventory currentseries 
+				// 
+				def afdata = remittance_db.findRemittedReceiptSummary([ controlid: m.controlid ]); 
+				if ( afdata?.maxseries ) {
+					m.currentseries = afdata.maxseries+1; 
+				} else {
+					m.currentseries = m.endseries+1; 
+				}
 			} else {
-				def g = afsvc.open( [objid: m.afid ]);
+				def g = afsvc.open( [objid: m.afid ]);				
 				m.qty = (int) (it.amount / g.denomination); 
-				m.startseries = it.minseries   
+				m.startseries = it.minseries 
 				m.endseries = it.minseries + (m.qty -1 )  
 				m.startstub = 0;
 				m.endstub = 0;
+
+				//
+				// auto resolve af_inventory currentseries 
+				// 
+				def afdetail = afinventory_db.findFirstDetail([ controlid: m.controlid ]); 
+				def afdata = remittance_db.findRemittedReceiptSummary([ controlid: m.controlid ]); 
+				if ( afdata?.amount ) {
+					def qty = (int) ( afdata.amount / g.denomination ); 
+					m.currentseries = afdetail.beginstartseries + qty; 
+				}
 			}
-			afSerialSvc.postIssue(m);
+			afSerialSvc.postIssue( m );
 		}
 
 
@@ -72,7 +100,28 @@ class RemittanceInterceptor {
 			m.afid = it.formno;
 			afSerialSvc.postBegin(m);
 		}
-
 	}
 	
-}
+
+	@ActiveDB('af_inventory_tool') 
+	def afi_tool; 
+
+	@After( pattern="RemittanceService.revert" )
+	public void afterRevert( evt ) {
+		def params = evt.args[0]; 
+		def rundate = dateSvc.getServerDate(); 
+
+		def refs = afi_tool.getDetailsByRef([ refid: params.objid ]); 
+		afi_tool.removeDetailsByRef([ refid: params.objid ]); 
+
+		refs.groupBy{ it.controlid }.each{k,v-> 
+			afi_tool.syncInventorySeries([ controlid: k ]); 
+			afi_tool.syncInventoryBalances([ controlid: k ]); 
+			afi_tool.syncInventoryLineNo([ controlid: k ]); 
+
+			def o = afi_tool.findInventory([ objid: k ]); 			
+			afi_tool.logDetailAsForward([ controlid: k, txndate:rundate, objid:k+'-'+o.currentlineno ]); 
+			afi_tool.syncInventoryLineNo([ controlid: k ]); 
+		} 
+	} 
+} 

@@ -19,13 +19,14 @@ class WaterworksPaymentService {
 		}
 		items.each {
 			if(!it.ledgertype) return;
+
 			def emb = ledgerLookup(it.ledgertype );
 			emb.find( [objid: it.txnrefid ]).update( [amtpaid: expr], [amt: it.amount] );
 		}
 	} 
 
 	@ProxyMethod
-	public def postCreate( def o ) {
+	public def postCreate( o ) { 
 		wp.create( o );
 		postToLedger(o.items, true);
 	}

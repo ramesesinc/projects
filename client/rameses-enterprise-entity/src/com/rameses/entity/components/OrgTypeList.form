@@ -19,7 +19,7 @@
     <Component class="com.rameses.rcp.control.XComboBox" name="component">
       <Properties>
         <Property name="caption" type="java.lang.String" value="Org Type"/>
-        <Property name="emptyText" type="java.lang.String" value="-select an org type-"/>
+        <Property name="emptyText" type="java.lang.String" value="- select an org type -"/>
         <Property name="expression" type="java.lang.String" value="#{item.value}"/>
         <Property name="itemKey" type="java.lang.String" value="key"/>
         <Property name="items" type="java.lang.String" value="orgTypes"/>

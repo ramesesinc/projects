@@ -63,9 +63,10 @@ public class ChangeAccountStuboutPage extends javax.swing.JPanel {
         xLabel2.setBackground(new java.awt.Color(245, 245, 245));
         xLabel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel2.setCaption("Stubout");
-        xLabel2.setExpression("#{entity.stuboutnode.stubout.code}");
+        xLabel2.setExpression("#{entity.stubout.code}");
         xLabel2.setOpaque(true);
         xLabel2.setPreferredSize(new java.awt.Dimension(0, 20));
+        xLabel2.setStretchWidth(100);
         xFormPanel2.add(xLabel2);
 
         xLabel4.setBackground(new java.awt.Color(245, 245, 245));
@@ -89,9 +90,10 @@ public class ChangeAccountStuboutPage extends javax.swing.JPanel {
         xLabel3.setBackground(new java.awt.Color(245, 245, 245));
         xLabel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel3.setCaption("Sector");
-        xLabel3.setExpression("#{entity.stuboutnode.stubout.zone.sector.code}");
+        xLabel3.setExpression("#{entity.sector.code}");
         xLabel3.setOpaque(true);
         xLabel3.setPreferredSize(new java.awt.Dimension(0, 20));
+        xLabel3.setStretchWidth(100);
         xFormPanel4.add(xLabel3);
 
         xLabel5.setBackground(new java.awt.Color(245, 245, 245));
@@ -99,7 +101,7 @@ public class ChangeAccountStuboutPage extends javax.swing.JPanel {
         xLabel5.setCaption("Zone");
         xLabel5.setCaptionWidth(120);
         xLabel5.setCellPadding(new java.awt.Insets(0, 15, 0, 0));
-        xLabel5.setExpression("#{entity.stuboutnode.stubout.zone.code}");
+        xLabel5.setExpression("#{entity.zone.code}");
         xLabel5.setOpaque(true);
         xLabel5.setPreferredSize(new java.awt.Dimension(120, 20));
         xFormPanel4.add(xLabel5);
@@ -139,9 +141,11 @@ public class ChangeAccountStuboutPage extends javax.swing.JPanel {
         xLookupField2.setCaption("Stubout");
         xLookupField2.setExpression("#{item.code}");
         xLookupField2.setHandler("lookupStubout");
+        xLookupField2.setIndex(-1);
         xLookupField2.setName("data.stubout"); // NOI18N
         xLookupField2.setPreferredSize(new java.awt.Dimension(0, 20));
         xLookupField2.setRequired(true);
+        xLookupField2.setStretchWidth(100);
         xFormPanel5.add(xLookupField2);
 
         xLookupField3.setCaption("Stubout Node Index");
@@ -168,6 +172,7 @@ public class ChangeAccountStuboutPage extends javax.swing.JPanel {
         xLabel7.setExpression("#{data.stubout.zone.sector.code}");
         xLabel7.setOpaque(true);
         xLabel7.setPreferredSize(new java.awt.Dimension(0, 20));
+        xLabel7.setStretchWidth(100);
         xFormPanel6.add(xLabel7);
 
         xLabel10.setBackground(new java.awt.Color(245, 245, 245));

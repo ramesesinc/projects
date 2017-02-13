@@ -49,6 +49,7 @@ from (
     inner join af on cr.formno=af.objid 
   where ia.fund_objid = $P{fundid} 
 )xx 
+where xx.formno like $P{formno} 
 group by xx.formtypeindexno, xx.controlid, xx.formno, xx.formtype, xx.stubno
 order by xx.formtypeindexno, xx.formno, min(xx.receiptno)  
 
@@ -71,6 +72,7 @@ from (
     inner join collectiontype ct on cr.collectiontype_objid=ct.objid    
     inner join af a on cr.formno=a.objid 
   where ia.fund_objid like $P{fundid} 
+    and a.objid like $P{formno}  
 )xx 
 group by particulars 
 
@@ -105,10 +107,13 @@ order by cc.bank, cc.refno
 select 
   cr.formno as afid, cr.receiptno as serialno, cr.receiptdate as txndate, cr.paidby,
   (case when rem.voided > 0 then 0.0 else cr.amount end) as amount, 
-  (case 
-    when rem.voided > 0 then '***VOIDED***' else 
-    case when ct.title is null then cr.collectiontype_name else ct.title end  
-  end) as collectiontype  
+  (
+    case 
+      when rem.voided > 0 then '***VOIDED***' else 
+      case when ct.title is null then cr.collectiontype_name else ct.title end  
+    end
+  ) as collectiontype, 
+  cr.remarks 
 from ( 
   select rc.*, 
     (select count(*) from cashreceipt_void where receiptid=rc.objid) as voided 
@@ -117,7 +122,7 @@ from (
 )rem 
   inner join cashreceipt cr on rem.objid=cr.objid 
   left join collectiontype ct on cr.collectiontype_objid=ct.objid 
-where cr.collectiontype_objid like '%' 
+where cr.collectiontype_objid like $P{collectiontypeid} 
 order by afid, serialno 
 
 
@@ -139,7 +144,11 @@ from (
   inner join cashreceipt cr on xx.objid = cr.objid 
   inner join cashreceiptitem cri on cr.objid = cri.receiptid 
   inner join itemaccount ai on cri.item_objid = ai.objid 
-where ai.fund_objid like $P{fundid}  
+where ai.fund_objid in ( 
+  select objid from fund where objid like $P{fundid} 
+  union 
+  select objid from fund where objid in (${fundfilter}) 
+) 
 order by afid, serialno, payer 
 
 
@@ -158,8 +167,11 @@ from (
   inner join cashreceiptitem cri on cr.objid = cri.receiptid 
   inner join itemaccount ai on cri.item_objid = ai.objid 
   inner join af a on cr.formno = a.objid 
-where ai.fund_objid like $P{fundid} 
-  and a.formtype = 'serial' 
+where ai.fund_objid in ( 
+  select objid from fund where objid like $P{fundid} 
+  union 
+  select objid from fund where objid in (${fundfilter})  
+) and a.formtype = 'serial' 
 order by afid, particulars, serialno 
 
 
@@ -178,15 +190,19 @@ from (
   inner join cashreceiptitem cri on cr.objid = cri.receiptid 
   inner join itemaccount ai on cri.item_objid = ai.objid 
   inner join af a on cr.formno = a.objid 
-where ai.fund_objid like $P{fundid} 
-  and a.formtype = 'cashticket' 
+where ai.fund_objid in ( 
+  select objid from fund where objid like $P{fundid} 
+  union 
+  select objid from fund where objid in (${fundfilter})  
+) and a.formtype = 'cashticket' 
 order by afid, particulars, serialno 
 
 
 [getRevenueItemSummaryByFund]
 select 
-  ai.fund_title as fundname, cri.item_objid as acctid, 
-  cri.item_title as acctname, cri.item_code as acctcode, 
+  ai.fund_objid as fundid, ai.fund_title as fundname, 
+  cri.item_objid as acctid, cri.item_title as acctname, 
+  cri.item_code as acctcode, 
   sum( cri.amount ) as amount 
 from ( 
   select rc.*, 
@@ -197,11 +213,15 @@ from (
   inner join cashreceipt cr on xx.objid = cr.objid 
   inner join cashreceiptitem cri on cr.objid = cri.receiptid 
   inner join itemaccount ai on cri.item_objid = ai.objid 
-where ai.fund_objid like $P{fundid} and xx.voided=0
+where ai.fund_objid in ( 
+  select objid from fund where objid like $P{fundid} 
+  union 
+  select objid from fund where objid in (${fundfilter}) 
+) and xx.voided=0 
 group by 
-  ai.fund_title, cri.item_objid,  
-  cri.item_title, cri.item_code 
-order by fundname, acctcode 
+  ai.fund_objid, ai.fund_title, 
+  cri.item_objid, cri.item_title, cri.item_code 
+order by fundname, acctcode  
 
 
 [getReceiptsGroupByFund]
@@ -296,3 +316,17 @@ group by
   receiptno, receiptdate, acctcode, accttitle, paidby
 order by 
   receiptdate, formno, controlid, series 
+
+
+[getAFList]
+select 
+  ia.fund_objid, cr.formno, af.title as formtitle   
+from remittance rem 
+  inner join remittance_cashreceipt remc on rem.objid=remc.remittanceid  
+  inner join cashreceipt cr on remc.objid=cr.objid 
+  inner join cashreceiptitem cri on cr.objid=cri.receiptid 
+  inner join itemaccount ia on cri.item_objid=ia.objid 
+  inner join af on cr.formno=af.objid 
+where rem.objid = $P{remittanceid} 
+group by ia.fund_objid, cr.formno, af.title 
+order by ia.fund_objid, cr.formno 

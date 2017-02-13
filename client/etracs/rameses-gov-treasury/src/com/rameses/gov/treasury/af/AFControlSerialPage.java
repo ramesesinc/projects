@@ -62,7 +62,7 @@ public class AFControlSerialPage extends javax.swing.JPanel {
         xFormPanel1.setPadding(new java.awt.Insets(8, 5, 5, 5));
 
         xComboBox3.setCaption("Collector");
-        xComboBox3.setExpression("#{item.name}");
+        xComboBox3.setExpression("#{item.name} - #{item.orgname}");
         xComboBox3.setIndex(-10);
         xComboBox3.setItems("collectorlist");
         xComboBox3.setName("collector"); // NOI18N

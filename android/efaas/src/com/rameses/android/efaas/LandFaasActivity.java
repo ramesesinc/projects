@@ -40,7 +40,6 @@ public class LandFaasActivity extends ControlActivity{
 	private static TextView street, purok, north, south, west, east;
 	private static Button appraisal_btn, examination_add;
 	private static ListView appraisal_list, examination_list;
-	
 	public static Activity activity;
 	private static Properties faas = null;
 	private static String faasid;

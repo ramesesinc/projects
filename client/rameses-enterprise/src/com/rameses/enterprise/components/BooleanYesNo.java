@@ -54,8 +54,18 @@ public class BooleanYesNo extends XComponentPanel {
         rdoNo.setName("val"); // NOI18N
         rdoNo.setOptionValue(false);
         rdoNo.setText("No");
+        rdoNo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rdoNoActionPerformed(evt);
+            }
+        });
         add(rdoNo);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void rdoNoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdoNoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_rdoNoActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.rameses.rcp.control.XRadio rdoNo;
     private com.rameses.rcp.control.XRadio rdoYes;

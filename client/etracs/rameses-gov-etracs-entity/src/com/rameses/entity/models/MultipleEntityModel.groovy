@@ -8,15 +8,33 @@ import com.rameses.seti2.models.*;
 import java.rmi.server.*;
 
 class MultipleEntityModel extends CrudFormModel {
-
-    void afterCreate() {
-        entity.members = [];
-    }
+    
+    @SubWindow 
+    def window; 
     
     def getLookupMember() {
         return InvokerUtil.lookupOpener('entity:lookup', ['query.type': 'INDIVIDUAL,JURIDICAL']); 
     }             
-            
+
+    void afterCreate() {
+        entity.members = [];
+        if ( listHandler ) {
+            listHandler.reload(); 
+        } 
+        if ( window ) 
+            window.title = getTitle(); 
+    }
+    
+    void afterSave() {
+        if ( window ) { 
+            window.update(); 
+        }
+    }
+    
+    String getTitle() {
+        return (mode=='create'? 'New Multiple Entity': super.getTitle()); 
+    }
+    
     def selectedEntity;    
             
     def listHandler = [
@@ -81,6 +99,4 @@ class MultipleEntityModel extends CrudFormModel {
         rebuildNames();
         binding.refresh('entity.name')
     }
-    
-    
 }

@@ -99,11 +99,12 @@
                     throw new Exception("Total of items must be equal to amount collected");
                     
                 if( MsgBox.confirm('You are about to post this transaction. Continue?')) { 
-                    entity.paidby = entity.collector?.name;
-                    entity.paidbyaddress = "-";
+                    if ( !entity.paidby ) entity.paidby = entity.collector?.name;
+                    if ( !entity.paidbyaddress ) entity.paidbyaddress = "-";
+                    
                     entity = service.post( entity );
+                    mode = "completed"; 
                     MsgBox.alert( "Receipt has been successfully saved.");
-                    mode = "completed"
                     infoHtml = TemplateProvider.instance.getResult( "com/rameses/enterprise/treasury/cashreceipt/cashreceipt.gtpl", [entity:entity] );
                     binding.refresh("infoHtml")
                     return "completed";

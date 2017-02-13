@@ -22,6 +22,9 @@ class UserQueueService {
 	@DataContext(value='queue_number', adapter='queue') 
 	def qn; 
 
+	@DataContext(value='queue_number_archive', adapter='queue') 
+	def qna; 
+
 	@DataContext(value='queue_number_counter', adapter='queue') 
 	def qnc; 
 
@@ -48,16 +51,14 @@ class UserQueueService {
 		if ( !m ) throw new Exception('No queue counter registered for this terminal. Please contact queue administrator');
 
 		m.sections = qcs.getCounterSections([ counterid: m.objid ]); 
-		if ( !m.sections ) throw new Exception('No queue sections defined for this counter. Please contact your queue administrator'); 
 
-		//find if there is a current number assigned
-		def c = qc.findCurrentNumber( [counterid: env.TERMINALID] );
-		if(c) {
+		def c = qc.findCurrentNumber([ counterid: env.TERMINALID ]);
+		if ( c ) {
 			m.current = c;
 			m.current.currentno = queueSvc.formatSeriesNumber(c);
-		}	
+		} 
 		return m;  
-	}
+	} 
 
 	/*
 		initiated by operator 
@@ -67,27 +68,48 @@ class UserQueueService {
 		if ( !o.sectionid ) throw new Exception('sectionid parameter is required');
 		if ( !o.counterid ) throw new Exception('counterid parameter is required');
 
+		def rundate = dateSvc.getServerDate();
 		def a = qs.find([ objid: o.sectionid ]).first(); 
 		if ( !a ) throw new Exception('queue section does not exist'); 
 
 		def m = qn.findNextAvailableNumber( o ); 
 		if ( !m ) throw new Exception('No available queue number'); 
 
-		def z = [objid: m.objid, counterid: o.counterid]; 
-		qnc.create( z ); 
+		qnc.create([ objid: m.objid, counterid: o.counterid ]); 
 
-		notify([ 
-			sectionid: o.sectionid, counterid: o.counterid, prefix: a.prefix, 
-			seriesno: m.seriesno, type:'TAKE_NUMBER' 
-		]);  
-		m.prefix = a.prefix;
-		return queueSvc.formatSeriesNumber(m);  
+		m.prefix = a.prefix; 
+		if ( !m.ticketno ) {
+			m.ticketno = queueSvc.formatSeriesNumber( m ); 
+			qn.find([ objid: m.objid ]).update([ ticketno: m.ticketno ]); 
+		} 
+
+		def dd = qn.find([ objid: m.objid ]).first();
+		dd.ticketno = m.ticketno; 
+		dd.dtfiled = dd.txndate;
+		dd.state = 'PROCESSING'; 
+		dd.startdate = rundate; 
+		dd.servedby = [objid: env.USERID, name: env.FULLNAME ];
+		dd.counter = qc.find([ objid: o.counterid ]).first(); 
+		dd.group = qg.find([ objid: a.groupid ]).first(); 
+		dd.section = a; 
+		qna.create( dd ); 
+
+		try {
+			return dd.ticketno; 
+		} finally { 
+			notify([ 
+				sectionid: o.sectionid, counterid: o.counterid, 
+				seriesno: m.seriesno, ticketno: dd.ticketno,  
+				type:'TAKE_NUMBER', prefix: a.prefix 
+			]); 
+		} 
 	} 
 
 	@ProxyMethod 
 	public void consumeNumber( o ) {
 		if ( !o.counterid ) throw new Exception('counterid parameter is required'); 
 
+		def rundate = dateSvc.getServerDate();
 		def qncdata = qnc.find([ counterid: o.counterid ]).first(); 
 		if ( !qncdata ) return; 
 
@@ -95,11 +117,12 @@ class UserQueueService {
 
 		def qndata = qn.find([ objid: qncdata.objid ]).first(); 
 		qn.find([ objid: qndata.objid ]).delete(); 
+		qna.find([ objid: qndata.objid ]).update([ state: 'CLOSED', enddate: rundate ]); 
 
 		def qsdata = qs.find([ objid: qndata.sectionid ]).first(); 
 		notify([ 
 			counterid: o.counterid, sectionid: qsdata.objid, prefix: qsdata.prefix, 
-			seriesno: qndata.seriesno, type:'CONSUME_NUMBER' 
+			type:'CONSUME_NUMBER', seriesno: qndata.seriesno, ticketno: qndata.ticketno 
 		]); 
 	} 
 
@@ -115,18 +138,31 @@ class UserQueueService {
 
 		notify([ 
 			counterid: o.counterid, sectionid: qsdata.objid, prefix: qsdata.prefix, 
-			seriesno: qndata.seriesno, type:'BUZZ_NUMBER' 
+			type:'BUZZ_NUMBER', seriesno: qndata.seriesno, ticketno: qndata.ticketno 
 		]); 
-	} 	
+	} 
 
 	@ProxyMethod 
 	public void skipNumber( o ) {
 		if ( !o.counterid ) throw new Exception('counterid parameter is required'); 
 
+		def rundate = dateSvc.getServerDate();
 		def m = qnc.find([ counterid: o.counterid ]).first(); 
 		qn.find([ objid: m.objid ]).update([ state: 'SKIP' ]); 
 		qnc.find([ objid: m.objid ]).delete(); 
+		qna.find([ objid: m.objid ]).update([ 
+			servedby: [ objid: env.USERID, name: env.FULLNAME ], 
+			counter: qc.find([ objid: o.counterid ]).first(), 
+			state: 'SKIP', enddate: rundate 
+		]); 
 	} 
+
+
+	@ProxyMethod 
+	public def getQueueSections() {
+		return qs.getList(); 
+	} 
+
 
 	void notify( data ) { 
 		def uuid = ''+ data.sectionid +'_'+ data.counterid; 

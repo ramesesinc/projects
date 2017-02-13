@@ -1,108 +1,14 @@
 <workunit>
-    
-   <invokers>
-         <invoker type="collectiongroup:create" caption="Collection Group" action="create" target="popup" role="MASTER" permission="collectiongroup.create"/>
-         <invoker type="collectiongroup:open" caption="Collection Group" action="open"  target="popup" role="MASTER" permission="collectiongroup.open"/>
-   </invokers>
+    <invokers>
+        <invoker type="collectiongroup:create" caption="Collection Group" action="create" 
+                 role="MASTER" permission="collectiongroup.create" target="popup"/>
+        <invoker type="collectiongroup:open" caption="Collection Group" action="open"  
+                 role="MASTER" permission="collectiongroup.open" target="popup" />        
+    </invokers>
    
-   <code>
-       <![CDATA[
-        import com.rameses.osiris2.common.*;
-        import com.rameses.rcp.common.*;
-        import com.rameses.rcp.annotations.*;
-        import com.rameses.osiris2.client.*;
-        
-        class CollectionGroupController extends CRUDController {
-        
-            @Service("CollectionTypeService")
-            def svc;
-        
-            String serviceName = "CollectionGroupService";
-            String entityName = "collectiongroup";
-            String title = "Collection Group";
-            
-            def valueTypes = [ "ANY", "FIXED", "FIXEDUNIT" ];
-            def selectedItem;
-            
-            def listModel = [
-                fetchList: {         
-                    if (entity.revenueitems == null) {
-                        entity.revenueitems = []; 
-                    }
-                    return entity.revenueitems;
-                },
-                createItem: {
-                    return [valuetype:'ANY', defaultvalue:0.0];
-                },
-                addItem: {
-                    entity.revenueitems << it; 
-                }
-            ] as EditorListModel;
-        
-            void afterCreate( o ) {
-                listModel.reload();
-            } 
-            void afterOpen( o ) {
-                listModel.reload();
-            }
-            
-            void afterUpdate( o ) {
-                listModel.reload();
-            }
-            
-            def getFormTypes() {
-                return svc.getFormTypes()*.objid;
-            }
-            
-            def getLookupAccount() {
-                def params = [:]; 
-                params.onselect = {o-> 
-                    if ( selectedItem==null ) return;
-                    
-                    selectedItem.revenueitemid = o.objid;
-                    selectedItem.code = o.code;                    
-                    selectedItem.title = o.title; 
-                    selectedItem.orderno = 0; 
-                } 
-                return Inv.lookupOpener('revenueitem:lookup', params);
-            } 
-            
-            def addAccount(){
-                entity.revenueitems = entity.revenueitems ? entity.revenueitems : [];
-                def h = {o->
-                    o.code = o.account.code;
-                    o.title = o.account.title;
-                    o.orderno = o.sortorder;
-                    entity.revenueitems << o;
-                    listModel.reload();
-                }
-                return Inv.lookupOpener("collectiontypeaccount:create",[handler:h]);
-            }
-            
-            def editAccount(){
-                selectedItem.account = [objid: selectedItem.objid, code: selectedItem.code, title: selectedItem.title];
-                selectedItem.sortorder = selectedItem.orderno;
-                def h = {o->
-                    o.code = o.account.code;
-                    o.title = o.account.title;
-                    o.orderno = o.sortorder;
-                    selectedItem = o;
-                    listModel.reload();
-                }
-                return Inv.lookupOpener("collectiontypeaccount:edit",[handler:h, entity:selectedItem]);
-            }
-            
-            void removeAccount(){
-                entity.revenueitems.remove(selectedItem);
-                listModel.reload();
-            }
-        }      
-        
-       ]]>
-   </code>
+    <code class="com.rameses.enterprise.treasury.models.CollectionGroupModel"/>
    
-   <pages>
-       <page template="com.rameses.enterprise.treasury.collection.CollectionGroupPage" />
-   </pages>
-   
+    <pages>
+        <page template="com.rameses.enterprise.treasury.collection.CollectionGroupPage"/>
+    </pages>   
 </workunit>

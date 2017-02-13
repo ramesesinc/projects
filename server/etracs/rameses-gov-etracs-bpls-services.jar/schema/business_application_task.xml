@@ -1,13 +1,9 @@
 <schema>
 	
 	<element tablename="business_application_task">
-		<field name="taskid" fieldname="objid" primary="true"/>
-		<complex name="app" ref="business_application" jointype="many-to-one" required="false" 
-			includefields="appno,apptype,appyear,ownername,businessaddress,business.businessname,business.address.text"> 
-			<key field="refid" target="objid"/>
-		</complex>
+		<field name="objid" primary="true"/>
+		<field name="refid" required="true"/>
 		<field name="parentprocessid" />
-		<field name="dtcreated"/>
 		<field name="state"/>
 		<field name="startdate" />
 		<field name="assignee_objid"/>
@@ -16,7 +12,7 @@
 		<field name="actor_objid"/>
 		<field name="actor_name"/>
 		<field name="message"/>
-		<field name="prevtaskid" />	
 	</element>	
-</schema>
 
+
+</schema>

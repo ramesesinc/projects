@@ -44,6 +44,7 @@
   <SubComponents>
     <Container class="com.rameses.rcp.control.XFormPanel" name="xFormPanel1">
       <Properties>
+        <Property name="captionVAlignment" type="java.lang.String" value="CENTER"/>
         <Property name="dynamic" type="boolean" value="true"/>
         <Property name="name" type="java.lang.String" value="formControls" noResource="true"/>
         <Property name="showCaption" type="boolean" value="false"/>

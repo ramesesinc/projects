@@ -1,0 +1,17 @@
+<schema adapter="vehicledb">
+	<element tablename="vehicle_application_fishboat" extends="vehicle_application">
+		<field name="objid" primary="true" prefix="FBAPP"/>
+		<field name="vesselname" required="true" />
+		<field name="length" required="true" type="decimal"/>
+		<field name="breadth" required="true" type="decimal"/>
+		<field name="depth" required="true" type="decimal"/>
+		<field name="grosstonnage" required="true" type="decimal"/>
+		<field name="nettonnage" required="true" type="decimal"/>
+		<field name="buildername" required="true" />
+		<field name="builderplace" required="true" />
+		<field name="buildyear" required="true" type="integer"/>
+		<complex name="engines" ref="vehicle_fishboat_engine" jointype="one-to-many">
+			<key field="objid" target="parentid"/>	
+		</complex>  
+	</element>	
+</schema>

@@ -44,7 +44,7 @@ class WorkflowTaskService  {
     @ProxyMethod
 	public def start( def r ) {
 		if( !r.refid ) throw new Exception("refid is required in WorkflowService.start");
-		if( !r.processname ) throw new Exception("processname is required  in SysWorkflowService.start");
+		if( !r.processname ) throw new Exception("processname is required  in WorkflowTaskService.start");
 		
 
 		//check first if there is already the same refid at start 
@@ -75,6 +75,7 @@ class WorkflowTaskService  {
         def st = [:];
         st.dtcreated = currDate;
         st.startdate = currDate;
+        st.enddate = currDate;
         st.actor = [objid:env.USERID, name:env.FULLNAME];
         st.state = 'start';
         st.refid = r.refid;
@@ -194,6 +195,7 @@ class WorkflowTaskService  {
             //find the first open taskid based on refid
             def pp = [refid: t.refid];
             if( t.state ) pp.state = t.state;
+            //em.debug = true;
             def tt = em.select("taskid").find( pp ).where( "NOT(state IN ('start','end')) AND enddate IS NULL").first();
             if(!tt) throw new Exception("Error in signalling " + t.processname + ". refid does not exist");
             t.taskid = tt.taskid;

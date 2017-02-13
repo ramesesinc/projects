@@ -12,5 +12,6 @@
 
 		<field name="year"  />
 		<field name="month"  />
+		<field name="txntype"  />
 	</element>
 </schema>

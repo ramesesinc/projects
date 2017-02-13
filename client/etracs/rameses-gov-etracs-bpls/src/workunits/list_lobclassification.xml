@@ -1,7 +1,0 @@
-<workunit extends="wtemplates/ListController.xml" 
-    serviceName="LobClassificationService" formName="lobclassification:list"
-    allowCreate="false" allowOpen="true" entityName="lobclassification">
-    <invokers>
-        <invoker folderid="/explorer/master/bpls" caption="Line of Business Classification" target="window" index="0" role="MASTER"/>
-    </invokers>
-</workunit>

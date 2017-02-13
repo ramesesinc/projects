@@ -56,11 +56,10 @@ class RemittanceFundReportController extends com.rameses.etracs.shared.ReportCon
     
      Map getParameters(){
         def params = [:]
-        params.SUBTITLE = 'SUMMARY OF COLLECTION'
-        if (fund) {
-            params.SUBTITLE = params.SUBTITLE + ' BY ' + fund.title + ' FUND ' ;
+        params.SUBTITLE = 'SUMMARY OF COLLECTION BY FUND'
+        if ( fund ) {
+            params.FUND_TITLE = '( ' + fund.title +' )' ;
         }
-            
         return params;
      }
 }      

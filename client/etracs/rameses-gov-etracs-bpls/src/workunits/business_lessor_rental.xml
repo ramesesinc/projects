@@ -1,0 +1,28 @@
+<workunit extends="com/rameses/seti2/templates/CrudForm.xml" schemaName="business_lessor_rental">
+    <invokers>
+        <invoker type="business_lessor_rental:create" caption="Rental Lessor" action="create"/>
+        <invoker type="business_lessor_rental:open" caption="Rental Lessor" action="open"/>
+    </invokers>
+    <code>
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        import com.rameses.seti2.models.*;
+        import com.rameses.rcp.framework.*;
+        import com.rameses.seti2.models.*;
+        
+        class RentalModel extends CrudFormModel {
+        
+            @PropertyChangeListener
+            def listener = [
+                'entity.lessor' : { o->
+                    entity.lessor.orgtype = o.type;
+                }
+            ]
+        }
+    </code>    
+    <pages>
+        <page template="com.rameses.gov.etracs.bpls.views.BusinessLessorRentalPage"/>
+    </pages>
+</workunit>

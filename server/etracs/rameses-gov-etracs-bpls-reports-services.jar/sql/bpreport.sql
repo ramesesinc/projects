@@ -67,7 +67,28 @@ order by xx.tradename
 [getPermitListByYear]
 SELECT 
 	bp.*, b.owner_name, b.owner_address_text as owner_address, 
-	b.tradename, b.objid as businessid 
+	b.tradename, b.objid as business_objid, idtin.idno as tin, 
+	(
+		select sum( bai.intvalue ) from business_application_info bai 
+			inner join business_application ba on bai.applicationid=ba.objid 
+		where bai.businessid=xx.businessid and bai.activeyear=xx.activeyear 
+			and bai.attribute_objid='NUM_EMPLOYEE' 
+			and ba.state IN ('COMPLETED') and ba.apptype in ('NEW','RENEW') 
+	) as numemployee, 
+	(
+		select sum( bai.intvalue ) from business_application_info bai 
+			inner join business_application ba on bai.applicationid=ba.objid 
+		where bai.businessid=xx.businessid and bai.activeyear=xx.activeyear 
+			and bai.attribute_objid='NUM_EMPLOYEE_MALE' 
+			and ba.state IN ('COMPLETED') and ba.apptype in ('NEW','RENEW') 
+	) as nummale, 
+	(
+		select sum( bai.intvalue ) from business_application_info bai 
+			inner join business_application ba on bai.applicationid=ba.objid 
+		where bai.businessid=xx.businessid and bai.activeyear=xx.activeyear 
+			and bai.attribute_objid='NUM_EMPLOYEE_FEMALE' 
+			and ba.state IN ('COMPLETED') and ba.apptype in ('NEW','RENEW') 
+	) as numfemale    
 FROM ( 
 	SELECT businessid, activeyear, MAX(version) AS version 
 	FROM business_permit 
@@ -76,6 +97,7 @@ FROM (
 )xx  
 	INNER JOIN business_permit bp ON xx.businessid=bp.businessid 
 	INNER JOIN business b ON bp.businessid=b.objid 
+	LEFT JOIN entityid idtin on (b.owner_objid=idtin.entityid AND idtin.idtype='TIN') 	
 	LEFT JOIN business_address addr ON b.address_objid=addr.objid  
 WHERE bp.activeyear=xx.activeyear and bp.version=xx.version  
 	${filter} 

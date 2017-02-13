@@ -12,6 +12,9 @@ class RemittanceReportService  {
 	@ActiveDB('remittancereport')
 	def db;
 
+	@ActiveDB('fund')
+	def fund_em;
+
 	@Service("NumberService")
 	def numSvc;
 
@@ -36,7 +39,7 @@ class RemittanceReportService  {
 
 	@ProxyMethod 
 	def getRCDReportData( rem ) {
-		def params = [ remittanceid: rem.objid, fundid:'%' ]; 
+		def params = [ remittanceid: rem.objid, fundid:'%', formno:'%' ]; 
 		def remittance = rem.clone();
 		remittance.collectiontype = buildCollectionTypes( db.getRCDCollectionTypes( params ) ); 
 		remittance.collectionsummaries = db.getRCDCollectionSummaries( params ); 
@@ -93,9 +96,9 @@ class RemittanceReportService  {
 	}
 
 	@ProxyMethod 
-	def getRCDReportDataByFund( rem, fund ) {
+	def getRCDReportDataByFund( rem, fund, af ) { 
 		def remittance = rem.clone();
-		def params = [ remittanceid: rem.objid,  fundid: (fund? fund.objid: '%') ];
+		def params = [ remittanceid: rem.objid, fundid: (fund? fund.objid: '%'), formno: (af? af.formno: '%') ];  
 		remittance.collectiontype = buildCollectionTypes( db.getRCDCollectionTypesByFund( params ) );
 		remittance.collectionsummaries = db.getRCDCollectionSummaries( params ); 
 
@@ -143,7 +146,7 @@ class RemittanceReportService  {
 		def params = [
 			remittanceid: data.objid, 
 			collectiontypeid : collectiontype ? collectiontype.objid : '%'
-		]
+		];
 
 		data.receipts = db.getReceiptsByRemittanceCollectionType( params ); 
 		if( ! data.receipts ) throw new Exception("No record(s) found ");
@@ -151,9 +154,17 @@ class RemittanceReportService  {
 	}
 
 	@ProxyMethod 
-	def generateReportByFund( rem, fund ) {
+	public def generateReportByFund( rem, fund ) { 
 		def data = rem.clone();
-		def params = [ remittanceid: data.objid,  fundid : fund ? fund.objid : '%']
+		def params = [ remittanceid: data.objid, fundid: (fund ? fund.objid : '%'), fundfilter:null]; 
+		if ( data._INCLUDE_SUBFUND == true ) { 			
+			def list = fund_em.findAllSubAcct([ objid: params.fundid ]).collect{ it.objid }   
+			if ( list ) { 
+				list << params.fundid; 
+				params.fundfilter = "'"+ list.join("','") +"'"; 
+			} 
+		} 
+
 		data.receipts = db.getReceiptsByRemittanceFund( params );
 		if( ! data.receipts ) throw new Exception("No record(s) found ");
 
@@ -165,7 +176,15 @@ class RemittanceReportService  {
 	@ProxyMethod 
 	def generateDetailedReportByFund(rem, fund) {
 		def data = rem.clone() 
-		def params = [ remittanceid: data.objid,  fundid : fund ? fund.objid : '%']
+		def params = [ remittanceid: data.objid,  fundid: (fund ? fund.objid : '%')];
+ 		if ( data._INCLUDE_SUBFUND == true ) { 			
+			def list = fund_em.findAllSubAcct([ objid: params.fundid ]).collect{ it.objid }   
+			if ( list ) { 
+				list << params.fundid; 
+				params.fundfilter = "'"+ list.join("','") +"'"; 
+			} 
+		} 
+
 		data.serials = db.getSerialReceiptsByRemittanceFund( params ); 
 		data.nonserials = db.getNonSerialReceiptDetailsByFund( params );
 		return data;
@@ -183,6 +202,13 @@ class RemittanceReportService  {
 	@ProxyMethod 
 	def generateReportByRevenueItem( rem, fund ) {
 		def params = [ remittanceid: rem.objid,  fundid: (fund? fund.objid: '%') ]; 
+ 		if ( rem._INCLUDE_SUBFUND == true ) { 			
+			def list = fund_em.findAllSubAcct([ objid: params.fundid ]).collect{ it.objid }   
+			if ( list ) { 
+				list << params.fundid; 
+				params.fundfilter = "'"+ list.join("','") +"'"; 
+			} 
+		} 
 
 		rem.acctsummaries = db.getRevenueItemSummaryByFund( params );
 		if ( !rem.acctsummaries ) throw new Exception("No record(s) found ");
@@ -326,8 +352,16 @@ class RemittanceReportService  {
 	} 
 	
 	@ProxyMethod 
-	def getFundlist( remittanceid ) {
-		return db.getFundlist([ remittanceid: remittanceid ]); 
+	def getFundlist( remittanceid ) { 
+		def params = [ remittanceid: remittanceid ]; 
+		def list = db.getFundlist( params ); 
+		list.each{ 
+			it.aflist = db.getAFList( params ); 
+			it.aflist.each{ o-> 
+				o.title = o.formno +' - '+ o.formtitle; 
+			}
+		} 
+		return list; 
 	} 
 
 	@ProxyMethod 

@@ -17,19 +17,19 @@ class WaterworksAccountConsumptionPersistenceInterceptor{
 	@After(pattern="PersistenceService.(create|update|removeEntity)", eval="#{args[0]._schemaname == 'waterworks_consumption'}")
 	public void afterPersist( evt ) {
 		def zz = evt.args[0];
-
+		def acctid = zz.acctid; 
 		//update the maximum in the acct code.
-		def z = consumption.select("c:{MAX(billingcycleid)}").find( [acctid:zz.acctid] ).val();
+		def z = consumption.select("c:{MAX(billingcycleid)}").find([ acctid: acctid ]).val();
 		if ( z ) { 
-			def bc = consumption.find([billingcycleid: z]).first(); 
-			acct.find([ objid: zz.acctid ]).update([ 
+			def bc = consumption.find([ acctid: acctid, billingcycleid: z ]).first(); 
+			acct.find([ objid: acctid ]).update([ 
 				billingcycleid: z, 
 				currentreading: bc.reading, 
 				billdate: bc.billingcycle.billdate, 
 				lastdateread: (zz.dtreading? zz.dtreading : bc.billingcycle.readingdate)  
 			]);
 		} else {
-			acct.find([ objid: zz.acctid ]).update([ 
+			acct.find([ objid: acctid ]).update([ 
 				billingcycleid:'{NULL}', currentreading:0, 
 				lastdateread:zz.dtreading, billdate:'{NULL}' 
 			]); 

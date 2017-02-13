@@ -19,7 +19,7 @@
           <Group type="102" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Component id="jPanel2" min="-2" pref="470" max="-2" attributes="0"/>
-              <EmptySpace pref="46" max="32767" attributes="0"/>
+              <EmptySpace pref="91" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -27,7 +27,7 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="1" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jPanel2" pref="328" max="32767" attributes="0"/>
+              <Component id="jPanel2" pref="437" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
@@ -111,12 +111,16 @@
           </Layout>
           <SubComponents>
             <Container class="com.rameses.rcp.control.XFormPanel" name="xFormPanel1">
+              <Properties>
+                <Property name="captionVAlignment" type="java.lang.String" value="CENTER"/>
+                <Property name="captionWidth" type="int" value="110"/>
+              </Properties>
               <SubComponents>
                 <Component class="com.rameses.rcp.control.XComboBox" name="xComboBox1">
                   <Properties>
                     <Property name="allowNull" type="boolean" value="false"/>
                     <Property name="caption" type="java.lang.String" value="Period"/>
-                    <Property name="captionWidth" type="int" value="100"/>
+                    <Property name="captionWidth" type="int" value="120"/>
                     <Property name="expression" type="java.lang.String" value="#{item.title}"/>
                     <Property name="immediate" type="boolean" value="true"/>
                     <Property name="itemKey" type="java.lang.String" value="type"/>
@@ -128,7 +132,7 @@
                 <Component class="com.rameses.rcp.control.XIntegerField" name="xIntegerField1">
                   <Properties>
                     <Property name="caption" type="java.lang.String" value="Year"/>
-                    <Property name="captionWidth" type="int" value="100"/>
+                    <Property name="captionWidth" type="int" value="120"/>
                     <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
                       <StringArray count="1">
                         <StringItem index="0" value="entity.period"/>
@@ -144,7 +148,7 @@
                 <Component class="com.rameses.rcp.control.XComboBox" name="xComboBox2">
                   <Properties>
                     <Property name="caption" type="java.lang.String" value="Quarter"/>
-                    <Property name="captionWidth" type="int" value="100"/>
+                    <Property name="captionWidth" type="int" value="120"/>
                     <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
                       <StringArray count="1">
                         <StringItem index="0" value="entity.period"/>
@@ -163,7 +167,7 @@
                 <Component class="com.rameses.rcp.control.XComboBox" name="xComboBox3">
                   <Properties>
                     <Property name="caption" type="java.lang.String" value="Month"/>
-                    <Property name="captionWidth" type="int" value="100"/>
+                    <Property name="captionWidth" type="int" value="120"/>
                     <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
                       <StringArray count="1">
                         <StringItem index="0" value="entity.period"/>
@@ -182,7 +186,7 @@
                 <Component class="com.rameses.rcp.control.XDateField" name="xDateField1">
                   <Properties>
                     <Property name="caption" type="java.lang.String" value="Date"/>
-                    <Property name="captionWidth" type="int" value="100"/>
+                    <Property name="captionWidth" type="int" value="120"/>
                     <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
                       <StringArray count="1">
                         <StringItem index="0" value="entity.period"/>
@@ -195,11 +199,26 @@
                     <Property name="required" type="boolean" value="true"/>
                   </Properties>
                 </Component>
+                <Component class="com.rameses.rcp.control.XComboBox" name="xComboBox7">
+                  <Properties>
+                    <Property name="allowNull" type="boolean" value="false"/>
+                    <Property name="caption" type="java.lang.String" value="Posting Type"/>
+                    <Property name="captionWidth" type="int" value="120"/>
+                    <Property name="expression" type="java.lang.String" value="#{item.name}"/>
+                    <Property name="immediate" type="boolean" value="true"/>
+                    <Property name="items" type="java.lang.String" value="postingTypes"/>
+                    <Property name="name" type="java.lang.String" value="entity.postingtype" noResource="true"/>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[300, 20]"/>
+                    </Property>
+                    <Property name="required" type="boolean" value="true"/>
+                  </Properties>
+                </Component>
                 <Component class="com.rameses.rcp.control.XComboBox" name="xComboBox4">
                   <Properties>
                     <Property name="allowNull" type="boolean" value="false"/>
                     <Property name="caption" type="java.lang.String" value="Report Type"/>
-                    <Property name="captionWidth" type="int" value="100"/>
+                    <Property name="captionWidth" type="int" value="120"/>
                     <Property name="expression" type="java.lang.String" value="#{item.name}"/>
                     <Property name="immediate" type="boolean" value="true"/>
                     <Property name="items" type="java.lang.String" value="reportTypes"/>
@@ -213,7 +232,7 @@
                 <Component class="com.rameses.rcp.control.XComboBox" name="xComboBox5">
                   <Properties>
                     <Property name="caption" type="java.lang.String" value="Acct Group"/>
-                    <Property name="captionWidth" type="int" value="100"/>
+                    <Property name="captionWidth" type="int" value="120"/>
                     <Property name="expression" type="java.lang.String" value="#{item.name}"/>
                     <Property name="immediate" type="boolean" value="true"/>
                     <Property name="items" type="java.lang.String" value="acctgroups"/>
@@ -226,7 +245,7 @@
                 <Component class="com.rameses.rcp.control.XComboBox" name="xComboBox6">
                   <Properties>
                     <Property name="caption" type="java.lang.String" value="Fund"/>
-                    <Property name="captionWidth" type="int" value="100"/>
+                    <Property name="captionWidth" type="int" value="120"/>
                     <Property name="expression" type="java.lang.String" value="#{item.title}"/>
                     <Property name="immediate" type="boolean" value="true"/>
                     <Property name="items" type="java.lang.String" value="funds"/>
@@ -239,10 +258,9 @@
                 <Component class="com.rameses.rcp.control.XCheckBox" name="xCheckBox3">
                   <Properties>
                     <Property name="cellPadding" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
-                      <Insets value="[0, 95, 0, 0]"/>
+                      <Insets value="[0, 115, 0, 0]"/>
                     </Property>
                     <Property name="name" type="java.lang.String" value="entity.opthidenoactual" noResource="true"/>
-                    <Property name="opaque" type="boolean" value="false"/>
                     <Property name="showCaption" type="boolean" value="false"/>
                     <Property name="text" type="java.lang.String" value=" Hide No Actual Values"/>
                   </Properties>

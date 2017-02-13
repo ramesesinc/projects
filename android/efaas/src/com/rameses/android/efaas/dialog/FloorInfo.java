@@ -1,28 +1,39 @@
 package com.rameses.android.efaas.dialog;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
-
 import com.rameses.android.R;
+import com.rameses.android.efaas.adapter.AdjustmentMenuAdapter;
+import com.rameses.android.efaas.bean.AdjustmentListItem;
 import com.rameses.android.efaas.bean.FloorItem;
-
+import com.rameses.android.efaas.bean.FloorListItem;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.AdapterView.OnItemClickListener;
 
 public class FloorInfo extends AlertDialog.Builder{
 	
 	public boolean CANCELLED = false;
-	private Context ctx;
+	private static Context ctx;
 	private AlertDialog.Builder builder;
 	private AlertDialog dialog;
 	private Throwable error = null;
 	private String objid, bldguseid, bldgrpuid;
 	private EditText floorno, floorarea;
+	private Button add;
+	private static ListView listview;
+	public static List<AdjustmentListItem> data_adjustment;
 	
-	public FloorInfo(Context ctx, String objid, String bldguseid, String bldgrpuid){
-		super(ctx);
+	public FloorInfo(Context c, String objid, String bldguseid, String bldgrpuid){
+		super(c);
+		this.ctx = c;
 		this.objid = objid;
 		this.bldguseid = bldguseid;
 		this.bldgrpuid = bldgrpuid;
@@ -32,6 +43,13 @@ public class FloorInfo extends AlertDialog.Builder{
 		
 		floorno = (EditText) view.findViewById(R.id.floor_floorno);
 		floorarea = (EditText) view.findViewById(R.id.floor_floorarea);
+		listview = (ListView) view.findViewById(R.id.adjustment_list);
+		add = (Button) view.findViewById(R.id.adjustment_add);
+		add.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+            	new AdjustmentTypeInfo(ctx, null, -1).show();
+            }
+        });
 		
 		builder = new AlertDialog.Builder(ctx);
 		builder.setTitle("Floor Info");
@@ -44,6 +62,28 @@ public class FloorInfo extends AlertDialog.Builder{
 		}
 		
 		dialog = builder.create();
+		data_adjustment = new ArrayList<AdjustmentListItem>();
+	}
+	
+	public static void loadAdjustmentData(){
+		try{
+			listview.setAdapter(new AdjustmentMenuAdapter(ctx, data_adjustment));
+			listview.setOnItemClickListener(new OnItemClickListener(){
+				@Override
+				public void onItemClick(AdapterView<?> adapter, View view, int pos, long arg3) {
+					AdjustmentMenuAdapter a = (AdjustmentMenuAdapter) adapter.getAdapter();
+					AdjustmentListItem item = a.getListItem(pos);
+					if(item != null) new AdjustmentTypeInfo(ctx,item,pos).show();
+				}	
+			});
+		}catch(Throwable t){
+			new ErrorDialog(ctx, t).show();
+		}
+	}
+	
+	public static void addAdjustment(AdjustmentListItem item){
+		if(item != null) data_adjustment.add(item);
+		loadAdjustmentData();
 	}
 	
 	@Override
@@ -67,7 +107,7 @@ public class FloorInfo extends AlertDialog.Builder{
 				}
 				
 				FloorItem item = new FloorItem(UUID.randomUUID().toString(), data_floorno, data_floorarea);
-				ActualUseInfo.data_floor.add(item);
+				ActualUseInfo.data_floor.add(new FloorListItem(item,data_adjustment));
 				ActualUseInfo.loadListData();
 				dialog.dismiss();
 			}

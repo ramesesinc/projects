@@ -1,0 +1,9 @@
+<workunit extends="com/rameses/seti2/templates/CrudForm.xml" schemaName="business_lessor_government">
+    <invokers>
+        <invoker type="business_lessor_government:create" caption="Government Lessor" action="create"/>
+        <invoker type="business_lessor_government:open" caption="Government Lessor" action="open"/>
+    </invokers>
+    <pages>
+        <page template="com.rameses.gov.etracs.bpls.views.BusinessLessorGovernmentPage"/>
+    </pages>
+</workunit>

@@ -59,9 +59,7 @@
 		<field name="varname" required="true"/>
 		<field name="datatype" required="true"/>
 		<field name="pos" required="true"/>
-	</element>	
-
-	
+	</element> 
 		
 	<element name="action" tablename="sys_rule_action">
 		<field name="objid" primary="true"/>
@@ -113,6 +111,7 @@
 		<field name="name" required="true"/>
 		<field name="title" required="true"/>
 		<field name="factclass" required="true"/>
+		<field name="factsuperclass" />
 		<field name="sortorder" required="true"/>
 		<field name="handler" />
 		<field name="defaultvarname" />

@@ -38,7 +38,11 @@ from (
     inner join remittance r on lr.objid = r.objid 
     inner join remittance_fund rf ON r.objid = rf.remittanceid  
   where lr.liquidationid = $P{liquidationid} 
-    and rf.fund_objid like $P{fundid}
+    and rf.fund_objid in ( 
+      select objid from fund where objid like $P{fundid} 
+      union 
+      select objid from fund where objid in (${fundfilter}) 
+    ) 
 )xx 
 group by collectorname, dtposted, txnno 
 order by collectorname, dtposted, txnno 
@@ -56,7 +60,11 @@ from (
     inner join remittance r on lr.objid = r.objid 
     inner join remittance_fund rf ON r.objid = rf.remittanceid  
   where lr.liquidationid = $P{liquidationid} 
-    and rf.fund_objid like $P{fundid} 
+    and rf.fund_objid in ( 
+      select objid from fund where objid like $P{fundid} 
+      union 
+      select objid from fund where objid in (${fundfilter}) 
+    ) 
 )xx 
 group by collectorname, dtposted, txnno 
 order by collectorname, dtposted, txnno 
@@ -74,7 +82,11 @@ select * from (
     end as fundsortorder
   from liquidation_cashier_fund  lcf 
   where lcf.liquidationid = $P{liquidationid} 
-    and lcf.fund_objid like $P{fundid} 
+    and lcf.fund_objid in ( 
+      select objid from fund where objid like $P{fundid} 
+      union 
+      select objid from fund where objid in (${fundfilter}) 
+    ) 
 )xx 
 order by xx.fundsortorder, xx.particulars 
 
@@ -149,7 +161,11 @@ from (
   inner join cashreceipt cr on xx.objid = cr.objid 
   inner join cashreceiptitem cri on cr.objid = cri.receiptid 
   inner join itemaccount ri on cri.item_objid = ri.objid 
-where ri.fund_objid like $P{fundid} 
+where ri.fund_objid in ( 
+    select objid from fund where objid like $P{fundid} 
+    union 
+    select objid from fund where objid in (${fundfilter}) 
+  ) 
 
 
 [getRevenueItemSummaryByFund]
@@ -165,7 +181,11 @@ from (
   inner join cashreceipt c on xx.objid = c.objid 
   inner join cashreceiptitem cri on c.objid = cri.receiptid 
   inner join itemaccount ia on cri.item_objid = ia.objid 
-where ia.fund_objid like $P{fundid}  
+where ia.fund_objid in ( 
+    select objid from fund where objid like $P{fundid} 
+    union 
+    select objid from fund where objid in (${fundfilter}) 
+  )  
 group by ia.fund_title, cri.item_objid, cri.item_title, cri.item_code 
 order by ia.fund_title, cri.item_code, cri.item_title 
 
@@ -248,7 +268,11 @@ from (
   inner join cashreceipt cr on xx.objid = cr.objid 
   inner join cashreceiptitem cri on cr.objid = cri.receiptid 
   inner join itemaccount ai on cri.item_objid = ai.objid 
-where ai.fund_objid like $P{fundid} 
+where ai.fund_objid in ( 
+    select objid from fund where objid like $P{fundid} 
+    union 
+    select objid from fund where objid in (${fundfilter}) 
+  ) 
 order by afid, serialno, payer 
 
 
@@ -267,7 +291,12 @@ from (
   inner join cashreceipt cr on xx.objid = cr.objid 
   inner join cashreceiptitem cri on cr.objid = cri.receiptid 
   inner join itemaccount ai on cri.item_objid = ai.objid 
-where ai.fund_objid like $P{fundid} and xx.voided=0
+where ai.fund_objid in ( 
+    select objid from fund where objid like $P{fundid} 
+    union 
+    select objid from fund where objid in (${fundfilter}) 
+  ) 
+  and xx.voided=0 
 group by 
   ai.fund_title, cri.item_objid,  
   cri.item_title, cri.item_code 

@@ -33,6 +33,7 @@ public class SelectQueueNumber extends javax.swing.JPanel {
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
         xButton1 = new com.rameses.rcp.control.XButton();
 
+        xFormPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
         xFormPanel1.setDynamic(true);
         xFormPanel1.setName("formControls"); // NOI18N
         xFormPanel1.setShowCaption(false);

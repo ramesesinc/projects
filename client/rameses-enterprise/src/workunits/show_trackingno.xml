@@ -1,0 +1,13 @@
+<workunit>
+    <!-- THIS DISPLAYS THE STUB AND BARCODE -->
+    <invokers>
+        <invoker type="show_trackingno" caption="Show Tracking No" target="popup" action="viewReport"/>
+    </invokers>
+    
+    <code class="com.rameses.enterprise.models.ShowTrackingNo" />
+
+    <pages>
+        <page name="default" template="com.rameses.enterprise.views.ShowTrackingnoPage"/>
+    </pages>
+    
+</workunit>

@@ -1,0 +1,22 @@
+<workunit schemaName="obovariable">
+    <invokers>
+        <invoker type="obovariable:create" caption="Obo Variable"
+                action="create" index="1" target="popup"/>
+        
+        <invoker type="obovariable:open" caption="Obo Variable"
+                action="open" index="1" target="popup"/>
+    </invokers>
+    <code>
+        class OboVariableMode extends com.rameses.seti2.models.CrudFormModel {
+            def datatypes = ['integer','decimal','boolean']
+            def sections = ['ELECTRICAL', 'PLUMBING', 'MECHANICAL', 'ELECTRONIC'];
+        
+            void beforeSave(def mode) {
+                entity.objid = entity.name;
+            }
+        }
+    </code>    
+    <pages>
+        <page template="com.rameses.gov.etracs.obo.views.OboVariablePage" />
+    </pages>
+</workunit>

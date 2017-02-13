@@ -2,7 +2,9 @@
     <invokers>
         <invoker type="queue_counter:show" caption="Queue Counter" action="init" /> 
     </invokers>
+    
     <code class="queueing.model.QueueCounter" />
+    
     <pages>
         <page template="queueing.view.QueueCounterPage"/>
     </pages>    

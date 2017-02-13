@@ -24,8 +24,8 @@ class StockReceiptService extends ActiveCrudService {
 	@Env
 	def env;
 
-	void beforeCreate( def o ) {
-		o.user = [objid:env.USERID, name:env.FULLNAME];
+	void beforeCreate( o ) {
+		o.user = [objid:env.USERID, name:env.FULLNAME, title:env.JOBTITLE];
 		o.org = [objid:env.ORGID, name:env.ORGNAME];
 		o.receiptno = "IRAF" + seqSvc.getNextFormattedSeries("IRAF");
 		o.dtfiled = dateSvc.serverDate;
@@ -47,8 +47,6 @@ class StockReceiptService extends ActiveCrudService {
 			if( u ) o.user.title = u.jobtitle 
 		}
 		o.items = em.getItems(o);
-		o.request = reqSvc.open( o.request )
+		o.request = reqSvc.open( o.request );
 	}
-
-
 }

@@ -1,0 +1,82 @@
+import com.rameses.annotations.*;
+
+import com.rameses.rules.common.*;
+import rules.vehicle.facts.*;
+import rules.treasury.facts.*;
+
+
+/**********************************************************
+* This service handles computation of what fees to charge 
+***********************************************************/
+class VehicleBillingService {
+	
+	@Service("RuleExecutorService")
+	def ruleSvc;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@DataContext("vehicle_application")
+	def appEm;
+
+
+	@ProxyMethod
+	public def getBilling( def o ) {
+		//find application or vehicleid
+		def vehicleid = null;
+		def appid = null;
+		if(o.appno) {
+			def v = appEm.find( [appno: o.appno] ).first();
+			appid = v.appid;
+		}
+		else if( o.appid ) {
+			appEm.find( [appno: o.appno] ).first();
+		}
+
+	}
+
+	@ProxyMethod
+	public def process( def app ) {
+		if(!app.billitems) {
+			throw new Exception("VehicleBillingService requires billitems");
+		}
+		if(!app.apptype) throw new Exception("app type is required");
+		if(!app.vehicletype) throw new Exception("vehicle type is required");	
+		if(!app.franchise?.controlno) throw new Exception("franchise controlno  is required");	
+
+		def svrDate = dateSvc.getServerDate();
+		if(!app.billdate) app.billdate = svrDate;
+		
+		def facts = [];
+		if(app.payment?.amount) {
+			facts << new Payment( amount: app.payment.amount );
+		}	
+		facts << new VehicleApplication( app );
+		facts << new VehicleFranchise( app.franchise );
+		facts << new AppDate( app.appdate );
+		facts << new rules.treasury.facts.SystemDate(svrDate);
+		facts << new rules.treasury.facts.BillDate(app.billdate);
+
+		def  acctUtil = new ItemAccountUtil();
+		def billItems = [];
+		app.billitems.each {
+			def bi = new BillItem( account: acctUtil.createAccountFact(it.item), 
+				amount: it.amount, 
+				refid: it.objid, 
+				ledgertype:it.ledgertype,
+				principal: it.principal,
+				amtpaid: it.amtpaid,
+				remarks : it.remarks
+			);
+			facts << bi;
+			billItems << bi;
+		};
+
+		def ctx = new RuleExecutionContext(facts);
+		ctx.env.acctUtil = acctUtil;
+		ctx.result.billitems = billItems;
+		def res = ruleSvc.execute( "vehiclebilling", facts, null, null );
+		return res;
+	}
+
+}

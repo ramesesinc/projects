@@ -3,11 +3,10 @@ package waterworks.facts;
 import java.util.*;
 import com.rameses.util.*;
 
-
 public class WaterConsumption {
 
-	int month = 0;
-	int year = 0;
+    int month = 0;
+    int year = 0;
     int volume = 0;
     double amount = 0.0;
     double amtdue = 0.0;
@@ -15,10 +14,6 @@ public class WaterConsumption {
     Date duedate;
     String refid;
     Date disconnectiondate;
-
-	public WaterConsumption() {
-
-	}
 
     public WaterConsumption(def o) {
 		if(o.month) month = o.month;
@@ -31,4 +26,5 @@ public class WaterConsumption {
 	    if(o.refid) refid = o.refid;
 	    if(o.disconnectiondate) disconnectiondate = o.disconnectiondate;
     }
+
 }

@@ -1,15 +1,11 @@
 <schema>
-	<element name="lob" tablename="lob">
-		<field name="objid" primary="true"/>
-		<field name="state" required="true"/>
-		<field name="name" required="true"/>
-		<field name="classification_objid" required="true"/>
-		<field name="psic"/>
-	</element>
 
-	<element name="attribute" tablename="lob_lobattribute">
-		<field name="lobid" primary="true"/>
-		<field name="lobattributeid" primary="true"/>
+	<element name="lob" tablename="lob">
+		<field name="objid" primary="true" prefix="LOB"/>
+		<field name="state" required="true" caption="State" visible="false"/>
+		<field name="name" required="true" caption="Name" searchable="true" indexed="true" />
+		<field name="classification_objid" required="true" caption="Classification" searchable="true"/>
+		<field name="psic"/>
 	</element>
 
 </schema>

@@ -1,0 +1,15 @@
+<schema adapter="vehicledb">
+	<element tablename="vehicle_franchise_tricycle" extends="vehicle_franchise">
+		<field name="objid" primary="true" prefix="MTRI"/>
+		<field name="plateno" caption="Plate No" indexed="true"/>
+		<field name="engineno" caption="Engine No" indexed="true"/>
+		<field name="bodyno" caption="Body No" indexed="true"/>
+		<field name="chassisno" caption="Chassis No" indexed="true"/>
+		<field name="sidecarno" />
+		<field name="make"  indexed="true"/>
+		<field name="model"  indexed="true"/>
+		<field name="color" />
+		<field name="sidecarcolor" />
+		<field name="crname" />
+	</element>
+</schema>

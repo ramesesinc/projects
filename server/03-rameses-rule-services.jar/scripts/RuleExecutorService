@@ -16,6 +16,7 @@ class RuleExecutorService {
 		
 	private static Map metaClasses = Collections.synchronizedMap(new HashMap());
 
+
 	private def getClassInstance( String ruleset, String actionName, String actionClassname) {
 		if( !metaClasses.containsKey(ruleset)  ) metaClasses.put(ruleset, [:] );
 		def rsMap = metaClasses.get(ruleset);
@@ -32,10 +33,12 @@ class RuleExecutorService {
 
 	@ProxyMethod	
 	public def execute( String ruleset, def facts, def actions, def handler )	{
-		def ctx = null;
-		try {
+		//just in case you want to pass it beforehand, you can do so.
+		def ctx = RuleExecutionContext.getCurrentContext();
+		if(ctx == null) {
 			ctx = new RuleExecutionContext(facts);
-
+		}	
+		try {
 			def ruleAction = actions;
 
 			if(ruleAction==null) {
@@ -53,8 +56,11 @@ class RuleExecutorService {
 
 			def grps = ruleDB.getRulegroups( [ruleset: ruleset] );
 			for( g in grps ) {
+				if(handler) {
+					boolean b = handler( g.name );
+					if(!b) continue;
+				}	
 				ruleSvc.execute( ruleset, facts, ruleAction, g.name );
-				if(handler) handler( g.name );
 			}
 			return ctx.result;
 		}

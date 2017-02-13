@@ -10,15 +10,39 @@ import com.rameses.common.*
 *****************************************************/
 class CashTicketCollectorMigrationService  { 
 
-	@Service("AFInventoryService")
-	def afInventorySvc ;
-
 	@ActiveDB("af_control")
 	def afControl;
+
+	@ActiveDB("af_stock")
+	def afstock_em;
 
 	@Service("SequenceService") 
 	def seqSvc;
 
+	@Service('UsergroupMemberLookupService') 
+	def ugmLookupSvc; 
+
+    @Service('DateService')
+    def dateSvc;
+
+	@Service("AFInventoryService")
+	def afInventorySvc;
+
+	@ProxyMethod 
+	public def init() { 
+		def result = [:]; 
+		result.aftypes = afstock_em.getAFByType([ formtype: 'cashticket' ]); 
+		result.aftypes.sort{ it.denomination }  
+
+		result.collectors = []; 
+		def tmplist = ugmLookupSvc.getList([ '_tag':'COLLECTOR' ]); 
+        tmplist.groupBy{ it.objid }.each{k,v-> 
+            result.collectors << v.first(); 
+        } 
+        result.collectors.sort{ it.name } 
+        result.txndate = dateSvc.getServerDate(); 
+        return result; 
+	} 
 	
 	/**********************************************************
 	* pass the ff. parameters:
@@ -33,35 +57,43 @@ class CashTicketCollectorMigrationService  {
 	*    remarks
 	**********************************************************/
 	@ProxyMethod
-	public void post( def m ) {
-		
-		if(! m.refno) m.refno = 'SYSTEM' + seqSvc.getNextFormattedSeries("CASHTICKETFORWARD")
+	public void post( m ) { 
+		Number maxqty = m.formtype.qty; 
+		if ( !maxqty ) 
+			throw new Exception('Please specify the maximum quantity for this accountable form'); 
+
+		Number qtybal = m.qty; 
+		if ( qtybal > maxqty ) 
+			throw new Exception('Qty Balance must not be greater than ' + maxqty);  
+
+		if ( !m.refno ) 
+			m.refno = 'SYSTEM' + seqSvc.getNextFormattedSeries("CASHTICKETFORWARD"); 
 
 		def head = [:];
 		head.refid = m.refid;
 		head.reftype = m.reftype;	
 		head.refno = m.refno;
 		head.refdate = m.refdate;
+	    head.currentstub = m.stubno;
 	    head.startstub = m.stubno;
 	    head.endstub = m.stubno;
-	    head.afid = m.afid;
-	    head.currentstub = m.stubno;
+	    head.afid = m.formtype.objid;
+		head.unit = m.formtype.unit;
 		head.startseries = 1;
+		head.currentseries = 1;
 		head.endseries = m.qty;
-		head.currentseries = 0;
 		head.qty = m.qty;
-		head.unit = 'PAD';
 		head.remarks = m.remarks;
 		head.respcenter = m.collector;
-		if(!head.respcenter.type) head.respcenter.type = 'COLLECTOR';
 		head.txntype = "COLLECTOR BEG.BAL.";
+		if ( !head.respcenter.type ) head.respcenter.type = 'COLLECTOR';
 		
-		def q = afInventorySvc .postReceipt(head);
-		q.txnmode = 'ONLINE'
-		q.assignee = q.respcenter
-		q.active = 0 
-		q.stubno = q.startstub 
-		q.owner = q.respcenter
+		def q = afInventorySvc.postReceipt( head );
+		q.active = 0;
+		q.txnmode = 'ONLINE';
+		q.assignee = q.respcenter;
+		q.stubno = q.startstub; 
+		q.owner = q.respcenter;
 		afControl.create( q );
-	}
+	} 
 }

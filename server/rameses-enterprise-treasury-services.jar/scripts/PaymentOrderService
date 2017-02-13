@@ -13,9 +13,11 @@ class PaymentOrderService {
 	@Service("DateService")
 	def dtSvc 
 
-	
 	@DataContext("collectiontype")
 	def collectionType;
+
+	@DataContext("paymentorder_type")
+	def paymentOrderType;
 
 	@DataContext("revenueitem")
 	def revItem;
@@ -33,20 +35,16 @@ class PaymentOrderService {
 		if(! entity.txntype) throw new Exception("txntype is required. ") 
 
 		if(!entity.collectiontype) {
-			entity.collectiontype = collectionType.find([barcodekey:'PMO']).first();
+			entity.collectiontype = collectionType.find([barcodekey: entity.barcodekey ]).first();
 		}	
 		if(!entity.collectiontype)
 			throw new Exception("Collection type not found!");
 
-		entity.items.eachWithIndex{ o,idx-> 
-			println idx;
+		entity.items?.eachWithIndex{ o,idx-> 
 			if( !o.item?.objid ) throw new Exception("Items item must have an objid");
 			if( !o.amount ) throw new Exception("Items item must have an amount");
-
-
 			def item = revItem.find([objid: o.item.objid]).first(); 
 			if ( !item ) throw new Exception('Item #'+ (idx+1)  +' account '+ o.item.title +' does not exist'); 
-
 			o.item = item; 
 		}
 		if( entity.items.sum{it.amount} != entity.amount)
@@ -55,11 +53,11 @@ class PaymentOrderService {
 		def m = [:];
 		m.txnid = KeyGen.generateAlphanumKey( "PMO:", 6 );
 		m.expirydate = dtSvc.findNextDate('1y');
-		m.info = entity;
+		m.info = entity.info;
 		m.payer = entity.payer;
-		m.txntype = entity.txntype;
 		m.amount = entity.amount;
 		m.refid = entity.refid;
+		m.refno = entity.refno;
 		pmt.create(m);
 		return m; 
 	}

@@ -4,7 +4,7 @@ import java.rmi.server.*;
 import com.rameses.services.extended.*;
 import java.text.*;
 
-public class KioskBusinessBillingService  {
+public class KioskBusinessPaymentOrderService  {
 
 	@Service("BusinessCashReceiptService")
 	def svc;
@@ -12,8 +12,11 @@ public class KioskBusinessBillingService  {
 	@Service("DateService")
 	def dateSvc;
 
+	@DataContext("collectiontype")
+	def collectionTypeEm;
+
 	@ProxyMethod
-	public def getBilling( def o ) {
+	public def post( def o ) {
 		def b = svc.findInfo([appno: o.code]);
 		if( !b) throw new Exception("Cannot find business code " + o.code);
 
@@ -39,13 +42,6 @@ public class KioskBusinessBillingService  {
         //b.items = z.items;             
         b.amount = b.totals.total;
 		return b;
-	}
-
-	@ProxyMethod
-	public void postPaymentOrder( def o ) {
-		def b = svc.findInfo([appno: o.code]);
-		if( !b) throw new Exception("Cannot find business code " + o.code);
-		
 	}
 
 

@@ -2,7 +2,6 @@ import com.rameses.annotations.*;
 import com.rameses.util.*;
 import java.rmi.server.*;
 import com.rameses.services.extended.*;
-import market.facts.*;
 import java.text.*;
 
 public class KioskBarcodeService  {
@@ -12,7 +11,7 @@ public class KioskBarcodeService  {
 		def barcode = o.barcode;
 		if(!barcode.contains(":")) throw new Exception("Barcode must have : ");
 		def arr = barcode.split(":");
-		return [prefix: arr[0], code: arr[1], barcode: barcode ];
+		return [prefix: arr[0], code: arr[1], barcode: barcode, handler: 'bpls', txntype: 'bpls'  ];
 	}
 
 

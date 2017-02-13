@@ -11,49 +11,37 @@ class KioskRPTBilllingService
     @Service('RPTUtil')
     def util
 
-    @ActiveDB('kiosk_rpt_billing')
-    def em
+    @Service('QueryService')
+    def query 
+
+    def BARCODE_KEY = '56001';
 
 
     @ProxyMethod
     public def generateBill(params){
         params.ledger = validateLedger(params)
         def bill = buildBill(params)
-        def pmtorder = [:]
-        pmtorder.billid = bill.billid 
-        pmtorder.barcode = bill.barcode 
-        pmtorder.rptledgerid = bill.rptledgerid 
-        pmtorder.billtoyear = bill.billtoyear 
-        pmtorder.billtoqtr = bill.billtoqtr 
-        pmtorder.taxpayer = bill.taxpayer
-        pmtorder.validuntil = bill.validuntil
-        pmtorder.tdno = bill.rptledger.tdno
-        pmtorder.barangay = bill.rptledger.barangay
-        pmtorder.fullpin = bill.rptledger.fullpin
-        pmtorder.cadastrallotno = bill.rptledger.cadastrallotno
-        pmtorder.rputype = bill.rptledger.rputype
-        pmtorder.classcode = bill.rptledger.classcode
-        pmtorder.lastyearpaid = bill.rptledger.lastyearpaid
-        pmtorder.lastqtrpaid = bill.rptledger.lastqtrpaid
-
-        pmtorder.basic = bill.items.basic.sum()
-        pmtorder.basicint = bill.items.basicint.sum()
-        pmtorder.basicdisc = bill.items.basicdisc.sum()
-        pmtorder.basicnet = pmtorder.basic + pmtorder.basicint - pmtorder.basicdisc
-        pmtorder.sef = bill.items.sef.sum()
-        pmtorder.sefint = bill.items.sefint.sum()
-        pmtorder.sefdisc = bill.items.sefdisc.sum()
-        pmtorder.sefnet = pmtorder.sef + pmtorder.sefint - pmtorder.sefdisc
-
-        pmtorder.billamount = pmtorder.basicnet + pmtorder.sefnet 
-        if (pmtorder.billamount <= 0.0) {
-            def msg = 'A problem was encountered when generating the bill.\n'
-            msg += 'Please proceed to Land Tax Office for assistance.'
-            throw new Exception(msg)
-        }
-        buildPeriod(pmtorder)
-        return pmtorder
+        return buildPaymentOrder(bill)
     }
+
+
+    @ProxyMethod
+    public def generateBillByPaymentOrder(entity) {
+        def q = [_schemaname:'paymentorder']
+        q.findBy = [txnid:entity.txnid]
+        def pmo = query.findFirst(q)
+        if (!pmo) throw new Exception("Payment Order does not exist.")
+
+        def bill = billSvc.getBillByBarcode([barcodeid:pmo.refno, barcodekey:BARCODE_KEY])
+        if (!bill) throw new Exception('Bill ' + pmo.refno + ' does not exist or has already been deleted.')
+        bill.billid = pmo.refid 
+        bill.rptledgerid = bill.ledgers[0].rptledgerid 
+        bill = billSvc.generateBillByLedgerId3(bill)
+        bill.rptledger.remove('faases')
+        bill.remove('taxes')
+        return buildPaymentOrder(bill)
+    }
+
 
     def buildBill(params){
         def ledger = params.ledger 
@@ -80,6 +68,55 @@ class KioskRPTBilllingService
         bill.remove('taxes')
         return bill 
     }
+
+    @ProxyMethod
+    public def buildPaymentOrder(bill){
+        def pmtorder = [:]
+        pmtorder.dtposted = bill.dtposted 
+        pmtorder.billid = bill.billid 
+        pmtorder.barcode = bill.barcode 
+        pmtorder.rptledgerid = bill.rptledgerid 
+        pmtorder.billtoyear = bill.billtoyear 
+        pmtorder.billtoqtr = bill.billtoqtr 
+        pmtorder.taxpayer = bill.taxpayer
+        pmtorder.validuntil = bill.validuntil
+        pmtorder.tdno = bill.rptledger.tdno
+        pmtorder.barangay = bill.rptledger.barangay
+        pmtorder.fullpin = bill.rptledger.fullpin
+        pmtorder.cadastrallotno = bill.rptledger.cadastrallotno
+        pmtorder.rputype = bill.rptledger.rputype
+        pmtorder.classcode = bill.rptledger.classcode
+        pmtorder.lastyearpaid = bill.rptledger.lastyearpaid
+        pmtorder.lastqtrpaid = bill.rptledger.lastqtrpaid
+
+        pmtorder.basic = bill.items.basic.sum()
+        pmtorder.basicint = bill.items.basicint.sum()
+        pmtorder.basicdisc = bill.items.basicdisc.sum()
+        pmtorder.basicnet = pmtorder.basic + pmtorder.basicint - pmtorder.basicdisc
+        
+        pmtorder.basicidle = bill.items.basicidle.sum()
+        pmtorder.basicidleint = bill.items.basicidleint.sum()
+        pmtorder.basicidledisc = bill.items.basicidledisc.sum()
+        pmtorder.basicidlenet = pmtorder.basicidle + pmtorder.basicidleint - pmtorder.basicidledisc
+
+        pmtorder.firecode = bill.items.firecode.sum()
+
+        pmtorder.sef = bill.items.sef.sum()
+        pmtorder.sefint = bill.items.sefint.sum()
+        pmtorder.sefdisc = bill.items.sefdisc.sum()
+        pmtorder.sefnet = pmtorder.sef + pmtorder.sefint - pmtorder.sefdisc 
+
+        pmtorder.billamount = pmtorder.basicnet + pmtorder.sefnet + pmtorder.basicidlenet + pmtorder.firecode 
+
+        if (pmtorder.billamount <= 0.0) {
+            def msg = 'A problem was encountered when generating the bill.\n'
+            msg += 'Please proceed to Land Tax Office for assistance.'
+            throw new Exception(msg)
+        }
+        buildPeriod(pmtorder)
+        return pmtorder
+    }
+
 
     void buildPeriod(pmtorder){
         pmtorder.fromyear = (pmtorder.lastqtrpaid == 4 ? pmtorder.lastyearpaid + 1 : pmtorder.lastyearpaid)
@@ -110,7 +147,10 @@ class KioskRPTBilllingService
 
         def msg = null;
 
-        def ledger = em.findLedger(params)
+        def q = [_schemaname:'rptledger']
+        q.findBy = [tdno:params.tdno]
+        def ledger = query.findFirst(q)
+
         if (!ledger) {
             msg = 'TD No. ' + params.tdno + ' does not exist.\n'
             msg += 'Verify that the you enter it correctly and submit again.' 

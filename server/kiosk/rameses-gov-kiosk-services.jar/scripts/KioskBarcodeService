@@ -7,14 +7,12 @@ import java.text.*;
 
 public class KioskBarcodeService  {
 
-	@DataContext("business")
-	def em;
-
 	@ProxyMethod
 	public def load( def o ) {
 		def barcode = o.barcode;
 		if(!barcode.contains(":")) throw new Exception("Barcode must have : ");
-		return [barcode:o.barcode, handler:'bpls', code: barcode.split(":")[1] ];
+		def arr = barcode.split(":");
+		return [prefix: arr[0], code: arr[1], barcode: barcode ];
 	}
 
 

@@ -1,0 +1,46 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.services.extended.*;
+import market.facts.*;
+import java.text.*;
+
+public class KioskBusinessBillingService  {
+
+	@Service("BusinessCashReceiptService")
+	def svc;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@ProxyMethod
+	public def getBilling( def o ) {
+		def b = svc.findInfo([appno: o.code]);
+		if( !b) throw new Exception("Cannot find business code " + o.code);
+
+		def r = [:];
+        r.app = [apptype:b.apptype, appyear:b.appyear, dtfiled:b.dtfiled, appno:b.appno]; 
+        r.billdate = dateSvc.getBasicServerDate();
+        r.applicationid = b.applicationid;
+        if(o.payoption == null || o.payoption.equalsIgnoreCase('FULLYEAR') ) {
+			r.payment = [option: 'FULLYEAR'];
+        }
+        else {
+			r.payment = [option: 'FULLQTR'];
+			if( o.payoption.equalsIgnoreCase( "q1") ) r.payment.qtr = 1;
+			else if( o.payoption.equalsIgnoreCase( "q2") ) r.payment.qtr = 2;
+			else if( o.payoption.equalsIgnoreCase( "q3") ) r.payment.qtr = 3;
+			else r.payment.qtr = 4;
+        }
+
+		def z = svc.getBillingForPayment( r ); 
+        b.taxfees = z.taxfees;
+        b.totals = z.totals;
+        b.expirydate = z.expirydate;
+        //b.items = z.items;             
+        b.amount = b.totals.total;
+		return b;
+	}
+
+
+}

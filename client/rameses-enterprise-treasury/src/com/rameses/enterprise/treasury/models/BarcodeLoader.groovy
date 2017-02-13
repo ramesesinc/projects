@@ -11,6 +11,9 @@ public class CashReceiptBarcode {
     @Service("CashReceiptBarcodeService")
     def barcodeSvc;
 
+    @Service('QueryService')
+    def qrySvc 
+
     def init() {
         def p = MsgBox.prompt("Enter barcode");
         if(!p) return null;
@@ -24,6 +27,20 @@ public class CashReceiptBarcode {
             prefix = p.substring(0,i).trim(); 
             barcodeid = p.substring(i+1).trim();
         } 
+        
+        def po = null;
+        if ('PMO'.equalsIgnoreCase(prefix)){
+            def q = [:]
+            q._schemaname = 'paymentorder'
+            q.findBy = [txnid:barcodeid]
+
+            po = qrySvc.findFirst(q)
+            if (!po) throw new Exception('Payment Order does not exist.')
+
+            prefix = po.collectiontype.barcodekey 
+            barcodeid = po.refno 
+        }
+
         try {
             if(!prefix) {
                 def pp = barcodeSvc.findPrefix( [barcodeid: barcodeid] );
@@ -33,7 +50,7 @@ public class CashReceiptBarcode {
                 throw new Exception("There is no handler found for requested entry");
             
             def e = barcodeSvc.init( [barcodeid: barcodeid, prefix: prefix] );
-            def m = [barcodeid: barcodeid, prefix: prefix];
+            def m = [barcodeid: barcodeid, prefix: prefix, _paymentorderid:po?.txnid];
             m.entity = e;
              
             return InvokerUtil.lookupOpener( "cashreceipt:barcode:"+prefix, m);

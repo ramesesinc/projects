@@ -22,15 +22,32 @@
    
     <code>
     <![CDATA[ 
-import com.rameses.seti2.models.*; 
-
-class EntityIndividualListModel extends CrudListModel {
+class EntityIndividualListModel extends com.rameses.seti2.models.CrudListModel {
     
-    public void initColumn( def c ) {
-        if ( c.name == 'entityname' ) {
-            c.visible = false; 
-        }
-    }
+    def confs = [
+        'entityno'     : [ width: 120 ],
+        'entityname'   : [ visible: false ], 
+        'lastname'     : [ width: 130 ], 
+        'firstname'    : [ width: 130 ], 
+        'middlename'   : [ width: 130 ], 
+        'address.text' : [ width: 300 ], 
+        'birthdate'    : [ type: 'date', outputFormat:'yyyy-MM-dd', width:80 ]
+    ]; 
+    
+    boolean autoResize = false; 
+    
+    public void initColumn( def c ) { 
+        
+        def conf = confs.get( c.name ); 
+        if ( !conf ) return; 
+        
+        if ( conf.type != null ) c.type = conf.type;
+        if ( conf.width != null ) c.width = conf.width; 
+        if ( conf.minWidth != null ) c.minWidth = conf.minWidth; 
+        if ( conf.maxWidth != null ) c.maxWidth = conf.maxWidth; 
+        if ( conf.visible != null ) c.visible = conf.visible; 
+        if ( conf.caption != null ) c.caption = conf.caption; 
+    } 
 }    
     ]]> 
     </code>

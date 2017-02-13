@@ -1,6 +1,6 @@
 <workunit extends="wtemplates/SimpleReportController.xml" >
     <invokers>
-        <invoker type="business_application:unifiedform" caption="Print Back" action="viewReport" index="2"/>
+        <invoker type="business_application:reports" caption="Print Back" action="viewReport" index="2"/>
     </invokers>
     
     <code>

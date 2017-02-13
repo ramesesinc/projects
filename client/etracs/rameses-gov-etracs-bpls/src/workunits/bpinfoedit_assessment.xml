@@ -12,7 +12,7 @@
         import com.rameses.osiris2.common.*
         import java.rmi.server.*;
         
-        public class BPEditAssessmentController extends com.rameses.gov.etracs.bpls.controller.BusinessInfoEdit {
+        public class BPEditAssessmentController extends com.rameses.gov.etracs.bpls.models.BusinessInfoEdit {
 
             @Service("BusinessAssessmentService")
             def service;

@@ -38,9 +38,11 @@ public class EditBusinessOwnerPage extends javax.swing.JPanel {
         xSuggest1 = new com.rameses.rcp.control.XSuggest();
         jScrollPane1 = new javax.swing.JScrollPane();
         xTextArea1 = new com.rameses.rcp.control.XTextArea();
+        jPanel1 = new javax.swing.JPanel();
+        jPanel2 = new javax.swing.JPanel();
         xButton5 = new com.rameses.rcp.control.XButton();
-        xButton4 = new com.rameses.rcp.control.XButton();
         xButton6 = new com.rameses.rcp.control.XButton();
+        xButton4 = new com.rameses.rcp.control.XButton();
         xLabel1 = new com.rameses.rcp.control.XLabel();
 
         xFormPanel1.setCaptionWidth(150);
@@ -75,53 +77,57 @@ public class EditBusinessOwnerPage extends javax.swing.JPanel {
 
         xFormPanel1.add(jScrollPane1);
 
+        jPanel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(23, 0, 0, 0));
+        jPanel1.setLayout(new com.rameses.rcp.control.layout.YLayout());
+
+        jPanel2.setLayout(new java.awt.BorderLayout());
+
         xButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/buttons/search.png"))); // NOI18N
+        xButton5.setDepends(new String[] {"entity.business.owner"});
+        xButton5.setDisableWhen("#{entity?.business?.owner?.objid == null}");
         xButton5.setImmediate(true);
         xButton5.setMargin(new java.awt.Insets(2, 4, 2, 4));
         xButton5.setName("owner.show"); // NOI18N
         xButton5.setPreferredSize(new java.awt.Dimension(25, 22));
+        jPanel2.add(xButton5, java.awt.BorderLayout.WEST);
 
-        xButton4.setImmediate(true);
-        xButton4.setName("owner.reload"); // NOI18N
-        xButton4.setText("Reload Address");
+        jPanel1.add(jPanel2);
 
+        xButton6.setDepends(new String[] {"entity.business.owner"});
+        xButton6.setDisableWhen("#{entity?.business?.owner?.objid == null}");
         xButton6.setImmediate(true);
         xButton6.setName("owner.lookupAddress"); // NOI18N
         xButton6.setText("Lookup Address");
+        jPanel1.add(xButton6);
+
+        xButton4.setDepends(new String[] {"entity.business.owner"});
+        xButton4.setDisableWhen("#{entity?.business?.owner?.objid == null}");
+        xButton4.setImmediate(true);
+        xButton4.setName("owner.reload"); // NOI18N
+        xButton4.setText("Reload Address");
+        jPanel1.add(xButton4);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 549, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(xButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(xButton6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGap(165, 165, 165)
-                        .addComponent(xButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(174, Short.MAX_VALUE))
+                .addContainerGap()
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 549, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(85, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGap(33, 33, 33)
-                        .addComponent(xButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(xButton6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(xButton4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(81, Short.MAX_VALUE))
+                        .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 89, Short.MAX_VALUE))
+                    .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         com.rameses.rcp.control.border.XEtchedBorder xEtchedBorder1 = new com.rameses.rcp.control.border.XEtchedBorder();
@@ -141,7 +147,7 @@ public class EditBusinessOwnerPage extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(xLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(99, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -149,12 +155,14 @@ public class EditBusinessOwnerPage extends javax.swing.JPanel {
                 .addComponent(xLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(21, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
     private com.rameses.rcp.control.XButton xButton4;

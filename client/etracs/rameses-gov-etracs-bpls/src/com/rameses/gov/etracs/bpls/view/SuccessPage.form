@@ -21,6 +21,7 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="jLabel1" alignment="0" min="-2" pref="654" max="-2" attributes="0"/>
                   <Component id="xTextField1" alignment="0" min="-2" pref="497" max="-2" attributes="0"/>
+                  <Component id="xButton1" alignment="0" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace pref="175" max="32767" attributes="0"/>
           </Group>
@@ -33,7 +34,9 @@
               <Component id="jLabel1" min="-2" pref="51" max="-2" attributes="0"/>
               <EmptySpace min="-2" pref="25" max="-2" attributes="0"/>
               <Component id="xTextField1" min="-2" pref="85" max="-2" attributes="0"/>
-              <EmptySpace pref="243" max="32767" attributes="0"/>
+              <EmptySpace type="separate" max="-2" attributes="0"/>
+              <Component id="xButton1" min="-2" pref="35" max="-2" attributes="0"/>
+              <EmptySpace pref="190" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -58,6 +61,14 @@
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="xTextField1.setAlignmentX(CENTER_ALIGNMENT);"/>
       </AuxValues>
+    </Component>
+    <Component class="com.rameses.rcp.control.XButton" name="xButton1">
+      <Properties>
+        <Property name="mnemonic" type="int" value="84"/>
+        <Property name="fontStyle" type="java.lang.String" value="font-size:12"/>
+        <Property name="name" type="java.lang.String" value="printTrackingno" noResource="true"/>
+        <Property name="text" type="java.lang.String" value="Print Tracking No"/>
+      </Properties>
     </Component>
   </SubComponents>
 </Form>

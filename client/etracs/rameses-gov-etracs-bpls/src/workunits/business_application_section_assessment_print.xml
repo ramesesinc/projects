@@ -3,5 +3,5 @@
         <invoker type="business_application:assessment:print" caption="Assessment" action="preview" index="-8888"/>
     </invokers>
     
-    <code class="com.rameses.gov.etracs.bpls.controller.BusinessAssessmentReportController"/>    
+    <code class="com.rameses.gov.etracs.bpls.models.BusinessAssessmentReportController"/>    
 </workunit>

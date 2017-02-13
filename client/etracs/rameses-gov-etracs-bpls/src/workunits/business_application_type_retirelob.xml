@@ -1,71 +1,14 @@
 <workunit>
     <invokers>
-        <invoker folderid="/home/business/business_application" caption="Retire LOB"  action="start" target="window"  role="BUSINESSINFO" index="52"/>
+        <invoker folderid="/home/business" caption="Retire LOB"  action="start" target="window"  role="BUSINESSINFO" index="52"/>
         
         <invoker type="lobActions" caption="Retire" action="lob.retire" immediate="true" visibleWhen="#{lob.selectedItem!=null  &amp;&amp; lob.selectedItem.assessmenttype=='ACTIVE' }"/>
         <invoker type="lobActions" caption="Unretire" action="lob.unretire" immediate="true" visibleWhen="#{lob.selectedItem!=null &amp;&amp; lob.selectedItem.assessmenttype=='RETIRE'}"/>
         
-         <invoker type="extActions" caption="Print"  icon="images/toolbars/printer.png" action="application.print" visibleWhen="#{state=='save-success'}"/>
+        <invoker type="extActions" caption="Print"  icon="images/toolbars/printer.png" action="application.print" visibleWhen="#{state=='save-success'}"/>
     </invokers>
     
-    <code> 
-    <![CDATA[ 
-        import com.rameses.rcp.annotations.*;
-        import com.rameses.rcp.common.*;
-        import com.rameses.osiris2.client.*;
-        import com.rameses.osiris2.common.*;
-        import java.rmi.server.*;
-        import com.rameses.util.*;
-        import com.rameses.gov.etracs.bpls.controller.*;
-        
-        public class RetireLOBApplication extends PageFlowController { 
-        
-            @Script("BusinessSearchUtil")
-            def searchList;
-        
-            @Script("BusinessApplicationUtil")
-            def application;
-            
-            @Script("BusinessLobUtil")
-            def lob;
-
-            @Script("BusinessInfoUtil")
-            def appinfo;
-
-            @FormTitle
-            def title = "Retire Line of Business";
-
-            def entity;
-            def text = 'Select line of business to retire. Click Retire button'
-            
-            void open() {
-                application.init([ businessid:searchList.selectedItem.objid, apptype: 'RETIRELOB']); 
-                lob.reset(); 
-                appinfo.reset(); 
-            } 
-            
-            void updateInfo() { 
-                def l = entity.lobs.findAll{ it.assessmenttype.matches('RETIRE') };
-                if( !l ) {
-                    throw new Exception("There must be at least one retire line of business");
-                }    
-                l = entity.lobs.findAll{ it.assessmenttype.matches('ACTIVE') };
-                if( !l ) {
-                    throw new Exception("There must be at least one active line of business");
-                } 
-                lob.verify(); 
-                boolean pass = false;
-                appinfo.handler = { 
-                    pass = true;
-                }
-                Modal.show(appinfo.update());
-                if(!pass) throw new BreakException();
-                appinfo.verify();
-                lob.removeActiveLobs();
-            }
-        }
-    ]]>
-    </code>    
+    <code class="com.rameses.gov.etracs.bpls.models.RetireLobBusinessApplication" /> 
     
     <pageflow>
         <start>

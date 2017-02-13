@@ -1,0 +1,29 @@
+<workunit extends="com/rameses/seti2/templates/CrudLookup.xml" schemaName="lob">
+    <invokers>
+        <invoker type="lob:lookup" caption="Lookup LOB" target="popup" action="init" 
+                 orderBy="name"/>
+    </invokers>
+    <code>
+    <![CDATA[ 
+class LOBLookupModel extends com.rameses.seti2.models.CrudLookupModel {
+
+    def confs = [
+        'classification.objid' : [ width: 150 ],  
+        'name' : [ width: 200 ],
+        'psic' : [ width: 25 ] 
+    ]; 
+    
+    
+    public void initColumn( def c ) { 
+        def conf = confs.get( c.name ); 
+        if ( !conf ) return; 
+        
+        if ( conf.type != null ) c.type = conf.type;
+        if ( conf.width != null ) c.width = conf.width; 
+        if ( conf.visible != null ) c.visible = conf.visible; 
+        if ( conf.caption != null ) c.caption = conf.caption; 
+    } 
+}   
+    ]]> 
+    </code> 
+</workunit>

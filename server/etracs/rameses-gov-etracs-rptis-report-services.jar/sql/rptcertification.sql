@@ -260,11 +260,15 @@ SELECT
 	COUNT(*) AS improvcount
 FROM faas f
 	INNER JOIN rpu r ON f.rpuid = r.objid 
+	INNER JOIN realproperty rp on f.realpropertyid = rp.objid 
 WHERE f.state IN ('CURRENT')
   AND f.year <= $P{asofyear}
   AND r.rputype <> 'land'
-  AND f.realpropertyid IN (
-		select realpropertyid from faas where objid = $P{faasid}
+  AND rp.pin IN (
+		select xrp.pin 
+    from faas xf 
+		inner join realproperty xrp on xf.realpropertyid = xrp.objid 
+	  where xf.objid = $P{faasid}
   )
 
 
@@ -342,10 +346,15 @@ SELECT
 	f.objid
 FROM faas f 
 	INNER JOIN rpu r on f.rpuid = r.objid 
+	INNER JOIN realproperty rp on f.realpropertyid = rp.objid 
 WHERE r.rputype <> 'land' 
+  and f.state ='CURRENT'
   ${asoffilter}
-  AND f.realpropertyid IN (
-		select realpropertyid from faas where objid = $P{faasid}
+  AND rp.pin IN (
+		select xrp.pin 
+		from faas xf 
+		inner join realproperty xrp on xf.realpropertyid = xrp.objid 
+		where xf.objid = $P{faasid}
   )
 
 

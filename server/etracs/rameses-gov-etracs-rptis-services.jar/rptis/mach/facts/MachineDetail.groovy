@@ -13,6 +13,8 @@ public class MachineDetail{
     Double assessedvalue
     Double swornamount
     Boolean useswornamount 
+    Boolean taxable
+    Double depreciation 
 
     //data reference
     def entity    
@@ -24,7 +26,8 @@ public class MachineDetail{
         this.entity  = md 
         this.swornamount = md.swornamount
         this.useswornamount = md.useswornamount
-
+        this.taxable = md.taxable
+        this.depreciation = md.depreciation
         setBasemarketvalue(md.basemarketvalue)
         setDepreciationvalue(md.depreciationvalue)
         setMarketvalue(md.marketvalue)

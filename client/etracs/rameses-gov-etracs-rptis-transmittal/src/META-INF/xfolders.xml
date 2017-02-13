@@ -1,0 +1,15 @@
+<folders>
+    <folder id="explorer">
+        <folder id="txn" caption="Transactions" index="2">
+            <folder id="rpt" caption="Assessor" index="1">
+                <folder id="transmittal" caption="Transmittal" index="1" />
+            </folder>
+        </folder>
+    </folder>
+    <folder id="home">
+        <folder id="rpt" caption="Assessor">
+            <folder id="transmittal" caption="Transmittal" index="5000" icon="home/icons/transmittals.png"/>
+        </folder>
+    </folder>
+</folders>
+

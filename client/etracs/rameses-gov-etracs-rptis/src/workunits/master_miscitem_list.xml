@@ -1,7 +1,9 @@
-<workunit extends="wtemplates/ListController.xml" serviceName="MiscItemService" entityName="miscitem" formName="miscitem:list">
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" 
+          schemaName="miscitem" 
+          cols="state,code,name" orderBy="code"
+          allowDelete="#{entity.state!='APPROVED'}"
+          caption="Miscellaneous Items">
     <invokers>
-        <invoker folderid="/explorer/master/rpt" caption="Miscellaneous Items" target="window" index="9"  role="ASSESSOR_DATAMGMT,MASTER" />
-        <invoker folderid="/home/rpt/master" caption="Miscellaneous Items" target="window" index="9"  role="ASSESSOR_DATAMGMT,MASTER" />
-        <invoker type="quick_launcher" code="MISC00" caption="Miscellaneous Items"  role="ASSESSOR_DATAMGMT,MASTER" />
+        <invoker folderid="/explorer/master/rpt" action="init" caption="Miscellaneous Items" index="9" role="ASSESSOR_DATAMGMT,MASTER"/>
     </invokers>
 </workunit>

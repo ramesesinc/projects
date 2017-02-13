@@ -36,6 +36,7 @@ public class AddAssessmentInfo implements RuleActionHandler {
 			marketvalue  : miscrpu.marketvalue,
 			assesslevel  : miscrpu.assesslevel,
 			assessedvalue  : miscrpu.assessedvalue,
+			taxable 		: true, 
 		]
 		
 		def a = new RPUAssessment(assessment)

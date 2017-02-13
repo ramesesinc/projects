@@ -19,6 +19,7 @@ class BldgFloorAdditionalLookupController extends com.rameses.gov.etracs.rpt.uti
     def barangayid;
     def ry;
     def type;
+    def selectedAdditionalItem;
     
     List fetchList(Map params){
         params.lguid = lguid;

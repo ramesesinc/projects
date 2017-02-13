@@ -160,7 +160,7 @@ class TDReportService
 		if (td.rputype != 'land') return 
 		td.lands = adb.getStandardLandAssessment(td)
 		td.specificlands = adb.getDetailedLandAssessment(td)
-		td.specificplants = adb.getLandPlantTreeAssessment(td)
+		td.plants = adb.getLandPlantTreeAssessment(td)
 
 		//if multiple area, set mixedarea = 1 otherwise = 0
 		//in the report display sqm for the total area in cases of mixedarea = 1

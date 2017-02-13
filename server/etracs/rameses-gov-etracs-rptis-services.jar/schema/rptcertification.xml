@@ -13,6 +13,8 @@
 		<field name="requestedbyaddress" required="true" />
 		<field name="purpose" required="true" />
 		<field name="addlinfo" />
+		<field name="year" type="integer" />
+		<field name="qtr" type="integer" />
 		<field name="asofyear" type="integer" />
 		<field name="certifiedby" required="true" />
 		<field name="certifiedbytitle" required="true" />

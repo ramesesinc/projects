@@ -1,0 +1,40 @@
+<workunit extends="wtemplates/LookupController.xml">
+    <invokers>
+        <invoker type="cancelledfaas:lookup" action="init" caption="Cancelled FAAS Lookup" target="popup" width="700"/>
+    </invokers>
+    
+    <code>
+
+import com.rameses.rcp.common.*
+import com.rameses.rcp.annotations.*
+import com.rameses.osiris2.client.*
+import com.rameses.osiris2.common.*
+
+class CancelledFAASLookupModel extends LookupController
+{
+    @Service("CancelledFAASListService")
+    def svc
+    
+    int getRows(){
+        return  25;
+    }
+    
+    Column[] getColumns() {
+        return [
+            new Column(name:"state", caption:"State", width:80),
+            new Column(name:"faas.tdno", caption:"TD No.", width:120),
+            new Column(name:"faas.fullpin", caption:"PIN", width:120),
+            new Column(name:"faas.owner.name", caption:"Owner", width:200),
+            new Column(name:"faas.totalmv", caption:"Market Value", width:100, type:'decimal'),
+            new Column(name:"faas.totalav", caption:"Assessed Value", width:100, type:'decimal'),
+        ]
+    }
+    
+    List fetchList( Map params ) { 
+        params.name = 'all';
+        return svc.getList(params)
+    }
+}  
+
+    </code>
+</workunit>

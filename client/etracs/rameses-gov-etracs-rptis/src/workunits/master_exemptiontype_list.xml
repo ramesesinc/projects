@@ -1,7 +1,9 @@
-<workunit extends="wtemplates/ListController.xml" serviceName="ExemptionTypeService" entityName="exemptiontype" formName="exemptiontype:list">
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" 
+          schemaName="exemptiontype" 
+          cols="state,code,name,orderno" orderBy="orderno"
+          allowDelete="#{entity.state!='APPROVED'}"
+          caption="Exemption Type">
     <invokers>
-        <invoker folderid="/explorer/master/rpt" caption="Exemption Types" target="window" index="2"  role="ASSESSOR_DATAMGMT,MASTER" />
-        <invoker folderid="/home/rpt/master" caption="Exemption Types" target="window" index="2"  role="ASSESSOR_DATAMGMT,MASTER" />
-        <invoker type="quick_launcher" code="ET00" caption="Exemption Types"  role="ASSESSOR_DATAMGMT,MASTER" />
+        <invoker folderid="/explorer/master/rpt" action="init" caption="Exemption Types" index="2" role="ASSESSOR_DATAMGMT,MASTER"/>
     </invokers>
 </workunit>

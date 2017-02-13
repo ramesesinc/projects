@@ -16,5 +16,5 @@
 			<key field="txntypeid" target="objid"/>
 		</complex>
 	</element>
-
 </schema>
+

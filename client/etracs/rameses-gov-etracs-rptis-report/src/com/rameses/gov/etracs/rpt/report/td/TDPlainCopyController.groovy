@@ -29,7 +29,9 @@ public class TDPlainCopyController extends com.rameses.gov.etracs.rpt.report.cer
     }
     
     def getReportData(){
-        return tdSvc.buildTaxDec(entity.faasid);
+        def e = tdSvc.buildTaxDec(entity.faasid);
+        e.putAll(entity)
+        return e;
     }
     
     def reportPath = 'com/rameses/gov/etracs/rpt/report/td/';

@@ -241,6 +241,7 @@ UPDATE rptledger SET state = 'CANCELLED' WHERE faasid = $P{faasid}
 SELECT 
 	f.objid AS newfaasid, 
 	f.tdno, 
+	f.utdno, 
 	r.ry AS rpu_ry, 
 	rp.barangayid AS rp_barangay_objid
 FROM faas f 
@@ -510,3 +511,11 @@ where refid in (
 	select consolidationid from consolidationaffectedrpu where newfaasid = $P{objid}
 )
 and enddate is null
+
+
+[getAffectedRpuWithNoPin]
+SELECT pf.fullpin
+FROM consolidationaffectedrpu cr
+	inner JOIN faas pf ON cr.prevfaasid = pf.objid 
+WHERE cr.consolidationid = $P{objid}	
+and cr.newfaasid is null 

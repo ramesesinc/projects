@@ -13,6 +13,7 @@ class MunicipalityRedFlagRemoteCallHandler
 	def util
 
 
+	@ProxyMethod 
 	public void postRedFlag(redflag){
 		redflagSvc.save(redflag)
 		notifyRecommender(redflag)

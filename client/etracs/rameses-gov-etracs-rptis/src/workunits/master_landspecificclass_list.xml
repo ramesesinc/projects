@@ -1,0 +1,5 @@
+<workunit extends="wtemplates/ListController.xml" serviceName="LandSpecificClassService" entityName="landspecificclass" formName="landspecificclass:list">
+    <invokers>
+        <invoker folderid="/explorer/master/rpt" caption="Specific Classes"  target="window" index="1"  role="ASSESSOR_DATAMGMT,MASTER" />
+    </invokers>
+</workunit>

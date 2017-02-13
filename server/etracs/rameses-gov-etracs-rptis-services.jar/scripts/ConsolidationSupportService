@@ -72,12 +72,12 @@ class ConsolidationSupportService
         }
 
         data.tasks << [type:'consolidation', tasks:taskEm.getTasks(consolidation)]
-        data.image = getImageData(consolidation)
+        data.image = getImageData(data)
         return data 
     }
 
     @ProxyMethod
-    public void buildFaasesData( consolidation ) {
+    public def buildFaasesData( consolidation ) {
         if (!consolidation.faases)
             consolidation.faases = []
 
@@ -86,6 +86,8 @@ class ConsolidationSupportService
         svc.getAffectedRpus(consolidation.objid).each{
             consolidation.faases << getFaasInfo([objid:it.newfaasid])
         }
+        consolidation.tasks = taskEm.getTasks(consolidation)
+        return consolidation
     }
 
     @ProxyMethod

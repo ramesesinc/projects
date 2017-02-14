@@ -173,3 +173,6 @@ android/*/Thumbs.db
 /client/custom/gov-lgu-ppc-rptis/nbproject/private/
 /client/custom/gov-lgu-ppc-rptis/build/
 /client/custom/gov-lgu-ppc-rptis/dist/
+/client/etracs/rameses-gov-etracs-rptis-landtax-province/nbproject/private/
+/client/etracs/rameses-gov-etracs-rptis-landtax-province/build/
+/client/etracs/rameses-gov-etracs-rptis-landtax-province/dist/

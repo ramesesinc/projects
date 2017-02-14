@@ -8,5 +8,6 @@
 	- With Improvement Certification updates
 
 - LANDTAX
+	- Support province specific land tax client and services
 	- Add posting type option on all collection reports
 	- Update on Tax Difference Support 

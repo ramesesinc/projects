@@ -1,6 +1,6 @@
 <schema>
 	<element name="cashreceipt" tablename="cashreceipt" >
-		<field name="objid" primary="true"/>
+		<field name="objid" primary="true" prefix="RCT"/>
 		<field name="state" required="true" />
 		<field name="txndate" required="true" />
 		<field name="receiptno" required="true" />

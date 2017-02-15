@@ -1,0 +1,21 @@
+/* v2.5.04.032-03009 */
+
+- TREAURY
+
+- BPLS 
+		
+- ASSESSOR
+	- NEW! Agricultural Land Area by Actual Use Summary report
+	- Valid subdivision affected improvement new faas
+	- Update on NOA report 
+	- Update on modify pin facility
+	- Fix sketch attachment and submission
+	- Fix TD Report sqm area
+	- Allow edit of superseded information
+	- Commit on data capture automatically to avoid duplication
+	- Update transmittal support
+	- Add support for non-taxable machine
+	- Fix missing machine FAAS info (brand/model)
+	
+- LANDTAX
+	- Update on delinquency listing 

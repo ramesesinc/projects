@@ -1,0 +1,18 @@
+
+"entity.remarks" [mode != 'read']{
+    enabled:true;
+}
+
+"entity.remarks" [mode.matches('read|processing|completed')]{
+    enabled:false;
+}
+
+"selectedItem" [mode != 'read']{
+    readonly:false;
+}
+
+
+"selectedItem" [mode.matches('read|processing|completed')]{
+    readonly:true;
+}
+

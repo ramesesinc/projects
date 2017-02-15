@@ -3,12 +3,14 @@ SELECT ld.*,
 	sub.code AS subclass_code,
 	sub.name AS subclass_name,
 	sub.unitvalue AS subclass_unitvalue,
-	spc.code AS specificclass_code,
-	spc.name AS specificclass_name,
+	lspc.code AS specificclass_code,
+	lspc.name AS specificclass_name,
 	spc.areatype AS specificclass_areatype,
 	cls.objid AS specificclass_classification_objid,
 	cls.code AS specificclass_classification_code,
 	cls.name AS specificclass_classification_name,
+	lspc.code AS landspecificclass_code,
+	lspc.name AS landspecificclass_name,
 	lal.code AS actualuse_code,
 	lal.name AS actualuse_name,
 	lal.fixrate AS actualuse_fixrate,
@@ -21,6 +23,7 @@ SELECT ld.*,
 FROM landdetail ld
 	INNER JOIN lcuvsubclass sub ON ld.subclass_objid = sub.objid
 	INNER JOIN lcuvspecificclass spc ON ld.specificclass_objid = spc.objid 
+	INNER JOIN landspecificclass lspc ON ld.landspecificclass_objid = lspc.objid 
 	INNER JOIN propertyclassification cls ON spc.classification_objid = cls.objid 
 	INNER JOIN landassesslevel lal ON ld.actualuse_objid = lal.objid 
 	INNER JOIN propertyclassification pc ON lal.classification_objid = pc.objid 

@@ -1,0 +1,53 @@
+<workunit extends="rpt_wtemplates/ReportController.xml" >
+    <invokers>
+        <invoker folderid="/explorer/report/rpt" action="init" caption="Agricultural Land Area by Actual Use Summary" target="window" index="110" 
+            role="ASSESSOR_REPORT,REPORT" />
+    </invokers>
+    <code>
+
+<![CDATA[
+
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.reports.*;
+
+
+class AgriLandActualUseSummaryController extends com.rameses.gov.etracs.rpt.report.AsyncReportController
+{
+    @Service('RPTReportAgriculturalService') 
+    def svc;
+    
+    String title = 'Agricultural Land Area by Actual Use Summary';
+    
+    String reportPath = 'com/rameses/gov/etracs/rptis/report/';
+    String reportName = reportPath + 'agriland_actualuse_summary.jasper';
+    
+    
+    void buildReportData(entity, asyncHandler){
+        svc.getActualUseSummaryByArea(entity, asyncHandler);
+    }
+    
+    Map getParameters(){
+        return data.parameters;
+    }    
+    
+    def getTaxabilities(){
+        return ['TAXABLE', 'EXEMPT'];
+    }
+    
+    def formControl = [
+        getFormControls: {
+            return [
+                new FormControl( "combo", [caption:'LGU', name:'entity.lgu', items:'lgus', expression:'#{item.name}', allowNull:false, required:true]),
+                new FormControl( "combo", [caption:'Taxability', name:'entity.taxability', items:'taxabilities', required:true, preferredSize:'120,19', allowNull:false]),
+            ]
+        },
+   ] as FormPanelModel;
+        
+}
+
+]]>        
+        
+    </code>
+</workunit>

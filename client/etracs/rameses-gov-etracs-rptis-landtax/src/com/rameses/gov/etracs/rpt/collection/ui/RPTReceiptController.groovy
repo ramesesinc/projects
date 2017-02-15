@@ -159,8 +159,9 @@ class RPTReceiptController extends com.rameses.enterprise.treasury.cashreceipt.A
         }
     }
         
-    def initBillFromBarcode(barcodeid){
-        def param = [barcodekey:BARCODE_KEY , barcodeid:barcodeid]; 
+    def initBillFromBarcode(){
+        def bid = barcodeid.startsWith(BARCODE_KEY) ? barcodeid : BARCODE_KEY+':'+barcodeid
+        def param = [barcodekey:BARCODE_KEY , barcodeid:bid]; 
         bill = billSvc.getBillByBarcode(param);
         entity.billid = bill.objid 
         entity.payer = bill.taxpayer;
@@ -200,7 +201,7 @@ class RPTReceiptController extends com.rameses.enterprise.treasury.cashreceipt.A
         itemsforpayment = [];
         clearAllPayments();
         
-        initBillFromBarcode(BARCODE_KEY+':'+barcodeid)
+        initBillFromBarcode()
         entity = cashReceiptSvc.init( entity );
         entity.payer = bill.taxpayer;
         entity.paidby = bill.taxpayer.name;

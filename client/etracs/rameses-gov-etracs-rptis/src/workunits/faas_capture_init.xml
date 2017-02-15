@@ -80,7 +80,7 @@ class FaasDataCaptureInitController
     
     
     def process(){
-        def faas = svc.initCapture(entity);
+        def faas = svc.initCaptureAndCreate(entity);
         faas.lgu = entity.lgu;
         faas.prevpin = entity.fullpin;
         def filetype = 'faas:capture:create'

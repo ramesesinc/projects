@@ -20,6 +20,7 @@ class RPTReportOcularInspectionService
 	@ProxyMethod
 	public def buildOcularInspectionReport(finding){
 		def reportdata = em.findOcularInspectionInfo(finding)
+		if (!reportdata) throw new Exception('Record does not exist or has already been deleted.')
 		if(reportdata.inspectors && reportdata.inspectors != 'null')
 			reportdata.inspectors = JsonUtil.toObject(reportdata.inspectors)
 		else

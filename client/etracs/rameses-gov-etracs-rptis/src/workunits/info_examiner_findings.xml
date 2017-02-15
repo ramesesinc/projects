@@ -10,11 +10,10 @@
         <invoker type="cancelledfaas:info" action="init" caption="Examination Findings" index="10" />
         
         <invoker type="formActions" action="refresh" caption="Refresh" mnemonic="r" />
-        
-        <invoker type="itemActions" action="addFinding" caption="Add" mnemonic="a" visibleWhen="#{showActions == true}" role="EXAMINER"/>
-        <invoker type="itemActions" action="viewFinding" caption="Open" mnemonic="o" role="EXAMINER" visibleWhen="#{showActions == true &amp;&amp; selectedFinding != null}" />
-        <invoker type="itemActions" action="removeFinding" caption="Remove" mnemonic="r" role="EXAMINER" visibleWhen="#{showActions == true &amp;&amp; selectedFinding != null  &amp;&amp; allowEdit==true}" />
-        <invoker type="itemActions" action="preview" caption="Preview" mnemonic="v" visibleWhen="#{selectedFinding != null}" />        
+        <invoker type="formActions" action="addFinding" caption="New" mnemonic="n" visibleWhen="#{showActions == true}" role="EXAMINER" depends="selectedFinding" icon="images/toolbars/create.png"/>
+        <invoker type="formActions" action="viewFinding" caption="Open" mnemonic="o" role="EXAMINER" visibleWhen="#{showActions == true &amp;&amp; selectedFinding != null}" />
+        <invoker type="formActions" action="removeFinding" caption="Remove" mnemonic="r" role="EXAMINER" visibleWhen="#{showActions == true &amp;&amp; selectedFinding != null  &amp;&amp; allowEdit==true}" icon="images/toolbars/cancel.png"/>
+        <invoker type="formActions" action="preview" caption="Preview" mnemonic="v" visibleWhen="#{selectedFinding != null}" />        
    </invokers>
    <code>
 

@@ -41,7 +41,6 @@ public class FaasPage extends javax.swing.JPanel {
         xFormPanel12 = new com.rameses.rcp.control.XFormPanel();
         xTextField15 = new com.rameses.rcp.control.XTextField();
         xLabel3 = new com.rameses.rcp.control.XLabel();
-        xLabel4 = new com.rameses.rcp.control.XLabel();
         xLabel2 = new com.rameses.rcp.control.XLabel();
         xTextField12 = new com.rameses.rcp.control.XTextField();
         xTextField13 = new com.rameses.rcp.control.XTextField();
@@ -127,29 +126,18 @@ public class FaasPage extends javax.swing.JPanel {
         xTextField15.setCaption("PIN");
         xTextField15.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         xTextField15.setName("entity.fullpin"); // NOI18N
-        xTextField15.setStretchWidth(60);
+        xTextField15.setStretchWidth(85);
         xFormPanel12.add(xTextField15);
 
         xLabel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
-        xLabel3.setCaption("Txn Code");
-        xLabel3.setCaptionWidth(60);
+        xLabel3.setCaption("Txn");
+        xLabel3.setCaptionWidth(35);
         xLabel3.setCellPadding(new java.awt.Insets(0, 2, 0, 0));
         xLabel3.setExpression("#{entity.txntype.objid}");
         xLabel3.setFontStyle("font-weight:bold;font-size:12;");
         xLabel3.setPreferredSize(new java.awt.Dimension(43, 20));
         xLabel3.setStretchWidth(10);
         xFormPanel12.add(xLabel3);
-
-        xLabel4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
-        xLabel4.setCaption("Doc No.");
-        xLabel4.setCaptionWidth(60);
-        xLabel4.setCellPadding(new java.awt.Insets(0, 2, 0, 0));
-        xLabel4.setExpression("#{entity.trackingno}");
-        xLabel4.setFontStyle("font-weight:bold;font-size:12;");
-        xLabel4.setName("entity.trackingno"); // NOI18N
-        xLabel4.setPreferredSize(new java.awt.Dimension(43, 20));
-        xLabel4.setStretchWidth(20);
-        xFormPanel12.add(xLabel4);
 
         xLabel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
         xLabel2.setCellPadding(new java.awt.Insets(0, 2, 0, 0));
@@ -159,7 +147,7 @@ public class FaasPage extends javax.swing.JPanel {
         xLabel2.setName("entity.annotated"); // NOI18N
         xLabel2.setPreferredSize(new java.awt.Dimension(43, 20));
         xLabel2.setShowCaption(false);
-        xLabel2.setStretchWidth(20);
+        xLabel2.setStretchWidth(15);
         xFormPanel12.add(xLabel2);
 
         xFormPanel11.add(xFormPanel12);
@@ -191,17 +179,19 @@ public class FaasPage extends javax.swing.JPanel {
 
         xLookupField2.setCaption("Property Owner");
         xLookupField2.setCellPadding(new java.awt.Insets(0, 0, 0, 3));
-        xLookupField2.setExpression("#{entity.taxpayer.entityno} - #{entity.taxpayer.name}");
+        xLookupField2.setExpression("#{ownerName}");
         xLookupField2.setHandler("lookupTaxpayer");
         xLookupField2.setName("entity.taxpayer"); // NOI18N
         xLookupField2.setStretchWidth(50);
         xFormPanel5.add(xLookupField2);
 
+        com.rameses.rcp.control.border.XLineBorder xLineBorder1 = new com.rameses.rcp.control.border.XLineBorder();
+        xLineBorder1.setLineColor(new java.awt.Color(153, 153, 153));
+        xLabel1.setBorder(xLineBorder1);
         xLabel1.setCaption("Address");
         xLabel1.setCaptionWidth(70);
         xLabel1.setExpression("#{entity.taxpayer.address}");
-        xLabel1.setPadding(new java.awt.Insets(1, 2, 1, 1));
-        xLabel1.setPreferredSize(new java.awt.Dimension(100, 18));
+        xLabel1.setPreferredSize(new java.awt.Dimension(100, 20));
         xLabel1.setShowCaption(false);
         xLabel1.setStretchWidth(50);
         xFormPanel5.add(xLabel1);
@@ -293,7 +283,7 @@ public class FaasPage extends javax.swing.JPanel {
 
         jPanel6.add(jScrollPane2, java.awt.BorderLayout.CENTER);
 
-        xFormPanel9.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
+        xFormPanel9.setBorder(javax.swing.BorderFactory.createEmptyBorder(2, 2, 2, 2));
         xFormPanel9.setCaptionBorder(null);
         xFormPanel9.setCaptionWidth(100);
 
@@ -402,7 +392,6 @@ public class FaasPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XLabel xLabel1;
     private com.rameses.rcp.control.XLabel xLabel2;
     private com.rameses.rcp.control.XLabel xLabel3;
-    private com.rameses.rcp.control.XLabel xLabel4;
     private com.rameses.rcp.control.XLookupField xLookupField2;
     private com.rameses.rcp.control.XSubFormPanel xSubFormPanel1;
     private com.rameses.rcp.control.XTextArea xTextArea2;

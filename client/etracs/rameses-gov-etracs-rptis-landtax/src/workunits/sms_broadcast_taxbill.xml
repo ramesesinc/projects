@@ -1,6 +1,6 @@
 <workunit>
     <invokers>
-        <invoker folderid="/explorer/txn/landtax/util" action="init" caption="Broadcast Tax Bill (SMS)" />
+        <invoker folderid="/explorer/txn/landtax/util" action="init" caption="Broadcast Tax Bill (SMS)" role="ADMIN" />
         
         <invoker type="formActions" action="_close" caption="Close" mnemonic="c" immediate="true"  visibleWhen="#{processing == false}"/>
         <invoker type="formActions" action="cancel" caption="Cancel" mnemonic="c" immediate="true"  visibleWhen="#{processing == true}"/>

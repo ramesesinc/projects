@@ -26,3 +26,10 @@ where rl.state = 'APPROVED'
   and rl.taxable = 1
   and (rl.lastyearpaid < $P{cy} or (rl.lastyearpaid = $P{cy} and rl.lastqtrpaid < 4))
   and e.mobileno is not null
+
+
+[findLatestBillByLedger]
+select distinct bl.rptledgerid, b.objid, b.barcode from rptbill b
+	inner join rptbill_ledger bl on b.objid = bl.billid
+where bl.rptledgerid =  $P{objid} 
+order by b.barcode desc 

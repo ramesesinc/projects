@@ -317,10 +317,10 @@ class SubdivisionService
         def faas = em.findFaasById(entity);
         if (!faas)
             throw new Exception('FAAS ' + entity.newfaasid + ' does not exist or has been deleted.')
-        if (!faas.tdno){
-            faas.newtdno = faasSvc.generateNextTdNo(faas)
-            em.updateFaasNewTdNo(faas)
-        }
+        
+        faasSvc.updateTDNo(faas)
+        faas.newtdno = faas.tdno 
+        em.updateFaasNewTdNo(faas)
     }    
 
     @ProxyMethod

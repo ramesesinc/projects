@@ -79,10 +79,15 @@ public class FaasController
         return 'FAAS : ' + (getEntity().tdno ? getEntity().tdno : getEntity().utdno);
     }
     
+    def getOwnerName(){
+        if (entity.taxpayer && entity.taxpayer.objid != null)
+            return entity.taxpayer.entityno + ' - ' + entity.taxpayer.name 
+        return '';
+    }
     
     void create(){
         loadRpuOpener();
-        mode = MODE_CREATE;
+        mode = MODE_EDIT;
     }
     
     void init(){ 
@@ -253,6 +258,14 @@ public class FaasController
         if( util.toBoolean(getEntity().datacapture, false) == true) return false 
         return true 
     }
+    
+    def getAllowAssignNewTdNo(){
+        if (entity.state != 'CURRENT') return false;
+        if (entity.taskstate != 'record') return false;
+        if (entity.assignee && entity.assignee.objid != OsirisContext.env.USERID) return false;
+        return true;
+    }
+    
     
     boolean getAllowEditPrevInfo(){
         return getAllowEditPrevInfoCallback();

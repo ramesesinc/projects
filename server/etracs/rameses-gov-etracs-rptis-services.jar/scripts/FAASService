@@ -69,6 +69,12 @@ class FAASService
 	def UTDNO_KEY 				= 'UNIQUE_TDNO'
 
 
+	@ProxyMethod
+	public def initCaptureAndCreate( info ) {
+		def faas = initCapture(info)
+		faasSvc.createFaas(faas)
+		return faas
+	}
 
 	@ProxyMethod
 	public def initCapture( info ) {
@@ -201,6 +207,11 @@ class FAASService
 	}
 
 	@ProxyMethod
+	public def disapproveOnlineFaas(faas) {
+		faasSvc.deleteFaas(faas)
+	}
+
+	@ProxyMethod
 	public def deleteFaas( faas ) {
 		if (!faas.allowdelete){
 			def currentstate = getState(faas.objid)
@@ -238,8 +249,7 @@ class FAASService
 		if (faas.txntype.newrpu){
 			rpuSvc.deleteRpu(rpuSvc.openRpu(faas.rpu))
 		}
-		
-		if (faas.rpu.rputype == 'land' && faas.txntype.newrealproperty){
+		if (faas.rpu.rputype == 'land' && util.isTrue(faas.txntype.newrealproperty)){
 			rpSvc.delete(rpSvc.open(faas.rp) )
 		}
 
@@ -307,10 +317,8 @@ class FAASService
 		updateTDNo(faas)
 		updateFullPinInfo(faas)
 		updateDateApprovedInfo(faas)
-		def retval = em.approveFaas(faas)
-		if (retval == 0) 
-			throw new Exception('Unable to approve FAAS. Only FOR APPROVAL record can be approved.')
-
+		em.approveFaas(faas)
+		
 		if (faas.txntype.newrealproperty)
 			rpSvc.approve(faas.rp)
 
@@ -325,7 +333,8 @@ class FAASService
 
 	void approveParentFaas(faas){
         if (faas.parentfaasid){
-            faasSvc.approveFaas(openFaas([objid:faas.parentfaasid]))
+        	def pf = openFaas([objid:faas.parentfaasid])
+            faasSvc.approveFaas(pf)
         }
     }
 
@@ -642,7 +651,8 @@ class FAASService
 	}
 
 
-	void updateFullPinInfo(faas){
+	@ProxyMethod 
+	public void updateFullPinInfo(faas){
 		faas.fullpin = faas.rpu.fullpin 
 		if (faas.rpu.rputype != 'land'){
 			def landowner = em.findLandOwner([rpuid:faas.rpu.objid]);
@@ -743,11 +753,30 @@ class FAASService
 		}
 	}
 
-	void updateTDNo(faas){
-    	if ( (faas.tdno == null || faas.tdno.toString().trim().length() == 0) ){
-			faas.tdno = generateNextTdNo(faas)
+	@ProxyMethod
+	public void updateTdNoByRecord( faas ) {
+		def exist = em.findFaasByTdNo(faas)
+		if(exist) 
+			throw new Exception('Duplicate TD No. is not allowed.\nTD No. is already assigned to PIN ' + exist.fullpin + '.')
+
+		em.updateFaasTdNo(faas)
+		em.updateFaasListTdNo(faas)
+		em.updateLedgerTdNo(faas)
+		em.updateLedgerFaasTdNo(faas)
+	}
+
+	@ProxyMethod
+	public void updateTDNo(faas){
+		def notdno = (faas.tdno == null || faas.tdno.toString().trim().length() == 0) 
+		if (notdno && util.isTrue(var.faas_tdno_assigned_by_record)){
+			faas.tdno = faas.utdno
 		}
-		faas.utdno = faas.tdno 
+    	else {
+    		if (notdno){
+				faas.tdno = generateNextTdNo(faas)
+    		}
+			faas.utdno = faas.tdno 
+		}
     }	
 	
 
@@ -892,13 +921,13 @@ class FAASService
 		def headers = imageSvc.getImages([refid:info.faas.objid])
 		headers.each{ h ->
 			def imageid = h.objid
-			h.objid = 'H' + new java.rmi.server.UID()
+			h.objid = faas.objid 
 			h.refid = faas.objid 
 			imageSvc.saveHeader(h)
 
 			imageSvc.getImageItems([objid:imageid]).each{ c ->
 				c.objid = 'C' + new java.rmi.server.UID()
-				c.parentid = faas.objid
+				c.parentid = h.objid 
 				imageSvc.saveItem(c)
 			}
 		}

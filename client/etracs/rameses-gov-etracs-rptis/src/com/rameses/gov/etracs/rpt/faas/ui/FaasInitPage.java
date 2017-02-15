@@ -39,7 +39,6 @@ public class FaasInitPage extends javax.swing.JPanel {
         xIntegerField3 = new com.rameses.rcp.control.XIntegerField();
         xIntegerField4 = new com.rameses.rcp.control.XIntegerField();
         xTextField2 = new com.rameses.rcp.control.XTextField();
-        xCheckBox1 = new com.rameses.rcp.control.XCheckBox();
         xLabel1 = new com.rameses.rcp.control.XLabel();
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
@@ -139,16 +138,6 @@ public class FaasInitPage extends javax.swing.JPanel {
         });
         formPanel1.add(xTextField2);
 
-        xCheckBox1.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
-        xCheckBox1.setCaption("Auto-number");
-        xCheckBox1.setCaptionWidth(120);
-        xCheckBox1.setCellPadding(new java.awt.Insets(10, 0, 0, 0));
-        xCheckBox1.setMargin(new java.awt.Insets(0, 0, 0, 0));
-        xCheckBox1.setName("entity.autonumber"); // NOI18N
-        xCheckBox1.setShowCaption(false);
-        xCheckBox1.setText("Auto-number");
-        formPanel1.add(xCheckBox1);
-
         xLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         com.rameses.rcp.control.border.XLineBorder xLineBorder1 = new com.rameses.rcp.control.border.XLineBorder();
         xLineBorder1.setLineColor(new java.awt.Color(153, 153, 153));
@@ -177,7 +166,7 @@ public class FaasInitPage extends javax.swing.JPanel {
                 .add(formPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(xLabel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 38, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(67, Short.MAX_VALUE))
+                .addContainerGap(94, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -188,7 +177,6 @@ public class FaasInitPage extends javax.swing.JPanel {
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.rameses.rcp.util.FormPanel formPanel1;
-    private com.rameses.rcp.control.XCheckBox xCheckBox1;
     private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XComboBox xComboBox2;
     private com.rameses.rcp.control.XComboBox xComboBox3;

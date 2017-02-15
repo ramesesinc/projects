@@ -13,11 +13,13 @@ public class BldgUse
     Double          basemarketvalue
     Double          depreciationvalue
     Double          adjustment
+    Double          adjfordepreciation
     Double          marketvalue
     Double          assesslevel
     Double          assessedvalue
     Double          swornamount
     Boolean         useswornamount 
+    Boolean         taxable  
     
 
     //data ref
@@ -32,6 +34,7 @@ public class BldgUse
         this.actualuseid        = bu.actualuse?.objid 
         this.swornamount        = bu.swornamount
         this.useswornamount     = bu.useswornamount
+        this.taxable            = bu.taxable
 
         this.fixrate = false;
         if ( bu.actualuse && (bu.actualuse?.fixrate == 1 || bu.actualuse?.fixrate == true))
@@ -47,6 +50,7 @@ public class BldgUse
         setBasemarketvalue(0.0)
         setDepreciationvalue(0.0)
         setAdjustment(0.0)
+        setAdjfordepreciation(0.0)
         setMarketvalue(0.0)
         setAssessedvalue(0.0)
         
@@ -75,6 +79,11 @@ public class BldgUse
     void setAdjustment(adjustment){
         this.adjustment = adjustment
         entity.adjustment = new BigDecimal(adjustment+'')
+    }
+
+    void setAdjfordepreciation(adjfordepreciation){
+        this.adjfordepreciation = adjfordepreciation
+        entity.adjfordepreciation = new BigDecimal(adjfordepreciation+'')
     }
 
     void setMarketvalue(marketvalue){

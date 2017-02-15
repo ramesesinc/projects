@@ -1,7 +1,0 @@
-"selectedItem" [mode == 'read']{
-    readonly:true;
-}
-
-"selectedItem" [mode != 'read']{
-    readonly:false;
-}

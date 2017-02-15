@@ -18,6 +18,7 @@ public class PlantTreeDetail
     Double marketvalue
     Double assesslevel
     Double assessedvalue 
+    Boolean taxable 
 
     //data reference
     def entity    
@@ -37,6 +38,7 @@ public class PlantTreeDetail
         this.basemarketvalue = ptd.basemarketvalue
         this.adjustment = ptd.adjustment
         this.adjustmentrate = ptd.adjustmentrate
+        this.taxable = true 
         setMarketvalue(ptd.marketvalue)
         setAssesslevel(ptd.assesslevel)
         setAssessedvalue(ptd.assessedvalue)

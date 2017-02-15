@@ -1,7 +1,7 @@
 <workunit extends="wtemplates/ExplorerViewController.xml" defaultFileType="faaslist" autoSelect="true">
     <invokers>
-        <invoker folderid="/home/rpt" caption="FAAS Management"  role="ASSESSOR_SHARED" index="101"/>
-        <invoker type="quick_launcher" code="FM00" caption="FAAS Management"  role="ASSESSOR_SHARED" index="101"/>
+        <invoker folderid="/home/rpt" caption="FAAS"  role="ASSESSOR_SHARED, SHARED" index="101" icon="home/icons/faases.png"/>
+        <invoker type="quick_launcher" code="FM00" caption="FAAS Management"  role="ASSESSOR_SHARED, SHARED" index="101"/>
         <invoker type="formActions" action="doOpen" caption="Open" mnemonic="o" shortcut="ctrl O" visibleWhen="#{selectedEntity != null}" depends="listHandler.selectedEntity" index="-100"/>        
     </invokers>
         <code>
@@ -31,6 +31,8 @@
             def grSvc;
     
             def states 
+            def classifications;
+            def txntypes;
             
             boolean allowSearch = false;
             boolean allowOpen = false;
@@ -42,17 +44,27 @@
             String entityName = 'faaslist';
             
             
-            int getRows() { return 25 }
+            int getRows() { return 20}
                         
             List getStates(){
                 if (!states) states = svc.getStates();
                 return states
             }
             
+            List getClassifications() {
+                if (!classifications)
+                    classifications = svc.getClassifications();
+                return classifications;
+            }
+            
+            List getTxntypes(){
+                return svc.getTxnTypes();
+            }
+            
             def doOpen(){
                 if (!selectedEntity) return;
                 
-                if (selectedEntity.state.matches('CURRENT|CANCELLED'))
+                if (selectedEntity.taskstate == null && selectedEntity.state.matches('CURRENT|CANCELLED'))
                     return InvokerUtil.lookupOpener('faas:open:closedwf', [entity:selectedEntity])
                 
                 if ( RPTUtil.toBoolean(selectedEntity?.datacapture, false) == true )
@@ -64,23 +76,6 @@
             def onOpenItem(Object item, String columnName) { 
                 return doOpen();
             }
-            
-                        
-                        
-            def formControl = [
-                getFormControls: {
-                    return [
-                        new FormControl( "combo", [captionWidth:100, caption:'State', name:'query.state', items:'states']),
-                        new FormControl( "integer", [captionWidth:100, caption:'Revision', name:'query.ry']),
-                        new FormControl( "combo", [captionWidth:100, caption:'Property Type', name:'query.rputype', items:'rputypes']),
-                        new FormControl( "combo", [captionWidth:100, caption:'LGU', name:'query.lgu', items:'lgus', expression:'#{item.name}']),
-                        new FormControl( "combo", [captionWidth:100, caption:'Barangay', name:'query.barangay', items:'barangays', expression:'#{item.name}', dynamic:true, depends:'query.lgu']),
-                        new FormControl( "lookup", [captionWidth:100, caption:'Taxpayer', name:'query.taxpayer', handler:'entity:lookup', expression:'#{item.name}']),
-                    ]    
-                },
-           ] as FormPanelModel;
-           
-           
             
             def getBarangays(){
                 if (! query.lgu)

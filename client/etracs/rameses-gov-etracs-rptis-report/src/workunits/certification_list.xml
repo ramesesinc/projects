@@ -1,7 +1,7 @@
 <workunit extends="wtemplates/ListController.xml">
     <invokers>
-        <invoker folderid="/explorer/txn/rpt/list" action="initAssessorCertifications" caption="Certifications and Clearances"  target="window" index="500" role="ASSESSOR_SHARED,SHARED" />
-        <invoker folderid="/home/rpt" action="initAssessorCertifications" caption="Certifications and Clearances"  target="window" index="500" role="ASSESSOR_SHARED,SHARED" />
+        <invoker folderid="/explorer/txn/rpt/list" action="initAssessorCertifications" caption="Certifications"  target="window" index="500" role="ASSESSOR_SHARED,SHARED" />
+        <invoker folderid="/home/rpt" action="initAssessorCertifications" caption="Certifications"  target="window" index="500" role="ASSESSOR_SHARED,SHARED" icon="home/icons/certifications.png" />
     </invokers>
     <code>
         import com.rameses.rcp.common.*

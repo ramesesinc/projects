@@ -4,6 +4,17 @@ from rpt_redflag
 where parentid = $P{parentid}
 order by filedby_date desc 
 
+[getLookup]
+select * 
+from rpt_redflag 
+where objid in (
+	select objid from rpt_redflag where caseno like $P{searchtext}
+	union 
+	select objid from rpt_redflag where refno like $P{searchtext}
+)
+order by caseno desc 
+
+
 [getListFromSubdivision]
 select x.*
 from (

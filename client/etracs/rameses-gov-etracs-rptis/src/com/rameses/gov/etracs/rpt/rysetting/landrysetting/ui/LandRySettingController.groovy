@@ -46,14 +46,25 @@ public class LandRySettingController extends RYSettingPageFlowController
     def selectedSpecificClass
     def specificClasses = []
     def areaTypes = ['SQM', 'HA']
+    
+    
+    def getLookupLandSpecificClass(){
+        return Inv.lookupOpener('landspecificclass:lookup', [
+           onselect : {
+               selectedSpecificClass.landspecificclass = it;
+               selectedSpecificClass.code = it.code;
+               selectedSpecificClass.name = it.name;
+           }
+        ]);
+    }
 
     def specificClassListHandler = [
         createItem : { return createSpecificClass() },
         getRows    : { return specificClasses.size() + 2 },
                 
         getColumns : { return [
-            new Column(name:'code', caption:'Code*', maxWidth:60, editable:true ),
-            new Column(name:'name', caption:'Name*', editable:true),
+            new Column(name:'landspecificclass', caption:'Code*', maxWidth:60, editable:true, type:'lookup', handler:'lookupLandSpecificClass', expression:'#{item.landspecificclass.code}' ),
+            new Column(name:'name', caption:'Name*', editable:false),
             new Column(name:'areatype', caption:'Area Type*', type:'combo', items:areaTypes , editable:true),
         ]},
                 

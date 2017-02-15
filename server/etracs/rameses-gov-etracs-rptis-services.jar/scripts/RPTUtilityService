@@ -27,6 +27,9 @@ class RPTUtilityService
 	@Service('LogService')
 	def logSvc 
 
+	@Service('FAASService')
+	def faasSvc 
+
 
 	
 	 //info: faasid, oldpin, tdno, pintype, municipality, barangay, 
@@ -39,6 +42,9 @@ class RPTUtilityService
 		info.ssection = tokens[3]
 		info.sparcel = tokens[4]
 		def oldpin = null
+		
+		
+
 		if( info.rputype == 'land') {
 			def rp = null
 			def rpu = rpuSvc.openRpu( [objid:info.rpuid] )
@@ -61,12 +67,16 @@ class RPTUtilityService
 
 				//update improvements pin 
 				rpudb.getLandImprovementsRpuByRealPropertyId([realpropertyid: rp.objid]).each { 
+					def improvfaas = em.findFaasInfo(it)
 					def param = [
 						oldpin  : it.fullpin, 
 						newpin  : buildNewPin(info.newpin, it.fullpin, it.suffix),
 						suffix  :it.suffix, 
 						rpuid   : it.objid ,
 						realpropertyid : rp.objid,
+						rputype : it.rputype, 
+						landrpuid : rpu.objid,
+						taxpayer  : improvfaas.taxpayer, 
 					]
 					modifyInfo(param)
 					faasListEm.updateFaasList([objid:it.faasid])
@@ -77,18 +87,26 @@ class RPTUtilityService
 			
 			return rp
 			
-		} else {
+		} 
+		else {
 			def oldfaas = em.findFaasInfo(info)
+			info.taxpayer = oldfaas.taxpayer 
 
 			def landpin = info.barangay.pin + '-' + info.ssection + '-' + info.sparcel
 			if (info.pintype == 'old'){
 				landpin = info.barangay.oldpin + '-' + info.ssection + '-' + info.sparcel
 			}
-			def landrp = em.findByPinRy([pin:landpin, ry:info.ry])
+
+			def pinry = [pin:landpin, ry:info.ry]
+			def landrp = em.findByPinRy(pinry)
 			if (!landrp)
 				throw new Exception('Land Real Property with PIN ' + landpin  + ' does not exist.')
 
+			def landrpu = em.findLandRpuByPinRy(pinry)
+			if (!landrpu) throw new Exception('Land RPU with PIN ' + landpin + 'does not exist.')
+
 			info.realpropertyid = landrp.objid 
+			info.landrpuid = landrpu.objid 
 			modifyInfo(info)
 			faasListEm.updateFaasList([objid:info.faasid])
 			log(info.faasid, oldfaas.fullpin, info.newpin)
@@ -103,8 +121,21 @@ class RPTUtilityService
 
 	void modifyInfo(info){
 		em.modifyPin(info)
+
+		if(info.rputype != 'land'){
+			em.modifyBldgLandRpu(info)
+			em.modifyMachLandRpu(info)
+			em.modifyPlantTreeLandRpu(info)
+			em.modifyMiscLandRpu(info)
+
+			info.rpu = [objid:info.rpuid, fullpin:info.newpin, rputype:info.rputype]
+			faasSvc.updateFullPinInfo(info)
+			info.newpin = info.fullpin 
+		}
+
 		em.modifyFaasPin(info)
 		em.modifyLedgerPin(info)
+
 	}
 	
 	void validatePin( info ) {
@@ -123,13 +154,7 @@ class RPTUtilityService
     }
 	
 	def buildNewPin(newpin, fullpin, suffix){
-	    if (fullpin.indexOf('(') < 0)
 	        return newpin + '-' + suffix
-    
-    	def tokens = newpin.tokenize('-')
-	    tokens[4] = '(' + tokens[4] + ')'
-	    def pin = tokens.join('-') + '-' + suffix
-	    return pin 
 	}
 
 }

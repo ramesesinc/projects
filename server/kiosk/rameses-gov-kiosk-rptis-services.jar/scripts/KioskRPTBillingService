@@ -5,6 +5,9 @@ import com.rameses.services.extended.*;
 
 class KioskRPTBilllingService
 {
+    @Service('DateService')
+    def dtSvc 
+
 	@Service('RPTBillingService')
     def billSvc
 
@@ -14,36 +17,54 @@ class KioskRPTBilllingService
     @Service('QueryService')
     def query 
 
+    @Service('PaymentOrderService')
+    def pmoSvc 
+
+    @Service('CacheService')
+    def cacheSvc 
+
     def BARCODE_KEY = '56001';
 
 
     @ProxyMethod
     public def generateBill(params){
         params.ledger = validateLedger(params)
-        def bill = buildBill(params)
-        return buildPaymentOrder(bill)
+        def bill = initBill(params)
+        def billing = buildBilling(bill)
+
+        def pmoinfo = [:]
+        pmoinfo.billid = bill.billid
+        pmoinfo.barcode = bill.barcode
+        pmoinfo.taxpayer = billing.taxpayer
+        pmoinfo.billamount = billing.billamount
+        pmoinfo.validuntil = billing.validuntil
+        cacheSvc.put([key:pmoinfo.billid, value:pmoinfo])
+        return billing 
     }
 
 
     @ProxyMethod
-    public def generateBillByPaymentOrder(entity) {
-        def q = [_schemaname:'paymentorder']
-        q.findBy = [txnid:entity.txnid]
-        def pmo = query.findFirst(q)
-        if (!pmo) throw new Exception("Payment Order does not exist.")
-
-        def bill = billSvc.getBillByBarcode([barcodeid:pmo.refno, barcodekey:BARCODE_KEY])
-        if (!bill) throw new Exception('Bill ' + pmo.refno + ' does not exist or has already been deleted.')
-        bill.billid = pmo.refid 
-        bill.rptledgerid = bill.ledgers[0].rptledgerid 
-        bill = billSvc.generateBillByLedgerId3(bill)
-        bill.rptledger.remove('faases')
-        bill.remove('taxes')
-        return buildPaymentOrder(bill)
+    public def postPaymentOrder( def o ) {
+        if(! o.billid) throw new Exception('Bill ID is required.')
+        def pmoinfo = cacheSvc.get([key:o.billid])
+        def pmo = [:]
+        pmo.txntype = 'rptcol'
+        pmo.payer = pmoinfo.taxpayer
+        pmo.paidby = pmoinfo.taxpayer?.name 
+        pmo.paidbyaddress = pmoinfo.taxpayer?.address 
+        pmo.amount = pmoinfo.billamount 
+        pmo.refid = pmoinfo.billid 
+        pmo.refno = pmoinfo.barcode 
+        pmo.expirydate = pmoinfo.validuntil
+        pmo.info = [:]
+        pmo = pmoSvc.create(pmo)
+        pmo.expirydate = dtSvc.format('yyyy-MM-dd', pmo.expirydate)
+        cacheSvc.put([key:pmo.txnid, value:pmo])
+        return pmo.txnid 
     }
 
 
-    def buildBill(params){
+    def initBill(params){
         def ledger = params.ledger 
         def bill = billSvc.initBill(ledger.objid)
 
@@ -70,74 +91,74 @@ class KioskRPTBilllingService
     }
 
     @ProxyMethod
-    public def buildPaymentOrder(bill){
-        def pmtorder = [:]
-        pmtorder.dtposted = bill.dtposted 
-        pmtorder.billid = bill.billid 
-        pmtorder.barcode = bill.barcode 
-        pmtorder.rptledgerid = bill.rptledgerid 
-        pmtorder.billtoyear = bill.billtoyear 
-        pmtorder.billtoqtr = bill.billtoqtr 
-        pmtorder.taxpayer = bill.taxpayer
-        pmtorder.validuntil = bill.validuntil
-        pmtorder.tdno = bill.rptledger.tdno
-        pmtorder.barangay = bill.rptledger.barangay
-        pmtorder.fullpin = bill.rptledger.fullpin
-        pmtorder.cadastrallotno = bill.rptledger.cadastrallotno
-        pmtorder.rputype = bill.rptledger.rputype
-        pmtorder.classcode = bill.rptledger.classcode
-        pmtorder.lastyearpaid = bill.rptledger.lastyearpaid
-        pmtorder.lastqtrpaid = bill.rptledger.lastqtrpaid
+    public def buildBilling(bill){
+        def billing = [:]
+        billing.dtposted = bill.dtposted 
+        billing.billid = bill.billid 
+        billing.barcode = bill.barcode 
+        billing.rptledgerid = bill.rptledgerid 
+        billing.billtoyear = bill.billtoyear 
+        billing.billtoqtr = bill.billtoqtr 
+        billing.taxpayer = bill.taxpayer
+        billing.validuntil = dtSvc.format('yyyy-MM-dd', bill.validuntil)
+        billing.tdno = bill.rptledger.tdno
+        billing.barangay = bill.rptledger.barangay
+        billing.fullpin = bill.rptledger.fullpin
+        billing.cadastrallotno = bill.rptledger.cadastrallotno
+        billing.rputype = bill.rptledger.rputype
+        billing.classcode = bill.rptledger.classcode
+        billing.lastyearpaid = bill.rptledger.lastyearpaid
+        billing.lastqtrpaid = bill.rptledger.lastqtrpaid
 
-        pmtorder.basic = bill.items.basic.sum()
-        pmtorder.basicint = bill.items.basicint.sum()
-        pmtorder.basicdisc = bill.items.basicdisc.sum()
-        pmtorder.basicnet = pmtorder.basic + pmtorder.basicint - pmtorder.basicdisc
+        billing.basic = bill.items.basic.sum()
+        billing.basicint = bill.items.basicint.sum()
+        billing.basicdisc = bill.items.basicdisc.sum()
+        billing.basicnet = billing.basic + billing.basicint - billing.basicdisc
         
-        pmtorder.basicidle = bill.items.basicidle.sum()
-        pmtorder.basicidleint = bill.items.basicidleint.sum()
-        pmtorder.basicidledisc = bill.items.basicidledisc.sum()
-        pmtorder.basicidlenet = pmtorder.basicidle + pmtorder.basicidleint - pmtorder.basicidledisc
+        billing.basicidle = bill.items.basicidle.sum()
+        billing.basicidleint = bill.items.basicidleint.sum()
+        billing.basicidledisc = bill.items.basicidledisc.sum()
+        billing.basicidlenet = billing.basicidle + billing.basicidleint - billing.basicidledisc
 
-        pmtorder.firecode = bill.items.firecode.sum()
+        billing.firecode = bill.items.firecode.sum()
 
-        pmtorder.sef = bill.items.sef.sum()
-        pmtorder.sefint = bill.items.sefint.sum()
-        pmtorder.sefdisc = bill.items.sefdisc.sum()
-        pmtorder.sefnet = pmtorder.sef + pmtorder.sefint - pmtorder.sefdisc 
+        billing.sef = bill.items.sef.sum()
+        billing.sefint = bill.items.sefint.sum()
+        billing.sefdisc = bill.items.sefdisc.sum()
+        billing.sefnet = billing.sef + billing.sefint - billing.sefdisc 
 
-        pmtorder.billamount = pmtorder.basicnet + pmtorder.sefnet + pmtorder.basicidlenet + pmtorder.firecode 
+        billing.billamount = billing.basicnet + billing.sefnet + billing.basicidlenet + billing.firecode 
 
-        if (pmtorder.billamount <= 0.0) {
+        if (billing.billamount <= 0.0) {
             def msg = 'A problem was encountered when generating the bill.\n'
             msg += 'Please proceed to Land Tax Office for assistance.'
             throw new Exception(msg)
         }
-        buildPeriod(pmtorder)
-        return pmtorder
+        buildPeriod(billing)
+        return billing
     }
 
 
-    void buildPeriod(pmtorder){
-        pmtorder.fromyear = (pmtorder.lastqtrpaid == 4 ? pmtorder.lastyearpaid + 1 : pmtorder.lastyearpaid)
-        pmtorder.fromqtr = (pmtorder.lastqtrpaid == 4 ? 1 : pmtorder.lastqtrpaid + 1)
-        pmtorder.toyear = pmtorder.billtoyear 
-        pmtorder.toqtr = pmtorder.billtoqtr 
+    void buildPeriod(billing){
+        billing.fromyear = (billing.lastqtrpaid == 4 ? billing.lastyearpaid + 1 : billing.lastyearpaid)
+        billing.fromqtr = (billing.lastqtrpaid == 4 ? 1 : billing.lastqtrpaid + 1)
+        billing.toyear = billing.billtoyear 
+        billing.toqtr = billing.billtoqtr 
 
-        if (pmtorder.fromyear == pmtorder.toyear && pmtorder.fromqtr == 1 && pmtorder.toqtr == 4)
-            pmtorder.billperiod = pmtorder.toyear
-        else if (pmtorder.fromyear == pmtorder.toyear && pmtorder.fromqtr == pmtorder.toqtr)
-            pmtorder.billperiod = pmtorder.fromqtr + 'Q, ' + pmtorder.toyear
-        else if (pmtorder.fromyear == pmtorder.toyear)
-            pmtorder.billperiod = pmtorder.fromqtr + '' + pmtorder.toqtr + 'Q, ' + pmtorder.toyear 
-        else if (pmtorder.fromqtr == 1 && pmtorder.toqtr == 4)
-            pmtorder.billperiod = pmtorder.fromyear + '-' + pmtorder.toyear 
-        else if (pmtorder.fromqtr == 1 && pmtorder.toqtr != 4)
-            pmtorder.billperiod = pmtorder.fromyear + '-' + pmtorder.toqtr + 'Q,' + pmtorder.toyear 
-        else if (pmtorder.fromqtr != 1 && pmtorder.toqtr == 4)
-            pmtorder.billperiod = pmtorder.fromqtr + 'Q,' + pmtorder.fromyear + '-' + pmtorder.toyear
+        if (billing.fromyear == billing.toyear && billing.fromqtr == 1 && billing.toqtr == 4)
+            billing.billperiod = billing.toyear
+        else if (billing.fromyear == billing.toyear && billing.fromqtr == billing.toqtr)
+            billing.billperiod = billing.fromqtr + 'Q, ' + billing.toyear
+        else if (billing.fromyear == billing.toyear)
+            billing.billperiod = billing.fromqtr + '' + billing.toqtr + 'Q, ' + billing.toyear 
+        else if (billing.fromqtr == 1 && billing.toqtr == 4)
+            billing.billperiod = billing.fromyear + '-' + billing.toyear 
+        else if (billing.fromqtr == 1 && billing.toqtr != 4)
+            billing.billperiod = billing.fromyear + '-' + billing.toqtr + 'Q,' + billing.toyear 
+        else if (billing.fromqtr != 1 && billing.toqtr == 4)
+            billing.billperiod = billing.fromqtr + 'Q,' + billing.fromyear + '-' + billing.toyear
         else 
-            pmtorder.billperiod = pmtorder.fromqtr + 'Q,' + pmtorder.fromyear + '-' + pmtorder.toqtr + 'Q,' + pmtorder.toyear
+            billing.billperiod = billing.fromqtr + 'Q,' + billing.fromyear + '-' + billing.toqtr + 'Q,' + billing.toyear
     }
 
 

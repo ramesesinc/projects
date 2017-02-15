@@ -35,6 +35,10 @@ public class CashReceiptBarcode {
             q.findBy = [txnid:barcodeid]
 
             po = qrySvc.findFirst(q)
+            if (!po){
+                q.findBy = [txnid:p]
+                po = qrySvc.findFirst(q)
+            }
             if (!po) throw new Exception('Payment Order does not exist.')
             
             q._schemaname = 'collectiontype'

@@ -50,6 +50,9 @@ class PaymentOrderService {
 		def m = [:];
 		m.txnid = KeyGen.generateAlphanumKey( "PMO:", 6 );
 		m.expirydate = dtSvc.findNextDate('1y');
+		if (entity.expirydate){
+			m.expirydate = entity.expirydate
+		}
 		m.info = entity.info;
 		m.payer = entity.payer;
 		m.paidby = entity.paidby;

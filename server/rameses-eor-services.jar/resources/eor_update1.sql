@@ -1,5 +1,3 @@
-#254032-03014
-
 CREATE TABLE `payment_partner` (
   `objid` varchar(50) NOT NULL,
   `name` varchar(255) DEFAULT NULL,

@@ -61,6 +61,7 @@ class PaymentOrderService {
 		m.refid = entity.refid;
 		m.refno = entity.refno;
 		m.txntype = entity.txntype;
+		m.particulars = entity.particulars;
 
 		if(!entity.txndate) m.txndate = dtSvc.getServerDate();
 		pmt.create(m);

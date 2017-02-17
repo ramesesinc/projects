@@ -266,7 +266,7 @@ public class RPTBillingService
 
 
 	def generateBarcode(){
-		def cy = dtSvc.serverYear
+		def cy = dtSvc.serverYear.toString()[-2..-1]
 		def lguid = '000'
 		if (env){
 			if (env.ORGID){

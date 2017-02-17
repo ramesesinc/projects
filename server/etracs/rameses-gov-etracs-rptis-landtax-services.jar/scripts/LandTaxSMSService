@@ -42,7 +42,9 @@ class LandTaxSMSService
 		println 'sendTaxDueInfo -> ' + ledger.phoneno  
 
 		billSvc.generateBillByLedgerId(ledger.objid)
-		def bill = billReportSvc.generateReportByLedgerId( ledger.objid )
+		def bill = em.findLatestBillByLedger(ledger)
+		if (!bill) return
+		bill = billReportSvc.getBilledLedger( bill )
 		def discount = bill.basicdp + bill.sefdp 
 
 		def msg = 'ADVISORY: Balance of your property TD No. ' + ledger.tdno + ' ' 

@@ -9,6 +9,9 @@ class VehiclePermitService {
 	@DataContext('vehicle_application') 
 	def vapp_db; 
 
+	@DataContext(dynamic=true) 
+	def em;
+
 	@Service("SequenceService")
 	def seqSvc;
 
@@ -17,6 +20,9 @@ class VehiclePermitService {
 
 	@Env
 	def env;	
+
+	@DataContext('entityindividual') 
+	def individualEntityEm; 
 
 	@ProxyMethod 
 	public def create( params ) { 
@@ -31,7 +37,7 @@ class VehiclePermitService {
 		if ( !appid ) throw new Exception('Please provide an appid'); 
 
 		def oldperm = vperm_db.find([ appid: appid ]).first(); 
-		if ( oldperm ) throw new Exception('There was already a permit issued to this application'); 
+		if ( oldperm ) throw new Exception('There is already a permit issued to this application'); 
 
 		def app = vapp_db.find([ objid: appid ]).first(); 
 		if ( !app ) throw new Exception('Vehicle application record not found');
@@ -54,23 +60,31 @@ class VehiclePermitService {
 		permit.issuedby = [objid: env.USERID, name: env.FULLNAME];
 		permit.permitno = permitno;
 		vperm_db.create( permit ); 
-		loadAdditionalInfos( permit ); 
-		return permit; 
+		return open( [objid: permit.objid ]);
 	}
 
 	@ProxyMethod 
 	public def open( params ) { 
 		if ( !params.objid ) throw new Exception('objid parameter is required'); 
-
-		def permit = vperm_db.find([ objid: params.objid ]).first();  	
+		def permit = vperm_db.find([ objid: params.objid ]).first();  
 		loadAdditionalInfos( permit ); 
 		return permit; 
 	} 
 
 	private void loadAdditionalInfos( o ) {
+		//load the full application
+		def appEm = em.lookup( "vehicle_application_"+o.app.vehicletype );
+		def app = appEm.find( [objid: o.app.objid ] ).first();
+		o.putAll( app );
 		o.orgtype = env.ORGCLASS; 
 		if ( o.orgtype.toString().toUpperCase()=='MUNICIPALITY' ) {
 			o.orgtype = 'MUNICIPAL'; 
+		};
+
+		//add also all info for individual entity
+		def g = individualEntityEm.find( [objid: app.owner.objid ] ).first();
+		g.each { k,v->
+			if( !o.owner.containsKey(k) ) o.owner.put(k,v);
 		}
 	}
 }

@@ -24,7 +24,7 @@
 
 		<field name="billexpirydate" required="false" type="date"/>
 
-		<complex name="franchise" ref="vehicle_franchise" jointype="many-to-one" includefields="controlno,dtregistered" required="true">
+		<complex name="franchise" ref="vehicle_franchise" jointype="many-to-one" includefields="objid,controlno,dtregistered" required="true">
 			<key field="controlid" target="objid" />
 		</complex> 
 
@@ -32,7 +32,7 @@
 			<key field="objid" target="appid" />
 		</complex>
 		
-		<complex name="infos" ref="vehicle_application_info" jointype="one-to-many">
+		<complex name="infos" ref="vehicle_application_info" jointype="one-to-many" required="false">
 			<key field="objid" target="appid" />
 		</complex>
 

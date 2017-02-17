@@ -31,12 +31,15 @@ class LandTaxReportNoticeOfDelinquencyService
 
 	@ProxyMethod
 	public def generateNoticeOfDelinquency( data ) {
-		if (data.rptledgerid)
+		if (data.rptledgerid){
 			data.filters = ' rl.objid = $P{rptledgerid} '
+			data.billid = em.findBillByLedgerId(data)?.objid 
+		}
 		else if (data.taxpayer){
 			data.taxpayerid = data.taxpayer.objid
 			data.taxpayer.address = data.taxpayer.address.text
 			data.filters = ' rl.taxpayer_objid = $P{taxpayerid} '
+			data.billid = em.findBillByTaxpayer(data)?.objid 
 		}
 		else {
 			throw new Exception('Ledger or taxpayer is required.')

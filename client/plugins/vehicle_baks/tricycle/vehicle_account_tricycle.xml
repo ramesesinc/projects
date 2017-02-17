@@ -1,6 +1,0 @@
-<workunit extends="com/rameses/gov/etracs/vehicle/templates/VehicleAccount.xml" 
-          schemaName="vehicle_account_tricycle" vehicletype="tricycle">
-    <invokers>
-        <invoker type="vehicle_account_tricycle:open" caption="Tricycle" action="open" />
-    </invokers>
-</workunit>

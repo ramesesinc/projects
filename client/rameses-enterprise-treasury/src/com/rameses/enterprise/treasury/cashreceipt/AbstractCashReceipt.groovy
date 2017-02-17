@@ -16,6 +16,7 @@ public abstract class AbstractCashReceipt {
     def service;
 
     def entity;
+    def _paymentorderid;
    
     String title;
     boolean completed = false;
@@ -219,6 +220,7 @@ public abstract class AbstractCashReceipt {
         if(MsgBox.confirm("You are about to post this payment. Please ensure entries are correct")) {
             try { 
                 beforePost();
+                entity._paymentorderid = _paymentorderid;
                 entity = service.post( entity );
             } catch(e) { 
                 postError(); 

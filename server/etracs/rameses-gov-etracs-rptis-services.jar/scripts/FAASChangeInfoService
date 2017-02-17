@@ -12,6 +12,9 @@ class FAASChangeInfoService
 	@ActiveDB('rpt_changeinfo')
 	def em
 
+	@DataContext('rpt_changeinfo')
+	def db_rpt_changeinfo
+
 	@Service('DateService')
 	def dtSvc
 
@@ -20,6 +23,49 @@ class FAASChangeInfoService
 
 	@Service('FAASService')
 	def faasSvc 
+
+    @Service('EntityService')
+    def entitySvc 
+
+	@Service('FAASSupportService')
+    def supportSvc 
+
+    @Service('RPTRequirementService')
+	def reqSvc
+
+	@Service('DBImageService')
+	def imageSvc 
+
+
+
+	@ProxyMethod
+	public def openByRedFlag(redflag) {
+		def changeinfo = db_rpt_changeinfo.find([redflagid:redflag.objid]).first()
+		if (!changeinfo) throw new Exception('Record does not exist or has already been deleted.')
+
+		changeinfo.newinfo = em.serializer.read(changeinfo.newinfo)
+		changeinfo.previnfo = em.serializer.read(changeinfo.previnfo)
+
+        if (changeinfo.action == 'change_owner_info'){
+            changeinfo.taxpayer = entitySvc.open(changeinfo.newinfo.taxpayer)
+        }
+        else if (changeinfo.action == 'add_faas_requirement_document'){
+        	redflag.requirementtypeid = redflag.info.requirementtype.objid 
+        	def imageids = em.getImageIds(redflag)
+        	if (imageids){
+	            changeinfo.requirement = reqSvc.open(imageids[0])
+        		def images = imageSvc.getImages([refid:imageids[0].objid])
+        		if (images){
+	            	changeinfo.image = supportSvc.getImageByIds(images.objid)
+        		}
+        	}
+        }
+        else if (changeinfo.action == 'change_faas_sketch'){
+            changeinfo.image = supportSvc.getImageByIds([changeinfo.refid])
+        }
+
+        return changeinfo
+	}
 	
 
 	@ProxyMethod
@@ -42,7 +88,11 @@ class FAASChangeInfoService
 		changeinfo.newinfo  = em.serializer.write(changeinfo.newinfo)
 		changeinfo.previnfo = em.serializer.write(changeinfo.previnfo)
 
-		em.create(changeinfo);
+		def exist = em.read(changeinfo)
+		if (exist)
+			em.update(changeinfo);
+		else 
+			em.create(changeinfo);
 		changeinfo.newinfo = newinfo;
 		logSvc.logA(changeinfo.action, 'faas', changeinfo.refid, changeinfo.reason)
 		return changeinfo

@@ -2,9 +2,12 @@
         schemaName="vehicle_application_fishboat" 
         vehicletype="fishboat">
     <invokers>
-        <invoker type="vehicle_application_fishboat:open" caption="Fishboat Application" action="open" />
-        <invoker type="global:barcode:51010" caption="Fishboat Application" 
+        <invoker type="vehicle_application_fishboat:open" caption="Vehicle Application" action="open" />
+        <invoker type="global:barcode:51010" caption="Vehicle Application" 
             action="openBarcode" 
-            target="window" expr1="#{barcodeid.startsWith('WA')}" />
+            target="window" />
     </invokers>
+    <pages>
+        <page template="com.rameses.gov.etracs.vehicle.fishboat.views.FishboatApplicationPage" />
+    </pages>
 </workunit>

@@ -1,0 +1,11 @@
+DELETE FROM vehicle_payment_item;
+DELETE FROM vehicle_payment;
+DELETE FROM vehicle_permit;
+DELETE FROM vehicle_application_tricycle_task;
+DELETE FROM vehicle_application_fee;
+DELETE FROM vehicle_franchise_fee;
+DELETE FROM vehicle_application_info;
+DELETE FROM vehicle_application_tricycle;
+DELETE FROM vehicle_application;
+DELETE FROM vehicle_franchise_tricycle;
+DELETE FROM vehicle_franchise;

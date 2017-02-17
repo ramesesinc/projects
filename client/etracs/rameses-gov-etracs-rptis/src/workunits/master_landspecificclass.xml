@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="landspecificclass:create" action="init" caption="Specific Class" role="ASSESSOR_DATAMGMT,MASTER" />
+        <invoker type="landspecificclass:open" action="open" caption="Specific Class" role="ASSESSOR_DATAMGMT,MASTER" />
+    </invokers>
+        
+    <code lang="groovy">
+        <![CDATA[
+        
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        
+        public class SpecificClassController  extends CRUDController
+        {
+            String serviceName = "LandSpecificClassService"
+            String entityName  = 'landspecificclass'
+            String prefixId    = 'LS'
+        }
+        
+        
+        ]]>
+    </code>
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.rpt.master.ui.ActualUsePage" />
+    </pages>
+</workunit>

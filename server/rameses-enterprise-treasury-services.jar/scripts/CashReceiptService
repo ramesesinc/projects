@@ -26,6 +26,9 @@ class CashReceiptService  {
 
 	@Env
 	def env;
+
+	@Service('PersistenceService')
+	def persistence 
 	
    
 	/**
@@ -105,6 +108,7 @@ class CashReceiptService  {
 			x.receiptid = p.objid;
 			em.create("cashreceipt:paymentitem-noncash", x);
 		} 
+		if (p._paymentorderid) deletePaymentOrder(p)
 		return formatReport(p);
 	}	
 		
@@ -164,4 +168,11 @@ class CashReceiptService  {
 		def sdate = new java.sql.Date( time ).toString(); 
 		return dateService.parse('yyyy-MM-dd', sdate); 
 	} 
+
+	void deletePaymentOrder(rct){
+		def q = [:]
+		q._schemaname = 'paymentorder'
+		q.txnid = rct._paymentorderid
+		persistence.removeEntity(q)
+	}
 }

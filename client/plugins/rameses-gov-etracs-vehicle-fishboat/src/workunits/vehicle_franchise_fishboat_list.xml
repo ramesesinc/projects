@@ -3,7 +3,11 @@
     <invokers>
         <invoker folderid="/home/vehicle/fishboat" 
                  caption="Fishboat Control List" index="-10"
-                 cols="controlno,activeyear,owner.name,owner.address.text,vehicle.vesselname,barangay.name,state"
-                 action="init" orderBy="controlno"/>
+                 cols="controlno,activeyear,owner.name,owner.address.text,vesselname,barangay.name,state"
+                 action="init" orderBy="controlno" 
+                 role="INFO,SHARED"/>
     </invokers>
+    <pages>
+        <page name="queryForm" template="com.rameses.gov.etracs.vehicle.views.VehicleQueryForm" />
+    </pages>
 </workunit>

@@ -288,11 +288,16 @@ class RPTLedgerService
             lastyearpaid    : item.year, 
             toyear          : item.year, 
             lastqtrpaid     : (item.fullypaid == 1 ? 4 : item.paidqtr),
-            toqtr     : (item.fullypaid == 1 ? 4 : item.paidqtr)
+            toqtr     : (item.fullypaid == 1 ? 4 : item.paidqtr),
+            taxdifference : (util.isTrue(item.taxdifference) ? 1 : 0)
         ]
         em.fixLedgerDeleteBillLedgerItems(params)
         em.fixLedgerDeleteQtrlyItems(params)
-        em.fixLedgerDeleteLedgerItems(params)
+        if (item.taxdifference == 0 || item.taxdifference == false){
+            em.fixLedgerDeleteLedgerItems(params)
+        }
+        em.resetQtrlyItemFullyPaidFlagByYear(params)
+        em.resetItemFullyPaidFlagByYear(params)
         em.fixLedgerSetQtrlyItemFullyPaid(params)
         em.fixLedgerSetItemFullyPaid(params)
         em.clearNextBillDateByLedger(params)
@@ -702,6 +707,7 @@ class RPTLedgerService
         info.rptledgerid = info.objid 
         info.taxpayerid = info.taxpayer.objid 
         info.taxpayername = info.taxpayer.name
+        info.taxdifference = '%'
 
         em.fixLedgerInfo(info)
 

@@ -1,9 +1,0 @@
-<workunit extends="com/rameses/seti2/templates/CrudList.xml" 
-          schemaName="vehicle_fishboat">
-    <invokers>
-         <invoker folderid="/explorer/master/vehicle" 
-                 caption="List of Fishboats" index="100"
-                 cols="vesselname"
-                 action="init"/>
-    </invokers>
-</workunit>

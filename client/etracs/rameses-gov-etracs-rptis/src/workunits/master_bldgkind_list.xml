@@ -1,7 +1,9 @@
-<workunit extends="wtemplates/ListController.xml" serviceName="BldgKindService" entityName="bldgkind" formName="bldgkind:list">
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" 
+          schemaName="bldgkind" 
+          cols="state,code,name" orderBy="code"
+          allowDelete="#{entity.state!='APPROVED'}"
+          caption="Kind of Buildings">
     <invokers>
-        <invoker folderid="/explorer/master/rpt" caption="Kind of Buildings"  target="window" index="4"  role="ASSESSOR_DATAMGMT,MASTER" />
-        <invoker folderid="/home/rpt/master" caption="Kind of Buildings"  target="window" index="4"  role="ASSESSOR_DATAMGMT,MASTER" />
-        <invoker type="quick_launcher" code="KB00" caption="Kind of Buildings"  role="ASSESSOR_DATAMGMT,MASTER" />
+        <invoker folderid="/explorer/master/rpt" action="init" caption="Kind of Buildings" index="4" role="ASSESSOR_DATAMGMT,MASTER"/>
     </invokers>
 </workunit>

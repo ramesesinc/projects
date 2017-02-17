@@ -48,26 +48,12 @@
 				<text><![CDATA[Please use this tracking no 
 to follow up:]]></text>
 				</staticText>
-				<image  scaleImage="RetainShape" vAlign="Top" hAlign="Left" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						mode="Opaque"
-						x="20"
-						y="47"
-						width="140"
-						height="36"
-						forecolor="#000000"
-						backcolor="#FFFFFF"
-						key="barcode-1"/>
-					<box></box>
-					<graphicElement stretchType="NoStretch" fill="Solid" />
-					<imageExpression class="java.awt.Image"><![CDATA[it.businesslogic.ireport.barcode.BcImage.getBarcodeImage(5,$F{trackingno},false,false,null,0,100)]]></imageExpression>
-				</image>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="0"
-						y="85"
+						y="100"
 						width="180"
-						height="29"
+						height="14"
 						key="textField-1"/>
 					<box></box>
 					<textElement textAlignment="Center">
@@ -77,9 +63,9 @@ to follow up:]]></text>
 				</textField>
 				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="0"
+						x="10"
 						y="119"
-						width="180"
+						width="160"
 						height="37"
 						key="textField-2"/>
 					<box leftPadding="5" rightPadding="5"></box>
@@ -88,6 +74,20 @@ to follow up:]]></text>
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$F{message}]]></textFieldExpression>
 				</textField>
+				<image  scaleImage="FillFrame" vAlign="Top" hAlign="Center" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="10"
+						y="50"
+						width="160"
+						height="25"
+						forecolor="#666666"
+						backcolor="#FFFFFF"
+						key="barcode-1"/>
+					<box></box>
+					<graphicElement stretchType="NoStretch" fill="Solid" />
+					<imageExpression class="java.awt.Image"><![CDATA[it.businesslogic.ireport.barcode.BcImage.getBarcodeImage(5,$F{trackingno},false,false,null,0,10)]]></imageExpression>
+				</image>
 			</band>
 		</title>
 		<pageHeader>

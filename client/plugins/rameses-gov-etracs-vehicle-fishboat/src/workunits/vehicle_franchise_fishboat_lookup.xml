@@ -5,7 +5,7 @@
                  orderBy="controlno"
                  target="popup"
                  cols="controlno"
-                 customFilter="vehicleid IS NULL"
+                 customFilter="state = 'OPEN'"
                  action="init"/>
     </invokers>
 </workunit>

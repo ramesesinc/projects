@@ -31,5 +31,7 @@
 		<field name="chassisno" caption="Chassis No"/>
 		<field name="sidecarcolor" caption="Color"/>
 		<field name="crname" caption="CR Name"/>
+		<field name="franchise_objid"  visible="false"/>
+		<field name="franchise_controlno"  caption="Control No"/>
 	</element>	
 </schema>

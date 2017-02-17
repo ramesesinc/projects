@@ -24,6 +24,7 @@ class VehicleAssessmentService {
 
 	@ProxyMethod
 	public def assess( def o ) {
+
 		if(!o.vehicletype) throw new Exception("vehicletype is required in VehicleAssessmentService.assess")
 		if(!o.franchise?.objid) throw new Exception("franchise.objid is required in VehicleAssessmentService.assess")
 

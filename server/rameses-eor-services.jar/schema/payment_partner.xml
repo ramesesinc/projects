@@ -1,0 +1,7 @@
+<schema>
+	<element tablename="payment_partner">
+		<field name="objid" primary="true"/>
+		<field name="name" required="true"/>
+	</element>
+</schema>	
+

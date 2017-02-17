@@ -5,14 +5,16 @@
 package com.rameses.gov.etracs.vehicle.views;
 
 import com.rameses.osiris2.themes.FormPage;
+import com.rameses.rcp.framework.UIContentPanel;
 import com.rameses.rcp.ui.annotations.Template;
+import javax.swing.JComponent;
 
 /**
  *
  * @author dell
  */
 @Template(FormPage.class)
-public class ApplicationInfoPage extends javax.swing.JPanel {
+public class ApplicationInfoPage extends javax.swing.JPanel implements UIContentPanel{
 
     /**
      * Creates new form ApplicationInfoPage
@@ -30,8 +32,6 @@ public class ApplicationInfoPage extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        xButton1 = new com.rameses.rcp.control.XButton();
-        xSubFormPanel1 = new com.rameses.rcp.control.XSubFormPanel();
         xFormPanel4 = new com.rameses.rcp.control.XFormPanel();
         xLabel3 = new com.rameses.rcp.control.XLabel();
         xLabel9 = new com.rameses.rcp.control.XLabel();
@@ -41,23 +41,7 @@ public class ApplicationInfoPage extends javax.swing.JPanel {
         xLabel4 = new com.rameses.rcp.control.XLabel();
         xLabel6 = new com.rameses.rcp.control.XLabel();
         xLabel5 = new com.rameses.rcp.control.XLabel();
-
-        xButton1.setImmediate(true);
-        xButton1.setName("addVehicle"); // NOI18N
-        xButton1.setText("Vehicle");
-
-        xSubFormPanel1.setHandler("vehicleTypeHandler");
-
-        javax.swing.GroupLayout xSubFormPanel1Layout = new javax.swing.GroupLayout(xSubFormPanel1);
-        xSubFormPanel1.setLayout(xSubFormPanel1Layout);
-        xSubFormPanel1Layout.setHorizontalGroup(
-            xSubFormPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-        xSubFormPanel1Layout.setVerticalGroup(
-            xSubFormPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 311, Short.MAX_VALUE)
-        );
+        jPanel5 = new javax.swing.JPanel();
 
         xFormPanel4.setCaptionWidth(150);
         xFormPanel4.setVisibleWhen("#{editmode == 'read' }");
@@ -109,33 +93,30 @@ public class ApplicationInfoPage extends javax.swing.JPanel {
         xLabel5.setPreferredSize(new java.awt.Dimension(180, 20));
         xFormPanel4.add(xLabel5);
 
+        jPanel5.setLayout(new java.awt.BorderLayout());
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(xFormPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, 798, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(xButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(xSubFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 723, Short.MAX_VALUE)))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(xFormPanel4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 595, Short.MAX_VALUE)
+                    .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, 595, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(xFormPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(xSubFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 311, Short.MAX_VALUE)
-                    .addComponent(xButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(19, 19, 19))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, 251, Short.MAX_VALUE)
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private com.rameses.rcp.control.XButton xButton1;
+    private javax.swing.JPanel jPanel5;
     private com.rameses.rcp.control.XDateField xDateField2;
     private com.rameses.rcp.control.XFormPanel xFormPanel4;
     private com.rameses.rcp.control.XLabel xLabel3;
@@ -145,6 +126,19 @@ public class ApplicationInfoPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XLabel xLabel7;
     private com.rameses.rcp.control.XLabel xLabel8;
     private com.rameses.rcp.control.XLabel xLabel9;
-    private com.rameses.rcp.control.XSubFormPanel xSubFormPanel1;
     // End of variables declaration//GEN-END:variables
+
+
+    @Override
+    public void setContent(JComponent content, String name) {
+        if ( content == null ) return; 
+        
+        jPanel5.add(content);
+    }
+
+    @Override
+    public void clearContent() {
+        //
+    }
+
 }

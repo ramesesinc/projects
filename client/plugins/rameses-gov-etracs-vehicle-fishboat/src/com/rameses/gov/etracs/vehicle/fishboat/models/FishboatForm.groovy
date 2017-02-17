@@ -6,7 +6,7 @@ import com.rameses.seti2.models.*;
 import com.rameses.osiris2.common.*;
 import com.rameses.gov.etracs.vehicle.models.*;
 
-public class FishboatForm extends VehicleForm  {
+public class FishboatForm extends VehicleApplicationEntryForm  {
     
     /*
     def create() {

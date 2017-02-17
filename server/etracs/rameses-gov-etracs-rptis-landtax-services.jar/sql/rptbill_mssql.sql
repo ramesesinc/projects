@@ -426,6 +426,7 @@ WHERE rl.objid IN (
 	FROM rptledger rl 
 	WHERE ${filters}
 	 AND rl.state = 'APPROVED'
+	 AND rl.taxable = 1 
 	 AND (rl.lastyearpaid < $P{billtoyear} 
 		  OR ( rl.lastyearpaid = $P{billtoyear} AND rl.lastqtrpaid < $P{billtoqtr})
 	 )

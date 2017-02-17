@@ -6,9 +6,6 @@ class VehicleCashReceiptInterceptor {
 	@Service("VehiclePaymentService")
 	def pmtSvc;
 
-	@DataContext("vehicle_application")
-	def appEm;
-
 	@DataContext(dynamic=true)
 	def em;
 
@@ -70,22 +67,23 @@ class VehicleCashReceiptInterceptor {
 			}
 			m.items << it;
 		}
-
 		pmtSvc.postPayment( m );
-
 		/*******************************************************************
 		* signal after
 		*******************************************************************/
 		if(m.appid) {
-			def app = appEm.find( [objid:m.appid ] ).first();
-			def vapp = em.lookup( "vehicle_application_" + app.vehicletype ).find( [objid: m.appid] ).first();
-			if( vapp.taskid ==null ) return;
-			
+			String pName = "vehicle_application_" + r.info.vehicletype;
+
+			def vapp = em.lookup(  pName + "_task" ).find( [refid: m.appid] ).first();
+			if( vapp.taskid ==null ) {
+				return;
+			}
+
 			//check balance first before signalling
-			def total = vFee.select( "total:{SUM( amount-amtpaid )}" ).find( [controlid: app.controlid ] ).val();
+			def total = vFee.select( "total:{SUM( amount-amtpaid )}" ).find( [controlid: r.info.franchiseid ] ).val();
 			if(total == 0) {
 				def wfParam = [
-					processname: 'vehicle_application_' + app.vehicletype, 
+					processname: pName, 
 					refid: m.appid,
 					action: 'post',
 					actor: [objid:env.USERID, name:env.FULLNAME]

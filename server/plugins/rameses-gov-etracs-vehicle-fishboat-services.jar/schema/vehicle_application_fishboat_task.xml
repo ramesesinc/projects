@@ -2,8 +2,8 @@
 
 	<element tablename="vehicle_application_fishboat_task">
 		<field name="taskid" primary="true"  prefix="VTATSK" visible="true"/>
-		<complex name="app" ref="vehicle_application_fishboat" jointype="many-to-one" required="false"
-			includefields="appno,apptype,owner.name,vehicle.vesselname"> 
+		<complex name="app" ref="vehicle_application_fishboat_fragment" jointype="many-to-one" required="false"
+			includefields="appno,apptype,owner.name,vesselname,franchise.*"> 
 			<key field="refid" target="objid"/>
 		</complex>
 		<field name="parentprocessid" />

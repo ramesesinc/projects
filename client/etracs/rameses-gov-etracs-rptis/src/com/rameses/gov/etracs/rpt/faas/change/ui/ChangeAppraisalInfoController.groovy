@@ -33,6 +33,7 @@ public class ChangeAppraisalInfoController extends com.rameses.gov.etracs.rpt.fa
             action      : invoker.properties.actiontype,
             newinfo     : entity.rpu,
             previnfo    : previnfo,
+            redflagid   : entity._redflag?.objid,
         ];
     }
     

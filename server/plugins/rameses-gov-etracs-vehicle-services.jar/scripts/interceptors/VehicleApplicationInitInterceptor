@@ -27,6 +27,7 @@ class VehicleApplicationInitInterceptor {
 		}
 	}
 
+	//THIS IS CALLED BY RENEW, DROP AND CHANGE UNIT
 	private void loadFranchiseInfo( def franchiseno, def entity ) {
 		if( !franchiseno ) throw new Exception("franchiseno is required in VehicleApplicationService.init");
 
@@ -36,10 +37,11 @@ class VehicleApplicationInitInterceptor {
 		if(f.state!='ACTIVE') 
 			throw new Exception("Cannot process. Franchise " + franchiseno + " is not in ACTIVE state. Please check and release pending application");
 
-        entity.owner = f.owner;
-        entity.vehicle = f.vehicle;
-        entity.vehicleid = f.vehicle.objid;
-        entity.barangay = f.barangay;
+		f.each { k,v->
+			if(!k.matches( "objid|state|cluster|controlno|expirydate|appid|dtregistered" )) {
+				entity.put(k, v);
+			}
+		}
         entity.appyear = f.activeyear;
         entity.franchise = [objid:f.objid, controlno: f.controlno, expirydate: f.expirydate];
 	}
@@ -55,25 +57,14 @@ class VehicleApplicationInitInterceptor {
 		checkUnpaidFees(  entity );
 	}
 
-	@After(pattern="VehicleApplicationService.init", eval="#{args[0].apptype == 'DROP'}", index=10)
+	
+	@After(pattern="VehicleApplicationService.init", eval="#{args[0].apptype.matches('DROP|CHANGE_OWNER_UNIT') }", index=10)
 	public void afterInitApplicationForRetire(def evt) {
 		def params = evt.args[0];
 		def entity = evt.result;
 		loadFranchiseInfo( params.franchiseno, entity );
 		checkUnpaidFees(  entity );
-		entity.prevvehicle = entity.vehicle;
 	}
 
-
-	@After(pattern="VehicleApplicationService.init", eval="#{args[0].apptype == 'CHANGE_OWNER_UNIT'}", index=10)
-	public void afterInitApplicationForTransfer(def evt) {
-		def params = evt.args[0];
-		def entity = evt.result;
-		loadFranchiseInfo( params.franchiseno, entity );
-		checkUnpaidFees(  entity );
-		entity.prevowner = entity.owner;
-		entity.owner = [:];
-		entity.prevvehicle = entity.vehicle;
-	}
 
 }

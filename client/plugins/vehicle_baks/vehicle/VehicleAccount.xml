@@ -1,5 +1,0 @@
-<workunit>
-    <invokers>
-        <invoker type="formActions" caption="Save" action="save" />
-    </invokers>
-</workunit>

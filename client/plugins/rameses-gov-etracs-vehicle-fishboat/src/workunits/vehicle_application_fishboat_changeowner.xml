@@ -1,8 +1,0 @@
-<workunit extends="com/rameses/gov/etracs/vehicle/templates/VehicleApplicationChangeOwner.xml" 
-         vehicletype="fishboat" 
-          apptype="CHANGE_OWNER" 
-         title="Fishboat Change Owner">
-    <invokers>
-        <invoker folderid="/home/vehicle/fishboat" caption="Change Owner" action="start" index="112"/>
-    </invokers>
-</workunit>

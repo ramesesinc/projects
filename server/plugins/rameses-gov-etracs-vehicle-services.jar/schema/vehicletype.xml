@@ -3,6 +3,5 @@
 		<field name="objid" primary="true" visible="true" editable="false" caption="Name"/>
 		<field name="title" required="true" caption="Title"/>
 		<field name="controlpattern" required="true" />
-		<field name="issued"  type="integer" caption="Issuances"/>
 	</element>
 </schema>

@@ -19,6 +19,7 @@
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace min="-2" pref="24" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
+                  <Component id="xButton3" min="-2" pref="130" max="-2" attributes="0"/>
                   <Component id="xLabel1" min="-2" pref="297" max="-2" attributes="0"/>
                   <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
                       <Component id="jLabel1" alignment="0" max="32767" attributes="0"/>
@@ -45,7 +46,9 @@
               <Component id="jLabel1" min="-2" pref="19" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="xLabel1" min="-2" pref="68" max="-2" attributes="0"/>
-              <EmptySpace pref="249" max="32767" attributes="0"/>
+              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+              <Component id="xButton3" min="-2" max="-2" attributes="0"/>
+              <EmptySpace pref="215" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -74,6 +77,12 @@
     <Component class="javax.swing.JLabel" name="jLabel1">
       <Properties>
         <Property name="text" type="java.lang.String" value="Application Tracking No."/>
+      </Properties>
+    </Component>
+    <Component class="com.rameses.rcp.control.XButton" name="xButton3">
+      <Properties>
+        <Property name="name" type="java.lang.String" value="printTrackingno" noResource="true"/>
+        <Property name="text" type="java.lang.String" value="Print Tracking No"/>
       </Properties>
     </Component>
   </SubComponents>

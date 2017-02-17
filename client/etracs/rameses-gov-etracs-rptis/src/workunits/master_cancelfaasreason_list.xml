@@ -1,7 +1,9 @@
-<workunit extends="wtemplates/ListController.xml" serviceName="CancelTDReasonService" entityName="canceltdreason" formName="canceltdreason:list">
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" 
+          schemaName="canceltdreason" 
+          cols="state,code,name" orderBy="code"
+          allowDelete="#{entity.state!='APPROVED'}"
+          caption="Cancellation Reason">
     <invokers>
-        <invoker folderid="/explorer/master/rpt" caption="Cancel FAAS Reasons" target="window" index="3"  role="ASSESSOR_DATAMGMT,MASTER" />
-        <invoker folderid="/home/rpt/master" caption="Cancel FAAS Reasons" target="window" index="3"  role="ASSESSOR_DATAMGMT,MASTER" />
-        <invoker type="quick_launcher" code="CTF00" caption="Cancel FAAS Reasons"  role="ASSESSOR_DATAMGMT,MASTER" />
+        <invoker folderid="/explorer/master/rpt" action="init" caption="Cancellation Reasons" index="3" role="ASSESSOR_DATAMGMT,MASTER"/>
     </invokers>
 </workunit>

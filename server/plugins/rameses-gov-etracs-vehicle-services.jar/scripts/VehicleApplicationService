@@ -16,8 +16,8 @@ class VehicleApplicationService {
 	@Service("DateService")
 	def dateSvc;
 
-	@DataContext("vehicle_application")
-	def appEm;
+	@DataContext(dynamic=true)
+	def em;
 
 	@DataContext("vehicle_application_fee")
 	def appfeeEm;
@@ -64,7 +64,7 @@ class VehicleApplicationService {
 				vi.fixData( it, it.datatype, it.value );
 			}
 		}
-
+		def appEm = em.lookup( "vehicle_application_"+o.vehicletype )
 		return appEm.create(o);
 	}
 

@@ -93,9 +93,7 @@ class BusinessApplicationOptionInfoController {
     }
 
     void refresh() { 
-        application.open();  
-        lob.reset(); 
-        binding.refresh(); 
+        if ( caller ) caller.reloadAll(); 
     } 
 }
     ]]>

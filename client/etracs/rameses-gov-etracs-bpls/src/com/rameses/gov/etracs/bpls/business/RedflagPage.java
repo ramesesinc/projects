@@ -9,6 +9,7 @@ package com.rameses.gov.etracs.bpls.business;
 import com.rameses.osiris2.themes.OKCancelPage;
 import com.rameses.rcp.ui.annotations.StyleSheet;
 import com.rameses.rcp.ui.annotations.Template;
+import java.awt.Dimension;
 
 /**
  *
@@ -21,6 +22,7 @@ public class RedflagPage extends javax.swing.JPanel {
     /** Creates new form NewBPApplicationInitPage */
     public RedflagPage() {
         initComponents();
+        setMinimumSize(new Dimension(573, 200)); 
     }
     
     /** This method is called from within the constructor to
@@ -31,6 +33,11 @@ public class RedflagPage extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPanel1 = new javax.swing.JPanel();
+        xFormPanel3 = new com.rameses.rcp.control.XFormPanel();
+        xTextField1 = new com.rameses.rcp.control.XTextField();
+        xTextField2 = new com.rameses.rcp.control.XTextField();
+        xTextField3 = new com.rameses.rcp.control.XTextField();
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
         xLabel3 = new com.rameses.rcp.control.XLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -41,14 +48,42 @@ public class RedflagPage extends javax.swing.JPanel {
         xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         xTextArea2 = new com.rameses.rcp.control.XTextArea();
-        xFormPanel3 = new com.rameses.rcp.control.XFormPanel();
-        xTextField1 = new com.rameses.rcp.control.XTextField();
-        xTextField2 = new com.rameses.rcp.control.XTextField();
-        xTextField3 = new com.rameses.rcp.control.XTextField();
+
+        setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+        jPanel1.setLayout(new com.rameses.rcp.control.layout.YLayout());
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
-        xTitledBorder1.setTitle("Case");
-        xFormPanel1.setBorder(xTitledBorder1);
+        xTitledBorder1.setPadding(new java.awt.Insets(25, 15, 15, 15));
+        xTitledBorder1.setTitle("  Business Information   ");
+        xFormPanel3.setBorder(xTitledBorder1);
+        xFormPanel3.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
+        xFormPanel3.setCaptionWidth(160);
+
+        xTextField1.setCaption("BIN");
+        xTextField1.setName("entity.bin"); // NOI18N
+        xTextField1.setPreferredSize(new java.awt.Dimension(0, 20));
+        xTextField1.setReadonly(true);
+        xFormPanel3.add(xTextField1);
+
+        xTextField2.setCaption("Business Name");
+        xTextField2.setName("entity.businessname"); // NOI18N
+        xTextField2.setPreferredSize(new java.awt.Dimension(0, 20));
+        xTextField2.setReadonly(true);
+        xFormPanel3.add(xTextField2);
+
+        xTextField3.setCaption("Owner Name");
+        xTextField3.setName("entity.ownername"); // NOI18N
+        xTextField3.setPreferredSize(new java.awt.Dimension(0, 20));
+        xTextField3.setReadonly(true);
+        xFormPanel3.add(xTextField3);
+
+        jPanel1.add(xFormPanel3);
+
+        com.rameses.rcp.control.border.XTitledBorder xTitledBorder2 = new com.rameses.rcp.control.border.XTitledBorder();
+        xTitledBorder2.setPadding(new java.awt.Insets(25, 15, 15, 15));
+        xTitledBorder2.setTitle("Case");
+        xFormPanel1.setBorder(xTitledBorder2);
         xFormPanel1.setCaptionWidth(160);
 
         xLabel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
@@ -80,12 +115,15 @@ public class RedflagPage extends javax.swing.JPanel {
         xLabel1.setCaption("");
         xLabel1.setExpression("Posted by #{entity.filedby.name} on #{entity.dtfiled}");
         xLabel1.setName("entity.postedby"); // NOI18N
-        xLabel1.setPreferredSize(new java.awt.Dimension(0, 16));
+        xLabel1.setPreferredSize(new java.awt.Dimension(0, 25));
         xFormPanel1.add(xLabel1);
 
-        com.rameses.rcp.control.border.XTitledBorder xTitledBorder2 = new com.rameses.rcp.control.border.XTitledBorder();
-        xTitledBorder2.setTitle("Resolution");
-        xFormPanel2.setBorder(xTitledBorder2);
+        jPanel1.add(xFormPanel1);
+
+        com.rameses.rcp.control.border.XTitledBorder xTitledBorder3 = new com.rameses.rcp.control.border.XTitledBorder();
+        xTitledBorder3.setPadding(new java.awt.Insets(25, 15, 15, 15));
+        xTitledBorder3.setTitle("Resolution");
+        xFormPanel2.setBorder(xTitledBorder3);
         xFormPanel2.setCaptionWidth(160);
         xFormPanel2.setVisibleWhen("#{mode=='resolve'}");
 
@@ -98,56 +136,23 @@ public class RedflagPage extends javax.swing.JPanel {
 
         xFormPanel2.add(jScrollPane2);
 
-        com.rameses.rcp.control.border.XTitledBorder xTitledBorder3 = new com.rameses.rcp.control.border.XTitledBorder();
-        xTitledBorder3.setTitle("  Business Information   ");
-        xFormPanel3.setBorder(xTitledBorder3);
-        xFormPanel3.setCaptionWidth(160);
-
-        xTextField1.setCaption("BIN");
-        xTextField1.setName("entity.bin"); // NOI18N
-        xTextField1.setPreferredSize(new java.awt.Dimension(0, 20));
-        xTextField1.setReadonly(true);
-        xFormPanel3.add(xTextField1);
-
-        xTextField2.setCaption("Business Name");
-        xTextField2.setName("entity.businessname"); // NOI18N
-        xTextField2.setPreferredSize(new java.awt.Dimension(0, 20));
-        xTextField2.setReadonly(true);
-        xFormPanel3.add(xTextField2);
-
-        xTextField3.setCaption("Owner Name");
-        xTextField3.setName("entity.ownername"); // NOI18N
-        xTextField3.setPreferredSize(new java.awt.Dimension(0, 20));
-        xTextField3.setReadonly(true);
-        xFormPanel3.add(xTextField3);
+        jPanel1.add(xFormPanel2);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(xFormPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(xFormPanel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 562, Short.MAX_VALUE)
-                    .addComponent(xFormPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 562, Short.MAX_VALUE))
-                .addContainerGap())
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 553, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(xFormPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private com.rameses.rcp.control.XComboBox xComboBox1;

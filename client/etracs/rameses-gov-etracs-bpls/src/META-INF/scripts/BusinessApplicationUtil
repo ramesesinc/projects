@@ -135,5 +135,4 @@ public class BusinessApplicationUtil {
         b.requirements = o.requirements;
         service.updateInfos(b);
     }
-
 }

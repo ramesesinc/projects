@@ -4,6 +4,8 @@ import com.rameses.rules.common.*;
 import vehicle.facts.*;
 import treasury.facts.*;
 import treasury.actions.*;
+import treasury.utils.*;
+
 import com.rameses.util.*;
 
 /**********************************************************
@@ -86,7 +88,7 @@ class VehicleCashReceiptService {
 		}
 		entity.particulars = fran.controlno;
 		entity.remarks = "Franchise No." + fran.controlno;
-		entity.items = res.billitems.collect{ it.toMap() };
+		entity.items = res.billitems;
 		entity.items.each {
 			it.amount = NumberUtil.round(it.amount);
 		}

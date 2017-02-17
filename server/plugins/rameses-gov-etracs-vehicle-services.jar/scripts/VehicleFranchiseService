@@ -3,8 +3,8 @@ import com.rameses.annotations.*;
 import com.rameses.util.*;
 import java.text.*;
 import java.util.regex.*;
-import rules.treasury.facts.*;
-import rules.vehicle.facts.*;
+import treasury.facts.*;
+import vehicle.facts.*;
 
 /**********************************************************
 * This service maintains generation of control nos.

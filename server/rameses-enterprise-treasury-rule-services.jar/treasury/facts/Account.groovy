@@ -1,36 +1,20 @@
 package treasury.facts;
 
-public class Account {
+class Account {
 	
+	Fund fund;
 	String objid;
 	String code;
 	String title;
-	Fund fund;
+	int sortorder;
 
-	public Account( def m ) {
-		this.objid = m.objid;
-		this.code = m.code;
-		this.title = m.title;
-		if( m.fund ) {
-			this.fund = new Fund( m.fund );	
-		}
+	public Map toMap() {
+		def m = [:];
+		m.objid = objid;
+		m.code = code;
+		m.title = title;
+		m.fund = fund?.toMap();
+		return m;
 	}
-
-	def toItem() {
-		return [
-			objid:objid,
-			code: code,
-			title: title,
-			fund: fund?.toItem()
-		];
-	}
-
-	public boolean equals(def obj) {
-        return hashCode() == obj.hashCode();
-    }    
-
-    public int hashCode() {
-    	return this.objid.hashCode();
-    }
 
 }

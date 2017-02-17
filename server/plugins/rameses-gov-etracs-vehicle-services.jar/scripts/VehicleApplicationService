@@ -1,7 +1,8 @@
 import com.rameses.annotations.*;
-import rules.vehicle.facts.*;
-import rules.treasury.facts.*;
-import rules.enterprise.facts.*;
+import vehicle.facts.*;
+import treasury.facts.*;
+import enterprise.facts.*;
+import enterprise.utils.*;
 import com.rameses.annotations.*;
 import com.rameses.util.*;
 import java.rmi.server.*;

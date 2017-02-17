@@ -1,6 +1,7 @@
 import com.rameses.annotations.*;
 import java.rmi.server.UID;
-import rules.enterprise.facts.*;
+import enterprise.facts.*;
+import enterprise.utils.*;
 
 class VehicleApplicationWorkflowInterceptor {
 	

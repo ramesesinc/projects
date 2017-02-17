@@ -52,11 +52,11 @@ public class ApplicationAssessmentPage extends javax.swing.JPanel {
         xLabel4.setPreferredSize(new java.awt.Dimension(180, 20));
         xFormPanel5.add(xLabel4);
 
-        xDateField2.setCaption("Bill Expiry Date");
+        xDateField2.setCaption("Billing Due Date");
         xDateField2.setCaptionWidth(150);
         xDateField2.setDisableWhen("#{1==1}");
         xDateField2.setEnabled(false);
-        xDateField2.setName("entity.franchise.expirydate"); // NOI18N
+        xDateField2.setName("entity.billexpirydate"); // NOI18N
         xDateField2.setPreferredSize(new java.awt.Dimension(180, 20));
         xFormPanel5.add(xDateField2);
 

@@ -66,6 +66,11 @@ class OboApplicationModel extends WorkflowTaskModel {
     def listModel = [
         fetchList: { o->
             return entity.permits;
+        },
+        openItem: { o,col->
+            def op = Inv.lookupOpener( "obo_auxiliary_permit_"+o.type+":open", [entity: o]);
+            op.target = 'popup';
+            return op;
         }
     ] as BasicListModel;
     

@@ -1,0 +1,10 @@
+<workunit schemaName="obo_auxiliary_permit">
+    <invokers>
+        <invoker type="obo_auxiliary_permit_plumbing:open" action="open"
+                 caption="Plumbing" index="1" />
+    </invokers>
+    <code class="com.rameses.gov.etracs.obo.models.AuxiliaryPermitModel" />
+    <pages>
+        <page template="com.rameses.gov.etracs.obo.views.PlumbingPermitPage" />
+    </pages>    
+</workunit>

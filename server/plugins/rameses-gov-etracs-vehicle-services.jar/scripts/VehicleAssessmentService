@@ -1,7 +1,9 @@
 import com.rameses.annotations.*;
-import rules.vehicle.facts.*;
-import rules.treasury.facts.*;
-import rules.enterprise.facts.*;
+import vehicle.facts.*;
+import treasury.facts.*;
+import treasury.utils.*;
+import enterprise.facts.*;
+import enterprise.utils.*;
 import com.rameses.annotations.*;
 import com.rameses.util.*;
 import java.rmi.server.*;
@@ -16,15 +18,14 @@ class VehicleAssessmentService {
 	@Service("DateService")
 	def dateSvc;
 
-	@Service("RuleExecutorService")
-	def ruleSvc;
+	@Service("AssessmentRuleService")
+	def assmtSvc;
 
 	@DataContext(dynamic=true)
 	def franchiseEm;
 
 	@ProxyMethod
 	public def assess( def o ) {
-
 		if(!o.vehicletype) throw new Exception("vehicletype is required in VehicleAssessmentService.assess")
 		if(!o.franchise?.objid) throw new Exception("franchise.objid is required in VehicleAssessmentService.assess")
 
@@ -35,48 +36,44 @@ class VehicleAssessmentService {
 		if(!o.billdate) o.billdate = svrDate;
 		if(!o.appdate) o.appdate = svrDate;
 
-		//build facts
-		def facts = [];
-		facts << new VehicleApplication( o );
-		facts << new VehicleFranchise( fran );
-		facts << new AppDate( o.appdate );
-		facts << new SystemDate(svrDate);
-		facts << new rules.treasury.facts.BillDate(o.appdate);
+		def fb = new FactBuilder();
+		fb.facts << new VehicleApplication( o );
+		fb.facts << new VehicleFranchise( fran );
+		fb.facts << new AppDate( o.appdate );
+		fb.facts << new treasury.facts.BillDate(o.appdate);
 
-		if(o.infos) {
-			def infoUtil = new VariableInfoUtil();
-			o.infos.each {
-				def f = infoUtil.createFact(it);
-				facts << f;
+		def rh = [
+			getFactKeyValue : { f ->
+				if((f instanceof VariableInfo) || (f instanceof BillItem)) {
+					fb.facts << f;
+				}
+				return null;
 			}
-		}
+		] as ResultHandler;
+	
+		def res = assmtSvc.execute( "vehicleassessment", o, fb, rh );
+		if( res.askinfos ) return [askinfos: res.askinfos];
 
-		def hdlr = { grpname ->
-			if( RuleExecutionContext.currentContext.result.askinfos ) return false;
-			return true;
-		}
+		/******************************************************
+		* run billing here
+		*******************************************************/
+		rh = [
+			getFactKeyValue: { f ->
+				if( f instanceof DueDate ) {
+					return new ResultKeyValue("duedate", f.date);
+				}
+				return null;
+			}
+		] as ResultHandler;
 
-		def res = ruleSvc.execute( "vehicleassessment", facts, null, hdlr );
-		//if there are askinfos, return immediately to client.
-		if(res.askinfos) {
-			return [askinfos : res.askinfos.collect{ it.toMap() } ];
-		}
-		else {
-			/******************************************************
-			* run billing here
-			*******************************************************/
-			def ctx = new RuleExecutionContext(facts);			
-			def res2 = ruleSvc.execute( "vehiclebilling", facts, null, null );
-			if(!res.billitems) res.billitems = [];
-			if(!res2.billitems) res2.billitems = [];
-
-			def app = [:];
-			app.infos = res.infos;
-			app.items = (res.billitems + res2.billitems).collect{ it.toMap() }
-			app.duedate = facts.find{ it instanceof DueDate }?.date;
-
-			return app;
-		}
+		def data2 = [billitems: res.billitems, infos: res.infos ];
+		res = assmtSvc.execute( "vehiclebilling", data2, fb, rh );
+		def app = [:];
+		app.infos = res.infos;
+		app.items = res.billitems;
+		app.duedate = res.duedate;
+		app.expirydate = res.duedate;
+		return app;
 	}
 
 

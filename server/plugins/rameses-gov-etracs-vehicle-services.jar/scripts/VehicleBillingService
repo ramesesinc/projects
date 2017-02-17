@@ -1,8 +1,11 @@
 import com.rameses.annotations.*;
 
 import com.rameses.rules.common.*;
-import rules.vehicle.facts.*;
-import rules.treasury.facts.*;
+import vehicle.facts.*;
+import treasury.facts.*;
+import treasury.utils.*;
+import enterprise.facts.*;
+import enterprise.utils.*;
 
 
 /**********************************************************
@@ -19,6 +22,8 @@ class VehicleBillingService {
 	@DataContext("vehicle_application")
 	def appEm;
 
+	@Service("AssessmentRuleService")
+	def assmtSvc;
 
 	@ProxyMethod
 	public def getBilling( def o ) {
@@ -37,6 +42,7 @@ class VehicleBillingService {
 
 	@ProxyMethod
 	public def process( def app ) {
+
 		if(!app.billitems) {
 			throw new Exception("VehicleBillingService requires billitems");
 		}
@@ -47,36 +53,25 @@ class VehicleBillingService {
 		def svrDate = dateSvc.getServerDate();
 		if(!app.billdate) app.billdate = svrDate;
 		
-		def facts = [];
+		def fb = new FactBuilder();
+		fb.facts << new VehicleApplication( app );
+		fb.facts << new VehicleFranchise( app.franchise );
+		fb.facts << new AppDate( app.appdate );
+		fb.facts << new treasury.facts.SystemDate(svrDate);
+		fb.facts << new treasury.facts.BillDate(app.billdate);
 		if(app.payment?.amount) {
-			facts << new Payment( amount: app.payment.amount );
+			fb.facts << new treasury.facts.Payment( amount: app.payment.amount );
 		}	
-		facts << new VehicleApplication( app );
-		facts << new VehicleFranchise( app.franchise );
-		facts << new AppDate( app.appdate );
-		facts << new rules.treasury.facts.SystemDate(svrDate);
-		facts << new rules.treasury.facts.BillDate(app.billdate);
 
-		def  acctUtil = new ItemAccountUtil();
-		def billItems = [];
-		app.billitems.each {
-			def bi = new BillItem( account: acctUtil.createAccountFact(it.item), 
-				amount: it.amount, 
-				refid: it.objid, 
-				ledgertype:it.ledgertype,
-				principal: it.principal,
-				amtpaid: it.amtpaid,
-				remarks : it.remarks
-			);
-			facts << bi;
-			billItems << bi;
-		};
+		def rh = [
+			getFactKeyValue: { f->
+				if( f instanceof DueDate ) {
+					return new ResultKeyValue( "duedate", f.date );
+				}
+			}
+		] as ResultHandler;
 
-		def ctx = new RuleExecutionContext(facts);
-		ctx.env.acctUtil = acctUtil;
-		ctx.result.billitems = billItems;
-		def res = ruleSvc.execute( "vehiclebilling", facts, null, null );
-		return res;
+		return assmtSvc.execute( "vehiclebilling", app, fb, rh );
 	}
 
 }

@@ -5,6 +5,7 @@
 - BPLS 
 		
 - ASSESSOR	
+	- TMCR : add ry filter support 
 	- With Improvement Certification updates
 
 - LANDTAX

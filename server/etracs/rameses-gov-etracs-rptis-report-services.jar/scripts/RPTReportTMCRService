@@ -18,6 +18,13 @@ class RPTReportTMCRService
     def dtSvc 
 
 
+    @ProxyMethod
+    public def getCurrentRy(  ) {
+    	def info = em.findCurrentRy()
+    	if (!info) info = [ry:dtSvc.serverYear]
+    	return info.ry 
+    }
+
 	@Async
     @ProxyMethod
 	public def generateTMCRDetailed( params ) {

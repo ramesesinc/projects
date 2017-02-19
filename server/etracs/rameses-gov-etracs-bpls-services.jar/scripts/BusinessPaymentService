@@ -113,5 +113,22 @@ public class BusinessPaymentService extends ActiveCrudListService {
 		if ( params.qtr ) pqtr = params.qtr; 
 
 		return ( info.qtr== 0 || info.qtr >= pqtr ); 
-	}
-}
+	} 
+
+	@ProxyMethod 
+	public void removePayment( params ) {
+		if ( !params.paymentid ) throw new Exception('paymentid parameter is required'); 
+
+		def payobj = em.read([ objid: params.paymentid ]); 
+		if ( !payobj ) throw new Exception('Business Payment record not found'); 
+		if ( payobj.reftype.toString().toLowerCase() != 'capture' ) 
+			throw new Exception('Removing this kind of payment receipt is not allowed.'); 
+
+		em.removePaymentItems( params ); 
+		em.delete([ objid: payobj.objid ]); 
+
+		def m = [ applicationid: payobj.applicationid ]; 
+		em.resetLedgerAmtPaid( m ); 
+		em.resyncLedgerAmtPaid( m ); 
+	} 
+} 

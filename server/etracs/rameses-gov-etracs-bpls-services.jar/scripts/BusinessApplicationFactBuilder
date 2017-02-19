@@ -6,9 +6,12 @@ import bpls.facts.*;
 
 public class BusinessApplicationFactBuilder {
 
-	@ActiveDB("lob")
+	@DataContext("lob")
 	def lobEm;
 	
+	@DataContext("lob_lobattribute")
+	def lobAttr;
+
 	@ProxyMethod
 	public void build(def app, def facts) {
 		def lobMap = [:];
@@ -20,11 +23,15 @@ public class BusinessApplicationFactBuilder {
 		if(app.lobs!=null) {
 			app.lobs?.each {
 				//we need to retrieve lob to be absolutely sure.
-				def lobInfo = lobEm.findInfo( [objid: it.lobid ]);
-				def LOB = new LOB(it);
+				def lobInfo = lobEm.find( [objid: it.lobid ]).first();
+				def LOB = new LOB();
+				LOB.objid = it.lobid;
+        		LOB.lobid = it.lobid;
+        		LOB.assessmenttype = it.assessmenttype;  				
 				LOB.name = lobInfo.name;
 				LOB.classification = lobInfo.classification?.objid;
-				LOB.attributes = "-" + lobEm.getAttributes( [lobid: it.lobid ] )*.name.join("-") + "-";
+				def attrs = lobAttr.find([lobid: it.lobid]).list();
+				LOB.attributes = "-" + attrs*.lobattributeid.join("-") + "-";
 				facts << LOB;
 				lobMap.put( it.lobid, LOB );
 			}

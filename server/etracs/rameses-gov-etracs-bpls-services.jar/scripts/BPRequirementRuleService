@@ -14,9 +14,6 @@ public class BPRequirementRuleService  {
 	@ActiveDB("rule")
 	def ruleDB;
 
-	@ActiveDB("lob")
-	def lob;
-
 	@Service("BusinessRequirementTypeService")
 	def br;
 

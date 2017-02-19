@@ -26,41 +26,40 @@ public class LobListQueryPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
-        xLookupField2 = new com.rameses.rcp.control.XLookupField();
-        xButton1 = new com.rameses.rcp.control.XButton();
+        jPanel1 = new javax.swing.JPanel();
+        xLabel1 = new com.rameses.rcp.control.XLabel();
+        xLookupField3 = new com.rameses.rcp.control.XLookupField();
+        xButton2 = new com.rameses.rcp.control.XButton();
 
-        xFormPanel1.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
+        setBorder(javax.swing.BorderFactory.createEmptyBorder(2, 0, 2, 0));
+        setLayout(new java.awt.BorderLayout());
 
-        xLookupField2.setCaption("Search Attribute");
-        xLookupField2.setCaptionWidth(120);
-        xLookupField2.setExpression("#{query.attribute.name}");
-        xLookupField2.setHandler("lookupAttribute");
-        xLookupField2.setPreferredSize(new java.awt.Dimension(200, 20));
-        xFormPanel1.add(xLookupField2);
+        jPanel1.setLayout(new com.rameses.rcp.control.layout.XLayout());
 
-        xButton1.setMargin(new java.awt.Insets(2, 2, 2, 2));
-        xButton1.setName("resetSearch"); // NOI18N
-        xButton1.setShowCaption(false);
-        xButton1.setText("Reset");
-        xFormPanel1.add(xButton1);
+        xLabel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 10, 0, 20));
+        xLabel1.setText("Search Attribute :");
+        jPanel1.add(xLabel1);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 390, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 24, Short.MAX_VALUE))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-        );
+        xLookupField3.setCaption("Search Attribute");
+        xLookupField3.setCaptionWidth(120);
+        xLookupField3.setExpression("#{query.attribute.name}");
+        xLookupField3.setHandler("lookupAttribute");
+        xLookupField3.setName("lobattribute"); // NOI18N
+        xLookupField3.setPreferredSize(new java.awt.Dimension(200, 20));
+        jPanel1.add(xLookupField3);
+
+        xButton2.setMargin(new java.awt.Insets(2, 2, 2, 2));
+        xButton2.setName("resetSearch"); // NOI18N
+        xButton2.setShowCaption(false);
+        xButton2.setText("Reset");
+        jPanel1.add(xButton2);
+
+        add(jPanel1, java.awt.BorderLayout.NORTH);
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private com.rameses.rcp.control.XButton xButton1;
-    private com.rameses.rcp.control.XFormPanel xFormPanel1;
-    private com.rameses.rcp.control.XLookupField xLookupField2;
+    private javax.swing.JPanel jPanel1;
+    private com.rameses.rcp.control.XButton xButton2;
+    private com.rameses.rcp.control.XLabel xLabel1;
+    private com.rameses.rcp.control.XLookupField xLookupField3;
     // End of variables declaration//GEN-END:variables
 }

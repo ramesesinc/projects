@@ -8,76 +8,73 @@
     </invokers>
     
     <code>
-        <![CDATA[    
-        import com.rameses.rcp.annotations.*
-        import com.rameses.rcp.common.*
-        import com.rameses.osiris2.client.*
-        import com.rameses.osiris2.common.*
-        import com.rameses.common.*;
-        import java.rmi.server.*
-        import com.rameses.util.*;
-        
-        class BusinessRedflagController {
-        
-            @Caller
-            def caller;
-            
-            @Binding 
-            def binding;
-            
-            @Script("User")
-            def user;
-            
-            @Service("BusinessRedflagService")
-            def service;
-            def mode = 'create'
-            def handler;
+    <![CDATA[    
+import com.rameses.rcp.annotations.*
+import com.rameses.rcp.common.*
+import com.rameses.osiris2.client.*
+import com.rameses.osiris2.common.*
+import com.rameses.common.*;
+import java.rmi.server.*
+import com.rameses.util.*;
 
-            def blockActions = ["renewal", "assign-assessor", "assessment-submit", "release-submit"];
-            def entity = [:];
-            
-            void init() {
-                mode = 'create'
-                entity.objid = "BRF"+new UID();
-                entity.bin = caller?.entity.bin;
-                entity.businessname = caller?.entity.businessname;
-                entity.ownername = caller?.entity.owner.name;
-            }
-            
-            void open() {
-                mode = 'update'
-                entity = service.open( entity );
-            }
-            
-            void resolve() {
-                mode = 'resolve'
-                entity = service.open( entity );
-            }
-            
-            def doOk() {
-                if( mode == 'create' ) { 
-                    service.create( entity );
-                }
-                else if( mode == 'update' ) {
-                    service.update( entity );
-                }
-                else {
-                    if( user.userid != entity.filedby.objid )
-                        throw new Exception("You are not allowed to resolve this issue");
-                    service.resolve( entity );
-                }
-                if(handler) handler();
-                return "_close";
-            }
-            
-            def doCancel() {
-                return "_close";
-            }
+class BusinessRedflagController {
 
-            
+    @Caller
+    def caller;
+    
+    @Binding 
+    def binding;
+    
+    @Script("User")
+    def user;
+    
+    @Service("BusinessRedflagService")
+    def service;
+    def mode = 'create'
+    def handler;
+
+    def blockActions = ["renewal", "assign-assessor", "assessment-submit", "release-submit"];
+    def entity = [:];
+    
+    void init() {
+        mode = 'create'
+        entity.objid = "BRF"+new UID();
+        entity.bin = caller?.entity.bin;
+        entity.businessname = caller?.entity.businessname;
+        entity.ownername = caller?.entity.owner.name;
+    }
+    
+    void open() {
+        mode = 'update'
+        entity = service.open( entity );
+    }
+    
+    void resolve() {
+        mode = 'resolve'
+        entity = service.open( entity );
+    }
+    
+    def doOk() {
+        if( mode == 'create' ) { 
+            service.create( entity );
         }
-        
-        ]]>
+        else if( mode == 'update' ) {
+            service.update( entity );
+        }
+        else {
+            if( user.userid != entity.filedby.objid )
+                throw new Exception("You are not allowed to resolve this issue");
+            service.resolve( entity );
+        }
+        if(handler) handler();
+        return "_close";
+    }
+    
+    def doCancel() {
+        return "_close";
+    } 
+}
+    ]]>
     </code>
     
     <pages>

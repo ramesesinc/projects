@@ -15,6 +15,22 @@ public class LobModel extends CrudFormModel {
 
     def selectedItem;    
     
+    public void beforeSave(def mode){
+        if( !entity.state ) entity.state = 'DRAFT'; 
+    }
+    
+    public void afterCreate(){ 
+        listHandler.reload(); 
+    } 
+    
+    boolean isCanRemoveAttribute() {
+        if ( selectedItem==null ) return false; 
+        return (mode == 'read');
+    }
+    boolean isCanAddAttribute() {
+        return (mode == 'read'); 
+    }
+    
     def addAttribute() {
         return InvokerUtil.lookupOpener( "lobattribute:lookup", [
             onselect: { o->
@@ -49,7 +65,5 @@ public class LobModel extends CrudFormModel {
             def list = queryService.getList(m);
             return list;
         }
-    ] as BasicListModel;
-
-
+    ] as BasicListModel; 
 }

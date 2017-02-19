@@ -1,6 +1,5 @@
 <workunit>
     <invokers>
-        
         <invoker type="business_application:formActions" caption="Business Info" action="openFromApp" visibleWhen="#{entity!=null}"
             index="100" target="popup"/>
         
@@ -13,8 +12,10 @@
         <invoker type="formActions" caption="Edit" action="showEditMenu" icon="images/toolbars/edit.png"/> 
         <invoker type="formActions" caption="View Owner" action="showOwner" immediate="true" /> 
         <invoker type="formActions" caption="Send SMS" action="createSMS" immediate="true" /> 
+        
+        <!-- USE FOR SECURITY CHECK --> 
+        <invoker type="business:admin:securitycheck" role="ADMIN" index="-9999"/>  
     </invokers>
-    
     
     <code>
     <![CDATA[    

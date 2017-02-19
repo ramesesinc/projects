@@ -13,6 +13,9 @@
         
         class SubAccountController extends CRUDController {
 
+            @Caller 
+            def caller; 
+
             boolean showConfirmOnSave = false;
             boolean allowCreate = false;
             String entityName = "subaccount";

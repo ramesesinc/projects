@@ -1,15 +1,15 @@
 <workunit>
+
     <invokers>
-        
         <invoker type="business_application:open" caption="Business Info" action="open" target="window" />
         <invoker type="global:barcode:51005" caption="Business Application" action="openBarcode" 
             target="window" expr="#{barcodeid.contains('-')}" />
        
-        <invoker type="formActions" caption="Close"  
-         action="_close" visibleWhen="#{task==null}" index="0"/>      
+        <invoker type="formActions" caption="Close" action="_close" 
+                 visibleWhen="#{task==null}" index="0"/>      
         
-        <invoker type="extActions" caption="Reports" action="showReports"
-            icon="images/toolbars/printer.png"/>
+        <invoker type="extActions" caption="Reports" action="showReports" 
+                 icon="images/toolbars/printer.png"/>
         
         <invoker type="extActions" caption="Issue Permit" action="issuePermit" 
                  visibleWhen="#{allowIssuePermit==true}" role="LICENSING" index="2" />  
@@ -19,9 +19,10 @@
 
         <invoker type="extActions" caption="View Business" index="0" action="viewBusiness" />  
         
-        <invoker type="extActions" caption="View Assessment"  action="viewAssessment" index="10" 
-                visibleWhen="#{allowViewAssessment==true}" role="SHARED" /> 
-        <invoker type="extActions" caption="Print Tracking No"  action="printTrackingno" index="11" /> 
+        <invoker type="extActions" caption="View Assessment" action="viewAssessment" 
+                 visibleWhen="#{allowViewAssessment==true}" role="SHARED" index="10" /> 
+        <invoker type="extActions" caption="Print Tracking No" action="printTrackingno" 
+                 index="11" /> 
         
     </invokers>
     

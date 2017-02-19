@@ -1,5 +1,5 @@
 /*
- * APanel.java
+ * ApplicationTemplate.java
  *
  * Created on November 11, 2013, 1:40 PM
  */
@@ -18,7 +18,6 @@ import com.rameses.rcp.ui.annotations.Template;
 @StyleSheet
 public class ApplicationTemplate extends javax.swing.JPanel {
     
-    /** Creates new form APanel */
     public ApplicationTemplate() {
         initComponents();
     }
@@ -31,6 +30,7 @@ public class ApplicationTemplate extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPanel1 = new javax.swing.JPanel();
         xHorizontalPanel1 = new com.rameses.rcp.control.XHorizontalPanel();
         xFormPanel5 = new com.rameses.rcp.control.XFormPanel();
         xLabel19 = new com.rameses.rcp.control.XLabel();
@@ -52,6 +52,9 @@ public class ApplicationTemplate extends javax.swing.JPanel {
         setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
         setPreferredSize(new java.awt.Dimension(41, 70));
         setLayout(new java.awt.BorderLayout());
+
+        jPanel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 3, 0));
+        jPanel1.setLayout(new java.awt.BorderLayout());
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder1.setTitle("  General Information    ");
@@ -189,12 +192,15 @@ public class ApplicationTemplate extends javax.swing.JPanel {
         jLabel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
         xHorizontalPanel1.add(jLabel1);
 
-        add(xHorizontalPanel1, java.awt.BorderLayout.PAGE_START);
+        jPanel1.add(xHorizontalPanel1, java.awt.BorderLayout.NORTH);
+
+        add(jPanel1, java.awt.BorderLayout.PAGE_START);
     }// </editor-fold>//GEN-END:initComponents
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
     private com.rameses.rcp.control.XFormPanel xFormPanel5;

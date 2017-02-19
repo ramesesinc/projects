@@ -38,6 +38,7 @@ public class LobPage extends javax.swing.JPanel {
         xButton1 = new com.rameses.rcp.control.XButton();
         xButton2 = new com.rameses.rcp.control.XButton();
 
+        formPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
         formPanel1.setCaptionWidth(85);
         formPanel1.setPadding(new java.awt.Insets(0, 5, 5, 5));
 
@@ -52,7 +53,7 @@ public class LobPage extends javax.swing.JPanel {
         xLookupField1.setCaptionWidth(100);
         xLookupField1.setExpression("#{entity.classification.objid}");
         xLookupField1.setHandler("lobclassification:lookup");
-        xLookupField1.setName("entity.classification.objid"); // NOI18N
+        xLookupField1.setName("entity.classification"); // NOI18N
         xLookupField1.setPreferredSize(new java.awt.Dimension(0, 20));
         formPanel1.add(xLookupField1);
 
@@ -67,11 +68,11 @@ public class LobPage extends javax.swing.JPanel {
         jPanel5.setBorder(xTitledBorder1);
         jPanel5.setLayout(new java.awt.BorderLayout());
 
-        xDataTable2.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        xDataTable2.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         xDataTable2.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "lobattributeid"}
-                , new Object[]{"caption", "Attribute"}
+                , new Object[]{"caption", "Name"}
                 , new Object[]{"width", 100}
                 , new Object[]{"minWidth", 0}
                 , new Object[]{"maxWidth", 0}
@@ -90,10 +91,14 @@ public class LobPage extends javax.swing.JPanel {
         jPanel5.add(xDataTable2, java.awt.BorderLayout.CENTER);
 
         xButton1.setCaption("Add");
+        xButton1.setDepends(new String[] {"entity.*", "selectedItem"});
+        xButton1.setDisableWhen("#{canAddAttribute == false}");
         xButton1.setName("addAttribute"); // NOI18N
         xButton1.setText("Add");
 
         xButton2.setCaption("Add");
+        xButton2.setDepends(new String[] {"entity.*", "selectedItem"});
+        xButton2.setDisableWhen("#{canRemoveAttribute == false}");
         xButton2.setName("removeAttribute"); // NOI18N
         xButton2.setText("Remove");
 
@@ -118,12 +123,12 @@ public class LobPage extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(formPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, 195, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(xButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(xButton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(16, Short.MAX_VALUE))
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
     

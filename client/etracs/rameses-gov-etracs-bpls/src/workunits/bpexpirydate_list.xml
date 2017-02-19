@@ -1,7 +1,21 @@
 <workunit extends="com/rameses/seti2/templates/CrudList.xml" schemaName="bpexpirydate">
     <invokers>
-        <invoker folderid="/explorer/master/bpls" caption="BP Expiry Dates" target="popup" index="11"
-                 action="init" role="ADMIN"/>
-        <invoker type="bpexpiry:list" caption="BP Expiry Dates" target="popup" index="11" action="init" />
+        <invoker folderid="/explorer/master/bpls" caption="BP Expiry Dates" action="init" 
+                 target="window" index="11" role="ADMIN"/>
+        
+        <invoker type="bpexpiry:list" caption="BP Expiry Dates" action="init" 
+                 target="window" index="11"/>
     </invokers>
+    <code>
+    <![CDATA[ 
+class BPExpiryDateListModel extends com.rameses.seti2.models.CrudListModel {
+
+    public void initColumn( def c ) {         
+        if ( c.name.toString().matches('year|qtr|expirydate') ) {
+            c.maxWidth = 100;
+        } 
+    }  
+}    
+    ]]>     
+    </code>
 </workunit>

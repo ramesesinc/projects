@@ -1,0 +1,165 @@
+import com.rameses.common.*;
+import com.rameses.annotations.*;
+import com.rameses.services.extended.*;
+import java.math.BigDecimal
+
+class BayawanCollectionUtilService
+{
+	@Service('RPTUtil')
+	def util 
+
+	@Service('NumberService')
+	def numSvc 
+
+	@ActiveDB('bayawan_collection_util')
+	def em 
+
+	@ActiveDB('cashreceiptrpt')
+	def receiptEm 
+
+
+	@ProxyMethod
+	public def postMissingOnlineItems(params){
+		util.required('receiptno', params.receiptno)
+		util.required('tdno', params.tdno)
+		util.required('year', params.year)
+		util.required('av', params.av)
+		util.required('basicrate', params.basicrate)
+		util.required('basicdiscrate', params.basicdiscrate)
+		util.required('basicintrate', params.basicintrate)
+		util.required('sefrate', params.sefrate)
+		util.required('sefdiscrate', params.sefdiscrate)
+		util.required('sefintrate', params.sefintrate)
+
+		params.av = new BigDecimal(params.av)
+		params.basicrate = new BigDecimal(params.basicrate)
+		params.basicdiscrate = new BigDecimal(params.basicdiscrate)
+		params.basicintrate = new BigDecimal(params.basicintrate)
+
+		params.sefrate = new BigDecimal(params.sefrate)
+		params.sefdiscrate = new BigDecimal(params.sefdiscrate)
+		params.sefintrate = new BigDecimal(params.sefintrate)
+
+		def receipt = validateReceipt(params)
+		def ledger = validateLedger(params)
+		postOnlineItems(params, receipt, ledger)
+		
+		return 'Successfully posted.'
+	}
+
+
+	def validateReceipt(params){
+		def receipt = em.findReceipt(params)
+		if (!receipt) throw new Exception('Receipt No. ' + params.receiptno + ' does not exist.')
+
+		params.rptreceiptid = receipt.objid 
+
+		def itemtotal = em.findItemTotal(receipt)
+		def accttotal = em.findAccountTotal(receipt)
+
+		if (receipt.amount != accttotal.amount)
+			throw new Exception('Procedure is not applicable to mismatch receipt and account totals.')
+
+		if (accttotal.amount == itemtotal.amount) 
+			throw new Exception('Receipt amounts are correctly posted.')
+
+		receipt.itemtotal = itemtotal 
+		receipt.accttotal = accttotal 
+
+		return receipt 
+	}
+
+
+	def validateLedger(params){
+		def ledgers = em.getLedgers(params)
+		if(!ledgers) throw new Exception('Ledger does not exist for TD No. ' + params.tdno)
+		if (ledgers.size() > 1) throw new Exception('There are multiple ledgers for TD No. ' + params.tdno)
+
+		def ledger = ledgers[0]
+		params.rptledgerid = ledger.objid 
+
+		def ledgerfaas = em.findLedgerFaas(params)
+		if (!ledgerfaas) throw new Exception('FAAS History for year ' + params.year + ' does not exist.')
+		ledger.ledgerfaas = ledgerfaas 
+		return ledger
+	}
+
+
+	def buildTaxes(params, ledger){
+		def av = params.av
+		def tax = [:]
+		tax.basic = numSvc.round(av * params.basicrate)
+		tax.basicdisc = numSvc.round(tax.basic * params.basicdiscrate)
+		tax.basicint = numSvc.round(tax.basic * params.basicintrate)    
+
+		tax.sef = numSvc.round(av * params.sefrate)
+		tax.sefdisc = numSvc.round(tax.sef * params.sefdiscrate)
+		tax.sefint = numSvc.round(tax.sef * params.sefintrate)   
+
+		tax.basicqtr = numSvc.round(tax.basic / 4)
+		tax.basic4thqtr = tax.basic - (tax.basicqtr * 3)
+		tax.basicintqtr = numSvc.round(tax.basicint / 4)
+		tax.basicint4thqtr = tax.basicint - (tax.basicintqtr * 3)
+		tax.basicdiscqtr = numSvc.round(tax.basicdisc / 4)
+		tax.basicdisc4thqtr = tax.basicdisc - (tax.basicdiscqtr * 3)
+
+		tax.sefqtr = numSvc.round(tax.sef / 4)
+		tax.sef4thqtr = tax.sef - (tax.sefqtr * 3)
+		tax.sefintqtr = numSvc.round(tax.sefint / 4)
+		tax.sefint4thqtr = tax.sefint - (tax.sefintqtr * 3)
+		tax.sefdiscqtr = numSvc.round(tax.sefdisc / 4)
+		tax.sefdisc4thqtr = tax.sefdisc - (tax.sefdiscqtr * 3)
+		return tax 
+	}
+
+
+	void postOnlineItems(params, receipt, ledger){
+		def tax = buildTaxes(params, ledger)
+		em.deletePostedItems(params)
+
+		1.upto(4){qtr ->
+			params.qtr = qtr 
+			def basic = (qtr == 4 ? tax.basic4thqtr : tax.basicqtr)
+			def basicint = (qtr == 4 ? tax.basicint4thqtr : tax.basicintqtr)
+			def basicdisc = (qtr == 4 ? tax.basicdisc4thqtr : tax.basicdiscqtr)
+			def sef = (qtr == 4 ? tax.sef4thqtr : tax.sefqtr)
+			def sefint = (qtr == 4 ? tax.sefint4thqtr : tax.sefintqtr)
+			def sefdisc = (qtr == 4 ? tax.sefdisc4thqtr : tax.sefdiscqtr)
+
+			def item = createItem(params, receipt, ledger)	
+			item.basic = basic
+			item.basicint = basicint
+			item.basicdisc = basicdisc
+			item.basicnet = basic + basicint - basicdisc 
+			item.sef = sef
+			item.sefint = sefint
+			item.sefdisc = sefdisc
+			item.sefnet = sef + sefint - sefdisc 
+			item.total = item.basicnet + item.sefnet 
+			receiptEm.create(item, 'cashreceiptitem_online')
+		}
+	}	
+
+
+	def createItem(params, receipt, ledger){
+		def item = [:]
+		item.objid = 'SYSI-' + new java.rmi.server.UID()
+		item.rptledgerid = ledger.objid
+		item.rptledgerfaasid = ledger.ledgerfaas.objid 
+		item.year = params.year 
+		item.qtr = params.qtr 
+		item.fromqtr = params.qtr
+		item.toqtr = params.qtr 
+		item.basicidle = 0.0 
+		item.basicidledisc = 0.0
+		item.basicidleint = 0.0 
+		item.firecode = 0.0 
+		item.revperiod = params.revperiod 
+		item.rptreceiptid = receipt.objid 
+		item.partialled = 0
+		item.rptledgeritemid = null 
+		item.rptledgeritemqtrlyid = null 
+		return item 
+	}
+	
+}

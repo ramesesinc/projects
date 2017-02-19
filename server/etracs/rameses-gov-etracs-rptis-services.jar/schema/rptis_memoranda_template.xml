@@ -1,0 +1,11 @@
+<schema adapter="main">
+	<element name="rptis_memoranda_template" tablename="memoranda_template">
+		<field name="objid" primary="true" prefix="MT"/>
+		<field name="code" caption="Code" required="true" 
+			searchable="true"  indexed="true"
+			width="60" />
+		<field name="template" caption="Template" required="true" 
+			searchable="true"  indexed="true"
+			width="250"/>
+	</element>
+</schema>

@@ -805,7 +805,7 @@
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" size="8"/>
+						<font fontName="Tahoma" size="7"/>
 					</textElement>
 				<textFieldExpression   class="java.lang.Number"><![CDATA[$F{pretaxcnt}]]></textFieldExpression>
 				</textField>
@@ -822,7 +822,7 @@
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Tahoma" size="8"/>
+						<font fontName="Tahoma" size="7"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{pretaxvalue}]]></textFieldExpression>
 				</textField>
@@ -839,7 +839,7 @@
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" size="8"/>
+						<font fontName="Tahoma" size="7"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{preexemptcnt}]]></textFieldExpression>
 				</textField>
@@ -856,7 +856,7 @@
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Tahoma" size="8"/>
+						<font fontName="Tahoma" size="7"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{preexemptvalue}]]></textFieldExpression>
 				</textField>
@@ -873,7 +873,7 @@
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" size="8"/>
+						<font fontName="Tahoma" size="7"/>
 					</textElement>
 				<textFieldExpression   class="java.lang.Number"><![CDATA[$F{currtaxcnt}]]></textFieldExpression>
 				</textField>
@@ -890,7 +890,7 @@
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Tahoma" size="8"/>
+						<font fontName="Tahoma" size="7"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{currtaxvalue}]]></textFieldExpression>
 				</textField>
@@ -907,7 +907,7 @@
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" size="8"/>
+						<font fontName="Tahoma" size="7"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{currexemptcnt}]]></textFieldExpression>
 				</textField>
@@ -924,7 +924,7 @@
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Tahoma" size="8"/>
+						<font fontName="Tahoma" size="7"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{currexemptvalue}]]></textFieldExpression>
 				</textField>
@@ -941,7 +941,7 @@
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" size="8"/>
+						<font fontName="Tahoma" size="7"/>
 					</textElement>
 				<textFieldExpression   class="java.lang.Number"><![CDATA[$F{cancelledtaxcnt}]]></textFieldExpression>
 				</textField>
@@ -958,7 +958,7 @@
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Tahoma" size="8"/>
+						<font fontName="Tahoma" size="7"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{cancelledtaxvalue}]]></textFieldExpression>
 				</textField>
@@ -975,7 +975,7 @@
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" size="8"/>
+						<font fontName="Tahoma" size="7"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{cancelledexemptcnt}]]></textFieldExpression>
 				</textField>
@@ -992,7 +992,7 @@
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Tahoma" size="8"/>
+						<font fontName="Tahoma" size="7"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{cancelledexemptvalue}]]></textFieldExpression>
 				</textField>
@@ -1009,7 +1009,7 @@
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" size="8"/>
+						<font fontName="Tahoma" size="7"/>
 					</textElement>
 				<textFieldExpression   class="java.lang.Number"><![CDATA[$F{endtaxcnt}]]></textFieldExpression>
 				</textField>
@@ -1026,7 +1026,7 @@
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Tahoma" size="8"/>
+						<font fontName="Tahoma" size="7"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{endtaxvalue}]]></textFieldExpression>
 				</textField>
@@ -1043,7 +1043,7 @@
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" size="8"/>
+						<font fontName="Tahoma" size="7"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{endexemptcnt}]]></textFieldExpression>
 				</textField>
@@ -1060,7 +1060,7 @@
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Tahoma" size="8"/>
+						<font fontName="Tahoma" size="7"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{endexemptvalue}]]></textFieldExpression>
 				</textField>
@@ -1262,7 +1262,7 @@
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" size="8"/>
+						<font fontName="Tahoma" size="7"/>
 					</textElement>
 				<textFieldExpression   class="java.lang.Number"><![CDATA[$V{pretaxcnt}]]></textFieldExpression>
 				</textField>
@@ -1279,7 +1279,7 @@
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Tahoma" size="8"/>
+						<font fontName="Tahoma" size="7"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{pretaxvalue}]]></textFieldExpression>
 				</textField>
@@ -1296,7 +1296,7 @@
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" size="8"/>
+						<font fontName="Tahoma" size="7"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{preexemptcnt}]]></textFieldExpression>
 				</textField>
@@ -1313,7 +1313,7 @@
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Tahoma" size="8"/>
+						<font fontName="Tahoma" size="7"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{preexemptvalue}]]></textFieldExpression>
 				</textField>
@@ -1330,7 +1330,7 @@
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" size="8"/>
+						<font fontName="Tahoma" size="7"/>
 					</textElement>
 				<textFieldExpression   class="java.lang.Number"><![CDATA[$V{currtaxcnt}]]></textFieldExpression>
 				</textField>
@@ -1347,7 +1347,7 @@
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Tahoma" size="8"/>
+						<font fontName="Tahoma" size="7"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{currtaxvalue}]]></textFieldExpression>
 				</textField>
@@ -1364,7 +1364,7 @@
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" size="8"/>
+						<font fontName="Tahoma" size="7"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{currexemptcnt}]]></textFieldExpression>
 				</textField>
@@ -1381,7 +1381,7 @@
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Tahoma" size="8"/>
+						<font fontName="Tahoma" size="7"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{currexemptvalue}]]></textFieldExpression>
 				</textField>
@@ -1398,7 +1398,7 @@
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" size="8"/>
+						<font fontName="Tahoma" size="7"/>
 					</textElement>
 				<textFieldExpression   class="java.lang.Number"><![CDATA[$V{cancelledtaxcnt}]]></textFieldExpression>
 				</textField>
@@ -1415,7 +1415,7 @@
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Tahoma" size="8"/>
+						<font fontName="Tahoma" size="7"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{cancelledtaxvalue}]]></textFieldExpression>
 				</textField>
@@ -1432,7 +1432,7 @@
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" size="8"/>
+						<font fontName="Tahoma" size="7"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{cancelledexemptcnt}]]></textFieldExpression>
 				</textField>
@@ -1449,7 +1449,7 @@
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Tahoma" size="8"/>
+						<font fontName="Tahoma" size="7"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{cancelledexemptvalue}]]></textFieldExpression>
 				</textField>
@@ -1466,7 +1466,7 @@
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" size="8"/>
+						<font fontName="Tahoma" size="7"/>
 					</textElement>
 				<textFieldExpression   class="java.lang.Number"><![CDATA[$V{endtaxcnt}]]></textFieldExpression>
 				</textField>
@@ -1483,7 +1483,7 @@
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Tahoma" size="8"/>
+						<font fontName="Tahoma" size="7"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{endtaxvalue}]]></textFieldExpression>
 				</textField>
@@ -1500,7 +1500,7 @@
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" size="8"/>
+						<font fontName="Tahoma" size="7"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{endexemptcnt}]]></textFieldExpression>
 				</textField>
@@ -1517,7 +1517,7 @@
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Tahoma" size="8"/>
+						<font fontName="Tahoma" size="7"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{endexemptvalue}]]></textFieldExpression>
 				</textField>

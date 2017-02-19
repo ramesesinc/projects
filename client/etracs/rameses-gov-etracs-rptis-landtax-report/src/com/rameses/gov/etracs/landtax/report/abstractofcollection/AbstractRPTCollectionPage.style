@@ -37,3 +37,12 @@
 "entity.collector"[entity.period==null]{
     visible:false;
 }
+
+
+"entity.postingtype"[1==1]{
+    visible:true;
+}
+
+"entity.postingtype"[showPostingType == null || showPostingType == false]{
+    visible:false;
+}

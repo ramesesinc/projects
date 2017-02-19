@@ -4,7 +4,7 @@
             action="init" 
             caption="Monthly Assessment Report" 
             target="window" 
-            role="REPORT"/>
+            role="REPORT,ASSESSOR_REPORT"/>
     </invokers>
     <code>
 

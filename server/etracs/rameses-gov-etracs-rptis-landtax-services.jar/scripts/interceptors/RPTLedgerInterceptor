@@ -22,11 +22,14 @@ class RPTLedgerInterceptor
     @Service('LogService')
     def logSvc
 
+    @Service('FAASService')
+    def faasSvc
+
 	def STATE_PENDING   = 'PENDING'
 	def STATE_APPROVED  = 'APPROVED'
 
 
-    @After(pattern="RPTLedgerService.(createLedger|createSubLedger|updateLedger|updateSubLedger|approveLedger|fixLedger|updateState)") 
+    @After(pattern="RPTLedgerService.(createLedger|createSubLedger|updateLedger|updateSubLedger|approveLedger|fixLedger|updateState|updateFaasReference)") 
     public void logActions( evt ) {
         def ledger = evt.result 
         logSvc.logA( evt.methodName, 'RPTLEDGER', ledger.objid, ledger._remarks)
@@ -66,6 +69,7 @@ class RPTLedgerInterceptor
     }
 
     void postNewLedger(faas){
+        faas.txntype = faasSvc.getTxnType( faas.txntype.objid )
         def manualledger = findManualLedger(faas)
 
         if (util.isTrue(faas.txntype.reconcileledger) && manualledger){

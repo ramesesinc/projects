@@ -34,13 +34,25 @@ public class ReportInitPage extends javax.swing.JPanel {
     private void initComponents() {
 
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
+        xComboBox4 = new com.rameses.rcp.control.XComboBox();
         xComboBox3 = new com.rameses.rcp.control.XComboBox();
-        xIntegerField1 = new com.rameses.rcp.control.XIntegerField();
         xComboBox5 = new com.rameses.rcp.control.XComboBox();
         xComboBox6 = new com.rameses.rcp.control.XComboBox();
+        xIntegerField1 = new com.rameses.rcp.control.XIntegerField();
 
         setOpaque(false);
         setLayout(new java.awt.BorderLayout());
+
+        xFormPanel1.setCaptionWidth(100);
+
+        xComboBox4.setAllowNull(false);
+        xComboBox4.setCaption("Posting Type");
+        xComboBox4.setExpression("#{item.caption}");
+        xComboBox4.setItems("postingtypes");
+        xComboBox4.setName("entity.postingtype"); // NOI18N
+        xComboBox4.setPreferredSize(new java.awt.Dimension(200, 22));
+        xComboBox4.setRequired(true);
+        xFormPanel1.add(xComboBox4);
 
         xComboBox3.setAllowNull(false);
         xComboBox3.setCaption("Period");
@@ -50,13 +62,6 @@ public class ReportInitPage extends javax.swing.JPanel {
         xComboBox3.setPreferredSize(new java.awt.Dimension(200, 22));
         xComboBox3.setRequired(true);
         xFormPanel1.add(xComboBox3);
-
-        xIntegerField1.setCaption("Year");
-        xIntegerField1.setDepends(new String[] {"entity.period"});
-        xIntegerField1.setName("entity.year"); // NOI18N
-        xIntegerField1.setPreferredSize(new java.awt.Dimension(80, 20));
-        xIntegerField1.setRequired(true);
-        xFormPanel1.add(xIntegerField1);
 
         xComboBox5.setAllowNull(false);
         xComboBox5.setCaption("Quarter");
@@ -80,10 +85,18 @@ public class ReportInitPage extends javax.swing.JPanel {
         xComboBox6.setRequired(true);
         xFormPanel1.add(xComboBox6);
 
+        xIntegerField1.setCaption("Year");
+        xIntegerField1.setDepends(new String[] {"entity.period"});
+        xIntegerField1.setName("entity.year"); // NOI18N
+        xIntegerField1.setPreferredSize(new java.awt.Dimension(80, 20));
+        xIntegerField1.setRequired(true);
+        xFormPanel1.add(xIntegerField1);
+
         add(xFormPanel1, java.awt.BorderLayout.PAGE_START);
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.rameses.rcp.control.XComboBox xComboBox3;
+    private com.rameses.rcp.control.XComboBox xComboBox4;
     private com.rameses.rcp.control.XComboBox xComboBox5;
     private com.rameses.rcp.control.XComboBox xComboBox6;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;

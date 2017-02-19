@@ -1,0 +1,21 @@
+<workunit schemaName="rptis_memoranda_template">
+    <invokers>
+        <invoker type="rptis_memoranda_template:create" 
+                 caption="Memoranda Template" 
+                 action="create" 
+                 target="popup" 
+                 role="MASTER"/>
+        
+        <invoker type="rptis_memoranda_template:open" 
+                 caption="Memoranda Template" 
+                 action="open" 
+                 target="popup" 
+                 role="MASTER"/>
+    </invokers>
+    
+    <code class="com.rameses.seti2.models.CrudFormModel"/>
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.rptis.master.views.MemorandaTemplatePage"/>
+    </pages>
+</workunit>

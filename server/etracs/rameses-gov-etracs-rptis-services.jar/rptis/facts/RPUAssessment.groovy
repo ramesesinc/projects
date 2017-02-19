@@ -7,6 +7,7 @@ public class RPUAssessment
     String rpuid
     String rputype
     String classificationid
+    String actualusecode
     String actualuseid
     Double areasqm
     Double areaha
@@ -28,12 +29,15 @@ public class RPUAssessment
         this.rputype = entity.rputype
         this.classificationid = entity.classificationid
         this.actualuseid = entity.actualuseid
+        this.actualusecode = entity.actualusecode
         this.taxable = (entity.taxable == null ? true : entity.taxable)
+
         
         setAreasqm(entity.areasqm)
         setAreaha(entity.areaha)
         setMarketvalue(entity.marketvalue)
         if (entity.exemptedmarketvalue == null ) entity.exemptedmarketvalue = 0.0
+        if (entity.assesslevel == null) entity.assesslevel = 0.0 
         setExemptedmarketvalue(entity.exemptedmarketvalue)
         setAssesslevel(entity.assesslevel)
         setAssessedvalue(entity.assessedvalue)

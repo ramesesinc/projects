@@ -16,3 +16,11 @@
 "entity.month" [ entity.period?.code=='monthly' ] {
     visible: true; 
 } 
+
+"entity.postingtype"[1==1]{
+    visible:true;
+}
+
+"entity.postingtype"[showPostingType == null || showPostingType == false]{
+    visible:false;
+}

@@ -15,7 +15,7 @@
     enabled:false;
 }
 
-"editFaas|removeFaas" [selectedItem.systemcreated == true] {
+"editFaas|removeFaas" [selectedItem && (selectedItem.systemcreated == 1 || selectedItem.systemcreated == true )] {
     enabled:false;
 }
 
@@ -43,7 +43,7 @@
     enabled:true;
 }
 
-"deleteSubLedger" [selectedSubLedger.state != 'PENDING']{
+"deleteSubLedger" [selectedSubLedger && selectedSubLedger.state != 'PENDING']{
     visible:false;
 }
 

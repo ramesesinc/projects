@@ -86,6 +86,7 @@ class RPTReportAssessmentReportService
 		brgy.preexemptvalue += v.cancelledexemptvalue
 	}
 
+
 	void setZeroValuesToNull(brgys){
 		brgys.each{brgy ->
 			brgy.each{k, v->

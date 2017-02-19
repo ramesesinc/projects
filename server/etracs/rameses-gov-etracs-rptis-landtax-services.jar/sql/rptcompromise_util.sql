@@ -16,7 +16,7 @@ where rptcompromiseid = $P{objid}
 
 
 [findPayment]
-select amtpaid from rptledger_compromise where objid = $P{objid}
+select (amtpaid + downpayment) as amtpaid from rptledger_compromise where objid = $P{objid}
 
 
 [getItems]

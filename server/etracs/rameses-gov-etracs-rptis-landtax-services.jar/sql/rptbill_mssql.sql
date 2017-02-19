@@ -35,7 +35,12 @@ FROM rptledger rl
 WHERE rl.objid = $P{rptledgerid}
  AND rl.state = 'APPROVED'
  AND rl.totalav > 0 
- AND ( rl.lastyearpaid < $P{billtoyear} OR (rl.lastyearpaid = $P{billtoyear} AND rl.lastqtrpaid < $P{billtoqtr}))
+ AND (
+ 		( rl.lastyearpaid < $P{billtoyear} OR (rl.lastyearpaid = $P{billtoyear} AND rl.lastqtrpaid < $P{billtoqtr}))
+ 		or 
+ 		(exists(select * from rptledgeritem where rptledgerid = rl.objid and taxdifference=1 and fullypaid=0))
+
+ 	)
 
 
 [getIncentivesByLedgerId]

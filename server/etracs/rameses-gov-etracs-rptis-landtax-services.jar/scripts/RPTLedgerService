@@ -1040,31 +1040,29 @@ class RPTLedgerService
 
 
     @ProxyMethod
-    public void updateFaasReference(ledger, newfaas){
+    public def updateFaasReference(ledger, newfaas){
+        def prevtdno = ledger.tdno 
         validateNewFaasReference(ledger, newfaas)
-
-        def newfaasledger = em.findLedgerByFaasId([faasid:newfaas.objid])
-        if (newfaasledger.state == 'PENDING')
-            deleteLedger(newfaasledger)
-
-        em.deleteLedgerItemByFaasReference(ledger)
-        em.cancelCurrentLedgerFaasReference(ledger)
-
         newfaas = faasSvc.openFaas(newfaas)
         updateLedgerFaasInfo(newfaas, ledger)
-
-        def ledgerfaas = createLedgerFaas(ledger, newfaas)
-        saveLedgerFaas(ledgerfaas)
+        ledger._remarks = 'Previous TD No.: ' + prevtdno  + '  ->  New TD No.: ' + newfaas.tdno 
+        return ledger
     }
 
 
-    void validateNewFaasReference(entity, faas){
+    void validateNewFaasReference(ledger, faas){
         if (faas.state != 'CURRENT')
             throw new Exception('FAAS is not yet current. Only current FAAS is allowed.');
-        if (entity.faasid == faas.objid)
-            throw new Exception('FAAS is the same with the Ledger reference.');
-        if (entity.rputype != faas.rputype)
-            throw new Exception('FAAS proeprty type is invalid. Only ' + entity.rputpe + ' property type is allowed.');
+        if (ledger.faasid == faas.objid)
+            throw new Exception('FAAS is the same with the current reference.');
+        if (ledger.rputype != faas.rputype)
+            throw new Exception('FAAS proeprty type is invalid. Only ' + ledger.rputpe + ' property type is allowed.');
+
+        //check duplicate reference
+        def existing = em.findLedgerByFaasId([faasid:faas.objid])
+        if(existing && ledger.objid != existing.objid){
+            throw new Exception('FAAS is already referenced by Ledger with TD No. ' + existing.tdno + '.')
+        }
     }
 
     void generateLedgerBill(rptledgerid){

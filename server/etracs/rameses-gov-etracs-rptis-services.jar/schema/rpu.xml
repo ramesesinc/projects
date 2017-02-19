@@ -28,8 +28,8 @@
         <field name="objid" primary="true" />
         <field name="rpuid" required="true" />
         <field name="rputype" required="true" />
-        <field name="classification_objid" required="true" />
-        <field name="actualuse_objid" required="true" />
+        <field name="classification_objid" />
+        <field name="actualuse_objid" />
         <field name="areasqm" required="true" type="decimal" />
         <field name="areaha" required="true" type="decimal" />
         <field name="marketvalue" required="true" type="decimal" />

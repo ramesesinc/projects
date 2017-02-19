@@ -18,12 +18,18 @@ public class AddPlantTreeAssessmentInfo implements RuleActionHandler {
 		def ptd = params.planttreedetail 
 		def ptdentity = ptd.entity
 		def rpuentity = ptd.rpu.entity
+		if (ptdentity.assesslevel == null) ptdentity.assesslevel = 0.0
+		if (ptd.assesslevel == null) ptd.assesslevel = 0.0
+		if (ptd.assessedvalue == null) ptd.assessedvalue = 0.0
 
-		def classificationid = ptdentity.actualuse.classification.objid 
-		def actualuseid = ptdentity.actualuse.objid
-		def rputype = 'planttree';
 
-		def a = request.assessments.find{it.rputype == rputype && it.classificationid == classificationid && it.actualuseid == actualuseid}
+		def classificationid = rpuentity.classification?.objid 
+		if (!classificationid) classificationid = ptdentity.actualuse?.classification?.objid 
+		def actualuseid = ptdentity.actualuse?.objid
+		def actualusecode = ptdentity.actualuse?.code
+		def rputype = rpuentity.rputype;
+
+		def a = request.assessments.find{it.rputype == rputype && it.classificationid == classificationid && it.actualusecode == actualusecode}
 		if ( ! a){
 			if (rpuentity.assessments == null) 
 				rpuentity.assessments = []
@@ -35,6 +41,7 @@ public class AddPlantTreeAssessmentInfo implements RuleActionHandler {
 				classificationid : classificationid,
 				classification   : [objid:classificationid],
 				actualuseid  : actualuseid,
+				actualusecode  : actualusecode,
 				actualuse    : [objid:actualuseid],
 				areasqm      : 0.0, 
 				areaha       : 0.0,

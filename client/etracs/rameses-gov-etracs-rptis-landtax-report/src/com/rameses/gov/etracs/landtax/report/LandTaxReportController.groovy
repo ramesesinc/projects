@@ -30,9 +30,13 @@ abstract class LandTaxReportController
     String title = 'Report Title';
     boolean showCollector = false;
     
-    
     public abstract String getReportName();
     public abstract def getReportData(entity);
+    
+    def postingtypes = [
+        [code:'byliq', caption:'By Liquidation Date'],
+        [code:'byrem', caption:'By Remittance Date'],
+    ]
     
     
     @PropertyChangeListener

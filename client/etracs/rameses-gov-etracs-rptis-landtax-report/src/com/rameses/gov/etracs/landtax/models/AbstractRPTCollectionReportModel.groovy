@@ -30,7 +30,9 @@ class AbstractRPTCollectionReportModel {
     def entity = [:];
     def params = [:];
     def reportdata;
-
+    
+    def showPostingType = true;
+    
     String title = "Abstract of Real Property Tax Collection";
     String reportpath = "com/rameses/gov/etracs/landtax/report/abstractofcollection/"
     String reportName = reportpath + 'abstractrptcollection.jasper'
@@ -43,6 +45,11 @@ class AbstractRPTCollectionReportModel {
             entity.todate = '';   
         }
     ];
+    
+    def postingtypes = [
+        [code:'byliq', caption:'By Liquidation Date'],
+        [code:'byrem', caption:'By Remittance Date'],
+    ]
 
     def initReport(){
         return 'default'

@@ -1,0 +1,11 @@
+<workunit extends="com/rameses/seti2/templates/CrudLookup.xml" schemaName="rptis_memoranda_template" 
+          allowEdit="false" 
+          allowOpen="false">
+    <invokers>
+        <invoker type="memorandatemplate:lookup" 
+                 caption="Memoranda Template Lookup" 
+                 action="init"
+                 height="500" width="700" 
+                 orderBy="code"/>
+    </invokers>
+</workunit>

@@ -16,15 +16,26 @@ SELECT
 	rl.rputype,
 	rl.fullpin ,
 	rl.totalareaha,
+	rl.totalareaha * 10000 as totalareasqm,
 	rl.totalmv,
 	rl.totalav,
 	rl.cadastrallotno,
+	rl.blockno,
+	rl.administrator_name,
+	f.administrator_address, 
+	case when m.objid is not null then m.name else c.name end as lguname, 
 	b.name AS barangay,
 	rl.classcode,
-	rl.titleno
+	rl.titleno,
+	rp.surveyno
 FROM rptcertificationitem rci 
 	INNER JOIN rptledger rl ON rci.refid = rl.objid 
 	INNER JOIN barangay b ON rl.barangayid = b.objid 
+	LEFT JOIN municipality m on b.parentid = m.objid
+	LEFT JOIN district d on b.parentid = d.objid 
+	LEFT JOIN city c on d.parentid = c.objid 
+	LEFT JOIN faas f on rl.faasid = f.objid 
+	LEFT JOIN realproperty rp on f.realpropertyid = rp.objid 
 WHERE rci.rptcertificationid = $P{rptcertificationid}
 
 

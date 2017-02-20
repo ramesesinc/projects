@@ -69,3 +69,20 @@ where py.applicationid=$P{applicationid} and pyi.lob_objid=$P{lobid} and voided=
 group by py.applicationid, py.refno, py.refdate, pyi.qtr, pyi.lob_objid 
 having max(pyi.[partial])=0 
 order by py.refdate desc, pyi.qtr desc 
+
+
+[resetLedgerAmtPaid]
+update business_receivable set amtpaid=0.0 where applicationid=$P{applicationid}
+
+[resyncLedgerAmtPaid]
+update 
+	business_receivable br, ( 
+		select bpi.receivableid, sum(bpi.amount) as amtpaid  
+		from business_payment bp, business_payment_item bpi 
+		where bp.applicationid=$P{applicationid} 
+			and bpi.parentid=bp.objid 
+			and bp.voided=0 
+		group by bpi.receivableid 
+	)tmp 
+set br.amtpaid = tmp.amtpaid 
+where br.objid=tmp.receivableid 

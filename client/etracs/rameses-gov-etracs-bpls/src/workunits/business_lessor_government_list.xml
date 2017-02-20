@@ -1,0 +1,34 @@
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" 
+          schemaName="business_lessor_government">
+    <invokers>
+        <invoker folderid="/explorer/master/bpls" caption="Government Property List"  
+                action="init" role="MASTER" permission="businesslessor.view" index="4" 
+                customFilter="government = 1" />
+    </invokers>
+    
+    <code>
+    <![CDATA[
+class BusinessLessorGovernmentListModel extends com.rameses.seti2.models.CrudListModel {
+    
+    def confs = [
+        'bldgno'            : [ maxWidth: 100 ],
+        'subdivision'       : [ maxWidth: 150 ],
+        'barangay.name'     : [ maxWidth: 150 ]      
+    ]; 
+        
+    public void initColumn( def c ) { 
+        
+        def conf = confs.get( c.name ); 
+        if ( !conf ) return; 
+        
+        if ( conf.type != null ) c.type = conf.type;
+        if ( conf.width != null ) c.width = conf.width; 
+        if ( conf.minWidth != null ) c.minWidth = conf.minWidth; 
+        if ( conf.maxWidth != null ) c.maxWidth = conf.maxWidth; 
+        if ( conf.visible != null ) c.visible = conf.visible; 
+        if ( conf.caption != null ) c.caption = conf.caption; 
+    } 
+}     
+    ]]> 
+    </code>
+</workunit>

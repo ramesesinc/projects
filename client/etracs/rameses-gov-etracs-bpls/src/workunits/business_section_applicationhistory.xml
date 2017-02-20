@@ -7,7 +7,7 @@
         <invoker type="formActions" caption="Capture Late Renewal" action="captureLateRenewal" 
                  role="ASSESSOR" permission="business.captureLateRenewal" index="55"/>
 
-        <invoker type="extActions" caption="Unified Form" action="showUnifiedFormMenu" icon="images/toolbars/printer.png"/>
+        <invoker type="extActions" caption="Reports" action="showReports" icon="images/toolbars/printer.png"/>
                  
     </invokers>
     
@@ -66,11 +66,11 @@
                 listModel.reload(); 
             } 
             
-            def showUnifiedFormMenu() {
+            def showReports() {
                 if(selectedItem == null ) {
                     throw new Exception("Please select an application");
                 }
-                def list = Inv.lookupOpeners( "business_application:unifiedform", [entity:selectedItem, handler:[:]] );
+                def list = Inv.lookupOpeners( "business_application:reports", [entity:selectedItem, handler:[:]] );
                 def pop = new PopupMenuOpener();
                 list.each {
                     pop.add( it );

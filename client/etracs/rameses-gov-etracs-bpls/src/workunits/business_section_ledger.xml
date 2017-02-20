@@ -1,20 +1,24 @@
 <workunit>
     <invokers>
-        <invoker type="business:section" caption="Business Ledger" index="40"/>
+        <invoker type="business:section" caption="Business Ledger" action="init" index="40"/>
        
         <invoker type="formActions" caption="Send SMS" action="sendSMS" target="process"/> 
-        <invoker type="formActions" caption="Print Bill" action="runBilling"/>
+        <invoker type="formActions" caption="Print Bill" action="printBill"/>
         
-        <invoker type="formActions" caption="Request Payment" action="requestPayment"/>
-        <invoker type="formActions" caption="Capture Payment" action="capturePayment" role="ADMIN"/>
-        <invoker type="formActions" caption="Add Receivable" action="addReceivable"  role="ADMIN"/>
-        <invoker type="formActions" caption="Tax Credit Payment" action="payTaxCredit"/>
+        <invoker type="formActions" caption="Capture Payment" action="capturePayment" 
+                 role="ADMIN" permission="businesspayment.capture" 
+                 depends="selectedApplication" visibleWhen="#{selectedApplication != null}"/>
+        <invoker type="formActions" caption="Add Receivable" action="addReceivable" 
+                 role="ADMIN" permission="businessledger.add" 
+                 depends="selectedApplication" visibleWhen="#{selectedApplication != null}"/>
         
-        <invoker type="receivableActions" caption=" Edit " action="doEditReceivable" visibleWhen="#{selectedReceivable != null}"/>
-        <invoker type="receivableActions" caption="Remove" action="doRemoveReceivable" visibleWhen="#{selectedReceivable != null}"/>
+        <invoker type="receivableActions" caption=" Edit " action="doEditReceivable" 
+                 depends="selectedReceivable" />
+        <invoker type="receivableActions" caption="Remove" action="doRemoveReceivable" 
+                 depends="selectedReceivable" />
     </invokers>
     
-    <code class="com.rameses.gov.etracs.bpls.controller.BusinessLedgerController"/>
+    <code class="com.rameses.gov.etracs.bpls.models.BusinessLedgerController"/>
 
     <pages>
         <page template="com.rameses.gov.etracs.bpls.business.BusinessLedger"/>

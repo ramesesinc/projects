@@ -1,6 +1,6 @@
 <workunit>
     <invokers>
-        <invoker type="business:section" caption="Application Html" index="200" />
+        <invoker xtype="business:section" caption="Application Html" index="200" />
         
         <invoker type="formActions" caption="Print" name="print" />
     </invokers>

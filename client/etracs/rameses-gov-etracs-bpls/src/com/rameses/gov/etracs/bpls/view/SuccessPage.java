@@ -32,6 +32,7 @@ public class SuccessPage extends javax.swing.JPanel {
         jLabel1 = new javax.swing.JLabel();
         xTextField1 = new com.rameses.rcp.control.XTextField();
         xTextField1.setAlignmentX(CENTER_ALIGNMENT);
+        xButton1 = new com.rameses.rcp.control.XButton();
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel1.setText("<html> Application successfully submitted. Please use the ff. application no. for tracking purposes <br><br> <b>For online applications, please print the unified application form</b> </html>");
@@ -39,6 +40,11 @@ public class SuccessPage extends javax.swing.JPanel {
         xTextField1.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
         xTextField1.setName("entity.appno"); // NOI18N
         xTextField1.setReadonly(true);
+
+        xButton1.setMnemonic('T');
+        xButton1.setFontStyle("font-size:12");
+        xButton1.setName("printTrackingno"); // NOI18N
+        xButton1.setText("Print Tracking No");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -48,7 +54,8 @@ public class SuccessPage extends javax.swing.JPanel {
                 .addGap(31, 31, 31)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 654, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(xTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 497, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(xTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 497, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(xButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(175, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -58,13 +65,16 @@ public class SuccessPage extends javax.swing.JPanel {
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(25, 25, 25)
                 .addComponent(xTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(243, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(xButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(190, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
+    private com.rameses.rcp.control.XButton xButton1;
     private com.rameses.rcp.control.XTextField xTextField1;
     // End of variables declaration//GEN-END:variables
     

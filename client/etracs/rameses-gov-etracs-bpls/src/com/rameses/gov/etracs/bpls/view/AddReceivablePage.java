@@ -39,6 +39,7 @@ public class AddReceivablePage extends javax.swing.JPanel {
         xDecimalField2 = new com.rameses.rcp.control.XDecimalField();
         xDecimalField3 = new com.rameses.rcp.control.XDecimalField();
 
+        xFormPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
         xFormPanel1.setCaptionWidth(120);
 
         xComboBox1.setCaption("Line of Business");
@@ -56,7 +57,7 @@ public class AddReceivablePage extends javax.swing.JPanel {
         xLookupField1.setRequired(true);
         xFormPanel1.add(xLookupField1);
 
-        xComboBox2.setCaption("Txn Type");
+        xComboBox2.setCaption("Tax Fee Type");
         xComboBox2.setItems("txnTypes");
         xComboBox2.setName("entity.taxfeetype"); // NOI18N
         xComboBox2.setPreferredSize(new java.awt.Dimension(0, 20));

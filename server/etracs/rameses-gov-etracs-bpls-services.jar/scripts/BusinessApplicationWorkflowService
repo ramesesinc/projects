@@ -186,7 +186,7 @@ public class BusinessApplicationWorkflowService extends ActiveWorkflowService {
 
 	@ProxyMethod
 	public def getTaskFromAppid( def o ) {
-		if(!o.applicationid) throew new Exception("applicationid is required in getTaskFromAppid");
+		if(!o.applicationid) throw new Exception("applicationid is required in getTaskFromAppid");
 		return taskDB.findCurrentTaskByAppid( o );
 	}
 

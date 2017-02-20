@@ -55,6 +55,7 @@
         <Property name="editable" type="boolean" value="true"/>
         <Property name="handler" type="java.lang.String" value="listModel"/>
         <Property name="name" type="java.lang.String" value="selectedItem" noResource="true"/>
+        <Property name="rowHeaderHeight" type="int" value="20"/>
         <Property name="rowHeight" type="int" value="40"/>
       </Properties>
     </Component>

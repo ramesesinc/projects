@@ -1,11 +1,21 @@
-"addPayment|removePayment" [selectedReceivable != null] {
-    visible:true;
+"(view|remove)Payment" [ 1==1 ] {
+    visible: false;
 }
-
-"addPayment|removePayment" [selectedReceivable == null] {
-    visible:false;
+"viewPayment" [ canViewPayment == true ] {
+    visible: true;
+} 
+"removePayment" [ canRemovePayment == true ] {
+    visible: true;
 }
-
-"add.*|remove.*" [entity.state == 'ACTIVE' ] {
-    visible:false;
+"(doEdit|doRemove)Receivable" [ 1==1 ] {
+    enabled:false; 
+} 
+"(doEdit|doRemove)Receivable" [ canEditReceivable == true ] {
+    enabled:true; 
+} 
+"(view|remove)TaxCredit" [ 1==1 ] {
+    enabled:false;
+}
+"(view|remove)TaxCredit" [ canEditTaxCredit==true  ] {
+    enabled:true;
 }

@@ -8,7 +8,7 @@
 		<field name="address_objid" required="true" visible="false"/>
 		<field name="address_text" required="true" caption="Address"/>
 		<complex name="address" ref="entity_address" required="false" jointype="many-to-one"
-			includefields="type,barangay_name,city,municipality,province,bldgno,bldgname,unitno,street,subdivision,pin">
+			includefields="type,barangay_objid,barangay_name,city,municipality,province,bldgno,bldgname,unitno,street,subdivision,pin">
 			<key field="address_objid" target="objid"/>
 		</complex>	
 		<field name="type" required="true" caption="Type"/>

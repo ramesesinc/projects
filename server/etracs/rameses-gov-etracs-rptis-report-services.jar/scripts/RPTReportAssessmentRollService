@@ -8,6 +8,11 @@ class RPTReportAssessmentRollService
     @ActiveDB('rptreport_assessmentroll')
     def em
 
+    @ProxyMethod
+    public def getCurrentRy(){
+        return em.findCurrentRy()?.ry 
+    }
+
 
     @Async
     @ProxyMethod

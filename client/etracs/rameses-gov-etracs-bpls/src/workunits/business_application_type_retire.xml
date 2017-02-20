@@ -1,59 +1,11 @@
 <workunit>
     <invokers>
-        <invoker folderid="/home/business/business_application" caption="Retire Business" 
+        <invoker folderid="/home/business" caption="Retire Business" 
             action="start" target="window"  role="BUSINESSINFO" index="53"/>
 
     </invokers>
     
-    <code>
-         <![CDATA[    
-        import com.rameses.rcp.annotations.*
-        import com.rameses.rcp.common.*
-        import com.rameses.osiris2.client.*
-        import com.rameses.osiris2.common.*
-        import java.rmi.server.*;
-        
-        public class RetireBusinessApplication extends PageFlowController {
-        
-            @Script("BusinessSearchUtil")
-            def searchList;
-        
-            @Script("BusinessApplicationUtil")
-            def application;
-            
-            @Script("BusinessAddressUtil")
-            def address;
-            
-            @Script("BusinessRequirementUtil")
-            def requirement;
-            
-            @Script("BusinessLobUtil")
-            def lob;
-
-            @Script("BusinessInfoUtil")
-            def appinfo;
-
-            @FormTitle
-            def title = "Retire Business";
-            
-            def entity;
-            
-            def text = "Please enter reason for the retirement. ";
-             
-            void open() {
-                application.init( [businessid:searchList.selectedItem.objid, apptype: 'RETIRE'] );
-                lob.reset();
-                appinfo.reset();
-            }
-            
-            void saveCreate() {
-                application.save();
-                MsgBox.alert('Application sent for assessment!'); 
-            }
-            
-        }
-        ]]>
-    </code>    
+    <code class="com.rameses.gov.etracs.bpls.models.RetireBusinessApplication" />
     
     <pageflow>
         
@@ -71,7 +23,6 @@
                 confirm="Please check if this is the correct application. This will be submitted for assesment. Proceed?"
                 action="saveCreate"/>
         </page>
-        
         
         <end/>
     </pageflow>

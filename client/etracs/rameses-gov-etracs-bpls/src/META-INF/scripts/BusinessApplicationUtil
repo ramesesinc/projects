@@ -65,7 +65,7 @@ public class BusinessApplicationUtil {
             
     def print() {
         def entity = caller.entity;
-        def op = Inv.lookupOpener( "business_application:unifiedform", [entity: entity] );
+        def op = Inv.lookupOpener( "business_application:reports", [entity: entity] );
         op.target = 'self';
         return op;
     }
@@ -89,8 +89,14 @@ public class BusinessApplicationUtil {
         }
     }
 
-    void open() {
-        caller.entity = service.open( caller.entity );
+    void open() { 
+        def data = service.open( caller.entity ); 
+        if ( caller.entity ) {
+            caller.entity.clear(); 
+            caller.entity.putAll( data ); 
+        } else {
+            caller.entity = data; 
+        } 
     }
 
     public void setPermitType(def o) {
@@ -129,5 +135,4 @@ public class BusinessApplicationUtil {
         b.requirements = o.requirements;
         service.updateInfos(b);
     }
-
 }

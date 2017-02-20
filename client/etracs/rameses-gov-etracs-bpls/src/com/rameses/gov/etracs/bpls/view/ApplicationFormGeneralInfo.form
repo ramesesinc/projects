@@ -243,6 +243,9 @@
         <Container class="com.rameses.rcp.control.XFormPanel" name="xFormPanel5">
           <Properties>
             <Property name="captionWidth" type="int" value="120"/>
+            <Property name="padding" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
+              <Insets value="[0, 5, 5, 0]"/>
+            </Property>
             <Property name="showCaption" type="boolean" value="false"/>
           </Properties>
           <SubComponents>

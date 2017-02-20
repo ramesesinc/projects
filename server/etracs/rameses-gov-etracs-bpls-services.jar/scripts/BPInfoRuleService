@@ -14,9 +14,6 @@ public class BPInfoRuleService  {
 	@ActiveDB("rule")
 	def ruleDB;
 
-	@ActiveDB("lob")
-	def lob;
-
 	@ActiveDB("businessvariable")
 	def bv;
 

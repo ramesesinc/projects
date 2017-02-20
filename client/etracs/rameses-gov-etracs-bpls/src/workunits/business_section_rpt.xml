@@ -1,7 +1,7 @@
 <workunit>
     
     <invokers>
-        <invoker type="business:section" caption="Property Assessors Office" index="50"/>
+        <invoker xtype="business:section" caption="Property Assessors Office" index="50"/>
         
         <invoker type="formActions" caption="Update PIN" action="updatePIN" />
     </invokers>

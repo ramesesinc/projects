@@ -3,7 +3,7 @@
         <invoker type="business_application:section" caption="General" index="0" action="init"/>
         
         <!-- toolbars -->
-        <invoker type="formActions" caption="Refresh" index="0" action="lob.reset" />
+        <invoker type="formActions" caption="Refresh" index="0" action="refresh" />
         <!--
         <invoker type="formActions" caption="Edit LOB" role="ASSESSOR" action="editLob"
              visibleWhen="#{!caller.prevmode?.contains('assessment') &amp;&amp; task.state.contains('assessment') &amp;&amp; task?.owner==true &amp;&amp; mode=='default'}"/>      
@@ -28,76 +28,79 @@
     </invokers>
     
     <code>
-        <![CDATA[    
-        import com.rameses.rcp.annotations.*
-        import com.rameses.rcp.common.*
-        import com.rameses.osiris2.client.*
-        import com.rameses.osiris2.common.*
-        import com.rameses.common.*;
-        import java.rmi.server.*
-        import com.rameses.util.*;
-        
-        class  BusinessApplicationOptionInfoController {
-        
-            @Script("BusinessLobUtil")
-            def lob;
-        
-            @Script("BusinessInfoUtil")
-            def appinfo;
-            
-            @Script("BusinessApplicationUtil")
-            def application;
-            
-            @Caller
-            def caller;
-            
-            def entity;
-            def task;
-            
-            String title = "General Information"
-            
-            String entityName = "business_application:section:general";
-            def mode = "default";
-            boolean lobUpdated;
-           
-            void init() {
-                lob.handler = { lobUpdated = true; }
-            }
-           
-            def editLob() {
-                lob.reset();
-                mode = 'editlob';
-                return mode;
-            }
-            
-            def backToDefault() {
-                if(lobUpdated) {
-                    Modal.show( appinfo.update() );
-                    appinfo.verify();
-                    application.updateInfos();
-                    entity.taxfees?.clear();
-                    lobUpdated = false;
-                }
-                mode = 'default'
-            }
-            
-            void editAppInfo() {
-                Modal.show( appinfo.update());
-                appinfo.verify();
-                application.updateInfos();
-                entity.taxfees?.clear();
-                appinfo.reset();
-            }
-            
+    <![CDATA[    
+import com.rameses.rcp.annotations.*
+import com.rameses.rcp.common.*
+import com.rameses.osiris2.client.*
+import com.rameses.osiris2.common.*
+import com.rameses.common.*;
+import java.rmi.server.*
+import com.rameses.util.*;
+
+class BusinessApplicationOptionInfoController {
+
+    @Script("BusinessLobUtil")
+    def lob;
+
+    @Script("BusinessInfoUtil")
+    def appinfo;
+
+    @Script("BusinessApplicationUtil")
+    def application;
+
+    @Caller
+    def caller;
+    
+    @Binding 
+    def binding; 
+
+    def entity;
+    def task;
+
+    String title = "General Information"
+
+    String entityName = "business_application:section:general";
+    def mode = "default";
+    boolean lobUpdated;
+
+    void init() {
+        lob.handler = { lobUpdated = true; }
+    }
+
+    def editLob() {
+        lob.reset();
+        mode = 'editlob';
+        return mode;
+    }
+
+    def backToDefault() {
+        if(lobUpdated) {
+            Modal.show( appinfo.update() );
+            appinfo.verify();
+            application.updateInfos();
+            entity.taxfees?.clear();
+            lobUpdated = false;
         }
-        ]]>
+        mode = 'default'
+    }
+
+    void editAppInfo() {
+        Modal.show( appinfo.update());
+        appinfo.verify();
+        application.updateInfos();
+        entity.taxfees?.clear();
+        appinfo.reset();
+    }
+
+    void refresh() { 
+        if ( caller ) caller.reloadAll(); 
+    } 
+}
+    ]]>
     </code>
     
     <pages>
         <page template="com.rameses.gov.etracs.bpls.view.ApplicationFormGeneralInfo"/>
-        <!--
-        <page name="editlob" template="com.rameses.gov.etracs.bpls.view.EditLobPage"/>
-        -->
     </pages>
-    
+        
 </workunit>

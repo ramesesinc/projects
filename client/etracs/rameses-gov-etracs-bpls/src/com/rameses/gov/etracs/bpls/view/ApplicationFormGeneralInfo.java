@@ -142,6 +142,7 @@ public class ApplicationFormGeneralInfo extends javax.swing.JPanel {
         xFormPanel3.add(jScrollPane2);
 
         xFormPanel5.setCaptionWidth(120);
+        xFormPanel5.setPadding(new java.awt.Insets(0, 5, 5, 0));
         xFormPanel5.setShowCaption(false);
 
         xLabel4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
@@ -258,6 +259,8 @@ public class ApplicationFormGeneralInfo extends javax.swing.JPanel {
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
                 , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.UPPER}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             }),
@@ -272,6 +275,8 @@ public class ApplicationFormGeneralInfo extends javax.swing.JPanel {
                 , new Object[]{"nullWhenEmpty", true}
                 , new Object[]{"editable", true}
                 , new Object[]{"editableWhen", null}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.UPPER}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.ComboBoxColumnHandler("lobAssessmentTypes", null, null)}
             })

@@ -39,8 +39,9 @@ public class BusinessInfoUtil {
     }
 
     def verify() {
-        if(!entity.appinfos) 
-            throw new Exception("Please specify at least one info for business");
+        if ( !entity.appinfos ) 
+            throw new Exception("Please specify at least one info for business"); 
+
         def unedited = entity.appinfos.findAll{ it.value == null };
         if( unedited ) {
             def buff = new StringBuffer();

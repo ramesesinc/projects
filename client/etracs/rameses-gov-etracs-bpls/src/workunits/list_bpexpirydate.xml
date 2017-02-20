@@ -1,6 +1,0 @@
-<workunit extends="wtemplates/ListController.xml" serviceName="BPExpiryDateService" entityName="bpexpirydate">
-    <invokers>
-        <invoker folderid="/explorer/master/bpls" caption="BP Expiry Dates" target="popup" index="11" role="ADMIN"/>
-        <invoker type="bpexpiry:list" caption="BP Expiry Dates" target="popup" index="11"/>
-    </invokers>
-</workunit>

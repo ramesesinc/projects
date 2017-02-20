@@ -70,6 +70,7 @@ public class EntityAddressListPage extends javax.swing.JPanel {
         xDataTable1.setEditable(true);
         xDataTable1.setHandler("listModel");
         xDataTable1.setName("selectedItem"); // NOI18N
+        xDataTable1.setRowHeaderHeight(20);
         xDataTable1.setRowHeight(40);
 
         xButton1.setIconResource("images/toolbars/plus.png");

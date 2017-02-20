@@ -5,26 +5,25 @@
     </invokers>
     
     <code>
-        <![CDATA[    
-        import com.rameses.rcp.annotations.*
-        import com.rameses.rcp.common.*
-        import com.rameses.osiris2.client.*
-        import com.rameses.osiris2.common.*
-        import java.rmi.server.*;
-        
-        public class BPEditInfoController extends com.rameses.gov.etracs.bpls.controller.BusinessInfoEdit {
+    <![CDATA[    
+import com.rameses.rcp.annotations.*
+import com.rameses.rcp.common.*
+import com.rameses.osiris2.client.*
+import com.rameses.osiris2.common.*
+import java.rmi.server.*;
 
-            @Service("BPInfoRuleService")
-            def service;
-            
-            String title = "Edit Business Info";
-            
-            public def execute() {
-                return service.execute(query);
-            }
-        }
-        ]]>
-        
+public class BPEditInfoController extends com.rameses.gov.etracs.bpls.models.BusinessInfoEdit {
+
+    @Service("BPInfoRuleService")
+    def service;
+
+    String title = "Edit Business Info";
+
+    public def execute() {
+        return service.execute(query);
+    }
+}
+    ]]> 
     </code>
     
     <pageflow>

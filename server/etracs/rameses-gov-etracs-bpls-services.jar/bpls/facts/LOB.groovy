@@ -14,11 +14,6 @@ public class LOB {
     public LOB() {
     }
 
-    public LOB(def o) {
-        this.objid = o.lobid;
-        this.lobid = o.lobid;
-        this.assessmenttype = o.assessmenttype;  
-    }
 
     public void printInfo() {
         /*print lob*/

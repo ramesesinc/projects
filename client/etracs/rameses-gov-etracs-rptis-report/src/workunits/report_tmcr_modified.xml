@@ -24,6 +24,11 @@ class TMCRModifiedController extends com.rameses.gov.etracs.rpt.report.AsyncRepo
     
     String reportName = 'com/rameses/gov/etracs/rpt/report/tmcr_modified.jasper';
     
+    def initReport(){
+        entity.ry = svc.getCurrentRy();
+        return 'default'
+    }
+    
     void buildReportData(entity, asyncHandler){
         svc.generateTMCRModified(entity, asyncHandler);
     }
@@ -38,6 +43,7 @@ class TMCRModifiedController extends com.rameses.gov.etracs.rpt.report.AsyncRepo
                 new FormControl( "combo", [caption:'Report Type', name:'entity.reporttype', emptyText:'ALL', items:'reporttypes', preferredSize:'0,21']),
                 new FormControl( "combo", [caption:'LGU', name:'entity.lgu', required:true, items:'lgus', expression:'#{item.name}']),
                 new FormControl( "combo", [caption:'Barangay', name:'entity.barangay', required:true, items:'barangays', expression:'#{item.name}', depends:'entity.lgu', dynamic:true]),
+                new FormControl( "integer", [caption:'Year', name:'entity.ry', required:true, preferredSize:'50,21']),            
                 new FormControl( "text", [caption:'Section', name:'entity.section', preferredSize:'50,19', required:true]),
             ]    
         },

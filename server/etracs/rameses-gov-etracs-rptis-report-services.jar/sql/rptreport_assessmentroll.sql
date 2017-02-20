@@ -1,3 +1,6 @@
+[findCurrentRy]
+select max(ry) as ry from landrysetting 
+
 [getAssessmentRollTaxable]
 SELECT
 	r.ry, rp.section,  
@@ -21,7 +24,8 @@ FROM faas f
 	LEFT JOIN district d ON b.parentid = d.objid 
 	LEFT JOIN province p ON m.parentid = p.objid 
 	LEFT JOIN city c ON d.parentid = c.objid 
-WHERE rp.barangayid = $P{barangayid} 
+WHERE rp.ry = $P{ry}
+  AND rp.barangayid = $P{barangayid} 
   AND rp.section LIKE $P{section} 
   AND f.state = 'CURRENT'  
   AND r.taxable = 1 
@@ -52,7 +56,8 @@ FROM faas f
 	LEFT JOIN district d ON b.parentid = d.objid 
 	LEFT JOIN province p ON m.parentid = p.objid 
 	LEFT JOIN city c ON d.parentid = c.objid 
-WHERE rp.barangayid = $P{barangayid} 
+WHERE rp.ry = $P{ry}
+  AND rp.barangayid = $P{barangayid} 
   AND rp.section LIKE $P{section} 
   AND f.state = 'CURRENT'  
   AND r.taxable = 0 
@@ -84,7 +89,8 @@ FROM faas f
 	LEFT JOIN district d ON b.parentid = d.objid 
 	LEFT JOIN province p ON m.parentid = p.objid 
 	LEFT JOIN city c ON d.parentid = c.objid 
-WHERE f.lguid = $P{lguid}
+WHERE rp.ry = $P{ry}
+  AND f.lguid = $P{lguid}
   AND rp.barangayid like $P{barangayid}
   AND f.state IN ('CURRENT', 'CANCELLED')
   AND r.taxable = 1 
@@ -117,7 +123,8 @@ FROM faas f
 	LEFT JOIN district d ON b.parentid = d.objid 
 	LEFT JOIN province p ON m.parentid = p.objid 
 	LEFT JOIN city c ON d.parentid = c.objid 
-WHERE f.lguid = $P{lguid}
+WHERE rp.ry = $P{ry}
+  AND f.lguid = $P{lguid}
   AND rp.barangayid like $P{barangayid}
   AND f.state IN ('CURRENT', 'CANCELLED')
   AND r.taxable = 0

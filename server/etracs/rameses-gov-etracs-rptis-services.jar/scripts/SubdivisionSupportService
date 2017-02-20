@@ -189,7 +189,7 @@ class SubdivisionSupportService
     public void updateFaasesData( subdivision ) {
         subdivision.faases.each{
             def oldfaas = faasSvc.findFaasById(it.objid)
-            if (oldfaas.state != 'CURRENT'){
+            if (oldfaas?.state != 'CURRENT'){
                 //old faas is not yet approved, 
                 //set province faas state to pending 
                 it.state = 'PENDING'

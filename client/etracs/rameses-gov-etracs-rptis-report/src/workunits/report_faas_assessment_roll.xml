@@ -25,6 +25,13 @@ class AssessmentRollController extends com.rameses.gov.etracs.rpt.report.AsyncRe
     
     String reportPath = 'com/rameses/gov/etracs/rpt/report/';
     
+        
+    def initReport(){
+        entity.ry = svc.getCurrentRy()
+        return 'default'
+    }
+    
+    
     String getReportName(){
         if (entity.reporttype.type == 'standard'){
             if (entity.taxability == 'TAXABLE')
@@ -62,6 +69,7 @@ class AssessmentRollController extends com.rameses.gov.etracs.rpt.report.AsyncRe
                 new FormControl( "combo", [caption:'Report Type', name:'entity.reporttype', required:true, items:'reportTypes', expression:'#{item.caption}', allowNull:false, captionWidth:100]),
                 new FormControl( "combo", [caption:'LGU', name:'entity.lgu', required:true, items:'lgus', expression:'#{item.name}', captionWidth:100]),
                 new FormControl( "combo", [caption:'Barangay', name:'entity.barangay', required:true, items:'barangays', expression:'#{item.name}', depends:'entity.(reporttype|lgu)', dynamic:true, captionWidth:100]),
+                new FormControl( "integer", [caption:'Year', name:'entity.ry', required:true, preferredSize:'50,21', captionWidth:100]),            
                 new FormControl( "combo", [caption:'Taxability', name:'entity.taxability', items:'taxabilities', required:true, immediate:true, depends:'entity.reporttype', captionWidth:100]),
                 new FormControl( "text", [caption:'Section', name:'entity.section', preferredSize:'50,19', depends:'entity.reporttype', visibleWhen:'#{entity.reporttype.type=="standard"}', captionWidth:100]),
             ]    

@@ -34,7 +34,6 @@ FROM rptledger rl
 	INNER JOIN entity e ON rl.taxpayer_objid = e.objid 
 WHERE rl.objid = $P{rptledgerid}
  AND rl.state = 'APPROVED'
- AND rl.totalav > 0 
  AND (
  		( rl.lastyearpaid < $P{billtoyear} OR (rl.lastyearpaid = $P{billtoyear} AND rl.lastqtrpaid < $P{billtoqtr}))
  		or 

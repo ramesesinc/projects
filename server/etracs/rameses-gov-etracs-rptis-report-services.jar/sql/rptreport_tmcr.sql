@@ -1,3 +1,6 @@
+[findCurrentRy]
+select ry from landrysetting order by ry desc 
+
 [getTmcrList]
 SELECT
 	b.name AS barangay, pc.code AS classcode, 
@@ -12,7 +15,8 @@ FROM faas f
 	inner join faas_txntype ft on f.txntype_objid = ft.objid 
 	INNER JOIN propertyclassification pc ON r.classification_objid = pc.objid 
 	INNER JOIN barangay b ON rp.barangayid = b.objid 
-WHERE rp.barangayid = $P{barangayid} 
+WHERE rp.ry = $P{ry}
+  AND rp.barangayid = $P{barangayid} 
   AND f.state IN ('CURRENT', 'CANCELLED')
   AND rp.section = $P{section} 
   ${txntypefilter}
@@ -31,7 +35,8 @@ FROM faas f
 	inner join faas_txntype ft on f.txntype_objid = ft.objid 
 	INNER JOIN propertyclassification pc ON r.classification_objid = pc.objid 
 	INNER JOIN barangay b ON rp.barangayid = b.objid 
-WHERE rp.barangayid = $P{barangayid} 
+WHERE rp.ry = $P{ry}
+  AND rp.barangayid = $P{barangayid} 
   AND f.state IN ('CURRENT', 'CANCELLED')
   AND rp.section LIKE $P{section} 
   ${txntypefilter}
@@ -47,7 +52,8 @@ FROM faas f
 	inner join faas_txntype ft on f.txntype_objid = ft.objid 
 	INNER JOIN propertyclassification pc ON r.classification_objid = pc.objid 
 	INNER JOIN barangay b ON rp.barangayid = b.objid 
-WHERE rp.barangayid = $P{barangayid} 
+WHERE rp.ry = $P{ry}
+  AND rp.barangayid = $P{barangayid} 
   AND f.state = 'CURRENT'
   AND rp.section = $P{section} 
 ORDER BY f.tdno 
@@ -113,7 +119,8 @@ from faas f
 	left join district d on b.parentid = d.objid 
 	left join province p on m.parentid = p.objid 
 	left join city c on d.parentid = c.objid 
-where rp.barangayid = $P{barangayid} 
+where rp.ry = $P{ry}
+  and rp.barangayid = $P{barangayid} 
   and f.state in ('CURRENT', 'CANCELLED')
   and rp.section = $P{section} 
   ${txntypefilter}

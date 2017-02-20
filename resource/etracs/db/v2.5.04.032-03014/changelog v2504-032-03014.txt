@@ -5,8 +5,11 @@
 - BPLS 
 		
 - ASSESSOR	
-	- 
+	- TMCR : add ry filter support 
+	- With Improvement Certification updates
 
 - LANDTAX
+	- Billing of current zero av with arrears
+	- Support province specific land tax client and services
 	- Add posting type option on all collection reports
 	- Update on Tax Difference Support 

@@ -1,29 +1,19 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<workunit>
+<workunit extends="rpt_wtemplates/MasterModel.xml"
+    schemaName="material">
     
     <invokers>
-        <invoker type="quick_launcher" code="MAT01" action="init" caption="Material" role="ASSESSOR_DATAMGMT,MASTER" />
-        <invoker type="material:create" action="init" caption="Material" role="ASSESSOR_DATAMGMT,MASTER" />
-        <invoker type="material:open" action="open" caption="Material" role="ASSESSOR_DATAMGMT,MASTER" />
+        <invoker type="material:create" 
+                 caption="Material" 
+                 action="create" 
+                 target="popup" 
+                 role="MASTER"
+                 permission="material.create" />
+        
+        <invoker type="material:open" 
+                 caption="Material" 
+                 action="open" 
+                 target="popup" 
+                 role="MASTER"
+                 permission="material.read"/>
     </invokers>
-        
-    <code lang="groovy">
-
-        import com.rameses.rcp.common.*;
-        import com.rameses.rcp.annotations.*;
-        import com.rameses.osiris2.client.*;
-        import com.rameses.osiris2.common.*;
-        
-        public class MaterialController  extends CRUDController
-        {
-            String serviceName = "MaterialService"
-            String entityName  = 'material'
-            String prefixId    = 'MAT'
-        }
-        
-    </code>
-    
-    <pages>
-        <page template="com.rameses.gov.etracs.rpt.master.ui.MaterialPage" />
-    </pages>
 </workunit>

@@ -4,13 +4,15 @@
                  caption="Memoranda Template" 
                  action="create" 
                  target="popup" 
-                 role="MASTER"/>
+                 role="MASTER"
+                 permission="rptis_memoranda_template.create" />
         
         <invoker type="rptis_memoranda_template:open" 
                  caption="Memoranda Template" 
                  action="open" 
                  target="popup" 
-                 role="MASTER"/>
+                 role="MASTER"
+                 permission="rptis_memoranda_template.read"/>
     </invokers>
     
     <code class="com.rameses.seti2.models.CrudFormModel"/>

@@ -11,8 +11,8 @@ public class BldgRYSettingService
 	@ActiveDB('bldgrysetting')
     def em
 
-    @ActiveDB('bldgkind')
-    def bldgkindEm
+    @DataContext('bldgkind')
+    def bldgkindEm 
 
     @Service('PropertyClassificationService')
     def pcSvc

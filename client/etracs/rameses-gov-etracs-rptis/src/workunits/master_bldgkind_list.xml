@@ -1,7 +1,23 @@
-<workunit extends="wtemplates/ListController.xml" serviceName="BldgKindService" entityName="bldgkind" formName="bldgkind:list">
+<workunit extends="rpt_wtemplates/MasterListModel.xml" 
+          schemaName="bldgkind" 
+          windowTitle="Kind of Buildings"
+          cols="code,name,state" 
+          orderBy="code" >
     <invokers>
-        <invoker folderid="/explorer/master/rpt" caption="Kind of Buildings"  target="window" index="4"  role="ASSESSOR_DATAMGMT,MASTER" />
-        <invoker folderid="/home/rpt/master" caption="Kind of Buildings"  target="window" index="4"  role="ASSESSOR_DATAMGMT,MASTER" />
-        <invoker type="quick_launcher" code="KB00" caption="Kind of Buildings"  role="ASSESSOR_DATAMGMT,MASTER" />
+        <invoker folderid="/explorer/master/rpt" caption="Kind of Buildings"  index="15" 
+                 action="init" 
+                 role="MASTER" 
+                 permission="master.viewlist" />
+        
+        <invoker folderid="/home/rpt/master" caption="Kind of Buildings"  index="15" 
+                 action="init" 
+                 role="MASTER" 
+                 permission="master.viewlist"
+                 icon="home/icons/list.png"/>
+        
+        <invoker type="quick_launcher" code="BK00" caption="Kind of Buildings"  
+                action="init" 
+                 role="MASTER" 
+                 permission="master.viewlist" />
     </invokers>
 </workunit>

@@ -1,29 +1,19 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<workunit>
+<workunit extends="rpt_wtemplates/MasterModel.xml"
+    schemaName="machine">
     
     <invokers>
-        <invoker type="quick_launcher" code="MACH01" action="init" caption="Machine" role="ASSESSOR_DATAMGMT,MASTER" />
-        <invoker type="machine:create" action="init" caption="Machine" role="ASSESSOR_DATAMGMT,MASTER" />
-        <invoker type="machine:open" action="open" caption="Machine" role="ASSESSOR_DATAMGMT,MASTER" />
+        <invoker type="machine:create" 
+                 caption="Machine" 
+                 action="create" 
+                 target="popup" 
+                 role="MASTER"
+                 permission="machine.create" />
+        
+        <invoker type="machine:open" 
+                 caption="Machine" 
+                 action="open" 
+                 target="popup" 
+                 role="MASTER"
+                 permission="machine.read"/>
     </invokers>
-        
-    <code lang="groovy">
-        import com.rameses.rcp.common.*;
-        import com.rameses.rcp.annotations.*;
-        import com.rameses.osiris2.client.*;
-        import com.rameses.osiris2.common.*
-        
-        public class MachineController  extends CRUDController
-        {
-            String serviceName = "MachineService"
-            String entityName  = 'machine'
-            String prefixId    = 'MACH'
-        }
-        
-    </code>
-    
-    <pages>
-        <page template="com.rameses.gov.etracs.rpt.master.ui.MachinePage" />
-    </pages>
 </workunit>
-

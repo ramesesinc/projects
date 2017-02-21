@@ -1,26 +1,19 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<workunit>
-    <invokers>
-        <invoker type="quick_launcher" code="PT01" action="init" caption="Plant and Tree" role="ASSESSOR_DATAMGMT,MASTER" />
-        <invoker type="planttree:create" action="init" caption="Plant and Tree" role="ASSESSOR_DATAMGMT,MASTER" />
-        <invoker type="planttree:open" action="open" caption="Plant and Tree" role="ASSESSOR_DATAMGMT,MASTER" />
-    </invokers>
-        
-    <code lang="groovy">
-        import com.rameses.rcp.common.*;
-        import com.rameses.rcp.annotations.*;
-        import com.rameses.osiris2.client.*;
-        import com.rameses.osiris2.common.*;
-        
-        public class PlantandTreeController  extends CRUDController
-        {
-            String serviceName = "PlantTreeService"
-            String entityName  = 'planttree'
-            String prefixId    = 'PT'
-        }
-    </code>
+<workunit extends="rpt_wtemplates/MasterModel.xml"
+    schemaName="planttree">
     
-    <pages>
-        <page template="com.rameses.gov.etracs.rpt.master.ui.PlantTreePage" />
-    </pages>
+    <invokers>
+        <invoker type="planttree:create" 
+                 caption="Plant/Tree" 
+                 action="create" 
+                 target="popup" 
+                 role="MASTER"
+                 permission="planttree.create" />
+        
+        <invoker type="planttree:open" 
+                 caption="Plant/Tree" 
+                 action="open" 
+                 target="popup" 
+                 role="MASTER"
+                 permission="planttree.read"/>
+    </invokers>
 </workunit>

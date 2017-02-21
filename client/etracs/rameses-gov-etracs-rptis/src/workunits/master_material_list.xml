@@ -1,7 +1,23 @@
-<workunit extends="wtemplates/ListController.xml" serviceName="MaterialService" entityName="material"  formName="material:list">
+<workunit extends="rpt_wtemplates/MasterListModel.xml" 
+          schemaName="material" 
+          windowTitle="Materials"
+          cols="code,name,state" 
+          orderBy="code" >
     <invokers>
-        <invoker folderid="/explorer/master/rpt" caption="Materials"  target="window" index="5"  role="ASSESSOR_DATAMGMT,MASTER" />
-        <invoker folderid="/home/rpt/master" caption="Materials"  target="window" index="5"  role="ASSESSOR_DATAMGMT,MASTER" />
-        <invoker type="quick_launcher" code="MAT00" caption="Materials"  role="ASSESSOR_DATAMGMT,MASTER" />
+        <invoker folderid="/explorer/master/rpt" caption="Materials"  index="15" 
+                 action="init" 
+                 role="MASTER" 
+                 permission="master.viewlist" />
+        
+        <invoker folderid="/home/rpt/master" caption="Materials"  index="15" 
+                 action="init" 
+                 role="MASTER" 
+                 permission="master.viewlist"
+                 icon="home/icons/materials.png"/>
+        
+        <invoker type="quick_launcher" code="MAT00" caption="Materials"  
+                action="init" 
+                 role="MASTER" 
+                 permission="master.viewlist" />
     </invokers>
 </workunit>

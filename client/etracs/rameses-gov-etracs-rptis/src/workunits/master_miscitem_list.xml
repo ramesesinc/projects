@@ -1,7 +1,23 @@
-<workunit extends="wtemplates/ListController.xml" serviceName="MiscItemService" entityName="miscitem" formName="miscitem:list">
+<workunit extends="rpt_wtemplates/MasterListModel.xml" 
+          schemaName="miscitem" 
+          windowTitle="Miscellaneous Items"
+          cols="code,name,state" 
+          orderBy="code" >
     <invokers>
-        <invoker folderid="/explorer/master/rpt" caption="Miscellaneous Items" target="window" index="9"  role="ASSESSOR_DATAMGMT,MASTER" />
-        <invoker folderid="/home/rpt/master" caption="Miscellaneous Items" target="window" index="9"  role="ASSESSOR_DATAMGMT,MASTER" />
-        <invoker type="quick_launcher" code="MISC00" caption="Miscellaneous Items"  role="ASSESSOR_DATAMGMT,MASTER" />
+        <invoker folderid="/explorer/master/rpt" caption="Miscellaneous Items"  index="15" 
+                 action="init" 
+                 role="MASTER" 
+                 permission="master.viewlist" />
+        
+        <invoker folderid="/home/rpt/master" caption="Miscellaneous Items"  index="15" 
+                 action="init" 
+                 role="MASTER" 
+                 permission="master.viewlist"
+                 icon="home/icons/miscitems.png"/>
+        
+        <invoker type="quick_launcher" code="MAT00" caption="Miscellaneous Items"  
+                action="init" 
+                 role="MASTER" 
+                 permission="master.viewlist" />
     </invokers>
 </workunit>

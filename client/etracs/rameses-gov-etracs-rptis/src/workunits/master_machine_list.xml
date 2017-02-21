@@ -1,7 +1,23 @@
-<workunit extends="wtemplates/ListController.xml" serviceName="MachineService" entityName="machine" formName="machine:list">
+<workunit extends="rpt_wtemplates/MasterListModel.xml" 
+          schemaName="machine" 
+          windowTitle="Machines"
+          cols="code,name,state" 
+          orderBy="code" >
     <invokers>
-        <invoker folderid="/explorer/master/rpt" caption="Machines" target="window" index="7"  role="ASSESSOR_DATAMGMT,MASTER" />
-        <invoker folderid="/home/rpt/master" caption="Machines" target="window" index="7"  role="ASSESSOR_DATAMGMT,MASTER" />
-        <invoker type="quick_launcher" code="MACH00" caption="Machines"  role="ASSESSOR_DATAMGMT,MASTER" />
+        <invoker folderid="/explorer/master/rpt" caption="Machines"  index="15" 
+                 action="init" 
+                 role="MASTER" 
+                 permission="master.viewlist" />
+        
+        <invoker folderid="/home/rpt/master" caption="Machines"  index="15" 
+                 action="init" 
+                 role="MASTER" 
+                 permission="master.viewlist"
+                 icon="home/icons/list.png"/>
+        
+        <invoker type="quick_launcher" code="MACH00" caption="Machines"  
+                action="init" 
+                 role="MASTER" 
+                 permission="master.viewlist" />
     </invokers>
 </workunit>

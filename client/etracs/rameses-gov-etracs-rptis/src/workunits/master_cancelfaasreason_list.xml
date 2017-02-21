@@ -1,7 +1,23 @@
-<workunit extends="wtemplates/ListController.xml" serviceName="CancelTDReasonService" entityName="canceltdreason" formName="canceltdreason:list">
+<workunit extends="rpt_wtemplates/MasterListModel.xml" 
+          schemaName="cancelfaasreason" 
+          windowTitle="FAAS Cancel Reason"
+          cols="code,name,state" 
+          orderBy="code" >
     <invokers>
-        <invoker folderid="/explorer/master/rpt" caption="Cancel FAAS Reasons" target="window" index="3"  role="ASSESSOR_DATAMGMT,MASTER" />
-        <invoker folderid="/home/rpt/master" caption="Cancel FAAS Reasons" target="window" index="3"  role="ASSESSOR_DATAMGMT,MASTER" />
-        <invoker type="quick_launcher" code="CTF00" caption="Cancel FAAS Reasons"  role="ASSESSOR_DATAMGMT,MASTER" />
+        <invoker folderid="/explorer/master/rpt" caption="FAAS Cancel Reason"  index="15" 
+                 action="init" 
+                 role="MASTER" 
+                 permission="master.viewlist" />
+        
+        <invoker folderid="/home/rpt/master" caption="FAAS Cancel Reason"  index="15" 
+                 action="init" 
+                 role="MASTER" 
+                 permission="master.viewlist"
+                 icon="home/icons/list.png"/>
+        
+        <invoker type="quick_launcher" code="CFR00" caption="FAAS Cancel Reason"  
+                action="init" 
+                 role="MASTER" 
+                 permission="master.viewlist" />
     </invokers>
 </workunit>

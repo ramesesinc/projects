@@ -17,9 +17,6 @@ public class PlantTreeRYSettingService
     @Service('PlantTreeRYSettingListService')
     def listSvc 
 
-    @Service('PlantTreeService')
-    def ptSvc
-    
     @Service('RYSettingService')
     def rysettingSvc
     
@@ -28,6 +25,9 @@ public class PlantTreeRYSettingService
 
     @Service('RPTUtil')
     def util 
+
+    @DataContext('planttree')
+    def db_planttree
     
     def SCHEMA_ASSESSLEVEL  = 'assesslevel' 
     def SCHEMA_UNITVALUE    = 'planttreeunitvalue' 
@@ -143,7 +143,7 @@ public class PlantTreeRYSettingService
     
     @ProxyMethod
     public def getPlantTrees() {
-        return ptSvc.getList([:])
+        return db_planttree.where("state = 'APPROVED'").orderBy('code').list()
     }
     
 

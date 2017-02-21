@@ -22,8 +22,8 @@ class CancelledFAASService
     @Service('RPTUtil')
     def util 
     
-    @Service('CancelTDReasonService')
-    def reasonSvc
+    @DataContext('cancelfaasreason')
+    def cancelfaasreasonEm
 
     @Service('FAASService')
     def faasSvc 
@@ -142,7 +142,7 @@ class CancelledFAASService
 
     @ProxyMethod
     public def getCancelReasons(  ) {
-        return reasonSvc.getList([:])    
+        return cancelfaasreasonEm.find([state:'APPROVED']).orderBy('code').list()
     }
 
 

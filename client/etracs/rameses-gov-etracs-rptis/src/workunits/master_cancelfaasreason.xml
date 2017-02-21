@@ -1,27 +1,19 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<workunit>
+<workunit extends="rpt_wtemplates/MasterModel.xml"
+    schemaName="cancelfaasreason">
     
     <invokers>
-        <invoker type="quick_launcher" code="CTF01" action="init" caption="Cancel FAAS Reason" role="ASSESSOR_DATAMGMT,MASTER" />
-        <invoker type="canceltdreason:create" action="init" caption="Cancel FAAS Reason" role="ASSESSOR_DATAMGMT,MASTER" />
-        <invoker type="canceltdreason:open" action="open" caption="Cancel FAAS Reason" role="ASSESSOR_DATAMGMT,MASTER" />
-    </invokers>
-    
-    <code lang="groovy">
-        import com.rameses.rcp.common.*;
-        import com.rameses.rcp.annotations.*;
-        import com.rameses.osiris2.client.*;
-        import com.rameses.osiris2.common.*;
+        <invoker type="cancelfaasreason:create" 
+                 caption="FAAS Cancel Reason" 
+                 action="create" 
+                 target="popup" 
+                 role="MASTER"
+                 permission="cancelfaasreason.create" />
         
-        public class CancelFaasReasonsController  extends CRUDController
-        {
-            String serviceName = "CancelTDReasonService"
-            String entityName  = 'canceltdreason'
-            String prefixId    = 'CTDR'
-        }
-    </code>
-    
-    <pages>
-        <page template="com.rameses.gov.etracs.rpt.master.ui.CancelTDReasonPage" />
-    </pages>
+        <invoker type="cancelfaasreason:open" 
+                 caption="FAAS Cancel Reason" 
+                 action="open" 
+                 target="popup" 
+                 role="MASTER"
+                 permission="cancelfaasreason.read"/>
+    </invokers>
 </workunit>

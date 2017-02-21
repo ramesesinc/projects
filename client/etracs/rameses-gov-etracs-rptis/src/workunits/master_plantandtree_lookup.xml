@@ -1,0 +1,11 @@
+<workunit extends="rpt_wtemplates/MasterLookup.xml" 
+          schemaName="planttree"
+          customFilter="state='APPROVED'" 
+          orderBy="code">
+    <invokers>
+        <invoker type="planttree:lookup" 
+                 caption="Plant/Tree Lookup" 
+                 action="init"
+                 height="500" width="700" />
+    </invokers>
+</workunit>

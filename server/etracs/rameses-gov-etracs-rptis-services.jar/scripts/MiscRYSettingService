@@ -15,8 +15,8 @@ public class MiscRYSettingService
     @Service('PropertyClassificationService')
     def pcSvc
 
-    @Service('MiscItemService')
-    def miscItemSvc
+    @DataContext('miscitem')
+    def miscitemEm 
 
     @Service('MiscRYSettingListService')
     def listSvc 
@@ -298,7 +298,7 @@ public class MiscRYSettingService
     }
 
     void loadInitialMiscItems(entity){
-        miscItemSvc.getList([:]).each{
+        miscitemEm.find([state:'APPROVED']).list().each{
             saveMiscItemValue([
                 objid           : util.generateId('MIV'),
                 miscrysettingid : entity.objid,

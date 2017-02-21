@@ -1,7 +1,23 @@
-<workunit extends="wtemplates/ListController.xml" serviceName="PlantTreeService" entityName="planttree" formName="planttree:list">
+<workunit extends="rpt_wtemplates/MasterListModel.xml" 
+          schemaName="planttree" 
+          windowTitle="Plants/Trees"
+          orderBy="code"
+          cols="code,name,state" >
     <invokers>
-        <invoker folderid="/explorer/master/rpt" caption="Plants and Trees" target="window" index="8"  role="ASSESSOR_DATAMGMT,MASTER" />
-        <invoker folderid="/home/rpt/master" caption="Plants and Trees" target="window" index="8"  role="ASSESSOR_DATAMGMT,MASTER" />
-        <invoker type="quick_launcher" code="PT00" caption="Plants and Trees"  role="ASSESSOR_DATAMGMT,MASTER" />
+        <invoker folderid="/explorer/master/rpt" caption="Plants/Trees"  index="15" 
+                 action="init" 
+                 role="MASTER" 
+                 permission="master.viewlist"/>
+        
+        <invoker folderid="/home/rpt/master" caption="Plants/Trees"  index="15" 
+                 action="init" 
+                 role="MASTER" 
+                 permission="master.viewlist"
+                 icon="home/icons/planttrees.png"/>
+        
+        <invoker type="quick_launcher" code="MACH00" caption="Plants/Trees"  
+                action="init" 
+                 role="MASTER" 
+                 permission="master.viewlist" />
     </invokers>
 </workunit>

@@ -3,14 +3,14 @@
     
     <invokers>
         <invoker type="cancelfaasreason:create" 
-                 caption="FAAS Cancel Reason" 
+                 caption="Cancellation Reason" 
                  action="create" 
                  target="popup" 
                  role="MASTER"
                  permission="cancelfaasreason.create" />
         
         <invoker type="cancelfaasreason:open" 
-                 caption="FAAS Cancel Reason" 
+                 caption="Cancellation Reason" 
                  action="open" 
                  target="popup" 
                  role="MASTER"

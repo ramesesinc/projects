@@ -4,10 +4,12 @@
  */
 package com.rameses.gov.etracs.rptis.master.views;
 
+import com.rameses.rcp.ui.annotations.StyleSheet;
 import com.rameses.rcp.ui.annotations.Template;
 import com.rameses.seti2.views.CrudFormPage;
 
 @Template(CrudFormPage.class)
+@StyleSheet()
 public class DefaultMasterPage extends javax.swing.JPanel {
 
     /**
@@ -30,6 +32,8 @@ public class DefaultMasterPage extends javax.swing.JPanel {
         xLabel1 = new com.rameses.rcp.control.XLabel();
         xTextField1 = new com.rameses.rcp.control.XTextField();
         xTextField2 = new com.rameses.rcp.control.XTextField();
+        xNumberField1 = new com.rameses.rcp.control.XNumberField();
+        xCheckBox1 = new com.rameses.rcp.control.XCheckBox();
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder1.setPadding(new java.awt.Insets(20, 5, 5, 5));
@@ -46,7 +50,7 @@ public class DefaultMasterPage extends javax.swing.JPanel {
         xTextField1.setCaption("Code");
         xTextField1.setDepends(new String[] {"selectedItem"});
         xTextField1.setName("entity.code"); // NOI18N
-        xTextField1.setPreferredSize(new java.awt.Dimension(80, 18));
+        xTextField1.setPreferredSize(new java.awt.Dimension(120, 18));
         xTextField1.setRequired(true);
         formPanel1.add(xTextField1);
 
@@ -56,6 +60,20 @@ public class DefaultMasterPage extends javax.swing.JPanel {
         xTextField2.setPreferredSize(new java.awt.Dimension(0, 18));
         xTextField2.setRequired(true);
         formPanel1.add(xTextField2);
+
+        xNumberField1.setCaption("Order No");
+        xNumberField1.setDepends(new String[] {"selectedItem"});
+        xNumberField1.setFieldType(int.class);
+        xNumberField1.setName("entity.orderno"); // NOI18N
+        xNumberField1.setPreferredSize(new java.awt.Dimension(75, 18));
+        xNumberField1.setRequired(true);
+        formPanel1.add(xNumberField1);
+
+        xCheckBox1.setCellPadding(new java.awt.Insets(5, 80, 0, 0));
+        xCheckBox1.setName("entity.special"); // NOI18N
+        xCheckBox1.setShowCaption(false);
+        xCheckBox1.setText(" Is Special?");
+        formPanel1.add(xCheckBox1);
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
@@ -70,13 +88,15 @@ public class DefaultMasterPage extends javax.swing.JPanel {
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(formPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 138, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(62, Short.MAX_VALUE))
+                .add(formPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 152, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(48, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.rameses.rcp.util.FormPanel formPanel1;
+    private com.rameses.rcp.control.XCheckBox xCheckBox1;
     private com.rameses.rcp.control.XLabel xLabel1;
+    private com.rameses.rcp.control.XNumberField xNumberField1;
     private com.rameses.rcp.control.XTextField xTextField1;
     private com.rameses.rcp.control.XTextField xTextField2;
     // End of variables declaration//GEN-END:variables

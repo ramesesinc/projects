@@ -103,6 +103,36 @@ INSERT INTO sys_usergroup_permission (objid, usergroup_objid, object, permission
 go 
 INSERT INTO sys_usergroup_permission (objid, usergroup_objid, object, permission, title) VALUES ('RPT.MASTER-miscitem-delete', 'RPT.MASTER', 'miscitem', 'delete', 'Delete Miscellaneous Item')
 go 
-
-
+INSERT INTO sys_usergroup_permission (objid, usergroup_objid, object, permission, title) VALUES ('RPT.MASTER-exemptiontype-create', 'RPT.MASTER', 'exemptiontype', 'create', 'Create Exemption Type')
+go 
+INSERT INTO sys_usergroup_permission (objid, usergroup_objid, object, permission, title) VALUES ('RPT.MASTER-exemptiontype-delete', 'RPT.MASTER', 'exemptiontype', 'delete', 'Delete Exemption Type')
+go 
+INSERT INTO sys_usergroup_permission (objid, usergroup_objid, object, permission, title) VALUES ('RPT.MASTER-exemptiontype-edit', 'RPT.MASTER', 'exemptiontype', 'edit', 'Edit Exemption Type')
+go 
+INSERT INTO sys_usergroup_permission (objid, usergroup_objid, object, permission, title) VALUES ('RPT.MASTER-exemptiontype-read', 'RPT.MASTER', 'exemptiontype', 'read', 'Open Exemption Type')
+go 
+INSERT INTO sys_usergroup_permission (objid, usergroup_objid, object, permission, title) VALUES ('RPT.MASTER-rptparameter-create', 'RPT.MASTER', 'rptparameter', 'create', 'Create Parameter')
+go 
+INSERT INTO sys_usergroup_permission (objid, usergroup_objid, object, permission, title) VALUES ('RPT.MASTER-rptparameter-delete', 'RPT.MASTER', 'rptparameter', 'delete', 'Delete Parameter')
+go 
+INSERT INTO sys_usergroup_permission (objid, usergroup_objid, object, permission, title) VALUES ('RPT.MASTER-rptparameter-edit', 'RPT.MASTER', 'rptparameter', 'edit', 'Edit Parameter')
+go 
+INSERT INTO sys_usergroup_permission (objid, usergroup_objid, object, permission, title) VALUES ('RPT.MASTER-rptparameter-read', 'RPT.MASTER', 'rptparameter', 'read', 'Open Parameter')
+go 
+INSERT INTO sys_usergroup_permission (objid, usergroup_objid, object, permission, title) VALUES ('RPT.MASTER-classification-create', 'RPT.MASTER', 'propertyclassification', 'create', 'Create Property Classification')
+go 
+INSERT INTO sys_usergroup_permission (objid, usergroup_objid, object, permission, title) VALUES ('RPT.MASTER-classification-delete', 'RPT.MASTER', 'propertyclassification', 'delete', 'Delete Property Classification')
+go 
+INSERT INTO sys_usergroup_permission (objid, usergroup_objid, object, permission, title) VALUES ('RPT.MASTER-classification-edit', 'RPT.MASTER', 'propertyclassification', 'edit', 'Edit Property Classification')
+go 
+INSERT INTO sys_usergroup_permission (objid, usergroup_objid, object, permission, title) VALUES ('RPT.MASTER-classification-read', 'RPT.MASTER', 'propertyclassification', 'read', 'Open Property Classification')
+go 
+INSERT INTO sys_usergroup_permission (objid, usergroup_objid, object, permission, title) VALUES ('RPT.MASTER-structure-create', 'RPT.MASTER', 'structure', 'create', 'Create Structure')
+go 
+INSERT INTO sys_usergroup_permission (objid, usergroup_objid, object, permission, title) VALUES ('RPT.MASTER-structure-delete', 'RPT.MASTER', 'structure', 'delete', 'Delete Structure')
+go 
+INSERT INTO sys_usergroup_permission (objid, usergroup_objid, object, permission, title) VALUES ('RPT.MASTER-structure-edit', 'RPT.MASTER', 'structure', 'edit', 'Edit Structure')
+go 
+INSERT INTO sys_usergroup_permission (objid, usergroup_objid, object, permission, title) VALUES ('RPT.MASTER-structure-read', 'RPT.MASTER', 'structure', 'read', 'Open Structure')
+go 
 

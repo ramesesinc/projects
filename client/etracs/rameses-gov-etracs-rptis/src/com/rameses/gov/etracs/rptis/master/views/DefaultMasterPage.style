@@ -1,0 +1,11 @@
+"entity.(orderno|special)" [1==1]{
+    visible:false;
+}
+
+"entity.orderno" [showOrderno == true]{
+    visible:true;
+}
+
+"entity.special" [showSpecial == true]{
+    visible:true;
+}

@@ -16,11 +16,11 @@ class RPTReportAssessmentExcerptService
     @Service('RPTUtil')
     def util
 
-    @Service('PropertyClassificationService')
-    def pcSvc 
+    @DataContext('propertyclassification')
+    def propertyclassification
 
-    @Service('ExemptionTypeService')
-    def etSvc
+    @DataContext('exemptiontype')
+    def exemptiontype
 
 	@Async
 	@ProxyMethod
@@ -80,13 +80,13 @@ class RPTReportAssessmentExcerptService
 
 	@ProxyMethod
     public def getClassifications(){
-    	return pcSvc.getClassifications([:])
+    	return propertyclassification.find([state:'APPROVED']).orderBy('orderno').list()
     }
 
     
     @ProxyMethod
     public def getExemptionTypes(  ) {
-    	return 	etSvc.getExemptionTypes([:])
+    	return 	exemptiontype.find([state:'APPROVED']).orderBy('orderno').list()
     }
 
 }

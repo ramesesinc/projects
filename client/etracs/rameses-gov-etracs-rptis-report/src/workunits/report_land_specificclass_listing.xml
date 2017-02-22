@@ -20,8 +20,8 @@ class LandBySpecificClassReportController extends com.rameses.gov.etracs.rpt.rep
     @Service('RPTReportLandSpecificClassService') 
     def svc 
     
-    @Service('PropertyClassificationService')
-    def classSvc;
+    @Service('QueryService')
+    def querySvc;
     
     String title = 'List of Lands by Specific Class'
     
@@ -46,7 +46,8 @@ class LandBySpecificClassReportController extends com.rameses.gov.etracs.rpt.rep
    }
    
     List getClassifications(){
-        return classSvc.getClassifications([:])
+        def q = [_schemaname:'propertyclassification', where:['1=1'], orderBy:'orderno']
+        return querySvc.getList(q)
     }
     
    def formControl = [

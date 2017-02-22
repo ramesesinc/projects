@@ -1,7 +1,6 @@
 import com.rameses.annotations.*
 import com.rameses.common.*;
 import com.rameses.services.extended.*;
-import java.rmi.server.UID
 
 class RPTReportComparativeRPUCountService
 {
@@ -14,12 +13,12 @@ class RPTReportComparativeRPUCountService
     @Service('Var')
     def var 
 
-    @Service('PropertyClassificationService')
-    def pcSvc 
+    @DataContext('propertyclassification')
+    def propertyclassification
 
-    @Service('ExemptionTypeService')
-    def etSvc
-
+    @DataContext('exemptiontype')
+    def exemptiontype
+    
     @Service('RPTUtil')
     def util
 
@@ -129,13 +128,12 @@ class RPTReportComparativeRPUCountService
 
     @ProxyMethod
     public def getClassifications(){
-    	return pcSvc.getClassifications([:])
+    	return propertyclassification.find([state:'APPROVED']).orderBy('orderno').list()
     }
 
-    
     @ProxyMethod
     public def getExemptionTypes(  ) {
-    	return 	etSvc.getExemptionTypes([:])
+    	return 	exemptiontype.find([state:'APPROVED']).orderBy('orderno').list()
     }
 
 

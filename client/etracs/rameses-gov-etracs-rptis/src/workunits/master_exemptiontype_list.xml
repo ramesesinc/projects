@@ -1,7 +1,23 @@
-<workunit extends="wtemplates/ListController.xml" serviceName="ExemptionTypeService" entityName="exemptiontype" formName="exemptiontype:list">
+<workunit extends="rpt_wtemplates/MasterListModel.xml" 
+          schemaName="exemptiontype" 
+          windowTitle="Exemption Types"
+          cols="code,name,state,orderno" 
+          orderBy="orderno" >
     <invokers>
-        <invoker folderid="/explorer/master/rpt" caption="Exemption Types" target="window" index="2"  role="ASSESSOR_DATAMGMT,MASTER" />
-        <invoker folderid="/home/rpt/master" caption="Exemption Types" target="window" index="2"  role="ASSESSOR_DATAMGMT,MASTER" />
-        <invoker type="quick_launcher" code="ET00" caption="Exemption Types"  role="ASSESSOR_DATAMGMT,MASTER" />
+        <invoker folderid="/explorer/master/rpt" caption="Exemption Types"  index="2" 
+                 action="init" 
+                 role="MASTER" 
+                 permission="master.viewlist" />
+        
+        <invoker folderid="/home/rpt/master" caption="Exemption Types"  index="2" 
+                 action="init" 
+                 role="MASTER" 
+                 permission="master.viewlist"
+                 icon="home/icons/exemptiontypes.png"/>
+        
+        <invoker type="quick_launcher" code="ET00" caption="Exemption Types"  
+                action="init" 
+                 role="MASTER" 
+                 permission="master.viewlist" />
     </invokers>
 </workunit>

@@ -12,8 +12,8 @@ public class LandRYSettingService
     @ActiveDB('landrysetting')
     def em
 
-    @Service('PropertyClassificationService')
-    def pcSvc
+    @DataContext('propertyclassification')
+    def propertyclassification
 
     @Service('LandRYSettingListService')
     def listSvc 
@@ -52,7 +52,7 @@ public class LandRYSettingService
     
     @ProxyMethod
     public List getPropertyClassifications() {
-        return pcSvc.getClassifications([:])
+        return propertyclassification.find([state:'APPROVED']).orderBy('orderno').list()
     }
     
     

@@ -13,11 +13,11 @@ class RPUService
     @Service('RealPropertyService')
     def rpSvc;
     
-    @Service('PropertyClassificationService')
-    def classSvc 
+    @DataContext('propertyclassification')
+    def propertyclassification
 
-    @Service('ExemptionTypeService')
-    def exemptSvc 
+    @DataContext('exemptiontype')
+    def exemptiontype
 
     @Service('RPTUtil')
     def util 
@@ -144,8 +144,8 @@ class RPUService
         rpu = em.read(rpu)
         if (!rpu) throw new Exception('Cannot open RPU. The record does not exist or has already been deleted.')
         updatePin(rpu)
-        rpu.classification  = classSvc.findById(rpu.classification.objid)
-        rpu.exemptiontype   = exemptSvc.findById(rpu.exemptiontype.objid)
+        rpu.classification  = propertyclassification.find([objid:rpu.classification.objid]).first() 
+        rpu.exemptiontype   = exemptiontype.find([objid:rpu.exemptiontype?.objid]).first()
         rpu.taxable         = util.toBoolean(rpu.taxable, true)
         rpu.hasswornamount  = util.toBoolean(rpu.hasswornamount, false)
         rpu.useswornamount  = util.toBoolean(rpu.useswornamount, false)
@@ -217,13 +217,13 @@ class RPUService
 
     @ProxyMethod
     public List getClassifications(  ) {
-        return classSvc.getClassifications([:])    
+        return propertyclassification.find([state:'APPROVED']).orderBy('orderno').list()
     }
 
 
     @ProxyMethod
     public List getExemptionTypes(){
-        return exemptSvc.getExemptionTypes([:])
+        return  exemptiontype.find([state:'APPROVED']).orderBy('orderno').list()
     }
 
 

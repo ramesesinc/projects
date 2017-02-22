@@ -8,6 +8,8 @@ import com.rameses.seti2.models.*;
 
 class MasterListModel extends CrudListModel
 {
+    // boolean autoResize = false;
+    
     def importFile(){
         def entity = [:]
         entity.schemaname = schemaName;

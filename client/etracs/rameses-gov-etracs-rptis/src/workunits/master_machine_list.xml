@@ -13,7 +13,7 @@
                  action="init" 
                  role="MASTER" 
                  permission="master.viewlist"
-                 icon="home/icons/list.png"/>
+                 icon="home/icons/machines.png"/>
         
         <invoker type="quick_launcher" code="MACH00" caption="Machines"  
                 action="init" 

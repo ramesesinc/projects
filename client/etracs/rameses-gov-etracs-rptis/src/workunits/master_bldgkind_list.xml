@@ -13,7 +13,7 @@
                  action="init" 
                  role="MASTER" 
                  permission="master.viewlist"
-                 icon="home/icons/list.png"/>
+                 icon="home/icons/bldgkinds.png"/>
         
         <invoker type="quick_launcher" code="BK00" caption="Kind of Buildings"  
                 action="init" 

@@ -12,26 +12,26 @@ class ExportController
     @Binding
     def binding;
     
-    @Invoker
-    def inv;
+    @Service('RPTISMasterExportService')
+    def exportSvc;
     
     def mode;
     def file;
     def data;
-    def msg;
-    def entity;
-    def service;
+    String msg;
     
     def asyncHandler;
+    def entity;
     String title;
     
+    
     /* overridable */
-    void getData(entity, asyncHandler){
-        getService().exportData(entity, asyncHandler)
+    void getData(asyncHandler){
+        exportSvc.exportData(entity, asyncHandler)
     }
     
     def init(){
-        title = inv.properties.title;
+        title = entity.title;
         msg = 'Processing request please wait...';
         mode = 'init';
         return 'default';
@@ -75,7 +75,7 @@ class ExportController
             } 
         ] as com.rameses.common.AbstractAsyncHandler;
         
-        getData(entity, asyncHandler); 
+        getData(asyncHandler); 
         mode = 'processing'; 
         return null; 
     } 
@@ -85,16 +85,4 @@ class ExportController
             throw new Exception('File Name is required.');
         FileUtil.writeObject(file, data);
     }
-    
-    
-    def getService(){
-        def name = inv.properties.serviceName
-        if (!name)
-            throw new Exception('Invoker Service Name must be provided.');
-        if (service == null)
-            service = InvokerProxy.getInstance().create(name);
-        return service;
-    }
-
 }
-

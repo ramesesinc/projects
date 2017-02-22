@@ -12,8 +12,8 @@ public class MiscRYSettingService
     @ActiveDB('miscrysetting')
     def em
      
-    @Service('PropertyClassificationService')
-    def pcSvc
+    @DataContext('propertyclassification')
+    def propertyclassification
 
     @DataContext('miscitem')
     def miscitemEm 
@@ -52,7 +52,7 @@ public class MiscRYSettingService
     
     @ProxyMethod
     public List getPropertyClassifications() {
-        return pcSvc.getList([:])
+        return propertyclassification.find([state:'APPROVED']).orderBy('orderno').list()
     }
     
     

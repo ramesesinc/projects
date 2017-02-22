@@ -1,27 +1,20 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<workunit>
+<workunit extends="rpt_wtemplates/MasterModel.xml"
+    schemaName="exemptiontype">
     
     <invokers>
-        <invoker type="quick_launcher" code="ET01" action="init" caption="Exemption Type" role="ASSESSOR_DATAMGMT,MASTER" />
-        <invoker type="exemptiontype:create" action="init" caption="Exemption Type" role="ASSESSOR_DATAMGMT,MASTER" />
-        <invoker type="exemptiontype:open" action="open" caption="Exemption Type" role="ASSESSOR_DATAMGMT,MASTER" />
-    </invokers>
-    
-    <code lang="groovy">
-        import com.rameses.rcp.common.*;
-        import com.rameses.rcp.annotations.*;
-        import com.rameses.osiris2.client.*;
-        import com.rameses.osiris2.common.*;
+        <invoker type="exemptiontype:create" 
+                 caption="Exemption Type" 
+                 action="create" 
+                 target="popup" 
+                 role="MASTER"
+                 permission="exemptiontype.create" />
         
-        public class ExemptionTypeController  extends CRUDController
-        {
-            String serviceName  = 'ExemptionTypeService'
-            String entityName   = 'exemptiontype'
-            String prefixId     = 'ET'
-        }
-    </code>
-    
-    <pages>
-        <page template="com.rameses.gov.etracs.rpt.master.ui.ExemptionTypePage" />
-    </pages>
+        <invoker type="exemptiontype:open" 
+                 caption="Exemption Type" 
+                 action="open" 
+                 target="popup" 
+                 role="MASTER"
+                 permission="exemptiontype.read"/>
+    </invokers>
+    <code class="com.rameses.gov.etracs.rptis.master.models.ExemptionTypeModel"/>
 </workunit>

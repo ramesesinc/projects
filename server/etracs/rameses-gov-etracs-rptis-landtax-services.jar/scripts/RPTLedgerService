@@ -24,8 +24,8 @@ class RPTLedgerService
     @Service('FAASService')
     def faasSvc 
 
-    @Service('PropertyClassificationService')
-    def pcSvc 
+    @DataContext('propertyclassification')
+    def propertyclassification
 
     @Service('RPTBillingService')
     def billingSvc
@@ -610,7 +610,7 @@ class RPTLedgerService
 
     @ProxyMethod
     public def getClassifications(){
-        return pcSvc.getClassifications([:])
+        return propertyclassification.find([state:'APPROVED']).orderBy('orderno').list()
     }
 
 

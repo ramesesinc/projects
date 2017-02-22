@@ -12,24 +12,25 @@ class ImportController
     @Binding
     def binding;
     
-    @Invoker
-    def inv;
+    @Service('RPTISMasterImportService')
+    def importSvc;
     
+    def entity;
     def mode;
     def file;
     def data;
-    def msg;
-    def service;
+    String msg;
     String title;
-    
     def asyncHandler;
     
     void importData(data, asyncHandler){
-        getService().importData(data, asyncHandler)
+        if (!entity.schemaname.equalsIgnoreCase(data.schemaname))
+            throw new Exception('File to import is invalid. Type must be ' + entity.schemane + '.');
+        importSvc.importData(data, asyncHandler)
     }
     
     def init(){
-        title = inv.properties.title;
+        title = entity.windowTitle;
         msg = 'Processing request please wait...';
         mode = 'init';
         return 'default';
@@ -82,14 +83,4 @@ class ImportController
     } 
     
     
-    def getService(){
-        def name = inv.properties.serviceName
-        if (!name)
-            throw new Exception('Invoker Service Name must be provided.');
-        if (service == null)
-            service = InvokerProxy.getInstance().create(name);
-        return service;
-    }    
-    
 }
-

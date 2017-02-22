@@ -49,7 +49,7 @@
         </folder>
     </folder>
     <folder id="home">
-        <folder id="rpt" caption="Assessor">
+        <folder id="rpt" caption="Assessor" icon="home/icons/assessor.png">
             <folder id="master" caption="Master Files" index="-100" icon="home/icons/masterfiles.png"/>
             <folder id="txn" caption="Transactions" index="-1" icon="home/icons/list.png" />
         </folder>

@@ -1,4 +1,4 @@
-<workunit  allowDelete="#{entity.state != 'APPROVED'}">
+<workunit  allowDelete="#{entity?.state != 'APPROVED'}">
     <invokers>
         <invoker type="listActions" 
             caption="Import"

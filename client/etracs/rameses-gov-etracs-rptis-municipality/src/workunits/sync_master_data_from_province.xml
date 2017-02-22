@@ -66,8 +66,13 @@
             serviceName="LandSpecificClassService"
         />
         
-        <invoker type="formActions" action="doClose" caption="Close" immediate="true" />
-        <invoker type="formActions" action="syncData" caption="Sync Data" visibleWhen="#{showsync==true}"/>
-
+        <invoker type="rptis_memoranda_template:list:listActions" 
+                 action="syncData" 
+                 caption="Sync from Province"  
+                 role="MASTER" 
+                 permission="master.sync"
+                 schemaName="rptis_memoranda_template" 
+                 schemaCaption="Memoranda Templates"
+                 icon="images/toolbars/sync.png"/>        
     </invokers>
 </workunit>

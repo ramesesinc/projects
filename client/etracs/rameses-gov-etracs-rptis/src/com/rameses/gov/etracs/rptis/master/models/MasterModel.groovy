@@ -11,6 +11,12 @@ class MasterModel extends CrudFormModel
     
     def allowApprove = true;
     def allowDisapprove = true;
+    def showOrderno = false;
+    def showSpecial = false;
+    
+    public void afterCreate(){
+        entity.state = 'DRAFT';
+    }
     
     def export(){
     }
@@ -38,5 +44,10 @@ class MasterModel extends CrudFormModel
             caller?.refresh();
         }
         catch(ign){;}
+    }
+    
+    boolean isEditAllowed() { 
+        if (entity.state == 'APPROVED') return false;
+        return super.isEditAllowed();
     }
 }

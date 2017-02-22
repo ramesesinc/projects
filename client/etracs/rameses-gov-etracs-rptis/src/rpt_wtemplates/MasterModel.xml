@@ -5,14 +5,14 @@
                  action="approve"
                  role="MASTER"
                  permission="master.approve" 
-                 visibleWhen="#{allowApprove == true &amp;&amp; entity.state!='APPROVED'}" />
+                 visibleWhen="#{mode=='read' &amp;&amp; allowApprove == true &amp;&amp; entity.state!='APPROVED'}" />
         
         <invoker type="formActions" 
                  caption="Disapprove"
                  action="disapprove"
                  role="MASTER"
                  permission="master.disapprove" 
-                 visibleWhen="#{allowDisapprove == true  &amp;&amp; entity.state=='APPROVED'}" />
+                 visibleWhen="#{mode=='read' &amp;&amp; allowDisapprove == true  &amp;&amp; entity.state=='APPROVED'}" />
     </invokers>
 
     <code class="com.rameses.gov.etracs.rptis.master.models.MasterModel"/>

@@ -1,31 +1,20 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<workunit>
-    <invokers>
-        <invoker type="quick_launcher" code="PC01" action="init" caption="Property Classification" role="MASTER" />
-        <invoker type="propertyclassification:create" action="init" caption="Property Classification" role="MASTER" />
-        <invoker type="propertyclassification:open" action="open" caption="Property Classification" role="MASTER" />
-    </invokers>
-        
-    <code lang="groovy">
-        import com.rameses.rcp.common.*;
-        import com.rameses.rcp.annotations.*;
-        import com.rameses.osiris2.client.*;
-        import com.rameses.osiris2.common.*;
-        
-        public class PropertyClassificationController  extends CRUDController
-        {
-            String serviceName = 'PropertyClassificationService'
-            String entityName  = 'propertyclassification'
-            String prefixId    = 'PC'
-
-            Map createEntity(){
-                return [special:0]
-            }
-            
-        }
-    </code>
+<workunit extends="rpt_wtemplates/MasterModel.xml"
+    schemaName="propertyclassification">
     
-    <pages>
-        <page template="com.rameses.gov.etracs.rpt.master.ui.PropertyClassificationPage" />
-    </pages>
+    <invokers>
+        <invoker type="propertyclassification:create" 
+                 caption="Property Classification" 
+                 action="create" 
+                 target="popup" 
+                 role="MASTER"
+                 permission="propertyclassification.create" />
+        
+        <invoker type="propertyclassification:open" 
+                 caption="Property Classification" 
+                 action="open" 
+                 target="popup" 
+                 role="MASTER"
+                 permission="propertyclassification.read"/>
+    </invokers>
+    <code class="com.rameses.gov.etracs.rptis.master.models.PropertyClassificationModel"/>
 </workunit>

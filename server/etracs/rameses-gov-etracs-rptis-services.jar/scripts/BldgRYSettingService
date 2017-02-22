@@ -14,8 +14,8 @@ public class BldgRYSettingService
     @DataContext('bldgkind')
     def bldgkindEm 
 
-    @Service('PropertyClassificationService')
-    def pcSvc
+    @DataContext('propertyclassification')
+    def propertyclassification
 
     @Service('BldgRYSettingListService')
     def listSvc 
@@ -403,7 +403,8 @@ public class BldgRYSettingService
     
     
     void loadInitialAssessesLevels(entity){
-        pcSvc.getList([:]).each{
+        def list = propertyclassification.find([state:'APPROVED']).orderBy('orderno').list()
+        list.each{
             saveAssessLevel([
                 objid               : it.objid,
                 bldgrysettingid     : entity.objid,

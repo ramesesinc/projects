@@ -11,9 +11,6 @@ public class PlantTreeRYSettingService
     @ActiveDB('planttreerysetting')
     def em
      
-    @Service('PropertyClassificationService')
-    def pcSvc
-
     @Service('PlantTreeRYSettingListService')
     def listSvc 
 
@@ -27,7 +24,7 @@ public class PlantTreeRYSettingService
     def util 
 
     @DataContext('planttree')
-    def db_planttree
+    def planttree
     
     def SCHEMA_ASSESSLEVEL  = 'assesslevel' 
     def SCHEMA_UNITVALUE    = 'planttreeunitvalue' 
@@ -143,7 +140,7 @@ public class PlantTreeRYSettingService
     
     @ProxyMethod
     public def getPlantTrees() {
-        return db_planttree.where("state = 'APPROVED'").orderBy('code').list()
+        return planttree.where("state = 'APPROVED'").orderBy('code').list()
     }
     
 

@@ -12,8 +12,8 @@ class RPTReportMasterListService
     def em
 
     
-    @Service('PropertyClassificationService')
-    def pcSvc 
+    @DataContext('propertyclassification')
+    def propertyclassification
 
 
     @Service('DateService')
@@ -86,7 +86,7 @@ class RPTReportMasterListService
 
     @ProxyMethod
     public def getClassifications(){
-    	return pcSvc.getClassifications([:])
+    	return propertyclassification.find([state:'APPROVED']).orderBy('orderno').list()
     }
 
 

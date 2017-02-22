@@ -4,15 +4,15 @@
  * Created on February 27, 2011, 12:48 PM
  */
 
-package com.rameses.gov.etracs.rpt.master.ui;
+package com.rameses.gov.etracs.rptis.master.views;
 
-import com.rameses.osiris2.themes.FormPage;
 import com.rameses.rcp.ui.annotations.StyleSheet;
 import com.rameses.rcp.ui.annotations.Template;
+import com.rameses.seti2.views.CrudFormPage;
 
 
 @StyleSheet
-@Template(FormPage.class)
+@Template(CrudFormPage.class)
 public class RPTParameterPage extends javax.swing.JPanel {
     
     /** Creates new form AccountPage */

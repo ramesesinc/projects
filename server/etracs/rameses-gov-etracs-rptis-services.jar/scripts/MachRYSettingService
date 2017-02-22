@@ -11,8 +11,8 @@ public class MachRYSettingService
     @ActiveDB('machrysetting')
     def em
      
-    @Service('PropertyClassificationService')
-    def pcSvc
+    @DataContext('propertyclassification')
+    def propertyclassification
 
     @Service('MachRYSettingListService')
     def listSvc 
@@ -282,7 +282,8 @@ public class MachRYSettingService
 
 
     void loadInitialAssessesLevels(entity){
-        pcSvc.getList([:]).each{
+        def list = propertyclassification.find([state:'APPROVED']).orderBy('orderno').list()
+        list.each{
             saveAssessLevel([
                 objid               : it.objid,
                 machrysettingid     : entity.objid,

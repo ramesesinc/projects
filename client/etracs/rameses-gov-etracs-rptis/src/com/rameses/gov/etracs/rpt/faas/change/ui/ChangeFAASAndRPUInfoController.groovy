@@ -10,11 +10,8 @@ import com.rameses.gov.etracs.rpt.faas.change.ui.*;
 
 public class ChangeFAASAndRPUInfoController extends ChangeFaasInfoController
 {
-    @Service('PropertyClassificationService')
-    def pcSvc;
-    
-    @Service('ExemptionTypeService')
-    def exemptTypeSvc;
+    @Service('QueryService')
+    def querySvc 
         
     String title = 'Modify FAAS Information';
     
@@ -60,11 +57,13 @@ public class ChangeFAASAndRPUInfoController extends ChangeFaasInfoController
      }
 
      List getClassifications(){
-        return pcSvc.getList([:]);
+        def q = [_schemaname:'propertyclassification', where:['1=1'], orderBy:'orderno']
+        return querySvc.getList(q)
      }
      
     List getExemptions(){
-        return exemptTypeSvc.getList([:])
+        def q = [_schemaname:'exemptiontype', where:['1=1'], orderBy:'orderno']
+        return querySvc.getList(q)
     }
     
     

@@ -13,7 +13,7 @@
                  action="init" 
                  role="MASTER" 
                  permission="master.viewlist"
-                 icon="home/icons/list.png"/>
+                 icon="home/icons/lands.png"/>
         
         <invoker type="quick_launcher" code="LSC00" caption="Land Specific Classes"  
                 action="init" 

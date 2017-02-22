@@ -19,8 +19,8 @@ class GenerateRPAReportController extends com.rameses.gov.etracs.rpt.report.Asyn
     @Service('RPTReportRPAService') 
     def svc 
     
-    @Service('PropertyClassificationService')
-    def pcSvc;    
+    @Service('QueryService')
+    def querySvc;    
     
     @Binding 
     def binding;
@@ -56,7 +56,8 @@ class GenerateRPAReportController extends com.rameses.gov.etracs.rpt.report.Asyn
    }    
    
     def getPropertyClassifications(){
-        return pcSvc.getList([:]);
+        def q = [_schemaname:'propertyclassification', where:['1=1'], orderBy:'orderno']
+        return querySvc.getList(q)
     }   
 
 }

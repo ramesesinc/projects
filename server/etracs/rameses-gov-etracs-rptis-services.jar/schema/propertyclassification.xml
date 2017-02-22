@@ -1,5 +1,5 @@
-<schema adapter="main">
-	<element name="rptis_propertyclassification" tablename="propertyclassification">
+<schema>
+	<element tablename="propertyclassification">
 		<field name="objid" primary="true" prefix="PC"/>
 		<field name="state" caption="State" required="true" searchable="true" indexed="true" width="100" />
 		<field name="code" caption="Code" required="true" searchable="true"  indexed="true" width="60" />

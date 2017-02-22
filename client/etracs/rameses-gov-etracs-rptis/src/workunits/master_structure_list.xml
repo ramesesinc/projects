@@ -1,7 +1,23 @@
-<workunit extends="wtemplates/ListController.xml" serviceName="StructureService" entityName="structure" formName="structure:list">
+<workunit extends="rpt_wtemplates/MasterListModel.xml" 
+          schemaName="structure" 
+          windowTitle="Structures"
+          cols="code,name,indexno,showinfaas,state" 
+          orderBy="indexno" >
     <invokers>
-        <invoker folderid="/explorer/master/rpt" caption="Structures" target="window" index="6" role="ASSESSOR_DATAMGMT,MASTER" />
-        <invoker folderid="/home/rpt/master" caption="Structures" target="window" index="6" role="ASSESSOR_DATAMGMT,MASTER" />
-        <invoker type="quick_launcher" code="ST00" caption="Structures"  role="ASSESSOR_DATAMGMT,MASTER" />
+        <invoker folderid="/explorer/master/rpt" caption="Structures"  index="6" 
+                 action="init" 
+                 role="MASTER" 
+                 permission="master.viewlist" />
+        
+        <invoker folderid="/home/rpt/master" caption="Structures"  index="6" 
+                 action="init" 
+                 role="MASTER" 
+                 permission="master.viewlist"
+                 icon="home/icons/structures.png"/>
+        
+        <invoker type="quick_launcher" code="ST00" caption="Structures"  
+                action="init" 
+                 role="MASTER" 
+                 permission="master.viewlist" />
     </invokers>
 </workunit>

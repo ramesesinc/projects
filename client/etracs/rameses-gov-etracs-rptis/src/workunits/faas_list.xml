@@ -1,7 +1,7 @@
 <workunit extends="wtemplates/ExplorerViewController.xml" defaultFileType="faaslist" autoSelect="true">
     <invokers>
-        <invoker folderid="/home/rpt" caption="FAAS Management"  role="ASSESSOR_SHARED" index="101"/>
-        <invoker type="quick_launcher" code="FM00" caption="FAAS Management"  role="ASSESSOR_SHARED" index="101"/>
+        <invoker folderid="/home/rpt" caption="FAAS List"  role="ASSESSOR_SHARED" index="101" icon="home/icons/list.png"/>
+        <invoker type="quick_launcher" code="FM00" caption="FAAS List"  role="ASSESSOR_SHARED" index="101"/>
         <invoker type="formActions" action="doOpen" caption="Open" mnemonic="o" shortcut="ctrl O" visibleWhen="#{selectedEntity != null}" depends="listHandler.selectedEntity" index="-100"/>        
     </invokers>
         <code>

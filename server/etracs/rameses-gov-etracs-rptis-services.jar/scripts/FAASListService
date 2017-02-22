@@ -20,8 +20,8 @@ public class FAASListService extends ActiveCrudListService {
     @Service('NumberService')
     def numSvc
 
-    @Service('PropertyClassificationService')
-    def propSvc 
+    @DataContext('propertyclassification')
+    def propertyclassification
 
     @Service('FAASService')
     def faasSvc
@@ -228,7 +228,7 @@ public class FAASListService extends ActiveCrudListService {
 
     @ProxyMethod
     public def getClassifications(  ) {
-        return propSvc.getList([:]) 
+        return propertyclassification.find([state:'APPROVED']).orderBy('orderno').list()
     }
 
     @ProxyMethod

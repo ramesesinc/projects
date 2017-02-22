@@ -1,0 +1,11 @@
+<workunit extends="rpt_wtemplates/MasterLookup.xml" 
+          schemaName="propertyclassification"
+          customFilter="state='APPROVED'" 
+          orderBy="code">
+    <invokers>
+        <invoker type="propertyclassification:lookup" 
+                 caption="Property Classification Lookup" 
+                 action="init"
+                 height="500" width="700" />
+    </invokers>
+</workunit>

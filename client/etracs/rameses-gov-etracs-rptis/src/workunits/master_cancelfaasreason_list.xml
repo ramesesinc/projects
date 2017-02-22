@@ -1,21 +1,21 @@
 <workunit extends="rpt_wtemplates/MasterListModel.xml" 
           schemaName="cancelfaasreason" 
-          windowTitle="FAAS Cancel Reason"
+          windowTitle="Cancellation Reasons"
           cols="code,name,state" 
           orderBy="code" >
     <invokers>
-        <invoker folderid="/explorer/master/rpt" caption="FAAS Cancel Reason"  index="15" 
+        <invoker folderid="/explorer/master/rpt" caption="Cancellation Reasons"  index="15" 
                  action="init" 
                  role="MASTER" 
                  permission="master.viewlist" />
         
-        <invoker folderid="/home/rpt/master" caption="FAAS Cancel Reason"  index="15" 
+        <invoker folderid="/home/rpt/master" caption="Cancellation Reasons"  index="15" 
                  action="init" 
                  role="MASTER" 
                  permission="master.viewlist"
-                 icon="home/icons/list.png"/>
+                 icon="home/icons/canceldoc.png"/>
         
-        <invoker type="quick_launcher" code="CFR00" caption="FAAS Cancel Reason"  
+        <invoker type="quick_launcher" code="CFR00" caption="Cancellation Reasons"  
                 action="init" 
                  role="MASTER" 
                  permission="master.viewlist" />

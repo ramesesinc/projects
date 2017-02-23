@@ -152,7 +152,7 @@ class RPTReportTMCRService
 
 		def parameters = [
 			TITLE 		: params.title,
-			ARPCAPTION 	: 'APR NO.\n' + stdno,
+			ARPCAPTION 	: 'ARP NO.\n' + stdno,
 			OTHERCAPTION: 'Others\nPREVIOUS\nARP NO.\n',
 			REMARKS     : 'Remarks\n' + ry + ' GR\nTransaction\nCode'
 		]

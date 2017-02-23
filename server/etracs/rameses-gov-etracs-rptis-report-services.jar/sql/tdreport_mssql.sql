@@ -2,8 +2,38 @@
 SELECT
 	f.objid as faasid,
 	f.*,
-	rp.*,
-	r.*,
+	rp.pin,
+	rp.ry,
+	rp.claimno,
+	rp.section,
+	rp.parcel,
+	rp.cadastrallotno,
+	rp.blockno,
+	rp.surveyno,
+	rp.street,
+	rp.purok,
+	rp.north,
+	rp.south,
+	rp.east,
+	rp.west,
+	rp.barangayid,
+	rp.lgutype,
+	rp.stewardshipno,
+	r.rputype,
+	r.ry,
+	r.suffix,
+	r.subsuffix,
+	r.classification_objid,
+	r.exemptiontype_objid,
+	r.taxable,
+	r.totalareaha,
+	r.totalareasqm,
+	r.totalbmv,
+	r.totalmv,
+	r.totalav,
+	r.hasswornamount,
+	r.swornamount,
+	r.useswornamount,
 	f.fullpin as displaypin,
 	CASE WHEN p.objid IS NOT NULL THEN p.name ELSE c.name END AS parentlguname, 
 	CASE WHEN p.objid IS NOT NULL THEN p.indexno ELSE c.indexno END AS parentlguindex,   
@@ -48,7 +78,8 @@ SELECT
 	SUM(r.assessedvalue) AS assessedvalue,
 	SUM(r.areasqm) AS areasqm,
 	SUM(r.areaha) AS areaha ,
-	r.taxable 
+	r.taxable,
+	r.rputype  
 FROM faas f
 	INNER JOIN rpu_assessment r ON f.rpuid = r.rpuid
 	INNER JOIN propertyclassification pc ON r.classification_objid = pc.objid 
@@ -59,7 +90,7 @@ GROUP BY
 	pc.code, pc.name, 
 	case when lal.objid is not null then lal.code else ptl.code end,
 	case when lal.objid is not null then lal.name else ptl.name end,
-	r.assesslevel, r.taxable 
+	r.assesslevel, r.taxable, r.rputype  
 
 
 
@@ -75,6 +106,7 @@ SELECT
 	ld.taxable,
 	ld.assesslevel,
 	lspc.name AS specificclass,
+	sub.code AS subclasscode,
 	sub.name AS subclass,
 	SUM(ld.area) AS area,	
 	SUM(ld.marketvalue) AS marketvalue,
@@ -92,7 +124,8 @@ FROM faas f
 	INNER JOIN propertyclassification pc ON spc.classification_objid = pc.objid 
 	INNER JOIN propertyclassification dc ON r.classification_objid = dc.objid 
 WHERE f.objid = $P{faasid}
-GROUP BY dc.code, dc.name, pc.code, pc.name, lal.code, lal.name, ld.areatype, ld.assesslevel,
+GROUP BY dc.code, dc.name, pc.code, pc.name, lal.code, lal.name, 
+	ld.areatype, ld.assesslevel, ld.taxable, 
 	lspc.code, lspc.name, sub.code, sub.name 
 
 UNION ALL 
@@ -108,8 +141,9 @@ SELECT
 	'HA' as areatype, 
 	1 as taxable,
 	ptd.assesslevel,
-	'PLANTS & TREES' AS specificclass,
-	ptal.name AS subclass,
+	'PLANTS' AS specificclass,
+	'PLANTS' AS subclasscode,
+	'PLANTS' AS subclass,
 	SUM(0) AS area,	
 	SUM(ptd.marketvalue) AS marketvalue,
 	SUM(ptd.assessedvalue) AS assessedvalue,
@@ -122,7 +156,7 @@ FROM faas f
 	INNER JOIN planttreeassesslevel ptal ON ptd.actualuse_objid = ptal.objid 
 	INNER JOIN planttree pt ON ptd.planttree_objid = pt.objid 
 WHERE f.objid = $P{faasid}
-GROUP BY pc.name, ptal.name, ptd.assesslevel		
+GROUP BY pc.code, pc.name, ptal.name, ptd.assesslevel		
 
 
 [getLandPlantTreeAssessment]
@@ -132,7 +166,7 @@ SELECT
 	pc.name AS classification,
 	ptal.code AS actualcode,
 	ptal.name AS actualuse,
-	'PLANT/TREE' AS specificclass,
+	'PLANTS' AS specificclass,
 	SUM(ptd.marketvalue) AS marketvalue,
 	ptd.assesslevel,
 	SUM(ptd.assessedvalue) AS assessedvalue
@@ -427,10 +461,14 @@ where ft.refid = $P{objid}
 
 
 [findAdjustmentFactor]
-select sum(la.adjustment) / sum(la.basemarketvalue) as adjfactor
+select 
+	case when sum(la.basemarketvalue) = 0 then 0 
+		else  sum(la.adjustment) / sum(la.basemarketvalue) 
+	end as adjfactor
 from faas f
 	inner join landadjustment la on f.rpuid = la.landrpuid 
 where f.objid = $P{faasid}
+
 
 
 
@@ -444,3 +482,14 @@ from faas f
 where f.objid = $P{objid}
 and bi.addareatobldgtotalarea = 1
 and param_objid = 'AREA_SQM'
+
+
+[findEsigned]
+select objid 
+from faas_task 
+where refid = $P{faasid} 
+and state = 'approver' 
+and signature is not null 
+order by startdate desc
+
+

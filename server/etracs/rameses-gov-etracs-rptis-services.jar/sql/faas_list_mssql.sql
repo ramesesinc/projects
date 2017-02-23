@@ -134,12 +134,12 @@ update fl set
 	fl.taskstate = (select state from faas_task where refid = f.objid and enddate is null),
 	fl.assignee_objid = (select assignee_objid from faas_task where refid = f.objid and enddate is null),
 	fl.trackingno = (select trackingno from rpttracking where objid = f.objid)
-from faas_list fl, faas f, rpu r, realproperty rp, propertyclassification pc 
+from faas_list fl
+	inner join faas f on fl.objid = f.objid 
+	inner join rpu r on fl.rpuid = r.objid 
+	inner join realproperty rp on fl.realpropertyid = rp.objid 
+	left join propertyclassification pc on r.classification_objid = pc.objid 
 where fl.objid = $P{objid}	
- 	and fl.objid = f.objid 
-	and f.rpuid = r.objid 
-	and f.realpropertyid = rp.objid 
-	and r.classification_objid = pc.objid 
 
 
 

@@ -79,9 +79,11 @@ class TDReportService
 
 		td.display_recommendedby = var.td_report_display_recommendedby ? var.td_report_display_recommendedby : '1'
 
+		/*
 		if(td.claimno) {
 			td.fullpin += ' M' + td.claimno
 		}
+		*/
 
 		td.address = concatHousenoStreetPurok( td ) 
 
@@ -103,6 +105,7 @@ class TDReportService
 		buildAdjustmentFactor(td)
 
 		td.show_interim_watermark = util.toBoolean(var.show_interim_watermark, false)
+		td.esigned = adb.findEsigned(td) != null
 		return td 
 	}
 
@@ -160,7 +163,7 @@ class TDReportService
 		if (td.rputype != 'land') return 
 		td.lands = adb.getStandardLandAssessment(td)
 		td.specificlands = adb.getDetailedLandAssessment(td)
-		td.plants = adb.getLandPlantTreeAssessment(td)
+		//td.plants = adb.getLandPlantTreeAssessment(td)
 
 		//if multiple area, set mixedarea = 1 otherwise = 0
 		//in the report display sqm for the total area in cases of mixedarea = 1
@@ -292,8 +295,13 @@ class TDReportService
 				//cancel faas transaction
 				def reason = adb.findCancelFaasReason(td)
 				if (reason){
-					notes  = 'Cancelled due to ' + reason.reason + '. '
-					notes += 'Date ' + dtSvc.format('MMMMM dd, yyyy' ,reason.txndate) + '.  ' 
+					notes  = 'Cancelled due to ' + reason.reason + '.\n'
+					notes += 'Date Cancelled: ' + dtSvc.format('MMMMM dd, yyyy' ,reason.txndate) + '.  ' 
+				}
+				else{
+					notes  =  'Cancelled By TD/ARP No. ' + td.cancelledbytdnos + '.\n' 
+					notes += 'Cancellation Reason: '  + td.cancelreason + '.\n'
+					notes += 'Date Cancelled: ' + dtSvc.format('MMMMM dd, yyyy' ,td.canceldate) + '.' 
 				}
 			}
 			td.cancelnote = notes + (td.cancelnote ? td.cancelnote : '')

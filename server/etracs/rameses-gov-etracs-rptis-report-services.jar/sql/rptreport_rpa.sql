@@ -7,9 +7,9 @@
 SELECT 
 	pc.objid AS classid,
 	pc.name AS classname, 
-	COUNT( 1 ) AS rpucount,
-	SUM(CASE WHEN r.rputype = 'land' THEN r.totalareasqm ELSE 0.0 END ) AS areasqm, 
-	SUM(CASE WHEN r.rputype = 'land' THEN r.totalareaha ELSE 0.0 END ) AS areaha, 
+	SUM( case when rp.claimno is null then 1 else 0 end) AS rpucount,
+	SUM(CASE WHEN r.rputype = 'land' and rp.claimno is null THEN r.totalareasqm ELSE 0.0 END ) AS areasqm, 
+	SUM(CASE WHEN r.rputype = 'land' and rp.claimno is null THEN r.totalareaha ELSE 0.0 END ) AS areaha, 
 
 	SUM( CASE WHEN r.rputype = 'land' THEN r.totalmv ELSE 0.0 END ) AS landmv,
 	SUM( CASE WHEN r.rputype = 'bldg' AND r.totalmv <= 175000 THEN r.totalmv ELSE 0.0 END ) AS bldgmv175less,
@@ -45,10 +45,10 @@ ORDER BY pc.orderno
 SELECT 
 	e.objid AS classid,
 	e.name AS classname, 
-	COUNT( 1 ) AS rpucount,
-	SUM(CASE WHEN r.rputype = 'land' THEN r.totalareasqm ELSE 0.0 END ) AS areasqm, 
-	SUM(CASE WHEN r.rputype = 'land' THEN r.totalareaha ELSE 0.0 END ) AS areaha, 
-	
+	SUM( case when rp.claimno is null then 1 else 0 end) AS rpucount,
+	SUM(CASE WHEN r.rputype = 'land' and rp.claimno is null THEN r.totalareasqm ELSE 0.0 END ) AS areasqm, 
+	SUM(CASE WHEN r.rputype = 'land' and rp.claimno is null THEN r.totalareaha ELSE 0.0 END ) AS areaha, 
+
 	SUM( CASE WHEN r.rputype = 'land' THEN r.totalmv ELSE 0.0 END ) AS landmv,
 	SUM( CASE WHEN r.rputype = 'bldg' AND r.totalmv <= 175000 THEN r.totalmv ELSE 0.0 END ) AS bldgmv175less,
 	SUM( CASE WHEN r.rputype = 'bldg' AND r.totalmv > 175000 THEN r.totalmv ELSE 0.0 END ) AS bldgmvover175,

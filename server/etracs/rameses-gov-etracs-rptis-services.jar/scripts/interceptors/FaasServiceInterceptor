@@ -19,6 +19,9 @@ class FaasServiceInterceptor
 	@Service('LogService')
 	def logSvc 
 
+	@Service('FAASAnnotationService')
+	def annotationSvc 
+
 
 	@After(pattern="FAASService.(createFaas|updateFaas|submitForApproval|disapproveFaas|approveFaas)") 
 	public void logActions( evt ) {
@@ -60,6 +63,8 @@ class FaasServiceInterceptor
 					ledgerSvc.checkLedgerBalance(info.faas.objid)
 				}
 			}
+			
+			annotationSvc.checkActiveAnnotations(info.txntype, info.faas)
 		}
 	}
 
@@ -82,7 +87,7 @@ class FaasServiceInterceptor
 	public void initUknownToKnown( evt ) {
 		def faas = evt.result 
 		if (!faas.owner || !faas.owner.name || !faas.owner.name.toLowerCase().matches('.*unknown.*')){
-			throw new Exception('Unable to process this property. Property owner must by UNKNOWN.')
+			throw new Exception('Unable to process this property. Property owner must be UNKNOWN.')
 		}
 	}
 

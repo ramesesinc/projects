@@ -72,7 +72,7 @@ select
 	r.swornamount, 
 	r.useswornamount
 from rpu r 
-	inner join propertyclassification pc on r.classification_objid = pc.objid 
+	left join propertyclassification pc on r.classification_objid = pc.objid 
 	left join exemptiontype et on r.exemptiontype_objid = et.objid 
 where r.objid = $P{objid}	
 
@@ -208,3 +208,12 @@ from sys_user u
 	inner join sys_usergroup ug on ugm.usergroup_objid = ug.objid 
 where u.objid = $P{userid}
 and ug.role = $P{role}
+
+
+[findEsigned]
+select objid 
+from faas_task 
+where refid = $P{objid} 
+and state = 'approver' 
+and signature is not null 
+order by startdate desc

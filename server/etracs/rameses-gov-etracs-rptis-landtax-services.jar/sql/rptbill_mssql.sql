@@ -34,8 +34,13 @@ FROM rptledger rl
 	INNER JOIN entity e ON rl.taxpayer_objid = e.objid 
 WHERE rl.objid = $P{rptledgerid}
  AND rl.state = 'APPROVED'
- AND ( rl.lastyearpaid < $P{billtoyear} OR (rl.lastyearpaid = $P{billtoyear} AND rl.lastqtrpaid < $P{billtoqtr}))
- and not exists(select * from rptledger_restriction where parentid = rl.objid )
+ AND rl.totalav > 0 
+ AND (
+ 		( rl.lastyearpaid < $P{billtoyear} OR (rl.lastyearpaid = $P{billtoyear} AND rl.lastqtrpaid < $P{billtoqtr}))
+ 		or 
+ 		(exists(select * from rptledgeritem where rptledgerid = rl.objid and taxdifference=1 and fullypaid=0))
+
+ 	)
 
 
 [getIncentivesByLedgerId]
@@ -444,6 +449,7 @@ WHERE rl.objid IN (
 			OR ( rl.lastyearpaid = $P{billtoyear} AND rl.lastqtrpaid < $P{billtoqtr})
 	 )
 )
+and rl.totalav > 0 
 and not exists(select * from rptledger_restriction where parentid = rl.objid )
 ORDER BY rl.tdno  
 

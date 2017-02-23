@@ -180,3 +180,6 @@ where objid = $P{objid}
 select classification_objid 
 from landadjustmenttype_classification 
 where landadjustmenttypeid = $P{objid}
+
+[findClassification]
+select objid, name from propertyclassification where objid = $P{objid}

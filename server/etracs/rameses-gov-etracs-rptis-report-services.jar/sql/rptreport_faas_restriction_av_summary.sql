@@ -15,5 +15,5 @@ from faas f
 where f.lguid like $P{lguid}
   and f.state = 'CURRENT' 
   ${periodfilter}
-group by s.name, rt.name 
+group by rt.objid, s.name, rt.name, rt.idx, rt.isother
 order by s.name, rt.isother, rt.idx

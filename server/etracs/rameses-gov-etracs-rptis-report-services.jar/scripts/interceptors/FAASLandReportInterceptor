@@ -62,7 +62,7 @@ class FaasLandReportInterceptor
 
 		//append plant/tree adjustments
 		def plantadj = em.findPlantTreeAdjustment(faas.rpu)
-		if (plantadj){
+		if (plantadj && plantadj.adjrate != 0.0){
 			if (faas.landadjustments.size()  == 0){
 				plantadj.adjtypename = 'TOTAL LAND ADJUSTMENT';
 				faas.landadjustments << plantadj
@@ -101,7 +101,7 @@ class FaasLandReportInterceptor
     		if (it.areatype == 'SQM'){
 	    		it.areatext = numberSvc.format('#,##0.00', it.areasqm) 
 	    		//it.areatext += ' sqm'
-	    		it.areatext += ' m\u00B2'
+	    		it.areatext += ' sqm'
     		}
     		else {
     			it.areatext = numberSvc.format('#,##0.000000', it.areaha) 

@@ -26,7 +26,6 @@ class RPTReportFAASValuationAndRestrictionService
 		if (params.basicrate == null ) params.basicrate = 1.0
 		if (params.sefrate == null ) params.sefrate = 1.0
 
-		println 'params.periodfilter = ' + params.periodfilter
 		def list = em.getFaasValuationRestrictionSummary(params)
 		if( ! list ) throw new Exception('Record not found.')
 

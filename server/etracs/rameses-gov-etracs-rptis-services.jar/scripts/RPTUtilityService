@@ -12,9 +12,6 @@ class RPTUtilityService
 	@ActiveDB('rpu')
 	def rpudb
 
-	@ActiveDB('pin')
-	def pindb 
-    
 	@Service('RPUService')
 	def rpuSvc 
 	
@@ -35,108 +32,100 @@ class RPTUtilityService
 	 //info: faasid, oldpin, tdno, pintype, municipality, barangay, 
 	//section, parcel, suffix, newpin, ssection, sparcel 
 	@ProxyMethod
-	public def updatePin( info ) { 
+	public void updatePin( info ) { 
 		validatePin( info )
 		rpuSvc.checkDuplicateFullPin([objid:info.rpuid, ry: info.ry, fullpin:info.newpin])
 		def tokens = info.newpin.tokenize('-')
 		info.ssection = tokens[3]
 		info.sparcel = tokens[4]
-		def oldpin = null
+
+		info.oldfaas = em.findFaasInfo(info)
+		info.oldfullpin = info.oldfaas.fullpin
+		info.taxpayer = info.oldfaas.taxpayer 
+
+		if( info.rputype == 'land') 
+			updatePinLand(info)
+		else 
+			updatePinImprovement(info)
+	}
+
+	void updateCommonInfo(info){
+		info.rpu = [objid:info.rpuid, fullpin:info.newpin, rputype:info.rputype]
+		if (info.rputype != 'land' || (info.rputype == 'land' && info.claimno != null)){
+			faasSvc.updateFullPinInfo(info)
+			info.newpin = info.fullpin 
+		}
+
+		em.modifyRpuPin(info)
+		em.modifyFaasPin(info)
+		em.modifyLedgerPin(info)
+		faasListEm.updateFaasList([objid:info.faasid])
+		log(info.faasid, info.oldfullpin, info.newpin)
+	}
+
+	void updatePinImprovement(info){
+		info.landfaasid = info.landfaas.objid
+		def landfaas = em.findLandFaas(info)
+		if (!landfaas)
+			throw new Exception('Current Land FAAS with PIN No. ' + info.landfaas.fullpin +' does not exist.')
 		
-		
 
-		if( info.rputype == 'land') {
-			def rp = null
-			def rpu = rpuSvc.openRpu( [objid:info.rpuid] )
-			if( rpu ) {
-				rp = rpSvc.open([objid:rpu.realpropertyid])
-				oldpin = rp.pin 
-				rp.pintype = info.pintype 
-				rp.pin = info.newpin 
-				rp.section = info.ssection
-				rp.barangay = info.barangay
-				rp.barangayid = info.barangay.objid 
-				rp.parcel = info.sparcel 
-				rpSvc.update( rp )
-				pindb.updateBarangayid(rp)
+		info.realpropertyid = landfaas.realpropertyid
+		info.landrpuid = landfaas.rpuid 
 
-				info.realpropertyid = rp.objid 
-				modifyInfo(info)
+		if('bldg' == info.rputype)
+			em.modifyBldgLandRpu(info)
+		else if('mach' == info.rputype)
+			em.modifyMachLandRpu(info)
+		else if('planttree' == info.rputype)
+			em.modifyPlantTreeLandRpu(info)
+		else if('misc' == info.rputype)
+			em.modifyMiscLandRpu(info)
 
-				log(info.faasid, oldpin, info.newpin)
+		updateCommonInfo(info)
+	}
 
-				//update improvements pin 
-				rpudb.getLandImprovementsRpuByRealPropertyId([realpropertyid: rp.objid]).each { 
-					def improvfaas = em.findFaasInfo(it)
-					def param = [
-						oldpin  : it.fullpin, 
-						newpin  : buildNewPin(info.newpin, it.fullpin, it.suffix),
-						suffix  :it.suffix, 
-						rpuid   : it.objid ,
-						realpropertyid : rp.objid,
-						rputype : it.rputype, 
-						landrpuid : rpu.objid,
-						taxpayer  : improvfaas.taxpayer, 
-					]
-					modifyInfo(param)
-					faasListEm.updateFaasList([objid:it.faasid])
-					log(it.faasid, param.oldpin, param.newpin)
-				}
-			}
-			faasListEm.updateFaasList([objid:info.faasid])
-			
-			return rp
-			
-		} 
-		else {
-			def oldfaas = em.findFaasInfo(info)
-			info.taxpayer = oldfaas.taxpayer 
+	void updatePinLand(info){
+		def rpu = rpuSvc.openRpu( [objid:info.rpuid] )
+		def rp = rpSvc.open([objid:rpu.realpropertyid])
+		def oldpin = rp.pin 
 
-			def landpin = info.barangay.pin + '-' + info.ssection + '-' + info.sparcel
-			if (info.pintype == 'old'){
-				landpin = info.barangay.oldpin + '-' + info.ssection + '-' + info.sparcel
-			}
+		//update with new info 
+		rp.pintype = info.pintype 
+		rp.pin = info.newpin 
+		rp.section = info.ssection
+		rp.barangay = info.barangay
+		rp.barangayid = info.barangay.objid 
+		rp.parcel = info.sparcel 
+		rpSvc.update( rp )
+		info.realpropertyid = rp.objid 
+		updateCommonInfo(info)
 
-			def pinry = [pin:landpin, ry:info.ry]
-			def landrp = em.findByPinRy(pinry)
-			if (!landrp)
-				throw new Exception('Land Real Property with PIN ' + landpin  + ' does not exist.')
-
-			def landrpu = em.findLandRpuByPinRy(pinry)
-			if (!landrpu) throw new Exception('Land RPU with PIN ' + landpin + 'does not exist.')
-
-			info.realpropertyid = landrp.objid 
-			info.landrpuid = landrpu.objid 
-			modifyInfo(info)
-			faasListEm.updateFaasList([objid:info.faasid])
-			log(info.faasid, oldfaas.fullpin, info.newpin)
-			return null
+		//update improvements pin 
+		info.landrpuid = info.oldfaas.rpuid 
+		def items = em.getImprovements(info)
+		items.each{
+			def improvfaas = em.findFaasInfo(it)
+			def param = [
+				faasid  : it.faasid,
+				oldpin  : it.fullpin, 
+				newpin  : buildNewPin(info.newpin, it.suffix),
+				suffix  :it.suffix, 
+				rpuid   : it.objid,
+				realpropertyid : rp.objid,
+				rputype : it.rputype, 
+				landrpuid : rpu.objid,
+				taxpayer  : improvfaas.taxpayer, 
+			]
+			updateCommonInfo(param)
 		}
 	}
+
 
 	void log(refid, oldpin, newpin){
 		logSvc.logA('modifypin', 'FAAS', refid, 'Modify PIN ' + oldpin + ' to ' + newpin + '.')
 	}
 
-
-	void modifyInfo(info){
-		em.modifyPin(info)
-
-		if(info.rputype != 'land'){
-			em.modifyBldgLandRpu(info)
-			em.modifyMachLandRpu(info)
-			em.modifyPlantTreeLandRpu(info)
-			em.modifyMiscLandRpu(info)
-
-			info.rpu = [objid:info.rpuid, fullpin:info.newpin, rputype:info.rputype]
-			faasSvc.updateFullPinInfo(info)
-			info.newpin = info.fullpin 
-		}
-
-		em.modifyFaasPin(info)
-		em.modifyLedgerPin(info)
-
-	}
 	
 	void validatePin( info ) {
         if( info.rputype == 'bldg' && (info.suffix < 1000 || info.suffix > 1999)) {
@@ -153,7 +142,7 @@ class RPTUtilityService
         }
     }
 	
-	def buildNewPin(newpin, fullpin, suffix){
+	def buildNewPin(newpin, suffix){
 	        return newpin + '-' + suffix
 	}
 

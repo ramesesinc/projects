@@ -36,8 +36,8 @@ from (
   select
     rlf.objid, 
     rlf.tdno,
+    rlf.assessedvalue as originalav,
     sum(bi.av) as assessedvalue,
-    sum(bi.av) as originalav,
     (convert(varchar(4),bi.year) + '-' + 
       case when min(bi.qtr) = max(bi.qtr) then convert(varchar(1),min(bi.qtr))
       else convert(varchar(1),min(bi.qtr)) + convert(varchar(1),max(bi.qtr))
@@ -85,8 +85,8 @@ from (
   select
     rlf.objid, 
     rlf.tdno,
+    rlf.assessedvalue as originalav,
     bi.av as assessedvalue,
-    bi.av as originalav,
     (convert(varchar(4),bi.year)  + '-' + convert(varchar(1),bi.qtr)) as period,
     bi.basic,
     bi.basicint,

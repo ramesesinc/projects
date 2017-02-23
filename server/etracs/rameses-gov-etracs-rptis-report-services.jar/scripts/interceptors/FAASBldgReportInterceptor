@@ -86,6 +86,9 @@ class FaasBldgReportInterceptor
 	void buildBldgStructures(faas){
 		if (util.isTrue(var.faas_report_bldg_detailed_structure) ){
 			faas.bldgstructures = em.getDetailedStructureMaterials(faas.rpu)
+			if (faas.bldgstructures.size() % 2 != 0){
+				faas.bldgstructures.add([:])
+			}
 		}
 		else{
 			faas.bldgstructures = getSimplifiedBldgStructures(faas)
@@ -93,35 +96,39 @@ class FaasBldgReportInterceptor
 	}
 
 	def getSimplifiedBldgStructures(faas){
-		def structmaterials = em.getBldgStructureMaterials(faas.rpu)
-		def structures = em.getStructures().each{
-			it.materials = em.getStructureMaterials(it)
+		def structmaterials = em.getStructureMaterials(faas.rpu)
+		def data = [] 
+		def mat0s = structmaterials.findAll{it.idx == 0}
+		def mat1s = structmaterials.findAll{it.idx == 1}
+		def mat2s = structmaterials.findAll{it.idx == 2}
+		def maxrows = mat0s.size() 
+		maxrows = (maxrows < mat1s.size() ? mat1s.size() : maxrows )
+		maxrows = (maxrows < mat2s.size() ? mat2s.size() : maxrows )
+		for( int i=0; i<maxrows; i++){
+			def d = [:]
+			if (i < mat0s.size()) d.mat0 = mat0s[i].mat0
+			if (i < mat1s.size()) d.mat1 = mat1s[i].mat1 
+			if (i < mat2s.size()) d.mat2 = mat2s[i].mat2 
+			data << d
 		}
 
-		def data = []
-		structures.eachWithIndex{st, idx ->
-		    st.materials.eachWithIndex{ mat, midx ->
-		    	if (data.size() <= midx){
-		    		data << [:]
-		    	}
-		    	def d = data[midx]
-		        d["mat$idx"]    = mat.name
-		        d["mat${idx}1"] = structmaterials.find{it.display ==  1 && it.floor == 1 && it.structureid == st.objid && it.materialid == mat.objid }?.checked
-		        d["mat${idx}2"] = structmaterials.find{it.display ==  1 && it.floor == 2 && it.structureid == st.objid && it.materialid == mat.objid }?.checked
-		        d["mat${idx}3"] = structmaterials.find{it.display ==  1 && it.floor == 3 && it.structureid == st.objid && it.materialid == mat.objid }?.checked
-		        d["mat${idx}4"] = structmaterials.find{it.display ==  1 && it.floor == 4 && it.structureid == st.objid && it.materialid == mat.objid }?.checked
-		    }
-		    data << [:]
-		    def matsize = st.materials.size();
-		    data[matsize]."mat$idx" = "Others (Specify)"
-		    def others = structmaterials.findAll{it.structureid == st.objid && it.display == 0}
-		    others.eachWithIndex{m, oix -> 
-		    	data << [:]
-		    	data[matsize + oix + 1]."mat${idx}" = m.material
-		    	data[matsize + oix + 1]."mat${idx}1" = 'X'
-		    }
+		//check applicable materials
+		structmaterials = em.getBldgStructureMaterials(faas.rpu)
+		for(int i=0; i<3; i++){
+			def list = structmaterials.findAll{it.idx == i}
+			checkMaterials(data, list, i)
 		}
 		return data
+	}
+
+	void checkMaterials(data, mats, structidx){
+		mats.eachWithIndex{m, idx->
+			def key = 'mat'+structidx
+			def d = data.find{it[key] == m.material}
+			if (d){
+				d[key+m.floor] = 'X'
+			}
+		}
 	}
 
 	void buildFloorInfo(faas){

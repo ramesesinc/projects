@@ -122,6 +122,7 @@ class SubdivisionWorkflowInterceptor
 	@Before(pattern="SubdivisionWorkflowService.signal", eval="#{args[0].state.matches('appraiser|provappraiser') &&  ! args[0].action?.matches('return.*')}", index=15)
 	public void validateAppraisalInfo( evt ) {
 		def subdivision = evt.args[0].data
+		subdivisionSvc.validateSubdividedLands(subdivision)
 		validateSubdividedLand(subdivision)
 		validateAffectedRpu(subdivision)
 

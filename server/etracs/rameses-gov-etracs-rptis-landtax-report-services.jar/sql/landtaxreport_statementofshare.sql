@@ -23,12 +23,13 @@ SELECT
     SUM(CASE WHEN cra.revperiod <> 'advance' AND  cra.revtype in ('basicidle','basicidleint') AND cra.sharetype = 'province' THEN cra.amount ELSE 0 END) AS provsharetotal
 FROM remittance rem 
     inner join liquidation_remittance liqr on rem.objid = liqr.objid 
+    inner join liquidation liq on liqr.liquidationid = liq.objid
     inner join remittance_cashreceipt remc on rem.objid = remc.remittanceid 
     inner join cashreceipt cr on remc.objid = cr.objid 
     INNER JOIN cashreceiptitem_rpt_account cra ON cr.objid = cra.rptreceiptid 
-    INNER JOIN rptledger rl ON cra.rptledgerid = rl.objid
-    INNER JOIN barangay b on rl.barangayid = b.objid 
-where rem.remittancedate >= $P{fromdate} AND rem.remittancedate < $P{todate}   
+    left JOIN rptledger rl ON cra.rptledgerid = rl.objid
+    left JOIN barangay b on rl.barangayid = b.objid 
+where ${filter}   
     and cr.objid not in (select receiptid from cashreceipt_void where receiptid=cr.objid) 
     AND cra.revtype in  ('basicidle', 'basicidleint') 
     AND cra.amount > 0
@@ -48,10 +49,11 @@ SELECT
     SUM(CASE WHEN cra.revperiod <> 'advance' AND  cra.revtype = 'basicidle' AND cra.sharetype = 'province' THEN cra.amount ELSE 0 END) AS provsharetotal
 FROM remittance rem 
     inner join liquidation_remittance liqr on rem.objid = liqr.objid 
+    inner join liquidation liq on liqr.liquidationid = liq.objid
     inner join remittance_cashreceipt remc on rem.objid = remc.remittanceid 
     inner join cashreceipt cr on remc.objid = cr.objid 
     INNER JOIN cashreceiptitem_rpt_account cra ON cr.objid = cra.rptreceiptid 
-WHERE rem.remittancedate >= $P{fromdate} AND rem.remittancedate < $P{todate} 
+WHERE ${filter} 
     and cr.objid not in (select receiptid from cashreceipt_void where receiptid=cr.objid) 
 
 
@@ -83,12 +85,13 @@ FROM (
         CASE WHEN cra.revtype = 'basicint' AND cra.sharetype IN ('province', 'municipality') THEN cra.amount ELSE 0 END AS provmunipenaltyshare
     FROM remittance rem 
         inner join liquidation_remittance liqr on rem.objid = liqr.objid 
+        inner join liquidation liq on liqr.liquidationid = liq.objid
         inner join remittance_cashreceipt remc on rem.objid = remc.remittanceid 
         inner join cashreceipt cr on remc.objid = cr.objid 
         INNER JOIN cashreceiptitem_rpt_account cra ON cr.objid = cra.rptreceiptid 
-        INNER JOIN rptledger rl ON cra.rptledgerid = rl.objid
-        INNER JOIN barangay b on rl.barangayid = b.objid 
-    WHERE rem.remittancedate >= $P{fromdate} AND rem.remittancedate < $P{todate} 
+        left JOIN rptledger rl ON cra.rptledgerid = rl.objid
+        left JOIN barangay b on rl.barangayid = b.objid 
+    WHERE ${filter} 
         and cr.objid not in (select receiptid from cashreceipt_void where receiptid=cr.objid) 
         AND cra.revperiod <> 'advance' 
         AND cra.revtype IN ('basic', 'basicint')
@@ -113,17 +116,18 @@ FROM (
         CASE WHEN cra.revtype = 'basicint' AND cra.sharetype IN ('province', 'municipality') THEN cra.amount ELSE 0 END AS provmunipenaltyshare
     FROM remittance rem 
         inner join liquidation_remittance liqr on rem.objid = liqr.objid 
+        inner join liquidation liq on liqr.liquidationid = liq.objid
         inner join remittance_cashreceipt remc on rem.objid = remc.remittanceid 
         inner join cashreceipt cr on remc.objid = cr.objid 
         INNER JOIN cashreceipt_rpt crr ON cr.objid = crr.objid 
         INNER JOIN cashreceiptitem_rpt_account cra ON cr.objid = cra.rptreceiptid 
-    WHERE rem.remittancedate >= $P{fromdate} AND rem.remittancedate < $P{todate} 
+    WHERE ${filter} 
         and cr.objid not in (select receiptid from cashreceipt_void where receiptid=cr.objid) 
         AND crr.txntype = 'noledger'
         AND cra.revperiod <> 'advance' 
         AND cra.revtype IN ('basic', 'basicint')
 )t 
-INNER JOIN barangay b ON t.barangayid = b.objid 
+left JOIN barangay b ON t.barangayid = b.objid 
 GROUP BY b.name 
 
 
@@ -154,12 +158,13 @@ FROM (
         CASE WHEN cra.revtype = 'basicint' AND cra.sharetype = 'province' THEN cra.amount ELSE 0 END AS provpenaltyshare
     FROM remittance rem 
         inner join liquidation_remittance liqr on rem.objid = liqr.objid 
+        inner join liquidation liq on liqr.liquidationid = liq.objid
         inner join remittance_cashreceipt remc on rem.objid = remc.remittanceid 
         inner join cashreceipt cr on remc.objid = cr.objid 
         INNER JOIN cashreceiptitem_rpt_account cra ON cr.objid = cra.rptreceiptid 
-        INNER JOIN rptledger rl ON cra.rptledgerid = rl.objid
-        INNER JOIN barangay b on rl.barangayid = b.objid 
-    WHERE rem.remittancedate >= $P{fromdate} AND rem.remittancedate < $P{todate} 
+        left JOIN rptledger rl ON cra.rptledgerid = rl.objid
+        left JOIN barangay b on rl.barangayid = b.objid 
+    WHERE ${filter} 
         and cr.objid not in (select receiptid from cashreceipt_void where receiptid=cr.objid) 
         AND cra.revperiod <> 'advance' 
         AND cra.revtype IN ('basic', 'basicint')
@@ -184,17 +189,18 @@ FROM (
         CASE WHEN cra.revtype = 'basicint' AND cra.sharetype = 'province' THEN cra.amount ELSE 0 END AS provpenaltyshare
     FROM remittance rem 
         inner join liquidation_remittance liqr on rem.objid = liqr.objid 
+        inner join liquidation liq on liqr.liquidationid = liq.objid
         inner join remittance_cashreceipt remc on rem.objid = remc.remittanceid 
         inner join cashreceipt cr on remc.objid = cr.objid 
         INNER JOIN cashreceipt_rpt crr ON cr.objid = crr.objid 
         INNER JOIN cashreceiptitem_rpt_account cra ON cr.objid = cra.rptreceiptid 
-    WHERE rem.remittancedate >= $P{fromdate} AND rem.remittancedate < $P{todate} 
+    WHERE ${filter} 
         and cr.objid not in (select receiptid from cashreceipt_void where receiptid=cr.objid) 
         AND crr.txntype = 'noledger'
         AND cra.revperiod <> 'advance' 
         AND cra.revtype IN ('basic', 'basicint')
 ) t
-INNER JOIN barangay b ON t.barangayid = b.objid 
+left JOIN barangay b ON t.barangayid = b.objid 
 GROUP BY b.name 
 
 
@@ -219,10 +225,11 @@ FROM (
         SUM(CASE WHEN cra.sharetype = 'province' THEN cra.amount ELSE 0 END) AS  provtotalshare 
     FROM remittance rem 
         inner join liquidation_remittance liqr on rem.objid = liqr.objid 
+        inner join liquidation liq on liqr.liquidationid = liq.objid
         inner join remittance_cashreceipt remc on rem.objid = remc.remittanceid 
         inner join cashreceipt cr on remc.objid = cr.objid 
         inner join cashreceiptitem_rpt_account cra ON cr.objid = cra.rptreceiptid 
-    where rem.remittancedate >= $P{fromdate} AND rem.remittancedate < $P{todate}   
+    where ${filter}   
         and cr.objid not in (select receiptid from cashreceipt_void where receiptid=cr.objid) 
         and cra.revperiod <> 'advance' 
         and cra.revtype IN ('basic', 'basicint')
@@ -242,10 +249,11 @@ SELECT
     SUM(CASE WHEN cra.revtype IN ('sef', 'sefint') AND cra.sharetype = 'province' THEN cra.amount ELSE 0 END) AS provsharetotal
 FROM remittance rem 
     inner join liquidation_remittance liqr on rem.objid = liqr.objid 
+    inner join liquidation liq on liqr.liquidationid = liq.objid
     inner join remittance_cashreceipt remc on rem.objid = remc.remittanceid 
     inner join cashreceipt cr on remc.objid = cr.objid 
     INNER JOIN cashreceiptitem_rpt_account cra ON cr.objid = cra.rptreceiptid 
-WHERE rem.remittancedate >= $P{fromdate} AND rem.remittancedate < $P{todate} 
+WHERE ${filter} 
     and cr.objid not in (select receiptid from cashreceipt_void where receiptid=cr.objid) 
     AND cra.revperiod <> 'advance'
     AND cra.revtype IN ('sef', 'sefint')
@@ -261,12 +269,13 @@ SELECT
     SUM(CASE WHEN cra.revperiod IN ('previous', 'prior') AND revtype ='basicint' THEN cra.amount ELSE 0.0 END) AS basicprevintamt   
 FROM remittance rem 
     inner join liquidation_remittance liqr on rem.objid = liqr.objid 
+    inner join liquidation liq on liqr.liquidationid = liq.objid
     inner join remittance_cashreceipt remc on rem.objid = remc.remittanceid 
     inner join cashreceipt cr on remc.objid = cr.objid 
     INNER JOIN cashreceiptitem_rpt_account cra ON cr.objid = cra.rptreceiptid 
-    INNER JOIN rptledger rl ON cra.rptledgerid = rl.objid
-    INNER JOIN barangay b ON rl.barangayid = b.objid 
-WHERE rem.remittancedate >= $P{fromdate} AND rem.remittancedate < $P{todate} 
+    left JOIN rptledger rl ON cra.rptledgerid = rl.objid
+    left JOIN barangay b ON rl.barangayid = b.objid 
+WHERE ${filter} 
     and cr.objid not in (select receiptid from cashreceipt_void where receiptid=cr.objid) 
     AND cra.sharetype ='barangay'
 GROUP BY b.objid
@@ -280,8 +289,8 @@ SELECT
 FROM cashreceipt cr 
     INNER JOIN cashreceiptitem_rpt_account cra ON cr.objid = cra.rptreceiptid 
     LEFT JOIN cashreceipt_void cv ON cr.objid = cv.receiptid 
-    INNER JOIN rptledger rl ON cra.rptledgerid = rl.objid
-    INNER JOIN barangay b ON rl.barangayid = b.objid 
+    left JOIN rptledger rl ON cra.rptledgerid = rl.objid
+    left JOIN barangay b ON rl.barangayid = b.objid 
     INNER JOIN remittance_cashreceipt rc ON cr.objid = rc.objid
 WHERE cr.receiptdate >= $P{fromdate} AND cr.receiptdate < $P{todate}
     AND cra.sharetype ='barangay'

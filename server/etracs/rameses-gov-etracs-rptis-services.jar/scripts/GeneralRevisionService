@@ -47,7 +47,7 @@ class GeneralRevisionService
 	@ProxyMethod
 	public def initGeneralRevision( info ) {
 		utilSvc.required('Property to process', info.faas)
-		utilSvc.required('New Revision Year', info.newrysetting)
+		utilSvc.required('New Revision Year', info.ry)
 		info.txntype = faasSvc.getTxnType('GR');
 		def faas = faasSvc.initTransaction(info)
 		
@@ -55,23 +55,23 @@ class GeneralRevisionService
 			faas.rpu.realpropertyid = faas.rp.objid
 		}
 		else {
-			def landrpu = grdb.findCurrentRevisedLandRpu([objid:faas.rpu.landrpuid, ry:info.newrysetting.ry])
+			def landrpu = grdb.findCurrentRevisedLandRpu([objid:faas.rpu.landrpuid, ry:info.ry])
 			if (!landrpu)
-				landrpu = grdb.findCurrentRevisedLandRpuByPin([pin:faas.rp.pin, ry:info.newrysetting.ry])
+				landrpu = grdb.findCurrentRevisedLandRpuByPin([pin:faas.rp.pin, ry:info.ry])
 			if (!landrpu)
-				landrpu = grdb.findRevisedLandRpu([previd:faas.rpu.landrpuid, ry:info.newrysetting.ry])
+				landrpu = grdb.findRevisedLandRpu([previd:faas.rpu.landrpuid, ry:info.ry])
 			if (!landrpu) 
-				landrpu = grdb.findRevisedLandByRealPropertyId([realpropertyid:faas.rpu.realpropertyid, ry:info.newrysetting.ry])
+				landrpu = grdb.findRevisedLandByRealPropertyId([realpropertyid:faas.rpu.realpropertyid, ry:info.ry])
 			if (!landrpu) 
-				throw new Exception('Land RPU is not yet revised for Revision Year ' + info.newrysetting.ry + '.')
+				throw new Exception('Land RPU is not yet revised for Revision Year ' + info.ry + '.')
 			faas.rp = rpSvc.open([objid:landrpu.realpropertyid])
 			faas.realpropertyid = faas.rp.objid
 			faas.rpu.realpropertyid = faas.rp.objid 
 			faas.rpu.landrpuid = landrpu.objid 
 		}
-		faas.rpu.rysettingid 	= info.newrysetting.objid 
-		faas.rpu.ry 			= info.newrysetting.ry
-		faas.rp.ry 			= info.newrysetting.ry 
+		//faas.rpu.rysettingid 	= info.newrysetting.objid 
+		faas.rpu.ry 			= info.ry
+		faas.rp.ry 			= info.ry 
 
 		faas.rpu.rp = faas.rp
 
@@ -105,7 +105,7 @@ class GeneralRevisionService
 		ry = (ry == null ? var.current_ry : ry)
 		rputype = (rputype ? rputype : 'LAND')
 		return em.sqlContext.createNamedQuery('generalrevision:getRyList' + rputype.toUpperCase())
-				.setParameters([lguid:lguid, ry:ry]).resultList 
+				.setParameters([lguid:lguid, ry:ry]).resultList.ry.unique() 
 	}
 }
 

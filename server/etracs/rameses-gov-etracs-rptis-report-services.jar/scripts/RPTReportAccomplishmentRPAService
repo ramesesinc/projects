@@ -35,6 +35,7 @@ class RPTReportAccomplishmentRPAService
 		
 		util.buildCurrentPeriodFilter(params)
 		def currentassessments = em.getCurrentRPAAccomplishment(params)
+		util.buildCurrentCancelledPeriodFilter(params)
 		def cancelledassessments = em.getCancelledRPAAccomplishment(params)
 
 		util.buildEndingPeriodFilter(params)

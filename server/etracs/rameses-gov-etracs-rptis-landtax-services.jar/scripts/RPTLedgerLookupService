@@ -18,6 +18,10 @@ class RPTLedgerLookupService
         params.tdno = params.searchtext
         params.prevtdno = params.searchtext
         params.searchtext = (params.searchtext ? params.searchtext : '') + '%'
+        params.columns = getLookupColumns()
+        params.fixfilters = ''
+        params.filters = ''
+        params.orderby = ''
 
         def filters = [
             ' AND rl.tdno = $P{tdno}',
@@ -39,6 +43,17 @@ class RPTLedgerLookupService
             [name:'totalav', caption:'Assessed Value', type:'decimal', width:110],
             [name:'state', caption:'State', width:100],
         ]   
+    }
+
+    def getLookupColumns(){
+        return '''
+            rl.objid, rl.state, rl.faasid, rl.tdno, rl.prevtdno, rl.titleno,
+            rl.taxpayer_objid, e.name AS taxpayer_name, rl.administrator_name,
+            rl.fullpin, rl.cadastrallotno, rl.totalareaha, rl.classcode, rl.rputype,  
+            rl.totalmv, rl.totalav, rl.lastyearpaid, rl.lastqtrpaid,
+            CASE WHEN rl.faasid IS NULL THEN 'M' ELSE '' END AS type,
+            b.objid AS barangay_objid, b.name AS barangay_name
+        '''
     }
 }
 

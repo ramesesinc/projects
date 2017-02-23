@@ -1,6 +1,7 @@
 <schema>
 	<element tablename="cashreceiptpayment_eor">
 		<field name="objid" primary="true" prefix="EOR"/>
+		<field name="dtposted" required="true" />
 		<field name="receiptid" />
 		<!-- link to original transaction like billing, ledger or payment order -->
 		<field name="txnrefid" required="true"/>

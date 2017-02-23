@@ -6,6 +6,7 @@ CREATE TABLE `payment_partner` (
 
 CREATE TABLE `cashreceiptpayment_eor` (
   `objid` varchar(50) NOT NULL,
+  `dtposted` datetime NOT NULL,
   `receiptid` varchar(50) DEFAULT NULL,
   `partner_objid` varchar(50) DEFAULT NULL,
   `txnrefid` varchar(50) DEFAULT NULL,
@@ -21,7 +22,7 @@ CREATE TABLE `cashreceiptpayment_eor` (
   KEY `ix_refno` (`refno`),
   KEY `ix_refdate` (`refdate`),
   CONSTRAINT `fk_payment_partner_eor` FOREIGN KEY (`partner_objid`) REFERENCES `payment_partner` (`objid`)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 INSERT INTO payment_partner SELECT 'DBP', 'DEVELOPMENT BANK OF THE PHILIPPINES';

@@ -62,3 +62,7 @@ INSERT INTO `sys_usergroup_permission` (`objid`, `usergroup_objid`, `object`, `p
 INSERT INTO `sys_usergroup_permission` (`objid`, `usergroup_objid`, `object`, `permission`, `title`) VALUES ('RPT.MASTER-structure-delete', 'RPT.MASTER', 'structure', 'delete', 'Delete Structure');
 INSERT INTO `sys_usergroup_permission` (`objid`, `usergroup_objid`, `object`, `permission`, `title`) VALUES ('RPT.MASTER-structure-edit', 'RPT.MASTER', 'structure', 'edit', 'Edit Structure');
 INSERT INTO `sys_usergroup_permission` (`objid`, `usergroup_objid`, `object`, `permission`, `title`) VALUES ('RPT.MASTER-structure-read', 'RPT.MASTER', 'structure', 'read', 'Open Structure');
+INSERT INTO `sys_usergroup_permission` (`objid`, `usergroup_objid`, `object`, `permission`, `title`) VALUES ('RPT.MASTER-requirementtype-create', 'RPT.MASTER', 'requirementtype', 'create', 'Create Requirement Type');
+INSERT INTO `sys_usergroup_permission` (`objid`, `usergroup_objid`, `object`, `permission`, `title`) VALUES ('RPT.MASTER-requirementtype-delete', 'RPT.MASTER', 'requirementtype', 'delete', 'Delete Requirement Type');
+INSERT INTO `sys_usergroup_permission` (`objid`, `usergroup_objid`, `object`, `permission`, `title`) VALUES ('RPT.MASTER-requirementtype-edit', 'RPT.MASTER', 'requirementtype', 'edit', 'Edit Requirement Type');
+INSERT INTO `sys_usergroup_permission` (`objid`, `usergroup_objid`, `object`, `permission`, `title`) VALUES ('RPT.MASTER-requirementtype-read', 'RPT.MASTER', 'requirementtype', 'read', 'Open Requirement Type');

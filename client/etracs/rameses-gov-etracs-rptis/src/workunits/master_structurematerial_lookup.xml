@@ -1,3 +1,4 @@
+
 <workunit extends="wtemplates/LookupController.xml">
     <invokers>
         <invoker type="structurematerial:lookup" action="init" caption="Struture Material Lookup" target="popup" />

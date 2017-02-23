@@ -4,19 +4,19 @@
  * Created on February 27, 2011, 12:48 PM
  */
 
-package com.rameses.gov.etracs.rpt.master.ui;
+package com.rameses.gov.etracs.rptis.master.views;
 
-import com.rameses.osiris2.themes.FormPage;
 import com.rameses.rcp.ui.annotations.StyleSheet;
 import com.rameses.rcp.ui.annotations.Template;
+import com.rameses.seti2.views.CrudFormPage;
 
 
 @StyleSheet
-@Template(FormPage.class)
-public class RPTRequirementTypePage extends javax.swing.JPanel {
+@Template(CrudFormPage.class)
+public class RequirementTypePage extends javax.swing.JPanel {
     
     /** Creates new form AccountPage */
-    public RPTRequirementTypePage() {
+    public RequirementTypePage() {
         initComponents();
     }
     
@@ -46,7 +46,7 @@ public class RPTRequirementTypePage extends javax.swing.JPanel {
         xTextField2.setRequired(true);
         formPanel1.add(xTextField2);
 
-        jScrollPane1.setPreferredSize(new java.awt.Dimension(0, 60));
+        jScrollPane1.setPreferredSize(new java.awt.Dimension(0, 100));
 
         xTextArea1.setLineWrap(true);
         xTextArea1.setWrapStyleWord(true);
@@ -77,8 +77,8 @@ public class RPTRequirementTypePage extends javax.swing.JPanel {
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(formPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 348, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(390, Short.MAX_VALUE))
+                .add(formPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 473, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(265, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)

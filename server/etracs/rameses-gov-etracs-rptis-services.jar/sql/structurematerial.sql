@@ -23,3 +23,14 @@ update structurematerial set
 	idx = $P{idx}
 where structure_objid = $P{structureid}
 and material_objid = $P{materialid}
+
+
+[getMaterials]
+SELECT 
+	m.*
+FROM structurematerial sm
+	INNER JOIN material m ON sm.material_objid = m.objid
+WHERE sm.structure_objid = $P{structure_objid}	
+  AND ( m.code LIKE $P{searchtext} OR m.name LIKE $P{searchtext} ) 
+ORDER BY m.name 
+

@@ -16,4 +16,11 @@ class StructureService
 		em.updateMaterial(item)
 	}
 
+	@ProxyMethod
+	public def getMaterials( params ) {
+		if (!params.searchtext) params.searchtext = ''
+		params.searchtext += '%'
+		return em.getMaterials(params)
+	}
+
 }

@@ -1,0 +1,12 @@
+<workunit extends="rpt_wtemplates/MasterLookup.xml" 
+          schemaName="structure"
+          customFilter="state='APPROVED'" 
+          orderBy="code">
+    <invokers>
+        <invoker type="structure:lookup" 
+                 caption="Structure Lookup" 
+                 action="init"
+                 height="500" width="700" />
+    </invokers>
+</workunit>
+

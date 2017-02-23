@@ -1,0 +1,5 @@
+<schema>
+	<element tablename="faas_txntype_attribute_type">
+		<field name="objid" primary="true" prefix="RT"/>
+	</element>
+</schema>

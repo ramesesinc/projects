@@ -17,11 +17,6 @@
 		<field name="fund_objid"  />
 		<field name="fund_title"  />
 		<field name="category"  />
-
-		<complex name="org" ref="sys_org" jointype="many-to-one" required="false" includefields="orgclass">
-			<key field="org_objid" target="objid" />
-		</complex>	
-
 	</element>
 
 </schema>

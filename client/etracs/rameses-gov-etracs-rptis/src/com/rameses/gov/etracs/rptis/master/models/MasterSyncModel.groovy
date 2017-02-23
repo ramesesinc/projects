@@ -1,4 +1,4 @@
-package com.rameses.gov.etracs.rptis.municipality.sync;
+package com.rameses.gov.etracs.rptis.master.models;
 
 import com.rameses.rcp.common.*;
 import com.rameses.rcp.annotations.*;
@@ -6,12 +6,12 @@ import com.rameses.osiris2.client.*;
 import com.rameses.osiris2.common.*;
 import com.rameses.common.*;
 
-public class MasterSyncDataController  
+public class MasterSyncModel  
 {
     @Binding
     def binding;
     
-    @Service('MunicipalityMasterDataSyncService')
+    @Service('RPTISMasterSyncService')
     def syncSvc;
     
     @Service('PersistenceService')
@@ -20,18 +20,14 @@ public class MasterSyncDataController
     @Caller
     def caller;
     
-    @Invoker 
-    def inv;
-    
+    def entity;
     
     def processing;
     boolean showry = false;
-    boolean showsync = false;
-    
-    def params = [:];
+    boolean showsync = true;
     
     def getTitle(){
-        return 'Synchronizing ' + inv.properties.schemaCaption;
+        return 'Synchronizing ' + entity.schemacaption;
     }
     
     def loghandler = new TextWriter();
@@ -40,7 +36,7 @@ public class MasterSyncDataController
         onMessage : { data ->
             if (data != AsyncHandler.EOF){
                 data.each{ 
-                    it._schemaname = inv.properties.schemaName;
+                    it._schemaname = entity.schemaname;
                     persistence.save(it);
                     loghandler.writeln('Updating data : ' + (it.name ? it.name : it.code) + '.');
                 }
@@ -68,16 +64,11 @@ public class MasterSyncDataController
         run : {
             processing = true;
             loghandler.writeln('Connecting to remote server...');
-            syncSvc.syncData(params, handler);
+            syncSvc.syncData(entity, handler);
         }
     ] as Runnable;
     
     void syncData(){
-        params.schemaname = inv.properties.schemaName;
-        
-        if (!params.schemaname) 
-            throw new Exception('Schema Name is not specified in the invoker.')
-            
         if (MsgBox.confirm('Sync data from province?')){
             new Thread(process).start();
         }

@@ -1,7 +1,7 @@
 import com.rameses.annotations.*;
 import com.rameses.common.*;
 
-class MunicipalityMasterDataSyncService
+class RPTISMasterSyncService
 {   
 	@Service(value='CloudNotificationService', connection='notification_proxy')
 	def cloudNotificationSvc;

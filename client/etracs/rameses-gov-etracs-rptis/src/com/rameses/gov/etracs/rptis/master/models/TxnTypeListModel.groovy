@@ -11,4 +11,8 @@ class TxnTypeListModel extends MasterListModel
 {
     boolean createAllowed  = false;
     boolean deleteAllowed  = false;
+    
+    boolean allowExport = false;
+    boolean allowImport = false;
+    boolean allowSync = false;
 }

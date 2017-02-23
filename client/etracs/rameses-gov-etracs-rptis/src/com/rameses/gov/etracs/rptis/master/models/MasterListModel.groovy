@@ -10,6 +10,15 @@ class MasterListModel extends CrudListModel
 {
     // boolean autoResize = false;
     
+    boolean allowExport = true;
+    boolean allowImport = true;
+    
+    boolean isAllowSync(){
+        if ('municipality'.equalsIgnoreCase(OsirisContext.env?.ORGCLASS))
+            return true;
+        return false;
+    }
+    
     def importFile(){
         def entity = [:]
         entity.schemaname = schemaName;
@@ -22,5 +31,13 @@ class MasterListModel extends CrudListModel
         entity.schemaname = schemaName;
         entity.title = workunit?.info?.workunit_properties?.windowTitle;
         return Inv.lookupOpener('rptis_master:export', [entity:entity]);
+    }
+    
+    def syncData(){
+        def entity = [:]
+        entity.title = workunit?.info?.workunit_properties?.windowTitle;
+        entity.schemaname = schemaName;
+        entity.schemacaption = entity.title;
+        return Inv.lookupOpener('rptis_master:sync', [entity:entity]);
     }
 }

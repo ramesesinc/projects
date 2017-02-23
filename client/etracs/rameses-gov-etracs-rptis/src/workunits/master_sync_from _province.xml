@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit>
     <invokers>
+        <invoker type="rptis_master:sync" caption="Synchronize Master Data"/>
+        
         <invoker type="formActions" action="doClose" caption="Close" immediate="true" />
         <invoker type="formActions" action="syncData" caption="Sync Data" visibleWhen="#{showsync==true}"/>
     </invokers>
-    <code class="com.rameses.gov.etracs.rptis.municipality.sync.MasterSyncDataModel"/>
+    <code class="com.rameses.gov.etracs.rptis.master.models.MasterSyncModel"/>
     <pages>
-        <page template="com.rameses.gov.etracs.rptis.municipality.sync.SyncStatusPage"/>
+        <page template="com.rameses.gov.etracs.rptis.util.SyncStatusPage"/>
     </pages>
 </workunit>

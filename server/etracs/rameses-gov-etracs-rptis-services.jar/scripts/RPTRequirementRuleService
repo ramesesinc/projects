@@ -25,7 +25,7 @@ public class RPTRequirementRuleService
 	public def getFaasTxnAttributeTypes( params ) {
 		if (!params.searchtext) params.searchtext = ''
 		params.searchtext += '%'
-		return querySvc.getList([_schemaname:'faas_attribute_type', where:['1=1']])
+		return querySvc.getList([_schemaname:'faastxntypeattribute', where:['1=1']])
 	}
 
 

@@ -143,3 +143,7 @@ INSERT INTO sys_usergroup_permission (objid, usergroup_objid, object, permission
 go 
 INSERT INTO sys_usergroup_permission (objid, usergroup_objid, object, permission, title) VALUES ('RPT.MASTER-requirementtype-read', 'RPT.MASTER', 'requirementtype', 'read', 'Open Requirement Type')
 go 
+INSERT INTO sys_usergroup_permission (objid, usergroup_objid, object, permission, title) VALUES ('RPT.MASTER-faastxntype-edit', 'RPT.MASTER', 'faastxntype', 'edit', 'Edit Transaction Types')
+go 
+INSERT INTO sys_usergroup_permission (objid, usergroup_objid, object, permission, title) VALUES ('RPT.MASTER-faastxntype-read', 'RPT.MASTER', 'faastxntype', 'read', 'Open Transaction Types')
+go 

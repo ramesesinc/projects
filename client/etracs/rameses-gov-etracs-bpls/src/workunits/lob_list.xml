@@ -1,7 +1,8 @@
 <workunit extends="com/rameses/seti2/templates/CrudList.xml" schemaName="lob">
     <invokers>
         <invoker folderid="/explorer/master/bpls" caption="Line of Business" 
-                 target="window" index="10" role="MASTER" permission="lob.view" action="init"/>
+                 action="init" role="MASTER" permission="lob.view" target="window" index="10" 
+                 orderBy="name"/>
     </invokers>
     <code class="com.rameses.gov.etracs.bpls.models.LobListModel" />
     <pages>

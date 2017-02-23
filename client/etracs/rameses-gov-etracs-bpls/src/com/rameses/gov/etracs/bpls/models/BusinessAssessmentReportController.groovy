@@ -47,12 +47,12 @@ class BusinessAssessmentReportController extends com.rameses.etracs.shared.Repor
         charges?.each{  
             it.sortindexno = (it.lob?.objid == null? 4: 3); 
         } 
-        entity.taxfees.sort{ it.sortindexno } 
+        entity.taxfees?.sort{ it.sortindexno } 
         entity.applications = []; 
         entity.applications << [
             year: entity.appyear, taxes: taxes, 
-            regfees: regfees.sort{ it.sortindexno }, 
-            charges: charges.sort{ it.sortindexno }  
+            regfees: regfees?.sort{ it.sortindexno }, 
+            charges: charges?.sort{ it.sortindexno }  
         ]; 
         afterReportData( entity ); 
         return entity; 

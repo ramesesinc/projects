@@ -59,7 +59,7 @@
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="xFormPanel1" min="-2" pref="405" max="-2" attributes="0"/>
-                  <EmptySpace pref="131" max="32767" attributes="0"/>
+                  <EmptySpace max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -84,7 +84,6 @@
                   <Dimension value="[0, 20]"/>
                 </Property>
                 <Property name="required" type="boolean" value="true"/>
-                <Property name="spaceChar" type="char" value="_"/>
               </Properties>
             </Component>
             <Component class="com.rameses.rcp.control.XTextField" name="xTextField1">
@@ -95,7 +94,6 @@
                   <Dimension value="[0, 20]"/>
                 </Property>
                 <Property name="required" type="boolean" value="true"/>
-                <Property name="spaceChar" type="char" value="_"/>
               </Properties>
             </Component>
             <Component class="com.rameses.rcp.control.XTextField" name="xTextField2">

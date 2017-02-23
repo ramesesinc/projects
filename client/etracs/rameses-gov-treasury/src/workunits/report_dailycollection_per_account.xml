@@ -1,4 +1,4 @@
-<workunit extends="wtemplates/gov/treasury/ReportController.xml" >
+<workunit extends="wtemplates/ReportController.xml">
     <invokers>
         <invoker folderid="/explorer/report/treasury" caption="Daily Report Of Collection Summary By Fund" target="window" index="10">
             <action name="doInit" role="REPORT" tag="all" permission="collectionreport.view"/> 
@@ -13,14 +13,16 @@ import com.rameses.rcp.annotations.*;
 import com.rameses.osiris2.client.*;
 import com.rameses.osiris2.reports.*;
 
+class DailyCollectionController extends ReportController {
 
-class DailyCollectionController extends com.rameses.etracs.shared.ReportController 
-{
     @Service('CollectorReportService') 
     def svc
 
     @Script('User')
     def user;
+
+    @Script('ReportPeriod')
+    def reportPeriod;
 
     String title = 'Daily Report Of Collection Summary By Fund'
     String reportpath = 'com/rameses/gov/treasury/report/'
@@ -28,20 +30,21 @@ class DailyCollectionController extends com.rameses.etracs.shared.ReportControll
     
     def tag; 
     def data;
-    
-    def periods = [
-        [type:'monthly', title:'Monthly'] 
-    ];
+    def months;   
+    def periods; 
+
+    def postingTypes = [
+        [objid: 'BY_REMITTANCE_DATE',  name: 'By Remittance Date'],
+        [objid: 'BY_LIQUIDATION_DATE', name: 'By Liquidation Date']
+    ]; 
 
     void doInit( invoker ) {
-        init();
-        
+        init();        
+        months = reportPeriod.getMonths(); 
+        periods = reportPeriod.getTypes().findAll{ it.type=='monthly' } 
         tag = invoker?.properties?.tag; 
         entity.period = periods[0].type; 
-        entity.collector = [
-            objid : user.env.USERID,
-            name  : user.env.FULLNAME 
-        ]; 
+        entity.collector = [ objid: user.env.USERID, name: user.env.FULLNAME ]; 
     } 
 
     def lookupCollector = Inv.lookupOpener('collector:lookup', [
@@ -53,36 +56,18 @@ class DailyCollectionController extends com.rameses.etracs.shared.ReportControll
             entity.collector = null; 
         } 
     ]); 
-        
-    def initReport(){
-        return 'default'
-    }     
-    
-    def getReportData(){
+            
+    def getReportData() { 
         data = svc.generateDailyCollectionReport(entity);
-        return data.items
-    }
+        return data.items; 
+    } 
     
-    def formControl = [
-        getFormControls: {
-            return [
-                new FormControl( "integer", [caption:'Year', name:'entity.year', required:true, preferredSize:'100,19', captionWidth:100]), 
-                new FormControl( "combo", [caption:'Month', name:'entity.month', items:'months', expression:'#{item.name}', preferredSize:'100,19', captionWidth:100, required:true]),
-            ]    
-        }
-    ] as FormPanelModel;
-   
-    Map getParameters(){
-        return data.header
+    Map getParameters() { 
+        return data.header; 
     }
-
-    List getMonths(){
-        return dtSvc.getMonths();
-    }
-}
+} 
 ]]>        
-    </code>
-    
+    </code>    
     <pages>
         <page template="com.rameses.gov.treasury.report.view.CollectionReportCriteriaPage" />
     </pages>      

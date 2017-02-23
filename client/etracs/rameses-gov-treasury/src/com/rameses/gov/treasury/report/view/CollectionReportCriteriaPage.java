@@ -38,15 +38,18 @@ public class CollectionReportCriteriaPage extends javax.swing.JPanel {
         xIntegerField1 = new com.rameses.rcp.control.XIntegerField();
         xComboBox3 = new com.rameses.rcp.control.XComboBox();
         xDateField1 = new com.rameses.rcp.control.XDateField();
+        xComboBox7 = new com.rameses.rcp.control.XComboBox();
         xLookupField1 = new com.rameses.rcp.control.XLookupField();
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder1.setTitle("  General Information   ");
         jPanel1.setBorder(xTitledBorder1);
 
+        xFormPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
+
         xComboBox1.setAllowNull(false);
         xComboBox1.setCaption("Period");
-        xComboBox1.setCaptionWidth(100);
+        xComboBox1.setCaptionWidth(110);
         xComboBox1.setExpression("#{item.title}");
         xComboBox1.setImmediate(true);
         xComboBox1.setItemKey("type");
@@ -56,7 +59,7 @@ public class CollectionReportCriteriaPage extends javax.swing.JPanel {
         xFormPanel1.add(xComboBox1);
 
         xIntegerField1.setCaption("Year");
-        xIntegerField1.setCaptionWidth(100);
+        xIntegerField1.setCaptionWidth(110);
         xIntegerField1.setDepends(new String[] {"entity.period"});
         xIntegerField1.setName("entity.year"); // NOI18N
         xIntegerField1.setPreferredSize(new java.awt.Dimension(99, 20));
@@ -64,9 +67,9 @@ public class CollectionReportCriteriaPage extends javax.swing.JPanel {
         xFormPanel1.add(xIntegerField1);
 
         xComboBox3.setCaption("Month");
-        xComboBox3.setCaptionWidth(100);
+        xComboBox3.setCaptionWidth(110);
         xComboBox3.setDepends(new String[] {"entity.period"});
-        xComboBox3.setExpression("#{item.name}");
+        xComboBox3.setExpression("#{item.title}");
         xComboBox3.setImmediate(true);
         xComboBox3.setItems("months");
         xComboBox3.setName("entity.month"); // NOI18N
@@ -75,15 +78,26 @@ public class CollectionReportCriteriaPage extends javax.swing.JPanel {
         xFormPanel1.add(xComboBox3);
 
         xDateField1.setCaption("Date");
-        xDateField1.setCaptionWidth(100);
+        xDateField1.setCaptionWidth(110);
         xDateField1.setDepends(new String[] {"entity.period"});
         xDateField1.setName("entity.date"); // NOI18N
         xDateField1.setPreferredSize(new java.awt.Dimension(99, 20));
         xDateField1.setRequired(true);
         xFormPanel1.add(xDateField1);
 
+        xComboBox7.setAllowNull(false);
+        xComboBox7.setCaption("Posting Type");
+        xComboBox7.setCaptionWidth(110);
+        xComboBox7.setExpression("#{item.name}");
+        xComboBox7.setImmediate(true);
+        xComboBox7.setItems("postingTypes");
+        xComboBox7.setName("entity.postingtype"); // NOI18N
+        xComboBox7.setPreferredSize(new java.awt.Dimension(300, 20));
+        xComboBox7.setRequired(true);
+        xFormPanel1.add(xComboBox7);
+
         xLookupField1.setCaption("Collector");
-        xLookupField1.setCaptionWidth(100);
+        xLookupField1.setCaptionWidth(110);
         xLookupField1.setDisableWhen("#{tag != 'all'}");
         xLookupField1.setExpression("#{item.name}");
         xLookupField1.setHandler("lookupCollector");
@@ -129,6 +143,7 @@ public class CollectionReportCriteriaPage extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel1;
     private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XComboBox xComboBox3;
+    private com.rameses.rcp.control.XComboBox xComboBox7;
     private com.rameses.rcp.control.XDateField xDateField1;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XIntegerField xIntegerField1;

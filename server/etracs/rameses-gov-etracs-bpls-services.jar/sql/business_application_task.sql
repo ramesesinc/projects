@@ -44,3 +44,14 @@ from business_application_task
 where refid = $P{refid}
   and state = $P{state}
 order by startdate desc 
+
+[findLastTask]
+select tsk.* 
+from ( 
+	select refid, max(startdate) as startdate  
+	from business_application_task 
+	where refid = $P{refid}   
+	group by refid 
+)tmp  
+	inner join business_application_task tsk on tsk.refid=tmp.refid 
+where tsk.startdate=tmp.startdate 

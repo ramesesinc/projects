@@ -50,6 +50,7 @@ public class CashReceiptSelectionPage extends javax.swing.JPanel {
         xTileView1.setPadding(new java.awt.Insets(10, 20, 10, 0));
         add(xTileView1, java.awt.BorderLayout.CENTER);
 
+        jPanel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 0, 0, 0));
         jPanel1.setPreferredSize(new java.awt.Dimension(100, 30));
 
         xComboBox1.setAllowNull(false);

@@ -24,62 +24,56 @@ class CollectionReportService  {
 	public def getReportListing( params ) { 
 		buildParams( params ); 
 
-		def list = adb.getReportListing( params );  
-		if (!list) throw new Exception('No available record(s) found that matches your criteria'); 
+		def list = null; 
+		def postingtypeid = params.postingtype?.objid.toString().toUpperCase(); 
+		if ( postingtypeid == 'BY_LIQUIDATION_DATE' ) {
+			list = adb.getReportListingByLiquidation( params ); 
+		} else {
+			list = adb.getReportListing( params ); 
+		} 
+
+		if ( !list ) throw new Exception('No available record(s) found that matches your criteria'); 
 
 		return [
 			header : [
-				REPORTTITLE   : 'DAILY REPORT OF COLLECTION LISTING', 
-				PERIOD        : params.strperiod  
+				REPORTTITLE : 'DAILY REPORT OF COLLECTION LISTING', 
+				PERIOD      : params.strperiod  
 			], 
-			reportdata: [
-				receipts : list 
-			]
+			reportdata: [ receipts : list ] 
 		]; 
 	}
 
 
 	void buildParams( params ) {
+		def YMD = new java.text.SimpleDateFormat('yyyy-MM-dd'); 
+		
 		def period = new StringBuilder();
-		if ( params.period == 'monthly' ) {
-			if ( !params.year ) throw new Exception('year is required');
-			if ( !params.month ) throw new Exception('month is required');
+		if ( params.period.toString().toUpperCase() == 'MONTHLY' ) {
+			if ( !params.year ) throw new Exception('year parameter is required');
+			if ( !params.month?.index ) throw new Exception('month parameter is required');
 
 			def monthindex = params.month.index; 
-			def strmonth = (monthindex > 9? monthindex: '0'+monthindex); 
-			def dtstart = java.sql.Date.valueOf(''+ params.year +'-'+ strmonth +'-01'); 
-			def dtend = dtSvc.getMonthEndDate( dtstart ); 
-			def cal = Calendar.getInstance();
-			cal.setTime( dtend ); 
-			cal.set( Calendar.HOUR, 23 );
-			cal.set( Calendar.MINUTE, 59 );
-			cal.set( Calendar.SECOND, 59 );
-			dtend = cal.time; 
+			def startdate = YMD.parse( params.year +'-'+ monthindex.toString().padLeft(2, '0') +'-01' );
+			def enddate = DateUtil.add( startdate, '1M' ); 	
 
 			def months = dtSvc.getMonths(); 
-			params.startdate = dtstart;
-			params.enddate = dtend;
+			params.startdate = startdate;
+			params.enddate = enddate;
 			period.append('For the month of ' + months[monthindex-1].caption +' '+ params.year ); 
 		
 		} else {
-			if ( !params.date ) throw new Exception('date is required');
+			if ( !params.date ) throw new Exception('date parameter is required');
 
 			def sdate = params.date; 
-			def YMD = new java.text.SimpleDateFormat('yyyy-MM-dd');
 			if ( params.date instanceof java.util.Date ) {
 				sdate = YMD.format( params.date );
-				params.startdate = sdate + ' 00:00:00';
-				params.enddate   = sdate + ' 23:59:59';
-			} else { 
-				YMD.parse( params.date ); 
-				params.startdate = params.date + ' 00:00:00';
-				params.enddate   = params.date + ' 23:59:59';				
-			}
+			} 
 
-			params.date = YMD.parse( sdate ); 
-
+			params.startdate = YMD.parse( sdate );
+			params.enddate = DateUtil.add( params.startdate, '1d' ); 	
 			def formatter = new java.text.SimpleDateFormat('MMMMM dd, yyyy');
-			period.append('For the day of ' + formatter.format( params.date ));
+			period.append('For the day of ' + formatter.format( params.startdate ));
+			params.date = params.startdate; 
 		}
 		params.strperiod = period.toString(); 
 		params.collectorid = params.collector?.objid; 

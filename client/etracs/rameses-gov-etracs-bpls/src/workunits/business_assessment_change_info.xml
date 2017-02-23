@@ -1,72 +1,64 @@
-<workunit>
-    
+<workunit>     
     <invokers>
-        <invoker  type="business_assessment:change" caption="Change Business Info" 
-            target="process" index="1" action="init" /> 
+        <invoker type="business_assessment:change" caption="Change Business Info" 
+                 action="init" target="process" index="1" /> 
     </invokers>
     
     <code>
-        <![CDATA[    
-        import com.rameses.rcp.annotations.*
-        import com.rameses.rcp.common.*
-        import com.rameses.osiris2.client.*
-        import com.rameses.osiris2.common.*
-        import java.rmi.server.*;
-        import com.rameses.util.*;
-        import com.rameses.gov.etracs.bpls.application.*;
-        
-        class EditInfoController {
-        
-            @Binding
-            def binding;
-            
-            @Script("BusinessLobUtil")
-            def lob;
-            
-            @Script("BusinessInfoUtil")
-            def appinfo;
-            
-            @Service("BusinessChangeService")
-            def service;
-            
-            def entity;
-            def entry = [:];
-            def handler;
-            
-            void init() {
-               if(entity.taxfees) {
-                    if( !MsgBox.confirm("Your present assessment will be cleared with this transaction. Proceed?")) 
-                        throw new BreakException();
-               }
-            
-               boolean test = false;
-               appinfo.handler = {
-                    test = true;
-               }
-               Modal.show(appinfo.update());
-               appinfo.verify();
-               if( !test ) 
-                    throw new BreakException();
+    <![CDATA[    
+import com.rameses.rcp.annotations.*
+import com.rameses.rcp.common.*
+import com.rameses.osiris2.client.*
+import com.rameses.osiris2.common.*
+import java.rmi.server.*;
+import com.rameses.util.*;
+import com.rameses.gov.etracs.bpls.application.*;
 
-               entry.businessid = entity.business.objid;
-               entry.applicationid = entity.objid;
-               entry.lobs = entity.lobs;     
-               entry.appinfos = entity.appinfos;     
-               entry.requirements = entity.requirements;     
-               entry.reason = 'wrong info';
-               entry.particulars = '-';
-               entry.changetype = 'CHANGE-APPINFO';
-               entry.activeyear = entity.appyear;
-               service.updateAppInfos(entry);   
-               entity.taxfees = [];
-               entity.assessmentinfos = [];  
-               if(handler) handler(true);               
-            }
-            
-            
-        }
-        ]]>
+class EditInfoController {
+
+    @Binding
+    def binding;
+
+    @Script("BusinessLobUtil")
+    def lob;
+
+    @Script("BusinessInfoUtil")
+    def appinfo;
+
+    @Service("BusinessChangeService")
+    def service;
+
+    def entity;
+    def entry = [:];
+    def handler;
+
+    void init() {
+       if(entity.taxfees) {
+            if( !MsgBox.confirm("Your present assessment will be cleared with this transaction. Proceed?")) 
+                throw new BreakException();
+       }
+
+       boolean test = false;
+       appinfo.handler = { test = true; }
+       Modal.show(appinfo.update());
+       appinfo.verify();
+       if( !test ) throw new BreakException();
+
+       entry.businessid = entity.business.objid;
+       entry.applicationid = entity.objid;
+       entry.lobs = entity.lobs;     
+       entry.appinfos = entity.appinfos;     
+       entry.requirements = entity.requirements;     
+       entry.reason = 'wrong info';
+       entry.particulars = '-';
+       entry.changetype = 'CHANGE-APPINFO';
+       entry.activeyear = entity.appyear;
+       service.updateAppInfos(entry);   
+       entity.taxfees = [];
+       entity.assessmentinfos = [];  
+       if(handler) handler(true);               
+    } 
+}
+    ]]>
     </code>
-    
-
 </workunit>

@@ -80,7 +80,7 @@ public class BusinessApplicationRetireInterceptor {
 		def b = bizSvc.open(app.business);
 		b.state = 'PROCESSING';
 		b.apptype = 'RETIRE';
-		b.appcount = apps.size() + 1; 
+		b.appcount = b.appcount + 1; 
 		bizSvc.updateForRetire( b );
 
 		app.appno = b.bin +  "-" + b.appcount + "R";

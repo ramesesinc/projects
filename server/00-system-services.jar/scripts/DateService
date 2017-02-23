@@ -15,15 +15,14 @@ class DateService {
 	@ProxyMethod(local=true)
 	public def getServerDate() {
 		def val = db.createNamedQuery("date:get-current").singleResult;
-		return val.dt; 
+		return toSqlDate( val.dt ); 
 	}
 
 	@ProxyMethod(local=true)
 	public def getBasicServerDate() {
-		def val = db.createNamedQuery("date:get-current").singleResult;
-		def df = new java.text.SimpleDateFormat( 'yyyy-MM-dd' ); 
-		return df.parse( df.format(val.dt) );
-	}
+		def val = getServerDate(); 
+		return toSqlDate( val, false ); 
+	} 
 	
 	@ProxyMethod(local=true)
 	public def getServerYear() {
@@ -60,15 +59,22 @@ class DateService {
 	}
  
  	@ProxyMethod(local=true)
-	public String format(String pattern, Date d ) {
-		return (new java.text.SimpleDateFormat( pattern )).format(d);
+	public String format(String pattern, Object value ) { 
+		def dt = resolveDate( value ); 
+		if ( dt == null ) return null; 
+
+		return new java.text.SimpleDateFormat( pattern ).format( dt );
 	}
 	
 	@ProxyMethod(local=true)
-	public def parse( pattern, d ) {
-		if (d instanceof Date)
-			return d;
-		return ( new java.text.SimpleDateFormat( pattern )).parse( d );
+	public def parse( String pattern, Object value ) { 
+		if ( value == null ) return null; 
+		else if ( value instanceof Date) { 
+			return toSqlDate( value ); 
+		} 
+
+		def dt = new java.text.SimpleDateFormat( pattern ).parse( value.toString()); 
+		return toSqlDate( dt );
 	}
 	
 	@ProxyMethod(local=true)
@@ -83,11 +89,10 @@ class DateService {
     }
   	
 	@ProxyMethod(local=true)
-	public def parseDate(def d, String timezone) {
-		if (!(d instanceof Date))
-			d = parse("yyyy-MM-dd", d);
+	public def parseDate( def value, String timezone ) { 
 		def cal = Calendar.getInstance();
-		cal.setTime( d );
+		cal.setTime( resolveDate( value ));
+
 		def map = [:];
 		map.month = cal.get( Calendar.MONTH ) + 1;
 		map.day = cal.get( Calendar.DATE );
@@ -96,7 +101,7 @@ class DateService {
 		map.minute = cal.get( Calendar.MINUTE );
 		map.second = cal.get( Calendar.SECOND );
 		map.millisecond = cal.get(Calendar.MILLISECOND);
-		map.date  = cal.getTime(); 
+		map.date  = toSqlDate( cal.getTime()); 
 		map.qtr = getQtrByMonth( map.month );
 		return map;
 	}
@@ -131,18 +136,18 @@ class DateService {
 	
 	@ProxyMethod(local=true)
 	public def add(Date d, String interval) {
-		if(d==null) d = getServerDate();
-		return DateUtil.add( d, interval );	
+		if ( d==null ) d = getServerDate();
+		return toSqlDate( DateUtil.add( d, interval ));	
 	}	
 	
 	@ProxyMethod(local=true)
 	public def findNextDate(String timeInterval) {
-		return DateUtil.add( serverDate, timeInterval );	
-	}
+		return toSqlDate( DateUtil.add( serverDate, timeInterval )); 
+	} 
 	
 	@ProxyMethod(local=true)
 	public def findNextFromDate( dt, String timeInterval) {
-		return DateUtil.add( parse('yyyy-MM-dd', dt) , timeInterval );	 
+		return toSqlDate( DateUtil.add( parse('yyyy-MM-dd', dt) , timeInterval )); 
 	}
 
 
@@ -184,11 +189,11 @@ class DateService {
     
     @ProxyMethod(local=true)
     public def getMonthEndDate( dt ) {
-        Calendar cal = Calendar.getInstance();
+        def cal = Calendar.getInstance();
         cal.setTime(dt);
         int d = cal.getActualMaximum( Calendar.DAY_OF_MONTH );
         cal.set( Calendar.DAY_OF_MONTH, d );
-        return cal.getTime();
+        return toSqlDate( cal.getTime()); 
     }
     
     @ProxyMethod(local=true)
@@ -202,12 +207,12 @@ class DateService {
             default: month = Calendar.OCTOBER;
         }
         cal.set( year, month, day,  0, 0  );
-        return cal.getTime();
-    }
+        return toSqlDate( cal.getTime()); 
+    } 
     
     @ProxyMethod(local=true)
     public Date getQtrEndDate( int qtr, int year ) {
-        Calendar cal = Calendar.getInstance();
+        def cal = Calendar.getInstance();
         int month = 0;
         switch(qtr) {
             case 1: month = Calendar.MARCH; break;
@@ -218,12 +223,12 @@ class DateService {
         cal.set( year, month, 1, 0, 0, 0  );
         int d = cal.getActualMaximum( Calendar.DAY_OF_MONTH );
         cal.set( Calendar.DAY_OF_MONTH, d );
-        return cal.getTime();
+        return toSqlDate( cal.getTime());
     }
     
     @ProxyMethod(local=true)
     public int getQtr( Date d ) {
-        Calendar cal = Calendar.getInstance();
+        def cal = Calendar.getInstance();
         cal.setTime( d );
         int month = cal.get( Calendar.MONTH );
         if( month == Calendar.JANUARY || month == Calendar.FEBRUARY || month == Calendar.MARCH ) return 1;
@@ -234,8 +239,8 @@ class DateService {
     
     @ProxyMethod(local=true)
     public def getDaysDiff(Date startDate, Date endDate ) {
-        Calendar startCal = Calendar.getInstance();
-        Calendar endCal = Calendar.getInstance();
+        def startCal = Calendar.getInstance();
+        def endCal = Calendar.getInstance();
         
         startCal.setTime(startDate);
         endCal.setTime(endDate );
@@ -251,8 +256,8 @@ class DateService {
     @ProxyMethod(local=true)
     public int calculateAge( value ) {
 		def dateOfBirth = resolveDate( value ); 
-		Calendar today = Calendar.getInstance();
-		Calendar birthDate = Calendar.getInstance();
+		def today = Calendar.getInstance();
+		def birthDate = Calendar.getInstance();
 	    birthDate.setTime(dateOfBirth);
 	    if (birthDate.after(today)) {
 	        throw new Exception("Can't be born in the future");
@@ -280,13 +285,27 @@ class DateService {
     	else if ( value instanceof Date ) return value; 
     	else if ( value instanceof String) { 
     		try {
-    			return YMD.parse( value.toString() ); 
+    			return YMDHMS.parse( value.toString() ); 
 			} catch(Throwable t) {;} 
 			try {
-    			return YMDHMS.parse( value.toString() ); 
+    			return YMD.parse( value.toString() ); 
 			} catch(Throwable t) {;} 
     	} 
 
     	throw new Exception('Cannot resolve date due to data type mismatch'); 
     } 
+
+    Date toSqlDate( Date value ) { 
+    	return toSqlDate( value, true ); 
+	} 
+    Date toSqlDate( Date value, boolean extended ) { 
+    	if ( value == null ) return null; 
+
+    	def dt = YMDHMS.parse( YMDHMS.format( value )); 
+    	if ( extended ) {
+    		return new java.sql.Timestamp( dt.time); 
+    	} else {
+    		return new java.sql.Date( dt.time); 
+    	}
+    }
 }

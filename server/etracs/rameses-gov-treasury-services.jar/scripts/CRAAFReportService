@@ -1,11 +1,9 @@
 import com.rameses.annotations.*;
 import com.rameses.common.*
-import com.rameses.services.extended.*
 import com.rameses.util.*
 
+class CRAAFReportService {
 
-class CRAAFReportService  
-{ 
 	@ActiveDB('craaf_report')
 	def adb 
 
@@ -61,8 +59,12 @@ class CRAAFReportService
 		]
 	}
 
-	def getCraafData(params) {
-		def list = adb.getCraafData([year:params.year, month:params.month.index]); 
+	def getCraafData(params) { 
+		def YMD = new java.text.SimpleDateFormat('yyyy-MM-dd'); 
+		def startdate = YMD.parse( params.year +'-'+ params.month.index.toString().padLeft(2, '0') +'-01' );
+		def enddate = DateUtil.add( startdate, '1M' ); 	
+
+		def list = adb.getCraafData([ startdate: startdate, enddate: enddate ]); 
 		list.each {
 			it.beginstartseries = (it.receivedstartseries>0? null: it.beginstartseries); 
 			it.beginendseries = (it.receivedstartseries>0? null: it.beginendseries); 
@@ -122,6 +124,8 @@ class CRAAFReportService
 			else if ( it.qtybegin > 0 ) it.sortseries = it.beginstartseries; 
 			else if ( it.qtyissued > 0 ) it.sortseries = it.issuedstartseries; 
 			else if ( it.qtyending > 0 ) it.sortseries = it.endingstartseries; 
+
+			if ( it.serieslength > 0 ) it.pattern = '0'*it.serieslength; 
 		} 
 
 		def list2 = []; 

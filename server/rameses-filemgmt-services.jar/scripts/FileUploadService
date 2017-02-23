@@ -9,6 +9,12 @@ class FileUploadService {
     @DataContext("sys_fileitem")
     def fileitemEm;	
 
+
+    @ProxyMethod 
+    public def getLocations() {
+    	return filelocEm.list(); 
+    } 
+
     @ProxyMethod
     public def start( def info ) { 
     	return null; 

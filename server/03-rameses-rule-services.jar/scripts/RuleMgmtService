@@ -311,7 +311,13 @@ class RuleMgmtService extends ActiveCrudListService {
 	@ProxyMethod
 	public void reload( def ruleset ) {
 		println "RELOADING RULESET " + ruleset;
-		ruleSvc.removeRuleContext( ruleset );
+		try {
+			ruleSvc.removeRuleContext( ruleset );
+		}
+		catch(e) {
+			println "ERROR REMOVING RULE CONTEXT " + ruleset;
+		}
+		
 		def readers = [];
 		//reload the rules again.
 		def loadrules = { m->

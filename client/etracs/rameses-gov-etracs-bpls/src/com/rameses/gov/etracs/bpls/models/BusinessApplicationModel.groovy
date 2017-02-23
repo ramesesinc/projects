@@ -27,7 +27,11 @@ class  BusinessApplicationModel extends WorkflowController {
 
     @Service("BusinessPaymentService")
     def paymentSvc;
+    
+    @Service('QueryService') 
+    def querySvc; 
 
+    def nodelist = [];
     def sections = [];
     def currentSection;
     def subform;
@@ -63,14 +67,28 @@ class  BusinessApplicationModel extends WorkflowController {
         return pop;
     }
 
+    void reloadAll() {
+        has_loaded_assessment = false;         
+        open(); 
+        reloadSections(); 
+        binding.refresh(); 
+    }
+    
     def open() { 
+        if ( entity.taskid == null && entity.txnmode.toString().toUpperCase() != 'CAPTURE' ) {
+            def lasttask = appService.findLastTask([ applicationid: entity.objid ]);  
+            if ( lasttask && lasttask.objid && lasttask.enddate==null ) { 
+                entity.taskid = lasttask.objid; 
+            } 
+        }
+        
         if ( entity.taskid ) {
             super.open(); 
             
-        } else {
-            entity = appService.open( [objid: entity.objid] );
-            buildExtActions();
-            afterOpen(entity);
+        } else { 
+            entity = appService.open([ objid: entity.objid ]); 
+            buildExtActions(); 
+            afterOpen(entity); 
         } 
         
         _option = entity._option; 
@@ -104,26 +122,39 @@ class  BusinessApplicationModel extends WorkflowController {
         }
         return popupMenu;
     }
-
-    void reloadSections()  {
+    
+    void reloadSections()  { 
         def handlers = Inv.lookupOpeners("business_application:section", [entity:entity, task:task]);
+        def selitemid = currentSection?.id; 
         sections.clear();
         sections.addAll( 
             handlers.findAll {
                 def vw = it.properties.visibleWhen;
                 return  ((!vw)  ||  ExpressionResolver.getInstance().evalBoolean( vw, [entity:entity, task:task] ));     
             }
-        );    
-        if(sections && !currentSection) {
-            currentSection = sections[0];
+        ); 
+        
+        currentSection = sections.find{ it.id == selitemid } 
+        if ( sections && currentSection==null ) {
+            currentSection = sections.first(); 
         }
     }
+    
+    void loadWorkflowNodes() { 
+        def params = [ _schemaname:'sys_wf_node', orderBy:' idx ' ];
+        params.findBy = [ processname:'business_application' ]; 
+        nodelist = querySvc.getList( params );
+    } 
 
     public String getTitle() {
         return " Application No. " + entity?.appno + (task!=null ?  " ["+ task.title + "]" : "" );
     }
 
-    public void beforeSignal(o) {
+    public void beforeSignal(o) { 
+        def lasttask = appService.findLastTask([ applicationid: entity.objid ]);  
+        if ( lasttask.state != o.state ) 
+            throw new Exception('The application task status is no longer in sync. Please reload your screen.'); 
+        
         tmpmode = o.state; 
         if (o.state.contains('assessment')) {
             if (!has_loaded_assessment) throw new Exception('Please run assessment first'); 
@@ -270,5 +301,4 @@ class  BusinessApplicationModel extends WorkflowController {
         def op = Inv.lookupOpener("show_trackingno", [info: info]);
         op.handle.print();
     }
-    
 }

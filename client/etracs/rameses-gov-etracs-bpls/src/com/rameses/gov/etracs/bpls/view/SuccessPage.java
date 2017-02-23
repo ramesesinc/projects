@@ -41,8 +41,10 @@ public class SuccessPage extends javax.swing.JPanel {
         xTextField1.setName("entity.appno"); // NOI18N
         xTextField1.setReadonly(true);
 
+        xButton1.setMnemonic('T');
+        xButton1.setFontStyle("font-size:12");
         xButton1.setName("printTrackingno"); // NOI18N
-        xButton1.setText("Print tracking No");
+        xButton1.setText("Print Tracking No");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);

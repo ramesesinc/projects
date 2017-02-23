@@ -109,6 +109,8 @@ class RAAFReportService
 			it.qtybegin = (Integer) it.qtybegin;
 			it.qtyissued = (Integer) it.qtyissued;
 			it.qtyending = (Integer) it.qtyending;
+			
+			if ( it.serieslength > 0 ) it.pattern = '0'*it.serieslength; 
 		}
 
 		def list2 = list.findAll{( it.qtyissued > 0 )} 

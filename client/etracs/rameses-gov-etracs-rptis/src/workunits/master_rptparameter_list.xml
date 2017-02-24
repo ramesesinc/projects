@@ -4,12 +4,12 @@
           cols="name,caption,paramtype,state" 
           orderBy="name" >
     <invokers>
-        <invoker folderid="/explorer/master/rpt" caption="Parameters"  index="10" 
+        <invoker folderid="/explorer/master/rpt" caption="Parameters"  index="11" 
                  action="init" 
                  role="MASTER" 
                  permission="master.viewlist" />
         
-        <invoker folderid="/home/rpt/master" caption="Parameters"  index="10" 
+        <invoker folderid="/home/rpt/master" caption="Parameters"  index="11" 
                  action="init" 
                  role="MASTER" 
                  permission="master.viewlist"

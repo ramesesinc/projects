@@ -4,12 +4,12 @@
           cols="code,name,indexno,showinfaas,state" 
           orderBy="indexno" >
     <invokers>
-        <invoker folderid="/explorer/master/rpt" caption="Structures"  index="6" 
+        <invoker folderid="/explorer/master/rpt" caption="Structures"  index="7" 
                  action="init" 
                  role="MASTER" 
                  permission="master.viewlist" />
         
-        <invoker folderid="/home/rpt/master" caption="Structures"  index="6" 
+        <invoker folderid="/home/rpt/master" caption="Structures"  index="7" 
                  action="init" 
                  role="MASTER" 
                  permission="master.viewlist"

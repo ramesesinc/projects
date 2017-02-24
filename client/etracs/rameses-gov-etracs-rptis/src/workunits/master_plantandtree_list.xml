@@ -4,18 +4,18 @@
           orderBy="code"
           cols="code,name,state" >
     <invokers>
-        <invoker folderid="/explorer/master/rpt" caption="Plants/Trees"  index="15" 
+        <invoker folderid="/explorer/master/rpt" caption="Plants/Trees"  index="9" 
                  action="init" 
                  role="MASTER" 
                  permission="master.viewlist"/>
         
-        <invoker folderid="/home/rpt/master" caption="Plants/Trees"  index="15" 
+        <invoker folderid="/home/rpt/master" caption="Plants/Trees"  index="9" 
                  action="init" 
                  role="MASTER" 
                  permission="master.viewlist"
                  icon="home/icons/planttrees.png"/>
         
-        <invoker type="quick_launcher" code="MACH00" caption="Plants/Trees"  
+        <invoker type="quick_launcher" code="PT00" caption="Plants/Trees"  
                 action="init" 
                  role="MASTER" 
                  permission="master.viewlist" />

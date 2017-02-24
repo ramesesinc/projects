@@ -4,12 +4,12 @@
           cols="code,name,state" 
           orderBy="code" >
     <invokers>
-        <invoker folderid="/explorer/master/rpt" caption="Machines"  index="15" 
+        <invoker folderid="/explorer/master/rpt" caption="Machines"  index="8" 
                  action="init" 
                  role="MASTER" 
                  permission="master.viewlist" />
         
-        <invoker folderid="/home/rpt/master" caption="Machines"  index="15" 
+        <invoker folderid="/home/rpt/master" caption="Machines"  index="8" 
                  action="init" 
                  role="MASTER" 
                  permission="master.viewlist"

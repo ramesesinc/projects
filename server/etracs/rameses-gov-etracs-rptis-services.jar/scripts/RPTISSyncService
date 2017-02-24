@@ -1,7 +1,7 @@
 import com.rameses.annotations.*;
 import com.rameses.common.*;
 
-class RPTISMasterSyncService
+class RPTISSyncService
 {   
 	@Service(value='CloudNotificationService', connection='notification_proxy')
 	def cloudNotificationSvc;
@@ -15,11 +15,18 @@ class RPTISMasterSyncService
     @Context
     def appContext 
 
+    @Service('RPTUtil')
+    def util 
+
 	@ProxyMethod
 	public def syncData(params) {
+		println 'RPTISSyncService.sync============'
+		util.required('servicename', params.servicename)
+		util.required('methodname', params.methodname)
+
 		params.orgid = env.ORGID 
 		def args = [params] as Object[];
-		def asyncreq = new AsyncRequest('ProvinceMasterDataSyncHandler', 'syncData', args, env); 
+		def asyncreq = new AsyncRequest(params.servicename, params.methodname, args, env); 
 		asyncreq.contextName = 'etracs25';
 		asyncreq.connection = 'async_remote'; 
 

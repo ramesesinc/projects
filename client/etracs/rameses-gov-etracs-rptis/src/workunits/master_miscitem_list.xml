@@ -4,18 +4,18 @@
           cols="code,name,state" 
           orderBy="code" >
     <invokers>
-        <invoker folderid="/explorer/master/rpt" caption="Miscellaneous Items"  index="15" 
+        <invoker folderid="/explorer/master/rpt" caption="Miscellaneous Items"  index="10" 
                  action="init" 
                  role="MASTER" 
                  permission="master.viewlist" />
         
-        <invoker folderid="/home/rpt/master" caption="Miscellaneous Items"  index="15" 
+        <invoker folderid="/home/rpt/master" caption="Miscellaneous Items"  index="10" 
                  action="init" 
                  role="MASTER" 
                  permission="master.viewlist"
                  icon="home/icons/miscitems.png"/>
         
-        <invoker type="quick_launcher" code="MAT00" caption="Miscellaneous Items"  
+        <invoker type="quick_launcher" code="MI00" caption="Miscellaneous Items"  
                 action="init" 
                  role="MASTER" 
                  permission="master.viewlist" />

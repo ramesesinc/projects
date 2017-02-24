@@ -5,12 +5,12 @@
           orderBy="objid" 
           allowDelete="false">
     <invokers>
-        <invoker folderid="/explorer/master/rpt" caption="Transaction Types"  index="1000" 
+        <invoker folderid="/explorer/master/rpt" caption="Transaction Types"  index="15" 
                  action="init" 
                  role="MASTER" 
                  permission="master.viewlist" />
         
-        <invoker folderid="/home/rpt/master" caption="Transaction Types"  index="1000" 
+        <invoker folderid="/home/rpt/master" caption="Transaction Types"  index="15" 
                  action="init" 
                  role="MASTER" 
                  permission="master.viewlist"

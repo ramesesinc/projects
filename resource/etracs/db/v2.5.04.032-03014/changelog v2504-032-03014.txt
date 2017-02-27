@@ -12,6 +12,7 @@
 	- With Improvement Certification updates
 
 - LANDTAX
+	- Disallow transaction for compromised ledger
 	- Post ledger FAAS history for previous record reconciliation
 	- Advance bill support for Batch Billing
 	- Billing of current zero av with arrears

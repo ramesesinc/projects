@@ -539,10 +539,11 @@ class RPTLedgerService
             throw new Exception('Ledger does not exist or has already been deleted.')
 
         def pdate = dtSvc.parseCurrentDate();
-            
         if (util.isTrue(ledger.taxable)) {
             if ( ledger.lastyearpaid < pdate.year || (ledger.lastyearpaid == pdate.year && ledger.lastqtrpaid < pdate.qtr))
                 throw new Exception('Ledger has not yet been fully paid.')
+            if (util.isTrue(ledger.undercompromise))
+                throw new Exception('Ledger is still under compromised.')
         }
         else {
             em.updateLastYearQtrPaid([toyear:dtSvc.serverYear, toqtr:4, rptledgerid:ledger.objid])

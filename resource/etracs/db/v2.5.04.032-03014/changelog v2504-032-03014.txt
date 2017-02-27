@@ -5,6 +5,7 @@
 - BPLS 
 		
 - ASSESSOR	
+	- Update misc rpu suffix on Modify PIN 
 	- TMCR : add ry filter support 
 	- With Improvement Certification updates
 

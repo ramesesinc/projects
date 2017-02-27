@@ -5,6 +5,7 @@
 - BPLS 
 		
 - ASSESSOR	
+	- Agricultural Land Summary update
 	- Allow Examination findings for Current FAAS
 	- Update misc rpu suffix on Modify PIN 
 	- TMCR : add ry filter support 

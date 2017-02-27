@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit>
     <invokers>
-        <invoker folderid="/explorer/txn/landtax" action="init"  caption="Real Property Tax Bill"
+        <invoker folderid="/explorer/txn/landtax" action="init"  caption="Generate Tax Bill"
             role="LANDTAX" permission="rptbilling.create" index="101"/>
         
-        <invoker folderid="/home/landtax" action="init"  caption="Generate Real Property Tax Bill"
+        <invoker folderid="/home/landtax" action="init"  caption="Generate Tax Bill"
             role="LANDTAX" permission="rptbilling.create" index="10" />
             
-        <invoker type="quick_launcher" code="RPTBILL" action="init"  caption="Real Property Tax Bill"  
+        <invoker type="quick_launcher" code="RPTBILL" action="init"  caption="Generate Tax Bill"  
             role="LANDTAX" permission="rptbilling.create" />
             
         <invoker type="rptbill:print" action="previewBill"  caption="Real Property Tax Bill" target="popup" />

@@ -1,12 +1,16 @@
 <workunit>
     
     <invokers>
-        <invoker type="cashreceiptinfo:formActions" caption="Print Detail" action="print" target="process" 
+        <!--invoker type="cashreceiptinfo:formActions" caption="Print Detail" action="print" target="process" 
                  role="COLLECTOR" visibleWhen="#{developerMode != true}" index="1"/> 
         <invoker type="cashreceiptinfo:formActions" caption="Preview Detail" action="preview"  
-                 role="COLLECTOR" visibleWhen="#{developerMode == true}" index="1"/> 
-        <invoker type="misc_cashreceipt:formActions" caption="Print Detail" action="print" target="process" 
-                 index="1" visibleWhen="#{completed &amp;&amp; entity.formno == '51'}"/>
+                 role="COLLECTOR" visibleWhen="#{developerMode == true}" index="1"/--> 
+
+        <invoker type="cashreceiptinfo:formActions" caption="Print Detail" action="print"  
+                 role="COLLECTOR" index="1" target="process"/> 
+                
+        <invoker type="misc_cashreceipt:formActions" caption="Print Detail" action="print" 
+                 target="process" index="1" visibleWhen="#{completed &amp;&amp; entity.formno == '51'}"/>
     </invokers>
    
     <code>
@@ -19,22 +23,15 @@ import com.rameses.osiris2.reports.*;
 
  class CashReceiptForm51Detail  {
 
-    def entity;
-    
     @Service("ReportParameterService")
     def paramSvc
     
-    boolean developerMode = ReportUtil.isDeveloperMode(); 
-
-    void print() { 
-        report.viewReport(); 
-        ReportUtil.print( report.report, true) ; 
-    } 
-
-    void preview() { 
-        report.viewReport(); 
-    } 
+    @Caller 
+    def caller; 
     
+    def entity;
+
+
     def reportPath = 'com/rameses/gov/treasury/cashreceipt/forms/'
     
     def report = [
@@ -47,11 +44,25 @@ import com.rameses.osiris2.reports.*;
             ] as SubReport[];  
         }
     ] as ReportModel
+
+    void print() { 
+        if ( ReportUtil.isDeveloperMode() ) { 
+            boolean has_callback_method = false;  
+            try { 
+                if ( caller.showReport ) has_callback_method = true; 
+            } catch(Throwable t){;} 
+            
+            if ( has_callback_method ) { 
+                caller.showReport( report ); 
+                return; 
+            } 
+        } 
+
+        report.viewReport();                
+        ReportUtil.print( report.report, true) ; 
+    } 
 }
     ]]>
     </code>
-
-    <pages> 
-        <page template="com.rameses.osiris2.common.ui.ReportPreviewPage"/> 
-    </pages> 
+    
 </workunit> 

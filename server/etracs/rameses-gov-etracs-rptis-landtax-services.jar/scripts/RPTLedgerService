@@ -893,12 +893,17 @@ class RPTLedgerService
 
     @ProxyMethod
     public void reconcileManualLedger(faas, manualledger){
-        if (util.isTrue(faas.datacapture)){
+        faas.putAll(faasSvc.openFaas(faas))
+        def ledgerfaas = em.findLedgerFaasByTdno(faas)
+        if (manualledger.previousfaases){
+            faas.previousfaases = manualledger.previousfaases
+            updateLedgerFaasInfo(faas, manualledger)
+            postLedgerFaasData(faas);
+        }
+        else if (util.isTrue(faas.datacapture)){
             updateLedgerFaasInfo(faas, manualledger)
         }
         else{
-            faas.putAll(faasSvc.openFaas(faas))
-            def ledgerfaas = em.findLedgerFaasByTdno(faas)
             if (!ledgerfaas){
                 postLedgerFaasData(faas);
             }

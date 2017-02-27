@@ -63,8 +63,9 @@ class RPTLedgerInterceptor
     def findManualLedger(faas){
         def manualledger = svc.findLedgerbyTdNo(faas)
             
-        if (!manualledger)
+        if (!manualledger){
             manualledger = svc.findLedgerbyPrevTdNo(faas)
+        }
         return manualledger
     }
 
@@ -73,13 +74,11 @@ class RPTLedgerInterceptor
         def manualledger = findManualLedger(faas)
 
         if (util.isTrue(faas.txntype.reconcileledger) && manualledger){
+            manualledger.previousfaases = [[prevfaasid:faas.objid]]
             svc.reconcileManualLedger(faas, manualledger)
         }
         else {
             svc.postNewLedger(faas)
-            if (manualledger){
-                svc.cancelLedger(manualledger)
-            }
         }
         
     }

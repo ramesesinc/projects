@@ -5,6 +5,7 @@
 package queueing.view;
 
 import com.rameses.rcp.ui.annotations.Template;
+import queueing.component.PageLayout;
 
 /**
  *
@@ -15,8 +16,20 @@ public class UserQueuePage extends javax.swing.JPanel {
 
     public UserQueuePage() {
         initComponents();
+                
+        PageLayout layout = new PageLayout();
+        tabitem1.setLayout( layout ); 
+        tabitem1.removeAll(); 
+        tabitem1.add( xFormPanel1, PageLayout.CONTENT);
+        tabitem1.add( footer1panel, PageLayout.FOOTER );
+        
+        layout = new PageLayout();
+        tabitem2.setLayout( layout ); 
+        tabitem2.removeAll(); 
+        tabitem2.add( xFormPanel2, PageLayout.CONTENT);
+        tabitem2.add( footer2panel, PageLayout.FOOTER );
     }
-
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -26,78 +39,74 @@ public class UserQueuePage extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jTabbedPane1 = new javax.swing.JTabbedPane();
-        jPanel1 = new javax.swing.JPanel();
+        xTabbedPane1 = new com.rameses.rcp.control.XTabbedPane();
+        tabitem1 = new javax.swing.JPanel();
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
-        jPanel2 = new javax.swing.JPanel();
+        footer1panel = new javax.swing.JPanel();
         xButton1 = new com.rameses.rcp.control.XButton();
-        jPanel3 = new javax.swing.JPanel();
+        tabitem2 = new javax.swing.JPanel();
         xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
-        jPanel4 = new javax.swing.JPanel();
+        footer2panel = new javax.swing.JPanel();
         xButton2 = new com.rameses.rcp.control.XButton();
-        jPanel5 = new javax.swing.JPanel();
 
+        setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
         setPreferredSize(new java.awt.Dimension(370, 400));
         setLayout(new java.awt.BorderLayout());
 
-        jTabbedPane1.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        xTabbedPane1.setItems("tabitems");
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        jPanel1.setLayout(new java.awt.BorderLayout());
+        tabitem1.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        tabitem1.setLayout(new java.awt.BorderLayout());
 
         xFormPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
         xFormPanel1.setDynamic(true);
         xFormPanel1.setName("formControls"); // NOI18N
         xFormPanel1.setShowCaption(false);
         xFormPanel1.setShowCategory(true);
-        jPanel1.add(xFormPanel1, java.awt.BorderLayout.NORTH);
+        tabitem1.add(xFormPanel1, java.awt.BorderLayout.NORTH);
 
-        jPanel2.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 0, 0, 0));
-        jPanel2.setLayout(new com.rameses.rcp.control.layout.XLayout());
+        footer1panel.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 0, 0, 0));
+        footer1panel.setLayout(new com.rameses.rcp.control.layout.XLayout());
 
         xButton1.setExpression("Edit");
         xButton1.setName("edit"); // NOI18N
-        jPanel2.add(xButton1);
+        footer1panel.add(xButton1);
 
-        jPanel1.add(jPanel2, java.awt.BorderLayout.PAGE_END);
+        tabitem1.add(footer1panel, java.awt.BorderLayout.PAGE_END);
 
-        jTabbedPane1.addTab("  Allowed Sections  ", jPanel1);
+        xTabbedPane1.addTab("  Allowed Sections  ", tabitem1);
 
-        jPanel3.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        jPanel3.setLayout(new java.awt.BorderLayout());
+        tabitem2.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        tabitem2.setLayout(new java.awt.BorderLayout());
 
         xFormPanel2.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
         xFormPanel2.setName("queueSectionHandler"); // NOI18N
         xFormPanel2.setShowCaption(false);
         xFormPanel2.setShowCategory(true);
-        jPanel3.add(xFormPanel2, java.awt.BorderLayout.NORTH);
+        tabitem2.add(xFormPanel2, java.awt.BorderLayout.NORTH);
 
-        jPanel4.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 0, 0, 0));
-        jPanel4.setLayout(new com.rameses.rcp.control.layout.XLayout());
+        footer2panel.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 0, 0, 0));
+        footer2panel.setLayout(new com.rameses.rcp.control.layout.XLayout());
 
         xButton2.setExpression("Refresh");
         xButton2.setName("refreshQueueSections"); // NOI18N
-        jPanel4.add(xButton2);
+        footer2panel.add(xButton2);
 
-        jPanel3.add(jPanel4, java.awt.BorderLayout.PAGE_END);
+        tabitem2.add(footer2panel, java.awt.BorderLayout.PAGE_END);
 
-        jTabbedPane1.addTab("  Request Ticket   ", jPanel3);
+        xTabbedPane1.addTab("  Request Ticket   ", tabitem2);
 
-        jPanel5.setLayout(new java.awt.BorderLayout());
-        jTabbedPane1.addTab("  Skip Tickets  ", jPanel5);
-
-        add(jTabbedPane1, java.awt.BorderLayout.CENTER);
+        add(xTabbedPane1, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel4;
-    private javax.swing.JPanel jPanel5;
-    private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JPanel footer1panel;
+    private javax.swing.JPanel footer2panel;
+    private javax.swing.JPanel tabitem1;
+    private javax.swing.JPanel tabitem2;
     private com.rameses.rcp.control.XButton xButton1;
     private com.rameses.rcp.control.XButton xButton2;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XFormPanel xFormPanel2;
+    private com.rameses.rcp.control.XTabbedPane xTabbedPane1;
     // End of variables declaration//GEN-END:variables
 }

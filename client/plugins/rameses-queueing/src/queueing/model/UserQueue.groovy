@@ -28,6 +28,8 @@ class UserQueue {
     def serveditem = [:];     
     def controlList = [];
     
+    def tabitems = Inv.lookupOpeners('queue-home:section', [:]); 
+
     def formControls = [
         getControlList: {
             return controlList;
@@ -85,7 +87,6 @@ class UserQueue {
     }
     
     void take( item ) { 
-        serveditem.clear(); 
         if ( !item ) return; 
 
         def m = [ sectionid: item.sectionid, counterid: item.counterid ];
@@ -95,12 +96,20 @@ class UserQueue {
             return; 
         }
 
-        serveditem.title = item.title;
-        serveditem.groupid = item.groupid;
-        serveditem.groupname = item.group?.title;
-        serveditem.currentnumber = currentnumber; 
-        binding.fireNavigation("view");
+        m.title = item.title;
+        m.groupid = item.groupid;
+        m.groupname = item.group?.title;
+        m.currentnumber = currentnumber; 
+        showServingTicket( m ); 
     }
+
+    void showServingTicket( item ) { 
+        serveditem.clear(); 
+        if ( !item ) return; 
+
+        serveditem.putAll( item ); 
+        binding.fireNavigation("view");
+    } 
     
     def selectNumber() {
         return "view";

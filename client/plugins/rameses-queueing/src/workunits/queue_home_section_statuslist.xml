@@ -1,0 +1,9 @@
+<workunit>
+    <invokers>
+        <invoker type="queue-home:section" caption=" Status " action="init"/> 
+    </invokers>
+    <code class="queueing.model.UserQueueStatusListModel"/>
+    <pages>
+        <page name="read" template="queueing.view.UserQueueStatusListPage"/>
+    </pages>
+</workunit>   

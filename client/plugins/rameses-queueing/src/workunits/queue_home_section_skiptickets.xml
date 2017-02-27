@@ -1,0 +1,9 @@
+<workunit>
+    <invokers>
+        <invoker type="queue-home:section" caption="Skip Tickets" action="init"/> 
+    </invokers>
+    <code class="queueing.model.UserQueueSkipTicketModel"/>
+    <pages>
+        <page name="read" template="queueing.view.UserQueueSkipTicketListPage"/>
+    </pages>
+</workunit>   

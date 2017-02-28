@@ -1073,4 +1073,14 @@ public class RPTBillingService
 			throw new Exception('Unable to generate billing statement.\nThe Ledger is currently under restrictions.')
 		*/
 	}
+
+	@ProxyMethod
+	public void deletePendingPaymentOrderBills(ledger){
+		em.getPaidLedgerBills(ledger).each{bill ->
+			em.deleteRptBillLedgerAccount(bill)
+			em.deleteRptBillLedgerItem(bill)
+			em.deleteRptBillLedger(bill)
+			em.deleteRptBill(bill)
+		}
+	}
 }

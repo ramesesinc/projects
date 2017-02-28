@@ -465,6 +465,17 @@ WHERE rptledgerid = $P{rptledgerid}
 AND billid = $P{objid}
 
 
+[deleteRptBillLedger]
+DELETE FROM rptbill_ledger 
+WHERE billid = $P{objid}
+and rptledgerid = $P{rptledgerid}
+
+[deleteRptBill]
+DELETE FROM rptbill 
+WHERE objid = $P{objid}
+and not exists(select * from rptbill_ledger where billid = rptbill.objid )
+
+
 
 [findBillByBarcode]
 SELECT * FROM rptbill  WHERE barcode = $P{barcodeid}
@@ -687,3 +698,12 @@ and not exists(
 
 [getLedgerQtrlyItems]
 select year, qtr, av, basicav, sefav from rptledgeritem_qtrly where parentid = $P{parentid} 
+
+
+
+[getPaidLedgerBills]
+select b.objid, bl.rptledgerid
+from rptbill b 
+inner join rptbill_ledger bl on b.objid = bl.billid 
+where bl.rptledgerid = $P{objid}
+

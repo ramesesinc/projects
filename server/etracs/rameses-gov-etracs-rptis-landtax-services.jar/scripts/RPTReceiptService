@@ -112,6 +112,10 @@ class RPTReceiptService
 		}
 		em.deleteRptBillLedgers(params)
 		em.deleteRptBill(params)
+		receipt.rptitems.each{
+			billingSvc.deletePendingPaymentOrderBills([objid:it.rptledgerid])
+		}
+
 	}
 
 	void updateLedgerInfo(params){

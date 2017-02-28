@@ -13,6 +13,9 @@ class PaymentOrderService {
 	@Service("DateService")
 	def dtSvc 
 
+	@Service('SequenceService')
+	def seqSvc 
+
 	@DataContext("paymentorder_type")
 	def pmoType;
 
@@ -53,6 +56,7 @@ class PaymentOrderService {
 		if (entity.expirydate){
 			m.expirydate = entity.expirydate
 		}
+		m.controlno = generateControlNo()
 		m.info = entity.info;
 		m.payer = entity.payer;
 		m.paidby = entity.paidby;
@@ -68,28 +72,11 @@ class PaymentOrderService {
 		return m; 
 	}
 
-	/*
-	@ProxyMethod
-	public def open( params) { 
-		if ( env.paymentorder ) { 
-			return env.paymentorder; 
-
-		} else {
-			def entity = pmt.find([txnid: 'PMO:'+params.txnid]).first();
-			if( !entity || entity.size()==0 ) {
-				throw new Exception("Payment Order Code does not exist. ")
-			}	
-			return entity; 
-		}
+	def generateControlNo(){
+		java.security.SecureRandom sr = new java.security.SecureRandom();
+		sr.setSeed(System.currentTimeMillis() + System.identityHashCode(sr));
+		def padl = (sr.nextInt(9)+1).toString();
+		return (sr.nextInt(99999999) + 1).toString().padLeft(8,padl)
 	}
-
-	@ProxyMethod
-	def close( params ){ 
-		def data = pmt.find([txnid: params.txnid]).first(); 
-		pmt.find([txnid: params.txnid]).delete(); 
-		return data; 
-	}
-	*/
-	
 
 }

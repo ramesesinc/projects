@@ -3,6 +3,8 @@
 CREATE TABLE `payment_partner` (
   `objid` varchar(50) NOT NULL,
   `name` varchar(255) DEFAULT NULL,
+  `code` varchar(50) DEFAULT NULL,
+  `info` text DEFAULT NULL,
   PRIMARY KEY (`objid`)
 ); 
 
@@ -26,9 +28,11 @@ CREATE TABLE `cashreceiptpayment_eor` (
   CONSTRAINT `fk_payment_partner_eor` FOREIGN KEY (`partner_objid`) REFERENCES `payment_partner` (`objid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+INSERT INTO `payment_partner` (`objid`, `name`, `code`, `info`) 
+VALUES ('DBP', 'DEVELOPMENT BANK OF THE PHILIPPINES', '101', '[terminalid:56, transactionkey:\"5f16150a98195379b69b525626cf41c41d79b33d\"]');
 
-INSERT INTO payment_partner SELECT 'DBP', 'DEVELOPMENT BANK OF THE PHILIPPINES';
-INSERT INTO payment_partner SELECT 'LBP', 'LAND BANK OF THE PHILIPPINES';
+INSERT INTO `payment_partner` (`objid`, `name`, `code`, `info`) 
+VALUES ('LBP', 'LAND BANK OF THE PHILIPPINES', '102', '[merchantcode:\"2016120039\"]');
 
  INSERT INTO af ( objid, title, usetype, serieslength,  system,  denomination,  formtype)
  VALUES ('EOR', 'EOR', 'collection', 12,  1, 0.00,  'serial' );
@@ -45,6 +49,7 @@ drop table if exists paymentorder;
 CREATE TABLE `paymentorder` (
   `txnid` varchar(50) NOT NULL DEFAULT '',
   `txndate` datetime DEFAULT NULL,
+  `controlno` varchar(50) NULL,
   `payer_objid` varchar(50) DEFAULT NULL,
   `payer_name` text,
   `paidby` text,
@@ -56,7 +61,8 @@ CREATE TABLE `paymentorder` (
   `refid` varchar(50) DEFAULT NULL,
   `refno` varchar(50) DEFAULT NULL,
   `info` text,
-  PRIMARY KEY (`txnid`)
+  PRIMARY KEY (`txnid`),
+  KEY `ix_controlno` (`controlno`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -68,6 +74,7 @@ CREATE TABLE `eor_paymentorder` (
   `dtposted` datetime DEFAULT NULL,
   `dtcreated` datetime DEFAULT NULL,
   `paymentorder_txnid` varchar(50) NOT NULL DEFAULT '',
+  `paymentorder_controlno` varchar(50) NOT NULL DEFAULT '',
   `paymentorder_txndate` datetime DEFAULT NULL,
   `paymentorder_payer_objid` varchar(50) DEFAULT NULL,
   `paymentorder_payer_name` text,
@@ -83,6 +90,7 @@ CREATE TABLE `eor_paymentorder` (
   PRIMARY KEY (`objid`),
   KEY `ix_traceno` (`traceno`),
   KEY `ix_paymentorder_txnid` (`paymentorder_txnid`),
+  KEY `ix_paymentorder_controlno` (`paymentorder_controlno`),
   KEY `ix_paymentorder_refid` (`paymentorder_refid`),
   KEY `ix_paymentorder_refno` (`paymentorder_refno`),
   KEY `ix_paymentorder_txntypeid` (`paymentorder_txntypeid`)

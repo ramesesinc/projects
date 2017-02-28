@@ -1,0 +1,31 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import com.rameses.common.*
+
+class PaymentPartnerInterceptor  
+{
+	@Service('NumberService')
+	def numSvc 
+
+
+	@After(pattern="PaymentPartnerService.getInfo", eval="#{result.objid.equalsIgnoreCase('dbp')}")
+	public void updateDbpInfo( evt ) {
+		def partner = evt.result 
+		def pmo = evt.args[0].pmo
+
+		def secval = partner.info.terminalid + pmo.txnid + '{' + partner.info.transactionkey + '}'
+    	partner.sectoken = com.rameses.util.Encoder.SHA1.encode(secval);
+	}
+
+
+	@After(pattern="PaymentPartnerService.getInfo", eval="#{result.objid.equalsIgnoreCase('lbp')}")
+	public void updateLbpInfo( evt ) {
+		def partner = evt.result 
+		def pmo = evt.args[0].pmo
+
+		def samt = numSvc.format('#,##0.00', pmo.amount).replace('.','')
+		def secval = partner.info.merchantcode + pmo.controlno + samt
+    	partner.sectoken = com.rameses.util.Encoder.MD5.encode(secval).toLowerCase()
+	}
+
+}

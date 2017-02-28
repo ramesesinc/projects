@@ -2,6 +2,8 @@
 	<element tablename="payment_partner">
 		<field name="objid" primary="true"/>
 		<field name="name" required="true"/>
+		<field name="code" required="true"/>
+		<complex name="info" serializer="default" required="true"/>
 	</element>
 </schema>	
 

@@ -8,6 +8,7 @@
 
 		<field name="paymentorder_txnid" required="true"/>
 		<field name="paymentorder_txndate" type="timestamp" required="true" />
+		<field name="paymentorder_controlno" required="true" />
 		<field name="paymentorder_payer_objid" required="true" />
 		<field name="paymentorder_payer_name" required="true" />
 		<field name="paymentorder_paidby" required="true" />

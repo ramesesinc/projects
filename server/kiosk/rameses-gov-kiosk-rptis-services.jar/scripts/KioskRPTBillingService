@@ -199,6 +199,12 @@ class KioskRPTBilllingService
             msg += 'Please proceed to the Land Tax Office for assistance.'
             throw new Exception(msg)
         }
+
+        if (util.isTrue(ledger.undercompromise)){
+            msg = 'Ledger is under compromised.\n'
+            msg += 'Please proceed to the Land Tax Office for assistance.'
+            throw new Exception(msg)   
+        }
         return ledger 
     }
 }

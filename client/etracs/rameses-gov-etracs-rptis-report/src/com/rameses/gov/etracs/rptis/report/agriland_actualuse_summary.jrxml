@@ -40,7 +40,7 @@
 	<parameter name="FORLGUNAME" isForPrompting="false" class="java.lang.String"/>
 	<parameter name="TAXABILITY" isForPrompting="false" class="java.lang.String"/>
 
-	<field name="barangay" class="java.lang.String"/>
+	<field name="lguname" class="java.lang.String"/>
 	<field name="specificclass" class="java.lang.String"/>
 	<field name="area" class="java.math.BigDecimal"/>
 
@@ -79,12 +79,12 @@
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
 					</textElement>
-				<text><![CDATA[MUNICIPALITY]]></text>
+				<text><![CDATA[LGU NAME]]></text>
 				</staticText>
 						</cellContents>
-					</crosstabHeaderCell>					<rowGroup name="barangay" width="110" totalPosition="End">
+					</crosstabHeaderCell>					<rowGroup name="lguname" width="110" totalPosition="End">
 						<bucket>
-							<bucketExpression class="java.lang.String"><![CDATA[$F{barangay}]]></bucketExpression>
+							<bucketExpression class="java.lang.String"><![CDATA[$F{lguname}]]></bucketExpression>
 						</bucket>
 						<crosstabRowHeader>
 						<cellContents mode="Transparent">
@@ -105,7 +105,7 @@
 					<textElement textAlignment="Left" verticalAlignment="Middle">
 						<font fontName="SansSerif" size="9"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$V{barangay}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$V{lguname}]]></textFieldExpression>
 				</textField>
 						</cellContents>
 						</crosstabRowHeader>
@@ -236,7 +236,7 @@
 				</textField>
 						</cellContents>
 					</crosstabCell>
-					<crosstabCell width="55" height="18" rowTotalGroup="barangay">
+					<crosstabCell width="55" height="18" rowTotalGroup="lguname">
 						<cellContents mode="Transparent">
 					<box></box>
 				<textField isStretchWithOverflow="true" pattern="#,##0.000000" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
@@ -259,7 +259,7 @@
 				</textField>
 						</cellContents>
 					</crosstabCell>
-					<crosstabCell width="54" height="18" rowTotalGroup="barangay" columnTotalGroup="specificclass">
+					<crosstabCell width="54" height="18" rowTotalGroup="lguname" columnTotalGroup="specificclass">
 						<cellContents mode="Transparent">
 					<box></box>
 				<textField isStretchWithOverflow="true" pattern="#,##0.000000" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >

@@ -13,3 +13,12 @@
     enabled: true; 
 } 
 
+
+"params.billdate" [params.advancebill == null || params.advancebill == false ] {
+    enabled:false;
+}
+
+"params.billdate" [ params.advancebill == true ] {
+    enabled:true;
+}
+

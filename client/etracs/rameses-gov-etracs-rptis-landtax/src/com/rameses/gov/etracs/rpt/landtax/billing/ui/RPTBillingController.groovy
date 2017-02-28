@@ -38,6 +38,8 @@ public class RPTBillingController
     def taxpayer;
     def rptledgerid;
     def showBack = true; 
+    def advancebill;
+    def billdate;
     
     String title = 'Real Property Tax Bill'
     
@@ -73,6 +75,11 @@ public class RPTBillingController
     
     def selectedItems 
     void updateLedgerBillStatement(){
+        if(advancebill){
+            bill.advancebill = advancebill;
+            bill.billdate = billdate;
+        }
+        
         if (items) {
             selectedItems = items.findAll{it.bill == true}
             if (!selectedItems) selectedItems = items;

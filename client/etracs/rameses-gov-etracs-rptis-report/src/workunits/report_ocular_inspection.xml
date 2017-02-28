@@ -24,6 +24,8 @@ class OcularInspectionController extends com.rameses.gov.etracs.rpt.report.Repor
     String reportPath = 'com/rameses/gov/etracs/rpt/report/examination/';
     String reportName = reportPath + 'ocularinspection.jasper';
     
+    boolean showBack = false;
+    
     def getReportData(){
         return svc.buildOcularInspectionReport(entity);
     }

@@ -116,9 +116,10 @@ class ExaminationFindingsInfoController
     
     
     boolean getShowActions(){
+        if (entity.state.matches('CURRENT')) return true;
+        if (entity.state.matches('CANCELLED')) return false;
         if (entity.taskstate && entity.taskstate.matches('assign.*')) return false;
         if (entity.taskstate && !entity.taskstate.matches('examiner')) return false;
-        if (entity.state.matches('CURRENT|CANCELLED')) return false;
         if (OsirisContext.env.USERID != entity.assignee.objid) return false;
         return true;
     }    

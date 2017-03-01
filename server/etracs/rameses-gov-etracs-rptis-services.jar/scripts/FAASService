@@ -906,12 +906,7 @@ class FAASService
 
 	void createRealProperty(faas){
 		if (allowSaveRealProperty(faas)){
-			try{
-				rpSvc.create(faas.rp)
-			}
-			catch(e){
-				rpSvc.update(faas.rp)	
-			}
+			rpSvc.save(faas.rp)
 		}
 	}
 
@@ -931,7 +926,7 @@ class FAASService
 	}
 
 	void createRpu(faas){
-		if (allowSaveRpu(faas)){
+		if (allowSaveRpu(faas) && rpuSvc.findRpuInfoById(faas.rpu.objid) == null){
 			try{
 				rpuSvc.createRpu(faas.rpu)
 			}

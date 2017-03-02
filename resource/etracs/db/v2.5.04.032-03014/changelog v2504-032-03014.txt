@@ -5,6 +5,7 @@
 - BPLS 
 		
 - ASSESSOR	
+	- Plant/Tree revision setting listing adjustment
 	- Agricultural Land Summary update
 	- Allow Examination findings for Current FAAS
 	- Update misc rpu suffix on Modify PIN 

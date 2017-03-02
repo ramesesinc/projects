@@ -51,7 +51,7 @@ public class PlantTreeRYSettingController  extends RYSettingPageFlowController
     
     
     def planttreeListHandler  = [
-        getRows    : { return 150 },
+        getRows    : { return plantTrees.size() <= 25 ? 25 : plantTrees.size() + 1 },
         getColumns : { return [
             new Column( name:'code', caption:'Code', maxWidth:80 ),
             new Column( name:'name', caption:'Plant/Tree' ),

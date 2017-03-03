@@ -4,7 +4,6 @@
          <invoker type="cashreceiptinfo:open" caption="Cash Receipt Info" action="open" />
          
          <invoker type="formActions" caption="Reprint" action="reprint" shortcut="ctrl P" mnemonic="p" role="COLLECTOR"/>
-         <invoker type="formActions" caption="Edit" action="edit" visibleWhen="#{entity.txnmode!='ONLINE' &amp;&amp; entity.remitted!=1}"/>
    </invokers>
    
    <code>

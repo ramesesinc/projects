@@ -35,18 +35,24 @@ public class BusinessOwnerUtil {
         onselect: { o->
             business.owner = [ objid:o.objid, name:o.name, address:o.address ];
             if(handler) handler();
+
+            notifyDepends( 'entity.business.owner' ); 
         },
         onempty: {
             business.owner = [ address:[:] ];
-            if(handler) handler();
+            if(handler) handler(); 
+
+            notifyDepends( 'entity.business.owner' ); 
         }
     ] as SuggestModel;
             
     def add() {
-        String stype = (business.orgtype == 'SING') ?'individualentity':'juridicalentity';
+        String stype = (business.orgtype=='SING' ? 'entityindividual':'entityjuridical');
         def sh = { o->
             business.owner = [ objid:o.objid, name:o.name, address:o.address ];
-            if(handler) handler();
+            if ( handler ) handler();
+
+            notifyDepends( 'entity.business.owner' ); 
         }
         def m = [:];
         if( business.owner ) {
@@ -54,24 +60,30 @@ public class BusinessOwnerUtil {
         }
         m.objid = null;
         m.entityno = null;
-        return InvokerUtil.lookupOpener( stype+":create", [onselect:sh, entity:m] );
+
+        def opener = InvokerUtil.lookupOpener( stype+":create", [onselect:sh, entity:m] );
+        if ( opener ) opener.target = 'popup'; 
+
+        return opener; 
     }  
     
     def show() {
-        if( !business.owner?.objid )
-            throw new Exception("Please select an owner");
-        String stype = (business.orgtype == 'SING') ?'individualentity':'juridicalentity';
-        return InvokerUtil.lookupOpener( stype + ":open", [entity: business.owner] ); 
+        if( !business.owner?.objid ) throw new Exception("Please select an owner");
+
+        String stype = (business.orgtype=='SING' ? 'entityindividual':'entityjuridical');
+        def opener = InvokerUtil.lookupOpener( stype + ":open", [entity: business.owner] ); 
+        if ( opener ) opener.target = 'popup'; 
+
+        return opener; 
     }
     
     void verify() {
-        if( !business.owner.objid)
+        if( !business.owner.objid ) 
             throw new Exception("Error in owner. Please map the owner.");
-
         if( !business.owner.address?.objid)
             throw new Exception("Error in owner address. Please check the address of owner by editing the entity.");
 
-         business.orgtypename = orgTypes.find{ it.key == business.orgtype}?.value;    
+        business.orgtypename = orgTypes.find{ it.key == business.orgtype }?.value;    
     }
 
     void reset() {;}
@@ -96,5 +108,9 @@ public class BusinessOwnerUtil {
         return Inv.lookupOpener( "entity_address:lookup", p );
     }
      
-
+    void notifyDepends( String name ) {
+        try { 
+            caller.binding.notifyDepends( name ); 
+        } catch(Throwable t){;} 
+    } 
 }

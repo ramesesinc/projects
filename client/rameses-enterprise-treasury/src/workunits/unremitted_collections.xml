@@ -6,7 +6,6 @@
         <invoker type="formActions" action="_close" caption="Close" icon="images/toolbars/cancel.png" mnemonic="c" shortcut="ctrl C"/>
         <invoker type="formActions" action="open" caption="Open" icon="images/toolbars/open.png" mnemonic="o" shortcut="ctrl O" />
         <invoker type="formActions" action="refresh" caption="Refresh" icon="images/toolbars/refresh.png" mnemonic="r" shortcut="ctrl R"/>
-        <invoker type="formActions" action="fix" caption="Fix_AF" icon="images/toolbars/refresh.png" mnemonic="f"/>
         <invoker type="formActions" action="remit" caption="Remit" role="COLLECTOR" mnemonic="c" shortcut="ctrl T"/>        
     </invokers>
     <code>

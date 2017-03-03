@@ -143,8 +143,8 @@
           </Properties>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
-              <JTabbedPaneConstraints tabName="  Request Queue Number  ">
-                <Property name="tabTitle" type="java.lang.String" value="  Request Queue Number  "/>
+              <JTabbedPaneConstraints tabName="  Request Ticket   ">
+                <Property name="tabTitle" type="java.lang.String" value="  Request Ticket   "/>
               </JTabbedPaneConstraints>
             </Constraint>
           </Constraints>
@@ -182,7 +182,6 @@
                   <Properties>
                     <Property name="expression" type="java.lang.String" value="Refresh"/>
                     <Property name="name" type="java.lang.String" value="refreshQueueSections" noResource="true"/>
-                    <Property name="text" type="java.lang.String" value="Refresh"/>
                   </Properties>
                 </Component>
               </SubComponents>
@@ -228,6 +227,17 @@
               </LayoutCode>
             </Container>
           </SubComponents>
+        </Container>
+        <Container class="javax.swing.JPanel" name="jPanel5">
+          <Constraints>
+            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
+              <JTabbedPaneConstraints tabName="  Skip Tickets  ">
+                <Property name="tabTitle" type="java.lang.String" value="  Skip Tickets  "/>
+              </JTabbedPaneConstraints>
+            </Constraint>
+          </Constraints>
+
+          <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
         </Container>
       </SubComponents>
     </Container>

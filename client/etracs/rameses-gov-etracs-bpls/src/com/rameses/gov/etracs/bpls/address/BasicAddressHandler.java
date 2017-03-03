@@ -50,6 +50,7 @@ public class BasicAddressHandler extends javax.swing.JPanel {
             .addGap(0, 235, Short.MAX_VALUE)
         );
 
+        xFormPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
         xFormPanel1.setPadding(new java.awt.Insets(0, 0, 0, 0));
 
         xComboBox2.setCaption("Location of Business");

@@ -35,6 +35,7 @@ public class UserQueuePage extends javax.swing.JPanel {
         xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
         jPanel4 = new javax.swing.JPanel();
         xButton2 = new com.rameses.rcp.control.XButton();
+        jPanel5 = new javax.swing.JPanel();
 
         setPreferredSize(new java.awt.Dimension(370, 400));
         setLayout(new java.awt.BorderLayout());
@@ -76,12 +77,14 @@ public class UserQueuePage extends javax.swing.JPanel {
 
         xButton2.setExpression("Refresh");
         xButton2.setName("refreshQueueSections"); // NOI18N
-        xButton2.setText("Refresh");
         jPanel4.add(xButton2);
 
         jPanel3.add(jPanel4, java.awt.BorderLayout.PAGE_END);
 
-        jTabbedPane1.addTab("  Request Queue Number  ", jPanel3);
+        jTabbedPane1.addTab("  Request Ticket   ", jPanel3);
+
+        jPanel5.setLayout(new java.awt.BorderLayout());
+        jTabbedPane1.addTab("  Skip Tickets  ", jPanel5);
 
         add(jTabbedPane1, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
@@ -90,6 +93,7 @@ public class UserQueuePage extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
     private javax.swing.JTabbedPane jTabbedPane1;
     private com.rameses.rcp.control.XButton xButton1;
     private com.rameses.rcp.control.XButton xButton2;

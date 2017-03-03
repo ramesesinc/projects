@@ -204,4 +204,15 @@ public class BusinessApplicationService  {
 	public void revert( params ) {
 		/* interceptors will handle other revert routines */
 	} 
+
+
+
+
+	@ActiveDB("business_application_task")
+	def apptaskdb;
+
+	@ProxyMethod 
+	public def findLastTask( params ) { 
+		return apptaskdb.findLastTask([ refid: params.applicationid ]); 
+	}
 }

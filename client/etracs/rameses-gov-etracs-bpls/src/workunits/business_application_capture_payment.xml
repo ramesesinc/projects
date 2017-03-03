@@ -1,206 +1,188 @@
 <workunit>
     <invokers>
-        <invoker type="business_assessment:payment" caption="Manual Capture Payment"  action="initManual" target="popup" 
-                 role="ADMIN,APPROVER" index="0"/>
+        <invoker type="business_assessment:payment" caption="Manual Capture Payment"  
+                 action="initManual" role="ADMIN,APPROVER" target="popup" index="0"/>        
+
+        <invoker type="business_payment:capture" caption="Manual Capture Payment"  
+                 action="initManual" role="ADMIN,APPROVER" target="popup" index="0"/> 
         
+        <invoker type="business_payment:capture:remove" role="ADMIN" />         
     </invokers>
     
     <code>
-         <![CDATA[    
-        import com.rameses.rcp.annotations.*
-        import com.rameses.rcp.common.*
-        import com.rameses.osiris2.client.*
-        import com.rameses.osiris2.common.*
-        import java.rmi.server.*;
-        import com.rameses.util.*;
-        
-        public class CaptureBusinessPayment {
-        
-            @Service("BusinessCapturePaymentService")
-            def service;
-            
-            @Script("BusinessAssessmentInfoUtil")
-            def assessmentInfo;
-            
-            @Service("BusinessCashReceiptService")
-            def cashRctSvc;
+    <![CDATA[    
+import com.rameses.rcp.annotations.*
+import com.rameses.rcp.common.*
+import com.rameses.osiris2.client.*
+import com.rameses.osiris2.common.*
+import java.rmi.server.*;
+import com.rameses.util.*;
 
-            @Binding
-            def binding;
-        
-            def entity = [:];
-            def handler;
-            def allselected = true;
-            def amount = 0.0;
-            def app;
-            
-            void initManual() {
-                app = entity;
-                entity = [taxcredit:0.0];
-                //always get fresh billing
-                loadBill(app);
-            }
-            
-            def loadBill = { o->
-                def r = [:];
-                r.app = [apptype:o.apptype, appyear:o.appyear, dtfiled:o.dtfiled, appno:o.appno]; 
-                r.billdate = o.receiptdate;
-                r.applicationid = o.objid;
-                //r.payment = [:]; 
-                
-                def z = cashRctSvc.getBillingForPayment( r ); 
-                def taxfees = z.taxfees;
-                entity.taxfees = [];
-                taxfees.each {
-                    if(it.details) {
-                        it.details.each { i->
-                            def m = [:];
-                            m.putAll( i );
-                            m.selected = true;
-                            m.amtpaid = i.amtdue;
-                            m.surchargepaid = (!i.surcharge)?0:i.surcharge;
-                            m.interestpaid = (!i.interest)?0:i.interest;
-                            m.totalpaid = m.amtpaid + m.surchargepaid + m.interestpaid;
-                            m.qtr = i.qtr; 
-                            entity.taxfees << m;
-                        }
-                    }
-                    else {
-                        def m = [:];
-                        m.putAll(it);
-                        m.selected = true;
-                        m.amtpaid = it.amtdue;
-                        m.surchargepaid = (!it.surcharge)?0:it.surcharge;
-                        m.interestpaid = (!it.interest)?0:it.interest;
-                        m.totalpaid = m.amtpaid + m.surchargepaid + m.interestpaid;
-                        m.qtr = 0;
-                        entity.taxfees << m;
-                    }
-                }
-                entity.amount = entity.taxfees.sum{it.totalpaid};    
-                listModel.reload();
-            }
-            
-            def listModel = [
-                fetchList: { o->
-                    return entity.taxfees;
-                },
-                onColumnUpdate: { o,col-> 
-                    if(col == 'selected') {
-                        if(o.selected) {
-                            o.amtpaid = o.amtdue;
-                            o.surchargepaid = o.surcharge;
-                            o.interestpaid = o.interest;
-                        }
-                        else {
-                            o.amtpaid = 0.0;
-                            o.surchargepaid = 0.0;
-                            o.interestpaid = 0.0;
-                        }
-                    }
-                    o.totalpaid = o.amtpaid + o.surchargepaid + o.interestpaid;
-                    //there should be no strict checking...
-                    /*
-                    if(o.totalpaid > (o.amount-o.discount+o.surcharge+o.interest)) 
-                        throw new Exception("Total must not be higher than amount due");
-                    if( o.amtpaid > o.amount )
-                        throw new Exception("Amt paid must not be higher than amount due");
-                    if( o.surchargepaid > o.surcharge )
-                        throw new Exception("Surcharge paid must not be higher than surcharge due");
-                    if( o.interestpaid > o.interest )
-                        throw new Exception("Interest paid must not be higher than interest due");
-                    */    
-                    entity.amount = NumberUtil.round( entity.taxfees.sum{it.totalpaid} );    
-                    binding.refresh();
-                }
-            ] as EditorListModel;
-            
-            def doOk() {
-                if(entity.amount <= 0 )
-                    throw new Exception("Please pay at least one item");
-                              
-                entity.taxcredit = NumberUtil.round( entity.taxcredit ); 
-                def amtwithtaxcredit = NumberUtil.round(entity.amount + entity.taxcredit); 
-                if(amount != amtwithtaxcredit)  
-                    throw new Exception("Amount paid must be equal to total amount");
-                    
-                if(!MsgBox.confirm('This transaction cannot be reversed. Please ensure the entries are correct. Proceed?')) return null;
-                
-                def m = [:];  
-                m.objid = "BCP"+ new UID();
-                m.refno = entity.refno; 
-                m.refdate = entity.refdate;
-                m.voided = 0;
-                m.businessid = app.business.objid;
-                m.applicationid = app.objid;
-                m.appyear = app.appyear;
-                m.reftype = "capture";
-                m.amount = entity.amount;
-                m.taxcredit = entity.taxcredit;
-                m.items = entity.taxfees.findAll{it.amtpaid>0}.collect {
-                  [   
-                    objid:'BCPITM'+new UID(),
-                    parentid: m.objid,
-                    account:it.account, 
-                    lob:it.lob,
-                    iyear:it.iyear,
-                    txntype: it.txntype,
-                    receivableid: it.receivableid, 
-                    amount:it.amtpaid,
-                    discount:it.discount, 
-                    sortorder: it.sortorder,
-                    surcharge:it.surchargepaid, 
-                    interest:it.interestpaid, 
-                    qtr: it.qtr,
-                    partial: (it.amtpaid==it.amtdue)?0:1
-                  ]
-                }
+public class CaptureBusinessPayment {
 
-                service.post( m );
-                if(handler) handler();
-                return "_close";
-            }
-            
-            def doCancel() {
-                return "_close";
-            }
+    @Service("BusinessCapturePaymentService")
+    def service;
 
-            void selectAll() {
-                entity.taxfees.each {
-                    if(it.selected==false) {
-                        it.selected = true;
-                        it.amtpaid = it.amtdue;
-                        it.surchargepaid = NumberUtil.round((!it.surcharge)?0:it.surcharge);
-                        it.interestpaid = NumberUtil.round((!it.interest)?0:it.interest);
-                        it.totalpaid = NumberUtil.round(it.amtpaid + it.surchargepaid + it.interestpaid);
-                    }
-                }
-                entity.amount = NumberUtil.round(entity.taxfees.sum{it.totalpaid}); 
-                listModel.reload();
-                allselected = true;
-            }
+    @Script("BusinessAssessmentInfoUtil")
+    def assessmentInfo;
 
-            void unselectAll() {
-                entity.taxfees.each {
-                    it.selected = false;
-                    it.amtpaid = 0;
-                    it.surchargepaid = 0;
-                    it.interestpaid = 0;
-                    it.totalpaid = 0;
-                }
-                entity.amount = 0; 
-                listModel.reload();
-                allselected = false;
-            }
+    @Service("BusinessCashReceiptService")
+    def cashRctSvc;
 
+    @Binding
+    def binding;
 
+    def entity = [:];
+    def handler;
+    def allselected = true;
+    def amount = 0.0;
+    def app;
+    
+    void initManual() {
+        app = entity;
+        entity = [taxcredit:0.0];
+        //always get fresh billing
+        loadBill(app);
+    }
+
+    def loadBill = { o->
+        def r = [:];
+        r.app = [apptype:o.apptype, appyear:o.appyear, dtfiled:o.dtfiled, appno:o.appno]; 
+        r.billdate = o.receiptdate;
+        r.applicationid = o.objid;
+        //r.payment = [:]; 
+
+        def z = cashRctSvc.getBillingForPayment( r ); 
+        def taxfees = z.taxfees;
+        entity.taxfees = [];
+        taxfees.each { 
+            def details = null; 
+            if ( it.details ) { 
+                details = it.details; 
+            } else { 
+                it.qtr = 0; 
+                details = [ it ]; 
+            } 
+
+            details.each { i->
+                def m = [:];
+                m.putAll( i );
+                m.qtr = i.qtr; 
+                m.selected = true;
+                m.amtpaid = i.amtdue;
+                m.interestpaid  = (i.interest ? i.interest : 0.0);
+                m.surchargepaid = (i.surcharge ? i.surcharge : 0.0);
+                m.totalpaid = m.amtpaid + m.surchargepaid + m.interestpaid;
+                entity.taxfees << m;
+            } 
         }
-        ]]>
+        entity.amount = entity.taxfees.sum{( it.totalpaid ? it.totalpaid : 0.0 )};    
+        listModel.reload();
+    }
+
+    def listModel = [
+        fetchList: { o->
+            return entity.taxfees;
+        },
+        onColumnUpdate: { o,col-> 
+            if ( col == 'selected' ) { 
+                if ( o.selected ) {
+                    o.amtpaid = o.amtdue;
+                    o.surchargepaid = o.surcharge;
+                    o.interestpaid = o.interest;
+                }
+                else {
+                    o.amtpaid = 0.0;
+                    o.surchargepaid = 0.0;
+                    o.interestpaid = 0.0;
+                }
+            }
+            o.totalpaid = o.amtpaid + o.surchargepaid + o.interestpaid;
+            entity.amount = NumberUtil.round( entity.taxfees.sum{ it.totalpaid } );     
+            binding.refresh();
+        }
+    ] as EditorListModel;
+
+    def doOk() {
+        if ( entity.amount <= 0 )
+            throw new Exception("Please pay at least one item");
+
+        entity.taxcredit = NumberUtil.round( entity.taxcredit ); 
+        def amtwithtaxcredit = NumberUtil.round( entity.amount + entity.taxcredit ); 
+        if ( amount != amtwithtaxcredit )  
+            throw new Exception("Amount paid must be equal to total amount");
+
+        if(!MsgBox.confirm('This transaction cannot be reversed. Please ensure the entries are correct. Proceed?')) return null;
+
+        def m = [:];  
+        m.objid = "BCP"+ new UID();
+        m.refno = entity.refno; 
+        m.refdate = entity.refdate;
+        m.voided = 0;
+        m.businessid = app.business.objid;
+        m.applicationid = app.objid;
+        m.appyear = app.appyear;
+        m.reftype = "capture";
+        m.amount = entity.amount;
+        m.taxcredit = entity.taxcredit;
+        m.items = entity.taxfees.findAll{ it.amtpaid > 0 }.collect {[   
+            objid:'BCPITM'+new UID(),
+            parentid: m.objid,
+            account:it.account, 
+            lob:it.lob,
+            iyear:it.iyear,
+            txntype: it.txntype,
+            receivableid: it.receivableid, 
+            amount:it.amtpaid,
+            discount:it.discount, 
+            sortorder: it.sortorder,
+            surcharge:it.surchargepaid, 
+            interest:it.interestpaid, 
+            qtr: it.qtr,
+            partial: (it.amtpaid==it.amtdue)?0:1
+        ]}
+
+        service.post( m );
+        if ( handler ) handler(); 
+        return "_close";
+    }
+
+    def doCancel() {
+        return "_close";
+    }
+
+    void selectAll() {
+        entity.taxfees.each {
+            if(it.selected==false) {
+                it.selected = true;
+                it.amtpaid = it.amtdue;
+                it.interestpaid  = NumberUtil.round( it.interest ? it.interest : 0.0 );
+                it.surchargepaid = NumberUtil.round( it.surcharge ? it.surcharge : 0.0 );
+                it.totalpaid = NumberUtil.round( it.amtpaid + it.surchargepaid + it.interestpaid ); 
+            } 
+        } 
+        entity.amount = NumberUtil.round(entity.taxfees.sum{it.totalpaid}); 
+        listModel.reload();
+        allselected = true;
+    }
+
+    void unselectAll() {
+        entity.taxfees.each {
+            it.selected = false;
+            it.amtpaid = 0;
+            it.interestpaid = 0;
+            it.surchargepaid = 0;
+            it.totalpaid = 0;
+        }
+        entity.amount = 0; 
+        listModel.reload();
+        allselected = false;
+    } 
+}
+    ]]>
     </code>    
     
     <pages>
         <page template="com.rameses.gov.etracs.bpls.view.AddBusinessPaymentPage"/>
-    </pages>
-    
-    
+    </pages>    
 </workunit>

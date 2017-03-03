@@ -1,7 +1,7 @@
 "entity.*" [1==1] {
     visible: false; 
 }
-"entity.(period|collector)" [1==1] {
+"entity.(period|postingtype|collector)" [1==1] {
     visible: true; 
 }
 "entity.year" [entity.period.toString().matches('monthly')==true] {

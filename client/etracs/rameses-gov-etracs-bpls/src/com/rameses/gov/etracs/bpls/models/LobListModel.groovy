@@ -10,17 +10,30 @@ import com.rameses.seti2.models.*;
 
 public class LobListModel extends CrudListModel {
 
+    boolean autoResize = false;
+    
+    public void initColumn( def c ) { 
+        
+        if ( c.name == 'name' ) {
+            c.width = 300;
+        } else if ( c.name == 'classification.objid' ) {
+            c.width = 150;
+        } 
+    }     
+    
     def getLookupAttribute() {
         return InvokerUtil.lookupOpener( "lobattribute:lookup", [
             onselect: { o->
                 query.attribute = o;
+                binding.refresh('lobattribute'); 
                 reload();
             }
         ])
     }
     
     void resetSearch() {
-        query.attribute = null;
+        query.attribute = null; 
+        binding.refresh('lobattribute'); 
         reload();
     }
     

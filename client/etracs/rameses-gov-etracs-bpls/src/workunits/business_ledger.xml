@@ -4,10 +4,14 @@
 
         <invoker type="formActions" caption="Close" action="_close"/>
         <invoker type="formActions" caption="Send SMS" action="sendSMS" target="process" immediate="true"/> 
-        <invoker type="formActions" caption="Print Bill" action="runBilling"/> 
+        <invoker type="formActions" caption="Print Bill" action="printBill"/> 
 
-        <invoker type="formActions" caption="Capture Payment" action="capturePayment" role="ADMIN"/>
-        <invoker type="formActions" caption="Add Receivable" action="addReceivable"  role="ADMIN"/>        
+        <invoker type="formActions" caption="Capture Payment" action="capturePayment" 
+                 role="ADMIN" permission="businesspayment.capture" 
+                 depends="selectedApplication" visibleWhen="#{selectedApplication != null}"/>
+        <invoker type="formActions" caption="Add Receivable" action="addReceivable" 
+                 role="ADMIN" permission="businessledger.add" 
+                 depends="selectedApplication" visibleWhen="#{selectedApplication != null}"/>
     </invokers>
     
     <code> 
@@ -33,7 +37,7 @@ class BusinessLedgerControllerImpl extends com.rameses.gov.etracs.bpls.models.Bu
         def b = businessMasterService.open([ objid: entity.objid ]); 
         entity.clear(); 
         entity.putAll( b ); 
-        entity.lobs = lobSvc.getActiveLobs([ businessid: entity.objid ]);
+        super.init(); 
     } 
 } 
     ]]> 

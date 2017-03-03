@@ -1,7 +1,7 @@
 <workunit extends="com/rameses/seti2/templates/CrudForm.xml" schemaName="business_lessor_rental">
     <invokers>
-        <invoker type="business_lessor_rental:create" caption="Rental Lessor" action="create"/>
-        <invoker type="business_lessor_rental:open" caption="Rental Lessor" action="open"/>
+        <invoker type="business_lessor_rental:create" caption="Rental Lessor" action="create" target="popup"/>
+        <invoker type="business_lessor_rental:open" caption="Rental Lessor" action="open" target="popup"/>
     </invokers>
     <code>
         import com.rameses.rcp.annotations.*;

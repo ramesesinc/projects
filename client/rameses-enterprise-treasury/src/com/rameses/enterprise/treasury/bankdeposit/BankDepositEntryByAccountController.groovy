@@ -64,10 +64,13 @@ class BankDepositEntryByAccountController
     
     void calcAmounts(){
         entity.amount = 0.0;
-        if (summaries) entity.amount = summaries.balance.sum();
+        if (summaries) { 
+            entity.amount = roundoff( summaries.balance.sum());
+        }
+        
         entity.totalnoncash = 0.0;
         if (entity.checks){
-            entity.totalnoncash = entity.checks.amount.sum();
+            entity.totalnoncash = roundoff( entity.checks.amount.sum());
         }
         entity.totalcash =  entity.amount - entity.totalnoncash
         total = entity.totalcash+entity.totalnoncash;
@@ -100,25 +103,38 @@ class BankDepositEntryByAccountController
         undepositedChecks << selectedCheck;
 
         if( entity.checks ) {
-            entity.totalnoncash = entity.checks.sum{it.amount};
-        }
-        else {
+            entity.totalnoncash = roundoff( entity.checks.sum{ it.amount });
+        } else {
             entity.totalnoncash = 0;
         }
         total = entity.totalcash+entity.totalnoncash;
         binding.refresh("entity.amount|entity.totalnoncash|total");
     }
 
+    def formatter = new java.text.DecimalFormat("0.00"); 
+
+    def roundoff( Number amount ) { 
+        def str = formatter.format( amount ); 
+        return new java.math.BigDecimal( str ); 
+    } 
+    
     def doOk() {
         if (!entity.bankaccount) 
             throw new Exception('Bank Account is required.');
-        if( breakdown != entity.totalcash )
+            
+        def breakdownamt = roundoff( breakdown );
+        def totalcashamt = roundoff( entity.totalcash );        
+        if( breakdownamt != totalcashamt )
             throw new Exception("Cash breakdown must be equal to total cash.");
-        if( entity.amount != total)
-            throw new Exception("Total cash and non cash must equal amount to deposit");
-        if(handler) {
+            
+        def amount  = roundoff( entity.amount );
+        def totalamt = roundoff( total );       
+        if( amount != totalamt ) 
+            throw new Exception("Total cash and non cash must equal amount to deposit"); 
+            
+        if ( handler ) {
             handler( entity );
-        }    
+        } 
         return "_close";
     }
 

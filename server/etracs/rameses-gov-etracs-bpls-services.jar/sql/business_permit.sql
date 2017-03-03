@@ -102,7 +102,7 @@ from business_application ba
 	inner join business_permit bp on ba.objid=bp.applicationid  
 	inner join business b on bp.businessid=b.objid 
 where ba.objid=$P{applicationid} 
-	and bp.activeyear=b.activeyear 
+	and bp.activeyear=ba.appyear 
 	and bp.state='ACTIVE' 
 
 
@@ -122,7 +122,7 @@ from (
 	inner join business_application ba on xx.appid=ba.objid 
 	inner join business_permit bp on ba.objid=bp.applicationid 
 	inner join business b on bp.businessid=b.objid 
-where bp.activeyear=b.activeyear and bp.state='ACTIVE' 
+where bp.activeyear=ba.appyear and bp.state='ACTIVE' 
 order by bp.version desc
 
 

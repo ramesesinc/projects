@@ -1,0 +1,72 @@
+import com.rameses.annotations.*;
+import java.text.*;
+import com.rameses.functions.*;
+import com.rameses.util.*;
+import market.facts.*;
+import treasury.facts.*;
+import treasury.utils.*;
+import com.rameses.rules.common.*;
+
+class MarketTestBillingService {
+	
+	@Service("DateService")
+	def dateSvc;
+
+	@Service("AssessmentRuleService")
+	def assmtSvc;
+
+	@ProxyMethod
+	public def getBilling( def p ) {
+		def svrDate = dateSvc.getServerDate();
+		def fromdate = dateSvc.parseDate(p.fromdate, null).date;
+		def todate = dateSvc.parseDate(p.todate, null).date;
+
+		def billdate = svrDate;
+		if( todate ) {
+			billdate = todate;
+		}
+		
+		def param = [
+			payfrequency: 'DAILY', 
+			unittype: 'STALL', 
+			rate: 10.0, 
+			extrate: 5.0, 
+			partialbalance: 5, 
+			partialextbalance: 2.5, 
+			lastdatecovered: fromdate
+		];
+
+		def fb = new FactBuilder();
+		fb.facts << new MarketRentalUnit( param );
+		fb.facts << new MarketBillingPeriod( fromdate: fromdate, todate: todate );
+		fb.facts << new treasury.facts.SystemDate(svrDate);
+		fb.facts << new treasury.facts.BillDate(billdate);
+		if(p.paymentamount) {
+			fb.facts << new Payment( amount: p.paymentamount.toBigDecimal() );
+		}	
+
+		def result = [];
+		def rh = [
+			getFactKeyValue : { o->
+				if(o instanceof MarketBillItem) result << o;
+				return null;
+			}
+		] as ResultHandler;
+
+		assmtSvc.execute( "marketbilling", [:], fb, rh );
+
+		def list = [];
+		result.sort{(it.year*12)+it.month}.each {
+			def m = it.toMap();
+			list << [month:m.month, year: m.year, days: m.days, amount: m.amount, extrate: m.extrate, 
+				surcharge: m.surcharge, interest: m.interest,  total: m.total, fromdate: m.fromdate, todate: m.todate ];
+		}
+		def mm = [:];
+		mm.items = list;
+		mm.total = NumberUtil.round( list.sum{ it.total } );
+
+		return mm;
+	}
+
+
+}

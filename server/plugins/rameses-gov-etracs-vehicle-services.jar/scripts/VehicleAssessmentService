@@ -66,7 +66,11 @@ class VehicleAssessmentService {
 			}
 		] as ResultHandler;
 
+		if(!res.billitems) 
+			throw new Exception("There are no billitems computed. Please review the rules");
+
 		def data2 = [billitems: res.billitems, infos: res.infos ];
+
 		res = assmtSvc.execute( "vehiclebilling", data2, fb, rh );
 		def app = [:];
 		app.infos = res.infos;

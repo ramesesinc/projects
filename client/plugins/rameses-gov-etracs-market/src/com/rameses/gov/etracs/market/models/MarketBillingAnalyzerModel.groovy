@@ -19,7 +19,7 @@ class MarketBillingAnalyzerModel  {
     @Binding
     def binding;
 
-    def entity = [attributes:[], compromise:[:],totalpaid:0, term:12];
+    def entity = [attributes:[], compromise:[:],totalpaid:0];
     def unitTypes = LOV.MARKET_UNIT_TYPES*.key;
     def billingTypes = [
         [id:"0", description:"Basic"],

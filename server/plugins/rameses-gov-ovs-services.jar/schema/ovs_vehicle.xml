@@ -1,4 +1,4 @@
-<schema adapter="violation">
+<schema adapter="ovs">
 	<element name="ovs_vehicle" tablename="vehicle">
 		<field name="objid" primary="true" prefix="VEH"/>
 		<field name="name" required="true" caption="Name"/>

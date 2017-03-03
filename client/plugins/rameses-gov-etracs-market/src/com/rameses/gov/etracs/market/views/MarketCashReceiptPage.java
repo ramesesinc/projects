@@ -54,7 +54,7 @@ public class MarketCashReceiptPage extends javax.swing.JPanel {
 
         xLabel4.setCaption("Rental rate");
         xLabel4.setCaptionWidth(90);
-        xLabel4.setExpression("#{entity.rate} - #{entity.term}");
+        xLabel4.setExpression("#{entity.rate} - #{entity.payfrequency}");
         xLabel4.setFontStyle("font-size:12;font-weight:bold;");
         xLabel4.setPreferredSize(new java.awt.Dimension(0, 17));
         xFormPanel1.add(xLabel4);
@@ -104,7 +104,6 @@ public class MarketCashReceiptPage extends javax.swing.JPanel {
         );
 
         jPanel2.setPreferredSize(new java.awt.Dimension(482, 25));
-        jPanel2.setLayout(new com.rameses.rcp.control.layout.XLayout());
 
         btnReloadBill.setName("reload"); // NOI18N
         btnReloadBill.setText("Reload");

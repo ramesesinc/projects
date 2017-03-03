@@ -1,4 +1,4 @@
-<schema adapter="violation">
+<schema adapter="ovs">
 	<element name="ovs_violation" tablename="violation">
 		<field name="objid" primary="true" prefix="VIO"/>
 		<field name="title" required="true" caption="Title" indexed="true" searchable="true"/>

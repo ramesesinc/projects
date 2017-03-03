@@ -15,7 +15,6 @@ public abstract class AbstractBillItem {
 	boolean dynamic;	//if true - then this should not be saved in database. Applicable for surcharge and interest
 	String remarks;
 
-
 	public int hashCode() {
 		return (account?.objid+"_"+txntype).hashCode();			
 	}

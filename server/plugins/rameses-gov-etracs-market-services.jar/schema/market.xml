@@ -1,7 +1,7 @@
 <schema adapter="market">
 	<element tablename="market">
 		<field name="objid" primary="true" prefix="MKT"/>
-		<field name="name" required="true" caption="Market Name" />
+		<field name="name" required="true" caption="Market Name" searchable="true" indexed="true"/>
 		<field name="state" required="true" defaultValue="ACTIVE" visible="false"/>
 		<field name="code" required="true" caption="Market Code"/>
 

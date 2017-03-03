@@ -2,29 +2,54 @@ package market.facts;
 
 import java.util.*;
 import treasury.facts.*;
+import com.rameses.util.*;
 
-public class MarketBillItem {
+public class MarketBillItem extends BillItem {
     
-    Date duedate;
+    MarketRentalUnit marketunit;
+    MarketMonthEntry monthentry;
+
     int month;
     int year;
-    int day;    
+    int days;
+    Date date;
+    Date duedate;
+    Date fromdate;
+    Date todate;
+    int index;
 
-    double rate;
-    double extrate;
+    String txntype = "market";
 
-	double amount = 0.0;
-    double amtpaid = 0.0;
+    public int getPaypriority() {
+       return (year*12)+month;
+    }
 
-	double total = 0.0;
-	Account account;
-    Account extaccount;
-	double surcharge = 0.0;
-	double interest = 0.0;
-    
-    Account surchargeAccount;
-    Account interestAccount;
-    int sortorder;
-    String remarks;
+    public def toMap() {
+        def m = super.toMap();
+        m.month = month;
+        m.year = year;
+        m.days = days;
+        m.date = date;
+        m.duedate = duedate;
+        m.fromdate = fromdate;
+        m.todate = todate;
+        m.sortorder = (year*12)+month;
+        return m;
+    }
+
+    public int hashCode() {
+        return super.hashCode() + (this.year + "-" + this.month + "-" + this.fromdate + "-" + this.todate).hashCode(); 
+    }
+
+    //during the update partial we need to update the number of days and todate for
+    //pay frequency that is not monthly.
+    public void recalc() {
+        if( marketunit.payfrequency != 'MONTHLY' ) {
+            int correctedDays = (int)(this.amount / marketunit.rate);
+            if( (this.amount % marketunit.rate) > 0 ) correctedDays += 1;
+            this.days = correctedDays;
+            todate = DateUtil.add( this.fromdate, (this.days-1) +"d");
+        }
+    } 
 
 }

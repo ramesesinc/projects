@@ -89,9 +89,6 @@ class VehicleCashReceiptService {
 		entity.particulars = fran.controlno;
 		entity.remarks = "Franchise No." + fran.controlno;
 		entity.items = res.billitems;
-		entity.items.each {
-			it.amount = NumberUtil.round(it.amount);
-		}
 		return entity;
 	}
 

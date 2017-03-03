@@ -30,8 +30,7 @@ class MarketPaymentService {
 		m.txnno = r.receiptno;
 		m.txndate = r.txndate;
 		m.acctid = r.acctid;
-		m.fromdate = r.fromdate;
-		m.todate = r.todate;
+		
 		m.reftype = "cashreceipt";
 		m.refid = r.objid;					//the cash receipt objid
 		m.refno = r.receiptno;		
@@ -40,37 +39,42 @@ class MarketPaymentService {
 		m.txnmode = 'ONLINE';
 		m.voided = 0;
 
-		//use the billitems as the details for payment.
-		r.billitems.each {
+		m.items = r.items.findAll{ it.dynamic != true };
+		m.items.each {
 			it.parent = m;
+			it.rate = r.unit.rate;
+			if(it.extrate==null) it.extrate = 0;
 		}
-		//find the items that is not surcharge or interest.
-		m.items = r.billitems;
-
+		
 		//find the last payment id so we can store it in the payment.
-		def prev = acctEm.find( [objid: m.acctid] ).select( "lastpaymentid,partialbalance,partialextbalance,lastdatepaid").first();
+		def prev = acctEm.find( [objid: m.acctid] ).select( "rate,extrate,lastpaymentid,partialbalance,partialextbalance,lastdatepaid").first();
 		m.prevlastdatepaid = prev.lastdatepaid;
 		m.prevpartialbalance = prev.partialbalance;
 		m.prevpartialextbalance = prev.partialextbalance;
 		m.prevpaymentid = prev.lastpaymentid;
 
+		def firstItem = m.items.first();
+		m.fromdate = firstItem.fromdate;
+		def lastItem = m.items.last();
+		m.todate =  lastItem.todate;
+
 		//create the payment.
 		pmtEm.create( m );
 
+
 		//calculate the last datepaid. It must be m.todate because it is already converted to date.
-		def lastdatepaid = m.todate;
-		if( r.partialbalance && r.partialbalance >0 ) {
-			lastdatepaid = DateUtil.add( m.todate, "-1d" );
-		};
+		//calculate if there are kida in next balance;
+		def partialbalance =  NumberUtil.round( lastItem.amount.doubleValue() % prev.rate.doubleValue() );
+		def partialextbalance =  NumberUtil.round( lastItem.extrate.doubleValue()  % prev.extrate.doubleValue() );
+
+		def u = [:];
+		u.partialbalance = (partialbalance>0)? prev.rate - partialbalance : 0;
+		u.partialextbalance = (partialextbalance>0)? prev.extrate - partialextbalance: 0;
+		u.lastdatepaid = m.todate; 
+		u.lastpaymentid = m.objid;
 
 		//update the ledger
-		acctEm.find( [objid: m.acctid] ).update( [
-			lastdatepaid: lastdatepaid, 
-			partialbalance: r.partialbalance, 
-			partialextbalance: r.partialextbalance,
-			lastpaymentid: m.objid 
-		]);
-
+		acctEm.find( [objid: m.acctid] ).update( u );
 	}
 
 

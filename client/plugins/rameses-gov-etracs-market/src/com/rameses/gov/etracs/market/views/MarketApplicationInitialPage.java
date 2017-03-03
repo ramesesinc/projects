@@ -95,7 +95,7 @@ public class MarketApplicationInitialPage extends javax.swing.JPanel {
 
         xLabel5.setCaption("Rate Type");
         xLabel5.setDepends(new String[] {"entity.unit"});
-        xLabel5.setExpression("#{entity.unit.rate} - #{entity.unit.term}");
+        xLabel5.setExpression("#{entity.unit.rate} - #{entity.unit.payfrequency}");
         xLabel5.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(xLabel5);
 

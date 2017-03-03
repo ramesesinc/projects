@@ -1,6 +1,7 @@
 import com.rameses.annotations.*;
 
 import treasury.utils.*;
+import treasury.facts.*;
 import enterprise.utils.*;
 import com.rameses.annotations.*;
 import com.rameses.util.*;
@@ -35,7 +36,6 @@ public class AssessmentRuleService {
 		// build the facts
 		//********************************************************************
 		def facts = [];
-		def resultBillItems = new LinkedHashSet<BillItem>();
 
 		if(!factBuilder.facts) throw new Exception("Please implement getFacts in FactBuilder")
 		facts.addAll( factBuilder.facts );
@@ -58,8 +58,9 @@ public class AssessmentRuleService {
 				if( bi.amtpaid ) ac.amtpaid = bi.amtpaid;
 				ac.remarks = bi.remarks;
 				def bbi = factBuilder.getBillItemFact( ac );
-				facts << bbi;
-				resultBillItems.add(bbi);
+				if( !facts.find{ (it instanceof AbstractBillItem) && (it.hashCode()==bbi.hashCode())  } ) {
+					facts << bbi;
+				}
 			}
 		};
 
@@ -83,7 +84,6 @@ public class AssessmentRuleService {
 		};
 		if(!ctx.env.acctUtil) ctx.env.acctUtil = acctUtil;
 		if(!ctx.env.infoUtil) ctx.env.infoUtil = variableInfoUtil;
-		ctx.result.billitems = resultBillItems; 
 
 		//********************************************************************
 		// handler to break the rule in case there are askinfos
@@ -99,9 +99,10 @@ public class AssessmentRuleService {
 		if( res.askinfos ) {
 			return [askinfos : res.askinfos.collect{ it.toMap() } ];
 		}
-		if( res.billitems ) {
-			def billItems = res.remove("billitems");
-			result.billitems = billItems.collect{ it.toMap() };
+		def billitems = facts.findAll{ it instanceof AbstractBillItem };
+
+		if( billitems ) {
+			result.billitems = billitems.collect{ it.toMap() };
 		}
 		if( res.infos ) {
 			def infos = res.remove("infos");

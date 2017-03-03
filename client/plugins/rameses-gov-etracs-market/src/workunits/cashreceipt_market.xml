@@ -5,6 +5,9 @@
     </invokers>
     <code class="com.rameses.gov.etracs.market.models.MarketCashReceiptModel"/>
     <pages>
+        <!--
         <page template="com.rameses.gov.etracs.market.views.MarketCashReceiptPage"/>
+        -->
+        <page template="com.rameses.enterprise.treasury.views.SimpleCashReceiptPage"/>
     </pages>    
 </workunit>

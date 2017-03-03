@@ -20,10 +20,9 @@ class SummarizeBillItem implements RuleActionHandler {
 		if(!billitem)
 			throw new Exception("treasury.actions.SummarizeBillItem");
 		def ct = RuleExecutionContext.getCurrentContext();
-		def billitems = ct.result.billitems;
 		def facts = ct.facts;
 
-		def obj = billitems.find{ (it instanceof SummaryBillItem) && it.account.objid == billitem.account.objid  };
+		def obj = facts.find{ (it instanceof SummaryBillItem) && it.account.objid == billitem.account.objid  };
 		if( !obj ) {
 			obj = new SummaryBillItem();
 			obj.account = billitem.account;
@@ -31,13 +30,14 @@ class SummarizeBillItem implements RuleActionHandler {
 			obj.dynamic = billitem.dynamic;
 			obj.txntype = billitem.txntype;
 			obj.sortorder = billitem.sortorder;
-			billitems << obj;			
 			facts << obj;
-		}
+		};
 		
 		obj.items << billitem;
+		obj.amount = NumberUtil.round(obj.items.sum{ it.amount });
 
 		//Calculate the amount 
+		/*
 		if(aggtype =="SUM" ) {
 			obj.amount = obj.items.sum{ it.amount };
 		}
@@ -53,9 +53,8 @@ class SummarizeBillItem implements RuleActionHandler {
 		else if( aggtype == "MAX" ) {
 			obj.amount = obj.items.max{ it.amount };
 		}
-
+		*/
 		//remove the billitem in the main facts and billitems
-		billitems.remove( billitem );
 		facts.remove( billitem );
 		drools.retract( billitem );		
 	}

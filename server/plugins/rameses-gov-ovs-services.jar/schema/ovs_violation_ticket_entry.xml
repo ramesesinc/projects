@@ -1,4 +1,4 @@
-<schema adapter="violation">
+<schema adapter="ovs">
 	<element name="ovs_violation_ticket_entry" tablename="violation_ticket_entry">
 		<field name="objid" primary="true" prefix="VTE"/>
 		<complex name="parent" ref="ovs_violation_ticket" jointype="many-to-one" required="false">

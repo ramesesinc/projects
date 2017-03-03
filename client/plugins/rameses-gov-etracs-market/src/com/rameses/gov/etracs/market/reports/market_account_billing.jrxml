@@ -43,7 +43,7 @@
 	<field name="grandtotal" class="java.lang.Number"/>
 	<field name="unit.code" class="java.lang.String"/>
 	<field name="unit.unittype" class="java.lang.String"/>
-	<field name="term" class="java.lang.String"/>
+	<field name="payfrequency" class="java.lang.String"/>
 	<field name="rate" class="java.lang.Number"/>
 	<field name="unit.section.name" class="java.lang.String"/>
 	<field name="unit.market.name" class="java.lang.String"/>

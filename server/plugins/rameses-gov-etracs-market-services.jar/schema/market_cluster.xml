@@ -5,7 +5,7 @@
 			includefields="objid,code,name,address.text">
 			<key field="marketid" target="objid" />
 		</complex>
-		<field name="name" required="true" caption="Cluster Name"/>
+		<field name="name" required="true" caption="Cluster Name" searchable="true" indexed="true"/>
 		<field name="description" />
 	</element>
 </schema>

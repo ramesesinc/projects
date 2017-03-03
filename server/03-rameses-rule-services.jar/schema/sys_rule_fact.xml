@@ -1,6 +1,6 @@
 <schema>
 	<element tablename="sys_rule_fact">
-		<field name="objid" primary="true"/>
+		<field name="objid" primary="true" prefix="RULFACT"/>
 		<field name="name" required="true" indexed="true" searchable="true"/>
 		<field name="title" required="true" indexed="true" searchable="true"/>
 		<field name="factclass" required="true" indexed="true"/>

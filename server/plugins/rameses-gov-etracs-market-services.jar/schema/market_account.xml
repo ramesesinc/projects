@@ -23,9 +23,10 @@
 		<!-- dates -->
 		<field name="padlockdate" type="date"/>
 
-		<field name="rate" required="true" />
-		<field name="extrate" required="true" />
-		<field name="term" required="true" />
+		<field name="payfrequency" required="true" caption="Pay Frequency"/>
+		<field name="rate" required="true" caption="Rate"/>
+		<field name="extrate" required="true" caption="Ext. Rate"/>
+		
 
 		<!-- store the partial balances -->
 		<field name="partialbalance" type="decimal" defaultValue="0"/>
@@ -33,5 +34,6 @@
 
 		<!-- link to market_payment -->
 		<field name="lastpaymentid" />
+		<field name="remarks" />
 	</element>
 </schema>

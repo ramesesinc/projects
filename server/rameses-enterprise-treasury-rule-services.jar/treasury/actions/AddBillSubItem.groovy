@@ -14,7 +14,8 @@ import com.rameses.osiris3.common.*;
 class AddBillSubItem extends AbstractAddBillItem {
 
 	public def createSubItemFact( def billitem, def amt, def txntype ) {
-		def subItem = new BillSubItem(parent: billitem, amount:amt);
+		def subItem = new BillSubItem(parent: billitem);
+		subItem.amount = NumberUtil.round(amt);
 		subItem.txntype = txntype;
 		return subItem;
 	}
@@ -26,12 +27,13 @@ class AddBillSubItem extends AbstractAddBillItem {
 		def txntype = params.txntype;
 
 		def subItem = createSubItemFact(  billitem, amt, txntype );
-		setAccountFact( acct.key, subItem );
+		if(acct!=null) {
+			setAccountFact( subItem, acct.key );
+		};	
 		boolean b = billitem.items.add(subItem);
 
 		//add to facts so it can be evaluated...
 		if(b) {
-			getBillItems() << subItem;
 			getFacts() << subItem;	
 		}
 	}

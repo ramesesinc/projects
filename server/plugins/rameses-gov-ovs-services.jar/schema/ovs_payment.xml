@@ -1,4 +1,4 @@
-<schema adapter="violation">
+<schema adapter="ovs">
 	<element name="ovs_payment" tablename="payment">
 		<field name="objid" primary="true" prefix="OVSPMT"/>
 		<field name="reftype" required="true"/>

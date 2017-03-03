@@ -6,6 +6,7 @@ import java.util.*;
 import treasury.facts.*;
 import com.rameses.osiris3.common.*;
 
+
 /***
 * Description: Simple Add of Item. Item is unique based on the account. 
 * Parameters:
@@ -24,15 +25,11 @@ class AddBillItem extends AbstractAddBillItem {
 			remarks = params.remarks.eval();		
 		}
 
-		def billitem = new BillItem(amount: amt);
+		def billitem = new BillItem(amount: NumberUtil.round( amt));
 		billitem.remarks = remarks;
-		setAccountFact( acct.key, billitem );
+		setAccountFact( billitem, acct.key );
+		addToFacts( billitem );
 
-		//check first if there is already existing. If successfully added, then add to facts
-		boolean b = getBillItems().add(billitem);
-		if(b) {
-			getFacts() << billitem;	
-		}
 	}
 
 }

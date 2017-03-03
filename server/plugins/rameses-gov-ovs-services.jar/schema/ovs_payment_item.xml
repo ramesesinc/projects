@@ -1,4 +1,4 @@
-<schema adapter="violation">
+<schema adapter="ovs">
 	<element name="ovs_payment_item" tablename="payment_item">
 		<field name="objid" primary="true" prefix="OVSPMTI"/>
 		<complex name="parent" ref="ovs_payment" jointype="many-to-one" required="false">

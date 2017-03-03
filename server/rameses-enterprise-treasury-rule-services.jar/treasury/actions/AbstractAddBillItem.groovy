@@ -21,19 +21,20 @@ public abstract class AbstractAddBillItem implements RuleActionHandler {
 		return ct.facts;
 	}
 
-	public def getBillItems() {
-		def ct = RuleExecutionContext.getCurrentContext();
-		if(!ct.result.billitems) {
-			ct.result.billitems = new LinkedHashSet<BillItem>();
-		}
-		return ct.result.billitems;
-	}
-
-	public void setAccountFact( def acctid, def billitem ) {
+	public void setAccountFact( def billitem, def acctid ) {
 		def ct = RuleExecutionContext.getCurrentContext();		
 		if( !ct.env.acctUtil ) ct.env.acctUtil = new ItemAccountUtil();
 		billitem.account = ct.env.acctUtil.createAccountFact( [objid: acctid] );
 		//billitem.sortorder = acct.sortorder;
+	}
+
+
+	public void addToFacts( def billitem ) {
+		def facts = getFacts();
+		//check if we can add the fact. Do not include if it already exists.
+		if( !facts.find{ (it instanceof AbstractBillItem) && (it.hashCode() == billitem.hashCode()) } ) {
+			facts << billitem;
+		}
 	}
 
 

@@ -19,7 +19,7 @@ public class VehicleCashReceipt extends AbstractSimpleCashReceiptModel {
      public String getContextName() {
          return "vehicle";
      }
-    
+     
      public def getPaymentInfo( def app ) {
          return cashReceiptSvc.getInfo( app );
      }

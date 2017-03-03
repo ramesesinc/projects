@@ -1,4 +1,4 @@
-<schema adapter="violation">
+<schema adapter="ovs">
 	<element name="ovs_violation_ticket" tablename="violation_ticket">
 		<field name="objid" primary="true" prefix="VIT"/>
 		<field name="state" required="true" defaultValue="OPEN"/>

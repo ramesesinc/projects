@@ -15,8 +15,14 @@ public class MarketAccount extends CrudFormModel {
     def listener = [
         'entity.unit' : { o->
             entity.rate = o.rate;
-            entity.term = o.term;
-            binding.refresh("entity.(rate|term)");
+            entity.payfrequency = o.payfrequency;
+            binding.refresh("entity.(rate|payfrequency)");
+        },
+        'entity.owner': { o->
+            if(entity.acctname==null) {
+                entity.acctname = o.name;
+                binding.refresh("entity.acctname");
+            }
         }
     ];        
    

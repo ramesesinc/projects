@@ -1,10 +1,11 @@
 import com.rameses.annotations.*;
 import java.text.*;
 import com.rameses.functions.*;
+import com.rameses.util.*;
 
 class MarketRentalBillingReportService {
 	
-	@Service("MarketRentalBillingService")
+	@Service("MarketBillingService")
 	def billingSvc;
 
 	@Service("DateService")
@@ -23,46 +24,42 @@ class MarketRentalBillingReportService {
 		result.status = 0;
 
 		def acctid = p.parameters.acctid;
+		
 		def acct = acctEm.find([objid: acctid]).first();
-		def billing = billingSvc.process( [acctid: acctid ] );
 
+		def billing = billingSvc.getBilling( [acctid: acctid ] );
+
+		
 		def items = [];
-		def group = [];
-		def item = [:];
 
-		billing.items.sort{ (it.year*12)+it.month }.each { cc->
-			def _grp = [cc.year, cc.month, cc.rate, cc.extrate ];
-			if( _grp != group ) {
-				group = _grp;
-				item = [:];
-				item.year = group[0];
-				item.month = group[1];
-				item.rate = cc.rate;
-				item.extrate = cc.extrate;
-				item.fromday = cc.day;
-				item.today = cc.day;
-				item.duedate = cc.duedate;
-				item.surcharge = cc.surcharge;
-				item.interest = cc.interest;
-				item.days = 1;
-				item.amount = item.rate + item.extrate;
-				item.linetotal = item.amount + item.surcharge + item.interest;
-				items << item;
-			}
-			else {
-				item.days += 1;
-				item.today = cc.day;
-				item.rate += cc.rate;
-				item.extrate += cc.extrate;
-				item.surcharge += cc.surcharge;
-				item.interest += cc.interest;
-				item.amount = item.rate + item.extrate;
-				item.linetotal = item.amount + item.surcharge + item.interest;
-			}
+		def cal = Calendar.instance;
+		billing.items.findAll{ it.dynamic != true }.sort{ (it.year*12)+it.month }.each { cc->
+			cal.setTime( cc.fromdate );
+			def fromday = cal.get(Calendar.DAY_OF_MONTH);
+
+			cal.setTime( cc.todate );
+			def today = cal.get(Calendar.DAY_OF_MONTH);
+
+			def item = [:];
+			item.year = cc.year;
+			item.month = cc.month;
+			item.rate = cc.amount;
+			item.extrate = (cc.extrate==null)?0:cc.extrate;
+			item.fromday = fromday;
+			item.today = today;
+			item.days = cc.days;
+			item.duedate = cc.duedate;
+			item.surcharge = NumberUtil.round( (cc.surcharge == null) ? 0: cc.surcharge );
+			item.interest = NumberUtil.round( (cc.interest == null) ? 0 : cc.interest );
+			item.amount = item.rate + item.extrate;
+			item.linetotal = NumberUtil.round(item.amount + item.surcharge + item.interest);
+			items << item;
 		}
 
 		acct.items = items;
+		acct.grandtotal =items.sum{ it.amount };
 		acct.billdate = dateSvc.getServerDate();
+		/*
 		acct.fromdate = billing.fromdate;
 		acct.todate = billing.todate;
 		acct.totalrate = billing.totalrate;
@@ -71,6 +68,7 @@ class MarketRentalBillingReportService {
 		acct.totalsurcharge = billing.totalsurcharge;
 		acct.totalinterest = billing.totalinterest;
 		acct.grandtotal = billing.grandtotal;
+		*/
 		acct.hasitems = (acct.items) ? true : false;
 
 		result.data = acct;

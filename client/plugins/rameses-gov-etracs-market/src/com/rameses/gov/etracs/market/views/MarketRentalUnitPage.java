@@ -39,7 +39,7 @@ public class MarketRentalUnitPage extends javax.swing.JPanel {
         xComboBox1 = new com.rameses.rcp.control.XComboBox();
         xComboBox3 = new com.rameses.rcp.control.XComboBox();
         xDecimalField1 = new com.rameses.rcp.control.XDecimalField();
-        xComboBox2 = new com.rameses.rcp.control.XComboBox();
+        xComboBox6 = new com.rameses.rcp.control.XComboBox();
 
         xFormPanel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
         xFormPanel1.setCaptionWidth(100);
@@ -109,13 +109,11 @@ public class MarketRentalUnitPage extends javax.swing.JPanel {
         xDecimalField1.setRequired(true);
         xFormPanel1.add(xDecimalField1);
 
-        xComboBox2.setCaption("Term");
-        xComboBox2.setExpression("#{item.name}");
-        xComboBox2.setItems("listTypes.term");
-        xComboBox2.setName("entity.term"); // NOI18N
-        xComboBox2.setPreferredSize(new java.awt.Dimension(100, 22));
-        xComboBox2.setRequired(true);
-        xFormPanel1.add(xComboBox2);
+        xComboBox6.setCaption("Pay Frequency");
+        xComboBox6.setItems("lov.MARKET_PAY_FREQUENCY");
+        xComboBox6.setName("entity.payfrequency"); // NOI18N
+        xComboBox6.setRequired(true);
+        xFormPanel1.add(xComboBox6);
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
@@ -123,8 +121,8 @@ public class MarketRentalUnitPage extends javax.swing.JPanel {
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(xFormPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 579, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(57, Short.MAX_VALUE))
+                .add(xFormPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -138,10 +136,10 @@ public class MarketRentalUnitPage extends javax.swing.JPanel {
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.rameses.rcp.control.XComboBox xComboBox1;
-    private com.rameses.rcp.control.XComboBox xComboBox2;
     private com.rameses.rcp.control.XComboBox xComboBox3;
     private com.rameses.rcp.control.XComboBox xComboBox4;
     private com.rameses.rcp.control.XComboBox xComboBox5;
+    private com.rameses.rcp.control.XComboBox xComboBox6;
     private com.rameses.rcp.control.XDecimalField xDecimalField1;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XFormPanel xFormPanel2;

@@ -1,7 +1,7 @@
 <schema>
 
 	<element tablename="sys_rule_fact_field">
-		<field name="objid" primary="true"/>
+		<field name="objid" primary="true" prefix="RULFACTFLD"/>
 		<field name="parentid" required="true"/>
 		<field name="name" required="true"/>
 		<field name="title" required="true"/>

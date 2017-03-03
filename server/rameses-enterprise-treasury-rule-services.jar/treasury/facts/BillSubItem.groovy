@@ -5,7 +5,7 @@ import java.util.*;
 public class BillSubItem extends AbstractBillItem {
 
 	BillItem parent;
-	boolean dynamic = true;
+	boolean dynamic = true;		//not saved in database
 	int sortorder = 200;
 
 	public int hashCode() {

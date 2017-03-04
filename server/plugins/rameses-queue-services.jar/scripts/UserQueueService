@@ -100,7 +100,8 @@ class UserQueueService {
 			notify([ 
 				sectionid: o.sectionid, counterid: o.counterid, 
 				seriesno: m.seriesno, ticketno: dd.ticketno,  
-				type:'TAKE_NUMBER', prefix: a.prefix 
+				type:'TAKE_NUMBER', prefix: a.prefix, 
+				countercode: dd.counter?.code  
 			]); 
 		} 
 	} 
@@ -108,6 +109,9 @@ class UserQueueService {
 	@ProxyMethod 
 	public void consumeNumber( o ) {
 		if ( !o.counterid ) throw new Exception('counterid parameter is required'); 
+
+		def qcdata = qc.find([ objid: o.counterid ]).first(); 
+		if ( !qcdata ) throw new Exception('The specified counter does not exist'); 
 
 		def rundate = dateSvc.getServerDate();
 		def qncdata = qnc.find([ counterid: o.counterid ]).first(); 
@@ -122,13 +126,17 @@ class UserQueueService {
 		def qsdata = qs.find([ objid: qndata.sectionid ]).first(); 
 		notify([ 
 			counterid: o.counterid, sectionid: qsdata.objid, prefix: qsdata.prefix, 
-			type:'CONSUME_NUMBER', seriesno: qndata.seriesno, ticketno: qndata.ticketno 
+			type:'CONSUME_NUMBER', seriesno: qndata.seriesno, ticketno: qndata.ticketno, 
+			countercode: qcdata.code  
 		]); 
 	} 
 
 	@ProxyMethod 
 	public void buzzNumber( o ) { 
 		if ( !o.counterid ) throw new Exception('counterid parameter is required'); 
+
+		def qcdata = qc.find([ objid: o.counterid ]).first(); 
+		if ( !qcdata ) throw new Exception('The specified counter does not exist'); 
 
 		def qncdata = qnc.find([ counterid: o.counterid ]).first(); 
 		if ( !qncdata ) throw new Exception('No available queue number for this counter');
@@ -138,7 +146,8 @@ class UserQueueService {
 
 		notify([ 
 			counterid: o.counterid, sectionid: qsdata.objid, prefix: qsdata.prefix, 
-			type:'BUZZ_NUMBER', seriesno: qndata.seriesno, ticketno: qndata.ticketno 
+			type:'BUZZ_NUMBER', seriesno: qndata.seriesno, ticketno: qndata.ticketno, 
+			countercode: qcdata.code  
 		]); 
 	} 
 
@@ -212,7 +221,5 @@ class UserQueueService {
         } catch(Throwable t) { 
             return data; 
         } 
-    }  
-
-
+    } 
 } 

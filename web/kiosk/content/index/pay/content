@@ -1,0 +1,68 @@
+
+<%
+    def partnerSvc = SERVICE.lookup("PaymentMethodService", "etracs");
+    def list = partnerSvc.getPaymentMethods([ billid: PARAMS.billid ]); 
+%>
+
+<script>
+\$put("payment", new function(){
+
+    this.paymenttype;
+
+    this.print = function( pmo ) { 
+        var params = {
+            header : "${PROJECT['lgu.name']}", 
+            title  : pmo.txntype.collectiontype.title, 
+            txnid  : pmo.txnid,
+            txndate : pmo.txndate,
+            paidby :  pmo.paidby,
+            amount : 'Php'+ pmo.amount,
+            expirydate : pmo.expirydate,
+            queueno : pmo.queueno 
+        };
+
+        window.console.log(params);
+        WebViewUtil.print(params, "pmo");
+    }
+
+
+
+    this.post = function() { 
+        var svc =  Service.lookup("PaymentMethodService", "etracs");
+        var pmo = svc.createPaymentOrder({ billid: '${PARAMS.billid}' }); 
+        if ( this.paymenttype == 'CASHIER ') { 
+            this.print( pmo ); 
+        } else {
+            window.console.log( this.paymenttype ); 
+        }
+    }
+
+}); 
+</script> 
+<div id="wrapper"> 
+    <header>
+      <h1>Payment Methods</h1>
+    </header>
+        <div id="content">
+        <div class="container">
+            <div class="container-paycontent">
+                <div class="row">
+                    <% list.each{ o-> %>
+
+                    <div class="col-sm-12">
+                        <form action="o.actionurl" method="post" showtoolbar="true" id="partnerform">  
+                            <% o.params.each{ k,v-> %>
+                                <input type="hidden" name="${k}" value="${v}"/>
+                            <%}%>
+                        </form>
+                        <button r:context="payment" r:name="post" class="thumbnail" r:param_paymenttype="${o.objid}" showbackbutton >${o.caption}</button>
+                    </div>
+
+                    <%}%>
+                </div>
+            </div>
+        </div>
+      </div>  
+</div>
+
+           

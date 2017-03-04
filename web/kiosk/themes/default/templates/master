@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" itemscope="" itemtype="http://schema.org/">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="title" content="${PROJECT.title}" />
+    <meta itemprop="name" content="${PROJECT.title}" />
+    <meta property="og:title" content="${PROJECT.title}" />
+    <meta name="Description" content="${PROJECT.description}" />
+    <meta itemprop="description" content="${PROJECT.description}" />
+    <meta property="og:description" content="${PROJECT.description}" />
+    <meta name="keywords" content="${PROJECT.keywords}"/>
+    <meta name="copyright" content="${PROJECT.copyright}" />
+
+
+    @stdlib()
+    @css("bootstrap.min")
+    @css("style")
+
+
+
+</head>
+
+<body>
+    <!-- 
+    <nav class="navbar-default">
+        <div class="container">
+              
+            <a class="navbar-brand" href="#"><img src="/res/kiosk-logo.png"></a>
+
+           
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="dropdown">
+                      <a href="#" class="dropdown-toggle bin-btn" data-toggle="dropdown">Language<b class="caret"></b></a>
+                      <ul class="dropdown-menu">
+                        <li><a href="#">Tagalog</a></li>
+                        <li class="divider"></li>
+                        <li><a href="#">English</a></li>
+                      </ul>
+                    </li>
+                </ul>
+            </div>
+        
+        </div>
+        
+    </nav> -->
+
+<script>
+<% 
+    def sidebar = [];
+    sidebar << [ links:'queue',  name:'Queue'];
+    sidebar << [ links:'business',  name:'Business'];
+    sidebar << [ links:'real',  name:'Real Property']; 
+    sidebar << [ links:'clearances',  name:'Clearances'];  
+    sidebar << [ links:'market',  name:'Market Rental'];  
+    sidebar << [ links:'water' ,  name:'Water Works'];
+    sidebar << [ links:'personal' ,  name:'Personal']; 
+   
+
+    void loadChildrenPg( i ) { 
+        ANUBIS.getFolder( i.path )?.children.each{ o-> 
+            def pginfo = ANUBIS.getFile((o.href ? o.href : o.path) +'.pg'); 
+            
+            //System.out.println('--> ' + pginfo);
+            if ( pginfo.activatebarcode ) {
+                println 'pgfiles.'+ pginfo.pagename +' = { activatebarcode: true }; ';
+            }
+            loadChildrenPg( pginfo );   
+        } 
+    }
+
+    println 'var pgfiles={}; ';
+    //System.out.println('-'*50);
+    ANUBIS.getFolder( PAGE.parentPath )?.children.each{ o-> 
+        def pginfo = ANUBIS.getFile((o.href ? o.href : o.path) +'.pg'); 
+        if ( pginfo.activatebarcode ) {
+            println 'pgfiles.'+ pginfo.pagename +' = { activatebarcode: true }; ';
+        }
+        loadChildrenPg(pginfo);
+    } 
+%>
+
+    \$put("kiosk", 
+       new function() {
+
+        var self = this;
+
+        this.link;
+
+        this.onpageload = function( pagename ) { 
+            if ( pagename == 'default' ) pagename='index'; 
+
+            window.console.log(pgfiles);
+            window.console.log(pagename);
+            window.console.log('${PAGE}');
+            var o = pgfiles[pagename]; 
+            var activate = false;
+            if ( o) {
+                activate = true;
+            }
+            //ActivateBarcodeScanner(activate);
+            //WebViewUtil.activateBarcodeScanner(activate);
+            WebViewUtil.onPageLoad({pagename: pagename, activatebarcode: activate});
+        } 
+
+        this.goToPage = function() {
+            return self.link;
+        }
+       },
+       {
+        "default"     : "/index",
+        "queue"       : "/index/queue",
+        "business"    : "/index/business",
+        "real"        : "/index/real"
+       }
+    ); 
+
+</script>
+
+<br>
+<div r:controller="kiosk">
+</div>
+
+    <div id="container">
+            <div id="content">
+                <div r:context="kiosk">
+              
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--<div class="col-md-3">
+         <input type="text" style="width:200px;height:200px;margin-bottom:100px;"/>
+    </div>
+  <div id="footer">
+
+    <button r:context="kiosk" r:name="_default" r:visibleWhen="#{_controller.currentPage != 'default' }" class="back">Main Menu</button>     
+    <div class="logo">
+        <a href="/index"><img src="/res/logo.png"></a>
+    </div>
+
+  </div>-->
+
+
+<script src="/res/js/queueing-system.js"></script>
+<script src="/res/js/CODE128.js"></script>
+<script src="/res/js/JsBarcode.js"></script>
+<script src="/res/js/webview-util.js"></script>
+
+</body>
+</html>

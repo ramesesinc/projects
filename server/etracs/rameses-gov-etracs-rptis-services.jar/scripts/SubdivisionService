@@ -56,6 +56,9 @@ class SubdivisionService
     @DataContext('subdivision_cancelledimprovement')
     def cancelledimprovementDb
 
+    @Service('FAASAnnotationService')
+    def annotationSvc 
+
 
     def SCHEMA_SUBDIVISION      = 'subdivision'
     def SCHEMA_SUBDIVIDED_LAND  = 'subdividedland'
@@ -142,6 +145,7 @@ class SubdivisionService
         txnRef.checkReference(motherland.landfaasid)
         def subdivision = em.findSubdivisionById([objid:motherland.subdivisionid])
         checkLedgerBalance(motherland)
+        checkAnnotation(subdivision, motherland)
         em.create(motherland, SCHEMA_MOTHER_LAND)
         createAffectedRpus(motherland)
         em.updateSubdivisionByMotherLand(motherland)
@@ -156,6 +160,11 @@ class SubdivisionService
         }
     }
 
+    void checkAnnotation(subdivision, motherland){
+        subdivision.txntype = faasSvc.getTxnType(subdivision.txntype.objid)
+        annotationSvc.checkActiveAnnotations( subdivision.txntype, [objid:motherland.landfaasid])
+    }
+
 
     @ProxyMethod
     public def deleteMotherLand( motherland ) {
@@ -167,7 +176,9 @@ class SubdivisionService
 
     @ProxyMethod
     public List getAffectedRpus(subdivisionid){
-        return em.getAffectedRpus([subdivisionid:subdivisionid])
+        return em.getAffectedRpus([subdivisionid:subdivisionid]).each{
+            it.isnew = util.toBoolean(it.isnew, false)
+        }
     }
 
     @ProxyMethod
@@ -268,6 +279,14 @@ class SubdivisionService
         em.save(arpu, SCHEMA_AFFECTED_RPU)  
         return arpu 
     }    
+
+    @ProxyMethod
+    public void deleteNewAffectedRpu(arpu){
+        arpu.newrpuid = null 
+        arpu.newrpid = null 
+        deleteAffectedRpuFaas(arpu)
+        em.delete(arpu, SCHEMA_AFFECTED_RPU)
+    }
 
     @ProxyMethod
     public def deleteAffectedRpuFaas(arpu){
@@ -415,7 +434,8 @@ class SubdivisionService
         txnRef.delete(subdivision.objid)
     }
 
-    void validateSubdividedLands(subdivision){
+    @ProxyMethod
+    public void validateSubdividedLands(subdivision){
         def lands = em.getSubdividedLandInfoForValidation(subdivision)
         if (lands.size() <= 1 ){
             throw new Exception('At least 2 Subdivided Lands are required.')
@@ -709,6 +729,7 @@ class SubdivisionService
         affectedrpu.newpin = affectedrpu.subdividedland.newpin 
         affectedrpu.newsuffix = affectedrpu.suffix 
         affectedrpu.prevpin = 'NEW'
+        affectedrpu.isnew = true 
         em.save(affectedrpu, SCHEMA_AFFECTED_RPU)
         return affectedrpu 
     }

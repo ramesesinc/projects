@@ -278,6 +278,9 @@ class LandRPUService
 				it.params = em.getAdjustmentParameters(it)
 			}
 			detail.taxable = util.toBoolean(detail.taxable, true)
+			if (!detail.landspecificclass || !detail.landspecificclass.objid ) {
+				detail.landspecificclass = detail.specificclass
+			}
 		}
 		return details 
     }

@@ -20,11 +20,16 @@ public class AddAssessmentInfo implements RuleActionHandler {
 		def ldentity = ld.entity
 		def rpuentity = ld.rpu.entity
 
-		def classificationid = params.classification?.objid
-		def actualuseid = ldentity.actualuse?.objid
-		def rputype = 'land';
+		def classificationid = params.classificationid 
+		if (params.classification){
+			classificationid = params.classification.objid			
+		}
 
-		def a = request.assessments.find{it.rputype == rputype && it.classificationid == classificationid && it.actualuseid == actualuseid && it.taxable == ldentity.taxable}
+		def actualuseid = ldentity.actualuse?.objid
+		def actualusecode = ldentity.actualuse?.code
+		def rputype = rpuentity.rputype;
+
+		def a = request.assessments.find{it.rputype == rputype && it.classificationid == classificationid && it.actualusecode == actualusecode && it.taxable == ldentity.taxable}
 		if ( ! a){
 			if (rpuentity.assessments == null) 
 				rpuentity.assessments = []
@@ -36,6 +41,7 @@ public class AddAssessmentInfo implements RuleActionHandler {
 				classificationid : classificationid,
 				classification   : [objid:classificationid],
 				actualuseid  : actualuseid,
+				actualusecode  : actualusecode,
 				actualuse    : [objid:actualuseid],
 				areasqm      : NS.round(ldentity.areasqm), 
 				areaha       : NS.roundA( ldentity.areaha, 6),

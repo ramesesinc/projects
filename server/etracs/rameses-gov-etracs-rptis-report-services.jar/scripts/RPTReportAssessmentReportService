@@ -1,0 +1,99 @@
+import com.rameses.annotations.*
+import com.rameses.common.*;
+import com.rameses.services.extended.*;
+
+class RPTReportAssessmentReportService
+{
+	@Env 
+	def env
+
+	@ActiveDB('rptreport_assessment_report')
+	def em
+
+	@Service('NumberService')
+	def numSvc 
+
+	@Service('LGUService')
+	def lguSvc 
+
+
+	@Async
+    @ProxyMethod
+	public def buildReport(params){
+		params.monthid = params.month?.index
+		params.lguid = params.lgu.objid
+		if ('MV'.equalsIgnoreCase(params.valuetype)){
+			params.valuefield = 'r.totalmv'
+			params.valuecaption = 'MARKET VALUE'
+		}
+		else {
+			params.valuefield = 'r.totalav'
+			params.valuecaption = 'ASSESSED VALUE'
+		}
+
+		def brgys = lguSvc.getBarangaysByParentId(params.lguid).collect{[objid:it.objid, barangay:it.name]}
+
+		em.getPreceedingList(params).each{v ->
+			def brgy = brgys.find{it.objid == v.objid }
+			if (brgy){
+				brgy.putAll(v)
+			}
+		}
+
+		em.getCurrentList(params).each{v ->
+			def brgy = brgys.find{it.objid == v.objid }
+			if (brgy){
+				brgy.putAll(v)
+			}
+		}
+
+		em.getCancelledList(params).each{v ->
+			def brgy = brgys.find{it.objid == v.objid }
+			if (brgy){
+				brgy.putAll(v)
+				addToPreceeding(brgy, v)
+			}
+		}
+
+		em.getEndingList(params).each{v ->
+			def brgy = brgys.find{it.objid == v.objid }
+			if (brgy){
+				brgy.putAll(v)
+			}
+		}
+
+		setZeroValuesToNull(brgys)
+		
+		params.TITLE = 'MONTHLY ASSESSMENT REPORT'
+		params.PERIOD = 'MONTH OF ' + params.month.caption + ', ' + params.year 
+		params.FORLGUNAME = env.ORGCLASS +  ' OF ' + env.ORGNAME 
+		if (params.lgu){
+			params.FORLGUNAME = params.lgu.lgutype.toUpperCase() + ' OF ' + params.lgu.name
+		}
+
+		return [reportdata:brgys, parameters:params]
+	}
+
+	void addToPreceeding(brgy, v){
+		if (brgy.pretaxcnt == null ) brgy.pretaxcnt = 0.0
+		if (brgy.pretaxvalue == null ) brgy.pretaxvalue = 0.0
+		if (brgy.preexemptcnt == null ) brgy.preexemptcnt = 0.0
+		if (brgy.preexemptvalue == null ) brgy.preexemptvalue = 0.0
+
+		brgy.pretaxcnt += v.cancelledtaxcnt
+		brgy.pretaxvalue += v.cancelledtaxvalue
+		brgy.preexemptcnt += v.cancelledexemptcnt
+		brgy.preexemptvalue += v.cancelledexemptvalue
+	}
+
+
+	void setZeroValuesToNull(brgys){
+		brgys.each{brgy ->
+			brgy.each{k, v->
+				if (v == 0.0) brgy[k] = null 
+			}
+		}
+	}
+
+}
+

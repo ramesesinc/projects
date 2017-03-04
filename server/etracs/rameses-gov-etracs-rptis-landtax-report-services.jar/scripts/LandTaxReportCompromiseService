@@ -13,16 +13,37 @@ class LandTaxReportCompromiseService{
     
     @ProxyMethod
     public def buildApplicationData(objid) {
-        def compromise = compromiseEm.read([objid:objid] )
-        if( ! compromise ) {
-            throw new Exception('Compromise does not exist or has already been deleted.')
-        }
-        compromise.putAll(em.findLedgerInfo([objid:compromise.rptledgerid]))
+        def compromise = getCompromiseInfo([objid:objid])
         compromise.credits = em.getCredits([objid:objid]).each{
             if (it.type == 'cypayment')
                 it.particular = it.year + ' Payment'
         }
         return compromise
+    }
+
+
+    @ProxyMethod
+    public def buildCompromiseLedgerReport( compromise ) {
+        compromise = getCompromiseInfo(compromise)
+        def balance = compromise.amtforinstallment 
+        compromise.credits = em.getLedgerCredits(compromise).eachWithIndex{v, idx ->
+            v.idx = ++idx
+            if (v.installmentid){
+                v.balance = balance - v.oramount 
+                balance -= v.oramount 
+            }
+        }
+        compromise.balance = balance 
+        return compromise
+    }    
+
+    def getCompromiseInfo(compromise){
+        compromise = compromiseEm.read(compromise)
+        if( ! compromise ) {
+            throw new Exception('Compromise Agreement does not exist or has already been deleted.')
+        }
+        compromise.putAll(em.findLedgerInfo([objid:compromise.rptledgerid]))
+        return compromise 
     }
 
 }

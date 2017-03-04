@@ -194,6 +194,11 @@ class NumberService {
         return cents.substring(cents.indexOf(".")+1);
     }
 
-
-    
+    @ProxyMethod(local=true)
+    public def generateControlNo(){
+        java.security.SecureRandom sr = new java.security.SecureRandom();
+        sr.setSeed(System.currentTimeMillis() + System.identityHashCode(sr));
+        def padl = (sr.nextInt(9)+1).toString();
+        return (sr.nextInt(99999999) + 1).toString().padLeft(8,padl)
+    }
 }

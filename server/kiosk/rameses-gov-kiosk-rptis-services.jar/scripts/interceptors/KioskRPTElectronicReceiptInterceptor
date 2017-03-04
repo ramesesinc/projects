@@ -1,0 +1,25 @@
+import com.rameses.annotations.*
+import com.rameses.common.*;
+import com.rameses.services.extended.*;
+
+
+class KioskRPTElectronicReceiptInterceptor
+{
+    @Service('RPTReceiptService')
+    def receiptSvc 
+
+    @ActiveDB('cashreceiptrpt')
+    def cashreceiptrpt
+
+
+    @After(pattern="ElectronicReceiptService.post", eval="#{args[0].txntype.objid=='rptcol'}")
+    public void postItems(evt){
+        def rct = evt.result 
+        def pmo = evt.args[0]
+        rct.billid = pmo.refid 
+        rct.rptitems = pmo.rptitems 
+        rct.txntype = 'eor'
+        receiptSvc.createReceipt(rct)
+    }
+}
+

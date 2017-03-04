@@ -1,33 +1,14 @@
 [getList]
 SELECT 
-	rl.objid, rl.state, rl.faasid, rl.tdno, rl.prevtdno, rl.titleno,
-	rl.taxpayer_objid, e.name AS taxpayer_name, rl.administrator_name,
-	rl.fullpin, rl.cadastrallotno, rl.blockno, rl.totalareaha, rl.classcode, rl.rputype,  
-	rl.totalmv, rl.totalav, rl.lastyearpaid, rl.lastqtrpaid,
-	CASE WHEN rl.faasid IS NULL THEN 'M' ELSE '' END AS type,
-	b.objid AS barangay_objid, b.name AS barangay_name
+	${columns}
 FROM rptledger rl 
 	INNER JOIN entity e ON rl.taxpayer_objid = e.objid 
 	INNER JOIN barangay b ON rl.barangayid = b.objid 
-WHERE rl.state LIKE $P{state} 
-and rl.objid in (
-	select objid from rptledger where tdno = $P{tdno}
-	union 
-	select objid from rptledger where prevtdno = $P{prevtdno}
-	union 
-	select objid from rptledger where fullpin like $P{searchtext}	
-	union 
-	select objid from rptledger where cadastrallotno like $P{searchtext}	
-	union 
-	select objid from rptledger where blockno like $P{searchtext}	
-	union 
-	select objid from rptledger where titleno like $P{searchtext}	
-	union 
-	select objid from rptledger where administrator_name like $P{searchtext}	
-	union 
-	select r.objid from rptledger r, entity e where r.taxpayer_objid = e.objid and e.name like $P{searchtext}	
-)
-order by rl.tdno 
+WHERE 1=1
+${fixfilters}
+${filters}
+${orderby}
+
 
 [findById]
 SELECT 
@@ -110,6 +91,7 @@ FROM (
 		objid AS rptreceiptid,
 		refno,
 		refdate ,
+		collector as collector_name, 
 		paidby_name,
 		fromyear,
 		fromqtr,
@@ -128,6 +110,7 @@ FROM (
 		0 as partialled
 	FROM rptledger_credit rc 
 	WHERE rptledgerid = $P{rptledgerid}
+	and rc.type <> 'COMPROMISE'
 
 	UNION ALL
 	
@@ -135,6 +118,7 @@ FROM (
 		cr.objid AS rptreceiptid, 
 		cr.receiptno AS refno,
 		cr.receiptdate AS refdate,
+		cr.collector_name,
 		cr.paidby AS paidby_name,
 		cri.year AS fromyear,
 		case when cri.qtr = 0 then cri.fromqtr else cri.qtr end AS fromqtr,
@@ -166,6 +150,7 @@ FROM (
 			x.rptreceiptid, 
 				x.refno,
 				x.refdate,
+				x.collector_name,
 				x.paidby_name,
 				x.fromyear,
 				(select min(fromqtr) from cashreceiptitem_rpt_online where rptledgerid = $P{rptledgerid} and rptreceiptid = x.rptreceiptid and year = x.fromyear and partialled = 0) as fromqtr,
@@ -187,6 +172,7 @@ FROM (
 				cr.objid AS rptreceiptid, 
 				cr.receiptno AS refno,
 				cr.receiptdate AS refdate,
+				cr.collector_name,
 				cr.paidby AS paidby_name,
 				min(cri.year) AS fromyear,
 				0 AS fromqtr,
@@ -215,6 +201,7 @@ FROM (
 			cr.objid,
 			cr.receiptno,
 			cr.receiptdate,
+			cr.collector_name,
 			cr.paidby,
 			crr.txntype,
 			cri.year, 
@@ -893,3 +880,10 @@ where rli.rptledgerid = $P{rptledgerid}
 
 [findLedgerFaasById]
 select objid from rptledgerfaas where objid = $P{objid}
+
+
+[findLedgerFaasByTdno]
+select objid from rptledgerfaas where tdno = $P{tdno}
+
+[getRestrictions]
+select * from faas_restriction_type order by idx

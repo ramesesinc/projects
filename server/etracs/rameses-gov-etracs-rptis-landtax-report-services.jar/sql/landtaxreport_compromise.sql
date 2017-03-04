@@ -41,3 +41,11 @@ from rptledger_compromise rc
 	inner join cashreceiptitem_rpt_online cro on cr.objid = cro.rptreceiptid 
 where rc.objid = $P{objid}
 group by cr.receiptno, cr.receiptdate 
+
+
+[getLedgerCredits]
+select c.installmentid, c.ordate, c.orno, c.amount as oramount, c.remarks 
+from rptledger_compromise_credit c
+	left join rptledger_compromise_installment i on c.installmentid = i.objid 
+where c.rptcompromiseid = $P{objid}
+order by i.installmentno, c.ordate, c.orno 

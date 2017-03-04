@@ -1,0 +1,23 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import com.rameses.common.*
+
+class ElectronicPaymentOrderInterceptor  {
+
+	@DataContext("eor_paymentorder")
+	def eor_paymentorder; 
+
+
+	@After(pattern="ElectronicReceiptService.createPayment")
+	public void postEorPayment( evt ) {
+		def eor = evt.result 
+		println 'postEorPayment -> ' + eor 
+
+		def info = [:]
+		info.traceno = eor.refno 
+		info.tracedate = eor.refdate 
+		info.dtposted = eor.dtposted 
+		eor_paymentorder.find([objid:eor.txnrefid]).update(info)
+	}
+
+}

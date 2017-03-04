@@ -32,6 +32,9 @@ class RPTReportRPAService
     @Service('DateService')
     def dtSvc 
 
+    @Service('NumberService')
+    def numSvc 
+
 
     @Async
 	@ProxyMethod
@@ -60,8 +63,11 @@ class RPTReportRPAService
 
 		params.lguid = params.lgu?.objid 
 
-		def taxables = em.getReportOnRPATaxable(params)
-							.each{ it.rpucount = util.toInteger2( it.rpucount, 0)}
+		def taxables = em.getReportOnRPATaxable(params).each{ 
+			it.rpucount = util.toInteger2( it.rpucount, 0)
+			it.basictax = numSvc.round((it.totalav - it.totalrestrictionav) * params.basicrate / 100.0)
+			it.seftax = numSvc.round((it.totalav - it.totalrestrictionav) * params.sefrate / 100.0)
+		}
 		
 		int lineno = 1
 		int charindex = 'a' 
@@ -85,8 +91,11 @@ class RPTReportRPAService
 			}
 		}
 		
-		def exempts  = em.getReportOnRPAExempt(params)
-							.each{ it.rpucount = util.toInteger2( it.rpucount, 0)}
+		def exempts  = em.getReportOnRPAExempt(params).each{ 
+			it.rpucount = util.toInteger2( it.rpucount, 0)
+			it.basictax = numSvc.round((it.totalav - it.totalrestrictionav) * params.basicrate / 100.0)
+			it.seftax = numSvc.round((it.totalav - it.totalrestrictionav) * params.sefrate / 100.0)
+		}
 		
 		lineno = 1 
 		def exemptclasses  = getExemptionTypes();
@@ -108,6 +117,8 @@ class RPTReportRPAService
 			LGUTYPE     : (params.lgu ? params.lgu.lgutype : env.ORGCLASS), 
 			BRGYCOUNT   : getBarangays(params).size(),
 			BARANGAY    : params.barangay?.name,
+			BASICRATE   : params.basicrate, 
+			SEFRATE     : params.sefrate, 
 		]
 		
 		return [

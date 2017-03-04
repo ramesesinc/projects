@@ -47,11 +47,11 @@ public class MiscAssessmentRuleService
 		grps.each{g ->
 			ruleSvc.execute( RULESET, request.facts, request.actions, g.name);
 		}
-		
+		/*
 		rpu.totalbmv = util.sum(rpu.items, 'basemarketvalue')
         rpu.totalmv  = util.sum(rpu.assessments, 'marketvalue')
         rpu.totalav  = util.sum(rpu.assessments, 'assessedvalue')
-
+		*/
         return rpu;
 	}
 

@@ -1,5 +1,7 @@
 [getSubdividedLands]
 select 
+	s.txnno, 
+	b.name as barangay,
 	f.tdno,
 	f.titleno, 
 	f.fullpin,
@@ -10,9 +12,11 @@ select
 	r.totalmv,
 	r.totalav 
 from subdividedland sl 
+	inner join subdivision s on sl.subdivisionid = s.objid 
 	inner join faas f on sl.newfaasid = f.objid 
 	inner join rpu r on f.rpuid = r.objid 
 	inner join realproperty rp on f.realpropertyid = rp.objid 
+	inner join barangay b on rp.barangayid = b.objid 
 where sl.subdivisionid = $P{objid}
 order by cadastrallotno
 

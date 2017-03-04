@@ -34,8 +34,12 @@ FROM rptledger rl
 	INNER JOIN entity e ON rl.taxpayer_objid = e.objid 
 WHERE rl.objid = $P{rptledgerid}
  AND rl.state = 'APPROVED'
- AND ( rl.lastyearpaid < $P{billtoyear} OR (rl.lastyearpaid = $P{billtoyear} AND rl.lastqtrpaid < $P{billtoqtr}))
- and not exists(select * from rptledger_restriction where parentid = rl.objid )
+ AND (
+ 		( rl.lastyearpaid < $P{billtoyear} OR (rl.lastyearpaid = $P{billtoyear} AND rl.lastqtrpaid < $P{billtoqtr}))
+ 		or 
+ 		(exists(select * from rptledgeritem where rptledgerid = rl.objid and taxdifference=1 and fullypaid=0))
+
+ 	)
 
 
 [getIncentivesByLedgerId]
@@ -444,6 +448,7 @@ WHERE rl.objid IN (
 			OR ( rl.lastyearpaid = $P{billtoyear} AND rl.lastqtrpaid < $P{billtoqtr})
 	 )
 )
+and rl.totalav > 0 
 and not exists(select * from rptledger_restriction where parentid = rl.objid )
 ORDER BY rl.tdno  
 
@@ -458,6 +463,17 @@ WHERE rptledgerid = $P{rptledgerid}
 DELETE FROM rptbill_ledger_account 
 WHERE rptledgerid = $P{rptledgerid}
 AND billid = $P{objid}
+
+
+[deleteRptBillLedger]
+DELETE FROM rptbill_ledger 
+WHERE billid = $P{objid}
+and rptledgerid = $P{rptledgerid}
+
+[deleteRptBill]
+DELETE FROM rptbill 
+WHERE objid = $P{objid}
+and not exists(select * from rptbill_ledger where billid = rptbill.objid )
 
 
 
@@ -682,3 +698,12 @@ and not exists(
 
 [getLedgerQtrlyItems]
 select year, qtr, av, basicav, sefav from rptledgeritem_qtrly where parentid = $P{parentid} 
+
+
+
+[getPaidLedgerBills]
+select b.objid, bl.rptledgerid
+from rptbill b 
+inner join rptbill_ledger bl on b.objid = bl.billid 
+where bl.rptledgerid = $P{objid}
+

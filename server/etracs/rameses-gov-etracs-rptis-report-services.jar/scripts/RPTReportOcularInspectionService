@@ -31,8 +31,8 @@ class RPTReportOcularInspectionService
 
 
 	void buildLocation(reportdata){
-		def muni = lguSvc.lookupMunicipalityById(reportdata.barangay.parentid)
-		def district = lguSvc.lookupDistrictById(reportdata.barangay.parentid)
+		def muni = lguSvc.lookupMunicipalityById(reportdata.barangay?.parentid)
+		def district = lguSvc.lookupDistrictById(reportdata.barangay?.parentid)
 		def prov = lguSvc.lookupProvinceById(muni?.parentid)
 		def city = lguSvc.lookupCityById(district?.parentid)
 		
@@ -46,7 +46,7 @@ class RPTReportOcularInspectionService
 		else if (reportdata.street)
 			reportdata.location = reportdata.street 
 
-		reportdata.location += ( muni ? muni.name + ', ' : '') + ( prov ? prov.name : city.name )
+		reportdata.location += ( muni ? muni.name + ', ' : '') + ( prov ? prov.name : city?.name )
 	}
 }
 

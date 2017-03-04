@@ -266,10 +266,12 @@ public class RPTBillingService
 
 
 	def generateBarcode(){
-		def cy = dtSvc.serverYear
-		def lguid = ''
+		def cy = dtSvc.serverYear.toString()[-2..-1]
+		def lguid = '000'
 		if (env){
-			lguid = env.ORGID.replaceAll('-', '')
+			if (env.ORGID){
+				lguid = env.ORGID.replaceAll('-', '')
+			}
 		}
 		return BARCODE_PREFIX + lguid + cy + seqSvc.getNextFormattedSeriesA('RPTBILL-' + cy,7)
 	}
@@ -786,6 +788,10 @@ public class RPTBillingService
         if (bill.billtoyear > pdate.year){
         	bill.forcerecalcbill = 1 
         }
+
+        if (util.isTrue(var.landtax_bill_force_recalc)){
+        	bill.forcerecalcbill = 1 	
+        }
 	}
 
 
@@ -1066,5 +1072,15 @@ public class RPTBillingService
 		if (restriction)
 			throw new Exception('Unable to generate billing statement.\nThe Ledger is currently under restrictions.')
 		*/
+	}
+
+	@ProxyMethod
+	public void deletePendingPaymentOrderBills(ledger){
+		em.getPaidLedgerBills(ledger).each{bill ->
+			em.deleteRptBillLedgerAccount(bill)
+			em.deleteRptBillLedgerItem(bill)
+			em.deleteRptBillLedger(bill)
+			em.deleteRptBill(bill)
+		}
 	}
 }

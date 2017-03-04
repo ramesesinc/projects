@@ -7,6 +7,7 @@ import java.math.*;
 public class LandDetail {
     RPU rpu
     Classification classification      
+    Classification specificclassification      
     String classificationid             
     String  objid                
     Double  striprate       
@@ -33,6 +34,7 @@ public class LandDetail {
     public LandDetail(rpufact, ld){
         this.rpu = rpufact
         this.classification = new Classification(ld.actualuse?.classification?.objid)
+        this.specificclassification = new Classification(ld.specificclass?.classification?.objid)
         this.classificationid = ld.specificclass?.classification?.objid
         this.entity = ld
         this.entity.areatype = ld.specificclass.areatype 

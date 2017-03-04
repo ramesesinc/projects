@@ -223,7 +223,7 @@ from (
 		la.objid, 
 		la.adjustmenttype_objid, 
 		max(la.basemarketvalue) as basemarketvalue, 
-		max(la.adjustment / la.basemarketvalue) as adjrate,
+		round(max(case when la.basemarketvalue = 0 then 0 else la.adjustment / la.basemarketvalue end), 4) as adjrate,
 		sum(la.adjustment) as adjustment,
 		sum(la.basemarketvalue + la.adjustment) as marketvalue
 	from landadjustment la 

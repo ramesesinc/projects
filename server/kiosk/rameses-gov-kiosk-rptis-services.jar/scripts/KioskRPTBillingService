@@ -8,7 +8,7 @@ class KioskRPTBilllingService
     @Service('DateService')
     def dtSvc 
 
-	@Service('RPTBillingService')
+    @Service('RPTBillingService')
     def billSvc
 
     @Service('RPTUtil')
@@ -23,6 +23,9 @@ class KioskRPTBilllingService
     @Service('CacheService')
     def cacheSvc 
 
+    @Service('RPTReceiptService')
+    def receiptSvc 
+
     def BARCODE_KEY = '56001';
 
 
@@ -33,11 +36,15 @@ class KioskRPTBilllingService
         def billing = buildBilling(bill)
 
         def pmoinfo = [:]
+        pmoinfo.rptledgerid = bill.rptledgerid
         pmoinfo.billid = bill.billid
         pmoinfo.barcode = bill.barcode
         pmoinfo.taxpayer = billing.taxpayer
         pmoinfo.billamount = billing.billamount
         pmoinfo.validuntil = billing.validuntil
+        pmoinfo.rptitems = bill.rptitems
+        pmoinfo.items = bill.rctitems
+        pmoinfo.particulars = 'Tax Payment of TD No. ' + bill.rptledger.tdno + '. Period Covered: ' + billing.billperiod
         cacheSvc.put([key:pmoinfo.billid, value:pmoinfo])
         return billing 
     }
@@ -46,19 +53,26 @@ class KioskRPTBilllingService
     @ProxyMethod
     public def postPaymentOrder( def o ) {
         if(! o.billid) throw new Exception('Bill ID is required.')
+        
         def pmoinfo = cacheSvc.get([key:o.billid])
+        if(!pmoinfo) throw new Exception('Bill Information cannot be loaded. Please try again.')
+
         def pmo = [:]
         pmo.txntype = 'rptcol'
         pmo.payer = pmoinfo.taxpayer
         pmo.paidby = pmoinfo.taxpayer?.name 
         pmo.paidbyaddress = pmoinfo.taxpayer?.address 
+        pmo.particulars = pmoinfo.particulars
         pmo.amount = pmoinfo.billamount 
         pmo.refid = pmoinfo.billid 
         pmo.refno = pmoinfo.barcode 
         pmo.expirydate = pmoinfo.validuntil
-        pmo.info = [:]
+        pmo.info = [rptlegderid:pmoinfo.rptledgerid]
         pmo = pmoSvc.create(pmo)
         pmo.expirydate = dtSvc.format('yyyy-MM-dd', pmo.expirydate)
+        pmo.items = pmoinfo.items 
+        pmo.rptitems = pmoinfo.rptitems
+
         cacheSvc.put([key:pmo.txnid, value:pmo])
         return pmo.txnid 
     }
@@ -87,6 +101,8 @@ class KioskRPTBilllingService
         bill = billSvc.generateBillByLedgerId3(bill)
         bill.rptledger.remove('faases')
         bill.remove('taxes')
+        bill.rptitems = receiptSvc.getItemsForPayment(bill)
+        bill.rctitems = receiptSvc.getSummarizedCashReceiptItems(bill)
         return bill 
     }
 
@@ -182,6 +198,12 @@ class KioskRPTBilllingService
             msg = 'Ledger has already been cancelled.\n'
             msg += 'Please proceed to the Land Tax Office for assistance.'
             throw new Exception(msg)
+        }
+
+        if (util.isTrue(ledger.undercompromise)){
+            msg = 'Ledger is under compromised.\n'
+            msg += 'Please proceed to the Land Tax Office for assistance.'
+            throw new Exception(msg)   
         }
         return ledger 
     }

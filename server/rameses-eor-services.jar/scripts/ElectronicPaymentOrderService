@@ -1,0 +1,35 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import com.rameses.common.*
+
+class ElectronicPaymentOrderService  {
+
+	@DataContext("eor_paymentorder")
+	def eor_paymentorder; 
+
+	@Service('CacheService')
+	def cache 
+
+	@Service('DateService')
+	def dtSvc
+
+
+	@ProxyMethod
+	public def logForPayment( params ) {
+		def pmo = cache.get([key:params.txnid])
+		if (!pmo) throw new Exception('Payment Order does not exist. Please close and repeat the transaction.')
+
+		def eor = eor_paymentorder.find([objid:pmo.txnid]).first()
+		if (eor) return eor
+
+		eor = [:]
+		eor.objid = pmo.txnid 
+		eor.refid = pmo.refid
+		eor.refno = pmo.refno 
+		eor.dtcreated = dtSvc.serverDate 
+		eor.paymentorder = pmo 
+		eor_paymentorder.create(eor)
+		return eor 
+	}
+
+}

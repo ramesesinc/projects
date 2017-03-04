@@ -17,29 +17,30 @@ class RPTReceiptInterceptor
 	def util
 
 
-	@After(pattern="CashReceiptService.open", eval="#{result.formno=='56'}") 
+	@After(pattern="CashReceiptService.open", eval="#{result.collectiontype?.handler == 'rpt'}") 
 	public void interceptOpenReceipt( evt ) {
-		def receipt = evt.result
-		svc.open(receipt)
+		def receipt = evt.result; 
+		svc.open(receipt) 
+
 		if (receipt.txntype.matches('rptonline|rptmanual')){
-			if (!receipt._items)
-				receipt._items = []
+			if (!receipt._items) receipt._items = []
+
 			receipt._items = svc.getItemsForPrinting(receipt)
 			util.buildPeriodCovered(receipt._items)
 			receipt.itemcount = receipt._items.size()
-			if(receipt.itemcount > 0) addLGUInfo(receipt)
-		}
+			if(receipt.itemcount > 0) addLGUInfo(receipt) 
+		} 
 	}
 
 
-	@Before(pattern="CashReceiptService.post", eval="#{args[0].formno=='56' && args[0].txntype.matches('rptonline|rptmanual')}") 
+	@Before(pattern="CashReceiptService.post", eval="#{args[0].txntype.toString().matches('rptonline|rptmanual')}") 
 	public void interceptBeforePostReceipt( evt ) {
 		def receipt = evt.args[0]
 		svc.checkLedgerUpdateFlagModified(receipt)
 		receipt.items = svc.getSummarizedCashReceiptItems(receipt); 
 	}
 
-	@After(pattern="CashReceiptService.post", eval="#{result.formno=='56' && args[0].txntype.matches('rptonline|rptmanual')}") 
+	@After(pattern="CashReceiptService.post", eval="#{args[0].txntype.toString().matches('rptonline|rptmanual')}") 
 	public void interceptPostReceipt( evt ) {
 		def receipt = evt.result
 		svc.createReceipt(receipt)
@@ -50,7 +51,7 @@ class RPTReceiptInterceptor
 		if(receipt.itemcount > 0) addLGUInfo(receipt)
 	}
 
-	@After(pattern="CashReceiptVoidService.post", eval="#{result.receipt.formno=='56' && args[0].receipt.txntype.matches('rptonline|rptmanual')}") 
+	@After(pattern="CashReceiptVoidService.post", eval="#{args[0].receipt.txntype.toString().matches('rptonline|rptmanual')}") 
 	public void interceptVoidReceipt( evt ) {
 		svc.voidReceipt(evt.result.receipt)
 	}

@@ -17,6 +17,7 @@ class RPTCertificationMultipleService
 		certSvc.buildFilter(cert)
 		em.insertMultipleItems(cert)
 		cert.items = getMultipleItems(cert)
+		certSvc.buildFootNotes(cert)
 		return cert 
 	}
 

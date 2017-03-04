@@ -26,6 +26,9 @@ class FAASAnnotationService
     @Service('DBImageService')
     def imageSvc
 
+    @Service('Var')
+    def var 
+
 
 	@Env
 	def env
@@ -196,6 +199,21 @@ class FAASAnnotationService
 				it.objid = 'FA' + new java.rmi.server.UID();
 				it.faasid = pf.faasid 
 				em.create(it);
+			}
+		}
+	}
+
+	@ProxyMethod
+	public void checkActiveAnnotations(txntype, entity  ) {
+		if (util.isFalse(txntype.allowannotated)) {
+			def annotations = em.getActiveAnnotations(entity)
+			if (annotations){
+				def msg = 'Transaction is not allowed.\nFAAS has existing '
+				if (annotations.size() == 1)
+					msg += 'Annotation No ' + annotations.txnno.join(', ')
+				else 
+					msg += 'Annotations with No(s). ' + annotations.txnno.join(', ')
+				throw new Exception(msg)
 			}
 		}
 	}

@@ -27,7 +27,7 @@ class FaasPlantTreeReportInterceptor
 	}
 
 	void buildPlantTreeAppraisals(faas){
-		faas.landappraisals = [[:],[:], [:]]
+		faas.landappraisals = [[taxable:true],[taxable:true], [taxable:true]]
     	def filter = 'WHERE planttreerpuid = $P{objid}'
     	faas.planttreesappraisals = em.getPlantTreeAppraisals([objid:faas.rpu.objid, filter:filter]).each{
     				  		it.planttreename = it.planttreename + ' - ' + it.subname

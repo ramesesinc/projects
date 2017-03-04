@@ -39,11 +39,11 @@ class RPTCertificationLatestService
 				if (it.rputype == 'bldg')
 					it.description = 'Type ' + em.getBldgTypes(it).code.join('/')
 			}
+			certSvc.buildFootNotes(cert)
 		}
 		else{
 			cert.putAll(certSvc.getFaasInfo(cert.faasid))
 		}
-
 		return cert 
 	}
 

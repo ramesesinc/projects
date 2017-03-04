@@ -7,7 +7,6 @@ SELECT fa.*,
 	r.totalmv AS faas_totalmv,
 	r.totalav AS faas_totalav,
 	pc.code AS faas_classification,
-	fat.objid AS annotationtype_objid,
 	fat.type AS annotationtype_type
 FROM faasannotation fa
 	INNER JOIN faasannotationtype fat ON fa.annotationtype_objid = fat.objid 
@@ -83,4 +82,6 @@ WHERE fa.objid = $P{objid}
 [getAnnotationTypes]
 SELECT * FROM faasannotationtype ORDER BY type 
 
+[getActiveAnnotations]
+select objid, txnno, fileno from faasannotation where faasid = $P{objid} and state = 'APPROVED'
 

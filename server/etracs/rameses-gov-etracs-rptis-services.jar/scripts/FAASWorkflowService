@@ -63,6 +63,11 @@ class FAASWorkflowService extends ActiveWorkflowService
 		removeUserNotification(task)
 	}
 
+	public void afterSignal(Object result) {
+		if (result && result.task && !result.data)
+			result.data = faasSvc.openFaas([objid:result.task.refid])
+	}
+
 
 	public void afterCloseTask(task){
 		faasSvc.updateSignatoryInfo(task)
@@ -74,6 +79,11 @@ class FAASWorkflowService extends ActiveWorkflowService
 		faasSvc.getAffectedRpus(env.data).each{
 			if( it.newfaasid){
 				saveNewTask(task, it.newfaasid)
+			}
+		}
+		env.data.backtaxes?.each{
+			if(faasSvc.faasExist(it)){
+				saveNewTask(task, it.objid)
 			}
 		}
 	}
@@ -120,13 +130,14 @@ class FAASWorkflowService extends ActiveWorkflowService
 
 	def notifyGroup(task){
 		def faas = env.data 
+		def msg = faas.txntype.name +  ' of FAAS ' + faas.fullpin + ' (' + task.state + ')'
         return [
             objid     		: task.refid,
             senderid  		: env.prevtask?.actor?.objid,
             sender    		: env.prevtask?.actor?.name,
             recipientid   	: task.state,
             recipienttype 	: 'group',
-            message   		: 'FAAS No. ' + ( faas.tdno ? faas.tdno : faas.utdno ) + '    (' + task.state + ')',
+            message   		: msg,
             filetype  		: 'faas',
             data 	  		: [taskid: task.objid],
         ]

@@ -61,6 +61,7 @@ public class CashReceiptBarcode {
             def e = barcodeSvc.init( [barcodeid: barcodeid, prefix: prefix] );
             def m = [barcodeid: barcodeid, prefix: prefix, _paymentorderid:po?.txnid];
             m.entity = e;
+            m.info = po?.info;
              
             return InvokerUtil.lookupOpener( "cashreceipt:barcode:"+prefix, m);
         }

@@ -18,6 +18,12 @@ class LandTaxReportStatementOfShareService{
         params.todate = dtsvc.add(dtsvc.parse("yyyy-MM-dd",params.todate),"1d");
 
         def period = 'For the Month of ' + dtsvc.format('MMMMM, yyyy', params.fromdate);
+        params.filter = ' liq.dtposted >= $P{fromdate} AND liq.dtposted < $P{todate} '
+        if (params.postingtype && params.postingtype.code == 'byrem'){
+            params.filter = ' rem.remittancedate between $P{fromdate} AND $P{todate} '
+        }
+        
+
         def items = em.getIdleLandSharesAbstract(params)
         if (!items) 
             throw new Exception('Records not found.')
@@ -36,6 +42,12 @@ class LandTaxReportStatementOfShareService{
         params.todate = dtsvc.add(dtsvc.parse("yyyy-MM-dd",params.todate),"1d")
 
         def period = 'For the Month of ' + dtsvc.format('MMMMM, yyyy', params.fromdate)
+        params.filter = ' liq.dtposted >= $P{fromdate} AND liq.dtposted < $P{todate} '
+        if (params.postingtype && params.postingtype.code == 'byrem'){
+            params.filter = ' rem.remittancedate between $P{fromdate} AND $P{todate} '
+        }
+        
+
         def shares = em.getIdleLandShares(params)
         if (!shares) 
             throw new Exception('Records not found.')
@@ -57,6 +69,12 @@ class LandTaxReportStatementOfShareService{
         params.todate = dtsvc.add(dtsvc.parse("yyyy-MM-dd",params.todate),"1d")
 
         def period = 'For the Month of ' + dtsvc.format('MMMMM, yyyy', params.fromdate)
+
+        params.filter = ' liq.dtposted >= $P{fromdate} AND liq.dtposted < $P{todate} '
+        if (params.postingtype && params.postingtype.code == 'byrem'){
+            params.filter = ' rem.remittancedate between $P{fromdate} AND $P{todate} '
+        }
+
         def shares = em.getBasicSharesAbstract(params)
         if (!shares) 
             throw new Exception('Records not found.')
@@ -82,6 +100,13 @@ class LandTaxReportStatementOfShareService{
         params.todate = dtsvc.add(dtsvc.parse("yyyy-MM-dd",params.todate),"1d")
 
         def period = 'For the Month of ' + dtsvc.format('MMMMM, yyyy', params.fromdate)
+        params.filter = ' liq.dtposted >= $P{fromdate} AND liq.dtposted < $P{todate} '
+        if (params.postingtype && params.postingtype.code == 'byrem'){
+            params.filter = ' rem.remittancedate between $P{fromdate} AND $P{todate} '
+        }
+        
+        println 'params.filter -> ' + params.filter 
+        
         def shares = em.getBasicShares(params)
         if (!shares) 
             throw new Exception('Records not found.')
@@ -106,6 +131,12 @@ class LandTaxReportStatementOfShareService{
         params.todate = dtsvc.add(dtsvc.parse("yyyy-MM-dd",params.todate),"1d")
 
         def period = 'For the Month of ' + dtsvc.format('MMMMM, yyyy', params.fromdate)
+        params.filter = ' liq.dtposted >= $P{fromdate} AND liq.dtposted < $P{todate} '
+        if (params.postingtype && params.postingtype.code == 'byrem'){
+            params.filter = ' rem.remittancedate between $P{fromdate} AND $P{todate} '
+        }
+        
+
         def shares = em.getBasicSharesSummary(params)
         if (!shares) 
             throw new Exception('Records not found.')
@@ -126,6 +157,11 @@ class LandTaxReportStatementOfShareService{
         params.todate = dtsvc.add(dtsvc.parse("yyyy-MM-dd",params.todate),"1d")
 
         def period = 'For the Month of ' + dtsvc.format('MMMMM, yyyy', params.fromdate)
+        params.filter = ' liq.dtposted >= $P{fromdate} AND liq.dtposted < $P{todate} '
+        if (params.postingtype && params.postingtype.code == 'byrem'){
+            params.filter = ' rem.remittancedate between $P{fromdate} AND $P{todate} '
+        }
+        
         def shares = em.getSefShares(params)
         if (!shares) 
             throw new Exception('Records not found.')
@@ -146,6 +182,11 @@ class LandTaxReportStatementOfShareService{
         params.todate = dtsvc.add(dtsvc.parse("yyyy-MM-dd",params.todate),"1d")
 
         def period = 'For the Month of ' + dtsvc.format('MMMMM, yyyy', params.fromdate)
+        params.filter = ' liq.dtposted >= $P{fromdate} AND liq.dtposted < $P{todate} '
+        if (params.postingtype && params.postingtype.code == 'byrem'){
+            params.filter = ' rem.remittancedate between $P{fromdate} AND $P{todate} '
+        }
+        
         def shares = em.getBrgySharesStandard( params) 
         if(! shares )  throw new Exception('Records not found.')
         

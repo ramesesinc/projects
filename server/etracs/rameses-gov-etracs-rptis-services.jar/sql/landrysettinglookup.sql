@@ -22,7 +22,7 @@ SELECT sub.*, l.barangayid,
 	spc.areatype AS specificclass_areatype,
 	spc.classification_objid as specificclass_classification_objid,
 	spc.classification_objid,
-	spc.objid as landspecificclass_objid,
+	lspc.objid as landspecificclass_objid,
 	lspc.code as landspecificclass_code,
 	lspc.name as landspecificclass_name,
 	pc.code AS classification_code,
@@ -49,7 +49,7 @@ SELECT sub.*,
 	pc.name AS classification_name
 FROM lcuvsubclass sub 
 	INNER JOIN lcuvspecificclass spc ON sub.specificclass_objid = spc.objid  
-	INNER JOIN landspecificclass lspc ON sub.landspecificclass_objid = lspc.objid  
+	INNER JOIN landspecificclass lspc ON spc.landspecificclass_objid = lspc.objid  
 	INNER JOIN propertyclassification pc ON spc.classification_objid = pc.objid 
 WHERE sub.previd = $P{previd}
 

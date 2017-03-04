@@ -289,13 +289,7 @@ class FAASSupportService
 			addr = [parentid:faas.taxpayer.objid, type:'local', text:s]
 			faas.taxpayer.address = addr;
 		}
-
-		try{
-			entitySvc.save(faas.taxpayer)
-		}
-		catch(e){
-			e.printStackTrace();
-		}
+		entitySvc.save(faas.taxpayer)
 		faas.taxpayer.address = faas.taxpayer?.address?.text 
 	}
 

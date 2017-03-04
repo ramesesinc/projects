@@ -43,6 +43,7 @@ public class RPTLedgerItemFact
     Boolean taxdifference 
     Boolean fullpayment
     Boolean qtrlypaymentavailed
+    Boolean fullypaid
 
     def entity;
 
@@ -72,6 +73,7 @@ public class RPTLedgerItemFact
         this.paidyear = item.paidyear
         this.taxdifference = (item.taxdifference == 1 || item.taxdifference ? true : false )
         this.fullpayment = (item.fullpayment != null ? item.fullpayment : false)
+        this.fullypaid = (item.fullypaid != null ? item.fullypaid : false)
         this.qtrlypaymentavailed = (item.qtrlypaymentavailed != null ? item.qtrlypaymentavailed : false)
 
         setBasic(item.basic)

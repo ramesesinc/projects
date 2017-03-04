@@ -2,7 +2,11 @@ import com.rameses.annotations.*;
 import com.rameses.util.*;
 import com.rameses.common.*
 
-class ElectronicReceiptService  {
+class ElectronicReceiptService  
+{
+
+	@Env 
+	def env 
 
 	@DataContext("cashreceipt")
 	def cashreceipt; 
@@ -25,15 +29,25 @@ class ElectronicReceiptService  {
 	@Service('PersistenceService')
 	def persistence 
 	
+	@Service('CacheService')
+	def cache 
+
+	@Service('OrgService')
+	def orgSvc 
+	
 	@ProxyMethod
-	public def createPayment( p ) {
-		return eor.create( o );
+	public def createPayment( o ) {
+		o.dtposted = dateService.serverDate 
+		if (!o.refdate) o.refdate = o.dtposted 
+		o = eor.create( o );
+		cache.put([key:o.objid, value:o])
+		return o 
 	}
 
 
 	@ProxyMethod
 	public def post( def p, def eorPayment ) {
-		if( !entity.items ) throw new Exception("ElectronicReceiptService must have items"); 
+		if( !p.items ) throw new Exception("ElectronicReceiptService must have items"); 
 
 		def svrDate = dateService.serverDate;
 		def entity = [:];
@@ -42,20 +56,21 @@ class ElectronicReceiptService  {
 		entity.txnmode = 'ONLINE';
 		entity.payer = p.payer;
 		entity.paidby = p.paidby;
-		entity.paidbyaddress = p.paidbybyaddress;
+		entity.paidbyaddress = p.paidbyaddress;
 		entity.amount = numSvc.round( p.amount );
 		if(!p.receiptdate) {
 			entity.receiptdate =  svrDate;
 		}	
 		entity.txndate = svrDate;
-		entity.org = [objid:env.ORGID, name:env.ORGNAME];
+		entity.org = orgSvc.getRoot();
+		entity.collector = getCollector()
 		entity.user = [objid: 'EOR', name:'EOR'];
         entity.totalcash = 0;
         entity.totalnoncash = entity.amount;
         entity.balancedue = 0;
         entity.cashchange = 0;
         entity.totalcredit = 0;
-        entity.collectiontype = p.collectiontype;
+        entity.collectiontype = p.txntype.collectiontype;
         cashreceipt.create(entity);
         p.items.each { m->
         	m.receiptid = entity.objid;
@@ -67,10 +82,9 @@ class ElectronicReceiptService  {
 
 		entity.paymentitems = [eorPayment];	
 
-		if (p._paymentorderid) deletePaymentOrder(p)
-		return formatReport(p);
+		deletePaymentOrder(p)
+		return formatReport(entity);
 	}	
-		
 
 	def getControl( def afControlId ) {
 		def ac = afControl.find( [objid: afControlId ]).first();
@@ -78,23 +92,27 @@ class ElectronicReceiptService  {
 			ac = [objid:afControlId];
 			ac.afid = 'EOR';
 			ac.startseries = 1;
-			ac.endseries = 999999999999;
+			ac.endseries = 999999999;
 			ac.currentseries = 1;
 			ac.stubno = 1;
 			ac.active = 1;
-			ac.owner =  [objid: 'EOR', name:'EOR'];
+			ac.owner =  getCollector();
 			ac.assignee = ac.owner;
 			afControl.create(ac);
 		}
 		return ac;
 	}
 
+	def getCollector(){
+		return [objid: 'EOR', name:'EOR', title:'EOR']
+	}
+
 	def getNextEORNumber() {
-		String afControlId = 'EOR'+dateSvc.getServerYear();
+		String afControlId = 'EOR'+ dateService.getServerYear();
 		def ac = getControl(afControlId);
 		int series = ac.currentseries;
 		afControl.find( [objid: afControlId] ).update( [currentseries: series + 1] );
-		return [series: series, receiptno: afControlId + '-' + series, formno:'EOR', formtype:'serial' controlid: afControlId, stub: 1 ] ;
+		return [series: series, receiptno: afControlId + '-' + series, formno:'EOR', formtype:'serial', controlid: afControlId, stub: 1 ] ;
 	}
 
 	def formatReport( def p ) {
@@ -107,10 +125,10 @@ class ElectronicReceiptService  {
 		return p;
 	}
 	
-	void deletePaymentOrder(rct){
+	void deletePaymentOrder(p){
 		def q = [:]
 		q._schemaname = 'paymentorder'
-		q.txnid = rct._paymentorderid
+		q.txnid = p.txnid 
 		persistence.removeEntity(q)
 	}
 }

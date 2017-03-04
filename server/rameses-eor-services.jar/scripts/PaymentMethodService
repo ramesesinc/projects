@@ -1,0 +1,60 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import com.rameses.common.*
+
+class PaymentMethodService {
+
+	@DataContext('payment_partner')
+	def em;
+
+	@Service('CacheService') 
+	def cacheSvc;
+
+	@Service('PaymentOrderService') 
+	def payOrderSvc;
+
+	@Env 
+	def env 
+
+	@Service 
+	def self;
+
+	@ProxyMethod
+	public def getPaymentMethods( params ) {
+		if ( !params.billid ) throw new Exception('billid is required.')
+		
+		env.bill = cacheSvc.get([ key: params.billid ]);  
+		def result = [];
+		result << [ objid: 'CASHIER', caption:'Pay To Cashier', info:[:] ];  
+		result.addAll( em.where('1=1').list());
+		result.each{ self.loadPartner( it ) }
+		return result; 
+	} 
+
+	@ProxyMethod 
+	public def loadPartner( def o ) { 
+		return o; 
+	}
+
+	@ProxyMethod 
+	public def createPaymentOrder( params ) {
+		if ( !params.billid ) throw new Exception('billid is required.'); 
+
+		def bill = cacheSvc.get([ key: params.billid ]); 
+
+		def pmo = [:];
+		pmo.txnid = bill.txnid; 
+		pmo.controlno = bill.controlno; 
+		pmo.payer = bill.payer; 
+		pmo.paidby = bill.paidby;
+		pmo.paidbyaddress = bill.paidbyaddress;
+		pmo.particulars = bill.particulars;
+		pmo.amount = bill.amount; 
+		pmo.expirydate = bill.expirydate;
+		pmo.refid = bill.refid;
+		pmo.refno = bill.refno; 
+		pmo.txntype = bill.txntype;
+		pmo.info = (bill.info ? bill.info : [:]); 
+		return payOrderSvc.create( pmo );  
+	} 
+}

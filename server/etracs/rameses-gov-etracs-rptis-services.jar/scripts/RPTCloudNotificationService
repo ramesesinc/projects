@@ -20,17 +20,29 @@ class RPTCloudNotificationService
 
     @ProxyMethod 
     public def sendMessage( msg ) { 
-    	msg.channel = (appContext.conf.cloud_channel ? appContext.conf.cloud_channel : 'etracs')
-    	if (!msg.objid) msg.objid = 'MSG' + new java.rmi.server.UID(); 
-        if (!msg.message) msg.message='Message ' + msg.objid;
-        remote.addMessage(msg); 
-        return msg; 
+        try{
+        	msg.channel = (appContext.conf.cloud_channel ? appContext.conf.cloud_channel : 'etracs')
+        	if (!msg.objid) msg.objid = 'MSG' + new java.rmi.server.UID(); 
+            if (!msg.message) msg.message='Message ' + msg.objid;
+            remote.addMessage(msg); 
+            return msg; 
+        }
+        catch(e){
+            println 'RPTCloudNotificationService.sendMessage [ERROR] ' + e.message 
+            println e.printStackTrace();
+        }
     } 
 
     @ProxyMethod 
     public def sendAttachment( msg ) { 
-        remote.addAttachment( msg ); 
-        return msg; 
+        try{
+            remote.addAttachment( msg ); 
+            return msg; 
+        }
+        catch(e){
+            println 'RPTCloudNotificationService.sendAttachment [ERROR] ' + e.message 
+            println e.printStackTrace();
+        }
     } 
 
 

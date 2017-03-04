@@ -78,7 +78,7 @@ class BldgRPUGRService
 			st.bldgkindbucc = lookupSvc.lookupBldgKindBuccByPrevId(st.bldgkindbucc.objid)
 			if (st.bldgkindbucc ){
 				st.basevalue = st.bldgkindbucc.basevalue 
-				if (st.bldgtype.basevaluetype == 'range'){
+				if (st.bldgkindbucc.basevaluetype == 'range'){
 					st.basevalue = st.bldgkindbucc.maxbasevalue 
 				}
 				st.unitvalue = st.basevalue

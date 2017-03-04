@@ -1,0 +1,13 @@
+
+
+<div class="col-md-2">
+	<form method="get" action="/payoption">
+		<input type="hidden" name="code" value="${PARAMS.code}"/>
+		<button class="thumbnail" type="submit">Payment Option</button>
+	</form>
+</div>
+<div class="col-md-2">
+	 <form method="post" action="/index/pay" id="payform"></form>
+
+	 <button r:context="bill" r:name="post" class="thumbnail">Pay</button>
+</div>

@@ -54,7 +54,7 @@ class LandTaxReportTaxClearanceService
             if (it.lastyearpaid < cert.year) 
                 throw new Exception('TD No. ' + it.tdno + ' is not cleared for the year ' + cert.year + '.')
             if (it.lastyearpaid == cert.year && it.lastqtrpaid < cert.qtr) 
-                throw new Exception('TD No. ' + it.tdno + ' is not cleared for the ' + formalizeNumber(cert.qtr) + ' qtr of ' + cert.year + '.' )
+                throw new Exception('TD No. ' + it.tdno + ' is not cleared for the ' + util.formalizeNumber(cert.qtr) + ' qtr of ' + cert.year + '.' )
         }
 
         def year = dtSvc.serverYear
@@ -64,20 +64,18 @@ class LandTaxReportTaxClearanceService
             certSvc.createItem(it)
         }
         em.insertTaxClearance(cert)
-        buildAdditionalInfo(cert)
-        loadPaymentInfo(cert)
-        return cert 
+        return openClearance(cert.objid)
     }
 
     
     @ProxyMethod
     public def openClearance( objid ) {
         def cert = certSvc.openCertification(objid)
-        cert.putAll( 
-            em.findInfo([objid:objid])
-        )
-        buildAdditionalInfo(cert)
+        cert.putAll(em.findInfo([objid:objid]))
+        buildIssuanceInfo(cert)
         cert.items = em.getItems([rptcertificationid:objid])
+        buildAdministratorInfo(cert)
+        buildLguNameInfo(cert)
         loadPaymentInfo(cert)
         return cert 
     }
@@ -92,7 +90,7 @@ class LandTaxReportTaxClearanceService
         return em.getClearedLedgers(cert)
     }
 
-    void buildAdditionalInfo(cert){
+    void buildIssuanceInfo(cert){
         def pdate = dtSvc.parseDate(cert.txndate, null)
         cert.issueday      = util.formalizeNumber(pdate.day)
         cert.issuemonth    = util.getMonthName(pdate.month)
@@ -110,6 +108,18 @@ class LandTaxReportTaxClearanceService
                 qtr : cert.qtr,
             ]
             item.payments = em.getPaymentInfo(p).findAll{it.rptledgerid == item.rptledgerid}
+        }
+    }
+
+    void buildAdministratorInfo(cert){
+        if (cert.items && cert.items.size() == 1){
+            cert.administrator = cert.items[0].administrator 
+        }
+    }
+
+    void buildLguNameInfo(cert){
+        if (cert.items && cert.items.size() == 1){
+            cert.lguname = cert.items[0].lguname
         }
     }
 }

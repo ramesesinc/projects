@@ -24,6 +24,7 @@ android/*/Thumbs.db
 /**/nbproject/genfiles.properties
 /**/nbproject/groovy-build.xml
 /**/.terminal
+/**/.DS_Store
 /**/Thumbs.db
 
 /**/.gradle

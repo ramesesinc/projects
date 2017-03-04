@@ -12,6 +12,7 @@ class EntityService
 	@Service('PersistenceService')
 	def persistenceSvc;	
 
+
 	@ProxyMethod
 	public def open( o ) { 
 		def type = em.select('type').find([ objid: o.objid ]).val(); 
@@ -22,6 +23,8 @@ class EntityService
 
 	@ProxyMethod
 	public def save( o ) { 
+		o._schemaname = 'entity';
+		persistenceSvc.save( o ); 
 		o._schemaname = 'entity' + o.type.toString().toLowerCase(); 
 		return persistenceSvc.save( o ); 
 	} 

@@ -302,8 +302,10 @@ public class RPTBillingService
 
 		doCalculateTaxDues(bill)		
 
-		if (bill._commit == null || bill._commit == true)
+		if (bill._commit == null || bill._commit == true){
+			bill.calctype = 'tax'
 			updateLedgerItemData(bill)
+		}
 		return bill 
 	}
 
@@ -343,8 +345,10 @@ public class RPTBillingService
 
 		doCalculatePenaltyDiscount(bill)
 
-		if (bill._commit == null || bill._commit == true)
+		if (bill._commit == null || bill._commit == true){
+			bill.calctype = 'penaltydisc'
 			updateLedgerItemData(bill)
+		}
 		return bill 
 	}
 
@@ -352,6 +356,7 @@ public class RPTBillingService
 	void updateLedgerItemData(bill){
 		//update rptledgeritem and rptledgeritemqtrly dues
 		bill.items.each{
+			it.calctype = bill.calctype
 			if (it.qtrlycomputed == 0){
 				em.updateLedgerItemData(it)
 				distributeLedgerItemQtrlyData(it)
@@ -391,7 +396,6 @@ public class RPTBillingService
 	
 	void distributeLedgerItemQtrlyData(item){
 		def qtrlyitems = em.getLedgerQtrlyItems([parentid:item.objid])
-
 		1.upto(4){qtr ->
 			def id = item.objid + '-' + qtr 
 			def qitem = [objid:id]

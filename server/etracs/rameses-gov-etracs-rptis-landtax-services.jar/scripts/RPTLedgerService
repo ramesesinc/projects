@@ -738,6 +738,8 @@ class RPTLedgerService
                 em.updatePartialledQtrlyItem(info)
                 em.addPartialToLedgerItemPayment(info)
             }
+            em.clearNextBillDateByLedger(info)
+            generateLedgerBill(info.rptledgerid)
         }
         info._remarks = 'Last Year Paid: ' + info.lastyearpaid + ' Last Qtr Paid: ' + info.lastqtrpaid 
         return info 
@@ -761,7 +763,7 @@ class RPTLedgerService
     @ProxyMethod
     public void postLedgerFaasData(faas){
         if (!faas.previousfaases) return
-    	def ledger = getLedgerByFaasId(faas.previousfaases[0].prevfaasid)
+        def ledger = getLedgerByFaasId(faas.previousfaases[0].prevfaasid)
         ledger.faasid = faas.objid 
         updateLedger(ledger)
         def ledgerfaas = createLedgerFaas(ledger, faas)

@@ -163,7 +163,6 @@ public class RPTBillingService
 
 	@ProxyMethod
 	public def getBillByBarcode(param){
-		println 'barcode -> ' + param
 		def bill= em.findBillByBarcode(param)
 		if (!bill) 
 			throw new Exception('Invalid barcode or associated bill has already expired.')
@@ -1073,5 +1072,15 @@ public class RPTBillingService
 		if (restriction)
 			throw new Exception('Unable to generate billing statement.\nThe Ledger is currently under restrictions.')
 		*/
+	}
+
+	@ProxyMethod
+	public void deletePendingPaymentOrderBills(ledger){
+		em.getPaidLedgerBills(ledger).each{bill ->
+			em.deleteRptBillLedgerAccount(bill)
+			em.deleteRptBillLedgerItem(bill)
+			em.deleteRptBillLedger(bill)
+			em.deleteRptBill(bill)
+		}
 	}
 }

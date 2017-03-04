@@ -48,11 +48,12 @@ class PaymentOrderService {
 		}	
 
 		def m = [:];
-		m.txnid = KeyGen.generateAlphanumKey( "PMO:", 6 );
 		m.expirydate = dtSvc.findNextDate('1y');
 		if (entity.expirydate){
 			m.expirydate = entity.expirydate
 		}
+		m.txnid = entity.txnid;
+		m.controlno = entity.controlno;
 		m.info = entity.info;
 		m.payer = entity.payer;
 		m.paidby = entity.paidby;
@@ -67,29 +68,4 @@ class PaymentOrderService {
 		pmt.create(m);
 		return m; 
 	}
-
-	/*
-	@ProxyMethod
-	public def open( params) { 
-		if ( env.paymentorder ) { 
-			return env.paymentorder; 
-
-		} else {
-			def entity = pmt.find([txnid: 'PMO:'+params.txnid]).first();
-			if( !entity || entity.size()==0 ) {
-				throw new Exception("Payment Order Code does not exist. ")
-			}	
-			return entity; 
-		}
-	}
-
-	@ProxyMethod
-	def close( params ){ 
-		def data = pmt.find([txnid: params.txnid]).first(); 
-		pmt.find([txnid: params.txnid]).delete(); 
-		return data; 
-	}
-	*/
-	
-
 }

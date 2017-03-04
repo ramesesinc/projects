@@ -129,7 +129,7 @@ SELECT objid FROM business_application WHERE appno=$P{appno}
 
 [findInfoByBIN]
 SELECT 
-    ba.*, b.tradename, b.owner_name, b.bin, 
+    ba.*, b.tradename, b.owner_objid, b.owner_name, b.bin, 
     b.address_objid, b.address_text, b.businessname  
 FROM business b 
     INNER JOIN business_application ba ON b.currentapplicationid=ba.objid 
@@ -137,7 +137,7 @@ WHERE b.bin=$P{bin}
 
 [findInfoByAppno]
 SELECT 
-    ba.*, b.tradename, b.owner_name, b.bin, 
+    ba.*, b.tradename, b.owner_objid, b.owner_name, b.bin, 
     b.address_objid, b.address_text, b.businessname  
 FROM business_application ba 
 INNER JOIN business b ON ba.business_objid=b.objid
@@ -145,7 +145,7 @@ WHERE ba.appno=$P{appno}
 
 [findInfoByAppid]
 SELECT 
-    ba.*, b.tradename, b.owner_name, b.bin, 
+    ba.*, b.tradename, b.owner_objid, b.owner_name, b.bin, 
     b.address_objid, b.address_text, b.businessname 
 FROM business_application ba 
 INNER JOIN business b ON ba.business_objid=b.objid

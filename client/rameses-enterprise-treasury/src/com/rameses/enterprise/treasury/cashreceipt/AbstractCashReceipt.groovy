@@ -16,6 +16,7 @@ public abstract class AbstractCashReceipt {
     def service;
 
     def entity;
+    def info;
     def _paymentorderid;
    
     String title;

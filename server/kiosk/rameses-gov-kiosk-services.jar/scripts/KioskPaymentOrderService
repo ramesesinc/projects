@@ -1,0 +1,12 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+
+public class KioskPaymentOrderService  {
+
+	@ProxyMethod
+	public def create( def params ) {
+
+	}
+
+
+}

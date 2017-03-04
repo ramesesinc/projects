@@ -13,7 +13,13 @@ public class KioskBusinessBillingService  {
 	def dateSvc;
 
 	@Service("PaymentOrderService")
-	def pmoSvc;
+	def pmoSvc;	
+
+	@Service("CacheService")
+	def cacheSvc;	
+
+	@Service("NumberService")
+	def numSvc;
 
 	private def getPaymentOption(def o) {
 		def r = [:]
@@ -46,9 +52,19 @@ public class KioskBusinessBillingService  {
 	}
 
 	@ProxyMethod
-	public def getBilling( def o ) {
+	public def getBilling( def o ) { 
 		def z = generateBilling(o);
 		z.remove("items");
+		z.objid = z.applicationid;
+		z.particulars = 'Business Collection';
+		z.controlno = numSvc.generateControlNo();
+		z.txntype = 'Business Permit'; 
+		z.txnid = KeyGen.generateAlphanumKey( "PMO:", 6 );
+		z.txntype = 'bpcol';
+		z.refid = z.objid;
+		z.refno = z.appno;
+		z.info = [payoption:[ option:'FULLQTR', qtr: 2]];
+        cacheSvc.put([key: z.objid, value: z ]);
 		return z;
 	}
 

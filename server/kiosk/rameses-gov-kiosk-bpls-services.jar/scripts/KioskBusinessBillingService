@@ -58,9 +58,9 @@ public class KioskBusinessBillingService  {
 		z.objid = z.applicationid;
 		z.particulars = 'Business Collection';
 		z.controlno = numSvc.generateControlNo();
-		z.txntype = 'Business Permit'; 
-		z.txnid = KeyGen.generateAlphanumKey( "PMO:", 6 );
 		z.txntype = 'bpcol';
+		z.txntypename = 'Business Permit'; 
+		z.txnid = KeyGen.generateAlphanumKey( "PMO:", 6 );
 		z.refid = z.objid;
 		z.refno = z.appno;
 		z.info = [payoption:[ option:'FULLQTR', qtr: 2]];

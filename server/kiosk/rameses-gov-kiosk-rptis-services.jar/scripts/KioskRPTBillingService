@@ -1,6 +1,7 @@
 import com.rameses.annotations.*
 import com.rameses.common.*;
 import com.rameses.services.extended.*;
+import com.rameses.util.*;
 
 
 class KioskRPTBilllingService
@@ -17,14 +18,14 @@ class KioskRPTBilllingService
     @Service('QueryService')
     def query 
 
-    @Service('PaymentOrderService')
-    def pmoSvc 
-
     @Service('CacheService')
     def cacheSvc 
 
     @Service('RPTReceiptService')
     def receiptSvc 
+
+    @Service('NumberService')
+    def numSvc 
 
     def BARCODE_KEY = '56001';
 
@@ -32,51 +33,25 @@ class KioskRPTBilllingService
     @ProxyMethod
     public def generateBill(params){
         params.ledger = validateLedger(params)
-        def bill = initBill(params)
-        def billing = buildBilling(bill)
+        def bill = buildBilling(initBill(params))
 
-        def pmoinfo = [:]
-        pmoinfo.rptledgerid = bill.rptledgerid
-        pmoinfo.billid = bill.billid
-        pmoinfo.barcode = bill.barcode
-        pmoinfo.taxpayer = billing.taxpayer
-        pmoinfo.billamount = billing.billamount
-        pmoinfo.validuntil = billing.validuntil
-        pmoinfo.rptitems = bill.rptitems
-        pmoinfo.items = bill.rctitems
-        pmoinfo.particulars = 'Tax Payment of TD No. ' + bill.rptledger.tdno + '. Period Covered: ' + billing.billperiod
-        cacheSvc.put([key:pmoinfo.billid, value:pmoinfo])
-        return billing 
+        bill.txnid = KeyGen.generateAlphanumKey( "PMO:", 6 )
+        bill.controlno = numSvc.generateControlNo()
+        bill.txntype = 'rptcol'
+        bill.txntypename = 'Real Property Tax'
+        bill.refid = bill.objid 
+        bill.refno = bill.barcode 
+        bill.paidby = bill.taxpayer.name 
+        bill.paidbyaddress =bill.taxpayer.address 
+        bill.particulars = 'Tax Payment of TD No. ' + bill.tdno + '. Period Covered: ' + bill.billperiod
+        //--- additional info-------
+        bill.info = [:]
+        bill.info.rptledgerid = bill.rptledgerid 
+        bill.info.billtoyear = bill.billtoyear 
+        bill.info.billtoqtr = bill.billtoqtr 
+        cacheSvc.put([key:bill.objid, value:bill])
+        return bill 
     }
-
-
-    @ProxyMethod
-    public def postPaymentOrder( def o ) {
-        if(! o.billid) throw new Exception('Bill ID is required.')
-        
-        def pmoinfo = cacheSvc.get([key:o.billid])
-        if(!pmoinfo) throw new Exception('Bill Information cannot be loaded. Please try again.')
-
-        def pmo = [:]
-        pmo.txntype = 'rptcol'
-        pmo.payer = pmoinfo.taxpayer
-        pmo.paidby = pmoinfo.taxpayer?.name 
-        pmo.paidbyaddress = pmoinfo.taxpayer?.address 
-        pmo.particulars = pmoinfo.particulars
-        pmo.amount = pmoinfo.billamount 
-        pmo.refid = pmoinfo.billid 
-        pmo.refno = pmoinfo.barcode 
-        pmo.expirydate = pmoinfo.validuntil
-        pmo.info = [rptlegderid:pmoinfo.rptledgerid]
-        pmo = pmoSvc.create(pmo)
-        pmo.expirydate = dtSvc.format('yyyy-MM-dd', pmo.expirydate)
-        pmo.items = pmoinfo.items 
-        pmo.rptitems = pmoinfo.rptitems
-
-        cacheSvc.put([key:pmo.txnid, value:pmo])
-        return pmo.txnid 
-    }
-
 
     def initBill(params){
         def ledger = params.ledger 
@@ -110,6 +85,7 @@ class KioskRPTBilllingService
     public def buildBilling(bill){
         def billing = [:]
         billing.dtposted = bill.dtposted 
+        billing.objid = bill.billid 
         billing.billid = bill.billid 
         billing.barcode = bill.barcode 
         billing.rptledgerid = bill.rptledgerid 
@@ -143,9 +119,11 @@ class KioskRPTBilllingService
         billing.sefdisc = bill.items.sefdisc.sum()
         billing.sefnet = billing.sef + billing.sefint - billing.sefdisc 
 
-        billing.billamount = billing.basicnet + billing.sefnet + billing.basicidlenet + billing.firecode 
+        billing.amount = billing.basicnet + billing.sefnet + billing.basicidlenet + billing.firecode 
 
-        if (billing.billamount <= 0.0) {
+        billing.items = bill.rctitems
+
+        if (billing.amount <= 0.0) {
             def msg = 'A problem was encountered when generating the bill.\n'
             msg += 'Please proceed to Land Tax Office for assistance.'
             throw new Exception(msg)

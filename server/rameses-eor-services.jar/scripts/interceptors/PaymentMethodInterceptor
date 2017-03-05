@@ -36,7 +36,7 @@ class PaymentMethodInterceptor  {
 		def params = [:];
 		params.MerchantCode = partner.info.merchantcode; 
 		params.MerchantRefNo = bill.controlno; 
-		params.Particulars = "Transaction_type=${bill.txntype};Name=${bill.paidby};Tax Reference Number=${bill.txnid};"; 
+		params.Particulars = "Transaction_type=${bill.txntypename};Name=${bill.paidby};Tax Reference Number=${bill.txnid};"; 
 		params.Amount = samt;
 		params.PayorName = bill.paidby;
 		params.PayorEmail = ( bill.paidbyemail ? bill.paidbyemail : '');

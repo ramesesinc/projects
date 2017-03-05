@@ -7,6 +7,9 @@ class PaymentMethodService {
 	@DataContext('payment_partner')
 	def em;
 
+	@DataContext("eor_paymentorder")
+	def eor_paymentorder; 
+
 	@Service('CacheService') 
 	def cacheSvc;
 
@@ -39,7 +42,7 @@ class PaymentMethodService {
 	@ProxyMethod 
 	public def createPaymentOrder( params ) {
 		if ( !params.billid ) throw new Exception('billid is required.'); 
-
+		println 'createPaymentOrder -> ' + params 
 		def bill = cacheSvc.get([ key: params.billid ]); 
 
 		def pmo = [:];
@@ -55,6 +58,27 @@ class PaymentMethodService {
 		pmo.refno = bill.refno; 
 		pmo.txntype = bill.txntype;
 		pmo.info = (bill.info ? bill.info : [:]); 
-		return payOrderSvc.create( pmo );  
+		pmo = payOrderSvc.create( pmo );  
+		cacheSvc.put([key:pmo.txnid, value:pmo])
 	} 
+
+	@ProxyMethod
+	public def logForPayment( params ) {
+		if (!params.txnid) throw new Exception('txnid is required.')
+
+		def pmo = cache.get([key:params.txnid])
+		if (!pmo) throw new Exception('Payment Order cannot be loaded. Please close and repeat the transaction.')
+
+		def eor = eor_paymentorder.find([objid:pmo.txnid]).first()
+		if (eor) return eor
+
+		eor = [:]
+		eor.objid = pmo.txnid 
+		eor.refid = pmo.refid
+		eor.refno = pmo.refno 
+		eor.dtcreated = dtSvc.serverDate 
+		eor.paymentorder = pmo 
+		eor_paymentorder.create(eor)
+		return eor 
+	}
 }

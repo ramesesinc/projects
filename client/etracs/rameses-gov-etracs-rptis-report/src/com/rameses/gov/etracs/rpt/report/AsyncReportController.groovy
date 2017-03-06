@@ -31,6 +31,7 @@ abstract class AsyncReportController
     def data;
     def asyncHandler;
     def has_result_preview = false; 
+    def showBack = true;
     
     
     abstract String getReportName();

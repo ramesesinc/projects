@@ -26,6 +26,7 @@ abstract class ReportController
     def entity = [:];
     def params = [:];
     def reportdata;
+    boolean showBack = true;
     
     abstract def getReportData();
     abstract String getReportName();

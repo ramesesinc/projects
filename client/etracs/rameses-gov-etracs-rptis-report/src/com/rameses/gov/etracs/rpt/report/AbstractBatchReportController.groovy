@@ -28,6 +28,9 @@ abstract class AbstractBatchReportController
     def states;
     boolean interrupt;
             
+    public void afterInit(params){
+    }
+    
     public void init() {
         params = [:]
         params.revisionyear = var.get('current_ry');
@@ -38,6 +41,7 @@ abstract class AbstractBatchReportController
         params.printinterval = 1;
         params.copies = 1;
         params.showprinterdialog = false;
+        afterInit(params)
         mode='init';
     }
             
@@ -66,6 +70,9 @@ abstract class AbstractBatchReportController
     }
 
     public void print() {
+        if (params.copies <= 0) 
+            throw new Exception('No. of Copies must be equal or greater than 1.');
+            
         mode = 'processing';
         Thread t = new Thread( batchTask)
         t.start();
@@ -124,7 +131,6 @@ abstract class AbstractBatchReportController
     
     def batchTask = [
         run : {
-            println 'PASS...'
             def error = false;
             def list = null;
             try {

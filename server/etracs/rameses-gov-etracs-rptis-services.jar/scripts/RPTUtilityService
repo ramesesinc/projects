@@ -137,8 +137,8 @@ class RPTUtilityService
         if( info.rputype == 'planttree' && (info.suffix < 3000 || info.suffix > 4999)) {
             throw new Exception('Plant/Tree Suffix must be between 3001 and 4999.')
         }
-        if( info.rputype == 'misc' && (info.suffix < 5000 || info.suffix > 5999)) {
-            throw new Exception('Miscellaneous Suffix must be between 5001 and 5999.')
+        if( info.rputype == 'misc' && (info.suffix < 5000 || info.suffix > 7999)) {
+            throw new Exception('Miscellaneous Suffix must be between 5001 and 7999.')
         }
     }
 	

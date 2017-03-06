@@ -539,10 +539,11 @@ class RPTLedgerService
             throw new Exception('Ledger does not exist or has already been deleted.')
 
         def pdate = dtSvc.parseCurrentDate();
-            
         if (util.isTrue(ledger.taxable)) {
             if ( ledger.lastyearpaid < pdate.year || (ledger.lastyearpaid == pdate.year && ledger.lastqtrpaid < pdate.qtr))
                 throw new Exception('Ledger has not yet been fully paid.')
+            if (util.isTrue(ledger.undercompromise))
+                throw new Exception('Ledger is still under compromised.')
         }
         else {
             em.updateLastYearQtrPaid([toyear:dtSvc.serverYear, toqtr:4, rptledgerid:ledger.objid])
@@ -737,6 +738,8 @@ class RPTLedgerService
                 em.updatePartialledQtrlyItem(info)
                 em.addPartialToLedgerItemPayment(info)
             }
+            em.clearNextBillDateByLedger(info)
+            generateLedgerBill(info.rptledgerid)
         }
         info._remarks = 'Last Year Paid: ' + info.lastyearpaid + ' Last Qtr Paid: ' + info.lastqtrpaid 
         return info 
@@ -760,7 +763,7 @@ class RPTLedgerService
     @ProxyMethod
     public void postLedgerFaasData(faas){
         if (!faas.previousfaases) return
-    	def ledger = getLedgerByFaasId(faas.previousfaases[0].prevfaasid)
+        def ledger = getLedgerByFaasId(faas.previousfaases[0].prevfaasid)
         ledger.faasid = faas.objid 
         updateLedger(ledger)
         def ledgerfaas = createLedgerFaas(ledger, faas)
@@ -893,12 +896,17 @@ class RPTLedgerService
 
     @ProxyMethod
     public void reconcileManualLedger(faas, manualledger){
-        if (util.isTrue(faas.datacapture)){
+        faas.putAll(faasSvc.openFaas(faas))
+        def ledgerfaas = em.findLedgerFaasByTdno(faas)
+        if (manualledger.previousfaases){
+            faas.previousfaases = manualledger.previousfaases
+            updateLedgerFaasInfo(faas, manualledger)
+            postLedgerFaasData(faas);
+        }
+        else if (util.isTrue(faas.datacapture)){
             updateLedgerFaasInfo(faas, manualledger)
         }
         else{
-            faas.putAll(faasSvc.openFaas(faas))
-            def ledgerfaas = em.findLedgerFaasByTdno(faas)
             if (!ledgerfaas){
                 postLedgerFaasData(faas);
             }

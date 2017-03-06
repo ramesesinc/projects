@@ -29,23 +29,25 @@ class OVSCashReceiptInterceptor{
 		pmt.items = [];
 		
 		def uniqueIds = new HashSet();
-		o.billitems.findAll{it.amount>0}.each {
-			uniqueIds.add(it.parent.objid);
+		o.items.findAll{it.amount>0}.each {
+			uniqueIds.add(it.ticketid);
 			def pi = [:];
-			pi.refid = it.objid;
+			pi.refid = it.refid;
 			pi.amount = it.amount;
 			pi.parentid = pmt.objid;
 			pmt.items << pi;
-			vte.find([objid:it.objid]).update([amtpaid: "{amtpaid + :amt}"],[amt:pi.amount]);
 		}
 
 		p.create(pmt);
+
+		o.items.each {
+			vte.find([objid:it.refid]).update([amtpaid: "{amtpaid + :amt}"],[amt:it.amount]);
+		}
 
 		uniqueIds.each { id->
 			def m = vte.select("total:{SUM(amount - amtpaid)}").find(["parent.objid": id]).groupBy("parent.objid").first();			
 			if( m.total==0 ) vt.find( [objid: id]).update( [state:'CLOSED']);
 		} 
-
 		buildRemarks( evt.result ); 
 	}
 

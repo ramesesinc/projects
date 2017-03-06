@@ -4,7 +4,10 @@ import java.util.*;
 
 public class Compromise {
 
-	Date fromdate;
-	Date todate;
+	Date startdate;
+	int numpayments;
+	double downpayment;
+	double amount;
+	double amtpaid;
 
 }

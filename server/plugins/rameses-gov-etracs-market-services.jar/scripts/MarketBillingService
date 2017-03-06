@@ -80,7 +80,6 @@ class MarketBillingService {
 				if(v instanceof BillItem) {
 					def itm = v.toMap();
 					itm.remarks = v.year + " " + monthNames[v.month-1]; 
-					println "FROM BILLING "+ itm.fromdate + "->" + itm.todate;
 					m.items << itm;
 				}	
 				else if( v instanceof BillSubItem ) {

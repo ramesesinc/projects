@@ -18,10 +18,8 @@
 		    <key field="unit_objid" target="objid"/>
 		</complex>
 		<field name="startdate" required="true"/>
-		<field name="lastdatepaid" type="date" />
+		<field name="dateclosed" type="date" />
 
-		<!-- dates -->
-		<field name="padlockdate" type="date"/>
 
 		<field name="payfrequency" required="true" caption="Pay Frequency"/>
 		<field name="rate" required="true" caption="Rate"/>

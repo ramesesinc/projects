@@ -1,9 +1,9 @@
 <workunit extends="com/rameses/seti2/templates/CrudList.xml" 
           schemaName="ovs_violation_ticket_entry"
-          cols="violation.title,violationcount,parent.ticketno,balance,parent.apprehensiondate"
-          allowOpen="false" allowCreate="false">
+          cols="violation.title,violationcount,parent.ticketno,amount,amtpaid,balance,parent.apprehensiondate"
+          allowOpen="false" allowCreate="false" allowDelete="false">
     <invokers>
-        <invoker type="individualentity:option" caption="Violations" index="100" action="init"/>
+        <invoker type="entityindividual:section" caption="Violations" index="100" action="init"/>
     </invokers>
     <code>
         import com.rameses.rcp.annotations.*;

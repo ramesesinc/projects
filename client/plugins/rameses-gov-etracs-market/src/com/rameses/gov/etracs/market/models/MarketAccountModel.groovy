@@ -9,7 +9,7 @@ import com.rameses.rulemgmt.*;
 import java.rmi.server.*;
 import com.rameses.seti2.models.*;
 
-public class MarketAccount extends CrudFormModel {
+public class MarketAccountModel extends CrudFormModel {
 
     @PropertyChangeListener
     def listener = [
@@ -25,7 +25,7 @@ public class MarketAccount extends CrudFormModel {
             }
         }
     ];        
-   
+    
     void changeLastPaymentDate() {
         def h = { o->
             def m = [_schemaname: 'market_account'];

@@ -45,7 +45,7 @@ public class OVSCashReceipt extends BasicCashReceipt {
                 }
                 if(o.checked ) {
                     o.amount = o.balance;
-                    entity.items << [item:o.item, amount: o.amount, remarks: o.remarks];
+                    entity.items << [item:o.item, amount: o.amount, remarks: o.remarks, refid: o.refid, ticketid: o.ticketid ];
                 }
                 else {
                     o.amount = 0;

@@ -1,16 +1,14 @@
 import com.rameses.annotations.*;
 
-class MarketAccountQueryInterceptor{
+class MarketAccountListInterceptor{
 	
 	@After(pattern="QueryService.getNodeList", eval="#{args[0]._schemaname == 'market_account'}")
 	public void getAcctNodeList(def evt) {
-		println "loading mass file"
 		def result = evt.result;
 		result << [ title: 'Active', id:'active'];
-		result << [ title: 'Past due', id:'pastdue', duedate: '2016-07-20'];
-		result << [ title: 'For padlock', id:'for-padlock'];
-		result << [ title: 'Padlocked', id:'padlocked'];
-		result << [ title: 'Inactive', id:'inactive'];
+		result << [ title: 'Past due', id:'pastdue'];
+		result << [ title: 'For closure', id:'for-closure'];
+		result << [ title: 'Closed', id:'closed'];
 	}
 
 	@Before(pattern="QueryService.getList", eval="#{args[0]._schemaname == 'market_account'}")
@@ -35,21 +33,16 @@ class MarketAccountQueryInterceptor{
 				str += ' AND lastdatepaid < :duedate'; 
 				break;
 
-			case 'for-padlock':
-				status = 'for-padlock'
-				m.state = 'ACTIVE'
-				str += ' AND padlockdate < NOW()'; 
+			case 'for-closure':
+				status = 'for-closure'
+				m.state = 'FOR-CLOSURE'
 				break;
 
-			case 'padlocked':
-				status = 'padlocked'
-				m.state = 'PADLOCKED';
+			case 'closed':
+				status = 'closed'
+				m.state = 'CLOSED';
 				break;
 
-			case 'inactive':
-				status = 'inactive'
-				m.state = 'INACTIVE';
-				break;
 		}
 
 		//add to first position of where

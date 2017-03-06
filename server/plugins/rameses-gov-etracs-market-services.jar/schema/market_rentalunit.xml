@@ -2,10 +2,7 @@
 	<element tablename="market_rentalunit">
 		<field name="objid" primary="true" prefix="MKTUNT"/>
 		<field name="state" required="true" defaultValue="ACTIVE"/>
-		<complex name="market" ref="market" jointype="many-to-one" required="false" 
-			includefields="objid,code,name,address.text">
-			<key field="marketid" target="objid" />
-		</complex>
+		<field name="locationid" />
 		<field name="unittype" required="true" lov="MARKET_UNIT_TYPES" caption="Type"/>
 		<field name="code" required="true" searchable="true"  caption="Unit Code"/>
 		<field name="description" />
@@ -20,7 +17,7 @@
 		<field name="rate" required="true" type="decimal" caption="Rate"/>
 
 		<complex name="account" ref="market_account" jointype="many-to-one" required="false" 
-			includefields="objid,acctname">
+			includefields="objid,acctname,startdate,dateclosed">
 			<key field="currentacctid" target="objid" />
 		</complex>
 

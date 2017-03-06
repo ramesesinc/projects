@@ -27,11 +27,13 @@ class MarketRentalBillingReportService {
 		
 		def acct = acctEm.find([objid: acctid]).first();
 
-		def billing = billingSvc.getBilling( [acctid: acctid ] );
+		def pp = [acctid: acctid ];
+		if( p.parameters.billdate ) {
+			pp.payoption = [todate: p.parameters.billdate ];
+		}
+		def billing = billingSvc.getBilling( pp );
 
-		
 		def items = [];
-
 		def cal = Calendar.instance;
 		billing.items.findAll{ it.dynamic != true }.sort{ (it.year*12)+it.month }.each { cc->
 			cal.setTime( cc.fromdate );
@@ -39,7 +41,6 @@ class MarketRentalBillingReportService {
 
 			cal.setTime( cc.todate );
 			def today = cal.get(Calendar.DAY_OF_MONTH);
-
 			def item = [:];
 			item.year = cc.year;
 			item.month = cc.month;

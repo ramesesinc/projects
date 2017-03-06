@@ -9,7 +9,7 @@ FROM (
 		(CASE WHEN vt.state='CLOSED' THEN 1 ELSE 0 END) AS paidcount, 
 		(CASE WHEN vt.state='OPEN' THEN 1 ELSE 0 END) AS unpaidcount, 
 		1 AS txncount 
-	FROM violation_ticket vt 
+	FROM ovs_violation_ticket vt 
 	WHERE vt.apprehensiondate >= $P{startdate} 
 		AND vt.apprehensiondate < $P{enddate} 
 		AND vt.state IN ('OPEN','CLOSED')
@@ -21,7 +21,7 @@ GROUP BY intday
 SELECT 
 	vt.apprehensiondate, vt.ticketno, vt.state, 
 	vt.violator_name, vt.apprehensionofficer_name 
-FROM violation_ticket vt 
+FROM ovs_violation_ticket vt 
 WHERE vt.apprehensiondate >= $P{startdate} 
 	AND vt.apprehensiondate < $P{enddate} 
 	AND vt.state IN ('OPEN','CLOSED')
@@ -32,7 +32,7 @@ SELECT
 	vt.apprehensiondate, vt.ticketno, 
 	vt.violator_name, vt.violator_objid, 
 	vt.apprehensionofficer_name
-FROM violation_ticket vt 
+FROM ovs_violation_ticket vt 
 WHERE vt.apprehensiondate >= $P{startdate} 
 	AND vt.apprehensiondate < $P{enddate} 
 	AND vt.state IN ('OPEN') 

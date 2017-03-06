@@ -1,11 +1,12 @@
 <schema adapter="ovs">
-	<element name="ovs_violation_ticket" tablename="violation_ticket">
+	<element name="ovs_violation_ticket" tablename="ovs_violation_ticket">
 		<field name="objid" primary="true" prefix="VIT"/>
 		<field name="state" required="true" defaultValue="OPEN"/>
 		<field name="dtcreated" required="true" caption="Date Created"/>
 		<field name="ticketno" required="true" caption="Ticket No." searchable="true" indexed="true"/>
 		<field name="violator_objid" required="true"/>
 		<field name="violator_name" required="true" caption="Violator" searchable="true" indexed="true"/>
+		<field name="violator_address_text" required="true" caption="Violator Address" searchable="true" indexed="true"/>
 		<field name="apprehensionofficer_objid" required="true"/>
 		<field name="apprehensionofficer_name" required="true" caption="Apprehending Officer"/>
 		<field name="apprehensionaddress" required="true" caption="Apprehension Address"/>

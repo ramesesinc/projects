@@ -1,4 +1,4 @@
-<workunit schemaName="market_rentalunit">
+    <workunit schemaName="market_rentalunit">
     <invokers>
         <invoker type="market_rentalunit:create" caption="New Market Rental Unit" index="4" 
                  action="create" target="popup"/>
@@ -6,20 +6,7 @@
                  action="open" target="popup"/>
     </invokers>
     
-    <code>
-        import com.rameses.rcp.annotations.*;
-        class RentalUnit extends com.rameses.seti2.models.CrudFormModel {
-        
-            public def getClusterList() {
-                if( !entity.market?.objid ) return []; 
-                def m = [_schemaname:'market_cluster']
-                m.select = 'objid,name,description';
-                m.findBy = ['market.objid': entity.market.objid ];
-                return qryService.getList( m );
-            }
-        
-        }
-    </code>
+    <code class="com.rameses.gov.etracs.market.models.MarketRentalUnitModel" />
     <pages>
         <page template="com.rameses.gov.etracs.market.views.MarketRentalUnitPage"/>
     </pages>

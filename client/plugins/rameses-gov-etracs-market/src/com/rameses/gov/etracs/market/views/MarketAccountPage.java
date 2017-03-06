@@ -63,7 +63,7 @@ public class MarketAccountPage extends javax.swing.JPanel {
 
         xLabel4.setCaption("Pay Frequency");
         xLabel4.setDepends(new String[] {"entity.unit"});
-        xLabel4.setExpression("#{entity.unit.payfrequency}");
+        xLabel4.setExpression("#{entity.payfrequency}");
         xLabel4.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel2.add(xLabel4);
 

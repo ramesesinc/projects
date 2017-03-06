@@ -9,7 +9,7 @@
         <invoker type="formAction" caption="Edit Last Payment Date" 
                  action="changeLastPaymentDate"/>
     </invokers>
-    <code class="com.rameses.gov.etracs.market.models.MarketAccount" />
+    <code class="com.rameses.gov.etracs.market.models.MarketAccountModel" />
     <pages>
         <page template="com.rameses.gov.etracs.market.views.MarketAccountPage"/>
     </pages>

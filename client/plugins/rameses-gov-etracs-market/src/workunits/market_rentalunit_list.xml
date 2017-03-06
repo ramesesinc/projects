@@ -1,45 +1,13 @@
-<workunit extends="com/rameses/seti2/templates/CrudList.xml" schemaName="market_rentalunit">
+<workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" schemaName="market_rentalunit"
+    cols="objid,code,description,section.name,cluster.name,payfrequency,rate,account.acctname" >
     <invokers>
         <invoker folderid="/explorer/master/market" caption="Market Rental Units" index="1" 
-                 cols="objid,code,description,section.name,cluster.name,market.code,payfrequency,rate,account.acctname"   
+                 role="MASTER" action="init"/>
+
+        <invoker folderid="/home/market" caption="Market Rental Units" index="0" 
                  role="MASTER" action="init"/>
     </invokers>
-    <code>
-        import com.rameses.rcp.annotations.*;
-        class MarketUnitList extends com.rameses.seti2.models.CrudListModel {
-        
-            def selectedMarket;
-            def locations;
-        
-            def getMarketLocations() {
-                if(!locations) {
-                    def m = [_schemaname:'market'];
-                    m.select = 'objid,code,name';
-                    m._start = 0;
-                    m._limit = 100;
-                    locations = queryService.getList( m ); 
-                }
-                return locations;
-            };
-            
-            @PropertyChangeListener
-            def listener  = [ 
-                'selectedMarket' : { o->
-                    listHandler.reload();
-                }
-            ];
-        
-            def getCustomFilter() {
-                if( !selectedMarket ) {
-                    return null;
-                }
-                else {
-                    return [ "marketid = :mid", [mid : selectedMarket.objid] ];
-                }
-            }
-        
-        }
-    </code>
+    <code class="com.rameses.gov.etracs.market.models.MarketRentalUnitListModel" />
     <pages>
         <page name="queryForm" template="com.rameses.gov.etracs.market.views.MarketLocationQueryForm" /> 
     </pages>    

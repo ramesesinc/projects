@@ -10,6 +10,10 @@
 		<field name="violationcount" required="true"/>
 		<field name="amount" required="true"/>
 		<field name="amtpaid" required="false" defaultValue="0.00"/>
+
+		<field name="account_objid" required="true"/>
+		<field name="account_title" required="true"/>
+
 		<field name="balance" expr="amount-amtpaid"/>
 	</element>
 </schema>

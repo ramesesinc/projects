@@ -20,8 +20,7 @@ public class OVSCashReceipt extends BasicCashReceipt {
      
      def payerChanged(def o){
         entity.billitems = cashreceiptSvc.getUnpaidViolations([objid:o.objid]);
-        entity.items = [];
-        entity.amount = 0;
+        reloadListModel( entity.billitems.size() - 1  );
         itemListHandler.reload();
         updateBalances();
         return null;
@@ -53,7 +52,7 @@ public class OVSCashReceipt extends BasicCashReceipt {
              }
              else{
                 o.checked = false;
-                o.amount = 0;
+                o.amount = 0.0;
              }
         }
         entity.amount = entity.items.sum{it.amount};

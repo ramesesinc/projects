@@ -1,7 +1,7 @@
 <workunit schemaName="ovs_violation_ticket" allowEdit="true">
     <invokers>
-        <invoker type="ovs_violation_ticket:create" caption="Violation Ticket" action="create" target="popup"/>
-        <invoker type="ovs_violation_ticket:open" caption="Violation Ticket" action="open" target="popup"/>
+        <invoker type="ovs_violation_ticket:create" caption="Violation Ticket" action="create" />
+        <invoker type="ovs_violation_ticket:open" caption="Violation Ticket" action="open" />
     </invokers>
     <code class="com.rameses.gov.etracs.ovs.models.OVSViolationTicketModel" />
     <pages>

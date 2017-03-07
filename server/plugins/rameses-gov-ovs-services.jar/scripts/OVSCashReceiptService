@@ -16,40 +16,27 @@ class OVSCashReceiptService {
     @ProxyMethod
     public def getUnpaidViolations(def o){
         def pp = ["parent.violator.objid":o.objid];
-        entries.select("refid:{objid},parent.ticketno,parentid,violation.title,violationid,violationcount,balance");
+        entries.select("refid:{objid},parent.ticketno,parentid,violation.title,violationid,violationcount,balance,account.objid");
         def list = entries.find(pp).where("amount - amtpaid > 0").orderBy("parent.dtcreated").list();
         if(!list) throw new Exception("There are no unpaid violations for this payer.");
 
-        def fb = new FactBuilder();
-        int i = 0;
-        list.each {
-            def vbi = new ViolationBillItem();
-            vbi.paypriority = (i++);
-            vbi.amount = it.balance;
-            vbi.violation = it.violationid;
-            vbi.ticketid = it.parentid;
-            vbi.refid = it.refid; 
-            vbi.remarks = "${it.violation.title} ( ${NumberUtil.formatOrdinal( it.violationcount )} offense ) Ref.${it.parent.ticketno}";            
-            fb.facts << vbi;
-        }
-        if( o.payoption?.amount ) {
-            fb.facts << new treasury.facts.Payment( amount: o.payoption.amount );  
-        }
+        def itemLookup = new ItemAccountUtil();
 
         def items = [];
-        def rh = [
-            getFactKeyValue : { v->
-              if(v instanceof ViolationBillItem) {
-                  def item = v.toMap();   
-                  if(!item.item?.objid) 
-                    throw new Exception("There is no account mapping for " + v.remarks);
-                  items << item;
-              };  
-              return null;
-            }
-        ] as ResultHandler;
-
-        assmtSvc.execute( "ovsbilling", [:], fb, rh );
+        int i = 0;
+        list.each {
+            def m = [:];
+            m.violation = it.violationid;
+            m.ticketid = it.parentid;
+            m.refid = it.refid; 
+            m.remarks = "${it.violation.title} ( ${NumberUtil.formatOrdinal( it.violationcount )} offense ) Ref.${it.parent.ticketno}".toString();                    
+            m.paypriority = (i++);
+            m.amount = it.balance;
+            m.balance = it.balance;
+            m.item = itemLookup.lookup( it.account.objid );
+            m.checked = true;
+            items << m;
+        }
         return items;
     }
 

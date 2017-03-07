@@ -1,5 +1,0 @@
-package ovscomputation;
-
-import com.rameses.rules.common.*;
-
-global RuleAction action;

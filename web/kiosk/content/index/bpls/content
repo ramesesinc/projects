@@ -1,5 +1,5 @@
 <%
-	System.out.println( PARAMS );
+	PARAMS.payoption = 'q2';
     def service = SERVICE.lookup("KioskBusinessBillingService", "etracs");
     def billing = service.getBilling(PARAMS);
     def billid = billing.objid;

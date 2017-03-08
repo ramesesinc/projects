@@ -2,8 +2,7 @@
 
     def service = SERVICE.lookup("KioskRPTBillingService", "etracs");
     def bill = service.generateBill(PARAMS);
-    //def jsonstr = com.rameses.anubis.JsonUtil.toString(bill);
-
+    def billid = bill.objid 
     def numsvc = SERVICE.lookup("NumberService", "etracs")
 	def taxpayer = bill.taxpayer;
 
@@ -40,15 +39,10 @@
 
     }
 
- 
     this.post = function(){
-    	var svc = Service.lookup("KioskRPTBillingService", "etracs");
-    	var txnid = svc.postPaymentOrder({billid:'${bill.billid}'});
-
     	var elem = \$('#payform');
-    	elem.html('<input type="hidden" name="txnid" value="'+txnid+'"/>');
+    	elem.html('<input type="hidden" name="billid" value="${billid}"/>');
     	elem.submit();
-
     }
 
 }); 

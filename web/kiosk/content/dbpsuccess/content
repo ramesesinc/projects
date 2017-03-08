@@ -1,107 +1,72 @@
-  
+<%
+def findCause( Throwable error ) { 
+    if ( error == null ) return null; 
 
-  <%
+    def msg = error.message; 
+    if ( msg ) return error; 
+    return findCause( error.getCause() ); 
+} 
 
-    def service = SERVICE.lookup("ElectronicReceiptService", "etracs");
-    def cache = SERVICE.lookup("CacheService", "etracs");
-    def pmo = cache.get([key:PARAMS.referenceCode]);
+def result = [:]; 
+try { 
+    def service = SERVICE.lookup("ElectronicPaymentOrderService", "etracs"); 
+    def txnid = PARAMS.referenceCode; 
+    def pmo = service.findCache( txnid ); 
+    if ( !pmo ) throw new Exception(''+ txnid +' payment order does not exist'); 
 
-    def eor = [:];
-      eor.objid = PARAMS.retrievalReferenceCode;
-      eor.txnrefid = PARAMS.referenceCode;
-      eor.txnreftype = 'pmo';
-      eor.txntype = pmo?.txntype.objid;
-      eor.refno = PARAMS.retrievalReferenceCode;
-      eor.refdate = PARAMS.refdate;
-      eor.amount = PARAMS.amount;
-      eor.particulars = pmo.particulars;
-      eor.partner = [objid : 'dbp'];
+    def map = [ info: PARAMS ]; 
+    map.objid = PARAMS.referenceCode; 
+    map.refno = PARAMS.retrievalReferenceCode; 
+    map.txnrefid = PARAMS.referenceCode; 
+    map.refdate = PARAMS.refdate; 
+    map.amount = PARAMS.amount; 
+    map.txnreftype = 'pmo'; 
+    map.particulars = pmo.particulars; 
+    map.txntype = pmo.txntype.objid; 
+    map.partner = [ objid : 'dbp' ]; 
+    service.logForPosting( map ); 
+    result.status = 'SUCCESS'; 
+    result.txnid = map.objid; 
 
-      service.createPayment(eor);
-      def receipt = service.post(pmo, eor);
+} catch(Throwable e) { 
+    result.status = 'ERROR'; 
+    Throwable t = findCause( e ); 
+    if ( t == null ) t = e; 
 
-
+    result.message = (t ? t.message : null); 
+    e.printStackTrace(); 
+} 
 %>
 
-DBP Success Page: <br/> 
-<script>
-\$put("receiptprint", new function(){
+<%if (result.status == 'SUCCESS'){%>
+    <script> 
+        \$( document ).ready(function(){ 
+            window.location.href = "/receipt?txnid=${result.txnid}";
+        }); 
+    </script> 
+<%} else {%>
 
-    this.print = function (){
-      var params = {
-        header : "${PROJECT['lgu.name']}",
-        paymenttype : "${receipt.paymentitems[0].particulars}",
-        receiptno : "${receipt.receiptno}",
-        receiptdate : "${receipt.receiptdate}",
-        txnno : "${receipt.paymentitems[0].refno}",
-        paidby : "${receipt.paidby}",
-        amount : "Php${receipt.amount}",
-        particulars : "${pmo.particulars}"
+<script> 
+\$put("partner", new function(){
 
-
-      };
-      window.console.log(params);
-      alert(params);
-      alert(window.handler);
-      alert(document.handler);
-      WebViewUtil.print(params, "receipt");
-
-    }
-
-
-}); 
+});     
 </script> 
-
 <div id="wrapper" > 
     <div id="content">
         <div class="container">
-          <div class="bg-white">
-            <div class="bill-main-panel">
-              <div class="row">
-                <div class="col-md-12"> 
-                  <div class="l-name">
-                    <p class="label-name">Payment Successful</p>
-                    <p class="label-address">Your payment has been processed. Here are the details of this transaction for your reference</p>
-                  </div>    
-                </div>
-                <div class="bill-second-panel">
-                  <div class="row">
-                    <div class="col-md-12">
-                      <div class="label-top">
-                        <p class="label-title">Receipt No.</p>
-                        <p>: ${receipt.receiptno}</p>
-                      </div>
-                      <div class="label-top">
-                        <p class="label-title">Receipt Date</p>
-                        <p>: ${receipt.receiptdate}</p>
-                      </div> 
-                      <div class="label-top">
-                        <p class="label-title">Paid By</p>
-                        <p>: ${receipt.paidby}</p>
-                      </div> 
-                      <div class="label-top">
-                        <p class="label-title">Txn No.</p>
-                        <p>: ${receipt.paymentitems[0].refno}</p>
-                      </div>
-                      <div class="label-top">
-                        <p class="label-title">Particulars:</p>
-                        <p> ${receipt.paymentitems[0].particulars}</p>
-                      </div>
-                    </div>  
-                  </div>
-              </div> 
-              </div>
+            <div class="bg-white">
+                <div class="bill-main-panel">
+                    <div class="row">
+                        <div class="col-md-12"> 
+                            <div class="l-name">
+                                <p class="label-name">ERROR</p>
+                            </div>    
+                        </div>
+                    </div> 
+                </div> 
+                ${result.message} 
             </div>
         </div> 
-      <div class="col-md-3">
-        <form method="post" action="/index">
-          <input type="submit" class="thumbnail" value="New Transaction"/>
-        </form>
-      </div>
-      <div class="col-md-3">
-        <button type="submit" class="thumbnail" r:context="receiptprint" r:name="print">Print Receipt</button>
-      </div>
     </div>
-  </div>
 </div>
-
+<%}%> 

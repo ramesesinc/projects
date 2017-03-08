@@ -5,7 +5,6 @@ import com.rameses.util.*;
 class CacheService {		
 	
 	private String DEFAULT_CONNECTION_NAME = "memcached"; 
-	private Number DEFAULT_TIMEOUT = 60;
 
 	@Context 
 	def currentContext;
@@ -22,15 +21,24 @@ class CacheService {
 		Number timeout = null; 
 		try { 
 			timeout = new Integer( params.timeout.toString() ); 
-		} catch(Throwable t) { 
-			timeout = DEFAULT_TIMEOUT; 
-		} 
+		} catch(Throwable t) {;} 
 
-		xconn.put( params.key.toString(), params.value, timeout.intValue()); 
+		if ( timeout == null ) {
+			xconn.put( params.key.toString(), params.value ); 
+		} else { 
+			xconn.put( params.key.toString(), params.value, timeout.intValue()); 
+		}
 	} 
 
 	@ProxyMethod 
-	public Object get( params ) {
+	public Object get( o ) { 
+		def params = [:]; 
+		if ( o instanceof Map ) { 
+			params = o; 
+		} else { 
+			params.key = o; 
+		} 
+
 		if ( params.key == null ) throw new Exception('key parameter is required'); 
 
 		String connectionName = ( params.connection ? params.connection : DEFAULT_CONNECTION_NAME ); 

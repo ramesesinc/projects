@@ -48,22 +48,22 @@ public class KioskBusinessBillingService  {
 		def z = svc.getBillingForPayment( r ); 
 		b.putAll(z);
         b.amount = b.totals.total;
+        b.payoption = r.payment;
 		return b;
 	}
 
 	@ProxyMethod
 	public def getBilling( def o ) { 
-		def z = generateBilling(o);
-		z.remove("items");
+		def z = generateBilling(o); 
 		z.objid = z.applicationid;
 		z.particulars = 'Business Collection';
 		z.controlno = numSvc.generateControlNo();
-		z.txntype = 'Business Permit'; 
-		z.txnid = KeyGen.generateAlphanumKey( "PMO:", 6 );
 		z.txntype = 'bpcol';
+		z.txntypename = 'Business Permit'; 
+		z.txnid = KeyGen.generateAlphanumKey( "PMO:", 6 );
 		z.refid = z.objid;
 		z.refno = z.appno;
-		z.info = [payoption:[ option:'FULLQTR', qtr: 2]];
+		z.info = [payoption: z.payoption];
         cacheSvc.put([key: z.objid, value: z ]);
 		return z;
 	}
@@ -81,7 +81,5 @@ public class KioskBusinessBillingService  {
 		m.info = [ payoption: getPaymentOption(o) ];
 		m.txntype = 'bpls';
 		return pmoSvc.create(m);
-	}
-
-
+	} 
 }

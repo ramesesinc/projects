@@ -10,17 +10,28 @@ class PaymentOrderService {
 	@DataContext("paymentorder")
 	def pmt;
 	
-	@Service("DateService")
-	def dtSvc 
-
 	@DataContext("paymentorder_type")
 	def pmoType;
 
 	@DataContext("revenueitem")
 	def revItem;
 
+	@Service("DateService")
+	def dtSvc 
+
+	@Service('PersistenceService') 
+	def persistenceSvc;
+
 	@Env 
 	def env; 
+
+	@ProxyMethod 
+	public def open( params ) { 
+		params._schemaname = 'paymentorder'; 
+		params.findBy = [ txnid: params.txnid ]; 
+		return persistenceSvc.read( params );  
+	} 
+
 
 	@ProxyMethod
 	public def create(def entity){	
@@ -67,5 +78,10 @@ class PaymentOrderService {
 		if(!entity.txndate) m.txndate = dtSvc.getServerDate();
 		pmt.create(m);
 		return m; 
+	} 
+
+	@ProxyMethod 
+	public def findPaymentType( params ) {
+		return pmoType.find([ objid: params.objid ]).first();
 	}
 }

@@ -1,0 +1,54 @@
+import com.rameses.annotations.*; 
+
+class BusinessCashReceiptEORInterceptor {
+
+	@Service('CacheService') 
+	def cacheSvc; 
+
+	@Service("BusinessPaymentService")
+	def businessPaySvc;
+
+	@Env 
+	def env; 
+
+	@After( pattern="ElectronicReceiptService.postReceipt", eval="#{result?.collectiontype?.handler=='bpls'}" ) 
+	public void afterPost( evt ) {
+		def receipt = evt.result;  
+		def crpeor = evt.args[0]; 
+		def pmo = crpeor.paymentorder; 
+
+		def m = [ reftype:'eor' ];
+		m.objid = receipt.objid;
+		m.refid = receipt.objid;
+		m.refno = receipt.receiptno;
+		m.refdate = receipt.receiptdate;
+		m.amount = receipt.amount;
+		m.remarks = receipt.remarks; 
+		m.taxcredit = ( receipt.totalcredit ? receipt.totalcredit: 0.0);
+		m.voided = 0;
+		m.items = [];
+
+		if ( env.bill ) {
+			m.appyear = env.bill.appyear;
+			m.businessid = env.bill.businessid;
+			m.paymentmode = env.bill.paymentmode;		
+			m.applicationid = env.bill.applicationid;
+
+			env.bill.taxfees.each {tf-> 
+				if ( tf.details ) {
+					tf.details.each{d-> 
+						if ( d.partial == null) d.partial=0; 
+
+						m.items << d; 
+					}
+				} else {
+					if ( tf.partial == null) tf.partial=0; 
+					if ( tf.qtr == null ) tf.qtr=0;
+					m.items << tf; 
+				} 
+			}
+		} 
+
+		businessPaySvc.create( m ); 
+	}	
+}

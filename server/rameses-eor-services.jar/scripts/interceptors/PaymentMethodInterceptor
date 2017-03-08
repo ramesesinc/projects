@@ -36,7 +36,7 @@ class PaymentMethodInterceptor  {
 		def params = [:];
 		params.MerchantCode = partner.info.merchantcode; 
 		params.MerchantRefNo = bill.controlno; 
-		params.Particulars = "Transaction_type=${bill.txntype};Name=${bill.paidby};Tax Reference Number=${bill.txnid};"; 
+		params.Particulars = "Transaction_type=${bill.txntypename};Name=${bill.paidby};Tax Reference Number=${bill.txnid};"; 
 		params.Amount = samt;
 		params.PayorName = bill.paidby;
 		params.PayorEmail = ( bill.paidbyemail ? bill.paidbyemail : '');
@@ -45,6 +45,7 @@ class PaymentMethodInterceptor  {
 
 		def secval = partner.info.merchantcode + bill.controlno + samt.replace('.','');
     	params.Hash = com.rameses.util.Encoder.MD5.encode(secval).toLowerCase();
+    	partner.params = params; 
 	}
 
 }

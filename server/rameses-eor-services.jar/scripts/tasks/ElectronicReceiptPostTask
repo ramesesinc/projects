@@ -1,0 +1,42 @@
+import com.rameses.annotations.*;
+
+class ElectronicReceiptPostTask {
+	
+	@DataContext('eor_paymentorder') 
+	def eor_paymentorder; 
+
+	@DataContext('cashreceiptpayment_eor') 
+	def cashreceiptpayment_eor; 
+
+	@Service('ElectronicReceiptService') 
+	def receiptSvc;
+
+	@Schedule( interval=1 ) 
+	public void post( tasks ) {
+		def o = eor_paymentorder.find([ state:'POSTED']).orderBy('dtposted').first(); 
+		if ( !o ) return; 
+
+		def crpeor = cashreceiptpayment_eor.find([ objid: o.traceno ]).first();  
+		if ( !crpeor ) { 
+			println ''+ o.traceno +' cashreceiptpayment_eor record not found'; 
+			eor_paymentorder.find([ objid: o.objid ]).update([ state: 'POSTING_FAILED' ]); 
+			return; 
+		} 
+
+		crpeor.paymentorder = o.paymentorder; 
+
+		def bill = null; 
+		if ( o.billinfo ) {
+			def cipher = new com.rameses.util.Base64Cipher();
+			if ( cipher.isEncoded( o.billinfo )) {
+				bill = cipher.decode( o.billinfo ); 
+				o.remove('billinfo'); 
+			} 
+		}
+		
+
+		def rct = receiptSvc.openReceipt([ objid: crpeor.receiptid ]); 
+		receiptSvc.postReceipt( crpeor, rct, bill );  
+		eor_paymentorder.find([ objid: o.objid ]).update([ state: 'COMPLETED' ]); 
+	} 
+}

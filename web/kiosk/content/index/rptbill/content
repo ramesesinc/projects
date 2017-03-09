@@ -1,59 +1,17 @@
-<div id="wrapper" > 
+
+<div id="wrapper"> 
+  <header>
+    <h1>Enter TD No. to Bill:</h1>
+  </header>
     <div id="content">
-      	<div class="container">
-	      	<div class="bg-white">
-	      		<form method="get" action="/index/rpt">
-		 			<div class="bill-main-panel">
-		 				<div class="bill-second-panel">
-			      			<div class="row">
-						      	<div class="col-md-12">
-						      		<div class="label-top">
-						      			<p class="label-title">TD NO.</p>
-						      			<p>: ${PARAMS.tdno}</p>
-						      		</div>
-						      		<div class="label-top">
-						      			<p class="label-title">Last Year Paid</p>
-						      			<p>: ${PARAMS.lastyearpaid}</p>
-						      		</div>
-						      		<div class="label-top">
-						      			<p class="label-title">Last QtrPaid</p>
-						      			<p>: ${PARAMS.lastqtrpaid}</p>
-						      		</div>
-						      	</div>
-					      	</div>
-					     </div>
-				      	<hr>
-				      	<div class="row">	
-					      	<div class="col-md-12">
-				      			<input type="hidden" name="tdno" value="${PARAMS.tdno}"/>
-					      		<p class="p-title"><b>New Billing Options</b></p>
-					      		<div class="label-top">
-					      			<p class="label-title">Year to Bill</p>
-					      			<p><input type="text" class="write" name="billtoyear"/></p>
-					      		</div>
-					      		<div class="label-top">
-					      			<p class="label-title">Quarter to Bill</p>
-					      			<p>
-					      				<select class="write" name="billtoqtr">
-					      					<option>1</option>
-					      					<option>2</option>
-					      					<option>3</option>
-					      					<option selected>4</option>
-					      				</select> 
-					      			</p>
-					      		</div>
-					      	</div>	
-						</div>	
-				    </div>
-				    <div class="col-md-2">
-						<button type="submit" class="thumbnail">Submit</button>
-					</div>
-				</form> 
-		  	</div>
-		</div>
-	</div>
+      <div class="container">
+        <div class="container-content">
+          <form method="get" action="/index/rptbill/result">
+            <input type="text" name="tdno"  class="write" autofocus/>
+            <button type="submit" class="btn-submit">Submit</button>
+          </form>
+        </div>
+
+      </div>
+    </div> 
 </div>
-
-
-     
-

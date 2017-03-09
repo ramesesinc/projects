@@ -49,6 +49,7 @@ class KioskRPTBilllingService
         bill.info.rptledgerid = bill.rptledgerid 
         bill.info.billtoyear = bill.billtoyear 
         bill.info.billtoqtr = bill.billtoqtr 
+        bill.payer = bill.taxpayer; 
         cacheSvc.put([key:bill.objid, value:bill])
         return bill 
     }
@@ -122,6 +123,7 @@ class KioskRPTBilllingService
         billing.amount = billing.basicnet + billing.sefnet + billing.basicidlenet + billing.firecode 
 
         billing.items = bill.rctitems
+        billing.rptitems = bill.rptitems
 
         if (billing.amount <= 0.0) {
             def msg = 'A problem was encountered when generating the bill.\n'

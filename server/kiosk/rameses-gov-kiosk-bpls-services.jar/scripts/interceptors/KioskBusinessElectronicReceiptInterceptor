@@ -1,6 +1,6 @@
 import com.rameses.annotations.*; 
 
-class BusinessCashReceiptEORInterceptor {
+class KioskBusinessElectronicReceiptInterceptor {
 
 	@Service('CacheService') 
 	def cacheSvc; 

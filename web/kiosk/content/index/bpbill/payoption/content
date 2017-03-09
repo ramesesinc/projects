@@ -1,0 +1,76 @@
+<%
+def options = [
+	[key: 'FULLQTR',  value:'PAY UP TO QTR'],
+	[key: 'SPECIFY-AMOUNT', value: 'SPECIFY AMOUNT'] 
+];
+%>
+
+<script>
+\$put("option", new function(){
+
+	this.option;
+	this.amount;
+	this.qtr;
+
+	this.submit = function() {
+		var form = \$('#submit'); 
+		form.html('<input type="hidden" name="code" value="${PARAMS.code}"/>'); 
+
+		if ( this.option == 'SPECIFY-AMOUNT' ) {
+			\$('<input type="hidden" name="payoption" value="'+ this.option +'"/>').appendTo( form ) ;
+			\$('<input type="hidden" name="payamount" value="'+ this.amount +'"/>').appendTo( form );
+		} 
+		else {
+			\$('<input type="hidden" name="payoption" value="q'+ this.qtr +'"/>').appendTo( form );
+		} 
+		form.submit(); 
+	} 
+}); 
+</script> 
+<div id="wrapper" > 
+    <div id="content">
+      	<div class="container">
+      		<div class="bg-white">
+      			<div class="bill-main-panel">      				
+      				<div class="col-md-12">
+      					<p class="label-name">Business Bill Payment Option</p>
+			      		<p class="label-address">Please specify the required fields below:</p>
+      				</div>
+      				<hr>
+	      			<div class="bill-second-panel">
+	      				<div class="row">
+					      	<div class="col-md-6">
+					      		<p class="label-bpls"> 
+					      			Option : &nbsp;&nbsp; 
+					      			<select r:context="option" r:name="option">
+					      			<%options.each{%>
+					      				<option value="${it.key}"> ${it.value} </option>
+					      			<%}%>
+					      			</select> 
+					      		</p>
+					      		<p class="label-bpls" r:context="option" r:depends="option" r:visibleWhen="#{option=='FULLQTR'}"> 
+					      			Quarter : &nbsp;&nbsp; 
+					      			<select r:context="option" r:name="qtr"> 
+					      				<option value="1"> 1 </option> 
+					      				<option value="2"> 2 </option> 
+					      				<option value="3"> 3 </option> 
+					      				<option value="4"> 4 </option> 
+					      			</select> 
+					      		</p> 
+					      		<p class="label-bpls" r:context="option" r:depends="option" r:visibleWhen="#{option=='SPECIFY-AMOUNT'}"> 
+					      			Amount : &nbsp;&nbsp; 
+					      			<input type="text" r:context="option" r:name="amount" r:datatype="decimal"/> 
+					      		</p> 
+					      	</div>
+				      	</div>
+			      	</div> 
+	      		</div> 
+	      	</div> 
+					<div class="col-md-2">
+						<form method="post" action="/index/bpbill/result" id="submit"></form>
+
+						<button r:context="option" r:name="submit" class="thumbnail">Submit</button>
+					</div>   				
+	    </div> 
+	</div> 	
+</div>

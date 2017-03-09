@@ -22,10 +22,19 @@ public class KioskBusinessBillingService  {
 	def numSvc;
 
 	private def getPaymentOption(def o) {
-		def r = [:]
-        if(o.payoption == null || o.payoption.equalsIgnoreCase('FULLYEAR') ) {
+		def r = [:] 
+        if ( o.payoption == null || o.payoption.equalsIgnoreCase('FULLYEAR') ) {
 			r.option = 'FULLYEAR';
         }
+        else if ( o.payoption.equalsIgnoreCase('SPECIFY-AMOUNT')) {
+        	r.option = 'SPECIFY-AMOUNT'; 
+        	r.amount = o.payamount;
+        	if ( o.payamount instanceof Number ) {
+        		//do nothing 
+        	} else { 
+        		r.amount = new java.math.BigDecimal( o.payamount ); 
+        	} 
+        } 
         else {
 			r.option = 'FULLQTR';
 			if( o.payoption.equalsIgnoreCase( "q1") ) r.qtr = 1;

@@ -1,11 +1,9 @@
-  <%
-
-    def service = SERVICE.lookup("KioskRPTBillingService", "etracs");
-    def bill = service.generateBill(PARAMS);
-    def billid = bill.objid 
-    def numsvc = SERVICE.lookup("NumberService", "etracs")
-	def taxpayer = bill.taxpayer;
-
+<%
+def service = SERVICE.lookup("KioskRPTBillingService", "etracs");
+def bill = service.generateBill(PARAMS);
+def billid = bill.objid 
+def numsvc = SERVICE.lookup("NumberService", "etracs")
+def taxpayer = bill.taxpayer;
 %>
 
 <script>
@@ -143,7 +141,7 @@
 						      		<tbody>
 								    	<tr>
 								    		<td><b class="bill-total">TOTAL BILL AMOUNT</b></td>
-								    		<td align="right"><b class="bill-total">Php ${numsvc.format('#,##0.00',bill.billamount)}</b></td>
+								    		<td align="right"><b class="bill-total">Php ${numsvc.format('#,##0.00',bill.amount)}</b></td>
 								    	</tr>
 								    </tbody>
 						      	</table>
@@ -164,23 +162,20 @@
 		      	</div>
 	    	</div> 
 	    	<div class="col-md-2">
-			 	<form method="post" action="/index/rptbill">
+			 	<form method="post" action="/index/rptbill/payoption">
 			 		<input type="hidden" name="tdno" value="${bill.tdno}"/>
 			 		<input type="hidden" name="lastyearpaid" value="${bill.lastyearpaid}"/>
 			 		<input type="hidden" name="lastqtrpaid" value="${bill.lastqtrpaid}"/>
 			     	<button type="submit" class="thumbnail">Payment Options</button>
-			     	<!--<button type="submit" r:context="pay" r:name="payoption" class="thumbnail">Payment Options</button>-->
 			  	</form>
 			</div>
 		   	<div class="col-md-2">
 				    <button type="submit" class="thumbnail" r:context="rptbill" r:name="print">Print Bill</button>
 			</div>
 			<div class="col-md-2">
-				 <form method="post" action="/index/pay" id="payform">
-				 </form>
+				 <form method="post" action="/index/pay" id="payform"></form>
 
 				 <button r:context="rptbill" r:name="post" class="thumbnail">Pay</button>
-				 
 			</div>
 		</div>
 	</div>

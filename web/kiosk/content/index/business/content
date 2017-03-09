@@ -2,7 +2,7 @@
     def business = [];
     business << [ links:'',  name:'Apply New'];
     business << [ links:'',  name:'Renew'];
-    business << [ links:'binbpls',  name:'Billing']; 
+    business << [ links:'bpbill',  name:'Billing']; 
 
 %>
 

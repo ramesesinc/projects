@@ -5,7 +5,7 @@
     <div id="content">
       <div class="container">
         <div class="container-content">
-          <form method="post" action="/index/bpls">
+          <form method="post" action="/index/bpbill/result">
             <input type="text" name="code" class="write" autofocus/>
             <button type="submit" class="btn-submit">Submit</button>
           </form>

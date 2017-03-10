@@ -2,7 +2,7 @@ import com.rameses.annotations.*;
 import com.rameses.common.*
 import com.rameses.util.*;
 
-class ElectronicPaymentOrderService  {
+class ElectronicPaymentOrderService { 
 
 	@Service('CacheService')
 	def cacheSvc; 
@@ -29,26 +29,30 @@ class ElectronicPaymentOrderService  {
 	public def create( params ) {
 		if ( !params.billid ) throw new Exception('billid parameter is required.'); 
 
-		def bill = cacheSvc.get([ key: params.billid ]); 
+		def bill = cacheSvc.get( params.billid ); 
 
-		def pmo = [:];
-		pmo.txnid = bill.txnid; 
-		pmo.controlno = bill.controlno; 
-		pmo.payer = bill.payer; 
-		pmo.paidby = bill.paidby;
-		pmo.paidbyaddress = bill.paidbyaddress;
-		pmo.particulars = bill.particulars;
-		pmo.amount = bill.amount; 
-		pmo.expirydate = bill.expirydate;
-		pmo.refid = bill.refid;
-		pmo.refno = bill.refno; 
-		pmo.txntype = bill.txntype;
-		pmo.info = (bill.info ? bill.info : [:]); 
-		pmo = payOrderSvc.create( pmo ); 
-
+		def pmo = payOrderSvc.open([ txnid: bill.txnid ]); 
+		if ( !pmo ) { 
+			pmo = [:]; 
+			pmo.txnid = bill.txnid; 
+			pmo.controlno = bill.controlno; 
+			pmo.payer = bill.payer; 
+			pmo.paidby = bill.paidby;
+			pmo.paidbyaddress = bill.paidbyaddress;
+			pmo.particulars = bill.particulars;
+			pmo.amount = bill.amount; 
+			pmo.expirydate = bill.expirydate;
+			pmo.refid = bill.refid;
+			pmo.refno = bill.refno; 
+			pmo.txntype = bill.txntype;
+			pmo.info = (bill.info ? bill.info : [:]); 
+			pmo = payOrderSvc.create( pmo ); 
+		} 
+  
 		if ( !params.paymenttype || params.paymenttype=='CASHIER' ) {
 			//do nothing 
 		} else { 
+			cacheSvc.put([ key: 'BILL:'+ pmo.txnid, value: params.billid ]); 
 			logForPaymentImpl( pmo, bill ); 
 		} 
 
@@ -60,7 +64,7 @@ class ElectronicPaymentOrderService  {
 	public def logForPayment( params ) {
 		if (!params.txnid) throw new Exception('txnid parameter is required.')
 
-		def pmo = cacheSvc.get([ key: params.txnid ]); 
+		def pmo = cacheSvc.get( params.txnid ); 
 		if (!pmo) throw new Exception('Payment Order cannot be loaded. Please close and repeat the transaction.')
 
 		return logForPaymentImpl( pmo, null );  
@@ -81,8 +85,8 @@ class ElectronicPaymentOrderService  {
 				eor.billinfo = new com.rameses.util.Base64Cipher().encode( bill ); 
 			}
 			eor_paymentorder.create(eor); 
-			eor.remove('billinfo');  
 		} 
+		eor.remove('billinfo');  
 		return eor; 
 	} 
 
@@ -143,4 +147,4 @@ class ElectronicPaymentOrderService  {
 		eor_paymentorder.find([ objid: o.objid ]).update([ state: 'POSTED' ]); 
 		return rct;  
 	} 
-}
+} 

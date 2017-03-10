@@ -39,7 +39,10 @@ def taxpayer = bill.taxpayer;
 
     this.post = function(){
     	var elem = \$('#payform');
-    	elem.html('<input type="hidden" name="billid" value="${billid}"/>');
+    	elem.html(
+    		'<input type="hidden" name="billid" value="${billid}"/>' + 
+    		'<input type="hidden" name="billurl" value="/index/rptbill"/>' 
+    	);
     	elem.submit();
     }
 

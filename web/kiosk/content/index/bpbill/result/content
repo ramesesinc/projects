@@ -21,15 +21,32 @@ if ( expirydate instanceof Date ) {
 	expirydate = new java.text.SimpleDateFormat('MMMMM dd, yyyy').format( expirydate );  
 } 
 
-def payoptiontext = null;
+def qtramounts = [];
+if ( billing?.totals ) {
+	qtramounts << [ qtr:1, amount: billing.totals.q1 ];
+	qtramounts << [ qtr:2, amount: billing.totals.q2 ];
+	qtramounts << [ qtr:3, amount: billing.totals.q3 ];
+	qtramounts << [ qtr:4, amount: billing.totals.q4 ];
+}
+def billqtrs = qtramounts.findAll{( it.amount > 0 )}
+def minqtr = billqtrs.min{ it.qtr }?.qtr; 
+def maxqtr = billqtrs.max{ it.qtr }?.qtr; 
+
 def payoption = billing?.payoption; 
 if ( payoption == null ) payoption = [:];
-if ( payoption.option == 'FULLQTR' ) {
-	payoptiontext = 'PAY UP TO QUARTER ( '+ payoption.qtr +' )'; 
+if ( payoption.option == 'FULLQTR' ) { 
+	if ( payoption.qtr ) { 
+		maxqtr = new Integer( payoption.qtr.toString() ); 
+	} 
 } 
-else if ( payoption.option == 'SPECIFY-AMOUNT' ) { 
-	payoptiontext = 'SPECIFY PAYMENT OF ( P '+ decformatter.format( payoption.amount ? payoption.amount : 0.0 ) +' )'; 
-}  
+
+def billperiod = null;
+def strqtr = [ minqtr, maxqtr ].findAll{( it )}.unique().collect{ 'Q'+it }.join(' - '); 
+if ( strqtr ) { 
+	billperiod = strqtr +', '+ billing?.appyear; 
+} 
+
+PARAMS.minqtr = minqtr; 
 %>
 
 <script>
@@ -37,7 +54,10 @@ else if ( payoption.option == 'SPECIFY-AMOUNT' ) {
     
     this.post = function(){
     	var elem = \$('#payform');
-    	elem.html('<input type="hidden" name="billid" value="${billid}"/>');
+    	elem.html(
+    		'<input type="hidden" name="billid" value="${billid}"/>'+ 
+    		'<input type="hidden" name="billurl" value="/index/bpbill"/>' 
+    	);
     	elem.submit();
     }
 
@@ -106,9 +126,9 @@ else if ( payoption.option == 'SPECIFY-AMOUNT' ) {
 					    		<th align="right"> P</th>
 					    		<th align="right">${billamount}</th>
 					    	</tr>
-					    	<% if ( payoptiontext ){%>
+					    	<% if ( billperiod ){%>
 					    	<tr>
-					    		<th align="left" colspan="7">BILL OPTION : ${payoptiontext}</th> 
+					    		<th align="left" colspan="7">BILL PERIOD : ${billperiod}</th> 
 					    	</tr> 
 					    	<%}%>
 				    	</thead>
@@ -116,7 +136,7 @@ else if ( payoption.option == 'SPECIFY-AMOUNT' ) {
 					<br>
 				</div>
 	  		</div>
-			${_payoption}
+			${_footer}
       	</div>
     </div>  
 </div>

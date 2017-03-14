@@ -103,7 +103,7 @@
  
     </nav> -->
     <div id="container">
-        <div id="content">
+        <div id="content" class="rui-controller">
 			${_content} 
         </div>
     </div>

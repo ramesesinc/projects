@@ -1,10 +1,14 @@
 <schema>
 	<element tablename="eor_paymentorder">
 		<field name="objid" primary="true"/>
-		<field name="traceno" />
-		<field name="tracedate" />
-		<field name="dtcreated" />
-		<field name="dtposted" />
+		<field name="state" required="true"/> 
+		<field name="dtcreated" required="true"/> 
+		<field name="dtposted" /> 
+		<field name="traceno" /> 
+		<field name="tracedate" /> 
+		<complex name="traceinfo" serializer="default" required="false" /> 
+		
+		<field name="billinfo" required="false"/> 
 
 		<field name="paymentorder_txnid" required="true"/>
 		<field name="paymentorder_txndate" type="timestamp" required="true" />

@@ -1,0 +1,124 @@
+<%
+def result = [:]; 
+try {
+	def service = SERVICE.lookup("ElectronicPaymentOrderService", "etracs"); 
+	def receipt = service.post([ txnid: PARAMS.txnid ]);  
+	def payitem = receipt.paymentitems.first();
+	result.receipt = receipt; 
+	result.payitem = payitem;
+	result.status = 'success';
+	result.message = '';
+
+} catch(Throwable t) { 
+    result.status = 'error'; 
+    result.message = t.message; 
+    result.receipt = [:];
+    result.payitem = [:];
+    t.printStackTrace();
+}
+
+boolean success = ( result.status=='success' );
+if ( success ) {
+    result.title = 'Payment Posting Successful'; 
+    result.desc = 'Your payment has been processed. Here are the details of this transaction for your reference'; 
+} else {
+    result.title = 'Payment Posting Failed'; 
+    result.desc = '';
+}
+%>
+
+<script>
+\$put("receipt", new function(){ 
+
+    this.print = function (){ 
+        var params = { 
+            header : "${PROJECT['lgu.name']}", 
+            paymenttype : "${result?.payitem?.particulars}", 
+            receiptno : "${result?.receipt?.receiptno}", 
+            receiptdate : "${result?.receipt?.receiptdate}", 
+            txnno : "${result?.payitem?.refno}", 
+            paidby : "${result?.receipt?.paidby}", 
+            amount : "Php${result?.receipt?.amount}", 
+            particulars : "${result?.payitem?.particulars}" 
+        }; 
+
+        window.console.log(params);
+        WebViewUtil.print(params, "receipt");
+    } 
+}); 
+</script> 
+
+<div id="wrapper" > 
+    <div id="content">
+        <div class="container">
+            <div class="bg-white">
+                <div class="bill-main-panel">
+                    <div class="row">
+                        <div class="col-md-12"> 
+                            <div class="l-name">
+                                <p class="label-name">${result.title}</p>
+                                <p class="label-address">${result.desc}</p>
+                            </div> 
+                        </div> 
+                        <div class="bill-second-panel">
+                            <div class="row">
+                                <% if ( success ) {%> 
+
+                                <div class="col-md-12">
+                                    <div class="label-top">
+                                        <p class="label-title">Receipt No.</p>
+                                        <p>: ${result?.receipt?.receiptno}</p>
+                                    </div>
+                                    <div class="label-top">
+                                        <p class="label-title">Receipt Date</p>
+                                        <p>: ${result?.receipt?.receiptdate}</p>
+                                    </div> 
+                                    <div class="label-top">
+                                        <p class="label-title">Paid By</p>
+                                        <p>: ${result?.receipt?.paidby}</p>
+                                    </div> 
+                                    <div class="label-top">
+                                        <p class="label-title">Txn No.</p>
+                                        <p>: ${result?.payitem?.refno}</p>
+                                    </div>
+                                    <div class="label-top">
+                                        <p class="label-title">Particulars:</p>
+                                        <p> ${result?.payitem?.particulars}</p>
+                                    </div>
+                                </div>  
+
+                                <%} else {%>
+
+                                <div class="col-md-12" style="min-height:100px;">
+                                    <div class="label-top">
+                                        <p class="label-title" style="white-space:nowrap;"> 
+                                            Transaction No. &nbsp; ${PARAMS.txnid} 
+                                        </p>
+                                    </div>
+                                    <div style="color:red;padding:20px 0;"> 
+                                        ${result.message} 
+                                    </div>
+                                </div> 
+
+                                <%}%> 
+                            </div>
+                        </div> 
+                    </div>
+                </div>
+            </div> 
+            <div class="col-md-3">
+                <form method="post" action="/index">
+                    <input type="submit" class="thumbnail" value="New Transaction"/>
+                </form>
+            </div>
+
+            <% if ( success ) {%> 
+
+            <div class="col-md-3">
+                <button type="submit" class="thumbnail" r:context="receipt" r:name="print">Print Receipt</button>
+            </div>
+
+            <%}%>
+        </div>
+    </div>
+</div>

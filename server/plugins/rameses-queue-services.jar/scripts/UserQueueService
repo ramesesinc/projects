@@ -173,10 +173,87 @@ class UserQueueService {
 	} 
 
 
+	@ProxyMethod 
+	public def getSkipTicketsForTheDay( params ) { 
+		if ( !params.counterid ) throw new Exception('counterid parameter is required'); 
+
+		def startdate = dateSvc.getBasicServerDate(); 
+		def enddate   = new java.sql.Date( dateSvc.findNextFromDate( startdate, '1d' ).getTime());   
+		return qn.getSkipTickets([ startdate: startdate, enddate: enddate, counterid: params.counterid ]);   
+	} 
+
+	@ProxyMethod 
+	public def getStatusList( params ) {
+		if ( !params.counterid ) throw new Exception('counterid parameter is required');
+
+		def startdate = dateSvc.getBasicServerDate(); 
+		def enddate   = new java.sql.Date( dateSvc.findNextFromDate( startdate, '1d' ).getTime());   
+		return qn.getStatusList([ startdate: startdate, enddate: enddate, counterid: params.counterid ]);   
+	}
+
+	@ProxyMethod 
+	public void requeue( params ) {
+		if ( !params.objid ) throw new Exception('objid parameter is required'); 
+
+		def rundate = dateSvc.getServerDate(); 
+		qn.find([ objid: params.objid ]).update([ txndate: rundate ]); 
+
+		def qndata = qn.find([ objid: params.objid ]).first(); 
+		if ( !qndata.state.toString().equalsIgnoreCase('SKIP')) 
+			throw new Exception('The ticket status must be equal to SKIP in processing requeue'); 
+
+		qn.find([ objid: params.objid ]).update([ state: 'PENDING' ]); 
+
+		def qnadata = qna.find([ objid: params.objid ]).first(); 
+		if ( qnadata ) qna.find([ objid: params.objid ]).delete(); 
+
+		qnadata.objid = 'RNQ' + new java.rmi.server.UID(); 
+		qna.create( qnadata ); 
+	} 
+
+	@ProxyMethod 
+	public def retake( params ) {
+		if ( !params.objid ) throw new Exception('objid parameter is required'); 
+		if ( !params.counterid ) throw new Exception('counterid parameter is required');
+
+		def rundate = dateSvc.getServerDate(); 
+		def qcdata = qc.find([ objid: params.counterid ]).first(); 
+		if ( !qcdata ) throw new Exception('The specified counter does not exist'); 
+
+		qn.find([ objid: params.objid ]).update([ txndate: rundate ]); 
+
+		def qndata = qn.find([ objid: params.objid ]).first(); 
+		if ( !qndata.state.toString().equalsIgnoreCase('SKIP')) 
+			throw new Exception('The ticket status must be equal to SKIP in processing retake transaction'); 
+
+		qnc.create([ objid: qndata.objid, counterid: params.counterid ]); 
+		qn.find([ objid: params.objid ]).update([ state: 'PENDING' ]); 
+
+		def qnadata = qna.find([ objid: params.objid ]).first(); 
+		qnadata.servedby = [objid: env.USERID, name: env.FULLNAME ];
+		qnadata.state = 'PROCESSING'; 
+		qnadata.counter = qcdata; 
+		qnadata.startdate = rundate; 
+		qnadata.enddate = null; 
+		qna.update( qnadata ); 
+		notify([ 
+			sectionid: qnadata.section?.objid, counterid: qnadata.counter?.objid, 
+			ticketno: qnadata.ticketno, type:'TAKE_NUMBER', countercode: qnadata.counter?.code 
+		]); 
+		return qnadata; 
+	} 
+
+
+
+
 	void notify( data ) { 
 		def uuid = ''+ data.sectionid +'_'+ data.counterid; 
 		data.uuid = uuid.toLowerCase(); 
-		data.formattedseriesno = formatSeriesNumber( data ); 
+		if ( data.ticketno ) {
+			data.formattedseriesno = data.ticketno; 
+		} else {
+			data.formattedseriesno = formatSeriesNumber( data ); 	
+		} 		
 		self.notifyHttp( data ); 
 		self.notifyWs( data ); 
 	} 

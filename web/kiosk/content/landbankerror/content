@@ -1,1 +1,46 @@
-Error: <br> ${PARAMS}
+<%
+def codes = [:]; 
+codes.put('00', 'Successful');
+codes.put('01', 'Invalid Merchant Code');
+codes.put('02', 'Invalid Merchant Reference Number ');
+codes.put('03', 'Zero or Negative Amount');
+codes.put('04', 'Null Payors Name ');
+codes.put('05', 'Null Return URL OK');
+codes.put('06', 'Null Return URL Error');
+codes.put('07', 'Invalid Hash ');
+codes.put('08', 'Service Unavailable ');
+codes.put('09', 'Transaction in process ');
+codes.put('10', 'Cancelled Transaction ');
+codes.put('11', 'EPP Offline');
+codes.put('12', 'Invalid Transaction Type ');
+codes.put('13', 'Invalid Particulars ');
+codes.put('14', 'Duplicate Transaction');
+
+def errmsg = codes.get( PARAMS.status ); 
+%>
+
+<h4 style="padding:10px;color:#fff;">
+An Error Occured 
+</h4>
+
+<pre>
+${PARAMS.status} &nbsp; ${errmsg} 
+ 
+
+${PARAMS}
+</pre> 
+
+<script>
+\$put("option", new function(){
+
+	this.selectAnotherPaymentMethod = function() { 
+		var svc =  Service.lookup("ElectronicPaymentOrderService", "etracs"); 
+
+		//"MerchantRefNo":"68250892"
+	}
+
+}); 
+</script> 
+<div class="col-sm-3">
+	<button r:context="option" r:name="selectAnotherPaymentMethod" class="thumbnail"> Select Another Payment Method </button> 
+</div>

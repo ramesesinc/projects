@@ -1,6 +1,6 @@
 <% 
     def rpt = [];
-    rpt << [ links:'binrpt',  name:'Billing']; 
+    rpt << [ links:'rptbill',  name:'Billing']; 
 
 %>
 

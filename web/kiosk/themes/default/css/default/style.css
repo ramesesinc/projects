@@ -37,6 +37,9 @@ header h1{
   font-weight: normal;
   line-height: 26.3999996185303px;
 }
+button[disabled]{
+  color: grey;
+}
 .page-header {
     letter-spacing: 2px;
     color: #ffffff;
@@ -256,7 +259,6 @@ button:focus {outline:0;}
     /* background-image: -webkit-linear-gradient(top, #A5B8DA, #7089B3); */
     background: #050527;
 }
-
 .table{
   background:#ffffff;
   font-size: 12px;

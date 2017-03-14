@@ -1,25 +1,29 @@
 import com.rameses.annotations.*
 import com.rameses.common.*;
-import com.rameses.services.extended.*;
 
+class KioskRPTElectronicReceiptInterceptor{
 
-class KioskRPTElectronicReceiptInterceptor
-{
     @Service('RPTReceiptService')
-    def receiptSvc 
+    def receiptSvc; 
 
-    @ActiveDB('cashreceiptrpt')
-    def cashreceiptrpt
+    @Env 
+    def env;     
 
+    @After( pattern="ElectronicReceiptService.postReceipt", eval="#{result?.collectiontype?.handler=='rpt'}" ) 
+    public void afterPostReceipt( evt ) {
+        def receipt = evt.result;  
+        def crpeor = evt.args[0]; 
+        def pmo = crpeor.paymentorder; 
 
-    @After(pattern="ElectronicReceiptService.post", eval="#{args[0].txntype.objid=='rptcol'}")
-    public void postItems(evt){
-        def rct = evt.result 
-        def pmo = evt.args[0]
-        rct.billid = pmo.refid 
-        rct.rptitems = pmo.rptitems 
-        rct.txntype = 'eor'
-        receiptSvc.createReceipt(rct)
-    }
+        receipt.txntype = 'eor';
+        receipt.billid = pmo.refid;
+        receipt.rptitems = env.bill?.rptitems
+        println '** bill'
+        env.bill.each{
+            println '>> '+ it; 
+        }
+   
+        receiptSvc.createReceipt( receipt ); 
+    } 
 }
 

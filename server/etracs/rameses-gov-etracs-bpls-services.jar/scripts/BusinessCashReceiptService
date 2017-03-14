@@ -90,6 +90,7 @@ public class BusinessCashReceiptService  {
         m.appyear = info.appyear;
         m.appno = info.appno; 
         m.dtfiled = info.dtfiled;
+        m.bin = info.bin;
 
         if(m.apptype!='ADDITIONAL') {
 	        def list = app.getDelinquentApplications([ businessid: m.businessid, appyear: m.appyear ]); 

@@ -9,8 +9,8 @@ public class MarketMonthEntry {
 	int days;
 	Date fromdate;
 	Date todate;
-	int index;
 	
-	double excesspartial;
+	double rate;
+	double extrate;
 
 }

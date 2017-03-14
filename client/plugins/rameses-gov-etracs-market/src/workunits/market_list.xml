@@ -1,5 +1,0 @@
-<workunit extends="com/rameses/seti2/templates/CrudList.xml" schemaName="market">
-    <invokers>
-        <invoker folderid="/explorer/master/market" caption="Market List" index="0" action="init"/>
-    </invokers>
-</workunit>

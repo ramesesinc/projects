@@ -19,10 +19,10 @@ class BillItem extends AbstractBillItem {
 
 	public double getTotal() {
 		if(items.size()>0) {
-			return  NumberUtil.round(amount) +   NumberUtil.round( items.sum{ it.amount } );		
+			return  NumberUtil.round( amount + items.sum{ it.amount } );		
 		}
 		else {
-			return amount;
+			return NumberUtil.round( amount );
 		}
 	};
 

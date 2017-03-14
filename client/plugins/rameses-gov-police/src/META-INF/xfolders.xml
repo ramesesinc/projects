@@ -18,4 +18,9 @@
             <folder id="police" caption="Police" />
         </folder>
     </folder>
+    
+    <folder id="home">
+        <folder id="police" caption="Police" icon="home/icons/police.png"/>
+    </folder>
+
 </folders>

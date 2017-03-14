@@ -11,6 +11,7 @@ import com.rameses.seti2.models.*;
 
 public class MarketRentalUnitModel extends CrudFormModel {
         
+    /*
     public def getClusterList() {
         if( !entity.market?.objid ) return []; 
         def m = [_schemaname:'market_cluster']
@@ -18,6 +19,7 @@ public class MarketRentalUnitModel extends CrudFormModel {
         m.findBy = ['market.objid': entity.market.objid ];
         return qryService.getList( m );
     }
+    */
 
     def historyListModel = [
         fetchList: { o->

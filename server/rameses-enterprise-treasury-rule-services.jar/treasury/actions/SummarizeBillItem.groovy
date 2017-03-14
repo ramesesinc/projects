@@ -15,18 +15,29 @@ class SummarizeBillItem implements RuleActionHandler {
 
 	public void execute(def params, def drools) {
 		def billitem = params.billitem;
-		def aggtype = params.aggtype;
+		def fields = params.fields;
+		def remarks = params.remarks;
 
 		if(!billitem)
 			throw new Exception("treasury.actions.SummarizeBillItem");
+
+		//add to keys, account is the default key 
+		def keys = [billitem.account];	
+		fields?.split(",").each { k->
+			try {
+				keys << billitem[k.trim()];
+			}	
+			catch(e){;}	
+		}
+
 		def ct = RuleExecutionContext.getCurrentContext();
 		def facts = ct.facts;
 
-		def obj = facts.find{ (it instanceof SummaryBillItem) && it.account.objid == billitem.account.objid  };
+		def obj = facts.find{ (it instanceof SummaryBillItem) && it.keys == keys  };
 		if( !obj ) {
 			obj = new SummaryBillItem();
+			obj.keys = keys;
 			obj.account = billitem.account;
-			obj.aggtype = aggtype;
 			obj.dynamic = billitem.dynamic;
 			obj.txntype = billitem.txntype;
 			obj.sortorder = billitem.sortorder;
@@ -36,24 +47,11 @@ class SummarizeBillItem implements RuleActionHandler {
 		obj.items << billitem;
 		obj.amount = NumberUtil.round(obj.items.sum{ it.amount });
 
-		//Calculate the amount 
-		/*
-		if(aggtype =="SUM" ) {
-			obj.amount = obj.items.sum{ it.amount };
+		if(remarks!=null) {
+			remarks.params.put("ITEM", obj);
+			obj.remarks = remarks.eval();
 		}
-		else if( aggtype == "COUNT") {
-			obj.amount = obj.items.size();
-		}
-		else if( aggtype == "AVG" ) {
-			obj.amount = obj.items.sum{ it.amount } / obj.items.size();
-		}
-		else if( aggtype == "MIN" ) {
-			obj.amount = obj.items.min{ it.amount };
-		}
-		else if( aggtype == "MAX" ) {
-			obj.amount = obj.items.max{ it.amount };
-		}
-		*/
+
 		//remove the billitem in the main facts and billitems
 		facts.remove( billitem );
 		drools.retract( billitem );		

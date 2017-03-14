@@ -36,7 +36,7 @@ public class MarketLocationQueryForm extends javax.swing.JPanel {
 
         xComboBox1.setCaption("Market Location");
         xComboBox1.setCaptionWidth(120);
-        xComboBox1.setExpression("#{item.code} #{item.name}");
+        xComboBox1.setExpression("#{item.name}");
         xComboBox1.setItems("marketLocations");
         xComboBox1.setName("selectedMarket"); // NOI18N
         xComboBox1.setPreferredSize(new java.awt.Dimension(200, 20));

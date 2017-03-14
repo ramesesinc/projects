@@ -1,0 +1,10 @@
+<workunit schemaName="policeclearance_application">
+    <invokers>
+        <invoker type="policeclearance_application:open" caption="Police Clearance" action="open"/>
+        <invoker type="formActions" caption="Show Tracking No" action="showTrackingno"/>
+    </invokers>
+    <code class="com.rameses.gov.etracs.police.models.PoliceClearanceApplicationModel" />
+    <pages>
+        <page template="com.rameses.gov.etracs.police.views.PoliceClearanceApplicationPage" />
+    </pages>
+</workunit>

@@ -50,9 +50,11 @@ class VehicleCashReceiptService {
 			throw new Exception("No vehicle record found for " + o.id);
 		};
 
+		controlid = fran?.objid;
+		if( !controlid ) controlid = app.controlid;
+
 		//check first if this is on payment mode...
-		
-		def fees = feeEm.find( [controlid: app.controlid]  ).where("amount - amtpaid > 0").list();
+		def fees = feeEm.find( [controlid: controlid]  ).where("amount - amtpaid > 0").list();
 		if( !fees )
 			throw new Exception("There are no unpaid items");
 

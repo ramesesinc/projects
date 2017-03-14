@@ -21,6 +21,11 @@ public class MarketCashReceiptInterceptor {
 	@After(pattern="CashReceiptService.post", eval="#{result.collectiontype?.handler == 'marketrental'}")
 	public void postMarketPayment(def evt) {
 		def r = evt.args[0];
+		r.each { k,v->
+			println k+"="+v;
+		}
+		throw new Exception("stop payment");
+
 		pmtSvc.postCreate( r );
 	} 
 

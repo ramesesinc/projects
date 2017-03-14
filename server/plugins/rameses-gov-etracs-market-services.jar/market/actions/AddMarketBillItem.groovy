@@ -30,7 +30,6 @@ public class AddMarketBillItem extends AbstractAddBillItem {
 		billitem.fromdate = entry.fromdate;
 		billitem.todate = entry.todate;
 		billitem.amount = amt;
-		billitem.index = entry.index;
 		billitem.monthentry = entry;
 		billitem.marketunit = rentalunit;
 		billitem.remarks = remarks;

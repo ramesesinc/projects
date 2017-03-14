@@ -47,8 +47,8 @@ class MarketPaymentService {
 		}
 		
 		//find the last payment id so we can store it in the payment.
-		def prev = acctEm.find( [objid: m.acctid] ).select( "rate,extrate,lastpaymentid,partialbalance,partialextbalance,lastdatepaid").first();
-		m.prevlastdatepaid = prev.lastdatepaid;
+		def prev = acctEm.find( [objid: m.acctid] ).select( "rate,extrate,lastpaymentid,partialbalance,partialextbalance,todate").first();
+		m.prevtodate = prev.todate;
 		m.prevpartialbalance = prev.partialbalance;
 		m.prevpartialextbalance = prev.partialextbalance;
 		m.prevpaymentid = prev.lastpaymentid;
@@ -70,7 +70,7 @@ class MarketPaymentService {
 		def u = [:];
 		u.partialbalance = (partialbalance>0)? prev.rate - partialbalance : 0;
 		u.partialextbalance = (partialextbalance>0)? prev.extrate - partialextbalance: 0;
-		u.lastdatepaid = m.todate; 
+		u.todate = m.todate; 
 		u.lastpaymentid = m.objid;
 
 		//update the ledger
@@ -97,7 +97,7 @@ class MarketPaymentService {
 		def z = [:];
 		z.partialbalance = pmt.prevpartialbalance;	
 		z.partialextbalance = pmt.prevpartialextbalance;
-		z.lastdatepaid = pmt.prevlastdatepaid;
+		z.todate = pmt.prevtodate;
 		z.lastpaymentid = pmt.prevpaymentid;
 
 		acctEm.find( [objid: pmt.acctid] ).update(z);

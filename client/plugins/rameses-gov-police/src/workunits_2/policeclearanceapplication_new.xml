@@ -1,0 +1,156 @@
+<workunit>
+    <invokers>
+        <!--
+        <invoker type="home.action" action="start" caption="New Police Clearance" />
+        <invoker type="policeclearance:open" action="open" caption="Police Clearance"/>
+        -->
+        
+    </invokers>
+    
+    <code>
+    <![CDATA[
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*
+        import com.rameses.osiris2.reports.*;
+        import java.rmi.server.UID;
+        import com.rameses.rcp.framework.ClientContext;
+        
+        class PoliceClearanceApplicationController extends PageFlowController {
+        
+            @Binding
+            def binding;
+        
+            @Service("PoliceClearanceService")
+            def service;
+            
+            @Service("EntityService")
+            def entitySvc;
+            
+            @Service("EntityPhysicalService")
+            def physicalSvc;
+            
+            String entityName = "policeclearance";
+            def entity = [:];
+            
+            void init() {
+                entity = [objid:"PC"+new UID()];
+            }
+            
+            boolean hasLookup;
+            def showPersonalInfo() {
+                if( !hasLookup && !entity.personalinfoid ) 
+                    throw new Exception("Please search first before attempting to create a new record");
+                String action = "open";
+                def data = entity.person;
+                if( !data?.objid ) {
+                    action = "create";
+                    data = [:];
+                }    
+                def opener =  InvokerUtil.lookupOpener( 'individualentity:'+action, [entity:data, 
+                    saveHandler: {o->
+                        entity.person = o;
+                        binding.refresh("entity.person.*");
+                    }
+                ]);
+                opener.target = "popup";
+                return opener;
+            }
+            
+            def getLookupPersonalInfo() {
+                hasLookup = true;
+                return InvokerUtil.lookupOpener( 'individualentity:lookup', [
+                    onselect : { o->
+                        entity.person = entitySvc.open( o );
+                        binding.refresh();
+                    },
+                    onempty: {
+                        hasLookup = false;
+                        entity.person = null;
+                        binding.refresh('entity.*');
+                    }
+                ]);
+            }
+            
+            void loadPhysical() {
+                def p = physicalSvc.open([objid:entity.person.objid]);            
+                entity.person.putAll( p );
+            }
+            
+            void savePhysical() {
+                physicalSvc.save( entity.person );
+            }
+            
+            def cameraHandler = [
+                onselect : { bytes->
+                    entity.person.photo = [objid: 'PHOTO'+new UID()];
+                    entity.person.photo.image = bytes;
+                    binding.refresh('entity.person.photo.image');
+                }
+            ] as CameraModel
+            
+            def thumbprintHandler = [
+                onselect : { info->
+                    entity.leftthumbmark = info.leftThumbData;
+                    entity.leftthumbfmd = info.leftThumbFmdData;
+                    entity.rightthumbmark = info.rightThumbData;
+                    entity.rightthumbfmd = info.rightThumbFmdData;
+                    binding.refresh('entity.(leftthumbmark|rightthumbmark)');
+                    
+                }
+            ] as FingerPrintModel
+            
+                        
+            void beforeSave( entity ) {
+                if( ! entity.photo ) throw new Exception("Photo is required");
+                if( ! entity.leftthumbmark ) throw new Exception("Left thumb mark is required");
+                if( ! entity.rightthumbmark ) throw new Exception("Right thumb mark is required");
+            }
+            
+            def save() {
+                if( MsgBox.confirm('Submit document?') ) {
+                    entity = service.submitPoliceClearance( entity );
+                    return 'forrelease';
+                }
+            }
+
+            
+        }
+    ]]>
+    </code>
+    
+    <pageflow>
+        <start>
+            <transition to="select-person" action="init"/>
+        </start>
+        <page name="select-person" title="Police Clearance (Select Person)">
+            <transition to="physical" caption="Next" name="next" immediate="false" action="loadPhysical"/>
+        </page>
+        <page name="physical" title="Police Clearance (Specify Physical Attributes) ">
+            <transition to="select-person" caption="Back" name="back"/>
+            <transition to="attachment" caption="Next" name="next" immediate="false" action="savePhysical"/>
+        </page>
+        <page name="attachment" title="Police Clearance (Specify Attachments) ">
+            <transition to="physical" caption="Back" name="back"/>
+            <transition to="confirm" caption="Next" name="next" immediate="false" />
+        </page>
+        <page name="confirm" title="Police Clearance (Confirm) ">
+            <transition to="attachment" caption="Back" name="back"/>
+            <transition to="save-success" caption="Submit" name="next" immediate="false" action="save" 
+            confirm="You are about to submit this page. Continue?"/>
+        </page>
+        <page name="save-success" title="Police Clearance (Success) ">
+            <transition to="end" caption="Close" name="close"/>
+        </page>
+        <end/>
+    </pageflow>
+    
+    <pages>
+        <page name="select-person" template="com.rameses.gov.police.policeclearance.SelectPersonPage" />
+        <page name="physical" template="com.rameses.gov.police.policeclearance.PhysicalInfoPage" />
+        <page name="attachment" template="com.rameses.gov.police.policeclearance.AttachmentsPage" />
+        <page name="confirm" template="com.rameses.gov.police.policeclearance.PoliceClearancePage" />
+        <page name="success" template="com.rameses.gov.police.policeclearance.PoliceClearancePage" />
+    </pages>
+</workunit>

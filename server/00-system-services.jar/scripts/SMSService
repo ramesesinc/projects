@@ -1,9 +1,0 @@
-import com.rameses.annotations.*;
-
-class SMSService {
-
-	@ProxyMethod
-	public Map send( Map data ) {  
-		return data; 
-	} 
-} 

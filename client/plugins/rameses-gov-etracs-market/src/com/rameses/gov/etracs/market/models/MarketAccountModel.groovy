@@ -30,9 +30,9 @@ public class MarketAccountModel extends CrudFormModel {
         def h = { o->
             def m = [_schemaname: 'market_account'];
             m.objid = entity.objid;
-            m.lastdatepaid = o;
+            m.todate = o;
             getPersistenceService().update(m);
-            entity.lastdatepaid = o;
+            entity.todate = o;
             binding.refresh();
         };
         Modal.show( "date:prompt", [handler: h] );

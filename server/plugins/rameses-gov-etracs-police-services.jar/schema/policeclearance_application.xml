@@ -1,0 +1,35 @@
+<schema adapter="police">
+	<element tablename="policeclearance_application" >
+		<field name="objid" primary="true" prefix="OVSPMT"/>
+		<field name="appno" required="true"/>
+		<field name="state" required="true"/>
+
+		<field name="appdate" required="true" type="date"/>
+
+		<field name="dtcreated" required="true"/>
+		<field name="createdby_objid" required="true"/>
+		<field name="createdby_name" required="true"/>
+
+		<field name="applicant_objid" required="true"/>
+		<field name="applicant_name" required="true"/>		
+		<field name="applicant_address_text" required="true"/>
+		<field name="purpose" />	
+
+		<field name="remarks" />	
+
+		<complex name="apptype" ref="policeclearance_type" jointype="many-to-one" required="true">				
+			<key field="apptypeid" target="objid" />	
+		</complex>	
+
+		<!--
+		<complex name="payment" ref="policeclearance_payment" includefields="refno,refdate,amount" jointype="many-to-one" required="false">
+			<key field="payment_objid" target="objid" />
+		</complex>		
+		-->
+
+		<complex name="fees" ref="policeclearance_application_fee" jointype="one-to-many" required="true">
+			<key field="objid" target="parentid" />
+		</complex>		
+
+	</element>
+</schema>

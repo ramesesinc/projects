@@ -1,0 +1,7 @@
+<workunit extends="com/rameses/seti2/templates/CrudLookup.xml" 
+          schemaName="market_cluster">
+    <invokers>
+        <invoker type="market_cluster:lookup" caption="Market Cluster Lookup" index="2" 
+                 action="init"  cols="name,description,market.name" />
+    </invokers>
+</workunit>

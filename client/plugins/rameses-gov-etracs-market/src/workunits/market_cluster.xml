@@ -12,7 +12,7 @@
                  action="open" />
         
     </invokers>
-    <code class="com.rameses.seti2.models.CrudFormModel" />
+    <code class="com.rameses.gov.etracs.market.models.MarketClusterModel" />
     <pages>
         <page template="com.rameses.gov.etracs.market.views.MarketClusterPage"/>
     </pages>

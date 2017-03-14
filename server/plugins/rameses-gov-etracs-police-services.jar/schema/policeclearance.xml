@@ -1,14 +1,15 @@
-<schema adapter="ovs">
-	<element name="ovs_payment" tablename="payment">
-		<field name="objid" primary="true" prefix="OVSPMT"/>
-		<field name="reftype" required="true"/>
-		<field name="refid" required="true"/>
-		<field name="refno" required="true"/>
-		<field name="refdate" required="true"/>
-		<field name="amount" required="true"/>
-		<field name="voided" required="false"/>
-		<complex name="items" ref="ovs_payment_item" jointype="one-to-many">
-			<key field="objid" target="parentid"/>
-		</complex>
+<schema adapter="police">
+	<element tablename="policeclearance" >
+		<field name="objid" required="true"/>
+		<field name="controlno" required="true"/>
+		<field name="dtissued" required="true"/>
+		<field name="createdby_objid" required="true"/>
+		<field name="createdby_name" required="true"/>
+		<field name="dtcreated" required="true"/>
+
+		<complex name="app" ref="policeclearance_application" jointype="many-to-one" required="true">
+			<key field="appid" target="objid" />
+		</complex>		
+
 	</element>
 </schema>

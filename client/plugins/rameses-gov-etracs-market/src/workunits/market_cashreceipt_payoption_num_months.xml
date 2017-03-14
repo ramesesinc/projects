@@ -1,0 +1,26 @@
+<workunit>
+    <invokers>
+        <invoker type="market:cashreceipt_payoption_type" caption="No. of Months" index="0"/>
+    </invokers>
+    
+    <code>
+        import com.rameses.rcp.annotations.*;
+        
+        class SpecifyNumberOfMonths {
+        
+            def context;
+        
+            def months = 0;
+        
+            def getValue() {
+                return [
+                    name:'NUM_MONTHS',
+                    months: months
+                ];
+            }
+        }
+    </code>
+    <pages>
+        <page template="com.rameses.enterprise.treasury.views.SpecifyAmountPayOptionPage" />
+    </pages>
+</workunit>

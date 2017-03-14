@@ -2,6 +2,8 @@ import com.rameses.annotations.*;
 import java.text.*;
 import com.rameses.functions.*;
 import com.rameses.util.*;
+import treasury.utils.*;
+import treasury.facts.*;
 
 class MarketRentalBillingReportService {
 	
@@ -24,41 +26,35 @@ class MarketRentalBillingReportService {
 		result.status = 0;
 
 		def acctid = p.parameters.acctid;
-		
 		def acct = acctEm.find([objid: acctid]).first();
-
 		def pp = [acctid: acctid ];
 		if( p.parameters.billdate ) {
 			pp.payoption = [todate: p.parameters.billdate ];
 		}
-		def billing = billingSvc.getBilling( pp );
 
 		def items = [];
 		def cal = Calendar.instance;
-		billing.items.findAll{ it.dynamic != true }.sort{ (it.year*12)+it.month }.each { cc->
-			cal.setTime( cc.fromdate );
-			def fromday = cal.get(Calendar.DAY_OF_MONTH);
 
-			cal.setTime( cc.todate );
-			def today = cal.get(Calendar.DAY_OF_MONTH);
-			def item = [:];
-			item.year = cc.year;
-			item.month = cc.month;
-			item.rate = cc.amount;
-			item.extrate = (cc.extrate==null)?0:cc.extrate;
-			item.fromday = fromday;
-			item.today = today;
-			item.days = cc.days;
-			item.duedate = cc.duedate;
-			item.surcharge = NumberUtil.round( (cc.surcharge == null) ? 0: cc.surcharge );
-			item.interest = NumberUtil.round( (cc.interest == null) ? 0 : cc.interest );
-			item.amount = item.rate + item.extrate;
-			item.linetotal = NumberUtil.round(item.amount + item.surcharge + item.interest);
-			items << item;
-		}
+		def resultHandler = [
+			getFactKeyValue : { v->
+				if(v instanceof BillItem) {
+					def itm = v.toMap();
+					cal.setTime( itm.fromdate );
+					itm.fromday = cal.get(Calendar.DAY_OF_MONTH);
+					cal.setTime( itm.todate );
+					itm.today = cal.get(Calendar.DAY_OF_MONTH);
+					if(itm.surcharge == null) itm.surcharge = 0.0;
+					if(itm.interest == null) itm.interest = 0.0;
+					items << itm;
+				}	
+				return null;
+			}
+		] as ResultHandler;
 
-		acct.items = items;
-		acct.grandtotal =items.sum{ it.amount };
+		billingSvc.getBilling( pp, resultHandler );
+
+		acct.items = items.sort{ it.sortorder };
+		acct.grandtotal =items.sum{ it.linetotal };
 		acct.billdate = dateSvc.getServerDate();
 		/*
 		acct.fromdate = billing.fromdate;

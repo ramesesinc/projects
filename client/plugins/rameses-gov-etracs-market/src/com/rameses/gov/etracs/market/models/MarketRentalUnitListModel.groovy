@@ -16,7 +16,7 @@ public class MarketRentalUnitListModel extends CrudListModel {
 
     def getMarketLocations() {
         if(!locations) {
-            def m = [_schemaname:'market'];
+            def m = [_schemaname:'government_property'];
             m.select = 'objid,code,name';
             m._start = 0;
             m._limit = 100;
@@ -37,7 +37,7 @@ public class MarketRentalUnitListModel extends CrudListModel {
             return null;
         }
         else {
-            return [ "marketid = :mid", [mid : selectedMarket.objid] ];
+            return [ "cluster.market.objid = :mid", [mid : selectedMarket.objid] ];
         }
     }
         

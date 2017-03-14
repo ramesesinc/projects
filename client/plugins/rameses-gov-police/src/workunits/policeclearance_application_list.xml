@@ -1,0 +1,7 @@
+<workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" 
+          schemaName="policeclearance_application">
+    <invokers>
+        <invoker folderid="home/police" caption="Police Clearance Application List" target="window"
+            action="init" cols="appno,applicant.name,apptype.title,appdate,createdby.name" />
+    </invokers>
+</workunit>

@@ -14,7 +14,7 @@
 		<field name="owner_name"  />
 		<field name="owner_address_text" />
 		<complex name="unit" ref="market_rentalunit" jointype="many-to-one"
-			includefields="code,unittype,cluster.name,term,section.name,cluster.market.name">
+			includefields="code,unittype,cluster.name,term,section.name,cluster.market.name,cluster.market.objid">
 		    <key field="unit_objid" target="objid"/>
 		</complex>
 		<field name="startdate" required="true"/>

@@ -9,7 +9,7 @@
 			<key field="sectionid" target="objid" />
 		</complex>
 		<complex name="cluster" ref="market_cluster" jointype="many-to-one" required="false" 
-			includefields="objid,name,description,market.name">
+			includefields="objid,name,description,market.name,market.objid">
 			<key field="clusterid" target="objid" />
 		</complex>
 		<field name="payfrequency" required="true" lov="MARKET_PAY_FREQUENCY"  caption="Frequency"/>

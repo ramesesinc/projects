@@ -4,4 +4,8 @@
     <invokers>
         <invoker folderid="/home/market" caption="Market Accounts List" role="MASTER" action="init"/>
     </invokers>
+    <code class="com.rameses.gov.etracs.market.models.MarketAccountListModel" />
+    <pages>
+        <page name="queryForm" template="com.rameses.gov.etracs.market.views.MarketLocationQueryForm" /> 
+    </pages>    
 </workunit>

@@ -14,8 +14,7 @@ class MarketRentalUnitListInterceptor{
 	public void loadList(def evt) {
 		def o = evt.args[0];
 		if( !o.node?.id ) return;
-		o.debug = true;
-
+		
 		def str = '';
 		switch( o.node.id ) {
 			case 'all':

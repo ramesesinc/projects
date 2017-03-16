@@ -13,6 +13,7 @@ import com.rameses.functions.*;
 public class BuildDailyItems implements RuleActionHandler {
 
 	public void execute(def params, def drools) {
+
 		def ctx = RuleExecutionContext.getCurrentContext();
 		def facts = ctx.facts;
 
@@ -37,31 +38,44 @@ public class BuildDailyItems implements RuleActionHandler {
 
 		//calculate the new todate based on number of days.
 		def cal = Calendar.instance;
-		cal.setTime( fromtime );
+		cal.setTime( fromdate );
 		cal.add( Calendar.DAY_OF_YEAR, i-1);
+		todate = cal.getTime();
 
-		def currdate = fromdate;
+		int monthsDiff = DateFunc.monthsDiff( fromdate, todate )+1;
 
-		for(int x=0; x<i; x++ ) {
-		   cal.setTime( currdate );
-		   cal.add(Calendar.MONTH, x);
-		   cal.set(Calendar.DATE, 1); 
-		   int days = cal.getActualMaximum( Calendar.DAY_OF_MONTH );
-		   def cdate = cal.getTime();
+		def _fromdate = fromdate;
 
+		for(int x=0; x < monthsDiff; x++ ) {
+		   cal.setTime(_fromdate);
+		   int _yr = cal.get( Calendar.YEAR );
+		   int _mon = cal.get( Calendar.MONTH )+1;
+
+		   int _days = cal.getActualMaximum( Calendar.DAY_OF_MONTH );
+		   cal.add( Calendar.DAY_OF_MONTH, _days - 1 );
+		   def _todate = cal.getTime();
+		   if( _todate.after(todate) ) {
+		   		_todate = todate;
+		   		_days = DateFunc.daysDiff( _fromdate, _todate )+1;
+		   }		
+		   
 		   MarketMonthEntry me = new MarketMonthEntry();
-		   me.fromdate = cdate;
-		   me.year = cal.get( Calendar.YEAR );
-		   me.month = cal.get( Calendar.MONTH )+1;
-		   me.rate = rate;
-		   me.extrate = extrate;
-		   me.days = days;
-		   me.todate = DateFunc.getDayAdd(cdate,  days - 1);
+		   me.fromdate = _fromdate;
+		   me.year = _yr;
+		   me.month = _mon;
+		   me.rate = rate * _days;
+		   me.extrate = extrate * _days ;
+		   me.days = _days;
+		   me.todate = _todate;
 		   if(x==0) {
-		   		if( mu.partialbalance > 0 ) me.rate = mu.partialbalance;
-		   		if( mu.partialextbalance > 0 ) me.extrate = mu.partialextbalance;
+		   		if( mu.partialbalance > 0 ) me.rate = NumberUtil.round( mu.partialbalance + (me.rate * (_days - 1)) ) ;
+		   		if( mu.partialextbalance > 0 ) me.extrate = NumberUtil.round( mu.partialextbalance + (me.extrate * (_days - 1)) );
 		   }
 		   facts << me;
+
+		   //add 1 day to todate
+		   cal.add( Calendar.DAY_OF_MONTH, 1 );
+		   _fromdate = cal.getTime();
 		} 
 
 	};

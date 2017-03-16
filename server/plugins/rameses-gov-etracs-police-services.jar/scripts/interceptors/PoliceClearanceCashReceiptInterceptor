@@ -36,7 +36,7 @@ public class PoliceClearanceCashReceiptInterceptor  {
 	@After(pattern="CashReceiptVoidService.post",index=0,eval="#{result.receipt.collectiontype.handler=='policeclearance'}")
 	public void voidPayment(def evt) {
 		def r = evt.args[0].receipt;
-		def p = pmt.find( [refid: r.objid] );
+		def p = pmt.find( [refid: r.objid] ).first();
 		pmt.find( [objid: p.objid] ).update( [voided: 1] );
 		def u = [:];
 		u.state = 'PAYMENT';

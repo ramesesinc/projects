@@ -1,6 +1,6 @@
 <schema adapter="police">
 	<element tablename="policeclearance_application_fee" >
-		<field name="objid" primary="true" />
+		<field name="objid" primary="true" prefix="PISAPPFEE"/>
 		<field name="parentid" required="true" />
 		<field name="item_objid" required="true" />
 		<field name="item_code" required="true" />

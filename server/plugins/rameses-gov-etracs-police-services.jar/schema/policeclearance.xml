@@ -1,6 +1,6 @@
 <schema adapter="police">
 	<element tablename="policeclearance" >
-		<field name="objid" required="true"/>
+		<field name="objid" required="true" prefix="PISCLR"/>
 		<field name="controlno" required="true"/>
 		<field name="dtissued" required="true"/>
 		<field name="createdby_objid" required="true"/>

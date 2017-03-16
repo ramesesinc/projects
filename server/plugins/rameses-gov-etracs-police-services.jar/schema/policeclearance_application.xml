@@ -1,6 +1,6 @@
 <schema adapter="police">
 	<element tablename="policeclearance_application" >
-		<field name="objid" primary="true" prefix="OVSPMT"/>
+		<field name="objid" primary="true" prefix="PISPMT"/>
 		<field name="appno" required="true"/>
 		<field name="state" required="true"/>
 
@@ -29,7 +29,11 @@
 
 		<complex name="fees" ref="policeclearance_application_fee" jointype="one-to-many" required="true">
 			<key field="objid" target="parentid" />
-		</complex>		
+		</complex>	
+
+		<field name="payment_objid" />	
+		<field name="payment_refno" />	
+		<field name="payment_refdate" />	
 
 	</element>
 </schema>

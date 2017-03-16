@@ -1,6 +1,6 @@
 <schema adapter="police">
 	<element tablename="policeclearance_payment" >
-		<field name="objid" primary="true"/>
+		<field name="objid" primary="true" prefix="PISPMT"/>
 		<field name="appid" required="true"/>
 		<field name="txndate" required="true"/>
 		<field name="refid" required="true"/>

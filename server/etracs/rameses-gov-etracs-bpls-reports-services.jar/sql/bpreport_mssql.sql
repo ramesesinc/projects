@@ -113,7 +113,7 @@ select
 		ELSE 0 
 	END) as newcount, 
 	SUM(CASE WHEN a.apptype='RENEW' AND bal.assessmenttype='RENEW' THEN 1 ELSE 0 END) AS renewcount,
-	SUM(CASE WHEN a.apptype='ADDITIONAL' AND bal.assessmenttype='NEW' THEN 1 ELSE 0 END) AS addlobcount,
+	SUM(CASE WHEN a.apptype='ADDITIONAL' THEN 1 ELSE 0 END) AS addlobcount,
 	SUM(CASE WHEN bal.assessmenttype='RETIRE' THEN 1 ELSE 0 END) AS retirecount	
 from business_application a 
 	inner join business_application_lob bal on a.objid=bal.applicationid 

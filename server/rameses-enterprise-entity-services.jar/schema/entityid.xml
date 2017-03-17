@@ -11,8 +11,8 @@
 		-->
 		<field name="idtype" required="true"/>
 		<field name="idno" required="true"/>
-		<field name="dtissued" required="true"/>
-		<field name="dtexpiry" required="true"/>
+		<field name="dtissued" />
+		<field name="dtexpiry" />
 	</element> 
 
 </schema>

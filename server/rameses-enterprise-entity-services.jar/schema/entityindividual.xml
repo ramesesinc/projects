@@ -16,6 +16,7 @@
 		<field name="thumbnail" />
 		<field name="tin" />
 		<field name="sss" />
+		<field name="age" expr="GET_AGE( birthdate )" />
 	</element>	
 	
 

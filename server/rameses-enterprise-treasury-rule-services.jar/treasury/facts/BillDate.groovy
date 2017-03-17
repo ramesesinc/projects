@@ -7,14 +7,12 @@ import com.rameses.rules.common.*;
 
 public class BillDate extends DateFact {
     
-    Date validUntil;
-    
-	public BillDate(String s) {
-        super(s);
-    }
-
     public BillDate() {
         super();
+    }
+
+    public BillDate(String s) {
+        super(s);
     }
 
     public BillDate(Date d) {

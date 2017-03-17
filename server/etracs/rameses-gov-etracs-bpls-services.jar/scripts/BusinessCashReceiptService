@@ -62,10 +62,16 @@ public class BusinessCashReceiptService  {
 	public def findInfo( param ) { 
 		def info = null; 
 		if ( param.appno ) { 
-			if (param.appno.contains('-')) { 
+
+			def sappno = param.appno;
+			if ( sappno.indexOf(':') > 0 ) { 
+				param.appno = sappno.substring( sappno.indexOf(':')+1); 
+				sappno = param.appno;
+			}
+			if ( sappno.contains('-')) { 
 				info = app.findInfoByAppno( param ); 
 			} else { 
-				info = app.findInfoByBIN([ bin: param.appno ]); 
+				info = app.findInfoByBIN([ bin: sappno ]); 
 			} 
 		} else if ( param.applicationid ) {
 			info = app.findInfoByAppid( param ); 
@@ -84,6 +90,7 @@ public class BusinessCashReceiptService  {
         m.appyear = info.appyear;
         m.appno = info.appno; 
         m.dtfiled = info.dtfiled;
+        m.bin = info.bin;
 
         if(m.apptype!='ADDITIONAL') {
 	        def list = app.getDelinquentApplications([ businessid: m.businessid, appyear: m.appyear ]); 

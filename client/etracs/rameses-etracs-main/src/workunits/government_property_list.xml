@@ -1,0 +1,7 @@
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" schemaName="government_property">
+    <invokers>
+        <invoker folderid="/explorer/master/lgu" caption="Government Property List"  
+                action="init" domain="ADMIN" role="SYSADMIN" index="4" 
+                cols="name,barangay.name"/>
+    </invokers>
+</workunit>

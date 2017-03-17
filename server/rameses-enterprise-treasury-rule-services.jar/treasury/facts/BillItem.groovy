@@ -3,73 +3,42 @@ package treasury.facts;
 import java.util.*;
 import com.rameses.util.*;
 
-public class BillItem {
+class BillItem extends AbstractBillItem {
 
-    def item;                       //store the original value
-    Date duedate;
-    def refid;
-    int sortorder = 0;
-    int pmtorder = 0;
+	String refid;
+	String ledgertype;
 
-    //if payment is required this must be paid based on its order. We cannot choose to pay what we want.
-    boolean required = true;    
+	//pay priority is only used during apply payment and will not be used anywhere else. This is defined by the extending class.
+	int paypriority = 0;
+	
+	LinkedHashSet<BillSubItem> items = new LinkedHashSet<BillSubItem>();
 
-    boolean compromise;             //if true, this line is under compromise so no penalty
-    double amtdue = 0;              //the original amount due
-    double amount = 0;              //amount paid
-    double discount = 0;            //discount
-    double surcharge = 0;           //surcharge paid
-    double interest = 0;            //interest paid
-    def category;
+	public def getTotals( def txntype ) {
+		return items.findAll{ it.txntype == txntype }.sum{it.amount};
+	}
 
-    String title;                   //this is used in lieu of account. if account is not specified.
-    String remarks;             
-    String txntype;                 //this is used for short codes. System specified txntype
+	public double getTotal() {
+		if(items.size()>0) {
+			return  NumberUtil.round( amount + items.sum{ it.amount } );		
+		}
+		else {
+			return NumberUtil.round( amount );
+		}
+	};
 
-    Account account;                //the principal account
-    Account surchargeAccount;       //surcharge account
-    Account interestAccount;        //interest account
-    Account discountAccount;        //discount account
+	public def toMap() {
+		def m = super.toMap();
+		m.refid = refid;
+		m.ledgertype = ledgertype;
+		items.each {
+			if(it.amount == null) it.amount = 0;
+			m.put(it.txntype, NumberUtil.round(it.amount));
+		};
+		m.total = total;
+		return m;
+	}
 
-    public double getTotal() {
-        return NumberUtil.round( (amount - discount) + surcharge + interest);
-    }
-
-    //for display
-    def toItem() {
-        return [
-            item: account?.toItem(),
-            refid: refid,
-            amtdue: amtdue,
-            amount: amount,
-            discount: discount,
-            surcharge:surcharge,
-            interest: interest,
-            total: total,
-            duedate: duedate,
-            compromise: compromise,
-            sortorder: sortorder,
-            title: title,
-            txntype: txntype,
-            remarks: remarks
-        ];
-    }
-    
-
-    public boolean equals(def obj) {
-        return hashCode() == obj.hashCode();
-    }    
-
-    public int hashCode() {
-        if( category!=null  && account?.objid!=null) {
-            return (category + ":" + account.objid).hashCode();        
-        }
-        else if(account?.objid!=null){
-            return account.objid.hashCode();
-        }
-        else {
-            return super.hashCode();
-        }
-    }
+	//call this after apply payment
+	void recalc() {;}
 
 }

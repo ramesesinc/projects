@@ -1,22 +1,21 @@
 <schema>
 	<element tablename="paymentorder">
 		<field name="txnid" primary="true"/>
-		<field name="txndate" type="timestamp" />
-		<field name="payer_objid" />
-		<field name="payer_name" />
-		<field name="paidby" />
-		<field name="paidbyaddress" />
-		<field name="amount" type="decimal" />
-		<field name="collectiontypehandler" />
-		<field name="expirydate" type="timestamp"/>
-		<field name="refid" />
+		<field name="txndate" type="timestamp" required="true" />
+		<field name="controlno"  />
+		<field name="payer_objid" required="true" />
+		<field name="payer_name" required="true" />
+		<field name="paidby" required="true" />
+		<field name="paidbyaddress" required="true" />
+		<field name="particulars" required="true" />
+		<field name="amount" type="decimal" required="true" />
+		<field name="expirydate" type="date" required="true" />
+		<field name="refid" required="true"  />
 		<field name="refno" />
 		<complex name="info" serializer="default" required="true"/>
-		<complex name="collectiontype" ref="collectiontype" jointype="many-to-one" 
-			required="false" includefields="objid,barcodekey">
-			<key field="collectiontypehandler" target="handler"/>
+		<complex name="txntype" ref="paymentorder_type" jointype="many-to-one">
+			<key field="txntypeid" target="objid"/>
 		</complex>
 	</element>
-
 </schema>
 

@@ -4,34 +4,7 @@
         <invoker type="show_trackingno" caption="Show Tracking No" target="popup" action="viewReport"/>
     </invokers>
     
-    <code>
-    <![CDATA[
-        import com.rameses.rcp.common.*;
-        import com.rameses.rcp.annotations.*;
-        import com.rameses.osiris2.client.*;
-        import java.rmi.server.*;
-        import com.rameses.util.*;
-        import com.rameses.osiris2.reports.*;
-        
-        public class ShowTrackingNo extends ReportModel {
-        
-            def info;
-            
-            String reportName = "com/rameses/enterprise/reports/show_trackingno.jasper";
-        
-            def getReportData() {
-                return info;
-            }
-            
-            String viewReport() {
-                super.viewReport();
-                return "default";
-            }
-            
-            
-        }
-    ]]>
-    </code>
+    <code class="com.rameses.enterprise.models.ShowTrackingNo" />
 
     <pages>
         <page name="default" template="com.rameses.enterprise.views.ShowTrackingnoPage"/>
